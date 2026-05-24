@@ -351,6 +351,16 @@ input:focus{border-color:var(--purple);}
 .exercise-score-val{font-family:'Nunito',sans-serif;font-size:36px;font-weight:900;}
 .exercise-score-lbl{font-size:13px;color:var(--muted);}
 
+
+/* ===== LOCKED ACTIVITY ===== */
+.conj-locked{opacity:.5;pointer-events:none;position:relative;}
+.conj-locked::after{content:"🔒 Bientôt disponible";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.7);border-radius:var(--r);font-size:13px;font-weight:700;color:var(--muted);}
+.toggle-activity-btn{padding:5px 12px;border-radius:6px;border:1.5px solid;font-size:12px;font-weight:700;cursor:pointer;transition:all .15s;white-space:nowrap;}
+.toggle-activity-btn.active{border-color:var(--green);color:var(--green);background:transparent;}
+.toggle-activity-btn.active:hover{background:var(--green-light);}
+.toggle-activity-btn.locked{border-color:var(--amber);color:var(--amber);background:transparent;}
+.toggle-activity-btn.locked:hover{background:var(--amber-light);}
+
 </style>
 <script src="livres.js"></script>
 <script src="exercices_francais.js"></script>
@@ -601,28 +611,7 @@ input:focus{border-color:var(--purple);}
   <div id="screen-conjugaison" class="screen">
     <button class="back-btn" onclick="showScreen('screen-francais')">← Retour</button>
     <div class="page-title">⏰ Conjugaison</div>
-    <div class="sub-subjects-grid">
-      <div class="sub-subject-card active-card" onclick="goToConjugaison('present')">
-        <div class="sub-icon">✏️</div>
-        <div class="sub-title">Indicatif présent</div>
-        <div class="sub-desc">Actions qui se passent maintenant</div>
-      </div>
-      <div class="sub-subject-card active-card" onclick="goToConjugaison('imparfait')">
-        <div class="sub-icon">📖</div>
-        <div class="sub-title">Indicatif imparfait</div>
-        <div class="sub-desc">Actions passées et habituelles</div>
-      </div>
-      <div class="sub-subject-card active-card" onclick="goToConjugaison('futur')">
-        <div class="sub-icon">🚀</div>
-        <div class="sub-title">Indicatif futur simple</div>
-        <div class="sub-desc">Actions qui se passeront</div>
-      </div>
-      <div class="sub-subject-card active-card" onclick="goToConjugaison('passe_compose')">
-        <div class="sub-icon">✅</div>
-        <div class="sub-title">Indicatif passé composé</div>
-        <div class="sub-desc">Actions passées et terminées</div>
-      </div>
-    </div>
+    <div class="sub-subjects-grid" id="conj-tenses-grid"></div>
   </div>
 
   <!-- SCREEN: Conjugaison - Présent -->
@@ -1750,7 +1739,7 @@ function teacherGoToSubject(subject){
 
 function teacherGoToFrancaisSection(section){
   if(section==='lecture') showScreen('screen-teacher-lecture');
-  if(section==='conjugaison') showScreen('screen-conjugaison');
+  if(section==='conjugaison'){renderConjugaisonScreen();showScreen('screen-conjugaison');}
 }
 
 function teacherGoToRecitsExpress(){
@@ -1896,6 +1885,7 @@ function shuffleArray(arr){
 }
 
 function startConjExercise(tense, type){
+  if(isActivityLocked(tense)){ alert('Cet exercice n\'est pas encore disponible.'); return; }
   const data = getConjData(tense);
   if(!data) return;
 
@@ -1929,6 +1919,7 @@ function startConjExercise(tense, type){
 }
 
 function startConjEvaluation(tense){
+  if(isActivityLocked(tense)){ alert('Cet exercice n\'est pas encore disponible.'); return; }
   const data = getConjData(tense);
   if(!data) return;
 
@@ -2197,6 +2188,57 @@ function loadConjResults(cls, student){
   return saved ? JSON.parse(saved) : [];
 }
 
+
+// ===== ACTIVITY LOCK SYSTEM =====
+function getLockedActivities(){
+  const s = localStorage.getItem('lq_locked_activities');
+  return s ? JSON.parse(s) : ['passe_compose']; // passé composé locked by default
+}
+function saveLockedActivities(arr){
+  localStorage.setItem('lq_locked_activities', JSON.stringify(arr));
+}
+function isActivityLocked(id){
+  return getLockedActivities().includes(id);
+}
+function toggleActivity(id){
+  const arr = getLockedActivities();
+  if(arr.includes(id)){
+    saveLockedActivities(arr.filter(x => x !== id));
+  } else {
+    arr.push(id);
+    saveLockedActivities(arr);
+  }
+  renderAppsManage();
+  renderConjugaisonScreen();
+}
+
+function renderConjugaisonScreen(){
+  // Update conjugaison tense cards based on lock status
+  const tenses = [
+    {id:'present', screen:'screen-conj-present', label:'Indicatif présent', icon:'✏️'},
+    {id:'imparfait', screen:'screen-conj-imparfait', label:'Indicatif imparfait', icon:'📖'},
+    {id:'futur', screen:'screen-conj-futur', label:'Indicatif futur simple', icon:'🚀'},
+    {id:'passe_compose', screen:'screen-conj-passe-compose', label:'Indicatif passé composé', icon:'✅'},
+  ];
+
+  const grid = document.getElementById('conj-tenses-grid');
+  if(!grid) return;
+  grid.innerHTML = '';
+
+  tenses.forEach(t => {
+    const locked = isActivityLocked(t.id);
+    const div = document.createElement('div');
+    div.className = 'sub-subject-card' + (locked ? ' disabled' : ' active-card');
+    div.onclick = locked ? null : () => goToConjugaison(t.id);
+    div.innerHTML = `
+      <div class="sub-icon">${t.icon}</div>
+      <div class="sub-title">${t.label}</div>
+      <div class="sub-desc">${locked ? '🔒 Non disponible pour le moment' : 'Entraînement et évaluation'}</div>
+    `;
+    grid.appendChild(div);
+  });
+}
+
 // ===== CONJUGAISON NAVIGATION =====
 function goToConjugaison(tense){
   const screens = {
@@ -2215,7 +2257,7 @@ function goToSubject(subject){
 
 function goToFrancaisSection(section){
   if(section==='lecture') showScreen('screen-lecture');
-  if(section==='conjugaison') showScreen('screen-conjugaison');
+  if(section==='conjugaison'){renderConjugaisonScreen();showScreen('screen-conjugaison');}
 }
 
 function goToRecitsExpress(){
@@ -2329,7 +2371,37 @@ function renderAppsManage(){
     });
   }
   html+=`</div>`;
+
+  // ===== CONJUGAISON SECTION =====
+  const tenses = [
+    {id:'present', label:'Indicatif présent', icon:'✏️'},
+    {id:'imparfait', label:'Indicatif imparfait', icon:'📖'},
+    {id:'futur', label:'Indicatif futur simple', icon:'🚀'},
+    {id:'passe_compose', label:'Indicatif passé composé', icon:'✅'},
+  ];
+  const locked = getLockedActivities();
+
+  html += `<div class="card" style="margin-top:1rem;"><div class="card-title">⏰ Conjugaison — Gestion des temps</div>`;
+  html += `<p style="font-size:12px;color:var(--muted);margin-bottom:1rem;">Active ou masque les temps de conjugaison pour les élèves.</p>`;
+
+  tenses.forEach(t => {
+    const isLocked = locked.includes(t.id);
+    const btnClass = isLocked ? 'locked' : 'active';
+    const btnLabel = isLocked ? '🔒 Masqué — Activer' : '✅ Actif — Masquer';
+    html += `<div class="manage-item">
+      <span style="font-size:20px;">${t.icon}</span>
+      <div style="flex:1;">
+        <div class="item-name">${t.label}</div>
+        <div class="item-code">${isLocked ? 'Non visible par les élèves' : 'Visible par les élèves'}</div>
+      </div>
+      <button class="toggle-activity-btn ${btnClass}" onclick="toggleActivity('${t.id}')">${btnLabel}</button>
+    </div>`;
+  });
+
+  html += `</div>`;
+
   document.getElementById('apps-manage').innerHTML=html;
+  renderConjugaisonScreen();
 }
 
 function teacherPreviewLecture(){
