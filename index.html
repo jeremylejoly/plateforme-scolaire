@@ -379,9 +379,24 @@ input:focus{border-color:var(--purple);}
 .card-teacher-toggle.btn-hide{border-color:var(--amber);color:var(--amber);}
 .card-teacher-toggle.btn-show{border-color:var(--green);color:var(--green);}
 
+
+/* ===== SHAPE QCM EXERCISE ===== */
+.shape-question{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r);padding:1rem;margin-bottom:14px;}
+.shape-question.correct{border-color:var(--green);background:#F0FFF8;}
+.shape-question.incorrect{border-color:var(--red);background:#FFF0F0;}
+.shape-svg-container{display:flex;justify-content:center;margin-bottom:12px;background:#FAFAFA;border-radius:8px;padding:8px;}
+.shape-svg-container svg{max-width:200px;width:100%;}
+.shape-options{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;}
+.shape-option{padding:8px 16px;border:2px solid var(--border);border-radius:20px;cursor:pointer;font-size:14px;font-weight:700;transition:all .15s;background:var(--bg);}
+.shape-option:hover{border-color:var(--purple);background:var(--purple-light);}
+.shape-option.selected{border-color:var(--purple);background:var(--purple-light);color:var(--purple);}
+.shape-option.correct-answer{border-color:var(--green);background:#E6FFF3;color:var(--green);}
+.shape-option.wrong-answer{border-color:var(--red);background:#FFE6E6;color:var(--red);}
+
 </style>
 <script src="livres.js"></script>
 <script src="exercices_francais.js"></script>
+<script src="exercices_maths.js"></script>
 </head>
 <body>
 
@@ -1063,10 +1078,45 @@ input:focus{border-color:var(--purple);}
   <div id="screen-solides-quadrilateres" class="screen">
     <button class="back-btn" onclick="showScreen('screen-solides');renderSolidesScreen();">← Retour</button>
     <div class="page-title">🔲 Les quadrilatères</div>
-    <div class="card" style="text-align:center;padding:2rem;">
-      <div style="font-size:48px;margin-bottom:1rem;">🚧</div>
-      <p style="font-size:15px;color:var(--muted);">Les exercices arrivent bientôt !</p>
+    <div class="exercise-list">
+      <div class="exercise-card" onclick="startShapeExercise('quadrilateres','qcm')">
+        <div class="exercise-card-icon qcm">🎯</div>
+        <div>
+          <div class="exercise-card-title">Entraînement — Reconnais la forme</div>
+          <div class="exercise-card-desc">10 formes aléatoires parmi 24 · Recommençable</div>
+        </div>
+        <span class="exercise-card-badge">QCM</span>
+      </div>
+      <div class="exercise-card" onclick="startShapeEvaluation('quadrilateres')">
+        <div class="exercise-card-icon" style="background:#FFE8E8;">🏆</div>
+        <div>
+          <div class="exercise-card-title">Évaluation</div>
+          <div class="exercise-card-desc">5 formes fixes · Une seule tentative</div>
+        </div>
+        <span class="exercise-card-badge" style="background:#FFE8E8;color:var(--red);">Éval.</span>
+      </div>
     </div>
+  </div>
+
+  <!-- SCREEN: Shape exercise player -->
+  <div id="screen-shape-exercise" class="screen">
+    <button class="back-btn" id="shape-back-btn" onclick="showScreen('screen-solides-quadrilateres')">← Retour</button>
+    <div class="page-title" id="shape-exercise-title">Exercice</div>
+    <div id="shape-exercise-body"></div>
+    <div id="shape-score-panel" style="display:none;">
+      <div class="exercise-score">
+        <div class="exercise-score-val" id="shape-score-val"></div>
+        <div class="exercise-score-lbl">résultat</div>
+      </div>
+      <button class="btn btn-primary" style="width:100%;margin-bottom:10px;" onclick="showShapeCorrection()">📋 Voir la correction</button>
+      <button class="btn" style="width:100%;" id="shape-restart-btn" onclick="restartShapeExercise()">🔄 Nouvel entraînement</button>
+    </div>
+    <div id="shape-correction-panel" style="display:none;">
+      <div class="card-title" style="margin-bottom:1rem;">📋 Correction complète</div>
+      <div id="shape-correction-body"></div>
+      <button class="btn" style="width:100%;margin-top:1rem;" onclick="restartShapeExercise()">🔄 Nouvel entraînement</button>
+    </div>
+    <button id="shape-validate-btn" class="btn btn-primary" style="width:100%;font-size:16px;padding:14px;margin-top:1rem;display:none;" onclick="validateShapeExercise()">✓ Valider mes réponses</button>
   </div>
 
   <!-- SCREEN: Solides - Les polyèdres -->
@@ -3142,6 +3192,197 @@ function renderGramFonctionsScreen(){
 }
 function renderGramTypesScreen(){
   renderSubGramGrid(GRAM_TYPES_ITEMS, ['gram-types-grid','gram-types-grid-teacher'], 'renderGramTypesScreen');
+}
+
+
+// ===== SHAPE EXERCISE ENGINE =====
+let shapeState = {
+  section: '',
+  type: '',
+  isEvaluation: false,
+  questions: [],
+  answers: [],
+  submitted: false
+};
+
+function getShapeData(section){
+  return window.EXERCICES_MATHS && window.EXERCICES_MATHS.solides_figures[section]
+    ? window.EXERCICES_MATHS.solides_figures[section]
+    : null;
+}
+
+function startShapeExercise(section, type){
+  const data = getShapeData(section);
+  if(!data) return;
+
+  shapeState = { section, type, isEvaluation: false, questions: [], answers: [], submitted: false };
+  shapeState.questions = shuffleArray(data.qcm_bank).slice(0, 10);
+
+  document.getElementById('shape-exercise-title').textContent = '🎯 Reconnais la forme';
+  document.getElementById('shape-score-panel').style.display = 'none';
+  document.getElementById('shape-correction-panel').style.display = 'none';
+  document.getElementById('shape-validate-btn').style.display = 'block';
+  document.getElementById('shape-restart-btn').style.display = 'block';
+  document.getElementById('shape-back-btn').onclick = function(){ showScreen('screen-solides-quadrilateres'); };
+
+  renderShapeQuestions();
+  showScreen('screen-shape-exercise');
+}
+
+function startShapeEvaluation(section){
+  const data = getShapeData(section);
+  if(!data) return;
+
+  const evalKey = `lq_eval_shape_${section}_${state.studentCls}_${state.student}`;
+  if(state.student && localStorage.getItem(evalKey)){
+    alert("Tu as déjà passé cette évaluation. Tu ne peux pas la recommencer.");
+    return;
+  }
+
+  shapeState = { section, type: 'qcm', isEvaluation: true, questions: [], answers: [], submitted: false };
+  shapeState.questions = data.evaluation.map(idx => data.qcm_bank[idx]);
+
+  document.getElementById('shape-exercise-title').textContent = '🏆 Évaluation — Les quadrilatères';
+  document.getElementById('shape-score-panel').style.display = 'none';
+  document.getElementById('shape-correction-panel').style.display = 'none';
+  document.getElementById('shape-validate-btn').style.display = 'block';
+  document.getElementById('shape-restart-btn').style.display = 'none';
+  document.getElementById('shape-back-btn').onclick = function(){ showScreen('screen-solides-quadrilateres'); };
+
+  renderShapeQuestions();
+  showScreen('screen-shape-exercise');
+}
+
+function renderShapeQuestions(){
+  const body = document.getElementById('shape-exercise-body');
+  let html = '';
+  const consigne = '<p style="font-size:13px;color:var(--muted);margin-bottom:1rem;text-align:center;">Quel est le nom le plus précis de cette forme ?</p>';
+
+  shapeState.questions.forEach((q, i) => {
+    html += `<div class="shape-question" id="shape-q-${i}">
+      <div class="conj-question-num">Question ${i+1}/${shapeState.questions.length}</div>
+      ${consigne}
+      <div class="shape-svg-container">
+        <svg viewBox="0 0 200 160" xmlns="http://www.w3.org/2000/svg">${q.svg}</svg>
+      </div>
+      <div class="shape-options">`;
+    q.options.forEach((opt, j) => {
+      html += `<button class="shape-option" id="shape-opt-${i}-${j}" onclick="selectShapeOption(${i},${j})">${opt}</button>`;
+    });
+    html += `</div></div>`;
+  });
+
+  body.innerHTML = html;
+}
+
+function selectShapeOption(qIdx, optIdx){
+  if(shapeState.submitted) return;
+  shapeState.questions[qIdx].options.forEach((_, j) => {
+    const btn = document.getElementById(`shape-opt-${qIdx}-${j}`);
+    if(btn) btn.classList.remove('selected');
+  });
+  const btn = document.getElementById(`shape-opt-${qIdx}-${optIdx}`);
+  if(btn) btn.classList.add('selected');
+  shapeState.answers[qIdx] = optIdx;
+}
+
+function validateShapeExercise(){
+  shapeState.submitted = true;
+  const total = shapeState.questions.length;
+  let score = 0;
+  const details = [];
+
+  shapeState.questions.forEach((q, i) => {
+    const answered = shapeState.answers[i];
+    const isCorrect = answered === q.answer;
+    const given = answered !== undefined ? q.options[answered] : '(pas de réponse)';
+    const expected = q.options[q.answer];
+
+    q.options.forEach((_, j) => {
+      const btn = document.getElementById(`shape-opt-${i}-${j}`);
+      if(!btn) return;
+      btn.onclick = null;
+      if(j === q.answer) btn.classList.add('correct-answer');
+      else if(j === answered && !isCorrect) btn.classList.add('wrong-answer');
+    });
+
+    const block = document.getElementById(`shape-q-${i}`);
+    if(block) block.classList.add(isCorrect ? 'correct' : 'incorrect');
+
+    if(isCorrect) score++;
+    details.push({ q: i+1, given, expected, isCorrect, svg: q.svg });
+  });
+
+  shapeState.score = score;
+  shapeState.details = details;
+
+  document.getElementById('shape-validate-btn').style.display = 'none';
+  document.getElementById('shape-score-panel').style.display = 'block';
+
+  const pct = Math.round(score/total*100);
+  const color = pct>=70 ? 'var(--green)' : pct>=50 ? 'var(--amber)' : 'var(--red)';
+  document.getElementById('shape-score-val').innerHTML =
+    `<span style="color:${color}">${score}/${total}</span><br><span style="font-size:18px;">${pct}%</span>`;
+
+  if(state.student) saveShapeResult(score, total, pct);
+
+  if(shapeState.isEvaluation && state.student){
+    const evalKey = `lq_eval_shape_${shapeState.section}_${state.studentCls}_${state.student}`;
+    localStorage.setItem(evalKey, '1');
+  }
+
+  document.getElementById('shape-score-panel').scrollIntoView({behavior:'smooth'});
+}
+
+function showShapeCorrection(){
+  document.getElementById('shape-score-panel').style.display = 'none';
+  document.getElementById('shape-correction-panel').style.display = 'block';
+
+  let html = '';
+  shapeState.details.forEach(d => {
+    const color = d.isCorrect ? 'var(--green)' : 'var(--red)';
+    const icon = d.isCorrect ? '✅' : '❌';
+    html += `<div class="shape-question" style="border-color:${color}">
+      <div class="shape-svg-container">
+        <svg viewBox="0 0 200 160" xmlns="http://www.w3.org/2000/svg">${d.svg}</svg>
+      </div>
+      <div style="font-size:13px;text-align:center;">${icon} Ta réponse : <strong style="color:${color}">${d.given}</strong></div>
+      ${!d.isCorrect ? `<div style="font-size:13px;color:var(--green);text-align:center;">✓ Bonne réponse : <strong>${d.expected}</strong></div>` : ''}
+    </div>`;
+  });
+
+  document.getElementById('shape-correction-body').innerHTML = html;
+  document.getElementById('shape-correction-panel').scrollIntoView({behavior:'smooth'});
+}
+
+function restartShapeExercise(){
+  if(shapeState.isEvaluation) return;
+  shapeState.submitted = false;
+  shapeState.answers = [];
+  document.getElementById('shape-score-panel').style.display = 'none';
+  document.getElementById('shape-correction-panel').style.display = 'none';
+  document.getElementById('shape-validate-btn').style.display = 'block';
+  const data = getShapeData(shapeState.section);
+  shapeState.questions = shuffleArray(data.qcm_bank).slice(0, 10);
+  renderShapeQuestions();
+  window.scrollTo(0,0);
+}
+
+function saveShapeResult(score, total, pct){
+  const key = `lq_shape_${state.studentCls}_${state.student}`;
+  const saved = localStorage.getItem(key);
+  const history = saved ? JSON.parse(saved) : [];
+  const now = new Date();
+  history.push({
+    section: shapeState.section,
+    sectionLabel: 'Les quadrilatères',
+    isEvaluation: shapeState.isEvaluation,
+    score, total, pct,
+    details: shapeState.details.map(d => ({q:d.q, given:d.given, expected:d.expected, isCorrect:d.isCorrect})),
+    date: now.toLocaleDateString('fr-BE'),
+    time: now.toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})
+  });
+  localStorage.setItem(key, JSON.stringify(history));
 }
 
 // ===== GÉOGRAPHIE NAVIGATION =====
