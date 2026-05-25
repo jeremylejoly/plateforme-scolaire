@@ -440,6 +440,23 @@ input:focus{border-color:var(--purple);}
 .calc-result{font-family:'Nunito',sans-serif;font-size:18px;font-weight:800;}
 .calc-q-num{font-size:11px;font-weight:700;color:var(--muted);min-width:24px;}
 
+
+/* ===== DURÉES EXERCISE ===== */
+.durees-question{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r);padding:1.25rem;margin-bottom:12px;}
+.durees-question.correct{border-color:var(--green);background:#F0FFF8;}
+.durees-question.incorrect{border-color:var(--red);background:#FFF0F0;}
+.durees-question.revealed{border-color:var(--amber);background:#FFFBEB;}
+.durees-text{font-family:'Nunito',sans-serif;font-size:16px;font-weight:700;color:var(--text);margin-bottom:10px;}
+.durees-input-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.durees-input{border:none;border-bottom:2.5px solid var(--purple);background:transparent;font-family:'Nunito',sans-serif;font-size:16px;font-weight:800;color:var(--text);width:60px;text-align:center;outline:none;padding:2px 4px;}
+.durees-input.correct{border-bottom-color:var(--green);color:var(--green);}
+.durees-input.incorrect{border-bottom-color:var(--red);color:var(--red);}
+.durees-label{font-family:'Nunito',sans-serif;font-size:15px;font-weight:700;color:var(--text);}
+.durees-feedback{font-size:13px;margin-top:8px;font-weight:700;}
+.durees-attempts{font-size:11px;color:var(--muted);margin-top:4px;}
+.clock-container{display:flex;justify-content:center;margin-bottom:12px;}
+.clock-time-inputs{display:flex;align-items:center;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:10px;}
+
 </style>
 <script src="livres.js"></script>
 <script src="exercices_francais.js"></script>
@@ -1397,10 +1414,48 @@ input:focus{border-color:var(--purple);}
   <div id="screen-grandeurs-durees" class="screen">
     <button class="back-btn" onclick="showScreen('screen-grandeurs');renderGrandeursScreen();">← Retour</button>
     <div class="page-title">⏱️ Les durées</div>
-    <div class="card" style="text-align:center;padding:2rem;">
-      <div style="font-size:48px;margin-bottom:1rem;">🚧</div>
-      <p style="font-size:15px;color:var(--muted);">Les exercices arrivent bientôt !</p>
+    <div class="exercise-list">
+      <div class="exercise-card" onclick="startDureesExercise('conversions')">
+        <div class="exercise-card-icon qcm">🔄</div>
+        <div>
+          <div class="exercise-card-title">Exercice 1 — Conversions</div>
+          <div class="exercise-card-desc">10 conversions aléatoires · Recommençable</div>
+        </div>
+        <span class="exercise-card-badge">Conversion</span>
+      </div>
+      <div class="exercise-card" onclick="startDureesExercise('duree_entre')">
+        <div class="exercise-card-icon trous">⏱️</div>
+        <div>
+          <div class="exercise-card-title">Exercice 2 — Durée entre 2 heures</div>
+          <div class="exercise-card-desc">5 calculs · 2 tentatives max · Recommençable</div>
+        </div>
+        <span class="exercise-card-badge">Durée</span>
+      </div>
+      <div class="exercise-card" onclick="startDureesExercise('horloge')">
+        <div class="exercise-card-icon qcm">🕐</div>
+        <div>
+          <div class="exercise-card-title">Exercice 3 — Lire une horloge</div>
+          <div class="exercise-card-desc">5 horloges · 2 tentatives max · Recommençable</div>
+        </div>
+        <span class="exercise-card-badge">Horloge</span>
+      </div>
     </div>
+  </div>
+
+  <!-- SCREEN: Durées exercise player -->
+  <div id="screen-durees-exercise" class="screen">
+    <button class="back-btn" id="durees-back-btn" onclick="showScreen('screen-grandeurs-durees')">← Retour</button>
+    <div class="page-title" id="durees-exercise-title">Les durées</div>
+    <div id="durees-exercise-body"></div>
+    <div id="durees-score-panel" style="display:none;">
+      <div class="exercise-score">
+        <div class="exercise-score-val" id="durees-score-val"></div>
+        <div class="exercise-score-lbl">résultat</div>
+      </div>
+      <button class="btn" style="width:100%;margin-top:10px;" onclick="restartDureesExercise()">🔄 Nouvel entraînement</button>
+    </div>
+    <button id="durees-validate-btn" class="btn btn-primary" style="width:100%;font-size:16px;padding:14px;margin-top:1rem;display:none;" onclick="validateDureesExercise()">✓ Valider mes réponses</button>
+    <button id="durees-next-btn" class="btn btn-primary" style="width:100%;font-size:16px;padding:14px;margin-top:1rem;display:none;" onclick="nextDureesQuestion()">Suivant →</button>
   </div>
 
   <!-- SCREEN: Grandeurs - La monnaie -->
@@ -3396,6 +3451,458 @@ function renderGramTypesScreen(){
 
 
 
+
+
+// ===== DURÉES EXERCISE ENGINE =====
+
+// BANQUE CONVERSIONS (41 questions)
+const CONVERSIONS_BANK = [
+  // Heures → minutes
+  {text:"1h = ___ min", type:"single", answer:"60"},
+  {text:"2h = ___ min", type:"single", answer:"120"},
+  {text:"1h30 = ___ min", type:"single", answer:"90"},
+  {text:"1h15 = ___ min", type:"single", answer:"75"},
+  {text:"1h45 = ___ min", type:"single", answer:"105"},
+  {text:"2h30 = ___ min", type:"single", answer:"150"},
+  {text:"3h = ___ min", type:"single", answer:"180"},
+  {text:"½h = ___ min", type:"single", answer:"30"},
+  {text:"2h15 = ___ min", type:"single", answer:"135"},
+  {text:"3h30 = ___ min", type:"single", answer:"210"},
+  {text:"¼h = ___ min", type:"single", answer:"15"},
+  {text:"¾h = ___ min", type:"single", answer:"45"},
+  {text:"1/10h = ___ min", type:"single", answer:"6"},
+  // Minutes → heures et minutes
+  {text:"60 min = ___h___min", type:"hmin", answerH:"1", answerMin:"0"},
+  {text:"90 min = ___h___min", type:"hmin", answerH:"1", answerMin:"30"},
+  {text:"120 min = ___h___min", type:"hmin", answerH:"2", answerMin:"0"},
+  {text:"75 min = ___h___min", type:"hmin", answerH:"1", answerMin:"15"},
+  {text:"150 min = ___h___min", type:"hmin", answerH:"2", answerMin:"30"},
+  {text:"180 min = ___h___min", type:"hmin", answerH:"3", answerMin:"0"},
+  {text:"600 min = ___h___min", type:"hmin", answerH:"10", answerMin:"0"},
+  {text:"135 min = ___h___min", type:"hmin", answerH:"2", answerMin:"15"},
+  {text:"210 min = ___h___min", type:"hmin", answerH:"3", answerMin:"30"},
+  {text:"105 min = ___h___min", type:"hmin", answerH:"1", answerMin:"45"},
+  // Jours → heures
+  {text:"1 jour = ___ h", type:"single", answer:"24"},
+  {text:"2 jours = ___ h", type:"single", answer:"48"},
+  {text:"3 jours = ___ h", type:"single", answer:"72"},
+  {text:"½ jour = ___ h", type:"single", answer:"12"},
+  // Heures → jours et heures
+  {text:"48 h = ___j___h", type:"jh", answerJ:"2", answerH:"0"},
+  {text:"36 h = ___j___h", type:"jh", answerJ:"1", answerH:"12"},
+  {text:"72 h = ___j___h", type:"jh", answerJ:"3", answerH:"0"},
+  {text:"30 h = ___j___h", type:"jh", answerJ:"1", answerH:"6"},
+  // Semaines → jours
+  {text:"1 semaine = ___ jours", type:"single", answer:"7"},
+  {text:"2 semaines = ___ jours", type:"single", answer:"14"},
+  // Années → mois
+  {text:"1 an = ___ mois", type:"single", answer:"12"},
+  // Minutes → secondes
+  {text:"1 min = ___ sec", type:"single", answer:"60"},
+  {text:"½ min = ___ sec", type:"single", answer:"30"},
+  {text:"¼ min = ___ sec", type:"single", answer:"15"},
+  {text:"10 min = ___ sec", type:"single", answer:"600"},
+  // Heures → secondes
+  {text:"1h = ___ sec", type:"single", answer:"3600"},
+  {text:"½h = ___ sec", type:"single", answer:"1800"},
+  // Jours → minutes
+  {text:"1 jour = ___ min", type:"single", answer:"1440"},
+];
+
+// BANQUE DURÉES ENTRE 2 HEURES (20 questions)
+const DUREE_ENTRE_BANK = [
+  {from:"8h46", to:"12h04", answerH:"3", answerMin:"18"},
+  {from:"9h15", to:"11h45", answerH:"2", answerMin:"30"},
+  {from:"7h30", to:"10h15", answerH:"2", answerMin:"45"},
+  {from:"13h20", to:"16h50", answerH:"3", answerMin:"30"},
+  {from:"20h50", to:"6h07", answerH:"9", answerMin:"17"},
+  {from:"22h15", to:"3h30", answerH:"5", answerMin:"15"},
+  {from:"6h45", to:"14h10", answerH:"7", answerMin:"25"},
+  {from:"11h55", to:"15h20", answerH:"3", answerMin:"25"},
+  {from:"8h08", to:"13h52", answerH:"5", answerMin:"44"},
+  {from:"17h40", to:"21h15", answerH:"3", answerMin:"35"},
+  {from:"23h30", to:"7h00", answerH:"7", answerMin:"30"},
+  {from:"6h25", to:"9h10", answerH:"2", answerMin:"45"},
+  {from:"10h35", to:"14h05", answerH:"3", answerMin:"30"},
+  {from:"15h48", to:"19h12", answerH:"3", answerMin:"24"},
+  {from:"21h55", to:"4h25", answerH:"6", answerMin:"30"},
+  {from:"7h12", to:"11h48", answerH:"4", answerMin:"36"},
+  {from:"14h30", to:"17h15", answerH:"2", answerMin:"45"},
+  {from:"9h40", to:"13h25", answerH:"3", answerMin:"45"},
+  {from:"18h55", to:"22h30", answerH:"3", answerMin:"35"},
+  {from:"5h20", to:"8h45", answerH:"3", answerMin:"25"},
+];
+
+// BANQUE HORLOGES (30 questions) - [h, min, sec] for 12h format
+const HORLOGES_BANK = [
+  {h:3, min:15, sec:0},   {h:7, min:42, sec:30},  {h:10, min:58, sec:15},
+  {h:1, min:30, sec:45},  {h:6, min:07, sec:0},   {h:11, min:23, sec:30},
+  {h:9, min:51, sec:15},  {h:4, min:36, sec:45},  {h:2, min:14, sec:0},
+  {h:8, min:49, sec:30},  {h:12, min:00, sec:0},  {h:5, min:33, sec:15},
+  {h:7, min:08, sec:45},  {h:3, min:47, sec:0},   {h:11, min:55, sec:30},
+  {h:6, min:22, sec:15},  {h:9, min:37, sec:45},  {h:1, min:59, sec:0},
+  {h:4, min:11, sec:30},  {h:10, min:44, sec:15}, {h:2, min:28, sec:45},
+  {h:8, min:03, sec:0},   {h:5, min:16, sec:30},  {h:12, min:30, sec:15},
+  {h:7, min:52, sec:45},  {h:3, min:24, sec:0},   {h:10, min:09, sec:30},
+  {h:6, min:41, sec:15},  {h:1, min:17, sec:45},  {h:9, min:05, sec:0},
+];
+
+let dureesState = {
+  type: '',
+  questions: [],
+  currentIdx: 0,
+  attempts: 0,
+  score: 0,
+  submitted: false,
+  mode: 'conversions'
+};
+
+function startDureesExercise(mode){
+  dureesState = { type: mode, questions: [], currentIdx: 0, attempts: 0, score: 0, submitted: false, mode };
+
+  document.getElementById('durees-back-btn').onclick = function(){ showScreen('screen-grandeurs-durees'); };
+  document.getElementById('durees-score-panel').style.display = 'none';
+  document.getElementById('durees-validate-btn').style.display = 'none';
+  document.getElementById('durees-next-btn').style.display = 'none';
+
+  if(mode === 'conversions'){
+    document.getElementById('durees-exercise-title').textContent = '🔄 Conversions de durées';
+    dureesState.questions = shuffleArray([...CONVERSIONS_BANK]).slice(0,10);
+    dureesState.submitted = false;
+    renderConversionsExercise();
+    document.getElementById('durees-validate-btn').style.display = 'block';
+  } else if(mode === 'duree_entre'){
+    document.getElementById('durees-exercise-title').textContent = '⏱️ Durée entre 2 heures';
+    dureesState.questions = shuffleArray([...DUREE_ENTRE_BANK]).slice(0,5);
+    dureesState.currentIdx = 0;
+    dureesState.attempts = 0;
+    renderDureeEntreQuestion();
+  } else if(mode === 'horloge'){
+    document.getElementById('durees-exercise-title').textContent = '🕐 Lire une horloge';
+    dureesState.questions = shuffleArray([...HORLOGES_BANK]).slice(0,5);
+    dureesState.currentIdx = 0;
+    dureesState.attempts = 0;
+    renderHorlogeQuestion();
+  }
+
+  showScreen('screen-durees-exercise');
+}
+
+// ===== CONVERSIONS =====
+function renderConversionsExercise(){
+  const body = document.getElementById('durees-exercise-body');
+  let html = '';
+
+  dureesState.questions.forEach((q, i) => {
+    html += `<div class="durees-question" id="durees-q-${i}">
+      <div class="conj-question-num">Question ${i+1}/10</div>
+      <div class="durees-text">${q.text}</div>
+      <div class="durees-input-row">`;
+
+    if(q.type === 'single'){
+      html += `<input type="number" class="durees-input" id="dinp-${i}-0" style="width:80px;" placeholder="?"/>`;
+    } else if(q.type === 'hmin'){
+      html += `<input type="number" class="durees-input" id="dinp-${i}-0" placeholder="?"/>
+        <span class="durees-label">h</span>
+        <input type="number" class="durees-input" id="dinp-${i}-1" placeholder="?"/>
+        <span class="durees-label">min</span>`;
+    } else if(q.type === 'jh'){
+      html += `<input type="number" class="durees-input" id="dinp-${i}-0" placeholder="?"/>
+        <span class="durees-label">j</span>
+        <input type="number" class="durees-input" id="dinp-${i}-1" placeholder="?"/>
+        <span class="durees-label">h</span>`;
+    }
+
+    html += `</div></div>`;
+  });
+
+  body.innerHTML = html;
+  document.getElementById('durees-validate-btn').style.display = 'block';
+}
+
+function validateDureesExercise(){
+  if(dureesState.mode !== 'conversions') return;
+  dureesState.submitted = true;
+  let score = 0;
+
+  dureesState.questions.forEach((q, i) => {
+    let isCorrect = false;
+
+    if(q.type === 'single'){
+      const val = document.getElementById(`dinp-${i}-0`)?.value?.trim();
+      isCorrect = val === q.answer;
+    } else if(q.type === 'hmin'){
+      const h = document.getElementById(`dinp-${i}-0`)?.value?.trim();
+      const m = document.getElementById(`dinp-${i}-1`)?.value?.trim();
+      isCorrect = h === q.answerH && (m === q.answerMin || m === q.answerMin.replace(/^0/,''));
+    } else if(q.type === 'jh'){
+      const j = document.getElementById(`dinp-${i}-0`)?.value?.trim();
+      const h = document.getElementById(`dinp-${i}-1`)?.value?.trim();
+      isCorrect = j === q.answerJ && (h === q.answerH || h === q.answerH.replace(/^0/,''));
+    }
+
+    // Style inputs
+    const inp0 = document.getElementById(`dinp-${i}-0`);
+    const inp1 = document.getElementById(`dinp-${i}-1`);
+    if(inp0){ inp0.disabled=true; inp0.classList.add(isCorrect?'correct':'incorrect'); }
+    if(inp1){ inp1.disabled=true; inp1.classList.add(isCorrect?'correct':'incorrect'); }
+
+    const block = document.getElementById(`durees-q-${i}`);
+    if(block) block.classList.add(isCorrect ? 'correct' : 'incorrect');
+
+    // Show correction if wrong
+    if(!isCorrect){
+      let correction = '';
+      if(q.type === 'single') correction = q.answer;
+      else if(q.type === 'hmin') correction = `${q.answerH}h${q.answerMin}min`;
+      else if(q.type === 'jh') correction = `${q.answerJ}j${q.answerH}h`;
+      const fb = document.createElement('div');
+      fb.className = 'durees-feedback';
+      fb.style.color = 'var(--green)';
+      fb.textContent = '✓ Réponse : ' + correction;
+      block?.appendChild(fb);
+    }
+
+    if(isCorrect) score++;
+  });
+
+  document.getElementById('durees-validate-btn').style.display = 'none';
+  document.getElementById('durees-score-panel').style.display = 'block';
+  const pct = Math.round(score/10*100);
+  const color = pct>=70?'var(--green)':pct>=50?'var(--amber)':'var(--red)';
+  document.getElementById('durees-score-val').innerHTML =
+    `<span style="color:${color}">${score}/10</span><br><span style="font-size:18px;">${pct}%</span>`;
+}
+
+function restartDureesExercise(){
+  startDureesExercise(dureesState.mode);
+}
+
+// ===== DURÉE ENTRE 2 HEURES =====
+function renderDureeEntreQuestion(){
+  const q = dureesState.questions[dureesState.currentIdx];
+  const total = dureesState.questions.length;
+  const body = document.getElementById('durees-exercise-body');
+
+  body.innerHTML = `
+    <div class="durees-question" id="durees-current-q">
+      <div class="conj-question-num">Question ${dureesState.currentIdx+1}/${total}</div>
+      <div class="durees-text">⏱️ De <strong>${q.from}</strong> à <strong>${q.to}</strong>, combien de temps s'est-il écoulé ?</div>
+      <p style="font-size:12px;color:var(--muted);font-style:italic;">💡 Utilise une feuille annexe pour faire tes calculs.</p>
+      <div class="durees-input-row" style="margin-top:10px;">
+        <input type="number" class="durees-input" id="de-h" placeholder="?"/>
+        <span class="durees-label">h</span>
+        <input type="number" class="durees-input" id="de-min" placeholder="?"/>
+        <span class="durees-label">min</span>
+      </div>
+      <div class="durees-attempts" id="de-attempts">Tentative 1/2</div>
+      <div class="durees-feedback" id="de-feedback"></div>
+    </div>`;
+
+  document.getElementById('durees-validate-btn').style.display = 'none';
+  document.getElementById('durees-next-btn').style.display = 'none';
+
+  // Use a specific validate button for this mode
+  const btn = document.getElementById('durees-validate-btn');
+  btn.style.display = 'block';
+  btn.onclick = checkDureeEntre;
+  document.getElementById('de-h').focus();
+}
+
+function checkDureeEntre(){
+  const q = dureesState.questions[dureesState.currentIdx];
+  const h = document.getElementById('de-h')?.value?.trim();
+  const m = document.getElementById('de-min')?.value?.trim();
+  const isCorrect = h === q.answerH && m === q.answerMin;
+  dureesState.attempts++;
+
+  const block = document.getElementById('durees-current-q');
+  const fb = document.getElementById('de-feedback');
+  const att = document.getElementById('de-attempts');
+
+  if(isCorrect){
+    block.classList.add('correct');
+    fb.style.color = 'var(--green)';
+    fb.textContent = '✅ Bravo, c'est correct !';
+    dureesState.score++;
+    document.getElementById('durees-validate-btn').style.display = 'none';
+    setTimeout(() => advanceDureeEntre(), 1200);
+  } else if(dureesState.attempts < 2){
+    block.classList.add('incorrect');
+    fb.style.color = 'var(--red)';
+    fb.textContent = '❌ Pas tout à fait... Réessaie !';
+    att.textContent = 'Tentative 2/2';
+    block.classList.remove('incorrect');
+    setTimeout(() => { block.classList.add('incorrect'); }, 10);
+  } else {
+    // 2nd attempt failed - show answer
+    block.classList.add('revealed');
+    block.classList.remove('incorrect');
+    fb.style.color = 'var(--amber)';
+    fb.textContent = `❌ La bonne réponse était : ${q.answerH}h${q.answerMin}min`;
+    document.getElementById('durees-validate-btn').style.display = 'none';
+    setTimeout(() => advanceDureeEntre(), 2500);
+  }
+}
+
+function advanceDureeEntre(){
+  dureesState.currentIdx++;
+  dureesState.attempts = 0;
+  if(dureesState.currentIdx >= dureesState.questions.length){
+    // Show final score
+    document.getElementById('durees-exercise-body').innerHTML = '';
+    document.getElementById('durees-score-panel').style.display = 'block';
+    const score = dureesState.score;
+    const total = dureesState.questions.length;
+    const pct = Math.round(score/total*100);
+    const color = pct>=70?'var(--green)':pct>=50?'var(--amber)':'var(--red)';
+    document.getElementById('durees-score-val').innerHTML =
+      `<span style="color:${color}">${score}/${total}</span><br><span style="font-size:18px;">${pct}%</span>`;
+  } else {
+    renderDureeEntreQuestion();
+  }
+}
+
+// ===== HORLOGE ANALOGIQUE =====
+function drawClock(h, min, sec){
+  const size = 180;
+  const cx = size/2, cy = size/2, r = size/2 - 10;
+
+  // Angles (in radians, 12 o'clock = -PI/2)
+  const secAngle = (sec/60)*2*Math.PI - Math.PI/2;
+  const minAngle = ((min + sec/60)/60)*2*Math.PI - Math.PI/2;
+  // Hour hand: hour + fraction of hour from minutes + seconds
+  const hourAngle = (((h%12) + min/60 + sec/3600)/12)*2*Math.PI - Math.PI/2;
+
+  function handEnd(angle, length){
+    return {
+      x: cx + length * Math.cos(angle),
+      y: cy + length * Math.sin(angle)
+    };
+  }
+
+  const hEnd = handEnd(hourAngle, r*0.55);
+  const mEnd = handEnd(minAngle, r*0.78);
+  const sEnd = handEnd(secAngle, r*0.88);
+
+  // Hour markers
+  let markers = '';
+  for(let i=0;i<12;i++){
+    const a = (i/12)*2*Math.PI - Math.PI/2;
+    const isHour = true;
+    const r1 = r*0.88, r2 = r*0.95;
+    markers += `<line x1="${cx+r1*Math.cos(a)}" y1="${cy+r1*Math.sin(a)}" x2="${cx+r2*Math.cos(a)}" y2="${cy+r2*Math.sin(a)}" stroke="#555" stroke-width="2"/>`;
+    // Hour numbers
+    const nr = r*0.75;
+    const num = i===0?12:i;
+    markers += `<text x="${cx+nr*Math.cos(a)}" y="${cy+nr*Math.sin(a)}" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="bold" fill="#333">${num}</text>`;
+  }
+  // Minute markers
+  for(let i=0;i<60;i++){
+    if(i%5===0) continue;
+    const a = (i/60)*2*Math.PI - Math.PI/2;
+    const r1 = r*0.92, r2 = r*0.96;
+    markers += `<line x1="${cx+r1*Math.cos(a)}" y1="${cy+r1*Math.sin(a)}" x2="${cx+r2*Math.cos(a)}" y2="${cy+r2*Math.sin(a)}" stroke="#aaa" stroke-width="1"/>`;
+  }
+
+  return `<svg viewBox="0 0 ${size} ${size}" xmlns="http://www.w3.org/2000/svg" style="max-width:200px;width:100%;">
+    <circle cx="${cx}" cy="${cy}" r="${r}" fill="white" stroke="#333" stroke-width="2.5"/>
+    ${markers}
+    <!-- Hour hand -->
+    <line x1="${cx}" y1="${cy}" x2="${hEnd.x}" y2="${hEnd.y}" stroke="#1a1a2e" stroke-width="5" stroke-linecap="round"/>
+    <!-- Minute hand -->
+    <line x1="${cx}" y1="${cy}" x2="${mEnd.x}" y2="${mEnd.y}" stroke="#2d3561" stroke-width="3.5" stroke-linecap="round"/>
+    <!-- Second hand -->
+    <line x1="${cx}" y1="${cy}" x2="${sEnd.x}" y2="${sEnd.y}" stroke="#E53E3E" stroke-width="1.5" stroke-linecap="round"/>
+    <circle cx="${cx}" cy="${cy}" r="4" fill="#333"/>
+  </svg>`;
+}
+
+function renderHorlogeQuestion(){
+  const q = dureesState.questions[dureesState.currentIdx];
+  const total = dureesState.questions.length;
+  const body = document.getElementById('durees-exercise-body');
+  const clockSvg = drawClock(q.h, q.min, q.sec);
+
+  body.innerHTML = `
+    <div class="durees-question" id="durees-current-q">
+      <div class="conj-question-num">Question ${dureesState.currentIdx+1}/${total}</div>
+      <div class="durees-text" style="text-align:center;">Quelle heure indique cette horloge ?</div>
+      <div class="clock-container">${clockSvg}</div>
+      <div class="clock-time-inputs">
+        <input type="number" class="durees-input" id="cl-h" placeholder="?" min="0" max="23" style="width:55px;"/>
+        <span class="durees-label">h</span>
+        <input type="number" class="durees-input" id="cl-min" placeholder="?" min="0" max="59" style="width:55px;"/>
+        <span class="durees-label">min</span>
+        <input type="number" class="durees-input" id="cl-sec" placeholder="?" min="0" max="59" style="width:55px;"/>
+        <span class="durees-label">sec</span>
+      </div>
+      <p style="font-size:11px;color:var(--muted);text-align:center;margin-top:6px;">Les heures en format 12h ou 24h sont acceptées.</p>
+      <div class="durees-attempts" id="cl-attempts">Tentative 1/2</div>
+      <div class="durees-feedback" id="cl-feedback"></div>
+    </div>`;
+
+  document.getElementById('durees-validate-btn').style.display = 'block';
+  document.getElementById('durees-validate-btn').onclick = checkHorloge;
+  document.getElementById('cl-h').focus();
+}
+
+function checkHorloge(){
+  const q = dureesState.questions[dureesState.currentIdx];
+  const hVal = parseInt(document.getElementById('cl-h')?.value);
+  const mVal = parseInt(document.getElementById('cl-min')?.value);
+  const sVal = parseInt(document.getElementById('cl-sec')?.value);
+
+  // Accept both 12h and 24h format
+  const hOk = hVal === q.h || hVal === (q.h + 12 <= 23 ? q.h + 12 : q.h);
+  const mOk = mVal === q.min;
+  const sOk = sVal === q.sec;
+  const isCorrect = hOk && mOk && sOk;
+
+  dureesState.attempts++;
+  const block = document.getElementById('durees-current-q');
+  const fb = document.getElementById('cl-feedback');
+  const att = document.getElementById('cl-attempts');
+
+  if(isCorrect){
+    block.classList.add('correct');
+    fb.style.color = 'var(--green)';
+    fb.textContent = '✅ Bravo, c'est correct !';
+    dureesState.score++;
+    document.getElementById('durees-validate-btn').style.display = 'none';
+    setTimeout(() => advanceHorloge(), 1200);
+  } else if(dureesState.attempts < 2){
+    fb.style.color = 'var(--red)';
+    att.textContent = 'Tentative 2/2';
+    if(!mOk && !sOk) fb.textContent = '❌ Les minutes et secondes ne sont pas correctes.';
+    else if(!hOk) fb.textContent = '❌ Les heures ne sont pas correctes.';
+    else if(!mOk) fb.textContent = '❌ Les minutes ne sont pas correctes.';
+    else fb.textContent = '❌ Les secondes ne sont pas correctes.';
+  } else {
+    block.classList.add('revealed');
+    fb.style.color = 'var(--amber)';
+    fb.textContent = `❌ La bonne réponse était : ${q.h}h${String(q.min).padStart(2,'0')}min${String(q.sec).padStart(2,'0')}sec`;
+    document.getElementById('durees-validate-btn').style.display = 'none';
+    setTimeout(() => advanceHorloge(), 2500);
+  }
+}
+
+function advanceHorloge(){
+  dureesState.currentIdx++;
+  dureesState.attempts = 0;
+  if(dureesState.currentIdx >= dureesState.questions.length){
+    document.getElementById('durees-exercise-body').innerHTML = '';
+    document.getElementById('durees-score-panel').style.display = 'block';
+    const score = dureesState.score;
+    const total = dureesState.questions.length;
+    const pct = Math.round(score/total*100);
+    const color = pct>=70?'var(--green)':pct>=50?'var(--amber)':'var(--red)';
+    document.getElementById('durees-score-val').innerHTML =
+      `<span style="color:${color}">${score}/${total}</span><br><span style="font-size:18px;">${pct}%</span>`;
+  } else {
+    renderHorlogeQuestion();
+  }
+}
 
 // ===== LES 4 OPÉRATIONS EXERCISE =====
 function generate4OpQuestions(){
