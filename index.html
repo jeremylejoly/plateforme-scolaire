@@ -1120,7 +1120,20 @@ input:focus{border-color:var(--purple);}
     </div>
     <button id="calc-validate-btn" class="btn btn-primary" style="width:100%;font-size:16px;padding:14px;margin-top:1rem;display:none;" onclick="validateCalcExercise()">✓ Valider mes réponses</button>
   </div>
-  <div id="screen-op-mult-div" class="screen"><button class="back-btn" onclick="showScreen('screen-operations');renderOperationsScreen();">← Retour</button><div class="page-title">✖️ Multiplication et division</div><div class="card" style="text-align:center;padding:2rem;"><div style="font-size:48px;">🚧</div><p style="color:var(--muted);">Les exercices arrivent bientôt !</p></div></div>
+  <div id="screen-op-mult-div" class="screen">
+    <button class="back-btn" onclick="showScreen('screen-operations');renderOperationsScreen();">← Retour</button>
+    <div class="page-title">✖️ Multiplication et division</div>
+    <div class="exercise-list">
+      <div class="exercise-card" onclick="startMultDivExercise()">
+        <div class="exercise-card-icon qcm">✖️</div>
+        <div>
+          <div class="exercise-card-title">Entraînement — Tables de multiplication</div>
+          <div class="exercise-card-desc">5 multiplications + 5 divisions · Tables de 1 à 10 · Recommençable</div>
+        </div>
+        <span class="exercise-card-badge">× ÷</span>
+      </div>
+    </div>
+  </div>
   <div id="screen-op-4-operations" class="screen"><button class="back-btn" onclick="showScreen('screen-operations');renderOperationsScreen();">← Retour</button><div class="page-title">🔢 Les 4 opérations</div><div class="card" style="text-align:center;padding:2rem;"><div style="font-size:48px;">🚧</div><p style="color:var(--muted);">Les exercices arrivent bientôt !</p></div></div>
   <div id="screen-op-tables" class="screen"><button class="back-btn" onclick="showScreen('screen-operations');renderOperationsScreen();">← Retour</button><div class="page-title">📊 Les tables étendues</div><div class="card" style="text-align:center;padding:2rem;"><div style="font-size:48px;">🚧</div><p style="color:var(--muted);">Les exercices arrivent bientôt !</p></div></div>
   <div id="screen-op-x10" class="screen"><button class="back-btn" onclick="showScreen('screen-operations');renderOperationsScreen();">← Retour</button><div class="page-title">🔟 Multiplier et diviser par 0,1 — 10 — 100 — 1000</div><div class="card" style="text-align:center;padding:2rem;"><div style="font-size:48px;">🚧</div><p style="color:var(--muted);">Les exercices arrivent bientôt !</p></div></div>
@@ -3368,6 +3381,84 @@ function renderGramTypesScreen(){
 
 
 
+
+
+// ===== MULTIPLICATION / DIVISION EXERCISE =====
+// Table weights: 1=very rare, 2=very rare, 3=few, 10=few, 4-9=majority
+const TABLE_WEIGHTS = [
+  {table:1, weight:1},
+  {table:2, weight:1},
+  {table:3, weight:3},
+  {table:4, weight:8},
+  {table:5, weight:8},
+  {table:6, weight:8},
+  {table:7, weight:8},
+  {table:8, weight:8},
+  {table:9, weight:8},
+  {table:10, weight:3},
+];
+
+function pickWeightedTable(){
+  const total = TABLE_WEIGHTS.reduce((s,t) => s + t.weight, 0);
+  let r = Math.random() * total;
+  for(const t of TABLE_WEIGHTS){
+    r -= t.weight;
+    if(r <= 0) return t.table;
+  }
+  return 6;
+}
+
+function generateMultDivQuestions(){
+  const questions = [];
+  const used = new Set();
+
+  // Generate 5 multiplications
+  let attempts = 0;
+  while(questions.filter(q=>q.op==='×').length < 5 && attempts < 100){
+    attempts++;
+    const table = pickWeightedTable();
+    const factor = Math.floor(Math.random() * 10) + 1;
+    const key = `×${table}×${factor}`;
+    if(used.has(key)){ continue; }
+    used.add(key);
+    // Randomize order
+    const [a, b] = Math.random() > 0.5 ? [table, factor] : [factor, table];
+    questions.push({a, b, op:'×', answer: a * b});
+  }
+
+  // Generate 5 divisions (always exact, derived from multiplication tables)
+  attempts = 0;
+  while(questions.filter(q=>q.op==='÷').length < 5 && attempts < 100){
+    attempts++;
+    const table = pickWeightedTable();
+    const factor = Math.floor(Math.random() * 10) + 1;
+    const product = table * factor;
+    const key = `÷${product}÷${table}`;
+    if(used.has(key)){ continue; }
+    used.add(key);
+    questions.push({a: product, b: table, op:'÷', answer: factor});
+  }
+
+  // Shuffle mix of mult and div
+  return shuffleArray(questions);
+}
+
+function startMultDivExercise(){
+  calcState = {
+    type: 'mult_div',
+    questions: generateMultDivQuestions(),
+    submitted: false
+  };
+
+  document.getElementById('calc-exercise-title').textContent = '✖️ Tables de multiplication et division';
+  document.getElementById('calc-score-panel').style.display = 'none';
+  document.getElementById('calc-correction-panel').style.display = 'none';
+  document.getElementById('calc-validate-btn').style.display = 'block';
+  document.getElementById('calc-back-btn').onclick = function(){ showScreen('screen-op-mult-div'); };
+
+  renderCalcQuestions();
+  showScreen('screen-calc-exercise');
+}
 
 // ===== CALC EXERCISE ENGINE =====
 let calcState = {
