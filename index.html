@@ -1134,7 +1134,20 @@ input:focus{border-color:var(--purple);}
       </div>
     </div>
   </div>
-  <div id="screen-op-4-operations" class="screen"><button class="back-btn" onclick="showScreen('screen-operations');renderOperationsScreen();">← Retour</button><div class="page-title">🔢 Les 4 opérations</div><div class="card" style="text-align:center;padding:2rem;"><div style="font-size:48px;">🚧</div><p style="color:var(--muted);">Les exercices arrivent bientôt !</p></div></div>
+  <div id="screen-op-4-operations" class="screen">
+    <button class="back-btn" onclick="showScreen('screen-operations');renderOperationsScreen();">← Retour</button>
+    <div class="page-title">🔢 Les 4 opérations</div>
+    <div class="exercise-list">
+      <div class="exercise-card" onclick="start4OpExercise()">
+        <div class="exercise-card-icon qcm">🔢</div>
+        <div>
+          <div class="exercise-card-title">Entraînement — Les 4 opérations mélangées</div>
+          <div class="exercise-card-desc">10 calculs mélangés · + − × ÷ · Recommençable</div>
+        </div>
+        <span class="exercise-card-badge">+ − × ÷</span>
+      </div>
+    </div>
+  </div>
   <div id="screen-op-tables" class="screen"><button class="back-btn" onclick="showScreen('screen-operations');renderOperationsScreen();">← Retour</button><div class="page-title">📊 Les tables étendues</div><div class="card" style="text-align:center;padding:2rem;"><div style="font-size:48px;">🚧</div><p style="color:var(--muted);">Les exercices arrivent bientôt !</p></div></div>
   <div id="screen-op-x10" class="screen"><button class="back-btn" onclick="showScreen('screen-operations');renderOperationsScreen();">← Retour</button><div class="page-title">🔟 Multiplier et diviser par 0,1 — 10 — 100 — 1000</div><div class="card" style="text-align:center;padding:2rem;"><div style="font-size:48px;">🚧</div><p style="color:var(--muted);">Les exercices arrivent bientôt !</p></div></div>
   <div id="screen-op-x5" class="screen"><button class="back-btn" onclick="showScreen('screen-operations');renderOperationsScreen();">← Retour</button><div class="page-title">5️⃣ Multiplier et diviser par 0,5 — 5 — 50 — 500</div><div class="card" style="text-align:center;padding:2rem;"><div style="font-size:48px;">🚧</div><p style="color:var(--muted);">Les exercices arrivent bientôt !</p></div></div>
@@ -3382,6 +3395,136 @@ function renderGramTypesScreen(){
 
 
 
+
+
+// ===== LES 4 OPÉRATIONS EXERCISE =====
+function generate4OpQuestions(){
+  const questions = [];
+  const used = new Set();
+  let attempts = 0;
+
+  // Helpers from add_sous generators
+  function genAdd100(){
+    for(let t=0;t<50;t++){
+      const units_a = Math.floor(Math.random()*8)+2;
+      const units_b = 10 - units_a + Math.floor(Math.random()*units_a);
+      const tens_a = Math.floor(Math.random()*6)+1;
+      const tens_b = Math.floor(Math.random()*(7-tens_a))+1;
+      const a = tens_a*10 + units_a;
+      const b = tens_b*10 + (units_b%10);
+      if(a+b<=100 && a+b>=10 && a>0 && b>0) return {a,b,op:'+',answer:a+b};
+    }
+    return null;
+  }
+
+  function genSub100(){
+    for(let t=0;t<50;t++){
+      const units_b = Math.floor(Math.random()*8)+2;
+      const units_a = Math.floor(Math.random()*units_b);
+      const tens_a = Math.floor(Math.random()*6)+2;
+      const tens_b = Math.floor(Math.random()*(tens_a-1))+1;
+      const a = tens_a*10+units_a;
+      const b = tens_b*10+units_b;
+      if(a>b && a<=100 && b>0) return {a,b,op:'−',answer:a-b};
+    }
+    return null;
+  }
+
+  function genAdd1000(){
+    for(let t=0;t<50;t++){
+      const tens_a = Math.floor(Math.random()*8)+2;
+      const tens_b = 10-tens_a+Math.floor(Math.random()*tens_a);
+      const hunds_a = Math.floor(Math.random()*6)+1;
+      const hunds_b = Math.floor(Math.random()*(7-hunds_a))+1;
+      const a = hunds_a*100+tens_a*10;
+      const b = hunds_b*100+(tens_b%10)*10;
+      if(a+b<=1000 && a+b>=100) return {a,b,op:'+',answer:a+b};
+    }
+    return null;
+  }
+
+  function genSub1000(){
+    for(let t=0;t<50;t++){
+      const tens_b = Math.floor(Math.random()*8)+2;
+      const tens_a = Math.floor(Math.random()*tens_b);
+      const hunds_a = Math.floor(Math.random()*6)+2;
+      const hunds_b = Math.floor(Math.random()*(hunds_a-1))+1;
+      const a = hunds_a*100+tens_a*10;
+      const b = hunds_b*100+tens_b*10;
+      if(a>b && a<=1000) return {a,b,op:'−',answer:a-b};
+    }
+    return null;
+  }
+
+  function genMult(){
+    for(let t=0;t<50;t++){
+      const table = [3,4,5,6,7,8,9][Math.floor(Math.random()*7)];
+      const factor = Math.floor(Math.random()*10)+1;
+      const key = `×${Math.min(table,factor)}×${Math.max(table,factor)}`;
+      if(used.has(key)) continue;
+      used.add(key);
+      const [a,b] = Math.random()>0.5?[table,factor]:[factor,table];
+      return {a,b,op:'×',answer:a*b};
+    }
+    return null;
+  }
+
+  function genDiv(){
+    for(let t=0;t<50;t++){
+      const divisor = Math.floor(Math.random()*10)+1;
+      const factor = Math.floor(Math.random()*10)+1;
+      const dividend = divisor*factor;
+      const key = `÷${dividend}÷${divisor}`;
+      if(used.has(key)) continue;
+      used.add(key);
+      return {a:dividend,b:divisor,op:'÷',answer:factor};
+    }
+    return null;
+  }
+
+  // Build exactly 10 questions: ~2-3 of each type
+  const generators = [
+    ...Array(3).fill(genAdd100),
+    ...Array(2).fill(genAdd1000),
+    ...Array(3).fill(genSub100),
+    ...Array(2).fill(genSub1000),
+    ...Array(3).fill(genMult),
+    ...Array(2).fill(genDiv),
+  ];
+
+  // Shuffle generators and pick 10
+  const shuffled = shuffleArray(generators).slice(0, 10);
+  shuffled.forEach(gen => {
+    const q = gen();
+    if(q) questions.push(q);
+  });
+
+  // If we didn't get 10, fill with mult
+  while(questions.length < 10){
+    const q = genMult();
+    if(q) questions.push(q);
+    else break;
+  }
+
+  return shuffleArray(questions);
+}
+
+function start4OpExercise(){
+  calcState = {
+    type: '4_operations',
+    questions: generate4OpQuestions(),
+    submitted: false
+  };
+
+  document.getElementById('calc-exercise-title').textContent = '🔢 Les 4 opérations';
+  document.getElementById('calc-score-panel').style.display = 'none';
+  document.getElementById('calc-correction-panel').style.display = 'none';
+  document.getElementById('calc-validate-btn').style.display = 'block';
+  document.getElementById('calc-back-btn').onclick = function(){ showScreen('screen-op-4-operations'); };
+
+  renderCalcQuestions();
+  showScreen('screen-calc-exercise');
+}
 
 // ===== MULTIPLICATION / DIVISION EXERCISE =====
 // Table weights: 1=very rare, 2=very rare, 3=few, 10=few, 4-9=majority
