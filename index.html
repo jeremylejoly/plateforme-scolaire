@@ -3911,54 +3911,44 @@ function generate4OpQuestions(){
   let attempts = 0;
 
   // Helpers from add_sous generators
+  function ri(min,max){return Math.floor(Math.random()*(max-min+1))+min;}
+
   function genAdd100(){
     for(let t=0;t<50;t++){
-      const units_a = Math.floor(Math.random()*8)+2;
-      const units_b = 10 - units_a + Math.floor(Math.random()*units_a);
-      const tens_a = Math.floor(Math.random()*6)+1;
-      const tens_b = Math.floor(Math.random()*(7-tens_a))+1;
-      const a = tens_a*10 + units_a;
-      const b = tens_b*10 + (units_b%10);
-      if(a+b<=100 && a+b>=10 && a>0 && b>0) return {a,b,op:'+',answer:a+b};
+      const ua=ri(2,9), ub=ri(10-ua,9);
+      const ta=ri(1,6), tb=ri(1,Math.min(6,9-ta));
+      const a=ta*10+ua, b=tb*10+(ub%10), res=a+b;
+      if(res>=11&&res<=99) return {a,b,op:'+',answer:res};
     }
     return null;
   }
 
   function genSub100(){
     for(let t=0;t<50;t++){
-      const units_b = Math.floor(Math.random()*8)+2;
-      const units_a = Math.floor(Math.random()*units_b);
-      const tens_a = Math.floor(Math.random()*6)+2;
-      const tens_b = Math.floor(Math.random()*(tens_a-1))+1;
-      const a = tens_a*10+units_a;
-      const b = tens_b*10+units_b;
-      if(a>b && a<=100 && b>0) return {a,b,op:'−',answer:a-b};
+      const ub=ri(2,9), ua=ri(0,ub-1);
+      const ta=ri(2,9), tb=ri(1,ta-1);
+      const a=ta*10+ua, b=tb*10+ub;
+      if(a>b&&a<=99) return {a,b,op:'−',answer:a-b};
     }
     return null;
   }
 
   function genAdd1000(){
     for(let t=0;t<50;t++){
-      const tens_a = Math.floor(Math.random()*8)+2;
-      const tens_b = 10-tens_a+Math.floor(Math.random()*tens_a);
-      const hunds_a = Math.floor(Math.random()*6)+1;
-      const hunds_b = Math.floor(Math.random()*(7-hunds_a))+1;
-      const a = hunds_a*100+tens_a*10;
-      const b = hunds_b*100+(tens_b%10)*10;
-      if(a+b<=1000 && a+b>=100) return {a,b,op:'+',answer:a+b};
+      const ta=ri(2,8), tb=ri(10-ta,9);
+      const ha=ri(1,7), hb=ri(1,Math.min(7,9-ha));
+      const a=ha*100+ta*10, b=hb*100+(tb%10)*10, res=a+b;
+      if(res>=110&&res<=990) return {a,b,op:'+',answer:res};
     }
     return null;
   }
 
   function genSub1000(){
     for(let t=0;t<50;t++){
-      const tens_b = Math.floor(Math.random()*8)+2;
-      const tens_a = Math.floor(Math.random()*tens_b);
-      const hunds_a = Math.floor(Math.random()*6)+2;
-      const hunds_b = Math.floor(Math.random()*(hunds_a-1))+1;
-      const a = hunds_a*100+tens_a*10;
-      const b = hunds_b*100+tens_b*10;
-      if(a>b && a<=1000) return {a,b,op:'−',answer:a-b};
+      const tb=ri(2,8), ta=ri(0,tb-1);
+      const ha=ri(2,9), hb=ri(1,ha-1);
+      const a=ha*100+ta*10, b=hb*100+tb*10;
+      if(a>b&&a<=990) return {a,b,op:'−',answer:a-b};
     }
     return null;
   }
@@ -4120,28 +4110,172 @@ let calcState = {
 // Generate random addition/subtraction problems
 function generateCalcQuestions(type){
   const questions = [];
+  const used = new Set();
+  let attempts = 0;
+
+  function randInt(min, max){ return Math.floor(Math.random()*(max-min+1))+min; }
+
+  function tryAdd100(){
+    // Force passage à la dizaine: units_a + units_b >= 10
+    const units_a = randInt(2,9);
+    const units_b = randInt(10-units_a, 9); // >= 10-units_a → somme unités >= 10
+    const tens_a = randInt(1,6);
+    const tens_b = randInt(1, Math.min(6, 9-tens_a)); // évite dépassement 100
+    const a = tens_a*10 + units_a;
+    const b = tens_b*10 + units_b%10;
+    const res = a+b;
+    if(res < 11 || res > 99) return null;
+    return {a, b, op:'+', answer:res};
+  }
+
+  function trySub100(){
+    // Force emprunt: units_a < units_b
+    const units_b = randInt(2,9);
+    const units_a = randInt(0, units_b-1);
+    const tens_a = randInt(2,9);
+    const tens_b = randInt(1, tens_a-1);
+    const a = tens_a*10+units_a;
+    const b = tens_b*10+units_b;
+    if(a<=b || a>99) return null;
+    return {a, b, op:'−', answer:a-b};
+  }
+
+  function tryAdd1000(){
+    const tens_a = randInt(2,8);
+    const tens_b = randInt(10-tens_a, 9);
+    const hunds_a = randInt(1,7);
+    const hunds_b = randInt(1, Math.min(7, 9-hunds_a));
+    const a = hunds_a*100+tens_a*10;
+    const b = hunds_b*100+(tens_b%10)*10;
+    const res = a+b;
+    if(res<110||res>990) return null;
+    return {a, b, op:'+', answer:res};
+  }
+
+  function trySub1000(){
+    const tens_b = randInt(2,8);
+    const tens_a = randInt(0, tens_b-1);
+    const hunds_a = randInt(2,9);
+    const hunds_b = randInt(1, hunds_a-1);
+    const a = hunds_a*100+tens_a*10;
+    const b = hunds_b*100+tens_b*10;
+    if(a<=b||a>990) return null;
+    return {a, b, op:'−', answer:a-b};
+  }
+
+  function tryAdd10000(){
+    const hunds_a = randInt(2,8);
+    const hunds_b = randInt(10-hunds_a, 9);
+    const ths_a = randInt(1,7);
+    const ths_b = randInt(1, Math.min(7, 9-ths_a));
+    const a = ths_a*1000+hunds_a*100;
+    const b = ths_b*1000+(hunds_b%10)*100;
+    const res = a+b;
+    if(res<1100||res>9900) return null;
+    return {a, b, op:'+', answer:res};
+  }
+
+  function trySub10000(){
+    const hunds_b = randInt(2,8);
+    const hunds_a = randInt(0, hunds_b-1);
+    const ths_a = randInt(2,9);
+    const ths_b = randInt(1, ths_a-1);
+    const a = ths_a*1000+hunds_a*100;
+    const b = ths_b*1000+hunds_b*100;
+    if(a<=b||a>9900) return null;
+    return {a, b, op:'−', answer:a-b};
+  }
+
+  function tryAdd100000(){
+    const ths_a = randInt(2,8);
+    const ths_b = randInt(10-ths_a, 9);
+    const tths_a = randInt(1,7);
+    const tths_b = randInt(1, Math.min(7, 9-tths_a));
+    const a = tths_a*10000+ths_a*1000;
+    const b = tths_b*10000+(ths_b%10)*1000;
+    const res = a+b;
+    if(res<11000||res>99000) return null;
+    return {a, b, op:'+', answer:res};
+  }
+
+  function trySub100000(){
+    const ths_b = randInt(2,8);
+    const ths_a = randInt(0, ths_b-1);
+    const tths_a = randInt(2,9);
+    const tths_b = randInt(1, tths_a-1);
+    const a = tths_a*10000+ths_a*1000;
+    const b = tths_b*10000+ths_b*1000;
+    if(a<=b||a>99000) return null;
+    return {a, b, op:'−', answer:a-b};
+  }
+
+  function tryAdd1000000(){
+    const tths_a = randInt(2,8);
+    const tths_b = randInt(10-tths_a, 9);
+    const htths_a = randInt(1,7);
+    const htths_b = randInt(1, Math.min(7, 9-htths_a));
+    const a = htths_a*100000+tths_a*10000;
+    const b = htths_b*100000+(tths_b%10)*10000;
+    const res = a+b;
+    if(res<110000||res>990000) return null;
+    return {a, b, op:'+', answer:res};
+  }
+
+  function trySub1000000(){
+    const tths_b = randInt(2,8);
+    const tths_a = randInt(0, tths_b-1);
+    const htths_a = randInt(2,9);
+    const htths_b = randInt(1, htths_a-1);
+    const a = htths_a*100000+tths_a*10000;
+    const b = htths_b*100000+tths_b*10000;
+    if(a<=b||a>990000) return null;
+    return {a, b, op:'−', answer:a-b};
+  }
+
+  const generators = {
+    add_sous_100: [tryAdd100, trySub100],
+    add_sous_1000: [tryAdd1000, trySub1000],
+    add_sous_10000: [tryAdd10000, trySub10000],
+    add_sous_100000: [tryAdd100000, trySub100000],
+    add_sous_1000000: [tryAdd1000000, trySub1000000],
+  };
+
+  const fns = generators[type] || [tryAdd100, trySub100];
+  
+  while(questions.length < 10 && attempts < 500){
+    attempts++;
+    const fn = fns[Math.floor(Math.random()*fns.length)];
+    const q = fn();
+    if(!q) continue;
+    const key = `${q.a}${q.op}${q.b}`;
+    if(used.has(key)) continue;
+    used.add(key);
+    questions.push(q);
+  }
+
+  return questions;
+}
+
+function generateCalcQuestions_OLD(type){
+  const questions = [];
   for(let i = 0; i < 10; i++){
     let a, b, op, answer;
     
     if(type === 'add_sous_100'){
-      // Passages à la dizaine, résultats entre 10 et 100
-      // Force un passage à la dizaine
       const isAdd = Math.random() > 0.5;
       if(isAdd){
-        // a + b avec passage dizaine: unités(a) + unités(b) >= 10
-        const units_a = Math.floor(Math.random() * 8) + 2; // 2-9
-        const units_b = Math.floor(Math.random() * (10 - units_a)) + (10 - units_a); // force carry
-        const tens_a = Math.floor(Math.random() * 7) + 1; // 1-7
+        const units_a = Math.floor(Math.random() * 8) + 2;
+        const units_b = Math.floor(Math.random() * (10 - units_a)) + (10 - units_a);
+        const tens_a = Math.floor(Math.random() * 7) + 1;
         const tens_b = Math.floor(Math.random() * (8 - tens_a)) + 1;
         a = tens_a * 10 + units_a;
         b = tens_b * 10 + (units_b % 10);
         if(a + b > 100 || a + b < 10){ i--; continue; }
         op = '+'; answer = a + b;
       } else {
-        // a - b avec emprunt: unités(a) < unités(b)
-        const units_b = Math.floor(Math.random() * 8) + 2; // 2-9
-        const units_a = Math.floor(Math.random() * units_b); // force borrow
-        const tens_a = Math.floor(Math.random() * 7) + 2; // 2-9
+        const units_b = Math.floor(Math.random() * 8) + 2;
+        const units_a = Math.floor(Math.random() * units_b);
+        const tens_a = Math.floor(Math.random() * 7) + 2;
         const tens_b = Math.floor(Math.random() * (tens_a - 1)) + 1;
         a = tens_a * 10 + units_a;
         b = tens_b * 10 + units_b;
@@ -4283,7 +4417,7 @@ function renderCalcQuestions(){
       <span class="calc-op">${q.op}</span>
       <span class="calc-num">${formatNum(q.b)}</span>
       <span class="calc-eq">=</span>
-      <input type="number" class="calc-input" id="calc-inp-${i}"
+      <input type="text" inputmode="numeric" pattern="[0-9]*" class="calc-input" id="calc-inp-${i}"
         placeholder="?" autocomplete="off"
         onkeydown="if(event.key==='Enter'){document.getElementById('calc-inp-${Math.min(i+1,9)}').focus();}"/>
     </div>`;
@@ -4304,7 +4438,7 @@ function validateCalcExercise(){
 
   calcState.questions.forEach((q, i) => {
     const inp = document.getElementById(`calc-inp-${i}`);
-    const given = inp ? parseInt(inp.value) : NaN;
+    const given = inp ? parseInt(inp.value.trim(), 10) : NaN;
     const isCorrect = given === q.answer;
 
     if(inp){
