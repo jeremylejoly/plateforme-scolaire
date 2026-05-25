@@ -393,6 +393,38 @@ input:focus{border-color:var(--purple);}
 .shape-option.correct-answer{border-color:var(--green);background:#E6FFF3;color:var(--green);}
 .shape-option.wrong-answer{border-color:var(--red);background:#FFE6E6;color:var(--red);}
 
+
+/* ===== VRAI/FAUX EXERCISE ===== */
+.vf-question{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r);padding:1rem;margin-bottom:12px;}
+.vf-question.correct{border-color:var(--green);background:#F0FFF8;}
+.vf-question.incorrect{border-color:var(--red);background:#FFF0F0;}
+.vf-question-text{font-size:14px;font-weight:600;color:var(--text);margin-bottom:12px;line-height:1.5;}
+.vf-options{display:flex;gap:10px;justify-content:center;}
+.vf-option{padding:10px 28px;border:2px solid var(--border);border-radius:20px;cursor:pointer;font-size:14px;font-weight:800;transition:all .15s;background:var(--bg);}
+.vf-option:hover{transform:scale(1.05);}
+.vf-option.vrai{border-color:#38A169;color:#38A169;}
+.vf-option.faux{border-color:#E53E3E;color:#E53E3E;}
+.vf-option.selected.vrai{background:#E6FFF3;border-color:#38A169;}
+.vf-option.selected.faux{background:#FFE6E6;border-color:#E53E3E;}
+.vf-option.correct-answer{background:#E6FFF3;border-color:var(--green);color:var(--green);}
+.vf-option.wrong-answer{background:#FFE6E6;border-color:var(--red);color:var(--red);}
+
+
+/* ===== CHARACTERISTICS EXERCISE ===== */
+.chars-question{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r);padding:1rem;margin-bottom:14px;}
+.chars-question.all-correct{border-color:var(--green);background:#F0FFF8;}
+.chars-question.has-error{border-color:var(--red);background:#FFF0F0;}
+.chars-consigne{font-size:13px;color:var(--muted);text-align:center;margin-bottom:10px;font-style:italic;}
+.chars-shape-name{font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;text-align:center;color:var(--purple);margin-bottom:8px;}
+.chars-list{display:flex;flex-direction:column;gap:6px;margin-top:10px;}
+.chars-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border:1.5px solid var(--border);border-radius:var(--rsm);cursor:pointer;transition:all .15s;background:var(--bg);font-size:13px;font-weight:600;}
+.chars-item:hover{border-color:var(--purple);background:var(--purple-light);}
+.chars-item.checked{border-color:var(--purple);background:var(--purple-light);color:var(--purple);}
+.chars-item.correct-check{border-color:var(--green);background:#E6FFF3;color:var(--green);}
+.chars-item.wrong-check{border-color:var(--red);background:#FFE6E6;color:var(--red);}
+.chars-item.missed{border-color:var(--amber);background:#FFFBEB;color:#B45309;}
+.chars-checkbox{width:20px;height:20px;border:2px solid currentColor;border-radius:4px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;}
+
 </style>
 <script src="livres.js"></script>
 <script src="exercices_francais.js"></script>
@@ -1087,15 +1119,73 @@ input:focus{border-color:var(--purple);}
         </div>
         <span class="exercise-card-badge">QCM</span>
       </div>
+      <div class="exercise-card" onclick="startVFExercise('quadrilateres','vf')">
+        <div class="exercise-card-icon" style="background:#EEF6FF;">✅</div>
+        <div>
+          <div class="exercise-card-title">Entraînement — Vrai ou Faux</div>
+          <div class="exercise-card-desc">10 questions aléatoires parmi 30 · Recommençable</div>
+        </div>
+        <span class="exercise-card-badge">V/F</span>
+      </div>
+      <div class="exercise-card" onclick="startCharsExercise('quadrilateres')">
+        <div class="exercise-card-icon" style="background:#FFF8E1;">🏷️</div>
+        <div>
+          <div class="exercise-card-title">Entraînement — Caractéristiques</div>
+          <div class="exercise-card-desc">Coche toutes les caractéristiques · Recommençable</div>
+        </div>
+        <span class="exercise-card-badge">Cocher</span>
+      </div>
       <div class="exercise-card" onclick="startShapeEvaluation('quadrilateres')">
         <div class="exercise-card-icon" style="background:#FFE8E8;">🏆</div>
         <div>
           <div class="exercise-card-title">Évaluation</div>
-          <div class="exercise-card-desc">5 formes fixes · Une seule tentative</div>
+          <div class="exercise-card-desc">5 formes + 5 vrai/faux · Une seule tentative</div>
         </div>
         <span class="exercise-card-badge" style="background:#FFE8E8;color:var(--red);">Éval.</span>
       </div>
     </div>
+  </div>
+
+  <!-- SCREEN: Characteristics exercise player -->
+  <div id="screen-chars-exercise" class="screen">
+    <button class="back-btn" id="chars-back-btn" onclick="showScreen('screen-solides-quadrilateres')">← Retour</button>
+    <div class="page-title" id="chars-exercise-title">Caractéristiques</div>
+    <div id="chars-exercise-body"></div>
+    <div id="chars-score-panel" style="display:none;">
+      <div class="exercise-score">
+        <div class="exercise-score-val" id="chars-score-val"></div>
+        <div class="exercise-score-lbl">résultat</div>
+      </div>
+      <button class="btn btn-primary" style="width:100%;margin-bottom:10px;" onclick="showCharsCorrection()">📋 Voir la correction</button>
+      <button class="btn" style="width:100%;" onclick="restartCharsExercise()">🔄 Nouvel entraînement</button>
+    </div>
+    <div id="chars-correction-panel" style="display:none;">
+      <div class="card-title" style="margin-bottom:1rem;">📋 Correction complète</div>
+      <div id="chars-correction-body"></div>
+      <button class="btn" style="width:100%;margin-top:1rem;" onclick="restartCharsExercise()">🔄 Nouvel entraînement</button>
+    </div>
+    <button id="chars-validate-btn" class="btn btn-primary" style="width:100%;font-size:16px;padding:14px;margin-top:1rem;display:none;" onclick="validateCharsExercise()">✓ Valider mes réponses</button>
+  </div>
+
+  <!-- SCREEN: VF exercise player -->
+  <div id="screen-vf-exercise" class="screen">
+    <button class="back-btn" id="vf-back-btn" onclick="showScreen('screen-solides-quadrilateres')">← Retour</button>
+    <div class="page-title" id="vf-exercise-title">Vrai ou Faux</div>
+    <div id="vf-exercise-body"></div>
+    <div id="vf-score-panel" style="display:none;">
+      <div class="exercise-score">
+        <div class="exercise-score-val" id="vf-score-val"></div>
+        <div class="exercise-score-lbl">résultat</div>
+      </div>
+      <button class="btn btn-primary" style="width:100%;margin-bottom:10px;" onclick="showVFCorrection()">📋 Voir la correction</button>
+      <button class="btn" style="width:100%;" onclick="restartVFExercise()">🔄 Nouvel entraînement</button>
+    </div>
+    <div id="vf-correction-panel" style="display:none;">
+      <div class="card-title" style="margin-bottom:1rem;">📋 Correction complète</div>
+      <div id="vf-correction-body"></div>
+      <button class="btn" style="width:100%;margin-top:1rem;" onclick="restartVFExercise()">🔄 Nouvel entraînement</button>
+    </div>
+    <button id="vf-validate-btn" class="btn btn-primary" style="width:100%;font-size:16px;padding:14px;margin-top:1rem;display:none;" onclick="validateVFExercise()">✓ Valider mes réponses</button>
   </div>
 
   <!-- SCREEN: Shape exercise player -->
@@ -3194,6 +3284,315 @@ function renderGramTypesScreen(){
   renderSubGramGrid(GRAM_TYPES_ITEMS, ['gram-types-grid','gram-types-grid-teacher'], 'renderGramTypesScreen');
 }
 
+
+
+
+// ===== CHARACTERISTICS EXERCISE ENGINE =====
+let charsState = {
+  section: '',
+  questions: [],
+  answers: [],  // array of arrays (checked indices per question)
+  submitted: false
+};
+
+function startCharsExercise(section){
+  const data = getShapeData(section);
+  if(!data || !data.chars_bank) return;
+
+  charsState = {
+    section,
+    questions: shuffleArray(data.chars_bank).slice(0, 8),
+    answers: [],
+    submitted: false
+  };
+
+  document.getElementById('chars-exercise-title').textContent = '🏷️ Caractéristiques des quadrilatères';
+  document.getElementById('chars-score-panel').style.display = 'none';
+  document.getElementById('chars-correction-panel').style.display = 'none';
+  document.getElementById('chars-validate-btn').style.display = 'block';
+  document.getElementById('chars-back-btn').onclick = function(){ showScreen('screen-solides-quadrilateres'); };
+
+  // Init answers arrays
+  charsState.questions.forEach((_, i) => { charsState.answers[i] = []; });
+
+  renderCharsQuestions();
+  showScreen('screen-chars-exercise');
+}
+
+function renderCharsQuestions(){
+  const body = document.getElementById('chars-exercise-body');
+  let html = '';
+
+  charsState.questions.forEach((q, i) => {
+    html += `<div class="chars-question" id="chars-q-${i}">
+      <div class="conj-question-num">Question ${i+1}/${charsState.questions.length}</div>
+      <div class="chars-consigne">Coche toutes les caractéristiques de cette forme :</div>
+      <div class="shape-svg-container">
+        <svg viewBox="0 0 200 160" xmlns="http://www.w3.org/2000/svg">${q.svg}</svg>
+      </div>
+      <div class="chars-list">`;
+
+    q.chars.forEach((char, j) => {
+      html += `<div class="chars-item" id="chars-item-${i}-${j}" onclick="toggleChar(${i},${j})">
+        <div class="chars-checkbox" id="chars-cb-${i}-${j}"></div>
+        <span>${char}</span>
+      </div>`;
+    });
+
+    html += `</div></div>`;
+  });
+
+  body.innerHTML = html;
+}
+
+function toggleChar(qIdx, charIdx){
+  if(charsState.submitted) return;
+  const arr = charsState.answers[qIdx];
+  const pos = arr.indexOf(charIdx);
+  const item = document.getElementById(`chars-item-${qIdx}-${charIdx}`);
+  const cb = document.getElementById(`chars-cb-${qIdx}-${charIdx}`);
+
+  if(pos === -1){
+    arr.push(charIdx);
+    item.classList.add('checked');
+    cb.textContent = '✓';
+  } else {
+    arr.splice(pos, 1);
+    item.classList.remove('checked');
+    cb.textContent = '';
+  }
+}
+
+function validateCharsExercise(){
+  charsState.submitted = true;
+  let totalScore = 0;
+  const details = [];
+
+  charsState.questions.forEach((q, i) => {
+    const correct = new Set(q.answers);
+    const given = new Set(charsState.answers[i]);
+
+    // Question is fully correct only if given == correct exactly
+    const isFullyCorrect = [...correct].every(x => given.has(x)) && [...given].every(x => correct.has(x));
+    if(isFullyCorrect) totalScore++;
+
+    // Style each characteristic
+    q.chars.forEach((_, j) => {
+      const item = document.getElementById(`chars-item-${i}-${j}`);
+      const cb = document.getElementById(`chars-cb-${i}-${j}`);
+      if(!item) return;
+      item.onclick = null;
+      item.classList.remove('checked');
+
+      const isCorrectChar = correct.has(j);
+      const wasChecked = given.has(j);
+
+      if(isCorrectChar && wasChecked){
+        item.classList.add('correct-check'); cb.textContent = '✓';
+      } else if(!isCorrectChar && wasChecked){
+        item.classList.add('wrong-check'); cb.textContent = '✗';
+      } else if(isCorrectChar && !wasChecked){
+        item.classList.add('missed'); cb.textContent = '!';
+      }
+    });
+
+    const block = document.getElementById(`chars-q-${i}`);
+    if(block) block.classList.add(isFullyCorrect ? 'all-correct' : 'has-error');
+
+    details.push({ q: i+1, shape: q.shape, svg: q.svg, chars: q.chars,
+      correctIndices: [...correct], givenIndices: [...given], isFullyCorrect });
+  });
+
+  charsState.score = totalScore;
+  charsState.details = details;
+  charsState.total = charsState.questions.length;
+
+  document.getElementById('chars-validate-btn').style.display = 'none';
+  document.getElementById('chars-score-panel').style.display = 'block';
+
+  const pct = Math.round(totalScore/charsState.total*100);
+  const color = pct>=70 ? 'var(--green)' : pct>=50 ? 'var(--amber)' : 'var(--red)';
+  document.getElementById('chars-score-val').innerHTML =
+    `<span style="color:${color}">${totalScore}/${charsState.total}</span><br><span style="font-size:18px;">${pct}%</span>`;
+
+  document.getElementById('chars-score-panel').scrollIntoView({behavior:'smooth'});
+}
+
+function showCharsCorrection(){
+  document.getElementById('chars-score-panel').style.display = 'none';
+  document.getElementById('chars-correction-panel').style.display = 'block';
+
+  let html = '';
+  charsState.details.forEach(d => {
+    const color = d.isFullyCorrect ? 'var(--green)' : 'var(--red)';
+    html += `<div class="chars-question" style="border-color:${color}">
+      <div class="chars-shape-name">${d.shape}</div>
+      <div class="shape-svg-container">
+        <svg viewBox="0 0 200 160" xmlns="http://www.w3.org/2000/svg">${d.svg}</svg>
+      </div>
+      <div style="font-size:12px;font-weight:700;color:var(--muted);margin:8px 0 4px;">Caractéristiques correctes :</div>`;
+
+    d.chars.forEach((char, j) => {
+      const isCorrect = d.correctIndices.includes(j);
+      const wasGiven = d.givenIndices.includes(j);
+      let cls = '', icon = '';
+      if(isCorrect && wasGiven){ cls = 'color:var(--green)'; icon = '✅'; }
+      else if(!isCorrect && wasGiven){ cls = 'color:var(--red)'; icon = '❌'; }
+      else if(isCorrect && !wasGiven){ cls = 'color:var(--amber)'; icon = '⚠️'; }
+      else { cls = 'color:var(--muted)'; icon = ''; }
+
+      if(isCorrect || wasGiven){
+        html += `<div style="font-size:13px;${cls};padding:3px 0;">${icon} ${char}</div>`;
+      }
+    });
+
+    html += `</div>`;
+  });
+
+  document.getElementById('chars-correction-body').innerHTML = html;
+  document.getElementById('chars-correction-panel').scrollIntoView({behavior:'smooth'});
+}
+
+function restartCharsExercise(){
+  charsState.submitted = false;
+  charsState.answers = [];
+  document.getElementById('chars-score-panel').style.display = 'none';
+  document.getElementById('chars-correction-panel').style.display = 'none';
+  document.getElementById('chars-validate-btn').style.display = 'block';
+  const data = getShapeData(charsState.section);
+  charsState.questions = shuffleArray(data.chars_bank).slice(0, 8);
+  charsState.questions.forEach((_, i) => { charsState.answers[i] = []; });
+  renderCharsQuestions();
+  window.scrollTo(0,0);
+}
+
+// ===== VRAI/FAUX EXERCISE ENGINE =====
+let vfState = {
+  section: '',
+  questions: [],
+  answers: [],
+  submitted: false
+};
+
+function startVFExercise(section){
+  const data = getShapeData(section);
+  if(!data || !data.vf_bank) return;
+
+  vfState = { section, questions: shuffleArray(data.vf_bank).slice(0,10), answers: [], submitted: false };
+
+  document.getElementById('vf-exercise-title').textContent = '✅ Vrai ou Faux — Les quadrilatères';
+  document.getElementById('vf-score-panel').style.display = 'none';
+  document.getElementById('vf-correction-panel').style.display = 'none';
+  document.getElementById('vf-validate-btn').style.display = 'block';
+  document.getElementById('vf-back-btn').onclick = function(){ showScreen('screen-solides-quadrilateres'); };
+
+  renderVFQuestions();
+  showScreen('screen-vf-exercise');
+}
+
+function renderVFQuestions(){
+  const body = document.getElementById('vf-exercise-body');
+  let html = '';
+  vfState.questions.forEach((q, i) => {
+    html += `<div class="vf-question" id="vf-q-${i}">
+      <div class="conj-question-num">Question ${i+1}/10</div>
+      <div class="vf-question-text">${q.text}</div>
+      <div class="vf-options">
+        <button class="vf-option vrai" id="vf-opt-${i}-true" onclick="selectVFOption(${i}, true)">✓ VRAI</button>
+        <button class="vf-option faux" id="vf-opt-${i}-false" onclick="selectVFOption(${i}, false)">✗ FAUX</button>
+      </div>
+    </div>`;
+  });
+  body.innerHTML = html;
+}
+
+function selectVFOption(qIdx, value){
+  if(vfState.submitted) return;
+  const trueBtn = document.getElementById(`vf-opt-${qIdx}-true`);
+  const falseBtn = document.getElementById(`vf-opt-${qIdx}-false`);
+  trueBtn.classList.remove('selected');
+  falseBtn.classList.remove('selected');
+  if(value) trueBtn.classList.add('selected');
+  else falseBtn.classList.add('selected');
+  vfState.answers[qIdx] = value;
+}
+
+function validateVFExercise(){
+  vfState.submitted = true;
+  let score = 0;
+  const details = [];
+
+  vfState.questions.forEach((q, i) => {
+    const answered = vfState.answers[i];
+    const isCorrect = answered === q.answer;
+
+    const trueBtn = document.getElementById(`vf-opt-${i}-true`);
+    const falseBtn = document.getElementById(`vf-opt-${i}-false`);
+    if(trueBtn) trueBtn.onclick = null;
+    if(falseBtn) falseBtn.onclick = null;
+
+    // Show correct answer
+    const correctBtn = document.getElementById(`vf-opt-${i}-${q.answer}`);
+    if(correctBtn) correctBtn.classList.add('correct-answer');
+    // Show wrong if answered incorrectly
+    if(answered !== undefined && !isCorrect){
+      const wrongBtn = document.getElementById(`vf-opt-${i}-${answered}`);
+      if(wrongBtn) wrongBtn.classList.add('wrong-answer');
+    }
+
+    const block = document.getElementById(`vf-q-${i}`);
+    if(block) block.classList.add(isCorrect ? 'correct' : 'incorrect');
+
+    if(isCorrect) score++;
+    details.push({ q: i+1, text: q.text, given: answered, expected: q.answer, isCorrect });
+  });
+
+  vfState.score = score;
+  vfState.details = details;
+
+  document.getElementById('vf-validate-btn').style.display = 'none';
+  document.getElementById('vf-score-panel').style.display = 'block';
+
+  const pct = Math.round(score/10*100);
+  const color = pct>=70 ? 'var(--green)' : pct>=50 ? 'var(--amber)' : 'var(--red)';
+  document.getElementById('vf-score-val').innerHTML =
+    `<span style="color:${color}">${score}/10</span><br><span style="font-size:18px;">${pct}%</span>`;
+
+  document.getElementById('vf-score-panel').scrollIntoView({behavior:'smooth'});
+}
+
+function showVFCorrection(){
+  document.getElementById('vf-score-panel').style.display = 'none';
+  document.getElementById('vf-correction-panel').style.display = 'block';
+
+  let html = '';
+  vfState.details.forEach(d => {
+    const color = d.isCorrect ? 'var(--green)' : 'var(--red)';
+    const icon = d.isCorrect ? '✅' : '❌';
+    const givenLabel = d.given === undefined ? '(pas de réponse)' : d.given ? 'VRAI' : 'FAUX';
+    const expectedLabel = d.expected ? 'VRAI' : 'FAUX';
+    html += `<div class="vf-question" style="border-color:${color}">
+      <div class="vf-question-text">${d.text}</div>
+      <div style="font-size:13px;">${icon} Ta réponse : <strong style="color:${color}">${givenLabel}</strong></div>
+      ${!d.isCorrect ? `<div style="font-size:13px;color:var(--green);">✓ Bonne réponse : <strong>${expectedLabel}</strong></div>` : ''}
+    </div>`;
+  });
+
+  document.getElementById('vf-correction-body').innerHTML = html;
+  document.getElementById('vf-correction-panel').scrollIntoView({behavior:'smooth'});
+}
+
+function restartVFExercise(){
+  vfState.submitted = false;
+  vfState.answers = [];
+  document.getElementById('vf-score-panel').style.display = 'none';
+  document.getElementById('vf-correction-panel').style.display = 'none';
+  document.getElementById('vf-validate-btn').style.display = 'block';
+  const data = getShapeData(vfState.section);
+  vfState.questions = shuffleArray(data.vf_bank).slice(0,10);
+  renderVFQuestions();
+  window.scrollTo(0,0);
+}
 
 // ===== SHAPE EXERCISE ENGINE =====
 let shapeState = {
