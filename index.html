@@ -3002,6 +3002,124 @@ function shuffleArray(arr){
   return a;
 }
 
+
+// ===== CONJUGAISON EXERCISE VALIDATION =====
+function selectConjOption(qIdx, optIdx){
+  if(conjState.submitted) return;
+  conjState.questions[qIdx].options.forEach((_, j) => {
+    const btn = document.getElementById(`conj-opt-${qIdx}-${j}`);
+    if(btn) btn.classList.remove('selected');
+  });
+  const btn = document.getElementById(`conj-opt-${qIdx}-${optIdx}`);
+  if(btn) btn.classList.add('selected');
+  conjState.answers[qIdx] = optIdx;
+}
+
+function validateConjExercise(){
+  conjState.submitted = true;
+  let score = 0;
+  const details = [];
+
+  conjState.questions.forEach((q, i) => {
+    const isQcm = conjState.type === 'qcm' || q.evalType === 'qcm';
+    let isCorrect = false;
+    let given = '';
+    let expected = '';
+
+    if(isQcm){
+      const answered = conjState.answers[i];
+      isCorrect = answered === q.answer;
+      given = answered !== undefined ? q.options[answered] : '(pas de réponse)';
+      expected = q.options[q.answer];
+      q.options.forEach((_, j) => {
+        const btn = document.getElementById(`conj-opt-${i}-${j}`);
+        if(!btn) return;
+        btn.onclick = null;
+        if(j === q.answer) btn.classList.add('correct-answer');
+        else if(j === answered && !isCorrect) btn.classList.add('wrong-answer');
+      });
+    } else {
+      const inp = document.getElementById(`conj-blank-${i}`);
+      given = inp ? inp.value.trim() : '';
+      expected = q.answer;
+      isCorrect = given.toLowerCase() === expected.toLowerCase();
+      if(inp){
+        inp.disabled = true;
+        inp.style.borderBottomColor = isCorrect ? 'var(--green)' : 'var(--red)';
+        inp.style.color = isCorrect ? 'var(--green)' : 'var(--red)';
+      }
+    }
+
+    const block = document.getElementById(`conj-q-${i}`);
+    if(block) block.classList.add(isCorrect ? 'correct' : 'incorrect');
+    if(isCorrect) score++;
+    details.push({q: i+1, given, expected, isCorrect, isQcm, text: q.text||q.before+' ___ '+q.after});
+  });
+
+  conjState.score = score;
+  conjState.details = details;
+  const total = conjState.questions.length;
+
+  document.getElementById('conj-validate-btn').style.display = 'none';
+  document.getElementById('conj-score-panel').style.display = 'block';
+
+  const pct = Math.round(score/total*100);
+  const color = pct>=70 ? 'var(--green)' : pct>=50 ? 'var(--amber)' : 'var(--red)';
+  document.getElementById('conj-score-val').innerHTML =
+    `<span style="color:${color}">${score}/${total}</span><br><span style="font-size:18px;">${pct}%</span>`;
+
+  document.getElementById('conj-score-panel').scrollIntoView({behavior:'smooth'});
+
+  // Save result
+  if(state.student){
+    const entry = {
+      student: state.student,
+      activity: 'conjugaison_' + conjState.tense,
+      activityLabel: 'Conjugaison — ' + conjState.tense,
+      isEvaluation: conjState.isEvaluation || false,
+      score, total, pct,
+      date: new Date().toLocaleDateString('fr-BE'),
+      time: new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})
+    };
+    saveResult(entry);
+  }
+}
+
+function showConjCorrection(){
+  document.getElementById('conj-score-panel').style.display = 'none';
+  document.getElementById('conj-correction-panel').style.display = 'block';
+
+  let html = '';
+  conjState.details.forEach(d => {
+    const color = d.isCorrect ? 'var(--green)' : 'var(--red)';
+    const icon = d.isCorrect ? '✅' : '❌';
+    html += `<div class="conj-question" style="border-color:${color}">
+      <div class="conj-question-text">${d.text}</div>
+      <div style="font-size:13px;">${icon} Ta réponse : <strong style="color:${color}">${d.given}</strong></div>
+      ${!d.isCorrect ? `<div style="font-size:13px;color:var(--green);">✓ Bonne réponse : <strong>${d.expected}</strong></div>` : ''}
+    </div>`;
+  });
+  document.getElementById('conj-correction-body').innerHTML = html;
+  document.getElementById('conj-correction-panel').scrollIntoView({behavior:'smooth'});
+}
+
+function restartConjExercise(){
+  if(conjState.isEvaluation) return;
+  conjState.submitted = false;
+  conjState.answers = [];
+  document.getElementById('conj-score-panel').style.display = 'none';
+  document.getElementById('conj-correction-panel').style.display = 'none';
+  document.getElementById('conj-validate-btn').style.display = 'block';
+  const data = getConjData(conjState.tense);
+  if(conjState.type === 'qcm'){
+    conjState.questions = shuffleArray(data.qcm_bank).slice(0,10);
+  } else {
+    conjState.questions = shuffleArray(data.trous_bank).slice(0,10);
+  }
+  renderConjQuestions();
+  window.scrollTo(0,0);
+}
+
 function startConjExercise(tense, type){
   if(isActivityLocked(tense)){ alert('Cet exercice n\'est pas encore disponible.'); return; }
   const data = getConjData(tense);
