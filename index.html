@@ -1808,28 +1808,7 @@ input:focus{border-color:var(--purple);}
   <div id="screen-teacher-francais" class="screen">
     <button class="back-btn" onclick="showScreen('screen-teacher-subjects')">← Retour</button>
     <div class="page-title">📚 Français — Vue enseignant</div>
-    <div class="sub-subjects-grid">
-      <div class="sub-subject-card active-card" onclick="teacherGoToFrancaisSection('lecture')">
-        <div class="sub-icon">📖</div>
-        <div class="sub-title">Lecture</div>
-        <div class="sub-desc">Questionnaires et compréhension</div>
-      </div>
-      <div class="sub-subject-card active-card" onclick="teacherGoToFrancaisSection('conjugaison')">
-        <div class="sub-icon">⏰</div>
-        <div class="sub-title">Conjugaison</div>
-        <div class="sub-desc">Présent, imparfait, futur…</div>
-      </div>
-      <div class="sub-subject-card active-card" onclick="teacherGoToFrancaisSection('grammaire')">
-        <div class="sub-icon">📝</div>
-        <div class="sub-title">Grammaire</div>
-        <div class="sub-desc">Classes de mots, fonctions, phrases…</div>
-      </div>
-      <div class="sub-subject-card disabled" onclick="comingSoon()">
-        <div class="sub-icon">🔤</div>
-        <div class="sub-title">Orthographe</div>
-        <div class="sub-desc">Bientôt disponible</div>
-      </div>
-    </div>
+    <div class="sub-subjects-grid" id="teacher-francais-grid"></div>
   </div>
 
   <!-- SCREEN: Teacher Lecture -->
@@ -2232,14 +2211,10 @@ function saveResult(entry){
   const all = JSON.parse(localStorage.getItem('lq_results')||'[]');
   all.push(entry);
   localStorage.setItem('lq_results',JSON.stringify(all));
-  // Save to server via no-cors
-  const formData = new FormData();
-  formData.append('data', JSON.stringify({action: 'saveResult', entry: entry}));
-  fetch(SCRIPT_URL, {
-    method: 'POST',
-    mode: 'no-cors',
-    body: formData
-  }).catch(()=>{});
+  // Save to server via GET to avoid CORS
+  const encodedEntry = encodeURIComponent(JSON.stringify(entry));
+  const url = SCRIPT_URL + '?action=saveResult&entry=' + encodedEntry + '&t=' + Date.now();
+  fetch(url, {mode: 'no-cors'}).catch(()=>{});
 }
 function deleteResultsForClass(cls){
   const all = JSON.parse(localStorage.getItem('lq_results')||'[]');
@@ -2855,7 +2830,7 @@ function changePassword(){
 
 // ===== TEACHER SUBJECT NAVIGATION =====
 function teacherGoToSubject(subject){
-  if(subject==='francais') showScreen('screen-teacher-francais');
+  if(subject==='francais'){ renderTeacherFrancaisScreen(); showScreen('screen-teacher-francais'); }
   else if(subject==='maths') showScreen('screen-teacher-maths');
   else if(subject==='eveil') showScreen('screen-teacher-eveil');
   else if(subject==='gestion'){
@@ -3334,23 +3309,21 @@ function saveLockedActivities(arr){
   localStorage.setItem('lq_locked_activities', JSON.stringify(arr));
   _lockedCache = arr;
   _lockedCacheTime = Date.now();
-  const fd = new FormData();
-  fd.append('data', JSON.stringify({action: 'setLocked', locked: arr}));
-  fetch(SCRIPT_URL, {
-    method: 'POST',
-    mode: 'no-cors',
-    body: fd
-  }).catch(()=>{});
+  // Use GET with encoded data to avoid CORS issues
+  const encoded = encodeURIComponent(JSON.stringify(arr));
+  const url = SCRIPT_URL + '?action=setLocked&locked=' + encoded + '&t=' + Date.now();
+  fetch(url, {mode: 'no-cors'}).catch(()=>{});
 }
 
 function loadLockedFromServer(){
   fetch(SCRIPT_URL + '?action=getLocked&t=' + Date.now())
     .then(r => r.json())
     .then(data => {
-      if(Array.isArray(data)){
+      if(Array.isArray(data) && data.length >= 0){
         localStorage.setItem('lq_locked_activities', JSON.stringify(data));
         _lockedCache = data;
         _lockedCacheTime = Date.now();
+        refreshAllScreens();
       }
     })
     .catch(()=>{});
@@ -3360,14 +3333,27 @@ function isActivityLocked(id){
 }
 function toggleActivity(id){
   const arr = getLockedActivities();
-  if(arr.includes(id)){
-    saveLockedActivities(arr.filter(x => x !== id));
-  } else {
-    arr.push(id);
-    saveLockedActivities(arr);
-  }
-  renderAppsManage();
-  renderConjugaisonScreen();
+  const newArr = arr.includes(id) ? arr.filter(x => x !== id) : [...arr, id];
+  saveLockedActivities(newArr);
+  // Refresh all visible screens
+  refreshAllScreens();
+}
+
+function refreshAllScreens(){
+  if(typeof renderConjugaisonScreen === 'function') renderConjugaisonScreen();
+  if(typeof renderGrandeursScreen === 'function') renderGrandeursScreen();
+  if(typeof renderSolidesScreen === 'function') renderSolidesScreen();
+  if(typeof renderNumerationScreen === 'function') renderNumerationScreen();
+  if(typeof renderOperationsScreen === 'function') renderOperationsScreen();
+  if(typeof renderTraitementScreen === 'function') renderTraitementScreen();
+  if(typeof renderHistoireScreen === 'function') renderHistoireScreen();
+  if(typeof renderGeographieScreen === 'function') renderGeographieScreen();
+  if(typeof renderSciencesScreen === 'function') renderSciencesScreen();
+  if(typeof renderGrammaireScreen === 'function') renderGrammaireScreen();
+  if(typeof renderGramClassesScreen === 'function') renderGramClassesScreen();
+  if(typeof renderGramFonctionsScreen === 'function') renderGramFonctionsScreen();
+  if(typeof renderGramTypesScreen === 'function') renderGramTypesScreen();
+  if(typeof renderAppsManage === 'function') renderAppsManage();
 }
 
 function renderConjugaisonScreen(){
@@ -5533,6 +5519,25 @@ function renderGestionResults(){
 function openGestionScreen(){
   loadResultsFromServer();
   switchGestionTab('results');
+}
+
+
+// ===== TEACHER FRANCAIS SCREEN =====
+function renderTeacherFrancaisScreen(){
+  const grid = document.getElementById('teacher-francais-grid');
+  if(!grid) return;
+  const items = [
+    {id:'lecture', label:'Lecture', icon:'📖', desc:'Questionnaires et compréhension', action:"teacherGoToFrancaisSection('lecture')", lockable:false},
+    {id:'conjugaison', label:'Conjugaison', icon:'⏰', desc:'Présent, imparfait, futur…', action:"teacherGoToFrancaisSection('conjugaison')", lockable:false},
+    {id:'grammaire', label:'Grammaire', icon:'📝', desc:'Classes de mots, fonctions, phrases…', action:"teacherGoToFrancaisSection('grammaire')", lockable:false},
+    {id:'orthographe', label:'Orthographe', icon:'🔤', desc:'Bientôt disponible', action:"comingSoon()", lockable:false, disabled:true},
+  ];
+  grid.innerHTML = items.map(t => `
+    <div class="sub-subject-card ${t.disabled ? 'disabled' : 'active-card'}" onclick="${t.action}">
+      <div class="sub-icon">${t.icon}</div>
+      <div class="sub-title">${t.label}</div>
+      <div class="sub-desc">${t.desc}</div>
+    </div>`).join('');
 }
 
 function goToSubject(subject){
