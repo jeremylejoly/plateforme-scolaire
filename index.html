@@ -2221,7 +2221,12 @@ function getClassStudents(cls) {
 }
 function saveClassStudents(cls,s){
   localStorage.setItem('lq_students_'+cls,JSON.stringify(s));
-  if(window.FB_ready) window.FB_saveStudents(cls, s);
+  if(window.FB_saveStudents){
+    window.FB_saveStudents(cls, s);
+  } else {
+    // Firebase pas encore prêt, on réessaie dans 2 secondes
+    setTimeout(()=>{ if(window.FB_saveStudents) window.FB_saveStudents(cls, s); }, 2000);
+  }
 }
 
 function getAllStudents() {
@@ -2340,7 +2345,14 @@ function loadBooks() {
   }
   ];
 }
-function saveBooks(b){ localStorage.setItem('lq_books',JSON.stringify(b)); if(window.FB_ready) window.FB_saveBooks(b); }
+function saveBooks(b){
+  localStorage.setItem('lq_books',JSON.stringify(b));
+  if(window.FB_saveBooks){
+    window.FB_saveBooks(b);
+  } else {
+    setTimeout(()=>{ if(window.FB_saveBooks) window.FB_saveBooks(b); }, 2000);
+  }
+}
 
 function loadResults(cls){
   const all = JSON.parse(localStorage.getItem('lq_results')||'[]');
@@ -2350,7 +2362,11 @@ function saveResult(entry){
   const all = JSON.parse(localStorage.getItem('lq_results')||'[]');
   all.push(entry);
   localStorage.setItem('lq_results',JSON.stringify(all));
-  if(window.FB_ready) window.FB_saveResult(entry);
+  if(window.FB_saveResult){
+    window.FB_saveResult(entry);
+  } else {
+    setTimeout(()=>{ if(window.FB_saveResult) window.FB_saveResult(entry); }, 2000);
+  }
 }
 function deleteResultsForClass(cls){
   const all = JSON.parse(localStorage.getItem('lq_results')||'[]');
@@ -2420,7 +2436,11 @@ function getArchivedBooks(){
 }
 function saveArchivedBooks(arr){
   localStorage.setItem('lq_archived',JSON.stringify(arr));
-  if(window.FB_ready) window.FB_saveArchivedBooks(arr);
+  if(window.FB_saveArchivedBooks){
+    window.FB_saveArchivedBooks(arr);
+  } else {
+    setTimeout(()=>{ if(window.FB_saveArchivedBooks) window.FB_saveArchivedBooks(arr); }, 2000);
+  }
 }
 function loadVisibleBooks(){
   const books=loadBooks();
@@ -2707,14 +2727,18 @@ async function syncFromFirebase(){
   if(!window.FB_ready) return;
   try {
     // Sync élèves
-    const students = await window.FB_loadStudents('lejoly');
-    if(students && Array.isArray(students) && students.length > 0){
-      localStorage.setItem('lq_students_lejoly', JSON.stringify(students));
+    const fbStudents = await window.FB_loadStudents('lejoly');
+    const localStudents = getClassStudents('lejoly');
+    if(fbStudents && Array.isArray(fbStudents) && fbStudents.length >= localStudents.length){
+      // Firebase a autant ou plus d'élèves → on prend Firebase
+      localStorage.setItem('lq_students_lejoly', JSON.stringify(fbStudents));
+    } else {
+      // Local a plus d'élèves → on pousse vers Firebase
+      await window.FB_saveStudents('lejoly', localStudents);
     }
     // Sync résultats
     const results = await window.FB_loadResults(null);
     if(results && results.length > 0){
-      // Fusionner avec résultats locaux (éviter doublons par timestamp+student)
       const local = JSON.parse(localStorage.getItem('lq_results')||'[]');
       const localKeys = new Set(local.map(r=>r.student+'|'+r.date+'|'+r.activity));
       const merged = [...local];
@@ -2728,6 +2752,10 @@ async function syncFromFirebase(){
     const locked = await window.FB_loadLockedActivities();
     if(locked && Array.isArray(locked)){
       localStorage.setItem('lq_locked_activities', JSON.stringify(locked));
+    } else {
+      // Pas encore dans Firebase → on pousse les valeurs locales
+      const localLocked = getLockedActivities();
+      await window.FB_saveLockedActivities(localLocked);
     }
     // Sync livres archivés
     const archived = await window.FB_loadArchivedBooks();
@@ -2735,7 +2763,6 @@ async function syncFromFirebase(){
       localStorage.setItem('lq_archived', JSON.stringify(archived));
     }
     console.log('✅ Synchronisation Firebase terminée');
-    // Rafraîchir l'affichage après sync
     renderDashboard();
     renderStudentsManage();
     renderAppsManage();
@@ -3416,7 +3443,11 @@ function getLockedActivities(){
 }
 function saveLockedActivities(arr){
   localStorage.setItem('lq_locked_activities', JSON.stringify(arr));
-  if(window.FB_ready) window.FB_saveLockedActivities(arr);
+  if(window.FB_saveLockedActivities){
+    window.FB_saveLockedActivities(arr);
+  } else {
+    setTimeout(()=>{ if(window.FB_saveLockedActivities) window.FB_saveLockedActivities(arr); }, 2000);
+  }
 }
 function isActivityLocked(id){
   return getLockedActivities().includes(id);
@@ -5573,7 +5604,11 @@ function changeStudentPin(i){
 
 function saveClassStudents(cls,arr){
   localStorage.setItem('lq_students_'+cls,JSON.stringify(arr));
-  if(window.FB_ready) window.FB_saveStudents(cls, arr);
+  if(window.FB_saveStudents){
+    window.FB_saveStudents(cls, arr);
+  } else {
+    setTimeout(()=>{ if(window.FB_saveStudents) window.FB_saveStudents(cls, arr); }, 2000);
+  }
 }
 
 function goToSubject(subject){
