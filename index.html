@@ -2211,8 +2211,7 @@ function saveResult(entry){
   const all = JSON.parse(localStorage.getItem('lq_results')||'[]');
   all.push(entry);
   localStorage.setItem('lq_results',JSON.stringify(all));
-  // Use Image pixel trick - GET request, no CORS issues
-  sendToServer('saveResult', JSON.stringify(entry));
+
 }
 function deleteResultsForClass(cls){
   const all = JSON.parse(localStorage.getItem('lq_results')||'[]');
@@ -2230,10 +2229,8 @@ let teacherCls = 'lejoly';
 let pinInput = '';
 
 window.addEventListener('load', function(){
-  loadLockedFromServer();
   // Auto-reconnect teacher if session exists
   if(localStorage.getItem('lq_teacher_session') === '1'){
-    // Small delay to let the page render first
     setTimeout(function(){
       openTeacherPanel();
     }, 300);
@@ -3293,30 +3290,13 @@ function loadConjResults(cls, student){
 // ===== ACTIVITY LOCK SYSTEM =====
 const DEFAULT_LOCKED = ['passe_compose','grandeur_masses','grandeur_capacites','grandeur_longueurs','grandeur_perimetre','grandeur_aire','grandeur_volume','grandeur_durees','grandeur_monnaie','solide_points','solide_polygones','solide_triangles','solide_quadrilateres','solide_polyedres','num_grands_nombres','num_decimaux','num_entiers_decimaux','num_fractions','num_pourcentages','num_tout','op_vocabulaire','op_add_sous','op_mult_div','op_4_operations','op_tables','op_x10','op_x5','op_x9','op_x11','op_divisibilite','op_compensation','op_calcul_ecrit','trait_graphiques','trait_regle3','trait_problemes','hist_prehistoire','hist_antiquite','hist_moyen_age','hist_temps_modernes','hist_contemporaine','hist_grandes_periodes','sci_respiratoire','sci_digestif','sci_circulatoire','sci_tegumentaire','sci_squelette','sci_engrenages','sci_electricite','sci_systeme_solaire','geo_oceans','geo_europe','geo_belgique','geo_paysages','geo_hydro','geo_cartes','gram_nom','gram_determinant','gram_adjectif','gram_verbe','gram_pronom','gram_adverbe','gram_complement_nom','gram_sujet','gram_verbe_fonc','gram_predicat','gram_cdv_civ','gram_cc','gram_attribut','gram_affirm_neg','gram_pass_act'];
 
-let _lockedCache = null;
-let _lockedCacheTime = 0;
-const CACHE_DURATION = 30000;
-
 function getLockedActivities(){
-  if(_lockedCache !== null && Date.now() - _lockedCacheTime < CACHE_DURATION) return _lockedCache;
   const s = localStorage.getItem('lq_locked_activities');
   return s ? JSON.parse(s) : DEFAULT_LOCKED;
 }
 
 function saveLockedActivities(arr){
   localStorage.setItem('lq_locked_activities', JSON.stringify(arr));
-  _lockedCache = arr;
-  _lockedCacheTime = Date.now();
-  // Use script tag trick to bypass CORS completely
-  sendToServer('setLocked', JSON.stringify(arr));
-}
-
-function sendToServer(action, data){
-  // Use Image pixel trick - GET request, no CORS issues
-  const encoded = encodeURIComponent(data);
-  const url = SCRIPT_URL + '?action=' + action + '&data=' + encoded + '&t=' + Date.now();
-  const img = new Image();
-  img.src = url;
 }
 
 function loadLockedFromServer(){
@@ -3325,8 +3305,6 @@ function loadLockedFromServer(){
     .then(data => {
       if(Array.isArray(data) && data.length >= 0){
         localStorage.setItem('lq_locked_activities', JSON.stringify(data));
-        _lockedCache = data;
-        _lockedCacheTime = Date.now();
         refreshAllScreens();
       }
     })
