@@ -390,55 +390,55 @@ window.EXERCICES_FRANCAIS = {
     }
     ,passe_compose: {
       qcm_bank: [
-        {text:"Hier, je ___ (aller) chez le médecin.", options:["suis allés","suis allé(e)","ai allé"], answer:1}
-        {text:"Ce matin, tu ___ (avoir) une bonne surprise.", options:["a eu","as eu","as eut"], answer:1}
-        {text:"Il ___ (être) très courageux pendant l'opération.", options:["est allé","a été","as été"], answer:1}
-        {text:"Nous ___ (finir) nos devoirs avant le dîner.", options:["avons fini","avons finis","sommes finis"], answer:0}
-        {text:"Vous ___ (unir) vos forces pour déplacer les meubles.", options:["avez uni","êtes unis","avez unis"], answer:0}
-        {text:"Elle ___ (savoir) la réponse immédiatement.", options:["a sue","a sut","a su"], answer:2}
-        {text:"Ils ___ (pouvoir) partir à l'heure grâce au train.", options:["ont put","ont pu","sont pu"], answer:1}
-        {text:"J' ___ (acheter) un nouveau cartable pour la rentrée.", options:["ai acheté","ai achetée","ai acheter"], answer:0}
-        {text:"Tu ___ (jeter) tes vieux cahiers à la fin de l'année.", options:["as jeter","as jeté","as jetté"], answer:1}
-        {text:"Il ___ (appeler) ses parents dès son arrivée.", options:["a appelé","a appellé","as appelé"], answer:0}
-        {text:"Nous ___ (emmener) les enfants au parc ce matin.", options:["avons emmenés","avons emmené","sommes emmenés"], answer:1}
-        {text:"Elle ___ (lever) la main pour répondre à la question.", options:["a levée","a levé","as levé"], answer:1}
-        {text:"Vous ___ (envoyer) le colis hier matin.", options:["avez envoyé","avez envoié","êtes envoyé"], answer:0}
-        {text:"Tu ___ (essuyer) la vaisselle après le repas.", options:["as essuyé","as essuié","a essuyé"], answer:0}
-        {text:"Il ___ (guérir) rapidement grâce aux médicaments.", options:["a guérit","a guérie","a guéri"], answer:2}
-        {text:"Je ___ (lire) ce roman en une seule journée.", options:["ai lut","ai lus","ai lu"], answer:2}
-        {text:"Nous ___ (écrire) une lettre à notre correspondant.", options:["avons écrit","avons écri","avons écris"], answer:0}
-        {text:"Elle ___ (mettre) son manteau avant de sortir.", options:["a mi","a mis","a mit"], answer:1}
-        {text:"Tu ___ (dire) la vérité à tes parents.", options:["as dis","as di","as dit"], answer:2}
-        {text:"Ils ___ (faire) une randonnée en montagne ce week-end.", options:["ont fait","ont fais","ont faient"], answer:0}
-        {text:"J' ___ (boire) un grand verre d'eau après le sport.", options:["ai but","ai bus","ai bu"], answer:2}
-        {text:"Elle ___ (peindre) un magnifique tableau pour l'exposition.", options:["a peind","a peint","a pein"], answer:1}
-        {text:"Nous ___ (mentir) et nous le regrettons.", options:["avons mentis","avons menti","avons mentit"], answer:1}
-        {text:"Il ___ (tenir) sa promesse jusqu'au bout.", options:["a tenus","a tenut","a tenu"], answer:2}
-        {text:"Le directeur ___ (accueillir) les nouveaux élèves ce matin.", options:["a accueillit","a accueillut","a accueilli"], answer:2}
-        {text:"Je ___ (vouloir) lui dire la vérité mais je n'ai pas osé.", options:["ai voulut","ai voulu","ai voulus"], answer:1}
-        {text:"Nous ___ (aller) au cinéma vendredi soir.", options:["sommes allé","sommes allés","sommes aller"], answer:1}
-        {text:"Tu ___ (recevoir) un beau cadeau pour ton anniversaire.", options:["as reçut","as reçu","as reçus"], answer:1}
-        {text:"Elle ___ (revenir) de vacances hier soir.", options:["est revenu","est revenue","est revenut"], answer:1}
-        {text:"Vous ___ (devoir) travailler très dur pour réussir.", options:["avez du","avez dut","avez dû"], answer:2}
-        {text:"Il ___ (voir) un film magnifique au cinéma.", options:["a vut","a vus","a vu"], answer:2}
-        {text:"Il ___ (falloir) partir très tôt ce matin.", options:["a fallut","a fallue","a fallu"], answer:2}
-        {text:"Elle ___ (résoudre) ce problème difficile en cinq minutes.", options:["a résolue","a résolu","a résolut"], answer:1}
-        {text:"Tu ___ (rejoindre) tes amis au parc après l'école.", options:["as rejoind","as rejoins","as rejoint"], answer:2}
-        {text:"Il ___ (amener) son chien chez le vétérinaire hier.", options:["a amené","a amenés","a amener"], answer:0}
-        {text:"Elle ___ (craindre) le pire mais tout s'est bien passé.", options:["a crainte","a craind","a craint"], answer:2}
-        {text:"Je ___ (courir) dix kilomètres ce matin.", options:["ai courrus","ai courri","ai couru"], answer:2}
-        {text:"Tu ___ (venir) nous rendre visite la semaine dernière.", options:["es venu(e)","es venut","es venus"], answer:0}
-        {text:"Cette plante ___ (mourir) faute d'eau pendant les vacances.", options:["est mort","est morte","est mourru"], answer:1}
-        {text:"Grand-mère ___ (coudre) les costumes pour le spectacle.", options:["a cousue","a cousut","a cousu"], answer:2}
-        {text:"Il ___ (vivre) dix ans en Australie avant de rentrer.", options:["a vécu","a vécut","a vit"], answer:0}
-        {text:"Tu ___ (conduire) prudemment sur cette route dangereuse.", options:["as condui","as conduis","as conduit"], answer:2}
-        {text:"Nous ___ (rire) beaucoup en regardant ce film comique.", options:["avons ri","avons rit","avons ris"], answer:0}
-        {text:"Vous ___ (suivre) attentivement les conseils du guide.", options:["avez suivi","avez suivit","avez suivis"], answer:0}
-        {text:"Il ___ (ouvrir) la fenêtre pour aérer la pièce.", options:["a ouvert","a ouvers","a ouvèrt"], answer:0}
-        {text:"Nous ___ (offrir) un cadeau à notre maîtresse pour Noël.", options:["avons offert","avons offerts","avons offrit"], answer:0}
-        {text:"Je ___ (sortir) après avoir fini tous mes devoirs.", options:["suis sortis","suis sorti(e)","ai sorti"], answer:1}
-        {text:"Elle ___ (partir) sans dire au revoir à personne.", options:["est partie","est partite","est partit"], answer:0}
-        {text:"Nous ___ (naître) dans la même ville tous les deux.", options:["sommes nés","sommes né","avons né"], answer:0}
+        {text:"Hier, je ___ (aller) chez le médecin.", options:["suis allés","suis allé(e)","ai allé"], answer:1},
+        {text:"Ce matin, tu ___ (avoir) une bonne surprise.", options:["a eu","as eu","as eut"], answer:1},
+        {text:"Il ___ (être) très courageux pendant l'opération.", options:["est allé","a été","as été"], answer:1},
+        {text:"Nous ___ (finir) nos devoirs avant le dîner.", options:["avons fini","avons finis","sommes finis"], answer:0},
+        {text:"Vous ___ (unir) vos forces pour déplacer les meubles.", options:["avez uni","êtes unis","avez unis"], answer:0},
+        {text:"Elle ___ (savoir) la réponse immédiatement.", options:["a sue","a sut","a su"], answer:2},
+        {text:"Ils ___ (pouvoir) partir à l'heure grâce au train.", options:["ont put","ont pu","sont pu"], answer:1},
+        {text:"J' ___ (acheter) un nouveau cartable pour la rentrée.", options:["ai acheté","ai achetée","ai acheter"], answer:0},
+        {text:"Tu ___ (jeter) tes vieux cahiers à la fin de l'année.", options:["as jeter","as jeté","as jetté"], answer:1},
+        {text:"Il ___ (appeler) ses parents dès son arrivée.", options:["a appelé","a appellé","as appelé"], answer:0},
+        {text:"Nous ___ (emmener) les enfants au parc ce matin.", options:["avons emmenés","avons emmené","sommes emmenés"], answer:1},
+        {text:"Elle ___ (lever) la main pour répondre à la question.", options:["a levée","a levé","as levé"], answer:1},
+        {text:"Vous ___ (envoyer) le colis hier matin.", options:["avez envoyé","avez envoié","êtes envoyé"], answer:0},
+        {text:"Tu ___ (essuyer) la vaisselle après le repas.", options:["as essuyé","as essuié","a essuyé"], answer:0},
+        {text:"Il ___ (guérir) rapidement grâce aux médicaments.", options:["a guérit","a guérie","a guéri"], answer:2},
+        {text:"Je ___ (lire) ce roman en une seule journée.", options:["ai lut","ai lus","ai lu"], answer:2},
+        {text:"Nous ___ (écrire) une lettre à notre correspondant.", options:["avons écrit","avons écri","avons écris"], answer:0},
+        {text:"Elle ___ (mettre) son manteau avant de sortir.", options:["a mi","a mis","a mit"], answer:1},
+        {text:"Tu ___ (dire) la vérité à tes parents.", options:["as dis","as di","as dit"], answer:2},
+        {text:"Ils ___ (faire) une randonnée en montagne ce week-end.", options:["ont fait","ont fais","ont faient"], answer:0},
+        {text:"J' ___ (boire) un grand verre d'eau après le sport.", options:["ai but","ai bus","ai bu"], answer:2},
+        {text:"Elle ___ (peindre) un magnifique tableau pour l'exposition.", options:["a peind","a peint","a pein"], answer:1},
+        {text:"Nous ___ (mentir) et nous le regrettons.", options:["avons mentis","avons menti","avons mentit"], answer:1},
+        {text:"Il ___ (tenir) sa promesse jusqu'au bout.", options:["a tenus","a tenut","a tenu"], answer:2},
+        {text:"Le directeur ___ (accueillir) les nouveaux élèves ce matin.", options:["a accueillit","a accueillut","a accueilli"], answer:2},
+        {text:"Je ___ (vouloir) lui dire la vérité mais je n'ai pas osé.", options:["ai voulut","ai voulu","ai voulus"], answer:1},
+        {text:"Nous ___ (aller) au cinéma vendredi soir.", options:["sommes allé","sommes allés","sommes aller"], answer:1},
+        {text:"Tu ___ (recevoir) un beau cadeau pour ton anniversaire.", options:["as reçut","as reçu","as reçus"], answer:1},
+        {text:"Elle ___ (revenir) de vacances hier soir.", options:["est revenu","est revenue","est revenut"], answer:1},
+        {text:"Vous ___ (devoir) travailler très dur pour réussir.", options:["avez du","avez dut","avez dû"], answer:2},
+        {text:"Il ___ (voir) un film magnifique au cinéma.", options:["a vut","a vus","a vu"], answer:2},
+        {text:"Il ___ (falloir) partir très tôt ce matin.", options:["a fallut","a fallue","a fallu"], answer:2},
+        {text:"Elle ___ (résoudre) ce problème difficile en cinq minutes.", options:["a résolue","a résolu","a résolut"], answer:1},
+        {text:"Tu ___ (rejoindre) tes amis au parc après l'école.", options:["as rejoind","as rejoins","as rejoint"], answer:2},
+        {text:"Il ___ (amener) son chien chez le vétérinaire hier.", options:["a amené","a amenés","a amener"], answer:0},
+        {text:"Elle ___ (craindre) le pire mais tout s'est bien passé.", options:["a crainte","a craind","a craint"], answer:2},
+        {text:"Je ___ (courir) dix kilomètres ce matin.", options:["ai courrus","ai courri","ai couru"], answer:2},
+        {text:"Tu ___ (venir) nous rendre visite la semaine dernière.", options:["es venu(e)","es venut","es venus"], answer:0},
+        {text:"Cette plante ___ (mourir) faute d'eau pendant les vacances.", options:["est mort","est morte","est mourru"], answer:1},
+        {text:"Grand-mère ___ (coudre) les costumes pour le spectacle.", options:["a cousue","a cousut","a cousu"], answer:2},
+        {text:"Il ___ (vivre) dix ans en Australie avant de rentrer.", options:["a vécu","a vécut","a vit"], answer:0},
+        {text:"Tu ___ (conduire) prudemment sur cette route dangereuse.", options:["as condui","as conduis","as conduit"], answer:2},
+        {text:"Nous ___ (rire) beaucoup en regardant ce film comique.", options:["avons ri","avons rit","avons ris"], answer:0},
+        {text:"Vous ___ (suivre) attentivement les conseils du guide.", options:["avez suivi","avez suivit","avez suivis"], answer:0},
+        {text:"Il ___ (ouvrir) la fenêtre pour aérer la pièce.", options:["a ouvert","a ouvers","a ouvèrt"], answer:0},
+        {text:"Nous ___ (offrir) un cadeau à notre maîtresse pour Noël.", options:["avons offert","avons offerts","avons offrit"], answer:0},
+        {text:"Je ___ (sortir) après avoir fini tous mes devoirs.", options:["suis sortis","suis sorti(e)","ai sorti"], answer:1},
+        {text:"Elle ___ (partir) sans dire au revoir à personne.", options:["est partie","est partite","est partit"], answer:0},
+        {text:"Nous ___ (naître) dans la même ville tous les deux.", options:["sommes nés","sommes né","avons né"], answer:0},
         {text:"Ils ___ (prendre) le train de sept heures ce matin.", options:["ont prit","ont pri","ont pris"], answer:2},
       ],
 
