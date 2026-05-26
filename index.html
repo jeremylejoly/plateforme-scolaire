@@ -683,15 +683,15 @@ input:focus{border-color:var(--purple);}
         <div class="sub-title">Lecture</div>
         <div class="sub-desc">Questionnaires et compréhension</div>
       </div>
-      <div class="sub-subject-card active-card" onclick="goToFrancaisSection('conjugaison')">
+      <div class="sub-subject-card disabled" onclick="comingSoon()">
         <div class="sub-icon">⏰</div>
         <div class="sub-title">Conjugaison</div>
         <div class="sub-desc">Bientôt disponible</div>
       </div>
-      <div class="sub-subject-card active-card" onclick="goToFrancaisSection('grammaire')">
+      <div class="sub-subject-card disabled" onclick="comingSoon()">
         <div class="sub-icon">📝</div>
         <div class="sub-title">Grammaire</div>
-        <div class="sub-desc">Classes de mots, fonctions, phrases…</div>
+        <div class="sub-desc">Bientôt disponible</div>
       </div>
       <div class="sub-subject-card disabled" onclick="comingSoon()">
         <div class="sub-icon">🔤</div>
@@ -970,10 +970,10 @@ input:focus{border-color:var(--purple);}
         <div class="sub-title">Solides et figures</div>
         <div class="sub-desc">Polygones, triangles, polyèdres…</div>
       </div>
-      <div class="sub-subject-card active-card" onclick="goToMathsSection('traitement')">
+      <div class="sub-subject-card disabled" onclick="comingSoon()">
         <div class="sub-icon">📊</div>
         <div class="sub-title">Traitement de données</div>
-        <div class="sub-desc">Graphiques, règle de 3, problèmes…</div>
+        <div class="sub-desc">Bientôt disponible</div>
       </div>
     </div>
   </div>
@@ -1784,7 +1784,7 @@ input:focus{border-color:var(--purple);}
         </div>
       </div>
       <!-- GESTION -->
-      <div class="subject-card gestion" onclick="teacherGoToSubject('gestion')">
+      <div class="subject-card gestion" onclick="showScreen('screen-gestion');openGestionScreen();">
         <svg class="subject-card-bg" viewBox="0 0 400 140" xmlns="http://www.w3.org/2000/svg">
           <text x="20" y="55" font-size="36" fill="white">📊</text>
           <text x="100" y="80" font-size="28" fill="white">résultats</text>
@@ -1872,10 +1872,10 @@ input:focus{border-color:var(--purple);}
         <div class="sub-title">Solides et figures</div>
         <div class="sub-desc">Polygones, triangles, polyèdres…</div>
       </div>
-      <div class="sub-subject-card active-card" onclick="goToMathsSection('traitement')">
+      <div class="sub-subject-card disabled" onclick="comingSoon()">
         <div class="sub-icon">📊</div>
         <div class="sub-title">Traitement de données</div>
-        <div class="sub-desc">Graphiques, règle de 3, problèmes…</div>
+        <div class="sub-desc">Bientôt disponible</div>
       </div>
     </div>
   </div>
@@ -1934,9 +1934,18 @@ input:focus{border-color:var(--purple);}
   <!-- SCREEN: Gestion — Liste des élèves -->
   <div id="screen-gestion" class="screen">
     <button class="back-btn" onclick="showScreen('screen-teacher-subjects')">← Retour</button>
-    <div class="page-title">📊 Gestion — Résultats des élèves</div>
-    <div id="gestion-summary" class="gestion-summary"></div>
-    <div id="gestion-students-list"></div>
+    <div class="page-title">📊 Gestion</div>
+    <div class="panel-tabs" style="margin-bottom:1rem;">
+      <button class="panel-tab active" id="gtab-results-btn" onclick="switchGestionTab('results')">📊 Résultats</button>
+      <button class="panel-tab" id="gtab-students-btn" onclick="switchGestionTab('students')">👤 Élèves</button>
+    </div>
+    <div id="gtab-results">
+      <div id="gestion-summary" class="gestion-summary"></div>
+      <div id="gestion-students-list"></div>
+    </div>
+    <div id="gtab-students" style="display:none;">
+      <div id="students-manage-new"></div>
+    </div>
   </div>
 
 
@@ -1965,10 +1974,10 @@ input:focus{border-color:var(--purple);}
         <div class="sub-title">Solides et figures</div>
         <div class="sub-desc">Bientôt disponible</div>
       </div>
-      <div class="sub-subject-card active-card" onclick="goToMathsSection('traitement')">
+      <div class="sub-subject-card disabled" onclick="comingSoon()">
         <div class="sub-icon">📊</div>
         <div class="sub-title">Traitement de données</div>
-        <div class="sub-desc">Graphiques, règle de 3, problèmes…</div>
+        <div class="sub-desc">Bientôt disponible</div>
       </div>
     </div>
   </div>
@@ -2219,9 +2228,16 @@ function loadResults(cls){
   return cls ? all.filter(r=>r.cls===cls) : all;
 }
 function saveResult(entry){
+  // Save locally
   const all = JSON.parse(localStorage.getItem('lq_results')||'[]');
   all.push(entry);
   localStorage.setItem('lq_results',JSON.stringify(all));
+  // Save to server
+  fetch(SCRIPT_URL, {
+    method: 'POST',
+    headers: {'Content-Type': 'text/plain'},
+    body: JSON.stringify({action: 'saveResult', entry: entry})
+  }).catch(()=>{});
 }
 function deleteResultsForClass(cls){
   const all = JSON.parse(localStorage.getItem('lq_results')||'[]');
@@ -2356,7 +2372,6 @@ function checkPin(){
 
 function goToHome(){
   if(state.role!=='teacher') state.role='student';
-  loadLockedFromServer();
   const emojis=['😊','🌟','🎯','🚀','🦁','🐬','🦊','🐧','🌈','⚡'];
   const idx = state.student.charCodeAt(0)%emojis.length;
   // Set subjects screen
@@ -2568,6 +2583,8 @@ function switchTabById(tabId){
 }
 
 function renderDashboard(){
+  loadResultsFromServer();
+
   const results=loadResults(teacherCls);
   if(results.length===0){
     document.getElementById('dash-body').innerHTML='<div class="alert alert-info">Aucun résultat enregistré pour le moment.</div>';
@@ -2828,8 +2845,8 @@ function teacherGoToSubject(subject){
   else if(subject==='maths') showScreen('screen-teacher-maths');
   else if(subject==='eveil') showScreen('screen-teacher-eveil');
   else if(subject==='gestion'){
-    renderGestion();
     showScreen('screen-gestion');
+    openGestionScreen();
   }
 }
 
@@ -3287,64 +3304,40 @@ function loadConjResults(cls, student){
 
 
 // ===== ACTIVITY LOCK SYSTEM =====
-// ===== ACTIVITÉS MASQUÉES — SYNCHRONISATION GOOGLE APPS SCRIPT =====
 const DEFAULT_LOCKED = ['passe_compose','grandeur_masses','grandeur_capacites','grandeur_longueurs','grandeur_perimetre','grandeur_aire','grandeur_volume','grandeur_durees','grandeur_monnaie','solide_points','solide_polygones','solide_triangles','solide_quadrilateres','solide_polyedres','num_grands_nombres','num_decimaux','num_entiers_decimaux','num_fractions','num_pourcentages','num_tout','op_vocabulaire','op_add_sous','op_mult_div','op_4_operations','op_tables','op_x10','op_x5','op_x9','op_x11','op_divisibilite','op_compensation','op_calcul_ecrit','trait_graphiques','trait_regle3','trait_problemes','hist_prehistoire','hist_antiquite','hist_moyen_age','hist_temps_modernes','hist_contemporaine','hist_grandes_periodes','sci_respiratoire','sci_digestif','sci_circulatoire','sci_tegumentaire','sci_squelette','sci_engrenages','sci_electricite','sci_systeme_solaire','geo_oceans','geo_europe','geo_belgique','geo_paysages','geo_hydro','geo_cartes','gram_nom','gram_determinant','gram_adjectif','gram_verbe','gram_pronom','gram_adverbe','gram_complement_nom','gram_sujet','gram_verbe_fonc','gram_predicat','gram_cdv_civ','gram_cc','gram_attribut','gram_affirm_neg','gram_pass_act'];
 
-// Cache local pour éviter trop de requêtes
 let _lockedCache = null;
 let _lockedCacheTime = 0;
-const CACHE_DURATION = 30000; // 30 secondes
+const CACHE_DURATION = 30000;
 
 function getLockedActivities(){
-  // Retourne le cache si récent
-  if(_lockedCache !== null && Date.now() - _lockedCacheTime < CACHE_DURATION){
-    return _lockedCache;
-  }
-  // Sinon retourne le localStorage (mis à jour en arrière-plan)
+  if(_lockedCache !== null && Date.now() - _lockedCacheTime < CACHE_DURATION) return _lockedCache;
   const s = localStorage.getItem('lq_locked_activities');
   return s ? JSON.parse(s) : DEFAULT_LOCKED;
 }
 
 function saveLockedActivities(arr){
-  // Sauvegarde locale immédiate
   localStorage.setItem('lq_locked_activities', JSON.stringify(arr));
   _lockedCache = arr;
   _lockedCacheTime = Date.now();
-  // Sauvegarde distante (Google Apps Script)
-  fetch(SCRIPT_URL + '?dummy=' + Date.now(), {
+  fetch(SCRIPT_URL, {
     method: 'POST',
     headers: {'Content-Type': 'text/plain'},
     body: JSON.stringify({action: 'setLocked', locked: arr})
-  }).catch(() => {});
+  }).catch(()=>{});
 }
 
 function loadLockedFromServer(){
-  // Charge la liste depuis le serveur au démarrage
-  fetch(SCRIPT_URL + '?action=getLocked&dummy=' + Date.now())
+  fetch(SCRIPT_URL + '?action=getLocked&t=' + Date.now())
     .then(r => r.json())
     .then(data => {
       if(Array.isArray(data)){
         localStorage.setItem('lq_locked_activities', JSON.stringify(data));
         _lockedCache = data;
         _lockedCacheTime = Date.now();
-        // Rafraîchir l'affichage si nécessaire
-        const currentScreen = document.querySelector('.screen.active');
-        if(currentScreen) {
-          const id = currentScreen.id;
-          if(id === 'screen-conjugaison') renderConjugaisonScreen();
-          else if(id === 'screen-grandeurs') renderGrandeursScreen();
-          else if(id === 'screen-solides') renderSolidesScreen();
-          else if(id === 'screen-numeration') renderNumerationScreen();
-          else if(id === 'screen-operations') renderOperationsScreen();
-          else if(id === 'screen-traitement') renderTraitementScreen();
-          else if(id === 'screen-histoire') renderHistoireScreen();
-          else if(id === 'screen-geographie') renderGeographieScreen();
-          else if(id === 'screen-sciences') renderSciencesScreen();
-          else if(id === 'screen-grammaire') renderGrammaireScreen();
-        }
       }
     })
-    .catch(() => {});
+    .catch(()=>{});
 }
 function isActivityLocked(id){
   return getLockedActivities().includes(id);
@@ -5415,6 +5408,117 @@ function goToConjugaison(tense){
 }
 
 // ===== SUBJECT NAVIGATION =====
+
+// ===== GESTION TABS =====
+function switchGestionTab(tab){
+  document.getElementById('gtab-results').style.display = tab==='results' ? '' : 'none';
+  document.getElementById('gtab-students').style.display = tab==='students' ? '' : 'none';
+  document.getElementById('gtab-results-btn').classList.toggle('active', tab==='results');
+  document.getElementById('gtab-students-btn').classList.toggle('active', tab==='students');
+  if(tab==='students') renderStudentsManageNew();
+}
+
+function renderStudentsManageNew(){
+  const students = getClassStudents(teacherCls);
+  let html = '<div class="card"><div class="card-title">👤 Élèves — ' + CLASSES[teacherCls].name + '</div>';
+  students.forEach((s,i) => {
+    html += `<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);">
+      <div style="flex:1;font-weight:700;">${s.name}</div>
+      <div style="font-size:13px;color:var(--muted);">PIN : <strong>${s.code}</strong></div>
+      <button class="btn btn-sm" onclick="changeStudentPin(${i})">✏️ PIN</button>
+      <button class="btn btn-sm" style="color:var(--red);" onclick="deleteStudentNew(${i})">🗑️</button>
+    </div>`;
+  });
+  html += `<div style="margin-top:1rem;display:flex;gap:8px;flex-wrap:wrap;">
+    <input type="text" id="new-st-name" placeholder="Prénom" style="flex:1;padding:8px;border:1.5px solid var(--border);border-radius:var(--rsm);font-size:14px;"/>
+    <input type="text" id="new-st-pin" placeholder="PIN (4 chiffres)" maxlength="4" style="width:120px;padding:8px;border:1.5px solid var(--border);border-radius:var(--rsm);font-size:14px;"/>
+    <button class="btn btn-primary" onclick="addStudentNew()">+ Ajouter</button>
+  </div></div>`;
+  document.getElementById('students-manage-new').innerHTML = html;
+}
+
+function addStudentNew(){
+  const name = document.getElementById('new-st-name').value.trim();
+  const pin = document.getElementById('new-st-pin').value.trim();
+  if(!name || pin.length !== 4 || isNaN(pin)){ alert('Prénom et PIN à 4 chiffres requis.'); return; }
+  const students = getClassStudents(teacherCls);
+  students.push({name, code: pin});
+  saveClassStudents(teacherCls, students);
+  renderStudentsManageNew();
+}
+
+function deleteStudentNew(i){
+  if(!confirm('Supprimer cet élève ?')) return;
+  const students = getClassStudents(teacherCls);
+  students.splice(i, 1);
+  saveClassStudents(teacherCls, students);
+  renderStudentsManageNew();
+}
+
+function changeStudentPin(i){
+  const students = getClassStudents(teacherCls);
+  const newPin = prompt('Nouveau PIN pour ' + students[i].name + ' (4 chiffres) :');
+  if(!newPin || newPin.length !== 4 || isNaN(newPin)){ alert('PIN invalide.'); return; }
+  students[i].code = newPin;
+  saveClassStudents(teacherCls, students);
+  renderStudentsManageNew();
+}
+
+function loadResultsFromServer(){
+  fetch(SCRIPT_URL + '?action=getAllResults&t=' + Date.now())
+    .then(r => r.json())
+    .then(data => {
+      if(Array.isArray(data) && data.length > 0){
+        // Merge with local results
+        const local = JSON.parse(localStorage.getItem('lq_results')||'[]');
+        const merged = [...local];
+        data.forEach(r => {
+          if(!merged.find(m => m.student===r.student && m.date===r.date && m.time===r.time)){
+            merged.push(r);
+          }
+        });
+        localStorage.setItem('lq_results', JSON.stringify(merged));
+        renderGestionResults();
+      }
+    })
+    .catch(()=>{ renderGestionResults(); });
+}
+
+function renderGestionResults(){
+  const results = JSON.parse(localStorage.getItem('lq_results')||'[]');
+  const students = getClassStudents(teacherCls);
+  const summary = document.getElementById('gestion-summary');
+  const list = document.getElementById('gestion-students-list');
+  if(!summary || !list) return;
+
+  const total = results.length;
+  const avg = total > 0 ? Math.round(results.reduce((s,r)=>s+(r.pct||0),0)/total) : 0;
+  summary.innerHTML = `
+    <div class="gestion-stat"><div class="gestion-stat-val">${students.length}</div><div class="gestion-stat-lbl">Élèves</div></div>
+    <div class="gestion-stat"><div class="gestion-stat-val">${total}</div><div class="gestion-stat-lbl">Tentatives</div></div>
+    <div class="gestion-stat"><div class="gestion-stat-val">${avg}%</div><div class="gestion-stat-lbl">Moyenne</div></div>
+  `;
+
+  let html = '';
+  students.forEach(st => {
+    const stResults = results.filter(r => r.student === st.name);
+    html += `<div class="student-result-card" onclick="showStudentResults('${st.name}')">
+      <div class="student-avatar">${st.name[0]}</div>
+      <div class="student-info">
+        <div class="student-name">${st.name}</div>
+        <div class="student-meta">${stResults.length} tentative(s) · ${stResults.length > 0 ? Math.round(stResults.reduce((s,r)=>s+(r.pct||0),0)/stResults.length)+'% moyenne' : 'Aucune activité'}</div>
+      </div>
+      <span style="color:var(--muted);font-size:20px;">›</span>
+    </div>`;
+  });
+  list.innerHTML = html;
+}
+
+function openGestionScreen(){
+  loadResultsFromServer();
+  switchGestionTab('results');
+}
+
 function goToSubject(subject){
   if(subject==='francais') showScreen('screen-francais');
   if(subject==='maths') showScreen('screen-maths');
