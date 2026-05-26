@@ -461,6 +461,122 @@ input:focus{border-color:var(--purple);}
 <script src="livres.js"></script>
 <script src="exercices_francais.js"></script>
 <script src="exercices_maths.js"></script>
+
+<!-- Firebase SDK -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getDatabase, ref, set, get, push, onValue, remove } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyALl7OluzVkdPXVAIKjZuF1VtdkdyFjH_g",
+    authDomain: "plateforme-scolaire-92d87.firebaseapp.com",
+    databaseURL: "https://plateforme-scolaire-92d87-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "plateforme-scolaire-92d87",
+    storageBucket: "plateforme-scolaire-92d87.firebasestorage.app",
+    messagingSenderId: "441186470279",
+    appId: "1:441186470279:web:3deacd9702f4888d372b22"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  // ===== FIREBASE HELPERS =====
+  window.FB_DB = db;
+  window.FB_ref = ref;
+  window.FB_set = set;
+  window.FB_get = get;
+  window.FB_push = push;
+  window.FB_onValue = onValue;
+  window.FB_remove = remove;
+  window.FB_ready = true;
+
+  // ===== SYNC ÉLÈVES =====
+  window.FB_saveStudents = async function(cls, students) {
+    try {
+      await set(ref(db, 'classes/' + cls + '/students'), students);
+    } catch(e) { console.warn('Firebase saveStudents error:', e); }
+  };
+
+  window.FB_loadStudents = async function(cls) {
+    try {
+      const snap = await get(ref(db, 'classes/' + cls + '/students'));
+      return snap.exists() ? snap.val() : null;
+    } catch(e) { console.warn('Firebase loadStudents error:', e); return null; }
+  };
+
+  // ===== SYNC RÉSULTATS =====
+  window.FB_saveResult = async function(entry) {
+    try {
+      await push(ref(db, 'results'), entry);
+    } catch(e) { console.warn('Firebase saveResult error:', e); }
+  };
+
+  window.FB_loadResults = async function(cls) {
+    try {
+      const snap = await get(ref(db, 'results'));
+      if (!snap.exists()) return [];
+      const all = [];
+      snap.forEach(child => { all.push(child.val()); });
+      return cls ? all.filter(r => r.cls === cls) : all;
+    } catch(e) { console.warn('Firebase loadResults error:', e); return []; }
+  };
+
+  window.FB_deleteResultsForClass = async function(cls) {
+    try {
+      const snap = await get(ref(db, 'results'));
+      if (!snap.exists()) return;
+      const deletes = [];
+      snap.forEach(child => {
+        if (child.val().cls === cls) deletes.push(remove(ref(db, 'results/' + child.key)));
+      });
+      await Promise.all(deletes);
+    } catch(e) { console.warn('Firebase deleteResults error:', e); }
+  };
+
+  // ===== SYNC ACTIVITÉS VERROUILLÉES =====
+  window.FB_saveLockedActivities = async function(arr) {
+    try {
+      await set(ref(db, 'settings/locked_activities'), arr);
+    } catch(e) { console.warn('Firebase saveLockedActivities error:', e); }
+  };
+
+  window.FB_loadLockedActivities = async function() {
+    try {
+      const snap = await get(ref(db, 'settings/locked_activities'));
+      return snap.exists() ? snap.val() : null;
+    } catch(e) { console.warn('Firebase loadLockedActivities error:', e); return null; }
+  };
+
+  // ===== SYNC LIVRES ARCHIVÉS =====
+  window.FB_saveArchivedBooks = async function(arr) {
+    try {
+      await set(ref(db, 'settings/archived_books'), arr);
+    } catch(e) { console.warn('Firebase saveArchivedBooks error:', e); }
+  };
+
+  window.FB_loadArchivedBooks = async function() {
+    try {
+      const snap = await get(ref(db, 'settings/archived_books'));
+      return snap.exists() ? snap.val() : null;
+    } catch(e) { console.warn('Firebase loadArchivedBooks error:', e); return null; }
+  };
+
+  // ===== SYNC LIVRES PERSONNALISÉS =====
+  window.FB_saveBooks = async function(books) {
+    try {
+      await set(ref(db, 'settings/custom_books'), books);
+    } catch(e) { console.warn('Firebase saveBooks error:', e); }
+  };
+
+  window.FB_loadBooks = async function() {
+    try {
+      const snap = await get(ref(db, 'settings/custom_books'));
+      return snap.exists() ? snap.val() : null;
+    } catch(e) { console.warn('Firebase loadBooks error:', e); return null; }
+  };
+
+  console.log('✅ Firebase initialisé');
+</script>
 </head>
 <body>
 
@@ -2103,7 +2219,10 @@ function getClassStudents(cls) {
   ];
   return [];
 }
-function saveClassStudents(cls,s){ localStorage.setItem('lq_students_'+cls,JSON.stringify(s)); }
+function saveClassStudents(cls,s){
+  localStorage.setItem('lq_students_'+cls,JSON.stringify(s));
+  if(window.FB_ready) window.FB_saveStudents(cls, s);
+}
 
 function getAllStudents() {
   return getClassStudents('lejoly').map(s=>({...s,cls:'lejoly'}));
@@ -2221,7 +2340,7 @@ function loadBooks() {
   }
   ];
 }
-function saveBooks(b){ localStorage.setItem('lq_books',JSON.stringify(b)); }
+function saveBooks(b){ localStorage.setItem('lq_books',JSON.stringify(b)); if(window.FB_ready) window.FB_saveBooks(b); }
 
 function loadResults(cls){
   const all = JSON.parse(localStorage.getItem('lq_results')||'[]');
@@ -2231,10 +2350,12 @@ function saveResult(entry){
   const all = JSON.parse(localStorage.getItem('lq_results')||'[]');
   all.push(entry);
   localStorage.setItem('lq_results',JSON.stringify(all));
+  if(window.FB_ready) window.FB_saveResult(entry);
 }
 function deleteResultsForClass(cls){
   const all = JSON.parse(localStorage.getItem('lq_results')||'[]');
   localStorage.setItem('lq_results',JSON.stringify(all.filter(r=>r.cls!==cls)));
+  if(window.FB_ready) window.FB_deleteResultsForClass(cls);
 }
 
 function getTeacherPw(cls){
@@ -2299,6 +2420,7 @@ function getArchivedBooks(){
 }
 function saveArchivedBooks(arr){
   localStorage.setItem('lq_archived',JSON.stringify(arr));
+  if(window.FB_ready) window.FB_saveArchivedBooks(arr);
 }
 function loadVisibleBooks(){
   const books=loadBooks();
@@ -2567,11 +2689,59 @@ function openTeacherPanel(){
   state.role='teacher';
   localStorage.setItem('lq_teacher_session','1');
   document.getElementById('teacher-class-title').textContent='Classe de '+CLASSES[teacherCls].name;
+  // Synchronisation Firebase au chargement
+  syncFromFirebase().then(()=>{
+    renderDashboard();
+    renderStudentsManage();
+    renderAppsManage();
+    renderSettingsPanel(false);
+  });
   renderDashboard();
   renderStudentsManage();
   renderAppsManage();
   renderSettingsPanel(false);
   showScreen('screen-teacher-subjects');
+}
+
+async function syncFromFirebase(){
+  if(!window.FB_ready) return;
+  try {
+    // Sync élèves
+    const students = await window.FB_loadStudents('lejoly');
+    if(students && Array.isArray(students) && students.length > 0){
+      localStorage.setItem('lq_students_lejoly', JSON.stringify(students));
+    }
+    // Sync résultats
+    const results = await window.FB_loadResults(null);
+    if(results && results.length > 0){
+      // Fusionner avec résultats locaux (éviter doublons par timestamp+student)
+      const local = JSON.parse(localStorage.getItem('lq_results')||'[]');
+      const localKeys = new Set(local.map(r=>r.student+'|'+r.date+'|'+r.activity));
+      const merged = [...local];
+      results.forEach(r=>{
+        const k = r.student+'|'+r.date+'|'+r.activity;
+        if(!localKeys.has(k)){ merged.push(r); localKeys.add(k); }
+      });
+      localStorage.setItem('lq_results', JSON.stringify(merged));
+    }
+    // Sync activités verrouillées
+    const locked = await window.FB_loadLockedActivities();
+    if(locked && Array.isArray(locked)){
+      localStorage.setItem('lq_locked_activities', JSON.stringify(locked));
+    }
+    // Sync livres archivés
+    const archived = await window.FB_loadArchivedBooks();
+    if(archived && Array.isArray(archived)){
+      localStorage.setItem('lq_archived', JSON.stringify(archived));
+    }
+    console.log('✅ Synchronisation Firebase terminée');
+    // Rafraîchir l'affichage après sync
+    renderDashboard();
+    renderStudentsManage();
+    renderAppsManage();
+  } catch(e){
+    console.warn('Sync Firebase échouée:', e);
+  }
 }
 
 function switchTab(tabId,btn){
@@ -3246,6 +3416,7 @@ function getLockedActivities(){
 }
 function saveLockedActivities(arr){
   localStorage.setItem('lq_locked_activities', JSON.stringify(arr));
+  if(window.FB_ready) window.FB_saveLockedActivities(arr);
 }
 function isActivityLocked(id){
   return getLockedActivities().includes(id);
@@ -5402,6 +5573,7 @@ function changeStudentPin(i){
 
 function saveClassStudents(cls,arr){
   localStorage.setItem('lq_students_'+cls,JSON.stringify(arr));
+  if(window.FB_ready) window.FB_saveStudents(cls, arr);
 }
 
 function goToSubject(subject){
