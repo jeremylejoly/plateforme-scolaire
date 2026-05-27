@@ -2414,20 +2414,34 @@ function selectClassTab(cls){
 }
 
 function renderNamesForClass(cls){
-  const students = getClassStudents(cls);
   const grid = document.getElementById('names-grid');
-  grid.innerHTML = '';
-  if(students.length===0){
-    grid.innerHTML='<p style="color:var(--muted);font-size:14px;grid-column:1/-1">Aucun élève dans cette classe pour le moment.</p>';
-    return;
+  grid.innerHTML = '<p style="color:var(--muted);font-size:14px;grid-column:1/-1">Chargement...</p>';
+  function displayStudents(students){
+    grid.innerHTML = '';
+    if(students.length===0){
+      grid.innerHTML='<p style="color:var(--muted);font-size:14px;grid-column:1/-1">Aucun élève dans cette classe pour le moment.</p>';
+      return;
+    }
+    students.forEach(s=>{
+      const b = document.createElement('button');
+      b.className='name-btn';
+      b.textContent=s.name;
+      b.onclick=()=>selectName(s.name,cls,b);
+      grid.appendChild(b);
+    });
   }
-  students.forEach(s=>{
-    const b = document.createElement('button');
-    b.className='name-btn';
-    b.textContent=s.name;
-    b.onclick=()=>selectName(s.name,cls,b);
-    grid.appendChild(b);
-  });
+  if(window.FB_loadStudents){
+    window.FB_loadStudents(cls).then(function(fbStudents){
+      if(fbStudents && Array.isArray(fbStudents) && fbStudents.length > 0){
+        localStorage.setItem('lq_students_'+cls, JSON.stringify(fbStudents));
+        displayStudents(fbStudents);
+      } else {
+        displayStudents(getClassStudents(cls));
+      }
+    }).catch(function(){ displayStudents(getClassStudents(cls)); });
+  } else {
+    displayStudents(getClassStudents(cls));
+  }
 }
 
 function getArchivedBooks(){
@@ -2499,20 +2513,48 @@ function pinDel(){
 }
 
 function checkPin(){
-  const students=getClassStudents(state.studentCls);
-  const student=students.find(s=>s.name===state.student);
-  if(student && pinInput===student.code){
-    document.getElementById('pin-error').style.display='none';
-    goToHome();
+  if(window.FB_loadStudents){
+    window.FB_loadStudents(state.studentCls).then(function(fbStudents){
+      if(fbStudents && Array.isArray(fbStudents) && fbStudents.length > 0){
+        localStorage.setItem("lq_students_"+state.studentCls, JSON.stringify(fbStudents));
+      }
+      doCheckPin();
+    }).catch(function(){ doCheckPin(); });
   } else {
-    for(let i=0;i<4;i++){
-      const d=document.getElementById('dot'+i);
-      d.classList.add('error'); d.classList.remove('filled');
-    }
-    document.getElementById('pin-error').style.display='block';
-    setTimeout(()=>{resetPinDisplay();document.getElementById('pin-error').style.display='none';},1500);
+    doCheckPin();
   }
 }
+
+function doCheckPin(){
+  var students=getClassStudents(state.studentCls);
+  var student=students.find(function(s){return s.name===state.student;});
+  if(student && pinInput===student.code){
+    document.getElementById("pin-error").style.display="none";
+    goToHome();
+  } else {
+    for(var i=0;i<4;i++){
+      var d=document.getElementById("dot"+i);
+      d.classList.add("error"); d.classList.remove("filled");
+    }
+    document.getElementById("pin-error").style.display="block";
+    setTimeout(function(){resetPinDisplay();document.getElementById("pin-error").style.display="none";},1500);
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 function goToHome(){
   state.role='student';
