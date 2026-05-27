@@ -2362,11 +2362,19 @@ function saveResult(entry){
   const all = JSON.parse(localStorage.getItem('lq_results')||'[]');
   all.push(entry);
   localStorage.setItem('lq_results',JSON.stringify(all));
-  if(window.FB_saveResult){
-    window.FB_saveResult(entry);
-  } else {
-    setTimeout(()=>{ if(window.FB_saveResult) window.FB_saveResult(entry); }, 2000);
+  // Envoyer vers Firebase avec retry si pas encore prêt
+  function trySend(attempts){
+    if(window.FB_saveResult){
+      window.FB_saveResult(entry).then(()=>{
+        console.log('✅ Résultat envoyé à Firebase');
+      }).catch(e=>{ console.warn('Erreur Firebase saveResult:', e); });
+    } else if(attempts > 0){
+      setTimeout(()=>trySend(attempts-1), 1500);
+    } else {
+      console.warn('Firebase non disponible, résultat sauvegardé localement uniquement');
+    }
   }
+  trySend(5);
 }
 function deleteResultsForClass(cls){
   const all = JSON.parse(localStorage.getItem('lq_results')||'[]');
@@ -2850,7 +2858,26 @@ function switchTabById(tabId){
 }
 
 function renderDashboard(){
-  const results=loadResults(teacherCls);
+  // Charger depuis Firebase si disponible, puis rafraîchir
+  if(window.FB_loadResults){
+    window.FB_loadResults(null).then(function(fbResults){
+      if(fbResults && fbResults.length > 0){
+        const local = JSON.parse(localStorage.getItem('lq_results')||'[]');
+        const localKeys = new Set(local.map(r=>r.student+'|'+r.date+'|'+r.activity));
+        const merged = [...local];
+        fbResults.forEach(r=>{
+          const k = r.student+'|'+r.date+'|'+r.activity;
+          if(!localKeys.has(k)){ merged.push(r); localKeys.add(k); }
+        });
+        localStorage.setItem('lq_results', JSON.stringify(merged));
+        renderDashboardWithData(loadResults(teacherCls));
+      }
+    }).catch(function(){});
+  }
+  renderDashboardWithData(loadResults(teacherCls));
+}
+
+function renderDashboardWithData(results){
   if(results.length===0){
     document.getElementById('dash-body').innerHTML='<div class="alert alert-info">Aucun résultat enregistré pour le moment.</div>';
     return;
