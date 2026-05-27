@@ -1690,6 +1690,13 @@ input:focus{border-color:var(--purple);}
     <div id="geo-belgique-body"></div>
   </div>
 
+  <!-- SCREEN: Géographie - Belgique - Hydrographie -->
+  <div id="screen-geo-belgique-hydro" class="screen">
+    <button class="back-btn" onclick="showScreen('screen-geo-belgique');renderGeoBelgiqueMenu();">← Retour</button>
+    <div class="page-title">💧 Les cours d'eau de Belgique</div>
+    <div id="geo-hydro-body"></div>
+  </div>
+
   <!-- SCREEN: Géographie - Les paysages -->
   <div id="screen-geo-paysages" class="screen">
     <button class="back-btn" onclick="showScreen('screen-geographie');renderGeographieScreen();">← Retour</button>
@@ -5429,6 +5436,7 @@ function renderGeoBelgiqueMenu(){
   if(!menu) return;
   const items = [
     {id:'geo_belgique_provinces', screen:'screen-geo-belgique-provinces', label:'Les provinces de Belgique', icon:'🗺️', desc:'Provinces et chefs-lieux', fn:'renderGeoBelgiqueScreen'},
+    {id:'geo_belgique_hydro', screen:'screen-geo-belgique-hydro', label:"Les cours d'eau de Belgique", icon:'💧', desc:'Fleuves et rivières', fn:'renderGeoHydroScreen'},
   ];
   let html = '';
   items.forEach(t => {
@@ -5658,6 +5666,190 @@ function validateGeoBelgique(){
       score, total, pct,
       date: new Date().toLocaleDateString('fr-BE'),
       time: new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})
+    });
+  }
+}
+
+
+// ===== GEO HYDROGRAPHIE BELGIQUE =====
+const GEO_HYDRO_DATA = [
+  {num:1,  cours:"Yser"},
+  {num:2,  cours:"Vesdre"},
+  {num:3,  cours:"Sambre"},
+  {num:4,  cours:"Senne"},
+  {num:5,  cours:"Amblève"},
+  {num:6,  cours:"Semois"},
+  {num:7,  cours:"Meuse"},
+  {num:8,  cours:"Warche"},
+  {num:9,  cours:"Ourthe"},
+  {num:10, cours:"Escaut"},
+];
+
+let geoHydroState = {answers:{}, submitted:false, dragging:null};
+
+function renderGeoHydroScreen(){
+  const body = document.getElementById('geo-hydro-body');
+  if(!body) return;
+  geoHydroState = {answers:{}, submitted:false, dragging:null};
+  GEO_HYDRO_DATA.forEach(d => { geoHydroState.answers[d.num] = ''; });
+
+  const tags = shuffle(GEO_HYDRO_DATA.map(d=>d.cours));
+
+  // Tableau
+  let tableHtml = `<table class="geo-table">
+    <thead><tr>
+      <th>N°</th>
+      <th>Cours d'eau</th>
+    </tr></thead><tbody>`;
+  GEO_HYDRO_DATA.forEach(d => {
+    tableHtml += `<tr>
+      <td>${d.num}</td>
+      <td><div class="geo-drop-zone" id="drop-hydro-${d.num}" data-num="${d.num}" data-type="cours"
+        ondragover="hydroDragOver(event)" ondrop="hydroDrop(event)" ondragleave="hydroDragLeave(event)"></div></td>
+    </tr>`;
+  });
+  tableHtml += '</tbody></table>';
+
+  // Banque d'étiquettes
+  let tagsHtml = '<div class="geo-tags-pool" id="hydro-tags-pool">';
+  tags.forEach((t,i) => {
+    tagsHtml += `<div class="geo-tag" id="hydro-tag-${i}" draggable="true"
+      data-text="${t}" data-idx="${i}"
+      ondragstart="hydroDragStart(event)"
+      ondragend="hydroDragEnd(event)"
+      ontouchstart="hydroTouchStart(event)"
+      ontouchmove="hydroTouchMove(event)"
+      ontouchend="hydroTouchEnd(event)"
+    >${t}</div>`;
+  });
+  tagsHtml += '</div>';
+
+  body.innerHTML = `
+    <div class="card geo-belgique-intro">
+      <p style="font-size:14px;color:var(--muted);margin-bottom:0.5rem">Glisse chaque cours d'eau dans la bonne case du tableau.</p>
+    </div>
+    <div class="geo-map-container">
+      <img src="https://jeremylejoly.github.io/plateforme-scolaire/carte_hydrographie_belgique.jpg" alt="Carte hydrographique de la Belgique" style="width:100%;border-radius:6px;border:2px solid var(--border);">
+    </div>
+    ${tagsHtml}
+    ${tableHtml}
+    <button class="btn" onclick="validateGeoHydro()" style="width:100%;margin-bottom:1rem">✅ Valider</button>
+    <div id="hydro-score-panel" style="display:none" class="geo-score-panel"></div>
+  `;
+}
+
+// Drag & Drop desktop
+function hydroDragStart(e){
+  geoHydroState.dragging = {text:e.currentTarget.dataset.text, tagEl:e.currentTarget};
+  e.dataTransfer.setData('text/plain', e.currentTarget.dataset.text);
+  e.currentTarget.style.opacity='0.5';
+}
+function hydroDragEnd(e){ e.currentTarget.style.opacity=''; }
+function hydroDragOver(e){ e.preventDefault(); e.currentTarget.classList.add('drag-over'); }
+function hydroDragLeave(e){ e.currentTarget.classList.remove('drag-over'); }
+function hydroDrop(e){
+  e.preventDefault();
+  const zone = e.currentTarget;
+  zone.classList.remove('drag-over');
+  const text = e.dataTransfer.getData('text/plain');
+  const num = parseInt(zone.dataset.num);
+  hydroPlaceTag(zone, text, num);
+}
+
+function hydroPlaceTag(zone, text, num){
+  const oldText = zone.textContent.trim();
+  if(oldText) hydroReturnTag(oldText);
+  zone.textContent = text;
+  zone.classList.add('filled');
+  geoHydroState.answers[num] = text;
+  hydroMarkUsed(text);
+}
+function hydroReturnTag(text){
+  const pool = document.getElementById('hydro-tags-pool');
+  if(!pool) return;
+  pool.querySelectorAll('.geo-tag').forEach(t => {
+    if(t.dataset.text===text && t.classList.contains('used')) t.classList.remove('used');
+  });
+}
+function hydroMarkUsed(text){
+  const pool = document.getElementById('hydro-tags-pool');
+  if(!pool) return;
+  let found=false;
+  pool.querySelectorAll('.geo-tag').forEach(t => {
+    if(t.dataset.text===text && !t.classList.contains('used') && !found){ t.classList.add('used'); found=true; }
+  });
+}
+
+// Touch support
+let hydroTouchEl=null, hydroTouchClone=null;
+function hydroTouchStart(e){
+  const tag=e.currentTarget;
+  if(tag.classList.contains('used')) return;
+  hydroTouchEl=tag;
+  const clone=tag.cloneNode(true);
+  clone.style.cssText='position:fixed;z-index:9999;opacity:.85;pointer-events:none;transform:scale(1.1);';
+  const touch=e.touches[0];
+  clone.style.left=(touch.clientX-40)+'px';
+  clone.style.top=(touch.clientY-20)+'px';
+  document.body.appendChild(clone);
+  hydroTouchClone=clone;
+  tag.style.opacity='0.4';
+}
+function hydroTouchMove(e){
+  e.preventDefault();
+  if(!hydroTouchClone) return;
+  const touch=e.touches[0];
+  hydroTouchClone.style.left=(touch.clientX-40)+'px';
+  hydroTouchClone.style.top=(touch.clientY-20)+'px';
+  document.querySelectorAll('.geo-drop-zone').forEach(z=>z.classList.remove('drag-over'));
+  const el=document.elementFromPoint(touch.clientX,touch.clientY);
+  if(el&&el.classList.contains('geo-drop-zone')) el.classList.add('drag-over');
+}
+function hydroTouchEnd(e){
+  if(!hydroTouchClone||!hydroTouchEl) return;
+  const touch=e.changedTouches[0];
+  document.body.removeChild(hydroTouchClone);
+  hydroTouchClone=null;
+  hydroTouchEl.style.opacity='';
+  document.querySelectorAll('.geo-drop-zone').forEach(z=>z.classList.remove('drag-over'));
+  const el=document.elementFromPoint(touch.clientX,touch.clientY);
+  if(el&&el.classList.contains('geo-drop-zone')){
+    hydroPlaceTag(el, hydroTouchEl.dataset.text, parseInt(el.dataset.num));
+  }
+  hydroTouchEl=null;
+}
+
+// Validation
+function validateGeoHydro(){
+  let score=0;
+  const total=10;
+  GEO_HYDRO_DATA.forEach(d=>{
+    const zone=document.getElementById('drop-hydro-'+d.num);
+    const ok=geoHydroState.answers[d.num]===d.cours;
+    if(ok){ score++; zone.classList.remove('filled'); zone.classList.add('correct'); }
+    else { zone.classList.remove('filled'); zone.classList.add('incorrect'); if(!zone.textContent.trim()) zone.textContent='—'; }
+  });
+  const pct=Math.round(score/total*100);
+  const color=pct>=70?'var(--green)':pct>=50?'var(--amber)':'var(--red)';
+  const panel=document.getElementById('hydro-score-panel');
+  panel.style.display='block';
+  panel.innerHTML=`
+    <div style="font-size:48px;margin-bottom:0.5rem">${pct>=70?'🎉':pct>=50?'👍':'💪'}</div>
+    <div style="font-family:'Nunito',sans-serif;font-weight:800;font-size:32px;color:${color}">${score}/${total}</div>
+    <div style="font-size:16px;color:${color};font-weight:700;margin-bottom:1rem">${pct}%</div>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:1rem">Les cases <span style="color:var(--red)">rouges</span> indiquent les erreurs.</p>
+    <button class="btn" onclick="renderGeoHydroScreen()">🔄 Recommencer</button>
+  `;
+  panel.scrollIntoView({behavior:'smooth'});
+  if(state.student){
+    saveResult({
+      student:state.student, cls:state.studentCls,
+      className:CLASSES[state.studentCls]?CLASSES[state.studentCls].name:state.studentCls,
+      activity:'geo_belgique_hydro',
+      bookTitle:"Belgique — Cours d'eau",
+      score, total, pct,
+      date:new Date().toLocaleDateString('fr-BE'),
+      time:new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})
     });
   }
 }
