@@ -147,6 +147,14 @@ h1,h2,h3,h4{font-family:'Nunito',sans-serif;}
 .bar-wrap{width:70px;height:6px;background:var(--border);border-radius:3px;overflow:hidden;flex-shrink:0;}
 .bar-fill{height:100%;border-radius:3px;}
 .dash-date{font-size:11px;color:var(--muted);min-width:70px;text-align:right;flex-shrink:0;}
+.student-result-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--rsm);padding:1rem 1.2rem;margin-bottom:0.7rem;display:flex;align-items:center;justify-content:space-between;cursor:pointer;transition:border-color .2s,box-shadow .2s;}
+.student-result-card:hover{border-color:var(--purple);box-shadow:0 2px 8px rgba(124,58,237,.1);}
+.student-result-card .src-name{font-family:'Nunito',sans-serif;font-weight:800;font-size:16px;}
+.student-result-card .src-count{font-size:13px;color:var(--muted);margin-top:2px;}
+.student-result-card .src-avg{font-family:'Nunito',sans-serif;font-weight:800;font-size:18px;}
+.student-detail-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);font-size:14px;}
+.student-detail-row:last-child{border-bottom:none;}
+.back-to-list{background:none;border:none;color:var(--purple);font-weight:700;cursor:pointer;font-size:14px;padding:0 0 1rem 0;display:flex;align-items:center;gap:4px;}
 
 .filter-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1rem;}
 .filter-btn{padding:6px 14px;border:1.5px solid var(--border);border-radius:20px;background:var(--surface);font-family:'Nunito',sans-serif;font-size:13px;font-weight:600;cursor:pointer;color:var(--muted);transition:all .15s;}
@@ -2882,58 +2890,90 @@ function renderDashboardWithData(results){
     document.getElementById('dash-body').innerHTML='<div class="alert alert-info">Aucun résultat enregistré pour le moment.</div>';
     return;
   }
-  const avg=Math.round(results.reduce((s,r)=>s+r.pct,0)/results.length);
-  const best=results.reduce((a,b)=>a.pct>b.pct?a:b);
-  const books=loadBooks();
-  const bookIds=[...new Set(results.map(r=>r.book))];
+  renderStudentResultList(results);
+}
 
-  let filterHtml='<div class="filter-row"><button class="filter-btn active" onclick="filterDash(\'all\',this)">Tous</button>';
-  bookIds.forEach(bid=>{
-    const bk=books.find(b=>b.id===bid);
-    filterHtml+=`<button class="filter-btn" onclick="filterDash('${bid}',this)">${bk?bk.title:bid}</button>`;
+function renderStudentResultList(results){
+  // Grouper les résultats par élève
+  const students = getClassStudents(teacherCls);
+  const byStudent = {};
+  results.forEach(r=>{
+    if(!byStudent[r.student]) byStudent[r.student]={count:0,total:0};
+    byStudent[r.student].count++;
+    byStudent[r.student].total+=r.pct;
   });
-  filterHtml+='</div>';
 
-  let html=`${filterHtml}
-    <div class="dash-metrics">
-      <div class="metric"><div class="metric-val">${results.length}</div><div class="metric-lbl">Tentatives</div></div>
-      <div class="metric"><div class="metric-val">${avg}%</div><div class="metric-lbl">Moyenne</div></div>
-      <div class="metric"><div class="metric-val">${best.student}</div><div class="metric-lbl">Meilleur (${best.pct}%)</div></div>
-    </div>
-    <div id="dash-table">${renderDashRows(results)}</div>`;
+  // Trier par ordre alphabétique
+  const names = students.map(s=>s.name).filter(n=>byStudent[n]);
+  const noActivity = students.map(s=>s.name).filter(n=>!byStudent[n]);
+
+  let html='';
+
+  if(names.length>0){
+    names.forEach(name=>{
+      const d=byStudent[name];
+      const avg=Math.round(d.total/d.count);
+      const color=avg>=70?'var(--green)':avg>=50?'var(--amber)':'var(--red)';
+      html+=`<div class="student-result-card" onclick="renderStudentDetail('${name}')">
+        <div>
+          <div class="src-name">${name}</div>
+          <div class="src-count">${d.count} activité${d.count>1?'s':''} réalisée${d.count>1?'s':''}</div>
+        </div>
+        <div style="text-align:right">
+          <div class="src-avg" style="color:${color}">${avg}%</div>
+          <div style="font-size:11px;color:var(--muted)">moyenne</div>
+        </div>
+      </div>`;
+    });
+  }
+
+  if(noActivity.length>0){
+    html+=`<div style="margin-top:1.2rem;margin-bottom:0.5rem;font-size:12px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.05em">Aucune activité</div>`;
+    noActivity.forEach(name=>{
+      html+=`<div class="student-result-card" style="opacity:.5;cursor:default">
+        <div>
+          <div class="src-name">${name}</div>
+          <div class="src-count">0 activité réalisée</div>
+        </div>
+      </div>`;
+    });
+  }
+
   document.getElementById('dash-body').innerHTML=html;
 }
 
-function renderDashRows(rows){
-  if(rows.length===0) return '<div class="alert alert-info">Aucun résultat pour ce filtre.</div>';
-  let h=`<div class="dash-row" style="font-size:11px;color:var(--muted);border-bottom:2px solid var(--border);">
-    <span class="dash-name">Élève</span><span style="min-width:70px"></span>
-    <span class="dash-book">Livre</span>
-    <span class="dash-score">Score</span>
-    <div class="bar-wrap"></div>
-    <span class="dash-date">Date</span>
-  </div>`;
-  rows.slice().reverse().forEach(r=>{
-    const color=r.pct>=70?'var(--green)':r.pct>=50?'var(--amber)':'var(--red)';
-    const clsCss=r.cls==='lejoly'?'class-lejoly':'class-verryken';
-    h+=`<div class="dash-row">
-      <span class="dash-name">${r.student}</span>
-      <span class="dash-class ${clsCss}">${r.className}</span>
-      <span class="dash-book">${r.bookTitle}</span>
-      <span class="dash-score" style="color:${color}">${r.score}/${r.total}</span>
-      <div class="bar-wrap"><div class="bar-fill" style="width:${r.pct}%;background:${color}"></div></div>
-      <span class="dash-date">${r.date} ${r.time}</span>
-    </div>`;
-  });
-  return h;
-}
+function renderStudentDetail(studentName){
+  const results=loadResults(teacherCls).filter(r=>r.student===studentName);
+  const avg=results.length?Math.round(results.reduce((s,r)=>s+r.pct,0)/results.length):0;
+  const color=avg>=70?'var(--green)':avg>=50?'var(--amber)':'var(--red)';
 
-function filterDash(bid,btn){
-  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  const results=loadResults(teacherCls);
-  const rows=bid==='all'?results:results.filter(r=>r.book===bid);
-  document.getElementById('dash-table').innerHTML=renderDashRows(rows);
+  let html=`<button class="back-to-list" onclick="renderDashboard()">← Retour à la liste</button>`;
+  html+=`<div style="font-family:'Nunito',sans-serif;font-weight:800;font-size:20px;margin-bottom:0.3rem">${studentName}</div>`;
+  html+=`<div style="font-size:13px;color:var(--muted);margin-bottom:1.2rem">${results.length} activité${results.length>1?'s':''} · Moyenne : <span style="color:${color};font-weight:700">${avg}%</span></div>`;
+
+  if(results.length===0){
+    html+='<div class="alert alert-info">Aucune activité réalisée.</div>';
+  } else {
+    results.slice().reverse().forEach(r=>{
+      const c=r.pct>=70?'var(--green)':r.pct>=50?'var(--amber)':'var(--red)';
+      const activity = r.bookTitle || r.activity || r.book || 'Exercice';
+      html+=`<div class="student-detail-row">
+        <div style="flex:1">
+          <div style="font-weight:600;font-size:14px">${activity}</div>
+          <div style="font-size:12px;color:var(--muted)">${r.date} ${r.time||''}</div>
+        </div>
+        <div style="text-align:right;flex-shrink:0">
+          <div style="font-family:'Nunito',sans-serif;font-weight:800;font-size:16px;color:${c}">${r.score}/${r.total}</div>
+          <div style="font-size:12px;color:${c};font-weight:600">${r.pct}%</div>
+        </div>
+        <div style="width:60px;flex-shrink:0">
+          <div class="bar-wrap"><div class="bar-fill" style="width:${r.pct}%;background:${c}"></div></div>
+        </div>
+      </div>`;
+    });
+  }
+
+  document.getElementById('dash-body').innerHTML=html;
 }
 
 function exportCSV(){
