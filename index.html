@@ -465,6 +465,25 @@ input:focus{border-color:var(--purple);}
 .clock-container{display:flex;justify-content:center;margin-bottom:12px;}
 .clock-time-inputs{display:flex;align-items:center;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:10px;}
 
+
+/* ===== LECTURE RAPIDE ===== */
+.lr-texte-container{background:var(--surface);border:1px solid var(--border);border-radius:var(--rsm);padding:1.5rem;margin-bottom:1.5rem;min-height:200px;font-size:17px;line-height:1.8;color:var(--text);}
+.lr-progress{height:6px;background:var(--border);border-radius:3px;margin-bottom:1rem;overflow:hidden;}
+.lr-progress-bar{height:100%;background:var(--purple);border-radius:3px;transition:width .1s linear;}
+.lr-qcm{margin-top:1rem;}
+.lr-question{background:var(--surface);border:1px solid var(--border);border-radius:var(--rsm);padding:1rem;margin-bottom:1rem;}
+.lr-question p{font-weight:700;margin-bottom:0.8rem;font-size:15px;}
+.lr-option{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:6px;cursor:pointer;margin-bottom:6px;border:1px solid var(--border);transition:background .15s;}
+.lr-option:hover{background:var(--purple-light);}
+.lr-option input{accent-color:var(--purple);}
+.lr-option.correct{background:#d4f5e9;border-color:var(--green);}
+.lr-option.incorrect{background:#fde8e8;border-color:var(--red);}
+.lr-niveau-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--rsm);padding:1.2rem;margin-bottom:0.8rem;cursor:pointer;transition:border-color .2s,box-shadow .2s;}
+.lr-niveau-card:hover{border-color:var(--purple);box-shadow:0 2px 8px rgba(124,58,237,.1);}
+.lr-niveau-card h3{margin:0 0 4px 0;font-size:16px;font-family:'Nunito',sans-serif;font-weight:800;}
+.lr-niveau-card p{margin:0;font-size:13px;color:var(--muted);}
+.lr-texte-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--rsm);padding:1rem;margin-bottom:0.7rem;cursor:pointer;transition:border-color .2s;}
+.lr-texte-card:hover{border-color:var(--purple);}
 /* ===== GEO BELGIQUE ===== */
 .geo-belgique-intro{margin-bottom:1rem;}
 .geo-map-container{width:100%;max-width:500px;margin:0 auto 1.5rem auto;}
@@ -1046,7 +1065,7 @@ input:focus{border-color:var(--purple);}
     <button class="back-btn" onclick="showScreen('screen-conjugaison')">← Retour</button>
     <div class="page-title">✅ Indicatif passé composé</div>
     <div class="exercise-list">
-      <div class="exercise-card" onclick="startConjExercise('passe_compose','qcm')">
+      <div class="exercise-card" onclick="startConjExercise('passe_compose','lr_niveau_1','qcm')">
         <div class="exercise-card-icon qcm">🎯</div>
         <div>
           <div class="exercise-card-title">Entraînement — QCM</div>
@@ -1084,6 +1103,27 @@ input:focus{border-color:var(--purple);}
         <div class="activity-type-desc">Questionnaires de lecture sur les livres lus en classe</div>
       </div>
     </div>
+    <div class="activity-type-card" onclick="showScreen('screen-lecture-rapide');renderLectureRapideMenu();">
+      <div class="activity-type-icon">⚡</div>
+      <div>
+        <div class="activity-type-title">Lecture rapide</div>
+        <div class="activity-type-desc">Lis avant que le texte ne disparaisse !</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN: Lecture rapide - menu niveaux -->
+  <div id="screen-lecture-rapide" class="screen">
+    <button class="back-btn" onclick="state.role==='teacher'?showScreen('screen-teacher-lecture'):showScreen('screen-lecture')">← Retour</button>
+    <div class="page-title">⚡ Lecture rapide</div>
+    <div id="lecture-rapide-menu"></div>
+  </div>
+
+  <!-- SCREEN: Lecture rapide - texte -->
+  <div id="screen-lecture-rapide-texte" class="screen">
+    <button class="back-btn" onclick="showScreen('screen-lecture-rapide');renderLectureRapideMenu();">← Retour</button>
+    <div class="page-title" id="lr-titre"></div>
+    <div id="lr-body"></div>
   </div>
 
 
@@ -2008,7 +2048,13 @@ input:focus{border-color:var(--purple);}
         <div class="activity-type-desc">Questionnaires de lecture sur les livres lus en classe</div>
       </div>
     </div>
-
+    <div class="activity-type-card" onclick="showScreen('screen-lecture-rapide');renderLectureRapideMenu();">
+      <div class="activity-type-icon">⚡</div>
+      <div>
+        <div class="activity-type-title">Lecture rapide</div>
+        <div class="activity-type-desc">Lis avant que le texte ne disparaisse !</div>
+      </div>
+    </div>
   </div>
 
 
@@ -6035,6 +6081,316 @@ function validateGeoCommunes(){
   }
 }
 
+
+
+// ===== LECTURE RAPIDE =====
+const LECTURE_RAPIDE_DATA = {
+  1: {
+    label: 'Niveau 1', vitesse: 60, couleur: '#4CAF50',
+    textes: [
+      {
+        id: 'n1t1', titre: 'Le chat',
+        texte: "Milo est un chat roux qui vit dans une petite maison à la campagne. Chaque matin, il se lève avant tout le monde et file dans le jardin pour chasser les papillons. Il ne les attrape jamais, mais cela ne l'empêche pas d'essayer. L'après-midi, il s'installe sur le rebord de la fenêtre et observe les oiseaux qui volent dans le ciel. Quand il pleut, Milo reste à l'intérieur et se love dans son panier en osier, près du radiateur. Sa maîtresse, Emma, lui prépare chaque soir une gamelle de croquettes. Milo mange lentement, puis vient se frotter contre les jambes d'Emma pour la remercier. Le soir, il saute sur le lit et s'endort en ronronnant doucement. C'est un chat heureux, qui profite de chaque moment de sa journée.",
+        questions: [
+          {
+            q: "Que fait Milo le matin dans le jardin ?",
+            options: ["Il dort au soleil", "Il chasse les papillons sans jamais les attraper", "Il mange ses croquettes dehors", "Il joue avec Emma"],
+            correct: 1
+          },
+          {
+            q: "Où se place Milo quand il pleut ?",
+            options: ["Sous un arbre dans le jardin", "Dans la cuisine avec Emma", "Dans son panier près du radiateur", "Sur le lit d'Emma"],
+            correct: 2
+          },
+          {
+            q: "Comment Milo remercie-t-il Emma après le repas ?",
+            options: ["Il ronronne très fort", "Il retourne dans le jardin", "Il se frotte contre ses jambes", "Il saute sur la fenêtre"],
+            correct: 2
+          }
+        ]
+      },
+      {
+        id: 'n1t2', titre: 'La forêt en automne',
+        texte: "En automne, la forêt change de visage. Les feuilles des arbres passent du vert au jaune, puis à l'orange et au rouge avant de tomber doucement sur le sol. Le vent les emporte parfois très loin. Les écureuils sont très occupés en cette saison. Ils ramassent des noisettes et des glands qu'ils cachent sous la terre ou dans les creux des arbres pour se nourrir pendant l'hiver. Les oiseaux migrateurs, comme les hirondelles, quittent la forêt pour voler vers des pays plus chauds. Seuls les merles et les mésanges restent. Le sol de la forêt est recouvert d'un épais tapis de feuilles mortes qui craquent sous les pieds. Les champignons poussent à l'ombre des grands arbres. C'est une saison pleine de couleurs et de changements, que beaucoup de promeneurs aiment découvrir.",
+        questions: [
+          {
+            q: "Pourquoi les écureuils sont-ils très occupés en automne ?",
+            options: ["Ils construisent un nouveau nid dans les arbres", "Ils cherchent des baies pour les donner aux oiseaux", "Ils cachent de la nourriture pour survivre en hiver", "Ils migrent vers des forêts plus chaudes"],
+            correct: 2
+          },
+          {
+            q: "Quels oiseaux restent dans la forêt en automne ?",
+            options: ["Les hirondelles et les cigognes", "Les merles et les mésanges", "Les perroquets et les pinsons", "Les hirondelles et les merles"],
+            correct: 1
+          },
+          {
+            q: "Que trouve-t-on sur le sol de la forêt en automne ?",
+            options: ["Des fleurs sauvages et de l'herbe verte", "De la neige et des glaçons", "Des feuilles mortes et des champignons", "Des glands et des nids d'oiseaux"],
+            correct: 2
+          }
+        ]
+      },
+      {
+        id: 'n1t3', titre: 'La boulangerie du village',
+        texte: "Chaque matin, Monsieur Dupont se lève à quatre heures pour préparer le pain de son village. Il allume son four, pèse la farine et mélange les ingrédients avec soin. La pâte doit reposer longtemps avant d'être enfournée. Vers sept heures, les premières baguettes dorées sortent du four. Une odeur délicieuse envahit toute la rue. Les habitants font la queue devant la boulangerie avant même qu'elle n'ouvre. Madame Bernard achète toujours deux baguettes et des croissants pour ses enfants. Le boulanger connaît les habitudes de chacun. Il garde de côté le pain de seigle pour le vieux Monsieur Henri, qui arrive toujours en retard. À midi, presque tout est vendu. Monsieur Dupont nettoie son fournil et prépare déjà les pâtes pour le lendemain. Son travail est fatigant, mais il est fier de régaler tout son village chaque jour.",
+        questions: [
+          {
+            q: "À quelle heure Monsieur Dupont se lève-t-il ?",
+            options: ["À six heures, quand la boulangerie ouvre", "À cinq heures, avant les livraisons", "À quatre heures, pour préparer le pain", "À trois heures, pour chauffer le four toute la nuit"],
+            correct: 2
+          },
+          {
+            q: "Pourquoi Monsieur Dupont met-il du pain de seigle de côté ?",
+            options: ["C'est le pain qu'il préfère manger lui-même", "Monsieur Henri arrive toujours en retard et le commande", "Madame Bernard en veut chaque matin pour ses enfants", "Ce pain se vend mieux l'après-midi que le matin"],
+            correct: 1
+          },
+          {
+            q: "Que fait le boulanger après la fermeture du midi ?",
+            options: ["Il se repose et regarde la télévision", "Il livre le pain restant aux habitants du village", "Il nettoie et prépare les pâtes pour le lendemain", "Il commande de la farine pour la semaine suivante"],
+            correct: 2
+          }
+        ]
+      }
+    ]
+  }
+};
+
+let lrState = {
+  niveau: null, texteIdx: null, texteData: null,
+  timer: null, charIdx: 0, totalChars: 0,
+  phase: 'lecture', // 'lecture' | 'qcm'
+  selections: {},
+  tentative: 0
+};
+
+function renderLectureRapideMenu(){
+  const menu = document.getElementById('lecture-rapide-menu');
+  if(!menu) return;
+  const isTeacher = state.role === 'teacher';
+  const locked = getLockedActivities();
+
+  let html = '';
+  Object.entries(LECTURE_RAPIDE_DATA).forEach(([niv, data]) => {
+    const isLocked = locked.includes('lr_niveau_' + niv);
+    if(isLocked && !isTeacher) return;
+    const toggleBtn = isTeacher
+      ? `<button class="card-teacher-toggle ${isLocked ? 'btn-show' : 'btn-hide'}"
+           onclick="event.stopPropagation();toggleActivity('lr_niveau_${niv}');renderLectureRapideMenu();">
+           ${isLocked ? '🔓 Réactiver' : '🔒 Masquer'}
+         </button>`
+      : '';
+    html += `<div class="lr-niveau-card" onclick="renderLectureRapideNiveau(${niv})" style="position:relative">
+      ${toggleBtn}
+      <h3>⚡ ${data.label}</h3>
+      <p>${data.vitesse} mots/minute — ${data.textes.length} textes</p>
+    </div>`;
+  });
+  menu.innerHTML = html || '<p style="color:var(--muted);text-align:center;padding:2rem">Aucun niveau disponible pour le moment.</p>';
+}
+
+function renderLectureRapideNiveau(niv){
+  const data = LECTURE_RAPIDE_DATA[niv];
+  const menu = document.getElementById('lecture-rapide-menu');
+  if(!menu) return;
+
+  let html = `<button class="back-to-list" onclick="renderLectureRapideMenu()" style="margin-bottom:1rem">← Retour aux niveaux</button>
+    <div style="font-family:'Nunito',sans-serif;font-weight:800;font-size:18px;margin-bottom:1rem">⚡ ${data.label} — Choisir un texte</div>`;
+
+  data.textes.forEach((t, i) => {
+    html += `<div class="lr-texte-card" onclick="lancerLectureRapide(${niv}, ${i})">
+      <div style="font-weight:700;font-size:15px">Texte ${i+1} — ${t.titre}</div>
+      <div style="font-size:13px;color:var(--muted);margin-top:4px">${data.vitesse} mots/min</div>
+    </div>`;
+  });
+
+  menu.innerHTML = html;
+}
+
+function lancerLectureRapide(niv, texteIdx){
+  const data = LECTURE_RAPIDE_DATA[niv];
+  const texte = data.textes[texteIdx];
+  lrState = {
+    niveau: niv, texteIdx, texteData: texte,
+    timer: null, charIdx: 0, totalChars: texte.texte.length,
+    phase: 'lecture', selections: {}, tentative: 0
+  };
+
+  document.getElementById('lr-titre').textContent = '⚡ ' + data.label + ' — ' + texte.titre;
+  showScreen('screen-lecture-rapide-texte');
+  afficherLectureTexte();
+}
+
+function afficherLectureTexte(){
+  const body = document.getElementById('lr-body');
+  const texte = lrState.texteData.texte;
+  lrState.charIdx = 0;
+  lrState.phase = 'lecture';
+  if(lrState.timer) clearInterval(lrState.timer);
+
+  const niv = LECTURE_RAPIDE_DATA[lrState.niveau];
+  const motsMoyens = texte.split(' ').length;
+  const dureeMs = (motsMoyens / niv.vitesse) * 60 * 1000;
+  const delaiParChar = dureeMs / texte.length;
+
+  // Phase 1 : décompte SANS texte
+  body.innerHTML = `
+    <div class="card" style="margin-bottom:1rem;padding:0.8rem 1rem;background:var(--purple-light);border:1px solid var(--purple);">
+      <p style="margin:0;font-size:13px;color:var(--purple);font-weight:700">⚡ Le texte va s'effacer lettre par lettre. Lis vite !</p>
+    </div>
+    <div class="lr-progress"><div class="lr-progress-bar" id="lr-bar" style="width:0%"></div></div>
+    <div class="lr-texte-container" id="lr-texte-wrapper" style="display:flex;align-items:center;justify-content:center;min-height:200px;">
+      <div id="lr-countdown" style="font-size:100px;font-weight:900;color:var(--purple);line-height:1;">3</div>
+    </div>
+  `;
+
+  let compte = 3;
+  const countInterval = setInterval(() => {
+    compte--;
+    const countdownEl = document.getElementById('lr-countdown');
+    const wrapper = document.getElementById('lr-texte-wrapper');
+    if(compte > 0){
+      if(countdownEl) countdownEl.textContent = compte;
+    } else {
+      clearInterval(countInterval);
+      // Phase 2 : afficher le texte avec un span par caractère
+      // color:transparent sur chaque span = le texte reste à sa place, seule la couleur change
+      if(wrapper){
+        let spansHtml = '';
+        for(let i=0; i<texte.length; i++){
+          const c = texte[i];
+          if(c === '\n'){
+            spansHtml += '<br>';
+          } else {
+            spansHtml += '<span id="lrc-'+i+'" style="font-size:17px;line-height:1.8;">'+c.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</span>';
+          }
+        }
+        wrapper.style.display = 'block';
+        wrapper.style.alignItems = '';
+        wrapper.style.justifyContent = '';
+        wrapper.innerHTML = '<div id="lr-texte">'+spansHtml+'</div>';
+      }
+      // Phase 3 : 1 seconde après, démarrer l'effacement
+      setTimeout(() => {
+        lrState.timer = setInterval(() => {
+          const span = document.getElementById('lrc-' + lrState.charIdx);
+          if(span) span.style.color = 'transparent';
+          const pct = Math.round((lrState.charIdx / texte.length) * 100);
+          const bar = document.getElementById('lr-bar');
+          if(bar) bar.style.width = pct + '%';
+          lrState.charIdx++;
+          if(lrState.charIdx >= texte.length){
+            clearInterval(lrState.timer);
+            setTimeout(afficherQCM, 500);
+          }
+        }, delaiParChar);
+      }, 1000);
+    }
+  }, 1000);
+}
+
+function afficherQCM(){
+  lrState.phase = 'qcm';
+  lrState.tentative++;
+  lrState.selections = {};
+  const body = document.getElementById('lr-body');
+  const texte = lrState.texteData;
+
+  let html = `
+    <div class="card" style="margin-bottom:1rem;padding:0.8rem 1rem;background:var(--purple-light);border:1px solid var(--purple);">
+      <p style="margin:0;font-size:13px;color:var(--purple);font-weight:700">📝 Réponds aux questions sur le texte que tu viens de lire.</p>
+    </div>
+    <div class="lr-qcm" id="lr-qcm">`;
+
+  texte.questions.forEach((q, qi) => {
+    html += `<div class="lr-question" id="lr-q-${qi}">
+      <p>${qi+1}. ${q.q}</p>`;
+    q.options.forEach((opt, oi) => {
+      html += `<label class="lr-option" id="lr-opt-${qi}-${oi}">
+        <input type="radio" name="lr-q-${qi}" value="${oi}" onchange="lrSelect(${qi},${oi})">
+        ${opt}
+      </label>`;
+    });
+    html += `</div>`;
+  });
+
+  html += `</div>
+    <button class="btn" onclick="validerQCMLR()" style="width:100%;margin-top:1rem">✅ Valider mes réponses</button>
+    <div id="lr-score-panel" style="display:none;margin-top:1rem" class="geo-score-panel"></div>
+  `;
+  body.innerHTML = html;
+}
+
+function lrSelect(qi, oi){
+  lrState.selections[qi] = oi;
+}
+
+function validerQCMLR(){
+  const texte = lrState.texteData;
+  let score = 0;
+  let allCorrect = true;
+
+  texte.questions.forEach((q, qi) => {
+    const sel = lrState.selections[qi];
+    const correct = q.correct;
+    const qEl = document.getElementById('lr-q-' + qi);
+    // Réinitialiser les styles
+    q.options.forEach((_, oi) => {
+      const optEl = document.getElementById('lr-opt-' + qi + '-' + oi);
+      if(optEl){ optEl.classList.remove('correct','incorrect'); }
+    });
+    if(sel === correct){
+      score++;
+      const optEl = document.getElementById('lr-opt-' + qi + '-' + sel);
+      if(optEl) optEl.classList.add('correct');
+    } else {
+      allCorrect = false;
+      if(sel !== undefined){
+        const optEl = document.getElementById('lr-opt-' + qi + '-' + sel);
+        if(optEl) optEl.classList.add('incorrect');
+      }
+    }
+  });
+
+  const total = texte.questions.length;
+  const pct = Math.round(score/total*100);
+  const color = pct===100?'var(--green)':pct>=66?'var(--amber)':'var(--red)';
+
+  // Sauvegarder résultat
+  if(state.student){
+    saveResult({
+      student: state.student, cls: state.studentCls,
+      className: CLASSES[state.studentCls]?CLASSES[state.studentCls].name:state.studentCls,
+      activity: 'lr_n'+lrState.niveau+'_t'+(lrState.texteIdx+1),
+      bookTitle: 'Lecture rapide — Niveau '+lrState.niveau+' — Texte '+(lrState.texteIdx+1)+' : '+texte.titre,
+      score, total, pct,
+      date: new Date().toLocaleDateString('fr-BE'),
+      time: new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})
+    });
+  }
+
+  const panel = document.getElementById('lr-score-panel');
+  panel.style.display = 'block';
+
+  if(allCorrect){
+    panel.innerHTML = `
+      <div style="font-size:48px;margin-bottom:0.5rem">🎉</div>
+      <div style="font-family:'Nunito',sans-serif;font-weight:800;font-size:28px;color:var(--green)">${score}/${total} — Parfait !</div>
+      <p style="font-size:14px;color:var(--muted);margin:0.8rem 0">Toutes tes réponses sont correctes !</p>
+      <button class="btn" onclick="renderLectureRapideNiveau(${lrState.niveau})" style="margin-top:0.5rem">← Choisir un autre texte</button>
+    `;
+  } else {
+    panel.innerHTML = `
+      <div style="font-size:48px;margin-bottom:0.5rem">${pct>=66?'👍':'💪'}</div>
+      <div style="font-family:'Nunito',sans-serif;font-weight:800;font-size:28px;color:${color}">${score}/${total}</div>
+      <p style="font-size:14px;color:var(--muted);margin:0.8rem 0">Les cases <span style="color:var(--red)">rouges</span> indiquent tes erreurs. Tu peux relire le texte ou réessayer le QCM.</p>
+      <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:0.5rem">
+        <button class="btn btn-secondary" onclick="afficherLectureTexte()">🔄 Relire le texte</button>
+        <button class="btn" onclick="afficherQCM()">📝 Réessayer le QCM</button>
+      </div>
+    `;
+  }
+  panel.scrollIntoView({behavior:'smooth'});
+}
 
 // ===== SCIENCES - APPAREIL CIRCULATOIRE =====
 function renderSciCirculatoireMenu(){
