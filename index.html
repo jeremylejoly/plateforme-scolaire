@@ -2943,6 +2943,27 @@ function renderStudentResultList(results){
 }
 
 function renderStudentDetail(studentName){
+  // Sync Firebase avant d'afficher
+  if(window.FB_loadResults){
+    window.FB_loadResults(null).then(function(fbResults){
+      if(fbResults && fbResults.length > 0){
+        const local = JSON.parse(localStorage.getItem('lq_results')||'[]');
+        const localKeys = new Set(local.map(r=>r.student+'|'+r.date+'|'+r.activity));
+        const merged = [...local];
+        fbResults.forEach(r=>{
+          const k = r.student+'|'+r.date+'|'+r.activity;
+          if(!localKeys.has(k)){ merged.push(r); localKeys.add(k); }
+        });
+        localStorage.setItem('lq_results', JSON.stringify(merged));
+      }
+      doRenderStudentDetail(studentName);
+    }).catch(function(){ doRenderStudentDetail(studentName); });
+  } else {
+    doRenderStudentDetail(studentName);
+  }
+}
+
+function doRenderStudentDetail(studentName){
   const results=loadResults(teacherCls).filter(r=>r.student===studentName);
   const avg=results.length?Math.round(results.reduce((s,r)=>s+r.pct,0)/results.length):0;
   const color=avg>=70?'var(--green)':avg>=50?'var(--amber)':'var(--red)';
@@ -2981,7 +3002,7 @@ function renderStudentDetail(studentName){
   } else {
     document.getElementById('dash-body').innerHTML=html;
   }
-}
+}  // fin doRenderStudentDetail
 
 function exportCSV(){
   const results=loadResults(teacherCls);
@@ -5669,6 +5690,26 @@ function switchGestionTab(tab){
 }
 
 function renderGestionResults(){
+  if(window.FB_loadResults){
+    window.FB_loadResults(null).then(function(fbResults){
+      if(fbResults && fbResults.length > 0){
+        const local = JSON.parse(localStorage.getItem('lq_results')||'[]');
+        const localKeys = new Set(local.map(r=>r.student+'|'+r.date+'|'+r.activity));
+        const merged = [...local];
+        fbResults.forEach(r=>{
+          const k = r.student+'|'+r.date+'|'+r.activity;
+          if(!localKeys.has(k)){ merged.push(r); localKeys.add(k); }
+        });
+        localStorage.setItem('lq_results', JSON.stringify(merged));
+      }
+      doRenderGestionResults();
+    }).catch(function(){ doRenderGestionResults(); });
+  } else {
+    doRenderGestionResults();
+  }
+}
+
+function doRenderGestionResults(){
   const results = JSON.parse(localStorage.getItem('lq_results')||'[]');
   const students = getClassStudents(teacherCls);
   const summary = document.getElementById('gestion-summary');
