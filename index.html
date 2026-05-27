@@ -855,13 +855,35 @@ input:focus{border-color:var(--purple);}
         <div class="sub-title">Grammaire</div>
         <div class="sub-desc">Classes de mots, fonctions, phrases…</div>
       </div>
-      <div class="sub-subject-card disabled" onclick="comingSoon()">
+      <div class="sub-subject-card active-card" onclick="showScreen('screen-orthographe');renderOrthographeMenu();">
         <div class="sub-icon">🔤</div>
         <div class="sub-title">Orthographe</div>
-        <div class="sub-desc">Bientôt disponible</div>
+        <div class="sub-desc">Homophones, accords, dictée…</div>
       </div>
     </div>
   </div>
+
+  <!-- SCREEN: Orthographe -->
+  <div id="screen-orthographe" class="screen">
+    <button class="back-btn" onclick="state.role==='teacher'?showScreen('screen-teacher-francais'):showScreen('screen-francais')">← Retour</button>
+    <div class="page-title">🔤 Orthographe</div>
+    <div id="orthographe-menu"></div>
+  </div>
+
+  <!-- SCREEN: Homophones -->
+  <div id="screen-homophones" class="screen">
+    <button class="back-btn" onclick="showScreen('screen-orthographe');renderOrthographeMenu();">← Retour</button>
+    <div class="page-title">🔀 Homophones</div>
+    <div id="homophones-menu"></div>
+  </div>
+
+  <!-- SCREEN: Homophones a/as/à -->
+  <div id="screen-homo-a" class="screen">
+    <button class="back-btn" onclick="showScreen('screen-homophones');renderHomophonesMenu();">← Retour</button>
+    <div class="page-title">🔀 a / as / à</div>
+    <div id="homo-a-body"></div>
+  </div>
+
   <!-- SCREEN: Grammaire -->
   <div id="screen-grammaire" class="screen">
     <button class="back-btn" onclick="state.role==='teacher'?showScreen('screen-teacher-francais'):showScreen('screen-francais')">← Retour</button>
@@ -1065,7 +1087,7 @@ input:focus{border-color:var(--purple);}
     <button class="back-btn" onclick="showScreen('screen-conjugaison')">← Retour</button>
     <div class="page-title">✅ Indicatif passé composé</div>
     <div class="exercise-list">
-      <div class="exercise-card" onclick="startConjExercise('passe_compose','lr_niveau_1','lr_niveau_2','lr_niveau_3','lr_niveau_4','lr_niveau_5','lr_niveau_6','qcm')">
+      <div class="exercise-card" onclick="startConjExercise('passe_compose','ortho_homophones','homo_a','lr_niveau_1','lr_niveau_2','lr_niveau_3','lr_niveau_4','lr_niveau_5','lr_niveau_6','qcm')">
         <div class="exercise-card-icon qcm">🎯</div>
         <div>
           <div class="exercise-card-title">Entraînement — QCM</div>
@@ -2029,10 +2051,10 @@ input:focus{border-color:var(--purple);}
         <div class="sub-title">Grammaire</div>
         <div class="sub-desc">Classes de mots, fonctions, phrases…</div>
       </div>
-      <div class="sub-subject-card disabled" onclick="comingSoon()">
+      <div class="sub-subject-card active-card" onclick="showScreen('screen-orthographe');renderOrthographeMenu();">
         <div class="sub-icon">🔤</div>
         <div class="sub-title">Orthographe</div>
-        <div class="sub-desc">Bientôt disponible</div>
+        <div class="sub-desc">Homophones, accords, dictée…</div>
       </div>
     </div>
   </div>
@@ -6082,6 +6104,213 @@ function validateGeoCommunes(){
 }
 
 
+
+
+// ===== ORTHOGRAPHE =====
+function renderOrthographeMenu(){
+  const menu = document.getElementById('orthographe-menu');
+  if(!menu) return;
+  const isTeacher = state.role === 'teacher';
+  const locked = getLockedActivities();
+  const items = [
+    {id:'ortho_homophones', screen:'screen-homophones', label:'Homophones', icon:'🔀', desc:'a/à/as, ou/où, ce/se...', fn:'renderHomophonesMenu'},
+  ];
+  let html = '';
+  items.forEach(t => {
+    const isLocked = locked.includes(t.id);
+    const toggleBtn = isTeacher
+      ? `<button class="card-teacher-toggle ${isLocked?'btn-show':'btn-hide'}"
+           onclick="event.stopPropagation();toggleActivity('${t.id}');renderOrthographeMenu();">
+           ${isLocked?'🔓 Réactiver':'🔒 Masquer'}
+         </button>` : '';
+    if(isLocked && !isTeacher) return;
+    html += `<div class="sub-subject-card active-card" onclick="showScreen('${t.screen}');${t.fn}();" style="position:relative">
+      ${toggleBtn}
+      <div class="sub-icon">${t.icon}</div>
+      <div class="sub-title">${t.label}</div>
+      <div class="sub-desc">${t.desc}</div>
+    </div>`;
+  });
+  menu.innerHTML = html || '<p style="color:var(--muted);text-align:center;padding:2rem">Aucun exercice disponible.</p>';
+}
+
+function renderHomophonesMenu(){
+  const menu = document.getElementById('homophones-menu');
+  if(!menu) return;
+  const isTeacher = state.role === 'teacher';
+  const locked = getLockedActivities();
+  const items = [
+    {id:'homo_a', screen:'screen-homo-a', label:'a / as / à', icon:'🔀', desc:'10 phrases aléatoires', fn:'renderHomoAScreen'},
+  ];
+  let html = '';
+  items.forEach(t => {
+    const isLocked = locked.includes(t.id);
+    const toggleBtn = isTeacher
+      ? `<button class="card-teacher-toggle ${isLocked?'btn-show':'btn-hide'}"
+           onclick="event.stopPropagation();toggleActivity('${t.id}');renderHomophonesMenu();">
+           ${isLocked?'🔓 Réactiver':'🔒 Masquer'}
+         </button>` : '';
+    if(isLocked && !isTeacher) return;
+    html += `<div class="sub-subject-card active-card" onclick="showScreen('${t.screen}');${t.fn}();" style="position:relative">
+      ${toggleBtn}
+      <div class="sub-icon">${t.icon}</div>
+      <div class="sub-title">${t.label}</div>
+      <div class="sub-desc">${t.desc}</div>
+    </div>`;
+  });
+  menu.innerHTML = html || '<p style="color:var(--muted);text-align:center;padding:2rem">Aucun exercice disponible.</p>';
+}
+
+// ===== HOMOPHONES a/as/à =====
+const HOMO_A_BANQUE = [
+  {phrase: "Mon chat ___ faim ce matin.", trous: [{pos:0, correct:'a'}]},
+  {phrase: "Tu ___ oublié ton cartable à la maison.", trous: [{pos:0, correct:'as'}]},
+  {phrase: "Il va ___ l'école tous les jours.", trous: [{pos:0, correct:'à'}]},
+  {phrase: "Elle ___ une belle robe rouge.", trous: [{pos:0, correct:'a'}]},
+  {phrase: "Tu ___ bien travaillé aujourd'hui.", trous: [{pos:0, correct:'as'}]},
+  {phrase: "Le chien court ___ toute vitesse.", trous: [{pos:0, correct:'à'}]},
+  {phrase: "Il ___ froid dehors ce matin.", trous: [{pos:0, correct:'a'}]},
+  {phrase: "Tu ___ vu ce film la semaine dernière ?", trous: [{pos:0, correct:'as'}]},
+  {phrase: "Papa va ___ la boulangerie acheter du pain.", trous: [{pos:0, correct:'à'}]},
+  {phrase: "Mon frère ___ les cheveux bouclés.", trous: [{pos:0, correct:'a'}]},
+  {phrase: "Elle marche ___ petits pas dans la neige.", trous: [{pos:0, correct:'à'}]},
+  {phrase: "Tu ___ rangé ta chambre sans qu'on te le demande.", trous: [{pos:0, correct:'as'}]},
+  {phrase: "Le soleil ___ brillé toute la journée.", trous: [{pos:0, correct:'a'}]},
+  {phrase: "Il habite ___ Bruxelles depuis deux ans.", trous: [{pos:0, correct:'à'}]},
+  {phrase: "Tu ___ mangé toute la tarte !", trous: [{pos:0, correct:'as'}]},
+  {phrase: "Ma sœur ___ peur du tonnerre.", trous: [{pos:0, correct:'a'}]},
+  {phrase: "Il court ___ perdre haleine dans la cour.", trous: [{pos:0, correct:'à'}]},
+  {phrase: "Tu ___ compris la leçon d'aujourd'hui ?", trous: [{pos:0, correct:'as'}]},
+  {phrase: "Le train part ___ huit heures précises.", trous: [{pos:0, correct:'à'}]},
+  {phrase: "Elle ___ un joli sourire qui illumine son visage.", trous: [{pos:0, correct:'a'}]},
+  {phrase: "Le chat ___ grimpé tout en haut de l'arbre.", trous: [{pos:0, correct:'a'}]},
+  {phrase: "Tu ___ l'air fatigué ce matin.", trous: [{pos:0, correct:'as'}]},
+  {phrase: "Elle écrit ___ la main dans son cahier.", trous: [{pos:0, correct:'à'}]},
+  {phrase: "Mon grand-père ___ soixante-dix ans aujourd'hui.", trous: [{pos:0, correct:'a'}]},
+  {phrase: "Tu ___ pensé ___ apporter ton goûter ?", trous: [{pos:0, correct:'as'}, {pos:1, correct:'à'}]},
+  {phrase: "Il répond toujours ___ voix basse en classe.", trous: [{pos:0, correct:'à'}]},
+  {phrase: "Ma maman ___ préparé une bonne soupe ce soir.", trous: [{pos:0, correct:'a'}]},
+  {phrase: "Le boulanger commence ___ travailler très tôt.", trous: [{pos:0, correct:'à'}]},
+  {phrase: "Tu ___ déjà visité le château de Bouillon ?", trous: [{pos:0, correct:'as'}]},
+  {phrase: "Elle tient son crayon ___ la main gauche.", trous: [{pos:0, correct:'à'}]},
+  {phrase: "Mon vélo ___ une roue crevée depuis hier.", trous: [{pos:0, correct:'a'}]},
+  {phrase: "Tu ___ couru plus vite que tout le monde.", trous: [{pos:0, correct:'as'}]},
+  {phrase: "Il parle ___ voix haute pour que tout le monde entende.", trous: [{pos:0, correct:'à'}]},
+  {phrase: "Elle ___ toujours su que tu réussirais.", trous: [{pos:0, correct:'a'}]},
+  {phrase: "Le professeur explique ___ nouveau la leçon.", trous: [{pos:0, correct:'à'}]},
+  {phrase: "Tu ___ mis tes chaussures ___ l'envers !", trous: [{pos:0, correct:'as'}, {pos:1, correct:'à'}]},
+  {phrase: "Il ___ fini ses devoirs avant le dîner.", trous: [{pos:0, correct:'a'}]},
+  {phrase: "Elle va ___ la piscine chaque mercredi après-midi.", trous: [{pos:0, correct:'à'}]},
+  {phrase: "Tu ___ vraiment beaucoup de courage.", trous: [{pos:0, correct:'as'}]},
+  {phrase: "Le soleil se couche ___ l'horizon ce soir.", trous: [{pos:0, correct:'à'}]},
+];
+
+let homoAState = {phrases:[], selections:{}, submitted:false};
+
+function renderHomoAScreen(){
+  const body = document.getElementById('homo-a-body');
+  if(!body) return;
+
+  // Sélectionner des phrases pour un total de 10 points
+  const shuffled = shuffle([...HOMO_A_BANQUE]);
+  let total = 0;
+  const selected = [];
+  for(let p of shuffled){
+    const pts = p.trous.length;
+    if(total + pts <= 10){
+      selected.push(p);
+      total += pts;
+    }
+    if(total === 10) break;
+  }
+
+  homoAState = {phrases: selected, selections:{}, submitted:false, total};
+
+  let html = `<div class="card" style="margin-bottom:1rem;padding:0.8rem 1rem;background:var(--purple-light);border:1px solid var(--purple);">
+    <p style="margin:0;font-size:13px;color:var(--purple);font-weight:700">Choisis le bon homophone dans chaque menu déroulant.</p>
+  </div>`;
+
+  selected.forEach((p, pi) => {
+    const parts = p.phrase.split('___');
+    let phraseHtml = '<p style="font-size:16px;line-height:2;">';
+    parts.forEach((part, i) => {
+      phraseHtml += part;
+      if(i < p.trous.length){
+        const tid = `homo-a-${pi}-${i}`;
+        phraseHtml += `<select id="${tid}" onchange="homoASelect('${tid}',${pi},${i})"
+          style="font-size:15px;font-weight:700;color:var(--purple);border:2px solid var(--purple);border-radius:6px;padding:2px 6px;background:var(--purple-light);cursor:pointer;">
+          <option value="">…</option>
+          <option value="a">a</option>
+          <option value="as">as</option>
+          <option value="à">à</option>
+        </select>`;
+      }
+    });
+    phraseHtml += '</p>';
+    html += `<div class="lr-question" id="homo-a-q-${pi}">${phraseHtml}</div>`;
+  });
+
+  html += `<button class="btn" onclick="validerHomoA()" style="width:100%;margin-top:1rem">✅ Valider</button>
+    <div id="homo-a-score" style="display:none;margin-top:1rem" class="geo-score-panel"></div>`;
+
+  body.innerHTML = html;
+  homoAState.selections = {};
+}
+
+function homoASelect(tid, pi, ti){
+  const val = document.getElementById(tid).value;
+  if(!homoAState.selections[pi]) homoAState.selections[pi] = {};
+  homoAState.selections[pi][ti] = val;
+}
+
+function validerHomoA(){
+  let score = 0;
+  const total = homoAState.total;
+
+  homoAState.phrases.forEach((p, pi) => {
+    p.trous.forEach((t, ti) => {
+      const tid = `homo-a-${pi}-${ti}`;
+      const sel = document.getElementById(tid);
+      const val = (homoAState.selections[pi] && homoAState.selections[pi][ti]) || '';
+      const ok = val === t.correct;
+      if(ok){
+        score++;
+        sel.style.background = '#d4f5e9';
+        sel.style.borderColor = 'var(--green)';
+        sel.style.color = 'var(--green)';
+      } else {
+        sel.style.background = '#fde8e8';
+        sel.style.borderColor = 'var(--red)';
+        sel.style.color = 'var(--red)';
+      }
+      sel.disabled = true;
+    });
+  });
+
+  const pct = Math.round(score/total*100);
+  const color = pct===100?'var(--green)':pct>=70?'var(--amber)':'var(--red)';
+  const panel = document.getElementById('homo-a-score');
+  panel.style.display = 'block';
+  panel.innerHTML = `
+    <div style="font-size:48px;margin-bottom:0.5rem">${pct===100?'🎉':pct>=70?'👍':'💪'}</div>
+    <div style="font-family:'Nunito',sans-serif;font-weight:800;font-size:32px;color:${color}">${score}/${total}</div>
+    <div style="font-size:16px;color:${color};font-weight:700;margin-bottom:1rem">${pct}%</div>
+    <button class="btn" onclick="renderHomoAScreen()" style="margin-top:0.5rem">🔄 Recommencer</button>
+  `;
+  panel.scrollIntoView({behavior:'smooth'});
+
+  if(state.student){
+    saveResult({
+      student:state.student, cls:state.studentCls,
+      className:CLASSES[state.studentCls]?CLASSES[state.studentCls].name:state.studentCls,
+      activity:'homo_a',
+      bookTitle:'Homophones — a / as / à',
+      score, total, pct,
+      date:new Date().toLocaleDateString('fr-BE'),
+      time:new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})
+    });
+  }
+}
 
 // ===== LECTURE RAPIDE =====
 const LECTURE_RAPIDE_DATA = {
