@@ -2527,6 +2527,29 @@ function goToHome(){
   document.getElementById('home-greeting').textContent='Bonjour '+state.student+' !';
   document.getElementById('home-class-label').textContent='Classe de '+CLASSES[state.studentCls].name+' – Que veux-tu faire ?';
   showScreen('screen-subjects');
+  // Sync Firebase : récupérer activités verrouillées et élèves à jour
+  syncStudentFromFirebase();
+}
+
+async function syncStudentFromFirebase(){
+  if(!window.FB_ready){ setTimeout(syncStudentFromFirebase, 1000); return; }
+  try {
+    // Récupérer les activités verrouillées depuis Firebase
+    const locked = await window.FB_loadLockedActivities();
+    if(locked && Array.isArray(locked)){
+      localStorage.setItem('lq_locked_activities', JSON.stringify(locked));
+    }
+    // Récupérer la liste des élèves depuis Firebase (pour les PIN à jour)
+    const students = await window.FB_loadStudents('lejoly');
+    if(students && Array.isArray(students) && students.length > 0){
+      localStorage.setItem('lq_students_lejoly', JSON.stringify(students));
+    }
+    // Rafraîchir l'affichage des matières avec les nouvelles données
+    renderAppsManage();
+    console.log('✅ Sync élève terminée');
+  } catch(e){
+    console.warn('Sync élève échouée:', e);
+  }
 }
 
 function goToActivity(act){
