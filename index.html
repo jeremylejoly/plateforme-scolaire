@@ -998,8 +998,38 @@ input:focus{border-color:var(--purple);}
           <div class="subject-card-desc">Histoire, géographie, sciences…</div>
         </div>
       </div>
+      <div class="subject-card" onclick="goToSubject('jeux')" style="background:linear-gradient(135deg,#e65100,#ff6f00);">
+        <svg class="subject-card-bg" viewBox="0 0 400 140" xmlns="http://www.w3.org/2000/svg">
+          <text x="20" y="60" font-size="40" fill="white">🎮</text>
+          <text x="100" y="55" font-size="36" fill="white">🎯</text>
+          <text x="190" y="65" font-size="38" fill="white">⭐</text>
+          <text x="280" y="55" font-size="34" fill="white">🏆</text>
+          <text x="30" y="120" font-size="16" fill="white">Défis</text>
+          <text x="160" y="120" font-size="16" fill="white">Chrono</text>
+          <text x="290" y="120" font-size="16" fill="white">Score</text>
+        </svg>
+        <div class="subject-card-content">
+          <span class="subject-card-icon">🎮</span>
+          <div class="subject-card-title">Jeux</div>
+          <div class="subject-card-desc">Défis, quiz et jeux éducatifs…</div>
+        </div>
+      </div>
     </div>
     <button class="btn btn-sm" onclick="resetToWelcome()">← Changer d'élève</button>
+  </div>
+
+  <!-- SCREEN: Jeux -->
+  <div id="screen-jeux" class="screen">
+    <button class="back-btn" onclick="showScreen('screen-subjects')">← Retour</button>
+    <div class="page-title">🎮 Jeux</div>
+    <div id="jeux-menu"></div>
+  </div>
+
+  <!-- SCREEN: Jeu Tables de multiplication -->
+  <div id="screen-jeu-tables" class="screen">
+    <button class="back-btn" onclick="showScreen('screen-jeux');renderJeuxMenu();">← Retour</button>
+    <div class="page-title">✖️ Tables de multiplication</div>
+    <div id="jeu-tables-body"></div>
   </div>
 
   <!-- SCREEN: Français -->
@@ -1282,7 +1312,7 @@ input:focus{border-color:var(--purple);}
     <button class="back-btn" onclick="showScreen('screen-conjugaison')">← Retour</button>
     <div class="page-title">✅ Indicatif passé composé</div>
     <div class="exercise-list">
-      <div class="exercise-card" onclick="startConjExercise('passe_compose','desc_libraire','desc_foret','desc_renard','arg_devoirs','arg_ecrans','arg_vegetarien','arg_uniforme','arg_lecture','arg_alimentation','arg_reseaux','fiche_baleine','fiche_vinci','fiche_eiffel','fiche_charlemagne','fiche_einstein','fiche_atomium','fiche_tajmahal','fiche_ecureuil','fiche_loup','fiche_elephant','ortho_homophones','homo_a','homo_ou','homo_son','homo_ce','homo_on','lr_niveau_1','lr_niveau_2','lr_niveau_3','lr_niveau_4','lr_niveau_5','lr_niveau_6','qcm')">
+      <div class="exercise-card" onclick="startConjExercise('passe_compose','jeu_tables','desc_libraire','desc_foret','desc_renard','arg_devoirs','arg_ecrans','arg_vegetarien','arg_uniforme','arg_lecture','arg_alimentation','arg_reseaux','fiche_baleine','fiche_vinci','fiche_eiffel','fiche_charlemagne','fiche_einstein','fiche_atomium','fiche_tajmahal','fiche_ecureuil','fiche_loup','fiche_elephant','ortho_homophones','homo_a','homo_ou','homo_son','homo_ce','homo_on','lr_niveau_1','lr_niveau_2','lr_niveau_3','lr_niveau_4','lr_niveau_5','lr_niveau_6','qcm')">
         <div class="exercise-card-icon qcm">🎯</div>
         <div>
           <div class="exercise-card-title">Entraînement — QCM</div>
@@ -9402,6 +9432,209 @@ function renderArgLecture(){ buildArgFiche('arg-lecture-body', TEXTES_ARG_DATA.l
 function renderArgAlimentation(){ buildArgFiche('arg-alimentation-body', TEXTES_ARG_DATA.alimentation); }
 function renderArgReseaux(){ buildArgFiche('arg-reseaux-body', TEXTES_ARG_DATA.reseaux); }
 
+
+// ===== JEUX =====
+function renderJeuxMenu(){
+  const menu = document.getElementById('jeux-menu');
+  if(!menu) return;
+  const isTeacher = state.role === 'teacher';
+  const locked = getLockedActivities();
+
+  const jeux = [
+    {id:'jeu_tables', screen:'screen-jeu-tables', label:'Tables de multiplication', icon:'✖️', desc:'Réponds le plus vite possible !', fn:'renderJeuTables'}
+  ];
+
+  let html = '';
+  jeux.forEach(j => {
+    const isLocked = locked.includes(j.id);
+    const toggleBtn = isTeacher
+      ? `<button class="card-teacher-toggle ${isLocked?'btn-show':'btn-hide'}"
+           onclick="event.stopPropagation();toggleActivity('${j.id}');renderJeuxMenu();">
+           ${isLocked?'🔓 Réactiver':'🔒 Masquer'}
+         </button>` : '';
+    if(isLocked && !isTeacher) return;
+    html += `<div class="fiche-info-card" onclick="showScreen('${j.screen}');${j.fn}();" style="position:relative;border-left:4px solid #e65100;">
+      ${toggleBtn}
+      <div class="fiche-category">🎮 Jeu éducatif</div>
+      <div style="font-weight:800;font-size:16px">${j.icon} ${j.label}</div>
+      <div style="font-size:13px;color:var(--muted);margin-top:2px">${j.desc}</div>
+    </div>`;
+  });
+  menu.innerHTML = html || '<p style="color:var(--muted);text-align:center;padding:2rem">Aucun jeu disponible.</p>';
+}
+
+function renderJeuTables(){
+  const body = document.getElementById('jeu-tables-body');
+  if(!body) return;
+  body.innerHTML = `
+    <div style="max-width:480px;margin:0 auto;font-family:'Nunito',sans-serif;">
+
+      <!-- Écran configuration -->
+      <div id="jt-config">
+        <div style="text-align:center;margin-bottom:1.5rem;">
+          <div style="font-size:64px;margin-bottom:0.5rem;">✖️</div>
+          <p style="font-size:18px;font-weight:800;margin:0;color:var(--text)">Tables de multiplication</p>
+          <p style="font-size:13px;color:var(--muted);margin-top:4px">Réponds le plus vite possible !</p>
+        </div>
+        <div class="card" style="margin-bottom:1rem;padding:1.2rem;">
+          <div style="margin-bottom:1rem;">
+            <label style="font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em">Table :</label>
+            <select id="jt-sel-table" style="margin-top:6px;display:block;width:100%;font-size:15px;padding:8px 12px;border-radius:8px;border:1.5px solid var(--border);background:var(--surface);color:var(--text);font-family:'Nunito',sans-serif;">
+              <option value="0">Toutes les tables (2→9)</option>
+              <option value="2">Table de 2</option>
+              <option value="3">Table de 3</option>
+              <option value="4">Table de 4</option>
+              <option value="5">Table de 5</option>
+              <option value="6">Table de 6</option>
+              <option value="7">Table de 7</option>
+              <option value="8">Table de 8</option>
+              <option value="9">Table de 9</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em">Nombre de questions :</label>
+            <select id="jt-sel-nb" style="margin-top:6px;display:block;width:100%;font-size:15px;padding:8px 12px;border-radius:8px;border:1.5px solid var(--border);background:var(--surface);color:var(--text);font-family:'Nunito',sans-serif;">
+              <option value="10">10 questions</option>
+              <option value="15">15 questions</option>
+              <option value="20">20 questions</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn" style="width:100%;font-size:16px;padding:0.9rem;" onclick="jtDemarrer()">🚀 Commencer le jeu !</button>
+      </div>
+
+      <!-- Écran jeu -->
+      <div id="jt-jeu" style="display:none;">
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:1rem;">
+          <div class="card" style="text-align:center;padding:0.8rem;">
+            <div style="font-family:'Nunito',sans-serif;font-weight:900;font-size:24px;color:var(--green)" id="jt-score">0</div>
+            <div style="font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase">Bonnes</div>
+          </div>
+          <div class="card" style="text-align:center;padding:0.8rem;">
+            <div style="font-family:'Nunito',sans-serif;font-weight:900;font-size:24px;color:var(--purple)" id="jt-q">1</div>
+            <div style="font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase">Question</div>
+          </div>
+          <div class="card" style="text-align:center;padding:0.8rem;">
+            <div style="font-family:'Nunito',sans-serif;font-weight:900;font-size:24px;color:var(--amber)" id="jt-timer">0s</div>
+            <div style="font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase">Temps</div>
+          </div>
+        </div>
+        <div style="height:8px;background:var(--border);border-radius:4px;margin-bottom:1.5rem;overflow:hidden;">
+          <div id="jt-progress" style="height:100%;background:var(--purple);border-radius:4px;transition:width .3s;width:0%"></div>
+        </div>
+        <div class="card" style="text-align:center;padding:2rem 1rem;">
+          <div id="jt-question" style="font-family:'Nunito',sans-serif;font-size:42px;font-weight:900;color:var(--text);margin-bottom:1.5rem;">— × — = ?</div>
+          <input type="text" inputmode="numeric" id="jt-reponse" placeholder="Ta réponse…"
+            style="width:100%;font-size:24px;font-weight:800;text-align:center;padding:12px;border-radius:12px;border:2.5px solid var(--purple);background:var(--surface);color:var(--text);font-family:'Nunito',sans-serif;outline:none;box-sizing:border-box;">
+          <div id="jt-feedback" style="margin-top:1rem;font-size:18px;font-weight:800;min-height:28px;">&nbsp;</div>
+        </div>
+      </div>
+
+      <!-- Écran fin -->
+      <div id="jt-fin" style="display:none;text-align:center;" class="card">
+        <div id="jt-badge" style="font-size:72px;margin-bottom:0.5rem;">🏆</div>
+        <h2 style="font-family:'Nunito',sans-serif;font-weight:900;font-size:24px;margin-bottom:0.5rem;color:var(--text)">Partie terminée !</h2>
+        <div id="jt-score-final" style="font-size:16px;color:var(--muted);margin-bottom:1.5rem;line-height:1.8;"></div>
+        <button class="btn" style="width:100%;margin-bottom:0.5rem;" onclick="jtReset()">🔄 Rejouer</button>
+        <button class="btn" style="width:100%;background:var(--surface);color:var(--text);border:1.5px solid var(--border);" onclick="showScreen('screen-jeux');renderJeuxMenu();">← Retour aux jeux</button>
+      </div>
+
+    </div>`;
+
+  // Initialiser le jeu
+  jtInitEvents();
+}
+
+let jtScore=0, jtTotal=0, jtNumQ=10, jtTable=0, jtA=0, jtB=0, jtDebut=0, jtTimerInterval=null;
+
+function jtRnd(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
+
+function jtInitEvents(){
+  const inp = document.getElementById('jt-reponse');
+  if(!inp) return;
+  inp.addEventListener('keydown', function(e){
+    if(e.key==='Enter'){
+      const val = parseInt(this.value);
+      if(isNaN(val)) return;
+      jtTotal++;
+      const fb = document.getElementById('jt-feedback');
+      if(val === jtA * jtB){
+        jtScore++;
+        fb.style.color='var(--green)';
+        fb.textContent='✅ Bravo !';
+      } else {
+        fb.style.color='var(--red)';
+        fb.textContent='❌ C\'était ' + (jtA * jtB);
+      }
+      document.getElementById('jt-score').textContent = jtScore;
+      setTimeout(jtProchaine, 900);
+    }
+  });
+}
+
+function jtDemarrer(){
+  jtScore=0; jtTotal=0;
+  jtNumQ = parseInt(document.getElementById('jt-sel-nb').value);
+  jtTable = parseInt(document.getElementById('jt-sel-table').value);
+  document.getElementById('jt-config').style.display='none';
+  document.getElementById('jt-fin').style.display='none';
+  document.getElementById('jt-jeu').style.display='block';
+  jtDebut = Date.now();
+  if(jtTimerInterval) clearInterval(jtTimerInterval);
+  jtTimerInterval = setInterval(()=>{
+    const el = document.getElementById('jt-timer');
+    if(el) el.textContent = Math.round((Date.now()-jtDebut)/1000)+'s';
+  }, 500);
+  jtProchaine();
+}
+
+function jtProchaine(){
+  if(jtTotal >= jtNumQ){ jtFin(); return; }
+  if(jtTable===0){ jtA=jtRnd(2,9); jtB=jtRnd(2,10); }
+  else { jtA=jtTable; jtB=jtRnd(2,10); if(Math.random()>.5){let t=jtA;jtA=jtB;jtB=t;} }
+  const q = document.getElementById('jt-question');
+  const inp = document.getElementById('jt-reponse');
+  const fb = document.getElementById('jt-feedback');
+  const prog = document.getElementById('jt-progress');
+  if(q) q.textContent = jtA + ' × ' + jtB + ' = ?';
+  if(inp){ inp.value=''; setTimeout(()=>inp.focus(),50); }
+  if(fb) fb.innerHTML='&nbsp;';
+  const qEl = document.getElementById('jt-q');
+  if(qEl) qEl.textContent=(jtTotal+1)+'/'+jtNumQ;
+  if(prog) prog.style.width=(jtTotal/jtNumQ*100)+'%';
+}
+
+function jtFin(){
+  clearInterval(jtTimerInterval);
+  document.getElementById('jt-jeu').style.display='none';
+  document.getElementById('jt-fin').style.display='block';
+  const pct = Math.round(jtScore/jtNumQ*100);
+  const emoji = pct===100?'🏆':pct>=80?'⭐':pct>=50?'👍':'💪';
+  const color = pct>=70?'var(--green)':pct>=50?'var(--amber)':'var(--red)';
+  document.getElementById('jt-badge').textContent = emoji;
+  const sec = Math.round((Date.now()-jtDebut)/1000);
+  document.getElementById('jt-score-final').innerHTML =
+    `<span style="font-family:'Nunito',sans-serif;font-weight:900;font-size:36px;color:${color}">${jtScore}/${jtNumQ}</span><br>
+     <span style="color:${color};font-weight:700">${pct}%</span><br>
+     ⏱️ Temps : <strong>${sec} secondes</strong>`;
+  if(state.student){
+    saveResult({
+      student:state.student, cls:state.studentCls,
+      className:CLASSES[state.studentCls]?CLASSES[state.studentCls].name:state.studentCls,
+      activity:'jeu_tables',
+      bookTitle:'Jeu — Tables de multiplication',
+      score:jtScore, total:jtNumQ, pct,
+      date:new Date().toLocaleDateString('fr-BE'),
+      time:new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})
+    });
+  }
+}
+
+function jtReset(){
+  document.getElementById('jt-fin').style.display='none';
+  document.getElementById('jt-config').style.display='block';
+}
+
 // ===== LECTURE RAPIDE =====
 const LECTURE_RAPIDE_DATA = {
   6: {
@@ -11020,6 +11253,7 @@ function goToSubject(subject){
   if(subject==='francais') showScreen('screen-francais');
   if(subject==='maths') showScreen('screen-maths');
   if(subject==='eveil') showScreen('screen-eveil');
+  if(subject==='jeux'){ showScreen('screen-jeux'); renderJeuxMenu(); }
 }
 
 
