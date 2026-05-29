@@ -1090,6 +1090,20 @@ input:focus{border-color:var(--purple);}
     <div id="jeu-tables-body"></div>
   </div>
 
+  <!-- SCREEN: Jeu Memory Calcul -->
+  <div id="screen-jeu-memory" class="screen">
+    <button class="back-btn" onclick="showScreen('screen-jeux');renderJeuxMenu();">← Retour</button>
+    <div class="page-title">🃏 Memory Calcul</div>
+    <div id="jeu-memory-body"></div>
+  </div>
+
+  <!-- SCREEN: Jeu Tetris -->
+  <div id="screen-jeu-tetris" class="screen">
+    <button class="back-btn" onclick="tetStop();showScreen('screen-jeux');renderJeuxMenu();">← Retour</button>
+    <div class="page-title">🟦 Tetris</div>
+    <div id="jeu-tetris-body"></div>
+  </div>
+
   <!-- SCREEN: Français -->
   <div id="screen-francais" class="screen">
     <button class="back-btn" onclick="state.role==='teacher'?showScreen('screen-teacher-subjects'):showScreen('screen-subjects')">← Retour</button>
@@ -4230,7 +4244,7 @@ function loadConjResults(cls, student){
 // ===== ACTIVITY LOCK SYSTEM =====
 function getLockedActivities(){
   const s = localStorage.getItem('lq_locked_activities');
-  return s ? JSON.parse(s) : ['passe_compose','dial_ecrans','dial_bio','dial_voiture','dial_animal','grandeur_masses','grandeur_capacites','grandeur_longueurs','grandeur_perimetre','grandeur_aire','grandeur_volume','grandeur_durees','grandeur_monnaie','solide_points','solide_polygones','solide_triangles','solide_quadrilateres','solide_polyedres','num_grands_nombres','num_decimaux','num_entiers_decimaux','num_fractions','num_pourcentages','num_tout','op_vocabulaire','op_add_sous','op_mult_div','op_4_operations','op_tables','op_x10','op_x5','op_x9','op_x11','op_divisibilite','op_compensation','op_calcul_ecrit','trait_graphiques','trait_regle3','trait_problemes','hist_prehistoire','hist_antiquite','hist_moyen_age','hist_temps_modernes','hist_contemporaine','hist_grandes_periodes','sci_respiratoire','sci_digestif','sci_circulatoire','sci_coeur','sci_tegumentaire','sci_squelette','sci_engrenages','sci_electricite','sci_systeme_solaire','geo_oceans','geo_europe','geo_belgique','geo_belgique_provinces','geo_belgique_hydro','geo_belgique_communes','geo_belgique_qcm','geo_paysages','geo_hydro','geo_cartes','gram_nom','gram_determinant','gram_adjectif','gram_verbe','gram_pronom','gram_adverbe','gram_complement_nom','gram_sujet','gram_verbe_fonc','gram_predicat','gram_cdv_civ','gram_cc','gram_attribut','gram_affirm_neg','gram_pass_act'];
+  return s ? JSON.parse(s) : ['passe_compose','jeu_memory','jeu_tetris','dial_ecrans','dial_bio','dial_voiture','dial_animal','grandeur_masses','grandeur_capacites','grandeur_longueurs','grandeur_perimetre','grandeur_aire','grandeur_volume','grandeur_durees','grandeur_monnaie','solide_points','solide_polygones','solide_triangles','solide_quadrilateres','solide_polyedres','num_grands_nombres','num_decimaux','num_entiers_decimaux','num_fractions','num_pourcentages','num_tout','op_vocabulaire','op_add_sous','op_mult_div','op_4_operations','op_tables','op_x10','op_x5','op_x9','op_x11','op_divisibilite','op_compensation','op_calcul_ecrit','trait_graphiques','trait_regle3','trait_problemes','hist_prehistoire','hist_antiquite','hist_moyen_age','hist_temps_modernes','hist_contemporaine','hist_grandes_periodes','sci_respiratoire','sci_digestif','sci_circulatoire','sci_coeur','sci_tegumentaire','sci_squelette','sci_engrenages','sci_electricite','sci_systeme_solaire','geo_oceans','geo_europe','geo_belgique','geo_belgique_provinces','geo_belgique_hydro','geo_belgique_communes','geo_belgique_qcm','geo_paysages','geo_hydro','geo_cartes','gram_nom','gram_determinant','gram_adjectif','gram_verbe','gram_pronom','gram_adverbe','gram_complement_nom','gram_sujet','gram_verbe_fonc','gram_predicat','gram_cdv_civ','gram_cc','gram_attribut','gram_affirm_neg','gram_pass_act'];
 }
 function saveLockedActivities(arr){
   localStorage.setItem('lq_locked_activities', JSON.stringify(arr));
@@ -9557,7 +9571,9 @@ function renderJeuxMenu(){
   const locked = getLockedActivities();
 
   const jeux = [
-    {id:'jeu_tables', screen:'screen-jeu-tables', label:'Tables de multiplication', icon:'✖️', desc:'Réponds le plus vite possible !', fn:'renderJeuTables'}
+    {id:'jeu_tables', screen:'screen-jeu-tables', label:'Tables de multiplication', icon:'✖️', desc:'Réponds le plus vite possible !', fn:'renderJeuTables'},
+    {id:'jeu_memory', screen:'screen-jeu-memory', label:'Memory Calcul', icon:'🃏', desc:'Trouve les paires opération / résultat !', fn:'renderJeuMemory'},
+    {id:'jeu_tetris', screen:'screen-jeu-tetris', label:'Tetris', icon:'🟦', desc:'Structuration spatiale — place les pièces !', fn:'renderJeuTetris'},
   ];
 
   let html = '';
@@ -10156,6 +10172,410 @@ function renderDialEcrans(){ buildDialFiche('dial-ecrans-body', DIALOGUES_DATA.e
 function renderDialBio(){ buildDialFiche('dial-bio-body', DIALOGUES_DATA.bio); }
 function renderDialVoiture(){ buildDialFiche('dial-voiture-body', DIALOGUES_DATA.voiture); }
 function renderDialAnimal(){ buildDialFiche('dial-animal-body', DIALOGUES_DATA.animal); }
+
+
+// ===== JEU MEMORY CALCUL =====
+function renderJeuMemory(){
+  const body = document.getElementById('jeu-memory-body');
+  if(!body) return;
+
+  body.innerHTML = `
+    <div style="max-width:560px;margin:0 auto;font-family:'Nunito',sans-serif;">
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:1rem;">
+        <div class="card" style="text-align:center;padding:0.8rem;">
+          <div style="font-family:'Nunito',sans-serif;font-weight:900;font-size:22px;color:var(--amber)" id="m-tours">0</div>
+          <div style="font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase">Tentatives</div>
+        </div>
+        <div class="card" style="text-align:center;padding:0.8rem;">
+          <div style="font-family:'Nunito',sans-serif;font-weight:900;font-size:22px;color:var(--green)" id="m-paires">0/8</div>
+          <div style="font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase">Paires trouvées</div>
+        </div>
+        <div class="card" style="text-align:center;padding:0.8rem;">
+          <div style="font-family:'Nunito',sans-serif;font-weight:900;font-size:22px;color:var(--purple)" id="m-temps">0s</div>
+          <div style="font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase">Temps</div>
+        </div>
+      </div>
+      <div id="mem-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;"></div>
+      <div id="mem-msg" style="text-align:center;font-size:14px;color:var(--muted);min-height:22px;margin:0.75rem 0;font-weight:600;">Retourne deux cartes pour trouver une paire !</div>
+      <button class="btn" id="mem-btn" style="display:none;width:100%;" onclick="memInit()">🔄 Rejouer</button>
+      <div id="mem-fin-score" style="display:none;margin-top:1rem" class="geo-score-panel"></div>
+    </div>
+
+    <style>
+      .mem-card{aspect-ratio:1;border-radius:12px;cursor:pointer;position:relative;transform-style:preserve-3d;transition:transform 0.4s;user-select:none;}
+      .mem-card.flipped{transform:rotateY(180deg);}
+      .mem-card.matched{transform:rotateY(180deg);cursor:default;outline:3px solid var(--green);}
+      .card-front,.card-back{position:absolute;inset:0;border-radius:12px;display:flex;align-items:center;justify-content:center;backface-visibility:hidden;font-weight:700;}
+      .card-back{background:var(--purple);border:2px solid var(--purple);font-size:28px;color:rgba(255,255,255,0.7);}
+      .card-front{background:var(--surface);border:2px solid var(--border);transform:rotateY(180deg);}
+      .card-front.is-op{font-size:14px;color:var(--text);padding:6px;text-align:center;font-weight:800;}
+      .card-front.is-ans{font-size:26px;color:var(--purple);font-weight:900;}
+    </style>`;
+
+  memInit();
+}
+
+let memFlipped=[], memMatched=0, memTours=0, memTimerI=null, memElapsed=0, memLocked=false, memCardStates={};
+
+const MEM_OPS=[
+  ()=>{let a=rndM(2,9),b=rndM(2,10);return{op:a+' × '+b,ans:a*b};},
+  ()=>{let a=rndM(10,60),b=rndM(5,30);return{op:a+' + '+b,ans:a+b};},
+  ()=>{let a=rndM(20,70),b=rndM(5,25);return{op:a+' - '+b,ans:a-b};},
+  ()=>{let a=rndM(2,9),b=rndM(2,9);return{op:(a*b)+' ÷ '+a,ans:b};},
+];
+
+function rndM(a,b){return Math.floor(Math.random()*(b-a+1))+a;}
+
+function memGenPairs(){
+  let pairs=[],used=[];
+  const fns=[MEM_OPS[0],MEM_OPS[1],MEM_OPS[2],MEM_OPS[3],MEM_OPS[0],MEM_OPS[1],MEM_OPS[2],MEM_OPS[3]];
+  fns.forEach(fn=>{
+    let p,tries=0;
+    do{p=fn();tries++;}while(used.includes(p.ans)&&tries<30);
+    used.push(p.ans);
+    pairs.push(p);
+  });
+  return pairs;
+}
+
+function memShuffle(arr){
+  for(let i=arr.length-1;i>0;i--){
+    let j=Math.floor(Math.random()*(i+1));
+    [arr[i],arr[j]]=[arr[j],arr[i]];
+  }
+  return arr;
+}
+
+function memInit(){
+  clearInterval(memTimerI);
+  memFlipped=[]; memMatched=0; memTours=0; memElapsed=0; memLocked=false; memCardStates={};
+  const mTours=document.getElementById('m-tours');
+  const mPaires=document.getElementById('m-paires');
+  const mTemps=document.getElementById('m-temps');
+  const mMsg=document.getElementById('mem-msg');
+  const mBtn=document.getElementById('mem-btn');
+  const mFin=document.getElementById('mem-fin-score');
+  if(mTours) mTours.textContent='0';
+  if(mPaires) mPaires.textContent='0/8';
+  if(mTemps) mTemps.textContent='0s';
+  if(mMsg) mMsg.textContent='Retourne deux cartes pour trouver une paire !';
+  if(mBtn) mBtn.style.display='none';
+  if(mFin) mFin.style.display='none';
+
+  const pairs=memGenPairs();
+  let cards=[];
+  pairs.forEach((p,i)=>{
+    cards.push({id:'op'+i,pairId:i,type:'op',text:p.op});
+    cards.push({id:'ans'+i,pairId:i,type:'ans',text:String(p.ans)});
+  });
+  memShuffle(cards);
+
+  const grid=document.getElementById('mem-grid');
+  if(!grid) return;
+  grid.innerHTML='';
+  cards.forEach(c=>{
+    memCardStates[c.id]='hidden';
+    const el=document.createElement('div');
+    el.className='mem-card';
+    el.dataset.id=c.id;
+    el.dataset.pair=c.pairId;
+    el.dataset.type=c.type;
+    el.innerHTML=`
+      <div class="card-back">?</div>
+      <div class="card-front is-${c.type==='op'?'op':'ans'}">${c.text}</div>`;
+    el.addEventListener('click',()=>memFlipCard(el,c.id));
+    grid.appendChild(el);
+  });
+
+  memTimerI=setInterval(()=>{
+    memElapsed++;
+    const el=document.getElementById('m-temps');
+    if(el) el.textContent=memElapsed+'s';
+  },1000);
+}
+
+function memFlipCard(el,id){
+  if(memLocked) return;
+  if(memCardStates[id]==='matched') return;
+  if(memCardStates[id]==='flipped') return;
+  el.classList.add('flipped');
+  memCardStates[id]='flipped';
+  memFlipped.push({el,id});
+
+  if(memFlipped.length===2){
+    memTours++;
+    const mTours=document.getElementById('m-tours');
+    if(mTours) mTours.textContent=memTours;
+    memLocked=true;
+    const [a,b]=memFlipped;
+    const aEl=a.el, bEl=b.el;
+    if(aEl.dataset.pair===bEl.dataset.pair && aEl.dataset.type!==bEl.dataset.type){
+      setTimeout(()=>{
+        aEl.classList.add('matched'); bEl.classList.add('matched');
+        memCardStates[a.id]='matched'; memCardStates[b.id]='matched';
+        memMatched++;
+        const mPaires=document.getElementById('m-paires');
+        if(mPaires) mPaires.textContent=memMatched+'/8';
+        const mMsg=document.getElementById('mem-msg');
+        if(mMsg) mMsg.textContent='Bonne paire ! 🎉';
+        memFlipped=[]; memLocked=false;
+        if(memMatched===8) memFinJeu();
+      },600);
+    } else {
+      const mMsg=document.getElementById('mem-msg');
+      if(mMsg) mMsg.textContent='Pas la bonne paire… Mémorise bien !';
+      setTimeout(()=>{
+        aEl.classList.remove('flipped'); bEl.classList.remove('flipped');
+        memCardStates[a.id]='hidden'; memCardStates[b.id]='hidden';
+        memFlipped=[]; memLocked=false;
+        const mMsg=document.getElementById('mem-msg');
+        if(mMsg) mMsg.textContent='Retourne deux cartes pour trouver une paire !';
+      },2500);
+    }
+  }
+}
+
+function memFinJeu(){
+  clearInterval(memTimerI);
+  const perf = memTours<=10?'🏆 Excellent !':memTours<=14?'⭐ Très bien !':memTours<=20?'👍 Bien joué !':'💪 Continue de t\'entraîner !';
+  const mMsg=document.getElementById('mem-msg');
+  if(mMsg) mMsg.textContent='';
+  const mBtn=document.getElementById('mem-btn');
+  if(mBtn) mBtn.style.display='block';
+  const panel=document.getElementById('mem-fin-score');
+  if(panel){
+    panel.style.display='block';
+    panel.innerHTML=`
+      <div style="font-size:48px;margin-bottom:0.5rem">${memTours<=10?'🏆':memTours<=14?'⭐':memTours<=20?'👍':'💪'}</div>
+      <div style="font-family:'Nunito',sans-serif;font-weight:900;font-size:24px;color:var(--green)">8/8 paires !</div>
+      <div style="font-size:15px;color:var(--muted);margin:0.5rem 0"><strong>${memTours}</strong> tentatives · <strong>${memElapsed}s</strong></div>
+      <div style="font-size:16px;font-weight:700;color:var(--purple)">${perf}</div>`;
+    panel.scrollIntoView({behavior:'smooth'});
+  }
+  if(state.student){
+    saveResult({
+      student:state.student, cls:state.studentCls,
+      className:CLASSES[state.studentCls]?CLASSES[state.studentCls].name:state.studentCls,
+      activity:'jeu_memory',
+      bookTitle:'Jeu — Memory Calcul',
+      score:8, total:8, pct:100,
+      time_sec: memElapsed,
+      date:new Date().toLocaleDateString('fr-BE'),
+      time:new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})
+    });
+  }
+}
+
+
+// ===== JEU TETRIS =====
+function renderJeuTetris(){
+  const body = document.getElementById('jeu-tetris-body');
+  if(!body) return;
+
+  body.innerHTML = `
+    <div style="font-family:'Nunito',sans-serif;max-width:560px;margin:0 auto;display:flex;gap:16px;align-items:flex-start;justify-content:center;flex-wrap:wrap;">
+
+      <div style="display:flex;flex-direction:column;align-items:center;gap:10px;">
+        <div id="tet-wrap" style="position:relative;display:inline-block;">
+          <canvas id="tet-canvas" width="200" height="400" style="border:2px solid var(--border);border-radius:8px;background:#111;display:block;"></canvas>
+          <div id="tet-overlay" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(0,0,0,0.82);border-radius:8px;gap:14px;">
+            <div style="font-size:22px;font-weight:900;color:#fff;font-family:'Nunito',sans-serif;">🟦 TETRIS</div>
+            <div style="font-size:13px;color:#bbb;text-align:center;line-height:1.6;">Structuration spatiale</div>
+            <button onclick="tetStart()" style="padding:0.7rem 2rem;font-size:16px;font-weight:800;border-radius:8px;cursor:pointer;background:#e65100;color:#fff;border:none;font-family:'Nunito',sans-serif;">▶ JOUER !</button>
+          </div>
+        </div>
+        <div style="font-size:11px;color:var(--muted);text-align:center;line-height:1.8;">
+          ← → déplacer · ↑ tourner · ↓ descendre · Espace chute rapide
+        </div>
+        <!-- Boutons tactiles pour mobile -->
+        <div style="display:flex;gap:8px;margin-top:4px;">
+          <button onclick="tetMobile('left')" style="width:48px;height:48px;border-radius:10px;border:1.5px solid var(--border);background:var(--surface);font-size:20px;cursor:pointer;">←</button>
+          <button onclick="tetMobile('rotate')" style="width:48px;height:48px;border-radius:10px;border:1.5px solid var(--border);background:var(--surface);font-size:20px;cursor:pointer;">↑</button>
+          <button onclick="tetMobile('down')" style="width:48px;height:48px;border-radius:10px;border:1.5px solid var(--border);background:var(--surface);font-size:20px;cursor:pointer;">↓</button>
+          <button onclick="tetMobile('right')" style="width:48px;height:48px;border-radius:10px;border:1.5px solid var(--border);background:var(--surface);font-size:20px;cursor:pointer;">→</button>
+          <button onclick="tetMobile('drop')" style="width:48px;height:48px;border-radius:10px;border:1.5px solid var(--purple);background:var(--purple-light);font-size:14px;font-weight:800;cursor:pointer;color:var(--purple);">DROP</button>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:10px;min-width:100px;">
+        <div class="card" style="text-align:center;padding:0.8rem;">
+          <div style="font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase;margin-bottom:4px;">Score</div>
+          <div style="font-family:'Nunito',sans-serif;font-weight:900;font-size:22px;color:var(--amber)" id="t-score">0</div>
+        </div>
+        <div class="card" style="text-align:center;padding:0.8rem;">
+          <div style="font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase;margin-bottom:4px;">Lignes</div>
+          <div style="font-family:'Nunito',sans-serif;font-weight:900;font-size:22px;color:var(--green)" id="t-lines">0</div>
+        </div>
+        <div class="card" style="text-align:center;padding:0.8rem;">
+          <div style="font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase;margin-bottom:4px;">Niveau</div>
+          <div style="font-family:'Nunito',sans-serif;font-weight:900;font-size:22px;color:var(--purple)" id="t-level">1</div>
+        </div>
+        <div class="card" style="text-align:center;padding:0.8rem;">
+          <div style="font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase;margin-bottom:4px;">Suivant</div>
+          <canvas id="tet-next" width="80" height="80" style="background:#111;border-radius:6px;display:block;margin:4px auto 0;"></canvas>
+        </div>
+      </div>
+    </div>`;
+
+  // Initialiser les variables
+  tetRunning = false;
+}
+
+// Variables globales Tetris
+let tetRunning = false, tetBoard, tetCur, tetNext, tetScore, tetLines, tetLevel, tetSpeed, tetFid;
+const TET_COLS=10, TET_ROWS=20, TET_BS=20;
+const TET_COLORS=['#00f0f0','#f0a000','#a000f0','#00f000','#f00000','#0000f0','#f0f000'];
+const TET_PIECES=[
+  [[1,1,1,1]],[[1,1],[1,1]],[[0,1,0],[1,1,1]],[[1,0,0],[1,1,1]],
+  [[0,0,1],[1,1,1]],[[0,1,1],[1,1,0]],[[1,1,0],[0,1,1]],
+];
+
+function tetStop(){
+  tetRunning = false;
+  clearTimeout(tetFid);
+  document.removeEventListener('keydown', tetOnKey);
+}
+
+function tetNewBoard(){ return Array.from({length:TET_ROWS},()=>Array(TET_COLS).fill(0)); }
+
+function tetRandPiece(){
+  const i=Math.floor(Math.random()*TET_PIECES.length);
+  return{shape:TET_PIECES[i].map(r=>[...r]),color:TET_COLORS[i],x:Math.floor((TET_COLS-TET_PIECES[i][0].length)/2),y:0};
+}
+
+function tetRotate(s){ return Array.from({length:s[0].length},(_,i)=>Array.from({length:s.length},(_,j)=>s[s.length-1-j][i])); }
+
+function tetValid(shape,x,y){
+  return shape.every((row,dy)=>row.every((v,dx)=>{
+    if(!v) return true;
+    const nx=x+dx, ny=y+dy;
+    return nx>=0&&nx<TET_COLS&&ny<TET_ROWS&&(ny<0||!tetBoard[ny][nx]);
+  }));
+}
+
+function tetPlace(){
+  tetCur.shape.forEach((row,dy)=>row.forEach((v,dx)=>{if(v)tetBoard[tetCur.y+dy][tetCur.x+dx]=tetCur.color;}));
+  tetClearLines();
+  tetCur=tetNext; tetNext=tetRandPiece(); tetDrawNext();
+  if(!tetValid(tetCur.shape,tetCur.x,tetCur.y)) tetGameOver();
+}
+
+function tetClearLines(){
+  let cleared=0;
+  for(let y=TET_ROWS-1;y>=0;y--){
+    if(tetBoard[y].every(v=>v)){ tetBoard.splice(y,1); tetBoard.unshift(Array(TET_COLS).fill(0)); cleared++; y++; }
+  }
+  if(cleared){
+    tetScore+=[0,100,300,500,800][cleared]*tetLevel;
+    tetLines+=cleared; tetLevel=Math.floor(tetLines/10)+1; tetSpeed=Math.max(100,600-tetLevel*50);
+    const ts=document.getElementById('t-score');
+    const tl=document.getElementById('t-lines');
+    const tlv=document.getElementById('t-level');
+    if(ts) ts.textContent=tetScore;
+    if(tl) tl.textContent=tetLines;
+    if(tlv) tlv.textContent=tetLevel;
+  }
+}
+
+function tetDrop(){
+  if(!tetRunning) return;
+  if(tetValid(tetCur.shape,tetCur.x,tetCur.y+1)) tetCur.y++;
+  else tetPlace();
+  tetDraw();
+  tetFid=setTimeout(tetDrop, tetSpeed);
+}
+
+function tetDraw(){
+  const cv=document.getElementById('tet-canvas');
+  if(!cv) return;
+  const ctx=cv.getContext('2d');
+  ctx.fillStyle='#111'; ctx.fillRect(0,0,TET_COLS*TET_BS,TET_ROWS*TET_BS);
+  ctx.strokeStyle='#222'; ctx.lineWidth=0.5;
+  for(let y=0;y<TET_ROWS;y++) for(let x=0;x<TET_COLS;x++){
+    if(tetBoard[y][x]) tetDrawBlock(ctx,x,y,tetBoard[y][x]);
+    else ctx.strokeRect(x*TET_BS,y*TET_BS,TET_BS,TET_BS);
+  }
+  tetCur.shape.forEach((row,dy)=>row.forEach((v,dx)=>{
+    if(v&&tetCur.y+dy>=0) tetDrawBlock(ctx,tetCur.x+dx,tetCur.y+dy,tetCur.color);
+  }));
+}
+
+function tetDrawBlock(ctx,x,y,color){
+  ctx.fillStyle=color; ctx.fillRect(x*TET_BS+1,y*TET_BS+1,TET_BS-2,TET_BS-2);
+  ctx.fillStyle='rgba(255,255,255,0.25)'; ctx.fillRect(x*TET_BS+1,y*TET_BS+1,TET_BS-2,4);
+  ctx.fillStyle='rgba(0,0,0,0.2)'; ctx.fillRect(x*TET_BS+1,y*TET_BS+TET_BS-4,TET_BS-2,3);
+}
+
+function tetDrawNext(){
+  const nc=document.getElementById('tet-next');
+  if(!nc) return;
+  const nctx=nc.getContext('2d');
+  nctx.fillStyle='#111'; nctx.fillRect(0,0,80,80);
+  const s=tetNext.shape, ox=Math.floor((4-s[0].length)/2), oy=Math.floor((4-s.length)/2);
+  s.forEach((row,dy)=>row.forEach((v,dx)=>{ if(v) tetDrawBlock(nctx,dx+ox,dy+oy,tetNext.color); }));
+}
+
+function tetOnKey(e){
+  if(!tetRunning) return;
+  if(e.code==='ArrowLeft'){ if(tetValid(tetCur.shape,tetCur.x-1,tetCur.y)) tetCur.x--; tetDraw(); }
+  else if(e.code==='ArrowRight'){ if(tetValid(tetCur.shape,tetCur.x+1,tetCur.y)) tetCur.x++; tetDraw(); }
+  else if(e.code==='ArrowDown'){ if(tetValid(tetCur.shape,tetCur.x,tetCur.y+1)) tetCur.y++; tetDraw(); }
+  else if(e.code==='ArrowUp'){ const r=tetRotate(tetCur.shape); if(tetValid(r,tetCur.x,tetCur.y)) tetCur.shape=r; tetDraw(); }
+  else if(e.code==='Space'){
+    e.preventDefault();
+    while(tetValid(tetCur.shape,tetCur.x,tetCur.y+1)) tetCur.y++;
+    tetPlace(); tetDraw();
+  }
+}
+
+function tetMobile(action){
+  if(!tetRunning) return;
+  if(action==='left'){ if(tetValid(tetCur.shape,tetCur.x-1,tetCur.y)) tetCur.x--; }
+  else if(action==='right'){ if(tetValid(tetCur.shape,tetCur.x+1,tetCur.y)) tetCur.x++; }
+  else if(action==='down'){ if(tetValid(tetCur.shape,tetCur.x,tetCur.y+1)) tetCur.y++; }
+  else if(action==='rotate'){ const r=tetRotate(tetCur.shape); if(tetValid(r,tetCur.x,tetCur.y)) tetCur.shape=r; }
+  else if(action==='drop'){ while(tetValid(tetCur.shape,tetCur.x,tetCur.y+1)) tetCur.y++; tetPlace(); }
+  tetDraw();
+}
+
+function tetGameOver(){
+  tetRunning=false; clearTimeout(tetFid);
+  document.removeEventListener('keydown', tetOnKey);
+  const ov=document.getElementById('tet-overlay');
+  if(!ov) return;
+  ov.style.display='flex';
+  ov.innerHTML=`
+    <div style="font-size:22px;font-weight:900;color:#fff;font-family:'Nunito',sans-serif;">GAME OVER</div>
+    <div style="font-size:13px;color:#bbb;text-align:center;line-height:1.6;">Score : ${tetScore} · Niveau : ${tetLevel}</div>
+    <button onclick="tetStart()" style="padding:0.7rem 2rem;font-size:16px;font-weight:800;border-radius:8px;cursor:pointer;background:#e65100;color:#fff;border:none;font-family:'Nunito',sans-serif;">▶ REJOUER</button>`;
+  if(state.student){
+    saveResult({
+      student:state.student, cls:state.studentCls,
+      className:CLASSES[state.studentCls]?CLASSES[state.studentCls].name:state.studentCls,
+      activity:'jeu_tetris',
+      bookTitle:'Jeu — Tetris',
+      score:tetScore, total:tetScore, pct:Math.min(100,Math.round(tetScore/50)),
+      date:new Date().toLocaleDateString('fr-BE'),
+      time:new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})
+    });
+  }
+}
+
+function tetStart(){
+  const ov=document.getElementById('tet-overlay');
+  if(ov) ov.style.display='none';
+  tetBoard=tetNewBoard(); tetScore=0; tetLines=0; tetLevel=1; tetSpeed=550; tetRunning=true;
+  const ts=document.getElementById('t-score');
+  const tl=document.getElementById('t-lines');
+  const tlv=document.getElementById('t-level');
+  if(ts) ts.textContent='0';
+  if(tl) tl.textContent='0';
+  if(tlv) tlv.textContent='1';
+  document.removeEventListener('keydown', tetOnKey);
+  document.addEventListener('keydown', tetOnKey);
+  tetCur=tetRandPiece(); tetNext=tetRandPiece(); tetDrawNext();
+  clearTimeout(tetFid); tetDrop();
+}
 
 // ===== LECTURE RAPIDE =====
 const LECTURE_RAPIDE_DATA = {
