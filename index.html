@@ -1542,6 +1542,20 @@ input:focus{border-color:var(--purple);}
     <div id="expression-ecrite-menu"></div>
   </div>
 
+  <!-- SCREEN: Synonymes -->
+  <div id="screen-synonymes" class="screen">
+    <button class="back-btn" onclick="showScreen('screen-expression-ecrite');renderExpressionEcriteMenu();">← Retour</button>
+    <div class="page-title">🔄 Synonymes</div>
+    <div id="synonymes-body"></div>
+  </div>
+
+  <!-- SCREEN: Antonymes -->
+  <div id="screen-antonymes" class="screen">
+    <button class="back-btn" onclick="showScreen('screen-expression-ecrite');renderExpressionEcriteMenu();">← Retour</button>
+    <div class="page-title">↔️ Antonymes</div>
+    <div id="antonymes-body"></div>
+  </div>
+
   <!-- SCREEN: Connecteurs logiques -->
   <div id="screen-connecteurs" class="screen">
     <button class="back-btn" onclick="showScreen('screen-expression-ecrite');renderExpressionEcriteMenu();">← Retour</button>
@@ -4352,7 +4366,7 @@ function loadConjResults(cls, student){
 // ===== ACTIVITY LOCK SYSTEM =====
 function getLockedActivities(){
   const s = localStorage.getItem('lq_locked_activities');
-  return s ? JSON.parse(s) : ['passe_compose','connecteurs','qvgdm_prehistoire','conte_chatbotte','conte_breme','poeme_cancre','poeme_ecriture','poeme_dormeur','poeme_sorciere','jeu_memory','jeu_tetris','jeu_rushhour','dial_ecrans','dial_bio','dial_voiture','dial_animal','grandeur_masses','grandeur_capacites','grandeur_longueurs','grandeur_perimetre','grandeur_aire','grandeur_volume','grandeur_durees','grandeur_monnaie','solide_points','solide_polygones','solide_triangles','solide_quadrilateres','solide_polyedres','num_grands_nombres','num_decimaux','num_entiers_decimaux','num_fractions','num_pourcentages','num_tout','op_vocabulaire','op_add_sous','op_mult_div','op_4_operations','op_tables','op_x10','op_x5','op_x9','op_x11','op_divisibilite','op_compensation','op_calcul_ecrit','trait_graphiques','trait_regle3','trait_problemes','hist_prehistoire','hist_antiquite','hist_moyen_age','hist_temps_modernes','hist_contemporaine','hist_grandes_periodes','sci_respiratoire','sci_digestif','sci_circulatoire','sci_coeur','sci_tegumentaire','sci_squelette','sci_engrenages','sci_electricite','sci_systeme_solaire','geo_oceans','geo_europe','geo_belgique','geo_belgique_provinces','geo_belgique_hydro','geo_belgique_communes','geo_belgique_qcm','geo_paysages','geo_hydro','geo_cartes','gram_nom','gram_determinant','gram_adjectif','gram_verbe','gram_pronom','gram_adverbe','gram_complement_nom','gram_sujet','gram_verbe_fonc','gram_predicat','gram_cdv_civ','gram_cc','gram_attribut','gram_affirm_neg','gram_pass_act'];
+  return s ? JSON.parse(s) : ['passe_compose','connecteurs','synonymes','antonymes','qvgdm_prehistoire','conte_chatbotte','conte_breme','poeme_cancre','poeme_ecriture','poeme_dormeur','poeme_sorciere','jeu_memory','jeu_tetris','jeu_rushhour','dial_ecrans','dial_bio','dial_voiture','dial_animal','grandeur_masses','grandeur_capacites','grandeur_longueurs','grandeur_perimetre','grandeur_aire','grandeur_volume','grandeur_durees','grandeur_monnaie','solide_points','solide_polygones','solide_triangles','solide_quadrilateres','solide_polyedres','num_grands_nombres','num_decimaux','num_entiers_decimaux','num_fractions','num_pourcentages','num_tout','op_vocabulaire','op_add_sous','op_mult_div','op_4_operations','op_tables','op_x10','op_x5','op_x9','op_x11','op_divisibilite','op_compensation','op_calcul_ecrit','trait_graphiques','trait_regle3','trait_problemes','hist_prehistoire','hist_antiquite','hist_moyen_age','hist_temps_modernes','hist_contemporaine','hist_grandes_periodes','sci_respiratoire','sci_digestif','sci_circulatoire','sci_coeur','sci_tegumentaire','sci_squelette','sci_engrenages','sci_electricite','sci_systeme_solaire','geo_oceans','geo_europe','geo_belgique','geo_belgique_provinces','geo_belgique_hydro','geo_belgique_communes','geo_belgique_qcm','geo_paysages','geo_hydro','geo_cartes','gram_nom','gram_determinant','gram_adjectif','gram_verbe','gram_pronom','gram_adverbe','gram_complement_nom','gram_sujet','gram_verbe_fonc','gram_predicat','gram_cdv_civ','gram_cc','gram_attribut','gram_affirm_neg','gram_pass_act'];
 }
 function saveLockedActivities(arr){
   localStorage.setItem('lq_locked_activities', JSON.stringify(arr));
@@ -12053,6 +12067,8 @@ function renderExpressionEcriteMenu(){
 
   const items = [
     {id:'connecteurs', screen:'screen-connecteurs', label:'Connecteurs logiques', icon:'🔗', desc:'Choisis le bon connecteur parmi 3-4 propositions — 10 phrases tirées aléatoirement', fn:'renderConnecteurs'},
+    {id:'synonymes', screen:'screen-synonymes', label:'Synonymes', icon:'🔄', desc:'Trouve le mot qui a le même sens — 10 phrases tirées aléatoirement', fn:'renderSynonymes'},
+    {id:'antonymes', screen:'screen-antonymes', label:'Antonymes', icon:'↔️', desc:'Trouve le mot qui a le sens contraire — 10 phrases tirées aléatoirement', fn:'renderAntonymes'},
   ];
 
   let html = '';
@@ -12263,6 +12279,215 @@ function validerConnecteurs(){
     time:new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})
   });
 }
+
+
+// ===== SYNONYMES =====
+const SYNONYMES_POOL = [
+  {phrase:"La salle de classe était ___ ce matin-là.", mot:"silencieuse", options:["vide","calme","sombre","froide"], correct:1, explication:'"Silencieuse" signifie sans bruit — "calme" est le synonyme le plus proche.'},
+  {phrase:"Le chemin de montagne était ___.", mot:"périlleux", options:["long","escarpé","dangereux","étroit"], correct:2, explication:'"Périlleux" signifie qui présente des dangers.'},
+  {phrase:"L\'explorateur était ___ après sa longue marche.", mot:"épuisé", options:["blessé","affamé","découragé","éreinté"], correct:3, explication:'"Épuisé" et "éreinté" signifient tous les deux extrêmement fatigué.'},
+  {phrase:"Le vieillard avait un regard ___.", mot:"bienveillant", options:["doux","triste","sévère","vif"], correct:0, explication:'"Bienveillant" signifie qui veut du bien aux autres — proche de "doux".'},
+  {phrase:"La rivière était ___ après les pluies.", mot:"limpide", options:["froide","profonde","transparente","agitée"], correct:2, explication:'"Limpide" signifie parfaitement clair et transparent.'},
+  {phrase:"L\'enfant était ___ face au chien.", mot:"intrépide", options:["méfiant","courageux","curieux","surpris"], correct:1, explication:'"Intrépide" signifie qui n\'a peur de rien.'},
+  {phrase:"Le discours du maire était ___.", mot:"ennuyeux", options:["long","confus","monotone","incompréhensible"], correct:2, explication:'"Monotone" désigne quelque chose d\'ennuyeux car toujours pareil.'},
+  {phrase:"La forêt semblait ___ à la tombée de la nuit.", mot:"mystérieuse", options:["inquiétante","silencieuse","dense","sombre"], correct:0, explication:'"Mystérieuse" et "inquiétante" évoquent tous les deux quelque chose d\'étrange.'},
+  {phrase:"Le repas préparé par grand-mère était ___.", mot:"savoureux", options:["copieux","chaud","délicieux","original"], correct:2, explication:'"Savoureux" et "délicieux" signifient tous les deux qui a très bon goût.'},
+  {phrase:"Le scientifique était ___ dans son travail.", mot:"méthodique", options:["rigoureux","rapide","passionné","expérimenté"], correct:0, explication:'"Méthodique" et "rigoureux" désignent quelqu\'un qui travaille avec ordre et précision.'},
+  {phrase:"Le chat ___ les oiseaux depuis la fenêtre.", mot:"observait", options:["guettait","épiait","cherchait","attendait"], correct:1, explication:'"Épier" signifie observer attentivement et discrètement.'},
+  {phrase:"Le vent ___ les feuilles des arbres.", mot:"agitait", options:["secouait","arrachait","balayait","courbait"], correct:0, explication:'"Agiter" et "secouer" signifient tous les deux faire bouger dans tous les sens.'},
+  {phrase:"Le voleur ___ le collier dans la vitrine.", mot:"déroba", options:["cassa","subtilisa","remarqua","prit"], correct:1, explication:'"Dérober" et "subtiliser" signifient voler habilement.'},
+  {phrase:"Le professeur ___ les élèves sur la leçon.", mot:"interrogea", options:["questionna","félicita","rassembla","nota"], correct:0, explication:'"Interroger" et "questionner" signifient poser des questions.'},
+  {phrase:"L\'enfant ___ pour ne pas réveiller son frère.", mot:"chuchotait", options:["criait","parlait","murmurait","appelait"], correct:2, explication:'"Chuchoter" et "murmurer" signifient parler très doucement.'},
+  {phrase:"Le cheval ___ à travers la prairie.", mot:"galopait", options:["trottait","avançait","fonçait","courait"], correct:2, explication:'"Galoper" signifie courir très vite — "fonçait" est le synonyme le plus proche.'},
+  {phrase:"La mère ___ doucement son bébé.", mot:"berçait", options:["portait","balançait","câlinait","apaisait"], correct:1, explication:'"Bercer" et "balancer" désignent le même mouvement doux et régulier.'},
+  {phrase:"Le détective ___ les indices avec soin.", mot:"examina", options:["nota","chercha","analysa","découvrit"], correct:2, explication:'"Examiner" et "analyser" signifient tous les deux étudier attentivement.'},
+  {phrase:"Le chevalier fit preuve d\'une grande ___.", mot:"bravoure", options:["force","vaillance","loyauté","adresse"], correct:1, explication:'"Bravoure" et "vaillance" désignent tous les deux le courage au combat.'},
+  {phrase:"La ___ du comte était immense.", mot:"demeure", options:["résidence","forteresse","propriété","construction"], correct:0, explication:'"Demeure" et "résidence" désignent tous les deux le lieu où l\'on habite.'},
+  {phrase:"L\'enfant observait la scène avec ___.", mot:"étonnement", options:["joie","intérêt","stupéfaction","plaisir"], correct:2, explication:'"Étonnement" et "stupéfaction" expriment la surprise, mais "stupéfaction" est plus fort.'},
+  {phrase:"La ___ de la forêt rendait la marche difficile.", mot:"pénombre", options:["demi-obscurité","humidité","densité","froideur"], correct:0, explication:'"Pénombre" désigne une lumière faible, une demi-obscurité.'},
+  {phrase:"Le rescapé avait ___ toute la nuit dans la forêt.", mot:"erré", options:["dormi","couru","vagabondé","cherché"], correct:2, explication:'"Errer" et "vagabonder" signifient se déplacer sans but précis.'},
+  {phrase:"La vieille dame avait un sourire ___.", mot:"malicieux", options:["espiègle","triste","timide","chaleureux"], correct:0, explication:'"Malicieux" et "espiègle" désignent quelqu\'un de légèrement moqueur et joueur.'},
+  {phrase:"Le torrent ___ la montagne avec fracas.", mot:"dévalait", options:["traversait","dégringolait","descendait","coulait"], correct:1, explication:'"Dévaler" et "dégringoler" signifient descendre très rapidement.'},
+  {phrase:"L\'enseignant était ___ avec ses élèves.", mot:"exigeant", options:["sévère","strict","injuste","impatient"], correct:1, explication:'"Exigeant" et "strict" désignent quelqu\'un qui demande beaucoup d\'efforts.'},
+  {phrase:"Le blessé ressentait une ___ douleur dans le bras.", mot:"vive", options:["longue","terrible","intense","profonde"], correct:2, explication:'"Vive" et "intense" qualifient tous les deux une douleur forte et immédiate.'},
+  {phrase:"Le paysage était ___ sous le soleil brûlant.", mot:"aride", options:["desséché","plat","rocheux","brûlant"], correct:0, explication:'"Aride" et "desséché" décrivent un terrain privé d\'eau et de végétation.'},
+  {phrase:"L\'aventurier ___ la falaise sans difficulté.", mot:"gravit", options:["escalada","traversa","contourna","atteignit"], correct:0, explication:'"Gravir" et "escalader" signifient tous les deux monter en s\'aidant des mains.'},
+  {phrase:"La nouvelle se ___ rapidement dans le village.", mot:"répandit", options:["arriva","circula","se propagea","surprit"], correct:2, explication:'"Se répandre" et "se propager" signifient se diffuser dans toutes les directions.'},
+  {phrase:"Le roi était réputé pour sa grande ___.", mot:"clémence", options:["sagesse","puissance","indulgence","générosité"], correct:2, explication:'"Clémence" et "indulgence" désignent la disposition à pardonner.'},
+  {phrase:"La fillette ___ dans le froid de la nuit.", mot:"frissonnait", options:["grelottait","tremblait","soufflait","pleurait"], correct:1, explication:'"Frissonner" et "trembler" désignent tous les deux un mouvement involontaire causé par le froid.'},
+  {phrase:"Emma ___ le coucher de soleil.", mot:"contemplait", options:["photographiait","admirait","regardait longuement","observait"], correct:2, explication:'"Contempler" signifie regarder longuement et avec admiration.'},
+  {phrase:"Le soleil ___ derrière les nuages.", mot:"disparaissait", options:["se cachait","brillait","descendait","s\'éteignait"], correct:0, explication:'"Disparaître" et "se cacher" expriment ici la même idée.'},
+  {phrase:"Le discours fut accueilli avec ___.", mot:"enthousiasme", options:["attention","respect","applaudissements","ferveur"], correct:3, explication:'"Enthousiasme" et "ferveur" expriment tous les deux une passion intense.'},
+];
+
+const ANTONYMES_POOL = [
+  {phrase:"Le chemin était ___ entre les deux maisons.", mot:"étroit", options:["court","sombre","large","courbe"], correct:2, explication:'L\'antonyme d\'"étroit" est "large" — qui a beaucoup d\'espace.'},
+  {phrase:"La réponse de l\'élève était ___.", mot:"pertinente", options:["courte","hors sujet","incorrecte","confuse"], correct:1, explication:'L\'antonyme de "pertinente" est "hors sujet" — qui ne convient pas.'},
+  {phrase:"Le vieux chêne était ___.", mot:"robuste", options:["vieux","immense","seul","fragile"], correct:3, explication:'L\'antonyme de "robuste" est "fragile" — qui manque de solidité.'},
+  {phrase:"La décision du juge était ___.", mot:"sévère", options:["rapide","injuste","indulgente","incomprise"], correct:2, explication:'L\'antonyme de "sévère" est "indulgente" — qui pardonne facilement.'},
+  {phrase:"L\'appartement était ___.", mot:"exigu", options:["spacieux","lumineux","agréable","moderne"], correct:0, explication:'L\'antonyme d\'"exigu" (très petit) est "spacieux" (très grand).'},
+  {phrase:"Le discours du président était ___.", mot:"ambigu", options:["long","ennuyeux","clair","important"], correct:2, explication:'L\'antonyme d\'"ambigu" (que l\'on peut interpréter de plusieurs façons) est "clair".'},
+  {phrase:"La soupe servie était ___.", mot:"brûlante", options:["salée","mauvaise","légère","froide"], correct:3, explication:'L\'antonyme de "brûlante" est "froide".'},
+  {phrase:"La petite fille était ___ en présence des adultes.", mot:"timide", options:["gentille","audacieuse","curieuse","souriante"], correct:1, explication:'L\'antonyme de "timide" est "audacieuse" — qui ose facilement.'},
+  {phrase:"Le sportif était ___ sur le terrain.", mot:"agile", options:["rapide","fort","maladroit","lent"], correct:2, explication:'L\'antonyme d\'"agile" (souple et rapide) est "maladroit".'},
+  {phrase:"La forêt était ___ dans cette région.", mot:"dense", options:["clairsemée","humide","sombre","silencieuse"], correct:0, explication:'L\'antonyme de "dense" (très serré) est "clairsemée" (peu fournie).'},
+  {phrase:"Le général ___ à ses soldats d\'avancer.", mot:"ordonna", options:["interdit","supplia","demanda","conseilla"], correct:0, explication:'L\'antonyme d\'"ordonner" est "interdire" — l\'un impose une action, l\'autre la refuse.'},
+  {phrase:"Le soleil ___ la terre au printemps.", mot:"réchauffait", options:["séchait","refroidissait","éclairait","brûlait"], correct:1, explication:'L\'antonyme de "réchauffer" est "refroidir".'},
+  {phrase:"Le chat ___ sur la souris.", mot:"bondit", options:["marcha","s\'immobilisa","tomba","recula"], correct:1, explication:'L\'antonyme de "bondir" (s\'élancer) est "s\'immobiliser" (s\'arrêter complètement).'},
+  {phrase:"La rivière ___ à mesure qu\'elle descendait.", mot:"s\'élargissait", options:["accélérait","débordait","se rétrécissait","s\'assèchait"], correct:2, explication:'L\'antonyme de "s\'élargir" est "se rétrécir".'},
+  {phrase:"L\'enfant ___ toujours à ses parents.", mot:"obéissait", options:["écoutait","désobéissait","répondait","résistait"], correct:1, explication:'L\'antonyme d\'"obéir" est "désobéir".'},
+  {phrase:"Le vieux mur ___ sous la pluie.", mot:"s'effritait", options:["noircissait","se consolidait","s\'humidifiait","se fissurait"], correct:1, explication:'L\'antonyme de "s\'effriter" (se désagréger) est "se consolider" (se renforcer).'},
+  {phrase:"Le commerçant ___ ses erreurs ce jour-là.", mot:"multiplia", options:["corrigea","réduisit","remarqua","cacha"], correct:1, explication:'L\'antonyme de "multiplier" (augmenter) est "réduire" (diminuer).'},
+  {phrase:"Les deux amis ___ après leur dispute.", mot:"se réconcilièrent", options:["se parlèrent","s\'expliquèrent","se brouillèrent","se retrouvèrent"], correct:2, explication:'L\'antonyme de "se réconcilier" est "se brouiller" — rompre une amitié.'},
+  {phrase:"Le coureur ___ dans la dernière ligne droite.", mot:"accélérait", options:["courait","avançait","soufflait","ralentissait"], correct:3, explication:'L\'antonyme d\'"accélérer" est "ralentir".'},
+  {phrase:"Le chirurgien ___ les deux parties de la plaie.", mot:"réunit", options:["ferma","écarta","examina","nettoya"], correct:1, explication:'L\'antonyme de "réunir" (rapprocher) est "écarter" (éloigner).'},
+  {phrase:"La ___ de l\'équipe fut célébrée dans toute la ville.", mot:"victoire", options:["performance","défaite","absence","surprise"], correct:1, explication:'L\'antonyme de "victoire" est "défaite".'},
+  {phrase:"Le roi était connu pour son ___.", mot:"avarice", options:["cruauté","orgueil","générosité","faiblesse"], correct:2, explication:'L\'antonyme d\'"avarice" (refus de dépenser) est "générosité".'},
+  {phrase:"Le savant avait une grande ___ du sujet.", mot:"ignorance", options:["connaissance","expérience","curiosité","passion"], correct:0, explication:'L\'antonyme d\'"ignorance" est "connaissance".'},
+  {phrase:"La ___ de son explication impressionna tout le monde.", mot:"clarté", options:["longueur","qualité","obscurité","simplicité"], correct:2, explication:'L\'antonyme de "clarté" est "obscurité" — ce qui est difficile à comprendre.'},
+  {phrase:"La ___ régnait dans le village depuis des années.", mot:"paix", options:["calme","joie","guerre","silence"], correct:2, explication:'L\'antonyme de "paix" est "guerre".'},
+  {phrase:"Le blessé marchait avec ___ malgré sa cheville tordue.", mot:"aisance", options:["lenteur","douleur","difficulté","prudence"], correct:2, explication:'L\'antonyme d\'"aisance" (facilité naturelle) est "difficulté".'},
+  {phrase:"L\'eau de la source était ___.", mot:"pure", options:["froide","rare","polluée","abondante"], correct:2, explication:'L\'antonyme de "pure" (sans impureté) est "polluée".'},
+  {phrase:"La décision fut prise de façon ___.", mot:"réfléchie", options:["rapide","collective","impulsive","discrète"], correct:2, explication:'L\'antonyme de "réfléchie" (mûrement pensée) est "impulsive" (prise sans réfléchir).'},
+  {phrase:"L\'attitude de l\'élève était ___ envers son professeur.", mot:"respectueuse", options:["froide","insolente","indifférente","réservée"], correct:1, explication:'L\'antonyme de "respectueuse" est "insolente" — qui manque de respect.'},
+  {phrase:"La nuit était ___ grâce à la pleine lune.", mot:"lumineuse", options:["froide","longue","silencieuse","sombre"], correct:3, explication:'L\'antonyme de "lumineuse" est "sombre".'},
+  {phrase:"Le soldat avança d\'un pas ___.", mot:"assuré", options:["lent","lourd","hésitant","discret"], correct:2, explication:'L\'antonyme d\'"assuré" (confiant) est "hésitant" (qui doute).'},
+  {phrase:"Le témoignage de l\'enfant était ___.", mot:"crédible", options:["court","flou","douteux","surprenant"], correct:2, explication:'L\'antonyme de "crédible" (que l\'on peut croire) est "douteux".'},
+  {phrase:"La relation entre les deux pays était ___.", mot:"tendue", options:["longue","complexe","apaisée","fragile"], correct:2, explication:'L\'antonyme de "tendue" (conflictuelle) est "apaisée" (calme et sereine).'},
+  {phrase:"La récolte de cette année était ___.", mot:"abondante", options:["tardive","belle","maigre","variée"], correct:2, explication:'L\'antonyme d\'"abondante" (en grande quantité) est "maigre" (en faible quantité).'},
+  {phrase:"Le voyageur avait l\'air ___ malgré les difficultés.", mot:"serein", options:["fatigué","courageux","anxieux","pensif"], correct:2, explication:'L\'antonyme de "serein" (calme et sans inquiétude) est "anxieux" (inquiet).'},
+];
+
+function buildVocabExercice(bodyId, pool, type){
+  const body = document.getElementById(bodyId);
+  if(!body) return;
+
+  const color = type === 'syn' ? '#1565c0' : '#6a1b9a';
+  const colorLight = type === 'syn' ? 'linear-gradient(135deg,#1565c0,#1976d2)' : 'linear-gradient(135deg,#6a1b9a,#8e24aa)';
+  const icon = type === 'syn' ? '🔄' : '↔️';
+  const titre = type === 'syn' ? 'Synonymes' : 'Antonymes';
+  const desc = type === 'syn'
+    ? 'Trouve le mot qui a le <strong>même sens</strong> que le mot en gras.'
+    : 'Trouve le mot qui a le sens <strong>contraire</strong> du mot en gras.';
+
+  const shuffled = [...pool].sort(()=>Math.random()-0.5);
+  const phrases = shuffled.slice(0, 10);
+
+  window[`vocabSels_${type}`] = {};
+  window[`vocabPhrases_${type}`] = phrases;
+  window[`vocabSubmitted_${type}`] = false;
+
+  let html = `
+    <div style="max-width:680px;margin:0 auto;font-family:'Nunito',sans-serif;">
+      <div class="card" style="margin-bottom:1rem;padding:1rem;background:${colorLight};color:#fff;border-radius:12px;">
+        <div style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;opacity:.8;">📝 Expression écrite</div>
+        <div style="font-size:18px;font-weight:900;">${icon} ${titre}</div>
+        <div style="font-size:13px;margin-top:4px;opacity:.85;">${desc} — 10 points</div>
+      </div>`;
+
+  phrases.forEach((p, i) => {
+    const phraseDisplay = p.phrase.replace('___', `<strong style="color:${color};border-bottom:2px solid ${color};">${p.mot}</strong>`);
+    html += `<div class="card" id="vocab-card-${type}-${i}" style="margin-bottom:0.8rem;padding:1rem;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+        <span style="background:${color};color:#fff;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;flex-shrink:0;">${i+1}</span>
+      </div>
+      <div style="font-size:15px;line-height:1.9;margin-bottom:12px;">${phraseDisplay}</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;" id="vocab-opts-${type}-${i}">`;
+
+    p.options.forEach((opt, oi) => {
+      html += `<button class="classif-btn" id="vocab-btn-${type}-${i}-${oi}"
+        onclick="vocabSelect('${type}',${i},${oi})">${opt}</button>`;
+    });
+
+    html += `</div>
+      <div id="vocab-expl-${type}-${i}" style="display:none;margin-top:8px;font-size:13px;padding:6px 10px;border-radius:8px;"></div>
+    </div>`;
+  });
+
+  html += `<button class="btn" id="vocab-submit-btn-${type}" onclick="validerVocab('${type}')" style="width:100%;margin-top:0.5rem;font-size:16px;padding:0.9rem;">✅ Valider mes réponses</button>
+    <div id="vocab-score-${type}" style="display:none;margin-top:1rem;" class="geo-score-panel"></div>
+    </div>`;
+
+  body.innerHTML = html;
+}
+
+function vocabSelect(type, i, oi){
+  if(window[`vocabSubmitted_${type}`]) return;
+  const p = window[`vocabPhrases_${type}`][i];
+  p.options.forEach((_,j) => {
+    const btn = document.getElementById(`vocab-btn-${type}-${i}-${j}`);
+    if(btn) btn.classList.remove('selected');
+  });
+  const btn = document.getElementById(`vocab-btn-${type}-${i}-${oi}`);
+  if(btn) btn.classList.add('selected');
+  window[`vocabSels_${type}`][i] = oi;
+}
+
+function validerVocab(type){
+  if(window[`vocabSubmitted_${type}`]) return;
+  window[`vocabSubmitted_${type}`] = true;
+
+  const phrases = window[`vocabPhrases_${type}`];
+  const sels = window[`vocabSels_${type}`] || {};
+  let score = 0;
+  const color = type === 'syn' ? '#1565c0' : '#6a1b9a';
+
+  document.getElementById(`vocab-submit-btn-${type}`).style.display = 'none';
+
+  phrases.forEach((p, i) => {
+    const sel = sels[i];
+    const ok = sel === p.correct;
+    if(ok) score++;
+
+    p.options.forEach((_,oi) => {
+      const btn = document.getElementById(`vocab-btn-${type}-${i}-${oi}`);
+      if(!btn) return;
+      btn.disabled = true;
+      if(oi === p.correct) btn.classList.add('correct-answer');
+      else if(oi === sel && !ok) btn.classList.add('wrong-answer');
+    });
+
+    const expl = document.getElementById(`vocab-expl-${type}-${i}`);
+    if(expl){
+      expl.style.display = 'block';
+      expl.style.background = ok ? '#d4f5e9' : '#fde8e8';
+      expl.style.color = ok ? 'var(--green)' : 'var(--red)';
+      expl.innerHTML = (ok ? '✅ ' : '❌ ') + p.explication;
+    }
+
+    const card = document.getElementById(`vocab-card-${type}-${i}`);
+    if(card) card.style.borderLeft = `4px solid ${ok ? 'var(--green)' : 'var(--red)'}`;
+  });
+
+  const pct = Math.round(score / 10 * 100);
+  const scoreColor = pct >= 70 ? 'var(--green)' : pct >= 50 ? 'var(--amber)' : 'var(--red)';
+  const panel = document.getElementById(`vocab-score-${type}`);
+  panel.style.display = 'block';
+  const screenId = type === 'syn' ? 'synonymes' : 'antonymes';
+  const fnName = type === 'syn' ? 'renderSynonymes' : 'renderAntonymes';
+  panel.innerHTML = `
+    <div style="font-size:56px;margin-bottom:0.5rem">${pct===100?'🎉':pct>=70?'⭐':pct>=50?'👍':'💪'}</div>
+    <div style="font-family:'Nunito',sans-serif;font-weight:900;font-size:40px;color:${scoreColor}">${score}/10</div>
+    <div style="font-size:18px;color:${scoreColor};font-weight:700;margin-bottom:1rem">${pct}%</div>
+    <div style="font-size:14px;color:var(--muted);margin-bottom:1.5rem">${pct===100?'Parfait ! Tu maîtrises tout le vocabulaire !':pct>=70?'Très bien ! Continue à t\'entraîner !':pct>=50?'Pas mal ! Relis les explications en rouge.':'Courage ! Relis bien les explications et réessaie.'}</div>
+    <button class="btn" onclick="${fnName}()" style="margin-bottom:0.5rem;width:100%;">🔄 Nouvel exercice (10 nouvelles phrases)</button>`;
+  panel.scrollIntoView({behavior:'smooth'});
+
+  const actId = type === 'syn' ? 'synonymes' : 'antonymes';
+  const actLabel = type === 'syn' ? 'Synonymes' : 'Antonymes';
+  if(state.student) saveResult({
+    student:state.student, cls:state.studentCls,
+    className:CLASSES[state.studentCls]?CLASSES[state.studentCls].name:state.studentCls,
+    activity:actId,
+    bookTitle:'Expression écrite — ' + actLabel,
+    score, total:10, pct,
+    date:new Date().toLocaleDateString('fr-BE'),
+    time:new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})
+  });
+}
+
+function renderSynonymes(){ buildVocabExercice('synonymes-body', SYNONYMES_POOL, 'syn'); }
+function renderAntonymes(){ buildVocabExercice('antonymes-body', ANTONYMES_POOL, 'ant'); }
 
 
 // ===== LECTURE RAPIDE =====
