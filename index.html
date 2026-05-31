@@ -4432,6 +4432,8 @@ function renderConjugaisonScreen(){
   grid.innerHTML = '';
 
   const isTeacher = (state.role === 'teacher');
+  (async()=>{
+  const results=isTeacher?{}:await loadStudentResults();
 
   tenses.forEach(t => {
     const locked = isActivityLocked(t.id);
@@ -4447,14 +4449,17 @@ function renderConjugaisonScreen(){
          </button>`
       : '';
 
+    const badge=isTeacher?'':renderScoreBadge(results[t.id]||null);
     div.innerHTML = `
       ${toggleBtn}
       <div class="sub-icon">${t.icon}</div>
       <div class="sub-title">${t.label}</div>
       <div class="sub-desc">${locked ? '🔒 Non disponible pour le moment' : 'Entraînement et évaluation'}</div>
+      ${badge}
     `;
     grid.appendChild(div);
   });
+  })();
 }
 
 
@@ -6214,6 +6219,8 @@ function renderGeoBelgiqueMenu(){
     {id:'geo_belgique_communes', screen:'screen-geo-belgique-communes', label:'Les communes de notre région', icon:'🏘️', desc:'Province de Liège', fn:'renderGeoCommunesScreen'},
     {id:'geo_belgique_qcm', screen:'screen-geo-belgique-qcm', label:'La Belgique — QCM', icon:'❓', desc:'50 questions sur la Belgique', fn:'renderGeoBelgiqueQCM'},
   ];
+  (async()=>{
+  const results=isTeacher?{}:await loadStudentResults();
   let html = '';
   items.forEach(t => {
     const isLocked = locked.includes(t.id);
@@ -6232,8 +6239,8 @@ function renderGeoBelgiqueMenu(){
     </div>`;
   });
   menu.innerHTML = html || '<p style="color:var(--muted);text-align:center;padding:2rem">Aucun exercice disponible pour le moment.</p>';
+  })();
 }
-
 function renderGeoBelgiqueScreen(){
   const body = document.getElementById('geo-belgique-body');
   if(!body) return;
@@ -6810,6 +6817,8 @@ function renderOrthographeMenu(){
   const items = [
     {id:'ortho_homophones', screen:'screen-homophones', label:'Homophones', icon:'🔀', desc:'a/à/as, ou/où, ce/se...', fn:'renderHomophonesMenu'},
   ];
+  (async()=>{
+  const results=isTeacher?{}:await loadStudentResults();
   let html = '';
   items.forEach(t => {
     const isLocked = locked.includes(t.id);
@@ -6827,8 +6836,8 @@ function renderOrthographeMenu(){
     </div>`;
   });
   menu.innerHTML = html || '<p style="color:var(--muted);text-align:center;padding:2rem">Aucun exercice disponible.</p>';
+  })();
 }
-
 function renderHomophonesMenu(){
   const menu = document.getElementById('homophones-menu');
   if(!menu) return;
@@ -6841,6 +6850,8 @@ function renderHomophonesMenu(){
     {id:'homo_ce', screen:'screen-homo-ce', label:"se / ce / s' / c'", icon:'🔀', desc:'10 phrases aléatoires', fn:'renderHomoCeScreen'},
     {id:'homo_on', screen:'screen-homo-on', label:'on / ont', icon:'🔀', desc:'10 phrases aléatoires', fn:'renderHomoOnScreen'},
   ];
+  (async()=>{
+  const results=isTeacher?{}:await loadStudentResults();
   let html = '';
   items.forEach(t => {
     const isLocked = locked.includes(t.id);
@@ -6905,7 +6916,6 @@ const HOMO_A_BANQUE = [
 ];
 
 let homoAState = {phrases:[], selections:{}, submitted:false};
-
 function renderHomoAScreen(){
   const body = document.getElementById('homo-a-body');
   if(!body) return;
@@ -7649,6 +7659,8 @@ function renderLectureInfoMenu(){
     categories[f.categorie].push(f);
   });
 
+  (async()=>{
+  const results=isTeacher?{}:await loadStudentResults();
   let html = '';
   Object.entries(categories).forEach(([cat, fiches]) => {
     html += `<div style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:1rem 0 0.5rem 0">${cat}</div>`;
@@ -7665,13 +7677,15 @@ function renderLectureInfoMenu(){
         <div class="fiche-category">${f.categorie}</div>
         <div style="font-weight:800;font-size:16px">${f.titre}</div>
         <div style="font-size:13px;color:var(--muted);margin-top:2px">${f.desc}</div>
+        ${isTeacher?'':renderScoreBadge(results['fiche_'+f.id]||null)}
       </div>`;
     });
   });
 
   menu.innerHTML = html || '<p style="color:var(--muted);text-align:center;padding:2rem">Aucune fiche disponible.</p>';
-}
 
+  })();
+}
 function renderFicheBaleine(){
   const body = document.getElementById('fiche-baleine-body');
   if(!body) return;
@@ -9173,23 +9187,28 @@ function renderLectureDescriptiveMenu(){
   if(!menu) return;
   const isTeacher = state.role === 'teacher';
   const locked = getLockedActivities();
-  let html = '';
-  TEXTES_DESCRIPTIFS.forEach(t => {
-    const isLocked = locked.includes('desc_' + t.id);
-    const toggleBtn = isTeacher
-      ? `<button class="card-teacher-toggle ${isLocked?'btn-show':'btn-hide'}"
-           onclick="event.stopPropagation();toggleActivity('desc_${t.id}');renderLectureDescriptiveMenu();">
-           ${isLocked?'🔓 Réactiver':'🔒 Masquer'}
-         </button>` : '';
-    if(isLocked && !isTeacher) return;
-    html += `<div class="fiche-info-card" onclick="showScreen('${t.screen}');${t.fn}();" style="position:relative;border-left:4px solid ${t.bordure};">
-      ${toggleBtn}
-      <div class="fiche-category">${t.type}</div>
-      <div style="font-weight:800;font-size:16px">${t.emoji} ${t.titre}</div>
-      <div style="font-size:13px;color:var(--muted);margin-top:2px">Texte descriptif — 5 questions</div>
-    </div>`;
-  });
-  menu.innerHTML = html || '<p style="color:var(--muted);text-align:center;padding:2rem">Aucun texte disponible.</p>';
+  (async()=>{
+    const results=isTeacher?{}:await loadStudentResults();
+    let html = '';
+    TEXTES_DESCRIPTIFS.forEach(t => {
+      const isLocked = locked.includes('desc_' + t.id);
+      const toggleBtn = isTeacher
+        ? `<button class="card-teacher-toggle ${isLocked?'btn-show':'btn-hide'}"
+             onclick="event.stopPropagation();toggleActivity('desc_${t.id}');renderLectureDescriptiveMenu();">
+             ${isLocked?'🔓 Réactiver':'🔒 Masquer'}
+           </button>` : '';
+      if(isLocked && !isTeacher) return;
+      const badge=isTeacher?'':renderScoreBadge(results['desc_'+t.id]||null);
+      html += `<div class="fiche-info-card" onclick="showScreen('${t.screen}');${t.fn}();" style="position:relative;border-left:4px solid ${t.bordure};">
+        ${toggleBtn}
+        <div class="fiche-category">${t.type}</div>
+        <div style="font-weight:800;font-size:16px">${t.emoji} ${t.titre}</div>
+        <div style="font-size:13px;color:var(--muted);margin-top:2px">Texte descriptif — 5 questions</div>
+        ${badge}
+      </div>`;
+    });
+    menu.innerHTML = html || '<p style="color:var(--muted);text-align:center;padding:2rem">Aucun texte disponible.</p>';
+  })();
 }
 
 function buildDescFiche(bodyId, data){
@@ -9530,23 +9549,28 @@ function renderLectureArgumentativeMenu(){
   if(!menu) return;
   const isTeacher = state.role === 'teacher';
   const locked = getLockedActivities();
-  let html = '';
-  TEXTES_ARG.forEach(t => {
-    const isLocked = locked.includes('arg_' + t.id);
-    const toggleBtn = isTeacher
-      ? `<button class="card-teacher-toggle ${isLocked?'btn-show':'btn-hide'}"
-           onclick="event.stopPropagation();toggleActivity('arg_${t.id}');renderLectureArgumentativeMenu();">
-           ${isLocked?'🔓 Réactiver':'🔒 Masquer'}
-         </button>` : '';
-    if(isLocked && !isTeacher) return;
-    html += `<div class="fiche-info-card" onclick="showScreen('${t.screen}');${t.fn}();" style="position:relative;border-left:4px solid ${t.bordure};">
-      ${toggleBtn}
-      <div class="fiche-category">💬 Texte argumentatif</div>
-      <div style="font-weight:800;font-size:16px">${t.emoji} ${t.titre}</div>
-      <div style="font-size:13px;color:var(--muted);margin-top:2px">4 questions + 5 arguments à classifier</div>
-    </div>`;
-  });
-  menu.innerHTML = html || '<p style="color:var(--muted);text-align:center;padding:2rem">Aucun texte disponible.</p>';
+  (async()=>{
+    const results=isTeacher?{}:await loadStudentResults();
+    let html = '';
+    TEXTES_ARG.forEach(t => {
+      const isLocked = locked.includes('arg_' + t.id);
+      const toggleBtn = isTeacher
+        ? `<button class="card-teacher-toggle ${isLocked?'btn-show':'btn-hide'}"
+             onclick="event.stopPropagation();toggleActivity('arg_${t.id}');renderLectureArgumentativeMenu();">
+             ${isLocked?'🔓 Réactiver':'🔒 Masquer'}
+           </button>` : '';
+      if(isLocked && !isTeacher) return;
+      const badge=isTeacher?'':renderScoreBadge(results['arg_'+t.id]||null);
+      html += `<div class="fiche-info-card" onclick="showScreen('${t.screen}');${t.fn}();" style="position:relative;border-left:4px solid ${t.bordure};">
+        ${toggleBtn}
+        <div class="fiche-category">💬 Texte argumentatif</div>
+        <div style="font-weight:800;font-size:16px">${t.emoji} ${t.titre}</div>
+        <div style="font-size:13px;color:var(--muted);margin-top:2px">4 questions + 5 arguments à classifier</div>
+        ${badge}
+      </div>`;
+    });
+    menu.innerHTML = html || '<p style="color:var(--muted);text-align:center;padding:2rem">Aucun texte disponible.</p>';
+  })();
 }
 
 function buildArgFiche(bodyId, data){
@@ -10088,24 +10112,29 @@ function renderLectureDialogueeMenu(){
   if(!menu) return;
   const isTeacher = state.role === 'teacher';
   const locked = getLockedActivities();
-  let html = '';
-  DIALOGUES_LIST.forEach(t => {
-    const isLocked = locked.includes('dial_' + t.id);
-    const toggleBtn = isTeacher
-      ? `<button class="card-teacher-toggle ${isLocked?'btn-show':'btn-hide'}"
-           onclick="event.stopPropagation();toggleActivity('dial_${t.id}');renderLectureDialogueeMenu();">
-           ${isLocked?'🔓 Réactiver':'🔒 Masquer'}
-         </button>` : '';
-    if(isLocked && !isTeacher) return;
-    html += `<div class="fiche-info-card" onclick="showScreen('${t.screen}');${t.fn}();" style="position:relative;border-left:4px solid ${t.bordure};">
-      ${toggleBtn}
-      <div class="fiche-category">🎭 Dialogue — Débat</div>
-      <div style="font-weight:800;font-size:16px">${t.emoji} ${t.titre}</div>
-      <div style="font-size:13px;color:var(--muted);margin-top:4px">${t.intervenants.join(' · ')}</div>
-      <div style="font-size:12px;color:var(--muted);margin-top:2px">4 questions + attribution + intentions</div>
-    </div>`;
-  });
-  menu.innerHTML = html || '<p style="color:var(--muted);text-align:center;padding:2rem">Aucun texte disponible.</p>';
+  (async()=>{
+    const results=isTeacher?{}:await loadStudentResults();
+    let html = '';
+    DIALOGUES_LIST.forEach(t => {
+      const isLocked = locked.includes('dial_' + t.id);
+      const toggleBtn = isTeacher
+        ? `<button class="card-teacher-toggle ${isLocked?'btn-show':'btn-hide'}"
+             onclick="event.stopPropagation();toggleActivity('dial_${t.id}');renderLectureDialogueeMenu();">
+             ${isLocked?'🔓 Réactiver':'🔒 Masquer'}
+           </button>` : '';
+      if(isLocked && !isTeacher) return;
+      const badge=isTeacher?'':renderScoreBadge(results['dial_'+t.id]||null);
+      html += `<div class="fiche-info-card" onclick="showScreen('${t.screen}');${t.fn}();" style="position:relative;border-left:4px solid ${t.bordure};">
+        ${toggleBtn}
+        <div class="fiche-category">🎭 Dialogue — Débat</div>
+        <div style="font-weight:800;font-size:16px">${t.emoji} ${t.titre}</div>
+        <div style="font-size:13px;color:var(--muted);margin-top:4px">${t.intervenants.join(' · ')}</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:2px">4 questions + attribution + intentions</div>
+        ${badge}
+      </div>`;
+    });
+    menu.innerHTML = html || '<p style="color:var(--muted);text-align:center;padding:2rem">Aucun texte disponible.</p>';
+  })();
 }
 
 function buildDialFiche(bodyId, data){
@@ -11227,6 +11256,8 @@ function renderLectureNarrativeMenu(){
     {id:'poemes', label:'Poèmes', icon:'🎵', desc:'Le Cancre, Page d\'écriture, Drôle de bonne femme…', action:"showScreen('screen-poemes');renderPoemesMenu();"},
   ];
 
+  (async()=>{
+  const results=isTeacher?{}:await loadStudentResults();
   let html = '';
   items.forEach(t => {
     if(t.disabled){
@@ -11252,8 +11283,8 @@ function renderLectureNarrativeMenu(){
     </div>`;
   });
   menu.innerHTML = html;
+  })();
 }
-
 function renderContesMenu(){
   const menu = document.getElementById('contes-menu');
   if(!menu) return;
@@ -11261,27 +11292,32 @@ function renderContesMenu(){
   const locked = getLockedActivities();
 
   const contes = [
-    {id:'conte_chatbotte', screen:'screen-conte-chatbotte', titre:'Le Chat Botté', auteur:'Charles Perrault', emoji:'🐱', couleur:'#8b3a00', fn:'renderConteChatBotte'},
-    {id:'conte_breme', screen:'screen-conte-breme', titre:'Les Musiciens de Brême', auteur:'Frères Grimm', emoji:'🎵', couleur:'#1a3a5c', fn:'renderConteBreme'},
+    {id:'conte_chatbotte', activityId:'conte_chatbotte', screen:'screen-conte-chatbotte', titre:'Le Chat Botté', auteur:'Charles Perrault', emoji:'🐱', couleur:'#8b3a00', fn:'renderConteChatBotte'},
+    {id:'conte_breme', activityId:'conte_breme', screen:'screen-conte-breme', titre:'Les Musiciens de Brême', auteur:'Frères Grimm', emoji:'🎵', couleur:'#1a3a5c', fn:'renderConteBreme'},
   ];
 
-  let html = '';
-  contes.forEach(c => {
-    const isLocked = locked.includes(c.id);
-    const toggleBtn = isTeacher
-      ? `<button class="card-teacher-toggle ${isLocked?'btn-show':'btn-hide'}"
-           onclick="event.stopPropagation();toggleActivity('${c.id}');renderContesMenu();">
-           ${isLocked?'🔓 Réactiver':'🔒 Masquer'}
-         </button>` : '';
-    if(isLocked && !isTeacher) return;
-    html += `<div class="fiche-info-card" onclick="showScreen('${c.screen}');${c.fn}();" style="position:relative;border-left:4px solid ${c.couleur};">
-      ${toggleBtn}
-      <div class="fiche-category">🏰 Conte</div>
-      <div style="font-weight:800;font-size:16px">${c.emoji} ${c.titre}</div>
-      <div style="font-size:13px;color:var(--muted);margin-top:2px">${c.auteur}</div>
-    </div>`;
-  });
-  menu.innerHTML = html || '<p style="color:var(--muted);text-align:center;padding:2rem">Aucun conte disponible.</p>';
+  (async () => {
+    const results = isTeacher ? {} : await loadStudentResults();
+    let html = '';
+    contes.forEach(c => {
+      const isLocked = locked.includes(c.id);
+      const toggleBtn = isTeacher
+        ? `<button class="card-teacher-toggle ${isLocked?'btn-show':'btn-hide'}"
+             onclick="event.stopPropagation();toggleActivity('${c.id}');renderContesMenu();">
+             ${isLocked?'🔓 Réactiver':'🔒 Masquer'}
+           </button>` : '';
+      if(isLocked && !isTeacher) return;
+      const badge = isTeacher ? '' : renderScoreBadge(results[c.activityId]||null);
+      html += `<div class="fiche-info-card" onclick="showScreen('${c.screen}');${c.fn}();" style="position:relative;border-left:4px solid ${c.couleur};">
+        ${toggleBtn}
+        <div class="fiche-category">🏰 Conte</div>
+        <div style="font-weight:800;font-size:16px">${c.emoji} ${c.titre}</div>
+        <div style="font-size:13px;color:var(--muted);margin-top:2px">${c.auteur}</div>
+        ${badge}
+      </div>`;
+    });
+    menu.innerHTML = html || '<p style="color:var(--muted);text-align:center;padding:2rem">Aucun conte disponible.</p>';
+  })();
 }
 
 // ===== MOTEUR COMMUN CONTES =====
@@ -11611,6 +11647,8 @@ function renderPrehistoireMenu(){
     {id:'qvgdm_prehistoire', screen:'screen-qvgdm-prehistoire', label:'Qui veut gagner des millions ?', icon:'🏆', desc:'15 questions sur la Préhistoire', fn:'renderQVGDMPrehistoire'},
   ];
 
+  (async()=>{
+  const results=isTeacher?{}:await loadStudentResults();
   let html = '';
   items.forEach(t => {
     const isLocked = locked.includes(t.id);
@@ -11625,6 +11663,7 @@ function renderPrehistoireMenu(){
       <div class="fiche-category">🦴 La Préhistoire</div>
       <div style="font-weight:800;font-size:16px">${t.icon} ${t.label}</div>
       <div style="font-size:13px;color:var(--muted);margin-top:2px">${t.desc}</div>
+      ${isTeacher?'':renderScoreBadge(results[t.id]||null)}
     </div>`;
   });
   menu.innerHTML = html || '<p style="color:var(--muted);text-align:center;padding:2rem">Aucun exercice disponible.</p>';
@@ -11680,7 +11719,6 @@ const QVGDM_AMI=[
 
 let qvgdmCur=0, qvgdmAnswered=false, qvgdmSafeLevel=0;
 let qvgdmJokers={f:true,p:true,a:true};
-
 function renderQVGDMPrehistoire(){
   const body = document.getElementById('qvgdm-prehistoire-body');
   if(!body) return;
@@ -12008,14 +12046,18 @@ function renderPoemesMenu(){
   if(!menu)return;
   const isTeacher=state.role==='teacher';
   const locked=getLockedActivities();
-  let html='';
-  POEMES_LIST.forEach(p=>{
-    const isLocked=locked.includes('poeme_'+p.id);
-    const toggleBtn=isTeacher?`<button class="card-teacher-toggle ${isLocked?'btn-show':'btn-hide'}" onclick="event.stopPropagation();toggleActivity('poeme_${p.id}');renderPoemesMenu();">${isLocked?'🔓 Réactiver':'🔒 Masquer'}</button>`:'';
-    if(isLocked&&!isTeacher)return;
-    html+=`<div class="fiche-info-card" onclick="showScreen('${p.screen}');${p.fn}();" style="position:relative;border-left:4px solid ${p.couleur};">${toggleBtn}<div class="fiche-category">🎵 Poème</div><div style="font-weight:800;font-size:16px">${p.emoji} ${p.titre}</div><div style="font-size:13px;color:var(--muted);margin-top:2px">${p.auteur}</div></div>`;
-  });
-  menu.innerHTML=html||'<p style="color:var(--muted);text-align:center;padding:2rem">Aucun poème disponible.</p>';
+  (async()=>{
+    const results=isTeacher?{}:await loadStudentResults();
+    let html='';
+    POEMES_LIST.forEach(p=>{
+      const isLocked=locked.includes('poeme_'+p.id);
+      const toggleBtn=isTeacher?`<button class="card-teacher-toggle ${isLocked?'btn-show':'btn-hide'}" onclick="event.stopPropagation();toggleActivity('poeme_${p.id}');renderPoemesMenu();">${isLocked?'🔓 Réactiver':'🔒 Masquer'}</button>`:'';
+      if(isLocked&&!isTeacher)return;
+      const badge=isTeacher?'':renderScoreBadge(results['poeme_'+p.id]||null);
+      html+=`<div class="fiche-info-card" onclick="showScreen('${p.screen}');${p.fn}();" style="position:relative;border-left:4px solid ${p.couleur};">${toggleBtn}<div class="fiche-category">🎵 Poème</div><div style="font-weight:800;font-size:16px">${p.emoji} ${p.titre}</div><div style="font-size:13px;color:var(--muted);margin-top:2px">${p.auteur}</div>${badge}</div>`;
+    });
+    menu.innerHTML=html||'<p style="color:var(--muted);text-align:center;padding:2rem">Aucun poème disponible.</p>';
+  })();
 }
 
 function buildPoemeFiche(bodyId,data){
@@ -12099,6 +12141,8 @@ function renderExpressionEcriteMenu(){
     {id:'antonymes', screen:'screen-antonymes', label:'Antonymes', icon:'↔️', desc:'Trouve le mot qui a le sens contraire — 10 phrases tirées aléatoirement', fn:'renderAntonymes'},
   ];
 
+  (async()=>{
+  const results=isTeacher?{}:await loadStudentResults();
   let html = '';
   items.forEach(t => {
     const isLocked = locked.includes(t.id);
@@ -12113,6 +12157,7 @@ function renderExpressionEcriteMenu(){
       <div class="fiche-category">📝 Expression écrite</div>
       <div style="font-weight:800;font-size:16px">${t.icon} ${t.label}</div>
       <div style="font-size:13px;color:var(--muted);margin-top:2px">${t.desc}</div>
+      ${isTeacher?'':renderScoreBadge(results[t.id]||null)}
     </div>`;
   });
   menu.innerHTML = html || '<p style="color:var(--muted);text-align:center;padding:2rem">Aucun exercice disponible.</p>';
@@ -12169,7 +12214,6 @@ const CONNECTEURS_POOL = [
 ];
 
 let connexSels = {}, connexPhrases = [], connexScore = 0, connexSubmitted = false;
-
 function renderConnecteurs(){
   const body = document.getElementById('connecteurs-body');
   if(!body) return;
@@ -12529,6 +12573,8 @@ function renderTraitementDonneesMenu(){
     {id:'td_graphique', screen:'screen-td-graphique', label:'Lire un graphique', icon:'📊', desc:'Diagrammes à barres et graphiques linéaires — lire, comparer, interpréter', fn:'renderTDGraphique'},
     {id:'td_moyenne', screen:'screen-td-moyenne', label:'Moyenne et étendue', icon:'🔢', desc:'Calculer la moyenne et l\'étendue d\'une série de données', fn:'renderTDMoyenne'},
   ];
+  (async()=>{
+  const results=isTeacher?{}:await loadStudentResults();
   let html = '';
   items.forEach(t => {
     const isLocked = locked.includes(t.id);
@@ -12543,6 +12589,7 @@ function renderTraitementDonneesMenu(){
       <div class="fiche-category">📊 Traitement de données</div>
       <div style="font-weight:800;font-size:16px">${t.icon} ${t.label}</div>
       <div style="font-size:13px;color:var(--muted);margin-top:2px">${t.desc}</div>
+      ${isTeacher?'':renderScoreBadge(results[t.id]||null)}
     </div>`;
   });
   menu.innerHTML = html;
@@ -12618,7 +12665,6 @@ const TD_TABLEAUX = [
 ];
 
 let tdTableauIdx = 0, tdTableauSels = {}, tdTableauSubmitted = false;
-
 function renderTDTableau(){
   tdTableauIdx = Math.floor(Math.random() * TD_TABLEAUX.length);
   tdTableauSels = {};
@@ -13070,6 +13116,69 @@ function validerTDMoyenne(){
   if(state.student) saveResult({student:state.student,cls:state.studentCls,className:CLASSES[state.studentCls]?CLASSES[state.studentCls].name:state.studentCls,activity:'td_moyenne',bookTitle:'Traitement de données — Moyenne et étendue',score,total,pct,date:new Date().toLocaleDateString('fr-BE'),time:new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})});
 }
 
+
+
+// ===== SYSTÈME DE SUIVI DES RÉSULTATS ÉLÈVE =====
+// Cache des résultats chargés depuis Firebase
+let _studentResultsCache = null;
+let _studentResultsCacheFor = null;
+
+async function loadStudentResults(){
+  if(!state.student || !state.studentCls) return {};
+  const cacheKey = state.student + '_' + state.studentCls;
+  if(_studentResultsCache && _studentResultsCacheFor === cacheKey) return _studentResultsCache;
+  try {
+    const snap = await firebaseDB.ref(`results/${state.studentCls}/${state.student}`).once('value');
+    const raw = snap.exists() ? snap.val() : {};
+    // Organiser par activity : garder le dernier résultat
+    const byActivity = {};
+    Object.values(raw).forEach(r => {
+      const act = r.activity;
+      if(!act) return;
+      if(!byActivity[act] || r.date > byActivity[act].date) byActivity[act] = r;
+    });
+    _studentResultsCache = byActivity;
+    _studentResultsCacheFor = cacheKey;
+    return byActivity;
+  } catch(e) { return {}; }
+}
+
+function invalidateResultsCache(){
+  _studentResultsCache = null;
+  _studentResultsCacheFor = null;
+}
+
+// Surcharger saveResult pour invalider le cache
+const _origSaveResult = saveResult;
+saveResult = function(data){
+  invalidateResultsCache();
+  return _origSaveResult(data);
+};
+
+function renderScoreBadge(result){
+  if(!result) return `<div style="font-size:11px;color:var(--muted);margin-top:4px;">⬜ Non fait</div>`;
+  const pct = result.pct || 0;
+  const color = pct >= 70 ? '#27ae60' : pct >= 50 ? '#e67e22' : '#e74c3c';
+  const icon = pct >= 70 ? '✅' : pct >= 50 ? '🟠' : '🔴';
+  return `<div style="margin-top:6px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+    <span style="background:${color}22;border:1px solid ${color};border-radius:20px;padding:2px 10px;font-size:11px;font-weight:800;color:${color};">
+      ${icon} ${result.score}/${result.total} — ${pct}%
+    </span>
+    <span style="font-size:10px;color:var(--muted);">Fait le ${result.date}</span>
+  </div>`;
+}
+
+async function renderMenuWithScores(menuId, items, buildCard){
+  const menu = document.getElementById(menuId);
+  if(!menu) return;
+  menu.innerHTML = '<div style="text-align:center;padding:1rem;color:var(--muted);">Chargement…</div>';
+  const results = state.role === 'student' ? await loadStudentResults() : {};
+  let html = '';
+  items.forEach(item => {
+    html += buildCard(item, results[item.activityId] || null);
+  });
+  menu.innerHTML = html || '<p style="color:var(--muted);text-align:center;padding:2rem">Aucun exercice disponible.</p>';
+}
 
 // ===== LECTURE RAPIDE =====
 const LECTURE_RAPIDE_DATA = {
@@ -13677,6 +13786,8 @@ function renderLectureRapideMenu(){
   const isTeacher = state.role === 'teacher';
   const locked = getLockedActivities();
 
+  (async()=>{
+  const results=isTeacher?{}:await loadStudentResults();
   let html = '';
   Object.entries(LECTURE_RAPIDE_DATA).forEach(([niv, data]) => {
     const isLocked = locked.includes('lr_niveau_' + niv);
@@ -13694,8 +13805,8 @@ function renderLectureRapideMenu(){
     </div>`;
   });
   menu.innerHTML = html || '<p style="color:var(--muted);text-align:center;padding:2rem">Aucun niveau disponible pour le moment.</p>';
+  })();
 }
-
 function renderLectureRapideNiveau(niv){
   const data = LECTURE_RAPIDE_DATA[niv];
   const menu = document.getElementById('lecture-rapide-menu');
@@ -13909,6 +14020,8 @@ function renderSciCirculatoireMenu(){
   const items = [
     {id:'sci_coeur', screen:'screen-sci-coeur', label:'Le cœur', icon:'❤️', desc:'Légender le schéma du cœur', fn:'renderSciCoeurScreen'},
   ];
+  (async()=>{
+  const results=isTeacher?{}:await loadStudentResults();
   let html = '';
   items.forEach(t => {
     const isLocked = locked.includes(t.id);
@@ -13944,7 +14057,6 @@ const SCI_COEUR_DATA = [
 ];
 
 let sciCoeurState = {answers:{}, dragging:null};
-
 function renderSciCoeurScreen(){
   const body = document.getElementById('sci-coeur-body');
   if(!body) return;
@@ -14216,6 +14328,8 @@ const GEOGRAPHIE_ITEMS = [
 
 function renderGeographieScreen(){
   const isTeacher = (state.role === 'teacher');
+  (async()=>{
+  const results=isTeacher?{}:await loadStudentResults();
   ['geographie-grid','geographie-grid-teacher'].forEach(gridId => {
     const grid = document.getElementById(gridId);
     if(!grid) return;
@@ -14236,11 +14350,13 @@ function renderGeographieScreen(){
            </button>`
         : '';
 
+      const badge=isTeacher?'':renderScoreBadge(results[t.id]||null);
       div.innerHTML = `
         ${toggleBtn}
         <div class="sub-icon">${t.icon}</div>
         <div class="sub-title">${t.label}</div>
         <div class="sub-desc">${locked && !isTeacher ? '🔒 Non disponible pour le moment' : t.id === 'geo_belgique' ? 'Provinces et chefs-lieux' : 'Exercices à venir'}</div>
+        ${badge}
       `;
       grid.appendChild(div);
     });
@@ -14258,9 +14374,10 @@ const SCIENCES_ITEMS = [
   {id:'sci_electricite', screen:'screen-sci-electricite', label:"L'électricité", icon:'⚡'},
   {id:'sci_systeme_solaire', screen:'screen-sci-systeme-solaire', label:'Le système solaire', icon:'🪐'},
 ];
-
 function renderSciencesScreen(){
   const isTeacher = (state.role === 'teacher');
+  (async()=>{
+  const results=isTeacher?{}:await loadStudentResults();
   ['sciences-grid','sciences-grid-teacher'].forEach(gridId => {
     const grid = document.getElementById(gridId);
     if(!grid) return;
@@ -14281,15 +14398,18 @@ function renderSciencesScreen(){
            </button>`
         : '';
 
+      const badge=isTeacher?'':renderScoreBadge(results[t.id]||null);
       div.innerHTML = `
         ${toggleBtn}
         <div class="sub-icon">${t.icon}</div>
         <div class="sub-title">${t.label}</div>
         <div class="sub-desc">${locked && !isTeacher ? '🔒 Non disponible pour le moment' : 'Exercices à venir'}</div>
+        ${badge}
       `;
       grid.appendChild(div);
     });
   });
+  })();
 }
 
 // ===== HISTOIRE NAVIGATION =====
@@ -14304,6 +14424,8 @@ const HISTOIRE_ITEMS = [
 
 function renderHistoireScreen(){
   const isTeacher = (state.role === 'teacher');
+  (async()=>{
+  const results=isTeacher?{}:await loadStudentResults();
   ['histoire-grid','histoire-grid-teacher'].forEach(gridId => {
     const grid = document.getElementById(gridId);
     if(!grid) return;
@@ -14321,15 +14443,18 @@ function renderHistoireScreen(){
            </button>`
         : '';
 
+      const badge=isTeacher?'':renderScoreBadge(results[t.id]||null);
       div.innerHTML = `
         ${toggleBtn}
         <div class="sub-icon">${t.icon}</div>
         <div class="sub-title">${t.label}</div>
         <div class="sub-desc">${locked && !isTeacher ? '🔒 Non disponible pour le moment' : 'Exercices à venir'}</div>
+        ${badge}
       `;
       grid.appendChild(div);
     });
   });
+  })();
 }
 
 function goToEveilSection(section){
@@ -14517,6 +14642,8 @@ const GRANDEURS_ITEMS = [
 
 function renderGrandeursScreen(){
   const isTeacher = (state.role === 'teacher');
+  (async()=>{
+  const results=isTeacher?{}:await loadStudentResults();
   ['grandeurs-grid','grandeurs-grid-teacher'].forEach(gridId => {
     const grid = document.getElementById(gridId);
     if(!grid) return;
@@ -14534,14 +14661,17 @@ function renderGrandeursScreen(){
            </button>`
         : '';
 
+      const badge=isTeacher?'':renderScoreBadge(results[t.id]||null);
       div.innerHTML = `
         ${toggleBtn}
         <div class="sub-icon">${t.icon}</div>
         <div class="sub-title">${t.label}</div>
         <div class="sub-desc">${locked && !isTeacher ? '🔒 Non disponible pour le moment' : 'Exercices à venir'}</div>
+        ${badge}
       `;
       grid.appendChild(div);
     });
+  })();
   });
 }
 
