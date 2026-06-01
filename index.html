@@ -13097,11 +13097,16 @@ function loadStudentResults(){
   if(!state.student || !state.studentCls) return;
   const cacheKey = state.student + '_' + state.studentCls;
   if(_studentResultsCacheFor === cacheKey) return;
+  // Attendre que Firebase soit prêt
+  if(!window.FB_ready){
+    setTimeout(loadStudentResults, 500);
+    return;
+  }
   _studentResultsCacheFor = cacheKey;
   _studentResultsCache = {};
   try {
     firebaseDB.ref('results/' + state.studentCls + '/' + state.student).once('value', function(snap){
-      if(!snap.exists()) return;
+      if(!snap.exists()){ refreshCurrentMenu(); return; }
       const raw = snap.val();
       Object.values(raw).forEach(function(r){
         const act = r.activity;
@@ -13112,7 +13117,7 @@ function loadStudentResults(){
       // Rafraîchir le menu courant pour afficher les badges
       refreshCurrentMenu();
     });
-  } catch(e) {}
+  } catch(e) { console.error('loadStudentResults error:', e); }
 }
 
 function refreshCurrentMenu(){
@@ -13134,6 +13139,9 @@ function refreshCurrentMenu(){
     'screen-traitement-donnees': 'renderTraitementDonneesMenu',
     'screen-geo-belgique': 'renderGeoBelgiqueMenu',
     'screen-hist-prehistoire': 'renderPrehistoireMenu',
+    'screen-conjugaison': 'renderConjugaisonScreen',
+    'screen-sci-circulatoire': 'renderSciCirculatoireMenu',
+    'screen-lecture-narrative': 'renderLectureNarrativeMenu',
   };
   const fn = menuMap[id];
   if(fn && window[fn]) window[fn]();
