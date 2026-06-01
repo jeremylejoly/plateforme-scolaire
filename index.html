@@ -1783,6 +1783,27 @@ input:focus{border-color:var(--purple);}
     <div id="num-grands-nombres-menu"></div>
   </div>
 
+  <!-- SCREEN: Écrire un nombre -->
+  <div id="screen-num-ecrire" class="screen">
+    <button class="back-btn" onclick="showScreen('screen-num-grands-nombres');renderGrandsNombresMenu();">← Retour</button>
+    <div class="page-title">✏️ Écrire un nombre</div>
+    <div id="num-ecrire-body"></div>
+  </div>
+
+  <!-- SCREEN: Décomposer un nombre -->
+  <div id="screen-num-decomposer" class="screen">
+    <button class="back-btn" onclick="showScreen('screen-num-grands-nombres');renderGrandsNombresMenu();">← Retour</button>
+    <div class="page-title">🔍 Décomposer un nombre</div>
+    <div id="num-decomposer-body"></div>
+  </div>
+
+  <!-- SCREEN: Classer des nombres -->
+  <div id="screen-num-classer" class="screen">
+    <button class="back-btn" onclick="showScreen('screen-num-grands-nombres');renderGrandsNombresMenu();">← Retour</button>
+    <div class="page-title">↕️ Classer des nombres</div>
+    <div id="num-classer-body"></div>
+  </div>
+
   <!-- SCREEN: Lire un nombre -->
   <div id="screen-num-lire" class="screen">
     <button class="back-btn" onclick="showScreen('screen-num-grands-nombres');renderGrandsNombresMenu();">← Retour</button>
@@ -13526,6 +13547,9 @@ function renderGrandsNombresMenu(){
   const locked = getLockedActivities();
   const items = [
     {id:'num_lire', screen:'screen-num-lire', label:'Lire un nombre', icon:'👁️', desc:'10 questions — Choisir la bonne lecture d\'un nombre en chiffres', fn:'renderNumLire'},
+    {id:'num_ecrire', screen:'screen-num-ecrire', label:'Écrire un nombre', icon:'✏️', desc:'10 questions — Choisir la bonne écriture en chiffres d\'un nombre en lettres', fn:'renderNumEcrire'},
+    {id:'num_decomposer', screen:'screen-num-decomposer', label:'Décomposer un nombre', icon:'🔍', desc:'10 questions — Choisir la bonne décomposition d\'un nombre', fn:'renderNumDecomposer'},
+    {id:'num_classer', screen:'screen-num-classer', label:'Classer des nombres', icon:'↕️', desc:'2 questions — Glisse les nombres dans le bon ordre (croissant et décroissant)', fn:'renderNumClasser'},
   ];
   let html = '';
   items.forEach(t => {
@@ -13546,6 +13570,555 @@ function renderGrandsNombresMenu(){
     </div>`;
   });
   menu.innerHTML = html || '<p style="color:var(--muted);text-align:center;padding:2rem">Aucun exercice disponible.</p>';
+}
+
+// ===== CLASSER DES NOMBRES =====
+const NUM_CLASSER_CROISSANT = [
+  {nombres:['45 236 789','452 367','45 263 789','4 523 678','145 236 789'], ordre:[1,3,0,2,4]},
+  {nombres:['300 050 000','30 050 000','300 500 000','3 050 000','300 005 000'], ordre:[3,1,4,0,2]},
+  {nombres:['87 654 321','87 645 321','87 654 231','78 654 321','87 654 312'], ordre:[3,1,2,4,0]},
+  {nombres:['500 000 500','500 050 000','50 500 000','500 500 000','500 005 000'], ordre:[2,0,4,1,3]},
+  {nombres:['12 034 567','120 345 670','1 203 456','12 345 670','120 034 567'], ordre:[2,0,3,4,1]},
+  {nombres:['999 000 001','99 900 001','999 100 001','999 000 010','999 000 100'], ordre:[1,0,3,4,2]},
+  {nombres:['63 000 000','630 000 000','6 300 000','603 000 000','360 000 000'], ordre:[2,0,4,3,1]},
+  {nombres:['408 070 000','408 007 000','480 070 000','408 700 000','408 070 100'], ordre:[1,0,4,3,2]},
+  {nombres:['25 000 025','25 002 500','25 200 005','2 500 025','250 002 500'], ordre:[3,0,1,2,4]},
+  {nombres:['716 384 295','716 483 295','761 384 295','716 384 925','716 384 259'], ordre:[4,0,3,1,2]},
+];
+
+const NUM_CLASSER_DECROISSANT = [
+  {nombres:['100 000 001','10 000 001','100 100 001','100 010 001','100 001 001'], ordre:[2,3,4,0,1]},
+  {nombres:['54 321 000','543 210 000','5 432 100','54 312 000','543 120 000'], ordre:[1,4,0,3,2]},
+  {nombres:['200 200 200','220 000 200','202 000 200','200 020 200','200 002 200'], ordre:[1,2,0,3,4]},
+  {nombres:['37 408 516','37 048 516','374 085 160','37 480 516','3 740 851'], ordre:[2,3,0,1,4]},
+  {nombres:['888 800 008','888 080 008','888 008 008','880 888 008','808 888 008'], ordre:[0,1,2,3,4]},
+  {nombres:['456 789 123','456 798 123','456 789 132','465 789 123','456 879 123'], ordre:[3,4,1,2,0]},
+  {nombres:['9 080 706','90 807 060','908 070 600','9 807 060','98 070 600'], ordre:[2,4,1,3,0]},
+  {nombres:['333 303 333','333 033 333','333 330 333','333 333 033','333 333 303'], ordre:[4,3,2,0,1]},
+  {nombres:['600 006 060','60 600 606','606 006 006','600 060 006','6 060 600'], ordre:[2,3,0,1,4]},
+  {nombres:['147 258 369','174 258 369','147 528 369','147 258 963','142 758 369'], ordre:[1,2,3,0,4]},
+];
+
+let numClasserState = {
+  croissantSerie: null,
+  decroissantSerie: null,
+  croissantOrder: [],
+  decroissantOrder: [],
+  submitted: false,
+  dragSrc: null,
+  dragType: null,
+};
+
+function renderNumClasser(){
+  const body = document.getElementById('num-classer-body');
+  if(!body) return;
+
+  // Choisir 1 série croissante et 1 décroissante au hasard
+  const ci = Math.floor(Math.random() * NUM_CLASSER_CROISSANT.length);
+  const di = Math.floor(Math.random() * NUM_CLASSER_DECROISSANT.length);
+  numClasserState.croissantSerie = NUM_CLASSER_CROISSANT[ci];
+  numClasserState.decroissantSerie = NUM_CLASSER_DECROISSANT[di];
+  numClasserState.submitted = false;
+
+  // Mélanger les nombres pour affichage
+  const shuffleIdxC = [...Array(5).keys()].sort(()=>Math.random()-0.5);
+  const shuffleIdxD = [...Array(5).keys()].sort(()=>Math.random()-0.5);
+  numClasserState.croissantOrder = shuffleIdxC;
+  numClasserState.decroissantOrder = shuffleIdxD;
+
+  body.innerHTML = `
+    <div style="max-width:680px;margin:0 auto;font-family:'Nunito',sans-serif;">
+      <div class="card" style="margin-bottom:1rem;padding:1rem;background:linear-gradient(135deg,#e65100,#f57c00);color:#fff;border-radius:12px;">
+        <div style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;opacity:.8;margin-bottom:4px;">🔢 Grands nombres</div>
+        <div style="font-size:18px;font-weight:900;">↕️ Classer des nombres</div>
+        <div style="font-size:13px;margin-top:4px;opacity:.85;">Glisse les nombres dans le bon ordre — 2 questions</div>
+      </div>
+
+      <div class="card" style="padding:1rem;margin-bottom:1rem;">
+        <div style="font-size:13px;font-weight:800;color:#e65100;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;">📋 Comment jouer ?</div>
+        <p style="font-size:13px;color:var(--muted);">Glisse chaque nombre avec ton doigt ou ta souris pour le déplacer dans la bonne position.</p>
+      </div>
+
+      <!-- Question 1 : Croissant -->
+      <div class="card" id="classer-q1" style="padding:1rem;margin-bottom:1rem;">
+        <div style="font-size:14px;font-weight:800;margin-bottom:12px;">📈 Question 1 — Range ces nombres du <strong>plus petit au plus grand</strong> :</div>
+        <div id="classer-list-c" style="display:flex;flex-direction:column;gap:8px;"></div>
+        <div id="classer-result-c" style="display:none;margin-top:10px;font-size:13px;padding:8px;border-radius:8px;"></div>
+      </div>
+
+      <!-- Question 2 : Décroissant -->
+      <div class="card" id="classer-q2" style="padding:1rem;margin-bottom:1rem;">
+        <div style="font-size:14px;font-weight:800;margin-bottom:12px;">📉 Question 2 — Range ces nombres du <strong>plus grand au plus petit</strong> :</div>
+        <div id="classer-list-d" style="display:flex;flex-direction:column;gap:8px;"></div>
+        <div id="classer-result-d" style="display:none;margin-top:10px;font-size:13px;padding:8px;border-radius:8px;"></div>
+      </div>
+
+      <button class="btn" id="classer-submit" onclick="validerNumClasser()" style="width:100%;font-size:16px;padding:0.9rem;background:#e65100;">✅ Valider mes réponses</button>
+      <div id="classer-score" style="display:none;margin-top:1rem;" class="geo-score-panel"></div>
+    </div>`;
+
+  renderClasserList('c', numClasserState.croissantSerie.nombres, shuffleIdxC);
+  renderClasserList('d', numClasserState.decroissantSerie.nombres, shuffleIdxD);
+}
+
+function renderClasserList(type, nombres, shuffleIdx){
+  const list = document.getElementById('classer-list-'+type);
+  if(!list) return;
+  list.innerHTML = '';
+  shuffleIdx.forEach((origIdx, pos) => {
+    const div = document.createElement('div');
+    div.id = `classer-item-${type}-${pos}`;
+    div.dataset.pos = pos;
+    div.dataset.type = type;
+    div.draggable = true;
+    div.style.cssText = `
+      background:var(--surface);border:2px solid var(--border);border-radius:10px;
+      padding:12px 16px;font-size:18px;font-weight:900;color:#e65100;
+      cursor:grab;user-select:none;display:flex;align-items:center;gap:10px;
+      transition:background 0.15s;`;
+    div.innerHTML = `<span style="font-size:16px;color:var(--muted);">⠿</span> ${nombres[origIdx]}`;
+    div.addEventListener('dragstart', onDragStart);
+    div.addEventListener('dragover', onDragOver);
+    div.addEventListener('drop', onDrop);
+    div.addEventListener('dragend', onDragEnd);
+    // Touch support
+    div.addEventListener('touchstart', onTouchStart, {passive:true});
+    div.addEventListener('touchmove', onTouchMove, {passive:false});
+    div.addEventListener('touchend', onTouchEnd);
+    list.appendChild(div);
+  });
+}
+
+// ---- Drag & Drop desktop ----
+function onDragStart(e){
+  numClasserState.dragSrc = this;
+  numClasserState.dragType = this.dataset.type;
+  e.dataTransfer.effectAllowed = 'move';
+  this.style.opacity = '0.5';
+}
+function onDragOver(e){
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  return false;
+}
+function onDrop(e){
+  e.stopPropagation();
+  if(numClasserState.dragSrc === this) return;
+  if(numClasserState.dragSrc.dataset.type !== this.dataset.type) return;
+  const srcHtml = numClasserState.dragSrc.innerHTML;
+  const srcData = numClasserState.dragSrc.dataset.pos;
+  numClasserState.dragSrc.innerHTML = this.innerHTML;
+  numClasserState.dragSrc.dataset.pos = this.dataset.pos;
+  this.innerHTML = srcHtml;
+  this.dataset.pos = srcData;
+  return false;
+}
+function onDragEnd(){
+  document.querySelectorAll('[id^="classer-item-"]').forEach(el => el.style.opacity='1');
+}
+
+// ---- Touch support mobile ----
+let touchDragEl = null, touchClone = null, touchOffsetX = 0, touchOffsetY = 0;
+function onTouchStart(e){
+  touchDragEl = this;
+  const touch = e.touches[0];
+  const rect = this.getBoundingClientRect();
+  touchOffsetX = touch.clientX - rect.left;
+  touchOffsetY = touch.clientY - rect.top;
+  touchClone = this.cloneNode(true);
+  touchClone.style.cssText += `;position:fixed;z-index:9999;opacity:0.85;pointer-events:none;width:${rect.width}px;`;
+  touchClone.style.left = (touch.clientX - touchOffsetX) + 'px';
+  touchClone.style.top = (touch.clientY - touchOffsetY) + 'px';
+  document.body.appendChild(touchClone);
+  this.style.opacity = '0.3';
+}
+function onTouchMove(e){
+  e.preventDefault();
+  const touch = e.touches[0];
+  if(touchClone){
+    touchClone.style.left = (touch.clientX - touchOffsetX) + 'px';
+    touchClone.style.top = (touch.clientY - touchOffsetY) + 'px';
+  }
+}
+function onTouchEnd(e){
+  if(touchClone) document.body.removeChild(touchClone);
+  touchClone = null;
+  if(!touchDragEl) return;
+  touchDragEl.style.opacity = '1';
+  const touch = e.changedTouches[0];
+  const type = touchDragEl.dataset.type;
+  // Trouver l'élément sous le doigt
+  const els = document.querySelectorAll(`[id^="classer-item-${type}-"]`);
+  let target = null;
+  els.forEach(el => {
+    if(el === touchDragEl) return;
+    const rect = el.getBoundingClientRect();
+    if(touch.clientX >= rect.left && touch.clientX <= rect.right &&
+       touch.clientY >= rect.top && touch.clientY <= rect.bottom) {
+      target = el;
+    }
+  });
+  if(target && target !== touchDragEl){
+    const srcHtml = touchDragEl.innerHTML;
+    const srcPos = touchDragEl.dataset.pos;
+    touchDragEl.innerHTML = target.innerHTML;
+    touchDragEl.dataset.pos = target.dataset.pos;
+    target.innerHTML = srcHtml;
+    target.dataset.pos = srcPos;
+  }
+  touchDragEl = null;
+}
+
+function validerNumClasser(){
+  if(numClasserState.submitted) return;
+  numClasserState.submitted = true;
+  document.getElementById('classer-submit').style.display = 'none';
+
+  let score = 0;
+
+  // Vérifier croissant
+  const listC = document.getElementById('classer-list-c');
+  const itemsC = [...listC.children];
+  const nombresC = numClasserState.croissantSerie.nombres;
+  const ordreCorrectC = numClasserState.croissantSerie.ordre; // indices dans l'ordre croissant
+  // Récupérer l'ordre actuel des nombres affichés
+  const currentC = itemsC.map(el => {
+    const text = el.innerHTML.replace('⠿</span> ','').replace(/<[^>]*>/g,'').trim();
+    // Trouver l'index dans nombres
+    return nombresC.findIndex(n => n.trim() === text.trim());
+  });
+  const bonOrdreC = ordreCorrectC; // [idx_plus_petit, ..., idx_plus_grand]
+  const okC = JSON.stringify(currentC) === JSON.stringify(bonOrdreC);
+  if(okC) score++;
+
+  itemsC.forEach((el,i) => {
+    el.style.border = `2px solid ${okC ? 'var(--green)' : (currentC[i]===bonOrdreC[i]?'var(--green)':'var(--red)')}`;
+  });
+  const resultC = document.getElementById('classer-result-c');
+  resultC.style.display='block';
+  if(okC){
+    resultC.style.background='#d4f5e9'; resultC.style.color='var(--green)';
+    resultC.innerHTML='✅ Bravo ! Ordre croissant parfait !';
+  } else {
+    resultC.style.background='#fde8e8'; resultC.style.color='var(--red)';
+    resultC.innerHTML='❌ Ordre croissant incorrect. La bonne réponse était : <strong>' + bonOrdreC.map(i=>nombresC[i]).join(' &lt; ') + '</strong>';
+  }
+
+  // Vérifier décroissant
+  const listD = document.getElementById('classer-list-d');
+  const itemsD = [...listD.children];
+  const nombresD = numClasserState.decroissantSerie.nombres;
+  const ordreCorrectD = numClasserState.decroissantSerie.ordre;
+  const currentD = itemsD.map(el => {
+    const text = el.innerHTML.replace('⠿</span> ','').replace(/<[^>]*>/g,'').trim();
+    return nombresD.findIndex(n => n.trim() === text.trim());
+  });
+  const okD = JSON.stringify(currentD) === JSON.stringify(ordreCorrectD);
+  if(okD) score++;
+
+  itemsD.forEach((el,i) => {
+    el.style.border = `2px solid ${okD ? 'var(--green)' : (currentD[i]===ordreCorrectD[i]?'var(--green)':'var(--red)')}`;
+  });
+  const resultD = document.getElementById('classer-result-d');
+  resultD.style.display='block';
+  if(okD){
+    resultD.style.background='#d4f5e9'; resultD.style.color='var(--green)';
+    resultD.innerHTML='✅ Bravo ! Ordre décroissant parfait !';
+  } else {
+    resultD.style.background='#fde8e8'; resultD.style.color='var(--red)';
+    resultD.innerHTML='❌ Ordre décroissant incorrect. La bonne réponse était : <strong>' + ordreCorrectD.map(i=>nombresD[i]).join(' &gt; ') + '</strong>';
+  }
+
+  const pct = Math.round(score/2*100);
+  const color = pct===100?'var(--green)':pct===50?'var(--amber)':'var(--red)';
+  const panel = document.getElementById('classer-score');
+  panel.style.display='block';
+  panel.innerHTML=`<div style="font-size:56px;margin-bottom:0.5rem">${pct===100?'🎉':pct===50?'👍':'💪'}</div>
+    <div style="font-family:'Nunito',sans-serif;font-weight:900;font-size:40px;color:${color}">${score}/2</div>
+    <div style="font-size:18px;color:${color};font-weight:700;margin-bottom:1rem">${pct}%</div>
+    <div style="font-size:14px;color:var(--muted);margin-bottom:1.5rem">${pct===100?'Parfait ! Tu classes les grands nombres sans problème !':pct===50?'Une bonne réponse sur deux — continue à t\'entraîner !':'Courage ! Compare chiffre par chiffre, classe par classe.'}</div>
+    <button class="btn" onclick="renderNumClasser()" style="width:100%;background:#e65100;">🔄 Nouvel exercice</button>`;
+  panel.scrollIntoView({behavior:'smooth'});
+
+  if(state.student) saveResult({
+    student:state.student, cls:state.studentCls,
+    className:CLASSES[state.studentCls]?CLASSES[state.studentCls].name:state.studentCls,
+    activity:'num_classer', bookTitle:'Grands nombres — Classer des nombres',
+    score, total:2, pct,
+    date:new Date().toLocaleDateString('fr-BE'),
+    time:new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})
+  });
+}
+
+// ===== BANQUE DÉCOMPOSER UN NOMBRE =====
+const NUM_DECOMPOSER_BANQUE = [
+  {n:'506 040 070', opts:['5 centaines de millions + 6 millions + 4 centaines + 7 dizaines','5 centaines de millions + 6 millions + 4 dizaines de mille + 7 dizaines','5 centaines de millions + 6 millions + 4 mille + 7 dizaines','5 dizaines de millions + 6 millions + 4 dizaines de mille + 7 dizaines'], correct:1},
+  {n:'230 005 800', opts:['5 centaines de millions + 3 dizaines de millions + 5 dizaines de mille + 8 centaines','2 centaines de millions + 3 millions + 5 mille + 8 centaines','2 centaines de millions + 3 dizaines de millions + 5 mille + 8 centaines','2 dizaines de millions + 3 millions + 5 mille + 8 centaines'], correct:2},
+  {n:'74 300 062', opts:['7 dizaines de millions + 4 millions + 3 centaines de mille + 6 dizaines + 2 unités','7 dizaines de millions + 4 millions + 3 dizaines de mille + 6 dizaines + 2 unités','7 millions + 4 centaines de mille + 3 dizaines de mille + 6 dizaines + 2 unités','7 dizaines de millions + 4 millions + 3 centaines de mille + 6 unités + 2 dizaines'], correct:0},
+  {n:'805 070 009', opts:['8 centaines de millions + 5 millions + 7 dizaines de mille + 9 unités','8 centaines de millions + 5 millions + 7 mille + 9 unités','8 centaines de millions + 5 dizaines de millions + 7 dizaines de mille + 9 unités','8 centaines de millions + 5 millions + 7 centaines de mille + 9 unités'], correct:0},
+  {n:'12 400 500', opts:['1 dizaine de millions + 2 millions + 4 centaines de mille + 5 dizaines','1 dizaine de millions + 2 millions + 4 centaines de mille + 5 centaines','1 dizaine de millions + 2 millions + 4 dizaines de mille + 5 centaines','1 million + 2 centaines de mille + 4 dizaines de mille + 5 centaines'], correct:1},
+  {n:'390 000 030', opts:['3 centaines de millions + 9 millions + 3 dizaines','3 centaines de millions + 9 dizaines de millions + 3 centaines','3 centaines de millions + 9 dizaines de millions + 3 dizaines','3 dizaines de millions + 9 millions + 3 dizaines'], correct:2},
+  {n:'60 808 060', opts:['6 dizaines de millions + 8 centaines de mille + 8 mille + 6 dizaines','6 millions + 8 centaines de mille + 8 mille + 6 dizaines','6 dizaines de millions + 8 dizaines de mille + 8 mille + 6 dizaines','6 dizaines de millions + 8 centaines de mille + 8 centaines + 6 dizaines'], correct:0},
+  {n:'451 000 451', opts:['4 centaines de millions + 5 dizaines de millions + 1 million + 4 centaines + 5 dizaines','4 centaines de millions + 5 dizaines de millions + 1 million + 4 centaines + 5 dizaines + 1 unité','4 centaines de millions + 5 millions + 1 dizaine de millions + 4 centaines + 5 dizaines + 1 unité','4 centaines de millions + 5 dizaines de millions + 1 million + 4 mille + 5 dizaines + 1 unité'], correct:1},
+  {n:'900 090 900', opts:['9 centaines de millions + 9 dizaines de mille + 9 centaines','9 centaines de millions + 9 mille + 9 centaines','9 centaines de millions + 9 centaines de mille + 9 dizaines','9 dizaines de millions + 9 dizaines de mille + 9 centaines'], correct:0},
+  {n:'37 060 004', opts:['3 dizaines de millions + 7 millions + 6 mille + 4 unités','3 dizaines de millions + 7 millions + 6 dizaines de mille + 4 unités','3 dizaines de millions + 7 millions + 6 centaines de mille + 4 unités','3 millions + 7 dizaines de millions + 6 dizaines de mille + 4 unités'], correct:1},
+  {n:'520 300 020', opts:['5 centaines de millions + 2 dizaines de millions + 3 centaines de mille + 2 dizaines','5 centaines de millions + 2 millions + 3 centaines de mille + 2 dizaines','5 centaines de millions + 2 dizaines de millions + 3 dizaines de mille + 2 dizaines','5 dizaines de millions + 2 millions + 3 centaines de mille + 2 dizaines'], correct:0},
+  {n:'108 050 008', opts:['1 centaine de millions + 8 millions + 5 mille + 8 unités','1 centaine de millions + 8 millions + 5 dizaines de mille + 8 dizaines','1 centaine de millions + 8 millions + 5 dizaines de mille + 8 unités','1 centaine de millions + 8 dizaines de millions + 5 dizaines de mille + 8 unités'], correct:2},
+  {n:'750 007 500', opts:['7 centaines de millions + 5 dizaines de millions + 7 mille + 5 centaines','7 centaines de millions + 5 millions + 7 mille + 5 centaines','7 centaines de millions + 5 dizaines de millions + 7 centaines de mille + 5 centaines','7 centaines de millions + 5 dizaines de millions + 7 mille + 5 dizaines'], correct:0},
+  {n:'83 400 083', opts:['8 dizaines de millions + 3 millions + 4 dizaines de mille + 8 dizaines + 3 unités','8 dizaines de millions + 3 millions + 4 centaines de mille + 8 dizaines + 3 unités','8 millions + 3 dizaines de millions + 4 centaines de mille + 8 dizaines + 3 unités','8 dizaines de millions + 3 millions + 4 centaines de mille + 8 unités + 3 dizaines'], correct:1},
+  {n:'600 060 600', opts:['6 centaines de millions + 6 dizaines de mille + 6 centaines','6 centaines de millions + 6 mille + 6 centaines','6 centaines de millions + 6 centaines de mille + 6 dizaines','6 dizaines de millions + 6 dizaines de mille + 6 centaines'], correct:0},
+  {n:'29 000 290', opts:['2 dizaines de millions + 9 millions + 2 centaines + 9 dizaines','2 dizaines de millions + 9 millions + 2 mille + 9 dizaines','2 dizaines de millions + 9 millions + 2 centaines + 9 unités','2 millions + 9 dizaines de millions + 2 centaines + 9 dizaines'], correct:0},
+  {n:'480 006 048', opts:['4 centaines de millions + 8 dizaines de millions + 6 mille + 4 dizaines + 8 unités','4 centaines de millions + 8 millions + 6 mille + 4 dizaines + 8 unités','4 centaines de millions + 8 dizaines de millions + 6 dizaines de mille + 4 dizaines + 8 unités','4 centaines de millions + 8 dizaines de millions + 6 mille + 4 unités + 8 dizaines'], correct:0},
+  {n:'55 505 055', opts:['5 dizaines de millions + 5 millions + 5 centaines de mille + 5 dizaines + 5 unités','5 dizaines de millions + 5 millions + 5 dizaines de mille + 5 dizaines + 5 unités','5 dizaines de millions + 5 millions + 5 centaines de mille + 5 unités','5 millions + 5 dizaines de millions + 5 centaines de mille + 5 dizaines + 5 unités'], correct:0},
+  {n:'317 080 317', opts:['3 centaines de millions + 1 dizaine de millions + 7 millions + 8 mille + 3 centaines + 1 dizaine + 7 unités','3 centaines de millions + 1 dizaine de millions + 7 millions + 8 dizaines de mille + 3 centaines + 1 dizaine + 7 unités','3 centaines de millions + 1 million + 7 dizaines de millions + 8 mille + 3 centaines + 1 dizaine + 7 unités','3 centaines de millions + 1 dizaine de millions + 7 millions + 8 mille + 3 dizaines + 1 centaine + 7 unités'], correct:0},
+  {n:'40 400 040', opts:['4 dizaines de millions + 4 dizaines de mille + 4 dizaines','4 dizaines de millions + 4 centaines de mille + 4 dizaines','4 millions + 4 centaines de mille + 4 dizaines','4 dizaines de millions + 4 dizaines de mille + 4 unités'], correct:1},
+  {n:'614 903 070', opts:['6 centaines de millions + 1 dizaine de millions + 4 millions + 9 centaines de mille + 3 mille + 7 dizaines','6 centaines de millions + 1 dizaine de millions + 4 millions + 9 dizaines de mille + 3 mille + 7 dizaines','6 centaines de millions + 1 million + 4 dizaines de millions + 9 centaines de mille + 3 mille + 7 dizaines','6 centaines de millions + 1 dizaine de millions + 4 millions + 9 centaines de mille + 3 mille + 7 unités'], correct:0},
+  {n:'3 070 300', opts:['3 millions + 7 dizaines de mille + 3 centaines','3 millions + 7 mille + 3 centaines','3 millions + 7 centaines de mille + 3 dizaines','3 dizaines de millions + 7 dizaines de mille + 3 centaines'], correct:0},
+  {n:'920 000 092', opts:['9 centaines de millions + 2 dizaines de millions + 9 dizaines + 2 unités','9 centaines de millions + 2 millions + 9 dizaines + 2 unités','9 centaines de millions + 2 dizaines de millions + 9 unités + 2 dizaines','9 dizaines de millions + 2 centaines de millions + 9 dizaines + 2 unités'], correct:0},
+  {n:'178 050 178', opts:['1 centaine de millions + 7 dizaines de millions + 8 millions + 5 dizaines de mille + 1 centaine + 7 dizaines + 8 unités','1 centaine de millions + 7 dizaines de millions + 8 millions + 5 mille + 1 centaine + 7 dizaines + 8 unités','1 centaine de millions + 7 millions + 8 dizaines de millions + 5 dizaines de mille + 1 centaine + 7 dizaines + 8 unités','1 centaine de millions + 7 dizaines de millions + 8 millions + 5 dizaines de mille + 1 dizaine + 7 centaines + 8 unités'], correct:0},
+  {n:'500 500 500', opts:['5 centaines de millions + 5 centaines de mille + 5 dizaines','5 centaines de millions + 5 dizaines de mille + 5 dizaines','5 centaines de millions + 5 centaines de mille + 5 centaines','5 dizaines de millions + 5 centaines de mille + 5 centaines'], correct:2},
+  {n:'47 007 047', opts:['4 dizaines de millions + 7 millions + 7 mille + 4 dizaines + 7 unités','4 dizaines de millions + 7 millions + 7 dizaines de mille + 4 dizaines + 7 unités','4 millions + 7 dizaines de millions + 7 mille + 4 dizaines + 7 unités','4 dizaines de millions + 7 millions + 7 mille + 4 unités + 7 dizaines'], correct:0},
+  {n:'863 420 006', opts:['8 centaines de millions + 6 dizaines de millions + 3 millions + 4 centaines de mille + 2 dizaines de mille + 6 unités','8 centaines de millions + 6 millions + 3 dizaines de millions + 4 centaines de mille + 2 dizaines de mille + 6 unités','8 centaines de millions + 6 dizaines de millions + 3 millions + 4 dizaines de mille + 2 mille + 6 unités','8 centaines de millions + 6 dizaines de millions + 3 millions + 4 centaines de mille + 2 dizaines de mille + 6 dizaines'], correct:0},
+  {n:'15 000 015', opts:['1 dizaine de millions + 5 millions + 1 dizaine + 5 unités','1 dizaine de millions + 5 millions + 1 centaine + 5 unités','1 dizaine de millions + 5 millions + 1 mille + 5 unités','1 million + 5 dizaines de millions + 1 dizaine + 5 unités'], correct:0},
+  {n:'290 060 290', opts:['2 centaines de millions + 9 dizaines de millions + 6 dizaines de mille + 2 centaines + 9 dizaines','2 centaines de millions + 9 millions + 6 dizaines de mille + 2 centaines + 9 dizaines','2 centaines de millions + 9 dizaines de millions + 6 mille + 2 centaines + 9 dizaines','2 centaines de millions + 9 dizaines de millions + 6 dizaines de mille + 2 dizaines + 9 centaines'], correct:0},
+  {n:'730 800 073', opts:['7 centaines de millions + 3 dizaines de millions + 8 centaines de mille + 7 dizaines + 3 unités','7 centaines de millions + 3 millions + 8 centaines de mille + 7 dizaines + 3 unités','7 centaines de millions + 3 dizaines de millions + 8 dizaines de mille + 7 dizaines + 3 unités','7 centaines de millions + 3 dizaines de millions + 8 centaines de mille + 7 unités + 3 dizaines'], correct:0},
+];
+
+let numDecomposerSels = {}, numDecomposerPhrases = [], numDecomposerSubmitted = false;
+
+function renderNumDecomposer(){
+  const body = document.getElementById('num-decomposer-body');
+  if(!body) return;
+  const shuffled = [...NUM_DECOMPOSER_BANQUE].sort(()=>Math.random()-0.5);
+  numDecomposerPhrases = shuffled.slice(0,10).map(q => {
+    const correctText = q.opts[q.correct];
+    const optsShuffled = [...q.opts].sort(()=>Math.random()-0.5);
+    return {...q, opts: optsShuffled, correct: optsShuffled.indexOf(correctText)};
+  });
+  numDecomposerSels = {};
+  numDecomposerSubmitted = false;
+
+  let html = `<div style="max-width:680px;margin:0 auto;font-family:'Nunito',sans-serif;">
+    <div class="card" style="margin-bottom:1rem;padding:1rem;background:linear-gradient(135deg,#2e7d32,#388e3c);color:#fff;border-radius:12px;">
+      <div style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;opacity:.8;margin-bottom:4px;">🔢 Grands nombres</div>
+      <div style="font-size:18px;font-weight:900;">🔍 Décomposer un nombre</div>
+      <div style="font-size:13px;margin-top:4px;opacity:.85;">Choisis la bonne décomposition — 10 questions</div>
+    </div>`;
+
+  numDecomposerPhrases.forEach((q,i) => {
+    html += `<div class="card" id="numdecomp-card-${i}" style="margin-bottom:0.8rem;padding:1rem;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+        <span style="background:#2e7d32;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;flex-shrink:0;">${i+1}</span>
+        <span style="font-size:24px;font-weight:900;color:#1b5e20;letter-spacing:2px;">${q.n}</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;">`;
+    q.opts.forEach((opt,oi) => {
+      html += `<label class="lr-option" id="numdecomp-opt-${i}-${oi}" style="font-size:13px;padding:8px 12px;">
+        <input type="radio" name="numdecomp-${i}" onchange="numDecompSel(${i},${oi})">${opt}
+      </label>`;
+    });
+    html += `</div>
+      <div id="numdecomp-expl-${i}" style="display:none;margin-top:8px;font-size:13px;padding:6px 10px;border-radius:8px;"></div>
+    </div>`;
+  });
+
+  html += `<button class="btn" id="numdecomp-submit" onclick="validerNumDecomposer()" style="width:100%;margin-top:0.5rem;font-size:16px;padding:0.9rem;background:#2e7d32;">✅ Valider mes réponses</button>
+    <div id="numdecomp-score" style="display:none;margin-top:1rem;" class="geo-score-panel"></div>
+  </div>`;
+
+  body.innerHTML = html;
+}
+
+function numDecompSel(i,oi){ if(!numDecomposerSubmitted) numDecomposerSels[i]=oi; }
+
+function validerNumDecomposer(){
+  if(numDecomposerSubmitted) return;
+  numDecomposerSubmitted = true;
+  let score = 0;
+  document.getElementById('numdecomp-submit').style.display='none';
+
+  numDecomposerPhrases.forEach((q,i) => {
+    const sel = numDecomposerSels[i];
+    const ok = sel === q.correct;
+    if(ok) score++;
+    q.opts.forEach((_,oi) => {
+      const el = document.getElementById(`numdecomp-opt-${i}-${oi}`);
+      if(!el) return;
+      el.querySelector('input').disabled = true;
+      if(oi===q.correct) el.classList.add('correct');
+      else if(oi===sel&&!ok) el.classList.add('incorrect');
+    });
+    const card = document.getElementById(`numdecomp-card-${i}`);
+    if(card) card.style.borderLeft=`4px solid ${ok?'var(--green)':'var(--red)'}`;
+    const expl = document.getElementById(`numdecomp-expl-${i}`);
+    if(expl){
+      expl.style.display='block';
+      expl.style.background=ok?'#d4f5e9':'#fde8e8';
+      expl.style.color=ok?'var(--green)':'var(--red)';
+      expl.innerHTML=ok?'✅ Bravo ! Tu as bien décomposé ce nombre.':`❌ La bonne réponse est : <strong>${q.opts[q.correct]}</strong>`;
+    }
+  });
+
+  const pct = Math.round(score/10*100);
+  const color = pct>=70?'var(--green)':pct>=50?'var(--amber)':'var(--red)';
+  const panel = document.getElementById('numdecomp-score');
+  panel.style.display='block';
+  panel.innerHTML=`<div style="font-size:56px;margin-bottom:0.5rem">${pct===100?'🎉':pct>=70?'⭐':pct>=50?'👍':'💪'}</div>
+    <div style="font-family:'Nunito',sans-serif;font-weight:900;font-size:40px;color:${color}">${score}/10</div>
+    <div style="font-size:18px;color:${color};font-weight:700;margin-bottom:1rem">${pct}%</div>
+    <div style="font-size:14px;color:var(--muted);margin-bottom:1.5rem">${pct===100?'Parfait ! Tu décomposes les grands nombres parfaitement !':pct>=70?'Très bien ! Continue à t\'entraîner !':pct>=50?'Pas mal ! Vérifie bien chaque classe du nombre.':'Courage ! Pense aux trois classes : millions, milliers, unités.'}</div>
+    <button class="btn" onclick="renderNumDecomposer()" style="width:100%;background:#2e7d32;">🔄 Nouvel exercice (10 nouveaux nombres)</button>`;
+  panel.scrollIntoView({behavior:'smooth'});
+
+  if(state.student) saveResult({
+    student:state.student, cls:state.studentCls,
+    className:CLASSES[state.studentCls]?CLASSES[state.studentCls].name:state.studentCls,
+    activity:'num_decomposer', bookTitle:'Grands nombres — Décomposer un nombre',
+    score, total:10, pct,
+    date:new Date().toLocaleDateString('fr-BE'),
+    time:new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})
+  });
+}
+
+// ===== BANQUE ÉCRIRE UN NOMBRE =====
+const NUM_ECRIRE_BANQUE = [
+  {lettres:'Quarante-cinq millions deux cent trente-six mille sept cent quatre-vingt-neuf', opts:['45 236 789','45 263 789','452 367 890','45 236 798'], correct:0},
+  {lettres:'Deux cent sept millions quarante mille cinq cent douze', opts:['270 040 512','207 400 512','207 040 512','207 040 521'], correct:2},
+  {lettres:'Neuf cent douze millions trois cent quarante-cinq mille six cent soixante-dix-huit', opts:['912 345 678','912 354 678','921 345 678','912 345 687'], correct:0},
+  {lettres:'Soixante-trois millions huit cent mille quatre', opts:['63 800 400','63 080 004','63 800 004','630 800 004'], correct:2},
+  {lettres:'Cinq cents millions vingt mille neuf', opts:['500 200 009','500 020 009','500 020 090','500 200 090'], correct:1},
+  {lettres:'Trente-huit millions cinq cent quatre-vingt-sept mille deux cent quarante et un', opts:['38 587 241','38 578 241','380 587 241','38 587 214'], correct:0},
+  {lettres:'Cent vingt et un millions trois mille six', opts:['121 030 006','121 300 006','121 003 006','121 003 060'], correct:2},
+  {lettres:'Quatre cent soixante-douze millions neuf cent mille huit cent trente', opts:['472 900 830','472 090 830','472 900 803','472 900 830'], correct:0},
+  {lettres:'Dix-neuf millions quatre-vingt mille sept cents', opts:['19 800 700','19 080 700','190 080 700','19 080 007'], correct:1},
+  {lettres:'Six cent cinquante millions quarante-quatre mille soixante-six', opts:['650 044 066','650 440 066','650 044 660','605 044 066'], correct:0},
+  {lettres:'Quatre millions six cent mille cinquante-deux', opts:['4 600 052','4 060 052','4 600 520','40 600 052'], correct:0},
+  {lettres:'Trois cent quatre-vingts millions deux cent soixante mille sept cent quinze', opts:['380 206 715','308 260 715','380 260 715','380 260 751'], correct:2},
+  {lettres:'Vingt-six millions sept cent quatre-vingt-onze mille quatre cents', opts:['26 791 040','26 791 400','267 914 000','26 719 400'], correct:1},
+  {lettres:'Huit cent quatre millions cinquante mille cent onze', opts:['840 050 111','804 500 111','804 050 111','804 050 011'], correct:2},
+  {lettres:'Soixante et onze millions neuf cent mille deux', opts:['71 090 002','71 900 200','71 900 002','710 900 002'], correct:2},
+  {lettres:'Deux cent cinquante-trois millions six cent quarante-huit mille neuf cent soixante-dix-neuf', opts:['253 648 997','253 684 979','253 648 979','253 648 969'], correct:2},
+  {lettres:'Quarante millions cinq cent mille six cent deux', opts:['40 500 620','40 050 602','40 500 062','40 500 602'], correct:3},
+  {lettres:'Sept cent quatre-vingt-neuf millions cent vingt-trois mille quatre cent cinquante-six', opts:['789 132 456','789 123 456','798 123 456','789 123 465'], correct:1},
+  {lettres:'Cinquante-deux millions sept cents', opts:['52 000 700','52 007 000','52 700 000','520 000 700'], correct:0},
+  {lettres:'Cent quatre-vingt-six millions quatre-vingt mille quarante', opts:['186 080 040','186 800 040','186 080 400','168 080 040'], correct:0},
+  {lettres:'Neuf millions trente mille cinq cent soixante-treize', opts:['9 300 573','9 030 573','9 030 537','90 030 573'], correct:1},
+  {lettres:'Quatre cent vingt millions huit cent mille', opts:['420 080 000','420 800 000','402 800 000','420 008 000'], correct:1},
+  {lettres:'Treize millions deux cent quarante-cinq mille huit cent soixante-douze', opts:['13 254 872','13 245 872','130 245 872','13 245 827'], correct:1},
+  {lettres:'Cinq cent soixante-dix millions neuf mille quatre-vingt-dix-neuf', opts:['570 090 099','570 009 099','570 900 099','570 009 099'], correct:1},
+  {lettres:'Quatre-vingt-douze millions quatre cent mille trente et un', opts:['92 040 031','92 400 031','92 400 013','920 400 031'], correct:1},
+  {lettres:'Trois cent dix-neuf millions huit cent soixante-dix-sept mille deux cent soixante-cinq', opts:['319 877 265','319 870 265','391 877 265','319 877 265'], correct:0},
+  {lettres:'Deux millions trois cent mille quatre-vingt', opts:['2 300 800','2 300 080','2 030 080','23 000 080'], correct:1},
+  {lettres:'Six cent quarante-huit millions soixante-dix-neuf mille trois cent quarante-deux', opts:['648 079 342','648 790 342','648 079 324','684 079 342'], correct:0},
+  {lettres:'Vingt-sept millions six cent cinq mille quatre-vingt-seize', opts:['27 650 096','27 605 096','27 605 069','270 605 096'], correct:1},
+  {lettres:'Cent millions cent mille cent', opts:['100 100 001','100 010 100','100 001 100','100 100 100'], correct:3},
+];
+
+let numEcrireSels = {}, numEcrirePhrases = [], numEcrireSubmitted = false;
+
+function renderNumEcrire(){
+  const body = document.getElementById('num-ecrire-body');
+  if(!body) return;
+
+  const shuffled = [...NUM_ECRIRE_BANQUE].sort(()=>Math.random()-0.5);
+  numEcrirePhrases = shuffled.slice(0,10).map(q => {
+    const correctText = q.opts[q.correct];
+    const optsShuffled = [...q.opts].sort(()=>Math.random()-0.5);
+    return {...q, opts: optsShuffled, correct: optsShuffled.indexOf(correctText)};
+  });
+  numEcrireSels = {};
+  numEcrireSubmitted = false;
+
+  let html = `<div style="max-width:680px;margin:0 auto;font-family:'Nunito',sans-serif;">
+    <div class="card" style="margin-bottom:1rem;padding:1rem;background:linear-gradient(135deg,#6a1b9a,#8e24aa);color:#fff;border-radius:12px;">
+      <div style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;opacity:.8;margin-bottom:4px;">🔢 Grands nombres</div>
+      <div style="font-size:18px;font-weight:900;">✏️ Écrire un nombre</div>
+      <div style="font-size:13px;margin-top:4px;opacity:.85;">Choisis la bonne écriture en chiffres — 10 questions</div>
+    </div>`;
+
+  numEcrirePhrases.forEach((q,i) => {
+    html += `<div class="card" id="numecrire-card-${i}" style="margin-bottom:0.8rem;padding:1rem;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+        <span style="background:#6a1b9a;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;flex-shrink:0;">${i+1}</span>
+        <span style="font-size:15px;font-weight:700;color:#4a148c;font-style:italic;">${q.lettres}</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;">`;
+    q.opts.forEach((opt,oi) => {
+      html += `<label class="lr-option" id="numecrire-opt-${i}-${oi}" style="font-size:15px;padding:8px 12px;font-family:'Nunito',sans-serif;font-weight:700;letter-spacing:1px;">
+        <input type="radio" name="numecrire-${i}" onchange="numEcrireSel(${i},${oi})">${opt}
+      </label>`;
+    });
+    html += `</div>
+      <div id="numecrire-expl-${i}" style="display:none;margin-top:8px;font-size:13px;padding:6px 10px;border-radius:8px;"></div>
+    </div>`;
+  });
+
+  html += `<button class="btn" id="numecrire-submit" onclick="validerNumEcrire()" style="width:100%;margin-top:0.5rem;font-size:16px;padding:0.9rem;background:#6a1b9a;">✅ Valider mes réponses</button>
+    <div id="numecrire-score" style="display:none;margin-top:1rem;" class="geo-score-panel"></div>
+  </div>`;
+
+  body.innerHTML = html;
+}
+
+function numEcrireSel(i, oi){
+  if(numEcrireSubmitted) return;
+  numEcrireSels[i] = oi;
+}
+
+function validerNumEcrire(){
+  if(numEcrireSubmitted) return;
+  numEcrireSubmitted = true;
+  let score = 0;
+  document.getElementById('numecrire-submit').style.display = 'none';
+
+  numEcrirePhrases.forEach((q,i) => {
+    const sel = numEcrireSels[i];
+    const ok = sel === q.correct;
+    if(ok) score++;
+
+    q.opts.forEach((_,oi) => {
+      const el = document.getElementById(`numecrire-opt-${i}-${oi}`);
+      if(!el) return;
+      el.querySelector('input').disabled = true;
+      if(oi === q.correct) el.classList.add('correct');
+      else if(oi === sel && !ok) el.classList.add('incorrect');
+    });
+
+    const card = document.getElementById(`numecrire-card-${i}`);
+    if(card) card.style.borderLeft = `4px solid ${ok?'var(--green)':'var(--red)'}`;
+
+    const expl = document.getElementById(`numecrire-expl-${i}`);
+    if(expl){
+      expl.style.display = 'block';
+      expl.style.background = ok ? '#d4f5e9' : '#fde8e8';
+      expl.style.color = ok ? 'var(--green)' : 'var(--red)';
+      expl.innerHTML = ok
+        ? '✅ Bravo ! Tu as bien écrit ce nombre.'
+        : `❌ La bonne réponse est : <strong>${q.opts[q.correct]}</strong>`;
+    }
+  });
+
+  const pct = Math.round(score/10*100);
+  const color = pct>=70?'var(--green)':pct>=50?'var(--amber)':'var(--red)';
+  const panel = document.getElementById('numecrire-score');
+  panel.style.display = 'block';
+  panel.innerHTML = `
+    <div style="font-size:56px;margin-bottom:0.5rem">${pct===100?'🎉':pct>=70?'⭐':pct>=50?'👍':'💪'}</div>
+    <div style="font-family:'Nunito',sans-serif;font-weight:900;font-size:40px;color:${color}">${score}/10</div>
+    <div style="font-size:18px;color:${color};font-weight:700;margin-bottom:1rem">${pct}%</div>
+    <div style="font-size:14px;color:var(--muted);margin-bottom:1.5rem">${pct===100?'Parfait ! Tu écris les grands nombres parfaitement !':pct>=70?'Très bien ! Continue à t\'entraîner !':pct>=50?'Pas mal ! Lis bien chaque classe séparément.':'Courage ! Pense aux trois classes : millions, milliers, unités.'}</div>
+    <button class="btn" onclick="renderNumEcrire()" style="width:100%;background:#6a1b9a;">🔄 Nouvel exercice (10 nouveaux nombres)</button>`;
+  panel.scrollIntoView({behavior:'smooth'});
+
+  if(state.student) saveResult({
+    student:state.student, cls:state.studentCls,
+    className:CLASSES[state.studentCls]?CLASSES[state.studentCls].name:state.studentCls,
+    activity:'num_ecrire',
+    bookTitle:'Grands nombres — Écrire un nombre',
+    score, total:10, pct,
+    date:new Date().toLocaleDateString('fr-BE'),
+    time:new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})
+  });
 }
 
 // ===== BANQUE LIRE UN NOMBRE =====
