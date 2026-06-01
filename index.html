@@ -3366,6 +3366,8 @@ function doCheckPin(){
 function goToHome(){
   state.role='student';
   localStorage.removeItem('lq_teacher_session');
+  // Charger les résultats de l'élève depuis Firebase
+  loadStudentResults();
   const emojis=['😊','🌟','🎯','🚀','🦁','🐬','🦊','🐧','🌈','⚡'];
   const idx = state.student.charCodeAt(0)%emojis.length;
   // Set subjects screen
@@ -13103,8 +13105,34 @@ function loadStudentResults(){
         if(!_studentResultsCache[act] || r.date > _studentResultsCache[act].date)
           _studentResultsCache[act] = r;
       });
+      // Rafraîchir le menu courant pour afficher les badges
+      refreshCurrentMenu();
     });
   } catch(e) {}
+}
+
+function refreshCurrentMenu(){
+  // Rafraîchir le menu visible pour mettre à jour les badges
+  const active = document.querySelector('.screen.active');
+  if(!active) return;
+  const id = active.id;
+  const menuMap = {
+    'screen-contes': 'renderContesMenu',
+    'screen-poemes': 'renderPoemesMenu',
+    'screen-lecture-rapide': 'renderLectureRapideMenu',
+    'screen-lecture-info': 'renderLectureInfoMenu',
+    'screen-lecture-descriptive': 'renderLectureDescriptiveMenu',
+    'screen-lecture-argumentative': 'renderLectureArgumentativeMenu',
+    'screen-lecture-dialoguee': 'renderLectureDialogueeMenu',
+    'screen-expression-ecrite': 'renderExpressionEcriteMenu',
+    'screen-orthographe': 'renderOrthographeMenu',
+    'screen-homophones': 'renderHomophonesMenu',
+    'screen-traitement-donnees': 'renderTraitementDonneesMenu',
+    'screen-geo-belgique': 'renderGeoBelgiqueMenu',
+    'screen-hist-prehistoire': 'renderPrehistoireMenu',
+  };
+  const fn = menuMap[id];
+  if(fn && window[fn]) window[fn]();
 }
 
 function invalidateResultsCache(){
