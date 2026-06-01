@@ -3761,7 +3761,8 @@ function doRenderStudentDetail(studentName){
   const avg=results.length?Math.round(results.reduce((s,r)=>s+r.pct,0)/results.length):0;
   const color=avg>=70?'var(--green)':avg>=50?'var(--amber)':'var(--red)';
 
-  let html=`<button class="back-to-list" onclick="renderGestionResults()">← Retour à la liste</button>`;
+  let html=`<button class="back-to-list" onclick="renderGestionResults()">← Retour à la liste</button>
+  <button onclick="deleteStudentResults('${studentName}')" style="float:right;background:#fee2e2;color:#e74c3c;border:1px solid #e74c3c;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;margin-bottom:0.5rem;">🗑 Effacer les résultats</button>`;
   html+=`<div style="font-family:'Nunito',sans-serif;font-weight:800;font-size:20px;margin-bottom:0.3rem">${studentName}</div>`;
   html+=`<div style="font-size:13px;color:var(--muted);margin-bottom:1.2rem">${results.length} activité${results.length>1?'s':''} · Moyenne : <span style="color:${color};font-weight:700">${avg}%</span></div>`;
 
@@ -3770,7 +3771,9 @@ function doRenderStudentDetail(studentName){
   } else {
     results.slice().reverse().forEach(r=>{
       const c=r.pct>=70?'var(--green)':r.pct>=50?'var(--amber)':'var(--red)';
-      const activity = r.bookTitle || r.activity || r.book || 'Exercice';
+      // Corriger le bug "undefined" dans les anciens résultats
+      let activity = r.bookTitle || r.activityLabel || r.activity || r.book || 'Exercice';
+      if(activity.includes('undefined')) activity = r.activityLabel || r.activity || 'Exercice';
       const tempsHtml = r.time_sec ? `<span style="margin-left:6px;background:var(--purple-light);color:var(--purple);border-radius:10px;padding:1px 7px;font-size:11px;font-weight:700;">⏱️ ${r.time_sec}s</span>` : '';
       html+=`<div class="student-detail-row">
         <div style="flex:1">
@@ -3805,6 +3808,21 @@ function exportCSV(){
   const blob=new Blob(['\uFEFF'+header+rows],{type:'text/csv;charset=utf-8;'});
   const url=URL.createObjectURL(blob);
   const a=document.createElement('a');a.href=url;a.download=`resultats_${teacherCls}.csv`;a.click();
+}
+
+function deleteStudentResults(studentName){
+  if(!confirm('Effacer tous les résultats de ' + studentName + ' ?')) return;
+  // Supprimer en local
+  const all = JSON.parse(localStorage.getItem('lq_results')||'[]');
+  const filtered = all.filter(r => r.student !== studentName);
+  localStorage.setItem('lq_results', JSON.stringify(filtered));
+  // Supprimer dans Firebase
+  if(window.FB_ready){
+    firebaseDB.ref('results/' + teacherCls + '/' + studentName).remove();
+  }
+  // Invalider le cache des badges
+  if(studentName === state.student) invalidateResultsCache();
+  renderGestionResults();
 }
 
 function clearAllResults(){
