@@ -1778,12 +1778,16 @@ input:focus{border-color:var(--purple);}
 
   <!-- SCREEN: Numération - Les grands nombres -->
   <div id="screen-num-grands-nombres" class="screen">
-    <button class="back-btn" onclick="showScreen('screen-numeration');renderNumerationScreen();">← Retour</button>
+    <button class="back-btn" onclick="state.role==='teacher'?showScreen('screen-teacher-numeration'):showScreen('screen-numeration');renderNumerationScreen();">← Retour</button>
     <div class="page-title">🔢 Les grands nombres</div>
-    <div class="card" style="text-align:center;padding:2rem;">
-      <div style="font-size:48px;margin-bottom:1rem;">🚧</div>
-      <p style="font-size:15px;color:var(--muted);">Les exercices arrivent bientôt !</p>
-    </div>
+    <div id="num-grands-nombres-menu"></div>
+  </div>
+
+  <!-- SCREEN: Lire un nombre -->
+  <div id="screen-num-lire" class="screen">
+    <button class="back-btn" onclick="showScreen('screen-num-grands-nombres');renderGrandsNombresMenu();">← Retour</button>
+    <div class="page-title">👁️ Lire un nombre</div>
+    <div id="num-lire-body"></div>
   </div>
 
   <!-- SCREEN: Numération - Les nombres décimaux -->
@@ -3227,6 +3231,8 @@ function showScreen(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   window.scrollTo(0,0);
+  // Appeler les fonctions de rendu des menus dynamiques
+  if(id==='screen-num-grands-nombres') setTimeout(renderGrandsNombresMenu, 50);
 }
 
 function init(){ renderBooks(); }
@@ -4464,7 +4470,7 @@ function loadConjResults(cls, student){
 // ===== ACTIVITY LOCK SYSTEM =====
 function getLockedActivities(){
   const s = localStorage.getItem('lq_locked_activities');
-  return s ? JSON.parse(s) : ['passe_compose','td_tableau','td_graphique','td_moyenne','connecteurs','synonymes','antonymes','dial_armstrong','dial_conseil','dial_marche','qvgdm_prehistoire','conte_chatbotte','conte_breme','poeme_cancre','poeme_ecriture','poeme_dormeur','poeme_sorciere','jeu_memory','jeu_tetris','jeu_rushhour','dial_ecrans','dial_bio','dial_voiture','dial_animal','grandeur_masses','grandeur_capacites','grandeur_longueurs','grandeur_perimetre','grandeur_aire','grandeur_volume','grandeur_durees','grandeur_monnaie','solide_points','solide_polygones','solide_triangles','solide_quadrilateres','solide_polyedres','num_grands_nombres','num_decimaux','num_entiers_decimaux','num_fractions','num_pourcentages','num_tout','op_vocabulaire','op_add_sous','op_mult_div','op_4_operations','op_tables','op_x10','op_x5','op_x9','op_x11','op_divisibilite','op_compensation','op_calcul_ecrit','trait_graphiques','trait_regle3','trait_problemes','hist_prehistoire','hist_antiquite','hist_moyen_age','hist_temps_modernes','hist_contemporaine','hist_grandes_periodes','sci_respiratoire','sci_digestif','sci_circulatoire','sci_coeur','sci_tegumentaire','sci_squelette','sci_engrenages','sci_electricite','sci_systeme_solaire','geo_oceans','geo_europe','geo_belgique','geo_belgique_provinces','geo_belgique_hydro','geo_belgique_communes','geo_belgique_qcm','geo_paysages','geo_hydro','geo_cartes','gram_nom','gram_determinant','gram_adjectif','gram_verbe','gram_pronom','gram_adverbe','gram_complement_nom','gram_sujet','gram_verbe_fonc','gram_predicat','gram_cdv_civ','gram_cc','gram_attribut','gram_affirm_neg','gram_pass_act'];
+  return s ? JSON.parse(s) : ['passe_compose','td_tableau','td_graphique','td_moyenne','connecteurs','synonymes','antonymes','dial_armstrong','dial_conseil','dial_marche','qvgdm_prehistoire','conte_chatbotte','conte_breme','poeme_cancre','poeme_ecriture','poeme_dormeur','poeme_sorciere','jeu_memory','jeu_tetris','jeu_rushhour','dial_ecrans','dial_bio','dial_voiture','dial_animal','grandeur_masses','grandeur_capacites','grandeur_longueurs','grandeur_perimetre','grandeur_aire','grandeur_volume','grandeur_durees','grandeur_monnaie','solide_points','solide_polygones','solide_triangles','solide_quadrilateres','solide_polyedres','num_decimaux','num_entiers_decimaux','num_fractions','num_pourcentages','num_tout','op_vocabulaire','op_add_sous','op_mult_div','op_4_operations','op_tables','op_x10','op_x5','op_x9','op_x11','op_divisibilite','op_compensation','op_calcul_ecrit','trait_graphiques','trait_regle3','trait_problemes','hist_prehistoire','hist_antiquite','hist_moyen_age','hist_temps_modernes','hist_contemporaine','hist_grandes_periodes','sci_respiratoire','sci_digestif','sci_circulatoire','sci_coeur','sci_tegumentaire','sci_squelette','sci_engrenages','sci_electricite','sci_systeme_solaire','geo_oceans','geo_europe','geo_belgique','geo_belgique_provinces','geo_belgique_hydro','geo_belgique_communes','geo_belgique_qcm','geo_paysages','geo_hydro','geo_cartes','gram_nom','gram_determinant','gram_adjectif','gram_verbe','gram_pronom','gram_adverbe','gram_complement_nom','gram_sujet','gram_verbe_fonc','gram_predicat','gram_cdv_civ','gram_cc','gram_attribut','gram_affirm_neg','gram_pass_act'];
 }
 function saveLockedActivities(arr){
   localStorage.setItem('lq_locked_activities', JSON.stringify(arr));
@@ -4602,7 +4608,7 @@ function renderSubGramGrid(items, gridIds, backFn){
       const locked = isActivityLocked(t.id);
       const div = document.createElement('div');
       div.className = 'sub-subject-card' + (locked && !isTeacher ? ' disabled' : ' active-card');
-      div.onclick = locked && !isTeacher ? null : () => { showScreen(t.screen); };
+      div.onclick = locked && !isTeacher ? null : () => { showScreen(t.screen); if(t.fn && window[t.fn]) window[t.fn](); };
       const toggleBtn = isTeacher
         ? `<button class="card-teacher-toggle ${locked ? 'btn-show' : 'btn-hide'}"
              onclick="event.stopPropagation();toggleActivity('${t.id}');${backFn}();">
@@ -13512,6 +13518,181 @@ function renderScoreBadge(actId){
     '<span style="font-size:10px;color:var(--muted);">Fait le '+r.date+'</span></div>';
 }
 
+// ===== GRANDS NOMBRES =====
+function renderGrandsNombresMenu(){
+  const menu = document.getElementById('num-grands-nombres-menu');
+  if(!menu) return;
+  const isTeacher = state.role === 'teacher';
+  const locked = getLockedActivities();
+  const items = [
+    {id:'num_lire', screen:'screen-num-lire', label:'Lire un nombre', icon:'👁️', desc:'10 questions — Choisir la bonne lecture d\'un nombre en chiffres', fn:'renderNumLire'},
+  ];
+  let html = '';
+  items.forEach(t => {
+    const isLocked = locked.includes(t.id);
+    const toggleBtn = isTeacher
+      ? `<button class="card-teacher-toggle ${isLocked?'btn-show':'btn-hide'}"
+           onclick="event.stopPropagation();toggleActivity('${t.id}');renderGrandsNombresMenu();">
+           ${isLocked?'🔓 Réactiver':'🔒 Masquer'}
+         </button>` : '';
+    if(isLocked && !isTeacher) return;
+    const badge = isTeacher ? '' : renderScoreBadge(t.id);
+    html += `<div class="fiche-info-card" onclick="showScreen('${t.screen}');${t.fn}();" style="position:relative;border-left:4px solid #1565c0;">
+      ${toggleBtn}
+      <div class="fiche-category">🔢 Grands nombres</div>
+      <div style="font-weight:800;font-size:16px">${t.icon} ${t.label}</div>
+      <div style="font-size:13px;color:var(--muted);margin-top:2px">${t.desc}</div>
+      ${badge}
+    </div>`;
+  });
+  menu.innerHTML = html || '<p style="color:var(--muted);text-align:center;padding:2rem">Aucun exercice disponible.</p>';
+}
+
+// ===== BANQUE LIRE UN NOMBRE =====
+const NUM_LIRE_BANQUE = [
+  {n:'43 000 500', opts:['Quarante-trois millions cinq cent mille','Quarante-trois millions cinq cents','Quarante-trois mille cinq cents','Quatre cent trois millions cinq cents'], correct:1},
+  {n:'125 436 000', opts:['Cent vingt-cinq millions quatre cent trente-six','Cent vingt-cinq mille quatre cent trente-six','Cent vingt-cinq millions quatre cent trente-six mille','Cent vingt-cinq millions quatre mille trente-six'], correct:2},
+  {n:'87 654 321', opts:['Quatre-vingt-sept millions six cent cinquante-quatre mille trois cent vingt et un','Quatre-vingt-sept millions six cent quarante-cinq mille trois cent vingt et un','Huit cent soixante-sept millions six cent cinquante-quatre mille trois cent vingt et un','Quatre-vingt-sept millions six cent cinquante mille trois cent vingt et un'], correct:0},
+  {n:'300 045 012', opts:['Trois cents millions quarante-cinq mille douze','Trois cents millions quatre cent cinq mille douze','Trois cent millions quarante mille douze','Trois millions quarante-cinq mille douze'], correct:0},
+  {n:'56 789 100', opts:['Cinquante-six millions sept cent quatre-vingt-neuf mille cent','Cinquante-six millions sept cent quatre-vingt-dix mille cent','Cinq cent soixante-sept millions quatre-vingt-neuf mille cent','Cinquante-six millions sept cent quatre-vingt-neuf cents'], correct:0},
+  {n:'412 008 070', opts:['Quatre cent douze millions huit mille soixante-dix','Quatre cent douze millions huit cent soixante-dix','Quatre cent vingt et un millions huit mille soixante-dix','Quatre cent douze millions quatre-vingt mille soixante-dix'], correct:0},
+  {n:'9 876 543', opts:['Neuf millions huit cent soixante-seize mille cinq cent quarante-trois','Neuf millions huit cent septante-six mille cinq cent quarante-trois','Quatre-vingt-dix-huit millions soixante-seize mille cinq cent quarante-trois','Neuf millions huit cent soixante-seize mille cinq cent trente-quatre'], correct:0},
+  {n:'640 320 008', opts:['Six cent quarante millions trois cent vingt mille huit','Six cent quarante millions trente-deux mille huit','Six cent quatre millions trois cent vingt mille huit','Six cent quarante millions trois cent deux mille huit'], correct:0},
+  {n:'23 456 789', opts:['Vingt-trois millions quatre cent cinquante-six mille sept cent quatre-vingt-neuf','Vingt-trois millions quatre cent soixante-cinq mille sept cent quatre-vingt-neuf','Deux cent trente millions quatre cent cinquante-six mille sept cent quatre-vingt-neuf','Vingt-trois millions quatre cent cinquante-six mille huit cent quatre-vingt-neuf'], correct:0},
+  {n:'701 050 340', opts:['Sept cent un millions cinquante mille trois cent quarante','Sept cent dix millions cinquante mille trois cent quarante','Sept cent un millions cinq cent mille trois cent quarante','Sept cent un millions cinquante mille quatre cent trente'], correct:0},
+  {n:'18 273 645', opts:['Dix-huit millions deux cent soixante-treize mille six cent quarante-cinq','Dix-huit millions deux cent trente-sept mille six cent quarante-cinq','Cent quatre-vingt-deux millions soixante-treize mille six cent quarante-cinq','Dix-huit millions deux cent soixante-treize mille six cent cinquante-quatre'], correct:0},
+  {n:'500 612 030', opts:['Cinq cents millions six cent douze mille trente','Cinq cents millions six cent vingt et un mille trente','Cinq cents millions six mille cent trente','Cinquante millions six cent douze mille trente'], correct:0},
+  {n:'34 507 216', opts:['Trente-quatre millions cinq cent sept mille deux cent seize','Trente-quatre millions cinq cent soixante-dix mille deux cent seize','Trois cent quarante-cinq millions sept mille deux cent seize','Trente-quatre millions cinq cent sept mille deux cent soixante'], correct:0},
+  {n:'876 543 210', opts:['Huit cent soixante-seize millions cinq cent quarante-trois mille deux cent dix','Huit cent soixante-seize millions cinq cent quarante-trois mille vingt et un','Huit cent soixante-sept millions cinq cent quarante-trois mille deux cent dix','Huit cent soixante-seize millions cinq cent quarante-trois mille deux cent un'], correct:0},
+  {n:'45 009 872', opts:['Quarante-cinq millions neuf mille huit cent soixante-douze','Quarante-cinq millions quatre-vingt-dix mille huit cent soixante-douze','Quatre cent cinquante millions neuf mille huit cent soixante-douze','Quarante-cinq millions neuf cents huit cent soixante-douze'], correct:0},
+  {n:'263 748 591', opts:['Deux cent soixante-trois millions sept cent quarante-huit mille cinq cent quatre-vingt-onze','Deux cent trente-six millions sept cent quarante-huit mille cinq cent quatre-vingt-onze','Deux cent soixante-trois millions sept cent quatre-vingt-quatre mille cinq cent quatre-vingt-onze','Deux cent soixante-trois millions sept cent quarante-huit mille cinq cent nonante et un'], correct:0},
+  {n:'70 030 405', opts:['Soixante-dix millions trente mille quatre cent cinq','Soixante-dix millions trois mille quatre cent cinq','Sept cent millions trente mille quatre cent cinq','Soixante-dix millions trente mille cinq cent quatre'], correct:0},
+  {n:'912 345 678', opts:['Neuf cent douze millions trois cent quarante-cinq mille six cent soixante-huit','Neuf cent vingt et un millions trois cent quarante-cinq mille six cent soixante-dix-huit','Neuf cent douze millions trois cent quarante-cinq mille six cent soixante-dix-huit','Neuf cent douze millions trois cent cinquante-quatre mille six cent soixante-dix-huit'], correct:2},
+  {n:'58 406 193', opts:['Cinquante-huit millions quatre cent six mille cent quatre-vingt-treize','Cinquante-huit millions quatre cent soixante mille cent quatre-vingt-treize','Cinq cent quatre-vingts millions quatre cent six mille cent quatre-vingt-treize','Cinquante-huit millions quatre cent six mille trois cent quatre-vingt-dix-neuf'], correct:0},
+  {n:'147 852 369', opts:['Cent quarante-sept millions huit cent cinquante-deux mille trois cent soixante-neuf','Cent quarante-sept millions huit cent vingt-cinq mille trois cent soixante-neuf','Cent soixante-quatorze millions huit cent cinquante-deux mille trois cent soixante-neuf','Cent quarante-sept millions huit cent cinquante-deux mille six cent trente-neuf'], correct:0},
+  {n:'6 050 408', opts:['Six millions cinquante mille quatre cent huit','Six millions cinq cents mille quatre cent huit','Soixante millions cinquante mille quatre cent huit','Six millions cinquante mille quarante-huit'], correct:0},
+  {n:'830 007 654', opts:['Huit cent trente millions sept mille six cent cinquante-quatre','Huit cent trente millions soixante-dix mille six cent cinquante-quatre','Huit cent trois millions sept mille six cent cinquante-quatre','Huit cent trente millions sept mille cinq cent soixante-quatre'], correct:0},
+  {n:'29 384 756', opts:['Vingt-neuf millions trois cent quatre-vingt-quatre mille sept cent cinquante-six','Vingt-neuf millions trois cent quarante-huit mille sept cent cinquante-six','Deux cent quatre-vingt-treize millions quatre-vingt-quatre mille sept cent cinquante-six','Vingt-neuf millions trois cent quatre-vingt-quatre mille six cent cinquante-sept'], correct:0},
+  {n:'405 030 702', opts:['Quatre cent cinq millions trente mille sept cent deux','Quatre cent cinq millions trois mille sept cent deux','Quarante-cinq millions trente mille sept cent deux','Quatre cent cinq millions trente mille soixante-douze'], correct:0},
+  {n:'71 628 394', opts:['Soixante et onze millions six cent vingt-huit mille trois cent quatre-vingt-quatorze','Soixante et onze millions six cent quatre-vingt-deux mille trois cent quatre-vingt-quatorze','Sept cent seize millions vingt-huit mille trois cent quatre-vingt-quatorze','Soixante et onze millions six cent vingt-huit mille trois cent quarante-neuf'], correct:0},
+  {n:'593 817 246', opts:['Cinq cent quatre-vingt-treize millions huit cent dix-sept mille deux cent quarante-six','Cinq cent trente-neuf millions huit cent dix-sept mille deux cent quarante-six','Cinq cent quatre-vingt-treize millions huit cent soixante-dix-sept mille deux cent quarante-six','Cinq cent quatre-vingt-treize millions huit cent dix-sept mille deux cent soixante-quatre'], correct:0},
+  {n:'38 204 915', opts:['Trente-huit millions deux cent quatre mille neuf cent quinze','Trente-huit millions vingt mille quatre cent quinze','Trois cent quatre-vingt-deux millions quatre mille neuf cent quinze','Trente-huit millions deux cent quarante mille neuf cent quinze'], correct:0},
+  {n:'760 481 035', opts:['Sept cent soixante millions quatre cent quatre-vingt-un mille trente-cinq','Sept cent six millions quatre cent quatre-vingt-un mille trente-cinq','Sept cent soixante millions quatre cent huit mille trente-cinq','Sept cent soixante millions quatre cent quatre-vingt-un mille cinquante-trois'], correct:0},
+  {n:'15 730 864', opts:['Quinze millions sept cent trente mille huit cent soixante-quatre','Cinquante et un millions sept cent trente mille huit cent soixante-quatre','Quinze millions sept cent trois mille huit cent soixante-quatre','Quinze millions sept cent trente mille six cent quarante-huit'], correct:0},
+  {n:'482 096 537', opts:['Quatre cent quatre-vingt-deux millions quatre-vingt-seize mille cinq cent trente-sept','Quatre cent vingt-huit millions quatre-vingt-seize mille cinq cent trente-sept','Quatre cent quatre-vingt-deux millions neuf cent six mille cinq cent trente-sept','Quatre cent quatre-vingt-deux millions quatre-vingt-seize mille cinq cent soixante-treize'], correct:0},
+];
+
+let numLireSels = {}, numLirePhrases = [], numLireSubmitted = false;
+
+function renderNumLire(){
+  const body = document.getElementById('num-lire-body');
+  if(!body) return;
+
+  // Mélanger les options pour chaque question (correct suit)
+  const shuffled = [...NUM_LIRE_BANQUE].sort(()=>Math.random()-0.5);
+  numLirePhrases = shuffled.slice(0,10).map(q => {
+    // Mélanger les options en gardant trace de la bonne réponse
+    const correctText = q.opts[q.correct];
+    const optsShuffled = [...q.opts].sort(()=>Math.random()-0.5);
+    const newCorrect = optsShuffled.indexOf(correctText);
+    return {...q, opts: optsShuffled, correct: newCorrect};
+  });
+  numLireSels = {};
+  numLireSubmitted = false;
+
+  let html = `<div style="max-width:680px;margin:0 auto;font-family:'Nunito',sans-serif;">
+    <div class="card" style="margin-bottom:1rem;padding:1rem;background:linear-gradient(135deg,#1565c0,#1976d2);color:#fff;border-radius:12px;">
+      <div style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;opacity:.8;margin-bottom:4px;">🔢 Grands nombres</div>
+      <div style="font-size:18px;font-weight:900;">👁️ Lire un nombre</div>
+      <div style="font-size:13px;margin-top:4px;opacity:.85;">Choisis la bonne façon de lire chaque nombre — 10 questions</div>
+    </div>`;
+
+  numLirePhrases.forEach((q,i) => {
+    html += `<div class="card" id="numlire-card-${i}" style="margin-bottom:0.8rem;padding:1rem;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+        <span style="background:#1565c0;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;flex-shrink:0;">${i+1}</span>
+        <span style="font-size:22px;font-weight:900;color:#1565c0;letter-spacing:1px;">${q.n}</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;" id="numlire-opts-${i}">`;
+    q.opts.forEach((opt,oi) => {
+      html += `<label class="lr-option" id="numlire-opt-${i}-${oi}" style="font-size:13px;padding:8px 12px;">
+        <input type="radio" name="numlire-${i}" onchange="numLireSel(${i},${oi})">${opt}
+      </label>`;
+    });
+    html += `</div>
+      <div id="numlire-expl-${i}" style="display:none;margin-top:8px;font-size:13px;padding:6px 10px;border-radius:8px;"></div>
+    </div>`;
+  });
+
+  html += `<button class="btn" id="numlire-submit" onclick="validerNumLire()" style="width:100%;margin-top:0.5rem;font-size:16px;padding:0.9rem;">✅ Valider mes réponses</button>
+    <div id="numlire-score" style="display:none;margin-top:1rem;" class="geo-score-panel"></div>
+  </div>`;
+
+  body.innerHTML = html;
+}
+
+function numLireSel(i, oi){
+  if(numLireSubmitted) return;
+  numLireSels[i] = oi;
+}
+
+function validerNumLire(){
+  if(numLireSubmitted) return;
+  numLireSubmitted = true;
+  let score = 0;
+  document.getElementById('numlire-submit').style.display = 'none';
+
+  numLirePhrases.forEach((q,i) => {
+    const sel = numLireSels[i];
+    const ok = sel === q.correct;
+    if(ok) score++;
+
+    q.opts.forEach((_,oi) => {
+      const el = document.getElementById(`numlire-opt-${i}-${oi}`);
+      if(!el) return;
+      el.querySelector('input').disabled = true;
+      if(oi === q.correct) el.classList.add('correct');
+      else if(oi === sel && !ok) el.classList.add('incorrect');
+    });
+
+    const card = document.getElementById(`numlire-card-${i}`);
+    if(card) card.style.borderLeft = `4px solid ${ok?'var(--green)':'var(--red)'}`;
+
+    const expl = document.getElementById(`numlire-expl-${i}`);
+    if(expl){
+      expl.style.display = 'block';
+      expl.style.background = ok ? '#d4f5e9' : '#fde8e8';
+      expl.style.color = ok ? 'var(--green)' : 'var(--red)';
+      expl.innerHTML = (ok ? '✅ ' : '❌ ') + (ok
+        ? 'Bravo ! Tu as bien lu ce nombre.'
+        : `La bonne réponse est : <strong>${q.opts[q.correct]}</strong>`);
+    }
+  });
+
+  const pct = Math.round(score/10*100);
+  const color = pct>=70?'var(--green)':pct>=50?'var(--amber)':'var(--red)';
+  const panel = document.getElementById('numlire-score');
+  panel.style.display = 'block';
+  panel.innerHTML = `
+    <div style="font-size:56px;margin-bottom:0.5rem">${pct===100?'🎉':pct>=70?'⭐':pct>=50?'👍':'💪'}</div>
+    <div style="font-family:'Nunito',sans-serif;font-weight:900;font-size:40px;color:${color}">${score}/10</div>
+    <div style="font-size:18px;color:${color};font-weight:700;margin-bottom:1rem">${pct}%</div>
+    <div style="font-size:14px;color:var(--muted);margin-bottom:1.5rem">${pct===100?'Parfait ! Tu lis les grands nombres comme un champion !':pct>=70?'Très bien ! Continue à t\'entraîner !':pct>=50?'Pas mal ! Relis les nombres attentivement.':'Courage ! Lis chaque classe séparément : millions, milliers, unités.'}</div>
+    <button class="btn" onclick="renderNumLire()" style="width:100%;margin-bottom:0.5rem;">🔄 Nouvel exercice (10 nouveaux nombres)</button>`;
+  panel.scrollIntoView({behavior:'smooth'});
+
+  if(state.student) saveResult({
+    student:state.student, cls:state.studentCls,
+    className:CLASSES[state.studentCls]?CLASSES[state.studentCls].name:state.studentCls,
+    activity:'num_lire',
+    bookTitle:'Grands nombres — Lire un nombre',
+    score, total:10, pct,
+    date:new Date().toLocaleDateString('fr-BE'),
+    time:new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})
+  });
+}
+
+
 // ===== LECTURE RAPIDE =====
 const LECTURE_RAPIDE_DATA = {
   6: {
@@ -14756,7 +14937,7 @@ function renderHistoireScreen(){
       const locked = isActivityLocked(t.id);
       const div = document.createElement('div');
       div.className = 'sub-subject-card' + (locked && !isTeacher ? ' disabled' : ' active-card');
-      div.onclick = locked && !isTeacher ? null : () => { showScreen(t.screen); };
+      div.onclick = locked && !isTeacher ? null : () => { showScreen(t.screen); if(t.fn && window[t.fn]) window[t.fn](); };
 
       const toggleBtn = isTeacher
         ? `<button class="card-teacher-toggle ${locked ? 'btn-show' : 'btn-hide'}"
@@ -14808,7 +14989,7 @@ function renderTraitementScreen(){
       const locked = isActivityLocked(t.id);
       const div = document.createElement('div');
       div.className = 'sub-subject-card' + (locked && !isTeacher ? ' disabled' : ' active-card');
-      div.onclick = locked && !isTeacher ? null : () => { showScreen(t.screen); };
+      div.onclick = locked && !isTeacher ? null : () => { showScreen(t.screen); if(t.fn && window[t.fn]) window[t.fn](); };
       const toggleBtn = isTeacher
         ? `<button class="card-teacher-toggle ${locked ? 'btn-show' : 'btn-hide'}"
              onclick="event.stopPropagation();toggleActivity('${t.id}');renderTraitementScreen();">
@@ -14852,7 +15033,7 @@ function renderOperationsScreen(){
       const locked = isActivityLocked(t.id);
       const div = document.createElement('div');
       div.className = 'sub-subject-card' + (locked && !isTeacher ? ' disabled' : ' active-card');
-      div.onclick = locked && !isTeacher ? null : () => { showScreen(t.screen); };
+      div.onclick = locked && !isTeacher ? null : () => { showScreen(t.screen); if(t.fn && window[t.fn]) window[t.fn](); };
       const toggleBtn = isTeacher
         ? `<button class="card-teacher-toggle ${locked ? 'btn-show' : 'btn-hide'}"
              onclick="event.stopPropagation();toggleActivity('${t.id}');renderOperationsScreen();">
@@ -14872,7 +15053,7 @@ function renderOperationsScreen(){
 
 // ===== NUMÉRATION NAVIGATION =====
 const NUMERATION_ITEMS = [
-  {id:'num_grands_nombres', screen:'screen-num-grands-nombres', label:'Les grands nombres', icon:'🔢'},
+  {id:'num_grands_nombres', screen:'screen-num-grands-nombres', label:'Les grands nombres', icon:'🔢', fn:'renderGrandsNombresMenu'},
   {id:'num_decimaux', screen:'screen-num-decimaux', label:'Les nombres décimaux', icon:'🔣'},
   {id:'num_entiers_decimaux', screen:'screen-num-entiers-decimaux', label:'Les nombres entiers et décimaux', icon:'🔢'},
   {id:'num_fractions', screen:'screen-num-fractions', label:'Les fractions', icon:'½'},
@@ -14890,7 +15071,7 @@ function renderNumerationScreen(){
       const locked = isActivityLocked(t.id);
       const div = document.createElement('div');
       div.className = 'sub-subject-card' + (locked && !isTeacher ? ' disabled' : ' active-card');
-      div.onclick = locked && !isTeacher ? null : () => { showScreen(t.screen); };
+      div.onclick = locked && !isTeacher ? null : () => { showScreen(t.screen); if(t.fn && window[t.fn]) window[t.fn](); };
 
       const toggleBtn = isTeacher
         ? `<button class="card-teacher-toggle ${locked ? 'btn-show' : 'btn-hide'}"
@@ -14929,7 +15110,7 @@ function renderSolidesScreen(){
       const locked = isActivityLocked(t.id);
       const div = document.createElement('div');
       div.className = 'sub-subject-card' + (locked && !isTeacher ? ' disabled' : ' active-card');
-      div.onclick = locked && !isTeacher ? null : () => { showScreen(t.screen); };
+      div.onclick = locked && !isTeacher ? null : () => { showScreen(t.screen); if(t.fn && window[t.fn]) window[t.fn](); };
 
       const toggleBtn = isTeacher
         ? `<button class="card-teacher-toggle ${locked ? 'btn-show' : 'btn-hide'}"
@@ -14971,7 +15152,7 @@ function renderGrandeursScreen(){
       const locked = isActivityLocked(t.id);
       const div = document.createElement('div');
       div.className = 'sub-subject-card' + (locked && !isTeacher ? ' disabled' : ' active-card');
-      div.onclick = locked && !isTeacher ? null : () => { showScreen(t.screen); };
+      div.onclick = locked && !isTeacher ? null : () => { showScreen(t.screen); if(t.fn && window[t.fn]) window[t.fn](); };
 
       const toggleBtn = isTeacher
         ? `<button class="card-teacher-toggle ${locked ? 'btn-show' : 'btn-hide'}"
