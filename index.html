@@ -4279,6 +4279,8 @@ function validateConjExercise(){
       time: new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})
     };
     saveResult(entry);
+    // Rafraîchir les badges après un délai (laisser Firebase se mettre à jour)
+    setTimeout(function(){ renderConjBadges(conjState.tense); }, 1500);
   }
 }
 
@@ -4322,17 +4324,17 @@ function startConjExercise(tense, type){
   const data = getConjData(tense);
   if(!data) return;
 
+  const tenseLabels = {futur:'Futur simple', present:'Indicatif présent', imparfait:'Imparfait', passe_compose:'Passé composé'};
+  const tenseLabel = tenseLabels[tense] || tense;
+
   conjState = {
     tense, type,
+    tenseLabel,
     isEvaluation: false,
     questions: [],
     answers: [],
     submitted: false
   };
-
-  // Pick 10 random questions from bank
-  const tenseLabels = {futur:'Futur simple', present:'Indicatif présent', imparfait:'Imparfait', passe_compose:'Passé composé'};
-  const tenseLabel = tenseLabels[tense] || tense;
   if(type === 'qcm'){
     conjState.questions = shuffleArray(data.qcm_bank).slice(0,10);
     document.getElementById('conj-exercise-title').textContent = '🎯 Entraînement QCM — ' + tenseLabel;
@@ -4363,8 +4365,10 @@ function startConjEvaluation(tense){
     return;
   }
 
+  const _evalLabels = {futur:'Futur simple', present:'Indicatif présent', imparfait:'Imparfait', passe_compose:'Passé composé'};
   conjState = {
-    tense, type: 'evaluation',
+    tense, type: 'eval',
+    tenseLabel: _evalLabels[tense] || tense,
     isEvaluation: true,
     questions: [],
     answers: [],
@@ -13154,8 +13158,15 @@ function loadStudentResults(){
         if(!r || !r.student || r.student !== state.student) return;
         const act = r.activity;
         if(!act) return;
-        if(!_studentResultsCache[act] || r.date > _studentResultsCache[act].date)
+        // Garder le résultat le plus récent (comparaison par timestamp ou date+time)
+        if(!_studentResultsCache[act]){
           _studentResultsCache[act] = r;
+        } else {
+          const existing = _studentResultsCache[act];
+          const existingDT = (existing.date||'') + ' ' + (existing.time||'');
+          const newDT = (r.date||'') + ' ' + (r.time||'');
+          if(newDT > existingDT) _studentResultsCache[act] = r;
+        }
       });
       // Rafraîchir le menu courant pour afficher les badges
       refreshCurrentMenu();
