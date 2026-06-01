@@ -3816,13 +3816,24 @@ function deleteStudentResults(studentName){
   const all = JSON.parse(localStorage.getItem('lq_results')||'[]');
   const filtered = all.filter(r => r.student !== studentName);
   localStorage.setItem('lq_results', JSON.stringify(filtered));
-  // Supprimer dans Firebase
+  // Supprimer dans Firebase - les résultats sont stockés sous results/{clé_aléatoire}
   if(window.FB_ready){
-    firebaseDB.ref('results/' + teacherCls + '/' + studentName).remove();
+    firebaseDB.ref('results').once('value', function(snap){
+      if(!snap.exists()) return;
+      const deletes = [];
+      snap.forEach(function(child){
+        const r = child.val();
+        if(r.student === studentName && (r.cls === teacherCls || r.className)){
+          deletes.push(firebaseDB.ref('results/' + child.key).remove());
+        }
+      });
+      Promise.all(deletes).then(function(){
+        renderGestionResults();
+      });
+    });
+  } else {
+    renderGestionResults();
   }
-  // Invalider le cache des badges
-  if(studentName === state.student) invalidateResultsCache();
-  renderGestionResults();
 }
 
 function clearAllResults(){
