@@ -3814,20 +3814,37 @@ function deleteStudentResults(studentName){
   if(!confirm('Effacer tous les résultats de ' + studentName + ' ?')) return;
   // Supprimer en local
   const all = JSON.parse(localStorage.getItem('lq_results')||'[]');
-  const filtered = all.filter(r => r.student !== studentName);
+  const filtered = all.filter(function(r){ return r.student !== studentName; });
   localStorage.setItem('lq_results', JSON.stringify(filtered));
-  // Supprimer dans Firebase - les résultats sont stockés sous results/{clé_aléatoire}
+  // Supprimer dans Firebase
   if(window.FB_ready){
     firebaseDB.ref('results').once('value', function(snap){
-      if(!snap.exists()) return;
-      const deletes = [];
+      if(!snap.exists()){
+        renderGestionResults();
+        return;
+      }
+      const promises = [];
+      // Log diagnostic - voir la structure réelle
+      let firstEntry = null;
       snap.forEach(function(child){
+        if(!firstEntry) firstEntry = {key: child.key, val: child.val()};
         const r = child.val();
-        if(r.student === studentName && (r.cls === teacherCls || r.className)){
-          deletes.push(firebaseDB.ref('results/' + child.key).remove());
+        // Vérifier tous les champs possibles qui identifient l'élève
+        if(r && (r.student === studentName || r.name === studentName)){
+          promises.push(firebaseDB.ref('results/' + child.key).remove());
         }
       });
-      Promise.all(deletes).then(function(){
+      if(firstEntry) console.log('Structure Firebase exemple:', JSON.stringify(firstEntry));
+      if(promises.length === 0){
+        console.warn('Aucun résultat trouvé dans Firebase pour', studentName);
+        renderGestionResults();
+        return;
+      }
+      Promise.all(promises).then(function(){
+        console.log('✅ ' + promises.length + ' résultats supprimés pour', studentName);
+        renderGestionResults();
+      }).catch(function(e){
+        console.error('Erreur suppression Firebase:', e);
         renderGestionResults();
       });
     });
