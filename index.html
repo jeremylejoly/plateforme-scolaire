@@ -1274,7 +1274,7 @@ input:focus{border-color:var(--purple);}
     <button class="back-btn" onclick="showScreen('screen-conjugaison')">← Retour</button>
     <div class="page-title">✏️ Indicatif présent</div>
     <div class="exercise-list">
-      <div class="exercise-card" onclick="startConjExercise('present','qcm')">
+      <div class="exercise-card" id="conj-card-present-qcm" onclick="startConjExercise('present','qcm')">
         <div class="exercise-card-icon qcm">🎯</div>
         <div>
           <div class="exercise-card-title">Entraînement — QCM</div>
@@ -1282,7 +1282,7 @@ input:focus{border-color:var(--purple);}
         </div>
         <span class="exercise-card-badge">QCM</span>
       </div>
-      <div class="exercise-card" onclick="startConjExercise('present','trous')">
+      <div class="exercise-card" id="conj-card-present-trous" onclick="startConjExercise('present','trous')">
         <div class="exercise-card-icon trous">✍️</div>
         <div>
           <div class="exercise-card-title">Entraînement — Phrases à trous</div>
@@ -1306,7 +1306,7 @@ input:focus{border-color:var(--purple);}
     <button class="back-btn" onclick="showScreen('screen-conjugaison')">← Retour</button>
     <div class="page-title">📖 Indicatif imparfait</div>
     <div class="exercise-list">
-      <div class="exercise-card" onclick="startConjExercise('imparfait','qcm')">
+      <div class="exercise-card" id="conj-card-imparfait-qcm" onclick="startConjExercise('imparfait','qcm')">
         <div class="exercise-card-icon qcm">🎯</div>
         <div>
           <div class="exercise-card-title">Entraînement — QCM</div>
@@ -1314,7 +1314,7 @@ input:focus{border-color:var(--purple);}
         </div>
         <span class="exercise-card-badge">QCM</span>
       </div>
-      <div class="exercise-card" onclick="startConjExercise('imparfait','trous')">
+      <div class="exercise-card" id="conj-card-imparfait-trous" onclick="startConjExercise('imparfait','trous')">
         <div class="exercise-card-icon trous">✍️</div>
         <div>
           <div class="exercise-card-title">Entraînement — Phrases à trous</div>
@@ -1338,7 +1338,7 @@ input:focus{border-color:var(--purple);}
     <button class="back-btn" onclick="showScreen('screen-conjugaison')">← Retour</button>
     <div class="page-title">🚀 Indicatif futur simple</div>
     <div class="exercise-list">
-      <div class="exercise-card" onclick="startConjExercise('futur','qcm')">
+      <div class="exercise-card" id="conj-card-futur-qcm" onclick="startConjExercise('futur','qcm')">
         <div class="exercise-card-icon qcm">🎯</div>
         <div>
           <div class="exercise-card-title">Entraînement — QCM</div>
@@ -1346,7 +1346,7 @@ input:focus{border-color:var(--purple);}
         </div>
         <span class="exercise-card-badge">QCM</span>
       </div>
-      <div class="exercise-card" onclick="startConjExercise('futur','trous')">
+      <div class="exercise-card" id="conj-card-futur-trous" onclick="startConjExercise('futur','trous')">
         <div class="exercise-card-icon trous">✍️</div>
         <div>
           <div class="exercise-card-title">Entraînement — Phrases à trous</div>
@@ -1354,7 +1354,7 @@ input:focus{border-color:var(--purple);}
         </div>
         <span class="exercise-card-badge">Trous</span>
       </div>
-      <div class="exercise-card" id="eval-futur-card" onclick="startConjEvaluation('futur')">
+      <div class="exercise-card" id="conj-card-futur-eval" onclick="startConjEvaluation('futur')">
         <div class="exercise-card-icon" style="background:#FFE8E8;">🏆</div>
         <div>
           <div class="exercise-card-title">Évaluation</div>
@@ -1399,7 +1399,7 @@ input:focus{border-color:var(--purple);}
         </div>
         <span class="exercise-card-badge">QCM</span>
       </div>
-      <div class="exercise-card" onclick="startConjExercise('passe_compose','trous')">
+      <div class="exercise-card" id="conj-card-passe_compose-trous" onclick="startConjExercise('passe_compose','trous')">
         <div class="exercise-card-icon trous">✍️</div>
         <div>
           <div class="exercise-card-title">Entraînement — Phrases à trous</div>
@@ -4228,9 +4228,9 @@ function validateConjExercise(){
       student: state.student,
       cls: state.studentCls,
       className: CLASSES[state.studentCls] ? CLASSES[state.studentCls].name : state.studentCls,
-      activity: 'conjugaison_' + conjState.tense,
+      activity: 'conjugaison_' + conjState.tense + '_' + (conjState.isEvaluation ? 'eval' : conjState.type),
       activityLabel: 'Conjugaison — ' + conjState.tenseLabel,
-      bookTitle: 'Conjugaison — ' + conjState.tenseLabel,
+      bookTitle: 'Conjugaison — ' + conjState.tenseLabel + ' (' + (conjState.isEvaluation ? 'Évaluation' : conjState.type === 'qcm' ? 'QCM' : 'Phrases à trous') + ')',
       isEvaluation: conjState.isEvaluation || false,
       score, total, pct,
       date: new Date().toLocaleDateString('fr-BE'),
@@ -4450,13 +4450,12 @@ function renderConjugaisonScreen(){
          </button>`
       : '';
 
-    const badge=isTeacher?'':renderScoreBadge('conjugaison_'+t.id);
+    // Pas de badge global ici - les badges sont sur les sous-exercices
     div.innerHTML = `
       ${toggleBtn}
       <div class="sub-icon">${t.icon}</div>
       <div class="sub-title">${t.label}</div>
       <div class="sub-desc">${locked ? '🔒 Non disponible pour le moment' : 'Entraînement et évaluation'}</div>
-      ${badge}
     `;
     grid.appendChild(div);
   });
@@ -14667,6 +14666,31 @@ function teacherGoToMathsSection(section){
 }
 
 // ===== CONJUGAISON NAVIGATION =====
+
+// Injecter les badges sur les cartes d'exercices de conjugaison
+function renderConjBadges(tense){
+  if(state.role !== 'student') return;
+  const types = ['qcm','trous','eval'];
+  types.forEach(function(t){
+    const card = document.getElementById('conj-card-'+tense+'-'+t);
+    if(!card) return;
+    // Supprimer ancien badge
+    const old = card.querySelector('.conj-result-badge');
+    if(old) old.remove();
+    const r = getStudentResult('conjugaison_'+tense+'_'+t);
+    if(!r) return;
+    const pct = r.pct || 0;
+    const color = pct>=70?'#27ae60':pct>=50?'#e67e22':'#e74c3c';
+    const icon = pct>=70?'✅':pct>=50?'🟠':'🔴';
+    const badge = document.createElement('div');
+    badge.className = 'conj-result-badge';
+    badge.style.cssText = 'margin-top:4px;font-size:11px;font-weight:800;color:'+color+';';
+    badge.textContent = icon+' '+r.score+'/'+r.total+' — '+pct+'% ('+r.date+')';
+    // Insérer après exercise-card-desc
+    const desc = card.querySelector('.exercise-card-desc');
+    if(desc) desc.after(badge);
+  });
+}
 function goToConjugaison(tense){
   const screens = {
     'present': 'screen-conj-present',
@@ -14674,7 +14698,11 @@ function goToConjugaison(tense){
     'futur': 'screen-conj-futur',
     'passe_compose': 'screen-conj-passe-compose'
   };
-  if(screens[tense]) showScreen(screens[tense]);
+  if(screens[tense]){
+    showScreen(screens[tense]);
+    // Afficher les badges après un court délai (laisser le DOM se mettre à jour)
+    setTimeout(function(){ renderConjBadges(tense); }, 100);
+  }
 }
 
 // ===== SUBJECT NAVIGATION =====
