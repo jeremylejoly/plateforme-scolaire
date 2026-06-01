@@ -3817,36 +3817,32 @@ function deleteStudentResults(studentName){
   const filtered = all.filter(function(r){ return r.student !== studentName; });
   localStorage.setItem('lq_results', JSON.stringify(filtered));
   // Supprimer dans Firebase
-  if(window.FB_ready){
-    firebaseDB.ref('results').once('value', function(snap){
+  if(window.FB_ready && window.FB_DB){
+    const dbRef = window.FB_ref(window.FB_DB, 'results');
+    window.FB_get(dbRef).then(function(snap){
       if(!snap.exists()){
         renderGestionResults();
         return;
       }
       const promises = [];
-      // Log diagnostic - voir la structure réelle
-      let firstEntry = null;
       snap.forEach(function(child){
-        if(!firstEntry) firstEntry = {key: child.key, val: child.val()};
         const r = child.val();
-        // Vérifier tous les champs possibles qui identifient l'élève
+        console.log('Entrée Firebase:', child.key, r && r.student);
         if(r && (r.student === studentName || r.name === studentName)){
-          promises.push(firebaseDB.ref('results/' + child.key).remove());
+          const childRef = window.FB_ref(window.FB_DB, 'results/' + child.key);
+          promises.push(window.FB_remove(childRef));
         }
       });
-      if(firstEntry) console.log('Structure Firebase exemple:', JSON.stringify(firstEntry));
-      if(promises.length === 0){
-        console.warn('Aucun résultat trouvé dans Firebase pour', studentName);
-        renderGestionResults();
-        return;
-      }
+      console.log(promises.length + ' résultats à supprimer pour', studentName);
       Promise.all(promises).then(function(){
-        console.log('✅ ' + promises.length + ' résultats supprimés pour', studentName);
         renderGestionResults();
       }).catch(function(e){
-        console.error('Erreur suppression Firebase:', e);
+        console.error('Erreur suppression:', e);
         renderGestionResults();
       });
+    }).catch(function(e){
+      console.error('Erreur lecture Firebase:', e);
+      renderGestionResults();
     });
   } else {
     renderGestionResults();
@@ -13150,10 +13146,12 @@ function loadStudentResults(){
   _studentResultsCacheFor = cacheKey;
   _studentResultsCache = {};
   try {
-    firebaseDB.ref('results/' + state.studentCls + '/' + state.student).once('value', function(snap){
+    const _lsrRef = window.FB_ref(window.FB_DB, 'results');
+    window.FB_get(_lsrRef).then(function(snap){
       if(!snap.exists()){ refreshCurrentMenu(); return; }
-      const raw = snap.val();
-      Object.values(raw).forEach(function(r){
+      snap.forEach(function(child){
+        const r = child.val();
+        if(!r || !r.student || r.student !== state.student) return;
         const act = r.activity;
         if(!act) return;
         if(!_studentResultsCache[act] || r.date > _studentResultsCache[act].date)
@@ -13161,7 +13159,7 @@ function loadStudentResults(){
       });
       // Rafraîchir le menu courant pour afficher les badges
       refreshCurrentMenu();
-    });
+    }).catch(function(e){ console.error('loadStudentResults error:', e); });
   } catch(e) { console.error('loadStudentResults error:', e); }
 }
 
