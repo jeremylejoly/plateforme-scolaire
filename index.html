@@ -1883,18 +1883,30 @@ input:focus{border-color:var(--purple);}
     <button class="back-btn" onclick="showScreen('screen-numeration');renderNumerationScreen();">← Retour</button>
     <div class="page-title">½ Les fractions</div>
     <div class="sub-subjects-grid">
+      <div class="sub-subject-card active-card" onclick="showScreen('screen-fractions-simples');renderFractionsSimples();">
+        <div class="sub-icon">🟣</div>
+        <div class="sub-title">Les fractions simples</div>
+        <div class="sub-desc">10 figures — identifie la fraction exacte</div>
+      </div>
       <div class="sub-subject-card active-card" onclick="showScreen('screen-fractions-figures');renderFractionsExercice();">
         <div class="sub-icon">🔵</div>
-        <div class="sub-title">Lire une fraction</div>
+        <div class="sub-title">Les fractions complexes</div>
         <div class="sub-desc">10 figures — coche toutes les fractions représentées</div>
       </div>
     </div>
   </div>
 
-  <!-- SCREEN: Fractions — figures -->
+  <!-- SCREEN: Fractions simples -->
+  <div id="screen-fractions-simples" class="screen">
+    <button class="back-btn" onclick="showScreen('screen-num-fractions');">← Retour</button>
+    <div class="page-title">🟣 Les fractions simples</div>
+    <div id="fractions-simples-body"></div>
+  </div>
+
+  <!-- SCREEN: Fractions complexes -->
   <div id="screen-fractions-figures" class="screen">
     <button class="back-btn" onclick="showScreen('screen-num-fractions');">← Retour</button>
-    <div class="page-title">🔵 Lire une fraction</div>
+    <div class="page-title">🔵 Les fractions complexes</div>
     <div id="fractions-figures-body"></div>
   </div>
 
@@ -4631,7 +4643,7 @@ function getLockedActivities(){
     return s ? JSON.parse(s) : [];
   }
   const s = localStorage.getItem('lq_locked_activities');
-  return s ? JSON.parse(s) : ['passe_compose','td_tableau','td_graphique','td_moyenne','connecteurs','synonymes','antonymes','dial_armstrong','dial_conseil','dial_marche','qvgdm_prehistoire','conte_chatbotte','conte_breme','poeme_cancre','poeme_ecriture','poeme_dormeur','poeme_sorciere','jeu_memory','jeu_tetris','jeu_rushhour','dial_ecrans','dial_bio','dial_voiture','dial_animal','grandeur_masses','grandeur_capacites','grandeur_longueurs','grandeur_perimetre','grandeur_aire','grandeur_volume','grandeur_durees','grandeur_monnaie','solide_points','solide_polygones','solide_triangles','solide_quadrilateres','solide_polyedres','num_decimaux','num_entiers_decimaux','num_fractions','num_pourcentages','num_tout','op_vocabulaire','op_add_sous','op_mult_div','op_4_operations','op_tables','op_x10','op_x5','op_x9','op_x11','op_divisibilite','op_compensation','op_calcul_ecrit','trait_graphiques','trait_regle3','trait_problemes','hist_prehistoire','prehistoire_assoc','prehistoire_doc','hist_antiquite','qvgdm_antiquite','hist_moyen_age','qvgdm_moyen_age','hist_temps_modernes','hist_contemporaine','hist_grandes_periodes','sci_respiratoire','sci_digestif','sci_circulatoire','sci_coeur','sci_trajet_sang','sci_circulatoire_qcm','sci_circulatoire_assoc','sci_circulatoire_ordre','sci_tegumentaire','sci_squelette','sci_engrenages','sci_electricite','sci_systeme_solaire','geo_oceans','geo_europe','geo_belgique','geo_belgique_provinces','geo_belgique_hydro','geo_belgique_communes','geo_belgique_qcm','geo_paysages','geo_hydro','geo_cartes','gram_nom','gram_determinant','gram_adjectif','gram_verbe','gram_pronom','gram_adverbe','gram_complement_nom','gram_sujet','gram_verbe_fonc','gram_predicat','gram_cdv_civ','gram_cc','gram_attribut','gram_affirm_neg','gram_pass_act'];
+  return s ? JSON.parse(s) : ['passe_compose','td_tableau','td_graphique','td_moyenne','connecteurs','synonymes','antonymes','dial_armstrong','dial_conseil','dial_marche','qvgdm_prehistoire','conte_chatbotte','conte_breme','poeme_cancre','poeme_ecriture','poeme_dormeur','poeme_sorciere','jeu_memory','jeu_tetris','jeu_rushhour','dial_ecrans','dial_bio','dial_voiture','dial_animal','grandeur_masses','grandeur_capacites','grandeur_longueurs','grandeur_perimetre','grandeur_aire','grandeur_volume','grandeur_durees','grandeur_monnaie','solide_points','solide_polygones','solide_triangles','solide_quadrilateres','solide_polyedres','num_decimaux','num_entiers_decimaux','num_fractions','num_fractions_simples','num_pourcentages','num_tout','op_vocabulaire','op_add_sous','op_mult_div','op_4_operations','op_tables','op_x10','op_x5','op_x9','op_x11','op_divisibilite','op_compensation','op_calcul_ecrit','trait_graphiques','trait_regle3','trait_problemes','hist_prehistoire','prehistoire_assoc','prehistoire_doc','hist_antiquite','qvgdm_antiquite','hist_moyen_age','qvgdm_moyen_age','hist_temps_modernes','hist_contemporaine','hist_grandes_periodes','sci_respiratoire','sci_digestif','sci_circulatoire','sci_coeur','sci_trajet_sang','sci_circulatoire_qcm','sci_circulatoire_assoc','sci_circulatoire_ordre','sci_tegumentaire','sci_squelette','sci_engrenages','sci_electricite','sci_systeme_solaire','geo_oceans','geo_europe','geo_belgique','geo_belgique_provinces','geo_belgique_hydro','geo_belgique_communes','geo_belgique_qcm','geo_paysages','geo_hydro','geo_cartes','gram_nom','gram_determinant','gram_adjectif','gram_verbe','gram_pronom','gram_adverbe','gram_complement_nom','gram_sujet','gram_verbe_fonc','gram_predicat','gram_cdv_civ','gram_cc','gram_attribut','gram_affirm_neg','gram_pass_act'];
 }
 function saveLockedActivities(arr){
   localStorage.setItem('lq_locked_activities', JSON.stringify(arr));
@@ -18391,7 +18403,190 @@ function perimetreProblResultat(){
   }
 }
 
-// ===== FRACTIONS — LIRE UNE FRACTION =====
+// ===== FRACTIONS SIMPLES =====
+// Banque avec uniquement des fractions exactes (pas d'équivalence attendue)
+const FRACTIONS_SIMPLES_BANQUE = [
+  {forme:'cercle',    total:2,  colorie:1},
+  {forme:'rectangle', total:3,  colorie:1},
+  {forme:'rectangle', total:3,  colorie:2},
+  {forme:'cercle',    total:4,  colorie:1},
+  {forme:'carre',     total:4,  colorie:3},
+  {forme:'rectangle', total:5,  colorie:1},
+  {forme:'rectangle', total:5,  colorie:2},
+  {forme:'rectangle', total:5,  colorie:3},
+  {forme:'rectangle', total:5,  colorie:4},
+  {forme:'hexagone',  total:6,  colorie:1},
+  {forme:'hexagone',  total:6,  colorie:2},
+  {forme:'hexagone',  total:6,  colorie:4},
+  {forme:'hexagone',  total:6,  colorie:5},
+  {forme:'cercle',    total:7,  colorie:2},
+  {forme:'cercle',    total:7,  colorie:5},
+  {forme:'rectangle', total:8,  colorie:1},
+  {forme:'rectangle', total:8,  colorie:3},
+  {forme:'rectangle', total:8,  colorie:5},
+  {forme:'rectangle', total:8,  colorie:7},
+  {forme:'carre',     total:9,  colorie:2},
+  {forme:'carre',     total:9,  colorie:7},
+  {forme:'rectangle', total:10, colorie:3},
+  {forme:'rectangle', total:10, colorie:7},
+  {forme:'cercle',    total:11, colorie:3},
+  {forme:'cercle',    total:11, colorie:8},
+  {forme:'carre',     total:12, colorie:5},
+  {forme:'carre',     total:12, colorie:7},
+  {forme:'triangle',  total:3,  colorie:1},
+  {forme:'triangle',  total:4,  colorie:1},
+  {forme:'triangle',  total:4,  colorie:3},
+];
+
+// Génère 3 propositions : la bonne + 2 distracteurs proches (pas d'équivalences)
+function genererPropSimples(colorie, total){
+  const bonne = fracStr(colorie, total);
+  const dist = new Set();
+  // Inversion
+  if(total !== colorie) dist.add(fracStr(total, colorie));
+  // ±1 au numérateur
+  if(colorie+1 < total) dist.add(fracStr(colorie+1, total));
+  if(colorie-1 > 0)     dist.add(fracStr(colorie-1, total));
+  // ±1 au dénominateur
+  if(total+1 <= 12)     dist.add(fracStr(colorie, total+1));
+  if(total-1 > colorie) dist.add(fracStr(colorie, total-1));
+  // Retirer la bonne
+  dist.delete(bonne);
+  const distArr = shuffle([...dist]).slice(0, 2);
+  return shuffle([bonne, ...distArr]);
+}
+
+let fractSimplesState = {questions:[], current:0, score:0, answers:[]};
+
+function renderFractionsSimples(){
+  const body = document.getElementById('fractions-simples-body');
+  if(!body) return;
+  const questions = shuffle([...FRACTIONS_SIMPLES_BANQUE]).slice(0, 10).map(fig => {
+    const props = genererPropSimples(fig.colorie, fig.total);
+    return {...fig, propositions:props, correcte:fracStr(fig.colorie, fig.total)};
+  });
+  fractSimplesState = {questions, current:0, score:0, answers:Array(10).fill(null)};
+  renderFractSimplesQuestion();
+}
+
+function renderFractSimplesQuestion(){
+  const body = document.getElementById('fractions-simples-body');
+  if(!body) return;
+  const {questions, current, score, answers} = fractSimplesState;
+  const q = questions[current];
+  const svg = buildFractionSVG(q.forme, q.total, q.colorie);
+
+  const propHtml = q.propositions.map((p, i) => `
+    <label class="lr-option" id="fs-opt-${i}" style="font-size:18px;font-weight:700;font-family:'Nunito',sans-serif;">
+      <input type="radio" name="frac-simple" value="${p}" onchange="fractSimplesSelect('${p}')">
+      ${p}
+    </label>`).join('');
+
+  body.innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+      <div style="font-size:13px;color:var(--muted);font-weight:700">Question ${current+1} / ${questions.length}</div>
+      <div style="font-size:13px;color:var(--purple);font-weight:700">Score : ${score} / ${current}</div>
+    </div>
+
+    <div class="card" style="margin-bottom:1rem;text-align:center;">
+      <p style="font-size:14px;color:var(--muted);margin-bottom:1rem;font-weight:600">
+        Quelle fraction est représentée par ce dessin ?
+      </p>
+      <div style="display:flex;justify-content:center;margin-bottom:0.5rem;">${svg}</div>
+      <div style="font-size:13px;color:var(--muted)">${q.colorie} part${q.colorie>1?'s':''} coloriée${q.colorie>1?'s':''} sur ${q.total}</div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:1.5rem;">
+      ${propHtml}
+    </div>
+
+    <button class="btn" onclick="validerFractSimple()" style="width:100%;margin-bottom:1rem">✅ Valider</button>
+    <div id="fs-feedback" style="display:none;margin-bottom:1rem;"></div>
+
+    <div style="display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:.5rem;">
+      ${answers.map(a => `<div style="width:26px;height:26px;border-radius:50%;background:${
+        a===null?'var(--border)':a?'var(--green,#16a34a)':'var(--red,#dc2626)'};"></div>`).join('')}
+    </div>
+  `;
+}
+
+let fractSimplesSelection = '';
+function fractSimplesSelect(val){ fractSimplesSelection = val; }
+
+function validerFractSimple(){
+  const q = fractSimplesState.questions[fractSimplesState.current];
+  const ok = fractSimplesSelection === q.correcte;
+  if(ok) fractSimplesState.score++;
+  fractSimplesState.answers[fractSimplesState.current] = ok;
+
+  // Colorer les options
+  q.propositions.forEach((p, i) => {
+    const opt = document.getElementById('fs-opt-'+i);
+    if(!opt) return;
+    const inp = opt.querySelector('input');
+    if(inp) inp.disabled = true;
+    if(p === q.correcte) opt.classList.add('correct');
+    else if(p === fractSimplesSelection && !ok) opt.classList.add('incorrect');
+  });
+
+  // Feedback
+  const feedback = document.getElementById('fs-feedback');
+  feedback.style.display = 'block';
+  feedback.innerHTML = ok
+    ? `<div style="color:var(--green,#16a34a);font-weight:700;font-size:15px">✅ Bravo, c'est ${q.correcte} !</div>`
+    : `<div style="color:var(--red,#dc2626);font-weight:700;font-size:15px">❌ La bonne réponse était <strong>${q.correcte}</strong>.</div>`;
+
+  // Bouton suivant
+  const btnDiv = document.createElement('div');
+  btnDiv.style.cssText = 'text-align:center;margin-top:1rem;';
+  if(fractSimplesState.current < fractSimplesState.questions.length - 1){
+    btnDiv.innerHTML = `<button class="btn" onclick="fractSimplesNext()">Suivant →</button>`;
+  } else {
+    btnDiv.innerHTML = `<button class="btn" onclick="fractSimplesResultat()">Voir les résultats 🏁</button>`;
+  }
+  feedback.after(btnDiv);
+
+  const valBtn = document.querySelector('#fractions-simples-body .btn');
+  if(valBtn && valBtn.textContent.includes('Valider')) valBtn.disabled = true;
+  fractSimplesSelection = '';
+}
+
+function fractSimplesNext(){
+  fractSimplesState.current++;
+  renderFractSimplesQuestion();
+}
+
+function fractSimplesResultat(){
+  const body = document.getElementById('fractions-simples-body');
+  const {score, questions} = fractSimplesState;
+  const total = questions.length;
+  const pct = Math.round(score/total*100);
+  const color = pct>=70?'var(--green)':pct>=50?'var(--amber)':'var(--red)';
+  const emoji = pct>=70?'🎉':pct>=50?'👍':'💪';
+
+  body.innerHTML = `
+    <div class="card" style="text-align:center;margin-bottom:1rem;">
+      <div style="font-size:48px;margin-bottom:.5rem">${emoji}</div>
+      <div style="font-family:'Nunito',sans-serif;font-weight:800;font-size:32px;color:${color}">${score}/${total}</div>
+      <div style="font-size:16px;color:${color};font-weight:700;margin-bottom:1.5rem">${pct}%</div>
+      <button class="btn" onclick="renderFractionsSimples()" style="width:100%">🔄 Nouvelles figures</button>
+    </div>
+  `;
+
+  if(state.student){
+    saveResult({
+      student:state.student, cls:state.studentCls,
+      className:CLASSES[state.studentCls]?CLASSES[state.studentCls].name:state.studentCls,
+      activity:'num_fractions_simples',
+      bookTitle:'Fractions simples — Lire une fraction',
+      score, total, pct,
+      date:new Date().toLocaleDateString('fr-BE'),
+      time:new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})
+    });
+  }
+}
+
+// ===== FRACTIONS COMPLEXES =====
 
 // pgcd pour simplifier
 function pgcd(a, b){ return b === 0 ? a : pgcd(b, a % b); }
