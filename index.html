@@ -2239,10 +2239,20 @@ input:focus{border-color:var(--purple);}
   <div id="screen-grandeurs-perimetre" class="screen">
     <button class="back-btn" onclick="showScreen('screen-grandeurs');renderGrandeursScreen();">← Retour</button>
     <div class="page-title">📐 Le périmètre</div>
-    <div class="card" style="text-align:center;padding:2rem;">
-      <div style="font-size:48px;margin-bottom:1rem;">🚧</div>
-      <p style="font-size:15px;color:var(--muted);">Les exercices arrivent bientôt !</p>
+    <div class="sub-subjects-grid">
+      <div class="sub-subject-card active-card" onclick="showScreen('screen-perimetre-calcul');renderPerimetreCalcul();">
+        <div class="sub-icon">✏️</div>
+        <div class="sub-title">Calcul du périmètre</div>
+        <div class="sub-desc">5 figures — calcule le périmètre</div>
+      </div>
     </div>
+  </div>
+
+  <!-- SCREEN: Périmètre — calcul -->
+  <div id="screen-perimetre-calcul" class="screen">
+    <button class="back-btn" onclick="showScreen('screen-grandeurs-perimetre');">← Retour</button>
+    <div class="page-title">✏️ Calcul du périmètre</div>
+    <div id="perimetre-calcul-body"></div>
   </div>
 
   <!-- SCREEN: Grandeurs - L'aire -->
@@ -17224,6 +17234,292 @@ async function loadAndApplyAvatar(){
     const saved = await loadAvatarFromFirebase();
     if(saved){ avatarCurrent = {...AVATAR_DEFAULTS, ...saved}; applyAvatarToUI(avatarCurrent); }
   } catch(e){}
+}
+
+// ===== PÉRIMÈTRE — CALCUL =====
+
+// Génère un nombre aléatoire (entier ou décimal à 1 chiffre)
+function rndM(min, max, decimal){
+  if(decimal && Math.random() < 0.45){
+    const v = min + Math.random() * (max - min);
+    return Math.round(v * 2) / 2; // multiple de 0.5
+  }
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+// Formate un nombre : 3.0 → "3", 3.5 → "3,5"
+function fmtM(v){ return String(v).replace('.', ','); }
+
+// Addition précise pour éviter les flottants
+function addM(...vals){
+  return Math.round(vals.reduce((a,b) => a + b, 0) * 100) / 100;
+}
+
+// Générateurs de figures avec SVG + mesures + périmètre correct
+const PERIMETRE_GENERATEURS = [
+
+  // Carré
+  () => {
+    const c = rndM(2, 12, true);
+    const p = addM(c,c,c,c);
+    const svg = `<svg viewBox="0 0 200 220" width="200" height="220">
+      <rect x="40" y="50" width="120" height="120" fill="#e8e4f7" stroke="var(--purple)" stroke-width="2.5"/>
+      <text x="100" y="38" text-anchor="middle" font-size="14" fill="var(--text)" font-weight="700">${fmtM(c)} m</text>
+    </svg>`;
+    return {nom:'Carré', svg, perimetre:p};
+  },
+
+  // Rectangle
+  () => {
+    let l = rndM(4, 14, true), w = rndM(2, 8, true);
+    while(w === l) w = rndM(2, 8, true);
+    const p = addM(l,w,l,w);
+    const svg = `<svg viewBox="0 0 240 200" width="240" height="200">
+      <rect x="30" y="40" width="170" height="110" fill="#e8e4f7" stroke="var(--purple)" stroke-width="2.5"/>
+      <text x="115" y="28" text-anchor="middle" font-size="14" fill="var(--text)" font-weight="700">${fmtM(l)} m</text>
+      <text x="220" y="100" text-anchor="start" font-size="14" fill="var(--text)" font-weight="700">${fmtM(w)} m</text>
+    </svg>`;
+    return {nom:'Rectangle', svg, perimetre:p};
+  },
+
+  // Triangle équilatéral
+  () => {
+    const c = rndM(3, 12, true);
+    const p = addM(c,c,c);
+    const svg = `<svg viewBox="0 0 200 200" width="200" height="200">
+      <polygon points="100,20 185,160 15,160" fill="#e8e4f7" stroke="var(--purple)" stroke-width="2.5"/>
+      <text x="100" y="185" text-anchor="middle" font-size="13" fill="var(--text)" font-weight="700">${fmtM(c)} m</text>
+    </svg>`;
+    return {nom:'Triangle équilatéral', svg, perimetre:p};
+  },
+
+  // Triangle isocèle
+  () => {
+    const b = rndM(4, 12, true);
+    let c = rndM(3, 10, true);
+    while(c === b) c = rndM(3, 10, true);
+    const p = addM(b,c,c);
+    const svg = `<svg viewBox="0 0 220 210" width="220" height="210">
+      <polygon points="110,20 190,165 30,165" fill="#e8e4f7" stroke="var(--purple)" stroke-width="2.5"/>
+      <text x="110" y="188" text-anchor="middle" font-size="13" fill="var(--text)" font-weight="700">${fmtM(b)} m</text>
+      <text x="170" y="108" text-anchor="start" font-size="13" fill="var(--text)" font-weight="700">${fmtM(c)} m</text>
+    </svg>`;
+    return {nom:'Triangle isocèle', svg, perimetre:p};
+  },
+
+  // Triangle quelconque
+  () => {
+    const a = rndM(3, 10, true), b = rndM(3, 10, true), c = rndM(3, 10, true);
+    const p = addM(a,b,c);
+    const svg = `<svg viewBox="0 0 240 210" width="240" height="210">
+      <polygon points="40,165 195,165 140,25" fill="#e8e4f7" stroke="var(--purple)" stroke-width="2.5"/>
+      <text x="118" y="188" text-anchor="middle" font-size="13" fill="var(--text)" font-weight="700">${fmtM(a)} m</text>
+      <text x="200" y="105" text-anchor="start" font-size="13" fill="var(--text)" font-weight="700">${fmtM(b)} m</text>
+      <text x="60" y="90" text-anchor="end" font-size="13" fill="var(--text)" font-weight="700">${fmtM(c)} m</text>
+    </svg>`;
+    return {nom:'Triangle', svg, perimetre:p};
+  },
+
+  // Losange
+  () => {
+    const c = rndM(3, 11, true);
+    const p = addM(c,c,c,c);
+    const svg = `<svg viewBox="0 0 220 200" width="220" height="200">
+      <polygon points="110,20 185,100 110,180 35,100" fill="#e8e4f7" stroke="var(--purple)" stroke-width="2.5"/>
+      <text x="200" y="65" text-anchor="start" font-size="13" fill="var(--text)" font-weight="700">${fmtM(c)} m</text>
+    </svg>`;
+    return {nom:'Losange', svg, perimetre:p};
+  },
+
+  // Trapèze
+  () => {
+    const b1 = rndM(5, 12, true), b2 = rndM(3, 8, true);
+    const c1 = rndM(3, 8, true), c2 = rndM(3, 8, true);
+    const p = addM(b1,b2,c1,c2);
+    const offset = 25;
+    const svg = `<svg viewBox="0 0 250 200" width="250" height="200">
+      <polygon points="${offset},160 ${250-offset},160 ${250-offset-25},45 ${offset+25},45" fill="#e8e4f7" stroke="var(--purple)" stroke-width="2.5"/>
+      <text x="125" y="182" text-anchor="middle" font-size="13" fill="var(--text)" font-weight="700">${fmtM(b1)} m</text>
+      <text x="125" y="33" text-anchor="middle" font-size="13" fill="var(--text)" font-weight="700">${fmtM(b2)} m</text>
+      <text x="228" y="108" text-anchor="start" font-size="13" fill="var(--text)" font-weight="700">${fmtM(c1)} m</text>
+      <text x="18" y="108" text-anchor="end" font-size="13" fill="var(--text)" font-weight="700">${fmtM(c2)} m</text>
+    </svg>`;
+    return {nom:'Trapèze', svg, perimetre:p};
+  },
+
+  // Pentagone régulier
+  () => {
+    const c = rndM(3, 9, true);
+    const p = addM(c,c,c,c,c);
+    const pts = [];
+    for(let i=0;i<5;i++){
+      const a = (i*72 - 90) * Math.PI/180;
+      pts.push(`${Math.round(100+80*Math.cos(a))},${Math.round(100+80*Math.sin(a))}`);
+    }
+    const svg = `<svg viewBox="0 0 200 210" width="200" height="210">
+      <polygon points="${pts.join(' ')}" fill="#e8e4f7" stroke="var(--purple)" stroke-width="2.5"/>
+      <text x="100" y="205" text-anchor="middle" font-size="13" fill="var(--text)" font-weight="700">${fmtM(c)} m</text>
+    </svg>`;
+    return {nom:'Pentagone régulier', svg, perimetre:p};
+  },
+
+  // Hexagone régulier
+  () => {
+    const c = rndM(2, 8, true);
+    const p = addM(c,c,c,c,c,c);
+    const pts = [];
+    for(let i=0;i<6;i++){
+      const a = (i*60) * Math.PI/180;
+      pts.push(`${Math.round(100+85*Math.cos(a))},${Math.round(100+85*Math.sin(a))}`);
+    }
+    const svg = `<svg viewBox="0 0 200 210" width="200" height="210">
+      <polygon points="${pts.join(' ')}" fill="#e8e4f7" stroke="var(--purple)" stroke-width="2.5"/>
+      <text x="100" y="206" text-anchor="middle" font-size="13" fill="var(--text)" font-weight="700">${fmtM(c)} m</text>
+    </svg>`;
+    return {nom:'Hexagone régulier', svg, perimetre:p};
+  },
+
+  // Parallélogramme
+  () => {
+    const b = rndM(5, 13, true), c = rndM(3, 8, true);
+    const p = addM(b,c,b,c);
+    const svg = `<svg viewBox="0 0 240 185" width="240" height="185">
+      <polygon points="40,155 210,155 190,35 20,35" fill="#e8e4f7" stroke="var(--purple)" stroke-width="2.5"/>
+      <text x="125" y="174" text-anchor="middle" font-size="13" fill="var(--text)" font-weight="700">${fmtM(b)} m</text>
+      <text x="222" y="100" text-anchor="start" font-size="13" fill="var(--text)" font-weight="700">${fmtM(c)} m</text>
+    </svg>`;
+    return {nom:'Parallélogramme', svg, perimetre:p};
+  },
+];
+
+let perimetreState = {figures:[], current:0, score:0, answers:[]};
+
+function renderPerimetreCalcul(){
+  const body = document.getElementById('perimetre-calcul-body');
+  if(!body) return;
+
+  // Tirer 5 figures en favorisant triangles et quadrilatères
+  // Indices: 0=carré, 1=rect, 2=tri éq, 3=tri iso, 4=tri qq, 5=losange, 6=trapèze, 7=penta, 8=hexa, 9=parallél
+  const pool = [0,0,1,1,2,3,4,4,5,6,9]; // triangles et quadrilatères surreprésentés
+  const chosen = shuffle([...pool]).slice(0,5);
+  const figures = chosen.map(i => PERIMETRE_GENERATEURS[i]());
+  perimetreState = {figures, current:0, score:0, answers:Array(5).fill(null)};
+  renderPerimetreQuestion();
+}
+
+function renderPerimetreQuestion(){
+  const body = document.getElementById('perimetre-calcul-body');
+  if(!body) return;
+  const {figures, current, score} = perimetreState;
+  const fig = figures[current];
+  const total = figures.length;
+
+  body.innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+      <div style="font-size:13px;color:var(--muted);font-weight:700">Figure ${current+1} / ${total}</div>
+      <div style="font-size:13px;color:var(--purple);font-weight:700">Score : ${score} / ${current}</div>
+    </div>
+
+    <div class="card" style="margin-bottom:1.5rem;text-align:center;">
+      <div style="font-weight:800;font-size:15px;color:var(--purple);margin-bottom:1rem">${fig.nom}</div>
+      <div style="display:flex;justify-content:center;margin-bottom:1rem;">
+        ${fig.svg}
+      </div>
+      <p style="font-size:14px;color:var(--text);margin-bottom:1rem">Calcule le périmètre de cette figure.</p>
+      <div style="display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;">
+        <input type="text" id="perimetre-input" placeholder="ex: 24 m"
+          style="font-size:16px;font-weight:700;text-align:center;padding:10px 16px;border:2px solid var(--border);border-radius:10px;width:130px;outline:none;"
+          onkeydown="if(event.key==='Enter') validerPerimetre()"
+          oninput="this.style.borderColor='var(--border)'"
+        />
+        <button class="btn" onclick="validerPerimetre()" style="padding:10px 20px;">✅ Valider</button>
+      </div>
+      <div id="perimetre-feedback" style="margin-top:1rem;display:none;font-weight:700;font-size:15px;"></div>
+    </div>
+
+    <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
+      ${figures.map((_, i) => `<div style="width:28px;height:28px;border-radius:50%;background:${
+        perimetreState.answers[i]===null ? 'var(--border)' :
+        perimetreState.answers[i] ? 'var(--green,#16a34a)' : 'var(--red,#dc2626)'
+      };"></div>`).join('')}
+    </div>
+  `;
+  document.getElementById('perimetre-input').focus();
+}
+
+function validerPerimetre(){
+  const input = document.getElementById('perimetre-input');
+  const feedback = document.getElementById('perimetre-feedback');
+  if(!input || !feedback) return;
+
+  const rep = input.value.trim().toLowerCase().replace(/\s+/g,' ');
+  const fig = perimetreState.figures[perimetreState.current];
+
+  // Construire la réponse attendue : "X m" avec virgule française
+  const attendu = fmtM(fig.perimetre) + ' m';
+  const attenduSansEspace = fmtM(fig.perimetre) + 'm';
+  const correct = rep === attendu.toLowerCase() || rep === attendu
+    || rep === attenduSansEspace.toLowerCase() || rep === attenduSansEspace;
+
+  input.style.borderColor = correct ? 'var(--green,#16a34a)' : 'var(--red,#dc2626)';
+  input.disabled = true;
+  feedback.style.display = 'block';
+
+  if(correct){
+    perimetreState.score++;
+    perimetreState.answers[perimetreState.current] = true;
+    feedback.style.color = 'var(--green,#16a34a)';
+    feedback.innerHTML = '✅ Bravo, c\'est correct !';
+  } else {
+    perimetreState.answers[perimetreState.current] = false;
+    feedback.style.color = 'var(--red,#dc2626)';
+    feedback.innerHTML = `❌ Incorrect. La bonne réponse est <strong>${attendu}</strong>.`;
+  }
+
+  // Bouton suivant ou résultat final
+  const btnDiv = document.createElement('div');
+  btnDiv.style.cssText = 'text-align:center;margin-top:1rem;';
+  if(perimetreState.current < perimetreState.figures.length - 1){
+    btnDiv.innerHTML = `<button class="btn" onclick="perimetreNext()">Suivant →</button>`;
+  } else {
+    btnDiv.innerHTML = `<button class="btn" onclick="perimetreResultat()">Voir les résultats 🏁</button>`;
+  }
+  feedback.after(btnDiv);
+}
+
+function perimetreNext(){
+  perimetreState.current++;
+  renderPerimetreQuestion();
+}
+
+function perimetreResultat(){
+  const body = document.getElementById('perimetre-calcul-body');
+  const {score, figures} = perimetreState;
+  const total = figures.length;
+  const pct = Math.round(score/total*100);
+  const color = pct>=70?'var(--green)':pct>=50?'var(--amber)':'var(--red)';
+  const emoji = pct>=70?'🎉':pct>=50?'👍':'💪';
+
+  body.innerHTML = `
+    <div class="card" style="text-align:center;margin-bottom:1rem;">
+      <div style="font-size:48px;margin-bottom:.5rem">${emoji}</div>
+      <div style="font-family:'Nunito',sans-serif;font-weight:800;font-size:32px;color:${color}">${score}/${total}</div>
+      <div style="font-size:16px;color:${color};font-weight:700;margin-bottom:1.5rem">${pct}%</div>
+      <button class="btn" onclick="renderPerimetreCalcul()" style="width:100%;margin-bottom:0.5rem">🔄 Nouvelles figures</button>
+    </div>
+  `;
+
+  if(state.student){
+    saveResult({
+      student:state.student, cls:state.studentCls,
+      className:CLASSES[state.studentCls]?CLASSES[state.studentCls].name:state.studentCls,
+      activity:'grandeur_perimetre',
+      bookTitle:'Périmètre — Calcul sur figures',
+      score, total, pct,
+      date:new Date().toLocaleDateString('fr-BE'),
+      time:new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})
+    });
+  }
 }
 
 // ===== QCM BELGIQUE =====
