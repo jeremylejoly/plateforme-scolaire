@@ -12997,6 +12997,124 @@ function validerAntiquiteAssoc(){
   }
 }
 
+// ===== DOCUMENT HISTORIQUE — LA BATAILLE D'ALÉSIA =====
+const ANTIQUITE_DOC_TEXTE = `
+<p style="font-style:italic;color:var(--muted);margin-bottom:1rem;font-size:13px">52 avant Jésus-Christ, en Gaule...</p>
+
+<p>En l'an <strong>52 avant Jésus-Christ</strong>, Jules César et ses légions romaines font face à une résistance gauloise menée par <strong>Vercingétorix</strong>, chef du peuple arverne. Après plusieurs batailles, Vercingétorix décide de se replier avec son armée dans l'<strong>oppidum d'Alésia</strong>, une ville fortifiée construite sur une colline, en Gaule.</p>
+
+<p>Jules César comprend qu'il ne peut pas prendre Alésia d'assaut directement — ses murs sont trop solides. Il décide alors d'affamer les Gaulois en les encerclant complètement. Ses <strong>légionnaires</strong> construisent en un temps record deux immenses lignes de fortifications en bois : l'une face à Alésia pour empêcher Vercingétorix de sortir, l'autre tournée vers l'extérieur pour se protéger d'une armée gauloise de secours qui arrive.</p>
+
+<p>Les Gaulois enfermés dans Alésia souffrent terriblement de la faim. Vercingétorix, pour économiser les vivres, prend une décision cruelle : il chasse de la ville les femmes, les enfants et les vieillards. Mais César refuse de les laisser passer ses lignes. Ces malheureux meurent de faim entre les deux armées.</p>
+
+<p>Lorsque l'armée de secours gauloise arrive, une bataille féroce s'engage sur les deux fronts. Les Romains, attaqués à la fois de l'intérieur et de l'extérieur, tiennent bon grâce à leur discipline et leur organisation. L'armée de secours est finalement repoussée.</p>
+
+<p>Sans espoir, Vercingétorix convoque ses chefs et leur annonce sa décision. Il revêt sa plus belle armure, monte son cheval et sort seul de l'oppidum. Il pose ses armes aux pieds du général romain et attend en silence. C'est la <strong>capitulation</strong>.</p>
+
+<p>Vercingétorix est emmené prisonnier à Rome, où il restera six ans en prison avant d'être exécuté. La <strong>Gaule</strong> devient une <strong>province romaine</strong>.</p>
+`;
+
+const ANTIQUITE_DOC_QCM = [
+  {q:"En quelle année s'est déroulée la bataille d'Alésia ?", options:["En 58 av. J.-C.","En 52 av. J.-C.","En 46 av. J.-C."], correct:"En 52 av. J.-C."},
+  {q:"Pourquoi César décide-t-il d'encercler Alésia plutôt que de l'attaquer directement ?", options:["Parce que ses soldats étaient trop fatigués","Parce que les murs de l'oppidum étaient trop solides","Parce qu'il attendait des renforts"], correct:"Parce que les murs de l'oppidum étaient trop solides"},
+  {q:"Que construisent les Romains autour d'Alésia ?", options:["Des tours de guet et des catapultes","Deux lignes de fortifications en bois","Un mur en pierre et un fossé rempli d'eau"], correct:"Deux lignes de fortifications en bois"},
+  {q:"Pourquoi Vercingétorix chasse-t-il les femmes, les enfants et les vieillards de la ville ?", options:["Pour les mettre en sécurité dans la forêt","Pour économiser les vivres","Pour qu'ils aillent chercher de l'aide"], correct:"Pour économiser les vivres"},
+  {q:"Comment se termine la bataille d'Alésia ?", options:["Vercingétorix réussit à s'enfuir avec son armée","César abandonne le siège et rentre à Rome","Vercingétorix se rend à Jules César"], correct:"Vercingétorix se rend à Jules César"},
+  {q:"Le texte dit que César construit une ligne tournée vers l'extérieur. Que cela nous apprend-il sur sa stratégie ?", options:["Il voulait attaquer l'armée de secours en premier","Il avait prévu l'arrivée d'une armée de secours gauloise","Il avait peur que ses soldats s'enfuient"], correct:"Il avait prévu l'arrivée d'une armée de secours gauloise"},
+  {q:"Le texte dit que les Romains \"tiennent bon grâce à leur discipline et leur organisation\". Qu'est-ce que cela nous apprend sur l'armée romaine ?", options:["Elle était moins nombreuse mais mieux entraînée que l'armée gauloise","Elle avait des armes bien supérieures à celles des Gaulois","Elle avait reçu des renforts de Rome au dernier moment"], correct:"Elle était moins nombreuse mais mieux entraînée que l'armée gauloise"},
+  {q:"Vercingétorix sort seul, en armure, et pose ses armes aux pieds de César. Que ressent-il probablement ?", options:["De la fierté — il veut mourir en combattant","De la lâcheté — il abandonne ses soldats","De la dignité — il se rend courageusement pour épargner son peuple"], correct:"De la dignité — il se rend courageusement pour épargner son peuple"},
+];
+
+let antiquiteDocState = {questions:[], selections:{}, submitted:false};
+
+function renderAntiquiteDoc(){
+  const body = document.getElementById('antiquite-doc-body');
+  if(!body) return;
+
+  const questions = shuffle([...ANTIQUITE_DOC_QCM]).map(q => {
+    const opts = shuffle([...q.options]);
+    return {q:q.q, options:opts, correctIndex:opts.indexOf(q.correct)};
+  });
+  antiquiteDocState = {questions, selections:{}, submitted:false};
+
+  let qcmHtml = '';
+  questions.forEach((q, qi) => {
+    qcmHtml += `<div class="lr-question" id="antdoc-q-${qi}" style="margin-bottom:1rem;">
+      <p style="font-weight:700;margin-bottom:.8rem;font-size:14px">${qi+1}. ${q.q}</p>`;
+    q.options.forEach((opt, oi) => {
+      qcmHtml += `<label class="lr-option" id="antdoc-opt-${qi}-${oi}">
+        <input type="radio" name="antdoc-${qi}" value="${oi}" onchange="antDocSelect(${qi},${oi})">
+        ${opt}
+      </label>`;
+    });
+    qcmHtml += `</div>`;
+  });
+
+  body.innerHTML = `
+    <div class="card" style="margin-bottom:1.5rem;border-left:4px solid var(--purple);">
+      <div style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--purple);margin-bottom:.75rem;">📜 Récit historique</div>
+      <div style="font-size:14px;line-height:1.8;color:var(--text)">${ANTIQUITE_DOC_TEXTE}</div>
+    </div>
+    <div class="card" style="margin-bottom:1rem;">
+      <div style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--purple);margin-bottom:1rem;">❓ Questions</div>
+      <div style="font-size:13px;color:var(--muted);margin-bottom:1rem;">Lis attentivement le document et réponds aux questions.</div>
+      ${qcmHtml}
+    </div>
+    <button class="btn" onclick="antDocValider()" style="width:100%;margin-bottom:1rem">✅ Valider mes réponses</button>
+    <div id="antdoc-score" style="display:none"></div>
+  `;
+}
+
+function antDocSelect(qi, oi){ antiquiteDocState.selections[qi] = oi; }
+
+function antDocValider(){
+  if(antiquiteDocState.submitted) return;
+  antiquiteDocState.submitted = true;
+  let score = 0;
+  const total = antiquiteDocState.questions.length;
+
+  antiquiteDocState.questions.forEach((q, qi) => {
+    const sel = antiquiteDocState.selections[qi];
+    const ok = sel === q.correctIndex;
+    if(ok) score++;
+    q.options.forEach((_, oi) => {
+      const el = document.getElementById(`antdoc-opt-${qi}-${oi}`);
+      if(!el) return;
+      if(oi === q.correctIndex) el.classList.add('correct');
+      else if(oi === sel && !ok) el.classList.add('incorrect');
+    });
+  });
+
+  const pct = Math.round(score/total*100);
+  const color = pct>=70?'var(--green)':pct>=50?'var(--amber)':'var(--red)';
+  const emoji = pct>=70?'🎉':pct>=50?'👍':'💪';
+
+  const panel = document.getElementById('antdoc-score');
+  panel.style.display = 'block';
+  panel.innerHTML = `
+    <div class="card" style="text-align:center">
+      <div style="font-size:48px;margin-bottom:.5rem">${emoji}</div>
+      <div style="font-family:'Nunito',sans-serif;font-weight:800;font-size:32px;color:${color}">${score}/${total}</div>
+      <div style="font-size:16px;color:${color};font-weight:700;margin-bottom:1rem">${pct}%</div>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:1rem">Les réponses <span style="color:var(--green)">vertes</span> sont correctes.</p>
+      <button class="btn" onclick="renderAntiquiteDoc()">🔄 Recommencer</button>
+    </div>
+  `;
+  panel.scrollIntoView({behavior:'smooth'});
+
+  if(state.student){
+    saveResult({
+      student:state.student, cls:state.studentCls,
+      className:CLASSES[state.studentCls]?CLASSES[state.studentCls].name:state.studentCls,
+      activity:'antiquite_doc',
+      bookTitle:"Document — La bataille d'Alésia",
+      score, total, pct,
+      date:new Date().toLocaleDateString('fr-BE'),
+      time:new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})
+    });
+  }
+}
+
 // ===== MENU ANTIQUITÉ =====
 function renderAntiquiteMenu(){
   const menu = document.getElementById('antiquite-menu');
