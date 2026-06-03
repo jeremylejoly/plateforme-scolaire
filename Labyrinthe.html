@@ -1,0 +1,1960 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🤖 Le Labyrinthe de l'Algorithme - FMTTN</title>
+  <meta name="description" content="Un jeu éducatif interactif en ligne pour initier les élèves de 5ème et 6ème primaire à l'algorithmique et à la programmation par blocs (référentiel FMTTN Fédération Wallonie-Bruxelles).">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-primary: #f8fafc;
+      --bg-card: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --primary-light: #e0e7ff;
+      --success: #10b981;
+      --success-hover: #059669;
+      --success-light: #d1fae5;
+      --warning: #f59e0b;
+      --warning-light: #fef3c7;
+      --danger: #ef4444;
+      --danger-hover: #dc2626;
+      --danger-light: #fee2e2;
+      --loop-color: #f97316;
+      --loop-light: #ffedd5;
+      --portal-color: #a855f7;
+      --portal-light: #f3e8ff;
+      
+      --border-radius: 16px;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+      --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+      --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+      --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-main);
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background-color: var(--bg-card);
+      border-bottom: 1px solid #e2e8f0;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: var(--shadow-sm);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .logo-icon {
+      font-size: 2rem;
+      animation: hoverRobot 3s ease-in-out infinite;
+    }
+
+    @keyframes hoverRobot {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-4px); }
+    }
+
+    h1 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--primary), #818cf8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .header-controls {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      max-width: 60%;
+    }
+
+    .level-selector {
+      display: flex;
+      background-color: #f1f5f9;
+      padding: 0.25rem;
+      border-radius: 9999px;
+      gap: 0.25rem;
+      overflow-x: auto;
+      max-width: 100%;
+      white-space: nowrap;
+    }
+
+    .level-selector::-webkit-scrollbar {
+      height: 4px;
+    }
+    .level-selector::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .level-selector::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 9999px;
+    }
+
+    .btn-level {
+      border: none;
+      background: none;
+      padding: 0.5rem 0.85rem;
+      border-radius: 9999px;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 600;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .btn-level.active {
+      background-color: var(--bg-card);
+      color: var(--primary);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .btn-help {
+      background-color: var(--primary-light);
+      color: var(--primary);
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-shrink: 0;
+    }
+
+    .btn-help:hover {
+      background-color: var(--primary);
+      color: white;
+    }
+
+    main {
+      flex: 1;
+      max-width: 1200px;
+      width: 100%;
+      margin: 1.5rem auto;
+      padding: 0 1rem;
+      display: grid;
+      grid-template-columns: 1.25fr 1fr 1.25fr;
+      gap: 1.5rem;
+    }
+
+    @media (max-width: 1024px) {
+      main {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto;
+      }
+    }
+
+    .panel {
+      background-color: var(--bg-card);
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow-md);
+      border: 1px solid #e2e8f0;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      height: 600px;
+    }
+
+    @media (max-width: 1024px) {
+      .panel {
+        height: auto;
+        min-height: 400px;
+      }
+    }
+
+    .panel-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      border-bottom: 2px solid #f1f5f9;
+      padding-bottom: 0.75rem;
+    }
+
+    /* --- PANEL 1 : CARTE --- */
+    .map-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .grid-board {
+      display: grid;
+      gap: 4px;
+      background-color: #cbd5e1;
+      padding: 6px;
+      border-radius: var(--border-radius);
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+      position: relative;
+    }
+
+    .cell {
+      aspect-ratio: 1;
+      border-radius: 8px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+      transition: var(--transition);
+    }
+
+    /* Types de cellules */
+    .cell-path {
+      background-color: #f1f5f9;
+      box-shadow: inset 0 1px 2px rgba(255,255,255,0.8);
+      background-image: radial-gradient(#cbd5e1 1.5px, transparent 1.5px);
+      background-size: 10px 10px;
+    }
+
+    .cell-wall {
+      background: linear-gradient(135deg, #475569, #334155);
+      border: 1px solid #1e293b;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.2);
+    }
+
+    .cell-water {
+      background-color: #bfdbfe;
+      background-image: radial-gradient(#3b82f6 20%, transparent 20%), radial-gradient(#3b82f6 20%, transparent 20%);
+      background-size: 8px 8px;
+      background-position: 0 0, 4px 4px;
+      border: 1px solid #93c5fd;
+    }
+    .cell-water::after {
+      content: '🌊';
+      font-size: 1.4rem;
+    }
+
+    .cell-mud {
+      background-color: #ffedd5;
+      background-image: radial-gradient(#c2410c 20%, transparent 20%), radial-gradient(#c2410c 20%, transparent 20%);
+      background-size: 8px 8px;
+      background-position: 0 0, 4px 4px;
+      border: 1px solid #fed7aa;
+    }
+    .cell-mud::after {
+      content: '🕳️';
+      font-size: 1.4rem;
+    }
+
+    .cell-start {
+      background-color: #e0f2fe;
+      border: 2px dashed #0284c7;
+    }
+
+    .cell-start::after {
+      content: 'Départ';
+      position: absolute;
+      bottom: 2px;
+      font-size: 0.65rem;
+      color: #0284c7;
+      font-weight: 700;
+      text-transform: uppercase;
+      pointer-events: none;
+    }
+
+    .cell-target {
+      background-color: var(--portal-light);
+      border: 2px solid var(--portal-color);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 0 10px rgba(168, 85, 247, 0.4);
+    }
+
+    .cell-energy {
+      background-color: #fcfdf9;
+    }
+
+    /* Éléments de jeu animés */
+    .robot {
+      width: 85%;
+      height: 85%;
+      z-index: 5;
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      filter: drop-shadow(0 4px 6px rgba(0,0,0,0.15));
+    }
+
+    .battery {
+      width: 75%;
+      height: 75%;
+      animation: pulseBattery 2.2s ease-in-out infinite;
+      z-index: 2;
+    }
+
+    @keyframes pulseBattery {
+      0%, 100% { transform: scale(0.9); opacity: 0.95; }
+      50% { transform: scale(1.05); opacity: 1; filter: drop-shadow(0 0 6px rgba(16, 185, 129, 0.5)); }
+    }
+
+    .portal {
+      width: 80%;
+      height: 80%;
+    }
+
+    .spin-portal {
+      animation: spinClockwise 6s linear infinite;
+      transform-origin: center;
+    }
+
+    .spin-portal-reverse {
+      animation: spinCounterClockwise 4.5s linear infinite;
+      transform-origin: center;
+    }
+
+    @keyframes spinClockwise {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes spinCounterClockwise {
+      from { transform: rotate(360deg); }
+      to { transform: rotate(0deg); }
+    }
+
+    .level-info-card {
+      background-color: var(--primary-light);
+      border-left: 4px solid var(--primary);
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      color: #312e81;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .level-description {
+      font-weight: 700;
+      font-size: 1rem;
+    }
+
+    .level-battery-counter {
+      font-weight: 700;
+      color: var(--success-hover);
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .level-hint {
+      font-size: 0.825rem;
+      color: #4338ca;
+      font-style: italic;
+    }
+
+    /* --- PANEL 2 : PALETTE DE BLOCS --- */
+    .palette-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .palette-info {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      background-color: #f8fafc;
+      padding: 0.5rem;
+      border-radius: 8px;
+      border: 1px dashed #e2e8f0;
+      text-align: center;
+    }
+
+    .block-template {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1rem;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: white;
+      cursor: pointer;
+      user-select: none;
+      transition: var(--transition);
+      border: none;
+      text-align: left;
+      width: 100%;
+      box-shadow: var(--shadow-sm);
+      position: relative;
+    }
+
+    .block-template::after {
+      content: '➕';
+      position: absolute;
+      right: 12px;
+      font-size: 0.8rem;
+      opacity: 0.7;
+      transition: var(--transition);
+    }
+
+    .block-template:hover::after {
+      transform: scale(1.2);
+      opacity: 1;
+    }
+
+    .block-template:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .block-template:active {
+      transform: translateY(0);
+    }
+
+    .block-move {
+      background-color: var(--primary);
+    }
+    .block-move:hover {
+      background-color: var(--primary-hover);
+    }
+
+    .block-turn-left {
+      background-color: #8b5cf6;
+    }
+    .block-turn-left:hover {
+      background-color: #7c3aed;
+    }
+
+    .block-turn-right {
+      background-color: #ec4899;
+    }
+    .block-turn-right:hover {
+      background-color: #db2777;
+    }
+
+    .block-loop {
+      background-color: var(--loop-color);
+    }
+    .block-loop:hover {
+      background-color: #ea580c;
+    }
+
+    /* --- PANEL 3 : ESPACE DE TRAVAIL --- */
+    .workspace-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      min-height: 0;
+    }
+
+    .workspace-stats {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .block-count {
+      color: var(--text-muted);
+    }
+
+    .block-count.limit-reached {
+      color: var(--danger);
+      animation: shake 0.5s ease-in-out;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-4px); }
+      40%, 80% { transform: translateX(4px); }
+    }
+
+    .workspace-list {
+      flex: 1;
+      border: 2px dashed #cbd5e1;
+      border-radius: var(--border-radius);
+      padding: 1rem;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      background-color: #f8fafc;
+      transition: var(--transition);
+      position: relative;
+    }
+
+    .workspace-list.active-dropzone {
+      border-color: var(--primary);
+      background-color: var(--primary-light);
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+    }
+
+    .workspace-list:empty::before {
+      content: 'Clique sur les blocs à gauche pour construire ton programme';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      text-align: center;
+      width: 80%;
+      pointer-events: none;
+      font-style: italic;
+    }
+
+    /* Blocs dans l'espace de travail */
+    .workspace-block {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.6rem 0.8rem;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: white;
+      animation: blockAppear 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+      box-shadow: var(--shadow-sm);
+      user-select: none;
+      position: relative;
+      border: 2px solid transparent;
+    }
+
+    @keyframes blockAppear {
+      from { transform: scale(0.8) translateY(10px); opacity: 0; }
+      to { transform: scale(1) translateY(0); opacity: 1; }
+    }
+
+    .workspace-block.executing {
+      border-color: #ffffff;
+      box-shadow: 0 0 12px 3px rgba(251, 191, 36, 0.8);
+      transform: scale(1.03);
+      z-index: 3;
+    }
+
+    .btn-delete-block {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.1rem;
+      cursor: pointer;
+      opacity: 0.7;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2px;
+      border-radius: 4px;
+    }
+
+    .btn-delete-block:hover {
+      opacity: 1;
+      background-color: rgba(0,0,0,0.15);
+    }
+
+    /* Style spécifique de la boucle */
+    .loop-block-wrapper {
+      background-color: var(--loop-light);
+      border: 2px solid var(--loop-color);
+      border-radius: 12px;
+      padding: 0.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      position: relative;
+      animation: blockAppear 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .loop-block-wrapper.executing-loop {
+      box-shadow: 0 0 12px 3px rgba(251, 191, 36, 0.6);
+      transform: scale(1.01);
+    }
+
+    .loop-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: #ea580c;
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+
+    .loop-title {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .loop-select {
+      background-color: white;
+      border: 1px solid var(--loop-color);
+      color: #ea580c;
+      border-radius: 6px;
+      padding: 0.15rem 0.4rem;
+      font-weight: 700;
+      font-family: 'Outfit', sans-serif;
+      cursor: pointer;
+      outline: none;
+    }
+
+    .loop-body-container {
+      background-color: rgba(255, 255, 255, 0.5);
+      border: 2px dashed #fdba74;
+      border-radius: 8px;
+      min-height: 60px;
+      padding: 0.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      transition: var(--transition);
+      cursor: pointer;
+    }
+
+    .loop-body-container.active-dropzone {
+      border-color: var(--loop-color);
+      background-color: #ffedd5;
+      box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.15);
+    }
+
+    .loop-body-container:empty::before {
+      content: 'Glisse ou clique ici pour mettre des actions dans la boucle';
+      color: #c2410c;
+      font-size: 0.75rem;
+      text-align: center;
+      display: block;
+      margin-top: 12px;
+      font-style: italic;
+      pointer-events: none;
+    }
+
+    /* Actions du bas */
+    .controls-bar {
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    .btn-action {
+      flex: 1;
+      border: none;
+      padding: 0.85rem 1rem;
+      border-radius: 12px;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .btn-action:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .btn-action:active {
+      transform: translateY(0);
+    }
+
+    .btn-run {
+      background-color: var(--success);
+      color: white;
+    }
+    .btn-run:hover {
+      background-color: var(--success-hover);
+    }
+
+    .btn-stop {
+      background-color: var(--danger);
+      color: white;
+    }
+    .btn-stop:hover {
+      background-color: var(--danger-hover);
+    }
+
+    .btn-clear {
+      background-color: #cbd5e1;
+      color: var(--text-main);
+      flex: 0.5;
+    }
+    .btn-clear:hover {
+      background-color: #94a3b8;
+    }
+
+    /* --- MODALES --- */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 100;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-card {
+      background-color: var(--bg-card);
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow-lg);
+      max-width: 450px;
+      width: 90%;
+      padding: 2rem;
+      text-align: center;
+      transform: scale(0.9);
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      border: 1px solid #e2e8f0;
+    }
+
+    .modal-overlay.active .modal-card {
+      transform: scale(1);
+    }
+
+    .modal-icon {
+      font-size: 4rem;
+      animation: popIcon 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    @keyframes popIcon {
+      from { transform: scale(0); }
+      to { transform: scale(1); }
+    }
+
+    .modal-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 800;
+      font-size: 1.5rem;
+    }
+
+    .modal-message {
+      color: var(--text-muted);
+      font-size: 1rem;
+    }
+
+    .btn-modal {
+      width: 100%;
+      border: none;
+      padding: 0.85rem;
+      border-radius: 12px;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 1.1rem;
+      cursor: pointer;
+      color: white;
+      transition: var(--transition);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .btn-modal-primary {
+      background-color: var(--primary);
+    }
+    .btn-modal-primary:hover {
+      background-color: var(--primary-hover);
+    }
+
+    .btn-modal-success {
+      background-color: var(--success);
+    }
+    .btn-modal-success:hover {
+      background-color: var(--success-hover);
+    }
+
+    .btn-modal-danger {
+      background-color: var(--danger);
+    }
+    .btn-modal-danger:hover {
+      background-color: var(--danger-hover);
+    }
+
+    /* Confettis de victoire */
+    .confetti {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background-color: #f00;
+      border-radius: 50%;
+      z-index: 99;
+      pointer-events: none;
+      animation: fall 3s linear forwards;
+    }
+
+    @keyframes fall {
+      to {
+        transform: translateY(105vh) rotate(360deg);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo-container">
+      <span class="logo-icon">🤖</span>
+      <div>
+        <h1>Le Labyrinthe de l'Algorithme</h1>
+        <p style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">Formation Numérique (FMTTN) - P5/P6</p>
+      </div>
+    </div>
+    
+    <div class="header-controls">
+      <div class="level-selector">
+        <button class="btn-level active" onclick="loadLevel(1)">Niveau 1</button>
+        <button class="btn-level" onclick="loadLevel(2)">Niveau 2</button>
+        <button class="btn-level" onclick="loadLevel(3)">Niveau 3</button>
+        <button class="btn-level" onclick="loadLevel(4)">Niveau 4</button>
+        <button class="btn-level" onclick="loadLevel(5)">Niveau 5</button>
+        <button class="btn-level" onclick="loadLevel(6)">Niveau 6</button>
+        <button class="btn-level" onclick="loadLevel(7)">Niveau 7</button>
+        <button class="btn-level" onclick="loadLevel(8)">Niveau 8</button>
+        <button class="btn-level" onclick="loadLevel(9)">Niveau 9</button>
+        <button class="btn-level" onclick="loadLevel(10)">Niveau 10</button>
+      </div>
+      <button class="btn-help" onclick="toggleHelpModal(true)">
+        <span>❓</span> Aide
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <!-- PANNEAU 1 : LA CARTE -->
+    <section class="panel">
+      <h2 class="panel-title">🗺️ Le Labyrinthe</h2>
+      <div class="map-container">
+        <div id="gridBoard" class="grid-board"></div>
+        <div class="level-info-card">
+          <div id="levelTitle" class="level-description">Niveau 1</div>
+          <div id="levelDescription" style="font-size: 0.85rem;">Description du niveau...</div>
+          <div id="levelBatteryCounter" class="level-battery-counter">🔋 Piles récoltées : 0 / 0</div>
+          <div id="levelHint" class="level-hint">Conseil...</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PANNEAU 2 : PALETTE DES BLOCS -->
+    <section class="panel">
+      <h2 class="panel-title">🧩 Instructions</h2>
+      <div class="palette-container">
+        <div class="palette-info">Clique sur un bloc pour l'ajouter à la zone active (surbrillance colorée)</div>
+        
+        <button class="block-template block-move" onclick="addBlockToWorkspace('move')">
+          <span>🚶‍♂️</span> Avancer d'une case
+        </button>
+        
+        <button class="block-template block-turn-left" onclick="addBlockToWorkspace('turn-left')">
+          <span>↩</span> Tourner à gauche
+        </button>
+        
+        <button class="block-template block-turn-right" onclick="addBlockToWorkspace('turn-right')">
+          <span>↪</span> Tourner à droite
+        </button>
+        
+        <button id="paletteLoopBtn" class="block-template block-loop" onclick="addBlockToWorkspace('loop')">
+          <span>🔄</span> Répéter X fois
+        </button>
+      </div>
+    </section>
+
+    <!-- PANNEAU 3 : ESPACE DE TRAVAIL -->
+    <section class="panel">
+      <h2 class="panel-title">💻 Mon Programme</h2>
+      <div class="workspace-container">
+        <div class="workspace-stats">
+          <div>Cible active : <span id="activeContainerName" style="color: var(--primary); font-weight: 700;">Programme</span></div>
+          <div id="blockCountLabel" class="block-count">Blocs : 0 / 5</div>
+        </div>
+        
+        <!-- Zone de dépôt des blocs -->
+        <div id="workspaceList" class="workspace-list active-dropzone" onclick="selectContainer('main', event)"></div>
+        
+        <div class="controls-bar">
+          <button id="btnRun" class="btn-action btn-run" onclick="runProgram()">
+            <span>▶</span> Démarrer
+          </button>
+          <button id="btnStop" class="btn-action btn-stop" style="display: none;" onclick="stopProgram()">
+            <span>⏹</span> Stop
+          </button>
+          <button class="btn-action btn-clear" onclick="clearWorkspace()">
+            <span>🗑</span> Vider
+          </button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- MODALE DE RÉUSSITE / ERREUR -->
+  <div id="resultModal" class="modal-overlay">
+    <div class="modal-card">
+      <div id="modalIcon" class="modal-icon">🎉</div>
+      <h3 id="modalTitle" class="modal-title">Gagné !</h3>
+      <p id="modalMessage" class="modal-message">Le robot a récupéré l'énergie.</p>
+      <button id="modalActionBtn" class="btn-modal" onclick="closeModal()">Continuer</button>
+    </div>
+  </div>
+
+  <!-- MODALE D'AIDE -->
+  <div id="helpModal" class="modal-overlay">
+    <div class="modal-card" style="text-align: left; align-items: stretch; max-width: 500px;">
+      <div style="text-align: center;">
+        <span class="modal-icon">📖</span>
+        <h3 class="modal-title">Comment jouer ?</h3>
+      </div>
+      <div style="margin: 1rem 0; font-size: 0.95rem; display: flex; flex-direction: column; gap: 0.75rem;">
+        <p><strong>But :</strong> Ramasse toutes les piles d'énergie 🔋 dispersées sur la carte, puis rejoins le portail de sortie violet 🌀 en utilisant le moins de blocs possible.</p>
+        <p><strong>1. Ajoute des blocs :</strong> Clique sur les instructions du panneau du milieu. Elles s'insèrent dans la zone active.</p>
+        <p><strong>2. Répète des actions (Boucle 🔄) :</strong> Aux niveaux avec le bloc orange <em>Répéter</em>, clique sur le fond de la boucle (il devient orange clair) puis clique sur les actions pour les mettre dedans !</p>
+        <p><strong>3. Oriente-toi bien :</strong> Le robot tourne par rapport à <strong>sa propre direction</strong> (sa tête 🤖), pas la tienne !</p>
+        <p><strong>4. Attention aux Dangers :</strong> Évite les flaques d'eau 🌊 et les trous de boue 🕳️. Il n'y a pas de murs physiques mais le robot tombera s'il marche dedans ! Si tu fais un détour sans danger, c'est possible, mais ton programme risque de dépasser la limite de blocs.</p>
+        <p><strong>5. Exécute :</strong> Appuie sur le bouton vert <strong>Démarrer</strong> pour voir le robot s'animer pas-à-pas.</p>
+      </div>
+      <button class="btn-modal btn-modal-primary" onclick="toggleHelpModal(false)">J'ai compris !</button>
+    </div>
+  </div>
+
+  <script>
+    // --- SYNTHÈSE SONORE (WEB AUDIO API) ---
+    class SoundController {
+      constructor() {
+        this.ctx = null;
+      }
+
+      init() {
+        if (!this.ctx) {
+          this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+      }
+
+      playTone(freq, type, duration, delay = 0) {
+        this.init();
+        if (!this.ctx) return;
+        
+        if (this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, this.ctx.currentTime + delay);
+        
+        gain.gain.setValueAtTime(0.15, this.ctx.currentTime + delay);
+        gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + delay + duration);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+
+        osc.start(this.ctx.currentTime + delay);
+        osc.stop(this.ctx.currentTime + delay + duration);
+      }
+
+      playClick() {
+        this.playTone(800, 'sine', 0.05);
+      }
+
+      playMove() {
+        this.playTone(300, 'triangle', 0.1);
+      }
+
+      playCollect() {
+        this.init();
+        if (!this.ctx) return;
+        const notes = [523.25, 659.25, 783.99]; // C5, E5, G5
+        notes.forEach((freq, index) => {
+          this.playTone(freq, 'sine', 0.15, index * 0.08);
+        });
+      }
+
+      playTurn() {
+        this.init();
+        if (!this.ctx) return;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(400, this.ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(600, this.ctx.currentTime + 0.12);
+        gain.gain.setValueAtTime(0.1, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.15);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(this.ctx.currentTime + 0.15);
+      }
+
+      playCollision() {
+        this.playTone(150, 'sawtooth', 0.25);
+      }
+
+      playError() {
+        this.init();
+        if (!this.ctx) return;
+        this.playTone(220, 'sawtooth', 0.2);
+        this.playTone(180, 'sawtooth', 0.3, 0.15);
+      }
+
+      playWin() {
+        this.init();
+        if (!this.ctx) return;
+        const notes = [261.63, 329.63, 392.00, 523.25]; // C4, E4, G4, C5
+        notes.forEach((freq, index) => {
+          this.playTone(freq, 'sine', 0.25, index * 0.12);
+        });
+      }
+    }
+
+    const audio = new SoundController();
+
+    // --- CONFIGURATION DES NIVEAUX (1 À 10) ---
+    const levels = [
+      {
+        id: 1,
+        title: "Niveau 1 : Les premiers pas",
+        description: "Apprends à faire avancer et tourner le robot. Ramasse la pile d'énergie sur le chemin puis rejoins le portail de sortie violet.",
+        grid: [
+          ['#', '#', '#', '#', '#'],
+          ['#', '#', 'T', '#', '#'],
+          ['#', '.', 'E', '#', '#'],
+          ['#', 'S', '#', '#', '#'],
+          ['#', '#', '#', '#', '#']
+        ],
+        startX: 1,
+        startY: 3,
+        startAngle: 0, // Face au Nord
+        maxBlocks: 5,
+        hint: "Conseil : Avance d'une case, tourne à droite ↪, avance d'une case pour prendre la pile, tourne à gauche ↩, et avance encore."
+      },
+      {
+        id: 2,
+        title: "Niveau 2 : Le parcours sinueux",
+        description: "Il y a plus d'obstacles et 2 piles d'énergie à ramasser. Dirige le robot avec précision.",
+        grid: [
+          ['#', '#', '#', '#', '#', '#'],
+          ['#', '#', '#', '#', 'T', '#'],
+          ['#', 'E', '.', '.', 'E', '#'],
+          ['#', '.', '#', '#', '#', '#'],
+          ['#', 'S', '#', '#', '#', '#'],
+          ['#', '#', '#', '#', '#', '#']
+        ],
+        startX: 1,
+        startY: 4,
+        startAngle: 0, // Nord
+        maxBlocks: 8,
+        hint: "Rappelle-toi : Les commandes 'gauche' et 'droite' s'appliquent selon la direction de la tête du robot !"
+      },
+      {
+        id: 3,
+        title: "Niveau 3 : L'escalier",
+        description: "Une pile d'énergie est posée sur chaque marche. Utilise la boucle orange Répéter pour monter toutes les marches en moins de 6 blocs !",
+        grid: [
+          ['#', '#', '#', '#', '#', '#', '#'],
+          ['#', '#', '#', '#', '#', 'T', '#'],
+          ['#', '#', '#', '#', 'E', '.', '#'],
+          ['#', '#', '#', 'E', '.', '#', '#'],
+          ['#', '#', 'E', '.', '#', '#', '#'],
+          ['#', 'S', '.', '#', '#', '#', '#'],
+          ['#', '#', '#', '#', '#', '#', '#']
+        ],
+        startX: 1,
+        startY: 5,
+        startAngle: 90, // Est
+        maxBlocks: 5,
+        hint: "La boucle doit répéter 4 fois le motif : 1. Avancer, 2. Tourner à gauche, 3. Avancer, 4. Tourner à droite."
+      },
+      {
+        id: 4,
+        title: "Niveau 4 : La chasse à l'énergie",
+        description: "Les piles sont cachées dans les recoins. Écris un programme complet pour faire le tour de la carte et tout récolter avant de sortir.",
+        grid: [
+          ['#', '#', '#', '#', '#', '#'],
+          ['#', 'E', '.', '.', 'E', '#'],
+          ['#', '.', '#', '#', '.', '#'],
+          ['#', '.', '.', '#', '.', '#'],
+          ['#', '#', 'S', '#', 'T', '#'],
+          ['#', '#', '#', '#', '#', '#']
+        ],
+        startX: 2,
+        startY: 4,
+        startAngle: 0, // Nord
+        maxBlocks: 15,
+        hint: "Fais monter le robot vers le coin supérieur gauche, passe au coin supérieur droit, puis redescends vers le portail."
+      },
+      {
+        id: 5,
+        title: "Niveau 5 : La boucle géante",
+        description: "Un parcours immense en carré avec 2 piles aux extrémités. Utilise une boucle Répéter pour faire tout le tour en 6 blocs maximum !",
+        grid: [
+          ['#', '#', '#', '#', '#', '#', '#'],
+          ['#', 'E', '.', '.', '.', 'E', '#'],
+          ['#', '.', '#', '#', '#', '.', '#'],
+          ['#', '.', '#', '#', '#', '.', '#'],
+          ['#', '.', '#', '#', '#', '.', '#'],
+          ['#', 'S', '#', '#', '#', 'T', '#'],
+          ['#', '#', '#', '#', '#', '#', '#']
+        ],
+        startX: 1,
+        startY: 5,
+        startAngle: 0, // Nord
+        maxBlocks: 6,
+        hint: "Chaque grand côté fait 4 cases. Utilise la boucle 3 fois pour faire : Avancer 4 fois, puis tourner à droite."
+      },
+      {
+        id: 6,
+        title: "Niveau 6 : La traversée des flaques",
+        description: "Il n'y a pas de murs en pierre ! Mais attention aux flaques d'eau 🌊. Contourne-les pour récolter la pile et sortir sain et sauf.",
+        grid: [
+          ['#', '#', '#', '#', '#', '#'],
+          ['#', '#', '#', '#', 'T', '#'],
+          ['#', '.', '~', '~', '.', '#'],
+          ['#', '.', '.', '.', 'E', '#'],
+          ['#', 'S', '.', '.', '.', '#'],
+          ['#', '#', '#', '#', '#', '#']
+        ],
+        startX: 1,
+        startY: 4,
+        startAngle: 90, // Est
+        maxBlocks: 7,
+        hint: "Pour éviter l'eau au milieu, le robot doit d'abord se diriger vers l'Est, ramasser la pile, puis monter au Nord."
+      },
+      {
+        id: 7,
+        title: "Niveau 7 : Le champ de boue",
+        description: "Évite les zones de boue 🕳️ qui bloquent la carte. Tu es libre de faire un grand détour par la droite si tu veux, ou de te faufiler plus court !",
+        grid: [
+          ['#', '#', '#', '#', '#', '#'],
+          ['#', '#', '.', '.', 'T', '#'],
+          ['#', 'M', '.', '.', '.', '#'],
+          ['#', '.', '.', '.', '.', '#'],
+          ['#', 'S', 'E', '.', '.', '#'],
+          ['#', '#', '#', '#', '#', '#']
+        ],
+        startX: 1,
+        startY: 4,
+        startAngle: 0, // Nord
+        maxBlocks: 9,
+        hint: "Le robot regarde au Nord, mais il y a de la boue juste devant. Tourne à droite vers l'Est, avance de 2 cases, puis monte vers le portail."
+      },
+      {
+        id: 8,
+        title: "Niveau 8 : Le pont suspendu",
+        description: "Le labyrinthe est très ouvert, mais la première pile est entourée d'eau et de boue. Fais attention à ne pas faire de trop grands détours pour ne pas manquer de blocs !",
+        grid: [
+          ['#', '#', '#', '#', '#', '#', '#'],
+          ['#', '.', '.', '.', '.', 'T', '#'],
+          ['#', '.', '.', '.', '.', '.', '#'],
+          ['#', '.', '.', '.', '.', 'E', '#'],
+          ['#', '.', '.', '.', '.', '~', '#'],
+          ['#', 'S', '.', 'E', 'M', '~', '#'],
+          ['#', '#', '#', '#', '#', '#', '#']
+        ],
+        startX: 1,
+        startY: 5,
+        startAngle: 90, // Est
+        maxBlocks: 7,
+        hint: "Le terrain est ouvert, mais pour finir en 7 blocs max, utilise une boucle de 2 itérations pour faire le motif régulier en marches d'escalier."
+      },
+      {
+        id: 9,
+        title: "Niveau 9 : Le chemin le plus court !",
+        description: "Le labyrinthe est très ouvert mais contient des pièges d'eau 🌊 et de boue 🕳️ au milieu. Trouve l'ordre parfait pour ramasser les 3 piles et finir au centre en 9 blocs maximum.",
+        grid: [
+          ['.', '.', '.', '.', '.', '.'],
+          ['.', 'S', '.', '.', 'E', '.'],
+          ['.', '.', 'T', 'M', '.', '.'],
+          ['.', '.', 'M', '~', '.', '.'],
+          ['.', 'E', '.', '.', 'E', '.'],
+          ['.', '.', '.', '.', '.', '.']
+        ],
+        startX: 1,
+        startY: 1,
+        startAngle: 180, // Sud
+        maxBlocks: 9,
+        hint: "Planifie bien l'ordre : Pile en bas à gauche ➡️ pile en bas à droite ➡️ pile en haut à droite ➡️ portail central. Tout doit s'enchaîner en 9 blocs !"
+      },
+      {
+        id: 10,
+        title: "Niveau 10 : Le zigzag final",
+        description: "Le terrain est très ouvert mais parsemé de pièges d'eau 🌊 et de boue 🕳️ pour bloquer les raccourcis. Trouve la boucle en escalier pour récolter les 2 piles en 7 blocs maximum.",
+        grid: [
+          ['#', '#', '#', '#', '#', '#', '#'],
+          ['#', '.', '.', '.', '.', 'T', '#'],
+          ['#', '~', '.', '.', '.', '.', '#'],
+          ['#', 'E', '.', 'E', 'M', '.', '#'],
+          ['#', '.', '.', '.', '.', '.', '#'],
+          ['#', 'S', '.', '.', '.', '.', '#'],
+          ['#', '#', '#', '#', '#', '#', '#']
+        ],
+        startX: 1,
+        startY: 5,
+        startAngle: 0, // Nord
+        maxBlocks: 7,
+        hint: "Utilise une boucle de 2 itérations pour faire le motif : Avancer 2 cases, tourner à droite, avancer 2 cases, tourner à gauche."
+      }
+    ];
+
+    // --- ÉTAT DU JEU ---
+    let currentLevelIndex = 0;
+    let robotX = 0;
+    let robotY = 0;
+    let robotAngle = 0; // 0=Nord, 90=Est, 180=Sud, 270=Ouest
+    let programBlocks = []; // Liste des blocs de programmation
+    let nextBlockId = 1;
+    let activeContainerId = 'main'; // 'main' ou 'loop-ID'
+    let isRunning = false;
+    let executionTimer = null;
+    let executionQueue = [];
+    let executionIndex = 0;
+
+    // État temporaire du niveau pendant l'exécution
+    let tempGrid = [];
+    let totalLevelBatteries = 0;
+    let collectedBatteries = 0;
+
+    // --- INITIALISATION ---
+    window.addEventListener('DOMContentLoaded', () => {
+      loadLevel(1);
+      
+      document.body.addEventListener('click', () => {
+        audio.init();
+      }, { once: true });
+    });
+
+    // Rendu du robot en SVG
+    const robotSVG = `
+      <svg viewBox="0 0 100 100" class="robot">
+        <line x1="50" y1="30" x2="50" y2="12" stroke="#1e293b" stroke-width="4" />
+        <circle cx="50" cy="10" r="6" fill="#f43f5e" />
+        <rect x="25" y="25" width="50" height="45" rx="12" fill="#4f46e5" stroke="#1e293b" stroke-width="4" />
+        <rect x="33" y="33" width="34" height="18" rx="6" fill="#1e293b" />
+        <circle cx="42" cy="42" r="4" fill="#10b981" />
+        <circle cx="58" cy="42" r="4" fill="#10b981" />
+        <rect x="42" y="58" width="16" height="4" rx="2" fill="#ffffff" />
+        <rect x="28" y="70" width="12" height="10" rx="3" fill="#334155" stroke="#1e293b" stroke-width="3" />
+        <rect x="60" y="70" width="12" height="10" rx="3" fill="#334155" stroke="#1e293b" stroke-width="3" />
+        <rect x="38" y="68" width="24" height="6" fill="#818cf8" stroke="#1e293b" stroke-width="3" />
+      </svg>
+    `;
+
+    // Rendu de la batterie en SVG
+    const batterySVG = `
+      <svg viewBox="0 0 100 100" class="battery">
+        <rect x="32" y="25" width="36" height="55" rx="8" fill="none" stroke="#10b981" stroke-width="6" />
+        <rect x="42" y="16" width="16" height="9" rx="2" fill="#10b981" />
+        <rect x="38" y="64" width="24" height="10" rx="2" fill="#10b981" />
+        <rect x="38" y="49" width="24" height="10" rx="2" fill="#10b981" />
+        <rect x="38" y="34" width="24" height="10" rx="2" fill="#10b981" />
+      </svg>
+    `;
+
+    // Rendu du portail violet en SVG
+    const portalSVG = `
+      <svg viewBox="0 0 100 100" class="portal">
+        <circle cx="50" cy="50" r="40" fill="none" stroke="var(--portal-color)" stroke-width="6" stroke-dasharray="10 6" class="spin-portal" />
+        <circle cx="50" cy="50" r="28" fill="none" stroke="#c084fc" stroke-width="4" stroke-dasharray="6 4" class="spin-portal-reverse" />
+        <circle cx="50" cy="50" r="14" fill="#e9d5ff" />
+      </svg>
+    `;
+
+    // Charge un niveau par son numéro
+    function loadLevel(num) {
+      if (isRunning) stopProgram();
+      
+      currentLevelIndex = num - 1;
+      const lvl = levels[currentLevelIndex];
+      
+      // Mettre à jour l'état actif des boutons
+      document.querySelectorAll('.btn-level').forEach((btn, idx) => {
+        if (idx === currentLevelIndex) btn.classList.add('active');
+        else btn.classList.remove('active');
+      });
+
+      // Mettre à jour les textes explicatifs
+      document.getElementById('levelTitle').innerText = lvl.title;
+      document.getElementById('levelDescription').innerText = lvl.description;
+      document.getElementById('levelHint').innerText = lvl.hint;
+
+      // Positionner le robot
+      robotX = lvl.startX;
+      robotY = lvl.startY;
+      robotAngle = lvl.startAngle;
+
+      // Compter le nombre de piles d'énergie à collecter
+      totalLevelBatteries = 0;
+      for (let r = 0; r < lvl.grid.length; r++) {
+        for (let c = 0; c < lvl.grid[r].length; c++) {
+          if (lvl.grid[r][c] === 'E') {
+            totalLevelBatteries++;
+          }
+        }
+      }
+      collectedBatteries = 0;
+      updateBatteryCountLabel();
+
+      // Copier la grille dans l'état temporaire
+      tempGrid = JSON.parse(JSON.stringify(lvl.grid));
+
+      // Afficher ou masquer le bouton boucle selon le niveau
+      const loopBtn = document.getElementById('paletteLoopBtn');
+      const loopsAllowedLevels = [3, 5, 8, 10];
+      if (loopsAllowedLevels.includes(lvl.id)) {
+        loopBtn.style.display = 'flex';
+      } else {
+        loopBtn.style.display = 'none';
+        clearWorkspace();
+      }
+
+      // Dessiner la grille
+      renderGrid();
+      
+      // Réinitialiser le programme
+      clearWorkspace();
+      
+      selectContainer('main');
+    }
+
+    // Met à jour l'étiquette HTML du compteur de piles
+    function updateBatteryCountLabel() {
+      const counter = document.getElementById('levelBatteryCounter');
+      counter.innerText = `🔋 Piles récoltées : ${collectedBatteries} / ${totalLevelBatteries}`;
+    }
+
+    // Dessine la grille de jeu
+    function renderGrid() {
+      const lvl = levels[currentLevelIndex];
+      const gridBoard = document.getElementById('gridBoard');
+      gridBoard.innerHTML = '';
+      
+      const rows = tempGrid.length;
+      const cols = tempGrid[0].length;
+      
+      gridBoard.style.gridTemplateRows = `repeat(${rows}, 50px)`;
+      gridBoard.style.gridTemplateColumns = `repeat(${cols}, 50px)`;
+
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          const type = tempGrid[r][c];
+          const cell = document.createElement('div');
+          cell.className = 'cell';
+          cell.dataset.x = c;
+          cell.dataset.y = r;
+          
+          if (type === '#') {
+            cell.classList.add('cell-wall');
+          } else if (type === '~') {
+            cell.classList.add('cell-water');
+          } else if (type === 'M') {
+            cell.classList.add('cell-mud');
+          } else {
+            cell.classList.add('cell-path');
+            if (type === 'S') {
+              cell.classList.add('cell-start');
+            } else if (type === 'T') {
+              cell.classList.add('cell-target');
+              cell.innerHTML = portalSVG;
+            } else if (type === 'E') {
+              cell.classList.add('cell-energy');
+              cell.innerHTML = batterySVG;
+            }
+          }
+          
+          // Ajouter le robot sur sa cellule actuelle
+          if (r === robotY && c === robotX) {
+            const robotWrapper = document.createElement('div');
+            robotWrapper.className = 'robot';
+            robotWrapper.innerHTML = robotSVG;
+            robotWrapper.style.transform = `rotate(${robotAngle}deg)`;
+            cell.appendChild(robotWrapper);
+          }
+          
+          gridBoard.appendChild(cell);
+        }
+      }
+    }
+
+    // Réinitialise la position du robot et réinitialise les piles ramassées
+    function resetRobotPosition() {
+      const lvl = levels[currentLevelIndex];
+      robotX = lvl.startX;
+      robotY = lvl.startY;
+      robotAngle = lvl.startAngle;
+      
+      // Restaurer la grille temporaire
+      tempGrid = JSON.parse(JSON.stringify(lvl.grid));
+      collectedBatteries = 0;
+      
+      updateBatteryCountLabel();
+      renderGrid();
+    }
+
+    // --- GESTION DE L'ESPACE DE TRAVAIL (WORKSPACE) ---
+
+    function selectContainer(containerId, event) {
+      if (event) {
+        event.stopPropagation();
+      }
+      
+      audio.playClick();
+      activeContainerId = containerId;
+      
+      document.getElementById('workspaceList').classList.remove('active-dropzone');
+      document.querySelectorAll('.loop-body-container').forEach(c => {
+        c.classList.remove('active-dropzone');
+      });
+
+      if (containerId === 'main') {
+        document.getElementById('workspaceList').classList.add('active-dropzone');
+        document.getElementById('activeContainerName').innerText = "Programme principal";
+      } else {
+        const loopBody = document.querySelector(`[data-id="${containerId}"]`);
+        if (loopBody) {
+          loopBody.classList.add('active-dropzone');
+          document.getElementById('activeContainerName').innerText = "Dans la boucle";
+        }
+      }
+    }
+
+    function addBlockToWorkspace(type) {
+      const currentCount = countTotalBlocks();
+      const limit = levels[currentLevelIndex].maxBlocks;
+      if (currentCount >= limit) {
+        audio.playError();
+        const counter = document.getElementById('blockCountLabel');
+        counter.classList.add('limit-reached');
+        setTimeout(() => counter.classList.remove('limit-reached'), 500);
+        return;
+      }
+
+      audio.playClick();
+      const id = nextBlockId++;
+      
+      const newBlock = {
+        id: id,
+        type: type,
+        iterations: 2
+      };
+
+      if (type === 'loop') {
+        newBlock.children = [];
+        programBlocks.push(newBlock);
+        renderWorkspace();
+        selectContainer(`loop-${id}`);
+      } else {
+        if (activeContainerId === 'main') {
+          programBlocks.push(newBlock);
+        } else {
+          const loopId = parseInt(activeContainerId.replace('loop-', ''));
+          const targetLoop = programBlocks.find(b => b.id === loopId);
+          if (targetLoop && targetLoop.type === 'loop') {
+            targetLoop.children.push(newBlock);
+          }
+        }
+        renderWorkspace();
+      }
+      
+      updateBlockCount();
+    }
+
+    function deleteBlock(id, event) {
+      if (event) event.stopPropagation();
+      audio.playClick();
+      
+      const idx = programBlocks.findIndex(b => b.id === id);
+      if (idx !== -1) {
+        if (activeContainerId === `loop-${id}`) {
+          activeContainerId = 'main';
+        }
+        programBlocks.splice(idx, 1);
+      } else {
+        programBlocks.forEach(block => {
+          if (block.type === 'loop') {
+            const childIdx = block.children.findIndex(c => c.id === id);
+            if (childIdx !== -1) {
+              block.children.splice(childIdx, 1);
+            }
+          }
+        });
+      }
+      
+      renderWorkspace();
+      updateBlockCount();
+      
+      if (activeContainerId !== 'main' && !document.querySelector(`[data-id="${activeContainerId}"]`)) {
+        selectContainer('main');
+      }
+    }
+
+    function updateLoopIterations(id, val) {
+      const loop = programBlocks.find(b => b.id === id);
+      if (loop && loop.type === 'loop') {
+        loop.iterations = parseInt(val);
+      }
+    }
+
+    function countTotalBlocks() {
+      let count = 0;
+      programBlocks.forEach(b => {
+        count++;
+        if (b.type === 'loop') {
+          count += b.children.length;
+        }
+      });
+      return count;
+    }
+
+    // Met à jour l'étiquette affichant le nombre de blocs utilisés
+    function updateBlockCount() {
+      const currentCount = countTotalBlocks();
+      const limit = levels[currentLevelIndex].maxBlocks;
+      const label = document.getElementById('blockCountLabel');
+      label.innerText = `Blocs : ${currentCount} / ${limit}`;
+      
+      if (currentCount > limit) {
+        label.classList.add('limit-reached');
+      } else {
+        label.classList.remove('limit-reached');
+      }
+    }
+
+    function clearWorkspace() {
+      audio.playClick();
+      programBlocks = [];
+      activeContainerId = 'main';
+      renderWorkspace();
+      updateBlockCount();
+      selectContainer('main');
+    }
+
+    function renderWorkspace() {
+      const workspaceList = document.getElementById('workspaceList');
+      workspaceList.innerHTML = '';
+
+      programBlocks.forEach(block => {
+        if (block.type === 'loop') {
+          const wrapper = document.createElement('div');
+          wrapper.className = `loop-block-wrapper ${activeContainerId === 'loop-' + block.id ? 'active-loop' : ''}`;
+          wrapper.id = `workspace-block-${block.id}`;
+          
+          const header = document.createElement('div');
+          header.className = 'loop-header';
+          
+          const title = document.createElement('div');
+          title.className = 'loop-title';
+          title.innerHTML = `<span>🔄 Répéter</span>`;
+          
+          const select = document.createElement('select');
+          select.className = 'loop-select';
+          select.onclick = (e) => e.stopPropagation();
+          select.onchange = (e) => updateLoopIterations(block.id, e.target.value);
+          for (let i = 2; i <= 9; i++) {
+            const opt = document.createElement('option');
+            opt.value = i;
+            opt.innerText = `${i} fois`;
+            if (block.iterations === i) opt.selected = true;
+            select.appendChild(opt);
+          }
+          
+          title.appendChild(select);
+          header.appendChild(title);
+          
+          const btnDel = document.createElement('button');
+          btnDel.className = 'btn-delete-block';
+          btnDel.innerHTML = '❌';
+          btnDel.onclick = (e) => deleteBlock(block.id, e);
+          header.appendChild(btnDel);
+          
+          wrapper.appendChild(header);
+
+          const body = document.createElement('div');
+          body.className = 'loop-body-container';
+          body.dataset.id = `loop-${block.id}`;
+          if (activeContainerId === `loop-${block.id}`) {
+            body.classList.add('active-dropzone');
+          }
+          body.onclick = (e) => selectContainer(`loop-${block.id}`, e);
+          
+          block.children.forEach(child => {
+            const childEl = createSimpleBlockDOM(child);
+            body.appendChild(childEl);
+          });
+          
+          wrapper.appendChild(body);
+          workspaceList.appendChild(wrapper);
+        } else {
+          const blockEl = createSimpleBlockDOM(block);
+          workspaceList.appendChild(blockEl);
+        }
+      });
+    }
+
+    function createSimpleBlockDOM(block) {
+      const el = document.createElement('div');
+      el.className = 'workspace-block';
+      el.id = `workspace-block-${block.id}`;
+      
+      let title = '';
+      if (block.type === 'move') {
+        el.classList.add('block-move');
+        title = '🚶‍♂️ Avancer d\'une case';
+      } else if (block.type === 'turn-left') {
+        el.classList.add('block-turn-left');
+        title = '↩ Tourner à gauche';
+      } else if (block.type === 'turn-right') {
+        el.classList.add('block-turn-right');
+        title = '↪ Tourner à droite';
+      }
+
+      el.innerHTML = `
+        <span>${title}</span>
+        <button class="btn-delete-block" onclick="deleteBlock(${block.id}, event)">❌</button>
+      `;
+      
+      return el;
+    }
+
+    // --- MOTEUR D'EXÉCUTION (EXECUTION ENGINE) ---
+
+    function runProgram() {
+      if (isRunning) return;
+      if (programBlocks.length === 0) {
+        audio.playError();
+        return;
+      }
+      
+      const currentCount = countTotalBlocks();
+      const limit = levels[currentLevelIndex].maxBlocks;
+      if (currentCount > limit) {
+        audio.playError();
+        showModal('❌ Limite dépassée', `Ton programme utilise trop de blocs ! Réduis à ${limit} blocs maximum.`, 'btn-modal-danger', 'Fermer');
+        return;
+      }
+
+      isRunning = true;
+      resetRobotPosition();
+      
+      document.getElementById('btnRun').style.display = 'none';
+      document.getElementById('btnStop').style.display = 'flex';
+      
+      document.querySelectorAll('.block-template').forEach(b => b.disabled = true);
+      document.querySelectorAll('.btn-level').forEach(b => b.disabled = true);
+
+      buildExecutionQueue();
+      
+      executionIndex = 0;
+      executeNextStep();
+    }
+
+    function buildExecutionQueue() {
+      executionQueue = [];
+      
+      programBlocks.forEach(block => {
+        if (block.type === 'loop') {
+          for (let i = 0; i < block.iterations; i++) {
+            executionQueue.push({
+              type: 'loop-header',
+              blockId: block.id
+            });
+            
+            block.children.forEach(child => {
+              executionQueue.push({
+                type: child.type,
+                blockId: child.id
+              });
+            });
+          }
+        } else {
+          executionQueue.push({
+            type: block.type,
+            blockId: block.id
+          });
+        }
+      });
+    }
+
+    function executeNextStep() {
+      if (!isRunning) return;
+
+      document.querySelectorAll('.workspace-block').forEach(b => b.classList.remove('executing'));
+      document.querySelectorAll('.loop-block-wrapper').forEach(b => b.classList.remove('executing-loop'));
+
+      if (executionIndex >= executionQueue.length) {
+        checkLevelOutcome();
+        return;
+      }
+
+      const step = executionQueue[executionIndex];
+      const stepBlockEl = document.getElementById(`workspace-block-${step.blockId}`);
+      
+      if (stepBlockEl) {
+        if (step.type === 'loop-header') {
+          stepBlockEl.classList.add('executing-loop');
+        } else {
+          stepBlockEl.classList.add('executing');
+        }
+      }
+
+      let success = true;
+      if (step.type === 'move') {
+        success = moveRobot();
+      } else if (step.type === 'turn-left') {
+        turnRobot(-90);
+      } else if (step.type === 'turn-right') {
+        turnRobot(90);
+      }
+
+      if (!success) {
+        audio.playCollision();
+        setTimeout(() => {
+          audio.playError();
+          showModal('💥 Aïe ! C\'est un mur !', "Le robot a heurté un obstacle en pierre. Corrige ton programme !", 'btn-modal-danger', 'Réessayer');
+          stopProgram();
+        }, 300);
+        return;
+      }
+
+      if (tempGrid[robotY][robotX] === '~') {
+        audio.playCollision();
+        setTimeout(() => {
+          audio.playError();
+          showModal('🌊 Gloups !', "Le robot est tombé dans l'eau ! Repère bien le chemin sans flaques.", 'btn-modal-danger', 'Réessayer');
+          stopProgram();
+        }, 300);
+        return;
+      }
+
+      if (tempGrid[robotY][robotX] === 'M') {
+        audio.playCollision();
+        setTimeout(() => {
+          audio.playError();
+          showModal('🕳️ Oh non !', "Le robot s'est embourbé dans la boue ! Contourne les tas de boue.", 'btn-modal-danger', 'Réessayer');
+          stopProgram();
+        }, 300);
+        return;
+      }
+
+      executionIndex++;
+      executionTimer = setTimeout(executeNextStep, 700);
+    }
+
+    function moveRobot() {
+      const lvl = levels[currentLevelIndex];
+      const rows = tempGrid.length;
+      const cols = tempGrid[0].length;
+
+      let dx = 0;
+      let dy = 0;
+
+      const angle = (robotAngle % 360 + 360) % 360;
+      if (angle === 0) dy = -1;      // Nord
+      else if (angle === 90) dx = 1;  // Est
+      else if (angle === 180) dy = 1; // Sud
+      else if (angle === 270) dx = -1;// Ouest
+
+      const targetX = robotX + dx;
+      const targetY = robotY + dy;
+
+      if (targetY < 0 || targetY >= rows || targetX < 0 || targetX >= cols) {
+        return false;
+      }
+
+      if (tempGrid[targetY][targetX] === '#') {
+        return false;
+      }
+
+      robotX = targetX;
+      robotY = targetY;
+
+      // Détecter la collecte de pile d'énergie
+      if (tempGrid[robotY][robotX] === 'E') {
+        collectedBatteries++;
+        tempGrid[robotY][robotX] = '.'; // La pile disparaît
+        audio.playCollect();
+        updateBatteryCountLabel();
+      } else {
+        audio.playMove();
+      }
+      
+      renderGrid();
+      return true;
+    }
+
+    function turnRobot(angleDelta) {
+      robotAngle = (robotAngle + angleDelta) % 360;
+      audio.playTurn();
+      renderGrid();
+    }
+
+    function stopProgram() {
+      isRunning = false;
+      clearTimeout(executionTimer);
+      
+      document.querySelectorAll('.workspace-block').forEach(b => b.classList.remove('executing'));
+      document.querySelectorAll('.loop-block-wrapper').forEach(b => b.classList.remove('executing-loop'));
+
+      document.getElementById('btnRun').style.display = 'flex';
+      document.getElementById('btnStop').style.display = 'none';
+
+      document.querySelectorAll('.block-template').forEach(b => b.disabled = false);
+      document.querySelectorAll('.btn-level').forEach(b => b.disabled = false);
+
+      resetRobotPosition();
+    }
+
+    function checkLevelOutcome() {
+      const lvl = levels[currentLevelIndex];
+      const targetType = lvl.grid[robotY][robotX];
+      
+      if (targetType === 'T') {
+        if (collectedBatteries === totalLevelBatteries) {
+          audio.playWin();
+          triggerConfetti();
+          
+          let message = "Tu as ramassé toutes les piles et rejoint le portail ! Excellent travail !";
+          let actionBtnText = "Niveau Suivant";
+          let isLastLevel = (currentLevelIndex === levels.length - 1);
+          
+          if (isLastLevel) {
+            message = "Félicitations ! Tu as terminé les 10 niveaux et tu as maîtrisé les algorithmes de boucles, de dangers et d'optimisation ! 🏆";
+            actionBtnText = "Recommencer au début";
+          }
+          
+          showModal('🎉 Félicitations !', message, 'btn-modal-success', actionBtnText, () => {
+            if (isLastLevel) {
+              loadLevel(1);
+            } else {
+              loadLevel(currentLevelIndex + 2);
+            }
+          });
+        } else {
+          audio.playError();
+          const missing = totalLevelBatteries - collectedBatteries;
+          showModal('🔋 Oups ! Piles manquantes !', `Le robot a atteint la sortie mais il reste encore ${missing} pile(s) d'énergie sur la carte. Récolte-les toutes avant de sortir !`, 'btn-modal-primary', 'Modifier mon programme');
+        }
+      } else {
+        audio.playError();
+        showModal('🤔 Pas tout à fait arrivé...', "Le robot s'est arrêté mais n'a pas atteint le portail de sortie violet. Modifie ton programme et réessaie !", 'btn-modal-primary', 'Réessayer');
+      }
+      
+      stopProgram();
+    }
+
+    // --- MODALES ET DIALOGUES ---
+    let modalCallback = null;
+
+    function showModal(title, msg, btnClass, btnText, callback = null) {
+      document.getElementById('modalTitle').innerText = title;
+      document.getElementById('modalMessage').innerText = msg;
+      
+      const btn = document.getElementById('modalActionBtn');
+      btn.className = `btn-modal ${btnClass}`;
+      btn.innerText = btnText;
+      
+      modalCallback = callback;
+      
+      const icon = document.getElementById('modalIcon');
+      if (btnClass.includes('success')) {
+        icon.innerText = '🎉';
+      } else if (btnClass.includes('danger')) {
+        icon.innerText = '💥';
+      } else {
+        icon.innerText = '🔋';
+      }
+
+      document.getElementById('resultModal').classList.add('active');
+    }
+
+    function closeModal() {
+      audio.playClick();
+      document.getElementById('resultModal').classList.remove('active');
+      if (modalCallback) {
+        modalCallback();
+        modalCallback = null;
+      }
+    }
+
+    function toggleHelpModal(show) {
+      if (show) {
+        audio.playClick();
+        document.getElementById('helpModal').classList.add('active');
+      } else {
+        audio.playClick();
+        document.getElementById('helpModal').classList.remove('active');
+      }
+    }
+
+    // Confettis
+    function triggerConfetti() {
+      const colors = ['#4f46e5', '#10b981', '#f59e0b', '#ec4899', '#8b5cf6', '#3b82f6'];
+      for (let i = 0; i < 60; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.style.left = Math.random() * 100 + 'vw';
+        confetti.style.top = -10 + 'px';
+        confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        confetti.style.width = Math.random() * 8 + 6 + 'px';
+        confetti.style.height = confetti.style.width;
+        confetti.style.animationDuration = Math.random() * 2 + 1.5 + 's';
+        confetti.style.animationDelay = Math.random() * 0.5 + 's';
+        confetti.style.opacity = Math.random() * 0.6 + 0.4;
+        
+        document.body.appendChild(confetti);
+        
+        setTimeout(() => confetti.remove(), 2500);
+      }
+    }
+  </script>
+</body>
+</html>
