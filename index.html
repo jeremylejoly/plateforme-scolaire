@@ -1340,6 +1340,17 @@ input:focus{border-color:var(--purple);}
       </div>
 
     </div>
+    <!-- Carte Plan de travail -->
+    <div id="subjects-plan-card" style="display:none;margin-bottom:1rem;">
+      <div class="subject-card" onclick="showPlanTravailStudent()" style="flex-direction:row;align-items:center;gap:16px;padding:1rem 1.25rem;border-radius:16px;cursor:pointer;">
+        <div style="font-size:36px;flex-shrink:0;">📋</div>
+        <div>
+          <div class="subject-card-title" style="font-size:18px;">Mon plan de travail</div>
+          <div class="subject-card-desc">Les exercices assignés par Mr Lejoly</div>
+        </div>
+        <div style="margin-left:auto;font-size:20px;">→</div>
+      </div>
+    </div>
     <div style="text-align:center;padding:1rem 0 2rem;">
       <button onclick="resetToWelcome()" style="background:none;border:1.5px solid #292929;border-radius:100px;padding:10px 24px;font-family:'KGElephant',cursive;font-size:15px;color:#292929;cursor:pointer;">← Changer d'élève</button>
     </div>
@@ -3777,6 +3788,13 @@ function goToHome(){
   document.getElementById('home-class-label').textContent='Classe de '+CLASSES[state.studentCls].name+' – Que veux-tu faire ?';
   showScreen('screen-subjects');
   loadAndApplyAvatar();
+  // Afficher immédiatement la carte plan si données locales disponibles
+  loadPlanTravailLocal();
+  const _vis = planTravailAssigned.length > 0 ? '' : 'none';
+  const planCard = document.getElementById('home-plan-card');
+  if(planCard) planCard.style.display = _vis;
+  const planCard2 = document.getElementById('subjects-plan-card');
+  if(planCard2) planCard2.style.display = _vis;
   // Sync Firebase : récupérer activités verrouillées et élèves à jour
   syncStudentFromFirebase();
 }
@@ -4053,10 +4071,17 @@ async function syncFromFirebase(){
 }
 
 function switchTab(tabId,btn){
-  document.querySelectorAll('.panel-section').forEach(s=>s.classList.remove('active'));
-  document.querySelectorAll('.panel-tab').forEach(b=>b.classList.remove('active'));
-  document.getElementById(tabId).classList.add('active');
-  btn.classList.add('active');
+  // Scoped au parent direct pour éviter les conflits entre blocs panel-tabs
+  const parent = btn.closest('.panel-tabs');
+  if(parent){
+    parent.querySelectorAll('.panel-tab').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+  // Pour les panel-sections, on scope au container parent du panel-tabs
+  const container = parent ? parent.parentElement : document;
+  container.querySelectorAll('.panel-section').forEach(s=>s.classList.remove('active'));
+  const target = document.getElementById(tabId);
+  if(target) target.classList.add('active');
 }
 function switchTabById(tabId){
   document.querySelectorAll('.panel-section').forEach(s=>s.classList.remove('active'));
@@ -20826,12 +20851,15 @@ function ptStudentToggle(id, checked) {
 async function updateHomePlanCard() {
   if (window.FB_loadPlanTravail) {
     const fb = await window.FB_loadPlanTravail();
-    if (fb) planTravailAssigned = fb;
+    if (fb) { planTravailAssigned = fb; localStorage.setItem('lq_plan_travail', JSON.stringify(fb)); }
   } else {
     loadPlanTravailLocal();
   }
-  const card = document.getElementById('home-plan-card');
-  if (card) card.style.display = planTravailAssigned.length > 0 ? '' : 'none';
+  const visible = planTravailAssigned.length > 0 ? '' : 'none';
+  const card1 = document.getElementById('home-plan-card');
+  if (card1) card1.style.display = visible;
+  const card2 = document.getElementById('subjects-plan-card');
+  if (card2) card2.style.display = visible;
 }
 
 init();
