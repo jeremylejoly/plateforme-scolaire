@@ -11737,7 +11737,7 @@ const RH_PCOLS={
 };
 
 const RH_S=54, RH_PAD=27, RH_NC=6, RH_NR=6;
-let rhPieces=[], rhMoves=0, rhSel=null, rhCurIdx=0;
+let rhPieces=[], rhMoves=0, rhSel=null, rhCurIdx=0, rhDrag=null;
 
 function renderJeuRushHour(){
   const body = document.getElementById('jeu-rushhour-body');
@@ -11908,59 +11908,13 @@ function rhCanMv(pc,d){
   return true;
 }
 
-function rhDoMove(id,d){
-  const i=rhPieces.findIndex(p=>p.id===id);
-  if(i<0)return;
-  const pc=rhPieces[i];
-  if(!rhCanMv(pc,d))return;
-  rhPieces[i]=pc.dir==='h'?{...pc,x:pc.x+d}:{...pc,y:pc.y+d};
-  rhMoves++;
-  const mv=document.getElementById('rh-moves');
-  if(mv) mv.textContent=rhMoves;
-  rhSel=null; rhRender();
-  const pl=rhPieces.find(p=>p.isPlayer);
-  if(pl.x+pl.len>=RH_NC){
-    const wb=document.getElementById('rh-win-box');
-    const wm=document.getElementById('rh-win-msg');
-    const mg=document.getElementById('rh-msg');
-    if(wb) wb.style.display='block';
-    if(mg) mg.textContent='';
-    const perf=rhMoves<=8?'Solution optimale ! 🏆':rhMoves<=14?'Très bien ! ⭐':'Bien joué ! 👍';
-    if(wm) wm.textContent='Résolu en '+rhMoves+' mouvements ! '+perf;
-    wb.scrollIntoView({behavior:'smooth'});
-    // Marquer le puzzle comme réussi
-    rhMarkSolved(rhCurIdx);
-    if(state.student) saveResult({
-      student:state.student, cls:state.studentCls,
-      className:CLASSES[state.studentCls]?CLASSES[state.studentCls].name:state.studentCls,
-      activity:'jeu_rushhour',
-      bookTitle:'Rush Hour — Puzzle '+(rhCurIdx+1),
-      score:rhMoves<=8?3:rhMoves<=14?2:1, total:3,
-      pct:rhMoves<=8?100:rhMoves<=14?67:33,
-      date:new Date().toLocaleDateString('fr-BE'),
-      time:new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})
-    });
-  }
-}
+// rhDoMove remplacé par rhApplyMove + drag & drop
 
 function rhPx(x){return RH_PAD+x*RH_S;}
 function rhPy(y){return RH_PAD+y*RH_S;}
 function rhMk(t){return document.createElementNS('http://www.w3.org/2000/svg',t);}
 
-function rhArrow(svg,ax,ay,lbl,col,id,d){
-  const g=rhMk('g'); g.style.cursor='pointer';
-  g.addEventListener('click',()=>rhDoMove(id,d));
-  const ci=rhMk('circle');
-  ci.setAttribute('cx',ax);ci.setAttribute('cy',ay);ci.setAttribute('r',16);
-  ci.setAttribute('fill','rgba(255,255,255,0.95)');
-  ci.setAttribute('stroke',col);ci.setAttribute('stroke-width','2.5');
-  const t=rhMk('text');
-  t.setAttribute('x',ax);t.setAttribute('y',ay+6);
-  t.setAttribute('text-anchor','middle');t.setAttribute('fill',col);
-  t.setAttribute('font-size','18');t.setAttribute('font-weight','bold');
-  t.textContent=lbl;
-  g.appendChild(ci);g.appendChild(t);svg.appendChild(g);
-}
+// rhArrow supprimé (drag & drop)
 
 function rhDrawBlock(ctx,x,y,color){
   ctx.fillStyle=color;ctx.fillRect(x*RH_S+1,y*RH_S+1,RH_S-2,RH_S-2);
@@ -11968,10 +11922,163 @@ function rhDrawBlock(ctx,x,y,color){
   ctx.fillStyle='rgba(0,0,0,0.2)';ctx.fillRect(x*RH_S+1,y*RH_S+RH_S-4,RH_S-2,3);
 }
 
+// ===== DRAG & DROP RUSH HOUR =====
+function rhSvgPoint(svg, e){
+  // Convertit les coordonnées écran en coordonnées SVG
+  const rect = svg.getBoundingClientRect();
+  const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+  const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+  const scaleX = 378 / rect.width;
+  const scaleY = 378 / rect.height;
+  return {
+    x: (clientX - rect.left) * scaleX,
+    y: (clientY - rect.top) * scaleY
+  };
+}
+
+function rhStartDrag(e, pcId){
+  e.preventDefault();
+  const svg = document.getElementById('rh-svg');
+  if(!svg) return;
+  const pc = rhPieces.find(p => p.id === pcId);
+  if(!pc) return;
+  const pt = rhSvgPoint(svg, e);
+  rhDrag = {
+    id: pcId,
+    dir: pc.dir,
+    startX: pt.x,
+    startY: pt.y,
+    origX: pc.x,
+    origY: pc.y,
+    moved: false
+  };
+  rhSel = pcId;
+  rhRender();
+}
+
+function rhOnDragMove(e){
+  if(!rhDrag) return;
+  e.preventDefault();
+  const svg = document.getElementById('rh-svg');
+  if(!svg) return;
+  const pt = rhSvgPoint(svg, e);
+  const dx = pt.x - rhDrag.startX;
+  const dy = pt.y - rhDrag.startY;
+  const pc = rhPieces.find(p => p.id === rhDrag.id);
+  if(!pc) return;
+
+  // Calculer le déplacement en cases selon l'axe autorisé
+  let delta = 0;
+  if(rhDrag.dir === 'h') delta = Math.round(dx / RH_S);
+  else delta = Math.round(dy / RH_S);
+
+  if(delta === 0) return;
+
+  // Calculer le max déplaçable dans chaque direction
+  let maxPos = delta > 0 ? delta : -delta;
+  let sign = delta > 0 ? 1 : -1;
+  let actualDelta = 0;
+  for(let i = 1; i <= maxPos; i++){
+    if(rhCanMv({...pc, x: rhDrag.origX, y: rhDrag.origY}, sign * i)) actualDelta = sign * i;
+    else break;
+  }
+
+  // Afficher la pièce à sa position glissée (temporaire, sans modifier rhPieces)
+  rhRenderWithGhost(rhDrag.id, rhDrag.origX, rhDrag.origY, actualDelta);
+}
+
+function rhOnDragEnd(e){
+  if(!rhDrag) return;
+  const svg = document.getElementById('rh-svg');
+  if(!svg) return;
+  const pt = rhSvgPoint(svg, e.changedTouches ? e : e);
+  const endX = e.changedTouches ? e.changedTouches[0].clientX : e.clientX;
+  const endY = e.changedTouches ? e.changedTouches[0].clientY : e.clientY;
+  const rect = svg.getBoundingClientRect();
+  const dx = (endX - rect.left) * (378/rect.width) - rhDrag.startX;
+  const dy = (endY - rect.top) * (378/rect.height) - rhDrag.startY;
+
+  let delta = 0;
+  if(rhDrag.dir === 'h') delta = Math.round(dx / RH_S);
+  else delta = Math.round(dy / RH_S);
+
+  if(delta !== 0){
+    const pc = rhPieces.find(p => p.id === rhDrag.id);
+    if(pc){
+      // Trouver le max déplaçable
+      let sign = delta > 0 ? 1 : -1;
+      let actualDelta = 0;
+      for(let i = 1; i <= Math.abs(delta); i++){
+        if(rhCanMv(pc, sign * i)) actualDelta = sign * i;
+        else break;
+      }
+      if(actualDelta !== 0){
+        rhApplyMove(rhDrag.id, actualDelta);
+      }
+    }
+  }
+
+  rhDrag = null;
+  rhSel = null;
+  rhRender();
+}
+
+function rhApplyMove(id, totalDelta){
+  // Applique le déplacement en 1 seul mouvement (peu importe la distance)
+  const i = rhPieces.findIndex(p => p.id === id);
+  if(i < 0) return;
+  const pc = rhPieces[i];
+  rhPieces[i] = pc.dir === 'h' ? {...pc, x: pc.x + totalDelta} : {...pc, y: pc.y + totalDelta};
+  rhMoves++;
+  const mv = document.getElementById('rh-moves');
+  if(mv) mv.textContent = rhMoves;
+
+  const pl = rhPieces.find(p => p.isPlayer);
+  if(pl.x + pl.len >= RH_NC){
+    const wb = document.getElementById('rh-win-box');
+    const wm = document.getElementById('rh-win-msg');
+    const mg = document.getElementById('rh-msg');
+    if(wb) wb.style.display = 'block';
+    if(mg) mg.textContent = '';
+    const perf = rhMoves <= 5 ? 'Solution optimale ! 🏆' : rhMoves <= 10 ? 'Très bien ! ⭐' : 'Bien joué ! 👍';
+    if(wm) wm.textContent = 'Résolu en ' + rhMoves + ' déplacements ! ' + perf;
+    if(wb) wb.scrollIntoView({behavior:'smooth'});
+    rhMarkSolved(rhCurIdx);
+    if(state.student) saveResult({
+      student: state.student, cls: state.studentCls,
+      className: CLASSES[state.studentCls] ? CLASSES[state.studentCls].name : state.studentCls,
+      activity: 'jeu_rushhour',
+      bookTitle: 'Rush Hour — Puzzle ' + (rhCurIdx + 1),
+      score: rhMoves <= 5 ? 3 : rhMoves <= 10 ? 2 : 1, total: 3,
+      pct: rhMoves <= 5 ? 100 : rhMoves <= 10 ? 67 : 33,
+      date: new Date().toLocaleDateString('fr-BE'),
+      time: new Date().toLocaleTimeString('fr-BE', {hour:'2-digit', minute:'2-digit'})
+    });
+  }
+}
+
+function rhRenderWithGhost(dragId, origX, origY, delta){
+  // Rendu avec la pièce fantôme à la position glissée
+  const saved = rhPieces.map(p => ({...p}));
+  const i = rhPieces.findIndex(p => p.id === dragId);
+  if(i >= 0 && delta !== 0){
+    const pc = rhPieces[i];
+    rhPieces[i] = pc.dir === 'h' ? {...pc, x: origX + delta} : {...pc, y: origY + delta};
+  }
+  rhRender();
+  rhPieces = saved;
+}
+
 function rhRender(){
   const svg=document.getElementById('rh-svg');
   if(!svg) return;
   svg.innerHTML='';
+
+  // Attacher les gestionnaires drag sur le SVG entier
+  svg.onmousemove = rhOnDragMove;
+  svg.onmouseup = rhOnDragEnd;
+  svg.ontouchmove = rhOnDragMove;
+  svg.ontouchend = rhOnDragEnd;
 
   const bg=rhMk('rect');
   bg.setAttribute('x',0);bg.setAttribute('y',0);
@@ -12011,15 +12118,19 @@ function rhRender(){
     const h=pc.dir==='v'?pc.len*RH_S-4:RH_S-4;
     const rx=rhPx(pc.x)+2, ry=rhPy(pc.y)+2;
     const col=pc.isPlayer?'#E74C3C':(RH_PCOLS[pc.id]||'#4A90D9');
-    const isSel=rhSel===pc.id;
+    const isDragging = rhDrag && rhDrag.id === pc.id;
+    const isSel = rhSel === pc.id;
 
     const rect=rhMk('rect');
     rect.setAttribute('x',rx);rect.setAttribute('y',ry);
     rect.setAttribute('width',w);rect.setAttribute('height',h);
-    rect.setAttribute('fill',col);rect.setAttribute('rx',8);
-    if(isSel){rect.setAttribute('stroke','#fff');rect.setAttribute('stroke-width','3');}
-    rect.style.cursor='pointer';
-    rect.addEventListener('click',()=>{rhSel=rhSel===pc.id?null:pc.id;rhRender();});
+    rect.setAttribute('fill', isDragging ? col : col);
+    rect.setAttribute('rx',8);
+    rect.setAttribute('opacity', isDragging ? '0.85' : '1');
+    if(isSel || isDragging){rect.setAttribute('stroke','#fff');rect.setAttribute('stroke-width','3');}
+    rect.style.cursor = pc.dir === 'h' ? 'ew-resize' : 'ns-resize';
+    rect.addEventListener('mousedown', e => rhStartDrag(e, pc.id));
+    rect.addEventListener('touchstart', e => rhStartDrag(e, pc.id), {passive:false});
     svg.appendChild(rect);
 
     // Reflet lumineux
@@ -12029,7 +12140,7 @@ function rhRender(){
     shine.setAttribute('fill','rgba(255,255,255,0.2)');shine.setAttribute('rx',4);
     svg.appendChild(shine);
 
-    // Label uniquement sur la voiture rouge
+    // Emoji voiture rouge
     if(pc.isPlayer){
       const lbl=rhMk('text');
       lbl.setAttribute('x',rx+w/2);lbl.setAttribute('y',ry+h/2+6);
@@ -12039,17 +12150,13 @@ function rhRender(){
       lbl.textContent='🚗';
       svg.appendChild(lbl);
     }
-
-    if(isSel){
-      if(pc.dir==='h'){
-        if(rhCanMv(pc,-1)) rhArrow(svg,rx-19,ry+h/2,'←',col,pc.id,-1);
-        if(rhCanMv(pc,1)) rhArrow(svg,rx+w+19,ry+h/2,'→',col,pc.id,1);
-      }else{
-        if(rhCanMv(pc,-1)) rhArrow(svg,rx+w/2,ry-19,'↑',col,pc.id,-1);
-        if(rhCanMv(pc,1)) rhArrow(svg,rx+w/2,ry+h+19,'↓',col,pc.id,1);
-      }
-    }
   });
+
+  // Message d'aide mis à jour
+  const msg = document.getElementById('rh-msg');
+  if(msg && !document.getElementById('rh-win-box')?.style.display !== 'none'){
+    msg.textContent = 'Glisse les blocs pour libérer la voiture rouge !';
+  }
 }
 
 
