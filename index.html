@@ -11744,21 +11744,55 @@ function renderJeuRushHour(){
   rhRenderSelect();
 }
 
+function rhGetSolved(){
+  const s = localStorage.getItem('rh_solved');
+  return s ? JSON.parse(s) : [];
+}
+function rhMarkSolved(idx){
+  const solved = rhGetSolved();
+  if(!solved.includes(idx)) { solved.push(idx); localStorage.setItem('rh_solved', JSON.stringify(solved)); }
+  // Mettre à jour la carte visuellement si la grille est visible
+  const btn = document.getElementById('rh-card-'+idx);
+  if(btn) rhColorCard(btn, idx);
+}
+function rhColorCard(btn, i){
+  const pz = RH_PUZZLES[i];
+  const col = RH_LEVEL_COLORS[pz.level];
+  // Couleurs de fond clair par niveau : vert clair, orange clair, rouge clair
+  const bgSolved = ['#d4f5e2','#fde8cc','#fdd9d7'][pz.level];
+  btn.style.background = bgSolved;
+  btn.onmouseover = () => btn.style.background = bgSolved;
+  btn.onmouseout  = () => btn.style.background = bgSolved;
+  // Ajouter checkmark si pas déjà là
+  if(!btn.querySelector('.rh-check')){
+    const ck = document.createElement('span');
+    ck.className = 'rh-check';
+    ck.textContent = '✓';
+    ck.style.cssText = 'font-size:10px;font-weight:900;position:absolute;top:3px;right:5px;color:'+col;
+    btn.style.position = 'relative';
+    btn.appendChild(ck);
+  }
+}
 function rhRenderSelect(){
   const grid = document.getElementById('rh-puzzle-grid');
   if(!grid) return;
+  const solved = rhGetSolved();
   let html = '';
   RH_PUZZLES.forEach((pz, i) => {
     const col = RH_LEVEL_COLORS[pz.level];
-    html += `<button onclick="rhStartPuzzle(${i})"
-      style="aspect-ratio:1;border-radius:10px;border:2px solid ${col};background:var(--surface);
+    const isSolved = solved.includes(i);
+    const bgSolved = ['#d4f5e2','#fde8cc','#fdd9d7'][pz.level];
+    const bg = isSolved ? bgSolved : 'var(--surface)';
+    html += `<button id="rh-card-${i}" onclick="rhStartPuzzle(${i})"
+      style="aspect-ratio:1;border-radius:10px;border:2px solid ${col};background:${bg};
       color:var(--text);font-family:'Nunito',sans-serif;font-weight:900;font-size:16px;
       cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
-      transition:background .15s;"
-      onmouseover="this.style.background='${col}20'"
-      onmouseout="this.style.background='var(--surface)'">
+      transition:background .15s;position:relative;"
+      onmouseover="this.style.background='${isSolved ? bgSolved : col+'20'}'"
+      onmouseout="this.style.background='${bg}'">
       <span style="font-size:13px;font-weight:900;color:${col}">${i+1}</span>
       <span style="font-size:8px;color:${col};font-weight:700">${['DÉB','INT','AVA'][pz.level]}</span>
+      ${isSolved ? `<span class="rh-check" style="font-size:10px;font-weight:900;position:absolute;top:3px;right:5px;color:${col}">✓</span>` : ''}
     </button>`;
   });
   grid.innerHTML = html;
@@ -11841,6 +11875,8 @@ function rhDoMove(id,d){
     const perf=rhMoves<=8?'Solution optimale ! 🏆':rhMoves<=14?'Très bien ! ⭐':'Bien joué ! 👍';
     if(wm) wm.textContent='Résolu en '+rhMoves+' mouvements ! '+perf;
     wb.scrollIntoView({behavior:'smooth'});
+    // Marquer le puzzle comme réussi
+    rhMarkSolved(rhCurIdx);
     if(state.student) saveResult({
       student:state.student, cls:state.studentCls,
       className:CLASSES[state.studentCls]?CLASSES[state.studentCls].name:state.studentCls,
@@ -20718,7 +20754,7 @@ async function renderPlanTravailStudent() {
   // Filtrer le catalogue aux exercices assignés
   const assigned = planTravailAssigned;
   if (!assigned.length) {
-    el.innerHTML = '<div class="pt-empty">📋 Aucun exercice assigné pour le moment.<br><span style="font-size:13px;color:var(--muted)">Mr Lejoly n'a pas encore préparé ton plan de travail.</span></div>';
+    el.innerHTML = '<div class="pt-empty">📋 Aucun exercice assigné pour le moment.<br><span style="font-size:13px;color:var(--muted)">Mr Lejoly n&#39;a pas encore préparé ton plan de travail.</span></div>';
     return;
   }
 
