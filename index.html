@@ -11868,7 +11868,7 @@ function rhLoadPuzzle(idx){
   rhCurIdx = ((idx % 25) + 25) % 25;
   const pz = RH_PUZZLES[rhCurIdx];
   rhPieces = rhDeepCopy(pz.pieces);
-  rhMoves = 0; rhSel = null;
+  rhMoves = 0; rhSel = null; rhTouchTargets = []; rhDrag = null;
   const mv = document.getElementById('rh-moves');
   const pn = document.getElementById('rh-puzzle-num');
   const pt = document.getElementById('rh-puzzle-title');
@@ -11933,6 +11933,9 @@ function rhDrawBlock(ctx,x,y,color){
 }
 
 // ===== DRAG & DROP RUSH HOUR =====
+// ===== DÉTECTION TOUCH VS MOUSE =====
+const rhIsTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+
 // ===== UTILITAIRE COORDONNÉES SVG =====
 function rhClientPoint(e){
   if(e.changedTouches && e.changedTouches.length) return {x: e.changedTouches[0].clientX, y: e.changedTouches[0].clientY};
@@ -11945,8 +11948,45 @@ function rhSvgPoint(svg, e){
   return { x:(c.x - r.left)*(378/r.width), y:(c.y - r.top)*(378/r.height) };
 }
 
-// ===== DRAG & DROP =====
+// ===== MODE TOUCH : TAP SÉLECTION + CASES CIBLES =====
+// rhSel = id de la pièce sélectionnée
+// rhTouchTargets = liste des positions cibles affichées
+
+let rhTouchTargets = []; // [{delta, x, y}] cases où on peut aller
+
+function rhTouchTapPiece(pcId){
+  if(rhSel === pcId){ rhSel = null; rhTouchTargets = []; rhRender(); return; }
+  const pc = rhPieces.find(p => p.id === pcId);
+  if(!pc) return;
+  rhSel = pcId;
+  rhTouchTargets = [];
+  // Trouver toutes les positions accessibles : on avance case par case
+  // dans chaque direction jusqu'à bloquer
+  for(const sign of [-1, 1]){
+    for(let i = 1; i <= 5; i++){
+      if(rhCanMv(pc, sign * i)){
+        const tx = pc.dir === 'h' ? pc.x + sign*i : pc.x;
+        const ty = pc.dir === 'v' ? pc.y + sign*i : pc.y;
+        rhTouchTargets.push({delta: sign*i, x: tx, y: ty});
+      } else {
+        break; // bloqué, on arrête dans cette direction
+      }
+    }
+  }
+  rhRender();
+}
+
+function rhTouchTapTarget(delta){
+  const pcId = rhSel;
+  rhSel = null;
+  rhTouchTargets = [];
+  if(delta !== 0) rhApplyMove(pcId, delta);
+  else rhRender();
+}
+
+// ===== MODE MOUSE : DRAG & DROP =====
 function rhStartDrag(e, pcId){
+  if(rhIsTouchDevice) return; // pas de drag sur touch
   e.preventDefault();
   const svg = document.getElementById('rh-svg');
   if(!svg) return;
@@ -11964,7 +12004,6 @@ function rhGetDragDelta(svg, e){
   const raw = rhDrag.dir === 'h'
     ? (pt.x - rhDrag.startX) / RH_S
     : (pt.y - rhDrag.startY) / RH_S;
-  // Delta entier, clamped aux cases libres depuis origX/origY
   const sign = raw >= 0 ? 1 : -1;
   const wanted = Math.round(Math.abs(raw)) * sign;
   const pc = rhPieces.find(p => p.id === rhDrag.id);
@@ -11984,9 +12023,8 @@ function rhOnDragMove(e){
   const svg = document.getElementById('rh-svg');
   if(!svg) return;
   const delta = rhGetDragDelta(svg, e);
-  if(delta === rhDrag.curDelta) return; // pas de changement, pas de re-render
+  if(delta === rhDrag.curDelta) return;
   rhDrag.curDelta = delta;
-  // Ghost render : bouger la pièce temporairement
   const idx = rhPieces.findIndex(p => p.id === rhDrag.id);
   const backup = {...rhPieces[idx]};
   const orig = {...backup, x: rhDrag.origX, y: rhDrag.origY};
@@ -12004,11 +12042,8 @@ function rhOnDragEnd(e){
   const savedDrag = {...rhDrag};
   rhDrag = null;
   rhSel = null;
-  if(delta !== 0){
-    rhApplyMove(savedDrag.id, delta, savedDrag.origX, savedDrag.origY);
-  } else {
-    rhRender();
-  }
+  if(delta !== 0) rhApplyMove(savedDrag.id, delta, savedDrag.origX, savedDrag.origY);
+  else rhRender();
 }
 
 function rhApplyMove(id, totalDelta, fromX, fromY){
@@ -12114,6 +12149,34 @@ function rhRender(){
   et.setAttribute('font-size','16');et.setAttribute('font-weight','bold');
   et.textContent='→';svg.appendChild(et);
 
+  // === MODE TOUCH : afficher les cases cibles ===
+  if(rhIsTouchDevice && rhTouchTargets.length > 0){
+    rhTouchTargets.forEach(tgt => {
+      const pc = rhPieces.find(p => p.id === rhSel);
+      if(!pc) return;
+      const tw = pc.dir==='h' ? pc.len*RH_S-4 : RH_S-4;
+      const th = pc.dir==='v' ? pc.len*RH_S-4 : RH_S-4;
+      const tx = rhPx(tgt.x)+2;
+      const ty = rhPy(tgt.y)+2;
+      const targetRect = rhMk('rect');
+      targetRect.setAttribute('x', tx);
+      targetRect.setAttribute('y', ty);
+      targetRect.setAttribute('width', tw);
+      targetRect.setAttribute('height', th);
+      targetRect.setAttribute('rx', 8);
+      targetRect.setAttribute('fill', 'rgba(255,255,255,0.25)');
+      targetRect.setAttribute('stroke', '#fff');
+      targetRect.setAttribute('stroke-width', '2');
+      targetRect.setAttribute('stroke-dasharray', '5,3');
+      targetRect.style.cursor = 'pointer';
+      const d = tgt.delta;
+      targetRect.addEventListener('touchstart', e => { e.preventDefault(); rhTouchTapTarget(d); }, {passive:false});
+      targetRect.addEventListener('click', () => rhTouchTapTarget(d));
+      svg.appendChild(targetRect);
+    });
+  }
+
+  // === DESSIN DES PIÈCES ===
   rhPieces.forEach(pc=>{
     const w=pc.dir==='h'?pc.len*RH_S-4:RH_S-4;
     const h=pc.dir==='v'?pc.len*RH_S-4:RH_S-4;
@@ -12125,13 +12188,25 @@ function rhRender(){
     const rect=rhMk('rect');
     rect.setAttribute('x',rx);rect.setAttribute('y',ry);
     rect.setAttribute('width',w);rect.setAttribute('height',h);
-    rect.setAttribute('fill', isDragging ? col : col);
+    rect.setAttribute('fill',col);
     rect.setAttribute('rx',8);
-    rect.setAttribute('opacity', isDragging ? '0.85' : '1');
-    if(isSel || isDragging){rect.setAttribute('stroke','#fff');rect.setAttribute('stroke-width','3');}
-    rect.style.cursor = pc.dir === 'h' ? 'ew-resize' : 'ns-resize';
-    rect.addEventListener('mousedown', e => rhStartDrag(e, pc.id));
-    rect.addEventListener('touchstart', e => rhStartDrag(e, pc.id), {passive:false});
+    rect.setAttribute('opacity', isDragging ? '0.75' : '1');
+    if(isSel || isDragging){
+      rect.setAttribute('stroke','#fff');
+      rect.setAttribute('stroke-width','3');
+    }
+
+    if(rhIsTouchDevice){
+      // Mode touch : tap pour sélectionner
+      rect.style.cursor = 'pointer';
+      const pid = pc.id;
+      rect.addEventListener('touchstart', e => { e.preventDefault(); rhTouchTapPiece(pid); }, {passive:false});
+      rect.addEventListener('click', () => rhTouchTapPiece(pc.id));
+    } else {
+      // Mode mouse : drag
+      rect.style.cursor = pc.dir === 'h' ? 'ew-resize' : 'ns-resize';
+      rect.addEventListener('mousedown', e => rhStartDrag(e, pc.id));
+    }
     svg.appendChild(rect);
 
     // Reflet lumineux
@@ -12153,10 +12228,15 @@ function rhRender(){
     }
   });
 
-  // Message d'aide mis à jour
+  // Message d'aide selon le mode
   const msg = document.getElementById('rh-msg');
-  if(msg && !document.getElementById('rh-win-box')?.style.display !== 'none'){
-    msg.textContent = 'Glisse les blocs pour libérer la voiture rouge !';
+  if(msg){
+    const wb = document.getElementById('rh-win-box');
+    if(!wb || wb.style.display === 'none'){
+      msg.textContent = rhIsTouchDevice
+        ? (rhSel ? 'Appuie sur une case en pointillés pour déplacer !' : 'Appuie sur un bloc pour le sélectionner !')
+        : 'Glisse les blocs pour libérer la voiture rouge !';
+    }
   }
 }
 
