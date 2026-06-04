@@ -3029,9 +3029,28 @@ input:focus{border-color:var(--purple);}
       </div>
 
     </div>
+
+    <!-- Carte Plan de travail — pleine largeur -->
+    <div onclick="showPlanTravailTeacherScreen()" style="background:white;border-radius:20px;box-shadow:rgba(0,0,0,0.08) 0px 0px 0px 1px,rgba(0,0,0,0.06) 0px 2px 8px 0px;cursor:pointer;transition:all .2s ease;padding:1.25rem 1.5rem;display:flex;align-items:center;gap:16px;margin-bottom:1rem;"
+      onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">
+      <div style="font-size:40px;flex-shrink:0;">📋</div>
+      <div style="flex:1;">
+        <div style="font-family:'KGHaventSlept',cursive;font-size:22px;color:#080808;margin-bottom:3px;">Plan de travail</div>
+        <div style="font-size:12px;color:#696969;">Assigner des exercices aux élèves</div>
+      </div>
+      <div style="font-size:22px;color:#aaa;">→</div>
+    </div>
+
     <div style="text-align:center;padding:1rem 0 2rem;">
       <button onclick="goToLogin()" style="background:none;border:1.5px solid #292929;border-radius:100px;padding:10px 24px;font-family:'KGElephant',cursive;font-size:15px;color:#292929;cursor:pointer;">← Déconnexion</button>
     </div>
+  </div>
+
+  <!-- SCREEN: Plan de travail enseignant -->
+  <div id="screen-plan-travail-teacher-full" class="screen">
+    <button class="back-btn" onclick="showScreen('screen-teacher-subjects')">← Retour</button>
+    <div class="page-title">📋 Plan de travail</div>
+    <div id="plan-travail-teacher-full-body"></div>
   </div>
 
   <!-- SCREEN: Teacher Français -->
@@ -11769,13 +11788,22 @@ function renderJeuRushHour(){
   rhRenderSelect();
 }
 
+function rhGetSolvedKey(){
+  // Clé unique par élève — l'enseignant ne sauvegarde pas
+  if(state.role === 'teacher') return null;
+  return 'rh_solved_' + (state.studentCls||'') + '_' + (state.student||'');
+}
 function rhGetSolved(){
-  const s = localStorage.getItem('rh_solved');
+  const key = rhGetSolvedKey();
+  if(!key) return [];
+  const s = localStorage.getItem(key);
   return s ? JSON.parse(s) : [];
 }
 function rhMarkSolved(idx){
+  const key = rhGetSolvedKey();
+  if(!key) return; // pas de sauvegarde pour l'enseignant
   const solved = rhGetSolved();
-  if(!solved.includes(idx)) { solved.push(idx); localStorage.setItem('rh_solved', JSON.stringify(solved)); }
+  if(!solved.includes(idx)) { solved.push(idx); localStorage.setItem(key, JSON.stringify(solved)); }
   // Mettre à jour la carte visuellement si la grille est visible
   const btn = document.getElementById('rh-card-'+idx);
   if(btn) rhColorCard(btn, idx);
@@ -20644,9 +20672,19 @@ function planNavigateTo(screen, fn) {
 // ============================================================
 // RENDU CÔTÉ ENSEIGNANT
 // ============================================================
+async function showPlanTravailTeacherScreen() {
+  showScreen('screen-plan-travail-teacher-full');
+  const el = document.getElementById('plan-travail-teacher-full-body');
+  if(el) await _renderPlanTravailInto(el);
+}
+
 async function renderPlanTravailTeacher() {
   const el = document.getElementById('plan-travail-teacher');
   if (!el) return;
+  await _renderPlanTravailInto(el);
+}
+
+async function _renderPlanTravailInto(el) {
 
   // Charger depuis Firebase si dispo
   if (window.FB_loadPlanTravail) {
