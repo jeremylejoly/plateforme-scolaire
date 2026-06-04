@@ -760,6 +760,71 @@ input:focus{border-color:var(--purple);}
 .geo-tag.used{opacity:0.3;cursor:default;pointer-events:none;}
 .geo-score-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--rsm);padding:1.5rem;text-align:center;margin-top:1rem;}
 
+
+/* ===== PLAN DE TRAVAIL ===== */
+.pt-category { margin-bottom: 1.5rem; }
+.pt-cat-header {
+  display: flex; align-items: center; gap: 8px;
+  font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 800;
+  color: var(--text); padding: 8px 0 6px; cursor: pointer;
+  border-bottom: 2px solid var(--border); margin-bottom: 0.5rem;
+  user-select: none;
+}
+.pt-cat-header .pt-toggle { margin-left: auto; font-size: 12px; color: var(--muted); transition: transform .2s; }
+.pt-cat-header.collapsed .pt-toggle { transform: rotate(-90deg); }
+.pt-sub-header {
+  font-size: 12px; font-weight: 700; color: var(--purple);
+  text-transform: uppercase; letter-spacing: .06em;
+  padding: 6px 0 4px 12px; margin-top: 6px;
+}
+.pt-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 10px 8px 16px;
+  border-radius: var(--rsm); cursor: pointer;
+  transition: background .15s; font-size: 14px;
+}
+.pt-item:hover { background: var(--bg); }
+.pt-item input[type=checkbox] { width: 18px; height: 18px; cursor: pointer; accent-color: var(--purple); flex-shrink: 0; }
+.pt-item-label { flex: 1; }
+.pt-item-icon { font-size: 16px; flex-shrink: 0; }
+.pt-item-link {
+  font-size: 11px; font-weight: 700; padding: 3px 8px;
+  border-radius: 10px; background: var(--purple-light);
+  color: var(--purple); cursor: pointer; white-space: nowrap;
+  border: none; transition: all .15s; flex-shrink: 0;
+}
+.pt-item-link:hover { background: var(--purple); color: white; }
+.pt-score-badge {
+  font-size: 11px; font-weight: 700; padding: 2px 7px;
+  border-radius: 10px; white-space: nowrap; flex-shrink: 0;
+}
+.pt-score-good { background: var(--green-light); color: var(--green); }
+.pt-score-mid { background: var(--amber-light); color: var(--amber); }
+.pt-score-bad { background: var(--red-light); color: var(--red); }
+.pt-progress-bar {
+  height: 8px; background: var(--border); border-radius: 4px;
+  overflow: hidden; margin-bottom: 1.25rem;
+}
+.pt-progress-fill { height: 100%; background: var(--purple); border-radius: 4px; transition: width .4s ease; }
+.pt-progress-label { font-size: 13px; font-weight: 700; color: var(--muted); margin-bottom: 6px; }
+.pt-done { text-decoration: line-through; color: var(--muted); }
+.pt-section-count {
+  font-size: 11px; font-weight: 700; padding: 2px 7px;
+  border-radius: 10px; background: var(--purple-light);
+  color: var(--purple); margin-left: auto;
+}
+.pt-empty {
+  text-align: center; padding: 3rem 1rem;
+  color: var(--muted); font-size: 15px;
+}
+.pt-save-bar {
+  position: sticky; bottom: 0;
+  background: white; border-top: 1px solid var(--border);
+  padding: 12px 0; margin-top: 1rem;
+  display: flex; align-items: center; gap: 12px;
+}
+.pt-saved-msg { font-size: 13px; color: var(--green); font-weight: 700; opacity: 0; transition: opacity .3s; }
+.pt-saved-msg.show { opacity: 1; }
 </style>
 <script src="livres.js"></script>
 <script src="exercices_francais.js"></script>
@@ -879,6 +944,30 @@ input:focus{border-color:var(--purple);}
   };
 
   console.log('✅ Firebase initialisé');
+
+  // ===== SYNC PLAN DE TRAVAIL =====
+  window.FB_savePlanTravail = async function(assigned) {
+    try {
+      await set(ref(db, 'settings/plan_travail'), assigned);
+    } catch(e) { console.warn('Firebase savePlanTravail error:', e); }
+  };
+  window.FB_loadPlanTravail = async function() {
+    try {
+      const snap = await get(ref(db, 'settings/plan_travail'));
+      return snap.exists() ? snap.val() : null;
+    } catch(e) { console.warn('Firebase loadPlanTravail error:', e); return null; }
+  };
+  window.FB_saveStudentPlanProgress = async function(cls, student, progress) {
+    try {
+      await set(ref(db, 'plan_progress/' + cls + '/' + student), progress);
+    } catch(e) { console.warn('Firebase saveStudentPlanProgress error:', e); }
+  };
+  window.FB_loadStudentPlanProgress = async function(cls, student) {
+    try {
+      const snap = await get(ref(db, 'plan_progress/' + cls + '/' + student));
+      return snap.exists() ? snap.val() : null;
+    } catch(e) { console.warn('Firebase loadStudentPlanProgress error:', e); return null; }
+  };
 </script>
 </head>
 <body>
@@ -1058,7 +1147,24 @@ input:focus{border-color:var(--purple);}
         <div class="activity-desc">Jeux et puzzles interactifs</div>
       </div>
     </div>
+    <div style="margin-top:1rem;">
+      <div class="activity-card" onclick="showPlanTravailStudent()" id="home-plan-card" style="display:none;">
+        <span class="activity-badge badge-active">Actif</span>
+        <div class="activity-icon">📋</div>
+        <div class="activity-title">Mon plan de travail</div>
+        <div class="activity-desc">Les exercices assignés par Mr Lejoly</div>
+      </div>
+    </div>
     <button class="btn btn-sm" onclick="resetToWelcome()">← Changer d'élève</button>
+  </div>
+
+  <!-- SCREEN: Plan de travail élève -->
+  <div id="screen-plan-travail-student" class="screen">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:1.25rem;">
+      <button class="btn btn-sm" onclick="showScreen('screen-home')">← Retour</button>
+      <h2 style="font-size:18px;font-weight:800">📋 Mon plan de travail</h2>
+    </div>
+    <div id="plan-student-body"></div>
   </div>
 
   <div id="screen-books" class="screen">
@@ -3244,11 +3350,13 @@ input:focus{border-color:var(--purple);}
       <button class="panel-tab" onclick="switchTab('tab-students',this)">👤 Élèves</button>
       <button class="panel-tab" onclick="switchTab('tab-apps',this)">🎯 Activités</button>
       <button class="panel-tab" onclick="switchTab('tab-settings',this)">⚙️ Réglages</button>
+      <button class="panel-tab" id="tab-plan-btn" onclick="switchTab('tab-plan',this);renderPlanTravailTeacher()">📋 Plan de travail</button>
     </div>
     <div id="tab-results" class="panel-section active"><div id="dash-body"></div></div>
     <div id="tab-students" class="panel-section"><div id="students-manage"></div></div>
     <div id="tab-apps" class="panel-section"><div id="apps-manage"></div></div>
     <div id="tab-settings" class="panel-section"><div id="settings-panel"></div></div>
+    <div id="tab-plan" class="panel-section"><div id="plan-travail-teacher"></div></div>
   </div>
 
   <div class="teacher-link">
@@ -3688,6 +3796,8 @@ async function syncStudentFromFirebase(){
     }
     // Rafraîchir l'affichage des matières avec les nouvelles données
     renderAppsManage();
+    // Afficher la carte Plan de travail si des exercices sont assignés
+    updateHomePlanCard();
     // Refresh any open sub-menus that may have loaded before sync
     if(document.getElementById('prehistoire-menu')) renderPrehistoireMenu();
     if(document.getElementById('sci-circulatoire-menu')) renderSciCirculatoireMenu();
@@ -20259,6 +20369,434 @@ function teacherPreviewLecture(){
   };
 }
 
+
+
+// ===================================================================
+// ===== PLAN DE TRAVAIL =====
+// ===================================================================
+
+// --- Catalogue complet de tous les exercices (sauf jeux) ---
+const PLAN_CATALOGUE = [
+  { cat: '📖 Français', sub: '📚 Lecture — Narrative', items: [
+    { id:'conte_chatbotte', label:'Le Chat Botté', icon:'🐱', screen:'screen-conte-chatbotte', fn:'renderConteChatBotte' },
+    { id:'conte_breme', label:'Les Musiciens de Brême', icon:'🎵', screen:'screen-conte-breme', fn:'renderConteBreme' },
+    { id:'poeme_cancre', label:'Le Cancre (Prévert)', icon:'😄', screen:'screen-poeme-cancre', fn:'renderPoemeCancre' },
+    { id:'poeme_ecriture', label:"Page d'écriture (Prévert)", icon:'🐦', screen:'screen-poeme-ecriture', fn:'renderPoemeEcriture' },
+    { id:'poeme_dormeur', label:'Le Dormeur du val (Rimbaud)', icon:'🌿', screen:'screen-poeme-dormeur', fn:'renderPoemeDormeur' },
+    { id:'poeme_sorciere', label:'Drôle de bonne femme (Carême)', icon:'🧙', screen:'screen-poeme-sorciere', fn:'renderPoemeSorciere' },
+  ]},
+  { cat: '📖 Français', sub: '📰 Lecture — Informative', items: [
+    { id:'fiche_baleine', label:'La Baleine Bleue', icon:'🐋', screen:'screen-fiche-baleine', fn:'renderFicheBaleine' },
+    { id:'fiche_vinci', label:'Léonard de Vinci', icon:'🎨', screen:'screen-fiche-vinci', fn:'renderFicheVinci' },
+    { id:'fiche_eiffel', label:'La Tour Eiffel', icon:'🗼', screen:'screen-fiche-eiffel', fn:'renderFicheEiffel' },
+    { id:'fiche_charlemagne', label:'Charlemagne', icon:'👑', screen:'screen-fiche-charlemagne', fn:'renderFicheCharlemagne' },
+    { id:'fiche_einstein', label:'Albert Einstein', icon:'🧪', screen:'screen-fiche-einstein', fn:'renderFicheEinstein' },
+    { id:'fiche_atomium', label:"L'Atomium", icon:'⚛️', screen:'screen-fiche-atomium', fn:'renderFicheAtomium' },
+    { id:'fiche_tajmahal', label:'Le Taj Mahal', icon:'🕌', screen:'screen-fiche-tajmahal', fn:'renderFicheTajMahal' },
+    { id:'fiche_ecureuil', label:"L'Écureuil roux", icon:'🐿️', screen:'screen-fiche-ecureuil', fn:'renderFicheEcureuil' },
+    { id:'fiche_loup', label:'Le Loup gris', icon:'🐺', screen:'screen-fiche-loup', fn:'renderFicheLoup' },
+    { id:'fiche_elephant', label:"L'Éléphant d'Afrique", icon:'🐘', screen:'screen-fiche-elephant', fn:'renderFicheElephant' },
+  ]},
+  { cat: '📖 Français', sub: '🖼️ Lecture — Descriptive', items: [
+    { id:'desc_libraire', label:'La librairie enchantée', icon:'📚', screen:'screen-desc-libraire', fn:'renderDescLibraire' },
+    { id:'desc_foret', label:'La forêt en hiver', icon:'🌲', screen:'screen-desc-foret', fn:'renderDescForet' },
+    { id:'desc_renard', label:'Le vieux renard', icon:'🦊', screen:'screen-desc-renard', fn:'renderDescRenard' },
+  ]},
+  { cat: '📖 Français', sub: '💬 Lecture — Argumentative', items: [
+    { id:'arg_devoirs', label:'Faut-il supprimer les devoirs ?', icon:'🎒', screen:'screen-arg-devoirs', fn:'renderArgDevoirs' },
+    { id:'arg_ecrans', label:'Les écrans sont-ils dangereux ?', icon:'📱', screen:'screen-arg-ecrans', fn:'renderArgEcrans' },
+    { id:'arg_vegetarien', label:'Doit-on devenir végétarien ?', icon:'🌿', screen:'screen-arg-vegetarien', fn:'renderArgVegetarien' },
+    { id:'arg_uniforme', label:'Faut-il porter un uniforme ?', icon:'🏫', screen:'screen-arg-uniforme', fn:'renderArgUniforme' },
+    { id:'arg_lecture', label:"L'importance de lire", icon:'📚', screen:'screen-arg-lecture', fn:'renderArgLecture' },
+    { id:'arg_alimentation', label:'Bien manger pour bien grandir', icon:'🥦', screen:'screen-arg-alimentation', fn:'renderArgAlimentation' },
+    { id:'arg_reseaux', label:'Les réseaux sociaux', icon:'📲', screen:'screen-arg-reseaux', fn:'renderArgReseaux' },
+  ]},
+  { cat: '📖 Français', sub: '🎭 Lecture — Dialoguée', items: [
+    { id:'dial_ecrans', label:'Les écrans à l'école', icon:'📱', screen:'screen-dial-ecrans', fn:'renderDialEcrans' },
+    { id:'dial_bio', label:'Manger bio, est-ce utile ?', icon:'🌿', screen:'screen-dial-bio', fn:'renderDialBio' },
+    { id:'dial_voiture', label:'La voiture en ville', icon:'🚗', screen:'screen-dial-voiture', fn:'renderDialVoiture' },
+    { id:'dial_animal', label:'Avoir un animal de compagnie', icon:'🐾', screen:'screen-dial-animal', fn:'renderDialAnimal' },
+    { id:'dial_armstrong', label:'Interview de Neil Armstrong', icon:'🚀', screen:'screen-dial-armstrong', fn:'renderDialArmstrong' },
+    { id:'dial_conseil', label:'Le grand désaccord', icon:'🎭', screen:'screen-dial-conseil', fn:'renderDialConseil' },
+    { id:'dial_marche', label:'Une affaire en or !', icon:'🏪', screen:'screen-dial-marche', fn:'renderDialMarche' },
+  ]},
+  { cat: '📖 Français', sub: '⚡ Lecture rapide', items: [
+    { id:'lecture_rapide', label:'Lecture rapide (tous niveaux)', icon:'⚡', screen:'screen-lecture-rapide', fn:'renderLectureRapideMenu' },
+  ]},
+  { cat: '📖 Français', sub: '✏️ Grammaire — Classes de mots', items: [
+    { id:'gram_nom', label:'Le nom', icon:'🏷️', screen:'screen-gram-nom', fn:'' },
+    { id:'gram_determinant', label:'Le déterminant', icon:'🔖', screen:'screen-gram-determinant', fn:'' },
+    { id:'gram_adjectif', label:"L'adjectif", icon:'🎨', screen:'screen-gram-adjectif', fn:'' },
+    { id:'gram_verbe', label:'Le verbe', icon:'⚡', screen:'screen-gram-verbe', fn:'' },
+    { id:'gram_pronom', label:'Le pronom', icon:'👤', screen:'screen-gram-pronom', fn:'' },
+    { id:'gram_adverbe', label:"L'adverbe", icon:'🔄', screen:'screen-gram-adverbe', fn:'' },
+    { id:'gram_complement_nom', label:'Le complément du nom', icon:'🔗', screen:'screen-gram-complement-nom', fn:'' },
+    { id:'gram_tri_mots', label:'Le tri des mots', icon:'🔍', screen:'screen-gram-tri-mots', fn:'' },
+  ]},
+  { cat: '📖 Français', sub: '✏️ Grammaire — Fonctions des mots', items: [
+    { id:'gram_sujet', label:'Le sujet', icon:'👑', screen:'screen-gram-sujet', fn:'' },
+    { id:'gram_verbe_fonc', label:'Le verbe (fonction)', icon:'⚡', screen:'screen-gram-verbe-fonc', fn:'' },
+    { id:'gram_predicat', label:'Le prédicat', icon:'📌', screen:'screen-gram-predicat', fn:'' },
+    { id:'gram_cdv_civ', label:'Le CDV et le CIV', icon:'🔀', screen:'screen-gram-cdv-civ', fn:'' },
+    { id:'gram_cc', label:'Le complément circonstanciel', icon:'📍', screen:'screen-gram-cc', fn:'' },
+    { id:'gram_attribut', label:"L'attribut du sujet", icon:'🌟', screen:'screen-gram-attribut', fn:'' },
+  ]},
+  { cat: '📖 Français', sub: '✏️ Grammaire — Types de phrases', items: [
+    { id:'gram_affirm_neg', label:'Affirmatives ou négatives ?', icon:'❓', screen:'screen-gram-affirm-neg', fn:'' },
+    { id:'gram_pass_act', label:'Passives ou actives ?', icon:'🔄', screen:'screen-gram-pass-act', fn:'' },
+  ]},
+  { cat: '📖 Français', sub: '⏰ Conjugaison', items: [
+    { id:'present', label:'Indicatif présent', icon:'✏️', screen:'screen-conjugaison', fn:'() => goToConjugaison("present")' },
+    { id:'imparfait', label:'Indicatif imparfait', icon:'📖', screen:'screen-conjugaison', fn:'() => goToConjugaison("imparfait")' },
+    { id:'futur', label:'Indicatif futur simple', icon:'🚀', screen:'screen-conjugaison', fn:'() => goToConjugaison("futur")' },
+    { id:'passe_compose', label:'Indicatif passé composé', icon:'✅', screen:'screen-conjugaison', fn:'() => goToConjugaison("passe_compose")' },
+  ]},
+  { cat: '📖 Français', sub: '✍️ Expression écrite', items: [
+    { id:'connecteurs', label:'Connecteurs logiques', icon:'🔗', screen:'screen-connecteurs', fn:'renderConnecteurs' },
+    { id:'synonymes', label:'Synonymes', icon:'🔄', screen:'screen-synonymes', fn:'renderSynonymes' },
+    { id:'antonymes', label:'Antonymes', icon:'↔️', screen:'screen-antonymes', fn:'renderAntonymes' },
+    { id:'mes_ecrits', label:'Mes écrits — Atelier Plume', icon:'✎', screen:'screen-mes-ecrits', fn:'' },
+  ]},
+  { cat: '🔢 Mathématiques', sub: '🔢 Numération', items: [
+    { id:'num_grands_nombres', label:'Les grands nombres', icon:'🔢', screen:'screen-num-grands-nombres', fn:'renderGrandsNombresMenu' },
+    { id:'num_decimaux', label:'Les nombres décimaux', icon:'🔣', screen:'screen-num-decimaux', fn:'' },
+    { id:'num_entiers_decimaux', label:'Entiers et décimaux', icon:'🔢', screen:'screen-num-entiers-decimaux', fn:'' },
+    { id:'num_fractions_simples', label:'Fractions simples', icon:'🟣', screen:'screen-fractions-simples', fn:'renderFractionsSimples' },
+    { id:'num_fractions_complexes', label:'Fractions complexes', icon:'🔵', screen:'screen-fractions-figures', fn:'renderFractionsExercice' },
+    { id:'num_balance_fractions', label:'La balance des fractions', icon:'⚖️', screen:'screen-balance-fractions', fn:'' },
+    { id:'num_pourcentages', label:'Les pourcentages', icon:'%', screen:'screen-num-pourcentages', fn:'' },
+  ]},
+  { cat: '🔢 Mathématiques', sub: '➕ Opérations', items: [
+    { id:'op_add_sous', label:'Addition et soustraction', icon:'➕', screen:'screen-op-add-sous', fn:'' },
+    { id:'op_mult_div', label:'Multiplication et division', icon:'✖️', screen:'screen-op-mult-div', fn:'' },
+    { id:'op_4_operations', label:'Les 4 opérations', icon:'🔢', screen:'screen-op-4-operations', fn:'' },
+    { id:'op_tables', label:'Les tables étendues', icon:'📊', screen:'screen-op-tables', fn:'' },
+    { id:'op_x10', label:'× et ÷ par 0,1 — 10 — 100 — 1000', icon:'🔟', screen:'screen-op-x10', fn:'' },
+    { id:'op_x5', label:'× et ÷ par 0,5 — 5 — 50 — 500', icon:'5️⃣', screen:'screen-op-x5', fn:'' },
+    { id:'op_x9', label:'× par 9 — 90 — 99 — 9,9', icon:'9️⃣', screen:'screen-op-x9', fn:'' },
+    { id:'op_x11', label:'× par 11 — 101 — 110 — 1,1', icon:'🔢', screen:'screen-op-x11', fn:'' },
+    { id:'op_divisibilite', label:'Caractères de divisibilité', icon:'➗', screen:'screen-op-divisibilite', fn:'' },
+    { id:'op_compensation', label:'La compensation', icon:'⚖️', screen:'screen-op-compensation', fn:'' },
+    { id:'op_calcul_ecrit', label:'Calcul écrit', icon:'✏️', screen:'screen-op-calcul-ecrit', fn:'' },
+  ]},
+  { cat: '🔢 Mathématiques', sub: '📐 Grandeurs', items: [
+    { id:'grandeur_masses', label:'Les masses', icon:'⚖️', screen:'screen-grandeurs-masses', fn:'' },
+    { id:'grandeur_capacites', label:'Les capacités', icon:'💧', screen:'screen-grandeurs-capacites', fn:'' },
+    { id:'grandeur_longueurs', label:'Les longueurs', icon:'📏', screen:'screen-grandeurs-longueurs', fn:'' },
+    { id:'grandeur_perimetre_calcul', label:'Périmètre — Calcul', icon:'✏️', screen:'screen-perimetre-calcul', fn:'renderPerimetreCalcul' },
+    { id:'grandeur_perimetre_problemes', label:'Périmètre — Problèmes', icon:'🧩', screen:'screen-perimetre-problemes', fn:'renderPerimetreProblemes' },
+    { id:'grandeur_aire', label:"L'aire — La superficie", icon:'🟦', screen:'screen-grandeurs-aire', fn:'' },
+    { id:'grandeur_volume', label:'Le volume', icon:'📦', screen:'screen-grandeurs-volume', fn:'' },
+    { id:'grandeur_durees', label:'Les durées', icon:'⏱️', screen:'screen-grandeurs-durees', fn:'renderGrandeurDurees' },
+    { id:'grandeur_monnaie', label:'La monnaie', icon:'💶', screen:'screen-grandeurs-monnaie', fn:'' },
+  ]},
+  { cat: '🔢 Mathématiques', sub: '🔷 Solides et figures', items: [
+    { id:'solide_points', label:'Points, lignes et droites', icon:'📍', screen:'screen-solides-points', fn:'' },
+    { id:'solide_polygones', label:'Les polygones', icon:'⬡', screen:'screen-solides-polygones', fn:'' },
+    { id:'solide_triangles', label:'Les triangles', icon:'🔺', screen:'screen-solides-triangles', fn:'' },
+    { id:'solide_quadrilateres', label:'Les quadrilatères', icon:'🔲', screen:'screen-solides-quadrilateres', fn:'renderQuadrilateresMenu' },
+    { id:'solide_polyedres', label:'Les polyèdres', icon:'💎', screen:'screen-solides-polyedres', fn:'' },
+  ]},
+  { cat: '🌍 Éveil', sub: '📜 Histoire — Préhistoire', items: [
+    { id:'hist_prehistoire', label:'QVGDM — Préhistoire', icon:'🏆', screen:'screen-hist-prehistoire', fn:'renderPrehistoireMenu' },
+    { id:'prehistoire_assoc', label:'Termes et définitions', icon:'🔗', screen:'screen-prehistoire-assoc', fn:'renderPrehistoireAssoc' },
+    { id:'prehistoire_doc', label:'Campement du Paléolithique', icon:'📜', screen:'screen-prehistoire-doc', fn:'renderPrehistoireDoc' },
+  ]},
+  { cat: '🌍 Éveil', sub: '🏺 Histoire — Antiquité', items: [
+    { id:'hist_antiquite', label:"QVGDM — L'Antiquité", icon:'🏆', screen:'screen-hist-antiquite', fn:'renderAntiquiteMenu' },
+    { id:'antiquite_assoc', label:'Termes et définitions', icon:'🔗', screen:'screen-antiquite-assoc', fn:'renderAntiquiteAssoc' },
+    { id:'antiquite_doc', label:'Document historique', icon:'📜', screen:'screen-antiquite-doc', fn:'renderAntiquiteDoc' },
+  ]},
+  { cat: '🌍 Éveil', sub: '🏰 Histoire — Moyen Âge', items: [
+    { id:'hist_moyen_age', label:'QVGDM — Moyen Âge', icon:'🏆', screen:'screen-hist-moyen-age', fn:'renderMoyenAgeMenu' },
+    { id:'qvgdm_moyen_age', label:'Quiz Moyen Âge', icon:'❓', screen:'screen-qvgdm-moyen-age', fn:'renderQVGDMMoyenAge' },
+  ]},
+  { cat: '🌍 Éveil', sub: '🫀 Sciences — Appareil circulatoire', items: [
+    { id:'sci_coeur', label:'Le schéma du cœur', icon:'❤️', screen:'screen-sci-coeur', fn:'renderSciCoeurScreen' },
+    { id:'sci_trajet_sang', label:'Le trajet du sang', icon:'🩸', screen:'screen-sci-trajet-sang', fn:'renderSciTrajetSangScreen' },
+    { id:'sci_circulatoire_qcm', label:"QCM — L'appareil circulatoire", icon:'❓', screen:'screen-sci-circulatoire-qcm', fn:'renderSciCirculatoireQCM' },
+    { id:'sci_circulatoire_assoc', label:'Termes et définitions', icon:'🔗', screen:'screen-sci-circulatoire-assoc', fn:'renderSciCirculatoireAssoc' },
+    { id:'sci_circulatoire_ordre', label:'Le trajet du sang — dans l'ordre', icon:'🔢', screen:'screen-sci-circulatoire-ordre', fn:'renderSciCirculatoireOrdre' },
+  ]},
+  { cat: '🌍 Éveil', sub: '🌍 Géographie — Belgique', items: [
+    { id:'geo_belgique_provinces', label:'Les provinces de Belgique', icon:'🗺️', screen:'screen-geo-belgique-provinces', fn:'renderGeoBelgiqueScreen' },
+    { id:'geo_belgique_hydro', label:"Les cours d'eau de Belgique", icon:'💧', screen:'screen-geo-belgique-hydro', fn:'renderGeoHydroScreen' },
+    { id:'geo_belgique_communes', label:'Les communes de notre région', icon:'🏘️', screen:'screen-geo-belgique-communes', fn:'renderGeoCommunesScreen' },
+    { id:'geo_belgique_qcm', label:'La Belgique — QCM', icon:'❓', screen:'screen-geo-belgique-qcm', fn:'renderGeoBelgiqueQCM' },
+  ]},
+];
+
+// --- État local plan de travail ---
+let planTravailAssigned = []; // IDs cochés par l'enseignant
+let studentPlanProgress = {}; // {id: true/false} côté élève
+
+// --- Sauvegarde/chargement plan enseignant ---
+function savePlanTravail() {
+  localStorage.setItem('lq_plan_travail', JSON.stringify(planTravailAssigned));
+  if (window.FB_savePlanTravail) {
+    window.FB_savePlanTravail(planTravailAssigned);
+  }
+}
+function loadPlanTravailLocal() {
+  const s = localStorage.getItem('lq_plan_travail');
+  planTravailAssigned = s ? JSON.parse(s) : [];
+}
+
+// --- Sauvegarde/chargement progression élève ---
+function saveStudentProgress() {
+  const key = 'lq_plan_progress_' + state.studentCls + '_' + state.student;
+  localStorage.setItem(key, JSON.stringify(studentPlanProgress));
+  if (window.FB_saveStudentPlanProgress) {
+    window.FB_saveStudentPlanProgress(state.studentCls, state.student, studentPlanProgress);
+  }
+}
+async function loadStudentProgress() {
+  const key = 'lq_plan_progress_' + state.studentCls + '_' + state.student;
+  const local = localStorage.getItem(key);
+  studentPlanProgress = local ? JSON.parse(local) : {};
+  if (window.FB_loadStudentPlanProgress) {
+    const fb = await window.FB_loadStudentPlanProgress(state.studentCls, state.student);
+    if (fb) { studentPlanProgress = fb; localStorage.setItem(key, JSON.stringify(fb)); }
+  }
+}
+
+// --- Récupérer le meilleur score pour un exercice ---
+function getPlanItemScore(id) {
+  if (!state.student || state.role === 'teacher') return null;
+  const results = window._cachedResults || [];
+  const matches = results.filter(r => r.student === state.student && r.cls === state.studentCls && r.activity && r.activity.includes(id));
+  if (!matches.length) return null;
+  const best = matches.reduce((a, b) => (a.pct||0) > (b.pct||0) ? a : b);
+  return best;
+}
+
+// --- Naviguer directement vers un exercice depuis le plan ---
+function planNavigateTo(screen, fn) {
+  showScreen(screen);
+  if (fn && fn.startsWith('()')) {
+    try { eval(fn); } catch(e) { console.warn('Plan navigate eval:', e); }
+  } else if (fn && window[fn]) {
+    window[fn]();
+  }
+}
+
+// ============================================================
+// RENDU CÔTÉ ENSEIGNANT
+// ============================================================
+async function renderPlanTravailTeacher() {
+  const el = document.getElementById('plan-travail-teacher');
+  if (!el) return;
+
+  // Charger depuis Firebase si dispo
+  if (window.FB_loadPlanTravail) {
+    const fb = await window.FB_loadPlanTravail();
+    if (fb) { planTravailAssigned = fb; localStorage.setItem('lq_plan_travail', JSON.stringify(fb)); }
+  } else {
+    loadPlanTravailLocal();
+  }
+
+  // Grouper par catégorie principale
+  const cats = {};
+  PLAN_CATALOGUE.forEach(section => {
+    if (!cats[section.cat]) cats[section.cat] = [];
+    cats[section.cat].push(section);
+  });
+
+  let html = `
+    <div style="margin-bottom:1.25rem;">
+      <h3 style="font-size:15px;font-weight:800;margin-bottom:.25rem;">📋 Plan de travail — Gestion</h3>
+      <p style="font-size:13px;color:var(--muted);">Cochez les exercices à assigner aux élèves. Ils apparaîtront dans leur onglet "Plan de travail".</p>
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:1rem;flex-wrap:wrap;">
+      <button class="btn btn-sm" onclick="planSelectAll(true)">✅ Tout sélectionner</button>
+      <button class="btn btn-sm" onclick="planSelectAll(false)">☐ Tout désélectionner</button>
+      <span style="margin-left:auto;font-size:13px;font-weight:700;color:var(--purple);align-self:center;" id="plan-count-label">${planTravailAssigned.length} exercice(s) assigné(s)</span>
+    </div>`;
+
+  Object.entries(cats).forEach(([catName, sections]) => {
+    const catId = catName.replace(/[^a-z]/gi,'_');
+    const catTotal = sections.reduce((a,s) => a + s.items.length, 0);
+    const catChecked = sections.reduce((a,s) => a + s.items.filter(i => planTravailAssigned.includes(i.id)).length, 0);
+    html += `
+    <div class="card pt-category">
+      <div class="pt-cat-header" onclick="ptToggleCat('${catId}')">
+        <span>${catName}</span>
+        <span class="pt-section-count">${catChecked}/${catTotal}</span>
+        <span class="pt-toggle">▼</span>
+      </div>
+      <div id="ptcat-${catId}">`;
+
+    sections.forEach(section => {
+      html += `<div class="pt-sub-header">${section.sub}</div>`;
+      section.items.forEach(item => {
+        const checked = planTravailAssigned.includes(item.id) ? 'checked' : '';
+        html += `
+        <div class="pt-item">
+          <input type="checkbox" id="pt-cb-${item.id}" ${checked}
+            onchange="ptToggleItem('${item.id}', this.checked)">
+          <span class="pt-item-icon">${item.icon}</span>
+          <label class="pt-item-label" for="pt-cb-${item.id}" style="cursor:pointer">${item.label}</label>
+        </div>`;
+      });
+    });
+
+    html += `</div></div>`;
+  });
+
+  html += `
+    <div class="pt-save-bar">
+      <button class="btn btn-primary" onclick="ptSaveAndNotify()">💾 Enregistrer le plan</button>
+      <span class="pt-saved-msg" id="pt-saved-msg">✅ Plan sauvegardé !</span>
+    </div>`;
+
+  el.innerHTML = html;
+}
+
+function ptToggleCat(catId) {
+  const body = document.getElementById('ptcat-' + catId);
+  const header = body ? body.previousElementSibling : null;
+  if (!body) return;
+  const collapsed = body.style.display === 'none';
+  body.style.display = collapsed ? '' : 'none';
+  if (header) header.classList.toggle('collapsed', !collapsed);
+}
+
+function ptToggleItem(id, checked) {
+  if (checked) {
+    if (!planTravailAssigned.includes(id)) planTravailAssigned.push(id);
+  } else {
+    planTravailAssigned = planTravailAssigned.filter(x => x !== id);
+  }
+  const lbl = document.getElementById('plan-count-label');
+  if (lbl) lbl.textContent = planTravailAssigned.length + ' exercice(s) assigné(s)';
+}
+
+function planSelectAll(val) {
+  PLAN_CATALOGUE.forEach(section => {
+    section.items.forEach(item => {
+      const cb = document.getElementById('pt-cb-' + item.id);
+      if (cb) { cb.checked = val; ptToggleItem(item.id, val); }
+    });
+  });
+}
+
+function ptSaveAndNotify() {
+  savePlanTravail();
+  const msg = document.getElementById('pt-saved-msg');
+  if (msg) {
+    msg.classList.add('show');
+    setTimeout(() => msg.classList.remove('show'), 2500);
+  }
+  // Afficher/masquer la carte plan sur screen-home
+  updateHomePlanCard();
+}
+
+// ============================================================
+// RENDU CÔTÉ ÉLÈVE
+// ============================================================
+async function showPlanTravailStudent() {
+  showScreen('screen-plan-travail-student');
+  await renderPlanTravailStudent();
+}
+
+async function renderPlanTravailStudent() {
+  const el = document.getElementById('plan-student-body');
+  if (!el) return;
+  el.innerHTML = '<p style="text-align:center;color:var(--muted);padding:2rem">Chargement…</p>';
+
+  // Charger le plan assigné
+  if (window.FB_loadPlanTravail) {
+    const fb = await window.FB_loadPlanTravail();
+    if (fb) { planTravailAssigned = fb; localStorage.setItem('lq_plan_travail', JSON.stringify(fb)); }
+  } else {
+    loadPlanTravailLocal();
+  }
+
+  // Charger la progression de l'élève
+  await loadStudentProgress();
+
+  // Filtrer le catalogue aux exercices assignés
+  const assigned = planTravailAssigned;
+  if (!assigned.length) {
+    el.innerHTML = '<div class="pt-empty">📋 Aucun exercice assigné pour le moment.<br><span style="font-size:13px;color:var(--muted)">Mr Lejoly n'a pas encore préparé ton plan de travail.</span></div>';
+    return;
+  }
+
+  // Calculer l'avancement
+  const done = assigned.filter(id => studentPlanProgress[id]).length;
+  const pct = Math.round((done / assigned.length) * 100);
+
+  let html = `
+    <div class="card" style="margin-bottom:1rem;">
+      <div class="pt-progress-label">Mon avancement : ${done} / ${assigned.length} exercices terminés (${pct} %)</div>
+      <div class="pt-progress-bar"><div class="pt-progress-fill" style="width:${pct}%"></div></div>
+    </div>`;
+
+  // Grouper par catégorie/sous-catégorie en ne gardant que les items assignés
+  const cats = {};
+  PLAN_CATALOGUE.forEach(section => {
+    const filteredItems = section.items.filter(item => assigned.includes(item.id));
+    if (!filteredItems.length) return;
+    if (!cats[section.cat]) cats[section.cat] = [];
+    cats[section.cat].push({ ...section, items: filteredItems });
+  });
+
+  Object.entries(cats).forEach(([catName, sections]) => {
+    html += `<div class="card pt-category"><div class="pt-cat-header" style="cursor:default"><span>${catName}</span></div>`;
+    sections.forEach(section => {
+      html += `<div class="pt-sub-header">${section.sub}</div>`;
+      section.items.forEach(item => {
+        const isDone = !!studentPlanProgress[item.id];
+        const score = getPlanItemScore(item.id);
+        let scoreBadge = '';
+        if (score) {
+          const cls = score.pct >= 80 ? 'pt-score-good' : score.pct >= 50 ? 'pt-score-mid' : 'pt-score-bad';
+          scoreBadge = `<span class="pt-score-badge ${cls}">${score.score}/${score.total} — ${score.pct}%</span>`;
+        }
+        html += `
+        <div class="pt-item">
+          <input type="checkbox" ${isDone ? 'checked' : ''}
+            onchange="ptStudentToggle('${item.id}', this.checked)">
+          <span class="pt-item-icon">${item.icon}</span>
+          <span class="pt-item-label ${isDone ? 'pt-done' : ''}">${item.label}</span>
+          ${scoreBadge}
+          <button class="pt-item-link" onclick="planNavigateTo('${item.screen}','${item.fn}')">→ Aller</button>
+        </div>`;
+      });
+    });
+    html += `</div>`;
+  });
+
+  el.innerHTML = html;
+}
+
+function ptStudentToggle(id, checked) {
+  studentPlanProgress[id] = checked;
+  saveStudentProgress();
+  // Mise à jour visuelle de la barre de progression et des labels
+  const assigned = planTravailAssigned;
+  const done = assigned.filter(i => studentPlanProgress[i]).length;
+  const pct = Math.round((done / assigned.length) * 100);
+  const lbl = document.querySelector('.pt-progress-label');
+  const bar = document.querySelector('.pt-progress-fill');
+  if (lbl) lbl.textContent = 'Mon avancement : ' + done + ' / ' + assigned.length + ' exercices terminés (' + pct + ' %)';
+  if (bar) bar.style.width = pct + '%';
+  // Barrer/débarrer le label
+  const label = document.querySelector('.pt-item-label[data-id="' + id + '"]');
+  if (label) label.classList.toggle('pt-done', checked);
+}
+
+// Afficher/masquer la carte Plan sur screen-home
+async function updateHomePlanCard() {
+  if (window.FB_loadPlanTravail) {
+    const fb = await window.FB_loadPlanTravail();
+    if (fb) planTravailAssigned = fb;
+  } else {
+    loadPlanTravailLocal();
+  }
+  const card = document.getElementById('home-plan-card');
+  if (card) card.style.display = planTravailAssigned.length > 0 ? '' : 'none';
+}
 
 init();
 </script>
