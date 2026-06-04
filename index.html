@@ -11900,7 +11900,14 @@ function rhCanMv(pc,d){
   const g=rhGrid();
   if(pc.dir==='h'){
     if(d<0){for(let i=1;i<=-d;i++){const nx=pc.x-i;if(nx<0||g[pc.y][nx])return false;}}
-    else{for(let i=1;i<=d;i++){const nx=pc.x+pc.len-1+i;if(nx>=RH_NC||g[pc.y][nx])return false;}}
+    else{
+      for(let i=1;i<=d;i++){
+        const nx=pc.x+pc.len-1+i;
+        // La voiture rouge sur la rangée 2 peut sortir par la droite
+        if(pc.isPlayer && pc.y===2 && nx>=RH_NC) return true;
+        if(nx>=RH_NC||g[pc.y][nx])return false;
+      }
+    }
   }else{
     if(d<0){for(let i=1;i<=-d;i++){const ny=pc.y-i;if(ny<0||g[ny][pc.x])return false;}}
     else{for(let i=1;i<=d;i++){const ny=pc.y+pc.len-1+i;if(ny>=RH_NR||g[ny][pc.x])return false;}}
@@ -11924,20 +11931,50 @@ function rhDrawBlock(ctx,x,y,color){
 
 // ===== DRAG & DROP RUSH HOUR =====
 function rhSvgPoint(svg, e){
-  // Convertit les coordonnées écran en coordonnées SVG
   const rect = svg.getBoundingClientRect();
-  const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-  const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-  const scaleX = 378 / rect.width;
-  const scaleY = 378 / rect.height;
+  // Supporter mouse ET touch
+  let clientX, clientY;
+  if(e.changedTouches && e.changedTouches.length > 0){
+    clientX = e.changedTouches[0].clientX;
+    clientY = e.changedTouches[0].clientY;
+  } else if(e.touches && e.touches.length > 0){
+    clientX = e.touches[0].clientX;
+    clientY = e.touches[0].clientY;
+  } else {
+    clientX = e.clientX;
+    clientY = e.clientY;
+  }
   return {
-    x: (clientX - rect.left) * scaleX,
-    y: (clientY - rect.top) * scaleY
+    x: (clientX - rect.left) * (378 / rect.width),
+    y: (clientY - rect.top) * (378 / rect.height)
   };
+}
+
+function rhCalcDelta(drag, pt){
+  const dx = pt.x - drag.startX;
+  const dy = pt.y - drag.startY;
+  return drag.dir === 'h' ? Math.round(dx / RH_S) : Math.round(dy / RH_S);
+}
+
+function rhClampDelta(origX, origY, dir, delta){
+  // Retourne le delta réellement possible (sans modifier rhPieces)
+  const dummyPc = {x: origX, y: origY, dir};
+  // canMv sur la pièce originale via sa position d'origine
+  const pc = rhPieces.find(p => p.x === origX && p.y === origY && p.dir === dir);
+  const refPc = pc ? {...pc, x: origX, y: origY} : null;
+  if(!refPc) return 0;
+  let sign = delta > 0 ? 1 : -1;
+  let actual = 0;
+  for(let i = 1; i <= Math.abs(delta); i++){
+    if(rhCanMv({...refPc, x: origX, y: origY}, sign * i)) actual = sign * i;
+    else break;
+  }
+  return actual;
 }
 
 function rhStartDrag(e, pcId){
   e.preventDefault();
+  e.stopPropagation();
   const svg = document.getElementById('rh-svg');
   if(!svg) return;
   const pc = rhPieces.find(p => p.id === pcId);
@@ -11949,8 +11986,7 @@ function rhStartDrag(e, pcId){
     startX: pt.x,
     startY: pt.y,
     origX: pc.x,
-    origY: pc.y,
-    moved: false
+    origY: pc.y
   };
   rhSel = pcId;
   rhRender();
@@ -11962,59 +11998,49 @@ function rhOnDragMove(e){
   const svg = document.getElementById('rh-svg');
   if(!svg) return;
   const pt = rhSvgPoint(svg, e);
-  const dx = pt.x - rhDrag.startX;
-  const dy = pt.y - rhDrag.startY;
+  const rawDelta = rhCalcDelta(rhDrag, pt);
+  if(rawDelta === 0) return;
+
+  // Recalculer le delta possible depuis la position d'origine
   const pc = rhPieces.find(p => p.id === rhDrag.id);
   if(!pc) return;
-
-  // Calculer le déplacement en cases selon l'axe autorisé
-  let delta = 0;
-  if(rhDrag.dir === 'h') delta = Math.round(dx / RH_S);
-  else delta = Math.round(dy / RH_S);
-
-  if(delta === 0) return;
-
-  // Calculer le max déplaçable dans chaque direction
-  let maxPos = delta > 0 ? delta : -delta;
-  let sign = delta > 0 ? 1 : -1;
-  let actualDelta = 0;
-  for(let i = 1; i <= maxPos; i++){
-    if(rhCanMv({...pc, x: rhDrag.origX, y: rhDrag.origY}, sign * i)) actualDelta = sign * i;
+  const sign = rawDelta > 0 ? 1 : -1;
+  let actual = 0;
+  const orig = {...pc, x: rhDrag.origX, y: rhDrag.origY};
+  for(let i = 1; i <= Math.abs(rawDelta); i++){
+    if(rhCanMv(orig, sign * i)) actual = sign * i;
     else break;
   }
 
-  // Afficher la pièce à sa position glissée (temporaire, sans modifier rhPieces)
-  rhRenderWithGhost(rhDrag.id, rhDrag.origX, rhDrag.origY, actualDelta);
+  // Rendu ghost : déplacer temporairement la pièce
+  const idx = rhPieces.findIndex(p => p.id === rhDrag.id);
+  const saved = {...rhPieces[idx]};
+  rhPieces[idx] = orig.dir === 'h'
+    ? {...orig, x: orig.x + actual}
+    : {...orig, y: orig.y + actual};
+  rhRender();
+  rhPieces[idx] = saved;
 }
 
 function rhOnDragEnd(e){
   if(!rhDrag) return;
+  e.preventDefault();
   const svg = document.getElementById('rh-svg');
   if(!svg) return;
-  const pt = rhSvgPoint(svg, e.changedTouches ? e : e);
-  const endX = e.changedTouches ? e.changedTouches[0].clientX : e.clientX;
-  const endY = e.changedTouches ? e.changedTouches[0].clientY : e.clientY;
-  const rect = svg.getBoundingClientRect();
-  const dx = (endX - rect.left) * (378/rect.width) - rhDrag.startX;
-  const dy = (endY - rect.top) * (378/rect.height) - rhDrag.startY;
+  const pt = rhSvgPoint(svg, e);
+  const rawDelta = rhCalcDelta(rhDrag, pt);
 
-  let delta = 0;
-  if(rhDrag.dir === 'h') delta = Math.round(dx / RH_S);
-  else delta = Math.round(dy / RH_S);
-
-  if(delta !== 0){
+  if(rawDelta !== 0){
     const pc = rhPieces.find(p => p.id === rhDrag.id);
     if(pc){
-      // Trouver le max déplaçable
-      let sign = delta > 0 ? 1 : -1;
-      let actualDelta = 0;
-      for(let i = 1; i <= Math.abs(delta); i++){
-        if(rhCanMv(pc, sign * i)) actualDelta = sign * i;
+      const orig = {...pc, x: rhDrag.origX, y: rhDrag.origY};
+      const sign = rawDelta > 0 ? 1 : -1;
+      let actual = 0;
+      for(let i = 1; i <= Math.abs(rawDelta); i++){
+        if(rhCanMv(orig, sign * i)) actual = sign * i;
         else break;
       }
-      if(actualDelta !== 0){
-        rhApplyMove(rhDrag.id, actualDelta);
-      }
+      if(actual !== 0) rhApplyMove(rhDrag.id, actual);
     }
   }
 
@@ -12024,7 +12050,6 @@ function rhOnDragEnd(e){
 }
 
 function rhApplyMove(id, totalDelta){
-  // Applique le déplacement en 1 seul mouvement (peu importe la distance)
   const i = rhPieces.findIndex(p => p.id === id);
   if(i < 0) return;
   const pc = rhPieces[i];
@@ -12033,8 +12058,11 @@ function rhApplyMove(id, totalDelta){
   const mv = document.getElementById('rh-moves');
   if(mv) mv.textContent = rhMoves;
 
+  // Vérifier si la voiture rouge est sur la ligne de sortie ET peut sortir
+  // Elle gagne dès qu'elle atteint la dernière colonne (x + len = NC)
   const pl = rhPieces.find(p => p.isPlayer);
-  if(pl.x + pl.len >= RH_NC){
+  // Permettre aussi le cas où le drag amène la voiture jusqu'au bord droit
+  if(pl && pl.dir === 'h' && pl.y === 2 && pl.x + pl.len >= RH_NC){
     const wb = document.getElementById('rh-win-box');
     const wm = document.getElementById('rh-win-msg');
     const mg = document.getElementById('rh-msg');
@@ -12074,11 +12102,13 @@ function rhRender(){
   if(!svg) return;
   svg.innerHTML='';
 
-  // Attacher les gestionnaires drag sur le SVG entier
+  // Attacher les gestionnaires drag sur le SVG et document (pour que le drag
+  // continue même si le doigt/curseur sort du SVG)
   svg.onmousemove = rhOnDragMove;
   svg.onmouseup = rhOnDragEnd;
-  svg.ontouchmove = rhOnDragMove;
-  svg.ontouchend = rhOnDragEnd;
+  // Touch : on attache sur le document pour capturer les mouvements hors SVG
+  document.ontouchmove = (e) => { if(rhDrag) rhOnDragMove(e); };
+  document.ontouchend = (e) => { if(rhDrag) rhOnDragEnd(e); };
 
   const bg=rhMk('rect');
   bg.setAttribute('x',0);bg.setAttribute('y',0);
