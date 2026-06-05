@@ -900,8 +900,81 @@ input:focus{border-color:var(--purple);}
 .subject-card.gestion{background:white;}
 
 /* ===== GESTION PANEL ===== */
-.student-result-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r);padding:1rem;margin-bottom:10px;cursor:pointer;transition:all .15s;}
-.student-result-card:hover{border-color:var(--purple);background:var(--purple-light);}
+/* Student results grid and card adjustments */
+.student-results-grid {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 1rem;
+  width: 100%;
+}
+@media (min-width: 640px) {
+  .student-results-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (min-width: 1024px) {
+  .student-results-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.student-result-card {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  background: white !important;
+  border-radius: 20px !important;
+  border: 1px solid #e5e7eb !important;
+  padding: 12px 16px !important;
+  margin-bottom: 0 !important;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.02) !important;
+}
+.student-result-card:hover {
+  transform: translateY(-2px) !important;
+  border-color: rgba(99, 102, 241, 0.3) !important;
+  box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05), 0 4px 6px -2px rgba(0,0,0,0.02) !important;
+}
+
+.student-avatar {
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 50% !important;
+  background-color: rgba(99, 102, 241, 0.08) !important;
+  color: #4f46e5 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-family: 'Fredoka', sans-serif !important;
+  font-weight: 700 !important;
+  font-size: 16px !important;
+  flex-shrink: 0 !important;
+  border: 1px solid rgba(0,0,0,0.03) !important;
+}
+
+.student-info {
+  flex: 1 !important;
+  min-width: 0 !important;
+}
+
+.student-name {
+  font-family: 'Fredoka', sans-serif !important;
+  font-weight: 700 !important;
+  font-size: 15px !important;
+  color: #1f2937 !important;
+}
+
+.student-meta {
+  font-family: 'Inter', sans-serif !important;
+  font-size: 11px !important;
+  color: #6b7280 !important;
+  margin-top: 2px !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
 .student-result-header{display:flex;align-items:center;gap:12px;}
 .student-result-avatar{width:42px;height:42px;border-radius:50%;background:var(--purple-light);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
 .student-result-name{font-family:'Nunito',sans-serif;font-size:15px;font-weight:800;color:var(--text);}
@@ -21201,7 +21274,7 @@ function doRenderGestionResults(){
     <div class="gestion-stat"><div class="gestion-stat-val">${students.length}</div><div class="gestion-stat-lbl">Élèves</div></div>
     <div class="gestion-stat"><div class="gestion-stat-val">${total}</div><div class="gestion-stat-lbl">Tentatives</div></div>
     <div class="gestion-stat"><div class="gestion-stat-val">${avg}%</div><div class="gestion-stat-lbl">Moyenne</div></div>`;
-  let html='';
+  let html='<div class="student-results-grid">';
   students.slice().sort((a,b)=>a.name.localeCompare(b.name,'fr')).forEach(st=>{
     const stR=results.filter(r=>r.student===st.name);
     html+=`<div class="student-result-card" onclick="renderStudentDetail('${st.name}')">
@@ -21213,6 +21286,7 @@ function doRenderGestionResults(){
       <span style="color:var(--muted);font-size:20px;">›</span>
     </div>`;
   });
+  html+='</div>';
   list.innerHTML=html;
 }
 
@@ -21243,23 +21317,36 @@ function addStudentNew(){
   students.push({name,code:pin});
   saveClassStudents(teacherCls,students);
   renderStudentsManageNew();
+  doRenderGestionResults();
 }
 
 function deleteStudentNew(i){
   if(!confirm('Supprimer cet élève ?'))return;
-  const students=getClassStudents(teacherCls);
-  students.splice(i,1);
-  saveClassStudents(teacherCls,students);
+  const studentsSorted=getClassStudents(teacherCls).slice().sort((a,b)=>a.name.localeCompare(b.name,'fr'));
+  const targetStudent = studentsSorted[i];
+  const studentsRaw=getClassStudents(teacherCls);
+  const rawIndex = studentsRaw.findIndex(s => s.name === targetStudent.name);
+  if(rawIndex !== -1) {
+    studentsRaw.splice(rawIndex, 1);
+    saveClassStudents(teacherCls,studentsRaw);
+  }
   renderStudentsManageNew();
+  doRenderGestionResults();
 }
 
 function changeStudentPin(i){
-  const students=getClassStudents(teacherCls);
-  const newPin=prompt('Nouveau PIN pour '+students[i].name+' (4 chiffres) :');
+  const studentsSorted=getClassStudents(teacherCls).slice().sort((a,b)=>a.name.localeCompare(b.name,'fr'));
+  const targetStudent = studentsSorted[i];
+  const newPin=prompt('Nouveau PIN pour '+targetStudent.name+' (4 chiffres) :');
   if(!newPin||newPin.length!==4||isNaN(newPin)){alert('PIN invalide.');return;}
-  students[i].code=newPin;
-  saveClassStudents(teacherCls,students);
+  const studentsRaw=getClassStudents(teacherCls);
+  const rawIndex = studentsRaw.findIndex(s => s.name === targetStudent.name);
+  if(rawIndex !== -1) {
+    studentsRaw[rawIndex].code=newPin;
+    saveClassStudents(teacherCls,studentsRaw);
+  }
   renderStudentsManageNew();
+  doRenderGestionResults();
 }
 
 function saveClassStudents(cls,arr){
