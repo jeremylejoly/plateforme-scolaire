@@ -4,7 +4,21 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Plateforme Scolaire – 5e & 6e primaire FWB</title>
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231A1A2E' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M12 2L2 7l10 5 10-5-10-5z'/><path d='M2 17l10 5 10-5'/><path d='M2 12l10 5 10-5'/></svg>"/>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1E1F29">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="apple-touch-icon" href="icon-192.png">
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+      navigator.serviceWorker.register('sw.js')
+        .then(function(reg) { console.log('✅ Service Worker enregistré avec succès !', reg); })
+        .catch(function(err) { console.error('❌ Échec enregistrement Service Worker :', err); });
+    });
+  }
+</script>
+<link rel="icon" type="image/svg+xml" href="logo.svg"/>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=Caveat:wght@400..700&family=Inter:wght@300..800&family=Architects+Daughter&display=swap" rel="stylesheet"/>
 <script src="https://cdn.tailwindcss.com"></script>
 <script>
@@ -1699,6 +1713,13 @@ input:focus{border-color:var(--purple);}
       return snap.exists() ? snap.val() : null;
     } catch(e) { console.warn('Firebase loadStudentPlanProgress error:', e); return null; }
   };
+
+  // Déclencher la synchronisation des résultats hors-ligne après chargement complet de l'app
+  setTimeout(function() {
+    if (window.syncOfflineResults) {
+      window.syncOfflineResults();
+    }
+  }, 2500);
 </script>
 </head>
 <body>
@@ -4592,6 +4613,7 @@ function loadResults(cls){
 function saveResult(entry){
   invalidateResultsCache();
   const all = JSON.parse(localStorage.getItem('lq_results')||'[]');
+  entry.synced = false; // Par défaut, marqué comme non synchronisé sur Firebase
   all.push(entry);
   localStorage.setItem('lq_results',JSON.stringify(all));
   // Envoyer vers Firebase avec retry si pas encore prêt
@@ -4599,6 +4621,7 @@ function saveResult(entry){
     if(window.FB_saveResult){
       window.FB_saveResult(entry).then(()=>{
         console.log('✅ Résultat envoyé à Firebase');
+        markResultAsSynced(entry);
       }).catch(e=>{ console.warn('Erreur Firebase saveResult:', e); });
     } else if(attempts > 0){
       setTimeout(()=>trySend(attempts-1), 1500);
@@ -4608,6 +4631,35 @@ function saveResult(entry){
   }
   trySend(5);
 }
+
+function markResultAsSynced(entry) {
+  const all = JSON.parse(localStorage.getItem('lq_results')||'[]');
+  for (let i = all.length - 1; i >= 0; i--) {
+    const r = all[i];
+    if (r.student === entry.student && r.date === entry.date && r.time === entry.time && r.activity === entry.activity && !r.synced) {
+      r.synced = true;
+      break;
+    }
+  }
+  localStorage.setItem('lq_results', JSON.stringify(all));
+}
+
+window.syncOfflineResults = function() {
+  if (!window.FB_saveResult) return;
+  const all = JSON.parse(localStorage.getItem('lq_results')||'[]');
+  const unsynced = all.filter(r => r.synced === false || r.synced === undefined);
+  if (unsynced.length === 0) return;
+  
+  console.log(`🔄 Synchronisation de ${unsynced.length} résultats hors-ligne...`);
+  unsynced.forEach(entry => {
+    window.FB_saveResult(entry).then(() => {
+      console.log(`✅ Résultat hors-ligne de ${entry.student} (${entry.activity}) synchronisé avec succès !`);
+      markResultAsSynced(entry);
+    }).catch(e => {
+      console.warn('Erreur lors de la synchronisation de l\'entrée:', entry, e);
+    });
+  });
+};
 function deleteResultsForClass(cls){
   const all = JSON.parse(localStorage.getItem('lq_results')||'[]');
   localStorage.setItem('lq_results',JSON.stringify(all.filter(r=>r.cls!==cls)));
