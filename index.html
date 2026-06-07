@@ -3298,10 +3298,14 @@ input:focus{border-color:var(--purple);}
   <div id="screen-num-decimaux" class="screen">
     <button class="back-btn" onclick="showScreen('screen-numeration');renderNumerationScreen();">← Retour</button>
     <div class="page-title">🔣 Les nombres décimaux</div>
-    <div class="card" style="text-align:center;padding:2rem;">
-      <div style="font-size:48px;margin-bottom:1rem;">🚧</div>
-      <p style="font-size:15px;color:var(--muted);">Les exercices arrivent bientôt !</p>
-    </div>
+    <div id="num-decimaux-menu"></div>
+  </div>
+
+  <!-- SCREEN: Abaque des décimaux -->
+  <div id="screen-num-abaque-decimaux" class="screen">
+    <button class="back-btn" onclick="showScreen('screen-num-decimaux');renderNumDecimauxMenu();">← Retour</button>
+    <div class="page-title">🔣 L'abaque — Nombres décimaux</div>
+    <div id="abaque-decimaux-body"></div>
   </div>
 
   <!-- SCREEN: Numération - Les nombres entiers et décimaux -->
@@ -17738,6 +17742,350 @@ function validerNumLire(){
   });
 }
 
+// ===== NUMÉRATION : LES NOMBRES DÉCIMAUX (ABAQUE) =====
+const ABQUE_DECIMAUX_BANQUE = [
+  { texte: "Trois unités et cinq dixièmes", v: {CMi:0,DMi:0,UMi:0,CM:0,DM:0,UM:0,C:0,D:0,U:3,d:5,c:0,m:0} },
+  { texte: "Douze unités et sept centièmes", v: {CMi:0,DMi:0,UMi:0,CM:0,DM:0,UM:0,C:0,D:1,U:2,d:0,c:7,m:0} },
+  { texte: "Cent vingt-huit dixièmes", v: {CMi:0,DMi:0,UMi:0,CM:0,DM:0,UM:0,C:0,D:1,U:2,d:8,c:0,m:0} },
+  { texte: "Quarante-cinq unités et trois centièmes", v: {CMi:0,DMi:0,UMi:0,CM:0,DM:0,UM:0,C:0,D:4,U:5,d:0,c:3,m:0} },
+  { texte: "Six cent quatre-vingt-deux unités et neuf millièmes", v: {CMi:0,DMi:0,UMi:0,CM:0,DM:0,UM:0,C:6,D:8,U:2,d:0,c:0,m:9} },
+  { texte: "Deux mille trois cent quarante-cinq unités et six dixièmes", v: {CMi:0,DMi:0,UMi:0,CM:0,DM:0,UM:2,C:3,D:4,U:5,d:6,c:0,m:0} },
+  { texte: "Douze mille trois cent treize unités et quinze centièmes", v: {CMi:0,DMi:0,UMi:0,CM:0,DM:1,UM:2,C:3,D:1,U:3,d:1,c:5,m:0} },
+  { texte: "Nonante-neuf unités et nonante-neuf centièmes", v: {CMi:0,DMi:0,UMi:0,CM:0,DM:0,UM:0,C:0,D:9,U:9,d:9,c:9,m:0} },
+  { texte: "Sept cents unités et huit dixièmes", v: {CMi:0,DMi:0,UMi:0,CM:0,DM:0,UM:0,C:7,D:0,U:0,d:8,c:0,m:0} },
+  { texte: "Trois mille unités et deux centièmes", v: {CMi:0,DMi:0,UMi:0,CM:0,DM:0,UM:3,C:0,D:0,U:0,d:0,c:2,m:0} },
+  { texte: "Cinquante mille six cent douze unités et sept dixièmes", v: {CMi:0,DMi:0,UMi:0,CM:0,DM:5,UM:0,C:6,D:1,U:2,d:7,c:0,m:0} },
+  { texte: "Quatre unités et cinquante-six centièmes", v: {CMi:0,DMi:0,UMi:0,CM:0,DM:0,UM:0,C:0,D:0,U:4,d:5,c:6,m:0} },
+  { texte: "Neuf cents unités et neuf millièmes", v: {CMi:0,DMi:0,UMi:0,CM:0,DM:0,UM:0,C:9,D:0,U:0,d:0,c:0,m:9} },
+  { texte: "Vingt et une unités et trois cent quarante-cinq millièmes", v: {CMi:0,DMi:0,UMi:0,CM:0,DM:0,UM:0,C:0,D:2,U:1,d:3,c:4,m:5} },
+  { texte: "Huit mille neuf cents unités et nonante centièmes", v: {CMi:0,DMi:0,UMi:0,CM:0,DM:0,UM:8,C:9,D:0,U:0,d:9,c:0,m:0} },
+  { texte: "Un million deux cent mille unités et cinq dixièmes", v: {CMi:0,DMi:0,UMi:1,CM:2,DM:0,UM:0,C:0,D:0,U:0,d:5,c:0,m:0} },
+  { texte: "Trois cents unités et huit millièmes", v: {CMi:0,DMi:0,UMi:0,CM:0,DM:0,UM:0,C:3,D:0,U:0,d:0,c:0,m:8} },
+  { texte: "Septante mille huit cents unités et vingt-cinq centièmes", v: {CMi:0,DMi:0,UMi:0,CM:0,DM:7,UM:0,C:8,D:0,U:0,d:2,c:5,m:0} },
+  { texte: "Deux millions trois cent mille unités et sept centièmes", v: {CMi:0,DMi:0,UMi:2,CM:3,DM:0,UM:0,C:0,D:0,U:0,d:0,c:7,m:0} },
+  { texte: "Cinq cent mille unités et nonante centièmes", v: {CMi:0,DMi:0,UMi:0,CM:0,DM:5,UM:0,C:0,D:0,U:0,d:9,c:0,m:0} },
+];
+
+let abaqueDecSelection = [], abaqueDecCurIdx = 0, abaqueDecScores = [];
+
+const ABAQUE_DEC_COLS = [
+  {id:'CMi',label:'CMi',classe:0}, {id:'DMi',label:'DMi',classe:0}, {id:'UMi',label:'UMi',classe:0},
+  {id:'CM', label:'CM', classe:1}, {id:'DM', label:'DM', classe:1}, {id:'UM', label:'UM', classe:1},
+  {id:'C',  label:'C',  classe:2}, {id:'D',  label:'D',  classe:2}, {id:'U',  label:'U',  classe:2},
+  {id:'SEP',label:',',  classe:-1, sep:true},
+  {id:'d',  label:'d',  classe:3}, {id:'c',  label:'c',  classe:3}, {id:'m',  label:'m',  classe:3},
+];
+
+const ABAQUE_DEC_CLASSES = [
+  {label:'Classe des millions', color:'#f3e8ff', bgTailwind:'bg-purple-50'},
+  {label:'Classe des mille',    color:'#fef9c3', bgTailwind:'bg-yellow-50'},
+  {label:'Classe des unités',   color:'#fce7f3', bgTailwind:'bg-pink-50'},
+  {label:'Classe des millièmes',color:'#f0fdf4', bgTailwind:'bg-green-50'},
+];
+
+const ABAQUE_DEC_ORDER = ['CMi','DMi','UMi','CM','DM','UM','C','D','U','d','c','m'];
+
+function renderNumDecimauxMenu(){
+  const menu = document.getElementById('num-decimaux-menu');
+  if(!menu) return;
+  const isTeacher = state.role === 'teacher';
+  const locked = getLockedActivities();
+  const items = [
+    {id:'num_decimaux_abaque', screen:'screen-num-abaque-decimaux', label:'L\'abaque des décimaux', icon:'🔣', desc:'5 questions — Place chaque chiffre dans la bonne colonne de l\'abaque.', fn:'renderAbaqueDecimaux'},
+  ];
+  let html = '<div class="sub-subjects-grid">';
+  items.forEach(t => {
+    const isLocked = locked.includes(t.id);
+    const toggleBtn = isTeacher
+      ? `<button class="card-teacher-toggle ${isLocked?'btn-show':'btn-hide'}"
+           onclick="event.stopPropagation();toggleActivity('${t.id}');renderNumDecimauxMenu();">
+           ${isLocked?'🔓 Réactiver':'🔒 Masquer'}
+         </button>` : '';
+    if(isLocked && !isTeacher) return;
+    const badge = isTeacher ? '' : renderScoreBadge(t.id);
+    html += `<div class="sub-subject-card active-card" onclick="navTo('${t.screen}','${t.fn}')" style="position:relative">
+      ${toggleBtn}
+      <div class="sub-icon">${t.icon}</div>
+      <div class="sub-title">${t.label}</div>
+      <div class="sub-desc">${t.desc}</div>
+      ${badge}
+    </div>`;
+  });
+  html += '</div>';
+  menu.innerHTML = html || '<p style="color:var(--muted);text-align:center;padding:2rem">Aucun exercice disponible.</p>';
+}
+
+function renderAbaqueDecimaux(){
+  const body = document.getElementById('abaque-decimaux-body');
+  if(!body) return;
+
+  body.innerHTML = `
+    <div id="abaquedec-exercice-zone" class="max-w-[900px] mx-auto font-sans">
+      <div class="flex justify-between items-center bg-purple-50 border border-purple-200 rounded-xl px-4 py-3 mb-4">
+        <p id="abaquedec-info-numero" class="text-sm text-purple-800 font-bold m-0">Nombre 1/5</p>
+        <div class="flex gap-1.5" id="abaquedec-dots-progress"></div>
+      </div>
+
+      <div class="bg-white rounded-xl p-5 mb-4 text-center border border-neutral-200 shadow-sm">
+        <div class="text-2xl font-extrabold text-slate-800 leading-normal" id="abaquedec-nombre-texte">—</div>
+        <div class="text-xs text-neutral-500 mt-1">Place chaque chiffre dans la bonne colonne de l'abaque.</div>
+      </div>
+
+      <div class="overflow-x-auto mb-4 border border-neutral-200 rounded-xl bg-white shadow-sm p-2">
+        <table class="w-full min-w-[700px] border-collapse" id="abaquedec-table">
+          <!-- Généré par JS -->
+        </table>
+      </div>
+
+      <button class="w-full p-3.5 bg-purple-600 hover:bg-purple-700 text-white rounded-xl text-base font-extrabold cursor-pointer transition-colors mb-4" id="abaquedec-btn-valider" onclick="validerAbaqueDec()">✅ Valider ce nombre</button>
+
+      <div class="hidden text-center p-5 bg-white rounded-xl border border-neutral-200 shadow-sm mb-4" id="abaquedec-feedback-zone">
+        <div class="text-4xl mb-1.5" id="abaquedec-feedback-emoji">🎉</div>
+        <div class="text-xl font-extrabold mb-3" id="abaquedec-feedback-score"></div>
+        <button class="w-full p-3 bg-purple-600 hover:bg-purple-700 text-white rounded-xl text-base font-extrabold cursor-pointer transition-colors" id="abaquedec-btn-suivant" onclick="abaqueDecSuivant()">➡️ Nombre suivant</button>
+      </div>
+    </div>
+
+    <div class="hidden text-center p-8 bg-white rounded-2xl border border-neutral-200 shadow-md max-w-[500px] mx-auto" id="abaquedec-score-final">
+      <div class="text-6xl mb-2.5" id="abaquedec-final-emoji">🎉</div>
+      <div class="text-3xl font-black mb-4" id="abaquedec-final-score"></div>
+      <div class="text-sm text-neutral-500 mb-6" id="abaquedec-final-detail"></div>
+      <button class="w-full p-3.5 bg-purple-600 hover:bg-purple-700 text-white rounded-xl text-base font-extrabold cursor-pointer transition-colors" onclick="demarrerAbaqueDec()">🔄 Recommencer avec 5 nouveaux nombres</button>
+    </div>
+  `;
+
+  buildAbaqueDecTable();
+  demarrerAbaqueDec();
+}
+
+function buildAbaqueDecTable(){
+  const table = document.getElementById('abaquedec-table');
+  if(!table) return;
+
+  let r1 = '<tr>';
+  ABAQUE_DEC_CLASSES.forEach((cl, ci) => {
+    r1 += `<th colspan="3" class="text-center text-xs font-black p-2 border border-neutral-200 ${cl.bgTailwind} text-purple-900">${cl.label}</th>`;
+    if(ci === 2) r1 += `<th class="bg-sky-100 border border-neutral-200 w-7"></th>`;
+  });
+  r1 += '</tr>';
+
+  let r2 = '<tr>';
+  ABAQUE_DEC_COLS.forEach(col => {
+    if(col.sep){
+      r2 += `<td class="text-center font-black text-2xl align-middle w-7 border border-neutral-200 bg-sky-50 py-1 text-sky-800">,</td>`;
+    } else {
+      r2 += `<td class="text-center text-xs font-black p-2 border border-neutral-200 ${ABAQUE_DEC_CLASSES[col.classe].bgTailwind} text-neutral-700">${col.label}</td>`;
+    }
+  });
+  r2 += '</tr>';
+
+  let r3 = '<tr>';
+  ABAQUE_DEC_COLS.forEach(col => {
+    if(col.sep){
+      r3 += `<td class="text-center font-black text-2xl align-middle w-7 border border-neutral-200 bg-sky-50 py-1 text-sky-800">,</td>`;
+    } else {
+      r3 += `<td class="p-2 border border-neutral-200 bg-white text-center">
+        <input type="text" id="inp-dec-${col.id}" maxlength="1" inputmode="numeric"
+          class="w-10 h-10 text-center text-lg font-extrabold border-2 border-neutral-200 rounded-lg focus:outline-none focus:border-purple-500 transition-colors block mx-auto"
+          oninput="inputAbaqueDecNext(this,'${col.id}')"
+          onkeydown="inputAbaqueDecKeyNav(event,'${col.id}')"/>
+      </td>`;
+    }
+  });
+  r3 += '</tr>';
+
+  table.innerHTML = r1 + r2 + r3;
+}
+
+function inputAbaqueDecNext(input, colId){
+  input.value = input.value.replace(/[^0-9]/g,'');
+  if(input.value.length === 1){
+    const idx = ABAQUE_DEC_ORDER.indexOf(colId);
+    if(idx < ABAQUE_DEC_ORDER.length - 1){
+      const next = document.getElementById('inp-dec-'+ABAQUE_DEC_ORDER[idx+1]);
+      if(next) next.focus();
+    }
+  }
+}
+
+function inputAbaqueDecKeyNav(e, colId){
+  if(e.key === 'Backspace'){
+    const input = document.getElementById('inp-dec-'+colId);
+    if(input && input.value === ''){
+      const idx = ABAQUE_DEC_ORDER.indexOf(colId);
+      if(idx > 0){
+        const prev = document.getElementById('inp-dec-'+ABAQUE_DEC_ORDER[idx-1]);
+        if(prev){ prev.focus(); prev.select(); }
+      }
+    }
+  }
+}
+
+function demarrerAbaqueDec(){
+  const indices = [...Array(ABQUE_DECIMAUX_BANQUE.length).keys()];
+  indices.sort(() => Math.random() - 0.5);
+  abaqueDecSelection = indices.slice(0, 5);
+  abaqueDecCurIdx = 0;
+  abaqueDecScores = [];
+
+  const sf = document.getElementById('abaquedec-score-final');
+  if(sf) sf.classList.add('hidden');
+  const ez = document.getElementById('abaquedec-exercice-zone');
+  if(ez) ez.classList.remove('hidden');
+
+  afficherAbaqueDecQuestion();
+}
+
+function afficherAbaqueDecQuestion(){
+  const nombre = ABQUE_DECIMAUX_BANQUE[abaqueDecSelection[abaqueDecCurIdx]];
+
+  const numInfo = document.getElementById('abaquedec-info-numero');
+  if(numInfo) numInfo.textContent = `Nombre ${abaqueDecCurIdx+1}/5`;
+
+  const dots = document.getElementById('abaquedec-dots-progress');
+  if(dots){
+    dots.innerHTML = abaqueDecSelection.map((_,i) => {
+      const color = i < abaqueDecCurIdx ? 'bg-green-500' : i === abaqueDecCurIdx ? 'bg-purple-600' : 'bg-neutral-300';
+      return `<div class="w-3 h-3 rounded-full ${color}"></div>`;
+    }).join('');
+  }
+
+  const txt = document.getElementById('abaquedec-nombre-texte');
+  if(txt) txt.textContent = nombre.texte;
+
+  ABAQUE_DEC_ORDER.forEach(id => {
+    const inp = document.getElementById('inp-dec-'+id);
+    if(inp){
+      inp.value = '';
+      inp.disabled = false;
+      inp.classList.remove('bg-green-100', 'border-green-500', 'bg-red-100', 'border-red-500');
+      inp.classList.add('border-neutral-200');
+    }
+  });
+
+  const fb = document.getElementById('abaquedec-feedback-zone');
+  if(fb) fb.classList.add('hidden');
+  const btnValider = document.getElementById('abaquedec-btn-valider');
+  if(btnValider) btnValider.classList.remove('hidden');
+
+  setTimeout(() => {
+    const f = document.getElementById('inp-dec-CMi');
+    if(f) f.focus();
+  }, 100);
+}
+
+function validerAbaqueDec(){
+  const nombre = ABQUE_DECIMAUX_BANQUE[abaqueDecSelection[abaqueDecCurIdx]];
+  let okCount = 0;
+
+  const vals = ABAQUE_DEC_ORDER.map(id => nombre.v[id] || 0);
+
+  let firstSig = -1, lastSig = -1;
+  for(let i = 0; i < 9; i++){
+    if(vals[i] !== 0){ firstSig = i; break; }
+  }
+  for(let i = 11; i >= 9; i--){
+    if(vals[i] !== 0){ lastSig = i; break; }
+  }
+  if(firstSig === -1 && lastSig !== -1) firstSig = 8;
+
+  ABAQUE_DEC_ORDER.forEach((id, idx) => {
+    const inp = document.getElementById('inp-dec-'+id);
+    if(!inp) return;
+    const val = inp.value.trim();
+    const correct = String(nombre.v[id] || 0);
+    inp.disabled = true;
+    inp.classList.remove('border-neutral-200');
+
+    const isZero = (nombre.v[id] || 0) === 0;
+    const isLeadingZero = isZero && (firstSig === -1 || idx < firstSig);
+    const isTrailingZero = isZero && idx >= 9 && (lastSig === -1 || idx > lastSig);
+    const obligatoire = !isLeadingZero && !isTrailingZero;
+
+    if(val === correct){
+      inp.classList.add('bg-green-100', 'border-green-500');
+      okCount++;
+    } else if(!obligatoire && val === '' && correct === '0'){
+      inp.classList.add('bg-green-100', 'border-green-500');
+      inp.value = '0';
+      okCount++;
+    } else {
+      inp.classList.add('bg-red-100', 'border-red-500');
+      inp.value = correct;
+    }
+  });
+
+  const nombreOk = (okCount === 12);
+  abaqueDecScores.push({okCount, total:12, nombreOk});
+  const pct = Math.round(okCount/12*100);
+  const isLast = abaqueDecCurIdx >= 4;
+
+  const btnValider = document.getElementById('abaquedec-btn-valider');
+  if(btnValider) btnValider.classList.add('hidden');
+
+  const fb = document.getElementById('abaquedec-feedback-zone');
+  if(fb) fb.classList.remove('hidden');
+
+  const emojiEl = document.getElementById('abaquedec-feedback-emoji');
+  if(emojiEl) emojiEl.textContent = pct===100?'🎉':pct>=70?'👍':'💪';
+
+  const scoreEl = document.getElementById('abaquedec-feedback-score');
+  if(scoreEl){
+    scoreEl.textContent = pct===100?'Parfait !':pct>=70?'Bien joué !':'Continue à réviser !';
+    scoreEl.className = `text-xl font-extrabold mb-3 ${pct===100?'text-green-600':pct>=70?'text-amber-500':'text-red-500'}`;
+  }
+
+  const btnSuivant = document.getElementById('abaquedec-btn-suivant');
+  if(btnSuivant){
+    if(isLast){
+      btnSuivant.textContent = '🏁 Voir mon score final';
+      btnSuivant.onclick = afficherAbaqueDecScoreFinal;
+    } else {
+      btnSuivant.textContent = '➡️ Nombre suivant';
+      btnSuivant.onclick = abaqueDecSuivant;
+    }
+  }
+}
+
+function abaqueDecSuivant(){
+  abaqueDecCurIdx++;
+  afficherAbaqueDecQuestion();
+}
+
+function afficherAbaqueDecScoreFinal(){
+  const ez = document.getElementById('abaquedec-exercice-zone');
+  if(ez) ez.classList.add('hidden');
+  const sf = document.getElementById('abaquedec-score-final');
+  if(sf) sf.classList.remove('hidden');
+
+  const nombresOk = abaqueDecScores.filter(r=>r.nombreOk).length;
+  const total = abaqueDecScores.length;
+  const pct = Math.round(nombresOk/total*100);
+
+  const finalEmoji = document.getElementById('abaquedec-final-emoji');
+  if(finalEmoji) finalEmoji.textContent = pct===100?'🎉':pct>=60?'👍':'💪';
+
+  const finalScore = document.getElementById('abaquedec-final-score');
+  if(finalScore){
+    finalScore.textContent = `${nombresOk}/${total} — ${pct}%`;
+    finalScore.className = `text-3xl font-black mb-4 ${pct===100?'text-green-600':pct>=60?'text-amber-500':'text-red-500'}`;
+  }
+
+  const finalDetail = document.getElementById('abaquedec-final-detail');
+  if(finalDetail){
+    finalDetail.innerHTML = abaqueDecScores.map((s,i)=>`Nombre ${i+1} : ${s.nombreOk?'✅':'❌'}`).join(' · ');
+  }
+
+  if(state.student) saveResult({
+    student:state.student, cls:state.studentCls,
+    className:CLASSES[state.studentCls]?CLASSES[state.studentCls].name:state.studentCls,
+    activity:'num_decimaux_abaque',
+    bookTitle:'Décimaux — Abaque des décimaux',
+    score: nombresOk, total, pct,
+    date:new Date().toLocaleDateString('fr-BE'),
+    time:new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})
+  });
+}
 
 // ===== LECTURE RAPIDE =====
 const LECTURE_RAPIDE_DATA = {
@@ -21734,7 +22082,7 @@ function renderOperationsScreen(){
 // ===== NUMÉRATION NAVIGATION =====
 const NUMERATION_ITEMS = [
   {id:'num_grands_nombres', screen:'screen-num-grands-nombres', label:'Les grands nombres', icon:'🔢', fn:'renderGrandsNombresMenu'},
-  {id:'num_decimaux', screen:'screen-num-decimaux', label:'Les nombres décimaux', icon:'🔣'},
+  {id:'num_decimaux', screen:'screen-num-decimaux', label:'Les nombres décimaux', icon:'🔣', fn:'renderNumDecimauxMenu'},
   {id:'num_entiers_decimaux', screen:'screen-num-entiers-decimaux', label:'Les nombres entiers et décimaux', icon:'🔢'},
   {id:'num_fractions', screen:'screen-num-fractions', label:'Les fractions', icon:'½'},
   {id:'num_pourcentages', screen:'screen-num-pourcentages', label:'Les pourcentages', icon:'%'},
