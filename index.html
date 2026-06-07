@@ -3308,6 +3308,13 @@ input:focus{border-color:var(--purple);}
     <div id="abaque-decimaux-body"></div>
   </div>
 
+  <!-- SCREEN: Devinettes décimales -->
+  <div id="screen-num-devinettes-decimaux" class="screen">
+    <button class="back-btn" onclick="showScreen('screen-num-decimaux');renderNumDecimauxMenu();">← Retour</button>
+    <div class="page-title">🧠 Devinettes décimales</div>
+    <div id="devinettes-decimaux-body"></div>
+  </div>
+
   <!-- SCREEN: Numération - Les nombres entiers et décimaux -->
   <div id="screen-num-entiers-decimaux" class="screen">
     <button class="back-btn" onclick="showScreen('screen-numeration');renderNumerationScreen();">← Retour</button>
@@ -17792,6 +17799,7 @@ function renderNumDecimauxMenu(){
   const locked = getLockedActivities();
   const items = [
     {id:'num_decimaux_abaque', screen:'screen-num-abaque-decimaux', label:'L\'abaque des décimaux', icon:'🔣', desc:'5 questions — Place chaque chiffre dans la bonne colonne de l\'abaque.', fn:'renderAbaqueDecimaux'},
+    {id:'num_decimaux_devinettes', screen:'screen-num-devinettes-decimaux', label:'Devinettes décimales', icon:'🧠', desc:'5 questions — Retrouve le bon nombre décimal à partir d\'indices.', fn:'renderDevinettesDecimaux'},
   ];
   let html = '<div class="sub-subjects-grid">';
   items.forEach(t => {
@@ -18082,6 +18090,259 @@ function afficherAbaqueDecScoreFinal(){
     activity:'num_decimaux_abaque',
     bookTitle:'Décimaux — Abaque des décimaux',
     score: nombresOk, total, pct,
+    date:new Date().toLocaleDateString('fr-BE'),
+    time:new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})
+  });
+}
+
+// ===== NUMÉRATION : DEVINETTES DÉCIMALES =====
+const DEVINETTES_DECIMAUX_BANQUE = [
+  {
+    texte: "Je suis un nombre décimal. Ma partie décimale comprend 3 chiffres. Mon chiffre des centièmes est le double de mon chiffre des dixièmes. Qui suis-je ?",
+    opts: ["45,248", "12,326", "9,24", "156,428"],
+    correct: 0,
+    expl: "Dans 45,248, le chiffre des dixièmes est 2 et celui des centièmes est 4 (le double de 2). La partie décimale a bien 3 chiffres."
+  },
+  {
+    texte: "Je suis un nombre décimal ayant 2 chiffres après la virgule. La somme des chiffres de ma partie entière est égale à 10 et mon chiffre des centièmes est 7. Qui suis-je ?",
+    opts: ["64,57", "38,27", "73,52", "19,777"],
+    correct: 0,
+    expl: "Dans 64,57, la partie entière est 64 (6 + 4 = 10), il y a 2 chiffres après la virgule, et le chiffre des centièmes est 7."
+  },
+  {
+    texte: "Je suis un nombre à 5 chiffres. Ma partie entière contient 2 chiffres. Mon chiffre des dixièmes est égal à la somme des chiffres de ma partie entière. Qui suis-je ?",
+    opts: ["14,528", "23,456", "12,678", "45,91"],
+    correct: 0,
+    expl: "Dans 14,528, il y a 5 chiffres en tout, 2 chiffres dans la partie entière (14) dont la somme vaut 1 + 4 = 5. Le chiffre des dixièmes est bien 5."
+  },
+  {
+    texte: "Je suis un nombre décimal. Mon chiffre des dixièmes est la moitié de mon chiffre des unités. Mon chiffre des centièmes est supérieur à 6. Qui suis-je ?",
+    opts: ["28,47", "46,32", "14,25", "37,38"],
+    correct: 0,
+    expl: "Dans 28,47, le chiffre des unités est 8. Le chiffre des dixièmes (4) est la moitié de 8. Le chiffre des centièmes (7) est bien supérieur à 6."
+  },
+  {
+    texte: "Je suis un nombre à 6 chiffres. Le nombre de chiffres de ma partie entière est égal au nombre de chiffres de ma partie décimale. La somme de tous mes chiffres est égale à 18. Qui suis-je ?",
+    opts: ["123,453", "205,361", "12,3456", "901,402"],
+    correct: 0,
+    expl: "Dans 123,453, il y a 6 chiffres (3 entiers et 3 décimaux). La somme de tous les chiffres est 1 + 2 + 3 + 4 + 5 + 3 = 18."
+  },
+  {
+    texte: "Je suis un nombre décimal. Ma partie entière est égale au double de ma partie décimale. Mon chiffre des dixièmes est 3. Qui suis-je ?",
+    opts: ["70,35", "30,15", "60,03", "80,4"],
+    correct: 0,
+    expl: "Dans 70,35, la partie entière (70) est le double de la partie décimale (35), et le chiffre des dixièmes est bien 3."
+  },
+  {
+    texte: "Je suis un nombre décimal. Mon chiffre des millièmes est 7. Mon chiffre des dixièmes est égal à la différence entre mon chiffre des millièmes et celui des centièmes. Qui suis-je ?",
+    opts: ["9,347", "12,627", "4,287", "8,417"],
+    correct: 0,
+    expl: "Dans 9,347, le chiffre des millièmes est 7, celui des centièmes est 4, et celui des dixièmes est 3 (7 - 4 = 3)."
+  },
+  {
+    texte: "Je suis un nombre décimal. Mon chiffre des dizaines est 2. Mon chiffre des dixièmes est le triple de mon chiffre des dizaines. Mon chiffre des centièmes est la moitié de mon chiffre des dixièmes. Qui suis-je ?",
+    opts: ["24,63", "2,63", "124,93", "27,62"],
+    correct: 0,
+    expl: "Dans 24,63, le chiffre des dizaines est 2. Le chiffre des dixièmes (6) est le triple de 2. Le chiffre des centièmes (3) est la moitié de 6."
+  },
+  {
+    texte: "Je suis un nombre à 5 chiffres. Ma partie décimale comprend 3 chiffres. Mon chiffre des dizaines est 9 et mon chiffre des millièmes est le tiers de mon chiffre des dizaines. Qui suis-je ?",
+    opts: ["95,123", "9,5123", "90,905", "95,300"],
+    correct: 0,
+    expl: "Dans 95,123, il y a 5 chiffres dont 3 après la virgule. Le chiffre des dizaines est 9 et celui des millièmes (3) est le tiers de 9."
+  },
+  {
+    texte: "Je suis un nombre décimal. Mon chiffre des centièmes est égal au produit de mon chiffre des unités par mon chiffre des dixièmes. Ce produit est égal à 8. Qui suis-je ?",
+    opts: ["14,248", "23,18", "81,18", "42,49"],
+    correct: 0,
+    expl: "Dans 14,248, le chiffre des unités est 4 et celui des dixièmes est 2. Leur produit vaut 4 * 2 = 8, ce qui correspond bien au chiffre des centièmes (8)."
+  }
+];
+
+let devinettesSelection = [], devinettesCurIdx = 0, devinettesScores = [];
+let devinettesSubmitted = false;
+
+function renderDevinettesDecimaux(){
+  const body = document.getElementById('devinettes-decimaux-body');
+  if(!body) return;
+
+  body.innerHTML = `
+    <div id="devinettes-exercice-zone" class="max-w-[680px] mx-auto font-sans">
+      <div class="flex justify-between items-center bg-purple-50 border border-purple-200 rounded-xl px-4 py-3 mb-4">
+        <p id="devinettes-info-numero" class="text-sm text-purple-800 font-bold m-0">Devinette 1/5</p>
+        <div class="flex gap-1.5" id="devinettes-dots-progress"></div>
+      </div>
+
+      <div class="bg-white rounded-xl p-6 mb-4 border border-neutral-200 shadow-sm">
+        <div class="text-xl font-bold text-slate-800 leading-relaxed" id="devinettes-texte">—</div>
+      </div>
+
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-4" id="devinettes-options-grid">
+        <!-- Généré par JS -->
+      </div>
+
+      <div class="hidden p-5 bg-white rounded-xl border border-neutral-200 shadow-sm mb-4" id="devinettes-feedback-zone">
+        <div class="flex items-center gap-3 mb-2">
+          <div class="text-3xl" id="devinettes-feedback-emoji">🎉</div>
+          <div class="text-lg font-extrabold" id="devinettes-feedback-title"></div>
+        </div>
+        <p class="text-sm text-neutral-600 mb-4" id="devinettes-feedback-expl"></p>
+        <button class="w-full p-3 bg-purple-600 hover:bg-purple-700 text-white rounded-xl text-base font-extrabold cursor-pointer transition-colors" id="devinettes-btn-suivant" onclick="devinetteSuivante()">➡️ Devinette suivante</button>
+      </div>
+    </div>
+
+    <div class="hidden text-center p-8 bg-white rounded-2xl border border-neutral-200 shadow-md max-w-[500px] mx-auto" id="devinettes-score-final">
+      <div class="text-6xl mb-2.5" id="devinettes-final-emoji">🎉</div>
+      <div class="text-3xl font-black mb-4" id="devinettes-final-score"></div>
+      <div class="text-sm text-neutral-500 mb-6" id="devinettes-final-detail"></div>
+      <button class="w-full p-3.5 bg-purple-600 hover:bg-purple-700 text-white rounded-xl text-base font-extrabold cursor-pointer transition-colors" onclick="demarrerDevinettes()">🔄 Recommencer avec 5 nouvelles devinettes</button>
+    </div>
+  `;
+
+  demarrerDevinettes();
+}
+
+function demarrerDevinettes(){
+  const indices = [...Array(DEVINETTES_DECIMAUX_BANQUE.length).keys()];
+  indices.sort(() => Math.random() - 0.5);
+  devinettesSelection = indices.slice(0, 5);
+  devinettesCurIdx = 0;
+  devinettesScores = [];
+
+  const sf = document.getElementById('devinettes-score-final');
+  if(sf) sf.classList.add('hidden');
+  const ez = document.getElementById('devinettes-exercice-zone');
+  if(ez) ez.classList.remove('hidden');
+
+  afficherDevinetteQuestion();
+}
+
+function afficherDevinetteQuestion(){
+  const q = DEVINETTES_DECIMAUX_BANQUE[devinettesSelection[devinettesCurIdx]];
+  devinettesSubmitted = false;
+
+  const numInfo = document.getElementById('devinettes-info-numero');
+  if(numInfo) numInfo.textContent = `Devinette ${devinettesCurIdx+1}/5`;
+
+  const dots = document.getElementById('devinettes-dots-progress');
+  if(dots){
+    dots.innerHTML = devinettesSelection.map((_,i) => {
+      const color = i < devinettesCurIdx ? 'bg-green-500' : i === devinettesCurIdx ? 'bg-purple-600' : 'bg-neutral-300';
+      return `<div class="w-3 h-3 rounded-full ${color}"></div>`;
+    }).join('');
+  }
+
+  const txt = document.getElementById('devinettes-texte');
+  if(txt) txt.textContent = q.texte;
+
+  const grid = document.getElementById('devinettes-options-grid');
+  if(grid){
+    grid.innerHTML = '';
+    const correctText = q.opts[q.correct];
+    const shuffledOpts = [...q.opts].sort(() => Math.random() - 0.5);
+    const newCorrectIdx = shuffledOpts.indexOf(correctText);
+
+    shuffledOpts.forEach((opt, idx) => {
+      const btn = document.createElement('button');
+      btn.className = "p-4 bg-white hover:bg-neutral-50 border-2 border-neutral-200 rounded-xl text-lg font-extrabold text-neutral-800 transition-all cursor-pointer shadow-sm focus:outline-none";
+      btn.id = `devinettes-opt-${idx}`;
+      btn.textContent = opt;
+      btn.onclick = () => selectDevinetteOption(idx, newCorrectIdx, shuffledOpts);
+      grid.appendChild(btn);
+    });
+  }
+
+  const fb = document.getElementById('devinettes-feedback-zone');
+  if(fb) fb.classList.add('hidden');
+}
+
+function selectDevinetteOption(selectedIdx, correctIdx, optsArray){
+  if(devinettesSubmitted) return;
+  devinettesSubmitted = true;
+
+  const isCorrect = selectedIdx === correctIdx;
+  const score = isCorrect ? 1 : 0;
+  devinettesScores.push(score);
+
+  optsArray.forEach((_, idx) => {
+    const btn = document.getElementById(`devinettes-opt-${idx}`);
+    if(!btn) return;
+    btn.disabled = true;
+    btn.classList.remove('hover:bg-neutral-50', 'border-neutral-200');
+    if(idx === correctIdx){
+      btn.classList.add('bg-green-100', 'border-green-500', 'text-green-800');
+    } else if(idx === selectedIdx && !isCorrect){
+      btn.classList.add('bg-red-100', 'border-red-500', 'text-red-800');
+    } else {
+      btn.classList.add('bg-neutral-50', 'border-neutral-200', 'text-neutral-400');
+    }
+  });
+
+  const q = DEVINETTES_DECIMAUX_BANQUE[devinettesSelection[devinettesCurIdx]];
+
+  const fb = document.getElementById('devinettes-feedback-zone');
+  if(fb) fb.classList.remove('hidden');
+
+  const emoji = document.getElementById('devinettes-feedback-emoji');
+  if(emoji) emoji.textContent = isCorrect ? '🎉' : '❌';
+
+  const title = document.getElementById('devinettes-feedback-title');
+  if(title){
+    title.textContent = isCorrect ? 'Bravo ! C\'est la bonne réponse.' : 'Dommage, ce n\'est pas tout à fait ça.';
+    title.className = `text-lg font-extrabold ${isCorrect ? 'text-green-600' : 'text-red-500'}`;
+  }
+
+  const expl = document.getElementById('devinettes-feedback-expl');
+  if(expl) expl.innerHTML = q.expl;
+
+  const btnSuivant = document.getElementById('devinettes-btn-suivant');
+  const isLast = devinettesCurIdx >= 4;
+  if(btnSuivant){
+    if(isLast){
+      btnSuivant.textContent = '🏁 Voir mon score final';
+      btnSuivant.onclick = afficherDevinettesScoreFinal;
+    } else {
+      btnSuivant.textContent = '➡️ Devinette suivante';
+      btnSuivant.onclick = devinetteSuivante;
+    }
+  }
+}
+
+function devinetteSuivante(){
+  devinettesCurIdx++;
+  afficherDevinetteQuestion();
+}
+
+function afficherDevinettesScoreFinal(){
+  const ez = document.getElementById('devinettes-exercice-zone');
+  if(ez) ez.classList.add('hidden');
+  const sf = document.getElementById('devinettes-score-final');
+  if(sf) sf.classList.remove('hidden');
+
+  const correctCount = devinettesScores.filter(s => s === 1).length;
+  const total = devinettesScores.length;
+  const pct = Math.round(correctCount / total * 100);
+
+  const finalEmoji = document.getElementById('devinettes-final-emoji');
+  if(finalEmoji) finalEmoji.textContent = pct===100?'🎉':pct>=60?'👍':'💪';
+
+  const finalScore = document.getElementById('devinettes-final-score');
+  if(finalScore){
+    finalScore.textContent = `${correctCount}/${total} — ${pct}%`;
+    finalScore.className = `text-3xl font-black mb-4 ${pct===100?'text-green-600':pct>=60?'text-amber-500':'text-red-500'}`;
+  }
+
+  const finalDetail = document.getElementById('devinettes-final-detail');
+  if(finalDetail){
+    finalDetail.innerHTML = devinettesScores.map((s,i)=>`Devinette ${i+1} : ${s === 1?'✅':'❌'}`).join(' · ');
+  }
+
+  if(state.student) saveResult({
+    student:state.student, cls:state.studentCls,
+    className:CLASSES[state.studentCls]?CLASSES[state.studentCls].name:state.studentCls,
+    activity:'num_decimaux_devinettes',
+    bookTitle:'Décimaux — Devinettes décimales',
+    score: correctCount, total, pct,
     date:new Date().toLocaleDateString('fr-BE'),
     time:new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})
   });
