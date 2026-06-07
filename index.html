@@ -1578,7 +1578,7 @@ input:focus{border-color:var(--purple);}
 <!-- Firebase SDK -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getDatabase, ref, set, get, push, onValue, remove } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+  import { getDatabase, ref, set, get, push, onValue, remove, onDisconnect } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyALl7OluzVkdPXVAIKjZuF1VtdkdyFjH_g",
@@ -1601,6 +1601,7 @@ input:focus{border-color:var(--purple);}
   window.FB_push = push;
   window.FB_onValue = onValue;
   window.FB_remove = remove;
+  window.FB_onDisconnect = onDisconnect;
   window.FB_ready = true;
 
   // ===== SYNC ÉLÈVES =====
@@ -1712,6 +1713,246 @@ input:focus{border-color:var(--purple);}
       const snap = await get(ref(db, 'plan_progress/' + cls + '/' + student));
       return snap.exists() ? snap.val() : null;
     } catch(e) { console.warn('Firebase loadStudentPlanProgress error:', e); return null; }
+  };
+
+  // ===== SYSTEME DE PRÉSENCE EN DIRECT =====
+  let presenceConnectedListener = false;
+
+  window.getActivityLabel = function(screenId) {
+    if (screenId === 'screen-quiz') {
+      try {
+        const books = typeof window.loadBooks === 'function' ? window.loadBooks() : [];
+        const book = books ? books.find(b => b.id === window.state.book) : null;
+        return book ? `Récits Express : ${book.title}` : "Lit un livre";
+      } catch(e) {
+        return "Lit un livre";
+      }
+    }
+    const mapping = {
+      'screen-subjects': "Navigue sur l'accueil",
+      'screen-plan-travail-student': "Consulte son plan de travail",
+      'screen-books': "Choisit un livre de lecture",
+      'screen-jeux': "Choisit un jeu",
+      'screen-jeu-tables': "Jeu : Tables de multiplication",
+      'screen-jeu-memory': "Jeu : Memory des fractions",
+      'screen-jeu-tetris': "Jeu : Tetris",
+      'screen-jeu-rushhour': "Jeu : Rush Hour",
+      'screen-jeu-robot': "Jeu : Logic Robot (Labyrinthe)",
+      'screen-francais': "Choisit une activité de Français",
+      'screen-orthographe': "Menu d'Orthographe",
+      'screen-homophones': "Menu des Homophones",
+      'screen-homo-a': "Exercice : Homophones a / à",
+      'screen-homo-ou': "Exercice : Homophones ou / où",
+      'screen-homo-son': "Exercice : Homophones son / sont",
+      'screen-homo-ce': "Exercice : Homophones ce / se",
+      'screen-homo-on': "Exercice : Homophones on / ont",
+      'screen-gram-tri-mots': "Exercice : Tri de mots",
+      'screen-conjugaison': "Menu de Conjugaison",
+      'screen-conj-present': "Exercice : Présent de l'indicatif",
+      'screen-conj-imparfait': "Exercice : Imparfait de l'indicatif",
+      'screen-conj-futur': "Exercice : Futur simple",
+      'screen-conj-passe-compose': "Exercice : Passé composé",
+      'screen-maths': "Choisit une activité de Mathématiques",
+      'screen-num-grands-nombres': "Menu des Grands Nombres",
+      'screen-num-fractions': "Menu des Fractions",
+      'screen-num-fractions-introduction': "Exercice : Introduction aux fractions",
+      'screen-num-fractions-lire-ecrire': "Exercice : Lire et écrire les fractions",
+      'screen-num-fractions-comparer': "Exercice : Comparer les fractions",
+      'screen-num-fractions-equivalentes': "Exercice : Fractions équivalentes",
+      'screen-num-fractions-complexes': "Exercice : Fractions complexes",
+      'screen-num-fractions-operations': "Exercice : Opérations sur les fractions",
+      'screen-balance-fractions': "Exercice : Balance des fractions",
+      'screen-num-grands-nombres-valeur-pos': "Exercice : Valeur de position",
+      'screen-num-grands-nombres-comparer': "Exercice : Comparer les grands nos.",
+      'screen-num-grands-nombres-decimaux': "Exercice : Nombres décimaux",
+      'screen-grandeurs': "Menu des Grandeurs",
+      'screen-grandeurs-perimetre': "Menu du Périmètre",
+      'screen-grandeurs-perimetre-formules': "Exercice : Formules du périmètre",
+      'screen-grandeurs-perimetre-calcul': "Exercice : Calcul du périmètre",
+      'screen-grandeurs-perimetre-enigmes': "Exercice : Énigmes de périmètre",
+      'screen-durees-horloge': "Exercice : Lire l'heure",
+      'screen-durees-conversions': "Exercice : Conversions de durées",
+      'screen-durees-calculs': "Exercice : Calculs de durées",
+      'screen-eveil': "Choisit une activité d'Éveil",
+      'screen-eveil-sciences': "Menu de Sciences",
+      'screen-eveil-geographie': "Menu de Géographie",
+      'screen-eveil-histoire': "Menu d'Histoire",
+      'screen-geo-belgique': "Exercice : Carte de la Belgique",
+      'screen-geo-hydro': "Exercice : Hydrographie de la Belgique",
+      'screen-geo-communes': "Exercice : Communes de Liège"
+    };
+    return mapping[screenId] || "Navigue sur l'application";
+  };
+
+  window.updateStudentPresence = function(activity) {
+    if (!window.FB_ready || !window.state || !window.state.student || !window.state.studentCls) return;
+    try {
+      const presenceRef = ref(db, 'presence/' + window.state.studentCls + '/' + window.state.student);
+      const data = {
+        student: window.state.student,
+        activity: activity || "Connecté(e)",
+        lastActive: Date.now()
+      };
+      set(presenceRef, data).then(() => {
+        onDisconnect(presenceRef).remove().catch(e => console.warn('onDisconnect error:', e));
+      }).catch(e => console.warn('set presence error:', e));
+    } catch(e) {
+      console.warn('updateStudentPresence error:', e);
+    }
+  };
+
+  window.clearStudentPresence = function() {
+    if (!window.FB_ready || !window.state || !window.state.student || !window.state.studentCls) return;
+    try {
+      const presenceRef = ref(db, 'presence/' + window.state.studentCls + '/' + window.state.student);
+      remove(presenceRef).catch(e => console.warn('clearStudentPresence error:', e));
+    } catch(e) {
+      console.warn(e);
+    }
+  };
+
+  window.initPresenceConnectedListener = function() {
+    if (presenceConnectedListener || !window.FB_ready) return;
+    presenceConnectedListener = true;
+    try {
+      const connectedRef = ref(db, '.info/connected');
+      onValue(connectedRef, (snap) => {
+        if (snap.val() === true && window.state && window.state.student && window.state.studentCls) {
+          const presenceRef = ref(db, 'presence/' + window.state.studentCls + '/' + window.state.student);
+          const data = {
+            student: window.state.student,
+            activity: window.currentStudentActivity || "Navigue sur le site",
+            lastActive: Date.now()
+          };
+          set(presenceRef, data).then(() => {
+            onDisconnect(presenceRef).remove().catch(err => console.warn(err));
+          }).catch(err => console.warn(err));
+        }
+      });
+    } catch(e) {
+      console.warn('initPresenceConnectedListener error:', e);
+    }
+  };
+
+  let livePresenceListener = null;
+  window.initTeacherLive = function() {
+    if (!window.FB_ready) return;
+    if (livePresenceListener) {
+      try { livePresenceListener(); } catch(e) {}
+      livePresenceListener = null;
+    }
+    
+    const container = document.getElementById('live-students-container');
+    const counter = document.getElementById('live-counter');
+    if (!container || !counter) return;
+
+    container.innerHTML = `
+      <div class="col-span-full flex flex-col items-center justify-center p-12 text-neutral-400">
+        <svg class="w-12 h-12 animate-spin text-rose-500 mb-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-opacity="0.25" />
+          <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" stroke-linecap="round" />
+        </svg>
+        <span class="font-medium">Chargement de l'activité en direct...</span>
+      </div>
+    `;
+
+    try {
+      const presenceRef = ref(db, 'presence/lejoly');
+      livePresenceListener = onValue(presenceRef, (snap) => {
+        const val = snap.val();
+        if (!val) {
+          counter.textContent = '0';
+          container.innerHTML = `
+            <div class="col-span-full bg-white rounded-3xl border-2 border-neutral-900 shadow-[4px_4px_0px_#1A1A2E] p-12 flex flex-col items-center justify-center text-center gap-4">
+              <div class="w-16 h-16 bg-rose-50 text-rose-500 rounded-2xl flex items-center justify-center border-2 border-neutral-900 shadow-[2px_2px_0px_#1A1A2E]">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15.182 15.182a4.5 4.5 0 01-6.364 0M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <div>
+                <h3 class="font-display font-black text-xl text-neutral-800" style="font-family: 'Fredoka', sans-serif;">Aucun élève connecté</h3>
+                <p class="text-neutral-500 text-sm max-w-sm mt-1 mx-auto" style="font-family: 'Inter', sans-serif;">Les élèves actifs de la classe de Waimes apparaîtront ici dès qu'ils se connecteront.</p>
+              </div>
+            </div>
+          `;
+          return;
+        }
+
+        const list = Object.keys(val).map(key => val[key]);
+        list.sort((a, b) => a.student.localeCompare(b.student));
+
+        counter.textContent = list.length;
+        container.innerHTML = '';
+
+        list.forEach(item => {
+          const initials = item.student.slice(0, 2).toUpperCase();
+          const colors = [
+            'bg-rose-100 text-rose-700 border-rose-300',
+            'bg-sky-100 text-sky-700 border-sky-300',
+            'bg-amber-100 text-amber-700 border-amber-300',
+            'bg-emerald-100 text-emerald-700 border-emerald-300',
+            'bg-indigo-100 text-indigo-700 border-indigo-300',
+            'bg-purple-100 text-purple-700 border-purple-300'
+          ];
+          const colorClass = colors[item.student.charCodeAt(0) % colors.length];
+
+          let elapsedStr = "Actif(ve)";
+          if (item.lastActive) {
+            const diffMs = Date.now() - item.lastActive;
+            const diffSec = Math.floor(diffMs / 1000);
+            if (diffSec < 60) {
+              elapsedStr = `il y a quelques secondes`;
+            } else {
+              const diffMin = Math.floor(diffSec / 60);
+              elapsedStr = `il y a ${diffMin} min`;
+            }
+          }
+
+          const card = document.createElement('div');
+          card.className = 'bg-white rounded-3xl border-2 border-neutral-900 shadow-[4px_4px_0px_#1A1A2E] p-6 flex flex-col gap-4 relative overflow-hidden transition-all duration-300 hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-[3px_3px_0px_#1A1A2E]';
+          
+          card.innerHTML = `
+            <div class="flex items-center gap-3">
+              <div class="w-12 h-12 rounded-2xl flex items-center justify-center font-display font-black text-lg border-2 border-neutral-900 shadow-[2px_2px_0px_#1A1A2E] shrink-0 ${colorClass}" style="font-family: 'Fredoka', sans-serif;">
+                ${initials}
+              </div>
+              <div class="flex-1 min-w-0">
+                <h3 class="font-display font-black text-lg text-neutral-800 truncate" style="font-family: 'Fredoka', sans-serif;">${item.student}</h3>
+                <div class="flex items-center gap-1.5 mt-0.5">
+                  <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0"></span>
+                  <span class="text-[10px] font-bold text-emerald-600 uppercase tracking-wider" style="font-family: 'Inter', sans-serif;">En ligne</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-neutral-50 rounded-2xl border border-neutral-200 p-4 flex flex-col gap-1.5 flex-1 justify-center">
+              <div class="text-[9px] font-bold text-neutral-400 uppercase tracking-wider" style="font-family: 'Inter', sans-serif;">Activité en cours</div>
+              <div class="text-sm font-semibold text-neutral-700 leading-relaxed font-sans flex items-start gap-1.5">
+                <span class="shrink-0 text-base">✏️</span>
+                <span style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">${item.activity}</span>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between text-[10px] text-neutral-400 font-medium" style="font-family: 'Inter', sans-serif;">
+              <span>Mise à jour</span>
+              <span>${elapsedStr}</span>
+            </div>
+          `;
+          container.appendChild(card);
+        });
+      }, (err) => {
+        console.warn("Live presence error:", err);
+      });
+    } catch(e) {
+      console.warn("Live presence setup failed:", e);
+    }
+  };
+
+  window.exitTeacherLive = function() {
+    if (livePresenceListener) {
+      try { livePresenceListener(); } catch(e) {}
+      livePresenceListener = null;
+    }
   };
 
   // Déclencher la synchronisation des résultats hors-ligne après chargement complet de l'app
@@ -4049,6 +4290,35 @@ input:focus{border-color:var(--purple);}
         </div>
       </div>
 
+      <!-- EN DIRECT -->
+      <div class="subject-card cursor-pointer bg-white rounded-[24px] border border-neutral-200 shadow-xs hover:shadow-md transition-all duration-300 p-5 flex flex-col gap-4" onclick="teacherGoToSubject('live')">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full bg-rose-500 animate-pulse"></span>
+            <span class="font-display font-black text-lg text-neutral-800" style="font-family: 'Fredoka', sans-serif;">En direct</span>
+          </div>
+          <span class="text-neutral-400 font-bold text-sm">→</span>
+        </div>
+        <div class="bg-rose-50/60 overflow-hidden relative w-full h-36 rounded-2xl flex items-center justify-center transition-all duration-300">
+          <div class="absolute inset-0 opacity-12 bg-[radial-gradient(#f43f5e_1px,transparent_1px)] [background-size:14px_14px]"></div>
+          <div class="relative flex items-center justify-center w-full h-full">
+            <div class="absolute w-20 h-20 rounded-full border border-dashed border-rose-300 animate-[spin_25s_linear_infinite] opacity-60"></div>
+
+            <div class="relative bg-white p-2.5 rounded-xl shadow-md border border-rose-100/50 text-rose-600">
+              <svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="2" fill="currentColor" />
+                <path d="M16.24 7.76a6 6 0 010 8.49m-8.48-.01a6 6 0 010-8.49m11.31-2.82a10 10 0 010 14.14m-14.14 0a10 10 0 010-14.14" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </div>
+
+          </div>
+        </div>
+        <div class="flex flex-col gap-1">
+          <span class="text-[10px] tracking-wider text-neutral-400 font-bold" style="font-family: 'Inter', sans-serif;">DÉTAIL DU COURS :</span>
+          <p class="text-xs text-neutral-500 font-medium leading-relaxed" style="font-family: 'Inter', sans-serif;">Vois en direct qui est connecté et quel exercice chaque élève est en train de faire.</p>
+        </div>
+      </div>
+
     </div>
 
     <!-- Carte Plan de travail — pleine largeur -->
@@ -4063,6 +4333,33 @@ input:focus{border-color:var(--purple);}
         <div class="text-xs text-neutral-500 font-medium mt-1">Assigner des exercices aux élèves</div>
       </div>
       <div class="text-2xl text-[#1A1A2E] font-bold">→</div>
+    </div>
+  </div>
+
+  <!-- SCREEN: En direct (Live Feed) -->
+  <div id="screen-teacher-live" class="screen">
+    <button class="back-btn" onclick="if(typeof window.exitTeacherLive === 'function') window.exitTeacherLive(); showScreen('screen-teacher-subjects');">← Retour</button>
+    
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+      <div>
+        <div class="flex items-center gap-3">
+          <span class="relative flex h-4 w-4">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-4 w-4 bg-rose-500"></span>
+          </span>
+          <h1 class="text-3xl font-black text-neutral-800" style="font-family: 'Fredoka', sans-serif;">Activité en direct</h1>
+        </div>
+        <p class="text-neutral-500 mt-1 font-medium" style="font-family: 'Inter', sans-serif;">Suivi en temps réel des élèves connectés à la plateforme.</p>
+      </div>
+      <div class="bg-white px-5 py-3 rounded-2xl border-2 border-neutral-900 shadow-[3px_3px_0px_#1A1A2E] flex items-center gap-3 self-start md:self-auto">
+        <div class="text-xs font-bold text-neutral-400 uppercase tracking-wider" style="font-family: 'Inter', sans-serif;">Élèves actifs</div>
+        <div id="live-counter" class="text-2xl font-black text-rose-500" style="font-family: 'Fredoka', sans-serif;">0</div>
+      </div>
+    </div>
+
+    <!-- Live Grid -->
+    <div id="live-students-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- Les cartes des élèves connectés seront insérées ici dynamiquement -->
     </div>
   </div>
 
@@ -4703,6 +5000,16 @@ function showScreen(id){
   if(id==='screen-num-grands-nombres') setTimeout(renderGrandsNombresMenu, 50);
   if(id==='screen-num-fractions') setTimeout(renderFractionsMenu, 50);
   if(id==='screen-grandeurs-perimetre') setTimeout(renderPerimetreMenu, 50);
+
+  // Mettre à jour la présence de l'élève en direct
+  if(window.state && window.state.student && window.state.studentCls) {
+    if(typeof window.getActivityLabel === 'function' && typeof window.updateStudentPresence === 'function') {
+      const label = window.getActivityLabel(id);
+      window.currentStudentActivity = label;
+      window.updateStudentPresence(label);
+      window.initPresenceConnectedListener();
+    }
+  }
 }
 
 function init(){ renderBooks(); }
@@ -4875,6 +5182,9 @@ function goToHome(){
   document.getElementById('home-greeting').textContent='Bonjour '+state.student+' !';
   document.getElementById('home-class-label').textContent="Que veux-tu faire aujourd'hui ?";
   showScreen('screen-subjects');
+  if(typeof window.initPresenceConnectedListener === 'function') {
+    window.initPresenceConnectedListener();
+  }
   loadAndApplyEmoji();
   // Afficher immédiatement la carte plan si données locales disponibles
   loadPlanTravailLocal();
@@ -4957,6 +5267,16 @@ function renderQ(){
   const q=book.questions[state.currentQ];
   const total=book.questions.length;
   const letters=['A','B','C','D'];
+
+  // Mettre à jour la présence en direct avec le numéro de question
+  if(window.state && window.state.student && window.state.studentCls) {
+    if(typeof window.updateStudentPresence === 'function') {
+      const bookTitle = book ? book.title : "Livre";
+      const presenceText = `Répond au quiz : ${bookTitle} (${state.currentQ+1}/${total})`;
+      window.currentStudentActivity = presenceText;
+      window.updateStudentPresence(presenceText);
+    }
+  }
 
   document.getElementById('quiz-student-badge').textContent='👤 '+state.student;
   document.getElementById('quiz-progress-label').textContent=`Question ${state.currentQ+1} / ${total}`;
@@ -5565,6 +5885,12 @@ function teacherGoToSubject(subject){
     showScreen('screen-gestion');
     switchGestionTab('results');
     renderGestionResults();
+  }
+  else if(subject==='live'){
+    showScreen('screen-teacher-live');
+    if(typeof window.initTeacherLive === 'function') {
+      window.initTeacherLive();
+    }
   }
 }
 
@@ -21618,6 +21944,10 @@ function goToRecitsExpress(){
 
 // ===== LANDING PAGE =====
 function goToLogin(){
+  // Nettoyer la présence en direct si l'élève se déconnecte
+  if (typeof window.clearStudentPresence === 'function') {
+    window.clearStudentPresence();
+  }
   // Full reset
   state={student:'',studentCls:'',book:'',answers:{},currentQ:0,role:'student'};
   pinInput='';
