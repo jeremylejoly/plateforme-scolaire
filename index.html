@@ -24113,74 +24113,175 @@ function validateGeoContinentsQCM(){
 // EXERCICE 3 : TOUR DU MONDE AVEC L'ATLAS
 // ================================================================
 
-const GEO_TOUR_MONDE_TEXTE = [
-  {texte:"Notre voyageur part de Bruxelles, en Belgique, sur le continent ", mot:"Europe", suite:"."},
-  {texte:" Il survole l'", mot:"Océan Atlantique", suite:" pour atterrir à New York, aux États-Unis, sur le continent "},
-  {texte:"Amérique du Nord", mot:"Amérique du Nord", suite:"."},
-  {texte:" Il repart vers le sud et survole l'", mot:"Océan Pacifique", suite:" pour rejoindre Tokyo, au Japon, sur le continent "},
-  {texte:"Asie", mot:"Asie", suite:"."},
-  {texte:" De là, il descend vers Sydney, en Australie, sur le continent ", mot:"Océanie", suite:", en traversant une partie de l'"},
-  {texte:"Océan Pacifique", mot:"Océan Pacifique", suite:"."},
-  {texte:" Il repart vers l'ouest en survolant l'", mot:"Océan Indien", suite:" pour s'arrêter au Kenya, en Afrique, sur le continent "},
-  {texte:"Afrique", mot:"Afrique", suite:"."},
-  {texte:" Il remonte ensuite vers Rio de Janeiro, au Brésil, sur le continent ", mot:"Amérique du Sud", suite:", en traversant l'"},
-  {texte:"Océan Atlantique", mot:"Océan Atlantique", suite:"."},
-  {texte:" Enfin, il rentre à Bruxelles en survolant à nouveau l'", mot:"Océan Atlantique", suite:"."},
+// ================================================================
+// EXERCICE 3 : TOUR DU MONDE AVEC L'ATLAS
+// ================================================================
+
+const GEO_TOUR_TEXTS = [
+  {
+    id: 1,
+    title: "Texte 1 — Tour du monde classique",
+    content: "Notre voyageur part de Bruxelles, en Belgique, en [Europe]. Il survole l'[Océan Atlantique] pour atterrir à New York, aux États-Unis, en [Amérique du Nord]. Il repart vers le sud et survole l'[Océan Pacifique] pour rejoindre Tokyo, au Japon, en [Asie]. De là, il descend vers Sydney, en Australie, en [Océanie], en traversant une partie de l'[Océan Pacifique]. Il repart vers l'ouest en survolant l'[Océan Indien] pour s'arrêter au Kenya, en [Afrique]. Il remonte ensuite vers Rio de Janeiro, au Brésil, en [Amérique du Sud], en traversant l'[Océan Atlantique]. Enfin, il rentre à Bruxelles en survolant à nouveau l'[Océan Atlantique]."
+  },
+  {
+    id: 2,
+    title: "Texte 2 — Le tour des océans",
+    content: "Notre exploratrice part de Londres, en Angleterre, en [Europe]. Elle embarque sur un bateau et traverse l'[Océan Atlantique] vers le sud. Elle longe les côtes du Brésil, en [Amérique du Sud], avant de contourner la pointe de l'Afrique du Sud, en [Afrique]. Elle navigue ensuite sur l'[Océan Indien] et fait escale à Mumbai, en Inde, en [Asie]. Elle repart vers l'est, traverse l'[Océan Pacifique] et arrive à Los Angeles, aux États-Unis, en [Amérique du Nord]. Elle remonte vers le nord, passe par l'[Océan Arctique] et rentre en Europe par la Norvège, en [Europe]."
+  },
+  {
+    id: 3,
+    title: "Texte 3 — L'aventurier du Pôle",
+    content: "Un aventurier part du Caire, en Égypte, en [Afrique]. Il survole l'[Océan Indien] pour rejoindre Perth, en Australie, en [Océanie]. Il repart vers le sud et s'approche de l'[Antarctique], entouré de l'[Océan Austral]. Il remonte vers Buenos Aires, en Argentine, en [Amérique du Sud], en traversant l'[Océan Atlantique]. Il continue vers le nord et visite Mexico, au Mexique, en [Amérique du Nord]. Il survole l'[Océan Pacifique] pour rejoindre Pékin, en Chine, en [Asie]. Enfin, il rentre au Caire en traversant à nouveau l'[Océan Indien]."
+  },
+  {
+    id: 4,
+    title: "Texte 4 — La route des épices",
+    content: "Une commerçante part d'Amsterdam, aux Pays-Bas, en [Europe]. Elle traverse l'[Océan Atlantique] et longe les côtes de l'Afrique de l'Ouest, en [Afrique]. Elle contourne le cap de Bonne-Espérance et navigue sur l'[Océan Indien] jusqu'à Goa, en Inde, en [Asie]. Elle continue vers l'est en traversant l'[Océan Pacifique] pour atteindre Jakarta, en Indonésie, toujours en [Asie]. Elle fait ensuite escale à Darwin, en Australie, en [Océanie]. Elle repart vers l'est, traverse l'[Océan Pacifique] et arrive à Lima, au Pérou, en [Amérique du Sud]. Elle rentre finalement en Europe en traversant l'[Océan Atlantique]."
+  }
 ];
 
-const GEO_TOUR_MOTS = ["Europe","Océan Atlantique","Amérique du Nord","Océan Pacifique","Asie","Océanie","Océan Indien","Afrique","Amérique du Sud"];
-
+let selectedGeoTourTextIndex = 0;
 let geoTourState = {answers:{}, dragging:null, touchEl:null, touchClone:null};
+
+function selectGeoTourText(index) {
+  selectedGeoTourTextIndex = index;
+  renderGeoTourMonde();
+}
+
+function parseTextToGapFill(textString) {
+  const regex = /\[([^\]]+)\]/g;
+  let match;
+  let lastIndex = 0;
+  let blanks = 0;
+  let html = '<p style="font-size:16px;line-height:2.8;color:#374151;font-family:\'Inter\',sans-serif;">';
+  const correctWords = [];
+  
+  while ((match = regex.exec(textString)) !== null) {
+    const word = match[1];
+    const textBefore = textString.slice(lastIndex, match.index);
+    html += textBefore;
+    
+    const bid = 'tour-blank-' + blanks;
+    html += `<span class="geo-drop-zone resp-blank" id="${bid}" data-word="${word}"
+      ondragover="tourDragOver(event)" ondrop="tourDrop(event)" ondragleave="tourDragLeave(event)"
+      style="display:inline-block;min-width:160px;margin:0 6px;vertical-align:middle;font-weight:700;text-align:center;"></span>`;
+    
+    geoTourState.answers[bid] = '';
+    correctWords.push(word);
+    
+    lastIndex = regex.lastIndex;
+    blanks++;
+  }
+  
+  html += textString.slice(lastIndex);
+  html += '</p>';
+  return { html, correctWords };
+}
 
 function renderGeoTourMonde(){
   const body=document.getElementById('geo-tour-monde-body'); if(!body) return;
   geoTourState={answers:{},dragging:null,touchEl:null,touchClone:null};
 
-  // Construire le texte avec les trous
-  let blanks=0;
-  let paraHtml='<p style="font-size:15px;line-height:2.6;">';
-  GEO_TOUR_MONDE_TEXTE.forEach(part=>{
-    paraHtml+=part.texte;
-    const bid='tour-blank-'+blanks;
-    paraHtml+=`<span class="geo-drop-zone resp-blank" id="${bid}" data-word="${part.mot}"
-      ondragover="tourDragOver(event)" ondrop="tourDrop(event)" ondragleave="tourDragLeave(event)"
-      style="display:inline-block;min-width:160px;margin:0 4px;vertical-align:middle;font-weight:700;"></span>`;
-    geoTourState.answers[bid]='';
-    paraHtml+=part.suite;
-    blanks++;
-  });
-  paraHtml+='</p>';
+  const selectedTextObj = GEO_TOUR_TEXTS[selectedGeoTourTextIndex];
+  const { html: paraHtml, correctWords } = parseTextToGapFill(selectedTextObj.content);
 
-  const words=shuffle([...GEO_TOUR_MOTS]);
-  let tagsHtml='<div class="geo-tags-pool" id="tour-pool">';
-  words.forEach((w,i)=>{ tagsHtml+=`<div class="geo-tag" id="tour-tag-${i}" draggable="true" data-text="${w}" ondragstart="tourDragStart(event)" ondragend="tourDragEnd(event)" ontouchstart="tourTouchStart(event)" ontouchmove="tourTouchMove(event)" ontouchend="tourTouchEnd(event)">${w}</div>`; });
+  // Sélecteur d'onglets premium
+  let selectorHtml = '<div class="flex flex-wrap gap-2.5 mb-6 justify-center">';
+  GEO_TOUR_TEXTS.forEach((txt, idx) => {
+    const isActive = idx === selectedGeoTourTextIndex;
+    const activeClass = isActive 
+      ? 'bg-rose-500 text-white border-rose-500 shadow-md scale-102 font-bold' 
+      : 'bg-white text-neutral-600 border-neutral-200 hover:bg-neutral-50 hover:text-neutral-800 hover:border-neutral-300';
+    
+    selectorHtml += `
+      <button class="px-4 py-2.5 rounded-2xl border-2 font-display text-sm transition-all duration-300 cursor-pointer ${activeClass}" 
+        style="font-family: 'Fredoka', sans-serif;"
+        onclick="selectGeoTourText(${idx})">
+        ${txt.title.split(' — ')[0]}
+      </button>
+    `;
+  });
+  selectorHtml += '</div>';
+
+  // Pool d'étiquettes
+  const words=shuffle([...correctWords]);
+  let tagsHtml='<div class="geo-tags-pool" id="tour-pool" style="margin-top:1.5rem;margin-bottom:1.5rem;">';
+  words.forEach((w,i)=>{ 
+    tagsHtml+=`<div class="geo-tag" id="tour-tag-${i}" draggable="true" data-text="${w}" ondragstart="tourDragStart(event)" ondragend="tourDragEnd(event)" ontouchstart="tourTouchStart(event)" ontouchmove="tourTouchMove(event)" ontouchend="tourTouchEnd(event)">${w}</div>`; 
+  });
   tagsHtml+='</div>';
 
   body.innerHTML=`
-    <div class="card" style="margin-bottom:1rem;padding:.8rem 1rem;background:#fef3c7;border:1px solid #f59e0b;">
-      <p style="margin:0;font-size:13px;color:#92400e;font-weight:700">🗺️ Utilise ton atlas pour t'aider à situer les pays sur les bons continents !</p>
+    <div class="card" style="margin-bottom:1rem;padding:.8rem 1rem;background:#fef3c7;border:1px solid #f59e0b;border-radius:16px;">
+      <p style="margin:0;font-size:13px;color:#92400e;font-weight:700">🗺️ Choisis un texte, utilise ton atlas pour situer les pays et glisse les bons continents/océans dans les trous !</p>
     </div>
-    <div class="card" style="margin-bottom:1rem;">${paraHtml}</div>
+    ${selectorHtml}
+    <div class="card" style="margin-bottom:1rem;border-radius:24px;padding:2rem;box-shadow:inset 0 2px 4px rgba(0,0,0,0.02);">
+      <h3 class="font-display font-black text-lg text-rose-500 mb-4" style="font-family:'Fredoka',sans-serif;">${selectedTextObj.title}</h3>
+      ${paraHtml}
+    </div>
     ${tagsHtml}
-    <button class="btn" onclick="validateGeoTour()" style="width:100%;margin-bottom:1rem">✅ Vérifier mon tour du monde</button>
+    <button class="btn" onclick="validateGeoTour()" style="width:100%;margin-bottom:1rem;padding:1rem;border-radius:18px;font-size:16px;">✅ Vérifier mes réponses</button>
     <div id="tour-score" style="display:none"></div>`;
 }
+
 function tourDragStart(e){ e.dataTransfer.setData('text/plain',e.currentTarget.dataset.text); e.currentTarget.style.opacity='0.5'; }
 function tourDragEnd(e){ e.currentTarget.style.opacity=''; }
 function tourDragOver(e){ e.preventDefault(); e.currentTarget.classList.add('drag-over'); }
 function tourDragLeave(e){ e.currentTarget.classList.remove('drag-over'); }
+
 function tourDrop(e){
   e.preventDefault(); const zone=e.currentTarget; zone.classList.remove('drag-over');
   const word=e.dataTransfer.getData('text/plain'); const old=zone.textContent.trim();
-  if(old){ const pool=document.getElementById('tour-pool'); pool&&pool.querySelectorAll('.geo-tag').forEach(t=>{if(t.dataset.text===old&&t.classList.contains('used'))t.classList.remove('used');}); }
+  if(old){ 
+    const pool=document.getElementById('tour-pool'); 
+    let found=false;
+    if(pool){
+      pool.querySelectorAll('.geo-tag').forEach(t=>{
+        if(t.dataset.text===old && t.classList.contains('used') && !found){
+          t.classList.remove('used');
+          found=true;
+        }
+      });
+    }
+  }
   zone.textContent=word; zone.classList.add('filled'); geoTourState.answers[zone.id]=word;
   const pool=document.getElementById('tour-pool'); let found=false;
   pool&&pool.querySelectorAll('.geo-tag').forEach(t=>{if(t.dataset.text===word&&!t.classList.contains('used')&&!found){t.classList.add('used');found=true;}});
 }
+
 let tourTEl=null,tourTClone=null;
 function tourTouchStart(e){ const tag=e.currentTarget; if(tag.classList.contains('used')) return; tourTEl=tag; const clone=tag.cloneNode(true); clone.style.cssText='position:fixed;z-index:9999;opacity:.85;pointer-events:none;'; const t=e.touches[0]; clone.style.left=(t.clientX-40)+'px'; clone.style.top=(t.clientY-20)+'px'; document.body.appendChild(clone); tourTClone=clone; tag.style.opacity='0.4'; }
 function tourTouchMove(e){ e.preventDefault(); if(!tourTClone) return; const t=e.touches[0]; tourTClone.style.left=(t.clientX-40)+'px'; tourTClone.style.top=(t.clientY-20)+'px'; }
-function tourTouchEnd(e){ if(!tourTClone) return; const t=e.changedTouches[0]; tourTClone.remove(); tourTClone=null; if(tourTEl) tourTEl.style.opacity=''; const el=document.elementFromPoint(t.clientX,t.clientY); const zone=el?el.closest('.geo-drop-zone'):null; if(zone&&tourTEl){ const word=tourTEl.dataset.text; const old=zone.textContent.trim(); if(old){const pool=document.getElementById('tour-pool');pool&&pool.querySelectorAll('.geo-tag').forEach(t2=>{if(t2.dataset.text===old&&t2.classList.contains('used'))t2.classList.remove('used');});} zone.textContent=word; zone.classList.add('filled'); geoTourState.answers[zone.id]=word; const pool=document.getElementById('tour-pool'); let found=false; pool&&pool.querySelectorAll('.geo-tag').forEach(t2=>{if(t2.dataset.text===word&&!t2.classList.contains('used')&&!found){t2.classList.add('used');found=true;}}); } tourTEl=null; }
+
+function tourTouchEnd(e){ 
+  if(!tourTClone) return; 
+  const t=e.changedTouches[0]; tourTClone.remove(); tourTClone=null; 
+  if(tourTEl) tourTEl.style.opacity=''; 
+  const el=document.elementFromPoint(t.clientX,t.clientY); 
+  const zone=el?el.closest('.geo-drop-zone'):null; 
+  if(zone&&tourTEl){ 
+    const word=tourTEl.dataset.text; 
+    const old=zone.textContent.trim(); 
+    if(old){
+      const pool=document.getElementById('tour-pool');
+      let found=false;
+      if(pool){
+        pool.querySelectorAll('.geo-tag').forEach(t2=>{
+          if(t2.dataset.text===old && t2.classList.contains('used') && !found){
+            t2.classList.remove('used');
+            found=true;
+          }
+        });
+      }
+    } 
+    zone.textContent=word; zone.classList.add('filled'); geoTourState.answers[zone.id]=word; 
+    const pool=document.getElementById('tour-pool'); let found=false; 
+    pool&&pool.querySelectorAll('.geo-tag').forEach(t2=>{if(t2.dataset.text===word&&!t2.classList.contains('used')&&!found){t2.classList.add('used');found=true;}}); 
+  } 
+  tourTEl=null; 
+}
+
 function validateGeoTour(){
   let ok=0,total=0;
   document.querySelectorAll('#geo-tour-monde-body .resp-blank').forEach(zone=>{
@@ -24190,7 +24291,20 @@ function validateGeoTour(){
   const pct=Math.round(ok/total*100);
   const panel=document.getElementById('tour-score'); panel.style.display='block';
   panel.innerHTML=`<div style="font-size:48px">${pct>=70?'🎉':pct>=50?'👍':'💪'}</div><div style="font-weight:800;font-size:28px;color:${pct>=70?'var(--green)':pct>=50?'var(--amber)':'var(--red)'}">${ok}/${total} — ${pct}%</div><button class="btn" onclick="renderGeoTourMonde()" style="margin-top:1rem">🔄 Recommencer</button>`;
-  if(state.student) saveResult({student:state.student,cls:state.studentCls,className:CLASSES[state.studentCls]?CLASSES[state.studentCls].name:state.studentCls,activity:'geo_tour_monde',bookTitle:'Géo — Tour du monde',score:ok,total,pct,date:new Date().toLocaleDateString('fr-BE'),time:new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})});
+  
+  const selectedTextObj = GEO_TOUR_TEXTS[selectedGeoTourTextIndex];
+  if(state.student) saveResult({
+    student:state.student,
+    cls:state.studentCls,
+    className:CLASSES[state.studentCls]?CLASSES[state.studentCls].name:state.studentCls,
+    activity:'geo_tour_monde',
+    bookTitle:`Géo — Tour du monde (${selectedTextObj.title.split(' — ')[0]})`,
+    score:ok,
+    total,
+    pct,
+    date:new Date().toLocaleDateString('fr-BE'),
+    time:new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})
+  });
 }
 
 init();
