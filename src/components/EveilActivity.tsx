@@ -8,6 +8,7 @@ interface EveilActivityProps {
 }
 
 export default function EveilActivity({ onBack, studentName }: EveilActivityProps) {
+  const [activityType, setActivityType] = useState<"menu" | "quiz" | "europe">("menu");
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [isAnswered, setIsAnswered] = useState(false);
@@ -60,14 +61,62 @@ export default function EveilActivity({ onBack, studentName }: EveilActivityProp
           <span className="font-display font-semibold text-lg text-neutral-800">Éveil Géographie & Sciences</span>
         </div>
         <button
-          onClick={onBack}
+          onClick={activityType === "menu" ? onBack : () => setActivityType("menu")}
           className="text-neutral-500 hover:text-neutral-800 bg-neutral-100 hover:bg-neutral-200 duration-200 px-4 py-1.5 rounded-full text-sm font-medium"
         >
-          Retour au menu
+          {activityType === "menu" ? "Retour au menu" : "Choisir une autre activité"}
         </button>
       </div>
 
-      {!showResults ? (
+      {activityType === "menu" ? (
+        <div className="space-y-6 text-center py-4">
+          <h3 className="text-2xl font-display font-bold text-neutral-800 mb-2">Choisis ton activité d'Éveil 🌍</h3>
+          <p className="text-neutral-500 mb-6 max-w-sm mx-auto font-medium">
+            Entraîne-toi sur tes connaissances en géographie, sciences et histoire de 5e et 6e primaire.
+          </p>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-xl mx-auto mt-4">
+            <button
+              onClick={() => setActivityType("quiz")}
+              className="p-6 bg-white border-2 border-neutral-100 hover:border-emerald-500 rounded-3xl flex flex-col items-center gap-4 transition-all duration-300 hover:shadow-lg text-center cursor-pointer group"
+            >
+              <div className="bg-emerald-50 text-emerald-700 p-4 rounded-2xl group-hover:scale-105 transition-transform duration-200">
+                <Compass className="w-8 h-8 animate-pulse" />
+              </div>
+              <div>
+                <h4 className="font-display font-bold text-lg text-neutral-800">Quiz d'Éveil</h4>
+                <p className="text-xs font-sans font-medium text-neutral-500 mt-1 leading-normal">
+                  Explore les provinces belges, le cycle de l'eau et les grandes notions d'histoire.
+                </p>
+              </div>
+            </button>
+
+            <button
+              onClick={() => setActivityType("europe")}
+              className="p-6 bg-white border-2 border-neutral-100 hover:border-emerald-500 rounded-3xl flex flex-col items-center gap-4 transition-all duration-300 hover:shadow-lg text-center cursor-pointer group"
+            >
+              <div className="bg-emerald-50 text-emerald-700 p-4 rounded-2xl group-hover:scale-105 transition-transform duration-200">
+                <Map className="w-8 h-8" />
+              </div>
+              <div>
+                <h4 className="font-display font-bold text-lg text-neutral-800">Carte de l'Europe</h4>
+                <p className="text-xs font-sans font-medium text-neutral-500 mt-1 leading-normal">
+                  Replace les étiquettes (reliefs, pays et capitales) au bon endroit sur les cartes de l'Europe.
+                </p>
+              </div>
+            </button>
+          </div>
+        </div>
+      ) : activityType === "europe" ? (
+        <div className="animate-fadeIn w-full">
+          <iframe
+            src="/europe_cartes.html"
+            title="Carte de l'Europe"
+            className="w-full border-2 border-neutral-900 rounded-3xl shadow-[6px_6px_0px_rgba(0,0,0,1)] bg-neutral-50"
+            style={{ height: "680px" }}
+          ></iframe>
+        </div>
+      ) : !showResults ? (
         <div>
           {/* Progress bar */}
           <div className="w-full bg-neutral-100 h-2 rounded-full overflow-hidden mb-6 flex">
