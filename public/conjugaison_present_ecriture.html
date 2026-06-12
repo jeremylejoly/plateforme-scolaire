@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Conjugaison — Présent écriture</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Nunito', sans-serif; background: #f5f6fa; padding: 1.5rem; }
+.container { max-width: 680px; margin: 0 auto; }
+.info-card { background:#fce7f3;border:1px solid #ec4899;border-radius:12px;padding:.8rem 1rem;margin-bottom:1.5rem;display:flex;justify-content:space-between;align-items:center; }
+.info-card p { font-size:13px;color:#9d174d;font-weight:700;margin:0; }
+.dots { display:flex;gap:6px; }
+.dot { width:12px;height:12px;border-radius:50%; }
+.question-card { background:white;border-radius:16px;padding:1.75rem 1.5rem;margin-bottom:1.25rem;box-shadow:0 2px 8px rgba(0,0,0,.08);border:2px solid #e5e7eb; }
+.q-label { font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:#9ca3af;margin-bottom:.75rem;text-align:center; }
+.q-verbe { display:inline-block;background:#fce7f3;border:1.5px solid #ec4899;border-radius:8px;padding:3px 10px;font-size:13px;font-weight:800;color:#9d174d;margin-bottom:1rem; }
+.q-phrase { font-size:17px;font-weight:800;color:#1e1b4b;margin-bottom:1.5rem;text-align:center;line-height:1.8; }
+.saisie-row { display:flex;align-items:center;justify-content:center;gap:10px; }
+.fleche { color:#ec4899;font-size:20px;flex-shrink:0; }
+.q-input { font-family:'Nunito',sans-serif;font-size:18px;font-weight:800;color:#1e1b4b;text-align:center;border:none;border-bottom:2.5px solid #ec4899;background:transparent;outline:none;width:160px;padding:4px 8px;transition:border-color .2s; }
+.q-input:focus { border-color:#9d174d; }
+.q-input.correct { border-color:#16a34a;color:#16a34a; }
+.q-input.incorrect { border-color:#dc2626;color:#dc2626; }
+.correction { font-size:13px;font-weight:700;color:#dc2626;margin-top:.75rem;text-align:center;display:none; }
+.btn { width:100%;padding:12px;background:#ec4899;color:white;border:none;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;transition:background .2s;margin-bottom:.75rem; }
+.btn:hover { background:#db2777; }
+.score-final { display:none;text-align:center;padding:2rem;background:white;border-radius:16px;box-shadow:0 2px 12px rgba(0,0,0,.1); }
+.big-emoji { font-size:64px;margin-bottom:.5rem; }
+.big-score { font-size:36px;font-weight:900;margin-bottom:1rem; }
+.score-detail { font-size:13px;color:#6b7280;margin-bottom:1.5rem;line-height:2; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div id="exercice-zone">
+    <div class="info-card">
+      <p id="info-numero">Question 1/10</p>
+      <div class="dots" id="dots-progress"></div>
+    </div>
+    <div id="question-zone"></div>
+    <button class="btn" id="btn-valider" onclick="valider()">✅ Valider</button>
+    <button class="btn" id="btn-suivant" style="display:none" onclick="suivant()">➡️ Question suivante</button>
+  </div>
+  <div class="score-final" id="score-final">
+    <div class="big-emoji" id="final-emoji">🎉</div>
+    <div class="big-score" id="final-score"></div>
+    <div class="score-detail" id="final-detail"></div>
+    <button class="btn" onclick="demarrer()">🔄 Recommencer</button>
+  </div>
+</div>
+<script>
+const QUESTIONS = [
+  // Verbes en -YER
+  { p:"Ma sœur <em>...</em> le sol de la cuisine.",     verbe:"essuyer (elle)",   rep:"essuie" },
+  { p:"Nous <em>...</em> toujours nos dettes.",          verbe:"payer (nous)",     rep:"payons" },
+  { p:"Ils <em>...</em> leurs baskets avant d'entrer.",  verbe:"essuyer (ils)",    rep:"essuient" },
+  { p:"J'<em>...</em> un message à mon ami.",            verbe:"envoyer (je)",     rep:"envoie" },
+  { p:"Vous <em>...</em> la salle de bain chaque semaine.", verbe:"nettoyer (vous)", rep:"nettoyez" },
+  { p:"Elle <em>...</em> sur l'interrupteur.",           verbe:"appuyer (elle)",   rep:"appuie" },
+  { p:"Tu <em>...</em> les marches de l'escalier.",      verbe:"balayer (tu)",     rep:"balaies" },
+  { p:"Ils <em>...</em> leurs parents régulièrement.",   verbe:"appuyer (ils)",    rep:"appuient" },
+  // Verbes en -CER
+  { p:"Nous <em>...</em> notre voyage demain.",          verbe:"commencer (nous)", rep:"commençons" },
+  { p:"Je <em>...</em> mes chaussettes dans le tiroir.", verbe:"placer (je)",      rep:"place" },
+  { p:"Nous <em>...</em> notre discours par une blague.", verbe:"lancer (nous)",   rep:"lançons" },
+  // Verbes en -GER
+  { p:"Nous <em>...</em> souvent des légumes.",          verbe:"manger (nous)",    rep:"mangeons" },
+  { p:"Je <em>...</em> ma chambre avant le dîner.",      verbe:"ranger (je)",      rep:"range" },
+  { p:"Nous <em>...</em> partager nos affaires.",        verbe:"partager (nous)",  rep:"partageons" },
+  // Verbes en -ELER/-ETER
+  { p:"Tu <em>...</em> ton frère pour lui demander de l'aide.", verbe:"appeler (tu)", rep:"appelles" },
+  { p:"Je <em>...</em> mon stylo dans la corbeille.",    verbe:"jeter (je)",       rep:"jette" },
+  { p:"Elle <em>...</em> ses feuilles de brouillon.",    verbe:"rejeter (elle)",   rep:"rejette" },
+  { p:"Il <em>...</em> souvent ses amis le soir.",       verbe:"rappeler (il)",    rep:"rappelle" },
+  // Verbes E+consonne+ER
+  { p:"Nous <em>...</em> nos affaires à l'école.",       verbe:"amener (nous)",    rep:"amenons" },
+  { p:"Je <em>...</em> la tête pour répondre.",          verbe:"lever (je)",       rep:"lève" },
+  { p:"Tu <em>...</em> toujours des bonbons au marché.", verbe:"acheter (tu)",     rep:"achètes" },
+  { p:"La rivière <em>...</em> après la pluie.",         verbe:"ruisseler (elle)", rep:"ruissèle" },
+  { p:"Nous <em>...</em> le chien tous les matins.",     verbe:"promener (nous)",  rep:"promenons" },
+  { p:"Il <em>...</em> le couvercle de la boîte.",       verbe:"soulever (il)",    rep:"soulève" },
+  // Être et avoir
+  { p:"Tu <em>...</em> un bon ami pour tout le monde.",  verbe:"être (tu)",        rep:"es" },
+  { p:"Nous <em>...</em> deux chats à la maison.",       verbe:"avoir (nous)",     rep:"avons" },
+  { p:"Ils <em>...</em> souvent en retard le matin.",    verbe:"être (ils)",       rep:"sont" },
+  { p:"Elle <em>...</em> mal à la tête depuis ce matin.", verbe:"avoir (elle)",    rep:"a" },
+  // Verbes en -IR irréguliers
+  { p:"Je <em>...</em> te rendre visite demain.",        verbe:"venir (je)",       rep:"viens" },
+  { p:"Nous <em>...</em> en avion pour les vacances.",   verbe:"partir (nous)",    rep:"partons" },
+  { p:"Tu <em>...</em> vite quand tu es en retard.",     verbe:"courir (tu)",      rep:"cours" },
+  { p:"Ils <em>...</em> la fenêtre pour aérer.",         verbe:"ouvrir (ils)",     rep:"ouvrent" },
+  { p:"Je <em>...</em> profondément la nuit.",           verbe:"dormir (je)",      rep:"dors" },
+  { p:"Nous <em>...</em> à notre parole.",               verbe:"tenir (nous)",     rep:"tenons" },
+  { p:"Elle <em>...</em> un livre à son ami.",           verbe:"offrir (elle)",    rep:"offre" },
+  // Verbes en -RE
+  { p:"Vous <em>...</em> toujours n'importe quoi !",     verbe:"dire (vous)",      rep:"dites" },
+  { p:"Je <em>...</em> de la natation le mercredi.",     verbe:"faire (je)",       rep:"fais" },
+  { p:"Nous <em>...</em> un roman en classe.",           verbe:"lire (nous)",      rep:"lisons" },
+  { p:"Tu <em>...</em> une carte postale à ta famille.", verbe:"écrire (tu)",      rep:"écris" },
+  { p:"Ils <em>...</em> le bus devant l'école.",         verbe:"prendre (ils)",    rep:"prennent" },
+  { p:"Je <em>...</em> mes chaussures devant la porte.", verbe:"mettre (je)",      rep:"mets" },
+  { p:"Nous <em>...</em> une belle vie à la campagne.",  verbe:"vivre (nous)",     rep:"vivons" },
+  // Verbes en -OIR
+  { p:"Tu <em>...</em> tout ce qui se passe dans la rue.", verbe:"voir (tu)",      rep:"vois" },
+  { p:"Je <em>...</em> finir mes devoirs avant de jouer.", verbe:"devoir (je)",    rep:"dois" },
+  { p:"Nous <em>...</em> la réponse à cette question.",  verbe:"savoir (nous)",    rep:"savons" },
+  { p:"Ils <em>...</em> venir mais ils sont fatigués.",  verbe:"vouloir (ils)",    rep:"veulent" },
+  { p:"Tu <em>...</em> partir quand tu veux.",           verbe:"pouvoir (tu)",     rep:"peux" },
+  { p:"Elle <em>...</em> un beau cadeau pour son anniversaire.", verbe:"recevoir (elle)", rep:"reçoit" },
+  { p:"Vous <em>...</em> la vérité maintenant.",         verbe:"savoir (vous)",    rep:"savez" },
+  { p:"Nous <em>...</em> nos amis chaque dimanche.",     verbe:"voir (nous)",      rep:"voyons" },
+];
+
+function shuffle(a){ return [...a].sort(()=>Math.random()-.5); }
+
+function normaliser(v){
+  return v.trim().toLowerCase()
+    .normalize('NFC'); // garde les accents tels quels
+}
+
+let selection=[], curIdx=0, scores=[];
+
+function demarrer(){
+  selection = shuffle([...QUESTIONS]).slice(0,10);
+  curIdx=0; scores=[];
+  document.getElementById('score-final').style.display='none';
+  document.getElementById('exercice-zone').style.display='block';
+  afficherQuestion();
+}
+
+function afficherQuestion(){
+  const q = selection[curIdx];
+  document.getElementById('info-numero').textContent = `Question ${curIdx+1}/10`;
+  document.getElementById('dots-progress').innerHTML =
+    selection.map((_,i)=>`<div class="dot" style="background:${i<curIdx?'#16a34a':i===curIdx?'#ec4899':'#d1d5db'}"></div>`).join('');
+
+  // Remplacer <em>...</em> par les pointillés dans la phrase affichée
+  const phraseAff = q.p.replace(/<em>\.\.\.?<\/em>/, '<span style="color:#ec4899;font-size:20px">...</span>');
+
+  document.getElementById('question-zone').innerHTML = `
+    <div class="question-card">
+      <div class="q-label">✏️ Indicatif présent — Écris la bonne forme</div>
+      <div style="text-align:center;margin-bottom:.75rem">
+        <span class="q-verbe">🔧 ${q.verbe}</span>
+      </div>
+      <div class="q-phrase">${phraseAff}</div>
+      <div class="saisie-row">
+        <span class="fleche">→</span>
+        <input type="text" class="q-input" id="q-inp" placeholder="………"
+          autocomplete="off" autocorrect="off" spellcheck="false"
+          onkeydown="if(event.key==='Enter') valider()"/>
+      </div>
+      <div class="correction" id="correction"></div>
+    </div>`;
+
+  document.getElementById('btn-valider').style.display='block';
+  document.getElementById('btn-suivant').style.display='none';
+  setTimeout(()=>{ document.getElementById('q-inp')?.focus(); }, 100);
+}
+
+function valider(){
+  const q = selection[curIdx];
+  const inp = document.getElementById('q-inp');
+  if(!inp) return;
+  const val = normaliser(inp.value);
+  const ok = (val === normaliser(q.rep));
+
+  inp.disabled = true;
+  inp.classList.add(ok ? 'correct' : 'incorrect');
+  scores.push(ok);
+
+  if(!ok){
+    const corr = document.getElementById('correction');
+    corr.style.display = 'block';
+    corr.textContent = `La bonne réponse est : ${q.rep}`;
+  }
+
+  document.getElementById('btn-valider').style.display='none';
+  const isLast = curIdx >= 9;
+  const btn = document.getElementById('btn-suivant');
+  btn.style.display='block';
+  btn.textContent = isLast ? '🏁 Voir mon score final' : '➡️ Question suivante';
+  btn.onclick = isLast ? afficherScoreFinal : suivant;
+}
+
+function suivant(){ curIdx++; afficherQuestion(); }
+
+function afficherScoreFinal(){
+  document.getElementById('exercice-zone').style.display='none';
+  const sf=document.getElementById('score-final'); sf.style.display='block';
+  const ok=scores.filter(Boolean).length, total=scores.length;
+  const pct=Math.round(ok/total*100);
+  document.getElementById('final-emoji').textContent=pct===100?'🎉':pct>=60?'👍':'💪';
+  document.getElementById('final-score').textContent=`${ok}/${total} — ${pct}%`;
+  document.getElementById('final-score').style.color=pct===100?'#16a34a':pct>=60?'#f59e0b':'#dc2626';
+  document.getElementById('final-detail').innerHTML=scores.map((s,i)=>`Q${i+1} : ${s?'✅':'❌'}`).join('  ');
+}
+
+demarrer();
+</script>
+</body>
+</html>

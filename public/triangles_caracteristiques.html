@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Triangles — Caractéristiques</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Nunito', sans-serif; background: #f5f6fa; padding: 1.5rem; }
+.container { max-width: 680px; margin: 0 auto; }
+.info-card { background:#ede9fe;border:1px solid #8b5cf6;border-radius:12px;padding:.8rem 1rem;margin-bottom:1.5rem;display:flex;justify-content:space-between;align-items:center; }
+.info-card p { font-size:13px;color:#6d28d9;font-weight:700;margin:0; }
+.dots { display:flex;gap:6px; }
+.dot { width:12px;height:12px;border-radius:50%; }
+.question-card { background:white;border-radius:16px;padding:1.75rem 1.5rem;margin-bottom:1.25rem;box-shadow:0 2px 8px rgba(0,0,0,.08);border:2px solid #e5e7eb; }
+.q-num { font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:#9ca3af;margin-bottom:.75rem;text-align:center; }
+.q-texte { font-size:16px;font-weight:800;color:#1e1b4b;margin-bottom:1.5rem;text-align:center;line-height:1.5; }
+.options { display:flex;flex-direction:column;gap:8px; }
+.opt-btn { padding:12px 16px;border-radius:12px;border:2px solid #e5e7eb;background:white;font-size:14px;font-weight:700;color:#374151;cursor:pointer;text-align:left;font-family:'Nunito',sans-serif;transition:all .15s;display:flex;align-items:center;gap:10px; }
+.opt-btn:hover:not(:disabled) { border-color:#8b5cf6;background:#ede9fe;color:#6d28d9; }
+.opt-btn .opt-letter { width:28px;height:28px;border-radius:50%;background:#f3f4f6;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;color:#6b7280;flex-shrink:0;transition:all .15s; }
+.opt-btn:hover:not(:disabled) .opt-letter { background:#8b5cf6;color:white; }
+.opt-btn.correct { border-color:#16a34a;background:#f0fdf4;color:#166534; }
+.opt-btn.correct .opt-letter { background:#16a34a;color:white; }
+.opt-btn.incorrect { border-color:#dc2626;background:#fff5f5;color:#991b1b; }
+.opt-btn.incorrect .opt-letter { background:#dc2626;color:white; }
+.opt-btn.disabled-neutral { border-color:#e5e7eb;color:#9ca3af; }
+.btn { width:100%;padding:12px;background:#8b5cf6;color:white;border:none;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;transition:background .2s;margin-bottom:.75rem; }
+.btn:hover { background:#7c3aed; }
+.score-final { display:none;text-align:center;padding:2rem;background:white;border-radius:16px;box-shadow:0 2px 12px rgba(0,0,0,.1); }
+.big-emoji { font-size:64px;margin-bottom:.5rem; }
+.big-score { font-size:36px;font-weight:900;margin-bottom:1rem; }
+.score-detail { font-size:13px;color:#6b7280;margin-bottom:1.5rem;line-height:2; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div id="exercice-zone">
+    <div class="info-card">
+      <p id="info-numero">Question 1/10</p>
+      <div class="dots" id="dots-progress"></div>
+    </div>
+    <div id="question-zone"></div>
+    <button class="btn" id="btn-suivant" style="display:none" onclick="suivant()">➡️ Question suivante</button>
+  </div>
+  <div class="score-final" id="score-final">
+    <div class="big-emoji" id="final-emoji">🎉</div>
+    <div class="big-score" id="final-score"></div>
+    <div class="score-detail" id="final-detail"></div>
+    <button class="btn" onclick="demarrer()">🔄 Recommencer</button>
+  </div>
+</div>
+<script>
+const QUESTIONS = [
+  { q:"Dans un triangle, la somme des angles est toujours...",
+    opts:["90°","180°","360°"], correct:1 },
+  { q:"Un triangle obtusangle possède...",
+    opts:["3 angles obtus","2 angles obtus","1 angle obtus"], correct:2 },
+  { q:"Un triangle rectangle possède...",
+    opts:["2 angles droits","aucun angle droit","1 angle droit"], correct:2 },
+  { q:"Dans un triangle équilatéral, chaque angle mesure...",
+    opts:["90°","45°","60°"], correct:2 },
+  { q:"Un triangle acutangle possède...",
+    opts:["1 angle aigu","2 angles aigus","3 angles aigus"], correct:2 },
+  { q:"Un triangle scalène possède...",
+    opts:["3 côtés égaux","2 côtés égaux","3 côtés différents"], correct:2 },
+  { q:"Un triangle isocèle possède...",
+    opts:["3 côtés égaux","3 côtés différents","2 côtés égaux"], correct:2 },
+  { q:"Un triangle équilatéral possède...",
+    opts:["2 côtés égaux","aucun côté égal","3 côtés égaux"], correct:2 },
+  { q:"Un triangle isocèle aura toujours...",
+    opts:["2 côtés isométriques et 1 angle droit","2 côtés isométriques et 3 angles différents","2 côtés isométriques et 2 angles de même amplitude"], correct:2 },
+  { q:"Un triangle équilatéral aura toujours...",
+    opts:["3 angles différents","1 angle droit","3 angles de 60° et 3 côtés isométriques"], correct:2 },
+  { q:"Un triangle rectangle aura toujours...",
+    opts:["2 angles droits","3 angles aigus","1 angle de 90° et 2 angles aigus"], correct:2 },
+  { q:"Un triangle scalène aura toujours...",
+    opts:["1 angle obtus","2 côtés égaux","3 côtés de longueurs différentes"], correct:2 },
+  { q:"Un triangle obtusangle aura toujours...",
+    opts:["3 angles obtus","1 angle droit","1 seul angle supérieur à 90°"], correct:2 },
+  { q:"Un triangle acutangle aura toujours...",
+    opts:["1 angle obtus","1 angle droit","tous ses angles inférieurs à 90°"], correct:2 },
+  { q:"J'ai un angle droit et 2 côtés isométriques, je suis...",
+    opts:["un triangle rectangle scalène","un triangle rectangle acutangle","un triangle isocèle rectangle"], correct:2 },
+  { q:"J'ai 3 côtés de longueurs différentes et un angle obtus, je suis...",
+    opts:["un triangle isocèle obtusangle","un triangle équilatéral obtusangle","un triangle scalène obtusangle"], correct:2 },
+  { q:"J'ai 3 côtés égaux, je suis forcément...",
+    opts:["un triangle isocèle acutangle","un triangle scalène acutangle","un triangle équilatéral acutangle"], correct:2 },
+  { q:"J'ai 2 angles de 45° et un angle de 90°, je suis...",
+    opts:["un triangle scalène rectangle","un triangle équilatéral rectangle","un triangle isocèle rectangle"], correct:2 },
+  { q:"J'ai un angle de 120° et 2 côtés égaux, je suis...",
+    opts:["un triangle scalène obtusangle","un triangle isocèle acutangle","un triangle isocèle obtusangle"], correct:2 },
+  { q:"J'ai 3 angles différents et tous inférieurs à 90°, je suis...",
+    opts:["un triangle scalène rectangle","un triangle isocèle acutangle","un triangle scalène acutangle"], correct:2 },
+  { q:"Parmi ces triangles, lequel est impossible à tracer ?",
+    opts:["Un triangle isocèle rectangle","Un triangle scalène obtusangle","Un triangle équilatéral obtusangle"], correct:2 },
+  { q:"Parmi ces triangles, lequel est impossible à tracer ?",
+    opts:["Un triangle scalène rectangle","Un triangle isocèle acutangle","Un triangle équilatéral rectangle"], correct:2 },
+  { q:"Parmi ces triangles, lequel est impossible à tracer ?",
+    opts:["Un triangle isocèle obtusangle","Un triangle scalène acutangle","Un triangle avec 2 angles droits"], correct:2 },
+  { q:"Parmi ces triangles, lequel est impossible à tracer ?",
+    opts:["Un triangle scalène rectangle","Un triangle isocèle rectangle","Un triangle avec 2 angles obtus"], correct:2 },
+  { q:"Laquelle de ces affirmations est vraie ?",
+    opts:["Un triangle équilatéral peut être rectangle","Un triangle équilatéral peut être obtusangle","Un triangle équilatéral est toujours acutangle"], correct:2 },
+  { q:"Laquelle de ces affirmations est vraie ?",
+    opts:["Un triangle rectangle peut avoir 2 angles droits","Un triangle rectangle peut être équilatéral","Un triangle rectangle peut être isocèle"], correct:2 },
+  { q:"Laquelle de ces affirmations est vraie ?",
+    opts:["Un triangle isocèle est toujours acutangle","Un triangle isocèle est toujours obtusangle","Un triangle isocèle peut être acutangle, rectangle ou obtusangle"], correct:2 },
+  { q:"Laquelle de ces affirmations est fausse ?",
+    opts:["Un triangle scalène peut être rectangle","Un triangle scalène peut être acutangle","Un triangle scalène peut avoir 3 côtés égaux"], correct:2 },
+  { q:"Laquelle de ces affirmations est vraie ?",
+    opts:["Dans un triangle rectangle, les 2 angles aigus font chacun 45°","Un triangle rectangle a toujours 2 côtés égaux","Dans un triangle rectangle, la somme des 2 angles aigus est 90°"], correct:2 },
+  { q:"Laquelle de ces affirmations est vraie ?",
+    opts:["Un triangle obtusangle peut avoir 2 angles obtus","Un triangle obtusangle a toujours 3 côtés égaux","Un triangle obtusangle a toujours 2 angles aigus"], correct:2 },
+];
+
+const LETTRES = ['A','B','C'];
+function shuffle(a){ return [...a].sort(()=>Math.random()-.5); }
+
+// Mélanger les options tout en gardant la bonne réponse
+function shuffleOpts(q){
+  const pairs = q.opts.map((o,i)=>({o, correct: i===q.correct}));
+  const shuffled = shuffle(pairs);
+  return { q: q.q, opts: shuffled.map(p=>p.o), correct: shuffled.findIndex(p=>p.correct) };
+}
+
+let selection=[], curIdx=0, scores=[];
+
+function demarrer(){
+  selection = shuffle([...QUESTIONS]).slice(0,10).map(q => shuffleOpts(q));
+  curIdx=0; scores=[];
+  document.getElementById('score-final').style.display='none';
+  document.getElementById('exercice-zone').style.display='block';
+  afficherQuestion();
+}
+
+function afficherQuestion(){
+  const q = selection[curIdx];
+  document.getElementById('info-numero').textContent = `Question ${curIdx+1}/10`;
+  document.getElementById('dots-progress').innerHTML =
+    selection.map((_,i)=>`<div class="dot" style="background:${i<curIdx?'#16a34a':i===curIdx?'#8b5cf6':'#d1d5db'}"></div>`).join('');
+
+  const optsHtml = q.opts.map((o,i)=>`
+    <button class="opt-btn" id="opt-${i}" onclick="choisir(${i},${q.correct})">
+      <span class="opt-letter">${LETTRES[i]}</span><span>${o}</span>
+    </button>`).join('');
+
+  document.getElementById('question-zone').innerHTML = `
+    <div class="question-card">
+      <div class="q-num">📐 Caractéristiques des triangles</div>
+      <div class="q-texte">${q.q}</div>
+      <div class="options">${optsHtml}</div>
+    </div>`;
+  document.getElementById('btn-suivant').style.display='none';
+}
+
+function choisir(idx, correct){
+  const ok = (idx===correct);
+  scores.push(ok);
+  for(let i=0;i<3;i++){
+    const b=document.getElementById('opt-'+i);
+    if(!b) continue; b.disabled=true;
+    if(i===correct) b.classList.add('correct');
+    else if(i===idx&&!ok) b.classList.add('incorrect');
+    else b.classList.add('disabled-neutral');
+  }
+  const isLast = curIdx>=9;
+  const btn = document.getElementById('btn-suivant');
+  btn.style.display='block';
+  btn.textContent = isLast ? '🏁 Voir mon score final' : '➡️ Question suivante';
+  btn.onclick = isLast ? afficherScoreFinal : suivant;
+}
+
+function suivant(){ curIdx++; afficherQuestion(); }
+
+function afficherScoreFinal(){
+  document.getElementById('exercice-zone').style.display='none';
+  const sf=document.getElementById('score-final'); sf.style.display='block';
+  const ok=scores.filter(Boolean).length, total=scores.length;
+  const pct=Math.round(ok/total*100);
+  document.getElementById('final-emoji').textContent=pct===100?'🎉':pct>=60?'👍':'💪';
+  document.getElementById('final-score').textContent=`${ok}/${total} — ${pct}%`;
+  document.getElementById('final-score').style.color=pct===100?'#16a34a':pct>=60?'#f59e0b':'#dc2626';
+  document.getElementById('final-detail').innerHTML=scores.map((s,i)=>`Q${i+1} : ${s?'✅':'❌'}`).join('  ');
+}
+
+demarrer();
+</script>
+</body>
+</html>
