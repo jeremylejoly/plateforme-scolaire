@@ -1941,7 +1941,8 @@ input:focus{border-color:var(--purple);}
       'screen-geo-belgique': "Exercice : Carte de la Belgique",
       'screen-geo-hydro': "Exercice : Hydrographie de la Belgique",
       'screen-geo-communes': "Exercice : Communes de Liège",
-      'screen-geo-europe': "Exercice : L'Europe - Cartes interactives",
+      'screen-geo-europe': "Menu de l'Europe",
+      'screen-geo-europe-cartes': "Exercice : L'Europe - Cartes interactives",
       'screen-triangles-qcm': "Exercice : Identifier les triangles",
       'screen-triangles-carac': "Exercice : Caractéristiques des triangles",
       'screen-polygones-reconnaitre': "Exercice : Identifier les polygones",
@@ -3981,9 +3982,16 @@ input:focus{border-color:var(--purple);}
     <div id="geo-tour-monde-body"></div>
   </div>
 
-  <!-- SCREEN: Géographie - L'Europe -->
+  <!-- SCREEN: Géographie - L'Europe (Menu) -->
   <div id="screen-geo-europe" class="screen">
     <button class="back-btn" onclick="showScreen('screen-geographie');renderGeographieScreen();">← Retour</button>
+    <div class="page-title">🇪🇺 L'Europe</div>
+    <div id="geo-europe-menu"></div>
+  </div>
+
+  <!-- SCREEN: Géographie - Europe - Cartes -->
+  <div id="screen-geo-europe-cartes" class="screen">
+    <button class="back-btn" onclick="showScreen('screen-geo-europe');renderGeoEuropeMenu();">← Retour</button>
     <div class="page-title">🇪🇺 L'Europe — Cartes interactives</div>
     <iframe src="europe_cartes.html" style="width:100%;height:calc(100vh - 60px);border:none;border-radius:12px;overflow-y:auto;" allowfullscreen scrolling="yes"></iframe>
   </div>
@@ -8423,6 +8431,36 @@ let geoBelgiqueState = {
   submitted: false,
   dragging: null, // {text, tagEl}
 };
+
+function renderGeoEuropeMenu(){
+  const isTeacher = (state.role === 'teacher');
+  const menu = document.getElementById('geo-europe-menu');
+  if(!menu) return;
+  const locked = getLockedActivities();
+  const items = [
+    {id:'geo_europe_cartes', screen:'screen-geo-europe-cartes', label:"L'Europe — Cartes interactives", icon:'🗺️', desc:'Reliefs, Pays et Capitales', fn:''},
+  ];
+  let html = '';
+  items.forEach(t => {
+    const isLocked = locked.includes(t.id);
+    const toggleBtn = isTeacher
+      ? `<button class="card-teacher-toggle ${isLocked ? 'btn-show' : 'btn-hide'}"
+           onclick="event.stopPropagation();toggleActivity('${t.id}');renderGeoEuropeMenu();">
+           ${isLocked ? '🔓 Réactiver' : '🔒 Masquer'}
+         </button>`
+      : '';
+    if(isLocked && !isTeacher) return;
+    const badge = isTeacher ? '' : renderScoreBadge(t.id);
+    html += `<div class="sub-subject-card active-card" onclick="navTo('${t.screen}','${t.fn}')" style="position:relative">
+      ${toggleBtn}
+      <div class="sub-icon">${t.icon}</div>
+      <div class="sub-title">${t.label}</div>
+      <div class="sub-desc">${isLocked && !isTeacher ? '🔒 Non disponible' : t.desc}</div>
+      ${badge}
+    </div>`;
+  });
+  menu.innerHTML = '<div class="sub-subjects-grid">' + html + '</div>' || '<p style="color:var(--muted);text-align:center;padding:2rem">Aucun exercice disponible pour le moment.</p>';
+}
 
 function renderGeoBelgiqueMenu(){
   const isTeacher = (state.role === 'teacher');
@@ -24387,6 +24425,7 @@ function renderGeographieScreen(){
         showScreen(t.screen);
         if(t.id === 'geo_belgique') renderGeoBelgiqueMenu();
         if(t.id === 'geo_oceans') renderGeoOceansMenu();
+        if(t.id === 'geo_europe') renderGeoEuropeMenu();
       };
 
       const toggleBtn = isTeacher
@@ -25290,7 +25329,7 @@ const PLAN_CATALOGUE = [
     { id:'geo_belgique_qcm', label:'La Belgique — QCM', icon:'❓', screen:'screen-geo-belgique-qcm', fn:'renderGeoBelgiqueQCM' },
   ]},
   { cat: '🌍 Éveil', sub: '🌍 Géographie — Europe', items: [
-    { id:'geo_europe_cartes', label:"L'Europe — Cartes interactives", icon:'🇪🇺', screen:'screen-geo-europe', fn:'' },
+    { id:'geo_europe_cartes', label:"L'Europe — Cartes interactives", icon:'🇪🇺', screen:'screen-geo-europe-cartes', fn:'' },
   ]},
 ];
 
