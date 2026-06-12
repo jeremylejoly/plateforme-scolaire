@@ -1853,6 +1853,17 @@ input:focus{border-color:var(--purple);}
       return snap.exists() ? snap.val() : null;
     } catch(e) { console.warn('Firebase loadPlanTravail error:', e); return null; }
   };
+  window.FB_savePlanTravailIndividual = async function(cls, individual) {
+    try {
+      await set(ref(db, 'settings/plan_travail_individual/' + cls), individual);
+    } catch(e) { console.warn('Firebase savePlanTravailIndividual error:', e); }
+  };
+  window.FB_loadPlanTravailIndividual = async function(cls) {
+    try {
+      const snap = await get(ref(db, 'settings/plan_travail_individual/' + cls));
+      return snap.exists() ? snap.val() : null;
+    } catch(e) { console.warn('Firebase loadPlanTravailIndividual error:', e); return null; }
+  };
   window.FB_saveStudentPlanProgress = async function(cls, student, progress) {
     try {
       await set(ref(db, 'plan_progress/' + cls + '/' + student), progress);
@@ -25206,9 +25217,15 @@ const PLAN_CATALOGUE = [
     { id:'op_calcul_ecrit', label:'Calcul écrit', icon:'✏️', screen:'screen-op-calcul-ecrit', fn:'' },
   ]},
   { cat: '🔢 Mathématiques', sub: '📐 Grandeurs', items: [
-    { id:'grandeur_masses', label:'Les masses', icon:'⚖️', screen:'screen-grandeurs-masses', fn:'' },
-    { id:'grandeur_capacites', label:'Les capacités', icon:'💧', screen:'screen-grandeurs-capacites', fn:'' },
-    { id:'grandeur_longueurs', label:'Les longueurs', icon:'📏', screen:'screen-grandeurs-longueurs', fn:'' },
+    { id:'grandeur_masses', label:'Les masses (Menu)', icon:'⚖️', screen:'screen-grandeurs-masses', fn:'' },
+    { id:'grandeur_masses_qcm', label:'Conversions de masses (QCM)', icon:'⚖️', screen:'screen-grandeur-masses-qcm', fn:'renderMassesQCM' },
+    { id:'grandeur_masses_qcm_abaque', label:'Conversions & Abaque (QCM)', icon:'🧮', screen:'screen-grandeur-masses-qcm-abaque', fn:'' },
+    { id:'grandeur_capacites', label:'Les capacités (Menu)', icon:'💧', screen:'screen-grandeurs-capacites', fn:'' },
+    { id:'grandeur_capacites_qcm', label:'Conversions de capacités (QCM)', icon:'💧', screen:'screen-grandeur-capacites-qcm', fn:'renderCapacitesQCM' },
+    { id:'grandeur_capacites_qcm_sup', label:'Conversions de capacités (QCM — Bis)', icon:'🧮', screen:'screen-grandeur-capacites-qcm-sup', fn:'' },
+    { id:'grandeur_longueurs', label:'Les longueurs (Menu)', icon:'📏', screen:'screen-grandeurs-longueurs', fn:'' },
+    { id:'grandeur_longueurs_qcm', label:'Conversions de longueurs (QCM)', icon:'📏', screen:'screen-grandeur-longueurs-qcm', fn:'renderLongueursQCM' },
+    { id:'grandeur_longueurs_qcm_sup', label:'Conversions de longueurs (QCM — Bis)', icon:'🧮', screen:'screen-grandeur-longueurs-qcm-sup', fn:'' },
     { id:'grandeur_perimetre_calcul', label:'Périmètre — Calcul', icon:'✏️', screen:'screen-perimetre-calcul', fn:'renderPerimetreCalcul' },
     { id:'grandeur_perimetre_problemes', label:'Périmètre — Problèmes', icon:'🧩', screen:'screen-perimetre-problemes', fn:'renderPerimetreProblemes' },
     { id:'grandeur_aire', label:"L'aire — La superficie", icon:'🟦', screen:'screen-grandeurs-aire', fn:'' },
@@ -25218,9 +25235,17 @@ const PLAN_CATALOGUE = [
   ]},
   { cat: '🔢 Mathématiques', sub: '🔷 Solides et figures', items: [
     { id:'solide_points', label:'Points, lignes et droites', icon:'📍', screen:'screen-solides-points', fn:'' },
-    { id:'solide_polygones', label:'Les polygones', icon:'⬡', screen:'screen-solides-polygones', fn:'' },
-    { id:'solide_triangles', label:'Les triangles', icon:'🔺', screen:'screen-solides-triangles', fn:'' },
-    { id:'solide_quadrilateres', label:'Les quadrilatères', icon:'🔲', screen:'screen-solides-quadrilateres', fn:'renderQuadrilateresMenu' },
+    { id:'solide_polygones', label:'Les polygones (Menu)', icon:'⬡', screen:'screen-solides-polygones', fn:'' },
+    { id:'polygones_reconnaitre', label:'Identifier les polygones', icon:'⬡', screen:'screen-polygones-reconnaitre', fn:'' },
+    { id:'polygones_caracteristiques', label:'Caractéristiques des polygones', icon:'🏷️', screen:'screen-polygones-carac', fn:'' },
+    { id:'solide_triangles', label:'Les triangles (Menu)', icon:'🔺', screen:'screen-solides-triangles', fn:'' },
+    { id:'triangles_qcm', label:'Identifier les triangles', icon:'🔺', screen:'screen-triangles-qcm', fn:'' },
+    { id:'triangles_caracteristiques', label:'Caractéristiques des triangles', icon:'🏷️', screen:'screen-triangles-carac', fn:'' },
+    { id:'solide_quadrilateres', label:'Les quadrilatères (Menu)', icon:'🔲', screen:'screen-solides-quadrilateres', fn:'renderQuadrilateresMenu' },
+    { id:'quadrilateres_reconnaître', label:'Quadrilatères — Reconnaître la forme', icon:'🎯', screen:'screen-shape-exercise', fn:'startShapeExercise("quadrilateres","qcm")' },
+    { id:'quadrilateres_vf', label:'Quadrilatères — Vrai ou Faux', icon:'✅', screen:'screen-vf-exercise', fn:'startVFExercise("quadrilateres")' },
+    { id:'quadrilateres_caracteristiques', label:'Quadrilatères — Caractéristiques', icon:'🏷️', screen:'screen-chars-exercise', fn:'startCharsExercise("quadrilateres")' },
+    { id:'quadrilateres_evaluation', label:'Quadrilatères — Évaluation', icon:'🏆', screen:'screen-shape-exercise', fn:'startShapeEvaluation("quadrilateres")' },
     { id:'solide_polyedres', label:'Les polyèdres', icon:'💎', screen:'screen-solides-polyedres', fn:'' },
   ]},
   { cat: '🌍 Éveil', sub: '📜 Histoire — Préhistoire', items: [
@@ -25269,7 +25294,10 @@ const PLAN_CATALOGUE = [
 ];
 
 // --- État local plan de travail ---
-let planTravailAssigned = []; // IDs cochés par l'enseignant
+let planTravailAssigned = []; // IDs cochés par l'enseignant (toute la classe)
+let planTravailIndividual = {}; // { studentName: [id1, id2, ...] }
+let planTravailTarget = 'class'; // 'class' ou le nom d'un élève
+let planTravailLoaded = false;
 let studentPlanProgress = {}; // {id: true/false} côté élève
 
 // --- Sauvegarde/chargement plan enseignant ---
@@ -25278,10 +25306,18 @@ function savePlanTravail() {
   if (window.FB_savePlanTravail) {
     window.FB_savePlanTravail(planTravailAssigned);
   }
+  
+  localStorage.setItem('lq_plan_travail_individual', JSON.stringify(planTravailIndividual));
+  if (window.FB_savePlanTravailIndividual) {
+    window.FB_savePlanTravailIndividual(teacherCls, planTravailIndividual);
+  }
 }
 function loadPlanTravailLocal() {
   const s = localStorage.getItem('lq_plan_travail');
   planTravailAssigned = s ? JSON.parse(s) : [];
+  
+  const sInd = localStorage.getItem('lq_plan_travail_individual');
+  planTravailIndividual = sInd ? JSON.parse(sInd) : {};
 }
 
 // --- Sauvegarde/chargement progression élève ---
@@ -25315,10 +25351,23 @@ function getPlanItemScore(id) {
 // --- Naviguer directement vers un exercice depuis le plan ---
 function planNavigateTo(screen, fn) {
   showScreen(screen);
-  if (fn && fn.startsWith('()')) {
-    try { eval(fn); } catch(e) { console.warn('Plan navigate eval:', e); }
-  } else if (fn && window[fn]) {
-    window[fn]();
+  if (fn) {
+    if (fn.startsWith('()')) {
+      try {
+        const f = eval(fn);
+        if (typeof f === 'function') f();
+      } catch(e) { console.warn('Plan navigate eval function error:', e); }
+    } else {
+      try {
+        if (window[fn]) {
+          window[fn]();
+        } else {
+          eval(fn);
+        }
+      } catch(e) {
+        console.warn('Plan navigate execute error:', e);
+      }
+    }
   }
 }
 
@@ -25326,25 +25375,40 @@ function planNavigateTo(screen, fn) {
 // RENDU CÔTÉ ENSEIGNANT
 // ============================================================
 async function showPlanTravailTeacherScreen() {
+  planTravailLoaded = false;
   showScreen('screen-plan-travail-teacher-full');
   const el = document.getElementById('plan-travail-teacher-full-body');
   if(el) await _renderPlanTravailInto(el);
 }
 
 async function renderPlanTravailTeacher() {
+  planTravailLoaded = false;
   const el = document.getElementById('plan-travail-teacher');
   if (!el) return;
   await _renderPlanTravailInto(el);
 }
 
 async function _renderPlanTravailInto(el) {
-
-  // Charger depuis Firebase si dispo
-  if (window.FB_loadPlanTravail) {
-    const fb = await window.FB_loadPlanTravail();
-    if (fb) { planTravailAssigned = fb; localStorage.setItem('lq_plan_travail', JSON.stringify(fb)); }
-  } else {
-    loadPlanTravailLocal();
+  if (!planTravailLoaded) {
+    // Charger depuis Firebase si dispo
+    if (window.FB_loadPlanTravail) {
+      const fb = await window.FB_loadPlanTravail();
+      if (fb) { planTravailAssigned = fb; localStorage.setItem('lq_plan_travail', JSON.stringify(fb)); }
+    } else {
+      loadPlanTravailLocal();
+    }
+    
+    if (window.FB_loadPlanTravailIndividual) {
+      const fbInd = await window.FB_loadPlanTravailIndividual(teacherCls);
+      if (fbInd) {
+        planTravailIndividual = fbInd;
+        localStorage.setItem('lq_plan_travail_individual', JSON.stringify(fbInd));
+      }
+    } else {
+      const s = localStorage.getItem('lq_plan_travail_individual');
+      planTravailIndividual = s ? JSON.parse(s) : {};
+    }
+    planTravailLoaded = true;
   }
 
   // Grouper par catégorie principale
@@ -25354,26 +25418,46 @@ async function _renderPlanTravailInto(el) {
     cats[section.cat].push(section);
   });
 
+  const students = getClassStudents(teacherCls).slice().sort((a,b)=>a.name.localeCompare(b.name,'fr'));
+  let optionsHtml = `<option value="class" ${planTravailTarget === 'class' ? 'selected' : ''}>🌍 Toute la classe</option>`;
+  students.forEach(s => {
+    optionsHtml += `<option value="${s.name}" ${planTravailTarget === s.name ? 'selected' : ''}>👤 ${s.name}</option>`;
+  });
+
+  const currentCount = planTravailTarget === 'class'
+    ? planTravailAssigned.length
+    : (planTravailIndividual[planTravailTarget] || []).length;
+
   let html = `
     <div style="margin-bottom:1.25rem;">
       <h3 style="font-size:15px;font-weight:800;margin-bottom:.25rem;">📋 Plan de travail — Gestion</h3>
-      <p style="font-size:13px;color:var(--muted);">Cochez les exercices à assigner aux élèves. Ils apparaîtront dans leur onglet "Plan de travail".</p>
+      <p style="font-size:13px;color:var(--muted);">Sélectionnez le destinataire puis cochez les exercices à lui attribuer.</p>
     </div>
+    
+    <div class="card" style="margin-bottom:1rem; padding: 12px; background: var(--surface); display:flex; flex-direction:column; gap:10px; border:1px solid var(--border);">
+      <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+        <label for="pt-target-select" style="font-size:13px; font-weight:700; color:var(--text);">Attribuer les exercices à :</label>
+        <select id="pt-target-select" onchange="ptChangeTarget(this.value)" style="padding:6px 12px; border-radius:8px; border:1.5px solid var(--border); background:var(--surface); color:var(--text); font-family:inherit; font-size:13px; font-weight:700; outline:none; cursor:pointer; min-width:200px;">
+          ${optionsHtml}
+        </select>
+      </div>
+    </div>
+
     <div style="display:flex;gap:8px;margin-bottom:1rem;flex-wrap:wrap;">
       <button class="btn btn-sm" onclick="planSelectAll(true)">✅ Tout sélectionner</button>
       <button class="btn btn-sm" onclick="planSelectAll(false)">☐ Tout désélectionner</button>
-      <span style="margin-left:auto;font-size:13px;font-weight:700;color:var(--purple);align-self:center;" id="plan-count-label">${planTravailAssigned.length} exercice(s) assigné(s)</span>
+      <span style="margin-left:auto;font-size:13px;font-weight:700;color:var(--purple);align-self:center;" id="plan-count-label">${currentCount} exercice(s) assigné(s)</span>
     </div>`;
 
   Object.entries(cats).forEach(([catName, sections]) => {
     const catId = catName.replace(/[^a-z]/gi,'_');
     const catTotal = sections.reduce((a,s) => a + s.items.length, 0);
-    const catChecked = sections.reduce((a,s) => a + s.items.filter(i => planTravailAssigned.includes(i.id)).length, 0);
+    const catChecked = sections.reduce((a,s) => a + s.items.filter(i => ptIsChecked(i.id)).length, 0);
     html += `
     <div class="card pt-category">
       <div class="pt-cat-header" onclick="ptToggleCat('${catId}')">
         <span>${catName}</span>
-        <span class="pt-section-count">${catChecked}/${catTotal}</span>
+        <span class="pt-section-count" id="pt-cat-count-${catId}">${catChecked}/${catTotal}</span>
         <span class="pt-toggle">▼</span>
       </div>
       <div id="ptcat-${catId}">`;
@@ -25381,7 +25465,7 @@ async function _renderPlanTravailInto(el) {
     sections.forEach(section => {
       html += `<div class="pt-sub-header">${section.sub}</div>`;
       section.items.forEach(item => {
-        const checked = planTravailAssigned.includes(item.id) ? 'checked' : '';
+        const checked = ptIsChecked(item.id) ? 'checked' : '';
         html += `
         <div class="pt-item">
           <input type="checkbox" id="pt-cb-${item.id}" ${checked}
@@ -25404,6 +25488,23 @@ async function _renderPlanTravailInto(el) {
   el.innerHTML = html;
 }
 
+function ptIsChecked(itemId) {
+  if (planTravailTarget === 'class') {
+    return planTravailAssigned.includes(itemId);
+  } else {
+    const indList = planTravailIndividual[planTravailTarget] || [];
+    return indList.includes(itemId);
+  }
+}
+
+function ptChangeTarget(newTarget) {
+  planTravailTarget = newTarget;
+  const el = document.getElementById('plan-travail-teacher-full-body') || document.getElementById('plan-travail-teacher');
+  if (el) {
+    _renderPlanTravailInto(el);
+  }
+}
+
 function ptToggleCat(catId) {
   const body = document.getElementById('ptcat-' + catId);
   const header = body ? body.previousElementSibling : null;
@@ -25414,21 +25515,96 @@ function ptToggleCat(catId) {
 }
 
 function ptToggleItem(id, checked) {
-  if (checked) {
-    if (!planTravailAssigned.includes(id)) planTravailAssigned.push(id);
+  if (planTravailTarget === 'class') {
+    if (checked) {
+      if (!planTravailAssigned.includes(id)) planTravailAssigned.push(id);
+    } else {
+      planTravailAssigned = planTravailAssigned.filter(x => x !== id);
+    }
+    const lbl = document.getElementById('plan-count-label');
+    if (lbl) lbl.textContent = planTravailAssigned.length + ' exercice(s) assigné(s)';
   } else {
-    planTravailAssigned = planTravailAssigned.filter(x => x !== id);
+    if (!planTravailIndividual[planTravailTarget]) {
+      planTravailIndividual[planTravailTarget] = [];
+    }
+    let indList = planTravailIndividual[planTravailTarget];
+    if (checked) {
+      if (!indList.includes(id)) indList.push(id);
+    } else {
+      indList = indList.filter(x => x !== id);
+    }
+    planTravailIndividual[planTravailTarget] = indList;
+    const lbl = document.getElementById('plan-count-label');
+    if (lbl) lbl.textContent = indList.length + ' exercice(s) assigné(s)';
   }
-  const lbl = document.getElementById('plan-count-label');
-  if (lbl) lbl.textContent = planTravailAssigned.length + ' exercice(s) assigné(s)';
+
+  // Update specific category count badge
+  let foundCat = null;
+  PLAN_CATALOGUE.forEach(section => {
+    if (section.items.some(item => item.id === id)) {
+      foundCat = section.cat;
+    }
+  });
+  if (foundCat) {
+    const catId = foundCat.replace(/[^a-z]/gi,'_');
+    const sections = PLAN_CATALOGUE.filter(s => s.cat === foundCat);
+    const catTotal = sections.reduce((a,s) => a + s.items.length, 0);
+    const catChecked = sections.reduce((a,s) => a + s.items.filter(i => ptIsChecked(i.id)).length, 0);
+    const badge = document.getElementById('pt-cat-count-' + catId);
+    if (badge) badge.textContent = `${catChecked}/${catTotal}`;
+  }
 }
 
 function planSelectAll(val) {
   PLAN_CATALOGUE.forEach(section => {
     section.items.forEach(item => {
+      // Toggle checkboxes locally
       const cb = document.getElementById('pt-cb-' + item.id);
-      if (cb) { cb.checked = val; ptToggleItem(item.id, val); }
+      if (cb) {
+        cb.checked = val;
+      }
+      
+      // Update data model
+      if (planTravailTarget === 'class') {
+        if (val) {
+          if (!planTravailAssigned.includes(item.id)) planTravailAssigned.push(item.id);
+        } else {
+          planTravailAssigned = planTravailAssigned.filter(x => x !== item.id);
+        }
+      } else {
+        if (!planTravailIndividual[planTravailTarget]) {
+          planTravailIndividual[planTravailTarget] = [];
+        }
+        let indList = planTravailIndividual[planTravailTarget];
+        if (val) {
+          if (!indList.includes(item.id)) indList.push(item.id);
+        } else {
+          indList = indList.filter(x => x !== item.id);
+        }
+        planTravailIndividual[planTravailTarget] = indList;
+      }
     });
+  });
+
+  // Update categories counts & count label
+  const currentCount = planTravailTarget === 'class'
+    ? planTravailAssigned.length
+    : (planTravailIndividual[planTravailTarget] || []).length;
+  const lbl = document.getElementById('plan-count-label');
+  if (lbl) lbl.textContent = currentCount + ' exercice(s) assigné(s)';
+
+  // Re-render categories check counts
+  const cats = {};
+  PLAN_CATALOGUE.forEach(section => {
+    if (!cats[section.cat]) cats[section.cat] = [];
+    cats[section.cat].push(section);
+  });
+  Object.entries(cats).forEach(([catName, sections]) => {
+    const catId = catName.replace(/[^a-z]/gi,'_');
+    const catTotal = sections.reduce((a,s) => a + s.items.length, 0);
+    const catChecked = sections.reduce((a,s) => a + s.items.filter(i => ptIsChecked(i.id)).length, 0);
+    const badge = document.getElementById('pt-cat-count-' + catId);
+    if (badge) badge.textContent = `${catChecked}/${catTotal}`;
   });
 }
 
@@ -25439,7 +25615,6 @@ function ptSaveAndNotify() {
     msg.classList.add('show');
     setTimeout(() => msg.classList.remove('show'), 2500);
   }
-  // Afficher/masquer la carte plan sur screen-home
   updateHomePlanCard();
 }
 
@@ -25464,11 +25639,27 @@ async function renderPlanTravailStudent() {
     loadPlanTravailLocal();
   }
 
+  // Charger le plan individuel
+  let individualPlan = [];
+  if (state.student && state.studentCls) {
+    if (window.FB_loadPlanTravailIndividual) {
+      const fbInd = await window.FB_loadPlanTravailIndividual(state.studentCls);
+      if (fbInd && fbInd[state.student]) {
+        individualPlan = fbInd[state.student];
+        localStorage.setItem('lq_plan_travail_individual_' + state.student, JSON.stringify(individualPlan));
+      }
+    } else {
+      const s = localStorage.getItem('lq_plan_travail_individual_' + state.student);
+      individualPlan = s ? JSON.parse(s) : [];
+    }
+  }
+
+  // Union des plans
+  const assigned = [...new Set([...planTravailAssigned, ...individualPlan])];
+
   // Charger la progression de l'élève
   await loadStudentProgress();
 
-  // Filtrer le catalogue aux exercices assignés
-  const assigned = planTravailAssigned;
   if (!assigned.length) {
     el.innerHTML = '<div class="pt-empty">📋 Aucun exercice assigné pour le moment.<br><span style="font-size:13px;color:var(--muted)">Mr Lejoly n&#39;a pas encore préparé ton plan de travail.</span></div>';
     return;
@@ -25510,7 +25701,7 @@ async function renderPlanTravailStudent() {
           <input type="checkbox" ${isDone ? 'checked' : ''}
             onchange="ptStudentToggle('${item.id}', this.checked)">
           <span class="pt-item-icon">${item.icon}</span>
-          <span class="pt-item-label ${isDone ? 'pt-done' : ''}">${item.label}</span>
+          <span class="pt-item-label ${isDone ? 'pt-done' : ''}" data-id="${item.id}">${item.label}</span>
           ${scoreBadge}
           <button class="pt-item-link" onclick="planNavigateTo('${item.screen}','${item.fn}')">→ Aller</button>
         </div>`;
@@ -25525,14 +25716,22 @@ async function renderPlanTravailStudent() {
 function ptStudentToggle(id, checked) {
   studentPlanProgress[id] = checked;
   saveStudentProgress();
-  // Mise à jour visuelle de la barre de progression et des labels
-  const assigned = planTravailAssigned;
+
+  // Récupérer l'union active des exercices assignés
+  let individualPlan = [];
+  if (state.student) {
+    const s = localStorage.getItem('lq_plan_travail_individual_' + state.student);
+    individualPlan = s ? JSON.parse(s) : [];
+  }
+  const assigned = [...new Set([...planTravailAssigned, ...individualPlan])];
+
   const done = assigned.filter(i => studentPlanProgress[i]).length;
   const pct = Math.round((done / assigned.length) * 100);
   const lbl = document.querySelector('.pt-progress-label');
   const bar = document.querySelector('.pt-progress-fill');
   if (lbl) lbl.textContent = 'Mon avancement : ' + done + ' / ' + assigned.length + ' exercices terminés (' + pct + ' %)';
   if (bar) bar.style.width = pct + '%';
+
   // Barrer/débarrer le label
   const label = document.querySelector('.pt-item-label[data-id="' + id + '"]');
   if (label) label.classList.toggle('pt-done', checked);
@@ -25546,7 +25745,22 @@ async function updateHomePlanCard() {
   } else {
     loadPlanTravailLocal();
   }
-  const visible = planTravailAssigned.length > 0 ? '' : 'none';
+
+  let individualPlan = [];
+  if (state.student && state.studentCls) {
+    if (window.FB_loadPlanTravailIndividual) {
+      const fbInd = await window.FB_loadPlanTravailIndividual(state.studentCls);
+      if (fbInd && fbInd[state.student]) {
+        individualPlan = fbInd[state.student];
+        localStorage.setItem('lq_plan_travail_individual_' + state.student, JSON.stringify(individualPlan));
+      }
+    } else {
+      const s = localStorage.getItem('lq_plan_travail_individual_' + state.student);
+      individualPlan = s ? JSON.parse(s) : [];
+    }
+  }
+
+  const visible = (planTravailAssigned.length > 0 || individualPlan.length > 0) ? '' : 'none';
   const card1 = document.getElementById('home-plan-card');
   if (card1) card1.style.display = visible;
   const card2 = document.getElementById('subjects-plan-card');
