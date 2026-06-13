@@ -531,3 +531,432 @@ window.EXERCICES_FRANCAIS = {
   // ,grammaire: { ... }
   // ,orthographe: { ... }
 };
+
+window.EXERCICES_ANALYSE = [
+  // Niveau 1 : Groupe sujet (bleu) et verbe (rouge)
+  [
+    {
+      text: "Le professeur patient explique .",
+      tokens: [
+        { text: "Le", sujet: true },
+        { text: "professeur", sujet: true },
+        { text: "patient", sujet: true },
+        { text: "explique", verbe: true },
+        { text: ".", punctuation: true }
+      ],
+      explanation: "« Le professeur patient » est le groupe sujet. « explique » est le verbe."
+    },
+    {
+      text: "Les élèves attentifs écrivent la leçon .",
+      tokens: [
+        { text: "Les", sujet: true },
+        { text: "élèves", sujet: true },
+        { text: "attentifs", sujet: true },
+        { text: "écrivent", verbe: true },
+        { text: "la", other: true },
+        { text: "leçon", other: true },
+        { text: ".", punctuation: true }
+      ],
+      explanation: "« Les élèves attentifs » est le groupe sujet. « écrivent » est le verbe."
+    },
+    {
+      text: "Mon petit frère mange une pomme rouge .",
+      tokens: [
+        { text: "Mon", sujet: true },
+        { text: "petit", sujet: true },
+        { text: "frère", sujet: true },
+        { text: "mange", verbe: true },
+        { text: "une", other: true },
+        { text: "pomme", other: true },
+        { text: "rouge", other: true },
+        { text: ".", punctuation: true }
+      ],
+      explanation: "« Mon petit frère » est le groupe sujet. « mange » est le verbe."
+    },
+    {
+      text: "Le grand chien noir aboie dehors .",
+      tokens: [
+        { text: "Le", sujet: true },
+        { text: "grand", sujet: true },
+        { text: "chien", sujet: true },
+        { text: "noir", sujet: true },
+        { text: "aboie", verbe: true },
+        { text: "dehors", other: true },
+        { text: ".", punctuation: true }
+      ],
+      explanation: "« Le grand chien noir » est le groupe sujet. « aboie » est le verbe."
+    },
+    {
+      text: "Les oiseaux migrateurs volent vers le sud .",
+      tokens: [
+        { text: "Les", sujet: true },
+        { text: "oiseaux", sujet: true },
+        { text: "migrateurs", sujet: true },
+        { text: "volent", verbe: true },
+        { text: "vers", other: true },
+        { text: "le", other: true },
+        { text: "sud", other: true },
+        { text: ".", punctuation: true }
+      ],
+      explanation: "« Les oiseaux migrateurs » est le groupe sujet. « volent » est le verbe."
+    }
+  ],
+  // Niveau 2 : Groupe sujet (bleu) et prédicat (rouge)
+  [
+    {
+      text: "Le professeur patient explique la leçon .",
+      tokens: [
+        { text: "Le", sujet: true },
+        { text: "professeur", sujet: true },
+        { text: "patient", sujet: true },
+        { text: "explique", predicat: true },
+        { text: "la", predicat: true },
+        { text: "leçon", predicat: true },
+        { text: ".", punctuation: true }
+      ],
+      explanation: "« Le professeur patient » est le groupe sujet. « explique la leçon » est le prédicat (ce qu'on dit du sujet)."
+    },
+    {
+      text: "Le chat noir dort sur le canapé .",
+      tokens: [
+        { text: "Le", sujet: true },
+        { text: "chat", sujet: true },
+        { text: "noir", sujet: true },
+        { text: "dort", predicat: true },
+        { text: "sur", predicat: true },
+        { text: "le", predicat: true },
+        { text: "canapé", predicat: true },
+        { text: ".", punctuation: true }
+      ],
+      explanation: "« Le chat noir » est le groupe sujet. « dort sur le canapé » est le prédicat."
+    },
+    {
+      text: "Les enfants fatigués regardent un film .",
+      tokens: [
+        { text: "Les", sujet: true },
+        { text: "enfants", sujet: true },
+        { text: "fatigués", sujet: true },
+        { text: "regardent", predicat: true },
+        { text: "un", predicat: true },
+        { text: "film", predicat: true },
+        { text: ".", punctuation: true }
+      ],
+      explanation: "« Les enfants fatigués » est le groupe sujet. « regardent un film » est le prédicat."
+    },
+    {
+      text: "Le jardinier arrose les jolies fleurs .",
+      tokens: [
+        { text: "Le", sujet: true },
+        { text: "jardinier", sujet: true },
+        { text: "arrose", predicat: true },
+        { text: "les", predicat: true },
+        { text: "jolies", predicat: true },
+        { text: "fleurs", predicat: true },
+        { text: ".", punctuation: true }
+      ],
+      explanation: "« Le jardinier » est le groupe sujet. « arrose les jolies fleurs » est le prédicat."
+    },
+    {
+      text: "Ce vieux monsieur marche lentement .",
+      tokens: [
+        { text: "Ce", sujet: true },
+        { text: "vieux", sujet: true },
+        { text: "monsieur", sujet: true },
+        { text: "marche", predicat: true },
+        { text: "lentement", predicat: true },
+        { text: ".", punctuation: true }
+      ],
+      explanation: "« Ce vieux monsieur » est le groupe sujet. « marche lentement » est le prédicat."
+    }
+  ],
+  // Niveau 3 : Groupe sujet (bleu), verbe (rouge), CDV (rose) et CIV (mauve)
+  [
+    {
+      text: "Le professeur explique la leçon aux élèves .",
+      tokens: [
+        { text: "Le", sujet: true },
+        { text: "professeur", sujet: true },
+        { text: "explique", verbe: true },
+        { text: "la", cdv: true },
+        { text: "leçon", cdv: true },
+        { text: "aux", civ: true },
+        { text: "élèves", civ: true },
+        { text: ".", punctuation: true }
+      ],
+      explanation: "« Le professeur » (sujet), « explique » (verbe), « la leçon » (CDV - explique quoi ?), « aux élèves » (CIV - explique à qui ?)."
+    },
+    {
+      text: "Julie donne un livre à son frère .",
+      tokens: [
+        { text: "Julie", sujet: true },
+        { text: "donne", verbe: true },
+        { text: "un", cdv: true },
+        { text: "livre", cdv: true },
+        { text: "à", civ: true },
+        { text: "son", civ: true },
+        { text: "frère", civ: true },
+        { text: ".", punctuation: true }
+      ],
+      explanation: "« Julie » (sujet), « donne » (verbe), « un livre » (CDV - donne quoi ?), « à son frère » (CIV - donne à qui ?)."
+    },
+    {
+      text: "Le témoin raconte l' histoire au policier .",
+      tokens: [
+        { text: "Le", sujet: true },
+        { text: "témoin", sujet: true },
+        { text: "raconte", verbe: true },
+        { text: "l'", cdv: true },
+        { text: "histoire", cdv: true },
+        { text: "au", civ: true },
+        { text: "policier", civ: true },
+        { text: ".", punctuation: true }
+      ],
+      explanation: "« Le témoin » (sujet), « raconte » (verbe), « l'histoire » (CDV), « au policier » (CIV)."
+    },
+    {
+      text: "Les parents offrent un cadeau à leur fille .",
+      tokens: [
+        { text: "Les", sujet: true },
+        { text: "parents", sujet: true },
+        { text: "offrent", verbe: true },
+        { text: "un", cdv: true },
+        { text: "cadeau", cdv: true },
+        { text: "à", civ: true },
+        { text: "leur", civ: true },
+        { text: "fille", civ: true },
+        { text: ".", punctuation: true }
+      ],
+      explanation: "« Les parents » (sujet), « offrent » (verbe), « un cadeau » (CDV), « à leur fille » (CIV)."
+    },
+    {
+      text: "Nous demandons une explication au guide .",
+      tokens: [
+        { text: "Nous", sujet: true },
+        { text: "demandons", verbe: true },
+        { text: "une", cdv: true },
+        { text: "explication", cdv: true },
+        { text: "au", civ: true },
+        { text: "guide", civ: true },
+        { text: ".", punctuation: true }
+      ],
+      explanation: "« Nous » (sujet), « demandons » (verbe), « une explication » (CDV), « au guide » (CIV)."
+    }
+  ],
+  // Niveau 4 : Groupe sujet (bleu), prédicat (rouge) et CC (vert)
+  [
+    {
+      text: "Dans la salle , le professeur explique la leçon .",
+      tokens: [
+        { text: "Dans", cc: true },
+        { text: "la", cc: true },
+        { text: "salle", cc: true, punctuation: "," },
+        { text: "le", sujet: true },
+        { text: "professeur", sujet: true },
+        { text: "explique", predicat: true },
+        { text: "la", predicat: true },
+        { text: "leçon", predicat: true },
+        { text: ".", punctuation: true }
+      ],
+      explanation: "« Dans la salle » est un CC de lieu. « le professeur » est le sujet. « explique la leçon » est le prédicat."
+    },
+    {
+      text: "Demain matin , les élèves feront une dictée .",
+      tokens: [
+        { text: "Demain", cc: true },
+        { text: "matin", cc: true, punctuation: "," },
+        { text: "les", sujet: true },
+        { text: "élèves", sujet: true },
+        { text: "feront", predicat: true },
+        { text: "une", predicat: true },
+        { text: "dictée", predicat: true },
+        { text: ".", punctuation: true }
+      ],
+      explanation: "« Demain matin » est un CC de temps. « les élèves » est le sujet. « feront une dictée » est le prédicat."
+    },
+    {
+      text: "Le garçon mange une glace dans le parc .",
+      tokens: [
+        { text: "Le", sujet: true },
+        { text: "garçon", sujet: true },
+        { text: "mange", predicat: true },
+        { text: "une", predicat: true },
+        { text: "glace", predicat: true },
+        { text: "dans", cc: true },
+        { text: "le", cc: true },
+        { text: "parc", cc: true },
+        { text: ".", punctuation: true }
+      ],
+      explanation: "« Le garçon » est le sujet. « mange une glace » est le prédicat. « dans le parc » est un CC de lieu."
+    },
+    {
+      text: "Avec courage , le pompier éteint l' incendie .",
+      tokens: [
+        { text: "Avec", cc: true },
+        { text: "courage", cc: true, punctuation: "," },
+        { text: "le", sujet: true },
+        { text: "pompier", sujet: true },
+        { text: "éteint", predicat: true },
+        { text: "l'", predicat: true },
+        { text: "incendie", predicat: true },
+        { text: ".", punctuation: true }
+      ],
+      explanation: "« Avec courage » est un CC de manière. « le pompier » est le sujet. « éteint l'incendie » est le prédicat."
+    },
+    {
+      text: "Les oiseaux chantent dans les arbres .",
+      tokens: [
+        { text: "Les", sujet: true },
+        { text: "oiseaux", sujet: true },
+        { text: "chantent", predicat: true },
+        { text: "dans", cc: true },
+        { text: "les", cc: true },
+        { text: "arbres", cc: true },
+        { text: ".", punctuation: true }
+      ],
+      explanation: "« Les oiseaux » est le sujet. « chantent » est le prédicat. « dans les arbres » est un CC de lieu."
+    }
+  ],
+  // Niveau 5 : Groupe sujet (bleu), verbe (rouge) et attribut du sujet (noir)
+  [
+    {
+      text: "Ce jeune professeur semble patient .",
+      tokens: [
+        { text: "Ce", sujet: true },
+        { text: "jeune", sujet: true },
+        { text: "professeur", sujet: true },
+        { text: "semble", verbe: true },
+        { text: "patient", attribut: true },
+        { text: ".", punctuation: true }
+      ],
+      explanation: "« Ce jeune professeur » (sujet), « semble » (verbe d'état), « patient » (attribut du sujet - qualifie le sujet)."
+    },
+    {
+      text: "Le chat de ma tante est magnifique .",
+      tokens: [
+        { text: "Le", sujet: true },
+        { text: "chat", sujet: true },
+        { text: "de", sujet: true },
+        { text: "ma", sujet: true },
+        { text: "tante", sujet: true },
+        { text: "est", verbe: true },
+        { text: "magnifique", attribut: true },
+        { text: ".", punctuation: true }
+      ],
+      explanation: "« Le chat de ma tante » (sujet), « est » (verbe d'état), « magnifique » (attribut du sujet)."
+    },
+    {
+      text: "Ces élèves deviendront des scientifiques .",
+      tokens: [
+        { text: "Ces", sujet: true },
+        { text: "élèves", sujet: true },
+        { text: "deviendront", verbe: true },
+        { text: "des", attribut: true },
+        { text: "scientifiques", attribut: true },
+        { text: ".", punctuation: true }
+      ],
+      explanation: "« Ces élèves » (sujet), « deviendront » (verbe d'état), « des scientifiques » (attribut du sujet)."
+    },
+    {
+      text: "La mer paraît calme ce matin .",
+      tokens: [
+        { text: "La", sujet: true },
+        { text: "mer", sujet: true },
+        { text: "paraît", verbe: true },
+        { text: "calme", attribut: true },
+        { text: "ce", other: true },
+        { text: "matin", other: true },
+        { text: ".", punctuation: true }
+      ],
+      explanation: "« La mer » (sujet), « paraît » (verbe d'état), « calme » (attribut du sujet). « ce matin » est un CC (non recherché ici)."
+    },
+    {
+      text: "Le chocolat chaud reste sa boisson préférée .",
+      tokens: [
+        { text: "Le", sujet: true },
+        { text: "chocolat", sujet: true },
+        { text: "chaud", sujet: true },
+        { text: "reste", verbe: true },
+        { text: "sa", attribut: true },
+        { text: "boisson", attribut: true },
+        { text: "préférée", attribut: true },
+        { text: ".", punctuation: true }
+      ],
+      explanation: "« Le chocolat chaud » (sujet), « reste » (verbe d'état), « sa boisson préférée » (attribut du sujet)."
+    }
+  ],
+  // Niveau 6 : Groupe sujet (bleu), verbe (rouge) et complément d'agent (brun)
+  [
+    {
+      text: "La leçon est expliquée par le professeur .",
+      tokens: [
+        { text: "La", sujet: true },
+        { text: "leçon", sujet: true },
+        { text: "est", verbe: true },
+        { text: "expliquée", verbe: true },
+        { text: "par", agent: true },
+        { text: "le", agent: true },
+        { text: "professeur", agent: true },
+        { text: ".", punctuation: true }
+      ],
+      explanation: "« La leçon » (sujet), « est expliquée » (verbe conjugué au passif), « par le professeur » (complément d'agent - celui qui fait l'action dans une phrase passive)."
+    },
+    {
+      text: "La souris est poursuivie par le chat noir .",
+      tokens: [
+        { text: "La", sujet: true },
+        { text: "souris", sujet: true },
+        { text: "est", verbe: true },
+        { text: "poursuivie", verbe: true },
+        { text: "par", agent: true },
+        { text: "le", agent: true },
+        { text: "chat", agent: true },
+        { text: "noir", agent: true },
+        { text: ".", punctuation: true }
+      ],
+      explanation: "« La souris » (sujet), « est poursuivie » (verbe au passif), « par le chat noir » (complément d'agent)."
+    },
+    {
+      text: "Cette chanson fut écrite par un poète .",
+      tokens: [
+        { text: "Cette", sujet: true },
+        { text: "chanson", sujet: true },
+        { text: "fut", verbe: true },
+        { text: "écrite", verbe: true },
+        { text: "par", agent: true },
+        { text: "un", agent: true },
+        { text: "poète", agent: true },
+        { text: ".", punctuation: true }
+      ],
+      explanation: "« Cette chanson » (sujet), « fut écrite » (verbe au passif), « par un poète » (complément d'agent)."
+    },
+    {
+      text: "La maison a été construite par les maçons .",
+      tokens: [
+        { text: "La", sujet: true },
+        { text: "maison", sujet: true },
+        { text: "a", verbe: true },
+        { text: "été", verbe: true },
+        { text: "construite", verbe: true },
+        { text: "par", agent: true },
+        { text: "les", agent: true },
+        { text: "maçons", agent: true },
+        { text: ".", punctuation: true }
+      ],
+      explanation: "« La maison » (sujet), « a été construite » (verbe au passif), « par les maçons » (complément d'agent)."
+    },
+    {
+      text: "Les arbres furent déracinés par la tempête .",
+      tokens: [
+        { text: "Les", sujet: true },
+        { text: "arbres", sujet: true },
+        { text: "furent", verbe: true },
+        { text: "déracinés", verbe: true },
+        { text: "par", agent: true },
+        { text: "la", agent: true },
+        { text: "tempête", agent: true },
+        { text: ".", punctuation: true }
+      ],
+      explanation: "« Les arbres » (sujet), « furent déracinés » (verbe au passif), « par la tempête » (complément d'agent)."
+    }
+  ]
+];
