@@ -942,21 +942,604 @@ window.EXERCICES_ANALYSE = [
         { text: "maçons", agent: true },
         { text: ".", punctuation: true }
       ],
-      explanation: "« La maison » (sujet), « a été construite » (verbe au passif), « par les maçons » (complément d'agent)."
-    },
-    {
-      text: "Les arbres furent déracinés par la tempête .",
-      tokens: [
-        { text: "Les", sujet: true },
-        { text: "arbres", sujet: true },
-        { text: "furent", verbe: true },
-        { text: "déracinés", verbe: true },
-        { text: "par", agent: true },
-        { text: "la", agent: true },
-        { text: "tempête", agent: true },
-        { text: ".", punctuation: true }
-      ],
       explanation: "« Les arbres » (sujet), « furent déracinés » (verbe au passif), « par la tempête » (complément d'agent)."
     }
   ]
+];
+
+window.EXERCICES_SUJET = [
+  {
+    text: "Il partira demain matin .",
+    tokens: [
+      { text: "Il", sujet: true },
+      { text: "partira" },
+      { text: "demain" },
+      { text: "matin" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est le pronom « Il »."
+  },
+  {
+    text: "Julie adore écouter de la musique .",
+    tokens: [
+      { text: "Julie", sujet: true },
+      { text: "adore" },
+      { text: "écouter" },
+      { text: "de" },
+      { text: "la" },
+      { text: "musique" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est le nom propre « Julie »."
+  },
+  {
+    text: "Les enfants jouent dans la cour .",
+    tokens: [
+      { text: "Les", sujet: true },
+      { text: "enfants", sujet: true },
+      { text: "jouent" },
+      { text: "dans" },
+      { text: "la" },
+      { text: "cour" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est le groupe nominal « Les enfants »."
+  },
+  {
+    text: "Le camion de mon oncle transporte du sable .",
+    tokens: [
+      { text: "Le", sujet: true },
+      { text: "camion", sujet: true },
+      { text: "de", sujet: true },
+      { text: "mon", sujet: true },
+      { text: "oncle", sujet: true },
+      { text: "transporte" },
+      { text: "du" },
+      { text: "sable" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est le groupe nominal avec complément du nom « Le camion de mon oncle »."
+  },
+  {
+    text: "La maison où j' ai habité a été vendue .",
+    tokens: [
+      { text: "La", sujet: true },
+      { text: "maison", sujet: true },
+      { text: "où", sujet: true },
+      { text: "j'", sujet: true },
+      { text: "ai", sujet: true },
+      { text: "habité", sujet: true },
+      { text: "a" },
+      { text: "été" },
+      { text: "vendue" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est le groupe nominal avec proposition relative « La maison où j'ai habité »."
+  },
+  {
+    text: "Le cadeau que je t' ai offert te plaît ?",
+    tokens: [
+      { text: "Le", sujet: true },
+      { text: "cadeau", sujet: true },
+      { text: "que", sujet: true },
+      { text: "je", sujet: true },
+      { text: "t'", sujet: true },
+      { text: "ai", sujet: true },
+      { text: "offert", sujet: true },
+      { text: "te" },
+      { text: "plaît" },
+      { text: "?", punctuation: true }
+    ],
+    explanation: "Le sujet est le groupe nominal avec proposition relative « Le cadeau que je t'ai offert »."
+  },
+  {
+    text: "Fumer est mauvais pour la santé .",
+    tokens: [
+      { text: "Fumer", sujet: true },
+      { text: "est" },
+      { text: "mauvais" },
+      { text: "pour" },
+      { text: "la" },
+      { text: "santé" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est le verbe à l'infinitif « Fumer »."
+  },
+  {
+    text: "Étudier est nécessaire pour réussir .",
+    tokens: [
+      { text: "Étudier", sujet: true },
+      { text: "est" },
+      { text: "nécessaire" },
+      { text: "pour" },
+      { text: "réussir" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est le verbe à l'infinitif « Étudier »."
+  },
+  {
+    text: "Dans cet arbre vit un écureuil .",
+    tokens: [
+      { text: "Dans" },
+      { text: "cet" },
+      { text: "arbre" },
+      { text: "vit" },
+      { text: "un", sujet: true },
+      { text: "écureuil", sujet: true },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est « un écureuil », inversé après le verbe « vit »."
+  },
+  {
+    text: "Dans le ciel brillent des milliers d' étoiles .",
+    tokens: [
+      { text: "Dans" },
+      { text: "le" },
+      { text: "ciel" },
+      { text: "brillent" },
+      { text: "des", sujet: true },
+      { text: "milliers", sujet: true },
+      { text: "d'", sujet: true },
+      { text: "étoiles", sujet: true },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est « des milliers d'étoiles », inversé après le verbe « brillent »."
+  },
+  {
+    text: "Sur la table traînent plusieurs livres .",
+    tokens: [
+      { text: "Sur" },
+      { text: "la" },
+      { text: "table" },
+      { text: "traînent" },
+      { text: "plusieurs", sujet: true },
+      { text: "livres", sujet: true },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est « plusieurs livres », inversé après le verbe « traînent »."
+  },
+  {
+    text: "Derrière la maison coule une petite rivière .",
+    tokens: [
+      { text: "Derrière" },
+      { text: "la" },
+      { text: "maison" },
+      { text: "coule" },
+      { text: "une", sujet: true },
+      { text: "petite", sujet: true },
+      { text: "rivière", sujet: true },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est « une petite rivière », inversé après le verbe « coule »."
+  },
+  {
+    text: "Le tien est plus grand que le mien .",
+    tokens: [
+      { text: "Le", sujet: true },
+      { text: "tien", sujet: true },
+      { text: "est" },
+      { text: "plus" },
+      { text: "grand" },
+      { text: "que" },
+      { text: "le" },
+      { text: "mien" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est le pronom possessif « Le tien »."
+  },
+  {
+    text: "Ce dernier arriva en retard .",
+    tokens: [
+      { text: "Ce", sujet: true },
+      { text: "dernier", sujet: true },
+      { text: "arriva" },
+      { text: "en" },
+      { text: "retard" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est le pronom démonstratif « Ce dernier »."
+  },
+  {
+    text: "Jules prépare un délicieux gâteau .",
+    tokens: [
+      { text: "Jules", sujet: true },
+      { text: "prépare" },
+      { text: "un" },
+      { text: "délicieux" },
+      { text: "gâteau" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est le nom propre « Jules »."
+  },
+  {
+    text: "Le grand livre rouge est posé sur l' étagère .",
+    tokens: [
+      { text: "Le", sujet: true },
+      { text: "grand", sujet: true },
+      { text: "livre", sujet: true },
+      { text: "rouge", sujet: true },
+      { text: "est" },
+      { text: "posé" },
+      { text: "sur" },
+      { text: "l'" },
+      { text: "étagère" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est le groupe nominal « Le grand livre rouge »."
+  },
+  {
+    text: "Les fleurs du jardin sentent très bon .",
+    tokens: [
+      { text: "Les", sujet: true },
+      { text: "fleurs", sujet: true },
+      { text: "du", sujet: true },
+      { text: "jardin", sujet: true },
+      { text: "sentent" },
+      { text: "très" },
+      { text: "bon" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est le groupe nominal avec complément du nom « Les fleurs du jardin »."
+  },
+  {
+    text: "La tarte aux pommes de grand-mère refroidit .",
+    tokens: [
+      { text: "La", sujet: true },
+      { text: "tarte", sujet: true },
+      { text: "aux", sujet: true },
+      { text: "pommes", sujet: true },
+      { text: "de", sujet: true },
+      { text: "grand-mère", sujet: true },
+      { text: "refroidit" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est le groupe nominal complexe « La tarte aux pommes de grand-mère »."
+  },
+  {
+    text: "Le chien de ma voisine aboie souvent .",
+    tokens: [
+      { text: "Le", sujet: true },
+      { text: "chien", sujet: true },
+      { text: "de", sujet: true },
+      { text: "ma", sujet: true },
+      { text: "voisine", sujet: true },
+      { text: "aboie" },
+      { text: "souvent" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est le groupe nominal avec complément du nom « Le chien de ma voisine »."
+  },
+  {
+    text: "Le cartable de mon petit frère est très lourd .",
+    tokens: [
+      { text: "Le", sujet: true },
+      { text: "cartable", sujet: true },
+      { text: "de", sujet: true },
+      { text: "mon", sujet: true },
+      { text: "petit", sujet: true },
+      { text: "frère", sujet: true },
+      { text: "est" },
+      { text: "très" },
+      { text: "lourd" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est le groupe nominal complexe « Le cartable de mon petit frère »."
+  },
+  {
+    text: "L' arbre qui pousse dans la cour est un chêne .",
+    tokens: [
+      { text: "L'", sujet: true },
+      { text: "arbre", sujet: true },
+      { text: "qui", sujet: true },
+      { text: "pousse", sujet: true },
+      { text: "dans", sujet: true },
+      { text: "la", sujet: true },
+      { text: "cour", sujet: true },
+      { text: "est" },
+      { text: "un" },
+      { text: "chêne" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est le groupe nominal avec proposition relative « L'arbre qui pousse dans la cour »."
+  },
+  {
+    text: "Le gâteau au chocolat que tu as préparé est délicieux .",
+    tokens: [
+      { text: "Le", sujet: true },
+      { text: "gâteau", sujet: true },
+      { text: "au", sujet: true },
+      { text: "chocolat", sujet: true },
+      { text: "que", sujet: true },
+      { text: "tu", sujet: true },
+      { text: "as", sujet: true },
+      { text: "préparé", sujet: true },
+      { text: "est" },
+      { text: "délicieux" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est le groupe nominal complexe « Le gâteau au chocolat que tu as préparé »."
+  },
+  {
+    text: "Le train en provenance de Paris entre en gare .",
+    tokens: [
+      { text: "Le", sujet: true },
+      { text: "train", sujet: true },
+      { text: "en", sujet: true },
+      { text: "provenance", sujet: true },
+      { text: "de", sujet: true },
+      { text: "Paris", sujet: true },
+      { text: "entre" },
+      { text: "en" },
+      { text: "gare" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est le groupe nominal avec complément du nom « Le train en provenance de Paris »."
+  },
+  {
+    text: "Les élèves de cette classe sont très sages .",
+    tokens: [
+      { text: "Les", sujet: true },
+      { text: "élèves", sujet: true },
+      { text: "de", sujet: true },
+      { text: "cette", sujet: true },
+      { text: "classe", sujet: true },
+      { text: "sont" },
+      { text: "très" },
+      { text: "sages" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est le groupe nominal avec complément du nom « Les élèves de cette classe »."
+  },
+  {
+    text: "Le rire de cet enfant est communicatif .",
+    tokens: [
+      { text: "Le", sujet: true },
+      { text: "rire", sujet: true },
+      { text: "de", sujet: true },
+      { text: "cet", sujet: true },
+      { text: "enfant", sujet: true },
+      { text: "est" },
+      { text: "communicatif" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est le groupe nominal avec complément du nom « Le rire de cet enfant »."
+  },
+  {
+    text: "La clé de la voiture se trouve sur le meuble .",
+    tokens: [
+      { text: "La", sujet: true },
+      { text: "clé", sujet: true },
+      { text: "de", sujet: true },
+      { text: "la", sujet: true },
+      { text: "voiture", sujet: true },
+      { text: "se" },
+      { text: "trouve" },
+      { text: "sur" },
+      { text: "le" },
+      { text: "meuble" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est le groupe nominal avec complément du nom « La clé de la voiture »."
+  },
+  {
+    text: "Le livre que j' ai emprunté est passionnant .",
+    tokens: [
+      { text: "Le", sujet: true },
+      { text: "livre", sujet: true },
+      { text: "que", sujet: true },
+      { text: "j'", sujet: true },
+      { text: "ai", sujet: true },
+      { text: "emprunté", sujet: true },
+      { text: "est" },
+      { text: "passionnant" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est le groupe nominal avec proposition relative « Le livre que j'ai emprunté »."
+  },
+  {
+    text: "Rêver adoucit le quotidien .",
+    tokens: [
+      { text: "Rêver", sujet: true },
+      { text: "adoucit" },
+      { text: "le" },
+      { text: "quotidien" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est le verbe à l'infinitif « Rêver »."
+  },
+  {
+    text: "Mentir détruit la confiance .",
+    tokens: [
+      { text: "Mentir", sujet: true },
+      { text: "détruit" },
+      { text: "la" },
+      { text: "confiance" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est le verbe à l'infinitif « Mentir »."
+  },
+  {
+    text: "Courir demande de l' endurance .",
+    tokens: [
+      { text: "Courir", sujet: true },
+      { text: "demande" },
+      { text: "de" },
+      { text: "l'" },
+      { text: "endurance" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est le verbe à l'infinitif « Courir »."
+  },
+  {
+    text: "Lire enrichit le vocabulaire .",
+    tokens: [
+      { text: "Lire", sujet: true },
+      { text: "enrichit" },
+      { text: "le" },
+      { text: "vocabulaire" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est le verbe à l'infinitif « Lire »."
+  },
+  {
+    text: "Sous la pluie battante , les piétons pressent le pas .",
+    tokens: [
+      { text: "Sous" },
+      { text: "la" },
+      { text: "pluie" },
+      { text: "battante", punctuation: "," },
+      { text: "les", sujet: true },
+      { text: "piétons", sujet: true },
+      { text: "pressent" },
+      { text: "le" },
+      { text: "pas" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est le groupe nominal « les piétons », placé après le complément circonstanciel."
+  },
+  {
+    text: "Depuis ce matin , Julie travaille sur son ordinateur .",
+    tokens: [
+      { text: "Depuis" },
+      { text: "ce" },
+      { text: "matin", punctuation: "," },
+      { text: "Julie", sujet: true },
+      { text: "travaille" },
+      { text: "sur" },
+      { text: "son" },
+      { text: "ordinateur" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est le nom propre « Julie », placé après le complément circonstanciel."
+  },
+  {
+    text: "Dans la forêt , un vieux chêne se dresse fièrement .",
+    tokens: [
+      { text: "Dans" },
+      { text: "la" },
+      { text: "forêt", punctuation: "," },
+      { text: "un", sujet: true },
+      { text: "vieux", sujet: true },
+      { text: "chêne", sujet: true },
+      { text: "se" },
+      { text: "dresse" },
+      { text: "fièrement" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est le groupe nominal « un vieux chêne », placé après le complément circonstanciel."
+  },
+  {
+    text: "Ceux-ci coûtent plus cher .",
+    tokens: [
+      { text: "Ceux-ci", sujet: true },
+      { text: "coûtent" },
+      { text: "plus" },
+      { text: "cher" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est le pronom démonstratif « Ceux-ci »."
+  },
+  {
+    text: "Bruxelles est une très belle ville .",
+    tokens: [
+      { text: "Bruxelles", sujet: true },
+      { text: "est" },
+      { text: "une" },
+      { text: "très" },
+      { text: "belle" },
+      { text: "ville" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est le nom propre « Bruxelles »."
+  },
+  {
+    text: "La fille de ma tante joue du piano .",
+    tokens: [
+      { text: "La", sujet: true },
+      { text: "fille", sujet: true },
+      { text: "de", sujet: true },
+      { text: "ma", sujet: true },
+      { text: "tante", sujet: true },
+      { text: "joue" },
+      { text: "du" },
+      { text: "piano" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est le groupe nominal avec complément du nom « La fille de ma tante »."
+  },
+  {
+    text: "L' eau de la source est pure .",
+    tokens: [
+      { text: "L'", sujet: true },
+      { text: "eau", sujet: true },
+      { text: "de", sujet: true },
+      { text: "la", sujet: true },
+      { text: "source", sujet: true },
+      { text: "est" },
+      { text: "pure" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est le groupe nominal avec complément du nom « L'eau de la source »."
+  },
+  {
+    text: "Le tiroir du bureau renferme des secrets .",
+    tokens: [
+      { text: "Le", sujet: true },
+      { text: "tiroir", sujet: true },
+      { text: "du", sujet: true },
+      { text: "bureau", sujet: true },
+      { text: "renferme" },
+      { text: "des" },
+      { text: "secrets" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est le groupe nominal avec complément du nom « Le tiroir du bureau »."
+  },
+  {
+    text: "La lettre que le facteur a apportée vient d' Italie .",
+    tokens: [
+      { text: "La", sujet: true },
+      { text: "lettre", sujet: true },
+      { text: "que", sujet: true },
+      { text: "le", sujet: true },
+      { text: "facteur", sujet: true },
+      { text: "a", sujet: true },
+      { text: "apportée", sujet: true },
+      { text: "vient" },
+      { text: "d'" },
+      { text: "Italie" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est le groupe nominal avec proposition relative « La lettre que le facteur a apportée »."
+  },
+  {
+    text: "Le dessin que tu as colorié est très beau .",
+    tokens: [
+      { text: "Le", sujet: true },
+      { text: "dessin", sujet: true },
+      { text: "que", sujet: true },
+      { text: "tu", sujet: true },
+      { text: "as", sujet: true },
+      { text: "colorié", sujet: true },
+      { text: "est" },
+      { text: "très" },
+      { text: "beau" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est le groupe nominal avec proposition relative « Le dessin que tu as colorié »."
+  },
+  {
+    text: "Dans le port attend un magnifique bateau .",
+    tokens: [
+      { text: "Dans" },
+      { text: "le" },
+      { text: "port" },
+      { text: "attend" },
+      { text: "un", sujet: true },
+      { text: "magnifique", sujet: true },
+      { text: "bateau", sujet: true },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est « un magnifique bateau », inversé après le verbe « attend »."
+  }
 ];

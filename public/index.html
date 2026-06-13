@@ -2796,7 +2796,11 @@ input:focus{border-color:var(--purple);}
   </div>
 
   <!-- Sub-screens: Fonctions des mots -->
-  <div id="screen-gram-sujet" class="screen"><button class="back-btn" onclick="showScreen('screen-gram-fonctions');renderGramFonctionsScreen();">← Retour</button><div class="page-title">👑 Le sujet</div><div class="card" style="text-align:center;padding:2rem;"><div style="font-size:48px;">🚧</div><p style="color:var(--muted);">Les exercices arrivent bientôt !</p></div></div>
+  <div id="screen-gram-sujet" class="screen">
+    <button class="back-btn gram-sujet-back-main-btn" style="margin-bottom:1rem;">← Retour</button>
+    <div class="page-title">👑 Le sujet</div>
+    <div id="gram-sujet-body"></div>
+  </div>
   <div id="screen-gram-verbe-fonc" class="screen"><button class="back-btn" onclick="showScreen('screen-gram-fonctions');renderGramFonctionsScreen();">← Retour</button><div class="page-title">⚡ Le verbe</div><div class="card" style="text-align:center;padding:2rem;"><div style="font-size:48px;">🚧</div><p style="color:var(--muted);">Les exercices arrivent bientôt !</p></div></div>
   <div id="screen-gram-predicat" class="screen"><button class="back-btn" onclick="showScreen('screen-gram-fonctions');renderGramFonctionsScreen();">← Retour</button><div class="page-title">📌 Le prédicat</div><div class="card" style="text-align:center;padding:2rem;"><div style="font-size:48px;">🚧</div><p style="color:var(--muted);">Les exercices arrivent bientôt !</p></div></div>
   <div id="screen-gram-cdv-civ" class="screen"><button class="back-btn" onclick="showScreen('screen-gram-fonctions');renderGramFonctionsScreen();">← Retour</button><div class="page-title">🔀 Le CDV et le CIV</div><div class="card" style="text-align:center;padding:2rem;"><div style="font-size:48px;">🚧</div><p style="color:var(--muted);">Les exercices arrivent bientôt !</p></div></div>
@@ -6719,7 +6723,7 @@ const GRAM_CLASSES_ITEMS = [
 ];
 
 const GRAM_FONCTIONS_ITEMS = [
-  {id:'gram_sujet', screen:'screen-gram-sujet', label:'Le sujet', icon:'👑', fn:''},
+  {id:'gram_sujet', screen:'screen-gram-sujet', label:'Le sujet', icon:'👑', fn:'startSujetExercise'},
   {id:'gram_verbe_fonc', screen:'screen-gram-verbe-fonc', label:'Le verbe', icon:'⚡', fn:''},
   {id:'gram_predicat', screen:'screen-gram-predicat', label:'Le prédicat', icon:'📌', fn:''},
   {id:'gram_cdv_civ', screen:'screen-gram-cdv-civ', label:'Le CDV et le CIV', icon:'🔀', fn:''},
@@ -25252,14 +25256,14 @@ const PLAN_CATALOGUE = [
     { id:'gram_tri_mots', label:'Le tri des mots', icon:'🔍', screen:'screen-gram-tri-mots', fn:'' },
   ]},
   { cat: '📖 Français', sub: '✏️ Grammaire — Fonctions des mots', items: [
-    { id:'gram_sujet', label:'Le sujet', icon:'👑', screen:'screen-gram-sujet', fn:'' },
+    { id:'gram_sujet', label:'Le sujet', icon:'👑', screen:'screen-gram-sujet', fn:'startSujetExercise' },
     { id:'gram_verbe_fonc', label:'Le verbe (fonction)', icon:'⚡', screen:'screen-gram-verbe-fonc', fn:'' },
     { id:'gram_predicat', label:'Le prédicat', icon:'📌', screen:'screen-gram-predicat', fn:'' },
     { id:'gram_cdv_civ', label:'Le CDV et le CIV', icon:'🔀', screen:'screen-gram-cdv-civ', fn:'' },
     { id:'gram_cc', label:'Le complément circonstanciel', icon:'📍', screen:'screen-gram-cc', fn:'' },
     { id:'gram_attribut', label:"L'attribut du sujet", icon:'🌟', screen:'screen-gram-attribut', fn:'' },
     { id:'gram_agent', label:"Le complément d'agent", icon:'🦮', screen:'screen-gram-agent', fn:'' },
-    { id:'gram_analyse_phrase', label:'Analyse de phrases', icon:'🔍', screen:'screen-gram-analyse-phrase', fn:'' },
+    { id:'gram_analyse_phrase', label:'Analyse de phrases', icon:'🔍', screen:'screen-gram-analyse-phrase', fn:'startAnalyseGlobale' },
   ]},
   { cat: '📖 Français', sub: '✏️ Grammaire — Types de phrases', items: [
     { id:'gram_affirm_neg', label:'Affirmatives ou négatives ?', icon:'❓', screen:'screen-gram-affirm-neg', fn:'' },
@@ -28068,7 +28072,340 @@ function renderAnalysePhraseResults() {
       time: new Date().toLocaleTimeString('fr-BE', {hour:'2-digit', minute:'2-digit'})
     });
   }
+  }
 }
+
+// ==========================================
+// EXERCICE DE REPÉRAGE DU SUJET
+// ==========================================
+let sujetGameState = {
+  containerId: 'gram-sujet-body',
+  questions: [],
+  currentIndex: 0,
+  score: 0,
+  answers: [],
+  submitted: false
+};
+
+function startSujetExercise() {
+  if (!window.EXERCICES_SUJET || window.EXERCICES_SUJET.length === 0) {
+    console.error("EXERCICES_SUJET n'est pas chargé ou est vide.");
+    return;
+  }
+
+  // Tirer 10 questions au hasard
+  const shuffled = [...window.EXERCICES_SUJET].sort(() => 0.5 - Math.random()).slice(0, 10);
+  
+  sujetGameState = {
+    containerId: 'gram-sujet-body',
+    questions: shuffled,
+    currentIndex: 0,
+    score: 0,
+    answers: Array(shuffled[0] ? shuffled[0].tokens.length : 0).fill(false),
+    submitted: false
+  };
+
+  // Câbler le bouton de retour de l'écran principal
+  const backMainBtn = document.querySelector('#screen-gram-sujet .gram-sujet-back-main-btn');
+  if (backMainBtn) {
+    backMainBtn.onclick = (e) => {
+      e.preventDefault();
+      showScreen('screen-gram-fonctions');
+      renderGramFonctionsScreen();
+    };
+  }
+
+  showScreen('screen-gram-sujet');
+  renderSujetQuestion();
+}
+
+function renderSujetQuestion() {
+  const container = document.getElementById(sujetGameState.containerId);
+  if (!container) return;
+
+  const question = sujetGameState.questions[sujetGameState.currentIndex];
+  if (!question) return;
+
+  const pctProgress = Math.round((sujetGameState.currentIndex / sujetGameState.questions.length) * 100);
+
+  const tokensHtml = question.tokens.map((token, idx) => {
+    if (token.punctuation) {
+      return `<span class="text-xl font-bold text-neutral-400 self-end mb-2 select-none">${token.text}${token.punctuation === ',' ? ',' : ''}</span>`;
+    }
+
+    const isSelected = sujetGameState.answers[idx] === true;
+    let inlineStyle = "";
+
+    if (isSelected) {
+      // Couleur bleu ciel pour le sujet sélectionné
+      inlineStyle = "border-color: #0ea5e9 !important; background-color: #e0f2fe !important; color: #0369a1 !important;";
+    }
+
+    if (sujetGameState.submitted) {
+      const isCorrectSujet = token.sujet === true;
+      if (isCorrectSujet) {
+        if (isSelected) {
+          // Correctement sélectionné -> vert
+          inlineStyle = "border-color: #22c55e !important; background-color: #f0fdf4 !important; color: #15803d !important;";
+        } else {
+          // Manqué -> orange/rouge bordure pointillée
+          inlineStyle = "border-color: #f97316 !important; border-style: dashed !important; background-color: #fff7ed !important; color: #c2410c !important;";
+        }
+      } else {
+        if (isSelected) {
+          // Faussement sélectionné -> rouge
+          inlineStyle = "border-color: #ef4444 !important; background-color: #fef2f2 !important; color: #b91c1c !important;";
+        }
+      }
+    }
+
+    let checkIcon = "";
+    if (sujetGameState.submitted) {
+      const isCorrectSujet = token.sujet === true;
+      if (isSelected && isCorrectSujet) {
+        checkIcon = `<span class="absolute -top-2 -right-2 bg-green-500 text-white rounded-full text-[10px] w-5 h-5 flex items-center justify-center border-2 border-white shadow-sm font-black">✓</span>`;
+      } else if (isSelected && !isCorrectSujet) {
+        checkIcon = `<span class="absolute -top-2 -right-2 bg-rose-500 text-white rounded-full text-[10px] w-5 h-5 flex items-center justify-center border-2 border-white shadow-sm font-black">✗</span>`;
+      } else if (!isSelected && isCorrectSujet) {
+        checkIcon = `<span class="absolute -top-2 -right-2 bg-orange-500 text-white rounded-full text-[10px] w-5 h-5 flex items-center justify-center border-2 border-white shadow-sm font-black">!</span>`;
+      }
+    }
+
+    return `
+      <div class="relative">
+        <button
+          ${sujetGameState.submitted ? 'disabled' : ''}
+          style="${inlineStyle}"
+          data-idx="${idx}"
+          class="gram-sujet-word-btn px-4 py-2.5 rounded-2xl border-2 font-sans font-semibold text-lg md:text-xl transition-all duration-150 relative cursor-pointer select-none shadow-[2px_2px_0px_rgba(0,0,0,0.1)] border-neutral-300 bg-white text-neutral-800 hover:bg-neutral-50 hover:scale-102"
+        >
+          ${token.text}
+        </button>
+        ${checkIcon}
+      </div>
+    `;
+  }).join('');
+
+  let actionBtn = "";
+  if (!sujetGameState.submitted) {
+    actionBtn = `
+      <button class="gram-sujet-verify-btn px-6 py-3 rounded-2xl border-2 border-neutral-900 bg-purple-600 text-white hover:bg-purple-700 font-display font-bold text-sm transition-all cursor-pointer shadow-[2px_2px_0px_rgba(0,0,0,1)] active:scale-95 ml-auto">
+        Vérifier ma réponse
+      </button>
+    `;
+  } else {
+    actionBtn = `
+      <button class="gram-sujet-next-btn px-6 py-3 rounded-2xl border-2 border-neutral-900 bg-green-600 text-white hover:bg-green-700 font-display font-bold text-sm transition-all cursor-pointer shadow-[2px_2px_0px_rgba(0,0,0,1)] active:scale-95 ml-auto">
+        ${sujetGameState.currentIndex < sujetGameState.questions.length - 1 ? 'Phrase suivante ➔' : 'Voir les résultats ➔'}
+      </button>
+    `;
+  }
+
+  const html = `
+    <div class="quiz-topbar">
+      <div class="quiz-student-badge">
+        ${state.student || 'Enseignant'}
+      </div>
+      <div class="quiz-progress-wrap">
+        <div class="quiz-progress-label">Phrase ${sujetGameState.currentIndex + 1} sur ${sujetGameState.questions.length}</div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: ${pctProgress}%"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-blue-50/50 border-2 border-blue-100 rounded-3xl p-5 mb-6 shadow-[4px_4px_0px_rgba(0,0,0,0.02)]">
+      <div class="flex items-center gap-3 text-blue-800 text-sm font-semibold">
+        <span>💡</span>
+        <span>Clique sur tous les mots faisant partie du sujet de la phrase.</span>
+      </div>
+    </div>
+
+    <!-- LA PHRASE -->
+    <div class="bg-white border-2 border-neutral-900 rounded-3xl p-8 md:p-12 mb-6 shadow-[4px_4px_0px_rgba(0,0,0,1)] flex flex-wrap gap-x-2 gap-y-4 justify-center items-center">
+      ${tokensHtml}
+    </div>
+
+    <!-- EXPLICATION CORRECTION -->
+    ${sujetGameState.submitted ? `
+      <div class="bg-neutral-50 rounded-2xl p-5 border-2 border-neutral-900 mb-6 animate-fadeIn shadow-[2px_2px_0px_rgba(0,0,0,1)]">
+        <div class="flex items-start gap-3">
+          <span class="text-2xl">💡</span>
+          <div>
+            <h4 class="font-display font-bold text-neutral-800 mb-1">Explication :</h4>
+            <p class="text-neutral-600 text-sm leading-relaxed">${question.explanation}</p>
+          </div>
+        </div>
+      </div>
+    ` : ''}
+
+    <!-- ZONE D'ACTION -->
+    <div class="flex justify-between items-center border-t border-neutral-200 pt-6">
+      ${actionBtn}
+    </div>
+  `;
+
+  container.innerHTML = html;
+
+  // Lier les événements
+  container.querySelectorAll('.gram-sujet-word-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const idx = parseInt(btn.getAttribute('data-idx'));
+      clickSujetWord(idx);
+    });
+  });
+
+  const verifyBtn = container.querySelector('.gram-sujet-verify-btn');
+  if (verifyBtn) {
+    verifyBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      verifySujetAnswer();
+    });
+  }
+
+  const nextBtn = container.querySelector('.gram-sujet-next-btn');
+  if (nextBtn) {
+    nextBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      nextSujetQuestion();
+    });
+  }
+}
+
+function clickSujetWord(wordIndex) {
+  if (sujetGameState.submitted) return;
+  sujetGameState.answers[wordIndex] = !sujetGameState.answers[wordIndex];
+  renderSujetQuestion();
+}
+
+function verifySujetAnswer() {
+  if (sujetGameState.submitted) return;
+
+  const question = sujetGameState.questions[sujetGameState.currentIndex];
+  let isPerfect = true;
+
+  for (let i = 0; i < question.tokens.length; i++) {
+    const t = question.tokens[i];
+    if (t.punctuation) continue;
+    const expected = t.sujet === true;
+    const actual = sujetGameState.answers[i] === true;
+    if (expected !== actual) {
+      isPerfect = false;
+      break;
+    }
+  }
+
+  if (isPerfect) {
+    sujetGameState.score++;
+  }
+
+  sujetGameState.submitted = true;
+  renderSujetQuestion();
+}
+
+function nextSujetQuestion() {
+  if (sujetGameState.currentIndex < sujetGameState.questions.length - 1) {
+    sujetGameState.currentIndex++;
+    sujetGameState.submitted = false;
+    const nextQuestion = sujetGameState.questions[sujetGameState.currentIndex];
+    sujetGameState.answers = Array(nextQuestion.tokens.length).fill(false);
+    renderSujetQuestion();
+  } else {
+    renderSujetResults();
+  }
+}
+
+function renderSujetResults() {
+  const container = document.getElementById(sujetGameState.containerId);
+  if (!container) return;
+
+  const pct = Math.round((sujetGameState.score / sujetGameState.questions.length) * 100);
+
+  let emoji = "💪";
+  let msg = "Pas mal ! Relis tes explications et réessaie !";
+  if (pct === 100) {
+    emoji = "🏆";
+    msg = "Sans faute exceptionnel ! Tu maîtrises le sujet sur le bout des doigts !";
+  } else if (pct >= 70) {
+    emoji = "⭐️";
+    msg = "Très bon travail, tu distingues bien le sujet dans les phrases !";
+  }
+
+  container.innerHTML = `
+    <div class="text-center py-8 animate-fadeIn">
+      <div class="inline-flex justify-center items-center bg-blue-100 text-blue-700 w-20 h-20 rounded-full mb-6 border-2 border-blue-300">
+        <span class="text-4xl">${emoji}</span>
+      </div>
+      <h3 class="text-2xl md:text-3xl font-display font-bold text-neutral-800 mb-2">
+        Entraînement Terminé !
+      </h3>
+      <p class="text-neutral-500 mb-6 max-w-md mx-auto">
+        Tu as complété le repérage du sujet de la phrase. Voici ton résultat :
+      </p>
+
+      <div class="bg-blue-50/60 border-2 border-blue-200 rounded-3xl p-6 max-w-sm mx-auto mb-8 shadow-[4px_4px_0px_rgba(0,0,0,0.05)]">
+        <div class="text-5xl font-display font-black text-blue-700 mb-2">
+          ${sujetGameState.score} <span class="text-2xl text-blue-400 font-normal">/ ${sujetGameState.questions.length}</span>
+        </div>
+        <div class="text-sm font-semibold text-blue-800">
+          ${msg}
+        </div>
+      </div>
+
+      <div class="flex flex-wrap gap-3 justify-center">
+        <button
+          class="gram-sujet-restart-btn flex items-center gap-2 px-5 py-2.5 rounded-2xl border-2 border-neutral-900 text-neutral-800 hover:bg-neutral-50 font-display font-bold text-sm transition-all cursor-pointer shadow-[2px_2px_0px_rgba(0,0,0,1)] bg-white active:scale-95"
+        >
+          🔄 Recommencer
+        </button>
+        <button
+          class="gram-sujet-back-btn px-5 py-2.5 rounded-2xl border-2 border-neutral-900 bg-purple-600 text-white hover:bg-purple-700 font-display font-bold text-sm transition-all cursor-pointer shadow-[2px_2px_0px_rgba(0,0,0,1)] active:scale-95"
+        >
+          Retourner aux fonctions
+        </button>
+      </div>
+    </div>
+  `;
+
+  const restartBtn = container.querySelector('.gram-sujet-restart-btn');
+  if (restartBtn) {
+    restartBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      startSujetExercise();
+    });
+  }
+
+  const backBtn = container.querySelector('.gram-sujet-back-btn');
+  if (backBtn) {
+    backBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      showScreen('screen-gram-fonctions');
+      renderGramFonctionsScreen();
+    });
+  }
+
+  if (state.student) {
+    saveResult({
+      student: state.student,
+      cls: state.studentCls,
+      className: CLASSES[state.studentCls] ? CLASSES[state.studentCls].name : state.studentCls,
+      activity: 'sujet_phrase',
+      bookTitle: `Grammaire — Repérer le sujet`,
+      score: sujetGameState.score,
+      total: sujetGameState.questions.length,
+      pct,
+      date: new Date().toLocaleDateString('fr-BE'),
+      time: new Date().toLocaleTimeString('fr-BE', {hour:'2-digit', minute:'2-digit'})
+    });
+  }
+}
+
+// Exposer les fonctions au scope global pour être appelées par l'HTML
+window.startSujetExercise = startSujetExercise;
+window.clickSujetWord = clickSujetWord;
+window.verifySujetAnswer = verifySujetAnswer;
+window.nextSujetQuestion = nextSujetQuestion;
 
 // Exposer les fonctions d'analyse de phrase au scope global pour être appelées par l'HTML
 window.startAnalyseGlobale = startAnalyseGlobale;
