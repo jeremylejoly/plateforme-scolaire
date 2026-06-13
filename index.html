@@ -2812,8 +2812,16 @@ input:focus{border-color:var(--purple);}
     <div class="page-title">⚡ Le verbe</div>
     <div id="gram-verbe-body"></div>
   </div>
-  <div id="screen-gram-predicat" class="screen"><button class="back-btn" onclick="showScreen('screen-gram-fonctions');renderGramFonctionsScreen();">← Retour</button><div class="page-title">📌 Le prédicat</div><div class="card" style="text-align:center;padding:2rem;"><div style="font-size:48px;">🚧</div><p style="color:var(--muted);">Les exercices arrivent bientôt !</p></div></div>
-  <div id="screen-gram-cdv-civ" class="screen"><button class="back-btn" onclick="showScreen('screen-gram-fonctions');renderGramFonctionsScreen();">← Retour</button><div class="page-title">🔀 Le CDV et le CIV</div><div class="card" style="text-align:center;padding:2rem;"><div style="font-size:48px;">🚧</div><p style="color:var(--muted);">Les exercices arrivent bientôt !</p></div></div>
+  <div id="screen-gram-predicat" class="screen">
+    <button class="back-btn gram-predicat-back-main-btn" style="margin-bottom:1rem;">← Retour</button>
+    <div class="page-title">📌 Le prédicat</div>
+    <div id="gram-predicat-body"></div>
+  </div>
+  <div id="screen-gram-cdv-civ" class="screen">
+    <button class="back-btn gram-cdv-civ-back-main-btn" style="margin-bottom:1rem;">← Retour</button>
+    <div class="page-title">🔀 Le CDV et le CIV</div>
+    <div id="gram-cdv-civ-body"></div>
+  </div>
   <div id="screen-gram-cc" class="screen"><button class="back-btn" onclick="showScreen('screen-gram-fonctions');renderGramFonctionsScreen();">← Retour</button><div class="page-title">📍 Le complément circonstanciel</div><div class="card" style="text-align:center;padding:2rem;"><div style="font-size:48px;">🚧</div><p style="color:var(--muted);">Les exercices arrivent bientôt !</p></div></div>
   <div id="screen-gram-attribut" class="screen"><button class="back-btn" onclick="showScreen('screen-gram-fonctions');renderGramFonctionsScreen();">← Retour</button><div class="page-title">🌟 L'attribut du sujet</div><div class="card" style="text-align:center;padding:2rem;"><div style="font-size:48px;">🚧</div><p style="color:var(--muted);">Les exercices arrivent bientôt !</p></div></div>
   <div id="screen-gram-agent" class="screen"><button class="back-btn" onclick="showScreen('screen-gram-fonctions');renderGramFonctionsScreen();">← Retour</button><div class="page-title">🦮 Le complément d'agent</div><div class="card" style="text-align:center;padding:2rem;"><div style="font-size:48px;">🚧</div><p style="color:var(--muted);">Les exercices arrivent bientôt !</p></div></div>
@@ -6757,8 +6765,8 @@ const GRAM_CLASSES_ITEMS = [
 const GRAM_FONCTIONS_ITEMS = [
   {id:'gram_sujet', screen:'screen-gram-sujet', label:'Le sujet', icon:'👑', fn:'renderSujetMenu'},
   {id:'gram_verbe_fonc', screen:'screen-gram-verbe-fonc', label:'Le verbe', icon:'⚡', fn:'renderVerbeMenu'},
-  {id:'gram_predicat', screen:'screen-gram-predicat', label:'Le prédicat', icon:'📌', fn:''},
-  {id:'gram_cdv_civ', screen:'screen-gram-cdv-civ', label:'Le CDV et le CIV', icon:'🔀', fn:''},
+  {id:'gram_predicat', screen:'screen-gram-predicat', label:'Le prédicat', icon:'📌', fn:'renderPredicatMenu'},
+  {id:'gram_cdv_civ', screen:'screen-gram-cdv-civ', label:'Le CDV et le CIV', icon:'🔀', fn:'renderCdvCivMenu'},
   {id:'gram_cc', screen:'screen-gram-cc', label:'Le complément circonstanciel', icon:'📍', fn:''},
   {id:'gram_attribut', screen:'screen-gram-attribut', label:"L'attribut du sujet", icon:'🌟', fn:''},
   {id:'gram_agent', screen:'screen-gram-agent', label:"Le complément d'agent", icon:'🦮', fn:''},
@@ -25352,8 +25360,8 @@ const PLAN_CATALOGUE = [
   { cat: '📖 Français', sub: '✏️ Grammaire — Fonctions des mots', items: [
     { id:'gram_sujet', label:'Le sujet', icon:'👑', screen:'screen-gram-sujet', fn:'renderSujetMenu' },
     { id:'gram_verbe_fonc', label:'Le verbe (fonction)', icon:'⚡', screen:'screen-gram-verbe-fonc', fn:'renderVerbeMenu' },
-    { id:'gram_predicat', label:'Le prédicat', icon:'📌', screen:'screen-gram-predicat', fn:'' },
-    { id:'gram_cdv_civ', label:'Le CDV et le CIV', icon:'🔀', screen:'screen-gram-cdv-civ', fn:'' },
+    { id:'gram_predicat', label:'Le prédicat', icon:'📌', screen:'screen-gram-predicat', fn:'renderPredicatMenu' },
+    { id:'gram_cdv_civ', label:'Le CDV et le CIV', icon:'🔀', screen:'screen-gram-cdv-civ', fn:'renderCdvCivMenu' },
     { id:'gram_cc', label:'Le complément circonstanciel', icon:'📍', screen:'screen-gram-cc', fn:'' },
     { id:'gram_attribut', label:"L'attribut du sujet", icon:'🌟', screen:'screen-gram-attribut', fn:'' },
     { id:'gram_agent', label:"Le complément d'agent", icon:'🦮', screen:'screen-gram-agent', fn:'' },
@@ -28249,7 +28257,8 @@ function startSujetExercise() {
     currentIndex: 0,
     score: 0,
     answers: Array(selection[0] ? selection[0].tokens.length : 0).fill(false),
-    submitted: false
+    submitted: false,
+    attempts: 0
   };
 
   // Câbler le bouton de retour de l'écran principal
@@ -28336,9 +28345,10 @@ function renderSujetQuestion() {
 
   let actionBtn = "";
   if (!sujetGameState.submitted) {
+    const btnLabel = sujetGameState.attempts === 1 ? "Vérifier à nouveau ➔" : "Vérifier ma réponse";
     actionBtn = `
       <button class="gram-sujet-verify-btn px-6 py-3 rounded-2xl border-2 border-neutral-900 bg-purple-600 text-white hover:bg-purple-700 font-display font-bold text-sm transition-all cursor-pointer shadow-[2px_2px_0px_rgba(0,0,0,1)] active:scale-95 ml-auto">
-        Vérifier ma réponse
+        ${btnLabel}
       </button>
     `;
   } else {
@@ -28368,6 +28378,14 @@ function renderSujetQuestion() {
         <span>Clique sur tous les mots faisant partie du sujet de la phrase.</span>
       </div>
     </div>
+
+    <!-- ALERTE DE SECONDE CHANCE -->
+    ${(sujetGameState.attempts === 1 && !sujetGameState.submitted) ? `
+      <div class="bg-amber-50 border-2 border-amber-200 text-amber-900 rounded-2xl p-4 mb-6 shadow-[2px_2px_0px_rgba(0,0,0,0.02)] animate-pulse flex items-center gap-3 font-semibold text-sm">
+        <span>⚠️</span>
+        <span>Ce n'est pas tout à fait correct ! Relis bien la phrase et essaye encore pour ta seconde chance.</span>
+      </div>
+    ` : ''}
 
     <!-- LA PHRASE -->
     <div class="bg-white border-2 border-neutral-900 rounded-3xl p-8 md:p-12 mb-6 shadow-[4px_4px_0px_rgba(0,0,0,1)] flex flex-wrap gap-x-2 gap-y-4 justify-center items-center">
@@ -28446,16 +28464,24 @@ function verifySujetAnswer() {
 
   if (isPerfect) {
     sujetGameState.score++;
+    sujetGameState.submitted = true;
+    renderSujetQuestion();
+  } else {
+    if (!sujetGameState.attempts) {
+      sujetGameState.attempts = 1;
+      renderSujetQuestion();
+    } else {
+      sujetGameState.submitted = true;
+      renderSujetQuestion();
+    }
   }
-
-  sujetGameState.submitted = true;
-  renderSujetQuestion();
 }
 
 function nextSujetQuestion() {
   if (sujetGameState.currentIndex < sujetGameState.questions.length - 1) {
     sujetGameState.currentIndex++;
     sujetGameState.submitted = false;
+    sujetGameState.attempts = 0;
     const nextQuestion = sujetGameState.questions[sujetGameState.currentIndex];
     sujetGameState.answers = Array(nextQuestion.tokens.length).fill(false);
     renderSujetQuestion();
@@ -28741,7 +28767,8 @@ function startVerbeExercise() {
     currentIndex: 0,
     score: 0,
     answers: Array(selection[0] ? selection[0].tokens.length : 0).fill(false),
-    submitted: false
+    submitted: false,
+    attempts: 0
   };
 
   showScreen('screen-gram-verbe-fonc');
@@ -28818,9 +28845,10 @@ function renderVerbeQuestion() {
 
   let actionBtn = "";
   if (!verbeGameState.submitted) {
+    const btnLabel = verbeGameState.attempts === 1 ? "Vérifier à nouveau ➔" : "Vérifier ma réponse";
     actionBtn = `
       <button class="gram-verbe-verify-btn px-6 py-3 rounded-2xl border-2 border-neutral-900 bg-purple-600 text-white hover:bg-purple-700 font-display font-bold text-sm transition-all cursor-pointer shadow-[2px_2px_0px_rgba(0,0,0,1)] active:scale-95 ml-auto">
-        Vérifier ma réponse
+        ${btnLabel}
       </button>
     `;
   } else {
@@ -28850,6 +28878,14 @@ function renderVerbeQuestion() {
         <span>Clique sur tous les mots faisant partie du verbe de la phrase (ne clique pas sur les verbes des compléments du nom ou des relatives).</span>
       </div>
     </div>
+
+    <!-- ALERTE DE SECONDE CHANCE -->
+    ${(verbeGameState.attempts === 1 && !verbeGameState.submitted) ? `
+      <div class="bg-amber-50 border-2 border-amber-200 text-amber-900 rounded-2xl p-4 mb-6 shadow-[2px_2px_0px_rgba(0,0,0,0.02)] animate-pulse flex items-center gap-3 font-semibold text-sm">
+        <span>⚠️</span>
+        <span>Ce n'est pas tout à fait correct ! Relis bien la phrase et essaye encore pour ta seconde chance.</span>
+      </div>
+    ` : ''}
 
     <!-- LA PHRASE -->
     <div class="bg-white border-2 border-neutral-900 rounded-3xl p-8 md:p-12 mb-6 shadow-[4px_4px_0px_rgba(0,0,0,1)] flex flex-wrap gap-x-2 gap-y-4 justify-center items-center">
@@ -28928,16 +28964,24 @@ function verifyVerbeAnswer() {
 
   if (isPerfect) {
     verbeGameState.score++;
+    verbeGameState.submitted = true;
+    renderVerbeQuestion();
+  } else {
+    if (!verbeGameState.attempts) {
+      verbeGameState.attempts = 1;
+      renderVerbeQuestion();
+    } else {
+      verbeGameState.submitted = true;
+      renderVerbeQuestion();
+    }
   }
-
-  verbeGameState.submitted = true;
-  renderVerbeQuestion();
 }
 
 function nextVerbeQuestion() {
   if (verbeGameState.currentIndex < verbeGameState.questions.length - 1) {
     verbeGameState.currentIndex++;
     verbeGameState.submitted = false;
+    verbeGameState.attempts = 0;
     const nextQuestion = verbeGameState.questions[verbeGameState.currentIndex];
     verbeGameState.answers = Array(nextQuestion.tokens.length).fill(false);
     renderVerbeQuestion();
@@ -29030,7 +29074,912 @@ function renderVerbeResults() {
   }
 }
 
+function renderPredicatMenu() {
+  showScreen('screen-gram-predicat');
+  const container = document.getElementById('gram-predicat-body');
+  if (!container) return;
+
+  const backMainBtn = document.querySelector('#screen-gram-predicat .gram-predicat-back-main-btn');
+  if (backMainBtn) {
+    backMainBtn.onclick = (e) => {
+      e.preventDefault();
+      showScreen('screen-gram-fonctions');
+      renderGramFonctionsScreen();
+    };
+  }
+
+  container.innerHTML = `
+    <div class="bg-rose-50/50 border-2 border-rose-100 rounded-3xl p-5 mb-6 shadow-[4px_4px_0px_rgba(0,0,0,0.02)]">
+      <p class="text-rose-800 text-sm font-semibold flex items-center gap-2">
+        <span>💡</span> Choisis un exercice ci-dessous pour t'entraîner sur le prédicat dans la phrase.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <!-- EXERCICE 1: REPÉRER LE PREDICAT -->
+      <div class="card cursor-pointer hover:scale-102 transition-all p-6 border-2 border-neutral-900 bg-white hover:bg-neutral-50 rounded-3xl shadow-[4px_4px_0px_rgba(0,0,0,1)] flex flex-col justify-between" id="btn-predicat-ex1">
+        <div>
+          <div class="text-4xl mb-4">📌</div>
+          <h3 class="font-display font-bold text-lg text-neutral-800 mb-2">1. Repérer le prédicat</h3>
+          <p class="text-neutral-500 text-sm leading-relaxed mb-4">Clique sur tous les mots composant le prédicat (le verbe et ses compléments de verbe CDV, CIV ou attributs).</p>
+        </div>
+        <button class="w-full py-2.5 px-4 rounded-xl border-2 border-neutral-900 bg-purple-600 text-white font-display font-bold text-sm shadow-[2px_2px_0px_rgba(0,0,0,1)] active:scale-98 transition-all">
+          Commencer ➔
+        </button>
+      </div>
+
+      <!-- EXERCICE 2: PROCHAINEMENT -->
+      <div class="card p-6 border-2 border-neutral-300 bg-neutral-50 rounded-3xl opacity-75 flex flex-col justify-between select-none">
+        <div>
+          <div class="text-4xl mb-4 opacity-50">✍️</div>
+          <h3 class="font-display font-bold text-lg text-neutral-400 mb-2">2. Accorder l'attribut du sujet</h3>
+          <p class="text-neutral-400 text-sm leading-relaxed mb-4">Bientôt disponible ! Entraîne-toi à accorder correctement l'attribut du sujet avec son sujet.</p>
+        </div>
+        <button disabled class="w-full py-2.5 px-4 rounded-xl border-2 border-neutral-300 bg-neutral-200 text-neutral-400 font-display font-bold text-sm cursor-not-allowed">
+          Bientôt disponible
+        </button>
+      </div>
+    </div>
+  `;
+
+  const ex1Btn = container.querySelector('#btn-predicat-ex1');
+  if (ex1Btn) {
+    ex1Btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      startPredicatExercise();
+    });
+  }
+}
+
+// ==========================================
+// EXERCICE DE REPÉRAGE DU PREDICAT
+// ==========================================
+let predicatGameState = {
+  containerId: 'gram-predicat-body',
+  questions: [],
+  currentIndex: 0,
+  score: 0,
+  answers: [],
+  submitted: false
+};
+
+function startPredicatExercise() {
+  if (!window.EXERCICES_PREDICAT || window.EXERCICES_PREDICAT.length === 0) {
+    console.error("EXERCICES_PREDICAT n'est pas chargé ou est vide.");
+    return;
+  }
+
+  const backMainBtn = document.querySelector('#screen-gram-predicat .gram-predicat-back-main-btn');
+  if (backMainBtn) {
+    backMainBtn.onclick = (e) => {
+      e.preventDefault();
+      renderPredicatMenu();
+    };
+  }
+
+  const verbOnlyPool = window.EXERCICES_PREDICAT.filter(q => q.cat === 'verb_only');
+  const cdvPool = window.EXERCICES_PREDICAT.filter(q => q.cat === 'cdv');
+  const civPool = window.EXERCICES_PREDICAT.filter(q => q.cat === 'civ');
+  const cdvCivPool = window.EXERCICES_PREDICAT.filter(q => q.cat === 'cdv_civ');
+  const attributPool = window.EXERCICES_PREDICAT.filter(q => q.cat === 'attribut');
+
+  const shuffle = (arr) => [...arr].sort(() => 0.5 - Math.random());
+
+  // Tirer exactement 2 de chaque catégorie (2 * 5 = 10 questions)
+  const selectedVerbOnly = shuffle(verbOnlyPool).slice(0, 2);
+  const selectedCdv = shuffle(cdvPool).slice(0, 2);
+  const selectedCiv = shuffle(civPool).slice(0, 2);
+  const selectedCdvCiv = shuffle(cdvCivPool).slice(0, 2);
+  const selectedAttribut = shuffle(attributPool).slice(0, 2);
+
+  // Assembler et mélanger
+  const selection = shuffle([
+    ...selectedVerbOnly,
+    ...selectedCdv,
+    ...selectedCiv,
+    ...selectedCdvCiv,
+    ...selectedAttribut
+  ]);
+
+  predicatGameState = {
+    containerId: 'gram-predicat-body',
+    questions: selection,
+    currentIndex: 0,
+    score: 0,
+    answers: Array(selection[0] ? selection[0].tokens.length : 0).fill(false),
+    submitted: false,
+    attempts: 0
+  };
+
+  showScreen('screen-gram-predicat');
+  renderPredicatQuestion();
+}
+
+function renderPredicatQuestion() {
+  const container = document.getElementById(predicatGameState.containerId);
+  if (!container) return;
+
+  const question = predicatGameState.questions[predicatGameState.currentIndex];
+  if (!question) return;
+
+  const pctProgress = Math.round((predicatGameState.currentIndex / predicatGameState.questions.length) * 100);
+
+  const tokensHtml = question.tokens.map((token, idx) => {
+    if (token.punctuation === true) {
+      return `<span class="text-xl font-bold text-neutral-400 self-end mb-2 select-none">${token.text}</span>`;
+    }
+
+    const isSelected = predicatGameState.answers[idx] === true;
+    let inlineStyle = "";
+
+    if (isSelected) {
+      // Couleur rose/rouge pour le prédicat sélectionné (identique à la couleur du prédicat de l'application)
+      inlineStyle = "border-color: #f43f5e !important; background-color: #ffe4e6 !important; color: #be123c !important;";
+    }
+
+    if (predicatGameState.submitted) {
+      const isCorrectPredicat = token.predicat === true;
+      if (isCorrectPredicat) {
+        if (isSelected) {
+          // Correctement sélectionné -> vert
+          inlineStyle = "border-color: #22c55e !important; background-color: #f0fdf4 !important; color: #15803d !important;";
+        } else {
+          // Manqué -> orange/rouge bordure pointillée
+          inlineStyle = "border-color: #f97316 !important; border-style: dashed !important; background-color: #fff7ed !important; color: #c2410c !important;";
+        }
+      } else {
+        if (isSelected) {
+          // Faussement sélectionné -> rouge foncé
+          inlineStyle = "border-color: #7f1d1d !important; background-color: #fca5a5 !important; color: #7f1d1d !important;";
+        }
+      }
+    }
+
+    let checkIcon = "";
+    if (predicatGameState.submitted) {
+      const isCorrectPredicat = token.predicat === true;
+      if (isSelected && isCorrectPredicat) {
+        checkIcon = `<span class="absolute -top-2 -right-2 bg-green-500 text-white rounded-full text-[10px] w-5 h-5 flex items-center justify-center border-2 border-white shadow-sm font-black">✓</span>`;
+      } else if (isSelected && !isCorrectPredicat) {
+        checkIcon = `<span class="absolute -top-2 -right-2 bg-rose-500 text-white rounded-full text-[10px] w-5 h-5 flex items-center justify-center border-2 border-white shadow-sm font-black">✗</span>`;
+      } else if (!isSelected && isCorrectPredicat) {
+        checkIcon = `<span class="absolute -top-2 -right-2 bg-orange-500 text-white rounded-full text-[10px] w-5 h-5 flex items-center justify-center border-2 border-white shadow-sm font-black">!</span>`;
+      }
+    }
+
+    return `
+      <div class="relative flex items-center">
+        <button
+          ${predicatGameState.submitted ? 'disabled' : ''}
+          style="${inlineStyle}"
+          data-idx="${idx}"
+          class="gram-predicat-word-btn px-4 py-2.5 rounded-2xl border-2 font-sans font-semibold text-lg md:text-xl transition-all duration-150 relative cursor-pointer select-none shadow-[2px_2px_0px_rgba(0,0,0,0.1)] border-neutral-300 bg-white text-neutral-800 hover:bg-neutral-50 hover:scale-102"
+        >
+          ${token.text}
+        </button>
+        ${checkIcon}
+        ${(token.punctuation && token.punctuation !== true) ? `<span class="text-xl font-bold text-neutral-400 select-none px-0.5 self-end mb-2">${token.punctuation}</span>` : ''}
+      </div>
+    `;
+  }).join('');
+
+  let actionBtn = "";
+  if (!predicatGameState.submitted) {
+    const btnLabel = predicatGameState.attempts === 1 ? "Vérifier à nouveau ➔" : "Vérifier ma réponse";
+    actionBtn = `
+      <button class="gram-predicat-verify-btn px-6 py-3 rounded-2xl border-2 border-neutral-900 bg-purple-600 text-white hover:bg-purple-700 font-display font-bold text-sm transition-all cursor-pointer shadow-[2px_2px_0px_rgba(0,0,0,1)] active:scale-95 ml-auto">
+        ${btnLabel}
+      </button>
+    `;
+  } else {
+    actionBtn = `
+      <button class="gram-predicat-next-btn px-6 py-3 rounded-2xl border-2 border-neutral-900 bg-green-600 text-white hover:bg-green-700 font-display font-bold text-sm transition-all cursor-pointer shadow-[2px_2px_0px_rgba(0,0,0,1)] active:scale-95 ml-auto">
+        ${predicatGameState.currentIndex < predicatGameState.questions.length - 1 ? 'Phrase suivante ➔' : 'Voir les résultats ➔'}
+      </button>
+    `;
+  }
+
+  const html = `
+    <div class="quiz-topbar">
+      <div class="quiz-student-badge">
+        ${state.student || 'Enseignant'}
+      </div>
+      <div class="quiz-progress-wrap">
+        <div class="quiz-progress-label">Phrase ${predicatGameState.currentIndex + 1} sur ${predicatGameState.questions.length}</div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: ${pctProgress}%"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-rose-50/50 border-2 border-rose-100 rounded-3xl p-5 mb-6 shadow-[4px_4px_0px_rgba(0,0,0,0.02)]">
+      <div class="flex items-center gap-3 text-rose-800 text-sm font-semibold">
+        <span>💡</span>
+        <span>Clique sur tous les mots faisant partie du prédicat (le verbe et ses compléments essentiels, sans inclure les compléments de phrase ni le sujet).</span>
+      </div>
+    </div>
+
+    <!-- ALERTE DE SECONDE CHANCE -->
+    ${(predicatGameState.attempts === 1 && !predicatGameState.submitted) ? `
+      <div class="bg-amber-50 border-2 border-amber-200 text-amber-950 rounded-2xl p-4 mb-6 shadow-[2px_2px_0px_rgba(0,0,0,0.02)] animate-pulse flex items-center gap-3 font-semibold text-sm">
+        <span>⚠️</span>
+        <span>Ce n'est pas tout à fait correct ! Relis bien la phrase et essaye encore pour ta seconde chance.</span>
+      </div>
+    ` : ''}
+
+    <!-- LA PHRASE -->
+    <div class="bg-white border-2 border-neutral-900 rounded-3xl p-8 md:p-12 mb-6 shadow-[4px_4px_0px_rgba(0,0,0,1)] flex flex-wrap gap-x-2 gap-y-4 justify-center items-center">
+      ${tokensHtml}
+    </div>
+
+    <!-- EXPLICATION CORRECTION -->
+    ${predicatGameState.submitted ? `
+      <div class="bg-neutral-50 rounded-2xl p-5 border-2 border-neutral-900 mb-6 animate-fadeIn shadow-[2px_2px_0px_rgba(0,0,0,1)]">
+        <div class="flex items-start gap-3">
+          <span class="text-2xl">💡</span>
+          <div>
+            <h4 class="font-display font-bold text-neutral-800 mb-1">Explication :</h4>
+            <p class="text-neutral-600 text-sm leading-relaxed">${question.explanation}</p>
+          </div>
+        </div>
+      </div>
+    ` : ''}
+
+    <!-- ZONE D'ACTION -->
+    <div class="flex justify-between items-center border-t border-neutral-200 pt-6">
+      ${actionBtn}
+    </div>
+  `;
+
+  container.innerHTML = html;
+
+  // Lier les événements
+  container.querySelectorAll('.gram-predicat-word-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const idx = parseInt(btn.getAttribute('data-idx'));
+      clickPredicatWord(idx);
+    });
+  });
+
+  const verifyBtn = container.querySelector('.gram-predicat-verify-btn');
+  if (verifyBtn) {
+    verifyBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      verifyPredicatAnswer();
+    });
+  }
+
+  const nextBtn = container.querySelector('.gram-predicat-next-btn');
+  if (nextBtn) {
+    nextBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      nextPredicatQuestion();
+    });
+  }
+}
+
+function clickPredicatWord(wordIndex) {
+  if (predicatGameState.submitted) return;
+  predicatGameState.answers[wordIndex] = !predicatGameState.answers[wordIndex];
+  renderPredicatQuestion();
+}
+
+function verifyPredicatAnswer() {
+  if (predicatGameState.submitted) return;
+
+  const question = predicatGameState.questions[predicatGameState.currentIndex];
+  let isPerfect = true;
+
+  for (let i = 0; i < question.tokens.length; i++) {
+    const t = question.tokens[i];
+    if (t.punctuation === true) continue;
+    const expected = t.predicat === true;
+    const actual = predicatGameState.answers[i] === true;
+    if (expected !== actual) {
+      isPerfect = false;
+      break;
+    }
+  }
+
+  if (isPerfect) {
+    predicatGameState.score++;
+    predicatGameState.submitted = true;
+    renderPredicatQuestion();
+  } else {
+    if (!predicatGameState.attempts) {
+      predicatGameState.attempts = 1;
+      renderPredicatQuestion();
+    } else {
+      predicatGameState.submitted = true;
+      renderPredicatQuestion();
+    }
+  }
+}
+
+function nextPredicatQuestion() {
+  if (predicatGameState.currentIndex < predicatGameState.questions.length - 1) {
+    predicatGameState.currentIndex++;
+    predicatGameState.submitted = false;
+    predicatGameState.attempts = 0;
+    const nextQuestion = predicatGameState.questions[predicatGameState.currentIndex];
+    predicatGameState.answers = Array(nextQuestion.tokens.length).fill(false);
+    renderPredicatQuestion();
+  } else {
+    renderPredicatResults();
+  }
+}
+
+function renderPredicatResults() {
+  const container = document.getElementById(predicatGameState.containerId);
+  if (!container) return;
+
+  const pct = Math.round((predicatGameState.score / predicatGameState.questions.length) * 100);
+
+  let emoji = "💪";
+  let msg = "Pas mal ! Relis tes explications et réessaie !";
+  if (pct === 100) {
+    emoji = "🏆";
+    msg = "Sans faute exceptionnel ! Tu maîtrises le prédicat sur le bout des doigts !";
+  } else if (pct >= 70) {
+    emoji = "⭐️";
+    msg = "Très bon travail, tu distingues bien le prédicat dans les phrases !";
+  }
+
+  container.innerHTML = `
+    <div class="text-center py-8 animate-fadeIn">
+      <div class="inline-flex justify-center items-center bg-rose-100 text-rose-700 w-20 h-20 rounded-full mb-6 border-2 border-rose-300">
+        <span class="text-4xl">${emoji}</span>
+      </div>
+      <h3 class="text-2xl md:text-3xl font-display font-bold text-neutral-800 mb-2">
+        Entraînement Terminé !
+      </h3>
+      <p class="text-neutral-500 mb-6 max-w-md mx-auto">
+        Tu as complété le repérage du prédicat de la phrase. Voici ton résultat :
+      </p>
+
+      <div class="bg-rose-50/60 border-2 border-rose-200 rounded-3xl p-6 max-w-sm mx-auto mb-8 shadow-[4px_4px_0px_rgba(0,0,0,0.05)]">
+        <div class="text-5xl font-display font-black text-rose-700 mb-2">
+          ${predicatGameState.score} <span class="text-2xl text-rose-400 font-normal">/ ${predicatGameState.questions.length}</span>
+        </div>
+        <div class="text-sm font-semibold text-rose-800">
+          ${msg}
+        </div>
+      </div>
+
+      <div class="flex flex-wrap gap-3 justify-center">
+        <button
+          class="gram-predicat-restart-btn flex items-center gap-2 px-5 py-2.5 rounded-2xl border-2 border-neutral-900 text-neutral-800 hover:bg-neutral-50 font-display font-bold text-sm transition-all cursor-pointer shadow-[2px_2px_0px_rgba(0,0,0,1)] bg-white active:scale-95"
+        >
+          🔄 Recommencer
+        </button>
+        <button
+          class="gram-predicat-back-btn px-5 py-2.5 rounded-2xl border-2 border-neutral-900 bg-purple-600 text-white hover:bg-purple-700 font-display font-bold text-sm transition-all cursor-pointer shadow-[2px_2px_0px_rgba(0,0,0,1)] active:scale-95"
+        >
+          Retourner aux fonctions
+        </button>
+      </div>
+    </div>
+  `;
+
+  const restartBtn = container.querySelector('.gram-predicat-restart-btn');
+  if (restartBtn) {
+    restartBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      startPredicatExercise();
+    });
+  }
+
+  const backBtn = container.querySelector('.gram-predicat-back-btn');
+  if (backBtn) {
+    backBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      renderPredicatMenu();
+    });
+  }
+
+  if (state.student) {
+    saveResult({
+      student: state.student,
+      cls: state.studentCls,
+      className: CLASSES[state.studentCls] ? CLASSES[state.studentCls].name : state.studentCls,
+      activity: 'predicat_phrase',
+      bookTitle: `Grammaire — Repérer le prédicat`,
+      score: predicatGameState.score,
+      total: predicatGameState.questions.length,
+      pct,
+      date: new Date().toLocaleDateString('fr-BE'),
+      time: new Date().toLocaleTimeString('fr-BE', {hour:'2-digit', minute:'2-digit'})
+    });
+  }
+}
+
+// ==========================================
+// EXERCICE DE REPÉRAGE DU CDV ET DU CIV
+// ==========================================
+let cdvCivGameState = {
+  containerId: 'gram-cdv-civ-body',
+  questions: [],
+  currentIndex: 0,
+  score: 0,
+  answers: [],
+  activeTag: 'cdv',
+  submitted: false,
+  attempts: 0
+};
+
+function renderCdvCivMenu() {
+  const container = document.getElementById('gram-cdv-civ-body');
+  if (!container) return;
+
+  const backMainBtn = document.querySelector('#screen-gram-cdv-civ .gram-cdv-civ-back-main-btn');
+  if (backMainBtn) {
+    backMainBtn.onclick = (e) => {
+      e.preventDefault();
+      showScreen('screen-gram-fonctions');
+      renderGramFonctionsScreen();
+    };
+  }
+
+  container.innerHTML = `
+    <div class="bg-purple-50/50 border-2 border-purple-100 rounded-3xl p-5 mb-6 shadow-[4px_4px_0px_rgba(0,0,0,0.02)]">
+      <p class="text-purple-800 text-sm font-semibold flex items-center gap-2">
+        <span>💡</span> Choisis un exercice ci-dessous pour t'entraîner sur les Compléments de verbe (CDV et CIV).
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <!-- EXERCICE 1: CDV / CIV -->
+      <div class="card cursor-pointer hover:scale-102 transition-all p-6 border-2 border-neutral-900 bg-white hover:bg-neutral-50 rounded-3xl shadow-[4px_4px_0px_rgba(0,0,0,1)] flex flex-col justify-between" id="btn-cdv-civ-ex1">
+        <div>
+          <div class="text-4xl mb-4">🔀</div>
+          <h3 class="font-display font-bold text-lg text-neutral-800 mb-2">1. Repérer le CDV et le CIV</h3>
+          <p class="text-neutral-500 text-sm leading-relaxed mb-4">Surligne le CDV en jaune et le CIV en orange dans les phrases proposées.</p>
+        </div>
+        <button class="w-full py-2.5 px-4 rounded-xl border-2 border-neutral-900 bg-purple-600 text-white font-display font-bold text-sm shadow-[2px_2px_0px_rgba(0,0,0,1)] active:scale-98 transition-all">
+          Commencer ➔
+        </button>
+      </div>
+
+      <!-- EXERCICE 2: PROCHAINEMENT -->
+      <div class="card p-6 border-2 border-neutral-300 bg-neutral-50 rounded-3xl opacity-75 flex flex-col justify-between select-none">
+        <div>
+          <div class="text-4xl mb-4 opacity-50">📝</div>
+          <h3 class="font-display font-bold text-lg text-neutral-400 mb-2">2. Remplacer par un pronom</h3>
+          <p class="text-neutral-400 text-sm leading-relaxed mb-4">Bientôt disponible ! Entraîne-toi à pronominaliser correctement les CDV et CIV.</p>
+        </div>
+        <button disabled class="w-full py-2.5 px-4 rounded-xl border-2 border-neutral-300 bg-neutral-200 text-neutral-400 font-display font-bold text-sm cursor-not-allowed">
+          Bientôt disponible
+        </button>
+      </div>
+    </div>
+  `;
+
+  const ex1Btn = container.querySelector('#btn-cdv-civ-ex1');
+  if (ex1Btn) {
+    ex1Btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      startCdvCivExercise();
+    });
+  }
+}
+
+function startCdvCivExercise() {
+  if (!window.EXERCICES_CDV_CIV || window.EXERCICES_CDV_CIV.length === 0) {
+    console.error("EXERCICES_CDV_CIV n'est pas chargé ou est vide.");
+    return;
+  }
+
+  const backMainBtn = document.querySelector('#screen-gram-cdv-civ .gram-cdv-civ-back-main-btn');
+  if (backMainBtn) {
+    backMainBtn.onclick = (e) => {
+      e.preventDefault();
+      renderCdvCivMenu();
+    };
+  }
+
+  const onlyCdvPool = window.EXERCICES_CDV_CIV.filter(q => q.cat === 'only_cdv');
+  const onlyCivPool = window.EXERCICES_CDV_CIV.filter(q => q.cat === 'only_civ');
+  const bothPool = window.EXERCICES_CDV_CIV.filter(q => q.cat === 'both');
+  const pronomPool = window.EXERCICES_CDV_CIV.filter(q => q.cat === 'pronominalized');
+  const pronomCdvCompleteCivPool = window.EXERCICES_CDV_CIV.filter(q => q.cat === 'pronom_cdv_complete_civ');
+
+  const shuffle = (arr) => [...arr].sort(() => 0.5 - Math.random());
+
+  // Tirer exactement 2 de chaque catégorie (2 * 5 = 10 questions)
+  const selectedCdv = shuffle(onlyCdvPool).slice(0, 2);
+  const selectedCiv = shuffle(onlyCivPool).slice(0, 2);
+  const selectedBoth = shuffle(bothPool).slice(0, 2);
+  const selectedPronom = shuffle(pronomPool).slice(0, 2);
+  const selectedPronomCdvCompleteCiv = shuffle(pronomCdvCompleteCivPool).slice(0, 2);
+
+  const selection = shuffle([
+    ...selectedCdv,
+    ...selectedCiv,
+    ...selectedBoth,
+    ...selectedPronom,
+    ...selectedPronomCdvCompleteCiv
+  ]);
+
+  cdvCivGameState = {
+    containerId: 'gram-cdv-civ-body',
+    questions: selection,
+    currentIndex: 0,
+    score: 0,
+    answers: Array(selection[0] ? selection[0].tokens.length : 0).fill(null),
+    activeTag: 'cdv',
+    submitted: false,
+    attempts: 0
+  };
+
+  showScreen('screen-gram-cdv-civ');
+  renderCdvCivQuestion();
+}
+
+function renderCdvCivQuestion() {
+  const container = document.getElementById(cdvCivGameState.containerId);
+  if (!container) return;
+
+  const question = cdvCivGameState.questions[cdvCivGameState.currentIndex];
+  if (!question) return;
+
+  const pctProgress = Math.round((cdvCivGameState.currentIndex / cdvCivGameState.questions.length) * 100);
+
+  const tokensHtml = question.tokens.map((token, idx) => {
+    if (token.punctuation === true) {
+      return `<span class="text-xl font-bold text-neutral-400 self-end mb-2 select-none">${token.text}</span>`;
+    }
+
+    const currentAnswer = cdvCivGameState.answers[idx];
+    let inlineStyle = "";
+
+    if (currentAnswer === 'cdv') {
+      // Jaune pour CDV
+      inlineStyle = "border-color: #eab308 !important; background-color: #fef9c3 !important; color: #854d0e !important;";
+    } else if (currentAnswer === 'civ') {
+      // Orange pour CIV
+      inlineStyle = "border-color: #f97316 !important; background-color: #fff7ed !important; color: #c2410c !important;";
+    }
+
+    if (cdvCivGameState.submitted) {
+      const isCorrectCdv = token.cdv === true;
+      const isCorrectCiv = token.civ === true;
+
+      if (isCorrectCdv) {
+        if (currentAnswer === 'cdv') {
+          // CDV bien trouvé -> vert
+          inlineStyle = "border-color: #22c55e !important; background-color: #f0fdf4 !important; color: #15803d !important;";
+        } else {
+          // Manqué -> jaune pointillé
+          inlineStyle = "border-color: #eab308 !important; border-style: dashed !important; background-color: #fef9c3 !important; color: #854d0e !important;";
+        }
+      } else if (isCorrectCiv) {
+        if (currentAnswer === 'civ') {
+          // CIV bien trouvé -> vert
+          inlineStyle = "border-color: #22c55e !important; background-color: #f0fdf4 !important; color: #15803d !important;";
+        } else {
+          // Manqué -> orange pointillé
+          inlineStyle = "border-color: #f97316 !important; border-style: dashed !important; background-color: #fff7ed !important; color: #c2410c !important;";
+        }
+      } else {
+        if (currentAnswer !== null) {
+          // Faux -> rouge
+          inlineStyle = "border-color: #ef4444 !important; background-color: #fef2f2 !important; color: #b91c1c !important;";
+        }
+      }
+    }
+
+    let checkIcon = "";
+    if (cdvCivGameState.submitted) {
+      const isCorrectCdv = token.cdv === true;
+      const isCorrectCiv = token.civ === true;
+
+      if (isCorrectCdv) {
+        if (currentAnswer === 'cdv') {
+          checkIcon = `<span class="absolute -top-2 -right-2 bg-green-500 text-white rounded-full text-[10px] w-5 h-5 flex items-center justify-center border-2 border-white shadow-sm font-black">✓</span>`;
+        } else {
+          checkIcon = `<span class="absolute -top-2 -right-2 bg-yellow-500 text-white rounded-full text-[10px] w-5 h-5 flex items-center justify-center border-2 border-white shadow-sm font-black">!</span>`;
+        }
+      } else if (isCorrectCiv) {
+        if (currentAnswer === 'civ') {
+          checkIcon = `<span class="absolute -top-2 -right-2 bg-green-500 text-white rounded-full text-[10px] w-5 h-5 flex items-center justify-center border-2 border-white shadow-sm font-black">✓</span>`;
+        } else {
+          checkIcon = `<span class="absolute -top-2 -right-2 bg-orange-500 text-white rounded-full text-[10px] w-5 h-5 flex items-center justify-center border-2 border-white shadow-sm font-black">!</span>`;
+        }
+      } else {
+        if (currentAnswer !== null) {
+          checkIcon = `<span class="absolute -top-2 -right-2 bg-rose-500 text-white rounded-full text-[10px] w-5 h-5 flex items-center justify-center border-2 border-white shadow-sm font-black">✗</span>`;
+        }
+      }
+    }
+
+    return `
+      <div class="relative flex items-center">
+        <button
+          ${cdvCivGameState.submitted ? 'disabled' : ''}
+          style="${inlineStyle}"
+          data-idx="${idx}"
+          class="gram-cdv-civ-word-btn px-4 py-2.5 rounded-2xl border-2 font-sans font-semibold text-lg md:text-xl transition-all duration-150 relative cursor-pointer select-none shadow-[2px_2px_0px_rgba(0,0,0,0.1)] border-neutral-300 bg-white text-neutral-800 hover:bg-neutral-50 hover:scale-102"
+        >
+          ${token.text}
+        </button>
+        ${checkIcon}
+        ${(token.punctuation && token.punctuation !== true) ? `<span class="text-xl font-bold text-neutral-400 select-none px-0.5 self-end mb-2">${token.punctuation}</span>` : ''}
+      </div>
+    `;
+  }).join('');
+
+  let actionBtn = "";
+  if (!cdvCivGameState.submitted) {
+    const btnLabel = cdvCivGameState.attempts === 1 ? "Vérifier à nouveau ➔" : "Vérifier ma réponse";
+    actionBtn = `
+      <button class="gram-cdv-civ-verify-btn px-6 py-3 rounded-2xl border-2 border-neutral-900 bg-purple-600 text-white hover:bg-purple-700 font-display font-bold text-sm transition-all cursor-pointer shadow-[2px_2px_0px_rgba(0,0,0,1)] active:scale-95 ml-auto">
+        ${btnLabel}
+      </button>
+    `;
+  } else {
+    actionBtn = `
+      <button class="gram-cdv-civ-next-btn px-6 py-3 rounded-2xl border-2 border-neutral-900 bg-green-600 text-white hover:bg-green-700 font-display font-bold text-sm transition-all cursor-pointer shadow-[2px_2px_0px_rgba(0,0,0,1)] active:scale-95 ml-auto">
+        ${cdvCivGameState.currentIndex < cdvCivGameState.questions.length - 1 ? 'Phrase suivante ➔' : 'Voir les résultats ➔'}
+      </button>
+    `;
+  }
+
+  // Barre d'outils de sélection sous la phrase :
+  const selectToolHtml = `
+    <div class="flex flex-wrap gap-4 justify-center items-center mb-6">
+      <span class="text-sm font-bold text-neutral-500">Outil de coloriage :</span>
+      <button
+        ${cdvCivGameState.submitted ? 'disabled' : ''}
+        onclick="window.selectCdvCivActiveTag('cdv')"
+        class="px-5 py-2.5 rounded-2xl border-2 font-display font-bold text-sm transition-all cursor-pointer shadow-[2px_2px_0px_rgba(0,0,0,1)] active:scale-95 flex items-center gap-2
+        ${cdvCivGameState.activeTag === 'cdv' ? 'bg-yellow-400 text-yellow-950 border-neutral-900 scale-105 shadow-[4px_4px_0px_rgba(0,0,0,1)]' : 'bg-yellow-100 text-yellow-800 border-yellow-300 opacity-60 hover:opacity-100'}"
+      >
+        🟡 Surligner le CDV
+      </button>
+      <button
+        ${cdvCivGameState.submitted ? 'disabled' : ''}
+        onclick="window.selectCdvCivActiveTag('civ')"
+        class="px-5 py-2.5 rounded-2xl border-2 font-display font-bold text-sm transition-all cursor-pointer shadow-[2px_2px_0px_rgba(0,0,0,1)] active:scale-95 flex items-center gap-2
+        ${cdvCivGameState.activeTag === 'civ' ? 'bg-orange-400 text-orange-950 border-neutral-900 scale-105 shadow-[4px_4px_0px_rgba(0,0,0,1)]' : 'bg-orange-100 text-orange-800 border-orange-300 opacity-60 hover:opacity-100'}"
+      >
+        🟠 Surligner le CIV
+      </button>
+    </div>
+  `;
+
+  const html = `
+    <div class="quiz-topbar">
+      <div class="quiz-student-badge">
+        ${state.student || 'Enseignant'}
+      </div>
+      <div class="quiz-progress-wrap">
+        <div class="quiz-progress-label">Phrase ${cdvCivGameState.currentIndex + 1} sur ${cdvCivGameState.questions.length}</div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: ${pctProgress}%"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-purple-50/50 border-2 border-purple-100 rounded-3xl p-5 mb-6 shadow-[4px_4px_0px_rgba(0,0,0,0.02)]">
+      <div class="flex items-center gap-3 text-purple-800 text-sm font-semibold">
+        <span>💡</span>
+        <span>Sélectionne l'outil (CDV en jaune ou CIV en orange) sous la phrase, puis clique sur les mots correspondants.</span>
+      </div>
+    </div>
+
+    <!-- ALERTE DE SECONDE CHANCE -->
+    ${(cdvCivGameState.attempts === 1 && !cdvCivGameState.submitted) ? `
+      <div class="bg-amber-50 border-2 border-amber-200 text-amber-950 rounded-2xl p-4 mb-6 shadow-[2px_2px_0px_rgba(0,0,0,0.02)] animate-pulse flex items-center gap-3 font-semibold text-sm">
+        <span>⚠️</span>
+        <span>Ce n'est pas tout à fait correct ! Relis bien la phrase et essaye encore pour ta seconde chance.</span>
+      </div>
+    ` : ''}
+
+    <!-- LA PHRASE -->
+    <div class="bg-white border-2 border-neutral-900 rounded-3xl p-8 md:p-12 mb-6 shadow-[4px_4px_0px_rgba(0,0,0,1)] flex flex-wrap gap-x-2 gap-y-4 justify-center items-center">
+      ${tokensHtml}
+    </div>
+
+    <!-- OUTIL DE SELECTION -->
+    ${selectToolHtml}
+
+    <!-- EXPLICATION CORRECTION -->
+    ${cdvCivGameState.submitted ? `
+      <div class="bg-neutral-50 rounded-2xl p-5 border-2 border-neutral-900 mb-6 animate-fadeIn shadow-[2px_2px_0px_rgba(0,0,0,1)]">
+        <div class="flex items-start gap-3">
+          <span class="text-2xl">💡</span>
+          <div>
+            <h4 class="font-display font-bold text-neutral-800 mb-1">Explication :</h4>
+            <p class="text-neutral-600 text-sm leading-relaxed">${question.explanation}</p>
+          </div>
+        </div>
+      </div>
+    ` : ''}
+
+    <!-- ZONE D'ACTION -->
+    <div class="flex justify-between items-center border-t border-neutral-200 pt-6">
+      ${actionBtn}
+    </div>
+  `;
+
+  container.innerHTML = html;
+
+  // Lier les événements
+  container.querySelectorAll('.gram-cdv-civ-word-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const idx = parseInt(btn.getAttribute('data-idx'));
+      clickCdvCivWord(idx);
+    });
+  });
+
+  const verifyBtn = container.querySelector('.gram-cdv-civ-verify-btn');
+  if (verifyBtn) {
+    verifyBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      verifyCdvCivAnswer();
+    });
+  }
+
+  const nextBtn = container.querySelector('.gram-cdv-civ-next-btn');
+  if (nextBtn) {
+    nextBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      nextCdvCivQuestion();
+    });
+  }
+}
+
+function clickCdvCivWord(wordIndex) {
+  if (cdvCivGameState.submitted) return;
+  const current = cdvCivGameState.answers[wordIndex];
+  const active = cdvCivGameState.activeTag;
+  
+  if (current === active) {
+    cdvCivGameState.answers[wordIndex] = null;
+  } else {
+    cdvCivGameState.answers[wordIndex] = active;
+  }
+  
+  renderCdvCivQuestion();
+}
+
+function selectCdvCivActiveTag(tag) {
+  if (cdvCivGameState.submitted) return;
+  cdvCivGameState.activeTag = tag;
+  renderCdvCivQuestion();
+}
+
+function verifyCdvCivAnswer() {
+  if (cdvCivGameState.submitted) return;
+
+  const question = cdvCivGameState.questions[cdvCivGameState.currentIndex];
+  let isPerfect = true;
+
+  for (let i = 0; i < question.tokens.length; i++) {
+    const t = question.tokens[i];
+    if (t.punctuation === true) continue;
+    
+    let expected = null;
+    if (t.cdv === true) expected = 'cdv';
+    else if (t.civ === true) expected = 'civ';
+
+    const actual = cdvCivGameState.answers[i];
+    if (expected !== actual) {
+      isPerfect = false;
+      break;
+    }
+  }
+
+  if (isPerfect) {
+    cdvCivGameState.score++;
+    cdvCivGameState.submitted = true;
+    renderCdvCivQuestion();
+  } else {
+    if (!cdvCivGameState.attempts) {
+      cdvCivGameState.attempts = 1;
+      renderCdvCivQuestion();
+    } else {
+      cdvCivGameState.submitted = true;
+      renderCdvCivQuestion();
+    }
+  }
+}
+
+function nextCdvCivQuestion() {
+  if (cdvCivGameState.currentIndex < cdvCivGameState.questions.length - 1) {
+    cdvCivGameState.currentIndex++;
+    cdvCivGameState.submitted = false;
+    cdvCivGameState.attempts = 0;
+    const nextQuestion = cdvCivGameState.questions[cdvCivGameState.currentIndex];
+    cdvCivGameState.answers = Array(nextQuestion.tokens.length).fill(null);
+    renderCdvCivQuestion();
+  } else {
+    renderCdvCivResults();
+  }
+}
+
+function renderCdvCivResults() {
+  const container = document.getElementById(cdvCivGameState.containerId);
+  if (!container) return;
+
+  const pct = Math.round((cdvCivGameState.score / cdvCivGameState.questions.length) * 100);
+
+  let msg = "Continue à t'entraîner, tu vas y arriver ! 💪";
+  if (pct === 100) msg = "Parfait ! Tu maîtrises parfaitement le CDV et le CIV ! 👑🏆";
+  else if (pct >= 80) msg = "Excellent travail ! C'est presque parfait ! 🌟";
+  else if (pct >= 50) msg = "Bon travail ! Poursuis tes efforts ! 👍";
+
+  container.innerHTML = `
+    <div class="card p-8 text-center border-2 border-neutral-900 bg-white rounded-3xl shadow-[4px_4px_0px_rgba(0,0,0,1)] animate-fadeIn">
+      <div class="text-6xl mb-4">🏆</div>
+      <h3 class="font-display font-black text-2xl text-neutral-800 mb-2">Exercice terminé !</h3>
+      <p class="text-neutral-500 mb-6">Voici ton score pour : <strong>Repérer le CDV et le CIV</strong></p>
+
+      <div class="bg-purple-50/60 border-2 border-purple-200 rounded-3xl p-6 max-w-sm mx-auto mb-8 shadow-[4px_4px_0px_rgba(0,0,0,0.05)]">
+        <div class="text-5xl font-display font-black text-purple-700 mb-2">
+          ${cdvCivGameState.score} <span class="text-2xl text-purple-400 font-normal">/ ${cdvCivGameState.questions.length}</span>
+        </div>
+        <div class="text-sm font-semibold text-purple-800">
+          ${msg}
+        </div>
+      </div>
+
+      <div class="flex flex-wrap gap-3 justify-center">
+        <button
+          class="gram-cdv-civ-restart-btn flex items-center gap-2 px-5 py-2.5 rounded-2xl border-2 border-neutral-900 text-neutral-800 hover:bg-neutral-50 font-display font-bold text-sm transition-all cursor-pointer shadow-[2px_2px_0px_rgba(0,0,0,1)] bg-white active:scale-95"
+        >
+          🔄 Recommencer
+        </button>
+        <button
+          class="gram-cdv-civ-back-btn px-5 py-2.5 rounded-2xl border-2 border-neutral-900 bg-purple-600 text-white hover:bg-purple-700 font-display font-bold text-sm transition-all cursor-pointer shadow-[2px_2px_0px_rgba(0,0,0,1)] active:scale-95"
+        >
+          Retourner aux fonctions
+        </button>
+      </div>
+    </div>
+  `;
+
+  const restartBtn = container.querySelector('.gram-cdv-civ-restart-btn');
+  if (restartBtn) {
+    restartBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      startCdvCivExercise();
+    });
+  }
+
+  const backBtn = container.querySelector('.gram-cdv-civ-back-btn');
+  if (backBtn) {
+    backBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      renderCdvCivMenu();
+    });
+  }
+
+  if (state.student) {
+    saveResult({
+      student: state.student,
+      cls: state.studentCls,
+      className: CLASSES[state.studentCls] ? CLASSES[state.studentCls].name : state.studentCls,
+      activity: 'cdv_civ_phrase',
+      bookTitle: `Grammaire — Repérer le CDV et le CIV`,
+      score: cdvCivGameState.score,
+      total: cdvCivGameState.questions.length,
+      pct,
+      date: new Date().toLocaleDateString('fr-BE'),
+      time: new Date().toLocaleTimeString('fr-BE', {hour:'2-digit', minute:'2-digit'})
+    });
+  }
+}
+
 // Exposer les fonctions au scope global pour être appelées par l'HTML
+window.renderCdvCivMenu = renderCdvCivMenu;
+window.startCdvCivExercise = startCdvCivExercise;
+window.clickCdvCivWord = clickCdvCivWord;
+window.selectCdvCivActiveTag = selectCdvCivActiveTag;
+window.verifyCdvCivAnswer = verifyCdvCivAnswer;
+window.nextCdvCivQuestion = nextCdvCivQuestion;
 window.renderSujetMenu = renderSujetMenu;
 window.startSujetExercise = startSujetExercise;
 window.clickSujetWord = clickSujetWord;
@@ -29042,6 +29991,12 @@ window.startVerbeExercise = startVerbeExercise;
 window.clickVerbeWord = clickVerbeWord;
 window.verifyVerbeAnswer = verifyVerbeAnswer;
 window.nextVerbeQuestion = nextVerbeQuestion;
+
+window.renderPredicatMenu = renderPredicatMenu;
+window.startPredicatExercise = startPredicatExercise;
+window.clickPredicatWord = clickPredicatWord;
+window.verifyPredicatAnswer = verifyPredicatAnswer;
+window.nextPredicatQuestion = nextPredicatQuestion;
 
 // Exposer les fonctions d'analyse de phrase au scope global pour être appelées par l'HTML
 window.startAnalyseGlobale = startAnalyseGlobale;

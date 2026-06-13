@@ -2241,3 +2241,1202 @@ window.EXERCICES_VERBE = [
     explanation: "Le verbe principal est le verbe composé passif « a été remporté » (verbe remporter au passé composé passif). L'adverbe « brillamment » ne fait pas partie du verbe."
   }
 ];
+
+window.EXERCICES_PREDICAT = [
+  // --- VERB_ONLY (8 phrases) ---
+  {
+    text: "Depuis ce matin , Julie travaille .",
+    cat: "verb_only",
+    tokens: [
+      { text: "Depuis" },
+      { text: "ce" },
+      { text: "matin", punctuation: "," },
+      { text: "Julie" },
+      { text: "travaille", predicat: true },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est « Julie » et le complément de phrase est « Depuis ce matin ». Le prédicat est composé du verbe seul « travaille »."
+  },
+  {
+    text: "Sous la pluie , les piétons courent .",
+    cat: "verb_only",
+    tokens: [
+      { text: "Sous" },
+      { text: "la" },
+      { text: "pluie", punctuation: "," },
+      { text: "les" },
+      { text: "piétons" },
+      { text: "courent", predicat: true },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est « les piétons » et le complément de phrase est « Sous la pluie ». Le prédicat est composé du verbe seul « courent »."
+  },
+  {
+    text: "Demain matin , nous partirons .",
+    cat: "verb_only",
+    tokens: [
+      { text: "Demain" },
+      { text: "matin", punctuation: "," },
+      { text: "nous" },
+      { text: "partirons", predicat: true },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est « nous » et le complément de phrase est « Demain matin ». Le prédicat est composé du verbe seul « partirons »."
+  },
+  {
+    text: "Dans la cour , les enfants jouent .",
+    cat: "verb_only",
+    tokens: [
+      { text: "Dans" },
+      { text: "la" },
+      { text: "cour", punctuation: "," },
+      { text: "les" },
+      { text: "enfants" },
+      { text: "jouent", predicat: true },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est « les enfants » et le complément de phrase est « Dans la cour ». Le prédicat est composé du verbe seul « jouent »."
+  },
+  {
+    text: "Sans hésiter , le lion a bondi .",
+    cat: "verb_only",
+    tokens: [
+      { text: "Sans" },
+      { text: "hésiter", punctuation: "," },
+      { text: "le" },
+      { text: "lion" },
+      { text: "a", predicat: true },
+      { text: "bondi", predicat: true },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est « le lion » et le complément de phrase est « Sans hésiter ». Le prédicat est le verbe composé « a bondi »."
+  },
+  {
+    text: "Dans le nid , les oisillons chantaient .",
+    cat: "verb_only",
+    tokens: [
+      { text: "Dans" },
+      { text: "le" },
+      { text: "nid", punctuation: "," },
+      { text: "les" },
+      { text: "oisillons" },
+      { text: "chantaient", predicat: true },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est « les oisillons » et le complément de phrase est « Dans le nid ». Le prédicat est composé du verbe seul « chantaient »."
+  },
+  {
+    text: "Depuis deux jours , la neige est tombée .",
+    cat: "verb_only",
+    tokens: [
+      { text: "Depuis" },
+      { text: "deux" },
+      { text: "jours", punctuation: "," },
+      { text: "la" },
+      { text: "neige" },
+      { text: "est", predicat: true },
+      { text: "tombée", predicat: true },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est « la neige » et le complément de phrase est « Depuis deux jours ». Le prédicat est le verbe composé « est tombée »."
+  },
+  {
+    text: "Malgré le froid , le randonneur marchait .",
+    cat: "verb_only",
+    tokens: [
+      { text: "Malgré" },
+      { text: "le" },
+      { text: "froid", punctuation: "," },
+      { text: "le" },
+      { text: "randonneur" },
+      { text: "marchait", predicat: true },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est « le randonneur » et le complément de phrase est « Malgré le froid ». Le prédicat est composé du verbe seul « marchait »."
+  },
+
+  // --- CDV (8 phrases) ---
+  {
+    text: "Chaque matin , mon frère lit le journal .",
+    cat: "cdv",
+    tokens: [
+      { text: "Chaque" },
+      { text: "matin", punctuation: "," },
+      { text: "mon" },
+      { text: "frère" },
+      { text: "lit", predicat: true },
+      { text: "le", predicat: true },
+      { text: "journal", predicat: true },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est « mon frère » et le complément de phrase est « Chaque matin ». Le prédicat est « lit le journal » (verbe + son complément direct du verbe CDV)."
+  },
+  {
+    text: "Dans la cuisine , maman prépare une tarte .",
+    cat: "cdv",
+    tokens: [
+      { text: "Dans" },
+      { text: "la" },
+      { text: "cuisine", punctuation: "," },
+      { text: "maman" },
+      { text: "prépare", predicat: true },
+      { text: "une", predicat: true },
+      { text: "tarte", predicat: true },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est « maman » et le complément de phrase est « Dans la cuisine ». Le prédicat est « prépare une tarte » (verbe + son complément direct du verbe CDV)."
+  },
+  {
+    text: "Hier soir , les élèves ont fini leurs devoirs .",
+    cat: "cdv",
+    tokens: [
+      { text: "Hier" },
+      { text: "soir", punctuation: "," },
+      { text: "les" },
+      { text: "élèves" },
+      { text: "ont", predicat: true },
+      { text: "fini", predicat: true },
+      { text: "leurs", predicat: true },
+      { text: "devoirs", predicat: true },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est « les élèves » et le complément de phrase est « Hier soir ». Le prédicat est « ont fini leurs devoirs » (verbe composé + son complément direct du verbe CDV)."
+  },
+  {
+    text: "Sur la table , le chat mange sa pâtée .",
+    cat: "cdv",
+    tokens: [
+      { text: "Sur" },
+      { text: "la" },
+      { text: "table", punctuation: "," },
+      { text: "le" },
+      { text: "chat" },
+      { text: "mange", predicat: true },
+      { text: "sa", predicat: true },
+      { text: "pâtée", predicat: true },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est « le chat » et le complément de phrase est « Sur la table ». Le prédicat est « mange sa pâtée » (verbe + son complément direct du verbe CDV)."
+  },
+  {
+    text: "Avec soin , l' artist dessine un portrait .",
+    cat: "cdv",
+    tokens: [
+      { text: "Avec" },
+      { text: "soin", punctuation: "," },
+      { text: "l'" },
+      { text: "artist" },
+      { text: "dessine", predicat: true },
+      { text: "un", predicat: true },
+      { text: "portrait", predicat: true },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est « l'artiste » et le complément de phrase est « Avec soin ». Le prédicat est « dessine un portrait » (verbe + son complément direct du verbe CDV)."
+  },
+  {
+    text: "Dans le garage , mon père répare la voiture .",
+    cat: "cdv",
+    tokens: [
+      { text: "Dans" },
+      { text: "le" },
+      { text: "garage", punctuation: "," },
+      { text: "mon" },
+      { text: "père" },
+      { text: "répare", predicat: true },
+      { text: "la", predicat: true },
+      { text: "voiture", predicat: true },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est « mon père » et le complément de phrase est « Dans le garage ». Le prédicat est « répare la voiture » (verbe + son complément direct du verbe CDV)."
+  },
+  {
+    text: "Depuis midi , la pluie bat les vitres .",
+    cat: "cdv",
+    tokens: [
+      { text: "Depuis" },
+      { text: "midi", punctuation: "," },
+      { text: "la" },
+      { text: "pluie" },
+      { text: "bat", predicat: true },
+      { text: "les", predicat: true },
+      { text: "vitres", predicat: true },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est « la pluie » et le complément de phrase est « Depuis midi ». Le prédicat est « bat les vitres » (verbe + son complément direct du verbe CDV)."
+  },
+  {
+    text: "Pendant les vacances , Julie a visité un musée .",
+    cat: "cdv",
+    tokens: [
+      { text: "Pendant" },
+      { text: "les" },
+      { text: "vacances", punctuation: "," },
+      { text: "Julie" },
+      { text: "a", predicat: true },
+      { text: "visité", predicat: true },
+      { text: "un", predicat: true },
+      { text: "musée", predicat: true },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est « Julie » et le complément de phrase est « Pendant les vacances ». Le prédicat est « a visité un musée » (verbe composé + son complément direct du verbe CDV)."
+  },
+
+  // --- CIV (8 phrases) ---
+  {
+    text: "Depuis une heure , le bébé sourit à sa mère .",
+    cat: "civ",
+    tokens: [
+      { text: "Depuis" },
+      { text: "une" },
+      { text: "heure", punctuation: "," },
+      { text: "le" },
+      { text: "bébé" },
+      { text: "sourit", predicat: true },
+      { text: "à", predicat: true },
+      { text: "sa", predicat: true },
+      { text: "mère", predicat: true },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est « le bébé » et le complément de phrase est « Depuis une heure ». Le prédicat est « sourit à sa mère » (verbe + son complément indirect du verbe CIV)."
+  },
+  {
+    text: "Chaque dimanche , les enfants téléphonent à leurs grands-parents .",
+    cat: "civ",
+    tokens: [
+      { text: "Chaque" },
+      { text: "dimanche", punctuation: "," },
+      { text: "les" },
+      { text: "enfants" },
+      { text: "téléphonent", predicat: true },
+      { text: "à", predicat: true },
+      { text: "leurs", predicat: true },
+      { text: "grands-parents", predicat: true },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est « les enfants » et le complément de phrase est « Chaque dimanche ». Le prédicat est « téléphonent à leurs grands-parents » (verbe + son complément indirect du verbe CIV)."
+  },
+  {
+    text: "À la récréation , Paul parle à son ami .",
+    cat: "civ",
+    tokens: [
+      { text: "À" },
+      { text: "la" },
+      { text: "récréation", punctuation: "," },
+      { text: "Paul" },
+      { text: "parle", predicat: true },
+      { text: "à", predicat: true },
+      { text: "son", predicat: true },
+      { text: "ami", predicat: true },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est « Paul » et le complément de phrase est « À la récréation ». Le prédicat est « parle à son ami » (verbe + son complément indirect du verbe CIV)."
+  },
+  {
+    text: "Dans sa lettre , elle pense à ses vacances .",
+    cat: "civ",
+    tokens: [
+      { text: "Dans" },
+      { text: "sa" },
+      { text: "lettre", punctuation: "," },
+      { text: "elle" },
+      { text: "pense", predicat: true },
+      { text: "à", predicat: true },
+      { text: "ses", predicat: true },
+      { text: "vacances", predicat: true },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est « elle » et le complément de phrase est « Dans sa lettre ». Le prédicat est « pense à ses vacances » (verbe + son complément indirect du verbe CIV)."
+  },
+  {
+    text: "Pendant le cours , l' élève répond aux questions .",
+    cat: "civ",
+    tokens: [
+      { text: "Pendant" },
+      { text: "le" },
+      { text: "cours", punctuation: "," },
+      { text: "l'" },
+      { text: "élève" },
+      { text: "répond", predicat: true },
+      { text: "aux", predicat: true },
+      { text: "questions", predicat: true },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est « l'élève » et le complément de phrase est « Pendant le cours ». Le prédicat est « répond aux questions » (verbe + son complément indirect du verbe CIV)."
+  },
+  {
+    text: "Malgré les conseils , le garçon désobéit à ses parents .",
+    cat: "civ",
+    tokens: [
+      { text: "Malgré" },
+      { text: "les" },
+      { text: "conseils", punctuation: "," },
+      { text: "le" },
+      { text: "garçon" },
+      { text: "désobéit", predicat: true },
+      { text: "à", predicat: true },
+      { text: "ses", predicat: true },
+      { text: "parents", predicat: true },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est « le garçon » et le complément de phrase est « Malgré les conseils ». Le prédicat est « désobéit à ses parents » (verbe + son complément indirect du verbe CIV)."
+  },
+  {
+    text: "À la plage , les touristes nuisent aux dunes .",
+    cat: "civ",
+    tokens: [
+      { text: "À" },
+      { text: "la" },
+      { text: "plage", punctuation: "," },
+      { text: "les" },
+      { text: "touristes" },
+      { text: "nuisent", predicat: true },
+      { text: "aux", predicat: true },
+      { text: "dunes", predicat: true },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est « les touristes » et le complément de phrase est « À la plage ». Le prédicat est « nuisent aux dunes » (verbe + son complément indirect du verbe CIV)."
+  },
+  {
+    text: "Depuis son départ , Marc manque à ses collègues .",
+    cat: "civ",
+    tokens: [
+      { text: "Depuis" },
+      { text: "son" },
+      { text: "départ", punctuation: "," },
+      { text: "Marc" },
+      { text: "manque", predicat: true },
+      { text: "à", predicat: true },
+      { text: "ses", predicat: true },
+      { text: "collègues", predicat: true },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est « Marc » et le complément de phrase est « Depuis son départ ». Le prédicat est « manque à ses collègues » (verbe + son complément indirect du verbe CIV)."
+  },
+
+  // --- CDV_CIV (8 phrases) ---
+  {
+    text: "Le matin , le maître distribue les cahiers aux élèves .",
+    cat: "cdv_civ",
+    tokens: [
+      { text: "Le" },
+      { text: "matin", punctuation: "," },
+      { text: "le" },
+      { text: "maître" },
+      { text: "distribue", predicat: true },
+      { text: "les", predicat: true },
+      { text: "cahiers", predicat: true },
+      { text: "aux", predicat: true },
+      { text: "élèves", predicat: true },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est « le maître » et le complément de phrase est « Le matin ». Le prédicat est « distribue les cahiers aux élèves » (verbe + CDV + CIV)."
+  },
+  {
+    text: "Dans la boutique , la vendeuse propose une écharpe au client .",
+    cat: "cdv_civ",
+    tokens: [
+      { text: "Dans" },
+      { text: "la" },
+      { text: "boutique", punctuation: "," },
+      { text: "la" },
+      { text: "vendeuse" },
+      { text: "propose", predicat: true },
+      { text: "une", predicat: true },
+      { text: "écharpe", predicat: true },
+      { text: "au", predicat: true },
+      { text: "client", predicat: true },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est « la vendeuse » et le complément de phrase est « Dans la boutique ». Le prédicat est « propose une écharpe au client » (verbe + CDV + CIV)."
+  },
+  {
+    text: "Pendant la fête , Jules offre des fleurs à sa maman .",
+    cat: "cdv_civ",
+    tokens: [
+      { text: "Pendant" },
+      { text: "la" },
+      { text: "fête", punctuation: "," },
+      { text: "Jules" },
+      { text: "offre", predicat: true },
+      { text: "des", predicat: true },
+      { text: "fleurs", predicat: true },
+      { text: "à", predicat: true },
+      { text: "sa", predicat: true },
+      { text: "maman", predicat: true },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est « Jules » et le complément de phrase est « Pendant la fête ». Le prédicat est « offre des fleurs à sa maman » (verbe + CDV + CIV)."
+  },
+  {
+    text: "Sur scène , le magicien montre un tour au public .",
+    cat: "cdv_civ",
+    tokens: [
+      { text: "Sur" },
+      { text: "scène", punctuation: "," },
+      { text: "le" },
+      { text: "magicien" },
+      { text: "montre", predicat: true },
+      { text: "un", predicat: true },
+      { text: "tour", predicat: true },
+      { text: "au", predicat: true },
+      { text: "public", predicat: true },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est « le magicien » et le complément de phrase est « Sur scène ». Le prédicat est « montre un tour au public » (verbe + CDV + CIV)."
+  },
+  {
+    text: "Devant le guichet , le voyageur demande un billet à l' employé .",
+    cat: "cdv_civ",
+    tokens: [
+      { text: "Devant" },
+      { text: "le" },
+      { text: "guichet", punctuation: "," },
+      { text: "le" },
+      { text: "voyageur" },
+      { text: "demande", predicat: true },
+      { text: "un", predicat: true },
+      { text: "billet", predicat: true },
+      { text: "à", predicat: true },
+      { text: "l'", predicat: true },
+      { text: "employé", predicat: true },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est « le voyageur » et le complément de phrase est « Devant le guichet ». Le prédicat est « demande un billet à l'employé » (verbe + CDV + CIV)."
+  },
+  {
+    text: "Hier après-midi , Julie a raconté une histoire à son frère .",
+    cat: "cdv_civ",
+    tokens: [
+      { text: "Hier" },
+      { text: "après-midi", punctuation: "," },
+      { text: "Julie" },
+      { text: "a", predicat: true },
+      { text: "raconté", predicat: true },
+      { text: "une", predicat: true },
+      { text: "histoire", predicat: true },
+      { text: "à", predicat: true },
+      { text: "son", predicat: true },
+      { text: "frère", predicat: true },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est « Julie » et le complément de phrase est « Hier après-midi ». Le prédicat est « a raconté une histoire à son frère » (verbe composé + CDV + CIV)."
+  },
+  {
+    text: "Avec gentillesse , le garçon prête son vélo à son cousin .",
+    cat: "cdv_civ",
+    tokens: [
+      { text: "Avec" },
+      { text: "gentillesse", punctuation: "," },
+      { text: "le" },
+      { text: "garçon" },
+      { text: "prête", predicat: true },
+      { text: "son", predicat: true },
+      { text: "vélo", predicat: true },
+      { text: "à", predicat: true },
+      { text: "son", predicat: true },
+      { text: "cousin", predicat: true },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est « le garçon » et le complément de phrase est « Avec gentillesse ». Le prédicat est « prête son vélo à son cousin » (verbe + CDV + CIV)."
+  },
+  {
+    text: "Au tableau , le professeur explique la règle aux enfants .",
+    cat: "cdv_civ",
+    tokens: [
+      { text: "Au" },
+      { text: "tableau", punctuation: "," },
+      { text: "le" },
+      { text: "professeur" },
+      { text: "explique", predicat: true },
+      { text: "la", predicat: true },
+      { text: "règle", predicat: true },
+      { text: "aux", predicat: true },
+      { text: "enfants", predicat: true },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est « le professeur » et le complément de phrase est « Au tableau ». Le prédicat est « explique la règle aux enfants » (verbe + CDV + CIV)."
+  },
+
+  // --- ATTRIBUT (8 phrases) ---
+  {
+    text: "Depuis hier , ce chat semble malade .",
+    cat: "attribut",
+    tokens: [
+      { text: "Depuis" },
+      { text: "hier", punctuation: "," },
+      { text: "ce" },
+      { text: "chat" },
+      { text: "semble", predicat: true },
+      { text: "malade", predicat: true },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est « ce chat » et le complément de phrase est « Depuis hier ». Le prédicat est « semble malade » (verbe d'état + attribut du sujet)."
+  },
+  {
+    text: "Sous le soleil , le sable devient chaud .",
+    cat: "attribut",
+    tokens: [
+      { text: "Sous" },
+      { text: "le" },
+      { text: "soleil", punctuation: "," },
+      { text: "le" },
+      { text: "sable" },
+      { text: "devient", predicat: true },
+      { text: "chaud", predicat: true },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est « le sable » et le complément de phrase est « Sous le soleil ». Le prédicat est « devient chaud » (verbe d'état + attribut du sujet)."
+  },
+  {
+    text: "Dans ce costume , l' acteur paraît immense .",
+    cat: "attribut",
+    tokens: [
+      { text: "Dans" },
+      { text: "ce" },
+      { text: "costume", punctuation: "," },
+      { text: "l'" },
+      { text: "acteur" },
+      { text: "paraît", predicat: true },
+      { text: "immense", predicat: true },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est « l'acteur » et le complément de phrase est « Dans ce costume ». Le prédicat est « paraît immense » (verbe d'état + attribut du sujet)."
+  },
+  {
+    text: "Malgré l' âge , ce vieux chêne reste solide .",
+    cat: "attribut",
+    tokens: [
+      { text: "Malgré" },
+      { text: "l'" },
+      { text: "âge", punctuation: "," },
+      { text: "ce" },
+      { text: "vieux" },
+      { text: "chêne" },
+      { text: "reste", predicat: true },
+      { text: "solide", predicat: true },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est « ce vieux chêne » et le complément de phrase est « Malgré l'âge ». Le prédicat est « reste solide » (verbe d'état + attribut du sujet)."
+  },
+  {
+    text: "Après l' effort , le coureur est épuisé .",
+    cat: "attribut",
+    tokens: [
+      { text: "Après" },
+      { text: "l'" },
+      { text: "effort", punctuation: "," },
+      { text: "le" },
+      { text: "coureur" },
+      { text: "est", predicat: true },
+      { text: "épuisé", predicat: true },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est « le coureur » et le complément de phrase est « Après l'effort ». Le prédicat est « est épuisé » (verbe d'état + attribut du sujet)."
+  },
+  {
+    text: "Dans la vitrine , les bijoux semblent précieux .",
+    cat: "attribut",
+    tokens: [
+      { text: "Dans" },
+      { text: "la" },
+      { text: "vitrine", punctuation: "," },
+      { text: "les" },
+      { text: "bijoux" },
+      { text: "semblent", predicat: true },
+      { text: "précieux", predicat: true },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est « les bijoux » et le complément de phrase est « Dans la vitrine ». Le prédicat est « semblent précieux » (verbe d'état + attribut du sujet)."
+  },
+  {
+    text: "À la fin du match , les joueurs étaient heureux .",
+    cat: "attribut",
+    tokens: [
+      { text: "À" },
+      { text: "la" },
+      { text: "fin" },
+      { text: "du" },
+      { text: "match", punctuation: "," },
+      { text: "les" },
+      { text: "joueurs" },
+      { text: "étaient", predicat: true },
+      { text: "heureux", predicat: true },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est « les joueurs » et le complément de phrase est « À la fin du match ». Le prédicat est « étaient heureux » (verbe d'état + attribut du sujet)."
+  },
+  {
+    text: "Malgré la tempête , la mer demeure calme .",
+    cat: "attribut",
+    tokens: [
+      { text: "Malgré" },
+      { text: "la" },
+      { text: "tempête", punctuation: "," },
+      { text: "la" },
+      { text: "mer" },
+      { text: "demeure", predicat: true },
+      { text: "calme", predicat: true },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est « la mer » et le complément de phrase est « Malgré la tempête ». Le prédicat est « demeure calme » (verbe d'état + attribut du sujet)."
+  }
+];
+
+window.EXERCICES_CDV_CIV = [
+  // --- ONLY_CDV (8 phrases) ---
+  {
+    text: "Le jardinier arrose les fleurs .",
+    cat: "only_cdv",
+    tokens: [
+      { text: "Le" },
+      { text: "jardinier" },
+      { text: "arrose" },
+      { text: "les", cdv: true },
+      { text: "fleurs", cdv: true },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est « Le jardinier » et le verbe est « arrose ». Le groupe nominal « les fleurs » est le Complément Direct du Verbe (CDV) car il répond à la question : Le jardinier arrose quoi ?"
+  },
+  {
+    text: "Le boulanger prépare le pain .",
+    cat: "only_cdv",
+    tokens: [
+      { text: "Le" },
+      { text: "boulanger" },
+      { text: "prépare" },
+      { text: "le", cdv: true },
+      { text: "pain", cdv: true },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est « Le boulanger » et le verbe est « prépare ». Le groupe nominal « le pain » est le Complément Direct du Verbe (CDV) car il répond à la question : Le boulanger prépare quoi ?"
+  },
+  {
+    text: "Les enfants écoutent une histoire .",
+    cat: "only_cdv",
+    tokens: [
+      { text: "Les" },
+      { text: "enfants" },
+      { text: "écoutent" },
+      { text: "une", cdv: true },
+      { text: "histoire", cdv: true },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est « Les enfants » et le verbe est « écoutent ». Le groupe nominal « une histoire » est le Complément Direct du Verbe (CDV) car il répond à la question : Les enfants écoutent quoi ?"
+  },
+  {
+    text: "Le détective cherche la vérité .",
+    cat: "only_cdv",
+    tokens: [
+      { text: "Le" },
+      { text: "détective" },
+      { text: "cherche" },
+      { text: "la", cdv: true },
+      { text: "vérité", cdv: true },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est « Le détective » et le verbe est « cherche ». Le groupe nominal « la vérité » est le Complément Direct du Verbe (CDV) car il répond à la question : Le détective cherche quoi ?"
+  },
+  {
+    text: "Le vent secoue les branches .",
+    cat: "only_cdv",
+    tokens: [
+      { text: "Le" },
+      { text: "vent" },
+      { text: "secoue" },
+      { text: "les", cdv: true },
+      { text: "branches", cdv: true },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est « Le vent » et le verbe est « secoue ». Le groupe nominal « les branches » est le Complément Direct du Verbe (CDV) car il répond à la question : Le vent secoue quoi ?"
+  },
+  {
+    text: "L' élève écrit un poème .",
+    cat: "only_cdv",
+    tokens: [
+      { text: "L'" },
+      { text: "élève" },
+      { text: "écrit" },
+      { text: "un", cdv: true },
+      { text: "poème", cdv: true },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est « L'élève » et le verbe est « écrit ». Le groupe nominal « un poème » est le Complément Direct du Verbe (CDV) car il répond à la question : L'élève écrit quoi ?"
+  },
+  {
+    text: "Le photographe prend une photo .",
+    cat: "only_cdv",
+    tokens: [
+      { text: "Le" },
+      { text: "photographe" },
+      { text: "prend" },
+      { text: "une", cdv: true },
+      { text: "photo", cdv: true },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est « Le photographe » et le verbe est « prend ». Le groupe nominal « une photo » est le Complément Direct du Verbe (CDV) car il répond à la question : Le photographe prend quoi ?"
+  },
+  {
+    text: "Le garagiste répare le moteur .",
+    cat: "only_cdv",
+    tokens: [
+      { text: "Le" },
+      { text: "garagiste" },
+      { text: "répare" },
+      { text: "le", cdv: true },
+      { text: "moteur", cdv: true },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est « Le garagiste » et le verbe est « répare ». Le groupe nominal « le moteur » est le Complément Direct du Verbe (CDV) car il répond à la question : Le garagiste répare quoi ?"
+  },
+
+  // --- ONLY_CIV (8 phrases) ---
+  {
+    text: "Le patient obéit au médecin .",
+    cat: "only_civ",
+    tokens: [
+      { text: "Le" },
+      { text: "patient" },
+      { text: "obéit" },
+      { text: "au", civ: true },
+      { text: "médecin", civ: true },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est « Le patient » et le verbe est « obéit ». Le groupe prépositionnel « au médecin » est le Complément Indirect du Verbe (CIV) car il répond à la question : Le patient obéit à qui ?"
+  },
+  {
+    text: "Julie téléphone à sa tante .",
+    cat: "only_civ",
+    tokens: [
+      { text: "Julie" },
+      { text: "téléphone" },
+      { text: "à", civ: true },
+      { text: "sa", civ: true },
+      { text: "tante", civ: true },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est « Julie » et le verbe est « téléphone ». Le groupe prépositionnel « à sa tante » est le Complément Indirect du Verbe (CIV) car il répond à la question : Julie téléphone à qui ?"
+  },
+  {
+    text: "Le garçon parle à son voisin .",
+    cat: "only_civ",
+    tokens: [
+      { text: "Le" },
+      { text: "garçon" },
+      { text: "parle" },
+      { text: "à", civ: true },
+      { text: "son", civ: true },
+      { text: "voisin", civ: true },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est « Le garçon » et le verbe est « parle ». Le groupe prépositionnel « à son voisin » est le Complément Indirect du Verbe (CIV) car il répond à la question : Le garçon parle à qui ?"
+  },
+  {
+    text: "Marc pense à son avenir .",
+    cat: "only_civ",
+    tokens: [
+      { text: "Marc" },
+      { text: "pense" },
+      { text: "à", civ: true },
+      { text: "son", civ: true },
+      { text: "avenir", civ: true },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est « Marc » et le verbe est « pense ». Le groupe prépositionnel « à son avenir » est le Complément Indirect du Verbe (CIV) car il répond à la question : Marc pense à quoi ?"
+  },
+  {
+    text: "Le fils ressemble à son père .",
+    cat: "only_civ",
+    tokens: [
+      { text: "Le" },
+      { text: "fils" },
+      { text: "ressemble" },
+      { text: "à", civ: true },
+      { text: "son", civ: true },
+      { text: "père", civ: true },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est « Le fils » et le verbe est « ressemble ». Le groupe prépositionnel « à son père » est le Complément Indirect du Verbe (CIV) car il répond à la question : Le fils ressemble à qui ?"
+  },
+  {
+    text: "L' enfant croit au Père Noël .",
+    cat: "only_civ",
+    tokens: [
+      { text: "L'" },
+      { text: "enfant" },
+      { text: "croit" },
+      { text: "au", civ: true },
+      { text: "Père", civ: true },
+      { text: "Noël", civ: true },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est « L'enfant » et le verbe est « croit ». Le groupe prépositionnel « au Père Noël » est le Complément Indirect du Verbe (CIV) car il répond à la question : L'enfant croit en qui ?"
+  },
+  {
+    text: "Les citoyens croient en la justice .",
+    cat: "only_civ",
+    tokens: [
+      { text: "Les" },
+      { text: "citoyens" },
+      { text: "croient" },
+      { text: "en", civ: true },
+      { text: "la", civ: true },
+      { text: "justice", civ: true },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est « Les citoyens » et le verbe est « croient ». Le groupe prépositionnel « en la justice » est le Complément Indirect du Verbe (CIV) car il répond à la question : Les citoyens croient en quoi ?"
+  },
+  {
+    text: "Ce projet plaît aux enseignants .",
+    cat: "only_civ",
+    tokens: [
+      { text: "Ce" },
+      { text: "projet" },
+      { text: "plaît" },
+      { text: "aux", civ: true },
+      { text: "enseignants", civ: true },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est « Ce projet » et le verbe est « plaît ». Le groupe prépositionnel « aux enseignants » est le Complément Indirect du Verbe (CIV) car il répond à la question : Ce projet plaît à qui ?"
+  },
+
+  // --- BOTH (8 phrases) ---
+  {
+    text: "Le maître donne un livre à l' élève .",
+    cat: "both",
+    tokens: [
+      { text: "Le" },
+      { text: "maître" },
+      { text: "donne" },
+      { text: "un", cdv: true },
+      { text: "livre", cdv: true },
+      { text: "à", civ: true },
+      { text: "l'", civ: true },
+      { text: "élève", civ: true },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est « Le maître » et le verbe est « donne ». « un livre » est le CDV (donne quoi ?) et « à l'élève » est le CIV (donne à qui ?)."
+  },
+  {
+    text: "Jules offre un cadeau à sa sœur .",
+    cat: "both",
+    tokens: [
+      { text: "Jules" },
+      { text: "offre" },
+      { text: "un", cdv: true },
+      { text: "cadeau", cdv: true },
+      { text: "à", civ: true },
+      { text: "sa", civ: true },
+      { text: "sœur", civ: true },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est « Jules » et le verbe est « offre ». « un cadeau » est le CDV (offre quoi ?) et « à sa sœur » est le CIV (offre à qui ?)."
+  },
+  {
+    text: "La secrétaire envoie un courriel au directeur .",
+    cat: "both",
+    tokens: [
+      { text: "La" },
+      { text: "secrétaire" },
+      { text: "envoie" },
+      { text: "un", cdv: true },
+      { text: "courriel", cdv: true },
+      { text: "au", civ: true },
+      { text: "directeur", civ: true },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est « La secrétaire » et le verbe est « envoie ». « un courriel » est le CDV (envoie quoi ?) et « au directeur » est le CIV (envoie à qui ?)."
+  },
+  {
+    text: "Le guide montre le chemin aux randonneurs .",
+    cat: "both",
+    tokens: [
+      { text: "Le" },
+      { text: "guide" },
+      { text: "montre" },
+      { text: "le", cdv: true },
+      { text: "chemin", cdv: true },
+      { text: "aux", civ: true },
+      { text: "randonneurs", civ: true },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est « Le guide » et le verbe est « montre ». « le chemin » est le CDV (montre quoi ?) et « aux randonneurs » est le CIV (montre à qui ?)."
+  },
+  {
+    text: "Le grand-père raconte une blague à ses petits-enfants .",
+    cat: "both",
+    tokens: [
+      { text: "Le" },
+      { text: "grand-père" },
+      { text: "raconte" },
+      { text: "une", cdv: true },
+      { text: "blague", cdv: true },
+      { text: "à", civ: true },
+      { text: "ses", civ: true },
+      { text: "petits-enfants", civ: true },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est « Le grand-père » et le verbe est « raconte ». « une blague » est le CDV (raconte quoi ?) et « à ses petits-enfants » est le CIV (raconte à qui ?)."
+  },
+  {
+    text: "Le cuisinier sert le repas aux invités .",
+    cat: "both",
+    tokens: [
+      { text: "Le" },
+      { text: "cuisinier" },
+      { text: "sert" },
+      { text: "le", cdv: true },
+      { text: "repas", cdv: true },
+      { text: "aux", civ: true },
+      { text: "invités", civ: true },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est « Le cuisinier » et le verbe est « sert ». « le repas » est le CDV (sert quoi ?) et « aux invités » est le CIV (sert à qui ?)."
+  },
+  {
+    text: "La maman lit un conte à son fils .",
+    cat: "both",
+    tokens: [
+      { text: "La" },
+      { text: "maman" },
+      { text: "lit" },
+      { text: "un", cdv: true },
+      { text: "conte", cdv: true },
+      { text: "à", civ: true },
+      { text: "son", civ: true },
+      { text: "fils", civ: true },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est « La maman » et le verbe est « lit ». « un conte » est le CDV (lit quoi ?) et « à son fils » est le CIV (lit à qui ?)."
+  },
+  {
+    text: "Le vendeur conseille un ordinateur au client .",
+    cat: "both",
+    tokens: [
+      { text: "Le" },
+      { text: "vendeur" },
+      { text: "conseille" },
+      { text: "un", cdv: true },
+      { text: "ordinateur", cdv: true },
+      { text: "au", civ: true },
+      { text: "client", civ: true },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le sujet est « Le vendeur » et le verbe est « conseille ». « un ordinateur » est le CDV (conseille quoi ?) et « au client » est le CIV (conseille à qui ?)."
+  },
+
+  // --- PRONOMINALIZED (8 phrases) ---
+  {
+    text: "Le jardinier les arrose .",
+    cat: "pronominalized",
+    tokens: [
+      { text: "Le" },
+      { text: "jardinier" },
+      { text: "les", cdv: true },
+      { text: "arrose" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le pronom « les » remplace un groupe nominal CDV (il répond à la question : Le jardinier arrose qui ? -> les)."
+  },
+  {
+    text: "Le boulanger le prépare .",
+    cat: "pronominalized",
+    tokens: [
+      { text: "Le" },
+      { text: "boulanger" },
+      { text: "le", cdv: true },
+      { text: "prépare" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le pronom « le » remplace un groupe nominal CDV (il répond à la question : Le boulanger prépare quoi ? -> le)."
+  },
+  {
+    text: "Julie lui téléphone .",
+    cat: "pronominalized",
+    tokens: [
+      { text: "Julie" },
+      { text: "lui", civ: true },
+      { text: "téléphone" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le pronom « lui » remplace un groupe prépositionnel CIV (il répond à la question : Julie téléphone à qui ? -> lui)."
+  },
+  {
+    text: "Le fils lui ressemble .",
+    cat: "pronominalized",
+    tokens: [
+      { text: "Le" },
+      { text: "fils" },
+      { text: "lui", civ: true },
+      { text: "ressemble" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le pronom « lui » remplace un groupe prépositionnel CIV (il répond à la question : Le fils ressemble à qui ? -> lui)."
+  },
+  {
+    text: "Le maître le lui donne .",
+    cat: "pronominalized",
+    tokens: [
+      { text: "Le" },
+      { text: "maître" },
+      { text: "le", cdv: true },
+      { text: "lui", civ: true },
+      { text: "donne" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "« le » est le pronom CDV (donne quoi ? -> le) et « lui » est le pronom CIV (donne à qui ? -> lui)."
+  },
+  {
+    text: "Jules le leur offre .",
+    cat: "pronominalized",
+    tokens: [
+      { text: "Jules" },
+      { text: "le", cdv: true },
+      { text: "leur", civ: true },
+      { text: "offre" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "« le » est le pronom CDV (offre quoi ? -> le) et « leur » est le pronom CIV (offre à qui ? -> leur)."
+  },
+  {
+    text: "La secrétaire le lui envoie .",
+    cat: "pronominalized",
+    tokens: [
+      { text: "La" },
+      { text: "secrétaire" },
+      { text: "le", cdv: true },
+      { text: "lui", civ: true },
+      { text: "envoie" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "« le » est le pronom CDV (envoie quoi ? -> le) et « lui » est le pronom CIV (envoie à qui ? -> lui)."
+  },
+  {
+    text: "Le guide le leur montre .",
+    cat: "pronominalized",
+    tokens: [
+      { text: "Le" },
+      { text: "guide" },
+      { text: "le", cdv: true },
+      { text: "leur", civ: true },
+      { text: "montre" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "« le » est le pronom CDV (montre quoi ? -> le) et « leur » est le pronom CIV (montre à qui ? -> leur)."
+  },
+
+  // --- PRONOM_CDV_COMPLETE_CIV (8 phrases) ---
+  {
+    text: "Le maître le donne à l' élève .",
+    cat: "pronom_cdv_complete_civ",
+    tokens: [
+      { text: "Le" },
+      { text: "maître" },
+      { text: "le", cdv: true },
+      { text: "donne" },
+      { text: "à", civ: true },
+      { text: "l'", civ: true },
+      { text: "élève", civ: true },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le pronom « le » est le CDV (donne quoi ? -> le) tandis que le groupe prépositionnel complet « à l'élève » est le CIV (donne à qui ?)."
+  },
+  {
+    text: "Jules l' offre à sa sœur .",
+    cat: "pronom_cdv_complete_civ",
+    tokens: [
+      { text: "Jules" },
+      { text: "l'", cdv: true },
+      { text: "offre" },
+      { text: "à", civ: true },
+      { text: "sa", civ: true },
+      { text: "sœur", civ: true },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le pronom « l' » est le CDV (offre quoi ? -> l') tandis que le groupe prépositionnel complet « à sa sœur » est le CIV (offre à qui ?)."
+  },
+  {
+    text: "La secrétaire l' envoie au directeur .",
+    cat: "pronom_cdv_complete_civ",
+    tokens: [
+      { text: "La" },
+      { text: "secrétaire" },
+      { text: "l'", cdv: true },
+      { text: "envoie" },
+      { text: "au", civ: true },
+      { text: "directeur", civ: true },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le pronom « l' » est le CDV (envoie quoi ? -> l') tandis que le groupe prépositionnel complet « au directeur » est le CIV (envoie à qui ?)."
+  },
+  {
+    text: "Le guide le montre aux randonneurs .",
+    cat: "pronom_cdv_complete_civ",
+    tokens: [
+      { text: "Le" },
+      { text: "guide" },
+      { text: "le", cdv: true },
+      { text: "montre" },
+      { text: "aux", civ: true },
+      { text: "randonneurs", civ: true },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le pronom « le » est le CDV (montre quoi ? -> le) tandis que le groupe prépositionnel complet « aux randonneurs » est le CIV (montre à qui ?)."
+  },
+  {
+    text: "Le cuisinier le sert aux invités .",
+    cat: "pronom_cdv_complete_civ",
+    tokens: [
+      { text: "Le" },
+      { text: "cuisinier" },
+      { text: "le", cdv: true },
+      { text: "sert" },
+      { text: "aux", civ: true },
+      { text: "invités", civ: true },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le pronom « le » est le CDV (sert quoi ? -> le) tandis que le groupe prépositionnel complet « aux invités » est le CIV (sert à qui ?)."
+  },
+  {
+    text: "La maman le lit à son fils .",
+    cat: "pronom_cdv_complete_civ",
+    tokens: [
+      { text: "La" },
+      { text: "maman" },
+      { text: "le", cdv: true },
+      { text: "lit" },
+      { text: "à", civ: true },
+      { text: "son", civ: true },
+      { text: "fils", civ: true },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le pronom « le » est le CDV (lit quoi ? -> le) tandis que le groupe prépositionnel complet « à son fils » est le CIV (lit à qui ?)."
+  },
+  {
+    text: "Le vendeur le conseille au client .",
+    cat: "pronom_cdv_complete_civ",
+    tokens: [
+      { text: "Le" },
+      { text: "vendeur" },
+      { text: "le", cdv: true },
+      { text: "conseille" },
+      { text: "au", civ: true },
+      { text: "client", civ: true },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le pronom « le » est le CDV (conseille quoi ? -> le) tandis que le groupe prépositionnel complet « au client » est le CIV (conseille à qui ?)."
+  },
+  {
+    text: "Le professeur les explique aux élèves .",
+    cat: "pronom_cdv_complete_civ",
+    tokens: [
+      { text: "Le" },
+      { text: "professeur" },
+      { text: "les", cdv: true },
+      { text: "explique" },
+      { text: "aux", civ: true },
+      { text: "élèves", civ: true },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le pronom « les » est le CDV (explique quoi ? -> les) tandis que le groupe prépositionnel complet « aux élèves » est le CIV (explique à qui ?)."
+  }
+];
