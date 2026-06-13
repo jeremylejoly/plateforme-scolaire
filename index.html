@@ -8245,7 +8245,10 @@ let charsState = {
   section: '',
   questions: [],
   answers: [],  // array of arrays (checked indices per question)
-  submitted: false
+  submitted: false,
+  currentIdx: 0,
+  currentValidated: false,
+  score: 0
 };
 
 function startCharsExercise(section){
@@ -8256,13 +8259,18 @@ function startCharsExercise(section){
     section,
     questions: shuffleArray(data.chars_bank).slice(0, 8),
     answers: [],
-    submitted: false
+    submitted: false,
+    currentIdx: 0,
+    currentValidated: false,
+    score: 0
   };
 
   document.getElementById('chars-exercise-title').textContent = '🏷️ Caractéristiques des quadrilatères';
   document.getElementById('chars-score-panel').style.display = 'none';
   document.getElementById('chars-correction-panel').style.display = 'none';
   document.getElementById('chars-validate-btn').style.display = 'block';
+  document.getElementById('chars-validate-btn').textContent = '✓ Valider ma réponse';
+  document.getElementById('chars-validate-btn').onclick = validateCurrentCharsQuestion;
   document.getElementById('chars-back-btn').onclick = function(){ showScreen('screen-solides-quadrilateres'); };
 
   // Init answers arrays
@@ -8275,32 +8283,34 @@ function startCharsExercise(section){
 function renderCharsQuestions(){
   const body = document.getElementById('chars-exercise-body');
   let html = '';
+  const i = charsState.currentIdx;
+  const q = charsState.questions[i];
 
-  charsState.questions.forEach((q, i) => {
-    html += `<div class="chars-question" id="chars-q-${i}">
-      <div class="conj-question-num">Question ${i+1}/${charsState.questions.length}</div>
-      <div class="chars-consigne">Coche toutes les caractéristiques de cette forme :</div>
-      <div class="chars-layout-container">
-        <div class="shape-svg-container">
-          <svg viewBox="0 0 200 160" xmlns="http://www.w3.org/2000/svg">${q.svg}</svg>
-        </div>
-        <div class="chars-list">`;
+  html += `<div class="chars-question" id="chars-q-${i}">
+    <div class="conj-question-num">Question ${i+1}/${charsState.questions.length}</div>
+    <div class="chars-consigne">Coche toutes les caractéristiques de cette forme :</div>
+    <div class="chars-layout-container">
+      <div class="shape-svg-container">
+        <svg viewBox="0 0 200 160" xmlns="http://www.w3.org/2000/svg">${q.svg}</svg>
+      </div>
+      <div class="chars-list">`;
 
-    q.chars.forEach((char, j) => {
-      html += `<div class="chars-item" id="chars-item-${i}-${j}" onclick="toggleChar(${i},${j})">
-        <div class="chars-checkbox" id="chars-cb-${i}-${j}"></div>
-        <span>${char}</span>
-      </div>`;
-    });
-
-    html += `</div></div></div>`;
+  q.chars.forEach((char, j) => {
+    const wasChecked = charsState.answers[i].includes(j);
+    const checkedClass = wasChecked ? ' checked' : '';
+    const checkedChar = wasChecked ? '✓' : '';
+    html += `<div class="chars-item${checkedClass}" id="chars-item-${i}-${j}" onclick="toggleChar(${i},${j})">
+      <div class="chars-checkbox" id="chars-cb-${i}-${j}">${checkedChar}</div>
+      <span>${char}</span>
+    </div>`;
   });
 
+  html += `</div></div></div>`;
   body.innerHTML = html;
 }
 
 function toggleChar(qIdx, charIdx){
-  if(charsState.submitted) return;
+  if(charsState.submitted || charsState.currentValidated) return;
   const arr = charsState.answers[qIdx];
   const pos = arr.indexOf(charIdx);
   const item = document.getElementById(`chars-item-${qIdx}-${charIdx}`);
@@ -8317,57 +8327,83 @@ function toggleChar(qIdx, charIdx){
   }
 }
 
-function validateCharsExercise(){
-  charsState.submitted = true;
-  let totalScore = 0;
-  const details = [];
+function validateCurrentCharsQuestion(){
+  const i = charsState.currentIdx;
+  const q = charsState.questions[i];
+  charsState.currentValidated = true;
 
+  const correct = new Set(q.answers);
+  const given = new Set(charsState.answers[i]);
+
+  const isFullyCorrect = [...correct].every(x => given.has(x)) && [...given].every(x => correct.has(x));
+  if(isFullyCorrect) charsState.score++;
+
+  // Style each characteristic
+  q.chars.forEach((_, j) => {
+    const item = document.getElementById(`chars-item-${i}-${j}`);
+    const cb = document.getElementById(`chars-cb-${i}-${j}`);
+    if(!item) return;
+    item.onclick = null;
+    item.classList.remove('checked');
+
+    const isCorrectChar = correct.has(j);
+    const wasChecked = given.has(j);
+
+    if(isCorrectChar && wasChecked){
+      item.classList.add('correct-check'); cb.textContent = '✓';
+    } else if(!isCorrectChar && wasChecked){
+      item.classList.add('wrong-check'); cb.textContent = '✗';
+    } else if(isCorrectChar && !wasChecked){
+      item.classList.add('missed'); cb.textContent = '!';
+    }
+  });
+
+  const block = document.getElementById(`chars-q-${i}`);
+  if(block) block.classList.add(isFullyCorrect ? 'all-correct' : 'has-error');
+
+  const valBtn = document.getElementById('chars-validate-btn');
+  if(i === charsState.questions.length - 1){
+    valBtn.textContent = 'Terminer l\'exercice ✓';
+    valBtn.onclick = finishCharsExercise;
+  } else {
+    valBtn.textContent = 'Question suivante →';
+    valBtn.onclick = nextCharsQuestion;
+  }
+}
+
+function nextCharsQuestion(){
+  charsState.currentIdx++;
+  charsState.currentValidated = false;
+
+  const valBtn = document.getElementById('chars-validate-btn');
+  valBtn.textContent = '✓ Valider ma réponse';
+  valBtn.onclick = validateCurrentCharsQuestion;
+
+  renderCharsQuestions();
+}
+
+function finishCharsExercise(){
+  charsState.submitted = true;
+  charsState.total = charsState.questions.length;
+  const score = charsState.score;
+  const total = charsState.total;
+
+  charsState.details = [];
   charsState.questions.forEach((q, i) => {
     const correct = new Set(q.answers);
     const given = new Set(charsState.answers[i]);
-
-    // Question is fully correct only if given == correct exactly
     const isFullyCorrect = [...correct].every(x => given.has(x)) && [...given].every(x => correct.has(x));
-    if(isFullyCorrect) totalScore++;
-
-    // Style each characteristic
-    q.chars.forEach((_, j) => {
-      const item = document.getElementById(`chars-item-${i}-${j}`);
-      const cb = document.getElementById(`chars-cb-${i}-${j}`);
-      if(!item) return;
-      item.onclick = null;
-      item.classList.remove('checked');
-
-      const isCorrectChar = correct.has(j);
-      const wasChecked = given.has(j);
-
-      if(isCorrectChar && wasChecked){
-        item.classList.add('correct-check'); cb.textContent = '✓';
-      } else if(!isCorrectChar && wasChecked){
-        item.classList.add('wrong-check'); cb.textContent = '✗';
-      } else if(isCorrectChar && !wasChecked){
-        item.classList.add('missed'); cb.textContent = '!';
-      }
-    });
-
-    const block = document.getElementById(`chars-q-${i}`);
-    if(block) block.classList.add(isFullyCorrect ? 'all-correct' : 'has-error');
-
-    details.push({ q: i+1, shape: q.shape, svg: q.svg, chars: q.chars,
+    charsState.details.push({ q: i+1, shape: q.shape, svg: q.svg, chars: q.chars,
       correctIndices: [...correct], givenIndices: [...given], isFullyCorrect });
   });
-
-  charsState.score = totalScore;
-  charsState.details = details;
-  charsState.total = charsState.questions.length;
 
   document.getElementById('chars-validate-btn').style.display = 'none';
   document.getElementById('chars-score-panel').style.display = 'block';
 
-  const pct = Math.round(totalScore/charsState.total*100);
+  const pct = Math.round(score/total*100);
   const color = pct>=70 ? 'var(--green)' : pct>=50 ? 'var(--amber)' : 'var(--red)';
   document.getElementById('chars-score-val').innerHTML =
-    `<span style="color:${color}">${totalScore}/${charsState.total}</span><br><span style="font-size:18px;">${pct}%</span>`;
+    `<span style="color:${color}">${score}/${total}</span><br><span style="font-size:18px;">${pct}%</span>`;
 
   document.getElementById('chars-score-panel').scrollIntoView({behavior:'smooth'});
 
@@ -8377,7 +8413,7 @@ function validateCharsExercise(){
       className: CLASSES[state.studentCls] ? CLASSES[state.studentCls].name : state.studentCls,
       activity: 'quadrilateres_caracteristiques',
       bookTitle: 'Quadrilatères — Caractéristiques',
-      score: totalScore, total: charsState.total, pct,
+      score, total, pct,
       date: new Date().toLocaleDateString('fr-BE'),
       time: new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})
     });
@@ -8422,9 +8458,14 @@ function showCharsCorrection(){
 function restartCharsExercise(){
   charsState.submitted = false;
   charsState.answers = [];
+  charsState.currentIdx = 0;
+  charsState.currentValidated = false;
+  charsState.score = 0;
   document.getElementById('chars-score-panel').style.display = 'none';
   document.getElementById('chars-correction-panel').style.display = 'none';
   document.getElementById('chars-validate-btn').style.display = 'block';
+  document.getElementById('chars-validate-btn').textContent = '✓ Valider ma réponse';
+  document.getElementById('chars-validate-btn').onclick = validateCurrentCharsQuestion;
   const data = getShapeData(charsState.section);
   charsState.questions = shuffleArray(data.chars_bank).slice(0, 8);
   charsState.questions.forEach((_, i) => { charsState.answers[i] = []; });
@@ -8437,19 +8478,32 @@ let vfState = {
   section: '',
   questions: [],
   answers: [],
-  submitted: false
+  submitted: false,
+  currentIdx: 0,
+  currentValidated: false,
+  score: 0
 };
 
 function startVFExercise(section){
   const data = getShapeData(section);
   if(!data || !data.vf_bank) return;
 
-  vfState = { section, questions: shuffleArray(data.vf_bank).slice(0,10), answers: [], submitted: false };
+  vfState = {
+    section,
+    questions: shuffleArray(data.vf_bank).slice(0,10),
+    answers: [],
+    submitted: false,
+    currentIdx: 0,
+    currentValidated: false,
+    score: 0
+  };
 
   document.getElementById('vf-exercise-title').textContent = '✅ Vrai ou Faux — Les quadrilatères';
   document.getElementById('vf-score-panel').style.display = 'none';
   document.getElementById('vf-correction-panel').style.display = 'none';
   document.getElementById('vf-validate-btn').style.display = 'block';
+  document.getElementById('vf-validate-btn').textContent = '✓ Valider ma réponse';
+  document.getElementById('vf-validate-btn').onclick = validateCurrentVFQuestion;
   document.getElementById('vf-back-btn').onclick = function(){ showScreen('screen-solides-quadrilateres'); };
 
   renderVFQuestions();
@@ -8459,21 +8513,26 @@ function startVFExercise(section){
 function renderVFQuestions(){
   const body = document.getElementById('vf-exercise-body');
   let html = '';
-  vfState.questions.forEach((q, i) => {
-    html += `<div class="vf-question" id="vf-q-${i}">
-      <div class="conj-question-num">Question ${i+1}/10</div>
-      <div class="vf-question-text">${q.text}</div>
-      <div class="vf-options">
-        <button class="vf-option vrai" id="vf-opt-${i}-true" onclick="selectVFOption(${i}, true)">✓ VRAI</button>
-        <button class="vf-option faux" id="vf-opt-${i}-false" onclick="selectVFOption(${i}, false)">✗ FAUX</button>
-      </div>
-    </div>`;
-  });
+  const i = vfState.currentIdx;
+  const q = vfState.questions[i];
+
+  const answered = vfState.answers[i];
+  const trueSelected = answered === true ? ' selected' : '';
+  const falseSelected = answered === false ? ' selected' : '';
+
+  html += `<div class="vf-question" id="vf-q-${i}">
+    <div class="conj-question-num">Question ${i+1}/${vfState.questions.length}</div>
+    <div class="vf-question-text">${q.text}</div>
+    <div class="vf-options">
+      <button class="vf-option vrai${trueSelected}" id="vf-opt-${i}-true" onclick="selectVFOption(${i}, true)">✓ VRAI</button>
+      <button class="vf-option faux${falseSelected}" id="vf-opt-${i}-false" onclick="selectVFOption(${i}, false)">✗ FAUX</button>
+    </div>
+  </div>`;
   body.innerHTML = html;
 }
 
 function selectVFOption(qIdx, value){
-  if(vfState.submitted) return;
+  if(vfState.submitted || vfState.currentValidated) return;
   const trueBtn = document.getElementById(`vf-opt-${qIdx}-true`);
   const falseBtn = document.getElementById(`vf-opt-${qIdx}-false`);
   trueBtn.classList.remove('selected');
@@ -8483,46 +8542,77 @@ function selectVFOption(qIdx, value){
   vfState.answers[qIdx] = value;
 }
 
-function validateVFExercise(){
-  vfState.submitted = true;
-  let score = 0;
-  const details = [];
+function validateCurrentVFQuestion(){
+  const i = vfState.currentIdx;
+  const q = vfState.questions[i];
+  const answered = vfState.answers[i];
 
+  if(answered === undefined){
+    alert('Veuillez sélectionner VRAI ou FAUX avant de valider.');
+    return;
+  }
+
+  vfState.currentValidated = true;
+  const isCorrect = answered === q.answer;
+  if(isCorrect) vfState.score++;
+
+  const trueBtn = document.getElementById(`vf-opt-${i}-true`);
+  const falseBtn = document.getElementById(`vf-opt-${i}-false`);
+  if(trueBtn) trueBtn.onclick = null;
+  if(falseBtn) falseBtn.onclick = null;
+
+  // Show correct answer
+  const correctBtn = document.getElementById(`vf-opt-${i}-${q.answer}`);
+  if(correctBtn) correctBtn.classList.add('correct-answer');
+  // Show wrong if answered incorrectly
+  if(!isCorrect){
+    const wrongBtn = document.getElementById(`vf-opt-${i}-${answered}`);
+    if(wrongBtn) wrongBtn.classList.add('wrong-answer');
+  }
+
+  const block = document.getElementById(`vf-q-${i}`);
+  if(block) block.classList.add(isCorrect ? 'correct' : 'incorrect');
+
+  const valBtn = document.getElementById('vf-validate-btn');
+  if(i === vfState.questions.length - 1){
+    valBtn.textContent = 'Terminer l\'exercice ✓';
+    valBtn.onclick = finishVFExercise;
+  } else {
+    valBtn.textContent = 'Question suivante →';
+    valBtn.onclick = nextVFQuestion;
+  }
+}
+
+function nextVFQuestion(){
+  vfState.currentIdx++;
+  vfState.currentValidated = false;
+
+  const valBtn = document.getElementById('vf-validate-btn');
+  valBtn.textContent = '✓ Valider ma réponse';
+  valBtn.onclick = validateCurrentVFQuestion;
+
+  renderVFQuestions();
+}
+
+function finishVFExercise(){
+  vfState.submitted = true;
+  const total = vfState.questions.length;
+  const score = vfState.score;
+
+  vfState.details = [];
   vfState.questions.forEach((q, i) => {
     const answered = vfState.answers[i];
     const isCorrect = answered === q.answer;
-
-    const trueBtn = document.getElementById(`vf-opt-${i}-true`);
-    const falseBtn = document.getElementById(`vf-opt-${i}-false`);
-    if(trueBtn) trueBtn.onclick = null;
-    if(falseBtn) falseBtn.onclick = null;
-
-    // Show correct answer
-    const correctBtn = document.getElementById(`vf-opt-${i}-${q.answer}`);
-    if(correctBtn) correctBtn.classList.add('correct-answer');
-    // Show wrong if answered incorrectly
-    if(answered !== undefined && !isCorrect){
-      const wrongBtn = document.getElementById(`vf-opt-${i}-${answered}`);
-      if(wrongBtn) wrongBtn.classList.add('wrong-answer');
-    }
-
-    const block = document.getElementById(`vf-q-${i}`);
-    if(block) block.classList.add(isCorrect ? 'correct' : 'incorrect');
-
-    if(isCorrect) score++;
-    details.push({ q: i+1, text: q.text, given: answered, expected: q.answer, isCorrect });
+    vfState.details.push({ q: i+1, text: q.text, given: answered, expected: q.answer, isCorrect });
   });
-
-  vfState.score = score;
-  vfState.details = details;
 
   document.getElementById('vf-validate-btn').style.display = 'none';
   document.getElementById('vf-score-panel').style.display = 'block';
 
-  const pct = Math.round(score/10*100);
+  const pct = Math.round(score/total*100);
   const color = pct>=70 ? 'var(--green)' : pct>=50 ? 'var(--amber)' : 'var(--red)';
   document.getElementById('vf-score-val').innerHTML =
-    `<span style="color:${color}">${score}/10</span><br><span style="font-size:18px;">${pct}%</span>`;
+    `<span style="color:${color}">${score}/${total}</span><br><span style="font-size:18px;">${pct}%</span>`;
 
   document.getElementById('vf-score-panel').scrollIntoView({behavior:'smooth'});
 
@@ -8532,7 +8622,7 @@ function validateVFExercise(){
       className: CLASSES[state.studentCls] ? CLASSES[state.studentCls].name : state.studentCls,
       activity: 'quadrilateres_vf',
       bookTitle: 'Quadrilatères — Vrai/Faux',
-      score, total: 10, pct,
+      score, total, pct,
       date: new Date().toLocaleDateString('fr-BE'),
       time: new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})
     });
@@ -8563,9 +8653,14 @@ function showVFCorrection(){
 function restartVFExercise(){
   vfState.submitted = false;
   vfState.answers = [];
+  vfState.currentIdx = 0;
+  vfState.currentValidated = false;
+  vfState.score = 0;
   document.getElementById('vf-score-panel').style.display = 'none';
   document.getElementById('vf-correction-panel').style.display = 'none';
   document.getElementById('vf-validate-btn').style.display = 'block';
+  document.getElementById('vf-validate-btn').textContent = '✓ Valider ma réponse';
+  document.getElementById('vf-validate-btn').onclick = validateCurrentVFQuestion;
   const data = getShapeData(vfState.section);
   vfState.questions = shuffleArray(data.vf_bank).slice(0,10);
   renderVFQuestions();
@@ -8579,7 +8674,10 @@ let shapeState = {
   isEvaluation: false,
   questions: [],
   answers: [],
-  submitted: false
+  submitted: false,
+  currentIdx: 0,
+  currentValidated: false,
+  score: 0
 };
 
 function getShapeData(section){
@@ -8592,13 +8690,24 @@ function startShapeExercise(section, type){
   const data = getShapeData(section);
   if(!data) return;
 
-  shapeState = { section, type, isEvaluation: false, questions: [], answers: [], submitted: false };
-  shapeState.questions = shuffleArray(data.qcm_bank).slice(0, 10);
+  shapeState = {
+    section,
+    type,
+    isEvaluation: false,
+    questions: shuffleArray(data.qcm_bank).slice(0, 10),
+    answers: [],
+    submitted: false,
+    currentIdx: 0,
+    currentValidated: false,
+    score: 0
+  };
 
   document.getElementById('shape-exercise-title').textContent = '🎯 Reconnais la forme';
   document.getElementById('shape-score-panel').style.display = 'none';
   document.getElementById('shape-correction-panel').style.display = 'none';
   document.getElementById('shape-validate-btn').style.display = 'block';
+  document.getElementById('shape-validate-btn').textContent = '✓ Valider ma réponse';
+  document.getElementById('shape-validate-btn').onclick = validateCurrentShapeQuestion;
   document.getElementById('shape-restart-btn').style.display = 'block';
   document.getElementById('shape-back-btn').onclick = function(){ showScreen('screen-solides-quadrilateres'); };
 
@@ -8616,13 +8725,24 @@ function startShapeEvaluation(section){
     return;
   }
 
-  shapeState = { section, type: 'qcm', isEvaluation: true, questions: [], answers: [], submitted: false };
-  shapeState.questions = data.evaluation.map(idx => data.qcm_bank[idx]);
+  shapeState = {
+    section,
+    type: 'qcm',
+    isEvaluation: true,
+    questions: data.evaluation.map(idx => data.qcm_bank[idx]),
+    answers: [],
+    submitted: false,
+    currentIdx: 0,
+    currentValidated: false,
+    score: 0
+  };
 
   document.getElementById('shape-exercise-title').textContent = '🏆 Évaluation — Les quadrilatères';
   document.getElementById('shape-score-panel').style.display = 'none';
   document.getElementById('shape-correction-panel').style.display = 'none';
   document.getElementById('shape-validate-btn').style.display = 'block';
+  document.getElementById('shape-validate-btn').textContent = '✓ Valider ma réponse';
+  document.getElementById('shape-validate-btn').onclick = validateCurrentShapeQuestion;
   document.getElementById('shape-restart-btn').style.display = 'none';
   document.getElementById('shape-back-btn').onclick = function(){ showScreen('screen-solides-quadrilateres'); };
 
@@ -8635,26 +8755,29 @@ function renderShapeQuestions(){
   let html = '';
   const consigne = '<p style="font-size:13px;color:var(--muted);margin-bottom:1rem;text-align:center;">Quel est le nom le plus précis de cette forme ?</p>';
 
-  shapeState.questions.forEach((q, i) => {
-    html += `<div class="shape-question" id="shape-q-${i}">
-      <div class="conj-question-num">Question ${i+1}/${shapeState.questions.length}</div>
-      ${consigne}
-      <div class="shape-layout-container">
-        <div class="shape-svg-container">
-          <svg viewBox="0 0 200 160" xmlns="http://www.w3.org/2000/svg">${q.svg}</svg>
-        </div>
-        <div class="shape-options">`;
-    q.options.forEach((opt, j) => {
-      html += `<button class="shape-option" id="shape-opt-${i}-${j}" onclick="selectShapeOption(${i},${j})">${opt}</button>`;
-    });
-    html += `</div></div></div>`;
+  const i = shapeState.currentIdx;
+  const q = shapeState.questions[i];
+  const answered = shapeState.answers[i];
+
+  html += `<div class="shape-question" id="shape-q-${i}">
+    <div class="conj-question-num">Question ${i+1}/${shapeState.questions.length}</div>
+    ${consigne}
+    <div class="shape-layout-container">
+      <div class="shape-svg-container">
+        <svg viewBox="0 0 200 160" xmlns="http://www.w3.org/2000/svg">${q.svg}</svg>
+      </div>
+      <div class="shape-options">`;
+  q.options.forEach((opt, j) => {
+    const selectedClass = answered === j ? ' selected' : '';
+    html += `<button class="shape-option${selectedClass}" id="shape-opt-${i}-${j}" onclick="selectShapeOption(${i},${j})">${opt}</button>`;
   });
+  html += `</div></div></div>`;
 
   body.innerHTML = html;
 }
 
 function selectShapeOption(qIdx, optIdx){
-  if(shapeState.submitted) return;
+  if(shapeState.submitted || shapeState.currentValidated) return;
   shapeState.questions[qIdx].options.forEach((_, j) => {
     const btn = document.getElementById(`shape-opt-${qIdx}-${j}`);
     if(btn) btn.classList.remove('selected');
@@ -8664,35 +8787,65 @@ function selectShapeOption(qIdx, optIdx){
   shapeState.answers[qIdx] = optIdx;
 }
 
-function validateShapeExercise(){
+function validateCurrentShapeQuestion(){
+  const i = shapeState.currentIdx;
+  const q = shapeState.questions[i];
+  const answered = shapeState.answers[i];
+
+  if(answered === undefined){
+    alert('Veuillez sélectionner une option avant de valider.');
+    return;
+  }
+
+  shapeState.currentValidated = true;
+  const isCorrect = answered === q.answer;
+  if(isCorrect) shapeState.score++;
+
+  q.options.forEach((_, j) => {
+    const btn = document.getElementById(`shape-opt-${i}-${j}`);
+    if(!btn) return;
+    btn.onclick = null;
+    if(j === q.answer) btn.classList.add('correct-answer');
+    else if(j === answered && !isCorrect) btn.classList.add('wrong-answer');
+  });
+
+  const block = document.getElementById(`shape-q-${i}`);
+  if(block) block.classList.add(isCorrect ? 'correct' : 'incorrect');
+
+  const valBtn = document.getElementById('shape-validate-btn');
+  if(i === shapeState.questions.length - 1){
+    valBtn.textContent = 'Terminer l\'exercice ✓';
+    valBtn.onclick = finishShapeExercise;
+  } else {
+    valBtn.textContent = 'Question suivante →';
+    valBtn.onclick = nextShapeQuestion;
+  }
+}
+
+function nextShapeQuestion(){
+  shapeState.currentIdx++;
+  shapeState.currentValidated = false;
+
+  const valBtn = document.getElementById('shape-validate-btn');
+  valBtn.textContent = '✓ Valider ma réponse';
+  valBtn.onclick = validateCurrentShapeQuestion;
+
+  renderShapeQuestions();
+}
+
+function finishShapeExercise(){
   shapeState.submitted = true;
   const total = shapeState.questions.length;
-  let score = 0;
-  const details = [];
+  const score = shapeState.score;
 
+  shapeState.details = [];
   shapeState.questions.forEach((q, i) => {
     const answered = shapeState.answers[i];
     const isCorrect = answered === q.answer;
     const given = answered !== undefined ? q.options[answered] : '(pas de réponse)';
     const expected = q.options[q.answer];
-
-    q.options.forEach((_, j) => {
-      const btn = document.getElementById(`shape-opt-${i}-${j}`);
-      if(!btn) return;
-      btn.onclick = null;
-      if(j === q.answer) btn.classList.add('correct-answer');
-      else if(j === answered && !isCorrect) btn.classList.add('wrong-answer');
-    });
-
-    const block = document.getElementById(`shape-q-${i}`);
-    if(block) block.classList.add(isCorrect ? 'correct' : 'incorrect');
-
-    if(isCorrect) score++;
-    details.push({ q: i+1, given, expected, isCorrect, svg: q.svg });
+    shapeState.details.push({ q: i+1, given, expected, isCorrect, svg: q.svg });
   });
-
-  shapeState.score = score;
-  shapeState.details = details;
 
   document.getElementById('shape-validate-btn').style.display = 'none';
   document.getElementById('shape-score-panel').style.display = 'block';
@@ -8737,9 +8890,14 @@ function restartShapeExercise(){
   if(shapeState.isEvaluation) return;
   shapeState.submitted = false;
   shapeState.answers = [];
+  shapeState.currentIdx = 0;
+  shapeState.currentValidated = false;
+  shapeState.score = 0;
   document.getElementById('shape-score-panel').style.display = 'none';
   document.getElementById('shape-correction-panel').style.display = 'none';
   document.getElementById('shape-validate-btn').style.display = 'block';
+  document.getElementById('shape-validate-btn').textContent = '✓ Valider ma réponse';
+  document.getElementById('shape-validate-btn').onclick = validateCurrentShapeQuestion;
   const data = getShapeData(shapeState.section);
   shapeState.questions = shuffleArray(data.qcm_bank).slice(0, 10);
   renderShapeQuestions();
