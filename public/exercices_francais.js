@@ -3440,3 +3440,759 @@ window.EXERCICES_CDV_CIV = [
     explanation: "Le pronom « les » est le CDV (explique quoi ? -> les) tandis que le groupe prépositionnel complet « aux élèves » est le CIV (explique à qui ?)."
   }
 ];
+
+window.EXERCICES_CC = [
+  // --- 1. LIEU (10 phrases) ---
+  {
+    text: "Le petit chat noir dort paisiblement sur le fauteuil du salon .",
+    cat: "lieu",
+    tokens: [
+      { text: "Le" },
+      { text: "petit" },
+      { text: "chat" },
+      { text: "noir" },
+      { text: "dort" },
+      { text: "paisiblement", cc: "maniere" },
+      { text: "sur", cc: "lieu" },
+      { text: "le", cc: "lieu" },
+      { text: "fauteuil", cc: "lieu" },
+      { text: "du", cc: "lieu" },
+      { text: "salon", cc: "lieu" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "« sur le fauteuil du salon » est un complément circonstanciel de lieu (dort où ?). « paisiblement » est un complément circonstanciel de manière (dort comment ?)."
+  },
+  {
+    text: "Nous irons pique-niquer près de la jolie cascade demain .",
+    cat: "lieu",
+    tokens: [
+      { text: "Nous" },
+      { text: "irons" },
+      { text: "pique-niquer" },
+      { text: "près", cc: "lieu" },
+      { text: "de", cc: "lieu" },
+      { text: "la", cc: "lieu" },
+      { text: "jolie", cc: "lieu" },
+      { text: "cascade", cc: "lieu" },
+      { text: "demain", cc: "temps" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "« près de la jolie cascade » est le CC de lieu (pique-niquer où ?). « demain » est le CC de temps (irons quand ?)."
+  },
+  {
+    text: "Les enfants jouent joyeusement dans la cour de récréation .",
+    cat: "lieu",
+    tokens: [
+      { text: "Les" },
+      { text: "enfants" },
+      { text: "jouent" },
+      { text: "joyeusement", cc: "maniere" },
+      { text: "dans", cc: "lieu" },
+      { text: "la", cc: "lieu" },
+      { text: "cour", cc: "lieu" },
+      { text: "de", cc: "lieu" },
+      { text: "récréation", cc: "lieu" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "« dans la cour de récréation » est le CC de lieu (jouent où ?). « joyeusement » est le CC de manière (jouent comment ?)."
+  },
+  {
+    text: "Dans la forêt profonde , les oiseaux chantent le matin .",
+    cat: "lieu",
+    tokens: [
+      { text: "Dans", cc: "lieu" },
+      { text: "la", cc: "lieu" },
+      { text: "forêt", cc: "lieu" },
+      { text: "profonde", cc: "lieu", punctuation: "," },
+      { text: "les" },
+      { text: "oiseaux" },
+      { text: "chantent" },
+      { text: "le", cc: "temps" },
+      { text: "matin", cc: "temps" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "« Dans la forêt profonde » est le CC de lieu (chantent où ?). « le matin » est le CC de temps (chantent quand ?)."
+  },
+  {
+    text: "Mon père range ses outils de jardinage dans le grand abri en bois .",
+    cat: "lieu",
+    tokens: [
+      { text: "Mon" },
+      { text: "père" },
+      { text: "range" },
+      { text: "ses" },
+      { text: "outils" },
+      { text: "de" },
+      { text: "jardinage" },
+      { text: "dans", cc: "lieu" },
+      { text: "le", cc: "lieu" },
+      { text: "grand", cc: "lieu" },
+      { text: "abri", cc: "lieu" },
+      { text: "en", cc: "lieu" },
+      { text: "bois", cc: "lieu" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "« dans le grand abri en bois » est le CC de lieu (range ses outils où ?)."
+  },
+  {
+    text: "Sous les pavés de la rue , les ouvriers cherchent une conduite d' eau .",
+    cat: "lieu",
+    tokens: [
+      { text: "Sous", cc: "lieu" },
+      { text: "les", cc: "lieu" },
+      { text: "pavés", cc: "lieu" },
+      { text: "de", cc: "lieu" },
+      { text: "la", cc: "lieu" },
+      { text: "rue", cc: "lieu", punctuation: "," },
+      { text: "les" },
+      { text: "ouvriers" },
+      { text: "cherchent" },
+      { text: "une" },
+      { text: "conduite" },
+      { text: "d'" },
+      { text: "eau" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "« Sous les pavés de la rue » est le CC de lieu (cherchent où ?)."
+  },
+  {
+    text: "Les randonneurs fatigués ont installé leur campement au sommet de la montagne .",
+    cat: "lieu",
+    tokens: [
+      { text: "Les" },
+      { text: "randonneurs" },
+      { text: "fatigués" },
+      { text: "ont" },
+      { text: "installé" },
+      { text: "leur" },
+      { text: "campement" },
+      { text: "au", cc: "lieu" },
+      { text: "sommet", cc: "lieu" },
+      { text: "de", cc: "lieu" },
+      { text: "la", cc: "lieu" },
+      { text: "montagne", cc: "lieu" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "« au sommet de la montagne » est le CC de lieu (ont installé leur campement où ?)."
+  },
+  {
+    text: "Le navire a jeté l' ancre au milieu de la baie tranquille .",
+    cat: "lieu",
+    tokens: [
+      { text: "Le" },
+      { text: "navire" },
+      { text: "a" },
+      { text: "jeté" },
+      { text: "l'" },
+      { text: "ancre" },
+      { text: "au", cc: "lieu" },
+      { text: "milieu", cc: "lieu" },
+      { text: "de", cc: "lieu" },
+      { text: "la", cc: "lieu" },
+      { text: "baie", cc: "lieu" },
+      { text: "tranquille", cc: "lieu" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "« au milieu de la baie tranquille » est le CC de lieu (a jeté l'ancre où ?)."
+  },
+  {
+    text: "Dans sa chambre mansardée , la jeune fille écrit son journal intime .",
+    cat: "lieu",
+    tokens: [
+      { text: "Dans", cc: "lieu" },
+      { text: "sa", cc: "lieu" },
+      { text: "chambre", cc: "lieu" },
+      { text: "mansardée", cc: "lieu", punctuation: "," },
+      { text: "la" },
+      { text: "jeune" },
+      { text: "fille" },
+      { text: "écrit" },
+      { text: "son" },
+      { text: "journal" },
+      { text: "intime" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "« Dans sa chambre mansardée » est le CC de lieu (écrit son journal où ?)."
+  },
+  {
+    text: "Les clés perdues se trouvaient derrière le lourd buffet en chêne .",
+    cat: "lieu",
+    tokens: [
+      { text: "Les" },
+      { text: "clés" },
+      { text: "perdues" },
+      { text: "se" },
+      { text: "trouvaient" },
+      { text: "derrière", cc: "lieu" },
+      { text: "le", cc: "lieu" },
+      { text: "lourd", cc: "lieu" },
+      { text: "buffet", cc: "lieu" },
+      { text: "en", cc: "lieu" },
+      { text: "chêne", cc: "lieu" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "« derrière le lourd buffet en chêne » est le CC de lieu (se trouvaient où ?)."
+  },
+
+  // --- 2. TEMPS (10 phrases) ---
+  {
+    text: "Ce matin , le soleil se lève doucement derrière la colline .",
+    cat: "temps",
+    tokens: [
+      { text: "Ce", cc: "temps" },
+      { text: "matin", cc: "temps", punctuation: "," },
+      { text: "le" },
+      { text: "soleil" },
+      { text: "se" },
+      { text: "lève" },
+      { text: "doucement", cc: "maniere" },
+      { text: "derrière", cc: "lieu" },
+      { text: "la", cc: "lieu" },
+      { text: "colline", cc: "lieu" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "« Ce matin » est le CC de temps (quand ?). « doucement » est le CC de manière (comment ?). « derrière la colline » est le CC de lieu (où ?)."
+  },
+  {
+    text: "Les hirondelles s' envolent vers le sud dès l' arrivée de l' automne .",
+    cat: "temps",
+    tokens: [
+      { text: "Les" },
+      { text: "hirondelles" },
+      { text: "s'" },
+      { text: "envolent" },
+      { text: "vers", cc: "lieu" },
+      { text: "le", cc: "lieu" },
+      { text: "sud", cc: "lieu" },
+      { text: "dès", cc: "temps" },
+      { text: "l'", cc: "temps" },
+      { text: "arrivée", cc: "temps" },
+      { text: "de", cc: "temps" },
+      { text: "l'", cc: "temps" },
+      { text: "automne", cc: "temps" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "« dès l'arrivée de l'automne » est le CC de temps (quand ?). « vers le sud » est le CC de lieu (où ?)."
+  },
+  {
+    text: "Pendant toute la nuit , la pluie est tombée sans s' arrêter .",
+    cat: "temps",
+    tokens: [
+      { text: "Pendant", cc: "temps" },
+      { text: "toute", cc: "temps" },
+      { text: "la", cc: "temps" },
+      { text: "nuit", cc: "temps", punctuation: "," },
+      { text: "la" },
+      { text: "pluie" },
+      { text: "est" },
+      { text: "tombée" },
+      { text: "sans" },
+      { text: "s'" },
+      { text: "arrêter" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "« Pendant toute la nuit » est le CC de temps (pendant combien de temps ?)."
+  },
+  {
+    text: "Nous terminerons ce travail difficile avant le coucher du soleil .",
+    cat: "temps",
+    tokens: [
+      { text: "Nous" },
+      { text: "terminerons" },
+      { text: "ce" },
+      { text: "travail" },
+      { text: "difficile" },
+      { text: "avant", cc: "temps" },
+      { text: "le", cc: "temps" },
+      { text: "coucher", cc: "temps" },
+      { text: "du", cc: "temps" },
+      { text: "soleil", cc: "temps" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "« avant le coucher du soleil » est le CC de temps (quand ?)."
+  },
+  {
+    text: "Hier soir , la foudre a frappé le vieux chêne centenaire .",
+    cat: "temps",
+    tokens: [
+      { text: "Hier", cc: "temps" },
+      { text: "soir", cc: "temps", punctuation: "," },
+      { text: "la" },
+      { text: "foudre" },
+      { text: "a" },
+      { text: "frappé" },
+      { text: "le" },
+      { text: "vieux" },
+      { text: "chêne" },
+      { text: "centenaire" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "« Hier soir » est le CC de temps (quand ?)."
+  },
+  {
+    text: "Chaque dimanche , ma grand-mère cuisine un délicieux rôti de bœuf .",
+    cat: "temps",
+    tokens: [
+      { text: "Chaque", cc: "temps" },
+      { text: "dimanche", cc: "temps", punctuation: "," },
+      { text: "ma" },
+      { text: "grand-mère" },
+      { text: "cuisine" },
+      { text: "un" },
+      { text: "délicieux" },
+      { text: "rôti" },
+      { text: "de" },
+      { text: "bœuf" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "« Chaque dimanche » est le CC de temps (quand ?)."
+  },
+  {
+    text: "Les coureurs s' élancent sur la piste dès le coup de pistolet .",
+    cat: "temps",
+    tokens: [
+      { text: "Les" },
+      { text: "coureurs" },
+      { text: "s'" },
+      { text: "élancent" },
+      { text: "sur", cc: "lieu" },
+      { text: "la", cc: "lieu" },
+      { text: "piste", cc: "lieu" },
+      { text: "dès", cc: "temps" },
+      { text: "le", cc: "temps" },
+      { text: "coup", cc: "temps" },
+      { text: "de", cc: "temps" },
+      { text: "pistolet", cc: "temps" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "« dès le coup de pistolet » est le CC de temps (quand ?). « sur la piste » est le CC de lieu (où ?)."
+  },
+  {
+    text: "Depuis plusieurs jours , le vent souffle avec une grande violence .",
+    cat: "temps",
+    tokens: [
+      { text: "Depuis", cc: "temps" },
+      { text: "plusieurs", cc: "temps" },
+      { text: "jours", cc: "temps", punctuation: "," },
+      { text: "le" },
+      { text: "vent" },
+      { text: "souffle" },
+      { text: "avec", cc: "maniere" },
+      { text: "une", cc: "maniere" },
+      { text: "grande", cc: "maniere" },
+      { text: "violence", cc: "maniere" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "« Depuis plusieurs jours » est le CC de temps (depuis quand ?). « avec une grande violence » est le CC de manière (comment ?)."
+  },
+  {
+    text: "Autrefois , les habitants puisaient l' eau au puits du village .",
+    cat: "temps",
+    tokens: [
+      { text: "Autrefois", cc: "temps", punctuation: "," },
+      { text: "les" },
+      { text: "habitants" },
+      { text: "puisaient" },
+      { text: "l'" },
+      { text: "eau" },
+      { text: "au", cc: "lieu" },
+      { text: "puits", cc: "lieu" },
+      { text: "du", cc: "lieu" },
+      { text: "village", cc: "lieu" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "« Autrefois » est le CC de temps (quand ?). « au puits du village » est le CC de lieu (où ?)."
+  },
+  {
+    text: "Soudain , un cri perçant a résonné dans la vallée silencieuse .",
+    cat: "temps",
+    tokens: [
+      { text: "Soudain", cc: "temps", punctuation: "," },
+      { text: "un" },
+      { text: "cri" },
+      { text: "perçant" },
+      { text: "a" },
+      { text: "résonné" },
+      { text: "dans", cc: "lieu" },
+      { text: "la", cc: "lieu" },
+      { text: "vallée", cc: "lieu" },
+      { text: "silencieuse", cc: "lieu" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "« Soudain » est le CC de temps (quand ?). « dans la vallée silencieuse » est le CC de lieu (où ?)."
+  },
+
+  // --- 3. MANIERE (8 phrases) ---
+  {
+    text: "Le vieux monsieur traverse la rue à petits pas lents .",
+    cat: "maniere",
+    tokens: [
+      { text: "Le" },
+      { text: "vieux" },
+      { text: "monsieur" },
+      { text: "traverse" },
+      { text: "la" },
+      { text: "rue" },
+      { text: "à", cc: "maniere" },
+      { text: "petits", cc: "maniere" },
+      { text: "pas", cc: "maniere" },
+      { text: "lents", cc: "maniere" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "« à petits pas lents » est le CC de manière (traverse comment ?)."
+  },
+  {
+    text: "Elle a résolu ce problème de mathématiques avec une grande facilité .",
+    cat: "maniere",
+    tokens: [
+      { text: "Elle" },
+      { text: "a" },
+      { text: "résolu" },
+      { text: "ce" },
+      { text: "problème" },
+      { text: "de" },
+      { text: "mathématiques" },
+      { text: "avec", cc: "maniere" },
+      { text: "une", cc: "maniere" },
+      { text: "grande", cc: "maniere" },
+      { text: "facilité", cc: "maniere" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "« avec une grande facilité » est le CC de manière (a résolu comment ?)."
+  },
+  {
+    text: "Le pianiste joue cette mélodie avec beaucoup de délicatesse .",
+    cat: "maniere",
+    tokens: [
+      { text: "Le" },
+      { text: "pianiste" },
+      { text: "joue" },
+      { text: "cette" },
+      { text: "mélodie" },
+      { text: "avec", cc: "maniere" },
+      { text: "beaucoup", cc: "maniere" },
+      { text: "de", cc: "maniere" },
+      { text: "délicatesse", cc: "maniere" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "« avec beaucoup de délicatesse » est le CC de manière (joue comment ?)."
+  },
+  {
+    text: "Les soldats marchaient courageusement vers la ligne de front .",
+    cat: "maniere",
+    tokens: [
+      { text: "Les" },
+      { text: "soldats" },
+      { text: "marchaient" },
+      { text: "courageusement", cc: "maniere" },
+      { text: "vers", cc: "lieu" },
+      { text: "la", cc: "lieu" },
+      { text: "ligne", cc: "lieu" },
+      { text: "de", cc: "lieu" },
+      { text: "front", cc: "lieu" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "« courageusement » est le CC de manière (marchaient comment ?). « vers la ligne de front » est le CC de lieu (marchaient où ?)."
+  },
+  {
+    text: "L' artisan travaille le bois précieux avec une infinie patience .",
+    cat: "maniere",
+    tokens: [
+      { text: "L'" },
+      { text: "artisan" },
+      { text: "travaille" },
+      { text: "le" },
+      { text: "bois" },
+      { text: "précieux" },
+      { text: "avec", cc: "maniere" },
+      { text: "une", cc: "maniere" },
+      { text: "infinie", cc: "maniere" },
+      { text: "patience", cc: "maniere" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "« avec une infinie patience » est le CC de manière (travaille comment ?)."
+  },
+  {
+    text: "Le chat s' approche de l' oiseau en silence .",
+    cat: "maniere",
+    tokens: [
+      { text: "Le" },
+      { text: "chat" },
+      { text: "s'" },
+      { text: "approche" },
+      { text: "de" },
+      { text: "l'" },
+      { text: "oiseau" },
+      { text: "en", cc: "maniere" },
+      { text: "silence", cc: "maniere" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "« en silence » est le CC de manière (s'approche comment ?)."
+  },
+  {
+    text: "Il a répondu à l' inspecteur de manière très polie .",
+    cat: "maniere",
+    tokens: [
+      { text: "Il" },
+      { text: "a" },
+      { text: "répondu" },
+      { text: "à" },
+      { text: "l'" },
+      { text: "inspecteur" },
+      { text: "de", cc: "maniere" },
+      { text: "manière", cc: "maniere" },
+      { text: "très", cc: "maniere" },
+      { text: "polie", cc: "maniere" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "« de manière très polie » est le CC de manière (a répondu comment ?)."
+  },
+  {
+    text: "Le fleuve coule paisiblement vers l' océan Atlantique .",
+    cat: "maniere",
+    tokens: [
+      { text: "Le" },
+      { text: "fleuve" },
+      { text: "coule" },
+      { text: "paisiblement", cc: "maniere" },
+      { text: "vers", cc: "lieu" },
+      { text: "l'", cc: "lieu" },
+      { text: "océan", cc: "lieu" },
+      { text: "Atlantique", cc: "lieu" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "« paisiblement » est le CC de manière (coule comment ?). « vers l'océan Atlantique » est le CC de lieu (coule où ?)."
+  },
+
+  // --- 4. CONDITION (4 phrases) ---
+  {
+    text: "En cas de tempête , les navires rentrent immédiatement au port .",
+    cat: "condition",
+    tokens: [
+      { text: "En", cc: "condition" },
+      { text: "cas", cc: "condition" },
+      { text: "de", cc: "condition" },
+      { text: "tempête", cc: "condition", punctuation: "," },
+      { text: "les" },
+      { text: "navires" },
+      { text: "rentrent" },
+      { text: "immédiatement", cc: "maniere" },
+      { text: "au", cc: "lieu" },
+      { text: "port", cc: "lieu" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "« En cas de tempête » est le CC de condition (à quelle condition rentrent-ils ?). « au port » est le CC de lieu (où ?) et « immédiatement » est le CC de manière."
+  },
+  {
+    text: "Avec de la persévérance , tu vaincras toutes les difficultés .",
+    cat: "condition",
+    tokens: [
+      { text: "Avec", cc: "condition" },
+      { text: "de", cc: "condition" },
+      { text: "la", cc: "condition" },
+      { text: "persévérance", cc: "condition", punctuation: "," },
+      { text: "tu" },
+      { text: "vaincras" },
+      { text: "toutes" },
+      { text: "les" },
+      { text: "difficultés" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "« Avec de la persévérance » est le CC de condition (à quelle condition vaincras-tu ? = si tu as de la persévérance)."
+  },
+  {
+    text: "Sans ton aide précieuse , je n' aurais pas terminé à temps .",
+    cat: "condition",
+    tokens: [
+      { text: "Sans", cc: "condition" },
+      { text: "ton", cc: "condition" },
+      { text: "aide", cc: "condition" },
+      { text: "précieuse", cc: "condition", punctuation: "," },
+      { text: "je" },
+      { text: "n'" },
+      { text: "aurais" },
+      { text: "pas" },
+      { text: "terminé" },
+      { text: "à", cc: "temps" },
+      { text: "temps", cc: "temps" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "« Sans ton aide précieuse » est le CC de condition (à quelle condition ? = si je n'avais pas eu ton aide). « à temps » est le CC de temps."
+  },
+  {
+    text: "En travaillant régulièrement , vous obtiendrez de brillants résultats .",
+    cat: "condition",
+    tokens: [
+      { text: "En", cc: "condition" },
+      { text: "travaillant", cc: "condition" },
+      { text: "régulièrement", cc: "condition", punctuation: "," },
+      { text: "vous" },
+      { text: "obtiendrez" },
+      { text: "de" },
+      { text: "brillants" },
+      { text: "résultats" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "« En travaillant régulièrement » est le CC de condition (à quelle condition obtiendrez-vous ? = si vous travaillez régulièrement)."
+  },
+
+  // --- 5. CAUSE (4 phrases) ---
+  {
+    text: "À cause du brouillard épais , le match de football a été annulé .",
+    cat: "cause",
+    tokens: [
+      { text: "À", cc: "cause" },
+      { text: "cause", cc: "cause" },
+      { text: "du", cc: "cause" },
+      { text: "brouillard", cc: "cause" },
+      { text: "épais", cc: "cause", punctuation: "," },
+      { text: "le" },
+      { text: "match" },
+      { text: "de" },
+      { text: "football" },
+      { text: "a" },
+      { text: "été" },
+      { text: "annulé" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "« À cause du brouillard épais » est le CC de cause (pour quelle raison le match a-t-il été annulé ?)."
+  },
+  {
+    text: "Par manque d' entraînement , il a abandonné la course au milieu .",
+    cat: "cause",
+    tokens: [
+      { text: "Par", cc: "cause" },
+      { text: "manque", cc: "cause" },
+      { text: "d'", cc: "cause" },
+      { text: "entraînement", cc: "cause", punctuation: "," },
+      { text: "il" },
+      { text: "a" },
+      { text: "abandonné" },
+      { text: "la" },
+      { text: "course" },
+      { text: "au", cc: "lieu" },
+      { text: "milieu", cc: "lieu" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "« Par manque d'entraînement » est le CC de cause (pourquoi a-t-il abandonné ?). « au milieu » est le CC de lieu (où ?)."
+  },
+  {
+    text: "Grâce à ton soutien financier , l' association a pu réparer le toit .",
+    cat: "cause",
+    tokens: [
+      { text: "Grâce", cc: "cause" },
+      { text: "à", cc: "cause" },
+      { text: "ton", cc: "cause" },
+      { text: "soutien", cc: "cause" },
+      { text: "financier", cc: "cause", punctuation: "," },
+      { text: "l'" },
+      { text: "association" },
+      { text: "a" },
+      { text: "pu" },
+      { text: "réparer" },
+      { text: "le" },
+      { text: "toit" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "« Grâce à ton soutien financier » est le CC de cause (grâce à quelle cause l'association a-t-elle pu réparer ?)."
+  },
+  {
+    text: "Elle tremble de peur devant ce gros chien agressif .",
+    cat: "cause",
+    tokens: [
+      { text: "Elle" },
+      { text: "tremble" },
+      { text: "de", cc: "cause" },
+      { text: "peur", cc: "cause" },
+      { text: "devant", cc: "lieu" },
+      { text: "ce", cc: "lieu" },
+      { text: "gros", cc: "lieu" },
+      { text: "chien", cc: "lieu" },
+      { text: "agressif", cc: "lieu" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "« de peur » est le CC de cause (pourquoi tremble-t-elle ? = à cause de la peur). « devant ce gros chien agressif » est le CC de lieu (où ?)."
+  },
+
+  // --- 6. BUT (4 phrases) ---
+  {
+    text: "Les élèves révisent leurs leçons pour réussir les examens de fin d' année .",
+    cat: "but",
+    tokens: [
+      { text: "Les" },
+      { text: "élèves" },
+      { text: "révisent" },
+      { text: "leurs" },
+      { text: "leçons" },
+      { text: "pour", cc: "but" },
+      { text: "réussir", cc: "but" },
+      { text: "les", cc: "but" },
+      { text: "examens", cc: "but" },
+      { text: "de", cc: "but" },
+      { text: "fin", cc: "but" },
+      { text: "d'", cc: "but" },
+      { text: "année", cc: "but" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "« pour réussir les examens de fin d'année » est le CC de but (dans quel but révisent-ils ?)."
+  },
+  {
+    text: "Le jardinier arrose les jeunes pousses afin d' assurer leur croissance .",
+    cat: "but",
+    tokens: [
+      { text: "Le" },
+      { text: "jardinier" },
+      { text: "arrose" },
+      { text: "les" },
+      { text: "jeunes" },
+      { text: "pousses" },
+      { text: "afin", cc: "but" },
+      { text: "d'", cc: "but" },
+      { text: "assurer", cc: "but" },
+      { text: "leur", cc: "but" },
+      { text: "croissance", cc: "but" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "« afin d'assurer leur croissance » est le CC de but (dans quel but arrose-t-il ?)."
+  },
+  {
+    text: "Il s' entraîne tous les jours dans le but d' améliorer son record .",
+    cat: "but",
+    tokens: [
+      { text: "Il" },
+      { text: "s'" },
+      { text: "entraîne" },
+      { text: "tous", cc: "temps" },
+      { text: "les", cc: "temps" },
+      { text: "jours", cc: "temps" },
+      { text: "dans", cc: "but" },
+      { text: "le", cc: "but" },
+      { text: "but", cc: "but" },
+      { text: "d'", cc: "but" },
+      { text: "améliorer", cc: "but" },
+      { text: "son", cc: "but" },
+      { text: "record", cc: "but" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "« dans le but d'améliorer son record » est le CC de but (dans quel but s'entraîne-t-il ?). « tous les jours » est le CC de temps (quand ?)."
+  },
+  {
+    text: "Nous portons des casques de protection pour éviter les blessures graves .",
+    cat: "but",
+    tokens: [
+      { text: "Nous" },
+      { text: "portons" },
+      { text: "des" },
+      { text: "casques" },
+      { text: "de" },
+      { text: "protection" },
+      { text: "pour", cc: "but" },
+      { text: "éviter", cc: "but" },
+      { text: "les", cc: "but" },
+      { text: "blessures", cc: "but" },
+      { text: "graves", cc: "but" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "« pour éviter les blessures graves » est le CC de but (dans quel but portons-nous des casques ?)."
+  }
+];
