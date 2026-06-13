@@ -28092,15 +28092,63 @@ function startSujetExercise() {
     return;
   }
 
-  // Tirer 10 questions au hasard
-  const shuffled = [...window.EXERCICES_SUJET].sort(() => 0.5 - Math.random()).slice(0, 10);
+  const cdnRelPool = window.EXERCICES_SUJET.filter(q => q.cat === 'cdn_rel');
+  const pronounPool = window.EXERCICES_SUJET.filter(q => q.cat === 'pronoun');
+  const nounPool = window.EXERCICES_SUJET.filter(q => q.cat === 'noun');
+  const infinitivePool = window.EXERCICES_SUJET.filter(q => q.cat === 'infinitive');
+
+  const shuffle = (arr) => [...arr].sort(() => 0.5 - Math.random());
+
+  let selection = [];
+  let attempts = 0;
+  while (attempts < 100) {
+    const cdnRelShuffled = shuffle(cdnRelPool);
+    const pronounShuffled = shuffle(pronounPool);
+    const nounShuffled = shuffle(nounPool);
+    const infinitiveShuffled = shuffle(infinitivePool);
+
+    // Ratios requis pour 10 phrases :
+    // - Compléments du nom / relatives : 55% -> 5 ou 6 phrases
+    // - Pronom : 15% -> 1 ou 2 phrases
+    // - Nom propre/commun : 25% -> 2 ou 3 phrases
+    // - Infinitif : 5% -> 1 phrase
+    const numCdn = Math.random() < 0.5 ? 5 : 6;
+    const numInfinitive = 1;
+    const numPronoun = Math.random() < 0.5 ? 1 : 2;
+    const numNoun = 10 - numCdn - numInfinitive - numPronoun;
+
+    const selectedCdn = cdnRelShuffled.slice(0, numCdn);
+    const selectedInfinitive = infinitiveShuffled.slice(0, numInfinitive);
+    const selectedPronoun = pronounShuffled.slice(0, numPronoun);
+    const selectedNoun = nounShuffled.slice(0, numNoun);
+
+    selection = [
+      ...selectedCdn,
+      ...selectedInfinitive,
+      ...selectedPronoun,
+      ...selectedNoun
+    ];
+
+    // S'assurer de la variété : au moins 3 phrases avec une position de sujet non standard (inversée ou après CC)
+    const nonStandardCount = selection.filter(q => q.position === 'inverted' || q.position === 'cc_first').length;
+    if (nonStandardCount >= 3) {
+      break;
+    }
+    attempts++;
+  }
+
+  if (selection.length < 10) {
+    selection = shuffle(window.EXERCICES_SUJET).slice(0, 10);
+  } else {
+    selection = shuffle(selection);
+  }
   
   sujetGameState = {
     containerId: 'gram-sujet-body',
-    questions: shuffled,
+    questions: selection,
     currentIndex: 0,
     score: 0,
-    answers: Array(shuffled[0] ? shuffled[0].tokens.length : 0).fill(false),
+    answers: Array(selection[0] ? selection[0].tokens.length : 0).fill(false),
     submitted: false
   };
 

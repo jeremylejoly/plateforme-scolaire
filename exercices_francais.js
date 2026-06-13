@@ -950,6 +950,8 @@ window.EXERCICES_ANALYSE = [
 window.EXERCICES_SUJET = [
   {
     text: "Il partira demain matin .",
+    cat: "pronoun",
+    position: "standard",
     tokens: [
       { text: "Il", sujet: true },
       { text: "partira" },
@@ -961,6 +963,8 @@ window.EXERCICES_SUJET = [
   },
   {
     text: "Julie adore écouter de la musique .",
+    cat: "noun",
+    position: "standard",
     tokens: [
       { text: "Julie", sujet: true },
       { text: "adore" },
@@ -974,6 +978,8 @@ window.EXERCICES_SUJET = [
   },
   {
     text: "Les enfants jouent dans la cour .",
+    cat: "noun",
+    position: "standard",
     tokens: [
       { text: "Les", sujet: true },
       { text: "enfants", sujet: true },
@@ -987,6 +993,8 @@ window.EXERCICES_SUJET = [
   },
   {
     text: "Le camion de mon oncle transporte du sable .",
+    cat: "cdn_rel",
+    position: "standard",
     tokens: [
       { text: "Le", sujet: true },
       { text: "camion", sujet: true },
@@ -1002,6 +1010,8 @@ window.EXERCICES_SUJET = [
   },
   {
     text: "La maison où j' ai habité a été vendue .",
+    cat: "cdn_rel",
+    position: "standard",
     tokens: [
       { text: "La", sujet: true },
       { text: "maison", sujet: true },
@@ -1018,6 +1028,8 @@ window.EXERCICES_SUJET = [
   },
   {
     text: "Le cadeau que je t' ai offert te plaît ?",
+    cat: "cdn_rel",
+    position: "standard",
     tokens: [
       { text: "Le", sujet: true },
       { text: "cadeau", sujet: true },
@@ -1034,6 +1046,8 @@ window.EXERCICES_SUJET = [
   },
   {
     text: "Fumer est mauvais pour la santé .",
+    cat: "infinitive",
+    position: "standard",
     tokens: [
       { text: "Fumer", sujet: true },
       { text: "est" },
@@ -1047,6 +1061,8 @@ window.EXERCICES_SUJET = [
   },
   {
     text: "Étudier est nécessaire pour réussir .",
+    cat: "infinitive",
+    position: "standard",
     tokens: [
       { text: "Étudier", sujet: true },
       { text: "est" },
@@ -1059,6 +1075,8 @@ window.EXERCICES_SUJET = [
   },
   {
     text: "Dans cet arbre vit un écureuil .",
+    cat: "noun",
+    position: "inverted",
     tokens: [
       { text: "Dans" },
       { text: "cet" },
@@ -1072,6 +1090,8 @@ window.EXERCICES_SUJET = [
   },
   {
     text: "Dans le ciel brillent des milliers d' étoiles .",
+    cat: "cdn_rel",
+    position: "inverted",
     tokens: [
       { text: "Dans" },
       { text: "le" },
@@ -1087,6 +1107,8 @@ window.EXERCICES_SUJET = [
   },
   {
     text: "Sur la table traînent plusieurs livres .",
+    cat: "noun",
+    position: "inverted",
     tokens: [
       { text: "Sur" },
       { text: "la" },
@@ -1100,6 +1122,8 @@ window.EXERCICES_SUJET = [
   },
   {
     text: "Derrière la maison coule une petite rivière .",
+    cat: "noun",
+    position: "inverted",
     tokens: [
       { text: "Derrière" },
       { text: "la" },
@@ -1114,6 +1138,8 @@ window.EXERCICES_SUJET = [
   },
   {
     text: "Le tien est plus grand que le mien .",
+    cat: "pronoun",
+    position: "standard",
     tokens: [
       { text: "Le", sujet: true },
       { text: "tien", sujet: true },
@@ -1129,6 +1155,8 @@ window.EXERCICES_SUJET = [
   },
   {
     text: "Ce dernier arriva en retard .",
+    cat: "pronoun",
+    position: "standard",
     tokens: [
       { text: "Ce", sujet: true },
       { text: "dernier", sujet: true },
@@ -1141,6 +1169,8 @@ window.EXERCICES_SUJET = [
   },
   {
     text: "Jules prépare un délicieux gâteau .",
+    cat: "noun",
+    position: "standard",
     tokens: [
       { text: "Jules", sujet: true },
       { text: "prépare" },
@@ -1153,6 +1183,8 @@ window.EXERCICES_SUJET = [
   },
   {
     text: "Le grand livre rouge est posé sur l' étagère .",
+    cat: "noun",
+    position: "standard",
     tokens: [
       { text: "Le", sujet: true },
       { text: "grand", sujet: true },
@@ -1169,6 +1201,8 @@ window.EXERCICES_SUJET = [
   },
   {
     text: "Les fleurs du jardin sentent très bon .",
+    cat: "cdn_rel",
+    position: "standard",
     tokens: [
       { text: "Les", sujet: true },
       { text: "fleurs", sujet: true },
@@ -1183,6 +1217,8 @@ window.EXERCICES_SUJET = [
   },
   {
     text: "La tarte aux pommes de grand-mère refroidit .",
+    cat: "cdn_rel",
+    position: "standard",
     tokens: [
       { text: "La", sujet: true },
       { text: "tarte", sujet: true },
@@ -1197,6 +1233,8 @@ window.EXERCICES_SUJET = [
   },
   {
     text: "Le chien de ma voisine aboie souvent .",
+    cat: "cdn_rel",
+    position: "standard",
     tokens: [
       { text: "Le", sujet: true },
       { text: "chien", sujet: true },
@@ -1211,6 +1249,8 @@ window.EXERCICES_SUJET = [
   },
   {
     text: "Le cartable de mon petit frère est très lourd .",
+    cat: "cdn_rel",
+    position: "standard",
     tokens: [
       { text: "Le", sujet: true },
       { text: "cartable", sujet: true },
@@ -1227,6 +1267,8 @@ window.EXERCICES_SUJET = [
   },
   {
     text: "L' arbre qui pousse dans la cour est un chêne .",
+    cat: "cdn_rel",
+    position: "standard",
     tokens: [
       { text: "L'", sujet: true },
       { text: "arbre", sujet: true },
@@ -1244,6 +1286,8 @@ window.EXERCICES_SUJET = [
   },
   {
     text: "Le gâteau au chocolat que tu as préparé est délicieux .",
+    cat: "cdn_rel",
+    position: "standard",
     tokens: [
       { text: "Le", sujet: true },
       { text: "gâteau", sujet: true },
@@ -1261,6 +1305,8 @@ window.EXERCICES_SUJET = [
   },
   {
     text: "Le train en provenance de Paris entre en gare .",
+    cat: "cdn_rel",
+    position: "standard",
     tokens: [
       { text: "Le", sujet: true },
       { text: "train", sujet: true },
@@ -1277,6 +1323,8 @@ window.EXERCICES_SUJET = [
   },
   {
     text: "Les élèves de cette classe sont très sages .",
+    cat: "cdn_rel",
+    position: "standard",
     tokens: [
       { text: "Les", sujet: true },
       { text: "élèves", sujet: true },
@@ -1292,6 +1340,8 @@ window.EXERCICES_SUJET = [
   },
   {
     text: "Le rire de cet enfant est communicatif .",
+    cat: "cdn_rel",
+    position: "standard",
     tokens: [
       { text: "Le", sujet: true },
       { text: "rire", sujet: true },
@@ -1306,6 +1356,8 @@ window.EXERCICES_SUJET = [
   },
   {
     text: "La clé de la voiture se trouve sur le meuble .",
+    cat: "cdn_rel",
+    position: "standard",
     tokens: [
       { text: "La", sujet: true },
       { text: "clé", sujet: true },
@@ -1323,6 +1375,8 @@ window.EXERCICES_SUJET = [
   },
   {
     text: "Le livre que j' ai emprunté est passionnant .",
+    cat: "cdn_rel",
+    position: "standard",
     tokens: [
       { text: "Le", sujet: true },
       { text: "livre", sujet: true },
@@ -1338,6 +1392,8 @@ window.EXERCICES_SUJET = [
   },
   {
     text: "Rêver adoucit le quotidien .",
+    cat: "infinitive",
+    position: "standard",
     tokens: [
       { text: "Rêver", sujet: true },
       { text: "adoucit" },
@@ -1349,6 +1405,8 @@ window.EXERCICES_SUJET = [
   },
   {
     text: "Mentir détruit la confiance .",
+    cat: "infinitive",
+    position: "standard",
     tokens: [
       { text: "Mentir", sujet: true },
       { text: "détruit" },
@@ -1360,6 +1418,8 @@ window.EXERCICES_SUJET = [
   },
   {
     text: "Courir demande de l' endurance .",
+    cat: "infinitive",
+    position: "standard",
     tokens: [
       { text: "Courir", sujet: true },
       { text: "demande" },
@@ -1372,6 +1432,8 @@ window.EXERCICES_SUJET = [
   },
   {
     text: "Lire enrichit le vocabulaire .",
+    cat: "infinitive",
+    position: "standard",
     tokens: [
       { text: "Lire", sujet: true },
       { text: "enrichit" },
@@ -1383,6 +1445,8 @@ window.EXERCICES_SUJET = [
   },
   {
     text: "Sous la pluie battante , les piétons pressent le pas .",
+    cat: "noun",
+    position: "cc_first",
     tokens: [
       { text: "Sous" },
       { text: "la" },
@@ -1399,6 +1463,8 @@ window.EXERCICES_SUJET = [
   },
   {
     text: "Depuis ce matin , Julie travaille sur son ordinateur .",
+    cat: "noun",
+    position: "cc_first",
     tokens: [
       { text: "Depuis" },
       { text: "ce" },
@@ -1414,6 +1480,8 @@ window.EXERCICES_SUJET = [
   },
   {
     text: "Dans la forêt , un vieux chêne se dresse fièrement .",
+    cat: "noun",
+    position: "cc_first",
     tokens: [
       { text: "Dans" },
       { text: "la" },
@@ -1430,6 +1498,8 @@ window.EXERCICES_SUJET = [
   },
   {
     text: "Ceux-ci coûtent plus cher .",
+    cat: "pronoun",
+    position: "standard",
     tokens: [
       { text: "Ceux-ci", sujet: true },
       { text: "coûtent" },
@@ -1441,6 +1511,8 @@ window.EXERCICES_SUJET = [
   },
   {
     text: "Bruxelles est une très belle ville .",
+    cat: "noun",
+    position: "standard",
     tokens: [
       { text: "Bruxelles", sujet: true },
       { text: "est" },
@@ -1454,6 +1526,8 @@ window.EXERCICES_SUJET = [
   },
   {
     text: "La fille de ma tante joue du piano .",
+    cat: "cdn_rel",
+    position: "standard",
     tokens: [
       { text: "La", sujet: true },
       { text: "fille", sujet: true },
@@ -1469,6 +1543,8 @@ window.EXERCICES_SUJET = [
   },
   {
     text: "L' eau de la source est pure .",
+    cat: "cdn_rel",
+    position: "standard",
     tokens: [
       { text: "L'", sujet: true },
       { text: "eau", sujet: true },
@@ -1483,6 +1559,8 @@ window.EXERCICES_SUJET = [
   },
   {
     text: "Le tiroir du bureau renferme des secrets .",
+    cat: "cdn_rel",
+    position: "standard",
     tokens: [
       { text: "Le", sujet: true },
       { text: "tiroir", sujet: true },
@@ -1497,6 +1575,8 @@ window.EXERCICES_SUJET = [
   },
   {
     text: "La lettre que le facteur a apportée vient d' Italie .",
+    cat: "cdn_rel",
+    position: "standard",
     tokens: [
       { text: "La", sujet: true },
       { text: "lettre", sujet: true },
@@ -1514,6 +1594,8 @@ window.EXERCICES_SUJET = [
   },
   {
     text: "Le dessin que tu as colorié est très beau .",
+    cat: "cdn_rel",
+    position: "standard",
     tokens: [
       { text: "Le", sujet: true },
       { text: "dessin", sujet: true },
@@ -1530,6 +1612,8 @@ window.EXERCICES_SUJET = [
   },
   {
     text: "Dans le port attend un magnifique bateau .",
+    cat: "noun",
+    position: "inverted",
     tokens: [
       { text: "Dans" },
       { text: "le" },
