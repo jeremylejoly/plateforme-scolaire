@@ -44,6 +44,8 @@
   .fb-btn.primary{background:var(--good); color:#fff}
   .fb-btn:disabled{opacity:.45; cursor:not-allowed; transform:none; box-shadow:0 4px 0 var(--ink)}
   #ibBoard text{font-family:var(--disp)}
+  .fb-final{text-align:center; background:#fff; border:3px solid var(--ink); border-radius:20px; padding:22px; box-shadow:0 5px 0 var(--ink)}
+  .fb-final p{font-family:var(--disp); font-weight:700; font-size:22px; margin:0 0 14px}
   @media (prefers-reduced-motion:reduce){.fb-btn{transition:none}}
 </style>
 </head>
@@ -52,29 +54,37 @@
   <h1>Atteins le score</h1>
   <p class="sub">Plante le bon nombre de fléchettes pour obtenir exactement le score demandé. Clique sur la cible !</p>
 
-  <div class="fb-status">
-    <span class="fb-pill" id="ibSolved">Défis réussis : 0</span>
-    <span class="fb-pill" id="ibTname"></span>
+  <div id="ibExercise">
+    <div class="fb-status">
+      <span class="fb-pill" id="ibProgress">Défi 1 / 10</span>
+      <span class="fb-pill" id="ibSolved">Défis réussis : 0</span>
+    </div>
+
+    <div class="fb-goal">Objectif : <b id="ibTarget">0</b> points avec <b id="ibN">0</b> fléchettes</div>
+
+    <div class="fb-card">
+      <div class="fb-tname" id="ibTname" style="text-align:center;font-family:var(--disp);font-weight:600;font-size:17px;margin-bottom:6px;"></div>
+      <div class="fb-hint">Clique dans un anneau pour y planter une fléchette.</div>
+      <svg id="ibBoard" viewBox="-20 -20 440 440" role="img" aria-label="Cible vide, clique pour planter des fléchettes"></svg>
+    </div>
+
+    <div class="fb-meter">
+      <span>Fléchettes : <b id="ibCount">0</b> / <b id="ibNeed">0</b></span>
+      <span>Total : <b id="ibSum">0</b></span>
+    </div>
+
+    <div id="ibFeedback" class="fb-feedback"></div>
+
+    <div class="fb-actions">
+      <button id="ibUndo" class="fb-btn" disabled>↶ Annuler</button>
+      <button id="ibClear" class="fb-btn" disabled>Effacer</button>
+      <button id="ibNew" class="fb-btn primary">Nouveau défi →</button>
+    </div>
   </div>
 
-  <div class="fb-goal">Objectif : <b id="ibTarget">0</b> points avec <b id="ibN">0</b> fléchettes</div>
-
-  <div class="fb-card">
-    <div class="fb-hint">Clique dans un anneau pour y planter une fléchette.</div>
-    <svg id="ibBoard" viewBox="-20 -20 440 440" role="img" aria-label="Cible vide, clique pour planter des fléchettes"></svg>
-  </div>
-
-  <div class="fb-meter">
-    <span>Fléchettes : <b id="ibCount">0</b> / <b id="ibNeed">0</b></span>
-    <span>Total : <b id="ibSum">0</b></span>
-  </div>
-
-  <div id="ibFeedback" class="fb-feedback"></div>
-
-  <div class="fb-actions">
-    <button id="ibUndo" class="fb-btn" disabled>↶ Annuler</button>
-    <button id="ibClear" class="fb-btn" disabled>Effacer</button>
-    <button id="ibNew" class="fb-btn primary">Nouveau défi →</button>
+  <div id="ibFinal" class="fb-final" hidden>
+    <p id="ibFinalMsg"></p>
+    <button id="ibRestart" class="fb-btn primary">Recommencer</button>
   </div>
 </div>
 
@@ -122,18 +132,25 @@
 
   var $=function(id){return document.getElementById(id);};
   var t, need, target, placed=[], solved=0, done=false;
+  var idx = 0, totalRounds = 10;
 
   function newChallenge(){
+    if(idx >= totalRounds){
+      showFinal();
+      return;
+    }
     t=TARGETS[rnd(0,TARGETS.length-1)];
     need=rnd(2,4);
     var s=0; for(var i=0;i<need;i++) s+=t.vals[rnd(0,3)];
     target=s; placed=[]; done=false;
+    idx++;
     render(); setFeedback('','');
   }
   function setFeedback(txt,cls){var f=$('ibFeedback'); f.textContent=txt; f.className='fb-feedback '+(cls||'');}
   function sumOf(){return placed.reduce(function(a,p){return a+t.vals[p.zone];},0);}
 
   function render(){
+    $('ibProgress').textContent='Défi '+idx+' / '+totalRounds;
     $('ibSolved').textContent='Défis réussis : '+solved;
     $('ibTname').textContent=t.name;
     $('ibTarget').textContent=target;
@@ -144,6 +161,7 @@
     $('ibBoard').innerHTML=drawBoard(t,placed);
     $('ibUndo').disabled=placed.length===0;
     $('ibClear').disabled=placed.length===0;
+    $('ibNew').textContent = (idx === totalRounds) ? '🏁 Voir mon score final' : 'Nouveau défi →';
   }
 
   function zoneFromRadius(r){
@@ -185,10 +203,44 @@
   function undo(){ if(placed.length===0) return; placed.pop(); done=false; render(); setFeedback('',''); }
   function clearAll(){ placed=[]; done=false; render(); setFeedback('',''); }
 
+  function showFinal(){
+    $('ibExercise').hidden=true; $('ibFinal').hidden=false;
+    var msg='Tu as réussi '+solved+' défis sur '+totalRounds+' !';
+    if(solved===totalRounds) msg='Parfait ! '+solved+' / '+totalRounds;
+    else if(solved>=totalRounds*0.7) msg='Très bien ! '+solved+' / '+totalRounds;
+    $('ibFinalMsg').textContent=msg;
+
+    if (window.parent && window.parent.saveResult && window.parent.state && window.parent.state.student) {
+      try {
+        var state = window.parent.state;
+        var classes = window.parent.CLASSES;
+        var className = classes && classes[state.studentCls] ? classes[state.studentCls].name : state.studentCls;
+        window.parent.saveResult({
+          student: state.student,
+          cls: state.studentCls,
+          className: className,
+          activity: 'op_add_sous_flechettes_atteins',
+          score: solved,
+          total: totalRounds,
+          pct: Math.round((solved / totalRounds) * 100),
+          date: new Date().toLocaleDateString('fr-BE'),
+          time: new Date().toLocaleTimeString('fr-BE', {hour: '2-digit', minute: '2-digit'})
+        });
+      } catch(e) { console.warn('Error saving flechettes score:', e); }
+    }
+  }
+
+  function restart(){
+    idx=0; solved=0; done=false;
+    $('ibFinal').hidden=true; $('ibExercise').hidden=false;
+    newChallenge();
+  }
+
   $('ibBoard').addEventListener('click',boardClick);
   $('ibUndo').addEventListener('click',undo);
   $('ibClear').addEventListener('click',clearAll);
   $('ibNew').addEventListener('click',newChallenge);
+  $('ibRestart').addEventListener('click',restart);
   newChallenge();
 })();
 </script>

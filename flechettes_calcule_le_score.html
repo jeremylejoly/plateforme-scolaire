@@ -145,7 +145,7 @@
   var $=function(id){return document.getElementById(id);};
   var throws=[], idx=0, score=0, answered=false;
 
-  function newSet(){throws=[];for(var i=0;i<30;i++)throws.push(makeThrow());}
+  function newSet(){throws=[];for(var i=0;i<10;i++)throws.push(makeThrow());}
   function setFeedback(t,c){var f=$('fbFeedback'); f.textContent=t; f.className='fb-feedback '+(c||'');}
   function breakdown(cur){
     var parts=cur.darts.map(function(d){return cur.t.vals[d.zone];}).sort(function(a,b){return b-a;});
@@ -186,6 +186,25 @@
     if(score===throws.length) msg='Parfait ! '+score+' / '+throws.length;
     else if(score>=throws.length*0.7) msg='Très bien ! '+score+' / '+throws.length;
     $('fbFinalMsg').textContent=msg;
+
+    if (window.parent && window.parent.saveResult && window.parent.state && window.parent.state.student) {
+      try {
+        var state = window.parent.state;
+        var classes = window.parent.CLASSES;
+        var className = classes && classes[state.studentCls] ? classes[state.studentCls].name : state.studentCls;
+        window.parent.saveResult({
+          student: state.student,
+          cls: state.studentCls,
+          className: className,
+          activity: 'op_add_sous_flechettes_calcule',
+          score: score,
+          total: throws.length,
+          pct: Math.round((score / throws.length) * 100),
+          date: new Date().toLocaleDateString('fr-BE'),
+          time: new Date().toLocaleTimeString('fr-BE', {hour: '2-digit', minute: '2-digit'})
+        });
+      } catch(e) { console.warn('Error saving flechettes score:', e); }
+    }
   }
   function restart(){newSet(); idx=0; score=0; answered=false; $('fbFinal').hidden=true; $('fbExercise').hidden=false; render();}
 
