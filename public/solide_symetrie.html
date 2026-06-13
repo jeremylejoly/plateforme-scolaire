@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Symétrie — Trace la figure symétrique</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#fcfdff; --ink:#202533; --muted:#69748a;
+    --grid:#cbe8f6; --grid-strong:#a9d8ee; --axis:#ff5fa2; --tint:#e9f6fd;
+    --student:#2f6bff; --ok:#13ad67; --extra:#ef5b5b; --missing:#f3a23d;
+    --accent:#15c79a; --accent-d:#0fa284; --line:#e6ebf2; --card:#ffffff;
+    --shadow:0 10px 30px rgba(40,70,110,.10), 0 2px 6px rgba(40,70,110,.06);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    font-family:"Nunito",system-ui,-apple-system,"Segoe UI",sans-serif;
+    color:var(--ink); background:
+      radial-gradient(1200px 500px at 80% -10%, #eaf7ff 0%, transparent 60%),
+      radial-gradient(900px 500px at -10% 110%, #fdeaf4 0%, transparent 55%),
+      var(--paper);
+    -webkit-font-smoothing:antialiased; line-height:1.4;
+  }
+  .wrap{max-width:980px; margin:0 auto; padding:22px 18px 48px;}
+
+  header.app{display:flex; align-items:flex-end; gap:14px; flex-wrap:wrap; margin-bottom:14px;}
+  .title-block h1{
+    font-family:"Fredoka",sans-serif; font-weight:700; font-size:clamp(24px,4.5vw,34px);
+    margin:0; letter-spacing:.2px; color:var(--ink);
+  }
+  .title-block h1 .axe{color:var(--axis);}
+  .title-block p{margin:4px 0 0; color:var(--muted); font-weight:600; font-size:15px;}
+  .badge{
+    margin-left:auto; font-family:"Fredoka",sans-serif; font-weight:600; font-size:13px;
+    color:#0c6e57; background:#d8f7ee; border:1px solid #b6ecdd; padding:7px 12px;
+    border-radius:999px; white-space:nowrap;
+  }
+
+  /* Axis tabs */
+  .axis-tabs{display:flex; gap:8px; margin:6px 0 14px; flex-wrap:wrap;}
+  .axis-tabs button{
+    font-family:"Fredoka",sans-serif; font-weight:600; font-size:15px;
+    border:2px solid var(--line); background:var(--card); color:var(--muted);
+    padding:10px 16px; border-radius:14px; cursor:pointer; transition:.15s;
+    display:flex; align-items:center; gap:9px;
+  }
+  .axis-tabs button .ico{width:18px; height:18px; display:inline-block;}
+  .axis-tabs button:hover{border-color:var(--grid-strong); color:var(--ink);}
+  .axis-tabs button[aria-pressed="true"]{
+    border-color:var(--axis); color:#b3245f; background:#fff2f8;
+    box-shadow:0 4px 12px rgba(255,95,162,.18);
+  }
+
+  /* Toolbar card */
+  .panel{background:var(--card); border:1px solid var(--line); border-radius:18px; box-shadow:var(--shadow);}
+  .toolbar{
+    display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+    padding:12px 14px; border-bottom:1px solid var(--line);
+  }
+  .nav{display:flex; align-items:center; gap:6px;}
+  .nav .count{font-family:"Fredoka",sans-serif; font-weight:600; min-width:96px; text-align:center; color:var(--ink);}
+  .grp{display:flex; align-items:center; gap:8px; flex-wrap:wrap;}
+  .grp + .grp{margin-left:auto;}
+
+  button.btn{
+    font-family:"Nunito",sans-serif; font-weight:700; font-size:14px;
+    border:1.5px solid var(--line); background:#fff; color:var(--ink);
+    padding:9px 13px; border-radius:12px; cursor:pointer; transition:.13s;
+    display:inline-flex; align-items:center; gap:7px;
+  }
+  button.btn:hover{border-color:var(--grid-strong); transform:translateY(-1px);}
+  button.btn:active{transform:translateY(0);}
+  button.btn:disabled{opacity:.45; cursor:not-allowed; transform:none;}
+  button.btn.round{width:40px; height:40px; padding:0; justify-content:center; border-radius:50%; font-size:18px;}
+  button.btn.primary{background:var(--accent); border-color:var(--accent-d); color:#063b30;}
+  button.btn.primary:hover{background:var(--accent-d); color:#fff;}
+  button.btn.ghost{background:transparent;}
+  button.btn svg{width:16px; height:16px;}
+
+  /* toggle (background type) */
+  .seg{display:inline-flex; background:#eef3f8; border:1.5px solid var(--line); border-radius:12px; padding:3px;}
+  .seg button{
+    border:none; background:transparent; font-family:"Nunito"; font-weight:700; font-size:13px;
+    color:var(--muted); padding:6px 12px; border-radius:9px; cursor:pointer;
+  }
+  .seg button[aria-pressed="true"]{background:#fff; color:var(--ink); box-shadow:0 1px 4px rgba(0,0,0,.08);}
+
+  .stage{padding:14px;}
+  .instruction{
+    display:flex; gap:10px; align-items:center; margin:0 0 12px; padding:11px 14px;
+    background:#f3faff; border:1px solid #d8eefb; border-radius:14px;
+    color:#1c4f6e; font-weight:700; font-size:15px;
+  }
+  .instruction .pin{flex:0 0 auto; width:22px; height:22px; display:grid; place-items:center;
+    background:var(--axis); color:#fff; border-radius:7px; font-size:13px; font-family:"Fredoka";}
+
+  .canvas{width:100%; background:#fff; border:1px solid var(--line); border-radius:14px; overflow:hidden;}
+  .canvas svg{display:block; width:100%; height:auto; touch-action:manipulation;}
+
+  .node-hit{fill:transparent; cursor:pointer;}
+  .node-hit:hover{fill:rgba(255,95,162,.16);}
+
+  .feedback{
+    margin:12px 2px 0; min-height:24px; font-weight:700; font-size:15px; color:var(--muted);
+    display:flex; align-items:center; gap:9px;
+  }
+  .feedback.ok{color:#0c8a52;}
+  .feedback.warn{color:#c0492f;}
+  .feedback .chip{display:inline-flex; gap:6px;}
+  .chip b{font-family:"Fredoka";}
+
+  .legend{display:flex; gap:16px; flex-wrap:wrap; margin:14px 2px 0; color:var(--muted); font-size:13px; font-weight:600;}
+  .legend span{display:inline-flex; align-items:center; gap:7px;}
+  .swatch{width:22px; height:0; border-top:4px solid; border-radius:3px;}
+
+  footer.note{margin:22px 2px 0; color:var(--muted); font-size:13px; font-weight:600; line-height:1.6;}
+  footer.note a{color:var(--accent-d);}
+
+  @media (max-width:560px){
+    .grp + .grp{margin-left:0;}
+    .nav .count{min-width:74px; font-size:14px;}
+    button.btn{padding:8px 10px; font-size:13px;}
+  }
+  @media (prefers-reduced-motion:reduce){ *{transition:none !important;} button.btn:hover{transform:none;} }
+
+  /* ---------- PRINT ---------- */
+  #printArea{display:none;}
+  @media print{
+    body{background:#fff;}
+    .wrap{max-width:none; padding:0;}
+    header.app .badge, .axis-tabs, .toolbar, .feedback, .legend, footer.note{display:none !important;}
+    .panel{border:none; box-shadow:none;}
+    .instruction{border-color:#bbb;}
+    /* worksheet = hide what the pupil must produce */
+    body.print-fiche .student-layer,
+    body.print-fiche .solution-layer,
+    body.print-fiche .hint-layer,
+    body.print-fiche .vertex-layer{display:none !important;}
+    body.print-fiche .node-hit{fill:transparent !important;}
+
+    body.print-all .wrap{display:none !important;}
+    body.print-all #printArea{display:block !important;}
+    #printArea .sheet{page-break-after:always; padding:14px 6px;}
+    #printArea h2{font-family:"Fredoka"; font-size:18px; margin:0 0 4px;}
+    #printArea p{color:#444; font-weight:700; margin:0 0 10px; font-size:14px;}
+    #printArea svg{width:100%; height:auto; max-height:88vh;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="app">
+    <div class="title-block">
+      <h1>Trace la figure <span class="axe">symétrique</span></h1>
+      <p>Géométrie · symétrie axiale — 5<sup>e</sup> & 6<sup>e</sup> primaire (FWB)</p>
+    </div>
+    <span class="badge" id="bgBadge">Fond : quadrillage</span>
+  </header>
+
+  <nav class="axis-tabs" aria-label="Type d'axe">
+    <button data-axis="V" aria-pressed="true">
+      <svg class="ico" viewBox="0 0 24 24" fill="none"><line x1="12" y1="2" x2="12" y2="22" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
+      Axe vertical
+    </button>
+    <button data-axis="H" aria-pressed="false">
+      <svg class="ico" viewBox="0 0 24 24" fill="none"><line x1="2" y1="12" x2="22" y2="12" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
+      Axe horizontal
+    </button>
+    <button data-axis="O" aria-pressed="false">
+      <svg class="ico" viewBox="0 0 24 24" fill="none"><line x1="3" y1="3" x2="21" y2="21" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
+      Axe oblique
+    </button>
+  </nav>
+
+  <section class="panel">
+    <div class="toolbar">
+      <div class="nav grp">
+        <button class="btn round" id="prev" title="Figure précédente" aria-label="Figure précédente">‹</button>
+        <span class="count" id="count">Figure 1 / 15</span>
+        <button class="btn round" id="next" title="Figure suivante" aria-label="Figure suivante">›</button>
+      </div>
+
+      <div class="grp" role="group" aria-label="Type de fond">
+        <span class="seg">
+          <button id="bgGrid" aria-pressed="true">Quadrillage</button>
+          <button id="bgDots" aria-pressed="false">Points</button>
+        </span>
+      </div>
+
+      <div class="grp">
+        <button class="btn" id="newStroke" title="Lever le crayon pour commencer un nouveau trait">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M14 4l6 6L9 21H3v-6L14 4z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+          Nouveau trait
+        </button>
+        <button class="btn ghost" id="undo" title="Annuler le dernier point">↩︎ Annuler</button>
+        <button class="btn ghost" id="clear" title="Tout effacer">🗑 Effacer</button>
+        <button class="btn primary" id="check">✓ Vérifier</button>
+        <button class="btn" id="solve">👁 Solution</button>
+      </div>
+    </div>
+
+    <div class="stage">
+      <p class="instruction" id="instruction"><span class="pin">↔</span><span id="instructionText"></span></p>
+      <div class="canvas" id="canvas"></div>
+
+      <div class="feedback" id="feedback">Clique sur les points pour relier la figure de l'autre côté de l'axe rose.</div>
+
+      <div class="legend">
+        <span><i class="swatch" style="border-color:var(--ink)"></i> Figure donnée</span>
+        <span><i class="swatch" style="border-color:var(--student)"></i> Ton tracé</span>
+        <span><i class="swatch" style="border-color:var(--axis)"></i> Axe de symétrie</span>
+        <span><i class="swatch" style="border-color:var(--ok)"></i> Correct</span>
+        <span><i class="swatch" style="border-color:var(--extra)"></i> À revoir</span>
+      </div>
+
+      <div class="grp" style="margin-top:16px; gap:10px;">
+        <button class="btn" id="printOne">🖨 Imprimer cette fiche</button>
+        <button class="btn" id="printAll">🖨 Imprimer les 15 fiches</button>
+      </div>
+    </div>
+  </section>
+
+  <footer class="note">
+    <strong>Mode d'emploi.</strong> Choisis le type d'axe, puis clique sur les nœuds du quadrillage (ou les points) pour
+    tracer le symétrique de la figure noire. « Nouveau trait » lève le crayon pour dessiner une partie séparée.
+    « Vérifier » colore tes segments&nbsp;: vert = juste, rouge = à corriger. Pour fermer une figure, reclique sur le point de départ.<br>
+    45 figures au total : 15 par type d'axe, avec des fonds quadrillés et pointillés. Imprime des fiches vierges pour travailler sur papier.
+  </footer>
+</div>
+
+<div id="printArea"></div>
+
+<script>
+"use strict";
+/* ------------------------------------------------------------------ *
+ *  Données : figures de base (repère local x:0..7, y:0..12)
+ *  x = 7 est le bord proche de l'axe (pour l'axe vertical).
+ * ------------------------------------------------------------------ */
+const BASE = [
+  [ {pts:[[7,1],[1,6],[7,11]], closed:false} ],                                            // chevron <
+  [ {pts:[[1,2],[1,10],[7,6]], closed:true} ],                                             // triangle
+  [ {pts:[[2,11],[2,5],[4,3],[6,5],[6,11]], closed:true} ],                                // maison
+  [ {pts:[[1,11],[1,8],[3,8],[3,5],[5,5],[5,2],[7,2]], closed:false} ],                    // escalier
+  [ {pts:[[1,5],[4,5],[4,3],[7,7],[4,11],[4,9],[1,9]], closed:true} ],                     // flèche
+  [ {pts:[[1,4],[7,4],[5,10],[3,10]], closed:true} ],                                      // trapèze
+  [ {pts:[[2,3],[6,3],[7,7],[6,11],[2,11],[1,7]], closed:true} ],                          // hexagone
+  [ {pts:[[7,1],[2,4],[6,7],[1,11]], closed:false} ],                                      // zigzag
+  [ {pts:[[7,2],[2,2],[2,4],[5,4],[5,6],[2,6],[2,8],[5,8],[5,10],[2,10],[2,12],[7,12]], closed:false} ], // peigne / E
+  [ {pts:[[4,1],[7,6],[4,11],[1,6]], closed:true} ],                                       // losange
+  [ {pts:[[3,2],[5,2],[5,5],[7,5],[7,7],[5,7],[5,11],[3,11],[3,7],[1,7],[1,5],[3,5]], closed:true} ], // croix +
+  [ {pts:[[5,1],[2,6],[4,6],[1,12]], closed:false} ],                                      // éclair
+  [ {pts:[[1,11],[3,5],[5,9],[7,4]], closed:false} ],                                      // montagnes
+  [ {pts:[[1,7],[7,7],[6,11],[2,11]], closed:true} ],                                      // barque
+  [ {pts:[[2,1],[2,12]], closed:false}, {pts:[[2,2],[7,4],[2,6]], closed:false} ],         // drapeau (2 traits)
+];
+
+/* Figures pour l'axe oblique (axe = diagonale y = x).
+   Toutes les figures sont dans le triangle bas-gauche (col 1..6, lig 7..13). */
+const OBL = [
+  [ {pts:[[1,8],[1,13],[6,13]], closed:true} ],                                            // triangle
+  [ {pts:[[1,8],[5,8],[5,12],[1,12]], closed:true} ],                                      // carré
+  [ {pts:[[6,7],[1,10],[6,13]], closed:false} ],                                           // chevron
+  [ {pts:[[1,13],[1,9],[3,7],[5,9],[5,13]], closed:true} ],                                // maison
+  [ {pts:[[3,7],[1,10],[2,10],[2,13],[4,13],[4,10],[5,10]], closed:true} ],                // flèche haut
+  [ {pts:[[1,13],[1,11],[3,11],[3,9],[5,9],[5,7]], closed:false} ],                        // escalier
+  [ {pts:[[1,8],[6,8],[5,12],[2,12]], closed:true} ],                                      // trapèze
+  [ {pts:[[6,7],[2,9],[5,11],[1,13]], closed:false} ],                                     // zigzag
+  [ {pts:[[3,7],[6,9],[5,12],[1,12],[1,9]], closed:true} ],                                // pentagone
+  [ {pts:[[3,7],[6,10],[3,13],[1,10]], closed:true} ],                                     // losange
+  [ {pts:[[1,10],[6,10],[5,13],[2,13]], closed:true} ],                                    // barque
+  [ {pts:[[5,7],[2,10],[4,10],[1,13]], closed:false} ],                                    // éclair
+  [ {pts:[[1,13],[2,8],[4,12],[6,7]], closed:false} ],                                     // montagnes
+  [ {pts:[[2,7],[4,7],[4,9],[6,9],[6,11],[4,11],[4,13],[2,13],[2,11],[1,11],[1,9],[2,9]], closed:true} ], // croix
+  [ {pts:[[2,7],[2,13]], closed:false}, {pts:[[2,8],[5,9],[2,11]], closed:false} ],        // drapeau
+];
+
+/* ------------------------------------------------------------------ *
+ *  Construction des exercices
+ * ------------------------------------------------------------------ */
+function mapV(s){ return {closed:s.closed, pts:s.pts.map(p=>[1+p[0], 1+p[1]])}; }
+function mapH(s){ return {closed:s.closed, pts:s.pts.map(p=>[1+p[1], 1+p[0]])}; }
+function clone(s){ return {closed:s.closed, pts:s.pts.map(p=>[p[0],p[1]])}; }
+
+function reflectPt(p, axis){
+  if(axis.t==='V') return [2*axis.pos - p[0], p[1]];
+  if(axis.t==='H') return [p[0], 2*axis.pos - p[1]];
+  return [p[1], p[0]]; // diagonale y = x
+}
+function reflectStroke(s, axis){ return {closed:s.closed, pts:s.pts.map(p=>reflectPt(p,axis))}; }
+
+function buildAxis(type){
+  const out=[];
+  for(let i=0;i<15;i++){
+    let model, axis, cols, rows;
+    if(type==='V'){ model = BASE[i].map(mapV);            axis={t:'V',pos:8}; cols=16; rows=14; }
+    else if(type==='H'){ model = BASE[(i+7)%15].map(mapH); axis={t:'H',pos:8}; cols=14; rows=16; }
+    else { model = OBL[i].map(clone);                      axis={t:'D'};      cols=14; rows=14; }
+    const answer = model.map(s=>reflectStroke(s, axis));
+    out.push({ type, axis, cols, rows, model, answer, bg:(i%2===0?'grid':'dots') });
+  }
+  return out;
+}
+const EXOS = { V:buildAxis('V'), H:buildAxis('H'), O:buildAxis('O') };
+
+/* ------------------------------------------------------------------ *
+ *  État
+ * ------------------------------------------------------------------ */
+let axisType='V', idx=0;
+let committed=[];     // traits terminés de l'élève [{pts:[...]}]
+let current=null;     // trait en cours {pts:[...]}
+let showSolution=false, verified=false;
+
+const CELL=36, PAD=26;
+const X = c => PAD + c*CELL;
+const Y = r => PAD + r*CELL;
+
+const INSTR = {
+  V:"Trace le symétrique de la figure par rapport à l'axe vertical rose.",
+  H:"Trace le symétrique de la figure par rapport à l'axe horizontal rose.",
+  O:"Trace le symétrique de la figure par rapport à l'axe oblique rose."
+};
+
+function curEx(){ return EXOS[axisType][idx]; }
+
+/* ----- segments & comparaison ----- */
+function ekey(a,b){ const A=a[0]+','+a[1], B=b[0]+','+b[1]; return A<B ? A+'|'+B : B+'|'+A; }
+function strokeSegs(s, asClosed){
+  const segs=[];
+  for(let i=0;i<s.pts.length-1;i++) segs.push([s.pts[i], s.pts[i+1]]);
+  if(asClosed && s.closed && s.pts.length>2) segs.push([s.pts[s.pts.length-1], s.pts[0]]);
+  return segs;
+}
+function studentStrokes(){ return current ? committed.concat([current]) : committed.slice(); }
+function studentSegs(){
+  const out=[];
+  studentStrokes().forEach(s=>{ for(let i=0;i<s.pts.length-1;i++) out.push([s.pts[i], s.pts[i+1]]); });
+  return out;
+}
+function expectedSet(){
+  const set=new Set();
+  curEx().answer.forEach(s=> strokeSegs(s,true).forEach(seg=> set.add(ekey(seg[0],seg[1]))));
+  return set;
+}
+
+/* ------------------------------------------------------------------ *
+ *  Rendu SVG (vue interactive)
+ * ------------------------------------------------------------------ */
+function svgOpen(ex){
+  const w = PAD*2 + ex.cols*CELL, h = PAD*2 + ex.rows*CELL;
+  return `<svg viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="grille de symétrie">`;
+}
+function tintLayer(ex){
+  // teinte le côté "donné" pour montrer ce qui est déjà tracé
+  if(ex.axis.t==='V') return `<rect x="${X(0)}" y="${Y(0)}" width="${ex.axis.pos*CELL}" height="${ex.rows*CELL}" fill="var(--tint)"/>`;
+  if(ex.axis.t==='H') return `<rect x="${X(0)}" y="${Y(0)}" width="${ex.cols*CELL}" height="${ex.axis.pos*CELL}" fill="var(--tint)"/>`;
+  // diagonale : triangle bas-gauche
+  return `<polygon points="${X(0)},${Y(0)} ${X(0)},${Y(ex.rows)} ${X(ex.cols)},${Y(ex.rows)}" fill="var(--tint)"/>`;
+}
+function backgroundLayer(ex){
+  let s='';
+  if(ex.bg==='grid'){
+    for(let c=0;c<=ex.cols;c++) s+=`<line x1="${X(c)}" y1="${Y(0)}" x2="${X(c)}" y2="${Y(ex.rows)}" stroke="var(--grid)" stroke-width="1.4"/>`;
+    for(let r=0;r<=ex.rows;r++) s+=`<line x1="${X(0)}" y1="${Y(r)}" x2="${X(ex.cols)}" y2="${Y(r)}" stroke="var(--grid)" stroke-width="1.4"/>`;
+    for(let c=0;c<=ex.cols;c++) for(let r=0;r<=ex.rows;r++) s+=`<circle cx="${X(c)}" cy="${Y(r)}" r="1.6" fill="var(--grid-strong)"/>`;
+  } else {
+    for(let c=0;c<=ex.cols;c++) for(let r=0;r<=ex.rows;r++) s+=`<circle cx="${X(c)}" cy="${Y(r)}" r="2.8" fill="var(--grid-strong)"/>`;
+  }
+  return s;
+}
+function axisLayer(ex){
+  let x1,y1,x2,y2;
+  if(ex.axis.t==='V'){ x1=X(ex.axis.pos); y1=Y(0); x2=X(ex.axis.pos); y2=Y(ex.rows); }
+  else if(ex.axis.t==='H'){ x1=X(0); y1=Y(ex.axis.pos); x2=X(ex.cols); y2=Y(ex.axis.pos); }
+  else { x1=X(0); y1=Y(0); x2=X(ex.cols); y2=Y(ex.rows); }
+  return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="var(--axis)" stroke-width="4" stroke-linecap="round"/>`;
+}
+function pathD(s){
+  let d='M'+X(s.pts[0][0])+' '+Y(s.pts[0][1]);
+  for(let i=1;i<s.pts.length;i++) d+='L'+X(s.pts[i][0])+' '+Y(s.pts[i][1]);
+  if(s.closed && s.pts.length>2) d+='Z';
+  return d;
+}
+function modelLayer(ex){
+  let s='';
+  ex.model.forEach(st=> s+=`<path d="${pathD(st)}" fill="none" stroke="var(--ink)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>`);
+  return s;
+}
+function solutionLayer(ex){
+  if(!showSolution) return '';
+  let s='<g class="solution-layer">';
+  ex.answer.forEach(st=> s+=`<path d="${pathD(st)}" fill="none" stroke="var(--ok)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="2 8" opacity=".85"/>`);
+  return s+'</g>';
+}
+function hintLayer(ex){
+  if(!verified) return '';
+  const exp = curEx().answer.flatMap(s=>strokeSegs(s,true));
+  const drawn = new Set(studentSegs().map(seg=>ekey(seg[0],seg[1])));
+  let s='<g class="hint-layer">';
+  exp.forEach(seg=>{
+    if(!drawn.has(ekey(seg[0],seg[1])))
+      s+=`<line x1="${X(seg[0][0])}" y1="${Y(seg[0][1])}" x2="${X(seg[1][0])}" y2="${Y(seg[1][1])}" stroke="var(--missing)" stroke-width="3" stroke-linecap="round" stroke-dasharray="3 7" opacity=".75"/>`;
+  });
+  return s+'</g>';
+}
+function studentLayer(){
+  const exp = verified ? expectedSet() : null;
+  let s='<g class="student-layer">';
+  studentSegs().forEach(seg=>{
+    let col='var(--student)';
+    if(verified) col = exp.has(ekey(seg[0],seg[1])) ? 'var(--ok)' : 'var(--extra)';
+    s+=`<line x1="${X(seg[0][0])}" y1="${Y(seg[0][1])}" x2="${X(seg[1][0])}" y2="${Y(seg[1][1])}" stroke="${col}" stroke-width="4.5" stroke-linecap="round"/>`;
+  });
+  s+='</g><g class="vertex-layer">';
+  studentStrokes().forEach(st=> st.pts.forEach((p,i)=>{
+    const last = current && st===current && i===st.pts.length-1;
+    s+=`<circle cx="${X(p[0])}" cy="${Y(p[1])}" r="${last?5.5:4}" fill="${last?'#fff':'var(--student)'}" stroke="var(--student)" stroke-width="${last?3:0}"/>`;
+  }));
+  return s+'</g>';
+}
+function hitLayer(ex){
+  let s='<g class="hit-layer">';
+  for(let c=0;c<=ex.cols;c++) for(let r=0;r<=ex.rows;r++)
+    s+=`<circle class="node-hit" data-c="${c}" data-r="${r}" cx="${X(c)}" cy="${Y(r)}" r="${CELL*0.42}"/>`;
+  return s+'</g>';
+}
+
+function render(){
+  const ex = curEx();
+  const html = svgOpen(ex) + tintLayer(ex) + backgroundLayer(ex) + hintLayer(ex)
+    + axisLayer(ex) + modelLayer(ex) + solutionLayer(ex) + studentLayer() + hitLayer(ex) + '</svg>';
+  const cv = document.getElementById('canvas');
+  cv.innerHTML = html;
+  cv.querySelectorAll('.node-hit').forEach(n=>{
+    n.addEventListener('click', ()=> addPoint(+n.dataset.c, +n.dataset.r));
+  });
+
+  document.getElementById('count').textContent = `Figure ${idx+1} / 15`;
+  document.getElementById('instructionText').textContent = INSTR[axisType];
+  document.getElementById('bgBadge').textContent = 'Fond : ' + (ex.bg==='grid'?'quadrillage':'points');
+  document.getElementById('bgGrid').setAttribute('aria-pressed', ex.bg==='grid');
+  document.getElementById('bgDots').setAttribute('aria-pressed', ex.bg==='dots');
+  document.getElementById('solve').style.background = showSolution ? 'var(--accent)' : '';
+  document.getElementById('solve').style.color = showSolution ? '#063b30' : '';
+}
+
+/* ------------------------------------------------------------------ *
+ *  Interactions
+ * ------------------------------------------------------------------ */
+function addPoint(c,r){
+  if(verified){ verified=false; } // on repart en mode tracé dès qu'on reclique
+  if(!current){ current={pts:[[c,r]]}; render(); return; }
+  const last=current.pts[current.pts.length-1];
+  if(last[0]===c && last[1]===r) return;     // double-clic au même endroit
+  current.pts.push([c,r]);
+  render();
+}
+function finishStroke(){
+  if(current && current.pts.length>=2) committed.push(current);
+  current=null;
+}
+function resetDrawing(){ committed=[]; current=null; showSolution=false; verified=false; }
+
+function setFeedback(text, cls){
+  const f=document.getElementById('feedback');
+  f.className='feedback'+(cls?' '+cls:'');
+  f.innerHTML=text;
+}
+
+function check(){
+  finishStroke();
+  verified=true;
+  const exp = expectedSet();
+  const drawn = studentSegs().map(seg=>ekey(seg[0],seg[1]));
+  const drawnSet=new Set(drawn);
+  let correct=0, extra=0;
+  drawn.forEach(k=> exp.has(k) ? correct++ : extra++);
+  let missing=0;
+  exp.forEach(k=> { if(!drawnSet.has(k)) missing++; });
+
+  if(missing===0 && extra===0 && correct>0){
+    setFeedback('🎉 Bravo&nbsp;! La figure symétrique est parfaite.', 'ok');
+  } else if(drawn.length===0){
+    setFeedback('Commence par cliquer sur les points pour tracer le symétrique.', 'warn');
+  } else {
+    const parts=[];
+    parts.push(`<span class="chip">✅ <b>${correct}</b> segment(s) juste(s)</span>`);
+    if(missing>0) parts.push(`<span class="chip">🟧 <b>${missing}</b> manquant(s)</span>`);
+    if(extra>0)   parts.push(`<span class="chip">🟥 <b>${extra}</b> à enlever</span>`);
+    setFeedback(parts.join('&nbsp;&nbsp;'), 'warn');
+  }
+  render();
+}
+
+/* ----- boutons ----- */
+document.querySelectorAll('.axis-tabs button').forEach(b=>{
+  b.addEventListener('click', ()=>{
+    axisType=b.dataset.axis; idx=0; resetDrawing();
+    document.querySelectorAll('.axis-tabs button').forEach(x=> x.setAttribute('aria-pressed', x===b));
+    setFeedback('Clique sur les points pour relier la figure de l\'autre côté de l\'axe rose.');
+    render();
+  });
+});
+document.getElementById('prev').addEventListener('click', ()=>{ idx=(idx+14)%15; resetDrawing(); defaultMsg(); render(); });
+document.getElementById('next').addEventListener('click', ()=>{ idx=(idx+1)%15; resetDrawing(); defaultMsg(); render(); });
+document.getElementById('bgGrid').addEventListener('click', ()=>{ curEx().bg='grid'; render(); });
+document.getElementById('bgDots').addEventListener('click', ()=>{ curEx().bg='dots'; render(); });
+document.getElementById('newStroke').addEventListener('click', ()=>{ finishStroke(); render(); });
+document.getElementById('undo').addEventListener('click', ()=>{
+  verified=false;
+  if(current){ current.pts.pop(); if(current.pts.length===0) current=null; }
+  else if(committed.length){ current=committed.pop(); current.pts.pop(); if(current.pts.length===0) current=null; }
+  render();
+});
+document.getElementById('clear').addEventListener('click', ()=>{ resetDrawing(); defaultMsg(); render(); });
+document.getElementById('check').addEventListener('click', check);
+document.getElementById('solve').addEventListener('click', ()=>{ finishStroke(); showSolution=!showSolution; render(); });
+
+function defaultMsg(){ setFeedback('Clique sur les points pour relier la figure de l\'autre côté de l\'axe rose.'); }
+
+/* ----- impression ----- */
+function worksheetSVG(ex){
+  // figure donnée + axe + fond, SANS le tracé de l'élève (fiche vierge)
+  return svgOpen(ex) + tintLayer(ex) + backgroundLayer(ex) + axisLayer(ex) + modelLayer(ex) + '</svg>';
+}
+document.getElementById('printOne').addEventListener('click', ()=>{
+  finishStroke();
+  document.body.classList.add('print-fiche');
+  window.addEventListener('afterprint', function h(){ document.body.classList.remove('print-fiche'); window.removeEventListener('afterprint', h); });
+  window.print();
+});
+document.getElementById('printAll').addEventListener('click', ()=>{
+  const list=EXOS[axisType];
+  const label={V:'axe vertical',H:'axe horizontal',O:'axe oblique'}[axisType];
+  let html='';
+  list.forEach((ex,i)=>{
+    html+=`<div class="sheet"><h2>Symétrie — ${label} · figure ${i+1}/15</h2>`
+        + `<p>Trace le symétrique de la figure noire par rapport à l'axe rose. Fond : ${ex.bg==='grid'?'quadrillage':'points'}.</p>`
+        + worksheetSVG(ex) + `</div>`;
+  });
+  const area=document.getElementById('printArea');
+  area.innerHTML=html;
+  document.body.classList.add('print-all');
+  window.addEventListener('afterprint', function h(){ document.body.classList.remove('print-all'); area.innerHTML=''; window.removeEventListener('afterprint', h); });
+  window.print();
+});
+
+/* ----- clavier (navigation) ----- */
+document.addEventListener('keydown', e=>{
+  if(e.key==='ArrowRight'){ document.getElementById('next').click(); }
+  else if(e.key==='ArrowLeft'){ document.getElementById('prev').click(); }
+});
+
+render();
+</script>
+</body>
+</html>
