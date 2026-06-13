@@ -1627,3 +1627,617 @@ window.EXERCICES_SUJET = [
     explanation: "Le sujet est « un magnifique bateau », inversé après le verbe « attend »."
   }
 ];
+
+window.EXERCICES_VERBE = [
+  {
+    text: "Le petit garçon mange une pomme rouge .",
+    words: 1,
+    separated: false,
+    subject_pos: "before",
+    tokens: [
+      { text: "Le" },
+      { text: "petit" },
+      { text: "garçon" },
+      { text: "mange", verbe: true },
+      { text: "une" },
+      { text: "pomme" },
+      { text: "rouge" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le verbe principal conjugué de la phrase est « mange » (verbe manger)."
+  },
+  {
+    text: "Les oiseaux chantent joyeusement dans le jardin .",
+    words: 1,
+    separated: false,
+    subject_pos: "before",
+    tokens: [
+      { text: "Les" },
+      { text: "oiseaux" },
+      { text: "chantent", verbe: true },
+      { text: "joyeusement" },
+      { text: "dans" },
+      { text: "le" },
+      { text: "jardin" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le verbe principal conjugué de la phrase est « chantent » (verbe chanter)."
+  },
+  {
+    text: "Dans ce grand arbre vit un petit écureuil .",
+    words: 1,
+    separated: false,
+    subject_pos: "after",
+    tokens: [
+      { text: "Dans" },
+      { text: "ce" },
+      { text: "grand" },
+      { text: "arbre" },
+      { text: "vit", verbe: true },
+      { text: "un" },
+      { text: "petit" },
+      { text: "écureuil" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le verbe principal conjugué de la phrase est « vit » (verbe vivre)."
+  },
+  {
+    text: "Dans la vallée coule une large rivière calme .",
+    words: 1,
+    separated: false,
+    subject_pos: "after",
+    tokens: [
+      { text: "Dans" },
+      { text: "la" },
+      { text: "vallée" },
+      { text: "coule", verbe: true },
+      { text: "une" },
+      { text: "large" },
+      { text: "rivière" },
+      { text: "calme" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le verbe principal conjugué de la phrase est « coule » (verbe couler)."
+  },
+  {
+    text: "Les feuilles tombaient doucement des branches en automne .",
+    words: 1,
+    separated: false,
+    subject_pos: "before",
+    tokens: [
+      { text: "Les" },
+      { text: "feuilles" },
+      { text: "tombaient", verbe: true },
+      { text: "doucement" },
+      { text: "des" },
+      { text: "branches" },
+      { text: "en" },
+      { text: "automne" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le verbe principal conjugué de la phrase est « tombaient » (verbe tomber)."
+  },
+  {
+    text: "Chaque matin , mon frère lit un livre intéressant .",
+    words: 1,
+    separated: false,
+    subject_pos: "before",
+    tokens: [
+      { text: "Chaque" },
+      { text: "matin", punctuation: "," },
+      { text: "mon" },
+      { text: "frère" },
+      { text: "lit", verbe: true },
+      { text: "un" },
+      { text: "livre" },
+      { text: "intéressant" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le verbe principal conjugué de la phrase est « lit » (verbe lire)."
+  },
+  {
+    text: "Le chat qui dort sur le canapé ronronne doucement .",
+    words: 1,
+    separated: false,
+    subject_pos: "before",
+    tokens: [
+      { text: "Le" },
+      { text: "chat" },
+      { text: "qui" },
+      { text: "dort" },
+      { text: "sur" },
+      { text: "le" },
+      { text: "canapé" },
+      { text: "ronronne", verbe: true },
+      { text: "doucement" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le verbe principal conjugué de la phrase est « ronronne » (verbe ronronner). Le verbe « dort » fait partie d'une proposition relative (complément du nom « chat ») et ne doit pas être sélectionné."
+  },
+  {
+    text: "Le chien que tu as adopté aboie toute la journée .",
+    words: 1,
+    separated: false,
+    subject_pos: "before",
+    tokens: [
+      { text: "Le" },
+      { text: "chien" },
+      { text: "que" },
+      { text: "tu" },
+      { text: "as" },
+      { text: "adopté" },
+      { text: "aboie", verbe: true },
+      { text: "toute" },
+      { text: "la" },
+      { text: "journée" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le verbe principal conjugué de la phrase est « aboie » (verbe aboyer). Le verbe composé « as adopté » fait partie d'une proposition relative (complément du nom « chien ») et ne doit pas être sélectionné."
+  },
+  {
+    text: "La fille de la voisine qui joue du piano habite ici .",
+    words: 1,
+    separated: false,
+    subject_pos: "before",
+    tokens: [
+      { text: "La" },
+      { text: "fille" },
+      { text: "de" },
+      { text: "la" },
+      { text: "voisine" },
+      { text: "qui" },
+      { text: "joue" },
+      { text: "du" },
+      { text: "piano" },
+      { text: "habite", verbe: true },
+      { text: "ici" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le verbe principal conjugué de la phrase est « habite » (verbe habiter). Le verbe « joue » fait partie d'une proposition relative (complément du nom « voisine ») et ne doit pas être sélectionné."
+  },
+  {
+    text: "Les enfants qui finissent leurs devoirs recevront une récompense .",
+    words: 1,
+    separated: false,
+    subject_pos: "before",
+    tokens: [
+      { text: "Les" },
+      { text: "enfants" },
+      { text: "qui" },
+      { text: "finissent" },
+      { text: "leurs" },
+      { text: "devoirs" },
+      { text: "recevront", verbe: true },
+      { text: "une" },
+      { text: "récompense" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le verbe principal conjugué de la phrase est « recevront » (verbe recevoir). Le verbe « finissent » fait partie d'une proposition relative (complément du nom « enfants ») et ne doit pas être sélectionné."
+  },
+  {
+    text: "Sur la colline brille un grand phare blanc .",
+    words: 1,
+    separated: false,
+    subject_pos: "after",
+    tokens: [
+      { text: "Sur" },
+      { text: "la" },
+      { text: "colline" },
+      { text: "brille", verbe: true },
+      { text: "un" },
+      { text: "grand" },
+      { text: "phare" },
+      { text: "blanc" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le verbe principal conjugué de la phrase est « brille » (verbe briller)."
+  },
+  {
+    text: "Demain , nous crierons notre joie sous le préau .",
+    words: 1,
+    separated: false,
+    subject_pos: "before",
+    tokens: [
+      { text: "Demain", punctuation: "," },
+      { text: "nous" },
+      { text: "crierons", verbe: true },
+      { text: "notre" },
+      { text: "joie" },
+      { text: "sous" },
+      { text: "le" },
+      { text: "préau" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le verbe principal conjugué de la phrase est « crierons » (verbe crier)."
+  },
+  {
+    text: "La voiture que conduit mon oncle roule très vite .",
+    words: 1,
+    separated: false,
+    subject_pos: "before",
+    tokens: [
+      { text: "La" },
+      { text: "voiture" },
+      { text: "que" },
+      { text: "conduit" },
+      { text: "mon" },
+      { text: "oncle" },
+      { text: "roule", verbe: true },
+      { text: "très" },
+      { text: "vite" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le verbe principal conjugué de la phrase est « roule » (verbe rouler). Le verbe « conduit » fait partie d'une proposition relative (complément du nom « voiture ») et ne doit pas être sélectionné."
+  },
+  {
+    text: "Le gâteau que tu prépares sent drôlement bon .",
+    words: 1,
+    separated: false,
+    subject_pos: "before",
+    tokens: [
+      { text: "Le" },
+      { text: "gâteau" },
+      { text: "que" },
+      { text: "tu" },
+      { text: "prépares" },
+      { text: "sent", verbe: true },
+      { text: "drôlement" },
+      { text: "bon" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le verbe principal conjugué de la phrase est « sent » (verbe sentir). Le verbe « prépares » fait partie d'une proposition relative (complément du nom « gâteau ») et ne doit pas être sélectionné."
+  },
+  {
+    text: "Les enfants sont allés au cinéma hier après-midi .",
+    words: 2,
+    separated: false,
+    subject_pos: "before",
+    tokens: [
+      { text: "Les" },
+      { text: "enfants" },
+      { text: "sont", verbe: true },
+      { text: "allés", verbe: true },
+      { text: "au" },
+      { text: "cinéma" },
+      { text: "hier" },
+      { text: "après-midi" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le verbe principal est le verbe composé « sont allés » (verbe aller au passé composé). Il faut sélectionner l'auxiliaire « sont » et le participe passé « allés »."
+  },
+  {
+    text: "Julie avait reçu une belle lettre de son amie .",
+    words: 2,
+    separated: false,
+    subject_pos: "before",
+    tokens: [
+      { text: "Julie" },
+      { text: "avait", verbe: true },
+      { text: "reçu", verbe: true },
+      { text: "une" },
+      { text: "belle" },
+      { text: "lettre" },
+      { text: "de" },
+      { text: "son" },
+      { text: "amie" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le verbe principal est le verbe composé « avait reçu » (verbe recevoir au plus-que-parfait). Il faut sélectionner l'auxiliaire « avait » et le participe passé « reçu »."
+  },
+  {
+    text: "Le roi eut lu le message secret dans sa chambre .",
+    words: 2,
+    separated: false,
+    subject_pos: "before",
+    tokens: [
+      { text: "Le" },
+      { text: "roi" },
+      { text: "eut", verbe: true },
+      { text: "lu", verbe: true },
+      { text: "le" },
+      { text: "message" },
+      { text: "secret" },
+      { text: "dans" },
+      { text: "sa" },
+      { text: "chambre" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le verbe principal est le verbe composé « eut lu » (verbe lire au passé antérieur). Il faut sélectionner l'auxiliaire « eut » et le participe passé « lu »."
+  },
+  {
+    text: "Dans la cour sont entrés deux grands camions de livraison .",
+    words: 2,
+    separated: false,
+    subject_pos: "after",
+    tokens: [
+      { text: "Dans" },
+      { text: "la" },
+      { text: "cour" },
+      { text: "sont", verbe: true },
+      { text: "entrés", verbe: true },
+      { text: "deux" },
+      { text: "grands" },
+      { text: "camions" },
+      { text: "de" },
+      { text: "livraison" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le verbe principal est le verbe composé « sont entrés » (verbe entrer au passé composé), inversé avant son sujet. Il faut sélectionner « sont » et « entrés »."
+  },
+  {
+    text: "Sous la tente ont dormi quatre jeunes campeurs fatigués .",
+    words: 2,
+    separated: false,
+    subject_pos: "after",
+    tokens: [
+      { text: "Sous" },
+      { text: "la" },
+      { text: "tente" },
+      { text: "ont", verbe: true },
+      { text: "dormi", verbe: true },
+      { text: "quatre" },
+      { text: "jeunes" },
+      { text: "campeurs" },
+      { text: "fatigués" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le verbe principal est le verbe composé « ont dormi » (verbe dormir au passé composé), inversé avant son sujet. Il faut sélectionner « ont » et « dormi »."
+  },
+  {
+    text: "Ils n' ont pas reçu leur colis ce matin .",
+    words: 2,
+    separated: true,
+    subject_pos: "before",
+    tokens: [
+      { text: "Ils" },
+      { text: "n'" },
+      { text: "ont", verbe: true },
+      { text: "pas" },
+      { text: "reçu", verbe: true },
+      { text: "leur" },
+      { text: "colis" },
+      { text: "ce" },
+      { text: "matin" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le verbe principal est le verbe composé « ont reçu » (verbe recevoir au passé composé). Les mots de la négation « n' » et « pas » encadrent l'auxiliaire mais ne font pas partie du verbe."
+  },
+  {
+    text: "Les invités sont calmement allés vers la salle à manger .",
+    words: 2,
+    separated: true,
+    subject_pos: "before",
+    tokens: [
+      { text: "Les" },
+      { text: "invités" },
+      { text: "sont", verbe: true },
+      { text: "calmement" },
+      { text: "allés", verbe: true },
+      { text: "vers" },
+      { text: "la" },
+      { text: "salle" },
+      { text: "à" },
+      { text: "manger" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le verbe principal est le verbe composé « sont allés » (verbe aller au passé composé). L'adverbe « calmement » sépare l'auxiliaire du participe mais ne fait pas partie du verbe. Le verbe « manger » est dans un complément du nom et n'est pas le verbe de la phrase."
+  },
+  {
+    text: "Nous avons rapidement compris la consigne de l' exercice .",
+    words: 2,
+    separated: true,
+    subject_pos: "before",
+    tokens: [
+      { text: "Nous" },
+      { text: "avons", verbe: true },
+      { text: "rapidement" },
+      { text: "compris", verbe: true },
+      { text: "la" },
+      { text: "consigne" },
+      { text: "de" },
+      { text: "l'" },
+      { text: "exercice" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le verbe principal est le verbe composé « avons compris » (verbe comprendre au passé composé). L'adverbe « rapidement » ne fait pas partie du verbe."
+  },
+  {
+    text: "La fillette n' avait jamais vu un si grand éléphant .",
+    words: 2,
+    separated: true,
+    subject_pos: "before",
+    tokens: [
+      { text: "La" },
+      { text: "fillette" },
+      { text: "n'" },
+      { text: "avait", verbe: true },
+      { text: "jamais" },
+      { text: "vu", verbe: true },
+      { text: "un" },
+      { text: "si" },
+      { text: "grand" },
+      { text: "éléphant" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le verbe principal est le verbe composé « avait vu » (verbe voir au plus-que-parfait). Les mots de la négation « n' » et « jamais » ne font pas partie du verbe."
+  },
+  {
+    text: "Le chat a discrètement attrapé la petite souris grise .",
+    words: 2,
+    separated: true,
+    subject_pos: "before",
+    tokens: [
+      { text: "Le" },
+      { text: "chat" },
+      { text: "a", verbe: true },
+      { text: "discrètement" },
+      { text: "attrapé", verbe: true },
+      { text: "la" },
+      { text: "petite" },
+      { text: "souris" },
+      { text: "grise" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le verbe principal est le verbe composé « a attrapé » (verbe attraper au passé composé). L'adverbe « discrètement » ne fait pas partie du verbe."
+  },
+  {
+    text: "Le gâteau que tu as préparé a ravi tous les convives .",
+    words: 2,
+    separated: false,
+    subject_pos: "before",
+    tokens: [
+      { text: "Le" },
+      { text: "gâteau" },
+      { text: "que" },
+      { text: "tu" },
+      { text: "as" },
+      { text: "préparé" },
+      { text: "a", verbe: true },
+      { text: "ravi", verbe: true },
+      { text: "tous" },
+      { text: "les" },
+      { text: "convives" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le verbe principal conjugué de la phrase est « a ravi » (verbe ravir au passé composé). Le verbe composé « as préparé » fait partie d'une proposition relative (complément du nom « gâteau ») et ne doit pas être sélectionné."
+  },
+  {
+    text: "La lettre que le facteur avait apportée est arrivée ce matin .",
+    words: 2,
+    separated: false,
+    subject_pos: "before",
+    tokens: [
+      { text: "La" },
+      { text: "lettre" },
+      { text: "que" },
+      { text: "le" },
+      { text: "facteur" },
+      { text: "avait" },
+      { text: "apportée" },
+      { text: "est", verbe: true },
+      { text: "arrivée", verbe: true },
+      { text: "ce" },
+      { text: "matin" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le verbe principal conjugué de la phrase est « est arrivée » (verbe arriver au passé composé). Le verbe composé « avait apportée » fait partie d'une proposition relative (complément du nom « lettre ») et ne doit pas être sélectionné."
+  },
+  {
+    text: "Tous les colis ont été reçus par les clients .",
+    words: 3,
+    separated: false,
+    subject_pos: "before",
+    tokens: [
+      { text: "Tous" },
+      { text: "les" },
+      { text: "colis" },
+      { text: "ont", verbe: true },
+      { text: "été", verbe: true },
+      { text: "reçus", verbe: true },
+      { text: "par" },
+      { text: "les" },
+      { text: "clients" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le verbe principal est le verbe composé passif « ont été reçus » (verbe recevoir au passé composé passif). Il faut bien sélectionner les trois mots formant le bloc verbal."
+  },
+  {
+    text: "Ce magnifique tableau avait été créé par un artiste local .",
+    words: 3,
+    separated: false,
+    subject_pos: "before",
+    tokens: [
+      { text: "Ce" },
+      { text: "magnifique" },
+      { text: "tableau" },
+      { text: "avait", verbe: true },
+      { text: "été", verbe: true },
+      { text: "créé", verbe: true },
+      { text: "par" },
+      { text: "un" },
+      { text: "artiste" },
+      { text: "local" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le verbe principal est le verbe composé passif « avait été créé » (verbe créer au plus-que-parfait passif). Il faut bien sélectionner les trois mots formant le bloc verbal."
+  },
+  {
+    text: "Dans cette usine ont été fabriquées des milliers de voitures .",
+    words: 3,
+    separated: false,
+    subject_pos: "after",
+    tokens: [
+      { text: "Dans" },
+      { text: "cette" },
+      { text: "usine" },
+      { text: "ont", verbe: true },
+      { text: "été", verbe: true },
+      { text: "fabriquées", verbe: true },
+      { text: "des" },
+      { text: "milliers" },
+      { text: "de" },
+      { text: "voitures" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le verbe principal est le verbe composé passif « ont été fabriquées » (verbe fabriquer au passé composé passif), inversé avant son sujet. Il faut sélectionner les trois mots du verbe."
+  },
+  {
+    text: "Le nouveau pont n' a pas été construit par cette entreprise .",
+    words: 3,
+    separated: true,
+    subject_pos: "before",
+    tokens: [
+      { text: "Le" },
+      { text: "nouveau" },
+      { text: "pont" },
+      { text: "n'" },
+      { text: "a", verbe: true },
+      { text: "pas" },
+      { text: "été", verbe: true },
+      { text: "construit", verbe: true },
+      { text: "par" },
+      { text: "cette" },
+      { text: "entreprise" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le verbe principal est le verbe composé passif « a été construit » (verbe construire au passé composé passif). Les mots de la négation « n' » et « pas » ne font pas partie du verbe."
+  },
+  {
+    text: "La verrière avait rapidement été réparée après la tempête .",
+    words: 3,
+    separated: true,
+    subject_pos: "before",
+    tokens: [
+      { text: "La" },
+      { text: "verrière" },
+      { text: "avait", verbe: true },
+      { text: "rapidement" },
+      { text: "été", verbe: true },
+      { text: "réparée", verbe: true },
+      { text: "après" },
+      { text: "la" },
+      { text: "tempête" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le verbe principal est le verbe composé passif « avait été réparée » (verbe réparer au plus-que-parfait passif). L'adverbe « rapidement » ne fait pas partie du verbe."
+  },
+  {
+    text: "Le trophée a brillamment été remporté par notre école .",
+    words: 3,
+    separated: true,
+    subject_pos: "before",
+    tokens: [
+      { text: "Le" },
+      { text: "trophée" },
+      { text: "a", verbe: true },
+      { text: "brillamment" },
+      { text: "été", verbe: true },
+      { text: "remporté", verbe: true },
+      { text: "par" },
+      { text: "notre" },
+      { text: "école" },
+      { text: ".", punctuation: true }
+    ],
+    explanation: "Le verbe principal est le verbe composé passif « a été remporté » (verbe remporter au passé composé passif). L'adverbe « brillamment » ne fait pas partie du verbe."
+  }
+];
