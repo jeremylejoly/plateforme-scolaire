@@ -313,9 +313,9 @@
 
   // ----- Réglages par niveau -----
   const CFG = {
-    facile:    { targetMin:30,  targetMax:150, minUse:2, maxUse:4, smalls:3, smallMax:9,  bigs:[10,15,20,25], nbBig:1, total:4 },
-    moyen:     { targetMin:80,  targetMax:500, minUse:2, maxUse:5, smalls:4, smallMax:10, bigs:[25,50,75,100], nbBig:1, total:5 },
-    difficile: { targetMin:200, targetMax:999, minUse:3, maxUse:6, smalls:4, smallMax:10, bigs:[25,50,75,100], nbBig:2, total:6 }
+    facile:    { targetMin:30,  targetMax:150, minUse:3, maxUse:6, smalls:5, smallMax:9,  bigs:[10,15,20,25], nbBig:1, total:6 },
+    moyen:     { targetMin:80,  targetMax:500, minUse:4, maxUse:6, smalls:5, smallMax:10, bigs:[25,50,75,100], nbBig:1, total:6 },
+    difficile: { targetMin:200, targetMax:999, minUse:5, maxUse:6, smalls:4, smallMax:10, bigs:[25,50,75,100], nbBig:2, total:6 }
   };
   const COULEURS = ['#ef3b3b','#2b6fe8','#2ecc5b','#ff8c1a','#8a4dde','#ff5fa2','#13b5b1'];
   const SYM = { '+':'+', '-':'−', '*':'×', '/':'÷' };
@@ -339,6 +339,33 @@
 
   function tirerNombres(){
     const c = CFG[niveau];
+    for (let attempts = 0; attempts < 100; attempts++) {
+      let n = new Set();
+      
+      // Tirer des nombres petits distincts
+      let smallCands = [];
+      for (let v = 2; v <= c.smallMax; v++) smallCands.push(v);
+      smallCands = melange(smallCands);
+      for (let i = 0; i < c.smalls && i < smallCands.length; i++) {
+        n.add(smallCands[i]);
+      }
+      
+      // Tirer des nombres grands distincts
+      let bigCands = melange(c.bigs.slice());
+      let addedBig = 0;
+      for (let i = 0; i < bigCands.length && addedBig < c.nbBig; i++) {
+        if (!n.has(bigCands[i])) {
+          n.add(bigCands[i]);
+          addedBig++;
+        }
+      }
+      
+      if (n.size === c.total) {
+        return melange(Array.from(n));
+      }
+    }
+    
+    // Sécurité au cas où le tirage unique échouerait
     let n = [];
     for(let i=0;i<c.smalls;i++) n.push(rnd(2,c.smallMax));
     for(let i=0;i<c.nbBig;i++) n.push(choix(c.bigs));
@@ -359,18 +386,79 @@
     return pool[0];
   }
 
+  function minStepsToTarget(valeurs, target) {
+    let queue = [[valeurs.slice().sort((a,b)=>a-b), 0]];
+    let visited = new Set();
+    visited.add(valeurs.slice().sort((a,b)=>a-b).join(','));
+    
+    let idx = 0;
+    while(idx < queue.length) {
+      const [nums, steps] = queue[idx++];
+      
+      if (nums.includes(target)) {
+        return steps;
+      }
+      
+      if (nums.length < 2) continue;
+      
+      for (let i = 0; i < nums.length; i++) {
+        for (let j = i + 1; j < nums.length; j++) {
+          const a = nums[i];
+          const b = nums[j];
+          const reste = [];
+          for (let k = 0; k < nums.length; k++) {
+            if (k !== i && k !== j) reste.push(nums[k]);
+          }
+          
+          const ops = [];
+          ops.push(a + b);
+          if (a - b > 0) ops.push(a - b);
+          if (b - a > 0) ops.push(b - a);
+          ops.push(a * b);
+          if (b !== 0 && a % b === 0) ops.push(a / b);
+          if (a !== 0 && b % a === 0) ops.push(b / a);
+          
+          for (let v of ops) {
+            const nextNums = reste.slice();
+            nextNums.push(v);
+            nextNums.sort((x, y) => x - y);
+            const key = nextNums.join(',');
+            if (!visited.has(key)) {
+              visited.add(key);
+              queue.push([nextNums, steps + 1]);
+            }
+          }
+        }
+      }
+    }
+    return Infinity;
+  }
+
   function genererPartie(){
     const c = CFG[niveau];
+    const reqMinSteps = niveau === 'facile' ? 2 : (niveau === 'moyen' ? 3 : 4);
+    
     for(let t=0;t<4000;t++){
       const valeurs = tirerNombres();
       const k = rnd(c.minUse, Math.min(c.maxUse, valeurs.length));
       const sousEns = melange(valeurs).slice(0,k);
       const but = combinerTout(sousEns);
       if(but >= c.targetMin && but <= c.targetMax && !valeurs.includes(but)){
-        return { valeurs, cible:but };
+        const steps = minStepsToTarget(valeurs, but);
+        if (steps >= reqMinSteps && steps !== Infinity) {
+          return { valeurs, cible:but };
+        }
       }
     }
-    return { valeurs:[2,3,4,5,6], cible:120 }; // secours
+    
+    // Grilles de secours adaptées (contenant 6 nombres distincts)
+    if (niveau === 'facile') {
+      return { valeurs: [7, 2, 3, 5, 6, 25], cible: 84 }; // 2 calculs minimum
+    } else if (niveau === 'moyen') {
+      return { valeurs: [7, 3, 5, 6, 2, 75], cible: 92 }; // 3 calculs minimum
+    } else {
+      return { valeurs: [5, 25, 8, 4, 9, 100], cible: 548 }; // 4 calculs minimum
+    }
   }
 
   // Solveur (pour le joker) -> renvoie la liste des étapes ou null
