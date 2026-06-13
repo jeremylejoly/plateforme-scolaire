@@ -2822,7 +2822,11 @@ input:focus{border-color:var(--purple);}
     <div class="page-title">🔀 Le CDV et le CIV</div>
     <div id="gram-cdv-civ-body"></div>
   </div>
-  <div id="screen-gram-cc" class="screen"><button class="back-btn" onclick="showScreen('screen-gram-fonctions');renderGramFonctionsScreen();">← Retour</button><div class="page-title">📍 Le complément circonstanciel</div><div class="card" style="text-align:center;padding:2rem;"><div style="font-size:48px;">🚧</div><p style="color:var(--muted);">Les exercices arrivent bientôt !</p></div></div>
+  <div id="screen-gram-cc" class="screen">
+    <button class="back-btn gram-cc-back-main-btn" style="margin-bottom:1rem;">← Retour</button>
+    <div class="page-title">📍 Le complément circonstanciel</div>
+    <div id="gram-cc-body"></div>
+  </div>
   <div id="screen-gram-attribut" class="screen"><button class="back-btn" onclick="showScreen('screen-gram-fonctions');renderGramFonctionsScreen();">← Retour</button><div class="page-title">🌟 L'attribut du sujet</div><div class="card" style="text-align:center;padding:2rem;"><div style="font-size:48px;">🚧</div><p style="color:var(--muted);">Les exercices arrivent bientôt !</p></div></div>
   <div id="screen-gram-agent" class="screen"><button class="back-btn" onclick="showScreen('screen-gram-fonctions');renderGramFonctionsScreen();">← Retour</button><div class="page-title">🦮 Le complément d'agent</div><div class="card" style="text-align:center;padding:2rem;"><div style="font-size:48px;">🚧</div><p style="color:var(--muted);">Les exercices arrivent bientôt !</p></div></div>
   <div id="screen-gram-analyse-phrase" class="screen">
@@ -6767,7 +6771,7 @@ const GRAM_FONCTIONS_ITEMS = [
   {id:'gram_verbe_fonc', screen:'screen-gram-verbe-fonc', label:'Le verbe', icon:'⚡', fn:'renderVerbeMenu'},
   {id:'gram_predicat', screen:'screen-gram-predicat', label:'Le prédicat', icon:'📌', fn:'renderPredicatMenu'},
   {id:'gram_cdv_civ', screen:'screen-gram-cdv-civ', label:'Le CDV et le CIV', icon:'🔀', fn:'renderCdvCivMenu'},
-  {id:'gram_cc', screen:'screen-gram-cc', label:'Le complément circonstanciel', icon:'📍', fn:''},
+  {id:'gram_cc', screen:'screen-gram-cc', label:'Le complément circonstanciel', icon:'📍', fn:'renderCcMenu'},
   {id:'gram_attribut', screen:'screen-gram-attribut', label:"L'attribut du sujet", icon:'🌟', fn:''},
   {id:'gram_agent', screen:'screen-gram-agent', label:"Le complément d'agent", icon:'🦮', fn:''},
   {id:'gram_analyse_phrase', screen:'screen-gram-analyse-phrase', label:'Analyse de phrases', icon:'🔍', fn:'startAnalyseGlobale'},
@@ -25362,7 +25366,7 @@ const PLAN_CATALOGUE = [
     { id:'gram_verbe_fonc', label:'Le verbe (fonction)', icon:'⚡', screen:'screen-gram-verbe-fonc', fn:'renderVerbeMenu' },
     { id:'gram_predicat', label:'Le prédicat', icon:'📌', screen:'screen-gram-predicat', fn:'renderPredicatMenu' },
     { id:'gram_cdv_civ', label:'Le CDV et le CIV', icon:'🔀', screen:'screen-gram-cdv-civ', fn:'renderCdvCivMenu' },
-    { id:'gram_cc', label:'Le complément circonstanciel', icon:'📍', screen:'screen-gram-cc', fn:'' },
+    { id:'gram_cc', label:'Le complément circonstanciel', icon:'📍', screen:'screen-gram-cc', fn:'renderCcMenu' },
     { id:'gram_attribut', label:"L'attribut du sujet", icon:'🌟', screen:'screen-gram-attribut', fn:'' },
     { id:'gram_agent', label:"Le complément d'agent", icon:'🦮', screen:'screen-gram-agent', fn:'' },
     { id:'gram_analyse_phrase', label:'Analyse de phrases', icon:'🔍', screen:'screen-gram-analyse-phrase', fn:'startAnalyseGlobale' },
@@ -29973,7 +29977,495 @@ function renderCdvCivResults() {
   }
 }
 
+// ==========================================
+// EXERCICE DE REPÉRAGE DES CC
+// ==========================================
+let ccGameState = {
+  containerId: 'gram-cc-body',
+  questions: [],
+  currentIndex: 0,
+  score: 0,
+  answers: [],
+  activeTag: 'lieu',
+  submitted: false,
+  attempts: 0
+};
+
+function renderCcMenu() {
+  const container = document.getElementById('gram-cc-body');
+  if (!container) return;
+
+  const backMainBtn = document.querySelector('#screen-gram-cc .gram-cc-back-main-btn');
+  if (backMainBtn) {
+    backMainBtn.onclick = (e) => {
+      e.preventDefault();
+      showScreen('screen-gram-fonctions');
+      renderGramFonctionsScreen();
+    };
+  }
+
+  container.innerHTML = `
+    <div class="bg-purple-50/50 border-2 border-purple-100 rounded-3xl p-5 mb-6 shadow-[4px_4px_0px_rgba(0,0,0,0.02)]">
+      <p class="text-purple-800 text-sm font-semibold flex items-center gap-2">
+        <span>💡</span> Choisis un exercice ci-dessous pour t'entraîner sur les Compléments Circonstanciels (CC).
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <!-- EXERCICE 1: REPÉRER ET CLASSER LES CC -->
+      <div class="card cursor-pointer hover:scale-102 transition-all p-6 border-2 border-neutral-900 bg-white hover:bg-neutral-50 rounded-3xl shadow-[4px_4px_0px_rgba(0,0,0,1)] flex flex-col justify-between" id="btn-cc-ex1">
+        <div>
+          <div class="text-4xl mb-4">📍</div>
+          <h3 class="font-display font-bold text-lg text-neutral-800 mb-2">1. Repérer et classer les CC</h3>
+          <p class="text-neutral-500 text-sm leading-relaxed mb-4">Surligne les différents compléments circonstanciels de la phrase avec la couleur correspondante (lieu, manière, temps, condition, cause ou but).</p>
+        </div>
+        <button class="w-full py-2.5 px-4 rounded-xl border-2 border-neutral-900 bg-purple-600 text-white font-display font-bold text-sm shadow-[2px_2px_0px_rgba(0,0,0,1)] active:scale-98 transition-all">
+          Commencer ➔
+        </button>
+      </div>
+
+      <!-- EXERCICE 2: PROCHAINEMENT -->
+      <div class="card p-6 border-2 border-neutral-300 bg-neutral-50 rounded-3xl opacity-75 flex flex-col justify-between select-none">
+        <div>
+          <div class="text-4xl mb-4 opacity-50">📝</div>
+          <h3 class="font-display font-bold text-lg text-neutral-400 mb-2">2. Identifier la question</h3>
+          <p class="text-neutral-400 text-sm leading-relaxed mb-4">Bientôt disponible ! Associe chaque CC à la question correspondante (où, quand, comment, pourquoi...).</p>
+        </div>
+        <button disabled class="w-full py-2.5 px-4 rounded-xl border-2 border-neutral-300 bg-neutral-200 text-neutral-400 font-display font-bold text-sm cursor-not-allowed">
+          Bientôt disponible
+        </button>
+      </div>
+    </div>
+  `;
+
+  const ex1Btn = container.querySelector('#btn-cc-ex1');
+  if (ex1Btn) {
+    ex1Btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      startCcExercise();
+    });
+  }
+}
+
+function startCcExercise() {
+  if (!window.EXERCICES_CC || window.EXERCICES_CC.length === 0) {
+    console.error("EXERCICES_CC n'est pas chargé ou est vide.");
+    return;
+  }
+
+  const backMainBtn = document.querySelector('#screen-gram-cc .gram-cc-back-main-btn');
+  if (backMainBtn) {
+    backMainBtn.onclick = (e) => {
+      e.preventDefault();
+      renderCcMenu();
+    };
+  }
+
+  const principals = window.EXERCICES_CC.filter(q => q.cat === 'lieu' || q.cat === 'temps' || q.cat === 'maniere');
+  const secondaries = window.EXERCICES_CC.filter(q => q.cat === 'condition' || q.cat === 'cause' || q.cat === 'but');
+
+  const shuffle = (arr) => [...arr].sort(() => 0.5 - Math.random());
+
+  // Tirer 7 principaux et 3 secondaires
+  const selectedPrincipals = shuffle(principals).slice(0, 7);
+  const selectedSecondaries = shuffle(secondaries).slice(0, 3);
+
+  const selection = shuffle([
+    ...selectedPrincipals,
+    ...selectedSecondaries
+  ]);
+
+  ccGameState = {
+    containerId: 'gram-cc-body',
+    questions: selection,
+    currentIndex: 0,
+    score: 0,
+    answers: Array(selection[0] ? selection[0].tokens.length : 0).fill(null),
+    activeTag: 'lieu',
+    submitted: false,
+    attempts: 0
+  };
+
+  showScreen('screen-gram-cc');
+  renderCcQuestion();
+}
+
+function renderCcQuestion() {
+  const container = document.getElementById(ccGameState.containerId);
+  if (!container) return;
+
+  const question = ccGameState.questions[ccGameState.currentIndex];
+  if (!question) return;
+
+  const pctProgress = Math.round((ccGameState.currentIndex / ccGameState.questions.length) * 100);
+
+  const CC_COLORS = {
+    lieu: "border-color: #22c55e !important; background-color: #f0fdf4 !important; color: #15803d !important;",
+    maniere: "border-color: #3b82f6 !important; background-color: #eff6ff !important; color: #1d4ed8 !important;",
+    temps: "border-color: #b45309 !important; background-color: #fef3c7 !important; color: #78350f !important;",
+    condition: "border-color: #ec4899 !important; background-color: #fdf2f8 !important; color: #be185d !important;",
+    cause: "border-color: #f97316 !important; background-color: #fff7ed !important; color: #c2410c !important;",
+    but: "border-color: #a855f7 !important; background-color: #faf5ff !important; color: #7e22ce !important;"
+  };
+
+  const tokensHtml = question.tokens.map((token, idx) => {
+    if (token.punctuation === true) {
+      return `<span class="text-xl font-bold text-neutral-400 self-end mb-2 select-none">${token.text}</span>`;
+    }
+
+    const currentAnswer = ccGameState.answers[idx];
+    let inlineStyle = "";
+
+    if (currentAnswer) {
+      inlineStyle = CC_COLORS[currentAnswer];
+    }
+
+    if (ccGameState.submitted) {
+      const expectedCc = token.cc;
+      if (expectedCc) {
+        if (currentAnswer === expectedCc) {
+          inlineStyle = CC_COLORS[expectedCc];
+        } else {
+          inlineStyle = CC_COLORS[expectedCc] + " border-style: dashed !important;";
+        }
+      } else {
+        if (currentAnswer) {
+          inlineStyle = "border-color: #ef4444 !important; background-color: #fef2f2 !important; color: #b91c1c !important;";
+        }
+      }
+    }
+
+    let checkIcon = "";
+    if (ccGameState.submitted) {
+      const expectedCc = token.cc;
+      if (expectedCc) {
+        if (currentAnswer === expectedCc) {
+          checkIcon = `<span class="absolute -top-2 -right-2 bg-green-500 text-white rounded-full text-[10px] w-5 h-5 flex items-center justify-center border-2 border-white shadow-sm font-black">✓</span>`;
+        } else {
+          checkIcon = `<span class="absolute -top-2 -right-2 bg-orange-500 text-white rounded-full text-[10px] w-5 h-5 flex items-center justify-center border-2 border-white shadow-sm font-black">!</span>`;
+        }
+      } else {
+        if (currentAnswer) {
+          checkIcon = `<span class="absolute -top-2 -right-2 bg-rose-500 text-white rounded-full text-[10px] w-5 h-5 flex items-center justify-center border-2 border-white shadow-sm font-black">✗</span>`;
+        }
+      }
+    }
+
+    return `
+      <div class="relative flex items-center">
+        <button
+          ${ccGameState.submitted ? 'disabled' : ''}
+          style="${inlineStyle}"
+          data-idx="${idx}"
+          class="gram-cc-word-btn px-4 py-2.5 rounded-2xl border-2 font-sans font-semibold text-lg md:text-xl transition-all duration-150 relative cursor-pointer select-none shadow-[2px_2px_0px_rgba(0,0,0,0.1)] border-neutral-300 bg-white text-neutral-800 hover:bg-neutral-50 hover:scale-102"
+        >
+          ${token.text}
+        </button>
+        ${checkIcon}
+        ${(token.punctuation && token.punctuation !== true) ? `<span class="text-xl font-bold text-neutral-400 select-none px-0.5 self-end mb-2">${token.punctuation}</span>` : ''}
+      </div>
+    `;
+  }).join('');
+
+  let actionBtn = "";
+  if (!ccGameState.submitted) {
+    const btnLabel = ccGameState.attempts === 1 ? "Vérifier à nouveau ➔" : "Vérifier ma réponse";
+    actionBtn = `
+      <button class="gram-cc-verify-btn px-6 py-3 rounded-2xl border-2 border-neutral-900 bg-purple-600 text-white hover:bg-purple-700 font-display font-bold text-sm transition-all cursor-pointer shadow-[2px_2px_0px_rgba(0,0,0,1)] active:scale-95 ml-auto">
+        ${btnLabel}
+      </button>
+    `;
+  } else {
+    actionBtn = `
+      <button class="gram-cc-next-btn px-6 py-3 rounded-2xl border-2 border-neutral-900 bg-green-600 text-white hover:bg-green-700 font-display font-bold text-sm transition-all cursor-pointer shadow-[2px_2px_0px_rgba(0,0,0,1)] active:scale-95 ml-auto">
+        ${ccGameState.currentIndex < ccGameState.questions.length - 1 ? 'Phrase suivante ➔' : 'Voir les résultats ➔'}
+      </button>
+    `;
+  }
+
+  const selectToolHtml = `
+    <div class="flex flex-wrap gap-4 justify-center items-center mb-6 bg-neutral-50 p-4 rounded-3xl border border-neutral-200">
+      <span class="text-sm font-bold text-neutral-500">Outil de coloriage :</span>
+      <button
+        ${ccGameState.submitted ? 'disabled' : ''}
+        onclick="window.selectCcActiveTag('lieu')"
+        class="px-4 py-2 rounded-2xl border-2 font-display font-bold text-xs transition-all cursor-pointer shadow-[2px_2px_0px_rgba(0,0,0,1)] active:scale-95 flex items-center gap-1.5
+        ${ccGameState.activeTag === 'lieu' ? 'bg-green-400 text-green-950 border-neutral-900 scale-105 shadow-[4px_4px_0px_rgba(0,0,0,1)]' : 'bg-green-50 text-green-700 border-green-200 opacity-70 hover:opacity-100'}"
+      >
+        🟢 Lieu
+      </button>
+      <button
+        ${ccGameState.submitted ? 'disabled' : ''}
+        onclick="window.selectCcActiveTag('maniere')"
+        class="px-4 py-2 rounded-2xl border-2 font-display font-bold text-xs transition-all cursor-pointer shadow-[2px_2px_0px_rgba(0,0,0,1)] active:scale-95 flex items-center gap-1.5
+        ${ccGameState.activeTag === 'maniere' ? 'bg-blue-400 text-blue-950 border-neutral-900 scale-105 shadow-[4px_4px_0px_rgba(0,0,0,1)]' : 'bg-blue-50 text-blue-700 border-blue-200 opacity-70 hover:opacity-100'}"
+      >
+        🔵 Manière
+      </button>
+      <button
+        ${ccGameState.submitted ? 'disabled' : ''}
+        onclick="window.selectCcActiveTag('temps')"
+        class="px-4 py-2 rounded-2xl border-2 font-display font-bold text-xs transition-all cursor-pointer shadow-[2px_2px_0px_rgba(0,0,0,1)] active:scale-95 flex items-center gap-1.5
+        ${ccGameState.activeTag === 'temps' ? 'bg-amber-400 text-amber-950 border-neutral-900 scale-105 shadow-[4px_4px_0px_rgba(0,0,0,1)]' : 'bg-amber-50 text-amber-700 border-amber-200 opacity-70 hover:opacity-100'}"
+      >
+        🟤 Temps
+      </button>
+      <button
+        ${ccGameState.submitted ? 'disabled' : ''}
+        onclick="window.selectCcActiveTag('condition')"
+        class="px-4 py-2 rounded-2xl border-2 font-display font-bold text-xs transition-all cursor-pointer shadow-[2px_2px_0px_rgba(0,0,0,1)] active:scale-95 flex items-center gap-1.5
+        ${ccGameState.activeTag === 'condition' ? 'bg-pink-400 text-pink-950 border-neutral-900 scale-105 shadow-[4px_4px_0px_rgba(0,0,0,1)]' : 'bg-pink-50 text-pink-700 border-pink-200 opacity-70 hover:opacity-100'}"
+      >
+        🌸 Condition
+      </button>
+      <button
+        ${ccGameState.submitted ? 'disabled' : ''}
+        onclick="window.selectCcActiveTag('cause')"
+        class="px-4 py-2 rounded-2xl border-2 font-display font-bold text-xs transition-all cursor-pointer shadow-[2px_2px_0px_rgba(0,0,0,1)] active:scale-95 flex items-center gap-1.5
+        ${ccGameState.activeTag === 'cause' ? 'bg-orange-400 text-orange-950 border-neutral-900 scale-105 shadow-[4px_4px_0px_rgba(0,0,0,1)]' : 'bg-orange-50 text-orange-700 border-orange-200 opacity-70 hover:opacity-100'}"
+      >
+        🟠 Cause
+      </button>
+      <button
+        ${ccGameState.submitted ? 'disabled' : ''}
+        onclick="window.selectCcActiveTag('but')"
+        class="px-4 py-2 rounded-2xl border-2 font-display font-bold text-xs transition-all cursor-pointer shadow-[2px_2px_0px_rgba(0,0,0,1)] active:scale-95 flex items-center gap-1.5
+        ${ccGameState.activeTag === 'but' ? 'bg-purple-400 text-purple-950 border-neutral-900 scale-105 shadow-[4px_4px_0px_rgba(0,0,0,1)]' : 'bg-purple-50 text-purple-700 border-purple-200 opacity-70 hover:opacity-100'}"
+      >
+        🟣 But
+      </button>
+    </div>
+  `;
+
+  const html = `
+    <div class="quiz-topbar">
+      <div class="quiz-student-badge">
+        ${state.student || 'Enseignant'}
+      </div>
+      <div class="quiz-progress-wrap">
+        <div class="quiz-progress-label">Phrase ${ccGameState.currentIndex + 1} sur ${ccGameState.questions.length}</div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: ${pctProgress}%"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-purple-50/50 border-2 border-purple-100 rounded-3xl p-5 mb-6 shadow-[4px_4px_0px_rgba(0,0,0,0.02)]">
+      <div class="flex items-center gap-3 text-purple-800 text-sm font-semibold">
+        <span>💡</span>
+        <span>Sélectionne le type de CC dans la barre d'outils, puis clique sur les mots correspondants dans la phrase.</span>
+      </div>
+    </div>
+
+    <!-- ALERTE DE SECONDE CHANCE -->
+    ${(ccGameState.attempts === 1 && !ccGameState.submitted) ? `
+      <div class="bg-amber-50 border-2 border-amber-200 text-amber-950 rounded-2xl p-4 mb-6 shadow-[2px_2px_0px_rgba(0,0,0,0.02)] animate-pulse flex items-center gap-3 font-semibold text-sm">
+        <span>⚠️</span>
+        <span>Ce n'est pas tout à fait correct ! Relis bien la phrase et essaye encore pour ta seconde chance.</span>
+      </div>
+    ` : ''}
+
+    <!-- LA PHRASE -->
+    <div class="bg-white border-2 border-neutral-900 rounded-3xl p-8 md:p-12 mb-6 shadow-[4px_4px_0px_rgba(0,0,0,1)] flex flex-wrap gap-x-2 gap-y-4 justify-center items-center">
+      ${tokensHtml}
+    </div>
+
+    <!-- OUTIL DE SELECTION -->
+    ${selectToolHtml}
+
+    <!-- EXPLICATION CORRECTION -->
+    ${ccGameState.submitted ? `
+      <div class="bg-neutral-50 rounded-2xl p-5 border-2 border-neutral-900 mb-6 animate-fadeIn shadow-[2px_2px_0px_rgba(0,0,0,1)]">
+        <div class="flex items-start gap-3">
+          <span class="text-2xl">💡</span>
+          <div>
+            <h4 class="font-display font-bold text-neutral-800 mb-1">Explication :</h4>
+            <p class="text-neutral-600 text-sm leading-relaxed">${question.explanation}</p>
+          </div>
+        </div>
+      </div>
+    ` : ''}
+
+    <!-- ZONE D'ACTION -->
+    <div class="flex justify-between items-center border-t border-neutral-200 pt-6">
+      ${actionBtn}
+    </div>
+  `;
+
+  container.innerHTML = html;
+
+  // Lier les événements
+  container.querySelectorAll('.gram-cc-word-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const idx = parseInt(btn.getAttribute('data-idx'));
+      clickCcWord(idx);
+    });
+  });
+
+  const verifyBtn = container.querySelector('.gram-cc-verify-btn');
+  if (verifyBtn) {
+    verifyBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      verifyCcAnswer();
+    });
+  }
+
+  const nextBtn = container.querySelector('.gram-cc-next-btn');
+  if (nextBtn) {
+    nextBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      nextCcQuestion();
+    });
+  }
+}
+
+function clickCcWord(wordIndex) {
+  if (ccGameState.submitted) return;
+  const current = ccGameState.answers[wordIndex];
+  const active = ccGameState.activeTag;
+  
+  if (current === active) {
+    ccGameState.answers[wordIndex] = null;
+  } else {
+    ccGameState.answers[wordIndex] = active;
+  }
+  
+  renderCcQuestion();
+}
+
+function selectCcActiveTag(tag) {
+  if (ccGameState.submitted) return;
+  ccGameState.activeTag = tag;
+  renderCcQuestion();
+}
+
+function verifyCcAnswer() {
+  if (ccGameState.submitted) return;
+
+  const question = ccGameState.questions[ccGameState.currentIndex];
+  let isPerfect = true;
+
+  for (let i = 0; i < question.tokens.length; i++) {
+    const t = question.tokens[i];
+    if (t.punctuation === true) continue;
+    
+    const expected = t.cc || null;
+    const actual = ccGameState.answers[i];
+    if (expected !== actual) {
+      isPerfect = false;
+      break;
+    }
+  }
+
+  if (isPerfect) {
+    ccGameState.score++;
+    ccGameState.submitted = true;
+    renderCcQuestion();
+  } else {
+    if (!ccGameState.attempts) {
+      ccGameState.attempts = 1;
+      renderCcQuestion();
+    } else {
+      ccGameState.submitted = true;
+      renderCcQuestion();
+    }
+  }
+}
+
+function nextCcQuestion() {
+  if (ccGameState.currentIndex < ccGameState.questions.length - 1) {
+    ccGameState.currentIndex++;
+    ccGameState.submitted = false;
+    ccGameState.attempts = 0;
+    const nextQuestion = ccGameState.questions[ccGameState.currentIndex];
+    ccGameState.answers = Array(nextQuestion.tokens.length).fill(null);
+    renderCcQuestion();
+  } else {
+    renderCcResults();
+  }
+}
+
+function renderCcResults() {
+  const container = document.getElementById(ccGameState.containerId);
+  if (!container) return;
+
+  const pct = Math.round((ccGameState.score / ccGameState.questions.length) * 100);
+
+  let msg = "Continue à t'entraîner, tu vas y arriver ! 💪";
+  if (pct === 100) msg = "Parfait ! Tu maîtrises tous les compléments circonstanciels ! 👑🏆";
+  else if (pct >= 80) msg = "Excellent travail ! C'est presque parfait ! 🌟";
+  else if (pct >= 50) msg = "Bon travail ! Poursuis tes efforts ! 👍";
+
+  container.innerHTML = `
+    <div class="card p-8 text-center border-2 border-neutral-900 bg-white rounded-3xl shadow-[4px_4px_0px_rgba(0,0,0,1)] animate-fadeIn">
+      <div class="text-6xl mb-4">🏆</div>
+      <h3 class="font-display font-black text-2xl text-neutral-800 mb-2">Exercice terminé !</h3>
+      <p class="text-neutral-500 mb-6">Voici ton score pour : <strong>Repérer et classer les CC</strong></p>
+
+      <div class="bg-purple-50/60 border-2 border-purple-200 rounded-3xl p-6 max-w-sm mx-auto mb-8 shadow-[4px_4px_0px_rgba(0,0,0,0.05)]">
+        <div class="text-5xl font-display font-black text-purple-700 mb-2">
+          ${ccGameState.score} <span class="text-2xl text-purple-400 font-normal">/ ${ccGameState.questions.length}</span>
+        </div>
+        <div class="text-sm font-semibold text-purple-800">
+          ${msg}
+        </div>
+      </div>
+
+      <div class="flex flex-wrap gap-3 justify-center">
+        <button
+          class="gram-cc-restart-btn flex items-center gap-2 px-5 py-2.5 rounded-2xl border-2 border-neutral-900 text-neutral-800 hover:bg-neutral-50 font-display font-bold text-sm transition-all cursor-pointer shadow-[2px_2px_0px_rgba(0,0,0,1)] bg-white active:scale-95"
+        >
+          🔄 Recommencer
+        </button>
+        <button
+          class="gram-cc-back-btn px-5 py-2.5 rounded-2xl border-2 border-neutral-900 bg-purple-600 text-white hover:bg-purple-700 font-display font-bold text-sm transition-all cursor-pointer shadow-[2px_2px_0px_rgba(0,0,0,1)] active:scale-95"
+        >
+          Retourner aux fonctions
+        </button>
+      </div>
+    </div>
+  `;
+
+  const restartBtn = container.querySelector('.gram-cc-restart-btn');
+  if (restartBtn) {
+    restartBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      startCcExercise();
+    });
+  }
+
+  const backBtn = container.querySelector('.gram-cc-back-btn');
+  if (backBtn) {
+    backBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      renderCcMenu();
+    });
+  }
+
+  if (state.student) {
+    saveResult({
+      student: state.student,
+      cls: state.studentCls,
+      className: CLASSES[state.studentCls] ? CLASSES[state.studentCls].name : state.studentCls,
+      activity: 'cc_phrase',
+      bookTitle: `Grammaire — Les compléments circonstanciels`,
+      score: ccGameState.score,
+      total: ccGameState.questions.length,
+      pct,
+      date: new Date().toLocaleDateString('fr-BE'),
+      time: new Date().toLocaleTimeString('fr-BE', {hour:'2-digit', minute:'2-digit'})
+    });
+  }
+}
+
 // Exposer les fonctions au scope global pour être appelées par l'HTML
+window.renderCcMenu = renderCcMenu;
+window.startCcExercise = startCcExercise;
+window.clickCcWord = clickCcWord;
+window.selectCcActiveTag = selectCcActiveTag;
+window.verifyCcAnswer = verifyCcAnswer;
+window.nextCcQuestion = nextCcQuestion;
 window.renderCdvCivMenu = renderCdvCivMenu;
 window.startCdvCivExercise = startCdvCivExercise;
 window.clickCdvCivWord = clickCdvCivWord;
