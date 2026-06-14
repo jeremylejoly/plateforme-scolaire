@@ -4927,11 +4927,7 @@ input[type=text].calc-input.incorrect {
         <div class="sub-title">Durée entre 2 heures</div>
         <div class="sub-desc">5 calculs · 2 tentatives max · Recommençable</div>
       </div>
-      <div class="sub-subject-card active-card" onclick="startDureesExercise('placer_aiguilles')">
-        <div class="sub-icon">🕐</div>
-        <div class="sub-title">Placer les aiguilles</div>
-        <div class="sub-desc">Règle l'horloge sur la bonne heure · 5 défis · Recommençable</div>
-      </div>
+
       <div class="sub-subject-card active-card" onclick="showScreen('screen-grandeurs-durees-heure-secondes')">
         <div class="sub-icon">🚆</div>
         <div class="sub-title">Quelle heure est-il ? (avec secondes)</div>
@@ -7958,16 +7954,7 @@ const DUREE_ENTRE_BANK = [
   {from:"5h20", to:"8h45", answerH:"3", answerMin:"25"},
 ];
 
-// BANQUE PLACER LES AIGUILLES (20 questions) - [h, min]
-const PLACER_AIGUILLES_BANK = [
-  {h:3, min:15},   {h:8, min:30},   {h:10, min:10},
-  {h:1, min:45},   {h:6, min:5},    {h:11, min:20},
-  {h:9, min:50},   {h:4, min:35},   {h:2, min:40},
-  {h:7, min:55},   {h:12, min:0},   {h:5, min:25},
-  {h:10, min:15},  {h:8, min:45},   {h:12, min:30},
-  {h:6, min:15},   {h:2, min:10},   {h:11, min:40},
-  {h:4, min:20},   {h:9, min:35}
-];
+
 
 let dureesState = {
   type: '',
@@ -7999,12 +7986,6 @@ function startDureesExercise(mode){
     dureesState.currentIdx = 0;
     dureesState.attempts = 0;
     renderDureeEntreQuestion();
-  } else if(mode === 'placer_aiguilles'){
-    document.getElementById('durees-exercise-title').textContent = '🕐 Placer les aiguilles';
-    dureesState.questions = shuffleArray([...PLACER_AIGUILLES_BANK]).slice(0,5);
-    dureesState.currentIdx = 0;
-    dureesState.attempts = 0;
-    renderPlacerAiguillesQuestion();
   }
 
   showScreen('screen-durees-exercise');
@@ -8285,225 +8266,7 @@ function drawClock(h, min, sec){
   </svg>`;
 }
 
-function drawInteractiveClockSkeleton(){
-  const size = 180;
-  const cx = size/2, cy = size/2, r = size/2 - 10;
 
-  // Hour markers
-  let markers = '';
-  for(let i=0;i<12;i++){
-    const a = (i/12)*2*Math.PI - Math.PI/2;
-    const r1 = r*0.88, r2 = r*0.95;
-    markers += `<line x1="${cx+r1*Math.cos(a)}" y1="${cy+r1*Math.sin(a)}" x2="${cx+r2*Math.cos(a)}" y2="${cy+r2*Math.sin(a)}" stroke="#555" stroke-width="2"/>`;
-    // Hour numbers
-    const nr = r*0.75;
-    const num = i===0?12:i;
-    markers += `<text x="${cx+nr*Math.cos(a)}" y="${cy+nr*Math.sin(a)}" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="bold" fill="#333">${num}</text>`;
-  }
-  // Minute markers
-  for(let i=0;i<60;i++){
-    if(i%5===0) continue;
-    const a = (i/60)*2*Math.PI - Math.PI/2;
-    const r1 = r*0.92, r2 = r*0.96;
-    markers += `<line x1="${cx+r1*Math.cos(a)}" y1="${cy+r1*Math.sin(a)}" x2="${cx+r2*Math.cos(a)}" y2="${cy+r2*Math.sin(a)}" stroke="#aaa" stroke-width="1"/>`;
-  }
-
-  return `<svg viewBox="0 0 ${size} ${size}" xmlns="http://www.w3.org/2000/svg" style="max-width:200px;width:100%;">
-    <circle cx="${cx}" cy="${cy}" r="${r}" fill="white" stroke="#333" stroke-width="2.5"/>
-    ${markers}
-    <!-- Hour hand -->
-    <line id="ic-hour-hand" x1="${cx}" y1="${cy}" x2="${cx}" y2="${cy - r*0.55}" stroke="#1a1a2e" stroke-width="5" stroke-linecap="round"/>
-    <!-- Minute hand -->
-    <line id="ic-min-hand" x1="${cx}" y1="${cy}" x2="${cx}" y2="${cy - r*0.78}" stroke="#2d3561" stroke-width="3.5" stroke-linecap="round"/>
-    <circle cx="${cx}" cy="${cy}" r="4" fill="#333"/>
-  </svg>`;
-}
-
-function updateInteractiveClock() {
-  const sliderH = document.getElementById('ic-slider-h');
-  const sliderMin = document.getElementById('ic-slider-min');
-  if(!sliderH || !sliderMin) return;
-
-  const h = parseInt(sliderH.value, 10);
-  const min = parseInt(sliderMin.value, 10);
-
-  document.getElementById('ic-val-h').textContent = h + ' h';
-  document.getElementById('ic-val-min').textContent = min + ' min';
-
-  const size = 180;
-  const cx = size/2, cy = size/2, r = size/2 - 10;
-
-  const minAngle = (min/60)*2*Math.PI - Math.PI/2;
-  const hourAngle = (((h%12) + min/60)/12)*2*Math.PI - Math.PI/2;
-
-  const hEnd = {
-    x: cx + r * 0.55 * Math.cos(hourAngle),
-    y: cy + r * 0.55 * Math.sin(hourAngle)
-  };
-  const mEnd = {
-    x: cx + r * 0.78 * Math.cos(minAngle),
-    y: cy + r * 0.78 * Math.sin(minAngle)
-  };
-
-  const hHand = document.getElementById('ic-hour-hand');
-  const mHand = document.getElementById('ic-min-hand');
-  if(hHand) {
-    hHand.setAttribute('x2', hEnd.x);
-    hHand.setAttribute('y2', hEnd.y);
-  }
-  if(mHand) {
-    mHand.setAttribute('x2', mEnd.x);
-    mHand.setAttribute('y2', mEnd.y);
-  }
-}
-
-function adjustClock(type, delta) {
-  if (type === 'h') {
-    const slider = document.getElementById('ic-slider-h');
-    if (!slider) return;
-    let val = parseInt(slider.value, 10) + delta;
-    if (val < 1) val = 12;
-    if (val > 12) val = 1;
-    slider.value = val;
-  } else {
-    const slider = document.getElementById('ic-slider-min');
-    if (!slider) return;
-    let val = parseInt(slider.value, 10) + delta;
-    if (val < 0) val = 60 + val;
-    if (val > 59) val = val - 60;
-    slider.value = val;
-  }
-  updateInteractiveClock();
-}
-
-function renderPlacerAiguillesQuestion(){
-  const q = dureesState.questions[dureesState.currentIdx];
-  const total = dureesState.questions.length;
-  const body = document.getElementById('durees-exercise-body');
-  const clockSvg = drawInteractiveClockSkeleton();
-
-  body.innerHTML = `
-    <div class="durees-question" id="durees-current-q">
-      <div class="conj-question-num">Question ${dureesState.currentIdx+1}/${total}</div>
-      <div class="durees-text" style="text-align:center; font-size:18px;">
-        👉 Place les aiguilles pour afficher : <strong style="color:var(--primary); font-size:22px; display:block; margin:6px 0;">${q.h}h${String(q.min).padStart(2,'0')}</strong>
-      </div>
-      <div class="clock-container">${clockSvg}</div>
-      
-      <div class="interactive-clock-controls">
-        <div class="control-row">
-          <label>Heures :</label>
-          <input type="range" id="ic-slider-h" min="1" max="12" value="12" step="1" class="clock-slider"/>
-          <span id="ic-val-h" class="slider-badge">12 h</span>
-          <div class="btn-group">
-            <button type="button" class="clock-adjust-btn" id="btn-dec-h">-1h</button>
-            <button type="button" class="clock-adjust-btn" id="btn-inc-h">+1h</button>
-          </div>
-        </div>
-        <div class="control-row">
-          <label>Minutes :</label>
-          <input type="range" id="ic-slider-min" min="0" max="59" value="0" step="1" class="clock-slider"/>
-          <span id="ic-val-min" class="slider-badge">0 min</span>
-          <div class="btn-group">
-            <button type="button" class="clock-adjust-btn" id="btn-dec-m">-5m</button>
-            <button type="button" class="clock-adjust-btn" id="btn-inc-m">+5m</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="durees-attempts" id="ic-attempts">Tentative 1/2</div>
-      <div class="durees-feedback" id="ic-feedback"></div>
-    </div>`;
-
-  const sliderH = document.getElementById('ic-slider-h');
-  const sliderM = document.getElementById('ic-slider-min');
-
-  sliderH.addEventListener('input', updateInteractiveClock);
-  sliderM.addEventListener('input', updateInteractiveClock);
-
-  document.getElementById('btn-dec-h').onclick = () => adjustClock('h', -1);
-  document.getElementById('btn-inc-h').onclick = () => adjustClock('h', 1);
-  document.getElementById('btn-dec-m').onclick = () => adjustClock('min', -5);
-  document.getElementById('btn-inc-m').onclick = () => adjustClock('min', 5);
-
-  updateInteractiveClock();
-
-  document.getElementById('durees-validate-btn').style.display = 'block';
-  document.getElementById('durees-validate-btn').onclick = checkPlacerAiguilles;
-}
-
-function checkPlacerAiguilles(){
-  const q = dureesState.questions[dureesState.currentIdx];
-  const hVal = parseInt(document.getElementById('ic-slider-h').value, 10);
-  const mVal = parseInt(document.getElementById('ic-slider-min').value, 10);
-
-  const hOk = (hVal % 12) === (q.h % 12);
-  const mOk = mVal === q.min;
-  const isCorrect = hOk && mOk;
-
-  dureesState.attempts++;
-  const block = document.getElementById('durees-current-q');
-  const fb = document.getElementById('ic-feedback');
-  const att = document.getElementById('ic-attempts');
-
-  if(isCorrect){
-    block.classList.add('correct');
-    fb.style.color = 'var(--green)';
-    fb.textContent = '✅ Bravo, c\'est correct !';
-    dureesState.score++;
-    document.getElementById('durees-validate-btn').style.display = 'none';
-    setTimeout(() => advancePlacerAiguilles(), 1200);
-  } else if(dureesState.attempts < 2){
-    fb.style.color = 'var(--red)';
-    att.textContent = 'Tentative 2/2';
-    if (!hOk && !mOk) {
-      fb.textContent = '❌ Les aiguilles ne sont pas à la bonne place.';
-    } else if (!hOk) {
-      fb.textContent = '❌ L\'aiguille des heures n\'est pas au bon endroit.';
-    } else {
-      fb.textContent = '❌ L\'aiguille des minutes n\'est pas au bon endroit.';
-    }
-  } else {
-    block.classList.add('revealed');
-    fb.style.color = 'var(--amber)';
-    fb.textContent = `❌ Dommage ! La bonne position était : ${q.h}h${String(q.min).padStart(2,'0')}`;
-    
-    document.getElementById('ic-slider-h').value = q.h === 0 ? 12 : (q.h > 12 ? q.h - 12 : q.h);
-    document.getElementById('ic-slider-min').value = q.min;
-    updateInteractiveClock();
-    
-    document.getElementById('durees-validate-btn').style.display = 'none';
-    setTimeout(() => advancePlacerAiguilles(), 3000);
-  }
-}
-
-function advancePlacerAiguilles(){
-  dureesState.currentIdx++;
-  dureesState.attempts = 0;
-  if(dureesState.currentIdx >= dureesState.questions.length){
-    document.getElementById('durees-exercise-body').innerHTML = '';
-    document.getElementById('durees-score-panel').style.display = 'block';
-    const score = dureesState.score;
-    const total = dureesState.questions.length;
-    const pct = Math.round(score/total*100);
-    const color = pct>=70?'var(--green)':pct>=50?'var(--amber)':'var(--red)';
-    document.getElementById('durees-score-val').innerHTML =
-      `<span style="color:${color}">${score}/${total}</span><br><span style="font-size:18px;">${pct}%</span>`;
-    if(state.student){
-      saveResult({
-        student: state.student, cls: state.studentCls,
-        className: CLASSES[state.studentCls] ? CLASSES[state.studentCls].name : state.studentCls,
-        activity: 'durées_placer_aiguilles',
-        bookTitle: 'Durées — Placer les aiguilles',
-        score, total, pct,
-        date: new Date().toLocaleDateString('fr-BE'),
-        time: new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})
-      });
-    }
-  } else {
-    renderPlacerAiguillesQuestion();
-  }
-}
 
 // ===== LES 4 OPÉRATIONS EXERCISE =====
 function generate4OpQuestions(){
