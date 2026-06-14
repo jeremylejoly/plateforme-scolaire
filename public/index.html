@@ -1049,6 +1049,30 @@ input:focus{border-color:var(--purple);}
   margin-top: 2px !important;
 }
 
+/* Journal des résultats */
+.gestion-journal-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-family: 'Nunito', sans-serif;
+  font-size: 14px;
+}
+.gestion-journal-table th {
+  padding: 10px 12px;
+  border-bottom: 2px solid #e5e7eb;
+  color: #6b7280;
+  font-weight: 700;
+}
+.gestion-journal-table td {
+  padding: 12px 12px;
+  border-bottom: 1px solid #f3f4f6;
+  color: #1f2937;
+}
+.gestion-journal-table tr:hover {
+  background-color: #f9fafb;
+}
+
+
 .student-manage-actions {
   display: flex !important;
   gap: 6px !important;
@@ -5223,6 +5247,7 @@ input[type=text].calc-input.incorrect {
     <div class="panel-tabs" style="margin-bottom:1rem;">
       <button class="panel-tab active" id="gtab-results-btn" onclick="switchGestionTab('results')">📊 Résultats</button>
       <button class="panel-tab" id="gtab-students-btn" onclick="switchGestionTab('students')">👤 Élèves</button>
+      <button class="panel-tab" id="gtab-journal-btn" onclick="switchGestionTab('journal')">📋 Journal des résultats</button>
     </div>
     <div id="gtab-results">
       <div id="gestion-summary" class="gestion-summary"></div>
@@ -5230,6 +5255,9 @@ input[type=text].calc-input.incorrect {
     </div>
     <div id="gtab-students" style="display:none;">
       <div id="students-manage-new"></div>
+    </div>
+    <div id="gtab-journal" style="display:none;">
+      <div id="gestion-journal-list"></div>
     </div>
   </div>
 
@@ -25488,10 +25516,133 @@ function goToConjugaison(tense){
 function switchGestionTab(tab){
   document.getElementById('gtab-results').style.display = tab==='results'?'':'none';
   document.getElementById('gtab-students').style.display = tab==='students'?'':'none';
+  document.getElementById('gtab-journal').style.display = tab==='journal'?'':'none';
   document.getElementById('gtab-results-btn').classList.toggle('active', tab==='results');
   document.getElementById('gtab-students-btn').classList.toggle('active', tab==='students');
+  document.getElementById('gtab-journal-btn').classList.toggle('active', tab==='journal');
   if(tab==='students') renderStudentsManageNew();
   if(tab==='results') renderGestionResults();
+  if(tab==='journal') renderGestionJournal();
+}
+
+function renderGestionJournal(){
+  if(window.FB_loadResults){
+    window.FB_loadResults(null).then(function(fbResults){
+      if(fbResults && fbResults.length > 0){
+        const local = JSON.parse(localStorage.getItem('lq_results')||'[]');
+        const localKeys = new Set(local.map(r=>r.student+'|'+r.date+'|'+r.activity));
+        const merged = [...local];
+        fbResults.forEach(r=>{
+          const k = r.student+'|'+r.date+'|'+r.activity;
+          if(!localKeys.has(k)){ merged.push(r); localKeys.add(k); }
+        });
+        localStorage.setItem('lq_results', JSON.stringify(merged));
+      }
+      doRenderGestionJournal();
+    }).catch(function(){ doRenderGestionJournal(); });
+  } else {
+    doRenderGestionJournal();
+  }
+}
+
+function doRenderGestionJournal(){
+  const results = loadResults(teacherCls);
+  const journalList = document.getElementById('gestion-journal-list');
+  if(!journalList) return;
+
+  if(results.length === 0){
+    journalList.innerHTML = '<div class="alert alert-info">Aucun résultat enregistré pour le moment.</div>';
+    return;
+  }
+
+  function parseResultDateTime(r) {
+    if (!r.date) return new Date(0);
+    const dateParts = r.date.split('/');
+    if (dateParts.length !== 3) return new Date(0);
+    const day = parseInt(dateParts[0], 10);
+    const month = parseInt(dateParts[1], 10) - 1;
+    const year = parseInt(dateParts[2], 10);
+    let hour = 0, minute = 0;
+    if (r.time) {
+      const timeParts = r.time.split(':');
+      if (timeParts.length >= 2) {
+        hour = parseInt(timeParts[0], 10);
+        minute = parseInt(timeParts[1], 10);
+      }
+    }
+    return new Date(year, month, day, hour, minute);
+  }
+
+  function getActivityFriendlyName(r) {
+    if (r.bookTitle) {
+      return `Récits Express : ${r.bookTitle}`;
+    }
+    let key = r.activity;
+    if (typeof PLAN_CATALOGUE !== 'undefined') {
+      for (let s of PLAN_CATALOGUE) {
+        for (let item of s.items) {
+          if (item.id === key) {
+            return item.label;
+          }
+        }
+      }
+    }
+    return r.activityLabel || r.activity || "Exercice";
+  }
+
+  // Trier par ordre chronologique (plus récent en premier)
+  const sorted = results.slice().sort((a, b) => parseResultDateTime(b) - parseResultDateTime(a));
+  
+  // Limiter aux 30 derniers
+  const latestResults = sorted.slice(0, 30);
+
+  let html = `
+    <div class="card" style="padding: 1.25rem;">
+      <div class="card-title" style="margin-bottom: 1.25rem; font-family: 'Fredoka', sans-serif;">📋 Journal des 30 derniers résultats</div>
+      <div style="overflow-x: auto;">
+        <table class="gestion-journal-table">
+          <thead>
+            <tr style="border-bottom: 2px solid #e5e7eb; color: var(--muted); font-weight: 700;">
+              <th style="padding: 10px 12px;">Élève</th>
+              <th style="padding: 10px 12px;">Exercice</th>
+              <th style="padding: 10px 12px; text-align: center;">Résultat</th>
+              <th style="padding: 10px 12px; text-align: right;">Date & Heure</th>
+            </tr>
+          </thead>
+          <tbody>
+  `;
+
+  latestResults.forEach(r => {
+    const c = r.pct >= 70 ? 'var(--green)' : r.pct >= 50 ? 'var(--amber)' : 'var(--red)';
+    let activityName = getActivityFriendlyName(r);
+    if (activityName && activityName.includes('undefined')) {
+      activityName = r.activityLabel || r.activity || 'Exercice';
+    }
+    const scoreText = r.score !== undefined && r.total !== undefined ? `${r.score} / ${r.total}` : `${r.pct}%`;
+    const timeSecText = r.time_sec ? `<span style="margin-left:6px;background:var(--purple-light);color:var(--purple);border-radius:10px;padding:1px 6px;font-size:10px;font-weight:700;">⏱️ ${r.time_sec}s</span>` : '';
+    
+    html += `
+      <tr style="border-bottom: 1px solid #f3f4f6;">
+        <td style="padding: 12px 12px; font-weight: 700; color: #1f2937;">${r.student}</td>
+        <td style="padding: 12px 12px; color: #1f2937; font-weight: 600;">${activityName}${timeSecText}</td>
+        <td style="padding: 12px 12px; text-align: center; font-weight: 800; color: ${c}; font-size: 15px;">
+          ${scoreText} <span style="font-size: 11px; font-weight: 600; color: var(--muted); font-family: 'Inter', sans-serif;">(${r.pct}%)</span>
+        </td>
+        <td style="padding: 12px 12px; text-align: right; color: var(--muted); font-size: 12px; font-family: 'Inter', sans-serif;">
+          ${r.date} <span style="font-weight: 600; color: #1f2937; margin-left: 4px;">${r.time || ''}</span>
+        </td>
+      </tr>
+    `;
+  });
+
+  html += `
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+
+  journalList.innerHTML = html;
 }
 
 function renderGestionResults(){
