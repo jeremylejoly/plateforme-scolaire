@@ -91,12 +91,16 @@
 
   .stage{padding:14px;}
   .instruction{
-    display:flex; gap:10px; align-items:center; margin:0 0 12px; padding:11px 14px;
+    display:flex; flex-direction:column; gap:10px; margin:0 0 12px; padding:14px 16px;
     background:#f3faff; border:1px solid #d8eefb; border-radius:14px;
     color:#1c4f6e; font-weight:700; font-size:15px;
   }
   .instruction .pin{flex:0 0 auto; width:22px; height:22px; display:grid; place-items:center;
     background:var(--axis); color:#fff; border-radius:7px; font-size:13px; font-family:"Fredoka";}
+  .instruction-help{
+    display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:8px 12px;
+    font-size:13px; font-weight:600; color:#4a607a; border-top:1px dashed #d8eefb; padding-top:10px; margin-top:2px;
+  }
 
   .canvas{width:100%; background:#fff; border:1px solid var(--line); border-radius:14px; overflow:hidden;}
   .canvas svg{display:block; width:100%; height:auto; touch-action:manipulation;}
@@ -127,28 +131,7 @@
   }
   @media (prefers-reduced-motion:reduce){ *{transition:none !important;} button.btn:hover{transform:none;} }
 
-  /* ---------- PRINT ---------- */
-  #printArea{display:none;}
-  @media print{
-    body{background:#fff;}
-    .wrap{max-width:none; padding:0;}
-    header.app .badge, .axis-tabs, .toolbar, .feedback, .legend, footer.note{display:none !important;}
-    .panel{border:none; box-shadow:none;}
-    .instruction{border-color:#bbb;}
-    /* worksheet = hide what the pupil must produce */
-    body.print-fiche .student-layer,
-    body.print-fiche .solution-layer,
-    body.print-fiche .hint-layer,
-    body.print-fiche .vertex-layer{display:none !important;}
-    body.print-fiche .node-hit{fill:transparent !important;}
 
-    body.print-all .wrap{display:none !important;}
-    body.print-all #printArea{display:block !important;}
-    #printArea .sheet{page-break-after:always; padding:14px 6px;}
-    #printArea h2{font-family:"Fredoka"; font-size:18px; margin:0 0 4px;}
-    #printArea p{color:#444; font-weight:700; margin:0 0 10px; font-size:14px;}
-    #printArea svg{width:100%; height:auto; max-height:88vh;}
-  }
 </style>
 </head>
 <body>
@@ -204,7 +187,18 @@
     </div>
 
     <div class="stage">
-      <p class="instruction" id="instruction"><span class="pin">↔</span><span id="instructionText"></span></p>
+      <div class="instruction" id="instruction">
+        <div style="display:flex; gap:10px; align-items:center;">
+          <span class="pin">↔</span>
+          <span id="instructionText"></span>
+        </div>
+        <div class="instruction-help">
+          <span>🖱️ <b>Trace :</b> Clique sur les points.</span>
+          <span>🔄 <b>Ferme :</b> Reclique sur ton point de départ.</span>
+          <span>✏️ <b>Partie séparée :</b> Clique sur <b>Nouveau trait</b> pour lever le crayon.</span>
+          <span>✅ <b>Valide :</b> Clique sur <b>Vérifier</b> (🟩 juste, 🟧 manquant, 🟥 faux).</span>
+        </div>
+      </div>
       <div class="canvas" id="canvas"></div>
 
       <div class="feedback" id="feedback">Clique sur les points pour relier la figure de l'autre côté de l'axe rose.</div>
@@ -216,23 +210,11 @@
         <span><i class="swatch" style="border-color:var(--ok)"></i> Correct</span>
         <span><i class="swatch" style="border-color:var(--extra)"></i> À revoir</span>
       </div>
-
-      <div class="grp" style="margin-top:16px; gap:10px;">
-        <button class="btn" id="printOne">🖨 Imprimer cette fiche</button>
-        <button class="btn" id="printAll">🖨 Imprimer les 15 fiches</button>
-      </div>
     </div>
   </section>
-
-  <footer class="note">
-    <strong>Mode d'emploi.</strong> Choisis le type d'axe, puis clique sur les nœuds du quadrillage (ou les points) pour
-    tracer le symétrique de la figure noire. « Nouveau trait » lève le crayon pour dessiner une partie séparée.
-    « Vérifier » colore tes segments&nbsp;: vert = juste, rouge = à corriger. Pour fermer une figure, reclique sur le point de départ.<br>
-    45 figures au total : 15 par type d'axe, avec des fonds quadrillés et pointillés. Imprime des fiches vierges pour travailler sur papier.
-  </footer>
 </div>
 
-<div id="printArea"></div>
+
 
 <script>
 "use strict";
@@ -521,32 +503,7 @@ document.getElementById('solve').addEventListener('click', ()=>{ finishStroke();
 
 function defaultMsg(){ setFeedback('Clique sur les points pour relier la figure de l\'autre côté de l\'axe rose.'); }
 
-/* ----- impression ----- */
-function worksheetSVG(ex){
-  // figure donnée + axe + fond, SANS le tracé de l'élève (fiche vierge)
-  return svgOpen(ex) + tintLayer(ex) + backgroundLayer(ex) + axisLayer(ex) + modelLayer(ex) + '</svg>';
-}
-document.getElementById('printOne').addEventListener('click', ()=>{
-  finishStroke();
-  document.body.classList.add('print-fiche');
-  window.addEventListener('afterprint', function h(){ document.body.classList.remove('print-fiche'); window.removeEventListener('afterprint', h); });
-  window.print();
-});
-document.getElementById('printAll').addEventListener('click', ()=>{
-  const list=EXOS[axisType];
-  const label={V:'axe vertical',H:'axe horizontal',O:'axe oblique'}[axisType];
-  let html='';
-  list.forEach((ex,i)=>{
-    html+=`<div class="sheet"><h2>Symétrie — ${label} · figure ${i+1}/15</h2>`
-        + `<p>Trace le symétrique de la figure noire par rapport à l'axe rose. Fond : ${ex.bg==='grid'?'quadrillage':'points'}.</p>`
-        + worksheetSVG(ex) + `</div>`;
-  });
-  const area=document.getElementById('printArea');
-  area.innerHTML=html;
-  document.body.classList.add('print-all');
-  window.addEventListener('afterprint', function h(){ document.body.classList.remove('print-all'); area.innerHTML=''; window.removeEventListener('afterprint', h); });
-  window.print();
-});
+
 
 /* ----- clavier (navigation) ----- */
 document.addEventListener('keydown', e=>{
