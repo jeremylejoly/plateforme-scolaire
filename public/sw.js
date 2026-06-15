@@ -1,10 +1,11 @@
-const CACHE_NAME = 'classe-mr-lejoly-cache-v50';
+const CACHE_NAME = 'classe-mr-lejoly-cache-v51';
 const CORE_ASSETS = [
   './',
   'index.html',
   'manifest.json',
   'exercices_francais.js',
   'exercices_maths.js',
+  'exercices_eveil.js',
   'livres.js',
   'KGElephantHiccups.ttf',
   'KGHaventSleptShadow.ttf',
