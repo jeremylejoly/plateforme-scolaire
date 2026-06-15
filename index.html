@@ -26253,20 +26253,23 @@ function doRenderGestionJournal(){
   }
 
   function getActivityFriendlyName(r) {
-    if (r.bookTitle) {
-      return `Récits Express : ${r.bookTitle}`;
+    // bookTitle contient déjà le libellé complet de l'activité (pas seulement les livres)
+    // On l'utilise directement comme dans doRenderStudentDetail
+    let activity = r.bookTitle || r.activityLabel || r.activity || 'Exercice';
+    if (activity && activity.includes('undefined')) {
+      activity = r.activityLabel || r.activity || 'Exercice';
     }
-    let key = r.activity;
-    if (typeof PLAN_CATALOGUE !== 'undefined') {
+    // Si c'est une clé technique (sans espaces, avec underscores), on cherche dans le catalogue
+    if (activity && !activity.includes(' ') && typeof PLAN_CATALOGUE !== 'undefined') {
       for (let s of PLAN_CATALOGUE) {
         for (let item of s.items) {
-          if (item.id === key) {
+          if (item.id === activity) {
             return item.label;
           }
         }
       }
     }
-    return r.activityLabel || r.activity || "Exercice";
+    return activity;
   }
 
   // Trier par ordre chronologique (plus récent en premier)
