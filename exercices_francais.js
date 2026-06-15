@@ -5978,6 +5978,121 @@ window.SAVOIR_ECOUTER_DATA = [
         correct: 0
       }
     ]
+  },
+  {
+    id: 'savoir_ecouter_5',
+    titre: 'Les Hautes Fagnes',
+    emoji: '🏔️',
+    desc: 'Écoute le texte et réponds aux 10 questions.',
+    audioUrl: 'audio/fagnes_audio.m4a',
+    screen: 'screen-savoir-ecouter',
+    questions: [
+      {
+        num: 1,
+        type: 'qcm',
+        q: 'Où se situent les Hautes Fagnes en Belgique ?',
+        options: [
+          'Au centre du pays',
+          'Près de la mer du Nord',
+          "À la frontière avec l'Allemagne",
+          'Près de Bruxelles'
+        ],
+        correct: 2
+      },
+      {
+        num: 2,
+        type: 'qcm',
+        q: "Qu'est-ce que la tourbe ?",
+        options: [
+          'Une roche très dure',
+          'Une terre spongieuse formée par des mousses et plantes mortes',
+          'Un type d'arbre',
+          'Un animal du plateau'
+        ],
+        correct: 1
+      },
+      {
+        num: 3,
+        type: 'qcm',
+        q: 'À quoi servent les caillebotis installés sur les sentiers ?',
+        options: [
+          'À éclairer le chemin la nuit',
+          'À empêcher les visiteurs de se perdre',
+          "À protéger la tourbe en permettant de traverser sans l'abîmer",
+          'À nourrir les animaux'
+        ],
+        correct: 2
+      },
+      {
+        num: 4,
+        type: 'qcm',
+        q: 'Quand peut-on observer le brame des cerfs ?',
+        options: [
+          'En hiver',
+          'Au printemps',
+          'En été',
+          'En automne'
+        ],
+        correct: 3
+      },
+      {
+        num: 5,
+        type: 'qcm',
+        q: 'Pourquoi compare-t-on la tourbe à une "éponge géante" ?',
+        options: [
+          "Parce qu'elle a la même couleur qu'une éponge",
+          "Parce qu'elle absorbe et retient l'eau de pluie comme une éponge",
+          "Parce qu'on peut la presser pour en faire sortir de l'eau potable",
+          "Parce qu'elle flotte sur l'eau"
+        ],
+        correct: 1
+      },
+      {
+        num: 6,
+        type: 'qcm',
+        q: 'Pourquoi les caillebotis sont-ils importants pour préserver le paysage ?',
+        options: [
+          "Parce que la tourbe met très longtemps à se reformer si elle est endommagée",
+          "Parce que sans eux, les visiteurs se perdraient dans le brouillard",
+          "Parce qu'ils empêchent les animaux de traverser les sentiers",
+          "Parce qu'ils servent à mesurer la neige"
+        ],
+        correct: 0
+      },
+      {
+        num: 7,
+        type: 'qcm',
+        q: 'Que peut-on déduire du fait que des oiseaux comme la pie-grièche grise nichent dans la végétation basse des Hautes Fagnes ?',
+        options: [
+          'Ces oiseaux préfèrent toujours les grands arbres',
+          "L'absence de grands prédateurs rend ce milieu sûr pour nicher au sol",
+          'Ces oiseaux ne savent pas voler',
+          'La végétation basse est dangereuse pour les oiseaux'
+        ],
+        correct: 1
+      },
+      {
+        num: 8,
+        type: 'vf',
+        q: 'Les Hautes Fagnes se trouvent au point le plus élevé de Belgique.',
+        options: ['Vrai', 'Faux'],
+        correct: 0
+      },
+      {
+        num: 9,
+        type: 'vf',
+        q: 'En été, le plateau est couvert de bruyères violettes.',
+        options: ['Vrai', 'Faux'],
+        correct: 0
+      },
+      {
+        num: 10,
+        type: 'vf',
+        q: 'En hiver, la neige fond plus vite sur les Hautes Fagnes que dans le reste de la Belgique.',
+        options: ['Vrai', 'Faux'],
+        correct: 1
+      }
+    ]
   }
 ];
 
