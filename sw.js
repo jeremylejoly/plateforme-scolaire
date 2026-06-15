@@ -19,7 +19,9 @@ const CORE_ASSETS = [
   'flechettes_atteins_le_score.html',
   'deux_objets_monnaie.html',
   'heure_secondes.html',
-  'calculs.html'
+  'calculs.html',
+  'calculs-4-operations.html',
+  'comparaison.html'
 ];
 
 // Installe le Service Worker et met en cache les ressources de base
