@@ -5517,3 +5517,122 @@ window.DIAL_MARCHE_DATA = {
      correct:3, explication:'Hugues apprécie que Renaud résume la situation honnêtement, contrairement aux deux marchands qui mentaient.'},
   ],
 };
+
+window.SAVOIR_ECOUTER_DATA = [
+  {
+    id: 'savoir_ecouter_1',
+    titre: 'Le secret de la forêt de Soignes',
+    emoji: '🎧',
+    desc: 'Écoute le texte et réponds aux 10 questions.',
+    audioUrl: 'audio/soignes_audio.m4a',
+    screen: 'screen-savoir-ecouter',
+    questions: [
+      {
+        num: 1,
+        type: 'qcm',
+        q: 'Comment appelle-t-on la forêt de Soignes en raison de ses grands hêtres ?',
+        options: [
+          'La forêt enchantée',
+          'La cathédrale verte',
+          'Le jardin secret',
+          'La forêt mystérieuse'
+        ],
+        correct: 1
+      },
+      {
+        num: 2,
+        type: 'qcm',
+        q: "Combien d'entrées un terrier de blaireau peut-il posséder ?",
+        options: [
+          'Une seule',
+          'Deux ou trois',
+          'Plusieurs dizaines',
+          'Plus de mille'
+        ],
+        correct: 2
+      },
+      {
+        num: 3,
+        type: 'qcm',
+        q: 'Que mange principalement le blaireau ?',
+        options: [
+          'De la viande uniquement',
+          'Des vers de terre, fruits, racines et insectes',
+          'Seulement des champignons',
+          'Des poissons'
+        ],
+        correct: 1
+      },
+      {
+        num: 4,
+        type: 'qcm',
+        q: 'Quelle couleur de lumière utilise-t-on pour observer les blaireaux la nuit ?',
+        options: [
+          'Lumière blanche',
+          'Lumière bleue',
+          'Lumière rouge',
+          'Lumière verte'
+        ],
+        correct: 2
+      },
+      {
+        num: 5,
+        type: 'qcm',
+        q: 'Pourquoi les promeneurs doivent-ils rester silencieux pour observer les blaireaux ?',
+        options: [
+          "Parce que c'est interdit de parler dans la forêt",
+          "Parce que les blaireaux ont une excellente ouïe et pourraient s'enfuir",
+          "Parce qu'il y a un règlement de la commune",
+          "Parce que le silence est obligatoire la nuit"
+        ],
+        correct: 1
+      },
+      {
+        num: 6,
+        type: 'qcm',
+        q: 'Pourquoi le statut du blaireau est-il passé de "nuisible" à "protégé" ?',
+        options: [
+          "Parce qu'il n'y en a presque plus",
+          "Parce que les scientifiques ont découvert son rôle bénéfique pour la nature",
+          "Parce qu'il ne mange plus les cultures",
+          "Parce que c'est un animal très rare en Europe"
+        ],
+        correct: 1
+      },
+      {
+        num: 7,
+        type: 'qcm',
+        q: 'Que peut-on déduire du fait que des terriers sont utilisés depuis plus de cent ans ?',
+        options: [
+          "Les blaireaux vivent très vieux, jusqu'à cent ans",
+          "Les terriers sont transmis et réutilisés par différentes générations de blaireaux",
+          "Les blaireaux construisent un nouveau terrier chaque siècle",
+          "Les terriers sont protégés par une loi spéciale depuis cent ans"
+        ],
+        correct: 1
+      },
+      {
+        num: 8,
+        type: 'vf',
+        q: 'Le blaireau européen a un pelage gris avec deux bandes noires sur le visage.',
+        options: ['Vrai', 'Faux'],
+        correct: 0
+      },
+      {
+        num: 9,
+        type: 'vf',
+        q: 'Le blaireau est actif principalement pendant la journée.',
+        options: ['Vrai', 'Faux'],
+        correct: 1
+      },
+      {
+        num: 10,
+        type: 'vf',
+        q: 'En creusant le sol, le blaireau aide les plantes à mieux pousser.',
+        options: ['Vrai', 'Faux'],
+        correct: 0
+      }
+    ]
+  }
+];
+
