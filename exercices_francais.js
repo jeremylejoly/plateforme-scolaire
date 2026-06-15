@@ -6208,6 +6208,121 @@ window.SAVOIR_ECOUTER_DATA = [
         correct: 0
       }
     ]
+  },
+  {
+    id: 'savoir_ecouter_7',
+    titre: "Au club d'échecs",
+    emoji: '♟️',
+    desc: 'Écoute le dialogue et réponds aux 10 questions.',
+    audioUrl: 'audio/echecs_audio.m4a',
+    screen: 'screen-savoir-ecouter',
+    questions: [
+      {
+        num: 1,
+        type: 'qcm',
+        q: "Pourquoi Yanis arrive-t-il toujours en avance au club d'échecs ?",
+        options: [
+          'Pour ranger la salle',
+          'Pour étudier des positions avant que le club commence',
+          'Pour attendre le professeur',
+          'Parce que le bus arrive tôt'
+        ],
+        correct: 1
+      },
+      {
+        num: 2,
+        type: 'qcm',
+        q: "Qu'est-ce que le \"contrôle du centre\" ?",
+        options: [
+          'Une règle pour protéger uniquement le roi',
+          'Le fait de contrôler les quatre cases centrales de l'échiquier avec ses pièces',
+          'Une technique pour attaquer directement avec la reine',
+          'Une façon de compter les points'
+        ],
+        correct: 1
+      },
+      {
+        num: 3,
+        type: 'qcm',
+        q: 'Que se passe-t-il pendant le \"petit roque\" ?',
+        options: [
+          'Le roi capture une pièce adverse',
+          'Le roi se déplace de deux cases vers la tour, et la tour vient près du roi',
+          'La reine change de position avec le roi',
+          'Tous les pions avancent en même temps'
+        ],
+        correct: 1
+      },
+      {
+        num: 4,
+        type: 'qcm',
+        q: 'Quelle erreur Léa a-t-elle commise dans sa partie de la semaine précédente ?',
+        options: [
+          'Elle a fait le petit roque trop tôt',
+          'Elle a sorti sa reine dès le deuxième coup',
+          "Elle n'a pas développé ses pions",
+          'Elle a perdu son roi au premier coup'
+        ],
+        correct: 1
+      },
+      {
+        num: 5,
+        type: 'qcm',
+        q: 'Pourquoi sortir la reine trop tôt est-il risqué ?',
+        options: [
+          'Parce que la reine se déplace très lentement',
+          "Parce qu'elle peut être attaquée par des pièces moins importantes, ce qui oblige à la reculer et perdre du temps",
+          "Parce que la reine n'a pas le droit de bouger en premier",
+          'Parce que cela est interdit par les règles du jeu'
+        ],
+        correct: 1
+      },
+      {
+        num: 6,
+        type: 'qcm',
+        q: 'Que veut dire Yanis en comparant une partie d'échecs à la construction d'un bâtiment ?',
+        options: [
+          "Qu'il faut d'abord construire de bonnes bases avant de se lancer dans l'attaque",
+          'Que les échecs et la construction sont deux activités identiques',
+          "Que les pièces d'échecs ressemblent à des briques",
+          "Qu'il faut beaucoup de temps pour apprendre à construire une maison"
+        ],
+        correct: 0
+      },
+      {
+        num: 7,
+        type: 'qcm',
+        q: 'Que peut-on déduire de la réaction de Léa à la fin du dialogue ?',
+        options: [
+          'Elle trouve que Yanis lui a fait perdre son temps',
+          'Elle a trouvé les explications de Yanis très utiles et efficaces',
+          'Elle ne veut plus jouer aux échecs',
+          'Elle préfère étudier seule plutôt qu'avec Yanis'
+        ],
+        correct: 1
+      },
+      {
+        num: 8,
+        type: 'vf',
+        q: 'Léa connaît déjà les règles de base des échecs avant cette discussion.',
+        options: ['Vrai', 'Faux'],
+        correct: 0
+      },
+      {
+        num: 9,
+        type: 'vf',
+        q: 'Selon Yanis, il faut sortir sa reine le plus tôt possible pour gagner.',
+        options: ['Vrai', 'Faux'],
+        correct: 1
+      },
+      {
+        num: 10,
+        type: 'vf',
+        q: 'La patience est, selon Yanis, la qualité la plus importante aux échecs.',
+        options: ['Vrai', 'Faux'],
+        correct: 0
+      }
+    ]
   }
 ];
 
