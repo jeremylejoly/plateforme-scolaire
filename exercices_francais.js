@@ -6093,6 +6093,121 @@ window.SAVOIR_ECOUTER_DATA = [
         correct: 1
       }
     ]
+  },
+  {
+    id: 'savoir_ecouter_6',
+    titre: "Dans l'atelier de Sandy",
+    emoji: '🎨',
+    desc: 'Écoute le dialogue et réponds aux 10 questions.',
+    audioUrl: 'audio/atelier_audio.m4a',
+    screen: 'screen-savoir-ecouter',
+    questions: [
+      {
+        num: 1,
+        type: 'qcm',
+        q: 'Sur quoi travaille Sandy en ce moment ?',
+        options: [
+          "Le premier tome d'une nouvelle série",
+          "Le quatrième tome d'une bande dessinée pour la jeunesse",
+          'Une bande dessinée pour adultes',
+          'Un roman illustré'
+        ],
+        correct: 1
+      },
+      {
+        num: 2,
+        type: 'qcm',
+        q: "Quelle est la toute première étape de création d'une bande dessinée selon Sandy ?",
+        options: [
+          "Le dessin définitif à l'encre",
+          'La couleur',
+          "L'écriture du scénario",
+          "L'impression de l'album"
+        ],
+        correct: 2
+      },
+      {
+        num: 3,
+        type: 'qcm',
+        q: 'Combien de temps faut-il à Sandy pour dessiner et encrer une seule page ?',
+        options: [
+          'Un jour',
+          'Une semaine complète',
+          'Un mois',
+          'Quarante-huit heures'
+        ],
+        correct: 1
+      },
+      {
+        num: 4,
+        type: 'qcm',
+        q: 'Comment Sandy ajoute-t-elle les couleurs à ses dessins ?',
+        options: [
+          'Avec de la peinture à l'eau',
+          'Avec des crayons de couleur',
+          'Sur une tablette graphique, numériquement',
+          "Elle n'ajoute jamais de couleur"
+        ],
+        correct: 2
+      },
+      {
+        num: 5,
+        type: 'qcm',
+        q: 'Pourquoi Sandy dessine-t-elle le crayonné "presque comme des gribouillages" ?',
+        options: [
+          "Parce qu'elle ne sait pas bien dessiner",
+          "Parce que cette étape sert seulement à vérifier que l'histoire fonctionne, pas à produire un beau dessin",
+          "Parce qu'elle est pressée par le temps",
+          "Parce que son éditeur lui demande de dessiner vite"
+        ],
+        correct: 1
+      },
+      {
+        num: 6,
+        type: 'qcm',
+        q: 'Pourquoi Sandy compare-t-elle le crayonné au "squelette avant d'habiller le corps" ?',
+        options: [
+          "Parce qu'elle dessine des squelettes dans son histoire",
+          "Parce que le crayonné est la base sur laquelle viendra ensuite le dessin détaillé",
+          "Parce que les personnages de son histoire sont des squelettes",
+          "Parce que c'est une expression sans rapport avec son travail"
+        ],
+        correct: 1
+      },
+      {
+        num: 7,
+        type: 'qcm',
+        q: 'Que peut-on déduire du fait que Sandy met environ un an pour dessiner un album, en plus du scénario ?',
+        options: [
+          'Créer une bande dessinée demande beaucoup de temps et de patience',
+          'Sandy travaille très lentement par rapport aux autres dessinateurs',
+          'Un album de BD est facile à réaliser rapidement',
+          "Sandy n'aime pas dessiner"
+        ],
+        correct: 0
+      },
+      {
+        num: 8,
+        type: 'vf',
+        q: "La première étape de création d'une BD est le dessin à l'encre.",
+        options: ['Vrai', 'Faux'],
+        correct: 1
+      },
+      {
+        num: 9,
+        type: 'vf',
+        q: 'Chaque tome de la série de Sandy compte quarante-huit pages.',
+        options: ['Vrai', 'Faux'],
+        correct: 0
+      },
+      {
+        num: 10,
+        type: 'vf',
+        q: 'Le moment préféré de Sandy est de recevoir les premiers exemplaires imprimés de l'album.',
+        options: ['Vrai', 'Faux'],
+        correct: 0
+      }
+    ]
   }
 ];
 
