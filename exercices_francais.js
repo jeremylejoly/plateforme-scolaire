@@ -5863,6 +5863,121 @@ window.SAVOIR_ECOUTER_DATA = [
         correct: 0
       }
     ]
+  },
+  {
+    id: 'savoir_ecouter_4',
+    titre: 'La recette du pain perdu',
+    emoji: '🍳',
+    desc: 'Écoute le texte et réponds aux 10 questions.',
+    audioUrl: 'audio/pain_perdu_audio.m4a',
+    screen: 'screen-savoir-ecouter',
+    questions: [
+      {
+        num: 1,
+        type: 'qcm',
+        q: 'Pourquoi appelle-t-on cette recette "pain perdu" ?',
+        options: [
+          "Parce qu'on perd le pain en le préparant",
+          "Parce qu'elle utilise du pain rassis qu'on allait jeter",
+          "Parce que la recette a été perdue puis retrouvée",
+          "Parce qu'on doit chercher le pain dans le jardin"
+        ],
+        correct: 1
+      },
+      {
+        num: 2,
+        type: 'qcm',
+        q: 'Quels ingrédients composent le mélange dans lequel on trempe le pain ?',
+        options: [
+          'Du lait, des œufs, du sucre et de la cannelle',
+          "De l'eau, du sel et de la farine",
+          "Du beurre, du sucre et de la confiture",
+          "Des œufs, de l'huile et du fromage"
+        ],
+        correct: 0
+      },
+      {
+        num: 3,
+        type: 'qcm',
+        q: 'Combien de temps faut-il laisser tremper chaque côté du pain dans le mélange ?',
+        options: [
+          '10 secondes',
+          '30 secondes',
+          '2 minutes',
+          '5 minutes'
+        ],
+        correct: 1
+      },
+      {
+        num: 4,
+        type: 'qcm',
+        q: "Quel est le signal indiquant qu'il faut poser le pain dans la poêle ?",
+        options: [
+          'Quand la poêle fume beaucoup',
+          'Quand le beurre commence à mousser légèrement',
+          "Quand l'huile devient noire",
+          "Quand on entend un sifflement"
+        ],
+        correct: 1
+      },
+      {
+        num: 5,
+        type: 'qcm',
+        q: 'Pourquoi le texte présente-t-il le pain perdu comme une lutte contre le gaspillage alimentaire ?',
+        options: [
+          "S'il faut acheter beaucoup d'ingrédients",
+          "Parce qu'il permet de réutiliser du pain qu'on aurait sinon jeté",
+          "Parce que cette recette coûte très cher",
+          "Parce qu'elle nécessite beaucoup de temps de préparation"
+        ],
+        correct: 1
+      },
+      {
+        num: 6,
+        type: 'qcm',
+        q: 'Pourquoi faut-il surveiller attentivement la cuisson du pain perdu ?',
+        options: [
+          "Parce que le pain peut s'envoler de la poêle",
+          "Parce que le sucre du mélange peut faire brûler le pain rapidement",
+          "Parce que la poêle peut casser",
+          "Parce qu'il faut compter le nombre de tranches"
+        ],
+        correct: 1
+      },
+      {
+        num: 7,
+        type: 'qcm',
+        q: 'Que peut-on déduire du fait que le pain ne doit pas tremper trop longtemps dans le mélange ?',
+        options: [
+          "Le pain doit rester sec à l'intérieur",
+          "Un trempage trop long rendrait le pain trop mou et il pourrait se déchirer",
+          "Le mélange devient mauvais après 30 secondes",
+          "Il faut absolument utiliser du pain frais"
+        ],
+        correct: 1
+      },
+      {
+        num: 8,
+        type: 'vf',
+        q: 'Le pain perdu se prépare avec du pain frais du jour.',
+        options: ['Vrai', 'Faux'],
+        correct: 1
+      },
+      {
+        num: 9,
+        type: 'vf',
+        q: 'Chaque tranche de pain doit cuire environ deux à trois minutes de chaque côté.',
+        options: ['Vrai', 'Faux'],
+        correct: 0
+      },
+      {
+        num: 10,
+        type: 'vf',
+        q: 'Le pain perdu peut être accompagné de fruits frais, de sirop ou de confiture.',
+        options: ['Vrai', 'Faux'],
+        correct: 0
+      }
+    ]
   }
 ];
 
