@@ -5578,7 +5578,7 @@ window.SAVOIR_ECOUTER_DATA = [
       {
         num: 5,
         type: 'qcm',
-        q: 'Pourquoi les promeneurs doivent-ils rester silencieux pour observer les blaireaux ?',
+        q: "Pourquoi les promeneurs doivent-ils rester silencieux pour observer les blaireaux ?",
         options: [
           "Parce que c'est interdit de parler dans la forêt",
           "Parce que les blaireaux ont une excellente ouïe et pourraient s'enfuir",
@@ -5590,7 +5590,7 @@ window.SAVOIR_ECOUTER_DATA = [
       {
         num: 6,
         type: 'qcm',
-        q: 'Pourquoi le statut du blaireau est-il passé de "nuisible" à "protégé" ?',
+        q: "Pourquoi le statut du blaireau est-il passé de \"nuisible\" à \"protégé\" ?",
         options: [
           "Parce qu'il n'y en a presque plus",
           "Parce que les scientifiques ont découvert son rôle bénéfique pour la nature",
@@ -5602,7 +5602,7 @@ window.SAVOIR_ECOUTER_DATA = [
       {
         num: 7,
         type: 'qcm',
-        q: 'Que peut-on déduire du fait que des terriers sont utilisés depuis plus de cent ans ?',
+        q: "Que peut-on déduire du fait que des terriers sont utilisés depuis plus de cent ans ?",
         options: [
           "Les blaireaux vivent très vieux, jusqu'à cent ans",
           "Les terriers sont transmis et réutilisés par différentes générations de blaireaux",
@@ -5614,29 +5614,29 @@ window.SAVOIR_ECOUTER_DATA = [
       {
         num: 8,
         type: 'vf',
-        q: 'Le blaireau européen a un pelage gris avec deux bandes noires sur le visage.',
-        options: ['Vrai', 'Faux'],
+        q: "Le blaireau européen a un pelage gris avec deux bandes noires sur le visage.",
+        options: ["Vrai", "Faux"],
         correct: 0
       },
       {
         num: 9,
         type: 'vf',
-        q: 'Le blaireau est actif principalement pendant la journée.',
-        options: ['Vrai', 'Faux'],
+        q: "Le blaireau est actif principalement pendant la journée.",
+        options: ["Vrai", "Faux"],
         correct: 1
       },
       {
         num: 10,
         type: 'vf',
-        q: 'En creusant le sol, le blaireau aide les plantes à mieux pousser.',
-        options: ['Vrai', 'Faux'],
+        q: "En creusant le sol, le blaireau aide les plantes à mieux pousser.",
+        options: ["Vrai", "Faux"],
         correct: 0
       }
     ]
   },
   {
     id: 'savoir_ecouter_2',
-    titre: 'Le mystère du carillon de Bruges',
+    titre: "Le mystère du carillon de Bruges",
     emoji: '🔔',
     desc: 'Écoute le texte et réponds aux 10 questions.',
     audioUrl: 'audio/bruges_audio.m4a',
@@ -5645,7 +5645,7 @@ window.SAVOIR_ECOUTER_DATA = [
       {
         num: 1,
         type: 'qcm',
-        q: 'Combien de marches faut-il grimper pour atteindre le sommet du Beffroi ?',
+        q: "Combien de marches faut-il grimper pour atteindre le sommet du Beffroi ?",
         options: [
           '83',
           '47',
@@ -5657,7 +5657,7 @@ window.SAVOIR_ECOUTER_DATA = [
       {
         num: 2,
         type: 'qcm',
-        q: 'Combien de cloches compose le carillon ?',
+        q: "Combien de cloches compose le carillon ?",
         options: [
           '7',
           '47',
@@ -5669,7 +5669,7 @@ window.SAVOIR_ECOUTER_DATA = [
       {
         num: 3,
         type: 'qcm',
-        q: 'Comment appelle-t-on le musicien qui joue du carillon ?',
+        q: "Comment appelle-t-on le musicien qui joue du carillon ?",
         options: [
           'Le sonneur',
           'Le carillonneur',
@@ -5681,7 +5681,7 @@ window.SAVOIR_ECOUTER_DATA = [
       {
         num: 4,
         type: 'qcm',
-        q: 'Que faut-il faire pour faire sonner les grosses cloches ?',
+        q: "Que faut-il faire pour faire sonner les grosses cloches ?",
         options: [
           'Tirer une corde très fort',
           'Enfoncer certaines touches avec un coup de poing',
@@ -5717,7 +5717,7 @@ window.SAVOIR_ECOUTER_DATA = [
       {
         num: 7,
         type: 'qcm',
-        q: "Que peut-on déduire du fait que des terriers sont utilisés depuis plus de cent ans ?",
+        q: "Que peut-on déduire du fait que la tour se rétrécit vers le sommet ?",
         options: [
           "La tour a été mal construite",
           "La forme de la tour se rétrécit vers le sommet",
@@ -5729,29 +5729,29 @@ window.SAVOIR_ECOUTER_DATA = [
       {
         num: 8,
         type: 'vf',
-        q: 'La plus grande cloche du carillon pèse plus de six tonnes.',
-        options: ['Vrai', 'Faux'],
+        q: "La plus grande cloche du carillon pèse plus de six tonnes.",
+        options: ["Vrai", "Faux"],
         correct: 0
       },
       {
         num: 9,
         type: 'vf',
         q: "Avant les téléphones, les carillons servaient uniquement à indiquer l'heure.",
-        options: ['Vrai', 'Faux'],
+        options: ["Vrai", "Faux"],
         correct: 1
       },
       {
         num: 10,
         type: 'vf',
         q: "Les concerts d'été sur le carillon sont payants.",
-        options: ['Vrai', 'Faux'],
+        options: ["Vrai", "Faux"],
         correct: 1
       }
     ]
   },
   {
     id: 'savoir_ecouter_3',
-    titre: 'La fourmi superstar',
+    titre: "La fourmi superstar",
     emoji: '🐜',
     desc: 'Écoute le texte et réponds aux 10 questions.',
     audioUrl: 'audio/fourmi_audio.m4a',
@@ -5760,7 +5760,7 @@ window.SAVOIR_ECOUTER_DATA = [
       {
         num: 1,
         type: 'qcm',
-        q: 'Combien de fois son propre poids une fourmi peut-elle transporter ?',
+        q: "Combien de fois son propre poids une fourmi peut-elle transporter ?",
         options: [
           '10 fois',
           '25 fois',
@@ -5784,7 +5784,7 @@ window.SAVOIR_ECOUTER_DATA = [
       {
         num: 3,
         type: 'qcm',
-        q: 'Comment les fourmis communiquent-elles entre elles pour se coordonner ?',
+        q: "Comment les fourmis communiquent-elles entre elles pour se coordonner ?",
         options: [
           'En faisant du bruit',
           'Grâce à des substances chimiques appelées phéromones',
@@ -5796,7 +5796,7 @@ window.SAVOIR_ECOUTER_DATA = [
       {
         num: 4,
         type: 'qcm',
-        q: 'Quel est le rôle de la reine dans la colonie ?',
+        q: "Quel est le rôle de la reine dans la colonie ?",
         options: [
           'Elle cherche la nourriture',
           'Elle construit la fourmilière',
@@ -5808,12 +5808,12 @@ window.SAVOIR_ECOUTER_DATA = [
       {
         num: 5,
         type: 'qcm',
-        q: 'Pourquoi un humain de quarante kilos ne pourrait-il pas réellement porter deux tonnes ?',
+        q: "Pourquoi un humain de quarante kilos ne pourrait-il pas réellement porter deux tonnes ?",
         options: [
-          'Parce que les humains sont plus faibles que les fourmis dans l'absolu',
-          'Parce que la proportion de force par rapport à la taille diminue chez les grands êtres vivants',
-          'Parce que les humains n'ont pas d'exosquelette',
-          'Parce que personne n'a jamais essayé'
+          "Parce que les humains sont plus faibles que les fourmis dans l'absolu",
+          "Parce que la proportion de force par rapport à la taille diminue chez les grands êtres vivants",
+          "Parce que les humains n'ont pas d'exosquelette",
+          "Parce que personne n'a jamais essayé"
         ],
         correct: 1
       },
@@ -5832,10 +5832,10 @@ window.SAVOIR_ECOUTER_DATA = [
       {
         num: 7,
         type: 'qcm',
-        q: 'Que peut-on déduire du fait que plusieurs fourmis se rassemblent pour porter une charge trop lourde ?',
+        q: "Que peut-on déduire du fait que plusieurs fourmis se rassemblent pour porter une charge trop lourde ?",
         options: [
           'Les fourmis se disputent souvent entre elles',
-          'La coopération permet d'accomplir des tâches impossibles pour un individu seul',
+          "La coopération permet d'accomplir des tâches impossibles pour un individu seul",
           'Une seule fourmi est toujours plus forte que plusieurs réunies',
           'Les fourmis abandonnent la charge si elle est trop lourde'
         ],
@@ -5844,29 +5844,29 @@ window.SAVOIR_ECOUTER_DATA = [
       {
         num: 8,
         type: 'vf',
-        q: 'Plus un être vivant est petit, plus ses muscles peuvent développer une force importante par rapport à sa taille.',
-        options: ['Vrai', 'Faux'],
+        q: "Plus un être vivant est petit, plus ses muscles peuvent développer une force importante par rapport à sa taille.",
+        options: ["Vrai", "Faux"],
         correct: 0
       },
       {
         num: 9,
         type: 'vf',
-        q: 'Une colonie de fourmis ne compte généralement que quelques dizaines d'individus.',
-        options: ['Vrai', 'Faux'],
+        q: "Une colonie de fourmis ne compte généralement que quelques dizaines d'individus.",
+        options: ["Vrai", "Faux"],
         correct: 1
       },
       {
         num: 10,
         type: 'vf',
-        q: 'Les fourmis peuvent transporter des morceaux de feuilles et des graines.',
-        options: ['Vrai', 'Faux'],
+        q: "Les fourmis peuvent transporter des morceaux de feuilles et des graines.",
+        options: ["Vrai", "Faux"],
         correct: 0
       }
     ]
   },
   {
     id: 'savoir_ecouter_4',
-    titre: 'La recette du pain perdu',
+    titre: "La recette du pain perdu",
     emoji: '🍳',
     desc: 'Écoute le texte et réponds aux 10 questions.',
     audioUrl: 'audio/pain_perdu_audio.m4a',
@@ -5875,7 +5875,7 @@ window.SAVOIR_ECOUTER_DATA = [
       {
         num: 1,
         type: 'qcm',
-        q: 'Pourquoi appelle-t-on cette recette "pain perdu" ?',
+        q: "Pourquoi appelle-t-on cette recette \"pain perdu\" ?",
         options: [
           "Parce qu'on perd le pain en le préparant",
           "Parce qu'elle utilise du pain rassis qu'on allait jeter",
@@ -5887,7 +5887,7 @@ window.SAVOIR_ECOUTER_DATA = [
       {
         num: 2,
         type: 'qcm',
-        q: 'Quels ingrédients composent le mélange dans lequel on trempe le pain ?',
+        q: "Quels ingrédients composent le mélange dans lequel on trempe le pain ?",
         options: [
           'Du lait, des œufs, du sucre et de la cannelle',
           "De l'eau, du sel et de la farine",
@@ -5899,7 +5899,7 @@ window.SAVOIR_ECOUTER_DATA = [
       {
         num: 3,
         type: 'qcm',
-        q: 'Combien de temps faut-il laisser tremper chaque côté du pain dans le mélange ?',
+        q: "Combien de temps faut-il laisser tremper chaque côté du pain dans le mélange ?",
         options: [
           '10 secondes',
           '30 secondes',
@@ -5923,7 +5923,7 @@ window.SAVOIR_ECOUTER_DATA = [
       {
         num: 5,
         type: 'qcm',
-        q: 'Pourquoi le texte présente-t-il le pain perdu comme une lutte contre le gaspillage alimentaire ?',
+        q: "Pourquoi le texte présente-t-il le pain perdu comme une lutte contre le gaspillage alimentaire ?",
         options: [
           "S'il faut acheter beaucoup d'ingrédients",
           "Parce qu'il permet de réutiliser du pain qu'on aurait sinon jeté",
@@ -5934,8 +5934,8 @@ window.SAVOIR_ECOUTER_DATA = [
       },
       {
         num: 6,
-        type: 'qcm',
-        q: 'Pourquoi faut-il surveiller attentivement la cuisson du pain perdu ?',
+        type: "qcm",
+        q: "Pourquoi faut-il surveiller attentivement la cuisson du pain perdu ?",
         options: [
           "Parce que le pain peut s'envoler de la poêle",
           "Parce que le sucre du mélange peut faire brûler le pain rapidement",
@@ -5946,8 +5946,8 @@ window.SAVOIR_ECOUTER_DATA = [
       },
       {
         num: 7,
-        type: 'qcm',
-        q: 'Que peut-on déduire du fait que le pain ne doit pas tremper trop longtemps dans le mélange ?',
+        type: "qcm",
+        q: "Que peut-on déduire du fait que le pain ne doit pas tremper trop longtemps dans le mélange ?",
         options: [
           "Le pain doit rester sec à l'intérieur",
           "Un trempage trop long rendrait le pain trop mou et il pourrait se déchirer",
@@ -5958,87 +5958,87 @@ window.SAVOIR_ECOUTER_DATA = [
       },
       {
         num: 8,
-        type: 'vf',
-        q: 'Le pain perdu se prépare avec du pain frais du jour.',
-        options: ['Vrai', 'Faux'],
+        type: "vf",
+        q: "Le pain perdu se prépare avec du pain frais du jour.",
+        options: ["Vrai", "Faux"],
         correct: 1
       },
       {
         num: 9,
-        type: 'vf',
-        q: 'Chaque tranche de pain doit cuire environ deux à trois minutes de chaque côté.',
-        options: ['Vrai', 'Faux'],
+        type: "vf",
+        q: "Chaque tranche de pain doit cuire environ deux à trois minutes de chaque côté.",
+        options: ["Vrai", "Faux"],
         correct: 0
       },
       {
         num: 10,
-        type: 'vf',
-        q: 'Le pain perdu peut être accompagné de fruits frais, de sirop ou de confiture.',
-        options: ['Vrai', 'Faux'],
+        type: "vf",
+        q: "Le pain perdu peut être accompagné de fruits frais, de sirop ou de confiture.",
+        options: ["Vrai", "Faux"],
         correct: 0
       }
     ]
   },
   {
-    id: 'savoir_ecouter_5',
-    titre: 'Les Hautes Fagnes',
-    emoji: '🏔️',
-    desc: 'Écoute le texte et réponds aux 10 questions.',
-    audioUrl: 'audio/fagnes_audio.m4a',
-    screen: 'screen-savoir-ecouter',
+    id: "savoir_ecouter_5",
+    titre: "Les Hautes Fagnes",
+    emoji: "🏔️",
+    desc: "Écoute le texte et réponds aux 10 questions.",
+    audioUrl: "audio/fagnes_audio.m4a",
+    screen: "screen-savoir-ecouter",
     questions: [
       {
         num: 1,
-        type: 'qcm',
-        q: 'Où se situent les Hautes Fagnes en Belgique ?',
+        type: "qcm",
+        q: "Où se situent les Hautes Fagnes en Belgique ?",
         options: [
-          'Au centre du pays',
-          'Près de la mer du Nord',
+          "Au centre du pays",
+          "Près de la mer du Nord",
           "À la frontière avec l'Allemagne",
-          'Près de Bruxelles'
+          "Près de Bruxelles"
         ],
         correct: 2
       },
       {
         num: 2,
-        type: 'qcm',
+        type: "qcm",
         q: "Qu'est-ce que la tourbe ?",
         options: [
-          'Une roche très dure',
-          'Une terre spongieuse formée par des mousses et plantes mortes',
-          'Un type d'arbre',
-          'Un animal du plateau'
+          "Une roche très dure",
+          "Une terre spongieuse formée par des mousses et plantes mortes",
+          "Un type d'arbre",
+          "Un animal du plateau"
         ],
         correct: 1
       },
       {
         num: 3,
-        type: 'qcm',
-        q: 'À quoi servent les caillebotis installés sur les sentiers ?',
+        type: "qcm",
+        q: "À quoi servent les caillebotis installés sur les sentiers ?",
         options: [
-          'À éclairer le chemin la nuit',
-          'À empêcher les visiteurs de se perdre',
+          "À éclairer le chemin la nuit",
+          "À empêcher les visiteurs de se perdre",
           "À protéger la tourbe en permettant de traverser sans l'abîmer",
-          'À nourrir les animaux'
+          "À nourrir les animaux"
         ],
         correct: 2
       },
       {
         num: 4,
-        type: 'qcm',
-        q: 'Quand peut-on observer le brame des cerfs ?',
+        type: "qcm",
+        q: "Quand peut-on observer le brame des cerfs ?",
         options: [
-          'En hiver',
-          'Au printemps',
-          'En été',
-          'En automne'
+          "En hiver",
+          "Au printemps",
+          "En été",
+          "En automne"
         ],
         correct: 3
       },
       {
         num: 5,
-        type: 'qcm',
-        q: 'Pourquoi compare-t-on la tourbe à une "éponge géante" ?',
+        type: "qcm",
+        q: "Pourquoi compare-t-on la tourbe à une \"éponge géante\" ?",
         options: [
           "Parce qu'elle a la même couleur qu'une éponge",
           "Parce qu'elle absorbe et retient l'eau de pluie comme une éponge",
@@ -6049,8 +6049,8 @@ window.SAVOIR_ECOUTER_DATA = [
       },
       {
         num: 6,
-        type: 'qcm',
-        q: 'Pourquoi les caillebotis sont-ils importants pour préserver le paysage ?',
+        type: "qcm",
+        q: "Pourquoi les caillebotis sont-ils importants pour préserver le paysage ?",
         options: [
           "Parce que la tourbe met très longtemps à se reformer si elle est endommagée",
           "Parce que sans eux, les visiteurs se perdraient dans le brouillard",
@@ -6061,35 +6061,35 @@ window.SAVOIR_ECOUTER_DATA = [
       },
       {
         num: 7,
-        type: 'qcm',
-        q: 'Que peut-on déduire du fait que des oiseaux comme la pie-grièche grise nichent dans la végétation basse des Hautes Fagnes ?',
+        type: "qcm",
+        q: "Que peut-on déduire du fait que des oiseaux comme la pie-grièche grise nichent dans la végétation basse ?",
         options: [
-          'Ces oiseaux préfèrent toujours les grands arbres',
+          "Ces oiseaux préfèrent toujours les grands arbres",
           "L'absence de grands prédateurs rend ce milieu sûr pour nicher au sol",
-          'Ces oiseaux ne savent pas voler',
-          'La végétation basse est dangereuse pour les oiseaux'
+          "Ces oiseaux ne savent pas voler",
+          "La végétation basse est dangereuse pour les oiseaux"
         ],
         correct: 1
       },
       {
         num: 8,
-        type: 'vf',
-        q: 'Les Hautes Fagnes se trouvent au point le plus élevé de Belgique.',
-        options: ['Vrai', 'Faux'],
+        type: "vf",
+        q: "Les Hautes Fagnes se trouvent au point le plus élevé de Belgique.",
+        options: ["Vrai", "Faux"],
         correct: 0
       },
       {
         num: 9,
-        type: 'vf',
-        q: 'En été, le plateau est couvert de bruyères violettes.',
-        options: ['Vrai', 'Faux'],
+        type: "vf",
+        q: "En été, le plateau est couvert de bruyères violettes.",
+        options: ["Vrai", "Faux"],
         correct: 0
       },
       {
         num: 10,
-        type: 'vf',
-        q: 'En hiver, la neige fond plus vite sur les Hautes Fagnes que dans le reste de la Belgique.',
-        options: ['Vrai', 'Faux'],
+        type: "vf",
+        q: "En hiver, la neige fond plus vite sur les Hautes Fagnes que dans le reste de la Belgique.",
+        options: ["Vrai", "Faux"],
         correct: 1
       }
     ]
@@ -6105,12 +6105,12 @@ window.SAVOIR_ECOUTER_DATA = [
       {
         num: 1,
         type: 'qcm',
-        q: 'Sur quoi travaille Sandy en ce moment ?',
+        q: "Sur quoi travaille Sandy en ce moment ?",
         options: [
           "Le premier tome d'une nouvelle série",
           "Le quatrième tome d'une bande dessinée pour la jeunesse",
-          'Une bande dessinée pour adultes',
-          'Un roman illustré'
+          "Une bande dessinée pour adultes",
+          "Un roman illustré"
         ],
         correct: 1
       },
@@ -6120,7 +6120,7 @@ window.SAVOIR_ECOUTER_DATA = [
         q: "Quelle est la toute première étape de création d'une bande dessinée selon Sandy ?",
         options: [
           "Le dessin définitif à l'encre",
-          'La couleur',
+          "La couleur",
           "L'écriture du scénario",
           "L'impression de l'album"
         ],
@@ -6129,23 +6129,23 @@ window.SAVOIR_ECOUTER_DATA = [
       {
         num: 3,
         type: 'qcm',
-        q: 'Combien de temps faut-il à Sandy pour dessiner et encrer une seule page ?',
+        q: "Combien de temps faut-il à Sandy pour dessiner et encrer une seule page ?",
         options: [
-          'Un jour',
-          'Une semaine complète',
-          'Un mois',
-          'Quarante-huit heures'
+          "Un jour",
+          "Une semaine complète",
+          "Un mois",
+          "Quarante-huit heures"
         ],
         correct: 1
       },
       {
         num: 4,
         type: 'qcm',
-        q: 'Comment Sandy ajoute-t-elle les couleurs à ses dessins ?',
+        q: "Comment Sandy ajoute-t-elle les couleurs à ses dessins ?",
         options: [
-          'Avec de la peinture à l'eau',
-          'Avec des crayons de couleur',
-          'Sur une tablette graphique, numériquement',
+          "Avec de la peinture à l'eau",
+          "Avec des crayons de couleur",
+          "Sur une tablette graphique, numériquement",
           "Elle n'ajoute jamais de couleur"
         ],
         correct: 2
@@ -6165,7 +6165,7 @@ window.SAVOIR_ECOUTER_DATA = [
       {
         num: 6,
         type: 'qcm',
-        q: 'Pourquoi Sandy compare-t-elle le crayonné au "squelette avant d'habiller le corps" ?',
+        q: "Pourquoi Sandy compare-t-elle le crayonné au \"squelette avant d'habiller le corps\" ?",
         options: [
           "Parce qu'elle dessine des squelettes dans son histoire",
           "Parce que le crayonné est la base sur laquelle viendra ensuite le dessin détaillé",
@@ -6203,7 +6203,7 @@ window.SAVOIR_ECOUTER_DATA = [
       {
         num: 10,
         type: 'vf',
-        q: 'Le moment préféré de Sandy est de recevoir les premiers exemplaires imprimés de l'album.',
+        q: "Le moment préféré de Sandy est de recevoir les premiers exemplaires imprimés de l'album.",
         options: ['Vrai', 'Faux'],
         correct: 0
       }
@@ -6235,7 +6235,7 @@ window.SAVOIR_ECOUTER_DATA = [
         q: "Qu'est-ce que le \"contrôle du centre\" ?",
         options: [
           'Une règle pour protéger uniquement le roi',
-          'Le fait de contrôler les quatre cases centrales de l'échiquier avec ses pièces',
+          "Le fait de contrôler les quatre cases centrales de l'échiquier avec ses pièces",
           'Une technique pour attaquer directement avec la reine',
           'Une façon de compter les points'
         ],
@@ -6280,7 +6280,7 @@ window.SAVOIR_ECOUTER_DATA = [
       {
         num: 6,
         type: 'qcm',
-        q: 'Que veut dire Yanis en comparant une partie d'échecs à la construction d'un bâtiment ?',
+        q: "Que veut dire Yanis en comparant une partie d'échecs à la construction d'un bâtiment ?",
         options: [
           "Qu'il faut d'abord construire de bonnes bases avant de se lancer dans l'attaque",
           'Que les échecs et la construction sont deux activités identiques',
@@ -6297,7 +6297,7 @@ window.SAVOIR_ECOUTER_DATA = [
           'Elle trouve que Yanis lui a fait perdre son temps',
           'Elle a trouvé les explications de Yanis très utiles et efficaces',
           'Elle ne veut plus jouer aux échecs',
-          'Elle préfère étudier seule plutôt qu'avec Yanis'
+          "Elle préfère étudier seule plutôt qu'avec Yanis"
         ],
         correct: 1
       },
