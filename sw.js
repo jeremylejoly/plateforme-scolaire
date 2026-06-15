@@ -1,4 +1,4 @@
-const CACHE_NAME = 'classe-mr-lejoly-cache-v58';
+const CACHE_NAME = 'classe-mr-lejoly-cache-v59';
 const CORE_ASSETS = [
   './',
   'index.html',
@@ -13,6 +13,7 @@ const CORE_ASSETS = [
   'icon-512.png',
   'savoir_ecouter.html',
   'audio/soignes_audio.m4a',
+  'audio/bruges_audio.m4a',
   'abaque.html',
   'colorie_les_fractions.html',
   'vocabulaire_solides.html',
