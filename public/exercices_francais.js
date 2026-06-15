@@ -5633,6 +5633,121 @@ window.SAVOIR_ECOUTER_DATA = [
         correct: 0
       }
     ]
+  },
+  {
+    id: 'savoir_ecouter_2',
+    titre: 'Le mystère du carillon de Bruges',
+    emoji: '🔔',
+    desc: 'Écoute le texte et réponds aux 10 questions.',
+    audioUrl: 'audio/bruges_audio.m4a',
+    screen: 'screen-savoir-ecouter',
+    questions: [
+      {
+        num: 1,
+        type: 'qcm',
+        q: 'Combien de marches faut-il grimper pour atteindre le sommet du Beffroi ?',
+        options: [
+          '83',
+          '47',
+          '366',
+          '700'
+        ],
+        correct: 2
+      },
+      {
+        num: 2,
+        type: 'qcm',
+        q: 'Combien de cloches compose le carillon ?',
+        options: [
+          '7',
+          '47',
+          '83',
+          '366'
+        ],
+        correct: 1
+      },
+      {
+        num: 3,
+        type: 'qcm',
+        q: 'Comment appelle-t-on le musicien qui joue du carillon ?',
+        options: [
+          'Le sonneur',
+          'Le carillonneur',
+          'Le clocheur',
+          'Le musicien royal'
+        ],
+        correct: 1
+      },
+      {
+        num: 4,
+        type: 'qcm',
+        q: 'Que faut-il faire pour faire sonner les grosses cloches ?',
+        options: [
+          'Tirer une corde très fort',
+          'Enfoncer certaines touches avec un coup de poing',
+          'Souffler dans un tube',
+          'Appuyer doucement sur un bouton'
+        ],
+        correct: 1
+      },
+      {
+        num: 5,
+        type: 'qcm',
+        q: "Pourquoi les habitants apprenaient-ils à reconnaître les différentes mélodies du carillon ?",
+        options: [
+          "Parce que c'était un jeu pour les enfants",
+          "Parce que chaque mélodie transmettait un message important, comme une alerte",
+          "Parce que le carillonneur les obligeait à les apprendre à l'école",
+          "Parce que c'était la seule musique qu'ils connaissaient"
+        ],
+        correct: 1
+      },
+      {
+        num: 6,
+        type: 'qcm',
+        q: "Pourquoi le carillon est-il inscrit au patrimoine de l'UNESCO ?",
+        options: [
+          "Parce qu'il est le plus grand du monde",
+          "Parce que cette tradition musicale est considérée comme un trésor culturel à préserver",
+          "Parce qu'il a coûté très cher à construire",
+          "Parce qu'il est interdit de le faire sonner"
+        ],
+        correct: 1
+      },
+      {
+        num: 7,
+        type: 'qcm',
+        q: "Que peut-on déduire du fait que des terriers sont utilisés depuis plus de cent ans ?",
+        options: [
+          "La tour a été mal construite",
+          "La forme de la tour se rétrécit vers le sommet",
+          "Les marches ont été abîmées par le temps",
+          "Il y a eu une erreur dans les plans de construction"
+        ],
+        correct: 1
+      },
+      {
+        num: 8,
+        type: 'vf',
+        q: 'La plus grande cloche du carillon pèse plus de six tonnes.',
+        options: ['Vrai', 'Faux'],
+        correct: 0
+      },
+      {
+        num: 9,
+        type: 'vf',
+        q: "Avant les téléphones, les carillons servaient uniquement à indiquer l'heure.",
+        options: ['Vrai', 'Faux'],
+        correct: 1
+      },
+      {
+        num: 10,
+        type: 'vf',
+        q: "Les concerts d'été sur le carillon sont payants.",
+        options: ['Vrai', 'Faux'],
+        correct: 1
+      }
+    ]
   }
 ];
 
