@@ -5748,6 +5748,121 @@ window.SAVOIR_ECOUTER_DATA = [
         correct: 1
       }
     ]
+  },
+  {
+    id: 'savoir_ecouter_3',
+    titre: 'La fourmi superstar',
+    emoji: '🐜',
+    desc: 'Écoute le texte et réponds aux 10 questions.',
+    audioUrl: 'audio/fourmi_audio.m4a',
+    screen: 'screen-savoir-ecouter',
+    questions: [
+      {
+        num: 1,
+        type: 'qcm',
+        q: 'Combien de fois son propre poids une fourmi peut-elle transporter ?',
+        options: [
+          '10 fois',
+          '25 fois',
+          '50 fois',
+          '100 fois'
+        ],
+        correct: 2
+      },
+      {
+        num: 2,
+        type: 'qcm',
+        q: "Comment s'appelle la carapace rigide qui recouvre le corps de la fourmi ?",
+        options: [
+          "L'endosquelette",
+          "L'exosquelette",
+          "La cuticule",
+          "Le squelette externe"
+        ],
+        correct: 1
+      },
+      {
+        num: 3,
+        type: 'qcm',
+        q: 'Comment les fourmis communiquent-elles entre elles pour se coordonner ?',
+        options: [
+          'En faisant du bruit',
+          'Grâce à des substances chimiques appelées phéromones',
+          'En se touchant les antennes uniquement',
+          'Elles ne communiquent pas'
+        ],
+        correct: 1
+      },
+      {
+        num: 4,
+        type: 'qcm',
+        q: 'Quel est le rôle de la reine dans la colonie ?',
+        options: [
+          'Elle cherche la nourriture',
+          'Elle construit la fourmilière',
+          'Elle pond les œufs',
+          'Elle surveille les autres fourmis'
+        ],
+        correct: 2
+      },
+      {
+        num: 5,
+        type: 'qcm',
+        q: 'Pourquoi un humain de quarante kilos ne pourrait-il pas réellement porter deux tonnes ?',
+        options: [
+          'Parce que les humains sont plus faibles que les fourmis dans l'absolu',
+          'Parce que la proportion de force par rapport à la taille diminue chez les grands êtres vivants',
+          'Parce que les humains n'ont pas d'exosquelette',
+          'Parce que personne n'a jamais essayé'
+        ],
+        correct: 1
+      },
+      {
+        num: 6,
+        type: 'qcm',
+        q: "Pourquoi les scientifiques étudient-ils l'organisation des fourmis ?",
+        options: [
+          'Pour savoir comment les éliminer plus facilement',
+          'Parce que leur travail en équipe peut inspirer des solutions pour les humains',
+          'Parce que les fourmis sont en voie de disparition',
+          'Pour comprendre pourquoi elles sont si lentes'
+        ],
+        correct: 1
+      },
+      {
+        num: 7,
+        type: 'qcm',
+        q: 'Que peut-on déduire du fait que plusieurs fourmis se rassemblent pour porter une charge trop lourde ?',
+        options: [
+          'Les fourmis se disputent souvent entre elles',
+          'La coopération permet d'accomplir des tâches impossibles pour un individu seul',
+          'Une seule fourmi est toujours plus forte que plusieurs réunies',
+          'Les fourmis abandonnent la charge si elle est trop lourde'
+        ],
+        correct: 1
+      },
+      {
+        num: 8,
+        type: 'vf',
+        q: 'Plus un être vivant est petit, plus ses muscles peuvent développer une force importante par rapport à sa taille.',
+        options: ['Vrai', 'Faux'],
+        correct: 0
+      },
+      {
+        num: 9,
+        type: 'vf',
+        q: 'Une colonie de fourmis ne compte généralement que quelques dizaines d'individus.',
+        options: ['Vrai', 'Faux'],
+        correct: 1
+      },
+      {
+        num: 10,
+        type: 'vf',
+        q: 'Les fourmis peuvent transporter des morceaux de feuilles et des graines.',
+        options: ['Vrai', 'Faux'],
+        correct: 0
+      }
+    ]
   }
 ];
 
