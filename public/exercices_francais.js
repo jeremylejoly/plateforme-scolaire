@@ -4196,3 +4196,1324 @@ window.EXERCICES_CC = [
     explanation: "« pour éviter les blessures graves » est le CC de but (dans quel but portons-nous des casques ?)."
   }
 ];
+
+// ===================================================
+// BANQUES DE DONNÉES DE FRANÇAIS EXTRAITES D'INDEX.HTML
+// ===================================================
+
+window.LECTURE_RAPIDE_DATA = {
+  6: {
+    label: 'Niveau 6', vitesse: 160, couleur: '#607D8B',
+    textes: [
+      {
+        id: 'n6t1', titre: 'La démocratie',
+        texte: "La démocratie est un système politique dans lequel le pouvoir appartient au peuple. Dans une démocratie représentative, les citoyens élisent des représentants chargés de prendre des décisions en leur nom. Ce système repose sur plusieurs principes essentiels : la liberté d'expression, l'égalité des droits de tous les citoyens et l'indépendance de la justice. La démocratie ne se limite pas au simple droit de vote : elle implique aussi la possibilité de critiquer le gouvernement et d'accéder à une information libre et variée. Cependant, ce système n'est pas parfait. Certains lui reprochent de favoriser les intérêts des plus puissants ou de produire des décisions dictées uniquement par les prochaines élections. D'autres soulignent que de moins en moins de citoyens participent aux votes, ce qui affaiblit sa légitimité. Malgré ces défauts, la démocratie reste considérée par beaucoup comme le système qui protège le mieux les libertés de chacun.",
+        questions: [
+          {
+            q: "Sur quels principes repose la démocratie selon le texte ?",
+            options: ["La richesse économique, la puissance militaire et la stabilité du gouvernement", "La liberté d'expression, l'égalité des droits et l'indépendance de la justice", "L'autorité d'un chef élu, la discipline des citoyens et le respect des lois", "Le droit de vote, la majorité absolue et le contrôle de l'information par l'État"],
+            correct: 1
+          },
+          {
+            q: "Quelle critique est formulée contre la démocratie dans le texte ?",
+            options: ["Elle donne trop de pouvoir aux juges au détriment des représentants élus", "Elle empêche les citoyens de participer directement aux décisions importantes", "Elle peut favoriser les plus puissants et produire des décisions à court terme", "Elle est trop lente pour répondre efficacement aux crises et aux urgences"],
+            correct: 2
+          },
+          {
+            q: "Qu'est-ce qui affaiblit la légitimité de la démocratie selon le texte ?",
+            options: ["La multiplication des partis politiques qui divisent les citoyens", "Le fait que de moins en moins de citoyens participent aux votes", "L'influence trop importante des médias sur les décisions politiques", "Le manque de formation civique des jeunes générations dans les écoles"],
+            correct: 1
+          },
+          {
+            q: "Que signifie avoir accès à une information libre selon le texte ?",
+            options: ["Pouvoir regarder gratuitement toutes les chaînes de télévision du pays", "Avoir la possibilité de lire des journaux sans payer d'abonnement mensuel", "Pouvoir accéder à des informations variées sans que l'État les contrôle", "Recevoir automatiquement les décisions du gouvernement par courrier postal"],
+            correct: 2
+          },
+          {
+            q: "Pourquoi la démocratie est-elle considérée comme imparfaite selon le texte ?",
+            options: ["Parce qu'elle donne trop de pouvoir aux citoyens qui manquent d'expérience", "Parce qu'elle peut favoriser les puissants et que peu de citoyens votent", "Parce qu'elle oblige les représentants à prendre des décisions impopulaires", "Parce qu'elle ne permet pas aux citoyens de changer rapidement de gouvernement"],
+            correct: 1
+          }
+        ]
+      },
+      {
+        id: 'n6t2', titre: 'La forêt amazonienne',
+        texte: "La forêt amazonienne est la plus grande forêt tropicale du monde. Elle s'étend sur environ 5,5 millions de kilomètres carrés, principalement au Brésil, mais aussi en Colombie, au Pérou et dans plusieurs autres pays d'Amérique du Sud. Elle abrite une biodiversité exceptionnelle : on y recense des millions d'espèces animales et végétales, dont beaucoup ne se trouvent nulle part ailleurs sur Terre. L'Amazonie joue un rôle crucial pour le climat de toute la planète. Elle absorbe d'énormes quantités de dioxyde de carbone et produit de l'oxygène, ce qui lui a valu le surnom de poumon de la Terre. Elle régule également le cycle de l'eau en rejetant de la vapeur d'eau dans l'atmosphère. Malheureusement, la déforestation liée à l'agriculture, à l'élevage et à l'exploitation du bois menace gravement cet écosystème fragile. Chaque année, des millions d'hectares disparaissent, mettant en danger des milliers d'espèces et aggravant le réchauffement climatique mondial.",
+        questions: [
+          {
+            q: "Pourquoi l'Amazonie est-elle surnommée le poumon de la Terre ?",
+            options: ["Parce qu'elle abrite des millions d'espèces animales qui respirent l'air pur", "Parce qu'elle absorbe du dioxyde de carbone et produit de l'oxygène", "Parce qu'elle régule la température des océans grâce à son humidité", "Parce qu'elle est si grande qu'elle influence la météo de toute la planète"],
+            correct: 1
+          },
+          {
+            q: "Quelles activités humaines menacent la forêt amazonienne selon le texte ?",
+            options: ["Le tourisme de masse et la construction de routes à travers la forêt", "La pêche intensive dans les rivières et la chasse aux espèces rares", "L'agriculture, l'élevage et l'exploitation du bois qui provoquent la déforestation", "L'extraction de pétrole et l'installation de centrales électriques en forêt"],
+            correct: 2
+          },
+          {
+            q: "Quel rôle joue l'Amazonie dans le cycle de l'eau ?",
+            options: ["Elle purifie l'eau des rivières en filtrant les polluants à travers ses racines", "Elle stocke d'immenses réserves d'eau douce dans ses nappes souterraines", "Elle rejette de la vapeur d'eau dans l'atmosphère et régule ainsi le cycle de l'eau", "Elle alimente en eau potable des millions de personnes dans toute l'Amérique du Sud"],
+            correct: 2
+          },
+          {
+            q: "Dans quels pays se trouve principalement la forêt amazonienne ?",
+            options: ["Principalement en Argentine et au Venezuela, avec une partie au Brésil", "Uniquement au Brésil, qui possède la totalité de la forêt amazonienne", "Principalement au Brésil, mais aussi en Colombie, au Pérou et d'autres pays", "Principalement en Colombie et en Équateur, avec une petite partie au Brésil"],
+            correct: 2
+          },
+          {
+            q: "Quelle conséquence la déforestation a-t-elle sur le réchauffement climatique ?",
+            options: ["Elle le ralentit car les terres déboisées réfléchissent mieux la chaleur du soleil", "Elle n'a pas d'impact direct car d'autres forêts compensent la perte de l'Amazonie", "Elle l'aggrave car des millions d'hectares qui absorbaient le CO2 disparaissent", "Elle le stabilise car les nouvelles cultures agricoles absorbent aussi du carbone"],
+            correct: 2
+          }
+        ]
+      },
+      {
+        id: 'n6t3', titre: 'Le système solaire',
+        texte: "Notre système solaire est composé du Soleil et de l'ensemble des corps célestes qui gravitent autour de lui. On y trouve huit planètes, dont la Terre, mais aussi des dizaines de lunes, des millions d'astéroïdes et des comètes. Le Soleil représente à lui seul plus de 99% de la masse totale du système solaire. Les quatre planètes les plus proches du Soleil — Mercure, Vénus, la Terre et Mars — sont des planètes rocheuses relativement petites. Les quatre planètes extérieures — Jupiter, Saturne, Uranus et Neptune — sont des géantes gazeuses ou glacées, beaucoup plus grandes. La distance entre les planètes est difficile à imaginer : la lumière met environ huit minutes pour parcourir la distance entre le Soleil et la Terre, et plus de quatre heures pour atteindre Neptune. La Terre est jusqu'à présent la seule planète connue à abriter la vie, grâce à la présence d'eau liquide, d'une atmosphère protectrice et d'une température adaptée.",
+        questions: [
+          {
+            q: "Que représente le Soleil par rapport à l'ensemble du système solaire ?",
+            options: ["Environ la moitié de la masse totale, les planètes représentant l'autre moitié", "Plus de 99% de la masse totale du système solaire", "Environ 75% de la masse, les géantes gazeuses représentant le reste", "Une petite partie de la masse, car les planètes sont bien plus nombreuses"],
+            correct: 1
+          },
+          {
+            q: "Quelle différence le texte établit-il entre les planètes intérieures et extérieures ?",
+            options: ["Les planètes intérieures sont gazeuses tandis que les extérieures sont rocheuses", "Les planètes intérieures sont plus froides car elles reçoivent moins de lumière", "Les planètes intérieures sont rocheuses et petites, les extérieures sont des géantes", "Les planètes intérieures tournent plus lentement que les planètes extérieures"],
+            correct: 2
+          },
+          {
+            q: "Pourquoi la Terre est-elle la seule planète connue à abriter la vie ?",
+            options: ["Parce qu'elle est la plus proche du Soleil et reçoit donc le plus d'énergie", "Parce qu'elle possède de l'eau liquide, une atmosphère protectrice et une température adaptée", "Parce qu'elle est entourée de la Lune qui la protège des météorites et des rayons", "Parce qu'elle est la seule planète à posséder un champ magnétique suffisamment fort"],
+            correct: 1
+          },
+          {
+            q: "Combien de temps la lumière met-elle pour aller du Soleil à Neptune ?",
+            options: ["Environ huit minutes, comme pour aller du Soleil à la Terre", "Environ deux heures, soit quinze fois la distance Terre-Soleil", "Plus de quatre heures, ce qui donne une idée des immenses distances", "Environ une journée entière, car Neptune est très éloignée du Soleil"],
+            correct: 2
+          },
+          {
+            q: "Combien de planètes compte notre système solaire ?",
+            options: ["Neuf planètes, dont Pluton qui fut reclassée récemment", "Huit planètes, dont quatre rocheuses et quatre géantes", "Dix planètes, certaines encore peu connues aux confins du système", "Six planètes, les autres corps célestes étant classés comme astéroïdes"],
+            correct: 1
+          }
+        ]
+      }
+    ]
+  },
+  5: {
+    label: 'Niveau 5', vitesse: 140, couleur: '#9C27B0',
+    textes: [
+      {
+        id: 'n5t1', titre: 'Les volcans',
+        texte: "Un volcan est une ouverture dans la croûte terrestre par laquelle du magma, des gaz et des cendres peuvent s'échapper vers la surface. Lorsqu'un volcan entre en éruption, le magma, qui prend alors le nom de lave, peut couler sur des dizaines de kilomètres et atteindre des températures supérieures à mille degrés. Les éruptions peuvent être explosives et projeter des roches et des cendres très haut dans l'atmosphère, ou effusives, avec des coulées de lave lentes mais continues. Les volcans se forment principalement aux endroits où les plaques tectoniques se rencontrent ou s'écartent. Bien que dangereux, ils jouent un rôle important : ils créent de nouvelles terres, enrichissent les sols en minéraux et régulent en partie le climat de la planète. Certaines régions très peuplées vivent à proximité de volcans actifs, car leurs sols fertiles permettent une agriculture très productive.",
+        questions: [
+          {
+            q: "Que devient le magma lorsqu'il atteint la surface lors d'une éruption ?",
+            options: ["Il se transforme en gaz et monte dans l'atmosphère sous forme de nuage", "Il prend le nom de lave et peut couler sur des dizaines de kilomètres", "Il durcit immédiatement au contact de l'air et forme des roches volcaniques", "Il se mélange à l'eau des rivières et crée des sources chaudes naturelles"],
+            correct: 1
+          },
+          {
+            q: "Où se forment principalement les volcans ?",
+            options: ["Au fond des océans, là où la pression de l'eau est la plus forte", "Dans les régions désertiques où la chaleur du sol est très intense", "Aux endroits où les plaques tectoniques se rencontrent ou s'écartent", "Dans les zones montagneuses où l'altitude favorise les éruptions"],
+            correct: 2
+          },
+          {
+            q: "Pourquoi certaines populations vivent-elles près des volcans malgré le danger ?",
+            options: ["Parce que les volcans protègent les habitants des séismes et des tsunamis", "Parce que les sols volcaniques sont très fertiles et permettent une bonne agriculture", "Parce que la chaleur dégagée par les volcans réchauffe les maisons en hiver", "Parce que les éruptions sont toujours prévisibles et n'arrivent que rarement"],
+            correct: 1
+          },
+          {
+            q: "Quels sont les deux types d'éruptions volcaniques décrits dans le texte ?",
+            options: ["Les éruptions souterraines et les éruptions sous-marines près des côtes", "Les éruptions explosives qui projettent des cendres et les éruptions effusives avec des coulées de lave", "Les petites éruptions locales et les grandes éruptions qui affectent tout un continent", "Les éruptions diurnes qui se produisent le jour et les éruptions nocturnes plus dangereuses"],
+            correct: 1
+          },
+          {
+            q: "Quel rôle positif jouent les volcans pour la planète selon le texte ?",
+            options: ["Ils réchauffent les régions froides grâce à la chaleur qu'ils dégagent", "Ils créent de nouvelles terres, enrichissent les sols et régulent en partie le climat", "Ils fournissent de l'énergie géothermique pour chauffer les habitations", "Ils attirent les touristes et génèrent des revenus importants pour les pays concernés"],
+            correct: 1
+          }
+        ]
+      },
+      {
+        id: 'n5t2', titre: 'Le recyclage',
+        texte: "Chaque année, des milliards de tonnes de déchets sont produites dans le monde. Face à ce problème, le recyclage est devenu une nécessité. Recycler, c'est transformer des objets usagés en nouvelles matières premières qui serviront à fabriquer d'autres produits. Le papier, le verre, le plastique et les métaux peuvent tous être recyclés, mais pas de la même façon ni un nombre illimité de fois. Le verre, par exemple, peut être recyclé indéfiniment sans perdre ses qualités. Le recyclage présente de nombreux avantages : il réduit la quantité de déchets envoyés dans les décharges, limite l'extraction de nouvelles matières premières et diminue la consommation d'énergie nécessaire à la production. Cependant, recycler ne suffit pas. Les spécialistes insistent sur l'importance de réduire d'abord sa consommation et de réutiliser les objets avant de les jeter. Ces trois actions — réduire, réutiliser, recycler — forment ensemble la meilleure stratégie pour protéger notre environnement.",
+        questions: [
+          {
+            q: "Quelle matière peut être recyclée indéfiniment sans perdre ses qualités ?",
+            options: ["Le plastique, qui peut être fondu et remodelé un grand nombre de fois", "Le papier, qui conserve toutes ses propriétés après plusieurs recyclages", "Le verre, qui peut être recyclé indéfiniment sans perdre ses qualités", "Les métaux, qui deviennent plus solides à chaque nouveau recyclage"],
+            correct: 2
+          },
+          {
+            q: "Quel avantage du recyclage est mentionné dans le texte ?",
+            options: ["Il permet de créer de nombreux emplois dans les usines de traitement des déchets", "Il réduit les déchets en décharge, limite l'extraction de matières premières et économise l'énergie", "Il supprime complètement la nécessité d'extraire de nouvelles matières premières dans la nature", "Il permet aux entreprises de produire des objets de meilleure qualité à moindre coût"],
+            correct: 1
+          },
+          {
+            q: "Selon les spécialistes, quelle est la meilleure stratégie pour protéger l'environnement ?",
+            options: ["Recycler tous les déchets produits sans exception grâce à des technologies modernes", "Remplacer tous les objets en plastique par des objets en matériaux naturels biodégradables", "Réduire sa consommation, réutiliser les objets et recycler les déchets restants", "Créer davantage de décharges modernes pour stocker les déchets de façon sécurisée"],
+            correct: 2
+          },
+          {
+            q: "Combien de fois le plastique peut-il être recyclé selon le texte ?",
+            options: ["Indéfiniment, comme le verre, car il garde toutes ses propriétés", "Une seule fois, après quoi il doit obligatoirement être mis en décharge", "Pas un nombre illimité de fois, contrairement au verre", "Trois à cinq fois maximum avant de perdre complètement ses qualités"],
+            correct: 2
+          },
+          {
+            q: "Que signifie réduire dans la stratégie des trois R selon le texte ?",
+            options: ["Réduire la taille des déchets pour qu'ils prennent moins de place en décharge", "Diminuer sa consommation avant même de penser à recycler ou réutiliser", "Réduire le nombre de matières recyclables pour simplifier le tri sélectif", "Réduire les émissions de gaz produits lors de la fabrication des objets neufs"],
+            correct: 1
+          }
+        ]
+      },
+      {
+        id: 'n5t3', titre: 'Les séismes',
+        texte: "Un séisme, aussi appelé tremblement de terre, est une secousse brutale du sol causée par une libération soudaine d'énergie dans la croûte terrestre. Cette énergie se propage sous forme d'ondes sismiques qui peuvent être ressenties à des centaines de kilomètres du point d'origine, appelé foyer. La magnitude d'un séisme mesure la quantité d'énergie libérée et s'exprime sur l'échelle de Richter. Un séisme de magnitude 5 est dix fois plus puissant qu'un séisme de magnitude 4. Les régions les plus touchées sont situées le long des frontières des plaques tectoniques, comme le Japon, la Turquie ou le Chili. Si les séismes eux-mêmes durent rarement plus de quelques minutes, leurs conséquences peuvent être catastrophiques : effondrements de bâtiments, glissements de terrain et tsunamis. Des systèmes d'alerte précoce ont été développés dans les pays les plus exposés pour donner aux habitants quelques secondes précieuses pour se mettre à l'abri.",
+        questions: [
+          {
+            q: "Qu'est-ce que le foyer d'un séisme ?",
+            options: ["La zone en surface où les dégâts causés par le séisme sont les plus importants", "Le point d'origine du séisme dans la croûte terrestre d'où partent les ondes", "L'appareil utilisé par les scientifiques pour mesurer la magnitude des séismes", "La région géographique la plus souvent touchée par les tremblements de terre"],
+            correct: 1
+          },
+          {
+            q: "Que signifie une différence d'un point sur l'échelle de Richter ?",
+            options: ["Le séisme est cent fois plus puissant que celui du niveau inférieur", "Le séisme dure dix fois plus longtemps que celui du niveau inférieur", "Le séisme est dix fois plus puissant que celui du niveau inférieur", "Le séisme touche une surface dix fois plus grande que celui du niveau inférieur"],
+            correct: 2
+          },
+          {
+            q: "Pourquoi des systèmes d'alerte précoce ont-ils été développés ?",
+            options: ["Pour prédire avec précision la date et le lieu des prochains séismes majeurs", "Pour donner aux habitants quelques secondes pour se mettre à l'abri", "Pour mesurer automatiquement la magnitude des séismes dès qu'ils se produisent", "Pour avertir les secours afin qu'ils interviennent le plus rapidement possible"],
+            correct: 1
+          },
+          {
+            q: "Dans quelles régions du monde les séismes sont-ils les plus fréquents ?",
+            options: ["Dans les régions désertiques où le sol est très sec et fragile", "Dans les zones côtières exposées aux tempêtes et aux vagues géantes", "Le long des frontières des plaques tectoniques comme au Japon ou en Turquie", "Dans les régions montagneuses où l'érosion fragilise les roches en profondeur"],
+            correct: 2
+          },
+          {
+            q: "Combien de temps durent généralement les séismes eux-mêmes ?",
+            options: ["Plusieurs heures, selon la puissance et la profondeur du foyer sismique", "Rarement plus de quelques minutes, même si les conséquences durent longtemps", "Entre trente minutes et une heure pour les séismes de forte magnitude", "Quelques jours, avec des répliques qui s'espacent progressivement"],
+            correct: 1
+          }
+        ]
+      }
+    ]
+  },
+  4: {
+    label: 'Niveau 4', vitesse: 120, couleur: '#F44336',
+    textes: [
+      {
+        id: 'n4t1', titre: 'La photosynthèse',
+        texte: "Les plantes sont les seuls êtres vivants capables de fabriquer eux-mêmes leur propre nourriture grâce à un processus remarquable appelé photosynthèse. Pour cela, elles ont besoin de trois éléments essentiels : la lumière du soleil, le dioxyde de carbone présent dans l'air et l'eau puisée dans le sol par leurs racines. La chlorophylle, le pigment vert contenu dans les feuilles, capte l'énergie lumineuse et permet de transformer ces éléments en glucose, une forme de sucre qui nourrit la plante. En échange, la plante rejette de l'oxygène dans l'atmosphère, ce qui est indispensable à la respiration de la quasi-totalité des êtres vivants. Sans photosynthèse, il n'y aurait ni oxygène dans l'air, ni nourriture disponible pour les animaux et les humains. Ce processus est donc à la base de presque toutes les chaînes alimentaires sur Terre.",
+        questions: [
+          {
+            q: "De quoi la plante a-t-elle besoin pour réaliser la photosynthèse ?",
+            options: ["De lumière, d'oxygène et de minéraux puisés dans le sol", "De lumière, de dioxyde de carbone et d'eau", "De chaleur, d'eau et de glucose produit par ses racines", "De lumière, d'azote et de sels minéraux dissous dans l'eau"],
+            correct: 1
+          },
+          {
+            q: "Quel est le rôle de la chlorophylle dans la photosynthèse ?",
+            options: ["Elle stocke le glucose produit dans les tiges de la plante", "Elle transporte l'eau des racines jusqu'aux feuilles", "Elle capte l'énergie lumineuse pour transformer les éléments en glucose", "Elle rejette le dioxyde de carbone en dehors de la feuille"],
+            correct: 2
+          },
+          {
+            q: "Pourquoi la photosynthèse est-elle essentielle pour les animaux ?",
+            options: ["Elle réchauffe l'atmosphère et régule le climat de la planète", "Elle produit de l'oxygène et constitue la base des chaînes alimentaires", "Elle permet aux plantes de se reproduire et de coloniser de nouveaux milieux", "Elle purifie l'eau des rivières en absorbant les substances toxiques"],
+            correct: 1
+          },
+          {
+            q: "Qu'est-ce que le glucose produit par la photosynthèse ?",
+            options: ["Un gaz rejeté par la plante dans l'atmosphère après la digestion", "Une forme de sucre qui sert de nourriture à la plante", "Un pigment vert qui donne sa couleur aux feuilles des plantes", "Une substance qui permet à la plante de puiser l'eau dans le sol"],
+            correct: 1
+          },
+          {
+            q: "Que se passerait-il s'il n'y avait plus de photosynthèse sur Terre ?",
+            options: ["Les plantes continueraient à vivre grâce aux minéraux du sol", "Les animaux s'adapteraient en se nourrissant uniquement de champignons", "Il n'y aurait plus d'oxygène ni de nourriture pour les animaux et les humains", "Le climat se réchaufferait légèrement mais la vie continuerait normalement"],
+            correct: 2
+          }
+        ]
+      },
+      {
+        id: 'n4t2', titre: "L'exploration spatiale",
+        texte: "Depuis le premier vol habité de Youri Gagarine en 1961, l'humanité n'a cessé d'explorer l'espace. En 1969, Neil Armstrong fut le premier être humain à poser le pied sur la Lune, lors de la mission Apollo 11. Depuis lors, des centaines d'astronautes ont séjourné dans l'espace, notamment à bord de la Station spatiale internationale, où des équipages multinationaux se relaient en permanence depuis l'an 2000. L'exploration spatiale a permis de nombreuses découvertes scientifiques et a conduit à des innovations technologiques qui améliorent notre quotidien, comme les panneaux solaires, les systèmes GPS ou certains matériaux utilisés en médecine. Aujourd'hui, de nouvelles ambitions émergent : retourner sur la Lune, envoyer des humains sur Mars et explorer plus loin encore notre système solaire. Ces projets soulèvent cependant des questions éthiques et environnementales importantes sur le coût et l'impact de ces aventures.",
+        questions: [
+          {
+            q: "Quelle fut la première mission à envoyer un homme sur la Lune ?",
+            options: ["La mission Soyouz, qui transporta Youri Gagarine en 1961", "La mission Apollo 11, lors de laquelle Neil Armstrong marcha sur la Lune", "La mission Apollo 13, qui fut interrompue à cause d'une panne technique", "La mission Gemini, qui prépara les premiers pas sur la Lune en 1969"],
+            correct: 1
+          },
+          {
+            q: "Depuis quand des équipages séjournent-ils en permanence dans la Station spatiale internationale ?",
+            options: ["Depuis 1969, juste après le premier alunissage de la mission Apollo", "Depuis 1990, après la fin de la guerre froide entre les États-Unis et l'URSS", "Depuis l'an 2000, avec des équipages multinationaux qui se relaient", "Depuis 2010, quand la station fut entièrement assemblée en orbite"],
+            correct: 2
+          },
+          {
+            q: "Quelle innovation du quotidien est issue de l'exploration spatiale ?",
+            options: ["L'invention d'internet, qui permettait aux astronautes de communiquer", "Le développement des téléphones mobiles pour les communications longue distance", "Les systèmes GPS, les panneaux solaires et certains matériaux médicaux", "La création des avions supersoniques utilisés pour les vols intercontinentaux"],
+            correct: 2
+          },
+          {
+            q: "Quel fut le premier être humain à voyager dans l'espace ?",
+            options: ["Neil Armstrong, qui orbita autour de la Terre avant d'aller sur la Lune", "Buzz Aldrin, qui accompagnait Armstrong lors de la mission Apollo 11", "Youri Gagarine, premier Russe à avoir voyagé dans l'espace", "John Glenn, qui fut le premier Américain à faire le tour de la Terre"],
+            correct: 2
+          },
+          {
+            q: "Quelles nouvelles ambitions spatiales sont évoquées dans le texte ?",
+            options: ["Construire une station spatiale permanente autour de la Lune", "Retourner sur la Lune et envoyer des humains sur Mars", "Explorer les astéroïdes pour y extraire des minerais précieux", "Envoyer des sondes robotiques vers les étoiles les plus proches"],
+            correct: 1
+          }
+        ]
+      },
+      {
+        id: 'n4t3', titre: 'Les énergies renouvelables',
+        texte: "Face au réchauffement climatique causé par l'utilisation massive des combustibles fossiles, de nombreux pays cherchent à développer des sources d'énergie renouvelables. Contrairement au pétrole, au charbon et au gaz naturel, qui sont des ressources limitées et polluantes, les énergies renouvelables sont inépuisables et produisent peu ou pas de gaz à effet de serre. L'énergie solaire capte la chaleur et la lumière du soleil grâce à des panneaux photovoltaïques. L'énergie éolienne utilise la force du vent pour faire tourner des turbines et produire de l'électricité. L'énergie hydraulique exploite la puissance des rivières et des barrages. Malgré leurs avantages, ces sources d'énergie présentent aussi des limites : elles dépendent des conditions météorologiques, nécessitent des installations coûteuses et leur stockage reste un défi technologique majeur. La transition vers ces nouvelles énergies est indispensable mais demande des investissements considérables et une adaptation profonde de nos modes de consommation.",
+        questions: [
+          {
+            q: "Quelle est la principale différence entre les énergies fossiles et les énergies renouvelables ?",
+            options: ["Les énergies fossiles sont plus efficaces mais plus dangereuses à transporter", "Les énergies renouvelables sont inépuisables et produisent peu de gaz à effet de serre", "Les énergies fossiles sont moins chères à installer mais plus difficiles à stocker", "Les énergies renouvelables nécessitent moins d'entretien que les centrales à charbon"],
+            correct: 1
+          },
+          {
+            q: "Quel est le principal défi technologique lié aux énergies renouvelables ?",
+            options: ["La fabrication de panneaux solaires suffisamment résistants aux intempéries", "La formation de techniciens capables d'entretenir les éoliennes en mer", "Le stockage de l'énergie produite, qui reste une difficulté majeure", "La connexion des installations renouvelables aux réseaux électriques existants"],
+            correct: 2
+          },
+          {
+            q: "Pourquoi la transition énergétique est-elle difficile à réaliser rapidement ?",
+            options: ["Parce que les gouvernements refusent de financer les nouvelles technologies", "Parce qu'elle demande des investissements importants et une adaptation de nos habitudes", "Parce que les énergies renouvelables ne peuvent pas alimenter les grandes villes", "Parce que les pays producteurs de pétrole bloquent le développement des alternatives"],
+            correct: 1
+          },
+          {
+            q: "Comment l'énergie éolienne produit-elle de l'électricité ?",
+            options: ["En captant la chaleur du sol grâce à des capteurs enterrés profondément", "En utilisant la force du vent pour faire tourner des turbines", "En exploitant la différence de température entre l'air et l'eau des rivières", "En transformant la lumière du soleil en courant électrique continu"],
+            correct: 1
+          },
+          {
+            q: "De quoi dépendent les énergies renouvelables selon le texte ?",
+            options: ["Du niveau de développement technologique de chaque pays producteur", "Du prix des matières premières nécessaires à la fabrication des installations", "Des conditions météorologiques, ce qui limite leur production régulière", "Du nombre d'ingénieurs formés pour installer et entretenir les équipements"],
+            correct: 2
+          }
+        ]
+      }
+    ]
+  },
+  3: {
+    label: 'Niveau 3', vitesse: 100, couleur: '#FF9800',
+    textes: [
+      {
+        id: 'n3t1', titre: 'La vie des abeilles',
+        texte: "Dans une ruche, chaque abeille a un rôle bien précis. La reine, unique dans la colonie, pond jusqu'à deux mille œufs par jour. Les ouvrières, qui sont toutes des femelles, accomplissent des tâches variées selon leur âge : elles nettoient les cellules, nourrissent les larves, produisent de la cire et gardent l'entrée de la ruche. Ce n'est qu'à partir de trois semaines qu'elles deviennent butineuses et partent collecter le nectar des fleurs. Les faux-bourdons, les seuls mâles de la ruche, n'ont qu'une seule mission : s'accoupler avec la reine. Une fois cette tâche accomplie, ils sont chassés de la ruche avant l'hiver. Les abeilles communiquent entre elles grâce à une danse particulière qui indique aux autres butineuses la direction et la distance des fleurs. Sans les abeilles, la pollinisation de nombreuses plantes serait impossible, menaçant gravement notre alimentation.",
+        questions: [
+          {
+            q: "À partir de quel âge les ouvrières deviennent-elles butineuses ?",
+            options: ["Dès leur naissance, car c'est leur rôle principal dans la ruche", "À partir d'une semaine, après avoir appris la danse des abeilles", "À partir de trois semaines, après avoir accompli d'autres tâches", "À partir de deux mois, quand la saison des fleurs commence"],
+            correct: 2
+          },
+          {
+            q: "Quel est le rôle des faux-bourdons dans la ruche ?",
+            options: ["Ils produisent le miel en transformant le nectar des fleurs", "Ils gardent l'entrée de la ruche contre les prédateurs", "Ils s'accouplent avec la reine, puis sont chassés avant l'hiver", "Ils nourrissent les larves pendant les premiers jours de leur vie"],
+            correct: 2
+          },
+          {
+            q: "Comment les abeilles indiquent-elles où trouver des fleurs ?",
+            options: ["En déposant une trace odorante sur le chemin à suivre", "En émettant des sons particuliers audibles par toute la colonie", "Grâce à une danse qui indique la direction et la distance", "En guidant personnellement chaque butineuse jusqu'aux fleurs"],
+            correct: 2
+          },
+          {
+            q: "Combien d'œufs la reine peut-elle pondre par jour ?",
+            options: ["Jusqu'à cinq cents œufs, ce qui suffit à maintenir la colonie", "Jusqu'à mille œufs, répartis dans toutes les cellules de la ruche", "Jusqu'à deux mille œufs par jour", "Jusqu'à dix mille œufs lors des périodes de forte activité"],
+            correct: 2
+          },
+          {
+            q: "Que se passerait-il sans les abeilles selon le texte ?",
+            options: ["Les fleurs ne pourraient plus produire de nectar pour se reproduire", "La pollinisation de nombreuses plantes serait impossible, menaçant notre alimentation", "Les autres insectes disparaîtraient également car ils se nourrissent de miel", "Les forêts disparaîtraient car les arbres ont besoin des abeilles pour grandir"],
+            correct: 1
+          }
+        ]
+      },
+      {
+        id: 'n3t2', titre: 'La révolution industrielle',
+        texte: "Au XIXe siècle, l'invention de la machine à vapeur a profondément transformé les sociétés européennes. Les usines ont remplacé les ateliers artisanaux, et des millions de paysans ont quitté les campagnes pour travailler dans les villes. Cette période, qu'on appelle la révolution industrielle, a permis de produire des biens en grande quantité et à moindre coût. Cependant, les conditions de travail étaient souvent très difficiles : les journées duraient douze à quinze heures, les salaires étaient bas et même les enfants travaillaient dans les mines ou les usines. Face à ces injustices, les ouvriers ont commencé à s'organiser en syndicats pour défendre leurs droits. Progressivement, des lois ont été adoptées pour limiter le travail des enfants et améliorer les conditions de travail. La révolution industrielle a donc apporté à la fois des progrès considérables et de profondes inégalités sociales.",
+        questions: [
+          {
+            q: "Quelle invention est à l'origine de la révolution industrielle ?",
+            options: ["L'invention de l'électricité, qui a permis d'éclairer les usines", "L'invention de la machine à vapeur, qui a transformé la production", "L'invention du chemin de fer, qui a facilité le transport des marchandises", "L'invention de l'imprimerie, qui a diffusé les nouvelles idées en Europe"],
+            correct: 1
+          },
+          {
+            q: "Pourquoi les ouvriers se sont-ils organisés en syndicats ?",
+            options: ["Pour produire davantage et augmenter les bénéfices des usines", "Pour apprendre un métier et trouver plus facilement du travail", "Pour défendre leurs droits face aux mauvaises conditions de travail", "Pour remplacer les artisans qui avaient perdu leur emploi"],
+            correct: 2
+          },
+          {
+            q: "Qu'est-ce qui caractérisait les conditions de travail à cette époque ?",
+            options: ["Des journées courtes mais des tâches très physiquement exigeantes", "De longues journées, des salaires bas et le travail des enfants", "Des salaires élevés mais des conditions de sécurité insuffisantes", "Un travail varié mais sans possibilité d'évolution professionnelle"],
+            correct: 1
+          },
+          {
+            q: "Qui a remplacé les ateliers artisanaux pendant la révolution industrielle ?",
+            options: ["Les coopératives d'ouvriers qui produisaient collectivement les marchandises", "Les grandes fermes agricoles qui fournissaient les matières premières", "Les usines qui permettaient de produire en grande quantité", "Les marchands ambulants qui vendaient les produits fabriqués à la main"],
+            correct: 2
+          },
+          {
+            q: "Qu'ont adopté progressivement les gouvernements face aux conditions de travail ?",
+            options: ["Des aides financières pour permettre aux ouvriers de quitter les usines", "Des lois pour limiter le travail des enfants et améliorer les conditions de travail", "Des règlements obligeant les usines à fermer le dimanche pour se reposer", "Des taxes sur les profits des usines pour financer les hôpitaux ouvriers"],
+            correct: 1
+          }
+        ]
+      },
+      {
+        id: 'n3t3', titre: 'Le désert du Sahara',
+        texte: "Le Sahara est le plus grand désert chaud du monde. Il s'étend sur environ 9 millions de kilomètres carrés, couvrant une grande partie du nord de l'Afrique. Contrairement à ce que l'on imagine souvent, le Sahara n'est pas uniquement composé de dunes de sable. On y trouve aussi des plateaux rocheux, des montagnes et même des oasis, où l'eau souterraine permet à des végétaux de pousser. Les températures y sont extrêmes : elles peuvent dépasser 50°C le jour et descendre en dessous de 0°C la nuit dans certaines régions. Malgré ces conditions hostiles, des populations comme les Touaregs y vivent depuis des siècles en s'adaptant remarquablement à leur environnement. Ils se déplacent à dos de dromadaire et connaissent parfaitement les rares points d'eau du désert. Le Sahara abrite également une faune surprenante : fennecs, scorpions, vipères des sables et même gazelles ont trouvé des stratégies pour survivre dans cet environnement extrême.",
+        questions: [
+          {
+            q: "Quelle est la superficie approximative du Sahara ?",
+            options: ["Environ 3 millions de km², soit la taille de l'Europe occidentale", "Environ 6 millions de km², couvrant la moitié de l'Afrique", "Environ 9 millions de km², couvrant une grande partie du nord de l'Afrique", "Environ 12 millions de km², ce qui en fait le plus grand désert du monde"],
+            correct: 2
+          },
+          {
+            q: "Qu'est-ce qu'une oasis dans le désert ?",
+            options: ["Une zone de dunes particulièrement hautes où le vent est plus fort", "Un endroit où l'eau souterraine permet à des végétaux de pousser", "Un campement temporaire utilisé par les Touaregs lors de leurs voyages", "Une région rocheuse où les températures sont moins extrêmes"],
+            correct: 1
+          },
+          {
+            q: "Comment les Touaregs se sont-ils adaptés à la vie dans le Sahara ?",
+            options: ["En construisant des villages souterrains pour échapper à la chaleur", "En cultivant des céréales résistantes à la sécheresse dans les oasis", "En se déplaçant à dos de dromadaire et en connaissant les points d'eau", "En migrant vers les côtes chaque été pour fuir les grandes chaleurs"],
+            correct: 2
+          },
+          {
+            q: "Quelles sont les températures extrêmes que peut connaître le Sahara ?",
+            options: ["Entre 20°C la nuit et 40°C le jour dans les régions les plus chaudes", "Plus de 50°C le jour et en dessous de 0°C la nuit dans certaines régions", "Entre 30°C et 60°C selon les saisons et les régions du désert", "Toujours entre 35°C et 45°C, avec peu de variations entre le jour et la nuit"],
+            correct: 1
+          },
+          {
+            q: "Quels animaux vivent dans le Sahara selon le texte ?",
+            options: ["Des lions, des éléphants et des girafes adaptés à la chaleur intense", "Des fennecs, des scorpions, des vipères des sables et des gazelles", "Des chameaux, des cobras et des aigles qui chassent la nuit", "Des hyènes, des serpents et des lézards géants résistants à la sécheresse"],
+            correct: 1
+          }
+        ]
+      }
+    ]
+  },
+  2: {
+    label: 'Niveau 2', vitesse: 80, couleur: '#2196F3',
+    textes: [
+      {
+        id: 'n2t1', titre: 'La migration des oiseaux',
+        texte: "Chaque année, à l'approche de l'automne, des millions d'oiseaux quittent l'Europe pour rejoindre l'Afrique. Ce voyage extraordinaire peut durer plusieurs semaines et couvrir des milliers de kilomètres. Les oiseaux s'orientent grâce au soleil, aux étoiles et au champ magnétique de la Terre. Ils voyagent souvent en groupe pour économiser leur énergie, chacun profitant du sillage de celui qui le précède. Certaines espèces, comme la cigogne blanche, suivent toujours le même itinéraire d'une année à l'autre. D'autres, comme les hirondelles, peuvent modifier leur route selon les conditions météorologiques. Ces longs voyages sont épuisants et dangereux : les oiseaux doivent traverser des mers, des déserts et éviter les tempêtes. Beaucoup ne survivent pas au voyage. Pourtant, chaque printemps, les survivants reviennent fidèlement vers leurs lieux de nidification en Europe, parfois jusqu'au même nid que l'année précédente.",
+        questions: [
+          {
+            q: "Comment les oiseaux s'orientent-ils durant leur migration ?",
+            options: ["Grâce aux rivières et aux montagnes qu'ils survolent", "Grâce au soleil, aux étoiles et au champ magnétique terrestre", "En suivant les bateaux qui traversent les mers", "En mémorisant les villes qu'ils survolent chaque année"],
+            correct: 1
+          },
+          {
+            q: "Pourquoi les oiseaux voyagent-ils souvent en groupe ?",
+            options: ["Pour se protéger des prédateurs qui les attaquent en vol", "Pour mieux repérer les zones où trouver de la nourriture", "Pour économiser leur énergie grâce au sillage des autres", "Pour ne pas se perdre en cas de mauvais temps"],
+            correct: 2
+          },
+          {
+            q: "Que font les oiseaux survivants chaque printemps ?",
+            options: ["Ils restent en Afrique jusqu'à l'été suivant", "Ils reviennent vers leurs lieux de nidification en Europe", "Ils cherchent de nouveaux territoires en Asie", "Ils attendent que d'autres oiseaux leur montrent le chemin"],
+            correct: 1
+          },
+          {
+            q: "Quels oiseaux suivent toujours le même itinéraire d'une année à l'autre ?",
+            options: ["Les hirondelles, qui modifient leur route selon la météo", "Les cigognes blanches, qui suivent toujours le même trajet", "Les merles, qui restent en Europe toute l'année", "Les mouettes, qui longent toujours les côtes maritimes"],
+            correct: 1
+          },
+          {
+            q: "Que risquent les oiseaux durant leur long voyage migratoire ?",
+            options: ["De se perdre car ils ne peuvent pas voir les étoiles en journée", "De manquer de nourriture car les insectes disparaissent en hiver", "De ne pas survivre car le voyage est épuisant et dangereux", "D'être capturés par des chasseurs dans les pays qu'ils traversent"],
+            correct: 2
+          }
+        ]
+      },
+      {
+        id: 'n2t2', titre: "L'eau sur Terre",
+        texte: "L'eau est indispensable à toute forme de vie sur notre planète. Elle recouvre environ 71% de la surface de la Terre, mais la grande majorité est salée et se trouve dans les océans. Seulement 3% de l'eau terrestre est douce, et une grande partie de cette eau douce est emprisonnée dans les glaciers et les calottes polaires. L'eau disponible pour les humains, les animaux et les plantes ne représente donc qu'une infime partie de l'eau totale. Elle se trouve dans les rivières, les lacs et les nappes souterraines. Le cycle de l'eau permet à cette ressource de se renouveler en permanence : l'eau s'évapore, forme des nuages, puis retombe sous forme de pluie ou de neige. Malgré ce cycle, l'eau douce reste une ressource précieuse et inégalement répartie dans le monde. Des millions de personnes n'ont pas accès à une eau potable de qualité.",
+        questions: [
+          {
+            q: "Quelle proportion de l'eau terrestre est douce ?",
+            options: ["Environ 71%, soit la majorité de l'eau sur Terre", "Environ 50%, répartie entre océans et rivières", "Seulement 3%, dont une grande partie est dans les glaciers", "Environ 10%, principalement dans les nappes souterraines"],
+            correct: 2
+          },
+          {
+            q: "Où se trouve la majeure partie de l'eau douce de la planète ?",
+            options: ["Dans les rivières et les lacs accessibles aux humains", "Dans les glaciers et les calottes polaires", "Dans les nuages et l'atmosphère terrestre", "Dans les nappes souterraines profondes"],
+            correct: 1
+          },
+          {
+            q: "Quel est le rôle principal du cycle de l'eau ?",
+            options: ["Il refroidit l'atmosphère en créant des nuages protecteurs", "Il transporte l'eau des océans vers les déserts", "Il permet à l'eau de se renouveler en permanence", "Il transforme l'eau salée en eau douce progressivement"],
+            correct: 2
+          },
+          {
+            q: "Où trouve-t-on l'eau douce accessible aux humains, animaux et plantes ?",
+            options: ["Uniquement dans les glaciers des pôles Nord et Sud", "Dans les rivières, les lacs et les nappes souterraines", "Principalement dans les nuages et les précipitations", "Dans les océans après traitement par des usines de dessalement"],
+            correct: 1
+          },
+          {
+            q: "Sous quelle forme l'eau retombe-t-elle après s'être évaporée ?",
+            options: ["Sous forme de brouillard qui se dépose sur les plantes et les sols", "Sous forme de rosée qui s'accumule la nuit sur les surfaces froides", "Sous forme de pluie ou de neige après avoir formé des nuages", "Sous forme de vapeur invisible qui s'infiltre directement dans le sol"],
+            correct: 2
+          }
+        ]
+      },
+      {
+        id: 'n2t3', titre: 'Le marché du samedi',
+        texte: "Tous les samedis matin, la place centrale du village se transforme en marché animé. Les producteurs locaux installent leurs étals dès l'aube pour proposer leurs fruits, légumes, fromages et pains frais. Les habitants du village et des environs s'y retrouvent pour faire leurs courses, mais aussi pour discuter et se retrouver entre voisins. Madame Collin, maraîchère depuis trente ans, vend ses légumes bios cultivés dans sa ferme à deux kilomètres du village. Elle connaît chacun de ses clients et leur conseille des recettes selon les saisons. À côté d'elle, un jeune apiculteur propose différentes variétés de miel et explique aux curieux comment fonctionnent ses ruches. Vers midi, les étals se vident progressivement et les vendeurs commencent à ranger leurs affaires. Le marché du samedi est bien plus qu'un simple lieu de commerce : c'est un moment de lien social précieux pour toute la communauté.",
+        questions: [
+          {
+            q: "Depuis combien de temps Madame Collin vend-elle ses légumes au marché ?",
+            options: ["Depuis dix ans, après avoir quitté son emploi en ville", "Depuis trente ans, avec des légumes cultivés près du village", "Depuis vingt ans, avec des légumes achetés en gros", "Depuis cinq ans, après avoir repris la ferme familiale"],
+            correct: 1
+          },
+          {
+            q: "Que propose le jeune apiculteur en plus de son miel ?",
+            options: ["Des cours de jardinage pour les habitants du village", "Des démonstrations de fabrication de bougies en cire", "Des explications sur le fonctionnement de ses ruches", "Des visites guidées de sa ferme le week-end"],
+            correct: 2
+          },
+          {
+            q: "Selon le texte, pourquoi le marché du samedi est-il important ?",
+            options: ["Parce qu'il permet aux producteurs de gagner beaucoup d'argent", "Parce qu'il attire des touristes venus de toute la région", "Parce qu'il crée du lien social précieux pour la communauté", "Parce qu'il propose des produits moins chers que les supermarchés"],
+            correct: 2
+          },
+          {
+            q: "Où Madame Collin cultive-t-elle ses légumes ?",
+            options: ["Dans une grande serre industrielle à la sortie du village", "Dans sa ferme située à deux kilomètres du village", "Dans son jardin personnel derrière sa maison au centre du village", "Dans des champs loués à plusieurs agriculteurs de la région"],
+            correct: 1
+          },
+          {
+            q: "À quel moment les vendeurs commencent-ils à ranger leurs affaires ?",
+            options: ["Dès dix heures, quand la plupart des clients sont déjà repartis", "Vers midi, quand les étals se vident progressivement", "En début d'après-midi, après une courte pause déjeuner", "Vers quatorze heures, quand les autorités ferment officiellement le marché"],
+            correct: 1
+          }
+        ]
+      }
+    ]
+  },
+  1: {
+    label: 'Niveau 1', vitesse: 60, couleur: '#4CAF50',
+    textes: [
+      {
+        id: 'n1t1', titre: 'Le chat',
+        texte: "Milo est un chat roux qui vit dans une petite maison à la campagne. Chaque matin, il se lève avant tout le monde et file dans le jardin pour chasser les papillons. Il ne les attrape jamais, mais cela ne l'empêche pas d'essayer. L'après-midi, il s'installe sur le rebord de la fenêtre et observe les oiseaux qui volent dans le ciel. Quand il pleut, Milo reste à l'intérieur et se love dans son panier en osier, près du radiateur. Sa maîtresse, Emma, lui prépare chaque soir une gamelle de croquettes. Milo mange lentement, puis vient se frotter contre les jambes d'Emma pour la remercier. Le soir, il saute sur le lit et s'endort en ronronnant doucement. C'est un chat heureux, qui profite de chaque moment de sa journée.",
+        questions: [
+          {
+            q: "Que fait Milo le matin dans le jardin ?",
+            options: ["Il dort au soleil", "Il chasse les papillons sans jamais les attraper", "Il mange ses croquettes dehors", "Il joue avec Emma"],
+            correct: 1
+          },
+          {
+            q: "Où se place Milo quand il pleut ?",
+            options: ["Sous un arbre dans le jardin", "Dans la cuisine avec Emma", "Dans son panier près du radiateur", "Sur le lit d'Emma"],
+            correct: 2
+          },
+          {
+            q: "Comment Milo remercie-t-il Emma après le repas ?",
+            options: ["Il ronronne très fort", "Il retourne dans le jardin", "Il se frotte contre ses jambes", "Il saute sur la fenêtre"],
+            correct: 2
+          },
+          {
+            q: "Où Milo passe-t-il ses après-midis ?",
+            options: ["Dans le jardin à chasser les oiseaux", "Sur le rebord de la fenêtre à observer les oiseaux", "Dans son panier en osier près du radiateur", "Sur le lit de sa maîtresse Emma"],
+            correct: 1
+          },
+          {
+            q: "Comment Milo s'endort-il le soir ?",
+            options: ["En regardant par la fenêtre les étoiles dans le ciel", "Dans son panier après avoir mangé ses croquettes", "Sur le lit en ronronnant doucement", "Contre les jambes d'Emma dans le salon"],
+            correct: 2
+          }
+        ]
+      },
+      {
+        id: 'n1t2', titre: 'La forêt en automne',
+        texte: "En automne, la forêt change de visage. Les feuilles des arbres passent du vert au jaune, puis à l'orange et au rouge avant de tomber doucement sur le sol. Le vent les emporte parfois très loin. Les écureuils sont très occupés en cette saison. Ils ramassent des noisettes et des glands qu'ils cachent sous la terre ou dans les creux des arbres pour se nourrir pendant l'hiver. Les oiseaux migrateurs, comme les hirondelles, quittent la forêt pour voler vers des pays plus chauds. Seuls les merles et les mésanges restent. Le sol de la forêt est recouvert d'un épais tapis de feuilles mortes qui craquent sous les pieds. Les champignons poussent à l'ombre des grands arbres. C'est une saison pleine de couleurs et de changements, que beaucoup de promeneurs aiment découvrir.",
+        questions: [
+          {
+            q: "Pourquoi les écureuils sont-ils très occupés en automne ?",
+            options: ["Ils construisent un nouveau nid dans les arbres", "Ils cherchent des baies pour les donner aux oiseaux", "Ils cachent de la nourriture pour survivre en hiver", "Ils migrent vers des forêts plus chaudes"],
+            correct: 2
+          },
+          {
+            q: "Quels oiseaux restent dans la forêt en automne ?",
+            options: ["Les hirondelles et les cigognes", "Les merles et les mésanges", "Les perroquets et les pinsons", "Les hirondelles et les merles"],
+            correct: 1
+          },
+          {
+            q: "Que trouve-t-on sur le sol de la forêt en automne ?",
+            options: ["Des fleurs sauvages et de l'herbe verte", "De la neige et des glaçons", "Des feuilles mortes et des champignons", "Des glands et des nids d'oiseaux"],
+            correct: 2
+          },
+          {
+            q: "Que font les oiseaux migrateurs comme les hirondelles en automne ?",
+            options: ["Ils restent dans la forêt et se cachent sous les feuilles mortes", "Ils construisent de nouveaux nids pour passer l'hiver au chaud", "Ils quittent la forêt pour voler vers des pays plus chauds", "Ils descendent vers le sol pour chercher des graines sous les feuilles"],
+            correct: 2
+          },
+          {
+            q: "Qui aime se promener dans la forêt en automne selon le texte ?",
+            options: ["Les écureuils qui cherchent leurs réserves de nourriture cachées", "Les chasseurs qui profitent de la saison pour trouver du gibier", "Les enfants qui ramassent les feuilles colorées pour les collections", "Les promeneurs qui apprécient les couleurs et les changements de saison"],
+            correct: 3
+          }
+        ]
+      },
+      {
+        id: 'n1t3', titre: 'La boulangerie du village',
+        texte: "Chaque matin, Monsieur Dupont se lève à quatre heures pour préparer le pain de son village. Il allume son four, pèse la farine et mélange les ingrédients avec soin. La pâte doit reposer longtemps avant d'être enfournée. Vers sept heures, les premières baguettes dorées sortent du four. Une odeur délicieuse envahit toute la rue. Les habitants font la queue devant la boulangerie avant même qu'elle n'ouvre. Madame Bernard achète toujours deux baguettes et des croissants pour ses enfants. Le boulanger connaît les habitudes de chacun. Il garde de côté le pain de seigle pour le vieux Monsieur Henri, qui arrive toujours en retard. À midi, presque tout est vendu. Monsieur Dupont nettoie son fournil et prépare déjà les pâtes pour le lendemain. Son travail est fatigant, mais il est fier de régaler tout son village chaque jour.",
+        questions: [
+          {
+            q: "À quelle heure Monsieur Dupont se lève-t-il ?",
+            options: ["À six heures, quand la boulangerie ouvre", "À cinq heures, avant les livraisons", "À quatre heures, pour préparer le pain", "À trois heures, pour chauffer le four toute la nuit"],
+            correct: 2
+          },
+          {
+            q: "Pourquoi Monsieur Dupont met-il du pain de seigle de côté ?",
+            options: ["C'est le pain qu'il préfère manger lui-même", "Monsieur Henri arrive toujours en retard et le commande", "Madame Bernard en veut chaque matin pour ses enfants", "Ce pain se vend mieux l'après-midi que le matin"],
+            correct: 1
+          },
+          {
+            q: "Que fait le boulanger après la fermeture du midi ?",
+            options: ["Il se repose et regarde la télévision", "Il livre le pain restant aux habitants du village", "Il nettoie et prépare les pâtes pour le lendemain", "Il commande de la farine pour la semaine suivante"],
+            correct: 2
+          },
+          {
+            q: "Que fait la queue de clients devant la boulangerie le matin ?",
+            options: ["Ils attendent que Monsieur Dupont finisse de pétrir la pâte", "Ils arrivent avant même que la boulangerie n'ouvre ses portes", "Ils commandent leur pain la veille pour être servis en priorité", "Ils discutent en attendant que les croissants sortent du four"],
+            correct: 1
+          },
+          {
+            q: "Comment Monsieur Dupont décrit-il son travail à la fin du texte ?",
+            options: ["Il trouve son travail passionnant mais peu rentable financièrement", "Il pense que son travail est trop dur et qu'il aimerait changer de métier", "Il trouve son travail fatigant mais est fier de régaler tout son village", "Il considère que son travail est facile grâce à ses machines modernes"],
+            correct: 2
+          }
+        ]
+      }
+    ]
+  }
+};
+
+window.DIALOGUES_DATA = {
+  ecrans:{
+    id:'ecrans', titre:'Les écrans à l\'école', emoji:'📱',
+    couleur:'linear-gradient(135deg,#1a237e,#3949ab)', bordure:'#3949ab',
+    intervenants:['Lucas','Manon'],
+    tagA:'🖥️ Lucas — Pour les écrans', tagB:'✏️ Manon — Pour le papier',
+    repliques:[
+      {nom:'Animateur', texte:'Bonjour à tous ! Aujourd\'hui, Lucas et Manon vont débattre d\'un sujet qui vous concerne directement : faut-il utiliser des écrans à l\'école à la place du papier et du crayon ? Lucas, tu commences.', anim:true},
+      {nom:'Lucas', texte:'Merci ! Je pense que les écrans sont vraiment utiles à l\'école. Avec une tablette, on peut accéder à des milliers de livres, de vidéos et d\'exercices en quelques secondes. C\'est beaucoup plus rapide qu\'un manuel scolaire !', couleur:'#3949ab'},
+      {nom:'Manon', texte:'Je ne suis pas d\'accord. Écrire à la main, c\'est essentiel pour apprendre. Des études montrent que les élèves qui écrivent à la main retiennent mieux les informations que ceux qui tapent sur un clavier.', couleur:'#c2185b'},
+      {nom:'Lucas', texte:'C\'est vrai, mais les écrans permettent aussi de corriger ses erreurs instantanément. Quand on écrit sur papier et qu\'on fait une faute, on doit tout recommencer ou effacer. Sur tablette, c\'est beaucoup plus simple !', couleur:'#3949ab'},
+      {nom:'Manon', texte:'Peut-être, mais les écrans sont une source de distraction énorme. Quand un élève a une tablette devant lui, il est tenté d\'aller sur des jeux ou des vidéos au lieu de travailler. Le papier, lui, ne distrait pas !', couleur:'#c2185b'},
+      {nom:'Lucas', texte:'On pourrait simplement bloquer l\'accès aux sites non éducatifs. Et puis, les écrans préparent les élèves au monde de demain. Presque tous les métiers utilisent des ordinateurs aujourd\'hui !', couleur:'#3949ab'},
+      {nom:'Manon', texte:'Je préfère qu\'on apprenne d\'abord à bien écrire et à bien lire avant de passer aux écrans. Les bases sont importantes. Et puis, les écrans coûtent cher — tout le monde n\'a pas les mêmes moyens.', couleur:'#c2185b'},
+      {nom:'Animateur', texte:'Merci à tous les deux pour ce débat passionné !', anim:true},
+    ],
+    questions:[
+      {q:"Quel est le sujet du débat ?", options:["Faut-il supprimer les devoirs à la maison ?","Faut-il utiliser des écrans à l\'école à la place du papier et du crayon ?","Faut-il interdire les jeux vidéo aux enfants ?"], correct:1},
+      {q:"Selon Lucas, quel est l\'avantage principal des écrans ?", options:["Ils permettent de corriger ses erreurs et d\'accéder à de nombreuses ressources","Ils sont moins chers que les livres et les cahiers scolaires","Ils permettent aux élèves de travailler plus vite que leurs camarades"], correct:0},
+      {q:"Quel argument Manon utilise-t-elle concernant l\'écriture à la main ?", options:["L\'écriture à la main est plus rapide que de taper sur un clavier","Les élèves qui écrivent à la main retiennent mieux les informations","L\'écriture à la main évite les problèmes de vue liés aux écrans"], correct:1},
+      {q:"Comment Lucas répond-il à l\'argument de Manon sur la distraction ?", options:["Il dit que les élèves sont aussi distraits avec leurs cahiers","Il propose de bloquer l\'accès aux sites non éducatifs","Il affirme que les professeurs peuvent surveiller les tablettes en permanence"], correct:1},
+    ],
+    attrib:{
+      noms:['Lucas','Manon'],
+      items:[
+        {arg:"Grâce aux tablettes, les élèves peuvent trouver des informations bien plus rapidement qu\'avec un livre.", correct:0, type:'A'},
+        {arg:"Un enfant qui a une tablette devant lui aura du mal à rester concentré sur son travail.", correct:1, type:'A'},
+        {arg:"Apprendre à bien maîtriser l\'écriture est une étape fondamentale avant de passer aux outils numériques.", correct:1, type:'A'},
+        {arg:"Si l\'élève est trop exposé aux écrans, il risque d\'avoir des maux de tête et des problèmes de vue.", correct:1, type:'B'},
+        {arg:"Les élèves pourraient partager leurs travaux et collaborer plus facilement grâce aux outils numériques.", correct:0, type:'B'},
+      ]
+    },
+    intentions:[
+      {rep:"\"Je ne suis pas d\'accord.\" (Manon)", options:["S\'excuser","Exprimer son désaccord","Encourager Lucas"], correct:1},
+      {rep:"\"On pourrait simplement bloquer l\'accès aux sites non éducatifs.\" (Lucas)", options:["Menacer Manon","Proposer une solution","Abandonner son point de vue"], correct:1},
+      {rep:"\"Merci à tous les deux pour ce débat passionné !\" (l\'animateur)", options:["Critiquer les deux intervenants","Interrompre le débat brutalement","Clore le débat en remerciant les participants"], correct:2},
+      {rep:"\"Les bases sont importantes.\" (Manon)", options:["Insister sur l\'importance des fondamentaux","Reconnaître que Lucas a raison","Changer de sujet pour éviter la discussion"], correct:0},
+    ]
+  },
+  bio:{
+    id:'bio', titre:'Manger bio, est-ce vraiment utile ?', emoji:'🌿',
+    couleur:'linear-gradient(135deg,#33691e,#7cb342)', bordure:'#7cb342',
+    intervenants:['Sofia','Tom'],
+    tagA:'🌱 Sofia — Pour le bio', tagB:'🛒 Tom — Contre le bio',
+    repliques:[
+      {nom:'Animateur', texte:'Bonjour à tous ! Aujourd\'hui, Sofia et Tom débattent d\'un sujet qui concerne nos assiettes : faut-il manger bio ? Sofia, tu commences.', anim:true},
+      {nom:'Sofia', texte:'Oui ! Les aliments bio sont cultivés sans pesticides chimiques. Ces produits sont donc meilleurs pour notre santé et pour l\'environnement. Quand on mange bio, on protège aussi les abeilles et les insectes utiles.', couleur:'#388e3c'},
+      {nom:'Tom', texte:'Je comprends l\'idée, mais les produits bio coûtent beaucoup plus cher que les produits normaux. Toutes les familles n\'ont pas les moyens de manger bio. Ce n\'est pas juste de demander ça à tout le monde.', couleur:'#f57c00'},
+      {nom:'Sofia', texte:'C\'est vrai que c\'est plus cher, mais on peut faire des choix. Acheter des fruits et légumes bio de saison dans les marchés locaux, c\'est souvent moins cher que dans les supermarchés. Et puis, si on mange mieux, on tombe moins malade !', couleur:'#388e3c'},
+      {nom:'Tom', texte:'Mais les aliments bio ne sont pas forcément plus nutritifs que les autres. Des études scientifiques montrent que la différence sur la santé est très faible. Et si tout le monde mangeait bio, on ne pourrait pas nourrir toute la planète — l\'agriculture bio produit moins.', couleur:'#f57c00'},
+      {nom:'Sofia', texte:'L\'agriculture intensive, elle, détruit les sols et pollue les rivières avec ses engrais chimiques. Sur le long terme, c\'est bien plus dangereux. Il faut penser à la planète que l\'on va laisser aux générations futures.', couleur:'#388e3c'},
+      {nom:'Tom', texte:'Je préfère qu\'on améliore les techniques agricoles modernes plutôt que de revenir en arrière. La science peut nous aider à produire suffisamment tout en réduisant les produits chimiques.', couleur:'#f57c00'},
+      {nom:'Animateur', texte:'Merci Sofia et Tom pour ce débat très instructif !', anim:true},
+    ],
+    questions:[
+      {q:"Quel est le sujet du débat ?", options:["Faut-il supprimer les fast-foods dans les villes ?","Faut-il manger bio ?","Faut-il devenir végétarien pour sauver la planète ?"], correct:1},
+      {q:"Selon Sofia, pourquoi les produits bio sont-ils meilleurs pour l\'environnement ?", options:["Parce qu\'ils sont produits localement et ne nécessitent pas de transport","Parce qu\'ils sont cultivés sans pesticides chimiques et protègent les insectes","Parce qu\'ils utilisent moins d\'eau que l\'agriculture traditionnelle"], correct:1},
+      {q:"Quel argument Tom utilise-t-il contre le bio ?", options:["Les produits bio ont mauvais goût comparés aux produits traditionnels","Les produits bio coûtent plus cher et ne sont pas accessibles à toutes les familles","Les produits bio se conservent moins longtemps que les produits normaux"], correct:1},
+      {q:"Quel est l\'argument final de Sofia pour défendre le bio ?", options:["Le bio est de plus en plus présent dans les grandes surfaces","L\'agriculture intensive détruit les sols et pollue les rivières","Les médecins recommandent de manger bio au moins trois fois par semaine"], correct:1},
+    ],
+    attrib:{
+      noms:['Sofia','Tom'],
+      items:[
+        {arg:"Les pesticides utilisés dans l\'agriculture classique sont nocifs pour les abeilles et les autres insectes.", correct:0, type:'A'},
+        {arg:"Il serait impossible de nourrir toute la population mondiale uniquement avec des aliments biologiques.", correct:1, type:'A'},
+        {arg:"En achetant des produits de saison au marché local, on peut manger bio sans dépenser trop.", correct:0, type:'A'},
+        {arg:"Les agriculteurs bio gagnent moins d\'argent car ils produisent moins et leurs coûts sont plus élevés.", correct:1, type:'B'},
+        {arg:"En mangeant bio, on soutient les petits producteurs locaux plutôt que les grandes industries alimentaires.", correct:0, type:'B'},
+      ]
+    },
+    intentions:[
+      {rep:"\"C\'est vrai que c\'est plus cher, mais on peut faire des choix.\" (Sofia)", options:["Abandonner son point de vue face à l\'argument de Tom","Reconnaître un point faible tout en maintenant sa position","Changer de sujet pour éviter la discussion"], correct:1},
+      {rep:"\"La science peut nous aider à produire suffisamment tout en réduisant les produits chimiques.\" (Tom)", options:["Proposer une alternative à l\'agriculture bio","Admettre que Sofia a entièrement raison","Menacer Sofia de mettre fin au débat"], correct:0},
+      {rep:"\"Il faut penser à la planète que l\'on va laisser aux générations futures.\" (Sofia)", options:["Critiquer le mode de vie de Tom","Appeler à la responsabilité environnementale","Demander à l\'animateur d\'intervenir"], correct:1},
+      {rep:"\"Merci Sofia et Tom pour ce débat très instructif !\" (l\'animateur)", options:["Exprimer sa préférence pour l\'un des deux intervenants","Clore le débat en valorisant les deux participants","Inviter le public à voter pour le meilleur argument"], correct:1},
+    ]
+  },
+  voiture:{
+    id:'voiture', titre:'La voiture en ville, faut-il l\'interdire ?', emoji:'🚗',
+    couleur:'linear-gradient(135deg,#880e4f,#c2185b)', bordure:'#c2185b',
+    intervenants:['Léa','Maxime'],
+    tagA:'🚲 Léa — Pour interdire', tagB:'🚗 Maxime — Contre l\'interdiction',
+    repliques:[
+      {nom:'Animateur', texte:'Bonjour à tous ! Aujourd\'hui, Léa et Maxime débattent d\'un sujet brûlant : faut-il interdire les voitures dans les villes ? Léa, à toi !', anim:true},
+      {nom:'Léa', texte:'Je pense qu\'il faudrait interdire les voitures dans les centres-villes. La pollution due aux voitures est responsable de nombreuses maladies respiratoires, surtout chez les enfants. Des villes comme Amsterdam ou Copenhague ont montré que c\'est possible !', couleur:'#c2185b'},
+      {nom:'Maxime', texte:'Mais comment les gens feraient-ils pour aller travailler, faire leurs courses ou emmener leurs enfants à l\'école ? Tout le monde n\'habite pas près d\'une gare ou d\'un arrêt de bus. La voiture est indispensable pour beaucoup de personnes.', couleur:'#1565c0'},
+      {nom:'Léa', texte:'On pourrait développer les transports en commun et les pistes cyclables. Si les bus et les vélos sont plus pratiques et moins chers, les gens laisseront naturellement leur voiture au garage.', couleur:'#c2185b'},
+      {nom:'Maxime', texte:'Développer les transports en commun, ça coûte très cher et ça prend des années. En attendant, les gens ont besoin de leurs voitures maintenant. Et dans les zones rurales comme la nôtre, il n\'y a souvent aucune alternative.', couleur:'#1565c0'},
+      {nom:'Léa', texte:'C\'est vrai pour les zones rurales, mais dans les villes, on pourrait commencer par des zones sans voitures dans les centres. Les commerces bénéficieraient même de plus de passages de piétons et de cyclistes !', couleur:'#c2185b'},
+      {nom:'Maxime', texte:'Certains commerçants pensent au contraire que supprimer les voitures ferait fuir leurs clients. Et les personnes âgées ou handicapées ont souvent besoin de la voiture pour se déplacer. On ne peut pas les oublier.', couleur:'#1565c0'},
+      {nom:'Animateur', texte:'Voilà un débat qui nous touche tous ! Merci Léa et Maxime !', anim:true},
+    ],
+    questions:[
+      {q:"Quel est le sujet du débat ?", options:["Faut-il construire plus de routes dans les villes ?","Faut-il interdire les voitures dans les villes ?","Faut-il rendre les transports en commun gratuits ?"], correct:1},
+      {q:"Quel argument Léa utilise-t-elle pour justifier l\'interdiction des voitures ?", options:["Les voitures provoquent trop d\'accidents mortels dans les centres-villes","La pollution des voitures est responsable de maladies respiratoires","Les voitures font trop de bruit et empêchent les habitants de dormir"], correct:1},
+      {q:"Pourquoi Maxime pense-t-il que la voiture est indispensable ?", options:["Parce que les voitures électriques ne polluent pas et sont donc acceptables","Parce que tout le monde n\'habite pas près des transports en commun","Parce que les pistes cyclables sont dangereuses pour les enfants"], correct:1},
+      {q:"Quel avantage Léa voit-elle pour les commerces sans voitures ?", options:["Les commerces pourraient agrandir leurs terrasses sur les anciennes routes","Les commerces bénéficieraient de plus de passages de piétons et cyclistes","Les commerces économiseraient sur leurs livraisons sans embouteillages"], correct:1},
+    ],
+    attrib:{
+      noms:['Léa','Maxime'],
+      items:[
+        {arg:"Les émissions de voitures causent des problèmes de santé graves, notamment chez les plus jeunes.", correct:0, type:'A'},
+        {arg:"Les personnes âgées et les personnes handicapées ne peuvent pas toujours utiliser les transports en commun.", correct:1, type:'A'},
+        {arg:"Si on rend les vélos et les bus plus pratiques, les automobilistes changeront spontanément leurs habitudes.", correct:0, type:'A'},
+        {arg:"Interdire les voitures réduirait le bruit dans les villes et améliorerait la qualité de vie des habitants.", correct:0, type:'B'},
+        {arg:"Un livreur qui doit approvisionner les magasins du centre-ville ne peut pas le faire à vélo.", correct:1, type:'B'},
+      ]
+    },
+    intentions:[
+      {rep:"\"C\'est vrai pour les zones rurales, mais dans les villes, on pourrait commencer par des zones sans voitures.\" (Léa)", options:["Abandonner complètement son point de vue","Nuancer sa position en reconnaissant une limite","Accuser Maxime de ne pas comprendre le problème"], correct:1},
+      {rep:"\"Comment les gens feraient-ils pour aller travailler ?\" (Maxime)", options:["Remettre en question la faisabilité de la proposition de Léa","Proposer une solution alternative aux voitures","Approuver l\'idée de Léa tout en exprimant des doutes"], correct:0},
+      {rep:"\"Des villes comme Amsterdam ou Copenhague ont montré que c\'est possible !\" (Léa)", options:["Se moquer des villes qui n\'ont pas encore interdit les voitures","Appuyer son argument avec des exemples concrets","Admettre qu\'elle n\'est pas sûre de sa position"], correct:1},
+      {rep:"\"On ne peut pas les oublier.\" (Maxime, en parlant des personnes âgées)", options:["Exprimer son inquiétude pour les personnes vulnérables","Critiquer Léa pour ne pas penser aux autres","Demander à l\'animateur de changer de sujet"], correct:0},
+    ]
+  },
+  animal:{
+    id:'animal', titre:'Faut-il avoir un animal de compagnie ?', emoji:'🐾',
+    couleur:'linear-gradient(135deg,#bf360c,#e64a19)', bordure:'#e64a19',
+    intervenants:['Camille','Noah'],
+    tagA:'🐕 Camille — Pour', tagB:'🚫 Noah — Contre',
+    repliques:[
+      {nom:'Animateur', texte:'Bonjour à tous ! Aujourd\'hui, Camille et Noah débattent d\'un sujet qui fait battre le cœur de beaucoup d\'entre vous : faut-il avoir un animal de compagnie ? Camille, tu commences.', anim:true},
+      {nom:'Camille', texte:'J\'adore les animaux et je pense qu\'avoir un animal de compagnie est vraiment bénéfique. Un chien ou un chat, ça apporte de la joie, de l\'amour et ça aide à combattre la solitude. Des études montrent même que les personnes qui ont des animaux sont moins stressées !', couleur:'#e64a19'},
+      {nom:'Noah', texte:'Je comprends que les animaux soient attachants, mais avoir un animal, c\'est une énorme responsabilité. Il faut les nourrir, les soigner, les promener. Quand on part en vacances, que fait-on de l\'animal ? Ça complique beaucoup la vie.', couleur:'#5c6bc0'},
+      {nom:'Camille', texte:'C\'est vrai que c\'est une responsabilité, mais c\'est justement pour ça que c\'est bien ! Les enfants qui s\'occupent d\'un animal apprennent à être responsables, à respecter le vivant et à développer leur empathie.', couleur:'#e64a19'},
+      {nom:'Noah', texte:'Peut-être, mais les animaux coûtent très cher. La nourriture, les visites chez le vétérinaire, les vaccins... tout ça représente beaucoup d\'argent. Et certaines personnes adoptent des animaux sans y avoir bien réfléchi, puis les abandonnent. C\'est cruel !', couleur:'#5c6bc0'},
+      {nom:'Camille', texte:'Les abandons, c\'est effectivement un problème grave. Mais ce n\'est pas une raison pour dire qu\'il ne faut pas avoir d\'animaux. Il faut juste mieux informer les gens avant l\'adoption. Et pour les enfants malades ou isolés, un animal peut vraiment faire des miracles.', couleur:'#e64a19'},
+      {nom:'Noah', texte:'Je préfèrerais qu\'on laisse les animaux vivre librement dans la nature plutôt que de les enfermer dans un appartement. Un chien qui reste seul toute la journée pendant que ses maîtres travaillent, est-ce vraiment une belle vie ?', couleur:'#5c6bc0'},
+      {nom:'Animateur', texte:'Un débat plein de cœur ! Merci Camille et Noah !', anim:true},
+    ],
+    questions:[
+      {q:"Quel est le sujet du débat ?", options:["Faut-il interdire les animaux dans les appartements ?","Faut-il avoir un animal de compagnie ?","Faut-il mieux protéger les animaux sauvages ?"], correct:1},
+      {q:"Selon Camille, quel bénéfice les animaux apportent-ils aux personnes ?", options:["Ils aident à faire de l\'exercice physique tous les jours","Ils apportent de la joie et réduisent le stress","Ils permettent de faire des économies sur les sorties et loisirs"], correct:1},
+      {q:"Quel problème Noah soulève-t-il concernant les animaux et les vacances ?", options:["Les animaux ont peur des voyages en voiture et en avion","Avoir un animal complique l\'organisation des vacances","Les hôtels et campings refusent souvent les animaux de compagnie"], correct:1},
+      {q:"Quel argument Noah utilise-t-il à la fin du débat ?", options:["Les animaux sont dangereux pour les jeunes enfants en bas âge","Les animaux seraient mieux dans leur milieu naturel que dans un appartement","Les animaux causent des allergies chez de nombreuses personnes"], correct:1},
+    ],
+    attrib:{
+      noms:['Camille','Noah'],
+      items:[
+        {arg:"S\'occuper d\'un animal aide les enfants à devenir plus responsables et plus attentionnés.", correct:0, type:'A'},
+        {arg:"Les frais liés à un animal — nourriture, soins, vaccins — représentent une dépense importante.", correct:1, type:'A'},
+        {arg:"Pour un enfant malade ou seul, la présence d\'un animal peut avoir un effet vraiment positif.", correct:0, type:'A'},
+        {arg:"Un animal qui passe ses journées seul dans un petit appartement peut souffrir d\'ennui et d\'anxiété.", correct:1, type:'B'},
+        {arg:"Adopter un animal dans un refuge plutôt que de l\'acheter, c\'est lui donner une seconde chance.", correct:0, type:'B'},
+      ]
+    },
+    intentions:[
+      {rep:"\"C\'est vrai que c\'est une responsabilité, mais c\'est justement pour ça que c\'est bien !\" (Camille)", options:["Admettre qu\'elle a tort et changer de position","Retourner l\'argument de Noah en sa faveur","Demander à l\'animateur de l\'aider à répondre"], correct:1},
+      {rep:"\"Est-ce vraiment une belle vie ?\" (Noah, en parlant du chien seul)", options:["Poser une question rhétorique pour faire réfléchir","Demander l\'avis de Camille sur la question","Admettre qu\'il ne connaît pas la réponse"], correct:0},
+      {rep:"\"Il faut juste mieux informer les gens avant l\'adoption.\" (Camille)", options:["Critiquer les personnes qui abandonnent leurs animaux","Proposer une solution au problème des abandons","Reconnaître que Noah a raison sur ce point"], correct:1},
+      {rep:"\"Je comprends que les animaux soient attachants, mais...\" (Noah)", options:["Exprimer son accord total avec Camille","Reconnaître un point positif avant d\'introduire une objection","Changer de sujet pour éviter d\'admettre qu\'il a tort"], correct:1},
+    ]
+  }
+};
+
+window.TEXTES_ARG_DATA = {
+  devoirs:{
+    id:'devoirs', titre:'Faut-il supprimer les devoirs à la maison ?', emoji:'🎒',
+    couleur:'linear-gradient(135deg,#1a237e,#3949ab)', bordure:'#3949ab',
+    thèse:'Pour la suppression des devoirs',
+    texte:`Chaque soir, des milliers d'élèves s'installent à leur bureau pour faire leurs devoirs. Mais est-ce vraiment utile ? Certains pensent que les devoirs devraient être supprimés, et leurs arguments méritent d'être entendus.<br><br>
+Tout d'abord, les devoirs <strong>creusent les inégalités</strong> entre les élèves. Un enfant dont les parents peuvent l'aider n'est pas dans la même situation qu'un élève dont les parents travaillent tard ou ne parlent pas bien français. L'école devrait être le seul endroit où l'on apprend, pour que tous les élèves aient les mêmes chances.<br><br>
+Ensuite, les devoirs <strong>empiètent sur le temps libre</strong> des enfants. Après une longue journée d'école, les élèves ont besoin de jouer, de se reposer et de faire du sport. Ces activités sont essentielles pour leur développement et leur bien-être.<br><br>
+Enfin, des études montrent que les devoirs <strong>n'améliorent pas forcément les résultats scolaires</strong>, surtout au primaire. Ce qui compte, c'est la qualité du travail en classe, pas la quantité de travail à la maison.<br><br>
+Pour toutes ces raisons, il serait judicieux de repenser la place des devoirs dans notre système scolaire.`,
+    questions:[
+      {q:"Quelle est la thèse défendue dans ce texte ?", options:["Les devoirs sont indispensables à la réussite scolaire","Les devoirs devraient être supprimés","Les devoirs devraient être réduits à 30 minutes par soir"], correct:1},
+      {q:"Pourquoi les devoirs creusent-ils les inégalités selon l'auteur ?", options:["Parce que certains élèves ont plus de matières que d'autres","Parce que tous les élèves n'ont pas la même aide à la maison","Parce que les devoirs sont trop difficiles pour certains élèves"], correct:1},
+      {q:"Quel argument l'auteur utilise-t-il concernant le temps libre ?", options:["Les enfants passent trop de temps sur les écrans au lieu de faire leurs devoirs","Les enfants ont besoin de jouer et se reposer après l'école","Les enfants préfèrent regarder la télévision plutôt que d'étudier"], correct:1},
+      {q:"Selon l'auteur, les devoirs améliorent toujours les résultats scolaires.", options:["Vrai","Faux"], correct:1}
+    ],
+    classif:{
+      labels:["Pour la suppression des devoirs","Contre la suppression des devoirs","Pas dans le texte"],
+      items:[
+        {arg:"Les devoirs creusent les inégalités entre élèves.", correct:0},
+        {arg:"Les enfants ont besoin de temps libre pour se développer.", correct:0},
+        {arg:"Les devoirs aident à consolider les apprentissages de la journée.", correct:1},
+        {arg:"Les devoirs permettent aux parents de suivre les progrès de leurs enfants.", correct:2},
+        {arg:"Les études montrent que les devoirs n'améliorent pas forcément les résultats au primaire.", correct:0}
+      ]
+    }
+  },
+  ecrans:{
+    id:'ecrans', titre:'Les écrans sont-ils dangereux pour les enfants ?', emoji:'📱',
+    couleur:'linear-gradient(135deg,#1b5e20,#388e3c)', bordure:'#388e3c',
+    thèse:'Les écrans présentent de réels dangers',
+    texte:`Tablettes, smartphones, télévisions, consoles de jeux... Les écrans font partie du quotidien des enfants d'aujourd'hui. Mais leur utilisation excessive présente de réels dangers qu'il ne faut pas ignorer.<br><br>
+Premièrement, les écrans <strong>nuisent au sommeil</strong>. La lumière bleue émise par les écrans perturbe la production de mélatonine, l'hormone du sommeil. Un enfant qui regarde un écran avant de se coucher dormira moins bien.<br><br>
+Deuxièmement, passer trop de temps devant un écran <strong>réduit les activités physiques</strong>. Un enfant sédentaire risque davantage de souffrir d'obésité, de problèmes de dos ou de vue.<br><br>
+Troisièmement, les réseaux sociaux et certains jeux vidéo peuvent <strong>créer une dépendance</strong>. Des enfants passent des heures à scroller ou jouer, au détriment de leurs devoirs et de leurs relations familiales.<br><br>
+Cela ne signifie pas qu'il faut interdire totalement les écrans. Mais il est indispensable d'en <strong>réguler l'usage</strong>, en fixant des limites claires et en encourageant des activités variées.`,
+    questions:[
+      {q:"Quelle est la position de l'auteur sur les écrans ?", options:["Il pense qu'il faut interdire totalement les écrans aux enfants","Il pense que les écrans sont dangereux mais qu'il faut en réguler l'usage","Il pense que les écrans sont bénéfiques pour l'apprentissage des enfants"], correct:1},
+      {q:"Pourquoi les écrans nuisent-ils au sommeil selon l'auteur ?", options:["Parce que les enfants jouent trop tard le soir","Parce que la lumière bleue perturbe la production de mélatonine","Parce que les contenus des écrans donnent des cauchemars"], correct:1},
+      {q:"Quel risque physique l'auteur associe-t-il aux écrans ?", options:["Des maux de tête causés par la lumière trop intense","Des problèmes d'obésité, de dos et de vue liés à la sédentarité","Des troubles auditifs causés par le volume trop élevé"], correct:1},
+      {q:"L'auteur pense qu'il faut supprimer complètement les écrans.", options:["Vrai","Faux"], correct:1}
+    ],
+    classif:{
+      labels:["Les écrans sont dangereux","Les écrans ne sont pas dangereux","Pas dans le texte"],
+      items:[
+        {arg:"La lumière bleue perturbe le sommeil des enfants.", correct:0},
+        {arg:"Les écrans peuvent créer une dépendance chez les jeunes.", correct:0},
+        {arg:"Les écrans permettent d'apprendre et de découvrir le monde.", correct:1},
+        {arg:"Les jeux vidéo améliorent les réflexes et la coordination.", correct:2},
+        {arg:"La sédentarité liée aux écrans cause des problèmes de santé.", correct:0}
+      ]
+    }
+  },
+  vegetarien:{
+    id:'vegetarien', titre:'Doit-on devenir végétarien pour sauver la planète ?', emoji:'🌿',
+    couleur:'linear-gradient(135deg,#33691e,#7cb342)', bordure:'#7cb342',
+    thèse:'Réduire sa consommation de viande',
+    texte:`Face à la crise climatique, de plus en plus de personnes se tournent vers le végétarisme. Manger moins de viande serait l'un des gestes les plus efficaces pour réduire notre impact sur l'environnement.<br><br>
+D'abord, l'élevage est l'une des <strong>principales causes du réchauffement climatique</strong>. Les vaches et les moutons produisent du méthane, un gaz à effet de serre très puissant. De plus, l'élevage intensif nécessite d'immenses surfaces agricoles, souvent obtenues en détruisant des forêts.<br><br>
+Ensuite, produire de la viande <strong>consomme énormément d'eau et de céréales</strong>. Pour produire 1 kg de bœuf, il faut environ 15 000 litres d'eau et 7 kg de céréales. Ces ressources pourraient nourrir directement bien plus de personnes.<br><br>
+Cependant, devenir totalement végétarien <strong>n'est pas forcément réaliste</strong> pour tout le monde. Certaines populations vivent dans des régions où les légumes frais sont rares ou trop chers. L'objectif n'est pas d'éliminer totalement la viande, mais de réduire sa consommation, en particulier la viande rouge.`,
+    questions:[
+      {q:"Quel gaz à effet de serre est produit par les vaches et les moutons ?", options:["Le dioxyde de carbone rejeté lors de leur digestion","Le méthane, un gaz à effet de serre très puissant","L'oxyde d'azote rejeté dans leurs déjections"], correct:1},
+      {q:"Combien d'eau faut-il pour produire 1 kg de bœuf selon le texte ?", options:["Environ 5 000 litres d'eau","Environ 15 000 litres d'eau","Environ 30 000 litres d'eau"], correct:1},
+      {q:"Quelle nuance l'auteur apporte-t-il à la fin du texte ?", options:["Il pense que manger de la viande est indispensable pour être en bonne santé","Il reconnaît que devenir totalement végétarien n'est pas réaliste pour tout le monde","Il suggère de remplacer la viande rouge par du poulet uniquement"], correct:1},
+      {q:"L'auteur demande à tout le monde de devenir totalement végétarien.", options:["Vrai","Faux"], correct:1}
+    ],
+    classif:{
+      labels:["Pour la diminution de viande","Contre le végétarisme total","Pas dans le texte"],
+      items:[
+        {arg:"L'élevage produit des gaz à effet de serre.", correct:0},
+        {arg:"Produire de la viande consomme énormément d'eau.", correct:0},
+        {arg:"Certaines populations ont peu accès aux légumes frais.", correct:1},
+        {arg:"Le végétarisme améliore la santé des enfants.", correct:2},
+        {arg:"L'élevage détruit des forêts pour créer des surfaces agricoles.", correct:0}
+      ]
+    }
+  },
+  uniforme:{
+    id:'uniforme', titre:"Faut-il porter un uniforme à l'école ?", emoji:'🏫',
+    couleur:'linear-gradient(135deg,#4a148c,#7b1fa2)', bordure:'#7b1fa2',
+    thèse:"Pour l'uniforme scolaire",
+    texte:`Dans certains pays comme l'Angleterre ou le Japon, tous les élèves portent un uniforme à l'école. En Belgique, cette pratique est rare. Pourtant, l'uniforme scolaire présente de nombreux avantages.<br><br>
+Premièrement, l'uniforme <strong>réduit les inégalités visibles</strong>. Quand tout le monde porte les mêmes vêtements, les différences de richesse entre les familles sont moins apparentes. Un élève qui ne peut pas se payer des vêtements à la mode ne se sentira plus jugé.<br><br>
+Deuxièmement, l'uniforme <strong>simplifie le quotidien des familles</strong>. Plus besoin de se demander chaque matin quoi mettre ! Cela évite également les dépenses excessives en vêtements tendance, souvent coûteux.<br><br>
+Troisièmement, certaines études montrent que le port de l'uniforme <strong>améliore la concentration</strong> des élèves et renforce le sentiment d'appartenance à l'école.<br><br>
+Bien sûr, certains élèves regrettent de ne pas pouvoir exprimer leur personnalité à travers leurs vêtements. Mais l'école est avant tout un lieu d'apprentissage, pas un défilé de mode.`,
+    questions:[
+      {q:"Dans quels pays l'uniforme scolaire est-il mentionné dans le texte ?", options:["En France et en Allemagne","En Angleterre et au Japon","Aux États-Unis et en Chine"], correct:1},
+      {q:"Comment l'uniforme réduit-il les inégalités selon l'auteur ?", options:["En empêchant les élèves riches d'apporter des objets de luxe","En rendant les différences de richesse moins visibles entre élèves","En obligeant toutes les familles à acheter les mêmes fournitures"], correct:1},
+      {q:"Quel argument l'auteur utilise-t-il concernant les familles ?", options:["L'uniforme évite les dépenses excessives en vêtements tendance","L'uniforme permet aux parents de retrouver facilement leur enfant","L'uniforme évite que les élèves abîment leurs beaux vêtements"], correct:0},
+      {q:"L'auteur pense que l'école est avant tout un lieu pour s'exprimer à travers les vêtements.", options:["Vrai","Faux"], correct:1}
+    ],
+    classif:{
+      labels:["Pour l'uniforme","Contre l'uniforme","Pas dans le texte"],
+      items:[
+        {arg:"L'uniforme réduit les inégalités visibles entre élèves.", correct:0},
+        {arg:"Les élèves ne peuvent plus exprimer leur personnalité.", correct:1},
+        {arg:"L'uniforme simplifie le quotidien et réduit les dépenses.", correct:0},
+        {arg:"L'uniforme améliore les relations entre enseignants et élèves.", correct:2},
+        {arg:"L'uniforme renforce le sentiment d'appartenance à l'école.", correct:0}
+      ]
+    }
+  },
+  lecture:{
+    id:'lecture', titre:"L'importance de lire", emoji:'📚',
+    couleur:'linear-gradient(135deg,#bf360c,#e64a19)', bordure:'#e64a19',
+    thèse:'Pour la lecture',
+    texte:`À l'heure des écrans et des réseaux sociaux, certains jeunes lisent de moins en moins. C'est dommage, car la lecture est l'une des activités les plus bénéfiques pour le développement d'un enfant.<br><br>
+Tout d'abord, lire <strong>enrichit le vocabulaire et améliore l'expression écrite</strong>. Un élève qui lit régulièrement dispose d'un bagage de mots beaucoup plus riche, ce qui lui permet de mieux s'exprimer, aussi bien à l'oral qu'à l'écrit.<br><br>
+Ensuite, la lecture <strong>développe l'imagination et la créativité</strong>. En lisant un roman, l'élève visualise les personnages, les lieux, les situations. Il construit dans sa tête des images que personne d'autre ne verra exactement de la même façon.<br><br>
+De plus, lire permet de <strong>mieux comprendre le monde et les autres</strong>. Les livres nous font voyager dans d'autres pays, d'autres époques, d'autres cultures. Ils nous aident à développer notre empathie en nous mettant à la place de personnages très différents de nous.<br><br>
+Alors, la prochaine fois que tu t'ennuies, pose ton téléphone et ouvre un livre. Tu ne le regretteras pas !`,
+    questions:[
+      {q:"Selon l'auteur, quel est l'un des premiers bénéfices de la lecture ?", options:["Elle permet d'apprendre des langues étrangères sans effort","Elle enrichit le vocabulaire et améliore l'expression écrite","Elle aide à mémoriser les leçons apprises à l'école"], correct:1},
+      {q:"Comment la lecture développe-t-elle l'imagination selon le texte ?", options:["En proposant des exercices créatifs après chaque chapitre","En obligeant le lecteur à visualiser mentalement ce qu'il lit","En racontant des histoires impossibles qui font rêver"], correct:1},
+      {q:"Comment la lecture aide-t-elle à comprendre les autres ?", options:["Elle nous apprend à reconnaitre les différentes cultures","Elle nous met à la place de personnages différents de nous","Elle nous explique comment résoudre les conflits"], correct:1},
+      {q:"L'auteur pense que les écrans sont plus bénéfiques que la lecture.", options:["Vrai","Faux"], correct:1}
+    ],
+    classif:{
+      labels:["Pour la lecture","Contre la lecture","Pas dans le texte"],
+      items:[
+        {arg:"La lecture enrichit le vocabulaire et améliore l'expression écrite.", correct:0},
+        {arg:"La lecture développe l'empathie envers les autres.", correct:0},
+        {arg:"Lire est ennuyeux et démotive les enfants à apprendre.", correct:1},
+        {arg:"La lecture améliore les résultats en mathématiques.", correct:2},
+        {arg:"La lecture développe l'imagination et la créativité.", correct:0}
+      ]
+    }
+  },
+  alimentation:{
+    id:'alimentation', titre:'Bien manger pour bien grandir', emoji:'🥦',
+    couleur:'linear-gradient(135deg,#006064,#00897b)', bordure:'#00897b',
+    thèse:'Pour une alimentation saine',
+    texte:`Tu as sûrement déjà entendu l'expression : "On est ce qu'on mange." Et c'est vrai ! Une alimentation saine et équilibrée est indispensable pour grandir en bonne santé et bien apprendre à l'école.<br><br>
+Premièrement, une bonne alimentation <strong>donne de l'énergie</strong>. Le cerveau a besoin de glucides, de protéines et de bonnes graisses pour fonctionner correctement. Un élève qui mange sainement sera plus concentré en classe.<br><br>
+Deuxièmement, manger des fruits et légumes <strong>renforce le système immunitaire</strong>. Les vitamines et minéraux qu'ils contiennent aident le corps à se défendre contre les maladies. Un enfant qui mange varié tombe moins souvent malade.<br><br>
+Troisièmement, les <strong>bonnes habitudes alimentaires prises dans l'enfance durent toute la vie</strong>. Un enfant qui apprend à apprécier les légumes et les céréales complètes aura beaucoup plus de chances d'avoir une alimentation équilibrée à l'âge adulte.<br><br>
+Bien manger ne veut pas dire ne jamais manger de gâteaux ou de chips. Cela signifie trouver un équilibre et faire de bonnes habitudes une priorité.`,
+    questions:[
+      {q:"Selon l'auteur, pourquoi le cerveau a-t-il besoin d'une bonne alimentation ?", options:["Pour produire des hormones qui régulent les émotions","Pour fonctionner correctement et être concentré en classe","Pour mémoriser plus facilement les leçons"], correct:1},
+      {q:"Quel effet les fruits et légumes ont-ils sur la santé selon le texte ?", options:["Ils renforcent les muscles et permettent de faire plus de sport","Ils aident le corps à se défendre contre les maladies","Ils améliorent la vue et réduisent la fatigue oculaire"], correct:1},
+      {q:"Que signifie bien manger selon l'auteur ?", options:["Ne jamais manger de sucreries ni de produits industriels","Trouver un équilibre et adopter de bonnes habitudes alimentaires","Manger uniquement des fruits, légumes et céréales complètes"], correct:1},
+      {q:"Selon l'auteur, les bonnes habitudes alimentaires prises dans l'enfance disparaissent à l'âge adulte.", options:["Vrai","Faux"], correct:1}
+    ],
+    classif:{
+      labels:["Pour une alimentation saine","Contre une alimentation saine","Pas dans le texte"],
+      items:[
+        {arg:"Une bonne alimentation améliore la concentration à l'école.", correct:0},
+        {arg:"Manger des légumes renforce le système immunitaire.", correct:0},
+        {arg:"Les bonnes habitudes alimentaires coûtent trop cher pour certaines familles.", correct:1},
+        {arg:"Une mauvaise alimentation provoque des difficultés de lecture.", correct:2},
+        {arg:"Les bonnes habitudes alimentaires prises enfant durent toute la vie.", correct:0}
+      ]
+    }
+  },
+  reseaux:{
+    id:'reseaux', titre:'Les réseaux sociaux : un monde à double tranchant', emoji:'📲',
+    couleur:'linear-gradient(135deg,#880e4f,#c2185b)', bordure:'#c2185b',
+    thèse:'Les réseaux sociaux ont des avantages et des inconvénients',
+    texte:`Instagram, TikTok, Snapchat, YouTube... Les réseaux sociaux font partie de la vie de millions de jeunes. Mais sont-ils vraiment une bonne chose ? La réponse n'est pas simple, car les réseaux sociaux ont à la fois des avantages et des inconvénients.<br><br>
+D'un côté, les réseaux sociaux permettent de <strong>rester en contact avec ses amis et sa famille</strong>, même à distance. Ils offrent aussi un espace pour s'exprimer, partager ses créations et découvrir des contenus éducatifs ou inspirants.<br><br>
+Mais d'un autre côté, les réseaux sociaux peuvent être <strong>dangereux</strong>. Certains jeunes passent des heures à faire défiler des images sans s'en rendre compte. Cette utilisation excessive peut provoquer de l'anxiété, une baisse de l'estime de soi ou des troubles du sommeil.<br><br>
+De plus, les réseaux sociaux exposent les jeunes à des <strong>contenus inappropriés, à la désinformation et au cyberharcèlement</strong>. Des études montrent que les adolescents qui passent plus de trois heures par jour sur les réseaux sociaux sont plus susceptibles de souffrir de problèmes de santé mentale.<br><br>
+Il est donc essentiel d'apprendre aux jeunes à utiliser les réseaux sociaux de façon <strong>responsable</strong> : en limitant le temps d'écran, en vérifiant les informations et en ne partageant jamais d'informations personnelles.`,
+    questions:[
+      {q:"Quelle est la position de l'auteur sur les réseaux sociaux ?", options:["Il pense que les réseaux sociaux sont uniquement dangereux","Il pense que les réseaux sociaux ont à la fois des avantages et des inconvénients","Il pense que les réseaux sociaux sont indispensables à la vie sociale"], correct:1},
+      {q:"Quel avantage des réseaux sociaux est mentionné dans le texte ?", options:["Ils permettent d'apprendre des langues étrangères facilement","Ils permettent de rester en contact avec ses proches et de partager ses créations","Ils offrent des jeux éducatifs gratuits pour tous les âges"], correct:1},
+      {q:"Combien d'heures par jour sur les réseaux sociaux est considéré comme risqué ?", options:["Plus d'une heure par jour","Plus de deux heures par jour","Plus de trois heures par jour"], correct:2},
+      {q:"L'auteur conseille d'interdire complètement les réseaux sociaux aux jeunes.", options:["Vrai","Faux"], correct:1}
+    ],
+    classif:{
+      labels:["Avantage des réseaux sociaux","Inconvénient des réseaux sociaux","Pas dans le texte"],
+      items:[
+        {arg:"Les réseaux sociaux permettent de rester en contact avec ses amis.", correct:0},
+        {arg:"Les réseaux sociaux peuvent provoquer de l'anxiété.", correct:1},
+        {arg:"Les réseaux sociaux exposent les jeunes à la désinformation.", correct:1},
+        {arg:"Les réseaux sociaux aident les jeunes à trouver du travail.", correct:2},
+        {arg:"Les réseaux sociaux offrent un espace pour partager ses créations.", correct:0}
+      ]
+    }
+  }
+};
+
+window.CONNECTEURS_POOL = [
+  // TEMPS / ORDRE
+  {cat:'⏱️ Temps', avant:'Lucas se leva tôt le matin.', trou:true, apres:'il prit son petit-déjeuner tranquillement avant de partir à l\'école.', options:['Pourtant','Ensuite','Car','Donc'], correct:1, explication:'"Ensuite" indique ce qui se passe après dans le temps.'},
+  {cat:'⏱️ Temps', avant:'', trou:false, apres:'les nuages s\'amoncelèrent dans le ciel et la pluie commença à tomber.', options:['Car','De plus','Soudain','Pourtant'], correct:2, explication:'"Soudain" indique un changement brusque et inattendu.'},
+  {cat:'⏱️ Temps', avant:'Emma prépara ses affaires,', trou:true, apres:'elle mit son manteau et quitta la maison.', options:['pourtant','car','puis','donc'], correct:2, explication:'"Puis" indique ce qui vient juste après dans le temps.'},
+  {cat:'⏱️ Temps', avant:'Les élèves travaillèrent dur toute la semaine.', trou:true, apres:'ils purent profiter de leur week-end sans stress.', options:['Pourtant','Car','Soudain','Finalement'], correct:3, explication:'"Finalement" indique ce qui se passe en dernier, au terme d\'un processus.'},
+  {cat:'⏱️ Temps', avant:'', trou:false, apres:'les enfants ramassèrent leurs jouets, puis ils allèrent se laver les mains avant le repas.', options:['Pourtant','D\'abord','Donc','En effet'], correct:1, explication:'"D\'abord" indique la première étape d\'une série d\'actions.'},
+  {cat:'⏱️ Temps', avant:'Le héros traversa la forêt, affronta le dragon et', trou:true, apres:'rentra chez lui, épuisé mais victorieux.', options:['pourtant','car','enfin','de plus'], correct:2, explication:'"Enfin" indique la dernière étape d\'une série d\'actions.'},
+  {cat:'⏱️ Temps', avant:'', trou:false, apres:'un bruit étrange brisa le silence de la nuit et réveilla tout le monde.', options:['Soudain','Donc','Car','En revanche'], correct:0, explication:'"Soudain" marque un événement inattendu et brusque.'},
+  {cat:'⏱️ Temps', avant:'La famille passa d\'abord la journée à la mer,', trou:true, apres:'elle rentra à la maison en fin d\'après-midi.', options:['pourtant','car','puis','en revanche'], correct:2, explication:'"Puis" indique ce qui vient après dans le temps.'},
+  // ADDITION
+  {cat:'➕ Addition', avant:'Ce livre est passionnant.', trou:true, apres:'il est très bien illustré.', options:['Pourtant','Car','De plus','Donc'], correct:2, explication:'"De plus" ajoute une information supplémentaire à ce qui précède.'},
+  {cat:'➕ Addition', avant:'Le chat est doux et affectueux. Il est', trou:true, apres:'très facile à entretenir.', options:['pourtant','également','car','soudain'], correct:1, explication:'"Également" signifie "aussi" et ajoute une qualité supplémentaire.'},
+  {cat:'➕ Addition', avant:'Léa adore le sport. Elle aime', trou:true, apres:'lire et dessiner pendant son temps libre.', options:['pourtant','car','aussi','donc'], correct:2, explication:'"Aussi" ajoute une information complémentaire.'},
+  {cat:'➕ Addition', avant:'Ce pays est magnifique.', trou:true, apres:'ses habitants sont chaleureux et accueillants.', options:['Pourtant','Car','Soudain','De plus'], correct:3, explication:'"De plus" permet d\'ajouter un nouvel argument ou une nouvelle information.'},
+  {cat:'➕ Addition', avant:'Le chien de Tom est très intelligent.', trou:true, apres:'il a appris à ouvrir les portes tout seul.', options:['Pourtant','En effet','Donc','Ensuite'], correct:1, explication:'"En effet" introduit une précision ou une preuve qui confirme ce qui précède.'},
+  {cat:'➕ Addition', avant:'La météo était mauvaise.', trou:true, apres:'le match de football a été annulé.', options:['De plus','Pourtant','Soudain','Car'], correct:0, explication:'"De plus" ajoute une conséquence ou une information supplémentaire.'},
+  // OPPOSITION
+  {cat:'↔️ Opposition', avant:'Tom voulait aller jouer dehors,', trou:true, apres:'il pleuvait des cordes.', options:['donc','car','mais','ensuite'], correct:2, explication:'"Mais" introduit une opposition ou un obstacle.'},
+  {cat:'↔️ Opposition', avant:'Sarah avait beaucoup travaillé.', trou:true, apres:'ses résultats n\'étaient pas très bons.', options:['Donc','Car','Pourtant','Ensuite'], correct:2, explication:'"Pourtant" marque une opposition surprenante entre deux faits.'},
+  {cat:'↔️ Opposition', avant:'Paul aime le chocolat.', trou:true, apres:'il n\'en mange presque jamais pour rester en bonne santé.', options:['Car','Donc','Ensuite','Cependant'], correct:3, explication:'"Cependant" introduit une restriction ou une nuance par rapport à ce qui précède.'},
+  {cat:'↔️ Opposition', avant:'Le film était long.', trou:true, apres:'il était tellement captivant que personne ne vit le temps passer.', options:['Car','Donc','Pourtant','Ensuite'], correct:2, explication:'"Pourtant" exprime une opposition inattendue entre deux idées.'},
+  {cat:'↔️ Opposition', avant:'Julie préfère la ville.', trou:true, apres:'son frère rêve de vivre à la campagne.', options:['Car','Donc','Ensuite','En revanche'], correct:3, explication:'"En revanche" oppose deux idées ou deux personnes qui pensent différemment.'},
+  {cat:'↔️ Opposition', avant:'Max est très bavard en classe.', trou:true, apres:'il devient très timide dès qu\'il rencontre de nouvelles personnes.', options:['Car','Donc','Ensuite','En revanche'], correct:3, explication:'"En revanche" marque un contraste fort entre deux comportements.'},
+  {cat:'↔️ Opposition', avant:'Le lion est féroce et imposant.', trou:true, apres:'le chat est doux et familier.', options:['Car','Donc','En revanche','Ensuite'], correct:2, explication:'"En revanche" oppose deux réalités contrastées.'},
+  {cat:'↔️ Opposition', avant:'Malgré la fatigue,', trou:true, apres:'les joueurs continuèrent à courir jusqu\'au coup de sifflet final.', options:['car','donc','pourtant','ensuite'], correct:2, explication:'"Pourtant" exprime que quelque chose se passe malgré un obstacle.'},
+  // CAUSE
+  {cat:'🔍 Cause', avant:'Léo était épuisé', trou:true, apres:'il avait couru pendant deux heures sans s\'arrêter.', options:['donc','pourtant','ensuite','car'], correct:3, explication:'"Car" explique la raison — il était fatigué pour cette raison.'},
+  {cat:'🔍 Cause', avant:'La route était fermée', trou:true, apres:'des travaux avaient commencé la nuit précédente.', options:['donc','pourtant','parce que','ensuite'], correct:2, explication:'"Parce que" introduit la cause directe d\'un fait.'},
+  {cat:'🔍 Cause', avant:'', trou:false, apres:'il avait oublié son parapluie, Tom fut trempé jusqu\'aux os.', options:['Donc','Pourtant','Puisque','Ensuite'], correct:2, explication:'"Puisque" introduit une cause présentée comme évidente ou connue.'},
+  {cat:'🔍 Cause', avant:'Emma ne put pas participer au spectacle', trou:true, apres:'elle était malade ce jour-là.', options:['donc','pourtant','car','ensuite'], correct:2, explication:'"Car" introduit l\'explication d\'une situation.'},
+  {cat:'🔍 Cause', avant:'Les élèves étaient contents', trou:true, apres:'la maîtresse avait annulé le contrôle.', options:['donc','pourtant','ensuite','parce que'], correct:3, explication:'"Parce que" explique pourquoi les élèves étaient contents.'},
+  {cat:'🔍 Cause', avant:'', trou:false, apres:'il fait très chaud en été, il est important de bien s\'hydrater.', options:['Pourtant','Ensuite','Puisque','Donc'], correct:2, explication:'"Puisque" présente la chaleur comme une cause évidente.'},
+  {cat:'🔍 Cause', avant:'', trou:false, apres:'les hivers sont très froids dans cette région, les habitants portent des vêtements très chauds.', options:['Donc','Pourtant','Ensuite','Comme'], correct:3, explication:'"Comme" peut introduire une cause en début de phrase.'},
+  // CONSEQUENCE
+  {cat:'🎯 Conséquence', avant:'Il avait neigé toute la nuit.', trou:true, apres:'les routes étaient dangereuses le lendemain matin.', options:['Pourtant','Car','Donc','Ensuite'], correct:2, explication:'"Donc" introduit la conséquence logique de ce qui précède.'},
+  {cat:'🎯 Conséquence', avant:'Nina avait étudié très sérieusement.', trou:true, apres:'elle réussit son examen avec une très bonne note.', options:['Pourtant','Car','Ensuite','C\'est pourquoi'], correct:3, explication:'"C\'est pourquoi" introduit le résultat logique d\'une situation.'},
+  {cat:'🎯 Conséquence', avant:'La tempête avait été très violente.', trou:true, apres:'plusieurs arbres s\'étaient effondrés sur la route.', options:['Pourtant','Car','Ainsi','Ensuite'], correct:2, explication:'"Ainsi" introduit une conséquence ou un résultat.'},
+  {cat:'🎯 Conséquence', avant:'Le petit garçon avait mangé trop de bonbons. Il avait', trou:true, apres:'très mal au ventre.', options:['pourtant','car','donc','ensuite'], correct:2, explication:'"Donc" introduit la conséquence directe d\'une action.'},
+  {cat:'🎯 Conséquence', avant:'Les pompiers étaient arrivés très vite.', trou:true, apres:'l\'incendie fut rapidement maîtrisé.', options:['Pourtant','Car','Ensuite','C\'est pourquoi'], correct:3, explication:'"C\'est pourquoi" relie la cause à son effet.'},
+  {cat:'🎯 Conséquence', avant:'La fillette avait oublié son manteau. Elle avait', trou:true, apres:'très froid en rentrant de l\'école.', options:['pourtant','donc','car','ensuite'], correct:1, explication:'"Donc" exprime la conséquence logique d\'un oubli.'},
+  {cat:'🎯 Conséquence', avant:'Le soleil brillait fort.', trou:true, apres:'les enfants décidèrent de passer la journée à la piscine.', options:['Pourtant','Car','Alors','Ensuite'], correct:2, explication:'"Alors" introduit une décision prise en réponse à une situation.'},
+  // ILLUSTRATION
+  {cat:'🔁 Exemple', avant:'Les animaux de la ferme sont très utiles.', trou:true, apres:'les poules nous donnent des œufs chaque jour.', options:['Pourtant','Donc','Par exemple','Car'], correct:2, explication:'"Par exemple" introduit un exemple concret pour illustrer une idée.'},
+  {cat:'🔁 Exemple', avant:'Il existe de nombreuses façons de protéger la planète,', trou:true, apres:'éteindre les lumières ou trier ses déchets.', options:['pourtant','car','comme','donc'], correct:2, explication:'"Comme" introduit des exemples pour illustrer une idée générale.'},
+  {cat:'🔁 Exemple', avant:'Les sports d\'hiver sont très variés.', trou:true, apres:'on peut faire du ski, du patin à glace ou du snowboard.', options:['Pourtant','Car','Donc','Par exemple'], correct:3, explication:'"Par exemple" introduit des exemples concrets.'},
+  {cat:'🔁 Exemple', avant:'Certains métiers demandent beaucoup de courage,', trou:true, apres:'pompier, médecin urgentiste ou sauveteur.', options:['pourtant','comme','donc','car'], correct:1, explication:'"Comme" introduit des exemples pour illustrer l\'idée générale.'},
+];
+
+window.POEMES_DATA = {
+  cancre:{
+    id:'cancre', titre:'Le Cancre', auteur:'Jacques Prévert', annee:'1946',
+    emoji:'😄', couleur:'linear-gradient(135deg,#e65100,#ff6d00)', borderColor:'#e65100',
+    texte:"Il dit non avec la tête\nmais il dit oui avec le coeur\nil dit oui à ce qu'il aime\nil dit non au professeur\nil est debout\non le questionne\net tous les problèmes sont posés\nsoudain le fou rire le prend\net il efface tout\nles chiffres et les mots\nles dates et les noms\nles phrases et les pièges\net malgré les menaces du maître\nsous les huées des enfants prodiges\navec des craies de toutes les couleurs\nsur le tableau noir du malheur\nil dessine le visage du bonheur.",
+    questions:[
+      {q:"Que fait le cancre quand on lui pose des questions ?", options:["Il répond correctement à toutes les questions du professeur","Il est pris d'un fou rire et efface tout au tableau","Il sort de la classe sans demander la permission"], correct:1},
+      {q:"Que signifie il dit non avec la tête mais il dit oui avec le coeur ?", options:["Il est d'accord avec le professeur mais fait semblant de refuser","Il refuse ce qu'on lui impose mais suit ce qu'il aime vraiment","Il est trop timide pour répondre à voix haute en classe"], correct:1},
+      {q:"Que dessine le cancre à la fin du poème ?", options:["Le portrait du professeur pour se moquer de lui","Des figures géométriques pour résoudre les problèmes","Le visage du bonheur sur le tableau noir du malheur"], correct:2},
+    ],
+    vf:[
+      {q:"Les autres élèves encouragent le cancre quand il efface tout.", correct:1},
+      {q:"Le cancre utilise des craies de toutes les couleurs pour dessiner.", correct:0},
+    ],
+    figureStyle:{q:"Dans le poème, Prévert parle du tableau noir du malheur. Que veut-il dire ?", options:["Le tableau est sale et mal entretenu par le professeur","L'école représente la contrainte et la tristesse opposée au bonheur du cancre","Le tableau représente l'école que le cancre n'aime vraiment pas."], correct:2},
+    message:{q:"Quel est le message principal de ce poème ?", options:["Les bons élèves sont toujours plus heureux que les mauvais","Il vaut mieux écouter son professeur que suivre ses envies","Suivre ce qu'on aime vraiment est plus important que de réussir à l'école"], correct:2},
+  },
+  ecriture:{
+    id:'ecriture', titre:"Page d'écriture", auteur:'Jacques Prévert', annee:'1946',
+    emoji:'🐦', couleur:'linear-gradient(135deg,#1565c0,#1976d2)', borderColor:'#1565c0',
+    texte:"Deux et deux quatre\nquatre et quatre huit\nhuit et huit font seize...\nRépétez ! dit le maître\nDeux et deux quatre\nquatre et quatre huit\nhuit et huit font seize.\nMais voilà l'oiseau-lyre\nqui passe dans le ciel\nl'enfant le voit\nl'enfant l'entend\nl'enfant l'appelle :\nSauve-moi\njoue avec moi\noiseau !\nAlors l'oiseau descend\net joue avec l'enfant\nDeux et deux quatre...\nRépétez ! dit le maître\net l'enfant joue\nl'oiseau joue avec lui...\nQuatre et quatre huit\nhuit et huit font seize\net seize et seize qu'est-ce qu'ils font ?\nIls ne font rien seize et seize\net surtout pas trente-deux\nde toute façon\net ils s'en vont.\nL'enfant a caché l'oiseau dans son pupitre\net tous les enfants\nentendent sa chanson\net tous les enfants\nentendent la musique\net huit et huit à leur tour s'en vont\net quatre et quatre et deux et deux\nà leur tour fichent le camp\net un et un ne font ni une ni deux\nun à un s'en vont également.\nEt l'oiseau-lyre joue\net l'enfant chante\net le professeur crie :\nQuand vous aurez fini de faire le pitre !\nMais tous les autres enfants\nécoutent la musique\net les murs de la classe\ns'écroulent tranquillement.\nEt les vitres redeviennent sable\nl'encre redevient eau\nles pupitres redeviennent arbres\nla craie redevient falaise\nle porte-plume redevient oiseau.",
+    questions:[
+      {q:"Que fait l'enfant quand l'oiseau-lyre arrive dans la classe ?", options:["Il continue à répéter ses tables de multiplication sagement","Il cache l'oiseau dans son pupitre et joue avec lui","Il attrape l'oiseau et le montre au professeur"], correct:1},
+      {q:"Que se passe-t-il avec les chiffres quand l'oiseau chante ?", options:["Les chiffres deviennent de plus en plus grands et compliqués","Les chiffres s'envolent et disparaissent un à un","Les chiffres se transforment en lettres sur le tableau"], correct:1},
+      {q:"Que devient la craie à la fin du poème ?", options:["Elle tombe par terre et se brise en mille morceaux","Elle redevient un oiseau","Elle redevient de la falaise blanche au bord de la mer"], correct:1},
+    ],
+    vf:[
+      {q:"Seul l'enfant entend la chanson de l'oiseau, les autres élèves continuent à travailler.", correct:1},
+      {q:"À la fin du poème, les murs de la classe s'écroulent.", correct:0},
+    ],
+    figureStyle:{q:"À la fin du poème, l'encre redevient eau, les pupitres redeviennent arbres, la craie redevient oiseau. Que veut dire Prévert ?", options:["La classe prend feu et tout brûle à cause de l'oiseau","La nature reprend ses droits et libère les enfants de l'école","L'oiseau est en réalité un magicien qui transforme les objets"], correct:1},
+    message:{q:"Quel message Prévert veut-il faire passer dans ce poème ?", options:["Il faut toujours bien écouter son professeur et apprendre ses leçons","La liberté et la nature sont plus importantes que les règles imposées à l'école","Les oiseaux sont dangereux car ils perturbent le travail en classe"], correct:1},
+  },
+  dormeur:{
+    id:'dormeur', titre:'Le Dormeur du val', auteur:'Arthur Rimbaud', annee:'1870',
+    emoji:'🌿', couleur:'linear-gradient(135deg,#2e7d32,#388e3c)', borderColor:'#2e7d32',
+    texte:"C'est un trou de verdure où chante une rivière\nAccrochant follement aux herbes des haillons\nD'argent ; où le soleil, de la montagne fière,\nLuit : c'est un petit val qui mousse de rayons.\n\nUn soldat jeune, bouche ouverte, tête nue,\nEt la nuque baignant dans le frais cresson bleu,\nDort ; il est étendu dans l'herbe, sous la nue,\nPâle dans son lit vert où la lumière pleut.\n\nLes pieds dans les glaïeuls, il dort. Souriant comme\nSourirait un enfant malade, il fait un somme :\nNature, berce-le chaudement : il a froid.\n\nLes parfums ne font pas frissonner sa narine ;\nIl dort dans le soleil, la main sur sa poitrine,\nTransquille. Il a deux trous rouges au côté droit.",
+    questions:[
+      {q:"Où se passe la scène décrite dans ce poème ?", options:["Dans une tranchée boueuse au milieu d'un champ de bataille","Dans un val verdoyant traversé par une rivière ensoleillée","Dans une forêt sombre et froide au bord d'un lac"], correct:1},
+      {q:"Comment le soldat est-il décrit au début du poème ?", options:["Il court dans la prairie en tenant son fusil","Il est allongé dans l'herbe, la bouche ouverte, la tête nue","Il est assis contre un arbre, les yeux grands ouverts"], correct:1},
+      {q:"Que découvre-t-on à la toute dernière ligne du poème ?", options:["Que le soldat rêve d'une belle journée d'été dans la nature","Que le soldat s'est endormi après une longue marche épuisante","Que le soldat est en réalité mort, blessé au côté droit"], correct:2},
+    ],
+    vf:[
+      {q:"Rimbaud décrit la nature de façon triste et sombre pour annoncer la mort du soldat.", correct:1},
+      {q:"Le soldat a les pieds dans les glaïeuls.", correct:0},
+    ],
+    figureStyle:{q:"Rimbaud compare l'herbe à un lit vert. Qu'est-ce que cette image exprime ?", options:["L'herbe est si haute qu'elle cache complètement le soldat endormi","La nature accueille tendrement le soldat comme dans un vrai lit","Le soldat a fabriqué un lit de camp avec des herbes coupées"], correct:1},
+    message:{q:"Quel est l'effet produit par la révélation finale du poème ?", options:["Le lecteur est soulagé car il pensait que le soldat était malade","Le lecteur est surpris et choqué car toute la beauté décrite cachait la mort","Le lecteur est triste mais s'y attendait car le poème donnait des indices clairs"], correct:1},
+  },
+  sorciere:{
+    id:'sorciere', titre:'Drôle de bonne femme', auteur:'Maurice Carême', annee:'',
+    emoji:'🧙', couleur:'linear-gradient(135deg,#6a1b9a,#8e24aa)', borderColor:'#6a1b9a',
+    texte:"Chapeau pointu et gros derrière,\nLongs doigts crochus et sales manières,\nCheveux grisâtres longs jusqu'à terre,\nElle est comme ça Marie-Mémère !\n\nBave de crapaud et ver de terre,\nAraignée noire et feuille de lierre,\nAjouter un pot de poussière,\nVoilà la recette qu'elle préfère.\n\nEt son balai qui fend les airs,\nQui marche avant, qui marche arrière,\nC'est pour aller voir ses commères\nOu jeter des sorts sur la terre.\n\nChapeau pointu et gros derrière,\nMarie-Mémère est une sorcière,\nQui habite loin d'ici, j'espère !",
+    questions:[
+      {q:"Comment s'appelle la sorcière décrite dans ce poème ?", options:["Marie-Madeleine","Marie-Mémère","Marie-Mystère"], correct:1},
+      {q:"À quoi sert le balai de la sorcière selon le poème ?", options:["À nettoyer sa maison et à préparer ses potions magiques","À voler dans les airs pour voir ses amies ou jeter des sorts","À effrayer les enfants qui passent devant sa maison"], correct:1},
+      {q:"Quels ingrédients la sorcière utilise-t-elle dans sa recette préférée ?", options:["Des herbes fraîches, des fleurs séchées et de la poudre d'étoile","De la bave de crapaud, des vers de terre, une araignée et de la poussière","Du sang de dragon, des ailes de chauve-souris et des plumes de hibou"], correct:1},
+    ],
+    vf:[
+      {q:"La sorcière a les cheveux courts et soignés.", correct:1},
+      {q:"Le poète dit qu'il espère que Marie-Mémère habite loin de chez lui.", correct:0},
+    ],
+    figureStyle:{q:"Dans le poème, presque tous les vers se terminent par le son ère. Comment appelle-t-on ce procédé poétique ?", options:["Une métaphore","Une rime","Une comparaison"], correct:1},
+    message:{q:"Quel est le ton de ce poème ?", options:["Effrayant et mystérieux — le poète veut faire peur au lecteur","Triste et mélancolique — le poète plaint la pauvre sorcière","Amusant et humoristique — le poète décrit la sorcière de façon comique"], correct:2},
+  },
+};
+
+window.CONTES_DATA = {
+  chatbotte:{
+    id:'chatbotte', titre:'Le Chat Botté', auteur:'Charles Perrault',
+    emoji:'🐱', couleur:'linear-gradient(135deg,#8b3a00,#e07b00)', borderColor:'#e07b00',
+    sections:[
+      {label:'Situation initiale', icon:'🟡', color:'#f0a000', texte:"Il était une fois un meunier qui, en mourant, ne laissa à ses trois fils que son moulin, son âne et son chat. L'aîné reçut le moulin, le second eut l'âne, et le benjamin n'hérita que du chat. Le jeune homme était bien triste : comment allait-il survivre avec un simple animal ? Mais le chat, qui était fort malin, lui dit : « Ne vous inquiétez pas, maître. Donnez-moi un sac et faites-moi faire une paire de bottes, et vous verrez que vous n'êtes pas si mal loti que vous le croyez. »"},
+      {label:'Élément perturbateur', icon:'🔴', color:'#e74c3c', texte:"Le jeune homme fit confiance à son chat. Celui-ci chaussa ses bottes, prit son sac, y mit des herbes et attendit que des lapins viennent s'y prendre. Il porta ensuite sa prise au roi en disant : « Sire, voici un présent de la part de mon maître, le marquis de Carabas. » Le roi, flatté, accepta le cadeau avec plaisir. Le chat répéta cette ruse plusieurs fois, apportant toujours des cadeaux au roi au nom de ce mystérieux marquis."},
+      {label:'Péripéties', icon:'🟠', color:'#e67e22', texte:"Un jour, le chat apprit que le roi allait se promener en carrosse avec sa fille. Il dit à son maître : « Baignez-vous dans la rivière ! » Pendant que le jeune homme se baignait, le carrosse passa. Le chat cria : « Au secours ! Mon maître, le marquis de Carabas, se noie ! » Le roi fit sauver le jeune homme et l'habilla de beaux vêtements. La princesse en tomba amoureuse. Le chat courut en avant et ordonna aux paysans de dire que ces terres appartenaient au marquis. Enfin, il arriva au château d'un terrible ogre qui pouvait se transformer en n'importe quel animal. « Pouvez-vous vous changer en souris ? » demanda-t-il. L'ogre, fier de ses pouvoirs, se transforma en souris. Le chat l'attrapa et le dévora aussitôt."},
+      {label:'Résolution', icon:'🟢', color:'#27ae60', texte:"Quand le carrosse royal arriva au château, le chat accueillit le roi en disant : « Bienvenue dans le château de mon maître, le marquis de Carabas ! » Le roi, impressionné par le château et les terres, proposa sa fille en mariage au jeune homme. Celui-ci accepta avec joie."},
+      {label:'Situation finale', icon:'🔵', color:'#2980b9', texte:"Le marquis de Carabas épousa la princesse et devint grand seigneur. Quant au chat, il ne courut plus jamais après les souris — sauf pour s'amuser."},
+    ],
+    questions:[
+      {q:"Que reçoit le fils cadet en héritage de son père ?", options:["Le moulin et l'âne","Uniquement le chat","Les bottes et le sac"], correct:1},
+      {q:"Comment le chat convainc-il le roi que son maître est un grand seigneur ?", options:["Il lui montre les terres et le château dès le début","Il lui apporte régulièrement des cadeaux au nom du marquis de Carabas","Il organise un grand banquet dans le château de l'ogre"], correct:1},
+      {q:"Comment le chat se débarrasse-t-il de l'ogre ?", options:["Il le pousse par la fenêtre du château pendant son sommeil","Il le défie en duel avec son épée","Il le convainc de se transformer en souris et le dévore"], correct:2},
+      {q:"Pourquoi la princesse tombe-t-elle amoureuse du jeune homme ?", options:["Parce qu'elle l'admirait depuis longtemps de loin","Parce qu'il la sauva d'un danger lors de sa promenade","Parce qu'elle le trouva beau après qu'il fut habillé par le roi"], correct:2},
+    ],
+    vf:[
+      {q:"Le chat révèle au roi que son maître est en réalité le fils d'un simple meunier.", correct:1},
+      {q:"L'ogre peut se transformer en différents animaux.", correct:0},
+      {q:"Le fils cadet reçoit le moulin en héritage de son père.", correct:1},
+    ],
+    resumes:[
+      {texte:"Un jeune homme reçoit un chat en héritage. Grâce à la ruse et à l'intelligence de l'animal, il épouse la fille du roi et devient grand seigneur.", correct:true},
+      {texte:"Un jeune homme reçoit un chat en héritage. Il part à l'aventure avec lui et, après avoir vaincu lui-même un terrible ogre, il épouse la fille du roi.", correct:false},
+      {texte:"Un jeune homme reçoit un chat en héritage. Le chat vole les richesses d'un ogre pour les offrir au roi, ce qui permet à son maître d'épouser la princesse.", correct:false},
+    ],
+    ordre:[
+      "Le chat convainc l'ogre de se transformer en souris et le dévore.",
+      "Le fils cadet reçoit uniquement un chat en héritage de son père.",
+      "Le roi propose sa fille en mariage au marquis de Carabas.",
+      "Le chat apporte des cadeaux au roi au nom du marquis de Carabas.",
+      "Le jeune homme fait semblant de se noyer et est sauvé par le roi.",
+      "Le chat demande à son maître des bottes et un sac.",
+    ],
+    ordreCorrect:[5,1,6,2,3,4],
+  },
+  breme:{
+    id:'breme', titre:'Les Musiciens de Brême', auteur:'Frères Grimm',
+    emoji:'🎵', couleur:'linear-gradient(135deg,#1a3a5c,#2980b9)', borderColor:'#2980b9',
+    sections:[
+      {label:'Situation initiale', icon:'🟡', color:'#f0a000', texte:"Il était une fois un âne qui avait travaillé toute sa vie pour son maître. Devenu vieux et trop faible pour porter des charges, il entendit son maître parler de s'en débarrasser. Sans attendre, l'âne prit la route en direction de Brême, où il espérait devenir musicien. En chemin, il rencontra un chien de chasse, lui aussi chassé par son maître parce qu'il était trop vieux pour courir. « Viens avec moi à Brême, dit l'âne, nous ferons de la musique ensemble ! » Le chien accepta."},
+      {label:'Élément perturbateur', icon:'🔴', color:'#e74c3c', texte:"Plus loin, ils trouvèrent un chat assis au bord du chemin, l'air bien malheureux. Sa maîtresse voulait le noyer car il ne chassait plus les souris. « Viens avec nous ! » dirent l'âne et le chien. Le chat les rejoignit. Enfin, ils aperçurent un coq perché sur un portail, chantant à tue-tête. Son maître voulait le cuisiner pour le repas du lendemain. « Tu as une belle voix ! Joins-toi à nous ! » Et le coq sauta sur le chemin avec eux. Les quatre compagnons marchèrent longtemps vers Brême."},
+      {label:'Péripéties', icon:'🟠', color:'#e67e22', texte:"Comme la nuit tombait, le coq aperçut au loin une lumière. Ils découvrirent une maison bien éclairée, avec une table couverte de bonnes choses — et autour, des brigands qui festoyaient. Ils décidèrent de les chasser. L'âne posa ses pattes sur le rebord de la fenêtre, le chien sauta sur le dos de l'âne, le chat grimpa sur le chien, et le coq se percha tout en haut. Puis, au signal, ils firent le plus grand vacarme possible. Épouvantés, les brigands s'enfuirent. Plus tard dans la nuit, un brigand revint vérifier. Dans l'obscurité, le chat lui griffa le visage, le chien le mordit à la jambe, l'âne lui donna un coup de sabot et le coq se mit à chanter. Le brigand s'enfuit terrorisé et raconta qu'une horrible sorcière, un géant et un juge crieur l'avaient attaqué. Les brigands ne revinrent jamais."},
+      {label:'Résolution', icon:'🟢', color:'#27ae60', texte:"Les quatre animaux s'installèrent définitivement dans la maison. Ils avaient trouvé un foyer confortable et chaleureux où ils pouvaient vivre en paix, ensemble."},
+      {label:'Situation finale', icon:'🔵', color:'#2980b9', texte:"Ils n'allèrent finalement jamais à Brême — ils n'en avaient plus besoin. Mais on dit que si tu passes par là une nuit, tu peux encore entendre au loin le braillement d'un âne, l'aboiement d'un chien, le miaulement d'un chat et le chant d'un coq."},
+    ],
+    questions:[
+      {q:"Pourquoi l'âne quitte-t-il son maître ?", options:["Parce qu'il rêve depuis toujours de devenir musicien à Brême","Parce que son maître veut s'en débarrasser car il est trop vieux","Parce qu'il se dispute avec son maître après une longue journée de travail"], correct:1},
+      {q:"Combien d'animaux composent le groupe qui marche vers Brême ?", options:["Trois","Cinq","Quatre"], correct:2},
+      {q:"Comment les animaux parviennent-ils à faire fuir les brigands ?", options:["En mettant le feu à la maison pour les obliger à sortir","En se superposant et en faisant un vacarme terrible à la fenêtre","En attaquant les brigands un par un pendant leur sommeil"], correct:1},
+      {q:"Pourquoi le brigand envoyé vérifier la maison repart-il terrorisé ?", options:["Il voit les quatre animaux danser autour d'un feu","Il entend une voix mystérieuse lui ordonner de partir","Il est griffé, mordu, frappé et surpris par le chant du coq dans le noir"], correct:2},
+    ],
+    vf:[
+      {q:"Les quatre animaux arrivent finalement à Brême et y deviennent musiciens célèbres.", correct:1},
+      {q:"C'est le coq qui aperçoit la lumière de la maison des brigands depuis son perchoir.", correct:0},
+      {q:"Les brigands reviennent le lendemain matin pour reprendre leur maison.", correct:1},
+    ],
+    resumes:[
+      {texte:"Quatre vieux animaux, chassés par leurs maîtres, s'associent pour aller à Brême. En chemin, ils chassent des brigands de leur maison grâce à leur ruse et s'y installent pour toujours.", correct:true},
+      {texte:"Quatre animaux musiciens partent pour Brême, chassent des brigands grâce à leur musique et deviennent célèbres dans toute la région.", correct:false},
+      {texte:"Quatre vieux animaux, chassés par leurs maîtres, partent pour Brême. Ils volent la maison de brigands endormis et partagent leur butin avec les habitants du village.", correct:false},
+    ],
+    ordre:[
+      "Les animaux se superposent et font fuir les brigands par leur vacarme.",
+      "L'âne quitte son maître qui veut s'en débarrasser et part vers Brême.",
+      "Un brigand revient vérifier la maison mais repart terrorisé.",
+      "Le chat, le chien et le coq rejoignent l'âne sur la route.",
+      "Les quatre animaux s'installent définitivement dans la maison.",
+      "Le coq aperçoit une lumière et ils découvrent la maison des brigands.",
+    ],
+    ordreCorrect:[4,1,5,2,6,3],
+  }
+};
+
+window.TEXTES_DESCRIPTIFS_DATA = {
+  libraire: {
+    id:'libraire',
+    titre:'Le vieux libraire',
+    type:'🧑 Personnage',
+    emoji:'📚',
+    couleur:'linear-gradient(135deg,#6b2737,#c0392b)',
+    bordure:'#c0392b',
+    texte:`Derrière son comptoir encombré de livres empilés jusqu'au plafond, Monsieur Anselme semblait faire partie du décor, comme un meuble oublié là depuis des siècles. C'était un vieil homme voûté aux épaules étroites, dont le dos courbé lui donnait l'allure d'un <strong>point d'interrogation vivant</strong>. Ses cheveux blancs, fins comme de la soie, formaient une couronne clairsemée autour de son crâne rose et luisant. Son visage, creusé de rides profondes, ressemblait à une <strong>vieille carte géographique</strong>. Deux petits yeux noisette, vifs et malicieux, brillaient derrière des lunettes rondes perchées au bout d'un nez en forme de bec de canard. Ses mains, noueuses et tachées d'encre, caressaient les couvertures des livres avec une tendresse infinie, comme s'il s'agissait d'êtres vivants. Toujours vêtu d'un gilet de laine bordeaux élimé aux coudes, il dégageait une douce odeur de <strong>papier ancien et de café froid</strong>.`,
+    questions:[
+      {q:"Comment est décrit le dos de Monsieur Anselme ?", options:["Droit et élégant comme celui d'un militaire","Courbé comme un point d'interrogation","Penché sur le côté à cause d'une blessure ancienne"], correct:1},
+      {q:"À quoi le visage de Monsieur Anselme est-il comparé ?", options:["À une vieille carte géographique","À un parchemin jauni par le temps","À une pomme ridée séchée au soleil"], correct:0},
+      {q:"Quelle odeur se dégage de Monsieur Anselme ?", options:["Une odeur de tabac froid et de cire à parquet","Une odeur de lavande et de vieux bois vernis","Une odeur de papier ancien et de café froid"], correct:2},
+      {q:"Comment Monsieur Anselme traite-t-il les livres ?", options:["Il les empile n'importe comment sans y faire attention","Il les caresse avec tendresse comme s'ils étaient vivants","Il les range méthodiquement par ordre alphabétique"], correct:1},
+      {q:"Les yeux de Monsieur Anselme sont ternes et fatigués.", options:["Vrai","Faux"], correct:1}
+    ]
+  },
+  foret: {
+    id:'foret',
+    titre:'La forêt en hiver',
+    type:'🌲 Lieu',
+    emoji:'🌨️',
+    couleur:'linear-gradient(135deg,#1a3a2a,#2d7a4a)',
+    bordure:'#2d7a4a',
+    texte:`Au cœur de la forêt ardennaise, l'hiver avait tout recouvert de son grand manteau blanc. Les sapins, ployant sous le poids de la neige fraîche, formaient de hautes silhouettes immobiles, pareilles à des <strong>géants endormis</strong>. Entre leurs troncs sombres et rugueux, la lumière filtrait à peine, teintant la neige de <strong>reflets bleutés et argentés</strong>. Pas un bruit. Pas un souffle. Seul le craquement sourd des branches sous le gel brisait parfois ce silence absolu. Le sol, recouvert d'une épaisse couche blanche et poudreuse, gardait les traces de quelques pas d'animaux — une ligne de petites empreintes rondes qui disparaissait entre les arbres. Une odeur fraîche et piquante de <strong>résine et de froid</strong> flottait dans l'air. Au loin, un ruisseau encore libre de glace murmurait doucement, comme pour rappeler que la vie n'avait pas tout à fait disparu sous la neige.`,
+    questions:[
+      {q:"À quoi les sapins couverts de neige sont-ils comparés ?", options:["À des fantômes blancs flottant dans la brume","À des géants endormis","À des soldats alignés au garde-à-vous"], correct:1},
+      {q:"Quelle couleur prend la neige à cause de la lumière filtrée ?", options:["Des reflets dorés et orangés comme au coucher du soleil","Des reflets roses et mauves comme à l'aube","Des reflets bleutés et argentés"], correct:2},
+      {q:"Quel est le seul bruit décrit dans la forêt ?", options:["Le vent qui siffle entre les branches des sapins","Le craquement des branches sous le gel","Le chant lointain d'un oiseau dans les hauteurs"], correct:1},
+      {q:"Que rappelle le ruisseau au fond de la forêt ?", options:["Que le printemps est tout proche et que la neige va fondre","Que la vie n'a pas tout à fait disparu sous la neige","Que des animaux sont venus s'y désaltérer récemment"], correct:1},
+      {q:"La forêt décrite se trouve dans les Ardennes.", options:["Vrai","Faux"], correct:0}
+    ]
+  },
+  renard: {
+    id:'renard',
+    titre:'Le renard',
+    type:'🦊 Animal',
+    emoji:'🦊',
+    couleur:'linear-gradient(135deg,#8b3a00,#e07b00)',
+    bordure:'#e07b00',
+    texte:`Tapi au bord du champ enneigé, le renard attendait, immobile comme une <strong>statue de roux et de feu</strong>. Son pelage épais, d'un beau <strong>roux flamboyant mêlé de blanc</strong> sur le ventre et le bout des pattes, luisait doucement sous le soleil d'hiver. Sa longue queue touffue, presque aussi grande que son corps, était enroulée autour de ses pattes comme une <strong>écharpe de fourrure</strong>. Son museau fin et pointu, frémissant légèrement, capturait les moindres odeurs portées par le vent. Ses oreilles triangulaires, dressées bien droites sur sa tête, pivotaient comme de petits <strong>radars</strong> à l'affût du moindre son. Ses yeux en amande, d'un <strong>jaune ambré</strong> presque lumineux, fixaient un point invisible dans la neige. Soudain, sans crier gare, il bondit en arc de cercle et plongea le museau dans la neige pour en ressortir avec une souris dans les mâchoires, les oreilles fièrement dressées, l'air satisfait.`,
+    questions:[
+      {q:"De quelle couleur est le pelage du renard ?", options:["Brun foncé sur le dos et beige clair sur le ventre","Gris argenté avec des reflets blancs sous la lumière","Roux flamboyant mêlé de blanc sur le ventre et les pattes"], correct:2},
+      {q:"À quoi la queue du renard est-elle comparée ?", options:["À un plumet de cavalier planté sur son arrière-train","À une écharpe de fourrure enroulée autour de ses pattes","À un balai retourné traînant sur la neige"], correct:1},
+      {q:"Comment sont décrites les oreilles du renard ?", options:["Rondes et poilues, légèrement tombantes sur les côtés","Triangulaires et dressées, pivotant comme des radars","Plates et collées contre la tête pour résister au froid"], correct:1},
+      {q:"Comment le renard attrape-t-il sa proie ?", options:["Il la pourchasse en courant très vite dans la neige","Il bondit en arc de cercle et plonge le museau dans la neige","Il creuse dans la neige avec ses pattes avant"], correct:1},
+      {q:"Les yeux du renard sont décrits comme noirs et brillants.", options:["Vrai","Faux"], correct:1}
+    ]
+  }
+};
+
+window.SYNONYMES_POOL = [
+  {phrase:"La salle de classe était ___ ce matin-là.", mot:"silencieuse", options:["vide","calme","sombre","froide"], correct:1, explication:'"Silencieuse" signifie sans bruit — "calme" est le synonyme le plus proche.'},
+  {phrase:"Le chemin de montagne était ___.", mot:"périlleux", options:["long","escarpé","dangereux","étroit"], correct:2, explication:'"Périlleux" signifie qui présente des dangers.'},
+  {phrase:"L\'explorateur était ___ après sa longue marche.", mot:"épuisé", options:["blessé","affamé","découragé","éreinté"], correct:3, explication:'"Épuisé" et "éreinté" signifient tous les deux extrêmement fatigué.'},
+  {phrase:"Le vieillard avait un regard ___.", mot:"bienveillant", options:["doux","triste","sévère","vif"], correct:0, explication:'"Bienveillant" signifie qui veut du bien aux autres — proche de "doux".'},
+  {phrase:"La rivière était ___ après les pluies.", mot:"limpide", options:["froide","profonde","transparente","agitée"], correct:2, explication:'"Limpide" signifie parfaitement clair et transparent.'},
+  {phrase:"L\'enfant était ___ face au chien.", mot:"intrépide", options:["méfiant","courageux","curieux","surpris"], correct:1, explication:'"Intrépide" signifie qui n\'a peur de rien.'},
+  {phrase:"Le discours du maire était ___.", mot:"ennuyeux", options:["long","confus","monotone","incompréhensible"], correct:2, explication:'"Monotone" désigne quelque chose d\'ennuyeux car toujours pareil.'},
+  {phrase:"La forêt semblait ___ à la tombée de la nuit.", mot:"mystérieuse", options:["inquiétante","silencieuse","dense","sombre"], correct:0, explication:'"Mystérieuse" et "inquiétante" évoquent tous les deux quelque chose d\'étrange.'},
+  {phrase:"Le repas préparé par grand-mère était ___.", mot:"savoureux", options:["copieux","chaud","délicieux","original"], correct:2, explication:'"Savoureux" et "délicieux" signifient tous les deux qui a très bon goût.'},
+  {phrase:"Le scientifique était ___ dans son travail.", mot:"méthodique", options:["rigoureux","rapide","passionné","expérimenté"], correct:0, explication:'"Méthodique" et "rigoureux" désignent quelqu\'un qui travaille avec ordre et précision.'},
+  {phrase:"Le chat ___ les oiseaux depuis la fenêtre.", mot:"observait", options:["guettait","épiait","cherchait","attendait"], correct:1, explication:'"Épier" signifie observer attentivement et discrètement.'},
+  {phrase:"Le vent ___ les feuilles des arbres.", mot:"agitait", options:["secouait","arrachait","balayait","courbait"], correct:0, explication:'"Agiter" et "secouer" signifient tous les deux faire bouger dans tous les sens.'},
+  {phrase:"Le voleur ___ le collier dans la vitrine.", mot:"déroba", options:["cassa","subtilisa","remarqua","prit"], correct:1, explication:'"Dérober" et "subtiliser" signifient voler habilement.'},
+  {phrase:"Le professeur ___ les élèves sur la leçon.", mot:"interrogea", options:["questionna","félicita","rassembla","nota"], correct:0, explication:'"Interroger" et "questionner" signifient poser des questions.'},
+  {phrase:"L\'enfant ___ pour ne pas réveiller son frère.", mot:"chuchotait", options:["criait","parlait","murmurait","appelait"], correct:2, explication:'"Chuchoter" et "murmurer" signifient parler très doucement.'},
+  {phrase:"Le cheval ___ à travers la prairie.", mot:"galopait", options:["trottait","avançait","fonçait","courait"], correct:2, explication:'"Galoper" signifie courir très vite — "fonçait" est le synonyme le plus proche.'},
+  {phrase:"La mère ___ doucement son bébé.", mot:"berçait", options:["portait","balançait","câlinait","apaisait"], correct:1, explication:'"Bercer" et "balancer" désignent le même mouvement doux et régulier.'},
+  {phrase:"Le détective ___ les indices avec soin.", mot:"examina", options:["nota","chercha","analysa","découvrit"], correct:2, explication:'"Examiner" et "analyser" signifient tous les deux étudier attentivement.'},
+  {phrase:"Le chevalier fit preuve d\'une grande ___.", mot:"bravoure", options:["force","vaillance","loyauté","adresse"], correct:1, explication:'"Bravoure" et "vaillance" désignent tous les deux le courage au combat.'},
+  {phrase:"La ___ du comte était immense.", mot:"demeure", options:["résidence","forteresse","propriété","construction"], correct:0, explication:'"Demeure" et "résidence" désignent tous les deux le lieu où l\'on habite.'},
+  {phrase:"L\'enfant observait la scène avec ___.", mot:"étonnement", options:["joie","intérêt","stupéfaction","plaisir"], correct:2, explication:'"Étonnement" et "stupéfaction" expriment la surprise, mais "stupéfaction" est plus fort.'},
+  {phrase:"La ___ de la forêt rendait la marche difficile.", mot:"pénombre", options:["demi-obscurité","humidité","densité","froideur"], correct:0, explication:'"Pénombre" désigne une lumière faible, une demi-obscurité.'},
+  {phrase:"Le rescapé avait ___ toute la nuit dans la forêt.", mot:"erré", options:["dormi","couru","vagabondé","cherché"], correct:2, explication:'"Errer" et "vagabonder" signifient se déplacer sans but précis.'},
+  {phrase:"La vieille dame avait un sourire ___.", mot:"malicieux", options:["espiègle","triste","timide","chaleureux"], correct:0, explication:'"Malicieux" et "espiègle" désignent quelqu\'un de légèrement moqueur et joueur.'},
+  {phrase:"Le torrent ___ la montagne avec fracas.", mot:"dévalait", options:["traversait","dégringolait","descendait","coulait"], correct:1, explication:'"Dévaler" et "dégringoler" signifient descendre très rapidement.'},
+  {phrase:"L\'enseignant était ___ avec ses élèves.", mot:"exigeant", options:["sévère","strict","injuste","impatient"], correct:1, explication:'"Exigeant" et "strict" désignent quelqu\'un qui demande beaucoup d\'efforts.'},
+  {phrase:"Le blessé ressentait une ___ douleur dans le bras.", mot:"vive", options:["longue","terrible","intense","profonde"], correct:2, explication:'"Vive" et "intense" qualifient tous les deux une douleur forte et immédiate.'},
+  {phrase:"Le paysage était ___ sous le soleil brûlant.", mot:"aride", options:["desséché","plat","rocheux","brûlant"], correct:0, explication:'"Aride" et "desséché" décrivent un terrain privé d\'eau et de végétation.'},
+  {phrase:"L\'aventurier ___ la falaise sans difficulté.", mot:"gravit", options:["escalada","traversa","contourna","atteignit"], correct:0, explication:'"Gravir" et "escalader" signifient tous les deux monter en s\'aidant des mains.'},
+  {phrase:"La nouvelle se ___ rapidement dans le village.", mot:"répandit", options:["arriva","circula","se propagea","surprit"], correct:2, explication:'"Se répandre" et "se propager" signifient se diffuser dans toutes les directions.'},
+  {phrase:"Le roi était réputé pour sa grande ___.", mot:"clémence", options:["sagesse","puissance","indulgence","générosité"], correct:2, explication:'"Clémence" et "indulgence" désignent la disposition à pardonner.'},
+  {phrase:"La fillette ___ dans le froid de la nuit.", mot:"frissonnait", options:["grelottait","tremblait","soufflait","pleurait"], correct:1, explication:'"Frissonner" et "trembler" désignent tous les deux un mouvement involontaire causé par le froid.'},
+  {phrase:"Emma ___ le coucher de soleil.", mot:"contemplait", options:["photographiait","admirait","regardait longuement","observait"], correct:2, explication:'"Contempler" signifie regarder longuement et avec admiration.'},
+  {phrase:"Le soleil ___ derrière les nuages.", mot:"disparaissait", options:["se cachait","brillait","descendait","s\'éteignait"], correct:0, explication:'"Disparaître" et "se cacher" expriment ici la même idée.'},
+  {phrase:"Le discours fut accueilli avec ___.", mot:"enthousiasme", options:["attention","respect","applaudissements","ferveur"], correct:3, explication:'"Enthousiasme" et "ferveur" expriment tous les deux une passion intense.'},
+];
+
+window.ANTONYMES_POOL = [
+  {phrase:"Le chemin était ___ entre les deux maisons.", mot:"étroit", options:["court","sombre","large","courbe"], correct:2, explication:'L\'antonyme d\'"étroit" est "large" — qui a beaucoup d\'espace.'},
+  {phrase:"La réponse de l\'élève était ___.", mot:"pertinente", options:["courte","hors sujet","incorrecte","confuse"], correct:1, explication:'L\'antonyme de "pertinente" est "hors sujet" — qui ne convient pas.'},
+  {phrase:"Le vieux chêne était ___.", mot:"robuste", options:["vieux","immense","seul","fragile"], correct:3, explication:'L\'antonyme de "robuste" est "fragile" — qui manque de solidité.'},
+  {phrase:"La décision du juge était ___.", mot:"sévère", options:["rapide","injuste","indulgente","incomprise"], correct:2, explication:'L\'antonyme de "sévère" est "indulgente" — qui pardonne facilement.'},
+  {phrase:"L\'appartement était ___.", mot:"exigu", options:["spacieux","lumineux","agréable","moderne"], correct:0, explication:'L\'antonyme d\'"exigu" (très petit) est "spacieux" (très grand).'},
+  {phrase:"Le discours du président était ___.", mot:"ambigu", options:["long","ennuyeux","clair","important"], correct:2, explication:'L\'antonyme d\'"ambigu" (que l\'on peut interpréter de plusieurs façons) est "clair".'},
+  {phrase:"La soupe servie était ___.", mot:"brûlante", options:["salée","mauvaise","légère","froide"], correct:3, explication:'L\'antonyme de "brûlante" est "froide".'},
+  {phrase:"La petite fille était ___ en présence des adultes.", mot:"timide", options:["gentille","audacieuse","curieuse","souriante"], correct:1, explication:'L\'antonyme de "timide" est "audacieuse" — qui ose facilement.'},
+  {phrase:"Le sportif était ___ sur le terrain.", mot:"agile", options:["rapide","fort","maladroit","lent"], correct:2, explication:'L\'antonyme d\'"agile" (souple et rapide) est "maladroit".'},
+  {phrase:"La forêt était ___ dans cette région.", mot:"dense", options:["clairsemée","humide","sombre","silencieuse"], correct:0, explication:'L\'antonyme de "dense" (très serré) est "clairsemée" (peu fournie).'},
+  {phrase:"Le général ___ à ses soldats d\'avancer.", mot:"ordonna", options:["interdit","supplia","demanda","conseilla"], correct:0, explication:'L\'antonyme d\'"ordonner" est "interdire" — l\'un impose une action, l\'autre la refuse.'},
+  {phrase:"Le soleil ___ la terre au printemps.", mot:"réchauffait", options:["séchait","refroidissait","éclairait","brûlait"], correct:1, explication:'L\'antonyme de "réchauffer" est "refroidir".'},
+  {phrase:"Le chat ___ sur la souris.", mot:"bondit", options:["marcha","s\'immobilisa","tomba","recula"], correct:1, explication:'L\'antonyme de "bondir" (s\'élancer) est "s\'immobiliser" (s\'arrêter complètement).'},
+  {phrase:"La rivière ___ à mesure qu\'elle descendait.", mot:"s\'élargissait", options:["accélérait","débordait","se rétrécissait","s\'assèchait"], correct:2, explication:'L\'antonyme de "s\'élargir" est "se rétrécir".'},
+  {phrase:"L\'enfant ___ toujours à ses parents.", mot:"obéissait", options:["écoutait","désobéissait","répondait","résistait"], correct:1, explication:'L\'antonyme d\'"obéir" est "désobéir".'},
+  {phrase:"Le vieux mur ___ sous la pluie.", mot:"s'effritait", options:["noircissait","se consolidait","s\'humidifiait","se fissurait"], correct:1, explication:'L\'antonyme de "s\'effriter" (se désagréger) est "se consolider" (se renforcer).'},
+  {phrase:"Le commerçant ___ ses erreurs ce jour-là.", mot:"multiplia", options:["corrigea","réduisit","remarqua","cacha"], correct:1, explication:'L\'antonyme de "multiplier" (augmenter) est "réduire" (diminuer).'},
+  {phrase:"Les deux amis ___ après leur dispute.", mot:"se réconcilièrent", options:["se parlèrent","s\'expliquèrent","se brouillèrent","se retrouvèrent"], correct:2, explication:'L\'antonyme de "se réconcilier" est "se brouiller" — rompre une amitié.'},
+  {phrase:"Le coureur ___ dans la dernière ligne droite.", mot:"accélérait", options:["courait","avançait","soufflait","ralentissait"], correct:3, explication:'L\'antonyme d\'"accélérer" est "ralentir".'},
+  {phrase:"Le chirurgien ___ les deux parties de la plaie.", mot:"réunit", options:["ferma","écarta","examina","nettoya"], correct:1, explication:'L\'antonyme de "réunir" (rapprocher) est "écarter" (éloigner).'},
+  {phrase:"La ___ de l\'équipe fut célébrée dans toute la ville.", mot:"victoire", options:["performance","défaite","absence","surprise"], correct:1, explication:'L\'antonyme de "victoire" est "défaite".'},
+  {phrase:"Le roi était connu pour son ___.", mot:"avarice", options:["cruauté","orgueil","générosité","faiblesse"], correct:2, explication:'L\'antonyme d\'"avarice" (refus de dépenser) est "générosité".'},
+  {phrase:"Le savant avait une grande ___ du sujet.", mot:"ignorance", options:["connaissance","expérience","curiosité","passion"], correct:0, explication:'L\'antonyme d\'"ignorance" est "connaissance".'},
+  {phrase:"La ___ de son explication impressionna tout le monde.", mot:"clarté", options:["longueur","qualité","obscurité","simplicité"], correct:2, explication:'L\'antonyme de "clarté" est "obscurité" — ce qui est difficile à comprendre.'},
+  {phrase:"La ___ régnait dans le village depuis des années.", mot:"paix", options:["calme","joie","guerre","silence"], correct:2, explication:'L\'antonyme de "paix" est "guerre".'},
+  {phrase:"Le blessé marchait avec ___ malgré sa cheville tordue.", mot:"aisance", options:["lenteur","douleur","difficulté","prudence"], correct:2, explication:'L\'antonyme d\'"aisance" (facilité naturelle) est "difficulté".'},
+  {phrase:"L\'eau de la source était ___.", mot:"pure", options:["froide","rare","polluée","abondante"], correct:2, explication:'L\'antonyme de "pure" (sans impureté) est "polluée".'},
+  {phrase:"La décision fut prise de façon ___.", mot:"réfléchie", options:["rapide","collective","impulsive","discrète"], correct:2, explication:'L\'antonyme de "réfléchie" (mûrement pensée) est "impulsive" (prise sans réfléchir).'},
+  {phrase:"L\'attitude de l\'élève était ___ envers son professeur.", mot:"respectueuse", options:["froide","insolente","indifférente","réservée"], correct:1, explication:'L\'antonyme de "respectueuse" est "insolente" — qui manque de respect.'},
+  {phrase:"La nuit était ___ grâce à la pleine lune.", mot:"lumineuse", options:["froide","longue","silencieuse","sombre"], correct:3, explication:'L\'antonyme de "lumineuse" est "sombre".'},
+  {phrase:"Le soldat avança d\'un pas ___.", mot:"assuré", options:["lent","lourd","hésitant","discret"], correct:2, explication:'L\'antonyme d\'"assuré" (confiant) est "hésitant" (qui doute).'},
+  {phrase:"Le témoignage de l\'enfant était ___.", mot:"crédible", options:["court","flou","douteux","surprenant"], correct:2, explication:'L\'antonyme de "crédible" (que l\'on peut croire) est "douteux".'},
+  {phrase:"La relation entre les deux pays était ___.", mot:"tendue", options:["longue","complexe","apaisée","fragile"], correct:2, explication:'L\'antonyme de "tendue" (conflictuelle) est "apaisée" (calme et sereine).'},
+  {phrase:"La récolte de cette année était ___.", mot:"abondante", options:["tardive","belle","maigre","variée"], correct:2, explication:'L\'antonyme d\'"abondante" (en grande quantité) est "maigre" (en faible quantité).'},
+  {phrase:"Le voyageur avait l\'air ___ malgré les difficultés.", mot:"serein", options:["fatigué","courageux","anxieux","pensif"], correct:2, explication:'L\'antonyme de "serein" (calme et sans inquiétude) est "anxieux" (inquiet).'},
+];
+
+window.DIAL_MARCHE_DATA = {
+  id: 'marche',
+  titre: 'Une affaire en or !',
+  sousTitre: '🎭 Scène de théâtre — Le marché au Moyen Âge',
+  contexte: 'Sur la place du marché de Beaumont, un matin d\'automne au XIIe siècle. Les marchands ont installé leurs étals. Renaud arrive avec une pièce d\'argent gagnée après une longue semaine de travail.',
+  intervenants: ['Renaud','Margot','Théodore','Hugues'],
+  couleur: '#6d4c41',
+  repliques: [
+    {qui:'didascalie', texte:'Renaud arrive en courant sur la place du marché, tenant fièrement une pièce d\'argent.'},
+    {qui:'Renaud', texte:'Enfin ! Une semaine à labourer les champs de monseigneur le comte, et voilà ma récompense : une belle pièce d\'argent ! Aujourd\'hui, je vais m\'acheter un remède pour ma vache Blanchette qui tousse depuis trois jours.', didascalie:'fièrement'},
+    {qui:'Margot', texte:'Eh bien, beau paysan ! Tu as l\'air d\'un homme prospère ce matin ! Qu\'est-ce qui t\'amène sur mon marché ?', didascalie:'s\'approchant avec un grand sourire'},
+    {qui:'Renaud', texte:'Je cherche un remède pour ma vache. Elle tousse et refuse de manger depuis trois jours.'},
+    {qui:'Margot', texte:'Tu tombes à pic ! J\'ai exactement ce qu\'il te faut ! Regarde cette poudre magique venue d\'Orient ! Une pincée dans l\'eau de ta vache, et demain matin elle gambade comme un agneau de printemps !', didascalie:'avec enthousiasme'},
+    {qui:'Renaud', texte:'Et ça coûte combien, cette poudre magique ?', didascalie:'suspicieux'},
+    {qui:'Margot', texte:'Pour toi, mon ami, prix d\'ami : une pièce d\'argent !'},
+    {qui:'Renaud', texte:'Une pièce d\'argent ?! C\'est tout ce que j\'ai !'},
+    {qui:'Théodore', texte:'N\'écoutez pas cette femme, brave homme ! Je suis Théodore, médecin renommé dans tout le royaume ! Cette poudre n\'est que de la farine de moulin teintée en jaune ! J\'ai moi-même le remède qu\'il vous faut : une décoction de plantes rares récoltées sous la pleine lune !', didascalie:'s\'interposant avec autorité'},
+    {qui:'Margot', texte:'Charlatan ! Va-t\'en de mon étal ! Ton décoction fait plus de mal que de bien !', didascalie:'furieuse'},
+    {qui:'Théodore', texte:'Charlatan, moi ?! J\'ai soigné les chevaliers du roi, madame !', didascalie:'offusqué'},
+    {qui:'Renaud', texte:'Mais... lequel de vous deux dit la vérité ?', didascalie:'perdu'},
+    {qui:'Hugues', texte:'Qu\'est-ce que ce tapage ? On vous entend depuis la fontaine ! *(regardant Margot et Théodore)* Encore vous deux !', didascalie:'arrivant avec son bâton de bailli'},
+    {qui:'Margot', texte:'Monsieur le bailli ! Ce faux médecin cherche à voler mes clients !', didascalie:'indignée'},
+    {qui:'Théodore', texte:'C\'est elle qui vend des poudres sans valeur à des paysans ignorants !'},
+    {qui:'Hugues', texte:'Silence ! *(se tournant vers Renaud)* Et toi, brave homme, qu\'est-ce qui t\'arrive exactement ?', didascalie:'levant la main'},
+    {qui:'Renaud', texte:'Ma vache est malade. J\'ai une pièce d\'argent. Et ces deux-là se disputent pour me la prendre.'},
+    {qui:'Hugues', texte:'Voilà une honnêteté qui fait plaisir. *(à Margot et Théodore)* Vous allez chacun me montrer votre remède. S\'il fonctionne vraiment, Renaud paiera. Sinon, c\'est vous qui lui rembourserez sa journée de travail.', didascalie:'souriant'},
+    {qui:'Margot', texte:'Eh bien… c\'est que… ma poudre, elle n\'est efficace que sur les vaches de moins de trois ans…', didascalie:'hésitant soudainement'},
+    {qui:'Théodore', texte:'Et ma décoction… il me faudrait d\'abord examiner l\'animal…', didascalie:'toussotant'},
+    {qui:'Renaud', texte:'Voilà ! Ils ne savent rien ni l\'un ni l\'autre !', didascalie:'avec un grand sourire'},
+    {qui:'Hugues', texte:'Margot, Théodore, vous avez jusqu\'à ce soir pour trouver un vrai remède gratuit pour la vache de cet homme, ou demain vous n\'aurez plus le droit de tenir un étal sur ce marché. *(à Renaud)* Et toi, brave Renaud, garde bien ta pièce d\'argent — et méfie-toi des marchands trop souriants !', didascalie:'sévèrement'},
+    {qui:'didascalie', texte:'Margot et Théodore baissent la tête, penauds. Renaud rit et repart en sifflotant.'},
+  ],
+  qcm:[
+    {q:'Pourquoi Renaud vient-il au marché ce matin-là ?',
+     opts:['Pour vendre ses légumes','Pour acheter un nouveau cheval','Pour trouver un remède pour sa vache malade','Pour payer ses impôts au comte'],
+     correct:2, explication:'Renaud dit lui-même : "je vais m\'acheter un remède pour ma vache Blanchette qui tousse depuis trois jours."'},
+    {q:'Que reproche Théodore à Margot ?',
+     opts:['De vendre ses remèdes trop cher','De ne pas avoir de licence de médecin','De vendre de la farine teintée en jaune comme remède magique','De lui voler ses clients depuis des années'],
+     correct:2, explication:'Théodore dit : "Cette poudre n\'est que de la farine de moulin teintée en jaune !"'},
+    {q:'Comment Hugues règle-t-il le conflit ?',
+     opts:['Il les met en prison tous les deux','Il donne raison à Margot','Il demande à Renaud de choisir','Il les oblige à trouver un vrai remède gratuit sous peine d\'être chassés du marché'],
+     correct:3, explication:'Hugues leur donne jusqu\'au soir pour trouver un vrai remède, sinon ils perdent leur étal.'},
+    {q:'Que comprend-on à la fin quand Margot et Théodore hésitent ?',
+     opts:['Qu\'ils ont peur de Hugues','Qu\'ils veulent aider Renaud gratuitement','Que ni l\'un ni l\'autre ne possède de vrai remède','Qu\'ils connaissent un meilleur médecin'],
+     correct:2, explication:'Leurs hésitations révèlent qu\'ils n\'avaient pas de vrais remèdes — ils voulaient juste prendre l\'argent de Renaud.'},
+  ],
+  attribution:[
+    {texte:'"Tu tombes à pic ! J\'ai exactement ce qu\'il te faut !"', correct:1},
+    {texte:'"On vous entend depuis la fontaine !"', correct:3},
+    {texte:'"J\'ai soigné les chevaliers du roi, madame !"', correct:2},
+    {texte:'"Garde bien ta pièce d\'argent — et méfie-toi des marchands trop souriants !"', correct:3},
+    {texte:'"Ils ne savent rien ni l\'un ni l\'autre !"', correct:0},
+  ],
+  intentions:[
+    {replique:'"Tu as l\'air d\'un homme prospère ce matin !"',
+     opts:['Flatter Renaud pour mieux lui vendre quelque chose','Lui souhaiter la bienvenue sincèrement','Se moquer de ses habits de paysan','L\'interroger sur sa semaine de travail'],
+     correct:0, explication:'Margot flatte Renaud pour l\'amadouer et lui vendre sa poudre. C\'est une technique de marchande rusée.'},
+    {replique:'"N\'écoutez pas cette femme, brave homme !"',
+     opts:['Protéger Renaud d\'une arnaque','Évincer un concurrent pour vendre son propre produit','Défendre l\'honneur de Margot','Demander l\'aide du bailli'],
+     correct:1, explication:'Théodore ne défend pas vraiment Renaud — il veut juste prendre la place de Margot pour vendre son propre remède.'},
+    {replique:'"Et toi, brave homme, qu\'est-ce qui t\'arrive exactement ?"',
+     opts:['Se moquer de Renaud','Chercher à lui vendre quelque chose','Entendre le point de vue de la victime avant de juger','L\'accuser d\'avoir provoqué la dispute'],
+     correct:2, explication:'Hugues, en tant que bailli, veut comprendre la situation de façon juste avant de prendre une décision.'},
+    {replique:'"Voilà une honnêteté qui fait plaisir."',
+     opts:['Se moquer de la naïveté de Renaud','Féliciter Renaud d\'avoir de l\'argent','Critiquer les marchands du marché','Valoriser la franchise de Renaud face aux mensonges des deux autres'],
+     correct:3, explication:'Hugues apprécie que Renaud résume la situation honnêtement, contrairement aux deux marchands qui mentaient.'},
+  ],
+};
