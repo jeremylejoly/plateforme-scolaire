@@ -6323,6 +6323,121 @@ window.SAVOIR_ECOUTER_DATA = [
         correct: 0
       }
     ]
+  },
+  {
+    id: 'savoir_ecouter_8',
+    titre: "Notice de l'étagère Lyra",
+    emoji: '🔧',
+    desc: 'Écoute la notice et réponds aux 10 questions.',
+    audioUrl: 'audio/notice_audio.m4a',
+    screen: 'screen-savoir-ecouter',
+    questions: [
+      {
+        num: 1,
+        type: 'qcm',
+        q: "Combien d'étagères horizontales contient le carton ?",
+        options: [
+          'Deux',
+          'Trois',
+          'Quatre',
+          'Cinq'
+        ],
+        correct: 1
+      },
+      {
+        num: 2,
+        type: 'qcm',
+        q: "À quoi sert la clé Allen fournie dans le sachet ?",
+        options: [
+          'À ouvrir le carton',
+          'À percer des trous dans le mur',
+          'À serrer certaines vis spéciales',
+          'À mesurer les planches'
+        ],
+        correct: 2
+      },
+      {
+        num: 3,
+        type: 'qcm',
+        q: 'Combien de vis faut-il utiliser pour fixer chaque étagère lors de la première étape ?',
+        options: [
+          'Deux vis',
+          'Quatre vis',
+          'Six vis',
+          'Huit vis'
+        ],
+        correct: 1
+      },
+      {
+        num: 4,
+        type: 'qcm',
+        q: 'Quel est le poids maximum supporté par chaque étagère ?',
+        options: [
+          'Deux kilos',
+          'Cinq kilos',
+          'Dix kilos',
+          'Quinze kilos'
+        ],
+        correct: 1
+      },
+      {
+        num: 5,
+        type: 'qcm',
+        q: 'Pourquoi la notice recommande-t-elle de ne pas serrer complètement les vis dès la première étape ?',
+        options: [
+          "Parce qu'il n'y a pas assez de vis",
+          "Pour pouvoir encore ajuster la structure avant de tout fixer définitivement",
+          "Parce que serrer les vis fait trop de bruit",
+          "Parce que les vis pourraient casser le bois"
+        ],
+        correct: 1
+      },
+      {
+        num: 6,
+        type: 'qcm',
+        q: "Pourquoi la notice recommande-t-elle l'aide d'une deuxième personne pour la fixation au mur ?",
+        options: [
+          "Parce que c'est plus rapide à deux",
+          "Parce qu'il faut maintenir le meuble en place pendant qu'on perce et qu'on fixe les supports",
+          "Parce que la notice est écrite pour deux personnes",
+          "Parce qu'une seule personne ne sait pas lire la notice"
+        ],
+        correct: 1
+      },
+      {
+        num: 7,
+        type: 'qcm',
+        q: 'Que peut-on déduire du fait que la plaque arrière doit être bien droite et vérifiée avec une équerre ?',
+        options: [
+          "Cette plaque n'a pas vraiment d'importance pour la stabilité",
+          "Une plaque mal alignée pourrait rendre le meuble instable et penché",
+          "L'équerre sert uniquement à décorer le meuble",
+          "La plaque arrière doit être installée en dernier"
+        ],
+        correct: 1
+      },
+      {
+        num: 8,
+        type: 'vf',
+        q: "Le montage de l'étagère se déroule en cinq étapes qu'il faut suivre dans l'ordre.",
+        options: ['Vrai', 'Faux'],
+        correct: 0
+      },
+      {
+        num: 9,
+        type: 'vf',
+        q: 'La plaque arrière est fixée avec des vis et la clé Allen.',
+        options: ['Vrai', 'Faux'],
+        correct: 1
+      },
+      {
+        num: 10,
+        type: 'vf',
+        q: 'Il est possible de poser des piles de gros livres sur les étagères sans problème.',
+        options: ['Vrai', 'Faux'],
+        correct: 1
+      }
+    ]
   }
 ];
 
