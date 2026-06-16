@@ -2877,7 +2877,7 @@ input[type=text].calc-input.incorrect {
     if (screenId === 'screen-quiz') {
       try {
         const books = typeof window.loadBooks === 'function' ? window.loadBooks() : [];
-        const book = books ? books.find(b => b.id === window.state.book) : null;
+        const book = books ? books.find(b => b.id === state.book) : null;
         return book ? `Récits Express : ${book.title}` : "Lit un livre";
       } catch(e) {
         return "Lit un livre";
@@ -2965,11 +2965,11 @@ input[type=text].calc-input.incorrect {
   };
 
   window.updateStudentPresence = function(activity) {
-    if (!window.FB_ready || !window.state || !window.state.student || !window.state.studentCls) return;
+    if (!window.FB_ready || typeof state === 'undefined' || !state.student || !state.studentCls) return;
     try {
-      const presenceRef = ref(db, 'presence/' + window.state.studentCls + '/' + window.state.student);
+      const presenceRef = ref(db, 'presence/' + state.studentCls + '/' + state.student);
       const data = {
-        student: window.state.student,
+        student: state.student,
         activity: activity || "Connecté(e)",
         lastActive: Date.now()
       };
@@ -2982,9 +2982,9 @@ input[type=text].calc-input.incorrect {
   };
 
   window.clearStudentPresence = function() {
-    if (!window.FB_ready || !window.state || !window.state.student || !window.state.studentCls) return;
+    if (!window.FB_ready || typeof state === 'undefined' || !state.student || !state.studentCls) return;
     try {
-      const presenceRef = ref(db, 'presence/' + window.state.studentCls + '/' + window.state.student);
+      const presenceRef = ref(db, 'presence/' + state.studentCls + '/' + state.student);
       remove(presenceRef).catch(e => console.warn('clearStudentPresence error:', e));
     } catch(e) {
       console.warn(e);
@@ -2997,10 +2997,10 @@ input[type=text].calc-input.incorrect {
     try {
       const connectedRef = ref(db, '.info/connected');
       onValue(connectedRef, (snap) => {
-        if (snap.val() === true && window.state && window.state.student && window.state.studentCls) {
-          const presenceRef = ref(db, 'presence/' + window.state.studentCls + '/' + window.state.student);
+        if (snap.val() === true && typeof state !== 'undefined' && state.student && state.studentCls) {
+          const presenceRef = ref(db, 'presence/' + state.studentCls + '/' + state.student);
           const data = {
-            student: window.state.student,
+            student: state.student,
             activity: window.currentStudentActivity || "Navigue sur le site",
             lastActive: Date.now()
           };
@@ -3037,7 +3037,7 @@ input[type=text].calc-input.incorrect {
     `;
 
     try {
-      const presenceRef = ref(db, 'presence/' + (window.teacherCls || 'lejoly'));
+      const presenceRef = ref(db, 'presence/' + (typeof teacherCls !== 'undefined' ? teacherCls : 'lejoly'));
       livePresenceListener = onValue(presenceRef, (snap) => {
         const val = snap.val();
         if (!val) {
@@ -6360,10 +6360,10 @@ function loadResults(cls){
   return cls ? all.filter(r=>!r.cls || r.cls===cls) : all;
 }
 function saveResult(entry){
-  if (!entry.student && window.state && window.state.student) {
-    entry.student = window.state.student;
-    entry.cls = window.state.studentCls;
-    entry.className = CLASSES[window.state.studentCls] ? CLASSES[window.state.studentCls].name : window.state.studentCls;
+  if (!entry.student && typeof state !== 'undefined' && state.student) {
+    entry.student = state.student;
+    entry.cls = state.studentCls;
+    entry.className = CLASSES[state.studentCls] ? CLASSES[state.studentCls].name : state.studentCls;
   }
   invalidateResultsCache();
   const all = JSON.parse(localStorage.getItem('lq_results')||'[]');
@@ -6427,15 +6427,7 @@ function getTeacherPw(cls){
 function setTeacherPw(cls,pw){ localStorage.setItem(CLASSES[cls].pwKey,pw); }
 
 let state = { student:'', studentCls:'', book:'', answers:{}, currentQ:0 };
-Object.defineProperty(window, 'state', {
-  get: function() { return state; },
-  set: function(val) { state = val; }
-});
 let teacherCls = 'lejoly';
-Object.defineProperty(window, 'teacherCls', {
-  get: function() { return teacherCls; },
-  set: function(val) { teacherCls = val; }
-});
 let pinInput = '';
 
 window.addEventListener('load',function(){
@@ -6459,7 +6451,7 @@ const HOME_SCREENS = new Set([
 ]);
 
 function goHome(){
-  const target = (window.state && window.state.role === 'teacher')
+  const target = (typeof state !== 'undefined' && state.role === 'teacher')
     ? 'screen-teacher-subjects'
     : 'screen-subjects';
   showScreen(target);
@@ -6493,7 +6485,7 @@ function showScreen(id){
   if(id==='screen-grandeurs-proportionnalite') setTimeout(renderProportionnaliteMenu, 50);
 
   // Mettre à jour la présence de l'élève en direct
-  if(window.state && window.state.student && window.state.studentCls) {
+  if(typeof state !== 'undefined' && state.student && state.studentCls) {
     if(typeof window.getActivityLabel === 'function' && typeof window.updateStudentPresence === 'function') {
       const label = window.getActivityLabel(id);
       window.currentStudentActivity = label;
@@ -6769,7 +6761,7 @@ function renderQ(){
   const letters=['A','B','C','D'];
 
   // Mettre à jour la présence en direct avec le numéro de question
-  if(window.state && window.state.student && window.state.studentCls) {
+  if(typeof state !== 'undefined' && state.student && state.studentCls) {
     if(typeof window.updateStudentPresence === 'function') {
       const bookTitle = book ? book.title : "Livre";
       const presenceText = `Répond au quiz : ${bookTitle} (${state.currentQ+1}/${total})`;
