@@ -1,7 +1,9 @@
-const CACHE_NAME = 'classe-mr-lejoly-cache-v81';
+const CACHE_NAME = 'classe-mr-lejoly-cache-v82';
 const CORE_ASSETS = [
   './',
   'index.html',
+  'classification_phylogenetique.html',
+  'circuit_electrique_18.html',
   'manifest.json',
   'exercices_francais.js',
   'exercices_maths.js',
