@@ -1,10 +1,16 @@
-const CACHE_NAME = 'classe-mr-lejoly-cache-v83';
+const CACHE_NAME = 'classe-mr-lejoly-cache-v98';
 const CORE_ASSETS = [
   './',
   'index.html',
   'classification_phylogenetique.html',
   'circuit_electrique_18.html',
-  'reproduction_plantes.html',
+  'energie-climat.html',
+  'paysage_energies.png',
+  'paysage_non_renouvelables.png',
+  'effet_de_serre.png',
+  'maison_gaspillage_energie_v3.jpg',
+  'Guide_de_l_eco-citoyen.png',
+  'cartes-planisphere.html',
   'manifest.json',
   'exercices_francais.js',
   'exercices_maths.js',
@@ -40,7 +46,8 @@ const CORE_ASSETS = [
   'proportionnalite.html',
   'globe-terrestre.html',
   'ne_110m_admin_0_countries.js',
-  'earth-blue-marble.jpg'
+  'earth-blue-marble.jpg',
+  'world-time-zones-cropped.png'
 ];
 
 // Installe le Service Worker et met en cache les ressources de base
