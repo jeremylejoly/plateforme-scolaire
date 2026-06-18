@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Conjugaison — Imparfait QCM</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Nunito', sans-serif; background: #f5f6fa; padding: 1.5rem; }
+.container { max-width: 680px; margin: 0 auto; }
+.info-card { background:#fce7f3;border:1px solid #ec4899;border-radius:12px;padding:.8rem 1rem;margin-bottom:1.5rem;display:flex;justify-content:space-between;align-items:center; }
+.info-card p { font-size:13px;color:#9d174d;font-weight:700;margin:0; }
+.dots { display:flex;gap:6px; }
+.dot { width:12px;height:12px;border-radius:50%; }
+.question-card { background:white;border-radius:16px;padding:1.75rem 1.5rem;margin-bottom:1.25rem;box-shadow:0 2px 8px rgba(0,0,0,.08);border:2px solid #e5e7eb; }
+.q-label { font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:#9ca3af;margin-bottom:.75rem;text-align:center; }
+.q-phrase { font-size:17px;font-weight:800;color:#1e1b4b;margin-bottom:1.5rem;text-align:center;line-height:1.6; }
+.q-phrase em { font-style:normal;color:#ec4899;font-size:20px; }
+.options { display:flex;flex-direction:column;gap:8px; }
+.opt-btn { padding:12px 16px;border-radius:12px;border:2px solid #e5e7eb;background:white;font-size:15px;font-weight:800;color:#374151;cursor:pointer;text-align:left;font-family:'Nunito',sans-serif;transition:all .15s;display:flex;align-items:center;gap:10px; }
+.opt-btn:hover:not(:disabled) { border-color:#ec4899;background:#fce7f3;color:#9d174d; }
+.opt-btn .opt-letter { width:28px;height:28px;border-radius:50%;background:#f3f4f6;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;color:#6b7280;flex-shrink:0;transition:all .15s; }
+.opt-btn:hover:not(:disabled) .opt-letter { background:#ec4899;color:white; }
+.opt-btn.correct { border-color:#16a34a;background:#f0fdf4;color:#166534; }
+.opt-btn.correct .opt-letter { background:#16a34a;color:white; }
+.opt-btn.incorrect { border-color:#dc2626;background:#fff5f5;color:#991b1b; }
+.opt-btn.incorrect .opt-letter { background:#dc2626;color:white; }
+.opt-btn.disabled-neutral { border-color:#e5e7eb;color:#9ca3af; }
+.btn { width:100%;padding:12px;background:#ec4899;color:white;border:none;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;transition:background .2s;margin-bottom:.75rem; }
+.btn:hover { background:#db2777; }
+.score-final { display:none;text-align:center;padding:2rem;background:white;border-radius:16px;box-shadow:0 2px 12px rgba(0,0,0,.1); }
+.big-emoji { font-size:64px;margin-bottom:.5rem; }
+.big-score { font-size:36px;font-weight:900;margin-bottom:1rem; }
+.score-detail { font-size:13px;color:#6b7280;margin-bottom:1.5rem;line-height:2; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div id="exercice-zone">
+    <div class="info-card">
+      <p id="info-numero">Question 1/10</p>
+      <div class="dots" id="dots-progress"></div>
+    </div>
+    <div id="question-zone"></div>
+    <button class="btn" id="btn-suivant" style="display:none" onclick="suivant()">➡️ Question suivante</button>
+  </div>
+  <div class="score-final" id="score-final">
+    <div class="big-emoji" id="final-emoji">🎉</div>
+    <div class="big-score" id="final-score"></div>
+    <div class="score-detail" id="final-detail"></div>
+    <button class="btn" onclick="demarrer()">🔄 Recommencer</button>
+  </div>
+</div>
+<script>
+const QUESTIONS = [
+  // Verbes en -CER
+  { p:"Chaque été, nous <em>...</em> dans la rivière.",     opts:["lancions","lançions","lançeons"],              correct:0 },
+  { p:"Il <em>...</em> toujours ses affaires sur la table.", opts:["plaçait","placait","plaçet"],                 correct:0 },
+  { p:"Ils <em>...</em> le match depuis le début.",          opts:["commençaient","commencaient","comencaient"],  correct:0 },
+  // Verbes en -GER
+  { p:"Nous <em>...</em> chez nos grands-parents le dimanche.", opts:["mangions","mangeions","mangeons"],         correct:0 },
+  { p:"Elle <em>...</em> toujours sa chambre avant le dîner.", opts:["rangeait","rangait","rangaient"],           correct:0 },
+  { p:"Ils <em>...</em> souvent dans la piscine.",           opts:["nageaient","nagaient","nageraient"],          correct:0 },
+  // Verbes en -YER
+  { p:"Tu <em>...</em> toujours tes achats comptant.",       opts:["payais","paiais","payiais"],                  correct:0 },
+  { p:"Elle <em>...</em> le sol après le repas.",            opts:["essuyait","essuiait","essuyiait"],            correct:0 },
+  { p:"Nous <em>...</em> nos amis chaque week-end.",         opts:["appuyions","appuiions","appuyiions"],         correct:0 },
+  { p:"Ils <em>...</em> le couloir chaque matin.",           opts:["balayaient","balaïaient","balaiaient"],       correct:0 },
+  // Verbes en -ELER/-ETER
+  { p:"Tu <em>...</em> souvent ta mère depuis l'école.",     opts:["appelais","appellais","appèlais"],            correct:0 },
+  { p:"Je <em>...</em> mes vieux jouets chaque année.",      opts:["jetais","jettais","jètais"],                  correct:0 },
+  { p:"Il <em>...</em> ses clés par la fenêtre.",            opts:["rejetait","rejettait","rejètait"],            correct:0 },
+  { p:"Elle <em>...</em> ses amis pour leur anniversaire.",  opts:["rappelait","rappellait","rappèlait"],         correct:0 },
+  // Verbes E+consonne+ER
+  { p:"J'<em>...</em> mes parents à la gare.",               opts:["amenais","amènais","ammènais"],               correct:0 },
+  { p:"Tu <em>...</em> la main pour répondre.",              opts:["levais","lèvais","levvais"],                  correct:0 },
+  { p:"Il <em>...</em> des fruits au marché.",               opts:["achetait","achètait","achettait"],            correct:0 },
+  { p:"Nous <em>...</em> le chien chaque matin.",            opts:["promenions","promènions","promeneons"],       correct:0 },
+  { p:"Elle <em>...</em> doucement le couvercle.",           opts:["soulevait","soulèvait","soulevvait"],         correct:0 },
+  { p:"La rivière <em>...</em> après chaque pluie.",         opts:["ruisselait","ruissèlait","ruissellait"],      correct:0 },
+  // Verbes en -IER
+  { p:"Nous <em>...</em> nos amis au parc.",                 opts:["criions","crions","crïions"],                 correct:0 },
+  { p:"Vous <em>...</em> entièrement de vos parents.",       opts:["vous fiiez","vous fiez","vous fïiez"],        correct:0 },
+  { p:"Nous <em>...</em> à la même école.",                  opts:["étudiions","étudions","étudïions"],           correct:0 },
+  { p:"Vous <em>...</em> souvent ensemble avant le repas.",  opts:["priiez","priez","prïiez"],                    correct:0 },
+  // Être et avoir
+  { p:"Tu <em>...</em> très courageux à cette époque.",      opts:["étais","étes","était"],                       correct:0 },
+  { p:"Nous <em>...</em> un grand jardin.",                  opts:["avions","avons","aviions"],                   correct:0 },
+  { p:"Ils <em>...</em> toujours en retard.",                opts:["étaient","étaients","étiaient"],              correct:0 },
+  { p:"Elle <em>...</em> peur du noir.",                     opts:["avait","avais","aviait"],                     correct:0 },
+  // Verbes en -IR irréguliers
+  { p:"Nous <em>...</em> en voiture chaque été.",            opts:["venions","vienions","veneons"],               correct:0 },
+  { p:"Tu <em>...</em> très vite sur la piste.",             opts:["courais","courrais","courait"],               correct:0 },
+  { p:"Ils <em>...</em> tôt chaque matin.",                  opts:["partaient","partirent","partissaient"],       correct:0 },
+  { p:"Elle <em>...</em> la fenêtre chaque matin.",          opts:["ouvrait","ouvrit","ouvrais"],                 correct:0 },
+  { p:"Je <em>...</em> profondément toutes les nuits.",      opts:["dormais","dormit","dormait"],                 correct:0 },
+  { p:"Nous <em>...</em> toujours nos promesses.",           opts:["tenions","tienions","teneons"],               correct:0 },
+  { p:"Il <em>...</em> souvent des cadeaux à sa famille.",   opts:["offrait","offrit","offrais"],                 correct:0 },
+  // Verbes du 3ème groupe irréguliers
+  { p:"Nous <em>...</em> un film chaque vendredi.",          opts:["voyions","voions","veyions"],                 correct:0 },
+  { p:"Je <em>...</em> de la natation le mercredi.",         opts:["faisais","fesais","faisait"],                 correct:0 },
+  { p:"Tu <em>...</em> une lettre à ta mamie.",              opts:["écrivais","écrivis","écrivait"],              correct:0 },
+  { p:"Ils <em>...</em> le problème ensemble.",              opts:["résolvaient","résoudaient","résolvient"],     correct:0 },
+  { p:"Nous <em>...</em> le sel dans l'eau.",                opts:["dissolvions","dissoudions","dissolveons"],    correct:0 },
+  { p:"Je <em>...</em> toujours en lui.",                    opts:["croyais","croiais","croyait"],                correct:0 },
+  { p:"Ils <em>...</em> devant le danger.",                  opts:["fuyaient","fuiaient","fuiyaient"],            correct:0 },
+  { p:"Tu <em>...</em> les murs de ta chambre.",             opts:["peignais","peindais","peingnais"],            correct:0 },
+  { p:"Nous <em>...</em> l'orage arriver.",                  opts:["craignions","craindions","craigneons"],       correct:0 },
+  { p:"Ils <em>...</em> leurs amis après l'école.",          opts:["rejoignaient","rejoingnaient","rejondaient"], correct:0 },
+  { p:"Vous <em>...</em> toujours n'importe quoi !",         opts:["disiez","diziez","dites"],                   correct:0 },
+  { p:"Je <em>...</em> finir mes devoirs avant de jouer.",   opts:["devais","devait","devrais"],                  correct:0 },
+  { p:"Nous <em>...</em> la réponse.",                       opts:["savions","saveons","saviions"],               correct:0 },
+  { p:"Tu <em>...</em> partir quand tu voulais.",            opts:["pouvais","pouvait","pourrais"],               correct:0 },
+  { p:"Elle <em>...</em> un colis chaque semaine.",          opts:["recevait","reçevait","recevrait"],            correct:0 },
+  { p:"Vous <em>...</em> aller au cinéma le samedi.",        opts:["vouliez","vouliéez","voulez"],                correct:0 },
+  { p:"Nous <em>...</em> très bien sans lunettes.",          opts:["voyions","voions","voyons"],                  correct:0 },
+];
+
+const LETTRES = ['A','B','C'];
+function shuffle(a){ return [...a].sort(()=>Math.random()-.5); }
+function shuffleQ(q){
+  const pairs = q.opts.map((o,i)=>({o, isCorrect:i===q.correct}));
+  const s = shuffle(pairs);
+  return { p:q.p, opts:s.map(p=>p.o), correct:s.findIndex(p=>p.isCorrect) };
+}
+let selection=[], curIdx=0, scores=[];
+function demarrer(){
+  selection = shuffle([...QUESTIONS]).slice(0,10).map(shuffleQ);
+  curIdx=0; scores=[];
+  document.getElementById('score-final').style.display='none';
+  document.getElementById('exercice-zone').style.display='block';
+  afficherQuestion();
+}
+function afficherQuestion(){
+  const q = selection[curIdx];
+  document.getElementById('info-numero').textContent = `Question ${curIdx+1}/10`;
+  document.getElementById('dots-progress').innerHTML =
+    selection.map((_,i)=>`<div class="dot" style="background:${i<curIdx?'#16a34a':i===curIdx?'#ec4899':'#d1d5db'}"></div>`).join('');
+  const optsHtml = q.opts.map((o,i)=>`
+    <button class="opt-btn" id="opt-${i}" onclick="choisir(${i},${q.correct})">
+      <span class="opt-letter">${LETTRES[i]}</span><span>${o}</span>
+    </button>`).join('');
+  document.getElementById('question-zone').innerHTML = `
+    <div class="question-card">
+      <div class="q-label">✏️ Indicatif imparfait — Choisis la bonne forme</div>
+      <div class="q-phrase">${q.p}</div>
+      <div class="options">${optsHtml}</div>
+    </div>`;
+  document.getElementById('btn-suivant').style.display='none';
+}
+function choisir(idx, correct){
+  const ok=(idx===correct); scores.push(ok);
+  for(let i=0;i<3;i++){
+    const b=document.getElementById('opt-'+i);
+    if(!b) continue; b.disabled=true;
+    if(i===correct) b.classList.add('correct');
+    else if(i===idx&&!ok) b.classList.add('incorrect');
+    else b.classList.add('disabled-neutral');
+  }
+  const isLast=curIdx>=9;
+  const btn=document.getElementById('btn-suivant');
+  btn.style.display='block';
+  btn.textContent=isLast?'🏁 Voir mon score final':'➡️ Question suivante';
+  btn.onclick=isLast?afficherScoreFinal:suivant;
+}
+function suivant(){ curIdx++; afficherQuestion(); }
+function afficherScoreFinal(){
+  document.getElementById('exercice-zone').style.display='none';
+  const sf=document.getElementById('score-final'); sf.style.display='block';
+  const ok=scores.filter(Boolean).length, total=scores.length;
+  const pct=Math.round(ok/total*100);
+  document.getElementById('final-emoji').textContent=pct===100?'🎉':pct>=60?'👍':'💪';
+  document.getElementById('final-score').textContent=`${ok}/${total} — ${pct}%`;
+  document.getElementById('final-score').style.color=pct===100?'#16a34a':pct>=60?'#f59e0b':'#dc2626';
+  document.getElementById('final-detail').innerHTML=scores.map((s,i)=>`Q${i+1} : ${s?'✅':'❌'}`).join('  ');
+}
+demarrer();
+</script>
+</body>
+</html>

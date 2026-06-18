@@ -1,4 +1,4 @@
-const CACHE_NAME = 'classe-mr-lejoly-cache-v98';
+const CACHE_NAME = 'classe-mr-lejoly-cache-v125';
 const CORE_ASSETS = [
   './',
   'index.html',
@@ -11,6 +11,8 @@ const CORE_ASSETS = [
   'maison_gaspillage_energie_v3.jpg',
   'Guide_de_l_eco-citoyen.png',
   'cartes-planisphere.html',
+  'cartes-europe.html',
+  'europe-shaded-relief.jpg',
   'manifest.json',
   'exercices_francais.js',
   'exercices_maths.js',
