@@ -7194,4 +7194,804 @@ window.EXERCICES_NOM = [
   }
 ];
 
+window.EXERCICES_VERBE_CLASS = [
+  {
+    text: "Les enfants aiment jouer dans le jardin .",
+    tokens: [
+      { text: "Les", cat: "det" },
+      { text: "enfants", cat: "nc" },
+      { text: "aiment", cat: "vc" },
+      { text: "jouer", cat: "vi" },
+      { text: "dans", cat: "prep" },
+      { text: "le", cat: "det" },
+      { text: "jardin", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Papa a préparé un gâteau que nous allons manger ce soir .",
+    tokens: [
+      { text: "Papa", cat: "nc" },
+      { text: "a", cat: "vc" },
+      { text: "préparé", cat: "vc" },
+      { text: "un", cat: "det" },
+      { text: "gâteau", cat: "nc" },
+      { text: "que", cat: "pr" },
+      { text: "nous", cat: "pr" },
+      { text: "allons", cat: "vc" },
+      { text: "manger", cat: "vi" },
+      { text: "ce", cat: "det" },
+      { text: "soir", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Le chien veut sortir mais il recommence à pleuvoir .",
+    tokens: [
+      { text: "Le", cat: "det" },
+      { text: "chien", cat: "nc" },
+      { text: "veut", cat: "vc" },
+      { text: "sortir", cat: "vi" },
+      { text: "mais", cat: "conj" },
+      { text: "il", cat: "pr" },
+      { text: "recommence", cat: "vc" },
+      { text: "à", cat: "prep" },
+      { text: "pleuvoir", cat: "vi" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "La lettre a été envoyée hier matin par la poste .",
+    tokens: [
+      { text: "La", cat: "det" },
+      { text: "lettre", cat: "nc" },
+      { text: "a", cat: "vc" },
+      { text: "été", cat: "vc" },
+      { text: "envoyée", cat: "vc" },
+      { text: "hier", cat: "adv" },
+      { text: "matin", cat: "nc" },
+      { text: "par", cat: "prep" },
+      { text: "la", cat: "det" },
+      { text: "poste", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Elle espère réussir ses examens sans trop stresser .",
+    tokens: [
+      { text: "Elle", cat: "pr" },
+      { text: "espère", cat: "vc" },
+      { text: "réussir", cat: "vi" },
+      { text: "ses", cat: "det" },
+      { text: "examens", cat: "nc" },
+      { text: "sans", cat: "prep" },
+      { text: "trop", cat: "adv" },
+      { text: "stresser", cat: "vi" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Le voleur a été arrêté par le policier qui l' observait .",
+    tokens: [
+      { text: "Le", cat: "det" },
+      { text: "voleur", cat: "nc" },
+      { text: "a", cat: "vc" },
+      { text: "été", cat: "vc" },
+      { text: "arrêté", cat: "vc" },
+      { text: "par", cat: "prep" },
+      { text: "le", cat: "det" },
+      { text: "policier", cat: "nc" },
+      { text: "qui", cat: "pr" },
+      { text: "l'", cat: "pr" },
+      { text: "observait", cat: "vc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Nous devons travailler pour obtenir de bons résultats .",
+    tokens: [
+      { text: "Nous", cat: "pr" },
+      { text: "devons", cat: "vc" },
+      { text: "travailler", cat: "vi" },
+      { text: "pour", cat: "prep" },
+      { text: "obtenir", cat: "vi" },
+      { text: "de", cat: "prep" },
+      { text: "bons", cat: "adj" },
+      { text: "résultats", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Le train vient de partir et nous devons attendre le suivant .",
+    tokens: [
+      { text: "Le", cat: "det" },
+      { text: "train", cat: "nc" },
+      { text: "vient", cat: "vc" },
+      { text: "de", cat: "prep" },
+      { text: "partir", cat: "vi" },
+      { text: "et", cat: "conj" },
+      { text: "nous", cat: "pr" },
+      { text: "devons", cat: "vc" },
+      { text: "attendre", cat: "vi" },
+      { text: "le", cat: "det" },
+      { text: "suivant", cat: "adj" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Les fleurs que tu as plantées commencent à grandir .",
+    tokens: [
+      { text: "Les", cat: "det" },
+      { text: "fleurs", cat: "nc" },
+      { text: "que", cat: "pr" },
+      { text: "tu", cat: "pr" },
+      { text: "as", cat: "vc" },
+      { text: "plantées", cat: "vc" },
+      { text: "commencent", cat: "vc" },
+      { text: "à", cat: "prep" },
+      { text: "grandir", cat: "vi" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Je pense venir te voir quand j' aurai fini mes devoirs .",
+    tokens: [
+      { text: "Je", cat: "pr" },
+      { text: "pense", cat: "vc" },
+      { text: "venir", cat: "vi" },
+      { text: "te", cat: "pr" },
+      { text: "voir", cat: "vi" },
+      { text: "quand", cat: "conj" },
+      { text: "j'", cat: "pr" },
+      { text: "aurai", cat: "vc" },
+      { text: "fini", cat: "vc" },
+      { text: "mes", cat: "det" },
+      { text: "devoirs", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Le chat a attrapé une souris qui voulait s' échapper .",
+    tokens: [
+      { text: "Le", cat: "det" },
+      { text: "chat", cat: "nc" },
+      { text: "a", cat: "vc" },
+      { text: "attrapé", cat: "vc" },
+      { text: "une", cat: "det" },
+      { text: "souris", cat: "nc" },
+      { text: "qui", cat: "pr" },
+      { text: "voulait", cat: "vc" },
+      { text: "s'", cat: "pr" },
+      { text: "échapper", cat: "vi" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Il a été décidé de fermer l' école à cause de la neige .",
+    tokens: [
+      { text: "Il", cat: "pr" },
+      { text: "a", cat: "vc" },
+      { text: "été", cat: "vc" },
+      { text: "décidé", cat: "vc" },
+      { text: "de", cat: "prep" },
+      { text: "fermer", cat: "vi" },
+      { text: "l'", cat: "det" },
+      { text: "école", cat: "nc" },
+      { text: "à", cat: "prep" },
+      { text: "cause", cat: "nc" },
+      { text: "de", cat: "prep" },
+      { text: "la", cat: "det" },
+      { text: "neige", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Tu pourras regarder la télévision après avoir fini de ranger ta chambre .",
+    tokens: [
+      { text: "Tu", cat: "pr" },
+      { text: "pourras", cat: "vc" },
+      { text: "regarder", cat: "vi" },
+      { text: "la", cat: "det" },
+      { text: "télévision", cat: "nc" },
+      { text: "après", cat: "prep" },
+      { text: "avoir", cat: "vi" },
+      { text: "fini", cat: "vi" },
+      { text: "de", cat: "prep" },
+      { text: "ranger", cat: "vi" },
+      { text: "ta", cat: "det" },
+      { text: "chambre", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Le chat semblait dormir mais il observait les oiseaux .",
+    tokens: [
+      { text: "Le", cat: "det" },
+      { text: "chat", cat: "nc" },
+      { text: "semblait", cat: "vc" },
+      { text: "dormir", cat: "vi" },
+      { text: "mais", cat: "conj" },
+      { text: "il", cat: "pr" },
+      { text: "observait", cat: "vc" },
+      { text: "les", cat: "det" },
+      { text: "oiseaux", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Nous avons décidé de partir tôt pour éviter les embouteillages .",
+    tokens: [
+      { text: "Nous", cat: "pr" },
+      { text: "avons", cat: "vc" },
+      { text: "décidé", cat: "vc" },
+      { text: "de", cat: "prep" },
+      { text: "partir", cat: "vi" },
+      { text: "tôt", cat: "adv" },
+      { text: "pour", cat: "prep" },
+      { text: "éviter", cat: "vi" },
+      { text: "les", cat: "det" },
+      { text: "embouteillages", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Le vent a soufflé si fort que la vieille cabane a été détruite .",
+    tokens: [
+      { text: "Le", cat: "det" },
+      { text: "vent", cat: "nc" },
+      { text: "a", cat: "vc" },
+      { text: "soufflé", cat: "vc" },
+      { text: "si", cat: "adv" },
+      { text: "fort", cat: "adv" },
+      { text: "que", cat: "conj" },
+      { text: "la", cat: "det" },
+      { text: "vieille", cat: "adj" },
+      { text: "cabane", cat: "nc" },
+      { text: "a", cat: "vc" },
+      { text: "été", cat: "vc" },
+      { text: "détruite", cat: "vc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Il préfère chanter plutôt que de réciter son poème .",
+    tokens: [
+      { text: "Il", cat: "pr" },
+      { text: "préfère", cat: "vc" },
+      { text: "chanter", cat: "vi" },
+      { text: "plutôt", cat: "adv" },
+      { text: "que", cat: "conj" },
+      { text: "de", cat: "prep" },
+      { text: "réciter", cat: "vi" },
+      { text: "son", cat: "det" },
+      { text: "poème", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "La maison où j' ai grandi a été vendue la semaine dernière .",
+    tokens: [
+      { text: "La", cat: "det" },
+      { text: "maison", cat: "nc" },
+      { text: "où", cat: "pr" },
+      { text: "j'", cat: "pr" },
+      { text: "ai", cat: "vc" },
+      { text: "grandi", cat: "vc" },
+      { text: "a", cat: "vc" },
+      { text: "été", cat: "vc" },
+      { text: "vendue", cat: "vc" },
+      { text: "la", cat: "det" },
+      { text: "semaine", cat: "nc" },
+      { text: "dernière", cat: "adj" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Vous devez écouter pour comprendre la leçon .",
+    tokens: [
+      { text: "Vous", cat: "pr" },
+      { text: "devez", cat: "vc" },
+      { text: "écouter", cat: "vi" },
+      { text: "pour", cat: "prep" },
+      { text: "comprendre", cat: "vi" },
+      { text: "la", cat: "det" },
+      { text: "leçon", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Le gâteau a été mangé par les enfants qui avaient faim .",
+    tokens: [
+      { text: "Le", cat: "det" },
+      { text: "gâteau", cat: "nc" },
+      { text: "a", cat: "vc" },
+      { text: "été", cat: "vc" },
+      { text: "mangé", cat: "vc" },
+      { text: "par", cat: "prep" },
+      { text: "les", cat: "det" },
+      { text: "enfants", cat: "nc" },
+      { text: "qui", cat: "pr" },
+      { text: "avaient", cat: "vc" },
+      { text: "faim", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Sophie aime dessiner des animaux sauvages .",
+    tokens: [
+      { text: "Sophie", cat: "np" },
+      { text: "aime", cat: "vc" },
+      { text: "dessiner", cat: "vi" },
+      { text: "des", cat: "det" },
+      { text: "animaux", cat: "nc" },
+      { text: "sauvages", cat: "adj" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Le train va s' arrêter dans quelques minutes .",
+    tokens: [
+      { text: "Le", cat: "det" },
+      { text: "train", cat: "nc" },
+      { text: "va", cat: "vc" },
+      { text: "s'", cat: "pr" },
+      { text: "arrêter", cat: "vi" },
+      { text: "dans", cat: "prep" },
+      { text: "quelques", cat: "det" },
+      { text: "minutes", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Les enfants ont voulu construire une cabane .",
+    tokens: [
+      { text: "Les", cat: "det" },
+      { text: "enfants", cat: "nc" },
+      { text: "ont", cat: "vc" },
+      { text: "voulu", cat: "vc" },
+      { text: "construire", cat: "vi" },
+      { text: "une", cat: "det" },
+      { text: "cabane", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Il a commencé à courir pour ne pas rater son bus .",
+    tokens: [
+      { text: "Il", cat: "pr" },
+      { text: "a", cat: "vc" },
+      { text: "commencé", cat: "vc" },
+      { text: "à", cat: "prep" },
+      { text: "courir", cat: "vi" },
+      { text: "pour", cat: "prep" },
+      { text: "ne", cat: "adv" },
+      { text: "pas", cat: "adv" },
+      { text: "rater", cat: "vi" },
+      { text: "son", cat: "det" },
+      { text: "bus", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Le professeur a expliqué comment résoudre cet exercice difficile .",
+    tokens: [
+      { text: "Le", cat: "det" },
+      { text: "professeur", cat: "nc" },
+      { text: "a", cat: "vc" },
+      { text: "expliqué", cat: "vc" },
+      { text: "comment", cat: "adv" },
+      { text: "résoudre", cat: "vi" },
+      { text: "cet", cat: "det" },
+      { text: "exercice", cat: "nc" },
+      { text: "difficile", cat: "adj" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "La rivière a débordé et a inondé les champs voisins .",
+    tokens: [
+      { text: "La", cat: "det" },
+      { text: "rivière", cat: "nc" },
+      { text: "a", cat: "vc" },
+      { text: "débordé", cat: "vc" },
+      { text: "et", cat: "conj" },
+      { text: "a", cat: "vc" },
+      { text: "inondé", cat: "vc" },
+      { text: "les", cat: "det" },
+      { text: "champs", cat: "nc" },
+      { text: "voisins", cat: "adj" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Je voudrais apprendre à parler espagnol .",
+    tokens: [
+      { text: "Je", cat: "pr" },
+      { text: "voudrais", cat: "vc" },
+      { text: "apprendre", cat: "vi" },
+      { text: "à", cat: "prep" },
+      { text: "parler", cat: "vi" },
+      { text: "espagnol", cat: "adj" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Le colis a été livré ce matin par un facteur fatigué .",
+    tokens: [
+      { text: "Le", cat: "det" },
+      { text: "colis", cat: "nc" },
+      { text: "a", cat: "vc" },
+      { text: "été", cat: "vc" },
+      { text: "livré", cat: "vc" },
+      { text: "ce", cat: "det" },
+      { text: "matin", cat: "nc" },
+      { text: "par", cat: "prep" },
+      { text: "un", cat: "det" },
+      { text: "facteur", cat: "nc" },
+      { text: "fatigué", cat: "adj" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Nous aimons écouter les oiseaux chanter le matin .",
+    tokens: [
+      { text: "Nous", cat: "pr" },
+      { text: "aimons", cat: "vc" },
+      { text: "écouter", cat: "vi" },
+      { text: "les", cat: "det" },
+      { text: "oiseaux", cat: "nc" },
+      { text: "chanter", cat: "vi" },
+      { text: "le", cat: "det" },
+      { text: "matin", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Le soleil commence à briller derrière les nuages gris .",
+    tokens: [
+      { text: "Le", cat: "det" },
+      { text: "soleil", cat: "nc" },
+      { text: "commence", cat: "vc" },
+      { text: "à", cat: "prep" },
+      { text: "briller", cat: "vi" },
+      { text: "derrière", cat: "prep" },
+      { text: "les", cat: "det" },
+      { text: "nuages", cat: "nc" },
+      { text: "gris", cat: "adj" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Léa a fini ses devoirs et veut aller jouer dehors .",
+    tokens: [
+      { text: "Léa", cat: "np" },
+      { text: "a", cat: "vc" },
+      { text: "fini", cat: "vc" },
+      { text: "ses", cat: "det" },
+      { text: "devoirs", cat: "nc" },
+      { text: "et", cat: "conj" },
+      { text: "veut", cat: "vc" },
+      { text: "aller", cat: "vi" },
+      { text: "jouer", cat: "vi" },
+      { text: "dehors", cat: "adv" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Le chat a été effrayé par le bruit et a couru se cacher .",
+    tokens: [
+      { text: "Le", cat: "det" },
+      { text: "chat", cat: "nc" },
+      { text: "a", cat: "vc" },
+      { text: "été", cat: "vc" },
+      { text: "effrayé", cat: "vc" },
+      { text: "par", cat: "prep" },
+      { text: "le", cat: "det" },
+      { text: "bruit", cat: "nc" },
+      { text: "et", cat: "conj" },
+      { text: "a", cat: "vc" },
+      { text: "couru", cat: "vc" },
+      { text: "se", cat: "pr" },
+      { text: "cacher", cat: "vi" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Il faut travailler régulièrement pour réussir l' année scolaire .",
+    tokens: [
+      { text: "Il", cat: "pr" },
+      { text: "faut", cat: "vc" },
+      { text: "travailler", cat: "vi" },
+      { text: "régulièrement", cat: "adv" },
+      { text: "pour", cat: "prep" },
+      { text: "réussir", cat: "vi" },
+      { text: "l'", cat: "det" },
+      { text: "année", cat: "nc" },
+      { text: "scolaire", cat: "adj" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Le soleil va bientôt se coucher et la nuit va tomber .",
+    tokens: [
+      { text: "Le", cat: "det" },
+      { text: "soleil", cat: "nc" },
+      { text: "va", cat: "vc" },
+      { text: "bientôt", cat: "adv" },
+      { text: "se", cat: "pr" },
+      { text: "coucher", cat: "vi" },
+      { text: "et", cat: "conj" },
+      { text: "la", cat: "det" },
+      { text: "nuit", cat: "nc" },
+      { text: "va", cat: "vc" },
+      { text: "tomber", cat: "vi" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Les touristes adorent visiter les musées et acheter des souvenirs .",
+    tokens: [
+      { text: "Les", cat: "det" },
+      { text: "touristes", cat: "nc" },
+      { text: "adorent", cat: "vc" },
+      { text: "visiter", cat: "vi" },
+      { text: "les", cat: "det" },
+      { text: "musées", cat: "nc" },
+      { text: "et", cat: "conj" },
+      { text: "acheter", cat: "vi" },
+      { text: "des", cat: "det" },
+      { text: "souvenirs", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Mon oncle a décidé de vendre sa vieille voiture rouge .",
+    tokens: [
+      { text: "Mon", cat: "det" },
+      { text: "oncle", cat: "nc" },
+      { text: "a", cat: "vc" },
+      { text: "décidé", cat: "vc" },
+      { text: "de", cat: "prep" },
+      { text: "vendre", cat: "vi" },
+      { text: "sa", cat: "det" },
+      { text: "vieille", cat: "adj" },
+      { text: "voiture", cat: "nc" },
+      { text: "rouge", cat: "adj" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Le lion a bondi sur sa proie qui a essayé de fuir .",
+    tokens: [
+      { text: "Le", cat: "det" },
+      { text: "lion", cat: "nc" },
+      { text: "a", cat: "vc" },
+      { text: "bondi", cat: "vc" },
+      { text: "sur", cat: "prep" },
+      { text: "sa", cat: "det" },
+      { text: "proie", cat: "nc" },
+      { text: "qui", cat: "pr" },
+      { text: "a", cat: "vc" },
+      { text: "essayé", cat: "vc" },
+      { text: "de", cat: "prep" },
+      { text: "fuir", cat: "vi" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Vous allez recevoir une lettre qui vous expliquera le projet .",
+    tokens: [
+      { text: "Vous", cat: "pr" },
+      { text: "allez", cat: "vc" },
+      { text: "recevoir", cat: "vi" },
+      { text: "une", cat: "det" },
+      { text: "lettre", cat: "nc" },
+      { text: "qui", cat: "pr" },
+      { text: "vous", cat: "pr" },
+      { text: "expliquera", cat: "vc" },
+      { text: "le", cat: "det" },
+      { text: "projet", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "La neige a recouvert les toits et continue de tomber .",
+    tokens: [
+      { text: "La", cat: "det" },
+      { text: "neige", cat: "nc" },
+      { text: "a", cat: "vc" },
+      { text: "recouvert", cat: "vc" },
+      { text: "les", cat: "det" },
+      { text: "toits", cat: "nc" },
+      { text: "et", cat: "conj" },
+      { text: "continue", cat: "vc" },
+      { text: "de", cat: "prep" },
+      { text: "tomber", cat: "vi" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Le vent a secoué les arbres qui ont perdu leurs feuilles .",
+    tokens: [
+      { text: "Le", cat: "det" },
+      { text: "vent", cat: "nc" },
+      { text: "a", cat: "vc" },
+      { text: "secoué", cat: "vc" },
+      { text: "les", cat: "det" },
+      { text: "arbres", cat: "nc" },
+      { text: "qui", cat: "pr" },
+      { text: "ont", cat: "vc" },
+      { text: "perdu", cat: "vc" },
+      { text: "leurs", cat: "det" },
+      { text: "feuilles", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Je ne pense pas pouvoir venir demain car je dois travailler .",
+    tokens: [
+      { text: "Je", cat: "pr" },
+      { text: "ne", cat: "adv" },
+      { text: "pense", cat: "vc" },
+      { text: "pas", cat: "adv" },
+      { text: "pouvoir", cat: "vi" },
+      { text: "venir", cat: "vi" },
+      { text: "demain", cat: "adv" },
+      { text: "car", cat: "conj" },
+      { text: "je", cat: "pr" },
+      { text: "dois", cat: "vc" },
+      { text: "travailler", cat: "vi" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Le jeune garçon a été récompensé pour avoir sauvé le petit chat .",
+    tokens: [
+      { text: "Le", cat: "det" },
+      { text: "jeune", cat: "adj" },
+      { text: "garçon", cat: "nc" },
+      { text: "a", cat: "vc" },
+      { text: "été", cat: "vc" },
+      { text: "récompensé", cat: "vc" },
+      { text: "pour", cat: "prep" },
+      { text: "avoir", cat: "vi" },
+      { text: "sauvé", cat: "vi" },
+      { text: "le", cat: "det" },
+      { text: "petit", cat: "adj" },
+      { text: "chat", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Nous devrons partir tôt si nous voulons arriver à l' heure .",
+    tokens: [
+      { text: "Nous", cat: "pr" },
+      { text: "devrons", cat: "vc" },
+      { text: "partir", cat: "vi" },
+      { text: "tôt", cat: "adv" },
+      { text: "si", cat: "conj" },
+      { text: "nous", cat: "pr" },
+      { text: "voulons", cat: "vc" },
+      { text: "arriver", cat: "vi" },
+      { text: "à", cat: "prep" },
+      { text: "l'", cat: "det" },
+      { text: "heure", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Elle a fini par comprendre qu' elle s' était trompée .",
+    tokens: [
+      { text: "Elle", cat: "pr" },
+      { text: "a", cat: "vc" },
+      { text: "fini", cat: "vc" },
+      { text: "par", cat: "prep" },
+      { text: "comprendre", cat: "vi" },
+      { text: "qu'", cat: "conj" },
+      { text: "elle", cat: "pr" },
+      { text: "s'", cat: "pr" },
+      { text: "était", cat: "vc" },
+      { text: "trompée", cat: "vc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Les castors construisent un barrage pour bloquer le courant .",
+    tokens: [
+      { text: "Les", cat: "det" },
+      { text: "castors", cat: "nc" },
+      { text: "construisent", cat: "vc" },
+      { text: "un", cat: "det" },
+      { text: "barrage", cat: "nc" },
+      { text: "pour", cat: "prep" },
+      { text: "bloquer", cat: "vi" },
+      { text: "le", cat: "det" },
+      { text: "courant", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Le boulanger aime préparer des pains spéciaux chaque matin .",
+    tokens: [
+      { text: "Le", cat: "det" },
+      { text: "boulanger", cat: "nc" },
+      { text: "aime", cat: "vc" },
+      { text: "préparer", cat: "vi" },
+      { text: "des", cat: "det" },
+      { text: "pains", cat: "nc" },
+      { text: "spéciaux", cat: "adj" },
+      { text: "chaque", cat: "det" },
+      { text: "matin", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Julie a couru dans la rue pour rattraper son amie .",
+    tokens: [
+      { text: "Julie", cat: "np" },
+      { text: "a", cat: "vc" },
+      { text: "couru", cat: "vc" },
+      { text: "dans", cat: "prep" },
+      { text: "la", cat: "det" },
+      { text: "rue", cat: "nc" },
+      { text: "pour", cat: "prep" },
+      { text: "rattraper", cat: "vi" },
+      { text: "son", cat: "det" },
+      { text: "amie", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Mon frère espère être invité à la fête de fin d' année .",
+    tokens: [
+      { text: "Mon", cat: "det" },
+      { text: "frère", cat: "nc" },
+      { text: "espère", cat: "vc" },
+      { text: "être", cat: "vi" },
+      { text: "invité", cat: "vi" },
+      { text: "à", cat: "prep" },
+      { text: "la", cat: "det" },
+      { text: "fête", cat: "nc" },
+      { text: "de", cat: "prep" },
+      { text: "fin", cat: "nc" },
+      { text: "d'", cat: "prep" },
+      { text: "année", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Le gardien a ouvert la porte pour laisser entrer les visiteurs .",
+    tokens: [
+      { text: "Le", cat: "det" },
+      { text: "gardien", cat: "nc" },
+      { text: "a", cat: "vc" },
+      { text: "ouvert", cat: "vc" },
+      { text: "la", cat: "det" },
+      { text: "porte", cat: "nc" },
+      { text: "pour", cat: "prep" },
+      { text: "laisser", cat: "vi" },
+      { text: "entrer", cat: "vi" },
+      { text: "les", cat: "det" },
+      { text: "visiteurs", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "L' eau a commencé à bouillir dans la grande marmite .",
+    tokens: [
+      { text: "L'", cat: "det" },
+      { text: "eau", cat: "nc" },
+      { text: "a", cat: "vc" },
+      { text: "commencé", cat: "vc" },
+      { text: "à", cat: "prep" },
+      { text: "bouillir", cat: "vi" },
+      { text: "dans", cat: "prep" },
+      { text: "la", cat: "det" },
+      { text: "grande", cat: "adj" },
+      { text: "marmite", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  }
+];
+
 
