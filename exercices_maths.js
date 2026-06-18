@@ -1080,3 +1080,62 @@ window.OP_X10_BANQUE = [
   { a: 0.5, b: 0.1, op: '÷', answer: 5 },
   { a: 0.0025, b: 0.1, op: '÷', answer: 0.025 }
 ];
+
+// Banque de 40 exercices × et ÷ par 0,5 — 5 — 50 — 500
+window.OP_X5_BANQUE = [
+  // --- MULTIPLICATIONS PAR 5 ---
+  { a: 24, b: 5, op: '×', answer: 120 },
+  { a: 8.4, b: 5, op: '×', answer: 42 },
+  { a: 16, b: 5, op: '×', answer: 80 },
+  { a: 3.6, b: 5, op: '×', answer: 18 },
+  { a: 480, b: 5, op: '×', answer: 2400 },
+
+  // --- DIVISIONS PAR 5 ---
+  { a: 35, b: 5, op: '÷', answer: 7 },
+  { a: 4.2, b: 5, op: '÷', answer: 0.84 },
+  { a: 12, b: 5, op: '÷', answer: 2.4 },
+  { a: 0.15, b: 5, op: '÷', answer: 0.03 },
+  { a: 6.5, b: 5, op: '÷', answer: 1.3 },
+
+  // --- MULTIPLICATIONS PAR 50 ---
+  { a: 12, b: 50, op: '×', answer: 600 },
+  { a: 8.2, b: 50, op: '×', answer: 410 },
+  { a: 64, b: 50, op: '×', answer: 3200 },
+  { a: 0.48, b: 50, op: '×', answer: 24 },
+  { a: 1.6, b: 50, op: '×', answer: 80 },
+
+  // --- DIVISIONS PAR 50 ---
+  { a: 45, b: 50, op: '÷', answer: 0.9 },
+  { a: 1.3, b: 50, op: '÷', answer: 0.026 },
+  { a: 3.5, b: 50, op: '÷', answer: 0.07 },
+  { a: 250, b: 50, op: '÷', answer: 5 },
+  { a: 0.8, b: 50, op: '÷', answer: 0.016 },
+
+  // --- MULTIPLICATIONS PAR 500 ---
+  { a: 14, b: 500, op: '×', answer: 7000 },
+  { a: 2.8, b: 500, op: '×', answer: 1400 },
+  { a: 0.62, b: 500, op: '×', answer: 310 },
+  { a: 84, b: 500, op: '×', answer: 42000 },
+  { a: 4.6, b: 500, op: '×', answer: 2300 },
+
+  // --- DIVISIONS PAR 500 ---
+  { a: 15, b: 500, op: '÷', answer: 0.03 },
+  { a: 4.5, b: 500, op: '÷', answer: 0.009 },
+  { a: 350, b: 500, op: '÷', answer: 0.7 },
+  { a: 0.9, b: 500, op: '÷', answer: 0.0018 },
+  { a: 12.5, b: 500, op: '÷', answer: 0.025 },
+
+  // --- MULTIPLICATIONS PAR 0,5 ---
+  { a: 18, b: 0.5, op: '×', answer: 9 },
+  { a: 6.4, b: 0.5, op: '×', answer: 3.2 },
+  { a: 0.84, b: 0.5, op: '×', answer: 0.42 },
+  { a: 150, b: 0.5, op: '×', answer: 75 },
+  { a: 2.68, b: 0.5, op: '×', answer: 1.34 },
+
+  // --- DIVISIONS PAR 0,5 ---
+  { a: 13, b: 0.5, op: '÷', answer: 26 },
+  { a: 4.5, b: 0.5, op: '÷', answer: 9 },
+  { a: 0.75, b: 0.5, op: '÷', answer: 1.5 },
+  { a: 3.2, b: 0.5, op: '÷', answer: 6.4 },
+  { a: 0.08, b: 0.5, op: '÷', answer: 0.16 }
+];
