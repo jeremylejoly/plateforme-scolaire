@@ -3769,7 +3769,11 @@ input[type=text].calc-input.incorrect {
   </div>
 
   <!-- Sub-screens: Classes de mots -->
-  <div id="screen-gram-nom" class="screen"><button class="back-btn" onclick="showScreen('screen-gram-classes');renderGramClassesScreen();">← Retour</button><div class="page-title">🏷️ Le nom</div><div class="card" style="text-align:center;padding:2rem;"><div style="font-size:48px;">🚧</div><p style="color:var(--muted);">Les exercices arrivent bientôt !</p></div></div>
+  <div id="screen-gram-nom" class="screen">
+    <button class="back-btn gram-nom-back-main-btn" style="margin-bottom:1rem;">← Retour</button>
+    <div class="page-title">🏷️ Le nom</div>
+    <div id="gram-nom-body"></div>
+  </div>
   <div id="screen-gram-determinant" class="screen"><button class="back-btn" onclick="showScreen('screen-gram-classes');renderGramClassesScreen();">← Retour</button><div class="page-title">🔖 Le déterminant</div><div class="card" style="text-align:center;padding:2rem;"><div style="font-size:48px;">🚧</div><p style="color:var(--muted);">Les exercices arrivent bientôt !</p></div></div>
   <div id="screen-gram-adjectif" class="screen"><button class="back-btn" onclick="showScreen('screen-gram-classes');renderGramClassesScreen();">← Retour</button><div class="page-title">🎨 L'adjectif</div><div class="card" style="text-align:center;padding:2rem;"><div style="font-size:48px;">🚧</div><p style="color:var(--muted);">Les exercices arrivent bientôt !</p></div></div>
   <div id="screen-gram-verbe" class="screen"><button class="back-btn" onclick="showScreen('screen-gram-classes');renderGramClassesScreen();">← Retour</button><div class="page-title">⚡ Le verbe</div><div class="card" style="text-align:center;padding:2rem;"><div style="font-size:48px;">🚧</div><p style="color:var(--muted);">Les exercices arrivent bientôt !</p></div></div>
@@ -8033,7 +8037,7 @@ const GRAMMAIRE_ITEMS = [
 ];
 
 const GRAM_CLASSES_ITEMS = [
-  {id:'gram_nom', screen:'screen-gram-nom', label:'Le nom', icon:'🏷️'},
+  {id:'gram_nom', screen:'screen-gram-nom', label:'Le nom', icon:'🏷️', fn:'renderNomMenu'},
   {id:'gram_determinant', screen:'screen-gram-determinant', label:'Le déterminant', icon:'🔖'},
   {id:'gram_adjectif', screen:'screen-gram-adjectif', label:"L'adjectif", icon:'🎨'},
   {id:'gram_verbe', screen:'screen-gram-verbe', label:'Le verbe', icon:'⚡'},
@@ -24705,7 +24709,7 @@ const PLAN_CATALOGUE = [
     { id:'lecture_rapide', label:'Lecture rapide (tous niveaux)', icon:'⚡', screen:'screen-lecture-rapide', fn:'renderLectureRapideMenu' },
   ]},
   { cat: '📖 Français', sub: '✏️ Grammaire — Classes de mots', items: [
-    { id:'gram_nom', label:'Le nom', icon:'🏷️', screen:'screen-gram-nom', fn:'' },
+    { id:'gram_nom', label:'Le nom', icon:'🏷️', screen:'screen-gram-nom', fn:'renderNomMenu' },
     { id:'gram_determinant', label:'Le déterminant', icon:'🔖', screen:'screen-gram-determinant', fn:'' },
     { id:'gram_adjectif', label:"L'adjectif", icon:'🎨', screen:'screen-gram-adjectif', fn:'' },
     { id:'gram_verbe', label:'Le verbe', icon:'⚡', screen:'screen-gram-verbe', fn:'' },
@@ -27822,6 +27826,541 @@ function renderSujetResults() {
       date: new Date().toLocaleDateString('fr-BE'),
       time: new Date().toLocaleTimeString('fr-BE', {hour:'2-digit', minute:'2-digit'})
     });
+  }
+}
+
+// ==========================================
+// EXERCICE DE REPÉRAGE ET DE TRI DU NOM
+// ==========================================
+let nomGameState = {
+  containerId: 'gram-nom-body',
+  questions: [],
+  currentIndex: 0,
+  score: 0,
+  answers: [],
+  submitted: false
+};
+
+function renderNomMenu() {
+  showScreen('screen-gram-nom');
+  const container = document.getElementById(nomGameState.containerId);
+  if (!container) return;
+
+  const backMainBtn = document.querySelector('#screen-gram-nom .gram-nom-back-main-btn');
+  if (backMainBtn) {
+    backMainBtn.onclick = (e) => {
+      e.preventDefault();
+      showScreen('screen-gram-classes');
+      renderGramClassesScreen();
+    };
+  }
+
+  container.innerHTML = `
+    <div class="bg-blue-50/50 border-2 border-blue-100 rounded-3xl p-5 mb-6 shadow-[4px_4px_0px_rgba(0,0,0,0.02)]">
+      <p class="text-blue-800 text-sm font-semibold flex items-center gap-2">
+        <span>💡</span> Choisis un exercice ci-dessous pour t'entraîner sur les classes de noms.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <!-- EXERCICE 1: IDENTIFIER LES NOMS -->
+      <div class="card cursor-pointer hover:scale-102 transition-all p-6 border-2 border-neutral-900 bg-white hover:bg-neutral-50 rounded-3xl shadow-[4px_4px_0px_rgba(0,0,0,1)] flex flex-col justify-between" id="btn-nom-ex1">
+        <div>
+          <div class="text-4xl mb-4">🏷️</div>
+          <h3 class="font-display font-bold text-lg text-neutral-800 mb-2">1. Identifier les noms</h3>
+          <p class="text-neutral-500 text-sm leading-relaxed mb-4">Distingue les noms propres (en bleu) et les noms communs (en rouge) dans 10 phrases.</p>
+        </div>
+        <button class="w-full py-2.5 px-4 rounded-xl border-2 border-neutral-900 bg-purple-600 text-white font-display font-bold text-sm shadow-[2px_2px_0px_rgba(0,0,0,1)] active:scale-98 transition-all">
+          Commencer ➔
+        </button>
+      </div>
+
+      <!-- EXERCICE 2: ACCORDER LES NOMS (PROCHAINEMENT) -->
+      <div class="card p-6 border-2 border-neutral-300 bg-neutral-50 rounded-3xl opacity-75 flex flex-col justify-between select-none">
+        <div>
+          <div class="text-4xl mb-4 opacity-50">✍️</div>
+          <h3 class="font-display font-bold text-lg text-neutral-400 mb-2">2. Accords et pluriels</h3>
+          <p class="text-neutral-400 text-sm leading-relaxed mb-4">Bientôt disponible ! Entraîne-toi à accorder correctement les noms en genre et en nombre.</p>
+        </div>
+        <button disabled class="w-full py-2.5 px-4 rounded-xl border-2 border-neutral-300 bg-neutral-200 text-neutral-400 font-display font-bold text-sm cursor-not-allowed">
+          Bientôt disponible
+        </button>
+      </div>
+    </div>
+  `;
+
+  const ex1Btn = container.querySelector('#btn-nom-ex1');
+  if (ex1Btn) {
+    ex1Btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      startNomExercise();
+    });
+  }
+}
+
+function startNomExercise() {
+  if (!window.EXERCICES_NOM || window.EXERCICES_NOM.length === 0) {
+    console.error("EXERCICES_NOM n'est pas chargé ou est vide.");
+    return;
+  }
+
+  const shuffle = (arr) => [...arr].sort(() => 0.5 - Math.random());
+  const selection = shuffle(window.EXERCICES_NOM).slice(0, 10);
+
+  nomGameState = {
+    containerId: 'gram-nom-body',
+    questions: selection,
+    currentIndex: 0,
+    score: 0,
+    answers: Array(selection[0].tokens.length).fill(0),
+    submitted: false
+  };
+
+  const backMainBtn = document.querySelector('#screen-gram-nom .gram-nom-back-main-btn');
+  if (backMainBtn) {
+    backMainBtn.onclick = (e) => {
+      e.preventDefault();
+      renderNomMenu();
+    };
+  }
+
+  // Inject styles if not present
+  if (!document.getElementById('nom-exercise-styles')) {
+    const style = document.createElement('style');
+    style.id = 'nom-exercise-styles';
+    style.innerHTML = `
+      .word-btn-neutral {
+        border: 3px solid #1A1A2E !important;
+        box-shadow: 3px 3px 0px #1A1A2E !important;
+        background-color: #ffffff !important;
+        color: #1A1A2E !important;
+      }
+      .word-btn-neutral:hover {
+        background-color: #f7f7f9 !important;
+        transform: translateY(-2px) !important;
+      }
+      .word-btn-nc {
+        border: 3px solid #D94F3D !important;
+        box-shadow: 3px 3px 0px #D94F3D !important;
+        background-color: #fdf2f0 !important;
+        color: #b91c1c !important;
+        font-weight: 800 !important;
+      }
+      .word-btn-np {
+        border: 3px solid #1D4ED8 !important;
+        box-shadow: 3px 3px 0px #1D4ED8 !important;
+        background-color: #eff6ff !important;
+        color: #1d4ed8 !important;
+        font-weight: 800 !important;
+      }
+      .word-btn-correct {
+        border: 3px solid #10B981 !important;
+        box-shadow: 3px 3px 0px #10B981 !important;
+        background-color: #ecfdf5 !important;
+        color: #047857 !important;
+        font-weight: 800 !important;
+      }
+      .word-btn-wrong {
+        border: 3px solid #EF4444 !important;
+        box-shadow: 3px 3px 0px #EF4444 !important;
+        background-color: #fef2f2 !important;
+        color: #b91c1c !important;
+        font-weight: 800 !important;
+        animation: shake 0.3s ease !important;
+      }
+      .word-btn-missed {
+        border: 3px dashed #F59E0B !important;
+        box-shadow: 3px 3px 0px #F59E0B !important;
+        background-color: #fffbeb !important;
+        color: #b45309 !important;
+        font-weight: 800 !important;
+      }
+      @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-4px); }
+        75% { transform: translateX(4px); }
+      }
+      .confetti {
+        position: fixed;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 9999;
+        animation: confettiFall 2.5s ease-out forwards;
+      }
+      @keyframes confettiFall {
+        0% { transform: translateY(-10px) rotate(0deg); opacity: 1; }
+        100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  showScreen('screen-gram-nom');
+  renderNomQuestion();
+}
+
+function renderNomQuestion() {
+  const container = document.getElementById(nomGameState.containerId);
+  if (!container) return;
+
+  const question = nomGameState.questions[nomGameState.currentIndex];
+  if (!question) return;
+
+  const pctProgress = Math.round((nomGameState.currentIndex / nomGameState.questions.length) * 100);
+
+  const tokensHtml = question.tokens.map((token, idx) => {
+    if (token.punctuation === true) {
+      return `<span class="text-xl font-bold text-neutral-400 self-end mb-2 select-none">${token.text}</span>`;
+    }
+
+    const sel = nomGameState.answers[idx];
+    let inlineClass = "word-btn-neutral";
+
+    if (!nomGameState.submitted) {
+      if (sel === 1) inlineClass = "word-btn-nc";
+      else if (sel === 2) inlineClass = "word-btn-np";
+    } else {
+      const cat = token.cat;
+      if (cat === 'nc') {
+        if (sel === 1) inlineClass = "word-btn-correct";
+        else if (sel === 2) inlineClass = "word-btn-wrong";
+        else inlineClass = "word-btn-missed";
+      } else if (cat === 'np') {
+        if (sel === 2) inlineClass = "word-btn-correct";
+        else if (sel === 1) inlineClass = "word-btn-wrong";
+        else inlineClass = "word-btn-missed";
+      } else {
+        if (sel === 0) inlineClass = "word-btn-neutral";
+        else inlineClass = "word-btn-wrong";
+      }
+    }
+
+    let badgeIcon = "";
+    if (nomGameState.submitted) {
+      const cat = token.cat;
+      if (cat === 'nc') {
+        if (sel === 1) {
+          badgeIcon = `<span class="absolute -top-2 -right-2 bg-green-500 text-white rounded-full text-[10px] w-5 h-5 flex items-center justify-center border-2 border-white shadow-sm font-black">✓</span>`;
+        } else if (sel === 2) {
+          badgeIcon = `<span class="absolute -top-2 -right-2 bg-rose-500 text-white rounded-full text-[10px] w-5 h-5 flex items-center justify-center border-2 border-white shadow-sm font-black">✗</span>`;
+        } else {
+          badgeIcon = `<span class="absolute -top-2 -right-2 bg-orange-500 text-white rounded-full text-[10px] w-5 h-5 flex items-center justify-center border-2 border-white shadow-sm font-black">!</span>`;
+        }
+      } else if (cat === 'np') {
+        if (sel === 2) {
+          badgeIcon = `<span class="absolute -top-2 -right-2 bg-green-500 text-white rounded-full text-[10px] w-5 h-5 flex items-center justify-center border-2 border-white shadow-sm font-black">✓</span>`;
+        } else if (sel === 1) {
+          badgeIcon = `<span class="absolute -top-2 -right-2 bg-rose-500 text-white rounded-full text-[10px] w-5 h-5 flex items-center justify-center border-2 border-white shadow-sm font-black">✗</span>`;
+        } else {
+          badgeIcon = `<span class="absolute -top-2 -right-2 bg-orange-500 text-white rounded-full text-[10px] w-5 h-5 flex items-center justify-center border-2 border-white shadow-sm font-black">!</span>`;
+        }
+      } else {
+        if (sel !== 0) {
+          badgeIcon = `<span class="absolute -top-2 -right-2 bg-rose-500 text-white rounded-full text-[10px] w-5 h-5 flex items-center justify-center border-2 border-white shadow-sm font-black">✗</span>`;
+        }
+      }
+    }
+
+    return `
+      <div class="relative flex items-center">
+        <button
+          ${nomGameState.submitted ? 'disabled' : ''}
+          data-idx="${idx}"
+          class="gram-nom-word-btn px-4 py-2.5 rounded-2xl border-2 font-sans font-semibold text-lg md:text-xl transition-all duration-155 relative cursor-pointer select-none ${inlineClass} hover:scale-102"
+        >
+          ${token.text}
+        </button>
+        ${badgeIcon}
+      </div>
+    `;
+  }).join('');
+
+  let actionBtn = "";
+  if (!nomGameState.submitted) {
+    actionBtn = `
+      <button class="gram-nom-verify-btn px-6 py-3 rounded-2xl border-2 border-neutral-900 bg-purple-600 text-white hover:bg-purple-700 font-display font-bold text-sm transition-all cursor-pointer shadow-[2px_2px_0px_rgba(0,0,0,1)] active:scale-95 ml-auto">
+        Vérifier ma réponse
+      </button>
+    `;
+  } else {
+    actionBtn = `
+      <button class="gram-nom-next-btn px-6 py-3 rounded-2xl border-2 border-neutral-900 bg-green-600 text-white hover:bg-green-700 font-display font-bold text-sm transition-all cursor-pointer shadow-[2px_2px_0px_rgba(0,0,0,1)] active:scale-95 ml-auto">
+        ${nomGameState.currentIndex < nomGameState.questions.length - 1 ? 'Phrase suivante ➔' : 'Voir les résultats ➔'}
+      </button>
+    `;
+  }
+
+  const html = `
+    <div class="quiz-topbar flex justify-between items-center mb-6">
+      <div class="quiz-student-badge bg-neutral-100 border-2 border-neutral-300 px-4 py-1.5 rounded-full font-bold text-xs text-neutral-600">
+        ${state.student || 'Enseignant'}
+      </div>
+      <div class="quiz-progress-wrap flex items-center gap-4 w-2/3 max-w-xs justify-end">
+        <div class="quiz-progress-label text-xs font-bold text-neutral-500 whitespace-nowrap">Phrase ${nomGameState.currentIndex + 1} sur ${nomGameState.questions.length}</div>
+        <div class="progress-bar w-full h-2.5 bg-neutral-200 rounded-full overflow-hidden">
+          <div class="progress-fill h-full bg-purple-600" style="width: ${pctProgress}%"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-blue-50 border-2 border-blue-150 rounded-3xl p-5 mb-6 shadow-[4px_4px_0px_rgba(0,0,0,0.02)]">
+      <div class="flex flex-col gap-2 text-blue-900 text-sm font-semibold">
+        <div class="flex items-center gap-2">
+          <span>💡</span>
+          <strong>Consigne :</strong> Clique sur les mots pour identifier les noms.
+        </div>
+        <div class="flex flex-wrap gap-4 mt-1 pl-6 text-xs text-neutral-600">
+          <span>👆 1 clic = <span class="text-rose-600 font-bold border-b border-rose-400">🔴 Nom commun</span></span>
+          <span>👆👆 2 clics = <span class="text-blue-600 font-bold border-b border-blue-400">🔵 Nom propre</span></span>
+          <span>👆👆👆 3 clics = ⚪ Réinitialiser</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- LA PHRASE -->
+    <div class="bg-white border-2 border-neutral-900 rounded-3xl p-8 md:p-12 mb-6 shadow-[4px_4px_0px_rgba(0,0,0,1)] flex flex-wrap gap-x-2 gap-y-4 justify-center items-center">
+      ${tokensHtml}
+    </div>
+
+    <!-- EXPLICATION / CORRECTION -->
+    <div id="nom-correction-panel"></div>
+
+    <!-- ZONE D'ACTION -->
+    <div class="flex justify-between items-center border-t border-neutral-200 pt-6">
+      ${actionBtn}
+    </div>
+  `;
+
+  container.innerHTML = html;
+
+  // Event bindings
+  container.querySelectorAll('.gram-nom-word-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const idx = parseInt(btn.getAttribute('data-idx'));
+      clickNomWord(idx);
+    });
+  });
+
+  const verifyBtn = container.querySelector('.gram-nom-verify-btn');
+  if (verifyBtn) {
+    verifyBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      verifyNomAnswer();
+    });
+  }
+
+  const nextBtn = container.querySelector('.gram-nom-next-btn');
+  if (nextBtn) {
+    nextBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      nextNomQuestion();
+    });
+  }
+}
+
+function clickNomWord(wordIndex) {
+  if (nomGameState.submitted) return;
+  nomGameState.answers[wordIndex] = (nomGameState.answers[wordIndex] + 1) % 3;
+  renderNomQuestion();
+}
+
+function verifyNomAnswer() {
+  if (nomGameState.submitted) return;
+
+  const question = nomGameState.questions[nomGameState.currentIndex];
+  const errors = [];
+
+  const catLabels = {
+    'v': 'un verbe (il exprime une action ou un état)',
+    'det': 'un déterminant (il accompagne le nom)',
+    'adj': 'un adjectif (il décrit le nom)',
+    'pr': 'un pronom (il remplace un nom)',
+    'adv': 'un adverbe (il modifie un verbe ou un adjectif)',
+    'prep': 'une préposition (comme à, de, pour, dans...)',
+    'conj': 'une conjonction (comme mais, ou, et, donc...)'
+  };
+
+  question.tokens.forEach((token, idx) => {
+    if (token.punctuation === true) return;
+
+    const cat = token.cat;
+    const sel = nomGameState.answers[idx]; // 0=none, 1=nc, 2=np
+
+    if (cat === 'nc') {
+      if (sel === 0) {
+        errors.push(`Tu as oublié le nom commun « <strong>${token.text}</strong> ».`);
+      } else if (sel === 2) {
+        errors.push(`Le mot « <strong>${token.text}</strong> » est un <strong>nom commun</strong>, pas un nom propre.`);
+      }
+    } else if (cat === 'np') {
+      if (sel === 0) {
+        errors.push(`Tu as oublié le nom propre « <strong>${token.text}</strong> ».`);
+      } else if (sel === 1) {
+        errors.push(`Le mot « <strong>${token.text}</strong> » est un <strong>nom propre</strong> (il a une majuscule !), pas un nom commun.`);
+      }
+    } else {
+      if (sel === 1 || sel === 2) {
+        const clsLabel = catLabels[cat] || "un mot d'une autre classe grammaticale";
+        errors.push(`Le mot « <strong>${token.text}</strong> » est <strong>${clsLabel}</strong>, ce n'est pas un nom.`);
+      }
+    }
+  });
+
+  nomGameState.submitted = true;
+  const isPerfect = errors.length === 0;
+
+  if (isPerfect) {
+    nomGameState.score++;
+  }
+
+  // Render question again to show colors and badges
+  renderNomQuestion();
+
+  // Show correction panel
+  const corrPanel = document.getElementById('nom-correction-panel');
+  if (corrPanel) {
+    if (isPerfect) {
+      corrPanel.innerHTML = `
+        <div class="bg-green-50 rounded-2xl p-5 border-2 border-green-500 mb-6 animate-fadeIn shadow-[2px_2px_0px_rgba(16,185,129,1)]">
+          <div class="flex items-center gap-3 text-green-800 font-display font-bold">
+            <span class="text-2xl">🏆</span>
+            <span>Félicitations ! Tout est parfaitement correct !</span>
+          </div>
+        </div>
+      `;
+    } else {
+      const errList = errors.map(err => `<li class="mb-1 text-sm text-neutral-700">• ${err}</li>`).join('');
+      corrPanel.innerHTML = `
+        <div class="bg-rose-50 rounded-2xl p-5 border-2 border-neutral-900 mb-6 animate-fadeIn shadow-[2px_2px_0px_rgba(0,0,0,1)]">
+          <div class="flex items-start gap-3">
+            <span class="text-2xl">💡</span>
+            <div>
+              <h4 class="font-display font-bold text-rose-800 mb-2">Explication des erreurs :</h4>
+              <ul class="list-none pl-0">
+                ${errList}
+              </ul>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+  }
+}
+
+function nextNomQuestion() {
+  nomGameState.currentIndex++;
+  if (nomGameState.currentIndex < nomGameState.questions.length) {
+    const nextQ = nomGameState.questions[nomGameState.currentIndex];
+    nomGameState.answers = Array(nextQ.tokens.length).fill(0);
+    nomGameState.submitted = false;
+    renderNomQuestion();
+  } else {
+    showNomResults();
+  }
+}
+
+function showNomResults() {
+  const container = document.getElementById(nomGameState.containerId);
+  if (!container) return;
+
+  const score = nomGameState.score;
+  const total = nomGameState.questions.length;
+  const pct = Math.round((score / total) * 100);
+
+  let title = "";
+  let msg = "";
+  let emoji = "";
+
+  if (score === 10) {
+    title = "🏆 Sans faute !";
+    msg = "Incroyable ! Tu as une parfaite maîtrise des noms propres et communs !";
+    emoji = "🎉";
+    // Launch Confetti
+    launchNomConfetti();
+  } else if (score >= 8) {
+    title = "🌟 Excellent !";
+    msg = "C'est un superbe score ! Tu as presque tout juste.";
+    emoji = "👏";
+  } else if (score >= 5) {
+    title = "👍 Pas mal !";
+    msg = "Tu as compris les bases du nom. Continue de t'entraîner pour t'améliorer !";
+    emoji = "💪";
+  } else {
+    title = "✍️ Entraîne-toi encore !";
+    msg = "Relis bien la différence entre nom propre et nom commun et recommence pour faire mieux !";
+    emoji = "📚";
+  }
+
+  container.innerHTML = `
+    <div class="bg-white border-2 border-neutral-900 rounded-3xl p-8 text-center shadow-[4px_4px_0px_rgba(0,0,0,1)] animate-fadeIn">
+      <div class="text-6xl mb-4">${emoji}</div>
+      <h3 class="font-display font-bold text-2xl text-neutral-800 mb-2">${title}</h3>
+      <p class="text-neutral-600 mb-6 max-w-md mx-auto leading-relaxed">${msg}</p>
+
+      <div class="font-display font-black text-5xl text-purple-600 bg-purple-50 border-2 border-purple-200 py-4 px-8 rounded-2xl inline-block mb-8 shadow-[2px_2px_0px_rgba(0,0,0,0.05)]">
+        ${score} / ${total}
+      </div>
+
+      <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+        <button class="gram-nom-restart-btn px-6 py-3 rounded-2xl border-2 border-neutral-900 bg-purple-600 text-white hover:bg-purple-700 font-display font-bold text-sm transition-all cursor-pointer shadow-[2px_2px_0px_rgba(0,0,0,1)] active:scale-95">
+          🔄 Recommencer
+        </button>
+        <button class="gram-nom-back-btn px-6 py-3 rounded-2xl border-2 border-neutral-900 bg-neutral-100 text-neutral-700 hover:bg-neutral-200 font-display font-bold text-sm transition-all cursor-pointer shadow-[2px_2px_0px_rgba(0,0,0,1)] active:scale-95">
+          ↩️ Retour aux thèmes
+        </button>
+      </div>
+    </div>
+  `;
+
+  const restartBtn = container.querySelector('.gram-nom-restart-btn');
+  if (restartBtn) {
+    restartBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      startNomExercise();
+    });
+  }
+
+  const backBtn = container.querySelector('.gram-nom-back-btn');
+  if (backBtn) {
+    backBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      showScreen('screen-gram-classes');
+      renderGramClassesScreen();
+    });
+  }
+
+  // Save results in student dashboard
+  if (state.student) {
+    saveResult({
+      student: state.student,
+      cls: state.studentCls,
+      className: CLASSES[state.studentCls] ? CLASSES[state.studentCls].name : state.studentCls,
+      activity: 'gram_nom',
+      bookTitle: 'Grammaire — Identifier le nom',
+      score,
+      total,
+      pct,
+      date: new Date().toLocaleDateString('fr-BE'),
+      time: new Date().toLocaleTimeString('fr-BE', {hour:'2-digit', minute:'2-digit'})
+    });
+  }
+}
+
+function launchNomConfetti() {
+  const colors = ['#5B4FCF', '#1A9E75', '#D94F3D', '#C97B1A', '#1A6FA0', '#FFD700'];
+  for (let i = 0; i < 45; i++) {
+    const confetti = document.createElement('div');
+    confetti.className = 'confetti';
+    confetti.style.left = Math.random() * 100 + 'vw';
+    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+    confetti.style.animationDelay = Math.random() * 1.5 + 's';
+    confetti.style.transform = `scale(${Math.random() * 0.8 + 0.5})`;
+    document.body.appendChild(confetti);
+    
+    setTimeout(() => confetti.remove(), 2500);
   }
 }
 
