@@ -6441,3 +6441,757 @@ window.SAVOIR_ECOUTER_DATA = [
   }
 ];
 
+window.EXERCICES_NOM = [
+  {
+    text: "Le petit chat boit du lait chaud .",
+    tokens: [
+      { text: "Le", cat: "det" },
+      { text: "petit", cat: "adj" },
+      { text: "chat", cat: "nc" },
+      { text: "boit", cat: "v" },
+      { text: "du", cat: "det" },
+      { text: "lait", cat: "nc" },
+      { text: "chaud", cat: "adj" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Sophie mange une pomme rouge dans la cuisine .",
+    tokens: [
+      { text: "Sophie", cat: "np" },
+      { text: "mange", cat: "v" },
+      { text: "une", cat: "det" },
+      { text: "pomme", cat: "nc" },
+      { text: "rouge", cat: "adj" },
+      { text: "dans", cat: "prep" },
+      { text: "la", cat: "det" },
+      { text: "cuisine", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Le vent souffle fort sur la colline .",
+    tokens: [
+      { text: "Le", cat: "det" },
+      { text: "vent", cat: "nc" },
+      { text: "souffle", cat: "v" },
+      { text: "fort", cat: "adv" },
+      { text: "sur", cat: "prep" },
+      { text: "la", cat: "det" },
+      { text: "colline", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Mon frère Julien adore voyager en Italie .",
+    tokens: [
+      { text: "Mon", cat: "det" },
+      { text: "frère", cat: "nc" },
+      { text: "Julien", cat: "np" },
+      { text: "adore", cat: "v" },
+      { text: "voyager", cat: "v" },
+      { text: "en", cat: "prep" },
+      { text: "Italie", cat: "np" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Les voitures rapides roulent sur l' autoroute .",
+    tokens: [
+      { text: "Les", cat: "det" },
+      { text: "voitures", cat: "nc" },
+      { text: "rapides", cat: "adj" },
+      { text: "roulent", cat: "v" },
+      { text: "sur", cat: "prep" },
+      { text: "l'", cat: "det" },
+      { text: "autoroute", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Le chien de Thomas aboie dans le jardin .",
+    tokens: [
+      { text: "Le", cat: "det" },
+      { text: "chien", cat: "nc" },
+      { text: "de", cat: "prep" },
+      { text: "Thomas", cat: "np" },
+      { text: "aboie", cat: "v" },
+      { text: "dans", cat: "prep" },
+      { text: "le", cat: "det" },
+      { text: "jardin", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Une grande girafe mange les feuilles vertes de l' arbre .",
+    tokens: [
+      { text: "Une", cat: "det" },
+      { text: "grande", cat: "adj" },
+      { text: "girafe", cat: "nc" },
+      { text: "mange", cat: "v" },
+      { text: "les", cat: "det" },
+      { text: "feuilles", cat: "nc" },
+      { text: "vertes", cat: "adj" },
+      { text: "de", cat: "prep" },
+      { text: "l'", cat: "det" },
+      { text: "arbre", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "La Seine traverse la ville de Paris .",
+    tokens: [
+      { text: "La", cat: "det" },
+      { text: "Seine", cat: "np" },
+      { text: "traverse", cat: "v" },
+      { text: "la", cat: "det" },
+      { text: "ville", cat: "nc" },
+      { text: "de", cat: "prep" },
+      { text: "Paris", cat: "np" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Les élèves écoutent attentivement le professeur .",
+    tokens: [
+      { text: "Les", cat: "det" },
+      { text: "élèves", cat: "nc" },
+      { text: "écoutent", cat: "v" },
+      { text: "attentivement", cat: "adv" },
+      { text: "le", cat: "det" },
+      { text: "professeur", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Ce matin , le soleil brille dans le ciel bleu .",
+    tokens: [
+      { text: "Ce", cat: "det" },
+      { text: "matin", cat: "nc" },
+      { text: ",", cat: "prep", punctuation: "," },
+      { text: "le", cat: "det" },
+      { text: "soleil", cat: "nc" },
+      { text: "brille", cat: "v" },
+      { text: "dans", cat: "prep" },
+      { text: "le", cat: "det" },
+      { text: "ciel", cat: "nc" },
+      { text: "bleu", cat: "adj" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Le renard rusé observe les poules du fermier .",
+    tokens: [
+      { text: "Le", cat: "det" },
+      { text: "renard", cat: "nc" },
+      { text: "rusé", cat: "adj" },
+      { text: "observe", cat: "v" },
+      { text: "les", cat: "det" },
+      { text: "poules", cat: "nc" },
+      { text: "du", cat: "det" },
+      { text: "fermier", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Julie a acheté des fleurs pour sa maman .",
+    tokens: [
+      { text: "Julie", cat: "np" },
+      { text: "a", cat: "v" },
+      { text: "acheté", cat: "v" },
+      { text: "des", cat: "det" },
+      { text: "fleurs", cat: "nc" },
+      { text: "pour", cat: "prep" },
+      { text: "sa", cat: "det" },
+      { text: "maman", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Le train entre lentement dans la gare de Bruxelles .",
+    tokens: [
+      { text: "Le", cat: "det" },
+      { text: "train", cat: "nc" },
+      { text: "entre", cat: "v" },
+      { text: "lentement", cat: "adv" },
+      { text: "dans", cat: "prep" },
+      { text: "la", cat: "det" },
+      { text: "gare", cat: "nc" },
+      { text: "de", cat: "prep" },
+      { text: "Bruxelles", cat: "np" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Mon grand-père lit son journal sur la terrasse .",
+    tokens: [
+      { text: "Mon", cat: "det" },
+      { text: "grand-père", cat: "nc" },
+      { text: "lit", cat: "v" },
+      { text: "son", cat: "det" },
+      { text: "journal", cat: "nc" },
+      { text: "sur", cat: "prep" },
+      { text: "la", cat: "det" },
+      { text: "terrasse", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Les poissons nagent dans l' eau claire de la rivière .",
+    tokens: [
+      { text: "Les", cat: "det" },
+      { text: "poissons", cat: "nc" },
+      { text: "nagent", cat: "v" },
+      { text: "dans", cat: "prep" },
+      { text: "l'", cat: "det" },
+      { text: "eau", cat: "nc" },
+      { text: "claire", cat: "adj" },
+      { text: "de", cat: "prep" },
+      { text: "la", cat: "det" },
+      { text: "rivière", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Arthur a trouvé un joli coquillage sur la plage .",
+    tokens: [
+      { text: "Arthur", cat: "np" },
+      { text: "a", cat: "v" },
+      { text: "trouvé", cat: "v" },
+      { text: "un", cat: "det" },
+      { text: "joli", cat: "adj" },
+      { text: "coquillage", cat: "nc" },
+      { text: "sur", cat: "prep" },
+      { text: "la", cat: "det" },
+      { text: "plage", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Le boulanger prépare des croissants chauds tous les matins .",
+    tokens: [
+      { text: "Le", cat: "det" },
+      { text: "boulanger", cat: "nc" },
+      { text: "prépare", cat: "v" },
+      { text: "des", cat: "det" },
+      { text: "croissants", cat: "nc" },
+      { text: "chauds", cat: "adj" },
+      { text: "tous", cat: "det" },
+      { text: "les", cat: "det" },
+      { text: "matins", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "L' Afrique est un immense continent avec de nombreux animaux .",
+    tokens: [
+      { text: "L'", cat: "det" },
+      { text: "Afrique", cat: "np" },
+      { text: "est", cat: "v" },
+      { text: "un", cat: "det" },
+      { text: "immense", cat: "adj" },
+      { text: "continent", cat: "nc" },
+      { text: "avec", cat: "prep" },
+      { text: "de", cat: "prep" },
+      { text: "nombreux", cat: "adj" },
+      { text: "animaux", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Le chat noir dort sur le tapis du salon .",
+    tokens: [
+      { text: "Le", cat: "det" },
+      { text: "chat", cat: "nc" },
+      { text: "noir", cat: "adj" },
+      { text: "dort", cat: "v" },
+      { text: "sur", cat: "prep" },
+      { text: "le", cat: "det" },
+      { text: "tapis", cat: "nc" },
+      { text: "du", cat: "det" },
+      { text: "salon", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Chaque soir , maman raconte une belle histoire à mon petit frère .",
+    tokens: [
+      { text: "Chaque", cat: "det" },
+      { text: "soir", cat: "nc" },
+      { text: ",", cat: "prep", punctuation: "," },
+      { text: "maman", cat: "nc" },
+      { text: "raconte", cat: "v" },
+      { text: "une", cat: "det" },
+      { text: "belle", cat: "adj" },
+      { text: "histoire", cat: "nc" },
+      { text: "à", cat: "prep" },
+      { text: "mon", cat: "det" },
+      { text: "petit", cat: "adj" },
+      { text: "frère", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Les alpinistes escaladent les hauts sommets des Alpes .",
+    tokens: [
+      { text: "Les", cat: "det" },
+      { text: "alpinistes", cat: "nc" },
+      { text: "escaladent", cat: "v" },
+      { text: "les", cat: "det" },
+      { text: "hauts", cat: "adj" },
+      { text: "sommets", cat: "nc" },
+      { text: "des", cat: "det" },
+      { text: "Alpes", cat: "np" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "La maîtresse écrit la date au tableau vert .",
+    tokens: [
+      { text: "La", cat: "det" },
+      { text: "maîtresse", cat: "nc" },
+      { text: "écrit", cat: "v" },
+      { text: "la", cat: "det" },
+      { text: "date", cat: "nc" },
+      { text: "au", cat: "prep" },
+      { text: "tableau", cat: "nc" },
+      { text: "vert", cat: "adj" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "La Belgique est célèbre pour son chocolat et ses frites .",
+    tokens: [
+      { text: "La", cat: "det" },
+      { text: "Belgique", cat: "np" },
+      { text: "est", cat: "v" },
+      { text: "célèbre", cat: "adj" },
+      { text: "pour", cat: "prep" },
+      { text: "son", cat: "det" },
+      { text: "chocolat", cat: "nc" },
+      { text: "et", cat: "conj" },
+      { text: "ses", cat: "det" },
+      { text: "frites", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Le facteur distribue les lettres et les colis dans le quartier .",
+    tokens: [
+      { text: "Le", cat: "det" },
+      { text: "facteur", cat: "nc" },
+      { text: "distribue", cat: "v" },
+      { text: "les", cat: "det" },
+      { text: "lettres", cat: "nc" },
+      { text: "et", cat: "conj" },
+      { text: "les", cat: "det" },
+      { text: "colis", cat: "nc" },
+      { text: "dans", cat: "prep" },
+      { text: "le", cat: "det" },
+      { text: "quartier", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Le vent souffle dans les branches des grands arbres .",
+    tokens: [
+      { text: "Le", cat: "det" },
+      { text: "vent", cat: "nc" },
+      { text: "souffle", cat: "v" },
+      { text: "dans", cat: "prep" },
+      { text: "les", cat: "det" },
+      { text: "branches", cat: "nc" },
+      { text: "des", cat: "det" },
+      { text: "arbres", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Marie adore écouter le chant des oiseaux dans la forêt .",
+    tokens: [
+      { text: "Marie", cat: "np" },
+      { text: "adore", cat: "v" },
+      { text: "écouter", cat: "v" },
+      { text: "le", cat: "det" },
+      { text: "chant", cat: "nc" },
+      { text: "des", cat: "det" },
+      { text: "oiseaux", cat: "nc" },
+      { text: "dans", cat: "prep" },
+      { text: "la", cat: "det" },
+      { text: "forêt", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Le lion est le roi de la savane africaine .",
+    tokens: [
+      { text: "Le", cat: "det" },
+      { text: "lion", cat: "nc" },
+      { text: "est", cat: "v" },
+      { text: "le", cat: "det" },
+      { text: "roi", cat: "nc" },
+      { text: "de", cat: "prep" },
+      { text: "la", cat: "det" },
+      { text: "savane", cat: "nc" },
+      { text: "africaine", cat: "adj" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Les touristes prennent des photos de la tour Eiffel .",
+    tokens: [
+      { text: "Les", cat: "det" },
+      { text: "touristes", cat: "nc" },
+      { text: "prennent", cat: "v" },
+      { text: "des", cat: "det" },
+      { text: "photos", cat: "nc" },
+      { text: "de", cat: "prep" },
+      { text: "la", cat: "det" },
+      { text: "tour", cat: "nc" },
+      { text: "Eiffel", cat: "np" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Une petite souris grignote un morceau de fromage .",
+    tokens: [
+      { text: "Une", cat: "det" },
+      { text: "petite", cat: "adj" },
+      { text: "souris", cat: "nc" },
+      { text: "grignote", cat: "v" },
+      { text: "un", cat: "det" },
+      { text: "morceau", cat: "nc" },
+      { text: "de", cat: "prep" },
+      { text: "fromage", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Le capitaine dirige le grand bateau sur l' océan Atlantique .",
+    tokens: [
+      { text: "Le", cat: "det" },
+      { text: "capitaine", cat: "nc" },
+      { text: "dirige", cat: "v" },
+      { text: "le", cat: "det" },
+      { text: "grand", cat: "adj" },
+      { text: "bateau", cat: "nc" },
+      { text: "sur", cat: "prep" },
+      { text: "l'", cat: "det" },
+      { text: "océan", cat: "nc" },
+      { text: "Atlantique", cat: "np" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Dans ce livre , le héros cherche un trésor caché .",
+    tokens: [
+      { text: "Dans", cat: "prep" },
+      { text: "ce", cat: "det" },
+      { text: "livre", cat: "nc" },
+      { text: ",", cat: "prep", punctuation: "," },
+      { text: "le", cat: "det" },
+      { text: "héros", cat: "nc" },
+      { text: "cherche", cat: "v" },
+      { text: "un", cat: "det" },
+      { text: "trésor", cat: "nc" },
+      { text: "caché", cat: "adj" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Mon ami Paul joue de la guitare dans un groupe .",
+    tokens: [
+      { text: "Mon", cat: "det" },
+      { text: "ami", cat: "nc" },
+      { text: "Paul", cat: "np" },
+      { text: "joue", cat: "v" },
+      { text: "de", cat: "prep" },
+      { text: "la", cat: "det" },
+      { text: "guitare", cat: "nc" },
+      { text: "dans", cat: "prep" },
+      { text: "un", cat: "det" },
+      { text: "groupe", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "La petite fille offre un joli dessin à son père .",
+    tokens: [
+      { text: "La", cat: "det" },
+      { text: "petite", cat: "adj" },
+      { text: "fille", cat: "nc" },
+      { text: "offre", cat: "v" },
+      { text: "un", cat: "det" },
+      { text: "joli", cat: "adj" },
+      { text: "dessin", cat: "nc" },
+      { text: "à", cat: "prep" },
+      { text: "son", cat: "det" },
+      { text: "père", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Le soleil se couche derrière les montagnes rocheuses .",
+    tokens: [
+      { text: "Le", cat: "det" },
+      { text: "soleil", cat: "nc" },
+      { text: "se", cat: "pr" },
+      { text: "couche", cat: "v" },
+      { text: "derrière", cat: "prep" },
+      { text: "les", cat: "det" },
+      { text: "montagnes", cat: "nc" },
+      { text: "rocheuses", cat: "adj" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Les ours bruns adorent manger du miel sauvage .",
+    tokens: [
+      { text: "Les", cat: "det" },
+      { text: "ours", cat: "nc" },
+      { text: "bruns", cat: "adj" },
+      { text: "adorent", cat: "v" },
+      { text: "manger", cat: "v" },
+      { text: "du", cat: "det" },
+      { text: "miel", cat: "nc" },
+      { text: "sauvage", cat: "adj" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "En hiver , la neige recouvre les toits des maisons .",
+    tokens: [
+      { text: "En", cat: "prep" },
+      { text: "hiver", cat: "nc" },
+      { text: ",", cat: "prep", punctuation: "," },
+      { text: "la", cat: "det" },
+      { text: "neige", cat: "nc" },
+      { text: "recouvre", cat: "v" },
+      { text: "les", cat: "det" },
+      { text: "toits", cat: "nc" },
+      { text: "des", cat: "det" },
+      { text: "maisons", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Le jardinier plante des tulipes rouges dans le parc .",
+    tokens: [
+      { text: "Le", cat: "det" },
+      { text: "jardinier", cat: "nc" },
+      { text: "plante", cat: "v" },
+      { text: "des", cat: "det" },
+      { text: "tulipes", cat: "nc" },
+      { text: "rouges", cat: "adj" },
+      { text: "dans", cat: "prep" },
+      { text: "le", cat: "det" },
+      { text: "parc", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Le jeune prince vit dans un magnifique château en Espagne .",
+    tokens: [
+      { text: "Le", cat: "det" },
+      { text: "jeune", cat: "adj" },
+      { text: "prince", cat: "nc" },
+      { text: "vit", cat: "v" },
+      { text: "dans", cat: "prep" },
+      { text: "un", cat: "det" },
+      { text: "magnifique", cat: "adj" },
+      { text: "château", cat: "nc" },
+      { text: "en", cat: "prep" },
+      { text: "Espagne", cat: "np" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "La lune éclaire la route sombre pendant la nuit .",
+    tokens: [
+      { text: "La", cat: "det" },
+      { text: "lune", cat: "nc" },
+      { text: "éclaire", cat: "v" },
+      { text: "la", cat: "det" },
+      { text: "route", cat: "nc" },
+      { text: "sombre", cat: "adj" },
+      { text: "pendant", cat: "prep" },
+      { text: "la", cat: "det" },
+      { text: "nuit", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Les singes amusants sautent de branche en branche dans le zoo .",
+    tokens: [
+      { text: "Les", cat: "det" },
+      { text: "singes", cat: "nc" },
+      { text: "amusants", cat: "adj" },
+      { text: "sautent", cat: "v" },
+      { text: "de", cat: "prep" },
+      { text: "branche", cat: "nc" },
+      { text: "en", cat: "prep" },
+      { text: "branche", cat: "nc" },
+      { text: "dans", cat: "prep" },
+      { text: "le", cat: "det" },
+      { text: "zoo", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Le vieux marin raconte ses aventures en mer .",
+    tokens: [
+      { text: "Le", cat: "det" },
+      { text: "vieux", cat: "adj" },
+      { text: "marin", cat: "nc" },
+      { text: "raconte", cat: "v" },
+      { text: "ses", cat: "det" },
+      { text: "aventures", cat: "nc" },
+      { text: "en", cat: "prep" },
+      { text: "mer", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Chaque matin , les oiseaux chantent sous ma fenêtre .",
+    tokens: [
+      { text: "Chaque", cat: "det" },
+      { text: "matin", cat: "nc" },
+      { text: ",", cat: "prep", punctuation: "," },
+      { text: "les", cat: "det" },
+      { text: "oiseaux", cat: "nc" },
+      { text: "chantent", cat: "v" },
+      { text: "sous", cat: "prep" },
+      { text: "ma", cat: "det" },
+      { text: "fenêtre", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Le pirate a caché son coffre sur une île déserte .",
+    tokens: [
+      { text: "Le", cat: "det" },
+      { text: "pirate", cat: "nc" },
+      { text: "a", cat: "v" },
+      { text: "caché", cat: "v" },
+      { text: "son", cat: "det" },
+      { text: "coffre", cat: "nc" },
+      { text: "sur", cat: "prep" },
+      { text: "une", cat: "det" },
+      { text: "île", cat: "nc" },
+      { text: "déserte", cat: "adj" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Lucas dessine un beau paysage avec des montagnes et un lac .",
+    tokens: [
+      { text: "Lucas", cat: "np" },
+      { text: "dessine", cat: "v" },
+      { text: "un", cat: "det" },
+      { text: "beau", cat: "adj" },
+      { text: "paysage", cat: "nc" },
+      { text: "avec", cat: "prep" },
+      { text: "des", cat: "det" },
+      { text: "montagnes", cat: "nc" },
+      { text: "et", cat: "conj" },
+      { text: "un", cat: "det" },
+      { text: "lac", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Les loups vivent en meute dans les grandes forêts du Canada .",
+    tokens: [
+      { text: "Les", cat: "det" },
+      { text: "loups", cat: "nc" },
+      { text: "vivent", cat: "v" },
+      { text: "en", cat: "prep" },
+      { text: "meute", cat: "nc" },
+      { text: "dans", cat: "prep" },
+      { text: "les", cat: "det" },
+      { text: "grandes", cat: "adj" },
+      { text: "forêts", cat: "nc" },
+      { text: "du", cat: "det" },
+      { text: "Canada", cat: "np" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Le boulanger sort le pain chaud du grand four .",
+    tokens: [
+      { text: "Le", cat: "det" },
+      { text: "boulanger", cat: "nc" },
+      { text: "sort", cat: "v" },
+      { text: "le", cat: "det" },
+      { text: "pain", cat: "nc" },
+      { text: "chaud", cat: "adj" },
+      { text: "du", cat: "det" },
+      { text: "grand", cat: "adj" },
+      { text: "four", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Une magnifique licorne apparaît dans les contes pour enfants .",
+    tokens: [
+      { text: "Une", cat: "det" },
+      { text: "magnifique", cat: "adj" },
+      { text: "licorne", cat: "nc" },
+      { text: "apparaît", cat: "v" },
+      { text: "dans", cat: "prep" },
+      { text: "les", cat: "det" },
+      { text: "contes", cat: "nc" },
+      { text: "pour", cat: "prep" },
+      { text: "enfants", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Le Nil est un fleuve immense qui traverse l' Egypte .",
+    tokens: [
+      { text: "Le", cat: "det" },
+      { text: "Nil", cat: "np" },
+      { text: "est", cat: "v" },
+      { text: "un", cat: "det" },
+      { text: "fleuve", cat: "nc" },
+      { text: "immense", cat: "adj" },
+      { text: "qui", cat: "pr" },
+      { text: "traverse", cat: "v" },
+      { text: "l'", cat: "det" },
+      { text: "Egypte", cat: "np" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Mon oncle habite dans une grande maison à Marseille .",
+    tokens: [
+      { text: "Mon", cat: "det" },
+      { text: "oncle", cat: "nc" },
+      { text: "habite", cat: "v" },
+      { text: "dans", cat: "prep" },
+      { text: "une", cat: "det" },
+      { text: "grande", cat: "adj" },
+      { text: "maison", cat: "nc" },
+      { text: "à", cat: "prep" },
+      { text: "Marseille", cat: "np" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Les castors construisent un barrage solide sur le ruisseau .",
+    tokens: [
+      { text: "Les", cat: "det" },
+      { text: "castors", cat: "nc" },
+      { text: "construisent", cat: "v" },
+      { text: "un", cat: "det" },
+      { text: "barrage", cat: "nc" },
+      { text: "solide", cat: "adj" },
+      { text: "sur", cat: "prep" },
+      { text: "le", cat: "det" },
+      { text: "ruisseau", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  }
+];
+
+
