@@ -7994,4 +7994,724 @@ window.EXERCICES_VERBE_CLASS = [
   }
 ];
 
+window.EXERCICES_ADJECTIF = [
+  {
+    text: "Le petit chien noir court dans le grand jardin .",
+    tokens: [
+      { text: "Le", cat: "det" },
+      { text: "petit", cat: "adj" },
+      { text: "chien", cat: "nc" },
+      { text: "noir", cat: "adj" },
+      { text: "court", cat: "v" },
+      { text: "dans", cat: "prep" },
+      { text: "le", cat: "det" },
+      { text: "grand", cat: "adj" },
+      { text: "jardin", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Une pomme rouge est tombée sur l' herbe verte .",
+    tokens: [
+      { text: "Une", cat: "det" },
+      { text: "pomme", cat: "nc" },
+      { text: "rouge", cat: "adj" },
+      { text: "est", cat: "v" },
+      { text: "tombée", cat: "v" },
+      { text: "sur", cat: "prep" },
+      { text: "l'", cat: "det" },
+      { text: "herbe", cat: "nc" },
+      { text: "verte", cat: "adj" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Les jolies fleurs jaunes décorent la table basse .",
+    tokens: [
+      { text: "Les", cat: "det" },
+      { text: "jolies", cat: "adj" },
+      { text: "fleurs", cat: "nc" },
+      { text: "jaunes", cat: "adj" },
+      { text: "décorent", cat: "v" },
+      { text: "la", cat: "det" },
+      { text: "table", cat: "nc" },
+      { text: "basse", cat: "adj" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Mon vieux grand-père raconte une histoire amusante .",
+    tokens: [
+      { text: "Mon", cat: "det" },
+      { text: "vieux", cat: "adj" },
+      { text: "grand-père", cat: "nc" },
+      { text: "raconte", cat: "v" },
+      { text: "une", cat: "det" },
+      { text: "histoire", cat: "nc" },
+      { text: "amusante", cat: "adj" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "La voiture bleue roule sur la route mouillée .",
+    tokens: [
+      { text: "La", cat: "det" },
+      { text: "voiture", cat: "nc" },
+      { text: "bleue", cat: "adj" },
+      { text: "roule", cat: "v" },
+      { text: "sur", cat: "prep" },
+      { text: "la", cat: "det" },
+      { text: "route", cat: "nc" },
+      { text: "mouillée", cat: "adj" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Le vent froid souffle sur la mer agitée .",
+    tokens: [
+      { text: "Le", cat: "det" },
+      { text: "vent", cat: "nc" },
+      { text: "froid", cat: "adj" },
+      { text: "souffle", cat: "v" },
+      { text: "sur", cat: "prep" },
+      { text: "la", cat: "det" },
+      { text: "mer", cat: "nc" },
+      { text: "agitée", cat: "adj" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Une gentille fée a offert un cadeau magique au prince .",
+    tokens: [
+      { text: "Une", cat: "det" },
+      { text: "gentille", cat: "adj" },
+      { text: "fée", cat: "nc" },
+      { text: "a", cat: "v" },
+      { text: "offert", cat: "v" },
+      { text: "un", cat: "det" },
+      { text: "cadeau", cat: "nc" },
+      { text: "magique", cat: "adj" },
+      { text: "au", cat: "prep" },
+      { text: "prince", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Le gros ours brun mange du miel sucré .",
+    tokens: [
+      { text: "Le", cat: "det" },
+      { text: "gros", cat: "adj" },
+      { text: "ours", cat: "nc" },
+      { text: "brun", cat: "adj" },
+      { text: "mange", cat: "v" },
+      { text: "du", cat: "det" },
+      { text: "miel", cat: "nc" },
+      { text: "sucré", cat: "adj" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Cette petite fille intelligente dessine un beau paysage .",
+    tokens: [
+      { text: "Cette", cat: "det" },
+      { text: "petite", cat: "adj" },
+      { text: "fille", cat: "nc" },
+      { text: "intelligente", cat: "adj" },
+      { text: "dessine", cat: "v" },
+      { text: "un", cat: "det" },
+      { text: "beau", cat: "adj" },
+      { text: "paysage", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Les enfants joyeux jouent dans la cour ensoleillée .",
+    tokens: [
+      { text: "Les", cat: "det" },
+      { text: "enfants", cat: "nc" },
+      { text: "joyeux", cat: "adj" },
+      { text: "jouent", cat: "v" },
+      { text: "dans", cat: "prep" },
+      { text: "la", cat: "det" },
+      { text: "cour", cat: "nc" },
+      { text: "ensoleillée", cat: "adj" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Un renard roux se cache sous les feuilles sèches .",
+    tokens: [
+      { text: "Un", cat: "det" },
+      { text: "renard", cat: "nc" },
+      { text: "roux", cat: "adj" },
+      { text: "se", cat: "pr" },
+      { text: "cache", cat: "v" },
+      { text: "sous", cat: "prep" },
+      { text: "les", cat: "det" },
+      { text: "feuilles", cat: "nc" },
+      { text: "sèches", cat: "adj" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "La soupe chaude est servie dans une assiette creuse .",
+    tokens: [
+      { text: "La", cat: "det" },
+      { text: "soupe", cat: "nc" },
+      { text: "chaude", cat: "adj" },
+      { text: "est", cat: "v" },
+      { text: "servie", cat: "v" },
+      { text: "dans", cat: "prep" },
+      { text: "une", cat: "det" },
+      { text: "assiette", cat: "nc" },
+      { text: "creuse", cat: "adj" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Le nouveau maître explique une leçon difficile .",
+    tokens: [
+      { text: "Le", cat: "det" },
+      { text: "nouveau", cat: "adj" },
+      { text: "maître", cat: "nc" },
+      { text: "explique", cat: "v" },
+      { text: "une", cat: "det" },
+      { text: "leçon", cat: "nc" },
+      { text: "difficile", cat: "adj" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Les oiseaux migrateurs volent vers les pays chauds .",
+    tokens: [
+      { text: "Les", cat: "det" },
+      { text: "oiseaux", cat: "nc" },
+      { text: "migrateurs", cat: "adj" },
+      { text: "volent", cat: "v" },
+      { text: "vers", cat: "prep" },
+      { text: "les", cat: "det" },
+      { text: "pays", cat: "nc" },
+      { text: "chauds", cat: "adj" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Un chat blanc dort sur le canapé confortable .",
+    tokens: [
+      { text: "Un", cat: "det" },
+      { text: "chat", cat: "nc" },
+      { text: "blanc", cat: "adj" },
+      { text: "dort", cat: "v" },
+      { text: "sur", cat: "prep" },
+      { text: "le", cat: "det" },
+      { text: "canapé", cat: "nc" },
+      { text: "confortable", cat: "adj" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Ce long chemin mène à la vieille cabane abandonnée .",
+    tokens: [
+      { text: "Ce", cat: "det" },
+      { text: "long", cat: "adj" },
+      { text: "chemin", cat: "nc" },
+      { text: "mène", cat: "v" },
+      { text: "à", cat: "prep" },
+      { text: "la", cat: "det" },
+      { text: "vieille", cat: "adj" },
+      { text: "cabane", cat: "nc" },
+      { text: "abandonnée", cat: "adj" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Julie porte une jolie robe rose et des chaussures neuves .",
+    tokens: [
+      { text: "Julie", cat: "np" },
+      { text: "porte", cat: "v" },
+      { text: "une", cat: "det" },
+      { text: "jolie", cat: "adj" },
+      { text: "robe", cat: "nc" },
+      { text: "rose", cat: "adj" },
+      { text: "et", cat: "conj" },
+      { text: "des", cat: "det" },
+      { text: "chaussures", cat: "nc" },
+      { text: "neuves", cat: "adj" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Le lion courageux protège ses petits lionceaux .",
+    tokens: [
+      { text: "Le", cat: "det" },
+      { text: "lion", cat: "nc" },
+      { text: "courageux", cat: "adj" },
+      { text: "protège", cat: "v" },
+      { text: "ses", cat: "det" },
+      { text: "petits", cat: "adj" },
+      { text: "lionceaux", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Une forte tempête a détruit les vieux arbres du parc .",
+    tokens: [
+      { text: "Une", cat: "det" },
+      { text: "forte", cat: "adj" },
+      { text: "tempête", cat: "nc" },
+      { text: "a", cat: "v" },
+      { text: "détruit", cat: "v" },
+      { text: "les", cat: "det" },
+      { text: "vieux", cat: "adj" },
+      { text: "arbres", cat: "nc" },
+      { text: "du", cat: "prep" },
+      { text: "parc", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Le jeune garçon a trouvé une pièce brillante sur le trottoir .",
+    tokens: [
+      { text: "Le", cat: "det" },
+      { text: "jeune", cat: "adj" },
+      { text: "garçon", cat: "nc" },
+      { text: "a", cat: "v" },
+      { text: "trouvé", cat: "v" },
+      { text: "une", cat: "det" },
+      { text: "pièce", cat: "nc" },
+      { text: "brillante", cat: "adj" },
+      { text: "sur", cat: "prep" },
+      { text: "le", cat: "det" },
+      { text: "trottoir", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Cette histoire courte fait rire les petits élèves .",
+    tokens: [
+      { text: "Cette", cat: "det" },
+      { text: "histoire", cat: "nc" },
+      { text: "courte", cat: "adj" },
+      { text: "fait", cat: "v" },
+      { text: "rire", cat: "v" },
+      { text: "les", cat: "det" },
+      { text: "petits", cat: "adj" },
+      { text: "élèves", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Le soleil chaud brille dans le ciel bleu .",
+    tokens: [
+      { text: "Le", cat: "det" },
+      { text: "soleil", cat: "nc" },
+      { text: "chaud", cat: "adj" },
+      { text: "brille", cat: "v" },
+      { text: "dans", cat: "prep" },
+      { text: "le", cat: "det" },
+      { text: "ciel", cat: "nc" },
+      { text: "bleu", cat: "adj" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Nous avons mangé une tarte délicieuse avec des fruits frais .",
+    tokens: [
+      { text: "Nous", cat: "pr" },
+      { text: "avons", cat: "v" },
+      { text: "mangé", cat: "v" },
+      { text: "une", cat: "det" },
+      { text: "tarte", cat: "nc" },
+      { text: "délicieuse", cat: "adj" },
+      { text: "avec", cat: "prep" },
+      { text: "des", cat: "det" },
+      { text: "fruits", cat: "nc" },
+      { text: "frais", cat: "adj" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Le méchant loup poursuit le petit lapin sauvage .",
+    tokens: [
+      { text: "Le", cat: "det" },
+      { text: "méchant", cat: "adj" },
+      { text: "loup", cat: "nc" },
+      { text: "poursuit", cat: "v" },
+      { text: "le", cat: "det" },
+      { text: "petit", cat: "adj" },
+      { text: "lapin", cat: "nc" },
+      { text: "sauvage", cat: "adj" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Une eau fraîche coule dans la petite rivière claire .",
+    tokens: [
+      { text: "Une", cat: "det" },
+      { text: "eau", cat: "nc" },
+      { text: "fraîche", cat: "adj" },
+      { text: "coule", cat: "v" },
+      { text: "dans", cat: "prep" },
+      { text: "la", cat: "det" },
+      { text: "petite", cat: "adj" },
+      { text: "rivière", cat: "nc" },
+      { text: "claire", cat: "adj" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Les singes agiles grimpent sur les branches fines .",
+    tokens: [
+      { text: "Les", cat: "det" },
+      { text: "singes", cat: "nc" },
+      { text: "agiles", cat: "adj" },
+      { text: "grimpent", cat: "v" },
+      { text: "sur", cat: "prep" },
+      { text: "les", cat: "det" },
+      { text: "branches", cat: "nc" },
+      { text: "fines", cat: "adj" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Ce vieux livre contient des dessins magnifiques .",
+    tokens: [
+      { text: "Ce", cat: "det" },
+      { text: "vieux", cat: "adj" },
+      { text: "livre", cat: "nc" },
+      { text: "contient", cat: "v" },
+      { text: "des", cat: "det" },
+      { text: "dessins", cat: "nc" },
+      { text: "magnifiques", cat: "adj" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Une grosse boîte verte est posée sur la table ronde .",
+    tokens: [
+      { text: "Une", cat: "det" },
+      { text: "grosse", cat: "adj" },
+      { text: "boîte", cat: "nc" },
+      { text: "verte", cat: "adj" },
+      { text: "est", cat: "v" },
+      { text: "posée", cat: "v" },
+      { text: "sur", cat: "prep" },
+      { text: "la", cat: "det" },
+      { text: "table", cat: "nc" },
+      { text: "ronde", cat: "adj" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Le cycliste rapide monte la colline raide .",
+    tokens: [
+      { text: "Le", cat: "det" },
+      { text: "cycliste", cat: "nc" },
+      { text: "rapide", cat: "adj" },
+      { text: "monte", cat: "v" },
+      { text: "la", cat: "det" },
+      { text: "colline", cat: "nc" },
+      { text: "raide", cat: "adj" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Une odeur agréable provient de la cuisine propre .",
+    tokens: [
+      { text: "Une", cat: "det" },
+      { text: "odeur", cat: "nc" },
+      { text: "agréable", cat: "adj" },
+      { text: "provient", cat: "v" },
+      { text: "de", cat: "prep" },
+      { text: "la", cat: "det" },
+      { text: "cuisine", cat: "nc" },
+      { text: "propre", cat: "adj" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Les élèves attentifs écoutent la douce musique .",
+    tokens: [
+      { text: "Les", cat: "det" },
+      { text: "élèves", cat: "nc" },
+      { text: "attentifs", cat: "adj" },
+      { text: "écoutent", cat: "v" },
+      { text: "la", cat: "det" },
+      { text: "douce", cat: "adj" },
+      { text: "musique", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Le chien fidèle attend son jeune maître devant la porte .",
+    tokens: [
+      { text: "Le", cat: "det" },
+      { text: "chien", cat: "nc" },
+      { text: "fidèle", cat: "adj" },
+      { text: "attend", cat: "v" },
+      { text: "son", cat: "det" },
+      { text: "jeune", cat: "adj" },
+      { text: "maître", cat: "nc" },
+      { text: "devant", cat: "prep" },
+      { text: "la", cat: "det" },
+      { text: "porte", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Un ciel gris annonce une pluie fine .",
+    tokens: [
+      { text: "Un", cat: "det" },
+      { text: "ciel", cat: "nc" },
+      { text: "gris", cat: "adj" },
+      { text: "annonce", cat: "v" },
+      { text: "une", cat: "det" },
+      { text: "pluie", cat: "nc" },
+      { text: "fine", cat: "adj" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "La petite chenille verte deviendra un magnifique papillon .",
+    tokens: [
+      { text: "La", cat: "det" },
+      { text: "petite", cat: "adj" },
+      { text: "chenille", cat: "nc" },
+      { text: "verte", cat: "adj" },
+      { text: "deviendra", cat: "v" },
+      { text: "un", cat: "det" },
+      { text: "magnifique", cat: "adj" },
+      { text: "papillon", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Ce gâteau au chocolat est moelleux et savoureux .",
+    tokens: [
+      { text: "Ce", cat: "det" },
+      { text: "gâteau", cat: "nc" },
+      { text: "au", cat: "prep" },
+      { text: "chocolat", cat: "nc" },
+      { text: "est", cat: "v" },
+      { text: "moelleux", cat: "adj" },
+      { text: "et", cat: "conj" },
+      { text: "savoureux", cat: "adj" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Le plongeur courageux explore les eaux profondes .",
+    tokens: [
+      { text: "Le", cat: "det" },
+      { text: "plongeur", cat: "nc" },
+      { text: "courageux", cat: "adj" },
+      { text: "explore", cat: "v" },
+      { text: "les", cat: "det" },
+      { text: "eaux", cat: "nc" },
+      { text: "profondes", cat: "adj" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Une vieille montre en or brille dans le tiroir ouvert .",
+    tokens: [
+      { text: "Une", cat: "det" },
+      { text: "vieille", cat: "adj" },
+      { text: "montre", cat: "nc" },
+      { text: "en", cat: "prep" },
+      { text: "or", cat: "nc" },
+      { text: "brille", cat: "v" },
+      { text: "dans", cat: "prep" },
+      { text: "le", cat: "det" },
+      { text: "tiroir", cat: "nc" },
+      { text: "ouvert", cat: "adj" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Le vent violent a cassé la branche fragile de l' arbre .",
+    tokens: [
+      { text: "Le", cat: "det" },
+      { text: "vent", cat: "nc" },
+      { text: "violent", cat: "adj" },
+      { text: "a", cat: "v" },
+      { text: "cassé", cat: "v" },
+      { text: "la", cat: "det" },
+      { text: "branche", cat: "nc" },
+      { text: "fragile", cat: "adj" },
+      { text: "de", cat: "prep" },
+      { text: "l'", cat: "det" },
+      { text: "arbre", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Une lumière vive éclaire la pièce sombre .",
+    tokens: [
+      { text: "Une", cat: "det" },
+      { text: "lumière", cat: "nc" },
+      { text: "vive", cat: "adj" },
+      { text: "éclaire", cat: "v" },
+      { text: "la", cat: "det" },
+      { text: "pièce", cat: "nc" },
+      { text: "sombre", cat: "adj" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Les petites grenouilles vertes sautent dans l' étang calme .",
+    tokens: [
+      { text: "Les", cat: "det" },
+      { text: "petites", cat: "adj" },
+      { text: "grenouilles", cat: "nc" },
+      { text: "vertes", cat: "adj" },
+      { text: "sautent", cat: "v" },
+      { text: "dans", cat: "prep" },
+      { text: "l'", cat: "det" },
+      { text: "étang", cat: "nc" },
+      { text: "calme", cat: "adj" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Ce grand tableau noir est accroché au mur blanc .",
+    tokens: [
+      { text: "Ce", cat: "det" },
+      { text: "grand", cat: "adj" },
+      { text: "tableau", cat: "nc" },
+      { text: "noir", cat: "adj" },
+      { text: "est", cat: "v" },
+      { text: "accroché", cat: "v" },
+      { text: "au", cat: "prep" },
+      { text: "mur", cat: "nc" },
+      { text: "blanc", cat: "adj" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Une voix douce chante une mélodie apaisante .",
+    tokens: [
+      { text: "Une", cat: "det" },
+      { text: "voix", cat: "nc" },
+      { text: "douce", cat: "adj" },
+      { text: "chante", cat: "v" },
+      { text: "une", cat: "det" },
+      { text: "mélodie", cat: "nc" },
+      { text: "apaisante", cat: "adj" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Le jardinier plante de jolies fleurs rouges .",
+    tokens: [
+      { text: "Le", cat: "det" },
+      { text: "jardinier", cat: "nc" },
+      { text: "plante", cat: "v" },
+      { text: "de", cat: "det" },
+      { text: "jolies", cat: "adj" },
+      { text: "fleurs", cat: "nc" },
+      { text: "rouges", cat: "adj" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Un bruit sourd résonne dans la cave obscure .",
+    tokens: [
+      { text: "Un", cat: "det" },
+      { text: "bruit", cat: "nc" },
+      { text: "sourd", cat: "adj" },
+      { text: "résonne", cat: "v" },
+      { text: "dans", cat: "prep" },
+      { text: "la", cat: "det" },
+      { text: "cave", cat: "nc" },
+      { text: "obscure", cat: "adj" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Les touristes fatigués cherchent un hôtel calme .",
+    tokens: [
+      { text: "Les", cat: "det" },
+      { text: "touristes", cat: "nc" },
+      { text: "fatigués", cat: "adj" },
+      { text: "cherchent", cat: "v" },
+      { text: "un", cat: "det" },
+      { text: "hôtel", cat: "nc" },
+      { text: "calme", cat: "adj" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Un petit écureuil agile ramasse des noisettes sèches .",
+    tokens: [
+      { text: "Un", cat: "det" },
+      { text: "petit", cat: "adj" },
+      { text: "écureuil", cat: "nc" },
+      { text: "agile", cat: "adj" },
+      { text: "ramasse", cat: "v" },
+      { text: "des", cat: "det" },
+      { text: "noisettes", cat: "nc" },
+      { text: "sèches", cat: "adj" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Cette boisson fraîche est parfaite pour une journée chaude .",
+    tokens: [
+      { text: "Cette", cat: "det" },
+      { text: "boisson", cat: "nc" },
+      { text: "fraîche", cat: "adj" },
+      { text: "est", cat: "v" },
+      { text: "parfaite", cat: "adj" },
+      { text: "pour", cat: "prep" },
+      { text: "une", cat: "det" },
+      { text: "journée", cat: "nc" },
+      { text: "chaude", cat: "adj" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Les enfants sages recevront une belle surprise .",
+    tokens: [
+      { text: "Les", cat: "det" },
+      { text: "enfants", cat: "nc" },
+      { text: "sages", cat: "adj" },
+      { text: "recevront", cat: "v" },
+      { text: "une", cat: "det" },
+      { text: "belle", cat: "adj" },
+      { text: "surprise", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Le navire solide traverse la tempête effrayante .",
+    tokens: [
+      { text: "Le", cat: "det" },
+      { text: "navire", cat: "nc" },
+      { text: "solide", cat: "adj" },
+      { text: "traverse", cat: "v" },
+      { text: "la", cat: "det" },
+      { text: "tempête", cat: "nc" },
+      { text: "effrayante", cat: "adj" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Une clé dorée ouvre la porte secrète du château .",
+    tokens: [
+      { text: "Une", cat: "det" },
+      { text: "clé", cat: "nc" },
+      { text: "dorée", cat: "adj" },
+      { text: "ouvre", cat: "v" },
+      { text: "la", cat: "det" },
+      { text: "porte", cat: "nc" },
+      { text: "secrète", cat: "adj" },
+      { text: "du", cat: "prep" },
+      { text: "château", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  }
+];
+
+
 
