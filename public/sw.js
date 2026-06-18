@@ -1,15 +1,7 @@
-const CACHE_NAME = 'classe-mr-lejoly-cache-v125';
+const CACHE_NAME = 'classe-mr-lejoly-cache-v126';
 const CORE_ASSETS = [
   './',
   'index.html',
-  'classification_phylogenetique.html',
-  'circuit_electrique_18.html',
-  'energie-climat.html',
-  'paysage_energies.png',
-  'paysage_non_renouvelables.png',
-  'effet_de_serre.png',
-  'maison_gaspillage_energie_v3.jpg',
-  'Guide_de_l_eco-citoyen.png',
   'cartes-planisphere.html',
   'cartes-europe.html',
   'europe-shaded-relief.jpg',
