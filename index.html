@@ -19173,7 +19173,7 @@ function afficherRelierSerie(){
             ${p.nombre}
           </div>
           <div class="flex items-center justify-center text-center text-xs font-semibold text-neutral-400 bg-purple-50/50 border-2 border-dashed border-purple-300 rounded-xl p-2 min-h-[56px] cursor-pointer transition-all hover:bg-purple-50"
-            id="rel-zone-${i}" data-i="${i}"
+            id="rel-zone-${i}" data-i="${i}" onclick="relDecClearZone(this)"
             ondragover="relDecDzOver(event)" ondrop="relDecDzDrop(event)" ondragleave="relDecDzLeave(event)">
             Glisse ici…
           </div>
@@ -19250,6 +19250,17 @@ function relDecRetourner(phraseIdx){
     tag.classList.remove('opacity-30', 'cursor-default', 'pointer-events-none');
     tag.draggable = true;
   }
+}
+function relDecClearZone(zone){
+  const btn = document.getElementById('relier-btn-valider');
+  if(btn && btn.classList.contains('hidden')) return;
+  const zoneIdx = parseInt(zone.dataset.i);
+  const phraseIdx = relDecPlaced[zoneIdx];
+  if(phraseIdx === undefined) return;
+  zone.textContent = 'Glisse ici…';
+  zone.className = "flex items-center justify-center text-center text-xs font-semibold text-neutral-400 bg-purple-50/50 border-2 border-dashed border-purple-300 rounded-xl p-2 min-h-[56px] cursor-pointer transition-all hover:bg-purple-50";
+  relDecRetourner(phraseIdx);
+  delete relDecPlaced[zoneIdx];
 }
 
 function relDecTouchStart(e){
@@ -21455,9 +21466,9 @@ function renderSciTrajetSangScreen(){
       texteHtml += `<span class="trajet-drop-zone" id="tdz-${seg.id}"
         data-id="${seg.id}" data-answer="${seg.answer}" ${seg.group ? `data-group="${seg.group}"` : ''}
         style="display:inline-block;min-width:${w}px;min-height:28px;border-bottom:2px solid var(--purple);
-        border-radius:4px;margin:0 3px;padding:2px 6px;vertical-align:middle;cursor:default;
+        border-radius:4px;margin:0 3px;padding:2px 6px;vertical-align:middle;cursor:pointer;
         background:var(--purple-light);transition:background .2s;"
-        ondragover="trajetDragOver(event)" ondrop="trajetDrop(event)" ondragleave="trajetDragLeave(event)"
+        ondragover="trajetDragOver(event)" ondrop="trajetDrop(event)" ondragleave="trajetDragLeave(event)" onclick="trajetClearZone(this)"
         ontouchstart="trajetZoneTouchStart(event)" >&nbsp;</span>`;
     }
   });
@@ -21595,6 +21606,18 @@ function trajetZoneTouchStart(e){
   if(!mot) return;
   e.preventDefault();
   // Remettre dans la banque et vider la zone
+  zone.dataset.placed = '';
+  zone.innerHTML = '&nbsp;';
+  zone.style.color = '';
+  zone.style.fontWeight = '';
+  delete sciTrajetState.answers[zone.dataset.id];
+  trajetRetournerMot(mot);
+}
+function trajetClearZone(zone){
+  const panel = document.getElementById('trajet-score-panel');
+  if(panel && panel.style.display === 'block') return;
+  const mot = zone.dataset.placed;
+  if(!mot) return;
   zone.dataset.placed = '';
   zone.innerHTML = '&nbsp;';
   zone.style.color = '';
@@ -21800,9 +21823,9 @@ function renderSciCirculatoireAssoc(){
   pairs.forEach((p,i) => {
     rowsHtml += `<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px;align-items:center;">
       <div style="padding:8px 12px;background:var(--surface);border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-weight:700;min-height:48px;display:flex;align-items:center">${p.terme}</div>
-      <div class="assoc-drop-zone" id="assoc-zone-${i}" data-index="${i}"
+      <div class="assoc-drop-zone" id="assoc-zone-${i}" data-index="${i}" onclick="assocClearZone(this)"
         style="min-height:48px;display:flex;align-items:center;padding:6px 10px;
-        background:var(--purple-light);border:2px dashed var(--purple);border-radius:8px;font-size:12px;transition:background .2s;"
+        background:var(--purple-light);border:2px dashed var(--purple);border-radius:8px;font-size:12px;transition:background .2s;cursor:pointer;"
         ondragover="assocDragOver(event)" ondrop="assocDrop(event)" ondragleave="assocDragLeave(event)"
         ontouchstart="assocZoneTouchStart(event)">
         <span class="assoc-zone-placeholder" style="opacity:.5">Glisse ici…</span>
@@ -21940,6 +21963,18 @@ function assocZoneTouchStart(e){
   const defIndex = sciAssocState.placed[zoneIndex];
   if(defIndex === undefined) return;
   e.preventDefault();
+  delete sciAssocState.placed[zoneIndex];
+  zone.innerHTML = '<span class="assoc-zone-placeholder" style="opacity:.5">Glisse une définition ici…</span>';
+  zone.style.background = 'var(--purple-light)';
+  zone.style.border = '2px dashed var(--purple)';
+  assocRetournerDef(defIndex);
+}
+function assocClearZone(zone){
+  const panel = document.getElementById('assoc-score-panel');
+  if(panel && panel.style.display === 'block') return;
+  const zoneIndex = parseInt(zone.dataset.index);
+  const defIndex = sciAssocState.placed[zoneIndex];
+  if(defIndex === undefined) return;
   delete sciAssocState.placed[zoneIndex];
   zone.innerHTML = '<span class="assoc-zone-placeholder" style="opacity:.5">Glisse une définition ici…</span>';
   zone.style.background = 'var(--purple-light)';
@@ -25770,9 +25805,9 @@ function renderSciRespTexteIdx(idx){
   data.texte.forEach(part => {
     if(data.mots.includes(part)){
       const bid = 'resp-blank-'+blanks;
-      paraHtml += `<span class="geo-drop-zone resp-blank" id="${bid}" data-word="${part}"
+      paraHtml += `<span class="geo-drop-zone resp-blank" id="${bid}" data-word="${part}" onclick="respTexteClearZone(this)"
         ondragover="respTexteDragOver(event)" ondrop="respTexteDrop(event)" ondragleave="respTexteDragLeave(event)"
-        style="display:inline-block;min-width:140px;margin:0 3px;vertical-align:middle;"></span>`;
+        style="display:inline-block;min-width:140px;margin:0 3px;vertical-align:middle;cursor:pointer;"></span>`;
       respTexteState.answers[bid] = '';
       blanks++;
     } else { paraHtml += part; }
@@ -25814,6 +25849,23 @@ function respTexteDrop(e){
   zone.textContent=word; zone.classList.add('filled'); respTexteState.answers[zone.id]=word;
   const pool=document.getElementById('resp-texte-pool'); let found=false;
   pool && pool.querySelectorAll('.geo-tag').forEach(t=>{if(t.dataset.text===word&&!t.classList.contains('used')&&!found){t.classList.add('used');found=true;}});
+}
+function respTexteClearZone(zone){
+  const panel = document.getElementById('resp-texte-score');
+  if(panel && panel.style.display === 'block') return;
+  const word = respTexteState.answers[zone.id];
+  if(!word) return;
+  zone.textContent = ''; zone.classList.remove('filled');
+  const pool = document.getElementById('resp-texte-pool');
+  if(pool){
+    let found = false;
+    pool.querySelectorAll('.geo-tag').forEach(t => {
+      if(t.dataset.text === word && t.classList.contains('used') && !found){
+        t.classList.remove('used'); found = true;
+      }
+    });
+  }
+  respTexteState.answers[zone.id] = '';
 }
 let respTxtTEl=null,respTxtTClone=null;
 function respTxtTouchStart(e){
@@ -25945,9 +25997,9 @@ function renderSciRespAssoc(){
   pairs.forEach((p,i) => {
     rowsHtml += `<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px;align-items:center;">
       <div style="padding:8px 12px;background:var(--surface);border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-weight:700;min-height:48px;display:flex;align-items:center">${p.terme}</div>
-      <div class="resp-assoc-zone" id="resp-zone-${i}" data-index="${i}"
+      <div class="resp-assoc-zone" id="resp-zone-${i}" data-index="${i}" onclick="respAssocClearZone(this)"
         style="min-height:48px;display:flex;align-items:center;padding:6px 10px;
-        background:var(--purple-light);border:2px dashed var(--purple);border-radius:8px;font-size:12px;transition:background .2s;"
+        background:var(--purple-light);border:2px dashed var(--purple);border-radius:8px;font-size:12px;transition:background .2s;cursor:pointer;"
         ondragover="respAssocDragOver(event)" ondrop="respAssocDrop(event)" ondragleave="respAssocDragLeave(event)">
         <span style="opacity:.5">Glisse ici…</span>
       </div>
@@ -25989,6 +26041,17 @@ function respAssocPlacer(zone,defIndex){
 }
 function respAssocRetourner(di){ const pool=document.getElementById('resp-assoc-pool'); if(!pool||document.getElementById('resp-def2-'+di)) return; const pairs=respAssocState.pairs; const div=document.createElement('div'); div.className='resp-assoc-def'; div.id='resp-def2-'+di; div.dataset.index=di; div.draggable=true; div.style.cssText='padding:8px 14px;background:var(--purple);color:#fff;border-radius:8px;font-size:12px;font-weight:600;cursor:grab;user-select:none;touch-action:none;margin-bottom:6px;line-height:1.4;'; div.textContent=pairs[di].def; div.ondragstart=respAssocDragStart; div.ondragend=respAssocDragEnd; div.ontouchstart=respAssocTouchStart; div.ontouchmove=respAssocTouchMove; div.ontouchend=respAssocTouchEnd; pool.appendChild(div); }
 function respAssocRetirerBanque(di){ const el=document.getElementById('resp-def2-'+di); if(el) el.remove(); }
+function respAssocClearZone(zone){
+  const panel = document.getElementById('resp-assoc-score');
+  if(panel && panel.style.display === 'block') return;
+  const zi = parseInt(zone.dataset.index);
+  const di = respAssocState.placed[zi];
+  if(di === undefined) return;
+  delete respAssocState.placed[zi];
+  zone.innerHTML = '<span style="opacity:.5">Glisse ici…</span>';
+  zone.style.background = 'var(--purple-light)'; zone.style.border = '2px dashed var(--purple)';
+  respAssocRetourner(di);
+}
 let respATEl=null,respAClone=null;
 function respAssocTouchStart(e){ e.preventDefault(); respATEl=e.currentTarget; const clone=respATEl.cloneNode(true); clone.style.cssText='position:fixed;z-index:9999;opacity:.85;pointer-events:none;padding:8px 14px;background:var(--purple);color:#fff;border-radius:8px;font-size:12px;'; const t=e.touches[0]; clone.style.left=(t.clientX-60)+'px'; clone.style.top=(t.clientY-20)+'px'; document.body.appendChild(clone); respAClone=clone; respATEl.style.opacity='0.4'; }
 function respAssocTouchMove(e){ e.preventDefault(); if(!respAClone) return; const t=e.touches[0]; respAClone.style.left=(t.clientX-60)+'px'; respAClone.style.top=(t.clientY-20)+'px'; }
@@ -26237,9 +26300,9 @@ function renderSciDigTexteIdx(idx){
   data.texte.forEach(part=>{
     if(data.mots.includes(part)){
       const bid='dig-blank-'+blanks;
-      paraHtml+=`<span class="geo-drop-zone resp-blank" id="${bid}" data-word="${part}"
+      paraHtml+=`<span class="geo-drop-zone resp-blank" id="${bid}" data-word="${part}" onclick="digTexteClearZone(this)"
         ondragover="digTexteDragOver(event)" ondrop="digTexteDrop(event)" ondragleave="digTexteDragLeave(event)"
-        style="display:inline-block;min-width:150px;margin:0 3px;vertical-align:middle;"></span>`;
+        style="display:inline-block;min-width:150px;margin:0 3px;vertical-align:middle;cursor:pointer;"></span>`;
       digTexteState.answers[bid]=''; blanks++;
     } else { paraHtml+=part; }
   });
@@ -26262,6 +26325,23 @@ function digTexteDrop(e){
   zone.textContent=word; zone.classList.add('filled'); digTexteState.answers[zone.id]=word;
   const pool=document.getElementById('dig-texte-pool'); let found=false;
   pool&&pool.querySelectorAll('.geo-tag').forEach(t=>{if(t.dataset.text===word&&!t.classList.contains('used')&&!found){t.classList.add('used');found=true;}});
+}
+function digTexteClearZone(zone){
+  const panel = document.getElementById('dig-texte-score');
+  if(panel && panel.style.display === 'block') return;
+  const word = digTexteState.answers[zone.id];
+  if(!word) return;
+  zone.textContent = ''; zone.classList.remove('filled');
+  const pool = document.getElementById('dig-texte-pool');
+  if(pool){
+    let found = false;
+    pool.querySelectorAll('.geo-tag').forEach(t => {
+      if(t.dataset.text === word && t.classList.contains('used') && !found){
+        t.classList.remove('used'); found = true;
+      }
+    });
+  }
+  digTexteState.answers[zone.id] = '';
 }
 let digTxtTEl=null,digTxtTClone=null;
 function digTxtTouchStart(e){ const tag=e.currentTarget; if(tag.classList.contains('used')) return; digTxtTEl=tag; const clone=tag.cloneNode(true); clone.style.cssText='position:fixed;z-index:9999;opacity:.85;pointer-events:none;'; const touch=e.touches[0]; clone.style.left=(touch.clientX-40)+'px'; clone.style.top=(touch.clientY-20)+'px'; document.body.appendChild(clone); digTxtTClone=clone; tag.style.opacity='0.4'; }
@@ -26358,9 +26438,9 @@ function renderSciDigAssoc(){
   pairs.forEach((p,i) => {
     rowsHtml += `<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px;align-items:center;">
       <div style="padding:8px 12px;background:var(--surface);border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-weight:700;min-height:48px;display:flex;align-items:center">${p.terme}</div>
-      <div class="dig-assoc-zone" id="dig-zone-${i}" data-index="${i}"
+      <div class="dig-assoc-zone" id="dig-zone-${i}" data-index="${i}" onclick="digAssocClearZone(this)"
         style="min-height:48px;display:flex;align-items:center;padding:6px 10px;
-        background:var(--purple-light);border:2px dashed var(--purple);border-radius:8px;font-size:12px;transition:background .2s;"
+        background:var(--purple-light);border:2px dashed var(--purple);border-radius:8px;font-size:12px;transition:background .2s;cursor:pointer;"
         ondragover="digAssocDragOver(event)" ondrop="digAssocDrop(event)" ondragleave="digAssocDragLeave(event)">
         <span style="opacity:.5">Glisse ici…</span>
       </div>
@@ -26395,6 +26475,17 @@ function digAssocDrop(e){ e.preventDefault(); const zone=e.currentTarget; zone.s
 function digAssocPlacer(zone,defIndex){ const zi=parseInt(zone.dataset.index); const pairs=digAssocState.pairs; const ancien=digAssocState.placed[zi]; if(ancien!==undefined) digAssocRetourner(ancien); Object.entries(digAssocState.placed).forEach(([z,d])=>{ if(d===defIndex&&parseInt(z)!==zi){delete digAssocState.placed[parseInt(z)]; const oz=document.getElementById('dig-zone-'+z); if(oz){oz.innerHTML='<span style="opacity:.5">Glisse une définition ici…</span>';oz.style.background='var(--purple-light)';oz.style.border='2px dashed var(--purple)';}} }); digAssocRetirerBanque(defIndex); digAssocState.placed[zi]=defIndex; zone.innerHTML=`<span style="font-size:12px;font-weight:600;color:var(--purple);line-height:1.4">${pairs[defIndex].def}</span>`; zone.style.border='2px solid var(--purple)'; }
 function digAssocRetourner(di){ const pool=document.getElementById('dig-assoc-pool'); if(!pool||document.getElementById('dig-def-'+di)) return; const pairs=digAssocState.pairs; const div=document.createElement('div'); div.className='dig-assoc-def'; div.id='dig-def-'+di; div.dataset.index=di; div.draggable=true; div.style.cssText='padding:8px 14px;background:var(--purple);color:#fff;border-radius:8px;font-size:12px;font-weight:600;cursor:grab;user-select:none;touch-action:none;margin-bottom:6px;line-height:1.4;'; div.textContent=pairs[di].def; div.ondragstart=digAssocDragStart; div.ondragend=digAssocDragEnd; div.ontouchstart=digAssocTouchStart; div.ontouchmove=digAssocTouchMove; div.ontouchend=digAssocTouchEnd; pool.appendChild(div); }
 function digAssocRetirerBanque(di){ const el=document.getElementById('dig-def-'+di); if(el) el.remove(); }
+function digAssocClearZone(zone){
+  const panel = document.getElementById('dig-assoc-score');
+  if(panel && panel.style.display === 'block') return;
+  const zi = parseInt(zone.dataset.index);
+  const di = digAssocState.placed[zi];
+  if(di === undefined) return;
+  delete digAssocState.placed[zi];
+  zone.innerHTML = '<span style="opacity:.5">Glisse ici…</span>';
+  zone.style.background = 'var(--purple-light)'; zone.style.border = '2px dashed var(--purple)';
+  digAssocRetourner(di);
+}
 let digATEl=null,digAClone=null;
 function digAssocTouchStart(e){ e.preventDefault(); digATEl=e.currentTarget; const clone=digATEl.cloneNode(true); clone.style.cssText='position:fixed;z-index:9999;opacity:.85;pointer-events:none;padding:8px 14px;background:var(--purple);color:#fff;border-radius:8px;font-size:12px;'; const t=e.touches[0]; clone.style.left=(t.clientX-60)+'px'; clone.style.top=(t.clientY-20)+'px'; document.body.appendChild(clone); digAClone=clone; digATEl.style.opacity='0.4'; }
 function digAssocTouchMove(e){ e.preventDefault(); if(!digAClone) return; const t=e.touches[0]; digAClone.style.left=(t.clientX-60)+'px'; digAClone.style.top=(t.clientY-20)+'px'; }
