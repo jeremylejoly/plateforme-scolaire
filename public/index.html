@@ -10146,8 +10146,8 @@ function renderGeoBelgiqueScreen(){
   GEO_BELGIQUE_DATA.forEach(d => {
     tableHtml += `<tr>
       <td>${d.num}</td>
-      <td><div class="geo-drop-zone" id="drop-prov-${d.num}" data-num="${d.num}" data-type="province" ondragover="geoDragOver(event)" ondrop="geoDrop(event)" ondragleave="geoDragLeave(event)"></div></td>
-      <td><div class="geo-drop-zone" id="drop-chef-${d.num}" data-num="${d.num}" data-type="chef" ondragover="geoDragOver(event)" ondrop="geoDrop(event)" ondragleave="geoDragLeave(event)"></div></td>
+      <td><div class="geo-drop-zone" id="drop-prov-${d.num}" data-num="${d.num}" data-type="province" onclick="geoClearZone(this)" ondragover="geoDragOver(event)" ondrop="geoDrop(event)" ondragleave="geoDragLeave(event)"></div></td>
+      <td><div class="geo-drop-zone" id="drop-chef-${d.num}" data-num="${d.num}" data-type="chef" onclick="geoClearZone(this)" ondragover="geoDragOver(event)" ondrop="geoDrop(event)" ondragleave="geoDragLeave(event)"></div></td>
     </tr>`;
   });
   tableHtml += '</tbody></table>';
@@ -10248,6 +10248,17 @@ function geoMarkTagUsed(text){
       found = true;
     }
   });
+}
+function geoClearZone(zone){
+  const panel = document.getElementById('geo-score-panel');
+  if(panel && panel.style.display === 'block') return;
+  const num = parseInt(zone.dataset.num);
+  const type = zone.dataset.type;
+  const text = geoBelgiqueState.answers[num][type];
+  if(!text) return;
+  zone.textContent = ''; zone.classList.remove('filled');
+  geoReturnTagToPool(text);
+  geoBelgiqueState.answers[num][type] = '';
 }
 
 // ===== TOUCH SUPPORT =====
@@ -10415,7 +10426,7 @@ function renderGeoHydroScreen(){
   GEO_HYDRO_DATA.forEach(d => {
     tableHtml += `<tr>
       <td>${d.num}</td>
-      <td><div class="geo-drop-zone" id="drop-hydro-${d.num}" data-num="${d.num}" data-type="cours"
+      <td><div class="geo-drop-zone" id="drop-hydro-${d.num}" data-num="${d.num}" data-type="cours" onclick="hydroClearZone(this)"
         ondragover="hydroDragOver(event)" ondrop="hydroDrop(event)" ondragleave="hydroDragLeave(event)"></div></td>
     </tr>`;
   });
@@ -10489,6 +10500,16 @@ function hydroMarkUsed(text){
   pool.querySelectorAll('.geo-tag').forEach(t => {
     if(t.dataset.text===text && !t.classList.contains('used') && !found){ t.classList.add('used'); found=true; }
   });
+}
+function hydroClearZone(zone){
+  const panel = document.getElementById('hydro-score-panel');
+  if(panel && panel.style.display === 'block') return;
+  const num = parseInt(zone.dataset.num);
+  const text = geoHydroState.answers[num];
+  if(!text) return;
+  zone.textContent = ''; zone.classList.remove('filled');
+  hydroReturnTag(text);
+  geoHydroState.answers[num] = '';
 }
 
 // Touch support
@@ -10597,7 +10618,7 @@ function renderGeoCommunesScreen(){
   GEO_COMMUNES_DATA.forEach(d => {
     tableHtml += `<tr>
       <td>${d.num}</td>
-      <td><div class="geo-drop-zone" id="drop-commune-${d.num}" data-num="${d.num}"
+      <td><div class="geo-drop-zone" id="drop-commune-${d.num}" data-num="${d.num}" onclick="communeClearZone(this)"
         ondragover="communeDragOver(event)" ondrop="communeDrop(event)" ondragleave="communeDragLeave(event)"></div></td>
     </tr>`;
   });
@@ -10659,6 +10680,16 @@ function communeMarkUsed(text){
   if(!pool) return;
   let found=false;
   pool.querySelectorAll('.geo-tag').forEach(t=>{ if(t.dataset.text===text&&!t.classList.contains('used')&&!found){t.classList.add('used');found=true;} });
+}
+function communeClearZone(zone){
+  const panel = document.getElementById('communes-score-panel');
+  if(panel && panel.style.display === 'block') return;
+  const num = parseInt(zone.dataset.num);
+  const text = geoCommunesState.answers[num];
+  if(!text) return;
+  zone.textContent = ''; zone.classList.remove('filled');
+  communeReturnTag(text);
+  geoCommunesState.answers[num] = '';
 }
 
 let communeTouchEl=null, communeTouchClone=null;
@@ -26793,6 +26824,7 @@ function renderGeoPlanZones(map){
     div.ondragover = e => { e.preventDefault(); div.style.background='rgba(99,102,241,0.35)'; };
     div.ondragleave = () => { div.style.background=geoPlanState.answers[z.id]?'rgba(99,102,241,0.25)':'rgba(99,102,241,0.08)'; };
     div.ondrop = e => { e.preventDefault(); div.style.background='rgba(99,102,241,0.2)'; geoPlanDrop(z.id, e.dataTransfer.getData('text/plain')); };
+    div.onclick = () => geoPlanClearZone(div);
     zones.appendChild(div);
   });
 }
@@ -26814,6 +26846,16 @@ function geoPlanDrop(zoneId, label){
 }
 function geoPlanReturnTag(label){ const pool=document.getElementById('geoplan-pool'); if(!pool) return; pool.querySelectorAll('.geo-tag').forEach(t=>{ if(t.dataset.text===label&&t.classList.contains('used')){t.classList.remove('used');t.draggable=true;} }); }
 function geoPlanMarkUsed(label){ const pool=document.getElementById('geoplan-pool'); if(!pool) return; let found=false; pool.querySelectorAll('.geo-tag').forEach(t=>{ if(t.dataset.text===label&&!t.classList.contains('used')&&!found){t.classList.add('used');t.draggable=false;found=true;} }); }
+function geoPlanClearZone(div){
+  const panel = document.getElementById('geoplan-score');
+  if(panel && panel.style.display === 'block') return;
+  const zoneId = div.dataset.id;
+  const label = geoPlanState.answers[zoneId];
+  if(!label) return;
+  div.textContent = '?'; div.style.background = 'rgba(99,102,241,0.08)';
+  geoPlanReturnTag(label);
+  geoPlanState.answers[zoneId] = '';
+}
 function geoPlanDragStart(e){ geoPlanState.dragging=e.currentTarget.dataset.text; e.dataTransfer.setData('text/plain',geoPlanState.dragging); e.currentTarget.style.opacity='0.5'; }
 function geoPlanDragEnd(e){ e.currentTarget.style.opacity=''; geoPlanState.dragging=null; }
 let geoPlanTEl=null,geoPlanTClone=null;
@@ -26971,7 +27013,7 @@ function parseTextToGapFill(textString) {
     html += textBefore;
     
     const bid = 'tour-blank-' + blanks;
-    html += `<span class="geo-drop-zone resp-blank" id="${bid}" data-word="${word}"
+    html += `<span class="geo-drop-zone resp-blank" id="${bid}" data-word="${word}" onclick="tourClearZone(this)"
       ondragover="tourDragOver(event)" ondrop="tourDrop(event)" ondragleave="tourDragLeave(event)"
       style="display:inline-block;min-width:160px;margin:0 6px;vertical-align:middle;font-weight:700;text-align:center;"></span>`;
     
@@ -27057,6 +27099,23 @@ function tourDrop(e){
   zone.textContent=word; zone.classList.add('filled'); geoTourState.answers[zone.id]=word;
   const pool=document.getElementById('tour-pool'); let found=false;
   pool&&pool.querySelectorAll('.geo-tag').forEach(t=>{if(t.dataset.text===word&&!t.classList.contains('used')&&!found){t.classList.add('used');found=true;}});
+}
+function tourClearZone(zone){
+  const panel = document.getElementById('tour-score');
+  if(panel && panel.style.display === 'block') return;
+  const word = geoTourState.answers[zone.id];
+  if(!word) return;
+  zone.textContent = ''; zone.classList.remove('filled');
+  const pool = document.getElementById('tour-pool');
+  if(pool){
+    let found = false;
+    pool.querySelectorAll('.geo-tag').forEach(t => {
+      if(t.dataset.text === word && t.classList.contains('used') && !found){
+        t.classList.remove('used'); found = true;
+      }
+    });
+  }
+  geoTourState.answers[zone.id] = '';
 }
 
 let tourTEl=null,tourTClone=null;
