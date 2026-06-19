@@ -48,29 +48,32 @@
 </script>
 <style>
 /* Style pour l'effet de glissement (placeholder) des étiquettes à ordonner */
-.sci-ordre-item-container {
-  transition: all 0.2s ease;
+.insert-line {
+  height: 4px;
+  border-radius: 2px;
+  background: var(--purple, #5b4fcf);
+  margin-left: 30px;
+  display: none;
+  margin-top: 4px;
+  margin-bottom: 4px;
+  box-shadow: 0 0 8px var(--purple, #5b4fcf);
+  transition: all 0.15s ease;
 }
-.sci-ordre-item-container.drag-hover-over {
-  padding-top: 60px;
-  position: relative;
+.insert-line.visible {
+  display: block;
 }
-.sci-ordre-item-container.drag-hover-over::before {
-  content: '';
-  position: absolute;
-  top: 8px;
-  left: 30px;
-  right: 0;
-  height: 44px;
-  border: 2px dashed var(--purple);
-  border-radius: 10px;
-  background: rgba(91, 79, 207, 0.05);
-  pointer-events: none;
-  animation: pulse-ordre 1.5s infinite alternate;
+.sci-ordre-item.card-correct {
+  border-color: #16a34a !important;
+  background: #dcfce7 !important;
+  color: #166534 !important;
 }
-@keyframes pulse-ordre {
-  from { opacity: 0.6; }
-  to { opacity: 1; }
+.sci-ordre-item.card-wrong {
+  border-color: #dc2626 !important;
+  background: #fee2e2 !important;
+  color: #991b1b !important;
+}
+.sci-ordre-item.dragging {
+  opacity: 0.25;
 }
 @font-face {
   font-family: 'KGHaventSlept';
@@ -2792,7 +2795,32 @@ input[type=text].calc-input.incorrect {
   window.FB_saveResult = async function(entry) {
     try {
       await push(ref(db, 'results'), entry);
+      if (entry.cls && entry.student) {
+        const studentClean = entry.student.replace(/\s+/g, '_');
+        await push(ref(db, 'student_results/' + entry.cls + '/' + studentClean), entry);
+      }
     } catch(e) { console.warn('Firebase saveResult error:', e); }
+  };
+
+  window.FB_loadStudentResults = async function(cls, student) {
+    try {
+      const studentClean = student.replace(/\s+/g, '_');
+      const snap = await get(ref(db, 'student_results/' + cls + '/' + studentClean));
+      if (!snap.exists()) return [];
+      const all = [];
+      snap.forEach(child => { all.push(child.val()); });
+      return all;
+    } catch(e) { console.warn('Firebase loadStudentResults error:', e); return []; }
+  };
+
+  window.FB_saveStudentResultsBatch = async function(cls, student, resultsArray) {
+    try {
+      const studentClean = student.replace(/\s+/g, '_');
+      const studentRef = ref(db, 'student_results/' + cls + '/' + studentClean);
+      const promises = resultsArray.map(r => push(studentRef, r));
+      await Promise.all(promises);
+      console.log(`✅ ${resultsArray.length} résultats historiques migrés pour ${student}`);
+    } catch(e) { console.warn('Firebase saveStudentResultsBatch error:', e); }
   };
 
   window.FB_loadResults = async function(cls) {
@@ -3533,12 +3561,8 @@ input[type=text].calc-input.incorrect {
         <div class="bg-indigo-50/60 overflow-hidden relative w-full h-36 rounded-2xl flex items-center justify-center transition-all duration-300">
           <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#4f46e5_1px,transparent_1px)] [background-size:16px_16px]"></div>
           <div class="relative flex items-center justify-center w-full h-full">
-            <div class="absolute w-20 h-20 rounded-full border border-dashed border-indigo-200 animate-[spin_20s_linear_infinite] opacity-70"></div>
-
-            <div class="relative bg-white p-3 rounded-xl shadow-md border border-indigo-100/50 text-indigo-600">
-              <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-            </div>
-
+            <div class="absolute w-24 h-24 rounded-full border border-dashed border-indigo-200 animate-[spin_20s_linear_infinite] opacity-70"></div>
+            <img src="assets/logos/subject_francais.png" class="w-20 h-20 object-contain relative z-10" alt="Français" />
           </div>
         </div>
         <div class="flex flex-col gap-1">
@@ -3559,19 +3583,8 @@ input[type=text].calc-input.incorrect {
         <div class="bg-sky-50/60 overflow-hidden relative w-full h-36 rounded-2xl flex items-center justify-center transition-all duration-300">
           <div class="absolute inset-0 opacity-12 bg-[radial-gradient(#0284c7_1px,transparent_1px)] [background-size:12px_12px]"></div>
           <div class="relative flex items-center justify-center w-full h-full">
-            <div class="absolute w-24 h-24 rounded-lg border border-sky-200 rotate-12 opacity-60"></div>
-            <div class="absolute w-24 h-24 rounded-lg border border-dashed border-sky-100 -rotate-12 opacity-80"></div>
-
-            <div class="relative bg-white p-2.5 rounded-xl shadow-md border border-sky-100/50 text-sky-600">
-              <svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
-                <!-- Équerre (Set square) -->
-                <path stroke-linecap="round" stroke-linejoin="round" d="M3 3v15a3 3 0 003 3h15L3 3z" fill="currentColor" fill-opacity="0.1" />
-                <path stroke-linecap="round" stroke-linejoin="round" d="M7 12v5a1 1 0 001 1h5L7 12z" />
-                <!-- Règle (Ruler marks) -->
-                <path d="M5 18h10M6 18v-2M9 18v-2M12 18v-2" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
-            </div>
-
+            <div class="absolute w-24 h-24 rounded-full border border-dashed border-sky-200 animate-[spin_20s_linear_infinite] opacity-70"></div>
+            <img src="assets/logos/subject_mathematiques.png" class="w-20 h-20 object-contain relative z-10" alt="Mathématiques" />
           </div>
         </div>
         <div class="flex flex-col gap-1">
@@ -3592,19 +3605,8 @@ input[type=text].calc-input.incorrect {
         <div class="bg-emerald-50/60 overflow-hidden relative w-full h-36 rounded-2xl flex items-center justify-center transition-all duration-300">
           <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#059669_1px,transparent_1px)] [background-size:14px_14px]"></div>
           <div class="relative flex items-center justify-center w-full h-full">
-            <div class="absolute w-22 h-22 rounded-full border border-emerald-200 opacity-75"></div>
-            <div class="absolute w-18 h-18 rounded-full border border-dashed border-emerald-300 animate-[spin_40s_linear_infinite] opacity-40"></div>
-
-            <div class="relative bg-white p-2.5 rounded-xl shadow-md border border-emerald-100/50 text-emerald-600">
-              <svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
-                <circle cx="12" cy="12" r="9" fill="currentColor" fill-opacity="0.1" />
-                <!-- Latitudes & Longitudes lines -->
-                <path d="M3.6 9h16.8M3.6 15h16.8M12 3a15.3 15.3 0 010 18M12 3a15.3 15.3 0 000 18" stroke-linecap="round" stroke-linejoin="round" opacity="0.4" />
-                <!-- Realistic continents outlines -->
-                <path d="M6 7c1-.5 2 .5 2 1.5s-1 1.5-2 1M14 9c.5.5.5 1.5 0 2s-1 1-1.5 2M8 14c.5 1 2 .5 2.5 0s1.5-1.5 1-2.5M17 11.5c1 .5.5 1.5 0 2s-.5 1-1 1" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
-              </svg>
-            </div>
-
+            <div class="absolute w-24 h-24 rounded-full border border-dashed border-emerald-200 animate-[spin_20s_linear_infinite] opacity-70"></div>
+            <img src="assets/logos/subject_eveil.png" class="w-20 h-20 object-contain relative z-10" alt="Éveil" />
           </div>
         </div>
         <div class="flex flex-col gap-1">
@@ -3625,25 +3627,8 @@ input[type=text].calc-input.incorrect {
         <div class="bg-amber-50/60 overflow-hidden relative w-full h-36 rounded-2xl flex items-center justify-center transition-all duration-300">
           <div class="absolute inset-0 opacity-12 bg-[radial-gradient(#d97706_1px,transparent_1px)] [background-size:15px_15px]"></div>
           <div class="relative flex items-center justify-center w-full h-full">
-            <div class="absolute w-20 h-20 rotate-45 border border-dashed border-amber-200 opacity-60"></div>
-
-            <div class="relative bg-white p-2 rounded-xl shadow-md border border-amber-100/50 text-amber-600">
-              <svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
-                <!-- Game Boy Console -->
-                <rect x="6" y="2" width="12" height="20" rx="1.5" fill="currentColor" fill-opacity="0.1" />
-                <rect x="6" y="2" width="12" height="20" rx="1.5" />
-                <!-- Game Boy screen -->
-                <rect x="8" y="4" width="8" height="7" rx="0.5" fill="white" />
-                <!-- Tetris piece on screen -->
-                <path d="M11 6h2v1h-1v1h-1V6z" fill="currentColor" fill-opacity="0.5" />
-                <!-- D-Pad -->
-                <path d="M9 15h2M10 14v2" stroke-linecap="round" stroke-linejoin="round" />
-                <!-- Buttons -->
-                <circle cx="14" cy="16" r="0.8" fill="currentColor" />
-                <circle cx="15.2" cy="14.8" r="0.8" fill="currentColor" />
-              </svg>
-            </div>
-
+            <div class="absolute w-24 h-24 rounded-full border border-dashed border-amber-200 animate-[spin_20s_linear_infinite] opacity-70"></div>
+            <img src="assets/logos/subject_jeux.png" class="w-20 h-20 object-contain relative z-10" alt="Jeux" />
           </div>
         </div>
         <div class="flex flex-col gap-1">
@@ -6520,7 +6505,12 @@ function goToHome(){
   loadAndApplyEmoji();
   // Afficher immédiatement la carte plan si données locales disponibles
   loadPlanTravailLocal();
-  const _vis = planTravailAssigned.length > 0 ? '' : 'none';
+  let individualPlan = [];
+  if (state.student) {
+    const s = localStorage.getItem('lq_plan_travail_individual_' + state.student);
+    individualPlan = s ? JSON.parse(s) : [];
+  }
+  const _vis = (planTravailAssigned.length > 0 || individualPlan.length > 0) ? '' : 'none';
   const planCard = document.getElementById('home-plan-card');
   if(planCard) planCard.style.display = _vis;
   const planCard2 = document.getElementById('subjects-plan-card');
@@ -6532,28 +6522,22 @@ function goToHome(){
 async function syncStudentFromFirebase(){
   if(!window.FB_ready){ setTimeout(syncStudentFromFirebase, 1000); return; }
   try {
-    // Récupérer les activités verrouillées depuis Firebase
-    const locked = await window.FB_loadLockedActivities();
-    if(locked && Array.isArray(locked)){
-      localStorage.setItem('lq_locked_activities', JSON.stringify(locked));
-    }
-    // Récupérer la liste des élèves depuis Firebase (pour les PIN à jour)
-    const students = await window.FB_loadStudents('lejoly');
-    if(students && Array.isArray(students) && students.length > 0){
-      localStorage.setItem('lq_students_lejoly', JSON.stringify(students));
-    }
-    // Rafraîchir l'affichage des matières avec les nouvelles données
+    initRealtimeStudentSync();
+    window.FB_loadStudents('lejoly').then(students => {
+      if(students && Array.isArray(students) && students.length > 0){
+        localStorage.setItem('lq_students_lejoly', JSON.stringify(students));
+      }
+    }).catch(e => console.warn('Erreur chargement élèves en tâche de fond:', e));
     renderAppsManage();
-    // Afficher la carte Plan de travail si des exercices sont assignés
-    updateHomePlanCard();
-    // Refresh any open sub-menus that may have loaded before sync
+    updateHomePlanCardUI();
     if(document.getElementById('prehistoire-menu')) renderPrehistoireMenu();
     if(document.getElementById('sci-circulatoire-menu')) renderSciCirculatoireMenu();
-    console.log('✅ Sync élève terminée');
+    console.log('✅ Sync élève démarrée (Realtime listeners activés)');
   } catch(e){
     console.warn('Sync élève échouée:', e);
   }
 }
+
 
 function goToActivity(act){
   if(act==='lecture'){
@@ -7971,8 +7955,8 @@ const FRANCAIS_ITEMS = [
 const MATHS_ITEMS = [
   {id:'maths-numeration', action:"goToMathsSection('numeration')", teacherAction:"teacherGoToMathsSection('numeration')", label:'Numération', icon:'🔢', desc:'Grands nombres, fractions, décimaux…'},
   {id:'maths-operations', action:"goToMathsSection('operations')", teacherAction:"teacherGoToMathsSection('operations')", label:'Opérations', icon:'➕', desc:'Addition, multiplication, division…'},
-  {id:'maths-grandeurs', action:"goToMathsSection('grandeurs')", teacherAction:"teacherGoToMathsSection('grandeurs')", label:'Grandeurs', icon:'📏', desc:'Masses, longueurs, durées…'},
-  {id:'maths-solides', action:"goToMathsSection('solides')", teacherAction:"teacherGoToMathsSection('solides')", label:'Solides et figures', icon:'🔷', desc:'Polygones, triangles, polyèdres…'},
+  {id:'maths-grandeurs', action:"goToMathsSection('grandeurs')", teacherAction:"teacherGoToMathsSection('grandeurs')", label:'Grandeurs', icon:'⚖️', desc:'Masses, longueurs, durées…'},
+  {id:'maths-solides', action:"goToMathsSection('solides')", teacherAction:"teacherGoToMathsSection('solides')", label:'Solides et figures', icon:'📐', desc:'Polygones, triangles, polyèdres…'},
   {id:'maths-traitement', action:"showScreen('screen-traitement-donnees');renderTraitementDonneesMenu();", label:'Traitement de données', icon:'📊', desc:'Tableaux, graphiques, moyenne…'},
 ];
 
@@ -8093,9 +8077,9 @@ function renderConjugaisonScreen(){
 
 // ===== GRAMMAIRE NAVIGATION =====
 const GRAMMAIRE_ITEMS = [
-  {id:'gram_classes', screen:'screen-gram-classes', teacherScreen:'screen-teacher-gram-classes', label:'Les classes de mots', icon:'📚', hasSubItems:true},
-  {id:'gram_fonctions', screen:'screen-gram-fonctions', teacherScreen:'screen-teacher-gram-fonctions', label:'Les fonctions des mots', icon:'🔍', hasSubItems:true},
-  {id:'gram_types', screen:'screen-gram-types', teacherScreen:'screen-teacher-gram-types', label:'Les types de phrases', icon:'💬', hasSubItems:true},
+  {id:'gram_classes', screen:'screen-gram-classes', teacherScreen:'screen-teacher-gram-classes', label:'Les classes de mots', icon:'🏷️', hasSubItems:true},
+  {id:'gram_fonctions', screen:'screen-gram-fonctions', teacherScreen:'screen-teacher-gram-fonctions', label:'Les fonctions des mots', icon:'👑', hasSubItems:true},
+  {id:'gram_types', screen:'screen-gram-types', teacherScreen:'screen-teacher-gram-types', label:'Les types de phrases', icon:'❓', hasSubItems:true},
 ];
 
 const GRAM_CLASSES_ITEMS = [
@@ -17822,15 +17806,49 @@ function loadStudentResults(){
   _studentResultsCacheFor = cacheKey;
   _studentResultsCache = {};
   try {
+    const cls = state.studentCls;
+    const student = state.student;
+    if (window.FB_loadStudentResults) {
+      window.FB_loadStudentResults(cls, student).then(function(fbResults) {
+        if (fbResults && fbResults.length > 0) {
+          fbResults.forEach(function(r) {
+            const act = r.activity;
+            if(!act) return;
+            if(!_studentResultsCache[act]){
+              _studentResultsCache[act] = r;
+            } else {
+              const existing = _studentResultsCache[act];
+              const existingDT = (existing.date||'') + ' ' + (existing.time||'');
+              const newDT = (r.date||'') + ' ' + (r.time||'');
+              if(newDT > existingDT) _studentResultsCache[act] = r;
+            }
+          });
+          refreshCurrentMenu();
+        } else {
+          loadStudentResultsFallback();
+        }
+      }).catch(function(e) {
+        console.warn('Erreur FB_loadStudentResults, repli sur l\'historique global:', e);
+        loadStudentResultsFallback();
+      });
+    } else {
+      loadStudentResultsFallback();
+    }
+  } catch(e) { console.error('loadStudentResults error:', e); }
+}
+
+function loadStudentResultsFallback() {
+  try {
     const _lsrRef = window.FB_ref(window.FB_DB, 'results');
     window.FB_get(_lsrRef).then(function(snap){
       if(!snap.exists()){ refreshCurrentMenu(); return; }
+      const myResults = [];
       snap.forEach(function(child){
         const r = child.val();
         if(!r || !r.student || r.student !== state.student) return;
+        myResults.push(r);
         const act = r.activity;
         if(!act) return;
-        // Garder le résultat le plus récent (comparaison par timestamp ou date+time)
         if(!_studentResultsCache[act]){
           _studentResultsCache[act] = r;
         } else {
@@ -17840,11 +17858,14 @@ function loadStudentResults(){
           if(newDT > existingDT) _studentResultsCache[act] = r;
         }
       });
-      // Rafraîchir le menu courant pour afficher les badges
       refreshCurrentMenu();
-    }).catch(function(e){ console.error('loadStudentResults error:', e); });
-  } catch(e) { console.error('loadStudentResults error:', e); }
+      if (myResults.length > 0 && window.FB_saveStudentResultsBatch) {
+        window.FB_saveStudentResultsBatch(state.studentCls, state.student, myResults);
+      }
+    }).catch(function(e){ console.error('loadStudentResultsFallback error:', e); });
+  } catch(e) { console.error('loadStudentResultsFallback error:', e); }
 }
+
 
 function refreshCurrentMenu(){
   // Rafraîchir le menu visible pour mettre à jour les badges
@@ -22137,33 +22158,60 @@ function sciOrdreChoisirSeq(seqId){
 
   // Mélanger les étapes (sauf la 1ère)
   const etapesAClasser = shuffle([...seq.etapes.slice(1)]);
-  sciOrdreState = {seq, ordre: etapesAClasser, draggingIdx:null, touchClone:null, touchEl:null, submitted:false};
+  sciOrdreState = {seq, ordre: etapesAClasser, draggingIdx:null, touchClone:null, touchEl:null, submitted:false, insertIdx:null};
 
   renderSciOrdreExercice();
 }
 
 function renderSciOrdreExercice(){
   const body = document.getElementById('sci-circulatoire-ordre-body');
-  const {seq, ordre} = sciOrdreState;
+  if(!body) return;
+  const {seq, ordre, submitted} = sciOrdreState;
+  const bonOrdre = seq.etapes.slice(1);
 
-  let etapesHtml = '';
+  let html = '';
   ordre.forEach((etape, i) => {
-    etapesHtml += `
-      <div class="sci-ordre-item-container" style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+    if (!submitted) {
+      html += `<div class="insert-line" data-insert-before="${i}"></div>`;
+    }
+    
+    let cardClass = "sci-ordre-item";
+    let correctionHtml = "";
+    if (submitted) {
+      const correct = etape === bonOrdre[i];
+      cardClass += correct ? " card-correct" : " card-wrong";
+      if (!correct) {
+        const bonnePos = bonOrdre.indexOf(etape) + 2;
+        correctionHtml = `<div style="font-size:11px;color:#991b1b;margin-top:3px;font-weight:700">→ Cette étape est en position ${bonnePos}</div>`;
+      }
+    }
+
+    const stepNumLabel = (submitted && etape === bonOrdre[i]) ? `${i+2}️⃣` : `☰`;
+
+    html += `
+      <div class="sci-ordre-item-container step-row" data-idx="${i}"
+        ${!submitted ? 'ondragover="sciOrdreDragOver(event)" ondrop="sciOrdreDrop(event)"' : ''}
+        style="display:flex;align-items:center;gap:10px;position:relative;">
         <span style="font-family:'Fredoka',sans-serif;font-weight:800;font-size:14px;color:var(--purple);width:20px;text-align:right;">${i+2}.</span>
-        <div class="sci-ordre-item" id="sci-ordre-item-${i}" data-idx="${i}" draggable="true"
+        <div class="${cardClass}" id="sci-ordre-item-${i}" data-idx="${i}" draggable="${!submitted ? 'true' : 'false'}"
           style="display:flex;align-items:center;gap:10px;padding:10px 14px;flex-grow:1;
           background:var(--surface);border:1.5px solid var(--border);border-radius:10px;
-          margin-bottom:0;cursor:grab;user-select:none;touch-action:none;transition:box-shadow .15s;"
-          ondragstart="sciOrdreDragStart(event)" ondragend="sciOrdreDragEnd(event)"
-          ondragover="sciOrdreDragOver(event)" ondrop="sciOrdreDrop(event)"
-          ondragleave="sciOrdreDragLeave(event)"
-          ontouchstart="sciOrdreTouchStart(event)" ontouchmove="sciOrdreTouchMove(event)" ontouchend="sciOrdreTouchEnd(event)">
-          <span style="font-size:18px;color:var(--muted);flex-shrink:0">☰</span>
-          <span style="font-size:13px;color:var(--text);line-height:1.4">${etape}</span>
+          margin-bottom:0;cursor:${!submitted ? 'grab' : 'default'};user-select:none;touch-action:none;transition:all 0.15s;"
+          ${!submitted ? `
+            ondragstart="sciOrdreDragStart(event)" ondragend="sciOrdreDragEnd(event)"
+            ontouchstart="sciOrdreTouchStart(event)" ontouchmove="sciOrdreTouchMove(event)" ontouchend="sciOrdreTouchEnd(event)"
+          ` : ''}>
+          <span style="font-size:18px;color:var(--muted);flex-shrink:0">${stepNumLabel}</span>
+          <span style="font-size:13px;color:var(--text);line-height:1.4">
+            ${etape}
+            ${correctionHtml}
+          </span>
         </div>
       </div>`;
   });
+  if (!submitted) {
+    html += `<div class="insert-line" data-insert-before="${ordre.length}"></div>`;
+  }
 
   body.innerHTML = `
     <div class="card" style="margin-bottom:1rem;padding:0.8rem 1rem;background:var(--purple-light);border:1px solid var(--purple);">
@@ -22181,95 +22229,141 @@ function renderSciOrdreExercice(){
 
     <div style="margin-bottom:1rem;">
       <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:6px;">Étapes à remettre dans l'ordre</div>
-      <div id="sci-ordre-list">${etapesHtml}</div>
+      <div id="sci-ordre-list" style="position:relative;">${html}</div>
     </div>
 
-    <button class="btn" onclick="validerSciOrdre()" style="width:100%;margin-bottom:1rem">✅ Vérifier l'ordre</button>
+    <button class="btn" onclick="validerSciOrdre()" style="width:100%;margin-bottom:1rem" ${submitted ? 'disabled' : ''}>✅ Vérifier l'ordre</button>
     <button class="btn" style="width:100%;margin-bottom:1rem;background:var(--surface);color:var(--text);border:1.5px solid var(--border);" onclick="renderSciCirculatoireOrdre()">← Choisir une autre séquence</button>
     <div id="sci-ordre-score" style="display:none"></div>
   `;
+
+  if (!submitted) {
+    const listContainer = document.getElementById('sci-ordre-list');
+    listContainer.addEventListener('dragleave', e => {
+      if (!listContainer.contains(e.relatedTarget)) {
+        clearSciOrdreHoverLines();
+        sciOrdreState.insertIdx = null;
+      }
+    });
+  }
 }
 
 // --- Drag & Drop Desktop (réordonnancement) ---
+function clearSciOrdreHoverLines() {
+  document.querySelectorAll('#sci-ordre-list .insert-line').forEach(l => l.classList.remove('visible'));
+}
+function showSciInsertLine(idx) {
+  document.querySelectorAll('#sci-ordre-list .insert-line').forEach(l => l.classList.remove('visible'));
+  const lines = document.querySelectorAll('#sci-ordre-list .insert-line');
+  if (lines[idx]) lines[idx].classList.add('visible');
+}
 function sciOrdreDragStart(e){
   sciOrdreState.draggingIdx = parseInt(e.currentTarget.dataset.idx);
-  e.currentTarget.style.opacity = '0.4';
+  sciOrdreState.insertIdx = null;
+  setTimeout(() => {
+    e.currentTarget.classList.add('dragging');
+  }, 0);
   e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('text/plain', e.currentTarget.dataset.idx);
 }
 function sciOrdreDragEnd(e){
-  e.currentTarget.style.opacity = '';
+  e.currentTarget.classList.remove('dragging');
+  clearSciOrdreHoverLines();
+  const insertIdx = sciOrdreState.insertIdx;
+  const dragSrcIdx = sciOrdreState.draggingIdx;
+  if (insertIdx !== null && dragSrcIdx !== null && insertIdx !== dragSrcIdx) {
+    const arr = sciOrdreState.ordre;
+    const item = arr.splice(dragSrcIdx, 1)[0];
+    let target = insertIdx;
+    if (insertIdx > dragSrcIdx) target--;
+    arr.splice(target, 0, item);
+    sciOrdreState.ordre = arr;
+    renderSciOrdreExercice();
+  }
   sciOrdreState.draggingIdx = null;
-  document.querySelectorAll('.sci-ordre-item-container').forEach(el => el.classList.remove('drag-hover-over'));
+  sciOrdreState.insertIdx = null;
 }
 function sciOrdreDragOver(e){
   e.preventDefault();
-  const container = e.currentTarget.closest('.sci-ordre-item-container');
-  if(container) container.classList.add('drag-hover-over');
-}
-function sciOrdreDragLeave(e){
-  const container = e.currentTarget.closest('.sci-ordre-item-container');
-  if(container) container.classList.remove('drag-hover-over');
+  if (sciOrdreState.draggingIdx === null) return;
+  const row = e.currentTarget.closest('.step-row');
+  if (!row) return;
+  const rect = row.getBoundingClientRect();
+  const mid = rect.top + rect.height / 2;
+  const i = parseInt(row.dataset.idx);
+  const newInsert = e.clientY < mid ? i : i + 1;
+  if (newInsert !== sciOrdreState.insertIdx) {
+    sciOrdreState.insertIdx = newInsert;
+    showSciInsertLine(newInsert);
+  }
 }
 function sciOrdreDrop(e){
   e.preventDefault();
-  document.querySelectorAll('.sci-ordre-item-container').forEach(el => el.classList.remove('drag-hover-over'));
-  const fromIdx = sciOrdreState.draggingIdx;
-  const toIdx = parseInt(e.currentTarget.dataset.idx);
-  if(fromIdx === null || fromIdx === toIdx) return;
-  // Réordonner le tableau
-  const arr = sciOrdreState.ordre;
-  const [moved] = arr.splice(fromIdx, 1);
-  arr.splice(toIdx, 0, moved);
-  sciOrdreState.ordre = arr;
-  renderSciOrdreExercice();
 }
 
-// --- Touch Mobile ---
+// --- Touch Mobile (Circulatory) ---
 function sciOrdreTouchStart(e){
   e.preventDefault();
   const el = e.currentTarget;
   sciOrdreState.touchEl = el;
   sciOrdreState.draggingIdx = parseInt(el.dataset.idx);
+  sciOrdreState.insertIdx = null;
+  
   const touch = e.touches[0];
   const clone = el.cloneNode(true);
-  clone.style.cssText += ';position:fixed;z-index:9999;pointer-events:none;opacity:0.85;width:' + el.offsetWidth + 'px;';
+  clone.style.cssText += ';position:fixed;z-index:9999;pointer-events:none;opacity:0.85;width:' + el.offsetWidth + 'px;box-shadow: 0 4px 12px rgba(0,0,0,0.15);';
   clone.style.left = touch.clientX - el.offsetWidth/2 + 'px';
   clone.style.top  = touch.clientY - 30 + 'px';
   document.body.appendChild(clone);
   sciOrdreState.touchClone = clone;
-  el.style.opacity = '0.4';
+  el.style.opacity = '0.25';
 }
+
 function sciOrdreTouchMove(e){
   e.preventDefault();
   if(!sciOrdreState.touchClone) return;
   const touch = e.touches[0];
   sciOrdreState.touchClone.style.left = touch.clientX - sciOrdreState.touchClone.offsetWidth/2 + 'px';
   sciOrdreState.touchClone.style.top  = touch.clientY - 30 + 'px';
-  // Highlight target
-  document.querySelectorAll('.sci-ordre-item-container').forEach(el => el.classList.remove('drag-hover-over'));
+  
   const target = document.elementFromPoint(touch.clientX, touch.clientY);
-  const targetItem = target ? target.closest('.sci-ordre-item') : null;
-  if(targetItem && targetItem !== sciOrdreState.touchEl){
-    const container = targetItem.closest('.sci-ordre-item-container');
-    if(container) container.classList.add('drag-hover-over');
+  const row = target ? target.closest('.step-row') : null;
+  
+  if(row && row.closest('#sci-ordre-list')){
+    const rect = row.getBoundingClientRect();
+    const mid = rect.top + rect.height / 2;
+    const i = parseInt(row.dataset.idx);
+    const newInsert = touch.clientY < mid ? i : i + 1;
+    if (newInsert !== sciOrdreState.insertIdx) {
+      sciOrdreState.insertIdx = newInsert;
+      showSciInsertLine(newInsert);
+    }
+  } else {
+    clearSciOrdreHoverLines();
+    sciOrdreState.insertIdx = null;
   }
 }
+
 function sciOrdreTouchEnd(e){
-  e.preventDefault();
   if(!sciOrdreState.touchClone) return;
-  const touch = e.changedTouches[0];
   sciOrdreState.touchClone.remove(); sciOrdreState.touchClone = null;
   if(sciOrdreState.touchEl) sciOrdreState.touchEl.style.opacity = '';
-  document.querySelectorAll('.sci-ordre-item-container').forEach(el => el.classList.remove('drag-hover-over'));
-  const target = document.elementFromPoint(touch.clientX, touch.clientY);
-  const targetItem = target ? target.closest('.sci-ordre-item') : null;
+  
+  clearSciOrdreHoverLines();
+  
   const fromIdx = sciOrdreState.draggingIdx;
-  const toIdx = targetItem ? parseInt(targetItem.dataset.idx) : null;
-  sciOrdreState.draggingIdx = null; sciOrdreState.touchEl = null;
-  if(toIdx !== null && fromIdx !== toIdx){
+  const insertIdx = sciOrdreState.insertIdx;
+  
+  sciOrdreState.draggingIdx = null;
+  sciOrdreState.touchEl = null;
+  sciOrdreState.insertIdx = null;
+  
+  if (fromIdx !== null && insertIdx !== null && fromIdx !== insertIdx) {
     const arr = sciOrdreState.ordre;
-    const [moved] = arr.splice(fromIdx, 1);
-    arr.splice(toIdx, 0, moved);
+    const item = arr.splice(fromIdx, 1)[0];
+    let target = insertIdx;
+    if (insertIdx > fromIdx) target--;
+    arr.splice(target, 0, item);
     sciOrdreState.ordre = arr;
     renderSciOrdreExercice();
   }
@@ -22280,28 +22374,14 @@ function validerSciOrdre(){
   if(sciOrdreState.submitted) return;
   sciOrdreState.submitted = true;
   const {seq, ordre} = sciOrdreState;
-  const bonOrdre = seq.etapes.slice(1); // sans la 1ère étape
+  const bonOrdre = seq.etapes.slice(1);
   let score = 0;
   const total = bonOrdre.length;
 
   ordre.forEach((etape, i) => {
-    const item = document.getElementById(`sci-ordre-item-${i}`);
-    if(!item) return;
-    const correct = etape === bonOrdre[i];
-    if(correct){
+    if(etape === bonOrdre[i]){
       score++;
-      item.style.background = 'var(--green-light,#dcfce7)';
-      item.style.border = '2px solid var(--green,#16a34a)';
-      item.querySelector('span:first-child').textContent = `${i+2}️⃣`;
-    } else {
-      item.style.background = 'var(--red-light,#fee2e2)';
-      item.style.border = '2px solid var(--red,#dc2626)';
-      // Afficher la bonne étape attendue
-      const bonnePos = bonOrdre.indexOf(etape) + 2;
-      item.querySelector('span:last-child').innerHTML += `<div style="font-size:11px;color:var(--red,#dc2626);margin-top:3px">→ Cette étape est en position ${bonnePos}</div>`;
     }
-    item.style.cursor = 'default';
-    item.draggable = false;
   });
 
   const pct = Math.round(score/total*100);
@@ -22320,6 +22400,8 @@ function validerSciOrdre(){
     </div>
   `;
   panel.scrollIntoView({behavior:'smooth'});
+
+  renderSciOrdreExercice();
 
   if(state.student){
     saveResult({
@@ -24753,6 +24835,10 @@ function goToLogin(){
   if (typeof window.clearStudentPresence === 'function') {
     window.clearStudentPresence();
   }
+  // Nettoyer les listeners temps réel si connectés
+  if (typeof clearRealtimeStudentSync === 'function') {
+    clearRealtimeStudentSync();
+  }
   // Full reset
   state={student:'',studentCls:'',book:'',answers:{},currentQ:0,role:'student'};
   pinInput='';
@@ -25148,7 +25234,101 @@ function savePlanTravail() {
     window.FB_savePlanTravailIndividual(teacherCls, planTravailIndividual);
   }
 }
+let fbStudentListeners = {};
+
+function initRealtimeStudentSync() {
+  if (!window.FB_ready || !state.student || !state.studentCls) return;
+  const cls = state.studentCls;
+  const student = state.student;
+  clearRealtimeStudentSync();
+  console.log('📡 Initialisation de la synchronisation temps réel pour', student);
+
+  // 1. Observer pour les activités verrouillées
+  const lockedRef = window.FB_ref(window.FB_DB, 'settings/locked_activities');
+  fbStudentListeners.locked = window.FB_onValue(lockedRef, (snap) => {
+    const val = snap.val();
+    if (val && Array.isArray(val)) {
+      localStorage.setItem('lq_locked_activities', JSON.stringify(val));
+    } else {
+      localStorage.setItem('lq_locked_activities', '[]');
+    }
+    renderAppsManage();
+    refreshCurrentMenu();
+  }, (err) => console.warn('Realtime locked_activities error:', err));
+
+  // 2. Observer pour le plan de travail global
+  const planRef = window.FB_ref(window.FB_DB, 'settings/plan_travail');
+  fbStudentListeners.plan = window.FB_onValue(planRef, (snap) => {
+    const val = snap.val();
+    if (val && Array.isArray(val)) {
+      planTravailAssigned = val;
+      localStorage.setItem('lq_plan_travail', JSON.stringify(val));
+    } else {
+      planTravailAssigned = [];
+      localStorage.setItem('lq_plan_travail', '[]');
+    }
+    updateHomePlanCardUI();
+  }, (err) => console.warn('Realtime plan_travail error:', err));
+
+  // 3. Observer pour le plan de travail individuel
+  const indPlanRef = window.FB_ref(window.FB_DB, 'settings/plan_travail_individual/' + cls);
+  fbStudentListeners.indPlan = window.FB_onValue(indPlanRef, (snap) => {
+    const val = snap.val();
+    if (val) {
+      planTravailIndividual = val;
+      const myIndPlan = val[student] || [];
+      localStorage.setItem('lq_plan_travail_individual_' + student, JSON.stringify(myIndPlan));
+    } else {
+      planTravailIndividual = {};
+      localStorage.setItem('lq_plan_travail_individual_' + student, '[]');
+    }
+    updateHomePlanCardUI();
+  }, (err) => console.warn('Realtime plan_travail_individual error:', err));
+
+  // 4. Observer pour la progression du plan
+  const progressRef = window.FB_ref(window.FB_DB, 'plan_progress/' + cls + '/' + student);
+  fbStudentListeners.progress = window.FB_onValue(progressRef, (snap) => {
+    const val = snap.val();
+    if (val) {
+      studentPlanProgress = val;
+      const key = 'lq_plan_progress_' + cls + '_' + student;
+      localStorage.setItem(key, JSON.stringify(val));
+    }
+    const el = document.getElementById('plan-student-body');
+    if (el && !el.innerHTML.includes('Chargement…')) {
+      renderPlanTravailStudent();
+    }
+  }, (err) => console.warn('Realtime plan_progress error:', err));
+}
+
+function clearRealtimeStudentSync() {
+  Object.keys(fbStudentListeners).forEach(key => {
+    if (typeof fbStudentListeners[key] === 'function') {
+      try { fbStudentListeners[key](); } catch(e) {}
+    }
+  });
+  fbStudentListeners = {};
+}
+
+function updateHomePlanCardUI() {
+  let individualPlan = [];
+  if (state.student) {
+    const s = localStorage.getItem('lq_plan_travail_individual_' + state.student);
+    individualPlan = s ? JSON.parse(s) : [];
+  }
+  const visible = (planTravailAssigned.length > 0 || individualPlan.length > 0) ? '' : 'none';
+  const card1 = document.getElementById('home-plan-card');
+  if (card1) card1.style.display = visible;
+  const card2 = document.getElementById('subjects-plan-card');
+  if (card2) card2.style.display = visible;
+  const el = document.getElementById('plan-student-body');
+  if (el && !el.innerHTML.includes('Chargement…')) {
+    renderPlanTravailStudent();
+  }
+}
+
 function loadPlanTravailLocal() {
+
   const s = localStorage.getItem('lq_plan_travail');
   planTravailAssigned = s ? JSON.parse(s) : [];
   
@@ -25475,51 +25655,27 @@ function ptSaveAndNotify() {
 // ============================================================
 // RENDU CÔTÉ ÉLÈVE
 // ============================================================
-async function showPlanTravailStudent() {
+function showPlanTravailStudent() {
   showScreen('screen-plan-travail-student');
-  await renderPlanTravailStudent();
+  renderPlanTravailStudent();
 }
 
-async function renderPlanTravailStudent() {
+function renderPlanTravailStudent() {
   const el = document.getElementById('plan-student-body');
   if (!el) return;
-  el.innerHTML = '<p style="text-align:center;color:var(--muted);padding:2rem">Chargement…</p>';
 
-  // Charger le plan assigné
-  if (window.FB_loadPlanTravail) {
-    const fb = await window.FB_loadPlanTravail();
-    if (fb) { planTravailAssigned = fb; localStorage.setItem('lq_plan_travail', JSON.stringify(fb)); }
-  } else {
-    loadPlanTravailLocal();
-  }
-
-  // Charger le plan individuel
   let individualPlan = [];
-  if (state.student && state.studentCls) {
-    if (window.FB_loadPlanTravailIndividual) {
-      const fbInd = await window.FB_loadPlanTravailIndividual(state.studentCls);
-      if (fbInd && fbInd[state.student]) {
-        individualPlan = fbInd[state.student];
-        localStorage.setItem('lq_plan_travail_individual_' + state.student, JSON.stringify(individualPlan));
-      }
-    } else {
-      const s = localStorage.getItem('lq_plan_travail_individual_' + state.student);
-      individualPlan = s ? JSON.parse(s) : [];
-    }
+  if (state.student) {
+    const s = localStorage.getItem('lq_plan_travail_individual_' + state.student);
+    individualPlan = s ? JSON.parse(s) : [];
   }
-
-  // Union des plans
   const assigned = [...new Set([...planTravailAssigned, ...individualPlan])];
-
-  // Charger la progression de l'élève
-  await loadStudentProgress();
 
   if (!assigned.length) {
     el.innerHTML = '<div class="pt-empty">📋 Aucun exercice assigné pour le moment.<br><span style="font-size:13px;color:var(--muted)">Mr Lejoly n&#39;a pas encore préparé ton plan de travail.</span></div>';
     return;
   }
 
-  // Calculer l'avancement
   const done = assigned.filter(id => studentPlanProgress[id]).length;
   const pct = Math.round((done / assigned.length) * 100);
 
@@ -25529,7 +25685,6 @@ async function renderPlanTravailStudent() {
       <div class="pt-progress-bar"><div class="pt-progress-fill" style="width:${pct}%"></div></div>
     </div>`;
 
-  // Grouper par catégorie/sous-catégorie en ne gardant que les items assignés
   const cats = {};
   PLAN_CATALOGUE.forEach(section => {
     const filteredItems = section.items.filter(item => assigned.includes(item.id));
@@ -25571,7 +25726,6 @@ function ptStudentToggle(id, checked) {
   studentPlanProgress[id] = checked;
   saveStudentProgress();
 
-  // Récupérer l'union active des exercices assignés
   let individualPlan = [];
   if (state.student) {
     const s = localStorage.getItem('lq_plan_travail_individual_' + state.student);
@@ -25586,40 +25740,15 @@ function ptStudentToggle(id, checked) {
   if (lbl) lbl.textContent = 'Mon avancement : ' + done + ' / ' + assigned.length + ' exercices terminés (' + pct + ' %)';
   if (bar) bar.style.width = pct + '%';
 
-  // Barrer/débarrer le label
   const label = document.querySelector('.pt-item-label[data-id="' + id + '"]');
   if (label) label.classList.toggle('pt-done', checked);
 }
 
-// Afficher/masquer la carte Plan sur screen-home
-async function updateHomePlanCard() {
-  if (window.FB_loadPlanTravail) {
-    const fb = await window.FB_loadPlanTravail();
-    if (fb) { planTravailAssigned = fb; localStorage.setItem('lq_plan_travail', JSON.stringify(fb)); }
-  } else {
-    loadPlanTravailLocal();
-  }
-
-  let individualPlan = [];
-  if (state.student && state.studentCls) {
-    if (window.FB_loadPlanTravailIndividual) {
-      const fbInd = await window.FB_loadPlanTravailIndividual(state.studentCls);
-      if (fbInd && fbInd[state.student]) {
-        individualPlan = fbInd[state.student];
-        localStorage.setItem('lq_plan_travail_individual_' + state.student, JSON.stringify(individualPlan));
-      }
-    } else {
-      const s = localStorage.getItem('lq_plan_travail_individual_' + state.student);
-      individualPlan = s ? JSON.parse(s) : [];
-    }
-  }
-
-  const visible = (planTravailAssigned.length > 0 || individualPlan.length > 0) ? '' : 'none';
-  const card1 = document.getElementById('home-plan-card');
-  if (card1) card1.style.display = visible;
-  const card2 = document.getElementById('subjects-plan-card');
-  if (card2) card2.style.display = visible;
+function updateHomePlanCard() {
+  updateHomePlanCardUI();
 }
+
+
 
 
 // ================================================================
@@ -26112,10 +26241,267 @@ const SCI_RESP_ORDRE_DATA = [
   "L'air sort par la bouche ou le nez",
 ];
 
-let respOrdreState = {ordre:[], draggingIdx:null, touchClone:null, touchEl:null};
+let respOrdreState = {ordre:[], draggingIdx:null, touchClone:null, touchEl:null, insertIdx:null, submitted:false};
 function renderSciRespOrdre(){
   const body=document.getElementById('sci-resp-ordre-body'); if(!body) return;
-  respOrdreState = {ordre: shuffle([...SCI_RESP_ORDRE_DATA.slice(1)]), draggingIdx:null, touchClone:null, touchEl:null};
+  respOrdreState = {ordre: shuffle([...SCI_RESP_ORDRE_DATA.slice(1)]), draggingIdx:null, touchClone:null, touchEl:null, insertIdx:null, submitted:false};
+  renderSciRespOrdreHtml();
+}
+function renderSciRespOrdreHtml(){
+  const body = document.getElementById('sci-resp-ordre-body'); if(!body) return;
+  const {ordre, submitted} = respOrdreState;
+
+  let html = '';
+  ordre.forEach((etape, i) => {
+    if (!submitted) {
+      html += `<div class="insert-line" data-insert-before="${i}"></div>`;
+    }
+
+    let cardClass = "sci-ordre-item";
+    let correctionHtml = "";
+    if (submitted) {
+      const correct = etape === SCI_RESP_ORDRE_DATA[i + 1];
+      cardClass += correct ? " card-correct" : " card-wrong";
+      if (!correct) {
+        const bonnePos = SCI_RESP_ORDRE_DATA.indexOf(etape) + 1;
+        correctionHtml = `<div style="font-size:11px;color:#991b1b;margin-top:3px;font-weight:700">→ Cette étape est en position ${bonnePos}</div>`;
+      }
+    }
+
+    const stepNumLabel = (submitted && etape === SCI_RESP_ORDRE_DATA[i + 1]) ? `${i+2}️⃣` : `☰`;
+
+    html += `
+      <div class="sci-ordre-item-container step-row" data-idx="${i}"
+        ${!submitted ? 'ondragover="respOrdreDragOver(event)" ondrop="respOrdreDrop(event)"' : ''}
+        style="display:flex;align-items:center;gap:10px;position:relative;">
+        <span style="font-family:'Fredoka',sans-serif;font-weight:800;font-size:14px;color:var(--purple);width:20px;text-align:right;">${i+2}.</span>
+        <div class="${cardClass}" id="resp-ord-${i}" data-idx="${i}" draggable="${!submitted ? 'true' : 'false'}"
+          style="display:flex;align-items:center;gap:10px;padding:10px 14px;flex-grow:1;background:var(--surface);border:1.5px solid var(--border);border-radius:10px;margin-bottom:0;cursor:${!submitted ? 'grab' : 'default'};user-select:none;touch-action:none;transition:all 0.15s;"
+          ${!submitted ? `
+            ondragstart="respOrdreDragStart(event)" ondragend="respOrdreDragEnd(event)"
+            ontouchstart="respOrdTouchStart(event)" ontouchmove="respOrdTouchMove(event)" ontouchend="respOrdTouchEnd(event)"
+          ` : ''}>
+          <span style="font-size:18px;color:var(--muted);flex-shrink:0">${stepNumLabel}</span>
+          <span style="font-size:13px;line-height:1.4">
+            ${etape}
+            ${correctionHtml}
+          </span>
+        </div>
+      </div>`;
+  });
+  if (!submitted) {
+    html += `<div class="insert-line" data-insert-before="${ordre.length}"></div>`;
+  }
+
+  body.innerHTML = `
+    <div class="card" style="margin-bottom:1rem;padding:.8rem 1rem;background:var(--purple-light);border:1px solid var(--purple);">
+      <p style="margin:0;font-size:13px;color:var(--purple);font-weight:700">🫁 Trajet de l'air — Remets les étapes dans le bon ordre.</p>
+    </div>
+    <div style="margin-bottom:1rem;">
+      <div style="font-size:11px;font-weight:800;text-transform:uppercase;color:var(--muted);margin-bottom:6px;">Étape 1 — donnée</div>
+      <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--green-light,#dcfce7);border:2px solid var(--green,#16a34a);border-radius:10px;">
+        <span style="font-size:18px;flex-shrink:0">1️⃣</span>
+        <span style="font-size:13px;font-weight:700;line-height:1.4">${SCI_RESP_ORDRE_DATA[0]}</span>
+      </div>
+    </div>
+    <div style="margin-bottom:1rem;">
+      <div style="font-size:11px;font-weight:800;text-transform:uppercase;color:var(--muted);margin-bottom:6px;">Étapes à remettre dans l'ordre</div>
+      <div id="resp-ordre-list" style="position:relative;">${html}</div>
+    </div>
+    <button class="btn" onclick="validateSciRespOrdre()" style="width:100%;margin-bottom:1rem" ${submitted ? 'disabled' : ''}>✅ Vérifier l'ordre</button>
+    <button class="btn" style="width:100%;margin-bottom:1rem;background:var(--surface);color:var(--text);border:1.5px solid var(--border);" onclick="renderSciRespOrdre()">🔄 Recommencer</button>
+    <div id="resp-ordre-score" style="display:none"></div>`;
+
+  if (!submitted) {
+    const listContainer = document.getElementById('resp-ordre-list');
+    listContainer.addEventListener('dragleave', e => {
+      if (!listContainer.contains(e.relatedTarget)) {
+        clearRespOrdreHoverLines();
+        respOrdreState.insertIdx = null;
+      }
+    });
+  }
+}
+function clearRespOrdreHoverLines() {
+  document.querySelectorAll('#resp-ordre-list .insert-line').forEach(l => l.classList.remove('visible'));
+}
+function showRespInsertLine(idx) {
+  document.querySelectorAll('#resp-ordre-list .insert-line').forEach(l => l.classList.remove('visible'));
+  const lines = document.querySelectorAll('#resp-ordre-list .insert-line');
+  if (lines[idx]) lines[idx].classList.add('visible');
+}
+function respOrdreDragStart(e){
+  respOrdreState.draggingIdx = parseInt(e.currentTarget.dataset.idx);
+  respOrdreState.insertIdx = null;
+  setTimeout(() => {
+    e.currentTarget.classList.add('dragging');
+  }, 0);
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('text/plain', e.currentTarget.dataset.idx);
+}
+function respOrdreDragEnd(e){
+  e.currentTarget.classList.remove('dragging');
+  clearRespOrdreHoverLines();
+  const insertIdx = respOrdreState.insertIdx;
+  const dragSrcIdx = respOrdreState.draggingIdx;
+  if (insertIdx !== null && dragSrcIdx !== null && insertIdx !== dragSrcIdx) {
+    const arr = respOrdreState.ordre;
+    const item = arr.splice(dragSrcIdx, 1)[0];
+    let target = insertIdx;
+    if (insertIdx > dragSrcIdx) target--;
+    arr.splice(target, 0, item);
+    respOrdreState.ordre = arr;
+    renderSciRespOrdreHtml();
+  }
+  respOrdreState.draggingIdx = null;
+  respOrdreState.insertIdx = null;
+}
+function respOrdreDragOver(e){
+  e.preventDefault();
+  if (respOrdreState.draggingIdx === null) return;
+  const row = e.currentTarget.closest('.step-row');
+  if (!row) return;
+  const rect = row.getBoundingClientRect();
+  const mid = rect.top + rect.height / 2;
+  const i = parseInt(row.dataset.idx);
+  const newInsert = e.clientY < mid ? i : i + 1;
+  if (newInsert !== respOrdreState.insertIdx) {
+    respOrdreState.insertIdx = newInsert;
+    showRespInsertLine(newInsert);
+  }
+}
+function respOrdreDrop(e){
+  e.preventDefault();
+}
+
+// --- Touch Mobile (Respiratory) ---
+function respOrdTouchStart(e){
+  e.preventDefault();
+  const el = e.currentTarget;
+  respOrdreState.touchEl = el;
+  respOrdreState.draggingIdx = parseInt(el.dataset.idx);
+  respOrdreState.insertIdx = null;
+  
+  const touch = e.touches[0];
+  const clone = el.cloneNode(true);
+  clone.style.cssText += ';position:fixed;z-index:9999;pointer-events:none;opacity:0.85;width:' + el.offsetWidth + 'px;box-shadow: 0 4px 12px rgba(0,0,0,0.15);';
+  clone.style.left = touch.clientX - el.offsetWidth/2 + 'px';
+  clone.style.top  = touch.clientY - 30 + 'px';
+  document.body.appendChild(clone);
+  respOrdreState.touchClone = clone;
+  el.style.opacity = '0.25';
+}
+
+function respOrdTouchMove(e){
+  e.preventDefault();
+  if(!respOrdreState.touchClone) return;
+  const touch = e.touches[0];
+  respOrdreState.touchClone.style.left = touch.clientX - respOrdreState.touchClone.offsetWidth/2 + 'px';
+  respOrdreState.touchClone.style.top  = touch.clientY - 30 + 'px';
+  
+  const target = document.elementFromPoint(touch.clientX, touch.clientY);
+  const row = target ? target.closest('.step-row') : null;
+  
+  if(row && row.closest('#resp-ordre-list')){
+    const rect = row.getBoundingClientRect();
+    const mid = rect.top + rect.height / 2;
+    const i = parseInt(row.dataset.idx);
+    const newInsert = touch.clientY < mid ? i : i + 1;
+    if (newInsert !== respOrdreState.insertIdx) {
+      respOrdreState.insertIdx = newInsert;
+      showRespInsertLine(newInsert);
+    }
+  } else {
+    clearRespOrdreHoverLines();
+    respOrdreState.insertIdx = null;
+  }
+}
+
+function respOrdTouchEnd(e){
+  if(!respOrdreState.touchClone) return;
+  respOrdreState.touchClone.remove(); respOrdreState.touchClone = null;
+  if(respOrdreState.touchEl) respOrdreState.touchEl.style.opacity = '';
+  
+  clearRespOrdreHoverLines();
+  
+  const fromIdx = respOrdreState.draggingIdx;
+  const insertIdx = respOrdreState.insertIdx;
+  
+  respOrdreState.draggingIdx = null;
+  respOrdreState.touchEl = null;
+  respOrdreState.insertIdx = null;
+  
+  if (fromIdx !== null && insertIdx !== null && fromIdx !== insertIdx) {
+    const arr = respOrdreState.ordre;
+    const item = arr.splice(fromIdx, 1)[0];
+    let target = insertIdx;
+    if (insertIdx > fromIdx) target--;
+    arr.splice(target, 0, item);
+    respOrdreState.ordre = arr;
+    renderSciRespOrdreHtml();
+  }
+}
+function validateSciRespOrdre(){
+  if(respOrdreState.submitted) return;
+  respOrdreState.submitted = true;
+  const ordre = respOrdreState.ordre;
+  let ok = 0;
+  ordre.forEach((item, i) => {
+    if(item === SCI_RESP_ORDRE_DATA[i + 1]) ok++;
+  });
+  const total = ordre.length;
+  const pct = Math.round(ok/total*100);
+  const panel = document.getElementById('resp-ordre-score');
+  panel.style.display = 'block';
+  panel.innerHTML = `<div style="font-size:48px;margin-bottom:.5rem">${pct>=70?'🎉':pct>=50?'👍':'💪'}</div><div style="font-weight:800;font-size:28px;color:${pct>=70?'var(--green)':pct>=50?'var(--amber)':'var(--red)'}">${ok}/${total} — ${pct}%</div>`;
+  
+  renderSciRespOrdreHtml(); // Re-render to show correction highlights!
+
+  if(state.student) saveResult({student:state.student,cls:state.studentCls,className:CLASSES[state.studentCls]?CLASSES[state.studentCls].name:state.studentCls,activity:'sci_resp_ordre',bookTitle:"Respiratoire — Dans l'ordre",score:ok,total,pct,date:new Date().toLocaleDateString('fr-BE'),time:new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})});
+}
+function respAssocRetirerBanque(di){ const el=document.getElementById('resp-def2-'+di); if(el) el.remove(); }
+function respAssocClearZone(zone){
+  const panel = document.getElementById('resp-assoc-score');
+  if(panel && panel.style.display === 'block') return;
+  const zi = parseInt(zone.dataset.index);
+  const di = respAssocState.placed[zi];
+  if(di === undefined) return;
+  delete respAssocState.placed[zi];
+  zone.innerHTML = '<span style="opacity:.5">Glisse ici…</span>';
+  zone.style.background = 'var(--purple-light)'; zone.style.border = '2px dashed var(--purple)';
+  respAssocRetourner(di);
+}
+let respATEl=null,respAClone=null;
+function respAssocTouchStart(e){ e.preventDefault(); respATEl=e.currentTarget; const clone=respATEl.cloneNode(true); clone.style.cssText='position:fixed;z-index:9999;opacity:.85;pointer-events:none;padding:8px 14px;background:var(--purple);color:#fff;border-radius:8px;font-size:12px;'; const t=e.touches[0]; clone.style.left=(t.clientX-60)+'px'; clone.style.top=(t.clientY-20)+'px'; document.body.appendChild(clone); respAClone=clone; respATEl.style.opacity='0.4'; }
+function respAssocTouchMove(e){ e.preventDefault(); if(!respAClone) return; const t=e.touches[0]; respAClone.style.left=(t.clientX-60)+'px'; respAClone.style.top=(t.clientY-20)+'px'; }
+function respAssocTouchEnd(e){ if(!respAClone) return; const t=e.changedTouches[0]; respAClone.remove(); respAClone=null; if(respATEl) respATEl.style.opacity=''; const el=document.elementFromPoint(t.clientX,t.clientY); const zone=el?el.closest('.resp-assoc-zone'):null; if(zone&&respATEl) respAssocPlacer(zone,parseInt(respATEl.dataset.index)); respATEl=null; }
+function validateSciRespAssoc(){
+  const pairs=respAssocState.pairs; let ok=0;
+  pairs.forEach((p,i)=>{ const zone=document.getElementById('resp-zone-'+i); if(!zone) return; const placed=respAssocState.placed[i]; if(placed!==undefined&&pairs[placed].def===p.def){zone.style.border='2px solid #16a34a';zone.style.background='#d4f5e2';ok++;}else{zone.style.border='2px solid #dc2626';zone.style.background='#fdd9d7';if(placed===undefined)zone.innerHTML='<span style="font-size:11px;color:#dc2626">— '+p.def+'</span>';} });
+  const total=pairs.length; const pct=Math.round(ok/total*100);
+  const panel=document.getElementById('resp-assoc-score'); panel.style.display='block';
+  panel.innerHTML=`<div style="font-size:48px;margin-bottom:.5rem">${pct>=70?'🎉':pct>=50?'👍':'💪'}</div><div style="font-weight:800;font-size:28px;color:${pct>=70?'var(--green)':pct>=50?'var(--amber)':'var(--red)'}">${ok}/${total} — ${pct}%</div><button class="btn" onclick="renderSciRespAssoc()" style="margin-top:1rem">🔄 Recommencer</button>`;
+  if(state.student) saveResult({student:state.student,cls:state.studentCls,className:CLASSES[state.studentCls]?CLASSES[state.studentCls].name:state.studentCls,activity:'sci_resp_assoc',bookTitle:'Respiratoire — Termes et définitions',score:ok,total,pct,date:new Date().toLocaleDateString('fr-BE'),time:new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})});
+}
+
+// ----- EXERCICE 5 : DANS L'ORDRE (insertion comme circulatoire, 1ère étape donnée) -----
+const SCI_RESP_ORDRE_DATA = [
+  "L'air entre par le nez ou la bouche",
+  "L'air passe par le pharynx (gorge)",
+  "L'air descend dans la trachée artère",
+  "La trachée se divise en deux bronches",
+  "Les bronches se ramifient en bronchioles",
+  "L'air arrive dans les alvéoles pulmonaires",
+  "L'oxygène passe dans le sang",
+  "Le dioxyde de carbone passe du sang vers les alvéoles",
+  "L'air chargé de CO₂ remonte par les bronchioles, bronches et trachée",
+  "L'air sort par la bouche ou le nez",
+];
+
+let respOrdreState = {ordre:[], draggingIdx:null, touchClone:null, touchEl:null, lastTargetSlot:null};
+function renderSciRespOrdre(){
+  const body=document.getElementById('sci-resp-ordre-body'); if(!body) return;
+  respOrdreState = {ordre: shuffle([...SCI_RESP_ORDRE_DATA.slice(1)]), draggingIdx:null, touchClone:null, touchEl:null, lastTargetSlot:null};
   renderSciRespOrdreHtml();
 }
 function renderSciRespOrdreHtml(){
@@ -26124,12 +26510,13 @@ function renderSciRespOrdreHtml(){
   let etapesHtml = '';
   ordre.forEach((etape,i) => {
     etapesHtml += `
-      <div class="sci-ordre-item-container" style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+      <div class="sci-ordre-item-container" data-idx="${i}"
+        ondragover="respOrdreDragOver(event)" ondrop="respOrdreDrop(event)"
+        style="display:flex;align-items:center;gap:10px;margin-bottom:8px;position:relative;">
         <span style="font-family:'Fredoka',sans-serif;font-weight:800;font-size:14px;color:var(--purple);width:20px;text-align:right;">${i+2}.</span>
         <div class="sci-ordre-item" id="resp-ord-${i}" data-idx="${i}" draggable="true"
           style="display:flex;align-items:center;gap:10px;padding:10px 14px;flex-grow:1;background:var(--surface);border:1.5px solid var(--border);border-radius:10px;margin-bottom:0;cursor:grab;user-select:none;touch-action:none;transition:box-shadow .15s;"
           ondragstart="respOrdreDragStart(event)" ondragend="respOrdreDragEnd(event)"
-          ondragover="respOrdreDragOver(event)" ondrop="respOrdreDrop(event)" ondragleave="respOrdreDragLeave(event)"
           ontouchstart="respOrdTouchStart(event)" ontouchmove="respOrdTouchMove(event)" ontouchend="respOrdTouchEnd(event)">
           <span style="font-size:18px;color:var(--muted);flex-shrink:0">☰</span>
           <span style="font-size:13px;line-height:1.4">${etape}</span>
@@ -26155,36 +26542,164 @@ function renderSciRespOrdreHtml(){
     <button class="btn" style="width:100%;margin-bottom:1rem;background:var(--surface);color:var(--text);border:1.5px solid var(--border);" onclick="renderSciRespOrdre()">🔄 Recommencer</button>
     <div id="resp-ordre-score" style="display:none"></div>`;
 }
-function respOrdreDragStart(e){ respOrdreState.draggingIdx=parseInt(e.currentTarget.dataset.idx); e.currentTarget.style.opacity='0.4'; e.dataTransfer.effectAllowed='move'; }
-function respOrdreDragEnd(e){ e.currentTarget.style.opacity=''; respOrdreState.draggingIdx=null; document.querySelectorAll('.sci-ordre-item-container').forEach(el=>el.classList.remove('drag-hover-over')); }
-function respOrdreDragOver(e){ e.preventDefault(); const container=e.currentTarget.closest('.sci-ordre-item-container'); if(container) container.classList.add('drag-hover-over'); }
-function respOrdreDragLeave(e){ const container=e.currentTarget.closest('.sci-ordre-item-container'); if(container) container.classList.remove('drag-hover-over'); }
-function respOrdreDrop(e){
-  e.preventDefault(); document.querySelectorAll('.sci-ordre-item-container').forEach(el=>el.classList.remove('drag-hover-over'));
-  const from=respOrdreState.draggingIdx; const to=parseInt(e.currentTarget.dataset.idx);
-  if(from===null||from===to) return;
-  const arr=respOrdreState.ordre; const [moved]=arr.splice(from,1); arr.splice(to,0,moved);
-  respOrdreState.ordre=arr; renderSciRespOrdreHtml();
+function clearRespOrdreHoverClasses() {
+  document.querySelectorAll('#resp-ordre-list .sci-ordre-item-container').forEach(el => {
+    el.classList.remove('drag-hover-above', 'drag-hover-below');
+  });
 }
+function respOrdreDragStart(e){
+  respOrdreState.draggingIdx = parseInt(e.currentTarget.dataset.idx);
+  e.currentTarget.style.opacity = '0.4';
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('text/plain', e.currentTarget.dataset.idx);
+  respOrdreState.lastTargetSlot = null;
+}
+function respOrdreDragEnd(e){
+  e.currentTarget.style.opacity = '';
+  respOrdreState.draggingIdx = null;
+  respOrdreState.lastTargetSlot = null;
+  clearRespOrdreHoverClasses();
+}
+function respOrdreDragOver(e){
+  e.preventDefault();
+  const targetItem = e.currentTarget.closest('.sci-ordre-item-container');
+  if(!targetItem) return;
+  const rect = targetItem.getBoundingClientRect();
+  const relY = e.clientY - rect.top;
+  const isLowerHalf = relY > rect.height / 2;
+  const idx = parseInt(targetItem.dataset.idx);
+  const targetSlot = isLowerHalf ? idx + 1 : idx;
+  
+  if (respOrdreState.lastTargetSlot === targetSlot) return;
+  respOrdreState.lastTargetSlot = targetSlot;
+  
+  clearRespOrdreHoverClasses();
+  
+  const total = respOrdreState.ordre.length;
+  if (targetSlot < total) {
+    const targetContainer = document.querySelectorAll('#resp-ordre-list .sci-ordre-item-container')[targetSlot];
+    if (targetContainer) targetContainer.classList.add('drag-hover-above');
+  } else {
+    const targetContainer = document.querySelectorAll('#resp-ordre-list .sci-ordre-item-container')[total - 1];
+    if (targetContainer) targetContainer.classList.add('drag-hover-below');
+  }
+}
+function respOrdreDragLeave(e){
+}
+function respOrdreDrop(e){
+  e.preventDefault();
+  clearRespOrdreHoverClasses();
+  respOrdreState.lastTargetSlot = null;
+  
+  const fromIdxStr = e.dataTransfer.getData('text/plain');
+  if (fromIdxStr === undefined || fromIdxStr === '') return;
+  const fromIdx = parseInt(fromIdxStr);
+  
+  const targetItem = e.currentTarget.closest('.sci-ordre-item-container');
+  if (!targetItem) return;
+  const rect = targetItem.getBoundingClientRect();
+  const relY = e.clientY - rect.top;
+  const isLowerHalf = relY > rect.height / 2;
+  const idx = parseInt(targetItem.dataset.idx);
+  const targetSlot = isLowerHalf ? idx + 1 : idx;
+  
+  let insertIdx = targetSlot;
+  if (fromIdx < targetSlot) {
+    insertIdx = targetSlot - 1;
+  }
+  
+  respOrdreState.draggingIdx = null;
+  
+  if (fromIdx !== insertIdx) {
+    const arr = respOrdreState.ordre;
+    const [moved] = arr.splice(fromIdx, 1);
+    arr.splice(insertIdx, 0, moved);
+    respOrdreState.ordre = arr;
+    renderSciRespOrdreHtml();
+  }
+}
+
+// --- Touch Mobile ---
 let respOrdTEl=null,respOrdTClone=null,respOrdTFromIdx=null;
-function respOrdTouchStart(e){ e.preventDefault(); respOrdTEl=e.currentTarget; respOrdTFromIdx=parseInt(respOrdTEl.dataset.idx); const clone=respOrdTEl.cloneNode(true); clone.style.cssText='position:fixed;z-index:9999;opacity:.85;pointer-events:none;width:'+respOrdTEl.offsetWidth+'px;'; const touch=e.touches[0]; clone.style.left=(touch.clientX-20)+'px'; clone.style.top=(touch.clientY-20)+'px'; document.body.appendChild(clone); respOrdTClone=clone; respOrdTEl.style.opacity='0.4'; }
+function respOrdTouchStart(e){
+  e.preventDefault();
+  respOrdTEl=e.currentTarget;
+  respOrdTFromIdx=parseInt(respOrdTEl.dataset.idx);
+  respOrdreState.lastTargetSlot = null;
+  const clone=respOrdTEl.cloneNode(true);
+  clone.style.cssText='position:fixed;z-index:9999;opacity:.85;pointer-events:none;width:'+respOrdTEl.offsetWidth+'px;';
+  const touch=e.touches[0];
+  clone.style.left=(touch.clientX-20)+'px';
+  clone.style.top=(touch.clientY-20)+'px';
+  document.body.appendChild(clone);
+  respOrdTClone=clone;
+  respOrdTEl.style.opacity='0.4';
+}
 function respOrdTouchMove(e){
-  e.preventDefault(); if(!respOrdTClone) return; const touch=e.touches[0]; respOrdTClone.style.left=(touch.clientX-20)+'px'; respOrdTClone.style.top=(touch.clientY-20)+'px';
-  document.querySelectorAll('.sci-ordre-item-container').forEach(el=>el.classList.remove('drag-hover-over'));
+  e.preventDefault();
+  if(!respOrdTClone) return;
+  const touch=e.touches[0];
+  respOrdTClone.style.left=(touch.clientX-20)+'px';
+  respOrdTClone.style.top=(touch.clientY-20)+'px';
+  
   const el=document.elementFromPoint(touch.clientX,touch.clientY);
-  const target=el?el.closest('.sci-ordre-item'):null;
-  if(target&&target!==respOrdTEl){
-    const container=target.closest('.sci-ordre-item-container');
-    if(container) container.classList.add('drag-hover-over');
+  const targetItem=el?el.closest('.sci-ordre-item-container'):null;
+  if(targetItem && targetItem !== respOrdTEl.closest('.sci-ordre-item-container')){
+    const rect = targetItem.getBoundingClientRect();
+    const relY = touch.clientY - rect.top;
+    const isLowerHalf = relY > rect.height / 2;
+    const idx = parseInt(targetItem.dataset.idx);
+    const targetSlot = isLowerHalf ? idx + 1 : idx;
+    
+    if (respOrdreState.lastTargetSlot === targetSlot) return;
+    respOrdreState.lastTargetSlot = targetSlot;
+    
+    clearRespOrdreHoverClasses();
+    
+    const total = respOrdreState.ordre.length;
+    if (targetSlot < total) {
+      const targetContainer = document.querySelectorAll('#resp-ordre-list .sci-ordre-item-container')[targetSlot];
+      if (targetContainer) targetContainer.classList.add('drag-hover-above');
+    } else {
+      const targetContainer = document.querySelectorAll('#resp-ordre-list .sci-ordre-item-container')[total - 1];
+      if (targetContainer) targetContainer.classList.add('drag-hover-below');
+    }
   }
 }
 function respOrdTouchEnd(e){
-  if(!respOrdTClone) return; const touch=e.changedTouches[0]; respOrdTClone.remove(); respOrdTClone=null;
+  if(!respOrdTClone) return;
+  const touch=e.changedTouches[0];
+  respOrdTClone.remove(); respOrdTClone=null;
   if(respOrdTEl) respOrdTEl.style.opacity='';
-  document.querySelectorAll('.sci-ordre-item-container').forEach(el=>el.classList.remove('drag-hover-over'));
-  const el=document.elementFromPoint(touch.clientX,touch.clientY); const target=el?el.closest('.sci-ordre-item'):null;
-  if(target&&respOrdTFromIdx!==null){ const to=parseInt(target.dataset.idx); if(to!==respOrdTFromIdx){ const arr=respOrdreState.ordre; const [moved]=arr.splice(respOrdTFromIdx,1); arr.splice(to,0,moved); respOrdreState.ordre=arr; } }
-  respOrdTEl=null; respOrdTFromIdx=null; renderSciRespOrdreHtml();
+  
+  clearRespOrdreHoverClasses();
+  respOrdreState.lastTargetSlot = null;
+  
+  const fromIdx=respOrdTFromIdx;
+  respOrdTEl=null; respOrdTFromIdx=null;
+  
+  const el=document.elementFromPoint(touch.clientX,touch.clientY);
+  const targetItem=el?el.closest('.sci-ordre-item-container'):null;
+  
+  if(fromIdx!==null && targetItem){
+    const rect = targetItem.getBoundingClientRect();
+    const relY = touch.clientY - rect.top;
+    const isLowerHalf = relY > rect.height / 2;
+    const idx = parseInt(targetItem.dataset.idx);
+    const targetSlot = isLowerHalf ? idx + 1 : idx;
+    
+    let insertIdx=targetSlot;
+    if(fromIdx<targetSlot){
+      insertIdx=targetSlot-1;
+    }
+    if(fromIdx!==insertIdx){
+      const arr=respOrdreState.ordre;
+      const [moved]=arr.splice(fromIdx,1);
+      arr.splice(insertIdx,0,moved);
+      respOrdreState.ordre=arr;
+      renderSciRespOrdreHtml();
+    }
+  }
 }
 function validateSciRespOrdre(){
   const ordre=respOrdreState.ordre; let ok=0;
@@ -26560,10 +27075,10 @@ const SCI_DIG_ORDRE_DATA = [
   "Les selles sont évacuées par l'anus",
 ];
 
-let digOrdreState = {ordre:[], draggingIdx:null, touchClone:null, touchEl:null};
+let digOrdreState = {ordre:[], draggingIdx:null, touchClone:null, touchEl:null, lastTargetSlot:null};
 function renderSciDigOrdre(){
   const body=document.getElementById('sci-dig-ordre-body'); if(!body) return;
-  digOrdreState={ordre:shuffle([...SCI_DIG_ORDRE_DATA.slice(1)]),draggingIdx:null,touchClone:null,touchEl:null};
+  digOrdreState={ordre:shuffle([...SCI_DIG_ORDRE_DATA.slice(1)]),draggingIdx:null,touchClone:null,touchEl:null,lastTargetSlot:null};
   renderSciDigOrdreHtml();
 }
 function renderSciDigOrdreHtml(){
@@ -26572,12 +27087,13 @@ function renderSciDigOrdreHtml(){
   let etapesHtml='';
   ordre.forEach((etape,i)=>{
     etapesHtml+=`
-      <div class="sci-ordre-item-container" style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+      <div class="sci-ordre-item-container" data-idx="${i}"
+        ondragover="digOrdreDragOver(event)" ondrop="digOrdreDrop(event)"
+        style="display:flex;align-items:center;gap:10px;margin-bottom:8px;position:relative;">
         <span style="font-family:'Fredoka',sans-serif;font-weight:800;font-size:14px;color:var(--purple);width:20px;text-align:right;">${i+2}.</span>
         <div class="sci-ordre-item" id="dig-ord-${i}" data-idx="${i}" draggable="true"
           style="display:flex;align-items:center;gap:10px;padding:10px 14px;flex-grow:1;background:var(--surface);border:1.5px solid var(--border);border-radius:10px;margin-bottom:0;cursor:grab;user-select:none;touch-action:none;"
           ondragstart="digOrdreDragStart(event)" ondragend="digOrdreDragEnd(event)"
-          ondragover="digOrdreDragOver(event)" ondrop="digOrdreDrop(event)" ondragleave="digOrdreDragLeave(event)"
           ontouchstart="digOrdTouchStart(event)" ontouchmove="digOrdTouchMove(event)" ontouchend="digOrdTouchEnd(event)">
           <span style="font-size:18px;color:var(--muted);flex-shrink:0">☰</span>
           <span style="font-size:13px;line-height:1.4">${etape}</span>
@@ -26586,36 +27102,164 @@ function renderSciDigOrdreHtml(){
   });
   body.innerHTML=`<div class="card" style="margin-bottom:1rem;padding:.8rem 1rem;background:var(--purple-light);border:1px solid var(--purple);"><p style="margin:0;font-size:13px;color:var(--purple);font-weight:700">🫃 Remets les étapes de la digestion dans le bon ordre.</p></div><div style="margin-bottom:1rem;"><div style="font-size:11px;font-weight:800;text-transform:uppercase;color:var(--muted);margin-bottom:6px;">Étape 1 — donnée</div><div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--green-light,#dcfce7);border:2px solid var(--green,#16a34a);border-radius:10px;"><span style="font-size:18px;flex-shrink:0">1️⃣</span><span style="font-size:13px;font-weight:700;line-height:1.4">${SCI_DIG_ORDRE_DATA[0]}</span></div></div><div style="margin-bottom:1rem;"><div style="font-size:11px;font-weight:800;text-transform:uppercase;color:var(--muted);margin-bottom:6px;">Étapes à remettre dans l'ordre</div><div id="dig-ordre-list">${etapesHtml}</div></div><button class="btn" onclick="validateSciDigOrdre()" style="width:100%;margin-bottom:1rem">✅ Vérifier l'ordre</button><button class="btn" style="width:100%;margin-bottom:1rem;background:var(--surface);color:var(--text);border:1.5px solid var(--border);" onclick="renderSciDigOrdre()">🔄 Recommencer</button><div id="dig-ordre-score" style="display:none"></div>`;
 }
-function digOrdreDragStart(e){ digOrdreState.draggingIdx=parseInt(e.currentTarget.dataset.idx); e.currentTarget.style.opacity='0.4'; e.dataTransfer.effectAllowed='move'; }
-function digOrdreDragEnd(e){ e.currentTarget.style.opacity=''; digOrdreState.draggingIdx=null; document.querySelectorAll('.sci-ordre-item-container').forEach(el=>el.classList.remove('drag-hover-over')); }
-function digOrdreDragOver(e){ e.preventDefault(); const container=e.currentTarget.closest('.sci-ordre-item-container'); if(container) container.classList.add('drag-hover-over'); }
-function digOrdreDragLeave(e){ const container=e.currentTarget.closest('.sci-ordre-item-container'); if(container) container.classList.remove('drag-hover-over'); }
-function digOrdreDrop(e){
-  e.preventDefault(); document.querySelectorAll('.sci-ordre-item-container').forEach(el=>el.classList.remove('drag-hover-over'));
-  const from=digOrdreState.draggingIdx; const to=parseInt(e.currentTarget.dataset.idx);
-  if(from===null||from===to) return;
-  const arr=digOrdreState.ordre; const [moved]=arr.splice(from,1); arr.splice(to,0,moved);
-  digOrdreState.ordre=arr; renderSciDigOrdreHtml();
+function clearDigOrdreHoverClasses() {
+  document.querySelectorAll('#dig-ordre-list .sci-ordre-item-container').forEach(el => {
+    el.classList.remove('drag-hover-above', 'drag-hover-below');
+  });
 }
+function digOrdreDragStart(e){
+  digOrdreState.draggingIdx = parseInt(e.currentTarget.dataset.idx);
+  e.currentTarget.style.opacity = '0.4';
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('text/plain', e.currentTarget.dataset.idx);
+  digOrdreState.lastTargetSlot = null;
+}
+function digOrdreDragEnd(e){
+  e.currentTarget.style.opacity = '';
+  digOrdreState.draggingIdx = null;
+  digOrdreState.lastTargetSlot = null;
+  clearDigOrdreHoverClasses();
+}
+function digOrdreDragOver(e){
+  e.preventDefault();
+  const targetItem = e.currentTarget.closest('.sci-ordre-item-container');
+  if(!targetItem) return;
+  const rect = targetItem.getBoundingClientRect();
+  const relY = e.clientY - rect.top;
+  const isLowerHalf = relY > rect.height / 2;
+  const idx = parseInt(targetItem.dataset.idx);
+  const targetSlot = isLowerHalf ? idx + 1 : idx;
+  
+  if (digOrdreState.lastTargetSlot === targetSlot) return;
+  digOrdreState.lastTargetSlot = targetSlot;
+  
+  clearDigOrdreHoverClasses();
+  
+  const total = digOrdreState.ordre.length;
+  if (targetSlot < total) {
+    const targetContainer = document.querySelectorAll('#dig-ordre-list .sci-ordre-item-container')[targetSlot];
+    if (targetContainer) targetContainer.classList.add('drag-hover-above');
+  } else {
+    const targetContainer = document.querySelectorAll('#dig-ordre-list .sci-ordre-item-container')[total - 1];
+    if (targetContainer) targetContainer.classList.add('drag-hover-below');
+  }
+}
+function digOrdreDragLeave(e){
+}
+function digOrdreDrop(e){
+  e.preventDefault();
+  clearDigOrdreHoverClasses();
+  digOrdreState.lastTargetSlot = null;
+  
+  const fromIdxStr = e.dataTransfer.getData('text/plain');
+  if (fromIdxStr === undefined || fromIdxStr === '') return;
+  const fromIdx = parseInt(fromIdxStr);
+  
+  const targetItem = e.currentTarget.closest('.sci-ordre-item-container');
+  if (!targetItem) return;
+  const rect = targetItem.getBoundingClientRect();
+  const relY = e.clientY - rect.top;
+  const isLowerHalf = relY > rect.height / 2;
+  const idx = parseInt(targetItem.dataset.idx);
+  const targetSlot = isLowerHalf ? idx + 1 : idx;
+  
+  let insertIdx = targetSlot;
+  if (fromIdx < targetSlot) {
+    insertIdx = targetSlot - 1;
+  }
+  
+  digOrdreState.draggingIdx = null;
+  
+  if (fromIdx !== insertIdx) {
+    const arr = digOrdreState.ordre;
+    const [moved] = arr.splice(fromIdx, 1);
+    arr.splice(insertIdx, 0, moved);
+    digOrdreState.ordre = arr;
+    renderSciDigOrdreHtml();
+  }
+}
+
+// --- Touch Mobile ---
 let digOrdTEl=null,digOrdTClone=null,digOrdTFromIdx=null;
-function digOrdTouchStart(e){ e.preventDefault(); digOrdTEl=e.currentTarget; digOrdTFromIdx=parseInt(digOrdTEl.dataset.idx); const clone=digOrdTEl.cloneNode(true); clone.style.cssText='position:fixed;z-index:9999;opacity:.85;pointer-events:none;width:'+digOrdTEl.offsetWidth+'px;'; const touch=e.touches[0]; clone.style.left=(touch.clientX-20)+'px'; clone.style.top=(touch.clientY-20)+'px'; document.body.appendChild(clone); digOrdTClone=clone; digOrdTEl.style.opacity='0.4'; }
+function digOrdTouchStart(e){
+  e.preventDefault();
+  digOrdTEl=e.currentTarget;
+  digOrdTFromIdx=parseInt(digOrdTEl.dataset.idx);
+  digOrdreState.lastTargetSlot = null;
+  const clone=digOrdTEl.cloneNode(true);
+  clone.style.cssText='position:fixed;z-index:9999;opacity:.85;pointer-events:none;width:'+digOrdTEl.offsetWidth+'px;';
+  const touch=e.touches[0];
+  clone.style.left=(touch.clientX-20)+'px';
+  clone.style.top=(touch.clientY-20)+'px';
+  document.body.appendChild(clone);
+  digOrdTClone=clone;
+  digOrdTEl.style.opacity='0.4';
+}
 function digOrdTouchMove(e){
-  e.preventDefault(); if(!digOrdTClone) return; const touch=e.touches[0]; digOrdTClone.style.left=(touch.clientX-20)+'px'; digOrdTClone.style.top=(touch.clientY-20)+'px';
-  document.querySelectorAll('.sci-ordre-item-container').forEach(el=>el.classList.remove('drag-hover-over'));
+  e.preventDefault();
+  if(!digOrdTClone) return;
+  const touch=e.touches[0];
+  digOrdTClone.style.left=(touch.clientX-20)+'px';
+  digOrdTClone.style.top=(touch.clientY-20)+'px';
+  
   const el=document.elementFromPoint(touch.clientX,touch.clientY);
-  const target=el?el.closest('.sci-ordre-item'):null;
-  if(target&&target!==digOrdTEl){
-    const container=target.closest('.sci-ordre-item-container');
-    if(container) container.classList.add('drag-hover-over');
+  const targetItem=el?el.closest('.sci-ordre-item-container'):null;
+  if(targetItem && targetItem !== digOrdTEl.closest('.sci-ordre-item-container')){
+    const rect = targetItem.getBoundingClientRect();
+    const relY = touch.clientY - rect.top;
+    const isLowerHalf = relY > rect.height / 2;
+    const idx = parseInt(targetItem.dataset.idx);
+    const targetSlot = isLowerHalf ? idx + 1 : idx;
+    
+    if (digOrdreState.lastTargetSlot === targetSlot) return;
+    digOrdreState.lastTargetSlot = targetSlot;
+    
+    clearDigOrdreHoverClasses();
+    
+    const total = digOrdreState.ordre.length;
+    if (targetSlot < total) {
+      const targetContainer = document.querySelectorAll('#dig-ordre-list .sci-ordre-item-container')[targetSlot];
+      if (targetContainer) targetContainer.classList.add('drag-hover-above');
+    } else {
+      const targetContainer = document.querySelectorAll('#dig-ordre-list .sci-ordre-item-container')[total - 1];
+      if (targetContainer) targetContainer.classList.add('drag-hover-below');
+    }
   }
 }
 function digOrdTouchEnd(e){
-  if(!digOrdTClone) return; const touch=e.changedTouches[0]; digOrdTClone.remove(); digOrdTClone=null;
+  if(!digOrdTClone) return;
+  const touch=e.changedTouches[0];
+  digOrdTClone.remove(); digOrdTClone=null;
   if(digOrdTEl) digOrdTEl.style.opacity='';
-  document.querySelectorAll('.sci-ordre-item-container').forEach(el=>el.classList.remove('drag-hover-over'));
-  const el=document.elementFromPoint(touch.clientX,touch.clientY); const target=el?el.closest('.sci-ordre-item'):null;
-  if(target&&digOrdTFromIdx!==null){const to=parseInt(target.dataset.idx); if(to!==digOrdTFromIdx){const arr=digOrdreState.ordre; const [moved]=arr.splice(digOrdTFromIdx,1); arr.splice(to,0,moved); digOrdreState.ordre=arr;}}
-  digOrdTEl=null; digOrdTFromIdx=null; renderSciDigOrdreHtml();
+  
+  clearDigOrdreHoverClasses();
+  digOrdreState.lastTargetSlot = null;
+  
+  const fromIdx=digOrdTFromIdx;
+  digOrdTEl=null; digOrdTFromIdx=null;
+  
+  const el=document.elementFromPoint(touch.clientX,touch.clientY);
+  const targetItem=el?el.closest('.sci-ordre-item-container'):null;
+  
+  if(fromIdx!==null && targetItem){
+    const rect = targetItem.getBoundingClientRect();
+    const relY = touch.clientY - rect.top;
+    const isLowerHalf = relY > rect.height / 2;
+    const idx = parseInt(targetItem.dataset.idx);
+    const targetSlot = isLowerHalf ? idx + 1 : idx;
+    
+    let insertIdx=targetSlot;
+    if(fromIdx<targetSlot){
+      insertIdx=targetSlot-1;
+    }
+    if(fromIdx!==insertIdx){
+      const arr=digOrdreState.ordre;
+      const [moved]=arr.splice(fromIdx,1);
+      arr.splice(insertIdx,0,moved);
+      digOrdreState.ordre=arr;
+      renderSciDigOrdreHtml();
+    }
+  }
 }
 function validateSciDigOrdre(){
   const ordre=digOrdreState.ordre; let ok=0;
