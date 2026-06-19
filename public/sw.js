@@ -1,4 +1,4 @@
-const CACHE_NAME = 'classe-mr-lejoly-cache-v154';
+const CACHE_NAME = 'classe-mr-lejoly-cache-v155';
 const CORE_ASSETS = [
   './',
   'index.html',
