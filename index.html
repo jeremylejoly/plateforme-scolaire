@@ -29562,15 +29562,15 @@ function renderVerbeMenu() {
         </button>
       </div>
 
-      <!-- EXERCICE 2: INFINITIF ET GROUPE (PROCHAINEMENT) -->
-      <div class="card p-6 border-2 border-neutral-300 bg-neutral-50 rounded-3xl opacity-75 flex flex-col justify-between select-none">
+      <!-- EXERCICE 2: INFINITIF ET GROUPE -->
+      <div class="card cursor-pointer hover:scale-102 transition-all p-6 border-2 border-neutral-900 bg-white hover:bg-neutral-50 rounded-3xl shadow-[4px_4px_0px_rgba(0,0,0,1)] flex flex-col justify-between" id="btn-verbe-ex2">
         <div>
-          <div class="text-4xl mb-4 opacity-50">🔬</div>
-          <h3 class="font-display font-bold text-lg text-neutral-400 mb-2">2. Infinitif et groupe</h3>
-          <p class="text-neutral-400 text-sm leading-relaxed mb-4">Bientôt disponible ! Identifie l'infinitif et le groupe des verbes conjugués.</p>
+          <div class="text-4xl mb-4">🔬</div>
+          <h3 class="font-display font-bold text-lg text-neutral-800 mb-2">2. Infinitif et groupe</h3>
+          <p class="text-neutral-500 text-sm leading-relaxed mb-4">Identifie le groupe des verbes conjugués et à l'infinitif (1er groupe en mauve, 2e en orange, 3e en rose).</p>
         </div>
-        <button disabled class="w-full py-2.5 px-4 rounded-xl border-2 border-neutral-300 bg-neutral-200 text-neutral-400 font-display font-bold text-sm cursor-not-allowed">
-          Bientôt disponible
+        <button class="w-full py-2.5 px-4 rounded-xl border-2 border-neutral-900 bg-purple-600 text-white font-display font-bold text-sm shadow-[2px_2px_0px_rgba(0,0,0,1)] active:scale-98 transition-all">
+          Commencer ➔
         </button>
       </div>
     </div>
@@ -29581,6 +29581,14 @@ function renderVerbeMenu() {
     ex1Btn.addEventListener('click', (e) => {
       e.preventDefault();
       startVerbeExercise();
+    });
+  }
+
+  const ex2Btn = container.querySelector('#btn-verbe-ex2');
+  if (ex2Btn) {
+    ex2Btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      startVerbeGroupeExercise();
     });
   }
 }
@@ -29964,6 +29972,449 @@ function renderVerbeResults() {
       date: new Date().toLocaleDateString('fr-BE'),
       time: new Date().toLocaleTimeString('fr-BE', {hour:'2-digit', minute:'2-digit'})
     });
+  }
+}
+
+}
+
+// ==========================================
+// EXERCICE : INFINITIF ET GROUPE DU VERBE
+// ==========================================
+let verbeGroupeGameState = {
+  containerId: 'gram-verbe-body',
+  questions: [],
+  currentIndex: 0,
+  score: 0,
+  answers: [],
+  submitted: false
+};
+
+function startVerbeGroupeExercise() {
+  if (!window.EXERCICES_VERBE_GROUPE || window.EXERCICES_VERBE_GROUPE.length === 0) {
+    console.error("EXERCICES_VERBE_GROUPE n'est pas chargé ou est vide.");
+    return;
+  }
+
+  const shuffle = (arr) => [...arr].sort(() => 0.5 - Math.random());
+  const selection = shuffle(window.EXERCICES_VERBE_GROUPE).slice(0, 10);
+
+  verbeGroupeGameState = {
+    containerId: 'gram-verbe-body',
+    questions: selection,
+    currentIndex: 0,
+    score: 0,
+    answers: Array(selection[0].tokens.length).fill(0),
+    submitted: false
+  };
+
+  const backMainBtn = document.querySelector('#screen-gram-verbe-fonc .gram-verbe-back-main-btn');
+  if (backMainBtn) {
+    backMainBtn.onclick = (e) => {
+      e.preventDefault();
+      renderVerbeMenu();
+    };
+  }
+
+  // Inject styles if not present
+  if (!document.getElementById('verbe-groupe-exercise-styles')) {
+    const style = document.createElement('style');
+    style.id = 'verbe-groupe-exercise-styles';
+    style.innerHTML = `
+      .word-btn-g1 {
+        border: 3px solid #8B5CF6 !important;
+        box-shadow: 3px 3px 0px #8B5CF6 !important;
+        background-color: #f5f3ff !important;
+        color: #6D28D9 !important;
+        font-weight: 800 !important;
+      }
+      .word-btn-g1:hover {
+        background-color: #ede9fe !important;
+        transform: translateY(-2px) !important;
+      }
+      .word-btn-g2 {
+        border: 3px solid #F97316 !important;
+        box-shadow: 3px 3px 0px #F97316 !important;
+        background-color: #fff7ed !important;
+        color: #C2410C !important;
+        font-weight: 800 !important;
+      }
+      .word-btn-g2:hover {
+        background-color: #ffedd5 !important;
+        transform: translateY(-2px) !important;
+      }
+      .word-btn-g3 {
+        border: 3px solid #EC4899 !important;
+        box-shadow: 3px 3px 0px #EC4899 !important;
+        background-color: #fdf2f8 !important;
+        color: #BE185D !important;
+        font-weight: 800 !important;
+      }
+      .word-btn-g3:hover {
+        background-color: #fce7f3 !important;
+        transform: translateY(-2px) !important;
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  renderVerbeGroupeQuestion();
+}
+
+function renderVerbeGroupeQuestion() {
+  const container = document.getElementById(verbeGroupeGameState.containerId);
+  if (!container) return;
+
+  const question = verbeGroupeGameState.questions[verbeGroupeGameState.currentIndex];
+  if (!question) return;
+
+  const pctProgress = Math.round((verbeGroupeGameState.currentIndex / verbeGroupeGameState.questions.length) * 100);
+
+  const tokensHtml = question.tokens.map((token, idx) => {
+    if (token.punctuation === true) {
+      return `<span class="text-xl font-bold text-neutral-400 self-end mb-2 select-none">${token.text}</span>`;
+    }
+
+    const sel = verbeGroupeGameState.answers[idx]; // 0=none, 1=g1, 2=g2, 3=g3
+    let inlineClass = "word-btn-neutral";
+
+    if (!verbeGroupeGameState.submitted) {
+      if (sel === 1) inlineClass = "word-btn-g1";
+      else if (sel === 2) inlineClass = "word-btn-g2";
+      else if (sel === 3) inlineClass = "word-btn-g3";
+    } else {
+      const isVerb = token.cat === 'v';
+      if (isVerb) {
+        if (sel === token.group) inlineClass = "word-btn-correct";
+        else if (sel !== 0) inlineClass = "word-btn-wrong";
+        else inlineClass = "word-btn-missed";
+      } else {
+        if (sel === 0) inlineClass = "word-btn-neutral";
+        else inlineClass = "word-btn-wrong";
+      }
+    }
+
+    let badgeIcon = "";
+    if (verbeGroupeGameState.submitted) {
+      const isVerb = token.cat === 'v';
+      if (isVerb) {
+        if (sel === token.group) {
+          badgeIcon = `<span class="absolute -top-2 -right-2 bg-green-500 text-white rounded-full text-[10px] w-5 h-5 flex items-center justify-center border-2 border-white shadow-sm font-black">✓</span>`;
+        } else if (sel !== 0) {
+          badgeIcon = `<span class="absolute -top-2 -right-2 bg-rose-500 text-white rounded-full text-[10px] w-5 h-5 flex items-center justify-center border-2 border-white shadow-sm font-black">✗</span>`;
+        } else {
+          badgeIcon = `<span class="absolute -top-2 -right-2 bg-orange-500 text-white rounded-full text-[10px] w-5 h-5 flex items-center justify-center border-2 border-white shadow-sm font-black">!</span>`;
+        }
+      } else {
+        if (sel !== 0) {
+          badgeIcon = `<span class="absolute -top-2 -right-2 bg-rose-500 text-white rounded-full text-[10px] w-5 h-5 flex items-center justify-center border-2 border-white shadow-sm font-black">✗</span>`;
+        }
+      }
+    }
+
+    return `
+      <div class="relative flex items-center">
+        <button
+          ${verbeGroupeGameState.submitted ? 'disabled' : ''}
+          data-idx="${idx}"
+          class="gram-verbe-groupe-word-btn px-4 py-2.5 rounded-2xl border-2 font-sans font-semibold text-lg md:text-xl transition-all duration-155 relative cursor-pointer select-none ${inlineClass} hover:scale-102"
+        >
+          ${token.text}
+        </button>
+        ${badgeIcon}
+      </div>
+    `;
+  }).join('');
+
+  let actionBtn = "";
+  if (!verbeGroupeGameState.submitted) {
+    actionBtn = `
+      <button class="gram-verbe-groupe-verify-btn px-6 py-3 rounded-2xl border-2 border-neutral-900 bg-purple-600 text-white hover:bg-purple-700 font-display font-bold text-sm transition-all cursor-pointer shadow-[2px_2px_0px_rgba(0,0,0,1)] active:scale-95 ml-auto">
+        Vérifier ma réponse
+      </button>
+    `;
+  } else {
+    actionBtn = `
+      <button class="gram-verbe-groupe-next-btn px-6 py-3 rounded-2xl border-2 border-neutral-900 bg-green-600 text-white hover:bg-green-700 font-display font-bold text-sm transition-all cursor-pointer shadow-[2px_2px_0px_rgba(0,0,0,1)] active:scale-95 ml-auto">
+        ${verbeGroupeGameState.currentIndex < verbeGroupeGameState.questions.length - 1 ? 'Phrase suivante ➔' : 'Voir les résultats ➔'}
+      </button>
+    `;
+  }
+
+  const html = `
+    <div class="quiz-topbar flex justify-between items-center mb-6">
+      <div class="quiz-student-badge bg-neutral-100 border-2 border-neutral-300 px-4 py-1.5 rounded-full font-bold text-xs text-neutral-600">
+        ${state.student || 'Enseignant'}
+      </div>
+      <div class="quiz-progress-wrap flex items-center gap-4 w-2/3 max-w-xs justify-end">
+        <div class="quiz-progress-label text-xs font-bold text-neutral-500 whitespace-nowrap">Phrase ${verbeGroupeGameState.currentIndex + 1} sur ${verbeGroupeGameState.questions.length}</div>
+        <div class="progress-bar w-full h-2.5 bg-neutral-200 rounded-full overflow-hidden">
+          <div class="progress-fill h-full bg-purple-600" style="width: ${pctProgress}%"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-blue-50 border-2 border-blue-150 rounded-3xl p-5 mb-6 shadow-[4px_4px_0px_rgba(0,0,0,0.02)]">
+      <div class="flex flex-col gap-2 text-blue-900 text-sm font-semibold">
+        <div class="flex items-center gap-2">
+          <span>💡</span>
+          <strong>Consigne :</strong> Trouve tous les verbes de la phrase (conjugués ou à l'infinitif) et indique leur groupe.
+        </div>
+        <div class="flex flex-wrap gap-4 mt-1 pl-6 text-xs text-neutral-600">
+          <span>👆 1 clic = <span class="text-purple-700 font-bold border-b border-purple-300">🟣 1er groupe</span></span>
+          <span>👆👆 2 clics = <span class="text-orange-600 font-bold border-b border-orange-300">🟠 2e groupe</span></span>
+          <span>👆👆👆 3 clics = <span class="text-pink-600 font-bold border-b border-pink-300">🌸 3e groupe</span></span>
+          <span>👆👆👆👆 4 clics = ⚪ Réinitialiser</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- LA PHRASE -->
+    <div class="bg-white border-2 border-neutral-900 rounded-3xl p-8 md:p-12 mb-6 shadow-[4px_4px_0px_rgba(0,0,0,1)] flex flex-wrap gap-x-2 gap-y-4 justify-center items-center">
+      ${tokensHtml}
+    </div>
+
+    <!-- EXPLICATION / CORRECTION -->
+    <div id="verbe-groupe-correction-panel"></div>
+
+    <!-- ZONE D'ACTION -->
+    <div class="flex justify-between items-center border-t border-neutral-200 pt-6">
+      ${actionBtn}
+    </div>
+  `;
+
+  container.innerHTML = html;
+
+  // Event bindings
+  container.querySelectorAll('.gram-verbe-groupe-word-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const idx = parseInt(btn.getAttribute('data-idx'));
+      clickVerbeGroupeWord(idx);
+    });
+  });
+
+  const verifyBtn = container.querySelector('.gram-verbe-groupe-verify-btn');
+  if (verifyBtn) {
+    verifyBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      verifyVerbeGroupeAnswer();
+    });
+  }
+
+  const nextBtn = container.querySelector('.gram-verbe-groupe-next-btn');
+  if (nextBtn) {
+    nextBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      nextVerbeGroupeQuestion();
+    });
+  }
+}
+
+function clickVerbeGroupeWord(wordIndex) {
+  if (verbeGroupeGameState.submitted) return;
+  verbeGroupeGameState.answers[wordIndex] = (verbeGroupeGameState.answers[wordIndex] + 1) % 4;
+  renderVerbeGroupeQuestion();
+}
+
+function verifyVerbeGroupeAnswer() {
+  if (verbeGroupeGameState.submitted) return;
+
+  const question = verbeGroupeGameState.questions[verbeGroupeGameState.currentIndex];
+  const errors = [];
+
+  const catLabels = {
+    'nc': 'un nom commun',
+    'np': 'un nom propre',
+    'det': 'un déterminant',
+    'adj': 'un adjectif',
+    'pr': 'un pronom',
+    'adv': 'un adverbe',
+    'prep': 'une préposition',
+    'conj': 'une conjonction'
+  };
+
+  question.tokens.forEach((token, idx) => {
+    if (token.punctuation === true) return;
+
+    const isVerb = token.cat === 'v';
+    const sel = verbeGroupeGameState.answers[idx]; // 0=none, 1=g1, 2=g2, 3=g3
+
+    if (isVerb) {
+      if (sel === 0) {
+        errors.push(`Tu as oublié le verbe « <strong>${token.text}</strong> ».`);
+      } else if (sel !== token.group) {
+        const trueGroupStr = token.group === 1 ? '1er' : `${token.group}e`;
+        const selGroupStr = sel === 1 ? '1er' : `${sel}e`;
+        errors.push(`Le verbe « <strong>${token.text}</strong> » (infinitif : <strong>${token.inf}</strong>) est du <strong>${trueGroupStr} groupe</strong>, pas du <strong>${selGroupStr} groupe</strong>.`);
+      }
+    } else {
+      if (sel !== 0) {
+        const clsLabel = catLabels[token.cat] || "un mot d'une autre classe grammaticale";
+        errors.push(`Le mot « <strong>${token.text}</strong> » est <strong>${clsLabel}</strong>, ce n'est pas un verbe.`);
+      }
+    }
+  });
+
+  verbeGroupeGameState.submitted = true;
+  const isPerfect = errors.length === 0;
+
+  if (isPerfect) {
+    verbeGroupeGameState.score++;
+  }
+
+  renderVerbeGroupeQuestion();
+
+  // Show correction panel
+  const corrPanel = document.getElementById('verbe-groupe-correction-panel');
+  if (corrPanel) {
+    if (isPerfect) {
+      corrPanel.innerHTML = `
+        <div class="bg-green-50 rounded-2xl p-5 border-2 border-green-500 mb-6 animate-fadeIn shadow-[2px_2px_0px_rgba(16,185,129,1)]">
+          <div class="flex items-center gap-3 text-green-800 font-display font-bold">
+            <span class="text-2xl">🏆</span>
+            <span>Félicitations ! Tout est parfaitement correct !</span>
+          </div>
+        </div>
+      `;
+    } else {
+      const errList = errors.map(err => `<li class="mb-1 text-sm text-neutral-700">• ${err}</li>`).join('');
+      corrPanel.innerHTML = `
+        <div class="bg-rose-50 rounded-2xl p-5 border-2 border-neutral-900 mb-6 animate-fadeIn shadow-[2px_2px_0px_rgba(0,0,0,1)]">
+          <div class="flex items-start gap-3">
+            <span class="text-2xl">💡</span>
+            <div>
+              <h4 class="font-display font-bold text-rose-800 mb-2">Explication des erreurs :</h4>
+              <ul class="list-none pl-0">
+                ${errList}
+              </ul>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+  }
+}
+
+function nextVerbeGroupeQuestion() {
+  verbeGroupeGameState.currentIndex++;
+  if (verbeGroupeGameState.currentIndex < verbeGroupeGameState.questions.length) {
+    const nextQ = verbeGroupeGameState.questions[verbeGroupeGameState.currentIndex];
+    verbeGroupeGameState.answers = Array(nextQ.tokens.length).fill(0);
+    verbeGroupeGameState.submitted = false;
+    renderVerbeGroupeQuestion();
+  } else {
+    showVerbeGroupeResults();
+  }
+}
+
+function showVerbeGroupeResults() {
+  const container = document.getElementById(verbeGroupeGameState.containerId);
+  if (!container) return;
+
+  const score = verbeGroupeGameState.score;
+  const total = verbeGroupeGameState.questions.length;
+  const pct = Math.round((score / total) * 100);
+
+  let title = "";
+  let msg = "";
+  let emoji = "";
+
+  if (score === 10) {
+    title = "🏆 Sans faute !";
+    msg = "Incroyable ! Tu as une parfaite maîtrise des groupes de verbes !";
+    emoji = "🎉";
+    launchVerbeGroupeConfetti();
+  } else if (score >= 8) {
+    title = "🌟 Excellent !";
+    msg = "C'est un superbe score ! Tu as presque tout juste.";
+    emoji = "👏";
+  } else if (score >= 5) {
+    title = "👍 Pas mal !";
+    msg = "Tu as compris les bases des groupes de verbes. Continue de t'entraîner !";
+    emoji = "💪";
+  } else {
+    title = "✍️ Entraîne-toi encore !";
+    msg = "Révise bien la règle des 3 groupes de verbes et recommence !";
+    emoji = "📚";
+  }
+
+  container.innerHTML = `
+    <div class="text-center py-8 animate-fadeIn">
+      <div class="inline-flex justify-center items-center bg-red-100 text-red-700 w-20 h-20 rounded-full mb-6 border-2 border-red-300">
+        <span class="text-4xl">${emoji}</span>
+      </div>
+      <h3 class="text-2xl md:text-3xl font-display font-bold text-neutral-800 mb-2">
+        ${title}
+      </h3>
+      <p class="text-neutral-500 mb-6 max-w-md mx-auto">
+        ${msg}
+      </p>
+
+      <div class="bg-red-50/60 border-2 border-red-200 rounded-3xl p-6 max-w-sm mx-auto mb-8 shadow-[4px_4px_0px_rgba(0,0,0,0.05)]">
+        <div class="text-5xl font-display font-black text-red-700 mb-2">
+          ${score} <span class="text-2xl text-red-400 font-normal">/ ${total}</span>
+        </div>
+      </div>
+
+      <div class="flex flex-wrap gap-3 justify-center">
+        <button
+          class="gram-verbe-groupe-restart-btn flex items-center gap-2 px-5 py-2.5 rounded-2xl border-2 border-neutral-900 text-neutral-800 hover:bg-neutral-50 font-display font-bold text-sm transition-all cursor-pointer shadow-[2px_2px_0px_rgba(0,0,0,1)] bg-white active:scale-95"
+        >
+          🔄 Recommencer
+        </button>
+        <button
+          class="gram-verbe-groupe-back-btn px-5 py-2.5 rounded-2xl border-2 border-neutral-900 bg-purple-600 text-white hover:bg-purple-700 font-display font-bold text-sm transition-all cursor-pointer shadow-[2px_2px_0px_rgba(0,0,0,1)] active:scale-95"
+        >
+          Retourner aux fonctions
+        </button>
+      </div>
+    </div>
+  `;
+
+  const restartBtn = container.querySelector('.gram-verbe-groupe-restart-btn');
+  if (restartBtn) {
+    restartBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      startVerbeGroupeExercise();
+    });
+  }
+
+  const backBtn = container.querySelector('.gram-verbe-groupe-back-btn');
+  if (backBtn) {
+    backBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      renderVerbeMenu();
+    });
+  }
+
+  if (state.student) {
+    saveResult({
+      student: state.student,
+      cls: state.studentCls,
+      className: CLASSES[state.studentCls] ? CLASSES[state.studentCls].name : state.studentCls,
+      activity: 'gram_verbe_groupe',
+      bookTitle: `Grammaire — Infinitif et groupe`,
+      score,
+      total,
+      pct,
+      date: new Date().toLocaleDateString('fr-BE'),
+      time: new Date().toLocaleTimeString('fr-BE', {hour:'2-digit', minute:'2-digit'})
+    });
+  }
+}
+
+function launchVerbeGroupeConfetti() {
+  const colors = ['#8B5CF6', '#F97316', '#EC4899', '#10B981', '#3B82F6', '#FFD700'];
+  for (let i = 0; i < 45; i++) {
+    const confetti = document.createElement('div');
+    confetti.className = 'confetti';
+    confetti.style.left = Math.random() * 100 + 'vw';
+    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+    confetti.style.animationDelay = Math.random() * 1.5 + 's';
+    confetti.style.transform = `scale(${Math.random() * 0.8 + 0.5})`;
+    document.body.appendChild(confetti);
+    
+    setTimeout(() => confetti.remove(), 2500);
   }
 }
 
