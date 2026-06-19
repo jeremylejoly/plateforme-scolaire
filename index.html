@@ -28656,6 +28656,377 @@ function launchSujetTextesConfetti() {
     document.body.appendChild(confetti);
     
     setTimeout(() => confetti.remove(), 2500);
+}
+
+// ==========================================
+// EXERCICE : TROUVER L'INFINITIF DU VERBE
+// ==========================================
+let verbeInfGameState = {
+  containerId: 'gram-verbe-body',
+  questions: [],
+  currentIndex: 0,
+  score: 0,
+  submitted: false,
+  selectedAnswer: null
+};
+
+function startVerbeInfinitifExercise() {
+  if (!window.EXERCICES_VERBE_INFINITIF || window.EXERCICES_VERBE_INFINITIF.length === 0) {
+    console.error("EXERCICES_VERBE_INFINITIF n'est pas chargé ou est vide.");
+    return;
+  }
+
+  const presentPool = window.EXERCICES_VERBE_INFINITIF.filter(q => q.tense === 'présent');
+  const imparfaitPool = window.EXERCICES_VERBE_INFINITIF.filter(q => q.tense === 'imparfait');
+  const futurPool = window.EXERCICES_VERBE_INFINITIF.filter(q => q.tense === 'futur simple');
+  const passePool = window.EXERCICES_VERBE_INFINITIF.filter(q => q.tense === 'passé composé');
+
+  const shuffle = (arr) => [...arr].sort(() => 0.5 - Math.random());
+
+  // Proportional selection: 3 present, 3 imperfect, 3 future, 1 past composed (exactly 10 questions)
+  const selection = [
+    ...shuffle(presentPool).slice(0, 3),
+    ...shuffle(imparfaitPool).slice(0, 3),
+    ...shuffle(futurPool).slice(0, 3),
+    ...shuffle(passePool).slice(0, 1)
+  ];
+
+  // Randomize the order of tenses
+  const questions = shuffle(selection);
+
+  verbeInfGameState = {
+    containerId: 'gram-verbe-body',
+    questions: questions,
+    currentIndex: 0,
+    score: 0,
+    submitted: false,
+    selectedAnswer: null
+  };
+
+  const backMainBtn = document.querySelector('#screen-gram-verbe-fonc .gram-verbe-back-main-btn');
+  if (backMainBtn) {
+    backMainBtn.onclick = (e) => {
+      e.preventDefault();
+      renderVerbeMenu();
+    };
+  }
+
+  renderVerbeInfinitifQuestion();
+}
+
+function renderVerbeInfinitifQuestion() {
+  const container = document.getElementById(verbeInfGameState.containerId);
+  if (!container) return;
+
+  const question = verbeInfGameState.questions[verbeInfGameState.currentIndex];
+  if (!question) return;
+
+  const pctProgress = Math.round((verbeInfGameState.currentIndex / verbeInfGameState.questions.length) * 100);
+
+  // Highlight verb in phrase
+  const highlightedPhrase = question.phrase.replace(
+    question.verb,
+    `<span class="text-purple-600 border-b-2 border-purple-300 font-black px-1">${question.verb}</span>`
+  );
+
+  let tenseLabel = question.tense.charAt(0).toUpperCase() + question.tense.slice(1);
+
+  const html = `
+    <div class="quiz-topbar flex justify-between items-center mb-6">
+      <div class="quiz-student-badge bg-neutral-100 border-2 border-neutral-300 px-4 py-1.5 rounded-full font-bold text-xs text-neutral-600">
+        ${state.student || 'Enseignant'}
+      </div>
+      <div class="quiz-progress-wrap flex items-center gap-4 w-2/3 max-w-xs justify-end">
+        <div class="quiz-progress-label text-xs font-bold text-neutral-500 whitespace-nowrap">Phrase ${verbeInfGameState.currentIndex + 1} sur ${verbeInfGameState.questions.length}</div>
+        <div class="progress-bar w-full h-2.5 bg-neutral-200 rounded-full overflow-hidden">
+          <div class="progress-fill h-full bg-purple-600" style="width: ${pctProgress}%"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-blue-50 border-2 border-blue-150 rounded-3xl p-5 mb-6 shadow-[4px_4px_0px_rgba(0,0,0,0.02)]">
+      <p class="text-blue-900 text-sm font-semibold flex items-center gap-2">
+        <span>💡</span>
+        <strong>Consigne :</strong> Écris l'infinitif du verbe conjugué (en violet) de la phrase.
+      </p>
+    </div>
+
+    <!-- LA PHRASE DE TRAVAIL -->
+    <div class="bg-white border-2 border-neutral-900 rounded-3xl p-8 md:p-10 mb-6 shadow-[4px_4px_0px_rgba(0,0,0,1)] text-center relative overflow-hidden">
+      <div class="absolute -top-12 -left-12 w-24 h-24 bg-purple-50 rounded-full opacity-50 select-none"></div>
+      <div class="absolute -bottom-12 -right-12 w-32 h-32 bg-purple-50 rounded-full opacity-50 select-none"></div>
+      
+      <div class="text-xs font-bold text-purple-500 uppercase tracking-widest mb-3 select-none">
+        Indicatif ${tenseLabel}
+      </div>
+      <span class="text-2xl md:text-3xl font-display font-bold text-neutral-800 leading-relaxed select-none relative z-10">
+        ${highlightedPhrase}
+      </span>
+    </div>
+
+    <!-- FORMULAIRE DE SAISIE -->
+    <div class="bg-neutral-50 border-2 border-neutral-900 rounded-3xl p-6 mb-6 shadow-[3px_3px_0px_rgba(0,0,0,1)]">
+      <form id="verbe-infinitif-form" class="flex flex-col sm:flex-row items-center gap-4">
+        <input
+          type="text"
+          id="verbe-infinitif-input"
+          placeholder="ex: chanter"
+          class="w-full sm:flex-1 px-4 py-3 rounded-2xl border-2 border-neutral-900 font-sans font-semibold text-lg text-center sm:text-left focus:outline-none focus:ring-4 focus:ring-purple-200 transition-all bg-white"
+          ${verbeInfGameState.submitted ? 'disabled' : ''}
+          autocomplete="off"
+          autocorrect="off"
+          autocapitalize="off"
+        />
+        <button
+          type="submit"
+          id="verbe-infinitif-submit-btn"
+          class="w-full sm:w-auto px-6 py-3 rounded-2xl border-2 border-neutral-900 bg-purple-600 text-white hover:bg-purple-700 font-display font-bold text-lg transition-all cursor-pointer shadow-[2px_2px_0px_rgba(0,0,0,1)] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+          ${verbeInfGameState.submitted ? 'disabled' : ''}
+        >
+          Valider
+        </button>
+      </form>
+    </div>
+
+    <!-- CORRECTION ZONE -->
+    <div id="verbe-inf-correction-panel"></div>
+
+    <!-- ACTION ZONE (CONTINUER) -->
+    <div id="verbe-inf-action-panel" class="flex justify-end items-center mt-4">
+      <!-- Generated dynamically -->
+    </div>
+  `;
+
+  container.innerHTML = html;
+
+  // Focus input
+  const input = container.querySelector('#verbe-infinitif-input');
+  if (input && !verbeInfGameState.submitted) {
+    setTimeout(() => input.focus(), 50);
+  }
+
+  // Bind submit
+  const form = container.querySelector('#verbe-infinitif-form');
+  if (form) {
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      submitVerbeInfinitifAnswer();
+    });
+  }
+
+  // Restore state if returning (robustness)
+  if (verbeInfGameState.submitted) {
+    showVerbeInfinitifCorrectionPanel();
+  }
+}
+
+function submitVerbeInfinitifAnswer() {
+  if (verbeInfGameState.submitted) return;
+
+  const container = document.getElementById(verbeInfGameState.containerId);
+  if (!container) return;
+
+  const input = container.querySelector('#verbe-infinitif-input');
+  if (!input) return;
+
+  const ans = input.value.trim().toLowerCase();
+  const question = verbeInfGameState.questions[verbeInfGameState.currentIndex];
+  
+  const isCorrect = ans === question.inf.toLowerCase();
+
+  verbeInfGameState.submitted = true;
+  verbeInfGameState.selectedAnswer = ans;
+
+  if (isCorrect) {
+    verbeInfGameState.score++;
+  }
+
+  // Disable elements
+  input.disabled = true;
+  const submitBtn = container.querySelector('#verbe-infinitif-submit-btn');
+  if (submitBtn) submitBtn.disabled = true;
+
+  // Show correction panel
+  showVerbeInfinitifCorrectionPanel(isCorrect, question, ans);
+}
+
+function showVerbeInfinitifCorrectionPanel(isCorrect, question, ans) {
+  if (isCorrect === undefined) {
+    // If restoring state
+    const question = verbeInfGameState.questions[verbeInfGameState.currentIndex];
+    const ans = verbeInfGameState.selectedAnswer;
+    isCorrect = ans === question.inf.toLowerCase();
+  }
+
+  const panel = document.getElementById('verbe-inf-correction-panel');
+  if (panel) {
+    if (isCorrect) {
+      panel.innerHTML = `
+        <div class="bg-green-50 rounded-2xl p-5 border-2 border-green-500 mb-6 animate-fadeIn shadow-[2px_2px_0px_rgba(16,185,129,1)]">
+          <div class="flex items-center gap-3 text-green-800 font-display font-bold">
+            <span class="text-2xl">🏆</span>
+            <span>Bravo ! C'est tout à fait correct !</span>
+          </div>
+        </div>
+      `;
+    } else {
+      panel.innerHTML = `
+        <div class="bg-rose-50 rounded-2xl p-5 border-2 border-neutral-900 mb-6 animate-fadeIn shadow-[2px_2px_0px_rgba(0,0,0,1)]">
+          <div class="flex items-start gap-3">
+            <span class="text-2xl">💡</span>
+            <div>
+              <h4 class="font-display font-bold text-rose-800 mb-1">Oups ! Ce n'est pas correct.</h4>
+              <p class="text-sm text-neutral-700">
+                Tu as écrit « <strong>${ans || '(vide)'}</strong> ».<br/>
+                L'infinitif du verbe « <strong>${question.verb}</strong> » dans cette phrase est « <strong>${question.inf}</strong> ».
+              </p>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+  }
+
+  // Show Continue button
+  const actionPanel = document.getElementById('verbe-inf-action-panel');
+  if (actionPanel) {
+    const isLast = verbeInfGameState.currentIndex === verbeInfGameState.questions.length - 1;
+    actionPanel.innerHTML = `
+      <button class="verbe-inf-continue-btn w-full md:w-auto px-6 py-3 rounded-2xl border-2 border-neutral-900 bg-green-600 text-white hover:bg-green-700 font-display font-bold text-sm transition-all cursor-pointer shadow-[2px_2px_0px_rgba(0,0,0,1)] active:scale-95">
+        ${isLast ? 'Voir les résultats ➔' : 'Continuer ➔'}
+      </button>
+    `;
+
+    const continueBtn = actionPanel.querySelector('.verbe-inf-continue-btn');
+    if (continueBtn) {
+      continueBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        nextVerbeInfinitifQuestion();
+      });
+    }
+  }
+}
+
+function nextVerbeInfinitifQuestion() {
+  verbeInfGameState.currentIndex++;
+  if (verbeInfGameState.currentIndex < verbeInfGameState.questions.length) {
+    verbeInfGameState.submitted = false;
+    verbeInfGameState.selectedAnswer = null;
+    renderVerbeInfinitifQuestion();
+  } else {
+    showVerbeInfinitifResults();
+  }
+}
+
+function showVerbeInfinitifResults() {
+  const container = document.getElementById(verbeInfGameState.containerId);
+  if (!container) return;
+
+  const score = verbeInfGameState.score;
+  const total = verbeInfGameState.questions.length;
+  const pct = Math.round((score / total) * 100);
+
+  let title = "";
+  let msg = "";
+  let emoji = "";
+
+  if (score === 10) {
+    title = "🏆 Sans faute ! Fantastique !";
+    msg = "Incroyable ! Tu trouves les infinitifs des verbes instantanément !";
+    emoji = "🎉";
+    launchVerbeInfinitifConfetti();
+  } else if (score >= 8) {
+    title = "🌟 Excellent travail !";
+    msg = "C'est un magnifique score ! Tu maîtrises très bien l'infinitif des verbes conjugués.";
+    emoji = "👏";
+  } else if (score >= 5) {
+    title = "👍 Pas mal !";
+    msg = "Tu as compris le principe. Continue à t'entraîner pour viser le sans-faute !";
+    emoji = "💪";
+  } else {
+    title = "✍️ Entraîne-toi encore !";
+    msg = "Rappelle-toi que l'infinitif est le nom du verbe (ex: mange ➔ manger). Réessaie !";
+    emoji = "📚";
+  }
+
+  container.innerHTML = `
+    <div class="text-center py-8 animate-fadeIn">
+      <div class="inline-flex justify-center items-center bg-purple-100 text-purple-700 w-20 h-20 rounded-full mb-6 border-2 border-purple-300">
+        <span class="text-4xl">${emoji}</span>
+      </div>
+      <h3 class="text-2xl md:text-3xl font-display font-bold text-neutral-800 mb-2">
+        ${title}
+      </h3>
+      <p class="text-neutral-500 mb-6 max-w-md mx-auto">
+        ${msg}
+      </p>
+
+      <div class="bg-purple-50/60 border-2 border-purple-200 rounded-3xl p-6 max-w-sm mx-auto mb-8 shadow-[4px_4px_0px_rgba(0,0,0,0.05)]">
+        <div class="text-5xl font-display font-black text-purple-700 mb-2">
+          ${score} <span class="text-2xl text-purple-400 font-normal">/ ${total}</span>
+        </div>
+      </div>
+
+      <div class="flex flex-wrap gap-3 justify-center">
+        <button
+          class="gram-verbe-inf-restart-btn flex items-center gap-2 px-5 py-2.5 rounded-2xl border-2 border-neutral-900 text-neutral-800 hover:bg-neutral-50 font-display font-bold text-sm transition-all cursor-pointer shadow-[2px_2px_0px_rgba(0,0,0,1)] bg-white active:scale-95"
+        >
+          🔄 Recommencer
+        </button>
+        <button
+          class="gram-verbe-inf-back-btn px-5 py-2.5 rounded-2xl border-2 border-neutral-900 bg-purple-600 text-white hover:bg-purple-700 font-display font-bold text-sm transition-all cursor-pointer shadow-[2px_2px_0px_rgba(0,0,0,1)] active:scale-95"
+        >
+          Retourner aux exercices
+        </button>
+      </div>
+    </div>
+  `;
+
+  const restartBtn = container.querySelector('.gram-verbe-inf-restart-btn');
+  if (restartBtn) {
+    restartBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      startVerbeInfinitifExercise();
+    });
+  }
+
+  const backBtn = container.querySelector('.gram-verbe-inf-back-btn');
+  if (backBtn) {
+    backBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      renderVerbeMenu();
+    });
+  }
+
+  // Save results in student dashboard
+  if (state.student) {
+    saveResult({
+      student: state.student,
+      cls: state.studentCls,
+      className: CLASSES[state.studentCls] ? CLASSES[state.studentCls].name : state.studentCls,
+      activity: 'gram_verbe_infinitif',
+      bookTitle: `Grammaire — Trouver l'infinitif`,
+      score,
+      total,
+      pct,
+      date: new Date().toLocaleDateString('fr-BE'),
+      time: new Date().toLocaleTimeString('fr-BE', {hour:'2-digit', minute:'2-digit'})
+    });
+  }
+}
+
+function launchVerbeInfinitifConfetti() {
+  const colors = ['#A78BFA', '#10B981', '#F59E0B', '#EF4444', '#3B82F6', '#EC4899'];
+  for (let i = 0; i < 45; i++) {
+    const confetti = document.createElement('div');
+    confetti.className = 'confetti';
+    confetti.style.left = Math.random() * 100 + 'vw';
+    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+    confetti.style.animationDelay = Math.random() * 1.5 + 's';
+    confetti.style.transform = `scale(${Math.random() * 0.8 + 0.5})`;
+    document.body.appendChild(confetti);
+    
+    setTimeout(() => confetti.remove(), 2500);
   }
 }
 
@@ -30610,7 +30981,7 @@ function renderVerbeMenu() {
       </p>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       <!-- EXERCICE 1: REPÉRER LE VERBE -->
       <div class="card cursor-pointer hover:scale-102 transition-all p-6 border-2 border-neutral-900 bg-white hover:bg-neutral-50 rounded-3xl shadow-[4px_4px_0px_rgba(0,0,0,1)] flex flex-col justify-between" id="btn-verbe-ex1">
         <div>
@@ -30634,6 +31005,18 @@ function renderVerbeMenu() {
           Commencer ➔
         </button>
       </div>
+
+      <!-- EXERCICE 3: TROUVER L'INFINITIF -->
+      <div class="card cursor-pointer hover:scale-102 transition-all p-6 border-2 border-neutral-900 bg-white hover:bg-neutral-50 rounded-3xl shadow-[4px_4px_0px_rgba(0,0,0,1)] flex flex-col justify-between" id="btn-verbe-ex3">
+        <div>
+          <div class="text-4xl mb-4">✍️</div>
+          <h3 class="font-display font-bold text-lg text-neutral-800 mb-2">3. Trouver l'infinitif</h3>
+          <p class="text-neutral-500 text-sm leading-relaxed mb-4">Écris l'infinitif du verbe conjugué mis en valeur dans 10 phrases à différents temps.</p>
+        </div>
+        <button class="w-full py-2.5 px-4 rounded-xl border-2 border-neutral-900 bg-purple-600 text-white font-display font-bold text-sm shadow-[2px_2px_0px_rgba(0,0,0,1)] active:scale-98 transition-all">
+          Commencer ➔
+        </button>
+      </div>
     </div>
   `;
 
@@ -30650,6 +31033,14 @@ function renderVerbeMenu() {
     ex2Btn.addEventListener('click', (e) => {
       e.preventDefault();
       startVerbeGroupeExercise();
+    });
+  }
+
+  const ex3Btn = container.querySelector('#btn-verbe-ex3');
+  if (ex3Btn) {
+    ex3Btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      startVerbeInfinitifExercise();
     });
   }
 }
