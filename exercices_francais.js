@@ -8713,5 +8713,636 @@ window.EXERCICES_ADJECTIF = [
   }
 ];
 
+window.EXERCICES_VERBE_GROUPE = [
+  {
+    text: "Le chat noir semble manger des croquettes .",
+    tokens: [
+      { text: "Le", cat: "det" },
+      { text: "chat", cat: "nc" },
+      { text: "noir", cat: "adj" },
+      { text: "semble", cat: "v", group: 1, inf: "sembler" },
+      { text: "manger", cat: "v", group: 1, inf: "manger" },
+      { text: "des", cat: "det" },
+      { text: "croquettes", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Nous pensons finir nos devoirs ce soir .",
+    tokens: [
+      { text: "Nous", cat: "pr" },
+      { text: "pensons", cat: "v", group: 1, inf: "penser" },
+      { text: "finir", cat: "v", group: 2, inf: "finir" },
+      { text: "nos", cat: "det" },
+      { text: "devoirs", cat: "nc" },
+      { text: "ce", cat: "det" },
+      { text: "soir", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Les enfants veulent partir à la plage .",
+    tokens: [
+      { text: "Les", cat: "det" },
+      { text: "enfants", cat: "nc" },
+      { text: "veulent", cat: "v", group: 3, inf: "vouloir" },
+      { text: "partir", cat: "v", group: 3, inf: "partir" },
+      { text: "à", cat: "prep" },
+      { text: "la", cat: "det" },
+      { text: "plage", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Mon frère détestait prendre le train chaque matin .",
+    tokens: [
+      { text: "Mon", cat: "det" },
+      { text: "frère", cat: "nc" },
+      { text: "détestait", cat: "v", group: 1, inf: "détester" },
+      { text: "prendre", cat: "v", group: 3, inf: "prendre" },
+      { text: "le", cat: "det" },
+      { text: "train", cat: "nc" },
+      { text: "chaque", cat: "det" },
+      { text: "matin", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Tu chanteras une belle chanson .",
+    tokens: [
+      { text: "Tu", cat: "pr" },
+      { text: "chanteras", cat: "v", group: 1, inf: "chanter" },
+      { text: "une", cat: "det" },
+      { text: "belle", cat: "adj" },
+      { text: "chanson", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Vous paraissez grandir très vite .",
+    tokens: [
+      { text: "Vous", cat: "pr" },
+      { text: "paraissez", cat: "v", group: 3, inf: "paraître" },
+      { text: "grandir", cat: "v", group: 2, inf: "grandir" },
+      { text: "très", cat: "adv" },
+      { text: "vite", cat: "adv" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Elle adore lire des romans policiers .",
+    tokens: [
+      { text: "Elle", cat: "pr" },
+      { text: "adore", cat: "v", group: 1, inf: "adorer" },
+      { text: "lire", cat: "v", group: 3, inf: "lire" },
+      { text: "des", cat: "det" },
+      { text: "romans", cat: "nc" },
+      { text: "policiers", cat: "adj" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Le soleil va se coucher derrière la montagne .",
+    tokens: [
+      { text: "Le", cat: "det" },
+      { text: "soleil", cat: "nc" },
+      { text: "va", cat: "v", group: 3, inf: "aller" },
+      { text: "se", cat: "pr" },
+      { text: "coucher", cat: "v", group: 1, inf: "coucher" },
+      { text: "derrière", cat: "prep" },
+      { text: "la", cat: "det" },
+      { text: "montagne", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Les élèves apprenaient une poésie difficile .",
+    tokens: [
+      { text: "Les", cat: "det" },
+      { text: "élèves", cat: "nc" },
+      { text: "apprenaient", cat: "v", group: 3, inf: "apprendre" },
+      { text: "une", cat: "det" },
+      { text: "poésie", cat: "nc" },
+      { text: "difficile", cat: "adj" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Il préfère choisir un dessert sucré .",
+    tokens: [
+      { text: "Il", cat: "pr" },
+      { text: "préfère", cat: "v", group: 1, inf: "préférer" },
+      { text: "choisir", cat: "v", group: 2, inf: "choisir" },
+      { text: "un", cat: "det" },
+      { text: "dessert", cat: "nc" },
+      { text: "sucré", cat: "adj" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Les randonneurs aiment descendre le sentier escarpé .",
+    tokens: [
+      { text: "Les", cat: "det" },
+      { text: "randonneurs", cat: "nc" },
+      { text: "aiment", cat: "v", group: 1, inf: "aimer" },
+      { text: "descendre", cat: "v", group: 3, inf: "descendre" },
+      { text: "le", cat: "det" },
+      { text: "sentier", cat: "nc" },
+      { text: "escarpé", cat: "adj" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Les athlètes doivent courir sur la piste .",
+    tokens: [
+      { text: "Les", cat: "det" },
+      { text: "athlètes", cat: "nc" },
+      { text: "doivent", cat: "v", group: 3, inf: "devoir" },
+      { text: "courir", cat: "v", group: 3, inf: "courir" },
+      { text: "sur", cat: "prep" },
+      { text: "la", cat: "det" },
+      { text: "piste", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Demain , nous mangerons des crêpes .",
+    tokens: [
+      { text: "Demain", cat: "adv" },
+      { text: ",", punctuation: true },
+      { text: "nous", cat: "pr" },
+      { text: "mangerons", cat: "v", group: 1, inf: "manger" },
+      { text: "des", cat: "det" },
+      { text: "crêpes", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Les fleurs commencent à fleurir au printemps .",
+    tokens: [
+      { text: "Les", cat: "det" },
+      { text: "fleurs", cat: "nc" },
+      { text: "commencent", cat: "v", group: 1, inf: "commencer" },
+      { text: "à", cat: "prep" },
+      { text: "fleurir", cat: "v", group: 2, inf: "fleurir" },
+      { text: "au", cat: "prep" },
+      { text: "printemps", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Je préfère dormir dans un lit confortable .",
+    tokens: [
+      { text: "Je", cat: "pr" },
+      { text: "préfère", cat: "v", group: 1, inf: "préférer" },
+      { text: "dormir", cat: "v", group: 3, inf: "dormir" },
+      { text: "dans", cat: "prep" },
+      { text: "un", cat: "det" },
+      { text: "lit", cat: "nc" },
+      { text: "confortable", cat: "adj" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Mon père cherche à réparer son vieux vélo .",
+    tokens: [
+      { text: "Mon", cat: "det" },
+      { text: "père", cat: "nc" },
+      { text: "cherche", cat: "v", group: 1, inf: "chercher" },
+      { text: "à", cat: "prep" },
+      { text: "réparer", cat: "v", group: 1, inf: "réparer" },
+      { text: "son", cat: "det" },
+      { text: "vieux", cat: "adj" },
+      { text: "vélo", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Tu réussiras cet examen important .",
+    tokens: [
+      { text: "Tu", cat: "pr" },
+      { text: "réussiras", cat: "v", group: 2, inf: "réussir" },
+      { text: "cet", cat: "det" },
+      { text: "examen", cat: "nc" },
+      { text: "important", cat: "adj" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Le lion s' apprête à bondir sur sa proie .",
+    tokens: [
+      { text: "Le", cat: "det" },
+      { text: "lion", cat: "nc" },
+      { text: "s'", cat: "pr" },
+      { text: "apprête", cat: "v", group: 1, inf: "apprêter" },
+      { text: "à", cat: "prep" },
+      { text: "bondir", cat: "v", group: 2, inf: "bondir" },
+      { text: "sur", cat: "prep" },
+      { text: "sa", cat: "det" },
+      { text: "proie", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Nous prenons le bus tous les jours .",
+    tokens: [
+      { text: "Nous", cat: "pr" },
+      { text: "prenons", cat: "v", group: 3, inf: "prendre" },
+      { text: "le", cat: "det" },
+      { text: "bus", cat: "nc" },
+      { text: "tous", cat: "det" },
+      { text: "les", cat: "det" },
+      { text: "jours", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Elle adorait écrire une lettre à son amie .",
+    tokens: [
+      { text: "Elle", cat: "pr" },
+      { text: "adorait", cat: "v", group: 1, inf: "adorer" },
+      { text: "écrire", cat: "v", group: 3, inf: "écrire" },
+      { text: "une", cat: "det" },
+      { text: "lettre", cat: "nc" },
+      { text: "à", cat: "prep" },
+      { text: "son", cat: "det" },
+      { text: "amie", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Les enfants aiment dessiner sur le tableau .",
+    tokens: [
+      { text: "Les", cat: "det" },
+      { text: "enfants", cat: "nc" },
+      { text: "aiment", cat: "v", group: 1, inf: "aimer" },
+      { text: "dessiner", cat: "v", group: 1, inf: "dessiner" },
+      { text: "sur", cat: "prep" },
+      { text: "le", cat: "det" },
+      { text: "tableau", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Vous applaudissez la fin du spectacle .",
+    tokens: [
+      { text: "Vous", cat: "pr" },
+      { text: "applaudissez", cat: "v", group: 2, inf: "applaudir" },
+      { text: "la", cat: "det" },
+      { text: "fin", cat: "nc" },
+      { text: "du", cat: "prep" },
+      { text: "spectacle", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Nous irons au cinéma ce week-end .",
+    tokens: [
+      { text: "Nous", cat: "pr" },
+      { text: "irons", cat: "v", group: 3, inf: "aller" },
+      { text: "au", cat: "prep" },
+      { text: "cinéma", cat: "nc" },
+      { text: "ce", cat: "det" },
+      { text: "week-end", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "L' oiseau préfère faire son nid dans l' arbre .",
+    tokens: [
+      { text: "L'", cat: "det" },
+      { text: "oiseau", cat: "nc" },
+      { text: "préfère", cat: "v", group: 1, inf: "préférer" },
+      { text: "faire", cat: "v", group: 3, inf: "faire" },
+      { text: "son", cat: "det" },
+      { text: "nid", cat: "nc" },
+      { text: "dans", cat: "prep" },
+      { text: "l'", cat: "det" },
+      { text: "arbre", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Le cuisinier prépare un repas délicieux .",
+    tokens: [
+      { text: "Le", cat: "det" },
+      { text: "cuisinier", cat: "nc" },
+      { text: "prépare", cat: "v", group: 1, inf: "préparer" },
+      { text: "un", cat: "det" },
+      { text: "repas", cat: "nc" },
+      { text: "délicieux", cat: "adj" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Tu obéiras aux règles de l' école .",
+    tokens: [
+      { text: "Tu", cat: "pr" },
+      { text: "obéiras", cat: "v", group: 2, inf: "obéir" },
+      { text: "aux", cat: "prep" },
+      { text: "règles", cat: "nc" },
+      { text: "de", cat: "prep" },
+      { text: "l'", cat: "det" },
+      { text: "école", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Mon grand-père vendait des légumes frais .",
+    tokens: [
+      { text: "Mon", cat: "det" },
+      { text: "grand-père", cat: "nc" },
+      { text: "vendait", cat: "v", group: 3, inf: "vendre" },
+      { text: "des", cat: "det" },
+      { text: "légumes", cat: "nc" },
+      { text: "frais", cat: "adj" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Il aime raconter des histoires amusantes .",
+    tokens: [
+      { text: "Il", cat: "pr" },
+      { text: "aime", cat: "v", group: 1, inf: "aimer" },
+      { text: "raconter", cat: "v", group: 1, inf: "raconter" },
+      { text: "des", cat: "det" },
+      { text: "histoires", cat: "nc" },
+      { text: "amusantes", cat: "adj" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Le gardien ferme la grille du parc .",
+    tokens: [
+      { text: "Le", cat: "det" },
+      { text: "gardien", cat: "nc" },
+      { text: "ferme", cat: "v", group: 1, inf: "fermer" },
+      { text: "la", cat: "det" },
+      { text: "grille", cat: "nc" },
+      { text: "du", cat: "prep" },
+      { text: "parc", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Nous finissions notre repas tranquillement .",
+    tokens: [
+      { text: "Nous", cat: "pr" },
+      { text: "finissions", cat: "v", group: 2, inf: "finir" },
+      { text: "notre", cat: "det" },
+      { text: "repas", cat: "nc" },
+      { text: "tranquillement", cat: "adv" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Vous dites toujours la vérité .",
+    tokens: [
+      { text: "Vous", cat: "pr" },
+      { text: "dites", cat: "v", group: 3, inf: "dire" },
+      { text: "toujours", cat: "adv" },
+      { text: "la", cat: "det" },
+      { text: "vérité", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Je veux voir ce documentaire fascinant .",
+    tokens: [
+      { text: "Je", cat: "pr" },
+      { text: "veux", cat: "v", group: 3, inf: "vouloir" },
+      { text: "voir", cat: "v", group: 3, inf: "voir" },
+      { text: "ce", cat: "det" },
+      { text: "documentaire", cat: "nc" },
+      { text: "fascinant", cat: "adj" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "La petite fille rougit devant les invités .",
+    tokens: [
+      { text: "La", cat: "det" },
+      { text: "petite", cat: "adj" },
+      { text: "fille", cat: "nc" },
+      { text: "rougit", cat: "v", group: 2, inf: "rougir" },
+      { text: "devant", cat: "prep" },
+      { text: "les", cat: "det" },
+      { text: "invités", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Les voyageurs prendront l' avion demain .",
+    tokens: [
+      { text: "Les", cat: "det" },
+      { text: "voyageurs", cat: "nc" },
+      { text: "prendront", cat: "v", group: 3, inf: "prendre" },
+      { text: "l'", cat: "det" },
+      { text: "avion", cat: "nc" },
+      { text: "demain", cat: "adv" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Vous remplissiez les bouteilles d' eau fraîche .",
+    tokens: [
+      { text: "Vous", cat: "pr" },
+      { text: "remplissiez", cat: "v", group: 2, inf: "remplir" },
+      { text: "les", cat: "det" },
+      { text: "bouteilles", cat: "nc" },
+      { text: "d'", cat: "prep" },
+      { text: "eau", cat: "nc" },
+      { text: "fraîche", cat: "adj" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Il faut ranger ta chambre rapidement .",
+    tokens: [
+      { text: "Il", cat: "pr" },
+      { text: "faut", cat: "v", group: 3, inf: "falloir" },
+      { text: "ranger", cat: "v", group: 1, inf: "ranger" },
+      { text: "ta", cat: "det" },
+      { text: "chambre", cat: "nc" },
+      { text: "rapidement", cat: "adv" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Le chien garde la maison .",
+    tokens: [
+      { text: "Le", cat: "det" },
+      { text: "chien", cat: "nc" },
+      { text: "garde", cat: "v", group: 1, inf: "garder" },
+      { text: "la", cat: "det" },
+      { text: "maison", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Nous réfléchissons à une solution simple .",
+    tokens: [
+      { text: "Nous", cat: "pr" },
+      { text: "réfléchissons", cat: "v", group: 2, inf: "réfléchir" },
+      { text: "à", cat: "prep" },
+      { text: "une", cat: "det" },
+      { text: "solution", cat: "nc" },
+      { text: "simple", cat: "adj" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Les ouvriers construisent un grand pont .",
+    tokens: [
+      { text: "Les", cat: "det" },
+      { text: "ouvriers", cat: "nc" },
+      { text: "construisent", cat: "v", group: 3, inf: "construire" },
+      { text: "un", cat: "det" },
+      { text: "grand", cat: "adj" },
+      { text: "pont", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Elle nettoiera la table après le déjeuner .",
+    tokens: [
+      { text: "Elle", cat: "pr" },
+      { text: "nettoiera", cat: "v", group: 1, inf: "nettoyer" },
+      { text: "la", cat: "det" },
+      { text: "table", cat: "nc" },
+      { text: "après", cat: "prep" },
+      { text: "le", cat: "det" },
+      { text: "déjeuner", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Vous bâtissez un château de sable .",
+    tokens: [
+      { text: "Vous", cat: "pr" },
+      { text: "bâtissez", cat: "v", group: 2, inf: "bâtir" },
+      { text: "un", cat: "det" },
+      { text: "château", cat: "nc" },
+      { text: "de", cat: "prep" },
+      { text: "sable", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Mon ami habite dans cette rue .",
+    tokens: [
+      { text: "Mon", cat: "det" },
+      { text: "ami", cat: "nc" },
+      { text: "habite", cat: "v", group: 1, inf: "habiter" },
+      { text: "dans", cat: "prep" },
+      { text: "cette", cat: "det" },
+      { text: "rue", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Tu sors de la maison en silence .",
+    tokens: [
+      { text: "Tu", cat: "pr" },
+      { text: "sors", cat: "v", group: 3, inf: "sortir" },
+      { text: "de", cat: "prep" },
+      { text: "la", cat: "det" },
+      { text: "maison", cat: "nc" },
+      { text: "en", cat: "prep" },
+      { text: "silence", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Les enfants adoraient jouer dans la forêt .",
+    tokens: [
+      { text: "Les", cat: "det" },
+      { text: "enfants", cat: "nc" },
+      { text: "adoraient", cat: "v", group: 1, inf: "adorer" },
+      { text: "jouer", cat: "v", group: 1, inf: "jouer" },
+      { text: "dans", cat: "prep" },
+      { text: "la", cat: "det" },
+      { text: "forêt", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Le renard guette le lapin dans le champ .",
+    tokens: [
+      { text: "Le", cat: "det" },
+      { text: "renard", cat: "nc" },
+      { text: "guette", cat: "v", group: 1, inf: "guetter" },
+      { text: "le", cat: "det" },
+      { text: "lapin", cat: "nc" },
+      { text: "dans", cat: "prep" },
+      { text: "le", cat: "det" },
+      { text: "champ", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Nous franchirons la ligne d' arrivée bientôt .",
+    tokens: [
+      { text: "Nous", cat: "pr" },
+      { text: "franchirons", cat: "v", group: 2, inf: "franchir" },
+      { text: "la", cat: "det" },
+      { text: "ligne", cat: "nc" },
+      { text: "d'", cat: "prep" },
+      { text: "arrivée", cat: "nc" },
+      { text: "bientôt", cat: "adv" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Elle venait me voir chaque dimanche .",
+    tokens: [
+      { text: "Elle", cat: "pr" },
+      { text: "venait", cat: "v", group: 3, inf: "venir" },
+      { text: "me", cat: "pr" },
+      { text: "voir", cat: "v", group: 3, inf: "voir" },
+      { text: "chaque", cat: "det" },
+      { text: "dimanche", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Les élèves écrivent une rédaction intéressante .",
+    tokens: [
+      { text: "Les", cat: "det" },
+      { text: "élèves", cat: "nc" },
+      { text: "écrivent", cat: "v", group: 3, inf: "écrire" },
+      { text: "une", cat: "det" },
+      { text: "rédaction", cat: "nc" },
+      { text: "intéressante", cat: "adj" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Tu puniras ton chien s' il désobéit .",
+    tokens: [
+      { text: "Tu", cat: "pr" },
+      { text: "puniras", cat: "v", group: 2, inf: "punir" },
+      { text: "ton", cat: "det" },
+      { text: "chien", cat: "nc" },
+      { text: "s'", cat: "conj" },
+      { text: "il", cat: "pr" },
+      { text: "désobéit", cat: "v", group: 2, inf: "désobéir" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Nous aimons chanter des airs joyeux .",
+    tokens: [
+      { text: "Nous", cat: "pr" },
+      { text: "aimons", cat: "v", group: 1, inf: "aimer" },
+      { text: "chanter", cat: "v", group: 1, inf: "chanter" },
+      { text: "des", cat: "det" },
+      { text: "airs", cat: "nc" },
+      { text: "joyeux", cat: "adj" },
+      { text: ".", punctuation: true }
+    ]
+  }
+];
+
 
 
