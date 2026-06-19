@@ -22273,11 +22273,11 @@ function sciOrdreDragStart(e){
   sciOrdreState.draggingIdx = parseInt(e.currentTarget.dataset.idx);
   e.currentTarget.style.opacity = '0.4';
   e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('text/plain', e.currentTarget.dataset.idx);
 }
 function sciOrdreDragEnd(e){
   e.currentTarget.style.opacity = '';
   sciOrdreState.draggingIdx = null;
-  sciOrdreState.targetSlot = null;
   clearSciOrdreHoverClasses();
 }
 function sciOrdreDragOver(e){
@@ -22300,23 +22300,31 @@ function sciOrdreDragOver(e){
     const targetContainer = document.querySelectorAll('#sci-ordre-list .sci-ordre-item-container')[total - 1];
     if (targetContainer) targetContainer.classList.add('drag-hover-below');
   }
-  sciOrdreState.targetSlot = targetSlot;
 }
 function sciOrdreDragLeave(e){
 }
 function sciOrdreDrop(e){
   e.preventDefault();
   clearSciOrdreHoverClasses();
-  const fromIdx = sciOrdreState.draggingIdx;
-  const targetSlot = sciOrdreState.targetSlot;
-  if(fromIdx === null || targetSlot === undefined || targetSlot === null) return;
+  
+  const fromIdxStr = e.dataTransfer.getData('text/plain');
+  if (fromIdxStr === undefined || fromIdxStr === '') return;
+  const fromIdx = parseInt(fromIdxStr);
+  
+  const targetItem = e.currentTarget.closest('.sci-ordre-item');
+  if (!targetItem) return;
+  const rect = targetItem.getBoundingClientRect();
+  const relY = e.clientY - rect.top;
+  const isLowerHalf = relY > rect.height / 2;
+  const idx = parseInt(targetItem.dataset.idx);
+  const targetSlot = isLowerHalf ? idx + 1 : idx;
   
   let insertIdx = targetSlot;
   if (fromIdx < targetSlot) {
     insertIdx = targetSlot - 1;
   }
+  
   sciOrdreState.draggingIdx = null;
-  sciOrdreState.targetSlot = null;
   
   if (fromIdx !== insertIdx) {
     const arr = sciOrdreState.ordre;
@@ -22368,7 +22376,6 @@ function sciOrdreTouchMove(e){
       const targetContainer = document.querySelectorAll('#sci-ordre-list .sci-ordre-item-container')[total - 1];
       if (targetContainer) targetContainer.classList.add('drag-hover-below');
     }
-    sciOrdreState.targetSlot = targetSlot;
   }
 }
 function sciOrdreTouchEnd(e){
@@ -22380,11 +22387,19 @@ function sciOrdreTouchEnd(e){
   clearSciOrdreHoverClasses();
   
   const fromIdx = sciOrdreState.draggingIdx;
-  const targetSlot = sciOrdreState.targetSlot;
   sciOrdreState.draggingIdx = null; sciOrdreState.touchEl = null;
-  sciOrdreState.targetSlot = null;
   
-  if(fromIdx !== null && targetSlot !== undefined && targetSlot !== null){
+  const touch = e.changedTouches[0];
+  const target = document.elementFromPoint(touch.clientX, touch.clientY);
+  const targetItem = target ? target.closest('.sci-ordre-item') : null;
+  
+  if(fromIdx !== null && targetItem){
+    const rect = targetItem.getBoundingClientRect();
+    const relY = touch.clientY - rect.top;
+    const isLowerHalf = relY > rect.height / 2;
+    const idx = parseInt(targetItem.dataset.idx);
+    const targetSlot = isLowerHalf ? idx + 1 : idx;
+    
     let insertIdx = targetSlot;
     if (fromIdx < targetSlot) {
       insertIdx = targetSlot - 1;
@@ -26331,8 +26346,17 @@ function clearRespOrdreHoverClasses() {
     el.classList.remove('drag-hover-above', 'drag-hover-below');
   });
 }
-function respOrdreDragStart(e){ respOrdreState.draggingIdx=parseInt(e.currentTarget.dataset.idx); e.currentTarget.style.opacity='0.4'; e.dataTransfer.effectAllowed='move'; }
-function respOrdreDragEnd(e){ e.currentTarget.style.opacity=''; respOrdreState.draggingIdx=null; respOrdreState.targetSlot=null; clearRespOrdreHoverClasses(); }
+function respOrdreDragStart(e){
+  respOrdreState.draggingIdx = parseInt(e.currentTarget.dataset.idx);
+  e.currentTarget.style.opacity = '0.4';
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('text/plain', e.currentTarget.dataset.idx);
+}
+function respOrdreDragEnd(e){
+  e.currentTarget.style.opacity = '';
+  respOrdreState.draggingIdx = null;
+  clearRespOrdreHoverClasses();
+}
 function respOrdreDragOver(e){
   e.preventDefault();
   const targetItem = e.currentTarget.closest('.sci-ordre-item');
@@ -26353,36 +26377,62 @@ function respOrdreDragOver(e){
     const targetContainer = document.querySelectorAll('#resp-ordre-list .sci-ordre-item-container')[total - 1];
     if (targetContainer) targetContainer.classList.add('drag-hover-below');
   }
-  respOrdreState.targetSlot = targetSlot;
 }
 function respOrdreDragLeave(e){
 }
 function respOrdreDrop(e){
   e.preventDefault();
   clearRespOrdreHoverClasses();
-  const from=respOrdreState.draggingIdx;
-  const targetSlot=respOrdreState.targetSlot;
-  if(from===null||targetSlot===undefined||targetSlot===null) return;
   
-  let insertIdx=targetSlot;
-  if(from<targetSlot){
-    insertIdx=targetSlot-1;
+  const fromIdxStr = e.dataTransfer.getData('text/plain');
+  if (fromIdxStr === undefined || fromIdxStr === '') return;
+  const fromIdx = parseInt(fromIdxStr);
+  
+  const targetItem = e.currentTarget.closest('.sci-ordre-item');
+  if (!targetItem) return;
+  const rect = targetItem.getBoundingClientRect();
+  const relY = e.clientY - rect.top;
+  const isLowerHalf = relY > rect.height / 2;
+  const idx = parseInt(targetItem.dataset.idx);
+  const targetSlot = isLowerHalf ? idx + 1 : idx;
+  
+  let insertIdx = targetSlot;
+  if (fromIdx < targetSlot) {
+    insertIdx = targetSlot - 1;
   }
-  respOrdreState.draggingIdx=null;
-  respOrdreState.targetSlot=null;
   
-  if(from!==insertIdx){
-    const arr=respOrdreState.ordre;
-    const [moved]=arr.splice(from,1);
-    arr.splice(insertIdx,0,moved);
-    respOrdreState.ordre=arr;
+  respOrdreState.draggingIdx = null;
+  
+  if (fromIdx !== insertIdx) {
+    const arr = respOrdreState.ordre;
+    const [moved] = arr.splice(fromIdx, 1);
+    arr.splice(insertIdx, 0, moved);
+    respOrdreState.ordre = arr;
     renderSciRespOrdreHtml();
   }
 }
+
+// --- Touch Mobile ---
 let respOrdTEl=null,respOrdTClone=null,respOrdTFromIdx=null;
-function respOrdTouchStart(e){ e.preventDefault(); respOrdTEl=e.currentTarget; respOrdTFromIdx=parseInt(respOrdTEl.dataset.idx); const clone=respOrdTEl.cloneNode(true); clone.style.cssText='position:fixed;z-index:9999;opacity:.85;pointer-events:none;width:'+respOrdTEl.offsetWidth+'px;'; const touch=e.touches[0]; clone.style.left=(touch.clientX-20)+'px'; clone.style.top=(touch.clientY-20)+'px'; document.body.appendChild(clone); respOrdTClone=clone; respOrdTEl.style.opacity='0.4'; }
+function respOrdTouchStart(e){
+  e.preventDefault();
+  respOrdTEl=e.currentTarget;
+  respOrdTFromIdx=parseInt(respOrdTEl.dataset.idx);
+  const clone=respOrdTEl.cloneNode(true);
+  clone.style.cssText='position:fixed;z-index:9999;opacity:.85;pointer-events:none;width:'+respOrdTEl.offsetWidth+'px;';
+  const touch=e.touches[0];
+  clone.style.left=(touch.clientX-20)+'px';
+  clone.style.top=(touch.clientY-20)+'px';
+  document.body.appendChild(clone);
+  respOrdTClone=clone;
+  respOrdTEl.style.opacity='0.4';
+}
 function respOrdTouchMove(e){
-  e.preventDefault(); if(!respOrdTClone) return; const touch=e.touches[0]; respOrdTClone.style.left=(touch.clientX-20)+'px'; respOrdTClone.style.top=(touch.clientY-20)+'px';
+  e.preventDefault();
+  if(!respOrdTClone) return;
+  const touch=e.touches[0];
+  respOrdTClone.style.left=(touch.clientX-20)+'px';
+  respOrdTClone.style.top=(touch.clientY-20)+'px';
   
   clearRespOrdreHoverClasses();
   
@@ -26403,21 +26453,29 @@ function respOrdTouchMove(e){
       const targetContainer = document.querySelectorAll('#resp-ordre-list .sci-ordre-item-container')[total - 1];
       if (targetContainer) targetContainer.classList.add('drag-hover-below');
     }
-    respOrdreState.targetSlot = targetSlot;
   }
 }
 function respOrdTouchEnd(e){
-  if(!respOrdTClone) return; const touch=e.changedTouches[0]; respOrdTClone.remove(); respOrdTClone=null;
+  if(!respOrdTClone) return;
+  const touch=e.changedTouches[0];
+  respOrdTClone.remove(); respOrdTClone=null;
   if(respOrdTEl) respOrdTEl.style.opacity='';
   
   clearRespOrdreHoverClasses();
   
   const fromIdx=respOrdTFromIdx;
-  const targetSlot=respOrdreState.targetSlot;
   respOrdTEl=null; respOrdTFromIdx=null;
-  respOrdreState.targetSlot=null;
   
-  if(fromIdx!==null&&targetSlot!==undefined&&targetSlot!==null){
+  const el=document.elementFromPoint(touch.clientX,touch.clientY);
+  const targetItem=el?el.closest('.sci-ordre-item'):null;
+  
+  if(fromIdx!==null && targetItem){
+    const rect = targetItem.getBoundingClientRect();
+    const relY = touch.clientY - rect.top;
+    const isLowerHalf = relY > rect.height / 2;
+    const idx = parseInt(targetItem.dataset.idx);
+    const targetSlot = isLowerHalf ? idx + 1 : idx;
+    
     let insertIdx=targetSlot;
     if(fromIdx<targetSlot){
       insertIdx=targetSlot-1;
@@ -26836,8 +26894,17 @@ function clearDigOrdreHoverClasses() {
     el.classList.remove('drag-hover-above', 'drag-hover-below');
   });
 }
-function digOrdreDragStart(e){ digOrdreState.draggingIdx=parseInt(e.currentTarget.dataset.idx); e.currentTarget.style.opacity='0.4'; e.dataTransfer.effectAllowed='move'; }
-function digOrdreDragEnd(e){ e.currentTarget.style.opacity=''; digOrdreState.draggingIdx=null; digOrdreState.targetSlot=null; clearDigOrdreHoverClasses(); }
+function digOrdreDragStart(e){
+  digOrdreState.draggingIdx = parseInt(e.currentTarget.dataset.idx);
+  e.currentTarget.style.opacity = '0.4';
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('text/plain', e.currentTarget.dataset.idx);
+}
+function digOrdreDragEnd(e){
+  e.currentTarget.style.opacity = '';
+  digOrdreState.draggingIdx = null;
+  clearDigOrdreHoverClasses();
+}
 function digOrdreDragOver(e){
   e.preventDefault();
   const targetItem = e.currentTarget.closest('.sci-ordre-item');
@@ -26858,36 +26925,62 @@ function digOrdreDragOver(e){
     const targetContainer = document.querySelectorAll('#dig-ordre-list .sci-ordre-item-container')[total - 1];
     if (targetContainer) targetContainer.classList.add('drag-hover-below');
   }
-  digOrdreState.targetSlot = targetSlot;
 }
 function digOrdreDragLeave(e){
 }
 function digOrdreDrop(e){
   e.preventDefault();
   clearDigOrdreHoverClasses();
-  const from=digOrdreState.draggingIdx;
-  const targetSlot=digOrdreState.targetSlot;
-  if(from===null||targetSlot===undefined||targetSlot===null) return;
   
-  let insertIdx=targetSlot;
-  if(from<targetSlot){
-    insertIdx=targetSlot-1;
+  const fromIdxStr = e.dataTransfer.getData('text/plain');
+  if (fromIdxStr === undefined || fromIdxStr === '') return;
+  const fromIdx = parseInt(fromIdxStr);
+  
+  const targetItem = e.currentTarget.closest('.sci-ordre-item');
+  if (!targetItem) return;
+  const rect = targetItem.getBoundingClientRect();
+  const relY = e.clientY - rect.top;
+  const isLowerHalf = relY > rect.height / 2;
+  const idx = parseInt(targetItem.dataset.idx);
+  const targetSlot = isLowerHalf ? idx + 1 : idx;
+  
+  let insertIdx = targetSlot;
+  if (fromIdx < targetSlot) {
+    insertIdx = targetSlot - 1;
   }
-  digOrdreState.draggingIdx=null;
-  digOrdreState.targetSlot=null;
   
-  if(from!==insertIdx){
-    const arr=digOrdreState.ordre;
-    const [moved]=arr.splice(from,1);
-    arr.splice(insertIdx,0,moved);
-    digOrdreState.ordre=arr;
+  digOrdreState.draggingIdx = null;
+  
+  if (fromIdx !== insertIdx) {
+    const arr = digOrdreState.ordre;
+    const [moved] = arr.splice(fromIdx, 1);
+    arr.splice(insertIdx, 0, moved);
+    digOrdreState.ordre = arr;
     renderSciDigOrdreHtml();
   }
 }
+
+// --- Touch Mobile ---
 let digOrdTEl=null,digOrdTClone=null,digOrdTFromIdx=null;
-function digOrdTouchStart(e){ e.preventDefault(); digOrdTEl=e.currentTarget; digOrdTFromIdx=parseInt(digOrdTEl.dataset.idx); const clone=digOrdTEl.cloneNode(true); clone.style.cssText='position:fixed;z-index:9999;opacity:.85;pointer-events:none;width:'+digOrdTEl.offsetWidth+'px;'; const touch=e.touches[0]; clone.style.left=(touch.clientX-20)+'px'; clone.style.top=(touch.clientY-20)+'px'; document.body.appendChild(clone); digOrdTClone=clone; digOrdTEl.style.opacity='0.4'; }
+function digOrdTouchStart(e){
+  e.preventDefault();
+  digOrdTEl=e.currentTarget;
+  digOrdTFromIdx=parseInt(digOrdTEl.dataset.idx);
+  const clone=digOrdTEl.cloneNode(true);
+  clone.style.cssText='position:fixed;z-index:9999;opacity:.85;pointer-events:none;width:'+digOrdTEl.offsetWidth+'px;';
+  const touch=e.touches[0];
+  clone.style.left=(touch.clientX-20)+'px';
+  clone.style.top=(touch.clientY-20)+'px';
+  document.body.appendChild(clone);
+  digOrdTClone=clone;
+  digOrdTEl.style.opacity='0.4';
+}
 function digOrdTouchMove(e){
-  e.preventDefault(); if(!digOrdTClone) return; const touch=e.touches[0]; digOrdTClone.style.left=(touch.clientX-20)+'px'; digOrdTClone.style.top=(touch.clientY-20)+'px';
+  e.preventDefault();
+  if(!digOrdTClone) return;
+  const touch=e.touches[0];
+  digOrdTClone.style.left=(touch.clientX-20)+'px';
+  digOrdTClone.style.top=(touch.clientY-20)+'px';
   
   clearDigOrdreHoverClasses();
   
@@ -26908,21 +27001,29 @@ function digOrdTouchMove(e){
       const targetContainer = document.querySelectorAll('#dig-ordre-list .sci-ordre-item-container')[total - 1];
       if (targetContainer) targetContainer.classList.add('drag-hover-below');
     }
-    digOrdreState.targetSlot = targetSlot;
   }
 }
 function digOrdTouchEnd(e){
-  if(!digOrdTClone) return; const touch=e.changedTouches[0]; digOrdTClone.remove(); digOrdTClone=null;
+  if(!digOrdTClone) return;
+  const touch=e.changedTouches[0];
+  digOrdTClone.remove(); digOrdTClone=null;
   if(digOrdTEl) digOrdTEl.style.opacity='';
   
   clearDigOrdreHoverClasses();
   
   const fromIdx=digOrdTFromIdx;
-  const targetSlot=digOrdreState.targetSlot;
   digOrdTEl=null; digOrdTFromIdx=null;
-  digOrdreState.targetSlot=null;
   
-  if(fromIdx!==null&&targetSlot!==undefined&&targetSlot!==null){
+  const el=document.elementFromPoint(touch.clientX,touch.clientY);
+  const targetItem=el?el.closest('.sci-ordre-item'):null;
+  
+  if(fromIdx!==null && targetItem){
+    const rect = targetItem.getBoundingClientRect();
+    const relY = touch.clientY - rect.top;
+    const isLowerHalf = relY > rect.height / 2;
+    const idx = parseInt(targetItem.dataset.idx);
+    const targetSlot = isLowerHalf ? idx + 1 : idx;
+    
     let insertIdx=targetSlot;
     if(fromIdx<targetSlot){
       insertIdx=targetSlot-1;
