@@ -2792,7 +2792,32 @@ input[type=text].calc-input.incorrect {
   window.FB_saveResult = async function(entry) {
     try {
       await push(ref(db, 'results'), entry);
+      if (entry.cls && entry.student) {
+        const studentClean = entry.student.replace(/\s+/g, '_');
+        await push(ref(db, 'student_results/' + entry.cls + '/' + studentClean), entry);
+      }
     } catch(e) { console.warn('Firebase saveResult error:', e); }
+  };
+
+  window.FB_loadStudentResults = async function(cls, student) {
+    try {
+      const studentClean = student.replace(/\s+/g, '_');
+      const snap = await get(ref(db, 'student_results/' + cls + '/' + studentClean));
+      if (!snap.exists()) return [];
+      const all = [];
+      snap.forEach(child => { all.push(child.val()); });
+      return all;
+    } catch(e) { console.warn('Firebase loadStudentResults error:', e); return []; }
+  };
+
+  window.FB_saveStudentResultsBatch = async function(cls, student, resultsArray) {
+    try {
+      const studentClean = student.replace(/\s+/g, '_');
+      const studentRef = ref(db, 'student_results/' + cls + '/' + studentClean);
+      const promises = resultsArray.map(r => push(studentRef, r));
+      await Promise.all(promises);
+      console.log(`✅ ${resultsArray.length} résultats historiques migrés pour ${student}`);
+    } catch(e) { console.warn('Firebase saveStudentResultsBatch error:', e); }
   };
 
   window.FB_loadResults = async function(cls) {
@@ -6520,7 +6545,12 @@ function goToHome(){
   loadAndApplyEmoji();
   // Afficher immédiatement la carte plan si données locales disponibles
   loadPlanTravailLocal();
-  const _vis = planTravailAssigned.length > 0 ? '' : 'none';
+  let individualPlan = [];
+  if (state.student) {
+    const s = localStorage.getItem('lq_plan_travail_individual_' + state.student);
+    individualPlan = s ? JSON.parse(s) : [];
+  }
+  const _vis = (planTravailAssigned.length > 0 || individualPlan.length > 0) ? '' : 'none';
   const planCard = document.getElementById('home-plan-card');
   if(planCard) planCard.style.display = _vis;
   const planCard2 = document.getElementById('subjects-plan-card');
@@ -6532,28 +6562,22 @@ function goToHome(){
 async function syncStudentFromFirebase(){
   if(!window.FB_ready){ setTimeout(syncStudentFromFirebase, 1000); return; }
   try {
-    // Récupérer les activités verrouillées depuis Firebase
-    const locked = await window.FB_loadLockedActivities();
-    if(locked && Array.isArray(locked)){
-      localStorage.setItem('lq_locked_activities', JSON.stringify(locked));
-    }
-    // Récupérer la liste des élèves depuis Firebase (pour les PIN à jour)
-    const students = await window.FB_loadStudents('lejoly');
-    if(students && Array.isArray(students) && students.length > 0){
-      localStorage.setItem('lq_students_lejoly', JSON.stringify(students));
-    }
-    // Rafraîchir l'affichage des matières avec les nouvelles données
+    initRealtimeStudentSync();
+    window.FB_loadStudents('lejoly').then(students => {
+      if(students && Array.isArray(students) && students.length > 0){
+        localStorage.setItem('lq_students_lejoly', JSON.stringify(students));
+      }
+    }).catch(e => console.warn('Erreur chargement élèves en tâche de fond:', e));
     renderAppsManage();
-    // Afficher la carte Plan de travail si des exercices sont assignés
-    updateHomePlanCard();
-    // Refresh any open sub-menus that may have loaded before sync
+    updateHomePlanCardUI();
     if(document.getElementById('prehistoire-menu')) renderPrehistoireMenu();
     if(document.getElementById('sci-circulatoire-menu')) renderSciCirculatoireMenu();
-    console.log('✅ Sync élève terminée');
+    console.log('✅ Sync élève démarrée (Realtime listeners activés)');
   } catch(e){
     console.warn('Sync élève échouée:', e);
   }
 }
+
 
 function goToActivity(act){
   if(act==='lecture'){
@@ -17822,15 +17846,49 @@ function loadStudentResults(){
   _studentResultsCacheFor = cacheKey;
   _studentResultsCache = {};
   try {
+    const cls = state.studentCls;
+    const student = state.student;
+    if (window.FB_loadStudentResults) {
+      window.FB_loadStudentResults(cls, student).then(function(fbResults) {
+        if (fbResults && fbResults.length > 0) {
+          fbResults.forEach(function(r) {
+            const act = r.activity;
+            if(!act) return;
+            if(!_studentResultsCache[act]){
+              _studentResultsCache[act] = r;
+            } else {
+              const existing = _studentResultsCache[act];
+              const existingDT = (existing.date||'') + ' ' + (existing.time||'');
+              const newDT = (r.date||'') + ' ' + (r.time||'');
+              if(newDT > existingDT) _studentResultsCache[act] = r;
+            }
+          });
+          refreshCurrentMenu();
+        } else {
+          loadStudentResultsFallback();
+        }
+      }).catch(function(e) {
+        console.warn('Erreur FB_loadStudentResults, repli sur l\'historique global:', e);
+        loadStudentResultsFallback();
+      });
+    } else {
+      loadStudentResultsFallback();
+    }
+  } catch(e) { console.error('loadStudentResults error:', e); }
+}
+
+function loadStudentResultsFallback() {
+  try {
     const _lsrRef = window.FB_ref(window.FB_DB, 'results');
     window.FB_get(_lsrRef).then(function(snap){
       if(!snap.exists()){ refreshCurrentMenu(); return; }
+      const myResults = [];
       snap.forEach(function(child){
         const r = child.val();
         if(!r || !r.student || r.student !== state.student) return;
+        myResults.push(r);
         const act = r.activity;
         if(!act) return;
-        // Garder le résultat le plus récent (comparaison par timestamp ou date+time)
         if(!_studentResultsCache[act]){
           _studentResultsCache[act] = r;
         } else {
@@ -17840,11 +17898,14 @@ function loadStudentResults(){
           if(newDT > existingDT) _studentResultsCache[act] = r;
         }
       });
-      // Rafraîchir le menu courant pour afficher les badges
       refreshCurrentMenu();
-    }).catch(function(e){ console.error('loadStudentResults error:', e); });
-  } catch(e) { console.error('loadStudentResults error:', e); }
+      if (myResults.length > 0 && window.FB_saveStudentResultsBatch) {
+        window.FB_saveStudentResultsBatch(state.studentCls, state.student, myResults);
+      }
+    }).catch(function(e){ console.error('loadStudentResultsFallback error:', e); });
+  } catch(e) { console.error('loadStudentResultsFallback error:', e); }
 }
+
 
 function refreshCurrentMenu(){
   // Rafraîchir le menu visible pour mettre à jour les badges
@@ -24753,6 +24814,10 @@ function goToLogin(){
   if (typeof window.clearStudentPresence === 'function') {
     window.clearStudentPresence();
   }
+  // Nettoyer les listeners temps réel si connectés
+  if (typeof clearRealtimeStudentSync === 'function') {
+    clearRealtimeStudentSync();
+  }
   // Full reset
   state={student:'',studentCls:'',book:'',answers:{},currentQ:0,role:'student'};
   pinInput='';
@@ -25148,7 +25213,101 @@ function savePlanTravail() {
     window.FB_savePlanTravailIndividual(teacherCls, planTravailIndividual);
   }
 }
+let fbStudentListeners = {};
+
+function initRealtimeStudentSync() {
+  if (!window.FB_ready || !state.student || !state.studentCls) return;
+  const cls = state.studentCls;
+  const student = state.student;
+  clearRealtimeStudentSync();
+  console.log('📡 Initialisation de la synchronisation temps réel pour', student);
+
+  // 1. Observer pour les activités verrouillées
+  const lockedRef = window.FB_ref(window.FB_DB, 'settings/locked_activities');
+  fbStudentListeners.locked = window.FB_onValue(lockedRef, (snap) => {
+    const val = snap.val();
+    if (val && Array.isArray(val)) {
+      localStorage.setItem('lq_locked_activities', JSON.stringify(val));
+    } else {
+      localStorage.setItem('lq_locked_activities', '[]');
+    }
+    renderAppsManage();
+    refreshCurrentMenu();
+  }, (err) => console.warn('Realtime locked_activities error:', err));
+
+  // 2. Observer pour le plan de travail global
+  const planRef = window.FB_ref(window.FB_DB, 'settings/plan_travail');
+  fbStudentListeners.plan = window.FB_onValue(planRef, (snap) => {
+    const val = snap.val();
+    if (val && Array.isArray(val)) {
+      planTravailAssigned = val;
+      localStorage.setItem('lq_plan_travail', JSON.stringify(val));
+    } else {
+      planTravailAssigned = [];
+      localStorage.setItem('lq_plan_travail', '[]');
+    }
+    updateHomePlanCardUI();
+  }, (err) => console.warn('Realtime plan_travail error:', err));
+
+  // 3. Observer pour le plan de travail individuel
+  const indPlanRef = window.FB_ref(window.FB_DB, 'settings/plan_travail_individual/' + cls);
+  fbStudentListeners.indPlan = window.FB_onValue(indPlanRef, (snap) => {
+    const val = snap.val();
+    if (val) {
+      planTravailIndividual = val;
+      const myIndPlan = val[student] || [];
+      localStorage.setItem('lq_plan_travail_individual_' + student, JSON.stringify(myIndPlan));
+    } else {
+      planTravailIndividual = {};
+      localStorage.setItem('lq_plan_travail_individual_' + student, '[]');
+    }
+    updateHomePlanCardUI();
+  }, (err) => console.warn('Realtime plan_travail_individual error:', err));
+
+  // 4. Observer pour la progression du plan
+  const progressRef = window.FB_ref(window.FB_DB, 'plan_progress/' + cls + '/' + student);
+  fbStudentListeners.progress = window.FB_onValue(progressRef, (snap) => {
+    const val = snap.val();
+    if (val) {
+      studentPlanProgress = val;
+      const key = 'lq_plan_progress_' + cls + '_' + student;
+      localStorage.setItem(key, JSON.stringify(val));
+    }
+    const el = document.getElementById('plan-student-body');
+    if (el && !el.innerHTML.includes('Chargement…')) {
+      renderPlanTravailStudent();
+    }
+  }, (err) => console.warn('Realtime plan_progress error:', err));
+}
+
+function clearRealtimeStudentSync() {
+  Object.keys(fbStudentListeners).forEach(key => {
+    if (typeof fbStudentListeners[key] === 'function') {
+      try { fbStudentListeners[key](); } catch(e) {}
+    }
+  });
+  fbStudentListeners = {};
+}
+
+function updateHomePlanCardUI() {
+  let individualPlan = [];
+  if (state.student) {
+    const s = localStorage.getItem('lq_plan_travail_individual_' + state.student);
+    individualPlan = s ? JSON.parse(s) : [];
+  }
+  const visible = (planTravailAssigned.length > 0 || individualPlan.length > 0) ? '' : 'none';
+  const card1 = document.getElementById('home-plan-card');
+  if (card1) card1.style.display = visible;
+  const card2 = document.getElementById('subjects-plan-card');
+  if (card2) card2.style.display = visible;
+  const el = document.getElementById('plan-student-body');
+  if (el && !el.innerHTML.includes('Chargement…')) {
+    renderPlanTravailStudent();
+  }
+}
+
 function loadPlanTravailLocal() {
+
   const s = localStorage.getItem('lq_plan_travail');
   planTravailAssigned = s ? JSON.parse(s) : [];
   
@@ -25475,51 +25634,27 @@ function ptSaveAndNotify() {
 // ============================================================
 // RENDU CÔTÉ ÉLÈVE
 // ============================================================
-async function showPlanTravailStudent() {
+function showPlanTravailStudent() {
   showScreen('screen-plan-travail-student');
-  await renderPlanTravailStudent();
+  renderPlanTravailStudent();
 }
 
-async function renderPlanTravailStudent() {
+function renderPlanTravailStudent() {
   const el = document.getElementById('plan-student-body');
   if (!el) return;
-  el.innerHTML = '<p style="text-align:center;color:var(--muted);padding:2rem">Chargement…</p>';
 
-  // Charger le plan assigné
-  if (window.FB_loadPlanTravail) {
-    const fb = await window.FB_loadPlanTravail();
-    if (fb) { planTravailAssigned = fb; localStorage.setItem('lq_plan_travail', JSON.stringify(fb)); }
-  } else {
-    loadPlanTravailLocal();
-  }
-
-  // Charger le plan individuel
   let individualPlan = [];
-  if (state.student && state.studentCls) {
-    if (window.FB_loadPlanTravailIndividual) {
-      const fbInd = await window.FB_loadPlanTravailIndividual(state.studentCls);
-      if (fbInd && fbInd[state.student]) {
-        individualPlan = fbInd[state.student];
-        localStorage.setItem('lq_plan_travail_individual_' + state.student, JSON.stringify(individualPlan));
-      }
-    } else {
-      const s = localStorage.getItem('lq_plan_travail_individual_' + state.student);
-      individualPlan = s ? JSON.parse(s) : [];
-    }
+  if (state.student) {
+    const s = localStorage.getItem('lq_plan_travail_individual_' + state.student);
+    individualPlan = s ? JSON.parse(s) : [];
   }
-
-  // Union des plans
   const assigned = [...new Set([...planTravailAssigned, ...individualPlan])];
-
-  // Charger la progression de l'élève
-  await loadStudentProgress();
 
   if (!assigned.length) {
     el.innerHTML = '<div class="pt-empty">📋 Aucun exercice assigné pour le moment.<br><span style="font-size:13px;color:var(--muted)">Mr Lejoly n&#39;a pas encore préparé ton plan de travail.</span></div>';
     return;
   }
 
-  // Calculer l'avancement
   const done = assigned.filter(id => studentPlanProgress[id]).length;
   const pct = Math.round((done / assigned.length) * 100);
 
@@ -25529,7 +25664,6 @@ async function renderPlanTravailStudent() {
       <div class="pt-progress-bar"><div class="pt-progress-fill" style="width:${pct}%"></div></div>
     </div>`;
 
-  // Grouper par catégorie/sous-catégorie en ne gardant que les items assignés
   const cats = {};
   PLAN_CATALOGUE.forEach(section => {
     const filteredItems = section.items.filter(item => assigned.includes(item.id));
@@ -25571,7 +25705,6 @@ function ptStudentToggle(id, checked) {
   studentPlanProgress[id] = checked;
   saveStudentProgress();
 
-  // Récupérer l'union active des exercices assignés
   let individualPlan = [];
   if (state.student) {
     const s = localStorage.getItem('lq_plan_travail_individual_' + state.student);
@@ -25586,40 +25719,15 @@ function ptStudentToggle(id, checked) {
   if (lbl) lbl.textContent = 'Mon avancement : ' + done + ' / ' + assigned.length + ' exercices terminés (' + pct + ' %)';
   if (bar) bar.style.width = pct + '%';
 
-  // Barrer/débarrer le label
   const label = document.querySelector('.pt-item-label[data-id="' + id + '"]');
   if (label) label.classList.toggle('pt-done', checked);
 }
 
-// Afficher/masquer la carte Plan sur screen-home
-async function updateHomePlanCard() {
-  if (window.FB_loadPlanTravail) {
-    const fb = await window.FB_loadPlanTravail();
-    if (fb) { planTravailAssigned = fb; localStorage.setItem('lq_plan_travail', JSON.stringify(fb)); }
-  } else {
-    loadPlanTravailLocal();
-  }
-
-  let individualPlan = [];
-  if (state.student && state.studentCls) {
-    if (window.FB_loadPlanTravailIndividual) {
-      const fbInd = await window.FB_loadPlanTravailIndividual(state.studentCls);
-      if (fbInd && fbInd[state.student]) {
-        individualPlan = fbInd[state.student];
-        localStorage.setItem('lq_plan_travail_individual_' + state.student, JSON.stringify(individualPlan));
-      }
-    } else {
-      const s = localStorage.getItem('lq_plan_travail_individual_' + state.student);
-      individualPlan = s ? JSON.parse(s) : [];
-    }
-  }
-
-  const visible = (planTravailAssigned.length > 0 || individualPlan.length > 0) ? '' : 'none';
-  const card1 = document.getElementById('home-plan-card');
-  if (card1) card1.style.display = visible;
-  const card2 = document.getElementById('subjects-plan-card');
-  if (card2) card2.style.display = visible;
+function updateHomePlanCard() {
+  updateHomePlanCardUI();
 }
+
+
 
 
 // ================================================================
