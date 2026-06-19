@@ -7822,7 +7822,36 @@ const ACTIVITY_PARENTS = {
   'sci_coeur': 'sci_circulatoire',
 };
 
+function getStudentPlanTravail() {
+  const localClass = localStorage.getItem('lq_plan_travail');
+  const classPlan = localClass ? JSON.parse(localClass) : [];
+  let indPlan = [];
+  if (typeof state !== 'undefined' && state.student) {
+    const localInd = localStorage.getItem('lq_plan_travail_individual_' + state.student);
+    indPlan = localInd ? JSON.parse(localInd) : [];
+  }
+  return [...new Set([...classPlan, ...indPlan])];
+}
+
+function isProposedInPlan(id) {
+  const plan = getStudentPlanTravail();
+  if (plan.includes(id)) return true;
+  
+  for (const itemId of plan) {
+    let current = itemId;
+    while (ACTIVITY_PARENTS[current]) {
+      const parent = ACTIVITY_PARENTS[current];
+      if (parent === id) return true;
+      current = parent;
+    }
+  }
+  return false;
+}
+
 function isActivityLocked(id){
+  if (typeof state !== 'undefined' && state.role === 'student' && isProposedInPlan(id)) {
+    return false;
+  }
   const locked = getLockedActivities();
   if (locked.includes(id)) return true;
   let currentId = id;
