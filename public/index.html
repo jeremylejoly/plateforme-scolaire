@@ -53,36 +53,52 @@
   transition: transform 0.15s ease;
 }
 .sci-ordre-item-container.drag-hover-above::before {
-  content: '';
+  content: '➕ INSÉRER ICI';
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-family: 'Fredoka', sans-serif;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
   position: absolute;
-  top: -6px;
+  top: -10px;
   left: 30px;
   right: 0;
-  height: 4px;
+  height: 18px;
   background: var(--purple);
-  border-radius: 2px;
-  box-shadow: 0 0 8px var(--purple);
-  z-index: 10;
+  border-radius: 9px;
+  box-shadow: 0 0 12px var(--purple), 0 2px 4px rgba(0,0,0,0.1);
+  z-index: 50;
   pointer-events: none;
-  animation: pulse-ordre 1s infinite alternate;
+  animation: pulse-ordre 0.8s infinite alternate;
 }
 .sci-ordre-item-container.drag-hover-below::after {
-  content: '';
+  content: '➕ INSÉRER ICI';
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-family: 'Fredoka', sans-serif;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
   position: absolute;
-  bottom: -6px;
+  bottom: -10px;
   left: 30px;
   right: 0;
-  height: 4px;
+  height: 18px;
   background: var(--purple);
-  border-radius: 2px;
-  box-shadow: 0 0 8px var(--purple);
-  z-index: 10;
+  border-radius: 9px;
+  box-shadow: 0 0 12px var(--purple), 0 2px 4px rgba(0,0,0,0.1);
+  z-index: 50;
   pointer-events: none;
-  animation: pulse-ordre 1s infinite alternate;
+  animation: pulse-ordre 0.8s infinite alternate;
 }
 @keyframes pulse-ordre {
-  from { opacity: 0.6; box-shadow: 0 0 4px var(--purple); }
-  to { opacity: 1; box-shadow: 0 0 12px var(--purple); }
+  from { opacity: 0.85; transform: scale(0.99); }
+  to { opacity: 1; transform: scale(1.01); }
 }
 @font-face {
   font-family: 'KGHaventSlept';
@@ -22210,7 +22226,7 @@ function sciOrdreChoisirSeq(seqId){
 
   // Mélanger les étapes (sauf la 1ère)
   const etapesAClasser = shuffle([...seq.etapes.slice(1)]);
-  sciOrdreState = {seq, ordre: etapesAClasser, draggingIdx:null, touchClone:null, touchEl:null, submitted:false};
+  sciOrdreState = {seq, ordre: etapesAClasser, draggingIdx:null, touchClone:null, touchEl:null, submitted:false, lastTargetSlot:null};
 
   renderSciOrdreExercice();
 }
@@ -22222,15 +22238,15 @@ function renderSciOrdreExercice(){
   let etapesHtml = '';
   ordre.forEach((etape, i) => {
     etapesHtml += `
-      <div class="sci-ordre-item-container" style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+      <div class="sci-ordre-item-container" data-idx="${i}"
+        ondragover="sciOrdreDragOver(event)" ondrop="sciOrdreDrop(event)"
+        style="display:flex;align-items:center;gap:10px;margin-bottom:8px;position:relative;">
         <span style="font-family:'Fredoka',sans-serif;font-weight:800;font-size:14px;color:var(--purple);width:20px;text-align:right;">${i+2}.</span>
         <div class="sci-ordre-item" id="sci-ordre-item-${i}" data-idx="${i}" draggable="true"
           style="display:flex;align-items:center;gap:10px;padding:10px 14px;flex-grow:1;
           background:var(--surface);border:1.5px solid var(--border);border-radius:10px;
           margin-bottom:0;cursor:grab;user-select:none;touch-action:none;transition:box-shadow .15s;"
           ondragstart="sciOrdreDragStart(event)" ondragend="sciOrdreDragEnd(event)"
-          ondragover="sciOrdreDragOver(event)" ondrop="sciOrdreDrop(event)"
-          ondragleave="sciOrdreDragLeave(event)"
           ontouchstart="sciOrdreTouchStart(event)" ontouchmove="sciOrdreTouchMove(event)" ontouchend="sciOrdreTouchEnd(event)">
           <span style="font-size:18px;color:var(--muted);flex-shrink:0">☰</span>
           <span style="font-size:13px;color:var(--text);line-height:1.4">${etape}</span>
@@ -22274,25 +22290,30 @@ function sciOrdreDragStart(e){
   e.currentTarget.style.opacity = '0.4';
   e.dataTransfer.effectAllowed = 'move';
   e.dataTransfer.setData('text/plain', e.currentTarget.dataset.idx);
+  sciOrdreState.lastTargetSlot = null;
 }
 function sciOrdreDragEnd(e){
   e.currentTarget.style.opacity = '';
   sciOrdreState.draggingIdx = null;
+  sciOrdreState.lastTargetSlot = null;
   clearSciOrdreHoverClasses();
 }
 function sciOrdreDragOver(e){
   e.preventDefault();
-  const targetItem = e.currentTarget.closest('.sci-ordre-item');
+  const targetItem = e.currentTarget.closest('.sci-ordre-item-container');
   if(!targetItem) return;
   const rect = targetItem.getBoundingClientRect();
   const relY = e.clientY - rect.top;
   const isLowerHalf = relY > rect.height / 2;
   const idx = parseInt(targetItem.dataset.idx);
   const targetSlot = isLowerHalf ? idx + 1 : idx;
-  const total = sciOrdreState.ordre.length;
+  
+  if (sciOrdreState.lastTargetSlot === targetSlot) return;
+  sciOrdreState.lastTargetSlot = targetSlot;
   
   clearSciOrdreHoverClasses();
   
+  const total = sciOrdreState.ordre.length;
   if (targetSlot < total) {
     const targetContainer = document.querySelectorAll('#sci-ordre-list .sci-ordre-item-container')[targetSlot];
     if (targetContainer) targetContainer.classList.add('drag-hover-above');
@@ -22306,12 +22327,13 @@ function sciOrdreDragLeave(e){
 function sciOrdreDrop(e){
   e.preventDefault();
   clearSciOrdreHoverClasses();
+  sciOrdreState.lastTargetSlot = null;
   
   const fromIdxStr = e.dataTransfer.getData('text/plain');
   if (fromIdxStr === undefined || fromIdxStr === '') return;
   const fromIdx = parseInt(fromIdxStr);
   
-  const targetItem = e.currentTarget.closest('.sci-ordre-item');
+  const targetItem = e.currentTarget.closest('.sci-ordre-item-container');
   if (!targetItem) return;
   const rect = targetItem.getBoundingClientRect();
   const relY = e.clientY - rect.top;
@@ -22341,6 +22363,7 @@ function sciOrdreTouchStart(e){
   const el = e.currentTarget;
   sciOrdreState.touchEl = el;
   sciOrdreState.draggingIdx = parseInt(el.dataset.idx);
+  sciOrdreState.lastTargetSlot = null;
   const touch = e.touches[0];
   const clone = el.cloneNode(true);
   clone.style.cssText += ';position:fixed;z-index:9999;pointer-events:none;opacity:0.85;width:' + el.offsetWidth + 'px;';
@@ -22357,18 +22380,21 @@ function sciOrdreTouchMove(e){
   sciOrdreState.touchClone.style.left = touch.clientX - sciOrdreState.touchClone.offsetWidth/2 + 'px';
   sciOrdreState.touchClone.style.top  = touch.clientY - 30 + 'px';
   
-  clearSciOrdreHoverClasses();
-  
   const target = document.elementFromPoint(touch.clientX, touch.clientY);
-  const targetItem = target ? target.closest('.sci-ordre-item') : null;
-  if(targetItem && targetItem !== sciOrdreState.touchEl){
+  const targetItem = target ? target.closest('.sci-ordre-item-container') : null;
+  if(targetItem && targetItem !== sciOrdreState.touchEl.closest('.sci-ordre-item-container')){
     const rect = targetItem.getBoundingClientRect();
     const relY = touch.clientY - rect.top;
     const isLowerHalf = relY > rect.height / 2;
     const idx = parseInt(targetItem.dataset.idx);
     const targetSlot = isLowerHalf ? idx + 1 : idx;
-    const total = sciOrdreState.ordre.length;
     
+    if (sciOrdreState.lastTargetSlot === targetSlot) return;
+    sciOrdreState.lastTargetSlot = targetSlot;
+    
+    clearSciOrdreHoverClasses();
+    
+    const total = sciOrdreState.ordre.length;
     if (targetSlot < total) {
       const targetContainer = document.querySelectorAll('#sci-ordre-list .sci-ordre-item-container')[targetSlot];
       if (targetContainer) targetContainer.classList.add('drag-hover-above');
@@ -22385,13 +22411,14 @@ function sciOrdreTouchEnd(e){
   if(sciOrdreState.touchEl) sciOrdreState.touchEl.style.opacity = '';
   
   clearSciOrdreHoverClasses();
+  sciOrdreState.lastTargetSlot = null;
   
   const fromIdx = sciOrdreState.draggingIdx;
   sciOrdreState.draggingIdx = null; sciOrdreState.touchEl = null;
   
   const touch = e.changedTouches[0];
   const target = document.elementFromPoint(touch.clientX, touch.clientY);
-  const targetItem = target ? target.closest('.sci-ordre-item') : null;
+  const targetItem = target ? target.closest('.sci-ordre-item-container') : null;
   
   if(fromIdx !== null && targetItem){
     const rect = targetItem.getBoundingClientRect();
@@ -26298,10 +26325,10 @@ const SCI_RESP_ORDRE_DATA = [
   "L'air sort par la bouche ou le nez",
 ];
 
-let respOrdreState = {ordre:[], draggingIdx:null, touchClone:null, touchEl:null};
+let respOrdreState = {ordre:[], draggingIdx:null, touchClone:null, touchEl:null, lastTargetSlot:null};
 function renderSciRespOrdre(){
   const body=document.getElementById('sci-resp-ordre-body'); if(!body) return;
-  respOrdreState = {ordre: shuffle([...SCI_RESP_ORDRE_DATA.slice(1)]), draggingIdx:null, touchClone:null, touchEl:null};
+  respOrdreState = {ordre: shuffle([...SCI_RESP_ORDRE_DATA.slice(1)]), draggingIdx:null, touchClone:null, touchEl:null, lastTargetSlot:null};
   renderSciRespOrdreHtml();
 }
 function renderSciRespOrdreHtml(){
@@ -26310,12 +26337,13 @@ function renderSciRespOrdreHtml(){
   let etapesHtml = '';
   ordre.forEach((etape,i) => {
     etapesHtml += `
-      <div class="sci-ordre-item-container" style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+      <div class="sci-ordre-item-container" data-idx="${i}"
+        ondragover="respOrdreDragOver(event)" ondrop="respOrdreDrop(event)"
+        style="display:flex;align-items:center;gap:10px;margin-bottom:8px;position:relative;">
         <span style="font-family:'Fredoka',sans-serif;font-weight:800;font-size:14px;color:var(--purple);width:20px;text-align:right;">${i+2}.</span>
         <div class="sci-ordre-item" id="resp-ord-${i}" data-idx="${i}" draggable="true"
           style="display:flex;align-items:center;gap:10px;padding:10px 14px;flex-grow:1;background:var(--surface);border:1.5px solid var(--border);border-radius:10px;margin-bottom:0;cursor:grab;user-select:none;touch-action:none;transition:box-shadow .15s;"
           ondragstart="respOrdreDragStart(event)" ondragend="respOrdreDragEnd(event)"
-          ondragover="respOrdreDragOver(event)" ondrop="respOrdreDrop(event)" ondragleave="respOrdreDragLeave(event)"
           ontouchstart="respOrdTouchStart(event)" ontouchmove="respOrdTouchMove(event)" ontouchend="respOrdTouchEnd(event)">
           <span style="font-size:18px;color:var(--muted);flex-shrink:0">☰</span>
           <span style="font-size:13px;line-height:1.4">${etape}</span>
@@ -26351,25 +26379,30 @@ function respOrdreDragStart(e){
   e.currentTarget.style.opacity = '0.4';
   e.dataTransfer.effectAllowed = 'move';
   e.dataTransfer.setData('text/plain', e.currentTarget.dataset.idx);
+  respOrdreState.lastTargetSlot = null;
 }
 function respOrdreDragEnd(e){
   e.currentTarget.style.opacity = '';
   respOrdreState.draggingIdx = null;
+  respOrdreState.lastTargetSlot = null;
   clearRespOrdreHoverClasses();
 }
 function respOrdreDragOver(e){
   e.preventDefault();
-  const targetItem = e.currentTarget.closest('.sci-ordre-item');
+  const targetItem = e.currentTarget.closest('.sci-ordre-item-container');
   if(!targetItem) return;
   const rect = targetItem.getBoundingClientRect();
   const relY = e.clientY - rect.top;
   const isLowerHalf = relY > rect.height / 2;
   const idx = parseInt(targetItem.dataset.idx);
   const targetSlot = isLowerHalf ? idx + 1 : idx;
-  const total = respOrdreState.ordre.length;
+  
+  if (respOrdreState.lastTargetSlot === targetSlot) return;
+  respOrdreState.lastTargetSlot = targetSlot;
   
   clearRespOrdreHoverClasses();
   
+  const total = respOrdreState.ordre.length;
   if (targetSlot < total) {
     const targetContainer = document.querySelectorAll('#resp-ordre-list .sci-ordre-item-container')[targetSlot];
     if (targetContainer) targetContainer.classList.add('drag-hover-above');
@@ -26383,12 +26416,13 @@ function respOrdreDragLeave(e){
 function respOrdreDrop(e){
   e.preventDefault();
   clearRespOrdreHoverClasses();
+  respOrdreState.lastTargetSlot = null;
   
   const fromIdxStr = e.dataTransfer.getData('text/plain');
   if (fromIdxStr === undefined || fromIdxStr === '') return;
   const fromIdx = parseInt(fromIdxStr);
   
-  const targetItem = e.currentTarget.closest('.sci-ordre-item');
+  const targetItem = e.currentTarget.closest('.sci-ordre-item-container');
   if (!targetItem) return;
   const rect = targetItem.getBoundingClientRect();
   const relY = e.clientY - rect.top;
@@ -26418,6 +26452,7 @@ function respOrdTouchStart(e){
   e.preventDefault();
   respOrdTEl=e.currentTarget;
   respOrdTFromIdx=parseInt(respOrdTEl.dataset.idx);
+  respOrdreState.lastTargetSlot = null;
   const clone=respOrdTEl.cloneNode(true);
   clone.style.cssText='position:fixed;z-index:9999;opacity:.85;pointer-events:none;width:'+respOrdTEl.offsetWidth+'px;';
   const touch=e.touches[0];
@@ -26434,18 +26469,21 @@ function respOrdTouchMove(e){
   respOrdTClone.style.left=(touch.clientX-20)+'px';
   respOrdTClone.style.top=(touch.clientY-20)+'px';
   
-  clearRespOrdreHoverClasses();
-  
   const el=document.elementFromPoint(touch.clientX,touch.clientY);
-  const target=el?el.closest('.sci-ordre-item'):null;
-  if(target&&target!==respOrdTEl){
-    const rect = target.getBoundingClientRect();
+  const targetItem=el?el.closest('.sci-ordre-item-container'):null;
+  if(targetItem && targetItem !== respOrdTEl.closest('.sci-ordre-item-container')){
+    const rect = targetItem.getBoundingClientRect();
     const relY = touch.clientY - rect.top;
     const isLowerHalf = relY > rect.height / 2;
-    const idx = parseInt(target.dataset.idx);
+    const idx = parseInt(targetItem.dataset.idx);
     const targetSlot = isLowerHalf ? idx + 1 : idx;
-    const total = respOrdreState.ordre.length;
     
+    if (respOrdreState.lastTargetSlot === targetSlot) return;
+    respOrdreState.lastTargetSlot = targetSlot;
+    
+    clearRespOrdreHoverClasses();
+    
+    const total = respOrdreState.ordre.length;
     if (targetSlot < total) {
       const targetContainer = document.querySelectorAll('#resp-ordre-list .sci-ordre-item-container')[targetSlot];
       if (targetContainer) targetContainer.classList.add('drag-hover-above');
@@ -26462,12 +26500,13 @@ function respOrdTouchEnd(e){
   if(respOrdTEl) respOrdTEl.style.opacity='';
   
   clearRespOrdreHoverClasses();
+  respOrdreState.lastTargetSlot = null;
   
   const fromIdx=respOrdTFromIdx;
   respOrdTEl=null; respOrdTFromIdx=null;
   
   const el=document.elementFromPoint(touch.clientX,touch.clientY);
-  const targetItem=el?el.closest('.sci-ordre-item'):null;
+  const targetItem=el?el.closest('.sci-ordre-item-container'):null;
   
   if(fromIdx!==null && targetItem){
     const rect = targetItem.getBoundingClientRect();
@@ -26863,10 +26902,10 @@ const SCI_DIG_ORDRE_DATA = [
   "Les selles sont évacuées par l'anus",
 ];
 
-let digOrdreState = {ordre:[], draggingIdx:null, touchClone:null, touchEl:null};
+let digOrdreState = {ordre:[], draggingIdx:null, touchClone:null, touchEl:null, lastTargetSlot:null};
 function renderSciDigOrdre(){
   const body=document.getElementById('sci-dig-ordre-body'); if(!body) return;
-  digOrdreState={ordre:shuffle([...SCI_DIG_ORDRE_DATA.slice(1)]),draggingIdx:null,touchClone:null,touchEl:null};
+  digOrdreState={ordre:shuffle([...SCI_DIG_ORDRE_DATA.slice(1)]),draggingIdx:null,touchClone:null,touchEl:null,lastTargetSlot:null};
   renderSciDigOrdreHtml();
 }
 function renderSciDigOrdreHtml(){
@@ -26875,12 +26914,13 @@ function renderSciDigOrdreHtml(){
   let etapesHtml='';
   ordre.forEach((etape,i)=>{
     etapesHtml+=`
-      <div class="sci-ordre-item-container" style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+      <div class="sci-ordre-item-container" data-idx="${i}"
+        ondragover="digOrdreDragOver(event)" ondrop="digOrdreDrop(event)"
+        style="display:flex;align-items:center;gap:10px;margin-bottom:8px;position:relative;">
         <span style="font-family:'Fredoka',sans-serif;font-weight:800;font-size:14px;color:var(--purple);width:20px;text-align:right;">${i+2}.</span>
         <div class="sci-ordre-item" id="dig-ord-${i}" data-idx="${i}" draggable="true"
           style="display:flex;align-items:center;gap:10px;padding:10px 14px;flex-grow:1;background:var(--surface);border:1.5px solid var(--border);border-radius:10px;margin-bottom:0;cursor:grab;user-select:none;touch-action:none;"
           ondragstart="digOrdreDragStart(event)" ondragend="digOrdreDragEnd(event)"
-          ondragover="digOrdreDragOver(event)" ondrop="digOrdreDrop(event)" ondragleave="digOrdreDragLeave(event)"
           ontouchstart="digOrdTouchStart(event)" ontouchmove="digOrdTouchMove(event)" ontouchend="digOrdTouchEnd(event)">
           <span style="font-size:18px;color:var(--muted);flex-shrink:0">☰</span>
           <span style="font-size:13px;line-height:1.4">${etape}</span>
@@ -26899,25 +26939,30 @@ function digOrdreDragStart(e){
   e.currentTarget.style.opacity = '0.4';
   e.dataTransfer.effectAllowed = 'move';
   e.dataTransfer.setData('text/plain', e.currentTarget.dataset.idx);
+  digOrdreState.lastTargetSlot = null;
 }
 function digOrdreDragEnd(e){
   e.currentTarget.style.opacity = '';
   digOrdreState.draggingIdx = null;
+  digOrdreState.lastTargetSlot = null;
   clearDigOrdreHoverClasses();
 }
 function digOrdreDragOver(e){
   e.preventDefault();
-  const targetItem = e.currentTarget.closest('.sci-ordre-item');
+  const targetItem = e.currentTarget.closest('.sci-ordre-item-container');
   if(!targetItem) return;
   const rect = targetItem.getBoundingClientRect();
   const relY = e.clientY - rect.top;
   const isLowerHalf = relY > rect.height / 2;
   const idx = parseInt(targetItem.dataset.idx);
   const targetSlot = isLowerHalf ? idx + 1 : idx;
-  const total = digOrdreState.ordre.length;
+  
+  if (digOrdreState.lastTargetSlot === targetSlot) return;
+  digOrdreState.lastTargetSlot = targetSlot;
   
   clearDigOrdreHoverClasses();
   
+  const total = digOrdreState.ordre.length;
   if (targetSlot < total) {
     const targetContainer = document.querySelectorAll('#dig-ordre-list .sci-ordre-item-container')[targetSlot];
     if (targetContainer) targetContainer.classList.add('drag-hover-above');
@@ -26931,12 +26976,13 @@ function digOrdreDragLeave(e){
 function digOrdreDrop(e){
   e.preventDefault();
   clearDigOrdreHoverClasses();
+  digOrdreState.lastTargetSlot = null;
   
   const fromIdxStr = e.dataTransfer.getData('text/plain');
   if (fromIdxStr === undefined || fromIdxStr === '') return;
   const fromIdx = parseInt(fromIdxStr);
   
-  const targetItem = e.currentTarget.closest('.sci-ordre-item');
+  const targetItem = e.currentTarget.closest('.sci-ordre-item-container');
   if (!targetItem) return;
   const rect = targetItem.getBoundingClientRect();
   const relY = e.clientY - rect.top;
@@ -26966,6 +27012,7 @@ function digOrdTouchStart(e){
   e.preventDefault();
   digOrdTEl=e.currentTarget;
   digOrdTFromIdx=parseInt(digOrdTEl.dataset.idx);
+  digOrdreState.lastTargetSlot = null;
   const clone=digOrdTEl.cloneNode(true);
   clone.style.cssText='position:fixed;z-index:9999;opacity:.85;pointer-events:none;width:'+digOrdTEl.offsetWidth+'px;';
   const touch=e.touches[0];
@@ -26982,18 +27029,21 @@ function digOrdTouchMove(e){
   digOrdTClone.style.left=(touch.clientX-20)+'px';
   digOrdTClone.style.top=(touch.clientY-20)+'px';
   
-  clearDigOrdreHoverClasses();
-  
   const el=document.elementFromPoint(touch.clientX,touch.clientY);
-  const target=el?el.closest('.sci-ordre-item'):null;
-  if(target&&target!==digOrdTEl){
-    const rect = target.getBoundingClientRect();
+  const targetItem=el?el.closest('.sci-ordre-item-container'):null;
+  if(targetItem && targetItem !== digOrdTEl.closest('.sci-ordre-item-container')){
+    const rect = targetItem.getBoundingClientRect();
     const relY = touch.clientY - rect.top;
     const isLowerHalf = relY > rect.height / 2;
-    const idx = parseInt(target.dataset.idx);
+    const idx = parseInt(targetItem.dataset.idx);
     const targetSlot = isLowerHalf ? idx + 1 : idx;
-    const total = digOrdreState.ordre.length;
     
+    if (digOrdreState.lastTargetSlot === targetSlot) return;
+    digOrdreState.lastTargetSlot = targetSlot;
+    
+    clearDigOrdreHoverClasses();
+    
+    const total = digOrdreState.ordre.length;
     if (targetSlot < total) {
       const targetContainer = document.querySelectorAll('#dig-ordre-list .sci-ordre-item-container')[targetSlot];
       if (targetContainer) targetContainer.classList.add('drag-hover-above');
@@ -27010,12 +27060,13 @@ function digOrdTouchEnd(e){
   if(digOrdTEl) digOrdTEl.style.opacity='';
   
   clearDigOrdreHoverClasses();
+  digOrdreState.lastTargetSlot = null;
   
   const fromIdx=digOrdTFromIdx;
   digOrdTEl=null; digOrdTFromIdx=null;
   
   const el=document.elementFromPoint(touch.clientX,touch.clientY);
-  const targetItem=el?el.closest('.sci-ordre-item'):null;
+  const targetItem=el?el.closest('.sci-ordre-item-container'):null;
   
   if(fromIdx!==null && targetItem){
     const rect = targetItem.getBoundingClientRect();
