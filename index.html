@@ -21845,250 +21845,214 @@ function renderSciCirculatoireAssoc(){
   const defsCol = shuffle(pairs.map((_,i) => i));
   let rowsHtml = '';
   pairs.forEach((p,i) => {
-    rowsHtml += `<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px;align-items:center;      html += `<div class="insert-line" data-insert-before="${i}"></div>`;
-    }
-    
-    let cardClass = "sci-ordre-item";
-    let correctionHtml = "";
-    if (submitted) {
-      const correct = etape === bonOrdre[i];
-      cardClass += correct ? " card-correct" : " card-wrong";
-      if (!correct) {
-        const bonnePos = bonOrdre.indexOf(etape) + 2;
-        correctionHtml = `<div style="font-size:11px;color:#991b1b;margin-top:3px;font-weight:700">→ Cette étape est en position ${bonnePos}</div>`;
-      }
-    }
-
-    const stepNumLabel = (submitted && etape === bonOrdre[i]) ? `${i+2}️⃣` : `☰`;
-
-    html += `
-      <div class="sci-ordre-item-container step-row" data-idx="${i}"
-        ${!submitted ? 'ondragover="sciOrdreDragOver(event)" ondrop="sciOrdreDrop(event)"' : ''}
-        style="display:flex;align-items:center;gap:10px;position:relative;">
-        <span style="font-family:'Fredoka',sans-serif;font-weight:800;font-size:14px;color:var(--purple);width:20px;text-align:right;">${i+2}.</span>
-        <div class="${cardClass}" id="sci-ordre-item-${i}" data-idx="${i}" draggable="${!submitted ? 'true' : 'false'}"
-          style="display:flex;align-items:center;gap:10px;padding:10px 14px;flex-grow:1;
-          background:var(--surface);border:1.5px solid var(--border);border-radius:10px;
-          margin-bottom:0;cursor:${!submitted ? 'grab' : 'default'};user-select:none;touch-action:none;transition:all 0.15s;"
-          ${!submitted ? `
-            ondragstart="sciOrdreDragStart(event)" ondragend="sciOrdreDragEnd(event)"
-            ontouchstart="sciOrdreTouchStart(event)" ontouchmove="sciOrdreTouchMove(event)" ontouchend="sciOrdreTouchEnd(event)"
-          ` : ''}>
-          <span style="font-size:18px;color:var(--muted);flex-shrink:0">${stepNumLabel}</span>
-          <span style="font-size:13px;color:var(--text);line-height:1.4">
-            ${etape}
-            ${correctionHtml}
-          </span>
-        </div>
-      </div>`;
+    rowsHtml += `<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px;align-items:center;">
+      <div style="padding:8px 12px;background:var(--surface);border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-weight:700;min-height:48px;display:flex;align-items:center">${p.terme}</div>
+      <div class="assoc-drop-zone" id="assoc-zone-${i}" data-index="${i}" onclick="assocClearZone(this)"
+        style="min-height:48px;display:flex;align-items:center;padding:6px 10px;
+        background:var(--purple-light);border:2px dashed var(--purple);border-radius:8px;font-size:12px;transition:background .2s;cursor:pointer;"
+        ondragover="assocDragOver(event)" ondrop="assocDrop(event)" ondragleave="assocDragLeave(event)"
+        ontouchstart="assocZoneTouchStart(event)">
+        <span class="assoc-zone-placeholder" style="opacity:.5">Glisse ici…</span>
+      </div>
+      <div class="assoc-def" id="assoc-def-${defsCol[i]}" data-index="${defsCol[i]}" draggable="true"
+        style="padding:8px 10px;background:var(--purple);color:#fff;border-radius:8px;font-size:12px;
+        font-weight:600;cursor:grab;user-select:none;touch-action:none;min-height:48px;
+        display:flex;align-items:center;line-height:1.3;"
+        ondragstart="assocDragStart(event)" ondragend="assocDragEnd(event)"
+        ontouchstart="assocDefTouchStart(event)" ontouchmove="assocDefTouchMove(event)" ontouchend="assocDefTouchEnd(event)">
+        ${pairs[defsCol[i]].def}
+      </div>
+    </div>`;
   });
-  if (!submitted) {
-    html += `<div class="insert-line" data-insert-before="${ordre.length}"></div>`;
-  }
-
   body.innerHTML = `
     <div class="card" style="margin-bottom:1rem;padding:0.8rem 1rem;background:var(--purple-light);border:1px solid var(--purple);">
-      <p style="margin:0;font-size:13px;color:var(--purple);font-weight:700">${seq.icon} ${seq.label} — Remets les étapes dans le bon ordre.</p>
+      <p style="margin:0;font-size:13px;color:var(--purple);font-weight:700">Glisse chaque définition (colonne de droite) en face du bon terme (colonne de gauche).</p>
     </div>
-
-    <div style="margin-bottom:1rem;">
-      <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:6px;">Étape 1 — donnée</div>
-      <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;
-        background:var(--green-light,#dcfce7);border:2px solid var(--green,#16a34a);border-radius:10px;">
-        <span style="font-size:18px;flex-shrink:0">1️⃣</span>
-        <span style="font-size:13px;color:var(--text);font-weight:700;line-height:1.4">${seq.etapes[0]}</span>
-      </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:6px;">
+      <div style="font-size:11px;font-weight:800;text-transform:uppercase;color:var(--muted);">Terme</div>
+      <div style="font-size:11px;font-weight:800;text-transform:uppercase;color:var(--muted);">Ta réponse</div>
+      <div style="font-size:11px;font-weight:800;text-transform:uppercase;color:var(--muted);">Définitions</div>
     </div>
+    <div id="circ-rows">${rowsHtml}</div>
+    <button class="btn" onclick="validerSciAssoc()" style="width:100%;margin-top:1rem;margin-bottom:1rem">✅ Vérifier mes réponses</button>
+    <div id="assoc-score-panel" style="display:none"></div>`;
+}
+function assocDragStart(e){
+  sciAssocState.dragging = e.currentTarget.dataset.index;
+  e.dataTransfer.setData('text/plain', e.currentTarget.dataset.index);
+  e.currentTarget.style.opacity = '0.5';
+}
+function assocDragEnd(e){ e.currentTarget.style.opacity = ''; sciAssocState.dragging = null; }
+function assocDragOver(e){ e.preventDefault(); e.currentTarget.style.background = 'var(--purple-mid,#ede9fe)'; }
+function assocDragLeave(e){ e.currentTarget.style.background = 'var(--purple-light)'; }
+function assocDrop(e){
+  e.preventDefault();
+  const zone = e.currentTarget;
+  zone.style.background = 'var(--purple-light)';
+  const defIndex = parseInt(e.dataTransfer.getData('text/plain'));
+  assocPlacerDef(zone, defIndex);
+}
 
-    <div style="margin-bottom:1rem;">
-      <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:6px;">Étapes à remettre dans l'ordre</div>
-      <div id="sci-ordre-list" style="position:relative;">${html}</div>
-    </div>
+function assocPlacerDef(zone, defIndex){
+  const zoneIndex = parseInt(zone.dataset.index);
+  const pairs = sciAssocState.pairs;
 
-    <button class="btn" onclick="validerSciOrdre()" style="width:100%;margin-bottom:1rem" ${submitted ? 'disabled' : ''}>✅ Vérifier l'ordre</button>
-    <button class="btn" style="width:100%;margin-bottom:1rem;background:var(--surface);color:var(--text);border:1.5px solid var(--border);" onclick="renderSciCirculatoireOrdre()">← Choisir une autre séquence</button>
-    <div id="sci-ordre-score" style="display:none"></div>
-  `;
+  // Si la zone avait déjà une def, la remettre dans la banque
+  const ancien = sciAssocState.placed[zoneIndex];
+  if(ancien !== undefined) assocRetournerDef(ancien);
 
-  if (!submitted) {
-    const listContainer = document.getElementById('sci-ordre-list');
-    listContainer.addEventListener('dragleave', e => {
-      if (!listContainer.contains(e.relatedTarget)) {
-        clearSciOrdreHoverLines();
-        sciOrdreState.insertIdx = null;
+  // Si la def était dans une autre zone, vider cette zone
+  Object.entries(sciAssocState.placed).forEach(([zi, di]) => {
+    if(di === defIndex && parseInt(zi) !== zoneIndex){
+      delete sciAssocState.placed[parseInt(zi)];
+      const oldZone = document.getElementById(`assoc-zone-${zi}`);
+      if(oldZone){
+        oldZone.innerHTML = '<span class="assoc-zone-placeholder" style="opacity:.5">Glisse une définition ici…</span>';
+        oldZone.style.background = 'var(--purple-light)';
+        oldZone.style.border = '2px dashed var(--purple)';
       }
-    });
-  }
-}
-
-// --- Drag & Drop Desktop (réordonnancement) ---
-function clearSciOrdreHoverLines() {
-  document.querySelectorAll('#sci-ordre-list .insert-line').forEach(l => l.classList.remove('visible'));
-}
-function showSciInsertLine(idx) {
-  document.querySelectorAll('#sci-ordre-list .insert-line').forEach(l => l.classList.remove('visible'));
-  const lines = document.querySelectorAll('#sci-ordre-list .insert-line');
-  if (lines[idx]) lines[idx].classList.add('visible');
-}
-function sciOrdreDragStart(e){
-  sciOrdreState.draggingIdx = parseInt(e.currentTarget.dataset.idx);
-  sciOrdreState.insertIdx = null;
-  setTimeout(() => {
-    e.currentTarget.classList.add('dragging');
-  }, 0);
-  e.dataTransfer.effectAllowed = 'move';
-  e.dataTransfer.setData('text/plain', e.currentTarget.dataset.idx);
-}
-function sciOrdreDragEnd(e){
-  e.currentTarget.classList.remove('dragging');
-  clearSciOrdreHoverLines();
-  const insertIdx = sciOrdreState.insertIdx;
-  const dragSrcIdx = sciOrdreState.draggingIdx;
-  if (insertIdx !== null && dragSrcIdx !== null && insertIdx !== dragSrcIdx) {
-    const arr = sciOrdreState.ordre;
-    const item = arr.splice(dragSrcIdx, 1)[0];
-    let target = insertIdx;
-    if (insertIdx > dragSrcIdx) target--;
-    arr.splice(target, 0, item);
-    sciOrdreState.ordre = arr;
-    renderSciOrdreExercice();
-  }
-  sciOrdreState.draggingIdx = null;
-  sciOrdreState.insertIdx = null;
-}
-function sciOrdreDragOver(e){
-  e.preventDefault();
-  if (sciOrdreState.draggingIdx === null) return;
-  const row = e.currentTarget.closest('.step-row');
-  if (!row) return;
-  const rect = row.getBoundingClientRect();
-  const mid = rect.top + rect.height / 2;
-  const i = parseInt(row.dataset.idx);
-  const newInsert = e.clientY < mid ? i : i + 1;
-  if (newInsert !== sciOrdreState.insertIdx) {
-    sciOrdreState.insertIdx = newInsert;
-    showSciInsertLine(newInsert);
-  }
-}
-function sciOrdreDrop(e){
-  e.preventDefault();
-}
-
-// --- Touch Mobile (Circulatory) ---
-function sciOrdreTouchStart(e){
-  e.preventDefault();
-  const el = e.currentTarget;
-  sciOrdreState.touchEl = el;
-  sciOrdreState.draggingIdx = parseInt(el.dataset.idx);
-  sciOrdreState.insertIdx = null;
-  
-  const touch = e.touches[0];
-  const clone = el.cloneNode(true);
-  clone.style.cssText += ';position:fixed;z-index:9999;pointer-events:none;opacity:0.85;width:' + el.offsetWidth + 'px;box-shadow: 0 4px 12px rgba(0,0,0,0.15);';
-  clone.style.left = touch.clientX - el.offsetWidth/2 + 'px';
-  clone.style.top  = touch.clientY - 30 + 'px';
-  document.body.appendChild(clone);
-  sciOrdreState.touchClone = clone;
-  el.style.opacity = '0.25';
-}
-
-function sciOrdreTouchMove(e){
-  e.preventDefault();
-  if(!sciOrdreState.touchClone) return;
-  const touch = e.touches[0];
-  sciOrdreState.touchClone.style.left = touch.clientX - sciOrdreState.touchClone.offsetWidth/2 + 'px';
-  sciOrdreState.touchClone.style.top  = touch.clientY - 30 + 'px';
-  
-  const target = document.elementFromPoint(touch.clientX, touch.clientY);
-  const row = target ? target.closest('.step-row') : null;
-  
-  if(row && row.closest('#sci-ordre-list')){
-    const rect = row.getBoundingClientRect();
-    const mid = rect.top + rect.height / 2;
-    const i = parseInt(row.dataset.idx);
-    const newInsert = touch.clientY < mid ? i : i + 1;
-    if (newInsert !== sciOrdreState.insertIdx) {
-      sciOrdreState.insertIdx = newInsert;
-      showSciInsertLine(newInsert);
     }
-  } else {
-    clearSciOrdreHoverLines();
-    sciOrdreState.insertIdx = null;
-  }
+  });
+
+  // Retirer la def de la banque si elle y est
+  assocRetirerDeBanque(defIndex);
+
+  // Placer dans la zone
+  sciAssocState.placed[zoneIndex] = defIndex;
+  zone.innerHTML = `<span style="font-size:12px;font-weight:600;color:var(--purple);line-height:1.4">${pairs[defIndex].def}</span>`;
+  zone.style.background = 'var(--purple-light)';
+  zone.style.border = '2px solid var(--purple)';
 }
 
-function sciOrdreTouchEnd(e){
-  if(!sciOrdreState.touchClone) return;
-  sciOrdreState.touchClone.remove(); sciOrdreState.touchClone = null;
-  if(sciOrdreState.touchEl) sciOrdreState.touchEl.style.opacity = '';
-  
-  clearSciOrdreHoverLines();
-  
-  const fromIdx = sciOrdreState.draggingIdx;
-  const insertIdx = sciOrdreState.insertIdx;
-  
-  sciOrdreState.draggingIdx = null;
-  sciOrdreState.touchEl = null;
-  sciOrdreState.insertIdx = null;
-  
-  if (fromIdx !== null && insertIdx !== null && fromIdx !== insertIdx) {
-    const arr = sciOrdreState.ordre;
-    const item = arr.splice(fromIdx, 1)[0];
-    let target = insertIdx;
-    if (insertIdx > fromIdx) target--;
-    arr.splice(target, 0, item);
-    sciOrdreState.ordre = arr;
-    renderSciOrdreExercice();
+function assocRetournerDef(defIndex){
+  const pool = document.getElementById('assoc-def-pool');
+  if(!pool || document.getElementById(`assoc-def-${defIndex}`)) return;
+  const div = document.createElement('div');
+  div.className = 'assoc-def';
+  div.id = `assoc-def-${defIndex}`;
+  div.dataset.index = defIndex;
+  div.draggable = true;
+  div.style.cssText = 'padding:8px 14px;background:var(--purple);color:#fff;border-radius:8px;font-size:12px;font-weight:600;cursor:grab;user-select:none;touch-action:none;margin-bottom:6px;line-height:1.4;';
+  div.textContent = sciAssocState.pairs[defIndex].def;
+  div.addEventListener('dragstart', assocDragStart);
+  div.addEventListener('dragend', assocDragEnd);
+  div.addEventListener('touchstart', assocDefTouchStart, {passive:false});
+  div.addEventListener('touchmove', assocDefTouchMove, {passive:false});
+  div.addEventListener('touchend', assocDefTouchEnd);
+  pool.appendChild(div);
+}
+
+function assocRetirerDeBanque(defIndex){
+  const el = document.getElementById(`assoc-def-${defIndex}`);
+  if(el) el.remove();
+}
+
+// --- Touch Mobile ---
+function assocDefTouchStart(e){
+  e.preventDefault();
+  const tag = e.currentTarget;
+  sciAssocState.touchSource = tag;
+  const touch = e.touches[0];
+  const clone = tag.cloneNode(true);
+  clone.style.cssText += ';position:fixed;z-index:9999;pointer-events:none;opacity:0.85;width:160px;';
+  clone.style.left = (touch.clientX - 80) + 'px';
+  clone.style.top  = (touch.clientY - 20) + 'px';
+  document.body.appendChild(clone);
+  sciAssocState.touchClone = clone;
+  tag.style.opacity = '0.4';
+}
+function assocDefTouchMove(e){
+  e.preventDefault();
+  if(!sciAssocState.touchClone) return;
+  const touch = e.touches[0];
+  sciAssocState.touchClone.style.left = (touch.clientX - 80) + 'px';
+  sciAssocState.touchClone.style.top  = (touch.clientY - 20) + 'px';
+}
+function assocDefTouchEnd(e){
+  e.preventDefault();
+  if(!sciAssocState.touchClone) return;
+  const touch = e.changedTouches[0];
+  sciAssocState.touchClone.remove(); sciAssocState.touchClone = null;
+  if(sciAssocState.touchSource) sciAssocState.touchSource.style.opacity = '';
+  const el = document.elementFromPoint(touch.clientX, touch.clientY);
+  const zone = el ? el.closest('.assoc-drop-zone') : null;
+  if(zone && sciAssocState.touchSource){
+    assocPlacerDef(zone, parseInt(sciAssocState.touchSource.dataset.index));
   }
+  sciAssocState.touchSource = null;
+}
+function assocZoneTouchStart(e){
+  const zone = e.currentTarget;
+  const zoneIndex = parseInt(zone.dataset.index);
+  const defIndex = sciAssocState.placed[zoneIndex];
+  if(defIndex === undefined) return;
+  e.preventDefault();
+  delete sciAssocState.placed[zoneIndex];
+  zone.innerHTML = '<span class="assoc-zone-placeholder" style="opacity:.5">Glisse une définition ici…</span>';
+  zone.style.background = 'var(--purple-light)';
+  zone.style.border = '2px dashed var(--purple)';
+  assocRetournerDef(defIndex);
+}
+function assocClearZone(zone){
+  const panel = document.getElementById('assoc-score-panel');
+  if(panel && panel.style.display === 'block') return;
+  const zoneIndex = parseInt(zone.dataset.index);
+  const defIndex = sciAssocState.placed[zoneIndex];
+  if(defIndex === undefined) return;
+  delete sciAssocState.placed[zoneIndex];
+  zone.innerHTML = '<span class="assoc-zone-placeholder" style="opacity:.5">Glisse une définition ici…</span>';
+  zone.style.background = 'var(--purple-light)';
+  zone.style.border = '2px dashed var(--purple)';
+  assocRetournerDef(defIndex);
 }
 
 // --- Vérification ---
-function validerSciOrdre(){
-  if(sciOrdreState.submitted) return;
-  sciOrdreState.submitted = true;
-  const {seq, ordre} = sciOrdreState;
-  const bonOrdre = seq.etapes.slice(1);
+function validerSciAssoc(){
+  const pairs = sciAssocState.pairs;
   let score = 0;
-  const total = bonOrdre.length;
-
-  ordre.forEach((etape, i) => {
-    if(etape === bonOrdre[i]){
+  pairs.forEach((p, i) => {
+    const zone = document.getElementById(`assoc-zone-${i}`);
+    const placedIndex = sciAssocState.placed[i];
+    const correct = placedIndex !== undefined && pairs[placedIndex].terme === p.terme;
+    if(correct){
       score++;
+      if(zone){ zone.style.background = 'var(--green-light,#dcfce7)'; zone.style.border = '2px solid var(--green,#16a34a)'; }
+    } else {
+      if(zone){ zone.style.background = 'var(--red-light,#fee2e2)'; zone.style.border = '2px solid var(--red,#dc2626)'; }
+      // Afficher la bonne réponse
+      if(zone) zone.innerHTML += `<div style="font-size:11px;color:var(--green,#16a34a);margin-top:4px;font-weight:700">✅ ${p.def}</div>`;
     }
   });
 
+  const total = pairs.length;
   const pct = Math.round(score/total*100);
   const color = pct>=70?'var(--green)':pct>=50?'var(--amber)':'var(--red)';
   const emoji = pct>=70?'🎉':pct>=50?'👍':'💪';
 
-  const panel = document.getElementById('sci-ordre-score');
+  const panel = document.getElementById('assoc-score-panel');
   panel.style.display = 'block';
   panel.innerHTML = `
     <div class="card" style="text-align:center">
       <div style="font-size:48px;margin-bottom:0.5rem">${emoji}</div>
       <div style="font-family:'Nunito',sans-serif;font-weight:800;font-size:32px;color:${color}">${score}/${total}</div>
       <div style="font-size:16px;color:${color};font-weight:700;margin-bottom:1rem">${pct}%</div>
-      <button class="btn" onclick="sciOrdreChoisirSeq('${seq.id}')">🔄 Recommencer cette séquence</button>
-      <button class="btn" style="margin-top:8px;background:var(--surface);color:var(--text);border:1.5px solid var(--border);width:100%" onclick="renderSciCirculatoireOrdre()">← Choisir une autre séquence</button>
+      <button class="btn" onclick="renderSciCirculatoireAssoc()">🔄 Nouvel exercice</button>
     </div>
   `;
   panel.scrollIntoView({behavior:'smooth'});
-
-  renderSciOrdreExercice();
 
   if(state.student){
     saveResult({
       student:state.student, cls:state.studentCls,
       className:CLASSES[state.studentCls]?CLASSES[state.studentCls].name:state.studentCls,
-      activity:'sci_circulatoire_ordre',
-      bookTitle:`Trajet du sang dans l'ordre — ${seq.label}`,
+      activity:'sci_circulatoire_assoc',
+      bookTitle:'Termes et définitions — Appareil circulatoire',
       score, total, pct,
       date:new Date().toLocaleDateString('fr-BE'),
       time:new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})
     });
   }
 }
-
 
 // ===== SYSTÈME AVATAR =====
 const AVATAR_DEFAULTS = {
@@ -25896,9 +25860,6 @@ function validateSciRespAssoc(){
   if(state.student) saveResult({student:state.student,cls:state.studentCls,className:CLASSES[state.studentCls]?CLASSES[state.studentCls].name:state.studentCls,activity:'sci_resp_assoc',bookTitle:'Respiratoire — Termes et définitions',score:ok,total,pct,date:new Date().toLocaleDateString('fr-BE'),time:new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})});
 }
 
-
-
-// ================================================================
 // ===== APPAREIL DIGESTIF =====
 // ================================================================
 
@@ -26247,9 +26208,6 @@ function validateSciDigAssoc(){
   if(state.student) saveResult({student:state.student,cls:state.studentCls,className:CLASSES[state.studentCls]?CLASSES[state.studentCls].name:state.studentCls,activity:'sci_dig_assoc',bookTitle:'Digestif — Termes et définitions',score:ok,total,pct,date:new Date().toLocaleDateString('fr-BE'),time:new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})});
 }
 
-
-
-// ================================================================
 // ===== MOYEN ÂGE — TERMES ET DÉFINITIONS =====
 // ================================================================
 
