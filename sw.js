@@ -1,4 +1,4 @@
-const CACHE_NAME = 'classe-mr-lejoly-cache-v164';
+const CACHE_NAME = 'classe-mr-lejoly-cache-v165';
 const CORE_ASSETS = [
   './',
   'index.html',
@@ -10,6 +10,7 @@ const CORE_ASSETS = [
   'exercices_maths.js',
   'exercices_eveil.js',
   'trajet_de_lair.html',
+  'trajet_de_la_nourriture.html',
   'livres.js',
   'KGElephantHiccups.ttf',
   'KGHaventSleptShadow.ttf',
