@@ -399,16 +399,21 @@
     return a;
   }
 
+  function isTabLocked(tabKey) {
+    if (!window.parent || typeof window.parent.isActivityLocked !== 'function') {
+      return false;
+    }
+    // If the logged in user is a teacher, bypass the lock
+    if (window.parent.state && window.parent.state.role === 'teacher') {
+      return false;
+    }
+    return window.parent.isActivityLocked(DATA[tabKey].activity);
+  }
+
   function checkLocks() {
-    const ids = {
-      petite: 'sci_circ_petite',
-      grande: 'sci_circ_grande',
-      ensemble: 'sci_circ_ensemble'
-    };
-    for (const [key, id] of Object.entries(ids)) {
-      const isLocked = window.parent && typeof window.parent.isActivityLocked === 'function' 
-        ? window.parent.isActivityLocked(id) 
-        : false;
+    const keys = ['petite', 'grande', 'ensemble'];
+    for (const key of keys) {
+      const isLocked = isTabLocked(key);
       const btn = document.getElementById(`btn-tab-${key}`);
       if (btn) {
         if (isLocked) {
@@ -426,18 +431,17 @@
     }
   }
 
-  function switchTab(tabKey) {
-    // Prevent switching to locked tabs
-    const isLocked = window.parent && typeof window.parent.isActivityLocked === 'function' 
-      ? window.parent.isActivityLocked(DATA[tabKey].activity) 
-      : false;
-    if (isLocked) return;
+  function switchTab(tabKey, force = false) {
+    // Prevent switching to locked tabs unless forced as a fallback
+    const isLocked = isTabLocked(tabKey);
+    if (isLocked && !force) return;
 
     activeTab = tabKey;
     
     // Update active tab buttons
     document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-    document.getElementById(`btn-tab-${tabKey}`).classList.add('active');
+    const activeBtn = document.getElementById(`btn-tab-${tabKey}`);
+    if (activeBtn) activeBtn.classList.add('active');
 
     // Load tab details
     const tabData = DATA[tabKey];
@@ -632,6 +636,7 @@
     if (lines[idx]) lines[idx].classList.add('visible');
   }
 
+  // Clear lines helper
   function clearInsertLines() {
     document.querySelectorAll('.insert-line').forEach(l => l.classList.remove('visible'));
   }
@@ -668,15 +673,12 @@
 
   // Parse location hash to auto-select tab
   function loadFromHash() {
-    const hash = window.location.hash.substring(1); // remove '#'
     checkLocks();
+    const hash = window.location.hash.substring(1); // remove '#'
     if (hash && DATA[hash]) {
-      // Check if requested tab is locked
-      const isLocked = window.parent && typeof window.parent.isActivityLocked === 'function'
-        ? window.parent.isActivityLocked(DATA[hash].activity)
-        : false;
+      const isLocked = isTabLocked(hash);
       if (!isLocked) {
-        switchTab(hash);
+        switchTab(hash, true);
         return;
       }
     }
@@ -684,17 +686,14 @@
     // Find first unlocked tab
     const keys = ['petite', 'grande', 'ensemble'];
     for (const k of keys) {
-      const isLocked = window.parent && typeof window.parent.isActivityLocked === 'function'
-        ? window.parent.isActivityLocked(DATA[k].activity)
-        : false;
-      if (!isLocked) {
-        switchTab(k);
+      if (!isTabLocked(k)) {
+        switchTab(k, true);
         return;
       }
     }
 
-    // Fallback to default
-    switchTab('petite');
+    // Fallback to default (forced so it renders even if locked for student)
+    switchTab('petite', true);
   }
 
   // Watch for hash changes in case it's re-launched from plan de travail with different hash
