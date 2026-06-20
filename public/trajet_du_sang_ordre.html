@@ -400,14 +400,19 @@
   }
 
   function isTabLocked(tabKey) {
-    if (!window.parent || typeof window.parent.isActivityLocked !== 'function') {
-      return false;
+    try {
+      if (!window.parent || typeof window.parent.isActivityLocked !== 'function') {
+        return false;
+      }
+      // If the logged in user is a teacher, bypass the lock
+      if (window.parent.state && window.parent.state.role === 'teacher') {
+        return false;
+      }
+      return window.parent.isActivityLocked(DATA[tabKey].activity);
+    } catch (e) {
+      console.warn("Parent access blocked or restricted:", e);
+      return false; // Safe fallback: assume unlocked if we can't check
     }
-    // If the logged in user is a teacher, bypass the lock
-    if (window.parent.state && window.parent.state.role === 'teacher') {
-      return false;
-    }
-    return window.parent.isActivityLocked(DATA[tabKey].activity);
   }
 
   function checkLocks() {
@@ -419,13 +424,13 @@
         if (isLocked) {
           btn.classList.add('locked');
           btn.disabled = true;
-          if (!btn.querySelector('.lock-icon')) {
-            btn.innerHTML = `🔒 ` + btn.innerText;
-          }
+          // Clean inner text to prevent duplicate lock emojis
+          let cleanText = btn.innerText.replace('🔒 ', '').replace('🔒', '').trim();
+          btn.innerHTML = `🔒 ` + cleanText;
         } else {
           btn.classList.remove('locked');
           btn.disabled = false;
-          btn.innerHTML = btn.innerText.replace('🔒 ', '');
+          btn.innerHTML = btn.innerText.replace('🔒 ', '').replace('🔒', '').trim();
         }
       }
     }
