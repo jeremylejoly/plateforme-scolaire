@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Le trajet du sang — dans l'ordre</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=Inter:wght@300..800&family=Nunito:wght@300..900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --purple: #5B4FCF;
+      --purple-light: #EEF0FF;
+      --purple-mid: #C7C2F5;
+      --green: #1A9E75;
+      --green-light: #E2F5EE;
+      --red: #D94F3D;
+      --red-light: #FDECEA;
+      --amber: #C97B1A;
+      --amber-light: #FEF3E2;
+      --bg: #FDFBF7;
+      --surface: #FFFFFF;
+      --text: #1A1A2E;
+      --muted: #6B7080;
+      --border: #1A1A2E;
+      --r: 14px;
+      --rsm: 8px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 1.5rem 1rem;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 3px solid var(--border);
+      box-shadow: 6px 6px 0px var(--border);
+      border-radius: var(--r);
+      padding: 2rem;
+      max-width: 680px;
+      width: 100%;
+    }
+
+    h1 {
+      font-family: 'Fredoka', sans-serif;
+      font-weight: 800;
+      font-size: 1.6rem;
+      color: var(--text);
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .tabs-container {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .tab-btn {
+      flex: 1;
+      min-width: 150px;
+      padding: 0.6rem 0.8rem;
+      font-size: 0.9rem;
+      font-weight: 700;
+      font-family: 'Fredoka', sans-serif;
+      border-radius: var(--rsm);
+      border: 2px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      cursor: pointer;
+      box-shadow: 2px 2px 0px var(--border);
+      transition: all 0.15s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .tab-btn:hover:not(.locked):not(.active) {
+      background: var(--purple-light);
+      transform: translate(-1px, -1px);
+      box-shadow: 3px 3px 0px var(--border);
+    }
+
+    .tab-btn:active:not(.locked):not(.active) {
+      transform: translate(1px, 1px);
+      box-shadow: 1px 1px 0px var(--border);
+    }
+
+    .tab-btn.active {
+      background: var(--purple);
+      color: white;
+      box-shadow: none;
+      transform: translate(1px, 1px);
+      border-color: var(--border);
+    }
+
+    .tab-btn.locked {
+      opacity: 0.55;
+      cursor: not-allowed;
+      background: #e2e2e2;
+      border-color: #a1a1a1;
+      color: #666;
+      box-shadow: none;
+      transform: none;
+    }
+
+    .instr {
+      border: 2px solid var(--purple-mid);
+      background: var(--purple-light);
+      border-radius: var(--rsm);
+      padding: 0.8rem 1.2rem;
+      color: var(--purple);
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+    }
+
+    .step-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 6px 0;
+    }
+
+    .step-num {
+      min-width: 32px;
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--purple);
+      font-family: 'Fredoka', sans-serif;
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    .given-card {
+      flex: 1;
+      background: var(--green-light);
+      border: 2px solid var(--border);
+      box-shadow: 2px 2px 0px var(--border);
+      border-radius: var(--rsm);
+      padding: 0.75rem 1.2rem;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #166534;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: 'Nunito', sans-serif;
+    }
+
+    .given-badge {
+      background: var(--green);
+      color: white;
+      border: 1.5px solid var(--border);
+      border-radius: 6px;
+      padding: 2px 8px;
+      font-weight: 800;
+      font-size: 0.8rem;
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .drag-card {
+      flex: 1;
+      background: var(--surface);
+      border: 2px solid var(--border);
+      box-shadow: 2px 2px 0px var(--border);
+      border-radius: var(--rsm);
+      padding: 0.75rem 1.2rem;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text);
+      font-family: 'Nunito', sans-serif;
+      cursor: grab;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      user-select: none;
+      transition: opacity 0.15s, border-color 0.15s, background-color 0.15s, transform 0.15s, box-shadow 0.15s;
+    }
+
+    .drag-card:active { cursor: grabbing; }
+    .drag-card.dragging { opacity: 0.3; }
+    
+    .drag-card.card-correct {
+      border-color: var(--green);
+      background: var(--green-light);
+      color: #166534;
+      box-shadow: 2px 2px 0px var(--green);
+    }
+    .drag-card.card-wrong {
+      border-color: var(--red);
+      background: var(--red-light);
+      color: #991b1b;
+      box-shadow: 2px 2px 0px var(--red);
+    }
+
+    .drag-handle {
+      color: var(--muted);
+      font-size: 1.2rem;
+      flex-shrink: 0;
+      font-weight: bold;
+    }
+
+    .insert-line {
+      height: 4px;
+      border-radius: 2px;
+      background: var(--purple);
+      margin-left: 44px;
+      display: none;
+    }
+    .insert-line.visible { display: block; margin-top: 4px; margin-bottom: 4px; }
+
+    .btn-verify {
+      width: 100%;
+      margin-top: 1.5rem;
+      padding: 0.8rem;
+      font-size: 1rem;
+      font-weight: 700;
+      font-family: 'Fredoka', sans-serif;
+      border-radius: var(--r);
+      border: 3px solid var(--border);
+      background: var(--purple);
+      color: white;
+      cursor: pointer;
+      box-shadow: 4px 4px 0px var(--border);
+      transition: all 0.15s ease;
+    }
+    .btn-verify:hover {
+      background: #4a3fb8;
+      transform: translate(-1px, -1px);
+      box-shadow: 5px 5px 0px var(--border);
+    }
+    .btn-verify:active {
+      transform: translate(1px, 1px);
+      box-shadow: 2px 2px 0px var(--border);
+    }
+
+    .btn-reset {
+      width: 100%;
+      margin-top: 12px;
+      padding: 0.6rem;
+      font-size: 0.9rem;
+      font-weight: 700;
+      font-family: 'Fredoka', sans-serif;
+      border-radius: var(--r);
+      border: 2px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      cursor: pointer;
+      box-shadow: 2px 2px 0px var(--border);
+      transition: all 0.15s ease;
+    }
+    .btn-reset:hover {
+      background: var(--bg);
+      transform: translate(-1px, -1px);
+      box-shadow: 3px 3px 0px var(--border);
+    }
+    .btn-reset:active {
+      transform: translate(1px, 1px);
+      box-shadow: 1px 1px 0px var(--border);
+    }
+
+    .result-msg {
+      margin-top: 1.5rem;
+      padding: 22px;
+      border-radius: var(--r);
+      border: 3px solid var(--border);
+      box-shadow: 6px 6px 0px var(--border);
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 800;
+      text-align: center;
+      display: none;
+    }
+    .result-msg.success {
+      display: block;
+      background: var(--green-light);
+      border-color: var(--green);
+      box-shadow: 6px 6px 0px var(--green);
+      color: #166534;
+    }
+    .result-msg.partial {
+      display: block;
+      background: var(--amber-light);
+      border-color: var(--amber);
+      box-shadow: 6px 6px 0px var(--amber);
+      color: #7a5000;
+    }
+  </style>
+</head>
+<body>
+<div class="card">
+  <h1>🫀 Le trajet du sang — dans l'ordre</h1>
+  
+  <div class="tabs-container">
+    <button class="tab-btn" onclick="switchTab('petite')" id="btn-tab-petite">La petite circulation</button>
+    <button class="tab-btn" onclick="switchTab('grande')" id="btn-tab-grande">La grande circulation</button>
+    <button class="tab-btn" onclick="switchTab('ensemble')" id="btn-tab-ensemble">Le trajet général</button>
+  </div>
+
+  <div class="instr" id="exercise-instr"></div>
+
+  <div class="step-row">
+    <div class="step-num">1.</div>
+    <div class="given-card">
+      <div class="given-badge">1</div>
+      <span id="exercise-first-step"></span>
+    </div>
+  </div>
+
+  <div id="list-container"></div>
+
+  <button class="btn-verify" onclick="verify()">✅ Vérifier l'ordre</button>
+  <button class="btn-reset" onclick="resetExercise()">↺ Mélanger à nouveau</button>
+  <div class="result-msg" id="result"></div>
+</div>
+
+<script>
+  const DATA = {
+    petite: {
+      activity: 'sci_circ_petite',
+      bookTitle: 'Circulatoire — La petite circulation',
+      instr: "Remets les étapes de la petite circulation dans le bon ordre en les faisant glisser.",
+      firstStep: "Le sang chargé en gaz carbonique arrive dans l'oreillette droite",
+      steps: [
+        "Il passe dans le ventricule droit",
+        "Le ventricule droit se contracte et envoie le sang dans l'artère pulmonaire",
+        "Le sang arrive dans les capillaires des poumons",
+        "Les échanges gazeux ont lieu : le gaz carbonique est rejeté, l'oxygène est capté",
+        "Le sang chargé en oxygène repart par les veines pulmonaires",
+        "Il arrive dans l'oreillette gauche"
+      ]
+    },
+    grande: {
+      activity: 'sci_circ_grande',
+      bookTitle: 'Circulatoire — La grande circulation',
+      instr: "Remets les étapes de la grande circulation dans le bon ordre en les faisant glisser.",
+      firstStep: "Le sang chargé en oxygène arrive dans l'oreillette gauche",
+      steps: [
+        "Il passe dans le ventricule gauche",
+        "Le ventricule gauche se contracte et envoie le sang dans l'artère aorte",
+        "Le sang est distribué aux organes via les artères",
+        "Le sang arrive dans les capillaires des organes",
+        "Les échanges gazeux ont lieu : l'oxygène est livré aux cellules, le gaz carbonique est récupéré",
+        "Le sang chargé en gaz carbonique repart par les veines vers la veine cave",
+        "Il arrive dans l'oreillette droite"
+      ]
+    },
+    ensemble: {
+      activity: 'sci_circ_ensemble',
+      bookTitle: 'Circulatoire — Le trajet du sang dans le corps',
+      instr: "Remets les étapes du trajet général du sang dans le bon ordre en les faisant glisser.",
+      firstStep: "Le cœur se contracte",
+      steps: [
+        "Le ventricule droit envoie le sang vers les poumons",
+        "Dans les poumons, le sang capte l'oxygène et rejette le gaz carbonique",
+        "Le sang oxygéné revient au cœur par les veines pulmonaires",
+        "Le ventricule gauche envoie le sang oxygéné vers les organes",
+        "Dans les organes, l'oxygène est livré aux cellules",
+        "Le sang chargé en gaz carbonique revient au cœur par la veine cave",
+        "Le cycle recommence"
+      ]
+    }
+  };
+
+  let activeTab = 'petite';
+  let order = [];
+  let dragSrcIdx = null;
+  let insertIdx = null;
+  let highlights = null;
+
+  // Touch state
+  let touchStartIdx = null;
+  let touchActiveEl = null;
+  let touchClone = null;
+  let touchInsertIdx = null;
+
+  function shuffle(arr) {
+    let a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      let j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    if (a.every((v, i) => v === arr[i])) return shuffle(arr);
+    return a;
+  }
+
+  function checkLocks() {
+    const ids = {
+      petite: 'sci_circ_petite',
+      grande: 'sci_circ_grande',
+      ensemble: 'sci_circ_ensemble'
+    };
+    for (const [key, id] of Object.entries(ids)) {
+      const isLocked = window.parent && typeof window.parent.isActivityLocked === 'function' 
+        ? window.parent.isActivityLocked(id) 
+        : false;
+      const btn = document.getElementById(`btn-tab-${key}`);
+      if (btn) {
+        if (isLocked) {
+          btn.classList.add('locked');
+          btn.disabled = true;
+          if (!btn.querySelector('.lock-icon')) {
+            btn.innerHTML = `🔒 ` + btn.innerText;
+          }
+        } else {
+          btn.classList.remove('locked');
+          btn.disabled = false;
+          btn.innerHTML = btn.innerText.replace('🔒 ', '');
+        }
+      }
+    }
+  }
+
+  function switchTab(tabKey) {
+    // Prevent switching to locked tabs
+    const isLocked = window.parent && typeof window.parent.isActivityLocked === 'function' 
+      ? window.parent.isActivityLocked(DATA[tabKey].activity) 
+      : false;
+    if (isLocked) return;
+
+    activeTab = tabKey;
+    
+    // Update active tab buttons
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    document.getElementById(`btn-tab-${tabKey}`).classList.add('active');
+
+    // Load tab details
+    const tabData = DATA[tabKey];
+    document.getElementById('exercise-instr').textContent = tabData.instr;
+    document.getElementById('exercise-first-step').textContent = tabData.firstStep;
+
+    // Reset state
+    order = shuffle(tabData.steps);
+    highlights = null;
+    document.getElementById('result').style.display = 'none';
+
+    render();
+  }
+
+  function resetExercise() {
+    const tabData = DATA[activeTab];
+    order = shuffle(tabData.steps);
+    highlights = null;
+    document.getElementById('result').style.display = 'none';
+    render();
+  }
+
+  function render() {
+    const container = document.getElementById('list-container');
+    container.innerHTML = '';
+
+    order.forEach((text, i) => {
+      const line = document.createElement('div');
+      line.className = 'insert-line';
+      line.dataset.insertBefore = i;
+      container.appendChild(line);
+
+      const row = document.createElement('div');
+      row.className = 'step-row';
+      row.dataset.idx = i;
+
+      const num = document.createElement('div');
+      num.className = 'step-num';
+      num.textContent = (i + 2) + '.';
+
+      const card = document.createElement('div');
+      card.className = 'drag-card';
+      if (highlights) card.classList.add(highlights[i] ? 'card-correct' : 'card-wrong');
+      card.draggable = true;
+      card.dataset.idx = i;
+      card.innerHTML = `<span class="drag-handle">☰</span><span>${text}</span>`;
+
+      // Mouse drag-and-drop events (Original robust centralized logic)
+      card.addEventListener('dragstart', e => {
+        dragSrcIdx = i;
+        insertIdx = null;
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/plain', String(i));
+        setTimeout(() => card.classList.add('dragging'), 0);
+      });
+
+      card.addEventListener('dragend', () => {
+        card.classList.remove('dragging');
+        clearInsertLines();
+        dragSrcIdx = null;
+        insertIdx = null;
+      });
+
+      // Touch events (iPads and tablets support)
+      card.addEventListener('touchstart', handleTouchStart, { passive: false });
+      card.addEventListener('touchmove', handleTouchMove, { passive: false });
+      card.addEventListener('touchend', handleTouchEnd);
+
+      row.appendChild(num);
+      row.appendChild(card);
+      container.appendChild(row);
+    });
+
+    const lastLine = document.createElement('div');
+    lastLine.className = 'insert-line';
+    lastLine.dataset.insertBefore = order.length;
+    container.appendChild(lastLine);
+  }
+
+  // Set up container listeners once (clean event delegation)
+  const container = document.getElementById('list-container');
+
+  container.addEventListener('dragover', e => {
+    e.preventDefault();
+    if (dragSrcIdx === null) return;
+    e.dataTransfer.dropEffect = 'move';
+    const rows = [...container.querySelectorAll('.step-row')];
+    let newInsert = order.length;
+    for (let j = 0; j < rows.length; j++) {
+      const rect = rows[j].getBoundingClientRect();
+      if (e.clientY < rect.top + rect.height / 2) { newInsert = j; break; }
+    }
+    if (newInsert !== insertIdx) {
+      insertIdx = newInsert;
+      showInsertLine(insertIdx);
+    }
+  });
+
+  container.addEventListener('drop', e => {
+    e.preventDefault();
+    if (dragSrcIdx === null || insertIdx === null) return;
+    if (insertIdx !== dragSrcIdx && insertIdx !== dragSrcIdx + 1) {
+      const item = order.splice(dragSrcIdx, 1)[0];
+      let target = insertIdx;
+      if (insertIdx > dragSrcIdx) target--;
+      order.splice(target, 0, item);
+      highlights = null;
+      document.getElementById('result').style.display = 'none';
+    }
+    clearInsertLines();
+    dragSrcIdx = null;
+    insertIdx = null;
+    render();
+  });
+
+  container.addEventListener('dragleave', e => {
+    if (!container.contains(e.relatedTarget)) {
+      clearInsertLines();
+      insertIdx = null;
+    }
+  });
+
+  // Touch Handlers
+  function handleTouchStart(e) {
+    const card = e.currentTarget;
+    const idx = parseInt(card.dataset.idx);
+    touchStartIdx = idx;
+    touchActiveEl = card;
+    
+    touchClone = card.cloneNode(true);
+    touchClone.style.position = 'fixed';
+    touchClone.style.zIndex = '9999';
+    touchClone.style.width = card.offsetWidth + 'px';
+    touchClone.style.opacity = '0.9';
+    touchClone.style.pointerEvents = 'none';
+    touchClone.style.boxShadow = '6px 6px 0px var(--border)';
+    
+    const touch = e.touches[0];
+    touchClone.style.left = (touch.clientX - card.offsetWidth / 2) + 'px';
+    touchClone.style.top = (touch.clientY - 20) + 'px';
+    
+    document.body.appendChild(touchClone);
+    card.classList.add('dragging');
+  }
+
+  function handleTouchMove(e) {
+    if (!touchClone) return;
+    e.preventDefault();
+    const touch = e.touches[0];
+    touchClone.style.left = (touch.clientX - touchClone.offsetWidth / 2) + 'px';
+    touchClone.style.top = (touch.clientY - 20) + 'px';
+    
+    const rows = [...container.querySelectorAll('.step-row')];
+    let newInsert = order.length;
+    for (let j = 0; j < rows.length; j++) {
+      const rect = rows[j].getBoundingClientRect();
+      if (touch.clientY < rect.top + rect.height / 2) { newInsert = j; break; }
+    }
+    
+    if (newInsert !== touchInsertIdx) {
+      touchInsertIdx = newInsert;
+      showInsertLine(touchInsertIdx);
+    }
+  }
+
+  function handleTouchEnd(e) {
+    if (!touchClone) return;
+    touchClone.remove();
+    touchClone = null;
+    
+    if (touchActiveEl) touchActiveEl.classList.remove('dragging');
+    clearInsertLines();
+    
+    if (touchInsertIdx !== null && touchInsertIdx !== touchStartIdx && touchInsertIdx !== touchStartIdx + 1) {
+      const item = order.splice(touchStartIdx, 1)[0];
+      let target = touchInsertIdx;
+      if (touchInsertIdx > touchStartIdx) target--;
+      order.splice(target, 0, item);
+      highlights = null;
+      document.getElementById('result').style.display = 'none';
+      render();
+    }
+    
+    touchStartIdx = null;
+    touchActiveEl = null;
+    touchInsertIdx = null;
+  }
+
+  function showInsertLine(idx) {
+    document.querySelectorAll('.insert-line').forEach(l => l.classList.remove('visible'));
+    const lines = document.querySelectorAll('.insert-line');
+    if (lines[idx]) lines[idx].classList.add('visible');
+  }
+
+  function clearInsertLines() {
+    document.querySelectorAll('.insert-line').forEach(l => l.classList.remove('visible'));
+  }
+
+  function verify() {
+    const tabData = DATA[activeTab];
+    highlights = order.map((text, i) => text === tabData.steps[i]);
+    render();
+    const correct = highlights.filter(Boolean).length;
+    const total = tabData.steps.length;
+    const msg = document.getElementById('result');
+    if (correct === total) {
+      msg.className = 'result-msg success';
+      msg.innerHTML = '🎉 Bravo ! Toutes les étapes sont dans le bon ordre !';
+    } else {
+      msg.className = 'result-msg partial';
+      msg.innerHTML = `${correct}/${total} étapes correctes. Les cases en rouge sont à corriger !`;
+    }
+
+    // Save score to parent dashboard
+    if (window.parent && window.parent.saveResult) {
+      const pct = Math.round(correct / total * 100);
+      window.parent.saveResult({
+        activity: tabData.activity,
+        bookTitle: tabData.bookTitle,
+        score: correct,
+        total: total,
+        pct: pct,
+        date: new Date().toLocaleDateString('fr-BE'),
+        time: new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })
+      });
+    }
+  }
+
+  // Parse location hash to auto-select tab
+  function loadFromHash() {
+    const hash = window.location.hash.substring(1); // remove '#'
+    checkLocks();
+    if (hash && DATA[hash]) {
+      // Check if requested tab is locked
+      const isLocked = window.parent && typeof window.parent.isActivityLocked === 'function'
+        ? window.parent.isActivityLocked(DATA[hash].activity)
+        : false;
+      if (!isLocked) {
+        switchTab(hash);
+        return;
+      }
+    }
+    
+    // Find first unlocked tab
+    const keys = ['petite', 'grande', 'ensemble'];
+    for (const k of keys) {
+      const isLocked = window.parent && typeof window.parent.isActivityLocked === 'function'
+        ? window.parent.isActivityLocked(DATA[k].activity)
+        : false;
+      if (!isLocked) {
+        switchTab(k);
+        return;
+      }
+    }
+
+    // Fallback to default
+    switchTab('petite');
+  }
+
+  // Watch for hash changes in case it's re-launched from plan de travail with different hash
+  window.addEventListener('hashchange', loadFromHash);
+
+  // Initialize
+  loadFromHash();
+</script>
+</body>
+</html>
