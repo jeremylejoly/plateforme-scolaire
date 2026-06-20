@@ -137,7 +137,7 @@
     }
 
     .drag-card:active { cursor: grabbing; }
-    .drag-card.dragging { opacity: 0.3; transform: scale(0.98); }
+    .drag-card.dragging { opacity: 0.3; }
     
     .drag-card.card-correct {
       border-color: var(--green);
@@ -165,7 +165,6 @@
       background: var(--purple);
       margin-left: 44px;
       display: none;
-      transition: all 0.1s ease;
     }
     .insert-line.visible { display: block; margin-top: 4px; margin-bottom: 4px; }
 
@@ -333,39 +332,20 @@
       card.dataset.idx = i;
       card.innerHTML = `<span class="drag-handle">☰</span><span>${text}</span>`;
 
-      // Mouse drag-and-drop events
+      // Mouse drag-and-drop events (Original robust centralized logic)
       card.addEventListener('dragstart', e => {
         dragSrcIdx = i;
+        insertIdx = null;
         e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/plain', String(i));
         setTimeout(() => card.classList.add('dragging'), 0);
       });
 
       card.addEventListener('dragend', () => {
         card.classList.remove('dragging');
         clearInsertLines();
-        if (insertIdx !== null && insertIdx !== dragSrcIdx) {
-          const item = order.splice(dragSrcIdx, 1)[0];
-          let target = insertIdx;
-          if (insertIdx > dragSrcIdx) target--;
-          order.splice(target, 0, item);
-          highlights = null;
-          document.getElementById('result').style.display = 'none';
-          render();
-        }
         dragSrcIdx = null;
         insertIdx = null;
-      });
-
-      row.addEventListener('dragover', e => {
-        e.preventDefault();
-        if (dragSrcIdx === null) return;
-        const rect = row.getBoundingClientRect();
-        const mid = rect.top + rect.height / 2;
-        const newInsert = e.clientY < mid ? i : i + 1;
-        if (newInsert !== insertIdx) {
-          insertIdx = newInsert;
-          showInsertLine(insertIdx);
-        }
       });
 
       // Touch events (iPads and tablets support)
@@ -382,6 +362,41 @@
     lastLine.className = 'insert-line';
     lastLine.dataset.insertBefore = order.length;
     container.appendChild(lastLine);
+
+    // Centralised dragover: compute insert position from all rows (Original robust logic)
+    container.addEventListener('dragover', e => {
+      e.preventDefault();
+      if (dragSrcIdx === null) return;
+      e.dataTransfer.dropEffect = 'move';
+      const rows = [...container.querySelectorAll('.step-row')];
+      let newInsert = order.length;
+      for (let j = 0; j < rows.length; j++) {
+        const rect = rows[j].getBoundingClientRect();
+        if (e.clientY < rect.top + rect.height / 2) { newInsert = j; break; }
+      }
+      if (newInsert !== insertIdx) {
+        insertIdx = newInsert;
+        showInsertLine(insertIdx);
+      }
+    });
+
+    // Reorder on drop (Original robust logic)
+    container.addEventListener('drop', e => {
+      e.preventDefault();
+      if (dragSrcIdx === null || insertIdx === null) return;
+      if (insertIdx !== dragSrcIdx && insertIdx !== dragSrcIdx + 1) {
+        const item = order.splice(dragSrcIdx, 1)[0];
+        let target = insertIdx;
+        if (insertIdx > dragSrcIdx) target--;
+        order.splice(target, 0, item);
+        highlights = null;
+        document.getElementById('result').style.display = 'none';
+      }
+      clearInsertLines();
+      dragSrcIdx = null;
+      insertIdx = null;
+      render();
+    });
 
     container.addEventListener('dragleave', e => {
       if (!container.contains(e.relatedTarget)) {
@@ -421,36 +436,17 @@
     touchClone.style.left = (touch.clientX - touchClone.offsetWidth / 2) + 'px';
     touchClone.style.top = (touch.clientY - 20) + 'px';
     
-    const rows = document.querySelectorAll('#list-container .step-row');
-    let hoveredIdx = null;
-    let isTopHalf = true;
-    
-    for (let i = 0; i < rows.length; i++) {
-      const rect = rows[i].getBoundingClientRect();
-      if (touch.clientY >= rect.top && touch.clientY <= rect.bottom) {
-        hoveredIdx = i;
-        const mid = rect.top + rect.height / 2;
-        isTopHalf = touch.clientY < mid;
-        break;
-      }
+    const container = document.getElementById('list-container');
+    const rows = [...container.querySelectorAll('.step-row')];
+    let newInsert = order.length;
+    for (let j = 0; j < rows.length; j++) {
+      const rect = rows[j].getBoundingClientRect();
+      if (touch.clientY < rect.top + rect.height / 2) { newInsert = j; break; }
     }
     
-    if (hoveredIdx !== null) {
-      const newInsert = isTopHalf ? hoveredIdx : hoveredIdx + 1;
-      if (newInsert !== touchInsertIdx) {
-        touchInsertIdx = newInsert;
-        showInsertLine(touchInsertIdx);
-      }
-    } else {
-      const container = document.getElementById('list-container');
-      const rect = container.getBoundingClientRect();
-      if (touch.clientY < rect.top) {
-        touchInsertIdx = 0;
-        showInsertLine(0);
-      } else if (touch.clientY > rect.bottom) {
-        touchInsertIdx = order.length;
-        showInsertLine(order.length);
-      }
+    if (newInsert !== touchInsertIdx) {
+      touchInsertIdx = newInsert;
+      showInsertLine(touchInsertIdx);
     }
   }
 
@@ -462,7 +458,7 @@
     if (touchActiveEl) touchActiveEl.classList.remove('dragging');
     clearInsertLines();
     
-    if (touchInsertIdx !== null && touchInsertIdx !== touchStartIdx) {
+    if (touchInsertIdx !== null && touchInsertIdx !== touchStartIdx && touchInsertIdx !== touchStartIdx + 1) {
       const item = order.splice(touchStartIdx, 1)[0];
       let target = touchInsertIdx;
       if (touchInsertIdx > touchStartIdx) target--;
