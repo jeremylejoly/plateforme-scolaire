@@ -1,4 +1,4 @@
-const CACHE_NAME = 'classe-mr-lejoly-cache-v186';
+const CACHE_NAME = 'classe-mr-lejoly-cache-v187';
 const CORE_ASSETS = [
   './',
   'index.html',
@@ -58,7 +58,11 @@ const CORE_ASSETS = [
   'photos/doc_fusillade_roux.png',
   'photos/doc_biodiversite.png',
   'qcm_arbre_feuilles.html',
-  'quelle_question.html'
+  'quelle_question.html',
+  'relief-hydrographie.html',
+  'photos/lexique_relief.png',
+  'photos/relief_belgique.png',
+  'photos/lexique_hydrographie.png'
 ];
 
 // Installe le Service Worker et met en cache les ressources de base
