@@ -1,4 +1,4 @@
-const CACHE_NAME = 'classe-mr-lejoly-cache-v171';
+const CACHE_NAME = 'classe-mr-lejoly-cache-v183';
 const CORE_ASSETS = [
   './',
   'index.html',
@@ -42,9 +42,21 @@ const CORE_ASSETS = [
   'comparaison.html',
   'proportionnalite.html',
   'globe-terrestre.html',
+  'frise-chronologique-histoire.html',
+  'lecon_frise_historique.html',
+  'ligne-du-temps_5.html',
   'ne_110m_admin_0_countries.js',
   'earth-blue-marble.jpg',
-  'world-time-zones-cropped.png'
+  'world-time-zones-cropped.png',
+  'photos/doc_etiolles.png',
+  'photos/doc_paladru.png',
+  'photos/doc_villa_romaine.png',
+  'photos/doc_voie_romaine.png',
+  'photos/doc_charrue.png',
+  'photos/doc_sceaux_corporations.png',
+  'photos/doc_reglement_cockerill.png',
+  'photos/doc_fusillade_roux.png',
+  'photos/doc_biodiversite.png'
 ];
 
 // Installe le Service Worker et met en cache les ressources de base
