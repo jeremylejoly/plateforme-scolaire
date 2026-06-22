@@ -1,0 +1,1270 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Le Relief et l'Hydrographie de la Belgique — Leçon Interactive</title>
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<!-- TailwindCSS CDN -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    corePlugins: {
+      preflight: false,
+    },
+    theme: {
+      extend: {
+        borderWidth: {
+          '3': '3px',
+        },
+        fontFamily: {
+          sans: ['Inter', 'sans-serif'],
+          display: ['Fredoka', 'sans-serif'],
+          mono: ['Space Mono', 'monospace'],
+        }
+      }
+    }
+  }
+</script>
+<style>
+  :root {
+    /* Palette HSL - Thème Bleu ardoise et Ocre terreux */
+    --encre: #1e293b;        /* Bleu ardoise foncé */
+    --courant: #3b82f6;      /* Bleu eau signature */
+    --courant-fonce: #1d4ed8; /* Bleu profond */
+    --accent-relief: #d97706; /* Ocre jaune terre */
+    --accent-relief-fonce: #b45309;
+    --papier: #f8fafc;       /* Gris-bleu très doux */
+    --papier-2: #ffffff;     /* Blanc pour les cartes */
+    --ardoise: #475569;      /* Gris moyen pour textes secondaires */
+    --ligne: #e2e8f0;        /* Filets de bordure */
+    
+    --vert: #10b981;         /* Validation */
+    --vert-clair: #ecfdf5;
+    --rouge: #ef4444;        /* Erreur */
+    --rouge-clair: #fef2f2;
+    --bleu: #0284c7;         /* Info */
+    --bleu-clair: #f0f9ff;
+    
+    --ombre: 0 4px 12px rgba(30, 41, 59, 0.05);
+    --ombre-forte: 0 10px 30px rgba(30, 41, 59, 0.08);
+    --radius: 16px;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font-family: 'Inter', system-ui, sans-serif;
+    color: var(--encre);
+    background: 
+      radial-gradient(circle at 1px 1px, rgba(30, 41, 59, 0.03) 1px, transparent 0) 0 0/24px 24px,
+      var(--papier);
+    line-height: 1.6;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: 'Fredoka', sans-serif;
+    line-height: 1.2;
+    margin: 0;
+  }
+
+  /* BOUTON 3D FLAT DESIGN */
+  .btn-3d {
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 700;
+    border: 3px solid #1A1A2E !important;
+    box-shadow: 3px 3px 0px #1A1A2E;
+    transition: all 0.1s ease;
+    cursor: pointer;
+    user-select: none;
+  }
+  .btn-3d:active {
+    transform: translate(1px, 1px);
+    box-shadow: 1px 1px 0px #1A1A2E;
+  }
+
+  /* ONGLETS NAVIGATION */
+  nav.tabs {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: #ffffff;
+    border-bottom: 3px solid #1A1A2E;
+    box-shadow: var(--ombre);
+  }
+  .tabs-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    padding: 8px 12px;
+    scrollbar-width: none;
+  }
+  .tabs-inner::-webkit-scrollbar { display: none; }
+  
+  .tab-btn {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: transparent;
+    border: 2px solid transparent;
+    border-radius: 12px;
+    padding: 8px 14px;
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--ardoise);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.15s;
+  }
+  .tab-btn:hover {
+    background: var(--papier);
+    color: var(--encre);
+  }
+  .tab-btn.active {
+    background: #1A1A2E;
+    color: #ffffff;
+    border-color: #1A1A2E;
+  }
+  .tab-btn .num {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    background: rgba(59, 130, 246, 0.15);
+    color: var(--courant-fonce);
+    border-radius: 6px;
+    padding: 2px 6px;
+  }
+  .tab-btn.active .num {
+    background: var(--courant);
+    color: #ffffff;
+  }
+
+  /* PAGES CONTENU */
+  main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 24px 16px 80px;
+  }
+  .page {
+    display: none;
+    animation: fade 0.25s ease-out;
+  }
+  .page.active {
+    display: block;
+  }
+  @keyframes fade {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* CARTES */
+  .card-premium {
+    background: #ffffff;
+    border: 3px solid #1A1A2E;
+    border-radius: var(--radius);
+    padding: 20px;
+    margin: 16px 0;
+    box-shadow: 4px 4px 0px rgba(26, 26, 46, 0.1);
+  }
+
+  /* ÉTIQUETTES / TAGS */
+  .tag-custom {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border: 2px solid #1A1A2E;
+    border-radius: 999px;
+    margin-bottom: 8px;
+  }
+
+  /* Révélation de synthèse (œil) */
+  .eye-toggle {
+    border: 2px solid #1A1A2E;
+    background: #ffffff;
+    cursor: pointer;
+    border-radius: 8px;
+    width: 32px;
+    height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+  }
+  .eye-toggle:hover {
+    background: var(--papier);
+    transform: scale(1.05);
+  }
+  .hideable.hidden { display: none !important; }
+  .eye-hint {
+    font-size: 0.85rem;
+    color: var(--ardoise);
+    font-style: italic;
+    margin-top: 6px;
+  }
+  .eye-hint.hidden { display: none !important; }
+
+  /* LEXIQUE / LISTES */
+  .lex-grid {
+    display: grid;
+    gap: 12px;
+  }
+  .lex-item {
+    padding: 12px 16px;
+    background: var(--papier);
+    border: 2px solid var(--ligne);
+    border-radius: 12px;
+    transition: border-color 0.15s;
+  }
+  .lex-item:hover {
+    border-color: var(--courant);
+  }
+
+  /* HOTSPOTS SUR IMAGE */
+  .scene-wrap {
+    position: relative;
+    display: inline-block;
+    max-width: 100%;
+    overflow: hidden;
+  }
+  .hotspot {
+    position: absolute;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: rgba(239, 68, 110, 0.2);
+    border: 3px solid var(--rouge);
+    cursor: pointer;
+    transition: all 0.2s;
+    transform: translate(-50%, -50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--rouge);
+    box-shadow: 0 0 8px rgba(239, 68, 68, 0.4);
+    user-select: none;
+  }
+  .hotspot:hover {
+    transform: translate(-50%, -50%) scale(1.25);
+    background: rgba(239, 68, 68, 0.4);
+  }
+  .hotspot.found {
+    border-color: var(--vert);
+    background: var(--vert-clair);
+    color: var(--vert);
+    box-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
+  }
+
+  /* MATCHING CARDS */
+  .match-item {
+    background: #ffffff;
+    border: 3px solid #1A1A2E;
+    border-radius: 12px;
+    padding: 10px 14px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.15s;
+    font-weight: 600;
+    font-size: 0.92rem;
+  }
+  .match-item:hover {
+    background: var(--papier);
+  }
+  .match-item.sel {
+    border-color: var(--courant) !important;
+    background: var(--bleu-clair);
+    box-shadow: 2px 2px 0px var(--courant-fonce);
+  }
+  .match-item.done {
+    border-color: var(--vert) !important;
+    background: var(--vert-clair);
+    cursor:default;
+    opacity: 0.75;
+  }
+
+  /* RESPONSIVE DESIGN */
+  @media(max-width:768px) {
+    .tabs-inner { padding: 6px; }
+    .tab-btn { font-size: 0.85rem; padding: 6px 10px; }
+  }
+  @media print {
+    nav.tabs, .controls, .btn-3d { display: none !important; }
+    .page { display: block !important; }
+    body { background: #ffffff; }
+    .card-premium { box-shadow: none; break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<!-- EN-TÊTE -->
+<header class="bg-gradient-to-r from-slate-900 to-slate-800 text-white border-b-4 border-blue-500 relative overflow-hidden py-8 px-6">
+  <div class="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(59,130,246,0.18),transparent_50%)] pointer-events-none"></div>
+  <div class="max-w-[1100px] mx-auto relative z-10">
+    <h1 class="text-3xl md:text-4xl font-display font-black flex items-center gap-2">
+      🏔️ Relief et Hydrographie de la Belgique 💧
+    </h1>
+    <p class="mt-2 text-slate-300 font-sans max-w-2xl text-sm md:text-base">
+      Explore les plaines et les plateaux de notre pays, découvre le vocabulaire des cours d'eau et suis le voyage des rivières belges de leur source jusqu'à la mer du Nord !
+    </p>
+  </div>
+</header>
+
+<!-- ONGLET DE NAVIGATION -->
+<nav class="tabs" aria-label="Onglets de la leçon">
+  <div class="tabs-inner" id="tabBar">
+    <button class="tab-btn active" data-tab="accueil"><span class="num">00</span>Accueil</button>
+    <button class="tab-btn" data-tab="relief-general"><span class="num">01</span>1. Le Relief</button>
+    <button class="tab-btn" data-tab="relief-belgique"><span class="num">02</span>2. Le Relief Belge</button>
+    <button class="tab-btn" data-tab="hydro-vocab"><span class="num">03</span>3. Vocabulaire de l'Eau</button>
+    <button class="tab-btn" data-tab="rivieres-belges"><span class="num">04</span>4. Rivières de Belgique</button>
+    <button class="tab-btn" data-tab="eval-bilan"><span class="num">05</span>5. Évaluation</button>
+  </div>
+</nav>
+
+<!-- CONTENU PRINCIPAL -->
+<main>
+
+  <!-- ====================== 00 ACCUEIL ====================== -->
+  <section class="page active" id="accueil" role="tabpanel">
+    <h2 class="text-xl md:text-2xl font-display font-bold text-slate-800 mb-2 flex items-center gap-2">
+      <span class="bg-slate-900 text-white font-mono text-xs px-2.5 py-1 rounded-md">00</span>
+      Bienvenue, jeune géographe !
+    </h2>
+    <p class="text-slate-600 mb-6 text-sm md:text-base leading-relaxed">
+      Dans cette leçon interactive, tu vas étudier les reliefs de la Terre (les bosses et les creux) ainsi que le voyage de l'eau à travers les paysages. Prépare-toi à relever des défis pour tester tes connaissances géographiques !
+    </p>
+
+    <div class="card-premium">
+      <span class="tag-custom bg-blue-50 text-blue-700">🧭 Notre plan d'enquête</span>
+      <div class="grid grid-cols-2 md:grid-cols-5 gap-3 mt-4">
+        <div class="bg-slate-50 border border-slate-200 border-dashed rounded-xl p-3 text-center">
+          <span class="font-mono text-xs text-blue-600 font-bold block mb-1">ÉTAPE 1</span>
+          <p class="font-display font-bold text-xs text-slate-900 m-0">Les Formes de Relief</p>
+        </div>
+        <div class="bg-slate-50 border border-slate-200 border-dashed rounded-xl p-3 text-center">
+          <span class="font-mono text-xs text-blue-600 font-bold block mb-1">ÉTAPE 2</span>
+          <p class="font-display font-bold text-xs text-slate-900 m-0">Le Relief en Belgique</p>
+        </div>
+        <div class="bg-slate-50 border border-slate-200 border-dashed rounded-xl p-3 text-center">
+          <span class="font-mono text-xs text-blue-600 font-bold block mb-1">ÉTAPE 3</span>
+          <p class="font-display font-bold text-xs text-slate-900 m-0">Vocabulaire de l'Eau</p>
+        </div>
+        <div class="bg-slate-50 border border-slate-200 border-dashed rounded-xl p-3 text-center">
+          <span class="font-mono text-xs text-blue-600 font-bold block mb-1">ÉTAPE 4</span>
+          <p class="font-display font-bold text-xs text-slate-900 m-0">Les Rivières Belges</p>
+        </div>
+        <div class="bg-slate-50 border border-slate-200 border-dashed rounded-xl p-3 text-center">
+          <span class="font-mono text-xs text-blue-600 font-bold block mb-1">ÉTAPE 5</span>
+          <p class="font-display font-bold text-xs text-slate-900 m-0">Validation Finale</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-4">
+      <div class="card-premium">
+        <span class="tag-custom bg-emerald-50 text-emerald-700">✋ Ce que je vais savoir FAIRE</span>
+        <ul class="list-none p-0 m-0 mt-3 text-xs md:text-sm text-slate-600 space-y-2.5">
+          <li class="flex items-start gap-2"><span class="text-emerald-500 font-bold">✔</span> Identifier les reliefs sur un schéma (plaine, plateau, montagne, vallée).</li>
+          <li class="flex items-start gap-2"><span class="text-emerald-500 font-bold">✔</span> Placer les trois zones de relief belges sur une carte.</li>
+          <li class="flex items-start gap-2"><span class="text-emerald-500 font-bold">✔</span> Expliquer le cours d'une rivière de la source à l'embouchure.</li>
+          <li class="flex items-start gap-2"><span class="text-emerald-500 font-bold">✔</span> Distinguer un affluent d'un confluent et un fleuve d'une rivière.</li>
+        </ul>
+      </div>
+      <div class="card-premium">
+        <span class="tag-custom bg-amber-50 text-amber-700">🧠 Ce que je vais COMPRENDRE</span>
+        <ul class="list-none p-0 m-0 mt-3 text-xs md:text-sm text-slate-600 space-y-2.5">
+          <li class="flex items-start gap-2"><span class="text-amber-500 font-bold">✔</span> Pourquoi l'eau coule toujours vers le bas (vers la mer).</li>
+          <li class="flex items-start gap-2"><span class="text-amber-500 font-bold">✔</span> La différence entre les vallées encaissées et non-encaissées.</li>
+          <li class="flex items-start gap-2"><span class="text-amber-500 font-bold">✔</span> L'influence du relief sur le cours des rivières belges.</li>
+          <li class="flex items-start gap-2"><span class="text-amber-500 font-bold">✔</span> L'importance d'un bassin versant ou bassin fluvial.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card-premium">
+      <span class="tag-custom bg-slate-50 text-slate-700">🧰 Le matériel de classe</span>
+      <div class="flex flex-wrap gap-2 mt-2">
+        <span class="bg-white border border-slate-300 text-xs px-3 py-1.5 rounded-lg shadow-sm">Atlas de base de Belgique</span>
+        <span class="bg-white border border-slate-300 text-xs px-3 py-1.5 rounded-lg shadow-sm">Fiche de vocabulaire muette</span>
+        <span class="bg-white border border-slate-300 text-xs px-3 py-1.5 rounded-lg shadow-sm">Crayon bleu et vert de dessin</span>
+        <span class="bg-white border border-slate-300 text-xs px-3 py-1.5 rounded-lg shadow-sm">Tablette d'apprentissage</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================== 01 LE RELIEF (GENERAL) ====================== -->
+  <section class="page" id="relief-general" role="tabpanel">
+    <h2 class="text-xl md:text-2xl font-display font-bold text-slate-800 mb-2 flex items-center gap-2">
+      <span class="bg-slate-900 text-white font-mono text-xs px-2.5 py-1 rounded-md">01</span>
+      Le Relief : Les creux et les bosses
+    </h2>
+    <p class="text-slate-600 mb-6 text-sm md:text-base leading-relaxed">
+      Le relief désigne les déformations à la surface solide de la Terre. Ces formes de paysages sont sculptées par le mouvement des plaques terrestres et par l'usure naturelle (le vent, la pluie, le gel) appelée l'érosion.
+    </p>
+
+    <div class="grid md:grid-cols-3 gap-4">
+      <div class="md:col-span-2 card-premium flex flex-col items-center">
+        <span class="tag-custom bg-blue-50 text-blue-700 w-full mb-3 text-center">💻 Atelier Interactif — « Explore le Relief »</span>
+        <p class="text-xs text-slate-500 mb-4 text-center">Clique sur les ronds rouges pour découvrir les définitions des paysages.</p>
+        
+        <div class="scene-wrap border-2 border-slate-900 rounded-2xl relative shadow-md">
+          <!-- Illustration lexique relief -->
+          <img src="photos/lexique_relief.png" alt="Schéma des reliefs de la Terre" class="w-full max-w-[600px] h-auto block rounded-xl cursor-zoom-in zoomable" data-caption="Paysage récapitulatif des formes de relief (Plaine, Plateau, Montagne, Vallée, Colline, Col).">
+          
+          <!-- Hotspots -->
+          <div class="hotspot" style="left: 15%; top: 38%;" data-id="montagne" data-name="La Montagne" data-desc="Un relief très haut et pointu avec des pentes très raides (versants). Les montagnes s'élèvent souvent en chaînes." role="button" aria-label="montagne">1</div>
+          <div class="hotspot" style="left: 33%; top: 32%;" data-id="col" data-name="Le Col" data-desc="Le point le plus bas situé entre deux sommets de montagnes, permettant de passer d'une vallée à l'autre." role="button" aria-label="col">2</div>
+          <div class="hotspot" style="left: 40%; top: 48%;" data-id="vallee" data-name="La Vallée" data-desc="Un creux allongé creusé dans le paysage par une rivière, situé entre deux versants de collines ou montagnes." role="button" aria-label="vallee">3</div>
+          <div class="hotspot" style="left: 72%; top: 36%;" data-id="colline" data-name="La Colline" data-desc="Une petite bosse de relief de forme arrondie et peu élevée. Les pentes y sont douces." role="button" aria-label="colline">4</div>
+          <div class="hotspot" style="left: 42%; top: 60%;" data-id="plaine" data-name="La Plaine" data-desc="Une grande étendue plate et basse. Dans la plaine, les rivières ne sont pas enfoncées (les vallées sont non-encaissées)." role="button" aria-label="plaine">5</div>
+          <div class="hotspot" style="left: 85%; top: 58%;" data-id="plateau" data-name="Le Plateau" data-desc="Une étendue plate située en hauteur. Dans le plateau, les rivières creusent de profondes vallées resserrées (encaissées)." role="button" aria-label="plateau">6</div>
+        </div>
+
+        <p class="statut off w-full mt-3 py-2 text-center rounded-xl font-bold border border-rose-300" id="reliefStatut">
+          Formes de relief découvertes : 0 / 6
+        </p>
+      </div>
+
+      <div class="card-premium flex flex-col justify-between">
+        <div>
+          <span class="tag-custom bg-amber-50 text-amber-700 mb-4 w-full text-center">🔍 Fiche d'exploration</span>
+          <div class="bg-blue-50 border border-blue-400 rounded-xl p-4 text-center min-h-[180px] flex flex-col justify-center" id="reliefInfo">
+            <h4 class="text-blue-900 text-lg mb-2 font-bold" id="reliefInfoTitre">Clique sur un numéro</h4>
+            <p class="text-slate-700 text-sm m-0" id="reliefInfoDesc">Parcours le paysage pour identifier les caractéristiques de chaque forme de relief.</p>
+          </div>
+        </div>
+        
+        <div class="bg-slate-50 border-l-4 border-amber-500 p-3 rounded-r-lg mt-4 text-xs">
+          <b>Vocabulaire clé :</b><br>
+          <b>Encaissée :</b> Une vallée resserrée entre des versants très raides (caractéristique des rivières sur les plateaux).
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================== 02 LE RELIEF BELGE ====================== -->
+  <section class="page" id="relief-belgique" role="tabpanel">
+    <h2 class="text-xl md:text-2xl font-display font-bold text-slate-800 mb-2 flex items-center gap-2">
+      <span class="bg-slate-900 text-white font-mono text-xs px-2.5 py-1 rounded-md">02</span>
+      Le Relief de la Belgique : Les 3 Paliers
+    </h2>
+    <p class="text-slate-600 mb-6 text-sm md:text-base leading-relaxed">
+      Le relief de la Belgique s'élève progressivement de la mer du Nord (au nord-ouest) vers l'Ardenne (au sud-est). Il se divise en trois grandes zones d'altitudes appelées « paliers ».
+    </p>
+
+    <div class="card-premium">
+      <span class="tag-custom bg-amber-50 text-accent-relief-fonce">🗺️ Les trois zones de relief belge</span>
+      <div class="grid md:grid-cols-3 gap-4 mt-3">
+        <!-- Basse -->
+        <div class="bg-emerald-50/50 border-2 border-emerald-500/20 rounded-xl p-4">
+          <h3 class="text-emerald-900 text-lg mb-2 font-bold">1. Basse Belgique</h3>
+          <p class="text-xs text-slate-500 mb-2 font-mono">Altitude : 0 à 100 mètres</p>
+          <p class="text-xs text-slate-700 m-0">
+            Comprend la Plaine maritime (les polders), la Flandre et la Campine. Le paysage y est très plat ou légèrement ondulé. Le sol est sablonneux ou argileux.
+          </p>
+        </div>
+        <!-- Moyenne -->
+        <div class="bg-amber-50/50 border-2 border-amber-500/20 rounded-xl p-4">
+          <h3 class="text-amber-900 text-lg mb-2 font-bold">2. Moyenne Belgique</h3>
+          <p class="text-xs text-slate-500 mb-2 font-mono">Altitude : 100 à 200 mètres</p>
+          <p class="text-xs text-slate-700 m-0">
+            Comprend les plateaux de Hesbaye, de Brabant et du Hainaut. C'est une région de collines douces et de plateaux recouverts de limon, une terre très fertile.
+          </p>
+        </div>
+        <!-- Haute -->
+        <div class="bg-orange-50/50 border-2 border-orange-500/20 rounded-xl p-4">
+          <h3 class="text-orange-900 text-lg mb-2 font-bold">3. Haute Belgique</h3>
+          <p class="text-xs text-slate-500 mb-2 font-mono">Altitude : 200 à 694 mètres</p>
+          <p class="text-xs text-slate-700 m-0">
+            Comprend le Condroz, la Famenne, l'Ardenne et la Lorraine Belge. C'est le palier le plus haut et le plus boisé, avec de profondes vallées rocheuses. Point culminant : <b>Signal de Botrange (694 m)</b>.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Atelier de tri des localités -->
+    <div class="card-premium">
+      <span class="tag-custom bg-blue-50 text-blue-700">🎮 Jeu d'Entraînement — « Trie les Localités »</span>
+      <p class="text-xs text-slate-500 mb-4">Associe chaque lieu ou caractéristique de Belgique à son palier de relief correspondant.</p>
+      
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4" id="triBelgiqueGrid">
+        <!-- Card 1 -->
+        <div class="bg-white border-2 border-slate-200 rounded-xl p-3 flex flex-col justify-between shadow-sm card-tri" id="tri-botrange">
+          <h4 class="text-sm font-bold text-slate-800 mb-2">Le Signal de Botrange (694 m)</h4>
+          <p class="text-[11px] text-slate-500 mb-3">Le point le plus haut de notre pays, dans les Hautes Fagnes.</p>
+          <select class="border border-slate-300 rounded-lg p-2 text-xs font-semibold select-tri" data-answer="haute">
+            <option value="">-- Choisis la zone --</option>
+            <option value="basse">Basse Belgique</option>
+            <option value="moyenne">Moyenne Belgique</option>
+            <option value="haute">Haute Belgique</option>
+          </select>
+        </div>
+        <!-- Card 2 -->
+        <div class="bg-white border-2 border-slate-200 rounded-xl p-3 flex flex-col justify-between shadow-sm card-tri" id="tri-panne">
+          <h4 class="text-sm font-bold text-slate-800 mb-2">Les Polders de La Panne</h4>
+          <p class="text-[11px] text-slate-500 mb-3">Terres plates reprises sur la mer du Nord, juste à la frontière française.</p>
+          <select class="border border-slate-300 rounded-lg p-2 text-xs font-semibold select-tri" data-answer="basse">
+            <option value="">-- Choisis la zone --</option>
+            <option value="basse">Basse Belgique</option>
+            <option value="moyenne">Moyenne Belgique</option>
+            <option value="haute">Haute Belgique</option>
+          </select>
+        </div>
+        <!-- Card 3 -->
+        <div class="bg-white border-2 border-slate-200 rounded-xl p-3 flex flex-col justify-between shadow-sm card-tri" id="tri-hesbaye">
+          <h4 class="text-sm font-bold text-slate-800 mb-2">Les plaines de Hesbaye</h4>
+          <p class="text-[11px] text-slate-500 mb-3">De grands champs de cultures fertiles avec un sol limoneux, à 140 m d'altitude.</p>
+          <select class="border border-slate-300 rounded-lg p-2 text-xs font-semibold select-tri" data-answer="moyenne">
+            <option value="">-- Choisis la zone --</option>
+            <option value="basse">Basse Belgique</option>
+            <option value="moyenne">Moyenne Belgique</option>
+            <option value="haute">Haute Belgique</option>
+          </select>
+        </div>
+        <!-- Card 4 -->
+        <div class="bg-white border-2 border-slate-200 rounded-xl p-3 flex flex-col justify-between shadow-sm card-tri" id="tri-kemmel">
+          <h4 class="text-sm font-bold text-slate-800 mb-2">Le Mont Kemmel (156 m)</h4>
+          <p class="text-[11px] text-slate-500 mb-3">Une colline sablo-limoneuse isolée en Flandre-Occidentale.</p>
+          <select class="border border-slate-300 rounded-lg p-2 text-xs font-semibold select-tri" data-answer="moyenne">
+            <option value="">-- Choisis la zone --</option>
+            <option value="basse">Basse Belgique</option>
+            <option value="moyenne">Moyenne Belgique</option>
+            <option value="haute">Haute Belgique</option>
+          </select>
+        </div>
+        <!-- Card 5 -->
+        <div class="bg-white border-2 border-slate-200 rounded-xl p-3 flex flex-col justify-between shadow-sm card-tri" id="tri-fraiture">
+          <h4 class="text-sm font-bold text-slate-800 mb-2">Baraque de Fraiture (652 m)</h4>
+          <p class="text-[11px] text-slate-500 mb-3">Un grand plateau rocheux et forestier situé au nord de Bastogne.</p>
+          <select class="border border-slate-300 rounded-lg p-2 text-xs font-semibold select-tri" data-answer="haute">
+            <option value="">-- Choisis la zone --</option>
+            <option value="basse">Basse Belgique</option>
+            <option value="moyenne">Moyenne Belgique</option>
+            <option value="haute">Haute Belgique</option>
+          </select>
+        </div>
+        <!-- Card 6 -->
+        <div class="bg-white border-2 border-slate-200 rounded-xl p-3 flex flex-col justify-between shadow-sm card-tri" id="tri-ostende">
+          <h4 class="text-sm font-bold text-slate-800 mb-2">La Plage d'Ostende</h4>
+          <p class="text-[11px] text-slate-500 mb-3">Bande de sable au niveau zéro de la mer du Nord.</p>
+          <select class="border border-slate-300 rounded-lg p-2 text-xs font-semibold select-tri" data-answer="basse">
+            <option value="">-- Choisis la zone --</option>
+            <option value="basse">Basse Belgique</option>
+            <option value="moyenne">Moyenne Belgique</option>
+            <option value="haute">Haute Belgique</option>
+          </select>
+        </div>
+        <!-- Card 7 -->
+        <div class="bg-white border-2 border-slate-200 rounded-xl p-3 flex flex-col justify-between shadow-sm card-tri" id="tri-ourthe">
+          <h4 class="text-sm font-bold text-slate-800 mb-2">Vallée de l'Ourthe</h4>
+          <p class="text-[11px] text-slate-500 mb-3">Région de rochers escarpés et de descentes rapides de kayak.</p>
+          <select class="border border-slate-300 rounded-lg p-2 text-xs font-semibold select-tri" data-answer="haute">
+            <option value="">-- Choisis la zone --</option>
+            <option value="basse">Basse Belgique</option>
+            <option value="moyenne">Moyenne Belgique</option>
+            <option value="haute">Haute Belgique</option>
+          </select>
+        </div>
+        <!-- Card 8 -->
+        <div class="bg-white border-2 border-slate-200 rounded-xl p-3 flex flex-col justify-between shadow-sm card-tri" id="tri-brabant">
+          <h4 class="text-sm font-bold text-slate-800 mb-2">Les collines du Brabant</h4>
+          <p class="text-[11px] text-slate-500 mb-3">Les douces pentes du Lion de Waterloo, autour de 120 m d'altitude.</p>
+          <select class="border border-slate-300 rounded-lg p-2 text-xs font-semibold select-tri" data-answer="moyenne">
+            <option value="">-- Choisis la zone --</option>
+            <option value="basse">Basse Belgique</option>
+            <option value="moyenne">Moyenne Belgique</option>
+            <option value="haute">Haute Belgique</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="flex justify-center mt-6">
+        <button class="btn-3d px-6 py-2.5 bg-yellow-400 text-slate-900 rounded-xl text-sm" id="btnCheckTri" type="button">✅ Vérifier mon classement</button>
+      </div>
+      <p id="triFeedback" class="text-center font-bold mt-3 text-sm min-h-[1.5em]"></p>
+    </div>
+
+    <!-- Synthese graphique -->
+    <div class="card-premium">
+      <span class="tag-custom bg-emerald-50 text-emerald-700">🎨 Représentation en Coupe</span>
+      <p class="text-xs text-slate-500 mb-3">Observe la coupe transversale simplifiée du relief de la Belgique de l'ouest vers l'est.</p>
+      <div class="flex justify-center">
+        <img src="photos/relief_belgique.png" alt="Schéma en coupe du relief de la Belgique" class="w-full max-w-[650px] h-auto border-2 border-slate-900 rounded-xl cursor-zoom-in zoomable" data-caption="Schéma en coupe représentant les 3 paliers de relief en Belgique (Basse, Moyenne et Haute Belgique).">
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================== 03 VOCABULAIRE DE L'EAU ====================== -->
+  <section class="page" id="hydro-vocab" role="tabpanel">
+    <h2 class="text-xl md:text-2xl font-display font-bold text-slate-800 mb-2 flex items-center gap-2">
+      <span class="bg-slate-900 text-white font-mono text-xs px-2.5 py-1 rounded-md">03</span>
+      Le Vocabulaire Hydrographique (Le trajet de l'eau)
+    </h2>
+    <p class="text-slate-600 mb-6 text-sm md:text-base leading-relaxed">
+      L'eau de pluie qui tombe sur terre s'écoule toujours vers le point le plus bas pour rejoindre la mer. Tout au long de ce voyage, elle dessine des cours d'eau. Il est essentiel d'en connaître les différents éléments.
+    </p>
+
+    <div class="grid md:grid-cols-3 gap-4">
+      <div class="md:col-span-2 card-premium flex flex-col items-center">
+        <span class="tag-custom bg-blue-50 text-blue-700 w-full mb-3 text-center">💻 Atelier Interactif — « Le voyage du cours d'eau »</span>
+        <p class="text-xs text-slate-500 mb-4 text-center">Clique sur les ronds rouges pour découvrir les étapes clés de la rivière.</p>
+        
+        <div class="scene-wrap border-2 border-slate-900 rounded-2xl relative shadow-md">
+          <!-- Illustration lexique hydrographie -->
+          <img src="photos/lexique_hydrographie.png" alt="Schéma hydrographique" class="w-full max-w-[600px] h-auto block rounded-xl cursor-zoom-in zoomable" data-caption="Diagramme montrant les éléments du cours d'eau (Source, Affluent, Confluent, Méandre, Estuaire, Delta).">
+          
+          <!-- Hotspots -->
+          <div class="hotspot" style="left: 14%; top: 22%;" data-id="source" data-name="La Source" data-desc="Le point de départ d'un cours d'eau, là où l'eau sort naturellement de la terre pour commencer son voyage." role="button" aria-label="source">1</div>
+          <div class="hotspot" style="left: 78%; top: 30%;" data-id="affluent" data-name="L'Affluent" data-desc="Une rivière plus petite qui se jette dans une autre plus importante (elle l'alimente en eau)." role="button" aria-label="affluent">2</div>
+          <div class="hotspot" style="left: 62%; top: 47%;" data-id="confluent" data-name="Le Confluent" data-desc="Le point de rencontre précis où deux cours d'eau se réunissent pour n'en former plus qu'un seul." role="button" aria-label="confluent">3</div>
+          <div class="hotspot" style="left: 70%; top: 58%;" data-id="meandre" data-name="Le Méandre" data-desc="Une boucle ou un grand virage dessiné par une rivière lorsque la plaine est très plate et le courant lent." role="button" aria-label="meandre">4</div>
+          <div class="hotspot" style="left: 92%; top: 48%;" data-id="estuaire" data-name="L'Estuaire" data-desc="Embouchure large d'un fleuve qui se jette dans la mer, dégagée par la force des marées et des vagues." role="button" aria-label="estuaire">5</div>
+          <div class="hotspot" style="left: 90%; top: 62%;" data-id="delta" data-name="Le Delta" data-desc="Embouchure en forme de triangle où le fleuve se sépare en plusieurs petits bras à cause des sédiments." role="button" aria-label="delta">6</div>
+        </div>
+
+        <p class="statut off w-full mt-3 py-2 text-center rounded-xl font-bold border border-rose-300" id="hydroStatut">
+          Organes hydrographiques découverts : 0 / 6
+        </p>
+      </div>
+
+      <div class="card-premium flex flex-col justify-between">
+        <div>
+          <span class="tag-custom bg-amber-50 text-amber-700 mb-4 w-full text-center">🔍 Carte d'identité hydrographique</span>
+          <div class="bg-blue-50 border border-blue-400 rounded-xl p-4 text-center min-h-[180px] flex flex-col justify-center" id="hydroInfo">
+            <h4 class="text-blue-900 text-lg mb-2 font-bold" id="hydroInfoTitre">Clique sur un numéro</h4>
+            <p class="text-slate-700 text-sm m-0" id="hydroInfoDesc">Parcours le schéma de la source à la mer pour comprendre le voyage de l'eau.</p>
+          </div>
+        </div>
+        
+        <div class="bg-slate-50 border-l-4 border-blue-500 p-3 rounded-r-lg mt-4 text-xs">
+          <b>Astuce pour les rives :</b><br>
+          Tourne le dos à la source (regarde vers la mer/l'aval) : ta main droite indique la <b>rive droite</b>, ta main gauche la <b>rive gauche</b> !
+        </div>
+      </div>
+    </div>
+
+    <!-- Jeu d'association de cartes -->
+    <div class="card-premium">
+      <span class="tag-custom bg-purple-50 text-purple-700">🎮 Jeu de Cartes — « Associe les définitions »</span>
+      <p class="text-xs text-slate-500 mb-4">Clique sur une étiquette bleue à gauche, puis associe-la à sa définition à droite.</p>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-3" id="matchHydroGrid">
+        <div>
+          <h4 class="text-xs font-bold uppercase text-slate-400 tracking-wider mb-2 text-center">Éléments</h4>
+          <div class="match-item" data-match="fleuve"><span class="bg-blue-500 text-white font-mono text-[10px] px-1.5 py-0.5 rounded-full">A</span> Le Fleuve</div>
+          <div class="match-item" data-match="riviere"><span class="bg-blue-500 text-white font-mono text-[10px] px-1.5 py-0.5 rounded-full">B</span> La Rivière</div>
+          <div class="match-item" data-match="amont"><span class="bg-blue-500 text-white font-mono text-[10px] px-1.5 py-0.5 rounded-full">C</span> Amont</div>
+          <div class="match-item" data-match="aval"><span class="bg-blue-500 text-white font-mono text-[10px] px-1.5 py-0.5 rounded-full">D</span> Aval</div>
+          <div class="match-item" data-match="rive-droite"><span class="bg-blue-500 text-white font-mono text-[10px] px-1.5 py-0.5 rounded-full">E</span> La Rive Droite</div>
+          <div class="match-item" data-match="rive-gauche"><span class="bg-blue-500 text-white font-mono text-[10px] px-1.5 py-0.5 rounded-full">F</span> La Rive Gauche</div>
+        </div>
+        <div>
+          <h4 class="text-xs font-bold uppercase text-slate-400 tracking-wider mb-2 text-center">Définitions</h4>
+          <div class="match-item" data-match="rive-gauche">Rive située à gauche quand on regarde vers l'aval (vers le courant).</div>
+          <div class="match-item" data-match="amont">La direction vers le haut du fleuve, en se rapprochant de sa source.</div>
+          <div class="match-item" data-match="riviere">Cours d'eau secondaire qui se jette dans un autre cours d'eau.</div>
+          <div class="match-item" data-match="fleuve">Cours d'eau principal qui se jette directement dans la mer ou l'océan.</div>
+          <div class="match-item" data-match="rive-droite">Rive située à droite quand on regarde vers l'aval (vers la mer).</div>
+          <div class="match-item" data-match="aval">La direction vers le bas du fleuve, en se rapprochant de l'embouchure.</div>
+        </div>
+      </div>
+      <div class="flex justify-center gap-3 mt-4">
+        <button class="btn-3d px-6 py-2.5 bg-yellow-400 text-slate-900 rounded-xl text-sm" id="btnResetMatch" type="button">↺ Recommencer</button>
+      </div>
+      <p id="matchFeedback" class="text-center font-bold mt-3 text-sm min-h-[1.5em]"></p>
+    </div>
+  </section>
+
+  <!-- ====================== 04 RIVIERES DE BELGIQUE ====================== -->
+  <section class="page" id="rivieres-belges" role="tabpanel">
+    <h2 class="text-xl md:text-2xl font-display font-bold text-slate-800 mb-2 flex items-center gap-2">
+      <span class="bg-slate-900 text-white font-mono text-xs px-2.5 py-1 rounded-md">04</span>
+      Les Rivières et les Fleuves de Belgique
+    </h2>
+    <p class="text-slate-600 mb-6 text-sm md:text-base leading-relaxed">
+      La Belgique est traversée par de nombreux cours d'eau, qui appartiennent presque tous au bassin de l'un de nos trois fleuves principaux : la Meuse, l'Escaut et l'Yser.
+    </p>
+
+    <div class="grid md:grid-cols-3 gap-4">
+      <!-- Meuse -->
+      <div class="card-premium border-blue-500">
+        <span class="tag-custom bg-blue-50 text-blue-700">🔴 La Meuse</span>
+        <p class="text-xs text-slate-600 my-2">
+          <b>Source :</b> France (Plateau de Langres).<br>
+          <b>Villes traversées :</b> Dinant, Namur, Liège.<br>
+          <b>Embouchure :</b> Mer du Nord (aux Pays-Bas).<br>
+          <b>Ses affluents belges :</b> La Semois, la Lesse, la Sambre, l'Ourthe (qui reçoit la Vesdre et l'Amblève).
+        </p>
+      </div>
+      <!-- Escaut -->
+      <div class="card-premium border-teal-500">
+        <span class="tag-custom bg-teal-50 text-teal-700">🟢 L'Escaut</span>
+        <p class="text-xs text-slate-600 my-2">
+          <b>Source :</b> France (Picardie).<br>
+          <b>Villes traversées :</b> Tournai, Audenarde, Gand, Anvers.<br>
+          <b>Embouchure :</b> Mer du Nord (aux Pays-Bas).<br>
+          <b>Ses affluents belges :</b> La Lys, la Dendre, la Senne (à Bruxelles), le Rupel.
+        </p>
+      </div>
+      <!-- Yser -->
+      <div class="card-premium border-orange-500">
+        <span class="tag-custom bg-orange-50 text-orange-700">🔵 L'Yser</span>
+        <p class="text-xs text-slate-600 my-2">
+          <b>Source :</b> Nord de la France.<br>
+          <b>Villes traversées :</b> Diksmuide.<br>
+          <b>Embouchure :</b> Mer du Nord à <b>Nieuwpoort</b>.<br>
+          <b>Particularité :</b> C'est le seul fleuve qui se jette directement dans la mer sur le territoire de la Belgique !
+        </p>
+      </div>
+    </div>
+
+    <!-- Enquête interactive sur les cours d'eau -->
+    <div class="card-premium mt-6">
+      <span class="tag-custom bg-blue-50 text-blue-700">🕵️ Enquête — « Lis les indices et trouve les réponses »</span>
+      <p class="text-xs text-slate-500 mb-4">À l'aide de l'Atlas de base ou des fiches ci-dessus, réponds aux questions de l'enquête.</p>
+      
+      <div class="space-y-4" id="enqueteQuestions">
+        <!-- Q1 -->
+        <div class="bg-slate-50 border border-slate-200 rounded-xl p-3">
+          <label class="text-xs font-bold text-slate-800 block mb-1">1. Namur est la capitale de la Wallonie. C'est également le point de confluence de la Meuse avec quelle autre rivière ?</label>
+          <select class="border border-slate-300 rounded-lg p-2 text-xs font-semibold select-enquete w-full sm:w-80" data-answer="sambre">
+            <option value="">-- Choisis la réponse --</option>
+            <option value="ourthe">L'Ourthe</option>
+            <option value="sambre">La Sambre</option>
+            <option value="semois">La Semois</option>
+            <option value="lesse">La Lesse</option>
+          </select>
+        </div>
+        <!-- Q2 -->
+        <div class="bg-slate-50 border border-slate-200 rounded-xl p-3">
+          <label class="text-xs font-bold text-slate-800 block mb-1">2. La Lys prend sa source en France et traverse Courtrai avant de se jeter dans l'Escaut à Gand. La Lys est donc :</label>
+          <select class="border border-slate-300 rounded-lg p-2 text-xs font-semibold select-enquete w-full sm:w-80" data-answer="affluent">
+            <option value="">-- Choisis la réponse --</option>
+            <option value="source">Le confluent</option>
+            <option value="fleuve">Le fleuve</option>
+            <option value="affluent">Un affluent de l'Escaut</option>
+          </select>
+        </div>
+        <!-- Q3 -->
+        <div class="bg-slate-50 border border-slate-200 rounded-xl p-3">
+          <label class="text-xs font-bold text-slate-800 block mb-1">3. Jules habite à Bouillon (sur le cours de la Semois) alors que Luc habite à Arlon (très proche de la source de la Semois). Qui habite en AMONT ?</label>
+          <select class="border border-slate-300 rounded-lg p-2 text-xs font-semibold select-enquete w-full sm:w-80" data-answer="luc">
+            <option value="">-- Choisis la réponse --</option>
+            <option value="jules">Jules (habite plus près de la Meuse)</option>
+            <option value="luc">Luc (habite plus près de la source)</option>
+          </select>
+        </div>
+        <!-- Q4 -->
+        <div class="bg-slate-50 border border-slate-200 rounded-xl p-3">
+          <label class="text-xs font-bold text-slate-800 block mb-1">4. Bruxelles est traversée par la Senne (qui coule en grande partie dans un tunnel sous la ville). La Senne se jette dans la Dyle, puis le Rupel et enfin l'Escaut. La Senne fait partie du bassin versant de quel fleuve ?</label>
+          <select class="border border-slate-300 rounded-lg p-2 text-xs font-semibold select-enquete w-full sm:w-80" data-answer="escaut">
+            <option value="">-- Choisis la réponse --</option>
+            <option value="meuse">La Meuse</option>
+            <option value="yser">L'Yser</option>
+            <option value="escaut">L'Escaut</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="flex justify-center mt-6">
+        <button class="btn-3d px-6 py-2.5 bg-yellow-400 text-slate-900 rounded-xl text-sm" id="btnCheckEnquete" type="button">✅ Vérifier l'enquête</button>
+      </div>
+      <p id="enqueteFeedback" class="text-center font-bold mt-3 text-sm min-h-[1.5em]"></p>
+    </div>
+  </section>
+
+  <!-- ====================== 05 EVALUATION & BILAN ====================== -->
+  <section class="page" id="eval-bilan" role="tabpanel">
+    <h2 class="text-xl md:text-2xl font-display font-bold text-slate-800 mb-2 flex items-center gap-2">
+      <span class="bg-slate-900 text-white font-mono text-xs px-2.5 py-1 rounded-md">05</span>
+      Évaluation Finale : Relief et Hydrographie
+    </h2>
+    <p class="text-slate-600 mb-6 text-sm md:text-base leading-relaxed">
+      Es-tu prêt à tester tes connaissances de géographe ? Réponds à ces 10 questions pour valider ta ceinture de chercheur de la Classe de Mr Lejoly.
+    </p>
+
+    <!-- QCM EVALUATION -->
+    <div class="card-premium" id="quizBlock">
+      <span class="tag-custom bg-orange-50 text-orange-700">📝 Quiz de connaissances</span>
+      <div class="space-y-6 mt-4">
+        <!-- Question 1 -->
+        <div class="quiz-q border-b border-slate-100 pb-4" data-q="1">
+          <p class="font-bold text-slate-800 text-sm md:text-base mb-2">1. Quel est le point le plus haut (point culminant) de la Belgique ?</p>
+          <div class="grid gap-2 sm:grid-cols-3">
+            <button class="opt border border-slate-300 bg-white rounded-lg py-2.5 px-4 text-xs font-semibold text-left transition hover:border-blue-500" data-ans="A" type="button">A. La Baraque de Fraiture</button>
+            <button class="opt border border-slate-300 bg-white rounded-lg py-2.5 px-4 text-xs font-semibold text-left transition hover:border-blue-500" data-ans="B" type="button">B. Le Signal de Botrange</button>
+            <button class="opt border border-slate-300 bg-white rounded-lg py-2.5 px-4 text-xs font-semibold text-left transition hover:border-blue-500" data-ans="C" type="button">C. Le Mont Kemmel</button>
+          </div>
+          <p class="fb text-xs font-semibold mt-2 hidden"></p>
+        </div>
+        <!-- Question 2 -->
+        <div class="quiz-q border-b border-slate-100 pb-4" data-q="2">
+          <p class="font-bold text-slate-800 text-sm md:text-base mb-2">2. Quel type de cours d'eau se jette directement dans la mer ou l'océan ?</p>
+          <div class="grid gap-2 sm:grid-cols-3">
+            <button class="opt border border-slate-300 bg-white rounded-lg py-2.5 px-4 text-xs font-semibold text-left transition hover:border-blue-500" data-ans="A" type="button">A. Une rivière</button>
+            <button class="opt border border-slate-300 bg-white rounded-lg py-2.5 px-4 text-xs font-semibold text-left transition hover:border-blue-500" data-ans="B" type="button">B. Un ruisseau</button>
+            <button class="opt border border-slate-300 bg-white rounded-lg py-2.5 px-4 text-xs font-semibold text-left transition hover:border-blue-500" data-ans="C" type="button">C. Un fleuve</button>
+          </div>
+          <p class="fb text-xs font-semibold mt-2 hidden"></p>
+        </div>
+        <!-- Question 3 -->
+        <div class="quiz-q border-b border-slate-100 pb-4" data-q="3">
+          <p class="font-bold text-slate-800 text-sm md:text-base mb-2">3. Dans quelle zone de relief de la Belgique l'altitude est-elle comprise entre 100 et 200 mètres ?</p>
+          <div class="grid gap-2 sm:grid-cols-3">
+            <button class="opt border border-slate-300 bg-white rounded-lg py-2.5 px-4 text-xs font-semibold text-left transition hover:border-blue-500" data-ans="A" type="button">A. La Basse Belgique</button>
+            <button class="opt border border-slate-300 bg-white rounded-lg py-2.5 px-4 text-xs font-semibold text-left transition hover:border-blue-500" data-ans="B" type="button">B. La Moyenne Belgique</button>
+            <button class="opt border border-slate-300 bg-white rounded-lg py-2.5 px-4 text-xs font-semibold text-left transition hover:border-blue-500" data-ans="C" type="button">C. La Haute Belgique</button>
+          </div>
+          <p class="fb text-xs font-semibold mt-2 hidden"></p>
+        </div>
+        <!-- Question 4 -->
+        <div class="quiz-q border-b border-slate-100 pb-4" data-q="4">
+          <p class="font-bold text-slate-800 text-sm md:text-base mb-2">4. Comment s'appelle le point où deux rivières se rejoignent ?</p>
+          <div class="grid gap-2 sm:grid-cols-3">
+            <button class="opt border border-slate-300 bg-white rounded-lg py-2.5 px-4 text-xs font-semibold text-left transition hover:border-blue-500" data-ans="A" type="button">A. Une embouchure</button>
+            <button class="opt border border-slate-300 bg-white rounded-lg py-2.5 px-4 text-xs font-semibold text-left transition hover:border-blue-500" data-ans="B" type="button">B. Une source</button>
+            <button class="opt border border-slate-300 bg-white rounded-lg py-2.5 px-4 text-xs font-semibold text-left transition hover:border-blue-500" data-ans="C" type="button">C. Un confluent</button>
+          </div>
+          <p class="fb text-xs font-semibold mt-2 hidden"></p>
+        </div>
+        <!-- Question 5 -->
+        <div class="quiz-q border-b border-slate-100 pb-4" data-q="5">
+          <p class="font-bold text-slate-800 text-sm md:text-base mb-2">5. Quelle partie du cours d'eau se situe vers le haut, c'est-à-dire près de sa source ?</p>
+          <div class="grid gap-2 sm:grid-cols-3">
+            <button class="opt border border-slate-300 bg-white rounded-lg py-2.5 px-4 text-xs font-semibold text-left transition hover:border-blue-500" data-ans="A" type="button">A. L'aval</button>
+            <button class="opt border border-slate-300 bg-white rounded-lg py-2.5 px-4 text-xs font-semibold text-left transition hover:border-blue-500" data-ans="B" type="button">B. L'amont</button>
+            <button class="opt border border-slate-300 bg-white rounded-lg py-2.5 px-4 text-xs font-semibold text-left transition hover:border-blue-500" data-ans="C" type="button">C. L'embouchure</button>
+          </div>
+          <p class="fb text-xs font-semibold mt-2 hidden"></p>
+        </div>
+        <!-- Question 6 -->
+        <div class="quiz-q border-b border-slate-100 pb-4" data-q="6">
+          <p class="font-bold text-slate-800 text-sm md:text-base mb-2">6. Quel fleuve belge a son embouchure à Nieuwpoort en Belgique ?</p>
+          <div class="grid gap-2 sm:grid-cols-3">
+            <button class="opt border border-slate-300 bg-white rounded-lg py-2.5 px-4 text-xs font-semibold text-left transition hover:border-blue-500" data-ans="A" type="button">A. L'Escaut</button>
+            <button class="opt border border-slate-300 bg-white rounded-lg py-2.5 px-4 text-xs font-semibold text-left transition hover:border-blue-500" data-ans="B" type="button">B. La Meuse</button>
+            <button class="opt border border-slate-300 bg-white rounded-lg py-2.5 px-4 text-xs font-semibold text-left transition hover:border-blue-500" data-ans="C" type="button">C. L'Yser</button>
+          </div>
+          <p class="fb text-xs font-semibold mt-2 hidden"></p>
+        </div>
+        <!-- Question 7 -->
+        <div class="quiz-q border-b border-slate-100 pb-4" data-q="7">
+          <p class="font-bold text-slate-800 text-sm md:text-base mb-2">7. Qu'est-ce qu'un méandre ?</p>
+          <div class="grid gap-2 sm:grid-cols-3">
+            <button class="opt border border-slate-300 bg-white rounded-lg py-2.5 px-4 text-xs font-semibold text-left transition hover:border-blue-500" data-ans="A" type="button">A. Une cascade dans la montagne</button>
+            <button class="opt border border-slate-300 bg-white rounded-lg py-2.5 px-4 text-xs font-semibold text-left transition hover:border-blue-500" data-ans="B" type="button">B. Une boucle ou un grand virage d'un cours d'eau</button>
+            <button class="opt border border-slate-300 bg-white rounded-lg py-2.5 px-4 text-xs font-semibold text-left transition hover:border-blue-500" data-ans="C" type="button">C. Le point le plus profond du fleuve</button>
+          </div>
+          <p class="fb text-xs font-semibold mt-2 hidden"></p>
+        </div>
+        <!-- Question 8 -->
+        <div class="quiz-q border-b border-slate-100 pb-4" data-q="8">
+          <p class="font-bold text-slate-800 text-sm md:text-base mb-2">8. Comment appelle-t-on une vallée très resserrée entre deux montagnes ou plateaux ?</p>
+          <div class="grid gap-2 sm:grid-cols-3">
+            <button class="opt border border-slate-300 bg-white rounded-lg py-2.5 px-4 text-xs font-semibold text-left transition hover:border-blue-500" data-ans="A" type="button">A. Une plaine maritime</button>
+            <button class="opt border border-slate-300 bg-white rounded-lg py-2.5 px-4 text-xs font-semibold text-left transition hover:border-blue-500" data-ans="B" type="button">B. Une vallée encaissée</button>
+            <button class="opt border border-slate-300 bg-white rounded-lg py-2.5 px-4 text-xs font-semibold text-left transition hover:border-blue-500" data-ans="C" type="button">C. Un estuaire élargi</button>
+          </div>
+          <p class="fb text-xs font-semibold mt-2 hidden"></p>
+        </div>
+        <!-- Question 9 -->
+        <div class="quiz-q border-b border-slate-100 pb-4" data-q="9">
+          <p class="font-bold text-slate-800 text-sm md:text-base mb-2">9. Si tu es sur un bateau et que tu regardes vers l'embouchure (aval), où est la rive gauche ?</p>
+          <div class="grid gap-2 sm:grid-cols-3">
+            <button class="opt border border-slate-300 bg-white rounded-lg py-2.5 px-4 text-xs font-semibold text-left transition hover:border-blue-500" data-ans="A" type="button">A. À ta gauche</button>
+            <button class="opt border border-slate-300 bg-white rounded-lg py-2.5 px-4 text-xs font-semibold text-left transition hover:border-blue-500" data-ans="B" type="button">B. À ta droite</button>
+            <button class="opt border border-slate-300 bg-white rounded-lg py-2.5 px-4 text-xs font-semibold text-left transition hover:border-blue-500" data-ans="C" type="button">C. Derrière toi</button>
+          </div>
+          <p class="fb text-xs font-semibold mt-2 hidden"></p>
+        </div>
+        <!-- Question 10 -->
+        <div class="quiz-q pb-2" data-q="10">
+          <p class="font-bold text-slate-800 text-sm md:text-base mb-2">10. Quelle terre est caractérisée par une altitude élevée mais une surface plate ?</p>
+          <div class="grid gap-2 sm:grid-cols-3">
+            <button class="opt border border-slate-300 bg-white rounded-lg py-2.5 px-4 text-xs font-semibold text-left transition hover:border-blue-500" data-ans="A" type="button">A. Une plaine</button>
+            <button class="opt border border-slate-300 bg-white rounded-lg py-2.5 px-4 text-xs font-semibold text-left transition hover:border-blue-500" data-ans="B" type="button">B. Un plateau</button>
+            <button class="opt border border-slate-300 bg-white rounded-lg py-2.5 px-4 text-xs font-semibold text-left transition hover:border-blue-500" data-ans="C" type="button">C. Un col de montagne</button>
+          </div>
+          <p class="fb text-xs font-semibold mt-2 hidden"></p>
+        </div>
+      </div>
+
+      <!-- Barre de score final -->
+      <div class="bg-slate-900 text-white rounded-xl p-4 flex justify-between items-center flex-wrap gap-4 mt-6 border-3 border-neutral-900" id="quizScoreBar" style="display:none">
+        <span class="font-display font-bold text-sm md:text-base">Résultats de ta leçon de géographe ! 🏆</span>
+        <span class="font-display text-lg md:text-xl font-bold">Ton score : <span id="scoreVal" class="text-yellow-400">0</span> / 10</span>
+      </div>
+    </div>
+
+    <!-- Auto-évaluation -->
+    <div class="card-premium">
+      <span class="tag-custom bg-emerald-50 text-emerald-700">📋 Auto-évaluation</span>
+      <div class="mt-3 space-y-2 text-xs md:text-sm text-slate-700">
+        <label class="flex items-center gap-2 cursor-pointer py-1 border-b border-dashed border-slate-200">
+          <input type="checkbox" class="w-4 h-4 accent-emerald-500 shrink-0"> Je sais définir le mot « relief ».
+        </label>
+        <label class="flex items-center gap-2 cursor-pointer py-1 border-b border-dashed border-slate-200">
+          <input type="checkbox" class="w-4 h-4 accent-emerald-500 shrink-0"> Je sais citer les 3 zones de relief belges et donner un exemple de lieu.
+        </label>
+        <label class="flex items-center gap-2 cursor-pointer py-1 border-b border-dashed border-slate-200">
+          <input type="checkbox" class="w-4 h-4 accent-emerald-500 shrink-0"> Je comprends la différence entre plaine (vallée non-encaissée) et plateau (vallée encaissée).
+        </label>
+        <label class="flex items-center gap-2 cursor-pointer py-1 border-b border-dashed border-slate-200">
+          <input type="checkbox" class="w-4 h-4 accent-emerald-500 shrink-0"> Je peux expliquer et schématiser le voyage d'un cours d'eau.
+        </label>
+        <label class="flex items-center gap-2 cursor-pointer py-1">
+          <input type="checkbox" class="w-4 h-4 accent-emerald-500 shrink-0"> Je sais retrouver la rive gauche, la rive droite, l'amont et l'aval.
+        </label>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- LIGHTBOX MODAL -->
+<div id="lightbox" class="fixed inset-0 bg-black/90 z-[9999] hidden flex items-center justify-center p-4 cursor-zoom-out" onclick="closeLightbox()">
+  <button class="absolute top-6 right-6 text-white text-4xl font-bold cursor-pointer hover:scale-110 transition-transform bg-transparent border-0">&times;</button>
+  <img id="lightbox-img" class="max-w-full max-h-full object-contain rounded-lg shadow-2xl transition-all duration-300" src="" alt="Agrandissement">
+  <div id="lightbox-caption" class="absolute bottom-6 left-1/2 -translate-x-1/2 text-white font-display text-sm md:text-base text-center bg-black/60 px-4 py-2 rounded-lg pointer-events-none"></div>
+</div>
+
+<!-- PIED DE PAGE -->
+<footer class="max-w-[1100px] mx-auto py-8 px-6 border-t border-slate-200 text-center text-xs text-slate-500 font-medium">
+  <span>Classe de <b>Mr Lejoly</b> — Module d'étude géographique pour la 5e et 6e primaire (CECP / FWB).</span>
+</footer>
+
+<!-- SCRIPTS INTERACTIFS -->
+<script>
+  /* ============ NAVIGATION DES ONGLETS ============ */
+  const tabBtns = document.querySelectorAll('.tab-btn');
+  const pages = document.querySelectorAll('.page');
+  tabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      tabBtns.forEach(b => b.classList.remove('active'));
+      pages.forEach(p => p.classList.remove('active'));
+      
+      btn.classList.add('active');
+      const targetPage = document.getElementById(btn.dataset.tab);
+      if (targetPage) {
+        targetPage.classList.add('active');
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+
+  /* ============ LIGHTBOX VISIONNEUSE ============ */
+  function openLightbox(imgEl) {
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightbox-img');
+    const lightboxCap = document.getElementById('lightbox-caption');
+    
+    lightboxImg.src = imgEl.src;
+    lightboxCap.textContent = imgEl.dataset.caption || imgEl.alt;
+    lightbox.classList.remove('hidden');
+  }
+  function closeLightbox() {
+    document.getElementById('lightbox').classList.add('hidden');
+  }
+  document.querySelectorAll('.zoomable').forEach(img => {
+    img.addEventListener('click', (e) => {
+      e.stopPropagation();
+      openLightbox(img);
+    });
+  });
+
+  /* ============ RÉVÉLATION DE SYNTHÈSE (ŒIL) ============ */
+  (function(){
+    const selector = '.card-premium';
+    document.querySelectorAll(selector).forEach(box => {
+      if (box.dataset.noToggle) return;
+      const tag = box.querySelector('.tag-custom');
+      if (!tag) return;
+      
+      // We will only hide boxes that are pedagogical callouts (marked with special tag classes)
+      const label = tag.textContent;
+      if (!label.includes('🧭') && !label.includes('📋') && !label.includes('🧭')) {
+        // Only toggle card contents for specific pedagogical challenges or lists if requested,
+        // Let's create an elegant toggle for group class activities or defi.
+      }
+    });
+  })();
+
+  /* ============ ATELIER 1 : EXPLORATION DU RELIEF (HOTSPOTS) ============ */
+  (function(){
+    const hotspots = document.querySelectorAll('#relief-general .hotspot');
+    const statusText = document.getElementById('reliefStatut');
+    const infoTitre = document.getElementById('reliefInfoTitre');
+    const infoDesc = document.getElementById('reliefInfoDesc');
+    const foundSet = new Set();
+
+    hotspots.forEach(h => {
+      h.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const id = h.dataset.id;
+        const name = h.dataset.name;
+        const desc = h.dataset.desc;
+        
+        h.classList.add('found');
+        foundSet.add(id);
+        
+        infoTitre.textContent = name;
+        infoTitre.style.color = "var(--accent-relief-fonce)";
+        infoDesc.textContent = desc;
+        
+        statusText.textContent = "Formes de relief découvertes : " + foundSet.size + " / 6";
+        if (foundSet.size === 6) {
+          statusText.className = "statut on w-full mt-3 py-2 text-center rounded-xl font-bold border border-emerald-300 text-emerald-600 bg-emerald-50";
+          statusText.textContent = "Parfait ! Tu as identifié tous les reliefs de la leçon ! 🏔️🎉";
+        }
+      });
+    });
+  })();
+
+  /* ============ ATELIER 2 : CLASSEMENT DU RELIEF BELGE ============ */
+  (function(){
+    const selects = document.querySelectorAll('#triBelgiqueGrid .select-tri');
+    const btnCheck = document.getElementById('btnCheckTri');
+    const feedback = document.getElementById('triFeedback');
+
+    btnCheck.addEventListener('click', () => {
+      let score = 0;
+      selects.forEach(sel => {
+        const card = sel.closest('.card-tri');
+        const answer = sel.dataset.answer;
+        const value = sel.value;
+        
+        if (value === answer) {
+          card.style.borderColor = "var(--vert)";
+          card.style.background = "var(--vert-clair)";
+          score++;
+        } else {
+          card.style.borderColor = "var(--rouge)";
+          card.style.background = "var(--rouge-clair)";
+        }
+      });
+
+      if (score === selects.length) {
+        feedback.textContent = "Félicitations ! Toutes les localités sont dans leur bon palier ! 🇧🇪🎉";
+        feedback.style.color = "var(--vert)";
+      } else {
+        feedback.textContent = "Il y a " + (selects.length - score) + " erreur(s) de classement. Regarde bien l'altitude de chaque lieu !";
+        feedback.style.color = "var(--rouge)";
+      }
+    });
+  })();
+
+  /* ============ ATELIER 3 : VOCABULAIRE HYDRO (HOTSPOTS) ============ */
+  (function(){
+    const hotspots = document.querySelectorAll('#hydro-vocab .hotspot');
+    const statusText = document.getElementById('hydroStatut');
+    const infoTitre = document.getElementById('hydroInfoTitre');
+    const infoDesc = document.getElementById('hydroInfoDesc');
+    const foundSet = new Set();
+
+    hotspots.forEach(h => {
+      h.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const id = h.dataset.id;
+        const name = h.dataset.name;
+        const desc = h.dataset.desc;
+        
+        h.classList.add('found');
+        foundSet.add(id);
+        
+        infoTitre.textContent = name;
+        infoTitre.style.color = "var(--courant-fonce)";
+        infoDesc.textContent = desc;
+        
+        statusText.textContent = "Organes hydrographiques découverts : " + foundSet.size + " / 6";
+        if (foundSet.size === 6) {
+          statusText.className = "statut on w-full mt-3 py-2 text-center rounded-xl font-bold border border-emerald-300 text-emerald-600 bg-emerald-50";
+          statusText.textContent = "Félicitations ! Le voyage du cours d'eau n'a plus de secret pour toi ! 💧🎉";
+        }
+      });
+    });
+  })();
+
+  /* ============ ATELIER 3 : ASSOCIATION DE CARTES (HYDRO) ============ */
+  (function(){
+    const matchItems = document.querySelectorAll('#matchHydroGrid .match-item');
+    const btnReset = document.getElementById('btnResetMatch');
+    const feedback = document.getElementById('matchFeedback');
+    let selected = null;
+    
+    matchItems.forEach(item => {
+      item.addEventListener('click', () => {
+        if (item.classList.contains('done')) return;
+        
+        const parent = item.parentElement;
+        const isLeft = parent.querySelector('h4').textContent.includes('Éléments');
+        
+        if (selected === null) {
+          selected = { element: item, isLeft: isLeft };
+          item.classList.add('sel');
+        } else {
+          // If clicked on same column, change selection
+          if (selected.isLeft === isLeft) {
+            selected.element.classList.remove('sel');
+            selected = { element: item, isLeft: isLeft };
+            item.classList.add('sel');
+          } else {
+            // Check matches!
+            const leftEl = selected.isLeft ? selected.element : item;
+            const rightEl = selected.isLeft ? item : selected.element;
+            
+            const matchValLeft = leftEl.dataset.match;
+            const matchValRight = rightEl.dataset.match;
+            
+            if (matchValLeft === matchValRight) {
+              leftEl.className = 'match-item done';
+              rightEl.className = 'match-item done';
+              feedback.textContent = "Bonne association !";
+              feedback.style.color = "var(--vert)";
+            } else {
+              leftEl.classList.remove('sel');
+              rightEl.classList.remove('sel');
+              feedback.textContent = "Mauvaise association. Réessaie !";
+              feedback.style.color = "var(--rouge)";
+            }
+            selected = null;
+            
+            // Check if all matched
+            const allDones = document.querySelectorAll('#matchHydroGrid .match-item.done');
+            if (allDones.length === 12) {
+              feedback.textContent = "Magnifique ! Toutes les cartes de vocabulaire sont associées ! 🧠💧";
+              feedback.style.color = "var(--vert)";
+            }
+          }
+        }
+      });
+    });
+    
+    btnReset.addEventListener('click', () => {
+      matchItems.forEach(item => {
+        item.className = 'match-item';
+      });
+      feedback.textContent = '';
+      selected = null;
+    });
+  })();
+
+  /* ============ ATELIER 4 : ENQUÊTE RIVIÈRES DE BELGIQUE ============ */
+  (function(){
+    const selects = document.querySelectorAll('#enqueteQuestions .select-enquete');
+    const btnCheck = document.getElementById('btnCheckEnquete');
+    const feedback = document.getElementById('enqueteFeedback');
+
+    btnCheck.addEventListener('click', () => {
+      let score = 0;
+      selects.forEach(sel => {
+        const value = sel.value;
+        const answer = sel.dataset.answer;
+        const container = sel.parentElement;
+        
+        if (value === answer) {
+          container.style.borderColor = "var(--vert)";
+          container.style.background = "var(--vert-clair)";
+          score++;
+        } else {
+          container.style.borderColor = "var(--rouge)";
+          container.style.background = "var(--rouge-clair)";
+        }
+      });
+
+      if (score === selects.length) {
+        feedback.textContent = "Bravo, inspecteur ! Toutes les réponses aux énigmes d'eau sont correctes ! 🕵️💧";
+        feedback.style.color = "var(--vert)";
+      } else {
+        feedback.textContent = "Il y a des erreurs dans ton enquête. Relis bien les fiches des 3 fleuves !";
+        feedback.style.color = "var(--rouge)";
+      }
+    });
+  })();
+
+  /* ============ ATELIER 5 : QUIZ D'ÉVALUATION ============ */
+  (function(){
+    const questions = document.querySelectorAll('#quizBlock .quiz-q');
+    const scoreBar = document.getElementById('quizScoreBar');
+    const scoreVal = document.getElementById('scoreVal');
+    
+    const correctAnswers = {
+      "1": "B", "2": "C", "3": "B", "4": "C", "5": "B",
+      "6": "C", "7": "B", "8": "B", "9": "A", "10": "B"
+    };
+    
+    const feedbacks = {
+      "1": "Le Signal de Botrange s'élève à 694 m dans les Hautes Fagnes, c'est le point culminant de la Belgique.",
+      "2": "Un fleuve est un cours d'eau qui se jette directement dans la mer (ex: Yser, Escaut, Meuse).",
+      "3": "La Moyenne Belgique regroupe les plateaux de Hesbaye et de Brabant, situés de 100 à 200 m d'altitude.",
+      "4": "Le confluent est le lieu de réunion où deux cours d'eau se mélangent.",
+      "5": "L'amont correspond à la partie supérieure, en direction de la source. L'aval se dirige vers l'embouchure.",
+      "6": "L'Yser est le seul fleuve belge dont l'embouchure (Nieuwpoort) se situe sur notre territoire.",
+      "7": "Un méandre est un large virage dessiné par une rivière lente dans les plaines.",
+      "8": "Une vallée est dite encaissée quand la rivière a creusé un lit étroit avec des versants abrupts.",
+      "9": "La rive gauche se trouve à notre gauche lorsque notre regard se dirige vers l'aval (dans le sens du courant).",
+      "10": "Un plateau est plat en surface mais situé à une altitude élevée."
+    };
+    
+    let scores = {};
+    
+    questions.forEach(q => {
+      const qId = q.dataset.q;
+      const opts = q.querySelectorAll('.opt');
+      const fb = q.querySelector('.fb');
+      
+      opts.forEach(opt => {
+        opt.addEventListener('click', () => {
+          opts.forEach(o => o.disabled = true); // Désactive les autres options
+          
+          const selectedAns = opt.dataset.ans;
+          const correctAns = correctAnswers[qId];
+          
+          if (selectedAns === correctAns) {
+            opt.classList.add('bg-emerald-100', 'border-emerald-500', 'text-emerald-800', 'font-bold');
+            fb.textContent = "Correct ! " + feedbacks[qId];
+            fb.className = "fb text-xs font-semibold mt-2 block text-emerald-600";
+            scores[qId] = 1;
+          } else {
+            opt.classList.add('bg-red-100', 'border-red-500', 'text-red-800', 'font-bold');
+            // Mettre en valeur la bonne réponse
+            q.querySelector("[data-ans='" + correctAns + "']").classList.add('bg-emerald-100', 'border-emerald-500', 'text-emerald-800', 'font-bold');
+            fb.textContent = "Incorrect. " + feedbacks[qId];
+            fb.className = "fb text-xs font-semibold mt-2 block text-red-600";
+            scores[qId] = 0;
+          }
+          
+          // Affichage du score total si toutes les questions ont reçu une réponse
+          if (Object.keys(scores).length === 10) {
+            let total = 0;
+            for (let key in scores) {
+              total += scores[key];
+            }
+            scoreVal.textContent = total;
+            scoreBar.style.display = "flex";
+          }
+        });
+      });
+    });
+  })();
+</script>
+
+</body>
+</html>
