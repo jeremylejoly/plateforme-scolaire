@@ -5522,7 +5522,7 @@ window.SAVOIR_ECOUTER_DATA = [
   {
     id: 'savoir_ecouter_1',
     titre: 'Le secret de la forêt de Soignes',
-    emoji: '🎧',
+    emoji: '<img src=\"assets/logos/savoir_ecouter_soignes.png\" class=\"w-full h-full object-contain\" />',
     desc: 'Écoute le texte et réponds aux 10 questions.',
     audioUrl: 'audio/soignes_audio.m4a',
     screen: 'screen-savoir-ecouter',
@@ -5637,7 +5637,7 @@ window.SAVOIR_ECOUTER_DATA = [
   {
     id: 'savoir_ecouter_2',
     titre: "Le mystère du carillon de Bruges",
-    emoji: '🔔',
+    emoji: '<img src=\"assets/logos/savoir_ecouter_bruges.png\" class=\"w-full h-full object-contain\" />',
     desc: 'Écoute le texte et réponds aux 10 questions.',
     audioUrl: 'audio/bruges_audio.m4a',
     screen: 'screen-savoir-ecouter',
@@ -5752,7 +5752,7 @@ window.SAVOIR_ECOUTER_DATA = [
   {
     id: 'savoir_ecouter_3',
     titre: "La fourmi superstar",
-    emoji: '🐜',
+    emoji: '<img src=\"assets/logos/savoir_ecouter_fourmi.png\" class=\"w-full h-full object-contain\" />',
     desc: 'Écoute le texte et réponds aux 10 questions.',
     audioUrl: 'audio/fourmi_audio.m4a',
     screen: 'screen-savoir-ecouter',
@@ -5867,7 +5867,7 @@ window.SAVOIR_ECOUTER_DATA = [
   {
     id: 'savoir_ecouter_4',
     titre: "La recette du pain perdu",
-    emoji: '🍳',
+    emoji: '<img src=\"assets/logos/savoir_ecouter_pain_perdu.png\" class=\"w-full h-full object-contain\" />',
     desc: 'Écoute le texte et réponds aux 10 questions.',
     audioUrl: 'audio/pain_perdu_audio.m4a',
     screen: 'screen-savoir-ecouter',
@@ -5982,7 +5982,7 @@ window.SAVOIR_ECOUTER_DATA = [
   {
     id: "savoir_ecouter_5",
     titre: "Les Hautes Fagnes",
-    emoji: "🏔️",
+    emoji: '<img src=\"assets/logos/savoir_ecouter_hautes_fagnes.png\" class=\"w-full h-full object-contain\" />',
     desc: "Écoute le texte et réponds aux 10 questions.",
     audioUrl: "audio/fagnes_audio.m4a",
     screen: "screen-savoir-ecouter",
@@ -6097,7 +6097,7 @@ window.SAVOIR_ECOUTER_DATA = [
   {
     id: 'savoir_ecouter_6',
     titre: "Dans l'atelier de Sandy",
-    emoji: '🎨',
+    emoji: '<img src=\"assets/logos/savoir_ecouter_atelier_sandy.png\" class=\"w-full h-full object-contain\" />',
     desc: 'Écoute le dialogue et réponds aux 10 questions.',
     audioUrl: 'audio/atelier_audio.m4a',
     screen: 'screen-savoir-ecouter',
@@ -6212,7 +6212,7 @@ window.SAVOIR_ECOUTER_DATA = [
   {
     id: 'savoir_ecouter_7',
     titre: "Au club d'échecs",
-    emoji: '♟️',
+    emoji: '<img src=\"assets/logos/savoir_ecouter_club_echecs.png\" class=\"w-full h-full object-contain\" />',
     desc: 'Écoute le dialogue et réponds aux 10 questions.',
     audioUrl: 'audio/echecs_audio.m4a',
     screen: 'screen-savoir-ecouter',
@@ -6327,7 +6327,7 @@ window.SAVOIR_ECOUTER_DATA = [
   {
     id: 'savoir_ecouter_8',
     titre: "Notice de l'étagère Lyra",
-    emoji: '🔧',
+    emoji: '<img src=\"assets/logos/savoir_ecouter_lyra.png\" class=\"w-full h-full object-contain\" />',
     desc: 'Écoute la notice et réponds aux 10 questions.',
     audioUrl: 'audio/notice_audio.m4a',
     screen: 'screen-savoir-ecouter',
