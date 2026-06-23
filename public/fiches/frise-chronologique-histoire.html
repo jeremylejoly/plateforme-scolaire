@@ -1,0 +1,1521 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Frise Chronologique – Histoire – P5–P6 FWB</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=Inter:wght@300..800&family=Nunito:wght@300..800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FDFBF7;
+    --paper-2: #F6F3EC;
+    --card-bg: #FFFFFF;
+    --text: #1A1A2E;
+    --border: #1A1A2E;
+    --muted: #6B7080;
+
+    /* Couleurs de base des périodes */
+    --p1: #B5732E; /* Préhistoire — ocre */
+    --p2: #D9A521; /* Antiquité — or */
+    --p3: #9C2F3A; /* Moyen Âge — grenat */
+    --p4: #2F6E8F; /* Temps Modernes — bleu */
+    --p5: #3F8C5C; /* Contemporaine — vert */
+
+    --timeline-h: 80px;
+    --radius: 16px;
+    --radius-sm: 8px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding-bottom: 40px;
+  }
+
+  /* ===== HEADER ===== */
+  header {
+    background: #FFFFFF;
+    color: var(--text);
+    padding: 28px 24px;
+    text-align: center;
+    border-bottom: 3px solid var(--border);
+  }
+  header h1 {
+    font-family: 'Fredoka', sans-serif;
+    font-size: clamp(1.4rem, 4vw, 2.2rem);
+    font-weight: 800;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+  }
+  header p {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--muted);
+  }
+  .badges {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 14px;
+    flex-wrap: wrap;
+  }
+  .badge {
+    background: var(--paper-2);
+    border: 2.5px solid var(--border);
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text);
+    box-shadow: 2px 2px 0px var(--border);
+  }
+
+  /* ===== LEGENDE ===== */
+  .legend-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 16px 24px;
+    background: #fff;
+    border-bottom: 3px solid var(--border);
+    justify-content: center;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--text);
+    background: var(--paper-2);
+    border: 2.5px solid var(--border);
+    border-radius: 8px;
+    padding: 4px 10px;
+    box-shadow: 2px 2px 0px var(--border);
+  }
+  .legend-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+    flex-shrink: 0;
+    border: 1.5px solid var(--border);
+  }
+
+  /* ===== SECTION FRISE ===== */
+  .timeline-section {
+    padding: 32px 24px 0;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+  .timeline-section h2, .zoom-section h2 {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 1.4rem;
+    color: var(--text);
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* ===== FRISE PRINCIPALE ===== */
+  .timeline-wrapper {
+    position: relative;
+    padding-bottom: 12px;
+  }
+  .timeline-track {
+    display: flex;
+    width: 100%;
+    height: var(--timeline-h);
+    border: 3px solid var(--border);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    box-shadow: 5px 5px 0px var(--border);
+    background: #fff;
+  }
+  .period-block {
+    position: relative;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    transition: all 0.15s ease;
+    cursor: pointer;
+    border-right: 3px solid var(--border);
+  }
+  .period-block:last-child {
+    border-right: none;
+  }
+  .period-block:hover {
+    filter: brightness(1.08);
+  }
+  .period-block.selected {
+    filter: brightness(1.12);
+    box-shadow: inset 0 0 0 4px rgba(255,255,255,0.4);
+  }
+  .period-block.dimmed {
+    opacity: 0.5;
+    filter: grayscale(30%);
+  }
+
+  .period-label {
+    color: #fff;
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 800;
+    font-size: clamp(0.7rem, 1.3vw, 1rem);
+    text-align: center;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.4);
+    padding: 0 4px;
+    line-height: 1.2;
+    z-index: 2;
+  }
+  .period-block[data-period-id="antiquite"] .period-label {
+    color: #3A2C05;
+    text-shadow: none;
+  }
+  .period-block[data-period-id="antiquite"] .period-date-label {
+    color: rgba(58, 44, 5, 0.8);
+    text-shadow: none;
+  }
+
+  .period-date-label {
+    color: rgba(255,255,255,0.9);
+    font-family: 'Space Mono', monospace;
+    font-size: clamp(0.55rem, 0.9vw, 0.75rem);
+    font-weight: 700;
+    text-align: center;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.4);
+    margin-top: 3px;
+  }
+
+  .timeline-markers-row {
+    position: relative;
+    height: 36px;
+    width: 100%;
+    margin-top: 8px;
+  }
+  .date-tick {
+    position: absolute;
+    top: 6px;
+    transform: translateX(-50%);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--text);
+    background: #fff;
+    border: 2px solid var(--border);
+    border-radius: 6px;
+    padding: 2px 6px;
+    white-space: nowrap;
+    z-index: 10;
+    box-shadow: 2px 2px 0px var(--border);
+  }
+
+  /* ===== SÉPARATEURS SOUS-PÉRIODES ===== */
+  .subperiod-sep {
+    position: absolute;
+    top: 0; bottom: 0;
+    width: 3px;
+    background: var(--border);
+    z-index: 8;
+    pointer-events: none;
+  }
+  .subperiod-sep::after {
+    content: attr(data-label);
+    position: absolute;
+    bottom: 4px;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.55rem;
+    font-weight: 700;
+    color: #fff;
+    background: rgba(0,0,0,0.5);
+    border-radius: 4px;
+    padding: 1px 3px;
+  }
+
+  /* ===== FRISE ZOOMÉE ===== */
+  .zoom-section {
+    padding: 28px 24px 0;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+  .zoom-subtitle {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--muted);
+    margin-bottom: 16px;
+  }
+  .zoom-wrapper {
+    position: relative;
+    padding-bottom: 12px;
+  }
+  .zoom-track-row {
+    display: flex;
+    align-items: stretch;
+    width: 100%;
+    height: 74px;
+    border: 3px solid var(--border);
+    border-radius: var(--radius-sm);
+    overflow: visible;
+    box-shadow: 5px 5px 0px var(--border);
+    background: #fff;
+  }
+
+  /* Bloc pointillés à gauche */
+  .zoom-dotted-block {
+    flex-shrink: 0;
+    width: 80px;
+    height: 100%;
+    background: repeating-linear-gradient(
+      45deg,
+      #B5732E,
+      #B5732E 10px,
+      #a06020 10px,
+      #a06020 20px
+    );
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    border-right: 3px solid var(--border);
+  }
+  .zoom-dotted-label {
+    color: #fff;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-align: center;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.6);
+    line-height: 1.3;
+    padding: 0 4px;
+  }
+
+  /* Séparateur flèche */
+  .zoom-arrow-sep {
+    flex-shrink: 0;
+    width: 28px;
+    height: 100%;
+    background: var(--paper-2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 2;
+    border-right: 3px solid var(--border);
+  }
+  .zoom-arrow-sep-text {
+    color: var(--text);
+    font-size: 1.1rem;
+    font-weight: 900;
+  }
+
+  /* Frise zoomée */
+  .zoom-track {
+    flex: 1;
+    display: flex;
+    height: 100%;
+    overflow: hidden;
+    position: relative;
+  }
+  .zoom-block {
+    position: relative;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    transition: all 0.15s ease;
+    cursor: pointer;
+    border-right: 3px solid var(--border);
+  }
+  .zoom-block:last-child {
+    border-right: none;
+  }
+  .zoom-block:hover {
+    filter: brightness(1.08);
+  }
+  .zoom-block.selected {
+    filter: brightness(1.12);
+    box-shadow: inset 0 0 0 4px rgba(255,255,255,0.4);
+  }
+  .zoom-block.dimmed {
+    opacity: 0.5;
+    filter: grayscale(30%);
+  }
+  .zoom-block-label {
+    color: #fff;
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 800;
+    font-size: clamp(0.6rem, 1.1vw, 0.9rem);
+    text-align: center;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.4);
+    padding: 0 3px;
+    line-height: 1.2;
+  }
+  .zoom-block[data-period-id="antiquite"] .zoom-block-label {
+    color: #3A2C05;
+    text-shadow: none;
+  }
+  .zoom-block[data-period-id="antiquite"] .zoom-block-date {
+    color: rgba(58, 44, 5, 0.8);
+    text-shadow: none;
+  }
+
+  .zoom-block-date {
+    color: rgba(255,255,255,0.85);
+    font-family: 'Space Mono', monospace;
+    font-size: clamp(0.5rem, 0.8vw, 0.7rem);
+    font-weight: 700;
+    text-align: center;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.4);
+    margin-top: 2px;
+  }
+  .zoom-sep {
+    position: absolute;
+    top: 0; bottom: 0;
+    width: 2px;
+    background: var(--border);
+    z-index: 8;
+    pointer-events: none;
+  }
+
+  /* Marqueurs dates frise zoomée */
+  .zoom-markers-row {
+    position: relative;
+    height: 36px;
+    width: 100%;
+    margin-top: 8px;
+    padding-left: 108px;
+  }
+  .zoom-date-tick {
+    position: absolute;
+    top: 6px;
+    transform: translateX(-50%);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: var(--text);
+    background: #fff;
+    border: 2px solid var(--border);
+    border-radius: 6px;
+    padding: 2px 6px;
+    white-space: nowrap;
+    z-index: 10;
+    box-shadow: 2px 2px 0px var(--border);
+  }
+
+  /* ===== BOUTONS NAVIGATION ===== */
+  .nav-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+    margin: 28px auto 0;
+    max-width: 1000px;
+    padding: 0 24px;
+  }
+  .nav-btn {
+    border: 3px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 10px 20px;
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    box-shadow: 3px 3px 0px var(--border);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .nav-btn:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 5px 5px 0px var(--border);
+  }
+  .nav-btn:active {
+    transform: translate(1px, 1px);
+    box-shadow: 1px 1px 0px var(--border);
+  }
+  .nav-btn.active {
+    outline: 3px solid var(--text);
+    outline-offset: 2px;
+  }
+  .nav-btn.all-btn {
+    background: #444;
+  }
+
+  /* ===== PANNEAU DÉTAIL PÉRIODE ===== */
+  .detail-panel {
+    margin: 32px auto;
+    max-width: 950px;
+    background: var(--card-bg);
+    border: 3px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: 6px 6px 0px var(--border);
+    overflow: hidden;
+    display: none;
+    animation: fadeUp 0.3s ease;
+  }
+  .detail-panel.visible { display: block; }
+  
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .detail-header {
+    padding: 20px 24px;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    border-bottom: 3px solid var(--border);
+  }
+  .detail-header[style*="background: rgb(217, 165, 33)"],
+  .detail-header[style*="background:#D9A521"],
+  .detail-header[style*="background: var(--p2)"],
+  .detail-header[style*="background:var(--p2)"] {
+    color: #3A2C05;
+  }
+  .detail-header-icon {
+    font-size: 2.2rem;
+    flex-shrink: 0;
+    background: rgba(255,255,255,0.25);
+    border-radius: 12px;
+    width: 54px;
+    height: 54px;
+    display: grid;
+    place-items: center;
+    border: 2px solid rgba(255,255,255,0.4);
+  }
+  .detail-header-text h3 {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 800;
+  }
+  .detail-header-text p {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.85rem;
+    font-weight: 700;
+    opacity: 0.9;
+    margin-top: 2px;
+  }
+
+  .detail-desc {
+    padding: 18px 24px;
+    background: var(--paper-2);
+    border-bottom: 3px solid var(--border);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  .detail-illustrations {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+    padding: 20px 24px;
+    background: var(--paper-2);
+    border-bottom: 3px solid var(--border);
+  }
+  .illustration-card {
+    background: #ffffff;
+    border: 3px solid var(--border);
+    border-radius: 12px;
+    box-shadow: 4px 4px 0px var(--border);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .illustration-card:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0px var(--border);
+  }
+  .illustration-img {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    border-bottom: 3px solid var(--border);
+    cursor: pointer;
+  }
+  .illustration-legend {
+    padding: 12px 14px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    line-height: 1.4;
+    color: var(--text);
+  }
+
+  /* ===== SOUS-PÉRIODES ===== */
+  .sub-periods {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    padding: 16px 24px;
+    background: var(--paper-2);
+    border-bottom: 3px solid var(--border);
+    align-items: center;
+  }
+  .sub-period-chip {
+    border: 2.5px solid var(--border);
+    border-radius: 10px;
+    padding: 6px 14px;
+    font-size: 0.8rem;
+    font-weight: 800;
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.12s ease;
+    box-shadow: 2px 2px 0px var(--border);
+  }
+  .sub-period-chip:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: 3px 3px 0px var(--border);
+  }
+  .sub-period-chip:active {
+    transform: translate(1px, 1px);
+    box-shadow: 1px 1px 0px var(--border);
+  }
+  .sub-period-chip.active {
+    outline: 3px solid var(--text);
+    outline-offset: 2px;
+  }
+
+  /* ===== LISTE ÉVÉNEMENTS ===== */
+  .events-header {
+    padding: 16px 24px 10px;
+    font-family: 'Fredoka', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    border-bottom: 3px solid var(--paper-2);
+  }
+  .events-list {
+    padding: 12px 24px 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 12px;
+  }
+  .event-chip {
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    border: 3px solid var(--border);
+    box-shadow: 3px 3px 0px var(--border);
+    transition: all 0.12s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    background: #FFFFFF;
+  }
+  .event-chip:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 5px 5px 0px var(--border);
+  }
+  .event-chip:active {
+    transform: translate(1px, 1px);
+    box-shadow: 1px 1px 0px var(--border);
+  }
+  .event-chip.selected {
+    background: var(--paper-2);
+    border-color: currentColor;
+    box-shadow: inset 0 0 0 2px rgba(0,0,0,0.05), 3px 3px 0px var(--border);
+  }
+  .event-chip-date {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.72rem;
+    font-weight: 800;
+    opacity: 0.85;
+  }
+  .event-chip-title {
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 800;
+    line-height: 1.3;
+  }
+
+  /* ===== FICHE ÉVÉNEMENT ===== */
+  .event-detail-card {
+    margin: 8px 24px 24px;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 3px solid var(--border);
+    box-shadow: 5px 5px 0px var(--border);
+    display: none;
+    animation: slideDown 0.25s ease;
+  }
+  .event-detail-card.visible { display: block; }
+  
+  @keyframes slideDown {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .event-detail-card-header {
+    padding: 16px 20px;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 3px solid var(--border);
+  }
+  .event-detail-card-header[style*="background: rgb(217, 165, 33)"],
+  .event-detail-card-header[style*="background:#D9A521"],
+  .event-detail-card-header[style*="background: var(--p2)"],
+  .event-detail-card-header[style*="background:var(--p2)"] {
+    color: #3A2C05;
+  }
+  .event-detail-card-header .event-icon {
+    font-size: 1.8rem;
+    background: rgba(255,255,255,0.2);
+    width: 44px;
+    height: 44px;
+    display: grid;
+    place-items: center;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.3);
+  }
+  .event-detail-card-header h4 {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 1.15rem;
+    font-weight: 800;
+  }
+  .event-detail-card-header .event-date {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.8rem;
+    font-weight: 700;
+    opacity: 0.9;
+  }
+  .event-detail-body {
+    padding: 18px 20px;
+    font-size: 0.92rem;
+    line-height: 1.7;
+    color: var(--text);
+    background: #FFFFFF;
+    border-bottom: 3px solid var(--border);
+  }
+  .event-detail-body strong {
+    color: var(--text);
+    font-weight: 800;
+  }
+
+  /* Position sur frise mini */
+  .mini-timeline-row {
+    padding: 14px 20px;
+    background: var(--paper-2);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--muted);
+  }
+  .mini-marker-bar {
+    flex: 1;
+    height: 14px;
+    border-radius: 7px;
+    position: relative;
+    background: #FFFFFF;
+    border: 2px solid var(--border);
+    overflow: visible;
+  }
+  .mini-fill {
+    position: absolute;
+    top: 0; bottom: 0; left: 0;
+    border-radius: 4px 0 0 4px;
+    border-right: 2px solid var(--border);
+  }
+  .mini-pointer {
+    position: absolute;
+    top: -6px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 2.5px solid var(--border);
+    box-shadow: 2px 2px 0px rgba(0,0,0,0.15);
+    transform: translateX(-50%);
+    z-index: 5;
+  }
+
+  /* ===== FOOTER ===== */
+  footer {
+    text-align: center;
+    padding: 24px 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--muted);
+    margin-top: 40px;
+    border-top: 3px solid var(--border);
+    background: #FFFFFF;
+  }
+
+  @media (max-width: 600px) {
+    .events-list { grid-template-columns: 1fr; }
+    header h1 { font-size: 1.3rem; }
+    .timeline-track { height: 60px; }
+    :root { --timeline-h: 60px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🏛️ Frise Chronologique de l'Histoire</h1>
+  <p>Outil interactif — 5e & 6e Primaire — Fédération Wallonie-Bruxelles</p>
+  <div class="badges">
+    <span class="badge">📚 Référentiel FHGES FWB</span>
+    <span class="badge">📋 Programme CECP</span>
+    <span class="badge">🕰️ ~3 000 000 av. J.-C. → Aujourd'hui</span>
+  </div>
+</header>
+
+<!-- LÉGENDE -->
+<div class="legend-bar" id="legendBar"></div>
+
+<!-- FRISE PRINCIPALE -->
+<div class="timeline-section">
+  <h2>▸ Clique sur une période pour l'explorer</h2>
+  <div class="timeline-wrapper">
+    <div class="timeline-markers-row" id="markersRow"></div>
+    <div class="timeline-track" id="timelineTrack"></div>
+  </div>
+</div>
+
+<!-- FRISE ZOOMÉE -->
+<div class="zoom-section">
+  <h2>🔍 Zoom — De la sédentarisation à aujourd'hui</h2>
+  <p class="zoom-subtitle">La Préhistoire ancienne est symbolisée par le bloc à gauche ◀ — à l'échelle réelle elle occuperait toute la page !</p>
+  <div class="zoom-wrapper">
+    <div class="zoom-markers-row" id="zoomMarkersRow"></div>
+    <div class="zoom-track-row">
+      <div class="zoom-dotted-block">
+        <div class="zoom-dotted-label">~3 000 000<br>à ~9 000<br>av. J.-C.</div>
+      </div>
+      <div class="zoom-arrow-sep">
+        <span class="zoom-arrow-sep-text">»</span>
+      </div>
+      <div class="zoom-track" id="zoomTrack"></div>
+    </div>
+  </div>
+</div>
+
+<!-- BOUTONS NAVIGATION -->
+<div class="nav-buttons" id="navButtons"></div>
+
+<!-- PANNEAU DÉTAIL -->
+<div class="detail-panel" id="detailPanel">
+  <div class="detail-header" id="detailHeader">
+    <div class="detail-header-icon" id="detailIcon"></div>
+    <div class="detail-header-text">
+      <h3 id="detailTitle"></h3>
+      <p id="detailDates"></p>
+    </div>
+  </div>
+  <div class="detail-desc" id="detailDesc"></div>
+  <div class="detail-illustrations" id="detailIllustrations" style="display:none"></div>
+  <!-- Sous-périodes préhistoire -->
+  <div class="sub-periods" id="subPeriodsRow" style="display:none"></div>
+  <div class="events-header">📌 Événements principaux — clique pour en savoir plus</div>
+  <div class="events-list" id="eventsList"></div>
+  <div class="event-detail-card" id="eventDetailCard">
+    <div class="event-detail-card-header" id="eventDetailHeader">
+      <span class="event-icon" id="eventDetailIcon"></span>
+      <div>
+        <div class="event-date" id="eventDetailDate"></div>
+        <h4 id="eventDetailTitle"></h4>
+      </div>
+    </div>
+    <div class="event-detail-body" id="eventDetailBody"></div>
+    <div class="mini-timeline-row">
+      <span>Position sur la grande frise :</span>
+      <div class="mini-marker-bar" id="miniMarkerBar">
+        <div class="mini-fill" id="miniFill"></div>
+        <div class="mini-pointer" id="miniPointer"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal pour agrandir les images -->
+<div id="imageModal" style="display:none; position:fixed; z-index:9999; left:0; top:0; width:100%; height:100%; overflow:auto; background-color: rgba(0,0,0,0.85); align-items:center; justify-content:center; padding: 20px;">
+  <div style="max-width: 900px; width: 100%; background:#fff; position:relative; display: flex; flex-direction: column; box-shadow: 6px 6px 0 var(--border); border: 3px solid var(--border); border-radius: 12px; padding: 25px; animation: slideDown 0.2s ease;">
+    <button onclick="closeImageModal()" style="position:absolute; right:15px; top:15px; background:#ff5f56; color:#fff; border:3px solid var(--border); border-radius:8px; font-weight:800; cursor:pointer; padding:5px 12px; box-shadow: 2px 2px 0 var(--border); font-family:'Fredoka', sans-serif;">✕ Fermer</button>
+    <h3 id="modalTitle" style="margin-top:0; font-family:'Fredoka', sans-serif; font-size:1.3rem; padding-right:80px; border-bottom:3px solid var(--border); padding-bottom:10px;">Illustration</h3>
+    <div style="flex:1; overflow-y:auto; text-align:center; padding:15px 0;">
+      <img id="modalImg" src="" style="max-width:100%; max-height: 70vh; height:auto; border:3px solid var(--border); border-radius:8px; box-shadow: 4px 4px 0 var(--border);">
+    </div>
+  </div>
+</div>
+
+<footer>
+  Ligne du temps conforme au référentiel FHGES (tronc commun FWB) et au programme du CECP — Usage pédagogique libre
+</footer>
+
+<script>
+// =============================================
+// DONNÉES HISTORIQUES
+// =============================================
+
+const TOTAL_START = -3000000;
+const TOTAL_END   =  2026;
+
+// Couleurs
+const COLORS = {
+  'paleo':    '#8B5E3C',
+  'meso':     '#A0724A',
+  'neo':      '#B5732E',
+  'bronze':   '#C9A06A',
+  'fer':      '#D4B483',
+  'antiq':    '#D9A521',
+  'moyen':    '#9C2F3A',
+  'moderne':  '#2F6E8F',
+  'contemp':  '#3F8C5C',
+};
+
+// Périodes principales (pour la frise et les blocs)
+const PERIODS = [
+  {
+    id: 'prehistoire',
+    label: 'Préhistoire',
+    icon: '🦴',
+    color: COLORS.paleo,
+    gradient: `linear-gradient(90deg, ${COLORS.paleo} 0%, ${COLORS.fer} 100%)`,
+    start: -3000000,
+    end: -52,
+    widthPct: null, // calculé
+    desc: "La Préhistoire (incluant la Protohistoire/les âges des métaux) désigne la très longue période qui précède la conquête romaine. Elle commence avec l'apparition des premiers humains, il y a environ 3 millions d'années, et se termine en 52 av. J.-C. avec la conquête de la Gaule par Jules César. Elle représente plus de 99 % du temps que l'humanité a passé sur notre territoire ! On la divise en grandes sous-périodes selon les outils fabriqués et les modes de vie.",
+    illustrations: [
+      { src: 'photos/doc_etiolles.png', legend: "Illustration A : Reconstitution d'un campement paléolithique nomade à Étiolles (Paléolithique)." },
+      { src: 'photos/doc_paladru.png', legend: "Illustration B : Reconstitution réaliste du village néolithique de Paladru sur pilotis (Néolithique)." }
+    ],
+    subPeriods: [
+      { id: 'paleo', label: 'Paléolithique', color: COLORS.paleo, start: -3000000, end: -10000, desc: "L'âge de la pierre taillée (la plus longue période de la Préhistoire). Les humains sont nomades, se déplaçant pour suivre le gibier et les saisons. Ils vivent de la chasse, de la pêche et de la cueillette. C'est l'époque de la domestication du feu (Homo erectus), du peuplement de la Terre et des premières expressions artistiques (peintures rupestres dans les grottes, sculptures)." },
+      { id: 'meso', label: 'Mésolithique', color: COLORS.meso, start: -10000, end: -7000, desc: "Période de transition charnière. Suite au réchauffement du climat (fin de l'ère glaciaire), les forêts se développent et les grands mammouths disparaissent. Les humains s'adaptent : ils chassent du gibier plus petit (cerfs, sangliers) avec des arcs et des flèches à petites pointes de silex (microlithes), et commencent à séjourner plus longtemps aux mêmes endroits, préparant le passage au mode de vie sédentaire." },
+      { id: 'neo', label: 'Néolithique', color: COLORS.neo, start: -7000, end: -3000, desc: "L'âge de la pierre polie et de la « révolution néolithique ». Les humains deviennent sédentaires et construisent les premiers villages durables. Ils inventent l'agriculture (culture du blé, de l'orge) et l'élevage (moutons, vaches), fabriquent des poteries pour stocker la nourriture, et érigent de monumentales sépultures en pierre (dolmens, menhirs)." },
+      { id: 'bronze', label: 'Âge du Bronze', color: COLORS.bronze, start: -3000, end: -1200, desc: "Première période de la Protohistoire. Les humains apprennent à fabriquer un alliage métallique révolutionnaire : le bronze (mélange de cuivre et d'étain). Cela permet de concevoir des outils agricoles plus solides (faucilles) et des armes plus redoutables (épées, lances). La société se hiérarchise avec l'apparition de chefs guerriers et de routes commerciales à longue distance." },
+      { id: 'fer', label: 'Âge du Fer', color: COLORS.fer, start: -1200, end: -52, desc: "Dernière période avant l'Antiquité gallo-romaine. La maîtrise du fer, un métal beaucoup plus abondant et résistant que le bronze, révolutionne l'artisanat et l'agriculture (soc de charrue). En Europe et en Belgique, c'est l'époque de l'épanouissement de la brillante civilisation des Celtes (artisans renommés, druides, forteresses sur des collines ou oppida)." },
+    ],
+    events: [
+      { id: 'e1', subPeriodId: 'paleo', date: '~3 000 000 av. J.-C.', year: -3000000, icon: '🦴', title: 'Apparition des premiers humains (Australopithèques)', body: "<strong>Qui ?</strong> Les australopithèques comme <em>Lucy</em> (découverte en Éthiopie en 1974) sont parmi les premiers hominidés à marcher debout.<br><br><strong>Pourquoi important ?</strong> C'est le point de départ de l'histoire humaine. Nos ancêtres vivaient en Afrique, se nourrissaient de plantes et de charogne. Ils n'utilisaient pas encore d'outils fabriqués.<br><br><strong>Ce qu'il faut retenir :</strong> L'être humain descend d'ancêtres communs aux grands singes. La marche debout (bipédie) est une caractéristique clé." },
+      { id: 'e2', subPeriodId: 'paleo', date: '~2 600 000 av. J.-C.', year: -2600000, icon: '🪨', title: 'Premiers outils taillés (Homo habilis)', body: "<strong>Homo habilis</strong> (« homme habile ») est le premier à fabriquer des outils en pierre en les taillant : c'est le début du <strong>Paléolithique</strong>.<br><br><strong>Les outils :</strong> galets taillés (choppers), éclats de silex. Ces outils servent à couper la viande et à broyer des végétaux.<br><br><strong>Importance :</strong> La fabrication d'outils est une caractéristique essentielle de l'humanité. Elle montre une capacité de réflexion et de transmission du savoir." },
+      { id: 'e3', subPeriodId: 'paleo', date: '~300 000 av. J.-C.', year: -300000, icon: '🔥', title: 'Maîtrise du feu (Homo erectus)', body: "<strong>Homo erectus</strong> apprend à contrôler le feu, probablement d'abord en le conservant (feu naturel des éclairs), puis en le produisant.<br><br><strong>Les usages du feu :</strong> se chauffer, cuire les aliments, éloigner les prédateurs, s'éclairer la nuit, durcir les pointes de bois.<br><br><strong>Révolution :</strong> La cuisson des aliments a permis de les rendre plus digestes, favorisant le développement du cerveau humain." },
+      { id: 'e4', subPeriodId: 'paleo', date: '~200 000 av. J.-C.', year: -200000, icon: '🧠', title: 'Apparition d\'Homo sapiens', body: "<strong>Homo sapiens</strong> (« homme sage ») apparaît en Afrique il y a environ 200 000 à 300 000 ans. C'est notre espèce !<br><br><strong>Caractéristiques :</strong> cerveau plus grand, langage articulé développé, capacité de raisonner et de créer des symboles.<br><br><strong>Migration :</strong> Homo sapiens va progressivement quitter l'Afrique et peupler toute la Terre, remplaçant les autres espèces humaines comme les Néandertaliens." },
+      { id: 'e5', subPeriodId: 'paleo', date: '~35 000 av. J.-C.', year: -35000, icon: '🎨', title: 'Art pariétal (peintures rupestres)', body: "<strong>Les peintures dans les grottes</strong> comme Lascaux (France) ou Altamira (Espagne) témoignent de la pensée symbolique de nos ancêtres.<br><br><strong>Que représentent-elles ?</strong> Des animaux (bisons, aurochs, chevaux, mammouths), des mains, des scènes de chasse. Parfois des signes mystérieux.<br><br><strong>Pourquoi ce n'est pas simple :</strong> Pour peindre, il fallait des pigments (ocre, charbon), des « pinceaux », et surtout une pensée abstraite. C'est une preuve de l'intelligence artistique de l'Homo sapiens.<br><br><strong>En Belgique :</strong> La grotte de Spy et d'autres sites témoignent de la présence de Néandertaliens, puis d'Homo sapiens sur notre territoire." },
+      { id: 'e6', subPeriodId: 'paleo', date: '~12 000 av. J.-C.', year: -12000, icon: '❄️', title: 'Fin de la dernière glaciation', body: "<strong>Le réchauffement climatique naturel</strong> après la dernière grande période glaciaire transforme complètement les paysages et les modes de vie.<br><br><strong>Conséquences :</strong> disparition des grands mammouths et rhinocéros laineux ; forêts qui remplacent les steppes froides ; nouvelles espèces animales à chasser.<br><br><strong>Pour les humains :</strong> Ils doivent adapter leurs techniques de chasse et de cueillette. C'est le début du <strong>Mésolithique</strong>." },
+      { id: 'e7', subPeriodId: 'meso', date: '~9 000 av. J.-C.', year: -9000, icon: '🌾', title: 'Révolution néolithique : agriculture et élevage', body: "<strong>La révolution néolithique</strong> est l'un des changements les plus importants de toute l'histoire humaine !<br><br><strong>Qu'est-ce qui change ?</strong> Les humains passent de cueilleurs-chasseurs nomades à agriculteurs-éleveurs sédentaires.<br><br><strong>Premières plantes cultivées :</strong> blé, orge, lentilles (en Orient, puis en Europe).<br><br><strong>Premiers animaux domestiqués :</strong> chèvres, moutons, porcs, bovins.<br><br><strong>Conséquences majeures :</strong><br>• Construction de villages permanents<br>• Apparition des premières poteries pour stocker les aliments<br>• Hiérarchie sociale plus marquée<br>• Croissance de la population<br><br><strong>En Belgique :</strong> Les premières communautés agricoles arrivent vers 5 000 av. J.-C." },
+      { id: 'e8', subPeriodId: 'neo', date: '~4 000 av. J.-C.', year: -4000, icon: '🗿', title: 'Mégalithes (dolmens, menhirs)', body: "<strong>Les mégalithes</strong> sont de grandes constructions en pierres (méga = grand, lithe = pierre) élevées au Néolithique et à l'Âge du Bronze.<br><br><strong>Types :</strong><br>• <em>Menhirs</em> : pierres dressées verticalement<br>• <em>Dolmens</em> : tombes formées de grandes dalles<br>• <em>Cromlechs</em> : alignements ou cercles de pierres (ex. Stonehenge)<br><br><strong>Pourquoi ?</strong> Probablement des lieux de culte, de sépultures et de repères astronomiques.<br><br><strong>En Belgique :</strong> On trouve des dolmens notamment à Wéris (province de Luxembourg), le plus grand site mégalithique de Belgique !" },
+      { id: 'e9', subPeriodId: 'bronze', date: '~3 300 av. J.-C.', year: -3300, icon: '⚒️', title: 'Découverte du bronze', body: "<strong>Le bronze</strong> est un alliage de cuivre et d'étain. Il est plus dur que le cuivre et permet de fabriquer des outils et des armes bien plus efficaces.<br><br><strong>Qui l'utilise ?</strong> C'est d'abord au Moyen-Orient que le bronze est découvert, puis la technique se répand en Europe.<br><br><strong>Ce qui change :</strong> Les armes en bronze (épées, lances) transforment la guerre. Les outils agricoles améliorent les récoltes. Un commerce à longue distance se développe pour transporter l'étain.<br><br><strong>Société :</strong> Des chefs guerriers s'imposent, la hiérarchie sociale se renforce." },
+      { id: 'e10', subPeriodId: 'fer', date: '~1 200 av. J.-C.', year: -1200, icon: '🗡️', title: 'Âge du Fer – Apparition des Celtes', body: "<strong>Le fer</strong> est un métal encore plus résistant que le bronze, et il est beaucoup plus répandu sur Terre. Sa maîtrise transforme les sociétés.<br><br><strong>Les Celtes</strong> sont un ensemble de peuples qui parlent des langues apparentées et partagent une culture. Ils se répandent en Europe à partir de l'Âge du Fer.<br><br><strong>En Belgique :</strong> Les Belges de l'Antiquité, dont parlera Jules César, sont des peuples celtes (Éburons, Nerviens, Trévires…).<br><br><strong>Leur culture :</strong> artisanat du métal très développé, druides, fêtes comme Samain (ancêtre d'Halloween)." },
+    ],
+    breakAfterLabel: null,
+  },
+  {
+    id: 'antiquite',
+    label: 'Antiquité',
+    icon: '🏛️',
+    color: COLORS.antiq,
+    gradient: `linear-gradient(90deg, ${COLORS.antiq} 0%, #B58410 100%)`,
+    start: -52,
+    end: 476,
+    desc: "Dans nos régions, l'Antiquité commence en 52 av. J.-C. avec l'intégration de la Gaule belgique dans l'Empire romain après la conquête de Jules César, marquant l'entrée dans l'histoire écrite. Elle se termine en 476 avec la chute de l'Empire Romain d'Occident.",
+    illustrations: [
+      { src: 'photos/doc_villa_romaine.png', legend: "Illustration A : Vue réaliste d'une villa gallo-romaine séparant la pars urbana et la pars rustica." },
+      { src: 'photos/doc_voie_romaine.png', legend: "Illustration B : Équipement réel d'un légionnaire romain et d'un guerrier gaulois sur une voie romaine." }
+    ],
+    subPeriods: [],
+    events: [
+      { id: 'e11', date: '~3 000 av. J.-C.', year: -3000, icon: '✍️', title: 'Invention de l\'écriture (cunéiforme, hiéroglyphes)', body: "<strong>L'écriture</strong> apparaît à peu près en même temps en Mésopotamie (cunéiforme) et en Égypte (hiéroglyphes). C'est le grand tournant qui marque la fin de la Préhistoire !<br><br><strong>Pourquoi ?</strong> Pour gérer les surplus agricoles, faire des comptes, transmettre des lois et des récits.<br><br><strong>Le cunéiforme</strong> est tracé avec un roseau sur de l'argile. Les <strong>hiéroglyphes</strong> sont gravés sur pierre ou écrits sur papyrus.<br><br><strong>Importance :</strong> L'écriture permet de transmettre le savoir à travers les générations sans dépendre de la mémoire. C'est la naissance de l'Histoire !" },
+      { id: 'e12', date: '~2 700 av. J.-C.', year: -2700, icon: '🔺', title: 'Construction des pyramides d\'Égypte', body: "<strong>Les pyramides</strong> sont construites comme tombeaux pour les pharaons, considérés comme des dieux vivants. La pyramide de Kéops est la plus grande construction de l'Antiquité.<br><br><strong>Comment ?</strong> Des dizaines de milliers d'ouvriers travaillent sur le chantier. Les pierres (certaines pesant plusieurs tonnes) sont transportées sur des traîneaux et des rampes.<br><br><strong>La civilisation égyptienne :</strong> organisée autour du Nil, avec une religion polythéiste très développée, un système d'écriture (hiéroglyphes), une médecine avancée.<br><br><strong>Le Sphinx</strong> de Gizeh garde les pyramides depuis 4 500 ans !" },
+      { id: 'e13', date: '~500 av. J.-C.', year: -500, icon: '🏛️', title: 'Démocratie athénienne et civilisation grecque', body: "<strong>Athènes</strong> invente la démocratie (du grec <em>demos</em> = peuple, <em>kratos</em> = pouvoir) : les citoyens votent les lois eux-mêmes. Attention : seuls les hommes libres sont citoyens (pas les femmes, ni les esclaves, ni les étrangers).<br><br><strong>Les Grecs nous ont transmis :</strong><br>• La philosophie (Socrate, Platon, Aristote)<br>• Les sciences (Pythagore, Euclide)<br>• Les Jeux Olympiques (776 av. J.-C.)<br>• Le théâtre (tragédies et comédies)<br>• L'architecture à colonnes<br><br><strong>Lien avec la Belgique :</strong> Les idéaux grecs (démocratie, citoyenneté) influencent encore nos sociétés aujourd'hui." },
+      { id: 'e14', date: '52 av. J.-C.', year: -52, icon: '⚔️', title: 'Jules César et la conquête de la Gaule belgique', body: "<strong>Jules César</strong>, général romain, conquiert la Gaule entre -58 et -51 av. J.-C. Il décrit dans ses <em>Commentaires sur la Guerre des Gaules</em> les peuples qu'il combat.<br><br><strong>La Belgique dans les textes de César :</strong> « De tous les peuples de la Gaule, les Belges sont les plus courageux. » Il décrit les Éburons (commandés par Ambiorix), les Nerviens, les Trévires…<br><br><strong>Conséquences :</strong> La Belgique actuelle est intégrée dans l'Empire romain. Les Romains construisent des routes, des villes (Tongres, Arlon), des thermes. Le latin devient la langue administrative.<br><br><strong>Ambiorix</strong> est considéré comme un héros national belge : il a résisté à César et détruit une légion romaine en -54 av. J.-C." },
+      { id: 'e15', date: '~27 av. J.-C.', year: -27, icon: '🦅', title: 'Naissance de l\'Empire romain', body: "<strong>Auguste</strong> (Octave) devient le premier Empereur romain en 27 av. J.-C. Il met fin à la République romaine après des guerres civiles.<br><br><strong>L'Empire romain :</strong> s'étend sur une grande partie de l'Europe, du Moyen-Orient et d'Afrique du Nord. Pendant la <em>Pax Romana</em> (paix romaine), commerce et culture se développent.<br><br><strong>Héritage romain en Belgique :</strong><br>• Routes romaines (chaussée romaine de Tongres)<br>• Villes : Tongres (Atuatuca Tungrorum), Arlon (Orolaunum)<br>• Aqueduc, thermes, temples<br>• Le latin est à l'origine du français et des autres langues romanes" },
+      { id: 'e16', date: '0', year: 0, icon: '✝️', title: 'Naissance de Jésus-Christ (début de l\'ère chrétienne)', body: "<strong>La naissance de Jésus de Nazareth</strong> est le point de départ de notre calendrier (an 1). C'est un événement fondateur pour le christianisme.<br><br><strong>Le christianisme</strong> se répand progressivement dans l'Empire romain, d'abord persécuté, puis reconnu par l'Édit de Milan en 313.<br><br><strong>Importance :</strong> Le christianisme devient la religion dominante en Europe et va profondément marquer l'art, l'architecture, les lois, les fêtes et les valeurs de notre civilisation.<br><br><strong>Notre calendrier</strong> (avant/après Jésus-Christ) est lui-même un héritage de cette naissance !" },
+      { id: 'e17', date: '476', year: 476, icon: '🌑', title: 'Chute de l\'Empire romain d\'Occident', body: "<strong>En 476</strong>, Romulus Augustule, le dernier Empereur romain d'Occident, est déposé par le chef barbare Odoacre. C'est la fin de l'Empire romain d'Occident.<br><br><strong>Pourquoi l'Empire s'est-il effondré ?</strong><br>• Invasions des peuples germaniques (Visigoths, Vandales, Huns…)<br>• Crise économique et politique interne<br>• Empire trop grand à défendre<br><br><strong>Conséquences :</strong> L'Europe de l'Ouest se morcelle en royaumes germaniques. C'est le début du Moyen Âge.<br><br><strong>Remarque :</strong> L'Empire romain d'Orient (Byzance) survivra jusqu'en 1453 !" },
+    ],
+    breakAfterLabel: '476 – Chute de Rome',
+  },
+  {
+    id: 'moyenage',
+    label: 'Moyen Âge',
+    icon: '🏰',
+    color: COLORS.moyen,
+    gradient: `linear-gradient(90deg, ${COLORS.moyen} 0%, #751F27 100%)`,
+    start: 476,
+    end: 1492,
+    desc: "Le Moyen Âge s'étend de la chute de l'Empire romain (476) à la découverte de l'Amérique par Christophe Colomb (1492). C'est une période de mille ans marquée par le système féodal, la domination de l'Église catholique, la construction des cathédrales et châteaux, les croisades, et l'essor des villes.",
+    illustrations: [
+      { src: 'photos/doc_charrue.png', legend: "Illustration A : Chevaliers en armure de plate du XIVe siècle devant un château fort." },
+      { src: 'photos/doc_sceaux_corporations.png', legend: "Illustration B : Rue commerçante animée d'une ville flamande au XVe siècle (Bruges)." }
+    ],
+    subPeriods: [],
+    events: [
+      { id: 'e18', date: '481–511', year: 481, icon: '👑', title: 'Clovis, roi des Francs – Naissance du royaume franc', body: "<strong>Clovis Ier</strong> unifie les tribus franques et devient le premier roi d'un territoire qui préfigure la France et la Belgique actuelles.<br><br><strong>Sa conversion au christianisme</strong> (vers 496) est capitale : il obtient le soutien de l'Église et légitime son pouvoir.<br><br><strong>Importance pour la Belgique :</strong> Le royaume franc couvre ce qui deviendra la Belgique. Tournai est l'une des premières capitales des Francs !" },
+      { id: 'e19', date: '800', year: 800, icon: '👑', title: 'Charlemagne couronné Empereur', body: "<strong>Charlemagne</strong> (roi des Francs) est couronné Empereur d'Occident à Rome le 25 décembre 800 par le pape Léon III.<br><br><strong>Son empire</strong> couvre la France, l'Allemagne, l'Italie du Nord, la Belgique, les Pays-Bas…<br><br><strong>Ses réformes :</strong><br>• Création d'écoles dans les monastères (pour apprendre à lire et écrire)<br>• Unification des lois (capitulaires)<br>• Développement du commerce<br>• La cour d'Aix-la-Chapelle est proche de la Belgique actuelle<br><br><strong>Sa mort en 814</strong> conduit au partage de l'empire entre ses petits-fils (Traité de Verdun, 843), à l'origine des futures nations européennes." },
+      { id: 'e20', date: 'IXe–Xe siècle', year: 900, icon: '⚔️', title: 'Invasions normandes, hongroises et sarrasines', body: "<strong>Au IXe et Xe siècle</strong>, l'Europe est attaquée de toutes parts :<br>• Les <strong>Vikings</strong> (Normands) du Nord pillent les côtes et remontent les fleuves<br>• Les <strong>Hongrois</strong> (Magyars) ravagent l'Europe centrale<br>• Les <strong>Sarrasins</strong> (Arabes et Berbères) menacent le sud<br><br><strong>Conséquence :</strong> Construction de châteaux forts, de remparts. Naissance du système <strong>féodal</strong> : les seigneurs locaux protègent les paysans en échange de travail et de loyauté." },
+      { id: 'e21', date: 'XIe–XIIIe siècle', year: 1100, icon: '✝️', title: 'Les Croisades', body: "<strong>Les Croisades</strong> sont des expéditions militaires organisées par les papes pour reprendre Jérusalem aux musulmans. Il y en aura 8 principales entre 1096 et 1270.<br><br><strong>Première Croisade (1096–1099) :</strong> Les croisés prennent Jérusalem (1099) et créent des royaumes chrétiens en Orient.<br><br><strong>Rencontres et échanges :</strong> Les Croisades ne sont pas que des guerres. Elles permettent des échanges culturels, scientifiques et commerciaux avec le monde arabe.<br><br><strong>Godefroid de Bouillon</strong>, duc de Basse-Lorraine (né à Baisy, en Belgique), participe à la 1re Croisade et devient défenseur du Saint-Sépulcre. C'est un personnage emblématique belge !" },
+      { id: 'e22', date: 'XIe–XVe siècle', year: 1200, icon: '🏰', title: 'Société féodale : seigneurs, chevaliers, serfs', body: "<strong>Le féodalisme</strong> est le système social et politique du Moyen Âge.<br><br><strong>La pyramide féodale :</strong><br>• Au sommet : le roi<br>• Puis : les grands seigneurs (ducs, comtes)<br>• Puis : les chevaliers vassaux<br>• À la base : les serfs (paysans liés à la terre)<br><br><strong>Les obligations :</strong> Le vassal jure fidélité à son suzerain (hommage), lui fournit aide militaire. En échange, il reçoit une terre (fief).<br><br><strong>L'Église</strong> occupe une place centrale : elle possède des terres, gère les hôpitaux, les écoles et influence les rois." },
+      { id: 'e23', date: 'XIIe–XVe siècle', year: 1250, icon: '⛪', title: 'Construction des cathédrales gothiques', body: "<strong>Les cathédrales gothiques</strong> sont les plus grandes réalisations architecturales du Moyen Âge. Elles s'élèvent vers le ciel, symboles de la gloire de Dieu.<br><br><strong>Techniques nouvelles :</strong><br>• Arc-boutant (qui permet des murs plus fins et de grandes fenêtres)<br>• Voûte en ogive<br>• Vitraux colorés qui racontent des histoires bibliques<br><br><strong>En Belgique :</strong> Cathédrale Saint-Rombaut de Malines, cathédrale Saint-Bavon de Gand, collégiale Sainte-Waudru de Mons.<br><br><strong>Construction :</strong> Plusieurs générations de tailleurs de pierre, charpentiers et maçons travaillent sur un seul édifice !" },
+      { id: 'e24', date: '1302', year: 1302, icon: '⚜️', title: 'Bataille des Éperons d\'Or (Flandre)', body: "<strong>Le 11 juillet 1302</strong>, à Courtrai, les milices communales flamandes (bourgeois et artisans) écrasent la chevalerie française.<br><br><strong>Pourquoi ?</strong> La Flandre refuse la domination française. Les tisserands et artisans de Bruges, Gand et Ypres se soulèvent.<br><br><strong>Résultat :</strong> Les miliciens flamands récupèrent des centaines d'éperons dorés des chevaliers tués, d'où le nom de la bataille.<br><br><strong>Importance :</strong> C'est la première fois que des fantassins (non-nobles) battent une armée de chevaliers. C'est un symbole de l'identité flamande, encore célébré le 11 juillet !" },
+      { id: 'e25', date: '1347–1353', year: 1347, icon: '💀', title: 'La Peste Noire', body: "<strong>La Peste Noire</strong> est l'une des plus grandes catastrophes de l'histoire. Elle tue entre 30 et 60 % de la population européenne !<br><br><strong>Cause :</strong> Une bactérie (<em>Yersinia pestis</em>) transmise par des puces vivant sur des rats noirs. Elle arrive d'Asie via les routes commerciales.<br><br><strong>Symptômes :</strong> Fièvre, bubons (grosseurs) sous les aisselles et à l'aine, taches noires sur la peau. La mort survient en quelques jours.<br><br><strong>Conséquences :</strong><br>• Dépopulation massive des villages<br>• Peur, désespoir, mais aussi remise en question de l'ordre établi<br>• Début de changements sociaux : les survivants sont mieux payés car rares<br><br><strong>En Belgique :</strong> La Belgique est durement touchée. Des villes entières sont décimées." },
+      { id: 'e26', date: '1431', year: 1431, icon: '🔥', title: 'Jeanne d\'Arc brûlée à Rouen', body: "<strong>Jeanne d\'Arc</strong> est une jeune paysanne lorraine qui, guidée par des « voix » divines, convainc le roi de France Charles VII de la laisser conduire l'armée française.<br><br><strong>Ses victoires :</strong> Elle fait lever le siège d'Orléans (1429) et fait couronner Charles VII à Reims.<br><br><strong>Sa capture :</strong> Prise par les Bourguignons en 1430, vendue aux Anglais, jugée pour hérésie et brûlée vive à Rouen le 30 mai 1431 à l'âge de 19 ans.<br><br><strong>Sa réhabilitation :</strong> En 1456, son procès est annulé. Elle est canonisée en 1920. Elle est le symbole de la résistance française contre l'occupation anglaise (guerre de Cent Ans)." },
+    ],
+    breakAfterLabel: '1492 – Découverte Amériques',
+  },
+  {
+    id: 'modernes',
+    label: 'Temps Modernes',
+    icon: '⚓',
+    color: COLORS.moderne,
+    gradient: `linear-gradient(90deg, ${COLORS.moderne} 0%, #1F4B63 100%)`,
+    start: 1492,
+    end: 1789,
+    desc: "Les Temps Modernes (1492–1789) sont une période de bouleversements majeurs : la découverte du Nouveau Monde, la Renaissance, la Réforme protestante, le développement des sciences, la montée des États modernes et des monarchies absolues. En Belgique, cette période est marquée par la domination espagnole puis autrichienne.",
+    illustrations: [
+      { src: 'photos/doc_reglement_cockerill.png', legend: "Illustration A : Intérieur de l'usine sidérurgique Cockerill au XIXe siècle avec sa machine à vapeur." },
+      { src: 'photos/doc_fusillade_roux.png', legend: "Illustration B : Travail dans une galerie souterraine basse d'un charbonnage belge au XIXe siècle." }
+    ],
+    subPeriods: [],
+    events: [
+      { id: 'e27', date: '1492', year: 1492, icon: '⚓', title: 'Christophe Colomb découvre l\'Amérique', body: "<strong>Le 12 octobre 1492</strong>, Christophe Colomb, navigateur génois au service de l'Espagne, arrive dans les Caraïbes (île de Guanahani).<br><br><strong>Il cherchait :</strong> Une route vers l'Asie (les Indes) en allant vers l'Ouest. Il ne sait pas qu'il a découvert un continent inconnu des Européens !<br><br><strong>Conséquences :</strong><br>• Colonisation des Amériques par les Espagnols, Portugais, Français, Anglais…<br>• Destruction de civilisations amérindiennes (Aztèques, Incas, Mayas)<br>• Esclavage des populations africaines (traite négrière)<br>• Échanges de plantes (maïs, pomme de terre, tomate) et d'animaux<br>• L'Europe s'enrichit massivement<br><br><strong>C'est la date qui marque la fin du Moyen Âge et le début des Temps Modernes.</strong>" },
+      { id: 'e28', date: 'XVe–XVIe siècle', year: 1500, icon: '🎨', title: 'La Renaissance', body: "<strong>La Renaissance</strong> (« re-naître ») est un mouvement culturel, artistique et intellectuel né en Italie au XVe siècle et qui se répand en Europe.<br><br><strong>L'idée centrale :</strong> Revenir aux textes et à l'art de l'Antiquité grecque et romaine, mais aussi développer une vision plus humaine du monde (<em>humanisme</em>).<br><br><strong>Grands artistes :</strong> Léonard de Vinci, Michel-Ange, Raphaël (Italie) ; Jérôme Bosch, Pieter Bruegel l'Ancien (Pays-Bas espagnols, donc territoire belge actuel).<br><br><strong>Inventions :</strong> L'imprimerie (Gutenberg, ~1450) révolutionne la diffusion des idées : les livres ne sont plus réservés aux monastères.<br><br><strong>Science :</strong> Copernic (1543) affirme que la Terre tourne autour du Soleil (héliocentrisme), révolutionnant la vision du monde." },
+      { id: 'e29', date: '1517', year: 1517, icon: '✝️', title: 'Réforme protestante (Luther)', body: "<strong>Martin Luther</strong>, moine allemand, affiche en 1517 ses 95 thèses critiquant l'Église catholique, notamment la vente des indulgences.<br><br><strong>Sa critique principale :</strong> On ne peut pas acheter son salut. La foi seule suffit. L'autorité vient de la Bible, pas du Pape.<br><br><strong>Conséquences :</strong><br>• Naissance du protestantisme (luthéranisme, calvinisme, anglicanisme…)<br>• Guerres de religion qui déchirent l'Europe<br>• Contre-Réforme catholique (Concile de Trente)<br><br><strong>En Belgique :</strong> Les guerres de religion sont particulièrement violentes. Les Pays-Bas espagnols (qui comprennent la Belgique actuelle) sont le théâtre de révoltes et de répression espagnole (duc d'Albe)." },
+      { id: 'e30', date: '1519–1522', year: 1519, icon: '🌍', title: 'Magellan : premier tour du monde', body: "<strong>Ferdinand Magellan</strong>, navigateur portugais au service de l'Espagne, entreprend le premier tour du monde en 1519.<br><br><strong>L'expédition :</strong> 5 bateaux et 270 hommes partent d'Espagne. Magellan est tué aux Philippines en 1521. Seulement 18 hommes et 1 bateau reviennent en 1522.<br><br><strong>Ce que cela prouve :</strong> La Terre est ronde ! Il existe un passage entre l'Atlantique et le Pacifique (détroit de Magellan).<br><br><strong>Importance :</strong> Les grandes découvertes géographiques transforment la vision du monde et ouvrent la voie à la mondialisation." },
+      { id: 'e31', date: '1585–1621', year: 1585, icon: '🇧🇪', title: 'Pays-Bas espagnols et naissance de la Belgique', body: "<strong>Après la révolte contre l'Espagne</strong>, les Provinces-Unies (nord, futures Pays-Bas) obtiennent leur indépendance, tandis que les provinces du Sud (futur territoire belge) restent sous domination espagnole : ce sont les <strong>Pays-Bas espagnols</strong>.<br><br><strong>Une période dorée :</strong> Malgré les guerres, le commerce prospère. Anvers est la plus grande ville commerciale d'Europe au XVIe siècle !<br><br><strong>Culture :</strong> Les peintres flamands (Rubens, Van Dyck) rayonnent dans toute l'Europe. L'imprimerie anversoise (Plantin) est la plus importante d'Europe.<br><br><strong>La dentelle de Bruges</strong> et les tapisseries bruxelloises sont vendues dans toute l'Europe." },
+      { id: 'e32', date: '1618–1648', year: 1618, icon: '⚔️', title: 'Guerre de Trente Ans', body: "<strong>La guerre de Trente Ans</strong> (1618–1648) est une guerre religieuse et politique qui ravage l'Europe centrale, principalement les États germaniques.<br><br><strong>Causes :</strong> Tensions entre catholiques et protestants, rivalités entre puissances européennes.<br><br><strong>La paix de Westphalie (1648)</strong> met fin à la guerre et établit de nouveaux principes pour les relations internationales (souveraineté des États).<br><br><strong>Bilan :</strong> 8 millions de morts (sur les champs de bataille mais surtout à cause de la peste et de la famine). Certaines régions perdent 1/3 de leur population." },
+      { id: 'e33', date: '1661–1715', year: 1661, icon: '👑', title: 'Louis XIV – Le Roi-Soleil et la monarchie absolue', body: "<strong>Louis XIV</strong>, roi de France, représente le modèle de la monarchie absolue : le roi concentre tous les pouvoirs.<br><br><strong>Son symbole :</strong> Le Soleil — il se compare à l'astre qui éclaire tout. Sa devise : « L'État, c'est moi ».<br><br><strong>Versailles :</strong> Il fait construire le château de Versailles pour impressionner les nobles et les ambassadeurs étrangers.<br><br><strong>Et la Belgique ?</strong> Louis XIV cherche à étendre ses frontières vers les Pays-Bas espagnols. Plusieurs villes belges sont conquises par la France (Lille, Tournai…). Les guerres de Louis XIV touchent directement notre territoire." },
+    ],
+    breakAfterLabel: '1789 – Révolution française',
+  },
+  {
+    id: 'contemporaine',
+    label: 'Époque contemporaine',
+    icon: '⚙️',
+    color: COLORS.contemp,
+    gradient: `linear-gradient(90deg, ${COLORS.contemp} 0%, #2A613F 100%)`,
+    start: 1789,
+    end: 2026,
+    desc: "L'Époque contemporaine (depuis 1789) est marquée par des révolutions politiques (Révolution française), industrielles et sociales. La Belgique obtient son indépendance en 1830. Deux guerres mondiales ravagent l'Europe au XXe siècle, suivies de la construction européenne. Notre époque est celle des droits de l'homme, de la démocratie et des défis environnementaux.",
+    illustrations: [
+      { src: 'photos/doc_biodiversite.png', legend: "Illustration A : Une cuisine familiale belge en 1960, témoin de la société de consommation." }
+    ],
+    subPeriods: [],
+    events: [
+      { id: 'e34', date: '1789', year: 1789, icon: '🗽', title: 'Révolution française', body: "<strong>La Révolution française</strong> éclate en 1789 et renverse la monarchie absolue de Louis XVI.<br><br><strong>Les causes :</strong><br>• Inégalités sociales (le Tiers État paye des impôts, les nobles non)<br>• Mauvaises récoltes et famine<br>• Idées des Lumières (Voltaire, Rousseau) qui prônent la liberté et l'égalité<br><br><strong>Événements clés :</strong><br>• 14 juillet 1789 : Prise de la Bastille<br>• 26 août 1789 : Déclaration des Droits de l'Homme et du Citoyen<br>• 1793 : Louis XVI guillotiné<br>• La Terreur (1793-1794) : des milliers d'exécutions<br><br><strong>Héritage :</strong> Les idéaux de Liberté, Égalité, Fraternité se répandent dans toute l'Europe et inspirent encore aujourd'hui nos démocraties." },
+      { id: 'e35', date: '1799–1815', year: 1799, icon: '🎖️', title: 'Napoléon Bonaparte et l\'Empire', body: "<strong>Napoléon Bonaparte</strong>, général corse, prend le pouvoir en France par un coup d'État en 1799. Il se proclame Empereur en 1804.<br><br><strong>Ses conquêtes :</strong> Il domine presque toute l'Europe à son apogée.<br><br><strong>Son héritage :</strong><br>• Le Code civil (Napoléon) : une loi commune pour tous les citoyens<br>• Réforme de l'éducation<br>• Création des préfectures<br><br><strong>En Belgique :</strong> La Belgique est annexée à la France de 1795 à 1815. Le Code Napoléon y est appliqué (il influence encore notre droit).<br><br><strong>Sa chute :</strong> Défaite de Waterloo (en Belgique !) le 18 juin 1815. Il est exilé à Sainte-Hélène." },
+      { id: 'e36', date: '1830', year: 1830, icon: '🇧🇪', title: 'Indépendance de la Belgique', body: "<strong>Le 25 août 1830</strong>, une révolution éclate à Bruxelles, inspirée par la Révolution française et par les idées libérales. La Belgique se sépare du Royaume des Pays-Bas.<br><br><strong>Causes :</strong><br>• Domination hollandaise ressentie comme injuste<br>• Différences religieuses (Belgique catholique / Pays-Bas protestants)<br>• Mécontentement économique<br><br><strong>4 octobre 1830 :</strong> Déclaration d'indépendance de la Belgique.<br><br><strong>Léopold Ier</strong> devient le premier roi des Belges en juillet 1831.<br><br><strong>La Belgique</strong> est le premier pays industrialisé d'Europe continentale. Elle adopte une Constitution libérale en 1831, une des plus progressistes de l'époque." },
+      { id: 'e37', date: '1760–1870', year: 1800, icon: '⚙️', title: 'Révolution industrielle', body: "<strong>La révolution industrielle</strong> transforme radicalement l'économie et la société : on passe du travail artisanal à la production en usine.<br><br><strong>Les innovations :</strong><br>• Machine à vapeur (James Watt, 1769)<br>• Chemin de fer (locomotive à vapeur)<br>• Métiers à tisser mécaniques<br>• Acier, fonte, charbon<br><br><strong>En Belgique :</strong> La Belgique est PIONNIÈRE ! Liège et le Borinage (charbon) et Gand (textile) sont parmi les premières régions industrialisées d'Europe continentale. William Cockerill installe à Seraing la première usine sidérurgique moderne du continent (1817).<br><br><strong>Conditions sociales :</strong> Travail des enfants, journées de 14-16h, taudis ouvriers. La question ouvrière devient centrale au XIXe siècle." },
+      { id: 'e38', date: '1914–1918', year: 1914, icon: '🌿', title: 'Première Guerre mondiale', body: "<strong>La Première Guerre mondiale</strong> (1914–1918) est le premier conflit mondial de l'histoire. 20 millions de morts.<br><br><strong>Déclenchement :</strong> Assassinat de l'archiduc François-Ferdinand à Sarajevo (28 juin 1914). Les alliances entraînent toute l'Europe dans la guerre.<br><br><strong>La Belgique dans la guerre :</strong><br>• L'Allemagne envahit la Belgique neutre le 4 août 1914 (violation de la neutralité garantie par traité)<br>• Le roi Albert Ier refuse de laisser passer l'armée allemande et résiste<br>• La Belgique est presque entièrement occupée. Les civils souffrent énormément<br>• Bataille de l'Yser : les soldats belges tiennent un front jusqu'en 1918<br>• Fusillades de civils (Dinant, Leuven/Louvain brûlée)<br><br><strong>L'Armistice</strong> est signé le 11 novembre 1918." },
+      { id: 'e39', date: '1939–1945', year: 1939, icon: '💣', title: 'Seconde Guerre mondiale et Shoah', body: "<strong>La Seconde Guerre mondiale</strong> (1939–1945) est le conflit le plus meurtrier de l'histoire : 50 à 80 millions de morts.<br><br><strong>Causes :</strong> Montée du nazisme en Allemagne, crise économique des années 1930, expansionnisme de Hitler.<br><br><strong>La Belgique :</strong><br>• Envahie par l'Allemagne le 10 mai 1940<br>• Capitulation en 18 jours<br>• Occupation nazie jusqu'en 1944<br>• Résistance belge active<br>• Libération en septembre 1944<br><br><strong>La Shoah :</strong> L'extermination systématique de 6 millions de Juifs et d'autres minorités par le régime nazi. La Caserne Dossin à Malines (Belgique) était le lieu de déportation des Juifs belges vers les camps de la mort.<br><br><strong>Fin :</strong> Capitulation allemande le 8 mai 1945 (V-E Day), japonaise le 2 septembre 1945." },
+      { id: 'e40', date: '1945–1957', year: 1950, icon: '🕊️', title: 'Construction européenne et ONU', body: "<strong>Après la guerre</strong>, les dirigeants européens veulent éviter un nouveau conflit. Ils créent des institutions communes.<br><br><strong>ONU (1945) :</strong> Organisation des Nations Unies pour maintenir la paix mondiale.<br><br><strong>1948 :</strong> Déclaration Universelle des Droits de l'Homme.<br><br><strong>Construction européenne :</strong><br>• 1951 : CECA (Communauté Européenne du Charbon et de l'Acier) – 6 pays dont la Belgique<br>• 1957 : Traité de Rome → Communauté Économique Européenne (CEE)<br>• 1993 : Union Européenne<br><br><strong>La Belgique</strong> joue un rôle clé : Bruxelles est devenue la capitale de l'Union européenne ! Paul-Henri Spaak, politicien belge, est l'un des « pères fondateurs » de l'Europe." },
+      { id: 'e41', date: '1960', year: 1960, icon: '🌍', title: 'Décolonisation – Indépendance du Congo belge', body: "<strong>Le 30 juin 1960</strong>, le Congo belge (aujourd'hui République Démocratique du Congo) obtient son indépendance. C'est l'une des plus grandes décolonisations de l'histoire.<br><br><strong>La colonisation belge :</strong> Depuis 1885, le Congo était d'abord propriété personnelle du roi Léopold II (État Indépendant du Congo), puis colonie belge à partir de 1908. La gestion léopoldienne a été marquée par des atrocités (mutilations, travail forcé).<br><br><strong>Patrice Lumumba</strong> devient le premier Premier ministre du Congo indépendant.<br><br><strong>Un sujet complexe :</strong> La question de la mémoire coloniale fait encore débat aujourd'hui en Belgique." },
+      { id: 'e42', date: '1970–1993', year: 1970, icon: '🏛️', title: 'Fédéralisation de la Belgique', body: "<strong>La Belgique</strong> se transforme progressivement d'un État unitaire en un État fédéral, suite aux tensions entre communautés linguistiques (francophones, néerlandophones, germanophones).<br><br><strong>Les grandes réformes de l'État :</strong><br>• 1970, 1980, 1988, 1993, 2001, 2011 : six réformes de l'État<br>• 1993 : La Belgique devient officiellement un État fédéral<br><br><strong>Les entités :</strong> Régions (Wallonie, Flandre, Bruxelles) et Communautés (française/FWB, flamande, germanophone) ont des compétences propres.<br><br><strong>C'est pourquoi</strong> vous êtes élèves de la Fédération Wallonie-Bruxelles (FWB) !" },
+      { id: 'e43', date: '1969', year: 1969, icon: '🚀', title: 'Premiers pas sur la Lune', body: "<strong>Le 21 juillet 1969</strong>, Neil Armstrong et Buzz Aldrin, astronautes américains de la mission Apollo 11, deviennent les premiers humains à marcher sur la Lune.<br><br><strong>La course à l'espace :</strong> Depuis le lancement du Spoutnik soviétique (1957) et le premier homme dans l'espace (Youri Gagarine, 1961), États-Unis et URSS se disputent la suprématie spatiale.<br><br><strong>La phrase :</strong> « C'est un petit pas pour l'homme, un grand bond pour l'humanité. »<br><br><strong>Aujourd'hui :</strong> Des sondes spatiales explorent Mars, des hommes vivent à bord de la Station Spatiale Internationale (ISS), et des projets de retour sur la Lune sont en cours." },
+      { id: 'e44', date: '1989', year: 1989, icon: '🧱', title: 'Chute du Mur de Berlin', body: "<strong>Le 9 novembre 1989</strong>, le Mur de Berlin tombe. C'est la fin de la Guerre Froide et la réunification de l'Allemagne est en marche.<br><br><strong>Contexte :</strong> Depuis 1961, le Mur séparait Berlin-Ouest (libre, capitaliste) de Berlin-Est (communiste). Des centaines de personnes sont mortes en tentant de le franchir.<br><br><strong>La Guerre Froide (1947–1989) :</strong> Affrontement indirect entre les États-Unis (démocraties occidentales) et l'URSS (pays communistes), sans guerre directe entre eux.<br><br><strong>Conséquences :</strong> Effondrement de l'URSS (1991), fin du communisme en Europe de l'Est, élargissement de l'UE." },
+      { id: 'e45', date: '2015–aujourd\'hui', year: 2015, icon: '🌡️', title: 'Changement climatique et défis du XXIe siècle', body: "<strong>Le changement climatique</strong> est l'un des plus grands défis de notre époque. La température moyenne de la Terre augmente à cause des gaz à effet de serre produits par l'activité humaine depuis la révolution industrielle.<br><br><strong>Accords de Paris (2015) :</strong> 196 pays s'engagent à limiter le réchauffement à 1,5°C ou 2°C maximum.<br><br><strong>Conséquences actuelles :</strong><br>• Fonte des glaces et montée des eaux<br>• Événements climatiques extrêmes (sécheresses, inondations)<br>• Extinction d'espèces animales<br><br><strong>En Belgique :</strong> Les inondations de juillet 2021 en Wallonie ont causé 42 morts et des milliards de dégâts.<br><br><strong>Des jeunes agissent :</strong> Greta Thunberg, le mouvement Youth for Climate… et peut-être toi ?" },
+    ],
+    breakAfterLabel: null,
+  },
+];
+
+// =============================================
+// CALCUL DES LARGEURS ET POURCENTAGES (Optimisé)
+// =============================================
+const MAIN_PERIOD_WIDTHS = {
+  'prehistoire': 30, // 30%
+  'antiquite': 20,    // 20%
+  'moyenage': 18,     // 18%
+  'modernes': 16,     // 16%
+  'contemporaine': 16  // 16%
+};
+
+const TIMELINE_POINTS = [
+  { year: -3000000, pct: 0 },
+  { year: -10000,   pct: 15 },    // Fin Paléo (50% de la préhistoire)
+  { year: -7000,    pct: 19.5 },  // Fin Méso (65% de la préhistoire)
+  { year: -3000,    pct: 24 },    // Fin Néo (80% de la préhistoire)
+  { year: -1200,    pct: 27 },    // Fin Bronze (90% de la préhistoire)
+  { year: -52,      pct: 30 },    // Fin Fer / Conquête romaine (100% de la préhistoire)
+  { year: 476,      pct: 50 },    // Fin Antiquité (50% global)
+  { year: 1492,     pct: 68 },    // Fin Moyen Âge (68% global)
+  { year: 1789,     pct: 84 },    // Fin Temps Modernes (84% global)
+  { year: 2026,     pct: 100 }    // Aujourd'hui (100% global)
+];
+
+function getMainTimelinePct(year) {
+  if (year <= -3000000) return 0;
+  if (year >= 2026) return 100;
+  
+  for (let i = 0; i < TIMELINE_POINTS.length - 1; i++) {
+    const p1 = TIMELINE_POINTS[i];
+    const p2 = TIMELINE_POINTS[i+1];
+    if (year >= p1.year && year <= p2.year) {
+      const ratio = (year - p1.year) / (p2.year - p1.year);
+      return p1.pct + ratio * (p2.pct - p1.pct);
+    }
+  }
+  return 100;
+}
+
+// =============================================
+// ÉTAT
+// =============================================
+let selectedPeriodId = null;
+let selectedEventId = null;
+let selectedSubPeriodId = null;
+
+// =============================================
+// CONSTRUCTION DE LA FRISE
+// =============================================
+function buildTimeline() {
+  const track = document.getElementById('timelineTrack');
+  const markersRow = document.getElementById('markersRow');
+  const legendBar = document.getElementById('legendBar');
+  const navButtons = document.getElementById('navButtons');
+
+  // Légende
+  const legendItems = [
+    { label: 'Paléolithique', color: COLORS.paleo },
+    { label: 'Mésolithique', color: COLORS.meso },
+    { label: 'Néolithique', color: COLORS.neo },
+    { label: 'Âge du Bronze', color: COLORS.bronze },
+    { label: 'Âge du Fer', color: COLORS.fer },
+    { label: 'Antiquité', color: COLORS.antiq },
+    { label: 'Moyen Âge', color: COLORS.moyen },
+    { label: 'Temps Modernes', color: COLORS.moderne },
+    { label: 'Époque contemporaine', color: COLORS.contemp },
+  ];
+  legendItems.forEach(item => {
+    legendBar.innerHTML += `<div class="legend-item"><div class="legend-dot" style="background:${item.color}"></div><span>${item.label}</span></div>`;
+  });
+
+  // Dates de rupture
+  const breaks = [
+    { year: -52, label: '-52 av. J.-C.', pct: 30 },
+    { year: 476,   label: '476', pct: 50 },
+    { year: 1492,  label: '1492', pct: 68 },
+    { year: 1789,  label: '1789', pct: 84 },
+  ];
+
+  breaks.forEach(b => {
+    const tick = document.createElement('div');
+    tick.className = 'date-tick';
+    tick.style.left = b.pct + '%';
+    tick.textContent = b.label;
+    markersRow.appendChild(tick);
+  });
+
+  // Blocs de période + séparateurs sous-périodes préhistoire
+  PERIODS.forEach(p => {
+    const w = MAIN_PERIOD_WIDTHS[p.id];
+    const block = document.createElement('div');
+    block.className = 'period-block';
+    block.style.width = w + '%';
+    block.style.background = p.gradient || p.color;
+    block.dataset.periodId = p.id;
+
+    block.innerHTML = `
+      <div class="period-label">${p.icon} ${p.label}</div>
+      <div class="period-date-label">${formatYear(p.start)} → ${formatYear(p.end)}</div>
+    `;
+
+    // Séparateurs gris entre sous-périodes préhistoriques (calculés manuellement en proportions)
+    if (p.subPeriods && p.subPeriods.length > 0) {
+      const subPeriodPcts = {
+        'paleo': 50,
+        'meso': 65,
+        'neo': 80,
+        'bronze': 90
+      };
+      p.subPeriods.slice(0, -1).forEach(sp => {
+        const sepPct = subPeriodPcts[sp.id];
+        const sep = document.createElement('div');
+        sep.className = 'subperiod-sep';
+        sep.style.left = sepPct + '%';
+        sep.setAttribute('data-label', formatYear(sp.end));
+        block.appendChild(sep);
+      });
+    }
+
+    block.addEventListener('click', () => selectPeriod(p.id));
+    track.appendChild(block);
+  });
+
+  // ===== FRISE ZOOMÉE =====
+  buildZoomTimeline();
+
+  // Boutons nav
+  const allBtn = document.createElement('button');
+  allBtn.className = 'nav-btn all-btn active';
+  allBtn.id = 'btn-all';
+  allBtn.textContent = '🗺️ Vue d\'ensemble';
+  allBtn.addEventListener('click', () => { selectedPeriodId = null; selectedEventId = null; renderDetail(); updateBlockStyles(); updateNavButtons('all'); });
+  navButtons.appendChild(allBtn);
+
+  PERIODS.forEach(p => {
+    const btn = document.createElement('button');
+    btn.className = 'nav-btn';
+    btn.id = 'btn-' + p.id;
+    btn.style.background = p.color;
+    if (p.id === 'antiquite') {
+      btn.style.color = '#3A2C05';
+    }
+    btn.textContent = p.icon + ' ' + p.label;
+    btn.addEventListener('click', () => selectPeriod(p.id));
+    navButtons.appendChild(btn);
+  });
+}
+
+// =============================================
+// FRISE ZOOMÉE (linéaire, depuis ~9000 av. J.-C.)
+// =============================================
+const ZOOM_START = -9000;  // début sédentarisation
+const ZOOM_END   =  2026;
+const ZOOM_RANGE = ZOOM_END - ZOOM_START;
+
+// Sous-périodes préhistoriques dans la zone zoomée (depuis -9000)
+const ZOOM_PREHIST_SEGMENTS = [
+  { id: 'meso-z',   label: 'Méso.', color: COLORS.meso,   start: -9000, end: -7000 },
+  { id: 'neo-z',    label: 'Néo.',  color: COLORS.neo,    start: -7000, end: -3000 },
+  { id: 'bronze-z', label: 'Bronze',color: COLORS.bronze, start: -3000, end: -1200 },
+  { id: 'fer-z',    label: 'Fer',   color: COLORS.fer,    start: -1200, end: -52 },
+];
+
+function zoomPct(year) {
+  return ((year - ZOOM_START) / ZOOM_RANGE) * 100;
+}
+
+function buildZoomTimeline() {
+  const zoomTrack  = document.getElementById('zoomTrack');
+  const zoomMarkers = document.getElementById('zoomMarkersRow');
+
+  // Dates de rupture à afficher sur la frise zoomée
+  const zoomBreaks = [
+    { year: -7000, label: '-7 000' },
+    { year: -3000, label: '-3 000\nÉcriture' },
+    { year: -1200, label: '-1 200' },
+    { year: -52,   label: '-52\nRomains' },
+    { year:   476, label: '476' },
+    { year:  1492, label: '1492' },
+    { year:  1789, label: '1789' },
+  ];
+
+  // Les blocs de la frise zoomée :
+  // 1) Sous-périodes préhistoriques (meso, néo, bronze, fer) de -9000 à -50
+  // 2) Antiquité, Moyen Âge, Temps Modernes, Contemporaine
+
+  const zoomBlocks = [
+    ...ZOOM_PREHIST_SEGMENTS.map(sp => ({
+      id: 'prehistoire',
+      subId: sp.id,
+      label: sp.label,
+      color: sp.color,
+      start: sp.start,
+      end: sp.end,
+    })),
+    ...PERIODS.filter(p => p.id !== 'prehistoire').map(p => {
+      let start = p.start;
+      if (p.id === 'antiquite') {
+        start = -52; // Gallo-romain locale
+      }
+      return {
+        id: p.id,
+        label: p.id === 'antiquite' ? 'Antiquité (Gallo-Romaine)' : p.label,
+        icon: p.icon,
+        color: p.color,
+        gradient: p.gradient,
+        start: start,
+        end: p.end,
+      };
+    }),
+  ];
+
+  zoomBlocks.forEach((zb, idx) => {
+    const wPct = zoomPct(zb.end) - zoomPct(zb.start);
+    if (wPct <= 0) return;
+
+    const block = document.createElement('div');
+    block.className = 'zoom-block';
+    block.style.width = wPct + '%';
+    block.style.background = zb.gradient || zb.color;
+    block.dataset.periodId = zb.id;
+
+    const labelText = zb.icon ? `${zb.icon} ${zb.label}` : zb.label;
+    block.innerHTML = `
+      <div class="zoom-block-label">${labelText}</div>
+      <div class="zoom-block-date">${formatYear(zb.start)}</div>
+    `;
+    block.addEventListener('click', () => selectPeriod(zb.id));
+    zoomTrack.appendChild(block);
+  });
+
+  // Marqueurs de dates (positionnés dans la zone zoomée, décalés)
+  const LEFT_OFFSET_PX = 100; // approx largeur bloc pointillés + flèche
+  zoomBreaks.forEach(b => {
+    if (b.year < ZOOM_START || b.year > ZOOM_END) return;
+    const pct = zoomPct(b.year);
+    const tick = document.createElement('div');
+    tick.className = 'zoom-date-tick';
+    // On positionne en % de la zone de droite (après l'offset fixe)
+    tick.style.left = `calc(${LEFT_OFFSET_PX}px + (100% - ${LEFT_OFFSET_PX}px) * ${pct / 100})`;
+    tick.textContent = b.label.split('\n')[0] + (b.label.includes('\n') ? ' – ' + b.label.split('\n')[1] : '');
+    zoomMarkers.appendChild(tick);
+  });
+}
+
+function formatYear(y) {
+  if (y <= -1000000) return (Math.abs(y)/1000000).toFixed(0) + ' M av. J.-C.';
+  if (y < 0) return Math.abs(y) + ' av. J.-C.';
+  if (y === 2026) return 'Aujourd\'hui';
+  return y;
+}
+
+// =============================================
+// SÉLECTION PÉRIODE
+// =============================================
+function selectPeriod(pid) {
+  selectedPeriodId = pid;
+  selectedEventId = null;
+  selectedSubPeriodId = null;
+  updateBlockStyles();
+  updateNavButtons(pid);
+  renderDetail();
+}
+
+function updateBlockStyles() {
+  // Frise principale
+  document.querySelectorAll('.period-block').forEach(block => {
+    const bid = block.dataset.periodId;
+    if (!selectedPeriodId) {
+      block.classList.remove('selected', 'dimmed');
+    } else if (bid === selectedPeriodId) {
+      block.classList.add('selected');
+      block.classList.remove('dimmed');
+    } else {
+      block.classList.remove('selected');
+      block.classList.add('dimmed');
+    }
+  });
+  // Frise zoomée
+  document.querySelectorAll('.zoom-block').forEach(block => {
+    const bid = block.dataset.periodId;
+    if (!selectedPeriodId) {
+      block.classList.remove('selected', 'dimmed');
+    } else if (bid === selectedPeriodId) {
+      block.classList.add('selected');
+      block.classList.remove('dimmed');
+    } else {
+      block.classList.remove('selected');
+      block.classList.add('dimmed');
+    }
+  });
+}
+
+function updateNavButtons(active) {
+  document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+  const target = active === 'all' ? document.getElementById('btn-all') : document.getElementById('btn-' + active);
+  if (target) target.classList.add('active');
+}
+
+// =============================================
+// RENDU PANNEAU DÉTAIL
+// =============================================
+function renderDetail() {
+  const panel = document.getElementById('detailPanel');
+  if (!selectedPeriodId) { panel.classList.remove('visible'); return; }
+
+  const p = PERIODS.find(x => x.id === selectedPeriodId);
+  if (!p) return;
+
+  panel.classList.add('visible');
+
+  // Header
+  document.getElementById('detailHeader').style.background = p.gradient || p.color;
+  document.getElementById('detailIcon').textContent = p.icon;
+  document.getElementById('detailTitle').textContent = p.label;
+  document.getElementById('detailDates').textContent = `${formatYear(p.start)} → ${formatYear(p.end)}`;
+  document.getElementById('detailDesc').textContent = p.desc;
+
+  // Illustrations
+  const illustDiv = document.getElementById('detailIllustrations');
+  if (p.illustrations && p.illustrations.length > 0) {
+    illustDiv.style.display = 'grid';
+    illustDiv.innerHTML = '';
+    p.illustrations.forEach(ill => {
+      const card = document.createElement('div');
+      card.className = 'illustration-card';
+      
+      const img = document.createElement('img');
+      img.className = 'illustration-img';
+      img.src = ill.src;
+      img.alt = ill.legend;
+      img.addEventListener('click', () => openImageModal(ill.src, p.label + ' — ' + ill.legend));
+      
+      const legend = document.createElement('div');
+      legend.className = 'illustration-legend';
+      legend.textContent = ill.legend;
+      
+      card.appendChild(img);
+      card.appendChild(legend);
+      illustDiv.appendChild(card);
+    });
+  } else {
+    illustDiv.style.display = 'none';
+  }
+
+  // Sous-périodes
+  const subRow = document.getElementById('subPeriodsRow');
+  if (p.subPeriods && p.subPeriods.length > 0) {
+    subRow.style.display = 'flex';
+    subRow.innerHTML = '<strong style="font-size:0.78rem;color:#555;margin-right:8px;align-self:center">Sous-périodes :</strong>';
+    p.subPeriods.forEach(sp => {
+      const chip = document.createElement('div');
+      chip.className = 'sub-period-chip' + (selectedSubPeriodId === sp.id ? ' active' : '');
+      chip.style.background = sp.color;
+      chip.textContent = sp.label;
+      chip.title = sp.desc;
+      chip.addEventListener('click', () => {
+        selectedSubPeriodId = selectedSubPeriodId === sp.id ? null : sp.id;
+        renderDetail();
+      });
+      subRow.appendChild(chip);
+    });
+    // Info sous-période sélectionnée
+    if (selectedSubPeriodId) {
+      const sp = p.subPeriods.find(x => x.id === selectedSubPeriodId);
+      if (sp) {
+        const info = document.createElement('div');
+        info.style.cssText = 'width:100%;margin-top:12px;padding:12px 16px;background:#fff;border:3px solid var(--border);border-radius:8px;box-shadow:3px 3px 0px var(--border);font-size:0.85rem;color:var(--text);font-weight:600;line-height:1.5;animation:fadeUp 0.2s ease;';
+        info.textContent = sp.desc;
+        subRow.appendChild(info);
+      }
+    }
+  } else {
+    subRow.style.display = 'none';
+  }
+
+  // Événements
+  const list = document.getElementById('eventsList');
+  list.innerHTML = '';
+  
+  // Filtrer par sous-période si sélectionnée
+  let filteredEvents = p.events;
+  if (selectedSubPeriodId) {
+    filteredEvents = p.events.filter(ev => ev.subPeriodId === selectedSubPeriodId);
+    if (selectedEventId && !filteredEvents.some(ev => ev.id === selectedEventId)) {
+      selectedEventId = null;
+    }
+  }
+
+  filteredEvents.forEach(ev => {
+    const chip = document.createElement('div');
+    chip.className = 'event-chip' + (selectedEventId === ev.id ? ' selected' : '');
+    chip.style.color = p.color;
+    chip.innerHTML = `<span class="event-chip-date">${ev.icon} ${ev.date}</span><span class="event-chip-title">${ev.title}</span>`;
+    chip.addEventListener('click', () => {
+      selectedEventId = selectedEventId === ev.id ? null : ev.id;
+      renderEventDetail(p);
+      // scroll smooth
+      setTimeout(() => {
+        const card = document.getElementById('eventDetailCard');
+        if (card && card.classList.contains('visible')) {
+          card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+      }, 50);
+    });
+    list.appendChild(chip);
+  });
+
+  renderEventDetail(p);
+}
+
+// =============================================
+// FICHE ÉVÉNEMENT
+// =============================================
+function renderEventDetail(p) {
+  const card = document.getElementById('eventDetailCard');
+  // Refresh les chips
+  document.querySelectorAll('.event-chip').forEach(chip => {
+    chip.classList.remove('selected');
+  });
+
+  if (!selectedEventId) { card.classList.remove('visible'); return; }
+
+  const ev = p.events.find(x => x.id === selectedEventId);
+  if (!ev) { card.classList.remove('visible'); return; }
+
+  // Highlight chip
+  document.querySelectorAll('.event-chip').forEach(chip => {
+    if (chip.querySelector('.event-chip-title').textContent === ev.title) {
+      chip.classList.add('selected');
+    }
+  });
+
+  card.classList.add('visible');
+  document.getElementById('eventDetailHeader').style.background = p.gradient || p.color;
+  document.getElementById('eventDetailIcon').textContent = ev.icon;
+  document.getElementById('eventDetailDate').textContent = ev.date;
+  document.getElementById('eventDetailTitle').textContent = ev.title;
+  document.getElementById('eventDetailBody').innerHTML = ev.body;
+
+  // Mini frise : position de l'événement
+  const pct = getMainTimelinePct(ev.year);
+  const fill = document.getElementById('miniFill');
+  const pointer = document.getElementById('miniPointer');
+  fill.style.width = pct + '%';
+  fill.style.background = p.color;
+  pointer.style.left = pct + '%';
+  pointer.style.background = p.color;
+}
+
+// =============================================
+// MODALE ZOOM IMAGES
+// =============================================
+function openImageModal(src, title) {
+  const modal = document.getElementById('imageModal');
+  const modalImg = document.getElementById('modalImg');
+  const modalTitle = document.getElementById('modalTitle');
+  modalImg.src = src;
+  modalTitle.textContent = title;
+  modal.style.display = 'flex';
+}
+
+function closeImageModal() {
+  document.getElementById('imageModal').style.display = 'none';
+}
+
+// Fermer la modale au clic en dehors du contenu
+window.addEventListener('click', (e) => {
+  const modal = document.getElementById('imageModal');
+  if (e.target === modal) {
+    closeImageModal();
+  }
+});
+
+// =============================================
+// INIT
+// =============================================
+buildTimeline();
+</script>
+</body>
+</html>
