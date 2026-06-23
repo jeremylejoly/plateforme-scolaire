@@ -5859,6 +5859,15 @@ input[type=text].calc-input.incorrect {
     <div class="sub-subjects-grid" id="fiches-grid-teacher"></div>
   </div>
 
+  <!-- SCREEN: Fiche Viewer -->
+  <div id="screen-fiche-viewer" class="screen">
+    <button class="back-btn" id="fiche-viewer-back-btn" onclick="closeFicheViewer()">← Retour</button>
+    <div class="page-title" id="fiche-viewer-title">Visualisation de la fiche</div>
+    <div class="bg-white rounded-[24px] border-3 border-neutral-900 p-2 shadow-[4px_4px_0px_#1A1A2E] overflow-hidden" style="height: calc(100vh - 120px);">
+      <iframe id="fiche-viewer-iframe" src="" style="width:100%;height:100%;border:none;border-radius:16px;background:#fff;" allowfullscreen></iframe>
+    </div>
+  </div>
+
   <!-- SCREEN: Teacher Français -->
   <div id="screen-teacher-francais" class="screen">
     <button class="back-btn" onclick="showScreen('screen-teacher-subjects')">← Retour</button>
@@ -34275,10 +34284,8 @@ function renderFichesScreen() {
 
     const card = document.createElement('div');
     card.className = 'activity-type-card cursor-pointer hover:scale-[1.02] transition-transform duration-200';
-    // When clicked, open the PDF/file in a new tab/window
     card.onclick = () => {
-      const url = `fiches/${encodeURIComponent(fiche.filename)}`;
-      window.open(url, '_blank');
+      openFiche(fiche.filename, fiche.title, 'screen-fiches');
     };
 
     card.innerHTML = `
@@ -34327,7 +34334,7 @@ function renderFichesScreenTeacher() {
     card.className = 'activity-type-card flex items-center justify-between';
     
     card.innerHTML = `
-      <div class="flex items-center gap-4 flex-1 cursor-pointer" onclick="window.open('fiches/${encodeURIComponent(fiche.filename)}', '_blank')">
+      <div class="flex items-center gap-4 flex-1 cursor-pointer fiche-click-area">
         <div class="activity-type-icon">${icon}</div>
         <div>
           <div class="activity-type-title">${escapeHTML(fiche.title)}</div>
@@ -34335,9 +34342,17 @@ function renderFichesScreenTeacher() {
         </div>
       </div>
       <div class="flex items-center gap-2">
-        <button class="btn btn-sm btn-danger px-3 py-2 text-xs font-bold rounded-lg border-2 border-neutral-900 cursor-pointer" onclick="deleteFiche(${index})" style="margin:0;">🗑️ Supprimer</button>
+        <button class="btn btn-sm btn-danger px-3 py-2 text-xs font-bold rounded-lg border-2 border-neutral-900 cursor-pointer btn-delete" style="margin:0;">🗑️ Supprimer</button>
       </div>
     `;
+    
+    card.querySelector('.fiche-click-area').onclick = () => {
+      openFiche(fiche.filename, fiche.title, 'screen-teacher-fiches');
+    };
+    card.querySelector('.btn-delete').onclick = () => {
+      deleteFiche(index);
+    };
+    
     grid.appendChild(card);
   });
 }
@@ -34403,6 +34418,25 @@ function escapeHTML(str) {
   );
 }
 
+let ficheViewerSourceScreen = 'screen-fiches';
+
+function openFiche(filename, title, sourceScreen) {
+  ficheViewerSourceScreen = sourceScreen;
+  const titleEl = document.getElementById('fiche-viewer-title');
+  if (titleEl) titleEl.innerText = title;
+  const iframe = document.getElementById('fiche-viewer-iframe');
+  if (iframe) {
+    iframe.src = `fiches/${encodeURIComponent(filename)}`;
+  }
+  showScreen('screen-fiche-viewer');
+}
+
+function closeFicheViewer() {
+  const iframe = document.getElementById('fiche-viewer-iframe');
+  if (iframe) iframe.src = 'about:blank';
+  showScreen(ficheViewerSourceScreen);
+}
+
 // Exposer les fonctions de fiches au scope global
 window.initFiches = initFiches;
 window.renderFichesScreen = renderFichesScreen;
@@ -34412,6 +34446,8 @@ window.filterFichesTeacher = filterFichesTeacher;
 window.openAddFicheModal = openAddFicheModal;
 window.addFicheSubmit = addFicheSubmit;
 window.deleteFiche = deleteFiche;
+window.openFiche = openFiche;
+window.closeFicheViewer = closeFicheViewer;
 
 init();
 </script>
