@@ -6196,7 +6196,13 @@ function saveBooks(b){
 }
 
 function loadResults(cls){
-  const all = JSON.parse(localStorage.getItem('lq_results')||'[]');
+  let all = JSON.parse(localStorage.getItem('lq_results')||'[]');
+  // Nettoyage automatique des anomalies (résultats sans élève valide)
+  const valid = all.filter(r => r && r.student && r.student !== 'undefined');
+  if (valid.length !== all.length) {
+    localStorage.setItem('lq_results', JSON.stringify(valid));
+    all = valid;
+  }
   return cls ? all.filter(r=>!r.cls || r.cls===cls) : all;
 }
 function saveResult(entry){
@@ -6204,6 +6210,11 @@ function saveResult(entry){
     entry.student = state.student;
     entry.cls = state.studentCls;
     entry.className = CLASSES[state.studentCls] ? CLASSES[state.studentCls].name : state.studentCls;
+  }
+  // Ne pas enregistrer de résultat s'il n'y a pas d'élève connecté (ex: mode enseignant ou prévisualisation)
+  if (!entry.student) {
+    console.warn("⚠️ Tentative d'enregistrement de résultat sans élève connecté. Enregistrement annulé.");
+    return;
   }
   invalidateResultsCache();
   const all = JSON.parse(localStorage.getItem('lq_results')||'[]');
