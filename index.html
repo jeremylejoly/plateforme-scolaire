@@ -8115,6 +8115,8 @@ function refreshAllToggles(){
   if (typeof renderTraitementDonneesMenu === 'function') renderTraitementDonneesMenu();
   
   if (typeof renderAppsManage === 'function') renderAppsManage();
+  if (typeof renderFichesScreen === 'function') renderFichesScreen();
+  if (typeof renderFichesScreenTeacher === 'function') renderFichesScreenTeacher();
 }
 
 const FRANCAIS_ITEMS = [
@@ -34262,10 +34264,13 @@ function renderFichesScreen() {
   
   const searchVal = (document.getElementById('fiche-search-student')?.value || '').toLowerCase();
   
+  const lockedArr = getLockedActivities();
+
   // Filter fiches
   const filtered = fiches.filter(f => 
-    f.title.toLowerCase().includes(searchVal) || 
-    f.category.toLowerCase().includes(searchVal)
+    (f.title.toLowerCase().includes(searchVal) || 
+    f.category.toLowerCase().includes(searchVal)) &&
+    !lockedArr.includes(f.id)
   );
 
   if (filtered.length === 0) {
@@ -34322,6 +34327,8 @@ function renderFichesScreenTeacher() {
     return;
   }
 
+  const lockedArr = getLockedActivities();
+
   filtered.forEach((fiche, index) => {
     let icon = '📁';
     if (fiche.category === 'Mathématiques') icon = '📐';
@@ -34330,24 +34337,34 @@ function renderFichesScreenTeacher() {
     else if (fiche.category === 'Histoire') icon = '🏛️';
     else if (fiche.category === 'Géographie') icon = '🌍';
 
+    const isLocked = lockedArr.includes(fiche.id);
+    const toggleLabel = isLocked ? '🔓 Réactiver' : '🔒 Masquer';
+    const toggleBgClass = isLocked 
+      ? 'bg-emerald-500 hover:bg-emerald-600' 
+      : 'bg-amber-500 hover:bg-amber-600';
+
     const card = document.createElement('div');
-    card.className = 'activity-type-card flex items-center justify-between';
+    card.className = `activity-type-card flex items-center justify-between ${isLocked ? 'opacity-60' : ''}`;
     
     card.innerHTML = `
       <div class="flex items-center gap-4 flex-1 cursor-pointer fiche-click-area">
         <div class="activity-type-icon">${icon}</div>
         <div>
-          <div class="activity-type-title">${escapeHTML(fiche.title)}</div>
+          <div class="activity-type-title">${escapeHTML(fiche.title)} ${isLocked ? '<span class="text-xs text-amber-600 font-bold ml-2">(Masquée)</span>' : ''}</div>
           <div class="text-xs text-neutral-400 font-bold uppercase tracking-wider mt-1">${escapeHTML(fiche.category)} (${escapeHTML(fiche.filename)})</div>
         </div>
       </div>
       <div class="flex items-center gap-2">
+        <button class="btn btn-sm px-3 py-2 text-xs font-bold rounded-lg border-2 border-neutral-900 cursor-pointer text-white btn-toggle-lock ${toggleBgClass}" style="margin:0;">${toggleLabel}</button>
         <button class="btn btn-sm btn-danger px-3 py-2 text-xs font-bold rounded-lg border-2 border-neutral-900 cursor-pointer btn-delete" style="margin:0;">🗑️ Supprimer</button>
       </div>
     `;
     
     card.querySelector('.fiche-click-area').onclick = () => {
       openFiche(fiche.filename, fiche.title, 'screen-teacher-fiches');
+    };
+    card.querySelector('.btn-toggle-lock').onclick = () => {
+      toggleActivity(fiche.id);
     };
     card.querySelector('.btn-delete').onclick = () => {
       deleteFiche(index);
