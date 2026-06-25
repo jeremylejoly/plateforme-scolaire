@@ -341,6 +341,49 @@
     z-index: 1000 !important;
   }
 
+  .hotspot-river {
+    position: absolute;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(37, 99, 235, 0.25);
+    border: 3px solid #2563eb;
+    cursor: pointer;
+    transition: all 0.2s;
+    transform: translate(-50%, -50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #2563eb;
+    box-shadow: 0 0 10px rgba(37, 99, 235, 0.5);
+    user-select: none;
+    z-index: 50;
+    pointer-events: auto !important;
+  }
+  .hotspot-river:hover {
+    transform: translate(-50%, -50%) scale(1.25);
+    background: rgba(37, 99, 235, 0.45);
+    box-shadow: 0 0 15px rgba(37, 99, 235, 0.7);
+  }
+  .hotspot-river.active {
+    background: #2563eb !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 15px rgba(37, 99, 235, 0.8) !important;
+    border-color: #1d4ed8 !important;
+  }
+  .hotspot-river.calibrating {
+    pointer-events: auto !important;
+    cursor: move;
+  }
+  .hotspot-river.selected {
+    outline: 2px dashed #3b82f6 !important;
+    outline-offset: 4px;
+    z-index: 1000 !important;
+  }
+
   /* RESPONSIVE DESIGN */
   @media(max-width:768px) {
     .tabs-inner { padding: 6px; }
@@ -809,7 +852,7 @@
       
       <!-- Container interactif pour la carte et ses étiquettes HTML -->
       <div class="scene-wrap border-2 border-slate-900 rounded-2xl relative shadow-md bg-white w-full max-w-[800px]" id="mapInteractiveContainer">
-        <img src="photos/carte_fond_cours_eau.png" data-lightbox-src="photos/carte_cours_eau_belgique.png" alt="Carte des cours d'eau de Belgique" class="w-full h-auto block rounded-xl cursor-zoom-in zoomable" data-caption="Carte de la Belgique présentant le relief (altitude) par dégradé de couleurs, les fleuves principaux (Yser, Escaut, Meuse) en gras et leurs affluents.">
+        <img src="photos/carte_fond_cours_eau.png" alt="Carte des cours d'eau de Belgique" class="w-full h-auto block rounded-xl">
         
         <!-- Overlay des étiquettes et points de villes -->
         <div id="mapLabelsOverlay" class="absolute inset-0 pointer-events-none" style="font-family: 'Georgia', serif;">
@@ -817,12 +860,41 @@
         </div>
       </div>
       
-      <p class="text-xs text-slate-500 mt-2 text-center" id="mapHintText">Clique sur la carte pour l'agrandir en plein écran. Appuie sur la touche 'd' pour calibrer les écritures.</p>
+      <p class="text-xs text-slate-500 mt-2 text-center" id="mapHintText">Appuie sur la touche 'd' pour calibrer les écritures.</p>
+    </div>
+
+    <!-- Boîte de détails du fleuve sélectionné (onglet 04) -->
+    <div class="card-premium mb-6 bg-blue-50 border-blue-200" id="riverDetailsBox">
+      <div id="riverDetailsDefault">
+        <p class="text-center text-sm text-blue-800 font-semibold flex items-center justify-center gap-2">
+          <span>ℹ️</span> Clique sur l'un des numéros bleus (<b>1</b>, <b>2</b>, <b>3</b>) sur la carte pour explorer les caractéristiques de chaque fleuve.
+        </p>
+      </div>
+      <div id="riverDetailsActive" class="hidden">
+        <div class="flex items-center gap-3 mb-3">
+          <span class="w-8 h-8 rounded-full bg-blue-600 text-white font-bold flex items-center justify-center font-mono" id="riverDetailsNumber">1</span>
+          <h3 class="text-base font-bold text-blue-900" id="riverDetailsName">Fleuve</h3>
+        </div>
+        <div class="grid sm:grid-cols-3 gap-4 text-xs md:text-sm">
+          <div class="bg-white rounded-lg p-3 border border-blue-100 shadow-sm">
+            <span class="font-bold text-blue-700 block mb-1">📍 Source</span>
+            <span id="riverDetailsSource" class="text-slate-700">...</span>
+          </div>
+          <div class="bg-white rounded-lg p-3 border border-blue-100 shadow-sm">
+            <span class="font-bold text-blue-700 block mb-1">🌊 Embouchure</span>
+            <span id="riverDetailsEmbouchure" class="text-slate-700">...</span>
+          </div>
+          <div class="bg-white rounded-lg p-3 border border-blue-100 shadow-sm">
+            <span class="font-bold text-blue-700 block mb-1">📏 Longueur</span>
+            <span id="riverDetailsLongueur" class="text-slate-700">...</span>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="grid md:grid-cols-3 gap-4">
       <!-- Meuse -->
-      <div class="card-premium border-blue-500">
+      <div class="card-premium border-blue-500 transition-all duration-300" id="card-meuse">
         <span class="tag-custom bg-blue-50 text-blue-700">🔴 La Meuse</span>
         <p class="text-xs text-slate-600 my-2">
           <b>Source :</b> France (Plateau de Langres).<br>
@@ -832,7 +904,7 @@
         </p>
       </div>
       <!-- Escaut -->
-      <div class="card-premium border-teal-500">
+      <div class="card-premium border-teal-500 transition-all duration-300" id="card-escaut">
         <span class="tag-custom bg-teal-50 text-teal-700">🟢 L'Escaut</span>
         <p class="text-xs text-slate-600 my-2">
           <b>Source :</b> France (Picardie).<br>
@@ -842,7 +914,7 @@
         </p>
       </div>
       <!-- Yser -->
-      <div class="card-premium border-orange-500">
+      <div class="card-premium border-orange-500 transition-all duration-300" id="card-yser">
         <span class="tag-custom bg-orange-50 text-orange-700">🔵 L'Yser</span>
         <p class="text-xs text-slate-600 my-2">
           <b>Source :</b> Nord de la France.<br>
@@ -1439,7 +1511,7 @@
   // DONNÉES ET RENDU DYNAMIQUE DES ÉCRITURES DE LA CARTE (ONGLET 04)
   // ================================================================
   const mapElements = [
-    { id: "dot-bruxelles", type: "dot", left: 45.4, top: 38.6, capital: true },
+    { id: "dot-bruxelles", type: "dot", left: 46.9, top: 37.9, capital: true },
     { id: "dot-anvers", type: "dot", left: 48.8, top: 23.7, capital: false },
     { id: "dot-gand", type: "dot", left: 33.7, top: 31.3, capital: false },
     { id: "dot-bruges", type: "dot", left: 21.2, top: 24.5, capital: false },
@@ -1454,42 +1526,93 @@
     { id: "dot-hasselt", type: "dot", left: 67.3, top: 36, capital: false },
     { id: "dot-liege", type: "dot", left: 75.4, top: 46.6, capital: false },
     { id: "dot-arlon", type: "dot", left: 80.7, top: 81, capital: false },
-    { id: "lbl-bruxelles", type: "label", name: "Bruxelles", left: 49.2, top: 38.4, size: 15, angle: 0, bold: true, color: "#b91c1c" },
-    { id: "lbl-anvers", type: "label", name: "Anvers", left: 55.4, top: 23.3, size: 15, angle: 0, bold: true, color: "#1e293b" },
+    { id: "lbl-bruxelles", type: "label", name: "Bruxelles", left: 53.2, top: 37.3, size: 15, angle: 0, bold: true, color: "#b91c1c" },
+    { id: "lbl-anvers", type: "label", name: "Anvers", left: 54.1, top: 22.9, size: 15, angle: 0, bold: true, color: "#1e293b" },
     { id: "lbl-gand", type: "label", name: "Gand", left: 34.3, top: 29.2, size: 15, angle: 0, bold: true, color: "#1e293b" },
-    { id: "lbl-bruges", type: "label", name: "Bruges", left: 25.9, top: 25.3, size: 15, angle: 0, bold: true, color: "#1e293b" },
+    { id: "lbl-bruges", type: "label", name: "Bruges", left: 25.8, top: 24.7, size: 15, angle: 0, bold: true, color: "#1e293b" },
     { id: "lbl-ostende", type: "label", name: "Ostende", left: 16.9, top: 26.5, size: 15, angle: 0, bold: true, color: "#1e293b" },
     { id: "lbl-nieuwpoort", type: "label", name: "Nieuwpoort", left: 16.3, top: 29.7, size: 15, angle: 0, bold: true, color: "#1e293b" },
     { id: "lbl-courtrai", type: "label", name: "Courtrai", left: 20.4, top: 40.2, size: 15, angle: 0, bold: true, color: "#1e293b" },
     { id: "lbl-tournai", type: "label", name: "Tournai", left: 28.3, top: 49.5, size: 15, angle: 0, bold: true, color: "#1e293b" },
     { id: "lbl-mons", type: "label", name: "Mons", left: 34.6, top: 56.2, size: 15, angle: 0, bold: true, color: "#1e293b" },
-    { id: "lbl-charleroi", type: "label", name: "Charleroi", left: 47.4, top: 58, size: 15, angle: 0, bold: true, color: "#1e293b" },
-    { id: "lbl-namur", type: "label", name: "Namur", left: 57.3, top: 51.3, size: 15, angle: 0, bold: true, color: "#1e293b" },
+    { id: "lbl-charleroi", type: "label", name: "Charleroi", left: 46.1, top: 52.9, size: 15, angle: 0, bold: true, color: "#1e293b" },
+    { id: "lbl-namur", type: "label", name: "Namur", left: 59.3, top: 51.3, size: 15, angle: 0, bold: true, color: "#1e293b" },
     { id: "lbl-dinant", type: "label", name: "Dinant", left: 64.2, top: 59.3, size: 15, angle: 0, bold: true, color: "#1e293b" },
-    { id: "lbl-hasselt", type: "label", name: "Hasselt", left: 72.7, top: 34, size: 15, angle: 0, bold: true, color: "#1e293b" },
+    { id: "lbl-hasselt", type: "label", name: "Hasselt", left: 72.2, top: 34.7, size: 15, angle: 0, bold: true, color: "#1e293b" },
     { id: "lbl-liege", type: "label", name: "Liège", left: 71.9, top: 45.3, size: 15, angle: 0, bold: true, color: "#1e293b" },
     { id: "lbl-arlon", type: "label", name: "Arlon", left: 77.8, top: 79.5, size: 15, angle: 0, bold: true, color: "#1e293b" },
-    { id: "lbl-yser", type: "label", name: "Yser", left: 9.7, top: 34.2, size: 17, angle: 0, bold: true, italic: true, color: "#142878" },
+    { id: "lbl-yser", type: "label", name: "Yser", left: 10.6, top: 35.8, size: 17, angle: -29, bold: true, italic: true, color: "#142878" },
     { id: "lbl-escaut", type: "label", name: "Escaut", left: 29.3, top: 42, size: 17, angle: 0, bold: true, italic: true, color: "#142878" },
-    { id: "lbl-meuse", type: "label", name: "Meuse", left: 66.9, top: 47.8, size: 17, angle: 0, bold: true, italic: true, color: "#142878" },
-    { id: "lbl-lys", type: "label", name: "Lys", left: 23.2, top: 35.7, size: 14, angle: -20, italic: true, color: "#1946a0" },
-    { id: "lbl-dendre", type: "label", name: "Dendre", left: 38.1, top: 37, size: 14, angle: -75, italic: true, color: "#1946a0" },
+    { id: "lbl-meuse", type: "label", name: "Meuse", left: 68.1, top: 52.4, size: 17, angle: -20, bold: true, italic: true, color: "#142878" },
+    { id: "lbl-lys", type: "label", name: "Lys", left: 25.6, top: 33.3, size: 14, angle: -30, italic: true, color: "#1946a0" },
+    { id: "lbl-dendre", type: "label", name: "Dendre", left: 37.2, top: 38.7, size: 14, angle: -41, italic: true, color: "#1946a0" },
     { id: "lbl-senne", type: "label", name: "Senne", left: 43.6, top: 41.6, size: 14, angle: -60, italic: true, color: "#1946a0" },
     { id: "lbl-dyle", type: "label", name: "Dyle", left: 51.8, top: 41.8, size: 14, angle: -70, italic: true, color: "#1946a0" },
-    { id: "lbl-demer", type: "label", name: "Demer", left: 60.7, top: 35.2, size: 14, angle: 5, italic: true, color: "#1946a0" },
-    { id: "lbl-rupel", type: "label", name: "Rupel", left: 47.4, top: 30, size: 14, angle: -45, italic: true, color: "#1946a0" },
-    { id: "lbl-sambre", type: "label", name: "Sambre", left: 53.8, top: 55.7, size: 14, angle: -15, italic: true, color: "#1946a0" },
-    { id: "lbl-ourthe", type: "label", name: "Ourthe", left: 75.3, top: 60, size: 14, angle: 75, italic: true, color: "#1946a0" },
-    { id: "lbl-vesdre", type: "label", name: "Vesdre", left: 81.8, top: 47.2, size: 14, angle: -10, italic: true, color: "#1946a0" },
-    { id: "lbl-ambleve", type: "label", name: "Amblève", left: 83.4, top: 53.6, size: 14, angle: 2, italic: true, color: "#1946a0" },
-    { id: "lbl-lesse", type: "label", name: "Lesse", left: 62.3, top: 65, size: 11, angle: 35, italic: true, color: "#1946a0" },
-    { id: "lbl-semois", type: "label", name: "Semois", left: 66.8, top: 76, size: 14, angle: 10, italic: true, color: "#1946a0" },
-    { id: "lbl-f-france", type: "label", name: "FRANCE", left: 21.5, top: 85, size: 17, angle: 0, bold: true, color: "#78716c" },
-    { id: "lbl-f-paysbas", type: "label", name: "PAYS-BAS", left: 60.5, top: 9.8, size: 17, angle: 0, bold: true, color: "#78716c" },
-    { id: "lbl-f-allemagne", type: "label", name: "ALLEMAGNE", left: 89.8, top: 37.1, size: 17, angle: 0, bold: true, color: "#78716c" },
-    { id: "lbl-f-luxembourg", type: "label", name: "LUXEMBOURG", left: 89.8, top: 67.4, size: 17, angle: 0, bold: true, color: "#78716c" },
-    { id: "lbl-f-mernord", type: "label", name: "Mer du Nord", left: 11.7, top: 20.5, size: 17, angle: 0, bold: true, color: "#78716c" }
+    { id: "lbl-demer", type: "label", name: "Demer", left: 60.1, top: 35, size: 14, angle: 5, italic: true, color: "#1946a0" },
+    { id: "lbl-rupel", type: "label", name: "Rupel", left: 49.6, top: 29.2, size: 14, angle: 15, italic: true, color: "#1946a0" },
+    { id: "lbl-sambre", type: "label", name: "Sambre", left: 52.1, top: 56.5, size: 14, angle: -15, italic: true, color: "#1946a0" },
+    { id: "lbl-ourthe", type: "label", name: "Ourthe", left: 72.7, top: 53.4, size: 14, angle: -64, italic: true, color: "#1946a0" },
+    { id: "lbl-vesdre", type: "label", name: "Vesdre", left: 80.9, top: 47.4, size: 14, angle: -17, italic: true, color: "#1946a0" },
+    { id: "lbl-ambleve", type: "label", name: "Amblève", left: 80.3, top: 53.4, size: 14, angle: 34, italic: true, color: "#1946a0" },
+    { id: "lbl-lesse", type: "label", name: "Lesse", left: 62.4, top: 65.3, size: 11, angle: 35, italic: true, color: "#1946a0" },
+    { id: "lbl-semois", type: "label", name: "Semois", left: 67.1, top: 76.7, size: 14, angle: 24, italic: true, color: "#1946a0" },
+    { id: "lbl-f-france", type: "label", name: "FRANCE", left: 38.6, top: 80, size: 17, angle: 0, bold: true, color: "#78716c" },
+    { id: "lbl-f-paysbas", type: "label", name: "PAYS-BAS", left: 81.3, top: 20, size: 17, angle: 10, bold: true, color: "#78716c" },
+    { id: "lbl-f-allemagne", type: "label", name: "ALLEMAGNE", left: 92.3, top: 43, size: 17, angle: 75, bold: true, color: "#78716c" },
+    { id: "lbl-f-luxembourg", type: "label", name: "LUXEMBOURG", left: 88.2, top: 70.5, size: 17, angle: -52, bold: true, color: "#78716c" },
+    { id: "lbl-f-mernord", type: "label", name: "Mer du Nord", left: 11.3, top: 22.8, size: 17, angle: -32, bold: true, color: "#78716c" },
+    { id: "hot-yser", type: "river-hotspot", number: 1, name: "L'Yser", left: 11.3, top: 32.9, source: "Nord de la France (à Buysscheure).", embouchure: "Mer du Nord à Nieuport (Nieuwpoort) en Belgique.", longueur: "78 km (dont 50 km en Belgique)." },
+    { id: "hot-escaut", type: "river-hotspot", number: 2, name: "L'Escaut", left: 31.2, top: 36.3, source: "Gouy en France (Aisne).", embouchure: "Mer du Nord aux Pays-Bas (par l'estuaire de l'Escaut occidental).", longueur: "355 km (dont 200 km en Belgique)." },
+    { id: "hot-meuse", type: "river-hotspot", number: 3, name: "La Meuse", left: 58.6, top: 56.4, source: "Pouilly-en-Bassigny en France (Plateau de Langres).", embouchure: "Mer du Nord aux Pays-Bas (delta commun Rhin-Meuse).", longueur: "950 km (dont 183 km en Belgique)." }
   ];
+
+  let selectedRiverId = null;
+  function selectRiver(el) {
+    selectedRiverId = el.id;
+    
+    // Toggle details cards visibility
+    document.getElementById('riverDetailsDefault').classList.add('hidden');
+    document.getElementById('riverDetailsActive').classList.remove('hidden');
+    
+    // Fill active details
+    document.getElementById('riverDetailsNumber').textContent = el.number;
+    document.getElementById('riverDetailsName').textContent = el.name;
+    document.getElementById('riverDetailsSource').textContent = el.source;
+    document.getElementById('riverDetailsEmbouchure').textContent = el.embouchure;
+    document.getElementById('riverDetailsLongueur').textContent = el.longueur;
+    
+    // Update active class on hotspots
+    document.querySelectorAll('.hotspot-river').forEach(hs => {
+      const idx = parseInt(hs.dataset.index);
+      const item = mapElements[idx];
+      if (item.id === el.id) {
+        hs.classList.add('active');
+      } else {
+        hs.classList.remove('active');
+      }
+    });
+    
+    // Highlight the static cards below
+    const cards = {
+      'hot-yser': 'card-yser',
+      'hot-escaut': 'card-escaut',
+      'hot-meuse': 'card-meuse'
+    };
+    
+    Object.values(cards).forEach(cId => {
+      const card = document.getElementById(cId);
+      if (card) {
+        card.classList.remove('ring-4', 'ring-blue-400', 'shadow-lg');
+      }
+    });
+    
+    const activeCardId = cards[el.id];
+    const activeCard = document.getElementById(activeCardId);
+    if (activeCard) {
+      activeCard.classList.add('ring-4', 'ring-blue-400', 'shadow-lg');
+      activeCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  }
 
   function renderMapElements() {
     const overlay = document.getElementById('mapLabelsOverlay');
@@ -1568,6 +1691,37 @@
         });
         
         overlay.appendChild(label);
+      } else if (el.type === 'river-hotspot') {
+        const hs = document.createElement('div');
+        hs.className = 'hotspot-river';
+        hs.id = el.id;
+        hs.dataset.index = index;
+        hs.textContent = el.number;
+        
+        hs.style.left = el.left + '%';
+        hs.style.top = el.top + '%';
+        
+        if (isCalibrating) {
+          hs.classList.add('calibrating');
+          if (selectedMapElement && selectedMapElement.id === el.id) {
+            hs.classList.add('selected');
+          }
+        } else {
+          if (selectedRiverId === el.id) {
+            hs.classList.add('active');
+          }
+        }
+        
+        hs.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (isCalibrating) {
+            selectMapElement(el, hs);
+          } else {
+            selectRiver(el);
+          }
+        });
+        
+        overlay.appendChild(hs);
       }
     });
   }
@@ -1676,7 +1830,7 @@
     selectedMapElement = el;
     selectedMapDom = dom;
     
-    document.querySelectorAll('.map-label, .map-dot').forEach(node => {
+    document.querySelectorAll('.map-label, .map-dot, .hotspot-river').forEach(node => {
       node.classList.remove('selected');
     });
     dom.classList.add('selected');
@@ -1713,7 +1867,7 @@
   }
 
   function onMapDragStart(e) {
-    const target = e.target.closest('.map-label, .map-dot');
+    const target = e.target.closest('.map-label, .map-dot, .hotspot-river');
     if (!target) return;
     
     e.preventDefault();
@@ -1778,6 +1932,8 @@
       const comma = index === mapElements.length - 1 ? "" : ",";
       if (el.type === 'dot') {
         outStr += `    { id: "${el.id}", type: "dot", left: ${el.left}, top: ${el.top}, capital: ${el.capital} }${comma}\n`;
+      } else if (el.type === 'river-hotspot') {
+        outStr += `    { id: "${el.id}", type: "river-hotspot", number: ${el.number}, name: "${el.name}", left: ${el.left}, top: ${el.top}, source: "${el.source}", embouchure: "${el.embouchure}", longueur: "${el.longueur}" }${comma}\n`;
       } else {
         const italicStr = el.italic ? `, italic: true` : ``;
         const boldStr = el.bold ? `, bold: true` : ``;
