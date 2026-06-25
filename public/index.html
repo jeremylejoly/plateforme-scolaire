@@ -26933,10 +26933,18 @@ function geoPlanDrop(zoneId, label){
   // Retourner l'ancienne étiquette si zone déjà remplie
   const old = geoPlanState.answers[zoneId];
   if(old) geoPlanReturnTag(old);
-  // Retirer la même étiquette d'une autre zone
-  Object.entries(geoPlanState.answers).forEach(([zid, lbl])=>{
-    if(lbl===label && zid!==zoneId){ geoPlanState.answers[zid]=''; const zEl=document.getElementById('geoplan-zone-'+zid); if(zEl){zEl.textContent='?';zEl.style.background='rgba(99,102,241,0.08)';} }
-  });
+  // Retirer la même étiquette d'une autre zone si on dépasse le nombre disponible dans le pool
+  const pool = document.getElementById('geoplan-pool');
+  const poolTags = pool ? Array.from(pool.querySelectorAll('.geo-tag')).filter(t => t.dataset.text === label).length : 1;
+  const filledZones = Object.values(geoPlanState.answers).filter(lbl => lbl === label).length;
+  if (filledZones >= poolTags) {
+    const otherZid = Object.keys(geoPlanState.answers).find(zid => zid !== zoneId && geoPlanState.answers[zid] === label);
+    if (otherZid) {
+      geoPlanState.answers[otherZid] = '';
+      const zEl = document.getElementById('geoplan-zone-' + otherZid);
+      if (zEl) { zEl.textContent = '?'; zEl.style.background = 'rgba(99,102,241,0.08)'; }
+    }
+  }
   geoPlanState.answers[zoneId] = label;
   const zEl = document.getElementById('geoplan-zone-'+zoneId);
   if(zEl){ zEl.textContent=label; zEl.style.background='rgba(99,102,241,0.2)'; }
@@ -26984,15 +26992,15 @@ function validateGeoPlan(){
 // ================================================================
 
 const GEO_CONTINENTS_QCM_DATA = [
-  {q:"Sur quel continent se trouve la France ?", opts:["Europe","Asie","Afrique","Amérique du Nord"], correct:0},
+  {q:"Sur quel continent se trouve la France ?", opts:["Europe","Asie","Afrique","Amérique"], correct:0},
   {q:"Sur quel continent se trouve la Chine ?", opts:["Asie","Europe","Afrique","Océanie"], correct:0},
-  {q:"Sur quel continent se trouve le Brésil ?", opts:["Amérique du Sud","Amérique du Nord","Afrique","Océanie"], correct:0},
+  {q:"Sur quel continent se trouve le Brésil ?", opts:["Amérique","Europe","Afrique","Océanie"], correct:0},
   {q:"Sur quel continent se trouve l'Australie ?", opts:["Océanie","Asie","Afrique","Antarctique"], correct:0},
-  {q:"Sur quel continent se trouve le Canada ?", opts:["Amérique du Nord","Amérique du Sud","Europe","Asie"], correct:0},
-  {q:"Sur quel continent se trouve l'Égypte ?", opts:["Afrique","Asie","Europe","Amérique du Nord"], correct:0},
-  {q:"Sur quel continent se trouve l'Argentine ?", opts:["Amérique du Sud","Amérique du Nord","Afrique","Océanie"], correct:0},
-  {q:"Sur quel continent se trouve le Japon ?", opts:["Asie","Océanie","Amérique du Nord","Europe"], correct:0},
-  {q:"Sur quel continent se trouve le Mexique ?", opts:["Amérique du Nord","Amérique du Sud","Asie","Europe"], correct:0},
+  {q:"Sur quel continent se trouve le Canada ?", opts:["Amérique","Europe","Afrique","Asie"], correct:0},
+  {q:"Sur quel continent se trouve l'Égypte ?", opts:["Afrique","Asie","Europe","Amérique"], correct:0},
+  {q:"Sur quel continent se trouve l'Argentine ?", opts:["Amérique","Europe","Afrique","Océanie"], correct:0},
+  {q:"Sur quel continent se trouve le Japon ?", opts:["Asie","Océanie","Amérique","Europe"], correct:0},
+  {q:"Sur quel continent se trouve le Mexique ?", opts:["Amérique","Europe","Asie","Océanie"], correct:0},
   {q:"Sur quel continent se trouve l'Inde ?", opts:["Asie","Afrique","Océanie","Europe"], correct:0},
   {q:"Si je suis en Belgique (côte ouest), dans quel océan puis-je me baigner ?", opts:["Océan Atlantique","Océan Pacifique","Océan Indien","Océan Arctique"], correct:0},
   {q:"Si je suis au Japon, dans quel océan puis-je me baigner ?", opts:["Océan Pacifique","Océan Atlantique","Océan Indien","Océan Austral"], correct:0},
@@ -27001,18 +27009,18 @@ const GEO_CONTINENTS_QCM_DATA = [
   {q:"Quel est le plus grand océan du monde ?", opts:["Océan Pacifique","Océan Atlantique","Océan Indien","Océan Austral"], correct:0},
   {q:"Quel océan se trouve entre l'Afrique et l'Australie ?", opts:["Océan Indien","Océan Atlantique","Océan Pacifique","Océan Austral"], correct:0},
   {q:"Quel océan se trouve au Pôle Nord ?", opts:["Océan Arctique","Océan Austral","Océan Atlantique","Océan Pacifique"], correct:0},
-  {q:"Quel est le plus grand continent du monde ?", opts:["Asie","Afrique","Amérique du Nord","Europe"], correct:0},
-  {q:"Quel est le plus petit continent du monde ?", opts:["Océanie","Europe","Antarctique","Amérique du Sud"], correct:0},
-  {q:"Quel est le continent le plus froid du monde ?", opts:["Antarctique","Asie","Amérique du Nord","Océanie"], correct:0},
-  {q:"Quel est le plus long fleuve du monde ?", opts:["Le Nil (Afrique)","L'Amazone (Amérique du Sud)","Le Yangtsé (Asie)","Le Mississippi (Amérique du Nord)"], correct:0},
-  {q:"Quelle est la plus haute montagne du monde ?", opts:["L'Everest (Asie)","Le Mont-Blanc (Europe)","L'Aconcagua (Amérique du Sud)","Le Kilimandjaro (Afrique)"], correct:0},
+  {q:"Quel est le plus grand continent du monde ?", opts:["Asie","Afrique","Amérique","Europe"], correct:0},
+  {q:"Quel est le plus petit continent du monde ?", opts:["Océanie","Europe","Antarctique","Afrique"], correct:0},
+  {q:"Quel est le continent le plus froid du monde ?", opts:["Antarctique","Asie","Amérique","Océanie"], correct:0},
+  {q:"Quel est le plus long fleuve du monde ?", opts:["Le Nil (Afrique)","L'Amazone (Amérique)","Le Yangtsé (Asie)","Le Mississippi (Amérique)"], correct:0},
+  {q:"Quelle est la plus haute montagne du monde ?", opts:["L'Everest (Asie)","Le Mont-Blanc (Europe)","L'Aconcagua (Amérique)","Le Kilimandjaro (Afrique)"], correct:0},
   {q:"Quel est le plus grand désert du monde ?", opts:["Le Sahara (Afrique)","Le Gobi (Asie)","L'Antarctique","L'Arabie (Asie)"], correct:0},
   {q:"Quelle chaîne de montagnes se trouve en Asie ?", opts:["L'Himalaya","Les Andes","Les Rocheuses","Les Alpes"], correct:0},
-  {q:"Quelle chaîne de montagnes se trouve en Amérique du Sud ?", opts:["Les Andes","Les Rocheuses","L'Himalaya","Les Alpes"], correct:0},
-  {q:"Quelle chaîne de montagnes se trouve en Amérique du Nord ?", opts:["Les Rocheuses","Les Andes","L'Himalaya","Les Alpes"], correct:0},
+  {q:"Quelle chaîne de montagnes se trouve en Amérique ?", opts:["Les Andes","L'Himalaya","Les Alpes","Le Kilimandjaro"], correct:0},
+  {q:"Dans quel continent se trouvent les Rocheuses ?", opts:["Amérique","Europe","Asie","Afrique"], correct:0},
   {q:"Quelle chaîne de montagnes se trouve en Europe ?", opts:["Les Alpes","Les Andes","L'Himalaya","Les Rocheuses"], correct:0},
   {q:"Quelle chaîne de montagnes se trouve en Afrique du Nord ?", opts:["L'Atlas","Les Andes","L'Himalaya","Les Alpes"], correct:0},
-  {q:"Combien y a-t-il de continents sur Terre ?", opts:["7","5","6","8"], correct:0},
+  {q:"Combien y a-t-il de continents sur Terre ?", opts:["6","5","7","8"], correct:0},
   {q:"Combien y a-t-il d'océans sur Terre ?", opts:["5","4","3","6"], correct:0},
 ];
 
@@ -27070,22 +27078,22 @@ const GEO_TOUR_TEXTS = [
   {
     id: 1,
     title: "Texte 1 — Tour du monde classique",
-    content: "Notre voyageur part de Bruxelles, en Belgique, en [Europe]. Il survole l'[Océan Atlantique] pour atterrir à New York, aux États-Unis, en [Amérique du Nord]. Il repart vers le sud et survole l'[Océan Pacifique] pour rejoindre Tokyo, au Japon, en [Asie]. De là, il descend vers Sydney, en Australie, en [Océanie], en traversant une partie de l'[Océan Pacifique]. Il repart vers l'ouest en survolant l'[Océan Indien] pour s'arrêter au Kenya, en [Afrique]. Il remonte ensuite vers Rio de Janeiro, au Brésil, en [Amérique du Sud], en traversant l'[Océan Atlantique]. Enfin, il rentre à Bruxelles en survolant à nouveau l'[Océan Atlantique]."
+    content: "Notre voyageur part de Bruxelles, en Belgique, en [Europe]. Il survole l'[Océan Atlantique] pour atterrir à New York, aux États-Unis, en [Amérique]. Il repart vers le sud et survole l'[Océan Pacifique] pour rejoindre Tokyo, au Japon, en [Asie]. De là, il descend vers Sydney, en Australie, en [Océanie], en traversant une partie de l'[Océan Pacifique]. Il repart vers l'ouest en survolant l'[Océan Indien] pour s'arrêter au Kenya, en [Afrique]. Il remonte ensuite vers Rio de Janeiro, au Brésil, en [Amérique], en traversant l'[Océan Atlantique]. Enfin, il rentre à Bruxelles en survolant à nouveau l'[Océan Atlantique]."
   },
   {
     id: 2,
     title: "Texte 2 — Le tour des océans",
-    content: "Notre exploratrice part de Londres, en Angleterre, en [Europe]. Elle embarque sur un bateau et traverse l'[Océan Atlantique] vers le sud. Elle longe les côtes du Brésil, en [Amérique du Sud], avant de contourner la pointe de l'Afrique du Sud, en [Afrique]. Elle navigue ensuite sur l'[Océan Indien] et fait escale à Mumbai, en Inde, en [Asie]. Elle repart vers l'est, traverse l'[Océan Pacifique] et arrive à Los Angeles, aux États-Unis, en [Amérique du Nord]. Elle remonte vers le nord, passe par l'[Océan Arctique] et rentre en Europe par la Norvège, en [Europe]."
+    content: "Notre exploratrice part de Londres, en Angleterre, en [Europe]. Elle embarque sur un bateau et traverse l'[Océan Atlantique] vers le sud. Elle longe les côtes du Brésil, en [Amérique], avant de contourner la pointe de l'Afrique du Sud, en [Afrique]. Elle navigue ensuite sur l'[Océan Indien] et fait escale à Mumbai, en Inde, en [Asie]. Elle repart vers l'est, traverse l'[Océan Pacifique] et arrive à Los Angeles, aux États-Unis, en [Amérique]. Elle remonte vers le nord, passe par l'[Océan Arctique] et rentre en Europe par la Norvège, en [Europe]."
   },
   {
     id: 3,
     title: "Texte 3 — L'aventurier du Pôle",
-    content: "Un aventurier part du Caire, en Égypte, en [Afrique]. Il survole l'[Océan Indien] pour rejoindre Perth, en Australie, en [Océanie]. Il repart vers le sud et s'approche de l'[Antarctique], entouré de l'[Océan Austral]. Il remonte vers Buenos Aires, en Argentine, en [Amérique du Sud], en traversant l'[Océan Atlantique]. Il continue vers le nord et visite Mexico, au Mexique, en [Amérique du Nord]. Il survole l'[Océan Pacifique] pour rejoindre Pékin, en Chine, en [Asie]. Enfin, il rentre au Caire en traversant à nouveau l'[Océan Indien]."
+    content: "Un aventurier part du Caire, en Égypte, en [Afrique]. Il survole l'[Océan Indien] pour rejoindre Perth, en Australie, en [Océanie]. Il repart vers le sud et s'approche de l'[Antarctique], entouré de l'[Océan Austral]. Il remonte vers Buenos Aires, en Argentine, en [Amérique], en traversant l'[Océan Atlantique]. Il continue vers le nord et visite Mexico, au Mexique, en [Amérique]. Il survole l'[Océan Pacifique] pour rejoindre Pékin, en Chine, en [Asie]. Enfin, il rentre au Caire en traversant à nouveau l'[Océan Indien]."
   },
   {
     id: 4,
     title: "Texte 4 — La route des épices",
-    content: "Une commerçante part d'Amsterdam, aux Pays-Bas, en [Europe]. Elle traverse l'[Océan Atlantique] et longe les côtes de l'Afrique de l'Ouest, en [Afrique]. Elle contourne le cap de Bonne-Espérance et navigue sur l'[Océan Indien] jusqu'à Goa, en Inde, en [Asie]. Elle continue vers l'est en traversant l'[Océan Pacifique] pour atteindre Jakarta, en Indonésie, toujours en [Asie]. Elle fait ensuite escale à Darwin, en Australie, en [Océanie]. Elle repart vers l'est, traverse l'[Océan Pacifique] et arrive à Lima, au Pérou, en [Amérique du Sud]. Elle rentre finalement en Europe en traversant l'[Océan Atlantique]."
+    content: "Une commerçante part d'Amsterdam, aux Pays-Bas, en [Europe]. Elle traverse l'[Océan Atlantique] et longe les côtes de l'Afrique de l'Ouest, en [Afrique]. Elle contourne le cap de Bonne-Espérance et navigue sur l'[Océan Indien] jusqu'à Goa, en Inde, en [Asie]. Elle continue vers l'est en traversant l'[Océan Pacifique] pour atteindre Jakarta, en Indonésie, toujours en [Asie]. Elle fait ensuite escale à Darwin, en Australie, en [Océanie]. Elle repart vers l'est, traverse l'[Océan Pacifique] et arrive à Lima, au Pérou, en [Amérique]. Elle rentre finalement en Europe en traversant l'[Océan Atlantique]."
   }
 ];
 
@@ -28576,7 +28584,7 @@ function initSujetTextesPanneau(ti) {
   if (banque) {
     banque.innerHTML = '';
     shuffled.forEach(l => {
-      banque.appendChild(creerSujetTextesEtiquette(ti, l.rep, l.id));
+      banque.appendChild(creerSujetTextesEtiquette(ti, l.rep, ''));
     });
   }
 
