@@ -1,4 +1,4 @@
-const CACHE_NAME = 'classe-mr-lejoly-cache-v248';
+const CACHE_NAME = 'classe-mr-lejoly-cache-v254';
 const CORE_ASSETS = [
   './',
   'index.html',
@@ -121,7 +121,19 @@ const CORE_ASSETS = [
   'photos/detail_vallee.png',
   'photos/detail_colline.png',
   'photos/detail_plaine.png',
-  'photos/detail_plateau.png'
+  'photos/detail_plateau.png',
+  'photos/detail_source_montagne.png',
+  'photos/detail_source_plateau.png',
+  'photos/detail_affluent.png',
+  'photos/detail_confluent.png',
+  'photos/detail_meandre.png',
+  'photos/detail_fleuve.png',
+  'photos/detail_estuaire.png',
+  'photos/detail_delta.png',
+  'photos/detail_embouchure.png',
+  'photos/detail_mer.png',
+  'photos/carte_cours_eau_belgique.png',
+  'photos/carte_relief_hydrographie_belgique.png'
 ];
 
 // Installe le Service Worker et met en cache les ressources de base
