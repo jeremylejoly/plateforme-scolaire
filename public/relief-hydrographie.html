@@ -300,6 +300,47 @@
     opacity: 0.75;
   }
 
+  /* INTERACTIVE MAP OVERLAYS */
+  .map-label {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    transform-origin: center center;
+    white-space: nowrap;
+    text-shadow: 
+      -2px -2px 0 #fff,  2px -2px 0 #fff, -2px  2px 0 #fff,  2px  2px 0 #fff,
+      -1px -1px 0 #fff,  1px -1px 0 #fff, -1px  1px 0 #fff,  1px  1px 0 #fff,
+      -3px  0px 0 #fff,  3px  0px 0 #fff,  0px -3px 0 #fff,  0px  3px 0 #fff;
+    user-select: none;
+    z-index: 10;
+  }
+  .map-label.calibrating {
+    pointer-events: auto !important;
+    cursor: move;
+  }
+  .map-label.selected {
+    outline: 2px dashed #3b82f6 !important;
+    outline-offset: 4px;
+    background: rgba(59, 130, 246, 0.15);
+    z-index: 1000 !important;
+  }
+  .map-dot {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    border: 1px solid #ffffff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+    z-index: 20;
+  }
+  .map-dot.calibrating {
+    pointer-events: auto !important;
+    cursor: move;
+  }
+  .map-dot.selected {
+    outline: 2px dashed #3b82f6 !important;
+    outline-offset: 2px;
+    z-index: 1000 !important;
+  }
+
   /* RESPONSIVE DESIGN */
   @media(max-width:768px) {
     .tabs-inner { padding: 6px; }
@@ -765,10 +806,18 @@
     <!-- Carte Orohydrographique de la Belgique -->
     <div class="card-premium mb-6 flex flex-col items-center">
       <span class="tag-custom bg-blue-50 text-blue-700 mb-4 w-full text-center">🗺️ Carte orohydrographique de la Belgique</span>
-      <div class="w-full max-w-[800px] bg-slate-50 rounded-xl border border-slate-200 p-2 shadow-sm">
-        <img src="photos/carte_cours_eau_belgique.png" alt="Carte des cours d'eau et canaux de Belgique" class="w-full h-auto rounded-lg cursor-zoom-in zoomable" data-caption="Carte de la Belgique présentant le relief (altitude) par dégradé de couleurs, les fleuves principaux (Yser, Escaut, Meuse) en gras, leurs affluents et les principaux canaux en pointillés.">
+      
+      <!-- Container interactif pour la carte et ses étiquettes HTML -->
+      <div class="scene-wrap border-2 border-slate-900 rounded-2xl relative shadow-md bg-white w-full max-w-[800px]" id="mapInteractiveContainer">
+        <img src="photos/carte_fond_cours_eau.png" data-lightbox-src="photos/carte_cours_eau_belgique.png" alt="Carte des cours d'eau de Belgique" class="w-full h-auto block rounded-xl cursor-zoom-in zoomable" data-caption="Carte de la Belgique présentant le relief (altitude) par dégradé de couleurs, les fleuves principaux (Yser, Escaut, Meuse) en gras et leurs affluents.">
+        
+        <!-- Overlay des étiquettes et points de villes -->
+        <div id="mapLabelsOverlay" class="absolute inset-0 pointer-events-none" style="font-family: 'Georgia', serif;">
+          <!-- Les étiquettes et points seront injectés dynamiquement par le script -->
+        </div>
       </div>
-      <p class="text-xs text-slate-500 mt-2 text-center">Clique sur la carte pour l'agrandir en plein écran avec la visionneuse zoomable.</p>
+      
+      <p class="text-xs text-slate-500 mt-2 text-center" id="mapHintText">Clique sur la carte pour l'agrandir en plein écran. Appuie sur la touche 'd' pour calibrer les écritures.</p>
     </div>
 
     <div class="grid md:grid-cols-3 gap-4">
@@ -1045,7 +1094,7 @@
     const lightboxImg = document.getElementById('lightbox-img');
     const lightboxCap = document.getElementById('lightbox-caption');
     
-    lightboxImg.src = imgEl.src;
+    lightboxImg.src = imgEl.dataset.lightboxSrc || imgEl.src;
     lightboxCap.textContent = imgEl.dataset.caption || imgEl.alt;
     lightbox.classList.remove('hidden');
   }
@@ -1386,29 +1435,361 @@
     });
   })();
 
+  // ================================================================
+  // DONNÉES ET RENDU DYNAMIQUE DES ÉCRITURES DE LA CARTE (ONGLET 04)
+  // ================================================================
+  const mapElements = [
+    { id: "dot-bruxelles", type: "dot", left: 45.4, top: 38.6, capital: true },
+    { id: "dot-anvers", type: "dot", left: 48.8, top: 23.7, capital: false },
+    { id: "dot-gand", type: "dot", left: 33.7, top: 31.3, capital: false },
+    { id: "dot-bruges", type: "dot", left: 21.2, top: 24.5, capital: false },
+    { id: "dot-ostende", type: "dot", left: 13.7, top: 24.6, capital: false },
+    { id: "dot-nieuwpoort", type: "dot", left: 9.6, top: 28.2, capital: false },
+    { id: "dot-courtrai", type: "dot", left: 22.3, top: 38.6, capital: false },
+    { id: "dot-tournai", type: "dot", left: 24.4, top: 47.8, capital: false },
+    { id: "dot-mons", type: "dot", left: 37.1, top: 54.8, capital: false },
+    { id: "dot-charleroi", type: "dot", left: 47.4, top: 54.7, capital: false },
+    { id: "dot-namur", type: "dot", left: 58.2, top: 53.2, capital: false },
+    { id: "dot-dinant", type: "dot", left: 59.8, top: 59.5, capital: false },
+    { id: "dot-hasselt", type: "dot", left: 67.3, top: 36, capital: false },
+    { id: "dot-liege", type: "dot", left: 75.4, top: 46.6, capital: false },
+    { id: "dot-arlon", type: "dot", left: 80.7, top: 81, capital: false },
+    { id: "lbl-bruxelles", type: "label", name: "Bruxelles", left: 49.2, top: 38.4, size: 15, angle: 0, bold: true, color: "#b91c1c" },
+    { id: "lbl-anvers", type: "label", name: "Anvers", left: 55.4, top: 23.3, size: 15, angle: 0, bold: true, color: "#1e293b" },
+    { id: "lbl-gand", type: "label", name: "Gand", left: 34.3, top: 29.2, size: 15, angle: 0, bold: true, color: "#1e293b" },
+    { id: "lbl-bruges", type: "label", name: "Bruges", left: 25.9, top: 25.3, size: 15, angle: 0, bold: true, color: "#1e293b" },
+    { id: "lbl-ostende", type: "label", name: "Ostende", left: 16.9, top: 26.5, size: 15, angle: 0, bold: true, color: "#1e293b" },
+    { id: "lbl-nieuwpoort", type: "label", name: "Nieuwpoort", left: 16.3, top: 29.7, size: 15, angle: 0, bold: true, color: "#1e293b" },
+    { id: "lbl-courtrai", type: "label", name: "Courtrai", left: 20.4, top: 40.2, size: 15, angle: 0, bold: true, color: "#1e293b" },
+    { id: "lbl-tournai", type: "label", name: "Tournai", left: 28.3, top: 49.5, size: 15, angle: 0, bold: true, color: "#1e293b" },
+    { id: "lbl-mons", type: "label", name: "Mons", left: 34.6, top: 56.2, size: 15, angle: 0, bold: true, color: "#1e293b" },
+    { id: "lbl-charleroi", type: "label", name: "Charleroi", left: 47.4, top: 58, size: 15, angle: 0, bold: true, color: "#1e293b" },
+    { id: "lbl-namur", type: "label", name: "Namur", left: 57.3, top: 51.3, size: 15, angle: 0, bold: true, color: "#1e293b" },
+    { id: "lbl-dinant", type: "label", name: "Dinant", left: 64.2, top: 59.3, size: 15, angle: 0, bold: true, color: "#1e293b" },
+    { id: "lbl-hasselt", type: "label", name: "Hasselt", left: 72.7, top: 34, size: 15, angle: 0, bold: true, color: "#1e293b" },
+    { id: "lbl-liege", type: "label", name: "Liège", left: 71.9, top: 45.3, size: 15, angle: 0, bold: true, color: "#1e293b" },
+    { id: "lbl-arlon", type: "label", name: "Arlon", left: 77.8, top: 79.5, size: 15, angle: 0, bold: true, color: "#1e293b" },
+    { id: "lbl-yser", type: "label", name: "Yser", left: 9.7, top: 34.2, size: 17, angle: 0, bold: true, italic: true, color: "#142878" },
+    { id: "lbl-escaut", type: "label", name: "Escaut", left: 29.3, top: 42, size: 17, angle: 0, bold: true, italic: true, color: "#142878" },
+    { id: "lbl-meuse", type: "label", name: "Meuse", left: 66.9, top: 47.8, size: 17, angle: 0, bold: true, italic: true, color: "#142878" },
+    { id: "lbl-lys", type: "label", name: "Lys", left: 23.2, top: 35.7, size: 14, angle: -20, italic: true, color: "#1946a0" },
+    { id: "lbl-dendre", type: "label", name: "Dendre", left: 38.1, top: 37, size: 14, angle: -75, italic: true, color: "#1946a0" },
+    { id: "lbl-senne", type: "label", name: "Senne", left: 43.6, top: 41.6, size: 14, angle: -60, italic: true, color: "#1946a0" },
+    { id: "lbl-dyle", type: "label", name: "Dyle", left: 51.8, top: 41.8, size: 14, angle: -70, italic: true, color: "#1946a0" },
+    { id: "lbl-demer", type: "label", name: "Demer", left: 60.7, top: 35.2, size: 14, angle: 5, italic: true, color: "#1946a0" },
+    { id: "lbl-rupel", type: "label", name: "Rupel", left: 47.4, top: 30, size: 14, angle: -45, italic: true, color: "#1946a0" },
+    { id: "lbl-sambre", type: "label", name: "Sambre", left: 53.8, top: 55.7, size: 14, angle: -15, italic: true, color: "#1946a0" },
+    { id: "lbl-ourthe", type: "label", name: "Ourthe", left: 75.3, top: 60, size: 14, angle: 75, italic: true, color: "#1946a0" },
+    { id: "lbl-vesdre", type: "label", name: "Vesdre", left: 81.8, top: 47.2, size: 14, angle: -10, italic: true, color: "#1946a0" },
+    { id: "lbl-ambleve", type: "label", name: "Amblève", left: 83.4, top: 53.6, size: 14, angle: 2, italic: true, color: "#1946a0" },
+    { id: "lbl-lesse", type: "label", name: "Lesse", left: 62.3, top: 65, size: 11, angle: 35, italic: true, color: "#1946a0" },
+    { id: "lbl-semois", type: "label", name: "Semois", left: 66.8, top: 76, size: 14, angle: 10, italic: true, color: "#1946a0" },
+    { id: "lbl-f-france", type: "label", name: "FRANCE", left: 21.5, top: 85, size: 17, angle: 0, bold: true, color: "#78716c" },
+    { id: "lbl-f-paysbas", type: "label", name: "PAYS-BAS", left: 60.5, top: 9.8, size: 17, angle: 0, bold: true, color: "#78716c" },
+    { id: "lbl-f-allemagne", type: "label", name: "ALLEMAGNE", left: 89.8, top: 37.1, size: 17, angle: 0, bold: true, color: "#78716c" },
+    { id: "lbl-f-luxembourg", type: "label", name: "LUXEMBOURG", left: 89.8, top: 67.4, size: 17, angle: 0, bold: true, color: "#78716c" },
+    { id: "lbl-f-mernord", type: "label", name: "Mer du Nord", left: 11.7, top: 20.5, size: 17, angle: 0, bold: true, color: "#78716c" }
+  ];
+
+  function renderMapElements() {
+    const overlay = document.getElementById('mapLabelsOverlay');
+    if (!overlay) return;
+    overlay.innerHTML = '';
+    
+    mapElements.forEach((el, index) => {
+      if (el.type === 'dot') {
+        const dot = document.createElement('div');
+        dot.className = 'map-dot';
+        dot.id = el.id;
+        dot.dataset.index = index;
+        
+        dot.style.left = el.left + '%';
+        dot.style.top = el.top + '%';
+        
+        if (el.capital) {
+          dot.style.width = '12px';
+          dot.style.height = '12px';
+          dot.style.backgroundColor = '#dc2626';
+          dot.style.borderWidth = '2px';
+        } else {
+          dot.style.width = '8px';
+          dot.style.height = '8px';
+          dot.style.backgroundColor = '#0f172a';
+          dot.style.borderWidth = '1px';
+        }
+        
+        if (isCalibrating) {
+          dot.classList.add('calibrating');
+          if (selectedMapElement && selectedMapElement.id === el.id) {
+            dot.classList.add('selected');
+          }
+        }
+        
+        dot.addEventListener('click', (e) => {
+          if (isCalibrating) {
+            e.stopPropagation();
+            selectMapElement(el, dot);
+          }
+        });
+        
+        overlay.appendChild(dot);
+      } else if (el.type === 'label') {
+        const label = document.createElement('div');
+        label.className = 'map-label';
+        label.id = el.id;
+        label.dataset.index = index;
+        label.textContent = el.name;
+        
+        label.style.left = el.left + '%';
+        label.style.top = el.top + '%';
+        label.style.fontSize = el.size + 'px';
+        label.style.color = el.color || '#1e293b';
+        label.style.fontWeight = el.bold ? 'bold' : 'normal';
+        label.style.fontStyle = el.italic ? 'italic' : 'normal';
+        
+        let transformStr = 'translate(-50%, -50%)';
+        if (el.angle) {
+          transformStr += ' rotate(' + el.angle + 'deg)';
+        }
+        label.style.transform = transformStr;
+        
+        if (isCalibrating) {
+          label.classList.add('calibrating');
+          if (selectedMapElement && selectedMapElement.id === el.id) {
+            label.classList.add('selected');
+          }
+        }
+        
+        label.addEventListener('click', (e) => {
+          if (isCalibrating) {
+            e.stopPropagation();
+            selectMapElement(el, label);
+          }
+        });
+        
+        overlay.appendChild(label);
+      }
+    });
+  }
 
   // ================================================================
-  // OUTIL DE CALIBRAGE DE HOTSPOTS (DEBUG)
+  // SYSTEME DE CALIBRATION AVANCÉ (PASTILLES & ÉCRITURES)
   // ================================================================
   let isCalibrating = false;
   let activeDragHotspot = null;
   let calibratorHotspots = [];
+  
+  let selectedMapElement = null;
+  let selectedMapDom = null;
+  let activeDragElement = null;
+  let activeDragDom = null;
 
   document.addEventListener('keydown', (e) => {
     if (e.key.toLowerCase() === 'd') {
+      e.preventDefault();
       isCalibrating = !isCalibrating;
       const calibratorBox = document.getElementById('calibratorBox');
-      if (isCalibrating) {
-        calibratorBox.classList.remove('hidden');
-        setupHotspotDraggability();
-        updateCalibratorUI();
+      
+      const activeTabBtn = document.querySelector('.tab-btn.active');
+      if (activeTabBtn && activeTabBtn.dataset.tab === 'rivieres-belges') {
+        // Mode Écritures (Onglet 4)
+        if (isCalibrating) {
+          calibratorBox.classList.remove('hidden');
+          setupMapElementsDraggability();
+          renderMapElements();
+          updateMapCalibratorJSON();
+        } else {
+          calibratorBox.classList.add('hidden');
+          teardownMapElementsDraggability();
+          selectedMapElement = null;
+          selectedMapDom = null;
+          renderMapElements();
+        }
       } else {
-        calibratorBox.classList.add('hidden');
-        teardownHotspotDraggability();
+        // Mode Pastilles (Onglet 1, 2, 3)
+        if (isCalibrating) {
+          calibratorBox.classList.remove('hidden');
+          setupHotspotDraggability();
+          updateCalibratorUI();
+        } else {
+          calibratorBox.classList.add('hidden');
+          teardownHotspotDraggability();
+        }
+      }
+      return;
+    }
+    
+    // Raccourcis clavier pour le calibrage des écritures
+    if (isCalibrating && selectedMapElement) {
+      const step = e.shiftKey ? 0.5 : 0.1;
+      let handled = false;
+      
+      if (e.key === 'ArrowUp') {
+        selectedMapElement.top = Math.round((selectedMapElement.top - step) * 10) / 10;
+        handled = true;
+      } else if (e.key === 'ArrowDown') {
+        selectedMapElement.top = Math.round((selectedMapElement.top + step) * 10) / 10;
+        handled = true;
+      } else if (e.key === 'ArrowLeft') {
+        selectedMapElement.left = Math.round((selectedMapElement.left - step) * 10) / 10;
+        handled = true;
+      } else if (e.key === 'ArrowRight') {
+        selectedMapElement.left = Math.round((selectedMapElement.left + step) * 10) / 10;
+        handled = true;
+      } else if (selectedMapElement.type === 'label') {
+        if (e.key.toLowerCase() === 'z' || e.key === 'PageUp') {
+          selectedMapElement.angle = (selectedMapElement.angle || 0) + (e.shiftKey ? 5 : 1);
+          handled = true;
+        } else if (e.key.toLowerCase() === 's' || e.key === 'PageDown') {
+          selectedMapElement.angle = (selectedMapElement.angle || 0) - (e.shiftKey ? 5 : 1);
+          handled = true;
+        } else if (e.key === '+' || e.key === '=' || e.key.toLowerCase() === 'x') {
+          selectedMapElement.size = (selectedMapElement.size || 14) + 1;
+          handled = true;
+        } else if (e.key === '-' || e.key.toLowerCase() === 'c') {
+          selectedMapElement.size = Math.max(8, (selectedMapElement.size || 14) - 1);
+          handled = true;
+        }
+      }
+      
+      if (handled) {
+        e.preventDefault();
+        if (selectedMapDom) {
+          selectedMapDom.style.left = selectedMapElement.left + '%';
+          selectedMapDom.style.top = selectedMapElement.top + '%';
+          if (selectedMapElement.type === 'label') {
+            selectedMapDom.style.fontSize = selectedMapElement.size + 'px';
+            let transformStr = 'translate(-50%, -50%)';
+            if (selectedMapElement.angle) {
+              transformStr += ' rotate(' + selectedMapElement.angle + 'deg)';
+            }
+            selectedMapDom.style.transform = transformStr;
+          }
+        }
+        updateMapCalibratorJSON();
+        selectMapElement(selectedMapElement, selectedMapDom);
       }
     }
   });
 
+  function selectMapElement(el, dom) {
+    selectedMapElement = el;
+    selectedMapDom = dom;
+    
+    document.querySelectorAll('.map-label, .map-dot').forEach(node => {
+      node.classList.remove('selected');
+    });
+    dom.classList.add('selected');
+    
+    const title = document.getElementById('calibratorTitle');
+    const desc = document.getElementById('calibratorDesc');
+    
+    let info = `Élément : "${el.name || el.id}"<br>`;
+    info += `Position : left: ${el.left}%, top: ${el.top}%<br>`;
+    if (el.type === 'label') {
+      info += `Angle : ${el.angle || 0}° | Taille : ${el.size || 14}px<br>`;
+      info += `Raccourcis : <b>Flèches</b> pour bouger | <b>Z / S</b> pour pivoter | <b>X / C</b> pour police.`;
+    } else {
+      info += `Raccourcis : <b>Flèches</b> pour bouger.`;
+    }
+    
+    title.textContent = "Calibrateur (Carte)";
+    desc.innerHTML = info;
+  }
+
+  function setupMapElementsDraggability() {
+    const overlay = document.getElementById('mapLabelsOverlay');
+    if (!overlay) return;
+    overlay.onmousedown = onMapDragStart;
+    overlay.ontouchstart = onMapDragStart;
+  }
+
+  function teardownMapElementsDraggability() {
+    const overlay = document.getElementById('mapLabelsOverlay');
+    if (overlay) {
+      overlay.onmousedown = null;
+      overlay.ontouchstart = null;
+    }
+  }
+
+  function onMapDragStart(e) {
+    const target = e.target.closest('.map-label, .map-dot');
+    if (!target) return;
+    
+    e.preventDefault();
+    const index = parseInt(target.dataset.index);
+    const el = mapElements[index];
+    
+    selectMapElement(el, target);
+    
+    activeDragElement = el;
+    activeDragDom = target;
+    
+    document.onmouseup = onMapDragEnd;
+    document.onmousemove = onMapDragMove;
+    document.ontouchend = onMapDragEnd;
+    document.ontouchmove = onMapDragTouchMove;
+  }
+
+  function onMapDragMove(e) {
+    updateMapDragPos(e.clientX, e.clientY);
+  }
+
+  function onMapDragTouchMove(e) {
+    updateMapDragPos(e.touches[0].clientX, e.touches[0].clientY);
+  }
+
+  function updateMapDragPos(clientX, clientY) {
+    if (!activeDragElement || !activeDragDom) return;
+    const wrap = document.getElementById('mapInteractiveContainer');
+    const rect = wrap.getBoundingClientRect();
+    
+    let left = ((clientX - rect.left) / rect.width) * 100;
+    let top = ((clientY - rect.top) / rect.height) * 100;
+    
+    left = Math.max(0, Math.min(100, Math.round(left * 10) / 10));
+    top = Math.max(0, Math.min(100, Math.round(top * 10) / 10));
+    
+    activeDragElement.left = left;
+    activeDragElement.top = top;
+    
+    activeDragDom.style.left = left + '%';
+    activeDragDom.style.top = top + '%';
+    
+    updateMapCalibratorJSON();
+    selectMapElement(activeDragElement, activeDragDom);
+  }
+
+  function onMapDragEnd() {
+    document.onmouseup = null;
+    document.onmousemove = null;
+    document.ontouchend = null;
+    document.ontouchmove = null;
+    activeDragElement = null;
+    activeDragDom = null;
+  }
+
+  function updateMapCalibratorJSON() {
+    const textel = document.getElementById('calibratorOutput');
+    if (!textel) return;
+    
+    let outStr = "const mapElements = [\n";
+    mapElements.forEach((el, index) => {
+      const comma = index === mapElements.length - 1 ? "" : ",";
+      if (el.type === 'dot') {
+        outStr += `    { id: "${el.id}", type: "dot", left: ${el.left}, top: ${el.top}, capital: ${el.capital} }${comma}\n`;
+      } else {
+        const italicStr = el.italic ? `, italic: true` : ``;
+        const boldStr = el.bold ? `, bold: true` : ``;
+        const colorStr = el.color ? `, color: "${el.color}"` : ``;
+        outStr += `    { id: "${el.id}", type: "label", name: "${el.name}", left: ${el.left}, top: ${el.top}, size: ${el.size}, angle: ${el.angle}${boldStr}${italicStr}${colorStr} }${comma}\n`;
+      }
+    });
+    outStr += "  ];";
+    textel.value = outStr;
+  }
+
+  // Hotspots Drag & Drop (Onglets 1, 2, 3)
   function setupHotspotDraggability() {
     const activeTabBtn = document.querySelector('.tab-btn.active');
     if (!activeTabBtn) return;
@@ -1417,7 +1798,6 @@
     if (!activeSection) return;
     
     calibratorHotspots = activeSection.querySelectorAll('.hotspot, .hotspot-belgique');
-    
     calibratorHotspots.forEach(h => {
       h.style.cursor = 'move';
       h.style.zIndex = '100';
@@ -1504,17 +1884,26 @@
     document.getElementById('calibratorOutput').value = outStr;
   }
 
+  // Toggles et initialisation lors du changement d'onglet
   document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       if (isCalibrating) {
         teardownHotspotDraggability();
-        setTimeout(() => {
-          setupHotspotDraggability();
-          updateCalibratorUI();
-        }, 50);
+        teardownMapElementsDraggability();
+        selectedMapElement = null;
+        selectedMapDom = null;
+        document.getElementById('calibratorBox').classList.add('hidden');
+        isCalibrating = false;
+      }
+      
+      if (btn.dataset.tab === 'rivieres-belges') {
+        renderMapElements();
       }
     });
   });
+
+  // Lancement initial au chargement de la page
+  renderMapElements();
 </script>
 
 <!-- SYSTEME DE CALIBRAGE DE HOTSPOTS (DEBUG) -->
@@ -1526,3 +1915,6 @@
 
 </body>
 </html>
+
+
+

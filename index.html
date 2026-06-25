@@ -6496,6 +6496,13 @@ function goHome(){
 }
 
 function showScreen(id){
+  // Nettoyage global de tout clone tactile orphelin dans le body
+  Array.from(document.body.children).forEach(el => {
+    if (el.style.position === 'fixed' && (el.style.zIndex === '9999' || el.style.zIndex === 9999)) {
+      el.remove();
+    }
+  });
+
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   window.scrollTo(0,0);
@@ -8080,6 +8087,13 @@ function isProposedInPlan(id) {
       if (parent === id) return true;
       current = parent;
     }
+  }
+
+  let current = id;
+  while (ACTIVITY_PARENTS[current]) {
+    const parent = ACTIVITY_PARENTS[current];
+    if (plan.includes(parent)) return true;
+    current = parent;
   }
   return false;
 }
@@ -10400,6 +10414,7 @@ function renderGeoBelgiqueScreen(){
       ontouchstart="geoTouchStart(event)"
       ontouchmove="geoTouchMove(event)"
       ontouchend="geoTouchEnd(event)"
+      ontouchcancel="geoTouchCancel(event)"
     >${t.text}</div>`;
   });
   tagsHtml += '</div>';
@@ -10502,7 +10517,7 @@ function geoClearZone(zone){
 // ===== TOUCH SUPPORT =====
 window.addEventListener('touchcancel', function(e) {
   // Safe cleanup for all touch drag and drop clone systems
-  const cloneSelectors = '.geo-tag, .ma-assoc-def, .dig-assoc-def, .resp-assoc-def, .sci-ordre-item, .resp-assoc-zone, .dig-assoc-zone';
+  const cloneSelectors = '.geo-tag, .ma-assoc-def, .dig-assoc-def, .resp-assoc-def, .sci-ordre-item, .resp-assoc-zone, .dig-assoc-zone, .assoc-def, .trajet-mot';
   document.body.querySelectorAll(cloneSelectors).forEach(c => {
     if (c.style.position === 'fixed') {
       try { c.remove(); } catch(err) {}
@@ -10514,8 +10529,13 @@ window.addEventListener('touchcancel', function(e) {
     t.style.opacity = '';
   });
   
-  // Reset all drag-over borders
-  document.querySelectorAll('.geo-drop-zone').forEach(z => z.classList.remove('drag-over'));
+  // Reset all drag-over borders and backgrounds
+  document.querySelectorAll('.geo-drop-zone, .assoc-drop-zone, .ma-assoc-zone, .resp-assoc-zone, .dig-assoc-zone, .trajet-drop-zone').forEach(z => {
+    z.classList.remove('drag-over');
+    if (z.classList.contains('assoc-drop-zone') || z.classList.contains('ma-assoc-zone') || z.classList.contains('resp-assoc-zone') || z.classList.contains('dig-assoc-zone')) {
+      z.style.background = 'var(--purple-light)';
+    }
+  });
   
   // Reset active global touch variables
   geoTouchClone = null; geoTouchDragEl = null;
@@ -10534,6 +10554,34 @@ window.addEventListener('touchcancel', function(e) {
   if (typeof respATEl !== 'undefined') respATEl = null;
   if (typeof sciOrdreTClone !== 'undefined') sciOrdreTClone = null;
   if (typeof digOrdTClone !== 'undefined') digOrdTClone = null;
+
+  // Reset states for object-based touch states
+  if (typeof prehistoireAssocState !== 'undefined') {
+    if (prehistoireAssocState.touchClone) { try { prehistoireAssocState.touchClone.remove(); } catch(err){} prehistoireAssocState.touchClone = null; }
+    if (prehistoireAssocState.touchSource) { prehistoireAssocState.touchSource.style.opacity = ''; prehistoireAssocState.touchSource = null; }
+  }
+  if (typeof antiquiteAssocState !== 'undefined') {
+    if (antiquiteAssocState.touchClone) { try { antiquiteAssocState.touchClone.remove(); } catch(err){} antiquiteAssocState.touchClone = null; }
+    if (antiquiteAssocState.touchSource) { antiquiteAssocState.touchSource.style.opacity = ''; antiquiteAssocState.touchSource = null; }
+  }
+  if (typeof sciAssocState !== 'undefined') {
+    if (sciAssocState.touchClone) { try { sciAssocState.touchClone.remove(); } catch(err){} sciAssocState.touchClone = null; }
+    if (sciAssocState.touchSource) { sciAssocState.touchSource.style.opacity = ''; sciAssocState.touchSource = null; }
+  }
+  if (typeof sciTrajetState !== 'undefined') {
+    if (sciTrajetState.touchClone) { try { sciTrajetState.touchClone.remove(); } catch(err){} sciTrajetState.touchClone = null; }
+    if (sciTrajetState.touchSource) { sciTrajetState.touchSource.style.opacity = ''; sciTrajetState.touchSource = null; }
+  }
+  if (typeof geoPlanTClone !== 'undefined' && geoPlanTClone) {
+    if (geoPlanTClone.parentNode) geoPlanTClone.parentNode.removeChild(geoPlanTClone);
+    geoPlanTClone = null;
+    if (geoPlanTEl) { geoPlanTEl.style.opacity = ''; geoPlanTEl = null; }
+  }
+  if (typeof tourTClone !== 'undefined' && tourTClone) {
+    if (tourTClone.parentNode) tourTClone.parentNode.removeChild(tourTClone);
+    tourTClone = null;
+    if (tourTEl) { tourTEl.style.opacity = ''; tourTEl = null; }
+  }
 });
 
 let geoTouchDragEl = null;
@@ -10589,6 +10637,14 @@ function geoTouchEnd(e){
     geoTouchDragEl.style.opacity = '';
   }
   geoTouchDragEl = null;
+}
+function geoTouchCancel(e){
+  if(geoTouchClone) {
+    if(geoTouchClone.parentNode) geoTouchClone.parentNode.removeChild(geoTouchClone);
+    geoTouchClone = null;
+  }
+  if(geoTouchDragEl) { geoTouchDragEl.style.opacity = ''; geoTouchDragEl = null; }
+  document.querySelectorAll('.geo-drop-zone').forEach(z => z.classList.remove('drag-over'));
 }
 
 // ===== VALIDATION =====
@@ -10680,6 +10736,7 @@ function renderGeoHydroScreen(){
       ontouchstart="hydroTouchStart(event)"
       ontouchmove="hydroTouchMove(event)"
       ontouchend="hydroTouchEnd(event)"
+      ontouchcancel="hydroTouchCancel(event)"
     >${t}</div>`;
   });
   tagsHtml += '</div>';
@@ -10790,6 +10847,14 @@ function hydroTouchEnd(e){
   }
   hydroTouchEl=null;
 }
+function hydroTouchCancel(e){
+  if(hydroTouchClone) {
+    if(hydroTouchClone.parentNode) hydroTouchClone.parentNode.removeChild(hydroTouchClone);
+    hydroTouchClone=null;
+  }
+  if(hydroTouchEl) { hydroTouchEl.style.opacity=''; hydroTouchEl=null; }
+  document.querySelectorAll('.geo-drop-zone').forEach(z=>z.classList.remove('drag-over'));
+}
 
 // Validation
 function validateGeoHydro(){
@@ -10871,6 +10936,7 @@ function renderGeoCommunesScreen(){
       ontouchstart="communeTouchStart(event)"
       ontouchmove="communeTouchMove(event)"
       ontouchend="communeTouchEnd(event)"
+      ontouchcancel="communeTouchCancel(event)"
     >${t}</div>`;
   });
   tagsHtml += '</div>';
@@ -10962,6 +11028,14 @@ function communeTouchEnd(e){
   const zone = el ? (el.closest('.geo-drop-zone') || el.querySelector('.geo-drop-zone')) : null;
   if(zone) communePlaceTag(zone,communeTouchEl.dataset.text,parseInt(zone.dataset.num));
   communeTouchEl=null;
+}
+function communeTouchCancel(e){
+  if(communeTouchClone) {
+    if(communeTouchClone.parentNode) communeTouchClone.parentNode.removeChild(communeTouchClone);
+    communeTouchClone=null;
+  }
+  if(communeTouchEl) { communeTouchEl.style.opacity=''; communeTouchEl=null; }
+  document.querySelectorAll('.geo-drop-zone').forEach(z=>z.classList.remove('drag-over'));
 }
 
 function validateGeoCommunes(){
@@ -14697,7 +14771,11 @@ function tetValid(shape,x,y){
 }
 
 function tetPlace(){
-  tetCur.shape.forEach((row,dy)=>row.forEach((v,dx)=>{if(v)tetBoard[tetCur.y+dy][tetCur.x+dx]=tetCur.color;}));
+  tetCur.shape.forEach((row,dy)=>row.forEach((v,dx)=>{
+    if(v && tetCur.y+dy>=0 && tetCur.y+dy<TET_ROWS && tetCur.x+dx>=0 && tetCur.x+dx<TET_COLS){
+      tetBoard[tetCur.y+dy][tetCur.x+dx]=tetCur.color;
+    }
+  }));
   tetClearLines();
   tetCur=tetNext; tetNext=tetRandPiece(); tetDrawNext();
   if(!tetValid(tetCur.shape,tetCur.x,tetCur.y)) tetGameOver();
@@ -14706,10 +14784,12 @@ function tetPlace(){
 function tetClearLines(){
   let cleared=0;
   for(let y=TET_ROWS-1;y>=0;y--){
-    if(tetBoard[y].every(v=>v)){ tetBoard.splice(y,1); tetBoard.unshift(Array(TET_COLS).fill(0)); cleared++; y++; }
+    if(tetBoard[y].every(v=>v!==0&&v!==undefined&&v!==null)){ tetBoard.splice(y,1); tetBoard.unshift(Array(TET_COLS).fill(0)); cleared++; y++; }
   }
   if(cleared){
-    tetScore+=[0,100,300,500,800][cleared]*tetLevel;
+    const lineValues = [0,100,300,500,800];
+    const basePoints = lineValues[cleared] !== undefined ? lineValues[cleared] : (cleared * 200);
+    tetScore += basePoints * tetLevel;
     tetLines+=cleared; tetLevel=Math.floor(tetLines/10)+1; tetSpeed=Math.max(100,600-tetLevel*50);
     const ts=document.getElementById('t-score');
     const tl=document.getElementById('t-lines');
@@ -15083,10 +15163,9 @@ function rhTouchTapTarget(delta){
   else rhRender();
 }
 
-// ===== MODE MOUSE : DRAG & DROP =====
+// ===== MODE MOUSE/TOUCH : DRAG & DROP =====
 function rhStartDrag(e, pcId){
-  if(rhIsTouchDevice) return; // pas de drag sur touch
-  e.preventDefault();
+  if(e.cancelable) e.preventDefault();
   const svg = document.getElementById('rh-svg');
   if(!svg) return;
   const pc = rhPieces.find(p => p.id === pcId);
@@ -15118,7 +15197,7 @@ function rhGetDragDelta(svg, e){
 
 function rhOnDragMove(e){
   if(!rhDrag) return;
-  e.preventDefault();
+  if(e.cancelable) e.preventDefault();
   const svg = document.getElementById('rh-svg');
   if(!svg) return;
   const delta = rhGetDragDelta(svg, e);
@@ -15134,15 +15213,23 @@ function rhOnDragMove(e){
 
 function rhOnDragEnd(e){
   if(!rhDrag) return;
-  e.preventDefault();
+  if(e.cancelable) e.preventDefault();
   const svg = document.getElementById('rh-svg');
   if(!svg) return;
   const delta = rhGetDragDelta(svg, e);
   const savedDrag = {...rhDrag};
   rhDrag = null;
   rhSel = null;
-  if(delta !== 0) rhApplyMove(savedDrag.id, delta, savedDrag.origX, savedDrag.origY);
-  else rhRender();
+  
+  const pt = rhSvgPoint(svg, e);
+  const dist = Math.hypot(pt.x - savedDrag.startX, pt.y - savedDrag.startY);
+  if(dist < 5){
+    // Simple tap/clic : basculer en mode sélection tactile/cases cibles
+    rhTouchTapPiece(savedDrag.id);
+  } else {
+    if(delta !== 0) rhApplyMove(savedDrag.id, delta, savedDrag.origX, savedDrag.origY);
+    else rhRender();
+  }
 }
 
 function rhApplyMove(id, totalDelta, fromX, fromY){
@@ -15213,6 +15300,7 @@ function rhRender(){
     document._rhTouchBound = true;
     document.addEventListener('touchmove', (e) => { if(rhDrag && document._rhTouchMove) document._rhTouchMove(e); }, {passive:false});
     document.addEventListener('touchend', (e) => { if(rhDrag && document._rhTouchEnd) document._rhTouchEnd(e); }, {passive:false});
+    document.addEventListener('touchcancel', (e) => { if(rhDrag) { rhDrag = null; rhSel = null; rhRender(); } }, {passive:false});
   }
 
   const bg=rhMk('rect');
@@ -15248,8 +15336,8 @@ function rhRender(){
   et.setAttribute('font-size','16');et.setAttribute('font-weight','bold');
   et.textContent='→';svg.appendChild(et);
 
-  // === MODE TOUCH : afficher les cases cibles ===
-  if(rhIsTouchDevice && rhTouchTargets.length > 0){
+  // === MODE TOUCH/CLIC : afficher les cases cibles ===
+  if(rhTouchTargets.length > 0){
     rhTouchTargets.forEach(tgt => {
       const pc = rhPieces.find(p => p.id === rhSel);
       if(!pc) return;
@@ -15295,17 +15383,9 @@ function rhRender(){
       rect.setAttribute('stroke-width','3');
     }
 
-    if(rhIsTouchDevice){
-      // Mode touch : tap pour sélectionner
-      rect.style.cursor = 'pointer';
-      const pid = pc.id;
-      rect.addEventListener('touchstart', e => { e.preventDefault(); rhTouchTapPiece(pid); }, {passive:false});
-      rect.addEventListener('click', () => rhTouchTapPiece(pc.id));
-    } else {
-      // Mode mouse : drag
-      rect.style.cursor = pc.dir === 'h' ? 'ew-resize' : 'ns-resize';
-      rect.addEventListener('mousedown', e => rhStartDrag(e, pc.id));
-    }
+    rect.style.cursor = pc.dir === 'h' ? 'ew-resize' : 'ns-resize';
+    rect.addEventListener('mousedown', e => rhStartDrag(e, pc.id));
+    rect.addEventListener('touchstart', e => rhStartDrag(e, pc.id), {passive:false});
     svg.appendChild(rect);
 
     // Reflet lumineux
@@ -15332,9 +15412,7 @@ function rhRender(){
   if(msg){
     const wb = document.getElementById('rh-win-box');
     if(!wb || wb.style.display === 'none'){
-      msg.textContent = rhIsTouchDevice
-        ? (rhSel ? 'Appuie sur une case en pointillés pour déplacer !' : 'Appuie sur un bloc pour le sélectionner !')
-        : 'Glisse les blocs pour libérer la voiture rouge !';
+      msg.textContent = 'Glisse un bloc ou clique dessus pour le déplacer !';
     }
   }
 }
@@ -15885,7 +15963,7 @@ function renderPrehistoireAssoc(){
       font-size:12px;font-weight:600;cursor:grab;user-select:none;touch-action:none;
       margin-bottom:6px;line-height:1.4;"
       ondragstart="prAssocDragStart(event)" ondragend="prAssocDragEnd(event)"
-      ontouchstart="prAssocDefTouchStart(event)" ontouchmove="prAssocDefTouchMove(event)" ontouchend="prAssocDefTouchEnd(event)">
+      ontouchstart="prAssocDefTouchStart(event)" ontouchmove="prAssocDefTouchMove(event)" ontouchend="prAssocDefTouchEnd(event)" ontouchcancel="prAssocDefTouchCancel(event)">
       ${pairs[i].def}
     </div>`;
   });
@@ -15949,6 +16027,7 @@ function prAssocRetournerDef(defIndex){
   div.textContent=prehistoireAssocState.pairs[defIndex].def;
   div.addEventListener('dragstart',prAssocDragStart); div.addEventListener('dragend',prAssocDragEnd);
   div.addEventListener('touchstart',prAssocDefTouchStart,{passive:false}); div.addEventListener('touchmove',prAssocDefTouchMove,{passive:false}); div.addEventListener('touchend',prAssocDefTouchEnd);
+  div.addEventListener('touchcancel',prAssocDefTouchCancel);
   pool.appendChild(div);
 }
 function prAssocRetirerDeBanque(defIndex){ const el=document.getElementById('prassoc-def-'+defIndex); if(el) el.remove(); }
@@ -15991,6 +16070,10 @@ function prAssocDefTouchEnd(e){
   const zone=el?el.closest('.assoc-drop-zone'):null;
   if(zone && prehistoireAssocState.touchSource) prAssocPlacerDef(zone,parseInt(prehistoireAssocState.touchSource.dataset.index));
   prehistoireAssocState.touchSource=null;
+}
+function prAssocDefTouchCancel(e){
+  if(prehistoireAssocState.touchClone) { prehistoireAssocState.touchClone.remove(); prehistoireAssocState.touchClone=null; }
+  if(prehistoireAssocState.touchSource) { prehistoireAssocState.touchSource.style.opacity=''; prehistoireAssocState.touchSource=null; }
 }
 function prAssocZoneTouchStart(e){
   const zone=e.currentTarget;
@@ -16386,7 +16469,7 @@ function renderAntiquiteAssoc(){
       font-size:12px;font-weight:600;cursor:grab;user-select:none;touch-action:none;
       margin-bottom:6px;line-height:1.4;"
       ondragstart="antAssocDragStart(event)" ondragend="antAssocDragEnd(event)"
-      ontouchstart="antAssocDefTouchStart(event)" ontouchmove="antAssocDefTouchMove(event)" ontouchend="antAssocDefTouchEnd(event)">
+      ontouchstart="antAssocDefTouchStart(event)" ontouchmove="antAssocDefTouchMove(event)" ontouchend="antAssocDefTouchEnd(event)" ontouchcancel="antAssocDefTouchCancel(event)">
       ${pairs[i].def}</div>`;
   });
 
@@ -16445,6 +16528,7 @@ function antAssocRetournerDef(defIndex){
   div.textContent=antiquiteAssocState.pairs[defIndex].def;
   div.addEventListener('dragstart',antAssocDragStart); div.addEventListener('dragend',antAssocDragEnd);
   div.addEventListener('touchstart',antAssocDefTouchStart,{passive:false}); div.addEventListener('touchmove',antAssocDefTouchMove,{passive:false}); div.addEventListener('touchend',antAssocDefTouchEnd);
+  div.addEventListener('touchcancel',antAssocDefTouchCancel);
   pool.appendChild(div);
 }
 function antAssocRetirerDeBanque(i){ const el=document.getElementById('antassoc-def-'+i); if(el) el.remove(); }
@@ -16483,6 +16567,10 @@ function antAssocDefTouchEnd(e){
   const zone=el?el.closest('.assoc-drop-zone'):null;
   if(zone && antiquiteAssocState.touchSource) antAssocPlacerDef(zone,parseInt(antiquiteAssocState.touchSource.dataset.index));
   antiquiteAssocState.touchSource=null;
+}
+function antAssocDefTouchCancel(e){
+  if(antiquiteAssocState.touchClone) { antiquiteAssocState.touchClone.remove(); antiquiteAssocState.touchClone=null; }
+  if(antiquiteAssocState.touchSource) { antiquiteAssocState.touchSource.style.opacity=''; antiquiteAssocState.touchSource=null; }
 }
 function antAssocZoneTouchStart(e){
   const zone=e.currentTarget, zi=parseInt(zone.dataset.index), di=antiquiteAssocState.placed[zi];
@@ -18315,6 +18403,7 @@ function renderClasserList(type, nombres, shuffleIdx){
     div.addEventListener('touchstart', onTouchStart, {passive:true});
     div.addEventListener('touchmove', onTouchMove, {passive:false});
     div.addEventListener('touchend', onTouchEnd);
+    div.addEventListener('touchcancel', onTouchCancel);
     list.appendChild(div);
   });
 }
@@ -18397,6 +18486,13 @@ function onTouchEnd(e){
     target.dataset.pos = srcPos;
   }
   touchDragEl = null;
+}
+function onTouchCancel(e){
+  if(touchClone) {
+    if(touchClone.parentNode) touchClone.parentNode.removeChild(touchClone);
+    touchClone = null;
+  }
+  if(touchDragEl) { touchDragEl.style.opacity = '1'; touchDragEl = null; }
 }
 
 function validerNumClasser(){
@@ -19473,7 +19569,7 @@ function afficherRelierSerie(){
           <div class="flex items-center justify-center text-center text-xs font-bold text-white bg-purple-600 rounded-xl p-3 min-h-[56px] cursor-grab active:cursor-grabbing select-none shadow-sm transition-all hover:bg-purple-700"
             id="rel-tag-${pIdx}" data-i="${pIdx}" draggable="true"
             ondragstart="relDecDragStart(event)" ondragend="relDecDragEnd(event)"
-            ontouchstart="relDecTouchStart(event)" ontouchmove="relDecTouchMove(event)" ontouchend="relDecTouchEnd(event)">
+            ontouchstart="relDecTouchStart(event)" ontouchmove="relDecTouchMove(event)" ontouchend="relDecTouchEnd(event)" ontouchcancel="relDecTouchCancel(event)">
             ${relDecSerie[pIdx].phrase}
           </div>
         </div>
@@ -19588,6 +19684,10 @@ function relDecTouchEnd(e){
     relDecPlacer(zone, parseInt(relDecTouchEl.dataset.i));
   }
   relDecTouchEl = null;
+}
+function relDecTouchCancel(e){
+  if(relDecTouchClone) { relDecTouchClone.remove(); relDecTouchClone = null; }
+  if(relDecTouchEl) { relDecTouchEl.style.opacity = ''; relDecTouchEl = null; }
 }
 
 function validerRelier(){
@@ -21635,7 +21735,7 @@ function renderSciCoeurScreen(){
     tagsHtml += `<div class="geo-tag" id="coeur-tag-${i}" draggable="true"
       data-text="${t}" data-idx="${i}"
       ondragstart="coeurDragStart(event)" ondragend="coeurDragEnd(event)"
-      ontouchstart="coeurTouchStart(event)" ontouchmove="coeurTouchMove(event)" ontouchend="coeurTouchEnd(event)"
+      ontouchstart="coeurTouchStart(event)" ontouchmove="coeurTouchMove(event)" ontouchend="coeurTouchEnd(event)" ontouchcancel="coeurTouchCancel(event)"
     >${t}</div>`;
   });
   tagsHtml += '</div>';
@@ -21722,6 +21822,14 @@ function coeurTouchEnd(e){
   if(zone) coeurPlaceTag(zone,coeurTouchEl.dataset.text,parseInt(zone.dataset.num));
   coeurTouchEl=null;
 }
+function coeurTouchCancel(e){
+  if(coeurTouchClone) {
+    if(coeurTouchClone.parentNode) coeurTouchClone.parentNode.removeChild(coeurTouchClone);
+    coeurTouchClone=null;
+  }
+  if(coeurTouchEl) { coeurTouchEl.style.opacity=''; coeurTouchEl=null; }
+  document.querySelectorAll('.geo-drop-zone').forEach(z=>z.classList.remove('drag-over'));
+}
 
 function validateSciCoeur(){
   let score=0; const total=10;
@@ -21801,7 +21909,7 @@ function renderSciTrajetSangScreen(){
       style="padding:6px 14px;background:var(--purple);color:#fff;border-radius:20px;cursor:grab;
       font-size:14px;font-weight:600;user-select:none;touch-action:none;"
       ondragstart="trajetDragStart(event)" ondragend="trajetDragEnd(event)"
-      ontouchstart="trajetMotTouchStart(event)" ontouchmove="trajetMotTouchMove(event)" ontouchend="trajetMotTouchEnd(event)"
+      ontouchstart="trajetMotTouchStart(event)" ontouchmove="trajetMotTouchMove(event)" ontouchend="trajetMotTouchEnd(event)" ontouchcancel="trajetMotTouchCancel(event)"
       >${mot}</div>`;
   });
   motsHtml += '</div>';
@@ -21873,6 +21981,7 @@ function trajetRetournerMot(mot){
   div.addEventListener('touchstart', trajetMotTouchStart, {passive:false});
   div.addEventListener('touchmove', trajetMotTouchMove, {passive:false});
   div.addEventListener('touchend', trajetMotTouchEnd);
+  div.addEventListener('touchcancel', trajetMotTouchCancel);
   pool.appendChild(div);
 }
 
@@ -21916,6 +22025,10 @@ function trajetMotTouchEnd(e){
     trajetPlacerMot(zone, sciTrajetState.touchSource.dataset.mot);
   }
   sciTrajetState.touchSource = null;
+}
+function trajetMotTouchCancel(e){
+  if(sciTrajetState.touchClone) { sciTrajetState.touchClone.remove(); sciTrajetState.touchClone = null; }
+  if(sciTrajetState.touchSource) { sciTrajetState.touchSource.style.opacity = ''; sciTrajetState.touchSource = null; }
 }
 function trajetZoneTouchStart(e){
   // Permet de reprendre un mot déjà placé dans une zone
@@ -22154,7 +22267,7 @@ function renderSciCirculatoireAssoc(){
           font-weight:600;cursor:grab;user-select:none;touch-action:none;min-height:48px;
           display:flex;align-items:center;line-height:1.3;"
           ondragstart="assocDragStart(event)" ondragend="assocDragEnd(event)"
-          ontouchstart="assocDefTouchStart(event)" ontouchmove="assocDefTouchMove(event)" ontouchend="assocDefTouchEnd(event)">
+          ontouchstart="assocDefTouchStart(event)" ontouchmove="assocDefTouchMove(event)" ontouchend="assocDefTouchEnd(event)" ontouchcancel="assocDefTouchCancel(event)">
           ${pairs[defsCol[i]].def}
         </div>
       </div>
@@ -22235,6 +22348,7 @@ function assocRetournerDef(defIndex){
   div.addEventListener('touchstart', assocDefTouchStart, {passive:false});
   div.addEventListener('touchmove', assocDefTouchMove, {passive:false});
   div.addEventListener('touchend', assocDefTouchEnd);
+  div.addEventListener('touchcancel', assocDefTouchCancel);
   pool.appendChild(div);
 }
 
@@ -22276,6 +22390,10 @@ function assocDefTouchEnd(e){
     assocPlacerDef(zone, parseInt(sciAssocState.touchSource.dataset.index));
   }
   sciAssocState.touchSource = null;
+}
+function assocDefTouchCancel(e){
+  if(sciAssocState.touchClone) { sciAssocState.touchClone.remove(); sciAssocState.touchClone = null; }
+  if(sciAssocState.touchSource) { sciAssocState.touchSource.style.opacity = ''; sciAssocState.touchSource = null; }
 }
 function assocZoneTouchStart(e){
   const zone = e.currentTarget;
@@ -25759,7 +25877,7 @@ function renderSciRespSchema(){
   tags.forEach((t,i) => {
     tagsHtml += `<div class="geo-tag" id="resp-tag-${i}" draggable="true" data-text="${t}" data-idx="${i}"
       ondragstart="respSchemaDragStart(event)" ondragend="respSchemaDragEnd(event)"
-      ontouchstart="respSchemaTouchStart(event)" ontouchmove="respSchemaTouchMove(event)" ontouchend="respSchemaTouchEnd(event)"
+      ontouchstart="respSchemaTouchStart(event)" ontouchmove="respSchemaTouchMove(event)" ontouchend="respSchemaTouchEnd(event)" ontouchcancel="respSchemaTouchCancel(event)"
     >${t}</div>`;
   });
   tagsHtml += '</div>';
@@ -25843,6 +25961,10 @@ function respSchemaTouchEnd(e){
   }
   respTouchEl=null;
 }
+function respSchemaTouchCancel(e){
+  if(respTouchClone) { respTouchClone.remove(); respTouchClone=null; }
+  if(respTouchEl) { respTouchEl.style.opacity=''; respTouchEl=null; }
+}
 
 function validateSciRespSchema(){
   let ok=0;
@@ -25918,7 +26040,7 @@ function renderSciRespTexteIdx(idx){
   words.forEach((w,i) => {
     tagsHtml += `<div class="geo-tag" id="resp-wtag-${i}" draggable="true" data-text="${w}"
       ondragstart="respTexteDragStart(event)" ondragend="respTexteDragEnd(event)"
-      ontouchstart="respTxtTouchStart(event)" ontouchmove="respTxtTouchMove(event)" ontouchend="respTxtTouchEnd(event)"
+      ontouchstart="respTxtTouchStart(event)" ontouchmove="respTxtTouchMove(event)" ontouchend="respTxtTouchEnd(event)" ontouchcancel="respTxtTouchCancel(event)"
     >${w}</div>`;
   });
   tagsHtml += '</div>';
@@ -25993,6 +26115,10 @@ function respTxtTouchEnd(e){
     pool && pool.querySelectorAll('.geo-tag').forEach(t=>{if(t.dataset.text===word&&!t.classList.contains('used')&&!found){t.classList.add('used');found=true;}});
   }
   respTxtTEl=null;
+}
+function respTxtTouchCancel(e){
+  if(respTxtTClone) { respTxtTClone.remove(); respTxtTClone=null; }
+  if(respTxtTEl) { respTxtTEl.style.opacity=''; respTxtTEl=null; }
 }
 function validateSciRespTexte(){
   const data=SCI_RESP_TEXTES[respTexteState.cur];
@@ -26108,7 +26234,7 @@ function renderSciRespAssoc(){
           font-weight:600;cursor:grab;user-select:none;touch-action:none;min-height:48px;
           display:flex;align-items:center;line-height:1.3;"
           ondragstart="respAssocDragStart(event)" ondragend="respAssocDragEnd(event)"
-          ontouchstart="respAssocTouchStart(event)" ontouchmove="respAssocTouchMove(event)" ontouchend="respAssocTouchEnd(event)">
+          ontouchstart="respAssocTouchStart(event)" ontouchmove="respAssocTouchMove(event)" ontouchend="respAssocTouchEnd(event)" ontouchcancel="respAssocTouchCancel(event)">
           ${pairs[defsCol[i]].def}
         </div>
       </div>
@@ -26140,7 +26266,7 @@ function respAssocPlacer(zone,defIndex){
   zone.innerHTML=`<span style="font-size:12px;font-weight:600;color:var(--purple);line-height:1.4">${pairs[defIndex].def}</span>`;
   zone.style.border='2px solid var(--purple)';
 }
-function respAssocRetourner(di){ const pool=document.getElementById('resp-def-container-'+di); if(!pool||document.getElementById('resp-def2-'+di)) return; const pairs=respAssocState.pairs; const div=document.createElement('div'); div.className='resp-assoc-def'; div.id='resp-def2-'+di; div.dataset.index=di; div.draggable=true; div.style.cssText='padding:8px 10px;background:var(--purple);color:#fff;border-radius:8px;font-size:12px;font-weight:600;cursor:grab;user-select:none;touch-action:none;min-height:48px;display:flex;align-items:center;line-height:1.3;'; div.textContent=pairs[di].def; div.ondragstart=respAssocDragStart; div.ondragend=respAssocDragEnd; div.ontouchstart=respAssocTouchStart; div.ontouchmove=respAssocTouchMove; div.ontouchend=respAssocTouchEnd; pool.appendChild(div); }
+function respAssocRetourner(di){ const pool=document.getElementById('resp-def-container-'+di); if(!pool||document.getElementById('resp-def2-'+di)) return; const pairs=respAssocState.pairs; const div=document.createElement('div'); div.className='resp-assoc-def'; div.id='resp-def2-'+di; div.dataset.index=di; div.draggable=true; div.style.cssText='padding:8px 10px;background:var(--purple);color:#fff;border-radius:8px;font-size:12px;font-weight:600;cursor:grab;user-select:none;touch-action:none;min-height:48px;display:flex;align-items:center;line-height:1.3;'; div.textContent=pairs[di].def; div.ondragstart=respAssocDragStart; div.ondragend=respAssocDragEnd; div.ontouchstart=respAssocTouchStart; div.ontouchmove=respAssocTouchMove; div.ontouchend=respAssocTouchEnd; div.ontouchcancel=respAssocTouchCancel; pool.appendChild(div); }
 function respAssocRetirerBanque(di){ const el=document.getElementById('resp-def2-'+di); if(el) el.remove(); }
 function respAssocClearZone(zone){
   const panel = document.getElementById('resp-assoc-score');
@@ -26157,6 +26283,7 @@ let respATEl=null,respAClone=null;
 function respAssocTouchStart(e){ e.preventDefault(); respATEl=e.currentTarget; const clone=respATEl.cloneNode(true); clone.style.cssText='position:fixed;z-index:9999;opacity:.85;pointer-events:none;padding:8px 14px;background:var(--purple);color:#fff;border-radius:8px;font-size:12px;'; const t=e.touches[0]; clone.style.left=(t.clientX-60)+'px'; clone.style.top=(t.clientY-20)+'px'; document.body.appendChild(clone); respAClone=clone; respATEl.style.opacity='0.4'; }
 function respAssocTouchMove(e){ e.preventDefault(); if(!respAClone) return; const t=e.touches[0]; respAClone.style.left=(t.clientX-60)+'px'; respAClone.style.top=(t.clientY-20)+'px'; }
 function respAssocTouchEnd(e){ if(!respAClone) return; const t=e.changedTouches[0]; respAClone.remove(); respAClone=null; if(respATEl) respATEl.style.opacity=''; const el=document.elementFromPoint(t.clientX,t.clientY); const zone=el?el.closest('.resp-assoc-zone'):null; if(zone&&respATEl) respAssocPlacer(zone,parseInt(respATEl.dataset.index)); respATEl=null; }
+function respAssocTouchCancel(e){ if(respAClone) { respAClone.remove(); respAClone=null; } if(respATEl) { respATEl.style.opacity=''; respATEl=null; } }
 function validateSciRespAssoc(){
   const pairs=respAssocState.pairs; let ok=0;
   pairs.forEach((p,i)=>{ const zone=document.getElementById('resp-zone-'+i); if(!zone) return; const placed=respAssocState.placed[i]; if(placed!==undefined&&pairs[placed].def===p.def){zone.style.border='2px solid #16a34a';zone.style.background='#d4f5e2';ok++;}else{zone.style.border='2px solid #dc2626';zone.style.background='#fdd9d7';if(placed===undefined)zone.innerHTML='<span style="font-size:11px;color:#dc2626">— '+p.def+'</span>';} });
@@ -26243,7 +26370,7 @@ function renderSciDigSchema(){
   tags.forEach((t,i) => {
     tagsHtml += `<div class="geo-tag" id="dig-tag-${i}" draggable="true" data-text="${t}" data-idx="${i}"
       ondragstart="digSchemaDragStart(event)" ondragend="digSchemaDragEnd(event)"
-      ontouchstart="digSchemaTouchStart(event)" ontouchmove="digSchemaTouchMove(event)" ontouchend="digSchemaTouchEnd(event)"
+      ontouchstart="digSchemaTouchStart(event)" ontouchmove="digSchemaTouchMove(event)" ontouchend="digSchemaTouchEnd(event)" ontouchcancel="digSchemaTouchCancel(event)"
     >${t}</div>`;
   });
   tagsHtml += '</div>';
@@ -26286,6 +26413,7 @@ let digTouchEl=null,digTouchClone=null;
 function digSchemaTouchStart(e){ const tag=e.currentTarget; if(tag.classList.contains('used')) return; digTouchEl=tag; const clone=tag.cloneNode(true); clone.style.cssText='position:fixed;z-index:9999;opacity:.85;pointer-events:none;transform:scale(1.1);'; const touch=e.touches[0]; clone.style.left=(touch.clientX-40)+'px'; clone.style.top=(touch.clientY-20)+'px'; document.body.appendChild(clone); digTouchClone=clone; tag.style.opacity='0.4'; }
 function digSchemaTouchMove(e){ e.preventDefault(); if(!digTouchClone) return; const touch=e.touches[0]; digTouchClone.style.left=(touch.clientX-40)+'px'; digTouchClone.style.top=(touch.clientY-20)+'px'; }
 function digSchemaTouchEnd(e){ if(!digTouchClone) return; const touch=e.changedTouches[0]; digTouchClone.remove(); digTouchClone=null; if(digTouchEl) digTouchEl.style.opacity=''; const el=document.elementFromPoint(touch.clientX,touch.clientY); const zone=el?el.closest('.geo-drop-zone'):null; if(zone&&digTouchEl) digSchemaPlaceTag(zone,digTouchEl.dataset.text,parseInt(zone.dataset.num)); digTouchEl=null; }
+function digSchemaTouchCancel(e){ if(digTouchClone) { digTouchClone.remove(); digTouchClone=null; } if(digTouchEl) { digTouchEl.style.opacity=''; digTouchEl=null; } }
 function validateSciDigSchema(){
   let ok=0; const total=SCI_DIG_SCHEMA_DATA.length;
   SCI_DIG_SCHEMA_DATA.forEach(d=>{ const zone=document.getElementById('drop-dig-'+d.num); if(!zone) return; if(sciDigSchemaState.answers[d.num]===d.label){zone.style.background='#d4f5e2';zone.style.color='#166534';ok++;}else{zone.style.background='#fdd9d7';zone.style.color='#991b1b';if(!sciDigSchemaState.answers[d.num]) zone.textContent='— '+d.label;} });
@@ -26333,7 +26461,7 @@ function renderSciDigTexteIdx(idx){
   paraHtml+='</p>';
   const words=shuffle([...data.mots]);
   let tagsHtml='<div class="geo-tags-pool" id="dig-texte-pool">';
-  words.forEach((w,i)=>{ tagsHtml+=`<div class="geo-tag" id="dig-wtag-${i}" draggable="true" data-text="${w}" ondragstart="digTexteDragStart(event)" ondragend="digTexteDragEnd(event)" ontouchstart="digTxtTouchStart(event)" ontouchmove="digTxtTouchMove(event)" ontouchend="digTxtTouchEnd(event)">${w}</div>`; });
+  words.forEach((w,i)=>{ tagsHtml+=`<div class="geo-tag" id="dig-wtag-${i}" draggable="true" data-text="${w}" ondragstart="digTexteDragStart(event)" ondragend="digTexteDragEnd(event)" ontouchstart="digTxtTouchStart(event)" ontouchmove="digTxtTouchMove(event)" ontouchend="digTxtTouchEnd(event)" ontouchcancel="digTxtTouchCancel(event)">${w}</div>`; });
   tagsHtml+='</div>';
   const tabs=SCI_DIG_TEXTES.map((t,i)=>`<button onclick="renderSciDigTexteIdx(${i})" class="btn btn-sm ${i===idx?'btn-primary':''}" style="margin-right:6px">${t.titre}</button>`).join('');
   body.innerHTML=`<div class="card" style="margin-bottom:1rem">${tabs}</div><div class="card">${paraHtml}</div>${tagsHtml}<button class="btn" onclick="validateSciDigTexte()" style="width:100%;margin-bottom:1rem">✅ Valider</button><div id="dig-texte-score" style="display:none" class="geo-score-panel"></div>`;
@@ -26371,6 +26499,7 @@ let digTxtTEl=null,digTxtTClone=null;
 function digTxtTouchStart(e){ const tag=e.currentTarget; if(tag.classList.contains('used')) return; digTxtTEl=tag; const clone=tag.cloneNode(true); clone.style.cssText='position:fixed;z-index:9999;opacity:.85;pointer-events:none;'; const touch=e.touches[0]; clone.style.left=(touch.clientX-40)+'px'; clone.style.top=(touch.clientY-20)+'px'; document.body.appendChild(clone); digTxtTClone=clone; tag.style.opacity='0.4'; }
 function digTxtTouchMove(e){ e.preventDefault(); if(!digTxtTClone) return; const touch=e.touches[0]; digTxtTClone.style.left=(touch.clientX-40)+'px'; digTxtTClone.style.top=(touch.clientY-20)+'px'; }
 function digTxtTouchEnd(e){ if(!digTxtTClone) return; const touch=e.changedTouches[0]; digTxtTClone.remove(); digTxtTClone=null; if(digTxtTEl) digTxtTEl.style.opacity=''; const el=document.elementFromPoint(touch.clientX,touch.clientY); const zone=el?el.closest('.geo-drop-zone'):null; if(zone&&digTxtTEl){ const word=digTxtTEl.dataset.text; const old=zone.textContent.trim(); if(old){const pool=document.getElementById('dig-texte-pool');pool&&pool.querySelectorAll('.geo-tag').forEach(t=>{if(t.dataset.text===old&&t.classList.contains('used'))t.classList.remove('used');});} zone.textContent=word; zone.classList.add('filled'); digTexteState.answers[zone.id]=word; const pool=document.getElementById('dig-texte-pool'); let found=false; pool&&pool.querySelectorAll('.geo-tag').forEach(t=>{if(t.dataset.text===word&&!t.classList.contains('used')&&!found){t.classList.add('used');found=true;}}); } digTxtTEl=null; }
+function digTxtTouchCancel(e){ if(digTxtTClone) { digTxtTClone.remove(); digTxtTClone=null; } if(digTxtTEl) { digTxtTEl.style.opacity=''; digTxtTEl=null; } }
 function validateSciDigTexte(){
   let ok=0,total=0;
   document.querySelectorAll('#sci-dig-texte-body .resp-blank').forEach(zone=>{
@@ -26474,7 +26603,7 @@ function renderSciDigAssoc(){
           font-weight:600;cursor:grab;user-select:none;touch-action:none;min-height:48px;
           display:flex;align-items:center;line-height:1.3;"
           ondragstart="digAssocDragStart(event)" ondragend="digAssocDragEnd(event)"
-          ontouchstart="digAssocTouchStart(event)" ontouchmove="digAssocTouchMove(event)" ontouchend="digAssocTouchEnd(event)">
+          ontouchstart="digAssocTouchStart(event)" ontouchmove="digAssocTouchMove(event)" ontouchend="digAssocTouchEnd(event)" ontouchcancel="digAssocTouchCancel(event)">
           ${pairs[defsCol[i]].def}
         </div>
       </div>
@@ -26499,7 +26628,7 @@ function digAssocDragOver(e){ e.preventDefault(); e.currentTarget.style.backgrou
 function digAssocDragLeave(e){ e.currentTarget.style.background='var(--purple-light)'; }
 function digAssocDrop(e){ e.preventDefault(); const zone=e.currentTarget; zone.style.background='var(--purple-light)'; digAssocPlacer(zone,parseInt(e.dataTransfer.getData('text/plain'))); }
 function digAssocPlacer(zone,defIndex){ const zi=parseInt(zone.dataset.index); const pairs=digAssocState.pairs; const ancien=digAssocState.placed[zi]; if(ancien!==undefined) digAssocRetourner(ancien); Object.entries(digAssocState.placed).forEach(([z,d])=>{ if(d===defIndex&&parseInt(z)!==zi){delete digAssocState.placed[parseInt(z)]; const oz=document.getElementById('dig-zone-'+z); if(oz){oz.innerHTML='<span style="opacity:.5">Glisse une définition ici…</span>';oz.style.background='var(--purple-light)';oz.style.border='2px dashed var(--purple)';}} }); digAssocRetirerBanque(defIndex); digAssocState.placed[zi]=defIndex; zone.innerHTML=`<span style="font-size:12px;font-weight:600;color:var(--purple);line-height:1.4">${pairs[defIndex].def}</span>`; zone.style.border='2px solid var(--purple)'; }
-function digAssocRetourner(di){ const pool=document.getElementById('dig-def-container-'+di); if(!pool||document.getElementById('dig-def-'+di)) return; const pairs=digAssocState.pairs; const div=document.createElement('div'); div.className='dig-assoc-def'; div.id='dig-def-'+di; div.dataset.index=di; div.draggable=true; div.style.cssText='padding:8px 10px;background:var(--purple);color:#fff;border-radius:8px;font-size:12px;font-weight:600;cursor:grab;user-select:none;touch-action:none;min-height:48px;display:flex;align-items:center;line-height:1.3;'; div.textContent=pairs[di].def; div.ondragstart=digAssocDragStart; div.ondragend=digAssocDragEnd; div.ontouchstart=digAssocTouchStart; div.ontouchmove=digAssocTouchMove; div.ontouchend=digAssocTouchEnd; pool.appendChild(div); }
+function digAssocRetourner(di){ const pool=document.getElementById('dig-def-container-'+di); if(!pool||document.getElementById('dig-def-'+di)) return; const pairs=digAssocState.pairs; const div=document.createElement('div'); div.className='dig-assoc-def'; div.id='dig-def-'+di; div.dataset.index=di; div.draggable=true; div.style.cssText='padding:8px 10px;background:var(--purple);color:#fff;border-radius:8px;font-size:12px;font-weight:600;cursor:grab;user-select:none;touch-action:none;min-height:48px;display:flex;align-items:center;line-height:1.3;'; div.textContent=pairs[di].def; div.ondragstart=digAssocDragStart; div.ondragend=digAssocDragEnd; div.ontouchstart=digAssocTouchStart; div.ontouchmove=digAssocTouchMove; div.ontouchend=digAssocTouchEnd; div.ontouchcancel=digAssocTouchCancel; pool.appendChild(div); }
 function digAssocRetirerBanque(di){ const el=document.getElementById('dig-def-'+di); if(el) el.remove(); }
 function digAssocClearZone(zone){
   const panel = document.getElementById('dig-assoc-score');
@@ -26516,6 +26645,7 @@ let digATEl=null,digAClone=null;
 function digAssocTouchStart(e){ e.preventDefault(); digATEl=e.currentTarget; const clone=digATEl.cloneNode(true); clone.style.cssText='position:fixed;z-index:9999;opacity:.85;pointer-events:none;padding:8px 14px;background:var(--purple);color:#fff;border-radius:8px;font-size:12px;'; const t=e.touches[0]; clone.style.left=(t.clientX-60)+'px'; clone.style.top=(t.clientY-20)+'px'; document.body.appendChild(clone); digAClone=clone; digATEl.style.opacity='0.4'; }
 function digAssocTouchMove(e){ e.preventDefault(); if(!digAClone) return; const t=e.touches[0]; digAClone.style.left=(t.clientX-60)+'px'; digAClone.style.top=(t.clientY-20)+'px'; }
 function digAssocTouchEnd(e){ if(!digAClone) return; const t=e.changedTouches[0]; digAClone.remove(); digAClone=null; if(digATEl) digATEl.style.opacity=''; const el=document.elementFromPoint(t.clientX,t.clientY); const zone=el?el.closest('.dig-assoc-zone'):null; if(zone&&digATEl) digAssocPlacer(zone,parseInt(digATEl.dataset.index)); digATEl=null; }
+function digAssocTouchCancel(e){ if(digAClone) { digAClone.remove(); digAClone=null; } if(digATEl) { digATEl.style.opacity=''; digATEl=null; } }
 function validateSciDigAssoc(){
   const pairs=digAssocState.pairs; let ok=0;
   pairs.forEach((p,i)=>{ const zone=document.getElementById('dig-zone-'+i); if(!zone) return; const placed=digAssocState.placed[i]; if(placed!==undefined&&pairs[placed].def===p.def){zone.style.border='2px solid #16a34a';zone.style.background='#d4f5e2';ok++;}else{zone.style.border='2px solid #dc2626';zone.style.background='#fdd9d7';if(placed===undefined)zone.innerHTML='<span style="font-size:11px;color:#dc2626">— '+p.def+'</span>';} });
@@ -26581,13 +26711,15 @@ function renderMoyenAgeAssoc(){
         ondragover="maAssocDragOver(event)" ondrop="maAssocDrop(event)" ondragleave="maAssocDragLeave(event)">
         <span style="opacity:.5">Glisse ici…</span>
       </div>
-      <div class="ma-assoc-def" id="ma-def-${defsCol[i]}" data-index="${defsCol[i]}" draggable="true"
-        style="padding:8px 10px;background:var(--purple);color:#fff;border-radius:8px;font-size:12px;
-        font-weight:600;cursor:grab;user-select:none;touch-action:none;min-height:48px;
-        display:flex;align-items:center;line-height:1.3;"
-        ondragstart="maAssocDragStart(event)" ondragend="maAssocDragEnd(event)"
-        ontouchstart="maAssocTouchStart(event)" ontouchmove="maAssocTouchMove(event)" ontouchend="maAssocTouchEnd(event)">
-        ${pairs[defsCol[i]].def}
+      <div id="ma-def-container-${defsCol[i]}" style="min-height:48px;">
+        <div class="ma-assoc-def" id="ma-def-${defsCol[i]}" data-index="${defsCol[i]}" draggable="true"
+          style="padding:8px 10px;background:var(--purple);color:#fff;border-radius:8px;font-size:12px;
+          font-weight:600;cursor:grab;user-select:none;touch-action:none;min-height:48px;
+          display:flex;align-items:center;line-height:1.3;"
+          ondragstart="maAssocDragStart(event)" ondragend="maAssocDragEnd(event)"
+          ontouchstart="maAssocTouchStart(event)" ontouchmove="maAssocTouchMove(event)" ontouchend="maAssocTouchEnd(event)" ontouchcancel="maAssocTouchCancel(event)">
+          ${pairs[defsCol[i]].def}
+        </div>
       </div>
     </div>`;
   });
@@ -26617,7 +26749,7 @@ function maAssocPlacer(zone,defIndex){
   zone.innerHTML=`<span style="font-size:12px;font-weight:600;color:var(--purple);line-height:1.3">${pairs[defIndex].def}</span>`;
   zone.style.border='2px solid var(--purple)';
 }
-function maAssocRetourner(di){ const pool=document.querySelector('#moyen-age-assoc-body .ma-assoc-def[data-index="'+di+'"]'); if(pool) return; const pairs=moyenAgeAssocState.pairs; const div=document.createElement('div'); div.className='ma-assoc-def'; div.id='ma-def-'+di; div.dataset.index=di; div.draggable=true; div.style.cssText='padding:8px 10px;background:var(--purple);color:#fff;border-radius:8px;font-size:12px;font-weight:600;cursor:grab;user-select:none;touch-action:none;min-height:48px;display:flex;align-items:center;line-height:1.3;margin-bottom:6px;'; div.textContent=pairs[di].def; div.ondragstart=maAssocDragStart; div.ondragend=maAssocDragEnd; div.ontouchstart=maAssocTouchStart; div.ontouchmove=maAssocTouchMove; div.ontouchend=maAssocTouchEnd; }
+function maAssocRetourner(di){ const pool=document.getElementById('ma-def-container-'+di); if(!pool||document.getElementById('ma-def-'+di)) return; const pairs=moyenAgeAssocState.pairs; const div=document.createElement('div'); div.className='ma-assoc-def'; div.id='ma-def-'+di; div.dataset.index=di; div.draggable=true; div.style.cssText='padding:8px 10px;background:var(--purple);color:#fff;border-radius:8px;font-size:12px;font-weight:600;cursor:grab;user-select:none;touch-action:none;min-height:48px;display:flex;align-items:center;line-height:1.3;'; div.textContent=pairs[di].def; div.ondragstart=maAssocDragStart; div.ondragend=maAssocDragEnd; div.ontouchstart=maAssocTouchStart; div.ontouchmove=maAssocTouchMove; div.ontouchend=maAssocTouchEnd; div.ontouchcancel=maAssocTouchCancel; pool.appendChild(div); }
 function maAssocRetirerBanque(di){ const el=document.getElementById('ma-def-'+di); if(el) el.remove(); }
 function maAssocClearZone(zone){
   const panel = document.getElementById('ma-assoc-score');
@@ -26634,6 +26766,7 @@ let maATEl=null,maAClone=null;
 function maAssocTouchStart(e){ e.preventDefault(); maATEl=e.currentTarget; const clone=maATEl.cloneNode(true); clone.style.cssText='position:fixed;z-index:9999;opacity:.85;pointer-events:none;padding:8px 10px;background:var(--purple);color:#fff;border-radius:8px;font-size:12px;'; const t=e.touches[0]; clone.style.left=(t.clientX-60)+'px'; clone.style.top=(t.clientY-20)+'px'; document.body.appendChild(clone); maAClone=clone; maATEl.style.opacity='0.4'; }
 function maAssocTouchMove(e){ e.preventDefault(); if(!maAClone) return; const t=e.touches[0]; maAClone.style.left=(t.clientX-60)+'px'; maAClone.style.top=(t.clientY-20)+'px'; }
 function maAssocTouchEnd(e){ if(!maAClone) return; const t=e.changedTouches[0]; maAClone.remove(); maAClone=null; if(maATEl) maATEl.style.opacity=''; const el=document.elementFromPoint(t.clientX,t.clientY); const zone=el?el.closest('.ma-assoc-zone'):null; if(zone&&maATEl) maAssocPlacer(zone,parseInt(maATEl.dataset.index)); maATEl=null; }
+function maAssocTouchCancel(e){ if(maAClone) { maAClone.remove(); maAClone=null; } if(maATEl) { maATEl.style.opacity=''; maATEl=null; } }
 function validateMoyenAgeAssoc(){
   const pairs=moyenAgeAssocState.pairs; let ok=0;
   pairs.forEach((p,i)=>{ const zone=document.getElementById('ma-zone-'+i); if(!zone) return; const placed=moyenAgeAssocState.placed[i]; if(placed!==undefined&&pairs[placed].def===p.def){zone.style.border='2px solid #16a34a';zone.style.background='#d4f5e2';ok++;}else{zone.style.border='2px solid #dc2626';zone.style.background='#fdd9d7';if(placed===undefined)zone.innerHTML='<span style="font-size:11px;color:#dc2626">— '+p.def+'</span>';} });
