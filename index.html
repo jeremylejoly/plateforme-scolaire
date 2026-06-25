@@ -28584,7 +28584,7 @@ function initSujetTextesPanneau(ti) {
   if (banque) {
     banque.innerHTML = '';
     shuffled.forEach(l => {
-      banque.appendChild(creerSujetTextesEtiquette(ti, l.rep, ''));
+      banque.appendChild(creerSujetTextesEtiquette(ti, l.rep, l.id));
     });
   }
 
@@ -28595,6 +28595,7 @@ function initSujetTextesPanneau(ti) {
       el.textContent = '';
       el.className = 'sujet-lacune';
       el.draggable = false;
+      delete el.dataset.labelId;
       el.ondragover = (e) => {
         e.preventDefault();
         el.classList.add('survol');
@@ -28649,6 +28650,14 @@ function depotSujetTextesLacune(e, ti, idCible) {
   const sourceTi = parseInt(e.dataTransfer.getData('ti'));
   if (sourceTi !== ti) return;
 
+  let sourceLabelId = null;
+  const sourceGapEl = document.getElementById(sourceLacune);
+  if (sourceGapEl && sourceGapEl.classList.contains('remplie')) {
+    sourceLabelId = sourceGapEl.dataset.labelId;
+  } else {
+    sourceLabelId = sourceLacune;
+  }
+
   if (sourceLacune && sourceLacune !== 'undefined' && sourceLacune !== '') {
     viderSujetTextesLacune(ti, sourceLacune);
   }
@@ -28658,7 +28667,7 @@ function depotSujetTextesLacune(e, ti, idCible) {
     viderSujetTextesLacune(ti, idCible);
   }
 
-  placerSujetTextes(ti, idCible, sujet);
+  placerSujetTextes(ti, idCible, sujet, sourceLabelId);
 }
 
 function depotSujetTextesBanque(e, ti) {
@@ -28698,18 +28707,20 @@ function sujetTextesLacuneClick(ti, idCible) {
 
   if (!etat.selection) return;
 
-  placerSujetTextes(ti, idCible, etat.selection.texte);
+  const sourceLabelId = etat.selection.el.dataset.lacune;
+  placerSujetTextes(ti, idCible, etat.selection.texte, sourceLabelId);
   etat.selection.el.classList.remove('selectionnee');
   etat.selection = null;
 }
 
-function placerSujetTextes(ti, idLacune, texte) {
+function placerSujetTextes(ti, idLacune, texte, sourceLabelId) {
   const el = document.getElementById(idLacune);
   if (!el) return;
 
   el.textContent = texte;
   el.className = 'sujet-lacune remplie';
   el.draggable = true;
+  el.dataset.labelId = sourceLabelId;
   
   el.ondragstart = (e) => {
     e.dataTransfer.setData('sujet', texte);
@@ -28718,7 +28729,7 @@ function placerSujetTextes(ti, idLacune, texte) {
   };
 
   sujetTextesStates[ti].placees[idLacune] = texte;
-  masquerSujetTextesEtiquette(ti, texte);
+  masquerSujetTextesEtiquette(ti, sourceLabelId);
   resetSujetTextesCouleurs(ti);
 }
 
@@ -28727,31 +28738,33 @@ function viderSujetTextesLacune(ti, idLacune) {
   if (!sujet) return;
 
   const el = document.getElementById(idLacune);
+  const sourceLabelId = el ? el.dataset.labelId : null;
   if (el) {
     el.textContent = '';
     el.className = 'sujet-lacune';
     el.draggable = false;
     el.ondragstart = null;
+    delete el.dataset.labelId;
   }
 
   delete sujetTextesStates[ti].placees[idLacune];
 
   // Show word in banque again
-  document.querySelectorAll(`#sujet-textes-banque-container .sujet-etiquette`).forEach(et => {
-    if (et.dataset.sujet === sujet) {
+  if (sourceLabelId) {
+    const et = document.querySelector(`#sujet-textes-banque-container .sujet-etiquette[data-lacune="${sourceLabelId}"]`);
+    if (et) {
       et.classList.remove('utilisee');
     }
-  });
+  }
 
   resetSujetTextesCouleurs(ti);
 }
 
-function masquerSujetTextesEtiquette(ti, texte) {
-  document.querySelectorAll(`#sujet-textes-banque-container .sujet-etiquette`).forEach(et => {
-    if (et.dataset.sujet === texte) {
-      et.classList.add('utilisee');
-    }
-  });
+function masquerSujetTextesEtiquette(ti, sourceLabelId) {
+  const et = document.querySelector(`#sujet-textes-banque-container .sujet-etiquette[data-lacune="${sourceLabelId}"]`);
+  if (et) {
+    et.classList.add('utilisee');
+  }
 }
 
 function resetSujetTextesCouleurs(ti) {
@@ -29683,6 +29696,7 @@ function initVerbeTextesPanneau(ti) {
       el.textContent = '';
       el.className = 'verbe-lacune';
       el.draggable = false;
+      delete el.dataset.labelId;
       el.ondragover = (e) => {
         e.preventDefault();
         el.classList.add('survol');
@@ -29743,6 +29757,14 @@ function depotVerbeTextesLacune(e, ti, idCible) {
 
   if (realSourceTi !== ti) return;
 
+  let sourceLabelId = null;
+  const sourceGapEl = document.getElementById(realSourceLacune);
+  if (sourceGapEl && sourceGapEl.classList.contains('remplie')) {
+    sourceLabelId = sourceGapEl.dataset.labelId;
+  } else {
+    sourceLabelId = realSourceLacune;
+  }
+
   if (realSourceLacune && realSourceLacune !== 'undefined' && realSourceLacune !== '') {
     viderVerbeTextesLacune(ti, realSourceLacune);
   }
@@ -29752,7 +29774,7 @@ function depotVerbeTextesLacune(e, ti, idCible) {
     viderVerbeTextesLacune(ti, idCible);
   }
 
-  placerVerbeTextes(ti, idCible, realSujet);
+  placerVerbeTextes(ti, idCible, realSujet, sourceLabelId);
 }
 
 function depotVerbeTextesBanque(e, ti) {
@@ -29792,18 +29814,20 @@ function verbeTextesLacuneClick(ti, idCible) {
 
   if (!etat.selection) return;
 
-  placerVerbeTextes(ti, idCible, etat.selection.texte);
+  const sourceLabelId = etat.selection.el.dataset.lacune;
+  placerVerbeTextes(ti, idCible, etat.selection.texte, sourceLabelId);
   etat.selection.el.classList.remove('selectionnee');
   etat.selection = null;
 }
 
-function placerVerbeTextes(ti, idLacune, texte) {
+function placerVerbeTextes(ti, idLacune, texte, sourceLabelId) {
   const el = document.getElementById(idLacune);
   if (!el) return;
 
   el.textContent = texte;
   el.className = 'verbe-lacune remplie';
   el.draggable = true;
+  el.dataset.labelId = sourceLabelId;
   
   el.ondragstart = (e) => {
     e.dataTransfer.setData('sujet', texte);
@@ -29812,7 +29836,7 @@ function placerVerbeTextes(ti, idLacune, texte) {
   };
 
   verbeTextesStates[ti].placees[idLacune] = texte;
-  masquerVerbeTextesEtiquette(ti, texte);
+  masquerVerbeTextesEtiquette(ti, sourceLabelId);
   resetVerbeTextesCouleurs(ti);
 }
 
@@ -29821,31 +29845,33 @@ function viderVerbeTextesLacune(ti, idLacune) {
   if (!verbe) return;
 
   const el = document.getElementById(idLacune);
+  const sourceLabelId = el ? el.dataset.labelId : null;
   if (el) {
     el.textContent = '';
     el.className = 'verbe-lacune';
     el.draggable = false;
     el.ondragstart = null;
+    delete el.dataset.labelId;
   }
 
   delete verbeTextesStates[ti].placees[idLacune];
 
   // Show word in banque again
-  document.querySelectorAll(`#verbe-textes-banque-container .verbe-etiquette`).forEach(et => {
-    if (et.dataset.sujet === verbe) {
+  if (sourceLabelId) {
+    const et = document.querySelector(`#verbe-textes-banque-container .verbe-etiquette[data-lacune="${sourceLabelId}"]`);
+    if (et) {
       et.classList.remove('utilisee');
     }
-  });
+  }
 
   resetVerbeTextesCouleurs(ti);
 }
 
-function masquerVerbeTextesEtiquette(ti, texte) {
-  document.querySelectorAll(`#verbe-textes-banque-container .verbe-etiquette`).forEach(et => {
-    if (et.dataset.sujet === texte) {
-      et.classList.add('utilisee');
-    }
-  });
+function masquerVerbeTextesEtiquette(ti, sourceLabelId) {
+  const et = document.querySelector(`#verbe-textes-banque-container .verbe-etiquette[data-lacune="${sourceLabelId}"]`);
+  if (et) {
+    et.classList.add('utilisee');
+  }
 }
 
 function resetVerbeTextesCouleurs(ti) {
