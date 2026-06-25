@@ -3822,7 +3822,7 @@ input[type=text].calc-input.incorrect {
     <!-- SEARCH & FILTER BAR -->
     <div class="bg-white rounded-[24px] border-3 border-neutral-900 p-4 shadow-[4px_4px_0px_#1A1A2E] mb-6 flex flex-col md:flex-row gap-4 items-center justify-between">
       <div class="w-full md:w-auto flex-1 max-w-md relative">
-        <input type="text" id="fiche-search" placeholder="Rechercher une fiche..." class="w-full px-4 py-2.5 rounded-xl border-2 border-neutral-300 focus:border-neutral-950 focus:outline-none transition-all" oninput="filterFiches()" />
+        <input type="text" id="fiche-search-student" placeholder="Rechercher une fiche..." class="w-full px-4 py-2.5 rounded-xl border-2 border-neutral-300 focus:border-neutral-950 focus:outline-none transition-all" oninput="filterFichesStudent()" />
       </div>
       <div class="flex gap-2 overflow-x-auto w-full md:w-auto pb-1 md:pb-0" id="fiche-category-filters">
         <!-- Will be dynamically filled -->
@@ -3830,7 +3830,7 @@ input[type=text].calc-input.incorrect {
     </div>
 
     <!-- FICHES GRID -->
-    <div class="sub-subjects-grid" id="fiches-grid"></div>
+    <div class="sub-subjects-grid" id="fiches-grid-student"></div>
   </div>
 
   <!-- SCREEN: Français -->
@@ -34293,16 +34293,39 @@ let fiches = [];
 
 function initFiches() {
   const saved = localStorage.getItem('lq_fiches');
+  const DEFAULT_FICHES = [
+    { id: 'fiche_frise', title: 'La frise chronologique', filename: 'frise-chronologique-histoire.html', category: 'Histoire' },
+    { id: 'fiche_planisphere', title: 'Le planisphère', filename: 'planisphere-interactif.html', category: 'Géographie' },
+    { id: 'fiche_respiratoire', title: "L'appareil respiratoire", filename: 'appareil-respiratoire.html', category: 'Sciences' },
+    { id: 'fiche_digestif', title: "L'appareil digestif", filename: 'appareil-digestif.html', category: 'Sciences' },
+    { id: 'fiche_circulatoire', title: 'Le système circulatoire', filename: 'systeme-circulatoire.html', category: 'Sciences' },
+    { id: 'fiche_lune', title: 'Le Soleil, la Terre et la Lune', filename: 'soleil-terre-lune.html', category: 'Sciences' },
+    { id: 'fiche_classification', title: 'La classification phylogénétique', filename: 'classification-phylogenetique.html', category: 'Sciences' }
+  ];
+
   if (saved) {
     try {
       fiches = JSON.parse(saved);
+      if (fiches.length === 0) {
+        fiches = [...DEFAULT_FICHES];
+        localStorage.setItem('lq_fiches', JSON.stringify(fiches));
+      }
     } catch(e) {
-      fiches = [];
+      fiches = [...DEFAULT_FICHES];
+      localStorage.setItem('lq_fiches', JSON.stringify(fiches));
     }
   } else {
-    fiches = [];
+    fiches = [...DEFAULT_FICHES];
     localStorage.setItem('lq_fiches', JSON.stringify(fiches));
   }
+
+  const updateFichesScreens = () => {
+    if (state.role === 'teacher') {
+      if (typeof renderFichesScreenTeacher === 'function') renderFichesScreenTeacher();
+    } else {
+      if (typeof renderFichesScreen === 'function') renderFichesScreen();
+    }
+  };
 
   // Load from Firebase if available
   if (window.FB_loadFiches) {
@@ -34310,6 +34333,9 @@ function initFiches() {
       if (fbFiches && fbFiches.length > 0) {
         fiches = fbFiches;
         localStorage.setItem('lq_fiches', JSON.stringify(fiches));
+        updateFichesScreens();
+      } else if (fiches.length > 0 && window.FB_saveFiches) {
+        window.FB_saveFiches(fiches);
       }
     });
   } else {
@@ -34320,6 +34346,9 @@ function initFiches() {
           if (fbFiches && fbFiches.length > 0) {
             fiches = fbFiches;
             localStorage.setItem('lq_fiches', JSON.stringify(fiches));
+            updateFichesScreens();
+          } else if (fiches.length > 0 && window.FB_saveFiches) {
+            window.FB_saveFiches(fiches);
           }
         });
       }
