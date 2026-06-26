@@ -6496,6 +6496,18 @@ function goHome(){
 }
 
 function showScreen(id){
+  if (id !== 'screen-jeu-tetris') {
+    if (typeof tetStop === 'function') {
+      tetStop();
+    }
+  }
+  if (id !== 'screen-jeu-rushhour') {
+    if (typeof rhDrag !== 'undefined') {
+      rhDrag = null;
+      rhSel = null;
+    }
+  }
+
   // Nettoyage global de tout clone tactile orphelin dans le body
   Array.from(document.body.children).forEach(el => {
     if (el.style.position === 'fixed' && (el.style.zIndex === '9999' || el.style.zIndex === 9999)) {
@@ -14739,7 +14751,7 @@ function renderJeuTetris(){
 }
 
 // Variables globales Tetris
-let tetRunning = false, tetBoard, tetCur, tetNext, tetScore, tetLines, tetLevel, tetSpeed, tetFid;
+let tetRunning = false, tetBoard, tetCur, tetNext, tetScore, tetLines, tetLevel, tetSpeed, tetFid, tetLockTick = 0;
 const TET_COLS=10, TET_ROWS=20, TET_BS=20;
 const TET_COLORS=['#00f0f0','#f0a000','#a000f0','#00f000','#f00000','#0000f0','#f0f000'];
 const TET_PIECES=[
@@ -14778,6 +14790,7 @@ function tetPlace(){
   }));
   tetClearLines();
   tetCur=tetNext; tetNext=tetRandPiece(); tetDrawNext();
+  tetLockTick = 0;
   if(!tetValid(tetCur.shape,tetCur.x,tetCur.y)) tetGameOver();
 }
 
@@ -14802,8 +14815,17 @@ function tetClearLines(){
 
 function tetDrop(){
   if(!tetRunning) return;
-  if(tetValid(tetCur.shape,tetCur.x,tetCur.y+1)) tetCur.y++;
-  else tetPlace();
+  if(tetValid(tetCur.shape,tetCur.x,tetCur.y+1)) {
+    tetCur.y++;
+    tetLockTick = 0;
+  } else {
+    if(!tetLockTick) {
+      tetLockTick = Date.now();
+    } else if(Date.now() - tetLockTick >= 500) {
+      tetPlace();
+      tetLockTick = 0;
+    }
+  }
   tetDraw();
   tetFid=setTimeout(tetDrop, tetSpeed);
 }
@@ -14840,10 +14862,10 @@ function tetDrawNext(){
 
 function tetOnKey(e){
   if(!tetRunning) return;
-  if(e.code==='ArrowLeft'){ if(tetValid(tetCur.shape,tetCur.x-1,tetCur.y)) tetCur.x--; tetDraw(); }
-  else if(e.code==='ArrowRight'){ if(tetValid(tetCur.shape,tetCur.x+1,tetCur.y)) tetCur.x++; tetDraw(); }
-  else if(e.code==='ArrowDown'){ if(tetValid(tetCur.shape,tetCur.x,tetCur.y+1)) tetCur.y++; tetDraw(); }
-  else if(e.code==='ArrowUp'){ const r=tetRotate(tetCur.shape); if(tetValid(r,tetCur.x,tetCur.y)) tetCur.shape=r; tetDraw(); }
+  if(e.code==='ArrowLeft'){ e.preventDefault(); if(tetValid(tetCur.shape,tetCur.x-1,tetCur.y)) tetCur.x--; tetDraw(); }
+  else if(e.code==='ArrowRight'){ e.preventDefault(); if(tetValid(tetCur.shape,tetCur.x+1,tetCur.y)) tetCur.x++; tetDraw(); }
+  else if(e.code==='ArrowDown'){ e.preventDefault(); if(tetValid(tetCur.shape,tetCur.x,tetCur.y+1)) tetCur.y++; tetDraw(); }
+  else if(e.code==='ArrowUp'){ e.preventDefault(); const r=tetRotate(tetCur.shape); if(tetValid(r,tetCur.x,tetCur.y)) tetCur.shape=r; tetDraw(); }
   else if(e.code==='Space'){
     e.preventDefault();
     while(tetValid(tetCur.shape,tetCur.x,tetCur.y+1)) tetCur.y++;
