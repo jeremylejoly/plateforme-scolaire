@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deux objets — Rends la monnaie</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --primary: #3b82f6;
+    --primary-hover: #2563eb;
+    --primary-light: #eff6ff;
+    --ink: #1e293b;
+    --border: #e2e8f0;
+    --bg-slate: #f8fafc;
+    --green: #10b981;
+    --green-hover: #059669;
+    --red: #f43f5e;
+    --gold: #f59e0b;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: #f1f5f9;
+    color: var(--ink);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 14px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .stage {
+    width: 100%;
+    max-width: 1000px;
+    background: white;
+    border-radius: 24px;
+    box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05), 0 8px 10px -6px rgba(0,0,0,0.05);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg-slate);
+  }
+  .consigne {
+    font-size: clamp(15px, 2.2vw, 19px);
+    font-weight: 800;
+    color: var(--ink);
+    flex: 1;
+  }
+  .hearts {
+    display: flex;
+    gap: 6px;
+    font-size: 22px;
+    line-height: 1;
+  }
+  .heart.gone {
+    opacity: 0.25;
+    filter: grayscale(1);
+  }
+  .progress {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+  .dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #e2e8f0;
+    border: 2px solid transparent;
+  }
+  .dot.done {
+    background: var(--green);
+  }
+  .dot.current {
+    background: var(--primary);
+    border-color: #bfdbfe;
+  }
+
+  .scene {
+    padding: 1.5rem;
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 20px;
+    align-items: stretch;
+    background: white;
+  }
+  .cadre-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .cadre-label {
+    font-weight: 800;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    color: #64748b;
+    text-align: center;
+  }
+  .cadre {
+    flex: 1;
+    background: var(--bg-slate);
+    border: 2px dashed #cbd5e1;
+    border-radius: 16px;
+    padding: 16px;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    gap: 12px;
+    min-height: 220px;
+    transition: all .2s;
+  }
+  .cadre.empty {
+    align-items: center;
+    justify-content: center;
+  }
+  .cadre .hint {
+    color: #94a3b8;
+    font-style: italic;
+    text-align: center;
+    width: 100%;
+    font-size: 14px;
+  }
+
+  .cashier {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    justify-content: center;
+  }
+
+  /* Style Ticket de Caisse */
+  .receipt-card {
+    background: #fff;
+    border: 2px solid #cbd5e1;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
+    font-family: monospace;
+    color: #0f172a;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background-image: radial-gradient(circle at 100% 170px, transparent 12px, #fff 12px),
+                      radial-gradient(circle at 0% 170px, transparent 12px, #fff 12px);
+    position: relative;
+    border-style: solid;
+  }
+  .receipt-header {
+    font-size: 15px;
+    font-weight: 900;
+    text-align: center;
+    letter-spacing: 0.1em;
+    color: #475569;
+  }
+  .receipt-divider {
+    text-align: center;
+    color: #cbd5e1;
+    letter-spacing: -1px;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  .receipt-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    font-weight: 700;
+  }
+  .receipt-row.price-row {
+    margin-top: 10px;
+    font-size: 15px;
+    border-top: 2px dashed #e2e8f0;
+    padding-top: 12px;
+    align-items: center;
+  }
+  .total-label {
+    font-weight: 900;
+    color: var(--ink);
+  }
+  .total-price {
+    font-size: 24px;
+    font-weight: 900;
+    color: var(--primary);
+  }
+
+  .paidwith {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 8px;
+    border-top: 1px dashed #cbd5e1;
+    padding-top: 10px;
+  }
+  .paidwith-lbl {
+    font-family: monospace;
+    font-size: 13px;
+    font-weight: 700;
+    color: #475569;
+  }
+
+  .actions {
+    display: flex;
+    justify-content: center;
+    padding: 1rem 1.5rem;
+    border-top: 1px solid var(--border);
+    background: var(--bg-slate);
+  }
+  .btn {
+    font-family: inherit;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: 800;
+    border: none;
+    border-radius: 12px;
+    padding: 10px 36px;
+    background: var(--primary);
+    color: white;
+    transition: all .2s;
+    box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.1);
+  }
+  .btn:hover {
+    background: var(--primary-hover);
+  }
+  .btn.valider {
+    background: var(--green);
+  }
+  .btn.valider:hover {
+    background: var(--green-hover);
+  }
+
+  .palette {
+    background: var(--bg-slate);
+    border-top: 1px solid var(--border);
+    padding: 1.5rem;
+  }
+  .palette-help {
+    text-align: center;
+    font-style: italic;
+    color: #64748b;
+    margin-bottom: 16px;
+    font-size: 13px;
+  }
+  .money-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    justify-content: center;
+    align-items: flex-end;
+  }
+  .piece {
+    position: relative;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0;
+    transition: transform .15s;
+  }
+  .piece:hover {
+    transform: translateY(-6px);
+  }
+  .piece:disabled {
+    cursor: not-allowed;
+    opacity: .3;
+    transform: none;
+  }
+  .badge {
+    position: absolute;
+    top: -8px;
+    right: -6px;
+    background: var(--red);
+    color: white;
+    font-weight: 900;
+    font-size: 12px;
+    border-radius: 50%;
+    width: 22px;
+    height: 22px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 3;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  .badge.show {
+    display: flex;
+  }
+
+  .toast {
+    position: absolute;
+    left: 50%;
+    top: 46%;
+    transform: translate(-50%, -50%) scale(.8);
+    background: white;
+    border-radius: 16px;
+    padding: 20px 30px;
+    text-align: center;
+    z-index: 30;
+    box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1);
+    opacity: 0;
+    pointer-events: none;
+    transition: all .2s;
+    border: 1px solid var(--border);
+    max-width: 80%;
+  }
+  .toast.show {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+    pointer-events: auto;
+  }
+  .toast .big {
+    font-size: 40px;
+    margin-bottom: 8px;
+  }
+  .toast .msg {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--ink);
+  }
+  .toast .sub {
+    font-size: 14px;
+    margin-top: 4px;
+    color: #64748b;
+  }
+
+  .endscreen {
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.98);
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    z-index: 40;
+    padding: 24px;
+    text-align: center;
+  }
+  .endscreen.show {
+    display: flex;
+  }
+  .endscreen h2 {
+    font-size: 32px;
+    font-weight: 900;
+    color: var(--ink);
+  }
+  .endscreen .score {
+    font-size: 18px;
+    color: #64748b;
+  }
+
+  .shake { animation: shake .4s; }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-7px)} 40%{transform:translateX(7px)} 60%{transform:translateX(-5px)} 80%{transform:translateX(5px)} }
+  .pop { animation: pop .3s; }
+  @keyframes pop { 0%{transform:scale(.4)} 70%{transform:scale(1.15)} 100%{transform:scale(1)} }
+
+  @media(max-width: 768px) {
+    .scene { grid-template-columns: 1fr; }
+    .topbar { flex-direction: column; align-items: stretch; text-align: center; }
+    .progress { justify-content: center; }
+    .hearts { justify-content: center; }
+  }
+</style>
+</head>
+<body>
+<div class="stage" id="stage">
+  <div class="topbar">
+    <div class="consigne">Le client achète <b>2 objets</b> : additionne les prix, puis rends la monnaie.</div>
+    <div class="hearts" id="hearts"></div>
+    <div class="progress" id="progress"></div>
+  </div>
+
+  <div class="scene">
+    <div class="cadre-wrap">
+      <div class="cadre-label">Rends la monnaie ici 👇</div>
+      <div class="cadre empty" id="cadre">
+        <div class="hint">Calcule le montant total, puis dépose la monnaie à rendre.</div>
+      </div>
+    </div>
+
+    <div class="cashier">
+      <div class="receipt-card">
+        <div class="receipt-header">🧾 TICKET DE CAISSE</div>
+        <div class="receipt-divider">-----------------------------</div>
+        <div class="receipt-row">
+          <span id="n1" style="color: #64748b;">—</span>
+          <span id="p1" style="color: var(--ink);">—</span>
+        </div>
+        <div class="receipt-row">
+          <span id="n2" style="color: #64748b;">—</span>
+          <span id="p2" style="color: var(--ink);">—</span>
+        </div>
+        <div class="receipt-divider">-----------------------------</div>
+        <div class="receipt-row price-row">
+          <span class="total-label">TOTAL :</span>
+          <span class="total-price" id="totalSum">? €</span>
+        </div>
+        <div class="paidwith">
+          <span class="paidwith-lbl">REÇU DU CLIENT :</span>
+          <div id="paidBill"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="actions"><button class="btn valider" id="valider">Valider</button></div>
+
+  <div class="palette">
+    <p class="palette-help">Tu peux cliquer plusieurs fois sur le même argent (5 fois au maximum). Clique sur l'argent du cadre pour le retirer.</p>
+    <div class="money-row" id="moneyRow"></div>
+  </div>
+
+  <div class="toast" id="toast">
+    <div class="big" id="toastBig">👍</div>
+    <div class="msg" id="toastMsg"></div>
+    <div class="sub" id="toastSub"></div>
+  </div>
+
+  <div class="endscreen" id="endscreen">
+    <h2 id="endTitle">Bravo !</h2>
+    <div class="score" id="endScore"></div>
+    <button class="btn valider" id="restart">Recommencer avec de nouveaux exercices</button>
+  </div>
+</div>
+
+<script>
+/* ===================== Banque de 20 exercices (2 objets) ===================== */
+const BANK = [
+  {n1:"Une baguette",p1:115, n2:"Un litre de lait",p2:125, paid:500},
+  {n1:"Un pain au chocolat",p1:130, n2:"Une tablette de chocolat",p2:240, paid:500},
+  {n1:"Un sachet de bonbons",p1:199, n2:"Une glace",p2:250, paid:1000},
+  {n1:"Un pot de confiture",p1:320, n2:"Une douzaine d'œufs",p2:360, paid:1000},
+  {n1:"Une boîte de céréales",p1:395, n2:"Un litre de lait",p2:125, paid:1000},
+  {n1:"Un magazine",p1:490, n2:"Une trousse",p2:650, paid:2000},
+  {n1:"Un petit ballon",p1:435, n2:"Une paire de chaussettes",p2:575, paid:2000},
+  {n1:"Un sandwich",p1:420, n2:"Une bouteille d'eau",p2:95, paid:1000},
+  {n1:"Un livre de poche",p1:890, n2:"Un magazine",p2:490, paid:2000},
+  {n1:"Un menu au fast-food",p1:980, n2:"Une glace",p2:250, paid:2000},
+  {n1:"Une casquette",p1:1230, n2:"Une paire de chaussettes",p2:575, paid:2000},
+  {n1:"Une bande dessinée",p1:1390, n2:"Une trousse",p2:650, paid:5000},
+  {n1:"Un jeu de société",p1:1750, n2:"Un livre de poche",p2:890, paid:5000},
+  {n1:"Une tablette de chocolat",p1:240, n2:"Un sachet de bonbons",p2:199, paid:1000},
+  {n1:"Une baguette",p1:115, n2:"Un pain au chocolat",p2:130, paid:500},
+  {n1:"Un pot de confiture",p1:320, n2:"Une boîte de céréales",p2:395, paid:1000},
+  {n1:"Une casquette",p1:1230, n2:"Un magazine",p2:490, paid:2000},
+  {n1:"Une douzaine d'œufs",p1:360, n2:"Un menu au fast-food",p2:980, paid:2000},
+  {n1:"Une paire de chaussettes",p1:575, n2:"Une trousse",p2:650, paid:2000},
+  {n1:"Une bande dessinée",p1:1390, n2:"Un jeu de société",p2:1750, paid:5000},
+];
+
+/* ===================== Monnaie disponible ===================== */
+const MONEY = [
+  {cents:5000, type:"bill"},{cents:2000, type:"bill"},{cents:1000, type:"bill"},{cents:500, type:"bill"},
+  {cents:200, type:"coin"},{cents:100, type:"coin"},{cents:50, type:"coin"},{cents:20, type:"coin"},
+  {cents:10, type:"coin"},{cents:5, type:"coin"},{cents:2, type:"coin"},{cents:1, type:"coin"},
+];
+const MAX_PER = 5;
+const HEARTS = 3;
+const COIN_W = {200:74,100:66,50:70,20:64,10:58,5:62,2:56,1:52};
+const BILL_W = {5000:122,2000:114,1000:108,500:102};
+
+/* ===================== Générateurs SVG ===================== */
+let UID=0;
+function grad(stops){
+  const id="g"+(UID++);
+  const s=stops.map(([o,c])=>`<stop offset="${o}" stop-color="${c}"/>`).join("");
+  return {id, def:`<radialGradient id="${id}" cx="38%" cy="33%" r="78%">${s}</radialGradient>`};
+}
+const METAL={
+  gold:{stops:[["0%","#fbeaa6"],["45%","#e8c45f"],["100%","#b3851d"]],rim:"#8a6411",text:"#6b5210"},
+  silver:{stops:[["0%","#ffffff"],["45%","#d4dbe0"],["100%","#9aa7af"]],rim:"#727e85",text:"#45505a"},
+  copper:{stops:[["0%","#f4c896"],["45%","#d2823c"],["100%","#9c5417"]],rim:"#7a3f10",text:"#5b3110"},
+};
+const COIN_SPEC={
+  200:{ring:"silver",center:"gold",label:"2",sub:"EURO"},
+  100:{ring:"gold",center:"silver",label:"1",sub:"EURO"},
+  50:{ring:"gold",label:"50",sub:"EURO CENT"},20:{ring:"gold",label:"20",sub:"EURO CENT"},
+  10:{ring:"gold",label:"10",sub:"EURO CENT"},5:{ring:"copper",label:"5",sub:"EURO CENT"},
+  2:{ring:"copper",label:"2",sub:"EURO CENT"},1:{ring:"copper",label:"1",sub:"EURO CENT"},
+};
+function coinSVG(spec){
+  const ring=METAL[spec.ring];const gR=grad(ring.stops);
+  let defs=gR.def, centerEl="", txt=ring.text;
+  if(spec.center){const c=METAL[spec.center];const gC=grad(c.stops);defs+=gC.def;
+    centerEl=`<circle cx="50" cy="50" r="31" fill="url(#${gC.id})" stroke="${c.rim}" stroke-width="0.7"/>`;txt=c.text;}
+  const numSize=(spec.label.length<=1)?40:33;
+  return `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" class="moneysvg coinsvg" role="img">
+<defs>${defs}</defs>
+<circle cx="50" cy="50" r="48" fill="url(#${gR.id})" stroke="${ring.rim}" stroke-width="1.4"/>
+<circle cx="50" cy="50" r="47" fill="none" stroke="${ring.rim}" stroke-width="2" stroke-dasharray="1.1 1.5" opacity="0.55"/>
+<circle cx="50" cy="50" r="42" fill="none" stroke="${ring.rim}" stroke-width="0.7" opacity="0.4"/>
+${centerEl}
+<ellipse cx="38" cy="33" rx="26" ry="19" fill="#ffffff" opacity="0.16"/>
+<text x="50" y="44" text-anchor="middle" dominant-baseline="central" font-family="Trebuchet MS, sans-serif" font-weight="800" font-size="${numSize}" fill="${txt}">${spec.label}</text>
+<text x="50" y="70" text-anchor="middle" dominant-baseline="central" font-family="Trebuchet MS, sans-serif" font-weight="700" font-size="8.5" letter-spacing="1.1" fill="${txt}">${spec.sub}</text>
+</svg>`;
+}
+const BILL_SPEC={
+  5000:{name:"50",light:"#f8dcad",mid:"#e8a44f",dark:"#9c5712",ink:"#7a430d"},
+  2000:{name:"20",light:"#c3d9f3",mid:"#6796d6",dark:"#1f4f8c",ink:"#173d6e"},
+  1000:{name:"10",light:"#f7c9d1",mid:"#e07d92",dark:"#a32f47",ink:"#7e2438"},
+  500 :{name:"5", light:"#e6e8e9",mid:"#b3b8bc",dark:"#6f7479",ink:"#525860"},
+};
+function starPath(cx,cy,r){let pts=[];for(let i=0;i<10;i++){const rad=(i%2===0)?r:r*0.45;const a=(-90+i*36)*Math.PI/180;
+  pts.push((cx+rad*Math.cos(a)).toFixed(2)+","+(cy+rad*Math.sin(a)).toFixed(2));}return "M"+pts.join("L")+"Z";}
+function euEmblem(CX,CY,R,sr,color){let p="";for(let i=0;i<12;i++){const a=(-90+i*30)*Math.PI/180;
+  p+=`<path d="${starPath(CX+R*Math.cos(a),CY+R*Math.sin(a),sr)}" fill="${color}"/>`;}return p;}
+function billSVG(s){
+  const gid="bg"+(UID++), holo="h"+(UID++);
+  const stars=euEmblem(150,24,11,2.3,"rgba(255,236,150,.95)");
+  return `<svg viewBox="0 0 200 105" xmlns="http://www.w3.org/2000/svg" class="moneysvg billsvg" role="img">
+<defs>
+<linearGradient id="${gid}" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0%" stop-color="${s.light}"/><stop offset="55%" stop-color="${s.mid}"/><stop offset="100%" stop-color="${s.dark}"/></linearGradient>
+<linearGradient id="${holo}" x1="0" y1="0" x2="1" y2="1">
+<stop offset="0%" stop-color="#ffffff" stop-opacity="0.08"/><stop offset="45%" stop-color="#ffffff" stop-opacity="0.6"/>
+<stop offset="55%" stop-color="#dfe7ec" stop-opacity="0.5"/><stop offset="100%" stop-color="#ffffff" stop-opacity="0.08"/></linearGradient>
+</defs>
+<rect x="2" y="2" width="196" height="101" rx="11" fill="url(#${gid})" stroke="${s.ink}" stroke-width="2"/>
+<g stroke="${s.ink}" stroke-width="0.5" opacity="0.13" fill="none">
+<path d="M2 30 Q60 14 120 30 T198 30"/><path d="M2 52 Q60 36 120 52 T198 52"/><path d="M2 74 Q60 58 120 74 T198 74"/></g>
+<g stroke="${s.ink}" stroke-width="1.3" fill="rgba(255,255,255,.10)" opacity="0.65">
+<path d="M14 88 V60 Q14 47 30 47 Q46 47 46 60 V88 Z"/><line x1="30" y1="47" x2="30" y2="88"/><line x1="14" y1="70" x2="46" y2="70"/></g>
+${stars}
+<text x="108" y="58" text-anchor="middle" dominant-baseline="central" font-family="Georgia, serif" font-weight="bold" font-size="62" fill="#ffffff" opacity="0.12">€</text>
+<text x="13" y="36" text-anchor="start" font-family="Trebuchet MS, sans-serif" font-weight="800" font-size="29" fill="${s.ink}">${s.name}</text>
+<text x="187" y="96" text-anchor="end" font-family="Trebuchet MS, sans-serif" font-weight="800" font-size="29" fill="${s.ink}">${s.name}</text>
+<text x="100" y="99" text-anchor="middle" font-family="Trebuchet MS, sans-serif" font-weight="700" font-size="9" letter-spacing="3" fill="${s.ink}">EURO</text>
+<rect x="168" y="6" width="22" height="93" rx="4" fill="url(#${holo})" stroke="${s.ink}" stroke-width="0.6" opacity="0.85"/>
+<text x="179" y="44" text-anchor="middle" font-family="Trebuchet MS, sans-serif" font-weight="800" font-size="13" fill="${s.ink}" opacity="0.45">€</text>
+<text x="179" y="70" text-anchor="middle" font-family="Trebuchet MS, sans-serif" font-weight="800" font-size="13" fill="${s.ink}" opacity="0.45">€</text>
+</svg>`;
+}
+
+/* ===================== État ===================== */
+let session=[], exIndex=0, counts={}, hearts=HEARTS, solved=0;
+function formatEuro(c){return (c/100).toFixed(2).replace(".",",")+" €";}
+function target(){const ex=session[exIndex];return ex.paid - (ex.p1+ex.p2);}
+function pickFive(){
+  const pool=[...BANK];
+  for(let i=pool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]];}
+  return pool.slice(0,5);
+}
+function moneyVisual(m,placed){
+  const wrap=document.createElement("span");
+  wrap.innerHTML = (m.type==="bill") ? billSVG(BILL_SPEC[m.cents]) : coinSVG(COIN_SPEC[m.cents]);
+  const el=wrap.firstChild;
+  const base=(m.type==="bill")?BILL_W[m.cents]:COIN_W[m.cents];
+  el.style.width=Math.round(base*(placed?0.72:1))+"px";el.style.height="auto";return el;
+}
+function moneyLabel(m){
+  if(m.type==="bill") return "Billet de "+BILL_SPEC[m.cents].name+" euros";
+  const c=COIN_SPEC[m.cents];return "Pièce de "+c.label+" "+(c.sub==="EURO"?"euro":"centimes");
+}
+
+/* ===================== Rendu ===================== */
+function renderHearts(){const box=document.getElementById("hearts");box.innerHTML="";
+  for(let i=0;i<HEARTS;i++){const s=document.createElement("span");s.className="heart"+(i<hearts?"":" gone");s.textContent="❤️";box.appendChild(s);}}
+function renderProgress(){const box=document.getElementById("progress");box.innerHTML="";
+  for(let i=0;i<session.length;i++){const d=document.createElement("div");d.className="dot"+(i<exIndex?" done":(i===exIndex?" current":""));box.appendChild(d);}}
+function renderPalette(){
+  const row=document.getElementById("moneyRow");row.innerHTML="";
+  MONEY.forEach(m=>{
+    const btn=document.createElement("button");btn.className="piece";btn.setAttribute("aria-label",moneyLabel(m));
+    btn.appendChild(moneyVisual(m,false));
+    const badge=document.createElement("span");badge.className="badge";badge.dataset.cents=m.cents;btn.appendChild(badge);
+    btn.dataset.cents=m.cents;btn.addEventListener("click",()=>addMoney(m,btn));row.appendChild(btn);
+  });
+}
+function renderCadre(){
+  const cadre=document.getElementById("cadre");cadre.innerHTML="";
+  const any=Object.values(counts).some(v=>v>0);
+  if(!any){cadre.classList.add("empty");
+    const h=document.createElement("div");h.className="hint";h.textContent="Calcule le montant total, puis dépose la monnaie à rendre.";cadre.appendChild(h);
+  }else{cadre.classList.remove("empty");
+    MONEY.forEach(m=>{const n=counts[m.cents]||0;
+      for(let i=0;i<n;i++){const w=document.createElement("div");w.className="placed";w.title="Retirer";w.setAttribute("role","button");
+        w.appendChild(moneyVisual(m,true));w.addEventListener("click",()=>removeMoney(m));cadre.appendChild(w);}});
+  }
+  document.querySelectorAll(".badge").forEach(b=>{const n=counts[b.dataset.cents]||0;
+    if(n>0){b.classList.add("show");b.textContent="×"+n;}else{b.classList.remove("show");}});
+  document.querySelectorAll(".piece").forEach(p=>{p.disabled=(counts[p.dataset.cents]||0)>=MAX_PER;});
+}
+
+/* ===================== Actions ===================== */
+function addMoney(m,btn){const n=counts[m.cents]||0;
+  if(n>=MAX_PER){btn.classList.remove("shake");void btn.offsetWidth;btn.classList.add("shake");return;}
+  counts[m.cents]=n+1;renderCadre();const last=document.querySelector("#cadre .placed:last-child");if(last)last.classList.add("pop");}
+function removeMoney(m){const n=counts[m.cents]||0;if(n>0)counts[m.cents]=n-1;renderCadre();}
+function currentTotal(){let t=0;for(const c in counts)t+=Number(c)*counts[c];return t;}
+
+function toast(big,msg,sub,then){
+  const t=document.getElementById("toast");
+  document.getElementById("toastBig").textContent=big;document.getElementById("toastMsg").textContent=msg;
+  document.getElementById("toastSub").textContent=sub||"";t.classList.add("show");
+  setTimeout(()=>{t.classList.remove("show");if(then)then();}, then?1400:1700);
+}
+function validate(){
+  const goal=target(), total=currentTotal();
+  if(total===0){toast("🤔","Le cadre est vide.","Calcule le total, puis dépose la monnaie à rendre.");return;}
+  if(total===goal){solved++;toast("🎉","Parfait, le compte est bon !","",nextExercise);}
+  else if(total>goal){loseHeart();toast("💸","C'est trop !","Tu rends "+formatEuro(total-goal)+" de trop.");}
+  else{loseHeart();toast("🪙","Ce n'est pas assez.","Il manque encore "+formatEuro(goal-total)+".");}
+}
+function loseHeart(){hearts--;renderHearts();if(hearts<=0)setTimeout(()=>endGame(false),1500);}
+function loadExercise(){
+  const ex=session[exIndex];
+  document.getElementById("n1").textContent=ex.n1;document.getElementById("p1").textContent=formatEuro(ex.p1);
+  document.getElementById("n2").textContent=ex.n2;document.getElementById("p2").textContent=formatEuro(ex.p2);
+  document.getElementById("totalSum").textContent="? €";
+  const pb=document.getElementById("paidBill");pb.innerHTML="";
+  const billEl=moneyVisual({cents:ex.paid,type:"bill"},false);billEl.style.width="78px";pb.appendChild(billEl);
+  counts={};renderCadre();renderProgress();
+}
+function nextExercise(){exIndex++;if(exIndex>=session.length)endGame(true);else loadExercise();}
+function endGame(won){
+  const es=document.getElementById("endscreen");
+  document.getElementById("endTitle").textContent=won?"Bravo, caisse impeccable ! 🛍️":"Plus de cœurs… 💔";
+  document.getElementById("endScore").textContent="Tu as rendu la bonne monnaie "+solved+" fois sur "+session.length+".";
+  es.classList.add("show");
+
+  if (window.parent && window.parent.saveResult) {
+    const pct = Math.round(solved / session.length * 100);
+    window.parent.saveResult({
+      activity: 'grandeur_monnaie_deux_objets',
+      bookTitle: 'Deux objets — Rends la monnaie',
+      score: solved,
+      total: session.length,
+      pct: pct,
+      date: new Date().toLocaleDateString('fr-BE'),
+      time: new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })
+    });
+  }
+}
+function newSession(){
+  session=pickFive();exIndex=0;hearts=HEARTS;solved=0;
+  document.getElementById("endscreen").classList.remove("show");
+  renderHearts();renderPalette();loadExercise();
+}
+document.getElementById("valider").addEventListener("click",validate);
+document.getElementById("restart").addEventListener("click",newSession);
+newSession();
+</script>
+</body>
+</html>
