@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cible aux fléchettes – Atteins le score</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --mint:#DCF1EA; --ink:#22303A; --muted:#5d7079; --paper:#ffffff;
+    --rim:#E59A47; --good:#2E9E6B; --bad:#E2574C; --line:#e4e9e7;
+    --disp:'Fredoka', system-ui, sans-serif; --body:'Nunito', system-ui, sans-serif;
+  }
+  html,body{margin:0;padding:16px;background:#f1f5f9;min-height:100vh;display:flex;justify-content:center;align-items:center;}
+  .fb-wrap{
+    font-family:var(--body); color:var(--ink); background:var(--mint);
+    width:100%;max-width:540px; padding:20px 16px 28px; border-radius:22px;
+    border:3px solid var(--ink); box-shadow:6px 6px 0 var(--ink);
+  }
+  .fb-wrap h1{font-family:var(--disp); font-weight:700; font-size:28px; margin:0 0 4px; text-align:center}
+  .fb-wrap .sub{margin:0 0 16px; text-align:center; color:var(--muted); font-size:15px}
+  .fb-status{display:flex; justify-content:space-between; gap:10px; margin-bottom:12px}
+  .fb-pill{background:#fff; border:2px solid var(--ink); border-radius:999px; padding:6px 14px; font-weight:700; font-size:14px}
+  .fb-goal{font-family:var(--disp); font-weight:600; font-size:18px; text-align:center;
+    background:#fff; border:3px solid var(--ink); border-radius:16px; padding:10px 14px; margin-bottom:12px; box-shadow:0 4px 0 var(--ink)}
+  .fb-goal b{color:var(--rim); font-size:22px}
+  .fb-card{background:#fff; border:3px solid var(--ink); border-radius:20px; padding:14px; text-align:center; box-shadow:0 5px 0 var(--ink)}
+  .fb-tname{font-family:var(--disp); font-weight:600; font-size:17px}
+  .fb-hint{color:var(--muted); font-size:14px; margin-bottom:6px}
+  .fb-card svg{width:100%; max-width:340px; display:block; margin:0 auto; cursor:crosshair; touch-action:manipulation}
+  .fb-meter{display:flex; justify-content:center; gap:18px; margin:14px 0 8px; font-family:var(--disp); font-weight:600; font-size:17px}
+  .fb-meter span b{font-size:20px}
+  .fb-feedback{min-height:26px; text-align:center; font-weight:700; font-size:16px; margin:4px 0 10px}
+  .fb-feedback.good{color:var(--good)} .fb-feedback.bad{color:var(--bad)} .fb-feedback.muted{color:var(--muted)}
+  .fb-actions{display:flex; justify-content:center; gap:10px; flex-wrap:wrap}
+  .fb-btn{font-family:var(--disp); font-weight:600; font-size:16px; padding:11px 18px; cursor:pointer;
+    border:3px solid var(--ink); border-radius:14px; background:#fff; color:var(--ink); box-shadow:0 4px 0 var(--ink);
+    transition:transform .06s, box-shadow .06s}
+  .fb-btn:hover{transform:translateY(-1px)}
+  .fb-btn:active{transform:translateY(4px); box-shadow:0 0 0 var(--ink)}
+  .fb-btn:focus-visible{outline:3px solid var(--rim); outline-offset:2px}
+  .fb-btn.primary{background:var(--good); color:#fff}
+  .fb-btn:disabled{opacity:.45; cursor:not-allowed; transform:none; box-shadow:0 4px 0 var(--ink)}
+  #ibBoard text{font-family:var(--disp)}
+  .fb-final{text-align:center; background:#fff; border:3px solid var(--ink); border-radius:20px; padding:22px; box-shadow:0 5px 0 var(--ink)}
+  .fb-final p{font-family:var(--disp); font-weight:700; font-size:22px; margin:0 0 14px}
+  @media (prefers-reduced-motion:reduce){.fb-btn{transition:none}}
+</style>
+</head>
+<body>
+<div class="fb-wrap">
+  <h1>Atteins le score</h1>
+  <p class="sub">Plante le bon nombre de fléchettes pour obtenir exactement le score demandé. Clique sur la cible !</p>
+
+  <div id="ibExercise">
+    <div class="fb-status">
+      <span class="fb-pill" id="ibProgress">Défi 1 / 10</span>
+      <span class="fb-pill" id="ibSolved">Défis réussis : 0</span>
+    </div>
+
+    <div class="fb-goal">Objectif : <b id="ibTarget">0</b> points avec <b id="ibN">0</b> fléchettes</div>
+
+    <div class="fb-card">
+      <div class="fb-tname" id="ibTname" style="text-align:center;font-family:var(--disp);font-weight:600;font-size:17px;margin-bottom:6px;"></div>
+      <div class="fb-hint">Clique dans un anneau pour y planter une fléchette.</div>
+      <svg id="ibBoard" viewBox="-20 -20 440 440" role="img" aria-label="Cible vide, clique pour planter des fléchettes"></svg>
+    </div>
+
+    <div class="fb-meter">
+      <span>Fléchettes : <b id="ibCount">0</b> / <b id="ibNeed">0</b></span>
+      <span>Total : <b id="ibSum">0</b></span>
+    </div>
+
+    <div id="ibFeedback" class="fb-feedback"></div>
+
+    <div class="fb-actions">
+      <button id="ibUndo" class="fb-btn" disabled>↶ Annuler</button>
+      <button id="ibClear" class="fb-btn" disabled>Effacer</button>
+      <button id="ibNew" class="fb-btn primary">Nouveau défi →</button>
+    </div>
+  </div>
+
+  <div id="ibFinal" class="fb-final" hidden>
+    <p id="ibFinalMsg"></p>
+    <button id="ibRestart" class="fb-btn primary">Recommencer</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  var TARGETS=[
+    {name:'Cible classique', vals:[25,10,5,2], ring2:'#F2917A'},
+    {name:'Petite cible',    vals:[12,6,3,1],  ring2:'#9FD17E'},
+    {name:'Grande cible',    vals:[50,20,10,5],ring2:'#C9A9E8'},
+    {name:'Cible orange',    vals:[30,15,8,4], ring2:'#F4B860'}
+  ];
+  var RADII=[54,96,138,180]; // limite extérieure de chaque zone (0=centre)
+  function rnd(a,b){return Math.floor(Math.random()*(b-a+1))+a;}
+
+  function circle(cx,cy,r,fill,w){
+    return '<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="'+fill+'" stroke="#111" stroke-width="'+w+'"/>';
+  }
+  function label(cx,cy,v){
+    return '<text x="'+cx+'" y="'+cy+'" text-anchor="middle" dominant-baseline="middle" font-size="28" font-weight="700" fill="#111" stroke="#fff" stroke-width="5" paint-order="stroke">'+v+'</text>';
+  }
+  function dart(x,y,deg){
+    return '<g transform="translate('+x.toFixed(1)+','+y.toFixed(1)+') rotate('+deg.toFixed(1)+') scale(1.2)">'+
+      '<line x1="0" y1="0" x2="-28" y2="0" stroke="#1a1a1a" stroke-width="3"/>'+
+      '<polygon points="-28,-9 -16,-6 -22,0 -16,6 -28,9" fill="#F5D23E" stroke="#1a1a1a" stroke-width="2" stroke-linejoin="round"/>'+
+      '<polygon points="3,0 -6,-4 -6,4" fill="#1a1a1a"/></g>';
+  }
+  function drawBoard(t,placed){
+    var cx=200,cy=200,s='';
+    s+=circle(cx,cy,192,'#E59A47',5);
+    s+=circle(cx,cy,180,'#FFFFFF',3);
+    s+=circle(cx,cy,138,t.ring2,3);
+    s+=circle(cx,cy,96,'#FFFFFF',3);
+    s+=circle(cx,cy,54,'#88B9EC',3);
+    s+=label(cx,cy-150,t.vals[3]);
+    s+=label(cx,cy-108,t.vals[2]);
+    s+=label(cx,cy-66,t.vals[1]);
+    s+=label(cx,cy+8,t.vals[0]);
+    for(var i=0;i<placed.length;i++){
+      var p=placed[i];
+      var ang=Math.atan2(p.y-cy,p.x-cx);
+      s+=dart(p.x,p.y,ang*180/Math.PI+180);
+    }
+    return s;
+  }
+
+  var $=function(id){return document.getElementById(id);};
+  var t, need, target, placed=[], solved=0, done=false;
+  var idx = 0, totalRounds = 10;
+
+  function newChallenge(){
+    if(idx >= totalRounds){
+      showFinal();
+      return;
+    }
+    t=TARGETS[rnd(0,TARGETS.length-1)];
+    need=rnd(2,4);
+    var s=0; for(var i=0;i<need;i++) s+=t.vals[rnd(0,3)];
+    target=s; placed=[]; done=false;
+    idx++;
+    render(); setFeedback('','');
+  }
+  function setFeedback(txt,cls){var f=$('ibFeedback'); f.textContent=txt; f.className='fb-feedback '+(cls||'');}
+  function sumOf(){return placed.reduce(function(a,p){return a+t.vals[p.zone];},0);}
+
+  function render(){
+    $('ibProgress').textContent='Défi '+idx+' / '+totalRounds;
+    $('ibSolved').textContent='Défis réussis : '+solved;
+    $('ibTname').textContent=t.name;
+    $('ibTarget').textContent=target;
+    $('ibN').textContent=need;
+    $('ibNeed').textContent=need;
+    $('ibCount').textContent=placed.length;
+    $('ibSum').textContent=sumOf();
+    $('ibBoard').innerHTML=drawBoard(t,placed);
+    $('ibUndo').disabled=placed.length===0;
+    $('ibClear').disabled=placed.length===0;
+    $('ibNew').textContent = (idx === totalRounds) ? '🏁 Voir mon score final' : 'Nouveau défi →';
+  }
+
+  function zoneFromRadius(r){
+    if(r<=RADII[0]) return 0;
+    if(r<=RADII[1]) return 1;
+    if(r<=RADII[2]) return 2;
+    if(r<=RADII[3]) return 3;
+    return -1;
+  }
+
+  function evaluate(){
+    var s=sumOf();
+    if(s===target){
+      done=true; solved++;
+      $('ibSolved').textContent='Défis réussis : '+solved;
+      setFeedback('Gagné ! '+placed.map(function(p){return t.vals[p.zone];}).join(' + ')+' = '+target,'good');
+    } else if(s>target){
+      setFeedback('Trop ! Tu as '+s+' au lieu de '+target+'. Annule une fléchette.','bad');
+    } else {
+      setFeedback('Pas assez : '+s+' au lieu de '+target+'. Annule une fléchette.','bad');
+    }
+  }
+
+  function boardClick(evt){
+    if(done) return;
+    if(placed.length>=need){ setFeedback('Tu as déjà '+need+' fléchettes. Annule pour corriger.','muted'); return; }
+    var svg=$('ibBoard');
+    var pt=svg.createSVGPoint();
+    pt.x=evt.clientX; pt.y=evt.clientY;
+    var p=pt.matrixTransform(svg.getScreenCTM().inverse());
+    var dx=p.x-200, dy=p.y-200, r=Math.sqrt(dx*dx+dy*dy);
+    var zone=zoneFromRadius(r);
+    if(zone<0){ setFeedback('Clique à l’intérieur de la cible.','muted'); return; }
+    placed.push({x:p.x,y:p.y,zone:zone});
+    render();
+    if(placed.length===need) evaluate(); else setFeedback('','');
+  }
+
+  function undo(){ if(placed.length===0) return; placed.pop(); done=false; render(); setFeedback('',''); }
+  function clearAll(){ placed=[]; done=false; render(); setFeedback('',''); }
+
+  function showFinal(){
+    $('ibExercise').hidden=true; $('ibFinal').hidden=false;
+    var msg='Tu as réussi '+solved+' défis sur '+totalRounds+' !';
+    if(solved===totalRounds) msg='Parfait ! '+solved+' / '+totalRounds;
+    else if(solved>=totalRounds*0.7) msg='Très bien ! '+solved+' / '+totalRounds;
+    $('ibFinalMsg').textContent=msg;
+
+    if (window.parent && window.parent.saveResult && window.parent.state && window.parent.state.student) {
+      try {
+        var state = window.parent.state;
+        var classes = window.parent.CLASSES;
+        var className = classes && classes[state.studentCls] ? classes[state.studentCls].name : state.studentCls;
+        window.parent.saveResult({
+          student: state.student,
+          cls: state.studentCls,
+          className: className,
+          activity: 'op_add_sous_flechettes_atteins',
+          score: solved,
+          total: totalRounds,
+          pct: Math.round((solved / totalRounds) * 100),
+          date: new Date().toLocaleDateString('fr-BE'),
+          time: new Date().toLocaleTimeString('fr-BE', {hour: '2-digit', minute: '2-digit'})
+        });
+      } catch(e) { console.warn('Error saving flechettes score:', e); }
+    }
+  }
+
+  function restart(){
+    idx=0; solved=0; done=false;
+    $('ibFinal').hidden=true; $('ibExercise').hidden=false;
+    newChallenge();
+  }
+
+  $('ibBoard').addEventListener('click',boardClick);
+  $('ibUndo').addEventListener('click',undo);
+  $('ibClear').addEventListener('click',clearAll);
+  $('ibNew').addEventListener('click',newChallenge);
+  $('ibRestart').addEventListener('click',restart);
+  newChallenge();
+})();
+</script>
+</body>
+</html>
