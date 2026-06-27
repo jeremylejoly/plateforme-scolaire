@@ -1,7 +1,9 @@
-const CACHE_NAME = 'classe-mr-lejoly-cache-v267';
+const CACHE_NAME = 'classe-mr-lejoly-cache-v270';
 const CORE_ASSETS = [
   './',
   'index.html',
+  'Labyrinthe.html',
+  'fiches/Labyrinthe.html',
   'planisphere-interactif.html',
   'cartes-planisphere.html',
   'cartes-europe.html',
@@ -45,6 +47,10 @@ const CORE_ASSETS = [
   'globe-terrestre.html',
   'soleil-terre-lune.html',
   'fiches/soleil-terre-lune.html',
+  'questionnaire-jour-nuit-LCML.html',
+  'fiches/questionnaire-jour-nuit-LCML.html',
+  'correctif-jour-nuit-LCML.html',
+  'fiches/correctif-jour-nuit-LCML.html',
   'classification-phylogenetique.html',
   'fiches/classification-phylogenetique.html',
   'appareil-respiratoire.html',
@@ -55,6 +61,8 @@ const CORE_ASSETS = [
   'fiches/questionnaire-respiratoire-correctif.html',
   'questionnaire-respiratoire-LCML.html',
   'fiches/questionnaire-respiratoire-LCML.html',
+  'questionnaire-respiratoire-LCML-correctif.html',
+  'fiches/questionnaire-respiratoire-LCML-correctif.html',
   'appareil-digestif.html',
   'fiches/appareil-digestif.html',
   'correctif-digestif.html',
