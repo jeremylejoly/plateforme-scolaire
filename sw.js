@@ -1,4 +1,4 @@
-const CACHE_NAME = 'classe-mr-lejoly-cache-v284';
+const CACHE_NAME = 'classe-mr-lejoly-cache-v285';
 const CORE_ASSETS = [
   './',
   'index.html',
@@ -86,6 +86,9 @@ const CORE_ASSETS = [
   'verbes-ternes.html',
   'fiches/verbes-ternes.html',
   'assets/logos/sub_verbes_ternes.png',
+  'chasseur-intrus.html',
+  'fiches/chasseur-intrus.html',
+  'assets/logos/sub_chasseur_intrus.png',
   'assets/logos/registre_familier.png',
   'assets/logos/registre_courant.png',
   'assets/logos/registre_soutenu.png',
