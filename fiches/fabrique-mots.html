@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>La Fabrique de Mots — Jeu de Vocabulaire</title>
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<!-- TailwindCSS CDN -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    corePlugins: {
+      preflight: false,
+    },
+    theme: {
+      extend: {
+        borderWidth: {
+          '3': '3px',
+        },
+        fontFamily: {
+          sans: ['Inter', 'sans-serif'],
+          display: ['Fredoka', 'sans-serif'],
+          mono: ['Space Mono', 'monospace'],
+        }
+      }
+    }
+  }
+</script>
+<style>
+  :root {
+    --encre: #1a1a2e;
+    --papier: #f7efe2;
+    --cuivre: #b85c37;
+    --cuivre-fonce: #803b1e;
+    --metal: #475569;
+    --ligne: #ebdcc5;
+    
+    --vert: #16a34a;
+    --vert-clair: #d4f5e2;
+    --rouge: #dc2626;
+    --rouge-clair: #fdd9d7;
+    
+    --radius: 16px;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: 'Inter', system-ui, sans-serif;
+    color: var(--encre);
+    background: 
+      radial-gradient(circle at 1px 1px, rgba(184, 92, 55, 0.04) 1px, transparent 0) 0 0/24px 24px,
+      var(--papier);
+    line-height: 1.5;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: 'Fredoka', sans-serif;
+    line-height: 1.2;
+    margin: 0;
+  }
+
+  /* BOUTON 3D */
+  .btn-3d {
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 700;
+    border: 3px solid var(--encre) !important;
+    box-shadow: 3px 3px 0px var(--encre);
+    transition: all 0.1s ease;
+    cursor: pointer;
+    user-select: none;
+  }
+  .btn-3d:active {
+    transform: translate(1px, 1px);
+    box-shadow: 1px 1px 0px var(--encre);
+  }
+
+  /* PANEL DE LA MACHINE */
+  .machine-panel {
+    background: #ffffff;
+    border: 4px solid var(--encre);
+    border-radius: var(--radius);
+    padding: 24px;
+    box-shadow: 5px 6px 0px var(--encre);
+    position: relative;
+  }
+
+  /* BLOCS DE MOTS */
+  .word-part-slot {
+    min-width: 85px;
+    height: 64px;
+    border: 3px solid var(--encre);
+    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 700;
+    font-size: 1.2rem;
+    transition: all 0.2s ease;
+    background: #f8fafc;
+    user-select: none;
+    box-shadow: inset 2px 2px 5px rgba(0,0,0,0.05);
+  }
+  
+  .word-part-slot.slot-empty {
+    border-style: dashed;
+    color: #94a3b8;
+    background: #f1f5f9;
+  }
+
+  .word-part-slot.slot-filled {
+    background: #ffffff;
+    color: var(--cuivre);
+    border-color: var(--cuivre);
+    box-shadow: 2px 3px 0px var(--encre);
+  }
+
+  .word-part-slot.slot-radical {
+    background: var(--metal);
+    color: #ffffff;
+    border-color: var(--encre);
+    box-shadow: 2px 3px 0px var(--encre);
+    cursor: default;
+  }
+
+  /* GRILLES DE PIECES */
+  .part-chip {
+    background: #ffffff;
+    border: 3px solid var(--encre);
+    border-radius: 10px;
+    padding: 8px 16px;
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 700;
+    font-size: 1.05rem;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    box-shadow: 2px 3px 0px var(--encre);
+    user-select: none;
+    text-align: center;
+  }
+  .part-chip:hover {
+    transform: translateY(-2px);
+    box-shadow: 3px 5px 0px var(--encre);
+    border-color: var(--cuivre);
+    color: var(--cuivre);
+  }
+  .part-chip.selected {
+    background: var(--cuivre-fonce);
+    color: #ffffff !important;
+    border-color: var(--encre);
+    box-shadow: none;
+    transform: translate(1px, 2px);
+  }
+
+  /* SUCCES ET ERREURS */
+  .assembly-area.assembly-correct .word-part-slot {
+    background: var(--vert-clair) !important;
+    border-color: var(--vert) !important;
+    color: var(--vert) !important;
+    box-shadow: none !important;
+  }
+  
+  .assembly-area.assembly-error {
+    animation: shake 0.4s ease-in-out;
+  }
+  .assembly-area.assembly-error .word-part-slot {
+    border-color: var(--rouge) !important;
+    background: var(--rouge-clair) !important;
+    color: var(--rouge) !important;
+  }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-8px); }
+    40%, 80% { transform: translateX(8px); }
+  }
+
+  @keyframes pop {
+    0% { transform: scale(0.8); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  .pop-anim {
+    animation: pop 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+</style>
+</head>
+<body>
+
+<!-- EN-TÊTE -->
+<header class="bg-gradient-to-r from-orange-950 to-amber-900 text-white border-b-4 border-amber-600 py-6 px-6 relative overflow-hidden">
+  <div class="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(217,119,6,0.22),transparent_50%)] pointer-events-none"></div>
+  <div class="max-w-[900px] mx-auto flex items-center justify-between relative z-10">
+    <div>
+      <h1 class="text-2xl md:text-3xl font-display font-black flex items-center gap-2">
+        ⚙️ La Fabrique de Mots
+      </h1>
+      <p class="mt-1 text-amber-100 font-sans text-xs md:text-sm">
+        Assemble le bon préfixe et le bon suffixe pour créer le mot correspondant à la définition !
+      </p>
+    </div>
+    <div class="text-3xl hidden sm:block">🏭</div>
+  </div>
+</header>
+
+<!-- CONTENU PRINCIPAL -->
+<main class="flex-1 max-w-[900px] w-full mx-auto p-4 md:py-6 flex flex-col justify-between">
+
+  <!-- Progression -->
+  <div class="w-full flex flex-col items-center mb-6">
+    <div class="w-full max-w-[500px] bg-slate-200 border-2 border-slate-900 rounded-full h-4 overflow-hidden mb-2 relative">
+      <div id="progress-bar" class="bg-amber-600 h-full w-0 transition-all duration-300"></div>
+    </div>
+    <div class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4" id="progress-text">
+      MOT 1 / 10
+    </div>
+  </div>
+
+  <!-- PANNEAU DE LA MACHINE -->
+  <div class="w-full max-w-[750px] mx-auto machine-panel mb-8 pop-anim">
+    
+    <!-- Définition cible -->
+    <div class="bg-slate-900 text-amber-100 font-mono text-xs sm:text-sm p-4 rounded-xl mb-6 border-2 border-slate-700 relative">
+      <div class="absolute top-2 right-3 text-[10px] text-slate-500 uppercase tracking-wider">Écran de contrôle</div>
+      <div class="font-bold text-amber-400 mb-1">📝 Définition :</div>
+      <p id="target-definition" class="text-sm sm:text-base leading-relaxed font-sans font-medium text-white">
+        Chargement...
+      </p>
+    </div>
+
+    <!-- Zone de montage active -->
+    <div class="flex flex-row justify-center items-center gap-3 py-6 border-2 border-dashed border-slate-200 rounded-2xl mb-2 assembly-area" id="assembly-zone">
+      <!-- Préfixe -->
+      <div id="slot-prefix" class="word-part-slot slot-empty" onclick="clearPrefixSlot()">?</div>
+      <div class="text-xl font-black text-slate-400">+</div>
+      <!-- Radical -->
+      <div id="slot-radical" class="word-part-slot slot-radical">charg</div>
+      <div class="text-xl font-black text-slate-400">+</div>
+      <!-- Suffixe -->
+      <div id="slot-suffix" class="word-part-slot slot-empty" onclick="clearSuffixSlot()">?</div>
+    </div>
+  </div>
+
+  <!-- PANNEAU DE PIECES DISPONIBLES -->
+  <div id="selection-panel" class="w-full max-w-[750px] mx-auto mb-8 flex flex-col gap-6">
+    <!-- Préfixes -->
+    <div>
+      <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Choisir un Préfixe :</h4>
+      <div class="flex flex-wrap gap-3" id="prefixes-container">
+        <!-- Rendu dynamique -->
+      </div>
+    </div>
+
+    <!-- Suffixes -->
+    <div>
+      <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Choisir un Suffixe :</h4>
+      <div class="flex flex-wrap gap-3" id="suffixes-container">
+        <!-- Rendu dynamique -->
+      </div>
+    </div>
+
+    <!-- Bouton Assembler -->
+    <button class="btn-3d w-full py-3.5 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-sm font-bold mt-2" onclick="testAssembly()">
+      ⚙️ Lancer l'assemblage
+    </button>
+  </div>
+
+  <!-- PANNEAU EXPLICATION / DEBUT REUSSI (Masqué par défaut) -->
+  <div id="explain-container" class="hidden w-full max-w-[750px] mx-auto mb-8 pop-anim">
+    <div class="card-premium bg-green-50 border-green-500 p-5">
+      <h3 class="text-green-800 font-bold text-sm uppercase tracking-wider mb-1" id="assembled-word-title">
+        Mot : RECHARGEMENT
+      </h3>
+      <p class="text-slate-700 text-xs sm:text-sm leading-relaxed mb-4" id="explain-text">
+        Explication...
+      </p>
+      <button class="btn-3d w-full py-3 bg-green-600 hover:bg-green-700 text-white rounded-xl text-sm font-bold flex items-center justify-center gap-1.5" onclick="nextWord()">
+        Mot suivant ➔
+      </button>
+    </div>
+  </div>
+
+  <!-- PANNEAU FINAL -->
+  <div id="panel-final" class="card-premium bg-amber-50 border-amber-600 hidden text-center max-w-[600px] mx-auto pop-anim">
+    <h3 class="text-amber-950 font-bold text-xl mb-2">🏆 Usine Terminée !</h3>
+    <p class="text-slate-700 text-sm leading-relaxed mb-6" id="final-score-text">
+      Tu as assemblé tous les mots avec succès !
+    </p>
+    <button class="btn-3d px-6 py-2.5 bg-amber-600 text-white rounded-xl text-sm font-bold" onclick="restartLab()">
+      Relancer la chaîne de montage
+    </button>
+  </div>
+
+</main>
+
+<script>
+  // ================================================================
+  // BANQUE DES MOTS (20 NIVEAUX D'ASSEMBLAGE)
+  // ================================================================
+  const WORD_BANK = [
+    {
+      def: "Action de charger à nouveau un objet ou un camion.",
+      radical: "charg",
+      prefix: "re-",
+      suffix: "-ement",
+      word: "rechargement",
+      ex: "Le préfixe <strong>re-</strong> exprime l'action de refaire à nouveau. Le suffixe <strong>-ement</strong> sert à former un nom désignant l'action."
+    },
+    {
+      def: "Qui est impossible ou extrêmement difficile à lire.",
+      radical: "lis",
+      prefix: "il-",
+      suffix: "-ible",
+      word: "illisible",
+      ex: "Le préfixe <strong>il-</strong> (variante de in-) exprime le contraire ou la négation. Le suffixe <strong>-ible</strong> désigne la capacité (que l'on peut)."
+    },
+    {
+      def: "Action de planter à nouveau des arbres ou de la végétation.",
+      radical: "plant",
+      prefix: "re-",
+      suffix: "-ation",
+      word: "replantation",
+      ex: "Le préfixe <strong>re-</strong> exprime la répétition. Le suffixe <strong>-ation</strong> forme le nom de l'action."
+    },
+    {
+      def: "Qui ne peut pas être mangé car c'est impropre ou mauvais.",
+      radical: "mang",
+      prefix: "im-",
+      suffix: "-able",
+      word: "immangeable",
+      ex: "Le préfixe <strong>im-</strong> (variante de in-) exprime le contraire. Le suffixe <strong>-able</strong> désigne la possibilité."
+    },
+    {
+      def: "Action de déranger complètement l'ordre ou la structure.",
+      radical: "organis",
+      prefix: "dés-",
+      suffix: "-ation",
+      word: "désorganisation",
+      ex: "Le préfixe <strong>dés-</strong> exprime la cessation ou le contraire. Le suffixe <strong>-ation</strong> indique l'action ou le résultat."
+    },
+    {
+      def: "Action de débarrasser de la pollution.",
+      radical: "pollu",
+      prefix: "dé-",
+      suffix: "-ation",
+      word: "dépollution",
+      ex: "Le préfixe <strong>dé-</strong> exprime l'action d'enlever ou de faire le contraire. Le suffixe <strong>-ation</strong> sert à fabriquer le nom."
+    },
+    {
+      def: "Qui est extraordinaire et difficile à croire.",
+      radical: "croy",
+      prefix: "in-",
+      suffix: "-able",
+      word: "incroyable",
+      ex: "Le préfixe <strong>in-</strong> exprime le contraire. Le suffixe <strong>-able</strong> signifie que l'on peut (que l'on peut croire)."
+    },
+    {
+      def: "Action de reconstruire ou bâtir à nouveau.",
+      radical: "construc",
+      prefix: "re-",
+      suffix: "-tion",
+      word: "reconstruction",
+      ex: "Le préfixe <strong>re-</strong> désigne la répétition de l'action. Le suffixe <strong>-tion</strong> sert à former le nom de l'acte."
+    },
+    {
+      def: "Action de congeler à nouveau un produit alimentaire.",
+      radical: "congél",
+      prefix: "re-",
+      suffix: "-ation",
+      word: "recongelation",
+      ex: "Le préfixe <strong>re-</strong> s'utilise pour répéter. Le suffixe <strong>-ation</strong> forme le nom."
+    },
+    {
+      def: "Qui ne peut pas être bu (toxique, sale).",
+      radical: "buv",
+      prefix: "im-",
+      suffix: "-able",
+      word: "imbuvable",
+      ex: "Le préfixe <strong>im-</strong> (variante de in-) exprime la négation. Le suffixe <strong>-able</strong> montre la possibilité."
+    },
+    {
+      def: "Action de classer à nouveau ou d'insérer dans un nouvel ordre.",
+      radical: "class",
+      prefix: "re-",
+      suffix: "-ement",
+      word: "reclassement",
+      ex: "Le préfixe <strong>re-</strong> exprime le retour en arrière ou la répétition. Le suffixe <strong>-ement</strong> forme le nom."
+    },
+    {
+      def: "Qui ne peut pas être battu ou vaincu au combat.",
+      radical: "batt",
+      prefix: "im-",
+      suffix: "-able",
+      word: "imbattable",
+      ex: "Le préfixe <strong>im-</strong> (pour in-) exprime la négation. Le suffixe <strong>-able</strong> indique la capacité."
+    },
+    {
+      def: "Action de retirer le sel (par exemple de l'eau de mer).",
+      radical: "sal",
+      prefix: "des-",
+      suffix: "-ement",
+      word: "dessalement",
+      ex: "Le préfixe <strong>des-</strong> indique l'action d'enlever. Le suffixe <strong>-ement</strong> sert à former le nom."
+    },
+    {
+      def: "Action d'enlever les arbres d'une forêt.",
+      radical: "forest",
+      prefix: "dé-",
+      suffix: "-ation",
+      word: "déforestation",
+      ex: "Le préfixe <strong>dé-</strong> marque la privation ou l'enlèvement. Le suffixe <strong>-ation</strong> forme le nom."
+    },
+    {
+      def: "Qui ne peut pas être vu, qui échappe au regard.",
+      radical: "vis",
+      prefix: "in-",
+      suffix: "-ible",
+      word: "invisible",
+      ex: "Le préfixe <strong>in-</strong> exprime l'impossibilité ou le contraire. Le suffixe <strong>-ible</strong> désigne la capacité (visible ➔ qu'on peut voir)."
+    },
+    {
+      def: "Action d'assembler des personnes ou objets à nouveau.",
+      radical: "group",
+      prefix: "re-",
+      suffix: "-ement",
+      word: "regroupement",
+      ex: "Le préfixe <strong>re-</strong> s'utilise pour rassembler à nouveau. Le suffixe <strong>-ement</strong> forme le nom."
+    },
+    {
+      def: "Qui ne peut pas se casser ou être brisé.",
+      radical: "cass",
+      prefix: "in-",
+      suffix: "-able",
+      word: "incassable",
+      ex: "Le préfixe <strong>in-</strong> exprime la négation. Le suffixe <strong>-able</strong> montre la possibilité."
+    },
+    {
+      def: "Action de diviser ou partager à nouveau.",
+      radical: "divis",
+      prefix: "re-",
+      suffix: "-ion",
+      word: "redivision",
+      ex: "Le préfixe <strong>re-</strong> exprime la répétition. Le suffixe <strong>-ion</strong> sert à fabriquer le nom de l'action."
+    },
+    {
+      def: "Qui ne fait pas preuve de patience.",
+      radical: "pati",
+      prefix: "im-",
+      suffix: "-ent",
+      word: "impatient",
+      ex: "Le préfixe <strong>im-</strong> (pour in-) exprime le contraire. Le suffixe <strong>-ent</strong> sert à former l'adjectif qualificatif de comportement."
+    },
+    {
+      def: "Action de retirer les armes (soldats, pays).",
+      radical: "arm",
+      prefix: "dés-",
+      suffix: "-ement",
+      word: "désarmement",
+      ex: "Le préfixe <strong>dés-</strong> indique la privation de l'arme. Le suffixe <strong>-ement</strong> forme le nom d'action."
+    }
+  ];
+
+  // Pool global d'affixes pour garnir le panneau
+  const ALL_PREFIXES = ["re-", "in-", "im-", "dé-", "dés-", "des-", "il-", "sur-"];
+  const ALL_SUFFIXES = ["-ement", "-able", "-ation", "-ible", "-tion", "-ent", "-ion"];
+
+  // ================================================================
+  // VARIABLES DU LAB
+  // ================================================================
+  let sessionList = [];
+  let currentQIdx = 0;
+  let activeWord = null;
+  let isAnimating = false;
+
+  // Choix actuels de l'élève
+  let selectedPrefix = null;
+  let selectedSuffix = null;
+
+  // ================================================================
+  // INITIALISATION
+  // ================================================================
+  function initLab() {
+    const shuffled = shuffleArray([...WORD_BANK]);
+    sessionList = shuffled.slice(0, 10); // 10 mots par partie
+    currentQIdx = 0;
+    isAnimating = false;
+
+    document.getElementById('panel-final').classList.add('hidden');
+    document.getElementById('explain-container').classList.add('hidden');
+    document.getElementById('selection-panel').classList.remove('hidden');
+    document.getElementById('assembly-zone').parentNode.classList.remove('hidden');
+    
+    loadWord();
+  }
+
+  function loadWord() {
+    if (currentQIdx >= sessionList.length) {
+      finishLab();
+      return;
+    }
+
+    activeWord = sessionList[currentQIdx];
+    isAnimating = false;
+
+    selectedPrefix = null;
+    selectedSuffix = null;
+
+    // Progression
+    const pct = (currentQIdx / sessionList.length) * 100;
+    document.getElementById('progress-bar').style.width = `${pct}%`;
+    document.getElementById('progress-text').innerText = `MOT ${currentQIdx + 1} / ${sessionList.length}`;
+
+    // Affiche la définition
+    document.getElementById('target-definition').innerText = activeWord.def;
+
+    // Reset des slots
+    const slotPrefix = document.getElementById('slot-prefix');
+    slotPrefix.className = "word-part-slot slot-empty";
+    slotPrefix.innerText = "?";
+
+    const slotRadical = document.getElementById('slot-radical');
+    slotRadical.innerText = activeWord.radical;
+
+    const slotSuffix = document.getElementById('slot-suffix');
+    slotSuffix.className = "word-part-slot slot-empty";
+    slotSuffix.innerText = "?";
+
+    // Construit les panneaux de choix d'affixes
+    buildPrefixesPanel();
+    buildSuffixesPanel();
+  }
+
+  function buildPrefixesPanel() {
+    const container = document.getElementById('prefixes-container');
+    container.innerHTML = '';
+
+    // Prend le bon préfixe et 3 autres au hasard
+    const options = new Set([activeWord.prefix]);
+    while (options.size < 4) {
+      const randomPref = ALL_PREFIXES[Math.floor(Math.random() * ALL_PREFIXES.length)];
+      options.add(randomPref);
+    }
+
+    const shuffled = shuffleArray([...options]);
+
+    shuffled.forEach(pref => {
+      const chip = document.createElement('button');
+      chip.className = 'part-chip';
+      chip.innerText = pref;
+      chip.addEventListener('click', () => selectPrefix(pref, chip));
+      container.appendChild(chip);
+    });
+  }
+
+  function buildSuffixesPanel() {
+    const container = document.getElementById('suffixes-container');
+    container.innerHTML = '';
+
+    // Prend le bon suffixe et 3 autres au hasard
+    const options = new Set([activeWord.suffix]);
+    while (options.size < 4) {
+      const randomSuff = ALL_SUFFIXES[Math.floor(Math.random() * ALL_SUFFIXES.length)];
+      options.add(randomSuff);
+    }
+
+    const shuffled = shuffleArray([...options]);
+
+    shuffled.forEach(suff => {
+      const chip = document.createElement('button');
+      chip.className = 'part-chip';
+      chip.innerText = suff;
+      chip.addEventListener('click', () => selectSuffix(suff, chip));
+      container.appendChild(chip);
+    });
+  }
+
+  // ================================================================
+  // ACTIONS DE SELECTION
+  // ================================================================
+  function selectPrefix(pref, chipEl) {
+    if (isAnimating) return;
+
+    // Unselect des autres puces de préfixes
+    document.querySelectorAll('#prefixes-container .part-chip').forEach(c => c.classList.remove('selected'));
+    
+    selectedPrefix = pref;
+    chipEl.classList.add('selected');
+
+    // Met à jour le slot
+    const slot = document.getElementById('slot-prefix');
+    slot.innerText = pref.replace('-', '');
+    slot.className = "word-part-slot slot-filled";
+  }
+
+  function selectSuffix(suff, chipEl) {
+    if (isAnimating) return;
+
+    // Unselect des autres puces de suffixes
+    document.querySelectorAll('#suffixes-container .part-chip').forEach(c => c.classList.remove('selected'));
+
+    selectedSuffix = suff;
+    chipEl.classList.add('selected');
+
+    // Met à jour le slot
+    const slot = document.getElementById('slot-suffix');
+    slot.innerText = suff.replace('-', '');
+    slot.className = "word-part-slot slot-filled";
+  }
+
+  function clearPrefixSlot() {
+    if (isAnimating) return;
+    selectedPrefix = null;
+    document.querySelectorAll('#prefixes-container .part-chip').forEach(c => c.classList.remove('selected'));
+    const slot = document.getElementById('slot-prefix');
+    slot.innerText = "?";
+    slot.className = "word-part-slot slot-empty";
+  }
+
+  function clearSuffixSlot() {
+    if (isAnimating) return;
+    selectedSuffix = null;
+    document.querySelectorAll('#suffixes-container .part-chip').forEach(c => c.classList.remove('selected'));
+    const slot = document.getElementById('slot-suffix');
+    slot.innerText = "?";
+    slot.className = "word-part-slot slot-empty";
+  }
+
+  // ================================================================
+  // VERIFICATION DU MONTAGE
+  // ================================================================
+  function testAssembly() {
+    if (isAnimating || !activeWord) return;
+
+    if (!selectedPrefix || !selectedSuffix) {
+      alert("Tu dois d'abord choisir un préfixe et un suffixe !");
+      return;
+    }
+
+    isAnimating = true;
+
+    const isCorrect = (selectedPrefix === activeWord.prefix && selectedSuffix === activeWord.suffix);
+    const zone = document.getElementById('assembly-zone');
+
+    if (isCorrect) {
+      // Colorie la zone en vert
+      zone.classList.add('assembly-correct');
+
+      // Affiche le panneau d'explications
+      document.getElementById('assembled-word-title').innerText = `Mot complet : ${activeWord.word.toUpperCase()}`;
+      document.getElementById('explain-text').innerHTML = activeWord.ex;
+      document.getElementById('explain-container').classList.remove('hidden');
+
+      // Masque les pièces pour le moment
+      document.getElementById('selection-panel').classList.add('hidden');
+
+    } else {
+      // Vibre en rouge
+      zone.classList.add('assembly-error');
+
+      setTimeout(() => {
+        zone.classList.remove('assembly-error');
+        // Réinitialise les choix faux
+        clearPrefixSlot();
+        clearSuffixSlot();
+        isAnimating = false;
+      }, 500);
+    }
+  }
+
+  function nextWord() {
+    // Rétablit les affichages
+    document.getElementById('explain-container').classList.add('hidden');
+    document.getElementById('selection-panel').classList.remove('hidden');
+    document.getElementById('assembly-zone').classList.remove('assembly-correct');
+    
+    isAnimating = false;
+    currentQIdx++;
+    loadWord();
+  }
+
+  function finishLab() {
+    document.getElementById('progress-bar').style.width = `100%`;
+    document.getElementById('progress-text').innerText = `Chaîne terminée !`;
+
+    document.getElementById('selection-panel').classList.add('hidden');
+    document.getElementById('assembly-zone').parentNode.classList.add('hidden');
+    document.getElementById('explain-container').classList.add('hidden');
+    
+    document.getElementById('panel-final').classList.remove('hidden');
+    document.getElementById('final-score-text').innerText = `Félicitations ! Tu as assemblé les 10 mots complexes avec brio en maîtrisant les préfixes et suffixes.`;
+  }
+
+  function restartLab() {
+    initLab();
+  }
+
+  // ================================================================
+  // UTILS
+  // ================================================================
+  function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  }
+
+  window.onload = () => {
+    initLab();
+    
+    // Correction automatique des chemins d'images pour le mode fiche
+    if (window.location.pathname.includes('/fiches/')) {
+      document.querySelectorAll('img').forEach(img => {
+        const src = img.getAttribute('src');
+        if (src && !src.startsWith('http') && !src.startsWith('../') && !src.startsWith('/') && !src.startsWith('data:')) {
+          img.setAttribute('src', '../' + src);
+        }
+      });
+    }
+  };
+</script>
+</body>
+</html>
