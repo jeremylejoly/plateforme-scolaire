@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Les parties d'un calcul</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=Inter:wght@300..800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --purple: #5B4FCF;
+    --purple-light: #EEF0FF;
+    --purple-mid: #C7C2F5;
+    --green: #1A9E75;
+    --green-light: #E2F5EE;
+    --red: #D94F3D;
+    --red-light: #FDECEA;
+    --amber: #C97B1A;
+    --amber-light: #FEF3E2;
+    --blue: #1A6FA0;
+    --blue-light: #E2F0FA;
+    --bg: #FDFBF7;
+    --surface: #FFFFFF;
+    --text: #1A1A2E;
+    --muted: #6B7080;
+    --border: #1A1A2E;
+    --slate-bg: #0F172A;
+    --slate-border: #1E293B;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    padding: 1.5rem;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .container {
+    max-width: 680px;
+    margin: 0 auto;
+    width: 100%;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  /* PROGRESS CARD */
+  .info-card {
+    background: var(--blue-light);
+    border: 3px solid var(--border);
+    border-radius: 16px;
+    padding: 0.8rem 1.2rem;
+    box-shadow: 4px 4px 0px var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .info-card p {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 1.05rem;
+    color: var(--blue);
+    font-weight: 700;
+  }
+
+  .dots {
+    display: flex;
+    gap: 6px;
+  }
+
+  .dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: #D1D5DB;
+    transition: all 0.3s ease;
+  }
+
+  /* QUESTION CARD */
+  .question-card {
+    background: var(--surface);
+    border: 3px solid var(--border);
+    border-radius: 18px;
+    padding: 1.5rem;
+    box-shadow: 4px 4px 0px var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .q-label {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    color: var(--purple);
+    text-align: center;
+  }
+
+  .q-text {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: var(--text);
+    text-align: center;
+    line-height: 1.4;
+  }
+
+  /* BLACKBOARD OPERATOR DISPLAY */
+  .blackboard {
+    background: var(--slate-bg);
+    border: 3px solid var(--border);
+    border-radius: 14px;
+    padding: 1.75rem 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: inset 0 2px 8px rgba(0,0,0,0.5), 3px 3px 0px rgba(0,0,0,0.15);
+    min-height: 110px;
+    overflow-x: auto;
+  }
+
+  .expr-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: 'Space Mono', 'Fredoka', monospace;
+    font-size: 2.8rem;
+    font-weight: 700;
+    color: #F8FAFC;
+    user-select: none;
+    white-space: nowrap;
+  }
+
+  .math-part {
+    padding: 2px 8px;
+    border-radius: 8px;
+    border: 3px solid transparent;
+    transition: all 0.2s ease;
+  }
+
+  .math-part.target {
+    border-color: var(--purple);
+    background: rgba(91, 79, 207, 0.15);
+    color: #E0E7FF;
+    animation: pulse-glow 2s infinite ease-in-out;
+  }
+
+  @keyframes pulse-glow {
+    0% {
+      box-shadow: 0 0 0 0 rgba(91, 79, 207, 0.4);
+      border-color: var(--purple);
+    }
+    50% {
+      box-shadow: 0 0 8px 3px rgba(91, 79, 207, 0.25);
+      border-color: #818CF8;
+    }
+    100% {
+      box-shadow: 0 0 0 0 rgba(91, 79, 207, 0.4);
+      border-color: var(--purple);
+    }
+  }
+
+  /* OPTIONS GRID */
+  .options-grid {
+    display: grid;
+    grid-template-cols: 1fr 1fr;
+    gap: 0.85rem;
+  }
+
+  @media (max-width: 500px) {
+    .options-grid {
+      grid-template-cols: 1fr;
+      gap: 0.75rem;
+    }
+    .expr-container {
+      font-size: 2.2rem;
+    }
+    .blackboard {
+      padding: 1.25rem 0.5rem;
+      min-height: 90px;
+    }
+  }
+
+  .opt-btn {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    padding: 0.85rem 1rem;
+    background: var(--surface);
+    border: 2px solid var(--border);
+    border-radius: 14px;
+    color: var(--text);
+    cursor: pointer;
+    text-align: center;
+    box-shadow: 2px 2px 0px var(--border);
+    transition: all 0.15s ease;
+    user-select: none;
+  }
+
+  .opt-btn:hover:not(:disabled) {
+    background: var(--purple-light);
+    border-color: var(--purple);
+    box-shadow: 3px 3px 0px var(--border);
+    transform: translateY(-1px);
+  }
+
+  .opt-btn:active:not(:disabled) {
+    transform: translateY(1px);
+    box-shadow: 1px 1px 0px var(--border);
+  }
+
+  .opt-btn.correct {
+    border-color: var(--green) !important;
+    background: var(--green-light) !important;
+    color: #115e59 !important;
+    box-shadow: 2px 2px 0px var(--green) !important;
+    cursor: default;
+    transform: none !important;
+  }
+
+  .opt-btn.incorrect {
+    border-color: var(--red) !important;
+    background: var(--red-light) !important;
+    color: #991b1b !important;
+    box-shadow: 2px 2px 0px var(--red) !important;
+    animation: shake 0.35s ease-in-out;
+  }
+
+  .opt-btn.disabled-neutral {
+    opacity: 0.4;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+  }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+  }
+
+  /* EXPLANATION FEEDBACK BOX */
+  .feedback-box {
+    display: none;
+    background: var(--purple-light);
+    border: 2px solid var(--purple-mid);
+    border-radius: 14px;
+    padding: 1rem;
+    animation: slideDown 0.3s ease-out;
+  }
+
+  @keyframes slideDown {
+    0% { transform: translateY(-10px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+  }
+
+  .feedback-content {
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+    line-height: 1.45;
+    font-size: 0.95rem;
+    font-weight: 500;
+  }
+
+  .feedback-icon {
+    font-size: 1.4rem;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+
+  /* NEXT BUTTON */
+  .btn-next {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    padding: 0.85rem;
+    background: var(--purple);
+    color: white;
+    border: 2px solid var(--border);
+    border-radius: 14px;
+    cursor: pointer;
+    box-shadow: 3px 3px 0px var(--border);
+    transition: all 0.15s ease;
+    text-align: center;
+    width: 100%;
+    margin-top: 1rem;
+    display: none;
+  }
+
+  .btn-next:hover {
+    background: #4a3eb3;
+    transform: translateY(-1px);
+    box-shadow: 4px 4px 0px var(--border);
+  }
+
+  .btn-next:active {
+    transform: translateY(1px);
+    box-shadow: 1px 1px 0px var(--border);
+  }
+
+  /* SCORE CARD */
+  .score-card {
+    display: none;
+    background: var(--surface);
+    border: 3px solid var(--border);
+    border-radius: 18px;
+    padding: 2rem;
+    box-shadow: 4px 4px 0px var(--border);
+    text-align: center;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.25rem;
+    animation: popIn 0.3s ease-out;
+  }
+
+  @keyframes popIn {
+    0% { transform: scale(0.9); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  .score-emoji {
+    font-size: 3.8rem;
+  }
+
+  .score-value {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 2.4rem;
+    font-weight: 800;
+  }
+
+  .score-pct {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--muted);
+    margin-bottom: 0.5rem;
+  }
+
+  .score-detail {
+    font-size: 0.9rem;
+    color: var(--muted);
+    font-weight: 600;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+  }
+
+  .btn-restart {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    padding: 0.85rem 2rem;
+    background: var(--purple);
+    color: white;
+    border: 2px solid var(--border);
+    border-radius: 14px;
+    cursor: pointer;
+    box-shadow: 3px 3px 0px var(--border);
+    transition: all 0.15s ease;
+    width: 220px;
+  }
+
+  .btn-restart:hover {
+    background: #4a3eb3;
+    transform: translateY(-1px);
+    box-shadow: 4px 4px 0px var(--border);
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <!-- Progress Header -->
+  <div class="info-card" id="progress-card">
+    <p id="info-question-num">Question 1/10</p>
+    <div class="dots" id="dots-container"></div>
+  </div>
+
+  <!-- Game Zone -->
+  <div class="question-card" id="exercice-zone">
+    <div class="q-label">🏷️ Les parties d'un calcul</div>
+    <div class="q-text" id="question-text">Comment appelle-t-on le nombre entouré ?</div>
+    
+    <!-- Blackboard calculation -->
+    <div class="blackboard">
+      <div class="expr-container" id="expression-container">
+        <!-- Built dynamically -->
+      </div>
+    </div>
+
+    <!-- Choices Grid -->
+    <div class="options-grid" id="options-container">
+      <!-- Built dynamically -->
+    </div>
+
+    <!-- Feedback explanation -->
+    <div class="feedback-box" id="feedback-box">
+      <div class="feedback-content">
+        <span class="feedback-icon">💡</span>
+        <div id="feedback-explain">Explication pédagogique...</div>
+      </div>
+    </div>
+
+    <button class="btn-next" id="btn-next" onclick="nextQuestion()">Question suivante ➔</button>
+  </div>
+
+  <!-- Score Summary -->
+  <div class="score-card" id="score-card">
+    <div class="score-emoji" id="score-emoji">🎉</div>
+    <div class="score-value" id="score-value">10/10</div>
+    <div class="score-pct" id="score-pct">100%</div>
+    <div class="score-detail" id="score-detail">Q1 : ✅  Q2 : ✅  Q3 : ✅</div>
+    <p id="score-comment" style="font-weight: 700; margin-bottom: 0.5rem;"></p>
+    <button class="btn-restart" onclick="startExercise()">🔄 Recommencer</button>
+  </div>
+</div>
+
+<script>
+  const QUESTIONS = [
+    {
+      expr: ["14", " + ", "32", " = ", "46"],
+      targetIdx: 0,
+      question: "Comment appelle-t-on ce nombre dans l'opération ?",
+      answer: "un terme",
+      options: ["un terme", "un facteur", "la somme", "le produit"],
+      explain: "14 est l'un des nombres d'une addition. Les nombres que l'on additionne sont appelés les termes."
+    },
+    {
+      expr: ["14", " + ", "32", " = ", "46"],
+      targetIdx: 2,
+      question: "Comment appelle-t-on ce nombre dans l'opération ?",
+      answer: "un terme",
+      options: ["un terme", "un facteur", "la somme", "le produit"],
+      explain: "32 est l'un des nombres d'une addition. Les nombres que l'on additionne sont appelés les termes."
+    },
+    {
+      expr: ["14", " + ", "32", " = ", "46"],
+      targetIdx: 4,
+      question: "Comment appelle-t-on le résultat de cette opération ?",
+      answer: "la somme",
+      options: ["la somme", "le produit", "la différence", "le quotient"],
+      explain: "46 est le résultat d'une addition. On l'appelle la somme."
+    },
+    {
+      expr: ["14", " + ", "32", " = ", "46"],
+      targetIdx: 1,
+      question: "Quel est le nom de cette opération représentée par ce signe ?",
+      answer: "l'addition",
+      options: ["l'addition", "la soustraction", "la multiplication", "la division"],
+      explain: "Le signe + représente l'opération de l'addition."
+    },
+    {
+      expr: ["75", " - ", "20", " = ", "55"],
+      targetIdx: 0,
+      question: "Comment appelle-t-on ce nombre dans l'opération ?",
+      answer: "un terme",
+      options: ["un terme", "un facteur", "la différence", "le dividende"],
+      explain: "75 est l'un des nombres d'une soustraction. Tout comme pour l'addition, les nombres d'une soustraction sont appelés les termes."
+    },
+    {
+      expr: ["75", " - ", "20", " = ", "55"],
+      targetIdx: 2,
+      question: "Comment appelle-t-on ce nombre dans l'opération ?",
+      answer: "un terme",
+      options: ["un terme", "un facteur", "la différence", "le diviseur"],
+      explain: "20 est l'un des nombres d'une soustraction. Tout comme pour l'addition, les nombres d'une soustraction sont appelés les termes."
+    },
+    {
+      expr: ["75", " - ", "20", " = ", "55"],
+      targetIdx: 4,
+      question: "Comment appelle-t-on le résultat de cette opération ?",
+      answer: "la différence",
+      options: ["la différence", "la somme", "le produit", "le quotient"],
+      explain: "55 est le résultat d'une soustraction. On l'appelle la différence."
+    },
+    {
+      expr: ["75", " - ", "20", " = ", "55"],
+      targetIdx: 1,
+      question: "Quel est le nom de cette opération représentée par ce signe ?",
+      answer: "la soustraction",
+      options: ["l'addition", "la soustraction", "la multiplication", "la division"],
+      explain: "Le signe - représente l'opération de la soustraction."
+    },
+    {
+      expr: ["6", " x ", "8", " = ", "48"],
+      targetIdx: 0,
+      question: "Comment appelle-t-on ce nombre dans l'opération ?",
+      answer: "un facteur",
+      options: ["un terme", "un facteur", "le produit", "le dividende"],
+      explain: "6 est l'un des nombres que l'on multiplie. Les nombres d'une multiplication sont appelés les facteurs."
+    },
+    {
+      expr: ["6", " x ", "8", " = ", "48"],
+      targetIdx: 2,
+      question: "Comment appelle-t-on ce nombre dans l'opération ?",
+      answer: "un facteur",
+      options: ["un terme", "un facteur", "le produit", "le diviseur"],
+      explain: "8 est l'un des nombres que l'on multiplie. Les nombres d'une multiplication sont appelés les facteurs."
+    },
+    {
+      expr: ["6", " x ", "8", " = ", "48"],
+      targetIdx: 4,
+      question: "Comment appelle-t-on le résultat de cette opération ?",
+      answer: "le produit",
+      options: ["le produit", "la somme", "la différence", "le quotient"],
+      explain: "48 est le résultat d'une multiplication. On l'appelle le produit."
+    },
+    {
+      expr: ["6", " x ", "8", " = ", "48"],
+      targetIdx: 1,
+      question: "Quel est le nom de cette opération représentée par ce signe ?",
+      answer: "la multiplication",
+      options: ["l'addition", "la soustraction", "la multiplication", "la division"],
+      explain: "Le signe x représente l'opération de la multiplication."
+    },
+    {
+      expr: ["35", " : ", "5", " = ", "7"],
+      targetIdx: 0,
+      question: "Comment appelle-t-on le nombre qui est divisé ?",
+      answer: "le dividende",
+      options: ["le dividende", "le diviseur", "le quotient", "un facteur"],
+      explain: "35 est le nombre que l'on divise (la quantité à partager). On l'appelle le dividende."
+    },
+    {
+      expr: ["35", " : ", "5", " = ", "7"],
+      targetIdx: 2,
+      question: "Comment appelle-t-on le nombre par lequel on divise ?",
+      answer: "le diviseur",
+      options: ["le dividende", "le diviseur", "le quotient", "un terme"],
+      explain: "5 est le nombre par lequel on divise (le nombre de parts à faire). On l'appelle le diviseur."
+    },
+    {
+      expr: ["35", " : ", "5", " = ", "7"],
+      targetIdx: 4,
+      question: "Comment appelle-t-on le résultat de cette opération ?",
+      answer: "le quotient",
+      options: ["le quotient", "le produit", "la somme", "la différence"],
+      explain: "7 est le résultat de la division. On l'appelle le quotient."
+    },
+    {
+      expr: ["35", " : ", "5", " = ", "7"],
+      targetIdx: 1,
+      question: "Quel est le nom de cette opération représentée par ce signe ?",
+      answer: "la division",
+      options: ["l'addition", "la soustraction", "la multiplication", "la division"],
+      explain: "Le signe : représente l'opération de la division."
+    }
+  ];
+
+  let selectedQuestions = [];
+  let currentIdx = 0;
+  let firstTryScores = []; // tracks if user was correct on 1st try (true/false)
+  let currentAttemptsCount = 0;
+  let isAnswered = false;
+
+  function shuffle(array) {
+    const arr = [...array];
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }
+
+  function startExercise() {
+    // Select 10 questions at random and shuffle options
+    const shuffled = shuffle(QUESTIONS);
+    selectedQuestions = shuffled.slice(0, 10).map(q => {
+      return {
+        ...q,
+        options: shuffle(q.options)
+      };
+    });
+
+    currentIdx = 0;
+    firstTryScores = [];
+    isAnswered = false;
+
+    document.getElementById('exercice-zone').style.display = 'flex';
+    document.getElementById('progress-card').style.display = 'flex';
+    document.getElementById('score-card').style.display = 'none';
+
+    loadQuestion();
+  }
+
+  function loadQuestion() {
+    isAnswered = false;
+    currentAttemptsCount = 0;
+    
+    const q = selectedQuestions[currentIdx];
+
+    // Update Header info
+    document.getElementById('info-question-num').textContent = `Question ${currentIdx + 1}/10`;
+    
+    // Draw dots progress bar
+    const dotsContainer = document.getElementById('dots-container');
+    dotsContainer.innerHTML = '';
+    selectedQuestions.forEach((_, idx) => {
+      const dot = document.createElement('div');
+      dot.className = 'dot';
+      if (idx < currentIdx) {
+        dot.style.background = firstTryScores[idx] ? 'var(--green)' : 'var(--amber)';
+      } else if (idx === currentIdx) {
+        dot.style.background = 'var(--blue)';
+      }
+      dotsContainer.appendChild(dot);
+    });
+
+    // Load text question
+    document.getElementById('question-text').textContent = q.question;
+
+    // Load expression into Blackboard
+    const exprContainer = document.getElementById('expression-container');
+    exprContainer.innerHTML = '';
+    q.expr.forEach((part, index) => {
+      const span = document.createElement('span');
+      span.className = 'math-part';
+      if (index === q.targetIdx) {
+        span.classList.add('target');
+      }
+      span.textContent = part;
+      exprContainer.appendChild(span);
+    });
+
+    // Load options
+    const optionsContainer = document.getElementById('options-container');
+    optionsContainer.innerHTML = '';
+    q.options.forEach(opt => {
+      const btn = document.createElement('button');
+      btn.className = 'opt-btn';
+      btn.textContent = opt;
+      btn.onclick = () => chooseOption(opt, btn);
+      optionsContainer.appendChild(btn);
+    });
+
+    // Hide feedback box and next button
+    document.getElementById('feedback-box').style.display = 'none';
+    document.getElementById('btn-next').style.display = 'none';
+  }
+
+  function chooseOption(selectedOpt, btnEl) {
+    if (isAnswered) return;
+    
+    const q = selectedQuestions[currentIdx];
+    currentAttemptsCount++;
+
+    if (selectedOpt === q.answer) {
+      // Correct!
+      isAnswered = true;
+      btnEl.classList.add('correct');
+      
+      // Lock first try score
+      firstTryScores.push(currentAttemptsCount === 1);
+
+      // Disable all other buttons
+      const buttons = document.querySelectorAll('#options-container .opt-btn');
+      buttons.forEach(btn => {
+        if (btn !== btnEl) {
+          btn.classList.add('disabled-neutral');
+          btn.disabled = true;
+        }
+      });
+
+      // Show pedagogical explain box
+      document.getElementById('feedback-explain').textContent = q.explain;
+      document.getElementById('feedback-box').style.display = 'block';
+
+      // Show next button
+      const nextBtn = document.getElementById('btn-next');
+      nextBtn.style.display = 'block';
+      if (currentIdx === 9) {
+        nextBtn.textContent = '🏁 Voir mon score final';
+      } else {
+        nextBtn.textContent = 'Question suivante ➔';
+      }
+
+      // Update current progress dot instantly
+      const currentDot = document.getElementById('dots-container').children[currentIdx];
+      if (currentDot) {
+        currentDot.style.background = (currentAttemptsCount === 1) ? 'var(--green)' : 'var(--amber)';
+      }
+    } else {
+      // Incorrect!
+      btnEl.classList.add('incorrect');
+      btnEl.disabled = true;
+      // Triggers shake, then clear styles
+      setTimeout(() => {
+        btnEl.classList.remove('incorrect');
+        btnEl.classList.add('disabled-neutral');
+      }, 800);
+    }
+  }
+
+  function nextQuestion() {
+    if (currentIdx < 9) {
+      currentIdx++;
+      loadQuestion();
+    } else {
+      showFinalScore();
+    }
+  }
+
+  function showFinalScore() {
+    document.getElementById('exercice-zone').style.display = 'none';
+    document.getElementById('progress-card').style.display = 'none';
+
+    const scoreCard = document.getElementById('score-card');
+    scoreCard.style.display = 'flex';
+
+    // Calculate score
+    const correctOnFirst = firstTryScores.filter(Boolean).length;
+    const total = 10;
+    const pct = Math.round((correctOnFirst / total) * 100);
+
+    document.getElementById('score-value').textContent = `${correctOnFirst} / ${total}`;
+    document.getElementById('score-pct').textContent = `${pct}%`;
+
+    // Render detailed dots summary list
+    const detailContainer = document.getElementById('score-detail');
+    detailContainer.innerHTML = firstTryScores.map((s, i) => `<span>Q${i+1} : ${s ? '✅' : '❌'}</span>`).join('&nbsp;&nbsp;');
+
+    const emojiEl = document.getElementById('score-emoji');
+    const commentEl = document.getElementById('score-comment');
+
+    if (pct === 100) {
+      emojiEl.textContent = '🎉';
+      commentEl.textContent = 'Parfait ! Tu es un champion du vocabulaire mathématique !';
+      commentEl.style.color = 'var(--green)';
+    } else if (pct >= 70) {
+      emojiEl.textContent = '👍';
+      commentEl.textContent = 'Très bon travail ! C\'est presque parfait.';
+      commentEl.style.color = 'var(--green)';
+    } else if (pct >= 50) {
+      emojiEl.textContent = '🟠';
+      commentEl.textContent = 'Pas mal ! Relis bien le vocabulaire pour essayer de faire 100%.';
+      commentEl.style.color = 'var(--amber)';
+    } else {
+      emojiEl.textContent = '💪';
+      commentEl.textContent = 'Courage ! Révise ta fiche de vocabulaire et réessaie.';
+      commentEl.style.color = 'var(--red)';
+    }
+
+    // Save results to classroom database
+    if (window.parent && window.parent.saveResult && window.parent.state && window.parent.state.student) {
+      try {
+        var state = window.parent.state;
+        var classes = window.parent.CLASSES;
+        var className = classes && classes[state.studentCls] ? classes[state.studentCls].name : state.studentCls;
+        window.parent.saveResult({
+          student: state.student,
+          cls: state.studentCls,
+          className: className,
+          activity: 'op_vocabulaire_calc',
+          bookTitle: 'Vocabulaire des opérations — Parties d\'un calcul',
+          score: correctOnFirst,
+          total: total,
+          pct: pct,
+          date: new Date().toLocaleDateString('fr-BE'),
+          time: new Date().toLocaleTimeString('fr-BE', {hour: '2-digit', minute: '2-digit'})
+        });
+      } catch (e) {
+        console.warn('Error saving operations parts score:', e);
+      }
+    }
+  }
+
+  // Start on load
+  startExercise();
+</script>
+</body>
+</html>
