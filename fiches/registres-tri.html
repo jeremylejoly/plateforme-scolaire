@@ -150,34 +150,26 @@
     border: 3px solid var(--encre);
     border-radius: 16px;
     padding: 24px;
-    width: 290px;
+    width: 100%;
+    max-width: 450px;
     min-height: 120px;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     text-align: center;
-    font-weight: 700;
-    font-size: 1.15rem;
     box-shadow: 6px 6px 0px var(--encre);
-    cursor: grab;
     user-select: none;
     touch-action: none;
     position: relative;
     z-index: 30;
     transition: transform 0.15s ease, box-shadow 0.15s ease;
   }
-  .sorting-card:active {
-    cursor: grabbing;
-  }
   
   .sorting-card.card-correct {
     background: var(--vert-clair) !important;
     border-color: var(--vert) !important;
-    color: var(--vert) !important;
-    box-shadow: none;
-    transform: scale(0.9) !important;
-    opacity: 0;
-    transition: all 0.4s ease;
+    box-shadow: 4px 4px 0px var(--vert) !important;
   }
   
   .sorting-card.card-incorrect {
@@ -235,15 +227,15 @@
     </div>
 
     <!-- Zone contenant la carte active -->
-    <div class="relative flex items-center justify-center min-h-[160px] w-full" id="card-holder">
+    <div class="relative flex items-center justify-center min-h-[160px] w-full px-4" id="card-holder">
       <div id="active-card" class="sorting-card pop-anim">
         Expression active
       </div>
     </div>
   </div>
 
-  <!-- Boutons de clic (Alternative mobile / tactile) -->
-  <div class="flex flex-row justify-center gap-4 mb-8 w-full max-w-[600px] mx-auto">
+  <!-- Boutons de choix -->
+  <div id="choices-container" class="flex flex-row justify-center gap-4 mb-8 w-full max-w-[600px] mx-auto">
     <button class="btn-3d flex-1 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-xl text-xs sm:text-sm font-bold flex flex-col items-center gap-1" onclick="submitChoice('familier')">
       <span>🧢</span>
       <span>Familier</span>
@@ -255,6 +247,13 @@
     <button class="btn-3d flex-1 py-3 bg-purple-500 hover:bg-purple-600 text-white rounded-xl text-xs sm:text-sm font-bold flex flex-col items-center gap-1" onclick="submitChoice('soutenu')">
       <span>👑</span>
       <span>Soutenu</span>
+    </button>
+  </div>
+
+  <!-- Bouton Continuer (Révélé après bonne réponse) -->
+  <div id="continue-container" class="hidden flex flex-row justify-center mb-8 w-full max-w-[600px] mx-auto">
+    <button class="btn-3d w-full py-4 bg-green-600 hover:bg-green-700 text-white rounded-xl text-sm font-bold flex items-center justify-center gap-1.5" onclick="goToNextCard()">
+      Continuer ➔
     </button>
   </div>
 
@@ -297,97 +296,90 @@
 
 </main>
 
-<!-- PIED DE PAGE -->
-<footer class="bg-white border-t-2 border-slate-200 py-3 text-center text-xs text-slate-500 font-semibold mt-auto">
-  <div class="max-w-[900px] mx-auto px-4">
-    Classe de Mr Lejoly — Niveaux de langue FWB — Autocorrection active
-  </div>
-</footer>
-
 <script>
   // ================================================================
   // BANQUE DES EXPRESSIONS (20 séries de 3 synonymes = 60 expressions)
   // ================================================================
   const ITEM_BANK = [
-    { text: "un canasson", register: "familier" },
-    { text: "un cheval", register: "courant" },
-    { text: "un destrier", register: "soutenu" },
+    { text: "un canasson", register: "familier", ex: "Ce vieux canasson avance moins vite qu'un escargot !" },
+    { text: "un cheval", register: "courant", ex: "Le cheval galope joyeusement dans la prairie verte." },
+    { text: "un destrier", register: "soutenu", ex: "Le preux chevalier monta son fier destrier avant le combat." },
 
-    { text: "un bouquin", register: "familier" },
-    { text: "un livre", register: "courant" },
-    { text: "un ouvrage", register: "soutenu" },
+    { text: "un bouquin", register: "familier", ex: "J'ai acheté un super bouquin d'aventures à la brocante." },
+    { text: "un livre", register: "courant", ex: "Range ce livre d'histoire sur l'étagère de la bibliothèque." },
+    { text: "un ouvrage", register: "soutenu", ex: "Ce dictionnaire est un ouvrage de référence très précieux." },
 
-    { text: "un flic", register: "familier" },
-    { text: "un policier", register: "courant" },
-    { text: "un gendarme", register: "soutenu" },
+    { text: "un flic", register: "familier", ex: "Dans cette bande dessinée, le flic mène l'enquête dans la rue." },
+    { text: "un policier", register: "courant", ex: "Le policier aide les enfants à traverser devant l'école." },
+    { text: "un gendarme", register: "soutenu", ex: "Les forces de l'ordre ont dépêché un gendarme pour sécuriser les lieux." },
 
-    { text: "se casser", register: "familier" },
-    { text: "s'en aller", register: "courant" },
-    { text: "se retirer", register: "soutenu" },
+    { text: "se casser", register: "familier", ex: "Allez, il se fait tard, on va se casser d'ici !" },
+    { text: "s'en aller", register: "courant", ex: "Nous devons nous en aller avant le coucher du soleil." },
+    { text: "se retirer", register: "soutenu", ex: "Le roi décida de se retirer dans ses appartements privés." },
 
-    { text: "bouffer", register: "familier" },
-    { text: "manger", register: "courant" },
-    { text: "se restaurer", register: "soutenu" },
+    { text: "bouffer", register: "familier", ex: "On va bouffer des frites à la kermesse du village." },
+    { text: "manger", register: "courant", ex: "Il est important de manger cinq fruits et légumes par jour." },
+    { text: "se restaurer", register: "soutenu", ex: "Les voyageurs s'arrêtèrent dans une auberge pour se restaurer." },
 
-    { text: "pioncer", register: "familier" },
-    { text: "dormir", register: "courant" },
-    { text: "sommeiller", register: "soutenu" },
+    { text: "pioncer", register: "familier", ex: "Je vais aller pioncer, je suis fatigué par ce long voyage." },
+    { text: "dormir", register: "courant", ex: "Les bébés ont besoin de dormir beaucoup d'heures par jour." },
+    { text: "sommeiller", register: "soutenu", ex: "Le vieux chat aime sommeiller au coin du feu de bois." },
 
-    { text: "une bagnole", register: "familier" },
-    { text: "une voiture", register: "courant" },
-    { text: "un véhicule", register: "soutenu" },
+    { text: "une bagnole", register: "familier", ex: "Mon oncle a garé sa vieille bagnole rouillée dans la cour." },
+    { text: "une voiture", register: "courant", ex: "La voiture électrique fait très peu de bruit en roulant." },
+    { text: "un véhicule", register: "soutenu", ex: "Ce véhicule prioritaire a le droit d'utiliser sa sirène." },
 
-    { text: "choper", register: "familier" },
-    { text: "attraper", register: "courant" },
-    { text: "appréhender", register: "soutenu" },
+    { text: "choper", register: "familier", ex: "Le gardien a réussi à choper le ballon juste avant la ligne." },
+    { text: "attraper", register: "courant", ex: "Essaie d'attraper ce frisbee avant qu'il ne touche le sol." },
+    { text: "appréhender", register: "soutenu", ex: "La police a pu appréhender le suspect à la sortie de la banque." },
 
-    { text: "piger", register: "familier" },
-    { text: "comprendre", register: "courant" },
-    { text: "saisir", register: "soutenu" },
+    { text: "piger", register: "familier", ex: "Je n'ai rien pigé à la blague de mon voisin de classe." },
+    { text: "comprendre", register: "courant", ex: "Le maître réexplique la leçon pour aider tout le monde à comprendre." },
+    { text: "saisir", register: "soutenu", ex: "L'auditeur attentif a su saisir toute la subtilité du discours." },
 
-    { text: "Je me marre.", register: "familier" },
-    { text: "Je ris.", register: "courant" },
-    { text: "Je souris.", register: "soutenu" },
+    { text: "Je me marre.", register: "familier", ex: "Je me marre bien en lisant les blagues de cette BD." },
+    { text: "Je ris.", register: "courant", ex: "Je ris de bon cœur en entendant son histoire amusante." },
+    { text: "Je souris.", register: "soutenu", ex: "Je souris poliment aux invités pour leur souhaiter la bienvenue." },
 
-    { text: "C'est la dèche.", register: "familier" },
-    { text: "Je n'ai plus d'argent.", register: "courant" },
-    { text: "Je suis sans ressources.", register: "soutenu" },
+    { text: "C'est la dèche.", register: "familier", ex: "C'est la dèche ce mois-ci, ma tirelire est vide !" },
+    { text: "Je n'ai plus d'argent.", register: "courant", ex: "Je n'ai plus d'argent pour m'acheter ce jeu vidéo." },
+    { text: "Je suis sans ressources.", register: "soutenu", ex: "Après l'incendie de sa ferme, il s'est retrouvé sans ressources." },
 
-    { text: "une bécane", register: "familier" },
-    { text: "un vélo", register: "courant" },
-    { text: "une bicyclette", register: "soutenu" },
+    { text: "une bécane", register: "familier", ex: "Il adore nettoyer sa bécane avant de partir en balade." },
+    { text: "un vélo", register: "courant", ex: "Nous faisons une promenade à vélo le long du canal." },
+    { text: "une bicyclette", register: "soutenu", ex: "La bicyclette d'époque était exposée au musée de la ville." },
 
-    { text: "flipper", register: "familier" },
-    { text: "avoir peur", register: "courant" },
-    { text: "s'effrayer", register: "soutenu" },
+    { text: "flipper", register: "familier", ex: "J'ai commencé à flipper quand l'orage a coupé le courant." },
+    { text: "avoir peur", register: "courant", ex: "Il ne faut pas avoir peur des petites araignées inoffensives." },
+    { text: "s'effrayer", register: "soutenu", ex: "Le jeune faon s'est effrayé au moindre craquement de branche." },
 
-    { text: "un toubib", register: "familier" },
-    { text: "un médecin", register: "courant" },
-    { text: "un praticien", register: "soutenu" },
+    { text: "un toubib", register: "familier", ex: "Je dois aller voir le toubib pour soigner mon mal de gorge." },
+    { text: "un médecin", register: "courant", ex: "Le médecin m'a prescrit du sirop pour calmer ma toux." },
+    { text: "un praticien", register: "soutenu", ex: "Ce praticien renommé consulte uniquement sur rendez-vous." },
 
-    { text: "C'est pas mal.", register: "familier" },
-    { text: "C'est assez bien.", register: "courant" },
-    { text: "C'est fort convenable.", register: "soutenu" },
+    { text: "C'est pas mal.", register: "familier", ex: "C'est pas mal ton dessin de dinosaure, j'aime bien !" },
+    { text: "C'est assez bien.", register: "courant", ex: "C'est assez bien fait pour un premier essai de peinture." },
+    { text: "C'est fort convenable.", register: "soutenu", ex: "Votre comportement lors de la cérémonie fut fort convenable." },
 
-    { text: "T'as pigé ?", register: "familier" },
-    { text: "As-tu compris ?", register: "courant" },
-    { text: "As-tu saisi ?", register: "soutenu" },
+    { text: "T'as pigé ?", register: "familier", ex: "T'as pigé l'heure du rendez-vous pour demain ?" },
+    { text: "As-tu compris ?", register: "courant", ex: "As-tu compris comment faire cette division difficile ?" },
+    { text: "As-tu saisi ?", register: "soutenu", ex: "As-tu saisi la portée philosophique de ce poème ?" },
 
-    { text: "un gosse", register: "familier" },
-    { text: "un enfant", register: "courant" },
-    { text: "un descendant", register: "soutenu" },
+    { text: "un gosse", register: "familier", ex: "Le gosse du voisin joue souvent dans le jardin." },
+    { text: "un enfant", register: "courant", ex: "Chaque enfant de la classe a reçu un livre de conte." },
+    { text: "un descendant", register: "soutenu", ex: "Ce prince est le dernier descendant d'une longue dynastie." },
 
-    { text: "une piaule", register: "familier" },
-    { text: "une chambre", register: "courant" },
-    { text: "une demeure", register: "soutenu" },
+    { text: "une piaule", register: "familier", ex: "Range ta piaule, il y a des jouets partout par terre !" },
+    { text: "une chambre", register: "courant", ex: "Ma chambre a des murs bleus et un grand tapis jaune." },
+    { text: "une demeure", register: "soutenu", ex: "Ce vieux manoir en pierre était la demeure de ses ancêtres." },
 
-    { text: "barboter", register: "familier" },
-    { text: "voler", register: "courant" },
-    { text: "dérober", register: "soutenu" },
+    { text: "barboter", register: "familier", ex: "Le voleur a profité du chahut pour lui barboter son goûter." },
+    { text: "voler", register: "courant", ex: "Il est interdit de voler le matériel d'écriture des autres." },
+    { text: "dérober", register: "soutenu", ex: "Le renard rusé est parvenu à dérober un fromage dans le garde-manger." },
 
-    { text: "chialer", register: "familier" },
-    { text: "pleurer", register: "courant" },
-    { text: "larmoyer", register: "soutenu" }
+    { text: "chialer", register: "familier", ex: "Arrête de chialer pour un petit bobo sans importance !" },
+    { text: "pleurer", register: "courant", ex: "L'oignon pique les yeux et fait pleurer quand on le coupe." },
+    { text: "larmoyer", register: "soutenu", ex: "L'acteur s'est mis à larmoyer d'une tristesse affectée sur scène." }
   ];
 
   // ================================================================
@@ -411,6 +403,10 @@
     document.getElementById('panel-final').classList.add('hidden');
     document.getElementById('card-holder').classList.remove('hidden');
     
+    // Rétablit l'état des conteneurs de boutons
+    document.getElementById('choices-container').classList.remove('hidden');
+    document.getElementById('continue-container').classList.add('hidden');
+    
     loadNextCard();
   }
 
@@ -429,7 +425,10 @@
 
     // Affiche le mot dans la carte active
     const card = document.getElementById('active-card');
-    card.innerText = activeItem.text;
+    card.innerHTML = `
+      <div class="text-[10px] text-slate-400 font-mono tracking-wider uppercase mb-1">À classer :</div>
+      <div class="text-xl font-bold text-slate-800">« ${activeItem.text} »</div>
+    `;
     card.className = "sorting-card pop-anim";
     card.style.transform = "translate(0px, 0px)";
   }
@@ -439,30 +438,52 @@
   // ================================================================
   function submitChoice(chosenRegister) {
     if (isAnimating || !activeItem) return;
-    isAnimating = true;
-
+    
     const card = document.getElementById('active-card');
     const isCorrect = (activeItem.register === chosenRegister);
-
-    // Identifie les avatars correspondants
     const avatar = document.getElementById(`avatar-${chosenRegister}`);
 
     if (isCorrect) {
-      // Animation correcte sur la carte (glisse vers le bas et rétrécit)
-      card.classList.add('card-correct');
+      isAnimating = true; // Empêche d'autres clics pendant l'animation
+
       if (avatar) {
         avatar.classList.add('avatar-yes');
         setTimeout(() => avatar.classList.remove('avatar-yes'), 500);
       }
 
-      // Passe à l'expression suivante après l'animation
-      setTimeout(() => {
-        currentIndex++;
-        isAnimating = false;
-        loadNextCard();
-      }, 500);
+      // Applique le style de réussite à la carte
+      card.className = "sorting-card pop-anim card-correct text-left block";
+
+      const badgeColors = {
+        familier: "bg-blue-100 text-blue-800 border-blue-300",
+        courant: "bg-orange-100 text-orange-800 border-orange-300",
+        soutenu: "bg-purple-100 text-purple-800 border-purple-300"
+      };
+
+      const badgeLabels = {
+        familier: "🧢 Registre Familier",
+        courant: "🏫 Registre Courant",
+        soutenu: "👑 Registre Soutenu"
+      };
+
+      // Affiche le mot avec son étiquette et l'exemple d'utilisation
+      card.innerHTML = `
+        <div class="flex items-center justify-between mb-3 w-full border-b border-dashed border-green-200 pb-2">
+          <span class="text-[10px] font-bold px-2 py-0.5 border rounded-md ${badgeColors[activeItem.register]}">${badgeLabels[activeItem.register]}</span>
+          <span class="text-xs text-green-700 font-bold">🎉 Correct !</span>
+        </div>
+        <div class="text-base font-bold text-slate-800 mb-2">« ${activeItem.text} »</div>
+        <div class="text-xs sm:text-sm font-normal text-slate-700 leading-relaxed">
+          <strong class="text-green-800">En contexte :</strong> <span class="italic font-serif">"${activeItem.ex}"</span>
+        </div>
+      `;
+
+      // Masque les boutons de sélection et montre le bouton continuer
+      document.getElementById('choices-container').classList.add('hidden');
+      document.getElementById('continue-container').classList.remove('hidden');
 
     } else {
+      isAnimating = true;
       // Animation d'erreur sur la carte (secousse et couleur rouge)
       card.classList.add('card-incorrect');
       if (avatar) {
@@ -470,12 +491,22 @@
         setTimeout(() => avatar.classList.remove('avatar-no'), 500);
       }
 
-      // Réinitialise la carte pour que l'élève puisse réessayer
+      // Réinitialise la carte
       setTimeout(() => {
         card.classList.remove('card-incorrect');
         isAnimating = false;
       }, 500);
     }
+  }
+
+  function goToNextCard() {
+    // Rétablit les boutons de choix et masque le bouton continuer
+    document.getElementById('choices-container').classList.remove('hidden');
+    document.getElementById('continue-container').classList.add('hidden');
+    
+    isAnimating = false;
+    currentIndex++;
+    loadNextCard();
   }
 
   function endGame() {
@@ -485,6 +516,9 @@
 
     document.getElementById('card-holder').classList.add('hidden');
     document.getElementById('panel-final').classList.remove('hidden');
+    document.getElementById('choices-container').classList.add('hidden');
+    document.getElementById('continue-container').classList.add('hidden');
+    
     document.getElementById('final-score-text').innerText = `Félicitations ! Tu as réussi à trier correctement les 15 expressions de cette session.`;
   }
 
