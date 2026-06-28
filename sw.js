@@ -1,4 +1,4 @@
-const CACHE_NAME = 'classe-mr-lejoly-cache-v271';
+const CACHE_NAME = 'classe-mr-lejoly-cache-v277';
 const CORE_ASSETS = [
   './',
   'index.html',
@@ -71,6 +71,11 @@ const CORE_ASSETS = [
   'fiches/questionnaire-circulatoire.html',
   'fiches/questionnaire-circulatoire-correctif.html',
   'fiches/questionnaire-circulatoire-LCML.html',
+  'expressions-proverbes.html',
+  'fiches/expressions-proverbes.html',
+  'photos/l_habit_moine.png',
+  'photos/vole_oeuf_boeuf.png',
+  'photos/charrue_boeufs.png',
   'fiches/relief-hydrographie.html',
   'photos/classification_banniere.png',
   'photos/classification_biodiversite.png',

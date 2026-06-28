@@ -1,6 +1,6 @@
 import os
 
-template_path = "gabarit-evaluation-LCML.html"
+template_path = "gabarit-questionnaire-LCML.html"
 output_path_root = "questionnaire-digestif-LCML.html"
 output_path_fiches = "fiches/questionnaire-digestif-LCML.html"
 
@@ -8,33 +8,31 @@ output_path_fiches = "fiches/questionnaire-digestif-LCML.html"
 with open(template_path, 'r', encoding='utf-8') as f:
     template_lines = f.readlines()
 
-# Extract lines 1 to 125 (0-indexed indices 0 to 124)
-header_html = "".join(template_lines[:125])
+# Extract lines 1 to 202 (0-indexed indices 0 to 201)
+header_html = "".join(template_lines[:202])
 
-# Replace color variables for Éveil theme
-header_html = header_html.replace(
-    "--matiere:#c8102e;--matiere-f:#8f0a20;--matiere-fond:#fbe7ea;--matiere-bord:#f0bcc4;",
-    "--matiere:#2f8457;--matiere-f:#1f5c3b;--matiere-fond:#eef6f0;--matiere-bord:#c7e0d0;"
+# Extract Éveil theme header: lines 517 to 563 (0-indexed indices 516 to 562)
+ehead_html = "".join(template_lines[516:563])
+
+# Replace values in the ehead block
+ehead_html = ehead_html.replace(
+    '<span class="subject-title">Cours d\'éveil</span>',
+    '<span class="subject-title">ÉVEIL SCIENTIFIQUE</span>'
+)
+ehead_html = ehead_html.replace(
+    '<h1 class="lesson-title">Titre de la leçon</h1>',
+    '<h1 class="lesson-title">L\'appareil digestif</h1>'
+)
+ehead_html = ehead_html.replace(
+    '<div class="tot">XXX</div>',
+    '<div class="tot">SC</div>'
 )
 
-# Replace titles in ehead
-header_html = header_html.replace(
-    '<div class="eyebrow">MATIÈRE</div>',
-    '<div class="eyebrow">ÉVEIL SCIENTIFIQUE</div>'
-)
-header_html = header_html.replace(
-    '<h1>Titre <span class="ac">accentué</span></h1>',
-    "<h1>L'appareil <span class=\"ac\">digestif</span></h1>"
-)
+# Body HTML with all questions optimized for 11pt font and spacious writing lines
+body_html = f"""
+<div class="sheet-container theme-eveil">
+{ehead_html}
 
-# Replace tot box with left-aligned SC code
-header_html = header_html.replace(
-    '<div class="tot"></div>',
-    '<div class="tot" style="display: flex; align-items: center; justify-content: flex-start; padding-left: 8px; font-family: \'League Spartan\', sans-serif; font-size: 10.5pt; font-weight: 800; color: #1E1F29;">SC</div>'
-)
-
-# Body HTML with all questions
-body_html = """
 <div class="cons-g">Lis attentivement chaque consigne, puis réponds. Soigne ton écriture et relis-toi à la fin.</div>
 
 <!-- EXERCICE 1 -->
@@ -56,8 +54,8 @@ body_html = """
 
     <p class="consigne">c. Explique précisément la différence entre le « tube digestif » et l'« appareil digestif » dans sa globalité.</p>
     <div class="lines" style="margin-left: 10px; margin-bottom: 14px;">
-      <span></span>
-      <span></span>
+      <span style="height: 38px;"></span>
+      <span style="height: 38px;"></span>
     </div>
 
     <p class="consigne">d. Dans quel organe du tube digestif commence la digestion des aliments&nbsp;? Coche la bonne case.</p>
@@ -70,7 +68,7 @@ body_html = """
 </div>
 
 <!-- EXERCICE 2 -->
-<div class="exo">
+<div class="exo" style="margin-bottom: 0;">
   <div class="xh"><h2>2. La mécanique de la digestion</h2></div>
   <div class="body">
     <p class="consigne">a. Relie chaque partie du tube digestif à son action mécanique principale&nbsp;:</p>
@@ -96,8 +94,8 @@ body_html = """
 
     <p class="consigne">c. Explique pourquoi il est important de bien mastiquer ses aliments pour faciliter la suite du travail de l'estomac.</p>
     <div class="lines" style="margin-left: 10px; margin-bottom: 14px;">
-      <span></span>
-      <span></span>
+      <span style="height: 38px;"></span>
+      <span style="height: 38px;"></span>
     </div>
 
     <p class="consigne">d. Combien de temps en moyenne les aliments restent-ils dans l'estomac pour y être malaxés et mélangés aux sucs digestifs&nbsp;? Coche la bonne case.</p>
@@ -108,9 +106,11 @@ body_html = """
     </div>
   </div>
 </div>
+</div>
 
-<!-- EXERCICE 3 (Force la page 2) -->
-<div class="exo" style="break-before: page; margin-top: 15px;">
+<div class="sheet-container theme-eveil" style="padding-top: 15px;">
+<!-- EXERCICE 3 -->
+<div class="exo">
   <div class="xh"><h2>3. La chimie de la digestion et l'absorption</h2></div>
   <div class="body">
     <p class="consigne">a. Relie chaque suc digestif à son lieu d'action et son rôle chimique principal&nbsp;:</p>
@@ -130,14 +130,14 @@ body_html = """
 
     <p class="consigne">b. Complète le paragraphe ci-dessous avec les mots de la banque&nbsp;:</p>
     <div class="bank" style="margin-left: 10px; margin-bottom: 6px;"><span class="w">sang</span><span class="w">fine</span><span class="w">villosités</span><span class="w">nutriments</span></div>
-    <p style="font-size: 11pt; line-height: 1.5; margin: 4px 0 0 10px; font-weight: bold;">
-      La paroi interne de l'intestin grêle possède des millions de replis microscopiques appelés les <span class="fill" style="min-width: 100px;"></span>. Cette paroi est extrêmement <span class="fill" style="min-width: 60px;"></span> pour laisser passer facilement les <span class="fill" style="min-width: 100px;"></span> digestifs directement dans le <span class="fill" style="min-width: 80px;"></span> afin d'alimenter nos cellules.
+    <p style="font-size: 11pt !important; line-height: 2.2; margin: 4px 0 0 10px; font-weight: bold; font-family: 'Comic Neue', sans-serif !important;">
+      La paroi interne de l'intestin grêle possède des millions de replis microscopiques appelés les <span class="fill" style="min-width: 120px;"></span>. Cette paroi est extrêmement <span class="fill" style="min-width: 70px;"></span> pour laisser passer facilement les <span class="fill" style="min-width: 120px;"></span> digestifs directement dans le <span class="fill" style="min-width: 90px;"></span> afin d'alimenter nos cellules.
     </p>
   </div>
 </div>
 
 <!-- EXERCICE 4 -->
-<div class="exo">
+<div class="exo" style="margin-bottom: 0;">
   <div class="xh"><h2>4. Hygiène, santé et chiffres records</h2></div>
   <div class="body">
     <p class="consigne">a. Quelle est la surface d'absorption totale de l'intestin grêle si on l'étalait complètement à plat&nbsp;? Coche la bonne case.</p>
@@ -147,19 +147,19 @@ body_html = """
       <span style="display: inline-flex; align-items: center; gap: 8px;"><span class="fillbox" style="width: 18px; height: 18px; border: 1.5px solid #000000; border-radius: 4px; margin: 0; flex-shrink: 0;"></span> C. La superficie de la Belgique</span>
     </div>
 
-    <p class="consigne">b. Écris V (Vrai) ou F (Faux) dans la case correspondante pour chaque affirmation&nbsp;:</p>
-    <div style="display: flex; flex-direction: column; gap: 10px; margin-left: 10px; margin-bottom: 14px;">
-      <div class="vrai-faux-row">
-        <span>Une consommation excessive de sucres rapides (bonbons, sodas) fatigue le foie et le pancréas, et produit des acides dentaires responsables des caries.</span>
-        <span class="fillbox" style="width: 26px; height: 26px; border: 1.5px solid #000000; border-radius: 6px; flex-shrink: 0; margin: 0;"></span>
-      </div>
-      <div class="vrai-faux-row" style="border-bottom: none; padding-bottom: 4px;">
-        <span>Manger sans se laver les mains peut introduire des microbes et provoquer des infections digestives comme la gastro-entérite.</span>
-        <span class="fillbox" style="width: 26px; height: 26px; border: 1.5px solid #000000; border-radius: 6px; flex-shrink: 0; margin: 0;"></span>
-      </div>
+    <p class="consigne">b. Écris V (Vrai) ou F (Faux) dans la case correspondante pour cette affirmation&nbsp;:</p>
+    <div class="vrai-faux-row" style="margin-left: 10px; margin-bottom: 14px; border-bottom: none; padding-bottom: 4px;">
+      <span>Une consommation excessive de sucres rapides (bonbons, sodas) fatigue le foie et le pancréas, et produit des acides dentaires responsables des caries.</span>
+      <span class="fillbox" style="width: 26px; height: 26px; border: 1.5px solid #000000; border-radius: 6px; flex-shrink: 0; margin: 0;"></span>
     </div>
 
-    <p class="consigne">c. Relie chaque mesure incroyable de notre tube digestif à sa signification correspondante&nbsp;:</p>
+    <p class="consigne" style="margin-top: 12px">c. Explique pourquoi il est important de se laver les mains avec du savon avant de manger, et quelle maladie digestive cela permet d'éviter.</p>
+    <div class="lines" style="margin-left: 10px; margin-bottom: 14px;">
+      <span style="height: 38px;"></span>
+      <span style="height: 38px;"></span>
+    </div>
+
+    <p class="consigne" style="margin-top: 12px">d. Relie chaque mesure incroyable de notre tube digestif à sa signification correspondante&nbsp;:</p>
     <div class="relier" style="display: grid; grid-template-columns: 130px 450px; gap: 12px 80px; align-items: center; margin-left: 10px; margin-bottom: 4px;">
       <div class="it" style="width: 100%; margin: 0; text-align: center;">8 à 10 mètres</div>
       <div class="it" style="width: 100%; margin: 0; text-align: left;">Temps moyen passé par les aliments dans l'estomac pour y être malaxés.</div>
@@ -171,6 +171,7 @@ body_html = """
       <div class="it" style="width: 100%; margin: 0; text-align: left;">Longueur totale estimée de notre tube digestif si on l'étirait.</div>
     </div>
   </div>
+</div>
 </div>
 </body></html>
 """
