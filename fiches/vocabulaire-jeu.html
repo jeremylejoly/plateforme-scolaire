@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Le Coffre aux Mots — Jeu de Vocabulaire</title>
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<!-- TailwindCSS CDN -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    corePlugins: {
+      preflight: false,
+    },
+    theme: {
+      extend: {
+        borderWidth: {
+          '3': '3px',
+        },
+        fontFamily: {
+          sans: ['Inter', 'sans-serif'],
+          display: ['Fredoka', 'sans-serif'],
+          mono: ['Space Mono', 'monospace'],
+        }
+      }
+    }
+  }
+</script>
+<style>
+  :root {
+    --encre: #1a1a2e;
+    --courant: #b16a09;
+    --courant-fonce: #8a5003;
+    --papier: #f7efe2;
+    --papier-2: #ffffff;
+    --ardoise: #475569;
+    --ligne: #ebdcc5;
+    
+    --vert: #16a34a;
+    --vert-clair: #d4f5e2;
+    --rouge: #dc2626;
+    --rouge-clair: #fdd9d7;
+    
+    --ombre: 0 4px 12px rgba(26, 26, 46, 0.04);
+    --ombre-forte: 0 10px 30px rgba(26, 26, 46, 0.06);
+    --radius: 16px;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font-family: 'Inter', system-ui, sans-serif;
+    color: var(--encre);
+    background: 
+      radial-gradient(circle at 1px 1px, rgba(177, 106, 9, 0.04) 1px, transparent 0) 0 0/24px 24px,
+      var(--papier);
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: 'Fredoka', sans-serif;
+    line-height: 1.2;
+    margin: 0;
+  }
+
+  /* BOUTON 3D */
+  .btn-3d {
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 700;
+    border: 3px solid var(--encre) !important;
+    box-shadow: 3px 3px 0px var(--encre);
+    transition: all 0.1s ease;
+    cursor: pointer;
+    user-select: none;
+  }
+  .btn-3d:active {
+    transform: translate(1px, 1px);
+    box-shadow: 1px 1px 0px var(--encre);
+  }
+
+  /* CARDS */
+  .card-premium {
+    background: #ffffff;
+    border: 3px solid var(--encre);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin: 16px 0;
+    box-shadow: 4px 4px 0px rgba(26, 26, 46, 0.08);
+  }
+
+  .theme-card {
+    background: #ffffff;
+    border: 3px solid var(--encre);
+    border-radius: 16px;
+    padding: 24px;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    box-shadow: 4px 4px 0px var(--encre);
+    text-align: center;
+  }
+  .theme-card:hover {
+    transform: translate(-3px, -3px);
+    box-shadow: 7px 7px 0px var(--encre);
+  }
+
+  /* LETTRES ET EMPLACEMENTS */
+  .letter-box {
+    width: 44px;
+    height: 48px;
+    border: 3px solid var(--encre);
+    border-radius: 10px;
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 700;
+    font-size: 1.5rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #ffffff;
+    user-select: none;
+    cursor: pointer;
+    box-shadow: 2px 2px 0px rgba(26, 26, 46, 0.1);
+    transition: all 0.1s ease;
+  }
+  .letter-box.correct {
+    background: var(--vert-clair);
+    border-color: var(--vert);
+    color: var(--vert);
+    cursor: default;
+    box-shadow: none;
+  }
+  .letter-box.incorrect {
+    background: var(--rouge-clair);
+    border-color: var(--rouge);
+    color: var(--rouge);
+    animation: shake 0.3s ease-in-out;
+  }
+  .letter-box.locked {
+    background: #f1f5f9;
+    color: #475569;
+    border-style: dashed;
+    cursor: default;
+  }
+
+  .bubble-letter {
+    width: 46px;
+    height: 46px;
+    border: 3px solid var(--encre);
+    border-radius: 50%;
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 700;
+    font-size: 1.3rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    cursor: pointer;
+    user-select: none;
+    box-shadow: 2px 3px 0px var(--encre);
+    transition: all 0.1s ease;
+  }
+  .bubble-letter:active {
+    transform: translate(1px, 2px);
+    box-shadow: 1px 1px 0px var(--encre);
+  }
+  .bubble-letter.used {
+    opacity: 0.15;
+    pointer-events: none;
+    transform: scale(0.9);
+    box-shadow: none;
+  }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-4px); }
+    75% { transform: translateX(4px); }
+  }
+
+  @keyframes pop {
+    0% { transform: scale(0.8); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  .pop-anim {
+    animation: pop 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+</style>
+</head>
+<body>
+
+<!-- EN-TÊTE -->
+<header class="bg-gradient-to-r from-amber-950 to-orange-900 text-white border-b-4 border-amber-600 py-6 px-6 relative overflow-hidden">
+  <div class="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(177,106,9,0.22),transparent_50%)] pointer-events-none"></div>
+  <div class="max-w-[800px] mx-auto flex items-center justify-between relative z-10">
+    <div>
+      <h1 class="text-2xl md:text-3xl font-display font-black flex items-center gap-2">
+        🧠 L'Atelier des Mots
+      </h1>
+      <p class="mt-1 text-amber-100 font-sans text-xs md:text-sm">
+        Reconstitue les mots mélangés grâce aux indices pour enrichir ton vocabulaire !
+      </p>
+    </div>
+    <div class="text-3xl hidden sm:block">📚</div>
+  </div>
+</header>
+
+<!-- CONTENU PRINCIPAL -->
+<main class="flex-1 max-w-[800px] w-full mx-auto p-4 md:py-6">
+
+  <!-- ================= ACCUEIL / SELECTION THEMES ================= -->
+  <section id="screen-setup" class="pop-anim">
+    <div class="card-premium border-amber-500 bg-amber-50/40">
+      <h2 class="text-lg font-bold text-amber-900 mb-2">Choisis ton thème d'entraînement :</h2>
+      <p class="text-slate-600 text-xs md:text-sm leading-relaxed mb-6">
+        Chaque thème contient des mots essentiels du programme de 5e et 6e primaire. Lis la devinette, utilise l'indice si nécessaire, et remets les lettres dans le bon ordre !
+      </p>
+      
+      <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+        <div class="theme-card theme-maths" onclick="startTraining('sentiments')">
+          <div class="text-3xl mb-2">🎭</div>
+          <h3 class="font-bold text-xs md:text-sm text-slate-800">Sentiments &amp; Qualités</h3>
+        </div>
+        <div class="theme-card" onclick="startTraining('actions')">
+          <div class="text-3xl mb-2">🏃</div>
+          <h3 class="font-bold text-xs md:text-sm text-slate-800">Actions &amp; Verbes</h3>
+        </div>
+        <div class="theme-card" onclick="startTraining('nature')">
+          <div class="text-3xl mb-2">🌲</div>
+          <h3 class="font-bold text-xs md:text-sm text-slate-800">Nature &amp; Climat</h3>
+        </div>
+        <div class="theme-card" onclick="startTraining('objets')">
+          <div class="text-3xl mb-2">🛠️</div>
+          <h3 class="font-bold text-xs md:text-sm text-slate-800">Objets &amp; Outils</h3>
+        </div>
+        <div class="theme-card" onclick="startTraining('metiers')">
+          <div class="text-3xl mb-2">👔</div>
+          <h3 class="font-bold text-xs md:text-sm text-slate-800">Métiers &amp; Personnes</h3>
+        </div>
+        <div class="theme-card bg-amber-50" onclick="startTraining('melange')">
+          <div class="text-3xl mb-2">🎲</div>
+          <h3 class="font-bold text-xs md:text-sm text-slate-800">Mélange surprise</h3>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= ZONE DE JEU ================= -->
+  <section id="screen-game" class="hidden pop-anim">
+    
+    <!-- Bouton de retour -->
+    <button class="btn-3d px-3 py-1.5 bg-white text-slate-700 rounded-lg text-xs font-bold mb-4" onclick="exitGame()">
+      ← Changer de thème
+    </button>
+
+    <!-- Carte du mot en cours -->
+    <div class="card-premium relative">
+      <!-- Thème actif -->
+      <div class="absolute top-4 right-4 bg-slate-900 text-white font-mono text-[9px] uppercase tracking-wider px-2 py-0.5 rounded-md" id="game-theme-tag">
+        Thème
+      </div>
+
+      <!-- Compteur de progression -->
+      <div class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3" id="game-progress-label">
+        MOT 1 / 10
+      </div>
+
+      <!-- La Devinette -->
+      <div class="bg-amber-50/50 border border-dashed border-amber-300 rounded-2xl p-4 mb-6">
+        <h4 class="text-xs font-bold text-amber-800 uppercase tracking-wider mb-1">💡 La devinette :</h4>
+        <p class="text-slate-800 font-semibold text-sm md:text-base leading-relaxed" id="game-definition">
+          Définition de l'indice...
+        </p>
+      </div>
+
+      <!-- Les cases vides pour le mot -->
+      <div class="flex flex-wrap justify-center gap-2 mb-8 min-h-[54px]" id="slots-container">
+        <!-- Rendu dynamique par JS -->
+      </div>
+
+      <!-- Clavier de lettres mélangées -->
+      <div class="flex flex-wrap justify-center gap-3.5 mb-8" id="bubbles-container">
+        <!-- Rendu dynamique par JS -->
+      </div>
+
+      <!-- Barre d'outils / boutons d'aide -->
+      <div class="flex items-center justify-between border-t border-slate-100 pt-5">
+        <button class="btn-3d px-4 py-2 bg-amber-500 text-white rounded-xl text-xs font-bold flex items-center gap-1.5" id="btn-hint" onclick="giveHint()">
+          <span>💡</span> Obtenir un indice
+        </button>
+        <button class="btn-3d px-4 py-2 bg-slate-500 text-white rounded-xl text-xs font-bold flex items-center gap-1.5" onclick="resetWordState()">
+          <span>❌</span> Effacer
+        </button>
+      </div>
+    </div>
+
+    <!-- Panneau de succès (Révélé uniquement quand le mot est trouvé) -->
+    <div class="card-premium bg-green-50 border-green-500 hidden pop-anim" id="panel-success">
+      <h3 class="text-green-800 font-bold text-base mb-1 flex items-center gap-2">
+        🎉 Bravo ! Tu as trouvé le mot !
+      </h3>
+      
+      <!-- Exemple d'utilisation en contexte -->
+      <div class="bg-white border-2 border-green-200 rounded-xl p-3 my-3">
+        <h4 class="text-[10px] font-bold text-green-700 uppercase tracking-wider mb-1">📖 Le mot en contexte :</h4>
+        <p class="text-slate-800 font-serif italic text-sm md:text-base leading-relaxed" id="success-example">
+          « Phrase exemple... »
+        </p>
+      </div>
+
+      <button class="btn-3d w-full py-3 bg-green-600 text-white rounded-xl text-sm font-bold mt-2" onclick="nextWord()">
+        Mot suivant ➔
+      </button>
+    </div>
+
+  </section>
+
+</main>
+
+<!-- PIED DE PAGE -->
+<footer class="bg-white border-t-2 border-slate-200 py-4 text-center text-xs text-slate-500 font-semibold mt-auto">
+  <div class="max-w-[800px] mx-auto px-4">
+    Classe de Mr Lejoly — Vocabulaire de base P5-P6 — Autocorrection active
+  </div>
+</footer>
+
+<script>
+  // ================================================================
+  // BANQUE DE MOTS (150 MOTS)
+  // ================================================================
+  const WORD_BANK = {
+    sentiments: [
+      { word: "AUDACE", def: "Courage ou hardiesse inhabituelle devant le danger.", ex: "L'alpiniste a eu l'audace de gravir ce sommet glacé tout seul." },
+      { word: "BONTE", def: "Qualité d'une personne gentille, douce et généreuse.", ex: "Sa bonté envers les animaux malades touche toute la classe." },
+      { word: "CHAGRIN", def: "Tristesse profonde ou peine qui fait pleurer.", ex: "Camille a séché ses larmes après son gros chagrin de la veille." },
+      { word: "COURAGE", def: "Force morale face au danger, à la douleur ou à la peur.", ex: "Le jeune garçon a eu le courage de dire la vérité au directeur." },
+      { word: "CRAINTE", def: "Peur ou inquiétude face à un danger possible.", ex: "Elle s'approcha du chien avec la crainte de se faire mordre." },
+      { word: "EFFROI", def: "Grande peur très violente ou terreur soudaine.", ex: "Le cri du hibou dans la forêt sombre a jeté l'effroi sur le groupe." },
+      { word: "FIERTE", def: "Sentiment de satisfaction personnelle et de dignité.", ex: "Ses parents ont regardé son bulletin scolaire avec beaucoup de fierté." },
+      { word: "FROUSSE", def: "Peur bleue ou panique passagère.", ex: "Ce film de fantômes m'a donné une sacrée frousse !" },
+      { word: "FUREUR", def: "Très grande colère, violente et incontrôlable.", ex: "Le taureau en fureur fonça directement sur la barrière rouge." },
+      { word: "JALOUSIE", def: "Sentiment d'envie envers quelqu'un qui a ce qu'on désire.", ex: "Sa jalousie a gâché son amitié avec son voisin de bureau." },
+      { word: "PANIQUE", def: "Terreur soudaine et collective qui empêche de réfléchir.", ex: "L'alarme à incendie a provoqué la panique dans le couloir." },
+      { word: "SAGESSE", def: "Qualité d'une personne calme, prudente et raisonnable.", ex: "Les conseils de ma grand-mère sont toujours pleins de sagesse." },
+      { word: "TRISTESSE", def: "Sentiment de peine, de cafard (contraire de la joie).", ex: "Sa tristesse se lisait sur son visage après le départ de son ami." },
+      { word: "AMITIE", def: "Sentiment d'affection réciproque entre deux personnes.", ex: "Leur amitié dure depuis leur entrée en classe de maternelle." },
+      { word: "HAINE", def: "Sentiment de forte hostilité et de détestation envers quelqu'un.", ex: "Il a chassé sa haine pour essayer de faire la paix avec lui." },
+      { word: "PITIE", def: "Sentiment de sympathie face aux malheurs d'autrui.", ex: "Le mendiant grelottant de froid inspirait beaucoup de pitié." },
+      { word: "SOUPCON", def: "Doute sur l'honnêteté d'une personne sans preuve réelle.", ex: "Le maître avait un soupçon sur l'auteur de la farce." },
+      { word: "DEGOUT", def: "Sentiment de rejet ou de répulsion envers quelque chose.", ex: "Il a fait une grimace de dégoût en voyant les épinards tièdes." },
+      { word: "ORGUEIL", def: "Opinion trop haute de soi-même, vanité excessive.", ex: "Son orgueil l'empêche de reconnaître qu'il s'est trompé." },
+      { word: "TIMIDITE", def: "Manque d'assurance, gêne en public ou avec les autres.", ex: "Sa timidité l'empêche de lever la main pour répondre en classe." },
+      { word: "VOLONTE", def: "Détermination ferme d'accomplir quelque chose.", ex: "Avec de la volonté, Lucas a fini par réussir son exercice de gym." },
+      { word: "COLERE", def: "Mécontentement violent accompagné d'énervement.", ex: "Sa colère a éclaté lorsqu'il a vu son jouet préféré cassé." },
+      { word: "ANXIETE", def: "Grande inquiétude ou angoisse qui oppresse.", ex: "L'anxiété de l'examen l'a empêché de dormir cette nuit." },
+      { word: "MEFIANCE", def: "Attitude prudente de celui qui ne fait pas confiance.", ex: "Le chat sauvage s'est approché de l'assiette avec méfiance." },
+      { word: "TERREUR", def: "Peur extrême qui paralyse l'esprit.", ex: "La terreur s'est lue dans ses yeux quand le loup a surgi du bois." }
+    ],
+    actions: [
+      { word: "BONDIR", def: "Sauter brusquement ou s'élancer rapidement.", ex: "Le chat a bondi sur la table pour attraper la mouche." },
+      { word: "GRIMPER", def: "Monter sur quelque chose avec les mains et les pieds.", ex: "Les enfants adorent grimper sur le grand chêne du parc." },
+      { word: "DEROBER", def: "Voler discrètement ou s'emparer en cachette de quelque chose.", ex: "La pie aime dérober les objets brillants sur la terrasse." },
+      { word: "SONGER", def: "Penser profondément ou rêver à quelque chose.", ex: "Arthur passe son temps à songer à ses prochaines vacances." },
+      { word: "HURLER", def: "Crier très fort à la manière d'un loup.", ex: "Le vent s'est mis à hurler sous les portes pendant la tempête." },
+      { word: "BATIR", def: "Construire un édifice (maison, château, mur).", ex: "Les castors s'activent pour bâtir un barrage solide sur le ruisseau." },
+      { word: "FRANCHIR", def: "Passer au-dessus d'un obstacle ou traverser une limite.", ex: "Le cavalier a réussi à franchir la barrière sans tomber." },
+      { word: "ECOUTER", def: "Prêter attention aux bruits ou aux paroles de quelqu'un.", ex: "Tu dois écouter attentivement les consignes avant de commencer." },
+      { word: "MURMURER", def: "Parler tout bas, à voix presque inaudible.", ex: "Pour ne pas réveiller le bébé, il a dû lui murmurer à l'oreille." },
+      { word: "INSPECTER", def: "Examiner très attentivement pour contrôler.", ex: "Le détective va inspecter la chambre à la recherche d'indices." },
+      { word: "GRELOTTER", def: "Trembler de froid ou de peur.", ex: "Sans manteau sous la pluie, l'enfant s'est mis à grelotter." },
+      { word: "DECLARER", def: "Faire savoir officiellement ou dire fermement.", ex: "Le maire va déclarer le début des festivités du village." },
+      { word: "MENACER", def: "Faire craindre un danger ou une punition.", ex: "Les nuages noirs semblent menacer le ciel de l'après-midi." },
+      { word: "DECOUVRIR", def: "Trouver ce qui était caché ou inconnu.", ex: "Les explorateurs espèrent découvrir un trésor dans la grotte." },
+      { word: "REVER", def: "Imaginer des choses pendant son sommeil ou éveillé.", ex: "Léa adore rêver de voyages spatiaux en regardant les étoiles." },
+      { word: "CREUSER", def: "Faire un trou dans la terre ou dans une matière.", ex: "Le chien adore creuser le sable pour y cacher son os." },
+      { word: "PROTEGER", def: "Prendre soin de quelqu'un ou le mettre à l'abri.", ex: "Le casque sert à protéger la tête en cas de chute de vélo." },
+      { word: "OBSERVER", def: "Regarder avec beaucoup d'attention pour analyser.", ex: "Le scientifique aime observer les insectes au microscope." },
+      { word: "COURIR", def: "Se déplacer très rapidement à pied.", ex: "Il a dû courir pour attraper le bus avant qu'il ne s'en aille." },
+      { word: "JOUER", def: "S'amuser à un jeu ou pratiquer un instrument de musique.", ex: "Les élèves aiment jouer au ballon pendant la récréation." },
+      { word: "APPRENDRE", def: "Acquérir des connaissances ou une technique.", ex: "Elle s'entraîne tous les jours pour apprendre à nager le crawl." },
+      { word: "REDIGER", def: "Écrire un texte, une lettre ou un devoir.", ex: "Le journaliste doit rédiger un article sur l'inondation." },
+      { word: "PARTAGER", def: "Diviser pour donner une part aux autres.", ex: "Il a choisi de partager son goûter avec son camarade." },
+      { word: "COLLER", def: "Fixer une matière sur une autre avec de la colle.", ex: "Tu dois coller l'étiquette rouge sur ton cahier d'exercices." },
+      { word: "DESSINER", def: "Représenter quelque chose sur papier avec des lignes.", ex: "L'artiste commence par dessiner les contours au crayon gris." }
+    ],
+    nature: [
+      { word: "GLACIER", def: "Grande accumulation de glace sur une montagne.", ex: "Le glacier des Alpes fond lentement sous l'effet du soleil." },
+      { word: "VOLCAN", def: "Montagne qui rejette de la lave et des cendres.", ex: "La fumée s'échappe du volcan en éruption depuis ce matin." },
+      { word: "TEMPETE", def: "Vent très violent accompagné de pluie ou de neige.", ex: "La tempête a cassé plusieurs grosses branches dans le jardin." },
+      { word: "DESERT", def: "Région très sèche où il n'y a presque pas de plantes.", ex: "Les chameaux marchent lentement sur le sable chaud du désert." },
+      { word: "FLEUVE", def: "Grand cours d'eau qui se jette directement dans la mer.", ex: "La Seine est le fleuve qui traverse la ville de Paris." },
+      { word: "BRUME", def: "Brouillard léger qui réduit un peu la visibilité.", ex: "La brume matinale enveloppait la vallée d'un voile blanc." },
+      { word: "ABIME", def: "Trou ou fossé extrêmement profond et effrayant.", ex: "Le randonneur s'est écarté du bord de l'abîme par sécurité." },
+      { word: "SEISME", def: "Tremblement de terre brusque.", ex: "Le séisme a fait trembler les vitres des maisons de la ville." },
+      { word: "BLIZZARD", def: "Vent glacial accompagné d'une tempête de neige.", ex: "Les explorateurs ont dû s'abriter sous la tente pendant le blizzard." },
+      { word: "OURAGAN", def: "Tempête tropicale extrêmement violente.", ex: "L'ouragan a arraché les toits des maisons sur l'île de sable." },
+      { word: "AVALANCHE", def: "Masse de neige qui glisse rapidement sur la montagne.", ex: "Les skieurs ont évité la piste à cause du risque d'avalanche." },
+      { word: "RIVIERE", def: "Cours d'eau qui se jette dans un autre fleuve.", ex: "Nous avons pêché de petits poissons au bord de la rivière." },
+      { word: "ORAGE", def: "Perturbation météo avec des éclairs et du tonnerre.", ex: "Le chien s'est caché sous la table en entendant l'orage gronder." },
+      { word: "ARCHIPEL", def: "Groupe d'îles proches les unes des autres.", ex: "Le Japon est un magnifique archipel situé en Asie." },
+      { word: "CAVERNE", def: "Cavité naturelle et profonde dans la roche.", ex: "Les ours aiment dormir au fond d'une caverne pendant l'hiver." },
+      { word: "COLLINE", def: "Petite montagne à pente très douce.", ex: "Le château fort domine toute la région depuis le haut de la colline." },
+      { word: "FORET", def: "Grand terrain couvert de très nombreux arbres.", ex: "Nous aimons ramasser des champignons sous les arbres de la forêt." },
+      { word: "VALLEE", def: "Espace allongé situé entre deux montagnes.", ex: "Un petit village de chalets s'est installé au fond de la vallée." },
+      { word: "MAREE", def: "Mouvement de l'océan qui monte et descend régulièrement.", ex: "À marée basse, on peut ramasser des coquillages sur le sable." },
+      { word: "BROUILLARD", def: "Nuage épais au sol qui empêche de voir clair.", ex: "La voiture a ralenti car le brouillard était trop dense sur la route." },
+      { word: "CASCADE", def: "Chute d'eau naturelle qui tombe d'une hauteur.", ex: "L'eau de la cascade s'écrase sur les rochers en faisant du bruit." },
+      { word: "RUISSEAU", def: "Tout petit cours d'eau étroit.", ex: "Les enfants ont construit un pont en bois au-dessus du ruisseau." },
+      { word: "FALAISE", def: "Mur de roche très haut au bord de la mer.", ex: "Les oiseaux marins font leurs nids dans les trous de la falaise." },
+      { word: "LAGUNE", def: "Étendue d'eau salée séparée de la mer par du sable.", ex: "Les flamants roses aiment pêcher dans les eaux calmes de la lagune." },
+      { word: "OCEAN", def: "Immense étendue d'eau salée qui couvre la Terre.", ex: "Le navire a mis deux semaines pour traverser le grand océan." }
+    ],
+    objets: [
+      { word: "CHARRUE", def: "Outil agricole lourd servant à labourer la terre.", ex: "Les bœufs tirent la charrue pour creuser des sillons dans le champ." },
+      { word: "BOUSSOLE", def: "Outil qui montre le Nord pour s'orienter.", ex: "Pour ne pas se perdre en forêt, Arthur consulte sa boussole." },
+      { word: "GRIMOIRE", def: "Vieux livre de magie ou de formules secrètes.", ex: "Le sorcier a ouvert son vieux grimoire pour y lire une recette." },
+      { word: "BALANCE", def: "Outil servant à mesurer le poids de quelque chose.", ex: "La boulangère utilise une balance pour peser la farine du pain." },
+      { word: "LANTERNE", def: "Lampe portable protégée par des vitres.", ex: "Le veilleur de nuit s'éclairait à l'aide d'une lanterne de fer." },
+      { word: "BOUCLIER", def: "Arme défensive portée au bras pour se protéger.", ex: "Le chevalier a levé son bouclier pour arrêter la flèche." },
+      { word: "CHAUDRON", def: "Grande marmite en métal suspendue au-dessus du feu.", ex: "La soupe mijote doucement dans le grand chaudron de la cuisine." },
+      { word: "CARTABLE", def: "Sac servant à transporter ses affaires d'école.", ex: "Il a rangé sa trousse et ses cahiers dans son cartable neuf." },
+      { word: "HORLOGE", def: "Gros appareil mécanique qui indique l'heure.", ex: "La grande horloge du salon sonne toutes les heures." },
+      { word: "CRAYON", def: "Outil en bois contenant une mine pour écrire.", ex: "Prends ton crayon gris pour faire le schéma en sciences." },
+      { word: "MARTEAU", def: "Outil lourd servant à enfoncer des clous.", ex: "Le menuisier utilise un marteau pour fixer la planche de bois." },
+      { word: "TROMBONE", def: "Petit fil de métal plié servant à lier des feuilles.", ex: "Elle a mis un trombone pour attacher les trois pages ensemble." },
+      { word: "ARMOIRE", def: "Grand meuble fermé servant à ranger les vêtements.", ex: "Il a suspendu son manteau de laine dans l'armoire de sa chambre." },
+      { word: "CATHEDRALE", def: "Très grande église en pierre du Moyen Âge.", ex: "La cathédrale possède de magnifiques vitraux très colorés." },
+      { word: "CHATEAU", def: "Grande demeure fortifiée de l'époque médiévale.", ex: "Le château fort possède de hautes tours et un pont-levis." },
+      { word: "SERRURE", def: "Mécanisme en métal où l'on introduit la clé.", ex: "Hugo a inséré la clé en fer dans la serrure de la grille." },
+      { word: "CLEF", def: "Outil servant à ouvrir ou fermer un verrou.", ex: "La clef de la porte d'entrée est restée sur la console." },
+      { word: "PAPIER", def: "Matière mince sur laquelle on écrit ou dessine.", ex: "Elle a découpé une feuille de papier blanc pour faire sa carte." },
+      { word: "CISEAUX", def: "Outil à deux lames servant à couper le papier.", ex: "Utilise des ciseaux à bouts ronds pour découper ces formes." },
+      { word: "REGLE", def: "Outil plat gradué servant à tracer des lignes droites.", ex: "Tu dois souligner les titres proprement à l'aide d'une règle." },
+      { word: "PINCEAU", def: "Outil à poils servant à peindre.", ex: "Le peintre trempe son pinceau dans la gouache bleue." },
+      { word: "BUREAU", def: "Table de travail avec des tiroirs de rangement.", ex: "Léa fait ses devoirs de français assise à son bureau de bois." },
+      { word: "TROUSSE", def: "Petit sac zippé où l'on range ses stylos.", ex: "N'oublie pas de ranger tes feutres dans ta trousse rouge." },
+      { word: "ORDINATEUR", def: "Machine électronique qui traite des informations.", ex: "Nous faisons des recherches sur l'ordinateur de la classe." },
+      { word: "FENETRE", def: "Ouverture vitrée dans le mur d'une maison.", ex: "Elle a ouvert la fenêtre pour faire entrer l'air frais du matin." }
+    ],
+    metiers: [
+      { word: "ARTISAN", def: "Personne qui fait un travail manuel de ses mains.", ex: "L'artisan façonne un vase en argile avec beaucoup de patience." },
+      { word: "MOINE", def: "Religieux vivant dans un monastère en pierre.", ex: "Le moine recopie un manuscrit à la plume sous la lampe." },
+      { word: "BERGER", def: "Personne qui garde et conduit les troupeaux de moutons.", ex: "Le berger marche en montagne accompagné de son chien." },
+      { word: "PILOTE", def: "Personne qui conduit un avion ou une voiture de course.", ex: "Le pilote a annoncé le début de la descente vers la piste." },
+      { word: "MEDECIN", def: "Professionnel de santé qui soigne les malades.", ex: "Le médecin écoute les battements du cœur de l'enfant." },
+      { word: "MARIN", def: "Personne dont le métier est de naviguer sur la mer.", ex: "Le vieux marin scrute l'horizon à la recherche de la côte." },
+      { word: "DETECTIVE", def: "Enquêteur qui cherche des indices secrets.", ex: "Le détective observe la scène avec sa loupe à la main." },
+      { word: "MAGICIEN", def: "Personne qui fait des tours d'illusionnisme.", ex: "Le magicien a sorti un lapin blanc de son chapeau noir." },
+      { word: "FERMIER", def: "Personne qui dirige une ferme et s'occupe des cultures.", ex: "Le fermier se lève tôt pour aller traire ses vaches laitières." },
+      { word: "SOLDAT", def: "Membre d'une armée chargé de la défense.", ex: "Le soldat monte la garde devant la porte du fort militaire." },
+      { word: "BOULANGER", def: "Artisan qui prépare et cuit le pain frais.", ex: "Le boulanger sort les baguettes chaudes de son grand four." },
+      { word: "MAITRE", def: "Enseignant dans une école primaire.", ex: "Le maître écrit les devoirs au tableau vert de la classe." },
+      { word: "DIRECTEUR", def: "Responsable en chef d'une école ou d'une entreprise.", ex: "Le directeur a accueilli les nouveaux élèves le jour de la rentrée." },
+      { word: "DENTISTE", def: "Professionnel de santé qui soigne les dents.", ex: "La dentiste me conseille de me brosser les dents trois fois par jour." },
+      { word: "VOYAGEUR", def: "Personne qui fait un déplacement lointain.", ex: "Le voyageur a posé sa lourde valise sur le quai de la gare." },
+      { word: "BRIGAND", def: "Bandit de grand chemin ou voleur de forêt.", ex: "Le brigand s'est enfui dans la forêt après son mauvais coup." },
+      { word: "INFIRMIERE", def: "Professionnel qui soigne sous les ordres du médecin.", ex: "L'infirmière a posé un pansement propre sur ma coupure." },
+      { word: "PAYSAN", def: "Personne de la campagne vivant de la terre.", ex: "Le paysan s'occupe de son potager avec beaucoup de soin." },
+      { word: "POLICIER", def: "Membre des forces de l'ordre qui protège les citoyens.", ex: "Le policier a réglé la circulation devant l'école primaire." },
+      { word: "ACTEUR", def: "Personne qui joue un rôle au théâtre ou au cinéma.", ex: "L'acteur principal a reçu des applaudissements à la fin." },
+      { word: "POMPIER", def: "Secouriste chargé d'éteindre les incendies.", ex: "Le pompier a grimpé à la grande échelle pour sauver le chat." },
+      { word: "ECRIVAIN", def: "Personne qui rédige des romans ou des livres.", ex: "Cette écrivain célèbre a fini son nouveau livre d'aventures." },
+      { word: "MUSICIEN", def: "Personne qui joue d'un instrument de musique.", ex: "Le musicien joue une douce mélodie sur les touches du piano." },
+      { word: "PEINTRE", def: "Artisan qui réalise des tableaux ou peint les murs.", ex: "L'artiste peintre mélange ses couleurs sur sa palette de bois." },
+      { word: "COUTURIERE", def: "Personne qui confectionne ou répare les habits.", ex: "La couturière coud un bouton sur la chemise de coton." }
+    ],
+    melange: [] // Rempli dynamiquement au clic
+  };
+
+  // Mélange les thèmes pour le mode surprise
+  function initMelange() {
+    WORD_BANK.melange = [
+      ...WORD_BANK.sentiments,
+      ...WORD_BANK.actions,
+      ...WORD_BANK.nature,
+      ...WORD_BANK.objets,
+      ...WORD_BANK.metiers
+    ];
+  }
+
+  // ================================================================
+  // VARIABLES DE JEU
+  // ================================================================
+  let currentTheme = 'sentiments';
+  let activeWordObj = null;
+  let wordList = [];
+  let currentIndex = 0;
+  
+  // État de la saisie de l'élève
+  let userLetters = []; // Tableau contenant { letter: 'A', originalIdx: 3, locked: false }
+  
+  // ================================================================
+  // INITIALISATION DU JEU
+  // ================================================================
+  function startTraining(theme) {
+    initMelange();
+    currentTheme = theme;
+    
+    // Filtre et mélange la liste de mots du thème choisi
+    const rawList = [...WORD_BANK[theme]];
+    wordList = shuffleArray(rawList);
+    
+    // Limite à 10 mots par session pour donner un but, mais renouvelable
+    if (wordList.length > 10) {
+      wordList = wordList.slice(0, 10);
+    }
+    
+    currentIndex = 0;
+    
+    // Affiche l'écran de jeu
+    document.getElementById('screen-setup').classList.add('hidden');
+    document.getElementById('screen-game').classList.remove('hidden');
+    
+    // Affiche le tag du thème
+    const tags = {
+      sentiments: "🎭 Sentiments & Qualités",
+      actions: "🏃 Actions & Verbes",
+      nature: "🌲 Nature & Climat",
+      objets: "🛠️ Objets & Outils",
+      metiers: "👔 Métiers & Personnes",
+      melange: "🎲 Mélange surprise"
+    };
+    document.getElementById('game-theme-tag').innerText = tags[theme];
+    
+    loadWord();
+  }
+
+  function exitGame() {
+    document.getElementById('screen-game').classList.add('hidden');
+    document.getElementById('screen-setup').classList.remove('hidden');
+  }
+
+  // ================================================================
+  // CHARGEMENT D'UN MOT
+  // ================================================================
+  function loadWord() {
+    // Masque le panneau de succès
+    document.getElementById('panel-success').classList.add('hidden');
+    
+    activeWordObj = wordList[currentIndex];
+    
+    // Mise à jour des compteurs et labels
+    document.getElementById('game-progress-label').innerText = `MOT ${currentIndex + 1} / ${wordList.length}`;
+    document.getElementById('game-definition').innerText = activeWordObj.def;
+    
+    // Réinitialise l'état de saisie
+    userLetters = Array(activeWordObj.word.length).fill(null);
+    
+    // Construit le clavier de bulles de lettres
+    buildLetterBubbles();
+    
+    // Construit les slots vides
+    renderSlots();
+  }
+
+  // Mélange les lettres du mot (sans que ce soit égal au mot d'origine)
+  function getScrambledLetters(word) {
+    let arr = word.split('');
+    let scrambled = shuffleArray([...arr]);
+    
+    // Si par hasard le mot n'est pas mélangé, on recommence
+    if (scrambled.join('') === word && word.length > 1) {
+      return getScrambledLetters(word);
+    }
+    return scrambled;
+  }
+
+  function buildLetterBubbles() {
+    const container = document.getElementById('bubbles-container');
+    container.innerHTML = '';
+    
+    const scrambled = getScrambledLetters(activeWordObj.word);
+    
+    scrambled.forEach((letter, idx) => {
+      const bubble = document.createElement('button');
+      bubble.className = 'bubble-letter';
+      bubble.innerText = letter;
+      bubble.dataset.idx = idx;
+      bubble.dataset.letter = letter;
+      
+      bubble.addEventListener('click', () => {
+        placeLetterInFirstEmptySlot(letter, idx, bubble);
+      });
+      
+      container.appendChild(bubble);
+    });
+  }
+
+  function renderSlots() {
+    const container = document.getElementById('slots-container');
+    container.innerHTML = '';
+    
+    userLetters.forEach((slot, idx) => {
+      const box = document.createElement('div');
+      box.className = 'letter-box';
+      
+      if (slot) {
+        box.innerText = slot.letter;
+        if (slot.locked) {
+          box.classList.add('locked');
+        } else {
+          // Cliquer sur un slot remplit supprime la lettre
+          box.addEventListener('click', () => {
+            removeLetterFromSlot(idx);
+          });
+        }
+      } else {
+        box.innerText = '';
+      }
+      
+      container.appendChild(box);
+    });
+  }
+
+  // ================================================================
+  // ACTIONS ET LOGIQUE
+  // ================================================================
+  function placeLetterInFirstEmptySlot(letter, originalIdx, bubbleEl) {
+    // Trouve le premier slot libre
+    const emptyIdx = userLetters.indexOf(null);
+    if (emptyIdx === -1) return; // Aucun slot libre
+    
+    userLetters[emptyIdx] = {
+      letter: letter,
+      originalIdx: originalIdx,
+      locked: false
+    };
+    
+    bubbleEl.classList.add('used');
+    renderSlots();
+    checkWordMatch();
+  }
+
+  function removeLetterFromSlot(slotIdx) {
+    const slotData = userLetters[slotIdx];
+    if (!slotData || slotData.locked) return; // Rien à retirer ou verrouillé par l'indice
+    
+    // Libère la bulle correspondante
+    const bubble = document.querySelector(`.bubble-letter[data-idx="${slotData.originalIdx}"]`);
+    if (bubble) {
+      bubble.classList.remove('used');
+    }
+    
+    userLetters[slotIdx] = null;
+    renderSlots();
+    
+    // Retire les colorations d'erreur (rouge) si présentes
+    clearErrorStyles();
+  }
+
+  function resetWordState() {
+    // Remet toutes les bulles en état non utilisé
+    document.querySelectorAll('.bubble-letter').forEach(b => b.classList.remove('used'));
+    
+    // Garde uniquement les lettres verrouillées par l'indice
+    userLetters = userLetters.map(slot => {
+      if (slot && slot.locked) {
+        // Rétablit l'état "used" sur la bulle de la lettre verrouillée
+        const bubble = document.querySelector(`.bubble-letter[data-idx="${slot.originalIdx}"]`);
+        if (bubble) bubble.classList.add('used');
+        return slot;
+      }
+      return null;
+    });
+    
+    renderSlots();
+  }
+
+  function clearErrorStyles() {
+    document.querySelectorAll('.letter-box').forEach(box => {
+      box.classList.remove('incorrect');
+    });
+  }
+
+  // ================================================================
+  // SYSTEME D'INDICE (ANTI-BLOCAGE)
+  // ================================================================
+  function giveHint() {
+    const targetWord = activeWordObj.word;
+    
+    // Trouve la première lettre qui est fausse ou vide
+    let hintIdx = -1;
+    for (let i = 0; i < targetWord.length; i++) {
+      if (!userLetters[i] || userLetters[i].letter !== targetWord[i]) {
+        hintIdx = i;
+        break;
+      }
+    }
+    
+    if (hintIdx === -1) return; // Déjà correct
+    
+    const correctLetter = targetWord[hintIdx];
+    
+    // Libère la lettre qui occupait potentiellement cette place fausse
+    if (userLetters[hintIdx]) {
+      removeLetterFromSlot(hintIdx);
+    }
+    
+    // Trouve une bulle contenant cette lettre qui n'est pas encore utilisée
+    const bubbles = document.querySelectorAll(`.bubble-letter[data-letter="${correctLetter}"]:not(.used)`);
+    let targetBubble = bubbles[0];
+    
+    // Si toutes les bulles de cette lettre sont utilisées (à cause d'erreurs ailleurs)
+    if (!targetBubble) {
+      // Libère l'un des mauvais placements de cette lettre pour pouvoir l'utiliser
+      for (let i = 0; i < userLetters.length; i++) {
+        if (userLetters[i] && userLetters[i].letter === correctLetter && userLetters[i].letter !== targetWord[i]) {
+          removeLetterFromSlot(i);
+          break;
+        }
+      }
+      // Recherche à nouveau la bulle libérée
+      const freshBubbles = document.querySelectorAll(`.bubble-letter[data-letter="${correctLetter}"]:not(.used)`);
+      targetBubble = freshBubbles[0];
+    }
+    
+    if (targetBubble) {
+      const originalIdx = parseInt(targetBubble.dataset.idx);
+      
+      // Place et verrouille la lettre dans le slot
+      userLetters[hintIdx] = {
+        letter: correctLetter,
+        originalIdx: originalIdx,
+        locked: true
+      };
+      
+      targetBubble.classList.add('used');
+      renderSlots();
+      checkWordMatch();
+    }
+  }
+
+  // ================================================================
+  // VERIFICATION DU MOT
+  // ================================================================
+  function checkWordMatch() {
+    // Si des slots sont encore vides, on ne valide pas encore
+    if (userLetters.includes(null)) return;
+    
+    const currentAttempt = userLetters.map(s => s.letter).join('');
+    const targetWord = activeWordObj.word;
+    
+    const boxes = document.querySelectorAll('.letter-box');
+    
+    if (currentAttempt === targetWord) {
+      // SUCCÈS !
+      boxes.forEach(box => {
+        box.classList.remove('incorrect');
+        box.classList.add('correct');
+      });
+      
+      // Bloque toutes les interactions sur les bulles et slots
+      document.querySelectorAll('.bubble-letter').forEach(b => b.classList.add('used'));
+      
+      // Révèle le panneau de réussite avec l'exemple
+      document.getElementById('success-example').innerText = `« ${activeWordObj.ex} »`;
+      document.getElementById('panel-success').classList.remove('hidden');
+      
+    } else {
+      // ERREUR !
+      boxes.forEach(box => {
+        if (!box.classList.contains('locked')) {
+          box.classList.add('incorrect');
+        }
+      });
+    }
+  }
+
+  function nextWord() {
+    currentIndex++;
+    if (currentIndex < wordList.length) {
+      loadWord();
+    } else {
+      // Fin de la session d'entraînement
+      alert("Félicitations ! Tu as terminé cette série d'entraînement de 10 mots !");
+      exitGame();
+    }
+  }
+
+  // ================================================================
+  // OUTILS UTILITAIRES
+  // ================================================================
+  function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  }
+  
+  function escapeHTML(str) {
+    return str.replace(/[&<>'"]/g, 
+      tag => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        "'": '&#39;',
+        '"': '&quot;'
+      }[tag] || tag)
+    );
+  }
+</script>
+</body>
+</html>
