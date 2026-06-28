@@ -1,8 +1,10 @@
-const CACHE_NAME = 'classe-mr-lejoly-cache-v293';
+const CACHE_NAME = 'classe-mr-lejoly-cache-v294';
 const CORE_ASSETS = [
   './',
   'index.html',
   'Labyrinthe.html',
+  'mots-croises.html',
+  'assets/logos/jeu_mots_croises.png',
   'fiches/Labyrinthe.html',
   'planisphere-interactif.html',
   'cartes-planisphere.html',
