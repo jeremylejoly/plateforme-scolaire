@@ -730,8 +730,11 @@
 
 <!-- PIED DE PAGE -->
 <footer class="bg-white border-t-2 border-slate-200 py-6 text-center text-xs text-slate-500 font-semibold mt-auto">
-  <div class="max-w-[1100px] mx-auto px-4">
-    Classe de Mr Lejoly — Activités d'Éveil Scientifique — Conforme au programme FWB / CECP
+  <div class="max-w-[1100px] mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+    <span>Classe de Mr Lejoly — Activités d'Éveil Scientifique — Conforme au programme FWB / CECP</span>
+    <button id="btnToggleCalibrator" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 border-2 border-slate-900 rounded-lg font-bold cursor-pointer transition-all active:translate-y-0.5 shadow-[2px_2px_0px_rgba(15,23,42,1)] text-[10px]">
+      🛠️ Mode Ajustement Hotspots
+    </button>
   </div>
 </footer>
 
@@ -760,7 +763,12 @@
   </div>
 </div>
 
-
+<!-- SYSTEME DE CALIBRAGE DE HOTSPOTS (DEBUG MODE - Touche 'd') -->
+<div id="calibratorBox" class="fixed bottom-4 right-4 bg-slate-900 text-white p-4 rounded-xl border border-slate-700 text-xs font-mono hidden z-50 max-w-sm">
+  <h4 class="font-bold text-sky-400 mb-2">Calibrateur de hotspots (Touche 'd')</h4>
+  <p class="mb-2 text-slate-400">Fais glisser les numéros sur l'image pour les ajuster, puis copie la configuration.</p>
+  <textarea id="calibratorOutput" class="w-full h-24 bg-slate-800 text-green-400 p-2 rounded border border-slate-700 text-[10px]" readonly></textarea>
+</div>
 
 <script>
   // ================================================================
@@ -904,43 +912,51 @@
   const ANTHRO_DATA = {
     capt: {
       title: "1. Le Captage (Station de captage)",
-      desc: "L'eau est prélevée dans son milieu naturel : soit dans une nappe phréatique sous le sol (eau souterraine généralement propre), soit dans une rivière ou un lac. C'est la station de captage qui pompe l'eau.",
-      type: "Prélèvement de la ressource"
+      desc: "L'eau brute est prélevée dans son milieu naturel. Il existe deux modes de captage principaux : le captage de surface (pompage dans une rivière ou un lac) et le forage d'eau souterraine (puits profond creusé jusqu'à une nappe phréatique). C'est la station de captage qui pompe l'eau.",
+      type: "Prélèvement de la ressource",
+      image: "photos/details_captage.png"
     },
     pota: {
       title: "2. Le Traitement de potabilisation",
-      desc: "L'eau brute captée n'est pas encore propre à la consommation. Elle est envoyée dans une usine de traitement où elle subit des filtrations physiques (grillage, sable) et des désinfections chimiques (chlore, ozone) pour éliminer les bactéries, virus et polluants. Elle devient potable.",
-      type: "Assainissement et désinfection"
+      desc: "L'eau brute captée contient des impuretés (sables, feuilles, microbes). Elle est envoyée à l'usine de traitement des eaux pour y être nettoyée. Elle subit plusieurs étapes : le dégrillage (pour enlever les gros morceaux), la décantation, la filtration sur lit de sable, et enfin la désinfection (souvent au chlore ou à l'ozone) pour détruire les bactéries et les virus. L'eau devient alors potable.",
+      type: "Assainissement et désinfection",
+      image: "photos/details_traitement.png"
     },
     chateau: {
-      title: "3. Le Stockage (Château d'eau)",
-      desc: "L'eau potable est pompée vers un réservoir construit très en hauteur : le château d'eau. Grâce à l'altitude du réservoir, l'eau redescend avec une forte pression par le principe des vases communicants, ce qui lui permet de monter facilement dans les étages de nos maisons.",
-      type: "Mise en pression et stockage"
+      title: "3. Le Stockage",
+      desc: "L'eau potable est envoyée dans des réservoirs de stockage pour être disponible à tout moment. Il existe deux types d'installations : le château d'eau (un réservoir surélevé qui utilise la gravité et le principe des vases communicants pour distribuer l'eau sous pression) et le réservoir enterré (une grande cuve en béton cachée sous la terre, très courante dans les villages, qui utilise des pompes électriques pour envoyer l'eau).",
+      type: "Stockage et mise en pression",
+      image: "photos/details_stockage.png"
     },
     dist: {
-      title: "4. La Distribution (Canalisations)",
-      desc: "Un réseau complexe de tuyaux souterrains (canalisations) chemine sous les rues pour amener l'eau potable sous pression depuis le château d'eau jusqu'au robinet de chaque habitation, école ou usine.",
-      type: "Réseau de transport de l'eau"
+      title: "4. La Distribution (Réseau de canalisations)",
+      desc: "L'eau potable quitte le château d'eau ou le réservoir enterré et voyage dans un immense réseau souterrain de canalisations (tuyaux) situé sous nos routes et trottoirs. Un branchement relie la canalisation principale à chaque bâtiment (maison, école, hôpital). Un compteur d'eau y est installé pour mesurer notre consommation.",
+      type: "Réseau de transport de l'eau",
+      image: "photos/details_distribution.png"
     },
     habi: {
       title: "5. L'Utilisation (Habitations)",
-      desc: "Les citoyens utilisent l'eau potable au quotidien pour boire, cuisiner, se laver (douches, bains) ou évacuer les déchets (toilettes). L'eau propre se mélange alors à des produits chimiques (savons, lessives) ou des saletés et devient une eau usée.",
-      type: "Consommation humaine"
+      desc: "Nous utilisons l'eau potable au quotidien à la maison ou à l'école pour boire, cuisiner, se laver (douches, bains) ou évacuer les déchets (chasses d'eau des toilettes). En moyenne, un Belge consomme 100 litres d'eau par jour ! L'eau propre se mélange alors aux savons, graisses et impuretés et devient une eau usée.",
+      type: "Consommation humaine",
+      image: "photos/details_utilisation.png"
     },
     egou: {
-      title: "6. La Collecte (Égouts & Eaux usées)",
-      desc: "Les eaux sales ou usées s'écoulent dans les canalisations d'évacuation de la maison puis se rassemblent dans de grands conduits sous la route : les égouts. Ce réseau de collecte les achemine hors de la ville.",
-      type: "Évacuation des eaux usées"
+      title: "6. La Collecte (Égouts)",
+      desc: "Les eaux usées (sales) s'écoulent dans les tuyaux d'évacuation de nos maisons puis se déversent dans des canalisations plus grandes situées sous la chaussée : les égouts. Ce réseau de collecte collecte et achemine gravitairement toutes les eaux usées en dehors des zones habitées vers la station d'épuration.",
+      type: "Évacuation des eaux usées",
+      image: "photos/details_collecte.png"
     },
     epur: {
       title: "7. La Dépollution (Station d'épuration)",
-      desc: "Avant d'être rejetée dans la nature, l'eau sale doit être nettoyée pour ne pas tuer les poissons et polluer les rivières. Elle arrive à la station d'épuration (STEP). Là, on sépare les déchets (papiers, sables, graisses) et on utilise des bactéries microscopiques pour dévorer la pollution organique.",
-      type: "Nettoyage des eaux usées"
+      desc: "Les eaux usées arrivent à la station d'épuration (STEP) pour y être nettoyées avant de retourner dans la nature. Elle subit un traitement physique (dégrillage pour retirer les déchets solides, décantation primaire pour laisser couler les boues) et un traitement biologique (dans un bassin d'aération où des bactéries microscopiques digèrent la pollution organique). Un clarificateur sépare enfin l'eau épurée des bactéries.",
+      type: "Nettoyage des eaux usées",
+      image: "photos/details_depollution.png"
     },
     reje: {
       title: "8. Le Rejet dans la rivière",
-      desc: "Une fois nettoyée (épurée), l'eau n'est pas encore potable, mais elle est devenue suffisamment propre pour être rejetée dans la rivière ou le fleuve sans nuire à l'environnement. Elle reprend ainsi son cours dans le cycle naturel.",
-      type: "Retour au milieu naturel"
+      desc: "Une fois épurée, l'eau est propre mais elle n'est pas encore potable. Elle est rejetée dans un cours d'eau (rivière ou fleuve). Ce rejet respecte l'écosystème : l'eau propre permet aux poissons de vivre, aux plantes de grandir, et réintègre ainsi le cycle naturel de l'eau de notre planète.",
+      type: "Retour au milieu naturel",
+      image: "photos/details_rejet.png"
     }
   };
 
@@ -1068,7 +1084,114 @@
     cb.addEventListener('change', calculateEcoSavings);
   });
 
+  // ================================================================
+  // SYSTEME DE CALIBRAGE DE HOTSPOTS (DEBUG)
+  // ================================================================
+  let debugMode = false;
+  const calibratorBox = document.getElementById('calibratorBox');
+  const calibratorOutput = document.getElementById('calibratorOutput');
 
+  // Activer/désactiver par raccourci clavier
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'd' || e.key === 'D') {
+      toggleCalibrator();
+    }
+  });
+
+  // Activer/désactiver par bouton
+  const btnToggleCalibrator = document.getElementById('btnToggleCalibrator');
+  if (btnToggleCalibrator) {
+    btnToggleCalibrator.addEventListener('click', toggleCalibrator);
+  }
+
+  function toggleCalibrator() {
+    debugMode = !debugMode;
+    calibratorBox.classList.toggle('hidden', !debugMode);
+    enableDragHotspots(debugMode);
+    
+    if (btnToggleCalibrator) {
+      btnToggleCalibrator.textContent = debugMode ? "✅ Quitter l'Ajustement" : "🛠️ Mode Ajustement Hotspots";
+      if (debugMode) {
+        btnToggleCalibrator.classList.remove('bg-slate-100');
+        btnToggleCalibrator.classList.add('bg-amber-100', 'border-amber-500');
+      } else {
+        btnToggleCalibrator.classList.remove('bg-amber-100', 'border-amber-500');
+        btnToggleCalibrator.classList.add('bg-slate-100');
+      }
+    }
+  }
+
+  function enableDragHotspots(enable) {
+    const allHotspots = document.querySelectorAll('.hotspot');
+    allHotspots.forEach(hs => {
+      if (enable) {
+        hs.style.cursor = 'move';
+        hs.style.touchAction = 'none'; // Empêche le défilement tactile pendant le glisser
+        hs.addEventListener('pointerdown', pointerDown);
+        hs.addEventListener('pointermove', pointerMove);
+        hs.addEventListener('pointerup', pointerUp);
+        hs.addEventListener('pointercancel', pointerUp);
+      } else {
+        hs.style.cursor = 'pointer';
+        hs.style.touchAction = '';
+        hs.removeEventListener('pointerdown', pointerDown);
+        hs.removeEventListener('pointermove', pointerMove);
+        hs.removeEventListener('pointerup', pointerUp);
+        hs.removeEventListener('pointercancel', pointerUp);
+      }
+    });
+  }
+
+  let activeDragElement = null;
+
+  function pointerDown(e) {
+    if (!debugMode) return;
+    activeDragElement = e.currentTarget;
+    activeDragElement.setPointerCapture(e.pointerId);
+    e.preventDefault();
+  }
+
+  function pointerMove(e) {
+    if (!activeDragElement) return;
+    
+    const wrap = activeDragElement.closest('.scene-wrap');
+    if (!wrap) return;
+    
+    const rect = wrap.getBoundingClientRect();
+    
+    // Calculer les positions par rapport au conteneur
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+    
+    // Calculer le pourcentage avec une décimale
+    let pctX = (mouseX / rect.width) * 100;
+    let pctY = (mouseY / rect.height) * 100;
+    
+    // Limiter entre 0% et 100%
+    pctX = Math.max(0, Math.min(100, pctX));
+    pctY = Math.max(0, Math.min(100, pctY));
+    
+    // Appliquer directement la position
+    activeDragElement.style.left = `${pctX.toFixed(1)}%`;
+    activeDragElement.style.top = `${pctY.toFixed(1)}%`;
+    
+    updateCalibratorOutput();
+  }
+
+  function pointerUp(e) {
+    if (!activeDragElement) return;
+    activeDragElement.releasePointerCapture(e.pointerId);
+    activeDragElement = null;
+  }
+
+  function updateCalibratorOutput() {
+    const allHotspots = document.querySelectorAll('.hotspot');
+    let out = "Configuration des hotspots :\n";
+    allHotspots.forEach(hs => {
+      out += `ID: ${hs.id} | style="left: ${hs.style.left}; top: ${hs.style.top};"\n`;
+    });
+    calibratorOutput.value = out;
+  }
 
   // ================================================================
   // SYSTEME DE LIGHTBOX (ZOOM D'ILLUSTRATIONS)
