@@ -1,6 +1,6 @@
 import os
 
-template_path = "/Users/jeremy/Downloads/gabarit-questionnaire-LCML.html"
+template_path = "/Users/jeremy/antigravity/LCML/gabarit-questionnaire-LCML.html"
 output_path = "/Users/jeremy/antigravity/LCML/questionnaire-respiratoire-LCML.html"
 output_path_fiches = "/Users/jeremy/antigravity/LCML/fiches/questionnaire-respiratoire-LCML.html"
 
@@ -75,8 +75,8 @@ body_html = f"""
       <span class="w">trachée</span>
       <span class="w">bronchioles</span>
     </div>
-    <ul style="margin-left: 10px; margin-top: 4px; line-height: 1.5;">
-      <li>Lors de l'inspiration, l'air entre par les <span class="fill" style="min-width: 140px;"></span> où il est filtré et réchauffé. Il passe ensuite par le <span class="fill" style="min-width: 110px;"></span>, traverse la <span class="fill" style="min-width: 110px;"></span>, puis circule dans les bronches et les <span class="fill" style="min-width: 130px;"></span> pour atteindre les alvéoles.</li>
+    <ul style="margin-left: 10px; margin-top: 4px; line-height: 2.2;">
+      <li>Lors de l'inspiration, l'air entre par les <span class="fill" style="min-width: 170px;"></span> où il est filtré et réchauffé. Il passe ensuite par le <span class="fill" style="min-width: 125px;"></span>, traverse la <span class="fill" style="min-width: 125px;"></span>, puis circule dans les bronches et les <span class="fill" style="min-width: 155px;"></span> pour atteindre les alvéoles.</li>
     </ul>
   </div>
 </div>
@@ -118,23 +118,20 @@ body_html = f"""
 
 <!-- EXERCICE 3 -->
 <div class="exo">
-  <div class="xh"><h2>3. L'observation des organes et les échanges gazeux</h2></div>
+  <div class="xh"><h2>3. L'observation de l'alvéole pulmonaire et les échanges gazeux</h2></div>
   <div class="body">
-    <p class="consigne">a. Observe les deux schémas du cours, puis réponds&nbsp;:</p>
-    <div class="g2" style="margin-left: 10px; margin-bottom: 12px;">
-      <div class="imgcard">
-        <img src="photos/schema_respiratoire.png" style="width:100%; height:120px; object-fit:contain; background:#fff; margin-bottom: 4px;">
-        <figcaption>Schéma de l'appareil respiratoire</figcaption>
-      </div>
-      <div class="imgcard">
-        <img src="photos/echanges_gazeux.png" style="width:100%; height:120px; object-fit:contain; background:#fff; margin-bottom: 4px;">
+    <div style="display: grid; grid-template-columns: 240px 1fr; gap: 20px; align-items: flex-start; margin-left: 10px; margin-top: 4px; margin-bottom: 4px;">
+      <div class="imgcard" style="margin: 0;">
+        <img src="photos/echanges_gazeux.png" style="width:100%; height:130px; object-fit:contain; background:#fff; margin-bottom: 4px;">
         <figcaption>Zoom sur l'alvéole pulmonaire</figcaption>
       </div>
-    </div>
-    <p class="consigne">b. Pourquoi est-il beaucoup plus sain de respirer par le nez plutôt que par la bouche&nbsp;? Explique.</p>
-    <div class="lines" style="margin-left: 10px; margin-bottom: 4px;">
-      <span></span>
-      <span></span>
+      <div style="display: flex; flex-direction: column; justify-content: flex-start;">
+        <p class="consigne" style="margin: 0 0 8px 0;">a. Observe le schéma de l'alvéole. Explique comment change la couleur du sang lorsqu'il circule autour de l'alvéole, et quel gaz il a récupéré&nbsp;:</p>
+        <div class="lines">
+          <span style="height: 36px;"></span>
+          <span style="height: 36px;"></span>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -227,7 +224,7 @@ body_html = f"""
 
     <p class="consigne">b. Quelle réaction réflexe involontaire se produit pour nettoyer immédiatement ton nez lorsqu'une poussière l'irrite&nbsp;?</p>
     <div class="lines" style="margin-left: 10px; margin-bottom: 4px;">
-      <span></span>
+      <span style="height: 32px;"></span>
     </div>
   </div>
 </div>
