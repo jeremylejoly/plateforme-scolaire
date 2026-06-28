@@ -1,4 +1,4 @@
-const CACHE_NAME = 'classe-mr-lejoly-cache-v295';
+const CACHE_NAME = 'classe-mr-lejoly-cache-v296';
 const CORE_ASSETS = [
   './',
   'index.html',
@@ -117,6 +117,14 @@ const CORE_ASSETS = [
   'photos/l_habit_moine.png',
   'photos/vole_oeuf_boeuf.png',
   'photos/charrue_boeufs.png',
+  'photos/villi_step1.png',
+  'photos/villi_step2.png',
+  'photos/villi_step3.png',
+  'photos/villi_panel1.png',
+  'photos/villi_panel2.png',
+  'photos/villi_panel3.png',
+  'photos/villi_zoom_new.png',
+  'photos/villi_zoom_chatgpt.png',
   'fiches/relief-hydrographie.html',
   'photos/classification_banniere.png',
   'photos/classification_biodiversite.png',
