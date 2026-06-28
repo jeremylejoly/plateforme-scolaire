@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>L'Enquêteur Royal — Situations d'Aire</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&family=Plus+Jakarta+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #0f172a;
+      --bg-card: #1e293b;
+      --primary: #8b5cf6;
+      --primary-glow: rgba(139, 92, 246, 0.25);
+      --true-color: #10b981;
+      --true-glow: rgba(16, 185, 129, 0.25);
+      --false-color: #f43f5e;
+      --false-glow: rgba(244, 63, 94, 0.25);
+      --accent: #f59e0b;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --border-color: #334155;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 1.5rem;
+    }
+
+    .game-container {
+      width: 100%;
+      max-width: 820px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 24px;
+      padding: 2rem 2.5rem 2.5rem;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    }
+
+    .game-container::before {
+      content: '';
+      position: absolute;
+      top: -120px; right: -120px;
+      width: 280px; height: 280px;
+      background: radial-gradient(circle, rgba(139,92,246,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    /* Header */
+    header { text-align: center; margin-bottom: 1.5rem; position: relative; z-index: 1; }
+
+    h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 2rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #c4b5fd 0%, #8b5cf6 60%, #6d28d9 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.4rem;
+    }
+
+    .subtitle { color: var(--text-muted); font-size: 0.95rem; }
+
+    /* Scoreboard */
+    .scoreboard {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 0.9rem 1.25rem;
+      margin-bottom: 1.5rem;
+      position: relative; z-index: 1;
+    }
+
+    .score-block { display: flex; align-items: center; gap: 0.6rem; }
+    .score-label { font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); }
+    .score-value { font-family: 'Outfit', sans-serif; font-size: 1.4rem; font-weight: 700; color: var(--accent); }
+
+    .progress-track {
+      flex: 1; height: 8px;
+      background: rgba(51,65,85,0.5);
+      border-radius: 999px; margin: 0 1.5rem; overflow: hidden;
+    }
+    .progress-bar {
+      height: 100%; width: 0%;
+      background: linear-gradient(90deg, var(--primary) 0%, #a78bfa 100%);
+      border-radius: 999px;
+      transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Situation card */
+    .situation-card {
+      background: rgba(30, 41, 59, 0.5);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 2rem;
+      margin-bottom: 1.75rem;
+      position: relative; z-index: 1;
+      min-height: 140px;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      justify-content: center;
+    }
+
+    .situation-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.25rem 0.75rem;
+      border-radius: 99px;
+      background: rgba(139, 92, 246, 0.15);
+      border: 1px solid rgba(139, 92, 246, 0.3);
+      color: #c4b5fd;
+      font-size: 0.78rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      width: fit-content;
+    }
+
+    .situation-emoji {
+      font-size: 2.5rem;
+      line-height: 1;
+    }
+
+    .situation-text {
+      font-size: 1.25rem;
+      font-weight: 600;
+      line-height: 1.5;
+      color: #e2e8f0;
+    }
+
+    /* True/False buttons */
+    .answer-buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      position: relative; z-index: 1;
+      margin-bottom: 1.5rem;
+    }
+
+    .btn-answer {
+      border: none;
+      border-radius: 18px;
+      padding: 1.25rem;
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.18s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.35rem;
+      letter-spacing: -0.01em;
+    }
+
+    .btn-answer span.btn-icon { font-size: 2rem; }
+    .btn-answer span.btn-label { font-size: 1.15rem; }
+
+    .btn-true {
+      background: linear-gradient(135deg, #059669 0%, var(--true-color) 100%);
+      color: white;
+      box-shadow: 0 4px 16px var(--true-glow);
+    }
+    .btn-true:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(16,185,129,0.4); }
+
+    .btn-false {
+      background: linear-gradient(135deg, #be123c 0%, var(--false-color) 100%);
+      color: white;
+      box-shadow: 0 4px 16px var(--false-glow);
+    }
+    .btn-false:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(244,63,94,0.4); }
+
+    .btn-answer:active { transform: translateY(0) scale(0.98); }
+    .btn-answer:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
+
+    /* Feedback panel */
+    .feedback-panel {
+      border-radius: 18px;
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+      animation: slideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      position: relative; z-index: 1;
+      margin-bottom: 1.25rem;
+    }
+
+    .feedback-correct {
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.35);
+    }
+    .feedback-wrong {
+      background: rgba(244, 63, 94, 0.1);
+      border: 1px solid rgba(244, 63, 94, 0.35);
+    }
+
+    .feedback-icon { font-size: 1.75rem; flex-shrink: 0; }
+
+    .feedback-body {}
+    .feedback-title {
+      font-weight: 700;
+      font-size: 1.05rem;
+      margin-bottom: 0.35rem;
+    }
+    .feedback-correct .feedback-title { color: #34d399; }
+    .feedback-wrong .feedback-title { color: #fb7185; }
+
+    .feedback-expl {
+      font-size: 0.95rem;
+      line-height: 1.55;
+      color: #cbd5e1;
+    }
+
+    .feedback-definition {
+      margin-top: 0.75rem;
+      padding: 0.6rem 0.85rem;
+      border-radius: 10px;
+      background: rgba(139, 92, 246, 0.1);
+      border-left: 3px solid var(--primary);
+      font-size: 0.88rem;
+      color: #c4b5fd;
+      font-style: italic;
+    }
+
+    /* Next button */
+    .btn-next {
+      width: 100%;
+      border: none;
+      color: white;
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      padding: 1rem;
+      border-radius: 14px;
+      cursor: pointer;
+      background: linear-gradient(135deg, var(--primary) 0%, #6d28d9 100%);
+      box-shadow: 0 4px 16px var(--primary-glow);
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      position: relative; z-index: 1;
+    }
+    .btn-next:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(139,92,246,0.4); }
+
+    /* Congrats screen */
+    .congrats-screen {
+      text-align: center;
+      padding: 2.5rem 1.5rem;
+      animation: scaleIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+    .trophy-icon { font-size: 4.5rem; display: inline-block; animation: float 3s ease-in-out infinite; margin-bottom: 1rem; }
+    .congrats-title { font-family: 'Outfit', sans-serif; font-size: 2.25rem; font-weight: 800; color: var(--accent); margin-bottom: 0.75rem; }
+    .congrats-text { color: var(--text-muted); font-size: 1.1rem; line-height: 1.6; max-width: 480px; margin: 0 auto 1.75rem; }
+    .stars { font-size: 2.25rem; margin-bottom: 1.75rem; }
+
+    .btn-replay {
+      background: linear-gradient(135deg, var(--true-color) 0%, #059669 100%);
+      border: none; color: white;
+      font-family: 'Outfit', sans-serif; font-size: 1.1rem; font-weight: 700;
+      padding: 1rem 2.25rem; border-radius: 14px; cursor: pointer;
+      box-shadow: 0 4px 16px rgba(16,185,129,0.3);
+      transition: all 0.2s ease;
+      display: inline-flex; align-items: center; gap: 0.5rem;
+    }
+    .btn-replay:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(16,185,129,0.4); }
+
+    /* Animations */
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes scaleIn {
+      from { opacity: 0; transform: scale(0.92); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+  </style>
+</head>
+<body>
+
+<div class="game-container">
+
+  <!-- Active game view -->
+  <div id="game-flow">
+    <header>
+      <h1>🔍 L'Enquêteur Royal</h1>
+      <p class="subtitle">Est-ce une situation d'aire ? Clique sur la bonne réponse.</p>
+    </header>
+
+    <div class="scoreboard">
+      <div class="score-block">
+        <span class="score-label">Question</span>
+        <span class="score-value" id="q-num">1</span>
+        <span style="color:var(--text-muted);font-family:'Outfit',sans-serif;font-size:1.1rem;">/10</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-bar" id="prog-bar"></div>
+      </div>
+      <div class="score-block">
+        <span class="score-label">Score</span>
+        <span class="score-value" id="score-display">0</span>
+        <span style="color:var(--text-muted);font-family:'Outfit',sans-serif;font-size:1.1rem;">/10</span>
+      </div>
+    </div>
+
+    <div class="situation-card">
+      <span class="situation-tag">🔎 Situation royale n°<span id="sit-num">1</span></span>
+      <div class="situation-emoji" id="sit-emoji">…</div>
+      <div class="situation-text" id="sit-text">Chargement de la situation…</div>
+    </div>
+
+    <div class="answer-buttons">
+      <button id="btn-true" class="btn-answer btn-true" onclick="answer(true)">
+        <span class="btn-icon">✅</span>
+        <span class="btn-label">VRAI — c'est de l'aire</span>
+      </button>
+      <button id="btn-false" class="btn-answer btn-false" onclick="answer(false)">
+        <span class="btn-icon">❌</span>
+        <span class="btn-label">FAUX — ce n'est pas de l'aire</span>
+      </button>
+    </div>
+
+    <div id="feedback-area"></div>
+    <div id="next-area"></div>
+  </div>
+
+  <!-- Congratulations view -->
+  <div id="congrats-flow" style="display:none;">
+    <div class="congrats-screen">
+      <div class="trophy-icon">🏅</div>
+      <h2 class="congrats-title">Enquête bouclée !</h2>
+      <p class="congrats-text" id="congrats-msg">Mission accomplie !</p>
+      <div class="stars" id="stars-display">⭐⭐⭐</div>
+      <button class="btn-replay" onclick="resetGame()">🔄 <span>Recommencer l'enquête</span></button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  const TOTAL = 10;
+  let step = 1;
+  let score = 0;
+  let session = [];
+  let answered = false;
+
+  // ─── 50 SITUATIONS ───────────────────────────────────────────────
+  // isAire: true = situation d'aire, false = pas de l'aire
+  const ALL_SITUATIONS = [
+    // ── VRAI (aire) ──
+    {
+      emoji: '🖌️',
+      text: 'Je veux repeindre le mur de ma chambre.',
+      isAire: true,
+      expl: 'Pour acheter la bonne quantité de peinture, tu dois connaître la surface du mur. La surface, c\'est de l\'aire !',
+      why: 'L\'aire, c\'est la mesure d\'une surface plate. Un mur est une surface.'
+    },
+    {
+      emoji: '🌿',
+      text: 'Le jardinier veut gazonner le jardin de la ferme.',
+      isAire: true,
+      expl: 'Pour semer du gazon, on a besoin de connaître la superficie du jardin. C\'est bien une situation d\'aire.',
+      why: 'Le sol du jardin est une surface plane : on mesure combien de mètres carrés il y a.'
+    },
+    {
+      emoji: '🧩',
+      text: 'Le carreleur pose des carreaux dans la salle de bain.',
+      isAire: true,
+      expl: 'Pour calculer le nombre de carreaux nécessaires, on mesure l\'aire du sol à couvrir.',
+      why: 'Le sol de la salle de bain est une surface : on en calcule l\'aire.'
+    },
+    {
+      emoji: '🏠',
+      text: 'Une architecte calcule la surface habitable d\'un appartement.',
+      isAire: true,
+      expl: 'La surface habitable, c\'est l\'aire totale de toutes les pièces de l\'appartement.',
+      why: 'L\'aire, c\'est justement la mesure de l\'espace au sol d\'une pièce ou d\'un bâtiment.'
+    },
+    {
+      emoji: '🖼️',
+      text: 'Un encadreur veut couvrir le fond d\'un cadre avec du tissu.',
+      isAire: true,
+      expl: 'Pour couper le bon morceau de tissu, il faut connaître l\'aire du fond du cadre.',
+      why: 'Le fond du cadre est une surface rectangulaire : on en calcule l\'aire.'
+    },
+    {
+      emoji: '🌾',
+      text: 'Un agriculteur veut fertiliser son champ.',
+      isAire: true,
+      expl: 'La dose d\'engrais dépend de la superficie du champ. C\'est une situation d\'aire.',
+      why: 'Un champ est une grande surface plane. On calcule son aire en m² ou en hectares.'
+    },
+    {
+      emoji: '🏊',
+      text: 'On veut installer une bâche sur la piscine pour l\'hiver.',
+      isAire: true,
+      expl: 'La bâche doit couvrir toute la surface de l\'eau : on calcule l\'aire de la piscine.',
+      why: 'La surface de l\'eau est une surface plane. On calcule son aire pour choisir la bonne bâche.'
+    },
+    {
+      emoji: '🪟',
+      text: 'Un vitrier doit remplacer la vitre d\'une fenêtre.',
+      isAire: true,
+      expl: 'Pour découper la bonne vitre, il faut connaître l\'aire de la fenêtre.',
+      why: 'La vitre est une surface plane : on mesure son aire en cm² ou en m².'
+    },
+    {
+      emoji: '🍕',
+      text: 'On partage une pizza en parts égales. Chaque part doit avoir la même surface.',
+      isAire: true,
+      expl: 'Avoir la même surface, c\'est avoir la même aire. C\'est bien une situation d\'aire !',
+      why: 'La pizza est une surface plane circulaire. Partager équitablement, c\'est partager des aires égales.'
+    },
+    {
+      emoji: '🎨',
+      text: 'Un élève colorie toute la surface d\'un triangle sur sa feuille.',
+      isAire: true,
+      expl: 'La surface coloriée est l\'aire du triangle. Couvrir une surface, c\'est une situation d\'aire.',
+      why: 'L\'aire du triangle, c\'est exactement la surface intérieure qu\'il faut colorier.'
+    },
+    {
+      emoji: '🛖',
+      text: 'On veut couvrir le sol d\'une cabane en bois avec un plancher.',
+      isAire: true,
+      expl: 'Pour poser le plancher, il faut mesurer l\'aire du sol de la cabane.',
+      why: 'Le sol est une surface : on calcule son aire pour savoir combien de planches acheter.'
+    },
+    {
+      emoji: '🏟️',
+      text: 'On veut gazonner la pelouse d\'un stade de football.',
+      isAire: true,
+      expl: 'Pour gazonner, on a besoin de connaître la superficie du terrain : c\'est de l\'aire.',
+      why: 'Le terrain de foot est une grande surface rectangulaire. On en calcule l\'aire.'
+    },
+    {
+      emoji: '🪂',
+      text: 'Un couturier mesure le tissu nécessaire pour fabriquer une nappe.',
+      isAire: true,
+      expl: 'La nappe doit couvrir la surface de la table. Pour savoir combien de tissu acheter, on calcule l\'aire.',
+      why: 'La table est une surface plane : son aire indique la quantité de tissu nécessaire.'
+    },
+    {
+      emoji: '🌡️',
+      text: 'On mesure la surface d\'un panneau solaire pour estimer l\'énergie produite.',
+      isAire: true,
+      expl: 'Plus la surface d\'un panneau est grande (grande aire), plus il capte d\'énergie.',
+      why: 'Le panneau solaire est une surface plane. Son efficacité dépend de son aire.'
+    },
+    {
+      emoji: '🗺️',
+      text: 'Un géographe veut calculer la superficie de la Belgique.',
+      isAire: true,
+      expl: 'La superficie d\'un pays, c\'est son aire totale. C\'est bien une situation d\'aire !',
+      why: 'Un pays est une grande surface. Sa superficie s\'exprime en km² : c\'est son aire.'
+    },
+    {
+      emoji: '📐',
+      text: 'Un dessinateur trace un rectangle et veut savoir combien de petits carrés d\'1 cm² il contient.',
+      isAire: true,
+      expl: 'Compter combien de cm² rentrent dans une figure, c\'est calculer son aire !',
+      why: 'L\'aire, c\'est exactement le nombre de carrés-unités que contient une surface.'
+    },
+    {
+      emoji: '🪵',
+      text: 'Un menuisier découpe une planche aux bonnes dimensions pour couvrir un trou dans le plancher.',
+      isAire: true,
+      expl: 'Il doit connaître la surface du trou (son aire) pour découper la planche à la bonne taille.',
+      why: 'Le trou est une surface : on calcule son aire pour adapter la planche.'
+    },
+    {
+      emoji: '🧺',
+      text: 'On veut poser un tapis dans le salon, et le tapis doit couvrir toute la surface.',
+      isAire: true,
+      expl: 'Pour que le tapis couvre exactement le sol, on a besoin de connaître l\'aire du salon.',
+      why: 'Le sol est une surface plane. Son aire détermine la taille du tapis à choisir.'
+    },
+    {
+      emoji: '🌍',
+      text: 'On compare la taille de deux îles : laquelle est la plus grande ?',
+      isAire: true,
+      expl: 'Comparer la taille de deux îles, c\'est comparer leurs aires. C\'est une situation d\'aire !',
+      why: 'La "taille" d\'une île, c\'est sa superficie, c\'est-à-dire son aire mesurée en km².'
+    },
+    {
+      emoji: '☀️',
+      text: 'Le fermier calcule combien de m² de serre il lui faut pour faire pousser ses tomates.',
+      isAire: true,
+      expl: 'Le nombre de m² d\'une serre, c\'est son aire. C\'est bien une situation d\'aire.',
+      why: 'La serre est une surface. On calcule son aire pour savoir si elle est assez grande.'
+    },
+    {
+      emoji: '🛕',
+      text: 'On veut décorer les murs d\'une église avec de la mosaïque. On calcule leur surface totale.',
+      isAire: true,
+      expl: 'Décorer des murs, c\'est couvrir une surface. On a besoin de l\'aire totale des murs.',
+      why: 'Les murs sont des surfaces planes. Leur surface totale, c\'est la somme de leurs aires.'
+    },
+    {
+      emoji: '🏕️',
+      text: 'On cherche un emplacement de camping de 30 m² pour planter la tente.',
+      isAire: true,
+      expl: '30 m², c\'est une aire ! On cherche un espace au sol de cette dimension.',
+      why: 'Un emplacement de camping est une surface plane. 30 m² est une mesure d\'aire.'
+    },
+    {
+      emoji: '🎭',
+      text: 'Le régisseur mesure la scène du théâtre pour commander les bons rideaux de sol.',
+      isAire: true,
+      expl: 'Les rideaux de sol doivent couvrir toute la scène. Il faut en calculer l\'aire.',
+      why: 'La scène est une surface plane. Son aire détermine la quantité de matériau à acheter.'
+    },
+    {
+      emoji: '🌻',
+      text: 'Un tournesol pousse dans un carré de jardin. On veut savoir combien de graines planter par m².',
+      isAire: true,
+      expl: 'Calculer une densité de plantation par m², c\'est bien travailler avec des aires.',
+      why: 'La parcelle du jardin est une surface. Son aire (en m²) détermine le nombre de graines.'
+    },
+    {
+      emoji: '🏄',
+      text: 'Un shaper fabrique une planche de surf et doit calculer la surface à poncer.',
+      isAire: true,
+      expl: 'La surface à poncer de la planche, c\'est son aire. C\'est bien une situation d\'aire.',
+      why: 'La planche a une surface plane à travailler. On en calcule l\'aire pour estimer le temps de travail.'
+    },
+
+    // ── FAUX (pas de l'aire) ──
+    {
+      emoji: '🐄',
+      text: 'Le fermier clôture son pré pour protéger ses vaches.',
+      isAire: false,
+      expl: 'Poser une clôture tout autour d\'un pré, c\'est mesurer le périmètre, pas l\'aire ! Le périmètre, c\'est la longueur du bord.',
+      why: 'L\'aire, c\'est la surface intérieure. Ici, on longe le bord : c\'est le périmètre.'
+    },
+    {
+      emoji: '🎀',
+      text: 'On met un ruban tout autour d\'une boîte cadeau carrée.',
+      isAire: false,
+      expl: 'Le ruban suit le bord de la boîte : c\'est le périmètre, pas l\'aire.',
+      why: 'L\'aire serait la surface du dessus de la boîte. Le ruban suit le tour (périmètre).'
+    },
+    {
+      emoji: '🏃',
+      text: 'Un athlète court autour d\'un stade.',
+      isAire: false,
+      expl: 'Courir autour d\'un stade, c\'est parcourir son périmètre, pas son aire.',
+      why: 'La distance parcourue autour d\'une forme, c\'est le périmètre. L\'aire, c\'est l\'intérieur.'
+    },
+    {
+      emoji: '🚿',
+      text: 'La plombière mesure la longueur de tuyau pour relier deux pièces.',
+      isAire: false,
+      expl: 'La longueur d\'un tuyau, c\'est une longueur, pas une aire. L\'aire mesure une surface.',
+      why: 'Une longueur est une mesure à une seule dimension. L\'aire, c\'est une surface (deux dimensions).'
+    },
+    {
+      emoji: '📏',
+      text: 'On mesure la hauteur d\'un élève avec une toise.',
+      isAire: false,
+      expl: 'La hauteur est une longueur, une seule dimension. L\'aire mesure une surface, deux dimensions.',
+      why: 'Mesurer quelqu\'un en cm, c\'est une longueur, pas une aire.'
+    },
+    {
+      emoji: '🥊',
+      text: 'On pèse un boxer pour savoir dans quelle catégorie il combat.',
+      isAire: false,
+      expl: 'Le poids se mesure en kg. Ce n\'est ni une longueur ni une aire.',
+      why: 'L\'aire mesure une surface en m² ou cm². Le poids, c\'est une masse en kg.'
+    },
+    {
+      emoji: '🧴',
+      text: 'On mesure le volume de shampoing restant dans la bouteille.',
+      isAire: false,
+      expl: 'Le volume se mesure en litres ou cm³. Ce n\'est pas une aire.',
+      why: 'L\'aire mesure une surface plate. Le volume mesure l\'espace occupé en 3D.'
+    },
+    {
+      emoji: '⏱️',
+      text: 'On chronomètre le temps d\'un coureur sur 100 m.',
+      isAire: false,
+      expl: 'Le temps se mesure en secondes. Ce n\'est absolument pas une aire.',
+      why: 'L\'aire mesure une surface. Le temps est une grandeur totalement différente.'
+    },
+    {
+      emoji: '🌡️',
+      text: 'On mesure la température de l\'eau dans la piscine.',
+      isAire: false,
+      expl: 'La température se mesure en degrés Celsius. Ce n\'est pas une aire.',
+      why: 'L\'aire mesure une surface en m² ou cm². La température est une grandeur physique différente.'
+    },
+    {
+      emoji: '🚗',
+      text: 'On mesure la vitesse d\'une voiture sur l\'autoroute.',
+      isAire: false,
+      expl: 'La vitesse se mesure en km/h. Ce n\'est pas une situation d\'aire.',
+      why: 'La vitesse est une grandeur qui combine longueur et temps. L\'aire, c\'est une surface.'
+    },
+    {
+      emoji: '🧵',
+      text: 'Une couturière mesure la longueur de fil pour faire une couture sur le bord d\'une nappe.',
+      isAire: false,
+      expl: 'Mesurer une couture sur le bord, c\'est mesurer une longueur (ou un périmètre), pas une aire.',
+      why: 'Le bord d\'une nappe, c\'est son périmètre. L\'aire, c\'est la surface du tissu entier.'
+    },
+    {
+      emoji: '⚓',
+      text: 'On mesure la profondeur de la mer à cet endroit.',
+      isAire: false,
+      expl: 'La profondeur est une longueur mesurée vers le bas. Ce n\'est pas une aire.',
+      why: 'Une profondeur s\'exprime en mètres : c\'est une longueur, pas une surface.'
+    },
+    {
+      emoji: '🧳',
+      text: 'On pèse la valise à l\'aéroport pour vérifier qu\'elle ne dépasse pas 23 kg.',
+      isAire: false,
+      expl: 'Le poids est une masse mesurée en kg. Ce n\'est pas lié à l\'aire.',
+      why: 'L\'aire mesure une surface. La masse se mesure en kg avec une balance.'
+    },
+    {
+      emoji: '💧',
+      text: 'On verse 2 litres d\'eau dans une casserole.',
+      isAire: false,
+      expl: 'Les litres mesurent un volume, pas une aire.',
+      why: 'L\'aire mesure une surface en m² ou cm². Les litres mesurent une capacité (volume).'
+    },
+    {
+      emoji: '📦',
+      text: 'On calcule si un carton est assez grand pour contenir tous les livres.',
+      isAire: false,
+      expl: 'Vérifier si un carton "contient" des livres, c\'est penser au volume, pas à l\'aire.',
+      why: 'L\'aire est une surface en 2D. La capacité d\'un carton dépend de son volume en 3D.'
+    },
+    {
+      emoji: '🚴',
+      text: 'Un cycliste mesure la distance parcourue depuis le départ.',
+      isAire: false,
+      expl: 'La distance est une longueur, mesurée en km ou en m. Ce n\'est pas une aire.',
+      why: 'Une distance s\'exprime en mètres : c\'est une longueur. L\'aire s\'exprime en m².'
+    },
+    {
+      emoji: '🪜',
+      text: 'On mesure la hauteur d\'une échelle pour savoir si elle atteint le toit.',
+      isAire: false,
+      expl: 'La hauteur d\'une échelle est une longueur. Ce n\'est pas une aire.',
+      why: 'Une hauteur s\'exprime en mètres : c\'est une seule dimension, pas une surface.'
+    },
+    {
+      emoji: '🎵',
+      text: 'On règle le volume sonore de la radio.',
+      isAire: false,
+      expl: 'Le volume sonore se mesure en décibels. Rien à voir avec l\'aire (surface).',
+      why: 'Le mot "volume" ici désigne l\'intensité du son, pas une surface ni même un volume géométrique.'
+    },
+    {
+      emoji: '⚙️',
+      text: 'On mesure le diamètre d\'un engrenage pour en trouver un identique.',
+      isAire: false,
+      expl: 'Le diamètre est une longueur (distance d\'un bord à l\'autre). Ce n\'est pas une aire.',
+      why: 'Le diamètre s\'exprime en cm : c\'est une longueur. L\'aire d\'un cercle s\'exprime en cm².'
+    },
+    {
+      emoji: '🪣',
+      text: 'On remplit un seau avec de l\'eau jusqu\'au bord.',
+      isAire: false,
+      expl: 'Remplir un seau, c\'est penser à un volume (combien de litres), pas à une aire.',
+      why: 'L\'aire mesure une surface plate (2D). Un seau contient un volume (3D).'
+    },
+    {
+      emoji: '🎈',
+      text: 'On gonfle un ballon jusqu\'à ce qu\'il ait la bonne taille.',
+      isAire: false,
+      expl: 'Le volume d\'air dans le ballon ou son périmètre… mais pas une aire de surface plate.',
+      why: 'Un ballon est un objet en 3D. On parle de volume ou de circonférence, pas d\'aire plate.'
+    },
+    {
+      emoji: '🪨',
+      text: 'On pèse une roche pour savoir si elle est assez lourde comme ancre.',
+      isAire: false,
+      expl: 'Le poids d\'une roche se mesure en kg. Ce n\'est pas une aire.',
+      why: 'L\'aire mesure une surface. La masse d\'une roche est une grandeur différente.'
+    },
+    {
+      emoji: '🔦',
+      text: 'On mesure la portée d\'une lampe de poche (jusqu\'où elle éclaire).',
+      isAire: false,
+      expl: 'La portée d\'une lampe est une distance, mesurée en mètres. Ce n\'est pas une aire.',
+      why: 'Une portée, c\'est une longueur. L\'aire, c\'est une surface en m².'
+    },
+    {
+      emoji: '🎯',
+      text: 'On mesure la distance entre l\'archer et la cible.',
+      isAire: false,
+      expl: 'La distance entre deux points est une longueur, pas une aire.',
+      why: 'L\'aire mesure l\'intérieur d\'une surface. Ici on mesure une distance (longueur en m).'
+    },
+    {
+      emoji: '🛶',
+      text: 'On mesure la longueur d\'un canal pour savoir si le bateau peut le traverser.',
+      isAire: false,
+      expl: 'La longueur du canal est une mesure de longueur. Ce n\'est pas une aire.',
+      why: 'La longueur s\'exprime en mètres (1 dimension). L\'aire s\'exprime en m² (2 dimensions).'
+    }
+  ];
+
+  // ─── INIT ────────────────────────────────────────────────────────
+  function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  function startNewSession() {
+    session = shuffle(ALL_SITUATIONS).slice(0, TOTAL);
+  }
+
+  function renderQuestion() {
+    answered = false;
+    document.getElementById('feedback-area').innerHTML = '';
+    document.getElementById('next-area').innerHTML = '';
+    document.getElementById('btn-true').disabled = false;
+    document.getElementById('btn-false').disabled = false;
+
+    const sit = session[step - 1];
+    document.getElementById('q-num').textContent = step;
+    document.getElementById('sit-num').textContent = step;
+    document.getElementById('sit-emoji').textContent = sit.emoji;
+    document.getElementById('sit-text').textContent = sit.text;
+    document.getElementById('prog-bar').style.width = `${((step - 1) / TOTAL) * 100}%`;
+    document.getElementById('score-display').textContent = score;
+  }
+
+  function answer(userSaid) {
+    if (answered) return;
+    answered = true;
+
+    document.getElementById('btn-true').disabled = true;
+    document.getElementById('btn-false').disabled = true;
+
+    const sit = session[step - 1];
+    const correct = (userSaid === sit.isAire);
+    if (correct) score++;
+    document.getElementById('score-display').textContent = score;
+
+    const feedbackArea = document.getElementById('feedback-area');
+    feedbackArea.innerHTML = `
+      <div class="feedback-panel ${correct ? 'feedback-correct' : 'feedback-wrong'}">
+        <div class="feedback-icon">${correct ? '🎯' : '💡'}</div>
+        <div class="feedback-body">
+          <div class="feedback-title">${correct ? 'Bravo, bonne réponse !' : `Non, c'est ${sit.isAire ? 'VRAI' : 'FAUX'} !`}</div>
+          <div class="feedback-expl">${sit.expl}</div>
+          <div class="feedback-definition">💜 À retenir : ${sit.why}</div>
+        </div>
+      </div>
+    `;
+
+    const nextArea = document.getElementById('next-area');
+    if (step < TOTAL) {
+      nextArea.innerHTML = `<button class="btn-next" onclick="nextQuestion()"><span>Situation suivante</span> 👉</button>`;
+    } else {
+      nextArea.innerHTML = `<button class="btn-next" onclick="finishGame()"><span>Voir mes résultats</span> 🏅</button>`;
+    }
+  }
+
+  function nextQuestion() {
+    step++;
+    renderQuestion();
+  }
+
+  function finishGame() {
+    document.getElementById('game-flow').style.display = 'none';
+    document.getElementById('congrats-flow').style.display = 'block';
+
+    const pct = Math.round((score / TOTAL) * 100);
+    const msg = document.getElementById('congrats-msg');
+    const stars = document.getElementById('stars-display');
+
+    if (score === TOTAL) {
+      msg.innerHTML = `Parfait ! Tu as répondu juste à <strong>toutes les ${TOTAL} situations</strong> (${pct}%). Tu es un véritable expert de la notion d'aire !`;
+      stars.innerHTML = '⭐⭐⭐';
+    } else if (score >= 8) {
+      msg.innerHTML = `Excellent travail ! <strong>${score}/${TOTAL}</strong> bonnes réponses (${pct}%). Tu maîtrises très bien la notion d'aire.`;
+      stars.innerHTML = '⭐⭐';
+    } else if (score >= 5) {
+      msg.innerHTML = `Pas mal ! <strong>${score}/${TOTAL}</strong> bonnes réponses (${pct}%). Relis les explications pour mieux distinguer l'aire du périmètre et des autres grandeurs.`;
+      stars.innerHTML = '⭐';
+    } else {
+      msg.innerHTML = `Tu as obtenu <strong>${score}/${TOTAL}</strong> (${pct}%). La notion d'aire est encore difficile pour toi — relis les explications et recommence !`;
+      stars.innerHTML = '❌';
+    }
+
+    if (typeof window.parent !== 'undefined' && window.parent.handleActivityScore) {
+      window.parent.handleActivityScore('grandeur_aire_situations', score);
+    }
+  }
+
+  function resetGame() {
+    step = 1;
+    score = 0;
+    document.getElementById('game-flow').style.display = 'block';
+    document.getElementById('congrats-flow').style.display = 'none';
+    startNewSession();
+    renderQuestion();
+  }
+
+  window.addEventListener('DOMContentLoaded', () => {
+    startNewSession();
+    renderQuestion();
+  });
+</script>
+</body>
+</html>
