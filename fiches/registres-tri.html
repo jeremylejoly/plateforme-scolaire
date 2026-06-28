@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Le Défi des Registres — Jeu de Vocabulaire</title>
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<!-- TailwindCSS CDN -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    corePlugins: {
+      preflight: false,
+    },
+    theme: {
+      extend: {
+        borderWidth: {
+          '3': '3px',
+        },
+        fontFamily: {
+          sans: ['Inter', 'sans-serif'],
+          display: ['Fredoka', 'sans-serif'],
+          mono: ['Space Mono', 'monospace'],
+        }
+      }
+    }
+  }
+</script>
+<style>
+  :root {
+    --encre: #1a1a2e;
+    --papier: #f7efe2;
+    
+    --bleu-familier: #3b82f6;
+    --bleu-familier-clair: #eff6ff;
+    --orange-courant: #f97316;
+    --orange-courant-clair: #fff7ed;
+    --violet-soutenu: #a855f7;
+    --violet-soutenu-clair: #faf5ff;
+    
+    --vert: #16a34a;
+    --vert-clair: #d4f5e2;
+    --rouge: #dc2626;
+    --rouge-clair: #fdd9d7;
+    
+    --radius: 16px;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: 'Inter', system-ui, sans-serif;
+    color: var(--encre);
+    background: 
+      radial-gradient(circle at 1px 1px, rgba(177, 106, 9, 0.04) 1px, transparent 0) 0 0/24px 24px,
+      var(--papier);
+    line-height: 1.5;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: 'Fredoka', sans-serif;
+    line-height: 1.2;
+    margin: 0;
+  }
+
+  /* BOUTONS 3D */
+  .btn-3d {
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 700;
+    border: 3px solid var(--encre) !important;
+    box-shadow: 3px 3px 0px var(--encre);
+    transition: all 0.1s ease;
+    cursor: pointer;
+    user-select: none;
+  }
+  .btn-3d:active {
+    transform: translate(1px, 1px);
+    box-shadow: 1px 1px 0px var(--encre);
+  }
+
+  /* CARTES */
+  .card-premium {
+    background: #ffffff;
+    border: 3px solid var(--encre);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin: 16px 0;
+    box-shadow: 4px 4px 0px rgba(26, 26, 46, 0.08);
+  }
+
+  /* ZONE DE TRI */
+  .drop-zone {
+    border: 3px solid var(--encre);
+    border-radius: 16px;
+    padding: 16px;
+    background: #ffffff;
+    text-align: center;
+    transition: all 0.2s ease;
+    box-shadow: 3px 3px 0px var(--encre);
+    position: relative;
+    overflow: hidden;
+  }
+  .drop-zone.hovered {
+    transform: scale(1.03);
+  }
+  .drop-zone.zone-familier { background: var(--bleu-familier-clair); border-color: var(--bleu-familier); }
+  .drop-zone.zone-courant { background: var(--orange-courant-clair); border-color: var(--orange-courant); }
+  .drop-zone.zone-soutenu { background: var(--violet-soutenu-clair); border-color: var(--violet-soutenu); }
+
+  /* COMPORTEMENT AVATARS */
+  .avatar-img {
+    width: 90px;
+    height: 90px;
+    border-radius: 12px;
+    border: 3px solid var(--encre);
+    object-cover: cover;
+    margin-bottom: 8px;
+    transition: transform 0.2s ease;
+  }
+  
+  /* ANIMATIONS AVATARS */
+  .avatar-yes {
+    animation: nod 0.5s ease-in-out;
+  }
+  .avatar-no {
+    animation: shake-head 0.5s ease-in-out;
+  }
+
+  @keyframes nod {
+    0%, 100% { transform: translateY(0); }
+    30% { transform: translateY(-10px) scale(1.05); }
+    70% { transform: translateY(5px); }
+  }
+
+  @keyframes shake-head {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-8px) rotate(-3deg); }
+    75% { transform: translateX(8px) rotate(3deg); }
+  }
+
+  /* CARTE A DEPLACER */
+  .sorting-card {
+    background: #ffffff;
+    border: 3px solid var(--encre);
+    border-radius: 16px;
+    padding: 24px;
+    width: 290px;
+    min-height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-weight: 700;
+    font-size: 1.15rem;
+    box-shadow: 6px 6px 0px var(--encre);
+    cursor: grab;
+    user-select: none;
+    touch-action: none;
+    position: relative;
+    z-index: 30;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .sorting-card:active {
+    cursor: grabbing;
+  }
+  
+  .sorting-card.card-correct {
+    background: var(--vert-clair) !important;
+    border-color: var(--vert) !important;
+    color: var(--vert) !important;
+    box-shadow: none;
+    transform: scale(0.9) !important;
+    opacity: 0;
+    transition: all 0.4s ease;
+  }
+  
+  .sorting-card.card-incorrect {
+    background: var(--rouge-clair) !important;
+    border-color: var(--rouge) !important;
+    color: var(--rouge) !important;
+    animation: shake 0.4s ease-in-out;
+  }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-8px); }
+    40%, 80% { transform: translateX(8px); }
+  }
+
+  @keyframes pop {
+    0% { transform: scale(0.8); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  .pop-anim {
+    animation: pop 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+</style>
+</head>
+<body>
+
+<!-- EN-TÊTE -->
+<header class="bg-gradient-to-r from-amber-950 to-orange-900 text-white border-b-4 border-amber-600 py-6 px-6 relative overflow-hidden">
+  <div class="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(177,106,9,0.22),transparent_50%)] pointer-events-none"></div>
+  <div class="max-w-[900px] mx-auto flex items-center justify-between relative z-10">
+    <div>
+      <h1 class="text-2xl md:text-3xl font-display font-black flex items-center gap-2">
+        🗣️ Le Défi des Registres
+      </h1>
+      <p class="mt-1 text-amber-100 font-sans text-xs md:text-sm">
+        Classe les expressions selon leur niveau de langue : Familier, Courant ou Soutenu !
+      </p>
+    </div>
+    <div class="text-3xl hidden sm:block">🎭</div>
+  </div>
+</header>
+
+<!-- CONTENU PRINCIPAL -->
+<main class="flex-1 max-w-[900px] w-full mx-auto p-4 md:py-6 flex flex-col justify-between">
+
+  <!-- ================= CARTE DE VOCABULAIRE ET PROGRESSION ================= -->
+  <div class="w-full flex flex-col items-center mb-6">
+    <!-- Barre de progression -->
+    <div class="w-full max-w-[500px] bg-slate-200 border-2 border-slate-900 rounded-full h-4 overflow-hidden mb-2 relative">
+      <div id="progress-bar" class="bg-amber-500 h-full w-0 transition-all duration-300"></div>
+    </div>
+    <div class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-6" id="progress-text">
+      Expression 1 / 15
+    </div>
+
+    <!-- Zone contenant la carte active -->
+    <div class="relative flex items-center justify-center min-h-[160px] w-full" id="card-holder">
+      <div id="active-card" class="sorting-card pop-anim">
+        Expression active
+      </div>
+    </div>
+  </div>
+
+  <!-- Boutons de clic (Alternative mobile / tactile) -->
+  <div class="flex flex-row justify-center gap-4 mb-8 w-full max-w-[600px] mx-auto">
+    <button class="btn-3d flex-1 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-xl text-xs sm:text-sm font-bold flex flex-col items-center gap-1" onclick="submitChoice('familier')">
+      <span>🧢</span>
+      <span>Familier</span>
+    </button>
+    <button class="btn-3d flex-1 py-3 bg-orange-500 hover:bg-orange-600 text-white rounded-xl text-xs sm:text-sm font-bold flex flex-col items-center gap-1" onclick="submitChoice('courant')">
+      <span>🏫</span>
+      <span>Courant</span>
+    </button>
+    <button class="btn-3d flex-1 py-3 bg-purple-500 hover:bg-purple-600 text-white rounded-xl text-xs sm:text-sm font-bold flex flex-col items-center gap-1" onclick="submitChoice('soutenu')">
+      <span>👑</span>
+      <span>Soutenu</span>
+    </button>
+  </div>
+
+  <!-- ================= ZONES DE DEPÔT / PERSONNAGES ================= -->
+  <div class="grid grid-cols-3 gap-4 w-full">
+    
+    <!-- Zone Familier -->
+    <div class="drop-zone zone-familier" id="zone-familier">
+      <img src="assets/logos/registre_familier.png" id="avatar-familier" class="avatar-img" alt="Familier" />
+      <h3 class="text-blue-800 font-bold text-xs sm:text-sm font-display mb-1">🧢 Familier</h3>
+      <p class="text-[9px] sm:text-xxs text-blue-600 leading-tight">À l'oral avec tes copains, de façon très détendue.</p>
+    </div>
+
+    <!-- Zone Courant -->
+    <div class="drop-zone zone-courant" id="zone-courant">
+      <img src="assets/logos/registre_courant.png" id="avatar-courant" class="avatar-img" alt="Courant" />
+      <h3 class="text-orange-800 font-bold text-xs sm:text-sm font-display mb-1">🏫 Courant</h3>
+      <p class="text-[9px] sm:text-xxs text-orange-600 leading-tight">En classe avec l'enseignant, ou avec des adultes.</p>
+    </div>
+
+    <!-- Zone Soutenu -->
+    <div class="drop-zone zone-soutenu" id="zone-soutenu">
+      <img src="assets/logos/registre_soutenu.png" id="avatar-soutenu" class="avatar-img" alt="Soutenu" />
+      <h3 class="text-purple-800 font-bold text-xs sm:text-sm font-display mb-1">👑 Soutenu</h3>
+      <p class="text-[9px] sm:text-xxs text-purple-600 leading-tight">À l'écrit, dans des textes littéraires ou officiels.</p>
+    </div>
+
+  </div>
+
+  <!-- Panneau de fin (Masqué par défaut) -->
+  <div class="card-premium bg-amber-50 border-amber-600 hidden text-center pop-anim" id="panel-final">
+    <h3 class="text-amber-950 font-bold text-xl mb-2">🎉 Niveau terminé !</h3>
+    <p class="text-slate-700 text-sm leading-relaxed mb-4" id="final-score-text">
+      Tu as classé toutes les expressions avec brio.
+    </p>
+    <button class="btn-3d px-6 py-2.5 bg-amber-600 text-white rounded-xl text-sm font-bold" onclick="restartGame()">
+      Recommencer une partie
+    </button>
+  </div>
+
+</main>
+
+<!-- PIED DE PAGE -->
+<footer class="bg-white border-t-2 border-slate-200 py-3 text-center text-xs text-slate-500 font-semibold mt-auto">
+  <div class="max-w-[900px] mx-auto px-4">
+    Classe de Mr Lejoly — Niveaux de langue FWB — Autocorrection active
+  </div>
+</footer>
+
+<script>
+  // ================================================================
+  // BANQUE DES EXPRESSIONS (20 séries de 3 synonymes = 60 expressions)
+  // ================================================================
+  const ITEM_BANK = [
+    { text: "un canasson", register: "familier" },
+    { text: "un cheval", register: "courant" },
+    { text: "un destrier", register: "soutenu" },
+
+    { text: "un bouquin", register: "familier" },
+    { text: "un livre", register: "courant" },
+    { text: "un ouvrage", register: "soutenu" },
+
+    { text: "un flic", register: "familier" },
+    { text: "un policier", register: "courant" },
+    { text: "un gendarme", register: "soutenu" },
+
+    { text: "se casser", register: "familier" },
+    { text: "s'en aller", register: "courant" },
+    { text: "se retirer", register: "soutenu" },
+
+    { text: "bouffer", register: "familier" },
+    { text: "manger", register: "courant" },
+    { text: "se restaurer", register: "soutenu" },
+
+    { text: "pioncer", register: "familier" },
+    { text: "dormir", register: "courant" },
+    { text: "sommeiller", register: "soutenu" },
+
+    { text: "une bagnole", register: "familier" },
+    { text: "une voiture", register: "courant" },
+    { text: "un véhicule", register: "soutenu" },
+
+    { text: "choper", register: "familier" },
+    { text: "attraper", register: "courant" },
+    { text: "appréhender", register: "soutenu" },
+
+    { text: "piger", register: "familier" },
+    { text: "comprendre", register: "courant" },
+    { text: "saisir", register: "soutenu" },
+
+    { text: "Je me marre.", register: "familier" },
+    { text: "Je ris.", register: "courant" },
+    { text: "Je souris.", register: "soutenu" },
+
+    { text: "C'est la dèche.", register: "familier" },
+    { text: "Je n'ai plus d'argent.", register: "courant" },
+    { text: "Je suis sans ressources.", register: "soutenu" },
+
+    { text: "une bécane", register: "familier" },
+    { text: "un vélo", register: "courant" },
+    { text: "une bicyclette", register: "soutenu" },
+
+    { text: "flipper", register: "familier" },
+    { text: "avoir peur", register: "courant" },
+    { text: "s'effrayer", register: "soutenu" },
+
+    { text: "un toubib", register: "familier" },
+    { text: "un médecin", register: "courant" },
+    { text: "un praticien", register: "soutenu" },
+
+    { text: "C'est pas mal.", register: "familier" },
+    { text: "C'est assez bien.", register: "courant" },
+    { text: "C'est fort convenable.", register: "soutenu" },
+
+    { text: "T'as pigé ?", register: "familier" },
+    { text: "As-tu compris ?", register: "courant" },
+    { text: "As-tu saisi ?", register: "soutenu" },
+
+    { text: "un gosse", register: "familier" },
+    { text: "un enfant", register: "courant" },
+    { text: "un descendant", register: "soutenu" },
+
+    { text: "une piaule", register: "familier" },
+    { text: "une chambre", register: "courant" },
+    { text: "une demeure", register: "soutenu" },
+
+    { text: "barboter", register: "familier" },
+    { text: "voler", register: "courant" },
+    { text: "dérober", register: "soutenu" },
+
+    { text: "chialer", register: "familier" },
+    { text: "pleurer", register: "courant" },
+    { text: "larmoyer", register: "soutenu" }
+  ];
+
+  // ================================================================
+  // VARIABLES DU JEU
+  // ================================================================
+  let sessionList = [];
+  let currentIndex = 0;
+  let activeItem = null;
+  let isAnimating = false;
+
+  // ================================================================
+  // INITIALISATION DU JEU
+  // ================================================================
+  function initGame() {
+    // Sélectionne 15 cartes aléatoires dans la banque de 60
+    const shuffledBank = shuffleArray([...ITEM_BANK]);
+    sessionList = shuffledBank.slice(0, 15);
+    currentIndex = 0;
+    isAnimating = false;
+
+    document.getElementById('panel-final').classList.add('hidden');
+    document.getElementById('card-holder').classList.remove('hidden');
+    
+    loadNextCard();
+  }
+
+  function loadNextCard() {
+    if (currentIndex >= sessionList.length) {
+      endGame();
+      return;
+    }
+
+    activeItem = sessionList[currentIndex];
+    
+    // Met à jour la barre de progression
+    const percent = (currentIndex / sessionList.length) * 100;
+    document.getElementById('progress-bar').style.width = `${percent}%`;
+    document.getElementById('progress-text').innerText = `Expression ${currentIndex + 1} / ${sessionList.length}`;
+
+    // Affiche le mot dans la carte active
+    const card = document.getElementById('active-card');
+    card.innerText = activeItem.text;
+    card.className = "sorting-card pop-anim";
+    card.style.transform = "translate(0px, 0px)";
+  }
+
+  // ================================================================
+  // LOGIQUE DE SOUMISSION DE CHOIX
+  // ================================================================
+  function submitChoice(chosenRegister) {
+    if (isAnimating || !activeItem) return;
+    isAnimating = true;
+
+    const card = document.getElementById('active-card');
+    const isCorrect = (activeItem.register === chosenRegister);
+
+    // Identifie les avatars correspondants
+    const avatar = document.getElementById(`avatar-${chosenRegister}`);
+
+    if (isCorrect) {
+      // Animation correcte sur la carte (glisse vers le bas et rétrécit)
+      card.classList.add('card-correct');
+      if (avatar) {
+        avatar.classList.add('avatar-yes');
+        setTimeout(() => avatar.classList.remove('avatar-yes'), 500);
+      }
+
+      // Passe à l'expression suivante après l'animation
+      setTimeout(() => {
+        currentIndex++;
+        isAnimating = false;
+        loadNextCard();
+      }, 500);
+
+    } else {
+      // Animation d'erreur sur la carte (secousse et couleur rouge)
+      card.classList.add('card-incorrect');
+      if (avatar) {
+        avatar.classList.add('avatar-no');
+        setTimeout(() => avatar.classList.remove('avatar-no'), 500);
+      }
+
+      // Réinitialise la carte pour que l'élève puisse réessayer
+      setTimeout(() => {
+        card.classList.remove('card-incorrect');
+        isAnimating = false;
+      }, 500);
+    }
+  }
+
+  function endGame() {
+    // Complète la barre de progression
+    document.getElementById('progress-bar').style.width = `100%`;
+    document.getElementById('progress-text').innerText = `Entraînement terminé !`;
+
+    document.getElementById('card-holder').classList.add('hidden');
+    document.getElementById('panel-final').classList.remove('hidden');
+    document.getElementById('final-score-text').innerText = `Félicitations ! Tu as réussi à trier correctement les 15 expressions de cette session.`;
+  }
+
+  function restartGame() {
+    initGame();
+  }
+
+  // ================================================================
+  // UTILS
+  // ================================================================
+  function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  }
+
+  // Lancement automatique au chargement
+  window.onload = () => {
+    initGame();
+    
+    // Correction automatique des chemins d'images pour le mode fiche
+    if (window.location.pathname.includes('/fiches/')) {
+      document.querySelectorAll('img').forEach(img => {
+        const src = img.getAttribute('src');
+        if (src && !src.startsWith('http') && !src.startsWith('../') && !src.startsWith('/') && !src.startsWith('data:')) {
+          img.setAttribute('src', '../' + src);
+        }
+      });
+    }
+  };
+</script>
+</body>
+</html>
