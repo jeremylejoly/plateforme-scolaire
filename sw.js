@@ -1,4 +1,4 @@
-const CACHE_NAME = 'classe-mr-lejoly-cache-v290';
+const CACHE_NAME = 'classe-mr-lejoly-cache-v291';
 const CORE_ASSETS = [
   './',
   'index.html',
@@ -81,6 +81,8 @@ const CORE_ASSETS = [
   'fiches/expressions-proverbes.html',
   'vocabulaire-jeu.html',
   'fiches/vocabulaire-jeu.html',
+  'cycle-eau.html',
+  'fiches/cycle-eau.html',
   'registres-tri.html',
   'fiches/registres-tri.html',
   'verbes-ternes.html',
