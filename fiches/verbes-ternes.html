@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SOS Verbes Ternes — Jeu de Vocabulaire</title>
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<!-- TailwindCSS CDN -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    corePlugins: {
+      preflight: false,
+    },
+    theme: {
+      extend: {
+        borderWidth: {
+          '3': '3px',
+        },
+        fontFamily: {
+          sans: ['Inter', 'sans-serif'],
+          display: ['Fredoka', 'sans-serif'],
+          mono: ['Space Mono', 'monospace'],
+        }
+      }
+    }
+  }
+</script>
+<style>
+  :root {
+    --encre: #1a1a2e;
+    --papier: #f7efe2;
+    --ligne: #ebdcc5;
+    
+    --bleu-magique: #2563eb;
+    --bleu-magique-clair: #dbeafe;
+    
+    --vert: #16a34a;
+    --vert-clair: #d4f5e2;
+    --rouge: #dc2626;
+    --rouge-clair: #fdd9d7;
+    
+    --radius: 16px;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: 'Inter', system-ui, sans-serif;
+    color: var(--encre);
+    background: 
+      radial-gradient(circle at 1px 1px, rgba(139, 92, 26, 0.04) 1px, transparent 0) 0 0/24px 24px,
+      var(--papier);
+    line-height: 1.5;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: 'Fredoka', sans-serif;
+    line-height: 1.2;
+    margin: 0;
+  }
+
+  /* BOUTONS 3D */
+  .btn-3d {
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 700;
+    border: 3px solid var(--encre) !important;
+    box-shadow: 3px 3px 0px var(--encre);
+    transition: all 0.1s ease;
+    cursor: pointer;
+    user-select: none;
+  }
+  .btn-3d:active {
+    transform: translate(1px, 1px);
+    box-shadow: 1px 1px 0px var(--encre);
+  }
+
+  /* FLASK / POTIONS */
+  .potion-btn {
+    background: #ffffff;
+    border: 3px solid var(--encre);
+    border-radius: 16px;
+    padding: 16px 8px;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 3px 4px 0px var(--encre);
+    text-align: center;
+    position: relative;
+    user-select: none;
+  }
+  .potion-btn:hover {
+    transform: translateY(-4px);
+    box-shadow: 6px 8px 0px var(--encre);
+  }
+  .potion-btn:active {
+    transform: translateY(-1px);
+    box-shadow: 2px 3px 0px var(--encre);
+  }
+
+  /* LIQUIDE DANS LA FIOLE */
+  .potion-liquid {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    margin: 0 auto 12px;
+    border: 3px solid var(--encre);
+    position: relative;
+    overflow: hidden;
+  }
+  .potion-liquid::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 65%;
+    background: currentColor;
+    opacity: 0.85;
+  }
+  
+  /* COULEURS DES LIQUIDES */
+  .liq-red { color: #ef4444; }
+  .liq-blue { color: #3b82f6; }
+  .liq-purple { color: #a855f7; }
+
+  /* EFFET VERSEMENT */
+  .potion-pouring {
+    animation: pour 0.6s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+  }
+
+  @keyframes pour {
+    0% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-15px) rotate(-65deg); }
+    100% { transform: translateY(0) rotate(0deg); }
+  }
+
+  /* PARCHEMIN DES PHRASES */
+  .parchment {
+    background: #fffdf9;
+    border: 3px solid var(--encre);
+    border-radius: 20px;
+    padding: 24px;
+    box-shadow: 5px 6px 0px var(--encre);
+    position: relative;
+  }
+  .parchment::before {
+    content: '';
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    right: 4px;
+    bottom: 4px;
+    border: 1px dashed var(--ligne);
+    border-radius: 16px;
+    pointer-events: none;
+  }
+
+  /* BULLE DU VERBE TERN */
+  .verb-cloud {
+    background: #f1f5f9;
+    border: 2px dashed #94a3b8;
+    color: #475569;
+    border-radius: 8px;
+    padding: 2px 8px;
+    font-weight: 700;
+    display: inline-block;
+    animation: pulse-cloud 2s infinite ease-in-out;
+  }
+  
+  @keyframes pulse-cloud {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); background: #e2e8f0; }
+  }
+
+  .verb-cloud.glowing-correct {
+    background: var(--vert-clair) !important;
+    border: 2px solid var(--vert) !important;
+    color: var(--vert) !important;
+    animation: pop-correct 0.4s ease-out forwards;
+  }
+
+  @keyframes pop-correct {
+    0% { transform: scale(0.9); }
+    50% { transform: scale(1.15); }
+    100% { transform: scale(1); }
+  }
+
+  /* ERREUR ET SECOUSSE */
+  .parchment.parchment-error {
+    animation: shake 0.4s ease-in-out;
+    border-color: var(--rouge);
+    box-shadow: 5px 6px 0px var(--rouge);
+  }
+  
+  .potion-btn.potion-error {
+    animation: shake 0.4s ease-in-out;
+    border-color: var(--rouge);
+    box-shadow: 2px 3px 0px var(--rouge);
+  }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-8px); }
+    40%, 80% { transform: translateX(8px); }
+  }
+
+  @keyframes pop {
+    0% { transform: scale(0.8); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  .pop-anim {
+    animation: pop 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+</style>
+</head>
+<body>
+
+<!-- EN-TÊTE -->
+<header class="bg-gradient-to-r from-violet-950 to-indigo-900 text-white border-b-4 border-indigo-600 py-6 px-6 relative overflow-hidden">
+  <div class="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(168,85,247,0.22),transparent_50%)] pointer-events-none"></div>
+  <div class="max-w-[900px] mx-auto flex items-center justify-between relative z-10">
+    <div>
+      <h1 class="text-2xl md:text-3xl font-display font-black flex items-center gap-2">
+        🧪 SOS Verbes Ternes
+      </h1>
+      <p class="mt-1 text-indigo-100 font-sans text-xs md:text-sm">
+        Verse le verbe précis dans la fiole pour détruire le verbe terne et enrichir la phrase !
+      </p>
+    </div>
+    <div class="text-3xl hidden sm:block">🔮</div>
+  </div>
+</header>
+
+<!-- CONTENU PRINCIPAL -->
+<main class="flex-1 max-w-[900px] w-full mx-auto p-4 md:py-6 flex flex-col justify-between">
+
+  <!-- Progression -->
+  <div class="w-full flex flex-col items-center mb-6">
+    <div class="w-full max-w-[500px] bg-slate-200 border-2 border-slate-900 rounded-full h-4 overflow-hidden mb-2 relative">
+      <div id="progress-bar" class="bg-indigo-500 h-full w-0 transition-all duration-300"></div>
+    </div>
+    <div class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4" id="progress-text">
+      PHRASE 1 / 10
+    </div>
+  </div>
+
+  <!-- ZONE PARCHEMIN DE JEU -->
+  <div class="w-full max-w-[700px] mx-auto mb-8">
+    <div id="game-parchment" class="parchment pop-anim min-h-[140px] flex flex-col justify-center">
+      <p id="sentence-container" class="text-base sm:text-lg font-medium text-slate-800 leading-relaxed text-center">
+        <!-- Rendu dynamique -->
+      </p>
+    </div>
+  </div>
+
+  <!-- POTIONS / CHOIX -->
+  <div id="potions-container" class="grid grid-cols-3 gap-4 w-full max-w-[650px] mx-auto mb-8">
+    <!-- Potion 1 -->
+    <button id="pot-0" class="potion-btn" onclick="pourPotion(0)">
+      <div class="potion-liquid liq-red"></div>
+      <div class="font-display font-bold text-xs sm:text-sm text-slate-700" id="label-pot-0">Option 1</div>
+    </button>
+    <!-- Potion 2 -->
+    <button id="pot-1" class="potion-btn" onclick="pourPotion(1)">
+      <div class="potion-liquid liq-blue"></div>
+      <div class="font-display font-bold text-xs sm:text-sm text-slate-700" id="label-pot-1">Option 2</div>
+    </button>
+    <!-- Potion 3 -->
+    <button id="pot-2" class="potion-btn" onclick="pourPotion(2)">
+      <div class="potion-liquid liq-purple"></div>
+      <div class="font-display font-bold text-xs sm:text-sm text-slate-700" id="label-pot-2">Option 3</div>
+    </button>
+  </div>
+
+  <!-- PANNEAU EXPLICATION / CONTINUER (Masqué par défaut) -->
+  <div id="explain-container" class="hidden w-full max-w-[650px] mx-auto mb-8 pop-anim">
+    <div class="card-premium bg-green-50 border-green-500 p-5">
+      <h4 class="text-green-800 font-bold text-sm uppercase tracking-wider mb-2">🎉 Mutation réussie !</h4>
+      <p class="text-slate-700 text-xs sm:text-sm leading-relaxed mb-4" id="explain-text">
+        Explication sur le mot...
+      </p>
+      <button class="btn-3d w-full py-3 bg-green-600 hover:bg-green-700 text-white rounded-xl text-sm font-bold flex items-center justify-center gap-1.5" onclick="loadNextQuestion()">
+        Phrase suivante ➔
+      </button>
+    </div>
+  </div>
+
+  <!-- PANNEAU FINAL -->
+  <div id="panel-final" class="card-premium bg-amber-50 border-amber-600 hidden text-center max-w-[600px] mx-auto pop-anim">
+    <h3 class="text-amber-950 font-bold text-xl mb-2">🏆 Laboratoire Complété !</h3>
+    <p class="text-slate-700 text-sm leading-relaxed mb-6" id="final-score-text">
+      Tu as chassé tous les verbes ternes de ta formule magique avec brio.
+    </p>
+    <button class="btn-3d px-6 py-2.5 bg-amber-600 text-white rounded-xl text-sm font-bold" onclick="restartLab()">
+      Refaire une potion
+    </button>
+  </div>
+
+</main>
+
+<script>
+  // ================================================================
+  // BANQUE DES QUESTIONS (30 MUTATIONS DE VERBES TERNES)
+  // ================================================================
+  const QUESTION_BANK = [
+    { 
+      sentence: "L'artisan <span class='verb-cloud' id='target-verb'>fait</span> un vase en argile rouge.", 
+      options: ["façonne", "dessine", "rédige"], 
+      answer: "façonne", 
+      ex: "On utilise le verbe <strong>façonner</strong> pour désigner l'action de donner une forme précise à une matière malléable comme de l'argile." 
+    },
+    { 
+      sentence: "Le maçon <span class='verb-cloud' id='target-verb'>fait</span> un mur en briques solides.", 
+      options: ["construit", "enfile", "raconte"], 
+      answer: "construit", 
+      ex: "<strong>Construire</strong> ou bâtir exprime précisément l'assemblage de matériaux lourds pour former une structure." 
+    },
+    { 
+      sentence: "L'élève <span class='verb-cloud' id='target-verb'>fait</span> une grave bêtise dans le couloir.", 
+      options: ["commet", "pratique", "exprime"], 
+      answer: "commet", 
+      ex: "Le verbe <strong>commettre</strong> s'utilise spécifiquement pour des erreurs, des bêtises, des fautes ou des crimes." 
+    },
+    { 
+      sentence: "Le moteur de la voiture <span class='verb-cloud' id='target-verb'>fait</span> un bruit bizarre.", 
+      options: ["provoque", "émet", "fixe"], 
+      answer: "émet", 
+      ex: "<strong>Émettre</strong> signifie projeter ou produire au-dehors (un son, de la lumière, de la chaleur)." 
+    },
+    { 
+      sentence: "Le journaliste <span class='verb-cloud' id='target-verb'>fait</span> un article sur le club de judo.", 
+      options: ["rédige", "dessine", "applique"], 
+      answer: "rédige", 
+      ex: "<strong>Rédiger</strong> est le mot exact pour structurer et écrire un devoir, un article de presse ou une lettre." 
+    },
+    { 
+      sentence: "Le sculpteur <span class='verb-cloud' id='target-verb'>fait</span> une statue en marbre.", 
+      options: ["taille", "coud", "raconte"], 
+      answer: "taille", 
+      ex: "<strong>Tailler</strong> ou sculpter exprime l'action d'enlever de la matière solide pour lui donner une forme artistique." 
+    },
+    { 
+      sentence: "Le joueur de basket <span class='verb-cloud' id='target-verb'>fait</span> un mètre nonante.", 
+      options: ["mesure", "pèse", "dépasse"], 
+      answer: "mesure", 
+      ex: "Pour exprimer la taille exacte d'une personne ou d'une chose, on emploie le verbe <strong>mesurer</strong>." 
+    },
+    { 
+      sentence: "Le photographe <span class='verb-cloud' id='target-verb'>fait</span> de superbes clichés.", 
+      options: ["capture", "dessine", "déclare"], 
+      answer: "capture", 
+      ex: "On dit qu'on <strong>capture</strong> ou que l'on prend des clichés (photographies) pour fixer l'image du moment." 
+    },
+    { 
+      sentence: "Mon grand frère <span class='verb-cloud' id='target-verb'>fait</span> du karaté le mercredi.", 
+      options: ["pratique", "étudie", "épargne"], 
+      answer: "pratique", 
+      ex: "On <strong>pratique</strong> un sport, un art ou un instrument de musique de façon régulière." 
+    },
+    { 
+      sentence: "Le malade <span class='verb-cloud' id='target-verb'>fait</span> de la fièvre depuis son retour.", 
+      options: ["présente", "mesure", "exprime"], 
+      answer: "présente", 
+      ex: "En médecine, on dit qu'un patient <strong>présente</strong> des symptômes (de la fièvre, des plaques, des frissons)." 
+    },
+    { 
+      sentence: "Le magicien a <span class='verb-cloud' id='target-verb'>mis</span> les cartes dans sa poche.", 
+      options: ["glissé", "dressé", "enfilé"], 
+      answer: "glissé", 
+      ex: "<strong>Glisser</strong> exprime l'action d'introduire un objet doucement ou furtivement dans un petit espace." 
+    },
+    { 
+      sentence: "Le petit garçon <span class='verb-cloud' id='target-verb'>met</span> son manteau de laine.", 
+      options: ["enfile", "coiffe", "applique"], 
+      answer: "enfile", 
+      ex: "On <strong>enfile</strong> un vêtement (pantalon, pull, veste, gants) en y faisant glisser ses bras ou ses jambes." 
+    },
+    { 
+      sentence: "La serveuse <span class='verb-cloud' id='target-verb'>met</span> les verres sur la table.", 
+      options: ["dresse", "dispose", "charge"], 
+      answer: "dispose", 
+      ex: "<strong>Disposer</strong> signifie ranger harmonieusement des objets à des emplacements précis pour faire joli." 
+    },
+    { 
+      sentence: "Le marin <span class='verb-cloud' id='target-verb'>met</span> de l'argent de côté chaque mois.", 
+      options: ["épargne", "dépense", "jette"], 
+      answer: "épargne", 
+      ex: "<strong>Épargner</strong> ou économiser est le verbe idéal pour désigner le fait de stocker de l'argent." 
+    },
+    { 
+      sentence: "Le maire <span class='verb-cloud' id='target-verb'>met</span> une affiche officielle.", 
+      options: ["placarde", "coince", "emprisonne"], 
+      answer: "placarde", 
+      ex: "<strong>Placarder</strong> signifie coller une affiche ou une ordonnance bien en vue sur un mur public." 
+    },
+    { 
+      sentence: "Le jardinier <span class='verb-cloud' id='target-verb'>met</span> les fleurs dans le vase.", 
+      options: ["arrange", "plante", "jette"], 
+      answer: "arrange", 
+      ex: "<strong>Arranger</strong> ou disposer des fleurs exprime l'esthétique du bouquet créé." 
+    },
+    { 
+      sentence: "Le policier <span class='verb-cloud' id='target-verb'>met</span> les bandits en prison.", 
+      options: ["incarcère", "appréhende", "accuse"], 
+      answer: "incarcère", 
+      ex: "<strong>Incarcérer</strong> est le verbe juridique précis pour signifier jeter en prison." 
+    },
+    { 
+      sentence: "Les ouvriers <span class='verb-cloud' id='target-verb'>mettent</span> les sacs dans le camion.", 
+      options: ["chargent", "rangent", "déposent"], 
+      answer: "chargent", 
+      ex: "<strong>Charger</strong> un camion ou un bateau signifie y empiler des marchandises pour le transport." 
+    },
+    { 
+      sentence: "L'infirmière <span class='verb-cloud' id='target-verb'>met</span> de la pommade sur la plaie.", 
+      options: ["applique", "coiffe", "étudie"], 
+      answer: "applique", 
+      ex: "On <strong>applique</strong> ou on étale un produit médical (crème, gel, lotion) délicatement sur le corps." 
+    },
+    { 
+      sentence: "Le capitaine <span class='verb-cloud' id='target-verb'>met</span> les voiles au matin.", 
+      options: ["hisse", "plie", "allume"], 
+      answer: "hisse", 
+      ex: "<strong>Hisser</strong> signifie monter un objet lourd en tirant sur une corde (hisser un drapeau, hisser des voiles)." 
+    },
+    { 
+      sentence: "La maman <span class='verb-cloud' id='target-verb'>dit</span> une belle histoire de dragons.", 
+      options: ["raconte", "récite", "confie"], 
+      answer: "raconte", 
+      ex: "<strong>Raconter</strong> s'emploie pour faire le récit d'événements, d'une légende ou d'une aventure." 
+    },
+    { 
+      sentence: "L'élève <span class='verb-cloud' id='target-verb'>dit</span> sa poésie par cœur.", 
+      options: ["récite", "exprime", "avoue"], 
+      answer: "récite", 
+      ex: "<strong>Réciter</strong> est l'action de restituer à haute voix un texte que l'on a mémorisé." 
+    },
+    { 
+      sentence: "La jeune fille <span class='verb-cloud' id='target-verb'>dit</span> ses secrets à son amie.", 
+      options: ["confie", "déclare", "profère"], 
+      answer: "confie", 
+      ex: "<strong>Confier</strong> signifie livrer des secrets ou des pensées privées à une personne à qui l'on fait confiance." 
+    },
+    { 
+      sentence: "L'instituteur <span class='verb-cloud' id='target-verb'>dit</span> son avis au directeur.", 
+      options: ["exprime", "annonce", "nie"], 
+      answer: "exprime", 
+      ex: "On <strong>exprime</strong> ou on formule une idée, une opinion ou un sentiment." 
+    },
+    { 
+      sentence: "Le voleur <span class='verb-cloud' id='target-verb'>dit</span> enfin sa faute au juge.", 
+      options: ["avoue", "raconte", "souhaite"], 
+      answer: "avoue", 
+      ex: "<strong>Avouer</strong> signifie admettre un méfait, une bêtise ou une responsabilité cachée." 
+    },
+    { 
+      sentence: "La foule fâchée <span class='verb-cloud' id='target-verb'>dit</span> des injures à l'arbitre.", 
+      options: ["profère", "récite", "proteste"], 
+      answer: "profère", 
+      ex: "<strong>Proférer</strong> s'emploie pour la prononciation à voix haute de menaces, d'insultes ou de cris hostiles." 
+    },
+    { 
+      sentence: "Le marchand <span class='verb-cloud' id='target-verb'>dit</span> le prix du fromage.", 
+      options: ["annonce", "confie", "avoue"], 
+      answer: "annonce", 
+      ex: "Le vendeur <strong>annonce</strong> ou indique le prix de vente d'une denrée." 
+    },
+    { 
+      sentence: "Le témoin de l'accident <span class='verb-cloud' id='target-verb'>dit</span> la scène.", 
+      options: ["décrit", "exprime", "invente"], 
+      answer: "décrit", 
+      ex: "<strong>Décrire</strong> consiste à dépeindre avec précision des détails visuels d'un événement ou d'un lieu." 
+    },
+    { 
+      sentence: "Le citoyen mécontent <span class='verb-cloud' id='target-verb'>dit</span> sa colère devant la mairie.", 
+      options: ["proteste", "récite", "confie"], 
+      answer: "proteste", 
+      ex: "<strong>Protester</strong> signifie crier publiquement et vigoureusement son désaccord." 
+    },
+    { 
+      sentence: "Le directeur de l'école <span class='verb-cloud' id='target-verb'>dit</span> le règlement de rentrée.", 
+      options: ["rappelle", "souhaite", "raconte"], 
+      answer: "rappelle", 
+      ex: "<strong>Rappeler</strong> s'utilise pour faire remémorer une règle ou une consigne déjà existante." 
+    }
+  ];
+
+  // ================================================================
+  // VARIABLES DU LAB
+  // ================================================================
+  let currentList = [];
+  let currentQIdx = 0;
+  let activeQuestion = null;
+  let isAnimating = false;
+
+  // ================================================================
+  // INITIALISATION
+  // ================================================================
+  function initLab() {
+    // Sélectionne 10 questions aléatoires
+    const shuffled = shuffleArray([...QUESTION_BANK]);
+    currentList = shuffled.slice(0, 10);
+    currentQIdx = 0;
+    isAnimating = false;
+
+    document.getElementById('panel-final').classList.add('hidden');
+    document.getElementById('explain-container').classList.add('hidden');
+    
+    document.getElementById('game-parchment').classList.remove('hidden');
+    document.getElementById('potions-container').classList.remove('hidden');
+    
+    loadQuestion();
+  }
+
+  function loadQuestion() {
+    if (currentQIdx >= currentList.length) {
+      finishLab();
+      return;
+    }
+
+    activeQuestion = currentList[currentQIdx];
+    
+    // Met à jour la barre de progression
+    const pct = (currentQIdx / currentList.length) * 100;
+    document.getElementById('progress-bar').style.width = `${pct}%`;
+    document.getElementById('progress-text').innerText = `PHRASE ${currentQIdx + 1} / ${currentList.length}`;
+
+    // Affiche la phrase
+    const parchment = document.getElementById('game-parchment');
+    parchment.className = "parchment pop-anim min-h-[140px] flex flex-col justify-center";
+    document.getElementById('sentence-container').innerHTML = activeQuestion.sentence;
+
+    // Construit les labels sur les potions
+    const labels = shuffleArray([...activeQuestion.options]);
+    for (let i = 0; i < 3; i++) {
+      const btn = document.getElementById(`pot-${i}`);
+      btn.className = "potion-btn";
+      
+      const label = document.getElementById(`label-pot-${i}`);
+      label.innerText = labels[i];
+    }
+  }
+
+  // ================================================================
+  // LOGIQUE INTERACTIVE DES POTIONS
+  // ================================================================
+  function pourPotion(potIndex) {
+    if (isAnimating) return;
+    isAnimating = true;
+
+    const btn = document.getElementById(`pot-${potIndex}`);
+    const chosenVerb = document.getElementById(`label-pot-${potIndex}`).innerText;
+    const isCorrect = (chosenVerb === activeQuestion.answer);
+
+    // Lance l'animation de versement sur la fiole
+    btn.classList.add('potion-pouring');
+    
+    setTimeout(() => {
+      btn.classList.remove('potion-pouring');
+
+      if (isCorrect) {
+        // Mutation réussie !
+        const target = document.getElementById('target-verb');
+        if (target) {
+          target.innerText = chosenVerb;
+          target.className = "verb-cloud glowing-correct";
+        }
+
+        // Affiche l'explication
+        document.getElementById('explain-text').innerHTML = activeQuestion.ex;
+        document.getElementById('explain-container').classList.remove('hidden');
+        document.getElementById('potions-container').classList.add('opacity-40');
+        document.getElementById('potions-container').style.pointerEvents = 'none';
+
+      } else {
+        // Erreur
+        const parchment = document.getElementById('game-parchment');
+        parchment.classList.add('parchment-error');
+        btn.classList.add('potion-error');
+
+        setTimeout(() => {
+          parchment.classList.remove('parchment-error');
+          btn.classList.remove('potion-error');
+          isAnimating = false;
+        }, 500);
+      }
+    }, 600);
+  }
+
+  function loadNextQuestion() {
+    // Rétablit l'état cliquable des potions
+    document.getElementById('potions-container').classList.remove('opacity-40');
+    document.getElementById('potions-container').style.pointerEvents = 'auto';
+    document.getElementById('explain-container').classList.add('hidden');
+    
+    isAnimating = false;
+    currentQIdx++;
+    loadQuestion();
+  }
+
+  function finishLab() {
+    document.getElementById('progress-bar').style.width = `100%`;
+    document.getElementById('progress-text').innerText = `Laboratoire terminé !`;
+
+    document.getElementById('game-parchment').classList.add('hidden');
+    document.getElementById('potions-container').classList.add('hidden');
+    document.getElementById('explain-container').classList.add('hidden');
+    
+    document.getElementById('panel-final').classList.remove('hidden');
+    document.getElementById('final-score-text').innerText = `Félicitations ! Tu as réussi à métamorphoser les 10 verbes ternes de ta formule en verbes riches de sens.`;
+  }
+
+  function restartLab() {
+    initLab();
+  }
+
+  // ================================================================
+  // UTILS
+  // ================================================================
+  function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  }
+
+  window.onload = () => {
+    initLab();
+    
+    // Correction automatique des chemins d'images pour le mode fiche
+    if (window.location.pathname.includes('/fiches/')) {
+      document.querySelectorAll('img').forEach(img => {
+        const src = img.getAttribute('src');
+        if (src && !src.startsWith('http') && !src.startsWith('../') && !src.startsWith('/') && !src.startsWith('data:')) {
+          img.setAttribute('src', '../' + src);
+        }
+      });
+    }
+  };
+</script>
+</body>
+</html>
