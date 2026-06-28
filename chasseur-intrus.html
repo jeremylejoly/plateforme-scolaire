@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Le Chasseur d'Intrus — Jeu de Vocabulaire</title>
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<!-- TailwindCSS CDN -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    corePlugins: {
+      preflight: false,
+    },
+    theme: {
+      extend: {
+        borderWidth: {
+          '3': '3px',
+        },
+        fontFamily: {
+          sans: ['Inter', 'sans-serif'],
+          display: ['Fredoka', 'sans-serif'],
+          mono: ['Space Mono', 'monospace'],
+        }
+      }
+    }
+  }
+</script>
+<style>
+  :root {
+    --encre: #1a1a2e;
+    --papier: #f7efe2;
+    --bois: #5c3c1e;
+    --bois-ombre: #35210e;
+    --bois-clair: #ebdcc5;
+    
+    --vert: #16a34a;
+    --vert-clair: #d4f5e2;
+    --rouge: #dc2626;
+    --rouge-clair: #fdd9d7;
+    
+    --radius: 16px;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: 'Inter', system-ui, sans-serif;
+    color: var(--encre);
+    background: 
+      radial-gradient(circle at 1px 1px, rgba(22, 101, 52, 0.04) 1px, transparent 0) 0 0/24px 24px,
+      var(--papier);
+    line-height: 1.5;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: 'Fredoka', sans-serif;
+    line-height: 1.2;
+    margin: 0;
+  }
+
+  /* BOUTON 3D */
+  .btn-3d {
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 700;
+    border: 3px solid var(--encre) !important;
+    box-shadow: 3px 3px 0px var(--encre);
+    transition: all 0.1s ease;
+    cursor: pointer;
+    user-select: none;
+  }
+  .btn-3d:active {
+    transform: translate(1px, 1px);
+    box-shadow: 1px 1px 0px var(--encre);
+  }
+
+  /* PREMIUM CARDS */
+  .card-premium {
+    background: #ffffff;
+    border: 3px solid var(--encre);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin: 16px 0;
+    box-shadow: 4px 4px 0px rgba(26, 26, 46, 0.08);
+  }
+
+  /* CAISSES EN BOIS */
+  .caisse-box {
+    background: #e7cbb3;
+    border: 4px solid var(--bois);
+    border-radius: 12px;
+    box-shadow: 4px 6px 0px var(--bois-ombre);
+    min-height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: var(--bois-ombre);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    user-select: none;
+    position: relative;
+    overflow: hidden;
+    padding: 8px;
+  }
+  .caisse-box:hover {
+    transform: translateY(-4px);
+    box-shadow: 4px 10px 0px var(--bois-ombre);
+  }
+  .caisse-box:active {
+    transform: translateY(1px);
+    box-shadow: 2px 3px 0px var(--bois-ombre);
+  }
+  
+  /* ETATS DES CAISSES */
+  .caisse-box.caisse-correct {
+    background: var(--vert-clair) !important;
+    border-color: var(--vert) !important;
+    color: var(--vert) !important;
+    box-shadow: 3px 3px 0px var(--vert) !important;
+    transform: none !important;
+    cursor: default;
+  }
+  
+  .caisse-box.caisse-exploding {
+    animation: explode-crate 0.4s ease-out forwards;
+    cursor: default;
+    pointer-events: none;
+  }
+  
+  @keyframes explode-crate {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.15) rotate(5deg); background: var(--rouge-clair); border-color: var(--rouge); color: var(--rouge); }
+    100% { transform: scale(0); opacity: 0; }
+  }
+
+  .caisse-box.caisse-error {
+    animation: shake 0.4s ease-in-out;
+    background: var(--rouge-clair) !important;
+    border-color: var(--rouge) !important;
+    color: var(--rouge) !important;
+    box-shadow: 2px 3px 0px var(--rouge) !important;
+  }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-8px); }
+    40%, 80% { transform: translateX(8px); }
+  }
+
+  @keyframes pop {
+    0% { transform: scale(0.8); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  .pop-anim {
+    animation: pop 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+</style>
+</head>
+<body>
+
+<!-- EN-TÊTE -->
+<header class="bg-gradient-to-r from-emerald-950 to-teal-900 text-white border-b-4 border-emerald-600 py-6 px-6 relative overflow-hidden">
+  <div class="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(16,185,129,0.22),transparent_50%)] pointer-events-none"></div>
+  <div class="max-w-[900px] mx-auto flex items-center justify-between relative z-10">
+    <div>
+      <h1 class="text-2xl md:text-3xl font-display font-black flex items-center gap-2">
+        🌴 Le Chasseur d'Intrus
+      </h1>
+      <p class="mt-1 text-emerald-100 font-sans text-xs md:text-sm">
+        Brise la caisse du mot intrus pour dégager le passage et découvrir la catégorie !
+      </p>
+    </div>
+    <div class="text-3xl hidden sm:block">🤠</div>
+  </div>
+</header>
+
+<!-- CONTENU PRINCIPAL -->
+<main class="flex-1 max-w-[900px] w-full mx-auto p-4 md:py-6 flex flex-col justify-between">
+
+  <!-- Progression -->
+  <div class="w-full flex flex-col items-center mb-6">
+    <div class="w-full max-w-[500px] bg-slate-200 border-2 border-slate-900 rounded-full h-4 overflow-hidden mb-2 relative">
+      <div id="progress-bar" class="bg-emerald-500 h-full w-0 transition-all duration-300"></div>
+    </div>
+    <div class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-6" id="progress-text">
+      SÉRIE 1 / 10
+    </div>
+  </div>
+
+  <!-- CONTEXTE DE LA MISSION -->
+  <div class="w-full max-w-[700px] mx-auto mb-6 text-center">
+    <h2 class="text-lg font-bold text-slate-700 flex items-center justify-center gap-2">
+      🕵️ Mission : <span class="text-emerald-800">Trouve le mot intrus !</span>
+    </h2>
+  </div>
+
+  <!-- LES CAISSES DE LA GRILLE -->
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-4 w-full max-w-[750px] mx-auto mb-8" id="crates-grid">
+    <!-- 4 caisses générées dynamiquement -->
+  </div>
+
+  <!-- PANNEAU EXPLICATION / CONTINUER (Masqué par défaut) -->
+  <div id="explain-container" class="hidden w-full max-w-[700px] mx-auto mb-8 pop-anim">
+    <div class="card-premium bg-green-50 border-green-500 p-5">
+      <h3 class="text-green-800 font-bold text-sm uppercase tracking-wider mb-1" id="category-title">
+        Catégorie : Les synonymes de...
+      </h3>
+      <p class="text-slate-700 text-xs sm:text-sm leading-relaxed mb-4" id="explain-text">
+        Explication...
+      </p>
+      <button class="btn-3d w-full py-3 bg-green-600 hover:bg-green-700 text-white rounded-xl text-sm font-bold flex items-center justify-center gap-1.5" onclick="nextQuestion()">
+        Série suivante ➔
+      </button>
+    </div>
+  </div>
+
+  <!-- PANNEAU FINAL -->
+  <div id="panel-final" class="card-premium bg-amber-50 border-amber-600 hidden text-center max-w-[600px] mx-auto pop-anim">
+    <h3 class="text-amber-950 font-bold text-xl mb-2">🎉 Mission Accomplie !</h3>
+    <p class="text-slate-700 text-sm leading-relaxed mb-6" id="final-score-text">
+      Tu as nettoyé toute la jungle de ses intrus de vocabulaire !
+    </p>
+    <button class="btn-3d px-6 py-2.5 bg-amber-600 text-white rounded-xl text-sm font-bold" onclick="restartMission()">
+      Recommencer l'expédition
+    </button>
+  </div>
+
+</main>
+
+<script>
+  // ================================================================
+  // BANQUE DES MISSIONS (30 SÉRIES D'INTRUS SEMANTIQUES)
+  // ================================================================
+  const MISSION_BANK = [
+    { 
+      category: "Synonymes de FATIGUÉ", 
+      words: ["fatigué", "épuisé", "éreinté", "vigoureux"], 
+      intruder: "vigoureux", 
+      ex: "<strong>Vigoureux</strong> signifie fort et plein d'énergie, c'est le contraire exact de fatigué." 
+    },
+    { 
+      category: "Abris d'animaux", 
+      words: ["terrier", "ruche", "étable", "fauteuil"], 
+      intruder: "fauteuil", 
+      ex: "Le <strong>fauteuil</strong> est un meuble pour humain. Le terrier, la ruche et l'étable sont tous des logements d'animaux." 
+    },
+    { 
+      category: "Synonymes de COLÈRE", 
+      words: ["fureur", "courroux", "rage", "douceur"], 
+      intruder: "douceur", 
+      ex: "La <strong>douceur</strong> est un comportement tendre et calme, à l'opposé de la colère." 
+    },
+    { 
+      category: "Moyens de transport", 
+      words: ["navire", "automobile", "hélicoptère", "téléphone"], 
+      intruder: "téléphone", 
+      ex: "Le <strong>téléphone</strong> sert à communiquer à distance. Les trois autres servent à déplacer des personnes ou objets." 
+    },
+    { 
+      category: "Synonymes de INTELLIGENT", 
+      words: ["astucieux", "savant", "ingénieux", "sot"], 
+      intruder: "sot", 
+      ex: "<strong>Sot</strong> veut dire bête ou stupide. C'est l'antonyme d'intelligent." 
+    },
+    { 
+      category: "Métiers de la santé", 
+      words: ["médecin", "dentiste", "infirmier", "boulanger"], 
+      intruder: "boulanger", 
+      ex: "Le <strong>boulanger</strong> cuit du pain frais, alors que le médecin, l'infirmier et le dentiste soignent le corps humain." 
+    },
+    { 
+      category: "Synonymes de BEAU", 
+      words: ["magnifique", "splendide", "ravissant", "vilain"], 
+      intruder: "vilain", 
+      ex: "<strong>Vilain</strong> signifie laid ou méchant. Les autres sont des qualificatifs de beauté." 
+    },
+    { 
+      category: "Organes du corps humain", 
+      words: ["cœur", "poumon", "estomac", "stylo"], 
+      intruder: "stylo", 
+      ex: "Le <strong>stylo</strong> est une fourniture scolaire. Le cœur, l'estomac et le poumon sont des organes internes du corps." 
+    },
+    { 
+      category: "Synonymes de DIRE", 
+      words: ["raconter", "réciter", "exprimer", "penser"], 
+      intruder: "penser", 
+      ex: "<strong>Penser</strong> se fait dans la tête en silence, tandis que raconter, réciter et exprimer demandent de s'exprimer (par la voix ou l'écriture)." 
+    },
+    { 
+      category: "Noms d'arbres", 
+      words: ["chêne", "sapin", "bouleau", "tulipe"], 
+      intruder: "tulipe", 
+      ex: "La <strong>tulipe</strong> est une petite fleur bulbeuse. Les autres sont des arbres ligneux forestiers." 
+    },
+    { 
+      category: "Synonymes de GENTIL", 
+      words: ["bienveillant", "aimable", "chaleureux", "cruel"], 
+      intruder: "cruel", 
+      ex: "<strong>Cruel</strong> signifie méchant et féroce, c'est le contraire d'une personne gentille." 
+    },
+    { 
+      category: "Ustensiles de cuisine", 
+      words: ["marmite", "louche", "poêle", "marteau"], 
+      intruder: "marteau", 
+      ex: "Le <strong>marteau</strong> est un outil de percussion de bricolage, pas un accessoire de cuisine." 
+    },
+    { 
+      category: "Synonymes de RAPIDE", 
+      words: ["véloce", "prompt", "hâtif", "lent"], 
+      intruder: "lent", 
+      ex: "<strong>Lent</strong> indique une vitesse réduite, c'est le contraire exact de rapide." 
+    },
+    { 
+      category: "Noms de sentiments", 
+      words: ["joie", "tristesse", "colère", "chocolat"], 
+      intruder: "chocolat", 
+      ex: "Le <strong>chocolat</strong> est une friandise sucrée, alors que la joie, la colère et la tristesse sont des émotions humaines." 
+    },
+    { 
+      category: "Synonymes de GRIMPER", 
+      words: ["escalader", "monter", "gravir", "descendre"], 
+      intruder: "descendre", 
+      ex: "<strong>Descendre</strong> exprime le fait d'aller vers le bas, à l'inverse de grimper." 
+    },
+    { 
+      category: "Matériel d'écriture", 
+      words: ["crayon", "stylo", "plume", "ciseaux"], 
+      intruder: "ciseaux", 
+      ex: "Les <strong>ciseaux</strong> servent à découper. Le stylo, le crayon et la plume servent à tracer des lettres." 
+    },
+    { 
+      category: "Synonymes de MAISON", 
+      words: ["demeure", "habitation", "logis", "voiture"], 
+      intruder: "voiture", 
+      ex: "La <strong>voiture</strong> est un véhicule routier, tandis que la demeure, l'habitation et le logis sont des abris habités." 
+    },
+    { 
+      category: "Animaux de l'océan", 
+      words: ["baleine", "dauphin", "requin", "écureuil"], 
+      intruder: "écureuil", 
+      ex: "L'<strong>écureuil</strong> est un rongeur des bois. Les trois autres sont de grands animaux marins." 
+    },
+    { 
+      category: "Synonymes de PEUR", 
+      words: ["crainte", "effroi", "panique", "audace"], 
+      intruder: "audace", 
+      ex: "L'<strong>audace</strong> signifie le grand courage ou le toupet, c'est l'opposé de la peur." 
+    },
+    { 
+      category: "Vêtements d'hiver", 
+      words: ["manteau", "écharpe", "bonnet", "maillot"], 
+      intruder: "maillot", 
+      ex: "Le <strong>maillot</strong> (de bain) s'utilise en été. Le manteau, l'écharpe et le bonnet servent à garder la chaleur en hiver." 
+    },
+    { 
+      category: "Synonymes de VOLER (vol)", 
+      words: ["dérober", "s'emparer", "subtiliser", "donner"], 
+      intruder: "donner", 
+      ex: "<strong>Donner</strong> consiste à offrir généreusement, ce qui est le contraire de dérober." 
+    },
+    { 
+      category: "Métiers artistiques", 
+      words: ["peintre", "sculpteur", "musicien", "policier"], 
+      intruder: "policier", 
+      ex: "Le <strong>policier</strong> est un agent de la force publique. Les autres sont des créateurs d'art." 
+    },
+    { 
+      category: "Synonymes de DORMIR", 
+      words: ["sommeiller", "pioncer", "s'assoupir", "veiller"], 
+      intruder: "veiller", 
+      ex: "<strong>Veiller</strong> signifie rester éveillé, souvent pendant la nuit, c'est l'inverse de dormir." 
+    },
+    { 
+      category: "Noms de fleurs", 
+      words: ["rose", "marguerite", "tulipe", "pommier"], 
+      intruder: "pommier", 
+      ex: "Le <strong>pommier</strong> est un arbre fruitier ligneux. Les autres sont des plantes à fleurs herbacées." 
+    },
+    { 
+      category: "Synonymes de COMBATTRE", 
+      words: ["lutter", "affronter", "rivaliser", "fuir"], 
+      intruder: "fuir", 
+      ex: "<strong>Fuir</strong> signifie s'enfuir devant un adversaire ou un danger, c'est le contraire d'affronter." 
+    },
+    { 
+      category: "Instruments de musique", 
+      words: ["violon", "tambour", "flûte", "pinceau"], 
+      intruder: "pinceau", 
+      ex: "Le <strong>pinceau</strong> sert à étaler de la gouache en arts plastiques. Les autres produisent de la musique." 
+    },
+    { 
+      category: "Synonymes de RIGOLER", 
+      words: ["s'amuser", "plaisanter", "se marrer", "s'ennuyer"], 
+      intruder: "s'ennuyer", 
+      ex: "<strong>S'ennuyer</strong> indique une lassitude, c'est le contraire de s'amuser." 
+    },
+    { 
+      category: "Matières minérales / métaux", 
+      words: ["fer", "cuivre", "argent", "bois"], 
+      intruder: "bois", 
+      ex: "Le <strong>bois</strong> est une matière organique végétale. Les autres sont des métaux minéraux." 
+    },
+    { 
+      category: "Synonymes de CAPTURER", 
+      words: ["attraper", "saisir", "choper", "libérer"], 
+      intruder: "libérer", 
+      ex: "<strong>Libérer</strong> consiste à relâcher, c'est le contraire exact de capturer." 
+    },
+    { 
+      category: "Matières d'enseignement d'éveil", 
+      words: ["histoire", "géographie", "sciences", "football"], 
+      intruder: "football", 
+      ex: "Le <strong>football</strong> est un jeu sportif d'équipe de loisir, alors que les autres sont des leçons scolaires d'éveil." 
+    }
+  ];
+
+  // ================================================================
+  // VARIABLES DE JEU
+  // ================================================================
+  let sessionList = [];
+  let currentIdx = 0;
+  let activeMission = null;
+  let isAnimating = false;
+
+  // ================================================================
+  // INITIALISATION
+  // ================================================================
+  function initMission() {
+    const shuffled = shuffleArray([...MISSION_BANK]);
+    sessionList = shuffled.slice(0, 10); // 10 séries par partie
+    currentIdx = 0;
+    isAnimating = false;
+
+    document.getElementById('panel-final').classList.add('hidden');
+    document.getElementById('explain-container').classList.add('hidden');
+    document.getElementById('crates-grid').classList.remove('hidden');
+    
+    loadNextCrates();
+  }
+
+  function loadNextCrates() {
+    if (currentIdx >= sessionList.length) {
+      endMission();
+      return;
+    }
+
+    activeMission = sessionList[currentIdx];
+    isAnimating = false;
+
+    // Progression
+    const pct = (currentIdx / sessionList.length) * 100;
+    document.getElementById('progress-bar').style.width = `${pct}%`;
+    document.getElementById('progress-text').innerText = `SÉRIE ${currentIdx + 1} / ${sessionList.length}`;
+
+    // Génère les 4 caisses dans le désordre
+    const grid = document.getElementById('crates-grid');
+    grid.innerHTML = '';
+
+    const shuffledWords = shuffleArray([...activeMission.words]);
+
+    shuffledWords.forEach((word, idx) => {
+      const box = document.createElement('div');
+      box.className = 'caisse-box pop-anim';
+      box.innerText = word;
+      box.dataset.word = word;
+      
+      box.addEventListener('click', () => {
+        selectCrate(box, word);
+      });
+      
+      grid.appendChild(box);
+    });
+  }
+
+  // ================================================================
+  // ACTIONS DES CAISSES
+  // ================================================================
+  function selectCrate(crateEl, word) {
+    if (isAnimating) return;
+    
+    const isIntruder = (word === activeMission.intruder);
+
+    if (isIntruder) {
+      isAnimating = true;
+
+      // Caisse de l'intrus explose
+      crateEl.classList.add('caisse-exploding');
+
+      // Colore les 3 autres caisses correctes en vert
+      setTimeout(() => {
+        document.querySelectorAll('.caisse-box').forEach(box => {
+          if (box.dataset.word !== activeMission.intruder) {
+            box.classList.add('caisse-correct');
+          }
+        });
+
+        // Affiche l'explication
+        document.getElementById('category-title').innerHTML = `💡 Thème : <span class="text-green-800">${activeMission.category}</span>`;
+        document.getElementById('explain-text').innerHTML = activeMission.ex;
+        document.getElementById('explain-container').classList.remove('hidden');
+      }, 400);
+
+    } else {
+      isAnimating = true;
+      // Caisse vibre en rouge
+      crateEl.classList.add('caisse-error');
+
+      setTimeout(() => {
+        crateEl.classList.remove('caisse-error');
+        isAnimating = false;
+      }, 500);
+    }
+  }
+
+  function nextQuestion() {
+    document.getElementById('explain-container').classList.add('hidden');
+    currentIdx++;
+    loadNextCrates();
+  }
+
+  function endMission() {
+    document.getElementById('progress-bar').style.width = `100%`;
+    document.getElementById('progress-text').innerText = `Expédition terminée !`;
+
+    document.getElementById('crates-grid').classList.add('hidden');
+    document.getElementById('explain-container').classList.add('hidden');
+    document.getElementById('panel-final').classList.remove('hidden');
+    
+    document.getElementById('final-score-text').innerText = `Félicitations ! Tu as réussi à chasser tous les intrus et à décrypter les 10 catégories sémantiques.`;
+  }
+
+  function restartMission() {
+    initMission();
+  }
+
+  // ================================================================
+  // UTILS
+  // ================================================================
+  function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  }
+
+  window.onload = () => {
+    initMission();
+    
+    // Correction automatique des chemins d'images pour le mode fiche
+    if (window.location.pathname.includes('/fiches/')) {
+      document.querySelectorAll('img').forEach(img => {
+        const src = img.getAttribute('src');
+        if (src && !src.startsWith('http') && !src.startsWith('../') && !src.startsWith('/') && !src.startsWith('data:')) {
+          img.setAttribute('src', '../' + src);
+        }
+      });
+    }
+  };
+</script>
+</body>
+</html>
