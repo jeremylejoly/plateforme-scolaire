@@ -1,4 +1,4 @@
-const CACHE_NAME = 'classe-mr-lejoly-cache-v279';
+const CACHE_NAME = 'classe-mr-lejoly-cache-v281';
 const CORE_ASSETS = [
   './',
   'index.html',
@@ -77,6 +77,15 @@ const CORE_ASSETS = [
   'fiches/expressions-proverbes.html',
   'vocabulaire-jeu.html',
   'fiches/vocabulaire-jeu.html',
+  'assets/logos/subject_vocabulaire.png',
+  'assets/logos/sub_proverbes.png',
+  'assets/logos/sub_atelier_mots.png',
+  'assets/logos/theme_sentiments.png',
+  'assets/logos/theme_actions.png',
+  'assets/logos/theme_nature.png',
+  'assets/logos/theme_objets.png',
+  'assets/logos/theme_metiers.png',
+  'assets/logos/theme_melange.png',
   'photos/l_habit_moine.png',
   'photos/vole_oeuf_boeuf.png',
   'photos/charrue_boeufs.png',
