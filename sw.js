@@ -1,4 +1,4 @@
-const CACHE_NAME = 'classe-mr-lejoly-cache-v277';
+const CACHE_NAME = 'classe-mr-lejoly-cache-v279';
 const CORE_ASSETS = [
   './',
   'index.html',
@@ -32,6 +32,8 @@ const CORE_ASSETS = [
   'abaque.html',
   'colorie_les_fractions.html',
   'vocabulaire_solides.html',
+  'vocabulaire_operations.html',
+  'fiches/vocabulaire_operations.html',
   'solide_symetrie.html',
   'compte_est_bon.html',
   'flechettes_calcule_le_score.html',
@@ -73,6 +75,8 @@ const CORE_ASSETS = [
   'fiches/questionnaire-circulatoire-LCML.html',
   'expressions-proverbes.html',
   'fiches/expressions-proverbes.html',
+  'vocabulaire-jeu.html',
+  'fiches/vocabulaire-jeu.html',
   'photos/l_habit_moine.png',
   'photos/vole_oeuf_boeuf.png',
   'photos/charrue_boeufs.png',
