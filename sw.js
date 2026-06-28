@@ -1,4 +1,4 @@
-const CACHE_NAME = 'classe-mr-lejoly-cache-v285';
+const CACHE_NAME = 'classe-mr-lejoly-cache-v286';
 const CORE_ASSETS = [
   './',
   'index.html',
@@ -89,6 +89,9 @@ const CORE_ASSETS = [
   'chasseur-intrus.html',
   'fiches/chasseur-intrus.html',
   'assets/logos/sub_chasseur_intrus.png',
+  'fabrique-mots.html',
+  'fiches/fabrique-mots.html',
+  'assets/logos/sub_fabrique_mots.png',
   'assets/logos/registre_familier.png',
   'assets/logos/registre_courant.png',
   'assets/logos/registre_soutenu.png',
