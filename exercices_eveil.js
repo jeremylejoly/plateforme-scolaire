@@ -363,6 +363,7 @@ window.SCI_RESP_QCM_DATA = [
 window.EMOJI_SVG_MAP = {
     '🔠': `<img src="assets/logos/jeu_mots_croises.png" class="w-full h-full object-contain" alt="Mots croisés" />`,
     '🔎': `<img src="assets/logos/jeu_mots_caches.png" class="w-full h-full object-contain" alt="Mots cachés" />`,
+    '🔢': `<img src="assets/logos/jeu_sudoku.png" class="w-full h-full object-contain" alt="Sudoku" />`,
     // Emojis de Français, Conjugaison & Lecture
     '📚': `<img src="assets/logos/lecture_narrative.png" class="w-full h-full object-contain" alt="Lecture" />`,
     '📖': `<img src="assets/logos/lecture_informative.png" class="w-full h-full object-contain" alt="Lecture" />`,
