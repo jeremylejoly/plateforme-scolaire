@@ -1,0 +1,1186 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sudoku LCML</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- TailwindCSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      corePlugins: {
+        preflight: false,
+      },
+      theme: {
+        extend: {
+          borderWidth: {
+            '3': '3px',
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            display: ['Fredoka', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    :root {
+      --purple: #5B4FCF;
+      --purple-light: #EEF0FF;
+      --green: #1A9E75;
+      --green-light: #E2F5EE;
+      --red: #D94F3D;
+      --red-light: #FDECEA;
+      --amber: #C97B1A;
+      --amber-light: #FEF3E2;
+      --blue: #1A6FA0;
+      --blue-light: #E2F0FA;
+      --bg: #FDFBF7;
+      --surface: #FFFFFF;
+      --text: #1A1A2E;
+      --muted: #6B7080;
+      --border: #1A1A2E;
+      --rsm: 8px;
+      --cell-size: 42px;
+    }
+    
+    @media (max-width: 640px) {
+      :root {
+        --cell-size: 34px;
+      }
+    }
+    @media (max-width: 400px) {
+      :root {
+        --cell-size: 28px;
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif !important;
+      background: radial-gradient(rgba(26, 26, 46, 0.05) 1.5px, transparent 1.5px) 0 0/24px 24px, var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      user-select: none;
+    }
+
+    h1, h2, h3, h4, h5 {
+      font-family: 'Fredoka', sans-serif !important;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 3px solid var(--border);
+      border-radius: 20px;
+      padding: 1.5rem;
+      box-shadow: 6px 6px 0px var(--border);
+    }
+
+    .btn {
+      padding: 10px 20px;
+      border: 2px solid var(--border);
+      border-radius: var(--rsm);
+      background: var(--surface);
+      font-family: 'Fredoka', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      color: var(--text);
+      transition: all .2s;
+      box-shadow: 2px 2px 0px var(--border);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .btn:hover {
+      background: var(--bg);
+      transform: translate(-1px, -1px);
+      box-shadow: 3px 3px 0px var(--border);
+    }
+    .btn:active {
+      transform: translate(1px, 1px);
+      box-shadow: 1px 1px 0px var(--border);
+    }
+    .btn-primary { background: var(--purple); color: #fff; }
+    .btn-primary:hover { background: #4a3fb8; }
+    .btn-success { background: var(--green); color: #fff; }
+    .btn-success:hover { background: #148360; }
+    .btn-danger { background: var(--red); color: #fff; }
+    .btn-danger:hover { background: #c24030; }
+    .btn-warning { background: var(--amber); color: #fff; }
+    .btn-warning:hover { background: #ad6712; }
+
+    /* Level select tabs (Rush Hour style) */
+    .level-tab {
+      flex: 1;
+      text-align: center;
+      padding: 12px 6px;
+      font-family: 'Fredoka', sans-serif;
+      font-weight: 800;
+      font-size: 14px;
+      border: 3px solid var(--border);
+      border-radius: 12px;
+      cursor: pointer;
+      box-shadow: 3px 3px 0px var(--border);
+      transition: all 0.15s;
+    }
+    .level-tab:active {
+      transform: translate(1px, 1px);
+      box-shadow: 2px 2px 0px var(--border);
+    }
+    
+    .tab-lvl1 { background-color: #E2F5EE; color: #148360; }
+    .tab-lvl1.active { background-color: var(--green) !important; color: white !important; transform: translate(-2px, -2px); box-shadow: 5px 5px 0px var(--border); }
+    
+    .tab-lvl2 { background-color: #E2F0FA; color: #146FA0; }
+    .tab-lvl2.active { background-color: var(--blue) !important; color: white !important; transform: translate(-2px, -2px); box-shadow: 5px 5px 0px var(--border); }
+    
+    .tab-lvl3 { background-color: #FEF3E2; color: #ad6712; }
+    .tab-lvl3.active { background-color: var(--amber) !important; color: white !important; transform: translate(-2px, -2px); box-shadow: 5px 5px 0px var(--border); }
+    
+    .tab-lvl4 { background-color: #FDECEA; color: #c24030; }
+    .tab-lvl4.active { background-color: var(--red) !important; color: white !important; transform: translate(-2px, -2px); box-shadow: 5px 5px 0px var(--border); }
+
+    /* Puzzle grid buttons */
+    .puzzle-grid-btn {
+      aspect-ratio: 1;
+      border-radius: 12px;
+      border: 3px solid var(--border);
+      background-color: var(--surface);
+      color: var(--text);
+      font-family: 'Fredoka', sans-serif;
+      font-weight: 900;
+      font-size: 16px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+      position: relative;
+      box-shadow: 3px 3px 0px var(--border);
+    }
+    .puzzle-grid-btn:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: 5px 5px 0px var(--border);
+    }
+    .puzzle-grid-btn:active {
+      transform: translate(1px, 1px);
+      box-shadow: 1px 1px 0px var(--border);
+    }
+
+    /* Sudoku Grid CSS */
+    .sudoku-container {
+      display: grid;
+      grid-template-columns: repeat(9, 1fr);
+      border: 3px solid var(--border);
+      background-color: var(--border);
+      gap: 1px;
+    }
+
+    .sudoku-cell {
+      width: var(--cell-size);
+      height: var(--cell-size);
+      background-color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      cursor: pointer;
+      box-sizing: border-box;
+      font-family: 'Fredoka', sans-serif;
+      font-size: calc(var(--cell-size) * 0.52);
+      font-weight: 700;
+      transition: background-color 0.1s, transform 0.1s;
+    }
+
+    /* Thicker borders for 3x3 subgrids */
+    .sudoku-cell[data-col="2"],
+    .sudoku-cell[data-col="5"] {
+      border-right: 3px solid var(--border);
+    }
+    .sudoku-cell[data-row="2"],
+    .sudoku-cell[data-row="5"] {
+      border-bottom: 3px solid var(--border);
+    }
+
+    /* Alternating 3x3 boxes checkering */
+    .cell-alt-box {
+      background-color: #EEF2FF; /* Indigo 50 */
+    }
+
+    /* Cell States */
+    .cell-clue {
+      background-color: #F1F5F9; /* Slate 100 for clues in normal boxes */
+      color: var(--text);
+      cursor: default;
+    }
+    
+    .cell-alt-box.cell-clue {
+      background-color: #E2E8F0; /* Slate 200 / slightly darker for clues in alt boxes */
+    }
+    
+    .cell-user {
+      color: var(--purple);
+    }
+
+    /* Highlights (higher specificity / !important to override alt-box backgrounds) */
+    .cell-highlight-area {
+      background-color: #E0E7FF !important; /* Soft Indigo 100 */
+    }
+
+    .cell-highlight-number {
+      background-color: #C7D2FE !important; /* Indigo 200 */
+      transform: scale(1.03);
+      z-index: 5;
+    }
+
+    .cell-selected {
+      background-color: #FEF08A !important; /* Yellow 200 */
+      outline: 3px solid var(--purple) !important;
+      outline-offset: -3px;
+      z-index: 10;
+    }
+
+    .cell-incorrect {
+      background-color: var(--red-light) !important;
+      color: var(--red) !important;
+    }
+
+    /* Notes Subgrid layout */
+    .notes-subgrid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(3, 1fr);
+      width: 100%;
+      height: 100%;
+      padding: 2px;
+      box-sizing: border-box;
+      pointer-events: none;
+    }
+    
+    .note-digit {
+      font-family: 'Inter', sans-serif;
+      font-size: calc(var(--cell-size) * 0.22);
+      font-weight: 800;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+    }
+
+    /* Input Keypad */
+    .keypad-btn {
+      aspect-ratio: 1;
+      border: 3px solid var(--border);
+      background: white;
+      border-radius: 12px;
+      font-family: 'Fredoka', sans-serif;
+      font-size: 20px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 2px 3px 0px var(--border);
+      transition: all 0.1s;
+    }
+    .keypad-btn:hover {
+      background: #F8FAFC;
+      transform: translate(-1.5px, -1.5px);
+      box-shadow: 3.5px 4.5px 0px var(--border);
+    }
+    .keypad-btn:active {
+      transform: translate(1px, 1px);
+      box-shadow: 1px 1px 0px var(--border);
+    }
+
+    #confetti-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 100;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Confetti Canvas -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <!-- HEADER -->
+  <header class="bg-white border-b-4 border-[#1A1A2E] py-3.5 px-6 relative overflow-hidden">
+    <div class="max-w-6xl mx-auto flex items-center justify-between relative z-10">
+      <div>
+        <h1 class="text-2xl md:text-3xl font-display font-black flex items-center gap-2 m-0 text-[#1A1A2E]">
+          🔢 Le Sudoku de LCML
+        </h1>
+        <p class="mt-1 text-[#6B7080] font-sans text-xs md:text-sm font-medium">
+          Remplis la grille pour que chaque ligne, colonne et carré de 3x3 contienne les chiffres de 1 à 9 !
+        </p>
+      </div>
+      <div class="text-3xl md:text-4xl hidden sm:block">🔢</div>
+    </div>
+  </header>
+
+  <!-- MAIN APP CONTAINER -->
+  <main class="flex-grow max-w-6xl w-full mx-auto p-4 flex flex-col relative">
+
+    <!-- MENU PRINCIPAL (SELECTION) -->
+    <div id="screen-menu" class="w-full py-2 flex flex-col gap-5">
+      
+      <!-- Levels selection tabs (Rush Hour style) -->
+      <div class="bg-white border-3 border-[#1A1A2E] rounded-2xl p-4 shadow-[5px_5px_0px_#1a1a2e] flex flex-col gap-3">
+        <h3 class="text-sm md:text-base font-black text-slate-800 m-0 uppercase tracking-wider text-center sm:text-left">
+          ⚙️ Choisis ton niveau de difficulté :
+        </h3>
+        <div class="flex flex-col sm:flex-row gap-3">
+          <button class="level-tab tab-lvl1 active" onclick="selectLevel(1)">
+            🟢 Niveau 1<br><span class="text-[10px] font-sans font-medium opacity-85">Initiation (Très facile)</span>
+          </button>
+          <button class="level-tab tab-lvl2" onclick="selectLevel(2)">
+            🔵 Niveau 2<br><span class="text-[10px] font-sans font-medium opacity-85">Facile (Entraînement)</span>
+          </button>
+          <button class="level-tab tab-lvl3" onclick="selectLevel(3)">
+            🟡 Niveau 3<br><span class="text-[10px] font-sans font-medium opacity-85">Moyen (Fait réfléchir)</span>
+          </button>
+          <button class="level-tab tab-lvl4" onclick="selectLevel(4)">
+            🔴 Niveau 4<br><span class="text-[10px] font-sans font-medium opacity-85">Difficile (Remue-méninges)</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Puzzle levels Grid -->
+      <div class="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-8 lg:grid-cols-10 gap-3" id="puzzles-grid">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+
+    <!-- PLAY SCREEN -->
+    <div id="screen-game" class="hidden w-full flex-grow flex flex-col gap-4 py-2">
+      
+      <!-- Toolbar -->
+      <div class="flex flex-wrap items-center justify-between gap-3 bg-white border-3 border-[#1A1A2E] rounded-xl p-3.5 shadow-[4px_4px_0px_#1a1a2e]">
+        <div class="flex items-center gap-3">
+          <button class="btn" onclick="exitGame()">← Retour</button>
+          <div class="flex flex-col">
+            <h3 class="text-base font-black m-0 flex items-center gap-1.5">
+              🔢 Grille <span id="game-grid-num">1</span>
+            </h3>
+            <span class="text-[10px] text-slate-500 font-bold uppercase tracking-wider mt-0.5" id="game-difficulty-badge">Niveau 1</span>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <button class="btn border-slate-300 font-sans text-xs px-3 py-1.5" onclick="toggleRulesModal()">📖 Règle</button>
+          <div class="flex items-center gap-1.5 font-display font-bold text-sm bg-slate-100 border border-slate-300 rounded-lg px-2.5 py-1">
+            ⏱️ <span id="game-timer">00:00</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Game Layout -->
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-4 flex-grow items-center justify-center">
+        
+        <!-- Left: The Sudoku Grid (md:col-7) -->
+        <div class="md:col-span-7 flex flex-col gap-3 items-center">
+          <div class="card p-3 flex items-center justify-center">
+            <div id="sudoku-grid" class="sudoku-container">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Input Keypad & helpers (md:col-5) -->
+        <div class="md:col-span-5 flex flex-col gap-4 w-full max-w-sm mx-auto">
+          <div class="card p-4 flex flex-col gap-4">
+            
+            <!-- Pencil/Notes & Erase control toggles -->
+            <div class="grid grid-cols-2 gap-3">
+              <button class="btn flex items-center justify-center gap-2 border-[#1A1A2E]" id="pencil-btn" onclick="togglePencilMode()">
+                ✏️ Crayon <span id="pencil-status-text" class="text-xs opacity-75 font-sans font-bold">OFF</span>
+              </button>
+              <button class="btn bg-slate-100 flex items-center justify-center gap-2 border-[#1A1A2E]" onclick="eraseCell()">
+                ⌫ Effacer
+              </button>
+            </div>
+
+            <!-- Numbers 1 to 9 keypad -->
+            <div class="grid grid-cols-3 gap-2">
+              <button class="keypad-btn py-3" onclick="onNumberInput(1)">1</button>
+              <button class="keypad-btn py-3" onclick="onNumberInput(2)">2</button>
+              <button class="keypad-btn py-3" onclick="onNumberInput(3)">3</button>
+              <button class="keypad-btn py-3" onclick="onNumberInput(4)">4</button>
+              <button class="keypad-btn py-3" onclick="onNumberInput(5)">5</button>
+              <button class="keypad-btn py-3" onclick="onNumberInput(6)">6</button>
+              <button class="keypad-btn py-3" onclick="onNumberInput(7)">7</button>
+              <button class="keypad-btn py-3" onclick="onNumberInput(8)">8</button>
+              <button class="keypad-btn py-3" onclick="onNumberInput(9)">9</button>
+            </div>
+
+            <hr class="border-slate-200">
+
+            <div class="flex gap-2">
+              <button class="btn btn-success flex-1" onclick="validateGrid()">✅ Vérifier</button>
+              <button class="btn btn-danger flex-1" onclick="restartGrid()">🔄 Vider</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- RULES MODAL -->
+    <div id="modal-rules" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-[90]">
+      <div class="card max-w-md w-full bg-white p-6 border-4 border-[#1A1A2E] shadow-[8px_8px_0px_#1a1a2e] animate-scale-up">
+        <h3 class="text-xl font-black text-slate-800 mb-3 flex items-center gap-2">📖 Comment jouer au Sudoku ?</h3>
+        <div class="text-sm text-slate-600 flex flex-col gap-3 font-sans leading-relaxed">
+          <p>Le but est de remplir la grille de 9x9 cases avec des chiffres de 1 à 9 selon 3 règles d'or :</p>
+          <ul class="list-decimal pl-5 flex flex-col gap-1.5 font-medium text-slate-800">
+            <li>Chaque <strong>ligne</strong> doit contenir tous les chiffres de 1 à 9 (sans doublons).</li>
+            <li>Chaque <strong>colonne</strong> doit contenir tous les chiffres de 1 à 9 (sans doublons).</li>
+            <li>Chaque <strong>grand carré de 3x3</strong> (subgrid) doit contenir tous les chiffres de 1 à 9.</li>
+          </ul>
+          <p class="bg-indigo-50 border border-indigo-200 text-indigo-800 p-2.5 rounded-lg text-xs font-semibold mt-1">
+            💡 Astuce : Commence par chercher les zones (lignes, colonnes ou grands carrés) qui ont déjà beaucoup de chiffres posés !
+          </p>
+        </div>
+        <button class="btn btn-primary w-full mt-5 py-2.5" onclick="toggleRulesModal()">J'ai compris ! 👍</button>
+      </div>
+    </div>
+
+    <!-- VICTORY MODAL -->
+    <div id="modal-victory" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-[90]">
+      <div class="card max-w-sm w-full bg-white text-center p-8 border-4 border-[#1A1A2E] shadow-[8px_8px_0px_#1a1a2e] animate-scale-up">
+        <div class="text-6xl mb-4">🏆</div>
+        <h2 class="text-2xl font-black text-slate-800 mb-2">Félicitations !</h2>
+        <p class="text-sm text-slate-600 mb-6">Tu as complété la grille de Sudoku avec succès !</p>
+        
+        <!-- Victory stats -->
+        <div class="grid grid-cols-2 gap-3 mb-6 bg-slate-50 border border-slate-200 rounded-xl p-3">
+          <div class="flex flex-col">
+            <span class="text-[10px] text-slate-500 font-bold uppercase tracking-wider">⏱ Temps</span>
+            <span class="text-base font-black text-[#5B4FCF]" id="victory-time">00:00</span>
+          </div>
+          <div class="flex flex-col">
+            <span class="text-[10px] text-slate-500 font-bold uppercase tracking-wider">💡 Aide</span>
+            <span class="text-base font-black text-[#C97B1A]" id="victory-helps">Aucune</span>
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-2">
+          <button class="btn btn-primary w-full py-3" onclick="exitGame()">🔄 Retour aux grilles</button>
+          <button class="btn w-full py-3" onclick="replayGame()">🔁 Rejouer cette grille</button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- DATA & SCRIPTS -->
+  <script>
+    // =========================================================================
+    // 1. SEEDED RANDOM LCG CLASS
+    // =========================================================================
+    class SeededRandom {
+      constructor(seed) {
+        this.seed = seed;
+      }
+      next() {
+        this.seed = (this.seed * 1664525 + 1013904223) % 4294967296;
+        return this.seed / 4294967296;
+      }
+      shuffle(arr) {
+        for (let i = arr.length - 1; i > 0; i--) {
+          const j = Math.floor(this.next() * (i + 1));
+          const temp = arr[i];
+          arr[i] = arr[j];
+          arr[j] = temp;
+        }
+      }
+    }
+
+    // =========================================================================
+    // 2. SUDOKU GRID COMPILER / SOLVER
+    // =========================================================================
+    class SudokuGenerator {
+      isValid(board, r, c, val) {
+        // Row check
+        for (let x = 0; x < 9; x++) {
+          if (board[r][x] === val) return false;
+        }
+        // Col check
+        for (let y = 0; y < 9; y++) {
+          if (board[y][c] === val) return false;
+        }
+        // Box 3x3 check
+        const startR = r - (r % 3);
+        const startC = c - (c % 3);
+        for (let i = 0; i < 3; i++) {
+          for (let j = 0; j < 3; j++) {
+            if (board[startR + i][startC + j] === val) return false;
+          }
+        }
+        return true;
+      }
+
+      generateFull(rand) {
+        const board = Array(9).fill(null).map(() => Array(9).fill(0));
+        
+        function fill(r, c) {
+          if (r === 9) return true;
+          const nextR = c === 8 ? r + 1 : r;
+          const nextC = c === 8 ? 0 : c + 1;
+          
+          const nums = [1,2,3,4,5,6,7,8,9];
+          rand.shuffle(nums);
+
+          for (let num of nums) {
+            if (this.isValid(board, r, c, num)) {
+              board[r][c] = num;
+              if (fill.call(this, nextR, nextC)) return true;
+              board[r][c] = 0;
+            }
+          }
+          return false;
+        }
+        
+        fill.call(this, 0, 0);
+        return board;
+      }
+
+      countSolutions(board, limit = 2) {
+        let count = 0;
+        
+        function solve(r, c) {
+          if (r === 9) {
+            count++;
+            return count >= limit;
+          }
+          const nextR = c === 8 ? r + 1 : r;
+          const nextC = c === 8 ? 0 : c + 1;
+          
+          if (board[r][c] !== 0) {
+            return solve.call(this, nextR, nextC);
+          }
+
+          for (let num = 1; num <= 9; num++) {
+            if (this.isValid(board, r, c, num)) {
+              board[r][c] = num;
+              if (solve.call(this, nextR, nextC)) return true;
+              board[r][c] = 0;
+            }
+          }
+          return false;
+        }
+        
+        solve.call(this, 0, 0);
+        return count;
+      }
+
+      generatePuzzle(seed, level) {
+        const rand = new SeededRandom(seed);
+        const full = this.generateFull(rand);
+        
+        const puzzle = full.map(row => [...row]);
+        
+        // Target pre-filled clues
+        // Level 1: 52, Level 2: 40, Level 3: 32, Level 4: 24
+        const targetClues = [52, 40, 32, 24][level - 1];
+        
+        const cells = [];
+        for (let r = 0; r < 9; r++) {
+          for (let c = 0; c < 9; c++) {
+            cells.push([r, c]);
+          }
+        }
+        rand.shuffle(cells);
+
+        let currentClues = 81;
+        for (let [r, c] of cells) {
+          if (currentClues <= targetClues) break;
+          if (puzzle[r][c] === 0) continue;
+
+          // Symmetrical cell
+          const sr = 8 - r;
+          const sc = 8 - c;
+
+          const val = puzzle[r][c];
+          const sval = puzzle[sr][sc];
+
+          puzzle[r][c] = 0;
+          puzzle[sr][sc] = 0;
+
+          const removedCount = (r === sr && c === sc) ? 1 : 2;
+
+          // Check if unique solution is preserved
+          const temp = puzzle.map(row => [...row]);
+          if (this.countSolutions(temp, 2) === 1) {
+            currentClues -= removedCount;
+          } else {
+            // Restore
+            puzzle[r][c] = val;
+            puzzle[sr][sc] = sval;
+          }
+        }
+
+        return { full, puzzle };
+      }
+    }
+
+    // =========================================================================
+    // 3. CANVAS CONFETTI SHOWER
+    // =========================================================================
+    class ConfettiShower {
+      constructor(canvas) {
+        this.canvas = canvas;
+        this.ctx = canvas.getContext('2d');
+        this.particles = [];
+        this.active = false;
+        
+        window.addEventListener('resize', () => {
+          if (this.active) {
+            this.canvas.width = window.innerWidth;
+            this.canvas.height = window.innerHeight;
+          }
+        });
+      }
+
+      start() {
+        this.canvas.width = window.innerWidth;
+        this.canvas.height = window.innerHeight;
+        this.particles = [];
+        this.active = true;
+
+        const colors = ['#5B4FCF', '#1A9E75', '#D94F3D', '#C97B1A', '#1A6FA0', '#ec4899', '#eab308'];
+        for (let i = 0; i < 180; i++) {
+          this.particles.push({
+            x: Math.random() * this.canvas.width,
+            y: Math.random() * -this.canvas.height - 20,
+            r: Math.random() * 5 + 3,
+            color: colors[Math.floor(Math.random() * colors.length)],
+            tilt: Math.random() * 10 - 5,
+            tiltAngleIncremental: Math.random() * 0.08 + 0.02,
+            tiltAngle: 0,
+            velocity: Math.random() * 3 + 2
+          });
+        }
+        this.animate();
+      }
+
+      stop() {
+        this.active = false;
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+      }
+
+      animate() {
+        if (!this.active) return;
+
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+        let finished = true;
+        this.particles.forEach(p => {
+          p.tiltAngle += p.tiltAngleIncremental;
+          p.y += p.velocity;
+          p.x += Math.sin(p.tiltAngle) * 0.5;
+          p.tilt = Math.sin(p.tiltAngle) * 4;
+
+          if (p.y < this.canvas.height + 20) {
+            finished = false;
+          }
+
+          this.ctx.beginPath();
+          this.ctx.lineWidth = p.r;
+          this.ctx.strokeStyle = p.color;
+          this.ctx.moveTo(p.x + p.tilt + p.r / 2, p.y);
+          this.ctx.lineTo(p.x + p.tilt, p.y + p.tilt + p.r / 2);
+          this.ctx.stroke();
+        });
+
+        if (finished) {
+          this.stop();
+        } else {
+          requestAnimationFrame(() => this.animate());
+        }
+      }
+    }
+
+    // =========================================================================
+    // 4. GAME PLAY STATE & LOGIC
+    // =========================================================================
+    let activeLevel = 1; // 1 to 4
+    let activeGridIndex = 0; // 0 to 19 (Grid 1 to 20)
+    
+    let boardData = null; // contains { full, puzzle }
+    let userBoard = null; // 9x9 board filled with current status (0 for empty)
+    let userNotes = null; // 9x9 board containing Sets of digits
+
+    let selectedCell = null; // { r, c }
+    let isPencilMode = false;
+
+    let timerInterval = null;
+    let timeElapsed = 0;
+    let helpCount = 0;
+    let isCompleted = false;
+
+    const generator = new SudokuGenerator();
+    const confetti = new ConfettiShower(document.getElementById('confetti-canvas'));
+
+    function selectLevel(level) {
+      activeLevel = level;
+      
+      document.querySelectorAll('.level-tab').forEach((tab, idx) => {
+        if (idx + 1 === level) {
+          tab.classList.add('active');
+        } else {
+          tab.classList.remove('active');
+        }
+      });
+
+      renderThemesMenu();
+    }
+
+    function renderThemesMenu() {
+      const grid = document.getElementById('puzzles-grid');
+      const progress = getSavedProgress();
+      
+      let html = '';
+      for (let i = 0; i < 20; i++) {
+        const key = `lvl${activeLevel}_grid${i}`;
+        const progData = progress[key];
+        
+        let style = 'border-color: var(--border);';
+        let badgeHtml = `<span class="text-[9px] text-slate-400 font-bold">À FARE</span>`;
+        
+        if (progData && progData.completed) {
+          const col = ['#1A9E75', '#1A6FA0', '#C97B1A', '#D94F3D'][activeLevel - 1];
+          style = `border-color: ${col}; background-color: ${col}12;`;
+          badgeHtml = `<span class="text-[10px] font-bold" style="color: ${col}">🏆 ${formatTime(progData.time)}</span>`;
+        }
+
+        html += `
+          <button class="puzzle-grid-btn" style="${style}" onclick="loadPuzzle(${i})">
+            <span class="text-xs text-slate-500 font-bold">Grille</span>
+            <span class="text-lg font-black leading-none my-0.5">${i + 1}</span>
+            ${badgeHtml}
+          </button>
+        `;
+      }
+      
+      grid.innerHTML = html;
+      document.getElementById('screen-menu').classList.remove('hidden');
+      document.getElementById('screen-game').classList.add('hidden');
+    }
+
+    function loadPuzzle(gridIdx) {
+      activeGridIndex = gridIdx;
+      
+      // Calculate seed deterministically based on level & index
+      const seed = activeLevel * 1000 + gridIdx;
+      boardData = generator.generatePuzzle(seed, activeLevel);
+      
+      // Deep copy starting puzzle to userBoard
+      userBoard = boardData.puzzle.map(row => [...row]);
+      
+      // Initialize notes array
+      userNotes = Array(9).fill(null).map(() => Array(9).fill(null).map(() => new Set()));
+      
+      selectedCell = null;
+      isPencilMode = false;
+      helpCount = 0;
+      timeElapsed = 0;
+      isCompleted = false;
+
+      updatePencilUI();
+      
+      // Set titles
+      document.getElementById('game-grid-num').innerText = gridIdx + 1;
+      
+      const badge = document.getElementById('game-difficulty-badge');
+      const lvlNames = ["🟢 Niveau 1 : Initiation", "🔵 Niveau 2 : Facile", "🟡 Niveau 3 : Moyen", "🔴 Niveau 4 : Difficile"];
+      const lvlColors = ["#1A9E75", "#1A6FA0", "#C97B1A", "#D94F3D"];
+      badge.innerText = lvlNames[activeLevel - 1];
+      badge.style.color = lvlColors[activeLevel - 1];
+
+      document.getElementById('screen-menu').classList.add('hidden');
+      document.getElementById('screen-game').classList.remove('hidden');
+
+      renderGrid();
+      initKeyboardEvents();
+      startTimer();
+    }
+
+    function renderGrid() {
+      const container = document.getElementById('sudoku-grid');
+      container.innerHTML = '';
+
+      for (let r = 0; r < 9; r++) {
+        for (let c = 0; c < 9; c++) {
+          const val = userBoard[r][c];
+          const isClue = boardData.puzzle[r][c] !== 0;
+
+          const cellEl = document.createElement('div');
+          cellEl.dataset.row = r;
+          cellEl.dataset.col = c;
+          cellEl.id = `cell-${r}-${c}`;
+          cellEl.onclick = () => selectCell(r, c);
+
+          const boxR = Math.floor(r / 3);
+          const boxC = Math.floor(c / 3);
+          const isAltBox = (boxR + boxC) % 2 === 1;
+          const altClass = isAltBox ? ' cell-alt-box' : '';
+
+          if (isClue) {
+            cellEl.className = 'sudoku-cell cell-clue' + altClass;
+            cellEl.innerText = val;
+          } else {
+            cellEl.className = 'sudoku-cell cell-user' + altClass;
+            
+            if (val !== 0) {
+              cellEl.innerText = val;
+            } else {
+              // Render notes subgrid
+              const notes = userNotes[r][c];
+              if (notes.size > 0) {
+                const notesSub = document.createElement('div');
+                notesSub.className = 'notes-subgrid';
+                
+                for (let i = 1; i <= 9; i++) {
+                  const digitEl = document.createElement('div');
+                  digitEl.className = 'note-digit';
+                  digitEl.innerText = notes.has(i) ? i : '';
+                  notesSub.appendChild(digitEl);
+                }
+                cellEl.appendChild(notesSub);
+              }
+            }
+          }
+
+          container.appendChild(cellEl);
+        }
+      }
+      
+      applyHighlighting();
+    }
+
+    function selectCell(r, c) {
+      if (isCompleted) return;
+      selectedCell = { r, c };
+      applyHighlighting();
+    }
+
+    function applyHighlighting() {
+      document.querySelectorAll('.sudoku-cell').forEach(cell => {
+        cell.classList.remove('cell-selected', 'cell-highlight-area', 'cell-highlight-number', 'cell-incorrect');
+      });
+
+      if (!selectedCell) return;
+
+      const { r, c } = selectedCell;
+      const val = userBoard[r][c];
+      
+      const selBoxR = r - (r % 3);
+      const selBoxC = c - (c % 3);
+
+      for (let row = 0; row < 9; row++) {
+        for (let col = 0; col < 9; col++) {
+          const cellEl = document.getElementById(`cell-${row}-${col}`);
+          if (!cellEl) continue;
+
+          // Highlight row, column, and box
+          const boxR = row - (row % 3);
+          const boxC = col - (col % 3);
+          
+          if (row === r && col === c) {
+            cellEl.classList.add('cell-selected');
+          } else if (row === r || col === c || (boxR === selBoxR && boxC === selBoxC)) {
+            cellEl.classList.add('cell-highlight-area');
+          }
+
+          // Highlight matching identical numbers
+          if (val !== 0 && userBoard[row][col] === val && (row !== r || col !== c)) {
+            cellEl.classList.add('cell-highlight-number');
+          }
+        }
+      }
+    }
+
+    function onNumberInput(num) {
+      if (isCompleted || !selectedCell) return;
+      const { r, c } = selectedCell;
+      
+      // Clues cannot be edited
+      if (boardData.puzzle[r][c] !== 0) return;
+
+      if (isPencilMode) {
+        // Toggle note candidate
+        userBoard[r][c] = 0; // Clear normal digit
+        
+        const notes = userNotes[r][c];
+        if (notes.has(num)) {
+          notes.delete(num);
+        } else {
+          notes.add(num);
+        }
+      } else {
+        // Input normal number
+        userNotes[r][c].clear(); // Clear notes
+        
+        if (userBoard[r][c] === num) {
+          userBoard[r][c] = 0; // Toggle off if clicking same number
+        } else {
+          userBoard[r][c] = num;
+        }
+      }
+
+      renderGrid();
+      
+      // Auto check if completed
+      if (isGridFilled()) {
+        checkBoardCompletion();
+      }
+    }
+
+    function eraseCell() {
+      if (isCompleted || !selectedCell) return;
+      const { r, c } = selectedCell;
+      if (boardData.puzzle[r][c] !== 0) return; // Clue
+
+      userBoard[r][c] = 0;
+      userNotes[r][c].clear();
+
+      renderGrid();
+    }
+
+    function togglePencilMode() {
+      isPencilMode = !isPencilMode;
+      updatePencilUI();
+    }
+
+    function updatePencilUI() {
+      const btn = document.getElementById('pencil-btn');
+      const text = document.getElementById('pencil-status-text');
+      if (isPencilMode) {
+        btn.classList.add('bg-amber-100', 'border-amber-500');
+        text.innerText = 'ON';
+        text.className = 'text-xs text-amber-600 font-sans font-bold';
+      } else {
+        btn.classList.remove('bg-amber-100', 'border-amber-500');
+        text.innerText = 'OFF';
+        text.className = 'text-xs text-slate-500 font-sans font-bold';
+      }
+    }
+
+    function initKeyboardEvents() {
+      document.addEventListener('keydown', function(e) {
+        if (isCompleted || !selectedCell) return;
+        
+        const key = e.key;
+        if (/^[1-9]$/.test(key)) {
+          e.preventDefault();
+          onNumberInput(parseInt(key));
+        } else if (key === 'Backspace' || key === 'Delete') {
+          e.preventDefault();
+          eraseCell();
+        } else if (key === 'ArrowLeft') {
+          e.preventDefault();
+          moveCursor(0, -1);
+        } else if (key === 'ArrowRight') {
+          e.preventDefault();
+          moveCursor(0, 1);
+        } else if (key === 'ArrowUp') {
+          e.preventDefault();
+          moveCursor(-1, 0);
+        } else if (key === 'ArrowDown') {
+          e.preventDefault();
+          moveCursor(1, 0);
+        } else if (key.toLowerCase() === 'n') {
+          e.preventDefault();
+          togglePencilMode();
+        }
+      });
+    }
+
+    function moveCursor(dr, dc) {
+      if (!selectedCell) return;
+      const nr = (selectedCell.r + dr + 9) % 9;
+      const nc = (selectedCell.c + dc + 9) % 9;
+      selectCell(nr, nc);
+    }
+
+    function isGridFilled() {
+      for (let r = 0; r < 9; r++) {
+        for (let c = 0; c < 9; c++) {
+          if (userBoard[r][c] === 0) return false;
+        }
+      }
+      return true;
+    }
+
+    function checkBoardCompletion() {
+      let isCorrect = true;
+      for (let r = 0; r < 9; r++) {
+        for (let c = 0; c < 9; c++) {
+          if (userBoard[r][c] !== boardData.full[r][c]) {
+            isCorrect = false;
+          }
+        }
+      }
+      if (isCorrect) {
+        triggerVictory();
+      }
+    }
+
+    function validateGrid() {
+      if (isCompleted) return;
+
+      let mistakes = 0;
+      let empty = 0;
+
+      for (let r = 0; r < 9; r++) {
+        for (let c = 0; c < 9; c++) {
+          const val = userBoard[r][c];
+          if (val === 0) {
+            empty++;
+          } else if (val !== boardData.full[r][c]) {
+            mistakes++;
+            const cellEl = document.getElementById(`cell-${r}-${c}`);
+            if (cellEl) cellEl.classList.add('cell-incorrect');
+          }
+        }
+      }
+
+      if (mistakes === 0 && empty === 0) {
+        triggerVictory();
+      } else {
+        if (mistakes > 0) {
+          alert(`La grille comporte ${mistakes} erreur(s) (marquée(s) en rouge). Corrige-les !`);
+        } else {
+          alert("Pas d'erreurs pour le moment, mais la grille n'est pas encore finie ! Continue ! 💪");
+        }
+      }
+    }
+
+    function restartGrid() {
+      if (confirm("Es-tu sûr de vouloir vider tous les chiffres que tu as saisis ?")) {
+        userBoard = boardData.puzzle.map(row => [...row]);
+        userNotes = Array(9).fill(null).map(() => Array(9).fill(null).map(() => new Set()));
+        
+        renderGrid();
+      }
+    }
+
+    function toggleRulesModal() {
+      document.getElementById('modal-rules').classList.toggle('hidden');
+    }
+
+    function startTimer() {
+      clearInterval(timerInterval);
+      document.getElementById('game-timer').innerText = "00:00";
+      
+      timerInterval = setInterval(() => {
+        timeElapsed++;
+        document.getElementById('game-timer').innerText = formatTime(timeElapsed);
+      }, 1000);
+    }
+
+    function formatTime(sec) {
+      const minutes = Math.floor(sec / 60);
+      const remainingSec = sec % 60;
+      return `${minutes.toString().padStart(2, '0')}:${remainingSec.toString().padStart(2, '0')}`;
+    }
+
+    function triggerVictory() {
+      isCompleted = true;
+      clearInterval(timerInterval);
+      
+      saveProgress(activeLevel, activeGridIndex, timeElapsed);
+
+      if (window.parent && typeof window.parent.saveResult === 'function') {
+        window.parent.saveResult({
+          student: window.parent.state ? window.parent.state.student : 'Local',
+          cls: window.parent.state ? window.parent.state.studentCls : 'P5-P6',
+          activity: `sudoku_lvl${activeLevel}_grid${activeGridIndex}`,
+          bookTitle: `Sudoku — Grille ${activeGridIndex + 1} (Lvl ${activeLevel})`,
+          score: 81,
+          total: 81,
+          pct: 100,
+          time_sec: timeElapsed,
+          helps_count: helpCount,
+          date: new Date().toLocaleDateString('fr-BE'),
+          time: new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })
+        });
+      }
+
+      document.getElementById('victory-time').innerText = formatTime(timeElapsed);
+      document.getElementById('victory-helps').innerText = helpCount === 0 ? "Aucune ! 🎉" : `${helpCount} fois`;
+      document.getElementById('modal-victory').classList.remove('hidden');
+
+      confetti.start();
+    }
+
+    function exitGame() {
+      clearInterval(timerInterval);
+      document.getElementById('modal-victory').classList.add('hidden');
+      confetti.stop();
+      
+      boardData = null;
+      renderThemesMenu();
+    }
+
+    function replayGame() {
+      document.getElementById('modal-victory').classList.add('hidden');
+      confetti.stop();
+      loadPuzzle(activeGridIndex);
+    }
+
+    // =========================================================================
+    // 5. LOCAL STORAGE PROGRESS TRACKING
+    // =========================================================================
+    const LOCAL_STORAGE_KEY = 'lcml_sudoku_progress';
+
+    function getSavedProgress() {
+      const raw = localStorage.getItem(LOCAL_STORAGE_KEY);
+      if (!raw) return {};
+      try {
+        return JSON.parse(raw);
+      } catch (e) {
+        return {};
+      }
+    }
+
+    function saveProgress(level, gridIdx, time) {
+      const progress = getSavedProgress();
+      const key = `lvl${level}_grid${gridIdx}`;
+      
+      if (!progress[key] || progress[key].time > time) {
+        progress[key] = {
+          completed: true,
+          time: time,
+          date: new Date().toLocaleDateString('fr-BE')
+        };
+        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(progress));
+      }
+    }
+  </script>
+</body>
+</html>
