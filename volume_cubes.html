@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Le Bâtisseur de Cubes — Volumes 3D</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&family=Plus+Jakarta+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #1e293b;
+      --border: #334155;
+      --primary: #06b6d4;
+      --primary-glow: rgba(6,182,212,0.22);
+      --accent: #f59e0b;
+      --green: #10b981;
+      --red: #f43f5e;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+    .container {
+      width: 100%;
+      max-width: 680px;
+    }
+
+    /* Header */
+    header { text-align: center; margin-bottom: 1.25rem; }
+    h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.85rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #67e8f9, #06b6d4, #0891b2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.3rem;
+    }
+    .subtitle { color: var(--muted); font-size: 0.9rem; }
+
+    /* Score bar */
+    .scorebar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(15,23,42,0.7);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 0.8rem 1.2rem;
+      margin-bottom: 1.25rem;
+    }
+    .sb-block { display: flex; align-items: center; gap: 0.5rem; }
+    .sb-label { font-size: 0.78rem; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+    .sb-val { font-family: 'Outfit', sans-serif; font-size: 1.4rem; font-weight: 700; color: var(--accent); }
+    .prog-track { flex:1; height:7px; background:rgba(51,65,85,.5); border-radius:99px; margin:0 1.25rem; overflow:hidden; }
+    .prog-bar { height:100%; width:0%; background:linear-gradient(90deg,var(--primary),#22d3ee); border-radius:99px; transition:width .5s ease; }
+
+    /* Description */
+    .figure-desc {
+      background: rgba(30,41,59,0.6);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+    .figure-icon { font-size: 1.8rem; }
+    .figure-name { font-weight: 700; font-size: 1.05rem; }
+    .figure-hint { font-size: 0.85rem; color: var(--muted); margin-top: 0.15rem; }
+
+    /* Render viewport */
+    .viewport-wrapper {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 1.25rem;
+    }
+    svg#volume-svg {
+      border: 2px solid var(--border);
+      border-radius: 16px;
+      background: #0f172a;
+      display: block;
+      max-width: 100%;
+      height: auto;
+    }
+
+    /* Input & validate */
+    .answer-row {
+      display: flex;
+      gap: 0.85rem;
+      align-items: center;
+      margin-bottom: 1.1rem;
+      flex-wrap: wrap;
+    }
+    .answer-label { font-weight: 600; font-size: 0.95rem; white-space: nowrap; }
+    .answer-input {
+      width: 90px;
+      padding: 0.55rem 0.75rem;
+      background: rgba(15,23,42,0.8);
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      text-align: center;
+      outline: none;
+      transition: border-color .2s;
+    }
+    .answer-input:focus { border-color: var(--primary); }
+    .answer-input:disabled { opacity: 0.5; }
+    .answer-unit { color: var(--muted); font-size: 0.9rem; }
+
+    .btn-validate {
+      padding: 0.6rem 1.4rem;
+      background: linear-gradient(135deg, var(--primary), #0891b2);
+      border: none;
+      border-radius: 10px;
+      color: white;
+      font-family: 'Outfit', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all .2s;
+      box-shadow: 0 4px 14px var(--primary-glow);
+    }
+    .btn-validate:hover { transform:translateY(-2px); box-shadow:0 8px 20px rgba(6,182,212,.4); }
+    .btn-validate:disabled { opacity:.45; cursor:not-allowed; transform:none; }
+
+    /* Feedback */
+    .feedback {
+      border-radius: 14px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.1rem;
+      display: flex;
+      gap: 0.85rem;
+      align-items: flex-start;
+      animation: slideUp .3s ease forwards;
+    }
+    .fb-correct { background:rgba(16,185,129,.1); border:1px solid rgba(16,185,129,.35); }
+    .fb-wrong   { background:rgba(244,63,94,.1);  border:1px solid rgba(244,63,94,.35); }
+    .fb-icon { font-size: 1.5rem; flex-shrink:0; }
+    .fb-title { font-weight:700; font-size:1rem; }
+    .fb-correct .fb-title { color:#34d399; }
+    .fb-wrong   .fb-title { color:#fb7185; }
+    .fb-text { font-size:.9rem; color:#cbd5e1; margin-top:.25rem; line-height:1.55; }
+    .fb-text strong { color: #f1f5f9; }
+
+    .btn-next {
+      width:100%;
+      padding:.85rem;
+      background:linear-gradient(135deg,var(--primary),#0891b2);
+      border:none; border-radius:12px; color:white;
+      font-family:'Outfit',sans-serif; font-size:1.05rem; font-weight:700;
+      cursor:pointer; transition:all .2s;
+      box-shadow:0 4px 14px var(--primary-glow);
+      display:flex; align-items:center; justify-content:center; gap:.5rem;
+    }
+    .btn-next:hover { transform:translateY(-2px); }
+
+    /* Congrats */
+    .congrats {
+      text-align:center; padding:2.5rem 1rem;
+      animation: scaleIn .5s cubic-bezier(.34,1.56,.64,1) forwards;
+    }
+    .trophy { font-size:4rem; display:inline-block; animation:float 3s ease-in-out infinite; margin-bottom:.75rem; }
+    .congrats-title { font-family:'Outfit',sans-serif; font-size:2rem; font-weight:800; color:var(--accent); margin-bottom:.6rem; }
+    .congrats-msg { color:var(--muted); font-size:1rem; max-width:440px; margin:0 auto 1.5rem; line-height:1.6; }
+    .stars { font-size:2rem; margin-bottom:1.5rem; }
+    .btn-replay {
+      background:linear-gradient(135deg,var(--green),#059669);
+      border:none; color:white; font-family:'Outfit',sans-serif;
+      font-size:1.05rem; font-weight:700; padding:.85rem 2rem;
+      border-radius:12px; cursor:pointer;
+      box-shadow:0 4px 14px rgba(16,185,129,.3);
+      display:inline-flex; align-items:center; gap:.5rem;
+      transition:all .2s;
+    }
+    .btn-replay:hover { transform:translateY(-2px); }
+
+    @keyframes slideUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes scaleIn { from{opacity:0;transform:scale(.92)} to{opacity:1;transform:scale(1)} }
+    @keyframes float   { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <div id="game-flow">
+    <header>
+      <h1>🧊 Le Bâtisseur de Cubes</h1>
+      <p class="subtitle">Compte les petits cubes pour trouver le volume de la structure.</p>
+    </header>
+
+    <div class="scorebar">
+      <div class="sb-block">
+        <span class="sb-label">Structure</span>
+        <span class="sb-val" id="q-num">1</span>
+        <span style="color:var(--muted);font-family:'Outfit',sans-serif;font-size:1rem;">/10</span>
+      </div>
+      <div class="prog-track"><div class="prog-bar" id="prog-bar"></div></div>
+      <div class="sb-block">
+        <span class="sb-label">Score</span>
+        <span class="sb-val" id="score-disp">0</span>
+        <span style="color:var(--muted);font-family:'Outfit',sans-serif;font-size:1rem;">/10</span>
+      </div>
+    </div>
+
+    <div class="figure-desc">
+      <div class="figure-icon" id="fig-icon">🏰</div>
+      <div>
+        <div class="figure-name" id="fig-name">Chargement…</div>
+        <div class="figure-hint" id="fig-hint">Chaque cube mesure 1 cm³ de volume.</div>
+      </div>
+    </div>
+
+    <div class="viewport-wrapper">
+      <svg id="volume-svg" width="500" height="340" viewBox="0 0 500 340"></svg>
+    </div>
+
+    <div class="answer-row">
+      <span class="answer-label">Volume de la structure :</span>
+      <input type="number" id="volume-input" class="answer-input" min="1" step="1" placeholder="?">
+      <span class="answer-unit">cm³</span>
+      <button class="btn-validate" id="btn-val" onclick="validateAnswer()">✓ Valider</button>
+    </div>
+
+    <div id="feedback-area"></div>
+    <div id="next-area"></div>
+  </div>
+
+  <div id="congrats-flow" style="display:none">
+    <div class="congrats">
+      <div class="trophy">🏆</div>
+      <h2 class="congrats-title">Géomètre de l'Espace !</h2>
+      <p class="congrats-msg" id="congrats-msg">Incroyable !</p>
+      <div class="stars" id="stars"></div>
+      <button class="btn-replay" onclick="resetGame()">🔄 Recommencer</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ════════════════════════════════════════════════
+// CONFIGURATION DU RENDU ISOMÉTRIQUE
+// ════════════════════════════════════════════════
+const W = 32; // Largeur horizontale d'une face
+const H = 18; // Hauteur verticale d'une face
+const CUBE_H = 36; // Hauteur de la face de côté du cube
+
+// Origine de la grille (centrée en bas/milieu)
+const ORIGIN_X = 250;
+const ORIGIN_Y = 240;
+
+// ════════════════════════════════════════════════
+// 15 STRUCTURES PRÉDÉFINIES
+// ════════════════════════════════════════════════
+const SHAPES = [
+  {
+    name: "La Tour Simple",
+    icon: "🗼",
+    grid: [
+      [0, 0, 0],
+      [0, 4, 0],
+      [0, 0, 0]
+    ],
+    hint: "Les cubes sont empilés les uns sur les autres.",
+    desc: "C'est une seule colonne verticale contenant <strong>4 cubes</strong>."
+  },
+  {
+    name: "Le Petit Escalier",
+    icon: "🪜",
+    grid: [
+      [0, 0, 0],
+      [1, 2, 3],
+      [0, 0, 0]
+    ],
+    hint: "Compte la hauteur de chaque colonne du premier plan.",
+    desc: "Il y a 3 colonnes alignées : la première a 1 cube, la seconde 2, et la troisième 3. Total : 1 + 2 + 3 = <strong>6 cubes</strong>."
+  },
+  {
+    name: "Le Canapé de Pierre",
+    icon: "🛋️",
+    grid: [
+      [2, 0, 2],
+      [2, 1, 2],
+      [0, 0, 0]
+    ],
+    hint: "Attention, certains cubes sont cachés derrière le dossier !",
+    desc: "Nous avons 4 colonnes de 2 cubes pour les accoudoirs et le dossier, et 1 seul cube au centre pour l'assise. Total : (4 × 2) + 1 = <strong>9 cubes</strong>."
+  },
+  {
+    name: "La Petite Pyramide",
+    icon: "🔺",
+    grid: [
+      [1, 1, 1],
+      [1, 3, 1],
+      [1, 1, 1]
+    ],
+    hint: "Le cube du sommet repose sur des cubes cachés en dessous.",
+    desc: "La base (l'étage inférieur) forme un anneau de 8 cubes de hauteur 1. Au centre, la colonne fait 3 cubes de haut. Total : 8 + 3 = <strong>11 cubes</strong>."
+  },
+  {
+    name: "Les Deux Murs",
+    icon: "🧱",
+    grid: [
+      [2, 2, 2],
+      [0, 0, 0],
+      [2, 2, 2]
+    ],
+    hint: "Deux rangées séparées par un vide.",
+    desc: "Chaque mur est composé de 3 colonnes de 2 cubes. Total : 3 × 2 + 3 × 2 = <strong>12 cubes</strong>."
+  },
+  {
+    name: "Le Petit Château",
+    icon: "🏰",
+    grid: [
+      [2, 1, 2],
+      [1, 0, 1],
+      [2, 1, 2]
+    ],
+    hint: "Les tours d'angle sont plus hautes.",
+    desc: "Les 4 coins ont 2 cubes chacun (8 cubes), les 4 liaisons ont 1 cube chacune (4 cubes), et le milieu est vide. Total : 8 + 4 = <strong>12 cubes</strong>."
+  },
+  {
+    name: "La Croix Symétrique",
+    icon: "➕",
+    grid: [
+      [0, 1, 0],
+      [1, 2, 1],
+      [0, 1, 0]
+    ],
+    hint: "Le cube central est surélevé.",
+    desc: "Les 4 branches de la croix ont 1 cube chacune (4 cubes), et le centre a 2 cubes. Total : 4 + 2 = <strong>6 cubes</strong>."
+  },
+  {
+    name: "Le Pont",
+    icon: "🌉",
+    grid: [
+      [2, 0, 2],
+      [2, 2, 2],
+      [0, 0, 0]
+    ],
+    hint: "Il y a un trou sous le pont.",
+    desc: "Les deux piliers de devant ont 2 cubes chacun, et le fond a 3 colonnes de 2 cubes. Total : 5 colonnes de 2 cubes = <strong>10 cubes</strong>."
+  },
+  {
+    name: "La Pente du Coin",
+    icon: "📐",
+    grid: [
+      [3, 2, 1],
+      [2, 1, 0],
+      [1, 0, 0]
+    ],
+    hint: "La hauteur descend régulièrement vers les bords.",
+    desc: "Les colonnes ont des hauteurs de 3, 2, 2, 1, 1, 1. Total : 3 + 2 + 2 + 1 + 1 + 1 = <strong>10 cubes</strong>."
+  },
+  {
+    name: "Le Passage Couvert",
+    icon: "🚇",
+    grid: [
+      [2, 2, 2],
+      [0, 1, 0],
+      [2, 2, 2]
+    ],
+    hint: "Il y a un cube caché au milieu du tunnel.",
+    desc: "Deux murs latéraux de 6 cubes chacun, plus 1 cube au centre. Total : 6 + 6 + 1 = <strong>13 cubes</strong>."
+  },
+  {
+    name: "La Lettre U",
+    icon: "🧲",
+    grid: [
+      [2, 0, 2],
+      [2, 0, 2],
+      [2, 2, 2]
+    ],
+    hint: "Le milieu est complètement vide.",
+    desc: "Nous avons 7 colonnes de 2 cubes disposées en forme de U. Total : 7 × 2 = <strong>14 cubes</strong>."
+  },
+  {
+    name: "Le Bloc Creux",
+    icon: "📦",
+    grid: [
+      [2, 2, 2],
+      [2, 0, 2],
+      [2, 2, 2]
+    ],
+    hint: "Un carré complet de 3x3 avec juste la colonne centrale manquante.",
+    desc: "Il y a 8 colonnes de 2 cubes de hauteur autour du centre vide. Total : 8 × 2 = <strong>16 cubes</strong>."
+  },
+  {
+    name: "Les Tours Jumelles",
+    icon: "🏢",
+    grid: [
+      [3, 1, 3],
+      [1, 1, 1],
+      [0, 0, 0]
+    ],
+    hint: "Les deux colonnes les plus hautes ont la même taille.",
+    desc: "Deux tours de 3 cubes, reliées par des blocs de 1 cube de haut. Total : 3 + 3 + 3 = <strong>9 cubes</strong>."
+  },
+  {
+    name: "Le Trident de Pierre",
+    icon: "🔱",
+    grid: [
+      [2, 0, 2],
+      [2, 1, 2],
+      [2, 0, 2]
+    ],
+    hint: "Trois dents pointant vers le haut.",
+    desc: "Les colonnes d'angle font 2 cubes (8 cubes), la colonne centrale 1 cube, les autres sont vides. Total : 8 + 1 = <strong>9 cubes</strong>."
+  },
+  {
+    name: "L'Escalier Double",
+    icon: "🪜",
+    grid: [
+      [1, 2, 3],
+      [0, 0, 0],
+      [1, 2, 3]
+    ],
+    hint: "Deux rangées identiques d'escaliers.",
+    desc: "Chaque escalier contient 1 + 2 + 3 = 6 cubes. Il y en a deux identiques. Total : 6 + 6 = <strong>12 cubes</strong>."
+  }
+];
+
+// ════════════════════════════════════════════════
+// ÉTAT DE LA PARTIE
+// ════════════════════════════════════════════════
+let step = 1;
+let score = 0;
+let session = [];
+let currentShape = null;
+let answered = false;
+
+// ════════════════════════════════════════════════
+// DESSIN DU SOL (Optionnel / Esthétique)
+// ════════════════════════════════════════════════
+function drawGround(svg) {
+  // Grille au sol isométrique 3x3
+  const colors = ["#1e293b", "#334155"];
+  for (let y = 0; y < 3; y++) {
+    for (let x = 0; x < 3; x++) {
+      const cx = ORIGIN_X + x * W - y * W;
+      const cy = ORIGIN_Y + x * H + y * H;
+
+      const poly = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+      poly.setAttribute('points', `${cx},${cy} ${cx + W},${cy + H} ${cx},${cy + 2 * H} ${cx - W},${cy + H}`);
+      poly.setAttribute('fill', '#1e293b');
+      poly.setAttribute('stroke', '#475569');
+      poly.setAttribute('stroke-width', '1');
+      svg.appendChild(poly);
+    }
+  }
+}
+
+// ════════════════════════════════════════════════
+// DESSIN D'UN CUBE ISOMÉTRIQUE
+// ════════════════════════════════════════════════
+function drawCube(svg, x, y, z) {
+  // Calcul de la coordonnée centrale du sommet du cube
+  const cx = ORIGIN_X + x * W - y * W;
+  const cy = ORIGIN_Y + x * H + y * H - z * CUBE_H;
+
+  const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+  
+  // 1. Face du haut (Rhombus)
+  const top = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+  top.setAttribute('points', `${cx},${cy} ${cx + W},${cy + H} ${cx},${cy + 2 * H} ${cx - W},${cy + H}`);
+  top.setAttribute('fill', '#67e8f9'); // Cyan brillant
+  top.setAttribute('stroke', '#0f172a');
+  top.setAttribute('stroke-width', '1.5');
+  g.appendChild(top);
+
+  // 2. Face gauche (Rhombus vertical)
+  const left = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+  left.setAttribute('points', `${cx - W},${cy + H} ${cx},${cy + 2 * H} ${cx},${cy + 2 * H + CUBE_H} ${cx - W},${cy + H + CUBE_H}`);
+  left.setAttribute('fill', '#0ea5e9'); // Bleu moyen
+  left.setAttribute('stroke', '#0f172a');
+  left.setAttribute('stroke-width', '1.5');
+  g.appendChild(left);
+
+  // 3. Face droite (Rhombus vertical)
+  const right = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+  right.setAttribute('points', `${cx},${cy + 2 * H} ${cx + W},${cy + H} ${cx + W},${cy + H + CUBE_H} ${cx},${cy + 2 * H + CUBE_H}`);
+  right.setAttribute('fill', '#0284c7'); // Bleu plus foncé
+  right.setAttribute('stroke', '#0f172a');
+  right.setAttribute('stroke-width', '1.5');
+  g.appendChild(right);
+
+  svg.appendChild(g);
+}
+
+// ════════════════════════════════════════════════
+// CRÉATION DE LA FIGURE
+// ════════════════════════════════════════════════
+function renderFigure(shape) {
+  const svg = document.getElementById('volume-svg');
+  svg.innerHTML = '';
+
+  // 1. On dessine la grille de sol
+  drawGround(svg);
+
+  // 2. Algorithme du peintre (de l'arrière vers l'avant, et du bas vers le haut)
+  const grid = shape.grid;
+  for (let y = 0; y < 3; y++) {
+    for (let x = 0; x < 3; x++) {
+      const height = grid[x][y];
+      for (let z = 0; z < height; z++) {
+        drawCube(svg, x, y, z);
+      }
+    }
+  }
+}
+
+// Calcule le volume total (somme de tous les cubes)
+function calculateVolume(shape) {
+  let total = 0;
+  for (let r = 0; r < 3; r++) {
+    for (let c = 0; c < 3; c++) {
+      total += shape.grid[r][c];
+    }
+  }
+  return total;
+}
+
+// ════════════════════════════════════════════════
+// ACTIONS DU JEU
+// ════════════════════════════════════════════════
+function renderQuestion() {
+  answered = false;
+  document.getElementById('feedback-area').innerHTML = '';
+  document.getElementById('next-area').innerHTML = '';
+  document.getElementById('volume-input').value = '';
+  document.getElementById('volume-input').disabled = false;
+  document.getElementById('btn-val').disabled = false;
+
+  currentShape = SHAPES[session[step - 1]];
+
+  document.getElementById('q-num').textContent = step;
+  document.getElementById('score-disp').textContent = score;
+  document.getElementById('prog-bar').style.width = `${((step - 1) / TOTAL_Q) * 100}%`;
+
+  document.getElementById('fig-icon').textContent = currentShape.icon;
+  document.getElementById('fig-name').textContent = currentShape.name;
+  document.getElementById('fig-hint').textContent = currentShape.hint;
+
+  renderFigure(currentShape);
+  document.getElementById('volume-input').focus();
+}
+
+function validateAnswer() {
+  if (answered) return;
+  const inputEl = document.getElementById('volume-input');
+  const val = parseInt(inputEl.value, 10);
+  
+  if (isNaN(val) || val <= 0) {
+    alert("Saisis un nombre entier de cubes valide !");
+    return;
+  }
+
+  answered = true;
+  document.getElementById('btn-val').disabled = true;
+  inputEl.disabled = true;
+
+  const correctAns = calculateVolume(currentShape);
+  const correct = (val === correctAns);
+
+  if (correct) score++;
+  document.getElementById('score-disp').textContent = score;
+
+  const feedbackArea = document.getElementById('feedback-area');
+  feedbackArea.innerHTML = `
+    <div class="feedback ${correct ? 'fb-correct' : 'fb-wrong'}">
+      <div class="fb-icon">${correct ? '🎯' : '💡'}</div>
+      <div>
+        <div class="fb-title">${correct ? 'Excellent travail !' : `Ce n'est pas tout à fait ça.`}</div>
+        <div class="fb-text">
+          La bonne réponse est <strong>${correctAns} cm³</strong> (soit ${correctAns} cubes).<br>
+          ${currentShape.desc}
+        </div>
+      </div>
+    </div>`;
+
+  document.getElementById('next-area').innerHTML = step < TOTAL_Q
+    ? `<button class="btn-next" onclick="nextQ()">Structure suivante 👉</button>`
+    : `<button class="btn-next" onclick="finishGame()">Voir mon résultat 🏆</button>`;
+}
+
+function nextQ() {
+  step++;
+  renderQuestion();
+}
+
+function finishGame() {
+  document.getElementById('game-flow').style.display = 'none';
+  document.getElementById('congrats-flow').style.display = 'block';
+
+  const pct = Math.round((score / TOTAL_Q) * 100);
+  let msg, stars;
+
+  if (score === TOTAL_Q) {
+    msg = `Fantastique ! Tu as obtenu un score parfait de <strong>${score}/${TOTAL_Q}</strong> (${pct}%). Tu visualises la 3D à la perfection !`;
+    stars = '⭐⭐⭐';
+  } else if (score >= 8) {
+    msg = `Félicitations ! Tu as un score de <strong>${score}/${TOTAL_Q}</strong> (${pct}%). Ton sens de l'espace est très développé !`;
+    stars = '⭐⭐';
+  } else if (score >= 5) {
+    msg = `Bon effort ! Tu as obtenu <strong>${score}/${TOTAL_Q}</strong> (${pct}%). Fais bien attention aux cubes invisibles qui soutiennent l'étage supérieur !`;
+    stars = '⭐';
+  } else {
+    msg = `Score : <strong>${score}/${TOTAL_Q}</strong> (${pct}%). Essaie à nouveau en prenant ton temps pour compter ligne par ligne.`;
+    stars = '❌';
+  }
+
+  document.getElementById('congrats-msg').innerHTML = msg;
+  document.getElementById('stars').textContent = stars;
+
+  if (typeof window.parent !== 'undefined' && window.parent.handleActivityScore) {
+    window.parent.handleActivityScore('grandeur_volume_cubes', score);
+  }
+}
+
+function startSession() {
+  const indices = SHAPES.map((_, i) => i);
+  // Mélange des indices
+  for (let i = indices.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [indices[i], indices[j]] = [indices[j], indices[i]];
+  }
+  session = indices.slice(0, TOTAL_Q);
+}
+
+function resetGame() {
+  step = 1;
+  score = 0;
+  document.getElementById('game-flow').style.display = 'block';
+  document.getElementById('congrats-flow').style.display = 'none';
+  startSession();
+  renderQuestion();
+}
+
+// Raccourci clavier Entrée pour valider
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !answered) {
+    validateAnswer();
+  }
+});
+
+// Lancement au chargement de la page
+window.addEventListener('DOMContentLoaded', () => {
+  startSession();
+  renderQuestion();
+});
+</script>
+</body>
+</html>
