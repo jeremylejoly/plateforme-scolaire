@@ -99,25 +99,24 @@
     }
 
     .btn-config {
-      background: var(--bg-card);
-      border: 1px solid rgba(99, 102, 241, 0.15);
-      padding: 0.6rem 1.2rem;
+      background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+      color: white;
+      border: none;
+      padding: 0.7rem 1.4rem;
       border-radius: var(--radius-md);
-      font-weight: 600;
-      color: var(--color-primary);
+      font-weight: 700;
       cursor: pointer;
       display: flex;
       align-items: center;
       gap: 0.5rem;
-      box-shadow: var(--shadow-soft);
+      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.25);
       transition: var(--transition);
     }
 
     .btn-config:hover {
-      background: var(--color-primary);
-      color: white;
+      background: linear-gradient(135deg, var(--color-primary-hover), var(--color-secondary));
       transform: translateY(-2px);
-      box-shadow: var(--shadow-glow);
+      box-shadow: 0 6px 20px rgba(99, 102, 241, 0.35);
     }
 
     .btn-back {
@@ -1450,7 +1449,7 @@
       </div>
 
       <div class="config-section">
-        <span class="config-label">Critères actifs (sélectionne au moins un) :</span>
+        <span class="config-label">Critères actifs (sélectionne entre 4 et tous les critères) :</span>
         <div class="criteria-grid" id="criteria-config-grid">
           <button class="criteria-btn active" data-div="2">par 2</button>
           <button class="criteria-btn active" data-div="3">par 3</button>
@@ -1463,6 +1462,9 @@
           <button class="criteria-btn" data-div="25">par 25</button>
           <button class="criteria-btn" data-div="50">par 50</button>
           <button class="criteria-btn" data-div="100">par 100</button>
+        </div>
+        <div id="config-criteria-warning" style="color: var(--color-danger); font-size: 0.85rem; margin-top: 0.5rem; font-weight: 600; display: none;">
+          ⚠️ Tu dois sélectionner au moins 4 critères de divisibilité.
         </div>
       </div>
 
@@ -1717,7 +1719,28 @@
     document.querySelectorAll('#criteria-config-grid .criteria-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         playSound('click');
+        
+        const wasActive = btn.classList.contains('active');
+        const activeCount = document.querySelectorAll('#criteria-config-grid .criteria-btn.active').length;
+        
+        if (wasActive && activeCount <= 4) {
+          const warning = document.getElementById('config-criteria-warning');
+          if (warning) {
+            warning.style.display = 'block';
+            warning.style.animation = 'none';
+            warning.offsetHeight; // trigger reflow
+            warning.style.animation = 'shake 0.4s ease-in-out';
+          }
+          return;
+        }
+        
         btn.classList.toggle('active');
+        
+        const newActiveCount = document.querySelectorAll('#criteria-config-grid .criteria-btn.active').length;
+        const warning = document.getElementById('config-criteria-warning');
+        if (warning && newActiveCount >= 4) {
+          warning.style.display = 'none';
+        }
       });
     });
 
@@ -1736,10 +1759,18 @@
         active.push(parseInt(btn.dataset.div));
       });
 
-      if (active.length === 0) {
-        alert("Choisis au moins 1 critère de divisibilité !");
+      if (active.length < 4) {
+        const warning = document.getElementById('config-criteria-warning');
+        if (warning) {
+          warning.style.display = 'block';
+        } else {
+          alert("Choisis au moins 4 critères de divisibilité !");
+        }
         return;
       }
+      
+      const warning = document.getElementById('config-criteria-warning');
+      if (warning) warning.style.display = 'none';
 
       state.activeCriteria = active;
       
