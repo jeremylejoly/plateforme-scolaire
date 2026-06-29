@@ -2275,51 +2275,67 @@
 
       const div = state.frog.activeCriterion;
 
-      // Generate a continuous orthogonal path
+      // Generate a continuous orthogonal path (forcing turns, no straight lines)
       let pathCoords = [];
-      let currentR = 0;
-      let currentC = getRandomInt(0, 3);
-      pathCoords.push({ r: currentR, c: currentC });
-
       let stuckCount = 0;
-      while (currentR < 4 && stuckCount < 100) {
-        const moves = [
-          { r: currentR + 1, c: currentC, type: 'up' }
-        ];
-        if (currentC > 0) moves.push({ r: currentR, c: currentC - 1, type: 'left' });
-        if (currentC < 2) moves.push({ r: currentR, c: currentC + 1, type: 'right' });
+      while (stuckCount < 200) {
+        pathCoords = [];
+        let currentR = 0;
+        let currentC = getRandomInt(0, 3);
+        pathCoords.push({ r: currentR, c: currentC });
+        
+        let localStuck = 0;
+        while (currentR < 4 && localStuck < 100) {
+          const moves = [
+            { r: currentR + 1, c: currentC, type: 'up' }
+          ];
+          if (currentC > 0) moves.push({ r: currentR, c: currentC - 1, type: 'left' });
+          if (currentC < 2) moves.push({ r: currentR, c: currentC + 1, type: 'right' });
 
-        const validMoves = moves.filter(m => !pathCoords.some(p => p.r === m.r && p.c === m.c));
+          const validMoves = moves.filter(m => !pathCoords.some(p => p.r === m.r && p.c === m.c));
 
-        if (validMoves.length === 0) {
-          pathCoords = [];
-          currentR = 0;
-          currentC = getRandomInt(0, 3);
+          if (validMoves.length === 0) {
+            pathCoords = [];
+            break;
+          }
+
+          // Winding weights: Up (weight 2), Left/Right (weight 1)
+          const weighted = [];
+          validMoves.forEach(m => {
+            if (m.type === 'up') {
+              weighted.push(m, m);
+            } else {
+              weighted.push(m);
+            }
+          });
+
+          const selected = weighted[getRandomInt(0, weighted.length)];
+          currentR = selected.r;
+          currentC = selected.c;
           pathCoords.push({ r: currentR, c: currentC });
-          stuckCount++;
-          continue;
+          localStuck++;
         }
 
-        const weighted = [];
-        validMoves.forEach(m => {
-          if (m.type === 'up') {
-            weighted.push(m, m, m);
-          } else {
-            weighted.push(m);
+        if (pathCoords.length > 0 && currentR === 4) {
+          const isStraight = pathCoords.every(p => p.c === pathCoords[0].c);
+          if (!isStraight) {
+            break; // Winding path found!
           }
-        });
-
-        const selected = weighted[getRandomInt(0, weighted.length)];
-        currentR = selected.r;
-        currentC = selected.c;
-        pathCoords.push({ r: currentR, c: currentC });
+        }
+        stuckCount++;
       }
 
-      if (pathCoords.length === 0) {
-        const startC = getRandomInt(0, 3);
-        for (let rowIdx = 0; rowIdx < 5; rowIdx++) {
-          pathCoords.push({ r: rowIdx, c: startC });
-        }
+      if (pathCoords.length === 0 || pathCoords.every(p => p.c === pathCoords[0].c)) {
+        // Fallback winding path
+        pathCoords = [
+          { r: 0, c: 0 },
+          { r: 1, c: 0 },
+          { r: 1, c: 1 },
+          { r: 2, c: 1 },
+          { r: 3, c: 1 },
+          { r: 3, c: 2 },
+          { r: 4, c: 2 }
+        ];
       }
 
       state.frog.pathData = [];
