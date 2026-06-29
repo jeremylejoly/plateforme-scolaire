@@ -1965,60 +1965,110 @@
       document.getElementById('safe-wheel').style.transform = `rotate(0deg)`;
 
       // Generate a secret number
-      // Level 1: <100, Level 2: <500, Level 3+: <1000
+      // Level 1: <100, Level 2: <300, Level 3+: <800
       let secret = 0;
       let limit = 100;
       if (state.vault.level === 2) limit = 300;
       if (state.vault.level >= 3) limit = 800;
       
-      // Select 2 or 3 criteria from activeCriteria
+      let finalMin = 1;
+      let finalMax = 100;
+      let finalClues = [];
+      
       let attempts = 0;
-      while (attempts < 100) {
+      let foundUnique = false;
+      
+      while (attempts < 1000) {
         secret = getRandomInt(Math.max(12, Math.floor(limit / 5)), limit);
         
         // Find which active criteria this secret matches
         const matches = state.activeCriteria.filter(div => divisorsCheck[div](secret));
         
-        // We want at least 2 distinct criteria matching (or 1 if it's very restricted)
-        if (matches.length >= 2 || (matches.length >= 1 && state.activeCriteria.length < 3)) {
-          // Keep a subset of matches to present as clues
-          const selectedClues = matches.slice(0, 3);
-          
-          // Also check for some non-divisibility clue
+        if (matches.length >= 1) {
+          // Shuffled matches and non-matches
+          const shuffledMatches = [...matches].sort(() => Math.random() - 0.5);
           const nonMatches = state.activeCriteria.filter(div => !divisorsCheck[div](secret));
-          const badClue = nonMatches.length > 0 ? nonMatches[getRandomInt(0, nonMatches.length)] : null;
+          const shuffledNonMatches = [...nonMatches].sort(() => Math.random() - 0.5);
           
-          state.vault.currentAnswer = secret;
-          state.vault.clues = selectedClues.map(div => ({ type: 'divisible', val: div }));
-          if (badClue) {
-            state.vault.clues.push({ type: 'not_divisible', val: badClue });
+          // Let's build a candidate clue set:
+          // 1 or 2 positive clues, and 0 or 1 negative clues
+          const cluesList = [];
+          const posClues = shuffledMatches.slice(0, Math.min(2, shuffledMatches.length));
+          posClues.forEach(val => cluesList.push({ type: 'divisible', val }));
+          
+          const negClues = shuffledNonMatches.slice(0, Math.min(1, shuffledNonMatches.length));
+          negClues.forEach(val => cluesList.push({ type: 'not_divisible', val }));
+          
+          // Find all candidates in [1, limit] that satisfy these clues
+          const candidates = [];
+          for (let x = 1; x <= limit; x++) {
+            let ok = true;
+            for (let c of cluesList) {
+              const isDiv = divisorsCheck[c.val](x);
+              if (c.type === 'divisible' && !isDiv) ok = false;
+              if (c.type === 'not_divisible' && isDiv) ok = false;
+            }
+            if (ok) candidates.push(x);
           }
-          break;
+          
+          // Now check secret index in candidates list
+          const secretIdx = candidates.indexOf(secret);
+          if (secretIdx > -1) {
+            // Bracketing lowerBound and upperBound
+            let lowerBound = 1;
+            if (secretIdx > 0) {
+              lowerBound = candidates[secretIdx - 1] + 1;
+            }
+            
+            let upperBound = limit;
+            if (secretIdx < candidates.length - 1) {
+              upperBound = candidates[secretIdx + 1] - 1;
+            }
+            
+            // Choose nice brackets around secret
+            let minTry = secret - getRandomInt(2, 6);
+            let maxTry = secret + getRandomInt(2, 6);
+            
+            minTry = Math.max(lowerBound, minTry);
+            maxTry = Math.min(upperBound, maxTry);
+            
+            if (minTry <= secret && secret <= maxTry) {
+              // Excellent, we found a unique solution set!
+              finalMin = minTry;
+              finalMax = maxTry;
+              finalClues = cluesList;
+              foundUnique = true;
+              break;
+            }
+          }
         }
         attempts++;
       }
 
-      // If we failed to find a complex one, just take any random number and its basic rules
-      if (state.vault.currentAnswer === 0 || attempts >= 100) {
-        state.vault.currentAnswer = 25;
-        state.vault.clues = [
+      // Fallback if unique solution is not found in 1000 attempts (very rare)
+      if (!foundUnique) {
+        secret = 25;
+        finalMin = 20;
+        finalMax = 30;
+        finalClues = [
           { type: 'divisible', val: 5 },
           { type: 'divisible', val: 25 }
         ];
       }
+      
+      state.vault.currentAnswer = secret;
+      state.vault.clues = finalClues;
+      state.vault.minRange = finalMin;
+      state.vault.maxRange = finalMax;
 
       // Render Clues
       const container = document.getElementById('vault-clues');
       container.innerHTML = '';
 
       // Clue 1: Range
-      const rangeVal = Math.floor(state.vault.currentAnswer / 100) * 100;
-      const minRange = rangeVal === 0 ? 1 : rangeVal;
-      const maxRange = rangeVal + 100;
-      
       const rangeClue = document.createElement('div');
       rangeClue.className = 'clue-item';
-      rangeClue.textContent = `🔑 Le code mystère est situé entre ${minRange} et ${maxRange}.`;
+      rangeClue.textContent = `🔑 Le code mystère est situé entre ${state.vault.minRange} et ${state.vault.maxRange}.`;
       container.appendChild(rangeClue);
 
       // Render divisibility clues (reveal first, hide others to unlock)
@@ -2081,9 +2131,8 @@
       let satisfiesAll = true;
       
       // 1. Range check
-      const rangeVal = Math.floor(secret / 100) * 100;
-      const minRange = rangeVal === 0 ? 1 : rangeVal;
-      const maxRange = rangeVal + 100;
+      const minRange = state.vault.minRange;
+      const maxRange = state.vault.maxRange;
       if (userAns < minRange || userAns > maxRange) satisfiesAll = false;
 
       // 2. Divisibility clues check
