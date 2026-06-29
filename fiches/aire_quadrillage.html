@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Le Géomètre des Carreaux — Aire sur Quadrillage</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&family=Plus+Jakarta+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #1e293b;
+      --border: #334155;
+      --primary: #06b6d4;
+      --primary-glow: rgba(6,182,212,0.22);
+      --accent: #f59e0b;
+      --green: #10b981;
+      --red: #f43f5e;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --cell-fill: rgba(6,182,212,0.25);
+      --cell-stroke: #06b6d4;
+      --half-fill: rgba(245,158,11,0.3);
+      --half-stroke: #f59e0b;
+      --figure-fill: rgba(99,102,241,0.18);
+      --figure-stroke: #818cf8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+    .container {
+      width: 100%;
+      max-width: 860px;
+    }
+
+    /* Header */
+    header { text-align: center; margin-bottom: 1.25rem; }
+    h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.85rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #67e8f9, #06b6d4, #0891b2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.3rem;
+    }
+    .subtitle { color: var(--muted); font-size: 0.9rem; }
+
+    /* Score bar */
+    .scorebar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(15,23,42,0.7);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 0.8rem 1.2rem;
+      margin-bottom: 1.25rem;
+    }
+    .sb-block { display: flex; align-items: center; gap: 0.5rem; }
+    .sb-label { font-size: 0.78rem; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+    .sb-val { font-family: 'Outfit', sans-serif; font-size: 1.4rem; font-weight: 700; color: var(--accent); }
+    .prog-track { flex:1; height:7px; background:rgba(51,65,85,.5); border-radius:99px; margin:0 1.25rem; overflow:hidden; }
+    .prog-bar { height:100%; width:0%; background:linear-gradient(90deg,var(--primary),#22d3ee); border-radius:99px; transition:width .5s ease; }
+
+    /* Figure description */
+    .figure-desc {
+      background: rgba(30,41,59,0.6);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+    .figure-icon { font-size: 1.8rem; }
+    .figure-name { font-weight: 700; font-size: 1.05rem; }
+    .figure-hint { font-size: 0.85rem; color: var(--muted); margin-top: 0.15rem; }
+
+    /* Legend */
+    .legend {
+      display: flex;
+      gap: 1.25rem;
+      margin-bottom: 0.85rem;
+      flex-wrap: wrap;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+    .legend-swatch {
+      width: 18px; height: 18px;
+      border-radius: 4px;
+      border: 2px solid;
+    }
+    .ls-full { background: var(--cell-fill); border-color: var(--cell-stroke); }
+    .ls-half { background: var(--half-fill); border-color: var(--half-stroke); }
+    .ls-figure { background: var(--figure-fill); border-color: var(--figure-stroke); }
+
+    /* Grid area */
+    .grid-wrapper {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 1.25rem;
+    }
+    svg#grid-svg {
+      border: 2px solid var(--border);
+      border-radius: 16px;
+      background: #0f1f38;
+      cursor: pointer;
+      touch-action: none;
+      display: block;
+    }
+
+    /* Input + validate */
+    .answer-row {
+      display: flex;
+      gap: 0.85rem;
+      align-items: center;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+    .answer-label { font-weight: 600; font-size: 0.95rem; white-space: nowrap; }
+    .answer-input {
+      width: 90px;
+      padding: 0.55rem 0.75rem;
+      background: rgba(15,23,42,0.8);
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      text-align: center;
+      outline: none;
+      transition: border-color .2s;
+    }
+    .answer-input:focus { border-color: var(--primary); }
+    .answer-unit { color: var(--muted); font-size: 0.9rem; }
+
+    .btn-validate {
+      padding: 0.6rem 1.4rem;
+      background: linear-gradient(135deg, var(--primary), #0891b2);
+      border: none;
+      border-radius: 10px;
+      color: white;
+      font-family: 'Outfit', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all .2s;
+      box-shadow: 0 4px 14px var(--primary-glow);
+    }
+    .btn-validate:hover { transform:translateY(-2px); box-shadow:0 8px 20px rgba(6,182,212,.4); }
+    .btn-validate:disabled { opacity:.45; cursor:not-allowed; transform:none; }
+
+    /* Feedback */
+    .feedback {
+      border-radius: 14px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 1rem;
+      display: flex;
+      gap: 0.85rem;
+      align-items: flex-start;
+      animation: slideUp .3s ease forwards;
+    }
+    .fb-correct { background:rgba(16,185,129,.1); border:1px solid rgba(16,185,129,.35); }
+    .fb-wrong { background:rgba(244,63,94,.1); border:1px solid rgba(244,63,94,.35); }
+    .fb-icon { font-size: 1.5rem; flex-shrink:0; }
+    .fb-title { font-weight:700; font-size:1rem; }
+    .fb-correct .fb-title { color:#34d399; }
+    .fb-wrong .fb-title { color:#fb7185; }
+    .fb-text { font-size:.9rem; color:#cbd5e1; margin-top:.25rem; line-height:1.5; }
+
+    .btn-next {
+      width:100%;
+      padding:.85rem;
+      background:linear-gradient(135deg,var(--primary),#0891b2);
+      border:none; border-radius:12px; color:white;
+      font-family:'Outfit',sans-serif; font-size:1.05rem; font-weight:700;
+      cursor:pointer; transition:all .2s;
+      box-shadow:0 4px 14px var(--primary-glow);
+      display:flex; align-items:center; justify-content:center; gap:.5rem;
+    }
+    .btn-next:hover { transform:translateY(-2px); }
+
+    /* Congrats */
+    .congrats {
+      text-align:center; padding:2.5rem 1rem;
+      animation: scaleIn .5s cubic-bezier(.34,1.56,.64,1) forwards;
+    }
+    .trophy { font-size:4rem; display:inline-block; animation:float 3s ease-in-out infinite; margin-bottom:.75rem; }
+    .congrats-title { font-family:'Outfit',sans-serif; font-size:2rem; font-weight:800; color:var(--accent); margin-bottom:.6rem; }
+    .congrats-msg { color:var(--muted); font-size:1rem; max-width:440px; margin:0 auto 1.5rem; line-height:1.6; }
+    .stars { font-size:2rem; margin-bottom:1.5rem; }
+    .btn-replay {
+      background:linear-gradient(135deg,var(--green),#059669);
+      border:none; color:white; font-family:'Outfit',sans-serif;
+      font-size:1.05rem; font-weight:700; padding:.85rem 2rem;
+      border-radius:12px; cursor:pointer;
+      box-shadow:0 4px 14px rgba(16,185,129,.3);
+      display:inline-flex; align-items:center; gap:.5rem;
+      transition:all .2s;
+    }
+    .btn-replay:hover { transform:translateY(-2px); }
+
+    @keyframes slideUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes scaleIn { from{opacity:0;transform:scale(.92)} to{opacity:1;transform:scale(1)} }
+    @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <div id="game-flow">
+    <header>
+      <h1>🟩 Le Géomètre des Carreaux</h1>
+      <p class="subtitle">Compte les carreaux pour trouver l'aire de la figure.</p>
+    </header>
+
+    <div class="scorebar">
+      <div class="sb-block">
+        <span class="sb-label">Figure</span>
+        <span class="sb-val" id="q-num">1</span>
+        <span style="color:var(--muted);font-family:'Outfit',sans-serif;font-size:1rem;">/10</span>
+      </div>
+      <div class="prog-track"><div class="prog-bar" id="prog-bar"></div></div>
+      <div class="sb-block">
+        <span class="sb-label">Score</span>
+        <span class="sb-val" id="score-disp">0</span>
+        <span style="color:var(--muted);font-family:'Outfit',sans-serif;font-size:1rem;">/10</span>
+      </div>
+    </div>
+
+    <div class="figure-desc">
+      <div class="figure-icon" id="fig-icon">📐</div>
+      <div>
+        <div class="figure-name" id="fig-name">Chargement…</div>
+        <div class="figure-hint" id="fig-hint">Chaque petit carré = 1 cm²</div>
+      </div>
+    </div>
+
+    <div class="legend">
+      <div class="legend-item"><div class="legend-swatch ls-figure"></div> Figure à mesurer</div>
+      <div class="legend-item"><div class="legend-swatch ls-full"></div> Carreau plein = 1 cm²</div>
+      <div class="legend-item"><div class="legend-swatch ls-half"></div> Demi-carreau = 0,5 cm²</div>
+    </div>
+
+    <div class="grid-wrapper">
+      <svg id="grid-svg" width="600" height="400" viewBox="0 0 600 400"></svg>
+    </div>
+
+    <div class="answer-row">
+      <span class="answer-label">Aire de la figure :</span>
+      <input type="number" id="aire-input" class="answer-input" min="0" step="0.5" placeholder="?">
+      <span class="answer-unit">cm²</span>
+      <button class="btn-validate" id="btn-val" onclick="validateAnswer()">✓ Valider</button>
+    </div>
+
+    <div id="feedback-area"></div>
+    <div id="next-area"></div>
+  </div>
+
+  <div id="congrats-flow" style="display:none">
+    <div class="congrats">
+      <div class="trophy">🏆</div>
+      <h2 class="congrats-title">Mission accomplie !</h2>
+      <p class="congrats-msg" id="congrats-msg">Bravo !</p>
+      <div class="stars" id="stars"></div>
+      <button class="btn-replay" onclick="resetGame()">🔄 Recommencer</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ── CONFIG ─────────────────────────────────────────────────
+const COLS = 15;   // number of grid columns
+const ROWS = 10;   // number of grid rows
+const CELL = 40;   // px per cell
+const PAD  = 0;
+const SVG_W = COLS * CELL;
+const SVG_H = ROWS * CELL;
+const TOTAL_Q = 10;
+
+// ── 50 FIGURES ─────────────────────────────────────────────
+// Each figure is defined by a polygon path (grid coordinates),
+// plus its correct area and whether it has half-squares.
+// Coordinates are [col, row] integers, 0-indexed from top-left.
+// "halves" marks which cells contain a half-triangle (cell indices).
+const FIGURES = [
+  // ── RECTANGLES & CARRÉS ──
+  {
+    icon:'⬛', name:'Un rectangle', hint:'Compte bien tous les carreaux complets.',
+    type:'polygon', points:[[2,2],[9,2],[9,7],[2,7]],
+    area:35, halfCells:[]
+  },
+  {
+    icon:'🟦', name:'Un carré', hint:'Toutes les rangées font la même longueur.',
+    type:'polygon', points:[[3,1],[9,1],[9,7],[3,7]],
+    area:36, halfCells:[]
+  },
+  {
+    icon:'⬛', name:'Un rectangle étroit', hint:'Attention à bien compter les rangées.',
+    type:'polygon', points:[[1,3],[13,3],[13,6],[1,6]],
+    area:36, halfCells:[]
+  },
+  {
+    icon:'🟦', name:'Un petit carré', hint:'Court et carré !',
+    type:'polygon', points:[[5,3],[9,3],[9,7],[5,7]],
+    area:16, halfCells:[]
+  },
+  {
+    icon:'⬛', name:'Un grand rectangle', hint:'Compte les lignes et les colonnes puis multiplie.',
+    type:'polygon', points:[[1,1],[12,1],[12,8],[1,8]],
+    area:77, halfCells:[]
+  },
+
+  // ── TRIANGLES rectangles ──
+  {
+    icon:'🔺', name:'Un triangle rectangle', hint:'La moitié des carreaux sont des demi-carreaux !',
+    type:'polygon', points:[[1,8],[9,8],[9,1]],
+    area:28, halfCells:[]
+  },
+  {
+    icon:'🔺', name:'Un triangle rectangle', hint:'Base en bas, pointe en haut.',
+    type:'polygon', points:[[2,8],[11,8],[2,1]],
+    area:31.5, halfCells:[]
+  },
+  {
+    icon:'🔺', name:'Un grand triangle', hint:'Base = 10, hauteur = 6.',
+    type:'polygon', points:[[2,8],[12,8],[7,2]],
+    area:30, halfCells:[]
+  },
+  {
+    icon:'🔺', name:'Un triangle isocèle', hint:'La pointe est exactement au milieu.',
+    type:'polygon', points:[[3,8],[11,8],[7,1]],
+    area:28, halfCells:[]
+  },
+  {
+    icon:'🔺', name:'Un triangle rectangle', hint:'Cherche la base et la hauteur.',
+    type:'polygon', points:[[4,9],[12,9],[4,2]],
+    area:28, halfCells:[]
+  },
+
+  // ── FIGURES EN L ──
+  {
+    icon:'🅻', name:'Une figure en L', hint:'Décompose-la en deux rectangles.',
+    type:'polygon', points:[[2,1],[6,1],[6,5],[9,5],[9,8],[2,8]],
+    area:37, halfCells:[]
+  },
+  {
+    icon:'🅻', name:'Une figure en L inversé', hint:'Deux rectangles bout à bout.',
+    type:'polygon', points:[[2,1],[12,1],[12,4],[6,4],[6,8],[2,8]],
+    area:46, halfCells:[]
+  },
+  {
+    icon:'🅻', name:'Une marche d\'escalier', hint:'Trois niveaux de hauteur.',
+    type:'polygon', points:[[1,8],[5,8],[5,5],[8,5],[8,3],[11,3],[11,1],[1,1]],
+    area:48, halfCells:[]
+  },
+  {
+    icon:'🅻', name:'Un T majuscule', hint:'Une barre horizontale et une tige verticale.',
+    type:'polygon', points:[[2,1],[12,1],[12,4],[9,4],[9,9],[5,9],[5,4],[2,4]],
+    area:42, halfCells:[]
+  },
+  {
+    icon:'🅻', name:'Un + (croix)', hint:'Une croix symétrique. Décompose en 3 rectangles.',
+    type:'polygon', points:[[5,1],[9,1],[9,4],[12,4],[12,6],[9,6],[9,9],[5,9],[5,6],[2,6],[2,4],[5,4]],
+    area:36, halfCells:[]
+  },
+
+  // ── TRAPÈZES ──
+  {
+    icon:'🔷', name:'Un trapèze', hint:'Deux côtés parallèles, deux obliques. Des demi-carreaux apparaissent.',
+    type:'polygon', points:[[3,8],[11,8],[9,2],[5,2]],
+    area:36, halfCells:[]
+  },
+  {
+    icon:'🔷', name:'Un trapèze rectangle', hint:'Un seul côté est vertical.',
+    type:'polygon', points:[[2,8],[10,8],[10,2],[2,5]],
+    area:39, halfCells:[]
+  },
+  {
+    icon:'🔷', name:'Un trapèze isocèle', hint:'Symétrique, comme un seau retourné.',
+    type:'polygon', points:[[2,8],[12,8],[10,2],[4,2]],
+    area:48, halfCells:[]
+  },
+  {
+    icon:'🔷', name:'Un grand trapèze', hint:'Base large en bas.',
+    type:'polygon', points:[[1,9],[13,9],[11,2],[3,2]],
+    area:56, halfCells:[]
+  },
+  {
+    icon:'🔷', name:'Un trapèze aplati', hint:'Peu de hauteur mais une grande base.',
+    type:'polygon', points:[[2,7],[12,7],[10,3],[4,3]],
+    area:32, halfCells:[]
+  },
+
+  // ── PARALLÉLOGRAMMES ──
+  {
+    icon:'◆', name:'Un parallélogramme', hint:'Base × hauteur. Certains bords sont en diagonale.',
+    type:'polygon', points:[[4,8],[11,8],[13,2],[6,2]],
+    area:42, halfCells:[]
+  },
+  {
+    icon:'◆', name:'Un parallélogramme penché', hint:'Décompose-le en un rectangle + 2 triangles.',
+    type:'polygon', points:[[3,8],[9,8],[12,2],[6,2]],
+    area:36, halfCells:[]
+  },
+  {
+    icon:'◆', name:'Un parallélogramme court', hint:'Moins haut que large.',
+    type:'polygon', points:[[2,7],[11,7],[13,3],[4,3]],
+    area:36, halfCells:[]
+  },
+  {
+    icon:'◆', name:'Un grand parallélogramme', hint:'Une grande base avec une bonne hauteur.',
+    type:'polygon', points:[[1,9],[10,9],[13,1],[4,1]],
+    area:72, halfCells:[]
+  },
+  {
+    icon:'◆', name:'Un losange', hint:'Tous les côtés sont égaux. Pense aux diagonales.',
+    type:'polygon', points:[[7,1],[13,5],[7,9],[1,5]],
+    area:48, halfCells:[]
+  },
+
+  // ── FORMES IRRÉGULIÈRES ──
+  {
+    icon:'🔶', name:'Une maison (pentagone)', hint:'Un rectangle avec un triangle au-dessus.',
+    type:'polygon', points:[[3,9],[11,9],[11,5],[7,1],[3,5]],
+    area:40, halfCells:[]
+  },
+  {
+    icon:'🔶', name:'Une flèche vers la droite', hint:'Comme un panneau de direction.',
+    type:'polygon', points:[[2,3],[10,3],[10,1],[13,5],[10,9],[10,7],[2,7]],
+    area:48, halfCells:[]
+  },
+  {
+    icon:'🔶', name:'Un hexagone régulier (approx.)', hint:'Pense aux triangles au sommet et en bas.',
+    type:'polygon', points:[[4,1],[10,1],[13,5],[10,9],[4,9],[1,5]],
+    area:60, halfCells:[]
+  },
+  {
+    icon:'🔶', name:'Un pentagone asymétrique', hint:'Décompose en formes simples.',
+    type:'polygon', points:[[2,8],[13,8],[13,4],[8,1],[2,4]],
+    area:51, halfCells:[]
+  },
+  {
+    icon:'🔶', name:'Un octogone (approx.)', hint:'Comme un panneau STOP arrondi.',
+    type:'polygon', points:[[4,1],[10,1],[13,4],[13,6],[10,9],[4,9],[1,6],[1,4]],
+    area:72, halfCells:[]
+  },
+  {
+    icon:'🔶', name:'Un drapeau (forme)', hint:'Comme un guidon de vélo.',
+    type:'polygon', points:[[2,2],[12,2],[12,5],[8,5],[12,8],[2,8]],
+    area:54, halfCells:[]
+  },
+  {
+    icon:'🔶', name:'Un trapèze rectangle irrégulier', hint:'Un côté penché, un côté droit.',
+    type:'polygon', points:[[2,8],[12,8],[12,3],[5,3],[2,6]],
+    area:43.5, halfCells:[]
+  },
+  {
+    icon:'🔶', name:'Un T asymétrique', hint:'Comme un T mais décentré.',
+    type:'polygon', points:[[1,1],[11,1],[11,4],[8,4],[8,9],[4,9],[4,4],[1,4]],
+    area:46, halfCells:[]
+  },
+  {
+    icon:'🔶', name:'Un U', hint:'Comme la lettre U. Décompose en 3 rectangles.',
+    type:'polygon', points:[[2,1],[5,1],[5,7],[9,7],[9,1],[12,1],[12,9],[2,9]],
+    area:50, halfCells:[]
+  },
+  {
+    icon:'🔶', name:'Un Z géant', hint:'Comme la lettre Z.',
+    type:'polygon', points:[[1,1],[13,1],[13,4],[5,6],[13,6],[13,9],[1,9],[1,6],[9,4],[1,4]],
+    area:50, halfCells:[]
+  },
+
+  // ── PETITES FORMES SIMPLES ──
+  {
+    icon:'⬛', name:'Un mini-rectangle', hint:'Très simple, bien compter !',
+    type:'polygon', points:[[5,4],[9,4],[9,7],[5,7]],
+    area:12, halfCells:[]
+  },
+  {
+    icon:'🔺', name:'Un très petit triangle', hint:'Base 4, hauteur 4.',
+    type:'polygon', points:[[5,8],[9,8],[5,4]],
+    area:8, halfCells:[]
+  },
+  {
+    icon:'🟦', name:'Un grand carré', hint:'Côté 8.',
+    type:'polygon', points:[[3,1],[11,1],[11,9],[3,9]],
+    area:64, halfCells:[]
+  },
+  {
+    icon:'⬛', name:'Un bandeau horizontal', hint:'Long et très fin.',
+    type:'polygon', points:[[1,4],[13,4],[13,6],[1,6]],
+    area:24, halfCells:[]
+  },
+  {
+    icon:'⬛', name:'Un bandeau vertical', hint:'Fin et haut.',
+    type:'polygon', points:[[6,1],[9,1],[9,9],[6,9]],
+    area:24, halfCells:[]
+  },
+  {
+    icon:'🔷', name:'Un petit trapèze', hint:'Reste bien attentif aux demi-carreaux.',
+    type:'polygon', points:[[5,7],[10,7],[9,3],[6,3]],
+    area:15.5, halfCells:[]
+  },
+  {
+    icon:'◆', name:'Un petit parallélogramme', hint:'Base 6, hauteur 4.',
+    type:'polygon', points:[[3,8],[9,8],[11,4],[5,4]],
+    area:24, halfCells:[]
+  },
+  {
+    icon:'🔶', name:'Un grand losange fin', hint:'Diagonale horizontale 12, verticale 6.',
+    type:'polygon', points:[[1,5],[7,1],[13,5],[7,9]],
+    area:36, halfCells:[]
+  },
+  {
+    icon:'🔶', name:'Une étoile à 4 branches', hint:'Décompose en un carré central + 4 triangles.',
+    type:'polygon', points:[[5,1],[7,4],[9,1],[12,5],[9,7],[7,10],[5,7],[2,5]],
+    area:30, halfCells:[]
+  },
+  {
+    icon:'🔶', name:'Un triangle équilatéral (approx.)', hint:'Base 10, hauteur environ 8.',
+    type:'polygon', points:[[2,9],[12,9],[7,1]],
+    area:40, halfCells:[]
+  },
+  {
+    icon:'🔶', name:'Un demi-lune (approx.)', hint:'Un grand triangle avec un triangle retiré.',
+    type:'polygon', points:[[1,9],[13,9],[13,2],[7,6],[1,2]],
+    area:48, halfCells:[]
+  },
+  {
+    icon:'🅻', name:'Un F majuscule', hint:'Trois barres horizontales à gauche.',
+    type:'polygon', points:[[2,1],[12,1],[12,3],[5,3],[5,5],[10,5],[10,7],[5,7],[5,9],[2,9]],
+    area:40, halfCells:[]
+  },
+  {
+    icon:'🅻', name:'Un C majuscule', hint:'Comme la lettre C.',
+    type:'polygon', points:[[4,1],[12,1],[12,3],[6,3],[6,7],[12,7],[12,9],[4,9],[2,7],[2,3]],
+    area:44, halfCells:[]
+  },
+  {
+    icon:'🅻', name:'Un H majuscule', hint:'Deux piliers reliés par une barre.',
+    type:'polygon', points:[[2,1],[5,1],[5,4],[9,4],[9,1],[12,1],[12,9],[9,9],[9,6],[5,6],[5,9],[2,9]],
+    area:48, halfCells:[]
+  },
+  {
+    icon:'🔶', name:'Un pentagone maison', hint:'Un grand rectangle surmonté d\'un triangle.',
+    type:'polygon', points:[[2,9],[12,9],[12,5],[7,1],[2,5]],
+    area:55, halfCells:[]
+  }
+];
+
+// ── STATE ───────────────────────────────────────────────────
+let step = 1, score = 0;
+let session = [];   // shuffled indices
+let currentFig = null;
+let answered = false;
+
+// ── UTILS ───────────────────────────────────────────────────
+function shuffle(arr){ const a=[...arr]; for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a; }
+
+function ptStr(pts){ return pts.map(([c,r])=>`${c*CELL},${r*CELL}`).join(' '); }
+
+// Compute area using shoelace formula
+function shoelaceArea(pts){
+  let area = 0;
+  const n = pts.length;
+  for(let i=0;i<n;i++){
+    const [x1,y1]=pts[i], [x2,y2]=pts[(i+1)%n];
+    area += (x1*y1+x2*y2)-(x2*y1+x1*y2);
+  }
+  return Math.abs(area)/2;
+}
+
+// ── DRAW ────────────────────────────────────────────────────
+function drawGrid(fig) {
+  const svg = document.getElementById('grid-svg');
+  svg.setAttribute('width', SVG_W);
+  svg.setAttribute('height', SVG_H);
+  svg.setAttribute('viewBox', `0 0 ${SVG_W} ${SVG_H}`);
+  svg.innerHTML = '';
+
+  // Grid lines
+  for(let c=0;c<=COLS;c++){
+    const l=document.createElementNS('http://www.w3.org/2000/svg','line');
+    l.setAttribute('x1',c*CELL); l.setAttribute('y1',0);
+    l.setAttribute('x2',c*CELL); l.setAttribute('y2',SVG_H);
+    l.setAttribute('stroke','#1e3a5f'); l.setAttribute('stroke-width','1');
+    svg.appendChild(l);
+  }
+  for(let r=0;r<=ROWS;r++){
+    const l=document.createElementNS('http://www.w3.org/2000/svg','line');
+    l.setAttribute('x1',0); l.setAttribute('y1',r*CELL);
+    l.setAttribute('x2',SVG_W); l.setAttribute('y2',r*CELL);
+    l.setAttribute('stroke','#1e3a5f'); l.setAttribute('stroke-width','1');
+    svg.appendChild(l);
+  }
+
+  // Scale indicators on axes
+  for(let c=1;c<=COLS;c++){
+    const t=document.createElementNS('http://www.w3.org/2000/svg','text');
+    t.setAttribute('x',c*CELL-CELL/2); t.setAttribute('y', SVG_H-4);
+    t.setAttribute('font-size','9'); t.setAttribute('fill','#334155');
+    t.setAttribute('text-anchor','middle');
+    t.textContent=c; svg.appendChild(t);
+  }
+  for(let r=1;r<=ROWS;r++){
+    const t=document.createElementNS('http://www.w3.org/2000/svg','text');
+    t.setAttribute('x',4); t.setAttribute('y',r*CELL-CELL/2+4);
+    t.setAttribute('font-size','9'); t.setAttribute('fill','#334155');
+    t.textContent=r; svg.appendChild(t);
+  }
+
+  // Figure polygon
+  const poly = document.createElementNS('http://www.w3.org/2000/svg','polygon');
+  poly.setAttribute('points', ptStr(fig.points));
+  poly.setAttribute('fill','rgba(99,102,241,0.22)');
+  poly.setAttribute('stroke','#818cf8');
+  poly.setAttribute('stroke-width','2.5');
+  poly.setAttribute('stroke-linejoin','round');
+  svg.appendChild(poly);
+
+  // Dimension markers
+  drawDimensions(svg, fig);
+}
+
+function drawDimensions(svg, fig) {
+  // Draw small dot on each vertex
+  fig.points.forEach(([c,r]) => {
+    const dot = document.createElementNS('http://www.w3.org/2000/svg','circle');
+    dot.setAttribute('cx', c*CELL); dot.setAttribute('cy', r*CELL);
+    dot.setAttribute('r','3.5'); dot.setAttribute('fill','#818cf8');
+    svg.appendChild(dot);
+  });
+}
+
+// ── QUESTION ────────────────────────────────────────────────
+function renderQuestion(){
+  answered = false;
+  document.getElementById('feedback-area').innerHTML = '';
+  document.getElementById('next-area').innerHTML = '';
+  document.getElementById('aire-input').value = '';
+  document.getElementById('aire-input').disabled = false;
+  document.getElementById('btn-val').disabled = false;
+
+  currentFig = FIGURES[session[step-1]];
+
+  document.getElementById('q-num').textContent = step;
+  document.getElementById('score-disp').textContent = score;
+  document.getElementById('prog-bar').style.width = `${((step-1)/TOTAL_Q)*100}%`;
+  document.getElementById('fig-icon').textContent = currentFig.icon;
+  document.getElementById('fig-name').textContent = currentFig.name;
+  document.getElementById('fig-hint').textContent = currentFig.hint;
+
+  drawGrid(currentFig);
+  document.getElementById('aire-input').focus();
+}
+
+// ── VALIDATE ────────────────────────────────────────────────
+function validateAnswer(){
+  if(answered) return;
+  const raw = document.getElementById('aire-input').value.replace(',','.');
+  const val = parseFloat(raw);
+  if(isNaN(val)){ alert('Saisis un nombre !'); return; }
+
+  answered = true;
+  document.getElementById('btn-val').disabled = true;
+  document.getElementById('aire-input').disabled = true;
+
+  const correct = Math.abs(val - currentFig.area) < 0.01;
+  if(correct) score++;
+  document.getElementById('score-disp').textContent = score;
+
+  // Highlight correct polygon area on svg after validation
+  highlightAnswer(correct);
+
+  const feedbackArea = document.getElementById('feedback-area');
+  feedbackArea.innerHTML = `
+    <div class="feedback ${correct?'fb-correct':'fb-wrong'}">
+      <div class="fb-icon">${correct?'🎯':'💡'}</div>
+      <div>
+        <div class="fb-title">${correct ? 'Parfait !' : `Non, la bonne réponse est ${currentFig.area} cm²`}</div>
+        <div class="fb-text">${getExplanation(currentFig)}</div>
+      </div>
+    </div>`;
+
+  const nextArea = document.getElementById('next-area');
+  nextArea.innerHTML = step < TOTAL_Q
+    ? `<button class="btn-next" onclick="nextQ()">Figure suivante 👉</button>`
+    : `<button class="btn-next" onclick="finishGame()">Voir mon résultat 🏆</button>`;
+}
+
+function highlightAnswer(correct){
+  const svg = document.getElementById('grid-svg');
+  const polys = svg.querySelectorAll('polygon');
+  if(polys.length > 0){
+    polys[0].setAttribute('fill', correct ? 'rgba(16,185,129,0.25)' : 'rgba(244,63,94,0.2)');
+    polys[0].setAttribute('stroke', correct ? '#34d399' : '#fb7185');
+  }
+}
+
+function getExplanation(fig){
+  const area = fig.area;
+  const pts = fig.points;
+  // Compute bounding box dimensions for rectangles
+  const minC = Math.min(...pts.map(p=>p[0]));
+  const maxC = Math.max(...pts.map(p=>p[0]));
+  const minR = Math.min(...pts.map(p=>p[1]));
+  const maxR = Math.max(...pts.map(p=>p[1]));
+  const w = maxC - minC;
+  const h = maxR - minR;
+
+  const n = fig.name.toLowerCase();
+  if(n.includes('rectangle') || n.includes('carré') || n.includes('bandeau')){
+    return `${fig.name} : Longueur × Largeur = ${w} × ${h} = <strong>${area} cm²</strong>.`;
+  }
+  if(n.includes('triangle')){
+    return `${fig.name} : (Base × Hauteur) ÷ 2 = (${w} × ${h}) ÷ 2 = <strong>${area} cm²</strong>.`;
+  }
+  if(n.includes('parallélogramme') || n.includes('losange')){
+    return `${fig.name} : Base × Hauteur = <strong>${area} cm²</strong>. Les demi-carreaux sur les bords obliques s'additionnent par paires.`;
+  }
+  if(n.includes('trapèze')){
+    return `${fig.name} : (Base₁ + Base₂) × Hauteur ÷ 2 = <strong>${area} cm²</strong>.`;
+  }
+  return `Aire correcte : <strong>${area} cm²</strong>. Décompose la figure en formes simples et additionne leurs aires.`;
+}
+
+// ── NAVIGATION ──────────────────────────────────────────────
+function nextQ(){ step++; renderQuestion(); }
+
+function finishGame(){
+  document.getElementById('game-flow').style.display='none';
+  document.getElementById('congrats-flow').style.display='block';
+  const pct = Math.round(score/TOTAL_Q*100);
+  let msg, stars;
+  if(score===TOTAL_Q){ msg=`Incroyable ! Tu as tout juste : <strong>${score}/${TOTAL_Q}</strong> (${pct}%). Tu es un as du quadrillage !`; stars='⭐⭐⭐'; }
+  else if(score>=8){ msg=`Excellent ! <strong>${score}/${TOTAL_Q}</strong> bonnes réponses (${pct}%). Tu maîtrises très bien la lecture du quadrillage.`; stars='⭐⭐'; }
+  else if(score>=5){ msg=`Pas mal ! <strong>${score}/${TOTAL_Q}</strong> (${pct}%). Continue à t'entraîner, tu progresses bien.`; stars='⭐'; }
+  else { msg=`<strong>${score}/${TOTAL_Q}</strong> (${pct}%). C'est difficile, mais recommence : chaque essai t'aide à progresser !`; stars='❌'; }
+  document.getElementById('congrats-msg').innerHTML = msg;
+  document.getElementById('stars').textContent = stars;
+  if(typeof window.parent!=='undefined'&&window.parent.handleActivityScore){
+    window.parent.handleActivityScore('grandeur_aire_quadrillage', score);
+  }
+}
+
+function resetGame(){
+  step=1; score=0;
+  document.getElementById('game-flow').style.display='block';
+  document.getElementById('congrats-flow').style.display='none';
+  startSession();
+  renderQuestion();
+}
+
+function startSession(){
+  const indices = FIGURES.map((_,i)=>i);
+  session = shuffle(indices).slice(0,TOTAL_Q);
+}
+
+// Keyboard shortcut: Enter to validate
+document.addEventListener('keydown', e => {
+  if(e.key === 'Enter' && !answered) validateAnswer();
+});
+
+// ── BOOT ────────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  startSession();
+  renderQuestion();
+});
+</script>
+</body>
+</html>
