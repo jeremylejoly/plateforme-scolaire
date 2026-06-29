@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>L'Arpenteur Impérial — Conversions d'Unités d'Aire</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&family=Plus+Jakarta+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #1e293b;
+      --border: #334155;
+      --primary: #a855f7;
+      --primary-glow: rgba(168,85,247,0.22);
+      --accent: #f59e0b;
+      --green: #10b981;
+      --red: #f43f5e;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 1.25rem;
+    }
+    .container { width: 100%; max-width: 860px; }
+
+    /* ── Header ── */
+    header { text-align: center; margin-bottom: 1.1rem; }
+    h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.75rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #d8b4fe, #a855f7, #7c3aed);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.25rem;
+    }
+    .subtitle { color: var(--muted); font-size: 0.88rem; }
+
+    /* ── Scorebar ── */
+    .scorebar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(15,23,42,0.7);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 0.7rem 1.1rem;
+      margin-bottom: 1.1rem;
+    }
+    .sb-block { display: flex; align-items: center; gap: 0.45rem; }
+    .sb-label { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing:.05em; color: var(--muted); }
+    .sb-val { font-family: 'Outfit', sans-serif; font-size: 1.35rem; font-weight: 700; color: var(--accent); }
+    .prog-track { flex:1; height:7px; background:rgba(51,65,85,.5); border-radius:99px; margin:0 1.1rem; overflow:hidden; }
+    .prog-bar { height:100%; width:0%; background:linear-gradient(90deg, var(--primary), #c084fc); border-radius:99px; transition:width .5s ease; }
+
+    /* ── Conversion table ── */
+    .conv-table-wrap {
+      overflow-x: auto;
+      margin-bottom: 1.1rem;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+    .conv-table {
+      width: 100%;
+      min-width: 580px;
+      border-collapse: collapse;
+    }
+    .conv-table th, .conv-table td {
+      text-align: center;
+      border: 1px solid var(--border);
+      padding: 0;
+    }
+    /* Row 1 — big unit symbols */
+    .conv-table thead tr:first-child th {
+      padding: 0.5rem 0.25rem;
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+    }
+    /* Row 2 — full names */
+    .conv-table thead tr:nth-child(2) th {
+      padding: 0.22rem 0.2rem;
+      font-size: 0.63rem;
+      font-weight: 500;
+      line-height: 1.3;
+    }
+    /* Row 3 — agrarian equivalents */
+    .conv-table tbody tr td {
+      padding: 0.4rem 0.2rem;
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+
+    /* Metric-only columns */
+    .col-metric      { background: #0d1f38; color: #93c5fd; border-color: #1e3a5f !important; }
+    .col-metric-name { background: rgba(13,31,56,0.85); color: #475569; }
+    .col-metric-empty{ background: rgba(13,31,56,0.4); }
+
+    /* Agrarian-capable columns */
+    .col-agr         { background: #0d2a12; color: #86efac; border-color: #1a4020 !important; }
+    .col-agr-name    { background: rgba(13,42,18,0.85); color: #4ade80; }
+    .col-agr-val     { background: rgba(13,42,18,0.5); }
+
+    .agr-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.2rem;
+      background: rgba(134,239,172,0.15);
+      border: 1px solid rgba(134,239,172,0.4);
+      border-radius: 7px;
+      padding: 0.12rem 0.5rem;
+      font-size: 0.85rem;
+      color: #86efac;
+      font-weight: 800;
+      font-family: 'Outfit', sans-serif;
+    }
+    .agr-equiv {
+      font-size: 0.62rem;
+      color: #4ade80;
+      margin-top: 0.1rem;
+      display: block;
+    }
+
+    .rule-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.5rem 0.5rem 0.3rem;
+      font-size: 0.76rem;
+      color: var(--muted);
+    }
+    .rule-arrow { color: var(--primary); font-size: 1rem; }
+    .rule-tag {
+      background: rgba(168,85,247,0.15);
+      border: 1px solid rgba(168,85,247,0.3);
+      border-radius: 6px;
+      padding: 0.15rem 0.45rem;
+      color: #d8b4fe;
+      font-size: 0.72rem;
+      font-weight: 600;
+    }
+
+    /* ── Question card ── */
+    .question-card {
+      background: rgba(30,41,59,0.55);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 1.5rem;
+      margin-bottom: 1.1rem;
+      text-align: center;
+    }
+    .q-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.2rem 0.65rem;
+      border-radius: 99px;
+      background: rgba(168,85,247,0.12);
+      border: 1px solid rgba(168,85,247,0.3);
+      color: #d8b4fe;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      margin-bottom: 0.9rem;
+    }
+    .q-text {
+      font-size: 1.5rem;
+      font-weight: 700;
+      font-family: 'Outfit', sans-serif;
+      color: #e2e8f0;
+      line-height: 1.4;
+      margin-bottom: 1.1rem;
+    }
+    .q-text .val { color: #c084fc; }
+    .q-text .unit-from { color: #f59e0b; }
+    .q-text .unit-to { color: #34d399; }
+    .q-text .equals { color: var(--muted); margin: 0 0.4rem; }
+
+    /* Answer row */
+    .answer-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+    .answer-input {
+      width: 140px;
+      padding: 0.65rem 0.85rem;
+      background: rgba(15,23,42,0.8);
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      color: var(--text);
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      text-align: center;
+      outline: none;
+      transition: border-color .2s;
+    }
+    .answer-input:focus { border-color: var(--primary); }
+    .answer-input:disabled { opacity: .5; }
+    .answer-unit {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #34d399;
+      min-width: 45px;
+    }
+    .btn-validate {
+      padding: 0.65rem 1.5rem;
+      background: linear-gradient(135deg, var(--primary), #7c3aed);
+      border: none;
+      border-radius: 12px;
+      color: white;
+      font-family: 'Outfit', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 14px var(--primary-glow);
+      transition: all .2s;
+    }
+    .btn-validate:hover { transform:translateY(-2px); box-shadow:0 8px 20px rgba(168,85,247,.4); }
+    .btn-validate:disabled { opacity:.4; cursor:not-allowed; transform:none; }
+
+    /* ── Feedback ── */
+    .feedback {
+      border-radius: 14px;
+      padding: 1rem 1.2rem;
+      margin-bottom: 1rem;
+      display: flex;
+      gap: 0.8rem;
+      align-items: flex-start;
+      animation: slideUp .3s ease forwards;
+    }
+    .fb-correct { background:rgba(16,185,129,.1); border:1px solid rgba(16,185,129,.35); }
+    .fb-wrong   { background:rgba(244,63,94,.1);  border:1px solid rgba(244,63,94,.35);  }
+    .fb-icon { font-size: 1.5rem; flex-shrink:0; }
+    .fb-title { font-weight:700; font-size:1rem; margin-bottom:.25rem; }
+    .fb-correct .fb-title { color:#34d399; }
+    .fb-wrong   .fb-title { color:#fb7185; }
+    .fb-text { font-size:.88rem; color:#cbd5e1; line-height:1.55; }
+    .fb-text strong { color:#f1f5f9; }
+    .fb-tip {
+      margin-top:.6rem;
+      padding:.5rem .75rem;
+      border-radius:8px;
+      background:rgba(168,85,247,.1);
+      border-left:3px solid var(--primary);
+      font-size:.82rem;
+      color:#d8b4fe;
+      font-style:italic;
+    }
+
+    /* ── Next / Replay ── */
+    .btn-next {
+      width:100%;
+      padding:.8rem;
+      background:linear-gradient(135deg, var(--primary), #7c3aed);
+      border:none; border-radius:12px; color:white;
+      font-family:'Outfit',sans-serif; font-size:1rem; font-weight:700;
+      cursor:pointer; transition:all .2s;
+      box-shadow:0 4px 14px var(--primary-glow);
+      display:flex; align-items:center; justify-content:center; gap:.5rem;
+    }
+    .btn-next:hover { transform:translateY(-2px); }
+
+    /* ── Congrats ── */
+    .congrats { text-align:center; padding:2.5rem 1rem; animation: scaleIn .5s cubic-bezier(.34,1.56,.64,1) forwards; }
+    .trophy { font-size:4rem; display:inline-block; animation:float 3s ease-in-out infinite; margin-bottom:.75rem; }
+    .congrats-title { font-family:'Outfit',sans-serif; font-size:2rem; font-weight:800; color:var(--accent); margin-bottom:.6rem; }
+    .congrats-msg { color:var(--muted); font-size:.98rem; max-width:460px; margin:0 auto 1.25rem; line-height:1.6; }
+    .stars { font-size:2rem; margin-bottom:1.5rem; }
+    .btn-replay {
+      background:linear-gradient(135deg,var(--green),#059669);
+      border:none; color:white; font-family:'Outfit',sans-serif;
+      font-size:1rem; font-weight:700; padding:.8rem 2rem;
+      border-radius:12px; cursor:pointer;
+      box-shadow:0 4px 14px rgba(16,185,129,.3);
+      display:inline-flex; align-items:center; gap:.5rem; transition:all .2s;
+    }
+    .btn-replay:hover { transform:translateY(-2px); }
+
+    @keyframes slideUp  { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes scaleIn  { from{opacity:0;transform:scale(.92)} to{opacity:1;transform:scale(1)} }
+    @keyframes float    { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <!-- GAME FLOW -->
+  <div id="game-flow">
+    <header>
+      <h1>⚖️ L'Arpenteur Impérial</h1>
+      <p class="subtitle">Convertis les unités d'aire — métriques et agraires.</p>
+    </header>
+
+    <div class="scorebar">
+      <div class="sb-block">
+        <span class="sb-label">Question</span>
+        <span class="sb-val" id="q-num">1</span>
+        <span style="color:var(--muted);font-family:'Outfit',sans-serif;font-size:.95rem;">/10</span>
+      </div>
+      <div class="prog-track"><div class="prog-bar" id="prog-bar"></div></div>
+      <div class="sb-block">
+        <span class="sb-label">Score</span>
+        <span class="sb-val" id="score-disp">0</span>
+        <span style="color:var(--muted);font-family:'Outfit',sans-serif;font-size:.95rem;">/10</span>
+      </div>
+    </div>
+
+    <!-- Conversion table reference -->
+    <div class="conv-table-wrap">
+      <table class="conv-table">
+        <thead>
+          <!-- Row 1 : Unit symbols -->
+          <tr>
+            <th class="col-metric">km²</th>
+            <th class="col-agr">hm²</th>
+            <th class="col-agr">dam²</th>
+            <th class="col-agr">m²</th>
+            <th class="col-metric">dm²</th>
+            <th class="col-metric">cm²</th>
+            <th class="col-metric">mm²</th>
+          </tr>
+          <!-- Row 2 : Full names -->
+          <tr>
+            <th class="col-metric-name">kilomètre²</th>
+            <th class="col-agr-name">hectomètre²</th>
+            <th class="col-agr-name">décamètre²</th>
+            <th class="col-agr-name">mètre²</th>
+            <th class="col-metric-name">décimètre²</th>
+            <th class="col-metric-name">centimètre²</th>
+            <th class="col-metric-name">millimètre²</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Row 3 : Agrarian equivalents -->
+          <tr>
+            <td class="col-metric-empty">—</td>
+            <td class="col-agr-val"><span class="agr-badge">= ha</span><span class="agr-equiv">hectare</span></td>
+            <td class="col-agr-val"><span class="agr-badge">= a</span><span class="agr-equiv">are</span></td>
+            <td class="col-agr-val"><span class="agr-badge">= ca</span><span class="agr-equiv">centiare</span></td>
+            <td class="col-metric-empty">—</td>
+            <td class="col-metric-empty">—</td>
+            <td class="col-metric-empty">—</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="rule-row">
+        <span class="rule-tag">÷ 100</span>
+        <span class="rule-arrow">←</span>
+        <span style="color:var(--muted);font-size:.75rem;">On monte d'une case</span>
+        <span class="rule-arrow" style="transform:scaleX(-1);">←</span>
+        <span style="color:var(--muted);font-size:.75rem;">On descend d'une case</span>
+        <span class="rule-arrow">→</span>
+        <span class="rule-tag">× 100</span>
+      </div>
+    </div>
+
+    <div class="question-card">
+      <div class="q-tag">🔄 Conversion n°<span id="q-idx">1</span></div>
+      <div class="q-text" id="q-text">Chargement…</div>
+      <div class="answer-row">
+        <input type="number" id="ans-input" class="answer-input" step="any" min="0" placeholder="?">
+        <span class="answer-unit" id="ans-unit">?</span>
+        <button class="btn-validate" id="btn-val" onclick="validateAnswer()">✓ Valider</button>
+      </div>
+    </div>
+
+    <div id="feedback-area"></div>
+    <div id="next-area"></div>
+  </div>
+
+  <!-- CONGRATS -->
+  <div id="congrats-flow" style="display:none">
+    <div class="congrats">
+      <div class="trophy">👑</div>
+      <h2 class="congrats-title">Conversions maîtrisées !</h2>
+      <p class="congrats-msg" id="congrats-msg"></p>
+      <div class="stars" id="stars-disp"></div>
+      <button class="btn-replay" onclick="resetGame()">🔄 Recommencer</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+// UNIT SYSTEM
+// Base unit: m² (= ca)
+// Each step UP divides by 100; each step DOWN multiplies by 100
+// ═══════════════════════════════════════════════════════════════
+const UNITS = [
+  { id:'km2',  label:'km²',    labelFull:'kilomètre²',   factor:1e12 },  // 1 km² = 10^12 mm²
+  { id:'hm2',  label:'hm²',   labelFull:'hm² (= 1 ha)', factor:1e10 },
+  { id:'ha',   label:'ha',    labelFull:'hectare',       factor:1e10 },  // ha = hm²
+  { id:'dam2', label:'dam²',  labelFull:'dam²',          factor:1e8  },
+  { id:'a',    label:'a',     labelFull:'are',           factor:1e8  },  // a = dam²
+  { id:'m2',   label:'m²',    labelFull:'mètre²',        factor:1e6  },
+  { id:'ca',   label:'ca',    labelFull:'centiare',      factor:1e6  },  // ca = m²
+  { id:'dm2',  label:'dm²',   labelFull:'dm²',           factor:1e4  },
+  { id:'cm2',  label:'cm²',   labelFull:'cm²',           factor:1e2  },
+  { id:'mm2',  label:'mm²',   labelFull:'mm²',           factor:1     },
+];
+
+// Get factor (in mm²) for a unit id
+function factorOf(id) { return UNITS.find(u => u.id===id).factor; }
+function labelOf(id)  { return UNITS.find(u => u.id===id).label;  }
+
+// ═══════════════════════════════════════════════════════════════
+// 50 QUESTIONS
+// Each: { val, from, to, answer, tip }
+// ═══════════════════════════════════════════════════════════════
+const ALL_Q = [
+  // ── Adjacent metric ──
+  { val:5,     from:'km2', to:'hm2', answer:500,      tip:'1 km² = 100 hm² → × 100' },
+  { val:3,     from:'hm2', to:'km2', answer:0.03,     tip:'1 hm² = 0,01 km² → ÷ 100' },
+  { val:7,     from:'hm2', to:'dam2',answer:700,      tip:'1 hm² = 100 dam² → × 100' },
+  { val:4,     from:'dam2',to:'m2',  answer:400,      tip:'1 dam² = 100 m² → × 100' },
+  { val:600,   from:'m2',  to:'dam2',answer:6,        tip:'1 dam² = 100 m² → ÷ 100' },
+  { val:9,     from:'m2',  to:'dm2', answer:900,      tip:'1 m² = 100 dm² → × 100' },
+  { val:500,   from:'dm2', to:'m2',  answer:5,        tip:'1 m² = 100 dm² → ÷ 100' },
+  { val:6,     from:'dm2', to:'cm2', answer:600,      tip:'1 dm² = 100 cm² → × 100' },
+  { val:200,   from:'cm2', to:'dm2', answer:2,        tip:'1 dm² = 100 cm² → ÷ 100' },
+  { val:8,     from:'cm2', to:'mm2', answer:800,      tip:'1 cm² = 100 mm² → × 100' },
+
+  // ── Adjacent agrarian ──
+  { val:3,     from:'ha',  to:'a',   answer:300,      tip:'1 ha = 100 a → × 100' },
+  { val:500,   from:'a',   to:'ha',  answer:5,        tip:'1 ha = 100 a → ÷ 100' },
+  { val:4,     from:'a',   to:'ca',  answer:400,      tip:'1 a = 100 ca → × 100' },
+  { val:250,   from:'ca',  to:'a',   answer:2.5,      tip:'1 a = 100 ca → ÷ 100' },
+  { val:2,     from:'km2', to:'ha',  answer:200,      tip:'1 km² = 100 ha → × 100' },
+  { val:350,   from:'ha',  to:'km2', answer:3.5,      tip:'1 km² = 100 ha → ÷ 100' },
+
+  // ── Métrique ↔ Agraire ──
+  { val:1,     from:'ha',  to:'m2',  answer:10000,    tip:'1 ha = 1 hm² = 100 dam² = 10 000 m²' },
+  { val:25000, from:'m2',  to:'ha',  answer:2.5,      tip:'10 000 m² = 1 ha → ÷ 10 000' },
+  { val:1,     from:'a',   to:'m2',  answer:100,      tip:'1 a = 1 dam² = 100 m²' },
+  { val:350,   from:'m2',  to:'a',   answer:3.5,      tip:'1 a = 100 m² → ÷ 100' },
+  { val:1,     from:'ca',  to:'m2',  answer:1,        tip:'1 ca = 1 m² (même unité !)' },
+  { val:1,     from:'km2', to:'m2',  answer:1000000,  tip:'1 km² = 100 ha = 10 000 a = 1 000 000 m²' },
+  { val:1,     from:'ha',  to:'dm2', answer:1000000,  tip:'1 ha = 10 000 m² et 1 m² = 100 dm² → × 10 000 × 100' },
+  { val:1,     from:'ha',  to:'cm2', answer:100000000,tip:'1 ha = 10 000 m² et 1 m² = 10 000 cm²' },
+  { val:5,     from:'ha',  to:'a',   answer:500,      tip:'1 ha = 100 a → × 100' },
+
+  // ── 2 unités d'écart ──
+  { val:3,     from:'km2', to:'dam2',answer:30000,    tip:'1 km² = 100 hm² et 1 hm² = 100 dam² → × 10 000' },
+  { val:4,     from:'hm2', to:'m2',  answer:40000,    tip:'1 hm² = 100 dam² et 1 dam² = 100 m² → × 10 000' },
+  { val:20000, from:'m2',  to:'hm2', answer:2,        tip:'1 hm² = 10 000 m² → ÷ 10 000' },
+  { val:2,     from:'dm2', to:'mm2', answer:20000,    tip:'1 dm² = 100 cm² et 1 cm² = 100 mm² → × 10 000' },
+  { val:50000, from:'mm2', to:'dm2', answer:5,        tip:'1 dm² = 10 000 mm² → ÷ 10 000' },
+  { val:3,     from:'m2',  to:'cm2', answer:30000,    tip:'1 m² = 100 dm² et 1 dm² = 100 cm² → × 10 000' },
+  { val:45000, from:'cm2', to:'m2',  answer:4.5,      tip:'1 m² = 10 000 cm² → ÷ 10 000' },
+  { val:2,     from:'dam2',to:'dm2', answer:200000,   tip:'1 dam² = 100 m² et 1 m² = 100 dm² → × 10 000' },
+
+  // ── 3+ unités d'écart ──
+  { val:1,     from:'km2', to:'m2',  answer:1000000,  tip:'1 km² = 1 000 000 m² (6 zéros !)' },
+  { val:1,     from:'m2',  to:'mm2', answer:1000000,  tip:'1 m² = 100 dm² = 10 000 cm² = 1 000 000 mm²' },
+  { val:5,     from:'km2', to:'cm2', answer:5e10,     tip:'1 km² = 10^10 cm². Tu peux calculer pas à pas.' },
+  { val:2,     from:'km2', to:'dm2', answer:2e10,     tip:'Chaque pas = × 100 ; 3 pas depuis km² jusqu\'à dm²' },
+  { val:1,     from:'hm2', to:'cm2', answer:1e8,      tip:'1 hm² = 10 000 m² et 1 m² = 10 000 cm² → × 100 000 000' },
+
+  // ── Valeurs décimales ──
+  { val:0.5,   from:'km2', to:'ha',  answer:50,       tip:'1 km² = 100 ha → × 100' },
+  { val:0.25,  from:'ha',  to:'a',   answer:25,       tip:'1 ha = 100 a → × 100' },
+  { val:1.5,   from:'a',   to:'m2',  answer:150,      tip:'1 a = 100 m² → × 100' },
+  { val:2.5,   from:'m2',  to:'dm2', answer:250,      tip:'1 m² = 100 dm² → × 100' },
+  { val:0.75,  from:'dm2', to:'cm2', answer:75,       tip:'1 dm² = 100 cm² → × 100' },
+  { val:3.5,   from:'cm2', to:'mm2', answer:350,      tip:'1 cm² = 100 mm² → × 100' },
+  { val:12.5,  from:'ha',  to:'m2',  answer:125000,   tip:'1 ha = 10 000 m² → × 10 000' },
+
+  // ── Mémorisation des équivalences clés ──
+  { val:100,   from:'m2',  to:'ca',  answer:100,      tip:'1 ca = 1 m² exactement ! Donc 100 m² = 100 ca.' },
+  { val:1,     from:'dam2',to:'a',   answer:1,        tip:'1 dam² = 1 are (a). Ce sont la même unité !' },
+  { val:1,     from:'hm2', to:'ha',  answer:1,        tip:'1 hm² = 1 hectare (ha). Ce sont la même unité !' },
+  { val:100,   from:'ha',  to:'km2', answer:1,        tip:'100 ha = 1 km². C\'est pourquoi la France fait ±55 M ha.' },
+  { val:10000, from:'m2',  to:'ha',  answer:1,        tip:'Un terrain de 10 000 m², c\'est 1 hectare.' },
+  { val:1,     from:'ha',  to:'ca',  answer:10000,    tip:'1 ha = 10 000 m² = 10 000 ca.' },
+];
+
+// ═══════════════════════════════════════════════════════════════
+// STATE & UTILS
+// ═══════════════════════════════════════════════════════════════
+const TOTAL = 10;
+let step=1, score=0, session=[], answered=false;
+
+function shuffle(arr){ const a=[...arr]; for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a; }
+
+function fmtNum(n){
+  if(Math.abs(n)>=1e9) return n.toExponential(2).replace('e+','×10^');
+  // Round to avoid floating-point quirks
+  const s = parseFloat(n.toPrecision(10)).toString();
+  return s.replace('.',',');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// RENDER
+// ═══════════════════════════════════════════════════════════════
+function renderQ(){
+  answered=false;
+  document.getElementById('feedback-area').innerHTML='';
+  document.getElementById('next-area').innerHTML='';
+  document.getElementById('ans-input').value='';
+  document.getElementById('ans-input').disabled=false;
+  document.getElementById('btn-val').disabled=false;
+
+  const q = ALL_Q[session[step-1]];
+  document.getElementById('q-num').textContent=step;
+  document.getElementById('q-idx').textContent=step;
+  document.getElementById('prog-bar').style.width=`${((step-1)/TOTAL)*100}%`;
+  document.getElementById('score-disp').textContent=score;
+
+  document.getElementById('q-text').innerHTML =
+    `<span class="val">${fmtNum(q.val)}</span> <span class="unit-from">${labelOf(q.from)}</span>`+
+    `<span class="equals">=</span> ? <span class="unit-to">${labelOf(q.to)}</span>`;
+
+  document.getElementById('ans-unit').textContent = labelOf(q.to);
+  document.getElementById('ans-input').focus();
+}
+
+// ═══════════════════════════════════════════════════════════════
+// VALIDATE
+// ═══════════════════════════════════════════════════════════════
+function validateAnswer(){
+  if(answered) return;
+  const raw = document.getElementById('ans-input').value.replace(',','.').trim();
+  const val = parseFloat(raw);
+  if(isNaN(val)){ alert('Saisis un nombre !'); return; }
+
+  answered=true;
+  document.getElementById('btn-val').disabled=true;
+  document.getElementById('ans-input').disabled=true;
+
+  const q = ALL_Q[session[step-1]];
+  // Allow tiny floating-point tolerance
+  const correct = Math.abs(val - q.answer)/Math.max(1, Math.abs(q.answer)) < 0.001;
+  if(correct) score++;
+  document.getElementById('score-disp').textContent=score;
+
+  const answerStr = fmtNum(q.answer);
+
+  document.getElementById('feedback-area').innerHTML = `
+    <div class="feedback ${correct?'fb-correct':'fb-wrong'}">
+      <div class="fb-icon">${correct?'🎯':'💡'}</div>
+      <div>
+        <div class="fb-title">${correct
+          ? 'Exact !'
+          : `Non — la bonne réponse est <strong>${answerStr} ${labelOf(q.to)}</strong>`}
+        </div>
+        <div class="fb-text">
+          ${fmtNum(q.val)} ${labelOf(q.from)} = <strong>${answerStr} ${labelOf(q.to)}</strong>
+        </div>
+        <div class="fb-tip">💡 ${q.tip}</div>
+      </div>
+    </div>`;
+
+  document.getElementById('next-area').innerHTML = step < TOTAL
+    ? `<button class="btn-next" onclick="nextQ()">Question suivante 👉</button>`
+    : `<button class="btn-next" onclick="finishGame()">Voir mon résultat 👑</button>`;
+}
+
+function nextQ(){ step++; renderQ(); }
+
+// ═══════════════════════════════════════════════════════════════
+// FINISH
+// ═══════════════════════════════════════════════════════════════
+function finishGame(){
+  document.getElementById('game-flow').style.display='none';
+  document.getElementById('congrats-flow').style.display='block';
+  const pct=Math.round(score/TOTAL*100);
+  let msg,stars;
+  if(score===TOTAL){
+    msg=`Parfait ! <strong>${score}/${TOTAL}</strong> (${pct}%) — Tu convertis les unités d'aire comme un expert !`;
+    stars='⭐⭐⭐';
+  } else if(score>=8){
+    msg=`Excellent ! <strong>${score}/${TOTAL}</strong> (${pct}%) — Tu maîtrises très bien les conversions.`;
+    stars='⭐⭐';
+  } else if(score>=5){
+    msg=`Pas mal ! <strong>${score}/${TOTAL}</strong> (${pct}%) — Revois les équivalences clés (ha ↔ m², a ↔ m²…).`;
+    stars='⭐';
+  } else {
+    msg=`<strong>${score}/${TOTAL}</strong> (${pct}%) — Continue à t'entraîner, les conversions demandent de la pratique !`;
+    stars='❌';
+  }
+  document.getElementById('congrats-msg').innerHTML=msg;
+  document.getElementById('stars-disp').textContent=stars;
+  if(typeof window.parent!=='undefined'&&window.parent.handleActivityScore){
+    window.parent.handleActivityScore('grandeur_aire_conversions', score);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// RESET
+// ═══════════════════════════════════════════════════════════════
+function startSession(){
+  session = shuffle(ALL_Q.map((_,i)=>i)).slice(0,TOTAL);
+}
+function resetGame(){
+  step=1; score=0;
+  document.getElementById('game-flow').style.display='block';
+  document.getElementById('congrats-flow').style.display='none';
+  startSession(); renderQ();
+}
+
+document.addEventListener('keydown',e=>{ if(e.key==='Enter'&&!answered) validateAnswer(); });
+window.addEventListener('DOMContentLoaded',()=>{ startSession(); renderQ(); });
+</script>
+</body>
+</html>
