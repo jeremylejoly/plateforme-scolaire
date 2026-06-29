@@ -448,61 +448,180 @@ let step = 1;
 let score = 0;
 let answered = false;
 let currentChallenge = null;
+let sessionChallenges = [];
 
-// Banque de conversions typiques (conçues pour être pédagogiques)
-const QUESTIONS_BANK = [
-  // 1. dm3 = L
-  { srcVal: 5, srcUnit: "dm³", destUnit: "L", correct: "5", explanation: "Le décimètre cube (dm³) et le litre (L) sont exactement la même unité !<br>Donc, <strong>5 dm³ = 5 L</strong>." },
-  { srcVal: 12.5, srcUnit: "dm³", destUnit: "L", correct: "12,5", explanation: "Puisque 1 dm³ = 1 L, la valeur reste identique.<br>Donc, <strong>12,5 dm³ = 12,5 L</strong>." },
+// ════════════════════════════════════════════════
+// MAPPING DES UNITÉS ET RAPPORTS DE CONVERSION
+// Base commune : 1 mL = 1 cm³ = 1 unité
+// ════════════════════════════════════════════════
+const UNITS = {
+  "mL":  { factor: 1,       type: "capacity", name: "millilitre(s)" },
+  "cL":  { factor: 10,      type: "capacity", name: "centilitre(s)" },
+  "dL":  { factor: 100,     type: "capacity", name: "décilitre(s)" },
+  "L":   { factor: 1000,    type: "capacity", name: "litre(s)" },
+  "daL": { factor: 10000,   type: "capacity", name: "décalitre(s)" },
+  "hL":  { factor: 100000,  type: "capacity", name: "hectolitre(s)" },
+  "kL":  { factor: 1000000, type: "capacity", name: "kilolitre(s)" },
+  "cm³": { factor: 1,       type: "volume",   name: "centimètre(s) cube(s)" },
+  "dm³": { factor: 1000,    type: "volume",   name: "décimètre(s) cube(s)" },
+  "m³":  { factor: 1000000, type: "volume",   name: "mètre(s) cube(s)" }
+};
+
+// Renvoie la description de la colonne cible pour l'abaque
+function getColumnDesc(unit) {
+  switch (unit) {
+    case "m³": return "les <strong>unités (u) de m³</strong> (colonne kL)";
+    case "dm³": return "les <strong>unités (u) de dm³</strong> (colonne L)";
+    case "cm³": return "les <strong>unités (u) de cm³</strong> (colonne mL)";
+    case "kL": return "la colonne <strong>kL</strong> (unités de m³)";
+    case "hL": return "la colonne <strong>hL</strong> (centaines de dm³)";
+    case "daL": return "la colonne <strong>daL</strong> (dizaines de dm³)";
+    case "L": return "la colonne <strong>L</strong> (unités de dm³)";
+    case "dL": return "la colonne <strong>dL</strong> (centaines de cm³)";
+    case "cL": return "la colonne <strong>cL</strong> (dizaines de cm³)";
+    case "mL": return "la colonne <strong>mL</strong> (unités de cm³)";
+    default: return "";
+  }
+}
+
+function formatNumberWithSpaces(n) {
+  return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+}
+
+// Génère une explication claire et détaillée pas-à-pas pour l'abaque en français
+function generateExplanation(srcVal, srcUnit, correctVal, destUnit) {
+  const formattedSrcVal = srcVal.toString().replace('.', ',');
+  const formattedCorrectVal = correctVal.toString().replace('.', ',');
   
-  // 2. cm3 = mL
-  { srcVal: 250, srcUnit: "cm³", destUnit: "mL", correct: "250", explanation: "Le centimètre cube (cm³) et le millilitre (mL) sont exactement la même unité !<br>Donc, <strong>250 cm³ = 250 mL</strong>." },
-  { srcVal: 8, srcUnit: "cm³", destUnit: "mL", correct: "8", explanation: "Puisque 1 cm³ = 1 mL, la valeur ne change pas.<br>Donc, <strong>8 cm³ = 8 mL</strong>." },
+  const srcFactor = UNITS[srcUnit].factor;
+  const destFactor = UNITS[destUnit].factor;
+  const ratio = srcFactor / destFactor;
+  
+  let html = "";
+  
+  // 1. Rappel de la correspondance fondamentale si les types diffèrent
+  if (UNITS[srcUnit].type !== UNITS[destUnit].type) {
+    html += `💡 <strong>Correspondance clé :</strong> On sait que <strong>1 dm³ = 1 L</strong> et <strong>1 cm³ = 1 mL</strong>.<br><br>`;
+  }
+  
+  // 2. Équivalence stricte
+  if (ratio === 1) {
+    html += `Le <strong>${srcUnit}</strong> et le <strong>${destUnit}</strong> représentent exactement la même mesure (1 ${srcUnit} = 1 ${destUnit}).<br>`;
+    html += `La valeur ne change pas !<br>`;
+    html += `Donc, <strong>${formattedSrcVal} ${srcUnit} = ${formattedCorrectVal} ${destUnit}</strong>.`;
+    return html;
+  }
+  
+  // 3. Placement initial
+  const srcCol = getColumnDesc(srcUnit);
+  let integerPart = Math.floor(srcVal);
+  let lastDigit = integerPart % 10;
+  if (srcVal % 1 !== 0) {
+    const parts = srcVal.toString().split('.');
+    lastDigit = parseInt(parts[0].slice(-1), 10);
+  }
+  
+  html += `📝 <strong>Dans l'abaque :</strong><br>`;
+  html += `• On place le chiffre des unités de la partie entière (le <strong>${lastDigit}</strong>) dans ${srcCol}.<br>`;
+  
+  // 4. Décalage
+  if (ratio > 1) {
+    const shift = Math.log10(ratio);
+    html += `• Pour obtenir la réponse en <strong>${destUnit}</strong>, on multiplie par <strong>${formatNumberWithSpaces(ratio)}</strong>.<br>`;
+    html += `• On décale la virgule (ou on ajoute des zéros) de <strong>${shift}</strong> colonne(s) vers la <strong>droite</strong>.<br><br>`;
+  } else {
+    const ratioInverse = 1 / ratio;
+    const shift = Math.log10(ratioInverse);
+    html += `• Pour obtenir la réponse en <strong>${destUnit}</strong>, on divise par <strong>${formatNumberWithSpaces(ratioInverse)}</strong>.<br>`;
+    html += `• On décale la virgule de <strong>${shift}</strong> colonne(s) vers la <strong>gauche</strong> (en ajoutant des zéros si nécessaire).<br><br>`;
+  }
+  
+  html += `🎯 <strong>Résultat :</strong> <strong>${formattedSrcVal} ${srcUnit} = ${formattedCorrectVal} ${destUnit}</strong>.`;
+  return html;
+}
 
-  // 3. m3 = L (x 1000)
-  { srcVal: 2, srcUnit: "m³", destUnit: "L", correct: "2000", explanation: "1 m³ = 1 000 dm³ = 1 000 L.<br>Pour passer des m³ aux dm³ (ou Litres), on décale de 3 colonnes vers la droite (on multiplie par 1 000).<br>Donc, <strong>2 m³ = 2 000 L</strong>." },
-  { srcVal: 0.5, srcUnit: "m³", destUnit: "L", correct: "500", explanation: "1 m³ = 1 000 L.<br>0,5 m³ × 1 000 = 500.<br>Donc, <strong>0,5 m³ = 500 L</strong>." },
-
-  // 4. dm3 to cm3 (x 1000)
-  { srcVal: 4, srcUnit: "dm³", destUnit: "cm³", correct: "4000", explanation: "1 dm³ = 1 000 cm³.<br>On multiplie par 1 000 car chaque grand palier de volume contient 3 colonnes.<br>Donc, <strong>4 dm³ = 4 000 cm³</strong>." },
-  { srcVal: 1.2, srcUnit: "dm³", destUnit: "cm³", correct: "1200", explanation: "1,2 dm³ × 1 000 = 1 200.<br>Dans l'abaque, on place la virgule aux unités de dm³ (les Litres), puis on décale de 3 colonnes vers la droite.<br>Donc, <strong>1,2 dm³ = 1 200 cm³</strong>." },
-
-  // 5. L to mL (x 1000)
-  { srcVal: 3, srcUnit: "L", destUnit: "mL", correct: "3000", explanation: "1 Litre = 1 000 millilitres.<br>Dans l'abaque, on passe des unités de dm³ aux unités de cm³.<br>Donc, <strong>3 L = 3 000 mL</strong>." },
-  { srcVal: 0.75, srcUnit: "L", destUnit: "mL", correct: "750", explanation: "0,75 L × 1 000 = 750.<br>Donc, <strong>0,75 L = 750 mL</strong>." },
-
-  // 6. cm3 to dm3 ( / 1000 )
-  { srcVal: 6000, srcUnit: "cm³", destUnit: "dm³", correct: "6", explanation: "On divise par 1 000 (décalage de 3 colonnes vers la gauche).<br>6 000 cm³ / 1 000 = 6 dm³.<br>Donc, <strong>6 000 cm³ = 6 dm³</strong>." },
-  { srcVal: 450, srcUnit: "cm³", destUnit: "dm³", correct: "0,45", explanation: "450 cm³ / 1 000 = 0,45 dm³.<br>Dans l'abaque, le 0 de 450 est dans les unités de cm³, et on remonte jusqu'aux unités de dm³ en plaçant la virgule.<br>Donc, <strong>450 cm³ = 0,45 dm³</strong> (soit 0,45 L)." },
-
-  // 7. L to cL (x 100)
-  { srcVal: 1.5, srcUnit: "L", destUnit: "cL", correct: "150", explanation: "1 L = 100 cL.<br>On décale de 2 colonnes vers la droite (de la colonne L vers la colonne cL).<br>Donc, <strong>1,5 L = 150 cL</strong>." },
-  { srcVal: 6, srcUnit: "L", destUnit: "cL", correct: "600", explanation: "6 L × 100 = 600 cL.<br>Donc, <strong>6 L = 600 cL</strong>." },
-
-  // 8. cL to mL (x 10)
-  { srcVal: 20, srcUnit: "cL", destUnit: "mL", correct: "200", explanation: "1 cL = 10 mL.<br>On décale d'une colonne vers la droite (des dizaines aux unités de cm³).<br>Donc, <strong>20 cL = 200 mL</strong> (soit 200 cm³)." },
-
-  // 9. L to hL ( / 100 )
-  { srcVal: 800, srcUnit: "L", destUnit: "hL", correct: "8", explanation: "1 hL = 100 L.<br>On divise par 100 en décalant de 2 colonnes vers la gauche.<br>Donc, <strong>800 L = 8 hL</strong> (soit 8 dm³ de centaines)." },
-  { srcVal: 150, srcUnit: "L", destUnit: "hL", correct: "1,5", explanation: "150 L / 100 = 1,5 hL.<br>Donc, <strong>150 L = 1,5 hL</strong>." },
-
-  // 10. mL to L ( / 1000 )
-  { srcVal: 1500, srcUnit: "mL", destUnit: "L", correct: "1,5", explanation: "1 500 mL / 1 000 = 1,5 L (soit 1,5 dm³).<br>Donc, <strong>1 500 mL = 1,5 L</strong>." }
-];
-
-let sessionChallengeIndices = [];
+// Générateur dynamique de défis de conversion selon les consignes de Mr Lejoly :
+// - volume -> volume
+// - capacity -> volume
+// - volume -> capacity
+// (Exclut capacity -> capacity)
+function generateConversion() {
+  const unitKeys = Object.keys(UNITS);
+  const eligiblePairs = [];
+  
+  for (let src of unitKeys) {
+    for (let dest of unitKeys) {
+      if (src === dest) continue;
+      
+      const srcType = UNITS[src].type;
+      const destType = UNITS[dest].type;
+      
+      if ((srcType === "volume" && destType === "volume") ||
+          (srcType === "volume" && destType === "capacity") ||
+          (srcType === "capacity" && destType === "volume")) {
+        eligiblePairs.push({ src, dest });
+      }
+    }
+  }
+  
+  // Pool de valeurs d'origine avec décimaux et entiers classiques
+  const values = [
+    1, 2, 3, 5, 8, 10, 15, 20, 50, 100, 250, 300, 450, 600, 800, 1200, 1500, // Entiers
+    0.5, 1.2, 1.5, 2.5, 3.5, 0.1, 0.25, 0.75, 0.8, 12.5                    // Décimaux
+  ];
+  
+  let srcVal, pair, ratio, correctVal;
+  let attempts = 0;
+  
+  // Sélectionner une combinaison qui reste raisonnable à calculer (pas trop de zéros et pas trop de décimales)
+  while (attempts < 150) {
+    pair = eligiblePairs[Math.floor(Math.random() * eligiblePairs.length)];
+    srcVal = values[Math.floor(Math.random() * values.length)];
+    
+    ratio = UNITS[pair.src].factor / UNITS[pair.dest].factor;
+    correctVal = srcVal * ratio;
+    
+    // Critères de simplicité pédagogique pour l'école primaire :
+    // - Pas de valeur finale minuscule (minimum 0,001)
+    // - Pas de valeur finale gigantesque (maximum 100 000)
+    // - Pas plus de 3 chiffres après la virgule
+    if (correctVal >= 0.001 && correctVal <= 100000 && (correctVal * 1000) % 1 === 0) {
+      break;
+    }
+    attempts++;
+  }
+  
+  // Si échec après de nombreuses tentatives, renvoyer une valeur par défaut très propre
+  if (attempts >= 150) {
+    pair = { src: "dm³", dest: "L" };
+    srcVal = 3.5;
+    correctVal = 3.5;
+  }
+  
+  // Formatage correct de la réponse attendue en string avec virgule
+  // Pour éviter des problèmes d'arrondi binaire JS type 0.1+0.2
+  const fixedVal = parseFloat(correctVal.toFixed(3));
+  const correctStr = fixedVal.toString().replace('.', ',');
+  
+  const explanation = generateExplanation(srcVal, pair.src, fixedVal, pair.dest);
+  
+  return {
+    srcVal: srcVal,
+    srcUnit: pair.src,
+    destUnit: pair.dest,
+    correct: correctStr,
+    explanation: explanation
+  };
+}
 
 // ════════════════════════════════════════════════
 // FLUX DU JEU
 // ════════════════════════════════════════════════
 function initSession() {
-  const indices = QUESTIONS_BANK.map((_, i) => i);
-  // Mélange de Fisher-Yates
-  for (let i = indices.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [indices[i], indices[j]] = [indices[j], indices[i]];
+  sessionChallenges = [];
+  for (let i = 0; i < TOTAL_Q; i++) {
+    sessionChallenges.push(generateConversion());
   }
-  sessionChallengeIndices = indices.slice(0, TOTAL_Q);
 }
 
 function renderQuestion() {
@@ -514,7 +633,7 @@ function renderQuestion() {
   inputEl.disabled = false;
   document.getElementById('btn-val').disabled = false;
 
-  currentChallenge = QUESTIONS_BANK[sessionChallengeIndices[step - 1]];
+  currentChallenge = sessionChallenges[step - 1];
 
   document.getElementById('q-num').textContent = step;
   document.getElementById('q-idx').textContent = step;
@@ -533,7 +652,6 @@ function renderQuestion() {
 }
 
 function cleanString(str) {
-  // Enlever les espaces et remplacer les virgules par des points pour la comparaison numérique
   return str.trim().replace(/\s+/g, '').replace(',', '.');
 }
 
@@ -559,9 +677,6 @@ function validateAnswer() {
   if (correct) score++;
   document.getElementById('score-disp').textContent = score;
 
-  // Formatter les valeurs attendues avec des virgules pour le feedback français
-  const formattedCorrect = currentChallenge.correct;
-
   const feedbackArea = document.getElementById('feedback-area');
   feedbackArea.innerHTML = `
     <div class="feedback ${correct ? 'fb-correct' : 'fb-wrong'}">
@@ -569,7 +684,7 @@ function validateAnswer() {
       <div>
         <div class="fb-title">${correct ? 'Excellent travail !' : `Ce n'est pas tout à fait ça.`}</div>
         <div class="fb-text">
-          La bonne réponse est <strong>${formattedCorrect} ${currentChallenge.destUnit}</strong>.<br>
+          La bonne réponse est <strong>${currentChallenge.correct} ${currentChallenge.destUnit}</strong>.<br>
           ${currentChallenge.explanation}
         </div>
       </div>
