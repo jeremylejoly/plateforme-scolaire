@@ -1,4 +1,4 @@
-const CACHE_NAME = 'classe-mr-lejoly-cache-v303';
+const CACHE_NAME = 'classe-mr-lejoly-cache-v304';
 const CORE_ASSETS = [
   './',
   'index.html',
@@ -12,6 +12,9 @@ const CORE_ASSETS = [
   'assets/logos/sub_durees_conversions.png',
   'assets/logos/sub_durees_duree.png',
   'assets/logos/sub_durees_heure.png',
+  'assets/logos/hist_temps_modernes.png',
+  'assets/logos/hist_contemporaine.png',
+  'assets/logos/hist_grandes_periodes.png',
   'fiches/Labyrinthe.html',
   'planisphere-interactif.html',
   'cartes-planisphere.html',

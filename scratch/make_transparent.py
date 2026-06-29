@@ -38,7 +38,7 @@ def process_image(src_path, dest_names):
             if not os.path.exists(dest_dir):
                 os.makedirs(dest_dir, exist_ok=True)
             img.save(dest, "PNG")
-            print(f"Saved transparent image to: {dest}")
+            print(f"Saved transparent PNG to: {dest}")
         return True
     except Exception as e:
         print(f"Error processing {src_path}: {e}")
@@ -46,17 +46,17 @@ def process_image(src_path, dest_names):
 
 # Mappings of the generated images to their final assets locations
 mappings = {
-    "/Users/jeremy/.gemini/antigravity/brain/6bcf5aa8-36e3-4743-bf02-1c935bb74813/sub_durees_conversions_1782678720754.png": [
-        "/Users/jeremy/antigravity/LCML/assets/logos/sub_durees_conversions.png",
-        "/Users/jeremy/antigravity/LCML/public/assets/logos/sub_durees_conversions.png"
+    "/Users/jeremy/.gemini/antigravity/brain/6bcf5aa8-36e3-4743-bf02-1c935bb74813/hist_temps_modernes_1782762999884.jpg": [
+        "/Users/jeremy/antigravity/LCML/assets/logos/hist_temps_modernes.png",
+        "/Users/jeremy/antigravity/LCML/public/assets/logos/hist_temps_modernes.png"
     ],
-    "/Users/jeremy/.gemini/antigravity/brain/6bcf5aa8-36e3-4743-bf02-1c935bb74813/sub_durees_duree_1782678738756.png": [
-        "/Users/jeremy/antigravity/LCML/assets/logos/sub_durees_duree.png",
-        "/Users/jeremy/antigravity/LCML/public/assets/logos/sub_durees_duree.png"
+    "/Users/jeremy/.gemini/antigravity/brain/6bcf5aa8-36e3-4743-bf02-1c935bb74813/hist_contemporaine_1782763018522.jpg": [
+        "/Users/jeremy/antigravity/LCML/assets/logos/hist_contemporaine.png",
+        "/Users/jeremy/antigravity/LCML/public/assets/logos/hist_contemporaine.png"
     ],
-    "/Users/jeremy/.gemini/antigravity/brain/6bcf5aa8-36e3-4743-bf02-1c935bb74813/sub_durees_heure_1782678757382.png": [
-        "/Users/jeremy/antigravity/LCML/assets/logos/sub_durees_heure.png",
-        "/Users/jeremy/antigravity/LCML/public/assets/logos/sub_durees_heure.png"
+    "/Users/jeremy/.gemini/antigravity/brain/6bcf5aa8-36e3-4743-bf02-1c935bb74813/hist_grandes_periodes_1782763035801.jpg": [
+        "/Users/jeremy/antigravity/LCML/assets/logos/hist_grandes_periodes.png",
+        "/Users/jeremy/antigravity/LCML/public/assets/logos/hist_grandes_periodes.png"
     ]
 }
 
