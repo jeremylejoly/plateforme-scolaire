@@ -492,17 +492,54 @@ function setHands(h,m,s){
   document.getElementById('hHour').setAttribute('transform',`rotate(${hr} 200 200)`);
 }
 
+function startTrainAndClockAnimation(){
+  locked = true;
+  document.getElementById('valider').disabled = true;
+  document.querySelector('.answer-panel').classList.add('locked');
+  
+  const train = document.getElementById('train');
+  train.classList.remove('run');
+  void train.offsetWidth; // force reflow
+  train.classList.add('run');
+  
+  const animDuration = 3000; // 3 seconds
+  let startTime = null;
+  
+  function spin(timestamp) {
+    if (!startTime) startTime = timestamp;
+    const elapsed = timestamp - startTime;
+    
+    if (elapsed < animDuration) {
+      // Fast spin of clock hands
+      const angleSec = (elapsed / 200) * 360;
+      const angleMin = (elapsed / 2400) * 360;
+      const angleHour = (elapsed / 28800) * 360;
+      
+      document.getElementById('hSec').setAttribute('transform', `rotate(${angleSec} 200 200)`);
+      document.getElementById('hMin').setAttribute('transform', `rotate(${angleMin} 200 200)`);
+      document.getElementById('hHour').setAttribute('transform', `rotate(${angleHour} 200 200)`);
+      
+      requestAnimationFrame(spin);
+    } else {
+      // Animation finished: set to exact target time and unlock
+      setHands(target.h, target.m, target.s);
+      locked = false;
+      document.getElementById('valider').disabled = false;
+      document.querySelector('.answer-panel').classList.remove('locked');
+    }
+  }
+  requestAnimationFrame(spin);
+}
+
 function newQuestion(){
-  locked=false;
   target.h=Math.floor(Math.random()*12)+1;
   target.m=Math.floor(Math.random()*60);
   target.s=Math.floor(Math.random()*60);
-  setHands(target.h,target.m,target.s);
   digits=[0,0,0,0,0,0];
   numEls.forEach(el=>el.textContent='0');
   feedback.textContent='';feedback.className='feedback';
-  const train=document.getElementById('train');
-  train.classList.remove('run');void train.offsetWidth;train.classList.add('run');
+  
+  startTrainAndClockAnimation();
 }
 
 /* ---------- validation ---------- */
