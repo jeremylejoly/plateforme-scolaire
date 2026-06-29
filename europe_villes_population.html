@@ -1,0 +1,1491 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>L'Europe : Villes, Population et Mégalopole (La Banane Bleue)</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --primary-light: #eeebff;
+      --success: #10b981;
+      --success-light: #d1fae5;
+      --danger: #ef4444;
+      --danger-light: #fee2e2;
+      --warning: #f59e0b;
+      --text: #1f2937;
+      --text-muted: #6b7280;
+      --bg: #f9fafb;
+      --card-bg: #ffffff;
+      --border: #e5e7eb;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      padding: 1.5rem;
+    }
+
+    h1, h2, h3, h4 {
+      font-weight: 800;
+    }
+
+    /* EN-TÊTE */
+    .exercise-header {
+      max-width: 900px;
+      margin: 0 auto 1.5rem auto;
+      background: linear-gradient(135deg, #4f46e5 0%, #312e81 100%);
+      color: white;
+      padding: 1.5rem 2rem;
+      border-radius: 16px;
+      box-shadow: 0 4px 15px rgba(79, 70, 229, 0.15);
+    }
+    .exercise-title {
+      font-size: 24px;
+      font-weight: 900;
+      margin-bottom: 0.25rem;
+    }
+    .exercise-subtitle {
+      font-size: 13px;
+      opacity: 0.9;
+      font-weight: 600;
+    }
+
+    /* NAVIGATION PAR ONGLETS */
+    .tabs {
+      max-width: 900px;
+      margin: 0 auto 1rem auto;
+      display: flex;
+      gap: 8px;
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 2px;
+    }
+    .tab-btn {
+      flex: 1;
+      padding: 12px 16px;
+      border: none;
+      background: none;
+      font-family: 'Nunito', sans-serif;
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-radius: 12px 12px 0 0;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .tab-btn:hover {
+      background: rgba(79, 70, 229, 0.04);
+      color: var(--primary);
+    }
+    .tab-btn.active {
+      color: var(--primary);
+      border-bottom: 3px solid var(--primary);
+      background: var(--primary-light);
+    }
+
+    /* CONTENUS DES ONGLETS */
+    .tab-content {
+      display: none;
+      max-width: 900px;
+      margin: 0 auto;
+      animation: fadeIn 0.3s ease;
+    }
+    .tab-content.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* CARTE ET PINS */
+    .map-container {
+      position: relative;
+      width: 100%;
+      max-width: 900px;
+      margin: 0 auto 1rem auto;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      border: 1px solid var(--border);
+      background: #eaeff2;
+    }
+    .map-image {
+      display: block;
+      width: 100%;
+      height: auto;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+    .pin {
+      position: absolute;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: 2px solid white;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      cursor: pointer;
+      transform: translate(-50%, -50%);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .pin:hover {
+      transform: translate(-50%, -50%) scale(1.25);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    }
+    .pin.inside {
+      background: #2563eb; /* Bleu intense (Banane Bleue) */
+      box-shadow: 0 0 10px rgba(37,99,235,0.7);
+    }
+    .pin.outside {
+      background: #f59e0b; /* Orange/Or (Hors Banane Bleue) */
+      box-shadow: 0 0 10px rgba(245,158,11,0.7);
+    }
+
+    /* PANNEAU INFOS (EXPLORATION) */
+    .info-panel {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+      min-height: 120px;
+      margin-bottom: 2rem;
+    }
+    .info-panel-empty {
+      color: var(--text-muted);
+      text-align: center;
+      padding: 1.5rem 0;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .info-panel-layout {
+      display: grid;
+      grid-template-columns: 1fr 280px;
+      gap: 20px;
+      align-items: center;
+    }
+    @media (max-width: 800px) {
+      .info-panel-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+    .info-header {
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .info-type {
+      font-size: 11px;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .info-type.inside {
+      background: #dbeafe;
+      color: #1e40af;
+    }
+    .info-type.outside {
+      background: #fef3c7;
+      color: #92400e;
+    }
+    .info-title {
+      font-size: 20px;
+      color: var(--text);
+    }
+    .info-body {
+      font-size: 14px;
+      color: #4b5563;
+      margin-bottom: 12px;
+    }
+    .info-body strong {
+      color: var(--text);
+    }
+    .info-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 15px;
+    }
+    .stat-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+    }
+    .stat-label {
+      color: var(--text-muted);
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+    .stat-val {
+      font-weight: 800;
+      color: var(--text);
+    }
+    .info-illustration {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+
+    /* DRAG & DROP : VILLES & FLEUVES */
+    .drag-container {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 20px;
+      margin-bottom: 2rem;
+    }
+    @media (max-width: 768px) {
+      .drag-container {
+        grid-template-columns: 1fr;
+      }
+    }
+    .matching-list {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+    }
+    .match-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px dashed var(--border);
+    }
+    .match-row:last-child {
+      border-bottom: none;
+    }
+    .city-label {
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .drop-zone {
+      width: 170px;
+      height: 38px;
+      border: 2px dashed #a5b4fc;
+      background: #f8fafc;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      color: #64748b;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+    .drop-zone.drag-over {
+      background: #e0e7ff;
+      border-color: var(--primary);
+      transform: scale(1.02);
+    }
+    .drop-zone.filled {
+      border-style: solid;
+      border-color: var(--primary);
+      background: var(--primary-light);
+      color: var(--primary);
+      font-size: 13px;
+      box-shadow: 0 2px 4px rgba(79, 70, 229, 0.05);
+    }
+    .drop-zone.correct-zone {
+      border-color: var(--success) !important;
+      background: var(--success-light) !important;
+      color: var(--success) !important;
+    }
+    .drop-zone.incorrect-zone {
+      border-color: var(--danger) !important;
+      background: var(--danger-light) !important;
+      color: var(--danger) !important;
+    }
+
+    .tags-bank {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .tags-bank-title {
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--text-muted);
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 8px;
+      margin-bottom: 4px;
+    }
+    .tags-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .drag-tag {
+      padding: 8px 14px;
+      border-radius: 20px;
+      background: var(--primary);
+      color: white;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: grab;
+      user-select: none;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      transition: all 0.2s ease;
+      border: 2px solid transparent;
+    }
+    .drag-tag:hover {
+      background: var(--primary-hover);
+      transform: translateY(-2px);
+    }
+    .drag-tag:active {
+      cursor: grabbing;
+    }
+
+    /* QUIZ : LE DÉFI DE LA MÉGALOPOLE */
+    .quiz-container {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+      margin-bottom: 2rem;
+    }
+    .quiz-question-block {
+      margin-bottom: 20px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+    .quiz-question-block:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+    .q-text {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 10px;
+    }
+    .options-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+    .option-btn {
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--bg);
+      font-family: 'Nunito', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.2s ease;
+    }
+    .option-btn:hover {
+      border-color: #a5b4fc;
+      background: #f8fafc;
+    }
+    .option-btn.selected {
+      border-color: var(--primary);
+      background: var(--primary-light);
+      color: var(--primary);
+    }
+    .option-btn.correct-opt {
+      border-color: var(--success) !important;
+      background: var(--success-light) !important;
+      color: var(--success) !important;
+    }
+    .option-btn.incorrect-opt {
+      border-color: var(--danger) !important;
+      background: var(--danger-light) !important;
+      color: var(--danger) !important;
+    }
+
+    /* PIED DE PAGE & VALIDATION */
+    .controls-panel {
+      max-width: 900px;
+      margin: 0 auto 3rem auto;
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+    }
+    .btn-action {
+      padding: 14px 28px;
+      border: none;
+      border-radius: 12px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 14px;
+      font-weight: 900;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .btn-valider {
+      background: var(--success);
+      color: white;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+    }
+    .btn-valider:hover {
+      background: #059669;
+      transform: translateY(-2px);
+    }
+    .btn-reset {
+      background: #4b5563;
+      color: white;
+      display: none;
+    }
+    .btn-reset:hover {
+      background: #374151;
+      transform: translateY(-2px);
+    }
+
+    /* SCORE */
+    .score-panel {
+      display: none;
+      text-align: center;
+      max-width: 900px;
+      margin: 0 auto 1.5rem auto;
+      background: var(--card-bg);
+      border: 2px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      animation: fadeIn 0.3s ease;
+    }
+    .score-txt {
+      font-size: 32px;
+      font-weight: 900;
+      margin-top: 5px;
+    }
+
+    /* MODAL D'ALERTE DE RÉPONSE MANQUANTE */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(15, 23, 42, 0.6);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 10000;
+      backdrop-filter: blur(4px);
+    }
+    .modal-card {
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      max-width: 400px;
+      width: 90%;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+      text-align: center;
+      animation: modalIn 0.2s ease-out;
+    }
+    @keyframes modalIn {
+      from { transform: scale(0.9); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    .modal-icon {
+      font-size: 40px;
+      color: var(--danger);
+      margin-bottom: 12px;
+    }
+    .modal-title {
+      font-size: 18px;
+      font-weight: 900;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+    .modal-body {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+    .modal-btn {
+      padding: 10px 20px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 800;
+      font-size: 13px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .modal-btn:hover {
+      background: var(--primary-hover);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- EN-TÊTE -->
+  <div class="exercise-header">
+    <h1 class="exercise-title">L'Europe : Villes, Population et Mégalopole</h1>
+    <p class="exercise-subtitle">Étude de la répartition de la population, des capitales et du corridor de la « Banane Bleue »</p>
+  </div>
+
+  <!-- NAVIGATION PAR ONGLETS -->
+  <div class="tabs">
+    <button class="tab-btn active" onclick="showTab(0)">🔎 1. Carte & Banane Bleue</button>
+    <button class="tab-btn" onclick="showTab(1)">🌊 2. Villes & Fleuves</button>
+    <button class="tab-btn" onclick="showTab(2)">🇪🇺 3. Défi Mégalopole</button>
+  </div>
+
+  <!-- CONTENU : Onglet 1 (Carte & Exploration) -->
+  <div id="tab-0" class="tab-content active">
+    <div style="background:#eeebff; border:1px solid #4f46e5; border-radius:12px; padding:12px 16px; margin-bottom:1.5rem; font-size:13px; font-weight:700; color:var(--primary);">
+      Instructions : Analyse le fond de carte de la densité de population. Clique sur les pastilles pour découvrir les métropoles dans la Banane Bleue (en bleu) et hors de ce corridor (en orange).
+    </div>
+
+    <!-- Carte avec pins absolus -->
+    <div class="map-container" id="map-calib-container">
+      <img class="map-image" id="map-calib-img" src="photos/europe_megalopolis.jpg" alt="Mégalopole Européenne et Densité"/>
+      
+      <!-- Pins Villes (Bleu = Dans Banane, Orange = Hors Banane) -->
+      <div class="pin inside" style="top: 31.8%; left: 25.1%;" onclick="showInfo('londres')"></div>
+      <div class="pin inside" style="top: 41.5%; left: 34.6%;" onclick="showInfo('bruxelles')"></div>
+      <div class="pin inside" style="top: 46.1%; left: 40.7%;" onclick="showInfo('francfort')"></div>
+      <div class="pin inside" style="top: 65.2%; left: 43.1%;" onclick="showInfo('milan')"></div>
+      <div class="pin outside" style="top: 51.5%; left: 29.8%;" onclick="showInfo('paris')"></div>
+      <div class="pin outside" style="top: 35.8%; left: 48.2%;" onclick="showInfo('berlin')"></div>
+      <div class="pin outside" style="top: 86.1%; left: 19.5%;" onclick="showInfo('madrid')"></div>
+      <div class="pin outside" style="top: 82.5%; left: 49.6%;" onclick="showInfo('rome')"></div>
+      <div class="pin outside" style="top: 36.8%; left: 61.5%;" onclick="showInfo('varsovie')"></div>
+      <div class="pin outside" style="top: 20.8%; left: 87.2%;" onclick="showInfo('moscou')"></div>
+    </div>
+
+    <!-- Bouton de calibrage visible par défaut en local pour Jeremy -->
+    <div style="max-width:900px; margin: 15px auto 5px auto; display:flex; justify-content:flex-start;">
+      <button id="btn-calib-toggle" onclick="toggleCalibMode()" style="padding:8px 16px; font-family:'Nunito', sans-serif; font-size:12px; font-weight:800; border-radius:8px; border:1px solid #4b5563; background:#f3f4f6; cursor:pointer; transition: all 0.2s;">
+        🔧 Activer l'outil de calibrage (Glisser-Déposer)
+      </button>
+    </div>
+
+    <div id="calib-panel" style="display:none; max-width:900px; margin: 10px auto 20px auto; background:#1e293b; color:white; padding:15px; border-radius:12px; border:1px solid #334155; font-family:'Nunito', sans-serif; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+      <h4 style="margin:0 0 8px 0; color:#38bdf8; font-size:14px; font-weight:800;">🔧 Outil de calibrage (Glisse les points directement sur la carte)</h4>
+      <p style="margin:0 0 12px 0; font-size:11px; color:#94a3b8;">Glisse les points de villes sur la carte pour les positionner correctement. Le code ci-dessous se met à jour en temps réel. Copie-colle le bloc entier dans ton fichier HTML.</p>
+      <textarea id="calib-output-area" readonly style="width:100%; height:160px; background:#0f172a; color:#4ade80; border:1px solid #334155; border-radius:6px; padding:10px; font-family:monospace; font-size:11px; resize:vertical; outline:none; box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);"></textarea>
+    </div>
+
+    <!-- Fiche informative -->
+    <div class="info-panel" id="info-panel">
+      <div class="info-panel-empty" id="info-empty">
+        Clique sur un point de la carte pour afficher sa fiche d'informations.
+      </div>
+      <div id="info-content" style="display:none;">
+        <div class="info-panel-layout">
+          <div>
+            <div class="info-header">
+              <span class="info-type" id="info-type-badge">Type</span>
+              <h3 class="info-title" id="info-title-text">Nom de la ville</h3>
+            </div>
+            <div class="info-body" id="info-body-text">
+              Description détaillée...
+            </div>
+            <div class="info-stats">
+              <div class="stat-card">
+                <div class="stat-label">Population (Aire urbaine)</div>
+                <div class="stat-val" id="stat-pop">0 M</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-label">Cours d'eau associé</div>
+                <div class="stat-val" id="stat-river">Aucun</div>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex; justify-content:center; align-items:center;">
+            <img class="info-illustration" id="info-illustration-img" src="" alt="Illustration"/>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTENU : Onglet 2 (Villes et Fleuves) -->
+  <div id="tab-1" class="tab-content">
+    <div style="background:#eeebff; border:1px solid #4f46e5; border-radius:12px; padding:12px 16px; margin-bottom:1.5rem; font-size:13px; font-weight:700; color:var(--primary);">
+      Instructions : Associe chaque grande métropole européenne au fleuve ou cours d'eau qui la traverse en faisant glisser les étiquettes de droite dans les cases correspondantes.
+    </div>
+
+    <div class="drag-container">
+      <!-- Liste des Villes (Zones de dépôt) -->
+      <div class="matching-list">
+        <div class="match-row">
+          <span class="city-label">🇬🇧 Londres</span>
+          <div class="drop-zone" data-city="londres" ondragover="dzOver(e)" ondragenter="dzEnter(e)" ondragleave="dzLeave(e)" ondrop="dzDrop(e)" onclick="clearZone(this)">
+            <span style="opacity:.4">Glisse un fleuve ici...</span>
+          </div>
+        </div>
+        <div class="match-row">
+          <span class="city-label">🇫🇷 Paris</span>
+          <div class="drop-zone" data-city="paris" ondragover="dzOver(e)" ondragenter="dzEnter(e)" ondragleave="dzLeave(e)" ondrop="dzDrop(e)" onclick="clearZone(this)">
+            <span style="opacity:.4">Glisse un fleuve ici...</span>
+          </div>
+        </div>
+        <div class="match-row">
+          <span class="city-label">🇧🇪 Bruxelles</span>
+          <div class="drop-zone" data-city="bruxelles" ondragover="dzOver(e)" ondragenter="dzEnter(e)" ondragleave="dzLeave(e)" ondrop="dzDrop(e)" onclick="clearZone(this)">
+            <span style="opacity:.4">Glisse un cours d'eau...</span>
+          </div>
+        </div>
+        <div class="match-row">
+          <span class="city-label">🇩🇪 Berlin</span>
+          <div class="drop-zone" data-city="berlin" ondragover="dzOver(e)" ondragenter="dzEnter(e)" ondragleave="dzLeave(e)" ondrop="dzDrop(e)" onclick="clearZone(this)">
+            <span style="opacity:.4">Glisse un fleuve ici...</span>
+          </div>
+        </div>
+        <div class="match-row">
+          <span class="city-label">🇮🇹 Rome</span>
+          <div class="drop-zone" data-city="rome" ondragover="dzOver(e)" ondragenter="dzEnter(e)" ondragleave="dzLeave(e)" ondrop="dzDrop(e)" onclick="clearZone(this)">
+            <span style="opacity:.4">Glisse un fleuve ici...</span>
+          </div>
+        </div>
+        <div class="match-row">
+          <span class="city-label">🇪🇸 Madrid</span>
+          <div class="drop-zone" data-city="madrid" ondragover="dzOver(e)" ondragenter="dzEnter(e)" ondragleave="dzLeave(e)" ondrop="dzDrop(e)" onclick="clearZone(this)">
+            <span style="opacity:.4">Glisse un fleuve ici...</span>
+          </div>
+        </div>
+        <div class="match-row">
+          <span class="city-label">🇷🇺 Moscou</span>
+          <div class="drop-zone" data-city="moscou" ondragover="dzOver(e)" ondragenter="dzEnter(e)" ondragleave="dzLeave(e)" ondrop="dzDrop(e)" onclick="clearZone(this)">
+            <span style="opacity:.4">Glisse un fleuve ici...</span>
+          </div>
+        </div>
+        <div class="match-row">
+          <span class="city-label">🇦🇹 Vienne</span>
+          <div class="drop-zone" data-city="vienne" ondragover="dzOver(e)" ondragenter="dzEnter(e)" ondragleave="dzLeave(e)" ondrop="dzDrop(e)" onclick="clearZone(this)">
+            <span style="opacity:.4">Glisse un fleuve ici...</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Banque d'étiquettes (Sources) -->
+      <div class="tags-bank">
+        <div class="tags-bank-title">Fleuves disponibles</div>
+        <div class="tags-grid" id="rivers-tags-grid">
+          <!-- Généré dynamiquement en JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTENU : Onglet 3 (Le Défi de la Mégalopole) -->
+  <div id="tab-2" class="tab-content">
+    <div style="background:#eeebff; border:1px solid #4f46e5; border-radius:12px; padding:12px 16px; margin-bottom:1.5rem; font-size:13px; font-weight:700; color:var(--primary);">
+      Instructions : Réponds à ces questions sur l'organisation démographique de l'Europe et la Banane Bleue.
+    </div>
+
+    <div class="quiz-container">
+      <!-- Les questions du Quiz seront générées en JS -->
+    </div>
+  </div>
+
+  <!-- ZONE DE RÉSULTAT DU SCORE -->
+  <div class="score-panel" id="score-panel">
+    <div style="color:var(--text-muted); font-size:14px; font-weight:800; text-transform:uppercase; letter-spacing:1px;">Activité terminée</div>
+    <h3 style="font-weight:900; color:var(--primary); font-size:18px;">Ton résultat</h3>
+    <div class="score-txt" id="score-txt">0 / 13</div>
+  </div>
+
+  <!-- PANNEAU DE CONTRÔLES -->
+  <div class="controls-panel">
+    <button class="btn-action btn-valider" id="btn-valider" onclick="validerTout()">Valider les réponses</button>
+    <button class="btn-action btn-reset" id="btn-reset" onclick="resetExercice()">Recommencer l'activité</button>
+  </div>
+
+  <!-- MODAL DE SÉCURITÉ (ALERTE) -->
+  <div class="modal-overlay" id="alert-modal">
+    <div class="modal-card">
+      <div class="modal-icon">⚠️</div>
+      <div class="modal-title" id="modal-alert-title">Réponses incomplètes</div>
+      <div class="modal-body" id="modal-alert-body">
+        Il te manque une ou plusieurs réponses. Regarde bien chaque onglet !
+      </div>
+      <button class="modal-btn" onclick="closeAlertModal()">D'accord, je complète</button>
+    </div>
+  </div>
+
+  <script>
+    // --- DONNÉES ENCYCLOPÉDIQUES ---
+    const EXPLORATION_DATA = {
+      londres: {
+        type: "inside",
+        title: "Londres",
+        pop: "Environ 9,0 millions",
+        river: "La Tamise",
+        img: "photos/villes_londres.jpg",
+        desc: "La capitale du Royaume-Uni est l'une des deux extrémités de la <strong>Banane Bleue</strong>. Traversée par la Tamise, elle a fondé son développement historique sur son port et sa puissance financière globale."
+      },
+      bruxelles: {
+        type: "inside",
+        title: "Bruxelles",
+        pop: "Environ 1,2 million",
+        river: "La Senne",
+        img: "photos/villes_bruxelles.jpg",
+        desc: "Capitale de la Belgique et centre politique de l'Union européenne, elle se situe <strong>au cœur même de la mégalopole européenne</strong>. Elle a une densité extrêmement élevée."
+      },
+      francfort: {
+        type: "inside",
+        title: "Francfort",
+        pop: "Environ 760 000 (2,5M aire)",
+        river: "Le Main (affluent du Rhin)",
+        img: "photos/villes_francfort.jpg",
+        desc: "Située en Allemagne, c'est la capitale financière de la zone euro. En plein centre du corridor de forte densité, elle est traversée par le Main et fait partie de la grande conurbation Rhin-Main."
+      },
+      milan: {
+        type: "inside",
+        title: "Milan",
+        pop: "Environ 1,4 million (3,2M aire)",
+        river: "Canaux reliés au Pô",
+        img: "photos/villes_milan.jpg",
+        desc: "Capitale économique de l'Italie du Nord (Lombardie). Elle marque traditionnellement la <strong>limite sud de la Banane Bleue</strong>, juste avant la barrière naturelle des Alpes."
+      },
+      paris: {
+        type: "outside",
+        title: "Paris",
+        pop: "Environ 11,2 millions (Aire urbaine)",
+        river: "La Seine",
+        img: "photos/villes_paris.jpg",
+        desc: "Bien qu'étant l'une des aires urbaines les plus géantes et denses d'Europe, la capitale française est géographiquement considérée comme **en dehors** de la Banane Bleue en raison du vide démographique relatif qui l'entoure à l'Est."
+      },
+      berlin: {
+        type: "outside",
+        title: "Berlin",
+        pop: "Environ 3,7 millions",
+        river: "La Spree",
+        img: "photos/villes_berlin.jpg",
+        desc: "La capitale de l'Allemagne se situe dans les plaines de l'Est, en dehors de la Banane Bleue. Son histoire politique et sa géographie la placent hors de ce corridor d'activité occidental."
+      },
+      madrid: {
+        type: "outside",
+        title: "Madrid",
+        pop: "Environ 3,3 millions (6,5M aire)",
+        river: "Le Manzanares",
+        img: "photos/villes_madrid.jpg",
+        desc: "La capitale de l'Espagne se trouve au centre de la péninsule ibérique. Elle forme une vaste oasis urbaine très dense, mais totalement déconnectée et isolée de la mégalopole du Nord-Ouest européen."
+      },
+      rome: {
+        type: "outside",
+        title: "Rome",
+        pop: "Environ 2,8 millions",
+        river: "Le Tibre",
+        img: "photos/villes_rome.jpg",
+        desc: "La capitale historique de l'Italie se situe au centre-sud de la péninsule. Elle est séparée de la mégalopole italienne du nord par les reliefs de l'Apennin et des espaces à plus faible densité."
+      },
+      varsovie: {
+        type: "outside",
+        title: "Varsovie",
+        pop: "Environ 1,8 million",
+        river: "La Vistule",
+        img: "photos/villes_varsovie.jpg",
+        desc: "Capitale et plus grande ville de Pologne. Elle constitue le principal pôle urbain d'Europe de l'Est, à l'écart du corridor de la Banane Bleue."
+      },
+      moscou: {
+        type: "outside",
+        title: "Moscou",
+        pop: "Environ 13,0 millions",
+        river: "La Moskova",
+        img: "photos/villes_moscou.jpg",
+        desc: "La capitale de la Russie est la métropole la plus peuplée d'Europe. Située à l'extrême Est du continent, elle est totalement indépendante du réseau urbain de la mégalopole européenne."
+      }
+    };
+
+    // --- DONNÉES DU JEU DES FLEUVES ---
+    const RIVERS_MATCHING = [
+      { id: "tamise", label: "La Tamise" },
+      { id: "seine", label: "La Seine" },
+      { id: "senne", label: "La Senne" },
+      { id: "spree", label: "La Spree" },
+      { id: "tibre", label: "Le Tibre" },
+      { id: "manzanares", label: "Le Manzanares" },
+      { id: "moskova", label: "La Moskova" },
+      { id: "danube", label: "Le Danube" }
+    ];
+
+    const CORRECT_ASSOCIATIONS = {
+      londres: "tamise",
+      paris: "seine",
+      bruxelles: "senne",
+      berlin: "spree",
+      rome: "tibre",
+      madrid: "manzanares",
+      moscou: "moskova",
+      vienne: "danube"
+    };
+
+    // --- QUESTIONS DU QUIZ ---
+    const QUIZ_QUESTIONS = [
+      {
+        q: "Pourquoi ce corridor de forte densité urbaine est-il surnommé la « Banane Bleue » ?",
+        options: [
+          "Parce que c'est la couleur dominante des drapeaux des pays traversés.",
+          "À cause de sa forme courbée sur les cartes et de la couleur bleue souvent utilisée pour la représenter (ou associée au drapeau européen).",
+          "Parce que les premières images satellite montraient des forêts bleues en forme de banane."
+        ],
+        correct: 1
+      },
+      {
+        q: "Quelles villes marquent approximativement les deux extrémités de la Banane Bleue ?",
+        options: [
+          "Paris (France) et Berlin (Allemagne).",
+          "Madrid (Espagne) et Varsovie (Pologne).",
+          "Londres (Royaume-Uni) et Milan (Italie)."
+        ],
+        correct: 2
+      },
+      {
+        q: "Combien d'habitants environ rassemble cette mégalopole européenne ?",
+        options: [
+          "Environ 10 millions d'habitants.",
+          "Plus de 110 millions d'habitants.",
+          "Près de 500 millions d'habitants."
+        ],
+        correct: 1
+      },
+      {
+        q: "Parmi ces capitales ou métropoles, laquelle est située en DEHORS de la Banane Bleue ?",
+        options: [
+          "Bruxelles.",
+          "Francfort.",
+          "Paris."
+        ],
+        correct: 2
+      },
+      {
+        q: "Comment appelle-t-on une région urbaine continue formée de plusieurs métropoles géantes connectées entre elles ?",
+        options: [
+          "Une capitale.",
+          "Une mégalopole.",
+          "Un archipel métropolitain."
+        ],
+        correct: 1
+      }
+    ];
+
+    // --- ÉTAT DU JEU ---
+    let userSelections = {
+      rivers: {}, // villeId -> riverId
+      quiz: {}    // questionIndex -> optionIndex
+    };
+    let submitted = false;
+
+    // --- INITIALISATION ---
+    function init() {
+      submitted = false;
+      userSelections = { rivers: {}, quiz: {} };
+
+      // Cacher/Afficher les boutons
+      document.getElementById('btn-valider').style.display = 'block';
+      document.getElementById('btn-reset').style.display = 'none';
+      document.getElementById('score-panel').style.display = 'none';
+
+      // Réinitialiser les onglets
+      showTab(0);
+
+      // Vider le panneau d'infos
+      document.getElementById('info-empty').style.display = 'block';
+      document.getElementById('info-content').style.display = 'none';
+
+      // Réinitialiser les drop-zones
+      const zones = document.querySelectorAll('.drop-zone');
+      zones.forEach(z => {
+        z.className = 'drop-zone';
+        if(z.dataset.city === 'bruxelles') {
+          z.innerHTML = '<span style="opacity:.4">Glisse un cours d\'eau...</span>';
+        } else {
+          z.innerHTML = '<span style="opacity:.4">Glisse un fleuve ici...</span>';
+        }
+      });
+
+      // Générer la banque d'étiquettes
+      generateTagsBank();
+
+      // Générer le quiz
+      generateQuiz();
+    }
+
+    // --- ONGLETS ---
+    function showTab(idx) {
+      const tabs = document.querySelectorAll('.tab-btn');
+      const contents = document.querySelectorAll('.tab-content');
+      
+      tabs.forEach((t, i) => {
+        t.classList.toggle('active', i === idx);
+      });
+      contents.forEach((c, i) => {
+        c.classList.toggle('active', i === idx);
+      });
+    }
+
+    // --- EXPLORATION ---
+    function showInfo(key) {
+      const data = EXPLORATION_DATA[key];
+      if(!data) return;
+
+      document.getElementById('info-empty').style.display = 'none';
+      document.getElementById('info-content').style.display = 'block';
+
+      const badge = document.getElementById('info-type-badge');
+      badge.textContent = data.type === 'inside' ? "Dans la Banane Bleue" : "Hors Banane Bleue";
+      badge.className = `info-type ${data.type}`;
+
+      document.getElementById('info-title-text').textContent = data.title;
+      document.getElementById('info-body-text').innerHTML = data.desc;
+      document.getElementById('stat-pop').textContent = data.pop;
+      document.getElementById('stat-river').textContent = data.river;
+
+      const imgEl = document.getElementById('info-illustration-img');
+      imgEl.src = data.img;
+      imgEl.alt = data.title;
+
+      // Scroll vers la fiche si mobile
+      if(window.innerWidth < 800) {
+        document.getElementById('info-panel').scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+
+    // --- DRAG & DROP ---
+    function generateTagsBank() {
+      const grid = document.getElementById('rivers-tags-grid');
+      grid.innerHTML = '';
+      
+      // Mélanger les étiquettes
+      const shuffled = shuffle([...RIVERS_MATCHING]);
+      shuffled.forEach(item => {
+        const tag = document.createElement('div');
+        tag.className = 'drag-tag';
+        tag.draggable = true;
+        tag.textContent = item.label;
+        tag.dataset.id = item.id;
+        tag.dataset.label = item.label;
+        
+        tag.addEventListener('dragstart', dragStart);
+        tag.addEventListener('dragend', dragEnd);
+        
+        // Touch events mobile
+        tag.addEventListener('touchstart', touchStart, {passive: false});
+        tag.addEventListener('touchmove', touchMove, {passive: false});
+        tag.addEventListener('touchend', touchEnd, {passive: false});
+        
+        grid.appendChild(tag);
+      });
+    }
+
+    function dragStart(e) {
+      if(submitted) return;
+      e.dataTransfer.setData('text/plain', JSON.stringify({
+        id: e.target.dataset.id,
+        label: e.target.dataset.label
+      }));
+      e.target.style.opacity = '0.5';
+    }
+    function dragEnd(e) {
+      e.target.style.opacity = '';
+    }
+
+    // Zones de dépôt events
+    function dzOver(e) { e.preventDefault(); }
+    function dzEnter(e) {
+      e.preventDefault();
+      if(submitted) return;
+      e.currentTarget.classList.add('drag-over');
+    }
+    function dzLeave(e) {
+      e.currentTarget.classList.remove('drag-over');
+    }
+    function dzDrop(e) {
+      e.preventDefault();
+      if(submitted) return;
+      e.currentTarget.classList.remove('drag-over');
+      try {
+        const data = JSON.parse(e.dataTransfer.getData('text/plain'));
+        placer(e.currentTarget, data.id, data.label);
+      } catch(err) {}
+    }
+
+    function placer(zone, id, label) {
+      const cityId = zone.dataset.city;
+      userSelections.rivers[cityId] = id;
+      zone.textContent = label;
+      zone.classList.add('filled');
+    }
+
+    function clearZone(zone) {
+      if(submitted) return;
+      const cityId = zone.dataset.city;
+      if(!userSelections.rivers[cityId]) return;
+
+      if(cityId === 'bruxelles') {
+        zone.innerHTML = '<span style="opacity:.5">Glisse un cours d\'eau...</span>';
+      } else {
+        zone.innerHTML = '<span style="opacity:.5">Glisse un fleuve ici...</span>';
+      }
+      zone.classList.remove('filled');
+      delete userSelections.rivers[cityId];
+    }
+
+    // --- TOUCH MOBILE FALLBACK ---
+    let touchEl = null, touchClone = null;
+    function touchStart(e) {
+      if(submitted) return;
+      const tag = e.currentTarget;
+      touchEl = tag;
+      const clone = tag.cloneNode(true);
+      clone.style.cssText = 'position:fixed;z-index:9999;opacity:.85;pointer-events:none;border-radius:20px;padding:8px 14px;font-size:12px;font-weight:700;color:white;background:var(--primary);';
+      const t = e.touches[0];
+      clone.style.left = (t.clientX - 40) + 'px';
+      clone.style.top = (t.clientY - 20) + 'px';
+      document.body.appendChild(clone);
+      touchClone = clone;
+      tag.style.opacity = '0.5';
+    }
+    function touchMove(e) {
+      e.preventDefault();
+      if(!touchClone) return;
+      const t = e.touches[0];
+      touchClone.style.left = (t.clientX - 40) + 'px';
+      touchClone.style.top = (t.clientY - 20) + 'px';
+    }
+    function touchEnd(e) {
+      if(!touchClone) return;
+      const t = e.changedTouches[0];
+      touchClone.remove();
+      touchClone = null;
+      if(touchEl) touchEl.style.opacity = '';
+      
+      const el = document.elementFromPoint(t.clientX, t.clientY);
+      const zone = el ? el.closest('.drop-zone') : null;
+      if(zone && touchEl) {
+        placer(zone, touchEl.dataset.id, touchEl.dataset.label);
+      }
+      touchEl = null;
+    }
+
+    // --- GENERER LE QUIZ ---
+    function generateQuiz() {
+      const container = document.querySelector('.quiz-container');
+      container.innerHTML = '';
+
+      QUIZ_QUESTIONS.forEach((qObj, qIdx) => {
+        const block = document.createElement('div');
+        block.className = 'quiz-question-block';
+
+        const qText = document.createElement('div');
+        qText.className = 'q-text';
+        qText.textContent = `${qIdx + 1}. ${qObj.q}`;
+        block.appendChild(qText);
+
+        const optionsGrid = document.createElement('div');
+        optionsGrid.className = 'options-grid';
+
+        qObj.options.forEach((optText, optIdx) => {
+          const btn = document.createElement('button');
+          btn.className = 'option-btn';
+          btn.textContent = optText;
+          btn.dataset.q = qIdx;
+          btn.dataset.o = optIdx;
+          
+          btn.onclick = () => selectOption(qIdx, optIdx);
+
+          optionsGrid.appendChild(btn);
+        });
+
+        block.appendChild(optionsGrid);
+        container.appendChild(block);
+      });
+    }
+
+    function selectOption(qIdx, optIdx) {
+      if(submitted) return;
+      userSelections.quiz[qIdx] = optIdx;
+
+      // Mettre à jour le style visuel
+      const buttons = document.querySelectorAll(`.option-btn[data-q="${qIdx}"]`);
+      buttons.forEach(btn => {
+        btn.classList.toggle('selected', parseInt(btn.dataset.o) === optIdx);
+      });
+    }
+
+    // --- MODAL ALERTE ---
+    function showAlertModal(tabIndex, tabLabel) {
+      const modal = document.getElementById('alert-modal');
+      const body = document.getElementById('modal-alert-body');
+      body.innerHTML = `Il te manque une ou plusieurs réponses dans l'onglet <strong>${tabLabel}</strong>.<br><br>Glisse les étiquettes ou réponds aux questions avant de valider !`;
+      
+      modal.style.display = 'flex';
+      
+      // Auto redirect vers l'onglet manquant au clic sur le bouton de fermeture
+      const btn = modal.querySelector('.modal-btn');
+      btn.onclick = () => {
+        closeAlertModal();
+        showTab(tabIndex);
+      };
+    }
+    function closeAlertModal() {
+      document.getElementById('alert-modal').style.display = 'none';
+    }
+
+    // --- VALIDATION DES RÈGLES ---
+    function validerTout() {
+      const quizCount = QUIZ_QUESTIONS.length;
+      
+      // Vérifier les réponses aux fleuves (Onglet 2)
+      const citiesKeys = Object.keys(CORRECT_ASSOCIATIONS);
+      let missingRivers = false;
+      for (const city of citiesKeys) {
+        if (userSelections.rivers[city] === undefined) {
+          missingRivers = true;
+          break;
+        }
+      }
+      if (missingRivers) {
+        showAlertModal(1, "2. Villes & Fleuves");
+        return;
+      }
+
+      // Vérifier les réponses au quiz (Onglet 3)
+      let missingQuiz = false;
+      for (let i = 0; i < quizCount; i++) {
+        if (userSelections.quiz[i] === undefined) {
+          missingQuiz = true;
+          break;
+        }
+      }
+      if (missingQuiz) {
+        showAlertModal(2, "3. Défi Mégalopole");
+        return;
+      }
+
+      // Tout est rempli, on corrige !
+      submitted = true;
+      let score = 0;
+      const totalPoints = citiesKeys.length + quizCount; // 8 villes + 5 quiz = 13 points
+
+      // 1. Correction des fleuves
+      const zones = document.querySelectorAll('.drop-zone');
+      zones.forEach(zone => {
+        const cityId = zone.dataset.city;
+        const userMouth = userSelections.rivers[cityId];
+        const correctMouth = CORRECT_ASSOCIATIONS[cityId];
+        
+        if (userMouth === correctMouth) {
+          zone.classList.add('correct-zone');
+          score++;
+        } else {
+          zone.classList.add('incorrect-zone');
+          const correctLabel = RIVERS_MATCHING.find(r => r.id === correctMouth).label;
+          zone.innerHTML = `${RIVERS_MATCHING.find(r => r.id === userMouth).label} <span style="font-weight:400; font-size:11px; display:block; margin-top:2px;">(Correction : ${correctLabel})</span>`;
+        }
+      });
+
+      // 2. Correction du quiz
+      QUIZ_QUESTIONS.forEach((qObj, qIdx) => {
+        const userOpt = userSelections.quiz[qIdx];
+        const correctOpt = qObj.correct;
+
+        const buttons = document.querySelectorAll(`.option-btn[data-q="${qIdx}"]`);
+        buttons.forEach(btn => {
+          const optIdx = parseInt(btn.dataset.o);
+          btn.classList.remove('selected');
+          
+          if (optIdx === correctOpt) {
+            btn.classList.add('correct-opt');
+          } else if (optIdx === userOpt && userOpt !== correctOpt) {
+            btn.classList.add('incorrect-opt');
+          }
+        });
+
+        if (userOpt === correctOpt) {
+          score++;
+        }
+      });
+
+      // Calcul du score final
+      const pct = Math.round((score / totalPoints) * 100);
+      
+      // Affichage du score
+      const scorePanel = document.getElementById('score-panel');
+      scorePanel.style.display = 'block';
+      const scoreTxt = document.getElementById('score-txt');
+      scoreTxt.textContent = `${score} / ${totalPoints} — ${pct}%`;
+      
+      if (pct >= 80) scoreTxt.style.color = 'var(--success)';
+      else if (pct >= 50) scoreTxt.style.color = 'var(--warning)';
+      else scoreTxt.style.color = 'var(--danger)';
+
+      document.getElementById('btn-valider').style.display = 'none';
+      document.getElementById('btn-reset').style.display = 'block';
+      scorePanel.scrollIntoView({ behavior: 'smooth' });
+
+      // Sauvegarde
+      if (window.parent && window.parent.saveResult) {
+        window.parent.saveResult({
+          activity: 'geo_europe_villes_population',
+          bookTitle: "L'Europe : Villes et Mégalopole",
+          score: score,
+          total: totalPoints,
+          pct: pct,
+          date: new Date().toLocaleDateString('fr-BE'),
+          time: new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })
+        });
+      }
+    }
+
+    function resetExercice() {
+      init();
+    }
+
+    // --- OUTIL DE CALIBRAGE DES COORDONNÉES (GLISSER-DÉPOSER) ---
+    let calibMode = false;
+
+    // Injecter les styles CSS pour les étiquettes de calibrage
+    const calibStyle = document.createElement('style');
+    calibStyle.textContent = `
+    .pin-label {
+      position: absolute;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(15, 23, 42, 0.95);
+      color: #fff;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      white-space: nowrap;
+      pointer-events: none;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 800;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+      border: 1px solid rgba(255,255,255,0.15);
+      z-index: 1000;
+    }
+    .pin-label::after {
+      content: "";
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 4px solid transparent;
+      border-top-color: rgba(15, 23, 42, 0.95);
+    }
+    `;
+    document.head.appendChild(calibStyle);
+
+    // Intercepter et bloquer showInfo en mode calibrage
+    const originalShowInfo = showInfo;
+    showInfo = function(key) {
+      if (calibMode) return;
+      originalShowInfo(key);
+    };
+
+    function toggleCalibMode() {
+      calibMode = !calibMode;
+      const btn = document.getElementById('btn-calib-toggle');
+      const calibPanel = document.getElementById('calib-panel');
+      const pins = document.querySelectorAll('.pin');
+      const container = document.getElementById('map-calib-container');
+
+      if(calibMode) {
+        btn.textContent = "Désactiver le calibrage";
+        btn.style.background = "#fee2e2";
+        btn.style.borderColor = "#dc2626";
+        btn.style.color = "#dc2626";
+        calibPanel.style.display = "block";
+        
+        pins.forEach(pin => {
+          pin.style.cursor = 'move';
+          pin.style.zIndex = '999';
+          makeElementDraggable(pin, container);
+
+          const match = pin.getAttribute('onclick').match(/showInfo\('([^']+)'\)/);
+          if (match && match[1] && EXPLORATION_DATA[match[1]]) {
+            const title = EXPLORATION_DATA[match[1]].title;
+            let label = pin.querySelector('.pin-label');
+            if (!label) {
+              label = document.createElement('span');
+              label.className = 'pin-label';
+              pin.appendChild(label);
+            }
+            label.textContent = title;
+          }
+        });
+        
+        updateCalibOutput();
+      } else {
+        btn.textContent = "🔧 Activer l'outil de calibrage (Glisser-Déposer)";
+        btn.style.background = "#f3f4f6";
+        btn.style.borderColor = "#4b5563";
+        btn.style.color = "";
+        calibPanel.style.display = "none";
+        
+        pins.forEach(pin => {
+          pin.style.cursor = 'pointer';
+          pin.style.zIndex = '';
+          pin.onmousedown = null;
+          pin.ontouchstart = null;
+          const label = pin.querySelector('.pin-label');
+          if (label) label.remove();
+        });
+      }
+    }
+
+    function makeElementDraggable(elmnt, container) {
+      elmnt.onmousedown = dragMouseDown;
+      elmnt.ontouchstart = dragTouchStart;
+
+      function dragMouseDown(e) {
+        e = e || window.event;
+        e.preventDefault();
+        const rect = elmnt.getBoundingClientRect();
+        const parentRect = container.getBoundingClientRect();
+        
+        let curLeft = rect.left - parentRect.left + (rect.width / 2);
+        let curTop = rect.top - parentRect.top + (rect.height / 2);
+        
+        const styleTop = elmnt.style.top;
+        const styleLeft = elmnt.style.left;
+        if (styleTop && styleTop.indexOf('%') !== -1) {
+          curTop = (parseFloat(styleTop) / 100) * parentRect.height;
+        }
+        if (styleLeft && styleLeft.indexOf('%') !== -1) {
+          curLeft = (parseFloat(styleLeft) / 100) * parentRect.width;
+        }
+        
+        let startX = e.clientX;
+        let startY = e.clientY;
+
+        document.onmousemove = elementDrag;
+        document.onmouseup = closeDragElement;
+
+        function elementDrag(e) {
+          e = e || window.event;
+          e.preventDefault();
+          const dx = e.clientX - startX;
+          const dy = e.clientY - startY;
+          startX = e.clientX;
+          startY = e.clientY;
+          curLeft += dx;
+          curTop += dy;
+          updatePosition(curTop, curLeft);
+        }
+        function closeDragElement() {
+          document.onmouseup = null;
+          document.onmousemove = null;
+        }
+      }
+
+      function dragTouchStart(e) {
+        const rect = elmnt.getBoundingClientRect();
+        const parentRect = container.getBoundingClientRect();
+        
+        let curLeft = rect.left - parentRect.left + (rect.width / 2);
+        let curTop = rect.top - parentRect.top + (rect.height / 2);
+        
+        const styleTop = elmnt.style.top;
+        const styleLeft = elmnt.style.left;
+        if (styleTop && styleTop.indexOf('%') !== -1) {
+          curTop = (parseFloat(styleTop) / 100) * parentRect.height;
+        }
+        if (styleLeft && styleLeft.indexOf('%') !== -1) {
+          curLeft = (parseFloat(styleLeft) / 100) * parentRect.width;
+        }
+        
+        let startX = e.touches[0].clientX;
+        let startY = e.touches[0].clientY;
+
+        document.ontouchmove = elementTouchDrag;
+        document.ontouchend = closeDragElement;
+
+        function elementTouchDrag(e) {
+          const dx = e.touches[0].clientX - startX;
+          const dy = e.touches[0].clientY - startY;
+          startX = e.touches[0].clientX;
+          startY = e.touches[0].clientY;
+          curLeft += dx;
+          curTop += dy;
+          updatePosition(curTop, curLeft);
+        }
+        function closeDragElement() {
+          document.ontouchend = null;
+          document.ontouchmove = null;
+        }
+      }
+
+      function updatePosition(topPx, leftPx) {
+        const containerRect = container.getBoundingClientRect();
+        let topPct = (topPx / containerRect.height) * 100;
+        let leftPct = (leftPx / containerRect.width) * 100;
+        topPct = Math.max(0, Math.min(100, topPct));
+        leftPct = Math.max(0, Math.min(100, leftPct));
+        elmnt.style.top = topPct.toFixed(1) + "%";
+        elmnt.style.left = leftPct.toFixed(1) + "%";
+        updateCalibOutput();
+      }
+    }
+
+    function updateCalibOutput() {
+      const area = document.getElementById('calib-output-area');
+      if(!area) return;
+      
+      let text = "      <!-- Pins Villes (Bleu = Dans Banane, Orange = Hors Banane) -->\n";
+      const insidePins = document.querySelectorAll('.pin.inside');
+      insidePins.forEach(pin => {
+        const styleAttr = `style="top: ${pin.style.top}; left: ${pin.style.left};"`;
+        const onclickAttr = pin.getAttribute('onclick');
+        text += `      <div class="pin inside" ${styleAttr} onclick="${onclickAttr}"></div>\n`;
+      });
+      const outsidePins = document.querySelectorAll('.pin.outside');
+      outsidePins.forEach(pin => {
+        const styleAttr = `style="top: ${pin.style.top}; left: ${pin.style.left};"`;
+        const onclickAttr = pin.getAttribute('onclick');
+        text += `      <div class="pin outside" ${styleAttr} onclick="${onclickAttr}"></div>\n`;
+      });
+      
+      area.value = text;
+    }
+
+
+
+    // Helper Utils
+    function shuffle(a){ return a.sort(() => Math.random() - .5); }
+
+    // Initialisation
+    init();
+  </script>
+</body>
+</html>
