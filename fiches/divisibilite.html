@@ -1778,6 +1778,16 @@
       const grid = document.getElementById('factory-options');
       grid.innerHTML = '';
       
+      // Add "Aucun" option at the start
+      const noneBtn = document.createElement('button');
+      noneBtn.className = 'option-btn';
+      noneBtn.innerHTML = `
+        <span>Aucun</span>
+        <span class="lbl-div">de ces critères</span>
+      `;
+      noneBtn.onclick = () => selectFactoryOption('none', noneBtn);
+      grid.appendChild(noneBtn);
+      
       state.activeCriteria.forEach(div => {
         const btn = document.createElement('button');
         btn.className = 'option-btn';
@@ -1794,13 +1804,38 @@
       if (state.factory.isAnswered) return;
       playSound('click');
       
-      const idx = state.factory.selected.indexOf(div);
-      if (idx > -1) {
-        state.factory.selected.splice(idx, 1);
-        element.classList.remove('selected');
+      const grid = document.getElementById('factory-options');
+      const buttons = grid.children;
+      
+      if (div === 'none') {
+        const isSelected = state.factory.selected.includes('none');
+        if (isSelected) {
+          state.factory.selected = [];
+          element.classList.remove('selected');
+        } else {
+          // Deselect all others
+          state.factory.selected = ['none'];
+          for (let i = 0; i < buttons.length; i++) {
+            buttons[i].classList.remove('selected');
+          }
+          element.classList.add('selected');
+        }
       } else {
-        state.factory.selected.push(div);
-        element.classList.add('selected');
+        // Deselect "Aucun" if it was selected
+        const noneIdx = state.factory.selected.indexOf('none');
+        if (noneIdx > -1) {
+          state.factory.selected.splice(noneIdx, 1);
+          buttons[0].classList.remove('selected'); // "Aucun" is at index 0
+        }
+        
+        const idx = state.factory.selected.indexOf(div);
+        if (idx > -1) {
+          state.factory.selected.splice(idx, 1);
+          element.classList.remove('selected');
+        } else {
+          state.factory.selected.push(div);
+          element.classList.add('selected');
+        }
       }
     }
 
@@ -1816,26 +1851,43 @@
       // Check user answers
       const selected = state.factory.selected;
       
-      // To be completely correct, selected arrays must contain exactly the same elements as correctDivisors
-      const isCorrect = correctDivisors.length === selected.length &&
-                        correctDivisors.every(d => selected.includes(d));
+      // To be correct:
+      // Either there are no correct divisors and user selected 'none'
+      // Or there are correct divisors, user did not select 'none', and user selected exactly the correct ones
+      const isCorrect = (correctDivisors.length === 0 && selected.includes('none')) ||
+                        (correctDivisors.length > 0 && !selected.includes('none') &&
+                         correctDivisors.length === selected.length &&
+                         correctDivisors.every(d => selected.includes(d)));
 
       const optionButtons = document.getElementById('factory-options').children;
 
-      // Color code options
+      // Color code "Aucun" button (index 0)
+      const noneBtn = optionButtons[0];
+      noneBtn.classList.remove('selected');
+      const noneShouldBeSelected = correctDivisors.length === 0;
+      const noneUserSelected = selected.includes('none');
+      if (noneUserSelected && noneShouldBeSelected) {
+        noneBtn.classList.add('correct-reveal');
+      } else if (noneUserSelected && !noneShouldBeSelected) {
+        noneBtn.classList.add('wrong-reveal');
+      } else if (!noneUserSelected && noneShouldBeSelected) {
+        noneBtn.classList.add('missed-reveal');
+      }
+
+      // Color code active divisor buttons
       state.activeCriteria.forEach((div, idx) => {
-        const btn = optionButtons[idx];
+        const btn = optionButtons[idx + 1]; // +1 because "Aucun" is at index 0
         btn.classList.remove('selected');
         
         const shouldBeSelected = correctDivisors.includes(div);
         const userSelected = selected.includes(div);
 
         if (userSelected && shouldBeSelected) {
-          btn.classList.add('correct-reveal'); // User was correct
+          btn.classList.add('correct-reveal');
         } else if (userSelected && !shouldBeSelected) {
-          btn.classList.add('wrong-reveal'); // User selected wrong
+          btn.classList.add('wrong-reveal');
         } else if (!userSelected && shouldBeSelected) {
-          btn.classList.add('missed-reveal'); // User missed a correct one
+          btn.classList.add('missed-reveal');
         }
       });
 
@@ -1865,6 +1917,12 @@
         
         // Generate detailed explanation
         let expText = "";
+        if (correctDivisors.length === 0 && !selected.includes('none')) {
+          expText += `• ${num} n'est divisible par aucun de ces critères, il fallait cocher "Aucun".<br>`;
+        } else if (correctDivisors.length > 0 && selected.includes('none')) {
+          expText += `• ${num} a des critères de divisibilité actifs, il ne fallait pas cocher "Aucun".<br>`;
+        }
+        
         state.activeCriteria.forEach(div => {
           const should = correctDivisors.includes(div);
           const did = selected.includes(div);
