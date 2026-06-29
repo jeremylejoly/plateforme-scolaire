@@ -427,8 +427,8 @@ body {
     </div>
 
     <!-- Carte avec pins absolus -->
-    <div class="map-container">
-      <img class="map-image" src="europe-shaded-relief.jpg" alt="Relief de l'Europe"/>
+    <div class="map-container" id="map-calib-container">
+      <img class="map-image" id="map-calib-img" src="europe-shaded-relief.jpg" alt="Relief de l'Europe"/>
       
       <!-- Pins Montagnes (Vert) -->
       <div class="pin relief" style="top: 25%; left: 51%;" onclick="showInfo('alpes_scand')"></div>
@@ -449,6 +449,16 @@ body {
       <div class="pin fleuve" style="top: 50%; left: 49%;" onclick="showInfo('elbe')"></div>
       <div class="pin fleuve" style="top: 65%; left: 47%;" onclick="showInfo('po')"></div>
       <div class="pin fleuve" style="top: 50%; left: 32%;" onclick="showInfo('tamise')"></div>
+    </div>
+
+    <!-- Outil de Calibrage pour Jeremy (visible au survol ou bouton discret) -->
+    <div style="max-width:900px; margin: 10px auto 20px auto; display:flex; gap:10px; align-items:center;">
+      <button id="btn-calib-toggle" onclick="toggleCalibMode()" style="padding:8px 14px; font-family:'Nunito', sans-serif; font-size:12px; font-weight:800; border-radius:8px; border:1px solid #4b5563; background:#f3f4f6; cursor:pointer; transition: all 0.2s;">
+        🔧 Activer l'outil de calibrage des points
+      </button>
+      <div id="calib-output" style="font-family:monospace; font-size:11.5px; font-weight:bold; color:#374151; display:none; background:white; padding:6px 12px; border-radius:8px; border:1px solid var(--border); flex:1; box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);">
+        Active le calibrage, puis clique n'importe où sur la carte...
+      </div>
     </div>
 
     <!-- Fiche informative -->
@@ -965,6 +975,79 @@ function validerTout() {
 function resetExercice() {
   init();
 }
+
+// --- OUTIL DE CALIBRAGE DES COORDONNÉES ---
+let calibMode = false;
+
+function toggleCalibMode() {
+  calibMode = !calibMode;
+  const btn = document.getElementById('btn-calib-toggle');
+  const output = document.getElementById('calib-output');
+  if(calibMode) {
+    btn.textContent = "🔧 Mode Calibrage : ACTIF";
+    btn.style.background = "#fee2e2";
+    btn.style.borderColor = "#dc2626";
+    btn.style.color = "#dc2626";
+    output.style.display = "block";
+    output.textContent = "Mode calibrage actif. Clique sur la carte pour générer le style...";
+  } else {
+    btn.textContent = "🔧 Activer l'outil de calibrage des points";
+    btn.style.background = "#f3f4f6";
+    btn.style.borderColor = "#4b5563";
+    btn.style.color = "";
+    output.style.display = "none";
+    const tempPin = document.getElementById('temp-calib-pin');
+    if(tempPin) tempPin.remove();
+  }
+}
+
+// Gestionnaire de clics sur l'image
+document.addEventListener('DOMContentLoaded', () => {
+  const mapImg = document.getElementById('map-calib-img');
+  if(mapImg) {
+    mapImg.addEventListener('click', function(e) {
+      if(!calibMode) return;
+      
+      const rect = this.getBoundingClientRect();
+      const x = ((e.clientX - rect.left) / rect.width) * 100;
+      const y = ((e.clientY - rect.top) / rect.height) * 100;
+      
+      const xPercent = x.toFixed(1);
+      const yPercent = y.toFixed(1);
+      
+      // Formater le style
+      const codeStyle = `style="top: ${yPercent}%; left: ${xPercent}%;"`;
+      
+      // Afficher dans la zone de texte
+      const output = document.getElementById('calib-output');
+      output.textContent = `Code généré : ${codeStyle} (Copié !)`;
+      
+      // Copier dans le presse-papier automatiquement
+      navigator.clipboard.writeText(codeStyle).catch(err => {
+        console.error('Erreur de copie :', err);
+      });
+      
+      // Afficher un marqueur temporaire rouge vif
+      let tempPin = document.getElementById('temp-calib-pin');
+      if(!tempPin) {
+        tempPin = document.createElement('div');
+        tempPin.id = 'temp-calib-pin';
+        tempPin.style.position = 'absolute';
+        tempPin.style.width = '24px';
+        tempPin.style.height = '24px';
+        tempPin.style.borderRadius = '50%';
+        tempPin.style.border = '2.5px solid white';
+        tempPin.style.background = '#e11d48';
+        tempPin.style.transform = 'translate(-50%, -50%)';
+        tempPin.style.boxShadow = '0 0 10px #e11d48';
+        tempPin.style.pointerEvents = 'none';
+        document.getElementById('map-calib-container').appendChild(tempPin);
+      }
+      tempPin.style.top = yPercent + '%';
+      tempPin.style.left = xPercent + '%';
+    });
+  }
+});
 
 // Initialisation
 init();
