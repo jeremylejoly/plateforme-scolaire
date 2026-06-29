@@ -1,0 +1,2442 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Les caractères de divisibilité</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-primary: #f0f4f8;
+      --bg-card: #ffffff;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      
+      --color-primary: #6366f1;
+      --color-primary-hover: #4f46e5;
+      --color-secondary: #0ea5e9;
+      --color-success: #10b981;
+      --color-warning: #f59e0b;
+      --color-danger: #ef4444;
+      
+      --radius-sm: 8px;
+      --radius-md: 16px;
+      --radius-lg: 24px;
+      --radius-xl: 32px;
+      
+      --shadow-soft: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+      --shadow-glow: 0 20px 25px -5px rgba(99, 102, 241, 0.15), 0 10px 10px -5px rgba(99, 102, 241, 0.1);
+      
+      --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Outfit', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding: 1.5rem;
+      overflow-x: hidden;
+    }
+
+    /* Scrollbar Styling */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(0,0,0,0.02);
+      border-radius: var(--radius-sm);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(0,0,0,0.15);
+      border-radius: var(--radius-sm);
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(0,0,0,0.25);
+    }
+
+    /* Container */
+    .container {
+      max-width: 1000px;
+      width: 100%;
+      margin: 0 auto;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top Bar & Navigation */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+
+    .app-title {
+      font-size: 1.8rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-config {
+      background: var(--bg-card);
+      border: 1px solid rgba(99, 102, 241, 0.15);
+      padding: 0.6rem 1.2rem;
+      border-radius: var(--radius-md);
+      font-weight: 600;
+      color: var(--color-primary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      box-shadow: var(--shadow-soft);
+      transition: var(--transition);
+    }
+
+    .btn-config:hover {
+      background: var(--color-primary);
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-glow);
+    }
+
+    .btn-back {
+      background: var(--bg-card);
+      border: 1px solid rgba(0,0,0,0.06);
+      padding: 0.6rem 1.2rem;
+      border-radius: var(--radius-md);
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      box-shadow: var(--shadow-soft);
+      transition: var(--transition);
+      align-self: flex-start;
+      margin-bottom: 1.5rem;
+    }
+
+    .btn-back:hover {
+      color: var(--text-main);
+      transform: translateX(-3px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+    /* DASHBOARD */
+    .dashboard {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+      margin-top: 1rem;
+    }
+
+    @media (max-width: 768px) {
+      .dashboard {
+        grid-template-columns: 1fr;
+      }
+      header {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+      }
+    }
+
+    .card-game {
+      background: var(--bg-card);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      box-shadow: var(--shadow-soft);
+      border: 1px solid rgba(255,255,255,0.8);
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 220px;
+    }
+
+    .card-game::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 6px;
+      background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
+      opacity: 0.8;
+    }
+
+    .card-game:hover {
+      transform: translateY(-8px);
+      box-shadow: var(--shadow-glow);
+    }
+
+    .card-icon {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      width: 60px;
+      height: 60px;
+      background: rgba(99, 102, 241, 0.08);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .card-game:nth-child(2) .card-icon { background: rgba(14, 165, 233, 0.08); }
+    .card-game:nth-child(3) .card-icon { background: rgba(16, 185, 129, 0.08); }
+    .card-game:nth-child(4) .card-icon { background: rgba(245, 158, 11, 0.08); }
+
+    .card-title {
+      font-size: 1.3rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+      color: var(--text-main);
+    }
+
+    .card-desc {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+      margin-bottom: 1.5rem;
+    }
+
+    .card-action {
+      font-weight: 600;
+      color: var(--color-primary);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: auto;
+    }
+
+    .card-action svg {
+      transition: transform 0.2s ease;
+    }
+
+    .card-game:hover .card-action svg {
+      transform: translateX(4px);
+    }
+
+    /* SCREENS CONFIG */
+    .screen {
+      display: none;
+      animation: fadeIn 0.3s ease-out forwards;
+    }
+
+    .screen.active {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* CONFIGURATION MODAL / PANEL */
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.4);
+      backdrop-filter: blur(8px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      z-index: 1000;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: var(--bg-card);
+      border-radius: var(--radius-lg);
+      max-width: 600px;
+      width: 100%;
+      padding: 2rem;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+      animation: modalSlide 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    @keyframes modalSlide {
+      from { transform: scale(0.9) translateY(20px); opacity: 0; }
+      to { transform: scale(1) translateY(0); opacity: 1; }
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+      padding-bottom: 1rem;
+    }
+
+    .modal-title {
+      font-size: 1.4rem;
+      font-weight: 800;
+    }
+
+    .btn-close {
+      background: transparent;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--text-muted);
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+    }
+
+    .btn-close:hover {
+      background: rgba(0,0,0,0.05);
+      color: var(--text-main);
+    }
+
+    .config-section {
+      margin-bottom: 1.5rem;
+    }
+
+    .config-label {
+      font-weight: 600;
+      margin-bottom: 0.8rem;
+      font-size: 1rem;
+      color: var(--text-muted);
+      display: block;
+    }
+
+    .criteria-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.8rem;
+    }
+
+    @media (max-width: 480px) {
+      .criteria-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .criteria-btn {
+      background: var(--bg-primary);
+      border: 1px solid rgba(0,0,0,0.05);
+      padding: 0.6rem;
+      border-radius: var(--radius-md);
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition);
+      text-align: center;
+    }
+
+    .criteria-btn.active {
+      background: var(--color-primary);
+      color: white;
+      border-color: var(--color-primary);
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+    }
+
+    .criteria-btn:hover:not(.active) {
+      background: rgba(99, 102, 241, 0.1);
+      color: var(--color-primary);
+    }
+
+    .difficulty-select {
+      display: flex;
+      gap: 0.8rem;
+    }
+
+    .diff-btn {
+      flex: 1;
+      background: var(--bg-primary);
+      border: 1px solid rgba(0,0,0,0.05);
+      padding: 0.8rem;
+      border-radius: var(--radius-md);
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+      transition: var(--transition);
+    }
+
+    .diff-btn.active {
+      background: var(--color-secondary);
+      color: white;
+      border-color: var(--color-secondary);
+      box-shadow: 0 4px 12px rgba(14, 165, 233, 0.2);
+    }
+
+    .diff-btn:hover:not(.active) {
+      background: rgba(14, 165, 233, 0.1);
+      color: var(--color-secondary);
+    }
+
+    .btn-apply {
+      width: 100%;
+      background: var(--color-primary);
+      color: white;
+      border: none;
+      padding: 1rem;
+      border-radius: var(--radius-md);
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: var(--shadow-glow);
+      transition: var(--transition);
+      margin-top: 1rem;
+    }
+
+    .btn-apply:hover {
+      background: var(--color-primary-hover);
+      transform: translateY(-2px);
+    }
+
+    /* GAME INTERFACES COMMON */
+    .game-card {
+      background: var(--bg-card);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      box-shadow: var(--shadow-soft);
+      border: 1px solid rgba(255,255,255,0.8);
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    .game-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      background: rgba(99, 102, 241, 0.03);
+      padding: 1rem 1.5rem;
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(99, 102, 241, 0.05);
+    }
+
+    .score-badge {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--color-primary);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .streak-badge {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--color-warning);
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    /* GAME 1: L'USINE À DIVISEURS */
+    .factory-display {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 2rem 0;
+      perspective: 1000px;
+    }
+
+    .number-pod {
+      font-size: 4rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #1e293b, #334155);
+      color: white;
+      padding: 1.5rem 3rem;
+      border-radius: var(--radius-lg);
+      box-shadow: 0 15px 35px -5px rgba(0,0,0,0.2);
+      border: 2px solid rgba(255,255,255,0.1);
+      letter-spacing: 2px;
+      animation: float 4s ease-in-out infinite;
+      position: relative;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-10px) rotate(1deg); }
+    }
+
+    .factory-instruction {
+      text-align: center;
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      margin-bottom: 1.5rem;
+    }
+
+    .options-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .option-btn {
+      background: var(--bg-card);
+      border: 2px solid rgba(0, 0, 0, 0.05);
+      padding: 1.2rem 1rem;
+      border-radius: var(--radius-md);
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: var(--text-main);
+      cursor: pointer;
+      box-shadow: var(--shadow-soft);
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .option-btn:hover {
+      border-color: rgba(99, 102, 241, 0.3);
+      transform: translateY(-3px);
+    }
+
+    .option-btn.selected {
+      background: var(--color-primary);
+      border-color: var(--color-primary);
+      color: white;
+      box-shadow: var(--shadow-glow);
+    }
+
+    .option-btn .lbl-div {
+      font-size: 0.75rem;
+      font-weight: 400;
+      opacity: 0.7;
+    }
+
+    .option-btn.correct-reveal {
+      background: var(--color-success);
+      border-color: var(--color-success);
+      color: white;
+      box-shadow: 0 4px 15px rgba(16, 185, 129, 0.25);
+    }
+
+    .option-btn.wrong-reveal {
+      background: var(--color-danger);
+      border-color: var(--color-danger);
+      color: white;
+      box-shadow: 0 4px 15px rgba(239, 68, 68, 0.25);
+    }
+
+    .option-btn.missed-reveal {
+      border: 2px dashed var(--color-warning);
+      color: var(--color-warning);
+      background: rgba(245, 158, 11, 0.05);
+    }
+
+    .action-panel {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .btn-action {
+      flex: 1;
+      padding: 1.1rem;
+      border-radius: var(--radius-md);
+      font-size: 1.1rem;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .btn-action-primary {
+      background: var(--color-primary);
+      color: white;
+      box-shadow: var(--shadow-glow);
+    }
+
+    .btn-action-primary:hover {
+      background: var(--color-primary-hover);
+      transform: translateY(-2px);
+    }
+
+    .btn-action-secondary {
+      background: var(--bg-primary);
+      color: var(--text-main);
+    }
+
+    .btn-action-secondary:hover {
+      background: rgba(0,0,0,0.06);
+    }
+
+    /* Feedback Banner */
+    .feedback-banner {
+      margin-top: 1.5rem;
+      padding: 1.2rem;
+      border-radius: var(--radius-md);
+      display: none;
+      animation: slideIn 0.3s ease-out;
+    }
+
+    .feedback-banner.active {
+      display: block;
+    }
+
+    .feedback-banner.success {
+      background: rgba(16, 185, 129, 0.08);
+      border: 1px solid rgba(16, 185, 129, 0.15);
+      color: #065f46;
+    }
+
+    .feedback-banner.error {
+      background: rgba(239, 68, 68, 0.08);
+      border: 1px solid rgba(239, 68, 68, 0.15);
+      color: #991b1b;
+    }
+
+    .feedback-title {
+      font-weight: 800;
+      margin-bottom: 0.4rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .feedback-explanation {
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* GAME 2: LE COFFRE-FORT */
+    .vault-layout {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 2rem;
+    }
+
+    @media (max-width: 768px) {
+      .vault-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .vault-screen {
+      background: #1e293b;
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      color: #f1f5f9;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border: 1px solid rgba(255,255,255,0.05);
+      box-shadow: inset 0 2px 8px rgba(0,0,0,0.5);
+    }
+
+    .vault-title {
+      color: var(--color-secondary);
+      font-size: 1.1rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 1rem;
+    }
+
+    .clues-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .clue-item {
+      background: rgba(255,255,255,0.04);
+      border-left: 4px solid var(--color-primary);
+      padding: 1rem;
+      border-radius: 0 var(--radius-md) var(--radius-md) 0;
+      line-height: 1.4;
+      font-size: 1.05rem;
+    }
+
+    .clue-item.hidden-clue {
+      border-left-color: var(--text-muted);
+      background: rgba(255,255,255,0.02);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .clue-item.hidden-clue:hover {
+      background: rgba(255,255,255,0.05);
+    }
+
+    .clue-reveal-btn {
+      background: var(--color-primary);
+      color: white;
+      border: none;
+      padding: 0.3rem 0.8rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .numpad-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .input-display {
+      background: #0f172a;
+      border: 2px solid rgba(255,255,255,0.1);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      text-align: center;
+      font-family: 'Space Mono', monospace;
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: #38bdf8;
+      min-height: 70px;
+      letter-spacing: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .numpad-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.6rem;
+    }
+
+    .numpad-btn {
+      background: var(--bg-card);
+      border: 1px solid rgba(0,0,0,0.06);
+      padding: 1.2rem 0.5rem;
+      border-radius: var(--radius-md);
+      font-size: 1.5rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition);
+      color: var(--text-main);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .numpad-btn:hover {
+      background: var(--bg-primary);
+      transform: scale(1.03);
+    }
+
+    .numpad-btn.btn-clear {
+      color: var(--color-danger);
+    }
+
+    .numpad-btn.btn-ok {
+      background: var(--color-success);
+      color: white;
+      border-color: var(--color-success);
+    }
+
+    .numpad-btn.btn-ok:hover {
+      background: #059669;
+    }
+
+    /* Animated Safe Wheel */
+    .vault-anim {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 180px;
+    }
+
+    .safe-wheel {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #475569 30%, #334155 70%);
+      border: 8px solid #1e293b;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.4), inset 0 2px 5px rgba(255,255,255,0.2);
+      position: relative;
+      transition: transform 1.5s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+
+    .safe-wheel::after {
+      content: '';
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      background: #38bdf8;
+      border-radius: 50%;
+      top: 15px;
+      left: 64px;
+      box-shadow: 0 0 8px #38bdf8;
+    }
+
+    .safe-handle {
+      position: absolute;
+      width: 80px;
+      height: 8px;
+      background: #94a3b8;
+      top: 66px;
+      left: 30px;
+      border-radius: 4px;
+    }
+
+    .safe-handle-v {
+      position: absolute;
+      width: 8px;
+      height: 80px;
+      background: #94a3b8;
+      top: 30px;
+      left: 66px;
+      border-radius: 4px;
+    }
+
+    .safe-center {
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      background: #64748b;
+      border: 4px solid #334155;
+      border-radius: 50%;
+      top: 55px;
+      left: 55px;
+    }
+
+    /* GAME 3: LE CHEMIN DIVISIBLE */
+    .frog-game-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      position: relative;
+    }
+
+    .game-target-banner {
+      width: 100%;
+      text-align: center;
+      padding: 0.8rem;
+      background: rgba(16, 185, 129, 0.05);
+      border: 1px solid rgba(16, 185, 129, 0.15);
+      border-radius: var(--radius-md);
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #065f46;
+      margin-bottom: 0.5rem;
+    }
+
+    .pond {
+      background: linear-gradient(to top, #0ea5e9, #38bdf8);
+      width: 100%;
+      max-width: 500px;
+      height: 480px;
+      border-radius: var(--radius-lg);
+      position: relative;
+      overflow: hidden;
+      box-shadow: inset 0 4px 15px rgba(0,0,0,0.1), var(--shadow-soft);
+      border: 6px solid #0284c7;
+      display: flex;
+      flex-direction: column-reverse;
+      justify-content: space-between;
+      padding: 20px;
+    }
+
+    .pond-row {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      width: 100%;
+      height: 70px;
+      position: relative;
+      z-index: 5;
+    }
+
+    .bank {
+      background: #84cc16;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      color: white;
+      border-radius: var(--radius-sm);
+      text-transform: uppercase;
+      font-size: 0.9rem;
+      letter-spacing: 1px;
+      border-bottom: 4px solid #65a30d;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .bank.start-bank { background: #e2e8f0; border-color: #cbd5e1; color: #475569; }
+
+    .lilypad {
+      width: 70px;
+      height: 58px;
+      background: radial-gradient(ellipse at center, #15803d 60%, #166534 100%);
+      border-radius: 50% 50% 50% 0; /* Creates leaf cut look */
+      transform: rotate(-15deg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .lilypad:hover {
+      transform: rotate(-15deg) scale(1.08);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.25);
+    }
+
+    .lilypad-num {
+      transform: rotate(15deg); /* Counter-rotate number */
+      color: #fff;
+      font-weight: 800;
+      font-size: 1.15rem;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    }
+
+    .lilypad.splashed {
+      background: transparent;
+      box-shadow: none;
+      cursor: not-allowed;
+      animation: splashAnim 0.5s ease-out forwards;
+    }
+
+    .lilypad.splashed .lilypad-num {
+      display: none;
+    }
+
+    @keyframes splashAnim {
+      0% { transform: rotate(-15deg) scale(1); opacity: 1; }
+      50% { transform: rotate(-15deg) scale(1.2); opacity: 0.5; }
+      100% { transform: rotate(-15deg) scale(0); opacity: 0; }
+    }
+
+    /* Frog Element */
+    .frog-element {
+      width: 48px;
+      height: 48px;
+      position: absolute;
+      z-index: 10;
+      pointer-events: none;
+      transition: left 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), top 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Ripple Effect */
+    .ripple {
+      position: absolute;
+      border: 4px solid rgba(255,255,255,0.4);
+      border-radius: 50%;
+      animation: rippleEffect 0.8s ease-out forwards;
+      pointer-events: none;
+    }
+
+    @keyframes rippleEffect {
+      0% { width: 0; height: 0; opacity: 1; }
+      100% { width: 80px; height: 80px; opacity: 0; border-width: 1px; }
+    }
+
+    /* GAME 4: LE TABLEAU INTERACTIF */
+    .table-layout {
+      width: 100%;
+      overflow-x: auto;
+      margin-bottom: 1.5rem;
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-soft);
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+
+    .grid-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      text-align: center;
+    }
+
+    .grid-table th, .grid-table td {
+      padding: 1.1rem 0.8rem;
+      border: 1px solid #e2e8f0;
+      font-size: 1.1rem;
+    }
+
+    .grid-table th {
+      background: #f8fafc;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+
+    .grid-table th.num-col {
+      background: rgba(99, 102, 241, 0.04);
+      color: var(--color-primary);
+      font-weight: 800;
+      font-size: 1.2rem;
+      width: 140px;
+    }
+
+    .grid-table td.num-cell {
+      font-weight: 800;
+      color: var(--text-main);
+      background: rgba(99, 102, 241, 0.02);
+    }
+
+    .grid-table td.check-cell {
+      cursor: pointer;
+      position: relative;
+      transition: var(--transition);
+    }
+
+    .grid-table td.check-cell:hover {
+      background: rgba(99, 102, 241, 0.03);
+    }
+
+    .cell-checkbox {
+      width: 24px;
+      height: 24px;
+      border: 2px solid #cbd5e1;
+      border-radius: 6px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+    }
+
+    .check-cell.checked .cell-checkbox {
+      background: var(--color-primary);
+      border-color: var(--color-primary);
+    }
+
+    .check-cell.checked .cell-checkbox::after {
+      content: '✓';
+      color: white;
+      font-size: 0.9rem;
+      font-weight: bold;
+    }
+
+    /* Table states after validation */
+    .check-cell.correct-cell {
+      background: rgba(16, 185, 129, 0.08);
+    }
+    .check-cell.correct-cell .cell-checkbox {
+      background: var(--color-success) !important;
+      border-color: var(--color-success) !important;
+    }
+
+    .check-cell.wrong-cell {
+      background: rgba(239, 68, 68, 0.08);
+      cursor: help;
+    }
+    .check-cell.wrong-cell .cell-checkbox {
+      background: var(--color-danger) !important;
+      border-color: var(--color-danger) !important;
+    }
+
+    .check-cell.missed-cell {
+      background: rgba(245, 158, 11, 0.08);
+      cursor: help;
+    }
+    .check-cell.missed-cell .cell-checkbox {
+      border: 2px dashed var(--color-warning) !important;
+      background: transparent !important;
+    }
+
+    /* Explanation tooltip in cells */
+    .explain-btn {
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      font-size: 0.7rem;
+      background: var(--color-warning);
+      color: white;
+      padding: 1px 4px;
+      border-radius: 4px;
+      font-weight: bold;
+      opacity: 0.8;
+      display: none;
+    }
+
+    .wrong-cell .explain-btn, .missed-cell .explain-btn {
+      display: block;
+    }
+
+    /* Sparkles & Badges for correct rows */
+    .success-celebration {
+      text-align: center;
+      padding: 1.5rem;
+      background: rgba(16, 185, 129, 0.05);
+      border-radius: var(--radius-md);
+      margin-top: 1rem;
+      display: none;
+      animation: fadeIn 0.4s ease-out;
+    }
+
+    .success-celebration.active {
+      display: block;
+    }
+
+    /* GENERAL BUTTON STYLING */
+    .btn-action-primary:disabled {
+      background: var(--text-muted);
+      cursor: not-allowed;
+      box-shadow: none;
+      transform: none !important;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    
+    <!-- HEADER -->
+    <header>
+      <div class="app-title">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--color-primary)">
+          <line x1="5" y1="6" x2="19" y2="18"></line>
+          <line x1="19" y1="6" x2="5" y2="18"></line>
+        </svg>
+        <span>Caractères de divisibilité</span>
+      </div>
+      <button class="btn-config" onclick="openConfigModal()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+        </svg>
+        Ajuster les critères
+      </button>
+    </header>
+
+    <!-- DASHBOARD SCREEN -->
+    <div id="screen-dashboard" class="screen active">
+      <div class="dashboard">
+        <!-- Game 1 Card -->
+        <div class="card-game" onclick="startFactoryGame()">
+          <div class="card-icon">🏭</div>
+          <div>
+            <div class="card-title">L'Usine à Diviseurs</div>
+            <div class="card-desc">Un nombre s'affiche dans l'usine. Choisis le plus vite possible tous ses caractères de divisibilité !</div>
+          </div>
+          <div class="card-action">
+            Jouer maintenant
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+          </div>
+        </div>
+
+        <!-- Game 2 Card -->
+        <div class="card-game" onclick="startVaultGame()">
+          <div class="card-icon">🔐</div>
+          <div>
+            <div class="card-title">Le Défi du Coffre-Fort</div>
+            <div class="card-desc">Résous les indices de divisibilité pour décoder la combinaison mystère et ouvrir le coffre fort.</div>
+          </div>
+          <div class="card-action">
+            Résoudre l'enquête
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+          </div>
+        </div>
+
+        <!-- Game 3 Card -->
+        <div class="card-game" onclick="startFrogGame()">
+          <div class="card-icon">🐸</div>
+          <div>
+            <div class="card-title">Le Chemin Divisible</div>
+            <div class="card-desc">Aide la grenouille à traverser la rivière en sautant uniquement sur les nénuphars divisibles !</div>
+          </div>
+          <div class="card-action">
+            Faire sauter la grenouille
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+          </div>
+        </div>
+
+        <!-- Game 4 Card -->
+        <div class="card-game" onclick="startTableGame()">
+          <div class="card-icon">📊</div>
+          <div>
+            <div class="card-title">Le Tableau Interactif</div>
+            <div class="card-desc">Remplis le tableau de synthèse et coche toutes les divisibilités. Idéal pour un entraînement complet.</div>
+          </div>
+          <div class="card-action">
+            Compléter le tableau
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GAME 1: L'USINE À DIVISEURS SCREEN -->
+    <div id="screen-game-factory" class="screen">
+      <button class="btn-back" onclick="goToDashboard()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+        Retour au menu
+      </button>
+
+      <div class="game-card">
+        <div class="game-header">
+          <div class="score-badge">
+            <span>Score:</span> <strong id="factory-score">0</strong>
+          </div>
+          <div class="streak-badge">
+            <span id="factory-streak-icon">🔥</span> <strong id="factory-streak">0</strong>
+          </div>
+        </div>
+
+        <div class="factory-instruction">Coche les caractères de divisibilité de ce nombre :</div>
+
+        <div class="factory-display">
+          <div class="number-pod" id="factory-number">120</div>
+        </div>
+
+        <div class="options-grid" id="factory-options">
+          <!-- Populated by JS -->
+        </div>
+
+        <div class="feedback-banner" id="factory-feedback">
+          <div class="feedback-title" id="factory-feedback-title">Bravo !</div>
+          <div class="feedback-explanation" id="factory-feedback-explanation">Explication</div>
+        </div>
+
+        <div class="action-panel">
+          <button class="btn-action btn-action-primary" id="factory-btn-main" onclick="validateFactoryAnswer()">
+            Valider la réponse
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- GAME 2: LE COFFRE-FORT SCREEN -->
+    <div id="screen-game-vault" class="screen">
+      <button class="btn-back" onclick="goToDashboard()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+        Retour au menu
+      </button>
+
+      <div class="game-card">
+        <div class="game-header">
+          <div class="score-badge">
+            <span>Score:</span> <strong id="vault-score">0</strong>
+          </div>
+          <div class="streak-badge">
+            <span>⭐ Niveau:</span> <strong id="vault-level-badge">1</strong>
+          </div>
+        </div>
+
+        <div class="vault-layout">
+          <div class="vault-screen">
+            <div>
+              <div class="vault-title">Indices d'enquête</div>
+              <div class="clues-container" id="vault-clues">
+                <!-- Clues populate here -->
+              </div>
+            </div>
+            
+            <div class="vault-anim">
+              <div class="safe-wheel" id="safe-wheel">
+                <div class="safe-handle"></div>
+                <div class="safe-handle-v"></div>
+                <div class="safe-center"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="numpad-container">
+            <div class="input-display" id="vault-input">???</div>
+            <div class="numpad-grid">
+              <button class="numpad-btn" onclick="pressVaultKey('1')">1</button>
+              <button class="numpad-btn" onclick="pressVaultKey('2')">2</button>
+              <button class="numpad-btn" onclick="pressVaultKey('3')">3</button>
+              <button class="numpad-btn" onclick="pressVaultKey('4')">4</button>
+              <button class="numpad-btn" onclick="pressVaultKey('5')">5</button>
+              <button class="numpad-btn" onclick="pressVaultKey('6')">6</button>
+              <button class="numpad-btn" onclick="pressVaultKey('7')">7</button>
+              <button class="numpad-btn" onclick="pressVaultKey('8')">8</button>
+              <button class="numpad-btn" onclick="pressVaultKey('9')">9</button>
+              <button class="numpad-btn btn-clear" onclick="pressVaultKey('C')">C</button>
+              <button class="numpad-btn" onclick="pressVaultKey('0')">0</button>
+              <button class="numpad-btn btn-ok" id="vault-btn-ok" onclick="validateVaultAnswer()">OK</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="feedback-banner" id="vault-feedback">
+          <div class="feedback-title" id="vault-feedback-title">Code Correct !</div>
+          <div class="feedback-explanation" id="vault-feedback-explanation">Explication</div>
+        </div>
+
+        <div class="action-panel" style="display:none;" id="vault-next-container">
+          <button class="btn-action btn-action-primary" onclick="generateVaultQuestion()">
+            Enquête Suivante
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- GAME 3: LE CHEMIN DIVISIBLE SCREEN -->
+    <div id="screen-game-frog" class="screen">
+      <button class="btn-back" onclick="goToDashboard()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+        Retour au menu
+      </button>
+
+      <div class="game-card">
+        <div class="game-header">
+          <div class="score-badge">
+            <span>Score:</span> <strong id="frog-score">0</strong>
+          </div>
+          <div class="streak-badge">
+            <span>🏞️ Niveau:</span> <strong id="frog-level">1</strong>
+          </div>
+        </div>
+
+        <div class="frog-game-container">
+          <div class="game-target-banner" id="frog-target-rule">
+            Saute uniquement sur les nombres divisibles par 5 !
+          </div>
+
+          <div class="pond" id="frog-pond">
+            <!-- Bank target -->
+            <div class="bank">Arrivée 🏁</div>
+
+            <!-- 5 rows of lilypads -->
+            <div class="pond-row" data-row="4"></div>
+            <div class="pond-row" data-row="3"></div>
+            <div class="pond-row" data-row="2"></div>
+            <div class="pond-row" data-row="1"></div>
+            <div class="pond-row" data-row="0"></div>
+
+            <!-- Start bank -->
+            <div class="bank start-bank">Départ 🐸</div>
+
+            <!-- Frog sprite container -->
+            <div class="frog-element" id="frog-sprite">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3))">
+                <path d="M12 2a5 5 0 0 0-5 5c0 1.25.47 2.4 1.25 3.25L4 16h16l-4.25-5.75C16.53 9.4 17 8.25 17 7a5 5 0 0 0-5-5z"></path>
+                <circle cx="9" cy="7" r="1" fill="#fff"></circle>
+                <circle cx="15" cy="7" r="1" fill="#fff"></circle>
+                <path d="M7 16v4c0 1.1.9 2 2 2h6c1.1 0 2-.9 2-2v-4"></path>
+              </svg>
+            </div>
+          </div>
+
+          <div class="feedback-banner" id="frog-feedback">
+            <div class="feedback-title" id="frog-feedback-title">Plouf !</div>
+            <div class="feedback-explanation" id="frog-feedback-explanation">Explication</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GAME 4: LE TABLEAU INTERACTIF SCREEN -->
+    <div id="screen-game-table" class="screen">
+      <button class="btn-back" onclick="goToDashboard()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+        Retour au menu
+      </button>
+
+      <div class="game-card">
+        <div class="game-header">
+          <div class="score-badge">
+            <span>Score:</span> <strong id="table-score">0</strong>
+          </div>
+          <div class="streak-badge">
+            <span>🎯 Précision:</span> <strong id="table-accuracy">--</strong>
+          </div>
+        </div>
+
+        <div class="factory-instruction">Coche les cases si le nombre est divisible par le diviseur proposé :</div>
+
+        <div class="table-layout">
+          <table class="grid-table">
+            <thead>
+              <tr id="table-headers">
+                <th class="num-col">Nombre</th>
+                <!-- Populated dynamically -->
+              </tr>
+            </thead>
+            <tbody id="table-body">
+              <!-- Populated dynamically -->
+            </tbody>
+          </table>
+        </div>
+
+        <div class="success-celebration" id="table-success-panel">
+          <h3 style="color:#065f46; font-size:1.3rem; font-weight:800; margin-bottom:0.5rem;">🎉 Tableau complété !</h3>
+          <p id="table-result-text">Tu as fait 0 erreur. Excellent travail !</p>
+        </div>
+
+        <div class="action-panel">
+          <button class="btn-action btn-action-primary" id="table-btn-main" onclick="validateTable()">
+            Valider le tableau
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- CONFIGURATION MODAL -->
+  <div class="modal" id="config-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Paramètres de divisibilité</h3>
+        <button class="btn-close" onclick="closeConfigModal()">&times;</button>
+      </div>
+
+      <div class="config-section">
+        <span class="config-label">Critères actifs (sélectionne au moins un) :</span>
+        <div class="criteria-grid" id="criteria-config-grid">
+          <button class="criteria-btn active" data-div="2">par 2</button>
+          <button class="criteria-btn active" data-div="3">par 3</button>
+          <button class="criteria-btn active" data-div="4">par 4</button>
+          <button class="criteria-btn active" data-div="5">par 5</button>
+          <button class="criteria-btn" data-div="6">par 6</button>
+          <button class="criteria-btn" data-div="8">par 8</button>
+          <button class="criteria-btn active" data-div="9">par 9</button>
+          <button class="criteria-btn active" data-div="10">par 10</button>
+          <button class="criteria-btn" data-div="25">par 25</button>
+          <button class="criteria-btn" data-div="50">par 50</button>
+          <button class="criteria-btn" data-div="100">par 100</button>
+        </div>
+      </div>
+
+      <div class="config-section">
+        <span class="config-label">Taille des nombres :</span>
+        <div class="difficulty-select">
+          <button class="diff-btn" data-range="easy">Facile (< 100)</button>
+          <button class="diff-btn active" data-range="medium">Moyen (< 1 000)</button>
+          <button class="diff-btn" data-range="hard">Difficile (< 10 000)</button>
+        </div>
+      </div>
+
+      <button class="btn-apply" onclick="saveConfiguration()">Appliquer les réglages</button>
+    </div>
+  </div>
+
+  <!-- JS LOGIC -->
+  <script>
+    // Audio synthesis context for simple game sounds
+    let audioCtx = null;
+    function playSound(type) {
+      try {
+        if (!audioCtx) {
+          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (audioCtx.state === 'suspended') {
+          audioCtx.resume();
+        }
+        
+        const osc = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+        osc.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+        
+        if (type === 'success') {
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); // C5
+          osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.1); // E5
+          osc.frequency.setValueAtTime(783.99, audioCtx.currentTime + 0.2); // G5
+          gainNode.gain.setValueAtTime(0.15, audioCtx.currentTime);
+          gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.45);
+          osc.start();
+          osc.stop(audioCtx.currentTime + 0.45);
+        } else if (type === 'error') {
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(220, audioCtx.currentTime); // A3
+          osc.frequency.linearRampToValueAtTime(110, audioCtx.currentTime + 0.3); // A2
+          gainNode.gain.setValueAtTime(0.15, audioCtx.currentTime);
+          gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.35);
+          osc.start();
+          osc.stop(audioCtx.currentTime + 0.35);
+        } else if (type === 'click') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(600, audioCtx.currentTime);
+          gainNode.gain.setValueAtTime(0.08, audioCtx.currentTime);
+          gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.08);
+          osc.start();
+          osc.stop(audioCtx.currentTime + 0.08);
+        } else if (type === 'unlock') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(392.00, audioCtx.currentTime); // G4
+          osc.frequency.setValueAtTime(523.25, audioCtx.currentTime + 0.15); // C5
+          osc.frequency.setValueAtTime(1046.50, audioCtx.currentTime + 0.3); // C6
+          gainNode.gain.setValueAtTime(0.15, audioCtx.currentTime);
+          gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.6);
+          osc.start();
+          osc.stop(audioCtx.currentTime + 0.6);
+        }
+      } catch (e) {
+        console.warn('Audio API non supportée ou bloquée', e);
+      }
+    }
+
+    // STATE VARIABLES
+    const state = {
+      activeCriteria: [2, 3, 4, 5, 9, 10], // Default active criteria
+      difficulty: 'medium', // easy (<100), medium (<1000), hard (<10000)
+      
+      // Game 1: Factory state
+      factory: {
+        score: 0,
+        streak: 0,
+        currentNum: 0,
+        selected: [], // selected divisors
+        isAnswered: false
+      },
+      // Game 2: Vault state
+      vault: {
+        score: 0,
+        level: 1,
+        currentAnswer: 0,
+        clues: [],
+        inputVal: '',
+        isAnswered: false
+      },
+      // Game 3: Frog state
+      frog: {
+        score: 0,
+        level: 1,
+        activeCriterion: 5,
+        currentRow: -1, // starts on bank (-1)
+        frogPosition: { row: -1, col: 1 }, // row: -1 to 5, col: 0 to 2
+        pathData: [], // list of rows with numbers
+        isGameOver: false
+      },
+      // Game 4: Table state
+      table: {
+        score: 0,
+        numbers: [],
+        cols: [],
+        checkedCells: {}, // format: "row-col": true/false
+        isAnswered: false
+      }
+    };
+
+    // DIVISIBILITY HELPERS
+    const divisorsCheck = {
+      2: (n) => n % 2 === 0,
+      3: (n) => n % 3 === 0,
+      4: (n) => n % 4 === 0,
+      5: (n) => n % 5 === 0,
+      6: (n) => n % 6 === 0,
+      8: (n) => n % 8 === 0,
+      9: (n) => n % 9 === 0,
+      10: (n) => n % 10 === 0,
+      25: (n) => n % 25 === 0,
+      50: (n) => n % 50 === 0,
+      100: (n) => n % 100 === 0
+    };
+
+    // Pedagogical explanation generator
+    function getExplanation(n, d) {
+      const isDiv = divisorsCheck[d](n);
+      const suffix = isDiv ? "est divisible par " + d : "n'est PAS divisible par " + d;
+      
+      if (d === 2) {
+        const lastDigit = n % 10;
+        return `${n} se termine par ${lastDigit}. Comme ${lastDigit} est ${lastDigit % 2 === 0 ? 'pair' : 'impair'}, alors ${n} ${suffix}.`;
+      }
+      if (d === 5) {
+        const lastDigit = n % 10;
+        return `${n} se termine par ${lastDigit}. Un nombre divisible par 5 doit se terminer par 0 ou 5. Donc ${n} ${suffix}.`;
+      }
+      if (d === 10) {
+        const lastDigit = n % 10;
+        return `${n} se termine par ${lastDigit}. Un nombre divisible par 10 doit se terminer par 0. Donc ${n} ${suffix}.`;
+      }
+      if (d === 3 || d === 9) {
+        const digits = Array.from(String(n)).map(Number);
+        const sum = digits.reduce((a, b) => a + b, 0);
+        const sumStr = digits.join(' + ');
+        const isSumDiv = sum % d === 0;
+        return `La somme des chiffres de ${n} est : ${sumStr} = ${sum}. Comme ${sum} ${isSumDiv ? 'est' : "n'est pas"} un multiple de ${d}, alors ${n} ${suffix}.`;
+      }
+      if (d === 4) {
+        const lastTwo = n % 100;
+        const lastTwoStr = String(lastTwo).padStart(2, '0');
+        const isLastTwoDiv = lastTwo % 4 === 0;
+        return `Les deux derniers chiffres de ${n} forment le nombre ${lastTwoStr}. Comme ${lastTwoStr} ${isLastTwoDiv ? 'est' : "n'est pas"} divisible par 4, alors ${n} ${suffix}.`;
+      }
+      if (d === 25) {
+        const lastTwo = n % 100;
+        const lastTwoStr = String(lastTwo).padStart(2, '0');
+        return `${n} se termine par ${lastTwoStr}. Les nombres divisibles par 25 se terminent par 00, 25, 50 ou 75. Donc ${n} ${suffix}.`;
+      }
+      if (d === 50) {
+        const lastTwo = n % 100;
+        const lastTwoStr = String(lastTwo).padStart(2, '0');
+        return `${n} se termine par ${lastTwoStr}. Les nombres divisibles par 50 se terminent par 00 ou 50. Donc ${n} ${suffix}.`;
+      }
+      if (d === 100) {
+        const lastTwo = n % 100;
+        const lastTwoStr = String(lastTwo).padStart(2, '0');
+        return `${n} se termine par ${lastTwoStr}. Un nombre divisible par 100 doit se terminer par 00. Donc ${n} ${suffix}.`;
+      }
+      if (d === 6) {
+        const isDiv2 = n % 2 === 0;
+        const isDiv3 = n % 3 === 0;
+        return `${n} est ${isDiv2 ? 'pair (divisible par 2)' : 'impair (non divisible par 2)'} et la somme de ses chiffres ${isDiv3 ? 'est multiple de 3 (divisible par 3)' : "n'est pas multiple de 3"}. Pour être divisible par 6, il doit être divisible par 2 ET par 3. Donc ${n} ${suffix}.`;
+      }
+      if (d === 8) {
+        if (n < 1000) {
+          return `Pour ${n}, on calcule si la division par 8 tombe juste : ${n} ÷ 8 = ${n / 8}. Donc ${n} ${suffix}.`;
+        } else {
+          const lastThree = n % 1000;
+          const lastThreeStr = String(lastThree).padStart(3, '0');
+          const isLastThreeDiv = lastThree % 8 === 0;
+          return `Les trois derniers chiffres de ${n} forment le nombre ${lastThreeStr}. Comme ${lastThreeStr} ${isLastThreeDiv ? 'est' : "n'est pas"} divisible par 8, alors ${n} ${suffix}.`;
+        }
+      }
+      return `${n} ÷ ${d} = ${Math.floor(n / d)} ${isDiv ? 'sans reste' : 'avec un reste de ' + (n % d)}. Donc ${n} ${suffix}.`;
+    }
+
+    // UTILS
+    function getRandomInt(min, max) {
+      return Math.floor(Math.random() * (max - min)) + min;
+    }
+
+    function generateNumberByDifficulty() {
+      if (state.difficulty === 'easy') {
+        return getRandomInt(10, 100);
+      } else if (state.difficulty === 'medium') {
+        return getRandomInt(100, 1000);
+      } else {
+        return getRandomInt(1000, 10000);
+      }
+    }
+
+    // NAVIGATION
+    function showScreen(screenId) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(screenId).classList.add('active');
+    }
+
+    // Return to dashboard
+    function goToDashboard() {
+      playSound('click');
+      showScreen('screen-dashboard');
+    }
+
+    // CONFIGURATION MODAL
+    function openConfigModal() {
+      playSound('click');
+      // Set active buttons in grid based on state
+      document.querySelectorAll('#criteria-config-grid .criteria-btn').forEach(btn => {
+        const div = parseInt(btn.dataset.div);
+        if (state.activeCriteria.includes(div)) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+
+      // Set active difficulty
+      document.querySelectorAll('.difficulty-select .diff-btn').forEach(btn => {
+        if (btn.dataset.range === state.difficulty) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+
+      document.getElementById('config-modal').classList.add('active');
+    }
+
+    function closeConfigModal() {
+      playSound('click');
+      document.getElementById('config-modal').classList.remove('active');
+    }
+
+    // Bind configuration button clicks
+    document.querySelectorAll('#criteria-config-grid .criteria-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        playSound('click');
+        btn.classList.toggle('active');
+      });
+    });
+
+    document.querySelectorAll('.difficulty-select .diff-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        playSound('click');
+        document.querySelectorAll('.difficulty-select .diff-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+      });
+    });
+
+    function saveConfiguration() {
+      // Gather active criteria
+      const active = [];
+      document.querySelectorAll('#criteria-config-grid .criteria-btn.active').forEach(btn => {
+        active.push(parseInt(btn.dataset.div));
+      });
+
+      if (active.length === 0) {
+        alert("Choisis au moins 1 critère de divisibilité !");
+        return;
+      }
+
+      state.activeCriteria = active;
+      
+      // Gather difficulty
+      const diffBtn = document.querySelector('.difficulty-select .diff-btn.active');
+      state.difficulty = diffBtn.dataset.range;
+
+      closeConfigModal();
+      
+      // Restart current game if active
+      if (document.getElementById('screen-game-factory').classList.contains('active')) {
+        startFactoryGame();
+      } else if (document.getElementById('screen-game-vault').classList.contains('active')) {
+        startVaultGame();
+      } else if (document.getElementById('screen-game-frog').classList.contains('active')) {
+        startFrogGame();
+      } else if (document.getElementById('screen-game-table').classList.contains('active')) {
+        startTableGame();
+      }
+    }
+
+    // ==========================================
+    // GAME 1: L'USINE À DIVISEURS LOGIC
+    // ==========================================
+    function startFactoryGame() {
+      showScreen('screen-game-factory');
+      state.factory.score = 0;
+      state.factory.streak = 0;
+      updateFactoryScoreboard();
+      generateFactoryQuestion();
+    }
+
+    function updateFactoryScoreboard() {
+      document.getElementById('factory-score').textContent = state.factory.score;
+      document.getElementById('factory-streak').textContent = state.factory.streak;
+      const streakIcon = document.getElementById('factory-streak-icon');
+      if (state.factory.streak >= 8) {
+        streakIcon.textContent = '⚡👑';
+      } else if (state.factory.streak >= 4) {
+        streakIcon.textContent = '⚡';
+      } else {
+        streakIcon.textContent = '🔥';
+      }
+    }
+
+    function generateFactoryQuestion() {
+      state.factory.isAnswered = false;
+      state.factory.selected = [];
+      
+      // Generate random number
+      state.factory.currentNum = generateNumberByDifficulty();
+      document.getElementById('factory-number').textContent = state.factory.currentNum;
+      
+      // Clear banners
+      document.getElementById('factory-feedback').classList.remove('active', 'success', 'error');
+      
+      // Set main action button
+      const mainBtn = document.getElementById('factory-btn-main');
+      mainBtn.textContent = "Valider la réponse";
+      mainBtn.className = "btn-action btn-action-primary";
+      mainBtn.onclick = validateFactoryAnswer;
+
+      // Populate options based on active criteria
+      const grid = document.getElementById('factory-options');
+      grid.innerHTML = '';
+      
+      state.activeCriteria.forEach(div => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.innerHTML = `
+          <span>par ${div}</span>
+          <span class="lbl-div">diviseur</span>
+        `;
+        btn.onclick = () => selectFactoryOption(div, btn);
+        grid.appendChild(btn);
+      });
+    }
+
+    function selectFactoryOption(div, element) {
+      if (state.factory.isAnswered) return;
+      playSound('click');
+      
+      const idx = state.factory.selected.indexOf(div);
+      if (idx > -1) {
+        state.factory.selected.splice(idx, 1);
+        element.classList.remove('selected');
+      } else {
+        state.factory.selected.push(div);
+        element.classList.add('selected');
+      }
+    }
+
+    function validateFactoryAnswer() {
+      if (state.factory.isAnswered) return;
+      state.factory.isAnswered = true;
+
+      const num = state.factory.currentNum;
+      
+      // Compute correct answers
+      const correctDivisors = state.activeCriteria.filter(div => divisorsCheck[div](num));
+      
+      // Check user answers
+      const selected = state.factory.selected;
+      
+      // To be completely correct, selected arrays must contain exactly the same elements as correctDivisors
+      const isCorrect = correctDivisors.length === selected.length &&
+                        correctDivisors.every(d => selected.includes(d));
+
+      const optionButtons = document.getElementById('factory-options').children;
+
+      // Color code options
+      state.activeCriteria.forEach((div, idx) => {
+        const btn = optionButtons[idx];
+        btn.classList.remove('selected');
+        
+        const shouldBeSelected = correctDivisors.includes(div);
+        const userSelected = selected.includes(div);
+
+        if (userSelected && shouldBeSelected) {
+          btn.classList.add('correct-reveal'); // User was correct
+        } else if (userSelected && !shouldBeSelected) {
+          btn.classList.add('wrong-reveal'); // User selected wrong
+        } else if (!userSelected && shouldBeSelected) {
+          btn.classList.add('missed-reveal'); // User missed a correct one
+        }
+      });
+
+      const feedback = document.getElementById('factory-feedback');
+      const fTitle = document.getElementById('factory-feedback-title');
+      const fExplain = document.getElementById('factory-feedback-explanation');
+      
+      if (isCorrect) {
+        playSound('success');
+        state.factory.score += 10 + Math.floor(state.factory.streak / 2);
+        state.factory.streak += 1;
+        
+        fTitle.textContent = "Excellent ! C'est un sans-faute !";
+        feedback.className = "feedback-banner success active";
+        
+        if (correctDivisors.length === 0) {
+          fExplain.textContent = `${num} n'est divisible par aucun des critères actifs. Bien vu !`;
+        } else {
+          fExplain.textContent = `${num} est bien divisible par ${correctDivisors.join(', ')}.`;
+        }
+      } else {
+        playSound('error');
+        state.factory.streak = 0;
+        
+        fTitle.textContent = "Oups, il y a des erreurs !";
+        feedback.className = "feedback-banner error active";
+        
+        // Generate detailed explanation
+        let expText = "";
+        state.activeCriteria.forEach(div => {
+          const should = correctDivisors.includes(div);
+          const did = selected.includes(div);
+          if (should !== did) {
+            expText += "• " + getExplanation(num, div) + "<br>";
+          }
+        });
+        fExplain.innerHTML = expText;
+      }
+
+      updateFactoryScoreboard();
+
+      // Transform action button
+      const mainBtn = document.getElementById('factory-btn-main');
+      mainBtn.textContent = "Nombre suivant";
+      mainBtn.className = "btn-action btn-action-primary";
+      mainBtn.onclick = generateFactoryQuestion;
+    }
+
+    // ==========================================
+    // GAME 2: LE COFFRE-FORT LOGIC
+    // ==========================================
+    function startVaultGame() {
+      showScreen('screen-game-vault');
+      state.vault.score = 0;
+      state.vault.level = 1;
+      document.getElementById('vault-score').textContent = state.vault.score;
+      document.getElementById('vault-level-badge').textContent = state.vault.level;
+      generateVaultQuestion();
+    }
+
+    function generateVaultQuestion() {
+      state.vault.isAnswered = false;
+      state.vault.inputVal = '';
+      document.getElementById('vault-input').textContent = '???';
+      document.getElementById('vault-feedback').classList.remove('active', 'success', 'error');
+      document.getElementById('vault-next-container').style.display = 'none';
+      document.getElementById('vault-btn-ok').disabled = false;
+      
+      // Safe wheel animation reset
+      document.getElementById('safe-wheel').style.transform = `rotate(0deg)`;
+
+      // Generate a secret number
+      // Level 1: <100, Level 2: <300, Level 3+: <800
+      let secret = 0;
+      let limit = 100;
+      if (state.vault.level === 2) limit = 300;
+      if (state.vault.level >= 3) limit = 800;
+      
+      // Select 2 or 3 criteria from activeCriteria
+      let attempts = 0;
+      while (attempts < 100) {
+        secret = getRandomInt(Math.max(12, Math.floor(limit / 5)), limit);
+        
+        // Find which active criteria this secret matches
+        const matches = state.activeCriteria.filter(div => divisorsCheck[div](secret));
+        
+        // We want at least 2 distinct criteria matching (or 1 if it's very restricted)
+        if (matches.length >= 2 || (matches.length >= 1 && state.activeCriteria.length < 3)) {
+          // Keep a subset of matches to present as clues
+          const selectedClues = matches.slice(0, 3);
+          
+          // Also check for some non-divisibility clue
+          const nonMatches = state.activeCriteria.filter(div => !divisorsCheck[div](secret));
+          const badClue = nonMatches.length > 0 ? nonMatches[getRandomInt(0, nonMatches.length)] : null;
+          
+          state.vault.currentAnswer = secret;
+          state.vault.clues = selectedClues.map(div => ({ type: 'divisible', val: div }));
+          if (badClue) {
+            state.vault.clues.push({ type: 'not_divisible', val: badClue });
+          }
+          break;
+        }
+        attempts++;
+      }
+
+      // If we failed to find a complex one, just take any random number and its basic rules
+      if (state.vault.currentAnswer === 0 || attempts >= 100) {
+        state.vault.currentAnswer = 25;
+        state.vault.clues = [
+          { type: 'divisible', val: 5 },
+          { type: 'divisible', val: 25 }
+        ];
+      }
+
+      // Render Clues
+      const container = document.getElementById('vault-clues');
+      container.innerHTML = '';
+
+      // Clue 1: Range
+      const rangeVal = Math.floor(state.vault.currentAnswer / 100) * 100;
+      const minRange = rangeVal === 0 ? 1 : rangeVal;
+      const maxRange = rangeVal + 100;
+      
+      const rangeClue = document.createElement('div');
+      rangeClue.className = 'clue-item';
+      rangeClue.textContent = `🔑 Le code mystère est situé entre ${minRange} et ${maxRange}.`;
+      container.appendChild(rangeClue);
+
+      // Render divisibility clues (reveal first, hide others to unlock)
+      state.vault.clues.forEach((clue, idx) => {
+        const item = document.createElement('div');
+        
+        if (idx === 0) {
+          item.className = 'clue-item';
+          item.textContent = clue.type === 'divisible' 
+            ? `🔍 Il est divisible par ${clue.val}.` 
+            : `🔍 Il n'est PAS divisible par ${clue.val}.`;
+        } else {
+          // Hidden clue that user can unlock
+          item.className = 'clue-item hidden-clue';
+          item.id = `vault-clue-hidden-${idx}`;
+          item.innerHTML = `
+            <span>🔒 Indice verrouillé</span>
+            <button class="clue-reveal-btn" onclick="revealVaultClue(${idx})">Déverrouiller</button>
+          `;
+        }
+        container.appendChild(item);
+      });
+    }
+
+    function revealVaultClue(idx) {
+      playSound('click');
+      const item = document.getElementById(`vault-clue-hidden-${idx}`);
+      const clue = state.vault.clues[idx];
+      
+      item.className = 'clue-item';
+      item.innerHTML = clue.type === 'divisible' 
+        ? `🔍 Il est divisible par ${clue.val}.` 
+        : `🔍 Il n'est PAS divisible par ${clue.val}.`;
+    }
+
+    function pressVaultKey(key) {
+      if (state.vault.isAnswered) return;
+      playSound('click');
+
+      if (key === 'C') {
+        state.vault.inputVal = '';
+      } else {
+        if (state.vault.inputVal.length < 5) {
+          state.vault.inputVal += key;
+        }
+      }
+      
+      document.getElementById('vault-input').textContent = state.vault.inputVal || '???';
+    }
+
+    function validateVaultAnswer() {
+      if (state.vault.isAnswered || state.vault.inputVal === '') return;
+      state.vault.isAnswered = true;
+      document.getElementById('vault-btn-ok').disabled = true;
+
+      const userAns = parseInt(state.vault.inputVal);
+      const secret = state.vault.currentAnswer;
+      
+      // Check if user answer satisfies all clues
+      let satisfiesAll = true;
+      
+      // 1. Range check
+      const rangeVal = Math.floor(secret / 100) * 100;
+      const minRange = rangeVal === 0 ? 1 : rangeVal;
+      const maxRange = rangeVal + 100;
+      if (userAns < minRange || userAns > maxRange) satisfiesAll = false;
+
+      // 2. Divisibility clues check
+      state.vault.clues.forEach(clue => {
+        const isDiv = divisorsCheck[clue.val](userAns);
+        if (clue.type === 'divisible' && !isDiv) satisfiesAll = false;
+        if (clue.type === 'not_divisible' && isDiv) satisfiesAll = false;
+      });
+
+      const feedback = document.getElementById('vault-feedback');
+      const fTitle = document.getElementById('vault-feedback-title');
+      const fExplain = document.getElementById('vault-feedback-explanation');
+
+      if (userAns === secret || satisfiesAll) {
+        // Safe opens animation
+        playSound('unlock');
+        document.getElementById('safe-wheel').style.transform = `rotate(360deg)`;
+        
+        state.vault.score += 25;
+        state.vault.level += 1;
+        
+        fTitle.textContent = "Félicitations ! Le coffre s'ouvre ! 🔓";
+        feedback.className = "feedback-banner success active";
+        fExplain.innerHTML = `Le code secret était bien <strong>${secret}</strong> (ou une valeur valide comme ${userAns}).<br>Il respecte toutes les consignes de divisibilité.`;
+      } else {
+        playSound('error');
+        fTitle.textContent = "Accès refusé ! Code erroné. 🔒";
+        feedback.className = "feedback-banner error active";
+        
+        // Explain why the input is wrong
+        let errorClue = "";
+        if (userAns < minRange || userAns > maxRange) {
+          errorClue = `• Le nombre ${userAns} n'est pas dans l'intervalle [${minRange} - ${maxRange}].`;
+        } else {
+          state.vault.clues.forEach(clue => {
+            const isDiv = divisorsCheck[clue.val](userAns);
+            if (clue.type === 'divisible' && !isDiv) {
+              errorClue += `• ` + getExplanation(userAns, clue.val) + `<br>`;
+            }
+            if (clue.type === 'not_divisible' && isDiv) {
+              errorClue += `• ${userAns} est divisible par ${clue.val}, ce qui contredit l'indice.<br>`;
+            }
+          });
+        }
+        
+        fExplain.innerHTML = `Le code proposé (${userAns}) ne respecte pas les indices :<br>${errorClue}<br>Le code correct était : <strong>${secret}</strong>.`;
+      }
+
+      document.getElementById('vault-score').textContent = state.vault.score;
+      document.getElementById('vault-level-badge').textContent = state.vault.level;
+      document.getElementById('vault-next-container').style.display = 'flex';
+    }
+
+    // ==========================================
+    // GAME 3: LE CHEMIN DIVISIBLE LOGIC (FROG)
+    // ==========================================
+    function startFrogGame() {
+      showScreen('screen-game-frog');
+      state.frog.score = 0;
+      state.frog.level = 1;
+      document.getElementById('frog-score').textContent = state.frog.score;
+      document.getElementById('frog-level').textContent = state.frog.level;
+      generateFrogPond();
+    }
+
+    function generateFrogPond() {
+      state.frog.isGameOver = false;
+      state.frog.currentRow = -1;
+      state.frog.frogPosition = { row: -1, col: 1 };
+      
+      document.getElementById('frog-feedback').classList.remove('active', 'success', 'error');
+
+      // Randomly select one active divisibility criterion
+      const idx = getRandomInt(0, state.activeCriteria.length);
+      state.frog.activeCriterion = state.activeCriteria[idx];
+      
+      document.getElementById('frog-target-rule').textContent = 
+        `🐸 Consigne : Saute uniquement sur les nombres divisibles par ${state.frog.activeCriterion} !`;
+
+      // Generate grid data: 5 rows
+      state.frog.pathData = [];
+      const div = state.frog.activeCriterion;
+
+      for (let r = 0; r < 5; r++) {
+        // Select which column is the correct path (0, 1, or 2)
+        const correctCol = getRandomInt(0, 3);
+        const rowVals = [0, 0, 0];
+        
+        // Populate the correct column
+        let attempt = 0;
+        while (attempt < 100) {
+          const val = generateNumberByDifficulty();
+          if (divisorsCheck[div](val)) {
+            rowVals[correctCol] = val;
+            break;
+          }
+          attempt++;
+        }
+        if (rowVals[correctCol] === 0) {
+          // fallback if search takes too long
+          rowVals[correctCol] = div * getRandomInt(2, 20);
+        }
+
+        // Populate incorrect columns
+        for (let c = 0; c < 3; c++) {
+          if (c === correctCol) continue;
+          let attemptIncorrect = 0;
+          while (attemptIncorrect < 100) {
+            const val = generateNumberByDifficulty();
+            if (!divisorsCheck[div](val) && !rowVals.includes(val)) {
+              rowVals[c] = val;
+              break;
+            }
+            attemptIncorrect++;
+          }
+          if (rowVals[c] === 0) {
+            rowVals[c] = div * getRandomInt(2, 20) + 1; // force non divisible
+          }
+        }
+
+        state.frog.pathData.push(rowVals);
+      }
+
+      // Render Pond Row content
+      for (let r = 0; r < 5; r++) {
+        const rowElem = document.querySelector(`.pond-row[data-row="${r}"]`);
+        rowElem.innerHTML = '';
+        
+        for (let c = 0; c < 3; c++) {
+          const val = state.frog.pathData[r][c];
+          const pad = document.createElement('div');
+          pad.className = 'lilypad';
+          pad.innerHTML = `<span class="lilypad-num">${val}</span>`;
+          pad.onclick = () => jumpToLilypad(r, c, pad);
+          rowElem.appendChild(pad);
+        }
+      }
+
+      // Position frog at start bank
+      updateFrogSpritePosition();
+    }
+
+    function updateFrogSpritePosition() {
+      const sprite = document.getElementById('frog-sprite');
+      const pond = document.getElementById('frog-pond');
+      
+      if (state.frog.currentRow === -1) {
+        // On bottom bank
+        sprite.style.bottom = '15px';
+        sprite.style.left = 'calc(50% - 20px)';
+      } else if (state.frog.currentRow === 5) {
+        // On top bank
+        sprite.style.bottom = '420px';
+        sprite.style.left = 'calc(50% - 20px)';
+      } else {
+        // On a lilypad
+        const row = state.frog.currentRow;
+        const col = state.frog.frogPosition.col;
+        const rowElem = document.querySelector(`.pond-row[data-row="${row}"]`);
+        const targetPad = rowElem.children[col];
+        
+        const padRect = targetPad.getBoundingClientRect();
+        const pondRect = pond.getBoundingClientRect();
+        
+        sprite.style.left = `${padRect.left - pondRect.left + (padRect.width / 2) - 20}px`;
+        sprite.style.bottom = `${pondRect.bottom - padRect.bottom + (padRect.height / 2) - 20}px`;
+      }
+    }
+
+    function jumpToLilypad(row, col, element) {
+      if (state.frog.isGameOver) return;
+      
+      // Player must click on lilypads of the very next row
+      if (row !== state.frog.currentRow + 1) {
+        return; 
+      }
+
+      const val = state.frog.pathData[row][col];
+      const div = state.frog.activeCriterion;
+      const isCorrect = divisorsCheck[div](val);
+
+      if (isCorrect) {
+        playSound('click');
+        state.frog.currentRow = row;
+        state.frog.frogPosition = { row, col };
+        updateFrogSpritePosition();
+
+        // Check if won
+        if (row === 4) {
+          // Auto jump to bank
+          setTimeout(() => {
+            playSound('success');
+            state.frog.currentRow = 5;
+            updateFrogSpritePosition();
+            
+            state.frog.score += 30;
+            state.frog.level += 1;
+            document.getElementById('frog-score').textContent = state.frog.score;
+            document.getElementById('frog-level').textContent = state.frog.level;
+
+            const feedback = document.getElementById('frog-feedback');
+            const fTitle = document.getElementById('frog-feedback-title');
+            const fExplain = document.getElementById('frog-feedback-explanation');
+            
+            fTitle.textContent = "Victoire ! Traversée réussie ! 🏆";
+            feedback.className = "feedback-banner success active";
+            fExplain.textContent = "La grenouille est saine et sauve sur la berge ! Prépare-toi pour la rivière suivante.";
+            
+            state.frog.isGameOver = true;
+            setTimeout(generateFrogPond, 2500);
+          }, 600);
+        }
+      } else {
+        // Splash sound, animation & game over
+        playSound('error');
+        element.classList.add('splashed');
+        
+        // Spawn ripple effect
+        const pond = document.getElementById('frog-pond');
+        const elemRect = element.getBoundingClientRect();
+        const pondRect = pond.getBoundingClientRect();
+        const ripple = document.createElement('div');
+        ripple.className = 'ripple';
+        ripple.style.left = `${elemRect.left - pondRect.left + 15}px`;
+        ripple.style.top = `${elemRect.top - pondRect.top + 10}px`;
+        pond.appendChild(ripple);
+        setTimeout(() => ripple.remove(), 800);
+
+        const feedback = document.getElementById('frog-feedback');
+        const fTitle = document.getElementById('frog-feedback-title');
+        const fExplain = document.getElementById('frog-feedback-explanation');
+        
+        fTitle.textContent = "Plouf ! Dans l'eau ! 🌊";
+        feedback.className = "feedback-banner error active";
+        fExplain.innerHTML = `Le nénuphar ${val} a coulé !<br>${getExplanation(val, div)}<br>Recommence la traversée.`;
+        
+        state.frog.isGameOver = true;
+        setTimeout(generateFrogPond, 4000);
+      }
+    }
+
+    // ==========================================
+    // GAME 4: LE TABLEAU INTERACTIF LOGIC
+    // ==========================================
+    function startTableGame() {
+      showScreen('screen-game-table');
+      state.table.score = 0;
+      document.getElementById('table-score').textContent = state.table.score;
+      document.getElementById('table-accuracy').textContent = '--';
+      generateTable();
+    }
+
+    function generateTable() {
+      state.table.isAnswered = false;
+      state.table.checkedCells = {};
+      
+      document.getElementById('table-success-panel').classList.remove('active');
+      
+      const mainBtn = document.getElementById('table-btn-main');
+      mainBtn.textContent = "Valider le tableau";
+      mainBtn.className = "btn-action btn-action-primary";
+      mainBtn.onclick = validateTable;
+
+      // Select columns (subset of activeCriteria, max 5 columns to keep it legible)
+      state.table.cols = [...state.activeCriteria].slice(0, 5);
+      
+      // Select 5 random numbers
+      state.table.numbers = [];
+      for (let i = 0; i < 5; i++) {
+        state.table.numbers.push(generateNumberByDifficulty());
+      }
+
+      // Render headers
+      const headerRow = document.getElementById('table-headers');
+      headerRow.innerHTML = '<th class="num-col">Nombre</th>';
+      
+      state.table.cols.forEach(div => {
+        const th = document.createElement('th');
+        th.textContent = `par ${div}`;
+        headerRow.appendChild(th);
+      });
+
+      // Render body rows
+      const tbody = document.getElementById('table-body');
+      tbody.innerHTML = '';
+
+      state.table.numbers.forEach((num, rIdx) => {
+        const tr = document.createElement('tr');
+        
+        // Number cell
+        const tdNum = document.createElement('td');
+        tdNum.className = 'num-cell';
+        tdNum.textContent = num;
+        tr.appendChild(tdNum);
+
+        // Checkbox cells
+        state.table.cols.forEach((div, cIdx) => {
+          const tdCheck = document.createElement('td');
+          tdCheck.className = 'check-cell';
+          tdCheck.innerHTML = `
+            <div class="cell-checkbox"></div>
+            <div class="explain-btn" onclick="showCellExplanation(${rIdx}, ${cIdx}, event)">Aide</div>
+          `;
+          
+          tdCheck.onclick = () => toggleTableCell(rIdx, cIdx, tdCheck);
+          tr.appendChild(tdCheck);
+        });
+
+        tbody.appendChild(tr);
+      });
+    }
+
+    function toggleTableCell(rIdx, cIdx, cellElement) {
+      if (state.table.isAnswered) return;
+      playSound('click');
+      
+      const key = `${rIdx}-${cIdx}`;
+      if (state.table.checkedCells[key]) {
+        state.table.checkedCells[key] = false;
+        cellElement.classList.remove('checked');
+      } else {
+        state.table.checkedCells[key] = true;
+        cellElement.classList.add('checked');
+      }
+    }
+
+    function validateTable() {
+      if (state.table.isAnswered) return;
+      state.table.isAnswered = true;
+
+      let totalCells = 5 * state.table.cols.length;
+      let correctCount = 0;
+      let wrongCount = 0;
+
+      const tbody = document.getElementById('table-body');
+      
+      state.table.numbers.forEach((num, rIdx) => {
+        const tr = tbody.children[rIdx];
+        
+        state.table.cols.forEach((div, cIdx) => {
+          const td = tr.children[cIdx + 1]; // +1 because of number column
+          const key = `${rIdx}-${cIdx}`;
+          const isUserChecked = !!state.table.checkedCells[key];
+          const isActuallyDivisible = divisorsCheck[div](num);
+
+          if (isUserChecked === isActuallyDivisible) {
+            correctCount++;
+            td.className = 'check-cell correct-cell';
+          } else {
+            wrongCount++;
+            if (isUserChecked && !isActuallyDivisible) {
+              td.className = 'check-cell wrong-cell'; // Checked but wrong
+            } else {
+              td.className = 'check-cell missed-cell'; // Not checked but should be
+            }
+          }
+        });
+      });
+
+      // Accuracy score
+      const accPercent = Math.round((correctCount / totalCells) * 100);
+      document.getElementById('table-accuracy').textContent = `${accPercent}%`;
+      
+      // Update score
+      const pointsWon = correctCount * 2;
+      state.table.score += pointsWon;
+      document.getElementById('table-score').textContent = state.table.score;
+
+      // Play sound
+      if (wrongCount === 0) {
+        playSound('success');
+      } else {
+        playSound('error');
+      }
+
+      // Display synthesis card
+      const successPanel = document.getElementById('table-success-panel');
+      const resultText = document.getElementById('table-result-text');
+      
+      successPanel.classList.add('active');
+      if (wrongCount === 0) {
+        resultText.innerHTML = `🏆 <strong>Parfait !</strong> Aucune erreur détectée sur les ${totalCells} cases ! Tu gagnes <strong>${pointsWon} points</strong>.`;
+      } else {
+        resultText.innerHTML = `⚠️ Tu as fait <strong>${wrongCount} erreur(s)</strong> sur les ${totalCells} cases.<br>Clique sur le bouton <span style="background:var(--color-warning);color:white;padding:2px 6px;border-radius:4px;font-size:0.8rem;font-weight:bold;">Aide</span> dans les cases jaunes/rouges pour voir les explications.`;
+      }
+
+      // Adjust main button to regenerate table
+      const mainBtn = document.getElementById('table-btn-main');
+      mainBtn.textContent = "Nouveau tableau";
+      mainBtn.className = "btn-action btn-action-primary";
+      mainBtn.onclick = generateTable;
+    }
+
+    function showCellExplanation(rIdx, cIdx, event) {
+      // Prevent triggering the td onclick again
+      event.stopPropagation();
+      playSound('click');
+
+      const num = state.table.numbers[rIdx];
+      const div = state.table.cols[cIdx];
+      const explanation = getExplanation(num, div);
+
+      alert(`Explication :\n\n${explanation.replace(/<br>/g, '\n').replace(/<strong>/g, '').replace(/<\/strong>/g, '')}`);
+    }
+
+    // Initialize application state on start
+    window.onload = () => {
+      // Audio context loaded on user click
+    };
+  </script>
+
+</body>
+</html>
