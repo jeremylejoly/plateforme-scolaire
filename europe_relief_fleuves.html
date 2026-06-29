@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>L'Europe : Relief et Fleuves</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --primary: #4f46e5;
+  --primary-light: #eeebff;
+  --success: #16a34a;
+  --success-light: #dcfce7;
+  --warning: #ea580c;
+  --warning-light: #ffedd5;
+  --danger: #dc2626;
+  --danger-light: #fee2fee2;
+  --text: #1f2937;
+  --text-muted: #6b7280;
+  --bg: #f3f4f6;
+  --card: #ffffff;
+  --border: #e5e7eb;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Nunito', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  padding: 1.5rem;
+}
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+/* Onglets */
+.tabs-nav {
+  display: flex;
+  background: var(--card);
+  padding: 6px;
+  border-radius: 30px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.04);
+  margin-bottom: 1.5rem;
+  border: 1px solid var(--border);
+}
+.tab-btn {
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: 10px 16px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--text-muted);
+  cursor: pointer;
+  border-radius: 25px;
+  transition: all .2s;
+  text-align: center;
+}
+.tab-btn:hover {
+  color: var(--primary);
+}
+.tab-btn.active {
+  background: var(--primary);
+  color: white;
+}
+
+/* Zone de contenu */
+.tab-content {
+  display: none;
+}
+.tab-content.active {
+  display: block;
+}
+
+/* CARTE INTERACTIVE OVERLAY */
+.map-exploration-layout {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 20px;
+  align-items: start;
+}
+@media(max-width: 800px) {
+  .map-exploration-layout {
+    grid-template-columns: 1fr;
+  }
+}
+.map-container {
+  position: relative;
+  width: 100%;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,.08);
+  border: 2px solid var(--border);
+  background: #ffffff;
+}
+.map-image {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+/* Points d'intérêt */
+.pin {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2.5px solid white;
+  cursor: pointer;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 2px 6px rgba(0,0,0,.3);
+  transition: all .2s;
+}
+.pin:hover {
+  transform: translate(-50%, -50%) scale(1.25);
+  box-shadow: 0 2px 10px rgba(0,0,0,.5);
+}
+.pin.relief {
+  background: var(--success);
+}
+.pin.fleuve {
+  background: #2563eb;
+}
+.pin-label {
+  display: none;
+}
+
+/* Fiche informative */
+.info-panel {
+  background: var(--card);
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,.04);
+  border: 1px solid var(--border);
+  min-height: 280px;
+  display: flex;
+  flex-direction: column;
+}
+.info-panel-empty {
+  color: var(--text-muted);
+  text-align: center;
+  margin: auto;
+  font-weight: 700;
+  font-size: 14px;
+}
+.info-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 1rem;
+  border-bottom: 2px solid var(--border);
+  padding-bottom: 8px;
+}
+.info-type {
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 12px;
+  color: white;
+}
+.info-type.relief {
+  background: var(--success);
+}
+.info-type.fleuve {
+  background: #2563eb;
+}
+.info-title {
+  font-size: 18px;
+  font-weight: 900;
+  color: var(--text);
+}
+.info-body {
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--text);
+}
+
+/* QUIZ */
+.question-block {
+  background: var(--card);
+  border-radius: 14px;
+  padding: 1.25rem;
+  margin-bottom: 1.25rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,.02);
+  border: 1px solid var(--border);
+}
+.question-title {
+  font-size: 14px;
+  font-weight: 800;
+  margin-bottom: 12px;
+}
+.options-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.option-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: var(--bg);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all .15s;
+}
+.option-label:hover {
+  border-color: var(--primary);
+  background: var(--primary-light);
+}
+.option-label input {
+  accent-color: var(--primary);
+  width: 16px;
+  height: 16px;
+}
+.option-label.selected {
+  border-color: var(--primary);
+  background: var(--primary-light);
+}
+.option-label.correct {
+  border-color: var(--success);
+  background: var(--success-light);
+  color: #15803d;
+}
+.option-label.incorrect {
+  border-color: var(--danger);
+  background: var(--danger-light);
+  color: #b91c1c;
+}
+
+/* DRAG AND DROP FLEUVES */
+.drag-drop-layout {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 20px;
+  align-items: start;
+}
+@media(max-width: 768px) {
+  .drag-drop-layout {
+    grid-template-columns: 1fr;
+  }
+}
+.pool-title {
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+.tags-pool {
+  background: var(--card);
+  border-radius: 14px;
+  padding: 1rem;
+  border: 1px solid var(--border);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.drag-tag {
+  padding: 6px 12px;
+  background: #2563eb;
+  color: white;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+  transition: opacity .15s;
+}
+.drag-tag.used {
+  opacity: .3;
+  cursor: default;
+}
+.drop-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--card);
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  box-shadow: 0 2px 6px rgba(0,0,0,.02);
+}
+.drop-table th {
+  background: #f9fafb;
+  padding: 10px 14px;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  color: var(--text-muted);
+  border-bottom: 1.5px solid var(--border);
+  text-align: left;
+}
+.drop-table td {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+.drop-table tr:last-child td {
+  border-bottom: none;
+}
+.drop-zone {
+  min-height: 36px;
+  padding: 4px 10px;
+  border: 2px dashed #2563eb;
+  border-radius: 8px;
+  background: #eff6ff;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  transition: all .15s;
+  cursor: pointer;
+}
+.drop-zone.drag-over {
+  background: #dbeafe;
+}
+.drop-zone.filled {
+  border-style: solid;
+  color: #1e3a8a;
+  background: #eff6ff;
+}
+.drop-zone.correct {
+  background: var(--success-light);
+  border-color: var(--success);
+  color: #15803d;
+  border-style: solid;
+}
+.drop-zone.incorrect {
+  background: var(--danger-light);
+  border-color: var(--danger);
+  color: #b91c1c;
+  border-style: solid;
+}
+
+/* Boutons generaux */
+.btn-valider {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  background: var(--success);
+  color: white;
+  font-family: 'Nunito', sans-serif;
+  font-size: 15px;
+  font-weight: 900;
+  border-radius: 14px;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(22, 163, 74, 0.2);
+  transition: all .2s;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+.btn-valider:hover {
+  opacity: .95;
+  transform: translateY(-1px);
+}
+.btn-reset {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  background: #6b7280;
+  color: white;
+  font-family: 'Nunito', sans-serif;
+  font-size: 14px;
+  font-weight: 800;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: opacity .2s;
+  display: none;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+.btn-reset:hover {
+  opacity: .9;
+}
+
+/* Panel score */
+.score-panel {
+  display: none;
+  background: white;
+  border-radius: 16px;
+  padding: 1.5rem;
+  text-align: center;
+  box-shadow: 0 4px 16px rgba(0,0,0,.06);
+  border: 2px solid var(--border);
+  margin-bottom: 2rem;
+}
+.score-txt {
+  font-size: 28px;
+  font-weight: 900;
+  margin-top: 8px;
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Navigation par onglets -->
+  <div class="tabs-nav">
+    <button class="tab-btn active" onclick="switchTab(0)">1. Découverte du Relief et des Fleuves</button>
+    <button class="tab-btn" onclick="switchTab(1)">2. Le Jeu des Reliefs</button>
+    <button class="tab-btn" onclick="switchTab(2)">3. Le Défi des Fleuves</button>
+  </div>
+
+  <!-- CONTENU : Onglet 1 (Découverte) -->
+  <div id="tab-0" class="tab-content active">
+    <div style="background:#eeebff; border:1px solid #4f46e5; border-radius:12px; padding:12px 16px; margin-bottom:1.5rem; font-size:13px; font-weight:700; color:var(--primary);">
+      Instructions : Clique sur les points colorés de la carte pour découvrir les montagnes (en vert) et les fleuves (en bleu) de l'Europe.
+    </div>
+
+    <div class="map-exploration-layout">
+      <!-- Carte avec pins absolus -->
+      <div class="map-container">
+        <img class="map-image" src="europe-shaded-relief.jpg" alt="Relief de l'Europe"/>
+        
+        <!-- Pins Montagnes (Vert) -->
+        <div class="pin relief" style="top: 25%; left: 51%;" onclick="showInfo('alpes_scand')"></div>
+        <div class="pin relief" style="top: 61%; left: 47%;" onclick="showInfo('alpes')"></div>
+        <div class="pin relief" style="top: 69%; left: 32%;" onclick="showInfo('pyrenees')"></div>
+        <div class="pin relief" style="top: 57%; left: 63%;" onclick="showInfo('carpates')"></div>
+        <div class="pin relief" style="top: 25%; left: 91%;" onclick="showInfo('oural')"></div>
+        <div class="pin relief" style="top: 63%; left: 74%;" onclick="showInfo('caucase')"></div>
+        <div class="pin relief" style="top: 67%; left: 49%;" onclick="showInfo('apennins')"></div>
+        <div class="pin relief" style="top: 48%; left: 62%;" onclick="showInfo('plaine')"></div>
+
+        <!-- Pins Fleuves (Bleu) -->
+        <div class="pin fleuve" style="top: 61%; left: 55%;" onclick="showInfo('danube')"></div>
+        <div class="pin fleuve" style="top: 53%; left: 45%;" onclick="showInfo('rhin')"></div>
+        <div class="pin fleuve" style="top: 43%; left: 81%;" onclick="showInfo('volga')"></div>
+        <div class="pin fleuve" style="top: 64%; left: 42%;" onclick="showInfo('rhone')"></div>
+        <div class="pin fleuve" style="top: 56%; left: 37%;" onclick="showInfo('seine')"></div>
+        <div class="pin fleuve" style="top: 59%; left: 34%;" onclick="showInfo('loire')"></div>
+        <div class="pin fleuve" style="top: 50%; left: 49%;" onclick="showInfo('elbe')"></div>
+        <div class="pin fleuve" style="top: 65%; left: 47%;" onclick="showInfo('po')"></div>
+        <div class="pin fleuve" style="top: 50%; left: 32%;" onclick="showInfo('tamise')"></div>
+      </div>
+
+      <!-- Fiche informative -->
+      <div class="info-panel" id="info-panel">
+        <div class="info-panel-empty" id="info-empty">
+          Clique sur un point de la carte pour afficher sa fiche d'informations.
+        </div>
+        <div id="info-content" style="display:none;">
+          <div class="info-header">
+            <span class="info-type" id="info-type-badge">Type</span>
+            <h3 class="info-title" id="info-title-text">Nom de l'élément</h3>
+          </div>
+          <div class="info-body" id="info-body-text">
+            Description détaillée...
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTENU : Onglet 2 (Le Jeu des Reliefs) -->
+  <div id="tab-1" class="tab-content">
+    <div id="quiz-container">
+      <!-- Généré par JS -->
+    </d  <!-- CONTENU : Onglet 3 (Le Défi des Fleuves) -->
+  <div id="tab-2" class="tab-content">
+    <div style="background:#eeebff; border:1px solid #4f46e5; border-radius:12px; padding:16px; margin-bottom:1.5rem; font-size:13px; color:var(--text);">
+      <h4 style="font-weight:900; color:var(--primary); margin-bottom:8px;">💡 Rappel sur l'embouchure d'un fleuve :</h4>
+      <p style="font-weight:700; line-height:1.5;">L'embouchure est le lieu où un fleuve se jette dans la mer, un océan ou un lac. Plusieurs fleuves différents peuvent se jeter dans la même mer (par exemple, le Rhin, l'Elbe et la Tamise se jettent tous dans la mer du Nord).</p>
+    </div>
+
+    <div style="background:#fef9c3; border:1px solid #f59e0b; border-radius:12px; padding:12px 16px; margin-bottom:1.5rem; font-size:13px; font-weight:700; color:#92400e;">
+      Instructions : Glisse chaque étiquette d'embouchure (mer ou océan) dans la case correspondant au fleuve. Les étiquettes peuvent être réutilisées plusieurs fois !
+    </div>
+
+    <div class="drag-drop-layout">
+      <div>
+        <div class="pool-title">Embouchures à faire glisser</div>
+        <div class="tags-pool" id="tags-pool">
+          <!-- Généré par JS -->
+        </div>
+      </div>
+
+      <div>
+        <table class="drop-table">
+          <thead>
+            <tr>
+              <th style="width: 200px;">Fleuve d'Europe</th>
+              <th>Son embouchure (Mer / Océan)</th>
+            </tr>
+          </thead>
+          <tbody id="table-embouchures">
+            <!-- Généré par JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Boutons et Score -->
+  <button class="btn-valider" id="btn-valider" onclick="validerTout()">Valider les réponses</button>
+  <button class="btn-reset" id="btn-reset" onclick="resetExercice()">Recommencer l'exercice</button>
+  
+  <div class="score-panel" id="score-panel">
+    <h3 style="font-weight:900;color:var(--primary);font-size:18px;">Ton résultat</h3>
+    <div class="score-txt" id="score-txt">0 / 14</div>
+  </div>
+
+</div>
+
+<script>
+// --- DONNÉES ENCYCLOPÉDIQUES ---
+const EXPLORATION_DATA = {
+  alpes_scand: {
+    type: "relief",
+    title: "Les Alpes scandinaves",
+    desc: "Cette chaîne de montagnes traverse la Norvège et la Suède. Elle est connue pour ses paysages spectaculaires de fjords (vallées glaciaires envahies par la mer). Son sommet culmine à 2469 mètres."
+  },
+  alpes: {
+    type: "relief",
+    title: "Les Alpes",
+    desc: "C'est la plus haute chaîne de montagnes d'Europe occidentale. Elle forme une barrière naturelle s'étendant sur la France, l'Italie, la Suisse, l'Autriche et l'Allemagne. Son point culminant est le <strong>Mont Blanc</strong> (4808 m), situé à la frontière entre la France et l'Italie."
+  },
+  pyrenees: {
+    type: "relief",
+    title: "Les Pyrénées",
+    desc: "Cette chaîne de montagnes forme une frontière naturelle continue entre la France et l'Espagne. Elle abrite également la petite principauté d'Andorre. Son point culminant est le pic d'Aneto (3404 m)."
+  },
+  carpates: {
+    type: "relief",
+    title: "Les Carpates",
+    desc: "Un grand arc montagneux situé principalement en Europe de l'Est (Roumanie, Slovaquie, Ukraine, Pologne). C'est le deuxième plus long massif montagneux d'Europe. Il abrite les plus grandes populations d'ours bruns et de loups du continent."
+  },
+  oural: {
+    type: "relief",
+    title: "Les monts Oural",
+    desc: "Située en Russie, cette très ancienne chaîne de montagnes de faible altitude est historiquement considérée comme la <strong>frontière naturelle qui sépare le continent européen du continent asiatique</strong>."
+  },
+  caucase: {
+    type: "relief",
+    title: "Le Caucase",
+    desc: "Cette haute chaîne de montagnes se situe entre la mer Noire et la mer Caspienne. Elle abrite le <strong>Mont Elbrouz</strong> (5642 m), qui est considéré par les géographes comme le véritable point culminant du continent européen."
+  },
+  apennins: {
+    type: "relief",
+    title: "Les Apennins",
+    desc: "Ce massif montagneux traverse toute la péninsule italienne du nord au sud comme une colonne vertébrale. Son point culminant est le Corno Grande (2912 m)."
+  },
+  plaine: {
+    type: "relief",
+    title: "La Grande Plaine européenne",
+    desc: "Un immense ensemble de terres basses et plates sans relief majeur. Elle commence au sud de l'Angleterre et en France occidentale, traverse la Belgique, les Pays-Bas, l'Allemagne du Nord, la Pologne et s'élargit considérablement en Russie."
+  },
+  danube: {
+    type: "fleuve",
+    title: "Le Danube",
+    desc: "Le <strong>deuxième plus long fleuve d'Europe</strong> (2850 km). Il prend sa source en Allemagne (Forêt-Noire), coule vers l'est en traversant ou longeant 10 pays différents, et se jette dans la <strong>mer Noire</strong> par un grand delta. Il traverse quatre capitales européennes : Vienne, Bratislava, Budapest et Belgrade."
+  },
+  rhin: {
+    type: "fleuve",
+    title: "Le Rhin",
+    desc: "Un fleuve commercial et historique majeur en Europe (1230 km). Il prend sa source dans les Alpes (Suisse), sert de frontière naturelle entre la France et l'Allemagne, s'écoule vers le nord et se jette dans la <strong>mer du Nord</strong> aux Pays-Bas. C'est à son embouchure que se trouve le port de Rotterdam, le plus grand d'Europe."
+  },
+  volga: {
+    type: "fleuve",
+    title: "La Volga",
+    desc: "Le <strong>plus long fleuve d'Europe</strong> (3530 km). Il coule entièrement en Russie. Il prend sa source sur les collines de Valdaï au nord-ouest de Moscou, s'écoule vers le sud et se jette dans la <strong>mer Caspienne</strong> (un grand lac salé fermé)."
+  },
+  rhone: {
+    type: "fleuve",
+    title: "Le Rhône",
+    desc: "Il prend sa source dans le glacier du Rhône dans les Alpes suisses, traverse le lac Léman, entre en France, coule vers le sud et se jette dans la <strong>mer Méditerranée</strong> par un grand delta sauvage appelé la Camargue."
+  },
+  seine: {
+    type: "fleuve",
+    title: "La Seine",
+    desc: "Fleuve français célèbre qui prend sa source en Bourgogne, coule vers le nord-ouest, traverse la ville de Paris, et se jette dans la <strong>Manche</strong> par un estuaire près du Havre."
+  },
+  loire: {
+    type: "fleuve",
+    title: "La Loire",
+    desc: "Le plus long fleuve coulant entièrement en France (1006 km). Elle prend sa source au Mont Gerbier-de-Jonc dans le Massif Central et s'écoule vers l'ouest pour se jeter dans l'<strong>océan Atlantique</strong> à Saint-Nazaire."
+  },
+  elbe: {
+    type: "fleuve",
+    title: "L'Elbe",
+    desc: "Ce fleuve prend sa source en République tchèque (dans les monts des Géants), traverse l'Allemagne vers le nord-ouest, arrose Hambourg (deuxième plus grand port d'Europe) et se jette dans la <strong>mer du Nord</strong>."
+  },
+  po: {
+    type: "fleuve",
+    title: "Le Pô",
+    desc: "Le plus long fleuve coulant entièrement en Italie (652 km). Il prend sa source dans les Alpes occidentales, traverse la plaine fertile du Pô en Italie du Nord, et se jette dans la <strong>mer Adriatique</strong>."
+  },
+  tamise: {
+    type: "fleuve",
+    title: "La Tamise",
+    desc: "Le fleuve le plus connu du Royaume-Uni. Il prend sa source dans le Gloucestershire, traverse la capitale Londres, et se jette dans la <strong>mer du Nord</strong> par un large estuaire."
+  }
+};
+
+// --- QUESTIONS DU QUIZ DE RELIEF ---
+const QUIZ_QUESTIONS = [
+  {
+    q: "Quelle chaîne de montagnes est considérée comme la frontière naturelle entre l'Europe et l'Asie ?",
+    options: ["Les Alpes", "Les Carpates", "Les monts Oural"],
+    correct: 2
+  },
+  {
+    q: "Quel est le point culminant des Alpes et de l'Europe de l'Ouest ?",
+    options: ["Le Mont Blanc (4808 m)", "Le pic d'Aneto (3404 m)", "Le Mont Elbrouz (5642 m)"],
+    correct: 0
+  },
+  {
+    q: "Quelle chaîne de montagnes forme la frontière naturelle entre la France et l'Espagne ?",
+    options: ["Les Apennins", "Les Pyrénées", "Le Caucase"],
+    correct: 1
+  },
+  {
+    q: "Quel massif montagneux traverse toute la péninsule italienne du nord au sud comme une colonne vertébrale ?",
+    options: ["Les Apennins", "Les Carpates", "Les Alpes scandinaves"],
+    correct: 0
+  },
+  {
+    q: "Où se situe le Mont Elbrouz (5642 m), le plus haut sommet du continent européen ?",
+    options: ["Dans les Pyrénées", "Dans les Carpates", "Dans le Caucase"],
+    correct: 2
+  }
+];
+
+// --- DONNÉES EMBOUCHURES ---
+const RIVERS_DATA = [
+  { id: "volga", label: "La Volga", correctMouth: "caspienne" },
+  { id: "danube", label: "Le Danube", correctMouth: "noire" },
+  { id: "rhin", label: "Le Rhin", correctMouth: "nord" },
+  { id: "elbe", label: "L'Elbe", correctMouth: "nord" },
+  { id: "tamise", label: "La Tamise", correctMouth: "nord" },
+  { id: "rhone", label: "Le Rhône", correctMouth: "med" },
+  { id: "po", label: "Le Pô", correctMouth: "adriatique" },
+  { id: "seine", label: "La Seine", correctMouth: "manche" },
+  { id: "loire", label: "La Loire", correctMouth: "atl" }
+];
+
+const MOUTHS = {
+  nord: "Mer du Nord",
+  med: "Mer Méditerranée",
+  noire: "Mer Noire",
+  caspienne: "Mer Caspienne (lac salé)",
+  atl: "Océan Atlantique",
+  manche: "La Manche",
+  adriatique: "Mer Adriatique"
+};
+
+let userSelections = { quiz: {}, rivers: {} };
+let submitted = false;
+let draggingTag = null;
+
+// --- INITIALISATION ---
+function init(){
+  // Fiche vide
+  document.getElementById('info-content').style.display = 'none';
+  document.getElementById('info-empty').style.display = 'block';
+
+  // Générer Quiz
+  const quizContainer = document.getElementById('quiz-container');
+  quizContainer.innerHTML = QUIZ_QUESTIONS.map((q, qi) => `
+    <div class="question-block" id="quiz-block-${qi}">
+      <div class="question-title">${qi + 1}. ${q.q}</div>
+      <div class="options-list">
+        ${q.options.map((opt, oi) => `
+          <label class="option-label" id="quiz-lbl-${qi}-${oi}">
+            <input type="radio" name="quiz-${qi}" value="${oi}" onchange="selectQuiz(${qi}, ${oi})"/>
+            <span>${opt}</span>
+          </label>
+        `).join('')}
+      </div>
+    </div>
+  `).join('');
+
+  // Générer Drag & Drop (Les embouchures dans le pool, réutilisables)
+  const tagsPool = document.getElementById('tags-pool');
+  tagsPool.innerHTML = Object.entries(MOUTHS).map(([k, v]) => `
+    <div class="drag-tag" id="tag-${k}" data-id="${k}" data-label="${v}"
+      draggable="true"
+      ondragstart="dragStart(event)" ondragend="dragEnd(event)"
+      ontouchstart="touchStart(event)" ontouchmove="touchMove(event)" ontouchend="touchEnd(event)">
+      ${v}
+    </div>
+  `).join('');
+
+  // Générer le tableau avec les 9 fleuves (lignes)
+  const tableBody = document.getElementById('table-embouchures');
+  const shuffledRivers = shuffle([...RIVERS_DATA]);
+  tableBody.innerHTML = shuffledRivers.map(r => `
+    <tr>
+      <td style="font-weight: 800; font-size:13px; color:var(--text);">${r.label}</td>
+      <td>
+        <div class="drop-zone" id="zone-${r.id}" data-river="${r.id}" onclick="clearZone(this)"
+          ondragover="dzOver(event)" ondrop="dzDrop(event)" ondragleave="dzLeave(event)">
+          <span style="opacity:.4">Glisse une embouchure ici...</span>
+        </div>
+      </td>
+    </tr>
+  `).join('');
+
+  userSelections = { quiz: {}, rivers: {} };
+  submitted = false;
+  document.getElementById('btn-valider').style.display = 'block';
+  document.getElementById('btn-reset').style.display = 'none';
+  document.getElementById('score-panel').style.display = 'none';
+}
+
+// --- EXPLORATION ---
+function showInfo(key) {
+  const data = EXPLORATION_DATA[key];
+  if(!data) return;
+  document.getElementById('info-empty').style.display = 'none';
+  document.getElementById('info-content').style.display = 'block';
+
+  const badge = document.getElementById('info-type-badge');
+  badge.textContent = data.type === 'relief' ? 'Relief' : 'Fleuve';
+  badge.className = `info-type ${data.type}`;
+
+  document.getElementById('info-title-text').innerHTML = data.title;
+  document.getElementById('info-body-text').innerHTML = data.desc;
+
+  if(window.innerWidth < 800) {
+    document.getElementById('info-panel').scrollIntoView({ behavior: 'smooth' });
+  }
+}
+
+// --- LOGIQUE INTERACTIVE ---
+function switchTab(idx) {
+  document.querySelectorAll('.tab-btn').forEach((b, i) => b.classList.toggle('active', i === idx));
+  document.querySelectorAll('.tab-content').forEach((c, i) => c.classList.toggle('active', i === idx));
+}
+
+function selectQuiz(qi, oi) {
+  if (submitted) return;
+  userSelections.quiz[qi] = oi;
+  QUIZ_QUESTIONS[qi].options.forEach((_, idx) => {
+    const el = document.getElementById(`quiz-lbl-${qi}-${idx}`);
+    el.classList.toggle('selected', idx === oi);
+  });
+}
+
+// --- DRAG DESKTOP ---
+function dragStart(e){
+  if(submitted) return;
+  draggingTag = { id: e.currentTarget.dataset.id, label: e.currentTarget.dataset.label };
+  e.dataTransfer.setData('text/plain', JSON.stringify(draggingTag));
+  e.currentTarget.style.opacity = '.7';
+}
+function dragEnd(e){
+  e.currentTarget.style.opacity = '';
+  draggingTag = null;
+}
+function dzOver(e){
+  e.preventDefault();
+  if(submitted) return;
+  e.currentTarget.classList.add('drag-over');
+}
+function dzLeave(e){
+  e.currentTarget.classList.remove('drag-over');
+}
+function dzDrop(e){
+  e.preventDefault();
+  if(submitted) return;
+  e.currentTarget.classList.remove('drag-over');
+  const data = JSON.parse(e.dataTransfer.getData('text/plain'));
+  placer(e.currentTarget, data.id, data.label);
+}
+
+function placer(zone, id, label){
+  const riverId = zone.dataset.river;
+  userSelections.rivers[riverId] = id;
+  zone.textContent = label;
+  zone.classList.add('filled');
+}
+
+function clearZone(zone){
+  if(submitted) return;
+  const riverId = zone.dataset.river;
+  if(!userSelections.rivers[riverId]) return;
+
+  zone.innerHTML = '<span style="opacity:.4">Glisse une embouchure ici...</span>';
+  zone.classList.remove('filled');
+  delete userSelections.rivers[riverId];
+}
+
+// --- TOUCH MOBILE ---
+let touchEl = null, touchClone = null;
+function touchStart(e){
+  if(submitted) return;
+  const tag = e.currentTarget;
+  touchEl = tag;
+  const clone = tag.cloneNode(true);
+  clone.style.cssText = 'position:fixed;z-index:9999;opacity:.85;pointer-events:none;border-radius:20px;padding:6px 12px;font-size:12px;font-weight:700;color:white;background:#2563eb;';
+  const t = e.touches[0];
+  clone.style.left = (t.clientX - 40) + 'px';
+  clone.style.top = (t.clientY - 20) + 'px';
+  document.body.appendChild(clone);
+  touchClone = clone;
+  tag.style.opacity = '.7';
+}
+function touchMove(e){
+  e.preventDefault();
+  if(!touchClone) return;
+  const t = e.touches[0];
+  touchClone.style.left = (t.clientX - 40) + 'px';
+  touchClone.style.top = (t.clientY - 20) + 'px';
+}
+function touchEnd(e){
+  if(!touchClone) return;
+  const t = e.changedTouches[0];
+  touchClone.remove();
+  touchClone = null;
+  if(touchEl) touchEl.style.opacity = '';
+  
+  const el = document.elementFromPoint(t.clientX, t.clientY);
+  const zone = el ? el.closest('.drop-zone') : null;
+  if(zone && touchEl) {
+    placer(zone, touchEl.dataset.id, touchEl.dataset.label);
+  }
+  touchEl = null;
+}
+
+// --- HELPER UTILS ---
+function shuffle(a){ return a.sort(() => Math.random() - .5); }
+
+// --- VALIDATION ---
+function validerTout() {
+  const quizCount = QUIZ_QUESTIONS.length;
+  
+  let missingQuiz = false;
+  for(let i = 0; i < quizCount; i++) {
+    if(userSelections.quiz[i] === undefined) {
+      missingQuiz = true;
+      break;
+    }
+  }
+
+  let missingRivers = false;
+  RIVERS_DATA.forEach(r => {
+    if(!userSelections.rivers[r.id]) {
+      missingRivers = true;
+    }
+  });
+
+  if(missingQuiz || missingRivers) {
+    let msg = "Oups ! Il reste des questions sans réponse :\n\n";
+    let list = [];
+    if(missingQuiz) {
+      list.push("• Onglet « 2. Le Jeu des Reliefs » (il reste des questions à choix multiples)");
+    }
+    if(missingRivers) {
+      list.push("• Onglet « 3. Le Défi des Fleuves » (il reste des embouchures à attribuer)");
+    }
+    msg += list.join("\n\n") + "\n\nMerci de compléter ces sections avant de valider.";
+    alert(msg);
+    return;
+  }
+
+  submitted = true;
+  let correctPoints = 0;
+  const totalPoints = quizCount + RIVERS_DATA.length; // 5 (quiz) + 9 (fleuves) = 14 points
+
+  // 1. Correction Quiz
+  QUIZ_QUESTIONS.forEach((q, qi) => {
+    const userSel = userSelections.quiz[qi];
+    const isOk = userSel === q.correct;
+    if(isOk) correctPoints++;
+
+    q.options.forEach((_, oi) => {
+      const el = document.getElementById(`quiz-lbl-${qi}-${oi}`);
+      el.classList.remove('selected');
+      if (oi === q.correct) el.classList.add('correct');
+      else if (oi === userSel) el.classList.add('incorrect');
+    });
+  });
+
+  // 2. Correction Fleuves
+  RIVERS_DATA.forEach(r => {
+    const zone = document.getElementById('zone-' + r.id);
+    const selMouth = userSelections.rivers[r.id];
+    const isOk = selMouth === r.correctMouth;
+    if(isOk) correctPoints++;
+
+    zone.classList.remove('filled');
+    if(isOk) {
+      zone.classList.add('correct');
+    } else {
+      zone.classList.add('incorrect');
+      zone.innerHTML = `${MOUTHS[selMouth]} <span style="font-weight:400; font-size:11px; display:block; margin-top:2px;">(Correction : ${MOUTHS[r.correctMouth]})</span>`;
+    }
+  });
+
+  // Calcul du score final
+  const pct = Math.round((correctPoints / totalPoints) * 100);
+  
+  // Affichage du score
+  const scorePanel = document.getElementById('score-panel');
+  scorePanel.style.display = 'block';
+  const scoreTxt = document.getElementById('score-txt');
+  scoreTxt.textContent = `${correctPoints} / ${totalPoints} — ${pct}%`;
+  
+  if (pct >= 80) scoreTxt.style.color = 'var(--success)';
+  else if (pct >= 50) scoreTxt.style.color = 'var(--warning)';
+  else scoreTxt.style.color = 'var(--danger)';
+
+  document.getElementById('btn-valider').style.display = 'none';
+  document.getElementById('btn-reset').style.display = 'block';
+  scorePanel.scrollIntoView({ behavior: 'smooth' });
+
+  // Sauvegarde
+  if (window.parent && window.parent.saveResult) {
+    window.parent.saveResult({
+      activity: 'geo_europe_relief_fleuves',
+      bookTitle: "L'Europe : Relief et Fleuves",
+      score: correctPoints,
+      total: totalPoints,
+      pct: pct,
+      date: new Date().toLocaleDateString('fr-BE'),
+      time: new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })
+    });
+  }
+}
+
+function resetExercice() {
+  init();
+}
+
+// Initialisation
+init();
+</script>
+</body>
+</html>
