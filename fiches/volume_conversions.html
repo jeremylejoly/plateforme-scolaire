@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Le Laboratoire des Liquides — Conversions de Volume et Capacité</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&family=Plus+Jakarta+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #1e293b;
+      --border: #334155;
+      --primary: #a855f7;
+      --primary-glow: rgba(168,85,247,0.22);
+      --accent: #f59e0b;
+      --green: #10b981;
+      --red: #f43f5e;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+    .container {
+      width: 100%;
+      max-width: 720px;
+    }
+
+    /* Header */
+    header { text-align: center; margin-bottom: 1.25rem; }
+    h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.85rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #c084fc, #a855f7, #7e22ce);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.3rem;
+    }
+    .subtitle { color: var(--muted); font-size: 0.9rem; }
+
+    /* Score bar */
+    .scorebar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(15,23,42,0.7);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 0.8rem 1.2rem;
+      margin-bottom: 1.25rem;
+    }
+    .sb-block { display: flex; align-items: center; gap: 0.5rem; }
+    .sb-label { font-size: 0.78rem; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+    .sb-val { font-family: 'Outfit', sans-serif; font-size: 1.4rem; font-weight: 700; color: var(--accent); }
+    .prog-track { flex:1; height:7px; background:rgba(51,65,85,.5); border-radius:99px; margin:0 1.25rem; overflow:hidden; }
+    .prog-bar { height:100%; width:0%; background:linear-gradient(90deg,var(--primary),#c084fc); border-radius:99px; transition:width .5s ease; }
+
+    /* Conversion table */
+    .conv-table-wrap {
+      overflow-x: auto;
+      margin-bottom: 1.25rem;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+    .conv-table {
+      width: 100%;
+      min-width: 660px;
+      border-collapse: collapse;
+    }
+    .conv-table th, .conv-table td {
+      text-align: center;
+      border: 1px solid var(--border);
+      padding: 0;
+    }
+    /* Row 1 — big unit symbols */
+    .conv-table thead tr:first-child th {
+      padding: 0.5rem 0.25rem;
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+    }
+    /* Row 2 — full names */
+    .conv-table thead tr:nth-child(2) th {
+      padding: 0.22rem 0.2rem;
+      font-size: 0.63rem;
+      font-weight: 500;
+      line-height: 1.3;
+    }
+    /* Row 3 — sub-columns (c, d, u) */
+    .col-sub {
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 0.2rem 0;
+    }
+    .sub-c, .sub-d {
+      border-right: 1px dashed rgba(255, 255, 255, 0.15) !important;
+    }
+    .sub-d, .sub-u {
+      border-left: 1px dashed rgba(255, 255, 255, 0.15) !important;
+    }
+
+    /* Row 4 — capacity equivalents */
+    .conv-table tbody tr td {
+      padding: 0.4rem 0.2rem;
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+
+    /* Col categories colors */
+    .col-m3          { background: #0f2440; color: #93c5fd; border-color: #1e3a5f !important; }
+    .col-m3-name     { background: rgba(15,36,64,0.85); color: #475569; }
+    .col-m3-sub      { background: rgba(15,36,64,0.6); color: #60a5fa; border-color: #1e3a5f !important; }
+    .col-m3-empty    { background: rgba(15,36,64,0.4); color: #475569; }
+
+    .col-dm3         { background: #0f301b; color: #86efac; border-color: #164e26 !important; }
+    .col-dm3-name    { background: rgba(15,48,27,0.85); color: #22c55e; }
+    .col-dm3-sub     { background: rgba(15,48,27,0.6); color: #4ade80; border-color: #164e26 !important; }
+
+    .col-cm3         { background: #3b200a; color: #fde047; border-color: #713f12 !important; }
+    .col-cm3-name    { background: rgba(59,32,10,0.85); color: #eab308; }
+    .col-cm3-sub     { background: rgba(59,32,10,0.6); color: #facc15; border-color: #713f12 !important; }
+
+    .cap-badge {
+      display: inline-flex;
+      align-items: center;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 6px;
+      padding: 0.12rem 0.35rem;
+      font-size: 0.72rem;
+      font-weight: 800;
+      font-family: 'Outfit', sans-serif;
+    }
+    .col-dm3 .cap-badge {
+      background: rgba(134,239,172,0.12);
+      border-color: rgba(134,239,172,0.3);
+      color: #86efac;
+    }
+    .col-cm3 .cap-badge {
+      background: rgba(253,224,71,0.12);
+      border-color: rgba(253,224,71,0.3);
+      color: #fde047;
+    }
+    .cap-name {
+      font-size: 0.58rem;
+      color: var(--muted);
+      margin-top: 0.1rem;
+      display: block;
+      font-weight: 500;
+    }
+    .col-dm3 .cap-name { color: #4ade80; }
+    .col-cm3 .cap-name { color: #facc15; }
+
+    /* Rules row below table */
+    .rule-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.5rem;
+      font-size: 0.76rem;
+      color: var(--muted);
+    }
+    .rule-arrow { color: var(--primary); font-size: 1rem; }
+    .rule-tag {
+      background: rgba(168,85,247,0.15);
+      border: 1px solid rgba(168,85,247,0.3);
+      border-radius: 6px;
+      padding: 0.15rem 0.45rem;
+      color: #d8b4fe;
+      font-size: 0.72rem;
+      font-weight: 600;
+    }
+
+    /* Question card */
+    .question-card {
+      background: rgba(30,41,59,0.55);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 1.5rem;
+      margin-bottom: 1.1rem;
+      text-align: center;
+    }
+    .q-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.2rem 0.65rem;
+      border-radius: 99px;
+      background: rgba(168,85,247,0.12);
+      border: 1px solid rgba(168,85,247,0.3);
+      color: #d8b4fe;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      margin-bottom: 0.8rem;
+    }
+    .q-text {
+      font-size: 1.45rem;
+      font-weight: 800;
+      margin-bottom: 1.2rem;
+      font-family: 'Outfit', sans-serif;
+    }
+    .q-text span.q-val { color: var(--accent); }
+    .q-text span.q-unit { color: var(--primary); font-weight: 800; }
+
+    /* Input answer row */
+    .answer-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.8rem;
+      margin-bottom: 0.5rem;
+    }
+    .answer-input {
+      width: 160px;
+      padding: 0.6rem 0.85rem;
+      background: rgba(15,23,42,0.7);
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      color: var(--text);
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      text-align: center;
+      outline: none;
+      transition: border-color .2s;
+    }
+    .answer-input:focus { border-color: var(--primary); }
+    .answer-input:disabled { opacity: 0.6; }
+    .answer-target-unit {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--accent);
+    }
+    .btn-validate {
+      padding: 0.65rem 1.5rem;
+      background: linear-gradient(135deg, var(--primary), #891bca);
+      border: none;
+      border-radius: 12px;
+      color: white;
+      font-family: 'Outfit', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all .2s;
+      box-shadow: 0 4px 14px var(--primary-glow);
+    }
+    .btn-validate:hover { transform:translateY(-2px); box-shadow:0 8px 20px rgba(168,85,247,.4); }
+    .btn-validate:disabled { opacity:.45; cursor:not-allowed; transform:none; }
+
+    /* Feedback */
+    .feedback {
+      border-radius: 14px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.1rem;
+      display: flex;
+      gap: 0.85rem;
+      align-items: flex-start;
+      animation: slideUp .3s ease forwards;
+    }
+    .fb-correct { background:rgba(16,185,129,.1); border:1px solid rgba(16,185,129,.35); }
+    .fb-wrong   { background:rgba(244,63,94,.1);  border:1px solid rgba(244,63,94,.35); }
+    .fb-icon { font-size: 1.5rem; flex-shrink:0; }
+    .fb-title { font-weight:700; font-size:1rem; }
+    .fb-correct .fb-title { color:#34d399; }
+    .fb-wrong   .fb-title { color:#fb7185; }
+    .fb-text { font-size:.9rem; color:#cbd5e1; margin-top:.25rem; line-height:1.55; }
+    .fb-text strong { color: #f1f5f9; }
+
+    .btn-next {
+      width:100%;
+      padding:.85rem;
+      background:linear-gradient(135deg,var(--primary),#891bca);
+      border:none; border-radius:12px; color:white;
+      font-family:'Outfit',sans-serif; font-size:1.05rem; font-weight:700;
+      cursor:pointer; transition:all .2s;
+      box-shadow:0 4px 14px var(--primary-glow);
+      display:flex; align-items:center; justify-content:center; gap:.5rem;
+    }
+    .btn-next:hover { transform:translateY(-2px); }
+
+    /* Congrats */
+    .congrats {
+      text-align:center; padding:2.5rem 1rem;
+      animation: scaleIn .5s cubic-bezier(.34,1.56,.64,1) forwards;
+    }
+    .trophy { font-size:4rem; display:inline-block; animation:float 3s ease-in-out infinite; margin-bottom:.75rem; }
+    .congrats-title { font-family:'Outfit',sans-serif; font-size:2rem; font-weight:800; color:var(--accent); margin-bottom:.6rem; }
+    .congrats-msg { color:var(--muted); font-size:1rem; max-width:440px; margin:0 auto 1.5rem; line-height:1.6; }
+    .stars { font-size:2rem; margin-bottom:1.5rem; }
+    .btn-replay {
+      background:linear-gradient(135deg,var(--green),#059669);
+      border:none; color:white; font-family:'Outfit',sans-serif;
+      font-size:1.05rem; font-weight:700; padding:.85rem 2rem;
+      border-radius:12px; cursor:pointer;
+      box-shadow:0 4px 14px rgba(16,185,129,.3);
+      display:inline-flex; align-items:center; gap:.5rem;
+      transition:all .2s;
+    }
+    .btn-replay:hover { transform:translateY(-2px); }
+
+    @keyframes slideUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes scaleIn { from{opacity:0;transform:scale(.92)} to{opacity:1;transform:scale(1)} }
+    @keyframes float   { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <div id="game-flow">
+    <header>
+      <h1>🧪 Le Laboratoire des Liquides</h1>
+      <p class="subtitle">Convertis les mesures de volume et de capacité à l'aide de l'abaque.</p>
+    </header>
+
+    <div class="scorebar">
+      <div class="sb-block">
+        <span class="sb-label">Défi</span>
+        <span class="sb-val" id="q-num">1</span>
+        <span style="color:var(--muted);font-family:'Outfit',sans-serif;font-size:1rem;">/10</span>
+      </div>
+      <div class="prog-track"><div class="prog-bar" id="prog-bar"></div></div>
+      <div class="sb-block">
+        <span class="sb-label">Score</span>
+        <span class="sb-val" id="score-disp">0</span>
+        <span style="color:var(--muted);font-family:'Outfit',sans-serif;font-size:1rem;">/10</span>
+      </div>
+    </div>
+
+    <!-- Interactive Abacus -->
+    <div class="conv-table-wrap">
+      <table class="conv-table">
+        <thead>
+          <!-- Row 1: Volume Units -->
+          <tr>
+            <th class="col-m3" colspan="3">m³</th>
+            <th class="col-dm3" colspan="3">dm³</th>
+            <th class="col-cm3" colspan="3">cm³</th>
+          </tr>
+          <!-- Row 2: Full names -->
+          <tr>
+            <th class="col-m3-name" colspan="3">mètre cube</th>
+            <th class="col-dm3-name" colspan="3">décimètre cube</th>
+            <th class="col-cm3-name" colspan="3">centimètre cube</th>
+          </tr>
+          <!-- Row 3: Subdivisions -->
+          <tr>
+            <th class="col-m3-sub col-sub sub-c">c</th>
+            <th class="col-m3-sub col-sub sub-d">d</th>
+            <th class="col-m3-sub col-sub sub-u">u</th>
+            <th class="col-dm3-sub col-sub sub-c">c</th>
+            <th class="col-dm3-sub col-sub sub-d">d</th>
+            <th class="col-dm3-sub col-sub sub-u">u</th>
+            <th class="col-cm3-sub col-sub sub-c">c</th>
+            <th class="col-cm3-sub col-sub sub-d">d</th>
+            <th class="col-cm3-sub col-sub sub-u">u</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Row 4: Capacities -->
+          <tr>
+            <td class="col-m3-empty">—</td>
+            <td class="col-m3-empty">—</td>
+            <td class="col-m3">
+              <span class="cap-badge">= kL</span><span class="cap-name">kilolitre</span>
+            </td>
+            <td class="col-dm3">
+              <span class="cap-badge">= hL</span><span class="cap-name">hectolitre</span>
+            </td>
+            <td class="col-dm3">
+              <span class="cap-badge">= daL</span><span class="cap-name">décalitre</span>
+            </td>
+            <td class="col-dm3">
+              <span class="cap-badge">= L</span><span class="cap-name">litre</span>
+            </td>
+            <td class="col-cm3">
+              <span class="cap-badge">= dL</span><span class="cap-name">décilitre</span>
+            </td>
+            <td class="col-cm3">
+              <span class="cap-badge">= cL</span><span class="cap-name">centilitre</span>
+            </td>
+            <td class="col-cm3">
+              <span class="cap-badge">= mL</span><span class="cap-name">millilitre</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="rule-row">
+        <span class="rule-tag">÷ 1 000 par grand palier</span>
+        <span class="rule-arrow">←</span>
+        <span style="color:var(--muted);font-size:.75rem;">1 colonne de volume = 3 colonnes de chiffres</span>
+        <span class="rule-arrow">→</span>
+        <span class="rule-tag">× 1 000 par grand palier</span>
+      </div>
+    </div>
+
+    <!-- Question Card -->
+    <div class="question-card">
+      <div class="q-tag">🔄 Conversion n°<span id="q-idx">1</span></div>
+      <div class="q-text" id="q-text">
+        <span class="q-val" id="q-val">12</span> <span class="q-unit" id="q-src-unit">dm³</span> = ? <span class="q-unit" id="q-dest-unit">L</span>
+      </div>
+
+      <div class="answer-row">
+        <input type="text" id="ans-input" class="answer-input" placeholder="Réponse" autocomplete="off" inputmode="decimal">
+        <span class="answer-target-unit" id="ans-target-unit">L</span>
+        <button class="btn-validate" id="btn-val" onclick="validateAnswer()">✓ Valider</button>
+      </div>
+    </div>
+
+    <div id="feedback-area"></div>
+    <div id="next-area"></div>
+  </div>
+
+  <div id="congrats-flow" style="display:none">
+    <div class="congrats">
+      <div class="trophy">🏆</div>
+      <h2 class="congrats-title">Scientifique en chef !</h2>
+      <p class="congrats-msg" id="congrats-msg">Incroyable !</p>
+      <div class="stars" id="stars"></div>
+      <button class="btn-replay" onclick="resetGame()">🔄 Recommencer</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ════════════════════════════════════════════════
+// CONFIGURATION DU DÉFI
+// ════════════════════════════════════════════════
+const TOTAL_Q = 10;
+
+let step = 1;
+let score = 0;
+let answered = false;
+let currentChallenge = null;
+
+// Banque de conversions typiques (conçues pour être pédagogiques)
+const QUESTIONS_BANK = [
+  // 1. dm3 = L
+  { srcVal: 5, srcUnit: "dm³", destUnit: "L", correct: "5", explanation: "Le décimètre cube (dm³) et le litre (L) sont exactement la même unité !<br>Donc, <strong>5 dm³ = 5 L</strong>." },
+  { srcVal: 12.5, srcUnit: "dm³", destUnit: "L", correct: "12,5", explanation: "Puisque 1 dm³ = 1 L, la valeur reste identique.<br>Donc, <strong>12,5 dm³ = 12,5 L</strong>." },
+  
+  // 2. cm3 = mL
+  { srcVal: 250, srcUnit: "cm³", destUnit: "mL", correct: "250", explanation: "Le centimètre cube (cm³) et le millilitre (mL) sont exactement la même unité !<br>Donc, <strong>250 cm³ = 250 mL</strong>." },
+  { srcVal: 8, srcUnit: "cm³", destUnit: "mL", correct: "8", explanation: "Puisque 1 cm³ = 1 mL, la valeur ne change pas.<br>Donc, <strong>8 cm³ = 8 mL</strong>." },
+
+  // 3. m3 = L (x 1000)
+  { srcVal: 2, srcUnit: "m³", destUnit: "L", correct: "2000", explanation: "1 m³ = 1 000 dm³ = 1 000 L.<br>Pour passer des m³ aux dm³ (ou Litres), on décale de 3 colonnes vers la droite (on multiplie par 1 000).<br>Donc, <strong>2 m³ = 2 000 L</strong>." },
+  { srcVal: 0.5, srcUnit: "m³", destUnit: "L", correct: "500", explanation: "1 m³ = 1 000 L.<br>0,5 m³ × 1 000 = 500.<br>Donc, <strong>0,5 m³ = 500 L</strong>." },
+
+  // 4. dm3 to cm3 (x 1000)
+  { srcVal: 4, srcUnit: "dm³", destUnit: "cm³", correct: "4000", explanation: "1 dm³ = 1 000 cm³.<br>On multiplie par 1 000 car chaque grand palier de volume contient 3 colonnes.<br>Donc, <strong>4 dm³ = 4 000 cm³</strong>." },
+  { srcVal: 1.2, srcUnit: "dm³", destUnit: "cm³", correct: "1200", explanation: "1,2 dm³ × 1 000 = 1 200.<br>Dans l'abaque, on place la virgule aux unités de dm³ (les Litres), puis on décale de 3 colonnes vers la droite.<br>Donc, <strong>1,2 dm³ = 1 200 cm³</strong>." },
+
+  // 5. L to mL (x 1000)
+  { srcVal: 3, srcUnit: "L", destUnit: "mL", correct: "3000", explanation: "1 Litre = 1 000 millilitres.<br>Dans l'abaque, on passe des unités de dm³ aux unités de cm³.<br>Donc, <strong>3 L = 3 000 mL</strong>." },
+  { srcVal: 0.75, srcUnit: "L", destUnit: "mL", correct: "750", explanation: "0,75 L × 1 000 = 750.<br>Donc, <strong>0,75 L = 750 mL</strong>." },
+
+  // 6. cm3 to dm3 ( / 1000 )
+  { srcVal: 6000, srcUnit: "cm³", destUnit: "dm³", correct: "6", explanation: "On divise par 1 000 (décalage de 3 colonnes vers la gauche).<br>6 000 cm³ / 1 000 = 6 dm³.<br>Donc, <strong>6 000 cm³ = 6 dm³</strong>." },
+  { srcVal: 450, srcUnit: "cm³", destUnit: "dm³", correct: "0,45", explanation: "450 cm³ / 1 000 = 0,45 dm³.<br>Dans l'abaque, le 0 de 450 est dans les unités de cm³, et on remonte jusqu'aux unités de dm³ en plaçant la virgule.<br>Donc, <strong>450 cm³ = 0,45 dm³</strong> (soit 0,45 L)." },
+
+  // 7. L to cL (x 100)
+  { srcVal: 1.5, srcUnit: "L", destUnit: "cL", correct: "150", explanation: "1 L = 100 cL.<br>On décale de 2 colonnes vers la droite (de la colonne L vers la colonne cL).<br>Donc, <strong>1,5 L = 150 cL</strong>." },
+  { srcVal: 6, srcUnit: "L", destUnit: "cL", correct: "600", explanation: "6 L × 100 = 600 cL.<br>Donc, <strong>6 L = 600 cL</strong>." },
+
+  // 8. cL to mL (x 10)
+  { srcVal: 20, srcUnit: "cL", destUnit: "mL", correct: "200", explanation: "1 cL = 10 mL.<br>On décale d'une colonne vers la droite (des dizaines aux unités de cm³).<br>Donc, <strong>20 cL = 200 mL</strong> (soit 200 cm³)." },
+
+  // 9. L to hL ( / 100 )
+  { srcVal: 800, srcUnit: "L", destUnit: "hL", correct: "8", explanation: "1 hL = 100 L.<br>On divise par 100 en décalant de 2 colonnes vers la gauche.<br>Donc, <strong>800 L = 8 hL</strong> (soit 8 dm³ de centaines)." },
+  { srcVal: 150, srcUnit: "L", destUnit: "hL", correct: "1,5", explanation: "150 L / 100 = 1,5 hL.<br>Donc, <strong>150 L = 1,5 hL</strong>." },
+
+  // 10. mL to L ( / 1000 )
+  { srcVal: 1500, srcUnit: "mL", destUnit: "L", correct: "1,5", explanation: "1 500 mL / 1 000 = 1,5 L (soit 1,5 dm³).<br>Donc, <strong>1 500 mL = 1,5 L</strong>." }
+];
+
+let sessionChallengeIndices = [];
+
+// ════════════════════════════════════════════════
+// FLUX DU JEU
+// ════════════════════════════════════════════════
+function initSession() {
+  const indices = QUESTIONS_BANK.map((_, i) => i);
+  // Mélange de Fisher-Yates
+  for (let i = indices.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [indices[i], indices[j]] = [indices[j], indices[i]];
+  }
+  sessionChallengeIndices = indices.slice(0, TOTAL_Q);
+}
+
+function renderQuestion() {
+  answered = false;
+  document.getElementById('feedback-area').innerHTML = '';
+  document.getElementById('next-area').innerHTML = '';
+  const inputEl = document.getElementById('ans-input');
+  inputEl.value = '';
+  inputEl.disabled = false;
+  document.getElementById('btn-val').disabled = false;
+
+  currentChallenge = QUESTIONS_BANK[sessionChallengeIndices[step - 1]];
+
+  document.getElementById('q-num').textContent = step;
+  document.getElementById('q-idx').textContent = step;
+  document.getElementById('score-disp').textContent = score;
+  document.getElementById('prog-bar').style.width = `${((step - 1) / TOTAL_Q) * 100}%`;
+
+  // Formatter la valeur d'origine avec une virgule française
+  const formattedSrcVal = currentChallenge.srcVal.toString().replace('.', ',');
+
+  document.getElementById('q-val').textContent = formattedSrcVal;
+  document.getElementById('q-src-unit').textContent = currentChallenge.srcUnit;
+  document.getElementById('q-dest-unit').textContent = currentChallenge.destUnit;
+  document.getElementById('ans-target-unit').textContent = currentChallenge.destUnit;
+
+  inputEl.focus();
+}
+
+function cleanString(str) {
+  // Enlever les espaces et remplacer les virgules par des points pour la comparaison numérique
+  return str.trim().replace(/\s+/g, '').replace(',', '.');
+}
+
+function validateAnswer() {
+  if (answered) return;
+  const inputEl = document.getElementById('ans-input');
+  const userAns = inputEl.value;
+
+  if (userAns.trim() === '') {
+    alert("Saisis une réponse !");
+    return;
+  }
+
+  answered = true;
+  document.getElementById('btn-val').disabled = true;
+  inputEl.disabled = true;
+
+  const cleanedUser = cleanString(userAns);
+  const cleanedCorrect = cleanString(currentChallenge.correct);
+
+  const correct = (parseFloat(cleanedUser) === parseFloat(cleanedCorrect));
+
+  if (correct) score++;
+  document.getElementById('score-disp').textContent = score;
+
+  // Formatter les valeurs attendues avec des virgules pour le feedback français
+  const formattedCorrect = currentChallenge.correct;
+
+  const feedbackArea = document.getElementById('feedback-area');
+  feedbackArea.innerHTML = `
+    <div class="feedback ${correct ? 'fb-correct' : 'fb-wrong'}">
+      <div class="fb-icon">${correct ? '🎯' : '💡'}</div>
+      <div>
+        <div class="fb-title">${correct ? 'Excellent travail !' : `Ce n'est pas tout à fait ça.`}</div>
+        <div class="fb-text">
+          La bonne réponse est <strong>${formattedCorrect} ${currentChallenge.destUnit}</strong>.<br>
+          ${currentChallenge.explanation}
+        </div>
+      </div>
+    </div>`;
+
+  document.getElementById('next-area').innerHTML = step < TOTAL_Q
+    ? `<button class="btn-next" onclick="nextQ()">Conversion suivante 👉</button>`
+    : `<button class="btn-next" onclick="finishGame()">Voir mon résultat 🏆</button>`;
+}
+
+function nextQ() {
+  step++;
+  renderQuestion();
+}
+
+function finishGame() {
+  document.getElementById('game-flow').style.display = 'none';
+  document.getElementById('congrats-flow').style.display = 'block';
+
+  const pct = Math.round((score / TOTAL_Q) * 100);
+  let msg, stars;
+
+  if (score === TOTAL_Q) {
+    msg = `Merveilleux ! Score parfait de <strong>${score}/${TOTAL_Q}</strong> (${pct}%). Les conversions de volumes n'ont plus aucun secret pour toi !`;
+    stars = '⭐⭐⭐';
+  } else if (score >= 8) {
+    msg = `Félicitations ! Tu as obtenu <strong>${score}/${TOTAL_Q}</strong> (${pct}%). Tu maîtrises l'équivalence entre dm³/L et cm³/mL !`;
+    stars = '⭐⭐';
+  } else if (score >= 5) {
+    msg = `Bon travail ! <strong>${score}/${TOTAL_Q}</strong> (${pct}%). Utilise bien le tableau pour placer la virgule et décaler les zéros.`;
+    stars = '⭐';
+  } else {
+    msg = `Score : <strong>${score}/${TOTAL_Q}</strong> (${pct}%). Recommence pour t'entraîner à manipuler l'abaque.`;
+    stars = '❌';
+  }
+
+  document.getElementById('congrats-msg').innerHTML = msg;
+  document.getElementById('stars').textContent = stars;
+
+  if (typeof window.parent !== 'undefined' && window.parent.handleActivityScore) {
+    window.parent.handleActivityScore('grandeur_volume_conversions', score);
+  }
+}
+
+function resetGame() {
+  step = 1;
+  score = 0;
+  document.getElementById('game-flow').style.display = 'block';
+  document.getElementById('congrats-flow').style.display = 'none';
+  initSession();
+  renderQuestion();
+}
+
+// Raccourci Entrée
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !answered) {
+    validateAnswer();
+  }
+});
+
+// Initialisation au chargement
+window.addEventListener('DOMContentLoaded', () => {
+  initSession();
+  renderQuestion();
+});
+</script>
+</body>
+</html>
