@@ -2821,7 +2821,7 @@ input[type=text].calc-input.incorrect {
     if (!emojiOrName || typeof emojiOrName !== 'string') return emojiOrName;
     const clean = emojiOrName.trim();
     if (clean.startsWith('<svg') || clean.startsWith('<span')) return clean;
-    return EMOJI_SVG_MAP[clean] || clean;
+    return window.EMOJI_SVG_MAP[clean] || clean;
   };
 
   window.replaceEmojisOnPage = function(root = document) {
@@ -2829,8 +2829,8 @@ input[type=text].calc-input.incorrect {
     // 1. Recharger dans .sub-icon, .activity-icon, .sub-icon-large, etc.
     root.querySelectorAll('.sub-icon, .activity-icon, .sub-icon-large').forEach(el => {
       const txt = el.textContent.trim();
-      if (txt && EMOJI_SVG_MAP[txt]) {
-        el.innerHTML = EMOJI_SVG_MAP[txt];
+      if (txt && window.EMOJI_SVG_MAP[txt]) {
+        el.innerHTML = window.EMOJI_SVG_MAP[txt];
       }
     });
 
@@ -2838,9 +2838,9 @@ input[type=text].calc-input.incorrect {
     root.querySelectorAll('.page-title, .card-title, .panel-tab').forEach(el => {
       let html = el.innerHTML;
       let changed = false;
-      Object.keys(EMOJI_SVG_MAP).sort((a, b) => b.length - a.length).forEach(emoji => {
+      Object.keys(window.EMOJI_SVG_MAP).sort((a, b) => b.length - a.length).forEach(emoji => {
         if (html.includes(emoji)) {
-          const svg = EMOJI_SVG_MAP[emoji];
+          const svg = window.EMOJI_SVG_MAP[emoji];
           const replacement = `<span class="inline-flex items-center justify-center text-current w-7 h-7 mr-2 align-middle" style="vertical-align: middle; margin-top: -3px;">${svg}</span>`;
           html = html.split(emoji).join(replacement);
           changed = true;
@@ -8223,13 +8223,41 @@ function isActivityLocked(id){
   return false;
 }
 function toggleActivity(id){
-  const arr = getLockedActivities();
-  if(arr.includes(id)){
-    saveLockedActivities(arr.filter(x => x !== id));
-  } else {
-    arr.push(id);
-    saveLockedActivities(arr);
-  }
+  let arr = getLockedActivities();
+  const idMapping = {
+    'vocabulaire_proverbes': 'fiche_proverbes',
+    'fiche_proverbes': 'vocabulaire_proverbes',
+    'vocabulaire_atelier_mots': 'fiche_atelier_mots',
+    'fiche_atelier_mots': 'vocabulaire_atelier_mots',
+    'vocabulaire_registres': 'fiche_registres_tri',
+    'fiche_registres_tri': 'vocabulaire_registres',
+    'vocabulaire_verbes_ternes': 'fiche_verbes_ternes',
+    'fiche_verbes_ternes': 'vocabulaire_verbes_ternes',
+    'vocabulaire_chasseur_intrus': 'fiche_chasseur_intrus',
+    'fiche_chasseur_intrus': 'vocabulaire_chasseur_intrus',
+    'vocabulaire_fabrique_mots': 'fiche_fabrique_mots',
+    'fiche_fabrique_mots': 'vocabulaire_fabrique_mots'
+  };
+  const linkedId = idMapping[id];
+  const idsToToggle = linkedId ? [id, linkedId] : [id];
+  
+  idsToToggle.forEach(toggleId => {
+    if(arr.includes(toggleId)){
+      arr = arr.filter(x => x !== toggleId);
+      
+      // Auto-unlock all parent/ancestor activities so the reactivated exercise becomes active and visible
+      let currentId = toggleId;
+      while (ACTIVITY_PARENTS[currentId]) {
+        const parentId = ACTIVITY_PARENTS[currentId];
+        arr = arr.filter(x => x !== parentId);
+        currentId = parentId;
+      }
+    } else {
+      arr.push(toggleId);
+    }
+  });
+  
+  saveLockedActivities(arr);
   refreshAllToggles();
 }
 
