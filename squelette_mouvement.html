@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Le fonctionnement du mouvement</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <!-- TailwindCSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      corePlugins: {
+        preflight: false,
+      },
+      theme: {
+        extend: {
+          borderWidth: {
+            '3': '3px',
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            display: ['Fredoka', 'sans-serif'],
+            mono: ['Space Mono', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    :root {
+      --encre: #0f172a;
+      --ardoise: #475569;
+      --papier: #f8fafc;
+      --papier-2: #ffffff;
+      --ligne: #e2e8f0;
+      
+      --squelette: #6366f1;
+      --squelette-fonce: #4338ca;
+      --squelette-clair: #e0e7ff;
+      
+      --vert: #10b981;
+      --vert-clair: #ecfdf5;
+      --rouge: #ef4444;
+      --rouge-clair: #fef2f2;
+      
+      --border: #0f172a;
+      --radius: 16px;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Inter', system-ui, sans-serif;
+      color: var(--encre);
+      background: var(--papier);
+      line-height: 1.5;
+      padding: 1rem;
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 960px;
+      width: 100%;
+    }
+
+    /* CARD STYLE */
+    .card-premium {
+      background: #ffffff;
+      border: 3px solid var(--encre);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin: 12px 0;
+      box-shadow: 4px 4px 0px rgba(15, 23, 42, 0.1);
+    }
+
+    /* FLAT 3D BUTTON */
+    .btn-3d {
+      font-family: 'Fredoka', sans-serif;
+      font-weight: 700;
+      border: 3px solid var(--encre) !important;
+      box-shadow: 3px 3px 0px var(--encre);
+      transition: all 0.1s ease;
+      cursor: pointer;
+      user-select: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .btn-3d:active {
+      transform: translate(1px, 1px);
+      box-shadow: 1px 1px 0px var(--encre);
+    }
+    .btn-3d:disabled {
+      background: #e2e8f0 !important;
+      color: #94a3b8 !important;
+      cursor: not-allowed;
+      transform: none !important;
+      box-shadow: 2px 2px 0px var(--encre) !important;
+    }
+
+    /* GAP FILL TEXT ZONE */
+    .lacune-word {
+      display: inline-block;
+      min-width: 110px;
+      height: 32px;
+      border-bottom: 2px dashed var(--squelette);
+      background: var(--squelette-clair);
+      border-radius: 6px;
+      vertical-align: middle;
+      margin: 0 4px;
+      text-align: center;
+      font-weight: 700;
+      line-height: 28px;
+      color: var(--squelette-fonce);
+      cursor: pointer;
+      padding: 0 8px;
+      transition: all 0.15s;
+    }
+    .lacune-word.drag-over {
+      background: #c7d2fe;
+      transform: scale(1.05);
+    }
+    .lacune-word.filled {
+      border: 2px solid var(--encre);
+      background: #ffffff;
+      color: var(--encre);
+      box-shadow: 2px 2px 0px var(--encre);
+      line-height: 26px;
+    }
+    .lacune-word.correct {
+      background: var(--vert-clair) !important;
+      border-color: var(--vert) !important;
+      color: #065f46 !important;
+      box-shadow: 2px 2px 0px var(--vert) !important;
+    }
+    .lacune-word.incorrect {
+      background: var(--rouge-clair) !important;
+      border-color: var(--rouge) !important;
+      color: #991b1b !important;
+      box-shadow: 2px 2px 0px var(--rouge) !important;
+    }
+
+    /* WORD POOL */
+    .geo-tags-pool {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      background: #f8fafc;
+      border: 2px dashed #cbd5e1;
+      border-radius: 12px;
+      padding: 12px;
+      margin-top: 12px;
+      min-height: 80px;
+      justify-content: center;
+      align-items: center;
+    }
+    .geo-tag {
+      background: #ffffff;
+      border: 2px solid var(--encre);
+      box-shadow: 2px 2px 0px var(--encre);
+      border-radius: 8px;
+      padding: 6px 12px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: grab;
+      user-select: none;
+      transition: all 0.15s;
+    }
+    .geo-tag:active {
+      cursor: grabbing;
+    }
+    .geo-tag.used {
+      opacity: 0.25;
+      pointer-events: none;
+      box-shadow: none;
+      transform: none;
+      background: #cbd5e1;
+      border-color: #94a3b8;
+    }
+
+    /* SCORE PANEL */
+    .geo-score-panel {
+      background: var(--vert-clair);
+      border: 3px solid var(--vert);
+      border-radius: var(--radius);
+      padding: 20px;
+      text-align: center;
+      margin-top: 16px;
+      box-shadow: 4px 4px 0px var(--vert);
+    }
+    .score-title {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: var(--vert);
+      margin-bottom: 6px;
+    }
+    .score-msg {
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: #065f46;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="card-premium bg-indigo-50 border-indigo-200" style="margin-top: 0;">
+    <p class="text-xs md:text-sm font-bold text-indigo-900 m-0">
+      Complète le texte de synthèse en glissant les mots étiquettes dans les cases correspondantes.
+    </p>
+  </div>
+  
+  <div class="grid md:grid-cols-2 gap-6 items-start mt-4">
+    <!-- Zone Image Mécanique -->
+    <div class="card-premium flex flex-col items-center justify-center m-0">
+      <div class="border-3 border-slate-900 rounded-2xl relative shadow-md overflow-hidden w-full max-w-[450px]">
+        <img src="photos/mecanique_bras.jpg" alt="Mouvements Flexion et Extension" class="w-full h-auto block rounded-xl">
+      </div>
+      <p class="text-xs text-slate-500 mt-2 font-semibold text-center">
+        Flexion (biceps contracté) et Extension (triceps contracté)
+      </p>
+    </div>
+
+    <!-- Zone Texte lacunaire -->
+    <div class="card-premium m-0 flex flex-col">
+      <div class="font-sans text-slate-700 text-sm md:text-base leading-loose" id="lacunes-text-content" style="text-align: justify;">
+        Le squelette humain forme notre charpente solide, mais il ne peut pas bouger seul. Le mouvement est rendu possible grâce à l'action combinée des 
+        <div class="lacune-word" data-word="muscles" onclick="clearLacuneZone(this)" ondragover="lacuneDragOver(event)" ondrop="lacuneDrop(event)" ondragleave="lacuneDragLeave(event)"></div>, des 
+        <div class="lacune-word" data-word="os" onclick="clearLacuneZone(this)" ondragover="lacuneDragOver(event)" ondrop="lacuneDrop(event)" ondragleave="lacuneDragLeave(event)"></div> et des 
+        <div class="lacune-word" data-word="articulations" onclick="clearLacuneZone(this)" ondragover="lacuneDragOver(event)" ondrop="lacuneDrop(event)" ondragleave="lacuneDragLeave(event)"></div>.
+        <br><br>
+        Une articulation est le point de jonction entre deux os. Pour éviter les frottements et amortir les chocs, l'extrémité des os est recouverte de 
+        <div class="lacune-word" data-word="cartilage" onclick="clearLacuneZone(this)" ondragover="lacuneDragOver(event)" ondrop="lacuneDrop(event)" ondragleave="lacuneDragLeave(event)"></div>. Les os sont maintenus reliés entre eux par des bandes élastiques solides appelées les 
+        <div class="lacune-word" data-word="ligaments" onclick="clearLacuneZone(this)" ondragover="lacuneDragOver(event)" ondrop="lacuneDrop(event)" ondragleave="lacuneDragLeave(event)"></div>.
+        <br><br>
+        Les muscles sont attachés aux os par des cordons très résistants appelés les 
+        <div class="lacune-word" data-word="tendons" onclick="clearLacuneZone(this)" ondragover="lacuneDragOver(event)" ondrop="lacuneDrop(event)" ondragleave="lacuneDragLeave(event)"></div>. Quand un muscle reçoit un ordre du cerveau, il 
+        <div class="lacune-word" data-word="se contracte" onclick="clearLacuneZone(this)" ondragover="lacuneDragOver(event)" ondrop="lacuneDrop(event)" ondragleave="lacuneDragLeave(event)"></div> : il raccourcit, gonfle et tire sur l'os.
+        <br><br>
+        Pour plier et déplier le bras au niveau du coude, deux muscles travaillent ensemble de façon opposée. Ce sont des muscles 
+        <div class="lacune-word" data-word="antagonistes" onclick="clearLacuneZone(this)" ondragover="lacuneDragOver(event)" ondrop="lacuneDrop(event)" ondragleave="lacuneDragLeave(event)"></div>. Lors de la flexion, le 
+        <div class="lacune-word" data-word="biceps" onclick="clearLacuneZone(this)" ondragover="lacuneDragOver(event)" ondrop="lacuneDrop(event)" ondragleave="lacuneDragLeave(event)"></div> se contracte pour plier le bras tandis que le 
+        <div class="lacune-word" data-word="triceps" onclick="clearLacuneZone(this)" ondragover="lacuneDragOver(event)" ondrop="lacuneDrop(event)" ondragleave="lacuneDragLeave(event)"></div> se relâche et s'étire.
+      </div>
+
+      <!-- Banque de mots -->
+      <div class="geo-tags-pool w-full mt-6" id="lacunes-tags-pool"></div>
+      
+      <button class="btn-3d w-full py-3.5 bg-indigo-500 text-white rounded-xl text-sm mt-6 font-bold" onclick="validateLacunes()">
+        ✅ Vérifier le texte
+      </button>
+      <div id="lacunes-score" style="display:none" class="geo-score-panel"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // UTILS
+  function shuffle(array) {
+    let currentIndex = array.length, randomIndex;
+    while (currentIndex != 0) {
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex--;
+      [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+    }
+    return array;
+  }
+
+  // GAME ENGINE
+  const LACUNES_WORDS = [
+    'muscles', 'os', 'articulations', 'cartilage', 'ligaments', 'tendons', 'se contracte', 'antagonistes', 'biceps', 'triceps'
+  ];
+
+  let lacunesAnswers = {};
+  let draggingWordText = null;
+
+  function initLacunesGame() {
+    lacunesAnswers = {};
+    LACUNES_WORDS.forEach(w => { lacunesAnswers[w] = ''; });
+    document.getElementById('lacunes-score').style.display = 'none';
+
+    // Rétablir le texte vierge
+    document.querySelectorAll('#lacunes-text-content .lacune-word').forEach(zone => {
+      zone.innerHTML = '';
+      zone.className = 'lacune-word';
+    });
+
+    // Remplir la banque de mots
+    const pool = document.getElementById('lacunes-tags-pool');
+    let poolHtml = '';
+    const shuffledWords = shuffle([...LACUNES_WORDS]);
+    shuffledWords.forEach((word, idx) => {
+      poolHtml += `
+        <div class="geo-tag" id="lacune-tag-${idx}" draggable="true" data-text="${word}"
+          ondragstart="lacuneDragStart(event)" ondragend="lacuneDragEnd(event)"
+          ontouchstart="lacuneTouchStart(event)" ontouchmove="lacuneTouchMove(event)" ontouchend="lacuneTouchEnd(event)">
+          ${word}
+        </div>`;
+    });
+    pool.innerHTML = poolHtml;
+  }
+
+  function lacuneDragStart(e) {
+    draggingWordText = e.currentTarget.dataset.text;
+    e.dataTransfer.setData('text/plain', draggingWordText);
+    e.currentTarget.style.opacity = '0.5';
+  }
+  function lacuneDragEnd(e) {
+    e.currentTarget.style.opacity = '';
+  }
+  function lacuneDragOver(e) {
+    e.preventDefault();
+    e.currentTarget.classList.add('drag-over');
+  }
+  function lacuneDragLeave(e) {
+    e.currentTarget.classList.remove('drag-over');
+  }
+  function lacuneDrop(e) {
+    e.preventDefault();
+    const zone = e.currentTarget;
+    zone.classList.remove('drag-over');
+    const text = e.dataTransfer.getData('text/plain') || draggingWordText;
+    lacunePlaceTag(zone, text);
+  }
+
+  function lacunePlaceTag(zone, text) {
+    const key = zone.dataset.word;
+    const oldText = lacunesAnswers[key];
+    if (oldText) lacuneReturnTag(oldText);
+
+    // Supprimer des autres zones
+    Object.keys(lacunesAnswers).forEach(k => {
+      if (lacunesAnswers[k] === text && k !== key) {
+        lacunesAnswers[k] = '';
+        const z = document.querySelector(`#lacunes-text-content .lacune-word[data-word="${k}"]`);
+        if(z) {
+          z.innerHTML = '';
+          z.classList.remove('filled');
+        }
+      }
+    });
+
+    zone.textContent = text;
+    zone.classList.add('filled');
+    lacunesAnswers[key] = text;
+    lacuneMarkUsed(text);
+  }
+
+  function lacuneReturnTag(text) {
+    const pool = document.getElementById('lacunes-tags-pool');
+    pool.querySelectorAll('.geo-tag').forEach(t => {
+      if (t.dataset.text === text && t.classList.contains('used')) {
+        t.classList.remove('used');
+      }
+    });
+  }
+
+  function lacuneMarkUsed(text) {
+    const pool = document.getElementById('lacunes-tags-pool');
+    let marked = false;
+    pool.querySelectorAll('.geo-tag').forEach(t => {
+      if (t.dataset.text === text && !t.classList.contains('used') && !marked) {
+        t.classList.add('used');
+        marked = true;
+      }
+    });
+  }
+
+  function clearLacuneZone(zone) {
+    if (document.getElementById('lacunes-score').style.display === 'block') return;
+    const key = zone.dataset.word;
+    const text = lacunesAnswers[key];
+    if (!text) return;
+    
+    zone.innerHTML = '';
+    zone.classList.remove('filled');
+    lacuneReturnTag(text);
+    lacunesAnswers[key] = '';
+  }
+
+  // Touch handlers pour lacunes (Mobile/Tablette)
+  let lacunesTouchEl = null, lacunesTouchClone = null;
+  function lacuneTouchStart(e) {
+    const tag = e.currentTarget;
+    if (tag.classList.contains('used')) return;
+    lacunesTouchEl = tag;
+    const clone = tag.cloneNode(true);
+    clone.style.cssText = 'position:fixed;z-index:9999;opacity:.85;pointer-events:none;transform:scale(1.1);border: 2px solid var(--border);';
+    const touch = e.touches[0];
+    clone.style.left = (touch.clientX - 50) + 'px';
+    clone.style.top = (touch.clientY - 20) + 'px';
+    document.body.appendChild(clone);
+    lacunesTouchClone = clone;
+    tag.style.opacity = '0.4';
+  }
+  function lacuneTouchMove(e) {
+    e.preventDefault();
+    if (!lacunesTouchClone) return;
+    const touch = e.touches[0];
+    lacunesTouchClone.style.left = (touch.clientX - 50) + 'px';
+    lacunesTouchClone.style.top = (touch.clientY - 20) + 'px';
+  }
+  function lacuneTouchEnd(e) {
+    if (!lacunesTouchClone) return;
+    const touch = e.changedTouches[0];
+    lacunesTouchClone.remove();
+    lacunesTouchClone = null;
+    if (lacunesTouchEl) lacunesTouchEl.style.opacity = '';
+    
+    const el = document.elementFromPoint(touch.clientX, touch.clientY);
+    const zone = el ? el.closest('.lacune-word') : null;
+    if (zone && lacunesTouchEl) {
+      lacunePlaceTag(zone, lacunesTouchEl.dataset.text);
+    }
+    lacunesTouchEl = null;
+  }
+
+  function validateLacunes() {
+    let score = 0;
+    let answeredCount = 0;
+    LACUNES_WORDS.forEach(w => {
+      const zone = document.querySelector(`#lacunes-text-content .lacune-word[data-word="${w}"]`);
+      if (zone) {
+        const answer = lacunesAnswers[w];
+        if (answer) answeredCount++;
+        if (answer === w) {
+          score++;
+          zone.className = 'lacune-word filled correct';
+        } else {
+          zone.className = 'lacune-word filled incorrect';
+        }
+      }
+    });
+
+    if (answeredCount < LACUNES_WORDS.length) {
+      alert("N'oublie pas de remplir toutes les cases avant de valider !");
+      return;
+    }
+
+    const panel = document.getElementById('lacunes-score');
+    panel.style.display = 'block';
+    const pct = Math.round((score / LACUNES_WORDS.length) * 100);
+    panel.innerHTML = `
+      <div class="score-title">${score} / ${LACUNES_WORDS.length}</div>
+      <div class="score-msg">${pct === 100 ? 'Félicitations ! 🏆 Le fonctionnement du mouvement n\'a plus de secret pour toi !' : pct >= 70 ? 'Très bon travail ! 👍 Encore un petit effort de vocabulaire !' : 'N\'hésite pas à relire ta leçon pour mieux placer les étiquettes. 💪'}</div>
+      <button class="btn-3d px-4 py-2 mt-3 bg-white text-slate-800 rounded-xl" onclick="initLacunesGame()">🔄 Recommencer</button>
+    `;
+
+    // Transmettre le score au tableau de bord parent
+    if (window.parent && window.parent.saveResult) {
+      window.parent.saveResult({
+        activity: 'sci_sq_texte',
+        bookTitle: 'Le squelette — Fonctionnement du mouvement',
+        score: score,
+        total: LACUNES_WORDS.length,
+        pct: pct,
+        date: new Date().toLocaleDateString('fr-BE'),
+        time: new Date().toLocaleTimeString('fr-BE', {hour: '2-digit', minute: '2-digit'})
+      });
+    }
+  }
+
+  window.onload = initLacunesGame;
+</script>
+
+</body>
+</html>
