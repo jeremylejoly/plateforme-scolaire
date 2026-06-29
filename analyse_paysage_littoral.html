@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>L'Analyseur de Paysage — Le Littoral Belge</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      /* Palette HSL - Thème marin/littoral (Tons azur et sable) */
+      --encre: #1e293b;        /* Bleu ardoise foncé */
+      --primaire: #0369a1;     /* Bleu océan / Azur profond */
+      --primaire-clair: #f0f9ff; /* Fond de carte bleu ciel clair */
+      --courant: #0284c7;      /* Accent principal bleu ciel */
+      --accent: #b45309;       /* Ocre orangé pour le sable / repères */
+      --ardoise: #475569;      /* Gris ardoise secondaire */
+      --papier: #fafaf9;       /* Fond de page sable très doux */
+      --papier-2: #ffffff;     /* Blanc pur pour les cartes */
+      --ligne: #e7e5e4;        /* Bordures fines beige/gris */
+      
+      --vert: #16a34a;         /* Succès */
+      --vert-clair: #f0fdf4;
+      --rouge: #dc2626;        /* Erreur */
+      --rouge-clair: #fef2f2;
+      --bleu: #2563eb;         /* Info */
+      --bleu-clair: #eff6ff;
+      
+      --ombre: 0 4px 12px rgba(30, 41, 59, 0.05);
+      --ombre-forte: 0 10px 30px rgba(30, 41, 59, 0.08);
+      --radius: 16px;
+      --border-style: 3px solid #1e293b;
+      --shadow-flat: 4px 4px 0px #1e293b;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Nunito', system-ui, -apple-system, sans-serif;
+      background-color: var(--papier);
+      background-image: radial-gradient(circle at 1px 1px, rgba(30, 41, 59, 0.03) 1px, transparent 0);
+      background-size: 24px 24px;
+      color: var(--encre);
+      line-height: 1.6;
+      padding: 1.5rem;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    /* HEADER */
+    header {
+      background: var(--papier-2);
+      border: var(--border-style);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      box-shadow: var(--shadow-flat);
+      text-align: center;
+    }
+
+    h1 {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--primaire);
+      margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+      font-size: 1rem;
+      color: var(--ardoise);
+      font-weight: 600;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    /* SCORE BAR */
+    .scorebar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--papier-2);
+      border: var(--border-style);
+      border-radius: var(--radius);
+      padding: 1rem 1.5rem;
+      box-shadow: var(--shadow-flat);
+      gap: 1rem;
+    }
+
+    .sb-block {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .sb-label {
+      font-size: 0.8rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      color: var(--ardoise);
+    }
+
+    .sb-val {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .prog-track {
+      flex: 1;
+      min-width: 150px;
+      height: 12px;
+      background: var(--ligne);
+      border: 2px solid #1e293b;
+      border-radius: 99px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .prog-bar {
+      height: 100%;
+      width: 0%;
+      background: var(--courant);
+      border-radius: 99px;
+      transition: width .4s ease;
+    }
+
+    /* MAIN CONTENT SPLIT */
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    @media (max-width: 900px) {
+      .main-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* LEFT PANEL: IMAGE */
+    .media-card {
+      background: var(--papier-2);
+      border: var(--border-style);
+      border-radius: var(--radius);
+      padding: 1rem;
+      box-shadow: var(--shadow-flat);
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      align-self: start;
+      position: sticky;
+      top: 1.5rem;
+    }
+
+    .image-wrapper {
+      position: relative;
+      width: 100%;
+      border: 3px solid #1e293b;
+      border-radius: 10px;
+      overflow: hidden;
+      cursor: zoom-in;
+      transition: transform 0.2s ease;
+    }
+
+    .image-wrapper:hover {
+      transform: scale(1.01);
+    }
+
+    .landscape-img {
+      width: 100%;
+      display: block;
+      height: auto;
+    }
+
+    .image-caption {
+      font-size: 0.85rem;
+      color: var(--ardoise);
+      font-weight: 700;
+      text-align: center;
+      background: var(--papier);
+      padding: 0.5rem;
+      border-radius: 8px;
+      border: 2px solid var(--ligne);
+    }
+
+    /* RIGHT PANEL: EXERCISE CARDS */
+    .exercise-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .element-card {
+      background: var(--papier-2);
+      border: 3px solid #e2e8f0;
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .element-card:hover {
+      border-color: #cbd5e1;
+    }
+
+    .element-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid var(--ligne);
+      padding-bottom: 0.5rem;
+    }
+
+    .element-title {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--primaire);
+    }
+
+    .element-status {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 6px;
+      border: 2px solid transparent;
+      display: none;
+    }
+
+    .status-correct {
+      background-color: var(--vert-clair);
+      color: var(--vert);
+      border-color: var(--vert);
+    }
+
+    .status-error {
+      background-color: var(--rouge-clair);
+      color: var(--rouge);
+      border-color: var(--rouge);
+    }
+
+    /* CHOICE GROUPS */
+    .choices-container {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.75rem;
+    }
+
+    @media (min-width: 480px) {
+      .choices-container {
+        grid-template-columns: auto 1fr;
+        align-items: center;
+      }
+    }
+
+    .choice-label {
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: var(--ardoise);
+      text-transform: uppercase;
+      min-width: 100px;
+    }
+
+    .btn-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .choice-btn {
+      padding: 6px 12px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 700;
+      background: var(--papier);
+      border: 2px solid #cbd5e1;
+      border-radius: 8px;
+      color: var(--ardoise);
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.15s ease;
+    }
+
+    .choice-btn:hover {
+      border-color: #94a3b8;
+      color: var(--encre);
+    }
+
+    .choice-btn.selected {
+      background: var(--primaire);
+      border-color: #1e293b;
+      color: var(--papier-2);
+    }
+
+    /* EXPLANATION AREA */
+    .explanation-box {
+      background: var(--bleu-clair);
+      border: 2px solid #bfdbfe;
+      border-radius: 8px;
+      padding: 0.75rem;
+      font-size: 0.85rem;
+      color: #1e40af;
+      font-weight: 600;
+      display: none;
+      margin-top: 0.25rem;
+    }
+
+    /* CARD STATES ON VALIDATION */
+    .element-card.card-correct {
+      border-color: var(--vert);
+      background-color: #fafdfb;
+    }
+
+    .element-card.card-incorrect {
+      border-color: var(--rouge);
+      background-color: #fffbfa;
+    }
+
+    /* ACTION BUTTONS */
+    .actions-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .btn-main {
+      width: 100%;
+      padding: 1rem;
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--papier-2);
+      background: var(--courant);
+      border: var(--border-style);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-flat);
+      cursor: pointer;
+      transition: all 0.1s ease;
+      text-align: center;
+    }
+
+    .btn-main:hover {
+      background: #0369a1;
+    }
+
+    .btn-main:active {
+      transform: translate(2px, 2px);
+      box-shadow: 2px 2px 0px #1e293b;
+    }
+
+    .btn-main:disabled {
+      background: #94a3b8;
+      border-color: #64748b;
+      box-shadow: 2px 2px 0px #64748b;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-secondary {
+      width: 100%;
+      padding: 0.75rem;
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--encre);
+      background: #e2e8f0;
+      border: var(--border-style);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-flat);
+      cursor: pointer;
+      transition: all 0.1s ease;
+      text-align: center;
+      display: none;
+    }
+
+    .btn-secondary:hover {
+      background: #cbd5e1;
+    }
+
+    .btn-secondary:active {
+      transform: translate(2px, 2px);
+      box-shadow: 2px 2px 0px #1e293b;
+    }
+
+    /* SYNTHÈSE / LESSON SUMMARY */
+    .summary-card {
+      background: var(--papier-2);
+      border: var(--border-style);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      box-shadow: var(--shadow-flat);
+      margin-top: 1rem;
+    }
+
+    .summary-title {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1.4rem;
+      color: var(--primaire);
+      margin-bottom: 1rem;
+      border-bottom: 3px solid #1e293b;
+      padding-bottom: 0.3rem;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    @media (max-width: 900px) {
+      .summary-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .summary-column h3 {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1.1rem;
+      color: var(--accent);
+      margin-bottom: 0.75rem;
+      border-bottom: 2px dashed var(--ligne);
+      padding-bottom: 0.2rem;
+    }
+
+    .summary-item {
+      margin-bottom: 1rem;
+    }
+
+    .summary-item strong {
+      color: var(--encre);
+      font-weight: 700;
+    }
+
+    .summary-item p {
+      font-size: 0.85rem;
+      color: var(--ardoise);
+      margin-top: 0.2rem;
+    }
+
+    /* MODAL ZOOM */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 100;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(15, 23, 42, 0.9);
+      justify-content: center;
+      align-items: center;
+      cursor: zoom-out;
+      padding: 1rem;
+    }
+
+    .modal-content {
+      max-width: 90%;
+      max-height: 90%;
+      border: 4px solid #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  
+  <!-- HEADER -->
+  <header>
+    <h1>Lecture et analyse de paysage</h1>
+    <div class="subtitle">Observe la photographie de la côte belge et analyse les différents aménagements de l'espace. Repère la position des éléments et classe-les selon leur nature.</div>
+  </header>
+
+  <!-- LESSON SUMMARY (FWB) -->
+  <div class="summary-card">
+    <h2 class="summary-title">Fiche de rappel : Les notions clés</h2>
+    <div class="summary-grid">
+      
+      <div class="summary-column">
+        <h3>Les plans du paysage</h3>
+        <div class="summary-item">
+          <strong>Le premier plan (ou avant-plan)</strong>
+          <p>C'est la partie du paysage située le plus près de l'observateur, tout en bas. Les éléments y apparaissent grands et très détaillés (ex: le sable de la plage, le brise-lames).</p>
+        </div>
+        <div class="summary-item">
+          <strong>Le second plan (ou plan intermédiaire)</strong>
+          <p>C'est la partie située à mi-distance, entre l'avant-plan et l'arrière-plan. Les éléments y sont de taille moyenne (ex: le tram de la côte, la digue piétonne, les immeubles).</p>
+        </div>
+        <div class="summary-item">
+          <strong>L'arrière-plan</strong>
+          <p>C'est la partie la plus éloignée, tout au fond, se terminant par la ligne d'horizon. Les éléments y paraissent petits (ex: la mer du Nord, les éoliennes marines au loin, le cargo sur l'horizon).</p>
+        </div>
+      </div>
+
+      <div class="summary-column">
+        <h3>Les composantes naturelles</h3>
+        <div class="summary-item">
+          <strong>Le relief</strong>
+          <p>Désigne les irrégularités de la surface terrestre : montagnes, collines, plateaux, plaines, vallées, dunes et plages.</p>
+        </div>
+        <div class="summary-item">
+          <strong>L'hydrographie</strong>
+          <p>Concerne tous les éléments liés à l'eau : rivières, fleuves, lacs, canaux, mers et océans.</p>
+        </div>
+        <div class="summary-item">
+          <strong>La végétation naturelle</strong>
+          <p>Représente les plantes, forêts, oyats des dunes et algues qui poussent sans l'intervention de l'Homme.</p>
+        </div>
+      </div>
+
+      <div class="summary-column">
+        <h3>Les composantes humaines</h3>
+        <div class="summary-item">
+          <strong>L'habitat</strong>
+          <p>Regroupe toutes les constructions destinées au logement et au séjour : maisons, immeubles, hôtels et résidences.</p>
+        </div>
+        <div class="summary-item">
+          <strong>Les voies de communication</strong>
+          <p>Comprennent les infrastructures de transport : routes, digues aménagées, ponts, voies ferrées, lignes électriques et ports.</p>
+        </div>
+        <div class="summary-item">
+          <strong>Les activités économiques</strong>
+          <p>Englobent les modifications de l'espace pour produire ou consommer des ressources : commerces, industries, parcs éoliens offshore et tourisme.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SCORE BAR -->
+  <div class="scorebar">
+    <div class="sb-block">
+      <span class="sb-label">Progression</span>
+      <span class="sb-val" id="progress-text">0/8 analysés</span>
+    </div>
+    <div class="prog-track">
+      <div class="prog-bar" id="progress-bar"></div>
+    </div>
+    <div class="sb-block">
+      <span class="sb-label">Score</span>
+      <span class="sb-val" id="score-text">--/16</span>
+    </div>
+  </div>
+
+  <!-- MAIN GRID -->
+  <div class="main-grid">
+    
+    <!-- LEFT: IMAGE PANEL -->
+    <div class="media-card">
+      <div class="image-wrapper" onclick="openZoom()">
+        <img class="landscape-img" src="photos/paysage_littoral.png" alt="Paysage du littoral de la Côte belge">
+      </div>
+      <div class="image-caption">
+        Clique sur l'image pour l'observer en grand format.
+      </div>
+    </div>
+
+    <!-- RIGHT: EXERCISE FORM -->
+    <div class="exercise-panel">
+      
+      <!-- Element 1 -->
+      <div class="element-card" id="card-0">
+        <div class="element-header">
+          <span class="element-title">Le sable de la plage</span>
+          <span class="element-status" id="status-0">Faux</span>
+        </div>
+        
+        <div class="choices-container">
+          <span class="choice-label">Son plan</span>
+          <div class="btn-group" id="plan-group-0">
+            <button class="choice-btn" onclick="selectOption(0, 'plan', 'premier')">Premier plan</button>
+            <button class="choice-btn" onclick="selectOption(0, 'plan', 'second')">Second plan</button>
+            <button class="choice-btn" onclick="selectOption(0, 'plan', 'arriere')">Arrière-plan</button>
+          </div>
+        </div>
+
+        <div class="choices-container">
+          <span class="choice-label">Sa nature</span>
+          <div class="btn-group" id="nature-group-0">
+            <button class="choice-btn" onclick="selectOption(0, 'nature', 'naturelle')">Composante naturelle</button>
+            <button class="choice-btn" onclick="selectOption(0, 'nature', 'humaine')">Composante humaine</button>
+          </div>
+        </div>
+        
+        <div class="explanation-box" id="explain-0"></div>
+      </div>
+
+      <!-- Element 2 -->
+      <div class="element-card" id="card-1">
+        <div class="element-header">
+          <span class="element-title">Le brise-lames en pierre</span>
+          <span class="element-status" id="status-1">Faux</span>
+        </div>
+        
+        <div class="choices-container">
+          <span class="choice-label">Son plan</span>
+          <div class="btn-group" id="plan-group-1">
+            <button class="choice-btn" onclick="selectOption(1, 'plan', 'premier')">Premier plan</button>
+            <button class="choice-btn" onclick="selectOption(1, 'plan', 'second')">Second plan</button>
+            <button class="choice-btn" onclick="selectOption(1, 'plan', 'arriere')">Arrière-plan</button>
+          </div>
+        </div>
+
+        <div class="choices-container">
+          <span class="choice-label">Sa nature</span>
+          <div class="btn-group" id="nature-group-1">
+            <button class="choice-btn" onclick="selectOption(1, 'nature', 'naturelle')">Composante naturelle</button>
+            <button class="choice-btn" onclick="selectOption(1, 'nature', 'humaine')">Composante humaine</button>
+          </div>
+        </div>
+        
+        <div class="explanation-box" id="explain-1"></div>
+      </div>
+
+      <!-- Element 3 -->
+      <div class="element-card" id="card-2">
+        <div class="element-header">
+          <span class="element-title">Le Tram de la Côte</span>
+          <span class="element-status" id="status-2">Faux</span>
+        </div>
+        
+        <div class="choices-container">
+          <span class="choice-label">Son plan</span>
+          <div class="btn-group" id="plan-group-2">
+            <button class="choice-btn" onclick="selectOption(2, 'plan', 'premier')">Premier plan</button>
+            <button class="choice-btn" onclick="selectOption(2, 'plan', 'second')">Second plan</button>
+            <button class="choice-btn" onclick="selectOption(2, 'plan', 'arriere')">Arrière-plan</button>
+          </div>
+        </div>
+
+        <div class="choices-container">
+          <span class="choice-label">Sa nature</span>
+          <div class="btn-group" id="nature-group-2">
+            <button class="choice-btn" onclick="selectOption(2, 'nature', 'naturelle')">Composante naturelle</button>
+            <button class="choice-btn" onclick="selectOption(2, 'nature', 'humaine')">Composante humaine</button>
+          </div>
+        </div>
+        
+        <div class="explanation-box" id="explain-2"></div>
+      </div>
+
+      <!-- Element 4 -->
+      <div class="element-card" id="card-3">
+        <div class="element-header">
+          <span class="element-title">Les immeubles à appartements</span>
+          <span class="element-status" id="status-3">Faux</span>
+        </div>
+        
+        <div class="choices-container">
+          <span class="choice-label">Son plan</span>
+          <div class="btn-group" id="plan-group-3">
+            <button class="choice-btn" onclick="selectOption(3, 'plan', 'premier')">Premier plan</button>
+            <button class="choice-btn" onclick="selectOption(3, 'plan', 'second')">Second plan</button>
+            <button class="choice-btn" onclick="selectOption(3, 'plan', 'arriere')">Arrière-plan</button>
+          </div>
+        </div>
+
+        <div class="choices-container">
+          <span class="choice-label">Sa nature</span>
+          <div class="btn-group" id="nature-group-3">
+            <button class="choice-btn" onclick="selectOption(3, 'nature', 'naturelle')">Composante naturelle</button>
+            <button class="choice-btn" onclick="selectOption(3, 'nature', 'humaine')">Composante humaine</button>
+          </div>
+        </div>
+        
+        <div class="explanation-box" id="explain-3"></div>
+      </div>
+
+      <!-- Element 5 -->
+      <div class="element-card" id="card-4">
+        <div class="element-header">
+          <span class="element-title">La digue piétonne</span>
+          <span class="element-status" id="status-4">Faux</span>
+        </div>
+        
+        <div class="choices-container">
+          <span class="choice-label">Son plan</span>
+          <div class="btn-group" id="plan-group-4">
+            <button class="choice-btn" onclick="selectOption(4, 'plan', 'premier')">Premier plan</button>
+            <button class="choice-btn" onclick="selectOption(4, 'plan', 'second')">Second plan</button>
+            <button class="choice-btn" onclick="selectOption(4, 'plan', 'arriere')">Arrière-plan</button>
+          </div>
+        </div>
+
+        <div class="choices-container">
+          <span class="choice-label">Sa nature</span>
+          <div class="btn-group" id="nature-group-4">
+            <button class="choice-btn" onclick="selectOption(4, 'nature', 'naturelle')">Composante naturelle</button>
+            <button class="choice-btn" onclick="selectOption(4, 'nature', 'humaine')">Composante humaine</button>
+          </div>
+        </div>
+        
+        <div class="explanation-box" id="explain-4"></div>
+      </div>
+
+      <!-- Element 6 -->
+      <div class="element-card" id="card-5">
+        <div class="element-header">
+          <span class="element-title">La mer du Nord</span>
+          <span class="element-status" id="status-5">Faux</span>
+        </div>
+        
+        <div class="choices-container">
+          <span class="choice-label">Son plan</span>
+          <div class="btn-group" id="plan-group-5">
+            <button class="choice-btn" onclick="selectOption(5, 'plan', 'premier')">Premier plan</button>
+            <button class="choice-btn" onclick="selectOption(5, 'plan', 'second')">Second plan</button>
+            <button class="choice-btn" onclick="selectOption(5, 'plan', 'arriere')">Arrière-plan</button>
+          </div>
+        </div>
+
+        <div class="choices-container">
+          <span class="choice-label">Sa nature</span>
+          <div class="btn-group" id="nature-group-5">
+            <button class="choice-btn" onclick="selectOption(5, 'nature', 'naturelle')">Composante naturelle</button>
+            <button class="choice-btn" onclick="selectOption(5, 'nature', 'humaine')">Composante humaine</button>
+          </div>
+        </div>
+        
+        <div class="explanation-box" id="explain-5"></div>
+      </div>
+
+      <!-- Element 7 -->
+      <div class="element-card" id="card-6">
+        <div class="element-header">
+          <span class="element-title">Les éoliennes au large</span>
+          <span class="element-status" id="status-6">Faux</span>
+        </div>
+        
+        <div class="choices-container">
+          <span class="choice-label">Son plan</span>
+          <div class="btn-group" id="plan-group-6">
+            <button class="choice-btn" onclick="selectOption(6, 'plan', 'premier')">Premier plan</button>
+            <button class="choice-btn" onclick="selectOption(6, 'plan', 'second')">Second plan</button>
+            <button class="choice-btn" onclick="selectOption(6, 'plan', 'arriere')">Arrière-plan</button>
+          </div>
+        </div>
+
+        <div class="choices-container">
+          <span class="choice-label">Sa nature</span>
+          <div class="btn-group" id="nature-group-6">
+            <button class="choice-btn" onclick="selectOption(6, 'nature', 'naturelle')">Composante naturelle</button>
+            <button class="choice-btn" onclick="selectOption(6, 'nature', 'humaine')">Composante humaine</button>
+          </div>
+        </div>
+        
+        <div class="explanation-box" id="explain-6"></div>
+      </div>
+
+      <!-- Element 8 -->
+      <div class="element-card" id="card-7">
+        <div class="element-header">
+          <span class="element-title">Le bateau sur l'horizon</span>
+          <span class="element-status" id="status-7">Faux</span>
+        </div>
+        
+        <div class="choices-container">
+          <span class="choice-label">Son plan</span>
+          <div class="btn-group" id="plan-group-7">
+            <button class="choice-btn" onclick="selectOption(7, 'plan', 'premier')">Premier plan</button>
+            <button class="choice-btn" onclick="selectOption(7, 'plan', 'second')">Second plan</button>
+            <button class="choice-btn" onclick="selectOption(7, 'plan', 'arriere')">Arrière-plan</button>
+          </div>
+        </div>
+
+        <div class="choices-container">
+          <span class="choice-label">Sa nature</span>
+          <div class="btn-group" id="nature-group-7">
+            <button class="choice-btn" onclick="selectOption(7, 'nature', 'naturelle')">Composante naturelle</button>
+            <button class="choice-btn" onclick="selectOption(7, 'nature', 'humaine')">Composante humaine</button>
+          </div>
+        </div>
+        
+        <div class="explanation-box" id="explain-7"></div>
+      </div>
+
+      <!-- Action Area -->
+      <div class="actions-panel">
+        <button class="btn-main" id="btn-validate" onclick="validateExercise()">Valider mon analyse</button>
+        <button class="btn-secondary" id="btn-reset" onclick="resetExercise()">Recommencer l'exercice</button>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<!-- LIGHTBOX ZOOM MODAL -->
+<div class="modal" id="zoomModal" onclick="closeZoom()">
+  <img class="modal-content" src="photos/paysage_littoral.png" alt="Agrandissement du paysage du littoral">
+</div>
+
+<script>
+  // Données de correction et d'explications pédagogiques
+  const answers = [
+    {
+      plan: 'premier',
+      nature: 'naturelle',
+      text: "Le sable de la plage se trouve tout au bas de l'image, au plus près de nous (premier plan). C'est une composante naturelle du littoral (relief)."
+    },
+    {
+      plan: 'premier',
+      nature: 'humaine',
+      text: "Le brise-lames en pierre s'avance dans l'eau au premier plan. C'est un aménagement humain conçu pour freiner les vagues et limiter l'érosion du sable."
+    },
+    {
+      plan: 'second',
+      nature: 'humaine',
+      text: "Le Tram de la Côte circule à mi-distance sur la digue (second plan). C'est une infrastructure de transport public aménagée par l'Homme (voie de communication)."
+    },
+    {
+      plan: 'second',
+      nature: 'humaine',
+      text: "Les immeubles à appartements se dressent à mi-distance (second plan). Ce sont des composantes humaines destinées au logement et au tourisme (habitat)."
+    },
+    {
+      plan: 'second',
+      nature: 'humaine',
+      text: "La digue promenade en béton où circulent les piétons est située à mi-distance (second plan). C'est une infrastructure humaine facilitant les déplacements le long de la plage (voie de communication)."
+    },
+    {
+      plan: 'arriere',
+      nature: 'naturelle',
+      text: "La mer du Nord s'étend tout au fond jusqu'à l'horizon (arrière-plan). C'est une grande étendue d'eau salée qui est une composante naturelle (hydrographie)."
+    },
+    {
+      plan: 'arriere',
+      nature: 'humaine',
+      text: "Les éoliennes marines sont implantées tout au fond sur l'horizon (arrière-plan). Ce sont des structures industrielles installées par l'Homme pour produire de l'électricité (activité économique)."
+    },
+    {
+      plan: 'arriere',
+      nature: 'humaine',
+      text: "Le cargo navigue très loin, près de la ligne d'horizon (arrière-plan). Ce navire commercial témoigne du transport de marchandises (activité économique/transport)."
+    }
+  ];
+
+  // État de l'exercice pour l'élève
+  const state = Array.from({ length: 8 }, () => ({
+    plan: null,
+    nature: null
+  }));
+
+  // Met à jour la sélection de l'élève
+  function selectOption(index, category, value) {
+    if (document.getElementById('btn-reset').style.display === 'block') return;
+
+    state[index][category] = value;
+
+    const groupElement = document.getElementById(`${category}-group-${index}`);
+    const buttons = groupElement.querySelectorAll('.choice-btn');
+    
+    buttons.forEach(btn => {
+      btn.classList.remove('selected');
+      const btnText = btn.innerText.toLowerCase();
+      if (
+        (value === 'premier' && btnText.includes('premier')) ||
+        (value === 'second' && btnText.includes('second')) ||
+        (value === 'arriere' && btnText.includes('arrière')) ||
+        (value === 'naturelle' && btnText.includes('naturelle')) ||
+        (value === 'humaine' && btnText.includes('humaine'))
+      ) {
+        btn.classList.add('selected');
+      }
+    });
+
+    updateProgress();
+  }
+
+  // Calcule et affiche la progression
+  function updateProgress() {
+    let completedCount = 0;
+    state.forEach(item => {
+      if (item.plan !== null && item.nature !== null) {
+        completedCount++;
+      }
+    });
+
+    document.getElementById('progress-text').innerText = `${completedCount}/8 analysés`;
+    const percent = (completedCount / 8) * 100;
+    document.getElementById('progress-bar').style.width = `${percent}%`;
+
+    const validateBtn = document.getElementById('btn-validate');
+    if (completedCount === 8) {
+      validateBtn.removeAttribute('disabled');
+    } else {
+      validateBtn.setAttribute('disabled', 'true');
+    }
+  }
+
+  // Valide l'ensemble des réponses
+  function validateExercise() {
+    let totalScore = 0;
+
+    state.forEach((item, idx) => {
+      const card = document.getElementById(`card-${idx}`);
+      const statusLabel = document.getElementById(`status-${idx}`);
+      const explainBox = document.getElementById(`explain-${idx}`);
+
+      const correctPlan = answers[idx].plan;
+      const correctNature = answers[idx].nature;
+
+      const isPlanCorrect = (item.plan === correctPlan);
+      const isNatureCorrect = (item.nature === correctNature);
+
+      let pointsGained = 0;
+      if (isPlanCorrect) pointsGained++;
+      if (isNatureCorrect) pointsGained++;
+      totalScore += pointsGained;
+
+      card.classList.remove('card-correct', 'card-incorrect');
+      if (pointsGained === 2) {
+        card.classList.add('card-correct');
+        statusLabel.innerText = "Correct";
+        statusLabel.className = "element-status status-correct";
+      } else {
+        card.classList.add('card-incorrect');
+        statusLabel.innerText = pointsGained === 1 ? "Incomplet" : "Incorrect";
+        statusLabel.className = "element-status status-error";
+      }
+      statusLabel.style.display = "inline-block";
+
+      let explanationText = "";
+      if (pointsGained < 2) {
+        let correctionParts = [];
+        if (!isPlanCorrect) {
+          const planLabels = { premier: "premier plan", second: "second plan", arriere: "arrière-plan" };
+          correctionParts.push(`le plan correct est : **${planLabels[correctPlan]}**`);
+        }
+        if (!isNatureCorrect) {
+          const natureLabels = { naturelle: "composante naturelle", humaine: "composante humaine" };
+          correctionParts.push(`la nature correcte est : **${natureLabels[correctNature]}**`);
+        }
+        explanationText = `Erreur. Note : ${correctionParts.join(' et ')}.<br><br>${answers[idx].text}`;
+      } else {
+        explanationText = answers[idx].text;
+      }
+      
+      explainBox.innerHTML = explanationText;
+      explainBox.style.display = "block";
+    });
+
+    document.getElementById('score-text').innerText = `${totalScore}/16`;
+
+    document.getElementById('btn-validate').style.display = 'none';
+    document.getElementById('btn-reset').style.display = 'block';
+
+    document.querySelector('.scorebar').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  // Réinitialise tout pour recommencer
+  function resetExercise() {
+    state.forEach((item, idx) => {
+      item.plan = null;
+      item.nature = null;
+
+      const card = document.getElementById(`card-${idx}`);
+      card.classList.remove('card-correct', 'card-incorrect');
+
+      const statusLabel = document.getElementById(`status-${idx}`);
+      statusLabel.style.display = "none";
+
+      const explainBox = document.getElementById(`explain-${idx}`);
+      explainBox.style.display = "none";
+      explainBox.innerHTML = "";
+
+      const planGroup = document.getElementById(`plan-group-${idx}`);
+      planGroup.querySelectorAll('.choice-btn').forEach(btn => btn.classList.remove('selected'));
+
+      const natureGroup = document.getElementById(`nature-group-${idx}`);
+      natureGroup.querySelectorAll('.choice-btn').forEach(btn => btn.classList.remove('selected'));
+    });
+
+    document.getElementById('score-text').innerText = "--/16";
+    updateProgress();
+
+    document.getElementById('btn-validate').style.display = 'block';
+    document.getElementById('btn-reset').style.display = 'none';
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function openZoom() {
+    document.getElementById('zoomModal').style.display = 'flex';
+  }
+
+  function closeZoom() {
+    document.getElementById('zoomModal').style.display = 'none';
+  }
+
+  window.onload = () => {
+    updateProgress();
+  };
+</script>
+
+</body>
+</html>
