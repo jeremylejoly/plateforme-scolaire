@@ -872,7 +872,7 @@
       box-shadow: inset 0 4px 15px rgba(0,0,0,0.1), var(--shadow-soft);
       border: 6px solid #0284c7;
       display: flex;
-      flex-direction: column-reverse;
+      flex-direction: column;
       justify-content: space-between;
       padding: 20px;
     }
@@ -2217,9 +2217,25 @@
       state.frog.pathData = [];
       const div = state.frog.activeCriterion;
 
+      // Generate a continuous path of correct columns
+      const correctCols = [];
+      let lastCol = getRandomInt(0, 3); // Start with a random column in row 0
+      correctCols.push(lastCol);
+
+      for (let r = 1; r < 5; r++) {
+        // Next column must be lastCol - 1, lastCol, or lastCol + 1
+        const choices = [];
+        if (lastCol > 0) choices.push(lastCol - 1);
+        choices.push(lastCol);
+        if (lastCol < 2) choices.push(lastCol + 1);
+        
+        const nextCol = choices[getRandomInt(0, choices.length)];
+        correctCols.push(nextCol);
+        lastCol = nextCol;
+      }
+
       for (let r = 0; r < 5; r++) {
-        // Select which column is the correct path (0, 1, or 2)
-        const correctCol = getRandomInt(0, 3);
+        const correctCol = correctCols[r];
         const rowVals = [0, 0, 0];
         
         // Populate the correct column
@@ -2309,6 +2325,13 @@
       // Player must click on lilypads of the very next row
       if (row !== state.frog.currentRow + 1) {
         return; 
+      }
+
+      // Player must click on an adjacent column if they are already on a lilypad
+      if (state.frog.currentRow >= 0) {
+        if (Math.abs(col - state.frog.frogPosition.col) > 1) {
+          return; // Ignore distant jumps
+        }
       }
 
       const val = state.frog.pathData[row][col];
