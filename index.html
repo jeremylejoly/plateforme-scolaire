@@ -5871,6 +5871,22 @@ input[type=text].calc-input.incorrect {
 
   <!-- SCREEN: Sciences - Le système solaire -->
   <div id="screen-sci-systeme-solaire" class="screen">
+    <button class="back-btn" onclick="showScreen('screen-sciences');renderSciencesScreen();">← Retour</button>
+    <div class="page-title">🪐 Le système solaire</div>
+    <div id="sci-systeme-solaire-menu"></div>
+  </div>
+
+  <!-- SCREEN: Sciences - L'ordre des planètes -->
+  <div id="screen-sci-planetes-ordre" class="screen">
+    <button class="back-btn" onclick="showScreen('screen-sci-systeme-solaire');renderSciSystemeSolaireMenu();">← Retour</button>
+    <div class="page-title">🪐 L'ordre des planètes</div>
+    <div id="sci-planetes-ordre-container" class="card" style="padding: 1.5rem; background: var(--papier-2); border: 3px solid var(--encre); border-radius: 16px; box-shadow: 4px 4px 0 var(--encre);">
+      <!-- L'exercice d'ordonnancement sera injecté ici -->
+    </div>
+  </div>
+
+  <!-- SCREEN: Sciences - Informations sur les planètes (Carte interactive & Quiz) -->
+  <div id="screen-sci-planetes-infos" class="screen">
     <style>
       .sci-infos-tabs-header {
         display: inline-flex !important;
@@ -5909,13 +5925,13 @@ input[type=text].calc-input.incorrect {
         background-color: rgba(0,0,0,0.05) !important;
       }
     </style>
-    <button class="back-btn" onclick="showScreen('screen-sciences');renderSciencesScreen();">← Retour</button>
-    <div class="page-title">🪐 Le système solaire</div>
+    <button class="back-btn" onclick="showScreen('screen-sci-systeme-solaire');renderSciSystemeSolaireMenu();">← Retour</button>
+    <div class="page-title">🌌 Informations sur les planètes</div>
     
-    <div class="sci-infos-tabs-header" id="sci-systeme-solaire-tabs-header"></div>
+    <div class="sci-infos-tabs-header" id="sci-planetes-infos-tabs-header"></div>
 
-    <div id="sci-systeme-solaire-container" class="card" style="padding: 1.5rem; background: var(--papier-2); border: 3px solid var(--encre); border-radius: 16px; box-shadow: 4px 4px 0 var(--encre);">
-      <!-- Le contenu de l'onglet actif sera injecté ici -->
+    <div id="sci-planetes-infos-container" class="card" style="padding: 1.5rem; background: var(--papier-2); border: 3px solid var(--encre); border-radius: 16px; box-shadow: 4px 4px 0 var(--encre);">
+      <!-- Le contenu de l'onglet actif (Carte ou Quiz) sera injecté ici -->
     </div>
   </div>
 
@@ -27175,9 +27191,8 @@ function renderSciSystemeSolaireMenu(){
   const menu = document.getElementById('sci-systeme-solaire-menu');
   if(!menu) return;
   const items = [
-    {id:'sci_planetes_ordre', screen:'screen-sci-planetes-ordre', label:"L'ordre des planètes", icon:'🪐', desc:"Retrouve l'ordre correct des planètes à partir du Soleil", fn:'renderSciPlanetesOrdreScreen'},
-    {id:'sci_planetes_infos', screen:'screen-sci-planetes-infos', label:"Informations sur les planètes", icon:'🌌', desc:"Explore le Soleil, les planètes, la ceinture d'astéroïdes et les comètes !", fn:'renderSciPlanetesInfosScreen'},
-    {id:'sci_planetes_qcm', screen:'screen-sci-planetes-qcm', label:"Le quiz du système solaire", icon:'❓', desc:"Teste tes connaissances avec des questions de lecture et de réflexion !", fn:'renderSciPlanetesQcmScreen'},
+    {id:'sci_planetes_ordre', badgeId:'sci_planetes_ordre', screen:'screen-sci-planetes-ordre', label:"L'ordre des planètes", icon:'🪐', desc:"Retrouve l'ordre correct des planètes à partir du Soleil", fn:'renderSciPlanetesOrdreScreen'},
+    {id:'sci_planetes_infos', badgeId:'sci_planetes_qcm', screen:'screen-sci-planetes-infos', label:"Informations sur les planètes", icon:'🌌', desc:"Explore le système solaire et teste tes connaissances avec le quiz !", fn:'renderSciPlanetesInfosScreen'},
   ];
   let html = '';
   items.forEach(t => {
@@ -27189,7 +27204,7 @@ function renderSciSystemeSolaireMenu(){
          </button>`
       : '';
     if(isLocked && !isTeacher) return;
-    const badge = isTeacher ? '' : renderScoreBadge(t.id);
+    const badge = isTeacher ? '' : renderScoreBadge(t.badgeId);
     html += `<div class="sub-subject-card active-card" onclick="navTo('${t.screen}','${t.fn}')" style="position:relative">
       ${toggleBtn}
       <div class="sub-icon">${t.icon}</div>
@@ -28236,8 +28251,58 @@ const SCI_PLANETES_DETAILS = {
   }
 };
 
+let sciPlanetesActiveTab = 'discover'; // 'discover' ou 'quiz'
+
 function renderSciPlanetesInfosScreen() {
   showScreen('screen-sci-planetes-infos');
+  
+  const header = document.getElementById('sci-planetes-infos-tabs-header');
+  if (header) {
+    const isTeacher = (state.role === 'teacher');
+    const isQcmLocked = isActivityLocked('sci_planetes_qcm');
+    
+    if (isQcmLocked && !isTeacher && sciPlanetesActiveTab === 'quiz') {
+      sciPlanetesActiveTab = 'discover';
+    }
+
+    let tabsHtml = `
+      <button class="sci-infos-tab ${sciPlanetesActiveTab === 'discover' ? 'active' : ''}" onclick="switchPlanetInfoTab('discover')">
+        🔍 Découvrir les planètes
+      </button>
+    `;
+
+    if (!isQcmLocked || isTeacher) {
+      const lockIcon = isQcmLocked ? '🔒 ' : '';
+      const teacherToggle = isTeacher 
+        ? `<span onclick="event.stopPropagation(); toggleActivity('sci_planetes_qcm'); renderSciPlanetesInfosScreen();" style="margin-left: 8px; cursor: pointer; font-size: 1.1rem; line-height: 1;" title="${isQcmLocked ? 'Déverrouiller le quiz' : 'Verrouiller le quiz'}">
+            ${isQcmLocked ? '🔓' : '🔒'}
+           </span>`
+        : '';
+      
+      tabsHtml += `
+        <button class="sci-infos-tab ${sciPlanetesActiveTab === 'quiz' ? 'active' : ''}" onclick="switchPlanetInfoTab('quiz')" style="display: inline-flex; align-items: center; gap: 4px;">
+          <span>${lockIcon}❓ Le quiz</span>
+          ${teacherToggle}
+        </button>
+      `;
+    }
+
+    header.innerHTML = tabsHtml;
+  }
+
+  if (sciPlanetesActiveTab === 'discover') {
+    renderSciPlanetesInfosContent();
+  } else {
+    renderSciPlanetesQcmContent();
+  }
+}
+
+function switchPlanetInfoTab(tab) {
+  sciPlanetesActiveTab = tab;
+  renderSciPlanetesInfosScreen();
+}
+
+function renderSciPlanetesInfosContent() {
   const container = document.getElementById('sci-planetes-infos-container');
   if (!container) return;
 
@@ -28795,12 +28860,10 @@ let sciPlanetesQcmState = {
   questions: [],
   currentIndex: 0,
   userAnswers: [], // stocke l'index de l'option choisie ou null
-  validatedAnswers: [], // stocke si l'élève a cliqué sur valider
   validated: false
 };
 
-function renderSciPlanetesQcmScreen() {
-  showScreen('screen-sci-planetes-qcm');
+function renderSciPlanetesQcmContent() {
   if (sciPlanetesQcmState.questions.length === 0) {
     sciPlanetesInitQcm();
   }
@@ -28810,7 +28873,7 @@ function renderSciPlanetesQcmScreen() {
 function sciPlanetesInitQcm() {
   const poolCopy = [...SCI_PLANETES_QCM_POOL];
   const shuffledPool = shuffle(poolCopy);
-  const selected = shuffledPool.slice(0, 5);
+  const selected = shuffledPool.slice(0, 10);
 
   sciPlanetesQcmState.questions = selected.map(q => {
     const optionsCopy = q.options.map(opt => ({ ...opt }));
@@ -28822,7 +28885,7 @@ function sciPlanetesInitQcm() {
     };
   });
 
-  sciPlanetesQcmState.userAnswers = Array(5).fill(-1);
+  sciPlanetesQcmState.userAnswers = Array(10).fill(-1);
   sciPlanetesQcmState.validated = false;
 }
 
@@ -28838,13 +28901,31 @@ function sciQcmSelect(qi, ai) {
   renderSciQcmQuestion();
 }
 
+function sciGetQcmCorrectCount() {
+  const stateObj = sciPlanetesQcmState;
+  let correct = 0;
+  stateObj.questions.forEach((q, idx) => {
+    const selOptIdx = stateObj.userAnswers[idx];
+    if (selOptIdx !== -1 && q.options[selOptIdx] && q.options[selOptIdx].isCorrect) {
+      correct++;
+    }
+  });
+  return correct;
+}
+
 function sciQcmValidateAll() {
   const stateObj = sciPlanetesQcmState;
+  const unanswered = stateObj.userAnswers.includes(-1);
+  if (unanswered) {
+    alert("Réponds à toutes les questions avant de valider !");
+    return;
+  }
+
   stateObj.validated = true;
   renderSciQcmQuestion();
 
   const score = sciGetQcmCorrectCount();
-  const pct = Math.round((score / 5) * 100);
+  const pct = Math.round((score / 10) * 100);
 
   if (window.state && window.state.student) {
     saveResult({
@@ -28854,7 +28935,7 @@ function sciQcmValidateAll() {
       activity: 'sci_planetes_qcm',
       bookTitle: "Le quiz du système solaire",
       score,
-      total: 5,
+      total: 10,
       pct,
       date: new Date().toLocaleDateString('fr-BE'),
       time: new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })
@@ -28863,7 +28944,7 @@ function sciQcmValidateAll() {
 }
 
 function renderSciQcmQuestion() {
-  const container = document.getElementById('sci-planetes-qcm-container');
+  const container = document.getElementById('sci-planetes-infos-container');
   if (!container) return;
 
   const stateObj = sciPlanetesQcmState;
@@ -28945,16 +29026,16 @@ function renderSciQcmQuestion() {
     `;
   } else {
     const score = sciGetQcmCorrectCount();
-    const pct = Math.round((score / 5) * 100);
+    const pct = Math.round((score / 10) * 100);
 
     let title = "Pas mal !";
     let desc = "Tu devrais relire les fiches scientifiques des planètes pour améliorer ton score.";
     let emoji = "✨";
-    if (score === 5) {
+    if (score === 10) {
       title = "Parfait !";
       desc = "Félicitations ! Tu connais le système solaire sur le bout des doigts.";
       emoji = "🏆";
-    } else if (score >= 3) {
+    } else if (score >= 7) {
       title = "Très bien !";
       desc = "Bon travail ! Tu as une bonne compréhension globale.";
       emoji = "🌟";
@@ -28963,7 +29044,7 @@ function renderSciQcmQuestion() {
     html += `
       <div class="geo-score-panel" style="margin-top:1rem; text-align:center; padding:1.5rem 0;">
         <div class="score-title" style="font-weight:800; font-size:28px; color:${pct>=70?'#16a34a':pct>=50?'#d97706':'#dc2626'}">
-          ${score} / 5 — ${pct}%
+          ${score} / 10 — ${pct}%
         </div>
         <div class="score-msg" style="font-weight:700; margin-top:0.5rem; margin-bottom:1rem; color:var(--encre);">
           ${emoji} ${title} ${desc}
@@ -37479,11 +37560,10 @@ window.sciHotspotClick = sciHotspotClick;
 window.sciShowPlanetInfo = sciShowPlanetInfo;
 window.sciClosePlanetInfo = sciClosePlanetInfo;
 window.sciClosePlanetInfoOutside = sciClosePlanetInfoOutside;
-window.renderSciPlanetesQcmScreen = renderSciPlanetesQcmScreen;
-window.sciQcmSelectOption = sciQcmSelectOption;
-window.sciQcmValidateCurrent = sciQcmValidateCurrent;
-window.sciQcmNextQuestion = sciQcmNextQuestion;
-window.sciQcmShowResults = sciQcmShowResults;
+window.switchPlanetInfoTab = switchPlanetInfoTab;
+window.sciQcmSelect = sciQcmSelect;
+window.sciQcmValidateAll = sciQcmValidateAll;
+window.sciQcmRestart = sciQcmRestart;
 window.renderGeographieScreen = renderGeographieScreen;
 window.renderSciencesScreen = renderSciencesScreen;
 window.renderHistoireScreen = renderHistoireScreen;
