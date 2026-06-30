@@ -1,0 +1,1184 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>L'Arpenteur des Ardennes - Échelles (P5-P6)</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --purple: #5B4FCF;
+    --purple-light: #EEF0FF;
+    --purple-dark: #3F35A3;
+    --green: #2ECC71;
+    --green-light: #E8F8F0;
+    --red: #E74C3C;
+    --red-light: #FDEDEC;
+    --yellow: #F1C40F;
+    --bg: #FDFBF7;
+    --panel: #FFFFFF;
+    --ink: #1A1A2E;
+    --muted: #6B7080;
+    --line: #1A1A2E;
+    --shadow: 6px 6px 0px #1A1A2E;
+    --shadow-active: 2px 2px 0px #1A1A2E;
+  }
+
+  * {
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+  }
+
+  body {
+    background: var(--bg);
+    margin: 0;
+    padding: 20px;
+    color: var(--ink);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: 'Fredoka', sans-serif;
+    margin: 0 0 10px 0;
+  }
+
+  /* --- HEADER & CONTROLS --- */
+  .header {
+    width: 100%;
+    max-width: 1200px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    background: var(--panel);
+    border: 3px solid var(--line);
+    padding: 15px 25px;
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+  }
+
+  .header-title {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .logo-icon {
+    font-size: 2.5rem;
+  }
+
+  .level-badge {
+    background: var(--purple-light);
+    color: var(--purple);
+    border: 2px solid var(--purple);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    font-family: 'Fredoka', sans-serif;
+  }
+
+  .stats-container {
+    display: flex;
+    gap: 20px;
+  }
+
+  .stat-card {
+    background: var(--panel);
+    border: 2px solid var(--line);
+    padding: 8px 15px;
+    border-radius: 10px;
+    font-weight: 800;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* --- MAIN CONTENT LAYOUT --- */
+  .game-container {
+    width: 100%;
+    max-width: 1200px;
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+  }
+
+  /* --- LEFT PANEL: THE MAP --- */
+  .map-panel {
+    position: relative;
+    width: 800px;
+    height: 600px;
+    background: #E4F1FE;
+    border: 3px solid var(--line);
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    user-select: none;
+  }
+
+  .map-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    pointer-events: none;
+  }
+
+  /* Target landmarks on map */
+  .landmark-target {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    background: rgba(231, 76, 60, 0.3);
+    border: 3px solid var(--red);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    cursor: pointer;
+    z-index: 10;
+    transition: all 0.2s ease;
+  }
+
+  .landmark-target::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 8px;
+    height: 8px;
+    background: var(--red);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .landmark-target.active-target {
+    background: rgba(241, 196, 15, 0.4);
+    border-color: var(--yellow);
+    box-shadow: 0 0 0 6px rgba(241, 196, 15, 0.3);
+    animation: pulseTarget 1.5s infinite;
+  }
+
+  .landmark-target.active-target::after {
+    background: var(--yellow);
+  }
+
+  .landmark-label {
+    position: absolute;
+    background: var(--ink);
+    color: #FFF;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    white-space: nowrap;
+    transform: translate(-50%, -140%);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    z-index: 15;
+  }
+
+  .landmark-target:hover .landmark-label {
+    opacity: 1;
+  }
+
+  @keyframes pulseTarget {
+    0% { transform: translate(-50%, -50%) scale(1); }
+    50% { transform: translate(-50%, -50%) scale(1.2); }
+    100% { transform: translate(-50%, -50%) scale(1); }
+  }
+
+  /* --- INTERACTIVE RULER --- */
+  .ruler {
+    position: absolute;
+    width: 940px; /* 22 cm (1 cm = 40 pixels) */
+    height: 50px;
+    background: rgba(255, 235, 150, 0.75);
+    border: 2px solid var(--line);
+    border-radius: 4px;
+    cursor: grab;
+    z-index: 20;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  }
+
+  .ruler:active {
+    cursor: grabbing;
+  }
+
+  /* Ruler Drag/Move Knob at "0" */
+  .ruler-grab-knob {
+    position: absolute;
+    left: 17px; /* Centered on the 30px zero mark: 30 - 13 = 17 */
+    top: 12px;  /* Centered on 25px: 25 - 13 = 12 */
+    width: 26px;
+    height: 26px;
+    background: var(--red);
+    border: 2.5px solid var(--line);
+    border-radius: 50%;
+    cursor: move;
+    box-shadow: 2px 2px 0px var(--line);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #FFF;
+    font-size: 14px;
+    font-weight: bold;
+    user-select: none;
+    z-index: 30;
+    transition: background 0.1s ease;
+  }
+
+  .ruler-grab-knob:active {
+    background: var(--purple);
+    transform: translate(1px, 1px);
+    box-shadow: 1px 1px 0px var(--line);
+  }
+
+  /* Ruler Tick Marks */
+  .ruler-ticks {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+
+  .tick {
+    position: absolute;
+    background: var(--line);
+    bottom: 0;
+    width: 1.5px;
+  }
+
+  .tick.cm {
+    height: 15px;
+    width: 2px;
+  }
+
+  .tick.half {
+    height: 10px;
+  }
+
+  .tick.mm {
+    height: 6px;
+  }
+
+  .ruler-label {
+    position: absolute;
+    font-size: 9px;
+    font-weight: 800;
+    bottom: 18px;
+    transform: translateX(-50%);
+    color: var(--ink);
+  }
+
+  /* --- RIGHT PANEL: CARNET DE ROUTE --- */
+  .question-panel {
+    flex: 1;
+    background: var(--panel);
+    border: 3px solid var(--line);
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+    padding: 24px;
+    min-height: 600px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .task-card {
+    background: var(--purple-light);
+    border: 2px solid var(--purple);
+    padding: 15px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+  }
+
+  .task-instruction {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--purple-dark);
+    margin-bottom: 8px;
+  }
+
+  .scale-box {
+    display: inline-block;
+    background: var(--panel);
+    border: 2px solid var(--line);
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+  }
+
+  /* --- STEP BY STEP WORKFLOW --- */
+  .step-container {
+    margin-bottom: 20px;
+    opacity: 0.5;
+    pointer-events: none;
+    transition: all 0.3s ease;
+  }
+
+  .step-container.active-step {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .step-title {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 1.1rem;
+    color: var(--ink);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .step-badge {
+    background: var(--ink);
+    color: #FFF;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: 800;
+  }
+
+  /* --- INPUT GROUPS & TABLES --- */
+  .prop-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 15px;
+    border: 2px solid var(--line);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .prop-table th, .prop-table td {
+    border: 1px solid var(--line);
+    padding: 10px;
+    text-align: center;
+  }
+
+  .prop-table th {
+    background: var(--purple-light);
+    font-size: 0.85rem;
+    font-weight: 700;
+  }
+
+  .input-with-unit {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .num-input {
+    width: 80px;
+    padding: 8px;
+    border: 2px solid var(--line);
+    border-radius: 6px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    text-align: center;
+    outline: none;
+    box-shadow: 2px 2px 0px var(--line);
+    transition: all 0.1s ease;
+  }
+
+  .num-input:focus {
+    box-shadow: 1px 1px 0px var(--line);
+    transform: translate(1px, 1px);
+  }
+
+  .unit-select {
+    padding: 8px;
+    border: 2px solid var(--line);
+    border-radius: 6px;
+    font-weight: 700;
+    background: #FFF;
+    outline: none;
+    box-shadow: 2px 2px 0px var(--line);
+    cursor: pointer;
+  }
+
+  /* --- ACTION BUTTONS --- */
+  .btn {
+    background: var(--purple);
+    color: #FFF;
+    border: 2px solid var(--line);
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    cursor: pointer;
+    box-shadow: var(--shadow);
+    transition: all 0.1s ease;
+    width: 100%;
+    text-align: center;
+  }
+
+  .btn:hover {
+    background: var(--purple-dark);
+  }
+
+  .btn:active {
+    transform: translate(4px, 4px);
+    box-shadow: var(--shadow-active);
+  }
+
+  .btn.btn-success {
+    background: var(--green);
+  }
+  .btn.btn-success:hover {
+    background: #27AE60;
+  }
+
+  /* --- FEEDBACK BOXES --- */
+  .feedback-box {
+    margin-top: 15px;
+    padding: 12px 18px;
+    border-radius: 10px;
+    border: 2px solid var(--line);
+    font-weight: 600;
+    display: none;
+    animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+
+  .feedback-success {
+    background: var(--green-light);
+    color: #196F3D;
+    border-color: var(--green);
+  }
+
+  .feedback-error {
+    background: var(--red-light);
+    color: #7B241C;
+    border-color: var(--red);
+  }
+
+  @keyframes popIn {
+    0% { transform: scale(0.9); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  /* --- LEVEL SELECTION OVERLAY --- */
+  .level-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(26, 26, 46, 0.85);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .level-card {
+    background: var(--panel);
+    border: 4px solid var(--line);
+    border-radius: 24px;
+    padding: 40px;
+    max-width: 500px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 10px 10px 0px #000;
+  }
+
+  .level-btns {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 25px;
+  }
+
+  .level-btn {
+    background: #FFF;
+    border: 3px solid var(--line);
+    padding: 18px;
+    border-radius: 16px;
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 700;
+    font-size: 1.3rem;
+    cursor: pointer;
+    box-shadow: 5px 5px 0px var(--line);
+    transition: all 0.1s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .level-btn .sub-text {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85rem;
+    color: var(--muted);
+    font-weight: 400;
+    margin-top: 5px;
+  }
+
+  .level-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 7px 7px 0px var(--line);
+  }
+
+  .level-btn.btn-p5:hover { background: var(--purple-light); }
+  .level-btn.btn-p6:hover { background: var(--green-light); }
+
+  .level-btn:active {
+    transform: translate(3px, 3px);
+    box-shadow: 2px 2px 0px var(--line);
+  }
+
+  /* --- FIN OVERLAY --- */
+  .end-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(26, 26, 46, 0.9);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    display: none;
+  }
+
+  .end-card {
+    background: var(--panel);
+    border: 4px solid var(--line);
+    border-radius: 24px;
+    padding: 40px;
+    max-width: 550px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 10px 10px 0px #000;
+    animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+
+  .trophy {
+    font-size: 5rem;
+    margin-bottom: 20px;
+  }
+</style>
+</head>
+<body>
+
+<!-- LEVEL SELECTION -->
+<div id="level-overlay" class="level-overlay">
+  <div class="level-card">
+    <h2>Choisis ton niveau</h2>
+    <p>Sélectionne la difficulté correspondant à ton programme scolaire.</p>
+    <div class="level-btns">
+      <button class="level-btn btn-p5" onclick="selectLevel('Niveau 1')">
+        Niveau 1
+        <span class="sub-text">Échelles simples (1:10 000, 1:20 000), distances réelles en mètres (m)</span>
+      </button>
+      <button class="level-btn btn-p6" onclick="selectLevel('Niveau 2')">
+        Niveau 2
+        <span class="sub-text">Échelles variées, conversions en kilomètres (km)</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- END GAME SCREEN -->
+<div id="end-overlay" class="end-overlay">
+  <div class="end-card">
+    <div class="trophy">🏆</div>
+    <h2>Félicitations, Arpenteur !</h2>
+    <p style="font-size: 1.15rem; margin-bottom: 25px;">Tu as terminé l'entraînement de cartographie avec succès.</p>
+    <div class="stat-card" style="justify-content: center; font-size: 1.5rem; margin-bottom: 30px; border-width: 3px;">
+      Score Final : <span id="final-score">0</span> / 100
+    </div>
+    <button class="btn" onclick="restartGame()">Recommencer l'activité</button>
+  </div>
+</div>
+
+<!-- MAIN INTERFACE -->
+<div class="header">
+  <div class="header-title">
+    <span class="logo-icon">🗺️</span>
+    <div>
+      <h1 style="margin: 0; font-size: 1.8rem;">L'Arpenteur des Ardennes</h1>
+      <div style="display: flex; gap: 8px; align-items: center; margin-top: 4px;">
+        <span class="level-badge" id="current-level-badge">Niveau 1</span>
+        <span style="font-size: 0.85rem; color: var(--muted);">Entraînement aux échelles cartographiques</span>
+      </div>
+    </div>
+  </div>
+  
+  <div class="stats-container">
+    <div class="stat-card">
+      🎯 Question : <span id="stat-question-num">1</span>/10
+    </div>
+    <div class="stat-card" style="border-color: var(--purple); color: var(--purple);">
+      ⭐ Score : <span id="stat-score">0</span> pts
+    </div>
+  </div>
+</div>
+
+<div class="game-container">
+  <!-- THE MAP PANEL -->
+  <div class="map-panel" id="map-container">
+    <!-- Map image -->
+    <img src="assets/images/carte_ardennes.jpg" alt="Carte des Ardennes" class="map-image">
+
+    <!-- Active dots for current question -->
+    <div id="dot-a" class="landmark-target" style="left: -100px; top: -100px;">
+      <span class="landmark-label" id="label-a">Point A</span>
+    </div>
+    <div id="dot-b" class="landmark-target" style="left: -100px; top: -100px;">
+      <span class="landmark-label" id="label-b">Point B</span>
+    </div>
+
+    <!-- Interactive Ruler -->
+    <div class="ruler" id="ruler" title="Fais glisser le corps jaune de la règle pour pivoter.">
+      <div class="ruler-ticks" id="ruler-ticks"></div>
+      <div class="ruler-grab-knob" id="ruler-grab-knob" title="Fais glisser ce bouton pour déplacer la règle">✥</div>
+    </div>
+  </div>
+
+  <!-- THE QUESTION PANEL -->
+  <div class="question-panel">
+    <div class="task-card">
+      <div class="task-instruction">Mission actuelle :</div>
+      <h3 id="question-text" style="font-size: 1.25rem; line-height: 1.4; margin-bottom: 12px;">Mesure la distance sur la carte...</h3>
+      <div>
+        Échelle de la carte : <span class="scale-box" id="scale-display">1 : 10 000</span>
+      </div>
+    </div>
+
+    <!-- STEP 1: MEASURE IN CM -->
+    <div class="step-container active-step" id="step-1-container">
+      <div class="step-title">
+        <span class="step-badge">1</span>
+        Mesure sur la carte
+      </div>
+      <p style="font-size: 0.9rem; color: var(--muted); margin: 0 0 10px 0; line-height: 1.45;">
+        <strong>Aide :</strong> Glisse le bouton rouge ✥ pour positionner le "0" sur la première cible. Glisse ensuite n'importe où sur le corps jaune de la règle pour la faire pivoter vers la seconde cible.
+      </p>
+      <div class="input-with-unit" style="justify-content: flex-start; margin-bottom: 12px;">
+        <label for="measure-input" style="font-weight: 700;">Ta mesure :</label>
+        <input type="number" id="measure-input" class="num-input" step="0.1" min="0" placeholder="ex: 6.2">
+        <span style="font-weight: 800; font-size: 1.1rem;">cm</span>
+      </div>
+      <button class="btn" id="btn-validate-measure" onclick="validateMeasurement()">Valider la mesure</button>
+      <div class="feedback-box" id="feedback-measure"></div>
+    </div>
+
+    <!-- STEP 2: CALCULATE REAL DISTANCE -->
+    <div class="step-container" id="step-2-container" style="margin-top: 10px;">
+      <div class="step-title">
+        <span class="step-badge">2</span>
+        Calcule la distance réelle
+      </div>
+      <p style="font-size: 0.9rem; color: var(--muted); margin: 0 0 12px 0;">
+        À l'aide de l'échelle, calcule la distance réelle correspondante.
+      </p>
+      
+      <table class="prop-table">
+        <thead>
+          <tr>
+            <th>Sur la carte</th>
+            <th>Dans la réalité</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="font-weight: 700;">1 cm</td>
+            <td id="scale-unit-conversion" style="font-weight: 700;">100 m</td>
+          </tr>
+          <tr style="background: var(--purple-light);">
+            <td id="measured-cm-display" style="font-weight: 800;">6.2 cm</td>
+            <td>
+              <div class="input-with-unit">
+                <input type="number" id="real-distance-input" class="num-input" style="width: 100px;" placeholder="ex: 620">
+                <select id="unit-select" class="unit-select">
+                  <option value="m">m</option>
+                  <option value="km">km</option>
+                </select>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <button class="btn btn-success" id="btn-validate-real" onclick="validateRealDistance()">Confirmer le calcul</button>
+      <div class="feedback-box" id="feedback-real"></div>
+    </div>
+
+    <!-- ACTION BUTTON FOR NEXT QUESTION -->
+    <button class="btn" id="btn-next-question" style="display: none; margin-top: auto;" onclick="nextQuestion()">Question suivante →</button>
+  </div>
+</div>
+
+<script>
+  // --- SOUND EFFECTS (Web Audio API Synthesizer) ---
+  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  
+  function playSound(type) {
+    if (audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+
+    const now = audioCtx.currentTime;
+
+    if (type === 'success') {
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(330, now);
+      osc.frequency.exponentialRampToValueAtTime(660, now + 0.15);
+      gain.gain.setValueAtTime(0.15, now);
+      gain.gain.linearRampToValueAtTime(0.01, now + 0.2);
+      osc.start(now);
+      osc.stop(now + 0.2);
+    } else if (type === 'error') {
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(180, now);
+      osc.frequency.linearRampToValueAtTime(100, now + 0.25);
+      gain.gain.setValueAtTime(0.2, now);
+      gain.gain.linearRampToValueAtTime(0.01, now + 0.3);
+      osc.start(now);
+      osc.stop(now + 0.3);
+    } else if (type === 'complete') {
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(523.25, now); // C5
+      osc.frequency.setValueAtTime(659.25, now + 0.1); // E5
+      osc.frequency.setValueAtTime(783.99, now + 0.2); // G5
+      osc.frequency.setValueAtTime(1046.50, now + 0.3); // C6
+      gain.gain.setValueAtTime(0.2, now);
+      gain.gain.linearRampToValueAtTime(0.01, now + 0.6);
+      osc.start(now);
+      osc.stop(now + 0.6);
+    } else if (type === 'click') {
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(400, now);
+      gain.gain.setValueAtTime(0.05, now);
+      gain.gain.linearRampToValueAtTime(0.01, now + 0.05);
+      osc.start(now);
+      osc.stop(now + 0.05);
+    }
+  }
+
+  // --- GAME CONFIGURATION ---
+  // Map display coordinates on 800x600 grid
+  const LANDMARKS = {
+    moulin: { name: "Le Moulin du Ry", x: 220, y: 120 },
+    pont: { name: "Le Pont des Gattes", x: 170, y: 550 },
+    chapelle: { name: "La Chapelle Saint-Thibaut", x: 300, y: 330 },
+    herou: { name: "Le belvédère du Hérou", x: 580, y: 220 },
+    source: { name: "La Source de la Lienne", x: 650, y: 400 },
+    gite: { name: "Le Gîte d'étape de Nisramont", x: 730, y: 500 }
+  };
+
+  const LANDMARK_KEYS = Object.keys(LANDMARKS);
+
+  // Scales config per level
+  const SCALES = {
+    'Niveau 1': [
+      { ratio: 10000, desc: "1 : 10 000", conversionText: "100 m" },
+      { ratio: 20000, desc: "1 : 20 000", conversionText: "200 m" },
+      { ratio: 5000,  desc: "1 : 5 000",  conversionText: "50 m" }
+    ],
+    'Niveau 2': [
+      { ratio: 25000, desc: "1 : 25 000", conversionText: "250 m" },
+      { ratio: 50000, desc: "1 : 50 000", conversionText: "500 m" },
+      { ratio: 100000, desc: "1 : 100 000", conversionText: "1 km" }
+    ]
+  };
+
+  let currentLevel = 'Niveau 1';
+  let score = 0;
+  let questionNum = 1;
+  let currentQuestion = null;
+
+  // --- INTERACTIVE RULER STATE ---
+  let isDragging = false;
+  let isRotating = false;
+  let startX, startY;
+  let rulerLeft = 100;
+  let rulerTop = 100;
+  let rulerAngle = 0;
+  let startAngle = 0;
+  let initialRulerAngle = 0;
+  const PIVOT_X = 30; // center of zero circle on ruler element
+  const PIVOT_Y = 25; // center vertical alignment
+
+  const ruler = document.getElementById('ruler');
+  const grabKnob = document.getElementById('ruler-grab-knob');
+  const mapContainer = document.getElementById('map-container');
+
+  // Initialize ruler ticks
+  function buildRulerTicks() {
+    const ticksContainer = document.getElementById('ruler-ticks');
+    ticksContainer.innerHTML = '';
+    
+    // 0 to 22 cm. 1 cm = 40px.
+    // Offset zero mark is at x = 30px.
+    for (let mm = 0; mm <= 220; mm++) {
+      const x = 30 + (mm * 4); // 4px per mm
+      const tick = document.createElement('div');
+      tick.style.left = x + 'px';
+      
+      if (mm % 10 === 0) {
+        // cm tick
+        tick.className = 'tick cm';
+        
+        // add text label
+        const label = document.createElement('span');
+        label.className = 'ruler-label';
+        label.style.left = x + 'px';
+        label.textContent = (mm / 10);
+        ticksContainer.appendChild(label);
+      } else if (mm % 5 === 0) {
+        // 0.5 cm tick
+        tick.className = 'tick half';
+      } else {
+        // mm tick
+        tick.className = 'tick mm';
+      }
+      ticksContainer.appendChild(tick);
+    }
+  }
+
+  // Position and setup ruler pivot
+  ruler.style.left = rulerLeft + 'px';
+  ruler.style.top = rulerTop + 'px';
+  ruler.style.transform = `rotate(${rulerAngle}deg)`;
+  ruler.style.transformOrigin = `${PIVOT_X}px ${PIVOT_Y}px`;
+
+  // Ruler event handlers
+  grabKnob.addEventListener('mousedown', (e) => {
+    isDragging = true;
+    startX = e.clientX - rulerLeft;
+    startY = e.clientY - rulerTop;
+    playSound('click');
+    e.preventDefault();
+    e.stopPropagation(); // Stop propagation to prevent triggering rotation
+  });
+
+  ruler.addEventListener('mousedown', (e) => {
+    if (e.target === grabKnob) return;
+    isRotating = true;
+    playSound('click');
+    
+    // Relative rotation setup
+    const rect = mapContainer.getBoundingClientRect();
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+    const pivotGlobalX = rulerLeft + PIVOT_X;
+    const pivotGlobalY = rulerTop + PIVOT_Y;
+    
+    startAngle = Math.atan2(mouseY - pivotGlobalY, mouseX - pivotGlobalX) * 180 / Math.PI;
+    initialRulerAngle = rulerAngle;
+    
+    e.preventDefault();
+  });
+
+  document.addEventListener('mousemove', (e) => {
+    if (isDragging) {
+      rulerLeft = e.clientX - startX;
+      rulerTop = e.clientY - startY;
+      
+      // Boundaries
+      rulerLeft = Math.max(-100, Math.min(750, rulerLeft));
+      rulerTop = Math.max(-30, Math.min(570, rulerTop));
+      
+      ruler.style.left = rulerLeft + 'px';
+      ruler.style.top = rulerTop + 'px';
+    } else if (isRotating) {
+      const rect = mapContainer.getBoundingClientRect();
+      const mouseX = e.clientX - rect.left;
+      const mouseY = e.clientY - rect.top;
+      
+      const pivotGlobalX = rulerLeft + PIVOT_X;
+      const pivotGlobalY = rulerTop + PIVOT_Y;
+      
+      const dx = mouseX - pivotGlobalX;
+      const dy = mouseY - pivotGlobalY;
+      
+      const currentAngle = Math.atan2(dy, dx) * 180 / Math.PI;
+      rulerAngle = initialRulerAngle + (currentAngle - startAngle);
+      ruler.style.transform = `rotate(${rulerAngle}deg)`;
+    }
+  });
+
+  document.addEventListener('mouseup', () => {
+    isDragging = false;
+    isRotating = false;
+  });
+
+  // Touch Support
+  grabKnob.addEventListener('touchstart', (e) => {
+    isDragging = true;
+    const touch = e.touches[0];
+    startX = touch.clientX - rulerLeft;
+    startY = touch.clientY - rulerTop;
+    playSound('click');
+    e.preventDefault();
+    e.stopPropagation();
+  });
+
+  ruler.addEventListener('touchstart', (e) => {
+    if (e.target === grabKnob) return;
+    isRotating = true;
+    playSound('click');
+    
+    const touch = e.touches[0];
+    const rect = mapContainer.getBoundingClientRect();
+    const mouseX = touch.clientX - rect.left;
+    const mouseY = touch.clientY - rect.top;
+    const pivotGlobalX = rulerLeft + PIVOT_X;
+    const pivotGlobalY = rulerTop + PIVOT_Y;
+    
+    startAngle = Math.atan2(mouseY - pivotGlobalY, mouseX - pivotGlobalX) * 180 / Math.PI;
+    initialRulerAngle = rulerAngle;
+    
+    e.preventDefault();
+  });
+
+  document.addEventListener('touchmove', (e) => {
+    const touch = e.touches[0];
+    if (isDragging) {
+      rulerLeft = touch.clientX - startX;
+      rulerTop = touch.clientY - startY;
+      ruler.style.left = rulerLeft + 'px';
+      ruler.style.top = rulerTop + 'px';
+    } else if (isRotating) {
+      const rect = mapContainer.getBoundingClientRect();
+      const mouseX = touch.clientX - rect.left;
+      const mouseY = touch.clientY - rect.top;
+      
+      const pivotGlobalX = rulerLeft + PIVOT_X;
+      const pivotGlobalY = rulerTop + PIVOT_Y;
+      
+      const dx = mouseX - pivotGlobalX;
+      const dy = mouseY - pivotGlobalY;
+      
+      const currentAngle = Math.atan2(dy, dx) * 180 / Math.PI;
+      rulerAngle = initialRulerAngle + (currentAngle - startAngle);
+      ruler.style.transform = `rotate(${rulerAngle}deg)`;
+    }
+  });
+
+  document.addEventListener('touchend', () => {
+    isDragging = false;
+    isRotating = false;
+  });
+
+  // --- GAME PLAY LOGIC ---
+
+  function selectLevel(level) {
+    playSound('click');
+    currentLevel = level;
+    document.getElementById('current-level-badge').textContent = level;
+    document.getElementById('level-overlay').style.display = 'none';
+    buildRulerTicks();
+    restartGame();
+  }
+
+  function restartGame() {
+    score = 0;
+    questionNum = 1;
+    document.getElementById('stat-score').textContent = score;
+    document.getElementById('stat-question-num').textContent = questionNum;
+    document.getElementById('end-overlay').style.display = 'none';
+    generateQuestion();
+  }
+
+  function generateQuestion() {
+    // Hide buttons/feedback
+    document.getElementById('btn-next-question').style.display = 'none';
+    document.getElementById('feedback-measure').style.display = 'none';
+    document.getElementById('feedback-real').style.display = 'none';
+    
+    // Enable Step 1 and reset inputs
+    document.getElementById('step-1-container').classList.add('active-step');
+    document.getElementById('step-2-container').classList.remove('active-step');
+    document.getElementById('measure-input').value = '';
+    document.getElementById('measure-input').disabled = false;
+    document.getElementById('btn-validate-measure').disabled = false;
+    document.getElementById('real-distance-input').value = '';
+    document.getElementById('real-distance-input').disabled = false;
+    document.getElementById('btn-validate-real').disabled = false;
+    document.getElementById('unit-select').disabled = false;
+
+    // Pick 2 random landmarks (must be different)
+    let idxA = Math.floor(Math.random() * LANDMARK_KEYS.length);
+    let idxB = Math.floor(Math.random() * LANDMARK_KEYS.length);
+    while (idxA === idxB) {
+      idxB = Math.floor(Math.random() * LANDMARK_KEYS.length);
+    }
+
+    const keyA = LANDMARK_KEYS[idxA];
+    const keyB = LANDMARK_KEYS[idxB];
+    const landA = LANDMARKS[keyA];
+    const landB = LANDMARKS[keyB];
+
+    // Pick random scale
+    const levelScales = SCALES[currentLevel];
+    const scaleObj = levelScales[Math.floor(Math.random() * levelScales.length)];
+
+    // Calculate actual values
+    const dx = landB.x - landA.x;
+    const dy = landB.y - landA.y;
+    const pixelDist = Math.sqrt(dx * dx + dy * dy);
+    
+    // 40 pixels = 1 cm
+    const actualCm = parseFloat((pixelDist / 40).toFixed(1));
+    const realDistMeters = actualCm * (scaleObj.ratio / 100); // 1 cm real = ratio cm = ratio / 100 meters
+
+    currentQuestion = {
+      from: landA,
+      to: landB,
+      scale: scaleObj,
+      correctCm: actualCm,
+      correctMeters: realDistMeters
+    };
+
+    // Update targets on map
+    const dotA = document.getElementById('dot-a');
+    const dotB = document.getElementById('dot-b');
+    
+    dotA.style.left = landA.x + 'px';
+    dotA.style.top = landA.y + 'px';
+    dotA.classList.add('active-target');
+    document.getElementById('label-a').textContent = landA.name;
+
+    dotB.style.left = landB.x + 'px';
+    dotB.style.top = landB.y + 'px';
+    dotB.classList.add('active-target');
+    document.getElementById('label-b').textContent = landB.name;
+
+    // Update text
+    document.getElementById('question-text').innerHTML = `Quelle est la distance réelle entre <strong style="color:var(--purple-dark);">${landA.name}</strong> et <strong style="color:var(--purple-dark);">${landB.name}</strong> ?`;
+    document.getElementById('scale-display').textContent = scaleObj.desc;
+    document.getElementById('scale-unit-conversion').textContent = scaleObj.conversionText;
+
+    // Hide ruler in starting position (or slightly offset from targets)
+    rulerLeft = 80;
+    rulerTop = 450;
+    rulerAngle = 0;
+    ruler.style.left = rulerLeft + 'px';
+    ruler.style.top = rulerTop + 'px';
+    ruler.style.transform = `rotate(${rulerAngle}deg)`;
+  }
+
+  function validateMeasurement() {
+    const userVal = parseFloat(document.getElementById('measure-input').value);
+    const feedback = document.getElementById('feedback-measure');
+
+    if (isNaN(userVal)) {
+      feedback.style.display = 'block';
+      feedback.className = 'feedback-box feedback-error';
+      feedback.textContent = 'Veuillez saisir un nombre.';
+      playSound('error');
+      return;
+    }
+
+    const diff = Math.abs(userVal - currentQuestion.correctCm);
+    
+    // Accept within 0.2 cm tolerance
+    if (diff <= 0.2) {
+      feedback.style.display = 'block';
+      feedback.className = 'feedback-box feedback-success';
+      feedback.innerHTML = `Excellent ! La mesure est de ${currentQuestion.correctCm} cm (ta réponse : ${userVal} cm).`;
+      playSound('success');
+
+      // Lock Step 1
+      document.getElementById('measure-input').disabled = true;
+      document.getElementById('btn-validate-measure').disabled = true;
+
+      // Open Step 2
+      document.getElementById('step-2-container').classList.add('active-step');
+      document.getElementById('measured-cm-display').textContent = userVal + ' cm';
+      document.getElementById('real-distance-input').focus();
+    } else {
+      feedback.style.display = 'block';
+      feedback.className = 'feedback-box feedback-error';
+      feedback.textContent = `Ajuste bien ta règle. Conseil : aligne le rond central rouge du 0 sur le premier lieu et fais pivoter la règle.`;
+      playSound('error');
+    }
+  }
+
+  function validateRealDistance() {
+    const userVal = parseFloat(document.getElementById('real-distance-input').value);
+    const userUnit = document.getElementById('unit-select').value;
+    const feedback = document.getElementById('feedback-real');
+
+    if (isNaN(userVal)) {
+      feedback.style.display = 'block';
+      feedback.className = 'feedback-box feedback-error';
+      feedback.textContent = 'Veuillez saisir un nombre.';
+      playSound('error');
+      return;
+    }
+
+    // Get the centimeter value entered by the user
+    const measuredCm = parseFloat(document.getElementById('measure-input').value);
+    
+    // Calculate expected meters based on the user's measurement
+    const correctMeters = measuredCm * (currentQuestion.scale.ratio / 100);
+
+    // Convert correct meters to user unit
+    let correctValue = correctMeters;
+    if (userUnit === 'km') {
+      correctValue = parseFloat((correctMeters / 1000).toFixed(3));
+    }
+
+    const diff = Math.abs(userVal - correctValue);
+    // Allow small decimal variance if km conversion
+    const tolerance = userUnit === 'km' ? 0.01 : 1;
+
+    if (diff <= tolerance) {
+      feedback.style.display = 'block';
+      feedback.className = 'feedback-box feedback-success';
+      feedback.innerHTML = `Bravo ! Le calcul est tout à fait exact. La distance réelle est bien de ${correctValue} ${userUnit}.`;
+      playSound('success');
+
+      // Add score
+      score += 10;
+      document.getElementById('stat-score').textContent = score;
+
+      // Lock elements
+      document.getElementById('real-distance-input').disabled = true;
+      document.getElementById('btn-validate-real').disabled = true;
+      document.getElementById('unit-select').disabled = true;
+
+      // Show Next button
+      document.getElementById('btn-next-question').style.display = 'block';
+    } else {
+      feedback.style.display = 'block';
+      feedback.className = 'feedback-box feedback-error';
+      feedback.innerHTML = `Calcul incorrect. Rappel : multiplie tes cm mesurés (${document.getElementById('measure-input').value} cm) par la valeur réelle de 1 cm (${currentQuestion.scale.conversionText}).`;
+      playSound('error');
+    }
+  }
+
+  function nextQuestion() {
+    playSound('click');
+    if (questionNum < 10) {
+      questionNum++;
+      document.getElementById('stat-question-num').textContent = questionNum;
+      generateQuestion();
+    } else {
+      // Game over!
+      playSound('complete');
+      document.getElementById('final-score').textContent = score;
+      document.getElementById('end-overlay').style.display = 'flex';
+    }
+  }
+</script>
+</body>
+</html>
