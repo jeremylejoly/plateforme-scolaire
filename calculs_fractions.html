@@ -1,0 +1,2079 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Les Calculs de Fractions - LCML</title>
+  <meta name="description" content="Activité interactive d'additions, soustractions et multiplications de fractions pour la 5e et 6e primaire.">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #f0fdfa; /* Soft teal background */
+      --bg-gradient: linear-gradient(135deg, #f0fdfa 0%, #e0f2fe 100%);
+      --card: #ffffff;
+      --text: #0f172a;
+      --text-muted: #475569;
+      --primary: #0d9488;
+      --primary-hover: #0f766e;
+      --primary-soft: #ccfbf1;
+      --secondary: #f43f5e; /* Coral for canvas fills */
+      --secondary-soft: #ffe4e6;
+      --success: #10b981;
+      --success-soft: #d1fae5;
+      --danger: #ef4444;
+      --danger-soft: #fee2e2;
+      --warning: #f59e0b;
+      --warning-soft: #fef3c7;
+      --border-color: #cbd5e1;
+      --border-focus: #0d9488;
+      
+      --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 10px 15px -3px rgba(13, 148, 136, 0.1), 0 4px 6px -4px rgba(13, 148, 136, 0.05);
+      --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+      
+      --radius-sm: 8px;
+      --radius-md: 16px;
+      --radius-lg: 24px;
+      --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: var(--bg-gradient);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3, .btn, .level-tag, .score-label {
+      font-family: 'Fredoka', sans-serif;
+    }
+
+    /* ---------- HEADER ---------- */
+    header {
+      background: var(--card);
+      border-bottom: 2px solid #e2e8f0;
+      padding: 0.75rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: var(--shadow-sm);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .header-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      cursor: pointer;
+    }
+
+    .header-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .header-stats {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .progress-bar-container {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    .progress-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #e2e8f0;
+      border: 2px solid #cbd5e1;
+      transition: var(--transition);
+    }
+
+    .progress-dot.active {
+      background: #fff;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-soft);
+    }
+
+    .progress-dot.correct {
+      background: var(--success);
+      border-color: var(--success);
+    }
+
+    .progress-dot.helped {
+      background: var(--warning);
+      border-color: var(--warning);
+    }
+
+    .progress-dot.wrong {
+      background: var(--danger);
+      border-color: var(--danger);
+    }
+
+    .score-container {
+      background: var(--primary-soft);
+      color: var(--primary-hover);
+      padding: 0.4rem 1rem;
+      border-radius: 9999px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      border: 1px solid #99f6e4;
+    }
+
+    /* ---------- MAIN CONTAINER ---------- */
+    .container {
+      flex: 1;
+      width: 100%;
+      max-width: 1120px;
+      margin: 1.5rem auto;
+      padding: 0 1rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .screen {
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ---------- WELCOME SCREEN ---------- */
+    .welcome-card {
+      background: var(--card);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+      overflow: hidden;
+      border: 2px solid #ccfbf1;
+    }
+
+    .banner-container {
+      width: 100%;
+      height: 250px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .banner-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .welcome-body {
+      padding: 2.5rem;
+      text-align: center;
+    }
+
+    .welcome-body h2 {
+      font-size: 2rem;
+      color: var(--primary-hover);
+      margin-bottom: 0.75rem;
+    }
+
+    .welcome-body p {
+      color: var(--text-muted);
+      max-width: 600px;
+      margin: 0 auto 2.5rem;
+      font-size: 1.1rem;
+      line-height: 1.6;
+    }
+
+    .level-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .level-card {
+      background: #f8fafc;
+      border: 2px solid #e2e8f0;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+      text-align: left;
+    }
+
+    .level-card:hover {
+      transform: translateY(-6px);
+      border-color: var(--primary);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .level-img {
+      height: 160px;
+      overflow: hidden;
+    }
+
+    .level-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .level-info {
+      padding: 1.25rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .level-tag {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 0.4rem;
+    }
+
+    .level-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: var(--text);
+    }
+
+    .level-desc {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+      margin-bottom: 1.25rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.75rem 1.5rem;
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: var(--transition);
+      border: none;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-hover);
+    }
+
+    .btn-secondary {
+      background: var(--primary-soft);
+      color: var(--primary);
+      border: 2px solid var(--primary);
+    }
+
+    .btn-secondary:hover {
+      background: var(--primary);
+      color: white;
+    }
+
+    /* ---------- GAME SCREEN ---------- */
+    .game-layout {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 1.5rem;
+      align-items: start;
+    }
+
+    @media (max-width: 850px) {
+      .game-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .panel {
+      background: var(--card);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-md);
+      border: 1px solid #e2e8f0;
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .panel-title {
+      font-size: 1.3rem;
+      margin-bottom: 1.5rem;
+      color: var(--primary-hover);
+      border-bottom: 2px solid var(--bg);
+      padding-bottom: 0.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* MATH DISPLAY & FRACTIONS STYLE */
+    .math-workspace {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 180px;
+      margin: 1rem 0;
+      background: #f8fafc;
+      border-radius: var(--radius-sm);
+      border: 2px dashed #cbd5e1;
+      padding: 1.5rem;
+    }
+
+    .math-equation {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: var(--text);
+      flex-wrap: wrap;
+    }
+
+    .math-part {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .fraction {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      vertical-align: middle;
+      line-height: 1;
+    }
+
+    .numerator {
+      display: block;
+      padding: 2px 8px;
+      text-align: center;
+    }
+
+    .fraction-bar {
+      width: 100%;
+      height: 4px;
+      background: var(--text);
+      border-radius: 2px;
+      margin: 4px 0;
+    }
+
+    .denominator {
+      display: block;
+      padding: 2px 8px;
+      text-align: center;
+    }
+
+    /* INPUT STYLES */
+    .fraction-input-box {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: #fff;
+      border: 2px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      padding: 4px;
+      transition: var(--transition);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .fraction-input-box:focus-within {
+      border-color: var(--border-focus);
+      box-shadow: 0 0 0 3px var(--primary-soft);
+    }
+
+    .math-input {
+      width: 50px;
+      height: 42px;
+      border: none;
+      background: transparent;
+      text-align: center;
+      font-size: 1.6rem;
+      font-weight: 700;
+      font-family: 'Nunito', sans-serif;
+      color: var(--primary-hover);
+      outline: none;
+      -moz-appearance: textfield;
+    }
+
+    .math-input::-webkit-outer-spin-button,
+    .math-input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    /* Sub denominator input or static denom */
+    .denom-static {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      padding: 2px 10px;
+    }
+
+    /* Mixed fraction visual support */
+    .soit-label {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1.15rem;
+      color: var(--text-muted);
+      margin: 0 0.5rem;
+    }
+
+    .mixed-fraction {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .whole-input-box {
+      border: 2px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      background: #fff;
+      padding: 4px;
+      transition: var(--transition);
+    }
+
+    .whole-input-box:focus-within {
+      border-color: var(--border-focus);
+      box-shadow: 0 0 0 3px var(--primary-soft);
+    }
+
+    .whole-input {
+      width: 44px;
+      height: 42px;
+      border: none;
+      background: transparent;
+      text-align: center;
+      font-size: 1.6rem;
+      font-weight: 700;
+      outline: none;
+      color: var(--primary-hover);
+    }
+
+    /* EQUIVALENCE PANEL (LEVEL 2) */
+    .equivalence-step {
+      margin-top: 1rem;
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      text-align: center;
+      background: #f1f5f9;
+      padding: 0.6rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid #cbd5e1;
+    }
+
+    /* CONTROLS ZONE */
+    .control-buttons {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    .control-buttons button {
+      flex: 1;
+    }
+
+    .btn-help-trigger {
+      background: var(--warning-soft);
+      color: #9a3412;
+      border: 2px solid var(--warning);
+    }
+
+    .btn-help-trigger:hover {
+      background: var(--warning);
+      color: white;
+    }
+
+    /* FEEDBACK ZONE */
+    .feedback-message {
+      margin-top: 1rem;
+      padding: 1rem;
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+      display: none;
+      line-height: 1.5;
+    }
+
+    .feedback-message.correct {
+      display: block;
+      background: var(--success-soft);
+      border: 1px solid var(--success);
+      color: #065f46;
+    }
+
+    .feedback-message.incorrect {
+      display: block;
+      background: var(--danger-soft);
+      border: 1px solid var(--danger);
+      color: #991b1b;
+    }
+
+    /* ---------- VISUAL HELP SIDE PANEL ---------- */
+    .help-panel {
+      min-height: 400px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .canvas-container {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #f8fafc;
+      border-radius: var(--radius-sm);
+      border: 1px solid #e2e8f0;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      min-height: 250px;
+    }
+
+    #helpCanvas {
+      max-width: 100%;
+      background: #fff;
+      border-radius: 4px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+
+    .help-explanation {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+      background: var(--primary-soft);
+      padding: 1rem;
+      border-radius: var(--radius-sm);
+      border-left: 4px solid var(--primary);
+    }
+
+    /* ---------- SUCCESS SCREEN ---------- */
+    .success-card {
+      background: var(--card);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      padding: 3rem;
+      text-align: center;
+      max-width: 600px;
+      margin: 2rem auto;
+      border: 2px solid #ccfbf1;
+    }
+
+    .success-img-container {
+      width: 180px;
+      height: 180px;
+      margin: 0 auto 2rem;
+      border-radius: 50%;
+      overflow: hidden;
+      box-shadow: var(--shadow-md);
+    }
+
+    .success-img-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .success-card h2 {
+      font-size: 2.2rem;
+      color: var(--primary-hover);
+      margin-bottom: 0.75rem;
+    }
+
+    .success-card p {
+      color: var(--text-muted);
+      font-size: 1.15rem;
+      margin-bottom: 2rem;
+      line-height: 1.5;
+    }
+
+    .stats-summary {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .stat-box {
+      background: var(--bg);
+      padding: 1rem 1.5rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid #ccfbf1;
+    }
+
+    .stat-val {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--primary-hover);
+    }
+
+    .stat-lbl {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 0.25rem;
+    }
+
+    .success-actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+    }
+
+    /* ---------- BACK BUTTON HEADER ---------- */
+    .btn-back {
+      background: var(--bg);
+      color: var(--primary);
+      border: none;
+      padding: 0.4rem 0.8rem;
+      border-radius: var(--radius-sm);
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .btn-back:hover {
+      background: var(--primary-soft);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-logo" onclick="goToHome()">
+      <span class="header-title">Opérations de fractions</span>
+    </div>
+    
+    <div class="header-stats" id="headerStats" style="display: none;">
+      <!-- Progress indicators -->
+      <div class="progress-bar-container" id="progressBar">
+        <div class="progress-dot"></div>
+        <div class="progress-dot"></div>
+        <div class="progress-dot"></div>
+        <div class="progress-dot"></div>
+        <div class="progress-dot"></div>
+      </div>
+      
+      <!-- Current Score -->
+      <div class="score-container" id="scoreContainer">
+        Score: <span id="currentScore">0</span> / 5
+      </div>
+
+      <!-- Quit/Back button -->
+      <button class="btn-back" onclick="goToHome()">
+        Quitter
+      </button>
+    </div>
+  </header>
+
+  <!-- MAIN WRAPPER -->
+  <div class="container">
+    
+    <!-- SCREEN 1: WELCOME / MENU -->
+    <div class="screen active" id="homeScreen">
+      <div class="welcome-card">
+        <div class="banner-container">
+          <img src="./fractions_banner.jpg" alt="Bannière Fractions">
+        </div>
+        <div class="welcome-body">
+          <h2>Les Calculs de Fractions</h2>
+          <p>
+            Bienvenue dans cette activité de numération interactive ! Entraîne-toi à résoudre des additions, soustractions et multiplications de fractions grâce à nos schémas d'aide interactifs.
+          </p>
+          
+          <div class="level-grid">
+            
+            <!-- Level 1 Card -->
+            <div class="level-card" onclick="startLevel(1)">
+              <div class="level-img">
+                <img src="./level1_fractions.jpg" alt="Niveau 1">
+              </div>
+              <div class="level-info">
+                <div>
+                  <div class="level-tag">Niveau 1</div>
+                  <div class="level-title">Mêmes Dénominateurs</div>
+                  <div class="level-desc">Additionne et soustrais des fractions de même dénominateur. Apprends à écrire la réponse sous forme de nombre mixte.</div>
+                </div>
+                <button class="btn btn-primary">Jouer</button>
+              </div>
+            </div>
+
+            <!-- Level 2 Card -->
+            <div class="level-card" onclick="startLevel(2)">
+              <div class="level-img">
+                <img src="./level2_fractions.jpg" alt="Niveau 2">
+              </div>
+              <div class="level-info">
+                <div>
+                  <div class="level-tag">Niveau 2</div>
+                  <div class="level-title">Dénominateurs Multiples</div>
+                  <div class="level-desc">Subdivise les parts pour mettre au même dénominateur avant de calculer.</div>
+                </div>
+                <button class="btn btn-primary">Jouer</button>
+              </div>
+            </div>
+
+            <!-- Level 3 Card -->
+            <div class="level-card" onclick="startLevel(3)">
+              <div class="level-img">
+                <img src="./level3_fractions.jpg" alt="Niveau 3">
+              </div>
+              <div class="level-info">
+                <div>
+                  <div class="level-tag">Niveau 3</div>
+                  <div class="level-title">Multiplications</div>
+                  <div class="level-desc">Calcule le produit d'une fraction par un nombre entier ou par une autre fraction.</div>
+                </div>
+                <button class="btn btn-primary">Jouer</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCREEN 2: GAME SCREEN -->
+    <div class="screen" id="gameScreen">
+      <div class="game-layout">
+        
+        <!-- Left Panel: Calculation workspace -->
+        <div class="panel">
+          <div class="panel-title">
+            <span id="levelTitleDisplay">Niveau 1 : Additions</span>
+            <span id="questionStepDisplay" style="font-size: 0.95rem; color: var(--text-muted);">Question 1/5</span>
+          </div>
+          
+          <div class="math-workspace">
+            <!-- Dynamic workspace content built by JavaScript -->
+            <div class="math-equation" id="equationWrapper">
+              <!-- Content injected here -->
+            </div>
+            
+            <!-- Step information placeholder for Level 2 -->
+            <div class="equivalence-step" id="equivalenceHint" style="display: none;">
+              Transforme la fraction pour l'exprimer au même dénominateur !
+            </div>
+          </div>
+          
+          <!-- Actions & Validations -->
+          <div class="control-buttons">
+            <button class="btn btn-help-trigger" id="btnHelp" onclick="toggleHelp()">
+              Besoin d'aide ?
+            </button>
+            <button class="btn btn-primary" id="btnValidate" onclick="checkAnswer()">
+              Valider
+            </button>
+          </div>
+
+          <!-- Feedback notification -->
+          <div class="feedback-message" id="feedbackMessage">
+            Bravo ! C'est tout à fait correct !
+          </div>
+        </div>
+
+        <!-- Right Panel: Visual help (pie/grid canvases) -->
+        <div class="panel help-panel" id="helpPanel" style="visibility: hidden; opacity: 0; transition: var(--transition); transform: translateX(20px); position: absolute; pointer-events: none;">
+          <div class="panel-title">
+            <span>Aide Visuelle</span>
+          </div>
+          
+          <div class="canvas-container">
+            <canvas id="helpCanvas" width="360" height="260"></canvas>
+          </div>
+          
+          <div class="help-explanation" id="helpText">
+            Clique sur le bouton "Aide" pour afficher le modèle ici.
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- SCREEN 3: SUCCESS CARD -->
+    <div class="screen" id="successScreen">
+      <div class="success-card">
+        <div class="success-img-container">
+          <img src="./trophy_success.jpg" alt="Trophée de réussite">
+        </div>
+        <h2 id="successTitle">Félicitations !</h2>
+        <p id="successDesc">Tu as terminé ce niveau avec succès et montré ta maîtrise des fractions !</p>
+        
+        <div class="stats-summary">
+          <div class="stat-box">
+            <div class="stat-val" id="finalScore">5/5</div>
+            <div class="stat-lbl">Score final</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-val" id="timeSpent">00:45</div>
+            <div class="stat-lbl">Temps écoulé</div>
+          </div>
+        </div>
+
+        <div class="success-actions">
+          <button class="btn btn-secondary" onclick="restartCurrentLevel()">Recommencer</button>
+          <button class="btn btn-primary" id="btnNextLevel" onclick="goNextLevel()">Niveau Suivant</button>
+          <button class="btn btn-secondary" onclick="goToHome()">Accueil</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // ---------- STATE VARIABLES ----------
+    let currentLevel = 1;
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let questions = [];
+    let helpOpened = false;
+    let helpedOnCurrentQuestion = false;
+    let questionStartTime = 0;
+    let levelStartTime = 0;
+    let timerInterval = null;
+    
+    // Algorithmic generator history to prevent repeating recent questions
+    let questionHistory = [];
+
+    // Animation variables for equivalent fraction slicing
+    let animProgress = 0;
+    let animInterval = null;
+
+    // ---------- SCREEN ROUTING ----------
+    function goToHome() {
+      clearInterval(timerInterval);
+      document.getElementById('homeScreen').classList.add('active');
+      document.getElementById('gameScreen').classList.remove('active');
+      document.getElementById('successScreen').classList.remove('active');
+      document.getElementById('headerStats').style.display = 'none';
+      helpOpened = false;
+      closeHelpPanel();
+    }
+
+    function showScreen(screenId) {
+      document.getElementById('homeScreen').classList.remove('active');
+      document.getElementById('gameScreen').classList.remove('active');
+      document.getElementById('successScreen').classList.remove('active');
+      document.getElementById(screenId).classList.add('active');
+    }
+
+    // ---------- QUESTION GENERATOR ----------
+    // Algorithmic questions generator matching FWB requirements for P5-P6
+    function generateQuestion(level) {
+      let q = { level: level };
+      
+      const selectRandom = (arr) => arr[Math.floor(Math.random() * arr.length)];
+      
+      if (level === 1) {
+        // Niveau 1: Same denominator addition/subtraction
+        const den = selectRandom([3, 4, 5, 6, 8, 10]);
+        const op = selectRandom(['+', '-']);
+        q.d1 = den;
+        q.d2 = den;
+        q.operator = op;
+        
+        if (op === '+') {
+          // Addition
+          q.n1 = Math.floor(Math.random() * (den - 1)) + 1; // 1 to den-1
+          q.n2 = Math.floor(Math.random() * (den - 1)) + 1; // 1 to den-1
+          
+          q.ans_num = q.n1 + q.n2;
+          q.ans_den = den;
+          
+          if (q.ans_num > den) {
+            q.has_mixed = true;
+            q.ans_whole = Math.floor(q.ans_num / den);
+            q.ans_mixed_num = q.ans_num % den;
+          } else {
+            q.has_mixed = false;
+          }
+        } else {
+          // Subtraction (positive results only)
+          q.n1 = Math.floor(Math.random() * (den - 2)) + 3; // 3 to den
+          q.n2 = Math.floor(Math.random() * (q.n1 - 1)) + 1; // 1 to n1-1
+          
+          q.ans_num = q.n1 - q.n2;
+          q.ans_den = den;
+          q.has_mixed = false;
+        }
+      } 
+      else if (level === 2) {
+        // Niveau 2: Multiple denominator conversions
+        // Pair sets: (d_min, d_max)
+        const pair = selectRandom([
+          [2, 4], [2, 6], [2, 8], [2, 10], 
+          [3, 6], [3, 9], 
+          [4, 8], [5, 10]
+        ]);
+        
+        // Randomize order of fractions (e.g. 1/2 + 1/4 or 1/4 + 1/2)
+        const order = Math.random() < 0.5;
+        const d1 = order ? pair[0] : pair[1];
+        const d2 = order ? pair[1] : pair[0];
+        const op = selectRandom(['+', '-']);
+        
+        q.d1 = d1;
+        q.d2 = d2;
+        q.operator = op;
+        
+        const d_max = Math.max(d1, d2);
+        
+        if (op === '+') {
+          // Addition
+          q.n1 = Math.floor(Math.random() * (d1 - 1)) + 1;
+          q.n2 = Math.floor(Math.random() * (d2 - 1)) + 1;
+          
+          // Equivalent numerators on common denominator d_max
+          const eq_n1 = q.n1 * (d_max / d1);
+          const eq_n2 = q.n2 * (d_max / d2);
+          
+          q.convert_first = (d1 !== d_max); // true if first fraction changes
+          q.eq_n1 = eq_n1;
+          q.eq_n2 = eq_n2;
+          
+          q.ans_num = eq_n1 + eq_n2;
+          q.ans_den = d_max;
+        } else {
+          // Subtraction
+          // We make sure the converted subtraction results in a positive numerator
+          let n1 = Math.floor(Math.random() * (d1 - 1)) + 1;
+          let n2 = Math.floor(Math.random() * (d2 - 1)) + 1;
+          
+          let eq_n1 = n1 * (d_max / d1);
+          let eq_n2 = n2 * (d_max / d2);
+          
+          while (eq_n1 <= eq_n2) {
+            n1 = Math.floor(Math.random() * (d1 - 1)) + 2;
+            n2 = Math.floor(Math.random() * (d2 - 1)) + 1;
+            eq_n1 = n1 * (d_max / d1);
+            eq_n2 = n2 * (d_max / d2);
+          }
+          
+          q.n1 = n1;
+          q.n2 = n2;
+          q.convert_first = (d1 !== d_max);
+          q.eq_n1 = eq_n1;
+          q.eq_n2 = eq_n2;
+          
+          q.ans_num = eq_n1 - eq_n2;
+          q.ans_den = d_max;
+        }
+      } 
+      else if (level === 3) {
+        // Niveau 3 : 3 opérations (+, -, x) avec nombres mixtes et dénominateurs différents
+        const type = selectRandom(['addition_mixed', 'subtraction_mixed', 'multiplication']);
+        
+        if (type === 'addition_mixed') {
+          q.is_mixed_op = true;
+          q.operator = '+';
+          const pair = selectRandom([
+            [2, 4], [2, 6], [2, 8], [3, 6], [3, 9], [4, 8], [5, 10]
+          ]);
+          const order = Math.random() < 0.5;
+          const d1 = order ? pair[0] : pair[1];
+          const d2 = order ? pair[1] : pair[0];
+          q.d1 = d1;
+          q.d2 = d2;
+          
+          q.w1 = selectRandom([1, 2]); // whole part of first fraction
+          q.n1 = Math.floor(Math.random() * (d1 - 1)) + 1; // numerator of mixed part
+          q.n2 = Math.floor(Math.random() * (d2 - 1)) + 1; // numerator of second fraction
+          
+          const d_max = Math.max(d1, d2);
+          const improper_n1 = q.w1 * d1 + q.n1;
+          q.eq_n1 = improper_n1 * (d_max / d1);
+          q.eq_n2 = q.n2 * (d_max / d2);
+          
+          q.ans_num = q.eq_n1 + q.eq_n2;
+          q.ans_den = d_max;
+          
+          q.has_mixed = true;
+          q.ans_whole = Math.floor(q.ans_num / d_max);
+          q.ans_mixed_num = q.ans_num % d_max;
+        } 
+        else if (type === 'subtraction_mixed') {
+          q.is_mixed_op = true;
+          q.operator = '-';
+          const pair = selectRandom([
+            [2, 4], [2, 6], [2, 8], [3, 6], [4, 8], [5, 10]
+          ]);
+          const order = Math.random() < 0.5;
+          const d1 = order ? pair[0] : pair[1];
+          const d2 = order ? pair[1] : pair[0];
+          q.d1 = d1;
+          q.d2 = d2;
+          
+          q.w1 = selectRandom([1, 2]);
+          q.n1 = Math.floor(Math.random() * (d1 - 1)) + 1;
+          q.n2 = Math.floor(Math.random() * (d2 - 1)) + 1;
+          
+          const d_max = Math.max(d1, d2);
+          let improper_n1 = q.w1 * d1 + q.n1;
+          let eq_n1 = improper_n1 * (d_max / d1);
+          let eq_n2 = q.n2 * (d_max / d2);
+          
+          // Ensure subtraction result is positive
+          while (eq_n1 <= eq_n2) {
+            q.w1 = selectRandom([1, 2]);
+            q.n1 = Math.floor(Math.random() * (d1 - 1)) + 1;
+            q.n2 = Math.floor(Math.random() * (d2 - 1)) + 1;
+            improper_n1 = q.w1 * d1 + q.n1;
+            eq_n1 = improper_n1 * (d_max / d1);
+            eq_n2 = q.n2 * (d_max / d2);
+          }
+          
+          q.eq_n1 = eq_n1;
+          q.eq_n2 = eq_n2;
+          q.ans_num = eq_n1 - eq_n2;
+          q.ans_den = d_max;
+          
+          if (q.ans_num > d_max) {
+            q.has_mixed = true;
+            q.ans_whole = Math.floor(q.ans_num / d_max);
+            q.ans_mixed_num = q.ans_num % d_max;
+          } else {
+            q.has_mixed = false;
+          }
+        } 
+        else {
+          // Multiplication
+          q.is_mixed_op = false;
+          q.is_mult_op = true;
+          const mode = selectRandom([1, 2]);
+          
+          if (mode === 1) {
+            q.is_int_mult = true;
+            q.int_val = selectRandom([2, 3, 4]);
+            q.d1 = selectRandom([3, 4, 5, 6, 8]);
+            q.n1 = Math.floor(Math.random() * Math.min(3, q.d1 - 1)) + 1;
+            
+            q.ans_num = q.int_val * q.n1;
+            q.ans_den = q.d1;
+          } else {
+            q.is_int_mult = false;
+            q.d1 = selectRandom([2, 3, 4, 5]);
+            q.n1 = Math.floor(Math.random() * (q.d1 - 1)) + 1;
+            
+            q.d2 = selectRandom([3, 4]);
+            q.n2 = Math.floor(Math.random() * (q.d2 - 1)) + 1;
+            
+            q.ans_num = q.n1 * q.n2;
+            q.ans_den = q.d1 * q.d2;
+          }
+        }
+      }
+      
+      const qKey = `${level}-${q.w1 || ''}_${q.n1}/${q.d1}${q.operator}${q.n2 || q.int_val || ''}/${q.d2 || ''}`;
+      if (questionHistory.includes(qKey)) {
+        return generateQuestion(level); // Retry
+      }
+      
+      questionHistory.push(qKey);
+      if (questionHistory.length > 10) questionHistory.shift();
+      
+      return q;
+    }
+
+    function buildLevelQuestions(level) {
+      let list = [];
+      for (let i = 0; i < 5; i++) {
+        list.push(generateQuestion(level));
+      }
+      return list;
+    }
+
+    // ---------- START GAME ----------
+    function startLevel(levelNum) {
+      currentLevel = levelNum;
+      currentQuestionIndex = 0;
+      score = 0;
+      questions = buildLevelQuestions(levelNum);
+      helpedOnCurrentQuestion = false;
+      
+      // Interface updates
+      document.getElementById('headerStats').style.display = 'flex';
+      updateProgressDots();
+      document.getElementById('currentScore').innerText = score;
+      
+      let lvlTitle = "";
+      if (levelNum === 1) lvlTitle = "Niveau 1 : Dénominateurs Identiques";
+      else if (levelNum === 2) lvlTitle = "Niveau 2 : Dénominateurs Multiples";
+      else if (levelNum === 3) lvlTitle = "Niveau 3 : Multiplications";
+      document.getElementById('levelTitleDisplay').innerText = lvlTitle;
+      
+      levelStartTime = Date.now();
+      showScreen('gameScreen');
+      loadQuestion();
+    }
+
+    function restartCurrentLevel() {
+      startLevel(currentLevel);
+    }
+
+    function goNextLevel() {
+      if (currentLevel < 3) {
+        startLevel(currentLevel + 1);
+      } else {
+        goToHome();
+      }
+    }
+
+    function updateProgressDots() {
+      const dots = document.querySelectorAll('#progressBar .progress-dot');
+      dots.forEach((dot, idx) => {
+        dot.className = "progress-dot";
+        if (idx === currentQuestionIndex) {
+          dot.classList.add('active');
+        } else if (idx < currentQuestionIndex) {
+          // If already completed, check if they used help
+          dot.classList.add('correct'); // fallback
+        }
+      });
+    }
+
+    // ---------- LOAD QUESTION ----------
+    function loadQuestion() {
+      helpedOnCurrentQuestion = false;
+      questionStartTime = Date.now();
+      closeHelpPanel();
+      
+      document.getElementById('questionStepDisplay').innerText = `Calcul ${currentQuestionIndex + 1} / 5`;
+      document.getElementById('feedbackMessage').className = "feedback-message";
+      document.getElementById('feedbackMessage').style.display = "none";
+      
+      const q = questions[currentQuestionIndex];
+      const eqWrapper = document.getElementById('equationWrapper');
+      eqWrapper.innerHTML = ''; // Reset
+      
+      document.getElementById('equivalenceHint').style.display = 'none';
+
+      // Build Math Layout based on level
+      if (currentLevel === 1) {
+        // Niveau 1 layout: a/d +/- b/d = [input]/d (soit [input] [input]/d if improper)
+        eqWrapper.appendChild(createFractionNode(q.n1, q.d1));
+        eqWrapper.appendChild(createOperatorNode(q.operator));
+        eqWrapper.appendChild(createFractionNode(q.n2, q.d2));
+        eqWrapper.appendChild(createOperatorNode('='));
+        
+        // Input answer fraction
+        const ansInputBox = createFractionInputNode('ansNum', q.d1);
+        eqWrapper.appendChild(ansInputBox);
+        
+        // If result is improper, offer the mixed number part
+        if (q.has_mixed) {
+          eqWrapper.appendChild(createLabelNode('soit', 'soit'));
+          const mixedNode = createMixedFractionInputNode('ansWhole', 'ansMixedNum', q.d1);
+          eqWrapper.appendChild(mixedNode);
+        }
+      } 
+      else if (currentLevel === 2) {
+        // Niveau 2 layout: a/d1 +/- b/d2 = [input]/d2 +/- b/d2 = [input]/d2 (assuming d2 is max)
+        // or a/d1 +/- b/d2 = a/d1 +/- [input]/d1 = [input]/d1
+        const d_max = Math.max(q.d1, q.d2);
+        
+        eqWrapper.appendChild(createFractionNode(q.n1, q.d1));
+        eqWrapper.appendChild(createOperatorNode(q.operator));
+        eqWrapper.appendChild(createFractionNode(q.n2, q.d2));
+        eqWrapper.appendChild(createOperatorNode('='));
+        
+        document.getElementById('equivalenceHint').style.display = 'block';
+
+        // Intermediate step (the equivalent conversion)
+        if (q.convert_first) {
+          // First fraction changes, second remains the same
+          eqWrapper.appendChild(createFractionInputNode('eqNum', d_max));
+          eqWrapper.appendChild(createOperatorNode(q.operator));
+          eqWrapper.appendChild(createFractionNode(q.n2, d_max));
+        } else {
+          // First fraction remains, second changes
+          eqWrapper.appendChild(createFractionNode(q.n1, d_max));
+          eqWrapper.appendChild(createOperatorNode(q.operator));
+          eqWrapper.appendChild(createFractionInputNode('eqNum', d_max));
+        }
+        
+        eqWrapper.appendChild(createOperatorNode('='));
+        
+        // Final result input
+        eqWrapper.appendChild(createFractionInputNode('ansNum', d_max));
+      } 
+      else if (currentLevel === 3) {
+        // Niveau 3 Layout
+        if (q.is_mixed_op) {
+          const d_max = Math.max(q.d1, q.d2);
+          
+          // Left side: mixed fraction +/- fraction
+          eqWrapper.appendChild(createMixedFractionNode(q.w1, q.n1, q.d1));
+          eqWrapper.appendChild(createOperatorNode(q.operator));
+          eqWrapper.appendChild(createFractionNode(q.n2, q.d2));
+          eqWrapper.appendChild(createOperatorNode('='));
+          
+          document.getElementById('equivalenceHint').style.display = 'block';
+          document.getElementById('equivalenceHint').innerText = "Exprime les fractions sur le dénominateur commun " + d_max + " !";
+
+          // Step 1: [eqNum1]/d_max +/- [eqNum2]/d_max
+          eqWrapper.appendChild(createFractionInputNode('eqNum1', d_max));
+          eqWrapper.appendChild(createOperatorNode(q.operator));
+          eqWrapper.appendChild(createFractionInputNode('eqNum2', d_max));
+          eqWrapper.appendChild(createOperatorNode('='));
+          
+          // Result fraction
+          eqWrapper.appendChild(createFractionInputNode('ansNum', d_max));
+          
+          if (q.has_mixed) {
+            eqWrapper.appendChild(createLabelNode('soit', 'soit'));
+            eqWrapper.appendChild(createMixedFractionInputNode('ansWhole', 'ansMixedNum', d_max));
+          }
+        } 
+        else if (q.is_int_mult) {
+          // n * a/b = [input]/b
+          eqWrapper.appendChild(createIntegerNode(q.int_val));
+          eqWrapper.appendChild(createOperatorNode('×'));
+          eqWrapper.appendChild(createFractionNode(q.n1, q.d1));
+          eqWrapper.appendChild(createOperatorNode('='));
+          eqWrapper.appendChild(createFractionInputNode('ansNum', q.d1));
+        } else {
+          // a/b * c/d = [input]/[input]
+          eqWrapper.appendChild(createFractionNode(q.n1, q.d1));
+          eqWrapper.appendChild(createOperatorNode('×'));
+          eqWrapper.appendChild(createFractionNode(q.n2, q.d2));
+          eqWrapper.appendChild(createOperatorNode('='));
+          
+          // Free input for both numerator and denominator
+          eqWrapper.appendChild(createFractionInputNodeFull('ansNum', 'ansDen'));
+        }
+      }
+      
+      // Auto focus first input and hook up automatic tab navigation
+      setupAutofocus();
+      updateProgressDots();
+    }
+
+    // ---------- HTML ELEMENT CREATORS ----------
+    function createFractionNode(num, den) {
+      const frac = document.createElement('div');
+      frac.className = 'fraction';
+      frac.innerHTML = `
+        <span class="numerator">${num}</span>
+        <div class="fraction-bar"></div>
+        <span class="denominator">${den}</span>
+      `;
+      return frac;
+    }
+
+    function createMixedFractionNode(whole, num, den) {
+      const mixed = document.createElement('div');
+      mixed.className = 'mixed-fraction';
+      mixed.innerHTML = `
+        <span style="font-size: 2.2rem; font-weight: 700; margin-right: 4px;">${whole}</span>
+        <div class="fraction">
+          <span class="numerator">${num}</span>
+          <div class="fraction-bar"></div>
+          <span class="denominator">${den}</span>
+        </div>
+      `;
+      return mixed;
+    }
+
+    // Custom non-SVG cross icon wrapper for Quit / back navigations
+    function createOperatorNode(op) {
+      const node = document.createElement('div');
+      node.style.padding = '0 0.25rem';
+      node.innerText = op;
+      return node;
+    }
+
+    function createIntegerNode(val) {
+      const node = document.createElement('div');
+      node.style.fontWeight = '700';
+      node.innerText = val;
+      return node;
+    }
+
+    function createLabelNode(text, className = '') {
+      const node = document.createElement('div');
+      node.className = className ? `${className}-label` : '';
+      node.innerText = text;
+      return node;
+    }
+
+    function createFractionInputNode(inputId, staticDenVal) {
+      const wrapper = document.createElement('div');
+      wrapper.className = 'fraction-input-box';
+      wrapper.innerHTML = `
+        <input type="number" class="math-input" id="${inputId}" min="0" placeholder="?" autocomplete="off" inputmode="numeric">
+        <div class="fraction-bar" style="background: var(--border-color); height: 2px;"></div>
+        <span class="denom-static">${staticDenVal}</span>
+      `;
+      return wrapper;
+    }
+
+    function createFractionInputNodeFull(numId, denId) {
+      const wrapper = document.createElement('div');
+      wrapper.className = 'fraction-input-box';
+      wrapper.innerHTML = `
+        <input type="number" class="math-input" id="${numId}" min="0" placeholder="?" autocomplete="off" inputmode="numeric">
+        <div class="fraction-bar" style="background: var(--border-color); height: 2px;"></div>
+        <input type="number" class="math-input" id="${denId}" min="0" placeholder="?" autocomplete="off" inputmode="numeric">
+      `;
+      return wrapper;
+    }
+
+    function createMixedFractionInputNode(wholeId, numId, staticDenVal) {
+      const wrapper = document.createElement('div');
+      wrapper.className = 'mixed-fraction';
+      
+      const wholePart = document.createElement('div');
+      wholePart.className = 'whole-input-box';
+      wholePart.innerHTML = `<input type="number" class="whole-input" id="${wholeId}" min="0" placeholder="?" autocomplete="off" inputmode="numeric">`;
+      
+      const fracPart = createFractionInputNode(numId, staticDenVal);
+      
+      wrapper.appendChild(wholePart);
+      wrapper.appendChild(fracPart);
+      return wrapper;
+    }
+
+    // ---------- AUTOFOCUS LOGIC ----------
+    function setupAutofocus() {
+      const inputs = Array.from(document.querySelectorAll('.math-workspace input'));
+      if (inputs.length > 0) {
+        inputs[0].focus();
+      }
+
+      inputs.forEach((input, index) => {
+        // Handle key navigation: arrows and enter tabbing
+        input.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            // If it is the last input field, validate the answers
+            if (index === inputs.length - 1) {
+              checkAnswer();
+            } else {
+              // Move focus to next input field
+              inputs[index + 1].focus();
+              inputs[index + 1].select();
+            }
+          } 
+          else if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+            if (index < inputs.length - 1) {
+              e.preventDefault();
+              inputs[index + 1].focus();
+              inputs[index + 1].select();
+            }
+          } 
+          else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+            if (index > 0) {
+              e.preventDefault();
+              inputs[index - 1].focus();
+              inputs[index - 1].select();
+            }
+          }
+        });
+      });
+    }
+
+    // ---------- SUBMIT & CHECK ANSWER ----------
+    function checkAnswer() {
+      const q = questions[currentQuestionIndex];
+      const feedback = document.getElementById('feedbackMessage');
+      
+      let userCorrect = false;
+      let errorDetail = "";
+      
+      if (currentLevel === 1) {
+        const numVal = parseInt(document.getElementById('ansNum').value);
+        let wholeVal = q.has_mixed ? parseInt(document.getElementById('ansWhole').value) : null;
+        let mixedNumVal = q.has_mixed ? parseInt(document.getElementById('ansMixedNum').value) : null;
+        
+        const basicCorrect = (numVal === q.ans_num);
+        let mixedCorrect = true;
+        
+        if (q.has_mixed) {
+          mixedCorrect = (wholeVal === q.ans_whole && mixedNumVal === q.ans_mixed_num);
+        }
+        
+        userCorrect = basicCorrect && mixedCorrect;
+        
+        if (!userCorrect) {
+          if (!basicCorrect && !mixedCorrect) {
+            errorDetail = `Additionne les numérateurs : ${q.n1} + ${q.n2} = ${q.ans_num}. Le dénominateur reste ${q.d1}. La fraction est donc <strong>${q.ans_num}/${q.d1}</strong>. En unités entières, cela fait <strong>${q.ans_whole} unité et ${q.ans_mixed_num}/${q.d1}</strong>.`;
+          } else if (!basicCorrect) {
+            errorDetail = `Ta fraction de base est inexacte. ${q.n1} ${q.operator === '+' ? '+' : '-'} ${q.n2} = ${q.ans_num}. Le dénominateur reste identique : <strong>${q.ans_num}/${q.d1}</strong>.`;
+          } else {
+            errorDetail = `Ta fraction ${q.ans_num}/${q.d1} est correcte, mais sa conversion en nombre mixte est inexacte. Dans ${q.ans_num}, il y a <strong>${q.ans_whole}</strong> fois ${q.d1}, et il reste <strong>${q.ans_mixed_num}</strong>. Soit <strong>${q.ans_whole} ${q.ans_mixed_num}/${q.d1}</strong>.`;
+          }
+        }
+      } 
+      else if (currentLevel === 2) {
+        const eqNum = parseInt(document.getElementById('eqNum').value);
+        const ansNum = parseInt(document.getElementById('ansNum').value);
+        const d_max = Math.max(q.d1, q.d2);
+        
+        let correctEq = q.convert_first ? q.eq_n1 : q.eq_n2;
+        let eqCorrect = (eqNum === correctEq);
+        let ansCorrect = (ansNum === q.ans_num);
+        
+        userCorrect = eqCorrect && ansCorrect;
+        
+        if (!userCorrect) {
+          if (!eqCorrect) {
+            const changingDen = q.convert_first ? q.d1 : q.d2;
+            const changingNum = q.convert_first ? q.n1 : q.n2;
+            const factor = d_max / changingDen;
+            errorDetail = `Pour mettre la fraction ${changingNum}/${changingDen} au dénominateur ${d_max}, on multiplie le haut et le bas par ${factor}. Elle devient <strong>${correctEq}/${d_max}</strong>.`;
+          } else {
+            errorDetail = `La fraction équivalente était correcte, mais l'addition finale est fausse. ${q.eq_n1} ${q.operator} ${q.eq_n2} = <strong>${q.ans_num}</strong>. Le résultat est <strong>${q.ans_num}/${d_max}</strong>.`;
+          }
+        }
+      } 
+      else if (currentLevel === 3) {
+        if (q.is_mixed_op) {
+          const eqNum1 = parseInt(document.getElementById('eqNum1').value);
+          const eqNum2 = parseInt(document.getElementById('eqNum2').value);
+          const ansNum = parseInt(document.getElementById('ansNum').value);
+          let wholeVal = q.has_mixed ? parseInt(document.getElementById('ansWhole').value) : null;
+          let mixedNumVal = q.has_mixed ? parseInt(document.getElementById('ansMixedNum').value) : null;
+          
+          const eq1Correct = (eqNum1 === q.eq_n1);
+          const eq2Correct = (eqNum2 === q.eq_n2);
+          const basicCorrect = (ansNum === q.ans_num);
+          let mixedCorrect = true;
+          if (q.has_mixed) {
+            mixedCorrect = (wholeVal === q.ans_whole && mixedNumVal === q.ans_mixed_num);
+          }
+          
+          userCorrect = eq1Correct && eq2Correct && basicCorrect && mixedCorrect;
+          
+          if (!userCorrect) {
+            const d_max = Math.max(q.d1, q.d2);
+            if (!eq1Correct) {
+              const improper = q.w1 * q.d1 + q.n1;
+              errorDetail = `Étape 1 : Convertis le nombre mixte en fraction impropre. ${q.w1} unité(s) et ${q.n1}/${q.d1} = <strong>${improper}/${q.d1}</strong>. <br>Exprime-le ensuite sur le dénominateur ${d_max} : <strong>${q.eq_n1}/${d_max}</strong>.`;
+            } else if (!eq2Correct) {
+              const mult = d_max / q.d2;
+              errorDetail = `Étape 2 : Convertis la deuxième fraction ${q.n2}/${q.d2} sur le dénominateur ${d_max} : multiplie le haut et le bas par ${mult} pour obtenir <strong>${q.eq_n2}/${d_max}</strong>.`;
+            } else if (!basicCorrect) {
+              errorDetail = `Étape 3 : Effectue le calcul sur les numérateurs convertis : ${q.eq_n1} ${q.operator} ${q.eq_n2} = <strong>${q.ans_num}</strong>. La fraction est <strong>${q.ans_num}/${d_max}</strong>.`;
+            } else {
+              errorDetail = `Étape 4 : Ta fraction ${q.ans_num}/${d_max} est correcte, mais sa conversion en nombre mixte est inexacte. Dans ${q.ans_num}, il y a <strong>${q.ans_whole}</strong> fois ${d_max}, et il reste <strong>${q.ans_mixed_num}</strong>. Soit <strong>${q.ans_whole} ${q.ans_mixed_num}/${d_max}</strong>.`;
+            }
+          }
+        } 
+        else if (q.is_int_mult) {
+          const ansNum = parseInt(document.getElementById('ansNum').value);
+          userCorrect = (ansNum === q.ans_num);
+          if (!userCorrect) {
+            errorDetail = `Pour multiplier une fraction par un entier, on multiplie uniquement le numérateur : ${q.int_val} × ${q.n1} = <strong>${q.ans_num}</strong>. Le dénominateur reste ${q.d1}. Résultat : <strong>${q.ans_num}/${q.d1}</strong>.`;
+          }
+        } else {
+          const ansNum = parseInt(document.getElementById('ansNum').value);
+          const ansDen = parseInt(document.getElementById('ansDen').value);
+          userCorrect = (ansNum === q.ans_num && ansDen === q.ans_den);
+          if (!userCorrect) {
+            errorDetail = `Pour multiplier deux fractions, multiplie les numérateurs ensemble (${q.n1} × ${q.n2} = <strong>${q.ans_num}</strong>) et les dénominateurs ensemble (${q.d1} × ${q.d2} = <strong>${q.ans_den}</strong>). Résultat : <strong>${q.ans_num}/${q.ans_den}</strong>.`;
+          }
+        }
+      }
+
+      // Show Feedback
+      if (userCorrect) {
+        feedback.innerText = "Excellent ! C'est la bonne réponse !";
+        feedback.className = "feedback-message correct";
+        feedback.style.display = "block";
+        
+        // Track score and progress states
+        const dots = document.querySelectorAll('#progressBar .progress-dot');
+        if (dots[currentQuestionIndex]) {
+          if (helpedOnCurrentQuestion) {
+            dots[currentQuestionIndex].classList.add('helped');
+          } else {
+            dots[currentQuestionIndex].classList.add('correct');
+            score++;
+          }
+        }
+        
+        document.getElementById('currentScore').innerText = score;
+        
+        // Block interaction and schedule next question
+        document.getElementById('btnValidate').disabled = true;
+        setTimeout(() => {
+          document.getElementById('btnValidate').disabled = false;
+          nextQuestion();
+        }, 2200);
+      } else {
+        feedback.innerHTML = `Attention, ce n'est pas tout à fait ça. <br><span style="font-weight: 500; font-size: 0.95rem;">${errorDetail}</span>`;
+        feedback.className = "feedback-message incorrect";
+        feedback.style.display = "block";
+        
+        const dots = document.querySelectorAll('#progressBar .progress-dot');
+        if (dots[currentQuestionIndex]) {
+          dots[currentQuestionIndex].classList.add('wrong');
+        }
+        
+        // Re-focus first input to let them correct
+        setupAutofocus();
+      }
+    }
+
+    function nextQuestion() {
+      currentQuestionIndex++;
+      if (currentQuestionIndex < 5) {
+        loadQuestion();
+      } else {
+        finishLevel();
+      }
+    }
+
+    // ---------- FINISH LEVEL & SCORES ----------
+    function finishLevel() {
+      clearInterval(timerInterval);
+      
+      const totalTimeMs = Date.now() - levelStartTime;
+      const totalSeconds = Math.floor(totalTimeMs / 1000);
+      const min = String(Math.floor(totalSeconds / 60)).padStart(2, '0');
+      const sec = String(totalSeconds % 60).padStart(2, '0');
+      
+      document.getElementById('finalScore').innerText = `${score} / 5`;
+      document.getElementById('timeSpent').innerText = `${min}:${sec}`;
+      
+      // Custom feedback text based on performance
+      let title = "Félicitations !";
+      let desc = "Tu as validé ce niveau. Continue à t'entraîner !";
+      
+      if (score === 5) {
+        title = "Parfait ! 🏆";
+        desc = "Quel exploit ! Sans faute ! Tu maîtrises ces calculs sur les fractions à la perfection.";
+      } else if (score >= 3) {
+        title = "Super Travail ! 👍";
+        desc = "Très bon score ! Tu as une bonne compréhension des calculs de fractions.";
+      } else {
+        title = "Bel effort ! 💪";
+        desc = "Tu as fini le niveau. Relance la partie pour améliorer ton score et utilise bien les aides visuelles !";
+      }
+      
+      document.getElementById('successTitle').innerText = title;
+      document.getElementById('successDesc').innerText = desc;
+      
+      // Control next level button
+      const nextBtn = document.getElementById('btnNextLevel');
+      if (currentLevel < 3) {
+        nextBtn.style.display = "inline-flex";
+        nextBtn.innerText = "Niveau Suivant";
+      } else {
+        nextBtn.style.display = "none";
+      }
+      
+      showScreen('successScreen');
+    }
+
+    // ---------- VISUAL HELP RENDERING ----------
+    function toggleHelp() {
+      if (!helpOpened) {
+        openHelpPanel();
+      } else {
+        closeHelpPanel();
+      }
+    }
+
+    function openHelpPanel() {
+      const panel = document.getElementById('helpPanel');
+      panel.style.position = 'relative';
+      panel.style.visibility = 'visible';
+      panel.style.opacity = '1';
+      panel.style.transform = 'translateX(0)';
+      panel.style.pointerEvents = 'auto';
+      
+      helpOpened = true;
+      helpedOnCurrentQuestion = true;
+      
+      // Trigger canvas drawing
+      renderHelpCanvas();
+    }
+
+    function closeHelpPanel() {
+      const panel = document.getElementById('helpPanel');
+      panel.style.position = 'absolute';
+      panel.style.visibility = 'hidden';
+      panel.style.opacity = '0';
+      panel.style.transform = 'translateX(20px)';
+      panel.style.pointerEvents = 'none';
+      
+      helpOpened = false;
+      
+      // Clear any running equivalency animation
+      clearInterval(animInterval);
+      animProgress = 0;
+    }
+
+    function renderHelpCanvas() {
+      const canvas = document.getElementById('helpCanvas');
+      const ctx = canvas.getContext('2d');
+      const q = questions[currentQuestionIndex];
+      
+      // Reset canvas
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      if (currentLevel === 1) {
+        drawLevel1Canvas(ctx, canvas, q);
+      } else if (currentLevel === 2) {
+        // Level 2 has equivalency partition animation
+        animProgress = 0;
+        clearInterval(animInterval);
+        animInterval = setInterval(() => {
+          animProgress += 0.05;
+          if (animProgress >= 1) {
+            animProgress = 1;
+            clearInterval(animInterval);
+          }
+          drawLevel2Canvas(ctx, canvas, q, animProgress);
+        }, 50);
+      } else if (currentLevel === 3) {
+        drawLevel3Canvas(ctx, canvas, q);
+      }
+    }
+
+    // --- CANVAS DRAWING UTILITIES ---
+    function drawPie(ctx, x, y, radius, num, den, mainColor, splitMultiplier = 1, animProgress = 1) {
+      const startAngle = -Math.PI / 2;
+      const sliceAngle = (2 * Math.PI) / den;
+      
+      // Draw background circle
+      ctx.beginPath();
+      ctx.arc(x, y, radius, 0, 2 * Math.PI);
+      ctx.fillStyle = "#f1f5f9";
+      ctx.fill();
+      ctx.strokeStyle = "#cbd5e1";
+      ctx.lineWidth = 1;
+      ctx.stroke();
+
+      // Color filled slices
+      const totalSlices = den;
+      const filledCount = num;
+      
+      for (let i = 0; i < filledCount; i++) {
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        ctx.arc(x, y, radius, startAngle + i * sliceAngle, startAngle + (i + 1) * sliceAngle);
+        ctx.lineTo(x, y);
+        ctx.fillStyle = mainColor;
+        ctx.fill();
+      }
+
+      // Draw outlines for basic slices
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = "#1e293b";
+      for (let i = 0; i < totalSlices; i++) {
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        ctx.arc(x, y, radius, startAngle + i * sliceAngle, startAngle + (i + 1) * sliceAngle);
+        ctx.lineTo(x, y);
+        ctx.stroke();
+      }
+
+      // If subdivision is active (equivalent fraction conversion)
+      if (splitMultiplier > 1 && animProgress > 0) {
+        const subSliceAngle = sliceAngle / splitMultiplier;
+        ctx.lineWidth = 1.5;
+        // Animating the dividing lines color from background to dark slate
+        ctx.strokeStyle = `rgba(244, 63, 94, ${animProgress})`; // Coral line subdivision
+        
+        for (let i = 0; i < totalSlices * splitMultiplier; i++) {
+          // Avoid drawing over the main thick black lines immediately if progress is small
+          if (i % splitMultiplier === 0) continue;
+          
+          ctx.beginPath();
+          ctx.moveTo(x, y);
+          ctx.arc(x, y, radius, startAngle + i * subSliceAngle, startAngle + (i + 1) * subSliceAngle);
+          ctx.lineTo(x, y);
+          ctx.stroke();
+        }
+      }
+    }
+
+    // DRAW LEVEL 1: Same denominator addition/subtraction
+    function drawLevel1Canvas(ctx, canvas, q) {
+      const centerY = canvas.height / 3;
+      const radius = 45;
+      const primaryColor = "#0ea5e9"; // Blue
+      
+      // Draw first pie (fraction 1)
+      drawPie(ctx, 70, centerY, radius, q.n1, q.d1, primaryColor);
+      ctx.fillStyle = "#0f172a";
+      ctx.font = "bold 16px Nunito";
+      ctx.textAlign = "center";
+      ctx.fillText(`${q.n1} / ${q.d1}`, 70, centerY + radius + 25);
+      
+      // Draw operator
+      ctx.font = "bold 24px Fredoka";
+      ctx.fillText(q.operator === '+' ? '+' : '-', 140, centerY + 5);
+
+      // Draw second pie (fraction 2)
+      drawPie(ctx, 210, centerY, radius, q.n2, q.d2, primaryColor);
+      ctx.fillText(`${q.n2} / ${q.d2}`, 210, centerY + radius + 25);
+      
+      // Draw arrow towards bottom/result
+      ctx.fillText('=', 290, centerY + 5);
+
+      // Draw result visual
+      const resX = 200;
+      const resY = canvas.height - 60;
+      
+      // Set explanation texts
+      let expl = "";
+      if (q.operator === '+') {
+        expl = `On rassemble les parts : ${q.n1} parts + ${q.n2} parts = <strong>${q.ans_num} parts</strong> de taille 1/${q.d1}.`;
+        if (q.has_mixed) {
+          expl += `<br>Comme ${q.ans_num}/${q.d1} > 1, cela forme <strong>${q.ans_whole} tarte entière</strong> et encore <strong>${q.ans_mixed_num}/${q.d1}</strong> d'une autre tarte.`;
+        }
+      } else {
+        expl = `On retire ${q.n2} parts des ${q.n1} parts initiales : il reste <strong>${q.ans_num} parts</strong> de taille 1/${q.d1}.`;
+      }
+      document.getElementById('helpText').innerHTML = expl;
+
+      // Draw result representation
+      if (!q.has_mixed) {
+        drawPie(ctx, 300, centerY, radius, q.ans_num, q.ans_den, varColor(q.operator));
+        ctx.fillText(`${q.ans_num} / ${q.ans_den}`, 300, centerY + radius + 25);
+      } else {
+        // For mixed fractions, draw two smaller pies to fit
+        const sRadius = 35;
+        // First full pie
+        drawPie(ctx, 70, canvas.height - 60, sRadius, q.d1, q.d1, primaryColor);
+        ctx.font = "14px Nunito";
+        ctx.fillText("1 (Tarte entière)", 70, canvas.height - 12);
+        
+        ctx.font = "bold 20px Fredoka";
+        ctx.fillText("+", 130, canvas.height - 55);
+        
+        // Second pie with remainder
+        drawPie(ctx, 190, canvas.height - 60, sRadius, q.ans_mixed_num, q.d1, primaryColor);
+        ctx.font = "14px Nunito";
+        ctx.fillText(`${q.ans_mixed_num} / ${q.d1} de tarte`, 190, canvas.height - 12);
+        
+        ctx.font = "bold 18px Fredoka";
+        ctx.fillText(`=  ${q.ans_whole}  ${q.ans_mixed_num}/${q.d1}`, 290, canvas.height - 55);
+      }
+    }
+
+    // DRAW LEVEL 2: Conversions
+    function drawLevel2Canvas(ctx, canvas, q, animProgress) {
+      const centerY = 70;
+      const radius = 42;
+      const d_max = Math.max(q.d1, q.d2);
+      const blue = "#0ea5e9";
+      
+      // Draw first pie
+      const factor1 = d_max / q.d1;
+      // We animate the partition of the pie that has the smaller denominator
+      const split1 = (q.d1 !== d_max) ? factor1 : 1;
+      drawPie(ctx, 70, centerY, radius, q.n1, q.d1, blue, split1, animProgress);
+      ctx.fillStyle = "#0f172a";
+      ctx.font = "bold 15px Nunito";
+      ctx.textAlign = "center";
+      ctx.fillText(`${q.n1}/${q.d1}`, 70, centerY + radius + 20);
+      
+      if (q.d1 !== d_max) {
+        ctx.font = "12px Nunito";
+        ctx.fillStyle = "var(--secondary)";
+        const currentEq = Math.round(q.n1 * (1 - animProgress) + q.eq_n1 * animProgress);
+        ctx.fillText(`→ ${q.eq_n1}/${d_max}`, 70, centerY + radius + 34);
+      }
+
+      // Draw operator
+      ctx.font = "bold 20px Fredoka";
+      ctx.fillStyle = "#0f172a";
+      ctx.fillText(q.operator, 140, centerY + 5);
+
+      // Draw second pie
+      const factor2 = d_max / q.d2;
+      const split2 = (q.d2 !== d_max) ? factor2 : 1;
+      drawPie(ctx, 210, centerY, radius, q.n2, q.d2, blue, split2, animProgress);
+      ctx.font = "bold 15px Nunito";
+      ctx.fillText(`${q.n2}/${q.d2}`, 210, centerY + radius + 20);
+      
+      if (q.d2 !== d_max) {
+        ctx.font = "12px Nunito";
+        ctx.fillStyle = "var(--secondary)";
+        ctx.fillText(`→ ${q.eq_n2}/${d_max}`, 210, centerY + radius + 34);
+      }
+
+      ctx.font = "bold 20px Fredoka";
+      ctx.fillStyle = "#0f172a";
+      ctx.fillText("=", 280, centerY + 5);
+
+      // Final result pie
+      drawPie(ctx, 315, centerY, radius, q.ans_num, d_max, "var(--primary)");
+      ctx.font = "bold 15px Nunito";
+      ctx.fillText(`${q.ans_num}/${d_max}`, 315, centerY + radius + 20);
+
+      document.getElementById('helpText').innerHTML = `
+        Les dénominateurs sont différents. On cherche le multiple commun : <strong>${d_max}</strong>. <br>
+        La tarte fractionnée se divise en parts plus petites ! <br>
+        En divisant, la fraction équivalente devient de même taille. <br>
+        Calcul final : <strong>${q.eq_n1}/${d_max} ${q.operator} ${q.eq_n2}/${d_max} = ${q.ans_num}/${d_max}</strong>.
+      `;
+    }
+
+    // DRAW LEVEL 3: Mixed number operations and Multiplications
+    function drawLevel3Canvas(ctx, canvas, q) {
+      if (q.is_mixed_op) {
+        const d_max = Math.max(q.d1, q.d2);
+        const radius = 18;
+        const row1Y = 65;
+        const row2Y = 165;
+        const color1 = "#0ea5e9"; // Blue
+        const colorRes = "var(--primary)"; // Teal
+        
+        ctx.fillStyle = "#0f172a";
+        ctx.font = "bold 14px Nunito";
+        ctx.textAlign = "center";
+        
+        // --- ROW 1: Problem ---
+        // 1. Draw mixed number (w1 full pies + 1 pie with n1/d1)
+        let x = 25;
+        for (let i = 0; i < q.w1; i++) {
+          // Full pies subdivided by d_max
+          drawPie(ctx, x, row1Y, radius, q.d1, q.d1, color1, d_max / q.d1, 1);
+          x += 40;
+        }
+        // Partial pie of first fraction subdivided by d_max
+        drawPie(ctx, x, row1Y, radius, q.n1, q.d1, color1, d_max / q.d1, 1);
+        ctx.fillText(`${q.w1} ${q.n1}/${q.d1}`, x - 20, row1Y + radius + 22);
+        
+        x += 40;
+        // Operator
+        ctx.font = "bold 18px Fredoka";
+        ctx.fillText(q.operator, x, row1Y + 5);
+        
+        x += 30;
+        // Second fraction pie subdivided by d_max
+        drawPie(ctx, x, row1Y, radius, q.n2, q.d2, color1, d_max / q.d2, 1);
+        ctx.font = "bold 14px Nunito";
+        ctx.fillText(`${q.n2}/${q.d2}`, x, row1Y + radius + 22);
+        
+        x += 40;
+        // Equals
+        ctx.font = "bold 18px Fredoka";
+        ctx.fillText("=", x, row1Y + 5);
+        
+        x += 35;
+        // Result representation
+        drawPie(ctx, x, row1Y, radius, q.ans_num % d_max, d_max, colorRes, 1, 1);
+        ctx.font = "bold 14px Nunito";
+        ctx.fillText(`${q.ans_num}/${d_max}`, x, row1Y + radius + 22);
+
+        // --- ROW 2: Step-by-Step Equivalences & Combined Result ---
+        ctx.font = "bold 14px Fredoka";
+        ctx.fillText("Équivalences :", 60, row2Y - 35);
+        
+        ctx.font = "bold 15px Nunito";
+        ctx.textAlign = "left";
+        ctx.fillStyle = "var(--text-muted)";
+        
+        const expr = `${q.w1} ${q.n1}/${q.d1} ${q.operator} ${q.n2}/${q.d2}  =  ${q.eq_n1}/${d_max} ${q.operator} ${q.eq_n2}/${d_max}  =  ${q.ans_num}/${d_max}`;
+        ctx.fillText(expr, 30, row2Y - 10);
+        
+        if (q.has_mixed) {
+          ctx.fillText(`soit  ${q.ans_whole}  ${q.ans_mixed_num}/${d_max}`, 30, row2Y + 20);
+          
+          // Draw result mixed pies
+          let rx = 240;
+          const sRadius = 15;
+          ctx.textAlign = "center";
+          for (let i = 0; i < q.ans_whole; i++) {
+            drawPie(ctx, rx, row2Y + 15, sRadius, d_max, d_max, colorRes, 1, 1);
+            rx += 32;
+          }
+          if (q.ans_mixed_num > 0) {
+            drawPie(ctx, rx, row2Y + 15, sRadius, q.ans_mixed_num, d_max, colorRes, 1, 1);
+          }
+        }
+        
+        const improper1 = q.w1 * q.d1 + q.n1;
+        document.getElementById('helpText').innerHTML = `
+          1. Transforme le nombre mixte en fraction impropre : <strong>${q.w1} ${q.n1}/${q.d1} = ${improper1}/${q.d1}</strong>.<br>
+          2. Mets les fractions au même dénominateur <strong>${d_max}</strong> : <br>
+          &nbsp;&nbsp;&nbsp;&nbsp;• ${improper1}/${q.d1} devient <strong>${q.eq_n1}/${d_max}</strong>.<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;• ${q.n2}/${q.d2} devient <strong>${q.eq_n2}/${d_max}</strong>.<br>
+          3. Calcule : ${q.eq_n1}/${d_max} ${q.operator} ${q.eq_n2}/${d_max} = <strong>${q.ans_num}/${d_max}</strong>${q.has_mixed ? ` soit <strong>${q.ans_whole} ${q.ans_mixed_num}/${d_max}</strong>` : ''}.
+        `;
+      } 
+      else if (q.is_int_mult) {
+        // Integer times fraction (e.g. 3 * 2/5)
+        const radius = 28;
+        const startY = 85;
+        const color = "#f43f5e"; // Coral
+        
+        ctx.fillStyle = "#0f172a";
+        ctx.font = "bold 16px Nunito";
+        ctx.textAlign = "center";
+        
+        // Draw the N repeating pies
+        for (let i = 0; i < q.int_val; i++) {
+          const xPos = 40 + i * 70;
+          drawPie(ctx, xPos, startY, radius, q.n1, q.d1, color);
+          ctx.fillText(`${q.n1}/${q.d1}`, xPos, startY + radius + 22);
+          
+          if (i < q.int_val - 1) {
+            ctx.font = "bold 20px Fredoka";
+            ctx.fillText("+", xPos + 35, startY + 5);
+            ctx.font = "bold 16px Nunito";
+          }
+        }
+        
+        // Draw Equals arrow
+        ctx.font = "bold 20px Fredoka";
+        ctx.fillText("=", q.int_val * 70, startY + 5);
+        
+        // Draw final result accumulation
+        const resX = q.int_val * 70 + 60;
+        ctx.font = "bold 16px Nunito";
+        
+        if (q.ans_num <= q.d1) {
+          drawPie(ctx, resX, startY, radius, q.ans_num, q.d1, "var(--primary)");
+          ctx.fillText(`${q.ans_num}/${q.d1}`, resX, startY + radius + 22);
+        } else {
+          const sRadius = 24;
+          drawPie(ctx, resX - 25, startY - 10, sRadius, q.d1, q.d1, "var(--primary)");
+          drawPie(ctx, resX + 25, startY - 10, sRadius, q.ans_num - q.d1, q.d1, "var(--primary)");
+          ctx.fillText(`${q.ans_num}/${q.d1}`, resX, startY + radius + 22);
+        }
+        
+        document.getElementById('helpText').innerHTML = `
+          Multiplier la fraction par ${q.int_val} revient à l'additionner ${q.int_val} fois à elle-même. <br>
+          On multiplie uniquement le numérateur par l'entier : <strong>${q.int_val} × ${q.n1} = ${q.ans_num}</strong>. <br>
+          Le dénominateur reste <strong>${q.d1}</strong>.
+        `;
+      } 
+      else {
+        // Fraction * Fraction area model (e.g. 2/3 * 3/4)
+        const gridX = 90;
+        const gridY = 30;
+        const gridW = 180;
+        const gridH = 150;
+        
+        ctx.fillStyle = "#f8fafc";
+        ctx.fillRect(gridX, gridY, gridW, gridH);
+        
+        const colW = gridW / q.d1;
+        const rowH = gridH / q.d2;
+        
+        ctx.fillStyle = "rgba(14, 165, 233, 0.4)";
+        for (let c = 0; c < q.n1; c++) {
+          ctx.fillRect(gridX + c * colW, gridY, colW, gridH);
+        }
+        
+        ctx.fillStyle = "rgba(245, 158, 11, 0.35)";
+        for (let r = 0; r < q.n2; r++) {
+          ctx.fillRect(gridX, gridY + r * rowH, gridW, rowH);
+        }
+        
+        ctx.fillStyle = "rgba(244, 63, 94, 0.7)";
+        for (let c = 0; c < q.n1; c++) {
+          for (let r = 0; r < q.n2; r++) {
+            ctx.fillRect(gridX + c * colW, gridY + r * rowH, colW, rowH);
+            
+            ctx.beginPath();
+            ctx.arc(gridX + c * colW + colW/2, gridY + r * rowH + rowH/2, 3, 0, 2*Math.PI);
+            ctx.fillStyle = "#ffffff";
+            ctx.fill();
+            ctx.fillStyle = "rgba(244, 63, 94, 0.7)";
+          }
+        }
+        
+        ctx.strokeStyle = "#1e293b";
+        ctx.lineWidth = 2;
+        ctx.strokeRect(gridX, gridY, gridW, gridH);
+        
+        ctx.lineWidth = 1;
+        for (let c = 1; c < q.d1; c++) {
+          ctx.beginPath();
+          ctx.moveTo(gridX + c * colW, gridY);
+          ctx.lineTo(gridX + c * colW, gridY + gridH);
+          ctx.stroke();
+        }
+        for (let r = 1; r < q.d2; r++) {
+          ctx.beginPath();
+          ctx.moveTo(gridX, gridY + r * rowH);
+          ctx.lineTo(gridX + gridW, gridY + r * rowH);
+          ctx.stroke();
+        }
+        
+        ctx.fillStyle = "#0f172a";
+        ctx.font = "bold 14px Nunito";
+        ctx.textAlign = "center";
+        
+        ctx.fillText(`${q.n1}/${q.d1} de large`, gridX + gridW/2, gridY + gridH + 18);
+        
+        ctx.save();
+        ctx.translate(gridX - 18, gridY + gridH/2);
+        ctx.rotate(-Math.PI/2);
+        ctx.fillText(`${q.n2}/${q.d2} de haut`, 0, 0);
+        ctx.restore();
+        
+        const totalSquares = q.d1 * q.d2;
+        const overlapSquares = q.n1 * q.n2;
+        
+        document.getElementById('helpText').innerHTML = `
+          La grille montre le produit : <strong>${q.n1}/${q.d1} × ${q.n2}/${q.d2}</strong>.<br>
+          Le rectangle complet est séparé en <strong>${totalSquares} rectangles</strong> (${q.d1} col × ${q.d2} lig). <br>
+          La zone de croisement contient <strong>${overlapSquares} rectangles</strong> (${q.n1} × ${q.n2}). <br>
+          Le résultat de la multiplication est donc <strong>${overlapSquares} / ${totalSquares}</strong>.
+        `;
+      }
+    }
+
+    function varColor(op) {
+      return op === '-' ? "#e11d48" : "#0d9488";
+    }
+
+    // Load initial screen
+    goToHome();
+  </script>
+</body>
+</html>
