@@ -5864,9 +5864,8 @@ input[type=text].calc-input.incorrect {
   <div id="screen-sci-planetes-ordre" class="screen">
     <button class="back-btn" onclick="showScreen('screen-sci-systeme-solaire');renderSciSystemeSolaireMenu();">← Retour</button>
     <div class="page-title">🪐 L'ordre des planètes</div>
-    <div id="sci-planetes-ordre-body" class="card" style="text-align:center;padding:2rem;">
-      <div style="font-size:48px;margin-bottom:1rem;">🚧</div>
-      <p style="font-size:15px;color:var(--muted);">L'exercice arrive bientôt !</p>
+    <div id="sci-planetes-ordre-container" class="card" style="padding: 1.5rem; background: var(--papier-2); border: 3px solid var(--encre); border-radius: 16px; box-shadow: 4px 4px 0 var(--encre);">
+      <!-- L'exercice sera injecté dynamiquement -->
     </div>
   </div>
 
@@ -27142,9 +27141,933 @@ function renderSciSystemeSolaireMenu(){
   menu.innerHTML = '<div class="sub-subjects-grid">' + html + '</div>' || '<p style="color:var(--muted);text-align:center;padding:2rem">Aucun exercice disponible pour le moment.</p>';
 }
 
+let sciPlanetesState = {
+  step: 1,
+  planets: [
+    { id: 'mercure', label: 'Mercure', size: 55, img: 'planete_mercure.jpg' },
+    { id: 'venus', label: 'Vénus', size: 68, img: 'planete_venus.jpg' },
+    { id: 'terre', label: 'Terre', size: 72, img: 'planete_terre.jpg' },
+    { id: 'mars', label: 'Mars', size: 60, img: 'planete_mars.jpg' },
+    { id: 'jupiter', label: 'Jupiter', size: 110, img: 'planete_jupiter.jpg' },
+    { id: 'saturne', label: 'Saturne', size: 120, img: 'planete_saturne.jpg', hasRings: true },
+    { id: 'uranus', label: 'Uranus', size: 85, img: 'planete_uranus.jpg' },
+    { id: 'neptune', label: 'Neptune', size: 80, img: 'planete_neptune.jpg' }
+  ],
+  correctOrder: ['mercure', 'venus', 'terre', 'mars', 'jupiter', 'saturne', 'uranus', 'neptune'],
+  planetPlacements: Array(8).fill(null),
+  namePlacements: Array(8).fill(null),
+  validated: false,
+  draggingPlanet: null,
+  draggingName: null,
+  shuffledPlanetsOrder: [],
+  shuffledNamesOrder: []
+};
+
+let sciPlanetsTouchEl = null;
+let sciPlanetsTouchClone = null;
+
 function renderSciPlanetesOrdreScreen() {
-  // L'exercice sera défini par l'utilisateur
+  const container = document.getElementById('sci-planetes-ordre-container');
+  if (!container) return;
+  
+  container.innerHTML = `
+<style>
+  #sci-planetes-board {
+    max-width: 100%;
+    overflow-x: auto;
+    padding: 20px 10px;
+    background: #000000;
+    border: 3px solid #1e293b;
+    border-radius: 16px;
+    box-shadow: inset 0 0 40px rgba(0,0,0,0.85), 4px 4px 0 #0f172a;
+    margin-bottom: 20px;
+  }
+  #sci-planetes-track {
+    display: flex;
+    align-items: flex-end;
+    gap: 24px;
+    min-width: 1050px;
+    padding: 40px 20px;
+    position: relative;
+    justify-content: space-between;
+  }
+  #sci-planetes-track::before {
+    content: '';
+    position: absolute;
+    left: 20px;
+    right: 20px;
+    top: 50%;
+    height: 3px;
+    background: repeating-linear-gradient(90deg, rgba(148, 163, 184, 0.25), rgba(148, 163, 184, 0.25) 15px, transparent 15px, transparent 30px);
+    z-index: 1;
+    transform: translateY(-40px);
+  }
+  .sci-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    z-index: 2;
+    position: relative;
+    flex: 0 0 auto;
+  }
+  .sci-planet-slot {
+    border-radius: 50%;
+    border: 3px dashed #475569;
+    background: rgba(30, 41, 59, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    transition: all 0.2s ease;
+  }
+  .sci-planet-slot.drag-over {
+    border-color: #f59e0b;
+    background: rgba(245, 158, 11, 0.2);
+    transform: scale(1.05);
+  }
+  .sci-planet-slot.correct {
+    border-color: #10b981 !important;
+    background: rgba(16, 185, 129, 0.15);
+    border-style: solid;
+  }
+  .sci-planet-slot.incorrect {
+    border-color: #f43f5e !important;
+    background: rgba(244, 63, 94, 0.15);
+    border-style: solid;
+  }
+  .sci-slot-number {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #475569;
+    pointer-events: none;
+    user-select: none;
+  }
+  .sci-planet-sphere {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    cursor: grab;
+    user-select: none;
+    background-size: cover;
+    background-position: center;
+  }
+  .sci-planet-sphere.saturn-ring-wrapper {
+    background-size: contain;
+    background-repeat: no-repeat;
+    border-radius: 0;
+  }
+  .sci-planet-sphere:not(.saturn-ring-wrapper)::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    pointer-events: none;
+    box-shadow: inset -8px -8px 18px rgba(0,0,0,0.9), inset 2px 2px 6px rgba(255,255,255,0.25);
+  }
+  .sci-planet-sphere.dragging {
+    opacity: 0.5;
+    cursor: grabbing;
+  }
+  .sci-name-slot {
+    width: 120px;
+    height: 44px;
+    border: 3px dashed #475569;
+    border-radius: 8px;
+    background: rgba(30, 41, 59, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+  }
+  .sci-name-slot.drag-over {
+    border-color: #f59e0b;
+    background: rgba(245, 158, 11, 0.2);
+  }
+  .sci-name-slot.correct {
+    border-color: #10b981 !important;
+    background: rgba(16, 185, 129, 0.15);
+    border-style: solid;
+  }
+  .sci-name-slot.incorrect {
+    border-color: #f43f5e !important;
+    background: rgba(244, 63, 94, 0.15);
+    border-style: solid;
+  }
+  .sci-pool-container {
+    background: #1e293b;
+    border: 3px solid #0f172a;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 4px 4px 0 #0f172a;
+    margin-top: 20px;
+  }
+  .sci-pool-title {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #f59e0b;
+    margin-bottom: 15px;
+    text-align: center;
+  }
+  .sci-planet-pool-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: center;
+    align-items: center;
+    min-height: 130px;
+  }
+  .sci-name-pool-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+    align-items: center;
+    min-height: 60px;
+  }
+  .sci-planet-pool-item {
+    position: relative;
+    border-radius: 50%;
+    cursor: grab;
+    transition: transform 0.2s ease;
+  }
+  .sci-planet-pool-item:hover {
+    transform: scale(1.1);
+  }
+  .sci-planet-pool-item.saturn-ring-wrapper {
+    background-size: contain;
+    background-repeat: no-repeat;
+    border-radius: 0;
+  }
+  .sci-planet-pool-item:not(.saturn-ring-wrapper)::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    pointer-events: none;
+    box-shadow: inset -8px -8px 18px rgba(0,0,0,0.9), inset 2px 2px 6px rgba(255,255,255,0.25);
+  }
+  .sci-name-tag {
+    background: #ffffff;
+    color: #0f172a;
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+    padding: 6px 14px;
+    border-radius: 8px;
+    border: 3px solid #0f172a;
+    box-shadow: 3px 3px 0 #0f172a;
+    cursor: grab;
+    user-select: none;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+  }
+  .sci-name-tag:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: 4px 4px 0 #0f172a;
+  }
+  .sci-name-tag.placed {
+    box-shadow: none;
+    border-width: 2px;
+    transform: none !important;
+    cursor: grab;
+  }
+  .sci-step-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(245, 158, 11, 0.15);
+    color: #f59e0b;
+    border: 2px solid #f59e0b;
+    border-radius: 999px;
+    padding: 4px 14px;
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    margin-bottom: 15px;
+    text-transform: uppercase;
+  }
+  .sci-feedback-panel {
+    display: none;
+    margin-top: 20px;
+    padding: 15px;
+    border-radius: 12px;
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 600;
+    text-align: center;
+    font-size: 1.05rem;
+  }
+  .sci-feedback-panel.success {
+    background: rgba(16, 185, 129, 0.15);
+    color: #34d399;
+    border: 2px solid #10b981;
+  }
+  .sci-feedback-panel.error {
+    background: rgba(244, 63, 94, 0.15);
+    color: #f87171;
+    border: 2px solid #f43f5e;
+  }
+  .sci-sun-sphere::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    pointer-events: none;
+    box-shadow: inset -8px -8px 18px rgba(0,0,0,0.9), inset 2px 2px 6px rgba(255,255,255,0.25);
+  }
+</style>
+
+<div class="flex flex-col items-center">
+  <div class="sci-step-indicator" id="sci-step-badge">Étape 1 : L'ordre des planètes</div>
+  
+  <p class="text-slate-600 text-sm mb-6 text-center max-w-2xl leading-relaxed" id="sci-instructions">
+    Le Soleil est en place. Glisse et dépose les 8 planètes dans le bon ordre à partir du Soleil (du plus proche au plus éloigné).
+  </p>
+
+  <div id="sci-planetes-board" class="w-full">
+    <div id="sci-planetes-track">
+      <!-- Sun Column (Fixed) -->
+      <div class="sci-column" style="width: 130px;">
+        <div style="width: 120px; height: 120px; border-radius: 50%; background-image: url('photos/planete_soleil.jpg'); background-size: cover; background-position: center; position: relative; box-shadow: 0 0 20px rgba(245, 158, 11, 0.4);" class="sci-sun-sphere"></div>
+        <div class="sci-name-tag placed" style="background: var(--soleil-clair); border-color: var(--soleil); color: var(--soleil-fonce); text-align: center; width: 100px;">Soleil</div>
+      </div>
+      
+      <!-- Injected columns -->
+      <div id="sci-columns-placeholder" style="display:contents;"></div>
+    </div>
+  </div>
+
+  <div id="sci-planetes-pool" class="sci-pool-container w-full" ondragover="event.preventDefault();" ondrop="sciPlanetesPoolDrop(event)">
+    <div class="sci-pool-title" id="sci-pool-title-text">Glisse les planètes sur leurs orbites :</div>
+    <div class="sci-planet-pool-items" id="sci-planet-pool-items"></div>
+    <div class="sci-name-pool-items" id="sci-name-pool-items" style="display: none;" ondragover="event.preventDefault();" ondrop="sciPlanetesPoolDrop(event)"></div>
+  </div>
+
+  <div id="sci-feedback" class="sci-feedback-panel w-full"></div>
+
+  <div class="flex justify-center gap-4 mt-6">
+    <button class="btn btn-secondary" onclick="sciPlanetesReset()">🔄 Recommencer</button>
+    <button class="btn" id="sci-btn-validate" onclick="sciPlanetesValidate()">✔️ Valider l'ordre</button>
+  </div>
+</div>
+  `;
+
+  // Initialize game state
+  sciPlanetesInitGame();
 }
+
+function sciPlanetesInitGame() {
+  sciPlanetesState.step = 1;
+  sciPlanetesState.planetPlacements = Array(8).fill(null);
+  sciPlanetesState.namePlacements = Array(8).fill(null);
+  sciPlanetesState.validated = false;
+  sciPlanetesState.draggingPlanet = null;
+  sciPlanetesState.draggingName = null;
+  
+  // Shuffle arrays
+  sciPlanetesState.shuffledPlanetsOrder = shuffle([...sciPlanetesState.planets]);
+  sciPlanetesState.shuffledNamesOrder = shuffle([...sciPlanetesState.planets]);
+  
+  // Render slots layout
+  const colsContainer = document.getElementById('sci-columns-placeholder');
+  if (colsContainer) {
+    colsContainer.innerHTML = '';
+    sciPlanetesState.planets.forEach((p, idx) => {
+      const col = document.createElement('div');
+      col.className = 'sci-column';
+      col.style.width = '130px';
+      col.innerHTML = `
+        <div class="sci-planet-slot" data-idx="${idx}" style="width: 120px; height: 120px;"
+             ondragover="sciPlanetesDragOver(event)" ondragleave="sciPlanetesDragLeave(event)" ondrop="sciPlanetesDrop(event)">
+          <span class="sci-slot-number">${idx + 1}</span>
+        </div>
+        <div class="sci-name-slot" data-idx="${idx}"
+             ondragover="sciPlanetesDragOver(event)" ondragleave="sciPlanetesDragLeave(event)" ondrop="sciPlanetesDrop(event)">
+        </div>
+      `;
+      colsContainer.appendChild(col);
+    });
+  }
+
+  // Action button reset
+  const btnVal = document.getElementById('sci-btn-validate');
+  if (btnVal) {
+    btnVal.innerHTML = '✔️ Valider l\'ordre';
+    btnVal.style.display = 'inline-flex';
+  }
+  
+  // Header badges reset
+  const stepBadge = document.getElementById('sci-step-badge');
+  if (stepBadge) {
+    stepBadge.textContent = "Étape 1 : L'ordre des planètes";
+    stepBadge.style.background = 'rgba(245, 158, 11, 0.15)';
+    stepBadge.style.color = '#f59e0b';
+    stepBadge.style.borderColor = '#f59e0b';
+  }
+  
+  const inst = document.getElementById('sci-instructions');
+  if (inst) {
+    inst.textContent = "Le Soleil est en place. Glisse et dépose les 8 planètes dans le bon ordre à partir du Soleil (du plus proche au plus éloigné).";
+  }
+
+  const feedback = document.getElementById('sci-feedback');
+  if (feedback) feedback.style.display = 'none';
+
+  const planPool = document.getElementById('sci-planet-pool-items');
+  if (planPool) planPool.style.display = 'flex';
+  const namePool = document.getElementById('sci-name-pool-items');
+  if (namePool) namePool.style.display = 'none';
+  const poolTitle = document.getElementById('sci-pool-title-text');
+  if (poolTitle) poolTitle.textContent = "Glisse les planètes sur leurs orbites :";
+
+  // Render Slots
+  for (let i = 0; i < 8; i++) {
+    updatePlanetSlotUI(i);
+    updateNameSlotUI(i);
+  }
+  renderPlanetPool();
+}
+
+function updatePlanetSlotUI(slotIdx) {
+  const slotEl = document.querySelector(`.sci-planet-slot[data-idx="${slotIdx}"]`);
+  if (!slotEl) return;
+  slotEl.innerHTML = '';
+  
+  const planetId = sciPlanetesState.planetPlacements[slotIdx];
+  if (planetId) {
+    const planet = sciPlanetesState.planets.find(p => p.id === planetId);
+    
+    const sphere = document.createElement('div');
+    sphere.className = 'sci-planet-sphere';
+    sphere.style.backgroundImage = `url('photos/${planet.img}')`;
+    
+    // Scale size relative to slot size (120px)
+    const scale = planet.size / 120;
+    sphere.style.transform = `scale(${scale})`;
+    
+    if (planet.hasRings) {
+      sphere.classList.add('saturn-ring-wrapper');
+      sphere.style.transform = `scale(${scale * 0.95})`; // fit slightly better
+    }
+    
+    if (!sciPlanetesState.validated && sciPlanetesState.step === 1) {
+      sphere.setAttribute('draggable', 'true');
+      sphere.setAttribute('data-type', 'planet');
+      sphere.setAttribute('data-id', planet.id);
+      sphere.addEventListener('dragstart', sciPlanetesDragStart);
+      sphere.addEventListener('dragend', sciPlanetesDragEnd);
+      sphere.addEventListener('touchstart', sciPlanetesTouchStart, {passive: false});
+      sphere.addEventListener('touchmove', sciPlanetesTouchMove, {passive: false});
+      sphere.addEventListener('touchend', sciPlanetesTouchEnd);
+      sphere.addEventListener('touchcancel', sciPlanetesTouchCancel);
+    } else {
+      sphere.style.cursor = 'default';
+    }
+    
+    slotEl.appendChild(sphere);
+  } else {
+    slotEl.innerHTML = `<span class="sci-slot-number">${slotIdx + 1}</span>`;
+  }
+}
+
+function updateNameSlotUI(slotIdx) {
+  const slotEl = document.querySelector(`.sci-name-slot[data-idx="${slotIdx}"]`);
+  if (!slotEl) return;
+  slotEl.innerHTML = '';
+  
+  const nameLabel = sciPlanetesState.namePlacements[slotIdx];
+  if (nameLabel) {
+    const tag = document.createElement('div');
+    tag.className = 'sci-name-tag placed';
+    tag.textContent = nameLabel;
+    
+    if (!sciPlanetesState.validated && sciPlanetesState.step === 2) {
+      tag.setAttribute('draggable', 'true');
+      tag.setAttribute('data-type', 'name');
+      tag.setAttribute('data-label', nameLabel);
+      tag.addEventListener('dragstart', sciPlanetesDragStart);
+      tag.addEventListener('dragend', sciPlanetesDragEnd);
+      tag.addEventListener('touchstart', sciPlanetesTouchStart, {passive: false});
+      tag.addEventListener('touchmove', sciPlanetesTouchMove, {passive: false});
+      tag.addEventListener('touchend', sciPlanetesTouchEnd);
+      tag.addEventListener('touchcancel', sciPlanetesTouchCancel);
+    } else {
+      tag.style.cursor = 'default';
+    }
+    
+    slotEl.appendChild(tag);
+  }
+}
+
+function renderPlanetPool() {
+  const poolEl = document.getElementById('sci-planet-pool-items');
+  if (!poolEl) return;
+  poolEl.innerHTML = '';
+  
+  const placedIds = sciPlanetesState.planetPlacements.filter(id => id !== null);
+  
+  sciPlanetesState.shuffledPlanetsOrder.forEach(p => {
+    if (placedIds.includes(p.id)) return;
+    
+    const div = document.createElement('div');
+    div.className = 'sci-planet-pool-item';
+    div.style.width = p.size + 'px';
+    div.style.height = p.size + 'px';
+    div.style.backgroundImage = `url('photos/${p.img}')`;
+    div.setAttribute('draggable', 'true');
+    div.setAttribute('data-type', 'planet');
+    div.setAttribute('data-id', p.id);
+    
+    if (p.hasRings) {
+      div.classList.add('saturn-ring-wrapper');
+      div.style.backgroundSize = 'contain';
+      div.style.backgroundRepeat = 'no-repeat';
+      div.style.backgroundPosition = 'center';
+    } else {
+      div.style.backgroundSize = 'cover';
+      div.style.backgroundPosition = 'center';
+    }
+    
+    div.addEventListener('dragstart', sciPlanetesDragStart);
+    div.addEventListener('dragend', sciPlanetesDragEnd);
+    div.addEventListener('touchstart', sciPlanetesTouchStart, {passive: false});
+    div.addEventListener('touchmove', sciPlanetesTouchMove, {passive: false});
+    div.addEventListener('touchend', sciPlanetesTouchEnd);
+    div.addEventListener('touchcancel', sciPlanetesTouchCancel);
+    
+    poolEl.appendChild(div);
+  });
+  
+  if (poolEl.children.length === 0 && sciPlanetesState.step === 1) {
+    poolEl.innerHTML = `<p class="text-sm text-slate-400 font-medium">Toutes les planètes sont placées. Valide l'ordre pour continuer !</p>`;
+  }
+}
+
+function renderNamePool() {
+  const poolEl = document.getElementById('sci-name-pool-items');
+  if (!poolEl) return;
+  poolEl.innerHTML = '';
+  
+  const placedLabels = sciPlanetesState.namePlacements.filter(name => name !== null);
+  
+  sciPlanetesState.shuffledNamesOrder.forEach(p => {
+    if (placedLabels.includes(p.label)) return;
+    
+    const div = document.createElement('div');
+    div.className = 'sci-name-tag';
+    div.setAttribute('draggable', 'true');
+    div.setAttribute('data-type', 'name');
+    div.setAttribute('data-label', p.label);
+    div.textContent = p.label;
+    
+    div.addEventListener('dragstart', sciPlanetesDragStart);
+    div.addEventListener('dragend', sciPlanetesDragEnd);
+    div.addEventListener('touchstart', sciPlanetesTouchStart, {passive: false});
+    div.addEventListener('touchmove', sciPlanetesTouchMove, {passive: false});
+    div.addEventListener('touchend', sciPlanetesTouchEnd);
+    div.addEventListener('touchcancel', sciPlanetesTouchCancel);
+    
+    poolEl.appendChild(div);
+  });
+  
+  if (poolEl.children.length === 0 && sciPlanetesState.step === 2) {
+    poolEl.innerHTML = `<p class="text-sm text-slate-400 font-medium">Tous les noms sont placés. Valide tes réponses !</p>`;
+  }
+}
+
+function sciPlanetesDragStart(e) {
+  if (sciPlanetesState.validated) return;
+  const type = e.target.dataset.type;
+  e.dataTransfer.effectAllowed = 'move';
+  if (type === 'planet') {
+    const id = e.target.dataset.id;
+    e.dataTransfer.setData('text/plain', JSON.stringify({ type: 'planet', id: id }));
+    sciPlanetesState.draggingPlanet = id;
+    e.target.classList.add('dragging');
+  } else if (type === 'name') {
+    const label = e.target.dataset.label;
+    e.dataTransfer.setData('text/plain', JSON.stringify({ type: 'name', label: label }));
+    sciPlanetesState.draggingName = label;
+    e.target.classList.add('dragging');
+  }
+}
+
+function sciPlanetesDragEnd(e) {
+  e.target.classList.remove('dragging');
+  sciPlanetesState.draggingPlanet = null;
+  sciPlanetesState.draggingName = null;
+}
+
+function sciPlanetesDragOver(e) {
+  e.preventDefault();
+  if (sciPlanetesState.validated) return;
+  const type = sciPlanetesState.draggingPlanet ? 'planet' : (sciPlanetesState.draggingName ? 'name' : null);
+  if (!type) return;
+  
+  const slotType = e.currentTarget.classList.contains('sci-planet-slot') ? 'planet' : (e.currentTarget.classList.contains('sci-name-slot') ? 'name' : null);
+  if (type === slotType) {
+    e.currentTarget.classList.add('drag-over');
+  }
+}
+
+function sciPlanetesDragLeave(e) {
+  e.currentTarget.classList.remove('drag-over');
+}
+
+function sciPlanetesDrop(e) {
+  e.preventDefault();
+  e.currentTarget.classList.remove('drag-over');
+  if (sciPlanetesState.validated) return;
+  
+  let dataStr = e.dataTransfer.getData('text/plain');
+  if (!dataStr) {
+    if (sciPlanetesState.draggingPlanet && e.currentTarget.classList.contains('sci-planet-slot')) {
+      dataStr = JSON.stringify({ type: 'planet', id: sciPlanetesState.draggingPlanet });
+    } else if (sciPlanetesState.draggingName && e.currentTarget.classList.contains('sci-name-slot')) {
+      dataStr = JSON.stringify({ type: 'name', label: sciPlanetesState.draggingName });
+    } else {
+      return;
+    }
+  }
+  
+  const data = JSON.parse(dataStr);
+  const targetIdx = parseInt(e.currentTarget.dataset.idx);
+  
+  if (data.type === 'planet' && e.currentTarget.classList.contains('sci-planet-slot')) {
+    if (sciPlanetesState.step !== 1) return;
+    const planetId = data.id;
+    const sourceIdx = sciPlanetesState.planetPlacements.indexOf(planetId);
+    const existingPlanetAtTarget = sciPlanetesState.planetPlacements[targetIdx];
+    
+    if (sourceIdx !== -1) {
+      sciPlanetesState.planetPlacements[sourceIdx] = existingPlanetAtTarget;
+      updatePlanetSlotUI(sourceIdx);
+    }
+    
+    sciPlanetesState.planetPlacements[targetIdx] = planetId;
+    updatePlanetSlotUI(targetIdx);
+    renderPlanetPool();
+  } else if (data.type === 'name' && e.currentTarget.classList.contains('sci-name-slot')) {
+    if (sciPlanetesState.step !== 2) return;
+    const nameLabel = data.label;
+    const sourceIdx = sciPlanetesState.namePlacements.indexOf(nameLabel);
+    const existingNameAtTarget = sciPlanetesState.namePlacements[targetIdx];
+    
+    if (sourceIdx !== -1) {
+      sciPlanetesState.namePlacements[sourceIdx] = existingNameAtTarget;
+      updateNameSlotUI(sourceIdx);
+    }
+    
+    sciPlanetesState.namePlacements[targetIdx] = nameLabel;
+    updateNameSlotUI(targetIdx);
+    renderNamePool();
+  }
+}
+
+function sciPlanetesPoolDrop(e) {
+  e.preventDefault();
+  if (sciPlanetesState.validated) return;
+  
+  let dataStr = e.dataTransfer.getData('text/plain');
+  if (!dataStr) {
+    if (sciPlanetesState.draggingPlanet) {
+      dataStr = JSON.stringify({ type: 'planet', id: sciPlanetesState.draggingPlanet });
+    } else if (sciPlanetesState.draggingName) {
+      dataStr = JSON.stringify({ type: 'name', label: sciPlanetesState.draggingName });
+    } else {
+      return;
+    }
+  }
+  
+  const data = JSON.parse(dataStr);
+  if (data.type === 'planet' && sciPlanetesState.step === 1) {
+    const sourceIdx = sciPlanetesState.planetPlacements.indexOf(data.id);
+    if (sourceIdx !== -1) {
+      sciPlanetesState.planetPlacements[sourceIdx] = null;
+      updatePlanetSlotUI(sourceIdx);
+      renderPlanetPool();
+    }
+  } else if (data.type === 'name' && sciPlanetesState.step === 2) {
+    const sourceIdx = sciPlanetesState.namePlacements.indexOf(data.label);
+    if (sourceIdx !== -1) {
+      sciPlanetesState.namePlacements[sourceIdx] = null;
+      updateNameSlotUI(sourceIdx);
+      renderNamePool();
+    }
+  }
+}
+
+function sciPlanetesValidate() {
+  if (sciPlanetesState.validated) return;
+  
+  const feedback = document.getElementById('sci-feedback');
+  if (!feedback) return;
+  
+  feedback.style.display = 'block';
+  feedback.className = 'sci-feedback-panel';
+  
+  if (sciPlanetesState.step === 1) {
+    const isComplete = sciPlanetesState.planetPlacements.every(id => id !== null);
+    if (!isComplete) {
+      feedback.textContent = "Place toutes les planètes avant de valider l'ordre !";
+      feedback.classList.add('error');
+      return;
+    }
+    
+    let correctCount = 0;
+    sciPlanetesState.planetPlacements.forEach((id, idx) => {
+      const slotEl = document.querySelector(`.sci-planet-slot[data-idx="${idx}"]`);
+      if (!slotEl) return;
+      
+      slotEl.classList.remove('correct', 'incorrect');
+      if (id === sciPlanetesState.correctOrder[idx]) {
+        slotEl.classList.add('correct');
+        correctCount++;
+      } else {
+        slotEl.classList.add('incorrect');
+      }
+    });
+    
+    if (correctCount === 8) {
+      feedback.textContent = "Bravo ! Toutes les planètes sont placées dans le bon ordre ! Passage à l'étape 2...";
+      feedback.classList.add('success');
+      
+      setTimeout(sciPlanetesGoToStep2, 1800);
+    } else {
+      feedback.textContent = `${correctCount} / 8 planètes sont bien placées. Corrige les erreurs en déplaçant les planètes entourées de rouge !`;
+      feedback.classList.add('error');
+    }
+  } else if (sciPlanetesState.step === 2) {
+    const isComplete = sciPlanetesState.namePlacements.every(name => name !== null);
+    if (!isComplete) {
+      feedback.textContent = "Place toutes les étiquettes de noms sous les planètes !";
+      feedback.classList.add('error');
+      return;
+    }
+    
+    let correctCount = 0;
+    sciPlanetesState.namePlacements.forEach((name, idx) => {
+      const slotEl = document.querySelector(`.sci-name-slot[data-idx="${idx}"]`);
+      if (!slotEl) return;
+      
+      slotEl.classList.remove('correct', 'incorrect');
+      
+      const planetId = sciPlanetesState.planetPlacements[idx];
+      const planet = sciPlanetesState.planets.find(p => p.id === planetId);
+      
+      if (planet && planet.label === name) {
+        slotEl.classList.add('correct');
+        correctCount++;
+      } else {
+        slotEl.classList.add('incorrect');
+      }
+    });
+    
+    if (correctCount === 8) {
+      sciPlanetesState.validated = true;
+      feedback.textContent = "Félicitations ! Tu as replacé toutes les planètes et leurs noms correctement !";
+      feedback.classList.add('success');
+      
+      // Locked placements redraw
+      for (let i = 0; i < 8; i++) {
+        updateNameSlotUI(i);
+      }
+      
+      const btnVal = document.getElementById('sci-btn-validate');
+      if (btnVal) btnVal.style.display = 'none';
+
+      const pct = 100;
+      const score = 8;
+      const total = 8;
+      
+      if (state.student) {
+        saveResult({
+          student: state.student,
+          cls: state.studentCls,
+          className: CLASSES[state.studentCls] ? CLASSES[state.studentCls].name : state.studentCls,
+          activity: 'sci_planetes_ordre',
+          bookTitle: "L'ordre des planètes",
+          score,
+          total,
+          pct,
+          date: new Date().toLocaleDateString('fr-BE'),
+          time: new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })
+        });
+      }
+    } else {
+      feedback.textContent = `${correctCount} / 8 étiquettes de noms sont bien placées. Regarde bien les étiquettes entourées de rouge !`;
+      feedback.classList.add('error');
+    }
+  }
+}
+
+function sciPlanetesGoToStep2() {
+  sciPlanetesState.step = 2;
+  
+  sciPlanetesState.planetPlacements.forEach((id, idx) => {
+    const slotEl = document.querySelector(`.sci-planet-slot[data-idx="${idx}"]`);
+    if (slotEl) {
+      slotEl.classList.remove('correct', 'incorrect');
+      updatePlanetSlotUI(idx);
+    }
+  });
+
+  const feedback = document.getElementById('sci-feedback');
+  if (feedback) feedback.style.display = 'none';
+
+  const stepBadge = document.getElementById('sci-step-badge');
+  if (stepBadge) {
+    stepBadge.textContent = "Étape 2 : Le nom des planètes";
+    stepBadge.style.background = 'rgba(16, 185, 129, 0.15)';
+    stepBadge.style.color = '#10b981';
+    stepBadge.style.borderColor = '#10b981';
+  }
+  
+  const inst = document.getElementById('sci-instructions');
+  if (inst) {
+    inst.textContent = "Les planètes sont ordonnées ! Glisse maintenant chaque étiquette de nom sous la planète correspondante.";
+  }
+
+  const btnVal = document.getElementById('sci-btn-validate');
+  if (btnVal) btnVal.innerHTML = '✔️ Valider les noms';
+
+  const planPool = document.getElementById('sci-planet-pool-items');
+  if (planPool) planPool.style.display = 'none';
+  const namePool = document.getElementById('sci-name-pool-items');
+  if (namePool) namePool.style.display = 'flex';
+  const poolTitle = document.getElementById('sci-pool-title-text');
+  if (poolTitle) poolTitle.textContent = "Glisse les noms sous les planètes :";
+
+  renderNamePool();
+}
+
+function sciPlanetesReset() {
+  sciPlanetesInitGame();
+}
+
+function sciPlanetesTouchStart(e) {
+  const target = e.currentTarget;
+  if (sciPlanetesState.validated) return;
+  
+  sciPlanetsTouchEl = target;
+  const clone = target.cloneNode(true);
+  clone.style.cssText = 'position:fixed;z-index:9999;opacity:.85;pointer-events:none;transform:scale(1.1);';
+  
+  const touch = e.touches[0];
+  const width = target.offsetWidth;
+  const height = target.offsetHeight;
+  clone.style.left = (touch.clientX - width / 2) + 'px';
+  clone.style.top = (touch.clientY - height / 2) + 'px';
+  
+  document.body.appendChild(clone);
+  sciPlanetsTouchClone = clone;
+  target.style.opacity = '0.4';
+}
+
+function sciPlanetesTouchMove(e) {
+  if (!sciPlanetsTouchClone) return;
+  e.preventDefault();
+  
+  const touch = e.touches[0];
+  const width = sciPlanetsTouchEl.offsetWidth;
+  const height = sciPlanetsTouchEl.offsetHeight;
+  
+  sciPlanetsTouchClone.style.left = (touch.clientX - width / 2) + 'px';
+  sciPlanetsTouchClone.style.top = (touch.clientY - height / 2) + 'px';
+}
+
+function sciPlanetesTouchEnd(e) {
+  if (!sciPlanetsTouchClone) return;
+  
+  const touch = e.changedTouches[0];
+  sciPlanetsTouchClone.remove();
+  sciPlanetsTouchClone = null;
+  
+  if (sciPlanetsTouchEl) {
+    sciPlanetsTouchEl.style.opacity = '';
+  }
+  
+  const targetEl = document.elementFromPoint(touch.clientX, touch.clientY);
+  const planetSlot = targetEl ? targetEl.closest('.sci-planet-slot') : null;
+  const nameSlot = targetEl ? targetEl.closest('.sci-name-slot') : null;
+  const planetPool = targetEl ? targetEl.closest('#sci-planetes-pool') : null;
+  const namePool = targetEl ? targetEl.closest('#sci-names-pool') : null;
+  
+  const type = sciPlanetsTouchEl.dataset.type;
+  
+  if (type === 'planet') {
+    if (sciPlanetesState.step !== 1) {
+      sciPlanetsTouchEl = null;
+      return;
+    }
+    const planetId = sciPlanetsTouchEl.dataset.id;
+    if (planetSlot) {
+      const targetIdx = parseInt(planetSlot.dataset.idx);
+      const sourceIdx = sciPlanetesState.planetPlacements.indexOf(planetId);
+      const existingPlanetAtTarget = sciPlanetesState.planetPlacements[targetIdx];
+      
+      if (sourceIdx !== -1) {
+        sciPlanetesState.planetPlacements[sourceIdx] = existingPlanetAtTarget;
+        updatePlanetSlotUI(sourceIdx);
+      }
+      
+      sciPlanetesState.planetPlacements[targetIdx] = planetId;
+      updatePlanetSlotUI(targetIdx);
+      renderPlanetPool();
+    } else if (planetPool || !planetSlot) {
+      const sourceIdx = sciPlanetesState.planetPlacements.indexOf(planetId);
+      if (sourceIdx !== -1) {
+        sciPlanetesState.planetPlacements[sourceIdx] = null;
+        updatePlanetSlotUI(sourceIdx);
+        renderPlanetPool();
+      }
+    }
+  } else if (type === 'name') {
+    if (sciPlanetesState.step !== 2) {
+      sciPlanetsTouchEl = null;
+      return;
+    }
+    const nameLabel = sciPlanetsTouchEl.dataset.label;
+    if (nameSlot) {
+      const targetIdx = parseInt(nameSlot.dataset.idx);
+      const sourceIdx = sciPlanetesState.namePlacements.indexOf(nameLabel);
+      const existingNameAtTarget = sciPlanetesState.namePlacements[targetIdx];
+      
+      if (sourceIdx !== -1) {
+        sciPlanetesState.namePlacements[sourceIdx] = existingNameAtTarget;
+        updateNameSlotUI(sourceIdx);
+      }
+      
+      sciPlanetesState.namePlacements[targetIdx] = nameLabel;
+      updateNameSlotUI(targetIdx);
+      renderNamePool();
+    } else if (namePool || !nameSlot) {
+      const sourceIdx = sciPlanetesState.namePlacements.indexOf(nameLabel);
+      if (sourceIdx !== -1) {
+        sciPlanetesState.namePlacements[sourceIdx] = null;
+        updateNameSlotUI(sourceIdx);
+        renderNamePool();
+      }
+    }
+  }
+  
+  sciPlanetsTouchEl = null;
+}
+
+function sciPlanetesTouchCancel(e) {
+  if (sciPlanetsTouchClone) {
+    sciPlanetsTouchClone.remove();
+    sciPlanetsTouchClone = null;
+  }
+  if (sciPlanetsTouchEl) {
+    sciPlanetsTouchEl.style.opacity = '';
+    sciPlanetsTouchEl = null;
+  }
+}
+
 
 // ----- EXERCICE 1 : SCHÉMA -----
 const SCI_DIG_SCHEMA_DATA = [
