@@ -1,0 +1,1211 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Mesurer les angles avec l'équerre Aristo</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --paper: #f8fafc;
+    --ink: #0f172a;
+    --muted: #64748b;
+    --accent: #2563eb;
+    --accent-light: #eff6ff;
+    --accent-hover: #1d4ed8;
+    --success: #16a34a;
+    --success-light: #f0fdf4;
+    --error: #dc2626;
+    --error-light: #fef2f2;
+    --warning: #ea580c;
+    --warning-light: #fff7ed;
+    --border: #e2e8f0;
+    --card: #ffffff;
+    --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    padding: 1.5rem;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .container {
+    max-width: 620px;
+    margin: 0 auto;
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 1.25rem;
+  }
+
+  h1 {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 0.25rem;
+  }
+
+  .subtitle {
+    font-size: 13.5px;
+    color: var(--muted);
+    font-weight: 600;
+  }
+
+  /* Progress and score indicators */
+  .info-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 0.85rem 1.25rem;
+    margin-bottom: 1.25rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: var(--shadow);
+  }
+  .info-card p {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 14.5px;
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .dots {
+    display: flex;
+    gap: 8px;
+  }
+  .dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #e2e8f0;
+    border: 1px solid #cbd5e1;
+    transition: all 0.3s ease;
+  }
+  .dot.current {
+    background: var(--accent);
+    border-color: var(--accent-hover);
+    transform: scale(1.2);
+  }
+  .dot.correct-3 {
+    background: var(--success);
+    border-color: var(--success);
+    box-shadow: 0 0 0 2px rgba(22, 163, 74, 0.2);
+  }
+  .dot.correct-2 {
+    background: #84cc16;
+    border-color: #84cc16;
+  }
+  .dot.correct-1 {
+    background: var(--warning);
+    border-color: var(--warning);
+  }
+  .dot.incorrect {
+    background: var(--error);
+    border-color: var(--error);
+  }
+
+  /* Interactive canvas card */
+  .shape-card {
+    background: var(--card);
+    border: 2px solid var(--border);
+    border-radius: 20px;
+    padding: 0.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 1rem;
+    box-shadow: var(--shadow);
+    min-height: 280px;
+    position: relative;
+    overflow: hidden;
+  }
+  .shape-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: radial-gradient(circle, rgba(37,99,235,0.01) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .shape-card svg {
+    width: 100%;
+    max-width: 380px;
+    height: 250px;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: none;
+  }
+
+  /* Fine-tuning controls below shape card */
+  .fine-tune-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 1.25rem;
+    background: #f1f5f9;
+    padding: 8px 12px;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+  }
+  .fine-tune-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--muted);
+    margin: 0 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .btn-tune {
+    padding: 6px 12px;
+    font-size: 12.5px;
+    font-weight: 800;
+    border-radius: 8px;
+    border: 1px solid #cbd5e1;
+    background: white;
+    color: var(--ink);
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .btn-tune:hover:not(:disabled) {
+    background: var(--accent-light);
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+  .btn-tune:active:not(:disabled) {
+    transform: scale(0.95);
+  }
+  .btn-tune:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  /* Question Card */
+  .step-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1rem;
+    box-shadow: var(--shadow);
+    animation: slideUp 0.4s ease forwards;
+  }
+  .step-title {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 1rem;
+    text-align: center;
+  }
+
+  /* Input form area */
+  .input-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 0.75rem;
+  }
+  .measure-input {
+    width: 80px;
+    padding: 10px;
+    border-radius: 12px;
+    border: 2px solid var(--border);
+    font-size: 18px;
+    font-weight: 800;
+    text-align: center;
+    color: var(--ink);
+    font-family: 'Nunito', sans-serif;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .measure-input:focus:not(:disabled) {
+    border-color: var(--accent);
+  }
+  .measure-input:disabled {
+    background: #f1f5f9;
+    cursor: not-allowed;
+  }
+  .unit-label {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--muted);
+  }
+  .btn-submit {
+    padding: 10px 20px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 800;
+    cursor: pointer;
+    font-family: 'Fredoka', sans-serif;
+    transition: all 0.2s ease;
+  }
+  .btn-submit:hover:not(:disabled) {
+    background: var(--accent-hover);
+  }
+  .btn-submit:disabled {
+    background: #cbd5e1;
+    cursor: not-allowed;
+  }
+
+  /* Feedback box */
+  .feedback-box {
+    margin-top: 1rem;
+    padding: 0.85rem 1.15rem;
+    border-radius: 12px;
+    font-size: 13.5px;
+    line-height: 1.5;
+    font-weight: 600;
+    display: none;
+    animation: fadeIn 0.3s ease forwards;
+  }
+  .feedback-box.correct {
+    display: block;
+    background: var(--success-light);
+    border: 1px solid #bbf7d0;
+    color: #15803d;
+  }
+  .feedback-box.partial {
+    display: block;
+    background: var(--warning-light);
+    border: 1px solid #fed7aa;
+    color: #c2410c;
+  }
+  .feedback-box.incorrect {
+    display: block;
+    background: var(--error-light);
+    border: 1px solid #fecaca;
+    color: #b91c1c;
+  }
+
+  /* Nav buttons */
+  .btn-next {
+    width: 100%;
+    padding: 14px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 16px;
+    font-size: 15px;
+    font-weight: 800;
+    cursor: pointer;
+    font-family: 'Fredoka', sans-serif;
+    transition: all 0.2s ease;
+    margin-top: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+  }
+  .btn-next:hover {
+    background: var(--accent-hover);
+    transform: translateY(-1.5px);
+    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3);
+  }
+  .btn-next:active {
+    transform: translateY(0);
+  }
+
+  /* Score screen */
+  .score-card {
+    display: none;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 2rem 1.5rem;
+    text-align: center;
+    box-shadow: var(--shadow);
+    animation: slideUp 0.5s ease forwards;
+  }
+  .score-emoji {
+    font-size: 64px;
+    margin-bottom: 0.5rem;
+    animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  }
+  .score-title {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: var(--ink);
+  }
+  .score-num {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 38px;
+    font-weight: 800;
+    color: var(--accent);
+    margin-bottom: 1.25rem;
+  }
+  .score-details {
+    background: var(--paper);
+    border-radius: 16px;
+    padding: 0.85rem;
+    margin-bottom: 1.5rem;
+    text-align: left;
+    max-height: 240px;
+    overflow-y: auto;
+    border: 1px solid var(--border);
+  }
+  .score-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 4px;
+    border-bottom: 1px solid rgba(0,0,0,0.04);
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .score-row:last-child {
+    border-bottom: none;
+  }
+  .score-row .name {
+    color: var(--ink);
+  }
+  .score-row .points-tag {
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 99px;
+    font-weight: 800;
+  }
+  .score-row .points-tag.pts-3 {
+    background: #dcfce7;
+    color: #15803d;
+  }
+  .score-row .points-tag.pts-2 {
+    background: #f7fee7;
+    color: #4d7c0f;
+  }
+  .score-row .points-tag.pts-1 {
+    background: #fff7ed;
+    color: #c2410c;
+  }
+  .score-row .points-tag.pts-0 {
+    background: #fee2e2;
+    color: #b91c1c;
+  }
+  .score-row .status-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  /* Animations */
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes popIn {
+    from { transform: scale(0.6); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+
+  .score-details::-webkit-scrollbar {
+    width: 6px;
+  }
+  .score-details::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .score-details::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 99px;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>Mesurer avec l'équerre Aristo</h1>
+    <div class="subtitle">Glisse et fais pivoter l'équerre pour mesurer l'angle</div>
+  </header>
+
+  <div id="exercice-zone">
+    <!-- Progress Indicator -->
+    <div class="info-card">
+      <p id="info-numero">Question 1/5</p>
+      <div class="dots" id="dots-progress"></div>
+    </div>
+
+    <!-- SVG Canvas -->
+    <div class="shape-card">
+      <svg id="angle-svg" viewBox="0 0 300 200">
+        <!-- Dynamically drawn angle and Aristo set square -->
+      </svg>
+    </div>
+
+    <!-- Fine-tuning rotation buttons -->
+    <div class="fine-tune-container" id="fine-tune-controls">
+      <button class="btn-tune" onclick="tuneAngle(-5)">↩ -5°</button>
+      <button class="btn-tune" onclick="tuneAngle(-1)">↩ -1°</button>
+      <span class="fine-tune-label">Ajuster</span>
+      <button class="btn-tune" onclick="tuneAngle(1)">+1° ↪</button>
+      <button class="btn-tune" onclick="tuneAngle(5)">+5° ↪</button>
+    </div>
+
+    <!-- Answer Box Step Card -->
+    <div class="step-card">
+      <div class="step-title">Inscris la mesure ci-dessous :</div>
+      
+      <div class="input-wrapper">
+        <input type="number" id="student-answer" class="measure-input" min="0" max="180" placeholder="..." onkeydown="if(event.key==='Enter') submitAnswer();" />
+        <span class="unit-label">°</span>
+        <button class="btn-submit" id="btn-submit" onclick="submitAnswer()">Valider</button>
+      </div>
+
+      <div class="feedback-box" id="feedback-box"></div>
+      
+      <!-- Next Button -->
+      <button class="btn-next" id="btn-next" style="display:none" onclick="nextQuestion()">
+        <span>Question suivante</span> ➡️
+      </button>
+    </div>
+  </div>
+
+  <!-- Final Score Screen -->
+  <div class="score-card" id="score-screen">
+    <div class="score-emoji" id="final-emoji">🏆</div>
+    <div class="score-title" id="final-title">Excellent travail !</div>
+    <div class="score-num" id="final-score">15 / 15 points</div>
+    <div class="score-details" id="final-details"></div>
+    <button class="btn-next" onclick="restart()">🔄 Recommencer</button>
+  </div>
+</div>
+
+<script>
+// --- AUDIO SYNTHESIS ---
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+function playSound(type) {
+  if (audioCtx.state === 'suspended') {
+    audioCtx.resume();
+  }
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  osc.connect(gain);
+  gain.connect(audioCtx.destination);
+
+  if (type === 'success') {
+    osc.frequency.setValueAtTime(523.25, audioCtx.currentTime);
+    osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.1);
+    osc.frequency.setValueAtTime(783.99, audioCtx.currentTime + 0.2);
+    osc.frequency.setValueAtTime(1046.50, audioCtx.currentTime + 0.3);
+    gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.005, audioCtx.currentTime + 0.5);
+    osc.start();
+    osc.stop(audioCtx.currentTime + 0.5);
+  } else if (type === 'error') {
+    osc.frequency.setValueAtTime(220, audioCtx.currentTime);
+    osc.frequency.setValueAtTime(147, audioCtx.currentTime + 0.15);
+    gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.005, audioCtx.currentTime + 0.4);
+    osc.start();
+    osc.stop(audioCtx.currentTime + 0.4);
+  } else if (type === 'click') {
+    osc.frequency.setValueAtTime(580, audioCtx.currentTime);
+    gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.005, audioCtx.currentTime + 0.08);
+    osc.start();
+    osc.stop(audioCtx.currentTime + 0.08);
+  }
+}
+
+// --- BANQUE D'ANGLES (10 Aigus, 10 Obtus) ---
+const ANGLE_BANK = [
+  // Aigus
+  { id: 1, value: 30, type: "aigu" },
+  { id: 2, value: 40, type: "aigu" },
+  { id: 3, value: 45, type: "aigu" },
+  { id: 4, value: 50, type: "aigu" },
+  { id: 5, value: 55, type: "aigu" },
+  { id: 6, value: 60, type: "aigu" },
+  { id: 7, value: 65, type: "aigu" },
+  { id: 8, value: 70, type: "aigu" },
+  { id: 9, value: 75, type: "aigu" },
+  { id: 10, value: 80, type: "aigu" },
+  // Obtus
+  { id: 11, value: 100, type: "obtus" },
+  { id: 12, value: 105, type: "obtus" },
+  { id: 13, value: 110, type: "obtus" },
+  { id: 14, value: 115, type: "obtus" },
+  { id: 15, value: 120, type: "obtus" },
+  { id: 16, value: 130, type: "obtus" },
+  { id: 17, value: 135, type: "obtus" },
+  { id: 18, value: 140, type: "obtus" },
+  { id: 19, value: 150, type: "obtus" },
+  { id: 20, value: 160, type: "obtus" }
+];
+
+// --- STATE VARIABLES ---
+let currentQuestions = [];
+let currentIdx = 0;
+let scorePoints = 0; // Cumulative score out of 15 (5 questions * 3 pts)
+let userAnswers = [];
+let hasAnswered = false;
+
+// Aristo tool coordinates
+let px = 50; // Pivot X in SVG space (starts offset)
+let py = 45; // Pivot Y in SVG space (starts offset)
+let aristoAngle = 0; // Current rotation angle of the set square
+
+// Touch/Mouse dragging state
+let isDragging = false;
+let isRotating = false;
+let startPtX = 0, startPtY = 0;
+let startPx = 0, startPy = 0;
+
+// Helper to convert screen pointer events to SVG user units
+function getSVGCoords(e, svg) {
+  const pt = svg.createSVGPoint();
+  pt.x = e.clientX;
+  pt.y = e.clientY;
+  return pt.matrixTransform(svg.getScreenCTM().inverse());
+}
+
+// --- RENDER DYNAMIC TICK MARKS ON SHIFTED COORD SYSTEM ---
+function renderAristoRulerTicks() {
+  const marksContainer = document.getElementById('aristo-rulers-marks');
+  if (!marksContainer) return;
+  marksContainer.innerHTML = '';
+  
+  const centerY = 0;
+  
+  // Millimeter and Centimeter graduations (extends from x = -140 to 140, base zero is 0)
+  for (let x = -140; x <= 140; x += 2) {
+    const isCm = x % 20 === 0;
+    const isHalfCm = x % 10 === 0 && !isCm;
+    
+    let tickHeight = 4;
+    if (isCm) tickHeight = 10;
+    else if (isHalfCm) tickHeight = 7;
+    
+    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    line.setAttribute('x1', x.toString());
+    line.setAttribute('y1', centerY.toString());
+    line.setAttribute('x2', x.toString());
+    line.setAttribute('y2', (centerY + tickHeight).toString());
+    line.setAttribute('stroke', '#1e293b');
+    line.setAttribute('stroke-width', isCm ? '0.8' : '0.4');
+    marksContainer.appendChild(line);
+    
+    // Centimeter value labels
+    if (isCm) {
+      const cmVal = Math.abs(x / 20);
+      if (cmVal > 0) {
+        const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        text.setAttribute('x', x.toString());
+        text.setAttribute('y', (centerY + 16).toString());
+        text.setAttribute('text-anchor', 'middle');
+        text.setAttribute('font-size', '6.5');
+        text.setAttribute('font-weight', 'bold');
+        text.setAttribute('fill', '#0f172a');
+        text.textContent = cmVal.toString();
+        marksContainer.appendChild(text);
+      }
+    }
+  }
+}
+
+function renderAristoProtractorTicks() {
+  const marksContainer = document.getElementById('aristo-rulers-marks');
+  if (!marksContainer) return;
+  
+  const centerX = 0;
+  const centerY = 0;
+  
+  // Degree graduations from 10 to 170
+  for (let a = 10; a <= 170; a++) {
+    const isMajor = (a % 10 === 0);
+    const isMedium = (a % 5 === 0) && !isMajor;
+    
+    let r1 = 92;
+    let r2 = 98;
+    if (isMajor) {
+      r1 = 88;
+      r2 = 102;
+    } else if (isMedium) {
+      r1 = 90;
+      r2 = 100;
+    }
+    
+    const alphaRad = (180 - a) * Math.PI / 180;
+    
+    const x1 = centerX + r1 * Math.cos(alphaRad);
+    const y1 = centerY + r1 * Math.sin(alphaRad);
+    const x2 = centerX + r2 * Math.cos(alphaRad);
+    const y2 = centerY + r2 * Math.sin(alphaRad);
+    
+    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    line.setAttribute('x1', x1.toFixed(1));
+    line.setAttribute('y1', y1.toFixed(1));
+    line.setAttribute('x2', x2.toFixed(1));
+    line.setAttribute('y2', y2.toFixed(1));
+    line.setAttribute('stroke', '#1e293b');
+    line.setAttribute('stroke-width', isMajor ? '0.8' : '0.4');
+    marksContainer.appendChild(line);
+    
+    if (isMajor) {
+      const rt = 109;
+      const xt = centerX + rt * Math.cos(alphaRad);
+      const yt = centerY + rt * Math.sin(alphaRad);
+      
+      const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      text.setAttribute('x', xt.toFixed(1));
+      text.setAttribute('y', yt.toFixed(1));
+      text.setAttribute('text-anchor', 'middle');
+      text.setAttribute('dominant-baseline', 'central');
+      text.setAttribute('font-size', '5');
+      text.setAttribute('font-weight', '900');
+      text.setAttribute('fill', '#334155');
+      text.textContent = a.toString();
+      marksContainer.appendChild(text);
+    }
+  }
+}
+
+// --- DRAW ANGLE AND INCORPORATE ARISTO ---
+function renderQuestion(angleObj) {
+  const svg = document.getElementById("angle-svg");
+  if (!svg) return;
+  
+  svg.innerHTML = "";
+  
+  // Pivot vertex is at (150, 110)
+  const x_s = 150;
+  const y_s = 110;
+  
+  // Longer lines so they cross the protractor scale perfectly
+  const L1 = 105;
+  const L2 = 105;
+  const R = 30;
+  
+  // SVG Definitions for arrows
+  const defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
+  const marker = document.createElementNS("http://www.w3.org/2000/svg", "marker");
+  marker.setAttribute("id", "arrow");
+  marker.setAttribute("viewBox", "0 0 10 10");
+  marker.setAttribute("refX", "7");
+  marker.setAttribute("refY", "5");
+  marker.setAttribute("markerWidth", "6");
+  marker.setAttribute("markerHeight", "6");
+  marker.setAttribute("orient", "auto-start-reverse");
+  
+  const markerPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
+  markerPath.setAttribute("d", "M 0 1.5 L 8 5 L 0 8.5 z");
+  markerPath.setAttribute("fill", "#0f172a");
+  marker.appendChild(markerPath);
+  defs.appendChild(marker);
+  svg.appendChild(defs);
+  
+  // Base line theta and end line theta (randomized)
+  const theta1 = (angleObj.rotation * Math.PI) / 180;
+  const theta2 = ((angleObj.rotation + angleObj.value) * Math.PI) / 180;
+  
+  const Ax = x_s + L1 * Math.cos(theta1);
+  const Ay = y_s + L1 * Math.sin(theta1);
+  const Bx = x_s + L2 * Math.cos(theta2);
+  const By = y_s + L2 * Math.sin(theta2);
+  
+  // Draw the blue angle sector
+  const arcStartX = x_s + R * Math.cos(theta1);
+  const arcStartY = y_s + R * Math.sin(theta1);
+  const arcEndX = x_s + R * Math.cos(theta2);
+  const arcEndY = y_s + R * Math.sin(theta2);
+  
+  const largeArc = angleObj.value > 180 ? 1 : 0;
+  
+  const pathFill = document.createElementNS("http://www.w3.org/2000/svg", "path");
+  pathFill.setAttribute("d", `M ${x_s} ${y_s} L ${arcStartX.toFixed(1)} ${arcStartY.toFixed(1)} A ${R} ${R} 0 ${largeArc} 1 ${arcEndX.toFixed(1)} ${arcEndY.toFixed(1)} Z`);
+  pathFill.setAttribute("fill", "rgba(37, 99, 235, 0.12)");
+  
+  const pathStroke = document.createElementNS("http://www.w3.org/2000/svg", "path");
+  pathStroke.setAttribute("d", `M ${arcStartX.toFixed(1)} ${arcStartY.toFixed(1)} A ${R} ${R} 0 ${largeArc} 1 ${arcEndX.toFixed(1)} ${arcEndY.toFixed(1)}`);
+  pathStroke.setAttribute("fill", "none");
+  pathStroke.setAttribute("stroke", "#2563eb");
+  pathStroke.setAttribute("stroke-width", "2");
+  
+  // Draw angle lines
+  const line1 = document.createElementNS("http://www.w3.org/2000/svg", "line");
+  line1.setAttribute("x1", x_s.toString());
+  line1.setAttribute("y1", y_s.toString());
+  line1.setAttribute("x2", Ax.toFixed(1));
+  line1.setAttribute("y2", Ay.toFixed(1));
+  line1.setAttribute("stroke", "#475569");
+  line1.setAttribute("stroke-width", "2.5");
+  line1.setAttribute("stroke-linecap", "round");
+  line1.setAttribute("marker-end", "url(#arrow)");
+  
+  const line2 = document.createElementNS("http://www.w3.org/2000/svg", "line");
+  line2.setAttribute("x1", x_s.toString());
+  line2.setAttribute("y1", y_s.toString());
+  line2.setAttribute("x2", Bx.toFixed(1));
+  line2.setAttribute("y2", By.toFixed(1));
+  line2.setAttribute("stroke", "#475569");
+  line2.setAttribute("stroke-width", "2.5");
+  line2.setAttribute("stroke-linecap", "round");
+  line2.setAttribute("marker-end", "url(#arrow)");
+  
+  const vertex = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+  vertex.setAttribute("cx", x_s.toString());
+  vertex.setAttribute("cy", y_s.toString());
+  vertex.setAttribute("r", "5");
+  vertex.setAttribute("fill", "#0f172a");
+  
+  // Append angle components
+  svg.appendChild(pathFill);
+  svg.appendChild(pathStroke);
+  svg.appendChild(line1);
+  svg.appendChild(line2);
+  svg.appendChild(vertex);
+  
+  // --- INJECT ARISTO SET SQUARE GROUP ---
+  const aristoGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
+  aristoGroup.setAttribute("id", "aristo-group");
+  
+  // Initial position offset from vertex (vertex is at 150, 110)
+  px = 75;
+  py = 55;
+  aristoAngle = 0;
+  
+  aristoGroup.setAttribute("transform", `translate(${px}, ${py}) rotate(${aristoAngle}) scale(0.8)`);
+  
+  aristoGroup.innerHTML = `
+    <!-- Semi-transparent white polygon body -->
+    <polygon points="-150,0 150,0 0,150" fill="#ffffff" fill-opacity="0.88" stroke="#334155" stroke-opacity="0.75" stroke-width="1.8" style="cursor: move; pointer-events: auto; filter: drop-shadow(0px 4px 6px rgba(0,0,0,0.1));" />
+    
+    <!-- Perpendicular line -->
+    <line x1="0" y1="0" x2="0" y2="150" stroke="#475569" stroke-opacity="0.6" stroke-dasharray="2.5,2.5" stroke-width="0.8"/>
+    
+    <!-- Slanted lines parallel helper -->
+    <line x1="-135" y1="15" x2="135" y2="15" stroke="#94a3b8" stroke-opacity="0.4" stroke-width="0.5"/>
+    <line x1="-120" y1="30" x2="120" y2="30" stroke="#94a3b8" stroke-opacity="0.4" stroke-width="0.5"/>
+    <line x1="-105" y1="45" x2="105" y2="45" stroke="#94a3b8" stroke-opacity="0.4" stroke-width="0.5"/>
+    <line x1="-90" y1="60" x2="90" y2="60" stroke="#94a3b8" stroke-opacity="0.4" stroke-width="0.5"/>
+    <line x1="-75" y1="75" x2="75" y2="75" stroke="#94a3b8" stroke-opacity="0.4" stroke-width="0.5"/>
+    <line x1="-60" y1="90" x2="60" y2="90" stroke="#94a3b8" stroke-opacity="0.4" stroke-width="0.5"/>
+    <line x1="-45" y1="105" x2="45" y2="105" stroke="#94a3b8" stroke-opacity="0.4" stroke-width="0.5"/>
+    <line x1="-30" y1="120" x2="30" y2="120" stroke="#94a3b8" stroke-opacity="0.4" stroke-width="0.5"/>
+    
+    <!-- Yellow transparent protractor strip -->
+    <path d="M -95 0 A 95 95 0 0 0 95 0" fill="none" stroke="#facc15" stroke-width="14" stroke-opacity="0.6" />
+    
+    <!-- Brand label -->
+    <text x="0" y="105" font-size="5" font-weight="900" fill="#64748b" text-anchor="middle" font-family="sans-serif" letter-spacing="0.5">ARISTO-GEODREIECK</text>
+    
+    <!-- Base black ruler line -->
+    <line x1="-150" y1="0" x2="150" y2="0" stroke="#0f172a" stroke-width="2.5"/>
+    
+    <!-- Dynamic ticks and labels container -->
+    <g id="aristo-rulers-marks"></g>
+    
+    <!-- Drag handle dot -->
+    <g id="aristo-drag-handle" style="cursor: move; pointer-events: auto;">
+      <circle cx="0" cy="30" r="14" fill="white" fill-opacity="0.2" stroke="#0f172a" stroke-width="2.5" />
+      <circle cx="0" cy="30" r="3.5" fill="#0f172a" />
+    </g>
+    
+    <!-- Rotation handle (circular arrow) -->
+    <g id="aristo-rotate-handle" style="cursor: pointer; pointer-events: auto;">
+      <circle cx="0" cy="60" r="22" fill="white" fill-opacity="0" />
+      <path d="M 0 72 A 12 12 0 1 1 -0.1 72" fill="none" stroke="#0f172a" stroke-width="2.5"/>
+      <path d="M 8 72 L 0 77 L 0 67 Z" fill="#0f172a"/>
+    </g>
+    
+    <!-- Pivot center point -->
+    <circle cx="0" cy="0" r="2" fill="#ef4444" />
+  `;
+  
+  svg.appendChild(aristoGroup);
+  
+  // Render tick marks
+  renderAristoRulerTicks();
+  renderAristoProtractorTicks();
+  
+  // Setup mouse/touch drag handlers
+  setupAristoHandlers(svg, aristoGroup);
+}
+
+function updateAristoTransform() {
+  const aristo = document.getElementById('aristo-group');
+  if (aristo) {
+    aristo.setAttribute("transform", `translate(${px}, ${py}) rotate(${aristoAngle}) scale(0.8)`);
+  }
+}
+
+// --- SETUP ARISTO DRAG & ROTATE HANDLERS ---
+function setupAristoHandlers(svg, aristoGroup) {
+  aristoGroup.addEventListener('pointerdown', (e) => {
+    if (hasAnswered) return;
+    // Skip if clicking on rotate handle
+    if (e.target.closest('#aristo-rotate-handle')) return;
+    
+    isDragging = true;
+    const pt = getSVGCoords(e, svg);
+    startPtX = pt.x;
+    startPtY = pt.y;
+    startPx = px;
+    startPy = py;
+    
+    aristoGroup.setPointerCapture(e.pointerId);
+    e.preventDefault();
+  });
+  
+  aristoGroup.addEventListener('pointermove', (e) => {
+    if (!isDragging) return;
+    const pt = getSVGCoords(e, svg);
+    const dx = pt.x - startPtX;
+    const dy = pt.y - startPtY;
+    
+    px = startPx + dx;
+    py = startPy + dy;
+    
+    // Bounds check to keep pivot within the 300x200 canvas
+    px = Math.max(10, Math.min(290, px));
+    py = Math.max(10, Math.min(190, py));
+    
+    updateAristoTransform();
+    e.preventDefault();
+  });
+  
+  aristoGroup.addEventListener('pointerup', (e) => {
+    if (isDragging) {
+      isDragging = false;
+      aristoGroup.releasePointerCapture(e.pointerId);
+    }
+  });
+  
+  const rotateHandle = document.getElementById('aristo-rotate-handle');
+  rotateHandle.addEventListener('pointerdown', (e) => {
+    if (hasAnswered) return;
+    isRotating = true;
+    rotateHandle.setPointerCapture(e.pointerId);
+    e.preventDefault();
+    e.stopPropagation();
+  });
+  
+  rotateHandle.addEventListener('pointermove', (e) => {
+    if (!isRotating) return;
+    const pt = getSVGCoords(e, svg);
+    
+    const dx = pt.x - px;
+    const dy = pt.y - py;
+    
+    const rad = Math.atan2(dy, dx);
+    let deg = rad * 180 / Math.PI;
+    
+    // 90° (downwards vector) is 0 rotation
+    let angle = deg - 90;
+    
+    aristoAngle = Math.round(angle);
+    updateAristoTransform();
+    
+    e.preventDefault();
+    e.stopPropagation();
+  });
+  
+  rotateHandle.addEventListener('pointerup', (e) => {
+    if (isRotating) {
+      isRotating = false;
+      rotateHandle.releasePointerCapture(e.pointerId);
+    }
+  });
+}
+
+// Fine adjustment buttons
+function tuneAngle(delta) {
+  if (hasAnswered) return;
+  playSound('click');
+  aristoAngle = (aristoAngle + delta) % 360;
+  updateAristoTransform();
+}
+
+// --- SMOOTH CORRECTION ANIMATION ---
+function animateAristoTo(targetPx, targetPy, targetAngle) {
+  const steps = 30;
+  let step = 0;
+  
+  const startPx = px;
+  const startPy = py;
+  const startAngle = aristoAngle;
+  
+  let diffAngle = targetAngle - startAngle;
+  while (diffAngle > 180) diffAngle -= 360;
+  while (diffAngle < -180) diffAngle += 360;
+  
+  const targetAngleAdjusted = startAngle + diffAngle;
+  
+  function frame() {
+    step++;
+    const t = step / steps;
+    // Ease-out cubic
+    const ease = 1 - Math.pow(1 - t, 3);
+    
+    px = startPx + (targetPx - startPx) * ease;
+    py = startPy + (targetPy - startPy) * ease;
+    aristoAngle = startAngle + (targetAngleAdjusted - startAngle) * ease;
+    
+    updateAristoTransform();
+    
+    if (step < steps) {
+      requestAnimationFrame(frame);
+    }
+  }
+  requestAnimationFrame(frame);
+}
+
+// --- GAME LOOP ---
+function shuffle(array) {
+  let m = array.length, t, i;
+  while (m) {
+    i = Math.floor(Math.random() * m--);
+    t = array[m];
+    array[m] = array[i];
+    array[i] = t;
+  }
+  return array;
+}
+
+function initGame() {
+  scorePoints = 0;
+  currentIdx = 0;
+  userAnswers = [];
+  hasAnswered = false;
+  
+  document.getElementById("score-screen").style.display = "none";
+  document.getElementById("exercice-zone").style.display = "block";
+  document.getElementById("btn-next").style.display = "none";
+  document.getElementById("btn-submit").disabled = false;
+  document.getElementById("student-answer").disabled = false;
+  document.getElementById("student-answer").value = "";
+  
+  // Set up 4 tune buttons & input state
+  toggleTuneButtons(false);
+  
+  // Select exactly 5 questions (mix of acute & obtuse)
+  const acutePool = shuffle(ANGLE_BANK.filter(q => q.type === "aigu"));
+  const obtusePool = shuffle(ANGLE_BANK.filter(q => q.type === "obtus"));
+  
+  // 3 acute, 2 obtuse (or 2 acute, 3 obtuse) randomized
+  const combined = Math.random() > 0.5 
+    ? [...acutePool.slice(0, 3), ...obtusePool.slice(0, 2)]
+    : [...acutePool.slice(0, 2), ...obtusePool.slice(0, 3)];
+    
+  currentQuestions = shuffle(combined);
+  
+  // Assign random rotations to each question
+  currentQuestions.forEach(q => {
+    q.rotation = Math.floor(Math.random() * 240) + 20; // rotation between 20° and 260°
+  });
+  
+  // Build 5 dots
+  const dotsContainer = document.getElementById("dots-progress");
+  dotsContainer.innerHTML = "";
+  for (let i = 0; i < 5; i++) {
+    const dot = document.createElement("div");
+    dot.className = "dot";
+    dotsContainer.appendChild(dot);
+  }
+  
+  loadQuestion();
+}
+
+function loadQuestion() {
+  hasAnswered = false;
+  document.getElementById("btn-next").style.display = "none";
+  document.getElementById("btn-submit").disabled = false;
+  document.getElementById("student-answer").disabled = false;
+  document.getElementById("student-answer").value = "";
+  
+  toggleTuneButtons(false);
+  
+  const fb = document.getElementById("feedback-box");
+  fb.style.display = "none";
+  fb.className = "feedback-box";
+  
+  document.getElementById("info-numero").textContent = `Question ${currentIdx + 1}/5`;
+  
+  const dots = document.querySelectorAll("#dots-progress .dot");
+  dots.forEach((dot, index) => {
+    dot.classList.remove("current");
+    if (index === currentIdx) {
+      dot.classList.add("current");
+    }
+  });
+  
+  renderQuestion(currentQuestions[currentIdx]);
+  document.getElementById("student-answer").focus();
+}
+
+function toggleTuneButtons(disabled) {
+  const buttons = document.querySelectorAll("#fine-tune-controls .btn-tune");
+  buttons.forEach(btn => btn.disabled = disabled);
+}
+
+function submitAnswer() {
+  if (hasAnswered) return;
+  
+  const inputEl = document.getElementById("student-answer");
+  const valText = inputEl.value.trim();
+  if (valText === "") return;
+  
+  const studentVal = parseInt(valText);
+  if (isNaN(studentVal) || studentVal < 0 || studentVal > 180) {
+    alert("Inscris un nombre valide de degrés (entre 0° et 180°).");
+    return;
+  }
+  
+  hasAnswered = true;
+  document.getElementById("btn-submit").disabled = true;
+  inputEl.disabled = true;
+  toggleTuneButtons(true);
+  
+  const currentAngle = currentQuestions[currentIdx];
+  const error = Math.abs(studentVal - currentAngle.value);
+  
+  let pts = 0;
+  let statusClass = "incorrect";
+  let dotClass = "incorrect";
+  let feedbackMessage = "";
+  
+  if (error === 0) {
+    pts = 3;
+    statusClass = "correct";
+    dotClass = "correct-3";
+    feedbackMessage = `🎉 **Mesure parfaite !** L'angle mesure précisément **${currentAngle.value}°**.<br>Tu marques **3 points** !`;
+    playSound('success');
+  } else if (error === 1) {
+    pts = 2;
+    statusClass = "partial";
+    dotClass = "correct-2";
+    feedbackMessage = `👍 **Très proche !** L'angle mesure **${currentAngle.value}°** (tu as indiqué ${studentVal}°).<br>Tu marques **2 points** !`;
+    playSound('success');
+  } else if (error === 2) {
+    pts = 1;
+    statusClass = "partial";
+    dotClass = "correct-1";
+    feedbackMessage = `Bien ! L'angle mesure **${currentAngle.value}°** (tu as indiqué ${studentVal}°).<br>Tu marques **1 point** !`;
+    playSound('success');
+  } else {
+    pts = 0;
+    statusClass = "incorrect";
+    dotClass = "incorrect";
+    feedbackMessage = `❌ **Oups !** L'angle mesure **${currentAngle.value}°** (tu as indiqué ${studentVal}°).<br>Erreur supérieure à 2°, tu marques **0 point**.`;
+    playSound('error');
+  }
+  
+  scorePoints += pts;
+  
+  userAnswers.push({
+    questionNum: currentIdx + 1,
+    correctValue: currentAngle.value,
+    userSelected: studentVal,
+    error: error,
+    points: pts
+  });
+  
+  // Update current dot status
+  const dots = document.querySelectorAll("#dots-progress .dot");
+  const currentDot = dots[currentIdx];
+  currentDot.classList.remove("current");
+  currentDot.classList.add(dotClass);
+  
+  // Show feedback
+  const fb = document.getElementById("feedback-box");
+  fb.className = `feedback-box ${statusClass}`;
+  fb.innerHTML = feedbackMessage;
+  
+  // Trigger Aristo snapping correction animation
+  // Snaps perfectly onto vertex (150, 110) aligned to the first segment
+  animateAristoTo(150, 110, currentAngle.rotation);
+  
+  document.getElementById("btn-next").style.display = "flex";
+}
+
+function nextQuestion() {
+  playSound('click');
+  currentIdx++;
+  
+  if (currentIdx < 5) {
+    loadQuestion();
+  } else {
+    showScoreScreen();
+  }
+}
+
+function showScoreScreen() {
+  document.getElementById("exercice-zone").style.display = "none";
+  const screen = document.getElementById("score-screen");
+  screen.style.display = "block";
+  
+  document.getElementById("final-score").textContent = `${scorePoints} / 15 points`;
+  
+  const emojiEl = document.getElementById("final-emoji");
+  const titleEl = document.getElementById("final-title");
+  
+  if (scorePoints === 15) {
+    emojiEl.textContent = "🏆";
+    titleEl.textContent = "Score parfait ! Quel œil de lynx !";
+  } else if (scorePoints >= 11) {
+    emojiEl.textContent = "⭐";
+    titleEl.textContent = "Superbe ! Excellente précision de mesure !";
+  } else if (scorePoints >= 7) {
+    emojiEl.textContent = "👍";
+    titleEl.textContent = "Pas mal ! Tu maîtrises l'équerre Aristo !";
+  } else {
+    emojiEl.textContent = "💪";
+    titleEl.textContent = "Entraîne-toi à bien aligner l'équerre sur la ligne du zéro !";
+  }
+  
+  const details = document.getElementById("final-details");
+  details.innerHTML = "";
+  
+  userAnswers.forEach(ans => {
+    const row = document.createElement("div");
+    row.className = "score-row";
+    
+    const leftText = document.createElement("span");
+    leftText.className = "name";
+    leftText.innerHTML = `Q${ans.questionNum} : Angle de <strong>${ans.correctValue}°</strong> · Ta mesure : <strong>${ans.userSelected}°</strong>`;
+    
+    const rightSide = document.createElement("div");
+    rightSide.className = "status-badge";
+    
+    const tag = document.createElement("span");
+    tag.className = `points-tag pts-${ans.points}`;
+    tag.textContent = ans.points === 3 ? "3 pts (Parfait)" : ans.points > 0 ? `${ans.points} pts` : "0 pt";
+    
+    rightSide.appendChild(tag);
+    row.appendChild(leftText);
+    row.appendChild(rightSide);
+    details.appendChild(row);
+  });
+}
+
+function restart() {
+  playSound('click');
+  initGame();
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+  document.body.addEventListener("click", () => {
+    if (audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
+  }, { once: true });
+  
+  initGame();
+});
+</script>
+</body>
+</html>
