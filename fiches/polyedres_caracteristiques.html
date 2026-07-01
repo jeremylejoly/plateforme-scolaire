@@ -1,0 +1,1252 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Les polyèdres - Trouve les caractéristiques</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #f8fafc;
+    --card: #ffffff;
+    --ink: #0f172a;
+    --muted: #64748b;
+    --border: #e2e8f0;
+    --accent: #2563eb;
+    --accent-light: #eff6ff;
+    --success: #22c55e;
+    --success-light: #f0fdf4;
+    --error: #ef4444;
+    --error-light: #fef2f2;
+    --shadow: 0 8px 30px rgba(0, 0, 0, 0.03);
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    padding: 1.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+  }
+
+  .container {
+    width: 100%;
+    max-width: 640px;
+    margin: 0 auto;
+  }
+
+  /* Info Header */
+  .info-card {
+    background: var(--card);
+    border: 2px solid var(--border);
+    border-radius: 16px;
+    padding: 12px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    box-shadow: var(--shadow);
+  }
+  .info-card p {
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--ink);
+  }
+
+  .dots {
+    display: flex;
+    gap: 6px;
+  }
+  .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--border);
+    transition: all 0.3s ease;
+  }
+  .dot.current {
+    background: var(--accent);
+    transform: scale(1.2);
+  }
+  .dot.correct {
+    background: var(--success);
+    border-color: var(--success);
+  }
+  .dot.incorrect {
+    background: var(--error);
+    border-color: var(--error);
+  }
+
+  /* Visual 3D mystery card */
+  .visual-card {
+    background: var(--card);
+    border: 2px solid var(--border);
+    border-radius: 20px;
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--shadow);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .canvas-container {
+    width: 100%;
+    height: 220px;
+    position: relative;
+    cursor: grab;
+  }
+  .canvas-container:active {
+    cursor: grabbing;
+  }
+  canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+  .mystery-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    background: #f8fafc;
+    border-radius: 14px;
+    border: 2px dashed #cbd5e1;
+    transition: all 0.3s ease;
+  }
+  .mystery-question-mark {
+    font-size: 5.5rem;
+    font-weight: 900;
+    color: var(--accent);
+    text-shadow: 0 4px 10px rgba(37, 99, 235, 0.15);
+    animation: pulseQuestionMark 2s infinite ease-in-out;
+    line-height: 1;
+  }
+  .mystery-text {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 15px;
+    color: var(--muted);
+    margin-top: 12px;
+    font-weight: 600;
+  }
+  @keyframes pulseQuestionMark {
+    0% { transform: scale(1); filter: drop-shadow(0 0 0px rgba(37, 99, 235, 0)); }
+    50% { transform: scale(1.15); filter: drop-shadow(0 0 12px rgba(37, 99, 235, 0.25)); }
+    100% { transform: scale(1); filter: drop-shadow(0 0 0px rgba(37, 99, 235, 0)); }
+  }
+
+  .drag-hint {
+    position: absolute;
+    bottom: 8px;
+    font-size: 11px;
+    color: var(--muted);
+    background: rgba(255, 255, 255, 0.85);
+    padding: 2px 8px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .classification-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .badge-poly {
+    background: #dbeafe;
+    color: #1e40af;
+  }
+  .badge-nonpoly {
+    background: #fee2e2;
+    color: #991b1b;
+  }
+
+  /* Riddle card */
+  .riddle-card {
+    background: var(--card);
+    border: 2px solid var(--border);
+    border-radius: 20px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--shadow);
+  }
+  .riddle-title {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .clue-icon {
+    font-size: 22px;
+  }
+
+  /* Checkboxes List */
+  .checkboxes-list {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1.5rem;
+  }
+
+  .checkbox-item {
+    background: var(--card);
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    font-size: 14.5px;
+    font-weight: 700;
+    color: var(--ink);
+    transition: all 0.15s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+    user-select: none;
+    margin-bottom: 10px;
+    position: relative;
+  }
+  .checkbox-item:hover:not(.disabled) {
+    border-color: var(--accent);
+    background: var(--accent-light);
+    transform: translateY(-1px);
+  }
+  .checkbox-item input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 22px;
+    height: 22px;
+    border: 2px solid var(--border);
+    border-radius: 6px;
+    outline: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s ease;
+    background: #fff;
+    flex-shrink: 0;
+  }
+  .checkbox-item input[type="checkbox"]:checked {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+  .checkbox-item input[type="checkbox"]:checked::after {
+    content: "✓";
+    color: #fff;
+    font-size: 14px;
+    font-weight: bold;
+  }
+  
+  /* Validation states */
+  .checkbox-item.correct-checked {
+    border-color: var(--success) !important;
+    background: var(--success-light) !important;
+    color: #166534 !important;
+  }
+  .checkbox-item.correct-checked input[type="checkbox"] {
+    background: var(--success) !important;
+    border-color: var(--success) !important;
+  }
+  .checkbox-item.incorrect-checked {
+    border-color: var(--error) !important;
+    background: var(--error-light) !important;
+    color: #991b1b !important;
+  }
+  .checkbox-item.incorrect-checked input[type="checkbox"] {
+    background: var(--error) !important;
+    border-color: var(--error) !important;
+  }
+  .checkbox-item.incorrect-checked input[type="checkbox"]:checked::after {
+    content: "✗" !important;
+  }
+  .checkbox-item.missed {
+    border-color: #f59e0b !important;
+    background: #fef3c7 !important;
+    color: #b45309 !important;
+    animation: pulseWarning 1.5s infinite ease-in-out;
+  }
+  .checkbox-item.missed input[type="checkbox"] {
+    border-color: #f59e0b !important;
+    background: #fff !important;
+  }
+  .checkbox-item.missed input[type="checkbox"]::after {
+    content: "⚠" !important;
+    color: #d97706 !important;
+    font-size: 14px;
+    font-weight: bold;
+  }
+  .checkbox-item.disabled {
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+  
+  @keyframes pulseWarning {
+    0% { box-shadow: 0 0 0 0px rgba(245, 158, 11, 0.4); }
+    50% { box-shadow: 0 0 0 6px rgba(245, 158, 11, 0); }
+    100% { box-shadow: 0 0 0 0px rgba(245, 158, 11, 0); }
+  }
+
+  /* Feedback box */
+  .feedback-box {
+    border-radius: 16px;
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+    display: none;
+    animation: slideUp 0.4s ease-out;
+  }
+  .feedback-success {
+    background: var(--success-light);
+    border: 2px solid var(--success);
+    color: #166534;
+  }
+  .feedback-error {
+    background: var(--error-light);
+    border: 2px solid var(--error);
+    color: #991b1b;
+  }
+  .feedback-title {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .feedback-desc {
+    font-size: 13.5px;
+    line-height: 1.5;
+    font-weight: 600;
+  }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Navigation Buttons */
+  .actions-container {
+    display: flex;
+    justify-content: center;
+  }
+  .btn-action {
+    background: var(--accent);
+    border: 2px solid #1d4ed8;
+    color: #ffffff;
+    border-radius: 14px;
+    padding: 14px 28px;
+    font-family: 'Fredoka', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.15s ease;
+    width: 100%;
+    justify-content: center;
+  }
+  .btn-action:hover:not(:disabled) {
+    background: #1d4ed8;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px -1px rgba(37, 99, 235, 0.3);
+  }
+  .btn-action:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  /* End Screen Overlay */
+  .end-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(8px);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+    padding: 1rem;
+  }
+  .end-card {
+    background: var(--card);
+    border: 2px solid var(--border);
+    border-radius: 24px;
+    padding: 2.5rem;
+    width: 100%;
+    max-width: 440px;
+    text-align: center;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    animation: zoomIn 0.3s ease-out;
+  }
+  @keyframes zoomIn {
+    from { transform: scale(0.95); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+  .end-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    display: block;
+  }
+  .end-title {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+  .end-score-box {
+    margin: 1.5rem 0;
+    background: var(--bg);
+    border: 2px solid var(--border);
+    border-radius: 16px;
+    padding: 1rem;
+  }
+  .end-score-lbl {
+    font-size: 13px;
+    color: var(--muted);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .end-score-val {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--accent);
+    line-height: 1.2;
+  }
+  .end-text {
+    font-size: 14.5px;
+    color: var(--muted);
+    margin-bottom: 2rem;
+    line-height: 1.6;
+    font-weight: 600;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <!-- Progression Info -->
+  <div class="info-card">
+    <p>Question <span id="current-question-idx">1</span> sur 8</p>
+    <div class="dots" id="progress-dots">
+      <div class="dot current"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+    </div>
+  </div>
+
+  <!-- Silhouette / 3D Canvas -->
+  <div class="visual-card">
+    <div class="classification-badge badge-poly" id="poly-badge">Polyèdre</div>
+    <div class="canvas-container" id="canvas-container">
+      <div class="mystery-box" id="mystery-box">
+        <div class="mystery-question-mark">?</div>
+        <div class="mystery-text">Coche ses caractéristiques pour me révéler ! 🕵️‍♂️</div>
+      </div>
+      <canvas id="canvas3d" style="display: none;"></canvas>
+      <div class="drag-hint" id="drag-hint" style="display: none;">Glisse pour faire pivoter le solide 🔄</div>
+    </div>
+  </div>
+
+  <!-- Riddle card -->
+  <div class="riddle-card">
+    <div class="riddle-title">
+      <span class="clue-icon">🏷️</span> Solide proposé : <span id="solid-target-name" style="color:var(--accent);">...</span>
+    </div>
+    
+    <div class="checkboxes-list" id="checkboxes-list">
+      <!-- Generated dynamically -->
+    </div>
+
+    <!-- Feedback panel -->
+    <div class="feedback-box" id="feedback-panel">
+      <div class="feedback-title" id="feedback-title">Bravo !</div>
+      <div class="feedback-desc" id="feedback-desc">Description explicative.</div>
+    </div>
+
+    <!-- Action Button -->
+    <div class="actions-container">
+      <button class="btn-action" id="btn-validate" onclick="validateSelection()">Valider mes choix</button>
+      <button class="btn-action" id="btn-next" onclick="nextQuestion()" style="display:none;">Solide suivant →</button>
+    </div>
+  </div>
+</div>
+
+<!-- End Screen -->
+<div class="end-overlay" id="end-overlay">
+  <div class="end-card">
+    <span class="end-icon">🏆</span>
+    <h2 class="end-title">Activité terminée !</h2>
+    <div class="end-score-box">
+      <div class="end-score-lbl">Score final</div>
+      <div class="end-score-val"><span id="score-value">0</span> / 8</div>
+    </div>
+    <p class="end-text" id="end-comment">Excellent travail ! Tu maîtrises parfaitement la caractérisation des solides.</p>
+    <button class="btn-action" onclick="restartGame()">Recommencer</button>
+  </div>
+</div>
+
+<script>
+// --- AUDIO SYNTHESIS ENGINE ---
+let audioCtx = null;
+function playSound(type) {
+  try {
+    if (!audioCtx) {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    if (audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
+
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+
+    const now = audioCtx.currentTime;
+
+    if (type === 'click') {
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(400, now);
+      osc.frequency.exponentialRampToValueAtTime(80, now + 0.1);
+      gain.gain.setValueAtTime(0.05, now);
+      gain.gain.linearRampToValueAtTime(0.001, now + 0.1);
+      osc.start(now);
+      osc.stop(now + 0.1);
+    } else if (type === 'success') {
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(523.25, now); // C5
+      osc.frequency.setValueAtTime(659.25, now + 0.1); // E5
+      osc.frequency.setValueAtTime(783.99, now + 0.2); // G5
+      gain.gain.setValueAtTime(0.08, now);
+      gain.gain.linearRampToValueAtTime(0.001, now + 0.45);
+      osc.start(now);
+      osc.stop(now + 0.45);
+    } else if (type === 'error') {
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(220, now);
+      osc.frequency.setValueAtTime(147, now + 0.12);
+      gain.gain.setValueAtTime(0.08, now);
+      gain.gain.linearRampToValueAtTime(0.001, now + 0.35);
+      osc.start(now);
+      osc.stop(now + 0.35);
+    }
+  } catch (e) {
+    console.warn("Audio Context blocked or unsupported:", e);
+  }
+}
+
+// --- 3D RENDERING DATA ---
+const FACE_COLORS = {
+  1: { rgb: [37, 99, 235], border: '#1d4ed8' },   // Blue
+  2: { rgb: [22, 163, 74], border: '#166534' },   // Green
+  3: { rgb: [219, 39, 119], border: '#be185d' },  // Pink
+  4: { rgb: [245, 158, 11], border: '#d97706' },  // Amber
+  5: { rgb: [14, 165, 233], border: '#0284c7' },  // Sky Blue
+  6: { rgb: [244, 63, 94], border: '#e11d48' }    // Rose
+};
+
+const MODELS = {
+  cube: {
+    isPoly: true,
+    getFaces: () => {
+      const x = 25;
+      return [
+        { colorIdx: 1, vertices: [ {x: -x, y: x, z: -x}, {x: x, y: x, z: -x}, {x: x, y: -x, z: -x}, {x: -x, y: -x, z: -x} ] },
+        { colorIdx: 4, vertices: [ {x: -x, y: -x, z: x}, {x: x, y: -x, z: x}, {x: x, y: x, z: x}, {x: -x, y: x, z: x} ] },
+        { colorIdx: 2, vertices: [ {x: -x, y: -x, z: -x}, {x: x, y: -x, z: -x}, {x: x, y: -x, z: x}, {x: -x, y: -x, z: x} ] },
+        { colorIdx: 3, vertices: [ {x: x, y: x, z: -x}, {x: -x, y: x, z: -x}, {x: -x, y: x, z: x}, {x: x, y: x, z: x} ] },
+        { colorIdx: 5, vertices: [ {x: -x, y: x, z: -x}, {x: -x, y: -x, z: -x}, {x: -x, y: -x, z: x}, {x: -x, y: x, z: x} ] },
+        { colorIdx: 6, vertices: [ {x: x, y: -x, z: -x}, {x: x, y: x, z: -x}, {x: x, y: x, z: x}, {x: x, y: -x, z: x} ] }
+      ];
+    }
+  },
+  pave: {
+    isPoly: true,
+    getFaces: () => {
+      const x = 32, y = 24, z = 16;
+      return [
+        { colorIdx: 1, vertices: [ {x: -x, y: y, z: -z}, {x: x, y: y, z: -z}, {x: x, y: -y, z: -z}, {x: -x, y: -y, z: -z} ] },
+        { colorIdx: 4, vertices: [ {x: -x, y: -y, z: z}, {x: x, y: -y, z: z}, {x: x, y: y, z: z}, {x: -x, y: y, z: z} ] },
+        { colorIdx: 2, vertices: [ {x: -x, y: -y, z: -z}, {x: x, y: -y, z: -z}, {x: x, y: -y, z: z}, {x: -x, y: -y, z: z} ] },
+        { colorIdx: 3, vertices: [ {x: x, y: y, z: -z}, {x: -x, y: y, z: -z}, {x: -x, y: y, z: z}, {x: x, y: y, z: z} ] },
+        { colorIdx: 5, vertices: [ {x: -x, y: y, z: -z}, {x: -x, y: -y, z: -z}, {x: -x, y: -y, z: z}, {x: -x, y: y, z: z} ] },
+        { colorIdx: 6, vertices: [ {x: x, y: -y, z: -z}, {x: x, y: y, z: -z}, {x: x, y: y, z: z}, {x: x, y: -y, z: z} ] }
+      ];
+    }
+  },
+  prisme: {
+    isPoly: true,
+    getFaces: () => {
+      const z_half = 30;
+      return [
+        { colorIdx: 2, vertices: [ {x: 0, y: 25, z: -z_half}, {x: 22, y: -13, z: -z_half}, {x: -22, y: -13, z: -z_half} ] },
+        { colorIdx: 3, vertices: [ {x: 0, y: 25, z: z_half}, {x: -22, y: -13, z: z_half}, {x: 22, y: -13, z: z_half} ] },
+        { colorIdx: 5, vertices: [ {x: 0, y: 25, z: -z_half}, {x: -22, y: -13, z: -z_half}, {x: -22, y: -13, z: z_half}, {x: 0, y: 25, z: z_half} ] },
+        { colorIdx: 1, vertices: [ {x: -22, y: -13, z: -z_half}, {x: 22, y: -13, z: -z_half}, {x: 22, y: -13, z: z_half}, {x: -22, y: -13, z: z_half} ] },
+        { colorIdx: 4, vertices: [ {x: 22, y: -13, z: -z_half}, {x: 0, y: 25, z: -z_half}, {x: 0, y: 25, z: z_half}, {x: 22, y: -13, z: z_half} ] }
+      ];
+    }
+  },
+  pyramide: {
+    isPoly: true,
+    getFaces: () => {
+      const z_base = -18, z_apex = 24;
+      return [
+        { colorIdx: 1, vertices: [ {x: -24, y: 24, z: z_base}, {x: 24, y: 24, z: z_base}, {x: 24, y: -24, z: z_base}, {x: -24, y: -24, z: z_base} ] },
+        { colorIdx: 2, vertices: [ {x: -24, y: -24, z: z_base}, {x: 24, y: -24, z: z_base}, {x: 0, y: 0, z: z_apex} ] },
+        { colorIdx: 3, vertices: [ {x: 24, y: -24, z: z_base}, {x: 24, y: 24, z: z_base}, {x: 0, y: 0, z: z_apex} ] },
+        { colorIdx: 4, vertices: [ {x: 24, y: 24, z: z_base}, {x: -24, y: 24, z: z_base}, {x: 0, y: 0, z: z_apex} ] },
+        { colorIdx: 5, vertices: [ {x: -24, y: 24, z: z_base}, {x: -24, y: -24, z: z_base}, {x: 0, y: 0, z: z_apex} ] }
+      ];
+    }
+  },
+  cylindre: {
+    isPoly: false,
+    getFaces: () => {
+      const R = 22, segments = 32, z_half = 30, faces = [];
+      const getCirc = (idx, z) => {
+        const ang = (idx * 2 * Math.PI) / segments;
+        return { x: R * Math.cos(ang), y: R * Math.sin(ang), z: z };
+      };
+      // Bottom & Top discs
+      const botVerts = [], topVerts = [];
+      for (let i = 0; i < segments; i++) {
+        botVerts.push(getCirc(i, -z_half));
+        topVerts.push(getCirc(i, z_half));
+      }
+      faces.push({ colorIdx: 2, vertices: botVerts });
+      faces.push({ colorIdx: 3, vertices: [...topVerts].reverse() });
+      // Side panels (curved)
+      for (let i = 0; i < segments; i++) {
+        const next = (i + 1) % segments;
+        faces.push({
+          colorIdx: 1,
+          noStroke: true,
+          vertices: [ getCirc(i, -z_half), getCirc(next, -z_half), getCirc(next, z_half), getCirc(i, z_half) ]
+        });
+      }
+      return faces;
+    }
+  },
+  cone: {
+    isPoly: false,
+    getFaces: () => {
+      const R = 24, segments = 32, z_base = -20, z_apex = 28, faces = [];
+      const botVerts = [];
+      for (let i = 0; i < segments; i++) {
+        const ang = (i * 2 * Math.PI) / segments;
+        botVerts.push({ x: R * Math.cos(ang), y: R * Math.sin(ang), z: z_base });
+      }
+      // Base disc
+      faces.push({ colorIdx: 4, vertices: botVerts });
+      // Side cone surface (triangles)
+      for (let i = 0; i < segments; i++) {
+        const ang1 = (i * 2 * Math.PI) / segments;
+        const ang2 = (((i + 1) % segments) * 2 * Math.PI) / segments;
+        faces.push({
+          colorIdx: 1,
+          noStroke: true,
+          vertices: [
+            {x: R * Math.cos(ang1), y: R * Math.sin(ang1), z: z_base},
+            {x: R * Math.cos(ang2), y: R * Math.sin(ang2), z: z_base},
+            {x: 0, y: 0, z: z_apex}
+          ]
+        });
+      }
+      return faces;
+    }
+  },
+  sphere: {
+    isPoly: false,
+    getFaces: () => {
+      const R = 26, slices = 10, stacks = 10, faces = [], vertices = [];
+      for (let stack = 0; stack <= stacks; stack++) {
+        const phi = (stack * Math.PI) / stacks;
+        const sinPhi = Math.sin(phi), cosPhi = Math.cos(phi);
+        for (let slice = 0; slice < slices; slice++) {
+          const theta = (slice * 2 * Math.PI) / slices;
+          vertices.push({
+            x: R * sinPhi * Math.cos(theta),
+            y: R * sinPhi * Math.sin(theta),
+            z: R * cosPhi
+          });
+        }
+      }
+      for (let stack = 0; stack < stacks; stack++) {
+        for (let slice = 0; slice < slices; slice++) {
+          const nextSlice = (slice + 1) % slices;
+          const p1 = stack * slices + slice;
+          const p2 = stack * slices + nextSlice;
+          const p3 = (stack + 1) * slices + slice;
+          const p4 = (stack + 1) * slices + nextSlice;
+          faces.push({
+            colorIdx: 6,
+            noStroke: true,
+            vertices: [ vertices[p1], vertices[p2], vertices[p4], vertices[p3] ]
+          });
+        }
+      }
+      return faces;
+    }
+  },
+  tetraedre: {
+    isPoly: true,
+    getFaces: () => {
+      const z_base = -16, z_apex = 26;
+      return [
+        { colorIdx: 2, vertices: [ {x: 0, y: 28, z: z_base}, {x: 24, y: -14, z: z_base}, {x: -24, y: -14, z: z_base} ] },
+        { colorIdx: 1, vertices: [ {x: -24, y: -14, z: z_base}, {x: 24, y: -14, z: z_base}, {x: 0, y: 0, z: z_apex} ] },
+        { colorIdx: 4, vertices: [ {x: 24, y: -14, z: z_base}, {x: 0, y: 28, z: z_base}, {x: 0, y: 0, z: z_apex} ] },
+        { colorIdx: 5, vertices: [ {x: 0, y: 28, z: z_base}, {x: -24, y: -14, z: z_base}, {x: 0, y: 0, z: z_apex} ] }
+      ];
+    }
+  }
+};
+
+class CanvasRenderer3D {
+  constructor(canvasId) {
+    this.canvas = document.getElementById(canvasId);
+    this.ctx = this.canvas.getContext('2d');
+    this.rx = -25;
+    this.ry = 35;
+    this.faces = [];
+    this.zoom = 2.4;
+    this.isSilhouette = true;
+  }
+
+  setSolid(modelKey, isSilhouette) {
+    const model = MODELS[modelKey];
+    this.faces = model ? model.getFaces() : [];
+    this.isSilhouette = isSilhouette;
+  }
+
+  resize() {
+    const w = this.canvas.clientWidth;
+    const h = this.canvas.clientHeight;
+    const dpr = window.devicePixelRatio || 1;
+    if (this.canvas.width !== Math.floor(w * dpr) || this.canvas.height !== Math.floor(h * dpr)) {
+      this.canvas.width = Math.floor(w * dpr);
+      this.canvas.height = Math.floor(h * dpr);
+      this.ctx.scale(dpr, dpr);
+    }
+  }
+
+  draw() {
+    this.resize();
+    const ctx = this.ctx;
+    const w = this.canvas.width / (window.devicePixelRatio || 1);
+    const h = this.canvas.height / (window.devicePixelRatio || 1);
+    ctx.clearRect(0, 0, w, h);
+
+    const cx = w / 2;
+    const cy = h / 2;
+    const D = 250; 
+
+    const theta = (this.ry * Math.PI) / 180; // Yaw
+    const phi = (this.rx * Math.PI) / 180;   // Pitch
+
+    const cosT = Math.cos(theta), sinT = Math.sin(theta);
+    const cosP = Math.cos(phi), sinP = Math.sin(phi);
+
+    const faceData = this.faces.map(face => {
+      const projectedVerts = face.vertices.map(v => {
+        // Yaw (Z rotation)
+        const x1 = v.x * cosT - v.y * sinT;
+        const y1 = v.x * sinT + v.y * cosT;
+        const z1 = v.z;
+
+        // Pitch (X rotation)
+        const x2 = x1;
+        const y2 = y1 * cosP - z1 * sinP;
+        const z2 = y1 * sinP + z1 * cosP;
+
+        // Projection
+        const scale = D / (D - y2);
+        const px = cx + x2 * scale * this.zoom;
+        const py = cy - z2 * scale * this.zoom;
+
+        return { x: px, y: py, depth: y2 };
+      });
+
+      // Simple flat lighting normal
+      const p0 = face.vertices[0];
+      const p1 = face.vertices[1];
+      const p2 = face.vertices[face.vertices.length - 1];
+      
+      const ux = p1.x - p0.x, uy = p1.y - p0.y, uz = p1.z - p0.z;
+      const vx = p2.x - p0.x, vy = p2.y - p0.y, vz = p2.z - p0.z;
+
+      let nx = uy * vz - uz * vy;
+      let ny = uz * vx - ux * vz;
+      let nz = ux * vy - uy * vx;
+
+      const len = Math.sqrt(nx*nx + ny*ny + nz*nz);
+      if (len > 0.001) { nx /= len; ny /= len; nz /= len; }
+
+      // Rotate normal
+      const nx1 = nx * cosT - ny * sinT;
+      const ny1 = nx * sinT + ny * cosT;
+      const nz1 = nz;
+
+      const nx2 = nx1;
+      const ny2 = ny1 * cosP - nz1 * sinP;
+      const nz2 = ny1 * sinP + nz1 * cosP;
+
+      const lightSource = { x: 0.3, y: -0.3, z: 0.9 };
+      const lenL = Math.sqrt(lightSource.x*lightSource.x + lightSource.y*lightSource.y + lightSource.z*lightSource.z);
+      lightSource.x /= lenL; lightSource.y /= lenL; lightSource.z /= lenL;
+
+      const cosTheta = nx2 * lightSource.x + ny2 * lightSource.y + nz2 * lightSource.z;
+      const intensity = Math.max(0.1, 0.4 + 0.6 * Math.abs(cosTheta));
+
+      // Average depth
+      let avgDepth = 0;
+      projectedVerts.forEach(pv => avgDepth += pv.depth);
+      avgDepth /= projectedVerts.length;
+
+      return { face, projectedVerts, depth: avgDepth, intensity };
+    });
+
+    // Painter's algorithm sort
+    faceData.sort((a, b) => a.depth - b.depth);
+
+    faceData.forEach(({ face, projectedVerts, intensity }) => {
+      ctx.beginPath();
+      ctx.moveTo(projectedVerts[0].x, projectedVerts[0].y);
+      for (let i = 1; i < projectedVerts.length; i++) {
+        ctx.lineTo(projectedVerts[i].x, projectedVerts[i].y);
+      }
+      ctx.closePath();
+
+      if (this.isSilhouette) {
+        ctx.fillStyle = `rgba(30, 41, 59, ${0.9 * intensity})`;
+        ctx.fill();
+        ctx.strokeStyle = '#475569';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+      } else {
+        const base = FACE_COLORS[face.colorIdx];
+        ctx.fillStyle = `rgba(${base.rgb[0]}, ${base.rgb[1]}, ${base.rgb[2]}, ${intensity * 0.85})`;
+        ctx.fill();
+
+        if (!face.noStroke) {
+          ctx.strokeStyle = base.border;
+          ctx.lineWidth = 2.0;
+          ctx.lineJoin = 'round';
+          ctx.stroke();
+        }
+      }
+    });
+  }
+}
+
+// --- GAME LOGIC ---
+const DATABASE = [
+  {
+    id: "cube",
+    name: "Le cube",
+    isPolyedre: true,
+    desc: "Le cube est un polyèdre régulier. Il a 6 faces carrées identiques, 8 sommets et 12 arêtes de même longueur.",
+    properties: [
+      { text: "Je suis un polyèdre.", correct: true },
+      { text: "Toutes mes faces sont des carrés identiques.", correct: true },
+      { text: "Je possède exactement 8 sommets et 12 arêtes.", correct: true },
+      { text: "Toutes mes arêtes possèdent la même longueur.", correct: true },
+      { text: "Je possède 2 bases circulaires parallèles.", correct: false },
+      { text: "Mes faces opposées ne sont pas parallèles.", correct: false },
+      { text: "Certaines de mes faces sont triangulaires.", correct: false }
+    ],
+    model: "cube"
+  },
+  {
+    id: "pave",
+    name: "Le parallélépipède rectangle",
+    isPolyedre: true,
+    desc: "Aussi appelé pavé droit, il possède 6 faces rectangulaires, 8 sommets et 12 arêtes. Ses faces opposées sont parallèles et de mêmes dimensions.",
+    properties: [
+      { text: "Je suis un polyèdre.", correct: true },
+      { text: "Toutes mes faces sont des rectangles.", correct: true },
+      { text: "Je possède 6 faces, 8 sommets et 12 arêtes.", correct: true },
+      { text: "Mes faces opposées sont parallèles et superposables.", correct: true },
+      { text: "Toutes mes faces sont obligatoirement des carrés.", correct: false },
+      { text: "Je possède au moins une face courbe.", correct: false },
+      { text: "Je possède 5 faces au total.", correct: false }
+    ],
+    model: "pave"
+  },
+  {
+    id: "prisme",
+    name: "Le prisme droit triangulaire",
+    isPolyedre: true,
+    desc: "Il possède 2 bases triangulaires parallèles et superposables et 3 faces latérales rectangulaires, soit 5 faces au total.",
+    properties: [
+      { text: "Je suis un polyèdre.", correct: true },
+      { text: "Mes deux bases sont des triangles parallèles.", correct: true },
+      { text: "Je possède 5 faces, 6 sommets et 9 arêtes.", correct: true },
+      { text: "Mes faces latérales reliant les bases sont des rectangles.", correct: true },
+      { text: "Toutes mes faces sont obligatoirement des triangles.", correct: false },
+      { text: "Je me termine par un unique sommet appelé l'apex.", correct: false },
+      { text: "Ma surface latérale est courbe.", correct: false }
+    ],
+    model: "prisme"
+  },
+  {
+    id: "pyramide",
+    name: "La pyramide à base carrée",
+    isPolyedre: true,
+    desc: "Elle possède 1 base carrée et 4 faces latérales triangulaires qui se rejoignent en un sommet unique (l'apex). Elle a 5 faces, 5 sommets et 8 arêtes.",
+    properties: [
+      { text: "Je suis un polyèdre.", correct: true },
+      { text: "Ma base au sol est un carré.", correct: true },
+      { text: "Mes faces latérales sont des triangles.", correct: true },
+      { text: "Je possède 5 faces, 5 sommets et 8 arêtes.", correct: true },
+      { text: "Mes faces latérales se rejoignent à l'apex.", correct: true },
+      { text: "Je possède 2 bases parallèles.", correct: false },
+      { text: "Je possède 6 faces au total.", correct: false }
+    ],
+    model: "pyramide"
+  },
+  {
+    id: "cylindre",
+    name: "Le cylindre",
+    isPolyedre: false,
+    desc: "Le cylindre est un corps rond (non-polyèdre). Il a 2 bases circulaires plates et parallèles et une surface latérale courbe.",
+    properties: [
+      { text: "Je ne suis pas un polyèdre (je suis un corps rond).", correct: true },
+      { text: "Je possède 2 bases circulaires parallèles.", correct: true },
+      { text: "Ma surface latérale est courbe.", correct: true },
+      { text: "Je possède 8 sommets et 12 arêtes rectilignes.", correct: false },
+      { text: "Mon patron ne comporte aucun rectangle.", correct: false },
+      { text: "Je me termine par un apex pointu.", correct: false },
+      { text: "Toutes mes surfaces sont planes.", correct: false }
+    ],
+    model: "cylindre"
+  },
+  {
+    id: "cone",
+    name: "Le cône",
+    isPolyedre: false,
+    desc: "Le cône est un corps rond (non-polyèdre) possédant 1 base plane circulaire, 1 sommet (l'apex) et 1 surface courbe.",
+    properties: [
+      { text: "Je possède une seule base plane circulaire.", correct: true },
+      { text: "Ma surface latérale est courbe (corps rond).", correct: true },
+      { text: "Je possède un sommet (l'apex) opposé à ma base.", correct: true },
+      { text: "Je suis un polyèdre.", correct: false },
+      { text: "Je possède 2 bases parallèles.", correct: false },
+      { text: "Mon patron contient deux disques complets.", correct: false },
+      { text: "Je ne possède aucune surface courbe.", correct: false }
+    ],
+    model: "cone"
+  },
+  {
+    id: "sphere",
+    name: "La sphère",
+    isPolyedre: false,
+    desc: "La sphère (ou boule) est un corps rond parfait. Elle n'a ni sommet ni arête, et sa surface courbe est à égale distance du centre.",
+    properties: [
+      { text: "Je ne suis pas un polyèdre.", correct: true },
+      { text: "Je ne possède aucun sommet et aucune arête.", correct: true },
+      { text: "Tous les points de ma surface sont équidistants du centre.", correct: true },
+      { text: "Je possède une base circulaire plane.", correct: false },
+      { text: "Mon patron comporte un rectangle.", correct: false },
+      { text: "Je possède 1 face plane et 1 face courbe.", correct: false },
+      { text: "Je me termine par un apex.", correct: false }
+    ],
+    model: "sphere"
+  },
+  {
+    id: "tetraedre",
+    name: "Le tétraèdre",
+    isPolyedre: true,
+    desc: "C'est une pyramide à base triangulaire possédant 4 faces triangulaires, 4 sommets et 6 arêtes.",
+    properties: [
+      { text: "Je suis un polyèdre.", correct: true },
+      { text: "Toutes mes faces sont des triangles.", correct: true },
+      { text: "Je possède 4 faces, 4 sommets et 6 arêtes.", correct: true },
+      { text: "Ma base au sol est obligatoirement un carré.", correct: false },
+      { text: "J'ai 5 sommets au total.", correct: false },
+      { text: "Je possède une face courbe.", correct: false },
+      { text: "Mes faces opposées sont parallèles.", correct: false }
+    ],
+    model: "tetraedre"
+  }
+];
+
+let renderer3D;
+let questions = [];
+let currentQIdx = 0;
+let score = 0;
+let answered = false;
+let currentProperties = [];
+
+// Drag angles
+let isDragging = false;
+let startX = 0, startY = 0;
+let rx = -25, ry = 35;
+let animationFrameId;
+
+function init() {
+  renderer3D = new CanvasRenderer3D('canvas3d');
+
+  // Handle Dragging
+  const container = document.getElementById('canvas-container');
+  container.addEventListener('mousedown', (e) => {
+    isDragging = true;
+    startX = e.clientX;
+    startY = e.clientY;
+  });
+  container.addEventListener('touchstart', (e) => {
+    isDragging = true;
+    startX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
+  });
+
+  window.addEventListener('mousemove', (e) => {
+    if (!isDragging) return;
+    const dx = e.clientX - startX;
+    const dy = e.clientY - startY;
+    ry += dx * 0.5;
+    rx -= dy * 0.5;
+    rx = Math.max(-85, Math.min(85, rx));
+    startX = e.clientX;
+    startY = e.clientY;
+  });
+
+  window.addEventListener('touchmove', (e) => {
+    if (!isDragging) return;
+    const dx = e.touches[0].clientX - startX;
+    const dy = e.touches[0].clientY - startY;
+    ry += dx * 0.5;
+    rx -= dy * 0.5;
+    rx = Math.max(-85, Math.min(85, rx));
+    startX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
+  });
+
+  window.addEventListener('mouseup', () => isDragging = false);
+  window.addEventListener('touchend', () => isDragging = false);
+
+  // Start animation loop
+  function animate() {
+    if (!isDragging) {
+      ry += 0.25; // Auto rotate
+    }
+    renderer3D.rx = rx;
+    renderer3D.ry = ry;
+    renderer3D.draw();
+    animationFrameId = requestAnimationFrame(animate);
+  }
+  animate();
+
+  restartGame();
+}
+
+function restartGame() {
+  score = 0;
+  currentQIdx = 0;
+  // Shuffle solids questions
+  questions = [...DATABASE].sort(() => Math.random() - 0.5);
+  document.getElementById('end-overlay').style.display = 'none';
+  loadQuestion();
+}
+
+function loadQuestion() {
+  answered = false;
+  
+  const q = questions[currentQIdx];
+
+  // Title solid target
+  document.getElementById('solid-target-name').textContent = q.name;
+
+  // Set up 3D renderer solid (in silhouette hidden mode)
+  renderer3D.setSolid(q.model, true);
+  rx = -25;
+  ry = 35;
+
+  // Reset visual card state
+  document.getElementById('mystery-box').style.display = 'flex';
+  document.getElementById('canvas3d').style.display = 'none';
+  document.getElementById('drag-hint').style.display = 'none';
+
+  // Set progression UI
+  document.getElementById('current-question-idx').textContent = currentQIdx + 1;
+  const dots = document.getElementById('progress-dots').children;
+  for (let i = 0; i < dots.length; i++) {
+    dots[i].className = 'dot';
+    if (i === currentQIdx) dots[i].classList.add('current');
+    else if (i < currentQIdx) {
+      // past answers dots are colored correctly
+    }
+  }
+
+  // Set classification badge
+  const badge = document.getElementById('poly-badge');
+  badge.textContent = q.isPolyedre ? "Polyèdre" : "Non-polyèdre";
+  badge.className = q.isPolyedre ? "classification-badge badge-poly" : "classification-badge badge-nonpoly";
+
+  // Shuffle properties
+  currentProperties = [...q.properties].sort(() => Math.random() - 0.5);
+
+  // Load properties checkboxes
+  const listContainer = document.getElementById('checkboxes-list');
+  listContainer.innerHTML = '';
+  currentProperties.forEach((prop, idx) => {
+    const label = document.createElement('label');
+    label.className = 'checkbox-item';
+    label.id = `item-${idx}`;
+
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.id = `check-${idx}`;
+    checkbox.onclick = () => playSound('click');
+
+    const span = document.createElement('span');
+    span.textContent = prop.text;
+
+    label.appendChild(checkbox);
+    label.appendChild(span);
+    listContainer.appendChild(label);
+  });
+
+  // Toggle button states
+  document.getElementById('btn-validate').style.display = 'inline-flex';
+  document.getElementById('btn-next').style.display = 'none';
+  document.getElementById('feedback-panel').style.display = 'none';
+}
+
+function validateSelection() {
+  if (answered) return;
+  answered = true;
+
+  const q = questions[currentQIdx];
+  let errorsCount = 0;
+
+  currentProperties.forEach((prop, idx) => {
+    const checkbox = document.getElementById(`check-${idx}`);
+    const label = document.getElementById(`item-${idx}`);
+    const checked = checkbox.checked;
+
+    // Lock elements
+    checkbox.disabled = true;
+    label.classList.add('disabled');
+
+    if (prop.correct) {
+      if (checked) {
+        label.classList.add('correct-checked');
+      } else {
+        label.classList.add('missed');
+        errorsCount++;
+      }
+    } else {
+      if (checked) {
+        label.classList.add('incorrect-checked');
+        errorsCount++;
+      } else {
+        label.style.opacity = '0.5';
+      }
+    }
+  });
+
+  const isPerfect = (errorsCount === 0);
+  if (isPerfect) {
+    playSound('success');
+    score++;
+  } else {
+    playSound('error');
+  }
+
+  // Reveal solid in 3D color
+  renderer3D.isSilhouette = false;
+  document.getElementById('mystery-box').style.display = 'none';
+  document.getElementById('canvas3d').style.display = 'block';
+  document.getElementById('drag-hint').style.display = 'block';
+
+  // Toggle panel feedback
+  const feedback = document.getElementById('feedback-panel');
+  const fTitle = document.getElementById('feedback-title');
+  const fDesc = document.getElementById('feedback-desc');
+  feedback.style.display = 'block';
+
+  if (isPerfect) {
+    feedback.className = 'feedback-box feedback-success';
+    fTitle.textContent = "Bravo ! Tout est correct.";
+  } else {
+    feedback.className = 'feedback-box feedback-error';
+    fTitle.textContent = `Vérifie tes réponses (${errorsCount} erreur${errorsCount > 1 ? 's' : ''}).`;
+  }
+  fDesc.textContent = q.desc;
+
+  // Toggle actions buttons
+  document.getElementById('btn-validate').style.display = 'none';
+  document.getElementById('btn-next').style.display = 'inline-flex';
+
+  // Progression dot coloring
+  const dots = document.getElementById('progress-dots').children;
+  dots[currentQIdx].className = isPerfect ? 'dot correct' : 'dot incorrect';
+}
+
+function nextQuestion() {
+  playSound('click');
+  currentQIdx++;
+  if (currentQIdx < 8) {
+    loadQuestion();
+  } else {
+    // Show End Screen
+    document.getElementById('score-value').textContent = score;
+    const commentEl = document.getElementById('end-comment');
+    if (score === 8) {
+      commentEl.textContent = "Incroyable ! Score parfait ! Tu as identifié toutes les caractéristiques de tous les solides avec brio.";
+    } else if (score >= 6) {
+      commentEl.textContent = "Très bon score ! Tu as une excellente compréhension des propriétés géométriques des solides.";
+    } else if (score >= 4) {
+      commentEl.textContent = "Pas mal ! Revois bien les caractéristiques des solides qui t'ont posé problème et essaie d'améliorer ton score.";
+    } else {
+      commentEl.textContent = "Entraîne-toi encore en relisant tes fiches de cours pour mieux retenir le nombre de faces, de sommets ou d'arêtes de chaque solide.";
+    }
+
+    document.getElementById('end-overlay').style.display = 'flex';
+
+    // Firebase Hook score reporting
+    if (window.parent && typeof window.parent.saveResult === 'function') {
+      window.parent.saveResult('polyedres_caracteristiques', score);
+    }
+  }
+}
+
+// Window load trigger
+window.addEventListener('load', init);
+</script>
+</body>
+</html>
