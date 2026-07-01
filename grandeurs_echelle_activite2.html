@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>L'Architecte de l'École - Échelles (P5-P6)</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --purple: #5B4FCF;
+    --purple-light: #EEF0FF;
+    --purple-dark: #3F35A3;
+    --green: #2ECC71;
+    --green-light: #E8F8F0;
+    --red: #E74C3C;
+    --red-light: #FDEDEC;
+    --yellow: #F1C40F;
+    --yellow-light: #FEF9E7;
+    --bg: #FDFBF7;
+    --panel: #FFFFFF;
+    --ink: #1A1A2E;
+    --muted: #6B7080;
+    --line: #1A1A2E;
+    --shadow: 6px 6px 0px #1A1A2E;
+    --shadow-active: 2px 2px 0px #1A1A2E;
+  }
+
+  * {
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+  }
+
+  body {
+    background: var(--bg);
+    margin: 0;
+    padding: 20px;
+    color: var(--ink);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: 'Fredoka', sans-serif;
+    margin: 0 0 10px 0;
+  }
+
+  /* --- HEADER & CONTROLS --- */
+  .header {
+    width: 100%;
+    max-width: 1200px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    background: var(--panel);
+    border: 3px solid var(--line);
+    padding: 15px 25px;
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+  }
+
+  .header-title {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .logo-icon {
+    font-size: 2.5rem;
+  }
+
+  .level-badge {
+    background: var(--purple-light);
+    color: var(--purple);
+    border: 2px solid var(--purple);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    font-family: 'Fredoka', sans-serif;
+  }
+
+  .stats-container {
+    display: flex;
+    gap: 20px;
+  }
+
+  .stat-card {
+    background: var(--panel);
+    border: 2px solid var(--line);
+    padding: 8px 15px;
+    border-radius: 10px;
+    font-weight: 800;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* --- MAIN CONTENT LAYOUT --- */
+  .game-container {
+    width: 100%;
+    max-width: 1200px;
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+  }
+
+  /* --- LEFT PANEL: THE CLASSROOM PLAN --- */
+  .plan-panel {
+    position: relative;
+    width: 720px;
+    height: 540px;
+    background: #E4F1FE;
+    border: 3px solid var(--line);
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    user-select: none;
+  }
+
+  .plan-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    pointer-events: none;
+  }
+
+  /* Inner wall boundaries indicators (visual guide for the student) */
+  .room-boundary-guide {
+    position: absolute;
+    left: 75px;
+    top: 55px;
+    width: 555px; /* 630 - 75 */
+    height: 415px; /* 470 - 55 */
+    border: 2px dashed rgba(91, 79, 207, 0.3);
+    border-radius: 8px;
+    pointer-events: none;
+    z-index: 5;
+  }
+
+  /* --- FURNITURE ITEMS --- */
+  .furniture-piece {
+    position: absolute;
+    border: 2.5px solid var(--line);
+    box-shadow: 4px 4px 0px rgba(26,26,46,0.15);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 0.75rem;
+    color: #FFF;
+    text-shadow: 1px 1px 0px var(--line);
+    cursor: grab;
+    z-index: 10;
+    user-select: none;
+    text-align: center;
+    padding: 4px;
+    border-radius: 6px;
+    box-sizing: border-box;
+  }
+
+  .furniture-piece:active {
+    cursor: grabbing;
+    box-shadow: 2px 2px 0px rgba(26,26,46,0.15);
+    z-index: 50;
+  }
+
+  .furniture-piece.placed {
+    cursor: default;
+    box-shadow: none;
+    border-color: #27AE60;
+    z-index: 8;
+  }
+
+  /* Furniture specific styles */
+  .piece-bureau-maitre {
+    background: linear-gradient(135deg, #d35400, #e67e22);
+  }
+  .piece-tableau {
+    background: linear-gradient(135deg, #2c3e50, #1a252f);
+    border-radius: 2px;
+  }
+  .piece-armoire {
+    background: linear-gradient(135deg, #7f8c8d, #95a5a6);
+  }
+  .piece-banc-eleve {
+    background: linear-gradient(135deg, #f39c12, #f1c40f);
+  }
+  .piece-bibliotheque {
+    background: linear-gradient(135deg, #8e44ad, #9b59b6);
+  }
+
+  /* --- RIGHT PANEL: BUREAU DE L'ARCHITECTE --- */
+  .control-panel {
+    flex: 1;
+    background: var(--panel);
+    border: 3px solid var(--line);
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+    padding: 24px;
+    min-height: 540px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .task-card {
+    background: var(--purple-light);
+    border: 2px solid var(--purple);
+    padding: 15px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+  }
+
+  .task-instruction {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--purple-dark);
+    margin-bottom: 8px;
+    line-height: 1.4;
+  }
+
+  .scale-box {
+    display: inline-block;
+    background: var(--panel);
+    border: 2px solid var(--line);
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+  }
+
+  /* --- STEPS --- */
+  .step-container {
+    margin-bottom: 20px;
+    opacity: 0.4;
+    pointer-events: none;
+    transition: all 0.3s ease;
+  }
+
+  .step-container.active-step {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .step-title {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 1.1rem;
+    color: var(--ink);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .step-badge {
+    background: var(--ink);
+    color: #FFF;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: 800;
+  }
+
+  /* --- ARCHITECT TABLE --- */
+  .prop-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 12px;
+    border: 2px solid var(--line);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .prop-table th, .prop-table td {
+    border: 1px solid var(--line);
+    padding: 8px;
+    text-align: center;
+    font-size: 0.9rem;
+  }
+
+  .prop-table th {
+    background: var(--purple-light);
+    font-weight: 700;
+  }
+
+  .prop-input {
+    width: 65px;
+    padding: 6px;
+    border: 2px solid var(--line);
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 700;
+    text-align: center;
+    outline: none;
+    box-shadow: 2px 2px 0px var(--line);
+  }
+
+  .prop-input:focus {
+    box-shadow: 1px 1px 0px var(--line);
+    transform: translate(1px, 1px);
+  }
+
+  /* --- SLIDERS --- */
+  .slider-group {
+    background: #FAFAFA;
+    border: 2px solid var(--line);
+    border-radius: 10px;
+    padding: 12px;
+    margin-bottom: 15px;
+  }
+
+  .slider-row {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: 10px;
+  }
+
+  .slider-row:last-child {
+    margin-bottom: 0;
+  }
+
+  .slider-label-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    font-weight: 700;
+  }
+
+  .range-input {
+    width: 100%;
+    cursor: pointer;
+    accent-color: var(--purple);
+  }
+
+  /* --- ACTIONS & BUTTONS --- */
+  .btn {
+    background: var(--purple);
+    color: #FFF;
+    border: 2px solid var(--line);
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    cursor: pointer;
+    box-shadow: var(--shadow);
+    transition: all 0.1s ease;
+    width: 100%;
+    text-align: center;
+  }
+
+  .btn:hover {
+    background: var(--purple-dark);
+  }
+
+  .btn:active {
+    transform: translate(4px, 4px);
+    box-shadow: var(--shadow-active);
+  }
+
+  .btn.btn-success {
+    background: var(--green);
+  }
+  .btn.btn-success:hover {
+    background: #27AE60;
+  }
+
+  .feedback-box {
+    margin-top: 10px;
+    padding: 10px 15px;
+    border-radius: 8px;
+    border: 2px solid var(--line);
+    font-weight: 600;
+    font-size: 0.9rem;
+    display: none;
+    animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+
+  .feedback-success {
+    background: var(--green-light);
+    color: #196F3D;
+    border-color: var(--green);
+  }
+
+  .feedback-error {
+    background: var(--red-light);
+    color: #7B241C;
+    border-color: var(--red);
+  }
+
+  @keyframes popIn {
+    0% { transform: scale(0.9); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  /* --- LEVEL SELECTION OVERLAY --- */
+  .level-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(26, 26, 46, 0.85);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .level-card {
+    background: var(--panel);
+    border: 4px solid var(--line);
+    border-radius: 24px;
+    padding: 40px;
+    max-width: 500px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 10px 10px 0px #000;
+  }
+
+  .level-btns {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 25px;
+  }
+
+  .level-btn {
+    background: #FFF;
+    border: 3px solid var(--line);
+    padding: 18px;
+    border-radius: 16px;
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 700;
+    font-size: 1.3rem;
+    cursor: pointer;
+    box-shadow: 5px 5px 0px var(--line);
+    transition: all 0.1s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .level-btn .sub-text {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85rem;
+    color: var(--muted);
+    font-weight: 400;
+    margin-top: 5px;
+  }
+
+  .level-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 7px 7px 0px var(--line);
+  }
+
+  .level-btn.btn-p5:hover { background: var(--purple-light); }
+  .level-btn.btn-p6:hover { background: var(--green-light); }
+
+  .level-btn:active {
+    transform: translate(3px, 3px);
+    box-shadow: 2px 2px 0px var(--line);
+  }
+
+  /* --- FIN OVERLAY --- */
+  .end-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(26, 26, 46, 0.9);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    display: none;
+  }
+
+  .end-card {
+    background: var(--panel);
+    border: 4px solid var(--line);
+    border-radius: 24px;
+    padding: 40px;
+    max-width: 550px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 10px 10px 0px #000;
+  }
+
+  .trophy {
+    font-size: 5rem;
+    margin-bottom: 20px;
+  }
+</style>
+</head>
+<body>
+
+<!-- LEVEL SELECTION -->
+<div id="level-overlay" class="level-overlay">
+  <div class="level-card">
+    <h2>Choisis ton niveau</h2>
+    <p>Sélectionne la difficulté correspondant à ton programme scolaire.</p>
+    <div class="level-btns">
+      <button class="level-btn btn-p5" onclick="selectLevel('Niveau 1')">
+        Niveau 1
+        <span class="sub-text">Échelle simple 1:100, calculs faciles sur le plan (division par 100)</span>
+      </button>
+      <button class="level-btn btn-p6" onclick="selectLevel('Niveau 2')">
+        Niveau 2
+        <span class="sub-text">Échelle de plan d'architecte 1:50, calculs de réduction plus précis</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- END GAME SCREEN -->
+<div id="end-overlay" class="end-overlay">
+  <div class="end-card">
+    <div class="trophy">🏆</div>
+    <h2>Félicitations, Maître d'Œuvre !</h2>
+    <p style="font-size: 1.15rem; margin-bottom: 25px;">Tu as meublé la salle de classe de manière géométriquement parfaite !</p>
+    <div class="stat-card" style="justify-content: center; font-size: 1.5rem; margin-bottom: 30px; border-width: 3px;">
+      Score Final : <span id="final-score">0</span> / 100
+    </div>
+    <button class="btn" onclick="restartGame()">Recommencer l'activité</button>
+  </div>
+</div>
+
+<!-- MAIN INTERFACE -->
+<div class="header">
+  <div class="header-title">
+    <span class="logo-icon">📐</span>
+    <div>
+      <h1 style="margin: 0; font-size: 1.8rem;">L'Architecte de l'École</h1>
+      <div style="display: flex; gap: 8px; align-items: center; margin-top: 4px;">
+        <span class="level-badge" id="current-level-badge">Niveau 1</span>
+        <span style="font-size: 0.85rem; color: var(--muted);">Dessiner et placer le mobilier à l'échelle</span>
+      </div>
+    </div>
+  </div>
+  
+  <div class="stats-container">
+    <div class="stat-card">
+      🪑 Mobilier : <span id="stat-item-num">1</span>/5
+    </div>
+    <div class="stat-card" style="border-color: var(--purple); color: var(--purple);">
+      ⭐ Score : <span id="stat-score">0</span> pts
+    </div>
+  </div>
+</div>
+
+<div class="game-container">
+  <!-- THE CLASSROOM FLOOR PLAN -->
+  <div class="plan-panel" id="plan-container">
+    <!-- Map image -->
+    <img src="assets/images/plan_classe.jpg" alt="Plan de classe vide" class="plan-image">
+
+    <!-- Visual boundary dashed line guide -->
+    <div class="room-boundary-guide"></div>
+
+    <!-- Active furniture item will be appended here dynamically -->
+  </div>
+
+  <!-- THE CONTROL PANEL -->
+  <div class="control-panel">
+    <div class="task-card">
+      <div class="task-instruction" id="task-instruction-text">Chargement de la mission...</div>
+      <div>
+        Échelle du plan : <span class="scale-box" id="scale-display">1 : 50</span>
+      </div>
+    </div>
+
+    <!-- STEP 1: CALCULATIONS TABLE -->
+    <div class="step-container active-step" id="step-1-container">
+      <div class="step-title">
+        <span class="step-badge">1</span>
+        Calcule les dimensions sur le plan
+      </div>
+      <p style="font-size: 0.85rem; color: var(--muted); margin: 0 0 10px 0;">
+        Convertis les mètres en centimètres, puis divise par le dénominateur de l'échelle.
+      </p>
+      
+      <table class="prop-table">
+        <thead>
+          <tr>
+            <th>Dimension</th>
+            <th>Réelle (m)</th>
+            <th>Réelle (cm)</th>
+            <th>Plan (cm)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="font-weight: 700;">Largeur</td>
+            <td id="table-real-w-m">1.50 m</td>
+            <td><input type="number" id="calc-real-w-cm" class="prop-input" placeholder="ex: 150"></td>
+            <td><input type="number" id="calc-plan-w-cm" class="prop-input" placeholder="ex: 3" step="0.1"></td>
+          </tr>
+          <tr>
+            <td style="font-weight: 700;">Hauteur</td>
+            <td id="table-real-h-m">1.00 m</td>
+            <td><input type="number" id="calc-real-h-cm" class="prop-input" placeholder="ex: 100"></td>
+            <td><input type="number" id="calc-plan-h-cm" class="prop-input" placeholder="ex: 2" step="0.1"></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <button class="btn" id="btn-validate-calc" onclick="validateCalculations()">Valider les calculs</button>
+      <div class="feedback-box" id="feedback-calc"></div>
+    </div>
+
+    <!-- STEP 2: SIZE AND POSITION ITEM -->
+    <div class="step-container" id="step-2-container">
+      <div class="step-title">
+        <span class="step-badge">2</span>
+        Ajuste et place le meuble
+      </div>
+      <p style="font-size: 0.85rem; color: var(--muted); margin: 0 0 10px 0;">
+        1. Règle la taille du meuble avec les curseurs.<br>
+        2. Glisse le meuble apparu en bas à gauche pour le placer sur le plan.
+      </p>
+
+      <div class="slider-group">
+        <div class="slider-row">
+          <div class="slider-label-row">
+            <span>Largeur :</span>
+            <span id="slider-w-val" style="color:var(--purple); font-weight:800;">1.0 cm</span>
+          </div>
+          <input type="range" id="slider-w" class="range-input" min="0.5" max="5.5" step="0.1" value="1.0" oninput="updateFurnitureSize()">
+        </div>
+        <div class="slider-row">
+          <div class="slider-label-row">
+            <span>Hauteur :</span>
+            <span id="slider-h-val" style="color:var(--purple); font-weight:800;">1.0 cm</span>
+          </div>
+          <input type="range" id="slider-h" class="range-input" min="0.2" max="4.0" step="0.1" value="1.0" oninput="updateFurnitureSize()">
+        </div>
+      </div>
+
+      <div class="feedback-box" id="feedback-placement"></div>
+    </div>
+
+    <!-- ACTION BUTTON FOR NEXT ITEM -->
+    <button class="btn btn-success" id="btn-next-item" style="display: none; margin-top: auto;" onclick="nextItem()">Mobilier suivant →</button>
+  </div>
+</div>
+
+<script>
+  // --- SOUND EFFECTS (Web Audio API Synthesizer) ---
+  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  
+  function playSound(type) {
+    if (audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+
+    const now = audioCtx.currentTime;
+
+    if (type === 'success') {
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(330, now);
+      osc.frequency.exponentialRampToValueAtTime(660, now + 0.15);
+      gain.gain.setValueAtTime(0.15, now);
+      gain.gain.linearRampToValueAtTime(0.01, now + 0.2);
+      osc.start(now);
+      osc.stop(now + 0.2);
+    } else if (type === 'error') {
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(180, now);
+      osc.frequency.linearRampToValueAtTime(100, now + 0.25);
+      gain.gain.setValueAtTime(0.2, now);
+      gain.gain.linearRampToValueAtTime(0.01, now + 0.3);
+      osc.start(now);
+      osc.stop(now + 0.3);
+    } else if (type === 'complete') {
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(523.25, now);
+      osc.frequency.setValueAtTime(659.25, now + 0.1);
+      osc.frequency.setValueAtTime(783.99, now + 0.2);
+      osc.frequency.setValueAtTime(1046.50, now + 0.3);
+      gain.gain.setValueAtTime(0.2, now);
+      gain.gain.linearRampToValueAtTime(0.01, now + 0.6);
+      osc.start(now);
+      osc.stop(now + 0.6);
+    } else if (type === 'click') {
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(400, now);
+      gain.gain.setValueAtTime(0.05, now);
+      gain.gain.linearRampToValueAtTime(0.01, now + 0.05);
+      osc.start(now);
+      osc.stop(now + 0.05);
+    }
+  }
+
+  // --- GAME CONFIGURATION ---
+  const FURNITURE_ITEMS = [
+    {
+      id: 'bureau_maitre',
+      name: "Le bureau du maître",
+      className: 'piece-bureau-maitre',
+      realW: 1.5, // 1.50m
+      realH: 1.0, // 1.00m
+      labelShort: "Bureau"
+    },
+    {
+      id: 'tableau',
+      name: "Le tableau noir",
+      className: 'piece-tableau',
+      realW: 2.0, // 2.00m
+      realH: 0.2, // 0.20m (épaisseur tableau)
+      labelShort: "Tableau"
+    },
+    {
+      id: 'armoire',
+      name: "L'armoire de rangement",
+      className: 'piece-armoire',
+      realW: 1.0, // 1.00m
+      realH: 0.5, // 0.50m
+      labelShort: "Armoire"
+    },
+    {
+      id: 'banc_eleve',
+      name: "Un banc double d'élèves",
+      className: 'piece-banc-eleve',
+      realW: 1.2, // 1.20m
+      realH: 0.8, // 0.80m
+      labelShort: "Banc"
+    },
+    {
+      id: 'bibliotheque',
+      name: "La bibliothèque de la classe",
+      className: 'piece-bibliotheque',
+      realW: 1.8, // 1.80m
+      realH: 0.6, // 0.60m
+      labelShort: "Bibliothèque"
+    }
+  ];
+
+  let currentLevel = 'Niveau 1';
+  let levelRatio = 100; // default 1:100
+  let score = 0;
+  let itemIndex = 0;
+  
+  let currentItem = null;
+  let activeElement = null; // Reference to the DOM element of the current furniture
+
+  // Classroom bounding box on 720x540 map container
+  const BOUNDS = {
+    xMin: 75,
+    xMax: 630,
+    yMin: 55,
+    yMax: 470
+  };
+
+  // 1 cm on plan = 40 pixels
+  const PIXELS_PER_CM = 40;
+
+  // Drag and drop variables
+  let isDragging = false;
+  let startX, startY;
+  let itemLeft = 0;
+  let itemTop = 0;
+
+  function selectLevel(level) {
+    playSound('click');
+    currentLevel = level;
+    levelRatio = (level === 'Niveau 1') ? 100 : 50;
+    
+    document.getElementById('current-level-badge').textContent = level;
+    document.getElementById('scale-display').textContent = `1 : ${levelRatio}`;
+    document.getElementById('level-overlay').style.display = 'none';
+    
+    restartGame();
+  }
+
+  function restartGame() {
+    score = 0;
+    itemIndex = 0;
+    
+    // Clear any existing furniture elements from map
+    const existingPieces = document.querySelectorAll('.furniture-piece');
+    existingPieces.forEach(p => p.remove());
+
+    document.getElementById('stat-score').textContent = score;
+    document.getElementById('stat-item-num').textContent = itemIndex + 1;
+    document.getElementById('end-overlay').style.display = 'none';
+    
+    loadItem();
+  }
+
+  function loadItem() {
+    currentItem = FURNITURE_ITEMS[itemIndex];
+    
+    // Clear inputs and hide steps/feedback
+    document.getElementById('calc-real-w-cm').value = '';
+    document.getElementById('calc-plan-w-cm').value = '';
+    document.getElementById('calc-real-h-cm').value = '';
+    document.getElementById('calc-plan-h-cm').value = '';
+    
+    document.getElementById('feedback-calc').style.display = 'none';
+    document.getElementById('feedback-placement').style.display = 'none';
+    document.getElementById('btn-next-item').style.display = 'none';
+
+    // Set step 1 active
+    document.getElementById('step-1-container').classList.add('active-step');
+    document.getElementById('step-2-container').classList.remove('active-step');
+    
+    // Enable step 1 inputs
+    document.getElementById('calc-real-w-cm').disabled = false;
+    document.getElementById('calc-plan-w-cm').disabled = false;
+    document.getElementById('calc-real-h-cm').disabled = false;
+    document.getElementById('calc-plan-h-cm').disabled = false;
+    document.getElementById('btn-validate-calc').disabled = false;
+
+    // Load dimensions in the panel
+    document.getElementById('task-instruction-text').innerHTML = `Installe <strong>${currentItem.name}</strong>.<br>Dimensions réelles : <strong>${currentItem.realW.toFixed(2)} m</strong> de large et <strong>${currentItem.realH.toFixed(2)} m</strong> de profondeur.`;
+    
+    document.getElementById('table-real-w-m').textContent = `${currentItem.realW.toFixed(2)} m`;
+    document.getElementById('table-real-h-m').textContent = `${currentItem.realH.toFixed(2)} m`;
+
+    // Reset Sliders
+    document.getElementById('slider-w').value = 1.0;
+    document.getElementById('slider-h').value = 1.0;
+    document.getElementById('slider-w-val').textContent = "1.0 cm";
+    document.getElementById('slider-h-val').textContent = "1.0 cm";
+  }
+
+  function validateCalculations() {
+    const rwCmInput = parseFloat(document.getElementById('calc-real-w-cm').value);
+    const pwCmInput = parseFloat(document.getElementById('calc-plan-w-cm').value);
+    const rhCmInput = parseFloat(document.getElementById('calc-real-h-cm').value);
+    const phCmInput = parseFloat(document.getElementById('calc-plan-h-cm').value);
+
+    const feedback = document.getElementById('feedback-calc');
+
+    if (isNaN(rwCmInput) || isNaN(pwCmInput) || isNaN(rhCmInput) || isNaN(phCmInput)) {
+      feedback.style.display = 'block';
+      feedback.className = 'feedback-box feedback-error';
+      feedback.textContent = 'Remplis toutes les cases du tableau.';
+      playSound('error');
+      return;
+    }
+
+    // Expected answers
+    const expectedRealW = Math.round(currentItem.realW * 100);
+    const expectedRealH = Math.round(currentItem.realH * 100);
+    
+    const expectedPlanW = parseFloat((expectedRealW / levelRatio).toFixed(1));
+    const expectedPlanH = parseFloat((expectedRealH / levelRatio).toFixed(1));
+
+    // Tolerance check
+    const isWCorrect = (rwCmInput === expectedRealW) && (Math.abs(pwCmInput - expectedPlanW) <= 0.05);
+    const isHCorrect = (rhCmInput === expectedRealH) && (Math.abs(phCmInput - expectedPlanH) <= 0.05);
+
+    if (isWCorrect && isHCorrect) {
+      feedback.style.display = 'block';
+      feedback.className = 'feedback-box feedback-success';
+      feedback.innerHTML = `Calculs corrects !<br>Largeur sur le plan : ${expectedPlanW} cm.<br>Hauteur sur le plan : ${expectedPlanH} cm.`;
+      playSound('success');
+
+      // Lock Step 1
+      document.getElementById('calc-real-w-cm').disabled = true;
+      document.getElementById('calc-plan-w-cm').disabled = true;
+      document.getElementById('calc-real-h-cm').disabled = true;
+      document.getElementById('calc-plan-h-cm').disabled = true;
+      document.getElementById('btn-validate-calc').disabled = true;
+
+      // Enable Step 2
+      document.getElementById('step-2-container').classList.add('active-step');
+
+      // Spawn furniture piece inside plan container at a default starting position
+      spawnFurniture(expectedPlanW, expectedPlanH);
+    } else {
+      feedback.style.display = 'block';
+      feedback.className = 'feedback-box feedback-error';
+      
+      let errMsg = "Calculs incorrects.";
+      if (rwCmInput !== expectedRealW || rhCmInput !== expectedRealH) {
+        errMsg += " Rappel : 1 mètre = 100 cm.";
+      } else {
+        errMsg += ` Rappel : divise les cm réels par ${levelRatio} pour trouver la taille sur le plan.`;
+      }
+      feedback.textContent = errMsg;
+      playSound('error');
+    }
+  }
+
+  function spawnFurniture(expectedPlanW, expectedPlanH) {
+    // Remove active element if any
+    if (activeElement) activeElement.remove();
+
+    activeElement = document.createElement('div');
+    activeElement.className = `furniture-piece ${currentItem.className}`;
+    activeElement.id = `piece-${currentItem.id}`;
+    
+    // Set starting position (bottom-left area of map)
+    itemLeft = 85;
+    itemTop = 410;
+    
+    activeElement.style.left = itemLeft + 'px';
+    activeElement.style.top = itemTop + 'px';
+
+    // Set initial slider visual dimensions (1.0 cm)
+    activeElement.style.width = (1.0 * PIXELS_PER_CM) + 'px';
+    activeElement.style.height = (1.0 * PIXELS_PER_CM) + 'px';
+    
+    activeElement.innerHTML = `<span style="font-weight:800;">${currentItem.labelShort}</span><span id="piece-dims-text" style="font-size:0.6rem;opacity:0.9;display:block;">1.0×1.0</span>`;
+
+    // Append to plan container
+    document.getElementById('plan-container').appendChild(activeElement);
+
+    // Setup Pointer Dragging
+    setupDragEvents(activeElement);
+  }
+
+  function updateFurnitureSize() {
+    if (!activeElement) return;
+
+    const wCm = parseFloat(document.getElementById('slider-w').value);
+    const hCm = parseFloat(document.getElementById('slider-h').value);
+
+    document.getElementById('slider-w-val').textContent = `${wCm.toFixed(1)} cm`;
+    document.getElementById('slider-h-val').textContent = `${hCm.toFixed(1)} cm`;
+
+    activeElement.style.width = (wCm * PIXELS_PER_CM) + 'px';
+    activeElement.style.height = (hCm * PIXELS_PER_CM) + 'px';
+
+    // Update label text inside piece
+    const textSpan = activeElement.querySelector('#piece-dims-text');
+    if (textSpan) {
+      textSpan.textContent = `${wCm.toFixed(1)}×${hCm.toFixed(1)}`;
+    }
+  }
+
+  function setupDragEvents(el) {
+    el.addEventListener('pointerdown', (e) => {
+      if (el.classList.contains('placed')) return;
+      isDragging = true;
+      
+      const rect = el.getBoundingClientRect();
+      // Calculate offset inside the element
+      startX = e.clientX - rect.left;
+      startY = e.clientY - rect.top;
+      
+      el.setPointerCapture(e.pointerId);
+      playSound('click');
+      e.preventDefault();
+    });
+
+    el.addEventListener('pointermove', (e) => {
+      if (!isDragging) return;
+      
+      const parentRect = document.getElementById('plan-container').getBoundingClientRect();
+      
+      // Target coordinates inside plan container
+      itemLeft = e.clientX - parentRect.left - startX;
+      itemTop = e.clientY - parentRect.top - startY;
+
+      // Keep it within plan bounds
+      itemLeft = Math.max(0, Math.min(720 - parseFloat(el.style.width), itemLeft));
+      itemTop = Math.max(0, Math.min(540 - parseFloat(el.style.height), itemTop));
+
+      el.style.left = itemLeft + 'px';
+      el.style.top = itemTop + 'px';
+    });
+
+    el.addEventListener('pointerup', (e) => {
+      if (!isDragging) return;
+      isDragging = false;
+      el.releasePointerCapture(e.pointerId);
+      
+      checkPlacement(el);
+    });
+  }
+
+  function checkPlacement(el) {
+    const feedback = document.getElementById('feedback-placement');
+    feedback.style.display = 'block';
+
+    const wCm = parseFloat(document.getElementById('slider-w').value);
+    const hCm = parseFloat(document.getElementById('slider-h').value);
+
+    // Target dimensions
+    const expectedRealW = Math.round(currentItem.realW * 100);
+    const expectedRealH = Math.round(currentItem.realH * 100);
+    
+    const targetW = parseFloat((expectedRealW / levelRatio).toFixed(1));
+    const targetH = parseFloat((expectedRealH / levelRatio).toFixed(1));
+
+    // 1. Check size
+    const sizeCorrect = (Math.abs(wCm - targetW) <= 0.05) && (Math.abs(hCm - targetH) <= 0.05);
+
+    if (!sizeCorrect) {
+      feedback.className = 'feedback-box feedback-error';
+      feedback.textContent = `Taille incorrecte. Règle la règle coulissante pour que le meuble fasse ${targetW} cm x ${targetH} cm.`;
+      playSound('error');
+      return;
+    }
+
+    // 2. Check position
+    // Item center point coordinates
+    const wPx = wCm * PIXELS_PER_CM;
+    const hPx = hCm * PIXELS_PER_CM;
+    const centerX = itemLeft + (wPx / 2);
+    const centerY = itemTop + (hPx / 2);
+
+    const inBounds = (centerX >= BOUNDS.xMin && centerX <= BOUNDS.xMax) && 
+                     (centerY >= BOUNDS.yMin && centerY <= BOUNDS.yMax);
+
+    if (inBounds) {
+      feedback.className = 'feedback-box feedback-success';
+      feedback.textContent = "Parfait ! Le meuble est bien proportionné et bien positionné dans la classe.";
+      playSound('success');
+
+      // Lock furniture piece
+      el.classList.add('placed');
+      
+      // Update stats and show Next button
+      score += 20;
+      document.getElementById('stat-score').textContent = score;
+
+      // Lock step 2 controls
+      document.getElementById('slider-w').disabled = true;
+      document.getElementById('slider-h').disabled = true;
+      document.getElementById('step-2-container').classList.remove('active-step');
+
+      document.getElementById('btn-next-item').style.display = 'block';
+    } else {
+      feedback.className = 'feedback-box feedback-error';
+      feedback.textContent = "Dépose le meuble à l'intérieur de la classe (dans les limites des murs).";
+      playSound('error');
+    }
+  }
+
+  function nextItem() {
+    playSound('click');
+    // Re-enable sliders
+    document.getElementById('slider-w').disabled = false;
+    document.getElementById('slider-h').disabled = false;
+
+    if (itemIndex < FURNITURE_ITEMS.length - 1) {
+      itemIndex++;
+      document.getElementById('stat-item-num').textContent = itemIndex + 1;
+      loadItem();
+    } else {
+      // Finished all items!
+      playSound('complete');
+      document.getElementById('final-score').textContent = score;
+      document.getElementById('end-overlay').style.display = 'flex';
+    }
+  }
+</script>
+</body>
+</html>
