@@ -746,6 +746,93 @@ const MODELS = {
       }
       return faces;
     }
+  },
+  prisme_pentagone: {
+    isPoly: true,
+    getFaces: () => {
+      const R = 22, z_half = 30, faces = [];
+      const getP = (i, z) => {
+        const ang = (i * 2 * Math.PI) / 5 - Math.PI / 2;
+        return { x: R * Math.cos(ang), y: R * Math.sin(ang), z: z };
+      };
+      const bot = [], top = [];
+      for (let i = 0; i < 5; i++) {
+        bot.push(getP(i, -z_half));
+        top.push(getP(i, z_half));
+      }
+      faces.push({ colorIdx: 2, vertices: bot });
+      faces.push({ colorIdx: 3, vertices: [...top].reverse() });
+      for (let i = 0; i < 5; i++) {
+        const next = (i + 1) % 5;
+        faces.push({
+          colorIdx: 1,
+          vertices: [ getP(i, -z_half), getP(next, -z_half), getP(next, z_half), getP(i, z_half) ]
+        });
+      }
+      return faces;
+    }
+  },
+  pyramide_pentagone: {
+    isPoly: true,
+    getFaces: () => {
+      const R = 24, z_base = -18, z_apex = 26, faces = [];
+      const getP = (i) => {
+        const ang = (i * 2 * Math.PI) / 5 - Math.PI / 2;
+        return { x: R * Math.cos(ang), y: R * Math.sin(ang), z: z_base };
+      };
+      const baseVerts = [];
+      for (let i = 0; i < 5; i++) {
+        baseVerts.push(getP(i));
+      }
+      faces.push({ colorIdx: 2, vertices: baseVerts });
+      for (let i = 0; i < 5; i++) {
+        const next = (i + 1) % 5;
+        faces.push({
+          colorIdx: 1,
+          vertices: [ getP(i), getP(next), { x: 0, y: 0, z: z_apex } ]
+        });
+      }
+      return faces;
+    }
+  },
+  demi_sphere: {
+    isPoly: false,
+    getFaces: () => {
+      const R = 26, slices = 12, stacks = 6, faces = [], vertices = [];
+      for (let stack = 0; stack <= stacks; stack++) {
+        const phi = (stack * Math.PI) / (2 * stacks);
+        const sinPhi = Math.sin(phi), cosPhi = Math.cos(phi);
+        for (let slice = 0; slice < slices; slice++) {
+          const theta = (slice * 2 * Math.PI) / slices;
+          vertices.push({
+            x: R * sinPhi * Math.cos(theta),
+            y: R * sinPhi * Math.sin(theta),
+            z: R * cosPhi
+          });
+        }
+      }
+      for (let stack = 0; stack < stacks; stack++) {
+        for (let slice = 0; slice < slices; slice++) {
+          const nextSlice = (slice + 1) % slices;
+          const p1 = stack * slices + slice;
+          const p2 = stack * slices + nextSlice;
+          const p3 = (stack + 1) * slices + slice;
+          const p4 = (stack + 1) * slices + nextSlice;
+          faces.push({
+            colorIdx: 6,
+            noStroke: true,
+            vertices: [ vertices[p1], vertices[p2], vertices[p4], vertices[p3] ]
+          });
+        }
+      }
+      const botVerts = [];
+      const baseOffset = stacks * slices;
+      for (let slice = 0; slice < slices; slice++) {
+        botVerts.push(vertices[baseOffset + slice]);
+      }
+      faces.push({ colorIdx: 2, vertices: botVerts.reverse() });
+      return faces;
+    }
   }
 };
 
@@ -1022,6 +1109,57 @@ const DATABASE = [
     eliminations: [
       ["Le cube", "La pyramide à base carrée"],
       ["Le prisme droit triangulaire"]
+    ]
+  },
+  {
+    id: "prisme_pentagone",
+    name: "Le prisme droit à base pentagonale",
+    isPolyedre: true,
+    desc: "Ce prisme possède 2 bases pentagonales (à 5 côtés) parallèles et 5 faces latérales rectangulaires. Il compte 7 faces, 10 sommets et 15 arêtes.",
+    clues: [
+      "Je possède 7 faces, 10 sommets et 15 arêtes.",
+      "Mes deux bases parallèles sont des pentagones (polygones à 5 côtés).",
+      "Mes faces latérales reliant les bases sont des rectangles."
+    ],
+    model: "prisme_pentagone",
+    distractors: ["Le prisme droit triangulaire", "La pyramide à base pentagonale", "Le cube"],
+    eliminations: [
+      ["La pyramide à base pentagonale"],
+      ["Le prisme droit triangulaire", "Le cube"]
+    ]
+  },
+  {
+    id: "pyramide_pentagone",
+    name: "La pyramide à base pentagonale",
+    isPolyedre: true,
+    desc: "Elle possède 1 base pentagonale et 5 faces latérales triangulaires qui se rejoignent en un sommet principal. Elle compte 6 faces, 6 sommets et 10 arêtes.",
+    clues: [
+      "Je possède 6 faces, 6 sommets et 10 arêtes.",
+      "Ma base au sol est un pentagone (polygone à 5 côtés).",
+      "Mes faces latérales sont des triangles se rejoignant en un seul sommet principal."
+    ],
+    model: "pyramide_pentagone",
+    distractors: ["La pyramide à base carrée", "Le prisme droit à base pentagonale", "Le cône"],
+    eliminations: [
+      ["Le cône"],
+      ["La pyramide à base carrée", "Le prisme droit à base pentagonale"]
+    ]
+  },
+  {
+    id: "demi_sphere",
+    name: "La demi-sphère",
+    isPolyedre: false,
+    desc: "C'est un corps rond (non-polyèdre) possédant une seule face plane circulaire (sa base) et une face courbe. Elle n'a aucun sommet.",
+    clues: [
+      "Je ne possède aucun sommet.",
+      "Je ne suis pas un polyèdre (je possède une surface courbe).",
+      "Je possède une seule base plane circulaire."
+    ],
+    model: "demi_sphere",
+    distractors: ["La sphère", "Le cylindre", "Le cône"],
+    eliminations: [
+      ["La sphère"],
+      ["Le cylindre", "Le cône"]
     ]
   }
 ];
