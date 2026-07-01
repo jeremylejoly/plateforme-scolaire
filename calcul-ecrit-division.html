@@ -321,35 +321,42 @@
             <input type="radio" name="level" id="lv1" checked>
             <div>
               <label for="lv1" class="level-name">Niveau 1 : Facile</label>
-              <span class="level-desc">Diviseur à 1 chiffre, division exacte</span>
+              <span class="level-desc">Diviseur 2, 3, 4 ou 5 (1er chiffre dividende ≥ diviseur)</span>
             </div>
           </div>
           <div class="level-opt" data-lv="2">
             <input type="radio" name="level" id="lv2">
             <div>
               <label for="lv2" class="level-name">Niveau 2 : Moyen</label>
-              <span class="level-desc">Diviseur à 2 chiffres, division entière</span>
+              <span class="level-desc">Tout diviseur à 1 chiffre (1er chiffre parfois plus petit)</span>
             </div>
           </div>
           <div class="level-opt" data-lv="3">
             <input type="radio" name="level" id="lv3">
             <div>
-              <label for="lv3" class="level-name">Niveau 3 : Quotient décimal</label>
-              <span class="level-desc">Continuer la division (ex: 25 ÷ 4 = 6,25)</span>
+              <label for="lv3" class="level-name">Niveau 3 : Difficile</label>
+              <span class="level-desc">Diviseur à 2 chiffres (division exacte)</span>
             </div>
           </div>
           <div class="level-opt" data-lv="4">
             <input type="radio" name="level" id="lv4">
             <div>
-              <label for="lv4" class="level-name">Niveau 4 : Dividende décimal</label>
-              <span class="level-desc">Placer la virgule au quotient dès qu'on la franchit</span>
+              <label for="lv4" class="level-name">Niveau 4 : Division avec reste</label>
+              <span class="level-desc">Diviseur à 1 chiffre, avec reste final à mentionner</span>
             </div>
           </div>
           <div class="level-opt" data-lv="5">
             <input type="radio" name="level" id="lv5">
             <div>
-              <label for="lv5" class="level-name">Niveau 5 : Chiffres masqués</label>
-              <span class="level-desc">Division lacunaire à compléter</span>
+              <label for="lv5" class="level-name">Niveau 5 : Dividende décimal</label>
+              <span class="level-desc">Nombre à virgule divisé par un entier (division exacte)</span>
+            </div>
+          </div>
+          <div class="level-opt" data-lv="6">
+            <input type="radio" name="level" id="lv6">
+            <div>
+              <label for="lv6" class="level-name">Niveau 6 : Chiffres masqués</label>
+              <span class="level-desc">Division lacunaire entiers ou décimaux (facile)</span>
             </div>
           </div>
         </div>
@@ -473,23 +480,9 @@ function solveDivision(dividendStr, divisorStr, level) {
   
   // Déterminer le scale de l'extension décimale nécessaire
   let scale = 0;
-  if (level === 3 || level === 4) {
-    const quotStr = quotient.toString();
-    const parts = quotStr.split('.');
-    if (parts.length > 1) {
-      scale = Math.min(2, parts[1].length);
-    } else {
-      scale = 2; // division non exacte ou forcé
-    }
-    const divParts = normDividend.split('.');
-    if (divParts.length > 1) {
-      scale = Math.max(scale, divParts[1].length);
-    }
-  } else {
-    const divParts = normDividend.split('.');
-    if (divParts.length > 1) {
-      scale = divParts[1].length;
-    }
+  const divParts = normDividend.split('.');
+  if (divParts.length > 1) {
+    scale = divParts[1].length;
   }
   
   // Créer le dividende étendu
@@ -638,49 +631,58 @@ function generateDivisionData(level) {
     operands = [];
     
     if (level === 1) {
-      // Diviseur à 1 chiffre, division exacte
+      // Niveau 1 : Diviseur entre 2 et 5, premier chiffre du dividende >= diviseur, division exacte.
+      const val2 = rnd(2, 5);
       const q = rnd(11, 99);
-      const val2 = rnd(3, 9);
-      const val1 = (q * val2).toString();
-      operands = [parseNum(val1), parseNum(val2.toString())];
-      break;
+      const val1 = q * val2;
+      const val1Str = val1.toString();
+      const firstDigit = parseInt(val1Str[0], 10);
+      if (firstDigit >= val2) {
+        operands = [parseNum(val1Str), parseNum(val2.toString())];
+        break;
+      }
       
     } else if (level === 2) {
-      // Diviseur à 2 chiffres, division entière (reste autorisé)
-      const q = rnd(11, 99);
-      const val2 = rnd(11, 25);
-      const r = rnd(0, val2 - 1);
-      const val1 = (q * val2 + r).toString();
-      operands = [parseNum(val1), parseNum(val2.toString())];
+      // Niveau 2 : Tout diviseur à 1 chiffre (2 à 9), premier chiffre du dividende parfois plus petit, division exacte.
+      const val2 = rnd(2, 9);
+      const q = rnd(11, 150);
+      const val1 = q * val2;
+      operands = [parseNum(val1.toString()), parseNum(val2.toString())];
       break;
       
     } else if (level === 3) {
-      // Quotient décimal
-      const val2 = rnd(4, 8); // ex: diviser par 4, 5 ou 8
-      let q = rnd(11, 99);
-      if (val2 === 4) q += 0.25 * rnd(1, 3);
-      else if (val2 === 5) q += 0.2 * rnd(1, 4);
-      else if (val2 === 8) q += 0.125 * rnd(1, 7);
-      
-      const val1 = Math.round(q * val2).toString();
-      operands = [parseNum(val1), parseNum(val2.toString())];
+      // Niveau 3 : Diviseur à 2 chiffres (11 à 25), division exacte.
+      const val2 = rnd(11, 25);
+      const q = rnd(11, 99);
+      const val1 = q * val2;
+      operands = [parseNum(val1.toString()), parseNum(val2.toString())];
       break;
       
     } else if (level === 4) {
-      // Dividende décimal
-      const q = rnd(11, 99) + 0.1 * rnd(1, 9);
-      const val2 = rnd(3, 9);
-      const val1 = (q * val2).toFixed(1).replace('.', ',');
-      operands = [parseNum(val1), parseNum(val2.toString())];
+      // Niveau 4 : Division avec reste non nul (diviseur à 1 chiffre).
+      const val2 = rnd(2, 9);
+      const q = rnd(11, 99);
+      const r = rnd(1, val2 - 1);
+      const val1 = q * val2 + r;
+      operands = [parseNum(val1.toString()), parseNum(val2.toString())];
       break;
       
     } else if (level === 5) {
-      // Lacunaire (généré à partir de 1 ou 2)
-      const use2Digits = Math.random() > 0.4;
-      const q = rnd(11, 99);
-      const val2 = use2Digits ? rnd(11, 19) : rnd(3, 9);
-      const val1 = (q * val2).toString();
-      operands = [parseNum(val1), parseNum(val2.toString())];
+      // Niveau 5 : Dividende décimal (donc quotient décimal, division exacte).
+      const val2 = rnd(2, 9);
+      const hasTwoDecimals = Math.random() > 0.5;
+      const q = hasTwoDecimals ? (rnd(1, 9) + 0.01 * rnd(11, 99)) : (rnd(11, 99) + 0.1 * rnd(1, 9));
+      const dividend = q * val2;
+      const decimalsCount = hasTwoDecimals ? 2 : 1;
+      const dividendStr = dividend.toFixed(decimalsCount).replace('.', ',');
+      operands = [parseNum(dividendStr), parseNum(val2.toString())];
+      break;
+      
+    } else if (level === 6) {
+      // Niveau 6 : Lacunaire sur niveau plus simple (Niveau 1, 2 ou 5)
+      const subLevel = Math.random() > 0.4 ? (Math.random() > 0.5 ? 1 : 2) : 5;
+      const subData = generateDivisionData(subLevel);
+      operands = subData.operands;
       break;
     }
   }
@@ -691,9 +693,9 @@ function generateDivisionData(level) {
   
   const solved = solveDivision(operands[0].raw, operands[1].raw, level);
   
-  // Dans le cas lacunaire (Niveau 5), choisir les chiffres à masquer
+  // Dans le cas lacunaire (Niveau 6), choisir 2 à 3 chiffres à masquer
   const lacunaryCells = [];
-  if (level === 5) {
+  if (level === 6) {
     const spots = [];
     
     // Quotient
@@ -731,7 +733,7 @@ function generateDivisionData(level) {
       [spots[i], spots[j]] = [spots[j], spots[i]];
     }
     
-    const targetCount = rnd(3, 4);
+    const targetCount = rnd(2, 3); // pas trop difficile
     for (let i = 0; i < Math.min(targetCount, spots.length); i++) {
       lacunaryCells.push(spots[i]);
     }
@@ -785,11 +787,12 @@ function generateNewSheet() {
   state.checked = false;
   
   const levelLabels = {
-    1: "Niveau 1 : Facile (Diviseur à 1 chiffre)",
-    2: "Niveau 2 : Moyen (Diviseur à 2 chiffres)",
-    3: "Niveau 3 : Quotient décimal",
-    4: "Niveau 4 : Dividende décimal",
-    5: "Niveau 5 : Divisions lacunaires"
+    1: "Niveau 1 : Facile (Diviseur 2, 3, 4, 5)",
+    2: "Niveau 2 : Moyen (Tout diviseur à 1 chiffre)",
+    3: "Niveau 3 : Difficile (Diviseur à 2 chiffres)",
+    4: "Niveau 4 : Division avec reste final",
+    5: "Niveau 5 : Dividende décimal",
+    6: "Niveau 6 : Divisions lacunaires"
   };
   document.getElementById('exercise-title').textContent = levelLabels[state.level];
   document.getElementById('score-banner').innerHTML = '';
@@ -1179,6 +1182,41 @@ function renderDivisionGrid(add, cardIdx) {
       }
     }
   });
+  
+  // G. Reste final (Niveau 4 uniquement, positionné sous le quotient sur la dernière ligne)
+  if (add.level === 4) {
+    const restCell = document.createElement('div');
+    restCell.style.gridRow = maxRowIdx;
+    restCell.style.gridColumn = `${potenceLineCol + 4} / span 3`;
+    restCell.style.display = 'flex';
+    restCell.style.alignItems = 'center';
+    restCell.style.justifyContent = 'flex-start';
+    restCell.style.gap = '6px';
+    restCell.style.paddingLeft = '8px';
+    restCell.style.fontSize = '1.15rem';
+    restCell.style.fontWeight = '700';
+    restCell.style.color = 'var(--purple-dark)';
+    
+    const label = document.createElement('span');
+    label.textContent = 'Reste :';
+    restCell.appendChild(label);
+    
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.inputMode = 'numeric';
+    input.pattern = '[0-9]*';
+    input.maxLength = 3;
+    input.className = 'input-result';
+    input.style.width = '48px';
+    input.dataset.col = potenceLineCol + 3; // aligner avec le quotient
+    input.dataset.row = maxRowIdx;
+    input.dataset.type = 'final-remainder';
+    input.dataset.correctVal = solved.finalRemainder.toString();
+    input.setAttribute('aria-label', `Reste final`);
+    restCell.appendChild(input);
+    
+    grid.appendChild(restCell);
+  }
   
   return grid;
 }
