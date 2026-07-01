@@ -309,6 +309,16 @@
     cursor: not-allowed;
     opacity: 0.6;
   }
+  .btn-choice.eliminated {
+    cursor: not-allowed;
+    opacity: 0.35 !important;
+    text-decoration: line-through;
+    background: #f1f5f9 !important;
+    border-color: #e2e8f0 !important;
+    color: #94a3b8 !important;
+    box-shadow: none !important;
+    transform: none !important;
+  }
 
   /* Feedback box */
   .feedback-box {
@@ -899,7 +909,11 @@ const DATABASE = [
       "Toutes mes faces sont des carrés identiques."
     ],
     model: "cube",
-    distractors: ["Le parallélépipède rectangle", "Le prisme droit triangulaire", "La pyramide à base carrée"]
+    distractors: ["Le parallélépipède rectangle", "Le prisme droit triangulaire", "La pyramide à base carrée"],
+    eliminations: [
+      ["Le prisme droit triangulaire", "La pyramide à base carrée"],
+      ["Le parallélépipède rectangle"]
+    ]
   },
   {
     id: "pave",
@@ -912,7 +926,11 @@ const DATABASE = [
       "Toutes mes faces sont des rectangles (dont certains peuvent être des carrés)."
     ],
     model: "pave",
-    distractors: ["Le cube", "Le prisme droit triangulaire", "Le cylindre"]
+    distractors: ["Le cube", "Le prisme droit triangulaire", "Le cylindre"],
+    eliminations: [
+      ["Le prisme droit triangulaire", "Le cylindre"],
+      ["Le cube"]
+    ]
   },
   {
     id: "prisme",
@@ -925,7 +943,11 @@ const DATABASE = [
       "Mes deux bases sont des triangles parallèles et superposables."
     ],
     model: "prisme",
-    distractors: ["Le tétraèdre", "Le parallélépipède rectangle", "La pyramide à base carrée"]
+    distractors: ["Le tétraèdre", "Le parallélépipède rectangle", "La pyramide à base carrée"],
+    eliminations: [
+      ["Le parallélépipède rectangle", "La pyramide à base carrée"],
+      ["Le tétraèdre"]
+    ]
   },
   {
     id: "pyramide",
@@ -938,7 +960,11 @@ const DATABASE = [
       "Ma base au sol est un carré, mais mes autres faces sont toutes des triangles."
     ],
     model: "pyramide",
-    distractors: ["Le tétraèdre", "Le prisme droit triangulaire", "Le cône"]
+    distractors: ["Le tétraèdre", "Le prisme droit triangulaire", "Le cône"],
+    eliminations: [
+      ["Le prisme droit triangulaire", "Le cône"],
+      ["Le tétraèdre"]
+    ]
   },
   {
     id: "cylindre",
@@ -951,7 +977,11 @@ const DATABASE = [
       "Je possède 2 bases circulaires plates et parallèles qui me permettent de tenir debout."
     ],
     model: "cylindre",
-    distractors: ["Le cône", "La sphère", "Le prisme droit triangulaire"]
+    distractors: ["Le cône", "La sphère", "Le prisme droit triangulaire"],
+    eliminations: [
+      ["Le prisme droit triangulaire"],
+      ["La sphère", "Le cône"]
+    ]
   },
   {
     id: "cone",
@@ -964,7 +994,11 @@ const DATABASE = [
       "Je me termine par un sommet pointu opposé à ma base circulaire."
     ],
     model: "cone",
-    distractors: ["Le cylindre", "La sphère", "La pyramide à base carrée"]
+    distractors: ["Le cylindre", "La sphère", "La pyramide à base carrée"],
+    eliminations: [
+      ["La pyramide à base carrée"],
+      ["La sphère", "Le cylindre"]
+    ]
   },
   {
     id: "sphere",
@@ -977,7 +1011,11 @@ const DATABASE = [
       "Je suis un corps rond parfaitement symétrique comme un ballon."
     ],
     model: "sphere",
-    distractors: ["Le cylindre", "Le cône", "Le cube"]
+    distractors: ["Le cylindre", "Le cône", "Le cube"],
+    eliminations: [
+      ["Le cube"],
+      ["Le cylindre", "Le cône"]
+    ]
   },
   {
     id: "tetraedre",
@@ -990,7 +1028,11 @@ const DATABASE = [
       "Absolument toutes mes faces sont des triangles."
     ],
     model: "tetraedre",
-    distractors: ["La pyramide à base carrée", "Le prisme droit triangulaire", "Le cône"]
+    distractors: ["Le cube", "La pyramide à base carrée", "Le prisme droit triangulaire"],
+    eliminations: [
+      ["Le cube", "La pyramide à base carrée"],
+      ["Le prisme droit triangulaire"]
+    ]
   }
 ];
 
@@ -1131,10 +1173,31 @@ function loadQuestion() {
   document.getElementById('btn-next-question').style.display = 'none';
 }
 
+function applyEliminations(revealedClueIdx) {
+  const q = questions[currentQIdx];
+  if (!q.eliminations) return;
+  
+  // revealedClueIdx is 1 for the 2nd clue, 2 for the 3rd clue
+  const listToEliminate = q.eliminations[revealedClueIdx - 1];
+  if (!listToEliminate) return;
+  
+  const btns = document.querySelectorAll('.btn-choice');
+  btns.forEach(btn => {
+    if (listToEliminate.includes(btn.textContent)) {
+      btn.classList.add('eliminated');
+      btn.disabled = true;
+    }
+  });
+}
+
 function showNextClue() {
   if (cluesVisibleCount < 3) {
     playSound('click');
     document.getElementById(`clue-${cluesVisibleCount}`).classList.add('visible');
+    
+    // Apply eliminations for the clue we just revealed
+    applyEliminations(cluesVisibleCount);
+    
     cluesVisibleCount++;
     if (cluesVisibleCount === 3) {
       document.getElementById('btn-next-clue').disabled = true;
