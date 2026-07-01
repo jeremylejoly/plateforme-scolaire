@@ -110,7 +110,7 @@
     border-color: var(--error);
   }
 
-  /* Interactive canvas card */
+  /* Interactive canvas card - LARGER SIZES FOR LEGIBILITY */
   .shape-card {
     background: var(--card);
     border: 2px solid var(--border);
@@ -121,7 +121,7 @@
     align-items: center;
     margin-bottom: 1rem;
     box-shadow: var(--shadow);
-    min-height: 280px;
+    min-height: 330px;
     position: relative;
     overflow: hidden;
   }
@@ -134,8 +134,8 @@
   }
   .shape-card svg {
     width: 100%;
-    max-width: 380px;
-    height: 250px;
+    max-width: 480px;
+    height: 300px;
     user-select: none;
     -webkit-user-select: none;
     touch-action: none;
@@ -439,14 +439,14 @@
       <div class="dots" id="dots-progress"></div>
     </div>
 
-    <!-- SVG Canvas -->
+    <!-- SVG Canvas - NEW LARGER VIEWBOX (400x260) -->
     <div class="shape-card">
-      <svg id="angle-svg" viewBox="0 0 300 200">
+      <svg id="angle-svg" viewBox="0 0 400 260">
         <!-- Dynamically drawn angle and Aristo set square -->
       </svg>
     </div>
 
-    <!-- Fine-tuning rotation buttons -->
+    <!-- Fine-tuning rotation controls -->
     <div class="fine-tune-container" id="fine-tune-controls">
       <button class="btn-tune" onclick="tuneAngle(-5)">↩ -5°</button>
       <button class="btn-tune" onclick="tuneAngle(-1)">↩ -1°</button>
@@ -554,9 +554,9 @@ let scorePoints = 0; // Cumulative score out of 15 (5 questions * 3 pts)
 let userAnswers = [];
 let hasAnswered = false;
 
-// Aristo tool coordinates
-let px = 50; // Pivot X in SVG space (starts offset)
-let py = 45; // Pivot Y in SVG space (starts offset)
+// Aristo tool coordinates (Centered on larger viewbox 400x260)
+let px = 120; // Pivot X in SVG space (starts offset)
+let py = 80;  // Pivot Y in SVG space (starts offset)
 let aristoAngle = 0; // Current rotation angle of the set square
 
 // Touch/Mouse dragging state
@@ -617,6 +617,7 @@ function renderAristoRulerTicks() {
   }
 }
 
+// RENDER TWO CONCENTRIC SCALE LABELS IN DIFFERENT COLORS (Standard & Complementary)
 function renderAristoProtractorTicks() {
   const marksContainer = document.getElementById('aristo-rulers-marks');
   if (!marksContainer) return;
@@ -656,20 +657,37 @@ function renderAristoProtractorTicks() {
     marksContainer.appendChild(line);
     
     if (isMajor) {
-      const rt = 109;
-      const xt = centerX + rt * Math.cos(alphaRad);
-      const yt = centerY + rt * Math.sin(alphaRad);
+      // 1. OUTSCALE (Slate color #334155) - Radius 109
+      const rtOuter = 109;
+      const xtOuter = centerX + rtOuter * Math.cos(alphaRad);
+      const ytOuter = centerY + rtOuter * Math.sin(alphaRad);
       
-      const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-      text.setAttribute('x', xt.toFixed(1));
-      text.setAttribute('y', yt.toFixed(1));
-      text.setAttribute('text-anchor', 'middle');
-      text.setAttribute('dominant-baseline', 'central');
-      text.setAttribute('font-size', '5');
-      text.setAttribute('font-weight', '900');
-      text.setAttribute('fill', '#334155');
-      text.textContent = a.toString();
-      marksContainer.appendChild(text);
+      const txtOuter = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      txtOuter.setAttribute('x', xtOuter.toFixed(1));
+      txtOuter.setAttribute('y', ytOuter.toFixed(1));
+      txtOuter.setAttribute('text-anchor', 'middle');
+      txtOuter.setAttribute('dominant-baseline', 'central');
+      txtOuter.setAttribute('font-size', '6.5'); // Larger for legibility
+      txtOuter.setAttribute('font-weight', '900');
+      txtOuter.setAttribute('fill', '#334155');
+      txtOuter.textContent = a.toString();
+      marksContainer.appendChild(txtOuter);
+
+      // 2. INSCALE (Amber color #b45309) - Radius 80 (Inside yellow band)
+      const rtInner = 80;
+      const xtInner = centerX + rtInner * Math.cos(alphaRad);
+      const ytInner = centerY + rtInner * Math.sin(alphaRad);
+      
+      const txtInner = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      txtInner.setAttribute('x', xtInner.toFixed(1));
+      txtInner.setAttribute('y', ytInner.toFixed(1));
+      txtInner.setAttribute('text-anchor', 'middle');
+      txtInner.setAttribute('dominant-baseline', 'central');
+      txtInner.setAttribute('font-size', '6.5'); // Same size
+      txtInner.setAttribute('font-weight', '900');
+      txtInner.setAttribute('fill', '#b45309'); // Distinctive color
+      txtInner.textContent = (180 - a).toString();
+      marksContainer.appendChild(txtInner);
     }
   }
 }
@@ -681,14 +699,14 @@ function renderQuestion(angleObj) {
   
   svg.innerHTML = "";
   
-  // Pivot vertex is at (150, 110)
-  const x_s = 150;
-  const y_s = 110;
+  // Pivot vertex is at (200, 150) in new 400x260 viewbox
+  const x_s = 200;
+  const y_s = 150;
   
-  // Longer lines so they cross the protractor scale perfectly
-  const L1 = 105;
-  const L2 = 105;
-  const R = 30;
+  // Longer lines (130px) so they cross the protractor scale perfectly
+  const L1 = 130;
+  const L2 = 130;
+  const R = 35;
   
   // SVG Definitions for arrows
   const defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
@@ -773,12 +791,13 @@ function renderQuestion(angleObj) {
   const aristoGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
   aristoGroup.setAttribute("id", "aristo-group");
   
-  // Initial position offset from vertex (vertex is at 150, 110)
-  px = 75;
-  py = 55;
+  // Initial position offset from vertex (vertex is at 200, 150)
+  px = 120;
+  py = 80;
   aristoAngle = 0;
   
-  aristoGroup.setAttribute("transform", `translate(${px}, ${py}) rotate(${aristoAngle}) scale(0.8)`);
+  // Scale is 1.0 now since the canvas is larger
+  aristoGroup.setAttribute("transform", `translate(${px}, ${py}) rotate(${aristoAngle})`);
   
   aristoGroup.innerHTML = `
     <!-- Semi-transparent white polygon body -->
@@ -839,7 +858,7 @@ function renderQuestion(angleObj) {
 function updateAristoTransform() {
   const aristo = document.getElementById('aristo-group');
   if (aristo) {
-    aristo.setAttribute("transform", `translate(${px}, ${py}) rotate(${aristoAngle}) scale(0.8)`);
+    aristo.setAttribute("transform", `translate(${px}, ${py}) rotate(${aristoAngle})`);
   }
 }
 
@@ -847,7 +866,6 @@ function updateAristoTransform() {
 function setupAristoHandlers(svg, aristoGroup) {
   aristoGroup.addEventListener('pointerdown', (e) => {
     if (hasAnswered) return;
-    // Skip if clicking on rotate handle
     if (e.target.closest('#aristo-rotate-handle')) return;
     
     isDragging = true;
@@ -870,9 +888,9 @@ function setupAristoHandlers(svg, aristoGroup) {
     px = startPx + dx;
     py = startPy + dy;
     
-    // Bounds check to keep pivot within the 300x200 canvas
-    px = Math.max(10, Math.min(290, px));
-    py = Math.max(10, Math.min(190, py));
+    // Bounds check to keep pivot within the 400x260 canvas
+    px = Math.max(10, Math.min(390, px));
+    py = Math.max(10, Math.min(250, py));
     
     updateAristoTransform();
     e.preventDefault();
@@ -1126,8 +1144,8 @@ function submitAnswer() {
   fb.innerHTML = feedbackMessage;
   
   // Trigger Aristo snapping correction animation
-  // Snaps perfectly onto vertex (150, 110) aligned to the first segment
-  animateAristoTo(150, 110, currentAngle.rotation);
+  // Snaps perfectly onto vertex (200, 150) aligned to the first segment
+  animateAristoTo(200, 150, currentAngle.rotation);
   
   document.getElementById("btn-next").style.display = "flex";
 }
