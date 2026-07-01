@@ -251,10 +251,8 @@
   }
 
   /* Barres et séparations de soustraction posée */
-  .subtraction-line-span {
-    height: 3px;
-    background-color: var(--ink);
-    margin: 4px 0;
+  .subtraction-line-cell {
+    border-bottom: 3.5px solid var(--ink) !important;
   }
   
   /* Symbole virgule statique */
@@ -858,7 +856,7 @@ function renderDivisionGrid(add, cardIdx) {
   let rowIdx = 1;
   const HEADER_ROW = rowIdx++;
   const DIVIDEND_DIVISOR_ROW = rowIdx++;
-  const POTENCE_HORIZ_ROW = rowIdx++;
+  const QUOTIENT_ROW = rowIdx;
   
   // Chaque étape ajoute des lignes
   const stepsLayout = [];
@@ -866,7 +864,6 @@ function renderDivisionGrid(add, cardIdx) {
     stepsLayout.push({
       stepIdx: step.stepIdx,
       subRow: rowIdx++,
-      lineRow: rowIdx++,
       remRow: rowIdx++
     });
   });
@@ -898,7 +895,6 @@ function renderDivisionGrid(add, cardIdx) {
   }
   
   // B. Rendu de la barre verticale de la potence
-  // On trace une ligne continue en appliquant border-right sur la colonne de potence
   const startRow = state.showHeaders ? HEADER_ROW : DIVIDEND_DIVISOR_ROW;
   for (let r = startRow; r <= maxRowIdx; r++) {
     const cell = document.createElement('div');
@@ -928,29 +924,21 @@ function renderDivisionGrid(add, cardIdx) {
     grid.appendChild(cell);
   }
   
-  // Diviseur à droite
+  // Diviseur et Ligne Horizontale de la potence à droite (Ligne 2)
   const divisorStr = add.operands[1].raw;
-  for (let i = 0; i < divisorStr.length; i++) {
-    const cell = document.createElement('div');
-    cell.className = 'grid-cell notebook-cell';
-    cell.style.gridRow = DIVIDEND_DIVISOR_ROW;
-    cell.style.gridColumn = potenceLineCol + 3 + i; // décalé de +3
-    cell.textContent = divisorStr[i];
-    grid.appendChild(cell);
-  }
-  
-  // D. Ligne 2 : Ligne horizontale de la potence
-  // Applique border-bottom sur les colonnes du diviseur
   for (let i = 0; i < rightSideCols; i++) {
     const cell = document.createElement('div');
     cell.className = 'grid-cell potence-horizontal-line';
-    cell.style.gridRow = POTENCE_HORIZ_ROW;
+    cell.style.gridRow = DIVIDEND_DIVISOR_ROW;
     cell.style.gridColumn = potenceLineCol + 3 + i; // décalé de +3
+    
+    if (i < divisorStr.length) {
+      cell.textContent = divisorStr[i];
+    }
     grid.appendChild(cell);
   }
   
   // E. Quotient (Placé sous la ligne horizontale, sur le Quotient Row)
-  const QUOTIENT_ROW = POTENCE_HORIZ_ROW + 1;
   const quotientObj = solved.quotientObj;
   
   let qColOffset = 0;
@@ -999,11 +987,10 @@ function renderDivisionGrid(add, cardIdx) {
     const rightCol = step.rightCol;
     
     // 1. Ligne de soustraction (SUB_ROW)
-    // Produit soustrait
     const prodStr = step.productVal.toString();
     const prodCols = [];
     
-    // Aligner à gauche à partir de rightCol (sauter la virgule)
+    // Aligner à gauche à partir de rightCol
     let curCol = rightCol;
     for (let i = prodStr.length - 1; i >= 0; i--) {
       if (curCol === solved.commaIdx) curCol--;
@@ -1014,7 +1001,7 @@ function renderDivisionGrid(add, cardIdx) {
     // Tracer le signe moins "-" à gauche du produit dans le quadrillage
     const signCol = curCol === solved.commaIdx ? curCol - 1 : curCol;
     const signCell = document.createElement('div');
-    signCell.className = 'grid-cell notebook-cell';
+    signCell.className = 'grid-cell notebook-cell subtraction-line-cell';
     signCell.style.gridRow = layout.subRow;
     signCell.style.gridColumn = (signCol >= 0) ? (signCol + 2) : 1; // décalé de +2
     signCell.textContent = '−';
@@ -1024,7 +1011,7 @@ function renderDivisionGrid(add, cardIdx) {
     // Remplir les chiffres du produit
     prodCols.forEach(item => {
       const cell = document.createElement('div');
-      cell.className = 'grid-cell notebook-cell';
+      cell.className = 'grid-cell notebook-cell subtraction-line-cell';
       cell.style.gridRow = layout.subRow;
       cell.style.gridColumn = item.col + 2; // décalé de +2
       cell.dataset.col = item.col;
@@ -1051,37 +1038,18 @@ function renderDivisionGrid(add, cardIdx) {
       grid.appendChild(cell);
     });
     
-    // Remplir le reste de la ligne avec des cellules cahier vides (pour garder le quadrillage uniforme)
+    // Remplir le reste de la ligne avec des cellules cahier vides
     for (let c = 0; c < divLen; c++) {
       if (extDivStr[c] !== ',' && !prodCols.some(item => item.col === c) && c !== signCol) {
         const cell = document.createElement('div');
         cell.className = 'grid-cell notebook-cell';
         cell.style.gridRow = layout.subRow;
         cell.style.gridColumn = c + 2; // décalé de +2
-        grid.appendChild(cell);
-      }
-    }
-    
-    // 2. Ligne horizontale de la soustraction (LINE_ROW)
-    const lineSpan = document.createElement('div');
-    lineSpan.className = 'subtraction-line-span';
-    lineSpan.style.gridRow = layout.lineRow;
-    
-    const startColLine = Math.min(...prodCols.map(i => i.col));
-    const spanWidth = rightCol - startColLine + 1;
-    lineSpan.style.gridColumn = `${startColLine + 2} / span ${spanWidth}`; // décalé de +2
-    grid.appendChild(lineSpan);
-    
-    // Reste des colonnes pour la ligne séparatrice
-    for (let c = 0; c < divLen; c++) {
-      if (c < startColLine || c > rightCol) {
-        if (extDivStr[c] !== ',') {
-          const cell = document.createElement('div');
-          cell.className = 'grid-cell notebook-cell';
-          cell.style.gridRow = layout.lineRow;
-          cell.style.gridColumn = c + 2; // décalé de +2
-          grid.appendChild(cell);
+        
+        if (c >= signCol && c <= rightCol) {
+          cell.classList.add('subtraction-line-cell');
         }
+        grid.appendChild(cell);
       }
     }
     
