@@ -994,6 +994,14 @@ function shuffle(array) {
   return array;
 }
 
+function generateRandomAngle(type) {
+  if (type === "aigu") {
+    return Math.floor(Math.random() * 71) + 15;
+  } else {
+    return Math.floor(Math.random() * 71) + 95;
+  }
+}
+
 function initGame() {
   scorePoints = 0;
   currentIdx = 0;
@@ -1011,20 +1019,20 @@ function initGame() {
   toggleTuneButtons(false);
   
   // Select exactly 5 questions (mix of acute & obtuse)
-  const acutePool = shuffle(ANGLE_BANK.filter(q => q.type === "aigu"));
-  const obtusePool = shuffle(ANGLE_BANK.filter(q => q.type === "obtus"));
+  const types = ["aigu", "aigu", "obtus", "obtus", Math.random() > 0.5 ? "aigu" : "obtus"];
+  shuffle(types);
   
-  // 3 acute, 2 obtuse (or 2 acute, 3 obtuse) randomized
-  const combined = Math.random() > 0.5 
-    ? [...acutePool.slice(0, 3), ...obtusePool.slice(0, 2)]
-    : [...acutePool.slice(0, 2), ...obtusePool.slice(0, 3)];
-    
-  currentQuestions = shuffle(combined);
-  
-  // Assign random rotations to each question
-  currentQuestions.forEach(q => {
-    q.rotation = Math.floor(Math.random() * 240) + 20; // rotation between 20° and 260°
-  });
+  currentQuestions = [];
+  for (let i = 0; i < 5; i++) {
+    const t = types[i];
+    const val = generateRandomAngle(t);
+    currentQuestions.push({
+      id: i + 1,
+      value: val,
+      type: t,
+      rotation: Math.floor(Math.random() * 240) + 20 // rotation between 20° and 260°
+    });
+  }
   
   // Build 5 dots
   const dotsContainer = document.getElementById("dots-progress");
@@ -1048,7 +1056,6 @@ function loadQuestion() {
   toggleTuneButtons(false);
   
   const fb = document.getElementById("feedback-box");
-  fb.style.display = "none";
   fb.className = "feedback-box";
   
   document.getElementById("info-numero").textContent = `Question ${currentIdx + 1}/5`;
