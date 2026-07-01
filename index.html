@@ -3045,6 +3045,8 @@ input[type=text].calc-input.incorrect {
       'screen-homo-son': "Exercice : Homophones son / sont",
       'screen-homo-ce': "Exercice : Homophones ce / se",
       'screen-homo-on': "Exercice : Homophones on / ont",
+      'screen-homo-la': "Exercice : Homophones la / là / l'a / l'as",
+      'screen-homo-ces': "Exercice : Homophones ces / ses / c'est / s'est / sais / sait",
       'screen-gram-tri-mots': "Exercice : Tri de mots",
       'screen-conjugaison': "Menu de Conjugaison",
       'screen-conj-present': "Exercice : Présent de l'indicatif",
@@ -3929,6 +3931,20 @@ input[type=text].calc-input.incorrect {
     <button class="back-btn" onclick="showScreen('screen-homophones');renderHomophonesMenu();">← Retour</button>
     <div class="page-title">🔀 on / ont</div>
     <div id="homo-on-body"></div>
+  </div>
+
+  <!-- SCREEN: Homophones la/là/l'a/l'as -->
+  <div id="screen-homo-la" class="screen">
+    <button class="back-btn" onclick="showScreen('screen-homophones');renderHomophonesMenu();">← Retour</button>
+    <div class="page-title">🔀 la / là / l'a / l'as</div>
+    <div id="homo-la-body"></div>
+  </div>
+
+  <!-- SCREEN: Homophones ces/ses/c'est/s'est/sais/sait -->
+  <div id="screen-homo-ces" class="screen">
+    <button class="back-btn" onclick="showScreen('screen-homophones');renderHomophonesMenu();">← Retour</button>
+    <div class="page-title">🔀 ces / ses / c'est / s'est / sais / sait</div>
+    <div id="homo-ces-body"></div>
   </div>
 
   <!-- SCREEN: Grammaire -->
@@ -5170,6 +5186,25 @@ input[type=text].calc-input.incorrect {
         <div class="sub-desc">Associe chaque solide proposé à toutes ses propriétés géométriques · 8 énigmes</div>
       </div>
     </div>
+  </div>
+
+  <!-- SCREEN: Solides - Les angles -->
+  <div id="screen-solides-angles" class="screen">
+    <button class="back-btn" onclick="showScreen('screen-solides');renderSolidesScreen();">← Retour</button>
+    <div class="page-title">📐 Les angles</div>
+    <div class="sub-subjects-grid">
+      <div class="sub-subject-card active-card" onclick="showScreen('screen-angles-reconnaitre')">
+        <div class="sub-icon">🎯</div>
+        <div class="sub-title">Reconnaître les angles</div>
+        <div class="sub-desc">QCM interactif pour identifier la nature d'un angle · 10 questions</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN: Angles Reconnaitre -->
+  <div id="screen-angles-reconnaitre" class="screen">
+    <button class="back-btn" onclick="showScreen('screen-solides-angles')">← Retour</button>
+    <iframe src="angles_reconnaitre.html" style="width:100%;height:calc(100vh - 60px);border:none;border-radius:12px;overflow-y:auto;" allowfullscreen scrolling="yes"></iframe>
   </div>
 
   <!-- SCREEN: Polyèdres Reconnaitre -->
@@ -8494,6 +8529,8 @@ const ACTIVITY_PARENTS = {
   'homo_son': 'ortho_homophones',
   'homo_ce': 'ortho_homophones',
   'homo_on': 'ortho_homophones',
+  'homo_la': 'ortho_homophones',
+  'homo_ces': 'ortho_homophones',
 
   'savoir_ecouter_1': 'francais-savoir_ecouter',
   'savoir_ecouter_2': 'francais-savoir_ecouter',
@@ -11852,6 +11889,8 @@ function renderHomophonesMenu(){
     {id:'homo_son', screen:'screen-homo-son', label:'son / sont', icon:'🔀', desc:'10 phrases aléatoires', fn:'renderHomoSonScreen'},
     {id:'homo_ce', screen:'screen-homo-ce', label:"se / ce / s' / c'", icon:'🔀', desc:'10 phrases aléatoires', fn:'renderHomoCeScreen'},
     {id:'homo_on', screen:'screen-homo-on', label:'on / ont', icon:'🔀', desc:'10 phrases aléatoires', fn:'renderHomoOnScreen'},
+    {id:'homo_la', screen:'screen-homo-la', label:"la / là / l'a / l'as", icon:'🔀', desc:'Synthèse + 10 phrases', fn:'renderHomoLaSynthesis'},
+    {id:'homo_ces', screen:'screen-homo-ces', label:"ces / ses / c'est / s'est / sais / sait", icon:'🔀', desc:'Synthèse + 10 phrases', fn:'renderHomoCesSynthesis'},
   ];
   let html = '';
   items.forEach(t => {
@@ -12648,6 +12687,513 @@ function validerHomoOn(){
       className:CLASSES[state.studentCls]?CLASSES[state.studentCls].name:state.studentCls,
       activity:'homo_on',
       bookTitle:'Homophones — on / ont',
+      score, total, pct,
+      date:new Date().toLocaleDateString('fr-BE'),
+      time:new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})
+    });
+  }
+}
+
+
+// ===== HOMOPHONES la/là/l'a/l'as =====
+const HOMO_LA_BANQUE = [
+  {phrase: "Il a posé ___ valise dans l'entrée.", trous: [{pos:0, correct:'la'}]},
+  {phrase: "Reste ___ et ne bouge pas !", trous: [{pos:0, correct:'là'}]},
+  {phrase: "Cette tarte, mon frère ___ mangée en un clin d'œil.", trous: [{pos:0, correct:'l\'a'}]},
+  {phrase: "Le livre que tu ___ prêté était passionnant.", trous: [{pos:0, correct:'l\'as'}]},
+  {phrase: "Elle adore courir dans ___ cour de récréation.", trous: [{pos:0, correct:'la'}]},
+  {phrase: "C'est ___ que nous nous sommes rencontrés.", trous: [{pos:0, correct:'là'}]},
+  {phrase: "Ce chien est perdu, la police ___ retrouvé dans la forêt.", trous: [{pos:0, correct:'l\'a'}]},
+  {phrase: "Tu ___ échappé belle lors de cette course !", trous: [{pos:0, correct:'l\'as'}]},
+  {phrase: "Le professeur félicite ___ directrice pour son travail.", trous: [{pos:0, correct:'la'}]},
+  {phrase: "Ne traîne pas ___ le soir quand il fait noir.", trous: [{pos:0, correct:'là'}]},
+  {phrase: "Le chat court après la souris et il ___ attrapée.", trous: [{pos:0, correct:'l\'a'}]},
+  {phrase: "Cette chanson, tu ___ chantée toute la journée.", trous: [{pos:0, correct:'l\'as'}]},
+  {phrase: "Regarde ___ magnifique fleur dans le jardin.", trous: [{pos:0, correct:'la'}]},
+  {phrase: "Il fait froid ___ dehors, rentre vite !", trous: [{pos:0, correct:'là'}]},
+  {phrase: "Sa clé est perdue, il ne ___ toujours pas retrouvée.", trous: [{pos:0, correct:'l\'a'}]},
+  {phrase: "La vérité, tu ___ cachée à tes parents.", trous: [{pos:0, correct:'l\'as'}]},
+  {phrase: "J'aime beaucoup ___ couleur de ton nouveau vélo.", trous: [{pos:0, correct:'la'}]},
+  {phrase: "Pose ton sac ___ sur la chaise.", trous: [{pos:0, correct:'là'}]},
+  {phrase: "Son devoir, le maître ___ corrigé hier soir.", trous: [{pos:0, correct:'l\'a'}]},
+  {phrase: "Cette médaille, tu ___ bien méritée.", trous: [{pos:0, correct:'l\'as'}]},
+  {phrase: "Nous irons visiter ___ Belgique cet été.", trous: [{pos:0, correct:'la'}]},
+  {phrase: "Attends-moi ___ près de la fontaine.", trous: [{pos:0, correct:'là'}]},
+  {phrase: "La bille rouge, Sarah ___ glissée dans sa poche.", trous: [{pos:0, correct:'l\'a'}]},
+  {phrase: "La poésie, tu ___ apprise par cœur.", trous: [{pos:0, correct:'l\'as'}]},
+  {phrase: "Le vent souffle sur ___ colline de Waimes.", trous: [{pos:0, correct:'la'}]},
+  {phrase: "Pourquoi es-tu encore ___ à cette heure-ci ?", trous: [{pos:0, correct:'là'}]},
+  {phrase: "Le ballon a filé dans le but, le gardien ___ raté.", trous: [{pos:0, correct:'l\'a'}]},
+  {phrase: "Ce secret, tu ___ promis de le garder.", trous: [{pos:0, correct:'l\'as'}]},
+  {phrase: "Je prends ___ voiture pour aller au travail.", trous: [{pos:0, correct:'la'}]},
+  {phrase: "C'est ___ que se trouve le trésor caché !", trous: [{pos:0, correct:'là'}]},
+  {phrase: "La maîtresse ___ félicitée pour ses progrès.", trous: [{pos:0, correct:'l\'a'}]},
+  {phrase: "Tu ___ échappée de peu !", trous: [{pos:0, correct:'l\'as'}]},
+  {phrase: "Il prépare ___ pâte pour faire des gaufres belges.", trous: [{pos:0, correct:'la'}]},
+  {phrase: "Le chat dort ___ sur le radiateur chaud.", trous: [{pos:0, correct:'là'}]},
+  {phrase: "Cette leçon, le professeur ___ répétée trois fois.", trous: [{pos:0, correct:'l\'a'}]},
+  {phrase: "La clé de la classe, tu ___ perdue ?", trous: [{pos:0, correct:'l\'as'}]},
+  {phrase: "Le jardinier arrose ___ pelouse tous les soirs.", trous: [{pos:0, correct:'la'}]},
+  {phrase: "Ne reste pas ___ sans rien faire.", trous: [{pos:0, correct:'là'}]},
+  {phrase: "Son amie ___ appelée pour aller jouer dehors.", trous: [{pos:0, correct:'l\'a'}]},
+  {phrase: "La boîte de chocolats, tu ___ finie en cachette ?", trous: [{pos:0, correct:'l\'as'}]},
+  {phrase: "Il a fermé ___ fenêtre à cause du bruit.", trous: [{pos:0, correct:'la'}]},
+  {phrase: "Regarde ___ -bas, il y a un grand oiseau.", trous: [{pos:0, correct:'là'}]},
+  {phrase: "Le film était si triste qu'elle ___ regardé en pleurant.", trous: [{pos:0, correct:'l\'a'}]},
+  {phrase: "Cette superbe photo, tu ___ prise avec ton téléphone ?", trous: [{pos:0, correct:'l\'as'}]},
+  {phrase: "Elle a allumé ___ lumière pour lire son livre.", trous: [{pos:0, correct:'la'}]},
+  {phrase: "Qui est ___ à frapper à la porte ?", trous: [{pos:0, correct:'là'}]},
+  {phrase: "Sa nouvelle voiture, il ___ achetée à Liège.", trous: [{pos:0, correct:'l\'a'}]},
+  {phrase: "Tu ___ méritée cette belle récompense !", trous: [{pos:0, correct:'l\'as'}]},
+  {phrase: "Le boulanger prépare ___ cuisson du pain.", trous: [{pos:0, correct:'la'}]},
+  {phrase: "Les enfants adorent jouer ___ près du grand chêne.", trous: [{pos:0, correct:'là'}]}
+];
+
+let homoLaState = {phrases:[], selections:{}, submitted:false, total:0};
+
+function renderHomoLaSynthesis(){
+  const body = document.getElementById('homo-la-body');
+  if(!body) return;
+
+  let html = `
+    <div class="card" style="margin-bottom:1.5rem;padding:1.5rem;background:var(--surface);border:2px solid var(--border);border-radius:var(--r);box-shadow:4px 4px 0px var(--border);">
+      <h3 style="margin-top:0;color:var(--purple);font-family:'Nunito',sans-serif;font-weight:800;font-size:22px;border-bottom:2px solid var(--purple-light);padding-bottom:0.6rem;display:flex;align-items:center;gap:10px;">
+        <span>💡</span> Rappel : la / là / l'a / l'as
+      </h3>
+      <p style="font-size:14px;color:var(--muted);margin-bottom:1.5rem;">Prends le temps de lire ce rappel de cours avant de commencer l'exercice pour bien comprendre les différences !</p>
+      
+      <div style="display:flex;flex-direction:column;gap:1.2rem;">
+        
+        <!-- la -->
+        <div style="background:var(--surface);border:2px solid var(--border);border-radius:var(--rsm);padding:1.2rem;box-shadow:3px 3px 0px var(--border);transition:transform 0.2s;">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:0.6rem;flex-wrap:wrap;">
+            <span style="background:var(--purple-light);color:var(--purple);padding:4px 12px;border-radius:6px;font-weight:800;font-size:18px;border:2px solid var(--purple);">la</span>
+            <strong style="color:var(--text);font-size:15px;">Déterminant (article) ou Pronom personnel</strong>
+          </div>
+          <ul style="margin:0;padding-left:1.2rem;font-size:14px;line-height:1.6;color:var(--text);">
+            <li><strong>Rôle :</strong> Se place devant un nom féminin <em>(article)</em> ou devant un verbe <em>(pronom)</em>.</li>
+            <li><strong>Exemples :</strong> <em>La</em> maîtresse donne <em>la</em> clé. / Je <em>la</em> regarde travailler.</li>
+            <li style="margin-top:6px;color:var(--purple);list-style-type:'🔑 ';"><strong>Astuce :</strong> On peut le remplacer par <strong>une</strong> (pour l'article) ou par <strong>le</strong> ou <strong>lui</strong> (pour le pronom). <br><em>(Une maîtresse donne une clé. / Je le regarde travailler.)</em></li>
+          </ul>
+        </div>
+
+        <!-- là -->
+        <div style="background:var(--surface);border:2px solid var(--border);border-radius:var(--rsm);padding:1.2rem;box-shadow:3px 3px 0px var(--border);transition:transform 0.2s;">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:0.6rem;flex-wrap:wrap;">
+            <span style="background:var(--purple-light);color:var(--purple);padding:4px 12px;border-radius:6px;font-weight:800;font-size:18px;border:2px solid var(--purple);">là</span>
+            <strong style="color:var(--text);font-size:15px;">Adverbe de lieu ou de temps</strong>
+          </div>
+          <ul style="margin:0;padding-left:1.2rem;font-size:14px;line-height:1.6;color:var(--text);">
+            <li><strong>Rôle :</strong> Indique un endroit (lieu) ou un moment précis (temps).</li>
+            <li><strong>Exemples :</strong> Reste <em>là</em> et attends-moi. / Ce jour-<em>là</em>, tout s'est bien passé. / Regarde <em>là</em>-bas.</li>
+            <li style="margin-top:6px;color:var(--purple);list-style-type:'🔑 ';"><strong>Astuce :</strong> On peut presque toujours le remplacer par <strong>ici</strong>. <br><em>(Reste ici et attends-moi.)</em></li>
+          </ul>
+        </div>
+
+        <!-- l'a -->
+        <div style="background:var(--surface);border:2px solid var(--border);border-radius:var(--rsm);padding:1.2rem;box-shadow:3px 3px 0px var(--border);transition:transform 0.2s;">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:0.6rem;flex-wrap:wrap;">
+            <span style="background:var(--purple-light);color:var(--purple);padding:4px 12px;border-radius:6px;font-weight:800;font-size:18px;border:2px solid var(--purple);">l'a</span>
+            <strong style="color:var(--text);font-size:15px;">Pronom l' + verbe avoir (3e personne du singulier)</strong>
+          </div>
+          <ul style="margin:0;padding-left:1.2rem;font-size:14px;line-height:1.6;color:var(--text);">
+            <li><strong>Rôle :</strong> Utilisé avec les pronoms <em>il / elle / on</em> ou un groupe nominal singulier.</li>
+            <li><strong>Exemples :</strong> Léo <em>l'a</em> perdu dans la forêt. / Elle <em>l'a</em> déjà mangée.</li>
+            <li style="margin-top:6px;color:var(--purple);list-style-type:'🔑 ';"><strong>Astuce :</strong> On peut le remplacer par <strong>l'avait</strong> (imparfait). <br><em>(Léo l'avait perdu... / Elle l'avait déjà mangée.)</em></li>
+          </ul>
+        </div>
+
+        <!-- l'as -->
+        <div style="background:var(--surface);border:2px solid var(--border);border-radius:var(--rsm);padding:1.2rem;box-shadow:3px 3px 0px var(--border);transition:transform 0.2s;">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:0.6rem;flex-wrap:wrap;">
+            <span style="background:var(--purple-light);color:var(--purple);padding:4px 12px;border-radius:6px;font-weight:800;font-size:18px;border:2px solid var(--purple);">l'as</span>
+            <strong style="color:var(--text);font-size:15px;">Pronom l' + verbe avoir (2e personne du singulier)</strong>
+          </div>
+          <ul style="margin:0;padding-left:1.2rem;font-size:14px;line-height:1.6;color:var(--text);">
+            <li><strong>Rôle :</strong> S'utilise uniquement avec le pronom de la 2e personne <strong>tu</strong>.</li>
+            <li><strong>Exemples :</strong> Cette poésie, tu <em>l'as</em> bien apprise. / Tu <em>l'as</em> vu hier.</li>
+            <li style="margin-top:6px;color:var(--purple);list-style-type:'🔑 ';"><strong>Astuce :</strong> On peut le remplacer par <strong>l'avais</strong> (imparfait). <br><em>(Tu l'avais bien apprise.)</em></li>
+          </ul>
+        </div>
+
+      </div>
+      
+      <button class="btn" onclick="renderHomoLaScreen()" style="width:100%;margin-top:2rem;font-size:16px;padding:0.8rem 1.5rem;">🚀 Démarrer l'exercice</button>
+    </div>
+  `;
+
+  body.innerHTML = html;
+}
+
+function renderHomoLaScreen(){
+  const body = document.getElementById('homo-la-body');
+  if(!body) return;
+
+  const shuffled = shuffle([...HOMO_LA_BANQUE]);
+  let total = 0;
+  const selected = [];
+  for(let p of shuffled){
+    const pts = p.trous.length;
+    if(total + pts <= 10){
+      selected.push(p);
+      total += pts;
+    }
+    if(total === 10) break;
+  }
+
+  homoLaState = {phrases: selected, selections:{}, submitted:false, total};
+
+  let html = `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+      <button class="btn btn-secondary" onclick="renderHomoLaSynthesis()" style="padding:4px 10px;font-size:13px;">💡 Voir le rappel de cours</button>
+      <span style="font-size:13px;font-weight:700;color:var(--purple)">Exercice : 10 phrases</span>
+    </div>
+    <div class="card" style="margin-bottom:1rem;padding:0.8rem 1rem;background:var(--purple-light);border:1px solid var(--purple);">
+      <p style="margin:0;font-size:13px;color:var(--purple);font-weight:700">Choisis le bon homophone dans chaque menu déroulant.</p>
+    </div>
+  `;
+
+  html += `<div class="homophones-grid">`;
+
+  selected.forEach((p, pi) => {
+    const parts = p.phrase.split('___');
+    let phraseHtml = '<p style="font-size:16px;line-height:2;margin-bottom:0;">';
+    parts.forEach((part, i) => {
+      phraseHtml += part;
+      if(i < p.trous.length){
+        const tid = `homo-la-${pi}-${i}`;
+        phraseHtml += `<select id="${tid}" onchange="homoLaSelect('${tid}',${pi},${i})"
+          style="font-size:15px;font-weight:700;color:var(--purple);border:2px solid var(--purple);border-radius:6px;padding:2px 6px;background:var(--purple-light);cursor:pointer;">
+          <option value="">…</option>
+          <option value="la">la</option>
+          <option value="là">là</option>
+          <option value="l'a">l'a</option>
+          <option value="l'as">l'as</option>
+        </select>`;
+      }
+    });
+    phraseHtml += '</p>';
+    html += `<div class="lr-question" id="homo-la-q-${pi}">${phraseHtml}</div>`;
+  });
+
+  html += `</div>`;
+
+  html += `<button class="btn" onclick="validerHomoLa()" style="width:100%;margin-top:1rem">✅ Valider</button>
+    <div id="homo-la-score" style="display:none;margin-top:1rem" class="geo-score-panel"></div>`;
+
+  body.innerHTML = html;
+  homoLaState.selections = {};
+}
+
+function homoLaSelect(tid, pi, ti){
+  const val = document.getElementById(tid).value;
+  if(!homoLaState.selections[pi]) homoLaState.selections[pi] = {};
+  homoLaState.selections[pi][ti] = val;
+}
+
+function validerHomoLa(){
+  let score = 0;
+  const total = homoLaState.total;
+
+  homoLaState.phrases.forEach((p, pi) => {
+    p.trous.forEach((t, ti) => {
+      const tid = `homo-la-${pi}-${ti}`;
+      const sel = document.getElementById(tid);
+      const val = (homoLaState.selections[pi] && homoLaState.selections[pi][ti]) || '';
+      const ok = val === t.correct;
+      if(ok){
+        score++;
+        sel.style.background = '#d4f5e9';
+        sel.style.borderColor = 'var(--green)';
+        sel.style.color = 'var(--green)';
+      } else {
+        sel.style.background = '#fde8e8';
+        sel.style.borderColor = 'var(--red)';
+        sel.style.color = 'var(--red)';
+      }
+      sel.disabled = true;
+    });
+  });
+
+  const pct = Math.round(score/total*100);
+  const color = pct===100?'var(--green)':pct>=70?'var(--amber)':'var(--red)';
+  const panel = document.getElementById('homo-la-score');
+  panel.style.display = 'block';
+  panel.innerHTML = `
+    <div style="font-size:48px;margin-bottom:0.5rem">${pct===100?'🎉':pct>=70?'👍':'💪'}</div>
+    <div style="font-family:'Nunito',sans-serif;font-weight:800;font-size:32px;color:${color}">${score}/${total}</div>
+    <div style="font-size:16px;color:${color};font-weight:700;margin-bottom:1rem">${pct}%</div>
+    <button class="btn" onclick="renderHomoLaScreen()" style="margin-top:0.5rem">🔄 Recommencer</button>
+  `;
+  panel.scrollIntoView({behavior:'smooth'});
+
+  if(state.student){
+    saveResult({
+      student:state.student, cls:state.studentCls,
+      className:CLASSES[state.studentCls]?CLASSES[state.studentCls].name:state.studentCls,
+      activity:'homo_la',
+      bookTitle:'Homophones — la / là / l\'a / l\'as',
+      score, total, pct,
+      date:new Date().toLocaleDateString('fr-BE'),
+      time:new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})
+    });
+  }
+}
+
+
+// ===== HOMOPHONES ces/ses/c'est/s'est/sais/sait =====
+const HOMO_CES_BANQUE = [
+  {phrase: "Le jardinier ramasse ___ feuilles mortes.", trous: [{pos:0, correct:'ces'}]},
+  {phrase: "L'enfant a rangé ___ jouets dans son coffre.", trous: [{pos:0, correct:'ses'}]},
+  {phrase: "Je pense que ___ une excellente idée d'aller à la piscine.", trous: [{pos:0, correct:'c\'est'}]},
+  {phrase: "Le renard ___ caché derrière un grand buisson.", trous: [{pos:0, correct:'s\'est'}]},
+  {phrase: "Je ___ bien que tu viendras demain.", trous: [{pos:0, correct:'sais'}]},
+  {phrase: "Elle ___ faire de la bicyclette sans les petites roues.", trous: [{pos:0, correct:'sait'}]},
+  {phrase: "Regarde ___ jolies fleurs dans le parterre.", trous: [{pos:0, correct:'ces'}]},
+  {phrase: "Sarah promène ___ chiens tous les après-midis.", trous: [{pos:0, correct:'ses'}]},
+  {phrase: "Il paraît que ___ la fête nationale aujourd'hui.", trous: [{pos:0, correct:'c\'est'}]},
+  {phrase: "La fillette ___ tordue la cheville en courant.", trous: [{pos:0, correct:'s\'est'}]},
+  {phrase: "Tu ___ jouer du piano depuis longtemps ?", trous: [{pos:0, correct:'sais'}]},
+  {phrase: "Mon grand-père ___ raconter de belles histoires.", trous: [{pos:0, correct:'sait'}]},
+  {phrase: "Je trouve que ___ arbres ont perdu leurs feuilles très tôt.", trous: [{pos:0, correct:'ces'}]},
+  {phrase: "Il a prêté ___ crayons de couleur à son copain.", trous: [{pos:0, correct:'ses'}]},
+  {phrase: "Dis-moi si ___ toi qui as fait ce dessin.", trous: [{pos:0, correct:'c\'est'}]},
+  {phrase: "Le vent ___ levé brusquement en fin de journée.", trous: [{pos:0, correct:'s\'est'}]},
+  {phrase: "Je ne ___ pas où j'ai posé mes lunettes.", trous: [{pos:0, correct:'sais'}]},
+  {phrase: "Personne ne ___ comment résoudre cette énigme.", trous: [{pos:0, correct:'sait'}]},
+  {phrase: "Le directeur dit que ___ élèves travaillent très bien en classe.", trous: [{pos:0, correct:'ces'}]},
+  {phrase: "Elle a perdu ___ clés de maison ce matin.", trous: [{pos:0, correct:'ses'}]},
+  {phrase: "Je sais que ___ difficile mais tu vas y arriver.", trous: [{pos:0, correct:'c\'est'}]},
+  {phrase: "Le skieur ___ élancé sur la piste enneigée.", trous: [{pos:0, correct:'s\'est'}]},
+  {phrase: "Tu ___ que nous partons en vacances bientôt ?", trous: [{pos:0, correct:'sais'}]},
+  {phrase: "Il ___ lire depuis qu'il a six ans.", trous: [{pos:0, correct:'sait'}]},
+  {phrase: "Je trouve que ___ biscuits au chocolat sont délicieux.", trous: [{pos:0, correct:'ces'}]},
+  {phrase: "Marc a mis ___ chaussures pour sortir.", trous: [{pos:0, correct:'ses'}]},
+  {phrase: "C'est vrai que ___ le plus beau jour de l'année.", trous: [{pos:0, correct:'c\'est'}]},
+  {phrase: "Le soleil ___ couché derrière la colline.", trous: [{pos:0, correct:'s\'est'}]},
+  {phrase: "Je ___ comment préparer des gaufres de Liège.", trous: [{pos:0, correct:'sais'}]},
+  {phrase: "On ___ bien que la Terre tourne autour du Soleil.", trous: [{pos:0, correct:'sait'}]},
+  {phrase: "Les guides disent que ___ monuments historiques datent du Moyen Âge.", trous: [{pos:0, correct:'ces'}]},
+  {phrase: "Le chat lèche ___ pattes après avoir mangé.", trous: [{pos:0, correct:'ses'}]},
+  {phrase: "Est-ce que ___ ton vélo garé là-bas ?", trous: [{pos:0, correct:'c\'est'}]},
+  {phrase: "La maîtresse ___ installée à son bureau.", trous: [{pos:0, correct:'s\'est'}]},
+  {phrase: "Tu ___ que tu es mon meilleur ami ?", trous: [{pos:0, correct:'sais'}]},
+  {phrase: "Mon frère ___ réparer un pneu crevé.", trous: [{pos:0, correct:'sait'}]},
+  {phrase: "Admire ___ magnifiques montagnes sous la neige !", trous: [{pos:0, correct:'ces'}]},
+  {phrase: "Il range ___ livres dans la bibliothèque.", trous: [{pos:0, correct:'ses'}]},
+  {phrase: "Je trouve que ___ très agréable de se promener ici.", trous: [{pos:0, correct:'c\'est'}]},
+  {phrase: "Le chien ___ couché au pied de son maître.", trous: [{pos:0, correct:'s\'est'}]},
+  {phrase: "Je ne ___ plus à quelle heure commence le film.", trous: [{pos:0, correct:'sais'}]},
+  {phrase: "Chaque élève ___ qu'il doit écouter attentivement.", trous: [{pos:0, correct:'sait'}]},
+  {phrase: "Prends ___ papiers et range-les dans ton sac.", trous: [{pos:0, correct:'ces'}]},
+  {phrase: "Elle soigne ___ plantes vertes avec attention.", trous: [{pos:0, correct:'ses'}]},
+  {phrase: "On dit que ___ bon pour la santé de manger des fruits.", trous: [{pos:0, correct:'c\'est'}]},
+  {phrase: "Le navire ___ éloigné du port lentement.", trous: [{pos:0, correct:'s\'est'}]},
+  {phrase: "Tu ___ où habite le maître d'école ?", trous: [{pos:0, correct:'sais'}]},
+  {phrase: "Elle ___ chanter comme un oiseau.", trous: [{pos:0, correct:'sait'}]},
+  {phrase: "Je pense que ___ crayons écrivent très bien.", trous: [{pos:0, correct:'ces'}]},
+  {phrase: "L'oiseau bat des ailes pour nourrir ___ petits.", trous: [{pos:0, correct:'ses'}]}
+];
+
+let homoCesState = {phrases:[], selections:{}, submitted:false, total:0};
+
+function renderHomoCesSynthesis(){
+  const body = document.getElementById('homo-ces-body');
+  if(!body) return;
+
+  let html = `
+    <div class="card" style="margin-bottom:1.5rem;padding:1.5rem;background:var(--surface);border:2px solid var(--border);border-radius:var(--r);box-shadow:4px 4px 0px var(--border);">
+      <h3 style="margin-top:0;color:var(--purple);font-family:'Nunito',sans-serif;font-weight:800;font-size:22px;border-bottom:2px solid var(--purple-light);padding-bottom:0.6rem;display:flex;align-items:center;gap:10px;">
+        <span>💡</span> Rappel : ces / ses / c'est / s'est / sais / sait
+      </h3>
+      <p style="font-size:14px;color:var(--muted);margin-bottom:1.5rem;">Prends le temps de lire ce rappel de cours avant de commencer l'exercice !</p>
+      
+      <div style="display:flex;flex-direction:column;gap:1.2rem;">
+        
+        <!-- ces -->
+        <div style="background:var(--surface);border:2px solid var(--border);border-radius:var(--rsm);padding:1.2rem;box-shadow:3px 3px 0px var(--border);">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:0.6rem;flex-wrap:wrap;">
+            <span style="background:var(--purple-light);color:var(--purple);padding:4px 12px;border-radius:6px;font-weight:800;font-size:18px;border:2px solid var(--purple);">ces</span>
+            <strong style="color:var(--text);font-size:15px;">Déterminant démonstratif (pluriel)</strong>
+          </div>
+          <ul style="margin:0;padding-left:1.2rem;font-size:14px;line-height:1.6;color:var(--text);">
+            <li><strong>Rôle :</strong> Sert à montrer des objets ou des personnes. C'est le pluriel de <em>ce / cet / cette</em>.</li>
+            <li><strong>Exemple :</strong> Regarde <em>ces</em> oiseaux dans le ciel.</li>
+            <li style="margin-top:6px;color:var(--purple);list-style-type:'🔑 ';"><strong>Astuce :</strong> On peut le remplacer par <strong>ceux-là</strong>, ou le mettre au singulier : <strong>ce / cet / cette</strong>. <br><em>(Regarde cet oiseau dans le ciel.)</em></li>
+          </ul>
+        </div>
+
+        <!-- ses -->
+        <div style="background:var(--surface);border:2px solid var(--border);border-radius:var(--rsm);padding:1.2rem;box-shadow:3px 3px 0px var(--border);">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:0.6rem;flex-wrap:wrap;">
+            <span style="background:var(--purple-light);color:var(--purple);padding:4px 12px;border-radius:6px;font-weight:800;font-size:18px;border:2px solid var(--purple);">ses</span>
+            <strong style="color:var(--text);font-size:15px;">Déterminant possessif (pluriel)</strong>
+          </div>
+          <ul style="margin:0;padding-left:1.2rem;font-size:14px;line-height:1.6;color:var(--text);">
+            <li><strong>Rôle :</strong> Indique la possession (les siens / les siennes). C'est le pluriel de <em>son / sa</em>.</li>
+            <li><strong>Exemple :</strong> L'enfant range <em>ses</em> jouets.</li>
+            <li style="margin-top:6px;color:var(--purple);list-style-type:'🔑 ';"><strong>Astuce :</strong> On peut le remplacer par <strong>les siens</strong>, ou le mettre au singulier : <strong>son / sa</strong>. <br><em>(L'enfant range son jouet.)</em></li>
+          </ul>
+        </div>
+
+        <!-- c'est -->
+        <div style="background:var(--surface);border:2px solid var(--border);border-radius:var(--rsm);padding:1.2rem;box-shadow:3px 3px 0px var(--border);">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:0.6rem;flex-wrap:wrap;">
+            <span style="background:var(--purple-light);color:var(--purple);padding:4px 12px;border-radius:6px;font-weight:800;font-size:18px;border:2px solid var(--purple);">c'est</span>
+            <strong style="color:var(--text);font-size:15px;">Pronom démonstratif c' + verbe être</strong>
+          </div>
+          <ul style="margin:0;padding-left:1.2rem;font-size:14px;line-height:1.6;color:var(--text);">
+            <li><strong>Rôle :</strong> Présente quelque chose ou quelqu'un.</li>
+            <li><strong>Exemple :</strong> Je trouve que <em>c'est</em> une excellente idée.</li>
+            <li style="margin-top:6px;color:var(--purple);list-style-type:'🔑 ';"><strong>Astuce :</strong> On peut le remplacer par <strong>cela est</strong> ou par <strong>c'était</strong> (imparfait). <br><em>(Je trouve que c'était une excellente idée.)</em></li>
+          </ul>
+        </div>
+
+        <!-- s'est -->
+        <div style="background:var(--surface);border:2px solid var(--border);border-radius:var(--rsm);padding:1.2rem;box-shadow:3px 3px 0px var(--border);">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:0.6rem;flex-wrap:wrap;">
+            <span style="background:var(--purple-light);color:var(--purple);padding:4px 12px;border-radius:6px;font-weight:800;font-size:18px;border:2px solid var(--purple);">s'est</span>
+            <strong style="color:var(--text);font-size:15px;">Pronom réfléchi s' + verbe être</strong>
+          </div>
+          <ul style="margin:0;padding-left:1.2rem;font-size:14px;line-height:1.6;color:var(--text);">
+            <li><strong>Rôle :</strong> S'utilise avec un verbe pronominal (à la 3e personne) et est suivi d'un participe passé.</li>
+            <li><strong>Exemple :</strong> Le chat <em>s'est</em> caché sous la table.</li>
+            <li style="margin-top:6px;color:var(--purple);list-style-type:'🔑 ';"><strong>Astuce :</strong> On peut le remplacer par <strong>s'était</strong> (imparfait), ou changer de personne : <em>je me suis caché</em>. <br><em>(Le chat s'était caché sous la table.)</em></li>
+          </ul>
+        </div>
+
+        <!-- sais / sait -->
+        <div style="background:var(--surface);border:2px solid var(--border);border-radius:var(--rsm);padding:1.2rem;box-shadow:3px 3px 0px var(--border);">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:0.6rem;flex-wrap:wrap;">
+            <span style="background:var(--purple-light);color:var(--purple);padding:4px 12px;border-radius:6px;font-weight:800;font-size:18px;border:2px solid var(--purple);">sais / sait</span>
+            <strong style="color:var(--text);font-size:15px;">Verbe savoir au présent</strong>
+          </div>
+          <ul style="margin:0;padding-left:1.2rem;font-size:14px;line-height:1.6;color:var(--text);">
+            <li><strong>Rôle :</strong> Formes conjuguées du verbe savoir. <br>- <em>sais</em> s'écrit avec <strong>je</strong> ou <strong>tu</strong>.<br>- <em>sait</em> s'écrit avec <strong>il / elle / on</strong> ou un sujet singulier.</li>
+            <li><strong>Exemples :</strong> Tu <em>sais</em> chanter. / Il <em>sait</em> réparer ce vélo.</li>
+            <li style="margin-top:6px;color:var(--purple);list-style-type:'🔑 ';"><strong>Astuce :</strong> On peut les remplacer par l'imparfait : <strong>savais</strong> (pour <em>sais</em>) ou <strong>savait</strong> (pour <em>sait</em>). <br><em>(Tu savais chanter. / Il savait réparer ce vélo.)</em></li>
+          </ul>
+        </div>
+
+      </div>
+      
+      <button class="btn" onclick="renderHomoCesScreen()" style="width:100%;margin-top:2rem;font-size:16px;padding:0.8rem 1.5rem;">🚀 Démarrer l'exercice</button>
+    </div>
+  `;
+
+  body.innerHTML = html;
+}
+
+function renderHomoCesScreen(){
+  const body = document.getElementById('homo-ces-body');
+  if(!body) return;
+
+  const shuffled = shuffle([...HOMO_CES_BANQUE]);
+  let total = 0;
+  const selected = [];
+  for(let p of shuffled){
+    const pts = p.trous.length;
+    if(total + pts <= 10){
+      selected.push(p);
+      total += pts;
+    }
+    if(total === 10) break;
+  }
+
+  homoCesState = {phrases: selected, selections:{}, submitted:false, total};
+
+  let html = `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+      <button class="btn btn-secondary" onclick="renderHomoCesSynthesis()" style="padding:4px 10px;font-size:13px;">💡 Voir le rappel de cours</button>
+      <span style="font-size:13px;font-weight:700;color:var(--purple)">Exercice : 10 phrases</span>
+    </div>
+    <div class="card" style="margin-bottom:1rem;padding:0.8rem 1rem;background:var(--purple-light);border:1px solid var(--purple);">
+      <p style="margin:0;font-size:13px;color:var(--purple);font-weight:700">Choisis le bon homophone dans chaque menu déroulant.</p>
+    </div>
+  `;
+
+  html += `<div class="homophones-grid">`;
+
+  selected.forEach((p, pi) => {
+    const parts = p.phrase.split('___');
+    let phraseHtml = '<p style="font-size:16px;line-height:2;margin-bottom:0;">';
+    parts.forEach((part, i) => {
+      phraseHtml += part;
+      if(i < p.trous.length){
+        const tid = `homo-ces-${pi}-${i}`;
+        phraseHtml += `<select id="${tid}" onchange="homoCesSelect('${tid}',${pi},${i})"
+          style="font-size:15px;font-weight:700;color:var(--purple);border:2px solid var(--purple);border-radius:6px;padding:2px 6px;background:var(--purple-light);cursor:pointer;">
+          <option value="">…</option>
+          <option value="ces">ces</option>
+          <option value="ses">ses</option>
+          <option value="c'est">c'est</option>
+          <option value="s'est">s'est</option>
+          <option value="sais">sais</option>
+          <option value="sait">sait</option>
+        </select>`;
+      }
+    });
+    phraseHtml += '</p>';
+    html += `<div class="lr-question" id="homo-ces-q-${pi}">${phraseHtml}</div>`;
+  });
+
+  html += `</div>`;
+
+  html += `<button class="btn" onclick="validerHomoCes()" style="width:100%;margin-top:1rem">✅ Valider</button>
+    <div id="homo-ces-score" style="display:none;margin-top:1rem" class="geo-score-panel"></div>`;
+
+  body.innerHTML = html;
+  homoCesState.selections = {};
+}
+
+function homoCesSelect(tid, pi, ti){
+  const val = document.getElementById(tid).value;
+  if(!homoCesState.selections[pi]) homoCesState.selections[pi] = {};
+  homoCesState.selections[pi][ti] = val;
+}
+
+function validerHomoCes(){
+  let score = 0;
+  const total = homoCesState.total;
+
+  homoCesState.phrases.forEach((p, pi) => {
+    p.trous.forEach((t, ti) => {
+      const tid = `homo-ces-${pi}-${ti}`;
+      const sel = document.getElementById(tid);
+      const val = (homoCesState.selections[pi] && homoCesState.selections[pi][ti]) || '';
+      const ok = val === t.correct;
+      if(ok){
+        score++;
+        sel.style.background = '#d4f5e9';
+        sel.style.borderColor = 'var(--green)';
+        sel.style.color = 'var(--green)';
+      } else {
+        sel.style.background = '#fde8e8';
+        sel.style.borderColor = 'var(--red)';
+        sel.style.color = 'var(--red)';
+      }
+      sel.disabled = true;
+    });
+  });
+
+  const pct = Math.round(score/total*100);
+  const color = pct===100?'var(--green)':pct>=70?'var(--amber)':'var(--red)';
+  const panel = document.getElementById('homo-ces-score');
+  panel.style.display = 'block';
+  panel.innerHTML = `
+    <div style="font-size:48px;margin-bottom:0.5rem">${pct===100?'🎉':pct>=70?'👍':'💪'}</div>
+    <div style="font-family:'Nunito',sans-serif;font-weight:800;font-size:32px;color:${color}">${score}/${total}</div>
+    <div style="font-size:16px;color:${color};font-weight:700;margin-bottom:1rem">${pct}%</div>
+    <button class="btn" onclick="renderHomoCesScreen()" style="margin-top:0.5rem">🔄 Recommencer</button>
+  `;
+  panel.scrollIntoView({behavior:'smooth'});
+
+  if(state.student){
+    saveResult({
+      student:state.student, cls:state.studentCls,
+      className:CLASSES[state.studentCls]?CLASSES[state.studentCls].name:state.studentCls,
+      activity:'homo_ces',
+      bookTitle:'Homophones — ces / ses / c\'est / s\'est / sais / sait',
       score, total, pct,
       date:new Date().toLocaleDateString('fr-BE'),
       time:new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})
@@ -25341,6 +25887,7 @@ const SOLIDES_ITEMS = [
   {id:'solide_triangles', screen:'screen-solides-triangles', label:'Les triangles', icon:'<img src="assets/logos/solide_triangles.png" class="w-full h-full object-contain" />', desc:'Scalène, isocèle, équilatéral, rectangle…'},
   {id:'solide_quadrilateres', screen:'screen-solides-quadrilateres', label:'Les quadrilatères', icon:'<img src="assets/logos/solide_quadrilateres.png" class="w-full h-full object-contain" />', desc:'Carré, rectangle, losange, parallélogramme, trapèze…', fn:'renderQuadrilateresMenu'},
   {id:'solide_polyedres', screen:'screen-solides-polyedres', label:'Les polyèdres', icon:'<img src="assets/logos/solide_polyedres.png" class="w-full h-full object-contain" />', desc:'Cube, parallélépipède rectangle, prisme, pyramide…'},
+  {id:'solide_angles', screen:'screen-solides-angles', label:'Les angles', icon:'📐', desc:'Mesurer, tracer et classifier les angles'},
   {id:'solide_symetrie', screen:'screen-solides-symetrie', label:'Les axes de symétrie', icon:'<img src="assets/logos/solide_symetrie.png" class="w-full h-full object-contain" />', desc:"Tracer le symétrique d'une figure sur quadrillage ou pointillés"},
   {id:'solide_vocabulaire', screen:'screen-solides-vocabulaire', label:'Le vocabulaire', icon:'📖', desc:'Vocabulaire géométrique : côtés, sommets, angles, faces, arêtes…'},
 ];
