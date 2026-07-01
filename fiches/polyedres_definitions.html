@@ -1,0 +1,1160 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Les polyèdres - Qui suis-je ?</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --paper: #f8fafc;
+    --ink: #0f172a;
+    --muted: #64748b;
+    --accent: #2563eb;
+    --accent-light: #eff6ff;
+    --accent-hover: #1d4ed8;
+    --success: #16a34a;
+    --success-light: #f0fdf4;
+    --error: #dc2626;
+    --error-light: #fef2f2;
+    --border: #e2e8f0;
+    --card: #ffffff;
+    --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    padding: 1.5rem;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .container {
+    max-width: 640px;
+    margin: 0 auto;
+  }
+
+  /* Info/Progress Card */
+  .info-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: var(--shadow);
+  }
+  .info-card p {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 15px;
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .dots {
+    display: flex;
+    gap: 6px;
+  }
+  .dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #e2e8f0;
+    border: 1px solid #cbd5e1;
+    transition: all 0.3s ease;
+  }
+  .dot.current {
+    background: var(--accent);
+    border-color: var(--accent-hover);
+    transform: scale(1.2);
+  }
+  .dot.correct {
+    background: var(--success);
+    border-color: var(--success);
+  }
+  .dot.incorrect {
+    background: var(--error);
+    border-color: var(--error);
+  }
+
+  /* Visual 3D mystery card */
+  .visual-card {
+    background: var(--card);
+    border: 2px solid var(--border);
+    border-radius: 20px;
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--shadow);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .canvas-container {
+    width: 100%;
+    height: 220px;
+    position: relative;
+    cursor: grab;
+  }
+  .canvas-container:active {
+    cursor: grabbing;
+  }
+  canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  .drag-hint {
+    position: absolute;
+    bottom: 8px;
+    font-size: 11px;
+    color: var(--muted);
+    background: rgba(255, 255, 255, 0.8);
+    padding: 2px 8px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .classification-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+  }
+  .badge-poly {
+    background: #eff6ff;
+    color: #2563eb;
+    border: 1px solid #bfdbfe;
+  }
+  .badge-nonpoly {
+    background: #fffbeb;
+    color: #d97706;
+    border: 1px solid #fde68a;
+  }
+
+  /* Riddle Box */
+  .riddle-card {
+    background: var(--card);
+    border: 2px solid var(--border);
+    border-radius: 20px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--shadow);
+  }
+
+  .riddle-title {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 1.4rem;
+    color: var(--accent);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .clues-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 1.25rem;
+  }
+
+  .clue-item {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 10px 14px;
+    font-size: 14.5px;
+    line-height: 1.4;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .clue-item.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .clue-icon {
+    font-size: 1.15rem;
+    flex-shrink: 0;
+  }
+
+  .clue-actions {
+    display: flex;
+    justify-content: center;
+  }
+  .btn-clue {
+    background: #f1f5f9;
+    color: #475569;
+    border: 1px solid #cbd5e1;
+    font-weight: 700;
+    font-size: 13px;
+    padding: 8px 16px;
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.15s ease;
+  }
+  .btn-clue:hover:not(:disabled) {
+    background: #e2e8f0;
+    color: #1e293b;
+  }
+  .btn-clue:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  /* Choices Grid */
+  .choices-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 1.5rem;
+  }
+  @media(max-width: 480px) {
+    .choices-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .btn-choice {
+    background: var(--card);
+    border: 2px solid var(--border);
+    border-radius: 14px;
+    padding: 14px;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--ink);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    text-align: center;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 52px;
+  }
+  .btn-choice:hover:not(.disabled) {
+    border-color: var(--accent);
+    background: var(--accent-light);
+    color: var(--accent);
+    transform: translateY(-2px);
+  }
+  .btn-choice:active:not(.disabled) {
+    transform: translateY(0);
+  }
+  .btn-choice.correct {
+    border-color: var(--success) !important;
+    background: var(--success-light) !important;
+    color: var(--success) !important;
+  }
+  .btn-choice.incorrect {
+    border-color: var(--error) !important;
+    background: var(--error-light) !important;
+    color: var(--error) !important;
+    opacity: 0.8;
+  }
+  .btn-choice.disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+
+  /* Feedback box */
+  .feedback-box {
+    border-radius: 16px;
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+    display: none;
+    animation: slideUp 0.4s ease-out;
+  }
+  .feedback-success {
+    background: var(--success-light);
+    border: 2px solid var(--success);
+    color: #15803d;
+  }
+  .feedback-success h4 {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 1.15rem;
+    margin-bottom: 6px;
+  }
+  .feedback-success p {
+    font-size: 14px;
+    line-height: 1.4;
+  }
+
+  /* Navigation Button */
+  .nav-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 1rem;
+  }
+  .btn-next {
+    background: var(--accent);
+    color: #ffffff;
+    border: none;
+    border-radius: 14px;
+    padding: 14px 28px;
+    font-size: 16px;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.15s ease;
+  }
+  .btn-next:hover {
+    background: var(--accent-hover);
+    transform: translateY(-2px);
+  }
+  .btn-next:active {
+    transform: translateY(0);
+  }
+
+  /* Screen overlays (End screen) */
+  .overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    padding: 1.5rem;
+  }
+  .overlay-card {
+    background: var(--card);
+    border: 3px solid var(--ink);
+    border-radius: 24px;
+    padding: 2.25rem 2rem;
+    max-width: 480px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 8px 8px 0px var(--ink);
+    animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+  .overlay-card h3 {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 2rem;
+    color: var(--accent);
+    margin-bottom: 0.75rem;
+  }
+  .overlay-card p {
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 1.5;
+    margin-bottom: 1.5rem;
+  }
+  .score-circle {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: var(--accent-light);
+    border: 3px solid var(--accent);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem auto;
+  }
+  .score-val {
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .score-max {
+    font-size: 11px;
+    color: var(--muted);
+    font-weight: 700;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #ffffff;
+    border: none;
+    border-radius: 14px;
+    padding: 12px 24px;
+    font-weight: 800;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .btn-primary:hover {
+    background: var(--accent-hover);
+    transform: translateY(-2px);
+  }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes popIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <!-- Progression Info -->
+  <div class="info-card">
+    <p>Question <span id="current-question-idx">1</span> sur 8</p>
+    <div class="dots" id="progress-dots">
+      <div class="dot current"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+    </div>
+  </div>
+
+  <!-- Silhouette / 3D Canvas -->
+  <div class="visual-card">
+    <div class="classification-badge badge-poly" id="poly-badge">Polyèdre</div>
+    <div class="canvas-container" id="canvas-container">
+      <canvas id="canvas3d"></canvas>
+      <div class="drag-hint">Glisse pour faire pivoter la silhouette 🔄</div>
+    </div>
+  </div>
+
+  <!-- Riddle card -->
+  <div class="riddle-card">
+    <div class="riddle-title">
+      <span class="clue-icon">❓</span> Qui suis-je ?
+    </div>
+    
+    <div class="clues-list">
+      <div class="clue-item" id="clue-0">
+        <span class="clue-icon">💡</span>
+        <span class="clue-text" id="clue-text-0">Premier indice.</span>
+      </div>
+      <div class="clue-item" id="clue-1">
+        <span class="clue-icon">💡</span>
+        <span class="clue-text" id="clue-text-1">Deuxième indice.</span>
+      </div>
+      <div class="clue-item" id="clue-2">
+        <span class="clue-icon">💡</span>
+        <span class="clue-text" id="clue-text-2">Troisième indice.</span>
+      </div>
+    </div>
+
+    <div class="clue-actions">
+      <button class="btn-clue" id="btn-next-clue" onclick="showNextClue()">
+        <span>Indice suivant</span> 💡
+      </button>
+    </div>
+  </div>
+
+  <!-- Choices Grid -->
+  <div class="choices-grid" id="choices-grid">
+    <button class="btn-choice" onclick="selectChoice(0)">Option 1</button>
+    <button class="btn-choice" onclick="selectChoice(1)">Option 2</button>
+    <button class="btn-choice" onclick="selectChoice(2)">Option 3</button>
+    <button class="btn-choice" onclick="selectChoice(3)">Option 4</button>
+  </div>
+
+  <!-- Feedback Container -->
+  <div class="feedback-box feedback-success" id="feedback-panel">
+    <h4>🎉 Bravo !</h4>
+    <p id="feedback-desc">Explications géométriques sur le solide...</p>
+  </div>
+
+  <!-- Action Nav -->
+  <div class="nav-container">
+    <button class="btn-next" id="btn-next-question" style="display:none;" onclick="nextQuestion()">
+      <span>Question suivante</span> ➡️
+    </button>
+  </div>
+</div>
+
+<!-- End Game Screen -->
+<div class="overlay" id="end-overlay" style="display:none;">
+  <div class="overlay-card">
+    <h3>Entraînement Terminé !</h3>
+    <p>Félicitations, tu as terminé toutes les énigmes sur les définitions des solides.</p>
+    <div class="score-circle">
+      <span class="score-val" id="score-value">8</span>
+      <span class="score-max">/ 8</span>
+    </div>
+    <button class="btn-primary" onclick="restartGame()">Recommencer 🔄</button>
+  </div>
+</div>
+
+<script>
+// --- AUDIO SYNTHESIS FOR SOUND EFFECTS ---
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+function playSound(type) {
+  if (audioCtx.state === 'suspended') {
+    audioCtx.resume();
+  }
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  osc.connect(gain);
+  gain.connect(audioCtx.destination);
+
+  if (type === 'success') {
+    osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); // C5
+    osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.1); // E5
+    osc.frequency.setValueAtTime(783.99, audioCtx.currentTime + 0.2); // G5
+    osc.frequency.setValueAtTime(1046.50, audioCtx.currentTime + 0.3); // C6
+    gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+    osc.start();
+    osc.stop(audioCtx.currentTime + 0.5);
+  } else if (type === 'error') {
+    osc.frequency.setValueAtTime(220, audioCtx.currentTime); // A3
+    osc.frequency.setValueAtTime(147, audioCtx.currentTime + 0.15); // D3
+    gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
+    osc.start();
+    osc.stop(audioCtx.currentTime + 0.4);
+  } else if (type === 'click') {
+    osc.frequency.setValueAtTime(600, audioCtx.currentTime);
+    gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.08);
+    osc.start();
+    osc.stop(audioCtx.currentTime + 0.08);
+  }
+}
+
+// --- 3D MATH ENGINE ---
+const FACE_COLORS = {
+  1: { rgb: [99, 102, 241], border: '#4f46e5' },  // Indigo
+  2: { rgb: [16, 185, 129], border: '#059669' },  // Emerald
+  3: { rgb: [139, 92, 246], border: '#7c3aed' },  // Violet
+  4: { rgb: [245, 158, 11], border: '#d97706' },  // Amber
+  5: { rgb: [14, 165, 233], border: '#0284c7' },  // Sky Blue
+  6: { rgb: [244, 63, 94], border: '#e11d48' }    // Rose
+};
+
+const MODELS = {
+  cube: {
+    isPoly: true,
+    getFaces: () => {
+      const x = 25;
+      return [
+        { colorIdx: 1, vertices: [ {x: -x, y: x, z: -x}, {x: x, y: x, z: -x}, {x: x, y: -x, z: -x}, {x: -x, y: -x, z: -x} ] },
+        { colorIdx: 4, vertices: [ {x: -x, y: -x, z: x}, {x: x, y: -x, z: x}, {x: x, y: x, z: x}, {x: -x, y: x, z: x} ] },
+        { colorIdx: 2, vertices: [ {x: -x, y: -x, z: -x}, {x: x, y: -x, z: -x}, {x: x, y: -x, z: x}, {x: -x, y: -x, z: x} ] },
+        { colorIdx: 3, vertices: [ {x: x, y: x, z: -x}, {x: -x, y: x, z: -x}, {x: -x, y: x, z: x}, {x: x, y: x, z: x} ] },
+        { colorIdx: 5, vertices: [ {x: -x, y: x, z: -x}, {x: -x, y: -x, z: -x}, {x: -x, y: -x, z: x}, {x: -x, y: x, z: x} ] },
+        { colorIdx: 6, vertices: [ {x: x, y: -x, z: -x}, {x: x, y: x, z: -x}, {x: x, y: x, z: x}, {x: x, y: -x, z: x} ] }
+      ];
+    }
+  },
+  pave: {
+    isPoly: true,
+    getFaces: () => {
+      const x = 32, y = 24, z = 16;
+      return [
+        { colorIdx: 1, vertices: [ {x: -x, y: y, z: -z}, {x: x, y: y, z: -z}, {x: x, y: -y, z: -z}, {x: -x, y: -y, z: -z} ] },
+        { colorIdx: 4, vertices: [ {x: -x, y: -y, z: z}, {x: x, y: -y, z: z}, {x: x, y: y, z: z}, {x: -x, y: y, z: z} ] },
+        { colorIdx: 2, vertices: [ {x: -x, y: -y, z: -z}, {x: x, y: -y, z: -z}, {x: x, y: -y, z: z}, {x: -x, y: -y, z: z} ] },
+        { colorIdx: 3, vertices: [ {x: x, y: y, z: -z}, {x: -x, y: y, z: -z}, {x: -x, y: y, z: z}, {x: x, y: y, z: z} ] },
+        { colorIdx: 5, vertices: [ {x: -x, y: y, z: -z}, {x: -x, y: -y, z: -z}, {x: -x, y: -y, z: z}, {x: -x, y: y, z: z} ] },
+        { colorIdx: 6, vertices: [ {x: x, y: -y, z: -z}, {x: x, y: x, z: -z}, {x: x, y: x, z: z}, {x: x, y: -y, z: z} ] }
+      ];
+    }
+  },
+  prisme: {
+    isPoly: true,
+    getFaces: () => {
+      const z_half = 30;
+      return [
+        { colorIdx: 2, vertices: [ {x: 0, y: 25, z: -z_half}, {x: 22, y: -13, z: -z_half}, {x: -22, y: -13, z: -z_half} ] },
+        { colorIdx: 3, vertices: [ {x: 0, y: 25, z: z_half}, {x: -22, y: -13, z: z_half}, {x: 22, y: -13, z: z_half} ] },
+        { colorIdx: 5, vertices: [ {x: 0, y: 25, z: -z_half}, {x: -22, y: -13, z: -z_half}, {x: -22, y: -13, z: z_half}, {x: 0, y: 25, z: z_half} ] },
+        { colorIdx: 1, vertices: [ {x: -22, y: -13, z: -z_half}, {x: 22, y: -13, z: -z_half}, {x: 22, y: -13, z: z_half}, {x: -22, y: -13, z: z_half} ] },
+        { colorIdx: 4, vertices: [ {x: 22, y: -13, z: -z_half}, {x: 0, y: 25, z: -z_half}, {x: 0, y: 25, z: z_half}, {x: 22, y: -13, z: z_half} ] }
+      ];
+    }
+  },
+  pyramide: {
+    isPoly: true,
+    getFaces: () => {
+      const z_base = -18, z_apex = 24;
+      return [
+        { colorIdx: 1, vertices: [ {x: -24, y: 24, z: z_base}, {x: 24, y: 24, z: z_base}, {x: 24, y: -24, z: z_base}, {x: -24, y: -24, z: z_base} ] },
+        { colorIdx: 2, vertices: [ {x: -24, y: -24, z: z_base}, {x: 24, y: -24, z: z_base}, {x: 0, y: 0, z: z_apex} ] },
+        { colorIdx: 3, vertices: [ {x: 24, y: 24, z: z_base}, {x: -24, y: 24, z: z_base}, {x: 0, y: 0, z: z_apex} ] },
+        { colorIdx: 5, vertices: [ {x: -24, y: 24, z: z_base}, {x: -24, y: -24, z: z_base}, {x: 0, y: 0, z: z_apex} ] },
+        { colorIdx: 4, vertices: [ {x: 24, y: -24, z: z_base}, {x: 24, y: 24, z: z_base}, {x: 0, y: 0, z: z_apex} ] }
+      ];
+    }
+  },
+  tetraedre: {
+    isPoly: true,
+    getFaces: () => {
+      const z_base = -16, z_apex = 26;
+      return [
+        { colorIdx: 1, vertices: [ {x: 0, y: 28, z: z_base}, {x: 24, y: -14, z: z_base}, {x: -24, y: -14, z: z_base} ] },
+        { colorIdx: 2, vertices: [ {x: -24, y: -14, z: z_base}, {x: 24, y: -14, z: z_base}, {x: 0, y: 0, z: z_apex} ] },
+        { colorIdx: 3, vertices: [ {x: 24, y: -14, z: z_base}, {x: 0, y: 28, z: z_base}, {x: 0, y: 0, z: z_apex} ] },
+        { colorIdx: 4, vertices: [ {x: 0, y: 28, z: z_base}, {x: -24, y: -14, z: z_base}, {x: 0, y: 0, z: z_apex} ] }
+      ];
+    }
+  },
+  cylindre: {
+    isPoly: false,
+    getFaces: () => {
+      const R = 22, h_half = 30, segments = 32, faces = [];
+      const bottomCap = [];
+      for (let i = segments - 1; i >= 0; i--) {
+        const ang = (i * 2 * Math.PI) / segments;
+        bottomCap.push({x: R * Math.cos(ang), y: R * Math.sin(ang), z: -h_half});
+      }
+      faces.push({colorIdx: 3, vertices: bottomCap});
+      const topCap = [];
+      for (let i = 0; i < segments; i++) {
+        const ang = (i * 2 * Math.PI) / segments;
+        topCap.push({x: R * Math.cos(ang), y: R * Math.sin(ang), z: h_half});
+      }
+      faces.push({colorIdx: 2, vertices: topCap});
+      for (let i = 0; i < segments; i++) {
+        const ang1 = (i * 2 * Math.PI) / segments;
+        const ang2 = (((i + 1) % segments) * 2 * Math.PI) / segments;
+        faces.push({
+          colorIdx: 1,
+          noStroke: true,
+          vertices: [
+            {x: R * Math.cos(ang1), y: R * Math.sin(ang1), z: -h_half},
+            {x: R * Math.cos(ang2), y: R * Math.sin(ang2), z: -h_half},
+            {x: R * Math.cos(ang2), y: R * Math.sin(ang2), z: h_half},
+            {x: R * Math.cos(ang1), y: R * Math.sin(ang1), z: h_half}
+          ]
+        });
+      }
+      return faces;
+    }
+  },
+  cone: {
+    isPoly: false,
+    getFaces: () => {
+      const R = 24, h_half = 26, z_base = -h_half, z_apex = h_half, segments = 32, faces = [];
+      const bottomCap = [];
+      for (let i = segments - 1; i >= 0; i--) {
+        const ang = (i * 2 * Math.PI) / segments;
+        bottomCap.push({x: R * Math.cos(ang), y: R * Math.sin(ang), z: z_base});
+      }
+      faces.push({colorIdx: 4, vertices: bottomCap});
+      for (let i = 0; i < segments; i++) {
+        const ang1 = (i * 2 * Math.PI) / segments;
+        const ang2 = (((i + 1) % segments) * 2 * Math.PI) / segments;
+        faces.push({
+          colorIdx: 5,
+          noStroke: true,
+          vertices: [
+            {x: R * Math.cos(ang1), y: R * Math.sin(ang1), z: z_base},
+            {x: R * Math.cos(ang2), y: R * Math.sin(ang2), z: z_base},
+            {x: 0, y: 0, z: z_apex}
+          ]
+        });
+      }
+      return faces;
+    }
+  },
+  sphere: {
+    isPoly: false,
+    getFaces: () => {
+      const R = 26, slices = 10, stacks = 10, faces = [], vertices = [];
+      for (let stack = 0; stack <= stacks; stack++) {
+        const phi = (stack * Math.PI) / stacks;
+        const sinPhi = Math.sin(phi), cosPhi = Math.cos(phi);
+        for (let slice = 0; slice < slices; slice++) {
+          const theta = (slice * 2 * Math.PI) / slices;
+          vertices.push({
+            x: R * sinPhi * Math.cos(theta),
+            y: R * sinPhi * Math.sin(theta),
+            z: R * cosPhi
+          });
+        }
+      }
+      for (let stack = 0; stack < stacks; stack++) {
+        for (let slice = 0; slice < slices; slice++) {
+          const nextSlice = (slice + 1) % slices;
+          const p1 = stack * slices + slice;
+          const p2 = stack * slices + nextSlice;
+          const p3 = (stack + 1) * slices + slice;
+          const p4 = (stack + 1) * slices + nextSlice;
+          faces.push({
+            colorIdx: 6,
+            noStroke: true,
+            vertices: [ vertices[p1], vertices[p2], vertices[p4], vertices[p3] ]
+          });
+        }
+      }
+      return faces;
+    }
+  }
+};
+
+class CanvasRenderer3D {
+  constructor(canvasId) {
+    this.canvas = document.getElementById(canvasId);
+    this.ctx = this.canvas.getContext('2d');
+    this.rx = -25;
+    this.ry = 45;
+    this.faces = [];
+    this.isSilhouette = true;
+  }
+
+  setSolid(modelKey, isSilhouette) {
+    const model = MODELS[modelKey];
+    this.faces = model ? model.getFaces() : [];
+    this.isSilhouette = isSilhouette;
+  }
+
+  resize() {
+    const w = this.canvas.clientWidth;
+    const h = this.canvas.clientHeight;
+    if (this.canvas.width !== w || this.canvas.height !== h) {
+      this.canvas.width = w;
+      this.canvas.height = h;
+    }
+  }
+
+  draw() {
+    this.resize();
+    const ctx = this.ctx;
+    const w = this.canvas.width;
+    const h = this.canvas.height;
+    ctx.clearRect(0, 0, w, h);
+
+    const radX = (this.rx * Math.PI) / 180;
+    const radY = (this.ry * Math.PI) / 180;
+
+    const cosX = Math.cos(radX), sinX = Math.sin(radX);
+    const cosY = Math.cos(radY), sinY = Math.sin(radY);
+
+    const scale = Math.min(w, h) * 1.8;
+    const cx = w / 2, cy = h / 2;
+
+    const faceData = this.faces.map(face => {
+      const projectedVerts = face.vertices.map(v => {
+        // Rotate Y
+        let x1 = v.x * cosY - v.z * sinY;
+        let z1 = v.x * sinY + v.z * cosY;
+        // Rotate X
+        let y2 = v.y * cosX - z1 * sinX;
+        let z2 = v.y * sinX + z1 * cosX;
+        // Project orthographic with depth cue
+        return {
+          x: cx + x1 * (scale / (scale + z2)),
+          y: cy + y2 * (scale / (scale + z2)),
+          z: z2
+        };
+      });
+
+      // Simple flat lighting normal
+      const v0 = face.vertices[0], v1 = face.vertices[1];
+      const ux = v1.x - v0.x, uy = v1.y - v0.y, uz = v1.z - v0.z;
+      const v2 = face.vertices[face.vertices.length - 1];
+      const wx = v2.x - v0.x, wy = v2.y - v0.y, wz = v2.z - v0.z;
+      const nx = uy * wz - uz * wy;
+      const ny = uz * wx - ux * wz;
+      const nz = ux * wy - uy * wx;
+      const len = Math.sqrt(nx*nx + ny*ny + nz*nz);
+      
+      let cosTheta = 1.0;
+      if (len > 0.001) {
+        // Rotate normal to check facing camera (z direction)
+        const ny_rot = ny * cosX - nz * sinX;
+        const nz_rot = ny * sinX + nz * cosX;
+        const nx_rot = nx * cosY - nz_rot * sinY;
+        cosTheta = (nx_rot * 0 + ny_rot * 0 + nz_rot * 1) / len;
+      }
+
+      // Average depth for Painter's algorithm
+      let avgDepth = 0;
+      projectedVerts.forEach(pv => avgDepth += pv.z);
+      avgDepth /= projectedVerts.length;
+
+      const intensity = Math.max(0.1, 0.4 + 0.6 * Math.abs(cosTheta));
+
+      return { face, projectedVerts, depth: avgDepth, intensity };
+    });
+
+    // Painter's algorithm sort
+    faceData.sort((a, b) => a.depth - b.depth);
+
+    faceData.forEach(({face, projectedVerts, intensity}) => {
+      ctx.beginPath();
+      ctx.moveTo(projectedVerts[0].x, projectedVerts[0].y);
+      for (let i = 1; i < projectedVerts.length; i++) {
+        ctx.lineTo(projectedVerts[i].x, projectedVerts[i].y);
+      }
+      ctx.closePath();
+
+      if (this.isSilhouette) {
+        // Shadow/Silhouette mode
+        ctx.fillStyle = `rgba(30, 41, 59, ${0.9 * intensity})`;
+        ctx.fill();
+        ctx.strokeStyle = '#475569';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+      } else {
+        // Correct revealed mode
+        const base = FACE_COLORS[face.colorIdx];
+        ctx.fillStyle = `rgba(${base.rgb[0]}, ${base.rgb[1]}, ${base.rgb[2]}, ${intensity * 0.85})`;
+        ctx.fill();
+
+        if (!face.noStroke) {
+          ctx.strokeStyle = base.border;
+          ctx.lineWidth = 2.0;
+          ctx.lineJoin = 'round';
+          ctx.stroke();
+        }
+      }
+    });
+  }
+}
+
+// --- GAME LOGIC ---
+const DATABASE = [
+  {
+    id: "cube",
+    name: "Le cube",
+    isPolyedre: true,
+    desc: "Le cube est un polyèdre régulier. Il possède 6 faces carrées identiques, 8 sommets et 12 arêtes.",
+    clues: [
+      "Toutes mes faces sont des carrés identiques.",
+      "Je possède 6 faces, 8 sommets et 12 arêtes.",
+      "Je suis un polyèdre régulier dont toutes les arêtes sont de mêmes longueurs."
+    ],
+    model: "cube",
+    distractors: ["Le parallélépipède rectangle", "Le prisme droit triangulaire", "La pyramide à base carrée"]
+  },
+  {
+    id: "pave",
+    name: "Le parallélépipède rectangle",
+    isPolyedre: true,
+    desc: "Ce polyèdre (aussi appelé pavé droit) possède 6 faces rectangulaires, 8 sommets et 12 arêtes. Ses faces opposées sont parallèles.",
+    clues: [
+      "Toutes mes faces sont des rectangles (dont certains peuvent être des carrés).",
+      "Je possède 6 faces, 8 sommets et 12 arêtes.",
+      "Mes faces opposées sont parallèles et possèdent exactement les mêmes dimensions."
+    ],
+    model: "pave",
+    distractors: ["Le cube", "Le prisme droit triangulaire", "Le cylindre"]
+  },
+  {
+    id: "prisme",
+    name: "Le prisme droit triangulaire",
+    isPolyedre: true,
+    desc: "Ce prisme possède 2 bases triangulaires parallèles et 3 faces latérales rectangulaires (5 faces au total).",
+    clues: [
+      "Mes deux bases sont des triangles parallèles et superposables.",
+      "Je possède 5 faces, 6 sommets et 9 arêtes.",
+      "Mes faces latérales reliant les deux bases sont obligatoirement des rectangles."
+    ],
+    model: "prisme",
+    distractors: ["Le tétraèdre", "Le parallélépipède rectangle", "La pyramide à base carrée"]
+  },
+  {
+    id: "pyramide",
+    name: "La pyramide à base carrée",
+    isPolyedre: true,
+    desc: "La pyramide possède 1 base carrée et 4 faces latérales triangulaires qui se rejoignent en un seul sommet.",
+    clues: [
+      "Ma base au sol est un carré, mais mes autres faces sont toutes des triangles.",
+      "Je possède 5 faces, 5 sommets et 8 arêtes.",
+      "Mes faces triangulaires se rejoignent toutes en un point unique appelé l'apex."
+    ],
+    model: "pyramide",
+    distractors: ["Le tétraèdre", "Le prisme droit triangulaire", "Le cône"]
+  },
+  {
+    id: "cylindre",
+    name: "Le cylindre",
+    isPolyedre: false,
+    desc: "Le cylindre est un corps rond (non-polyèdre). Il est constitué de 2 bases circulaires plates et d'une surface courbe.",
+    clues: [
+      "Je ne suis pas un polyèdre car je possède une surface latérale courbe.",
+      "Je peux rouler sur une table et je possède 2 bases circulaires plates parallèles.",
+      "Mon patron est constitué d'un grand rectangle et de deux disques."
+    ],
+    model: "cylindre",
+    distractors: ["Le cône", "La sphère", "Le prisme droit triangulaire"]
+  },
+  {
+    id: "cone",
+    name: "Le cône",
+    isPolyedre: false,
+    desc: "Le cône est un corps rond possédant 1 base circulaire, 1 sommet et 1 surface courbe.",
+    clues: [
+      "Je possède une seule base plane circulaire.",
+      "Je me termine par un sommet pointu opposé à ma base circulaire.",
+      "Je ne suis pas un polyèdre et ma surface latérale est courbe."
+    ],
+    model: "cone",
+    distractors: ["Le cylindre", "La sphère", "La pyramide à base carrée"]
+  },
+  {
+    id: "sphere",
+    name: "La sphère",
+    isPolyedre: false,
+    desc: "La sphère (ou boule) est un corps rond parfait. Elle n'a ni sommet, ni arête, et tous ses points sont équidistants du centre.",
+    clues: [
+      "Je ne possède absolument aucun sommet et aucune arête.",
+      "Tous les points de ma surface extérieure sont situés à égale distance de mon centre.",
+      "Je suis un corps rond parfaitement symétrique comme un ballon."
+    ],
+    model: "sphere",
+    distractors: ["Le cylindre", "Le cône", "Le cube"]
+  },
+  {
+    id: "tetraedre",
+    name: "Le tétraèdre",
+    isPolyedre: true,
+    desc: "Le tétraèdre est une pyramide à base triangulaire. Il comporte 4 faces triangulaires, 4 sommets et 6 arêtes.",
+    clues: [
+      "Absolument toutes mes faces sont des triangles.",
+      "Je possède 4 faces, 4 sommets et 6 arêtes.",
+      "Je suis la plus simple des pyramides possibles."
+    ],
+    model: "tetraedre",
+    distractors: ["La pyramide à base carrée", "Le prisme droit triangulaire", "Le cône"]
+  }
+];
+
+let questions = [];
+let currentQIdx = 0;
+let score = 0;
+let answered = false;
+let cluesVisibleCount = 1;
+let renderer3D = null;
+let animationFrameId = null;
+
+// Drag state
+let isDragging = false;
+let startX = 0, startY = 0;
+let rx = -25, ry = 45;
+
+function init() {
+  renderer3D = new CanvasRenderer3D('canvas3d');
+  
+  // Drag rotation events
+  const canvasContainer = document.getElementById('canvas-container');
+  canvasContainer.addEventListener('mousedown', e => {
+    isDragging = true;
+    startX = e.clientX;
+    startY = e.clientY;
+  });
+  canvasContainer.addEventListener('touchstart', e => {
+    isDragging = true;
+    startX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
+  });
+
+  window.addEventListener('mousemove', e => {
+    if (!isDragging) return;
+    const dx = e.clientX - startX;
+    const dy = e.clientY - startY;
+    ry += dx * 0.5;
+    rx -= dy * 0.5;
+    rx = Math.max(-85, Math.min(85, rx));
+    startX = e.clientX;
+    startY = e.clientY;
+  });
+  window.addEventListener('touchmove', e => {
+    if (!isDragging) return;
+    const dx = e.touches[0].clientX - startX;
+    const dy = e.touches[0].clientY - startY;
+    ry += dx * 0.5;
+    rx -= dy * 0.5;
+    rx = Math.max(-85, Math.min(85, rx));
+    startX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
+  });
+
+  window.addEventListener('mouseup', () => isDragging = false);
+  window.addEventListener('touchend', () => isDragging = false);
+
+  // Start animation loop
+  function animate() {
+    if (!isDragging) {
+      ry += 0.25; // Auto rotate slightly
+    }
+    renderer3D.rx = rx;
+    renderer3D.ry = ry;
+    renderer3D.draw();
+    animationFrameId = requestAnimationFrame(animate);
+  }
+  animate();
+
+  restartGame();
+}
+
+function restartGame() {
+  score = 0;
+  currentQIdx = 0;
+  // Shuffle questions
+  questions = [...DATABASE].sort(() => Math.random() - 0.5);
+  document.getElementById('end-overlay').style.display = 'none';
+  loadQuestion();
+}
+
+function loadQuestion() {
+  answered = false;
+  cluesVisibleCount = 1;
+  
+  const q = questions[currentQIdx];
+
+  // Set up 3D renderer solid
+  renderer3D.setSolid(q.model, true); // true = starts as silhouette
+  rx = -25;
+  ry = 45;
+
+  // Set progression UI
+  document.getElementById('current-question-idx').textContent = currentQIdx + 1;
+  const dots = document.getElementById('progress-dots').children;
+  for (let i = 0; i < dots.length; i++) {
+    dots[i].className = 'dot';
+    if (i === currentQIdx) dots[i].classList.add('current');
+    else if (i < currentQIdx) {
+      // mark past questions if scores are saved
+    }
+  }
+
+  // Set classification badge
+  const badge = document.getElementById('poly-badge');
+  badge.textContent = q.isPolyedre ? "Polyèdre" : "Non-polyèdre";
+  badge.className = q.isPolyedre ? "classification-badge badge-poly" : "classification-badge badge-nonpoly";
+
+  // Load Clues
+  document.getElementById('clue-text-0').textContent = q.clues[0];
+  document.getElementById('clue-text-1').textContent = q.clues[1];
+  document.getElementById('clue-text-2').textContent = q.clues[2];
+
+  // Set clues visibility classes
+  document.getElementById('clue-0').className = 'clue-item visible';
+  document.getElementById('clue-1').className = 'clue-item';
+  document.getElementById('clue-2').className = 'clue-item';
+  document.getElementById('btn-next-clue').disabled = false;
+
+  // Set Options
+  const choices = [q.name, ...q.distractors].sort(() => Math.random() - 0.5);
+  const choicesGrid = document.getElementById('choices-grid');
+  choicesGrid.innerHTML = '';
+  choices.forEach(choice => {
+    const btn = document.createElement('button');
+    btn.className = 'btn-choice';
+    btn.textContent = choice;
+    btn.onclick = () => selectChoice(btn, choice);
+    choicesGrid.appendChild(btn);
+  });
+
+  // Hide feedback and next button
+  document.getElementById('feedback-panel').style.display = 'none';
+  document.getElementById('btn-next-question').style.display = 'none';
+}
+
+function showNextClue() {
+  if (cluesVisibleCount < 3) {
+    playSound('click');
+    document.getElementById(`clue-${cluesVisibleCount}`).classList.add('visible');
+    cluesVisibleCount++;
+    if (cluesVisibleCount === 3) {
+      document.getElementById('btn-next-clue').disabled = true;
+    }
+  }
+}
+
+function selectChoice(btn, choice) {
+  if (answered) return;
+  
+  const q = questions[currentQIdx];
+  const isCorrect = (choice === q.name);
+
+  if (isCorrect) {
+    playSound('success');
+    answered = true;
+    score++;
+    
+    // Reveal solid color
+    renderer3D.isSilhouette = false;
+    
+    // UI state
+    btn.classList.add('correct');
+    
+    // Disable other buttons
+    const btns = document.querySelectorAll('.btn-choice');
+    btns.forEach(b => {
+      if (b !== btn) b.classList.add('disabled');
+    });
+
+    // Reveal all clues
+    document.getElementById('clue-1').classList.add('visible');
+    document.getElementById('clue-2').classList.add('visible');
+    document.getElementById('btn-next-clue').disabled = true;
+
+    // Show feedback panel
+    const feedback = document.getElementById('feedback-panel');
+    feedback.className = 'feedback-box feedback-success';
+    document.getElementById('feedback-desc').textContent = q.desc;
+    feedback.style.display = 'block';
+
+    // Show navigation button
+    document.getElementById('btn-next-question').style.display = 'flex';
+
+    // Highlight dot in progression
+    const dots = document.getElementById('progress-dots').children;
+    dots[currentQIdx].className = 'dot correct';
+  } else {
+    playSound('error');
+    btn.classList.add('incorrect');
+    btn.disabled = true;
+    
+    // Highlight dot as incorrect in progress
+    const dots = document.getElementById('progress-dots').children;
+    dots[currentQIdx].className = 'dot incorrect';
+  }
+}
+
+function nextQuestion() {
+  playSound('click');
+  currentQIdx++;
+  if (currentQIdx < 8) {
+    loadQuestion();
+  } else {
+    // Show End Screen
+    document.getElementById('score-value').textContent = score;
+    document.getElementById('end-overlay').style.display = 'flex';
+    
+    // Firebase Hook integration
+    if (window.parent && typeof window.parent.saveResult === 'function') {
+      window.parent.saveResult('polyedres_definitions', score);
+    }
+  }
+}
+
+// Window load init
+window.addEventListener('load', init);
+</script>
+</body>
+</html>
