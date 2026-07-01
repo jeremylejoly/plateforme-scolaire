@@ -842,7 +842,7 @@ function renderDivisionGrid(add, cardIdx) {
   const rightSideCols = 5;
   const totalColsCount = divLen + 1 + rightSideCols;
   
-  const colStyles = [];
+  const colStyles = ['35px']; // Colonne dédiée à l'opérateur de soustraction sur la gauche
   for (let c = 0; c < totalColsCount; c++) {
     if (c < divLen) {
       colStyles.push(extDivStr[c] === ',' ? '16px' : '44px');
@@ -880,7 +880,7 @@ function renderDivisionGrid(add, cardIdx) {
         const cell = document.createElement('div');
         cell.className = `grid-cell row-header notebook-cell`;
         cell.style.gridRow = HEADER_ROW;
-        cell.style.gridColumn = c + 1;
+        cell.style.gridColumn = c + 2; // décalé de +2
         cell.dataset.col = c;
         
         // Trouver la classe d'en-tête correspondante (U, D, C...)
@@ -904,7 +904,7 @@ function renderDivisionGrid(add, cardIdx) {
     const cell = document.createElement('div');
     cell.className = 'grid-cell potence-vertical-line';
     cell.style.gridRow = r;
-    cell.style.gridColumn = potenceLineCol + 1;
+    cell.style.gridColumn = potenceLineCol + 2; // décalé de +2
     grid.appendChild(cell);
   }
   
@@ -914,7 +914,7 @@ function renderDivisionGrid(add, cardIdx) {
     const cell = document.createElement('div');
     cell.className = 'grid-cell notebook-cell';
     cell.style.gridRow = DIVIDEND_DIVISOR_ROW;
-    cell.style.gridColumn = c + 1;
+    cell.style.gridColumn = c + 2; // décalé de +2
     cell.dataset.col = c;
     
     if (extDivStr[c] === ',') {
@@ -934,7 +934,7 @@ function renderDivisionGrid(add, cardIdx) {
     const cell = document.createElement('div');
     cell.className = 'grid-cell notebook-cell';
     cell.style.gridRow = DIVIDEND_DIVISOR_ROW;
-    cell.style.gridColumn = potenceLineCol + 2 + i;
+    cell.style.gridColumn = potenceLineCol + 3 + i; // décalé de +3
     cell.textContent = divisorStr[i];
     grid.appendChild(cell);
   }
@@ -945,7 +945,7 @@ function renderDivisionGrid(add, cardIdx) {
     const cell = document.createElement('div');
     cell.className = 'grid-cell potence-horizontal-line';
     cell.style.gridRow = POTENCE_HORIZ_ROW;
-    cell.style.gridColumn = potenceLineCol + 2 + i;
+    cell.style.gridColumn = potenceLineCol + 3 + i; // décalé de +3
     grid.appendChild(cell);
   }
   
@@ -954,13 +954,15 @@ function renderDivisionGrid(add, cardIdx) {
   const quotientObj = solved.quotientObj;
   
   let qColOffset = 0;
-  // Trouver la plage de colonnes réelles pour le quotient
-  quotientObj.digits.forEach((char, pos) => {
+  // Trouver la plage de colonnes réelles pour le quotient, triées de gauche à droite
+  const sortedQuotKeys = [...quotientObj.digits.keys()].sort((a, b) => b - a);
+  sortedQuotKeys.forEach((pos) => {
+    const char = quotientObj.digits.get(pos);
     const cell = document.createElement('div');
     cell.className = 'grid-cell notebook-cell';
     cell.style.gridRow = QUOTIENT_ROW;
-    cell.style.gridColumn = potenceLineCol + 2 + qColOffset;
-    cell.dataset.col = potenceLineCol + 1 + qColOffset;
+    cell.style.gridColumn = potenceLineCol + 3 + qColOffset; // décalé de +3
+    cell.dataset.col = potenceLineCol + 2 + qColOffset; // décalé de +2
     
     if (char === ',') {
       const comma = document.createElement('span');
@@ -976,7 +978,7 @@ function renderDivisionGrid(add, cardIdx) {
         input.pattern = '[0-9]*';
         input.maxLength = 1;
         input.className = 'input-result';
-        input.dataset.col = potenceLineCol + 1 + qColOffset;
+        input.dataset.col = potenceLineCol + 2 + qColOffset; // décalé de +2
         input.dataset.row = QUOTIENT_ROW;
         input.dataset.type = 'quotient';
         input.dataset.pos = pos;
@@ -1009,12 +1011,12 @@ function renderDivisionGrid(add, cardIdx) {
       curCol--;
     }
     
-    // Tracer le signe moins "-" à gauche du produit
+    // Tracer le signe moins "-" à gauche du produit dans le quadrillage
     const signCol = curCol === solved.commaIdx ? curCol - 1 : curCol;
     const signCell = document.createElement('div');
     signCell.className = 'grid-cell notebook-cell';
     signCell.style.gridRow = layout.subRow;
-    signCell.style.gridColumn = (signCol >= 0) ? (signCol + 1) : 1;
+    signCell.style.gridColumn = (signCol >= 0) ? (signCol + 2) : 1; // décalé de +2
     signCell.textContent = '−';
     signCell.style.color = 'var(--ink-soft)';
     grid.appendChild(signCell);
@@ -1024,7 +1026,7 @@ function renderDivisionGrid(add, cardIdx) {
       const cell = document.createElement('div');
       cell.className = 'grid-cell notebook-cell';
       cell.style.gridRow = layout.subRow;
-      cell.style.gridColumn = item.col + 1;
+      cell.style.gridColumn = item.col + 2; // décalé de +2
       cell.dataset.col = item.col;
       
       const isHidden = add.level !== 5 || add.lacunaryCells.some(spot => spot.type === 'subtraction' && spot.stepIdx === step.stepIdx && spot.digitIdx === item.digitIdx);
@@ -1055,7 +1057,7 @@ function renderDivisionGrid(add, cardIdx) {
         const cell = document.createElement('div');
         cell.className = 'grid-cell notebook-cell';
         cell.style.gridRow = layout.subRow;
-        cell.style.gridColumn = c + 1;
+        cell.style.gridColumn = c + 2; // décalé de +2
         grid.appendChild(cell);
       }
     }
@@ -1067,7 +1069,7 @@ function renderDivisionGrid(add, cardIdx) {
     
     const startColLine = Math.min(...prodCols.map(i => i.col));
     const spanWidth = rightCol - startColLine + 1;
-    lineSpan.style.gridColumn = `${startColLine + 1} / span ${spanWidth}`;
+    lineSpan.style.gridColumn = `${startColLine + 2} / span ${spanWidth}`; // décalé de +2
     grid.appendChild(lineSpan);
     
     // Reste des colonnes pour la ligne séparatrice
@@ -1077,7 +1079,7 @@ function renderDivisionGrid(add, cardIdx) {
           const cell = document.createElement('div');
           cell.className = 'grid-cell notebook-cell';
           cell.style.gridRow = layout.lineRow;
-          cell.style.gridColumn = c + 1;
+          cell.style.gridColumn = c + 2; // décalé de +2
           grid.appendChild(cell);
         }
       }
@@ -1099,7 +1101,7 @@ function renderDivisionGrid(add, cardIdx) {
       const cell = document.createElement('div');
       cell.className = 'grid-cell notebook-cell';
       cell.style.gridRow = layout.remRow;
-      cell.style.gridColumn = item.col + 1;
+      cell.style.gridColumn = item.col + 2; // décalé de +2
       cell.dataset.col = item.col;
       
       const isHidden = add.level !== 5 || add.lacunaryCells.some(spot => spot.type === 'remainder' && spot.stepIdx === step.stepIdx && spot.digitIdx === item.digitIdx);
@@ -1130,7 +1132,7 @@ function renderDivisionGrid(add, cardIdx) {
       const cell = document.createElement('div');
       cell.className = 'grid-cell notebook-cell';
       cell.style.gridRow = layout.remRow;
-      cell.style.gridColumn = step.dropCol + 1;
+      cell.style.gridColumn = step.dropCol + 2; // décalé de +2
       cell.dataset.col = step.dropCol;
       
       const isHidden = add.level !== 5 || add.lacunaryCells.some(spot => spot.type === 'drop' && spot.stepIdx === step.stepIdx);
@@ -1161,7 +1163,7 @@ function renderDivisionGrid(add, cardIdx) {
         const cell = document.createElement('div');
         cell.className = 'grid-cell notebook-cell';
         cell.style.gridRow = layout.remRow;
-        cell.style.gridColumn = c + 1;
+        cell.style.gridColumn = c + 2; // décalé de +2
         grid.appendChild(cell);
       }
     }
@@ -1281,9 +1283,9 @@ function setupInteractivity() {
             nextInput.select();
           }
         } else {
-          // De droite à gauche pour les produits et restes (comme d'habitude)
+          // De droite à gauche pour les produits et restes (dans notre repère gauche-droite, aller à gauche correspond à décroître l'index de colonne)
           const sameRowInputs = Array.from(card.querySelectorAll(`input[data-row="${row}"]`))
-            .sort((a, b) => parseFloat(b.dataset.col) - parseFloat(a.dataset.col));
+            .sort((a, b) => parseFloat(a.dataset.col) - parseFloat(b.dataset.col));
           const idx = sameRowInputs.indexOf(target);
           if (idx > 0) {
             const nextInput = sameRowInputs[idx - 1];
