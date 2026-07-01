@@ -121,10 +121,12 @@
   }
 
   .map-image {
+    position: absolute;
     width: 100%;
     height: 100%;
     object-fit: cover;
     pointer-events: none;
+    transition: all 0.4s ease;
   }
 
   /* Target capital dots on map */
@@ -784,21 +786,17 @@
   const CITY_KEYS = Object.keys(CITIES);
 
   // Scales configurations (in km per cm: 1:10M -> 100km/cm)
-  const SCALES = {
-    'Niveau 1': [
-      { ratio: 10000000, desc: "1 : 10 000 000", conversionText: "100 km", kmPerCm: 100 },
-      { ratio: 20000000, desc: "1 : 20 000 000", conversionText: "200 km", kmPerCm: 200 }
-    ],
-    'Niveau 2': [
-      { ratio: 15000000, desc: "1 : 15 000 000", conversionText: "150 km", kmPerCm: 150 },
-      { ratio: 25000000, desc: "1 : 25 000 000", conversionText: "250 km", kmPerCm: 250 }
-    ]
-  };
-
   let currentLevel = 'Niveau 1';
   let score = 0;
   let questionNum = 1;
   let currentQuestion = null;
+
+  // Zooming & math-scaling factors to keep map sizes mathematically correct!
+  let zoomFactor = 1.66;
+  let offsetX = -220;
+  let offsetY = -110;
+  let kmPerCm = 100;
+  let scaleText = "1 : 10 000 000";
 
   // --- INTERACTIVE RULER STATE ---
   let isDragging = false;
@@ -980,6 +978,32 @@
     currentLevel = level;
     document.getElementById('current-level-badge').textContent = level;
     document.getElementById('level-overlay').style.display = 'none';
+
+    const mapImage = document.querySelector('.map-image');
+    if (level === 'Niveau 1') {
+      zoomFactor = 1.66;
+      offsetX = -220;
+      offsetY = -110;
+      kmPerCm = 100;
+      scaleText = "1 : 10 000 000";
+      
+      mapImage.style.width = '1328px';
+      mapImage.style.height = '996px';
+      mapImage.style.left = '-220px';
+      mapImage.style.top = '-110px';
+    } else {
+      zoomFactor = 1.0;
+      offsetX = 0;
+      offsetY = 0;
+      kmPerCm = 166;
+      scaleText = "1 : 16 600 000";
+      
+      mapImage.style.width = '800px';
+      mapImage.style.height = '600px';
+      mapImage.style.left = '0px';
+      mapImage.style.top = '0px';
+    }
+
     buildRulerTicks();
     restartGame();
   }
@@ -1009,57 +1033,57 @@
     document.getElementById('real-distance-input').disabled = false;
     document.getElementById('btn-validate-real').disabled = false;
 
+    // Filter cities based on current level visibility
+    const allowedKeys = (currentLevel === 'Niveau 1')
+      ? ['londres', 'bruxelles', 'paris', 'berlin']
+      : ['londres', 'bruxelles', 'paris', 'berlin', 'rome', 'madrid'];
+
     // Pick 2 random capital cities (must be different)
-    let idxA = Math.floor(Math.random() * CITY_KEYS.length);
-    let idxB = Math.floor(Math.random() * CITY_KEYS.length);
+    let idxA = Math.floor(Math.random() * allowedKeys.length);
+    let idxB = Math.floor(Math.random() * allowedKeys.length);
     while (idxA === idxB) {
-      idxB = Math.floor(Math.random() * CITY_KEYS.length);
+      idxB = Math.floor(Math.random() * allowedKeys.length);
     }
 
-    const keyA = CITY_KEYS[idxA];
-    const keyB = CITY_KEYS[idxB];
+    const keyA = allowedKeys[idxA];
+    const keyB = allowedKeys[idxB];
     const cityA = CITIES[keyA];
     const cityB = CITIES[keyB];
-
-    // Pick random scale
-    const levelScales = SCALES[currentLevel];
-    const scaleObj = levelScales[Math.floor(Math.random() * levelScales.length)];
 
     // Calculate actual values
     const dx = cityB.x - cityA.x;
     const dy = cityB.y - cityA.y;
     const pixelDist = Math.sqrt(dx * dx + dy * dy);
     
-    // 40 pixels = 1 cm
-    const actualCm = parseFloat((pixelDist / 40).toFixed(1));
-    const realDistKm = actualCm * scaleObj.kmPerCm; // 1 cm = kmPerCm km
+    // 40 pixels = 1 cm on base map, scaled by zoomFactor
+    const actualCm = parseFloat(((pixelDist * zoomFactor) / 40).toFixed(1));
+    const realDistKm = Math.round(actualCm * kmPerCm);
 
     currentQuestion = {
       from: cityA,
       to: cityB,
-      scale: scaleObj,
       correctCm: actualCm,
       correctKm: realDistKm
     };
 
-    // Update targets on map
+    // Update targets on map screen coordinates (even if hidden)
     const dotA = document.getElementById('dot-a');
     const dotB = document.getElementById('dot-b');
     
-    dotA.style.left = cityA.x + 'px';
-    dotA.style.top = cityA.y + 'px';
+    dotA.style.left = (cityA.x * zoomFactor + offsetX) + 'px';
+    dotA.style.top = (cityA.y * zoomFactor + offsetY) + 'px';
     dotA.classList.add('active-target');
     document.getElementById('label-a').textContent = cityA.name;
 
-    dotB.style.left = cityB.x + 'px';
-    dotB.style.top = cityB.y + 'px';
+    dotB.style.left = (cityB.x * zoomFactor + offsetX) + 'px';
+    dotB.style.top = (cityB.y * zoomFactor + offsetY) + 'px';
     dotB.classList.add('active-target');
     document.getElementById('label-b').textContent = cityB.name;
 
     // Update text
     document.getElementById('question-text').innerHTML = `Quelle est la distance réelle à vol d'oiseau entre <strong style="color:var(--purple-dark);">${cityA.name}</strong> et <strong style="color:var(--purple-dark);">${cityB.name}</strong> ?`;
-    document.getElementById('scale-display').textContent = scaleObj.desc;
-    document.getElementById('scale-unit-conversion').textContent = scaleObj.conversionText;
+    document.getElementById('scale-display').textContent = scaleText;
+    document.getElementById('scale-unit-conversion').textContent = kmPerCm + " km";
 
     // Reset ruler positions
     rulerLeft = 80;
