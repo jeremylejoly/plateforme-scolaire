@@ -109,6 +109,38 @@
     height: 100%;
     display: block;
   }
+  .mystery-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    background: #f8fafc;
+    border-radius: 14px;
+    border: 2px dashed #cbd5e1;
+    transition: all 0.3s ease;
+  }
+  .mystery-question-mark {
+    font-size: 5.5rem;
+    font-weight: 900;
+    color: var(--accent);
+    text-shadow: 0 4px 10px rgba(37, 99, 235, 0.15);
+    animation: pulseQuestionMark 2s infinite ease-in-out;
+    line-height: 1;
+  }
+  .mystery-text {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 15px;
+    color: var(--muted);
+    margin-top: 12px;
+    font-weight: 600;
+  }
+  @keyframes pulseQuestionMark {
+    0% { transform: scale(1); filter: drop-shadow(0 0 0px rgba(37, 99, 235, 0)); }
+    50% { transform: scale(1.15); filter: drop-shadow(0 0 12px rgba(37, 99, 235, 0.25)); }
+    100% { transform: scale(1); filter: drop-shadow(0 0 0px rgba(37, 99, 235, 0)); }
+  }
 
   .drag-hint {
     position: absolute;
@@ -437,8 +469,12 @@
   <div class="visual-card">
     <div class="classification-badge badge-poly" id="poly-badge">Polyèdre</div>
     <div class="canvas-container" id="canvas-container">
-      <canvas id="canvas3d"></canvas>
-      <div class="drag-hint">Glisse pour faire pivoter la silhouette 🔄</div>
+      <div class="mystery-box" id="mystery-box">
+        <div class="mystery-question-mark">?</div>
+        <div class="mystery-text">Devine le solide pour le révéler en 3D ! 🕵️‍♂️</div>
+      </div>
+      <canvas id="canvas3d" style="display: none;"></canvas>
+      <div class="drag-hint" id="drag-hint" style="display: none;">Glisse pour faire pivoter le solide 🔄</div>
     </div>
   </div>
 
@@ -718,8 +754,9 @@ class CanvasRenderer3D {
     this.canvas = document.getElementById(canvasId);
     this.ctx = this.canvas.getContext('2d');
     this.rx = -25;
-    this.ry = 45;
+    this.ry = 35;
     this.faces = [];
+    this.zoom = 2.4;
     this.isSilhouette = true;
   }
 
@@ -732,69 +769,86 @@ class CanvasRenderer3D {
   resize() {
     const w = this.canvas.clientWidth;
     const h = this.canvas.clientHeight;
-    if (this.canvas.width !== w || this.canvas.height !== h) {
-      this.canvas.width = w;
-      this.canvas.height = h;
+    const dpr = window.devicePixelRatio || 1;
+    if (this.canvas.width !== Math.floor(w * dpr) || this.canvas.height !== Math.floor(h * dpr)) {
+      this.canvas.width = Math.floor(w * dpr);
+      this.canvas.height = Math.floor(h * dpr);
+      this.ctx.scale(dpr, dpr);
     }
   }
 
   draw() {
     this.resize();
     const ctx = this.ctx;
-    const w = this.canvas.width;
-    const h = this.canvas.height;
+    const w = this.canvas.width / (window.devicePixelRatio || 1);
+    const h = this.canvas.height / (window.devicePixelRatio || 1);
     ctx.clearRect(0, 0, w, h);
 
-    const radX = (this.rx * Math.PI) / 180;
-    const radY = (this.ry * Math.PI) / 180;
+    const cx = w / 2;
+    const cy = h / 2;
+    const D = 250; 
 
-    const cosX = Math.cos(radX), sinX = Math.sin(radX);
-    const cosY = Math.cos(radY), sinY = Math.sin(radY);
+    const theta = (this.ry * Math.PI) / 180; // Yaw
+    const phi = (this.rx * Math.PI) / 180;   // Pitch
 
-    const scale = Math.min(w, h) * 1.8;
-    const cx = w / 2, cy = h / 2;
+    const cosT = Math.cos(theta), sinT = Math.sin(theta);
+    const cosP = Math.cos(phi), sinP = Math.sin(phi);
 
     const faceData = this.faces.map(face => {
       const projectedVerts = face.vertices.map(v => {
-        // Rotate Y
-        let x1 = v.x * cosY - v.z * sinY;
-        let z1 = v.x * sinY + v.z * cosY;
-        // Rotate X
-        let y2 = v.y * cosX - z1 * sinX;
-        let z2 = v.y * sinX + z1 * cosX;
-        // Project orthographic with depth cue
-        return {
-          x: cx + x1 * (scale / (scale + z2)),
-          y: cy + y2 * (scale / (scale + z2)),
-          z: z2
-        };
+        // Yaw (Z rotation)
+        const x1 = v.x * cosT - v.y * sinT;
+        const y1 = v.x * sinT + v.y * cosT;
+        const z1 = v.z;
+
+        // Pitch (X rotation)
+        const x2 = x1;
+        const y2 = y1 * cosP - z1 * sinP;
+        const z2 = y1 * sinP + z1 * cosP;
+
+        // Projection
+        const scale = D / (D - y2);
+        const px = cx + x2 * scale * this.zoom;
+        const py = cy - z2 * scale * this.zoom;
+
+        return { x: px, y: py, depth: y2 };
       });
 
       // Simple flat lighting normal
-      const v0 = face.vertices[0], v1 = face.vertices[1];
-      const ux = v1.x - v0.x, uy = v1.y - v0.y, uz = v1.z - v0.z;
-      const v2 = face.vertices[face.vertices.length - 1];
-      const wx = v2.x - v0.x, wy = v2.y - v0.y, wz = v2.z - v0.z;
-      const nx = uy * wz - uz * wy;
-      const ny = uz * wx - ux * wz;
-      const nz = ux * wy - uy * wx;
-      const len = Math.sqrt(nx*nx + ny*ny + nz*nz);
+      const p0 = face.vertices[0];
+      const p1 = face.vertices[1];
+      const p2 = face.vertices[face.vertices.length - 1];
       
-      let cosTheta = 1.0;
-      if (len > 0.001) {
-        // Rotate normal to check facing camera (z direction)
-        const ny_rot = ny * cosX - nz * sinX;
-        const nz_rot = ny * sinX + nz * cosX;
-        const nx_rot = nx * cosY - nz_rot * sinY;
-        cosTheta = (nx_rot * 0 + ny_rot * 0 + nz_rot * 1) / len;
-      }
+      const ux = p1.x - p0.x, uy = p1.y - p0.y, uz = p1.z - p0.z;
+      const vx = p2.x - p0.x, vy = p2.y - p0.y, vz = p2.z - p0.z;
 
-      // Average depth for Painter's algorithm
-      let avgDepth = 0;
-      projectedVerts.forEach(pv => avgDepth += pv.z);
-      avgDepth /= projectedVerts.length;
+      let nx = uy * vz - uz * vy;
+      let ny = uz * vx - ux * vz;
+      let nz = ux * vy - uy * vx;
 
+      const len = Math.sqrt(nx*nx + ny*ny + nz*nz);
+      if (len > 0.001) { nx /= len; ny /= len; nz /= len; }
+
+      // Rotate normal
+      const nx1 = nx * cosT - ny * sinT;
+      const ny1 = nx * sinT + ny * cosT;
+      const nz1 = nz;
+
+      const nx2 = nx1;
+      const ny2 = ny1 * cosP - nz1 * sinP;
+      const nz2 = ny1 * sinP + nz1 * cosP;
+
+      const lightSource = { x: 0.3, y: -0.3, z: 0.9 };
+      const lenL = Math.sqrt(lightSource.x*lightSource.x + lightSource.y*lightSource.y + lightSource.z*lightSource.z);
+      lightSource.x /= lenL; lightSource.y /= lenL; lightSource.z /= lenL;
+
+      const cosTheta = nx2 * lightSource.x + ny2 * lightSource.y + nz2 * lightSource.z;
       const intensity = Math.max(0.1, 0.4 + 0.6 * Math.abs(cosTheta));
+
+      // Average depth
+      let avgDepth = 0;
+      projectedVerts.forEach(pv => avgDepth += pv.depth);
+      avgDepth /= projectedVerts.length;
 
       return { face, projectedVerts, depth: avgDepth, intensity };
     });
@@ -802,7 +856,7 @@ class CanvasRenderer3D {
     // Painter's algorithm sort
     faceData.sort((a, b) => a.depth - b.depth);
 
-    faceData.forEach(({face, projectedVerts, intensity}) => {
+    faceData.forEach(({ face, projectedVerts, intensity }) => {
       ctx.beginPath();
       ctx.moveTo(projectedVerts[0].x, projectedVerts[0].y);
       for (let i = 1; i < projectedVerts.length; i++) {
@@ -811,14 +865,12 @@ class CanvasRenderer3D {
       ctx.closePath();
 
       if (this.isSilhouette) {
-        // Shadow/Silhouette mode
         ctx.fillStyle = `rgba(30, 41, 59, ${0.9 * intensity})`;
         ctx.fill();
         ctx.strokeStyle = '#475569';
         ctx.lineWidth = 1.5;
         ctx.stroke();
       } else {
-        // Correct revealed mode
         const base = FACE_COLORS[face.colorIdx];
         ctx.fillStyle = `rgba(${base.rgb[0]}, ${base.rgb[1]}, ${base.rgb[2]}, ${intensity * 0.85})`;
         ctx.fill();
@@ -1028,7 +1080,12 @@ function loadQuestion() {
   // Set up 3D renderer solid
   renderer3D.setSolid(q.model, true); // true = starts as silhouette
   rx = -25;
-  ry = 45;
+  ry = 35;
+
+  // Toggle mystery card state
+  document.getElementById('mystery-box').style.display = 'flex';
+  document.getElementById('canvas3d').style.display = 'none';
+  document.getElementById('drag-hint').style.display = 'none';
 
   // Set progression UI
   document.getElementById('current-question-idx').textContent = currentQIdx + 1;
@@ -1098,6 +1155,11 @@ function selectChoice(btn, choice) {
     
     // Reveal solid color
     renderer3D.isSilhouette = false;
+    
+    // Toggle mystery card state
+    document.getElementById('mystery-box').style.display = 'none';
+    document.getElementById('canvas3d').style.display = 'block';
+    document.getElementById('drag-hint').style.display = 'block';
     
     // UI state
     btn.classList.add('correct');
