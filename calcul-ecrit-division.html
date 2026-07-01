@@ -1310,36 +1310,23 @@ function setupInteractivity() {
       }
     });
     
-    // 3. Auto-tabbing de gauche à droite pour le quotient (et droite à gauche pour les soustractions)
+    // 3. Auto-tabbing de gauche à droite pour tous les champs dans la division
     card.addEventListener('input', (e) => {
       const target = e.target;
       if (target.tagName !== 'INPUT') return;
       
       const val = target.value.trim();
       if (val.length === 1 && /^[0-9]$/.test(val)) {
-        const type = target.dataset.type;
         const row = parseInt(target.dataset.row, 10);
         
-        if (type === 'quotient') {
-          // De gauche à droite (ordre naturel croissant)
-          const sameRowInputs = Array.from(card.querySelectorAll(`input[data-row="${row}"]`))
-            .sort((a, b) => parseFloat(a.dataset.col) - parseFloat(b.dataset.col));
-          const idx = sameRowInputs.indexOf(target);
-          if (idx < sameRowInputs.length - 1) {
-            const nextInput = sameRowInputs[idx + 1];
-            nextInput.focus();
-            nextInput.select();
-          }
-        } else {
-          // De droite à gauche pour les produits et restes (dans notre repère gauche-droite, aller à gauche correspond à décroître l'index de colonne)
-          const sameRowInputs = Array.from(card.querySelectorAll(`input[data-row="${row}"]`))
-            .sort((a, b) => parseFloat(a.dataset.col) - parseFloat(b.dataset.col));
-          const idx = sameRowInputs.indexOf(target);
-          if (idx > 0) {
-            const nextInput = sameRowInputs[idx - 1];
-            nextInput.focus();
-            nextInput.select();
-          }
+        // De gauche à droite (ordre naturel croissant) pour tous les champs de la division
+        const sameRowInputs = Array.from(card.querySelectorAll(`input[data-row="${row}"]`))
+          .sort((a, b) => parseFloat(a.dataset.col) - parseFloat(b.dataset.col));
+        const idx = sameRowInputs.indexOf(target);
+        if (idx < sameRowInputs.length - 1) {
+          const nextInput = sameRowInputs[idx + 1];
+          nextInput.focus();
+          nextInput.select();
         }
       }
     });
@@ -1381,8 +1368,8 @@ function updateTabIndices() {
             if (typeA === 'remainder') return -1;
             if (typeB === 'remainder') return 1;
           }
-          // De droite à gauche
-          return parseFloat(b.dataset.col) - parseFloat(a.dataset.col);
+          // De gauche à droite (ordre naturel croissant)
+          return parseFloat(a.dataset.col) - parseFloat(b.dataset.col);
         });
     });
     
@@ -1406,6 +1393,12 @@ function updateTabIndices() {
     while (qIdx < quotientInputs.length) {
       sortedInputs.push(quotientInputs[qIdx]);
       qIdx++;
+    }
+    
+    // Ajouter le reste final (Niveau 4) à la fin
+    const finalRemainderInput = inputs.find(i => i.dataset.type === 'final-remainder');
+    if (finalRemainderInput) {
+      sortedInputs.push(finalRemainderInput);
     }
     
     // Assigner les tabindexes
