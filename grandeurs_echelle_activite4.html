@@ -606,6 +606,18 @@
   </div>
 </div>
 
+<!-- CUSTOM CONFIRMATION MODAL -->
+<div id="confirm-modal" class="level-overlay" style="display: none; z-index: 200;">
+  <div class="level-card" style="max-width: 400px; padding: 30px; box-shadow: 8px 8px 0px #000;">
+    <h3 style="font-family: 'Fredoka', sans-serif; font-size: 1.6rem; margin-bottom: 12px; color: var(--purple-dark);">Attention !</h3>
+    <p style="font-size: 0.95rem; color: var(--muted); margin: 0 0 24px 0; line-height: 1.5;">Es-tu sûr de vouloir quitter ton niveau ? Ton résultat se réinitialisera.</p>
+    <div style="display: flex; gap: 15px; justify-content: center;">
+      <button class="btn" style="background: #E74C3C; font-size: 1rem; padding: 10px 25px; width: 100px; box-shadow: 4px 4px 0px var(--line);" onclick="closeConfirmModal(false)">Non</button>
+      <button class="btn btn-success" style="font-size: 1rem; padding: 10px 25px; width: 100px; box-shadow: 4px 4px 0px var(--line);" onclick="closeConfirmModal(true)">Oui</button>
+    </div>
+  </div>
+</div>
+
 <!-- MAIN INTERFACE -->
 <div class="header">
   <div class="header-title">
@@ -1025,13 +1037,16 @@
     restartGame();
   }
 
-  function changeLevel(level) {
+  let pendingLevel = null;
+
+  function changeLevel(level, bypassConfirm = false) {
     if (level === currentLevel) return;
     
     // Warn if a game is already in progress
-    if (questionNum > 1 || score > 0) {
-      const confirmReset = confirm("Es-tu sûr de vouloir quitter ton niveau ? Ton résultat se réinitialisera.");
-      if (!confirmReset) return;
+    if (!bypassConfirm && (questionNum > 1 || score > 0)) {
+      pendingLevel = level;
+      document.getElementById('confirm-modal').style.display = 'flex';
+      return;
     }
     
     playSound('click');
@@ -1080,6 +1095,15 @@
 
     buildRulerTicks();
     restartGame();
+  }
+
+  function closeConfirmModal(confirmed) {
+    playSound('click');
+    document.getElementById('confirm-modal').style.display = 'none';
+    if (confirmed && pendingLevel) {
+      changeLevel(pendingLevel, true);
+    }
+    pendingLevel = null;
   }
 
   function restartGame() {
