@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Reconnaître les polyèdres</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --paper: #f8fafc;
+    --ink: #0f172a;
+    --muted: #64748b;
+    --accent: #2563eb;
+    --accent-light: #eff6ff;
+    --accent-hover: #1d4ed8;
+    --success: #16a34a;
+    --success-light: #f0fdf4;
+    --error: #dc2626;
+    --error-light: #fef2f2;
+    --warning: #ea580c;
+    --warning-light: #fff7ed;
+    --border: #e2e8f0;
+    --card: #ffffff;
+    --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    padding: 1.5rem;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .container {
+    max-width: 620px;
+    margin: 0 auto;
+  }
+
+  /* Progress bar and dots */
+  .info-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: var(--shadow);
+  }
+  .info-card p {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 15px;
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .dots {
+    display: flex;
+    gap: 6px;
+  }
+  .dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #e2e8f0;
+    border: 1px solid #cbd5e1;
+    transition: all 0.3s ease;
+  }
+  .dot.current {
+    background: var(--accent);
+    border-color: var(--accent-hover);
+    transform: scale(1.2);
+  }
+  .dot.correct {
+    background: var(--success);
+    border-color: var(--success);
+  }
+  .dot.partial {
+    background: var(--warning);
+    border-color: var(--warning);
+  }
+  .dot.incorrect {
+    background: var(--error);
+    border-color: var(--error);
+  }
+
+  /* Shape container */
+  .shape-card {
+    background: var(--card);
+    border: 2px solid var(--border);
+    border-radius: 20px;
+    padding: 1.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--shadow);
+    min-height: 220px;
+    position: relative;
+    overflow: hidden;
+  }
+  .shape-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: radial-gradient(circle, rgba(37,99,235,0.03) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .shape-card svg {
+    max-width: 240px;
+    max-height: 180px;
+    filter: drop-shadow(0 10px 8px rgba(0,0,0,0.04));
+  }
+
+  /* Interaction and step cards */
+  .step-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    box-shadow: var(--shadow);
+    display: none;
+    animation: slideUp 0.4s ease forwards;
+  }
+  .step-card.active {
+    display: block;
+  }
+  .step-title {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 1.25rem;
+    text-align: center;
+  }
+
+  /* Buttons */
+  .type-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .btn-type {
+    padding: 1rem 0.75rem;
+    border-radius: 16px;
+    border: 2.5px solid var(--border);
+    background: var(--card);
+    color: var(--ink);
+    font-size: 15px;
+    font-weight: 800;
+    cursor: pointer;
+    font-family: 'Nunito', sans-serif;
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+  .btn-type:hover:not(:disabled) {
+    border-color: var(--accent);
+    background: var(--accent-light);
+    color: var(--accent-hover);
+    transform: translateY(-2px);
+  }
+  .btn-type:active:not(:disabled) {
+    transform: translateY(0);
+  }
+  .btn-type.selected {
+    border-color: var(--accent);
+    background: var(--accent-light);
+    color: var(--accent-hover);
+  }
+  .btn-type.correct {
+    border-color: var(--success);
+    background: var(--success-light);
+    color: var(--success);
+  }
+  .btn-type.incorrect {
+    border-color: var(--error);
+    background: var(--error-light);
+    color: var(--error);
+  }
+  .btn-type:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+
+  .btn-type .icon {
+    font-size: 24px;
+  }
+  .btn-type .desc {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted);
+  }
+
+  /* Name QCM grid */
+  .name-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .btn-name {
+    padding: 12px 14px;
+    border-radius: 14px;
+    border: 2px solid var(--border);
+    background: var(--card);
+    color: var(--ink);
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: 'Nunito', sans-serif;
+    transition: all 0.15s ease;
+    text-align: center;
+  }
+  .btn-name:hover:not(:disabled) {
+    border-color: var(--accent);
+    background: var(--accent-light);
+    color: var(--accent-hover);
+  }
+  .btn-name.correct {
+    border-color: var(--success);
+    background: var(--success-light);
+    color: var(--success);
+    font-weight: 800;
+  }
+  .btn-name.incorrect {
+    border-color: var(--error);
+    background: var(--error-light);
+    color: var(--error);
+  }
+  .btn-name:disabled {
+    cursor: not-allowed;
+  }
+
+  /* Feedback box */
+  .feedback-box {
+    margin-top: 1rem;
+    padding: 1rem 1.25rem;
+    border-radius: 14px;
+    font-size: 14px;
+    line-height: 1.45;
+    font-weight: 600;
+    display: none;
+    animation: fadeIn 0.3s ease forwards;
+  }
+  .feedback-box.correct {
+    display: block;
+    background: var(--success-light);
+    border: 1px solid #bbf7d0;
+    color: #15803d;
+  }
+  .feedback-box.incorrect {
+    display: block;
+    background: var(--error-light);
+    border: 1px solid #fecaca;
+    color: #b91c1c;
+  }
+
+  /* Nav buttons */
+  .btn-next {
+    width: 100%;
+    padding: 14px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 16px;
+    font-size: 16px;
+    font-weight: 800;
+    cursor: pointer;
+    font-family: 'Fredoka', sans-serif;
+    transition: all 0.2s ease;
+    margin-top: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+  }
+  .btn-next:hover {
+    background: var(--accent-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3);
+  }
+  .btn-next:active {
+    transform: translateY(0);
+  }
+
+  /* Score screen */
+  .score-card {
+    display: none;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 2.5rem 1.5rem;
+    text-align: center;
+    box-shadow: var(--shadow);
+    animation: slideUp 0.5s ease forwards;
+  }
+  .score-emoji {
+    font-size: 72px;
+    margin-bottom: 0.5rem;
+    animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  }
+  .score-title {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 26px;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: var(--ink);
+  }
+  .score-num {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 48px;
+    font-weight: 800;
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+  }
+  .score-details {
+    background: var(--paper);
+    border-radius: 16px;
+    padding: 1rem;
+    margin-bottom: 2rem;
+    text-align: left;
+    max-height: 250px;
+    overflow-y: auto;
+    border: 1px solid var(--border);
+  }
+  .score-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 4px;
+    border-bottom: 1px solid rgba(0,0,0,0.04);
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .score-row:last-child {
+    border-bottom: none;
+  }
+  .score-row .name {
+    color: var(--ink);
+  }
+  .score-row .type-tag {
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 99px;
+    font-weight: 800;
+    text-transform: uppercase;
+  }
+  .score-row .type-tag.polyedre {
+    background: #dbeafe;
+    color: #1e40af;
+  }
+  .score-row .type-tag.non-polyedre {
+    background: #ffedd5;
+    color: #9a3412;
+  }
+  .score-row .status-badge {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  /* Animations */
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes popIn {
+    from { transform: scale(0.6); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+
+  /* Scrollbar style */
+  .score-details::-webkit-scrollbar {
+    width: 6px;
+  }
+  .score-details::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .score-details::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 99px;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <div id="exercice-zone">
+    <!-- Progress Indicator -->
+    <div class="info-card">
+      <p id="info-numero">Solide 1/10</p>
+      <div class="dots" id="dots-progress"></div>
+    </div>
+
+    <!-- The 3D Shape Card -->
+    <div class="shape-card" id="shape-container"></div>
+
+    <!-- STEP 1: Polyhedron or not -->
+    <div class="step-card active" id="card-step1">
+      <div class="step-title">1. Ce solide est-il un polyèdre ?</div>
+      <div class="type-buttons">
+        <button class="btn-type" onclick="submitStep1(true)" id="btn-poly">
+          <span class="icon">💎</span>
+          <span>Polyèdre</span>
+          <span class="desc">Toutes les faces planes</span>
+        </button>
+        <button class="btn-type" onclick="submitStep1(false)" id="btn-nonpoly">
+          <span class="icon">🌀</span>
+          <span>Non-polyèdre</span>
+          <span class="desc">Au moins 1 face courbe</span>
+        </button>
+      </div>
+      <div class="feedback-box" id="feedback-step1"></div>
+    </div>
+
+    <!-- STEP 2: Choose Name (displayed after Step 1) -->
+    <div class="step-card" id="card-step2">
+      <div class="step-title">2. Comment s'appelle ce solide ?</div>
+      <div class="name-grid" id="name-options"></div>
+      <div class="feedback-box" id="feedback-step2"></div>
+    </div>
+
+    <!-- Next Button (displayed when current shape is completed) -->
+    <button class="btn-next" id="btn-next" style="display:none" onclick="nextQuestion()">
+      <span>Solide suivant</span> ➡️
+    </button>
+  </div>
+
+  <!-- Final Score Screen -->
+  <div class="score-card" id="score-screen">
+    <div class="score-emoji" id="final-emoji">🏆</div>
+    <div class="score-title" id="final-title">Excellent travail !</div>
+    <div class="score-num" id="final-score">9 / 10</div>
+    <div class="score-details" id="final-details"></div>
+    <button class="btn-next" onclick="restart()">🔄 Recommencer</button>
+  </div>
+</div>
+
+<script>
+// The 10 beautiful 3D shapes with vector definitions and pedagogical details
+const SOLIDS_DATABASE = [
+  {
+    id: "cube",
+    name: "Cube",
+    isPolyedre: true,
+    desc: "Un polyèdre à 6 faces carrées identiques.",
+    svg: `<svg viewBox="0 0 240 200" width="100%" height="100%">
+      <defs>
+        <linearGradient id="cube-front-grad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#8bb6ff"/>
+          <stop offset="100%" stop-color="#4d88ff"/>
+        </linearGradient>
+        <linearGradient id="cube-top-grad" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="#b3d1ff"/>
+          <stop offset="100%" stop-color="#8bb6ff"/>
+        </linearGradient>
+        <linearGradient id="cube-right-grad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#4d88ff"/>
+          <stop offset="100%" stop-color="#1a66ff"/>
+        </linearGradient>
+      </defs>
+      <polygon points="110,30 190,30 150,60 70,60" fill="url(#cube-top-grad)" opacity="0.85"/>
+      <polygon points="150,60 190,30 190,110 150,140" fill="url(#cube-right-grad)" opacity="0.85"/>
+      <polygon points="70,60 150,60 150,140 70,140" fill="url(#cube-front-grad)" opacity="0.9"/>
+      <line x1="70" y1="140" x2="110" y2="110" stroke="#0044cc" stroke-width="1.5" stroke-dasharray="4,4"/>
+      <line x1="110" y1="30" x2="110" y2="110" stroke="#0044cc" stroke-width="1.5" stroke-dasharray="4,4"/>
+      <line x1="110" y1="110" x2="190" y2="110" stroke="#0044cc" stroke-width="1.5" stroke-dasharray="4,4"/>
+      <polygon points="70,60 150,60 150,140 70,140" fill="none" stroke="#0033aa" stroke-width="2.5" stroke-linejoin="round"/>
+      <line x1="70" y1="60" x2="110" y2="30" stroke="#0033aa" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="150" y1="60" x2="190" y2="30" stroke="#0033aa" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="150" y1="140" x2="190" y2="110" stroke="#0033aa" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="110" y1="30" x2="190" y2="30" stroke="#0033aa" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="190" y1="30" x2="190" y2="110" stroke="#0033aa" stroke-width="2.5" stroke-linecap="round"/>
+      <circle cx="70" cy="60" r="4.5" fill="#0033aa"/>
+      <circle cx="150" cy="60" r="4.5" fill="#0033aa"/>
+      <circle cx="150" cy="140" r="4.5" fill="#0033aa"/>
+      <circle cx="70" cy="140" r="4.5" fill="#0033aa"/>
+      <circle cx="110" cy="30" r="4.5" fill="#0033aa"/>
+      <circle cx="190" cy="30" r="4.5" fill="#0033aa"/>
+      <circle cx="190" cy="110" r="4.5" fill="#0033aa"/>
+    </svg>`,
+    distractors: ["Pavé droit", "Pyramide", "Prisme droit"]
+  },
+  {
+    id: "pave",
+    name: "Pavé droit",
+    isPolyedre: true,
+    desc: "Un polyèdre à 6 faces rectangulaires.",
+    svg: `<svg viewBox="0 0 240 200" width="100%" height="100%">
+      <defs>
+        <linearGradient id="pave-front-grad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#ffb84d"/>
+          <stop offset="100%" stop-color="#e68a00"/>
+        </linearGradient>
+        <linearGradient id="pave-top-grad" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="#ffe0b3"/>
+          <stop offset="100%" stop-color="#ffb84d"/>
+        </linearGradient>
+        <linearGradient id="pave-right-grad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#e68a00"/>
+          <stop offset="100%" stop-color="#995c00"/>
+        </linearGradient>
+      </defs>
+      <polygon points="80,45 200,45 170,70 50,70" fill="url(#pave-top-grad)" opacity="0.85"/>
+      <polygon points="170,70 200,45 200,105 170,130" fill="url(#pave-right-grad)" opacity="0.85"/>
+      <polygon points="50,70 170,70 170,130 50,130" fill="url(#pave-front-grad)" opacity="0.9"/>
+      <line x1="50" y1="130" x2="80" y2="105" stroke="#cc7a00" stroke-width="1.5" stroke-dasharray="4,4"/>
+      <line x1="80" y1="45" x2="80" y2="105" stroke="#cc7a00" stroke-width="1.5" stroke-dasharray="4,4"/>
+      <line x1="80" y1="105" x2="200" y2="105" stroke="#cc7a00" stroke-width="1.5" stroke-dasharray="4,4"/>
+      <polygon points="50,70 170,70 170,130 50,130" fill="none" stroke="#995c00" stroke-width="2.5" stroke-linejoin="round"/>
+      <line x1="50" y1="70" x2="80" y2="45" stroke="#995c00" stroke-width="2.5"/>
+      <line x1="170" y1="70" x2="200" y2="45" stroke="#995c00" stroke-width="2.5"/>
+      <line x1="170" y1="130" x2="200" y2="105" stroke="#995c00" stroke-width="2.5"/>
+      <line x1="80" y1="45" x2="200" y2="45" stroke="#995c00" stroke-width="2.5"/>
+      <line x1="200" y1="45" x2="200" y2="105" stroke="#995c00" stroke-width="2.5"/>
+      <circle cx="50" cy="70" r="4.5" fill="#995c00"/>
+      <circle cx="170" cy="70" r="4.5" fill="#995c00"/>
+      <circle cx="170" cy="130" r="4.5" fill="#995c00"/>
+      <circle cx="50" cy="130" r="4.5" fill="#995c00"/>
+      <circle cx="80" cy="45" r="4.5" fill="#995c00"/>
+      <circle cx="200" cy="45" r="4.5" fill="#995c00"/>
+      <circle cx="200" cy="105" r="4.5" fill="#995c00"/>
+    </svg>`,
+    distractors: ["Cube", "Cylindre", "Prisme droit"]
+  },
+  {
+    id: "pyramide",
+    name: "Pyramide à base carrée",
+    isPolyedre: true,
+    desc: "Un polyèdre avec 1 base plane carrée et 4 faces triangulaires.",
+    svg: `<svg viewBox="0 0 240 200" width="100%" height="100%">
+      <defs>
+        <linearGradient id="pyr-left-grad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#34d399"/>
+          <stop offset="100%" stop-color="#059669"/>
+        </linearGradient>
+        <linearGradient id="pyr-right-grad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#059669"/>
+          <stop offset="100%" stop-color="#047857"/>
+        </linearGradient>
+      </defs>
+      <polygon points="120,30 60,130 140,140" fill="url(#pyr-left-grad)" opacity="0.85"/>
+      <polygon points="120,30 140,140 180,100" fill="url(#pyr-right-grad)" opacity="0.85"/>
+      <line x1="60" y1="130" x2="100" y2="90" stroke="#047857" stroke-width="1.5" stroke-dasharray="4,4"/>
+      <line x1="100" y1="90" x2="180" y2="100" stroke="#047857" stroke-width="1.5" stroke-dasharray="4,4"/>
+      <line x1="120" y1="30" x2="100" y2="90" stroke="#047857" stroke-width="1.5" stroke-dasharray="4,4"/>
+      <line x1="120" y1="30" x2="60" y2="130" stroke="#065f46" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="120" y1="30" x2="140" y2="140" stroke="#065f46" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="120" y1="30" x2="180" y2="100" stroke="#065f46" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="60" y1="130" x2="140" y2="140" stroke="#065f46" stroke-width="2.5" stroke-linejoin="round"/>
+      <line x1="140" y1="140" x2="180" y2="100" stroke="#065f46" stroke-width="2.5" stroke-linejoin="round"/>
+      <circle cx="120" cy="30" r="4.5" fill="#065f46"/>
+      <circle cx="60" cy="130" r="4.5" fill="#065f46"/>
+      <circle cx="140" cy="140" r="4.5" fill="#065f46"/>
+      <circle cx="180" cy="100" r="4.5" fill="#065f46"/>
+    </svg>`,
+    distractors: ["Cône", "Tétraèdre", "Prisme droit"]
+  },
+  {
+    id: "prisme",
+    name: "Prisme droit",
+    isPolyedre: true,
+    desc: "Un polyèdre ayant 2 bases triangulaires parallèles et 3 faces rectangulaires.",
+    svg: `<svg viewBox="0 0 240 200" width="100%" height="100%">
+      <defs>
+        <linearGradient id="prism-front-grad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#c084fc"/>
+          <stop offset="100%" stop-color="#9333ea"/>
+        </linearGradient>
+        <linearGradient id="prism-top-grad" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="#e9d5ff"/>
+          <stop offset="100%" stop-color="#c084fc"/>
+        </linearGradient>
+      </defs>
+      <polygon points="70,50 140,65 100,35" fill="url(#prism-top-grad)" opacity="0.8"/>
+      <polygon points="70,50 140,65 140,145 70,130" fill="url(#prism-front-grad)" opacity="0.85"/>
+      <line x1="70" y1="130" x2="100" y2="115" stroke="#7e22ce" stroke-width="1.5" stroke-dasharray="4,4"/>
+      <line x1="100" y1="115" x2="140" y2="145" stroke="#7e22ce" stroke-width="1.5" stroke-dasharray="4,4"/>
+      <line x1="100" y1="35" x2="100" y2="115" stroke="#7e22ce" stroke-width="1.5" stroke-dasharray="4,4"/>
+      <polygon points="70,50 140,65 100,35" fill="none" stroke="#6b21a8" stroke-width="2.5" stroke-linejoin="round"/>
+      <line x1="70" y1="50" x2="70" y2="130" stroke="#6b21a8" stroke-width="2.5"/>
+      <line x1="140" y1="65" x2="140" y2="145" stroke="#6b21a8" stroke-width="2.5"/>
+      <line x1="70" y1="130" x2="140" y2="145" stroke="#6b21a8" stroke-width="2.5"/>
+      <circle cx="70" cy="50" r="4.5" fill="#6b21a8"/>
+      <circle cx="140" cy="65" r="4.5" fill="#6b21a8"/>
+      <circle cx="100" cy="35" r="4.5" fill="#6b21a8"/>
+      <circle cx="70" cy="130" r="4.5" fill="#6b21a8"/>
+      <circle cx="140" cy="145" r="4.5" fill="#6b21a8"/>
+    </svg>`,
+    distractors: ["Cylindre", "Pyramide à base carrée", "Pavé droit"]
+  },
+  {
+    id: "cylindre",
+    name: "Cylindre",
+    isPolyedre: false,
+    desc: "Un corps rond possédant 2 bases planes circulaires et 1 surface latérale courbe.",
+    svg: `<svg viewBox="0 0 240 200" width="100%" height="100%">
+      <defs>
+        <linearGradient id="cyl-body" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="#f87171"/>
+          <stop offset="25%" stop-color="#fca5a5"/>
+          <stop offset="70%" stop-color="#ef4444"/>
+          <stop offset="100%" stop-color="#991b1b"/>
+        </linearGradient>
+        <linearGradient id="cyl-top" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#fee2e2"/>
+          <stop offset="100%" stop-color="#fca5a5"/>
+        </linearGradient>
+      </defs>
+      <path d="M60,50 L180,50 L180,130 A60,20 0 0,1 60,130 Z" fill="url(#cyl-body)" opacity="0.85"/>
+      <ellipse cx="120" cy="50" rx="60" ry="20" fill="url(#cyl-top)" stroke="#991b1b" stroke-width="2.5"/>
+      <path d="M180,130 A60,20 0 0,1 60,130" fill="none" stroke="#991b1b" stroke-width="2.5"/>
+      <path d="M60,130 A60,20 0 0,1 180,130" fill="none" stroke="#991b1b" stroke-width="1.5" stroke-dasharray="4,4"/>
+      <line x1="60" y1="50" x2="60" y2="130" stroke="#991b1b" stroke-width="2.5"/>
+      <line x1="180" y1="50" x2="180" y2="130" stroke="#991b1b" stroke-width="2.5"/>
+    </svg>`,
+    distractors: ["Cône", "Prisme droit", "Pavé droit"]
+  },
+  {
+    id: "cone",
+    name: "Cône",
+    isPolyedre: false,
+    desc: "Un corps rond avec 1 base plane circulaire, 1 sommet (apex) et 1 face latérale courbe.",
+    svg: `<svg viewBox="0 0 240 200" width="100%" height="100%">
+      <defs>
+        <linearGradient id="cone-body" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="#2dd4bf"/>
+          <stop offset="25%" stop-color="#99f6e4"/>
+          <stop offset="70%" stop-color="#0d9488"/>
+          <stop offset="100%" stop-color="#115e59"/>
+        </linearGradient>
+      </defs>
+      <path d="M120,30 L185,135 A65,22 0 0,1 55,135 Z" fill="url(#cone-body)" opacity="0.85"/>
+      <path d="M185,135 A65,22 0 0,1 55,135" fill="none" stroke="#115e59" stroke-width="2.5"/>
+      <path d="M55,135 A65,22 0 0,1 185,135" fill="none" stroke="#115e59" stroke-width="1.5" stroke-dasharray="4,4"/>
+      <line x1="120" y1="30" x2="55" y2="135" stroke="#115e59" stroke-width="2.5"/>
+      <line x1="120" y1="30" x2="185" y2="135" stroke="#115e59" stroke-width="2.5"/>
+      <circle cx="120" cy="30" r="3" fill="#115e59"/>
+    </svg>`,
+    distractors: ["Cylindre", "Pyramide à base carrée", "Sphère"]
+  },
+  {
+    id: "sphere",
+    name: "Sphère",
+    isPolyedre: false,
+    desc: "Un corps rond parfaitement symétrique composé d'une unique surface courbe continue.",
+    svg: `<svg viewBox="0 0 240 200" width="100%" height="100%">
+      <defs>
+        <radialGradient id="sphere-grad" cx="35%" cy="35%" r="65%">
+          <stop offset="0%" stop-color="#93c5fd"/>
+          <stop offset="35%" stop-color="#60a5fa"/>
+          <stop offset="85%" stop-color="#1d4ed8"/>
+          <stop offset="100%" stop-color="#1e3a8a"/>
+        </radialGradient>
+      </defs>
+      <circle cx="120" cy="95" r="60" fill="url(#sphere-grad)" opacity="0.9"/>
+      <path d="M180,95 A60,18 0 0,1 60,95" fill="none" stroke="#1e3a8a" stroke-width="2" opacity="0.6"/>
+      <path d="M60,95 A60,18 0 0,1 180,95" fill="none" stroke="#1e3a8a" stroke-width="1.5" stroke-dasharray="4,4" opacity="0.6"/>
+      <path d="M120,35 A18,60 0 0,1 120,155" fill="none" stroke="#1e3a8a" stroke-width="1.5" stroke-dasharray="4,4" opacity="0.6"/>
+      <circle cx="120" cy="95" r="60" fill="none" stroke="#1d4ed8" stroke-width="2.5"/>
+    </svg>`,
+    distractors: ["Cylindre", "Cône", "Demi-sphère"]
+  },
+  {
+    id: "tetraedre",
+    name: "Tétraèdre",
+    isPolyedre: true,
+    desc: "Un polyèdre (pyramide triangulaire) composé de 4 faces triangulaires.",
+    svg: `<svg viewBox="0 0 240 200" width="100%" height="100%">
+      <defs>
+        <linearGradient id="tetra-left" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#fb7185"/>
+          <stop offset="100%" stop-color="#e11d48"/>
+        </linearGradient>
+        <linearGradient id="tetra-right" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#e11d48"/>
+          <stop offset="100%" stop-color="#9f1239"/>
+        </linearGradient>
+      </defs>
+      <polygon points="115,35 60,135 170,135" fill="url(#tetra-left)" opacity="0.85"/>
+      <polygon points="115,35 170,135 110,105" fill="url(#tetra-right)" opacity="0.5"/>
+      <line x1="60" y1="135" x2="110" y2="105" stroke="#be123c" stroke-width="1.5" stroke-dasharray="4,4"/>
+      <line x1="110" y1="105" x2="170" y2="135" stroke="#be123c" stroke-width="1.5" stroke-dasharray="4,4"/>
+      <line x1="115" y1="35" x2="110" y2="105" stroke="#be123c" stroke-width="1.5" stroke-dasharray="4,4"/>
+      <line x1="115" y1="35" x2="60" y2="135" stroke="#9f1239" stroke-width="2.5"/>
+      <line x1="115" y1="35" x2="170" y2="135" stroke="#9f1239" stroke-width="2.5"/>
+      <line x1="60" y1="135" x2="170" y2="135" stroke="#9f1239" stroke-width="2.5"/>
+      <circle cx="115" cy="35" r="4.5" fill="#9f1239"/>
+      <circle cx="60" cy="135" r="4.5" fill="#9f1239"/>
+      <circle cx="170" cy="135" r="4.5" fill="#9f1239"/>
+    </svg>`,
+    distractors: ["Pyramide à base carrée", "Prisme droit", "Cône"]
+  },
+  {
+    id: "demisphere",
+    name: "Demi-sphère",
+    isPolyedre: false,
+    desc: "Un corps rond composé de 1 face plane circulaire et 1 face courbe (dôme).",
+    svg: `<svg viewBox="0 0 240 200" width="100%" height="100%">
+      <defs>
+        <radialGradient id="dome-grad" cx="50%" cy="30%" r="50%">
+          <stop offset="0%" stop-color="#fbbf24"/>
+          <stop offset="70%" stop-color="#d97706"/>
+          <stop offset="100%" stop-color="#b45309"/>
+        </radialGradient>
+      </defs>
+      <path d="M60,120 A60,60 0 0,1 180,120 Z" fill="url(#dome-grad)" opacity="0.85"/>
+      <path d="M180,120 A60,20 0 0,1 60,120" fill="none" stroke="#78350f" stroke-width="2.5"/>
+      <path d="M60,120 A60,20 0 0,1 180,120" fill="none" stroke="#78350f" stroke-width="1.5" stroke-dasharray="4,4"/>
+      <path d="M60,120 A60,60 0 0,1 180,120" fill="none" stroke="#b45309" stroke-width="2.5"/>
+    </svg>`,
+    distractors: ["Sphère", "Cône", "Cylindre"]
+  },
+  {
+    id: "conetronque",
+    name: "Cône tronqué",
+    isPolyedre: false,
+    desc: "Un corps rond composé de 2 bases planes circulaires de tailles différentes et 1 face courbe.",
+    svg: `<svg viewBox="0 0 240 200" width="100%" height="100%">
+      <defs>
+        <linearGradient id="trun-body" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="#a3e635"/>
+          <stop offset="25%" stop-color="#d9f99d"/>
+          <stop offset="70%" stop-color="#65a30d"/>
+          <stop offset="100%" stop-color="#4d7c0f"/>
+        </linearGradient>
+        <linearGradient id="trun-top" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#ecfccb"/>
+          <stop offset="100%" stop-color="#d9f99d"/>
+        </linearGradient>
+      </defs>
+      <path d="M85,60 L155,60 L185,130 A65,20 0 0,1 55,130 Z" fill="url(#trun-body)" opacity="0.85"/>
+      <ellipse cx="120" cy="60" rx="35" ry="11" fill="url(#trun-top)" stroke="#4d7c0f" stroke-width="2.5"/>
+      <path d="M185,130 A65,20 0 0,1 55,130" fill="none" stroke="#4d7c0f" stroke-width="2.5"/>
+      <path d="M55,130 A65,20 0 0,1 185,130" fill="none" stroke="#4d7c0f" stroke-width="1.5" stroke-dasharray="4,4"/>
+      <line x1="85" y1="60" x2="55" y2="130" stroke="#4d7c0f" stroke-width="2.5"/>
+      <line x1="155" y1="60" x2="185" y2="130" stroke="#4d7c0f" stroke-width="2.5"/>
+    </svg>`,
+    distractors: ["Cône", "Cylindre", "Prisme droit"]
+  }
+];
+
+let selection = [];
+let curIdx = 0;
+let currentScores = []; // tracks results: 2 = all correct, 1 = 1/2 correct, 0 = all wrong
+let step1Answered = false;
+let step2Answered = false;
+let step1Correct = false;
+let step2Correct = false;
+
+// Shuffle array helper
+function shuffle(arr) {
+  return [...arr].sort(() => Math.random() - 0.5);
+}
+
+// Generate the 10 progress dots
+function initProgress() {
+  const container = document.getElementById('dots-progress');
+  container.innerHTML = '';
+  for (let i = 0; i < 10; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'dot';
+    if (i === 0) dot.classList.add('current');
+    container.appendChild(dot);
+  }
+}
+
+// Update state of progress dots
+function updateProgress() {
+  const dots = document.querySelectorAll('.dots .dot');
+  dots.forEach((dot, idx) => {
+    dot.className = 'dot';
+    if (idx === curIdx) {
+      dot.classList.add('current');
+    } else if (idx < curIdx) {
+      const score = currentScores[idx];
+      if (score === 2) dot.classList.add('correct');
+      else if (score === 1) dot.classList.add('partial');
+      else dot.classList.add('incorrect');
+    }
+  });
+}
+
+function demarrer() {
+  selection = shuffle(SOLIDS_DATABASE);
+  curIdx = 0;
+  currentScores = [];
+  document.getElementById('score-screen').style.display = 'none';
+  document.getElementById('exercice-zone').style.display = 'block';
+  initProgress();
+  afficherQuestion();
+}
+
+function afficherQuestion() {
+  step1Answered = false;
+  step2Answered = false;
+  step1Correct = false;
+  step2Correct = false;
+
+  const q = selection[curIdx];
+
+  // Set number indicator
+  document.getElementById('info-numero').textContent = `Solide ${curIdx + 1}/10`;
+  updateProgress();
+
+  // Load SVG shape
+  document.getElementById('shape-container').innerHTML = q.svg;
+
+  // Reset Step 1 Card
+  document.getElementById('card-step1').className = 'step-card active';
+  document.getElementById('btn-poly').className = 'btn-type';
+  document.getElementById('btn-nonpoly').className = 'btn-type';
+  document.getElementById('btn-poly').disabled = false;
+  document.getElementById('btn-nonpoly').disabled = false;
+  document.getElementById('feedback-step1').style.display = 'none';
+
+  // Hide Step 2 Card & Next button
+  document.getElementById('card-step2').className = 'step-card';
+  document.getElementById('btn-next').style.display = 'none';
+}
+
+function submitStep1(chosenIsPoly) {
+  if (step1Answered) return;
+  step1Answered = true;
+
+  const q = selection[curIdx];
+  const correct = (chosenIsPoly === q.isPolyedre);
+  step1Correct = correct;
+
+  // Highlight chosen and correct buttons
+  const btnPoly = document.getElementById('btn-poly');
+  const btnNonPoly = document.getElementById('btn-nonpoly');
+
+  btnPoly.disabled = true;
+  btnNonPoly.disabled = true;
+
+  const selectedBtn = chosenIsPoly ? btnPoly : btnNonPoly;
+  const correctBtn = q.isPolyedre ? btnPoly : btnNonPoly;
+
+  if (correct) {
+    selectedBtn.classList.add('correct');
+    showFeedback('feedback-step1', true, `Correct ! ${q.isPolyedre ? "C'est bien un polyèdre" : "C'est bien un non-polyèdre"} : toutes ses faces doivent être planes pour être un polyèdre.`);
+  } else {
+    selectedBtn.classList.add('incorrect');
+    correctBtn.classList.add('correct');
+    showFeedback('feedback-step1', false, `Faux. ${q.isPolyedre ? "Le solide dessiné est un polyèdre car toutes ses faces sont plates." : "Le solide dessiné possède au moins une face courbe (corps rond), ce n'est donc pas un polyèdre."}`);
+  }
+
+  // Go to step 2 after a small delay
+  setTimeout(() => {
+    afficherStep2();
+  }, 1000);
+}
+
+function showFeedback(id, isSuccess, text) {
+  const box = document.getElementById(id);
+  box.className = 'feedback-box ' + (isSuccess ? 'correct' : 'incorrect');
+  box.innerHTML = `<strong>${isSuccess ? '✅ Bravo !' : '❌ Aide :'}</strong> ${text}`;
+  box.style.display = 'block';
+}
+
+function afficherStep2() {
+  const q = selection[curIdx];
+  const card2 = document.getElementById('card-step2');
+  card2.className = 'step-card active';
+
+  // Build name options
+  const list = shuffle([q.name, ...q.distractors]);
+  const optionsDiv = document.getElementById('name-options');
+  optionsDiv.innerHTML = '';
+
+  list.forEach(name => {
+    const btn = document.createElement('button');
+    btn.className = 'btn-name';
+    btn.textContent = name;
+    btn.onclick = () => submitStep2(btn, name);
+    optionsDiv.appendChild(btn);
+  });
+
+  document.getElementById('feedback-step2').style.display = 'none';
+}
+
+function submitStep2(selectedBtn, chosenName) {
+  if (step2Answered) return;
+  step2Answered = true;
+
+  const q = selection[curIdx];
+  const correct = (chosenName === q.name);
+  step2Correct = correct;
+
+  // Disable all options
+  const buttons = document.querySelectorAll('#name-options .btn-name');
+  buttons.forEach(btn => {
+    btn.disabled = true;
+    if (btn.textContent === q.name) {
+      btn.classList.add('correct');
+    }
+  });
+
+  if (correct) {
+    selectedBtn.classList.add('correct');
+    showFeedback('feedback-step2', true, `${q.desc}`);
+  } else {
+    selectedBtn.classList.add('incorrect');
+    showFeedback('feedback-step2', false, `Ce solide s'appelle un <strong>${q.name}</strong>. ${q.desc}`);
+  }
+
+  // Calculate question score
+  let scorePoints = 0;
+  if (step1Correct) scorePoints++;
+  if (step2Correct) scorePoints++;
+  currentScores.push(scorePoints);
+
+  // Show Next button
+  document.getElementById('btn-next').style.display = 'flex';
+}
+
+function nextQuestion() {
+  curIdx++;
+  if (curIdx < 10) {
+    afficherQuestion();
+  } else {
+    afficherScoreFinal();
+  }
+}
+
+function afficherScoreFinal() {
+  document.getElementById('exercice-zone').style.display = 'none';
+  const scoreScreen = document.getElementById('score-screen');
+  scoreScreen.style.display = 'block';
+
+  // Calculate global score
+  const totalCorrectSteps = currentScores.reduce((acc, val) => acc + val, 0);
+  const finalVal = Math.round((totalCorrectSteps / 20) * 10);
+  
+  const scoreNum = document.getElementById('final-score');
+  scoreNum.textContent = `${finalVal} / 10`;
+
+  // Set message and emoji
+  const emoji = document.getElementById('final-emoji');
+  const title = document.getElementById('final-title');
+
+  if (finalVal === 10) {
+    emoji.textContent = '🏆';
+    title.textContent = 'Parfait ! Tu es un expert des solides !';
+  } else if (finalVal >= 8) {
+    emoji.textContent = '🎉';
+    title.textContent = 'Félicitations ! Très bon travail !';
+  } else if (finalVal >= 5) {
+    emoji.textContent = '👍';
+    title.textContent = 'Pas mal ! Encore un peu d\'entraînement !';
+  } else {
+    emoji.textContent = '🧐';
+    title.textContent = 'Relis bien tes définitions et réessaie.';
+  }
+
+  // Render review rows
+  const details = document.getElementById('final-details');
+  details.innerHTML = '';
+
+  selection.slice(0, 10).forEach((q, idx) => {
+    const score = currentScores[idx];
+    let icon = '❌';
+    let label = 'Erreur';
+    let color = '#ef4444';
+
+    if (score === 2) {
+      icon = '✅';
+      label = 'Parfait';
+      color = '#22c55e';
+    } else if (score === 1) {
+      icon = '⚠️';
+      label = 'À revoir';
+      color = '#f97316';
+    }
+
+    const row = document.createElement('div');
+    row.className = 'score-row';
+    row.innerHTML = `
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span class="type-tag ${q.isPolyedre ? 'polyedre' : 'non-polyedre'}">${q.isPolyedre ? 'polyèdre' : 'non-poly'}</span>
+        <span class="name">${q.name}</span>
+      </div>
+      <div class="status-badge" style="color:${color}">
+        <span>${icon}</span>
+        <span>${label}</span>
+      </div>
+    `;
+    details.appendChild(row);
+  });
+}
+
+function restart() {
+  demarrer();
+}
+
+// Launch on start
+window.onload = demarrer;
+</script>
+</body>
+</html>
