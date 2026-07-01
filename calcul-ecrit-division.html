@@ -842,9 +842,8 @@ function renderDivisionGrid(add, cardIdx) {
   
   const solved = add.solved;
   const extDivStr = solved.extDivStr;
-  
-  // colonnes du dividende
-  const divLen = extDivStr.length;
+
+      const divLen = extDivStr.length;
   
   // la potence est placée juste après la fin du dividende
   const potenceLineCol = divLen; 
@@ -853,12 +852,13 @@ function renderDivisionGrid(add, cardIdx) {
   const rightSideCols = 5;
   const totalColsCount = divLen + 1 + rightSideCols;
   
-  const colStyles = ['35px']; // Colonne dédiée à l'opérateur de soustraction sur la gauche
+  const colStyles = ['44px']; // Colonne dédiée à l'opérateur de soustraction sur la gauche (élargie à 44px)
   for (let c = 0; c < totalColsCount; c++) {
     if (c < divLen) {
       colStyles.push(extDivStr[c] === ',' ? '16px' : '44px');
     } else if (c === potenceLineCol) {
       colStyles.push('10px'); // Barre verticale de la potence
+      colStyles.push('20px'); // Espace vide (spacer) pour aérer la potence
     } else {
       colStyles.push('44px'); // Diviseur et quotient
     }
@@ -869,15 +869,15 @@ function renderDivisionGrid(add, cardIdx) {
   let rowIdx = 1;
   const HEADER_ROW = rowIdx++;
   const DIVIDEND_DIVISOR_ROW = rowIdx++;
-  const QUOTIENT_ROW = rowIdx;
+  const QUOTIENT_ROW = rowIdx; // Quotient is on the same row as the first subtraction!
   
   // Chaque étape ajoute des lignes
   const stepsLayout = [];
   solved.steps.forEach((step, sIdx) => {
     stepsLayout.push({
       stepIdx: step.stepIdx,
-      subRow: rowIdx++,
-      remRow: rowIdx++
+      subRow: rowIdx++, // Step 1: Row 3, Step 2: Row 5
+      remRow: rowIdx++  // Step 1: Row 4, Step 2: Row 6
     });
   });
   
@@ -946,12 +946,15 @@ function renderDivisionGrid(add, cardIdx) {
     const cell = document.createElement('div');
     cell.className = 'grid-cell potence-horizontal-line';
     cell.style.gridRow = DIVIDEND_DIVISOR_ROW;
-    cell.style.gridColumn = potenceLineCol + 3 + i; // décalé de +3
+    cell.style.gridColumn = potenceLineCol + 3 + i; // Column 6 (spacer) onwards!
     
-    if (i < divisorStr.length) {
+    // i = 0 est la colonne espace (spacer), donc vide.
+    // Pour i > 0, on affiche le chiffre du diviseur correspondant (i - 1).
+    const divDigitIdx = i - 1;
+    if (divDigitIdx >= 0 && divDigitIdx < divisorStr.length) {
       const span = document.createElement('span');
       span.className = 'char-box';
-      span.textContent = divisorStr[i];
+      span.textContent = divisorStr[divDigitIdx];
       cell.appendChild(span);
     }
     grid.appendChild(cell);
@@ -968,8 +971,8 @@ function renderDivisionGrid(add, cardIdx) {
     const cell = document.createElement('div');
     cell.className = 'grid-cell notebook-cell';
     cell.style.gridRow = QUOTIENT_ROW;
-    cell.style.gridColumn = potenceLineCol + 3 + qColOffset; // décalé de +3
-    cell.dataset.col = potenceLineCol + 2 + qColOffset; // décalé de +2
+    cell.style.gridColumn = potenceLineCol + 4 + qColOffset; // décalé de +4 (laisse vide la colonne spacer)
+    cell.dataset.col = potenceLineCol + 3 + qColOffset; // décalé de +3
     
     if (char === ',') {
       const comma = document.createElement('span');
@@ -985,7 +988,7 @@ function renderDivisionGrid(add, cardIdx) {
         input.pattern = '[0-9]*';
         input.maxLength = 1;
         input.className = 'input-result';
-        input.dataset.col = potenceLineCol + 2 + qColOffset; // décalé de +2
+        input.dataset.col = potenceLineCol + 3 + qColOffset; // décalé de +3
         input.dataset.row = QUOTIENT_ROW;
         input.dataset.type = 'quotient';
         input.dataset.pos = pos;
