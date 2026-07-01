@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Estimer les angles</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --paper: #f8fafc;
+    --ink: #0f172a;
+    --muted: #64748b;
+    --accent: #2563eb;
+    --accent-light: #eff6ff;
+    --accent-hover: #1d4ed8;
+    --success: #16a34a;
+    --success-light: #f0fdf4;
+    --error: #dc2626;
+    --error-light: #fef2f2;
+    --warning: #ea580c;
+    --warning-light: #fff7ed;
+    --border: #e2e8f0;
+    --card: #ffffff;
+    --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    padding: 1.5rem;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .container {
+    max-width: 620px;
+    margin: 0 auto;
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+
+  h1 {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 0.25rem;
+  }
+
+  .subtitle {
+    font-size: 14px;
+    color: var(--muted);
+    font-weight: 600;
+  }
+
+  /* Progress bar and dots */
+  .info-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: var(--shadow);
+  }
+  .info-card p {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 15px;
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .dots {
+    display: flex;
+    gap: 6px;
+  }
+  .dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #e2e8f0;
+    border: 1px solid #cbd5e1;
+    transition: all 0.3s ease;
+  }
+  .dot.current {
+    background: var(--accent);
+    border-color: var(--accent-hover);
+    transform: scale(1.2);
+  }
+  .dot.correct {
+    background: var(--success);
+    border-color: var(--success);
+  }
+  .dot.incorrect {
+    background: var(--error);
+    border-color: var(--error);
+  }
+
+  /* Shape container for Angle */
+  .shape-card {
+    background: var(--card);
+    border: 2px solid var(--border);
+    border-radius: 20px;
+    padding: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--shadow);
+    min-height: 250px;
+    position: relative;
+    overflow: hidden;
+  }
+  .shape-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: radial-gradient(circle, rgba(37,99,235,0.02) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .shape-card svg {
+    width: 100%;
+    max-width: 320px;
+    height: 220px;
+    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.03));
+  }
+
+  /* Step Card */
+  .step-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    box-shadow: var(--shadow);
+    animation: slideUp 0.4s ease forwards;
+  }
+  .step-title {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 1.25rem;
+    text-align: center;
+  }
+
+  /* Grid Options QCM (2x2 grid for 4 choices) */
+  .options-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 1rem;
+  }
+  .btn-option {
+    padding: 16px 12px;
+    border-radius: 14px;
+    border: 2px solid var(--border);
+    background: var(--card);
+    color: var(--ink);
+    font-size: 16px;
+    font-weight: 800;
+    cursor: pointer;
+    font-family: 'Nunito', sans-serif;
+    transition: all 0.15s ease;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.01);
+  }
+  .btn-option:hover:not(:disabled) {
+    border-color: var(--accent);
+    background: var(--accent-light);
+    color: var(--accent-hover);
+    transform: translateY(-1.5px);
+  }
+  .btn-option:active:not(:disabled) {
+    transform: translateY(0);
+  }
+  .btn-option.correct {
+    border-color: var(--success);
+    background: var(--success-light);
+    color: var(--success);
+    font-weight: 900;
+  }
+  .btn-option.incorrect {
+    border-color: var(--error);
+    background: var(--error-light);
+    color: var(--error);
+    font-weight: 900;
+  }
+  .btn-option:disabled {
+    cursor: not-allowed;
+  }
+
+  /* Feedback box */
+  .feedback-box {
+    margin-top: 1rem;
+    padding: 1rem 1.25rem;
+    border-radius: 14px;
+    font-size: 13.5px;
+    line-height: 1.45;
+    font-weight: 600;
+    display: none;
+    animation: fadeIn 0.3s ease forwards;
+  }
+  .feedback-box.correct {
+    display: block;
+    background: var(--success-light);
+    border: 1px solid #bbf7d0;
+    color: #15803d;
+  }
+  .feedback-box.incorrect {
+    display: block;
+    background: var(--error-light);
+    border: 1px solid #fecaca;
+    color: #b91c1c;
+  }
+
+  /* Nav buttons */
+  .btn-next {
+    width: 100%;
+    padding: 14px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 16px;
+    font-size: 15px;
+    font-weight: 800;
+    cursor: pointer;
+    font-family: 'Fredoka', sans-serif;
+    transition: all 0.2s ease;
+    margin-top: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+  }
+  .btn-next:hover {
+    background: var(--accent-hover);
+    transform: translateY(-1.5px);
+    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3);
+  }
+  .btn-next:active {
+    transform: translateY(0);
+  }
+
+  /* Score screen */
+  .score-card {
+    display: none;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 2.5rem 1.5rem;
+    text-align: center;
+    box-shadow: var(--shadow);
+    animation: slideUp 0.5s ease forwards;
+  }
+  .score-emoji {
+    font-size: 72px;
+    margin-bottom: 0.5rem;
+    animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  }
+  .score-title {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: var(--ink);
+  }
+  .score-num {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 44px;
+    font-weight: 800;
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+  }
+  .score-details {
+    background: var(--paper);
+    border-radius: 16px;
+    padding: 0.85rem;
+    margin-bottom: 2rem;
+    text-align: left;
+    max-height: 280px;
+    overflow-y: auto;
+    border: 1px solid var(--border);
+  }
+  .score-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 6px;
+    border-bottom: 1px solid rgba(0,0,0,0.04);
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .score-row:last-child {
+    border-bottom: none;
+  }
+  .score-row .name {
+    color: var(--ink);
+  }
+  .score-row .type-tag {
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 99px;
+    font-weight: 800;
+    text-transform: uppercase;
+  }
+  .score-row .type-tag.correct-tag {
+    background: #dcfce7;
+    color: #15803d;
+  }
+  .score-row .type-tag.incorrect-tag {
+    background: #fee2e2;
+    color: #b91c1c;
+  }
+  .score-row .status-badge {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  /* Animations */
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes popIn {
+    from { transform: scale(0.6); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+
+  .score-details::-webkit-scrollbar {
+    width: 6px;
+  }
+  .score-details::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .score-details::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 99px;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>Estimer les angles</h1>
+    <div class="subtitle">Estime la mesure en degrés de l'angle colorié</div>
+  </header>
+
+  <div id="exercice-zone">
+    <!-- Progress Indicator -->
+    <div class="info-card">
+      <p id="info-numero">Question 1/10</p>
+      <div class="dots" id="dots-progress"></div>
+    </div>
+
+    <!-- SVG Canvas -->
+    <div class="shape-card">
+      <svg id="angle-svg" viewBox="0 0 300 200">
+        <!-- Will be dynamically populated -->
+      </svg>
+    </div>
+
+    <!-- MCQ Step Card -->
+    <div class="step-card">
+      <div class="step-title">Quelle est la mesure de cet angle ?</div>
+      
+      <div class="options-grid" id="options-container">
+        <!-- Will be dynamically populated with 4 buttons -->
+      </div>
+
+      <div class="feedback-box" id="feedback-box"></div>
+      
+      <!-- Next Button -->
+      <button class="btn-next" id="btn-next" style="display:none" onclick="nextQuestion()">
+        <span>Question suivante</span> ➡️
+      </button>
+    </div>
+  </div>
+
+  <!-- Final Score Screen -->
+  <div class="score-card" id="score-screen">
+    <div class="score-emoji" id="final-emoji">🏆</div>
+    <div class="score-title" id="final-title">Excellent travail !</div>
+    <div class="score-num" id="final-score">9 / 10</div>
+    <div class="score-details" id="final-details"></div>
+    <button class="btn-next" onclick="restart()">🔄 Recommencer</button>
+  </div>
+</div>
+
+<script>
+// --- AUDIO SYNTHESIS ---
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+function playSound(type) {
+  if (audioCtx.state === 'suspended') {
+    audioCtx.resume();
+  }
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  osc.connect(gain);
+  gain.connect(audioCtx.destination);
+
+  if (type === 'success') {
+    osc.frequency.setValueAtTime(523.25, audioCtx.currentTime);
+    osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.1);
+    osc.frequency.setValueAtTime(783.99, audioCtx.currentTime + 0.2);
+    osc.frequency.setValueAtTime(1046.50, audioCtx.currentTime + 0.3);
+    gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.005, audioCtx.currentTime + 0.5);
+    osc.start();
+    osc.stop(audioCtx.currentTime + 0.5);
+  } else if (type === 'error') {
+    osc.frequency.setValueAtTime(220, audioCtx.currentTime);
+    osc.frequency.setValueAtTime(147, audioCtx.currentTime + 0.15);
+    gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.005, audioCtx.currentTime + 0.4);
+    osc.start();
+    osc.stop(audioCtx.currentTime + 0.4);
+  } else if (type === 'click') {
+    osc.frequency.setValueAtTime(580, audioCtx.currentTime);
+    gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.005, audioCtx.currentTime + 0.08);
+    osc.start();
+    osc.stop(audioCtx.currentTime + 0.08);
+  }
+}
+
+// --- DATABASE OF 30 ANGLES WITH SCATTERED OPTIONS ---
+const ANGLE_BANK = [
+  // AIGU (7 questions)
+  { id: 1, value: 30, type: "aigu", rotation: 0, options: [15, 30, 65, 120], explanation: "Cet angle aigu mesure 30°. Il est très fermé (représentant un tiers de l'angle droit)." },
+  { id: 2, value: 45, type: "aigu", rotation: 45, options: [20, 45, 75, 100], explanation: "Cet angle aigu mesure 45°. Il représente la moitié exacte d'un angle droit (90°)." },
+  { id: 3, value: 60, type: "aigu", rotation: 120, options: [35, 60, 110, 140], explanation: "Cet angle aigu mesure 60°. Il est plus ouvert que la moitié d'un angle droit, mais plus fermé que 90°." },
+  { id: 4, value: 15, type: "aigu", rotation: 190, options: [15, 40, 80, 110], explanation: "Cet angle aigu très pincé et fermé mesure 15°." },
+  { id: 5, value: 75, type: "aigu", rotation: 260, options: [30, 50, 75, 120], explanation: "Cet angle aigu mesure 75°. Il est proche de l'angle droit (90°), mais un peu plus fermé." },
+  { id: 6, value: 50, type: "aigu", rotation: 320, options: [25, 50, 80, 130], explanation: "Cet angle aigu mesure 50°. Il est un tout petit peu plus ouvert que la moitié d'un angle droit." },
+  { id: 7, value: 40, type: "aigu", rotation: 80, options: [15, 40, 70, 115], explanation: "Cet angle aigu mesure 40°." },
+  
+  // DROIT (4 questions - drawn with normal circular arc)
+  { id: 8, value: 90, type: "droit", rotation: 0, options: [45, 70, 90, 120], explanation: "Cet angle droit mesure exactement 90°. Ses deux côtés s'ouvrent perpendiculairement." },
+  { id: 9, value: 90, type: "droit", rotation: 45, options: [60, 90, 110, 135], explanation: "Même incliné, cet angle droit mesure 90°. Les deux demi-droites forment une équerre." },
+  { id: 10, value: 90, type: "droit", rotation: 150, options: [50, 90, 120, 150], explanation: "Cet angle droit mesure exactement 90°." },
+  { id: 11, value: 90, type: "droit", rotation: 270, options: [40, 75, 90, 130], explanation: "Ses deux côtés s'ouvrent perpendiculairement : c'est un angle droit de 90°." },
+  
+  // OBTUS (7 questions)
+  { id: 12, value: 120, type: "obtus", rotation: 0, options: [45, 80, 120, 155], explanation: "Cet angle obtus mesure 120°. Il est plus ouvert qu'un angle droit (90°)." },
+  { id: 13, value: 135, type: "obtus", rotation: 30, options: [60, 100, 135, 160], explanation: "Cet angle obtus mesure 135°. C'est la somme d'un angle droit et d'un demi-angle droit (90° + 45°)." },
+  { id: 14, value: 150, type: "obtus", rotation: 90, options: [75, 115, 150, 175], explanation: "Cet angle obtus très ouvert mesure 150° (proche de l'angle plat)." },
+  { id: 15, value: 105, type: "obtus", rotation: 160, options: [60, 85, 105, 140], explanation: "Cet angle obtus mesure 105°. Il dépasse légèrement l'ouverture de l'angle droit." },
+  { id: 16, value: 160, type: "obtus", rotation: 220, options: [90, 120, 140, 160], explanation: "Cet angle obtus très aplati mesure 160°." },
+  { id: 17, value: 115, type: "obtus", rotation: 285, options: [70, 95, 115, 150], explanation: "Cet angle obtus mesure 115°." },
+  { id: 18, value: 145, type: "obtus", rotation: 135, options: [80, 110, 145, 170], explanation: "Cet angle obtus mesure 145°." },
+  
+  // PLAT (3 questions)
+  { id: 19, value: 180, type: "plat", rotation: 0, options: [90, 135, 180, 220], explanation: "Cet angle plat mesure exactement 180°. Ses deux côtés forment une ligne droite." },
+  { id: 20, value: 180, type: "plat", rotation: 60, options: [120, 150, 180, 270], explanation: "Cet angle plat de 180° s'identifie par sa ligne droite passant par le sommet." },
+  { id: 21, value: 180, type: "plat", rotation: 145, options: [140, 165, 180, 240], explanation: "Cet angle plat mesure 180°." },
+  
+  // RENTRANT (6 questions)
+  { id: 22, value: 240, type: "rentrant", rotation: 0, options: [120, 180, 240, 290], explanation: "Cet angle rentrant fait le tour par l'extérieur et mesure 240°." },
+  { id: 23, value: 300, type: "rentrant", rotation: 50, options: [150, 210, 300, 335], explanation: "Cet angle rentrant de 300° s'approche d'un tour complet." },
+  { id: 24, value: 210, type: "rentrant", rotation: 120, options: [135, 180, 210, 250], explanation: "Cet angle rentrant mesure 210°. Il dépasse d'un sixième l'alignement droit de 180°." },
+  { id: 25, value: 315, type: "rentrant", rotation: 230, options: [180, 225, 280, 315], explanation: "Cet angle rentrant mesure 315°." },
+  { id: 26, value: 280, type: "rentrant", rotation: 170, options: [160, 200, 240, 280], explanation: "Cet angle rentrant mesure 280°." },
+  { id: 27, value: 225, type: "rentrant", rotation: 80, options: [135, 180, 225, 270], explanation: "Cet angle rentrant mesure 225°." },
+  
+  // NUL (2 questions)
+  { id: 28, value: 0, type: "nul", rotation: 0, options: [0, 30, 90, 360], explanation: "Cet angle nul mesure 0°. Ses côtés sont superposés, il n'y a aucune ouverture." },
+  { id: 29, value: 0, type: "nul", rotation: 130, options: [0, 45, 180, 360], explanation: "Aucune ouverture n'étant visible, cet angle mesure 0° (angle nul)." },
+  
+  // PLEIN (1 question)
+  { id: 30, value: 360, type: "plein", rotation: 110, options: [0, 180, 270, 360], explanation: "L'arc circulaire complet indique que cet angle fait 360° (tour complet)." }
+];
+
+// --- STATE MANAGEMENT ---
+let currentQuestions = [];
+let currentIdx = 0;
+let score = 0;
+let userAnswers = [];
+let hasAnswered = false;
+
+// --- GEOMETRIC RENDERING ---
+function renderAngle(angleObj) {
+  const svg = document.getElementById("angle-svg");
+  if (!svg) return;
+  
+  svg.innerHTML = "";
+  
+  const x_s = 150;
+  const y_s = 100;
+  const L1 = 70;
+  const L2 = (angleObj.type === "nul" || angleObj.type === "plein") ? 52 : 70;
+  const R = 24;
+  
+  const defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
+  const marker = document.createElementNS("http://www.w3.org/2000/svg", "marker");
+  marker.setAttribute("id", "arrow");
+  marker.setAttribute("viewBox", "0 0 10 10");
+  marker.setAttribute("refX", "7");
+  marker.setAttribute("refY", "5");
+  marker.setAttribute("markerWidth", "6");
+  marker.setAttribute("markerHeight", "6");
+  marker.setAttribute("orient", "auto-start-reverse");
+  
+  const markerPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
+  markerPath.setAttribute("d", "M 0 1.5 L 8 5 L 0 8.5 z");
+  markerPath.setAttribute("fill", "#0f172a");
+  marker.appendChild(markerPath);
+  defs.appendChild(marker);
+  svg.appendChild(defs);
+  
+  const theta1 = (angleObj.rotation * Math.PI) / 180;
+  const theta2 = ((angleObj.rotation + angleObj.value) * Math.PI) / 180;
+  
+  const Ax = x_s + L1 * Math.cos(theta1);
+  const Ay = y_s + L1 * Math.sin(theta1);
+  const Bx = x_s + L2 * Math.cos(theta2);
+  const By = y_s + L2 * Math.sin(theta2);
+  
+  const line1 = document.createElementNS("http://www.w3.org/2000/svg", "line");
+  line1.setAttribute("x1", x_s.toString());
+  line1.setAttribute("y1", y_s.toString());
+  line1.setAttribute("x2", Ax.toFixed(1));
+  line1.setAttribute("y2", Ay.toFixed(1));
+  line1.setAttribute("stroke", "#0f172a");
+  line1.setAttribute("stroke-width", "3");
+  line1.setAttribute("stroke-linecap", "round");
+  line1.setAttribute("marker-end", "url(#arrow)");
+  
+  const line2 = document.createElementNS("http://www.w3.org/2000/svg", "line");
+  line2.setAttribute("x1", x_s.toString());
+  line2.setAttribute("y1", y_s.toString());
+  line2.setAttribute("x2", Bx.toFixed(1));
+  line2.setAttribute("y2", By.toFixed(1));
+  line2.setAttribute("stroke", "#0f172a");
+  line2.setAttribute("stroke-width", "3");
+  line2.setAttribute("stroke-linecap", "round");
+  line2.setAttribute("marker-end", "url(#arrow)");
+  
+  if (angleObj.type === "nul") {
+    svg.appendChild(line1);
+    svg.appendChild(line2);
+  } else if (angleObj.type === "plein") {
+    const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    circle.setAttribute("cx", x_s.toString());
+    circle.setAttribute("cy", y_s.toString());
+    circle.setAttribute("r", R.toString());
+    circle.setAttribute("fill", "rgba(37, 99, 235, 0.15)");
+    circle.setAttribute("stroke", "#2563eb");
+    circle.setAttribute("stroke-width", "2.5");
+    
+    svg.appendChild(circle);
+    svg.appendChild(line1);
+    svg.appendChild(line2);
+  } else {
+    // Normal circular arc for ALL angles (including right/droit)
+    const arcStartX = x_s + R * Math.cos(theta1);
+    const arcStartY = y_s + R * Math.sin(theta1);
+    const arcEndX = x_s + R * Math.cos(theta2);
+    const arcEndY = y_s + R * Math.sin(theta2);
+    
+    const largeArc = angleObj.value > 180 ? 1 : 0;
+    
+    const pathFill = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    pathFill.setAttribute("d", `M ${x_s} ${y_s} L ${arcStartX.toFixed(1)} ${arcStartY.toFixed(1)} A ${R} ${R} 0 ${largeArc} 1 ${arcEndX.toFixed(1)} ${arcEndY.toFixed(1)} Z`);
+    pathFill.setAttribute("fill", "rgba(37, 99, 235, 0.15)");
+    
+    const pathStroke = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    pathStroke.setAttribute("d", `M ${arcStartX.toFixed(1)} ${arcStartY.toFixed(1)} A ${R} ${R} 0 ${largeArc} 1 ${arcEndX.toFixed(1)} ${arcEndY.toFixed(1)}`);
+    pathStroke.setAttribute("fill", "none");
+    pathStroke.setAttribute("stroke", "#2563eb");
+    pathStroke.setAttribute("stroke-width", "2.5");
+    
+    svg.appendChild(pathFill);
+    svg.appendChild(pathStroke);
+    svg.appendChild(line1);
+    svg.appendChild(line2);
+  }
+  
+  const vertex = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+  vertex.setAttribute("cx", x_s.toString());
+  vertex.setAttribute("cy", y_s.toString());
+  vertex.setAttribute("r", "5.5");
+  vertex.setAttribute("fill", "#0f172a");
+  svg.appendChild(vertex);
+}
+
+// --- GAME LOOP ---
+
+function shuffle(array) {
+  let m = array.length, t, i;
+  while (m) {
+    i = Math.floor(Math.random() * m--);
+    t = array[m];
+    array[m] = array[i];
+    array[i] = t;
+  }
+  return array;
+}
+
+function initGame() {
+  score = 0;
+  currentIdx = 0;
+  userAnswers = [];
+  hasAnswered = false;
+  
+  document.getElementById("score-screen").style.display = "none";
+  document.getElementById("exercice-zone").style.display = "block";
+  document.getElementById("btn-next").style.display = "none";
+  
+  const shuffledBank = shuffle([...ANGLE_BANK]);
+  currentQuestions = shuffledBank.slice(0, 10);
+  
+  const dotsContainer = document.getElementById("dots-progress");
+  dotsContainer.innerHTML = "";
+  for (let i = 0; i < 10; i++) {
+    const dot = document.createElement("div");
+    dot.className = "dot";
+    dotsContainer.appendChild(dot);
+  }
+  
+  loadQuestion();
+}
+
+function loadQuestion() {
+  hasAnswered = false;
+  document.getElementById("btn-next").style.display = "none";
+  
+  const fb = document.getElementById("feedback-box");
+  fb.style.display = "none";
+  fb.className = "feedback-box";
+  
+  document.getElementById("info-numero").textContent = `Question ${currentIdx + 1}/10`;
+  
+  const dots = document.querySelectorAll("#dots-progress .dot");
+  dots.forEach((dot, index) => {
+    dot.classList.remove("current");
+    if (index === currentIdx) {
+      dot.classList.add("current");
+    }
+  });
+  
+  // Render options buttons dynamically
+  const currentAngle = currentQuestions[currentIdx];
+  const optionsGrid = document.getElementById("options-container");
+  optionsGrid.innerHTML = "";
+  
+  currentAngle.options.forEach(opt => {
+    const btn = document.createElement("button");
+    btn.className = "btn-option";
+    btn.textContent = `${opt}°`;
+    btn.onclick = () => checkAnswer(opt, btn);
+    optionsGrid.appendChild(btn);
+  });
+  
+  renderAngle(currentAngle);
+}
+
+function checkAnswer(selectedValue, clickedBtn) {
+  if (hasAnswered) return;
+  hasAnswered = true;
+  
+  const currentAngle = currentQuestions[currentIdx];
+  const isCorrect = (selectedValue === currentAngle.value);
+  
+  playSound(isCorrect ? 'success' : 'error');
+  
+  userAnswers.push({
+    questionNum: currentIdx + 1,
+    correctValue: currentAngle.value,
+    userSelected: selectedValue,
+    isCorrect: isCorrect
+  });
+  
+  if (isCorrect) score++;
+  
+  // Color code QCM buttons
+  const buttons = document.querySelectorAll("#options-container .btn-option");
+  buttons.forEach(btn => {
+    btn.disabled = true;
+    const btnVal = parseInt(btn.textContent);
+    
+    if (btnVal === currentAngle.value) {
+      btn.classList.add("correct");
+    } else if (btn === clickedBtn && !isCorrect) {
+      btn.classList.add("incorrect");
+    }
+  });
+  
+  // Update dot progress
+  const dots = document.querySelectorAll("#dots-progress .dot");
+  const currentDot = dots[currentIdx];
+  currentDot.classList.remove("current");
+  currentDot.classList.add(isCorrect ? "correct" : "incorrect");
+  
+  // Feedback
+  const fb = document.getElementById("feedback-box");
+  fb.className = `feedback-box ${isCorrect ? 'correct' : 'incorrect'}`;
+  fb.innerHTML = isCorrect
+    ? `🎉 **Excellent !** L'angle mesure bien **${currentAngle.value}°**.<br>${currentAngle.explanation}`
+    : `❌ **Oups !** Tu as choisi **${selectedValue}°**.<br>La bonne mesure était **${currentAngle.value}°**.<br>${currentAngle.explanation}`;
+  
+  document.getElementById("btn-next").style.display = "flex";
+}
+
+function nextQuestion() {
+  playSound('click');
+  currentIdx++;
+  
+  if (currentIdx < 10) {
+    loadQuestion();
+  } else {
+    showScoreScreen();
+  }
+}
+
+function showScoreScreen() {
+  document.getElementById("exercice-zone").style.display = "none";
+  const screen = document.getElementById("score-screen");
+  screen.style.display = "block";
+  
+  document.getElementById("final-score").textContent = `${score} / 10`;
+  
+  const emojiEl = document.getElementById("final-emoji");
+  const titleEl = document.getElementById("final-title");
+  
+  if (score === 10) {
+    emojiEl.textContent = "🏆";
+    titleEl.textContent = "Parfait ! Une estimation digne d'un géomètre !";
+  } else if (score >= 8) {
+    emojiEl.textContent = "⭐";
+    titleEl.textContent = "Superbe ! Excellente vision des angles !";
+  } else if (score >= 5) {
+    emojiEl.textContent = "👍";
+    titleEl.textContent = "Pas mal ! Tu estimes bien les angles !";
+  } else {
+    emojiEl.textContent = "💪";
+    titleEl.textContent = "Continue à t'entraîner pour aiguiser ton œil !";
+  }
+  
+  const details = document.getElementById("final-details");
+  details.innerHTML = "";
+  
+  userAnswers.forEach(ans => {
+    const row = document.createElement("div");
+    row.className = "score-row";
+    
+    const leftText = document.createElement("span");
+    leftText.className = "name";
+    leftText.innerHTML = `Question ${ans.questionNum} : Mesure réelle <strong>${ans.correctValue}°</strong>`;
+    
+    const rightSide = document.createElement("div");
+    rightSide.className = "status-badge";
+    
+    const tag = document.createElement("span");
+    tag.className = `type-tag ${ans.isCorrect ? 'correct-tag' : 'incorrect-tag'}`;
+    tag.textContent = ans.isCorrect ? "Correct" : `Choisi: ${ans.userSelected}°`;
+    
+    const statusIcon = document.createElement("span");
+    statusIcon.textContent = ans.isCorrect ? "✅" : "❌";
+    
+    rightSide.appendChild(tag);
+    rightSide.appendChild(statusIcon);
+    row.appendChild(leftText);
+    row.appendChild(rightSide);
+    details.appendChild(row);
+  });
+}
+
+function restart() {
+  playSound('click');
+  initGame();
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+  document.body.addEventListener("click", () => {
+    if (audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
+  }, { once: true });
+  
+  initGame();
+});
+</script>
+</body>
+</html>
