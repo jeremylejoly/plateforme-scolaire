@@ -1,0 +1,1309 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Les patrons de solides - Plier ou ne pas plier ?</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --paper: #f8fafc;
+    --ink: #0f172a;
+    --muted: #64748b;
+    --accent: #3b82f6;
+    --accent-light: #eff6ff;
+    --accent-hover: #2563eb;
+    --success: #10b981;
+    --success-light: #ecfdf5;
+    --error: #ef4444;
+    --error-light: #fef2f2;
+    --warning: #f59e0b;
+    --warning-light: #fdfbeb;
+    --border: #e2e8f0;
+    --card: #ffffff;
+    --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+    
+    /* Solids 3D colors */
+    --cube-color: rgba(59, 130, 246, 0.5); /* Blue */
+    --cube-border: #1d4ed8;
+    --pave-color: rgba(245, 158, 11, 0.5); /* Orange */
+    --pave-border: #b45309;
+    --pyramide-color: rgba(16, 185, 129, 0.5); /* Emerald */
+    --pyramide-border: #047857;
+    --prisme-color: rgba(139, 92, 246, 0.5); /* Purple */
+    --prisme-border: #6d28d9;
+    --cylindre-color: rgba(236, 72, 153, 0.5); /* Pink */
+    --cylindre-border: #be185d;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    padding: 1.5rem;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .container {
+    max-width: 860px;
+    margin: 0 auto;
+  }
+
+  /* Header card */
+  .header-card {
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    border-radius: 20px;
+    padding: 1.5rem;
+    color: white;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 10px 20px rgba(29, 78, 216, 0.15);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .header-card h1 {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+  }
+  .header-card p {
+    font-size: 14px;
+    opacity: 0.9;
+  }
+
+  /* Progress indicator */
+  .info-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: var(--shadow);
+  }
+  .info-card p {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 15px;
+    color: var(--accent-hover);
+    font-weight: 600;
+  }
+  .dots {
+    display: flex;
+    gap: 8px;
+  }
+  .dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #e2e8f0;
+    border: 1px solid #cbd5e1;
+    transition: all 0.3s ease;
+  }
+  .dot.current {
+    background: var(--accent);
+    border-color: var(--accent-hover);
+    transform: scale(1.2);
+  }
+  .dot.correct {
+    background: var(--success);
+    border-color: var(--success);
+  }
+  .dot.incorrect {
+    background: var(--error);
+    border-color: var(--error);
+  }
+
+  /* Two Column Layout */
+  .exercise-layout {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 1.5rem;
+    align-items: start;
+  }
+  @media (max-width: 768px) {
+    .exercise-layout {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* Left Panel: Views */
+  .view-panel {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 1.25rem;
+    box-shadow: var(--shadow);
+  }
+  .view-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid var(--border);
+    padding-bottom: 8px;
+  }
+  .tab-btn {
+    padding: 6px 14px;
+    border: none;
+    background: none;
+    font-family: 'Fredoka', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--muted);
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+  }
+  .tab-btn.active {
+    color: var(--accent-hover);
+    background: var(--accent-light);
+  }
+  .tab-content {
+    min-height: 280px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+  }
+
+  /* 2D SVG style */
+  .svg-container {
+    width: 100%;
+    max-width: 280px;
+    height: 280px;
+  }
+  .svg-face {
+    fill: #f1f5f9;
+    stroke: #475569;
+    stroke-width: 2.5px;
+    stroke-linejoin: round;
+    transition: fill 0.3s;
+  }
+  .svg-fold {
+    stroke: #64748b;
+    stroke-width: 2px;
+    stroke-dasharray: 4,4;
+  }
+  .svg-cut {
+    stroke: #334155;
+    stroke-width: 2.5px;
+  }
+
+  /* 3D Scene container */
+  .scene-3d {
+    perspective: 800px;
+    width: 100%;
+    height: 300px;
+    background: radial-gradient(circle, #f8fafc 0%, #cbd5e1 100%);
+    border-radius: 16px;
+    border: 1px solid #cbd5e1;
+    overflow: hidden;
+    position: relative;
+    cursor: grab;
+  }
+  .scene-3d:active {
+    cursor: grabbing;
+  }
+  .scene-instructions {
+    position: absolute;
+    bottom: 8px;
+    left: 8px;
+    background: rgba(15, 23, 42, 0.7);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 11px;
+    pointer-events: none;
+  }
+  .net-assembly-3d {
+    width: 0px;
+    height: 0px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform-style: preserve-3d;
+    transform: rotateX(var(--rx, -25deg)) rotateY(var(--ry, 35deg));
+    transition: transform 0.1s ease;
+  }
+
+  /* Generic 3D Face styling */
+  .face-3d {
+    position: absolute;
+    transform-style: preserve-3d;
+    backface-visibility: visible;
+    border: 2px solid;
+    box-sizing: border-box;
+  }
+  .face-3d.root-face {
+    transform: translate(-50%, -50%);
+  }
+
+  /* 3D control slider */
+  .slider-container {
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .slider-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--muted);
+  }
+  .slider-control {
+    width: 100%;
+    height: 6px;
+    border-radius: 99px;
+    background: #cbd5e1;
+    outline: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+  }
+  .slider-control::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    transition: background 0.15s;
+  }
+  .slider-control::-webkit-slider-thumb:hover {
+    background: var(--accent-hover);
+  }
+
+  /* Right Panel: Interactivity */
+  .quiz-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+  .question-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+  }
+  .solid-target-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 99px;
+    font-size: 12px;
+    font-weight: 800;
+    margin-bottom: 0.75rem;
+  }
+  .solid-target-badge.cube { background: #dbeafe; color: #1e40af; }
+  .solid-target-badge.pave { background: #ffedd5; color: #9a3412; }
+  .solid-target-badge.pyramide { background: #d1fae5; color: #065f46; }
+  .solid-target-badge.prisme { background: #f3e8ff; color: #6b21a8; }
+  .solid-target-badge.cylindre { background: #fce7f3; color: #9d174d; }
+
+  .question-title {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 1.25rem;
+    line-height: 1.35;
+  }
+
+  .options-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .btn-option {
+    width: 100%;
+    padding: 14px;
+    border-radius: 16px;
+    border: 2.5px solid var(--border);
+    background: var(--card);
+    font-family: 'Nunito', sans-serif;
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--ink);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .btn-option:hover:not(:disabled) {
+    border-color: var(--accent);
+    background: var(--accent-light);
+    color: var(--accent-hover);
+    transform: translateY(-2px);
+  }
+  .btn-option.correct {
+    border-color: var(--success);
+    background: var(--success-light);
+    color: var(--success);
+  }
+  .btn-option.incorrect {
+    border-color: var(--error);
+    background: var(--error-light);
+    color: var(--error);
+  }
+  .btn-option:disabled {
+    cursor: not-allowed;
+  }
+
+  /* Feedback box */
+  .feedback-box {
+    margin-top: 1rem;
+    padding: 1.25rem;
+    border-radius: 16px;
+    font-size: 14px;
+    line-height: 1.5;
+    font-weight: 600;
+    display: none;
+    animation: slideUp 0.3s ease forwards;
+  }
+  .feedback-box.correct {
+    background: var(--success-light);
+    border: 1px solid #a7f3d0;
+    color: #065f46;
+  }
+  .feedback-box.incorrect {
+    background: var(--error-light);
+    border: 1px solid #fecaca;
+    color: #991b1b;
+  }
+  .feedback-title {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 15px;
+    margin-bottom: 4px;
+  }
+
+  /* Next Button */
+  .btn-next {
+    width: 100%;
+    padding: 14px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 16px;
+    font-size: 16px;
+    font-weight: 800;
+    cursor: pointer;
+    font-family: 'Fredoka', sans-serif;
+    transition: all 0.2s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+  }
+  .btn-next:hover {
+    background: var(--accent-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(59, 130, 246, 0.3);
+  }
+
+  /* Score screen */
+  .score-card {
+    display: none;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 2.5rem 1.5rem;
+    text-align: center;
+    box-shadow: var(--shadow);
+    animation: slideUp 0.5s ease forwards;
+  }
+  .score-emoji {
+    font-size: 72px;
+    margin-bottom: 0.5rem;
+    animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  }
+  .score-title {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 26px;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: var(--ink);
+  }
+  .score-num {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 48px;
+    font-weight: 800;
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+  }
+  .score-details {
+    background: var(--paper);
+    border-radius: 16px;
+    padding: 1rem;
+    margin-bottom: 2rem;
+    text-align: left;
+    max-height: 280px;
+    overflow-y: auto;
+    border: 1px solid var(--border);
+  }
+  .score-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 6px;
+    border-bottom: 1px solid rgba(0,0,0,0.04);
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .score-row:last-child {
+    border-bottom: none;
+  }
+  .score-row .name {
+    color: var(--ink);
+  }
+  .score-row .status-badge {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  /* Animations */
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes popIn {
+    from { transform: scale(0.6); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+
+  /* Scrollbar styling */
+  .score-details::-webkit-scrollbar {
+    width: 6px;
+  }
+  .score-details::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .score-details::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 99px;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <!-- Header Card -->
+  <div class="header-card">
+    <h1>📂 Les patrons de solides</h1>
+    <p>Visualise le pliage en 3D pour savoir si le patron forme le solide sans se chevaucher.</p>
+  </div>
+
+  <div id="exercice-zone">
+    <!-- Progress dots -->
+    <div class="info-card">
+      <p id="info-numero">Patron 1/10</p>
+      <div class="dots" id="dots-progress"></div>
+    </div>
+
+    <!-- Main Workspace -->
+    <div class="exercise-layout">
+      <!-- Left Panel: 2D/3D visualizer -->
+      <div class="view-panel">
+        <div class="view-tabs">
+          <button class="tab-btn active" id="tab-btn-2d" onclick="switchTab('2d')">📐 Vue 2D</button>
+          <button class="tab-btn" id="tab-btn-3d" onclick="switchTab('3d')">🌀 Visualisation 3D</button>
+        </div>
+
+        <div class="tab-content" id="tab-content-2d">
+          <div class="svg-container" id="svg-container-2d"></div>
+        </div>
+
+        <div class="tab-content" id="tab-content-3d" style="display:none;">
+          <div style="width:100%;">
+            <div class="scene-3d" id="scene-container">
+              <div class="net-assembly-3d" id="net-assembly"></div>
+              <div class="scene-instructions">Glisse pour faire pivoter le solide 🔄</div>
+            </div>
+            <!-- Folding slider -->
+            <div class="slider-container">
+              <div class="slider-label">
+                <span>À plat (Patron)</span>
+                <span>Plié (Solide)</span>
+              </div>
+              <input type="range" min="0" max="1" step="0.01" value="0" class="slider-control" id="fold-slider" oninput="onSliderMove(this.value)"/>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Panel: Questions and Choices -->
+      <div class="quiz-panel">
+        <div class="question-card">
+          <div class="solid-target-badge" id="solid-badge">un cube</div>
+          <div class="question-title">Est-ce que ce patron permet de construire le solide proposé ?</div>
+
+          <div class="options-buttons">
+            <button class="btn-option" onclick="submitAnswer(true)" id="btn-oui">
+              <span>✅</span> Oui, c'est un patron correct
+            </button>
+            <button class="btn-option" onclick="submitAnswer(false)" id="btn-non">
+              <span>❌</span> Non, ce n'est pas un patron correct
+            </button>
+          </div>
+
+          <!-- Educational Feedback -->
+          <div class="feedback-box" id="feedback-card">
+            <div class="feedback-title" id="feedback-title">Bravo !</div>
+            <div id="feedback-text">Explication pédagogique...</div>
+          </div>
+        </div>
+
+        <!-- Next button -->
+        <button class="btn-next" id="btn-next" style="display:none;" onclick="nextQuestion()">
+          Question suivante ➡️
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Score Screen -->
+  <div class="score-card" id="score-screen">
+    <div class="score-emoji" id="final-emoji">🏆</div>
+    <div class="score-title" id="final-title">Excellent travail !</div>
+    <div class="score-num" id="final-score">9 / 10</div>
+    <div class="score-details" id="final-details"></div>
+    <button class="btn-next" onclick="restart()">🔄 Recommencer</button>
+  </div>
+</div>
+
+<script>
+// The 10 pedagogical nets database with SVG drawings and 3D folding structures
+const DATABASE = [
+  {
+    id: "cube_valid_cross",
+    solid: "cube",
+    solidLabel: "un Cube",
+    valid: true,
+    desc: "Ce patron en croix (type 1-4-1) est le plus classique pour un cube. Les 6 faces s'assemblent parfaitement sans chevauchement.",
+    svg2d: `<svg viewBox="0 0 220 220" width="100%" height="100%">
+      <rect x="85" y="10" width="50" height="50" class="svg-face"/>
+      <rect x="85" y="60" width="50" height="50" class="svg-face"/>
+      <rect x="35" y="60" width="50" height="50" class="svg-face"/>
+      <rect x="135" y="60" width="50" height="50" class="svg-face"/>
+      <rect x="85" y="110" width="50" height="50" class="svg-face"/>
+      <rect x="85" y="160" width="50" height="50" class="svg-face"/>
+      <line x1="85" y1="60" x2="135" y2="60" class="svg-fold"/>
+      <line x1="85" y1="110" x2="135" y2="110" class="svg-fold"/>
+      <line x1="85" y1="160" x2="135" y2="160" class="svg-fold"/>
+      <line x1="85" y1="60" x2="85" y2="110" class="svg-fold"/>
+      <line x1="135" y1="60" x2="135" y2="110" class="svg-fold"/>
+    </svg>`,
+    faces3d: {
+      id: "f1", w: 50, h: 50, type: "square", color: "var(--cube-color)", border: "var(--cube-border)",
+      children: [
+        { id: "f2", hinge: "top", w: 50, h: 50, type: "square", color: "var(--cube-color)", border: "var(--cube-border)", angle: -90 },
+        { id: "f3", hinge: "bottom", w: 50, h: 50, type: "square", color: "var(--cube-color)", border: "var(--cube-border)", angle: 90,
+          children: [
+            { id: "f4", hinge: "bottom", w: 50, h: 50, type: "square", color: "var(--cube-color)", border: "var(--cube-border)", angle: 90 }
+          ]
+        },
+        { id: "f5", hinge: "left", w: 50, h: 50, type: "square", color: "var(--cube-color)", border: "var(--cube-border)", angle: -90 },
+        { id: "f6", hinge: "right", w: 50, h: 50, type: "square", color: "var(--cube-color)", border: "var(--cube-border)", angle: 90 }
+      ]
+    }
+  },
+  {
+    id: "cube_invalid_overlap",
+    solid: "cube",
+    solidLabel: "un Cube",
+    valid: false,
+    desc: "Ce patron comporte bien 6 carrés, mais les deux faces latérales sont situées du même côté (à gauche). Lors du pliage, elles se superposent, laissant le côté droit vide.",
+    svg2d: `<svg viewBox="0 0 220 220" width="100%" height="100%">
+      <rect x="85" y="10" width="50" height="50" class="svg-face"/>
+      <rect x="85" y="60" width="50" height="50" class="svg-face"/>
+      <rect x="35" y="60" width="50" height="50" class="svg-face"/>
+      <rect x="35" y="110" width="50" height="50" class="svg-face"/>
+      <rect x="85" y="110" width="50" height="50" class="svg-face"/>
+      <rect x="85" y="160" width="50" height="50" class="svg-face"/>
+      <line x1="85" y1="60" x2="135" y2="60" class="svg-fold"/>
+      <line x1="85" y1="110" x2="135" y2="110" class="svg-fold"/>
+      <line x1="85" y1="160" x2="135" y2="160" class="svg-fold"/>
+      <line x1="85" y1="60" x2="85" y2="110" class="svg-fold"/>
+      <line x1="35" y1="110" x2="85" y2="110" class="svg-fold"/>
+    </svg>`,
+    faces3d: {
+      id: "f1", w: 50, h: 50, type: "square", color: "var(--cube-color)", border: "var(--cube-border)",
+      children: [
+        { id: "f2", hinge: "top", w: 50, h: 50, type: "square", color: "var(--cube-color)", border: "var(--cube-border)", angle: -90 },
+        { id: "f3", hinge: "bottom", w: 50, h: 50, type: "square", color: "var(--cube-color)", border: "var(--cube-border)", angle: 90,
+          children: [
+            { id: "f4", hinge: "bottom", w: 50, h: 50, type: "square", color: "var(--cube-color)", border: "var(--cube-border)", angle: 90 },
+            { id: "f6", hinge: "left", w: 50, h: 50, type: "square", color: "var(--cube-color)", border: "var(--cube-border)", angle: -90 } // Attached to f3, overlaps f5
+          ]
+        },
+        { id: "f5", hinge: "left", w: 50, h: 50, type: "square", color: "var(--cube-color)", border: "var(--cube-border)", angle: -90 }
+      ]
+    }
+  },
+  {
+    id: "pave_valid",
+    solid: "pave",
+    solidLabel: "un Parallélépipède rectangle",
+    valid: true,
+    desc: "Ce patron est correct car il est composé de 3 paires de faces rectangulaires de tailles identiques, disposées de sorte que les faces opposées correspondent parfaitement.",
+    svg2d: `<svg viewBox="0 0 220 220" width="100%" height="100%">
+      <!-- top panel -->
+      <rect x="80" y="25" width="60" height="30" class="svg-face"/>
+      <!-- center rows -->
+      <rect x="80" y="55" width="60" height="50" class="svg-face"/>
+      <rect x="50" y="55" width="30" height="50" class="svg-face"/>
+      <rect x="140" y="55" width="30" height="50" class="svg-face"/>
+      <!-- bottom panel -->
+      <rect x="80" y="105" width="60" height="30" class="svg-face"/>
+      <!-- lid -->
+      <rect x="80" y="135" width="60" height="50" class="svg-face"/>
+      <line x1="80" y1="55" x2="140" y2="55" class="svg-fold"/>
+      <line x1="80" y1="105" x2="140" y2="105" class="svg-fold"/>
+      <line x1="80" y1="135" x2="140" y2="135" class="svg-fold"/>
+      <line x1="80" y1="55" x2="80" y2="105" class="svg-fold"/>
+      <line x1="140" y1="55" x2="140" y2="105" class="svg-fold"/>
+    </svg>`,
+    faces3d: {
+      id: "f1", w: 60, h: 50, type: "rectangle", color: "var(--pave-color)", border: "var(--pave-border)",
+      children: [
+        { id: "f2", hinge: "top", w: 60, h: 30, type: "rectangle", color: "var(--pave-color)", border: "var(--pave-border)", angle: -90 },
+        { id: "f3", hinge: "bottom", w: 60, h: 30, type: "rectangle", color: "var(--pave-color)", border: "var(--pave-border)", angle: 90,
+          children: [
+            { id: "f4", hinge: "bottom", w: 60, h: 50, type: "rectangle", color: "var(--pave-color)", border: "var(--pave-border)", angle: 90 }
+          ]
+        },
+        { id: "f5", hinge: "left", w: 30, h: 50, type: "rectangle", color: "var(--pave-color)", border: "var(--pave-border)", angle: -90 },
+        { id: "f6", hinge: "right", w: 30, h: 50, type: "rectangle", color: "var(--pave-color)", border: "var(--pave-border)", angle: 90 }
+      ]
+    }
+  },
+  {
+    id: "pave_invalid_dim",
+    solid: "pave",
+    solidLabel: "un Parallélépipède rectangle",
+    valid: false,
+    desc: "Ce patron est invalide : la face latérale droite est trop longue (taille non ajustée aux autres). Lors du pliage, elle dépasse et la boîte ne peut pas se fermer correctement.",
+    svg2d: `<svg viewBox="0 0 220 220" width="100%" height="100%">
+      <!-- top panel -->
+      <rect x="70" y="25" width="50" height="30" class="svg-face"/>
+      <!-- center rows -->
+      <rect x="70" y="55" width="50" height="50" class="svg-face"/>
+      <rect x="25" y="55" width="45" height="50" class="svg-face"/>
+      <rect x="120" y="55" width="65" height="50" class="svg-face"/>
+      <!-- bottom panel -->
+      <rect x="70" y="105" width="50" height="30" class="svg-face"/>
+      <!-- lid -->
+      <rect x="70" y="135" width="50" height="50" class="svg-face"/>
+      <line x1="70" y1="55" x2="120" y2="55" class="svg-fold"/>
+      <line x1="70" y1="105" x2="120" y2="105" class="svg-fold"/>
+      <line x1="70" y1="135" x2="120" y2="135" class="svg-fold"/>
+      <line x1="70" y1="55" x2="70" y2="105" class="svg-fold"/>
+      <line x1="120" y1="55" x2="120" y2="105" class="svg-fold"/>
+    </svg>`,
+    faces3d: {
+      id: "f1", w: 50, h: 50, type: "rectangle", color: "var(--pave-color)", border: "var(--pave-border)",
+      children: [
+        { id: "f2", hinge: "top", w: 50, h: 30, type: "rectangle", color: "var(--pave-color)", border: "var(--pave-border)", angle: -90 },
+        { id: "f3", hinge: "bottom", w: 50, h: 30, type: "rectangle", color: "var(--pave-color)", border: "var(--pave-border)", angle: 90,
+          children: [
+            { id: "f4", hinge: "bottom", w: 50, h: 50, type: "rectangle", color: "var(--pave-color)", border: "var(--pave-border)", angle: 90 }
+          ]
+        },
+        { id: "f5", hinge: "left", w: 30, h: 50, type: "rectangle", color: "var(--pave-color)", border: "var(--pave-border)", angle: -90 },
+        { id: "f6", hinge: "right", w: 45, h: 50, type: "rectangle", color: "var(--pave-color)", border: "var(--pave-border)", angle: 90 } // 45px instead of 30px
+      ]
+    }
+  },
+  {
+    id: "pyramide_valid",
+    solid: "pyramide",
+    solidLabel: "une Pyramide à base carrée",
+    valid: true,
+    desc: "C'est le patron standard en étoile. Le carré central sert de base, et les 4 triangles se rejoignent parfaitement au sommet (apex).",
+    svg2d: `<svg viewBox="0 0 220 220" width="100%" height="100%">
+      <rect x="85" y="85" width="50" height="50" class="svg-face"/>
+      <!-- triangles -->
+      <polygon points="85,85 110,35 135,85" class="svg-face"/>
+      <polygon points="85,135 110,185 135,135" class="svg-face"/>
+      <polygon points="85,85 35,110 85,135" class="svg-face"/>
+      <polygon points="135,85 185,110 135,135" class="svg-face"/>
+      
+      <line x1="85" y1="85" x2="135" y2="85" class="svg-fold"/>
+      <line x1="85" y1="135" x2="135" y2="135" class="svg-fold"/>
+      <line x1="85" y1="85" x2="85" y2="135" class="svg-fold"/>
+      <line x1="135" y1="85" x2="135" y2="135" class="svg-fold"/>
+    </svg>`,
+    faces3d: {
+      id: "f1", w: 50, h: 50, type: "square", color: "var(--pyramide-color)", border: "var(--pyramide-border)",
+      children: [
+        { id: "f2", hinge: "top", w: 50, h: 50, type: "triangle", color: "var(--pyramide-color)", border: "var(--pyramide-border)", angle: -55 },
+        { id: "f3", hinge: "bottom", w: 50, h: 50, type: "triangle", color: "var(--pyramide-color)", border: "var(--pyramide-border)", angle: 55 },
+        { id: "f4", hinge: "left", w: 50, h: 50, type: "triangle", color: "var(--pyramide-color)", border: "var(--pyramide-border)", angle: -55 },
+        { id: "f5", hinge: "right", w: 50, h: 50, type: "triangle", color: "var(--pyramide-color)", border: "var(--pyramide-border)", angle: 55 }
+      ]
+    }
+  },
+  {
+    id: "pyramide_invalid_pos",
+    solid: "pyramide",
+    solidLabel: "une Pyramide à base carrée",
+    valid: false,
+    desc: "Ce patron est incorrect car l'un des triangles est attaché sur le côté d'un autre triangle. Lors du pliage, deux triangles se superposent, laissant un côté de la base sans face.",
+    svg2d: `<svg viewBox="0 0 220 220" width="100%" height="100%">
+      <rect x="85" y="85" width="50" height="50" class="svg-face"/>
+      <!-- triangles -->
+      <polygon points="85,85 110,35 135,85" class="svg-face"/>
+      <polygon points="85,135 110,185 135,135" class="svg-face"/>
+      <polygon points="85,85 35,110 85,135" class="svg-face"/>
+      <!-- wrong position triangle -->
+      <polygon points="35,110 35,60 85,85" class="svg-face"/>
+      
+      <line x1="85" y1="85" x2="135" y2="85" class="svg-fold"/>
+      <line x1="85" y1="135" x2="135" y2="135" class="svg-fold"/>
+      <line x1="85" y1="85" x2="85" y2="135" class="svg-fold"/>
+      <line x1="35" y1="110" x2="85" y2="85" class="svg-fold"/>
+    </svg>`,
+    faces3d: {
+      id: "f1", w: 50, h: 50, type: "square", color: "var(--pyramide-color)", border: "var(--pyramide-border)",
+      children: [
+        { id: "f2", hinge: "top", w: 50, h: 50, type: "triangle", color: "var(--pyramide-color)", border: "var(--pyramide-border)", angle: -55 },
+        { id: "f3", hinge: "bottom", w: 50, h: 50, type: "triangle", color: "var(--pyramide-color)", border: "var(--pyramide-border)", angle: 55 },
+        { id: "f4", hinge: "left", w: 50, h: 50, type: "triangle", color: "var(--pyramide-color)", border: "var(--pyramide-border)", angle: -55,
+          children: [
+            { id: "f5", hinge: "top", w: 50, h: 50, type: "triangle", color: "var(--pyramide-color)", border: "var(--pyramide-border)", angle: -55 }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    id: "prisme_valid",
+    solid: "prisme",
+    solidLabel: "un Prisme droit",
+    valid: true,
+    desc: "Ce patron est correct car il comprend 3 rectangles qui s'enroulent pour former les faces latérales, et 2 triangles opposés servant de bases.",
+    svg2d: `<svg viewBox="0 0 220 220" width="100%" height="100%">
+      <!-- central rectangles -->
+      <rect x="85" y="75" width="50" height="70" class="svg-face"/>
+      <rect x="35" y="75" width="50" height="70" class="svg-face"/>
+      <rect x="135" y="75" width="50" height="70" class="svg-face"/>
+      <!-- triangles -->
+      <polygon points="85,75 110,32 135,75" class="svg-face"/>
+      <polygon points="85,145 110,188 135,145" class="svg-face"/>
+      
+      <line x1="85" y1="75" x2="85" y2="145" class="svg-fold"/>
+      <line x1="135" y1="75" x2="135" y2="145" class="svg-fold"/>
+      <line x1="85" y1="75" x2="135" y2="75" class="svg-fold"/>
+      <line x1="85" y1="145" x2="135" y2="145" class="svg-fold"/>
+    </svg>`,
+    faces3d: {
+      id: "f1", w: 50, h: 70, type: "rectangle", color: "var(--prisme-color)", border: "var(--prisme-border)",
+      children: [
+        { id: "f2", hinge: "top", w: 50, h: 43, type: "triangle", color: "var(--prisme-color)", border: "var(--prisme-border)", angle: -90 },
+        { id: "f3", hinge: "bottom", w: 50, h: 43, type: "triangle", color: "var(--prisme-color)", border: "var(--prisme-border)", angle: 90 },
+        { id: "f5", hinge: "left", w: 50, h: 70, type: "rectangle", color: "var(--prisme-color)", border: "var(--prisme-border)", angle: -120 },
+        { id: "f6", hinge: "right", w: 50, h: 70, type: "rectangle", color: "var(--prisme-color)", border: "var(--prisme-border)", angle: 120 }
+      ]
+    }
+  },
+  {
+    id: "prisme_invalid_pos",
+    solid: "prisme",
+    solidLabel: "un Prisme droit",
+    valid: false,
+    desc: "Ce patron est incorrect car les deux faces triangulaires sont attachées du même côté (en haut). Un bout du prisme restera grand ouvert tandis que les deux triangles se superposeront.",
+    svg2d: `<svg viewBox="0 0 220 220" width="100%" height="100%">
+      <!-- central rectangles -->
+      <rect x="85" y="75" width="50" height="70" class="svg-face"/>
+      <rect x="35" y="75" width="50" height="70" class="svg-face"/>
+      <rect x="135" y="75" width="50" height="70" class="svg-face"/>
+      <!-- triangles same side -->
+      <polygon points="85,75 110,32 135,75" class="svg-face"/>
+      <polygon points="35,75 60,32 85,75" class="svg-face"/>
+      
+      <line x1="85" y1="75" x2="85" y2="145" class="svg-fold"/>
+      <line x1="135" y1="75" x2="135" y2="145" class="svg-fold"/>
+      <line x1="85" y1="75" x2="135" y2="75" class="svg-fold"/>
+      <line x1="35" y1="75" x2="85" y2="75" class="svg-fold"/>
+    </svg>`,
+    faces3d: {
+      id: "f1", w: 50, h: 70, type: "rectangle", color: "var(--prisme-color)", border: "var(--prisme-border)",
+      children: [
+        { id: "f2", hinge: "top", w: 50, h: 43, type: "triangle", color: "var(--prisme-color)", border: "var(--prisme-border)", angle: -90 },
+        { id: "f5", hinge: "left", w: 50, h: 70, type: "rectangle", color: "var(--prisme-color)", border: "var(--prisme-border)", angle: -120,
+          children: [
+            { id: "f3", hinge: "top", w: 50, h: 43, type: "triangle", color: "var(--prisme-color)", border: "var(--prisme-border)", angle: -90 }
+          ]
+        },
+        { id: "f6", hinge: "right", w: 50, h: 70, type: "rectangle", color: "var(--prisme-color)", border: "var(--prisme-border)", angle: 120 }
+      ]
+    }
+  },
+  {
+    id: "cylindre_valid",
+    solid: "cylindre",
+    solidLabel: "un Cylindre",
+    valid: true,
+    desc: "Ce patron est correct car le rectangle s'enroule pour former la surface latérale courbe, et les 2 disques viennent boucher les extrémités de manière symétrique.",
+    svg2d: `<svg viewBox="0 0 220 220" width="100%" height="100%">
+      <rect x="55" y="70" width="110" height="80" class="svg-face"/>
+      <circle cx="110" cy="40" r="30" class="svg-face"/>
+      <circle cx="110" cy="180" r="30" class="svg-face"/>
+      
+      <line x1="55" y1="70" x2="165" y2="70" class="svg-fold"/>
+      <line x1="55" y1="150" x2="165" y2="150" class="svg-fold"/>
+    </svg>`,
+    // We approximate the rolled surface with 12 segments that fold 30 degrees each
+    faces3d: {
+      id: "f1", w: 12, h: 70, type: "rectangle", color: "var(--cylindre-color)", border: "var(--cylindre-border)",
+      children: [
+        { id: "c1", hinge: "top", w: 50, h: 50, type: "circle", color: "var(--cylindre-color)", border: "var(--cylindre-border)", angle: -90 },
+        { id: "c2", hinge: "bottom", w: 50, h: 50, type: "circle", color: "var(--cylindre-color)", border: "var(--cylindre-border)", angle: 90 },
+        // Right roll segment chain
+        { id: "r1", hinge: "right", w: 12, h: 70, type: "rectangle", color: "var(--cylindre-color)", border: "var(--cylindre-border)", angle: 30,
+          children: [{ id: "r2", hinge: "right", w: 12, h: 70, type: "rectangle", color: "var(--cylindre-color)", border: "var(--cylindre-border)", angle: 30,
+            children: [{ id: "r3", hinge: "right", w: 12, h: 70, type: "rectangle", color: "var(--cylindre-color)", border: "var(--cylindre-border)", angle: 30,
+              children: [{ id: "r4", hinge: "right", w: 12, h: 70, type: "rectangle", color: "var(--cylindre-color)", border: "var(--cylindre-border)", angle: 30,
+                children: [{ id: "r5", hinge: "right", w: 12, h: 70, type: "rectangle", color: "var(--cylindre-color)", border: "var(--cylindre-border)", angle: 30 }]
+              }]
+            }]
+          }]
+        },
+        // Left roll segment chain
+        { id: "l1", hinge: "left", w: 12, h: 70, type: "rectangle", color: "var(--cylindre-color)", border: "var(--cylindre-border)", angle: -30,
+          children: [{ id: "l2", hinge: "left", w: 12, h: 70, type: "rectangle", color: "var(--cylindre-color)", border: "var(--cylindre-border)", angle: -30,
+            children: [{ id: "l3", hinge: "left", w: 12, h: 70, type: "rectangle", color: "var(--cylindre-color)", border: "var(--cylindre-border)", angle: -30,
+              children: [{ id: "l4", hinge: "left", w: 12, h: 70, type: "rectangle", color: "var(--cylindre-color)", border: "var(--cylindre-border)", angle: -30,
+                children: [{ id: "l5", hinge: "left", w: 12, h: 70, type: "rectangle", color: "var(--cylindre-color)", border: "var(--cylindre-border)", angle: -30,
+                  children: [{ id: "l6", hinge: "left", w: 12, h: 70, type: "rectangle", color: "var(--cylindre-color)", border: "var(--cylindre-border)", angle: -30 }]
+                }]
+              }]
+            }]
+          }]
+        }
+      ]
+    }
+  },
+  {
+    id: "cube_valid_z",
+    solid: "cube",
+    solidLabel: "un Cube",
+    valid: true,
+    desc: "Ce patron en escalier (type 2-2-2) est l'un des patrons valides moins évidents. Il se replie parfaitement sans aucune superposition.",
+    svg2d: `<svg viewBox="0 0 220 220" width="100%" height="100%">
+      <rect x="35" y="25" width="50" height="50" class="svg-face"/>
+      <rect x="85" y="25" width="50" height="50" class="svg-face"/>
+      <rect x="85" y="75" width="50" height="50" class="svg-face"/>
+      <rect x="135" y="75" width="50" height="50" class="svg-face"/>
+      <rect x="135" y="125" width="50" height="50" class="svg-face"/>
+      <rect x="185" y="125" width="50" height="50" class="svg-face"/>
+      <line x1="85" y1="25" x2="85" y2="75" class="svg-fold"/>
+      <line x1="85" y1="75" x2="135" y2="75" class="svg-fold"/>
+      <line x1="135" y1="75" x2="135" y2="125" class="svg-fold"/>
+      <line x1="135" y1="125" x2="185" y2="125" class="svg-fold"/>
+    </svg>`,
+    faces3d: {
+      id: "f1", w: 50, h: 50, type: "square", color: "var(--cube-color)", border: "var(--cube-border)",
+      children: [
+        { id: "f2", hinge: "left", w: 50, h: 50, type: "square", color: "var(--cube-color)", border: "var(--cube-border)", angle: -90 },
+        { id: "f3", hinge: "bottom", w: 50, h: 50, type: "square", color: "var(--cube-color)", border: "var(--cube-border)", angle: 90,
+          children: [
+            { id: "f4", hinge: "right", w: 50, h: 50, type: "square", color: "var(--cube-color)", border: "var(--cube-border)", angle: 90,
+              children: [
+                { id: "f5", hinge: "bottom", w: 50, h: 50, type: "square", color: "var(--cube-color)", border: "var(--cube-border)", angle: 90,
+                  children: [
+                    { id: "f6", hinge: "right", w: 50, h: 50, type: "square", color: "var(--cube-color)", border: "var(--cube-border)", angle: 90 }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+];
+
+let selection = [];
+let curIdx = 0;
+let results = [];
+let answered = false;
+
+// Shuffling utility
+function shuffle(array) {
+  return [...array].sort(() => Math.random() - 0.5);
+}
+
+// 3D Scene Orbit variables
+let isDragging = false;
+let startX, startY;
+let rx = -25;
+let ry = 35;
+
+function init3DDrag() {
+  const scene = document.getElementById('scene-container');
+  scene.addEventListener('mousedown', e => {
+    isDragging = true;
+    startX = e.clientX;
+    startY = e.clientY;
+  });
+  window.addEventListener('mousemove', e => {
+    if (!isDragging) return;
+    const dx = e.clientX - startX;
+    const dy = e.clientY - startY;
+    ry += dx * 0.5;
+    rx -= dy * 0.5;
+    rx = Math.max(-80, Math.min(80, rx));
+    const assembly = document.getElementById('net-assembly');
+    if (assembly) {
+      assembly.style.setProperty('--rx', rx + 'deg');
+      assembly.style.setProperty('--ry', ry + 'deg');
+    }
+    startX = e.clientX;
+    startY = e.clientY;
+  });
+  window.addEventListener('mouseup', () => { isDragging = false; });
+
+  // Touch Support
+  scene.addEventListener('touchstart', e => {
+    isDragging = true;
+    startX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
+  });
+  window.addEventListener('touchmove', e => {
+    if (!isDragging) return;
+    const dx = e.touches[0].clientX - startX;
+    const dy = e.touches[0].clientY - startY;
+    ry += dx * 0.5;
+    rx -= dy * 0.5;
+    rx = Math.max(-80, Math.min(80, rx));
+    const assembly = document.getElementById('net-assembly');
+    if (assembly) {
+      assembly.style.setProperty('--rx', rx + 'deg');
+      assembly.style.setProperty('--ry', ry + 'deg');
+    }
+    startX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
+  }, { passive: true });
+  window.addEventListener('touchend', () => { isDragging = false; });
+}
+
+// Build progress dots
+function initProgress() {
+  const container = document.getElementById('dots-progress');
+  container.innerHTML = '';
+  for (let i = 0; i < 10; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'dot';
+    if (i === 0) dot.classList.add('current');
+    container.appendChild(dot);
+  }
+}
+
+function updateProgress() {
+  const dots = document.querySelectorAll('.dots .dot');
+  dots.forEach((dot, idx) => {
+    dot.className = 'dot';
+    if (idx === curIdx) {
+      dot.classList.add('current');
+    } else if (idx < curIdx) {
+      if (results[idx]) {
+        dot.classList.add('correct');
+      } else {
+        dot.classList.add('incorrect');
+      }
+    }
+  });
+}
+
+function demarrer() {
+  selection = shuffle(DATABASE).slice(0, 10);
+  curIdx = 0;
+  results = [];
+  document.getElementById('score-screen').style.display = 'none';
+  document.getElementById('exercice-zone').style.display = 'block';
+  initProgress();
+  init3DDrag();
+  afficherQuestion();
+}
+
+function afficherQuestion() {
+  answered = false;
+  const q = selection[curIdx];
+
+  document.getElementById('info-numero').textContent = `Patron ${curIdx + 1}/10`;
+  updateProgress();
+
+  // Reset badge
+  const badge = document.getElementById('solid-badge');
+  badge.className = 'solid-target-badge ' + q.solid;
+  badge.textContent = q.solidLabel;
+
+  // Load 2D view
+  document.getElementById('svg-container-2d').innerHTML = q.svg2d;
+
+  // Build 3D Net
+  const assembly = document.getElementById('net-assembly');
+  assembly.innerHTML = '';
+  build3DFace(q.faces3d, assembly);
+
+  // Reset slider
+  const slider = document.getElementById('fold-slider');
+  slider.value = 0;
+  onSliderMove(0);
+
+  // Reset tabs
+  switchTab('2d');
+
+  // Reset buttons
+  document.getElementById('btn-oui').className = 'btn-option';
+  document.getElementById('btn-non').className = 'btn-option';
+  document.getElementById('btn-oui').disabled = false;
+  document.getElementById('btn-non').disabled = false;
+
+  // Hide feedback & next
+  document.getElementById('feedback-card').style.display = 'none';
+  document.getElementById('btn-next').style.display = 'none';
+}
+
+// Generate the 3D CSS Face nodes recursively
+function build3DFace(faceData, parentEl) {
+  const el = document.createElement('div');
+  el.className = 'face-3d';
+  el.id = 'face-' + faceData.id;
+  
+  el.style.width = faceData.w + 'px';
+  el.style.height = faceData.h + 'px';
+  el.style.borderColor = faceData.border;
+  
+  if (faceData.type === 'triangle') {
+    el.style.backgroundColor = 'transparent';
+    el.style.backgroundImage = `linear-gradient(to top, ${faceData.color}, ${faceData.color})`;
+    
+    // Triangle clip paths dynamically set based on hinges
+    if (faceData.hinge === 'top') {
+      el.style.clipPath = 'polygon(50% 0%, 0% 100%, 100% 100%)';
+    } else if (faceData.hinge === 'bottom') {
+      el.style.clipPath = 'polygon(50% 100%, 0% 0%, 100% 0%)';
+    } else if (faceData.hinge === 'left') {
+      el.style.clipPath = 'polygon(0% 50%, 100% 0%, 100% 100%)';
+    } else if (faceData.hinge === 'right') {
+      el.style.clipPath = 'polygon(100% 50%, 0% 0%, 0% 100%)';
+    }
+  } else if (faceData.type === 'circle') {
+    el.style.backgroundColor = faceData.color;
+    el.style.borderRadius = '50%';
+  } else {
+    el.style.backgroundColor = faceData.color;
+  }
+  
+  // Positioning children around hinges
+  if (faceData.hinge) {
+    el.classList.add('hinge-' + faceData.hinge);
+    if (faceData.hinge === 'top') {
+      el.style.top = -faceData.h + 'px';
+      el.style.left = '0px';
+      el.style.transformOrigin = 'bottom center';
+    } else if (faceData.hinge === 'bottom') {
+      el.style.top = '100%';
+      el.style.left = '0px';
+      el.style.transformOrigin = 'top center';
+    } else if (faceData.hinge === 'left') {
+      el.style.left = -faceData.w + 'px';
+      el.style.top = '0px';
+      el.style.transformOrigin = 'right center';
+    } else if (faceData.hinge === 'right') {
+      el.style.left = '100%';
+      el.style.top = '0px';
+      el.style.transformOrigin = 'left center';
+    }
+  } else {
+    el.classList.add('root-face');
+  }
+  
+  el.dataset.foldAngle = faceData.angle || 0;
+  el.dataset.hinge = faceData.hinge || '';
+  
+  if (faceData.children) {
+    faceData.children.forEach(child => build3DFace(child, el));
+  }
+  
+  parentEl.appendChild(el);
+}
+
+// Fold Slider processing
+function onSliderMove(value) {
+  const faces = document.querySelectorAll('.face-3d');
+  faces.forEach(face => {
+    const hinge = face.dataset.hinge;
+    if (!hinge) return; // skip root
+    
+    const maxAngle = parseFloat(face.dataset.foldAngle || 0);
+    const curAngle = maxAngle * value;
+    
+    if (hinge === 'top' || hinge === 'bottom') {
+      face.style.transform = `rotateX(${curAngle}deg)`;
+    } else if (hinge === 'left' || hinge === 'right') {
+      face.style.transform = `rotateY(${curAngle}deg)`;
+    }
+  });
+}
+
+function switchTab(mode) {
+  const tab2d = document.getElementById('tab-btn-2d');
+  const tab3d = document.getElementById('tab-btn-3d');
+  const content2d = document.getElementById('tab-content-2d');
+  const content3d = document.getElementById('tab-content-3d');
+
+  if (mode === '2d') {
+    tab2d.classList.add('active');
+    tab3d.classList.remove('active');
+    content2d.style.display = 'flex';
+    content3d.style.display = 'none';
+  } else {
+    tab3d.classList.add('active');
+    tab2d.classList.remove('active');
+    content3d.style.display = 'flex';
+    content2d.style.display = 'none';
+  }
+}
+
+// Submit choice
+function submitAnswer(chosenAnswer) {
+  if (answered) return;
+  answered = true;
+
+  const q = selection[curIdx];
+  const correct = (chosenAnswer === q.valid);
+  results.push(correct);
+
+  // Disable options and highlight correct/incorrect
+  const btnOui = document.getElementById('btn-oui');
+  const btnNon = document.getElementById('btn-non');
+  btnOui.disabled = true;
+  btnNon.disabled = true;
+
+  const selectedBtn = chosenAnswer ? btnOui : btnNon;
+  if (correct) {
+    selectedBtn.classList.add('correct');
+    showFeedback(true, q.desc);
+  } else {
+    selectedBtn.classList.add('incorrect');
+    const correctBtn = q.valid ? btnOui : btnNon;
+    correctBtn.classList.add('correct');
+    showFeedback(false, q.desc);
+  }
+
+  // Force Tab change to 3D Visualization to show how it folds
+  switchTab('3d');
+  
+  // Trigger progressive auto-folding animation to guide the student visually
+  let progress = 0;
+  const interval = setInterval(() => {
+    progress += 0.02;
+    if (progress >= 1) {
+      progress = 1;
+      clearInterval(interval);
+    }
+    document.getElementById('fold-slider').value = progress;
+    onSliderMove(progress);
+  }, 20);
+
+  document.getElementById('btn-next').style.display = 'block';
+}
+
+function showFeedback(isSuccess, text) {
+  const card = document.getElementById('feedback-card');
+  const title = document.getElementById('feedback-title');
+  const content = document.getElementById('feedback-text');
+
+  card.className = 'feedback-box ' + (isSuccess ? 'correct' : 'incorrect');
+  title.textContent = isSuccess ? '✅ Bravo ! C\'est exact.' : '❌ Oups, ce n\'est pas tout à fait ça.';
+  content.innerHTML = text;
+  card.style.display = 'block';
+}
+
+function nextQuestion() {
+  curIdx++;
+  if (curIdx < 10) {
+    afficherQuestion();
+  } else {
+    afficherScoreFinal();
+  }
+}
+
+function afficherScoreFinal() {
+  document.getElementById('exercice-zone').style.display = 'none';
+  const scoreScreen = document.getElementById('score-screen');
+  scoreScreen.style.display = 'block';
+
+  // Calculate final score out of 10
+  const finalVal = results.filter(r => r).length;
+  document.getElementById('final-score').textContent = `${finalVal} / 10`;
+
+  // Set titles and emojis
+  const emoji = document.getElementById('final-emoji');
+  const title = document.getElementById('final-title');
+
+  if (finalVal === 10) {
+    emoji.textContent = '🏆';
+    title.textContent = 'Exceptionnel ! Tu as une vision spatiale parfaite !';
+  } else if (finalVal >= 8) {
+    emoji.textContent = '🎉';
+    title.textContent = 'Félicitations ! Très bon travail de géométrie !';
+  } else if (finalVal >= 5) {
+    emoji.textContent = '👍';
+    title.textContent = 'Pas mal ! Relis bien les explications et recommence.';
+  } else {
+    emoji.textContent = '🧐';
+    title.textContent = 'Prends le temps de visualiser en 3D les plis.';
+  }
+
+  // Build review details
+  const details = document.getElementById('final-details');
+  details.innerHTML = '';
+  selection.forEach((q, idx) => {
+    const ok = results[idx];
+    const row = document.createElement('div');
+    row.className = 'score-row';
+    row.innerHTML = `
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span class="solid-target-badge ${q.solid}">${q.solidLabel}</span>
+        <span class="name">${q.valid ? 'Patron valide' : 'Patron invalide'}</span>
+      </div>
+      <div class="status-badge" style="color: ${ok ? 'var(--success)' : 'var(--error)'}">
+        <span>${ok ? '✅' : '❌'}</span>
+        <span>${ok ? 'Correct' : 'Erreur'}</span>
+      </div>
+    `;
+    details.appendChild(row);
+  });
+
+  // Call parent window if present to save the score
+  if (window.parent && window.parent.saveResult) {
+    const pct = Math.round(finalVal / 10 * 100);
+    window.parent.saveResult({
+      activity: 'polyedres_patrons',
+      bookTitle: 'Patrons de solides — Plier ou ne pas plier ?',
+      score: finalVal,
+      total: 10,
+      pct: pct,
+      date: new Date().toLocaleDateString('fr-BE'),
+      time: new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })
+    });
+  }
+}
+
+function restart() {
+  demarrer();
+}
+
+window.onload = demarrer;
+</script>
+</body>
+</html>
