@@ -555,6 +555,13 @@ function solveDivision(dividendStr, divisorStr, level) {
   let product = qDigit * divisorVal;
   let remainder = currentVal - product;
   
+  let firstStepDropCol = null;
+  let firstStepDropDigit = null;
+  if (nextDigitIdx < digitChars.length) {
+    firstStepDropCol = digitCols[nextDigitIdx];
+    firstStepDropDigit = digitChars[nextDigitIdx];
+  }
+  
   steps.push({
     stepIdx: 1,
     dividendVal: currentVal,
@@ -562,8 +569,8 @@ function solveDivision(dividendStr, divisorStr, level) {
     productVal: product,
     remainderVal: remainder,
     rightCol: digitCols[nextDigitIdx - 1],
-    dropCol: null,
-    dropDigit: null
+    dropCol: firstStepDropCol,
+    dropDigit: firstStepDropDigit
   });
   
   let prevRemainder = remainder;
@@ -585,6 +592,13 @@ function solveDivision(dividendStr, divisorStr, level) {
     product = qDigit * divisorVal;
     remainder = currentVal - product;
     
+    let stepDropCol = null;
+    let stepDropDigit = null;
+    if (nextDigitIdx + 1 < digitChars.length) {
+      stepDropCol = digitCols[nextDigitIdx + 1];
+      stepDropDigit = digitChars[nextDigitIdx + 1];
+    }
+    
     steps.push({
       stepIdx: steps.length + 1,
       dividendVal: currentVal,
@@ -592,8 +606,8 @@ function solveDivision(dividendStr, divisorStr, level) {
       productVal: product,
       remainderVal: remainder,
       rightCol: colPos,
-      dropCol: colPos,
-      dropDigit: nextDigitChar
+      dropCol: stepDropCol,
+      dropDigit: stepDropDigit
     });
     
     prevRemainder = remainder;
@@ -1129,7 +1143,7 @@ function renderDivisionGrid(add, cardIdx) {
       grid.appendChild(cell);
     });
     
-    // Chiffre abaissé (si ce n'est pas la dernière étape)
+    // Chiffre abaissé (si ce n'est pas la dernière étape) - Toujours une case de saisie !
     let hasDrop = (step.dropCol !== null);
     if (hasDrop) {
       const cell = document.createElement('div');
@@ -1138,28 +1152,19 @@ function renderDivisionGrid(add, cardIdx) {
       cell.style.gridColumn = step.dropCol + 2; // décalé de +2
       cell.dataset.col = step.dropCol;
       
-      const isHidden = add.level !== 5 || add.lacunaryCells.some(spot => spot.type === 'drop' && spot.stepIdx === step.stepIdx);
-      if (isHidden) {
-        const input = document.createElement('input');
-        input.type = 'text';
-        input.inputMode = 'numeric';
-        input.pattern = '[0-9]*';
-        input.maxLength = 1;
-        input.className = 'input-operand';
-        input.dataset.col = step.dropCol;
-        input.dataset.row = layout.remRow;
-        input.dataset.type = 'drop';
-        input.dataset.stepIdx = step.stepIdx;
-        input.dataset.correctVal = step.dropDigit;
-        input.setAttribute('aria-label', `Chiffre abaissé étape ${step.stepIdx}`);
-        cell.appendChild(input);
-      } else {
-        const span = document.createElement('span');
-        span.className = 'char-box';
-        span.textContent = step.dropDigit;
-        span.style.color = 'var(--purple-dark)'; // Distinction visuelle
-        cell.appendChild(span);
-      }
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.inputMode = 'numeric';
+      input.pattern = '[0-9]*';
+      input.maxLength = 1;
+      input.className = 'input-operand';
+      input.dataset.col = step.dropCol;
+      input.dataset.row = layout.remRow;
+      input.dataset.type = 'drop';
+      input.dataset.stepIdx = step.stepIdx;
+      input.dataset.correctVal = step.dropDigit;
+      input.setAttribute('aria-label', `Chiffre abaissé étape ${step.stepIdx}`);
+      cell.appendChild(input);
       grid.appendChild(cell);
     }
     
