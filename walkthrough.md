@@ -1,6 +1,6 @@
 # Intégration du module "Le cercle et le disque" & "Périmètre du cercle" (P5-P6)
 
-Ce document résume le travail réalisé pour implémenter le 9e cadre de géométrie "Le cercle et le disque", ainsi que le nouveau cadre "Le cercle" dans la section "Grandeurs / Périmètre" avec les deux activités interactives associées.
+Ce document résume le travail réalisé pour implémenter le 9e cadre de géométrie "Le cercle et le disque", ainsi que le nouveau cadre "Le cercle" dans la section "Grandeurs / Périmètre" avec les trois activités interactives associées.
 
 ---
 
@@ -26,7 +26,7 @@ Trois exercices interactifs (sans calcul d'aire ou de périmètre) :
 ---
 
 ## 2. Grandeurs / Périmètre : Le cercle (Circonférence & Calculs Inverses)
-Un nouveau sous-menu "Le cercle" contenant 2 activités adaptées à P5-P6 et conformes au programme FWB (valeur de $\pi = 3,14$ exclusively) :
+Un sous-menu "Le cercle" contenant 3 activités adaptées à P5-P6 et conformes au programme FWB (valeur de $\pi = 3,14$ exclusivement) :
 
 ### 🧮 Activité 1 : Le labo de la circonférence
 * **Fichier créé** : [perimetre_cercle.html](file:///Users/jeremy/antigravity/LCML/perimetre_cercle.html).
@@ -41,6 +41,20 @@ Un nouveau sous-menu "Le cercle" contenant 2 activités adaptées à P5-P6 et co
 * **Aide visuelle** : Schéma SVG avec le périmètre affiché (ex. $P = 31,4\text{ cm}$) et la ligne recherchée marquée d'un point d'interrogation **?** bleu vif.
 * **Contour pédagogique** : Idéal pour travailler les équations simples et le sens des opérations inverses avec calculatrice.
 
+### 🧩 Activité 3 : Figures complexes (Périmètres Composés)
+* **Fichier créé** : [perimetre_cercle_compose.html](file:///Users/jeremy/antigravity/LCML/perimetre_cercle_compose.html).
+* **Concept** : Calculer le contour extérieur (périmètre) de figures composées incluant des segments droits et des arcs circulaires (demi-cercles ou quarts de cercle).
+* **Figures incluses (8 questions)** :
+  1. Demi-disque (arc + diamètre).
+  2. Quart de disque (arc + 2 rayons).
+  3. Piste d'athlétisme / Stade (2 longueurs droites + 2 demi-cercles).
+  4. Arche / Pont (2 arcs concentriques + 2 largeurs horizontales).
+  5. Vague en S (grand demi-cercle + 2 petits demi-cercles inverses).
+  6. Maison-dôme (3 côtés droits de carré + toit en demi-cercle).
+  7. Trèfle à 4 feuilles (4 demi-cercles extérieurs, pas de côtés de carré intérieur).
+  8. Plaque métallique découpée (la forme de la capture d'écran, avec 4 coins arrondis de rayon 2 m et côtés verticaux évidés).
+* **Contour pédagogique** : Force l'élève à distinguer les lignes intérieures (non comptées) des lignes extérieures et à diviser les calculs en sous-parties (courbes vs droites).
+
 ---
 
 ## 3. Modifications du Dashboard Principal & Navigation
@@ -48,15 +62,16 @@ Un nouveau sous-menu "Le cercle" contenant 2 activités adaptées à P5-P6 et co
 Les fichiers [index.html](file:///Users/jeremy/antigravity/LCML/index.html) (racine) et [fiches/index.html](file:///Users/jeremy/antigravity/LCML/fiches/index.html) ont été mis à jour de manière identique :
 1. **Périmètre - Sous-menu** : Ajout d'un 3e cadre "Le cercle" dans la section périmètre.
 2. **Création des Écrans HTML** :
-   * `screen-perimetre-cercle` : Sous-menu du cercle pour le périmètre (contenant les 2 activités).
+   * `screen-perimetre-cercle` : Sous-menu du cercle pour le périmètre (contenant les 3 activités).
    * `screen-perimetre-cercle-calcul` : Charge `perimetre_cercle.html`.
    * `screen-perimetre-cercle-inverse` : Charge `perimetre_cercle_inverse.html`.
+   * `screen-perimetre-cercle-compose` : Charge `perimetre_cercle_compose.html`.
 3. **Mise à jour du tracker d'activité** : Enregistrement de tous ces nouveaux écrans dans `getActivityLabel` pour le tableau de bord enseignant.
 4. **Système de verrouillage** : Ajout des relations parents/enfants dans `ACTIVITY_PARENTS`.
 
 ---
 
 ## Validation & Tests
-* Les deux exercices s'ouvrent de manière fluide sans erreur de script.
-* Les émojis contextuels s'affichent à côté des cercles SVG dans une mise en page Flex Row harmonieuse.
+* Les trois exercices s'ouvrent de manière fluide sans erreur de script.
+* Les émojis contextuels et schémas SVG s'affichent correctement côte à côte dans une mise en page Flex Row harmonieuse.
 * La navigation via les boutons retour du dashboard est pleinement fonctionnelle.
