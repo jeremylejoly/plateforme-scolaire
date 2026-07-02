@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Le laboratoire du cercle — Rayon ⇄ Diamètre</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --paper: #f8fafc;
+    --ink: #0f172a;
+    --muted: #64748b;
+    --accent: #2563eb;
+    --accent-light: #eff6ff;
+    --accent-hover: #1d4ed8;
+    --success: #16a34a;
+    --success-light: #f0fdf4;
+    --error: #dc2626;
+    --error-light: #fef2f2;
+    --warning: #ea580c;
+    --warning-light: #fff7ed;
+    --border: #e2e8f0;
+    --card: #ffffff;
+    --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    padding: 1.5rem;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .container {
+    max-width: 620px;
+    margin: 0 auto;
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+
+  h1 {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 0.25rem;
+  }
+
+  .subtitle {
+    font-size: 14px;
+    color: var(--muted);
+    font-weight: 600;
+  }
+
+  /* Progress bar and dots */
+  .info-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: var(--shadow);
+  }
+  .info-card p {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 15px;
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .dots {
+    display: flex;
+    gap: 6px;
+  }
+  .dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #e2e8f0;
+    border: 1px solid #cbd5e1;
+    transition: all 0.3s ease;
+  }
+  .dot.current {
+    background: var(--accent);
+    border-color: var(--accent-hover);
+    transform: scale(1.2);
+  }
+  .dot.correct {
+    background: var(--success);
+    border-color: var(--success);
+  }
+  .dot.incorrect {
+    background: var(--error);
+    border-color: var(--error);
+  }
+
+  /* Shape container for Circle Graphic */
+  .shape-card {
+    background: var(--card);
+    border: 2px solid var(--border);
+    border-radius: 20px;
+    padding: 1.25rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 1.25rem;
+    box-shadow: var(--shadow);
+    min-height: 230px;
+    position: relative;
+    overflow: hidden;
+  }
+  .shape-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: radial-gradient(circle, rgba(37,99,235,0.015) 0%, transparent 75%);
+    pointer-events: none;
+  }
+  .shape-card img {
+    max-width: 180px;
+    width: 100%;
+    height: auto;
+    filter: drop-shadow(0 6px 12px rgba(0,0,0,0.06));
+    animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1) forwards;
+  }
+
+  /* Step Card */
+  .step-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    box-shadow: var(--shadow);
+    animation: slideUp 0.4s ease forwards;
+  }
+  .step-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 1.25rem;
+    text-align: center;
+    line-height: 1.5;
+  }
+  .step-title strong {
+    color: var(--warning);
+    background: var(--warning-light);
+    padding: 2px 8px;
+    border-radius: 8px;
+    font-family: 'Fredoka', sans-serif;
+  }
+
+  /* Input area styling */
+  .input-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin: 0.5rem 0 1.25rem;
+  }
+  .ans-field {
+    width: 150px;
+    padding: 12px 14px;
+    border: 3px solid var(--border);
+    border-radius: 16px;
+    font-size: 24px;
+    font-weight: 800;
+    text-align: center;
+    color: var(--ink);
+    background: var(--paper);
+    outline: none;
+    transition: all 0.2s ease;
+    font-family: 'Nunito', sans-serif;
+  }
+  .ans-field:focus {
+    border-color: var(--accent);
+    background: #ffffff;
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
+  }
+  .ans-field:disabled {
+    background: #e2e8f0;
+    border-color: #cbd5e1;
+    color: var(--muted);
+    cursor: not-allowed;
+  }
+  .unit-text {
+    font-size: 22px;
+    font-weight: 900;
+    color: var(--muted);
+    font-family: 'Fredoka', sans-serif;
+  }
+
+  /* Virtual Keypad styling */
+  .keypad {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    max-width: 280px;
+    margin: 0 auto 1.5rem;
+  }
+  .key-btn {
+    padding: 12px;
+    border-radius: 12px;
+    border: 2px solid var(--border);
+    background: var(--card);
+    font-family: inherit;
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--ink);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    user-select: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+  }
+  .key-btn:hover:not(:disabled) {
+    border-color: var(--accent);
+    background: var(--accent-light);
+    color: var(--accent);
+  }
+  .key-btn:active:not(:disabled) {
+    transform: scale(0.95);
+  }
+  .key-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  .key-btn.backspace {
+    color: var(--error);
+  }
+  .key-btn.backspace:hover:not(:disabled) {
+    background: var(--error-light);
+    border-color: var(--error);
+    color: var(--error);
+  }
+
+  /* Feedback box */
+  .feedback-box {
+    margin-top: 1rem;
+    padding: 1rem 1.25rem;
+    border-radius: 14px;
+    font-size: 13.5px;
+    line-height: 1.45;
+    font-weight: 600;
+    display: none;
+    animation: fadeIn 0.3s ease forwards;
+  }
+  .feedback-box.correct {
+    display: block;
+    background: var(--success-light);
+    border: 1px solid #bbf7d0;
+    color: #15803d;
+  }
+  .feedback-box.incorrect {
+    display: block;
+    background: var(--error-light);
+    border: 1px solid #fecaca;
+    color: #b91c1c;
+  }
+
+  /* Action buttons */
+  .btn-action {
+    width: 100%;
+    padding: 14px;
+    background: var(--success);
+    color: white;
+    border: none;
+    border-radius: 16px;
+    font-size: 15px;
+    font-weight: 800;
+    cursor: pointer;
+    font-family: 'Fredoka', sans-serif;
+    transition: all 0.2s ease;
+    margin-top: 0.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 12px rgba(22, 163, 74, 0.2);
+  }
+  .btn-action:hover:not(:disabled) {
+    background: #15803d;
+    transform: translateY(-1.5px);
+    box-shadow: 0 6px 16px rgba(22, 163, 74, 0.3);
+  }
+  .btn-action:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  .btn-action.next {
+    background: var(--accent);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+  }
+  .btn-action.next:hover {
+    background: var(--accent-hover);
+    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3);
+  }
+
+  /* Score screen */
+  .score-card {
+    display: none;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 2.5rem 1.5rem;
+    text-align: center;
+    box-shadow: var(--shadow);
+    animation: slideUp 0.5s ease forwards;
+  }
+  .score-emoji {
+    font-size: 72px;
+    margin-bottom: 0.5rem;
+    animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  }
+  .score-title {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: var(--ink);
+  }
+  .score-num {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 44px;
+    font-weight: 800;
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+  }
+  .score-details {
+    background: var(--paper);
+    border-radius: 16px;
+    padding: 0.85rem;
+    margin-bottom: 2rem;
+    text-align: left;
+    max-height: 280px;
+    overflow-y: auto;
+    border: 1px solid var(--border);
+  }
+  .score-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 6px;
+    border-bottom: 1px solid rgba(0,0,0,0.04);
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .score-row:last-child {
+    border-bottom: none;
+  }
+  .score-row .name {
+    color: var(--ink);
+    max-width: 60%;
+    line-height: 1.4;
+  }
+  .score-row .type-tag {
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 99px;
+    font-weight: 800;
+    text-transform: uppercase;
+  }
+  .score-row .type-tag.correct-tag {
+    background: #dcfce7;
+    color: #15803d;
+  }
+  .score-row .type-tag.incorrect-tag {
+    background: #fee2e2;
+    color: #b91c1c;
+  }
+  .score-row .status-badge {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  /* Animations */
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes popIn {
+    from { transform: scale(0.6); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+
+  .score-details::-webkit-scrollbar {
+    width: 6px;
+  }
+  .score-details::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .score-details::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 99px;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>Le laboratoire du cercle</h1>
+    <div class="subtitle">Entraîne-toi aux relations entre rayon et diamètre</div>
+  </header>
+
+  <div id="exercice-zone">
+    <!-- Progress Indicator -->
+    <div class="info-card">
+      <p id="info-numero">Question 1/10</p>
+      <div class="dots" id="dots-progress"></div>
+    </div>
+
+    <!-- Circle Graphic Card -->
+    <div class="shape-card">
+      <img id="disque-image" src="" alt="Schéma géométrique" />
+    </div>
+
+    <!-- Step Card -->
+    <div class="step-card">
+      <div class="step-title" id="question-text">Question text</div>
+      
+      <!-- Input container -->
+      <div class="input-container">
+        <div class="input-wrapper">
+          <input type="text" class="ans-field" id="user-input" readonly placeholder="?" />
+          <span class="unit-text" id="target-unit">cm</span>
+        </div>
+      </div>
+
+      <!-- Virtual Keypad -->
+      <div class="keypad" id="virtual-keypad">
+        <button class="key-btn" onclick="pressKey('1')">1</button>
+        <button class="key-btn" onclick="pressKey('2')">2</button>
+        <button class="key-btn" onclick="pressKey('3')">3</button>
+        <button class="key-btn" onclick="pressKey('4')">4</button>
+        <button class="key-btn" onclick="pressKey('5')">5</button>
+        <button class="key-btn" onclick="pressKey('6')">6</button>
+        <button class="key-btn" onclick="pressKey('7')">7</button>
+        <button class="key-btn" onclick="pressKey('8')">8</button>
+        <button class="key-btn" onclick="pressKey('9')">9</button>
+        <button class="key-btn" onclick="pressKey(',')">,</button>
+        <button class="key-btn" onclick="pressKey('0')">0</button>
+        <button class="key-btn backspace" onclick="pressKey('backspace')">⌫</button>
+      </div>
+
+      <div class="feedback-box" id="feedback-box"></div>
+      
+      <!-- Validate Button -->
+      <button class="btn-action" id="btn-validate" onclick="validateAnswer()">
+        ✓ Valider ma réponse
+      </button>
+
+      <!-- Next Button -->
+      <button class="btn-action next" id="btn-next" style="display:none" onclick="nextQuestion()">
+        <span>Question suivante</span> ➡️
+      </button>
+    </div>
+  </div>
+
+  <!-- Final Score Screen -->
+  <div class="score-card" id="score-screen">
+    <div class="score-emoji" id="final-emoji">🏆</div>
+    <div class="score-title" id="final-title">Excellent travail !</div>
+    <div class="score-num" id="final-score">9 / 10</div>
+    <div class="score-details" id="final-details"></div>
+    <button class="btn-action next" onclick="restart()">🔄 Recommencer</button>
+  </div>
+</div>
+
+<script>
+// --- AUDIO SYNTHESIS FOR SOUND EFFECTS ---
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+function playSound(type) {
+  if (audioCtx.state === 'suspended') {
+    audioCtx.resume();
+  }
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  osc.connect(gain);
+  gain.connect(audioCtx.destination);
+
+  if (type === 'success') {
+    osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); // C5
+    osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.1); // E5
+    osc.frequency.setValueAtTime(783.99, audioCtx.currentTime + 0.2); // G5
+    osc.frequency.setValueAtTime(1046.50, audioCtx.currentTime + 0.3); // C6
+    gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.005, audioCtx.currentTime + 0.5);
+    osc.start();
+    osc.stop(audioCtx.currentTime + 0.5);
+  } else if (type === 'error') {
+    osc.frequency.setValueAtTime(220, audioCtx.currentTime); // A3
+    osc.frequency.setValueAtTime(147, audioCtx.currentTime + 0.15); // D3
+    gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.005, audioCtx.currentTime + 0.4);
+    osc.start();
+    osc.stop(audioCtx.currentTime + 0.4);
+  } else if (type === 'click') {
+    osc.frequency.setValueAtTime(580, audioCtx.currentTime);
+    gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.005, audioCtx.currentTime + 0.08);
+    osc.start();
+    osc.stop(audioCtx.currentTime + 0.08);
+  }
+}
+
+// --- DATABASE OF 14 PROGRESSIVE MATH QUESTIONS ---
+const QUESTION_BANK = [
+  // EASY LEVEL (Integers, no conversion)
+  {
+    id: 1,
+    image: "assets/disque/rayon.png",
+    questionText: "Le rayon orange de ce cercle mesure <strong>6 cm</strong>. Quelle est la longueur de son diamètre ?",
+    ans: "12",
+    targetUnit: "cm",
+    explanation: "Le diamètre vaut le double du rayon. Donc : 2 × 6 cm = 12 cm."
+  },
+  {
+    id: 2,
+    image: "assets/disque/diametre.png",
+    questionText: "Le diamètre orange de ce cercle mesure <strong>18 cm</strong>. Quelle est la longueur de son rayon ?",
+    ans: "9",
+    targetUnit: "cm",
+    explanation: "Le rayon vaut la moitié du diamètre. Donc : 18 cm / 2 = 9 cm."
+  },
+  {
+    id: 3,
+    image: "assets/disque/rayon.png",
+    questionText: "Le rayon orange de ce cercle mesure <strong>10 m</strong>. Quelle est la longueur de son diamètre ?",
+    ans: "20",
+    targetUnit: "m",
+    explanation: "Le diamètre vaut deux fois le rayon. Donc : 2 × 10 m = 20 m."
+  },
+  {
+    id: 4,
+    image: "assets/disque/diametre.png",
+    questionText: "Le diamètre orange de ce cercle mesure <strong>24 dm</strong>. Quelle est la longueur de son rayon ?",
+    ans: "12",
+    targetUnit: "dm",
+    explanation: "Le rayon vaut la moitié du diamètre. Donc : 24 dm / 2 = 12 dm."
+  },
+  // MEDIUM LEVEL (Decimals)
+  {
+    id: 5,
+    image: "assets/disque/rayon.png",
+    questionText: "Le rayon orange de ce cercle mesure <strong>3,5 cm</strong>. Quelle est la longueur de son diamètre ?",
+    ans: "7",
+    targetUnit: "cm",
+    explanation: "Le diamètre vaut le double du rayon. Donc : 2 × 3,5 cm = 7 cm."
+  },
+  {
+    id: 6,
+    image: "assets/disque/diametre.png",
+    questionText: "Le diamètre orange de ce cercle mesure <strong>15 cm</strong>. Quelle est la longueur de son rayon ?",
+    ans: "7,5",
+    targetUnit: "cm",
+    explanation: "Le rayon vaut la moitié du diamètre. Donc : 15 cm / 2 = 7,5 cm."
+  },
+  {
+    id: 7,
+    image: "assets/disque/rayon.png",
+    questionText: "Le rayon orange de ce cercle mesure <strong>4,5 dm</strong>. Quelle est la longueur de son diamètre ?",
+    ans: "9",
+    targetUnit: "dm",
+    explanation: "Le diamètre vaut le double du rayon. Donc : 2 × 4,5 dm = 9 dm."
+  },
+  {
+    id: 8,
+    image: "assets/disque/diametre.png",
+    questionText: "Le diamètre orange de ce cercle mesure <strong>9 cm</strong>. Quelle est la longueur de son rayon ?",
+    ans: "4,5",
+    targetUnit: "cm",
+    explanation: "Le rayon vaut la moitié du diamètre. Donc : 9 cm / 2 = 4,5 cm."
+  },
+  // DIFFICULT LEVEL (Conversions)
+  {
+    id: 9,
+    image: "assets/disque/rayon.png",
+    questionText: "Le rayon orange de ce cercle mesure <strong>5 cm</strong>. Quelle est la longueur de son diamètre en <strong>mm</strong> ?",
+    ans: "100",
+    targetUnit: "mm",
+    explanation: "Le diamètre vaut 2 × 5 cm = 10 cm. Converti en millimètres, cela fait 100 mm (car 1 cm = 10 mm)."
+  },
+  {
+    id: 10,
+    image: "assets/disque/diametre.png",
+    questionText: "Le diamètre orange de ce cercle mesure <strong>6 dm</strong>. Quelle est la longueur de son rayon en <strong>cm</strong> ?",
+    ans: "30",
+    targetUnit: "cm",
+    explanation: "Le rayon vaut 6 dm / 2 = 3 dm. Converti en centimètres, cela fait 30 cm (car 1 dm = 10 cm)."
+  },
+  {
+    id: 11,
+    image: "assets/disque/rayon.png",
+    questionText: "Le rayon orange de ce cercle mesure <strong>8 dm</strong>. Quelle est la longueur de son diamètre en <strong>cm</strong> ?",
+    ans: "160",
+    targetUnit: "cm",
+    explanation: "Le diamètre vaut 2 × 8 dm = 16 dm. Converti en centimètres, cela fait 160 cm (car 1 dm = 10 cm)."
+  },
+  // EXPERT LEVEL (Decimals + Conversions)
+  {
+    id: 12,
+    image: "assets/disque/rayon.png",
+    questionText: "Le rayon orange de ce cercle mesure <strong>2,5 cm</strong>. Quelle est la longueur de son diamètre en <strong>mm</strong> ?",
+    ans: "50",
+    targetUnit: "mm",
+    explanation: "Le diamètre vaut 2 × 2,5 cm = 5 cm. Converti en millimètres, cela fait 50 mm (car 1 cm = 10 mm)."
+  },
+  {
+    id: 13,
+    image: "assets/disque/diametre.png",
+    questionText: "Le diamètre orange de ce cercle mesure <strong>7 cm</strong>. Quelle est la longueur de son rayon en <strong>mm</strong> ?",
+    ans: "35",
+    targetUnit: "mm",
+    explanation: "Le rayon vaut 7 cm / 2 = 3,5 cm. Converti en millimètres, cela fait 35 mm (car 1 cm = 10 mm)."
+  },
+  {
+    id: 14,
+    image: "assets/disque/diametre.png",
+    questionText: "Le diamètre orange de ce cercle mesure <strong>12 m</strong>. Quelle est la longueur de son rayon en <strong>dm</strong> ?",
+    ans: "60",
+    targetUnit: "dm",
+    explanation: "Le rayon vaut 12 m / 2 = 6 m. Converti en décimètres, cela fait 60 dm (car 1 m = 10 dm)."
+  }
+];
+
+// --- STATE MANAGEMENT ---
+let currentQuestions = [];
+let currentIdx = 0;
+let score = 0;
+let userAnswers = [];
+let hasAnswered = false;
+
+// --- KEYPAD INPUT HANDLER ---
+function pressKey(key) {
+  if (hasAnswered) return;
+  playSound('click');
+  const input = document.getElementById("user-input");
+  
+  if (key === 'backspace') {
+    input.value = input.value.slice(0, -1);
+  } else if (key === ',') {
+    // Only allow one decimal separator
+    if (!input.value.includes(',') && !input.value.includes('.')) {
+      input.value += ',';
+    }
+  } else {
+    // Character limit of 6 characters
+    if (input.value.length < 6) {
+      input.value += key;
+    }
+  }
+}
+
+// Allow real keyboard input for desktop users
+window.addEventListener("keydown", (e) => {
+  if (hasAnswered) return;
+  
+  if (e.key >= '0' && e.key <= '9') {
+    pressKey(e.key);
+  } else if (e.key === ',' || e.key === '.') {
+    pressKey(',');
+  } else if (e.key === 'Backspace') {
+    pressKey('backspace');
+  } else if (e.key === 'Enter') {
+    validateAnswer();
+  }
+});
+
+// --- GAME LOGIC ---
+
+function initGame() {
+  currentIdx = 0;
+  score = 0;
+  userAnswers = [];
+  hasAnswered = false;
+  
+  // Shuffle and pick 10 questions
+  const shuffled = [...QUESTION_BANK].sort(() => Math.random() - 0.5);
+  currentQuestions = shuffled.slice(0, 10);
+  
+  // Reset dots
+  const dotsContainer = document.getElementById("dots-progress");
+  dotsContainer.innerHTML = "";
+  for (let i = 0; i < 10; i++) {
+    const dot = document.createElement("div");
+    dot.className = "dot";
+    dotsContainer.appendChild(dot);
+  }
+  
+  document.getElementById("score-screen").style.display = "none";
+  document.getElementById("exercice-zone").style.display = "block";
+  
+  loadQuestion();
+}
+
+function loadQuestion() {
+  hasAnswered = false;
+  const q = currentQuestions[currentIdx];
+  
+  // Update progress text
+  document.getElementById("info-numero").textContent = `Question ${currentIdx + 1} / 10`;
+  
+  // Update dots status
+  const dots = document.getElementById("dots-progress").children;
+  for (let i = 0; i < 10; i++) {
+    dots[i].classList.remove("current");
+  }
+  dots[currentIdx].classList.add("current");
+  
+  // Set question UI elements
+  document.getElementById("question-text").innerHTML = q.questionText;
+  document.getElementById("target-unit").textContent = q.targetUnit;
+  document.getElementById("disque-image").src = q.image;
+  
+  // Clear input
+  const input = document.getElementById("user-input");
+  input.value = "";
+  input.disabled = false;
+  
+  // Enable keypad keys
+  const keys = document.querySelectorAll(".key-btn");
+  keys.forEach(k => k.disabled = false);
+  
+  // Toggle buttons
+  document.getElementById("btn-validate").style.display = "block";
+  document.getElementById("btn-validate").disabled = false;
+  document.getElementById("btn-next").style.display = "none";
+  document.getElementById("feedback-box").style.display = "none";
+}
+
+function validateAnswer() {
+  if (hasAnswered) return;
+  
+  const input = document.getElementById("user-input");
+  const rawInput = input.value.trim();
+  
+  if (rawInput === "") {
+    // Highlight empty input area slightly
+    input.focus();
+    return;
+  }
+  
+  hasAnswered = true;
+  const q = currentQuestions[currentIdx];
+  const dots = document.getElementById("dots-progress").children;
+  
+  // Normalize values (removing spaces, converting dots to commas)
+  const normInput = rawInput.replace(/\s+/g, '').replace('.', ',');
+  const normCorrect = q.ans.replace(/\s+/g, '').replace('.', ',');
+  const isCorrect = (normInput === normCorrect);
+  
+  // Disable input & keypad
+  input.disabled = true;
+  const keys = document.querySelectorAll(".key-btn");
+  keys.forEach(k => k.disabled = true);
+  
+  // Update dots and score
+  if (isCorrect) {
+    playSound('success');
+    dots[currentIdx].classList.add("correct");
+    score++;
+  } else {
+    playSound('error');
+    dots[currentIdx].classList.add("incorrect");
+  }
+  
+  // Save answer data
+  userAnswers.push({
+    questionNum: currentIdx + 1,
+    questionText: q.questionText,
+    correctVal: q.ans,
+    unit: q.targetUnit,
+    userSelected: rawInput === "" ? "?" : rawInput,
+    isCorrect: isCorrect
+  });
+  
+  // Show feedback
+  const feedback = document.getElementById("feedback-box");
+  feedback.className = `feedback-box ${isCorrect ? 'correct' : 'incorrect'}`;
+  feedback.innerHTML = isCorrect 
+    ? `<strong>Super !</strong> ${q.explanation}` 
+    : `<strong>Mince !</strong> La bonne réponse était <strong>${q.ans} ${q.targetUnit}</strong>. ${q.explanation}`;
+  
+  // Toggle action buttons
+  document.getElementById("btn-validate").style.display = "none";
+  document.getElementById("btn-next").style.display = "flex";
+}
+
+function nextQuestion() {
+  playSound('click');
+  currentIdx++;
+  
+  if (currentIdx < 10) {
+    loadQuestion();
+  } else {
+    showScoreScreen();
+  }
+}
+
+function showScoreScreen() {
+  document.getElementById("exercice-zone").style.display = "none";
+  const screen = document.getElementById("score-screen");
+  screen.style.display = "block";
+  
+  // Set final values
+  document.getElementById("final-score").textContent = `${score} / 10`;
+  
+  // Set dynamic messages
+  const emojiEl = document.getElementById("final-emoji");
+  const titleEl = document.getElementById("final-title");
+  
+  if (score === 10) {
+    emojiEl.textContent = "🏆";
+    titleEl.textContent = "Parfait ! Un vrai virtuose du cercle !";
+  } else if (score >= 8) {
+    emojiEl.textContent = "⭐";
+    titleEl.textContent = "Excellent ! Tu maîtrises les conversions !";
+  } else if (score >= 5) {
+    emojiEl.textContent = "👍";
+    titleEl.textContent = "Bon travail ! Continue comme ça !";
+  } else {
+    emojiEl.textContent = "💪";
+    titleEl.textContent = "Entraîne-toi encore pour éviter les pièges !";
+  }
+  
+  // Populate details
+  const details = document.getElementById("final-details");
+  details.innerHTML = "";
+  
+  userAnswers.forEach(ans => {
+    const row = document.createElement("div");
+    row.className = "score-row";
+    
+    const leftText = document.createElement("span");
+    leftText.className = "name";
+    leftText.innerHTML = `Q${ans.questionNum} : Attendue : <strong>${ans.correctVal} ${ans.unit}</strong>`;
+    
+    const rightSide = document.createElement("div");
+    rightSide.className = "status-badge";
+    
+    const tag = document.createElement("span");
+    tag.className = `type-tag ${ans.isCorrect ? 'correct-tag' : 'incorrect-tag'}`;
+    tag.textContent = ans.isCorrect ? "Correct" : `Saisi: ${ans.userSelected}`;
+    
+    const statusIcon = document.createElement("span");
+    statusIcon.textContent = ans.isCorrect ? "✅" : "❌";
+    
+    rightSide.appendChild(tag);
+    rightSide.appendChild(statusIcon);
+    row.appendChild(leftText);
+    row.appendChild(rightSide);
+    details.appendChild(row);
+  });
+}
+
+function restart() {
+  playSound('click');
+  initGame();
+}
+
+// --- INITIALIZE GAME ON LOAD ---
+window.addEventListener("DOMContentLoaded", () => {
+  document.body.addEventListener("click", () => {
+    if (audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
+  }, { once: true });
+  
+  initGame();
+});
+</script>
+</body>
+</html>
