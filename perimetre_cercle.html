@@ -106,19 +106,17 @@
     border-radius: 20px;
     padding: 1.5rem;
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
     margin-bottom: 1.5rem;
     box-shadow: var(--shadow);
-    min-height: 260px;
-    position: relative;
+    min-height: 280px;
   }
   .shape-svg {
-    max-width: 200px;
+    max-width: 240px;
     width: 100%;
-    height: auto;
-    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.04));
+    height: 240px;
+    filter: drop-shadow(0 4px 10px rgba(0,0,0,0.06));
   }
 
   /* Context icon badge */
@@ -397,8 +395,6 @@
 
     <!-- Circle SVG Graphic Card -->
     <div class="shape-card" id="shape-card">
-      <!-- Will be updated by Javascript -->
-      <div id="context-emoji" class="context-icon" style="display:none;"></div>
       <svg id="circle-svg" class="shape-svg" viewBox="0 0 200 200">
         <!-- SVG contents will be dynamically injected here -->
       </svg>
@@ -695,26 +691,19 @@ function loadQuestion() {
   document.getElementById("feedback-box").style.display = "none";
   document.getElementById("btn-next").style.display = "none";
   
-  // Update texts
-  document.getElementById("question-text").innerHTML = q.questionText || q.question;
+  // Update texts - Prepend emoji to question text
+  let qText = q.questionText || q.question;
+  if (q.emoji) {
+    qText = `<span style="font-size: 26px; margin-right: 8px;">${q.emoji}</span>` + qText;
+  }
+  document.getElementById("question-text").innerHTML = qText;
   document.getElementById("answer-unit").textContent = q.unit;
   
-
-  
-  // Render Dynamic SVG or Emoji
+  // Render Dynamic SVG
   const svg = document.getElementById("circle-svg");
   const emojiDiv = document.getElementById("context-emoji");
-  
-  if (q.emoji) {
-    // Word problem mode: show emoji context and small circle
-    emojiDiv.style.display = "block";
-    emojiDiv.textContent = q.emoji;
-    svg.style.maxHeight = "120px";
-  } else {
-    // Pure geometry mode: hide emoji and make circle larger
-    emojiDiv.style.display = "none";
-    svg.style.maxHeight = "200px";
-  }
+  emojiDiv.style.display = "none";
+  svg.style.maxHeight = "240px";
   
   renderCircleSVG(q);
 }
@@ -724,15 +713,15 @@ function renderCircleSVG(q) {
   svg.innerHTML = "";
   
   // Base circle styles
-  const strokeColor = q.emoji ? "#cbd5e1" : "#64748b";
-  const strokeWidth = q.emoji ? 4 : 6;
+  const strokeColor = "#64748b";
+  const strokeWidth = 8;
   const highlightColor = "#ea580c"; // orange
   
-  // 1. Draw outer circle
+  // 1. Draw outer circle (radius 82, filling the viewbox)
   const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
   circle.setAttribute("cx", "100");
   circle.setAttribute("cy", "100");
-  circle.setAttribute("r", "70");
+  circle.setAttribute("r", "82");
   circle.setAttribute("fill", "none");
   circle.setAttribute("stroke", strokeColor);
   circle.setAttribute("stroke-width", strokeWidth);
@@ -742,75 +731,75 @@ function renderCircleSVG(q) {
   const center = document.createElementNS("http://www.w3.org/2000/svg", "circle");
   center.setAttribute("cx", "100");
   center.setAttribute("cy", "100");
-  center.setAttribute("r", "4");
+  center.setAttribute("r", "5");
   center.setAttribute("fill", "#0f172a");
   svg.appendChild(center);
   
   if (q.showRadius) {
-    // Draw radius line (center to right edge)
+    // Draw radius line (center 100 to right edge 182)
     const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
     line.setAttribute("x1", "100");
     line.setAttribute("y1", "100");
-    line.setAttribute("x2", "170");
+    line.setAttribute("x2", "182");
     line.setAttribute("y2", "100");
     line.setAttribute("stroke", highlightColor);
-    line.setAttribute("stroke-width", "4");
-    line.setAttribute("stroke-dasharray", "4,4");
+    line.setAttribute("stroke-width", "5");
+    line.setAttribute("stroke-dasharray", "5,5");
     svg.appendChild(line);
     
-    // Label
+    // Label (font size 22, bold)
     const textVal = `${q.r} ${q.unit}`;
     const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
-    text.setAttribute("x", "130");
-    text.setAttribute("y", "90");
+    text.setAttribute("x", "141");
+    text.setAttribute("y", "80");
     text.setAttribute("fill", highlightColor);
-    text.setAttribute("font-size", "14");
+    text.setAttribute("font-size", "22");
     text.setAttribute("font-weight", "800");
     text.setAttribute("text-anchor", "middle");
     text.textContent = textVal;
     svg.appendChild(text);
     
-    // 'r = ...' label under center
+    // 'Rayon' helper text inside lower circle half (font size 16)
     const textSub = document.createElementNS("http://www.w3.org/2000/svg", "text");
     textSub.setAttribute("x", "100");
-    textSub.setAttribute("y", "120");
+    textSub.setAttribute("y", "135");
     textSub.setAttribute("fill", "#64748b");
-    textSub.setAttribute("font-size", "11");
+    textSub.setAttribute("font-size", "16");
     textSub.setAttribute("font-weight", "700");
     textSub.setAttribute("text-anchor", "middle");
     textSub.textContent = "Rayon";
     svg.appendChild(textSub);
     
   } else {
-    // Draw diameter line (left edge to right edge)
+    // Draw diameter line (left edge 18 to right edge 182)
     const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-    line.setAttribute("x1", "30");
+    line.setAttribute("x1", "18");
     line.setAttribute("y1", "100");
-    line.setAttribute("x2", "170");
+    line.setAttribute("x2", "182");
     line.setAttribute("y2", "100");
     line.setAttribute("stroke", highlightColor);
-    line.setAttribute("stroke-width", "4");
-    line.setAttribute("stroke-dasharray", "4,4");
+    line.setAttribute("stroke-width", "5");
+    line.setAttribute("stroke-dasharray", "5,5");
     svg.appendChild(line);
     
-    // Label
+    // Label (font size 22, bold)
     const textVal = `${q.d} ${q.unit}`;
     const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
     text.setAttribute("x", "100");
-    text.setAttribute("y", "90");
+    text.setAttribute("y", "80");
     text.setAttribute("fill", highlightColor);
-    text.setAttribute("font-size", "14");
+    text.setAttribute("font-size", "22");
     text.setAttribute("font-weight", "800");
     text.setAttribute("text-anchor", "middle");
     text.textContent = textVal;
     svg.appendChild(text);
     
-    // 'd = ...' label under center
+    // 'Diamètre' helper text inside lower circle half (font size 16)
     const textSub = document.createElementNS("http://www.w3.org/2000/svg", "text");
     textSub.setAttribute("x", "100");
-    textSub.setAttribute("y", "120");
+    textSub.setAttribute("y", "135");
     textSub.setAttribute("fill", "#64748b");
-    textSub.setAttribute("font-size", "11");
+    textSub.setAttribute("font-size", "16");
     textSub.setAttribute("font-weight", "700");
     textSub.setAttribute("text-anchor", "middle");
     textSub.textContent = "Diamètre";
