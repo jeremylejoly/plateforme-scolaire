@@ -3123,7 +3123,9 @@ input[type=text].calc-input.incorrect {
       'screen-grandeurs-proportionnalite': "Menu de la proportionnalité",
       'screen-grandeurs-proportionnalite-exercice': "Exercice : Recettes",
       'screen-grandeurs-proportionnalite-rallye-bolides': "Exercice : Le rallye des bolides",
-      'screen-grandeurs-proportionnalite-supermarche-malin': "Exercice : Le supermarché malin"
+      'screen-grandeurs-proportionnalite-supermarche-malin': "Exercice : Le supermarché malin",
+      'screen-perimetre-cercle': "Menu du Périmètre — Le cercle",
+      'screen-perimetre-cercle-calcul': "Exercice : Le labo de la circonférence"
     };
     return mapping[screenId] || "Navigue sur l'application";
   };
@@ -5325,6 +5327,19 @@ input[type=text].calc-input.incorrect {
     <div id="perimetre-calcul-body"></div>
   </div>
 
+  <!-- SCREEN: Périmètre — Le cercle -->
+  <div id="screen-perimetre-cercle" class="screen">
+    <button class="back-btn" onclick="showScreen('screen-grandeurs-perimetre');">← Retour</button>
+    <div class="page-title">⭕ Le cercle</div>
+    <div id="perimetre-cercle-menu"></div>
+  </div>
+
+  <!-- SCREEN: Périmètre — Cercle Calcul -->
+  <div id="screen-perimetre-cercle-calcul" class="screen">
+    <button class="back-btn" onclick="showScreen('screen-perimetre-cercle');renderPerimetreCercleMenu();">← Retour</button>
+    <iframe src="perimetre_cercle.html" style="width:100%;height:calc(100vh - 60px);border:none;border-radius:12px;overflow-y:auto;" allowfullscreen scrolling="yes"></iframe>
+  </div>
+
   <!-- SCREEN: Grandeurs - L'aire -->
   <div id="screen-grandeurs-aire" class="screen">
     <button class="back-btn" onclick="showScreen('screen-grandeurs');renderGrandeursScreen();">← Retour</button>
@@ -6865,6 +6880,7 @@ function showScreen(id){
   if(id==='screen-num-entiers-decimaux') setTimeout(renderNumEntiersDecimauxMenu, 50);
   if(id==='screen-num-fractions') setTimeout(renderFractionsMenu, 50);
   if(id==='screen-grandeurs-perimetre') setTimeout(renderPerimetreMenu, 50);
+  if(id==='screen-perimetre-cercle') setTimeout(renderPerimetreCercleMenu, 50);
   if(id==='screen-grandeurs-aire') setTimeout(renderAireMenu, 50);
   if(id==='screen-grandeurs-volume') setTimeout(renderVolumeMenu, 50);
   if(id==='screen-grandeurs-monnaie') setTimeout(renderGrandeursMonnaieMenu, 50);
@@ -8330,6 +8346,8 @@ const ACTIVITY_PARENTS = {
   'grandeur_echelle': 'maths-grandeurs',
   'grandeur_perimetre_calcul': 'grandeur_perimetre',
   'grandeur_perimetre_problemes': 'grandeur_perimetre',
+  'grandeur_perimetre_cercle': 'grandeur_perimetre',
+  'grandeur_perimetre_cercle_labo': 'grandeur_perimetre_cercle',
   'grandeur_durees_heure_secondes': 'grandeur_durees',
   'grandeur_monnaie_deux_objets': 'grandeur_monnaie',
   'grandeur_proportionnalite_exercice': 'grandeur_proportionnalite',
@@ -23923,6 +23941,7 @@ function renderPerimetreMenu(){
   const items = [
     {id:'grandeur_perimetre_calcul', screen:'screen-perimetre-calcul', label:'Calcul du périmètre', icon:'✏️', desc:'5 figures — calcule le périmètre', fn:'renderPerimetreCalcul'},
     {id:'grandeur_perimetre_problemes', screen:'screen-perimetre-problemes', label:'Problèmes', icon:'🧩', desc:'10 problèmes — lis et trouve la réponse', fn:'renderPerimetreProblemes'},
+    {id:'grandeur_perimetre_cercle', screen:'screen-perimetre-cercle', label:'Le cercle', icon:'⭕', desc:'Calculer la circonférence d\'un cercle · Formules et problèmes', fn:'renderPerimetreCercleMenu'},
   ];
   let html = '';
   items.forEach(t => {
@@ -23930,6 +23949,36 @@ function renderPerimetreMenu(){
     const toggleBtn = isTeacher
       ? `<button class="card-teacher-toggle ${isLocked?'btn-show':'btn-hide'}"
            onclick="event.stopPropagation();toggleActivity('${t.id}');renderPerimetreMenu();">
+           ${isLocked?'🔓 Réactiver':'🔒 Masquer'}
+         </button>` : '';
+    if(isLocked && !isTeacher) return;
+    const badge = isTeacher ? '' : renderScoreBadge(t.id);
+    html += `<div class="sub-subject-card active-card" onclick="navTo('${t.screen}','${t.fn}')" style="position:relative">
+      ${toggleBtn}
+      <div class="sub-icon">${t.icon}</div>
+      <div class="sub-title">${t.label}</div>
+      <div class="sub-desc">${t.desc}</div>
+      ${badge}
+    </div>`;
+  });
+  menu.innerHTML = '<div class="sub-subjects-grid">' + html + '</div>';
+}
+
+// ===== MENU CERCLE PÉRIMÈTRE =====
+function renderPerimetreCercleMenu(){
+  const menu = document.getElementById('perimetre-cercle-menu');
+  if(!menu) return;
+  const locked = getLockedActivities();
+  const isTeacher = state.role === 'teacher';
+  const items = [
+    {id:'grandeur_perimetre_cercle_labo', screen:'screen-perimetre-cercle-calcul', label:'Le labo de la circonférence', icon:'🧮', desc:'Calculer le périmètre d\'un cercle à partir de son rayon ou son diamètre · 10 questions', fn:''},
+  ];
+  let html = '';
+  items.forEach(t => {
+    const isLocked = isActivityLocked(t.id);
+    const toggleBtn = isTeacher
+      ? `<button class="card-teacher-toggle ${isLocked?'btn-show':'btn-hide'}"
+           onclick="event.stopPropagation();toggleActivity('${t.id}');renderPerimetreCercleMenu();">
            ${isLocked?'🔓 Réactiver':'🔒 Masquer'}
          </button>` : '';
     if(isLocked && !isTeacher) return;
