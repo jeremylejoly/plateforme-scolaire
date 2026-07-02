@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>L'enquête du compas</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --paper: #f8fafc;
+    --ink: #0f172a;
+    --muted: #64748b;
+    --accent: #2563eb;
+    --accent-light: #eff6ff;
+    --accent-hover: #1d4ed8;
+    --success: #16a34a;
+    --success-light: #f0fdf4;
+    --error: #dc2626;
+    --error-light: #fef2f2;
+    --warning: #ea580c;
+    --warning-light: #fff7ed;
+    --border: #e2e8f0;
+    --card: #ffffff;
+    --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    padding: 1.5rem;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .container {
+    max-width: 620px;
+    margin: 0 auto;
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+
+  h1 {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 0.25rem;
+  }
+
+  .subtitle {
+    font-size: 14px;
+    color: var(--muted);
+    font-weight: 600;
+  }
+
+  /* Progress bar and dots */
+  .info-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: var(--shadow);
+  }
+  .info-card p {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 15px;
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .dots {
+    display: flex;
+    gap: 6px;
+  }
+  .dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #e2e8f0;
+    border: 1px solid #cbd5e1;
+    transition: all 0.3s ease;
+  }
+  .dot.current {
+    background: var(--accent);
+    border-color: var(--accent-hover);
+    transform: scale(1.2);
+  }
+  .dot.correct {
+    background: var(--success);
+    border-color: var(--success);
+  }
+  .dot.incorrect {
+    background: var(--error);
+    border-color: var(--error);
+  }
+
+  /* Shape container for Circle Graphic */
+  .shape-card {
+    background: var(--card);
+    border: 2px solid var(--border);
+    border-radius: 20px;
+    padding: 1.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--shadow);
+    min-height: 280px;
+    position: relative;
+    overflow: hidden;
+  }
+  .shape-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: radial-gradient(circle, rgba(37,99,235,0.015) 0%, transparent 75%);
+    pointer-events: none;
+  }
+  .shape-card img {
+    max-width: 320px;
+    width: 100%;
+    height: auto;
+    filter: drop-shadow(0 6px 12px rgba(0,0,0,0.06));
+    animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1) forwards;
+  }
+
+  /* Step Card */
+  .step-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    box-shadow: var(--shadow);
+    animation: slideUp 0.4s ease forwards;
+  }
+  .step-title {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 1.25rem;
+    text-align: center;
+    line-height: 1.5;
+  }
+
+  /* Grid Options QCM */
+  .options-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 1rem;
+  }
+  .btn-option {
+    padding: 14px 12px;
+    border-radius: 14px;
+    border: 2px solid var(--border);
+    background: var(--card);
+    color: var(--ink);
+    font-size: 14px;
+    font-weight: 800;
+    cursor: pointer;
+    font-family: 'Nunito', sans-serif;
+    transition: all 0.15s ease;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.015);
+  }
+  .btn-option:hover:not(:disabled) {
+    border-color: var(--accent);
+    background: var(--accent-light);
+    color: var(--accent-hover);
+    transform: translateY(-1.5px);
+  }
+  .btn-option:active:not(:disabled) {
+    transform: translateY(0);
+  }
+  .btn-option.correct {
+    border-color: var(--success);
+    background: var(--success-light);
+    color: var(--success);
+    font-weight: 900;
+  }
+  .btn-option.incorrect {
+    border-color: var(--error);
+    background: var(--error-light);
+    color: var(--error);
+    font-weight: 900;
+  }
+  .btn-option:disabled {
+    cursor: not-allowed;
+    opacity: 0.85;
+  }
+
+  /* Feedback box */
+  .feedback-box {
+    margin-top: 1rem;
+    padding: 1rem 1.25rem;
+    border-radius: 14px;
+    font-size: 13.5px;
+    line-height: 1.45;
+    font-weight: 600;
+    display: none;
+    animation: fadeIn 0.3s ease forwards;
+  }
+  .feedback-box.correct {
+    display: block;
+    background: var(--success-light);
+    border: 1px solid #bbf7d0;
+    color: #15803d;
+  }
+  .feedback-box.incorrect {
+    display: block;
+    background: var(--error-light);
+    border: 1px solid #fecaca;
+    color: #b91c1c;
+  }
+
+  /* Nav buttons */
+  .btn-next {
+    width: 100%;
+    padding: 14px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 16px;
+    font-size: 15px;
+    font-weight: 800;
+    cursor: pointer;
+    font-family: 'Fredoka', sans-serif;
+    transition: all 0.2s ease;
+    margin-top: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+  }
+  .btn-next:hover {
+    background: var(--accent-hover);
+    transform: translateY(-1.5px);
+    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3);
+  }
+  .btn-next:active {
+    transform: translateY(0);
+  }
+
+  /* Score screen */
+  .score-card {
+    display: none;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 2.5rem 1.5rem;
+    text-align: center;
+    box-shadow: var(--shadow);
+    animation: slideUp 0.5s ease forwards;
+  }
+  .score-emoji {
+    font-size: 72px;
+    margin-bottom: 0.5rem;
+    animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  }
+  .score-title {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: var(--ink);
+  }
+  .score-num {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 44px;
+    font-weight: 800;
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+  }
+  .score-details {
+    background: var(--paper);
+    border-radius: 16px;
+    padding: 0.85rem;
+    margin-bottom: 2rem;
+    text-align: left;
+    max-height: 280px;
+    overflow-y: auto;
+    border: 1px solid var(--border);
+  }
+  .score-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 6px;
+    border-bottom: 1px solid rgba(0,0,0,0.04);
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .score-row:last-child {
+    border-bottom: none;
+  }
+  .score-row .name {
+    color: var(--ink);
+    max-width: 60%;
+    line-height: 1.4;
+  }
+  .score-row .type-tag {
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 99px;
+    font-weight: 800;
+    text-transform: uppercase;
+  }
+  .score-row .type-tag.correct-tag {
+    background: #dcfce7;
+    color: #15803d;
+  }
+  .score-row .type-tag.incorrect-tag {
+    background: #fee2e2;
+    color: #b91c1c;
+  }
+  .score-row .status-badge {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  /* Animations */
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes popIn {
+    from { transform: scale(0.6); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+
+  .score-details::-webkit-scrollbar {
+    width: 6px;
+  }
+  .score-details::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .score-details::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 99px;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>L'enquête du compas</h1>
+    <div class="subtitle">Analyse la construction de figures géométriques</div>
+  </header>
+
+  <div id="exercice-zone">
+    <!-- Progress Indicator -->
+    <div class="info-card">
+      <p id="info-numero">Question 1/10</p>
+      <div class="dots" id="dots-progress"></div>
+    </div>
+
+    <!-- Circle Graphic Card -->
+    <div class="shape-card">
+      <img id="disque-image" src="" alt="Schéma géométrique" />
+    </div>
+
+    <!-- QCM Step Card -->
+    <div class="step-card">
+      <div class="step-title" id="question-text">Question text</div>
+      
+      <!-- Dynamic options grid -->
+      <div class="options-grid" id="options-container">
+        <!-- Buttons will be dynamically inserted here -->
+      </div>
+
+      <div class="feedback-box" id="feedback-box"></div>
+      
+      <!-- Next Button -->
+      <button class="btn-next" id="btn-next" style="display:none" onclick="nextQuestion()">
+        <span>Question suivante</span> ➡️
+      </button>
+    </div>
+  </div>
+
+  <!-- Final Score Screen -->
+  <div class="score-card" id="score-screen">
+    <div class="score-emoji" id="final-emoji">🏆</div>
+    <div class="score-title" id="final-title">Excellent travail !</div>
+    <div class="score-num" id="final-score">9 / 10</div>
+    <div class="score-details" id="final-details"></div>
+    <button class="btn-next" onclick="restart()">🔄 Recommencer</button>
+  </div>
+</div>
+
+<script>
+// --- AUDIO SYNTHESIS FOR SOUND EFFECTS ---
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+function playSound(type) {
+  if (audioCtx.state === 'suspended') {
+    audioCtx.resume();
+  }
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  osc.connect(gain);
+  gain.connect(audioCtx.destination);
+
+  if (type === 'success') {
+    osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); // C5
+    osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.1); // E5
+    osc.frequency.setValueAtTime(783.99, audioCtx.currentTime + 0.2); // G5
+    osc.frequency.setValueAtTime(1046.50, audioCtx.currentTime + 0.3); // C6
+    gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.005, audioCtx.currentTime + 0.5);
+    osc.start();
+    osc.stop(audioCtx.currentTime + 0.5);
+  } else if (type === 'error') {
+    osc.frequency.setValueAtTime(220, audioCtx.currentTime); // A3
+    osc.frequency.setValueAtTime(147, audioCtx.currentTime + 0.15); // D3
+    gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.005, audioCtx.currentTime + 0.4);
+    osc.start();
+    osc.stop(audioCtx.currentTime + 0.4);
+  } else if (type === 'click') {
+    osc.frequency.setValueAtTime(580, audioCtx.currentTime);
+    gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.005, audioCtx.currentTime + 0.08);
+    osc.start();
+    osc.stop(audioCtx.currentTime + 0.08);
+  }
+}
+
+// --- DATABASE OF 10 COMPASS INVESTIGATION QUESTIONS ---
+const QUESTION_BANK = [
+  {
+    id: 1,
+    image: "assets/disque/compas_rosace_petale.png",
+    questionText: "Pour tracer ce pétale courbe (l'arc orange), sur quel point doit-on planter la pointe sèche du compas ?",
+    options: ["Le point A", "Le point B", "Le point C", "Le point O"],
+    ans: "Le point A",
+    frenchName: "Pointe du compas (pétale rosace)",
+    explanation: "Pour tracer cet arc qui passe par le centre O et par la frontière, le centre du tracé est le point A. La pointe sèche est donc posée en A."
+  },
+  {
+    id: 2,
+    image: "assets/disque/compas_tangents.png",
+    questionText: "Pour dessiner le cercle orange de droite de centre B, quel doit être l'écartement (le rayon) du compas ?",
+    options: ["2 cm", "4 cm", "6 cm", "8 cm"],
+    ans: "4 cm",
+    frenchName: "Rayon du compas (cercles tangents)",
+    explanation: "Le rayon de ce cercle orange est le segment reliant son centre B au point de contact T, ce qui correspond à une longueur de 4 cm."
+  },
+  {
+    id: 3,
+    image: "assets/disque/compas_intersection.png",
+    questionText: "Le compas a tracé le cercle de gauche de centre A. Pour tracer le cercle orange de droite (de même taille), où doit-on planter le compas ?",
+    options: ["Au point A", "Au point B", "À l'intersection", "Au milieu de A et B"],
+    ans: "Au point B",
+    frenchName: "Pointe du compas (cercles sécants)",
+    explanation: "Le point B est le centre du cercle orange de droite. C'est là que l'on doit planter la pointe sèche du compas."
+  },
+  {
+    id: 4,
+    image: "assets/disque/compas_yinyang.png",
+    questionText: "Pour tracer le demi-cercle orange du haut de centre B, quel doit être l'écartement (le rayon) du compas ?",
+    options: ["3 cm", "6 cm", "9 cm", "12 cm"],
+    ans: "3 cm",
+    frenchName: "Rayon du compas (Yin-Yang)",
+    explanation: "Le rayon de ce demi-cercle est la distance reliant son centre B à son bord A ou C, soit une mesure de 3 cm (la moitié du rayon du grand cercle)."
+  },
+  {
+    id: 5,
+    image: "assets/disque/compas_rosace_petale.png",
+    questionText: "Si on veut tracer un deuxième pétale symétrique courbé vers le bas reliant O à la frontière, où doit-on planter la pointe sèche ?",
+    options: ["Le point A", "Le point B", "Le point C", "Le point D"],
+    ans: "Le point C",
+    frenchName: "Pointe du compas (pétale du bas)",
+    explanation: "Pour tracer le pétale inférieur reliant le centre O, on doit planter le compas au point opposé A, c'est-à-dire le point C situé en bas."
+  },
+  {
+    id: 6,
+    image: "assets/disque/compas_tangents.png",
+    questionText: "Les deux cercles bleu et orange se touchent en T. Quel est le diamètre total de cette double figure reliant A à B plus leurs rayons ?",
+    options: ["4 cm", "8 cm", "12 cm", "16 cm"],
+    ans: "16 cm",
+    frenchName: "Diamètre total (cercles tangents)",
+    explanation: "Chaque cercle a un rayon de 4 cm, donc un diamètre de 8 cm (4 × 2). Les deux cercles côte à côte font un diamètre cumulé de 8 + 8 = 16 cm."
+  },
+  {
+    id: 7,
+    image: "assets/disque/compas_intersection.png",
+    questionText: "Chaque cercle passe par le centre de l'autre. Le segment reliant les centres A et B mesure 6 cm. Quelle est la largeur totale de la figure ?",
+    options: ["12 cm", "14 cm", "18 cm", "24 cm"],
+    ans: "18 cm",
+    frenchName: "Largeur totale (cercles sécants)",
+    explanation: "Comme chaque cercle passe par le centre de l'autre, leur rayon est égal à la distance AB, soit 6 cm. La largeur totale vaut : le rayon gauche (6 cm) + la distance AB (6 cm) + le rayon droit (6 cm) = 18 cm."
+  },
+  {
+    id: 8,
+    image: "assets/disque/compas_yinyang.png",
+    questionText: "Pour tracer le grand cercle extérieur de centre C, quel doit être l'écartement (le rayon) du compas ?",
+    options: ["3 cm", "6 cm", "9 cm", "12 cm"],
+    ans: "6 cm",
+    frenchName: "Rayon du grand cercle (Yin-Yang)",
+    explanation: "Le rayon du grand cercle extérieur de centre C est la distance AC ou CE, soit 3 cm + 3 cm = 6 cm."
+  },
+  {
+    id: 9,
+    image: "assets/disque/compas_rosace_petale.png",
+    questionText: "Pour tracer le grand cercle de centre O, quel segment a servi d'écartement au compas ?",
+    options: ["La distance OA", "La distance OB", "La distance OC", "Toutes ces réponses"],
+    ans: "Toutes ces réponses",
+    frenchName: "Segment d'écartement (grand cercle)",
+    explanation: "Le grand cercle a pour centre O. Les points A, B, C, D sont tous situés sur sa frontière, donc OA, OB, OC et OD valent tous le rayon."
+  },
+  {
+    id: 10,
+    image: "assets/disque/compas_yinyang.png",
+    questionText: "Quel est le diamètre complet (longueur totale de A à E) du grand cercle de centre C ?",
+    options: ["6 cm", "12 cm", "18 cm", "24 cm"],
+    ans: "12 cm",
+    frenchName: "Diamètre du grand cercle (Yin-Yang)",
+    explanation: "Le rayon du grand cercle vaut 6 cm (segment AC ou CE). Son diamètre total vaut le double, soit 2 × 6 = 12 cm (segment complet AE)."
+  }
+];
+
+// --- STATE MANAGEMENT ---
+let currentQuestions = [];
+let currentIdx = 0;
+let score = 0;
+let userAnswers = [];
+let hasAnswered = false;
+
+// --- GAME LOGIC ---
+
+function initGame() {
+  currentIdx = 0;
+  score = 0;
+  userAnswers = [];
+  hasAnswered = false;
+  
+  // Shuffle and pick all 10 questions
+  const shuffled = [...QUESTION_BANK].sort(() => Math.random() - 0.5);
+  currentQuestions = shuffled.slice(0, 10);
+  
+  // Reset dots
+  const dotsContainer = document.getElementById("dots-progress");
+  dotsContainer.innerHTML = "";
+  for (let i = 0; i < 10; i++) {
+    const dot = document.createElement("div");
+    dot.className = "dot";
+    dotsContainer.appendChild(dot);
+  }
+  
+  document.getElementById("score-screen").style.display = "none";
+  document.getElementById("exercice-zone").style.display = "block";
+  
+  loadQuestion();
+}
+
+function loadQuestion() {
+  hasAnswered = false;
+  const q = currentQuestions[currentIdx];
+  
+  // Update progress text
+  document.getElementById("info-numero").textContent = `Question ${currentIdx + 1} / 10`;
+  
+  // Update current dot active state
+  const dots = document.getElementById("dots-progress").children;
+  for (let i = 0; i < 10; i++) {
+    dots[i].classList.remove("current");
+  }
+  dots[currentIdx].classList.add("current");
+  
+  // Set question UI elements
+  document.getElementById("question-text").textContent = q.questionText;
+  document.getElementById("disque-image").src = q.image + "?v=" + Date.now();
+  
+  // Render options dynamically
+  const container = document.getElementById("options-container");
+  container.innerHTML = "";
+  q.options.forEach(opt => {
+    const btn = document.createElement("button");
+    btn.className = "btn-option";
+    btn.onclick = () => checkAnswer(opt);
+    btn.id = `btn-${opt.replace(/\s+/g, '_')}`;
+    btn.textContent = opt;
+    container.appendChild(btn);
+  });
+  
+  // Hide feedback and next button
+  document.getElementById("feedback-box").style.display = "none";
+  document.getElementById("btn-next").style.display = "none";
+}
+
+function checkAnswer(selectedOpt) {
+  if (hasAnswered) return;
+  hasAnswered = true;
+  
+  const q = currentQuestions[currentIdx];
+  const isCorrect = (selectedOpt === q.ans);
+  const dots = document.getElementById("dots-progress").children;
+  
+  // Disable all option buttons
+  const buttons = document.querySelectorAll(".btn-option");
+  buttons.forEach(btn => {
+    btn.disabled = true;
+  });
+  
+  // Highlight chosen option and correct option
+  const correctId = `btn-${q.ans.replace(/\s+/g, '_')}`;
+  const selectedId = `btn-${selectedOpt.replace(/\s+/g, '_')}`;
+  
+  const correctBtn = document.getElementById(correctId);
+  const selectedBtn = document.getElementById(selectedId);
+  
+  if (isCorrect) {
+    playSound('success');
+    correctBtn.classList.add("correct");
+    dots[currentIdx].classList.add("correct");
+    score++;
+  } else {
+    playSound('error');
+    selectedBtn.classList.add("incorrect");
+    correctBtn.classList.add("correct");
+    dots[currentIdx].classList.add("incorrect");
+  }
+  
+  // Save answer data
+  userAnswers.push({
+    questionNum: currentIdx + 1,
+    questionText: q.frenchName,
+    correctVal: q.ans,
+    userSelected: selectedOpt,
+    isCorrect: isCorrect
+  });
+  
+  // Show feedback
+  const feedback = document.getElementById("feedback-box");
+  feedback.className = `feedback-box ${isCorrect ? 'correct' : 'incorrect'}`;
+  feedback.innerHTML = isCorrect 
+    ? `<strong>Super !</strong> ${q.explanation}` 
+    : `<strong>Mince !</strong> La bonne réponse était <strong>${q.ans}</strong>. ${q.explanation}`;
+  
+  // Show Next Button
+  document.getElementById("btn-next").style.display = "flex";
+}
+
+function nextQuestion() {
+  playSound('click');
+  currentIdx++;
+  
+  if (currentIdx < 10) {
+    loadQuestion();
+  } else {
+    showScoreScreen();
+  }
+}
+
+function showScoreScreen() {
+  document.getElementById("exercice-zone").style.display = "none";
+  const screen = document.getElementById("score-screen");
+  screen.style.display = "block";
+  
+  // Set final values
+  document.getElementById("final-score").textContent = `${score} / 10`;
+  
+  // Set dynamic messages
+  const emojiEl = document.getElementById("final-emoji");
+  const titleEl = document.getElementById("final-title");
+  
+  if (score === 10) {
+    emojiEl.textContent = "🏆";
+    titleEl.textContent = "Parfait ! Un vrai détective géomètre !";
+  } else if (score >= 8) {
+    emojiEl.textContent = "⭐";
+    titleEl.textContent = "Excellent ! Tu as un excellent coup d'œil !";
+  } else if (score >= 5) {
+    emojiEl.textContent = "👍";
+    titleEl.textContent = "Bien joué ! Analyse bien le centre et le rayon.";
+  } else {
+    emojiEl.textContent = "💪";
+    titleEl.textContent = "Entraîne-toi encore à observer l'écartement du compas !";
+  }
+  
+  // Populate details
+  const details = document.getElementById("final-details");
+  details.innerHTML = "";
+  
+  userAnswers.forEach(ans => {
+    const row = document.createElement("div");
+    row.className = "score-row";
+    
+    const leftText = document.createElement("span");
+    leftText.className = "name";
+    leftText.innerHTML = `Q${ans.questionNum} : <strong>${ans.questionText}</strong>`;
+    
+    const rightSide = document.createElement("div");
+    rightSide.className = "status-badge";
+    
+    const tag = document.createElement("span");
+    tag.className = `type-tag ${ans.isCorrect ? 'correct-tag' : 'incorrect-tag'}`;
+    tag.textContent = ans.isCorrect ? "Correct" : `Choisi: ${ans.userSelected}`;
+    
+    const statusIcon = document.createElement("span");
+    statusIcon.textContent = ans.isCorrect ? "✅" : "❌";
+    
+    rightSide.appendChild(tag);
+    rightSide.appendChild(statusIcon);
+    row.appendChild(leftText);
+    row.appendChild(rightSide);
+    details.appendChild(row);
+  });
+}
+
+function restart() {
+  playSound('click');
+  initGame();
+}
+
+// --- INITIALIZE GAME ON LOAD ---
+window.addEventListener("DOMContentLoaded", () => {
+  document.body.addEventListener("click", () => {
+    if (audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
+  }, { once: true });
+  
+  initGame();
+});
+</script>
+</body>
+</html>
