@@ -46,17 +46,9 @@ def process_image(src_path, dest_names):
 
 # Mappings of the generated images to their final assets locations
 mappings = {
-    "/Users/jeremy/.gemini/antigravity/brain/6bcf5aa8-36e3-4743-bf02-1c935bb74813/hist_temps_modernes_1782762999884.jpg": [
-        "/Users/jeremy/antigravity/LCML/assets/logos/hist_temps_modernes.png",
-        "/Users/jeremy/antigravity/LCML/public/assets/logos/hist_temps_modernes.png"
-    ],
-    "/Users/jeremy/.gemini/antigravity/brain/6bcf5aa8-36e3-4743-bf02-1c935bb74813/hist_contemporaine_1782763018522.jpg": [
-        "/Users/jeremy/antigravity/LCML/assets/logos/hist_contemporaine.png",
-        "/Users/jeremy/antigravity/LCML/public/assets/logos/hist_contemporaine.png"
-    ],
-    "/Users/jeremy/.gemini/antigravity/brain/6bcf5aa8-36e3-4743-bf02-1c935bb74813/hist_grandes_periodes_1782763035801.jpg": [
-        "/Users/jeremy/antigravity/LCML/assets/logos/hist_grandes_periodes.png",
-        "/Users/jeremy/antigravity/LCML/public/assets/logos/hist_grandes_periodes.png"
+    "/Users/jeremy/.gemini/antigravity/brain/6bcf5aa8-36e3-4743-bf02-1c935bb74813/subject_outils_1783194679142.jpg": [
+        "/Users/jeremy/antigravity/LCML/assets/logos/subject_outils.png",
+        "/Users/jeremy/antigravity/LCML/public/assets/logos/subject_outils.png"
     ]
 }
 
