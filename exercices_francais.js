@@ -11357,6 +11357,225 @@ window.EXERCICES_DETERMINANT_TRI = [
   }
 ];
 
+window.EXERCICES_PRONOM_PIEGE = [
+  {
+    phrase: "Je <span class='target-highlight'>le</span> connais depuis longtemps.",
+    word: "le",
+    cat: "pronom",
+    exp: "« le » est placé devant le verbe « connais » et remplace une personne. C'est un pronom personnel."
+  },
+  {
+    phrase: "Regarde <span class='target-highlight'>le</span> beau papillon sur la fleur.",
+    word: "le",
+    cat: "determinant",
+    exp: "« le » accompagne le nom « papillon ». C'est un déterminant (article défini)."
+  },
+  {
+    phrase: "Nous <span class='target-highlight'>la</span> rangerons demain dans le tiroir.",
+    word: "la",
+    cat: "pronom",
+    exp: "« la » est placé devant le verbe « rangerons » et remplace un objet (ex: la boîte). C'est un pronom personnel."
+  },
+  {
+    phrase: "Ferme <span class='target-highlight'>la</span> fenêtre s'il te plaît, il fait froid.",
+    word: "la",
+    cat: "determinant",
+    exp: "« la » accompagne le nom « fenêtre ». C'est un déterminant (article défini)."
+  },
+  {
+    phrase: "Le maître <span class='target-highlight'>les</span> félicite pour leurs bons résultats.",
+    word: "les",
+    cat: "pronom",
+    exp: "« les » est placé devant le verbe « félicite » et remplace les élèves. C'est un pronom personnel."
+  },
+  {
+    phrase: "J'adore ramasser <span class='target-highlight'>les</span> coquillages sur le sable.",
+    word: "les",
+    cat: "determinant",
+    exp: "« les » accompagne le nom « coquillages ». C'est un déterminant (article défini)."
+  },
+  {
+    phrase: "Le boulanger <span class='target-highlight'>leur</span> vend de délicieuses baguettes.",
+    word: "leur",
+    cat: "pronom",
+    exp: "« leur » est placé devant le verbe « vend » et signifie « à eux ». C'est un pronom personnel."
+  },
+  {
+    phrase: "Les enfants écoutent attentivement <span class='target-highlight'>leur</span> maître.",
+    word: "leur",
+    cat: "determinant",
+    exp: "« leur » accompagne le nom singulier « maître ». C'est un déterminant possessif."
+  },
+  {
+    phrase: "Il <span class='target-highlight'>l'</span> adore plus que tout.",
+    word: "l'",
+    cat: "pronom",
+    exp: "« l' » est placé devant le verbe « adore » et remplace un nom singulier. C'est un pronom personnel."
+  },
+  {
+    phrase: "Ne touche pas à <span class='target-highlight'>l'</span> assiette, elle est brûlante.",
+    word: "l'",
+    cat: "determinant",
+    exp: "« l' » (élision de la) accompagne le nom « assiette ». C'est un déterminant (article défini)."
+  },
+  {
+    phrase: "Le guépard court très vite, je <span class='target-highlight'>le</span> vois au loin.",
+    word: "le",
+    cat: "pronom",
+    exp: "« le » est placé devant le verbe « vois » et remplace le guépard. C'est un pronom personnel."
+  },
+  {
+    phrase: "Prends <span class='target-highlight'>le</span> temps de bien lire la consigne.",
+    word: "le",
+    cat: "determinant",
+    exp: "« le » accompagne le nom masculin « temps ». C'est un déterminant (article défini)."
+  },
+  {
+    phrase: "Cette valise est lourde, je <span class='target-highlight'>la</span> porte jusqu'en haut.",
+    word: "la",
+    cat: "pronom",
+    exp: "« la » est placé devant le verbe « porte » et remplace la valise. C'est un pronom personnel."
+  },
+  {
+    phrase: "Il a manqué <span class='target-highlight'>la</span> marche et il est tombé.",
+    word: "la",
+    cat: "determinant",
+    exp: "« la » accompagne le nom « marche ». C'est un déterminant (article défini)."
+  },
+  {
+    phrase: "Ses clés ont disparu, il <span class='target-highlight'>les</span> cherche partout.",
+    word: "les",
+    cat: "pronom",
+    exp: "« les » est placé devant le verbe « cherche » et remplace ses clés. C'est un pronom personnel."
+  },
+  {
+    phrase: "Elle a planté <span class='target-highlight'>les</span> graines dans le potager.",
+    word: "les",
+    cat: "determinant",
+    exp: "« les » accompagne le nom « graines ». C'est un déterminant (article défini)."
+  },
+  {
+    phrase: "Tu <span class='target-highlight'>leur</span> donnes trop de bonbons.",
+    word: "leur",
+    cat: "pronom",
+    exp: "« leur » est placé devant le verbe « donnes » et signifie « à eux ». C'est un pronom personnel."
+  },
+  {
+    phrase: "Chaque élève range <span class='target-highlight'>leur</span> matériel de dessin.",
+    word: "leur",
+    cat: "determinant",
+    exp: "« leur » accompagne le nom « matériel ». C'est un déterminant possessif."
+  },
+  {
+    phrase: "Cette chanson est jolie, je <span class='target-highlight'>l'</span> écoute souvent.",
+    word: "l'",
+    cat: "pronom",
+    exp: "« l' » est placé devant le verbe « écoute » et remplace la chanson. C'est un pronom personnel."
+  },
+  {
+    phrase: "Le soleil brille sur <span class='target-highlight'>l'</span> eau de la piscine.",
+    word: "l'",
+    cat: "determinant",
+    exp: "« l' » accompagne le nom « eau ». C'est un déterminant (article défini)."
+  },
+  {
+    phrase: "Mon ami est perdu, je <span class='target-highlight'>le</span> guide vers la sortie.",
+    word: "le",
+    cat: "pronom",
+    exp: "« le » est placé devant le verbe « guide » et remplace mon ami. C'est un pronom personnel."
+  },
+  {
+    phrase: "Le vent souffle fort dans <span class='target-highlight'>le</span> parc.",
+    word: "le",
+    cat: "determinant",
+    exp: "« le » accompagne le nom « parc ». C'est un déterminant (article défini)."
+  },
+  {
+    phrase: "La pomme est mûre, Léa <span class='target-highlight'>la</span> croque avec appétit.",
+    word: "la",
+    cat: "pronom",
+    exp: "« la » est placé devant le verbe « croque » et remplace la pomme. C'est un pronom personnel."
+  },
+  {
+    phrase: "J'adore <span class='target-highlight'>la</span> tarte au citron de ma grand-mère.",
+    word: "la",
+    cat: "determinant",
+    exp: "« la » accompagne le nom « tarte ». C'est un déterminant (article défini)."
+  },
+  {
+    phrase: "Les oiseaux s'envolent, je <span class='target-highlight'>les</span> photographie au vol.",
+    word: "les",
+    cat: "pronom",
+    exp: "« les » est placé devant le verbe « photographie » et remplace les oiseaux. C'est un pronom personnel."
+  },
+  {
+    phrase: "Il faut ramasser <span class='target-highlight'>les</span> feuilles mortes du jardin.",
+    word: "les",
+    cat: "determinant",
+    exp: "« les » accompagne le nom « feuilles ». C'est un déterminant (article défini)."
+  },
+  {
+    phrase: "Le berger <span class='target-highlight'>leur</span> montre le chemin du retour.",
+    word: "leur",
+    cat: "pronom",
+    exp: "« leur » est placé devant le verbe « montre » et signifie « à eux ». C'est un pronom personnel."
+  },
+  {
+    phrase: "Les parents sont fiers de <span class='target-highlight'>leur</span> fils.",
+    word: "leur",
+    cat: "determinant",
+    exp: "« leur » accompagne le nom « fils ». C'est un déterminant possessif."
+  },
+  {
+    phrase: "Ce film est amusant, je <span class='target-highlight'>l'</span> ai vu deux fois.",
+    word: "l'",
+    cat: "pronom",
+    exp: "« l' » est placé devant le verbe auxiliaire « ai » et remplace le film. C'est un pronom personnel."
+  },
+  {
+    phrase: "L'avion atterrit sur <span class='target-highlight'>l'</span> immense piste.",
+    word: "l'",
+    cat: "determinant",
+    exp: "« l' » accompagne l'adjectif « immense » qui qualifie le nom « piste ». C'est un déterminant (article défini)."
+  },
+  {
+    phrase: "Je <span class='target-highlight'>les</span> aime beaucoup, ces petites douceurs.",
+    word: "les",
+    cat: "pronom",
+    exp: "« les » est placé devant le verbe « aime » et remplace les douceurs. C'est un pronom personnel."
+  },
+  {
+    phrase: "Tu as oublié <span class='target-highlight'>les</span> clés de la maison.",
+    word: "les",
+    cat: "determinant",
+    exp: "« les » accompagne le nom pluriel « clés ». C'est un déterminant."
+  },
+  {
+    phrase: "Elle <span class='target-highlight'>la</span> lave car elle était très sale.",
+    word: "la",
+    cat: "pronom",
+    exp: "« la » est placé devant le verbe « lave » et remplace un objet ou une chose. C'est un pronom personnel."
+  },
+  {
+    phrase: "Regarde <span class='target-highlight'>la</span> lune briller ce soir.",
+    word: "la",
+    cat: "determinant",
+    exp: "« la » accompagne le nom « lune ». C'est un déterminant."
+  },
+  {
+    phrase: "Les parents <span class='target-highlight'>leur</span> lisent une histoire avant de dormir.",
+    word: "leur",
+    cat: "pronom",
+    exp: "« leur » est placé devant le verbe « lisent » et signifie « à eux ». C'est un pronom personnel."
+  },
+  {
+    phrase: "Les spectateurs applaudissent <span class='target-highlight'>leur</span> actrice préférée.",
+    word: "leur",
+    cat: "determinant",
+    exp: "« leur » accompagne le nom singulier « actrice ». C'est un déterminant possessif."
+  }
+];
+
 
 
 
