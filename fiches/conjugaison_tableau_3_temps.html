@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Conjugaison — Tableau des 3 temps</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Nunito', sans-serif; background: #f5f6fa; padding: 1.5rem; }
+.container { max-width: 680px; margin: 0 auto; }
+.info-card { background:#f5f3ff;border:1px solid #8b5cf6;border-radius:12px;padding:.8rem 1rem;margin-bottom:1.5rem;display:flex;justify-content:space-between;align-items:center; }
+.info-card p { font-size:13px;color:#6d28d9;font-weight:700;margin:0; }
+.dots { display:flex;gap:6px; }
+.dot { width:12px;height:12px;border-radius:50%; }
+.question-card { background:white;border-radius:16px;padding:1.75rem 1.5rem;margin-bottom:1.25rem;box-shadow:0 2px 8px rgba(0,0,0,.08);border:2px solid #e5e7eb; }
+.q-label { font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:#9ca3af;margin-bottom:.75rem;text-align:center; }
+.q-phrase { font-size:18px;font-weight:800;color:#1e1b4b;margin-bottom:1.5rem;text-align:center;line-height:1.6; }
+.q-phrase em { font-style:normal;color:#8b5cf6;font-size:21px;text-decoration:underline;text-underline-offset: 4px; }
+.options { display:flex;flex-direction:column;gap:10px; }
+.opt-btn { padding:14px 18px;border-radius:12px;border:2px solid #e5e7eb;background:white;font-size:16px;font-weight:800;color:#374151;cursor:pointer;text-align:left;font-family:'Nunito',sans-serif;transition:all .15s;display:flex;align-items:center;gap:12px; }
+.opt-btn:hover:not(:disabled) { border-color:#8b5cf6;background:#f5f3ff;color:#6d28d9; }
+.opt-btn .opt-letter { width:30px;height:30px;border-radius:50%;background:#f3f4f6;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:#6b7280;flex-shrink:0;transition:all .15s; }
+.opt-btn:hover:not(:disabled) .opt-letter { background:#8b5cf6;color:white; }
+.opt-btn.correct { border-color:#16a34a;background:#f0fdf4;color:#166534; }
+.opt-btn.correct .opt-letter { background:#16a34a;color:white; }
+.opt-btn.incorrect { border-color:#dc2626;background:#fff5f5;color:#991b1b; }
+.opt-btn.incorrect .opt-letter { background:#dc2626;color:white; }
+.opt-btn.disabled-neutral { border-color:#e5e7eb;color:#9ca3af; }
+.btn { width:100%;padding:14px;background:#8b5cf6;color:white;border:none;border-radius:12px;font-size:16px;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;transition:background .2s;margin-bottom:.75rem; }
+.btn:hover { background:#7c3aed; }
+.score-final { display:none;text-align:center;padding:2.5rem 2rem;background:white;border-radius:16px;box-shadow:0 4px 20px rgba(0,0,0,.08);border:2px solid #e5e7eb; }
+.big-emoji { font-size:64px;margin-bottom:.5rem; }
+.big-score { font-size:38px;font-weight:900;margin-bottom:1rem; }
+.score-detail { font-size:14px;color:#4b5563;margin-bottom:1.5rem;line-height:2.2; }
+.score-detail span { display: inline-block; background: #f3f4f6; border-radius: 6px; padding: 2px 8px; margin: 2px 4px; font-weight: bold; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div id="exercice-zone">
+    <div class="info-card">
+      <p id="info-numero">Question 1/10</p>
+      <div class="dots" id="dots-progress"></div>
+    </div>
+    <div id="question-zone"></div>
+    <button class="btn" id="btn-suivant" style="display:none" onclick="suivant()">➡️ Question suivante</button>
+  </div>
+  <div class="score-final" id="score-final">
+    <div class="big-emoji" id="final-emoji">🎉</div>
+    <div class="big-score" id="final-score"></div>
+    <div class="score-detail" id="final-detail"></div>
+    <button class="btn" onclick="demarrer()">🔄 Recommencer</button>
+  </div>
+</div>
+
+<script>
+// Tenses options mapping: 0 = Passé, 1 = Présent, 2 = Futur
+const PRESENT_QUES = [
+  { p: "La Terre <em>tourne</em> autour du Soleil en 365 jours et quart.", correct: 1 },
+  { p: "<em>Mélangez</em> ces deux solutions chimiques pour observer leur réaction.", correct: 1 },
+  { p: "Le fleuve Congo <em>traverse</em> l'Afrique centrale avec un débit impressionnant.", correct: 1 },
+  { p: "<em>Calcule</em> le périmètre de ce rectangle en appliquant la formule.", correct: 1 },
+  { p: "Notre galaxie, la Voie lactée, <em>contient</em> des milliards d'étoiles.", correct: 1 },
+  { p: "<em>Protégeons</em> la biodiversité de notre planète en réduisant nos déchets.", correct: 1 },
+  { p: "Les triangles rectangles <em>possèdent</em> toujours un angle de 90 degrés.", correct: 1 },
+  { p: "<em>Situez</em> la capitale de la Belgique sur cette carte politique.", correct: 1 },
+  { p: "L'océan Pacifique <em>représente</em> la plus grande masse d'eau du globe.", correct: 1 },
+  { p: "<em>Retiens</em> bien cette règle mathématique pour résoudre le problème.", correct: 1 },
+  { p: "L'atmosphère terrestre <em>filtre</em> les rayons ultraviolets du Soleil.", correct: 1 },
+  { p: "Le cerveau humain <em>consomme</em> une grande partie de notre énergie.", correct: 1 },
+  { p: "<em>Comparez</em> ces deux fractions pour trouver la plus grande.", correct: 1 },
+  { p: "Les pyramides d'Égypte <em>attirent</em> des millions de visiteurs chaque année.", correct: 1 },
+  { p: "<em>Observez</em> attentivement le cycle de l'eau dans la nature.", correct: 1 }
+];
+
+const PASSE_QUES = [
+  { p: "Albert Einstein <em>a formulé</em> la célèbre théorie de la relativité.", correct: 0 },
+  { p: "Les dinosaures <em>régnaient</em> sur Terre avant leur brutale disparition.", correct: 0 },
+  { p: "Marie Curie <em>découvrit</em> le radium après des années de recherches.", correct: 0 },
+  { p: "Charlemagne <em>régna</em> sur l'Empire d'Occident à partir de l'an 800.", correct: 0 },
+  { p: "Les Romains <em>construisaient</em> de magnifiques aqueducs à travers l'Europe.", correct: 0 },
+  { p: "Isaac Newton <em>a compris</em> la gravité grâce à la chute d'une pomme.", correct: 0 },
+  { p: "Les premiers hommes <em>utilisaient</em> le silex pour fabriquer des outils.", correct: 0 },
+  { p: "Le navigateur Magellan <em>entreprit</em> le premier tour du monde en bateau.", correct: 0 },
+  { p: "Les Égyptiens de l'Antiquité <em>ont érigé</em> d'immenses monuments.", correct: 0 },
+  { p: "Le volcan Vésuve <em>détruisit</em> la ville de Pompéi en quelques heures.", correct: 0 },
+  { p: "À cette époque, la Belgique <em>faisait</em> partie de l'Empire romain.", correct: 0 },
+  { p: "Les savants <em>ont classé</em> les êtres vivants en différentes espèces.", correct: 0 },
+  { p: "Le mathématicien Pythagore <em>étudiait</em> les propriétés des triangles.", correct: 0 },
+  { p: "Louis Pasteur <em>développa</em> le vaccin contre la rage en 1885.", correct: 0 },
+  { p: "Nous <em>avons mesuré</em> l'angle avec précision lors de la leçon d'hier.", correct: 0 }
+];
+
+const FUTUR_QUES = [
+  { p: "Les astronautes <em>exploreront</em> bientôt de nouvelles planètes du système solaire.", correct: 2 },
+  { p: "Le niveau des océans <em>augmentera</em> si la température mondiale s'élève.", correct: 2 },
+  { p: "Tu <em>traceras</em> une ligne parallèle à l'aide de ta règle.", correct: 2 },
+  { p: "Les historiens <em>étudieront</em> notre siècle avec beaucoup d'intérêt.", correct: 2 },
+  { p: "La sonde spatiale <em>transmettra</em> des images de la planète Mars.", correct: 2 },
+  { p: "Nous <em>convertirons</em> ces mesures de capacité en litres.", correct: 2 },
+  { p: "Les énergies renouvelables <em>remplaceront</em> progressivement le pétrole.", correct: 2 },
+  { p: "Vous <em>calculerez</em> l'aire du disque avec le nombre Pi.", correct: 2 },
+  { p: "Les glaciers des Alpes <em>reculeront</em> à cause du réchauffement.", correct: 2 },
+  { p: "Je <em>visiterai</em> le musée de l'Antiquité le mois prochain.", correct: 2 },
+  { p: "La Terre <em>tournera</em> encore pendant des milliards d'années.", correct: 2 },
+  { p: "Les élèves <em>comprendront</em> le fonctionnement du corps humain.", correct: 2 },
+  { p: "Nous <em>résoudrons</em> cette équation difficile à la rentrée.", correct: 2 },
+  { p: "Les scientifiques <em>trouveront</em> de nouvelles espèces au fond des océans.", correct: 2 },
+  { p: "Vous <em>dresserez</em> la carte hydrographique de la Belgique.", correct: 2 }
+];
+
+const OPTS = ["Passé", "Présent", "Futur"];
+const LETTRES = ["A", "B", "C"];
+
+let selection = [], curIdx = 0, scores = [];
+
+function shuffle(arr) {
+  return [...arr].sort(() => Math.random() - 0.5);
+}
+
+function demarrer() {
+  // Tirage équilibré (3 présent, 3 passé, 3 futur)
+  const pres = shuffle(PRESENT_QUES);
+  const pass = shuffle(PASSE_QUES);
+  const fut = shuffle(FUTUR_QUES);
+
+  const selPres = pres.slice(0, 3);
+  const selPass = pass.slice(0, 3);
+  const selFut = fut.slice(0, 3);
+
+  // Le 10ème élément est tiré au hasard parmi le reste
+  const reste = [
+    ...pres.slice(3),
+    ...pass.slice(3),
+    ...fut.slice(3)
+  ];
+  const dernier = shuffle(reste)[0];
+
+  // Mélange total des 10 questions
+  selection = shuffle([...selPres, ...selPass, ...selFut, dernier]);
+  curIdx = 0;
+  scores = [];
+
+  document.getElementById('score-final').style.display = 'none';
+  document.getElementById('exercice-zone').style.display = 'block';
+  afficherQuestion();
+}
+
+function afficherQuestion() {
+  const q = selection[curIdx];
+  document.getElementById('info-numero').textContent = `Question ${curIdx + 1}/10`;
+  
+  // Rendu de la barre de progression (dots)
+  document.getElementById('dots-progress').innerHTML = selection.map((_, i) => {
+    let color = '#d1d5db'; // gris pour le futur
+    if (i < curIdx) {
+      color = scores[i] ? '#16a34a' : '#dc2626'; // vert si correct, rouge si incorrect
+    } else if (i === curIdx) {
+      color = '#8b5cf6'; // violet pour la question en cours
+    }
+    return `<div class="dot" style="background:${color}"></div>`;
+  }).join('');
+
+  // Rendu des options de réponse
+  const optsHtml = OPTS.map((opt, i) => `
+    <button class="opt-btn" id="opt-${i}" onclick="choisir(${i}, ${q.correct})">
+      <span class="opt-letter">${LETTRES[i]}</span><span>${opt}</span>
+    </button>
+  `).join('');
+
+  document.getElementById('question-zone').innerHTML = `
+    <div class="question-card">
+      <div class="q-label">🧭 Repère le temps de la phrase</div>
+      <div class="q-phrase">${q.p}</div>
+      <div class="options">${optsHtml}</div>
+    </div>
+  `;
+  document.getElementById('btn-suivant').style.display = 'none';
+}
+
+function choisir(idx, correct) {
+  const ok = (idx === correct);
+  scores.push(ok);
+
+  // Désactiver les boutons et colorer correct/incorrect
+  for (let i = 0; i < 3; i++) {
+    const btn = document.getElementById('opt-' + i);
+    if (!btn) continue;
+    btn.disabled = true;
+    if (i === correct) {
+      btn.classList.add('correct');
+    } else if (i === idx && !ok) {
+      btn.classList.add('incorrect');
+    } else {
+      btn.classList.add('disabled-neutral');
+    }
+  }
+
+  const isLast = (curIdx >= 9);
+  const btnSuivant = document.getElementById('btn-suivant');
+  btnSuivant.style.display = 'block';
+  btnSuivant.textContent = isLast ? '🏁 Voir mon score final' : '➡️ Question suivante';
+  btnSuivant.onclick = isLast ? afficherScoreFinal : suivant;
+}
+
+function suivant() {
+  curIdx++;
+  afficherQuestion();
+}
+
+function afficherScoreFinal() {
+  document.getElementById('exercice-zone').style.display = 'none';
+  const sf = document.getElementById('score-final');
+  sf.style.display = 'block';
+
+  const nbCorrect = scores.filter(Boolean).length;
+  const total = scores.length;
+  const pct = Math.round((nbCorrect / total) * 100);
+
+  let emoji = '💪';
+  if (pct === 100) emoji = '🎉';
+  else if (pct >= 70) emoji = '👍';
+
+  document.getElementById('final-emoji').textContent = emoji;
+  document.getElementById('final-score').textContent = `${nbCorrect}/${total} — ${pct}%`;
+  
+  if (pct === 100) {
+    document.getElementById('final-score').style.color = '#16a34a';
+  } else if (pct >= 60) {
+    document.getElementById('final-score').style.color = '#d97706';
+  } else {
+    document.getElementById('final-score').style.color = '#dc2626';
+  }
+
+  document.getElementById('final-detail').innerHTML = scores.map((s, i) => {
+    return `<span>Q${i + 1} : ${s ? '✅' : '❌'}</span>`;
+  }).join(' ');
+}
+
+// Lancement automatique
+demarrer();
+</script>
+</body>
+</html>
