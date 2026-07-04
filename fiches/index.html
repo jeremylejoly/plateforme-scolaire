@@ -3939,7 +3939,11 @@ input[type=text].calc-input.incorrect {
     <div class="page-title">🏷️ Le nom</div>
     <div id="gram-nom-body"></div>
   </div>
-  <div id="screen-gram-determinant" class="screen"><button class="back-btn" onclick="showScreen('screen-gram-classes');renderGramClassesScreen();">← Retour</button><div class="page-title">🔖 Le déterminant</div><div class="card" style="text-align:center;padding:2rem;"><div style="font-size:48px;">🚧</div><p style="color:var(--muted);">Les exercices arrivent bientôt !</p></div></div>
+  <div id="screen-gram-determinant" class="screen">
+    <button class="back-btn gram-det-back-main-btn" style="margin-bottom:1rem;">← Retour</button>
+    <div class="page-title">🔖 Le déterminant</div>
+    <div id="gram-det-body"></div>
+  </div>
   <div id="screen-gram-adjectif" class="screen">
     <button class="back-btn gram-adjectif-back-main-btn" style="margin-bottom:1rem;">← Retour</button>
     <div class="page-title">🎨 L'adjectif</div>
@@ -8738,7 +8742,7 @@ const GRAMMAIRE_ITEMS = [
 
 const GRAM_CLASSES_ITEMS = [
   {id:'gram_nom', screen:'screen-gram-nom', label:'Le nom', icon:'🏷️', fn:'renderNomMenu'},
-  {id:'gram_determinant', screen:'screen-gram-determinant', label:'Le déterminant', icon:'🔖'},
+  {id:'gram_determinant', screen:'screen-gram-determinant', label:'Le déterminant', icon:'🔖', fn:'renderDeterminantMenu'},
   {id:'gram_adjectif', screen:'screen-gram-adjectif', label:"L'adjectif", icon:'🎨', fn:'renderAdjectifMenu'},
   {id:'gram_verbe', screen:'screen-gram-verbe', label:'Le verbe', icon:'⚡', fn:'renderVerbeClassMenu'},
   {id:'gram_pronom', screen:'screen-gram-pronom', label:'Le pronom', icon:'👤'},
@@ -35016,6 +35020,448 @@ window.startPredicatExercise = startPredicatExercise;
 window.clickPredicatWord = clickPredicatWord;
 window.verifyPredicatAnswer = verifyPredicatAnswer;
 window.nextPredicatQuestion = nextPredicatQuestion;
+
+// ==========================================
+// EXERCICE : RECONNAITRE LES DETERMINANTS
+// ==========================================
+let determinantGameState = {
+  containerId: 'gram-det-body',
+  questions: [],
+  currentIndex: 0,
+  score: 0,
+  answers: [],
+  submitted: false
+};
+
+function renderDeterminantMenu() {
+  showScreen('screen-gram-determinant');
+  const container = document.getElementById(determinantGameState.containerId);
+  if (!container) return;
+
+  const backMainBtn = document.querySelector('#screen-gram-determinant .gram-det-back-main-btn');
+  if (backMainBtn) {
+    backMainBtn.onclick = (e) => {
+      e.preventDefault();
+      showScreen('screen-gram-classes');
+      renderGramClassesScreen();
+    };
+  }
+
+  container.innerHTML = `
+    <div class="bg-blue-50/50 border-2 border-blue-100 rounded-3xl p-5 mb-6 shadow-[4px_4px_0px_rgba(0,0,0,0.02)]">
+      <p class="text-blue-800 text-sm font-semibold flex items-center gap-2">
+        <span>💡</span> Choisis un exercice ci-dessous pour t'entraîner sur les déterminants.
+      </p>
+    </div>
+
+    <div class="sub-subjects-grid">
+      <div class="sub-subject-card active-card" id="btn-det-ex1" style="position:relative">
+        <div class="sub-icon">🔖</div>
+        <div class="sub-title">1. Reconnaître les déterminants</div>
+        <div class="sub-desc">Trouve et clique sur tous les déterminants de la phrase (articles, possessifs, démonstratifs...).</div>
+      </div>
+    </div>
+  `;
+
+  const ex1Btn = container.querySelector('#btn-det-ex1');
+  if (ex1Btn) {
+    ex1Btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      startDeterminantExercise();
+    });
+  }
+}
+
+function startDeterminantExercise() {
+  if (!window.EXERCICES_DETERMINANT || window.EXERCICES_DETERMINANT.length === 0) {
+    console.error("EXERCICES_DETERMINANT n'est pas chargé ou est vide.");
+    return;
+  }
+
+  const shuffle = (arr) => [...arr].sort(() => 0.5 - Math.random());
+  const selection = shuffle(window.EXERCICES_DETERMINANT).slice(0, 10);
+
+  determinantGameState = {
+    containerId: 'gram-det-body',
+    questions: selection,
+    currentIndex: 0,
+    score: 0,
+    answers: Array(selection[0].tokens.length).fill(0),
+    submitted: false
+  };
+
+  const backMainBtn = document.querySelector('#screen-gram-determinant .gram-det-back-main-btn');
+  if (backMainBtn) {
+    backMainBtn.onclick = (e) => {
+      e.preventDefault();
+      renderDeterminantMenu();
+    };
+  }
+
+  // Inject styles if not present
+  if (!document.getElementById('det-exercise-styles')) {
+    const style = document.createElement('style');
+    style.id = 'det-exercise-styles';
+    style.innerHTML = `
+      .word-btn-det {
+        border: 3px solid #D97706 !important;
+        box-shadow: 3px 3px 0px #D97706 !important;
+        background-color: #fef3c7 !important;
+        color: #b45309 !important;
+        font-weight: 800 !important;
+      }
+      .word-btn-det:hover {
+        background-color: #fde68a !important;
+        transform: translateY(-2px) !important;
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  showScreen('screen-gram-determinant');
+  renderDeterminantQuestion();
+}
+
+function renderDeterminantQuestion() {
+  const container = document.getElementById(determinantGameState.containerId);
+  if (!container) return;
+
+  const question = determinantGameState.questions[determinantGameState.currentIndex];
+  if (!question) return;
+
+  const pctProgress = Math.round((determinantGameState.currentIndex / determinantGameState.questions.length) * 100);
+
+  const tokensHtml = question.tokens.map((token, idx) => {
+    if (token.punctuation === true) {
+      return `<span class="text-xl font-bold text-neutral-400 self-end mb-2 select-none">${token.text}</span>`;
+    }
+
+    const sel = determinantGameState.answers[idx]; // 0 or 1
+    let inlineClass = "word-btn-neutral";
+
+    if (!determinantGameState.submitted) {
+      if (sel === 1) inlineClass = "word-btn-det";
+    } else {
+      const cat = token.cat;
+      if (cat === 'det') {
+        if (sel === 1) inlineClass = "word-btn-correct";
+        else inlineClass = "word-btn-missed";
+      } else {
+        if (sel === 0) inlineClass = "word-btn-neutral";
+        else inlineClass = "word-btn-wrong";
+      }
+    }
+
+    let badgeIcon = "";
+    if (determinantGameState.submitted) {
+      const cat = token.cat;
+      if (cat === 'det') {
+        if (sel === 1) {
+          badgeIcon = `<span class="absolute -top-2 -right-2 bg-green-500 text-white rounded-full text-[10px] w-5 h-5 flex items-center justify-center border-2 border-white shadow-sm font-black">✓</span>`;
+        } else {
+          badgeIcon = `<span class="absolute -top-2 -right-2 bg-orange-500 text-white rounded-full text-[10px] w-5 h-5 flex items-center justify-center border-2 border-white shadow-sm font-black">!</span>`;
+        }
+      } else {
+        if (sel === 1) {
+          badgeIcon = `<span class="absolute -top-2 -right-2 bg-rose-500 text-white rounded-full text-[10px] w-5 h-5 flex items-center justify-center border-2 border-white shadow-sm font-black">✗</span>`;
+        }
+      }
+    }
+
+    return `
+      <div class="relative flex items-center">
+        <button
+          ${determinantGameState.submitted ? 'disabled' : ''}
+          data-idx="${idx}"
+          class="gram-det-word-btn px-4 py-2.5 rounded-2xl border-2 font-sans font-semibold text-lg md:text-xl transition-all duration-155 relative cursor-pointer select-none ${inlineClass} hover:scale-102"
+        >
+          ${token.text}
+        </button>
+        ${badgeIcon}
+      </div>
+    `;
+  }).join('');
+
+  let actionBtn = "";
+  if (!determinantGameState.submitted) {
+    actionBtn = `
+      <button class="gram-det-verify-btn px-6 py-3 rounded-2xl border-2 border-neutral-900 bg-purple-600 text-white hover:bg-purple-700 font-display font-bold text-sm transition-all cursor-pointer shadow-[2px_2px_0px_rgba(0,0,0,1)] active:scale-95 ml-auto">
+        Vérifier ma réponse
+      </button>
+    `;
+  } else {
+    actionBtn = `
+      <button class="gram-det-next-btn px-6 py-3 rounded-2xl border-2 border-neutral-900 bg-green-600 text-white hover:bg-green-700 font-display font-bold text-sm transition-all cursor-pointer shadow-[2px_2px_0px_rgba(0,0,0,1)] active:scale-95 ml-auto">
+        ${determinantGameState.currentIndex < determinantGameState.questions.length - 1 ? 'Phrase suivante ➔' : 'Voir les résultats ➔'}
+      </button>
+    `;
+  }
+
+  const html = `
+    <div class="quiz-topbar flex justify-between items-center mb-6">
+      <div class="quiz-student-badge bg-neutral-100 border-2 border-neutral-300 px-4 py-1.5 rounded-full font-bold text-xs text-neutral-600">
+        ${state.student || 'Enseignant'}
+      </div>
+      <div class="quiz-progress-wrap flex items-center gap-4 w-2/3 max-w-xs justify-end">
+        <div class="quiz-progress-label text-xs font-bold text-neutral-500 whitespace-nowrap">Phrase ${determinantGameState.currentIndex + 1} sur ${determinantGameState.questions.length}</div>
+        <div class="progress-bar w-full h-2.5 bg-neutral-200 rounded-full overflow-hidden">
+          <div class="progress-fill h-full bg-purple-600" style="width: ${pctProgress}%"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-blue-50 border-2 border-blue-150 rounded-3xl p-5 mb-6 shadow-[4px_4px_0px_rgba(0,0,0,0.02)]">
+      <div class="flex flex-col gap-2 text-blue-900 text-sm font-semibold">
+        <div class="flex items-center gap-2">
+          <span>💡</span>
+          <strong>Consigne :</strong> Clique sur les déterminants de la phrase.
+        </div>
+        <div class="flex flex-wrap gap-4 mt-1 pl-6 text-xs text-neutral-600">
+          <span>👆 1 clic = <span class="text-amber-600 font-bold border-b border-amber-400">🟡 Déterminant</span></span>
+          <span>👆👆 2 clics = ⚪ Réinitialiser</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- LA PHRASE -->
+    <div class="bg-white border-2 border-neutral-900 rounded-3xl p-8 md:p-12 mb-6 shadow-[4px_4px_0px_rgba(0,0,0,1)] flex flex-wrap gap-x-2 gap-y-4 justify-center items-center">
+      ${tokensHtml}
+    </div>
+
+    <!-- EXPLICATION / CORRECTION -->
+    <div id="det-correction-panel"></div>
+
+    <!-- ZONE D'ACTION -->
+    <div class="flex justify-between items-center border-t border-neutral-200 pt-6">
+      ${actionBtn}
+    </div>
+  `;
+
+  container.innerHTML = html;
+
+  // Event bindings
+  container.querySelectorAll('.gram-det-word-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const idx = parseInt(btn.getAttribute('data-idx'));
+      clickDeterminantWord(idx);
+    });
+  });
+
+  const verifyBtn = container.querySelector('.gram-det-verify-btn');
+  if (verifyBtn) {
+    verifyBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      verifyDeterminantAnswer();
+    });
+  }
+
+  const nextBtn = container.querySelector('.gram-det-next-btn');
+  if (nextBtn) {
+    nextBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      nextDeterminantQuestion();
+    });
+  }
+}
+
+function clickDeterminantWord(wordIndex) {
+  if (determinantGameState.submitted) return;
+  determinantGameState.answers[wordIndex] = (determinantGameState.answers[wordIndex] + 1) % 2;
+  renderDeterminantQuestion();
+}
+
+function verifyDeterminantAnswer() {
+  if (determinantGameState.submitted) return;
+
+  const question = determinantGameState.questions[determinantGameState.currentIndex];
+  const errors = [];
+
+  const catLabels = {
+    'nc': 'un nom commun',
+    'np': 'un nom propre',
+    'v': 'un verbe',
+    'adj': 'un adjectif',
+    'pr': 'un pronom',
+    'adv': 'un adverbe',
+    'prep': 'une préposition',
+    'conj': 'une conjonction'
+  };
+
+  question.tokens.forEach((token, idx) => {
+    if (token.punctuation === true) return;
+
+    const cat = token.cat;
+    const sel = determinantGameState.answers[idx]; // 0 or 1
+
+    if (cat === 'det') {
+      if (sel === 0) {
+        errors.push(`Tu as oublié le déterminant « <strong>${token.text}</strong> ».`);
+      }
+    } else {
+      if (sel === 1) {
+        const clsLabel = catLabels[cat] || "un mot d'une autre classe grammaticale";
+        errors.push(`Le mot « <strong>${token.text}</strong> » est <strong>${clsLabel}</strong>, ce n'est pas un déterminant.`);
+      }
+    }
+  });
+
+  determinantGameState.submitted = true;
+  const isPerfect = errors.length === 0;
+
+  if (isPerfect) {
+    determinantGameState.score++;
+  }
+
+  renderDeterminantQuestion();
+
+  const corrPanel = document.getElementById('det-correction-panel');
+  if (corrPanel) {
+    if (isPerfect) {
+      corrPanel.innerHTML = `
+        <div class="bg-green-50 rounded-2xl p-5 border-2 border-green-500 mb-6 animate-fadeIn shadow-[2px_2px_0px_rgba(16,185,129,1)]">
+          <div class="flex items-center gap-3 text-green-800 font-display font-bold">
+            <span class="text-2xl">🏆</span>
+            <span>Félicitations ! Tout est parfaitement correct !</span>
+          </div>
+        </div>
+      `;
+    } else {
+      const errList = errors.map(err => `<li class="mb-1 text-sm text-neutral-700">• ${err}</li>`).join('');
+      corrPanel.innerHTML = `
+        <div class="bg-rose-50 rounded-2xl p-5 border-2 border-neutral-900 mb-6 animate-fadeIn shadow-[2px_2px_0px_rgba(0,0,0,1)]">
+          <div class="flex items-start gap-3">
+            <span class="text-2xl">💡</span>
+            <div>
+              <h4 class="font-display font-bold text-rose-800 mb-2">Explication des erreurs :</h4>
+              <ul class="list-none pl-0">
+                ${errList}
+              </ul>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+  }
+}
+
+function nextDeterminantQuestion() {
+  determinantGameState.currentIndex++;
+  if (determinantGameState.currentIndex < determinantGameState.questions.length) {
+    const nextQ = determinantGameState.questions[determinantGameState.currentIndex];
+    determinantGameState.answers = Array(nextQ.tokens.length).fill(0);
+    determinantGameState.submitted = false;
+    renderDeterminantQuestion();
+  } else {
+    showDeterminantResults();
+  }
+}
+
+function showDeterminantResults() {
+  const container = document.getElementById(determinantGameState.containerId);
+  if (!container) return;
+
+  const score = determinantGameState.score;
+  const total = determinantGameState.questions.length;
+  const pct = Math.round((score / total) * 100);
+
+  let title = "";
+  let msg = "";
+  let emoji = "";
+
+  if (score === 10) {
+    title = "🏆 Sans faute !";
+    msg = "Incroyable ! Tu as une parfaite maîtrise des déterminants !";
+    emoji = "🎉";
+    launchDeterminantConfetti();
+  } else if (score >= 8) {
+    title = "🌟 Excellent !";
+    msg = "C'est un superbe score ! Tu as presque tout juste.";
+    emoji = "👏";
+  } else if (score >= 5) {
+    title = "👍 Pas mal !";
+    msg = "Tu as compris les bases du déterminant. Continue de t'entraîner !";
+    emoji = "💪";
+  } else {
+    title = "✍️ Entraîne-toi encore !";
+    msg = "Relis bien la leçon sur les déterminants et recommence pour faire mieux !";
+    emoji = "📚";
+  }
+
+  container.innerHTML = `
+    <div class="bg-white border-2 border-neutral-900 rounded-3xl p-8 text-center shadow-[4px_4px_0px_rgba(0,0,0,1)] animate-fadeIn">
+      <div class="text-6xl mb-4">${emoji}</div>
+      <h3 class="font-display font-bold text-2xl text-neutral-800 mb-2">${title}</h3>
+      <p class="text-neutral-600 mb-6 max-w-md mx-auto leading-relaxed">${msg}</p>
+
+      <div class="font-display font-black text-5xl text-purple-600 bg-purple-50 border-2 border-purple-200 py-4 px-8 rounded-2xl inline-block mb-8 shadow-[2px_2px_0px_rgba(0,0,0,0.05)]">
+        ${score} / ${total}
+      </div>
+
+      <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+        <button class="gram-det-restart-btn px-6 py-3 rounded-2xl border-2 border-neutral-900 bg-purple-600 text-white hover:bg-purple-700 font-display font-bold text-sm transition-all cursor-pointer shadow-[2px_2px_0px_rgba(0,0,0,1)] active:scale-95">
+          🔄 Recommencer
+        </button>
+        <button class="gram-det-back-btn px-6 py-3 rounded-2xl border-2 border-neutral-900 bg-neutral-100 text-neutral-700 hover:bg-neutral-200 font-display font-bold text-sm transition-all cursor-pointer shadow-[2px_2px_0px_rgba(0,0,0,1)] active:scale-95">
+          ↩️ Retour aux thèmes
+        </button>
+      </div>
+    </div>
+  `;
+
+  const restartBtn = container.querySelector('.gram-det-restart-btn');
+  if (restartBtn) {
+    restartBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      startDeterminantExercise();
+    });
+  }
+
+  const backBtn = container.querySelector('.gram-det-back-btn');
+  if (backBtn) {
+    backBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      showScreen('screen-gram-classes');
+      renderGramClassesScreen();
+    });
+  }
+
+  if (state.student) {
+    saveResult({
+      student: state.student,
+      cls: state.studentCls,
+      className: CLASSES[state.studentCls] ? CLASSES[state.studentCls].name : state.studentCls,
+      activity: 'gram_determinant',
+      bookTitle: 'Grammaire — Identifier le déterminant',
+      score,
+      total,
+      pct,
+      date: new Date().toLocaleDateString('fr-BE'),
+      time: new Date().toLocaleTimeString('fr-BE', {hour:'2-digit', minute:'2-digit'})
+    });
+  }
+}
+
+function launchDeterminantConfetti() {
+  const colors = ['#D97706', '#1A9E75', '#D94F3D', '#C97B1A', '#1A6FA0', '#FFD700'];
+  for (let i = 0; i < 45; i++) {
+    const confetti = document.createElement('div');
+    confetti.className = 'confetti';
+    confetti.style.left = Math.random() * 100 + 'vw';
+    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+    confetti.style.animationDelay = Math.random() * 1.5 + 's';
+    confetti.style.transform = `scale(${Math.random() * 0.8 + 0.5})`;
+    document.body.appendChild(confetti);
+    
+    setTimeout(() => confetti.remove(), 2500);
+  }
+}
+
+window.renderDeterminantMenu = renderDeterminantMenu;
+window.startDeterminantExercise = startDeterminantExercise;
+window.clickDeterminantWord = clickDeterminantWord;
+window.verifyDeterminantAnswer = verifyDeterminantAnswer;
+window.nextDeterminantQuestion = nextDeterminantQuestion;
 
 // Exposer les fonctions des classes de mots (Le nom, L'adjectif, Le verbe)
 window.renderNomMenu = renderNomMenu;

@@ -9668,6 +9668,713 @@ window.EXERCICES_VERBE_INFINITIF = [
   { phrase: "Les enfants ont joué dans la cour.", verb: "ont joué", inf: "jouer", tense: "passé composé" }
 ];
 
+window.EXERCICES_DETERMINANT = [
+  {
+    text: "Le grand chien noir garde la maison .",
+    tokens: [
+      { text: "Le", cat: "det" },
+      { text: "grand", cat: "adj" },
+      { text: "chien", cat: "nc" },
+      { text: "noir", cat: "adj" },
+      { text: "garde", cat: "v" },
+      { text: "la", cat: "det" },
+      { text: "maison", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Un petit oiseau chante sur une branche .",
+    tokens: [
+      { text: "Un", cat: "det" },
+      { text: "petit", cat: "adj" },
+      { text: "oiseau", cat: "nc" },
+      { text: "chante", cat: "v" },
+      { text: "sur", cat: "prep" },
+      { text: "une", cat: "det" },
+      { text: "branche", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Ma sœur a perdu ses clés ce matin .",
+    tokens: [
+      { text: "Ma", cat: "det" },
+      { text: "sœur", cat: "nc" },
+      { text: "a", cat: "v" },
+      { text: "perdu", cat: "v" },
+      { text: "ses", cat: "det" },
+      { text: "clés", cat: "nc" },
+      { text: "ce", cat: "det" },
+      { text: "matin", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Ces enfants jouent dans leur grand jardin .",
+    tokens: [
+      { text: "Ces", cat: "det" },
+      { text: "enfants", cat: "nc" },
+      { text: "jouent", cat: "v" },
+      { text: "dans", cat: "prep" },
+      { text: "leur", cat: "det" },
+      { text: "grand", cat: "adj" },
+      { text: "jardin", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Chaque élève doit apporter ses crayons colorés .",
+    tokens: [
+      { text: "Chaque", cat: "det" },
+      { text: "élève", cat: "nc" },
+      { text: "doit", cat: "v" },
+      { text: "apporter", cat: "v" },
+      { text: "ses", cat: "det" },
+      { text: "crayons", cat: "nc" },
+      { text: "colorés", cat: "adj" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Deux chats dorment paisiblement sur le canapé .",
+    tokens: [
+      { text: "Deux", cat: "det" },
+      { text: "chats", cat: "nc" },
+      { text: "dorment", cat: "v" },
+      { text: "paisiblement", cat: "adv" },
+      { text: "sur", cat: "prep" },
+      { text: "le", cat: "det" },
+      { text: "canapé", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Ta maman prépare un délicieux gâteau pour la fête .",
+    tokens: [
+      { text: "Ta", cat: "det" },
+      { text: "maman", cat: "nc" },
+      { text: "prépare", cat: "v" },
+      { text: "un", cat: "det" },
+      { text: "délicieux", cat: "adj" },
+      { text: "gâteau", cat: "nc" },
+      { text: "pour", cat: "prep" },
+      { text: "la", cat: "det" },
+      { text: "fête", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Mon frère a acheté trois livres de contes .",
+    tokens: [
+      { text: "Mon", cat: "det" },
+      { text: "frère", cat: "nc" },
+      { text: "a", cat: "v" },
+      { text: "acheté", cat: "v" },
+      { text: "trois", cat: "det" },
+      { text: "livres", cat: "nc" },
+      { text: "de", cat: "prep" },
+      { text: "contes", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Ce joli papillon se pose sur cette fleur rouge .",
+    tokens: [
+      { text: "Ce", cat: "det" },
+      { text: "joli", cat: "adj" },
+      { text: "papillon", cat: "nc" },
+      { text: "se", cat: "pr" },
+      { text: "pose", cat: "v" },
+      { text: "sur", cat: "prep" },
+      { text: "cette", cat: "det" },
+      { text: "fleur", cat: "nc" },
+      { text: "rouge", cat: "adj" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Leurs parents ont réservé une belle chambre d' hôtel .",
+    tokens: [
+      { text: "Leurs", cat: "det" },
+      { text: "parents", cat: "nc" },
+      { text: "ont", cat: "v" },
+      { text: "réservé", cat: "v" },
+      { text: "une", cat: "det" },
+      { text: "belle", cat: "adj" },
+      { text: "chambre", cat: "nc" },
+      { text: "d'", cat: "prep" },
+      { text: "hôtel", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Plusieurs oiseaux s' envolent vers le sud .",
+    tokens: [
+      { text: "Plusieurs", cat: "det" },
+      { text: "oiseaux", cat: "nc" },
+      { text: "s'", cat: "pr" },
+      { text: "envolent", cat: "v" },
+      { text: "vers", cat: "prep" },
+      { text: "le", cat: "det" },
+      { text: "sud", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Quel magnifique paysage s' offre à nos yeux !",
+    tokens: [
+      { text: "Quel", cat: "det" },
+      { text: "magnifique", cat: "adj" },
+      { text: "paysage", cat: "nc" },
+      { text: "s'", cat: "pr" },
+      { text: "offre", cat: "v" },
+      { text: "à", cat: "prep" },
+      { text: "nos", cat: "det" },
+      { text: "yeux", cat: "nc" },
+      { text: "!", punctuation: true }
+    ]
+  },
+  {
+    text: "Tu as oublié ton parapluie dans ma voiture .",
+    tokens: [
+      { text: "Tu", cat: "pr" },
+      { text: "as", cat: "v" },
+      { text: "oublié", cat: "v" },
+      { text: "ton", cat: "det" },
+      { text: "parapluie", cat: "nc" },
+      { text: "dans", cat: "prep" },
+      { text: "ma", cat: "det" },
+      { text: "voiture", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Certains élèves préfèrent les livres d' images .",
+    tokens: [
+      { text: "Certains", cat: "det" },
+      { text: "élèves", cat: "nc" },
+      { text: "préfèrent", cat: "v" },
+      { text: "les", cat: "det" },
+      { text: "livres", cat: "nc" },
+      { text: "d'", cat: "prep" },
+      { text: "images", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Les filles de notre classe aiment le sport .",
+    tokens: [
+      { text: "Les", cat: "det" },
+      { text: "filles", cat: "nc" },
+      { text: "de", cat: "prep" },
+      { text: "notre", cat: "det" },
+      { text: "classe", cat: "nc" },
+      { text: "aiment", cat: "v" },
+      { text: "le", cat: "det" },
+      { text: "sport", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Son vieil oncle habite dans un vieux château .",
+    tokens: [
+      { text: "Son", cat: "det" },
+      { text: "vieil", cat: "adj" },
+      { text: "oncle", cat: "nc" },
+      { text: "habite", cat: "v" },
+      { text: "dans", cat: "prep" },
+      { text: "un", cat: "det" },
+      { text: "vieux", cat: "adj" },
+      { text: "château", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Une pluie fine tombe sur nos fenêtres depuis ce matin .",
+    tokens: [
+      { text: "Une", cat: "det" },
+      { text: "pluie", cat: "nc" },
+      { text: "fine", cat: "adj" },
+      { text: "tombe", cat: "v" },
+      { text: "sur", cat: "prep" },
+      { text: "nos", cat: "det" },
+      { text: "fenêtres", cat: "nc" },
+      { text: "depuis", cat: "prep" },
+      { text: "ce", cat: "det" },
+      { text: "matin", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Chaque matin , le boulanger prépare ses croissants chauds .",
+    tokens: [
+      { text: "Chaque", cat: "det" },
+      { text: "matin", cat: "nc" },
+      { text: ",", punctuation: true },
+      { text: "le", cat: "det" },
+      { text: "boulanger", cat: "nc" },
+      { text: "prépare", cat: "v" },
+      { text: "ses", cat: "det" },
+      { text: "croissants", cat: "nc" },
+      { text: "chauds", cat: "adj" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Cette vieille horloge indique la bonne heure .",
+    tokens: [
+      { text: "Cette", cat: "det" },
+      { text: "vieille", cat: "adj" },
+      { text: "horloge", cat: "nc" },
+      { text: "indique", cat: "v" },
+      { text: "la", cat: "det" },
+      { text: "bonne", cat: "adj" },
+      { text: "heure", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Quatre lions marchent fièrement dans la savane sauvage .",
+    tokens: [
+      { text: "Quatre", cat: "det" },
+      { text: "lions", cat: "nc" },
+      { text: "marchent", cat: "v" },
+      { text: "fièrement", cat: "adv" },
+      { text: "dans", cat: "prep" },
+      { text: "la", cat: "det" },
+      { text: "savane", cat: "nc" },
+      { text: "sauvage", cat: "adj" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Mon cousin habite dans cette grande maison blanche .",
+    tokens: [
+      { text: "Mon", cat: "det" },
+      { text: "cousin", cat: "nc" },
+      { text: "habite", cat: "v" },
+      { text: "dans", cat: "prep" },
+      { text: "cette", cat: "det" },
+      { text: "grande", cat: "adj" },
+      { text: "maison", cat: "nc" },
+      { text: "blanche", cat: "adj" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Ces fleurs dégagent un parfum très doux .",
+    tokens: [
+      { text: "Ces", cat: "det" },
+      { text: "fleurs", cat: "nc" },
+      { text: "dégagent", cat: "v" },
+      { text: "un", cat: "det" },
+      { text: "parfum", cat: "nc" },
+      { text: "très", cat: "adv" },
+      { text: "doux", cat: "adj" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Quelques touristes visitent ce magnifique monument .",
+    tokens: [
+      { text: "Quelques", cat: "det" },
+      { text: "touristes", cat: "nc" },
+      { text: "visitent", cat: "v" },
+      { text: "ce", cat: "det" },
+      { text: "magnifique", cat: "adj" },
+      { text: "monument", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Le jeune menuisier répare cette table en bois .",
+    tokens: [
+      { text: "Le", cat: "det" },
+      { text: "jeune", cat: "adj" },
+      { text: "menuisier", cat: "nc" },
+      { text: "répare", cat: "v" },
+      { text: "cette", cat: "det" },
+      { text: "table", cat: "nc" },
+      { text: "en", cat: "prep" },
+      { text: "bois", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Leur équipe a gagné le premier match de la saison .",
+    tokens: [
+      { text: "Leur", cat: "det" },
+      { text: "équipe", cat: "nc" },
+      { text: "a", cat: "v" },
+      { text: "gagné", cat: "v" },
+      { text: "le", cat: "det" },
+      { text: "premier", cat: "adj" },
+      { text: "match", cat: "nc" },
+      { text: "de", cat: "prep" },
+      { text: "la", cat: "det" },
+      { text: "saison", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Ton amie porte une jolie robe pour son anniversaire .",
+    tokens: [
+      { text: "Ton", cat: "det" },
+      { text: "amie", cat: "nc" },
+      { text: "porte", cat: "v" },
+      { text: "une", cat: "det" },
+      { text: "jolie", cat: "adj" },
+      { text: "robe", cat: "nc" },
+      { text: "pour", cat: "prep" },
+      { text: "son", cat: "det" },
+      { text: "anniversaire", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Le chat noir surveille les petites souris dans la grange .",
+    tokens: [
+      { text: "Le", cat: "det" },
+      { text: "chat", cat: "nc" },
+      { text: "noir", cat: "adj" },
+      { text: "surveille", cat: "v" },
+      { text: "les", cat: "det" },
+      { text: "petites", cat: "adj" },
+      { text: "souris", cat: "nc" },
+      { text: "dans", cat: "prep" },
+      { text: "la", cat: "det" },
+      { text: "grange", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Chaque enfant a reçu un cadeau pour la fête .",
+    tokens: [
+      { text: "Chaque", cat: "det" },
+      { text: "enfant", cat: "nc" },
+      { text: "a", cat: "v" },
+      { text: "reçu", cat: "v" },
+      { text: "un", cat: "det" },
+      { text: "cadeau", cat: "nc" },
+      { text: "pour", cat: "prep" },
+      { text: "la", cat: "det" },
+      { text: "fête", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Cinq garçons courent après le gros ballon rouge .",
+    tokens: [
+      { text: "Cinq", cat: "det" },
+      { text: "garçons", cat: "nc" },
+      { text: "courent", cat: "v" },
+      { text: "après", cat: "prep" },
+      { text: "le", cat: "det" },
+      { text: "gros", cat: "adj" },
+      { text: "ballon", cat: "nc" },
+      { text: "rouge", cat: "adj" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Ma grand-mère prépare cette délicieuse confiture de fraises .",
+    tokens: [
+      { text: "Ma", cat: "det" },
+      { text: "grand-mère", cat: "nc" },
+      { text: "prépare", cat: "v" },
+      { text: "cette", cat: "det" },
+      { text: "délicieuse", cat: "adj" },
+      { text: "confiture", cat: "nc" },
+      { text: "de", cat: "prep" },
+      { text: "fraises", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Le vent souffle sur les arbres de notre grand park .",
+    tokens: [
+      { text: "Le", cat: "det" },
+      { text: "vent", cat: "nc" },
+      { text: "souffle", cat: "v" },
+      { text: "sur", cat: "prep" },
+      { text: "les", cat: "det" },
+      { text: "arbres", cat: "nc" },
+      { text: "de", cat: "prep" },
+      { text: "notre", cat: "det" },
+      { text: "grand", cat: "adj" },
+      { text: "parc", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Une grande voiture noire bloque notre garage .",
+    tokens: [
+      { text: "Une", cat: "det" },
+      { text: "grande", cat: "adj" },
+      { text: "voiture", cat: "nc" },
+      { text: "noire", cat: "adj" },
+      { text: "bloque", cat: "v" },
+      { text: "notre", cat: "det" },
+      { text: "garage", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Ce jeune athlète a remporté trois médailles .",
+    tokens: [
+      { text: "Ce", cat: "det" },
+      { text: "jeune", cat: "adj" },
+      { text: "athlète", cat: "nc" },
+      { text: "a", cat: "v" },
+      { text: "remporté", cat: "v" },
+      { text: "trois", cat: "det" },
+      { text: "médailles", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Ces pommes rouges viennent de mon jardin .",
+    tokens: [
+      { text: "Ces", cat: "det" },
+      { text: "pommes", cat: "nc" },
+      { text: "rouges", cat: "adj" },
+      { text: "viennent", cat: "v" },
+      { text: "de", cat: "prep" },
+      { text: "mon", cat: "det" },
+      { text: "jardin", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Leur petit chien aboie contre les passants .",
+    tokens: [
+      { text: "Leur", cat: "det" },
+      { text: "petit", cat: "adj" },
+      { text: "chien", cat: "nc" },
+      { text: "aboie", cat: "v" },
+      { text: "contre", cat: "prep" },
+      { text: "les", cat: "det" },
+      { text: "passants", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Quelques nuages gris cachent le soleil ce matin .",
+    tokens: [
+      { text: "Quelques", cat: "det" },
+      { text: "nuages", cat: "nc" },
+      { text: "gris", cat: "adj" },
+      { text: "cachent", cat: "v" },
+      { text: "le", cat: "det" },
+      { text: "soleil", cat: "nc" },
+      { text: "ce", cat: "det" },
+      { text: "matin", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Certains oiseaux construisent des nids dans ces sapins .",
+    tokens: [
+      { text: "Certains", cat: "det" },
+      { text: "oiseaux", cat: "nc" },
+      { text: "construisent", cat: "v" },
+      { text: "des", cat: "det" },
+      { text: "nids", cat: "nc" },
+      { text: "dans", cat: "prep" },
+      { text: "ces", cat: "det" },
+      { text: "sapins", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Les voitures roulent lentement sous la pluie .",
+    tokens: [
+      { text: "Les", cat: "det" },
+      { text: "voitures", cat: "nc" },
+      { text: "roulent", cat: "v" },
+      { text: "lentement", cat: "adv" },
+      { text: "sous", cat: "prep" },
+      { text: "la", cat: "det" },
+      { text: "pluie", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Son professeur explique une leçon difficile pour les élèves .",
+    tokens: [
+      { text: "Son", cat: "det" },
+      { text: "professeur", cat: "nc" },
+      { text: "explique", cat: "v" },
+      { text: "une", cat: "det" },
+      { text: "leçon", cat: "nc" },
+      { text: "difficile", cat: "adj" },
+      { text: "pour", cat: "prep" },
+      { text: "les", cat: "det" },
+      { text: "élèves", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Chaque élève écoute attentivement les explications de la maîtresse .",
+    tokens: [
+      { text: "Chaque", cat: "det" },
+      { text: "élève", cat: "nc" },
+      { text: "écoute", cat: "v" },
+      { text: "attentivement", cat: "adv" },
+      { text: "les", cat: "det" },
+      { text: "explications", cat: "nc" },
+      { text: "de", cat: "prep" },
+      { text: "la", cat: "det" },
+      { text: "maîtresse", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Dix enfants jouent dans la cour de notre école .",
+    tokens: [
+      { text: "Dix", cat: "det" },
+      { text: "enfants", cat: "nc" },
+      { text: "jouent", cat: "v" },
+      { text: "dans", cat: "prep" },
+      { text: "la", cat: "det" },
+      { text: "cour", cat: "nc" },
+      { text: "de", cat: "prep" },
+      { text: "notre", cat: "det" },
+      { text: "école", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Quelle surprise de voir ton frère dans ce magasin !",
+    tokens: [
+      { text: "Quelle", cat: "det" },
+      { text: "surprise", cat: "nc" },
+      { text: "de", cat: "prep" },
+      { text: "voir", cat: "v" },
+      { text: "ton", cat: "det" },
+      { text: "frère", cat: "nc" },
+      { text: "dans", cat: "prep" },
+      { text: "ce", cat: "det" },
+      { text: "magasin", cat: "nc" },
+      { text: "!", punctuation: true }
+    ]
+  },
+  {
+    text: "Cette tarte parfumée est un vrai régal .",
+    tokens: [
+      { text: "Cette", cat: "det" },
+      { text: "tarte", cat: "nc" },
+      { text: "parfumée", cat: "adj" },
+      { text: "est", cat: "v" },
+      { text: "un", cat: "det" },
+      { text: "vrai", cat: "adj" },
+      { text: "régal", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Mon oncle a garé sa moto près de notre portail .",
+    tokens: [
+      { text: "Mon", cat: "det" },
+      { text: "oncle", cat: "nc" },
+      { text: "a", cat: "v" },
+      { text: "garé", cat: "v" },
+      { text: "sa", cat: "det" },
+      { text: "moto", cat: "nc" },
+      { text: "près", cat: "prep" },
+      { text: "de", cat: "prep" },
+      { text: "notre", cat: "det" },
+      { text: "portail", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Les petites abeilles butinent ces jolies fleurs jaunes .",
+    tokens: [
+      { text: "Les", cat: "det" },
+      { text: "petites", cat: "adj" },
+      { text: "abeilles", cat: "nc" },
+      { text: "butinent", cat: "v" },
+      { text: "ces", cat: "det" },
+      { text: "jolies", cat: "adj" },
+      { text: "fleurs", cat: "nc" },
+      { text: "jaunes", cat: "adj" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Un énorme camion transporte plusieurs voitures neuves .",
+    tokens: [
+      { text: "Un", cat: "det" },
+      { text: "énorme", cat: "adj" },
+      { text: "camion", cat: "nc" },
+      { text: "transporte", cat: "v" },
+      { text: "plusieurs", cat: "det" },
+      { text: "voitures", cat: "nc" },
+      { text: "neuves", cat: "adj" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Notre chat aime boire son lait tiède .",
+    tokens: [
+      { text: "Notre", cat: "det" },
+      { text: "chat", cat: "nc" },
+      { text: "aime", cat: "v" },
+      { text: "boire", cat: "v" },
+      { text: "son", cat: "det" },
+      { text: "lait", cat: "nc" },
+      { text: "tiède", cat: "adj" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Deux cyclistes montent cette route très raide .",
+    tokens: [
+      { text: "Deux", cat: "det" },
+      { text: "cyclistes", cat: "nc" },
+      { text: "montent", cat: "v" },
+      { text: "cette", cat: "det" },
+      { text: "route", cat: "nc" },
+      { text: "très", cat: "adv" },
+      { text: "raide", cat: "adj" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Le vieux capitaine regarde les vagues depuis son bateau .",
+    tokens: [
+      { text: "Le", cat: "det" },
+      { text: "vieux", cat: "adj" },
+      { text: "capitaine", cat: "nc" },
+      { text: "regarde", cat: "v" },
+      { text: "les", cat: "det" },
+      { text: "vagues", cat: "nc" },
+      { text: "depuis", cat: "prep" },
+      { text: "son", cat: "det" },
+      { text: "bateau", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  },
+  {
+    text: "Chaque matin , je prépare mon sac pour la classe .",
+    tokens: [
+      { text: "Chaque", cat: "det" },
+      { text: "matin", cat: "nc" },
+      { text: ",", punctuation: true },
+      { text: "je", cat: "pr" },
+      { text: "prépare", cat: "v" },
+      { text: "mon", cat: "det" },
+      { text: "sac", cat: "nc" },
+      { text: "pour", cat: "prep" },
+      { text: "la", cat: "det" },
+      { text: "classe", cat: "nc" },
+      { text: ".", punctuation: true }
+    ]
+  }
+];
+
+
 
 
 

@@ -75,3 +75,24 @@ Les fichiers [index.html](file:///Users/jeremy/antigravity/LCML/index.html) (rac
 * Les trois exercices s'ouvrent de manière fluide sans erreur de script.
 * Les émojis contextuels et schémas SVG s'affichent correctement côte à côte dans une mise en page Flex Row harmonieuse.
 * La navigation via les boutons retour du dashboard est pleinement fonctionnelle.
+
+---
+
+## 4. Grammaire : Le déterminant (Classes de mots)
+
+Le module temporaire (marqué par un émoji 🚧) a été remplacé par un système d'exercice interactif dynamique et complet, disponible dans les dashboards élève et enseignant (`index.html` et `fiches/index.html`).
+
+### 🎯 Exercice interactif : Reconnaître les déterminants
+* **Concept** : Identifier et cliquer sur tous les déterminants (articles définis/indéfinis/partitifs, possessifs, démonstratifs, numéraux, indéfinis, interrogatifs/exclamatifs) dans une phrase tirée aléatoirement.
+* **Base de données** : 40 phrases variées et étiquetées (catégorie `det` par rapport aux autres classes grammaticales comme `nc`, `v`, `adj`, etc.), déjà disponibles sous `window.EXERCICES_DETERMINANT` dans [exercices_francais.js](file:///Users/jeremy/antigravity/LCML/exercices_francais.js).
+* **Interface premium** :
+  * Interaction fluide : Sélection des mots au clic (colorisation ambre/jaune) avec possibilité de désélection.
+  * Validation immédiate des réponses avec retour visuel (badges vert pour correct, rouge pour incorrect, orange pour manquant).
+  * Panneau d'explications détaillé justifiant la classe grammaticale des mots erronés (ex. *« Le mot "fleur" est un nom commun, ce n'est pas un déterminant »*).
+  * Système de progression (10 phrases par session tirées au sort, barre de progression visuelle).
+  * Écran de résultats final adapté au score avec effets de confettis festifs en cas de sans-faute (10/10).
+  * Enregistrement automatique des résultats et du score via `saveResult` pour le suivi enseignant.
+* **Intégration technique** :
+  * Remplacement des conteneurs statiques temporaires `#screen-gram-determinant`.
+  * Raccordement au menu principal via la fonction globale `renderDeterminantMenu`.
+  * Exposition des variables d'état et des fonctions interactives au scope global (`window.renderDeterminantMenu`, `window.startDeterminantExercise`, etc.) dans les deux applications.
