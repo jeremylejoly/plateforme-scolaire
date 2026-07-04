@@ -10118,231 +10118,611 @@ window.EXERCICES_DETERMINANT = [
       { text: "garage", cat: "nc" },
       { text: ".", punctuation: true }
     ]
+  }
+];
+
+window.EXERCICES_DETERMINANT_TRI = [
+  {
+    phrase: "Je regarde <span class='target-highlight'>ce</span> magnifique paysage.",
+    word: "ce",
+    cat: "demonstratif",
+    exp: "« ce » désigne ce que l'on montre, c'est un déterminant démonstratif."
   },
   {
-    text: "Ce jeune athlète a remporté trois médailles .",
-    tokens: [
-      { text: "Ce", cat: "det" },
-      { text: "jeune", cat: "adj" },
-      { text: "athlète", cat: "nc" },
-      { text: "a", cat: "v" },
-      { text: "remporté", cat: "v" },
-      { text: "trois", cat: "det" },
-      { text: "médailles", cat: "nc" },
-      { text: ".", punctuation: true }
-    ]
+    phrase: "Tu as pris <span class='target-highlight'>mes</span> clés dans l'entrée.",
+    word: "mes",
+    cat: "possessif",
+    exp: "« mes » indique que les clés m'appartiennent, c'est un déterminant possessif."
   },
   {
-    text: "Ces pommes rouges viennent de mon jardin .",
-    tokens: [
-      { text: "Ces", cat: "det" },
-      { text: "pommes", cat: "nc" },
-      { text: "rouges", cat: "adj" },
-      { text: "viennent", cat: "v" },
-      { text: "de", cat: "prep" },
-      { text: "mon", cat: "det" },
-      { text: "jardin", cat: "nc" },
-      { text: ".", punctuation: true }
-    ]
+    phrase: "Il mange <span class='target-highlight'>un</span> délicieux gâteau.",
+    word: "un",
+    cat: "article",
+    exp: "« un » introduit un nom de manière indéterminée, c'est un article indéfini."
   },
   {
-    text: "Leur petit chien aboie contre les passants .",
-    tokens: [
-      { text: "Leur", cat: "det" },
-      { text: "petit", cat: "adj" },
-      { text: "chien", cat: "nc" },
-      { text: "aboie", cat: "v" },
-      { text: "contre", cat: "prep" },
-      { text: "les", cat: "det" },
-      { text: "passants", cat: "nc" },
-      { text: ".", punctuation: true }
-    ]
+    phrase: "Nous avons loué <span class='target-highlight'>cette</span> voiture pour les vacances.",
+    word: "cette",
+    cat: "demonstratif",
+    exp: "« cette » désigne une voiture précise que l'on montre, c'est un déterminant démonstratif."
   },
   {
-    text: "Quelques nuages gris cachent le soleil ce matin .",
-    tokens: [
-      { text: "Quelques", cat: "det" },
-      { text: "nuages", cat: "nc" },
-      { text: "gris", cat: "adj" },
-      { text: "cachent", cat: "v" },
-      { text: "le", cat: "det" },
-      { text: "soleil", cat: "nc" },
-      { text: "ce", cat: "det" },
-      { text: "matin", cat: "nc" },
-      { text: ".", punctuation: true }
-    ]
+    phrase: "Où est caché <span class='target-highlight'>votre</span> petit chat ?",
+    word: "votre",
+    cat: "possessif",
+    exp: "« votre » indique la possession (le vôtre), c'est un déterminant possessif."
   },
   {
-    text: "Certains oiseaux construisent des nids dans ces sapins .",
-    tokens: [
-      { text: "Certains", cat: "det" },
-      { text: "oiseaux", cat: "nc" },
-      { text: "construisent", cat: "v" },
-      { text: "des", cat: "det" },
-      { text: "nids", cat: "nc" },
-      { text: "dans", cat: "prep" },
-      { text: "ces", cat: "det" },
-      { text: "sapins", cat: "nc" },
-      { text: ".", punctuation: true }
-    ]
+    phrase: "Le chat boit <span class='target-highlight'>du</span> lait tiède.",
+    word: "du",
+    cat: "article",
+    exp: "« du » exprime une quantité indéterminée de lait, c'est un article partitif."
   },
   {
-    text: "Les voitures roulent lentement sous la pluie .",
-    tokens: [
-      { text: "Les", cat: "det" },
-      { text: "voitures", cat: "nc" },
-      { text: "roulent", cat: "v" },
-      { text: "lentement", cat: "adv" },
-      { text: "sous", cat: "prep" },
-      { text: "la", cat: "det" },
-      { text: "pluie", cat: "nc" },
-      { text: ".", punctuation: true }
-    ]
+    phrase: "J'ai lu <span class='target-highlight'>plusieurs</span> livres ce mois-ci.",
+    word: "plusieurs",
+    cat: "autre",
+    exp: "« plusieurs » exprime une quantité indéterminée et floue, c'est un déterminant indéfini."
   },
   {
-    text: "Son professeur explique une leçon difficile pour les élèves .",
-    tokens: [
-      { text: "Son", cat: "det" },
-      { text: "professeur", cat: "nc" },
-      { text: "explique", cat: "v" },
-      { text: "une", cat: "det" },
-      { text: "leçon", cat: "nc" },
-      { text: "difficile", cat: "adj" },
-      { text: "pour", cat: "prep" },
-      { text: "les", cat: "det" },
-      { text: "élèves", cat: "nc" },
-      { text: ".", punctuation: true }
-    ]
+    phrase: "Il y a <span class='target-highlight'>trois</span> pommes dans le panier.",
+    word: "trois",
+    cat: "autre",
+    exp: "« trois » indique le nombre exact de pommes, c'est un déterminant numéral."
   },
   {
-    text: "Chaque élève écoute attentivement les explications de la maîtresse .",
-    tokens: [
-      { text: "Chaque", cat: "det" },
-      { text: "élève", cat: "nc" },
-      { text: "écoute", cat: "v" },
-      { text: "attentivement", cat: "adv" },
-      { text: "les", cat: "det" },
-      { text: "explications", cat: "nc" },
-      { text: "de", cat: "prep" },
-      { text: "la", cat: "det" },
-      { text: "maîtresse", cat: "nc" },
-      { text: ".", punctuation: true }
-    ]
+    phrase: "N'oublie pas de prendre <span class='target-highlight'>ton</span> sac de sport.",
+    word: "ton",
+    cat: "possessif",
+    exp: "« ton » indique que le sac t'appartient, c'est un déterminant possessif."
   },
   {
-    text: "Dix enfants jouent dans la cour de notre école .",
-    tokens: [
-      { text: "Dix", cat: "det" },
-      { text: "enfants", cat: "nc" },
-      { text: "jouent", cat: "v" },
-      { text: "dans", cat: "prep" },
-      { text: "la", cat: "det" },
-      { text: "cour", cat: "nc" },
-      { text: "de", cat: "prep" },
-      { text: "notre", cat: "det" },
-      { text: "école", cat: "nc" },
-      { text: ".", punctuation: true }
-    ]
+    phrase: "Regarde <span class='target-highlight'>l'</span> oiseau perché sur la branche.",
+    word: "l'",
+    cat: "article",
+    exp: "« l' » (élision de « le » devant voyelle) détermine le nom oiseau, c'est un article défini."
   },
   {
-    text: "Quelle surprise de voir ton frère dans ce magasin !",
-    tokens: [
-      { text: "Quelle", cat: "det" },
-      { text: "surprise", cat: "nc" },
-      { text: "de", cat: "prep" },
-      { text: "voir", cat: "v" },
-      { text: "ton", cat: "det" },
-      { text: "frère", cat: "nc" },
-      { text: "dans", cat: "prep" },
-      { text: "ce", cat: "det" },
-      { text: "magasin", cat: "nc" },
-      { text: "!", punctuation: true }
-    ]
+    phrase: "Il n'y a <span class='target-highlight'>aucun</span> élève dans la classe.",
+    word: "aucun",
+    cat: "autre",
+    exp: "« aucun » exprime l'absence complète, c'est un déterminant indéfini."
   },
   {
-    text: "Cette tarte parfumée est un vrai régal .",
-    tokens: [
-      { text: "Cette", cat: "det" },
-      { text: "tarte", cat: "nc" },
-      { text: "parfumée", cat: "adj" },
-      { text: "est", cat: "v" },
-      { text: "un", cat: "det" },
-      { text: "vrai", cat: "adj" },
-      { text: "régal", cat: "nc" },
-      { text: ".", punctuation: true }
-    ]
+    phrase: "Elle termine <span class='target-highlight'>ses</span> devoirs de français.",
+    word: "ses",
+    cat: "possessif",
+    exp: "« ses » indique la possession (les siens), c'est un déterminant possessif."
   },
   {
-    text: "Mon oncle a garé sa moto près de notre portail .",
-    tokens: [
-      { text: "Mon", cat: "det" },
-      { text: "oncle", cat: "nc" },
-      { text: "a", cat: "v" },
-      { text: "garé", cat: "v" },
-      { text: "sa", cat: "det" },
-      { text: "moto", cat: "nc" },
-      { text: "près", cat: "prep" },
-      { text: "de", cat: "prep" },
-      { text: "notre", cat: "det" },
-      { text: "portail", cat: "nc" },
-      { text: ".", punctuation: true }
-    ]
+    phrase: "J'adore <span class='target-highlight'>cet</span> endroit magnifique.",
+    word: "cet",
+    cat: "demonstratif",
+    exp: "« cet » (forme de « ce » devant une voyelle ou un h muet) désigne ce que l'on montre, c'est un déterminant démonstratif."
   },
   {
-    text: "Les petites abeilles butinent ces jolies fleurs jaunes .",
-    tokens: [
-      { text: "Les", cat: "det" },
-      { text: "petites", cat: "adj" },
-      { text: "abeilles", cat: "nc" },
-      { text: "butinent", cat: "v" },
-      { text: "ces", cat: "det" },
-      { text: "jolies", cat: "adj" },
-      { text: "fleurs", cat: "nc" },
-      { text: "jaunes", cat: "adj" },
-      { text: ".", punctuation: true }
-    ]
+    phrase: "C'est <span class='target-highlight'>leur</span> maison de campagne.",
+    word: "leur",
+    cat: "possessif",
+    exp: "« leur » indique la possession (la leur), c'est un déterminant possessif."
   },
   {
-    text: "Un énorme camion transporte plusieurs voitures neuves .",
-    tokens: [
-      { text: "Un", cat: "det" },
-      { text: "énorme", cat: "adj" },
-      { text: "camion", cat: "nc" },
-      { text: "transporte", cat: "v" },
-      { text: "plusieurs", cat: "det" },
-      { text: "voitures", cat: "nc" },
-      { text: "neuves", cat: "adj" },
-      { text: ".", punctuation: true }
-    ]
+    phrase: "Maman a préparé <span class='target-highlight'>quelques</span> biscuits au chocolat.",
+    word: "quelques",
+    cat: "autre",
+    exp: "« quelques » désigne une quantité restreinte mais indéfinie, c'est un déterminant indéfini."
   },
   {
-    text: "Notre chat aime boire son lait tiède .",
-    tokens: [
-      { text: "Notre", cat: "det" },
-      { text: "chat", cat: "nc" },
-      { text: "aime", cat: "v" },
-      { text: "boire", cat: "v" },
-      { text: "son", cat: "det" },
-      { text: "lait", cat: "nc" },
-      { text: "tiède", cat: "adj" },
-      { text: ".", punctuation: true }
-    ]
+    phrase: "Le marathon mesure plus de <span class='target-highlight'>quarante</span> kilomètres.",
+    word: "quarante",
+    cat: "autre",
+    exp: "« quarante » indique un nombre précis, c'est un déterminant numéral."
   },
   {
-    text: "Deux cyclistes montent cette route très raide .",
-    tokens: [
-      { text: "Deux", cat: "det" },
-      { text: "cyclistes", cat: "nc" },
-      { text: "montent", cat: "v" },
-      { text: "cette", cat: "det" },
-      { text: "route", cat: "nc" },
-      { text: "très", cat: "adv" },
-      { text: "raide", cat: "adj" },
-      { text: ".", punctuation: true }
-    ]
+    phrase: "<span class='target-highlight'>Quelle</span> magnifique surprise !",
+    word: "Quelle",
+    cat: "autre",
+    exp: "« Quelle » s'accorde avec le nom féminin surprise et marque l'exclamation, c'est un déterminant exclamatif."
   },
   {
-    text: "Le vieux capitaine regarde les vagues depuis son bateau .",
+    phrase: "À <span class='target-highlight'>quel</span> jeu veux-tu jouer ?",
+    word: "quel",
+    cat: "autre",
+    exp: "« quel » accompagne le nom masculin jeu et introduit une question, c'est un déterminant interrogatif."
+  },
+  {
+    phrase: "Le directeur distribue des cahiers <span class='target-highlight'>aux</span> enfants.",
+    word: "aux",
+    cat: "article",
+    exp: "« aux » est la contraction de la préposition « à » et de l'article « les », c'est un article contracté."
+  },
+  {
+    phrase: "Nous suivons <span class='target-highlight'>les</span> conseils du guide.",
+    word: "les",
+    cat: "article",
+    exp: "« les » est un article défini déterminant le nom pluriel conseils."
+  },
+  {
+    phrase: "Elle lave <span class='target-highlight'>sa</span> chemise blanche.",
+    word: "sa",
+    cat: "possessif",
+    exp: "« sa » indique la possession (la sienne), c'est un déterminant possessif."
+  },
+  {
+    phrase: "Regarde <span class='target-highlight'>ces</span> magnifiques fleurs jaunes.",
+    word: "ces",
+    cat: "demonstratif",
+    exp: "« ces » désigne les fleurs que l'on montre du doigt, c'est un déterminant démonstratif."
+  },
+  {
+    phrase: "Il a fait <span class='target-highlight'>cinq</span> fautes dans sa dictée.",
+    word: "cinq",
+    cat: "autre",
+    exp: "« cinq » exprime un nombre exact de fautes, c'est un déterminant numéral."
+  },
+  {
+    phrase: "<span class='target-highlight'>Chaque</span> élève reçoit un livre.",
+    word: "Chaque",
+    cat: "autre",
+    exp: "« Chaque » distribue la quantité élément par élément, c'est un déterminant indéfini."
+  },
+  {
+    phrase: "Nous écoutons <span class='target-highlight'>le</span> chant des oiseaux.",
+    word: "le",
+    cat: "article",
+    exp: "« le » est un article défini déterminant le nom masculin chant."
+  },
+  {
+    phrase: "Nous avons garé <span class='target-highlight'>notre</span> voiture devant le garage.",
+    word: "notre",
+    cat: "possessif",
+    exp: "« notre » indique la possession (la nôtre), c'est un déterminant possessif."
+  },
+  {
+    phrase: "Je prendrais bien <span class='target-highlight'>de la</span> confiture de fraises.",
+    word: "de la",
+    cat: "article",
+    exp: "« de la » exprime une quantité de confiture qu'on ne peut pas compter, c'est un article partitif."
+  },
+  {
+    phrase: "Le chat a attrapé <span class='target-highlight'>une</span> petite souris grise.",
+    word: "une",
+    cat: "article",
+    exp: "« une » détermine le nom féminin souris de façon imprécise, c'est un article indéfini."
+  },
+  {
+    phrase: "C'est <span class='target-highlight'>votre</span> tour de jouer.",
+    word: "votre",
+    cat: "possessif",
+    exp: "« votre » indique à qui appartient le tour de jouer, c'est un déterminant possessif."
+  },
+  {
+    phrase: "Le vent a cassé <span class='target-highlight'>cette</span> grosse branche.",
+    word: "cette",
+    cat: "demonstratif",
+    exp: "« cette » montre précisément la branche en question, c'est un déterminant démonstratif."
+  },
+  {
+    phrase: "J'ai oublié <span class='target-highlight'>mon</span> cahier de mathématiques.",
+    word: "mon",
+    cat: "possessif",
+    exp: "« mon » indique la possession (le mien), c'est un déterminant possessif."
+  },
+  {
+    phrase: "Il adore <span class='target-highlight'>ma</span> nouvelle trottinette.",
+    word: "ma",
+    cat: "possessif",
+    exp: "« ma » indique que la trottinette m'appartient, c'est un déterminant possessif."
+  },
+  {
+    phrase: "Où as-tu mis <span class='target-highlight'>tes</span> gants en laine ?",
+    word: "tes",
+    cat: "possessif",
+    exp: "« tes » indique la possession (les tiens), c'est un déterminant possessif."
+  },
+  {
+    phrase: "Pierre promène <span class='target-highlight'>son</span> chien dans le parc.",
+    word: "son",
+    cat: "possessif",
+    exp: "« son » indique que le chien appartient à Pierre, c'est un déterminant possessif."
+  },
+  {
+    phrase: "Nous partageons <span class='target-highlight'>nos</span> jouets avec nos amis.",
+    word: "nos",
+    cat: "possessif",
+    exp: "« nos » indique la possession collective (les nôtres), c'est un déterminant possessif."
+  },
+  {
+    phrase: "Veuillez ranger <span class='target-highlight'>vos</span> affaires sous les bancs.",
+    word: "vos",
+    cat: "possessif",
+    exp: "« vos » indique que les affaires vous appartiennent, c'est un déterminant possessif."
+  },
+  {
+    phrase: "Les oiseaux nourrissent <span class='target-highlight'>leurs</span> petits dans le nid.",
+    word: "leurs",
+    cat: "possessif",
+    exp: "« leurs » indique que les petits appartiennent aux oiseaux, c'est un déterminant possessif."
+  },
+  {
+    phrase: "Tu devrais lire <span class='target-highlight'>ce</span> livre d'aventures.",
+    word: "ce",
+    cat: "demonstratif",
+    exp: "« ce » désigne un livre précis que l'on montre, c'est un déterminant démonstratif."
+  },
+  {
+    phrase: "Regarde <span class='target-highlight'>cette</span> belle étoile filante dans le ciel.",
+    word: "cette",
+    cat: "demonstratif",
+    exp: "« cette » montre une étoile bien précise, c'est un déterminant démonstratif."
+  },
+  {
+    phrase: "J'aimerais acheter <span class='target-highlight'>ces</span> belles pommes rouges.",
+    word: "ces",
+    cat: "demonstratif",
+    exp: "« ces » désigne des pommes précises que l'on montre, c'est un déterminant démonstratif."
+  },
+  {
+    phrase: "Le promeneur s'est abrité sous <span class='target-highlight'>cet</span> arbre centenaire.",
+    word: "cet",
+    cat: "demonstratif",
+    exp: "« cet » désigne un arbre précis (placé devant une voyelle), c'est un déterminant démonstratif."
+  },
+  {
+    phrase: "Nous admirons <span class='target-highlight'>le</span> coucher de soleil sur la mer.",
+    word: "le",
+    cat: "article",
+    exp: "« le » détermine le nom masculin singulier coucher, c'est un article défini."
+  },
+  {
+    phrase: "Le guide montre <span class='target-highlight'>la</span> direction du sentier.",
+    word: "la",
+    cat: "article",
+    exp: "« la » détermine le nom féminin singulier direction, c'est un article défini."
+  },
+  {
+    phrase: "L'arbitre siffle <span class='target-highlight'>les</span> fautes durant le match.",
+    word: "les",
+    cat: "article",
+    exp: "« les » détermine le nom pluriel fautes, c'est un article défini."
+  },
+  {
+    phrase: "Le médecin examine <span class='target-highlight'>l'</span> enfant malade.",
+    word: "l'",
+    cat: "article",
+    exp: "« l' » est un article défini élidé placé devant une voyelle."
+  },
+  {
+    phrase: "J'ai aperçu <span class='target-highlight'>un</span> écureuil sur un tronc d'arbre.",
+    word: "un",
+    cat: "article",
+    exp: "« un » introduit un nom singulier de manière non spécifique, c'est un article indéfini."
+  },
+  {
+    phrase: "Le maître raconte <span class='target-highlight'>une</span> histoire drôle aux élèves.",
+    word: "une",
+    cat: "article",
+    exp: "« une » détermine le nom histoire, c'est un article indéfini."
+  },
+  {
+    phrase: "Le jardinier plante <span class='target-highlight'>des</span> tulipes multicolores.",
+    word: "des",
+    cat: "article",
+    exp: "« des » détermine le nom pluriel tulipes, c'est un article indéfini."
+  },
+  {
+    phrase: "Nous mangeons <span class='target-highlight'>du</span> pain frais au petit-déjeuner.",
+    word: "du",
+    cat: "article",
+    exp: "« du » désigne une quantité indéterminée de pain, c'est un article partitif."
+  },
+  {
+    phrase: "Il faut avoir <span class='target-highlight'>de la</span> patience pour réussir ce puzzle.",
+    word: "de la",
+    cat: "article",
+    exp: "« de la » désigne une quantité abstraite de patience, c'est un article partitif."
+  },
+  {
+    phrase: "La plante a besoin <span class='target-highlight'>de l'</span> eau pour grandir.",
+    word: "de l'",
+    cat: "article",
+    exp: "« de l' » exprime une quantité indéterminée d'eau, c'est un article partitif élidé."
+  },
+  {
+    phrase: "Les enfants jouent <span class='target-highlight'>au</span> football dans la cour.",
+    word: "au",
+    cat: "article",
+    exp: "« au » est un article contracté résultant de la fusion de la préposition « à » et de l'article « le »."
+  },
+  {
+    phrase: "La maîtresse distribue des fiches <span class='target-highlight'>aux</span> élèves attentifs.",
+    word: "aux",
+    cat: "article",
+    exp: "« aux » est un article contracté résultant de la fusion de la préposition « à » et de l'article « les »."
+  },
+  {
+    phrase: "Le médecin conseille de marcher <span class='target-highlight'>chaque</span> jour.",
+    word: "chaque",
+    cat: "autre",
+    exp: "« chaque » indique une répartition individuelle, c'est un déterminant indéfini."
+  },
+  {
+    phrase: "Il a fallu <span class='target-highlight'>plusieurs</span> heures pour éteindre le feu.",
+    word: "plusieurs",
+    cat: "autre",
+    exp: "« plusieurs » indique une pluralité indéterminée, c'est un déterminant indéfini."
+  },
+  {
+    phrase: "J'ai ramassé <span class='target-highlight'>quelques</span> coquillages sur la plage.",
+    word: "quelques",
+    cat: "autre",
+    exp: "« quelques » désigne un petit nombre indéterminé de coquillages, c'est un déterminant indéfini."
+  },
+  {
+    phrase: "L'alpiniste n'a rencontré <span class='target-highlight'>aucun</span> obstacle durant sa montée.",
+    word: "aucun",
+    cat: "autre",
+    exp: "« aucun » exprime une quantité nulle, c'est un déterminant indéfini."
+  },
+  {
+    phrase: "<span class='target-highlight'>Nul</span> homme ne peut vivre sans eau.",
+    word: "Nul",
+    cat: "autre",
+    exp: "« Nul » signifie aucun, c'est un déterminant indéfini."
+  },
+  {
+    phrase: "<span class='target-highlight'>Certains</span> élèves préfèrent la géométrie.",
+    word: "Certains",
+    cat: "autre",
+    exp: "« Certains » désigne une partie indéfinie d'un groupe, c'est un déterminant indéfini."
+  },
+  {
+    phrase: "Le professeur félicite <span class='target-highlight'>tous</span> les participants.",
+    word: "tous",
+    cat: "autre",
+    exp: "« tous » englobe l'ensemble du groupe, c'est un déterminant indéfini."
+  },
+  {
+    phrase: "Il a mangé <span class='target-highlight'>toutes</span> les fraises du jardin.",
+    word: "toutes",
+    cat: "autre",
+    exp: "« toutes » englobe la totalité du groupe au féminin, c'est un déterminant indéfini."
+  },
+  {
+    phrase: "Le chat a dormi <span class='target-highlight'>tout</span> le après-midi au soleil.",
+    word: "tout",
+    cat: "autre",
+    exp: "« tout » englobe la totalité de la période, c'est un déterminant indéfini."
+  },
+  {
+    phrase: "Nous avons marché <span class='target-highlight'>toute</span> la journée dans la forêt.",
+    word: "toute",
+    cat: "autre",
+    exp: "« toute » exprime la totalité de la journée, c'est un déterminant indéfini."
+  },
+  {
+    phrase: "Le vélo possède <span class='target-highlight'>deux</span> roues.",
+    word: "deux",
+    cat: "autre",
+    exp: "« deux » indique la quantité exacte, c'est un déterminant numéral."
+  },
+  {
+    phrase: "La table repose sur <span class='target-highlight'>quatre</span> pieds.",
+    word: "quatre",
+    cat: "autre",
+    exp: "« quatre » indique la quantité précise, c'est un déterminant numéral."
+  },
+  {
+    phrase: "Le joueur a marqué <span class='target-highlight'>dix</span> points lors du match.",
+    word: "dix",
+    cat: "autre",
+    exp: "« dix » exprime un nombre précis, c'est un déterminant numéral."
+  },
+  {
+    phrase: "Ce livre contient <span class='target-highlight'>cent</span> pages illustrées.",
+    word: "cent",
+    cat: "autre",
+    exp: "« cent » indique la quantité précise, c'est un déterminant numéral."
+  },
+  {
+    phrase: "Ce puzzle compte <span class='target-highlight'>mille</span> petites pièces.",
+    word: "mille",
+    cat: "autre",
+    exp: "« mille » indique un nombre exact, c'est un déterminant numéral."
+  },
+  {
+    phrase: "<span class='target-highlight'>Quel</span> magnifique dessin tu as fait !",
+    word: "Quel",
+    cat: "autre",
+    exp: "« quel » s'accorde avec le nom dessin et exprime l'exclamation, c'est un déterminant exclamatif."
+  },
+  {
+    phrase: "<span class='target-highlight'>Quelle</span> heure est-il à ta montre ?",
+    word: "quelle",
+    cat: "autre",
+    exp: "« quelle » s'accorde avec le nom heure et introduit une question, c'est un déterminant interrogatif."
+  },
+  {
+    phrase: "<span class='target-highlight'>Quels</span> livres as-tu choisis à la bibliothèque ?",
+    word: "quels",
+    cat: "autre",
+    exp: "« quels » accompagne le nom livres pour poser une question, c'est un déterminant interrogatif."
+  },
+  {
+    phrase: "<span class='target-highlight'>Quelles</span> magnifiques vacances nous avons passées !",
+    word: "quelles",
+    cat: "autre",
+    exp: "« quelles » accompagne le nom féminin pluriel vacances et exprime l'exclamation, c'est un déterminant exclamatif."
+  },
+  {
+    phrase: "Je prête <span class='target-highlight'>mon</span> vélo à mon frère.",
+    word: "mon",
+    cat: "possessif",
+    exp: "« mon » montre la possession (le mien), c'est un déterminant possessif."
+  },
+  {
+    phrase: "Prends <span class='target-highlight'>ta</span> veste, il commence à faire froid.",
+    word: "ta",
+    cat: "possessif",
+    exp: "« ta » montre la possession (la tienne), c'est un déterminant possessif."
+  },
+  {
+    phrase: "Léa a perdu <span class='target-highlight'>sa</span> trousse rose.",
+    word: "sa",
+    cat: "possessif",
+    exp: "« sa » montre la possession (la sienne), c'est un déterminant possessif."
+  },
+  {
+    phrase: "Nous écoutons <span class='target-highlight'>nos</span> chansons préférées.",
+    word: "nos",
+    cat: "possessif",
+    exp: "« nos » indique la possession (les nôtres), c'est un déterminant possessif."
+  },
+  {
+    phrase: "N'oubliez pas <span class='target-highlight'>vos</span> cahiers d'exercices.",
+    word: "vos",
+    cat: "possessif",
+    exp: "« vos » indique la possession (les vôtres), c'est un déterminant possessif."
+  },
+  {
+    phrase: "Les renards protègent <span class='target-highlight'>leurs</span> petits dans le terrier.",
+    word: "leurs",
+    cat: "possessif",
+    exp: "« leurs » indique la possession (les leurs), c'est un déterminant possessif."
+  },
+  {
+    phrase: "J'adore <span class='target-highlight'>ce</span> gâteau au chocolat.",
+    word: "ce",
+    cat: "demonstratif",
+    exp: "« ce » désigne un objet précis que l'on montre ou dont on parle, c'est un déterminant démonstratif."
+  },
+  {
+    phrase: "Il ne faut pas toucher à <span class='target-highlight'>cette</span> plante piquante.",
+    word: "cette",
+    cat: "demonstratif",
+    exp: "« cette » montre la plante précise, c'est un déterminant démonstratif."
+  },
+  {
+    phrase: "Regarde <span class='target-highlight'>ces</span> enfants courir dans le pré.",
+    word: "ces",
+    cat: "demonstratif",
+    exp: "« ces » désigne des personnes précises, c'est un déterminant démonstratif."
+  },
+  {
+    phrase: "Nous avons visité <span class='target-highlight'>cet</span> ancien château fort.",
+    word: "cet",
+    cat: "demonstratif",
+    exp: "« cet » désigne un lieu précis (devant voyelle), c'est un déterminant démonstratif."
+  },
+  {
+    phrase: "Le pompier a sauvé <span class='target-highlight'>un</span> petit chaton noir.",
+    word: "un",
+    cat: "article",
+    exp: "« un » introduit un nom de manière indéfinie, c'est un article indéfini."
+  },
+  {
+    phrase: "Il a trouvé <span class='target-highlight'>une</span> pièce de monnaie par terre.",
+    word: "une",
+    cat: "article",
+    exp: "« une » détermine de façon indéfinie, c'est un article indéfini."
+  },
+  {
+    phrase: "Le cuisinier prépare <span class='target-highlight'>des</span> tartes aux pommes.",
+    word: "des",
+    cat: "article",
+    exp: "« des » détermine de façon indéfinie au pluriel, c'est un article indéfini."
+  },
+  {
+    phrase: "Tu as vu <span class='target-highlight'>le</span> grand arbre dans le jardin ?",
+    word: "le",
+    cat: "article",
+    exp: "« le » détermine un nom de façon précise, c'est un article défini."
+  },
+  {
+    phrase: "Écoute <span class='target-highlight'>la</span> jolie mélodie du violon.",
+    word: "la",
+    cat: "article",
+    exp: "« la » détermine un nom féminin de façon précise, c'est un article défini."
+  },
+  {
+    phrase: "Nous ramassons <span class='target-highlight'>les</span> feuilles mortes sous les arbres.",
+    word: "les",
+    cat: "article",
+    exp: "« les » détermine le pluriel feuilles de façon précise, c'est un article défini."
+  },
+  {
+    phrase: "Il faut allumer <span class='target-highlight'>l'</span> ordinateur pour travailler.",
+    word: "l'",
+    cat: "article",
+    exp: "« l' » est un article défini élidé."
+  },
+  {
+    phrase: "Je rajoute <span class='target-highlight'>du</span> sucre dans mon yaourt.",
+    word: "du",
+    cat: "article",
+    exp: "« du » indique une quantité indénombrable de sucre, c'est un article partitif."
+  },
+  {
+    phrase: "Il y a <span class='target-highlight'>de la</span> buée sur les vitres.",
+    word: "de la",
+    cat: "article",
+    exp: "« de la » indique une quantité indénombrable de buée, c'est un article partitif."
+  },
+  {
+    phrase: "Elle boit <span class='target-highlight'>de l'</span> eau bien fraîche.",
+    word: "de l'",
+    cat: "article",
+    exp: "« de l' » indique une quantité indénombrable (devant voyelle), c'est un article partitif."
+  },
+  {
+    phrase: "Le boulanger vend du pain <span class='target-highlight'>au</span> chocolat.",
+    word: "au",
+    cat: "article",
+    exp: "« au » est une contraction de « à » et « le », c'est un article contracté."
+  },
+  {
+    phrase: "Nous distribuons des bonbons <span class='target-highlight'>aux</span> passants.",
+    word: "aux",
+    cat: "article",
+    exp: "« aux » est une contraction de « à » et « les », c'est un article contracté."
+  },
+  {
+    phrase: "Il reste <span class='target-highlight'>quelques</span> places dans le bus.",
+    word: "quelques",
+    cat: "autre",
+    exp: "« quelques » exprime une petite quantité indéfinie, c'est un déterminant indéfini."
+  },
+  {
+    phrase: "L'artiste a peint <span class='target-highlight'>plusieurs</span> tableaux magnifiques.",
+    word: "plusieurs",
+    cat: "autre",
+    exp: "« plusieurs » indique une quantité indéfinie supérieure à un, c'est un déterminant indéfini."
+  },
+  {
+    phrase: "<span class='target-highlight'>Chaque</span> pays a ses propres traditions.",
+    word: "chaque",
+    cat: "autre",
+    exp: "« Chaque » désigne chaque élément pris un par un, c'est un déterminant indéfini."
+  },
+  {
+    phrase: "Le détective n'a trouvé <span class='target-highlight'>aucun</span> indice dans la pièce.",
+    word: "aucun",
+    cat: "autre",
+    exp: "« aucun » indique une absence totale de quantité, c'est un déterminant indéfini."
+  },
+  {
+    phrase: "Elle a invité <span class='target-highlight'>cinq</span> amies pour son anniversaire.",
+    word: "cinq",
+    cat: "autre",
+    exp: "« cinq » exprime une quantité chiffrée précise, c'est un déterminant numéral."
+  },
+  {
+    phrase: "<span class='target-highlight'>Quel</span> bonheur de vous voir !",
+    word: "quel",
+    cat: "autre",
+    exp: "« quel » exprime l'exclamation, c'est un déterminant exclamatif."
+  }
+];es vagues depuis son bateau .",
     tokens: [
       { text: "Le", cat: "det" },
       { text: "vieux", cat: "adj" },
@@ -10371,6 +10751,609 @@ window.EXERCICES_DETERMINANT = [
       { text: "classe", cat: "nc" },
       { text: ".", punctuation: true }
     ]
+  }
+];
+
+window.EXERCICES_DETERMINANT_TRI = [
+  {
+    phrase: "Je regarde <span class='target-highlight'>ce</span> magnifique paysage.",
+    word: "ce",
+    cat: "demonstratif",
+    exp: "« ce » désigne ce que l'on montre, c'est un déterminant démonstratif."
+  },
+  {
+    phrase: "Tu as pris <span class='target-highlight'>mes</span> clés dans l'entrée.",
+    word: "mes",
+    cat: "possessif",
+    exp: "« mes » indique que les clés m'appartiennent, c'est un déterminant possessif."
+  },
+  {
+    phrase: "Il mange <span class='target-highlight'>un</span> délicieux gâteau.",
+    word: "un",
+    cat: "article",
+    exp: "« un » introduit un nom de manière indéterminée, c'est un article indéfini."
+  },
+  {
+    phrase: "Nous avons loué <span class='target-highlight'>cette</span> voiture pour les vacances.",
+    word: "cette",
+    cat: "demonstratif",
+    exp: "« cette » désigne une voiture précise que l'on montre, c'est un déterminant démonstratif."
+  },
+  {
+    phrase: "Où est caché <span class='target-highlight'>votre</span> petit chat ?",
+    word: "votre",
+    cat: "possessif",
+    exp: "« votre » indique la possession (le vôtre), c'est un déterminant possessif."
+  },
+  {
+    phrase: "Le chat boit <span class='target-highlight'>du</span> lait tiède.",
+    word: "du",
+    cat: "article",
+    exp: "« du » exprime une quantité indéterminée de lait, c'est un article partitif."
+  },
+  {
+    phrase: "J'ai lu <span class='target-highlight'>plusieurs</span> livres ce mois-ci.",
+    word: "plusieurs",
+    cat: "autre",
+    exp: "« plusieurs » exprime une quantité indéterminée et floue, c'est un déterminant indéfini."
+  },
+  {
+    phrase: "Il y a <span class='target-highlight'>trois</span> pommes dans le panier.",
+    word: "trois",
+    cat: "autre",
+    exp: "« trois » indique le nombre exact de pommes, c'est un déterminant numéral."
+  },
+  {
+    phrase: "N'oublie pas de prendre <span class='target-highlight'>ton</span> sac de sport.",
+    word: "ton",
+    cat: "possessif",
+    exp: "« ton » indique que le sac t'appartient, c'est un déterminant possessif."
+  },
+  {
+    phrase: "Regarde <span class='target-highlight'>l'</span> oiseau perché sur la branche.",
+    word: "l'",
+    cat: "article",
+    exp: "« l' » (élision de « le » devant voyelle) détermine le nom oiseau, c'est un article défini."
+  },
+  {
+    phrase: "Il n'y a <span class='target-highlight'>aucun</span> élève dans la classe.",
+    word: "aucun",
+    cat: "autre",
+    exp: "« aucun » exprime l'absence complète, c'est un déterminant indéfini."
+  },
+  {
+    phrase: "Elle termine <span class='target-highlight'>ses</span> devoirs de français.",
+    word: "ses",
+    cat: "possessif",
+    exp: "« ses » indique la possession (les siennes), c'est un déterminant possessif."
+  },
+  {
+    phrase: "J'adore <span class='target-highlight'>cet</span> endroit magnifique.",
+    word: "cet",
+    cat: "demonstratif",
+    exp: "« cet » (forme de « ce » devant une voyelle ou un h muet) désigne ce que l'on montre, c'est un déterminant démonstratif."
+  },
+  {
+    phrase: "C'est <span class='target-highlight'>leur</span> maison de campagne.",
+    word: "leur",
+    cat: "possessif",
+    exp: "« leur » indique la possession (la leur), c'est un déterminant possessif."
+  },
+  {
+    phrase: "Maman a préparé <span class='target-highlight'>quelques</span> biscuits au chocolat.",
+    word: "quelques",
+    cat: "autre",
+    exp: "« quelques » désigne une quantité restreinte mais indéfinie, c'est un déterminant indéfini."
+  },
+  {
+    phrase: "Le marathon mesure plus de <span class='target-highlight'>quarante</span> kilomètres.",
+    word: "quarante",
+    cat: "autre",
+    exp: "« quarante » indique un nombre précis, c'est un déterminant numéral."
+  },
+  {
+    phrase: "<span class='target-highlight'>Quelle</span> magnifique surprise !",
+    word: "Quelle",
+    cat: "autre",
+    exp: "« Quelle » s'accorde avec le nom féminin surprise et marque l'exclamation, c'est un déterminant exclamatif."
+  },
+  {
+    phrase: "À <span class='target-highlight'>quel</span> jeu veux-tu jouer ?",
+    word: "quel",
+    cat: "autre",
+    exp: "« quel » accompagne le nom masculin jeu et introduit une question, c'est un déterminant interrogatif."
+  },
+  {
+    phrase: "Le directeur distribue des cahiers <span class='target-highlight'>aux</span> enfants.",
+    word: "aux",
+    cat: "article",
+    exp: "« aux » est la contraction de la préposition « à » et de l'article « les », c'est un article contracté."
+  },
+  {
+    phrase: "Nous suivons <span class='target-highlight'>les</span> conseils du guide.",
+    word: "les",
+    cat: "article",
+    exp: "« les » est un article défini déterminant le nom pluriel conseils."
+  },
+  {
+    phrase: "Elle lave <span class='target-highlight'>sa</span> chemise blanche.",
+    word: "sa",
+    cat: "possessif",
+    exp: "« sa » indique la possession (la sienne), c'est un déterminant possessif."
+  },
+  {
+    phrase: "Regarde <span class='target-highlight'>ces</span> magnifiques fleurs jaunes.",
+    word: "ces",
+    cat: "demonstratif",
+    exp: "« ces » désigne les fleurs que l'on montre du doigt, c'est un déterminant démonstratif."
+  },
+  {
+    phrase: "Il a fait <span class='target-highlight'>cinq</span> fautes dans sa dictée.",
+    word: "cinq",
+    cat: "autre",
+    exp: "« cinq » exprime un nombre exact de fautes, c'est un déterminant numéral."
+  },
+  {
+    phrase: "<span class='target-highlight'>Chaque</span> élève reçoit un livre.",
+    word: "Chaque",
+    cat: "autre",
+    exp: "« Chaque » distribue la quantité élément par élément, c'est un déterminant indéfini."
+  },
+  {
+    phrase: "Nous écoutons <span class='target-highlight'>le</span> chant des oiseaux.",
+    word: "le",
+    cat: "article",
+    exp: "« le » est un article défini déterminant le nom masculin chant."
+  },
+  {
+    phrase: "Nous avons garé <span class='target-highlight'>notre</span> voiture devant le garage.",
+    word: "notre",
+    cat: "possessif",
+    exp: "« notre » indique la possession (la nôtre), c'est un déterminant possessif."
+  },
+  {
+    phrase: "Je prendrais bien <span class='target-highlight'>de la</span> confiture de fraises.",
+    word: "de la",
+    cat: "article",
+    exp: "« de la » exprime une quantité de confiture qu'on ne peut pas compter, c'est un article partitif."
+  },
+  {
+    phrase: "Le chat a attrapé <span class='target-highlight'>une</span> petite souris grise.",
+    word: "une",
+    cat: "article",
+    exp: "« une » détermine le nom féminin souris de façon imprécise, c'est un article indéfini."
+  },
+  {
+    phrase: "C'est <span class='target-highlight'>votre</span> tour de jouer.",
+    word: "votre",
+    cat: "possessif",
+    exp: "« votre » indique à qui appartient le tour de jouer, c'est un déterminant possessif."
+  },
+  {
+    phrase: "Le vent a cassé <span class='target-highlight'>cette</span> grosse branche.",
+    word: "cette",
+    cat: "demonstratif",
+    exp: "« cette » montre précisément la branche en question, c'est un déterminant démonstratif."
+  },
+  {
+    phrase: "J'ai oublié <span class='target-highlight'>mon</span> cahier de mathématiques.",
+    word: "mon",
+    cat: "possessif",
+    exp: "« mon » indique la possession (le mien), c'est un déterminant possessif."
+  },
+  {
+    phrase: "Il adore <span class='target-highlight'>ma</span> nouvelle trottinette.",
+    word: "ma",
+    cat: "possessif",
+    exp: "« ma » indique que la trottinette m'appartient, c'est un déterminant possessif."
+  },
+  {
+    phrase: "Où as-tu mis <span class='target-highlight'>tes</span> gants en laine ?",
+    word: "tes",
+    cat: "possessif",
+    exp: "« tes » indique la possession (les tiens), c'est un déterminant possessif."
+  },
+  {
+    phrase: "Pierre promène <span class='target-highlight'>son</span> chien dans le parc.",
+    word: "son",
+    cat: "possessif",
+    exp: "« son » indique que le chien appartient à Pierre, c'est un déterminant possessif."
+  },
+  {
+    phrase: "Nous partageons <span class='target-highlight'>nos</span> jouets avec nos amis.",
+    word: "nos",
+    cat: "possessif",
+    exp: "« nos » indique la possession collective (les nôtres), c'est un déterminant possessif."
+  },
+  {
+    phrase: "Veuillez ranger <span class='target-highlight'>vos</span> affaires sous les bancs.",
+    word: "vos",
+    cat: "possessif",
+    exp: "« vos » indique que les affaires vous appartiennent, c'est un déterminant possessif."
+  },
+  {
+    phrase: "Les oiseaux nourrissent <span class='target-highlight'>leurs</span> petits dans le nid.",
+    word: "leurs",
+    cat: "possessif",
+    exp: "« leurs » indique que les petits appartiennent aux oiseaux, c'est un déterminant possessif."
+  },
+  {
+    phrase: "Tu devrais lire <span class='target-highlight'>ce</span> livre d'aventures.",
+    word: "ce",
+    cat: "demonstratif",
+    exp: "« ce » désigne un livre précis que l'on montre, c'est un déterminant démonstratif."
+  },
+  {
+    phrase: "Regarde <span class='target-highlight'>cette</span> belle étoile filante dans le ciel.",
+    word: "cette",
+    cat: "demonstratif",
+    exp: "« cette » montre une étoile bien précise, c'est un déterminant démonstratif."
+  },
+  {
+    phrase: "J'aimerais acheter <span class='target-highlight'>ces</span> belles pommes rouges.",
+    word: "ces",
+    cat: "demonstratif",
+    exp: "« ces » désigne des pommes précises que l'on montre, c'est un déterminant démonstratif."
+  },
+  {
+    phrase: "Le promeneur s'est abrité sous <span class='target-highlight'>cet</span> arbre centenaire.",
+    word: "cet",
+    cat: "demonstratif",
+    exp: "« cet » désigne un arbre précis (placé devant une voyelle), c'est un déterminant démonstratif."
+  },
+  {
+    phrase: "Nous admirons <span class='target-highlight'>le</span> coucher de soleil sur la mer.",
+    word: "le",
+    cat: "article",
+    exp: "« le » détermine le nom masculin singulier coucher, c'est un article défini."
+  },
+  {
+    phrase: "Le guide montre <span class='target-highlight'>la</span> direction du sentier.",
+    word: "la",
+    cat: "article",
+    exp: "« la » détermine le nom féminin singulier direction, c'est un article défini."
+  },
+  {
+    phrase: "L'arbitre siffle <span class='target-highlight'>les</span> fautes durant le match.",
+    word: "les",
+    cat: "article",
+    exp: "« les » détermine le nom pluriel fautes, c'est un article défini."
+  },
+  {
+    phrase: "Le médecin examine <span class='target-highlight'>l'</span> enfant malade.",
+    word: "l'",
+    cat: "article",
+    exp: "« l' » est un article défini élidé placé devant une voyelle."
+  },
+  {
+    phrase: "J'ai aperçu <span class='target-highlight'>un</span> écureuil sur un tronc d'arbre.",
+    word: "un",
+    cat: "article",
+    exp: "« un » introduit un nom singulier de manière non spécifique, c'est un article indéfini."
+  },
+  {
+    phrase: "Le maître raconte <span class='target-highlight'>une</span> histoire drôle aux élèves.",
+    word: "une",
+    cat: "article",
+    exp: "« une » détermine le nom histoire, c'est un article indéfini."
+  },
+  {
+    phrase: "Le jardinier plante <span class='target-highlight'>des</span> tulipes multicolores.",
+    word: "des",
+    cat: "article",
+    exp: "« des » détermine le nom pluriel tulipes, c'est un article indéfini."
+  },
+  {
+    phrase: "Nous mangeons <span class='target-highlight'>du</span> pain frais au petit-déjeuner.",
+    word: "du",
+    cat: "article",
+    exp: "« du » désigne une quantité indéterminée de pain, c'est un article partitif."
+  },
+  {
+    phrase: "Il faut avoir <span class='target-highlight'>de la</span> patience pour réussir ce puzzle.",
+    word: "de la",
+    cat: "article",
+    exp: "« de la » désigne une quantité abstraite de patience, c'est un article partitif."
+  },
+  {
+    phrase: "La plante a besoin <span class='target-highlight'>de l'</span> eau pour grandir.",
+    word: "de l'",
+    cat: "article",
+    exp: "« de l' » exprime une quantité indéterminée d'eau, c'est un article partitif élidé."
+  },
+  {
+    phrase: "Les enfants jouent <span class='target-highlight'>au</span> football dans la cour.",
+    word: "au",
+    cat: "article",
+    exp: "« au » est un article contracté résultant de la fusion de la préposition « à » et de l'article « le »."
+  },
+  {
+    phrase: "La maîtresse distribue des fiches <span class='target-highlight'>aux</span> élèves attentifs.",
+    word: "aux",
+    cat: "article",
+    exp: "« aux » est un article contracté résultant de la fusion de la préposition « à » et de l'article « les »."
+  },
+  {
+    phrase: "Le médecin conseille de marcher <span class='target-highlight'>chaque</span> jour.",
+    word: "chaque",
+    cat: "autre",
+    exp: "« chaque » indique une répartition individuelle, c'est un déterminant indéfini."
+  },
+  {
+    phrase: "Il a fallu <span class='target-highlight'>plusieurs</span> heures pour éteindre le feu.",
+    word: "plusieurs",
+    cat: "autre",
+    exp: "« plusieurs » indique une pluralité indéterminée, c'est un déterminant indéfini."
+  },
+  {
+    phrase: "J'ai ramassé <span class='target-highlight'>quelques</span> coquillages sur la plage.",
+    word: "quelques",
+    cat: "autre",
+    exp: "« quelques » désigne un petit nom de quantité indéterminée, c'est un déterminant indéfini."
+  },
+  {
+    phrase: "L'alpiniste n'a rencontré <span class='target-highlight'>aucun</span> obstacle durant sa montée.",
+    word: "aucun",
+    cat: "autre",
+    exp: "« aucun » exprime une quantité nulle, c'est un déterminant indéfini."
+  },
+  {
+    phrase: "<span class='target-highlight'>Nul</span> homme ne peut vivre sans eau.",
+    word: "Nul",
+    cat: "autre",
+    exp: "« Nul » signifie aucun, c'est un déterminant indéfini."
+  },
+  {
+    phrase: "<span class='target-highlight'>Certains</span> élèves préfèrent la géométrie.",
+    word: "Certains",
+    cat: "autre",
+    exp: "« Certains » désigne une partie indéfinie d'un groupe, c'est un déterminant indéfini."
+  },
+  {
+    phrase: "Le professeur félicite <span class='target-highlight'>tous</span> les participants.",
+    word: "tous",
+    cat: "autre",
+    exp: "« tous » englobe l'ensemble du groupe, c'est un déterminant indéfini."
+  },
+  {
+    phrase: "Il a mangé <span class='target-highlight'>toutes</span> les fraises du jardin.",
+    word: "toutes",
+    cat: "autre",
+    exp: "« toutes » englobe la totalité du groupe au féminin, c'est un déterminant indéfini."
+  },
+  {
+    phrase: "Le chat a dormi <span class='target-highlight'>tout</span> le après-midi au soleil.",
+    word: "tout",
+    cat: "autre",
+    exp: "« tout » englobe la totalité de la période, c'est un déterminant indéfini."
+  },
+  {
+    phrase: "Nous avons marché <span class='target-highlight'>toute</span> la journée dans la forêt.",
+    word: "toute",
+    cat: "autre",
+    exp: "« toute » exprime la totalité de la journée, c'est un déterminant indéfini."
+  },
+  {
+    phrase: "Le vélo possède <span class='target-highlight'>deux</span> roues.",
+    word: "deux",
+    cat: "autre",
+    exp: "« deux » indique la quantité exacte, c'est un déterminant numéral."
+  },
+  {
+    phrase: "La table repose sur <span class='target-highlight'>quatre</span> pieds.",
+    word: "quatre",
+    cat: "autre",
+    exp: "« quatre » indique la quantité précise, c'est un déterminant numéral."
+  },
+  {
+    phrase: "Le joueur a marqué <span class='target-highlight'>dix</span> points lors du match.",
+    word: "dix",
+    cat: "autre",
+    exp: "« dix » exprime un nombre précis, c'est un déterminant numéral."
+  },
+  {
+    phrase: "Ce livre contient <span class='target-highlight'>cent</span> pages illustrées.",
+    word: "cent",
+    cat: "autre",
+    exp: "« cent » indique la quantité précise, c'est un déterminant numéral."
+  },
+  {
+    phrase: "Ce puzzle compte <span class='target-highlight'>mille</span> petites pièces.",
+    word: "mille",
+    cat: "autre",
+    exp: "« mille » indique un nombre exact, c'est un déterminant numéral."
+  },
+  {
+    phrase: "<span class='target-highlight'>Quel</span> magnifique dessin tu as fait !",
+    word: "Quel",
+    cat: "autre",
+    exp: "« quel » s'accorde avec le nom dessin et exprime l'exclamation, c'est un déterminant exclamatif."
+  },
+  {
+    phrase: "<span class='target-highlight'>Quelle</span> heure est-il à ta montre ?",
+    word: "quelle",
+    cat: "autre",
+    exp: "« quelle » s'accorde avec le nom heure et introduit une question, c'est un déterminant interrogatif."
+  },
+  {
+    phrase: "<span class='target-highlight'>Quels</span> livres as-tu choisis à la bibliothèque ?",
+    word: "quels",
+    cat: "autre",
+    exp: "« quels » accompagne le nom livres pour poser une question, c'est un déterminant interrogatif."
+  },
+  {
+    phrase: "<span class='target-highlight'>Quelles</span> magnifiques vacances nous avons passées !",
+    word: "quelles",
+    cat: "autre",
+    exp: "« quelles » accompagne le nom féminin pluriel vacances et exprime l'exclamation, c'est un déterminant exclamatif."
+  },
+  {
+    phrase: "Je prête <span class='target-highlight'>mon</span> vélo à mon frère.",
+    word: "mon",
+    cat: "possessif",
+    exp: "« mon » montre la possession (le mien), c'est un déterminant possessif."
+  },
+  {
+    phrase: "Prends <span class='target-highlight'>ta</span> veste, il commence à faire froid.",
+    word: "ta",
+    cat: "possessif",
+    exp: "« ta » montre la possession (la tienne), c'est un déterminant possessif."
+  },
+  {
+    phrase: "Léa a perdu <span class='target-highlight'>sa</span> trousse rose.",
+    word: "sa",
+    cat: "possessif",
+    exp: "« sa » montre la possession (la sienne), c'est un déterminant possessif."
+  },
+  {
+    phrase: "Nous écoutons <span class='target-highlight'>nos</span> chansons préférées.",
+    word: "nos",
+    cat: "possessif",
+    exp: "« nos » indique la possession (les nôtres), c'est un déterminant possessif."
+  },
+  {
+    phrase: "N'oubliez pas <span class='target-highlight'>vos</span> cahiers d'exercices.",
+    word: "vos",
+    cat: "possessif",
+    exp: "« vos » indique la possession (les vôtres), c'est un déterminant possessif."
+  },
+  {
+    phrase: "Les renards protègent <span class='target-highlight'>leurs</span> petits dans le terrier.",
+    word: "leurs",
+    cat: "possessif",
+    exp: "« leurs » indique la possession (les leurs), c'est un déterminant possessif."
+  },
+  {
+    phrase: "J'adore <span class='target-highlight'>ce</span> gâteau au chocolat.",
+    word: "ce",
+    cat: "demonstratif",
+    exp: "« ce » désigne un objet précis que l'on montre ou dont on parle, c'est un déterminant démonstratif."
+  },
+  {
+    phrase: "Il ne faut pas toucher à <span class='target-highlight'>cette</span> plante piquante.",
+    word: "cette",
+    cat: "demonstratif",
+    exp: "« cette » montre la plante précise, c'est un déterminant démonstratif."
+  },
+  {
+    phrase: "Regarde <span class='target-highlight'>ces</span> enfants courir dans le pré.",
+    word: "ces",
+    cat: "demonstratif",
+    exp: "« ces » désigne des personnes précises, c'est un déterminant démonstratif."
+  },
+  {
+    phrase: "Nous avons visité <span class='target-highlight'>cet</span> ancien château fort.",
+    word: "cet",
+    cat: "demonstratif",
+    exp: "« cet » désigne un lieu précis (devant voyelle), c'est un déterminant démonstratif."
+  },
+  {
+    phrase: "Le pompier a sauvé <span class='target-highlight'>un</span> petit chaton noir.",
+    word: "un",
+    cat: "article",
+    exp: "« un » introduit un nom de manière indéfinie, c'est un article indéfini."
+  },
+  {
+    phrase: "Il a trouvé <span class='target-highlight'>une</span> pièce de monnaie par terre.",
+    word: "une",
+    cat: "article",
+    exp: "« une » détermine de façon indéfinie, c'est un article indéfini."
+  },
+  {
+    phrase: "Le cuisinier prépare <span class='target-highlight'>des</span> tartes aux pommes.",
+    word: "des",
+    cat: "article",
+    exp: "« des » détermine de façon indéfinie au pluriel, c'est un article indéfini."
+  },
+  {
+    phrase: "Tu as vu <span class='target-highlight'>le</span> grand arbre dans le jardin ?",
+    word: "le",
+    cat: "article",
+    exp: "« le » détermine un nom de façon précise, c'est un article défini."
+  },
+  {
+    phrase: "Écoute <span class='target-highlight'>la</span> jolie mélodie du violon.",
+    word: "la",
+    cat: "article",
+    exp: "« la » détermine un nom féminin de façon précise, c'est un article défini."
+  },
+  {
+    phrase: "Nous ramassons <span class='target-highlight'>les</span> feuilles mortes sous les arbres.",
+    word: "les",
+    cat: "article",
+    exp: "« les » détermine le pluriel feuilles de façon précise, c'est un article défini."
+  },
+  {
+    phrase: "Il faut allumer <span class='target-highlight'>l'</span> ordinateur pour travailler.",
+    word: "l'",
+    cat: "article",
+    exp: "« l' » est un article défini élidé."
+  },
+  {
+    phrase: "Je rajoute <span class='target-highlight'>du</span> sucre dans mon yaourt.",
+    word: "du",
+    cat: "article",
+    exp: "« du » indique une quantité indénombrable de sucre, c'est un article partitif."
+  },
+  {
+    phrase: "Il y a <span class='target-highlight'>de la</span> buée sur les vitres.",
+    word: "de la",
+    cat: "article",
+    exp: "« de la » indique une quantité indénombrable de buée, c'est un article partitif."
+  },
+  {
+    phrase: "Elle boit <span class='target-highlight'>de l'</span> eau bien fraîche.",
+    word: "de l'",
+    cat: "article",
+    exp: "« de l' » indique une quantité indénombrable (devant voyelle), c'est un article partitif."
+  },
+  {
+    phrase: "Le boulanger vend du pain <span class='target-highlight'>au</span> chocolat.",
+    word: "au",
+    cat: "article",
+    exp: "« au » est une contraction de « à » et « le », c'est un article contracté."
+  },
+  {
+    phrase: "Nous distribuons des bonbons <span class='target-highlight'>aux</span> passants.",
+    word: "aux",
+    cat: "article",
+    exp: "« aux » est une contraction de « à » et « les », c'est un article contracté."
+  },
+  {
+    phrase: "Il reste <span class='target-highlight'>quelques</span> places dans le bus.",
+    word: "quelques",
+    cat: "autre",
+    exp: "« quelques » exprime une petite quantité indéfinie, c'est un déterminant indéfini."
+  },
+  {
+    phrase: "L'artiste a peint <span class='target-highlight'>plusieurs</span> tableaux magnifiques.",
+    word: "plusieurs",
+    cat: "autre",
+    exp: "« plusieurs » indique une quantité indéfinie supérieure à un, c'est un déterminant indéfini."
+  },
+  {
+    phrase: "<span class='target-highlight'>Chaque</span> pays a ses propres traditions.",
+    word: "chaque",
+    cat: "autre",
+    exp: "« Chaque » désigne chaque élément pris un par un, c'est un déterminant indéfini."
+  },
+  {
+    phrase: "Le détective n'a trouvé <span class='target-highlight'>aucun</span> indice dans la pièce.",
+    word: "aucun",
+    cat: "autre",
+    exp: "« aucun » indique une absence totale de quantité, c'est un déterminant indéfini."
+  },
+  {
+    phrase: "Elle a invité <span class='target-highlight'>cinq</span> amies pour son anniversaire.",
+    word: "cinq",
+    cat: "autre",
+    exp: "« cinq » exprime une quantité chiffrée précise, c'est un déterminant numéral."
+  },
+  {
+    phrase: "<span class='target-highlight'>Quel</span> bonheur de vous voir !",
+    word: "quel",
+    cat: "autre",
+    exp: "« quel » exprime l'exclamation, c'est un déterminant exclamatif."
   }
 ];
 

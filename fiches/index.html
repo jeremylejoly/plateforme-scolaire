@@ -3944,6 +3944,11 @@ input[type=text].calc-input.incorrect {
     <div class="page-title">🔖 Le déterminant</div>
     <div id="gram-det-body"></div>
   </div>
+  <div id="screen-gram-determinant-tri" class="screen">
+    <button class="back-btn" onclick="showScreen('screen-gram-determinant');renderDeterminantMenu();">← Retour</button>
+    <div class="page-title">🔖 Le tri des déterminants</div>
+    <div id="gram-det-tri-body"></div>
+  </div>
   <div id="screen-gram-adjectif" class="screen">
     <button class="back-btn gram-adjectif-back-main-btn" style="margin-bottom:1rem;">← Retour</button>
     <div class="page-title">🎨 L'adjectif</div>
@@ -35060,6 +35065,11 @@ function renderDeterminantMenu() {
         <div class="sub-title">1. Reconnaître les déterminants</div>
         <div class="sub-desc">Trouve et clique sur tous les déterminants de la phrase (articles, possessifs, démonstratifs...).</div>
       </div>
+      <div class="sub-subject-card active-card" id="btn-det-ex2" style="position:relative">
+        <div class="sub-icon">🗂️</div>
+        <div class="sub-title">2. Le tri des déterminants</div>
+        <div class="sub-desc">Classe chaque déterminant surligné (Article, Possessif, Démonstratif, Autre) · 10 questions.</div>
+      </div>
     </div>
   `;
 
@@ -35068,6 +35078,14 @@ function renderDeterminantMenu() {
     ex1Btn.addEventListener('click', (e) => {
       e.preventDefault();
       startDeterminantExercise();
+    });
+  }
+
+  const ex2Btn = container.querySelector('#btn-det-ex2');
+  if (ex2Btn) {
+    ex2Btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      startTriExercise();
     });
   }
 }
@@ -35457,11 +35475,364 @@ function launchDeterminantConfetti() {
   }
 }
 
+let triGameState = {
+  containerId: 'gram-det-tri-body',
+  questions: [],
+  currentIndex: 0,
+  score: 0,
+  selectedAnswer: null,
+  submitted: false
+};
+
+function startTriExercise() {
+  if (!window.EXERCICES_DETERMINANT_TRI || window.EXERCICES_DETERMINANT_TRI.length === 0) {
+    console.error("EXERCICES_DETERMINANT_TRI n'est pas chargé ou est vide.");
+    return;
+  }
+
+  const shuffle = (arr) => [...arr].sort(() => 0.5 - Math.random());
+  const selection = shuffle(window.EXERCICES_DETERMINANT_TRI).slice(0, 10);
+
+  triGameState = {
+    containerId: 'gram-det-tri-body',
+    questions: selection,
+    currentIndex: 0,
+    score: 0,
+    selectedAnswer: null,
+    submitted: false
+  };
+
+  // Injecter les styles dynamiquement si nécessaire
+  if (!document.getElementById('tri-exercise-styles')) {
+    const style = document.createElement('style');
+    style.id = 'tri-exercise-styles';
+    style.innerHTML = `
+      .target-highlight {
+        background-color: #fef3c7;
+        border-bottom: 3px solid #d97706;
+        color: #b45309;
+        padding: 2px 6px;
+        border-radius: 6px;
+        font-weight: 800;
+      }
+      .option-btn {
+        border: 3px solid #1A1A2E !important;
+        box-shadow: 4px 4px 0px #1A1A2E !important;
+        background-color: #ffffff;
+        color: #1A1A2E;
+        transition: all 0.15s ease-out;
+        cursor: pointer;
+      }
+      .option-btn:hover:not(:disabled) {
+        background-color: #f3f4f6;
+        transform: translateY(-2px);
+        box-shadow: 4px 4px 0px #1A1A2E;
+      }
+      .option-btn:active:not(:disabled) {
+        transform: translateY(2px);
+        box-shadow: 2px 2px 0px #1A1A2E;
+      }
+      .option-btn.btn-correct {
+        border-color: #10B981 !important;
+        box-shadow: 4px 4px 0px #10B981 !important;
+        background-color: #ecfdf5 !important;
+        color: #047857 !important;
+        font-weight: 800;
+      }
+      .option-btn.btn-wrong {
+        border-color: #EF4444 !important;
+        box-shadow: 4px 4px 0px #EF4444 !important;
+        background-color: #fef2f2 !important;
+        color: #b91c1c !important;
+        font-weight: 800;
+        animation: shake 0.3s ease;
+      }
+      @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-4px); }
+        75% { transform: translateX(4px); }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  showScreen('screen-gram-determinant-tri');
+  renderTriQuestion();
+}
+
+function renderTriQuestion() {
+  const container = document.getElementById(triGameState.containerId);
+  if (!container) return;
+
+  const question = triGameState.questions[triGameState.currentIndex];
+  if (!question) return;
+
+  const pctProgress = Math.round((triGameState.currentIndex / triGameState.questions.length) * 100);
+
+  const categories = [
+    { key: "article", label: "Article" },
+    { key: "possessif", label: "Déterminant possessif" },
+    { key: "demonstratif", label: "Déterminant démonstratif" },
+    { key: "autre", label: "Autre déterminant" }
+  ];
+
+  const optionsHtml = categories.map(cat => {
+    let btnClass = "option-btn";
+    let badge = "";
+
+    if (triGameState.submitted) {
+      if (cat.key === question.cat) {
+        btnClass += " btn-correct";
+        badge = `<span class="absolute -top-2 -right-2 bg-green-500 text-white rounded-full text-[10px] w-5 h-5 flex items-center justify-center border-2 border-white shadow-sm font-black">✓</span>`;
+      } else if (triGameState.selectedAnswer === cat.key) {
+        btnClass += " btn-wrong";
+        badge = `<span class="absolute -top-2 -right-2 bg-rose-500 text-white rounded-full text-[10px] w-5 h-5 flex items-center justify-center border-2 border-white shadow-sm font-black">✗</span>`;
+      }
+    }
+
+    return `
+      <div class="relative flex flex-col w-full">
+        <button
+          ${triGameState.submitted ? 'disabled' : ''}
+          data-cat="${cat.key}"
+          class="option-btn text-center p-5 rounded-2xl border-2 font-sans font-semibold text-lg md:text-xl transition-all duration-155 relative cursor-pointer select-none ${btnClass} flex flex-col justify-center min-h-[76px]"
+        >
+          <span class="font-display font-bold text-neutral-800 text-base md:text-lg">${cat.label}</span>
+        </button>
+        ${badge}
+      </div>
+    `;
+  }).join('');
+
+  let actionBtn = "";
+  if (triGameState.submitted) {
+    actionBtn = `
+      <button class="gram-tri-next-btn px-6 py-3 rounded-2xl border-2 border-neutral-900 bg-green-600 text-white hover:bg-green-700 font-display font-bold text-sm transition-all cursor-pointer shadow-[2px_2px_0px_rgba(0,0,0,1)] active:scale-95 ml-auto">
+        ${triGameState.currentIndex < triGameState.questions.length - 1 ? 'Phrase suivante ➔' : 'Voir les résultats ➔'}
+      </button>
+    `;
+  }
+
+  const html = `
+    <div class="quiz-topbar flex justify-between items-center mb-6">
+      <div class="quiz-student-badge bg-neutral-100 border-2 border-neutral-300 px-4 py-1.5 rounded-full font-bold text-xs text-neutral-600">
+        ${state.student || 'Élève'}
+      </div>
+      <div class="quiz-progress-wrap flex items-center gap-4 w-2/3 max-w-xs justify-end">
+        <div class="quiz-progress-label text-xs font-bold text-neutral-500 whitespace-nowrap">Phrase ${triGameState.currentIndex + 1} sur ${triGameState.questions.length}</div>
+        <div class="progress-bar w-full h-2.5 bg-neutral-200 rounded-full overflow-hidden">
+          <div class="progress-fill h-full bg-purple-600" style="width: ${pctProgress}%"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LA PHRASE -->
+    <div class="bg-white border-2 border-neutral-900 rounded-3xl p-8 md:p-10 mb-6 shadow-[4px_4px_0px_rgba(0,0,0,1)] text-center">
+      <p class="text-lg md:text-xl font-medium text-neutral-700 leading-relaxed">
+        ${question.phrase}
+      </p>
+    </div>
+
+    <div class="bg-blue-50 border-2 border-blue-150 rounded-3xl p-5 mb-6 shadow-[4px_4px_0px_rgba(0,0,0,0.02)]">
+      <div class="flex items-center gap-2 text-blue-900 text-sm font-semibold">
+        <span>💡</span>
+        <strong>Consigne :</strong> Quelle est la classe précise du déterminant en gras <span class="text-amber-600 font-extrabold border-b border-amber-400">« ${question.word} »</span> ?
+      </div>
+    </div>
+
+    <!-- ZONE D'OPTIONS (GRID) -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+      ${optionsHtml}
+    </div>
+
+    <!-- EXPLICATION / CORRECTION -->
+    <div id="tri-correction-panel"></div>
+
+    <!-- ZONE D'ACTION -->
+    <div class="flex justify-between items-center border-t border-neutral-200 pt-6">
+      <button class="gram-tri-back-menu-btn px-4 py-2.5 rounded-xl border-2 border-neutral-300 text-neutral-500 hover:bg-neutral-50 text-sm font-bold">
+        ← Quitter
+      </button>
+      ${actionBtn}
+    </div>
+  `;
+
+  container.innerHTML = html;
+
+  // Bind clicks
+  container.querySelectorAll('.option-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const cat = btn.getAttribute('data-cat');
+      selectTriAnswer(cat);
+    });
+  });
+
+  const nextBtn = container.querySelector('.gram-tri-next-btn');
+  if (nextBtn) {
+    nextBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      nextTriQuestion();
+    });
+  }
+
+  const backMenuBtn = container.querySelector('.gram-tri-back-menu-btn');
+  if (backMenuBtn) {
+    backMenuBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      showScreen('screen-gram-determinant');
+      renderDeterminantMenu();
+    });
+  }
+}
+
+function selectTriAnswer(selectedCat) {
+  if (triGameState.submitted) return;
+
+  triGameState.selectedAnswer = selectedCat;
+  triGameState.submitted = true;
+
+  const question = triGameState.questions[triGameState.currentIndex];
+  const isCorrect = selectedCat === question.cat;
+
+  if (isCorrect) {
+    triGameState.score++;
+  }
+
+  renderTriQuestion();
+
+  const corrPanel = document.getElementById('tri-correction-panel');
+  if (corrPanel) {
+    if (isCorrect) {
+      corrPanel.innerHTML = `
+        <div class="bg-green-50 rounded-2xl p-5 border-2 border-green-500 mb-6 animate-fadeIn shadow-[2px_2px_0px_rgba(16,185,129,1)]">
+          <div class="flex items-start gap-3">
+            <span class="text-2xl">🏆</span>
+            <div>
+              <h4 class="font-display font-bold text-green-800 mb-1">Excellent travail !</h4>
+              <p class="text-sm text-green-700">${question.exp}</p>
+            </div>
+          </div>
+        </div>
+      `;
+    } else {
+      corrPanel.innerHTML = `
+        <div class="bg-rose-50 rounded-2xl p-5 border-2 border-neutral-900 mb-6 animate-fadeIn shadow-[2px_2px_0px_rgba(0,0,0,1)]">
+          <div class="flex items-start gap-3">
+            <span class="text-2xl">💡</span>
+            <div>
+              <h4 class="font-display font-bold text-rose-800 mb-1">Oups, ce n'est pas tout à fait ça...</h4>
+              <p class="text-sm text-neutral-700">${question.exp}</p>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+  }
+}
+
+function nextTriQuestion() {
+  triGameState.currentIndex++;
+  if (triGameState.currentIndex < triGameState.questions.length) {
+    triGameState.selectedAnswer = null;
+    triGameState.submitted = false;
+    renderTriQuestion();
+  } else {
+    showTriResults();
+  }
+}
+
+function showTriResults() {
+  const container = document.getElementById(triGameState.containerId);
+  if (!container) return;
+
+  const score = triGameState.score;
+  const total = triGameState.questions.length;
+  const pct = Math.round((score / total) * 100);
+
+  let title = "";
+  let msg = "";
+  let emoji = "";
+
+  if (score === 10) {
+    title = "🏆 Champion des déterminants !";
+    msg = "Félicitations ! Tu as classé tous les déterminants sans faire la moindre erreur.";
+    emoji = "🎉";
+    launchDeterminantConfetti();
+  } else if (score >= 8) {
+    title = "🌟 Presque parfait !";
+    msg = "C'est un excellent résultat. Tu sais très bien classer les déterminants.";
+    emoji = "👏";
+  } else if (score >= 5) {
+    title = "👍 Bon début !";
+    msg = "Tu as compris la majorité des cas, continue de t'entraîner pour tout maîtriser !";
+    emoji = "💪";
+  } else {
+    title = "✍️ À réviser !";
+    msg = "Relis bien la fiche de synthèse sur les classes de déterminants et tente à nouveau.";
+    emoji = "📚";
+  }
+
+  container.innerHTML = `
+    <div class="bg-white border-2 border-neutral-900 rounded-3xl p-8 text-center shadow-[4px_4px_0px_rgba(0,0,0,1)] animate-fadeIn">
+      <div class="text-6xl mb-4">${emoji}</div>
+      <h3 class="font-display font-bold text-2xl text-neutral-800 mb-2">${title}</h3>
+      <p class="text-neutral-600 mb-6 max-w-md mx-auto leading-relaxed">${msg}</p>
+
+      <div class="font-display font-black text-5xl text-purple-600 bg-purple-50 border-2 border-purple-200 py-4 px-8 rounded-2xl inline-block mb-8 shadow-[2px_2px_0px_rgba(0,0,0,0.05)]">
+        ${score} / ${total}
+      </div>
+
+      <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+        <button class="gram-tri-restart-btn px-6 py-3 rounded-2xl border-2 border-neutral-900 bg-purple-600 text-white hover:bg-purple-700 font-display font-bold text-sm transition-all cursor-pointer shadow-[2px_2px_0px_rgba(0,0,0,1)] active:scale-95">
+          🔄 Recommencer
+        </button>
+        <button class="gram-tri-back-btn px-6 py-3 rounded-2xl border-2 border-neutral-900 bg-neutral-100 text-neutral-700 hover:bg-neutral-200 font-display font-bold text-sm transition-all cursor-pointer shadow-[2px_2px_0px_rgba(0,0,0,1)] active:scale-95">
+          ↩️ Retour au menu
+        </button>
+      </div>
+    </div>
+  `;
+
+  const restartBtn = container.querySelector('.gram-tri-restart-btn');
+  if (restartBtn) {
+    restartBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      startTriExercise();
+    });
+  }
+
+  const backBtn = container.querySelector('.gram-tri-back-btn');
+  if (backBtn) {
+    backBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      showScreen('screen-gram-determinant');
+      renderDeterminantMenu();
+    });
+  }
+
+  if (state.student) {
+    saveResult({
+      student: state.student,
+      cls: state.studentCls,
+      className: CLASSES[state.studentCls] ? CLASSES[state.studentCls].name : state.studentCls,
+      activity: 'gram_determinant_tri',
+      bookTitle: 'Grammaire — Tri des déterminants',
+      score,
+      total,
+      pct,
+      date: new Date().toLocaleDateString('fr-BE'),
+      time: new Date().toLocaleTimeString('fr-BE', {hour:'2-digit', minute:'2-digit'})
+    });
+  }
+}
+
 window.renderDeterminantMenu = renderDeterminantMenu;
 window.startDeterminantExercise = startDeterminantExercise;
 window.clickDeterminantWord = clickDeterminantWord;
 window.verifyDeterminantAnswer = verifyDeterminantAnswer;
 window.nextDeterminantQuestion = nextDeterminantQuestion;
+window.startTriExercise = startTriExercise;
 
 // Exposer les fonctions des classes de mots (Le nom, L'adjectif, Le verbe)
 window.renderNomMenu = renderNomMenu;
