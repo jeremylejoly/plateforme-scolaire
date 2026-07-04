@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Conjugaison — Repère le bon verbe</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Nunito', sans-serif; background: #f5f6fa; padding: 1.5rem; }
+.container { max-width: 680px; margin: 0 auto; }
+.info-card { background:#f5f3ff;border:1px solid #8b5cf6;border-radius:12px;padding:.8rem 1rem;margin-bottom:1.5rem;display:flex;justify-content:space-between;align-items:center; }
+.info-card p { font-size:13px;color:#6d28d9;font-weight:700;margin:0; }
+.dots { display:flex;gap:6px; }
+.dot { width:12px;height:12px;border-radius:50%; }
+.question-card { background:white;border-radius:16px;padding:2rem 1.5rem;margin-bottom:1.25rem;box-shadow:0 2px 8px rgba(0,0,0,.08);border:2px solid #e5e7eb; }
+.q-label { font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:#9ca3af;margin-bottom:1rem;text-align:center; }
+.target-tense-badge { display:inline-block;background:#8b5cf6;color:white;padding:6px 14px;border-radius:20px;font-weight:900;font-size:15px;margin-top:4px;box-shadow: 0 2px 6px rgba(139, 92, 246, 0.3); }
+.q-phrase-container { font-size:19px;font-weight:800;color:#1e1b4b;margin-bottom:2rem;text-align:center;line-height:2; }
+.verb-select { font-family: 'Nunito', sans-serif; font-size:17px; font-weight:900; color:#8b5cf6; background: #f5f3ff; border: 2px solid #8b5cf6; border-radius: 8px; padding: 4px 28px 4px 10px; cursor: pointer; outline: none; transition: all 0.15s; appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238b5cf6' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 8px center; background-size: 14px; }
+.verb-select:hover { background: #ede9fe; }
+.verb-select:disabled { background: #f3f4f6; border-color: #d1d5db; color: #9ca3af; cursor: not-allowed; background-image: none; padding-right: 10px; }
+.verb-select.correct { border-color: #16a34a; background: #f0fdf4; color: #166534; }
+.verb-select.incorrect { border-color: #dc2626; background: #fff5f5; color: #991b1b; }
+.feedback-box { display: none; text-align: center; margin-top: 1rem; padding: 10px; border-radius: 8px; font-weight: 800; font-size: 15px; }
+.feedback-box.correct { display: block; background: #f0fdf4; color: #166534; border: 1px solid #16a34a; }
+.feedback-box.incorrect { display: block; background: #fff5f5; color: #991b1b; border: 1px solid #dc2626; }
+.btn { width:100%;padding:14px;background:#8b5cf6;color:white;border:none;border-radius:12px;font-size:16px;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;transition:background .2s;margin-bottom:.75rem; }
+.btn:hover { background:#7c3aed; }
+.score-final { display:none;text-align:center;padding:2.5rem 2rem;background:white;border-radius:16px;box-shadow:0 4px 20px rgba(0,0,0,.08);border:2px solid #e5e7eb; }
+.big-emoji { font-size:64px;margin-bottom:.5rem; }
+.big-score { font-size:38px;font-weight:900;margin-bottom:1rem; }
+.score-detail { font-size:14px;color:#4b5563;margin-bottom:1.5rem;line-height:2.2; }
+.score-detail span { display: inline-block; background: #f3f4f6; border-radius: 6px; padding: 2px 8px; margin: 2px 4px; font-weight: bold; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div id="exercice-zone">
+    <div class="info-card">
+      <p id="info-numero">Question 1/10</p>
+      <div class="dots" id="dots-progress"></div>
+    </div>
+    <div id="question-zone"></div>
+    <button class="btn" id="btn-suivant" style="display:none" onclick="suivant()">➡️ Question suivante</button>
+  </div>
+  <div class="score-final" id="score-final">
+    <div class="big-emoji" id="final-emoji">🎉</div>
+    <div class="big-score" id="final-score"></div>
+    <div class="score-detail" id="final-detail"></div>
+    <button class="btn" onclick="demarrer()">🔄 Recommencer</button>
+  </div>
+</div>
+
+<script>
+// Target types: 0 = Indicatif présent, 1 = Indicatif imparfait, 2 = Indicatif futur simple
+const TARGET_LABELS = [
+  "l'indicatif présent",
+  "l'indicatif imparfait",
+  "l'indicatif futur simple"
+];
+
+const PRESENT_QUES = [
+  { p: "La Terre [SELECT] autour du Soleil en 365 jours.", target: 0, opts: ["tourne", "tournera", "tournerait"], correct: 0 },
+  { p: "Les explorateurs [SELECT] ce haut col de montagne.", target: 0, opts: ["franchissent", "franchissaient", "franchiraient"], correct: 0 },
+  { p: "Grâce à la lumière, les plantes [SELECT] de l'oxygène.", target: 0, opts: ["produisent", "produisaient", "produiraient"], correct: 0 },
+  { p: "Tu [SELECT] précisément la longueur de ce segment.", target: 0, opts: ["mesures", "mesureras", "mesurerais"], correct: 0 },
+  { p: "Le cerveau humain [SELECT] beaucoup d'énergie.", target: 0, opts: ["consomme", "consommera", "consommerait"], correct: 0 },
+  { p: "L'atmosphère terrestre [SELECT] les rayons nocifs.", target: 0, opts: ["filtre", "filtrait", "filtrerait"], correct: 0 },
+  { p: "Cette jungle immense [SELECT] des espèces rares.", target: 0, opts: ["abrite", "abritait", "abriterait"], correct: 0 },
+  { p: "Les grandes pyramides [SELECT] de nombreux touristes.", target: 0, opts: ["attirent", "attireront", "attireraient"], correct: 0 },
+  { p: "À haute altitude, l'eau [SELECT] plus rapidement.", target: 0, opts: ["bout", "bouillait", "bouillirait"], correct: 0 },
+  { p: "Nous [SELECT] ce problème de proportionnalité.", target: 0, opts: ["résolvons", "résoudrons", "résoudrions"], correct: 0 },
+  { p: "Vous [SELECT] les vestiges de cette cité antique.", target: 0, opts: ["découvrez", "découvrirez", "découvririez"], correct: 0 },
+  { p: "Le bambou [SELECT] d'un mètre par jour en moyenne.", target: 0, opts: ["grandit", "grandira", "grandirait"], correct: 0 },
+  { p: "Tu [SELECT] les fleuves principaux de Belgique.", target: 0, opts: ["connais", "connaîtras", "connaîtrais"], correct: 0 },
+  { p: "L'étoile Polaire [SELECT] dans le ciel du nord.", target: 0, opts: ["brille", "brillait", "brillerait"], correct: 0 },
+  { p: "Les globules blancs [SELECT] notre organisme.", target: 0, opts: ["défendent", "défendaient", "défendraient"], correct: 0 }
+];
+
+const IMPARFAIT_QUES = [
+  { p: "Jules César [SELECT] sur l'Empire romain.", target: 1, opts: ["régna", "régnerait", "régnait"], correct: 2 },
+  { p: "Les Romains [SELECT] des routes pavées.", target: 1, opts: ["construisaient", "construisirent", "construiraient"], correct: 0 },
+  { p: "Les premiers hommes [SELECT] le mammouth.", target: 1, opts: ["chassaient", "chassèrent", "chasseraient"], correct: 0 },
+  { p: "Autrefois, la Belgique [SELECT] partie des Pays-Bas.", target: 1, opts: ["ferait", "faisait", "fit"], correct: 1 },
+  { p: "Le savant Thalès [SELECT] la géométrie en Égypte.", target: 1, opts: ["étudiait", "étudia", "étudierait"], correct: 0 },
+  { p: "À cette époque, le roi [SELECT] au château de Versailles.", target: 1, opts: ["habita", "habiterait", "habitait"], correct: 2 },
+  { p: "Les savants [SELECT] comprendre le mystère du feu.", target: 1, opts: ["voulais", "voudraient", "voulaient"], correct: 2 },
+  { p: "Chaque printemps, les fleuves [SELECT] à cause des pluies.", target: 1, opts: ["débodaient", "débordaient", "déborderaient"], correct: 1 },
+  { p: "Les scribes [SELECT] des roseaux taillés pour écrire.", target: 1, opts: ["utilisèrent", "utiliseraient", "utilisaient"], correct: 2 },
+  { p: "Les hommes [SELECT] que le ciel allait leur tomber sur la tête.", target: 1, opts: ["croiraient", "croyaient", "crurent"], correct: 1 },
+  { p: "Cette région [SELECT] de nombreuses collines verdoyantes.", target: 1, opts: ["comptait", "compta", "compterait"], correct: 0 },
+  { p: "Copernic [SELECT] les mouvements des planètes.", target: 1, opts: ["observa", "observerait", "observait"], correct: 2 },
+  { p: "Christophe Colomb [SELECT] une route vers les Indes.", target: 1, opts: ["cherchait", "chercha", "chercherait"], correct: 0 },
+  { p: "Vous [SELECT] autrefois sans calculatrice.", target: 1, opts: ["calculiez", "calculeriez", "calculâtes"], correct: 0 },
+  { p: "Les chevaliers [SELECT] protéger le royaume.", target: 1, opts: ["devraient", "devaient", "durent"], correct: 1 }
+];
+
+const FUTUR_QUES = [
+  { p: "Je [SELECT] le planétarium lors de notre sortie scolaire.", target: 2, opts: ["visiterai", "visiterais", "visite"], correct: 0 },
+  { p: "Les astronautes [SELECT] la surface de la Lune.", target: 2, opts: ["exploreraient", "exploreront", "explorent"], correct: 1 },
+  { p: "La température du globe [SELECT] encore dans les années à venir.", target: 2, opts: ["augmenterait", "augmentera", "augmente"], correct: 1 },
+  { p: "Tu [SELECT] deux droites perpendiculaires sur ta feuille.", target: 2, opts: ["traceras", "tracerais", "traces"], correct: 0 },
+  { p: "Nous [SELECT] le cycle de reproduction des grenouilles.", target: 2, opts: ["étudierons", "étudierions", "étudions"], correct: 0 },
+  { p: "Je [SELECT] l'angle de cette figure géométrique.", target: 2, opts: ["mesurerai", "mesurerais", "mesure"], correct: 0 },
+  { p: "Le satellite [SELECT] des informations météorologiques.", target: 2, opts: ["transmettra", "transmettrait", "transmet"], correct: 0 },
+  { p: "Nous [SELECT] ces mesures en mètres carrés.", target: 2, opts: ["convertirons", "convertirions", "convertissons"], correct: 0 },
+  { p: "Les glaciers des Alpes [SELECT] si le climat se réchauffe.", target: 2, opts: ["reculeraient", "reculeront", "reculent"], correct: 1 },
+  { p: "Vous [SELECT] le volume du cylindre en appliquant Pi.", target: 2, opts: ["calculeriez", "calculerez", "calculez"], correct: 1 },
+  { p: "Tu [SELECT] le trajet de l'air dans les poumons.", target: 2, opts: ["comprendras", "comprendrais", "comprends"], correct: 0 },
+  { p: "Les scientifiques [SELECT] un remède contre cette maladie.", target: 2, opts: ["trouveraient", "trouveront", "trouvent"], correct: 1 },
+  { p: "Vous [SELECT] la carte physique de la Belgique.", target: 2, opts: ["dresseriez", "dresserez", "dressez"], correct: 1 },
+  { p: "Nous [SELECT] la tranchée de la Première Guerre mondiale.", target: 2, opts: ["visiterions", "visiterons", "visitons"], correct: 1 },
+  { p: "Je [SELECT] de lire ce livre sur le système solaire.", target: 2, opts: ["finirai", "finirais", "finis"], correct: 0 }
+];
+
+let selection = [], curIdx = 0, scores = [];
+
+function shuffle(arr) {
+  return [...arr].sort(() => Math.random() - 0.5);
+}
+
+function demarrer() {
+  // Tirage équilibré (3 présent, 3 imparfait, 3 futur)
+  const pres = shuffle(PRESENT_QUES);
+  const imp = shuffle(IMPARFAIT_QUES);
+  const fut = shuffle(FUTUR_QUES);
+
+  const selPres = pres.slice(0, 3);
+  const selImp = imp.slice(0, 3);
+  const selFut = fut.slice(0, 3);
+
+  // Le 10ème élément est tiré au hasard parmi le reste
+  const reste = [
+    ...pres.slice(3),
+    ...imp.slice(3),
+    ...fut.slice(3)
+  ];
+  const dernier = shuffle(reste)[0];
+
+  // Mélange total des 10 questions
+  selection = shuffle([...selPres, ...selImp, ...selFut, dernier]);
+  curIdx = 0;
+  scores = [];
+
+  document.getElementById('score-final').style.display = 'none';
+  document.getElementById('exercice-zone').style.display = 'block';
+  afficherQuestion();
+}
+
+function shuffleOptions(q) {
+  // Shuffling options dynamically so correct isn't always at the same slot
+  const mapped = q.opts.map((o, idx) => ({ text: o, isCorrect: idx === q.correct }));
+  const shuffled = shuffle(mapped);
+  return {
+    phrase: q.p,
+    target: q.target,
+    options: shuffled.map(x => x.text),
+    correctIdx: shuffled.findIndex(x => x.isCorrect),
+    originalCorrectText: q.opts[q.correct]
+  };
+}
+
+let activeQuestionData = null;
+
+function afficherQuestion() {
+  const qRaw = selection[curIdx];
+  activeQuestionData = shuffleOptions(qRaw);
+
+  document.getElementById('info-numero').textContent = `Question ${curIdx + 1}/10`;
+  
+  // Barre de progression
+  document.getElementById('dots-progress').innerHTML = selection.map((_, i) => {
+    let color = '#d1d5db';
+    if (i < curIdx) {
+      color = scores[i] ? '#16a34a' : '#dc2626';
+    } else if (i === curIdx) {
+      color = '#8b5cf6';
+    }
+    return `<div class="dot" style="background:${color}"></div>`;
+  }).join('');
+
+  // Rendu de la phrase avec select déroulant
+  const optionsHtml = activeQuestionData.options.map((opt, i) => `
+    <option value="${i}">${opt}</option>
+  `).join('');
+
+  const selectHtml = `
+    <select id="verb-select-el" class="verb-select" onchange="verifierReponse(this)">
+      <option value="" disabled selected>Choisir le verbe...</option>
+      ${optionsHtml}
+    </select>
+  `;
+
+  // Remplacer [SELECT] par l'élément select HTML
+  const formattedPhrase = activeQuestionData.phrase.replace('[SELECT]', selectHtml);
+
+  document.getElementById('question-zone').innerHTML = `
+    <div class="question-card">
+      <div class="q-label">
+        Conjugue le verbe à :<br/>
+        <span class="target-tense-badge">${TARGET_LABELS[activeQuestionData.target]}</span>
+      </div>
+      <div class="q-phrase-container">${formattedPhrase}</div>
+      <div id="feedback-zone" class="feedback-box"></div>
+    </div>
+  `;
+  document.getElementById('btn-suivant').style.display = 'none';
+}
+
+function verifierReponse(selectEl) {
+  const selectedIdx = parseInt(selectEl.value);
+  const correctIdx = activeQuestionData.correctIdx;
+  const ok = (selectedIdx === correctIdx);
+  scores.push(ok);
+
+  selectEl.disabled = true;
+  const feedbackZone = document.getElementById('feedback-zone');
+
+  if (ok) {
+    selectEl.classList.add('correct');
+    feedbackZone.className = "feedback-box correct";
+    feedbackZone.textContent = "✨ Excellent ! C'est la bonne réponse.";
+  } else {
+    selectEl.classList.add('incorrect');
+    feedbackZone.className = "feedback-box incorrect";
+    feedbackZone.innerHTML = `❌ Oups ! La forme attendue était : <strong>${activeQuestionData.originalCorrectText}</strong>.`;
+  }
+
+  const isLast = (curIdx >= 9);
+  const btnSuivant = document.getElementById('btn-suivant');
+  btnSuivant.style.display = 'block';
+  btnSuivant.textContent = isLast ? '🏁 Voir mon score final' : '➡️ Question suivante';
+  btnSuivant.onclick = isLast ? afficherScoreFinal : suivant;
+}
+
+function suivant() {
+  curIdx++;
+  afficherQuestion();
+}
+
+function afficherScoreFinal() {
+  document.getElementById('exercice-zone').style.display = 'none';
+  const sf = document.getElementById('score-final');
+  sf.style.display = 'block';
+
+  const nbCorrect = scores.filter(Boolean).length;
+  const total = scores.length;
+  const pct = Math.round((nbCorrect / total) * 100);
+
+  let emoji = '💪';
+  if (pct === 100) emoji = '🎉';
+  else if (pct >= 70) emoji = '👍';
+
+  document.getElementById('final-emoji').textContent = emoji;
+  document.getElementById('final-score').textContent = `${nbCorrect}/${total} — ${pct}%`;
+  
+  if (pct === 100) {
+    document.getElementById('final-score').style.color = '#16a34a';
+  } else if (pct >= 60) {
+    document.getElementById('final-score').style.color = '#d97706';
+  } else {
+    document.getElementById('final-score').style.color = '#dc2626';
+  }
+
+  document.getElementById('final-detail').innerHTML = scores.map((s, i) => {
+    return `<span>Q${i + 1} : ${s ? '✅' : '❌'}</span>`;
+  }).join(' ');
+}
+
+// Lancement automatique
+demarrer();
+</script>
+</body>
+</html>
