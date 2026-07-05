@@ -839,6 +839,17 @@
       cleanVerb = cleanVerb.substring(2);
     }
 
+    // Détecter les verbes exclusivement pronominaux
+    const exclusivePronominals = [
+      "enfuir", "évanouir", "écrier", "absenter", "emparer", "ingénier", 
+      "esclaffer", "obstiner", "souvenir", "enquérir", "ébrouer", "égosiller"
+    ];
+    if (exclusivePronominals.includes(cleanVerb)) {
+      isReflexive = true;
+      const isVowelChar = ["a", "e", "i", "o", "u", "y", "é", "è", "à", "ù", "â", "ê", "î", "ô", "û", "ë", "ï", "ü", "æ", "œ"].includes(cleanVerb[0]);
+      reflexivePrefix = isVowelChar ? "s'" : "se ";
+    }
+
     // Gérer la locution "s'en" (enlever le "en " résiduel)
     if (cleanVerb.startsWith("en ")) {
       hasEn = true;
@@ -1086,7 +1097,7 @@
         info.model = "voir";
       } else if (cleanVerb.endsWith("valoir")) {
         info.model = "valoir";
-      } else if (cleanVerb.endsWith("choir") && !cleanVerb.endsWith("déchoir") && !cleanVerb.endsWith("échoir")) {
+      } else if (cleanVerb.endsWith("choir")) {
         info.model = "choir";
       }
     }
@@ -1191,7 +1202,7 @@
             const mascPl = pp.mascPlur;
             const femPl = pp.femPlur;
             if (masc === fem) return masc;
-            if (fem.startsWith(masc)) {
+            if (fem.startsWith(masc) && !masc.endsWith("s")) {
               const suff = fem.substring(masc.length);
               if (idx < 3) return masc + "(" + suff + ")";
               if (idx === 3) return masc + "(" + suff + ")s";
@@ -1206,7 +1217,11 @@
           // Accord pour les pronominaux (être)
           let p = "";
           const cleanV = info.cleanVerb + (info.trailing ? " " + info.trailing : "");
-          const isInvariableReflexive = ["plaire", "déplaire", "complaire", "rire", "sourire", "parler", "succéder", "nuire", "ressembler", "téléphoner", "mentir", "survivre", "convenir", "rendre compte", "suffire", "vouloir"].some(v => cleanV === v || cleanV.endsWith(v));
+          const isInvariableReflexive = [
+            "plaire", "déplaire", "complaire", "rire", "sourire", "parler", "succéder", "nuire", 
+            "ressembler", "téléphoner", "mentir", "survivre", "convenir", "rendre compte", "suffire", 
+            "vouloir", "permettre", "promettre", "demander", "dire", "écrire", "offrir", "acheter"
+          ].some(v => cleanV === v || cleanV.endsWith(v)) || (info.trailing && info.trailing.trim().length > 0);
           
           if (isInvariableReflexive) {
             p = ppStruct.masc;
@@ -1225,7 +1240,7 @@
               const mascPl = pp.mascPlur;
               const femPl = pp.femPlur;
               if (masc === fem) return masc;
-              if (fem.startsWith(masc)) {
+              if (fem.startsWith(masc) && !masc.endsWith("s")) {
                 const suff = fem.substring(masc.length);
                 if (idx < 3) return masc + "(" + suff + ")";
                 if (idx === 3) return masc + "(" + suff + ")s";
@@ -1687,7 +1702,7 @@
         if (tense === "imparfait") return [p+"haïssais", p+"haïssais", p+"haïssait", p+"haïssions", p+"haïssiez", p+"haïssaient"];
         if (tense === "futur") return [p+"haïrai", p+"haïras", p+"haïra", p+"haïrons", p+"haïrez", p+"haïront"];
         if (tense === "conditionnel_present") return [p+"haïrais", p+"haïrais", p+"haïrait", p+"haïrions", p+"haïriez", p+"haïraient"];
-        if (tense === "passe_simple") return [p+"haïs", p+"haïs", p+"haït", p+"haîmes", p+"haîtes", p+"haïrent"];
+        if (tense === "passe_simple") return [p+"haïs", p+"haïs", p+"haït", p+"haïmes", p+"haïtes", p+"haïrent"];
         if (tense === "subjonctif_present") return [p+"haïsse", p+"haïsses", p+"haïsse", p+"haïssions", p+"haïssiez", p+"haïssent"];
         if (tense === "imperatif_present") return [p+"hais", p+"haïssons", p+"haïssez"];
       }
@@ -2645,7 +2660,9 @@
       }
 
       // Filtrer les verbes
-      const matches = VERBS_DATABASE.filter(v => v.startsWith(searchVal) || v.replace(/î/g, 'i').replace(/â/g, 'a').startsWith(searchVal)).slice(0, 16);
+      const strip = (s) => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+      const cleanSearch = strip(searchVal);
+      const matches = VERBS_DATABASE.filter(v => strip(v).startsWith(cleanSearch)).slice(0, 16);
 
       const customVariants = {
         "assoir": "asseoir", "asseoir": "assoir",
@@ -2917,6 +2934,7 @@
     
     if (allEmpty) {
       tableArea.innerHTML = `<div class="no-results" style="padding: 24px;"><span class="no-results-icon">💡</span>Ce mode ou ce temps n'existe pas pour ce verbe (ex : le verbe <em>pouvoir</em> n'a pas d'impératif).</div>`;
+      document.getElementById("explanation-box").style.display = "none";
       return;
     }
 
