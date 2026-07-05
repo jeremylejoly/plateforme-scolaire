@@ -1,7 +1,8 @@
-const CACHE_NAME = 'classe-mr-lejoly-cache-v305';
+const CACHE_NAME = 'classe-mr-lejoly-cache-v306';
 const CORE_ASSETS = [
   './',
   'index.html',
+  'bescherelle_nouvelle_orthographe.html',
   'Labyrinthe.html',
   'mots-croises.html',
   'assets/logos/jeu_mots_croises.png',
