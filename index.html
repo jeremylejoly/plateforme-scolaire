@@ -28168,7 +28168,11 @@ function updateHomePlanCardUI() {
     const s = localStorage.getItem('lq_plan_travail_individual_' + state.student);
     individualPlan = s ? JSON.parse(s) : [];
   }
-  const visible = (planTravailAssigned.length > 0 || individualPlan.length > 0) ? '' : 'none';
+  const validIds = new Set();
+  PLAN_CATALOGUE.forEach(sec => sec.items.forEach(it => validIds.add(it.id)));
+  const hasValidClass = planTravailAssigned.some(id => validIds.has(id));
+  const hasValidInd = individualPlan.some(id => validIds.has(id));
+  const visible = (hasValidClass || hasValidInd) ? '' : 'none';
   const card1 = document.getElementById('home-plan-card');
   if (card1) card1.style.display = visible;
   const card2 = document.getElementById('subjects-plan-card');
@@ -28534,7 +28538,9 @@ function renderPlanTravailStudent() {
     const s = localStorage.getItem('lq_plan_travail_individual_' + state.student);
     individualPlan = s ? JSON.parse(s) : [];
   }
-  const assigned = [...new Set([...planTravailAssigned, ...individualPlan])];
+  const validIds = new Set();
+  PLAN_CATALOGUE.forEach(sec => sec.items.forEach(it => validIds.add(it.id)));
+  const assigned = [...new Set([...planTravailAssigned, ...individualPlan])].filter(id => validIds.has(id));
 
   if (!assigned.length) {
     el.innerHTML = '<div class="pt-empty">📋 Aucun exercice assigné pour le moment.<br><span style="font-size:13px;color:var(--muted)">Mr Lejoly n&#39;a pas encore préparé ton plan de travail.</span></div>';
@@ -28596,7 +28602,9 @@ function ptStudentToggle(id, checked) {
     const s = localStorage.getItem('lq_plan_travail_individual_' + state.student);
     individualPlan = s ? JSON.parse(s) : [];
   }
-  const assigned = [...new Set([...planTravailAssigned, ...individualPlan])];
+  const validIds = new Set();
+  PLAN_CATALOGUE.forEach(sec => sec.items.forEach(it => validIds.add(it.id)));
+  const assigned = [...new Set([...planTravailAssigned, ...individualPlan])].filter(id => validIds.has(id));
 
   const done = assigned.filter(i => studentPlanProgress[i]).length;
   const pct = Math.round((done / assigned.length) * 100);
