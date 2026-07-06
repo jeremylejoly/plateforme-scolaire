@@ -35475,7 +35475,7 @@ function renderAdjectifMenu() {
       </p>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
       <!-- EXERCICE 1: IDENTIFIER LES ADJECTIFS -->
       <div class="card cursor-pointer hover:scale-102 transition-all p-6 border-2 border-neutral-900 bg-white hover:bg-neutral-50 rounded-3xl shadow-[4px_4px_0px_rgba(0,0,0,1)] flex flex-col justify-between" id="btn-adjectif-ex1">
         <div>
@@ -35511,6 +35511,18 @@ function renderAdjectifMenu() {
           Commencer ➔
         </button>
       </div>
+
+      <!-- EXERCICE 4: RETROUVER LE NOM QUALIFIÉ -->
+      <div class="card cursor-pointer hover:scale-102 transition-all p-6 border-2 border-neutral-900 bg-white hover:bg-neutral-50 rounded-3xl shadow-[4px_4px_0px_rgba(0,0,0,1)] flex flex-col justify-between" id="btn-adjectif-ex4">
+        <div>
+          <div class="text-4xl mb-4">🔗</div>
+          <h3 class="font-display font-bold text-lg text-neutral-800 mb-2">4. Retrouver le nom qualifié</h3>
+          <p class="text-neutral-500 text-sm leading-relaxed mb-4">Retrouve le nom commun qualifié par l'adjectif mis en évidence dans 10 phrases.</p>
+        </div>
+        <button class="w-full py-2.5 px-4 rounded-xl border-2 border-neutral-900 bg-purple-600 text-white font-display font-bold text-sm shadow-[2px_2px_0px_rgba(0,0,0,1)] active:scale-98 transition-all">
+          Commencer ➔
+        </button>
+      </div>
     </div>
   `;
 
@@ -35535,6 +35547,14 @@ function renderAdjectifMenu() {
     ex3Btn.addEventListener('click', (e) => {
       e.preventDefault();
       startAdjectifFonctionExercise();
+    });
+  }
+
+  const ex4Btn = container.querySelector('#btn-adjectif-ex4');
+  if (ex4Btn) {
+    ex4Btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      startAdjectifNomExercise();
     });
   }
 }
@@ -36568,6 +36588,335 @@ function showAdjectifFonctionResults() {
       className: CLASSES[state.studentCls] ? CLASSES[state.studentCls].name : state.studentCls,
       activity: 'gram_adjectif_fonction',
       bookTitle: "Grammaire — Épithète ou Attribut ?",
+      score,
+      total,
+      pct,
+      date: new Date().toLocaleDateString('fr-BE'),
+      time: new Date().toLocaleTimeString('fr-BE', {hour:'2-digit', minute:'2-digit'})
+    });
+  }
+}
+
+  }
+}
+
+// ===== ADJECTIF NOM EXERCISE ENGINE =====
+let adjectifNomGameState = {
+  containerId: 'gram-adjectif-body',
+  questions: [],
+  currentIndex: 0,
+  score: 0,
+  selectedWordIndex: null,
+  submitted: false
+};
+
+function startAdjectifNomExercise() {
+  if (!window.EXERCICES_ADJECTIF_NOM || window.EXERCICES_ADJECTIF_NOM.length === 0) {
+    console.error("EXERCICES_ADJECTIF_NOM n'est pas chargé ou est vide.");
+    return;
+  }
+
+  const shuffle = (arr) => [...arr].sort(() => 0.5 - Math.random());
+  const selection = shuffle(window.EXERCICES_ADJECTIF_NOM).slice(0, 10);
+
+  adjectifNomGameState = {
+    containerId: 'gram-adjectif-body',
+    questions: selection,
+    currentIndex: 0,
+    score: 0,
+    selectedWordIndex: null,
+    submitted: false
+  };
+
+  const backMainBtn = document.querySelector('#screen-gram-adjectif .gram-adjectif-back-main-btn');
+  if (backMainBtn) {
+    backMainBtn.onclick = (e) => {
+      e.preventDefault();
+      renderAdjectifMenu();
+    };
+  }
+
+  // Inject styles dynamically if not present
+  if (!document.getElementById('adjectif-nom-styles')) {
+    const style = document.createElement('style');
+    style.id = 'adjectif-nom-styles';
+    style.innerHTML = `
+      .adj-nom-word {
+        font-family: 'Outfit', sans-serif;
+        font-size: 1.25rem;
+        padding: 4px 8px;
+        margin: 2px 4px;
+        display: inline-block;
+        border-radius: 8px;
+        border: 2px solid transparent;
+        transition: all 0.1s ease-out;
+        user-select: none;
+      }
+      .adj-nom-word.word-clickable:hover {
+        background-color: #f3f4f6;
+        border-color: #e5e7eb;
+        cursor: pointer;
+        transform: translateY(-1px);
+      }
+      .adj-nom-word.word-target {
+        background-color: #8B5CF6 !important;
+        color: #ffffff !important;
+        font-weight: bold;
+        border-radius: 8px;
+        padding: 4px 10px;
+        box-shadow: 2px 2px 0px #1A1A2E;
+      }
+      .adj-nom-word.word-selected {
+        background-color: #fef3c7;
+        border-color: #d97706;
+        color: #b45309;
+        font-weight: 700;
+        box-shadow: 2px 2px 0px #d97706;
+      }
+      .adj-nom-word.word-correct {
+        background-color: #ecfdf5 !important;
+        border-color: #10B981 !important;
+        color: #047857 !important;
+        font-weight: 800;
+        box-shadow: 2px 2px 0px #10B981;
+      }
+      .adj-nom-word.word-wrong {
+        background-color: #fef2f2 !important;
+        border-color: #EF4444 !important;
+        color: #b91c1c !important;
+        font-weight: 800;
+        box-shadow: 2px 2px 0px #EF4444;
+        animation: shake-adj-nom 0.3s ease;
+      }
+      @keyframes shake-adj-nom {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-3px); }
+        75% { transform: translateX(3px); }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  showScreen('screen-gram-adjectif');
+  renderAdjectifNomQuestion();
+}
+
+function renderAdjectifNomQuestion() {
+  const container = document.getElementById(adjectifNomGameState.containerId);
+  if (!container) return;
+
+  const question = adjectifNomGameState.questions[adjectifNomGameState.currentIndex];
+  if (!question) return;
+
+  const pctProgress = Math.round((adjectifNomGameState.currentIndex / adjectifNomGameState.questions.length) * 100);
+
+  // Render tokens
+  const tokensHtml = question.tokens.map((tok, idx) => {
+    // Check punctuation
+    const isPunc = /^[.,!?;:]+$/.test(tok);
+    if (isPunc) {
+      return `<span class="adj-nom-word text-neutral-400 px-1 font-sans">${tok}</span>`;
+    }
+
+    let extraClass = "word-clickable";
+    if (idx === question.adjIndex) {
+      extraClass = "word-target";
+    } else if (adjectifNomGameState.submitted) {
+      if (idx === question.nounIndex) {
+        extraClass = "word-correct";
+      } else if (adjectifNomGameState.selectedWordIndex === idx) {
+        extraClass = "word-wrong";
+      }
+    } else if (adjectifNomGameState.selectedWordIndex === idx) {
+      extraClass = "word-selected";
+    }
+
+    return `
+      <span
+        class="adj-nom-word ${extraClass}"
+        data-idx="${idx}"
+        ${adjectifNomGameState.submitted || idx === question.adjIndex ? '' : 'onclick="clickAdjectifNomWord(' + idx + ')"'}
+      >${tok}</span>
+    `;
+  }).join('');
+
+  let actionBtn = "";
+  if (!adjectifNomGameState.submitted) {
+    actionBtn = `
+      <button
+        id="adj-nom-validate-btn"
+        ${adjectifNomGameState.selectedWordIndex === null ? 'disabled' : ''}
+        onclick="verifyAdjectifNomAnswer()"
+        class="px-6 py-3 rounded-2xl border-2 border-neutral-900 bg-purple-600 text-white font-display font-bold text-sm shadow-[2px_2px_0px_rgba(0,0,0,1)] active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+      >
+        ✅ Valider
+      </button>
+    `;
+  } else {
+    actionBtn = `
+      <button
+        onclick="nextAdjectifNomQuestion()"
+        class="px-6 py-3 rounded-2xl border-2 border-neutral-900 bg-green-600 text-white hover:bg-green-700 font-display font-bold text-sm transition-all cursor-pointer shadow-[2px_2px_0px_rgba(0,0,0,1)] active:scale-95 ml-auto"
+      >
+        ${adjectifNomGameState.currentIndex < adjectifNomGameState.questions.length - 1 ? 'Phrase suivante ➔' : 'Voir les résultats ➔'}
+      </button>
+    `;
+  }
+
+  const html = `
+    <div class="quiz-topbar flex justify-between items-center mb-6">
+      <div class="quiz-student-badge bg-neutral-100 border-2 border-neutral-300 px-4 py-1.5 rounded-full font-bold text-xs text-neutral-600">
+        ${state.student || 'Élève'}
+      </div>
+      <div class="quiz-progress-wrap flex items-center gap-4 w-2/3 max-w-xs justify-end">
+        <div class="quiz-progress-label text-xs font-bold text-neutral-500 whitespace-nowrap">Phrase ${adjectifNomGameState.currentIndex + 1} sur ${adjectifNomGameState.questions.length}</div>
+        <div class="progress-bar w-full h-2.5 bg-neutral-200 rounded-full overflow-hidden">
+          <div class="progress-fill h-full bg-purple-600" style="width: ${pctProgress}%"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LA PHRASE INTERACTIVE -->
+    <div class="bg-white border-2 border-neutral-900 rounded-3xl p-8 md:p-10 mb-6 shadow-[4px_4px_0px_rgba(0,0,0,1)] text-center leading-relaxed">
+      <div class="flex flex-wrap justify-center items-center gap-y-3">
+        ${tokensHtml}
+      </div>
+    </div>
+
+    <div class="bg-blue-50 border-2 border-blue-150 rounded-3xl p-5 mb-6 shadow-[4px_4px_0px_rgba(0,0,0,0.02)]">
+      <div class="flex items-center gap-2 text-blue-900 text-sm font-semibold">
+        <span>💡</span>
+        <strong>Consigne :</strong> Clique sur le nom commun qui est qualifié par l'adjectif en violet <span class="text-purple-700 font-extrabold">« ${question.tokens[question.adjIndex]} »</span>, puis valide.
+      </div>
+    </div>
+
+    <!-- EXPLICATION / CORRECTION -->
+    <div id="adjectif-nom-correction-panel"></div>
+
+    <!-- ZONE D'ACTION -->
+    <div class="flex justify-between items-center border-t border-neutral-200 pt-6">
+      <button
+        onclick="renderAdjectifMenu()"
+        class="px-4 py-2.5 rounded-xl border-2 border-neutral-300 text-neutral-500 hover:bg-neutral-50 text-sm font-bold cursor-pointer"
+      >
+        ← Quitter
+      </button>
+      ${actionBtn}
+    </div>
+  `;
+
+  container.innerHTML = html;
+
+  if (adjectifNomGameState.submitted) {
+    showAdjectifNomCorrectionPanel(question);
+  }
+}
+
+function clickAdjectifNomWord(idx) {
+  if (adjectifNomGameState.submitted) return;
+  adjectifNomGameState.selectedWordIndex = idx;
+  renderAdjectifNomQuestion();
+}
+
+function verifyAdjectifNomAnswer() {
+  if (adjectifNomGameState.submitted || adjectifNomGameState.selectedWordIndex === null) return;
+
+  const question = adjectifNomGameState.questions[adjectifNomGameState.currentIndex];
+  if (!question) return;
+
+  adjectifNomGameState.submitted = true;
+
+  const isCorrect = (adjectifNomGameState.selectedWordIndex === question.nounIndex);
+  if (isCorrect) {
+    adjectifNomGameState.score++;
+  }
+
+  renderAdjectifNomQuestion();
+}
+
+function showAdjectifNomCorrectionPanel(question) {
+  const panel = document.getElementById('adjectif-nom-correction-panel');
+  if (!panel) return;
+
+  const isCorrect = adjectifNomGameState.selectedWordIndex === question.nounIndex;
+  const heading = isCorrect ? "🎉 Bravo, c'est correct !" : "💡 Oups, ce n'est pas le bon mot...";
+  const cardBg = isCorrect ? "bg-green-50 border-green-200 text-green-800" : "bg-neutral-50 border-neutral-300 text-neutral-700";
+  const accentColor = isCorrect ? "text-green-700" : "text-neutral-800";
+
+  panel.innerHTML = `
+    <div class="card p-6 border-2 rounded-3xl ${cardBg} mb-6 shadow-[2px_2px_0px_rgba(0,0,0,0.02)] transition-all">
+      <h4 class="font-display font-bold text-lg ${accentColor} mb-2">${heading}</h4>
+      <p class="text-sm font-sans leading-relaxed">${question.exp}</p>
+    </div>
+  `;
+}
+
+function nextAdjectifNomQuestion() {
+  if (adjectifNomGameState.currentIndex < adjectifNomGameState.questions.length - 1) {
+    adjectifNomGameState.currentIndex++;
+    adjectifNomGameState.submitted = false;
+    adjectifNomGameState.selectedWordIndex = null;
+    renderAdjectifNomQuestion();
+  } else {
+    showAdjectifNomResults();
+  }
+}
+
+function showAdjectifNomResults() {
+  const container = document.getElementById(adjectifNomGameState.containerId);
+  if (!container) return;
+
+  const score = adjectifNomGameState.score;
+  const total = adjectifNomGameState.questions.length;
+  const pct = Math.round((score / total) * 100);
+
+  let congratsTitle = "Entraînement terminé !";
+  let congratsMsg = `Tu as obtenu un score de <strong>${score} sur ${total}</strong> (${pct}%). Continue tes efforts !`;
+
+  if (score === total) {
+    congratsTitle = "🏆 Score Parfait ! Magnifique !";
+    congratsMsg = `Félicitations ! Tu as un sans-faute parfait de <strong>${score} sur ${total}</strong> ! Tu sais repérer les mots qualifiés avec brio.`;
+    if (typeof confetti === 'function') {
+      setTimeout(() => {
+        confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
+      }, 300);
+    }
+  } else if (score >= 7) {
+    congratsTitle = "🌟 Très bon travail !";
+    congratsMsg = `Superbe score de <strong>${score} sur ${total}</strong> ! Tu as une très bonne maîtrise de l'adjectif.`;
+  }
+
+  container.innerHTML = `
+    <div class="bg-white border-2 border-neutral-900 rounded-3xl p-8 md:p-10 mb-6 shadow-[4px_4px_0px_rgba(0,0,0,1)] text-center max-w-xl mx-auto">
+      <div class="text-6xl mb-6">🏆</div>
+      <h3 class="font-display font-bold text-2xl text-neutral-800 mb-4">${congratsTitle}</h3>
+      <p class="text-neutral-600 mb-8 text-base md:text-lg leading-relaxed">${congratsMsg}</p>
+      
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <button
+          onclick="startAdjectifNomExercise()"
+          class="px-6 py-3 rounded-2xl border-2 border-neutral-900 bg-purple-600 text-white hover:bg-purple-700 font-display font-bold text-sm transition-all cursor-pointer shadow-[2px_2px_0px_rgba(0,0,0,1)] active:scale-95"
+        >
+          🔄 Recommencer
+        </button>
+        <button
+          onclick="showScreen('screen-gram-classes'); renderGramClassesScreen();"
+          class="px-6 py-3 rounded-2xl border-2 border-neutral-900 bg-neutral-100 text-neutral-700 hover:bg-neutral-200 font-display font-bold text-sm transition-all cursor-pointer shadow-[2px_2px_0px_rgba(0,0,0,1)] active:scale-95"
+        >
+          ↩️ Retour aux thèmes
+        </button>
+      </div>
+    </div>
+  `;
+
+  // Save results in student dashboard
+  if (state.student) {
+    saveResult({
+      student: state.student,
+      cls: state.studentCls,
+      className: CLASSES[state.studentCls] ? CLASSES[state.studentCls].name : state.studentCls,
+      activity: 'gram_adjectif_nom',
+      bookTitle: "Grammaire — Retrouver le nom qualifié",
       score,
       total,
       pct,

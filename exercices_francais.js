@@ -11331,3 +11331,156 @@ window.EXERCICES_ADJECTIF_FONCTION = [
     exp: "« bleue » qualifie directement le nom « robe ». C'est un adjectif épithète."
   }
 ];
+
+window.EXERCICES_ADJECTIF_NOM = [
+  {
+    tokens: ["Le", "petit", "garçon", "joue", "au", "ballon", "."],
+    adjIndex: 1,
+    nounIndex: 2,
+    exp: "L'adjectif « petit » s'accorde avec le nom commun « garçon » et le qualifie."
+  },
+  {
+    tokens: ["Une", "belle", "fleur", "pousse", "dans", "le", "jardin", "."],
+    adjIndex: 1,
+    nounIndex: 2,
+    exp: "L'adjectif « belle » s'accorde avec le nom commun « fleur » et le qualifie."
+  },
+  {
+    tokens: ["Le", "vieux", "château", "semble", "abandonné", "."],
+    adjIndex: 1,
+    nounIndex: 2,
+    exp: "L'adjectif « vieux » s'accorde avec le nom commun « château » et le qualifie."
+  },
+  {
+    tokens: ["Les", "élèves", "attentifs", "écoutent", "la", "maîtresse", "."],
+    adjIndex: 2,
+    nounIndex: 1,
+    exp: "L'adjectif « attentifs » s'accorde avec le nom commun « élèves » et le qualifie."
+  },
+  {
+    tokens: ["Une", "lumière", "brillante", "éclaire", "la", "pièce", "."],
+    adjIndex: 2,
+    nounIndex: 1,
+    exp: "L'adjectif « brillante » s'accorde avec le nom commun « lumière » et le qualifie."
+  },
+  {
+    tokens: ["Le", "vent", "glacial", "souffle", "sur", "la", "plaine", "."],
+    adjIndex: 2,
+    nounIndex: 1,
+    exp: "L'adjectif « glacial » s'accorde avec le nom commun « vent » et le qualifie."
+  },
+  {
+    tokens: ["Les", "pommes", "rouges", "sont", "délicieuses", "."],
+    adjIndex: 2,
+    nounIndex: 1,
+    exp: "L'adjectif « rouges » s'accorde avec le nom commun « pommes » et le qualifie."
+  },
+  {
+    tokens: ["Une", "grosse", "tempête", "approche", "de", "la", "côte", "."],
+    adjIndex: 1,
+    nounIndex: 2,
+    exp: "L'adjectif « grosse » s'accorde avec le nom commun « tempête » et le qualifie."
+  },
+  {
+    tokens: ["Le", "jeune", "boulanger", "prépare", "du", "bon", "pain", "."],
+    adjIndex: 1,
+    nounIndex: 2,
+    exp: "L'adjectif « jeune » s'accorde avec le nom commun « boulanger » et le qualifie."
+  },
+  {
+    tokens: ["Le", "jeune", "boulanger", "prépare", "du", "bon", "pain", "."],
+    adjIndex: 5,
+    nounIndex: 6,
+    exp: "L'adjectif « bon » s'accorde avec le nom commun « pain » et le qualifie."
+  },
+  {
+    tokens: ["Des", "vêtements", "propres", "sont", "rangés", "dans", "l'armoire", "."],
+    adjIndex: 2,
+    nounIndex: 1,
+    exp: "L'adjectif « propres » s'accorde avec le nom commun « vêtements » et le qualifie."
+  },
+  {
+    tokens: ["Un", "grand", "arbre", "ombrage", "la", "cour", "."],
+    adjIndex: 1,
+    nounIndex: 2,
+    exp: "L'adjectif « grand » s'accorde avec le nom commun « arbre » et le qualifie."
+  },
+  {
+    tokens: ["La", "nuit", "sombre", "fait", "peur", "aux", "enfants", "."],
+    adjIndex: 2,
+    nounIndex: 1,
+    exp: "L'adjectif « sombre » s'accorde avec le nom commun « nuit » et le qualifie."
+  },
+  {
+    tokens: ["Ce", "long", "chemin", "mène", "à", "la", "rivière", "."],
+    adjIndex: 1,
+    nounIndex: 2,
+    exp: "L'adjectif « long » s'accorde avec le nom commun « chemin » et le qualifie."
+  },
+  {
+    tokens: ["Les", "chats", "sauvages", "chassent", "la", "nuit", "."],
+    adjIndex: 2,
+    nounIndex: 1,
+    exp: "L'adjectif « sauvages » s'accorde avec le nom commun « chats » et le qualifie."
+  },
+  {
+    tokens: ["Une", "eau", "fraîche", "coule", "de", "la", "source", "."],
+    adjIndex: 2,
+    nounIndex: 1,
+    exp: "L'adjectif « fraîche » s'accorde avec le nom commun « eau » et le qualifie."
+  },
+  {
+    tokens: ["La", "vieille", "dame", "traverse", "prudemment", "la", "rue", "."],
+    adjIndex: 1,
+    nounIndex: 2,
+    exp: "L'adjectif « vieille » s'accorde avec le nom commun « dame » et le qualifie."
+  },
+  {
+    tokens: ["Un", "bruit", "mystérieux", "retentit", "dans", "la", "cave", "."],
+    adjIndex: 2,
+    nounIndex: 1,
+    exp: "L'adjectif « mystérieux » s'accorde avec le nom commun « bruit » et le qualifie."
+  },
+  {
+    tokens: ["Les", "oiseaux", "migrateurs", "volent", "vers", "le", "sud", "."],
+    adjIndex: 2,
+    nounIndex: 1,
+    exp: "L'adjectif « migrateurs » s'accorde avec le nom commun « oiseaux » et le qualifie."
+  },
+  {
+    tokens: ["Ce", "magnifique", "paysage", "attire", "les", "touristes", "."],
+    adjIndex: 1,
+    nounIndex: 2,
+    exp: "L'adjectif « magnifique » s'accorde avec le nom commun « paysage » et le qualifie."
+  },
+  {
+    tokens: ["Le", "chien", "fidèle", "attend", "son", "maître", "."],
+    adjIndex: 2,
+    nounIndex: 1,
+    exp: "L'adjectif « fidèle » s'accorde avec le nom commun « chien » et le qualifie."
+  },
+  {
+    tokens: ["Une", "forte", "pluie", "inonde", "les", "routes", "."],
+    adjIndex: 1,
+    nounIndex: 2,
+    exp: "L'adjectif « forte » s'accorde avec le nom commun « pluie » et le qualifie."
+  },
+  {
+    tokens: ["Les", "petites", "étoiles", "brillent", "dans", "le", "ciel", "."],
+    adjIndex: 1,
+    nounIndex: 2,
+    exp: "L'adjectif « petites » s'accorde avec le nom commun « étoiles » et le qualifie."
+  },
+  {
+    tokens: ["Ce", "nouveau", "jeu", "est", "très", "amusant", "."],
+    adjIndex: 1,
+    nounIndex: 2,
+    exp: "L'adjectif « nouveau » s'accorde avec le nom commun « jeu » et le qualifie."
+  },
+  {
+    tokens: ["L'histoire", "drôle", "fait", "rire", "toute", "la", "classe", "."],
+    adjIndex: 1,
+    nounIndex: 0,
+    exp: "L'adjectif « drôle » s'accorde avec le nom commun « L'histoire » et le qualifie."
+  }
+];
