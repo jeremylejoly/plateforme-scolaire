@@ -11238,3 +11238,96 @@ window.EXERCICES_PRONOM_PIEGE = [
     exp: "« leur » accompagne le nom singulier « actrice ». C'est un déterminant possessif."
   }
 ];
+
+window.EXERCICES_ADJECTIF_FONCTION = [
+  {
+    phrase: "Le petit chat <span class='target-highlight'>noir</span> dort sur le tapis.",
+    word: "noir",
+    cat: "epithete",
+    exp: "« noir » est placé directement à côté du nom « chat » qu'il qualifie. C'est un adjectif épithète."
+  },
+  {
+    phrase: "Le chat semble <span class='target-highlight'>fatigué</span> après sa longue promenade.",
+    word: "fatigué",
+    cat: "attribut",
+    exp: "« fatigué » est relié au sujet « Le chat » par le verbe d'état « sembler ». C'est un adjectif attribut du sujet."
+  },
+  {
+    phrase: "Une <span class='target-highlight'>immense</span> maison s'élève au bout de la rue.",
+    word: "immense",
+    cat: "epithete",
+    exp: "« immense » est placé directement devant le nom « maison » qu'il qualifie. C'est un adjectif épithète."
+  },
+  {
+    phrase: "La tarte aux pommes de maman a l'air <span class='target-highlight'>délicieuse</span>.",
+    word: "délicieuse",
+    cat: "attribut",
+    exp: "« délicieuse » est relié au sujet « La tarte aux pommes de maman » par la locution verbale d'état « avoir l'air ». C'est un adjectif attribut du sujet."
+  },
+  {
+    phrase: "Les fleurs <span class='target-highlight'>rouges</span> décorent le balcon de la maison.",
+    word: "rouges",
+    cat: "epithete",
+    exp: "« rouges » est placé directement après le nom « fleurs » qu'il qualifie. C'est un adjectif épithète."
+  },
+  {
+    phrase: "Ce jeune athlète devient très <span class='target-highlight'>fort</span>.",
+    word: "fort",
+    cat: "attribut",
+    exp: "« fort » est relié au sujet « Ce jeune athlète » par le verbe d'état « devenir ». C'est un adjectif attribut du sujet."
+  },
+  {
+    phrase: "Les spectateurs, <span class='target-highlight'>ravis</span>, applaudissent chaleureusement.",
+    word: "ravis",
+    cat: "epithete",
+    exp: "« ravis » est séparé du nom « spectateurs » par des virgules, mais il n'y a pas de verbe d'état entre eux. C'est un adjectif épithète (apposé)."
+  },
+  {
+    phrase: "Les rues de la ville restent <span class='target-highlight'>sombres</span> ce soir.",
+    word: "sombres",
+    cat: "attribut",
+    exp: "« sombres » est relié au sujet « Les rues de la ville » par le verbe d'état « rester ». C'est un adjectif attribut du sujet."
+  },
+  {
+    phrase: "Le vieil homme marchait d'un pas <span class='target-highlight'>lent</span>.",
+    word: "lent",
+    cat: "epithete",
+    exp: "« lent » accompagne directement le nom « pas ». C'est un adjectif épithète."
+  },
+  {
+    phrase: "Ces enfants paraissent <span class='target-highlight'>sages</span> aujourd'hui.",
+    word: "sages",
+    cat: "attribut",
+    exp: "« sages » est relié au sujet « Ces enfants » par le verbe d'état « paraître ». C'est un adjectif attribut du sujet."
+  },
+  {
+    phrase: "Un vent <span class='target-highlight'>glacial</span> souffle sur la montagne.",
+    word: "glacial",
+    cat: "epithete",
+    exp: "« glacial » qualifie directement le nom « vent ». C'est un adjectif épithète."
+  },
+  {
+    phrase: "La blessure du joueur semble <span class='target-highlight'>grave</span>.",
+    word: "grave",
+    cat: "attribut",
+    exp: "« grave » est relié au sujet « La blessure du joueur » par le verbe d'état « sembler ». C'est un adjectif attribut du sujet."
+  },
+  {
+    phrase: "J'ai acheté des fruits <span class='target-highlight'>frais</span> au marché.",
+    word: "frais",
+    cat: "epithete",
+    exp: "« frais » qualifie directement le nom « fruits ». C'est un adjectif épithète."
+  },
+  {
+    phrase: "Les élèves demeurent <span class='target-highlight'>silencieux</span> pendant l'explication.",
+    word: "silencieux",
+    cat: "attribut",
+    exp: "« silencieux » est relié au sujet « Les élèves » par le verbe d'état « demeurer ». C'est un adjectif attribut du sujet."
+  },
+  {
+    phrase: "Elle porte une robe <span class='target-highlight'>bleue</span> pour la fête.",
+    word: "bleue",
+    cat: "epithete",
+    exp: "« bleue » qualifie directement le nom « robe ». C'est un adjectif épithète."
+  }
+];
