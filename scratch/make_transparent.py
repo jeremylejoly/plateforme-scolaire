@@ -46,37 +46,37 @@ def process_image(src_path, dest_names):
 
 # Mappings of the generated images to their final assets locations
 mappings = {
-    "/Users/jeremy/.gemini/antigravity/brain/6bcf5aa8-36e3-4743-bf02-1c935bb74813/gram_nom_1783360631060.jpg": [
-        "/Users/jeremy/antigravity/LCML/assets/logos/gram_nom.png",
-        "/Users/jeremy/antigravity/LCML/public/assets/logos/gram_nom.png"
+    "/Users/jeremy/.gemini/antigravity/brain/6bcf5aa8-36e3-4743-bf02-1c935bb74813/gram_sujet_1783362327425.jpg": [
+        "/Users/jeremy/antigravity/LCML/assets/logos/gram_sujet.png",
+        "/Users/jeremy/antigravity/LCML/public/assets/logos/gram_sujet.png"
     ],
-    "/Users/jeremy/.gemini/antigravity/brain/6bcf5aa8-36e3-4743-bf02-1c935bb74813/gram_determinant_1783360643918.jpg": [
-        "/Users/jeremy/antigravity/LCML/assets/logos/gram_determinant.png",
-        "/Users/jeremy/antigravity/LCML/public/assets/logos/gram_determinant.png"
+    "/Users/jeremy/.gemini/antigravity/brain/6bcf5aa8-36e3-4743-bf02-1c935bb74813/gram_verbe_fonc_1783362339596.jpg": [
+        "/Users/jeremy/antigravity/LCML/assets/logos/gram_verbe_fonc.png",
+        "/Users/jeremy/antigravity/LCML/public/assets/logos/gram_verbe_fonc.png"
     ],
-    "/Users/jeremy/.gemini/antigravity/brain/6bcf5aa8-36e3-4743-bf02-1c935bb74813/gram_adjectif_1783360657070.jpg": [
-        "/Users/jeremy/antigravity/LCML/assets/logos/gram_adjectif.png",
-        "/Users/jeremy/antigravity/LCML/public/assets/logos/gram_adjectif.png"
+    "/Users/jeremy/.gemini/antigravity/brain/6bcf5aa8-36e3-4743-bf02-1c935bb74813/gram_predicat_1783362355446.jpg": [
+        "/Users/jeremy/antigravity/LCML/assets/logos/gram_predicat.png",
+        "/Users/jeremy/antigravity/LCML/public/assets/logos/gram_predicat.png"
     ],
-    "/Users/jeremy/.gemini/antigravity/brain/6bcf5aa8-36e3-4743-bf02-1c935bb74813/gram_verbe_1783360672133.jpg": [
-        "/Users/jeremy/antigravity/LCML/assets/logos/gram_verbe.png",
-        "/Users/jeremy/antigravity/LCML/public/assets/logos/gram_verbe.png"
+    "/Users/jeremy/.gemini/antigravity/brain/6bcf5aa8-36e3-4743-bf02-1c935bb74813/gram_cdv_civ_1783362369942.jpg": [
+        "/Users/jeremy/antigravity/LCML/assets/logos/gram_cdv_civ.png",
+        "/Users/jeremy/antigravity/LCML/public/assets/logos/gram_cdv_civ.png"
     ],
-    "/Users/jeremy/.gemini/antigravity/brain/6bcf5aa8-36e3-4743-bf02-1c935bb74813/gram_pronom_1783360685447.jpg": [
-        "/Users/jeremy/antigravity/LCML/assets/logos/gram_pronom.png",
-        "/Users/jeremy/antigravity/LCML/public/assets/logos/gram_pronom.png"
+    "/Users/jeremy/.gemini/antigravity/brain/6bcf5aa8-36e3-4743-bf02-1c935bb74813/gram_cc_1783362384882.jpg": [
+        "/Users/jeremy/antigravity/LCML/assets/logos/gram_cc.png",
+        "/Users/jeremy/antigravity/LCML/public/assets/logos/gram_cc.png"
     ],
-    "/Users/jeremy/.gemini/antigravity/brain/6bcf5aa8-36e3-4743-bf02-1c935bb74813/gram_adverbe_1783360698852.jpg": [
-        "/Users/jeremy/antigravity/LCML/assets/logos/gram_adverbe.png",
-        "/Users/jeremy/antigravity/LCML/public/assets/logos/gram_adverbe.png"
+    "/Users/jeremy/.gemini/antigravity/brain/6bcf5aa8-36e3-4743-bf02-1c935bb74813/gram_attribut_1783362399959.jpg": [
+        "/Users/jeremy/antigravity/LCML/assets/logos/gram_attribut.png",
+        "/Users/jeremy/antigravity/LCML/public/assets/logos/gram_attribut.png"
     ],
-    "/Users/jeremy/.gemini/antigravity/brain/6bcf5aa8-36e3-4743-bf02-1c935bb74813/gram_complement_nom_1783360710930.jpg": [
-        "/Users/jeremy/antigravity/LCML/assets/logos/gram_complement_nom.png",
-        "/Users/jeremy/antigravity/LCML/public/assets/logos/gram_complement_nom.png"
+    "/Users/jeremy/.gemini/antigravity/brain/6bcf5aa8-36e3-4743-bf02-1c935bb74813/gram_agent_1783362414183.jpg": [
+        "/Users/jeremy/antigravity/LCML/assets/logos/gram_agent.png",
+        "/Users/jeremy/antigravity/LCML/public/assets/logos/gram_agent.png"
     ],
-    "/Users/jeremy/.gemini/antigravity/brain/6bcf5aa8-36e3-4743-bf02-1c935bb74813/gram_tri_mots_1783360725109.jpg": [
-        "/Users/jeremy/antigravity/LCML/assets/logos/gram_tri_mots.png",
-        "/Users/jeremy/antigravity/LCML/public/assets/logos/gram_tri_mots.png"
+    "/Users/jeremy/.gemini/antigravity/brain/6bcf5aa8-36e3-4743-bf02-1c935bb74813/gram_analyse_phrase_1783362438868.jpg": [
+        "/Users/jeremy/antigravity/LCML/assets/logos/gram_analyse_phrase.png",
+        "/Users/jeremy/antigravity/LCML/public/assets/logos/gram_analyse_phrase.png"
     ]
 }
 
