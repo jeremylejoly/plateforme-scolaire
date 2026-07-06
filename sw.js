@@ -1,4 +1,4 @@
-const CACHE_NAME = 'classe-mr-lejoly-cache-v309';
+const CACHE_NAME = 'classe-mr-lejoly-cache-v310';
 const CORE_ASSETS = [
   './',
   'index.html',
@@ -17,6 +17,14 @@ const CORE_ASSETS = [
   'assets/logos/hist_contemporaine.png',
   'assets/logos/hist_grandes_periodes.png',
   'assets/logos/subject_outils.png',
+  'assets/logos/gram_nom.png',
+  'assets/logos/gram_determinant.png',
+  'assets/logos/gram_adjectif.png',
+  'assets/logos/gram_verbe.png',
+  'assets/logos/gram_pronom.png',
+  'assets/logos/gram_adverbe.png',
+  'assets/logos/gram_complement_nom.png',
+  'assets/logos/gram_tri_mots.png',
   'fiches/Labyrinthe.html',
   'planisphere-interactif.html',
   'cartes-planisphere.html',

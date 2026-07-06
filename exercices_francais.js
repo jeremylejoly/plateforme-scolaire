@@ -8713,6 +8713,49 @@ window.EXERCICES_ADJECTIF = [
   }
 ];
 
+window.EXERCICES_ADJECTIF_ACCORD = [
+  { before: "Des filles ", adjective: "sportif", after: " courent dans la cour.", answer: "sportives", exp: "Le nom « filles » est féminin pluriel, donc l'adjectif « sportif » devient « sportives »." },
+  { before: "La voiture ", adjective: "bleu", after: " roule sur la route.", answer: "bleue", exp: "Le nom « voiture » est féminin singulier, donc l'adjectif « bleu » s'accorde en ajoutant un « e » et devient « bleue »." },
+  { before: "Les fleurs ", adjective: "jaune", after: " décorent la table.", answer: "jaunes", exp: "Le nom « fleurs » est féminin pluriel. L'adjectif « jaune » prend un « s » au pluriel. Son féminin est identique au masculin." },
+  { before: "Une ", adjective: "bon", after: " idée a été proposée.", answer: "bonne", exp: "Le nom « idée » est féminin singulier. Pour accorder « bon », on double la consonne « n » et on ajoute un « e » pour faire « bonne »." },
+  { before: "Ces pommes sont très ", adjective: "rouge", after: " et bien mûres.", answer: "rouges", exp: "Le nom « pommes » est féminin pluriel. L'adjectif « rouge » s'accorde au pluriel en prenant un « s »." },
+  { before: "La petite chienne est ", adjective: "gros", after: ".", answer: "grosse", exp: "Le nom « chienne » est féminin singulier. Pour l'adjectif « gros », on double le « s » et on ajoute un « e » pour faire « grosse »." },
+  { before: "Mon grand-père raconte une histoire ", adjective: "amusant", after: ".", answer: "amusante", exp: "Le nom « histoire » est féminin singulier. L'adjectif « amusant » s'accorde au féminin en ajoutant un « e »." },
+  { before: "Les garçons de ma classe sont très ", adjective: "gentil", after: ".", answer: "gentils", exp: "Le nom « garçons » est masculin pluriel. Pour « gentil », on ajoute simplement un « s »." },
+  { before: "Des clés ", adjective: "doré", after: " ouvrent la porte secrète.", answer: "dorées", exp: "Le nom « clés » est féminin pluriel, on s'accorde en ajoutant « es » à l'adjectif « doré »." },
+  { before: "Elle a acheté une veste ", adjective: "neuf", after: ".", answer: "neuve", exp: "Le nom « veste » est féminin singulier. Pour les adjectifs se terminant par « f », le « f » se transforme en « ve » au féminin." },
+  { before: "Nous mangeons dans des assiettes ", adjective: "creux", after: ".", answer: "creuses", exp: "Le nom « assiettes » est féminin pluriel. Le « x » de « creux » devient « se » au féminin, et on ajoute un « s » pour le pluriel." },
+  { before: "La soupe ", adjective: "chaud", after: " est servie sur la table.", answer: "chaude", exp: "Le nom « soupe » est féminin singulier. On ajoute un « e » à l'adjectif « chaud » pour faire « chaude »." },
+  { before: "Le professeur explique une leçon ", adjective: "difficile", after: ".", answer: "difficile", exp: "Le nom « leçon » est féminin singulier. L'adjectif « difficile » se terminant déjà par un « e », il ne change pas." },
+  { before: "Les voitures roulent sur des routes ", adjective: "mouillé", after: ".", answer: "mouillées", exp: "Le nom « routes » est féminin pluriel, on accorde l'adjectif « mouillé » en lui ajoutant « es »." },
+  { before: "Une fillette ", adjective: "attentif", after: " écoute la consigne.", answer: "attentive", exp: "Le nom « fillette » est féminin singulier. Le « f » final de « attentif » devient « ve » au féminin." },
+  { before: "Des herbes ", adjective: "frais", after: " poussent au bord de la rivière.", answer: "fraîches", exp: "Le nom « herbes » est féminin pluriel. Le féminin de « frais » est « fraîche », auquel on ajoute un « s » au pluriel." },
+  { before: "La maîtresse est très ", adjective: "heureux", after: " de notre travail.", answer: "heureuse", exp: "Le nom « maîtresse » est féminin singulier. Le « x » final de « heureux » devient « se » au féminin." },
+  { before: "Une musique ", adjective: "doux", after: " nous aide à nous endormir.", answer: "douce", exp: "Le nom « musique » est féminin singulier. Le féminin de l'adjectif « doux » est irrégulier et s'écrit « douce »." },
+  { before: "Une ", adjective: "vieux", after: " dame traverse prudemment la rue.", answer: "vieille", exp: "Le nom « dame » est féminin singulier. Le féminin de « vieux » est irrégulier et s'écrit « vieille »." },
+  { before: "Les ", adjective: "nouveau", after: " classes de l'école sont prêtes.", answer: "nouvelles", exp: "Le nom « classes » est féminin pluriel. L'adjectif « nouveau » devient « nouvelle » au féminin, puis prend un « s » au pluriel." },
+  { before: "Des loups ", adjective: "sauvage", after: " vivent dans cette grande forêt.", answer: "sauvages", exp: "Le nom « loups » est masculin pluriel. L'adjectif « sauvage » s'accorde au pluriel en prenant un « s »." },
+  { before: "Le détective a retrouvé une clé ", adjective: "perdu", after: ".", answer: "perdue", exp: "Le nom « clé » est féminin singulier. L'adjectif « perdu » s'accorde en ajoutant un « e »." },
+  { before: "Nous avons passé une ", adjective: "long", after: " journée à la plage.", answer: "longue", exp: "Le nom « journée » est féminin singulier. Pour accorder « long », on ajoute « ue » pour obtenir le son [g] correct." },
+  { before: "C'est une ", adjective: "faux", after: " information.", answer: "fausse", exp: "Le nom « information » est féminin singulier. Le féminin de « faux » est irrégulier et s'écrit « fausse »." },
+  { before: "Nous avons ramassé des fruits ", adjective: "sec", after: ".", answer: "secs", exp: "Le nom « fruits » est masculin pluriel. On ajoute simplement un « s » à l'adjectif « sec »." },
+  { before: "Le bûcheron a coupé une branche ", adjective: "sec", after: ".", answer: "sèche", exp: "Le nom « branche » est féminin singulier. Le féminin de « sec » s'écrit « sèche »." },
+  { before: "Nous ramassons des feuilles ", adjective: "sec", after: " dans le jardin.", answer: "sèches", exp: "Le nom « feuilles » est féminin pluriel. L'adjectif « sec » devient « sèche » au féminin, puis prend un « s » au pluriel." },
+  { before: "Les garçons sont très ", adjective: "heureux", after: " aujourd'hui.", answer: "heureux", exp: "Le nom « garçons » est masculin pluriel. L'adjectif « heureux » se terminant déjà par un « x », il ne change pas." },
+  { before: "J'écris sur une feuille ", adjective: "blanc", after: ".", answer: "blanche", exp: "Le nom « feuille » est féminin singulier. Le féminin de « blanc » est particulier et s'écrit « blanche »." },
+  { before: "Les ouvriers déplacent des pierres ", adjective: "lourd", after: ".", answer: "lourdes", exp: "Le nom « pierres » est féminin pluriel. On accorde l'adjectif « lourd » au féminin pluriel en ajoutant « es »." },
+  { before: "La mer est très ", adjective: "agité", after: " aujourd'hui.", answer: "agitée", exp: "Le nom « mer » est féminin singulier, donc on ajoute un « e » à l'adjectif « agité »." },
+  { before: "Les enfants écoutent une chanson ", adjective: "joyeux", after: ".", answer: "joyeuse", exp: "Le nom « chanson » est féminin singulier, donc le « x » final de « joyeux » devient « se »." },
+  { before: "Les coureurs s'élancent sur des pistes ", adjective: "immense", after: ".", answer: "immenses", exp: "Le nom « pistes » est féminin pluriel, on ajoute donc un « s » à l'adjectif « immense »." },
+  { before: "Les enfants observent des oiseaux ", adjective: "migrateur", after: ".", answer: "migrateurs", exp: "Le nom « oiseaux » est masculin pluriel, on accorde donc « migrateur » au pluriel en ajoutant un « s »." },
+  { before: "Les randonneurs avancent sur des routes ", adjective: "étroit", after: ".", answer: "étroites", exp: "Le nom « routes » est féminin pluriel, donc l'adjectif « étroit » s'accorde au féminin pluriel en ajoutant « es »." },
+  { before: "Une lumière ", adjective: "vif", after: " éclaire soudainement la pièce.", answer: "vive", exp: "Le nom « lumière » est féminin singulier. Pour « vif », la lettre « f » se transforme en « ve » au féminin." },
+  { before: "Le maître nous donne des devoirs ", adjective: "facile", after: ".", answer: "faciles", exp: "Le nom « devoirs » est masculin pluriel. L'adjectif « facile » prend simplement un « s »." },
+  { before: "Nous entendons des voix très ", adjective: "doux", after: ".", answer: "douces", exp: "Le nom « voix » est féminin pluriel. Le féminin pluriel de « doux » est « douces »." },
+  { before: "Nous avons passé une très ", adjective: "beau", after: " journée en famille.", answer: "belle", exp: "Le nom « journée » est féminin singulier. Le féminin de l'adjectif « beau » est « belle »." },
+  { before: "Il a fait une ", adjective: "gros", after: " bêtise.", answer: "grosse", exp: "Le nom « bêtise » est féminin singulier, donc on double le « s » de l'adjectif « gros » et on ajoute un « e »." }
+];
+
 window.EXERCICES_VERBE_GROUPE = [
   {
     text: "Le chat noir semble manger des croquettes .",
