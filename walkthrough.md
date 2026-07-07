@@ -96,3 +96,29 @@ Le module temporaire (marqué par un émoji 🚧) a été remplacé par un syst�
   * Remplacement des conteneurs statiques temporaires `#screen-gram-determinant`.
   * Raccordement au menu principal via la fonction globale `renderDeterminantMenu`.
   * Exposition des variables d'état et des fonctions interactives au scope global (`window.renderDeterminantMenu`, `window.startDeterminantExercise`, etc.) dans les deux applications.
+
+---
+
+## 5. Grandeurs : La vitesse horaire (P5-P6)
+
+Un nouveau sous-module complet sur **la vitesse horaire** a été ajouté pour les élèves de P5 et P6 :
+
+### 🎯 Fichier créé : [vitesse_situations.html](file:///Users/jeremy/antigravity/LCML/vitesse_situations.html)
+* **Concept** : 10 questions de QCM contextualisées avec des situations concrètes et variées (train, cycliste, escargot, avion, guépard, navette spatiale, piéton, etc.).
+* **Compétences évaluées** :
+  * Calcul de la vitesse moyenne ($V = D/T$)
+  * Calcul de la distance parcourue ($D = V \times T$)
+  * Calcul de la durée du trajet ($T = D/V$), avec conversions simples d'heures et minutes (ex. 1h30 ⇄ 1,5h).
+* **Interface Premium** :
+  * Disposition responsive moderne en Flex-Row (schéma vectoriel dynamique ou illustration thématique à gauche, QCM interactif à droite).
+  * Système de progression (10 questions avec barre de progression).
+  * Feedback instantané et explications pédagogiques détaillées pour chaque réponse.
+  * Score et enregistrement automatiques dans la base Firebase/Dashboard enseignant via `saveResult`.
+
+### 🗂️ Intégration dans le Dashboard & la Navigation
+* **Mise à jour des menus principaux** ([index.html](file:///Users/jeremy/antigravity/LCML/index.html) et [fiches/index.html](file:///Users/jeremy/antigravity/LCML/fiches/index.html)) :
+  * Ajout d'un bouton d'accès direct dans la section **Grandeurs** (avec icône premium de compteur de vitesse ⏱️ / ⚡).
+  * Création des écrans d'affichage `screen-grandeurs-vitesse-horaire` (sous-menu) et `screen-grandeurs-vitesse-horaire-qcm` (chargement de l'activité).
+  * Enregistrement des labels de suivi dans le dictionnaire des activités (`getActivityLabel`).
+  * Enregistrement dans la liste des activités verrouillables par défaut (`getLockedActivities`).
+  * Configuration de l'héritage de statut parent/enfant (`ACTIVITY_PARENTS`).
