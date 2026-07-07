@@ -8308,6 +8308,10 @@ const ACTIVITY_PARENTS = {
   'gram_nom': 'gram_classes',
   'gram_determinant': 'gram_classes',
   'gram_adjectif': 'gram_classes',
+  'gram_adjectif_identifier': 'gram_adjectif',
+  'gram_adjectif_accord': 'gram_adjectif',
+  'gram_adjectif_fonction': 'gram_adjectif',
+  'gram_adjectif_nom': 'gram_adjectif',
   'gram_verbe': 'gram_classes',
   'gram_pronom': 'gram_classes',
   'gram_adverbe': 'gram_classes',
@@ -31361,6 +31365,62 @@ function renderAdjectifMenu() {
     };
   }
 
+  const isTeacher = (state.role === 'teacher');
+
+  const items = [
+    {
+      id: 'gram_adjectif_identifier',
+      label: '1. Identifier les adjectifs',
+      icon: '🎨',
+      desc: "Repère tous les adjectifs qualificatifs et les adjectifs de couleur dans 10 phrases.",
+      fn: startAdjectifExercise
+    },
+    {
+      id: 'gram_adjectif_accord',
+      label: "2. Accords de l'adjectif",
+      icon: '✍️',
+      desc: "Entraîne-toi à accorder l'adjectif (genre et nombre) avec le nom qu'il qualifie dans 10 phrases.",
+      fn: startAdjectifAccordExercise
+    },
+    {
+      id: 'gram_adjectif_fonction',
+      label: '3. Épithète ou Attribut ?',
+      icon: '👑',
+      desc: "Détermine si l'adjectif souligné est épithète (lié directement) ou attribut du sujet (verbe d'état).",
+      fn: startAdjectifFonctionExercise
+    },
+    {
+      id: 'gram_adjectif_nom',
+      label: '4. Retrouver le nom qualifié',
+      icon: '🔗',
+      desc: "Retrouve le nom commun qualifié par l'adjectif mis en évidence dans 10 phrases.",
+      fn: startAdjectifNomExercise
+    }
+  ];
+
+  let cardsHtml = '';
+  items.forEach(t => {
+    const locked = isActivityLocked(t.id);
+    const toggleBtn = isTeacher
+      ? `<button class="card-teacher-toggle ${locked ? 'btn-show' : 'btn-hide'}"
+           onclick="event.stopPropagation(); toggleActivity('${t.id}'); renderAdjectifMenu();">
+           ${locked ? '🔓 Réactiver' : '🔒 Masquer'}
+         </button>`
+      : '';
+    const badge = isTeacher ? '' : renderScoreBadge(t.id);
+    const cardClass = 'sub-subject-card' + (locked && !isTeacher ? ' disabled' : ' active-card');
+    
+    cardsHtml += `
+      <div class="${cardClass}" style="position:relative;" id="btn-${t.id}">
+        ${toggleBtn}
+        <div class="sub-icon">${t.icon}</div>
+        <div class="sub-title">${t.label}</div>
+        <div class="sub-desc">${locked && !isTeacher ? '🔒 Non disponible pour le moment' : t.desc}</div>
+        ${badge}
+      </div>
+    `;
+  });
+
   container.innerHTML = `
     <div class="bg-blue-50/50 border-2 border-blue-100 rounded-3xl p-5 mb-6 shadow-[4px_4px_0px_rgba(0,0,0,0.02)]">
       <p class="text-blue-800 text-sm font-semibold flex items-center gap-2">
@@ -31369,67 +31429,21 @@ function renderAdjectifMenu() {
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <!-- EXERCICE 1: IDENTIFIER LES ADJECTIFS -->
-      <div class="sub-subject-card active-card" id="btn-adjectif-ex1">
-        <div class="sub-icon">🎨</div>
-        <div class="sub-title">1. Identifier les adjectifs</div>
-        <div class="sub-desc">Repère tous les adjectifs qualificatifs et les adjectifs de couleur dans 10 phrases.</div>
-      </div>
-
-      <!-- EXERCICE 2: ACCORD DE L'ADJECTIF -->
-      <div class="sub-subject-card active-card" id="btn-adjectif-ex2">
-        <div class="sub-icon">✍️</div>
-        <div class="sub-title">2. Accords de l'adjectif</div>
-        <div class="sub-desc">Entraîne-toi à accorder l'adjectif (genre et nombre) avec le nom qu'il qualifie dans 10 phrases.</div>
-      </div>
-
-      <!-- EXERCICE 3: ÉPITHÈTE OU ATTRIBUT ? -->
-      <div class="sub-subject-card active-card" id="btn-adjectif-ex3">
-        <div class="sub-icon">👑</div>
-        <div class="sub-title">3. Épithète ou Attribut ?</div>
-        <div class="sub-desc">Détermine si l'adjectif souligné est épithète (lié directement) ou attribut du sujet (verbe d'état).</div>
-      </div>
-
-      <!-- EXERCICE 4: RETROUVER LE NOM QUALIFIÉ -->
-      <div class="sub-subject-card active-card" id="btn-adjectif-ex4">
-        <div class="sub-icon">🔗</div>
-        <div class="sub-title">4. Retrouver le nom qualifié</div>
-        <div class="sub-desc">Retrouve le nom commun qualifié par l'adjectif mis en évidence dans 10 phrases.</div>
-      </div>
+      ${cardsHtml}
     </div>
   `;
 
-  const ex1Btn = container.querySelector('#btn-adjectif-ex1');
-  if (ex1Btn) {
-    ex1Btn.addEventListener('click', (e) => {
-      e.preventDefault();
-      startAdjectifExercise();
-    });
-  }
-
-  const ex2Btn = container.querySelector('#btn-adjectif-ex2');
-  if (ex2Btn) {
-    ex2Btn.addEventListener('click', (e) => {
-      e.preventDefault();
-      startAdjectifAccordExercise();
-    });
-  }
-
-  const ex3Btn = container.querySelector('#btn-adjectif-ex3');
-  if (ex3Btn) {
-    ex3Btn.addEventListener('click', (e) => {
-      e.preventDefault();
-      startAdjectifFonctionExercise();
-    });
-  }
-
-  const ex4Btn = container.querySelector('#btn-adjectif-ex4');
-  if (ex4Btn) {
-    ex4Btn.addEventListener('click', (e) => {
-      e.preventDefault();
-      startAdjectifNomExercise();
-    });
-  }
+  // Attach click events
+  items.forEach(t => {
+    const locked = isActivityLocked(t.id);
+    const btn = container.querySelector(`#btn-${t.id}`);
+    if (btn && !(locked && !isTeacher)) {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        t.fn();
+      });
+    }
+  });
 }
 
 
@@ -31798,7 +31812,7 @@ function showAdjectifResults() {
       student: state.student,
       cls: state.studentCls,
       className: CLASSES[state.studentCls] ? CLASSES[state.studentCls].name : state.studentCls,
-      activity: 'gram_adjectif',
+      activity: 'gram_adjectif_identifier',
       bookTitle: "Grammaire — Identifier l'adjectif",
       score,
       total,
