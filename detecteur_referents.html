@@ -1,0 +1,1358 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Le Détecteur de Référents 🔍 — P5 & P6</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=Inter:wght@300..800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-gradient: linear-gradient(135deg, #f5f3ff 0%, #e0e7ff 100%);
+      --primary: #6366f1;
+      --primary-dark: #4f46e5;
+      --primary-light: #e0e7ff;
+      --accent: #8b5cf6;
+      --accent-glow: rgba(139, 92, 246, 0.15);
+      --text: #1e1b4b;
+      --text-muted: #475569;
+      --white: #ffffff;
+      --correct: #10b981;
+      --correct-light: #d1fae5;
+      --wrong: #f43f5e;
+      --wrong-light: #ffe4e6;
+      --border-color: #1e1b4b;
+      --shadow-color: #1e1b4b;
+      --radius: 20px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-gradient);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      overflow-x: hidden;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 800px;
+      background: var(--white);
+      border: 3px solid var(--border-color);
+      border-radius: var(--radius);
+      box-shadow: 8px 8px 0px var(--shadow-color);
+      padding: 30px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Header & Progress */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+      border-bottom: 2px dashed #cbd5e1;
+      padding-bottom: 15px;
+    }
+
+    .title {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--primary-dark);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .progress-bar-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 45%;
+    }
+
+    .progress-text {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    .progress-bar-bg {
+      flex-grow: 1;
+      height: 10px;
+      background: #e2e8f0;
+      border: 2px solid var(--border-color);
+      border-radius: 9999px;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: var(--primary);
+      width: 0%;
+      transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .score-badge {
+      background: var(--primary-light);
+      border: 2px solid var(--border-color);
+      border-radius: 9999px;
+      padding: 4px 14px;
+      font-weight: 800;
+      font-size: 0.9rem;
+    }
+
+    /* Instruction */
+    .instruction-card {
+      background: #f8fafc;
+      border: 2px solid var(--border-color);
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 25px;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      box-shadow: 2px 2px 0px var(--shadow-color);
+    }
+
+    .instruction-icon {
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+
+    .instruction-text {
+      font-size: 0.95rem;
+      line-height: 1.5;
+      font-weight: 500;
+    }
+
+    /* Interactive Sentence Zone */
+    .sentence-card {
+      background: var(--white);
+      border: 3px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 35px 25px;
+      margin-bottom: 25px;
+      box-shadow: 4px 4px 0px var(--shadow-color);
+      text-align: center;
+      line-height: 2.2;
+    }
+
+    /* Word Buttons */
+    .word-token {
+      display: inline-block;
+      font-size: 1.15rem;
+      font-weight: 600;
+      padding: 2px 6px;
+      margin: 2px;
+      border-radius: 8px;
+      border: 2px solid transparent;
+      background: transparent;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.15s ease;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .word-token.clickable:hover {
+      background: #f1f5f9;
+      border-color: #94a3b8;
+      transform: translateY(-1px);
+    }
+
+    /* Target Pronoun Style */
+    .word-token.target-pronoun {
+      background: var(--primary-light);
+      border: 2px solid var(--primary);
+      color: var(--primary-dark);
+      cursor: default;
+      font-weight: 800;
+      box-shadow: 0 0 12px var(--accent-glow);
+      animation: pulse-glow 2s infinite alternate;
+    }
+
+    @keyframes pulse-glow {
+      0% {
+        box-shadow: 0 0 4px var(--accent-glow);
+      }
+      100% {
+        box-shadow: 0 0 16px rgba(99, 102, 241, 0.4);
+      }
+    }
+
+    /* Correct referent style */
+    .word-token.correct-match {
+      background: var(--correct-light) !important;
+      border-color: var(--correct) !important;
+      color: #065f46 !important;
+      font-weight: 700;
+      transform: scale(1.05);
+    }
+
+    /* Selected word style */
+    .word-token.selected {
+      background-color: #fef3c7 !important;
+      border-color: #f59e0b !important;
+      color: #b45309 !important;
+      font-weight: 700;
+    }
+
+    /* Container shake for incorrect validation */
+    .sentence-card.shake-container {
+      animation: container-shake-anim 0.4s ease;
+    }
+
+    @keyframes container-shake-anim {
+      0%, 100% { transform: translateX(0); }
+      15%, 45%, 75% { transform: translateX(-6px); }
+      30%, 60%, 90% { transform: translateX(6px); }
+    }
+
+    /* Wrong click style */
+    .word-token.wrong-match {
+      background: var(--wrong-light) !important;
+      border-color: var(--wrong) !important;
+      color: #9f1239 !important;
+      animation: shake 0.35s ease-in-out;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-4px); }
+      40%, 80% { transform: translateX(4px); }
+    }
+
+    /* Punctuation Style */
+    .punctuation-token {
+      display: inline-block;
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--text);
+      user-select: none;
+      padding: 0 2px;
+    }
+
+    /* Action Panels & Explanations */
+    .explanation-panel {
+      background: #f0fdf4;
+      border: 2px solid var(--correct);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 25px;
+      box-shadow: 3px 3px 0px var(--correct);
+      animation: slide-up 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      display: none;
+    }
+
+    @keyframes slide-up {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .explanation-title {
+      color: #065f46;
+      font-family: 'Fredoka', sans-serif;
+      font-weight: 700;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+
+    .explanation-text {
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    /* Footer & Controls */
+    .controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 15px;
+    }
+
+    .btn {
+      font-family: 'Fredoka', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      padding: 10px 22px;
+      border-radius: 12px;
+      border: 3px solid var(--border-color);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 3px 3px 0px var(--shadow-color);
+      user-select: none;
+    }
+
+    .btn-secondary {
+      background: #f1f5f9;
+      color: var(--text-muted);
+    }
+
+    .btn-secondary:hover {
+      background: #e2e8f0;
+      transform: translateY(-2px);
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: var(--white);
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+    }
+
+    .btn:active {
+      transform: translateY(2px);
+      box-shadow: 1px 1px 0px var(--shadow-color);
+    }
+
+    /* Results / Final Screen */
+    .results-screen {
+      text-align: center;
+      padding: 20px 10px;
+      display: none;
+    }
+
+    .trophy-container {
+      margin-bottom: 20px;
+      font-size: 4.5rem;
+      animation: bounce-float 2s ease-in-out infinite;
+      display: inline-block;
+    }
+
+    @keyframes bounce-float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .results-title {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 2.2rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: var(--primary-dark);
+    }
+
+    .results-subtitle {
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      margin-bottom: 25px;
+    }
+
+    .score-card {
+      background: var(--primary-light);
+      border: 3px solid var(--border-color);
+      border-radius: 20px;
+      padding: 25px;
+      max-width: 320px;
+      margin: 0 auto 30px auto;
+      box-shadow: 4px 4px 0px var(--shadow-color);
+    }
+
+    .score-value {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 3.5rem;
+      font-weight: 900;
+      color: var(--primary-dark);
+      margin-bottom: 5px;
+    }
+
+    .score-label {
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .feedback-message {
+      font-weight: 600;
+      font-size: 1.1rem;
+      margin-top: 15px;
+      color: var(--primary-dark);
+    }
+
+    #confetti-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    /* Responsive */
+    @media (max-width: 640px) {
+      .container {
+        padding: 20px;
+      }
+      .header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+      }
+      .progress-bar-container {
+        width: 100%;
+      }
+      .title {
+        font-size: 1.5rem;
+      }
+      .sentence-card {
+        padding: 20px 10px;
+      }
+      .word-token, .punctuation-token {
+        font-size: 1rem;
+      }
+      .btn {
+        padding: 8px 16px;
+        font-size: 0.9rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <canvas id="confetti-canvas"></canvas>
+
+    <!-- ÉCRAN DE JEU -->
+    <div id="game-screen">
+      <div class="header">
+        <div class="title">
+          <span>🔍</span> Le Détecteur de Référents
+        </div>
+        <div class="progress-bar-container">
+          <div class="progress-text" id="progress-text">Phrase 1 sur 6</div>
+          <div class="progress-bar-bg">
+            <div class="progress-bar-fill" id="progress-fill"></div>
+          </div>
+        </div>
+        <div class="score-badge" id="score-badge">Score : 0</div>
+      </div>
+
+      <div class="instruction-card">
+        <div class="instruction-icon">💡</div>
+        <div class="instruction-text">
+          Trouve ce que remplace le pronom en gras, violet et souligné dans la phrase. <br>
+          <strong>Sélectionne tous les mots du groupe nominal correspondant.</strong>
+        </div>
+      </div>
+
+      <!-- Zone de la phrase -->
+      <div class="sentence-card" id="sentence-zone">
+        <!-- Rempli en JS -->
+      </div>
+
+      <!-- Panel d'explication -->
+      <div class="explanation-panel" id="explanation-panel">
+        <div class="explanation-title">
+          <span>🎉</span> Superbe découverte !
+        </div>
+        <div class="explanation-text" id="explanation-text">
+          Explication de la réponse...
+        </div>
+      </div>
+
+      <!-- Contrôles du bas -->
+      <div class="controls">
+        <button class="btn btn-secondary" id="quit-btn">
+          ← Quitter
+        </button>
+        <div style="display: flex; gap: 15px;">
+          <button class="btn btn-primary" id="validate-btn">
+            Valider ➔
+          </button>
+          <button class="btn btn-primary" id="next-btn" style="display: none;">
+            Phrase suivante ➔
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ÉCRAN FINAL DE RÉSULTATS -->
+    <div id="results-screen" class="results-screen">
+      <div class="trophy-container" id="feedback-icon">🏆</div>
+      <div class="results-title" id="feedback-title">Incroyable !</div>
+      <div class="results-subtitle" id="feedback-subtitle">Tu as relevé le défi des pronoms !</div>
+
+      <div class="score-card">
+        <div class="score-value" id="final-score">0 / 6</div>
+        <div class="score-label">Score final</div>
+        <div class="feedback-message" id="final-feedback">Magnifique !</div>
+      </div>
+
+      <div class="flex gap-4 justify-center">
+        <button class="btn btn-secondary" id="back-home-btn">
+          Retourner aux cours
+        </button>
+        <button class="btn btn-primary" id="restart-btn">
+          🔄 Recommencer
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // --- SYNTHÈSE AUDIO (API Web Audio) ---
+    class SoundEffects {
+      constructor() {
+        this.ctx = null;
+      }
+      init() {
+        if (!this.ctx) {
+          this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+      }
+      playTick() {
+        this.init();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(600, now);
+        gain.gain.setValueAtTime(0.05, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.05);
+      }
+      playCorrect() {
+        this.init();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        
+        // Note 1 (Mi 5)
+        const osc1 = this.ctx.createOscillator();
+        const gain1 = this.ctx.createGain();
+        osc1.type = 'triangle';
+        osc1.frequency.setValueAtTime(659.25, now); // E5
+        gain1.gain.setValueAtTime(0.1, now);
+        gain1.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+        osc1.connect(gain1);
+        gain1.connect(this.ctx.destination);
+        osc1.start(now);
+        osc1.stop(now + 0.15);
+
+        // Note 2 (La 5)
+        const osc2 = this.ctx.createOscillator();
+        const gain2 = this.ctx.createGain();
+        osc2.type = 'triangle';
+        osc2.frequency.setValueAtTime(880.00, now + 0.08); // A5
+        gain2.gain.setValueAtTime(0.1, now + 0.08);
+        gain2.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+        osc2.connect(gain2);
+        gain2.connect(this.ctx.destination);
+        osc2.start(now + 0.08);
+        osc2.stop(now + 0.3);
+      }
+      playWrong() {
+        this.init();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(150, now);
+        osc.frequency.linearRampToValueAtTime(100, now + 0.25);
+        
+        gain.gain.setValueAtTime(0.15, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+        
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.25);
+      }
+    }
+    const sounds = new SoundEffects();
+
+    // --- DONNÉES DE L'EXERCICE ---
+    const QUESTIONS = [
+      {
+        tokens: [
+          { text: "Julie", isWord: true },
+          { text: "a", isWord: true },
+          { text: "acheté", isWord: true },
+          { text: "de", isWord: true, valIndex: 3 },
+          { text: "magnifiques", isWord: true, valIndex: 4 },
+          { text: "fleurs", isWord: true, valIndex: 5 },
+          { text: ".", isWord: false },
+          { text: "Elle", isWord: true },
+          { text: "les", isWord: true, target: true },
+          { text: "a", isWord: true },
+          { text: "offertes", isWord: true },
+          { text: "à", isWord: true },
+          { text: "sa", isWord: true },
+          { text: "mère", isWord: true },
+          { text: ".", isWord: false }
+        ],
+        correctIndices: [3, 4, 5],
+        explanation: "Le pronom personnel complément <strong>les</strong> remplace le groupe nominal <strong>de magnifiques fleurs</strong> (Elle a offert quoi ? -> les, représentant les fleurs)."
+      },
+      {
+        tokens: [
+          { text: "Le", isWord: true },
+          { text: "professeur", isWord: true },
+          { text: "sourit", isWord: true },
+          { text: "à", isWord: true, valIndex: 3 },
+          { text: "Lucas", isWord: true, valIndex: 4 },
+          { text: ".", isWord: false },
+          { text: "Il", isWord: true },
+          { text: "lui", isWord: true, target: true },
+          { text: "donne", isWord: true },
+          { text: "une", isWord: true },
+          { text: "feuille", isWord: true },
+          { text: "de", isWord: true },
+          { text: "route", isWord: true },
+          { text: ".", isWord: false }
+        ],
+        correctIndices: [3, 4],
+        explanation: "Le pronom personnel indirect <strong>lui</strong> remplace le groupe prépositionnel <strong>à Lucas</strong> (Il donne une feuille à qui ? -> à Lucas)."
+      },
+      {
+        tokens: [
+          { text: "J'ai", isWord: true },
+          { text: "lu", isWord: true },
+          { text: "un", isWord: true, valIndex: 2 },
+          { text: "livre", isWord: true, valIndex: 3 },
+          { text: "intéressant", isWord: true, valIndex: 4 },
+          { text: "qui", isWord: true, target: true },
+          { text: "parle", isWord: true },
+          { text: "des", isWord: true },
+          { text: "dinosaures", isWord: true },
+          { text: ".", isWord: false }
+        ],
+        correctIndices: [2, 3, 4],
+        explanation: "Le pronom relatif <strong>qui</strong> remplace son antécédent, le groupe nominal <strong>un livre intéressant</strong> (C'est le livre intéressant qui parle des dinosaures)."
+      },
+      {
+        tokens: [
+          { text: "Mon", isWord: true, valIndex: 0 },
+          { text: "vélo", isWord: true, valIndex: 1 },
+          { text: "bleu", isWord: true, valIndex: 2 },
+          { text: "est", isWord: true },
+          { text: "cassé", isWord: true },
+          { text: ",", isWord: false },
+          { text: "je", isWord: true },
+          { text: "vais", isWord: true },
+          { text: "donc", isWord: true },
+          { text: "utiliser", isWord: true },
+          { text: "celui-ci", isWord: true, target: true },
+          { text: ".", isWord: false }
+        ],
+        correctIndices: [0, 1, 2],
+        explanation: "Le pronom démonstratif <strong>celui-ci</strong> remplace le groupe nominal <strong>mon vélo bleu</strong>."
+      },
+      {
+        tokens: [
+          { text: "Sarah", isWord: true },
+          { text: "cherche", isWord: true },
+          { text: "sa", isWord: true, valIndex: 2 },
+          { text: "trousse", isWord: true, valIndex: 3 },
+          { text: "et", isWord: true },
+          { text: "trouve", isWord: true },
+          { text: "la sienne", isWord: true, target: true },
+          { text: "sous", isWord: true },
+          { text: "le", isWord: true },
+          { text: "bureau", isWord: true },
+          { text: ".", isWord: false }
+        ],
+        correctIndices: [2, 3],
+        explanation: "Le pronom possessif <strong>la sienne</strong> remplace le groupe nominal <strong>sa trousse</strong> (la trousse de Sarah)."
+      },
+      {
+        tokens: [
+          { text: "Nous", isWord: true },
+          { text: "adorons", isWord: true },
+          { text: "aller", isWord: true },
+          { text: "à", isWord: true, valIndex: 3 },
+          { text: "la", isWord: true, valIndex: 4 },
+          { text: "piscine", isWord: true, valIndex: 5 },
+          { text: ".", isWord: false },
+          { text: "Nous", isWord: true },
+          { text: "y", isWord: true, target: true },
+          { text: "passons", isWord: true },
+          { text: "tous", isWord: true },
+          { text: "nos", isWord: true },
+          { text: "samedis", isWord: true },
+          { text: ".", isWord: false }
+        ],
+        correctIndices: [3, 4, 5],
+        explanation: "Le pronom adverbial de lieu <strong>y</strong> remplace le groupe prépositionnel de lieu <strong>à la piscine</strong> (Nous passons nos samedis à la piscine)."
+      },
+      {
+        tokens: [
+          { text: "La", isWord: true, valIndex: 0 },
+          { text: "tarte", isWord: true, valIndex: 1 },
+          { text: "aux", isWord: true, valIndex: 2 },
+          { text: "pommes", isWord: true, valIndex: 3 },
+          { text: "que", isWord: true, target: true },
+          { text: "grand-mère", isWord: true },
+          { text: "a", isWord: true },
+          { text: "préparée", isWord: true },
+          { text: "est", isWord: true },
+          { text: "délicieuse", isWord: true },
+          { text: ".", isWord: false }
+        ],
+        correctIndices: [0, 1, 2, 3],
+        explanation: "Le pronom relatif <strong>que</strong> remplace le groupe nominal antécédent <strong>La tarte aux pommes</strong>."
+      },
+      {
+        tokens: [
+          { text: "Mes", isWord: true, valIndex: 0 },
+          { text: "petites", isWord: true, valIndex: 1 },
+          { text: "sœurs", isWord: true, valIndex: 2 },
+          { text: "jouent", isWord: true },
+          { text: "au", isWord: true },
+          { text: "ballon", isWord: true },
+          { text: ".", isWord: false },
+          { text: "Soudain", isWord: true },
+          { text: ",", isWord: false },
+          { text: "elles", isWord: true, target: true },
+          { text: "éclatent", isWord: true },
+          { text: "de", isWord: true },
+          { text: "rire", isWord: true },
+          { text: ".", isWord: false }
+        ],
+        correctIndices: [0, 1, 2],
+        explanation: "Le pronom personnel sujet <strong>elles</strong> remplace le groupe nominal sujet <strong>Mes petites sœurs</strong>."
+      },
+      {
+        tokens: [
+          { text: "J'aime", isWord: true },
+          { text: "beaucoup", isWord: true },
+          { text: "cette", isWord: true, valIndex: 2 },
+          { text: "vieille", isWord: true, valIndex: 3 },
+          { text: "maison", isWord: true, valIndex: 4 },
+          { text: ".", isWord: false },
+          { text: "Mon", isWord: true },
+          { text: "oncle", isWord: true },
+          { text: "la", isWord: true, target: true },
+          { text: "rénove", isWord: true },
+          { text: "avec", isWord: true },
+          { text: "passion", isWord: true },
+          { text: ".", isWord: false }
+        ],
+        correctIndices: [2, 3, 4],
+        explanation: "Le pronom personnel complément <strong>la</strong> remplace le groupe nominal <strong>cette vieille maison</strong> (Mon oncle rénove quoi ? -> la)."
+      },
+      {
+        tokens: [
+          { text: "C'est", isWord: true },
+          { text: "un", isWord: true, valIndex: 1 },
+          { text: "travail", isWord: true, valIndex: 2 },
+          { text: "difficile", isWord: true, valIndex: 3 },
+          { text: "dont", isWord: true, target: true },
+          { text: "je", isWord: true },
+          { text: "suis", isWord: true },
+          { text: "très", isWord: true },
+          { text: "fier", isWord: true },
+          { text: ".", isWord: false }
+        ],
+        correctIndices: [1, 2, 3],
+        explanation: "Le pronom relatif <strong>dont</strong> remplace le groupe nominal antécédent <strong>un travail difficile</strong> (Je suis très fier de ce travail)."
+      },
+      {
+        tokens: [
+          { text: "Lucas", isWord: true },
+          { text: "écrit", isWord: true },
+          { text: "à", isWord: true, valIndex: 2 },
+          { text: "ses", isWord: true, valIndex: 3 },
+          { text: "grands-parents", isWord: true, valIndex: 4 },
+          { text: ".", isWord: false },
+          { text: "Il", isWord: true },
+          { text: "leur", isWord: true, target: true },
+          { text: "raconte", isWord: true },
+          { text: "son", isWord: true },
+          { text: "voyage", isWord: true },
+          { text: "en", isWord: true },
+          { text: "Italie", isWord: true },
+          { text: ".", isWord: false }
+        ],
+        correctIndices: [2, 3, 4],
+        explanation: "Le pronom personnel complément indirect <strong>leur</strong> remplace le groupe prépositionnel <strong>à ses grands-parents</strong> (Il raconte son voyage à qui ? -> à eux)."
+      },
+      {
+        tokens: [
+          { text: "Je", isWord: true },
+          { text: "me", isWord: true },
+          { text: "souviens", isWord: true },
+          { text: "du", isWord: true, valIndex: 3 },
+          { text: "magnifique", isWord: true, valIndex: 4 },
+          { text: "village", isWord: true, valIndex: 5 },
+          { text: "où", isWord: true, target: true },
+          { text: "nous", isWord: true },
+          { text: "avons", isWord: true },
+          { text: "passé", isWord: true },
+          { text: "l'été", isWord: true },
+          { text: ".", isWord: false }
+        ],
+        correctIndices: [3, 4, 5],
+        explanation: "Le pronom relatif de lieu <strong>où</strong> remplace le groupe nominal antécédent <strong>du magnifique village</strong>."
+      },
+      {
+        tokens: [
+          { text: "Il", isWord: true },
+          { text: "reste", isWord: true },
+          { text: "du", isWord: true, valIndex: 2 },
+          { text: "gâteau", isWord: true, valIndex: 3 },
+          { text: "au", isWord: true, valIndex: 4 },
+          { text: "chocolat", isWord: true, valIndex: 5 },
+          { text: ".", isWord: false },
+          { text: "Veux-tu", isWord: true },
+          { text: "en", isWord: true, target: true },
+          { text: "manger", isWord: true },
+          { text: "une", isWord: true },
+          { text: "part", isWord: true },
+          { text: "?", isWord: false }
+        ],
+        correctIndices: [2, 3, 4, 5],
+        explanation: "Le pronom adverbial quantitatif <strong>en</strong> remplace le groupe introduit par un partitif <strong>du gâteau au chocolat</strong>."
+      },
+      {
+        tokens: [
+          { text: "J'ai", isWord: true },
+          { text: "retrouvé", isWord: true },
+          { text: "mon", isWord: true, valIndex: 2 },
+          { text: "vieux", isWord: true, valIndex: 3 },
+          { text: "livre", isWord: true, valIndex: 4 },
+          { text: "de", isWord: true, valIndex: 5 },
+          { text: "contes", isWord: true, valIndex: 6 },
+          { text: ".", isWord: false },
+          { text: "Je", isWord: true },
+          { text: "le", isWord: true, target: true },
+          { text: "lirai", isWord: true },
+          { text: "ce", isWord: true },
+          { text: "soir", isWord: true },
+          { text: "dans", isWord: true },
+          { text: "mon", isWord: true },
+          { text: "lit", isWord: true },
+          { text: ".", isWord: false }
+        ],
+        correctIndices: [2, 3, 4, 5, 6],
+        explanation: "Le pronom personnel COD <strong>le</strong> remplace le groupe nominal <strong>mon vieux livre de contes</strong>."
+      },
+      {
+        tokens: [
+          { text: "Le", isWord: true, valIndex: 0 },
+          { text: "petit", isWord: true, valIndex: 1 },
+          { text: "chien", isWord: true, valIndex: 2 },
+          { text: "blanc", isWord: true, valIndex: 3 },
+          { text: "qui", isWord: true, target: true },
+          { text: "aboie", isWord: true },
+          { text: "dans", isWord: true },
+          { text: "le", isWord: true },
+          { text: "jardin", isWord: true },
+          { text: "appartient", isWord: true },
+          { text: "au", isWord: true },
+          { text: "voisin", isWord: true },
+          { text: ".", isWord: false }
+        ],
+        correctIndices: [0, 1, 2, 3],
+        explanation: "Le pronom relatif sujet <strong>qui</strong> remplace son antécédent <strong>Le petit chien blanc</strong>."
+      },
+      {
+        tokens: [
+          { text: "Léa", isWord: true, valIndex: 0 },
+          { text: "et", isWord: true, valIndex: 1 },
+          { text: "moi", isWord: true, valIndex: 2 },
+          { text: "adorons", isWord: true },
+          { text: "le", isWord: true },
+          { text: "dessin", isWord: true },
+          { text: ".", isWord: false },
+          { text: "Nous", isWord: true, target: true },
+          { text: "dessinons", isWord: true },
+          { text: "tous", isWord: true },
+          { text: "les", isWord: true },
+          { text: "jours", isWord: true },
+          { text: "après", isWord: true },
+          { text: "l'école", isWord: true },
+          { text: ".", isWord: false }
+        ],
+        correctIndices: [0, 1, 2],
+        explanation: "Le pronom personnel sujet <strong>Nous</strong> remplace le groupe nominal sujet coordonné <strong>Léa et moi</strong>."
+      },
+      {
+        tokens: [
+          { text: "La", isWord: true, valIndex: 0 },
+          { text: "nouvelle", isWord: true, valIndex: 1 },
+          { text: "trottinette", isWord: true, valIndex: 2 },
+          { text: "que", isWord: true, target: true },
+          { text: "mes", isWord: true },
+          { text: "parents", isWord: true },
+          { text: "m'ont", isWord: true },
+          { text: "offerte", isWord: true },
+          { text: "est", isWord: true },
+          { text: "très", isWord: true },
+          { text: "rapide", isWord: true },
+          { text: ".", isWord: false }
+        ],
+        correctIndices: [0, 1, 2],
+        explanation: "Le pronom relatif COD <strong>que</strong> remplace le groupe nominal antécédent <strong>La nouvelle trottinette</strong>."
+      },
+      {
+        tokens: [
+          { text: "Le", isWord: true },
+          { text: "jardinier", isWord: true },
+          { text: "ramasse", isWord: true },
+          { text: "les", isWord: true, valIndex: 3 },
+          { text: "feuilles", isWord: true, valIndex: 4 },
+          { text: "sèches", isWord: true, valIndex: 5 },
+          { text: ".", isWord: false },
+          { text: "Il", isWord: true },
+          { text: "les", isWord: true, target: true },
+          { text: "met", isWord: true },
+          { text: "dans", isWord: true },
+          { text: "un", isWord: true },
+          { text: "grand", 'isWord': true },
+          { text: "sac", isWord: true },
+          { text: ".", isWord: false }
+        ],
+        correctIndices: [3, 4, 5],
+        explanation: "Le pronom personnel COD <strong>les</strong> remplace le groupe nominal <strong>les feuilles sèches</strong>."
+      },
+      {
+        tokens: [
+          { text: "Nous", isWord: true },
+          { text: "visiterons", isWord: true },
+          { text: "le", isWord: true, valIndex: 2 },
+          { text: "château", isWord: true, valIndex: 3 },
+          { text: "historique", isWord: true, valIndex: 4 },
+          { text: "où", isWord: true, target: true },
+          { text: "est", isWord: true },
+          { text: "né", isWord: true },
+          { text: "le", isWord: true },
+          { text: "roi", isWord: true },
+          { text: ".", isWord: false }
+        ],
+        correctIndices: [2, 3, 4],
+        explanation: "Le pronom relatif de lieu/temps <strong>où</strong> remplace le groupe nominal antécédent <strong>le château historique</strong>."
+      },
+      {
+        tokens: [
+          { text: "Maxime", isWord: true },
+          { text: "a", isWord: true },
+          { text: "prêté", isWord: true },
+          { text: "sa", isWord: true },
+          { text: "règle", isWord: true },
+          { text: "à", isWord: true, valIndex: 5 },
+          { text: "Clara", isWord: true, valIndex: 6 },
+          { text: "car", isWord: true },
+          { text: "il", isWord: true },
+          { text: "lui", isWord: true, target: true },
+          { text: "fait", isWord: true },
+          { text: "confiance", isWord: true },
+          { text: ".", isWord: false }
+        ],
+        correctIndices: [5, 6],
+        explanation: "Le pronom personnel complément indirect <strong>lui</strong> remplace le groupe prépositionnel <strong>à Clara</strong> (Il fait confiance à qui ? -> à Clara)."
+      },
+      {
+        tokens: [
+          { text: "De", isWord: true },
+          { text: "toutes", isWord: true },
+          { text: "les", isWord: true, valIndex: 2 },
+          { text: "histoires", isWord: true, valIndex: 3 },
+          { text: "de", isWord: true, valIndex: 4 },
+          { text: "monstres", isWord: true, valIndex: 5 },
+          { text: ",", isWord: false },
+          { text: "celle-ci", isWord: true, target: true },
+          { text: "est", isWord: true },
+          { text: "ma", isWord: true },
+          { text: "préférée", isWord: true },
+          { text: ".", isWord: false }
+        ],
+        correctIndices: [2, 3, 4, 5],
+        explanation: "Le pronom démonstratif <strong>celle-ci</strong> remplace le groupe nominal <strong>les histoires de monstres</strong>."
+      },
+      {
+        tokens: [
+          { text: "Ton", isWord: true, valIndex: 0 },
+          { text: "gâteau", isWord: true, valIndex: 1 },
+          { text: "a", isWord: true },
+          { text: "l'air", isWord: true },
+          { text: "délicieux", isWord: true },
+          { text: ",", isWord: false },
+          { text: "mais", isWord: true },
+          { text: "le mien", isWord: true, target: true },
+          { text: "est", isWord: true },
+          { text: "au", isWord: true },
+          { text: "chocolat", isWord: true },
+          { text: ".", isWord: false }
+        ],
+        correctIndices: [0, 1],
+        explanation: "Le pronom possessif <strong>le mien</strong> remplace le groupe nominal <strong>ton gâteau</strong> (mon gâteau à moi)."
+      },
+      {
+        tokens: [
+          { text: "C'est", isWord: true },
+          { text: "une", isWord: true, valIndex: 1 },
+          { text: "splendide", isWord: true, valIndex: 2 },
+          { text: "région", isWord: true, valIndex: 3 },
+          { text: "dont", isWord: true, target: true },
+          { text: "tout", isWord: true },
+          { text: "le", isWord: true },
+          { text: "monde", isWord: true },
+          { text: "admire", isWord: true },
+          { text: "les", isWord: true },
+          { text: "paysages", isWord: true },
+          { text: ".", isWord: false }
+        ],
+        correctIndices: [1, 2, 3],
+        explanation: "Le pronom relatif <strong>dont</strong> remplace le groupe nominal antécédent <strong>une splendide région</strong> (Tout le monde admire les paysages de cette région)."
+      },
+      {
+        tokens: [
+          { text: "Les", isWord: true, valIndex: 0 },
+          { text: "élèves", isWord: true, valIndex: 1 },
+          { text: "écoutent", isWord: true },
+          { text: "le", isWord: true },
+          { text: "maître", isWord: true },
+          { text: "attentivement", isWord: true },
+          { text: ".", isWord: false },
+          { text: "Ils", isWord: true, target: true },
+          { text: "notent", isWord: true },
+          { text: "les", isWord: true },
+          { text: "devoirs", isWord: true },
+          { text: "dans", isWord: true },
+          { text: "l'agenda", isWord: true },
+          { text: ".", isWord: false }
+        ],
+        correctIndices: [0, 1],
+        explanation: "Le pronom personnel sujet <strong>Ils</strong> remplace le groupe nominal sujet <strong>Les élèves</strong>."
+      }
+    ];
+
+    // --- ÉTAT DU JEU ---
+    let state = {
+      currentIndex: 0,
+      score: 0,
+      submitted: false,
+      incorrectAttempts: 0,
+      selectedIndices: [],
+      questions: []
+    };
+
+    // --- SÉLECTEURS ---
+    const gameScreen = document.getElementById('game-screen');
+    const resultsScreen = document.getElementById('results-screen');
+    const sentenceZone = document.getElementById('sentence-zone');
+    const explanationPanel = document.getElementById('explanation-panel');
+    const explanationText = document.getElementById('explanation-text');
+    const progressText = document.getElementById('progress-text');
+    const progressFill = document.getElementById('progress-fill');
+    const scoreBadge = document.getElementById('score-badge');
+    const validateBtn = document.getElementById('validate-btn');
+    const nextBtn = document.getElementById('next-btn');
+    const quitBtn = document.getElementById('quit-btn');
+    const restartBtn = document.getElementById('restart-btn');
+    const backHomeBtn = document.getElementById('back-home-btn');
+
+    // --- UTILS ---
+    function shuffle(array) {
+      const arr = [...array];
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    // --- INITIALISATION ---
+    function initGame() {
+      state.currentIndex = 0;
+      state.score = 0;
+      state.submitted = false;
+      state.incorrectAttempts = 0;
+      state.questions = shuffle(QUESTIONS).slice(0, 10);
+      
+      scoreBadge.textContent = "Score : 0";
+      gameScreen.style.display = 'block';
+      resultsScreen.style.display = 'none';
+      
+      loadQuestion();
+    }
+
+    function loadQuestion() {
+      state.submitted = false;
+      state.incorrectAttempts = 0;
+      state.selectedIndices = [];
+      validateBtn.style.display = 'inline-flex';
+      nextBtn.style.display = 'none';
+      explanationPanel.style.display = 'none';
+      sentenceZone.classList.remove('shake-container');
+
+      const question = state.questions[state.currentIndex];
+      
+      // Progress UI
+      progressText.textContent = `Phrase ${state.currentIndex + 1} sur ${state.questions.length}`;
+      const pct = (state.currentIndex / state.questions.length) * 100;
+      progressFill.style.width = `${pct}%`;
+
+      // Render sentence tokens
+      sentenceZone.innerHTML = '';
+      question.tokens.forEach((tok, index) => {
+        if (tok.isWord) {
+          const btn = document.createElement('button');
+          btn.className = 'word-token clickable';
+          btn.textContent = tok.text;
+          btn.setAttribute('data-idx', index);
+          
+          if (tok.target) {
+            btn.className = 'word-token target-pronoun';
+            btn.disabled = true;
+          }
+
+          btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            handleWordClick(index, btn);
+          });
+
+          sentenceZone.appendChild(btn);
+        } else {
+          const span = document.createElement('span');
+          span.className = 'punctuation-token';
+          span.textContent = tok.text;
+          sentenceZone.appendChild(span);
+        }
+      });
+    }
+
+    function handleWordClick(clickedIdx, btnElement) {
+      if (state.submitted) return;
+
+      sounds.playTick();
+
+      const idxPos = state.selectedIndices.indexOf(clickedIdx);
+      if (idxPos > -1) {
+        // Deselect
+        state.selectedIndices.splice(idxPos, 1);
+        btnElement.classList.remove('selected');
+      } else {
+        // Select
+        state.selectedIndices.push(clickedIdx);
+        btnElement.classList.add('selected');
+      }
+    }
+
+    function handleValidation() {
+      if (state.submitted) return;
+      
+      const question = state.questions[state.currentIndex];
+      
+      // Check if selection matches correct indices exactly
+      const selected = state.selectedIndices;
+      const correct = question.correctIndices;
+      
+      const isCorrect = selected.length === correct.length && selected.every(idx => correct.includes(idx));
+
+      if (isCorrect) {
+        // Success
+        state.submitted = true;
+        sounds.playCorrect();
+
+        // Style all selected words as correct matches
+        question.correctIndices.forEach(idx => {
+          const btn = sentenceZone.querySelector(`[data-idx="${idx}"]`);
+          if (btn) {
+            btn.className = 'word-token correct-match';
+          }
+        });
+
+        // Add to score if no incorrect validation attempts
+        if (state.incorrectAttempts === 0) {
+          state.score++;
+          scoreBadge.textContent = `Score : ${state.score}`;
+        }
+
+        // Show explanation and controls
+        explanationText.innerHTML = question.explanation;
+        explanationPanel.style.display = 'block';
+        validateBtn.style.display = 'none';
+        nextBtn.style.display = 'inline-flex';
+      } else {
+        // Fail
+        sounds.playWrong();
+        state.incorrectAttempts++;
+        
+        // Shake the container card
+        sentenceZone.classList.remove('shake-container');
+        void sentenceZone.offsetWidth; // Trigger reflow to restart animation
+        sentenceZone.classList.add('shake-container');
+
+        // Shake any selected words that are incorrect
+        selected.forEach(idx => {
+          if (!correct.includes(idx)) {
+            const btn = sentenceZone.querySelector(`[data-idx="${idx}"]`);
+            if (btn) {
+              btn.classList.add('wrong-match');
+              setTimeout(() => {
+                btn.classList.remove('wrong-match');
+              }, 400);
+            }
+          }
+        });
+
+        // Désélectionner tous les mots après validation incorrecte
+        sentenceZone.querySelectorAll('.word-token.selected').forEach(btn => {
+          btn.classList.remove('selected');
+        });
+        state.selectedIndices = [];
+      }
+    }
+
+    function handleNext() {
+      state.currentIndex++;
+      if (state.currentIndex < state.questions.length) {
+        loadQuestion();
+      } else {
+        showResults();
+      }
+    }
+
+    function showResults() {
+      gameScreen.style.display = 'none';
+      resultsScreen.style.display = 'block';
+      
+      const finalScore = document.getElementById('final-score');
+      finalScore.textContent = `${state.score} / ${state.questions.length}`;
+
+      const titleEl = document.getElementById('feedback-title');
+      const textEl = document.getElementById('final-feedback');
+      const iconEl = document.getElementById('feedback-icon');
+
+      if (state.score === state.questions.length) {
+        iconEl.textContent = '🏆';
+        titleEl.textContent = 'Parfait !';
+        textEl.textContent = 'Incroyable ! Tu es un véritable maître des pronoms et des anaphores !';
+        startConfetti();
+      } else if (state.score >= 7) {
+        iconEl.textContent = '🌟';
+        titleEl.textContent = 'Félicitations !';
+        textEl.textContent = 'Excellent travail ! Tu as très bien compris le rôle des pronoms.';
+        startConfetti();
+      } else if (state.score >= 4) {
+        iconEl.textContent = '👍';
+        titleEl.textContent = 'Bel effort !';
+        textEl.textContent = 'Tu y es presque. Relis bien les explications pour progresser davantage.';
+      } else {
+        iconEl.textContent = '🌱';
+        titleEl.textContent = 'Continue d\'apprendre !';
+        textEl.textContent = 'N\'hésite pas à refaire l\'exercice pour t\'entraîner et maîtriser les pronoms.';
+      }
+    }
+
+    // --- CONFETTI ANIMATION ---
+    function startConfetti() {
+      const canvas = document.getElementById('confetti-canvas');
+      const ctx = canvas.getContext('2d');
+      
+      // Ajuster la taille
+      canvas.width = canvas.parentElement.clientWidth;
+      canvas.height = canvas.parentElement.clientHeight;
+
+      const colors = ['#6366f1', '#8b5cf6', '#10b981', '#f43f5e', '#fbbf24'];
+      const particles = Array.from({ length: 120 }, () => ({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height - canvas.height,
+        r: Math.random() * 6 + 4,
+        d: Math.random() * canvas.height,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        tilt: Math.random() * 10 - 5,
+        tiltAngleIncremental: Math.random() * 0.07 + 0.02,
+        tiltAngle: 0
+      }));
+
+      function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        particles.forEach((p, idx) => {
+          p.tiltAngle += p.tiltAngleIncremental;
+          p.y += (Math.cos(p.d) + 3 + p.r / 2) / 2;
+          p.x += Math.sin(p.tiltAngle);
+          p.tilt = Math.sin(p.tiltAngle - idx / 3) * 15;
+
+          ctx.beginPath();
+          ctx.lineWidth = p.r;
+          ctx.strokeStyle = p.color;
+          ctx.moveTo(p.x + p.tilt + p.r / 2, p.y);
+          ctx.lineTo(p.x + p.tilt, p.y + p.tilt + p.r / 2);
+          ctx.stroke();
+        });
+
+        // Loop / Update
+        let active = false;
+        particles.forEach(p => {
+          if (p.y < canvas.height) {
+            active = true;
+          }
+        });
+
+        if (active) {
+          requestAnimationFrame(draw);
+        } else {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+      }
+
+      draw();
+    }
+
+    // --- ÉVÉNEMENTS ---
+    validateBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      handleValidation();
+    });
+
+    nextBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      handleNext();
+    });
+
+    restartBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      initGame();
+    });
+
+    quitBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (confirm('Es-tu sûr de vouloir quitter cet exercice ?')) {
+        window.location.href = 'index.html'; // Retour au hub central
+      }
+    });
+
+    backHomeBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      window.location.href = 'index.html';
+    });
+
+    // Lancer au démarrage
+    window.addEventListener('load', initGame);
+  </script>
+</body>
+</html>
