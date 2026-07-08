@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Régions et Communautés de Belgique — Leçon Interactive</title>
+
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+<!-- TailwindCSS CDN -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    corePlugins: {
+      preflight: false,
+    },
+    theme: {
+      extend: {
+        borderWidth: {
+          '3': '3px',
+        },
+        fontFamily: {
+          sans: ['Nunito', 'sans-serif'],
+          display: ['Fredoka', 'sans-serif'],
+          mono: ['Space Mono', 'monospace'],
+        }
+      }
+    }
+  }
+</script>
+
+<style>
+  :root {
+    --paper: #f8fafc;
+    --grid-line: #e2e8f0;
+    --card: #ffffff;
+    --ink: #1e293b;
+    --ink-soft: #475569;
+    
+    /* Couleurs des Régions */
+    --reg-flandre: #fde047;       /* Jaune doux */
+    --reg-wallonie: #fca5a5;      /* Rouge/Rose doux */
+    --reg-bruxelles: #93c5fd;     /* Bleu doux */
+    
+    /* Couleurs des Communautés */
+    --com-flamande: #eab308;      /* Jaune vif */
+    --com-francaise: #ec4899;     /* Rose vif */
+    --com-germanophone: #10b981;  /* Vert émeraude */
+    
+    --ok: #10b981;
+    --ok-soft: #ecfdf5;
+    --bad: #ef4444;
+    --bad-soft: #fef2f2;
+    --shadow: 4px 4px 0px #1e293b;
+    --shadow-active: 1px 1px 0px #1e293b;
+    --radius: 16px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Nunito', sans-serif;
+    color: var(--ink);
+    background-color: var(--paper);
+    background-image:
+      linear-gradient(var(--grid-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+    background-size: 26px 26px;
+    min-height: 100vh;
+    padding-bottom: 60px;
+    line-height: 1.5;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 700;
+  }
+
+  .wrap {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+
+  /* FLAT 3D DESIGNS */
+  .box-3d {
+    background: var(--card);
+    border: 3px solid var(--ink);
+    box-shadow: var(--shadow);
+    border-radius: var(--radius);
+    transition: all 0.15s ease;
+  }
+
+  .btn-3d {
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 700;
+    border: 3px solid var(--ink) !important;
+    box-shadow: var(--shadow);
+    transition: all 0.1s ease;
+    cursor: pointer;
+    user-select: none;
+  }
+  .btn-3d:active {
+    transform: translate(3px, 3px);
+    box-shadow: var(--shadow-active);
+  }
+  .btn-3d.active {
+    background-color: var(--ink) !important;
+    color: #ffffff !important;
+    transform: translate(3px, 3px);
+    box-shadow: none;
+  }
+
+  /* SVG MAP INTERACTION */
+  .map-path {
+    stroke: var(--ink);
+    stroke-width: 3px;
+    stroke-linejoin: round;
+    transition: fill 0.3s ease, filter 0.2s ease, opacity 0.2s ease;
+    cursor: pointer;
+  }
+  .map-path:hover {
+    filter: brightness(1.05) drop-shadow(0px 4px 8px rgba(30,41,59,0.15));
+    stroke-width: 4px;
+  }
+
+  .bruxelles-point {
+    stroke: var(--ink);
+    stroke-width: 3px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+  .bruxelles-point:hover {
+    r: 15;
+    stroke-width: 4px;
+  }
+
+  /* ANIMATIONS */
+  @keyframes pop {
+    0% { transform: scale(0.95); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  .animate-pop {
+    animation: pop 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <!-- En-tête -->
+  <header class="box-3d p-6 mb-8 bg-white flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div>
+      <span class="inline-block bg-sky-100 text-sky-800 text-xs px-3 py-1 rounded-full font-bold uppercase tracking-wider mb-2 border-2 border-slate-900">🌍 Géographie de la Belgique</span>
+      <h1 class="text-3xl md:text-4xl text-slate-900">Régions et Communautés</h1>
+      <p class="text-slate-600 mt-1">Découvre comment notre pays est organisé et teste tes connaissances.</p>
+    </div>
+    <div class="flex items-center gap-3">
+      <div class="p-3 bg-amber-100 border-2 border-slate-900 rounded-xl flex items-center justify-center text-3xl font-bold">
+        🇧🇪
+      </div>
+    </div>
+  </header>
+
+  <!-- Sélecteur de Calques / Modes -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+    <button onclick="switchMode('regions')" id="btn-regions" class="btn-3d active bg-amber-50 text-slate-800 text-left p-5 rounded-2xl flex items-center gap-4 w-full">
+      <span class="text-3xl p-2 bg-yellow-100 border-2 border-slate-900 rounded-xl">🗺️</span>
+      <div>
+        <h3 class="text-xl">Le Calque des 3 Régions</h3>
+        <p class="text-xs font-normal opacity-90 text-slate-600">Divisé selon le <strong class="underline">territoire</strong> (économie, routes, nature).</p>
+      </div>
+    </button>
+
+    <button onclick="switchMode('communautes')" id="btn-communautes" class="btn-3d bg-pink-50 text-slate-800 text-left p-5 rounded-2xl flex items-center gap-4 w-full">
+      <span class="text-3xl p-2 bg-pink-100 border-2 border-slate-900 rounded-xl">🗣️</span>
+      <div>
+        <h3 class="text-xl">Le Calque des 3 Communautés</h3>
+        <p class="text-xs font-normal opacity-90 text-slate-600">Divisé selon la <strong class="underline">langue et la culture</strong> (écoles, médias).</p>
+      </div>
+    </button>
+  </div>
+
+  <!-- Contenu Principal : Carte + Infos -->
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-8 items-start">
+    
+    <!-- Zone de la carte -->
+    <div class="box-3d p-4 bg-white lg:col-span-7 flex flex-col items-center">
+      <div class="w-full flex items-center justify-between mb-4 border-b-2 border-slate-100 pb-2">
+        <span id="map-title" class="font-display font-bold text-lg text-slate-800">Les Régions de Belgique</span>
+        <div class="flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+          <span class="text-xs text-slate-500 font-mono">Carte interactive</span>
+        </div>
+      </div>
+
+      <!-- Carte SVG de la Belgique -->
+      <div class="w-full max-w-[550px] relative">
+        <svg viewBox="0 0 600 380" class="w-full h-auto drop-shadow-[4px_4px_0px_#1e293b]">
+          <!-- Définitions pour les hachures de Bruxelles en mode Communauté -->
+          <defs>
+            <pattern id="brux-stripes" width="10" height="10" patternTransform="rotate(45 0 0)" patternUnits="userSpaceOnUse">
+              <rect width="10" height="10" fill="#ec4899" />
+              <line x1="0" y1="0" x2="0" y2="10" stroke="#eab308" stroke-width="5" />
+            </pattern>
+          </defs>
+
+          <!-- Zone 1 : Flandre -->
+          <path id="path-flandre" class="map-path" 
+                d="M 30,120 L 100,85 L 180,75 L 240,75 L 285,60 L 320,105 L 350,115 L 375,160 L 375,180 L 300,180 L 220,185 L 150,195 L 100,185 L 30,140 Z" 
+                onclick="clickZone('flandre')" onmouseover="hoverZone('flandre')" onmouseout="leaveZone()"/>
+
+          <!-- Zone 2 : Wallonie Francophone -->
+          <path id="path-wallonie-fr" class="map-path" 
+                d="M 30,140 L 100,185 L 150,195 L 220,185 L 300,180 L 375,180 L 375,160 L 440,155 L 440,200 L 410,240 L 410,310 L 370,320 L 300,300 L 200,300 L 120,270 L 60,240 Z" 
+                onclick="clickZone('wallonie_fr')" onmouseover="hoverZone('wallonie_fr')" onmouseout="leaveZone()"/>
+
+          <!-- Zone 3 : Wallonie Germanophone (Cantons de l'Est) -->
+          <path id="path-wallonie-de" class="map-path" 
+                d="M 440,155 L 480,160 L 520,210 L 500,270 L 460,320 L 410,310 L 410,240 L 440,200 L 440,155 Z" 
+                onclick="clickZone('wallonie_de')" onmouseover="hoverZone('wallonie_de')" onmouseout="leaveZone()"/>
+
+          <!-- Zone 4 : Bruxelles-Capitale (Agrandie volontairement pour cliquabilité) -->
+          <circle id="point-bruxelles" cx="240" cy="155" r="13" class="bruxelles-point"
+                  onclick="clickZone('bruxelles')" onmouseover="hoverZone('bruxelles')" onmouseout="leaveZone()"/>
+
+          <!-- Textes des étiquettes (dynamiques) -->
+          <g style="pointer-events: none;">
+            <text id="lbl-flandre" x="180" y="115" text-anchor="middle" font-family="Fredoka" font-size="15px" fill="#1e293b" font-weight="bold">Flandre</text>
+            <text id="lbl-wallonie" x="220" y="250" text-anchor="middle" font-family="Fredoka" font-size="15px" fill="#1e293b" font-weight="bold">Wallonie</text>
+            <text id="lbl-germano" x="465" y="240" text-anchor="middle" font-family="Fredoka" font-size="9px" fill="#1e293b" font-weight="bold">Ostbelgien</text>
+            <text id="lbl-bruxelles" x="240" y="132" text-anchor="middle" font-family="Fredoka" font-size="13px" fill="#1e293b" font-weight="bold">Bruxelles</text>
+          </g>
+        </svg>
+      </div>
+
+      <!-- Légende Dynamique -->
+      <div id="legend-container" class="w-full mt-6 bg-slate-50 border-2 border-slate-900 rounded-xl p-4 flex flex-wrap gap-4 justify-around text-sm font-semibold">
+        <!-- Rempli par le script -->
+      </div>
+    </div>
+
+    <!-- Panneau latéral d'information -->
+    <div class="lg:col-span-5 flex flex-col gap-6 w-full">
+      <!-- Explication générale du calque actif -->
+      <div class="box-3d p-5 bg-white border-sky-400">
+        <h3 id="panel-title" class="text-xl text-sky-800 mb-2 flex items-center gap-2">
+          <span>💡</span> Le savais-tu ?
+        </h3>
+        <p id="panel-intro" class="text-sm text-slate-600">
+          En Belgique, on a découpé le pays en **Régions** pour gérer les choses pratiques du quotidien lié au sol (routes, économie). On l'a aussi découpé en **Communautés** pour que chaque groupe linguistique puisse gérer ses propres écoles et sa culture !
+        </p>
+      </div>
+
+      <!-- Carte d'identité dynamique du territoire survolé / cliqué -->
+      <div id="info-card" class="box-3d p-6 bg-white flex-1 flex flex-col justify-center items-center text-center text-slate-500 min-h-[220px]">
+        <div class="text-5xl mb-3">👈</div>
+        <p class="font-display font-semibold text-lg text-slate-800">Clique ou survole une zone</p>
+        <p class="text-sm mt-1 text-slate-500">Découvre sa capitale, ses langues et ses rôles dans la vie de tous les jours.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section interactive de Quiz -->
+  <section class="box-3d p-6 bg-amber-50 border-amber-500">
+    <div class="border-b-2 border-amber-900 pb-3 mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div>
+        <h2 class="text-2xl text-amber-900">Atelier Pratique : Qui gère quoi ?</h2>
+        <p class="text-xs text-slate-600">Associe les situations réelles à la bonne institution !</p>
+      </div>
+      <div class="font-mono text-sm bg-white border-2 border-slate-900 px-3 py-1 rounded-lg" id="quiz-progress">
+        Question : 1 / 6
+      </div>
+    </div>
+
+    <!-- Écran de Jeu Actif -->
+    <div id="quiz-play-screen">
+      <div class="bg-white border-3 border-slate-900 p-6 rounded-2xl mb-6 relative">
+        <span class="absolute top-0 right-0 transform translate-x-2 -translate-y-3 bg-amber-200 text-slate-800 font-bold border-2 border-slate-900 px-2 py-0.5 rounded text-xs">Situation</span>
+        <p id="quiz-question" class="text-lg md:text-xl font-bold text-slate-800 text-center py-4">
+          Le bus scolaire TEC change son trajet pour s'arrêter plus près d'une école.
+        </p>
+      </div>
+
+      <!-- Boutons de Réponses -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <button onclick="submitAnswer('region')" class="btn-3d bg-yellow-100 hover:bg-yellow-200 text-slate-800 py-4 px-6 rounded-2xl text-center w-full">
+          <span class="block text-2xl mb-1">🗺️</span>
+          <span class="font-display text-lg font-bold block">C'est la RÉGION</span>
+          <span class="block text-xs opacity-75 mt-1">(Territoire, transport, routes)</span>
+        </button>
+
+        <button onclick="submitAnswer('communaute')" class="btn-3d bg-pink-100 hover:bg-pink-200 text-slate-800 py-4 px-6 rounded-2xl text-center w-full">
+          <span class="block text-2xl mb-1">🗣️</span>
+          <span class="font-display text-lg font-bold block">C'est la COMMUNAUTÉ</span>
+          <span class="block text-xs opacity-75 mt-1">(Langues, écoles, culture)</span>
+        </button>
+      </div>
+
+      <!-- Feedback de réponse -->
+      <div id="quiz-feedback" class="hidden mt-6 p-4 rounded-xl border-3 border-slate-900 flex items-start gap-3">
+        <span id="feedback-icon" class="text-2xl p-1 bg-white border-2 border-slate-900 rounded-lg"></span>
+        <div>
+          <h4 id="feedback-title" class="font-bold text-lg"></h4>
+          <p id="feedback-desc" class="text-sm mt-1 text-slate-700"></p>
+          <button onclick="nextQuestion()" class="btn-3d mt-3 bg-white hover:bg-slate-50 text-slate-800 text-xs px-4 py-2 rounded-lg font-bold uppercase">
+            Continuer ➔
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Écran de Résultat Final -->
+    <div id="quiz-end-screen" class="hidden text-center py-8">
+      <div class="text-6xl mb-4">🏆</div>
+      <h3 class="text-3xl text-slate-900 mb-2 font-display">Entraînement terminé !</h3>
+      <p class="text-slate-600 mb-6 max-w-md mx-auto">
+        Tu as obtenu un score de <strong class="text-lg text-slate-900" id="final-score">5 / 6</strong>. Tu commences à bien comprendre le fonctionnement de la Belgique !
+      </p>
+      <button onclick="resetQuiz()" class="btn-3d bg-white hover:bg-slate-50 text-slate-800 px-6 py-3 rounded-xl font-bold">
+        🔄 Recommencer le défi
+      </button>
+    </div>
+  </section>
+</div>
+
+<script>
+  // --- ÉTAT DE L'APPLICATION ---
+  let currentMode = 'regions'; // 'regions' ou 'communautes'
+  let activeZone = null;
+
+  // --- DONNÉES GÉOGRAPHIQUES ---
+  const GEOGRAPHY_DATA = {
+    regions: {
+      intro: "La Belgique est divisée en **3 Régions**. Elles s'occupent des matières de territoire : transports, travaux publics, environnement, aménagement du territoire et économie.",
+      zones: {
+        flandre: {
+          title: "La Région Flamande",
+          sub: "Région (Nord du pays)",
+          capital: "Bruxelles",
+          languages: "Néerlandais",
+          roles: [
+            "Gère les transports en bus (De Lijn) en Flandre.",
+            "S'occupe des autoroutes, de la nature et de l'agriculture au Nord.",
+            "Aide les entreprises flamandes à se développer."
+          ],
+          color: "var(--reg-flandre)"
+        },
+        wallonie_fr: {
+          title: "La Région Wallonne",
+          sub: "Région (Sud du pays)",
+          capital: "Namur (siège de la Région)",
+          languages: "Français (principalement)",
+          roles: [
+            "Gère le réseau de transports wallons TEC.",
+            "Gère la réparation et l'entretien des routes et autoroutes wallonnes.",
+            "Protège la faune et la flore (Hautes Fagnes, forêts d'Ardennes)."
+          ],
+          color: "var(--reg-wallonie)"
+        },
+        wallonie_de: {
+          title: "La Région Wallonne",
+          sub: "Région (Sud du pays)",
+          capital: "Namur (siège de la Région)",
+          languages: "Allemand (minorité locale)",
+          roles: [
+            "Fait partie intégrante de la Région wallonne pour le territoire.",
+            "Les transports et routes y sont gérés par la Région wallonne.",
+            "L'entretien des parcs naturels locaux dépend de la Région wallonne."
+          ],
+          color: "var(--reg-wallonie)" // Même couleur que Wallonie FR car c'est la même Région
+        },
+        bruxelles: {
+          title: "La Région de Bruxelles-Capitale",
+          sub: "Région (Au centre)",
+          capital: "Bruxelles",
+          languages: "Français et Néerlandais (bilingue)",
+          roles: [
+            "Gère le métro, les trams et bus de Bruxelles (STIB).",
+            "Gère la propreté publique, le ramassage des déchets et les pompiers.",
+            "Gère l'aménagement des quartiers et le logement."
+          ],
+          color: "var(--reg-bruxelles)"
+        }
+      },
+      legend: [
+        { name: "Région Flamande", color: "var(--reg-flandre)" },
+        { name: "Région Wallonne", color: "var(--reg-wallonie)" },
+        { name: "Région de Bruxelles-Capitale", color: "var(--reg-bruxelles)" }
+      ]
+    },
+    communautes: {
+      intro: "La Belgique est divisée en **3 Communautés**. Elles s'occupent des matières de personnes liées à la langue et à la culture : écoles, universités, bibliothèques, musées, sports et médias.",
+      zones: {
+        flandre: {
+          title: "La Communauté Flamande",
+          sub: "Communauté (Flandre + Bruxellois flamands)",
+          capital: "Bruxelles",
+          languages: "Néerlandais",
+          roles: [
+            "S'occupe des écoles et universités néerlandophones (en Flandre et à Bruxelles).",
+            "Gère la radio et télévision publique flamande (VRT).",
+            "Subventionne la culture, le sport et la jeunesse en langue néerlandaise."
+          ],
+          color: "var(--com-flamande)"
+        },
+        wallonie_fr: {
+          title: "La Communauté Française",
+          sub: "Aussi appelée « Fédération Wallonie-Bruxelles »",
+          capital: "Bruxelles",
+          languages: "Français",
+          roles: [
+            "S'occupe de toutes les écoles et universités francophones (en Wallonie et à Bruxelles).",
+            "Gère la radio-télévision publique francophone (RTBF).",
+            "Subventionne la culture francophone (théâtres, cinéma, auteurs, bibliothèques)."
+          ],
+          color: "var(--com-francaise)"
+        },
+        wallonie_de: {
+          title: "La Communauté Germanophone",
+          sub: "Communauté (9 communes de l'Est)",
+          capital: "Eupen",
+          languages: "Allemand",
+          roles: [
+            "S'occupe de l'enseignement en langue allemande.",
+            "Organise la culture et la radio publique en allemand (BRF).",
+            "Gère le secteur de la santé locale et des aides aux personnes âgées."
+          ],
+          color: "var(--com-germanophone)"
+        },
+        bruxelles: {
+          title: "Bruxelles (Zone Bilingue)",
+          sub: "Territoire commun aux communautés",
+          capital: "Bruxelles",
+          languages: "Français et Néerlandais",
+          roles: [
+            "Bruxelles n'a pas sa propre communauté.",
+            "Les élèves bruxellois francophones vont dans des écoles de la Communauté française.",
+            "Les élèves bruxellois néerlandophones vont dans des écoles de la Communauté flamande."
+          ],
+          color: "url(#brux-stripes)"
+        }
+      },
+      legend: [
+        { name: "Communauté Flamande", color: "var(--com-flamande)" },
+        { name: "Communauté Française (FWB)", color: "var(--com-francaise)" },
+        { name: "Communauté Germanophone", color: "var(--com-germanophone)" },
+        { name: "Bruxelles (Française & Flamande)", color: "url(#brux-stripes)" }
+      ]
+    }
+  };
+
+  // --- LE JEU DU QUIZ ---
+  const QUIZ_QUESTIONS = [
+    {
+      text: "On répare les trous sur la route nationale qui va de Namur à Liège.",
+      answer: "region",
+      explanation: "C'est la Région (Wallonne) qui s'occupe des routes et des infrastructures sur son territoire."
+    },
+    {
+      text: "Ton école primaire achète de nouveaux dictionnaires pour la rentrée scolaire.",
+      answer: "communaute",
+      explanation: "C'est la Communauté (Française / Fédération Wallonie-Bruxelles) qui gère l'enseignement et les écoles."
+    },
+    {
+      text: "Créer une émission de télévision pour les jeunes sur la chaîne publique RTBF.",
+      answer: "communaute",
+      explanation: "C'est la Communauté qui est responsable des médias de sa langue, comme la RTBF ou la VRT."
+    },
+    {
+      text: "Créer une réserve naturelle pour protéger les oiseaux dans les Hautes Fagnes.",
+      answer: "region",
+      explanation: "C'est la Région qui s'occupe de la protection de l'environnement et de la nature sur son sol."
+    },
+    {
+      text: "Organiser les lignes et les bus de la STIB pour circuler dans la ville de Bruxelles.",
+      answer: "region",
+      explanation: "Les transports publics (comme la STIB, le TEC ou De Lijn) dépendent de la Région."
+    },
+    {
+      text: "Aider un club de sport de langue allemande à acheter du matériel pour ses gymnastes.",
+      answer: "communaute",
+      explanation: "Le sport, la jeunesse et la culture dépendent des Communautés, ici la Communauté germanophone."
+    }
+  ];
+
+  let currentQuestionIndex = 0;
+  let score = 0;
+
+  // --- GESTION DU SON (Web Audio API) ---
+  function playSound(type) {
+    try {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const now = ctx.currentTime;
+      
+      if (type === 'success') {
+        const notes = [261.63, 329.63, 392.00, 523.25]; // Do-Mi-Sol-Do
+        notes.forEach((freq, i) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(freq, now + i * 0.08);
+          gain.gain.setValueAtTime(0.15, now + i * 0.08);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.08 + 0.3);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now + i * 0.08);
+          osc.stop(now + i * 0.08 + 0.35);
+        });
+      } else if (type === 'error') {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(130.81, now);
+        osc.frequency.linearRampToValueAtTime(80.00, now + 0.25);
+        gain.gain.setValueAtTime(0.2, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.28);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.3);
+      }
+    } catch(e) {
+      console.warn("Audio non disponible ou bloqué par le navigateur", e);
+    }
+  }
+
+  // --- LOGIQUE DES CALQUES ET DE LA CARTE ---
+
+  function switchMode(mode) {
+    currentMode = mode;
+    
+    document.getElementById('btn-regions').classList.toggle('active', mode === 'regions');
+    document.getElementById('btn-communautes').classList.toggle('active', mode === 'communautes');
+
+    const data = GEOGRAPHY_DATA[mode];
+    document.getElementById('map-title').innerText = mode === 'regions' ? 'Les Régions de Belgique' : 'Les Communautés de Belgique';
+    document.getElementById('panel-title').innerHTML = mode === 'regions' ? '<span>🗺️</span> Le rôle des Régions' : '<span>🗣️</span> Le rôle des Communautés';
+    document.getElementById('panel-intro').innerHTML = data.intro;
+
+    resetInfoCard();
+    updateMapColors();
+    renderLegend(data.legend);
+    updateMapLabels();
+  }
+
+  function updateMapColors() {
+    const zones = GEOGRAPHY_DATA[currentMode].zones;
+
+    document.getElementById('path-flandre').setAttribute('fill', zones.flandre.color);
+    document.getElementById('path-wallonie-fr').setAttribute('fill', zones.wallonie_fr.color);
+    document.getElementById('path-wallonie-de').setAttribute('fill', zones.wallonie_de.color);
+    
+    const brux = document.getElementById('point-bruxelles');
+    brux.setAttribute('fill', zones.bruxelles.color);
+    if (currentMode === 'communautes') {
+      brux.setAttribute('r', '15');
+    } else {
+      brux.setAttribute('r', '13');
+    }
+  }
+
+  function updateMapLabels() {
+    const lblFlandre = document.getElementById('lbl-flandre');
+    const lblWallonie = document.getElementById('lbl-wallonie');
+    const lblGermano = document.getElementById('lbl-germano');
+    const lblBruxelles = document.getElementById('lbl-bruxelles');
+
+    if (currentMode === 'regions') {
+      lblFlandre.textContent = "Flandre";
+      lblWallonie.textContent = "Wallonie";
+      lblGermano.textContent = "Ostbelgien";
+      lblBruxelles.textContent = "Bruxelles";
+    } else {
+      lblFlandre.textContent = "Com. Flamande";
+      lblWallonie.textContent = "Com. Française (FWB)";
+      lblGermano.textContent = "Com. Germano.";
+      lblBruxelles.textContent = "Bruxelles";
+    }
+  }
+
+  function renderLegend(legendData) {
+    const container = document.getElementById('legend-container');
+    container.innerHTML = '';
+    legendData.forEach(item => {
+      const isPattern = item.color.includes('url');
+      const bgStyle = isPattern ? 'background-image: repeating-linear-gradient(45deg, var(--com-flamande), var(--com-flamande) 5px, var(--com-francaise) 5px, var(--com-francaise) 10px)' : `background-color: ${item.color}`;
+      
+      const div = document.createElement('div');
+      div.className = 'flex items-center gap-2';
+      div.innerHTML = `
+        <span class="inline-block w-4 h-4 border-2 border-slate-900 rounded" style="${bgStyle}"></span>
+        <span class="text-slate-800">${item.name}</span>
+      `;
+      container.appendChild(div);
+    });
+  }
+
+  function hoverZone(zoneId) {
+    if (!activeZone) {
+      showZoneInfo(zoneId, true);
+    }
+  }
+
+  function leaveZone() {
+    if (!activeZone) {
+      resetInfoCard();
+    }
+  }
+
+  function clickZone(zoneId) {
+    if (activeZone === zoneId) {
+      activeZone = null;
+      resetInfoCard();
+      document.querySelectorAll('.map-path, .bruxelles-point').forEach(p => p.setAttribute('stroke-width', '3px'));
+    } else {
+      activeZone = zoneId;
+      showZoneInfo(zoneId, false);
+      
+      document.querySelectorAll('.map-path, .bruxelles-point').forEach(p => p.setAttribute('stroke-width', '3px'));
+      const activeEl = zoneId === 'bruxelles' ? document.getElementById('point-bruxelles') : document.getElementById(`path-${zoneId.replace('_', '-')}`);
+      if (activeEl) {
+        activeEl.setAttribute('stroke-width', '5px');
+      }
+    }
+  }
+
+  function showZoneInfo(zoneId, isHover = false) {
+    const data = GEOGRAPHY_DATA[currentMode].zones[zoneId];
+    const infoCard = document.getElementById('info-card');
+    
+    let colorClass = 'text-slate-800';
+    if (currentMode === 'communautes') {
+      if (zoneId === 'flandre') colorClass = 'text-yellow-600';
+      if (zoneId === 'wallonie_fr') colorClass = 'text-pink-600';
+      if (zoneId === 'wallonie_de') colorClass = 'text-emerald-600';
+    } else {
+      if (zoneId === 'flandre') colorClass = 'text-amber-600';
+      if (zoneId === 'wallonie_fr' || zoneId === 'wallonie_de') colorClass = 'text-red-500';
+      if (zoneId === 'bruxelles') colorClass = 'text-blue-500';
+    }
+
+    let rolesHTML = data.roles.map(role => `<li class="flex items-start gap-2 text-left text-sm text-slate-700 mb-1.5"><span class="text-emerald-500 font-bold">✔</span> <span>${role}</span></li>`).join('');
+
+    infoCard.innerHTML = `
+      <div class="w-full text-left animate-pop">
+        <span class="inline-block bg-slate-100 border-2 border-slate-900 rounded-full px-3 py-0.5 text-xs font-bold text-slate-700 uppercase mb-2">
+          ${data.sub}
+        </span>
+        <h3 class="text-2xl ${colorClass} font-display leading-tight mb-2">${data.title}</h3>
+        
+        <div class="grid grid-cols-2 gap-2 mb-4 bg-slate-50 p-3 border-2 border-slate-200 rounded-xl text-xs font-semibold">
+          <div>
+            <span class="block text-slate-400 font-bold uppercase tracking-wider text-[10px]">Capitale</span>
+            <span class="text-slate-800 text-sm block truncate">${data.capital}</span>
+          </div>
+          <div>
+            <span class="block text-slate-400 font-bold uppercase tracking-wider text-[10px]">Langue(s)</span>
+            <span class="text-slate-800 text-sm block truncate">${data.languages}</span>
+          </div>
+        </div>
+
+        <div>
+          <span class="block text-slate-400 font-bold uppercase tracking-wider text-[10px] mb-2">Que gère cette entité ?</span>
+          <ul class="pl-1">
+            ${rolesHTML}
+          </ul>
+        </div>
+        ${isHover ? '<p class="text-[10px] text-slate-400 mt-4 italic text-center">Clique sur la carte pour verrouiller l\'affichage.</p>' : ''}
+      </div>
+    `;
+    
+    infoCard.className = "box-3d p-6 bg-white flex-1 flex flex-col justify-start items-start";
+  }
+
+  function resetInfoCard() {
+    const infoCard = document.getElementById('info-card');
+    infoCard.innerHTML = `
+      <div class="text-5xl mb-3">👈</div>
+      <p class="font-display font-semibold text-lg text-slate-800">Clique ou survole une zone</p>
+      <p class="text-sm mt-1 text-slate-500">Découvre sa capitale, ses langues et ses rôles dans la vie de tous les jours.</p>
+    `;
+    infoCard.className = "box-3d p-6 bg-white flex-1 flex flex-col justify-center items-center text-center text-slate-500 min-h-[220px]";
+  }
+
+  // --- LOGIQUE DU JEU QUIZ ---
+  
+  function updateQuizUI() {
+    const question = QUIZ_QUESTIONS[currentQuestionIndex];
+    document.getElementById('quiz-progress').innerText = `Question : ${currentQuestionIndex + 1} / ${QUIZ_QUESTIONS.length}`;
+    document.getElementById('quiz-question').innerText = question.text;
+    document.getElementById('quiz-feedback').classList.add('hidden');
+  }
+
+  function submitAnswer(userChoice) {
+    const question = QUIZ_QUESTIONS[currentQuestionIndex];
+    const feedback = document.getElementById('quiz-feedback');
+    const fIcon = document.getElementById('feedback-icon');
+    const fTitle = document.getElementById('feedback-title');
+    const fDesc = document.getElementById('feedback-desc');
+
+    feedback.classList.remove('hidden');
+
+    if (userChoice === question.answer) {
+      score++;
+      playSound('success');
+      feedback.className = "mt-6 p-4 rounded-xl border-3 border-emerald-950 bg-emerald-50 flex items-start gap-3";
+      fIcon.innerText = "🎉";
+      fIcon.className = "text-2xl p-1 bg-white border-2 border-emerald-950 rounded-lg";
+      fTitle.innerText = "Excellent ! C'est correct.";
+      fTitle.className = "font-bold text-lg text-emerald-900";
+    } else {
+      playSound('error');
+      feedback.className = "mt-6 p-4 rounded-xl border-3 border-rose-950 bg-rose-50 flex items-start gap-3";
+      fIcon.innerText = "❌";
+      fIcon.className = "text-2xl p-1 bg-white border-2 border-rose-950 rounded-lg";
+      fTitle.innerText = "Oups ! Ce n'est pas tout à fait ça.";
+      fTitle.className = "font-bold text-lg text-rose-900";
+    }
+    
+    fDesc.innerText = question.explanation;
+  }
+
+  function nextQuestion() {
+    currentQuestionIndex++;
+    if (currentQuestionIndex < QUIZ_QUESTIONS.length) {
+      updateQuizUI();
+    } else {
+      document.getElementById('quiz-play-screen').classList.add('hidden');
+      document.getElementById('quiz-end-screen').classList.remove('hidden');
+      document.getElementById('final-score').innerText = `${score} / ${QUIZ_QUESTIONS.length}`;
+      document.getElementById('quiz-progress').innerText = "Terminé !";
+    }
+  }
+
+  function resetQuiz() {
+    currentQuestionIndex = 0;
+    score = 0;
+    document.getElementById('quiz-play-screen').classList.remove('hidden');
+    document.getElementById('quiz-end-screen').classList.add('hidden');
+    updateQuizUI();
+  }
+
+  // --- INITIALISATION ---
+  window.onload = function() {
+    switchMode('regions');
+    updateQuizUI();
+  };
+</script>
+</body>
+</html>
