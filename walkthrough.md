@@ -55,6 +55,32 @@ Un sous-menu "Le cercle" contenant 3 activités adaptées à P5-P6 et conformes 
   8. Plaque métallique découpée (la forme de la capture d'écran, avec 4 coins arrondis de rayon 2 m et côtés verticaux évidés).
 * **Contour pédagogique** : Force l'élève à distinguer les lignes intérieures (non comptées) des lignes extérieures et à diviser les calculs en sous-parties (courbes vs droites).
 
+## 4. Activité 5 : « L'Accord parfait » (Déplacée en Orthographe > Participe passé)
+Cette activité entraîne l'élève à l'accord du participe passé employé avec l'auxiliaire avoir lorsqu'il est précédé d'un pronom complément direct (CDV), tout en évitant les pièges des CIV (compléments indirects) et du pronom *en*.
+
+### Modifications apportées
+*   **[accord_participe.html](file:///Users/jeremy/antigravity/LCML/accord_participe.html)** : Création d'un fichier HTML/JS/CSS autonome d'accord de participe passé avec inputs interactifs insérés directement dans les phrases (également copié dans **[fiches/accord_participe.html](file:///Users/jeremy/antigravity/LCML/fiches/accord_participe.html)**).
+*   **Orthographe > Participe passé** :
+    *   Création d'une nouvelle catégorie « Participe passé » sous la section « Orthographe » dans **[index.html](file:///Users/jeremy/antigravity/LCML/index.html)** et **[fiches/index.html](file:///Users/jeremy/antigravity/LCML/fiches/index.html)**.
+    *   Génération de l'icône de logo associée (`assets/logos/subject_participe_passe.png`).
+    *   Création de la fonction `renderParticipePasseMenu()` pour afficher le sous-menu de cette section.
+    *   Déplacement du jeu « L'Accord parfait » dans ce nouveau menu sous l'identifiant d'activité `ortho_participe_accord`.
+    *   Gestion du masquage/réactivation de l'activité par l'enseignant via le système de verrous locaux et Firebase (`toggleActivity()`).
+
+### Caractéristiques du jeu
+*   **Système Interactive Fill-in-the-blank :**
+    *   L'élève voit la phrase d'exercice avec le verbe à l'infinitif affiché en indice (ex : `(cueillir)`) et un champ de saisie (`<input>`) à côté.
+    *   L'élève doit écrire l'accord correct du participe passé directement dans le champ (ex : `cueillies`).
+    *   Une validation manuelle avec effets sonores, retours visuels (champ illuminé en vert s'il est correct ou en rouge s'il est erroné) et secousses de la carte en cas d'erreur.
+    *   Une explication grammaticale détaillée et claire s'affiche après chaque validation réussie (pourquoi on accorde ou pas, rappel des règles CDV, CIV ou pronom *en*).
+    *   **10 phrases par session** choisies aléatoirement dans une banque de **24 phrases** soigneusement rédigées et diversifiées.
+*   **Rendus sonores et animations :** Sons 8-bit rétro pour chaque lettre tapée (tick), validation réussie ou erreur, et effet confettis en fin de partie.
+
+## Vérification
+*   Ouvrir localement [index.html](file:///Users/jeremy/antigravity/LCML/index.html) et tester l'ensemble du cycle de jeu sous Orthographe > Participe passé.
+*   Valider que l'exercice s'ouvre correctement dans les iFrames de [index.html](file:///Users/jeremy/antigravity/LCML/index.html) and [fiches/index.html](file:///Users/jeremy/antigravity/LCML/fiches/index.html).
+*   Vérifier le bon fonctionnement des verrous de masquage (Espace enseignant) sur le cadre « Participe passé » ainsi que sur l'exercice « L'Accord parfait » à l'intérieur.
+
 ---
 
 ## 3. Modifications du Dashboard Principal & Navigation

@@ -3338,6 +3338,8 @@ input[type=text].calc-input.incorrect {
       'screen-francais': "Choisit une activité de Français",
       'screen-orthographe': "Menu d'Orthographe",
       'screen-homophones': "Menu des Homophones",
+      'screen-participe-passe': "Menu du Participe passé",
+      'screen-ortho-accord-participe': "Exercice : L'Accord parfait",
       'screen-homo-a': "Exercice : Homophones a / à",
       'screen-homo-ou': "Exercice : Homophones ou / où",
       'screen-homo-son': "Exercice : Homophones son / sont",
@@ -4298,6 +4300,13 @@ input[type=text].calc-input.incorrect {
     <div id="homophones-menu"></div>
   </div>
 
+  <!-- SCREEN: Participe passé -->
+  <div id="screen-participe-passe" class="screen">
+    <button class="back-btn" onclick="showScreen('screen-orthographe');renderOrthographeMenu();">← Retour</button>
+    <div class="page-title">🤝 Participe passé</div>
+    <div id="participe-passe-menu"></div>
+  </div>
+
   <!-- SCREEN: Homophones a/as/à -->
   <div id="screen-homo-a" class="screen">
     <button class="back-btn" onclick="showScreen('screen-homophones');renderHomophonesMenu();">← Retour</button>
@@ -4444,6 +4453,11 @@ input[type=text].calc-input.incorrect {
     <button class="back-btn" onclick="showScreen('screen-gram-pronom');renderPronomMenu();" style="margin-bottom:1rem;">← Retour</button>
     <div class="page-title">📝 La Chasse aux Répétitions</div>
     <iframe src="chasse_repetitions.html" style="width:100%;height:calc(100vh - 120px);border:none;border-radius:12px;" allowfullscreen></iframe>
+  </div>
+  <div id="screen-ortho-accord-participe" class="screen">
+    <button class="back-btn" onclick="showScreen('screen-participe-passe');renderParticipePasseMenu();" style="margin-bottom:1rem;">← Retour</button>
+    <div class="page-title">🤝 L'Accord parfait</div>
+    <iframe src="accord_participe.html" style="width:100%;height:calc(100vh - 120px);border:none;border-radius:12px;" allowfullscreen></iframe>
   </div>
   <div id="screen-gram-adverbe" class="screen"><button class="back-btn" onclick="showScreen('screen-gram-classes');renderGramClassesScreen();">← Retour</button><div class="page-title">🔄 L'adverbe</div><div class="card" style="text-align:center;padding:2rem;"><div style="font-size:48px;">🚧</div><p style="color:var(--muted);">Les exercices arrivent bientôt !</p></div></div>
   <div id="screen-gram-complement-nom" class="screen"><button class="back-btn" onclick="showScreen('screen-gram-classes');renderGramClassesScreen();">← Retour</button><div class="page-title">🔗 Le complément du nom</div><div class="card" style="text-align:center;padding:2rem;"><div style="font-size:48px;">🚧</div><p style="color:var(--muted);">Les exercices arrivent bientôt !</p></div></div>
@@ -9218,6 +9232,8 @@ const ACTIVITY_PARENTS = {
   'homo_leur': 'ortho_homophones',
   'homo_peu': 'ortho_homophones',
   'homo_sans': 'ortho_homophones',
+  'ortho_participe_passe': 'francais-orthographe',
+  'ortho_participe_accord': 'ortho_participe_passe',
 
   'savoir_ecouter_1': 'francais-savoir_ecouter',
   'savoir_ecouter_2': 'francais-savoir_ecouter',
@@ -12603,6 +12619,7 @@ function renderOrthographeMenu(){
   const locked = getLockedActivities();
   const items = [
     {id:'ortho_homophones', screen:'screen-homophones', label:'Homophones', icon:'<img src="assets/logos/subject_homophones.png" class="w-full h-full object-contain" />', desc:'a/à/as, ou/où, ce/se...', fn:'renderHomophonesMenu'},
+    {id:'ortho_participe_passe', screen:'screen-participe-passe', label:'Participe passé', icon:'<img src="assets/logos/subject_participe_passe.png" class="w-full h-full object-contain" />', desc:'Accord du participe passé…', fn:'renderParticipePasseMenu'},
   ];
   let html = '';
   items.forEach(t => {
@@ -12658,6 +12675,35 @@ function renderHomophonesMenu(){
     </div>`;
   });
   menu.innerHTML = '<div class="sub-subjects-grid">' + html + '</div>' || '<p style="color:var(--muted);text-align:center;padding:2rem">Aucun exercice disponible.</p>';
+}
+
+function renderParticipePasseMenu(){
+  const menu = document.getElementById('participe-passe-menu');
+  if(!menu) return;
+  const isTeacher = state.role === 'teacher';
+  const locked = getLockedActivities();
+  const items = [
+    {id:'ortho_participe_accord', screen:'screen-ortho-accord-participe', label:"L'Accord parfait", icon:'🤝', desc:'Synthèse interactive de l\'accord du participe passé avec 24 phrases d\'entraînement', fn:null},
+  ];
+  let html = '';
+  items.forEach(t => {
+    const isLocked = isActivityLocked(t.id);
+    const toggleBtn = isTeacher
+      ? `<button class="card-teacher-toggle ${isLocked?'btn-show':'btn-hide'}"
+           onclick="event.stopPropagation();toggleActivity('${t.id}');renderParticipePasseMenu();">
+           ${isLocked?'🔓 Réactiver':'🔒 Masquer'}
+         </button>` : '';
+    if(isLocked && !isTeacher) return;
+    const badge = isTeacher ? '' : renderScoreBadge(t.id);
+    html += `<div class="sub-subject-card active-card" onclick="navTo('${t.screen}',${t.fn ? `'${t.fn}'` : 'null'})" style="position:relative">
+      ${toggleBtn}
+      <div class="sub-icon">${t.icon}</div>
+      <div class="sub-title">${t.label}</div>
+      <div class="sub-desc">${t.desc}</div>
+      ${badge}
+    </div>`;
+  });
+  menu.innerHTML = html ? '<div class="sub-subjects-grid">' + html + '</div>' : '<p style="color:var(--muted);text-align:center;padding:2rem">Aucun exercice disponible.</p>';
 }
 
 // ===== VOCABULAIRE =====
@@ -21891,6 +21937,7 @@ function refreshCurrentMenu(){
     'screen-orthographe': 'renderOrthographeMenu',
     'screen-vocabulaire': 'renderVocabulaireMenu',
     'screen-homophones': 'renderHomophonesMenu',
+    'screen-participe-passe': 'renderParticipePasseMenu',
     'screen-traitement-donnees': 'renderTraitementDonneesMenu',
     'screen-td-la-moyenne-menu': 'renderLaMoyenneMenu',
     'screen-td-moyenne-qcm': 'renderTDMoyenneQCM',
@@ -42017,46 +42064,46 @@ function renderPronomMenu() {
         <div class="sub-title">3. Le Remplaçant</div>
         <div class="sub-desc">Reconstruis la phrase en plaçant le pronom correct au bon endroit · 10 questions.</div>
       </div>
-      <div class="sub-subject-card active-card" id="btn-pronom-chasse-repetitions" style="position:relative">
-        <div class="sub-icon">📝</div>
-        <div class="sub-title">4. La Chasse aux Répétitions</div>
-        <div class="sub-desc">Remplace les répétitions dans le texte par les pronoms adéquats · 6 textes.</div>
-      </div>
-    </div>
-  `;
-
-  const piègeBtn = container.querySelector('#btn-pronom-piege');
-  if (piègeBtn) {
-    piègeBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      startPronomPiegeExercise();
-    });
-  }
-
-  const referentsBtn = container.querySelector('#btn-pronom-detecteur-referents');
-  if (referentsBtn) {
-    referentsBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      showScreen('screen-gram-detecteur-referents');
-    });
-  }
-
-  const remplacantBtn = container.querySelector('#btn-pronom-remplacant');
-  if (remplacantBtn) {
-    remplacantBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      showScreen('screen-gram-remplacant-pronom');
-    });
-  }
-
-  const repetitionsBtn = container.querySelector('#btn-pronom-chasse-repetitions');
-  if (repetitionsBtn) {
-    repetitionsBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      showScreen('screen-gram-chasse-repetitions');
-    });
-  }
-}
+       <div class="sub-subject-card active-card" id="btn-pronom-chasse-repetitions" style="position:relative">
+         <div class="sub-icon">📝</div>
+         <div class="sub-title">4. La Chasse aux Répétitions</div>
+         <div class="sub-desc">Remplace les répétitions dans le texte par les pronoms adéquats · 6 textes.</div>
+       </div>
+     </div>
+   `;
+ 
+   const piègeBtn = container.querySelector('#btn-pronom-piege');
+   if (piègeBtn) {
+     piègeBtn.addEventListener('click', (e) => {
+       e.preventDefault();
+       startPronomPiegeExercise();
+     });
+   }
+ 
+   const referentsBtn = container.querySelector('#btn-pronom-detecteur-referents');
+   if (referentsBtn) {
+     referentsBtn.addEventListener('click', (e) => {
+       e.preventDefault();
+       showScreen('screen-gram-detecteur-referents');
+     });
+   }
+ 
+   const remplacantBtn = container.querySelector('#btn-pronom-remplacant');
+   if (remplacantBtn) {
+     remplacantBtn.addEventListener('click', (e) => {
+       e.preventDefault();
+       showScreen('screen-gram-remplacant-pronom');
+     });
+   }
+ 
+   const repetitionsBtn = container.querySelector('#btn-pronom-chasse-repetitions');
+   if (repetitionsBtn) {
+     repetitionsBtn.addEventListener('click', (e) => {
+       e.preventDefault();
+       showScreen('screen-gram-chasse-repetitions');
+     });
+   }
+ }
 
 function startPronomPiegeExercise() {
   if (!window.EXERCICES_PRONOM_PIEGE || window.EXERCICES_PRONOM_PIEGE.length === 0) {
@@ -42828,6 +42875,7 @@ window.renderGeoBelgiqueMenu = renderGeoBelgiqueMenu;
 window.renderGeoPaysagesMenu = renderGeoPaysagesMenu;
 window.renderOrthographeMenu = renderOrthographeMenu;
 window.renderHomophonesMenu = renderHomophonesMenu;
+window.renderParticipePasseMenu = renderParticipePasseMenu;
 window.renderLectureInfoMenu = renderLectureInfoMenu;
 window.renderSavoirEcouterMenu = renderSavoirEcouterMenu;
 window.renderLectureDescriptiveMenu = renderLectureDescriptiveMenu;
