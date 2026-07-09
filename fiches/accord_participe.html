@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>L'Accord parfait</title>
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --foreground: #0f172a;
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --primary-light: #e0e7ff;
+      --accent-red: #ef4444;
+      --accent-red-light: #fee2e2;
+      --border-color: #0f172a;
+      --card-bg: #ffffff;
+      --shadow-color: #000000;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg);
+      color: var(--foreground);
+      padding: 1.5rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .game-container {
+      width: 100%;
+      max-width: 800px;
+      background-color: var(--card-bg);
+      border: 4px solid var(--border-color);
+      border-radius: 24px;
+      padding: 2rem;
+      box-shadow: 8px 8px 0px var(--shadow-color);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Header */
+    .game-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      border-bottom: 4px solid var(--border-color);
+      padding-bottom: 1rem;
+    }
+
+    .game-title {
+      font-size: 1.8rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .score-badge {
+      background-color: #fef08a;
+      border: 3px solid var(--border-color);
+      padding: 0.5rem 1rem;
+      font-weight: 800;
+      border-radius: 12px;
+      box-shadow: 3px 3px 0px var(--shadow-color);
+    }
+
+    /* Bar de progression */
+    .progress-container {
+      margin-bottom: 1.5rem;
+    }
+
+    .progress-text {
+      font-size: 0.9rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+      color: #64748b;
+    }
+
+    .progress-bar {
+      height: 16px;
+      background-color: #e2e8f0;
+      border: 3px solid var(--border-color);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background-color: var(--primary);
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    /* Consigne */
+    .instruction-card {
+      background-color: #eff6ff;
+      border: 3px solid var(--border-color);
+      border-radius: 16px;
+      padding: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .instruction-title {
+      font-weight: 800;
+      color: #1e3a8a;
+      margin-bottom: 0.25rem;
+      font-size: 0.95rem;
+    }
+
+    .instruction-desc {
+      font-size: 0.85rem;
+      color: #1e40af;
+    }
+
+    /* Zone phrase */
+    .sentence-zone {
+      border: 3px solid var(--border-color);
+      background-color: #fafafa;
+      border-radius: 20px;
+      padding: 2rem 1.5rem;
+      margin-bottom: 1.5rem;
+      line-height: 2.2;
+      font-size: 1.25rem;
+      box-shadow: 4px 4px 0px var(--shadow-color);
+      text-align: center;
+    }
+
+    /* Input participe passé */
+    .participe-input {
+      display: inline-block;
+      border: 3px solid var(--border-color);
+      border-radius: 8px;
+      padding: 2px 8px;
+      font-family: inherit;
+      font-size: 1.15rem;
+      font-weight: 700;
+      width: 140px;
+      text-align: center;
+      margin: 0 6px;
+      box-shadow: 2px 2px 0px var(--shadow-color);
+      transition: all 0.2s ease;
+      background-color: #ffffff;
+      vertical-align: middle;
+    }
+
+    .participe-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      background-color: var(--primary-light);
+      box-shadow: 3px 3px 0px var(--shadow-color);
+    }
+
+    .participe-input.correct {
+      border-color: #10b981;
+      background-color: #d1fae5;
+      color: #065f46;
+      box-shadow: none;
+    }
+
+    .participe-input.incorrect {
+      border-color: var(--accent-red);
+      background-color: var(--accent-red-light);
+      color: #b91c1c;
+      box-shadow: none;
+    }
+
+    /* Verb hint */
+    .verb-hint {
+      color: #4f46e5;
+      font-weight: 800;
+      font-style: italic;
+      font-size: 1.1rem;
+    }
+
+    /* Actions */
+    .btn-container {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+    }
+
+    .action-btn {
+      background-color: #fef08a;
+      color: var(--foreground);
+      border: 4px solid var(--border-color);
+      padding: 0.75rem 2.5rem;
+      font-size: 1.2rem;
+      font-weight: 800;
+      border-radius: 16px;
+      cursor: pointer;
+      box-shadow: 4px 4px 0px var(--shadow-color);
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: inherit;
+    }
+
+    .action-btn:hover {
+      background-color: #fde047;
+      transform: translate(-3px, -3px);
+      box-shadow: 7px 7px 0px var(--shadow-color);
+    }
+
+    .action-btn:active {
+      transform: translate(2px, 2px);
+      box-shadow: 2px 2px 0px var(--shadow-color);
+    }
+
+    .action-btn.correct-btn {
+      background-color: #86efac;
+    }
+    .action-btn.correct-btn:hover {
+      background-color: #4ade80;
+    }
+
+    /* Explication */
+    .explanation-panel {
+      margin-top: 1.5rem;
+      background-color: #f0fdf4;
+      border: 3px solid #10b981;
+      border-radius: 16px;
+      padding: 1.25rem;
+      display: none;
+      animation: slideIn 0.3s ease-out;
+    }
+
+    .explanation-title {
+      font-weight: 800;
+      color: #065f46;
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .explanation-text {
+      color: #064e3b;
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    /* Écran des résultats */
+    .results-screen {
+      text-align: center;
+      display: none;
+      animation: fadeIn 0.5s ease-out;
+    }
+
+    .results-icon {
+      font-size: 5rem;
+      margin-bottom: 1rem;
+    }
+
+    .results-title {
+      font-size: 2.2rem;
+      font-weight: 900;
+      margin-bottom: 1rem;
+    }
+
+    .results-score {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      color: var(--primary);
+    }
+
+    .results-feedback {
+      font-size: 1.1rem;
+      margin-bottom: 2rem;
+      color: #475569;
+      line-height: 1.6;
+    }
+
+    /* Animations */
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* Secousse */
+    .shake-container {
+      animation: shake 0.5s ease-in-out;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      10%, 30%, 50%, 70%, 90% { transform: translateX(-6px); }
+      20%, 40%, 60%, 80% { transform: translateX(6px); }
+    }
+
+    /* Tremblement des inputs erronés */
+    .wrong-match {
+      animation: wrongShake 0.4s ease-in-out;
+    }
+
+    @keyframes wrongShake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-4px); }
+      40%, 80% { transform: translateX(4px); }
+    }
+
+    #confetti-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    /* Astuce */
+    .tip-msg {
+      background-color: #fef3c7;
+      border: 2px solid #d97706;
+      color: #b45309;
+      padding: 0.6rem;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 1.2rem;
+      display: none;
+      animation: slideIn 0.2s ease-out;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="game-container" id="game-container">
+    <canvas id="confetti-canvas"></canvas>
+
+    <!-- ÉCRAN DE JEU -->
+    <div id="game-screen">
+      <div class="game-header">
+        <div class="game-title">🤝 L'Accord parfait</div>
+        <div class="score-badge" id="score-badge">Score : 0</div>
+      </div>
+
+      <div class="progress-container">
+        <div class="progress-text" id="progress-text">Phrase 1 sur 10</div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="progress-fill"></div>
+        </div>
+      </div>
+
+      <div class="instruction-card">
+        <div class="instruction-title">💡 Consigne :</div>
+        <div class="instruction-desc">
+          Écris dans chaque case la forme correcte du participe passé à la fin du verbe indiqué entre parenthèses. Fais bien attention aux accords !
+        </div>
+      </div>
+
+      <!-- Message astuce/erreur -->
+      <div class="tip-msg" id="tip-msg"></div>
+
+      <!-- Zone phrase -->
+      <div class="sentence-zone" id="sentence-text"></div>
+
+      <!-- Boutons -->
+      <div class="btn-container">
+        <button class="action-btn" id="validate-btn">Valider ➔</button>
+        <button class="action-btn correct-btn" id="next-btn" style="display:none">Continuer ➔</button>
+      </div>
+
+      <!-- Explications -->
+      <div class="explanation-panel" id="explanation-panel">
+        <div class="explanation-title">💡 Explications grammaticales :</div>
+        <div class="explanation-text" id="explanation-text"></div>
+      </div>
+    </div>
+
+    <!-- ÉCRAN DES RÉSULTATS -->
+    <div class="results-screen" id="results-screen">
+      <div class="results-icon" id="feedback-icon">🏆</div>
+      <div class="results-title" id="feedback-title">Félicitations !</div>
+      <div class="results-score" id="final-score">10 / 10</div>
+      <div class="results-feedback" id="final-feedback">Tu maîtrises l'accord du participe passé sur le bout des doigts !</div>
+      <button class="action-btn" id="restart-btn">Recommencer ↺</button>
+    </div>
+  </div>
+
+  <script>
+    // --- AUDIO EFFECTS ---
+    class SoundEffects {
+      constructor() {
+        this.ctx = null;
+      }
+      init() {
+        if (!this.ctx) {
+          this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+      }
+      playTick() {
+        this.init();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(650, now);
+        gain.gain.setValueAtTime(0.06, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.08);
+      }
+      playCorrect() {
+        this.init();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        
+        const osc1 = this.ctx.createOscillator();
+        const gain1 = this.ctx.createGain();
+        osc1.type = 'triangle';
+        osc1.frequency.setValueAtTime(523.25, now); // Do 5
+        gain1.gain.setValueAtTime(0.08, now);
+        gain1.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
+        osc1.connect(gain1);
+        gain1.connect(this.ctx.destination);
+        osc1.start(now);
+        osc1.stop(now + 0.12);
+
+        const osc2 = this.ctx.createOscillator();
+        const gain2 = this.ctx.createGain();
+        osc2.type = 'triangle';
+        osc2.frequency.setValueAtTime(659.25, now + 0.08); // Mi 5
+        gain2.gain.setValueAtTime(0.08, now + 0.08);
+        gain2.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+        osc2.connect(gain2);
+        gain2.connect(this.ctx.destination);
+        osc2.start(now + 0.08);
+        osc2.stop(now + 0.2);
+
+        const osc3 = this.ctx.createOscillator();
+        const gain3 = this.ctx.createGain();
+        osc3.type = 'triangle';
+        osc3.frequency.setValueAtTime(783.99, now + 0.16); // Sol 5
+        gain3.gain.setValueAtTime(0.08, now + 0.16);
+        gain3.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+        osc3.connect(gain3);
+        gain3.connect(this.ctx.destination);
+        osc3.start(now + 0.16);
+        osc3.stop(now + 0.35);
+      }
+      playWrong() {
+        this.init();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(140, now);
+        osc.frequency.linearRampToValueAtTime(90, now + 0.25);
+        gain.gain.setValueAtTime(0.12, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.25);
+      }
+    }
+    const sounds = new SoundEffects();
+
+    // --- BANQUE DE QUESTIONS (24 Phrases) ---
+    const QUESTIONS = [
+      {
+        tokens: [
+          { type: "text", text: "Les pommes que j'ai (" },
+          { type: "input", id: "input0", verb: "cueillir", expected: "cueillies" },
+          { type: "text", text: ") étaient absolument délicieuses." }
+        ],
+        explanation: "Le CDV <strong>que</strong> (qui remplace <i>les pommes</i>, féminin pluriel) est placé <strong>avant</strong> le verbe. On accorde donc le participe passé au féminin pluriel : <strong>cueillies</strong>."
+      },
+      {
+        tokens: [
+          { type: "text", text: "La clé de la maison que tu as (" },
+          { type: "input", id: "input0", verb: "perdre", expected: "perdue" },
+          { type: "text", text: ") a été retrouvée dans la cour." }
+        ],
+        explanation: "Le CDV <strong>que</strong> (qui remplace <i>la clé</i>, féminin singulier) précède le verbe. Le participe passé s'accorde au féminin singulier : <strong>perdue</strong>."
+      },
+      {
+        tokens: [
+          { type: "text", text: "Les merveilleuses aventures que nous avons (" },
+          { type: "input", id: "input0", verb: "vivre", expected: "vécues" },
+          { type: "text", text: " resteront gravées dans nos mémoires." }
+        ],
+        explanation: "Le CDV <strong>que</strong> (qui remplace <i>les aventures</i>, féminin pluriel) est placé <strong>avant</strong> le verbe. Le participe passé s'accorde donc au féminin pluriel : <strong>vécues</strong>."
+      },
+      {
+        tokens: [
+          { type: "text", text: "La lettre d'encouragement que Julie m'a (" },
+          { type: "input", id: "input0", verb: "écrire", expected: "écrite" },
+          { type: "text", text: " m'a fait extrêmement plaisir." }
+        ],
+        explanation: "Le CDV <strong>que</strong> (qui remplace <i>la lettre</i>, féminin singulier) précède le verbe. Le participe s'accorde au féminin singulier : <strong>écrite</strong>."
+      },
+      {
+        tokens: [
+          { type: "text", text: "Ces magnifiques roses, mon frère les a (" },
+          { type: "input", id: "input0", verb: "arroser", expected: "arrosées" },
+          { type: "text", text: " tôt ce matin." }
+        ],
+        explanation: "Le pronom CDV <strong>les</strong> (qui remplace <i>les roses</i>, féminin pluriel) est placé <strong>avant</strong> le verbe. Le participe s'accorde donc au féminin pluriel : <strong>arrosées</strong>."
+      },
+      {
+        tokens: [
+          { type: "text", text: "Cette chanson anglaise, je l'ai (" },
+          { type: "input", id: "input0", verb: "entendre", expected: "entendue" },
+          { type: "text", text: " à la radio plusieurs fois." }
+        ],
+        explanation: "Le pronom CDV <strong>l'</strong> (qui remplace <i>la chanson</i>, féminin singulier) est placé <strong>avant</strong> le verbe. Le participe s'accorde au féminin singulier : <strong>entendue</strong>."
+      },
+      {
+        tokens: [
+          { type: "text", text: "Les devoirs de français, le maître les a (" },
+          { type: "input", id: "input0", verb: "corriger", expected: "corrigés" },
+          { type: "text", text: " hier soir avec beaucoup de soin." }
+        ],
+        explanation: "Le pronom CDV <strong>les</strong> (qui remplace <i>les devoirs</i>, masculin pluriel) est placé <strong>avant</strong> le verbe. On l'accorde au masculin pluriel : <strong>corrigés</strong>."
+      },
+      {
+        tokens: [
+          { type: "text", text: "Ta lourde valise rouge, tu l'as (" },
+          { type: "input", id: "input0", verb: "poser", expected: "posée" },
+          { type: "text", text: " dans le coffre de la voiture." }
+        ],
+        explanation: "Le pronom CDV <strong>l'</strong> (qui remplace <i>ta valise</i>, féminin singulier) précède le verbe. Le participe s'accorde au féminin singulier : <strong>posée</strong>."
+      },
+      {
+        tokens: [
+          { type: "text", text: "Des poissons d'eau douce, le pêcheur en a (" },
+          { type: "input", id: "input0", verb: "attraper", expected: "attrapé" },
+          { type: "text", text: " trois dans le lac." }
+        ],
+        explanation: "⚠️ <strong>Piège !</strong> Lorsque le participe passé avec *avoir* est précédé du pronom <strong>en</strong>, il reste toujours <strong>invariable</strong>. On écrit donc : <strong>attrapé</strong>."
+      },
+      {
+        tokens: [
+          { type: "text", text: "Des biscuits au chocolat, les enfants en ont (" },
+          { type: "input", id: "input0", verb: "manger", expected: "mangé" },
+          { type: "text", text: " tout l'après-midi." }
+        ],
+        explanation: "⚠️ <strong>Piège !</strong> Le pronom <strong>en</strong> n'entraîne aucun accord. Le participe passé reste invariable (neutre) : <strong>mangé</strong>."
+      },
+      {
+        tokens: [
+          { type: "text", text: "Des photos de notre voyage, nous en avons (" },
+          { type: "input", id: "input0", verb: "prendre", expected: "pris" },
+          { type: "text", text: " une grande quantité." }
+        ],
+        explanation: "⚠️ <strong>Piège !</strong> Pas d'accord avec le pronom <strong>en</strong>. Le participe reste à sa forme neutre du dictionnaire : <strong>pris</strong>."
+      },
+      {
+        tokens: [
+          { type: "text", text: "Des fraises sauvages, j'en ai (" },
+          { type: "input", id: "input0", verb: "cueillir", expected: "cueilli" },
+          { type: "text", text: " une pleine barquette." }
+        ],
+        explanation: "⚠️ <strong>Piège !</strong> Avec le pronom <strong>en</strong>, le participe reste invariable : <strong>cueilli</strong>."
+      },
+      {
+        tokens: [
+          { type: "text", text: "Mes chers parents, je leur ai (" },
+          { type: "input", id: "input0", verb: "téléphoner", expected: "téléphoné" },
+          { type: "text", text: " hier soir avant de dormir." }
+        ],
+        explanation: "⚠️ <strong>Piège !</strong> Le pronom <strong>leur</strong> est un complément indirect du verbe (CIV) : on téléphone <i>à</i> ses parents. Le participe passé employé avec *avoir* ne s'accorde jamais avec un CIV, donc pas d'accord : <strong>téléphoné</strong>."
+      },
+      {
+        tokens: [
+          { type: "text", text: "Cette surprise incroyable, Paul lui en a (" },
+          { type: "input", id: "input0", verb: "parler", expected: "parlé" },
+          { type: "text", text: " en toute confidence." }
+        ],
+        explanation: "⚠️ <strong>Piège !</strong> Les pronoms <strong>lui</strong> et <strong>en</strong> ne sont pas des compléments directs du verbe (CDV). Pas d'accord, le participe reste invariable : <strong>parlé</strong>."
+      },
+      {
+        tokens: [
+          { type: "text", text: "Les voisins du dessous, nous leur avons (" },
+          { type: "input", id: "input0", verb: "prêter", expected: "prêté" },
+          { type: "text", text: " notre tondeuse." }
+        ],
+        explanation: "⚠️ <strong>Piège !</strong> Le pronom <strong>leur</strong> est un CIV (prêter <i>à</i> quelqu'un). Pas d'accord avec un complément indirect : <strong>prêté</strong>."
+      },
+      {
+        tokens: [
+          { type: "text", text: "À ma petite sœur, je lui ai (" },
+          { type: "input", id: "input0", verb: "donner", expected: "donné" },
+          { type: "text", text: " mon ancien livre de contes." }
+        ],
+        explanation: "⚠️ <strong>Piège !</strong> Le pronom <strong>lui</strong> est un CIV (donner <i>à</i> quelqu'un). Le participe reste donc invariable : <strong>donné</strong>."
+      },
+      {
+        tokens: [
+          { type: "text", text: "Ce matin, j'ai (" },
+          { type: "input", id: "input0", verb: "acheter", expected: "acheté" },
+          { type: "text", text: " des bonbons pour l'anniversaire." }
+        ],
+        explanation: "⚠️ <strong>Piège !</strong> Le complément direct du verbe (CDV) <i>des bonbons</i> est placé <strong>après</strong> le verbe. Il n'y a donc pas d'accord du participe passé : <strong>acheté</strong>."
+      },
+      {
+        tokens: [
+          { type: "text", text: "Au cinéma, nous avons (" },
+          { type: "input", id: "input0", verb: "regarder", expected: "regardé" },
+          { type: "text", text: " un film captivant." }
+        ],
+        explanation: "⚠️ <strong>Piège !</strong> Le CDV <i>un film captivant</i> est après le verbe. Le participe reste invariable : <strong>regardé</strong>."
+      },
+      {
+        tokens: [
+          { type: "text", text: "Hier, tu as (" },
+          { type: "input", id: "input0", verb: "ranger", expected: "rangé" },
+          { type: "text", text: " toutes tes affaires dans le placard." }
+        ],
+        explanation: "⚠️ <strong>Piège !</strong> Le CDV <i>tes affaires</i> est après le verbe. Pas d'accord : <strong>rangé</strong>."
+      },
+      {
+        tokens: [
+          { type: "text", text: "Les randonneurs ont (" },
+          { type: "input", id: "input0", verb: "visiter", expected: "visité" },
+          { type: "text", text: " le musée historique de la ville." }
+        ],
+        explanation: "⚠️ <strong>Piège !</strong> Le CDV <i>le musée</i> est après le verbe. Le participe passé reste invariable : <strong>visité</strong>."
+      },
+      {
+        tokens: [
+          { type: "text", text: "Les valises pour le voyage, je ne les ai pas encore (" },
+          { type: "input", id: "input0", verb: "faire", expected: "faites" },
+          { type: "text", text: "." }
+        ],
+        explanation: "Le pronom CDV <strong>les</strong> (qui remplace <i>les valises</i>, féminin pluriel) est placé <strong>avant</strong> le verbe. Le participe s'accorde au féminin pluriel : <strong>faites</strong>."
+      },
+      {
+        tokens: [
+          { type: "text", text: "Cette leçon de grammaire difficile, l'élève ne l'a pas bien (" },
+          { type: "input", id: "input0", verb: "comprendre", expected: "comprise" },
+          { type: "text", text: "." }
+        ],
+        explanation: "Le pronom CDV <strong>l'</strong> (qui remplace <i>la leçon</i>, féminin singulier) précède le verbe. Le participe s'accorde donc au féminin singulier : <strong>comprise</strong>."
+      },
+      {
+        tokens: [
+          { type: "text", text: "Les photos de classe que j'ai (" },
+          { type: "input", id: "input0", verb: "prendre", expected: "prises" },
+          { type: "text", text: ") ? Je les ai (" },
+          { type: "input", id: "input1", verb: "envoyer", expected: "envoyées" },
+          { type: "text", text: " à ma grand-mère." }
+        ],
+        explanation: "Double accord dans cette phrase :<br>1. Le relatif CDV <strong>que</strong> (remplaçant <i>les photos</i>, f. pl.) précède le premier verbe : <strong>prises</strong>.<br>2. Le pronom CDV <strong>les</strong> (remplaçant <i>les photos</i>, f. pl.) précède le second verbe : <strong>envoyées</strong>."
+      },
+      {
+        tokens: [
+          { type: "text", text: "La tarte aux pommes que tu as (" },
+          { type: "input", id: "input0", verb: "cuire", expected: "cuite" },
+          { type: "text", text: ") ? Nous l'avons (" },
+          { type: "input", id: "input1", verb: "manger", expected: "mangée" },
+          { type: "text", text: " avec grand appétit." }
+        ],
+        explanation: "Double accord dans cette phrase :<br>1. Le relatif CDV <strong>que</strong> (remplaçant <i>la tarte</i>, f. sg.) précède le premier verbe : <strong>cuite</strong>.<br>2. Le pronom CDV <strong>l'</strong> (remplaçant <i>la tarte</i>, f. sg.) précède le second verbe : <strong>mangée</strong>."
+      }
+    ];
+
+    // --- GAME STATE ---
+    let state = {
+      currentIndex: 0,
+      score: 0,
+      submitted: false,
+      incorrectAttempts: 0,
+      questions: []
+    };
+
+    // --- SELECTORS ---
+    const gameScreen = document.getElementById('game-screen');
+    const resultsScreen = document.getElementById('results-screen');
+    const scoreBadge = document.getElementById('score-badge');
+    const progressText = document.getElementById('progress-text');
+    const progressFill = document.getElementById('progress-fill');
+    const sentenceText = document.getElementById('sentence-text');
+    const validateBtn = document.getElementById('validate-btn');
+    const nextBtn = document.getElementById('next-btn');
+    const explanationPanel = document.getElementById('explanation-panel');
+    const explanationText = document.getElementById('explanation-text');
+    const restartBtn = document.getElementById('restart-btn');
+    const gameContainer = document.getElementById('game-container');
+    const tipMsg = document.getElementById('tip-msg');
+
+    // --- UTILS ---
+    function shuffle(array) {
+      const arr = [...array];
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    // --- ACTIONS ---
+    function initGame() {
+      state.currentIndex = 0;
+      state.score = 0;
+      state.submitted = false;
+      state.incorrectAttempts = 0;
+      state.questions = shuffle(QUESTIONS).slice(0, 10); // 10 questions par session
+
+      scoreBadge.textContent = "Score : 0";
+      gameScreen.style.display = 'block';
+      resultsScreen.style.display = 'none';
+
+      loadQuestion();
+    }
+
+    function loadQuestion() {
+      state.submitted = false;
+      state.incorrectAttempts = 0;
+      
+      validateBtn.style.display = 'inline-flex';
+      nextBtn.style.display = 'none';
+      explanationPanel.style.display = 'none';
+      gameContainer.classList.remove('shake-container');
+      hideTip();
+
+      const question = state.questions[state.currentIndex];
+
+      // Progress UI
+      progressText.textContent = `Phrase ${state.currentIndex + 1} sur ${state.questions.length}`;
+      const pct = (state.currentIndex / state.questions.length) * 100;
+      progressFill.style.width = `${pct}%`;
+
+      renderSentence();
+    }
+
+    function showTip(msg) {
+      tipMsg.textContent = msg;
+      tipMsg.style.display = 'block';
+    }
+
+    function hideTip() {
+      tipMsg.style.display = 'none';
+    }
+
+    function renderSentence() {
+      sentenceText.innerHTML = '';
+      const question = state.questions[state.currentIndex];
+
+      question.tokens.forEach(tok => {
+        if (tok.type === 'text') {
+          const span = document.createElement('span');
+          span.textContent = tok.text;
+          sentenceText.appendChild(span);
+        } else if (tok.type === 'input') {
+          // Verb hint
+          const verbSpan = document.createElement('span');
+          verbSpan.className = 'verb-hint';
+          verbSpan.textContent = tok.verb;
+          sentenceText.appendChild(verbSpan);
+
+          // Input field
+          const input = document.createElement('input');
+          input.type = 'text';
+          input.className = 'participe-input';
+          input.setAttribute('data-input-id', tok.id);
+          input.setAttribute('autocomplete', 'off');
+          input.setAttribute('placeholder', 'participe...');
+          
+          input.addEventListener('input', () => {
+            sounds.playTick();
+            hideTip();
+            input.classList.remove('incorrect');
+          });
+
+          sentenceText.appendChild(input);
+        }
+      });
+    }
+
+    function handleValidation() {
+      if (state.submitted) return;
+
+      const question = state.questions[state.currentIndex];
+      const inputs = sentenceText.querySelectorAll('.participe-input');
+      
+      // Check if all fields are filled
+      let allFilled = true;
+      inputs.forEach(input => {
+        if (!input.value.trim()) {
+          allFilled = false;
+        }
+      });
+
+      if (!allFilled) {
+        sounds.playWrong();
+        showTip("⚠️ Écris ton participe passé dans chaque case avant de valider !");
+        return;
+      }
+
+      // Check correctness
+      let isCorrect = true;
+      inputs.forEach(input => {
+        const inputId = input.getAttribute('data-input-id');
+        const token = question.tokens.find(tok => tok.type === 'input' && tok.id === inputId);
+        const expected = token.expected.toLowerCase().trim();
+        const actual = input.value.toLowerCase().trim();
+        
+        if (expected !== actual) {
+          isCorrect = false;
+          input.classList.add('incorrect');
+          // Animation shake sur l'input erroné
+          input.classList.remove('wrong-match');
+          void input.offsetWidth; // reflow
+          input.classList.add('wrong-match');
+        } else {
+          input.classList.remove('incorrect');
+          input.classList.add('correct');
+        }
+      });
+
+      if (isCorrect) {
+        // Success
+        state.submitted = true;
+        sounds.playCorrect();
+        hideTip();
+
+        // Lock inputs
+        inputs.forEach(input => {
+          input.disabled = true;
+          input.classList.add('correct');
+        });
+
+        if (state.incorrectAttempts === 0) {
+          state.score++;
+          scoreBadge.textContent = `Score : ${state.score}`;
+        }
+
+        explanationText.innerHTML = question.explanation;
+        explanationPanel.style.display = 'block';
+        validateBtn.style.display = 'none';
+        nextBtn.style.display = 'inline-flex';
+      } else {
+        // Fail
+        sounds.playWrong();
+        state.incorrectAttempts++;
+
+        // Secouer la carte de jeu
+        gameContainer.classList.remove('shake-container');
+        void gameContainer.offsetWidth; // reflow
+        gameContainer.classList.add('shake-container');
+
+        // Effacer les champs incorrects pour aider
+        inputs.forEach(input => {
+          if (input.classList.contains('incorrect')) {
+            input.value = '';
+          }
+        });
+      }
+    }
+
+    function handleNext() {
+      state.currentIndex++;
+      if (state.currentIndex < state.questions.length) {
+        loadQuestion();
+      } else {
+        showResults();
+      }
+    }
+
+    function showResults() {
+      gameScreen.style.display = 'none';
+      resultsScreen.style.display = 'block';
+
+      const finalScore = document.getElementById('final-score');
+      finalScore.textContent = `${state.score} / ${state.questions.length}`;
+
+      const titleEl = document.getElementById('feedback-title');
+      const textEl = document.getElementById('final-feedback');
+      const iconEl = document.getElementById('feedback-icon');
+
+      if (state.score === state.questions.length) {
+        iconEl.textContent = '🏆';
+        titleEl.textContent = 'Parfait !';
+        textEl.textContent = 'Fantastique ! Tu as accordé tous les participes passés sans aucune erreur !';
+        startConfetti();
+      } else if (state.score >= 8) {
+        iconEl.textContent = '🌟';
+        titleEl.textContent = 'Excellent !';
+        textEl.textContent = 'Très bon travail, tu as évité la plupart des pièges de l\'accord du participe passé !';
+        startConfetti();
+      } else if (state.score >= 5) {
+        iconEl.textContent = '👍';
+        titleEl.textContent = 'Bravo !';
+        textEl.textContent = 'C\'est un bon score. Relis bien les explications pour maîtriser tous les accords.';
+      } else {
+        iconEl.textContent = '🌱';
+        titleEl.textContent = 'Essaie encore !';
+        textEl.textContent = 'Recommence l\'activité pour t\'entraîner sur les CDV placés avant le verbe et les pièges comme « en » ou « leur ».';
+      }
+    }
+
+    // --- CONFETTI ENGINE ---
+    let confettiActive = false;
+    function startConfetti() {
+      confettiActive = true;
+      const canvas = document.getElementById('confetti-canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = canvas.parentElement.offsetWidth;
+      canvas.height = canvas.parentElement.offsetHeight;
+
+      const colors = ['#4f46e5', '#f59e0b', '#ef4444', '#10b981', '#3b82f6'];
+      const confettis = Array.from({ length: 85 }).map(() => ({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height - canvas.height,
+        r: Math.random() * 6 + 4,
+        d: Math.random() * canvas.height,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        tilt: Math.random() * 10 - 5,
+        tiltAngleIncremental: Math.random() * 0.07 + 0.02,
+        tiltAngle: 0
+      }));
+
+      function draw() {
+        if (!confettiActive) return;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        confettis.forEach((c, index) => {
+          c.tiltAngle += c.tiltAngleIncremental;
+          c.y += (Math.cos(c.d) + 3 + c.r / 2) / 2;
+          c.tilt = Math.sin(c.tiltAngle - index / 3) * 15;
+
+          if (c.y > canvas.height) {
+            c.x = Math.random() * canvas.width;
+            c.y = -20;
+            c.tilt = Math.random() * 10 - 5;
+          }
+
+          ctx.beginPath();
+          ctx.lineWidth = c.r;
+          ctx.strokeStyle = c.color;
+          ctx.moveTo(c.x + c.tilt + c.r / 2, c.y);
+          ctx.lineTo(c.x + c.tilt, c.y + c.tilt + c.r / 2);
+          ctx.stroke();
+        });
+
+        requestAnimationFrame(draw);
+      }
+      draw();
+
+      setTimeout(() => {
+        confettiActive = false;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }, 5000);
+    }
+
+    // --- LISTENERS ---
+    validateBtn.addEventListener('click', handleValidation);
+    nextBtn.addEventListener('click', handleNext);
+    restartBtn.addEventListener('click', initGame);
+
+    window.onload = initGame;
+  </script>
+</body>
+</html>
