@@ -141,7 +141,7 @@
 
 <div class="wrap">
   <!-- En-tête -->
-  <header class="box-3d p-6 mb-8 bg-white flex flex-col md:flex-row md:items-center justify-between gap-4">
+  <header class="box-3d p-6 mb-6 bg-white flex flex-col md:flex-row md:items-center justify-between gap-4">
     <div>
       <span class="inline-block bg-sky-100 text-sky-800 text-xs px-3 py-1 rounded-full font-bold uppercase tracking-wider mb-2 border-2 border-slate-900">🌍 Géographie de la Belgique</span>
       <h1 class="text-3xl md:text-4xl text-slate-900">Régions et Communautés</h1>
@@ -154,21 +154,31 @@
     </div>
   </header>
 
+  <!-- Grand Sélecteur : Mode Théorie vs Mode Défi (Pill track style) -->
+  <div class="flex border-3 border-slate-900 rounded-2xl overflow-hidden mb-6 bg-slate-200 p-1.5 box-3d">
+    <button onclick="switchTab('theory')" id="tab-theory" class="flex-1 py-3.5 px-4 text-center font-display font-bold text-base cursor-pointer rounded-xl border-none bg-white text-slate-900 shadow select-none">
+      📚 Théorie & Découverte
+    </button>
+    <button onclick="switchTab('exercise')" id="tab-exercise" class="flex-1 py-3.5 px-4 text-center font-display font-bold text-base cursor-pointer rounded-xl border-none bg-transparent text-slate-500 hover:text-slate-800 transition-colors select-none">
+      🏆 Défis & Exercices (Carte muette)
+    </button>
+  </div>
+
   <!-- Sélecteur de Calques / Modes -->
   <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-    <button onclick="switchMode('regions')" id="btn-regions" class="btn-3d active bg-amber-50 text-slate-800 text-left p-5 rounded-2xl flex items-center gap-4 w-full">
-      <span class="text-3xl p-2 bg-yellow-100 border-2 border-slate-900 rounded-xl">🗺️</span>
+    <button onclick="switchMode('regions')" id="btn-regions" class="btn-3d active bg-amber-50 text-slate-800 text-left p-4 rounded-2xl flex items-center gap-3 w-full">
+      <span class="text-2xl p-1.5 bg-yellow-100 border-2 border-slate-900 rounded-xl">🗺️</span>
       <div>
-        <h3 class="text-xl">Le Calque des 3 Régions</h3>
-        <p class="text-xs font-normal opacity-90 text-slate-600">Divisé selon le <strong class="underline">territoire</strong> (économie, routes, nature).</p>
+        <h3 class="text-base my-0 font-bold">Le Calque des 3 Régions</h3>
+        <p class="text-[10px] font-normal opacity-90 text-slate-600 my-0">Gère les matières de <strong class="underline">territoire</strong> (routes, économie, environnement).</p>
       </div>
     </button>
 
-    <button onclick="switchMode('communautes')" id="btn-communautes" class="btn-3d bg-pink-50 text-slate-800 text-left p-5 rounded-2xl flex items-center gap-4 w-full">
-      <span class="text-3xl p-2 bg-pink-100 border-2 border-slate-900 rounded-xl">🗣️</span>
+    <button onclick="switchMode('communautes')" id="btn-communautes" class="btn-3d bg-pink-50 text-slate-800 text-left p-4 rounded-2xl flex items-center gap-3 w-full">
+      <span class="text-2xl p-1.5 bg-pink-100 border-2 border-slate-900 rounded-xl">🗣️</span>
       <div>
-        <h3 class="text-xl">Le Calque des Communautés</h3>
-        <p class="text-xs font-normal opacity-90 text-slate-600">Divisé selon la <strong class="underline">langue et la culture</strong> (écoles, médias).</p>
+        <h3 class="text-base my-0 font-bold">Le Calque des Communautés</h3>
+        <p class="text-[10px] font-normal opacity-90 text-slate-600 my-0">Gère les matières de <strong class="underline">langue et culture</strong> (écoles, médias, sport).</p>
       </div>
     </button>
   </div>
@@ -182,7 +192,7 @@
         <span id="map-title" class="font-display font-bold text-lg text-slate-800">Les Régions de Belgique</span>
         <div class="flex items-center gap-2">
           <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-          <span class="text-xs text-slate-500 font-mono">Carte interactive</span>
+          <span id="map-badge-text" class="text-xs text-slate-500 font-mono">Carte interactive</span>
         </div>
       </div>
 
@@ -231,7 +241,7 @@
             </g>
           </g>
 
-          <!-- Textes des étiquettes (dynamiques) placés sur les centres visuels réels (sans ombre) -->
+          <!-- Textes des étiquettes (dynamiques) placés sur les centres visuels réels -->
           <g id="lbl-group" style="pointer-events: none; user-select: none;">
             <text id="lbl-flandre" x="155" y="64" text-anchor="middle" font-family="Fredoka" font-size="11px" fill="#1e293b" font-weight="bold">Flandre</text>
             <text id="lbl-wallonie" x="203" y="151" text-anchor="middle" font-family="Fredoka" font-size="11px" fill="#1e293b" font-weight="bold">Wallonie</text>
@@ -244,98 +254,129 @@
         </svg>
       </div>
 
-      <!-- Légende Dynamique -->
+      <!-- Légende Dynamique (masquée en mode défi) -->
       <div id="legend-container" class="w-full mt-6 bg-slate-50 border-2 border-slate-900 rounded-xl p-4 flex flex-wrap gap-4 justify-around text-sm font-semibold">
         <!-- Rempli par le script -->
       </div>
     </div>
 
-    <!-- Panneau latéral d'information -->
-    <div class="lg:col-span-5 flex flex-col gap-6 w-full">
+    <!-- Panneau latéral d'information ou de Jeu (Côte à côte avec la carte) -->
+    <div class="lg:col-span-5 flex flex-col gap-6 w-full min-h-[400px]">
       <!-- Explication générale du calque actif -->
-      <div class="box-3d p-5 bg-white border-sky-400">
-        <h3 id="panel-title" class="text-xl text-sky-800 mb-2 flex items-center gap-2">
+      <div class="box-3d p-4 bg-white border-sky-400">
+        <h3 id="panel-title" class="text-lg text-sky-800 mb-1.5 flex items-center gap-2">
           <span>💡</span> Le savais-tu ?
         </h3>
-        <p id="panel-intro" class="text-sm text-slate-600">
+        <p id="panel-intro" class="text-xs text-slate-600 my-0">
           En Belgique, on a découpé le pays en **Régions** pour gérer les choses pratiques du quotidien lié au sol (routes, économie). On l'a aussi découpé en **Communautés** pour que chaque groupe linguistique puisse gérer ses propres écoles et sa culture !
         </p>
       </div>
 
-      <!-- Carte d'identité dynamique du territoire survolé / cliqué -->
-      <div id="info-card" class="box-3d p-6 bg-white flex-1 flex flex-col justify-center items-center text-center text-slate-500 min-h-[220px]">
+      <!-- Fiche d'identité (Mode Théorie) -->
+      <div id="info-card" class="box-3d p-6 bg-white flex-1 flex flex-col justify-center items-center text-center text-slate-500 min-h-[350px]">
         <div class="text-5xl mb-3">👈</div>
         <p class="font-display font-semibold text-lg text-slate-800">Clique ou survole une zone</p>
         <p class="text-sm mt-1 text-slate-500">Découvre sa capitale, ses langues et ses rôles dans la vie de tous les jours.</p>
       </div>
-    </div>
-  </div>
 
-  <!-- Section interactive de Quiz -->
-  <section class="box-3d p-6 bg-amber-50 border-amber-500">
-    <div class="border-b-2 border-amber-900 pb-3 mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-      <div>
-        <h2 class="text-2xl text-amber-900">Atelier Pratique : Qui gère quoi ?</h2>
-        <p class="text-xs text-slate-600">Associe les situations réelles à la bonne institution !</p>
-      </div>
-      <div class="font-mono text-sm bg-white border-2 border-slate-900 px-3 py-1 rounded-lg" id="quiz-progress">
-        Question : 1 / 6
-      </div>
-    </div>
-
-    <!-- Écran de Jeu Actif -->
-    <div id="quiz-play-screen">
-      <div class="bg-white border-3 border-slate-900 p-6 rounded-2xl mb-6 relative">
-        <span class="absolute top-0 right-0 transform translate-x-2 -translate-y-3 bg-amber-200 text-slate-800 font-bold border-2 border-slate-900 px-2 py-0.5 rounded text-xs">Situation</span>
-        <p id="quiz-question" class="text-lg md:text-xl font-bold text-slate-800 text-center py-4">
-          Le bus scolaire TEC change son trajet pour s'arrêter plus près d'une école.
-        </p>
-      </div>
-
-      <!-- Boutons de Réponses -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <button onclick="submitAnswer('region')" class="btn-3d bg-yellow-100 hover:bg-yellow-200 text-slate-800 py-4 px-6 rounded-2xl text-center w-full">
-          <span class="block text-2xl mb-1">🗺️</span>
-          <span class="font-display text-lg font-bold block">C'est la RÉGION</span>
-          <span class="block text-xs opacity-75 mt-1">(Territoire, transport, routes)</span>
-        </button>
-
-        <button onclick="submitAnswer('communaute')" class="btn-3d bg-pink-100 hover:bg-pink-200 text-slate-800 py-4 px-6 rounded-2xl text-center w-full">
-          <span class="block text-2xl mb-1">🗣️</span>
-          <span class="font-display text-lg font-bold block">C'est la FÉDÉRATION / COMMUNAUTÉ</span>
-          <span class="block text-xs opacity-75 mt-1">(Langues, écoles, culture, médias)</span>
-        </button>
-      </div>
-
-      <!-- Feedback de réponse -->
-      <div id="quiz-feedback" class="hidden mt-6 p-4 rounded-xl border-3 border-slate-900 flex items-start gap-3">
-        <span id="feedback-icon" class="text-2xl p-1 bg-white border-2 border-slate-900 rounded-lg"></span>
-        <div>
-          <h4 id="feedback-title" class="font-bold text-lg"></h4>
-          <p id="feedback-desc" class="text-sm mt-1 text-slate-700"></p>
-          <button onclick="nextQuestion()" class="btn-3d mt-3 bg-white hover:bg-slate-50 text-slate-800 text-xs px-4 py-2 rounded-lg font-bold uppercase">
-            Continuer ➔
+      <!-- Fiche de Jeu (Mode Exercices) -->
+      <div id="game-card" class="box-3d bg-amber-50 border-amber-500 overflow-hidden flex flex-col flex-1 hidden min-h-[350px]">
+        <!-- Onglets de Navigation entre les Jeux -->
+        <div class="flex border-b-3 border-slate-900 bg-slate-200">
+          <button onclick="switchGameMode('locate')" id="tab-game-locate" class="flex-1 py-3 px-2 text-center font-display font-bold border-none cursor-pointer text-xs md:text-sm transition-colors duration-150">
+            📍 Localise
           </button>
+          <button onclick="switchGameMode('quiz')" id="tab-game-quiz" class="flex-1 py-3 px-2 text-center font-display font-bold border-none cursor-pointer text-xs md:text-sm border-l-3 border-slate-900 transition-colors duration-150">
+            ❓ QCM Gérance
+          </button>
+        </div>
+
+        <div class="p-5 flex-1 flex flex-col justify-between">
+          <div>
+            <div class="border-b-2 border-amber-900 pb-2 mb-4 flex items-center justify-between gap-3">
+              <div>
+                <h3 id="game-title" class="text-base text-amber-900 my-0">Jeu de repérage</h3>
+                <p id="game-subtitle" class="text-[10px] text-slate-600 my-0.5">Clique sur la bonne zone sur la carte muette.</p>
+              </div>
+              <div class="font-mono text-xs bg-white border-2 border-slate-900 px-2 py-0.5 rounded-lg" id="quiz-progress">
+                Question : 1 / 3
+              </div>
+            </div>
+
+            <!-- Écran du Jeu Localisation -->
+            <div id="locate-game-screen">
+              <div class="bg-white border-2 border-slate-900 p-4 rounded-xl mb-4 relative text-center">
+                <p class="text-xs text-slate-400 mb-1">Trouve l'élément demandé sur la carte vierge :</p>
+                <p id="locate-instruction" class="text-base md:text-lg font-bold text-sky-700 py-1 my-0">
+                  Trouve et clique sur : la Fédération Wallonie-Bruxelles
+                </p>
+              </div>
+
+              <!-- Feedback de localisation -->
+              <div id="locate-feedback" class="hidden p-3 rounded-xl border-2 border-slate-900 flex items-start gap-2 text-xs">
+                <span id="locate-feedback-icon" class="text-lg p-0.5 bg-white border border-slate-900 rounded"></span>
+                <div>
+                  <h4 id="locate-feedback-title" class="font-bold text-sm text-slate-950 my-0"></h4>
+                  <p id="locate-feedback-desc" class="text-slate-700 mt-1 my-0"></p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Écran du Jeu Quiz (Masqué par défaut) -->
+            <div id="quiz-play-screen" class="hidden">
+              <div class="bg-white border-2 border-slate-900 p-4 rounded-xl mb-4 relative">
+                <p id="quiz-question" class="text-sm font-bold text-slate-800 text-center py-2 my-0">
+                  Le bus scolaire TEC change son trajet pour s'arrêter plus près d'une école.
+                </p>
+              </div>
+
+              <!-- Boutons de Réponses -->
+              <div class="flex flex-col gap-2">
+                <button onclick="submitAnswer('region')" class="btn-3d bg-yellow-100 hover:bg-yellow-200 text-slate-800 py-2.5 px-4 rounded-xl text-center w-full flex items-center justify-center gap-2">
+                  <span>🗺️</span>
+                  <span class="font-display text-sm font-bold">C'est la région</span>
+                </button>
+
+                <button onclick="submitAnswer('communaute')" class="btn-3d bg-pink-100 hover:bg-pink-200 text-slate-800 py-2.5 px-4 rounded-xl text-center w-full flex items-center justify-center gap-2">
+                  <span>🗣️</span>
+                  <span class="font-display text-sm font-bold">C'est la communauté / FWB</span>
+                </button>
+              </div>
+
+              <!-- Feedback de réponse -->
+              <div id="quiz-feedback" class="hidden mt-4 p-3 rounded-xl border-2 border-slate-900 flex items-start gap-2 text-xs">
+                <span id="feedback-icon" class="text-lg p-0.5 bg-white border border-slate-900 rounded"></span>
+                <div>
+                  <h4 id="feedback-title" class="font-bold text-sm my-0"></h4>
+                  <p id="feedback-desc" class="text-slate-700 mt-1 my-0"></p>
+                  <button onclick="nextQuestion()" class="btn-3d mt-2 bg-white hover:bg-slate-50 text-slate-800 text-[10px] px-2.5 py-1 rounded font-bold uppercase">
+                    Continuer ➔
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Écran de Résultat Final -->
+            <div id="quiz-end-screen" class="hidden text-center py-4">
+              <div class="text-5xl mb-2">🏆</div>
+              <h3 class="text-xl text-slate-900 mb-1 font-display">Défi terminé !</h3>
+              <p class="text-xs text-slate-600 mb-4 max-w-xs mx-auto">
+                Tu as obtenu un score de <strong class="text-sm text-slate-900" id="final-score">5 / 6</strong>.
+              </p>
+              <button onclick="restartActiveGame()" class="btn-3d bg-white hover:bg-slate-50 text-slate-800 text-xs px-4 py-2 rounded-xl font-bold">
+                🔄 Recommencer
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-
-    <!-- Écran de Résultat Final -->
-    <div id="quiz-end-screen" class="hidden text-center py-8">
-      <div class="text-6xl mb-4">🏆</div>
-      <h3 class="text-3xl text-slate-900 mb-2 font-display">Entraînement terminé !</h3>
-      <p class="text-slate-600 mb-6 max-w-md mx-auto">
-        Tu as obtenu un score de <strong class="text-lg text-slate-900" id="final-score">5 / 6</strong>. Tu commences à bien comprendre le fonctionnement de la Belgique !
-      </p>
-      <button onclick="resetQuiz()" class="btn-3d bg-white hover:bg-slate-50 text-slate-800 px-6 py-3 rounded-xl font-bold">
-        🔄 Recommencer le défi
-      </button>
-    </div>
-  </section>
+  </div>
 </div>
 
 <script>
   // --- ÉTAT DE L'APPLICATION ---
+  let currentTab = 'theory';  // 'theory' ou 'exercise'
   let currentMode = 'regions'; // 'regions' ou 'communautes'
   let activeZone = null;
 
@@ -460,7 +501,7 @@
     }
   };
 
-  // --- LE JEU DU QUIZ ---
+  // --- LE JEU DU QUIZ (12 Questions pour la rejouabilité) ---
   const QUIZ_QUESTIONS = [
     {
       text: "On répare les trous sur la route nationale qui va de Namur à Liège.",
@@ -491,9 +532,40 @@
       text: "Aider un club de sport de langue allemande à acheter du matériel pour ses gymnastes.",
       answer: "communaute",
       explanation: "Le sport, la jeunesse et la culture dépendent des Communautés, ici la Communauté germanophone."
+    },
+    {
+      text: "Gérer l'aménagement du territoire et accorder un permis pour construire un grand éco-quartier.",
+      answer: "region",
+      explanation: "L'aménagement du territoire et le logement sont des compétences territoriales gérées par la Région."
+    },
+    {
+      text: "Organiser les examens officiels du CEB et du CESS pour tous les élèves francophones.",
+      answer: "communaute",
+      explanation: "C'est la Fédération Wallonie-Bruxelles (FWB) qui s'occupe des règles d'enseignement et de l'organisation des examens scolaires."
+    },
+    {
+      text: "Distribuer des aides financières aux agriculteurs wallons pour moderniser leur matériel.",
+      answer: "region",
+      explanation: "L'agriculture et l'économie locale sont des compétences de gestion du sol gérées par la Région."
+    },
+    {
+      text: "Créer des programmes radio ou télévision de divertissement sur la chaîne publique flamande VRT.",
+      answer: "communaute",
+      explanation: "Les radios et télévisions publiques de chaque langue (VRT, RTBF, BRF) sont régies par leurs Communautés respectives."
+    },
+    {
+      text: "S'occuper du nettoyage des rues, du tri sélectif et du ramassage des poubelles dans la capitale.",
+      answer: "region",
+      explanation: "La propreté publique, le traitement des déchets et la gestion de la voirie urbaine dépendent de la Région."
+    },
+    {
+      text: "Financer et équiper une bibliothèque de quartier pour prêter des livres rédigés en allemand.",
+      answer: "communaute",
+      explanation: "L'accès à la culture, aux livres et à la lecture publique dépend de la Communauté linguistique (ici germanophone)."
     }
   ];
 
+  let activeQuestions = [];
   let currentQuestionIndex = 0;
   let score = 0;
 
@@ -535,6 +607,50 @@
     }
   }
 
+  // --- LOGIQUE DES ONGLETS PRINCIPAUX (THÉORIE / EXERCICES) ---
+  function switchTab(tab) {
+    currentTab = tab;
+    
+    const tabTheory = document.getElementById('tab-theory');
+    const tabExercise = document.getElementById('tab-exercise');
+    
+    const lblGroup = document.getElementById('lbl-group');
+    const legendContainer = document.getElementById('legend-container');
+    const sideInfo = document.getElementById('info-card');
+    const sideGame = document.getElementById('game-card');
+    const mapBadgeText = document.getElementById('map-badge-text');
+    
+    // Style du commutateur pill
+    if (tab === 'theory') {
+      tabTheory.className = "flex-1 py-3.5 px-4 text-center font-display font-bold text-base cursor-pointer rounded-xl border-none bg-white text-slate-900 shadow select-none";
+      tabExercise.className = "flex-1 py-3.5 px-4 text-center font-display font-bold text-base cursor-pointer rounded-xl border-none bg-transparent text-slate-500 hover:text-slate-800 transition-colors select-none";
+      
+      mapBadgeText.innerText = "Carte interactive";
+      lblGroup.style.display = 'block';
+      legendContainer.style.display = 'flex';
+      
+      sideInfo.classList.remove('hidden');
+      sideGame.classList.add('hidden');
+      
+      activeGameMode = 'study';
+      resetInfoCard();
+      document.querySelectorAll('.map-path').forEach(p => p.setAttribute('stroke-width', '1px'));
+    } else {
+      tabTheory.className = "flex-1 py-3.5 px-4 text-center font-display font-bold text-base cursor-pointer rounded-xl border-none bg-transparent text-slate-500 hover:text-slate-800 transition-colors select-none";
+      tabExercise.className = "flex-1 py-3.5 px-4 text-center font-display font-bold text-base cursor-pointer rounded-xl border-none bg-white text-slate-900 shadow select-none";
+      
+      mapBadgeText.innerText = "Carte muette (vierge)";
+      lblGroup.style.display = 'none';
+      legendContainer.style.display = 'none';
+      
+      sideInfo.classList.add('hidden');
+      sideGame.classList.remove('hidden');
+      
+      document.querySelectorAll('.map-path').forEach(p => p.setAttribute('stroke-width', '1px'));
+      switchGameMode('locate');
+    }
+  }
+
   // --- LOGIQUE DES CALQUES ET DE LA CARTE ---
 
   function switchMode(mode) {
@@ -552,6 +668,11 @@
     updateMapColors();
     renderLegend(data.legend);
     updateMapLabels();
+
+    // Si on est dans le jeu de localisation, on relance le jeu pour adapter les cibles au nouveau calque
+    if (currentTab === 'exercise' && activeGameMode === 'locate') {
+      startLocateGame();
+    }
   }
 
   function updateMapColors() {
@@ -667,40 +788,48 @@
   }
 
   function hoverZone(zoneId) {
-    if (!activeZone) {
+    if (currentTab === 'theory' && !activeZone) {
       showZoneInfo(zoneId, true);
     }
   }
 
   function leaveZone() {
-    if (!activeZone) {
+    if (currentTab === 'theory' && !activeZone) {
       resetInfoCard();
     }
   }
 
   function clickZone(zoneId) {
-    if (activeZone === zoneId) {
-      activeZone = null;
-      resetInfoCard();
-      document.querySelectorAll('.map-path').forEach(p => p.setAttribute('stroke-width', '1px'));
-    } else {
-      activeZone = zoneId;
-      showZoneInfo(zoneId, false);
-      
-      document.querySelectorAll('.map-path').forEach(p => p.setAttribute('stroke-width', '1px'));
-      
-      if (zoneId === 'bruxelles') {
-        document.getElementById('path-bruxelles-fr').setAttribute('stroke-width', '2px');
-        document.getElementById('path-bruxelles-nl').setAttribute('stroke-width', '2px');
-      } else if (zoneId === 'wallonie_fr' || zoneId === 'wallonie_de') {
-        if (currentMode === 'regions') {
-          document.getElementById('path-wallonie-fr').setAttribute('stroke-width', '2px');
-          document.getElementById('path-wallonie-de').setAttribute('stroke-width', '2px');
-        } else {
-          document.getElementById(`path-${zoneId.replace('_', '-')}`).setAttribute('stroke-width', '2px');
-        }
+    // Si on est dans le mode de jeu "Localisation", le clic sur la carte sert à répondre
+    if (currentTab === 'exercise' && activeGameMode === 'locate') {
+      handleLocateClick(zoneId);
+      return;
+    }
+
+    if (currentTab === 'theory') {
+      if (activeZone === zoneId) {
+        activeZone = null;
+        resetInfoCard();
+        document.querySelectorAll('.map-path').forEach(p => p.setAttribute('stroke-width', '1px'));
       } else {
-        document.getElementById(`path-${zoneId}`).setAttribute('stroke-width', '2px');
+        activeZone = zoneId;
+        showZoneInfo(zoneId, false);
+        
+        document.querySelectorAll('.map-path').forEach(p => p.setAttribute('stroke-width', '1px'));
+        
+        if (zoneId === 'bruxelles') {
+          document.getElementById('path-bruxelles-fr').setAttribute('stroke-width', '2px');
+          document.getElementById('path-bruxelles-nl').setAttribute('stroke-width', '2px');
+        } else if (zoneId === 'wallonie_fr' || zoneId === 'wallonie_de') {
+          if (currentMode === 'regions') {
+            document.getElementById('path-wallonie-fr').setAttribute('stroke-width', '2px');
+            document.getElementById('path-wallonie-de').setAttribute('stroke-width', '2px');
+          } else {
+            document.getElementById(`path-${zoneId.replace('_', '-')}`).setAttribute('stroke-width', '2px');
+          }
+        } else {
+          document.getElementById(`path-${zoneId}`).setAttribute('stroke-width', '2px');
+        }
       }
     }
   }
@@ -769,17 +898,214 @@
     infoCard.className = "box-3d p-6 bg-white flex-1 flex flex-col justify-center items-center text-center text-slate-500 min-h-[220px]";
   }
 
-  // --- GESTION DU JEU QUIZ ---
+  // --- LOGIQUE DES JEUX ET MODES ---
+  let activeGameMode = 'study'; // 'study', 'locate' ou 'quiz'
+  let locateTargets = [];
+  let currentLocateIndex = 0;
+  let locateScore = 0;
+  let isLocateFeedbackActive = false;
+
+  function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  }
+
+  function switchGameMode(mode) {
+    activeGameMode = mode;
+    
+    const tabLocate = document.getElementById('tab-game-locate');
+    const tabQuiz = document.getElementById('tab-game-quiz');
+    const screenLocate = document.getElementById('locate-game-screen');
+    const screenQuiz = document.getElementById('quiz-play-screen');
+    const screenEnd = document.getElementById('quiz-end-screen');
+    
+    // Réinitialiser l'affichage de l'écran de fin
+    screenEnd.classList.add('hidden');
+    
+    if (mode === 'locate') {
+      tabLocate.className = "flex-1 py-3 px-2 text-center font-display font-bold border-none cursor-pointer text-xs md:text-sm bg-amber-100 text-amber-950 transition-colors duration-150";
+      tabQuiz.className = "flex-1 py-3 px-2 text-center font-display font-bold border-none cursor-pointer text-xs md:text-sm border-l-3 border-slate-900 bg-slate-200 text-slate-500 hover:bg-slate-100 transition-colors duration-150";
+      
+      document.getElementById('game-title').innerText = "Jeu de repérage";
+      document.getElementById('game-subtitle').innerText = "Clique sur la bonne zone sur la carte muette.";
+      
+      screenLocate.classList.remove('hidden');
+      screenQuiz.classList.add('hidden');
+      startLocateGame();
+    } else {
+      tabLocate.className = "flex-1 py-3 px-2 text-center font-display font-bold border-none cursor-pointer text-xs md:text-sm bg-slate-200 text-slate-500 hover:bg-slate-100 transition-colors duration-150";
+      tabQuiz.className = "flex-1 py-3 px-2 text-center font-display font-bold border-none cursor-pointer text-xs md:text-sm border-l-3 border-slate-900 bg-amber-100 text-amber-950 transition-colors duration-150";
+      
+      document.getElementById('game-title').innerText = "Qui gère quoi ?";
+      document.getElementById('game-subtitle').innerText = "Associe les situations réelles à la bonne institution !";
+      
+      screenLocate.classList.add('hidden');
+      screenQuiz.classList.remove('hidden');
+      resetQuiz();
+    }
+  }
+
+  function restartActiveGame() {
+    if (activeGameMode === 'locate') {
+      document.getElementById('locate-game-screen').classList.remove('hidden');
+      document.getElementById('quiz-end-screen').classList.add('hidden');
+      startLocateGame();
+    } else {
+      resetQuiz();
+    }
+  }
+
+  // --- LOGIQUE JEU 1 : LOCALISATION SUR LA CARTE ---
+  function startLocateGame() {
+    isLocateFeedbackActive = false;
+    document.getElementById('locate-feedback').classList.add('hidden');
+    
+    // Charger les cibles correspondantes au calque actif
+    if (currentMode === 'regions') {
+      locateTargets = [
+        { id: 'flandre', label: "la Région flamande", desc: "Elle se situe au Nord de la Belgique (en jaune)." },
+        { id: 'wallonie', label: "la Région wallonne", desc: "Elle se situe au Sud de la Belgique (en rose)." },
+        { id: 'bruxelles', label: "la Région de Bruxelles-Capitale", desc: "C'est la petite enclave bleue centrale." }
+      ];
+    } else {
+      locateTargets = [
+        { id: 'flandre', label: "la Communauté flamande", desc: "Elle réunit toute la Flandre jaune et les Flamands de Bruxelles." },
+        { id: 'wallonie_fr', label: "la Fédération Wallonie-Bruxelles", desc: "Elle réunit les francophones de Wallonie (rose) et de Bruxelles." },
+        { id: 'wallonie_de', label: "la Communauté germanophone", desc: "C'est la petite enclave verte située tout à l'Est." },
+        { id: 'bruxelles', label: "Bruxelles (la zone bilingue)", desc: "Elle regroupe les deux grandes communautés linguistiques (motif hachuré)." }
+      ];
+    }
+
+    // Mélanger pour renouveler l'exercice à chaque partie
+    shuffleArray(locateTargets);
+    currentLocateIndex = 0;
+    locateScore = 0;
+    
+    updateLocateUI();
+  }
+
+  function updateLocateUI() {
+    const progress = document.getElementById('quiz-progress');
+    progress.innerText = `Objectif : ${currentLocateIndex + 1} / ${locateTargets.length}`;
+    
+    const target = locateTargets[currentLocateIndex];
+    document.getElementById('locate-instruction').innerHTML = `Trouve et clique sur : <br><strong class="text-lg text-sky-950 font-display block mt-1">${target.label}</strong>`;
+  }
+
+  function handleLocateClick(clickedZoneId) {
+    if (isLocateFeedbackActive) return;
+    
+    const target = locateTargets[currentLocateIndex];
+    let isCorrect = false;
+    
+    // Normaliser l'évaluation selon la cible
+    if (target.id === 'wallonie') {
+      isCorrect = (clickedZoneId === 'wallonie_fr' || clickedZoneId === 'wallonie_de');
+    } else {
+      isCorrect = (clickedZoneId === target.id);
+    }
+    
+    isLocateFeedbackActive = true;
+    const feedback = document.getElementById('locate-feedback');
+    const fIcon = document.getElementById('locate-feedback-icon');
+    const fTitle = document.getElementById('locate-feedback-title');
+    const fDesc = document.getElementById('locate-feedback-desc');
+    
+    feedback.classList.remove('hidden');
+    
+    // Retrouver les chemins SVG concernés pour allumer la carte
+    const pathsToHighlight = [];
+    if (clickedZoneId === 'bruxelles') {
+      pathsToHighlight.push(document.getElementById('path-bruxelles-fr'));
+      pathsToHighlight.push(document.getElementById('path-bruxelles-nl'));
+    } else if (currentMode === 'regions' && (clickedZoneId === 'wallonie_fr' || clickedZoneId === 'wallonie_de')) {
+      pathsToHighlight.push(document.getElementById('path-wallonie-fr'));
+      pathsToHighlight.push(document.getElementById('path-wallonie-de'));
+    } else {
+      pathsToHighlight.push(document.getElementById(`path-${clickedZoneId.replace('_', '-')}`));
+    }
+    
+    if (isCorrect) {
+      locateScore++;
+      playSound('success');
+      feedback.className = "mt-4 p-3 rounded-xl border-2 border-emerald-950 bg-emerald-50 flex items-start gap-2 animate-pop";
+      fIcon.innerText = "🎉";
+      fIcon.className = "text-lg p-0.5 bg-white border border-emerald-950 rounded";
+      fTitle.innerText = "Bien joué ! C'est correct.";
+      fTitle.className = "font-bold text-sm text-emerald-900 my-0";
+      fDesc.innerText = target.desc;
+      
+      pathsToHighlight.forEach(p => {
+        p.style.transition = 'fill 0.2s, stroke-width 0.2s';
+        p.setAttribute('stroke-width', '3px');
+        p.setAttribute('stroke', '#047857');
+      });
+    } else {
+      playSound('error');
+      feedback.className = "mt-4 p-3 rounded-xl border-2 border-rose-950 bg-rose-50 flex items-start gap-2 animate-pop";
+      fIcon.innerText = "❌";
+      fIcon.className = "text-lg p-0.5 bg-white border border-rose-950 rounded";
+      fTitle.innerText = "Ce n'est pas le bon endroit.";
+      fTitle.className = "font-bold text-sm text-rose-900 my-0";
+      fDesc.innerText = `Aide : ${target.desc}`;
+      
+      pathsToHighlight.forEach(p => {
+        p.style.transition = 'fill 0.2s, stroke-width 0.2s';
+        p.setAttribute('stroke-width', '3px');
+        p.setAttribute('stroke', '#b91c1c');
+      });
+    }
+    
+    // Attendre 2 secondes avant de réinitialiser la carte et de passer à la suite
+    setTimeout(() => {
+      pathsToHighlight.forEach(p => {
+        p.setAttribute('stroke-width', '1px');
+        p.setAttribute('stroke', 'var(--ink)');
+      });
+      
+      feedback.classList.add('hidden');
+      isLocateFeedbackActive = false;
+      
+      currentLocateIndex++;
+      if (currentLocateIndex < locateTargets.length) {
+        updateLocateUI();
+      } else {
+        // Fin de jeu localisation
+        document.getElementById('locate-game-screen').classList.add('hidden');
+        document.getElementById('quiz-end-screen').classList.remove('hidden');
+        document.getElementById('final-score').innerText = `${locateScore} / ${locateTargets.length}`;
+        document.getElementById('quiz-progress').innerText = "Terminé !";
+      }
+    }, 2000);
+  }
+
+  // --- LOGIQUE JEU 2 : QUI COMPREND LE QCM ---
   
+  function resetQuiz() {
+    currentQuestionIndex = 0;
+    score = 0;
+    document.getElementById('quiz-play-screen').classList.remove('hidden');
+    document.getElementById('quiz-end-screen').classList.add('hidden');
+    
+    // Choisir 6 questions au hasard parmi les 12 disponibles
+    shuffleArray(QUIZ_QUESTIONS);
+    activeQuestions = QUIZ_QUESTIONS.slice(0, 6);
+    
+    updateQuizUI();
+  }
+
   function updateQuizUI() {
-    const question = QUIZ_QUESTIONS[currentQuestionIndex];
-    document.getElementById('quiz-progress').innerText = `Question : ${currentQuestionIndex + 1} / ${QUIZ_QUESTIONS.length}`;
+    const question = activeQuestions[currentQuestionIndex];
+    document.getElementById('quiz-progress').innerText = `Question : ${currentQuestionIndex + 1} / ${activeQuestions.length}`;
     document.getElementById('quiz-question').innerText = question.text;
     document.getElementById('quiz-feedback').classList.add('hidden');
   }
 
   function submitAnswer(userChoice) {
-    const question = QUIZ_QUESTIONS[currentQuestionIndex];
+    const question = activeQuestions[currentQuestionIndex];
     const feedback = document.getElementById('quiz-feedback');
     const fIcon = document.getElementById('feedback-icon');
     const fTitle = document.getElementById('feedback-title');
@@ -790,18 +1116,18 @@
     if (userChoice === question.answer) {
       score++;
       playSound('success');
-      feedback.className = "mt-6 p-4 rounded-xl border-3 border-emerald-950 bg-emerald-50 flex items-start gap-3";
+      feedback.className = "mt-4 p-3 rounded-xl border-2 border-emerald-950 bg-emerald-50 flex items-start gap-2 text-xs";
       fIcon.innerText = "🎉";
-      fIcon.className = "text-2xl p-1 bg-white border-2 border-emerald-950 rounded-lg";
+      fIcon.className = "text-lg p-0.5 bg-white border border-emerald-950 rounded";
       fTitle.innerText = "Excellent ! C'est correct.";
-      fTitle.className = "font-bold text-lg text-emerald-900";
+      fTitle.className = "font-bold text-sm text-emerald-900 my-0";
     } else {
       playSound('error');
-      feedback.className = "mt-6 p-4 rounded-xl border-3 border-rose-950 bg-rose-50 flex items-start gap-3";
+      feedback.className = "mt-4 p-3 rounded-xl border-2 border-rose-950 bg-rose-50 flex items-start gap-2 text-xs";
       fIcon.innerText = "❌";
-      fIcon.className = "text-2xl p-1 bg-white border-2 border-rose-950 rounded-lg";
+      fIcon.className = "text-lg p-0.5 bg-white border border-rose-950 rounded";
       fTitle.innerText = "Oups ! Ce n'est pas tout à fait ça.";
-      fTitle.className = "font-bold text-lg text-rose-900";
+      fTitle.className = "font-bold text-sm text-rose-900 my-0";
     }
     
     fDesc.innerText = question.explanation;
@@ -809,28 +1135,20 @@
 
   function nextQuestion() {
     currentQuestionIndex++;
-    if (currentQuestionIndex < QUIZ_QUESTIONS.length) {
+    if (currentQuestionIndex < activeQuestions.length) {
       updateQuizUI();
     } else {
       document.getElementById('quiz-play-screen').classList.add('hidden');
       document.getElementById('quiz-end-screen').classList.remove('hidden');
-      document.getElementById('final-score').innerText = `${score} / ${QUIZ_QUESTIONS.length}`;
+      document.getElementById('final-score').innerText = `${score} / ${activeQuestions.length}`;
       document.getElementById('quiz-progress').innerText = "Terminé !";
     }
-  }
-
-  function resetQuiz() {
-    currentQuestionIndex = 0;
-    score = 0;
-    document.getElementById('quiz-play-screen').classList.remove('hidden');
-    document.getElementById('quiz-end-screen').classList.add('hidden');
-    updateQuizUI();
   }
 
   // --- INITIALISATION ---
   window.onload = function() {
     switchMode('regions');
-    updateQuizUI();
+    switchTab('theory');
   };
 </script>
 </body>
