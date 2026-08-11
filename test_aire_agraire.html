@@ -1,0 +1,1484 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test : Mesures Agraires & Superficies</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #1e293b;
+      --border: #334155;
+      --primary: #a855f7;
+      --primary-glow: rgba(168, 85, 247, 0.22);
+      --accent: #f59e0b;
+      --accent-glow: rgba(245, 158, 11, 0.2);
+      --green: #10b981;
+      --green-soft: rgba(16, 185, 129, 0.1);
+      --red: #f43f5e;
+      --red-soft: rgba(244, 63, 94, 0.1);
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      
+      --metric-bg: #0d1f38;
+      --metric-text: #60a5fa;
+      --metric-border: #1e3a5f;
+      
+      --agrarian-bg: #0d2a12;
+      --agrarian-text: #4ade80;
+      --agrarian-border: #1a4020;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 1.5rem 1rem;
+      overflow-y: auto;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 960px;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    /* ── Header ── */
+    header {
+      text-align: center;
+    }
+    h1 {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 2rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #e879f9, #a855f7, #6366f1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.35rem;
+    }
+    .subtitle {
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    /* ── Progress Bar & Stats ── */
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 0.75rem 1.25rem;
+    }
+    .stat-block {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .stat-label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+    }
+    .stat-val {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+    .prog-track {
+      flex: 1;
+      height: 8px;
+      background: rgba(51, 65, 85, 0.5);
+      border-radius: 99px;
+      margin: 0 1.5rem;
+      overflow: hidden;
+    }
+    .prog-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--primary), #c084fc);
+      border-radius: 99px;
+      transition: width 0.4s ease;
+    }
+
+    /* ── Question Card ── */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 1.5rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+    .q-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.25rem 0.75rem;
+      border-radius: 99px;
+      background: rgba(168, 85, 247, 0.12);
+      border: 1px solid rgba(168, 85, 247, 0.3);
+      color: #d8b4fe;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+    .q-text {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #e2e8f0;
+      line-height: 1.5;
+      margin-bottom: 1.25rem;
+    }
+    .q-text strong {
+      color: #fff;
+      background: rgba(255,255,255,0.08);
+      padding: 0.1rem 0.4rem;
+      border-radius: 6px;
+      font-family: 'Fredoka', sans-serif;
+    }
+    .q-text .highlight-unit {
+      color: var(--accent);
+    }
+
+    /* ── Answer Form ── */
+    .answer-form {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+    }
+    .answer-input-container {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .answer-input {
+      width: 180px;
+      padding: 0.75rem 1rem;
+      background: rgba(15, 23, 42, 0.8);
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      color: var(--text);
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      text-align: center;
+      outline: none;
+      transition: all 0.2s;
+    }
+    .answer-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 10px rgba(168, 85, 247, 0.2);
+    }
+    .answer-input:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    .answer-placeholder {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+    .btn-validate {
+      padding: 0.75rem 1.75rem;
+      background: linear-gradient(135deg, var(--primary), #7c3aed);
+      border: none;
+      border-radius: 12px;
+      color: white;
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 4px 14px var(--primary-glow);
+      transition: all 0.2s;
+    }
+    .btn-validate:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(168, 85, 247, 0.4);
+    }
+    .btn-validate:active {
+      transform: translateY(0);
+    }
+    .btn-validate:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* ── Feedback Panel ── */
+    .feedback {
+      border-radius: 14px;
+      padding: 1.1rem 1.3rem;
+      margin-top: 1rem;
+      display: flex;
+      gap: 0.85rem;
+      align-items: flex-start;
+      animation: slideUp 0.3s ease forwards;
+    }
+    .fb-correct {
+      background: var(--green-soft);
+      border: 1px solid rgba(16, 185, 129, 0.35);
+    }
+    .fb-wrong {
+      background: var(--red-soft);
+      border: 1px solid rgba(244, 63, 94, 0.35);
+    }
+    .fb-icon {
+      font-size: 1.6rem;
+      flex-shrink: 0;
+      line-height: 1;
+    }
+    .fb-title {
+      font-family: 'Fredoka', sans-serif;
+      font-weight: 700;
+      font-size: 1.1rem;
+      margin-bottom: 0.3rem;
+    }
+    .fb-correct .fb-title { color: var(--green); }
+    .fb-wrong .fb-title { color: #fb7185; }
+    .fb-text {
+      font-size: 0.95rem;
+      color: #cbd5e1;
+      line-height: 1.6;
+    }
+    .fb-text strong {
+      color: #fff;
+    }
+    .fb-explanation {
+      margin-top: 0.6rem;
+      padding: 0.6rem 0.8rem;
+      border-radius: 8px;
+      background: rgba(168, 85, 247, 0.08);
+      border-left: 3px solid var(--primary);
+      font-size: 0.88rem;
+      color: #d8b4fe;
+      font-style: italic;
+    }
+    
+    .btn-next {
+      width: 100%;
+      padding: 0.85rem;
+      background: linear-gradient(135deg, var(--primary), #7c3aed);
+      border: none;
+      border-radius: 12px;
+      color: white;
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 14px var(--primary-glow);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-top: 1rem;
+      transition: all 0.2s;
+    }
+    .btn-next:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(168, 85, 247, 0.4);
+    }
+
+    /* ── Abaque Section ── */
+    .abaque-section {
+      background: #1e293b;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .abaque-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .abaque-h2 {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #f1f5f9;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .abaque-desc {
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+    
+    /* The conversion abacus table */
+    .abaque-table-container {
+      width: 100%;
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: #0f172a;
+    }
+    .abaque-table {
+      width: 100%;
+      min-width: 780px;
+      border-collapse: collapse;
+      table-layout: fixed;
+    }
+    .abaque-table th, .abaque-table td {
+      border: 1px solid var(--border);
+      text-align: center;
+      position: relative;
+    }
+    
+    /* Row headers styling */
+    .th-unit {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      padding: 0.4rem 0.2rem;
+    }
+    .th-metric {
+      background: var(--metric-bg);
+      color: var(--metric-text);
+      border-color: var(--metric-border);
+    }
+    .th-agrarian {
+      background: var(--agrarian-bg);
+      color: var(--agrarian-text);
+      border-color: var(--agrarian-border);
+    }
+    
+    /* Row 2 agrarian name badges */
+    .th-subname {
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 0.25rem 0.1rem;
+      line-height: 1.2;
+    }
+    .th-subname-empty {
+      background: rgba(15, 23, 42, 0.4);
+      color: var(--muted);
+    }
+    .th-subname-agr {
+      background: rgba(13, 42, 18, 0.85);
+      color: var(--agrarian-text);
+    }
+    .badge-agr {
+      display: inline-block;
+      background: rgba(74, 222, 128, 0.15);
+      border: 1px solid rgba(74, 222, 128, 0.4);
+      border-radius: 6px;
+      padding: 0.1rem 0.35rem;
+      font-size: 0.75rem;
+      font-weight: 800;
+      font-family: 'Fredoka', sans-serif;
+      margin-bottom: 0.1rem;
+    }
+    
+    /* Row 3 column subdivision (d / u) */
+    .th-du {
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 0.15rem 0;
+      text-transform: uppercase;
+    }
+    .th-du-metric {
+      background: rgba(13, 31, 56, 0.6);
+      color: #93c5fd;
+      border-color: var(--metric-border);
+    }
+    .th-du-agr {
+      background: rgba(13, 42, 18, 0.4);
+      color: #86efac;
+      border-color: var(--agrarian-border);
+    }
+    .border-dashed-right {
+      border-right: 1px dashed rgba(255, 255, 255, 0.2) !important;
+    }
+    
+    /* Cells input row styling */
+    .abaque-cell {
+      height: 48px;
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #fff;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.15s;
+    }
+    .abaque-cell:hover {
+      background: rgba(255, 255, 255, 0.04);
+    }
+    .abaque-cell.selected {
+      background: var(--accent-glow) !important;
+      outline: 2px solid var(--accent);
+      outline-offset: -2px;
+      z-index: 5;
+    }
+    .cell-metric-bg {
+      background: rgba(15, 23, 42, 0.25);
+    }
+    .cell-agr-bg {
+      background: rgba(13, 42, 18, 0.1);
+    }
+    
+    /* Comma styling on the right border of cell */
+    .abaque-cell.has-comma::after {
+      content: ",";
+      position: absolute;
+      right: -4px;
+      bottom: 4px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: var(--accent);
+      z-index: 10;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.8);
+      pointer-events: none;
+      line-height: 1;
+    }
+
+    /* ── Controls Row (Numpad + Abaque tools) ── */
+    .controls-row {
+      display: flex;
+      gap: 1.25rem;
+      align-items: stretch;
+      flex-wrap: wrap;
+    }
+    
+    /* Virtual Numpad styling */
+    .numpad {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 0.5rem;
+      flex: 1.2;
+      min-width: 280px;
+      background: rgba(15, 23, 42, 0.4);
+      padding: 0.75rem;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+    }
+    .num-btn {
+      height: 44px;
+      border-radius: 8px;
+      border: none;
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+      font-family: 'Fredoka', sans-serif;
+      font-weight: 600;
+      font-size: 1.15rem;
+      cursor: pointer;
+      transition: all 0.1s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .num-btn:hover {
+      background: rgba(255, 255, 255, 0.16);
+      transform: translateY(-1px);
+    }
+    .num-btn:active {
+      transform: translateY(1px);
+    }
+    .num-btn.comma-btn {
+      color: var(--accent);
+      font-weight: 800;
+      font-size: 1.3rem;
+    }
+    .num-btn.del {
+      background: var(--red);
+      grid-column: span 2;
+    }
+    .num-btn.del:hover {
+      background: #fb7185;
+    }
+    .num-btn.clear {
+      background: #475569;
+      grid-column: span 3;
+      font-size: 0.85rem;
+    }
+    .num-btn.clear:hover {
+      background: #64748b;
+    }
+
+    /* Helper text card */
+    .helper-card {
+      flex: 1;
+      min-width: 250px;
+      background: rgba(168, 85, 247, 0.05);
+      border: 1px dashed rgba(168, 85, 247, 0.25);
+      border-radius: 14px;
+      padding: 0.85rem 1rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 0.4rem;
+    }
+    .helper-card-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 0.2rem;
+    }
+    .helper-item {
+      font-size: 0.8rem;
+      color: var(--muted);
+      line-height: 1.4;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .helper-item strong {
+      color: #cbd5e1;
+      font-family: 'Fredoka', sans-serif;
+    }
+    .helper-badge-ha {
+      background: rgba(74, 222, 128, 0.1);
+      border: 1px solid rgba(74, 222, 128, 0.3);
+      color: var(--agrarian-text);
+      border-radius: 4px;
+      padding: 0.05rem 0.25rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+
+    /* ── Congrats View ── */
+    .congrats {
+      text-align: center;
+      padding: 3rem 1.5rem;
+      animation: scaleIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+      display: none;
+    }
+    .trophy {
+      font-size: 4.5rem;
+      display: inline-block;
+      animation: float 3s ease-in-out infinite;
+      margin-bottom: 1rem;
+    }
+    .congrats-title {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 2.25rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 0.75rem;
+    }
+    .congrats-msg {
+      color: #cbd5e1;
+      font-size: 1.05rem;
+      max-width: 500px;
+      margin: 0 auto 1.5rem;
+      line-height: 1.7;
+    }
+    .stars {
+      font-size: 2.5rem;
+      margin-bottom: 1.75rem;
+      letter-spacing: 0.2rem;
+    }
+    .btn-replay {
+      background: linear-gradient(135deg, var(--green), #059669);
+      border: none;
+      color: white;
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      padding: 0.85rem 2.25rem;
+      border-radius: 12px;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.2s;
+    }
+    .btn-replay:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(16, 185, 129, 0.5);
+    }
+
+    /* ── Confetti effect elements ── */
+    .confetti {
+      position: fixed;
+      width: 10px;
+      height: 10px;
+      top: -10px;
+      z-index: 9999;
+      pointer-events: none;
+      animation: confettiFall 2.5s ease-out forwards;
+    }
+
+    @keyframes confettiFall {
+      0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(105vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes scaleIn {
+      from { opacity: 0; transform: scale(0.92); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    @media (max-width: 600px) {
+      .answer-form {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .answer-input-container {
+        justify-content: center;
+      }
+      .answer-input {
+        width: 100%;
+      }
+      .btn-validate {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  
+  <!-- GAME INTERFACE -->
+  <div id="game-interface">
+    <header>
+      <h1>🌾 Mesures Agraires & Superficies</h1>
+      <p class="subtitle">Version d'essai locale autonome</p>
+    </header>
+
+    <div class="topbar" style="margin-top: 1rem;">
+      <div class="stat-block">
+        <span class="stat-label">Question</span>
+        <span class="stat-val" id="q-num">1</span>
+        <span style="color:var(--muted);font-family:'Fredoka',sans-serif;font-size:1rem;">/10</span>
+      </div>
+      <div class="prog-track"><div class="prog-bar" id="prog-bar"></div></div>
+      <div class="stat-block">
+        <span class="stat-label">Score</span>
+        <span class="stat-val" id="score-disp">0</span>
+        <span style="color:var(--muted);font-family:'Fredoka',sans-serif;font-size:1rem;">/10</span>
+      </div>
+    </div>
+
+    <!-- Active Question Card -->
+    <div class="card" style="margin-top: 1.25rem;">
+      <div class="q-tag" id="q-tag-type">📝 Conversion n°1</div>
+      <div class="q-text" id="q-text-content">Chargement de la question...</div>
+      
+      <div class="answer-form">
+        <div class="answer-input-container">
+          <input type="text" id="ans-input" class="answer-input" placeholder="?" autocomplete="off" onfocus="onInputFocus()">
+        </div>
+        <span class="answer-placeholder" id="ans-unit-label"></span>
+        <button class="btn-validate" id="btn-val" onclick="validateAnswer()">✓ Valider</button>
+      </div>
+
+      <div id="feedback-area"></div>
+      <div id="next-area"></div>
+    </div>
+
+    <!-- Interactive Abacus Card -->
+    <div class="abaque-section" style="margin-top: 1.25rem;">
+      <div class="abaque-title-row">
+        <h2 class="abaque-h2">🧮 Abaque de conversion interactif</h2>
+        <span class="abaque-desc">Sers-toi de ce tableau pour aligner les chiffres et poser tes virgules.</span>
+      </div>
+      
+      <div class="abaque-table-container">
+        <table class="abaque-table">
+          <thead>
+            <!-- Row 1: Main standard Area Units (colspan=2) -->
+            <tr>
+              <th class="th-unit th-metric" colspan="2">km²</th>
+              <th class="th-unit th-agrarian" colspan="2">hm²</th>
+              <th class="th-unit th-agrarian" colspan="2">dam²</th>
+              <th class="th-unit th-agrarian" colspan="2">m²</th>
+              <th class="th-unit th-metric" colspan="2">dm²</th>
+              <th class="th-unit th-metric" colspan="2">cm²</th>
+              <th class="th-unit th-metric" colspan="2">mm²</th>
+            </tr>
+            <!-- Row 2: Agrarian equivalents overlay -->
+            <tr>
+              <th class="th-subname th-subname-empty" colspan="2">—</th>
+              <th class="th-subname th-subname-agr" colspan="2">
+                <span class="badge-agr">ha</span><br>hectare
+              </th>
+              <th class="th-subname th-subname-agr" colspan="2">
+                <span class="badge-agr">a</span><br>are
+              </th>
+              <th class="th-subname th-subname-agr" colspan="2">
+                <span class="badge-agr">ca</span><br>centiare
+              </th>
+              <th class="th-subname th-subname-empty" colspan="2">—</th>
+              <th class="th-subname th-subname-empty" colspan="2">—</th>
+              <th class="th-subname th-subname-empty" colspan="2">—</th>
+            </tr>
+            <!-- Row 3: Subdivision columns (dizaines / unités) -->
+            <tr>
+              <th class="th-du th-du-metric border-dashed-right">d</th><th class="th-du th-du-metric">u</th>
+              <th class="th-du th-du-agr border-dashed-right">d</th><th class="th-du th-du-agr">u</th>
+              <th class="th-du th-du-agr border-dashed-right">d</th><th class="th-du th-du-agr">u</th>
+              <th class="th-du th-du-agr border-dashed-right">d</th><th class="th-du th-du-agr">u</th>
+              <th class="th-du th-du-metric border-dashed-right">d</th><th class="th-du th-du-metric">u</th>
+              <th class="th-du th-du-metric border-dashed-right">d</th><th class="th-du th-du-metric">u</th>
+              <th class="th-du th-du-metric border-dashed-right">d</th><th class="th-du th-du-metric">u</th>
+            </tr>
+          </thead>
+          <tbody id="abaque-body">
+            <!-- Dynamically generated rows of cells (3 rows) -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Controls & Keypad -->
+      <div class="controls-row">
+        <div class="numpad">
+          <button class="num-btn" onclick="pressNumpadKey('1')">1</button>
+          <button class="num-btn" onclick="pressNumpadKey('2')">2</button>
+          <button class="num-btn" onclick="pressNumpadKey('3')">3</button>
+          <button class="num-btn" onclick="pressNumpadKey('4')">4</button>
+          <button class="num-btn" onclick="pressNumpadKey('5')">5</button>
+          <button class="num-btn" onclick="pressNumpadKey('6')">6</button>
+          <button class="num-btn" onclick="pressNumpadKey('7')">7</button>
+          <button class="num-btn" onclick="pressNumpadKey('8')">8</button>
+          <button class="num-btn" onclick="pressNumpadKey('9')">9</button>
+          <button class="num-btn" onclick="pressNumpadKey('0')">0</button>
+          <button class="num-btn comma-btn" onclick="pressNumpadKey(',')">,</button>
+          <button class="num-btn del" onclick="pressNumpadKey('Backspace')">⌫ Effacer</button>
+          <button class="num-btn clear" onclick="clearAbaque()">🗑️ Tout vider le tableau</button>
+        </div>
+
+        <div class="helper-card">
+          <div class="helper-card-title">💡 Rappel des correspondances :</div>
+          <div class="helper-item">
+            <span class="helper-badge-ha">1 ha</span> = <strong>1 hm²</strong> (10 000 m²)
+          </div>
+          <div class="helper-item">
+            <span class="helper-badge-ha" style="color:#a855f7; border-color:rgba(168,85,247,0.3); background:rgba(168,85,247,0.1)">1 a</span> = <strong>1 dam²</strong> (100 m²)
+          </div>
+          <div class="helper-item">
+            <span class="helper-badge-ha" style="color:#60a5fa; border-color:rgba(96,165,250,0.3); background:rgba(96,165,250,0.1)">1 ca</span> = <strong>1 m²</strong> (1 centiare)
+          </div>
+          <div style="font-size:0.75rem; color:var(--muted); border-top:1px solid var(--border); padding-top:0.4rem; margin-top:0.2rem;">
+            * Clique sur une cellule de l'abaque pour y écrire avec le clavier virtuel ou physique.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONGRATULATIONS FLOW -->
+  <div id="congrats-flow" class="card congrats">
+    <div class="trophy">🏆</div>
+    <h2 class="congrats-title">Félicitations !</h2>
+    <p class="congrats-msg" id="congrats-msg"></p>
+    <div class="stars" id="stars-disp"></div>
+    <button class="btn-replay" onclick="resetGame()">🔄 Recommencer</button>
+  </div>
+
+</div>
+
+<script>
+  // ═══════════════════════════════════════════════════════════════
+  // RETRO 8-BIT AUDIO SYNTHESIZER (WEB AUDIO API)
+  // ═══════════════════════════════════════════════════════════════
+  let audioCtx = null;
+  
+  function playTone(freq, dur = 0.12, delay = 0, type = 'sine', vol = 0.15) {
+    try {
+      audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      const osc = audioCtx.createOscillator();
+      const gainNode = audioCtx.createGain();
+      
+      osc.type = type;
+      osc.frequency.value = freq;
+      
+      gainNode.gain.setValueAtTime(vol, audioCtx.currentTime + delay);
+      gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + delay + dur);
+      
+      osc.connect(gainNode);
+      gainNode.connect(audioCtx.destination);
+      
+      osc.start(audioCtx.currentTime + delay);
+      osc.stop(audioCtx.currentTime + delay + dur + 0.02);
+    } catch (e) {
+      console.warn("Audio Context Error: ", e);
+    }
+  }
+
+  const sndTap = () => playTone(800, 0.04, 0, 'sine', 0.1);
+  const sndDel = () => playTone(350, 0.07, 0, 'triangle', 0.15);
+  const sndCorrect = () => {
+    playTone(523.25, 0.08, 0, 'sine', 0.15);
+    playTone(659.25, 0.08, 0.06, 'sine', 0.15);
+    playTone(783.99, 0.12, 0.12, 'sine', 0.15);
+  };
+  const sndWrong = () => {
+    playTone(220, 0.15, 0, 'sawtooth', 0.12);
+    playTone(180, 0.2, 0.05, 'sawtooth', 0.12);
+  };
+  const sndFanfare = () => {
+    const tones = [523.25, 659.25, 783.99, 1046.50];
+    tones.forEach((t, i) => {
+      playTone(t, 0.15, i * 0.12, 'square', 0.1);
+    });
+    playTone(1318.51, 0.35, 0.48, 'square', 0.1);
+  };
+
+  // ═══════════════════════════════════════════════════════════════
+  // QUESTIONS & STATE
+  // ═══════════════════════════════════════════════════════════════
+  const QUESTIONS = [
+    // 10 Pure Conversions
+    {
+      type: 'conversion',
+      val: 8,
+      from: 'ha',
+      to: 'm²',
+      answer: '80000',
+      text: "Convertis <strong>8 ha</strong> en <strong>m²</strong>.",
+      tip: "1 ha = 1 hm² = 10 000 m². Donc pour convertir de ha en m², on multiplie par 10 000. 8 ha = 80 000 m²."
+    },
+    {
+      type: 'conversion',
+      val: 450,
+      from: 'a',
+      to: 'dam²',
+      answer: '450',
+      text: "Convertis <strong>450 a</strong> en <strong>dam²</strong>.",
+      tip: "1 a = 1 dam² (ce sont des unités identiques de superficie). Donc 450 a = 450 dam²."
+    },
+    {
+      type: 'conversion',
+      val: 15000,
+      from: 'ca',
+      to: 'a',
+      answer: '150',
+      text: "Convertis <strong>15 000 ca</strong> en <strong>ares (a)</strong>.",
+      tip: "1 ca = 1 m² et 1 a = 100 ca. Pour passer de centiares en ares, on divise par 100. 15 000 ca = 150 a."
+    },
+    {
+      type: 'conversion',
+      val: 3.5,
+      from: 'ha',
+      to: 'a',
+      answer: '350',
+      text: "Convertis <strong>3,5 ha</strong> en <strong>ares (a)</strong>.",
+      tip: "1 ha = 100 a. Donc pour passer d'hectares en ares, on multiplie par 100. 3,5 ha × 100 = 350 a."
+    },
+    {
+      type: 'conversion',
+      val: 0.75,
+      from: 'a',
+      to: 'm²',
+      answer: '75',
+      text: "Convertis <strong>0,75 a</strong> en <strong>m²</strong>.",
+      tip: "1 a = 1 dam² = 100 m². Pour passer d'ares en m², on multiplie par 100. 0,75 a × 100 = 75 m²."
+    },
+    {
+      type: 'conversion',
+      val: 12,
+      from: 'a',
+      to: 'ca',
+      answer: '1200',
+      text: "Convertis <strong>12 a</strong> en <strong>centiares (ca)</strong>.",
+      tip: "1 a = 100 ca. Donc pour passer d'ares en centiares, on multiplie par 100. 12 a × 100 = 1 200 ca."
+    },
+    {
+      type: 'conversion',
+      val: 6.2,
+      from: 'ha',
+      to: 'a',
+      answer: '620',
+      text: "Convertis <strong>6,2 ha</strong> en <strong>ares (a)</strong>.",
+      tip: "1 ha = 100 a. Donc pour passer d'hectares en ares, on multiplie par 100. 6,2 ha × 100 = 620 a."
+    },
+    {
+      type: 'conversion',
+      val: 9500,
+      from: 'm²',
+      to: 'a',
+      answer: '95',
+      text: "Convertis <strong>9 500 m²</strong> en <strong>ares (a)</strong>.",
+      tip: "1 a = 100 m². Pour passer de m² en ares, on divise par 100. 9 500 m² ÷ 100 = 95 a."
+    },
+    {
+      type: 'conversion',
+      val: 0.4,
+      from: 'ha',
+      to: 'm²',
+      answer: '4000',
+      text: "Convertis <strong>0,4 ha</strong> en <strong>m²</strong>.",
+      tip: "1 ha = 10 000 m². Donc pour passer d'hectares en m², on multiplie par 10 000. 0,4 ha × 10 000 = 4 000 m²."
+    },
+    {
+      type: 'conversion',
+      val: 85,
+      from: 'ca',
+      to: 'm²',
+      answer: '85',
+      text: "Convertis <strong>85 ca</strong> en <strong>m²</strong>.",
+      tip: "1 ca = 1 m² (ce sont des unités équivalentes). Donc 85 ca = 85 m²."
+    },
+    // 10 Word Problems
+    {
+      type: 'problem',
+      text: "Un agriculteur possède un champ de <strong>4 hectares</strong>. Il souhaite le diviser en parcelles maraîchères de <strong>5 ares</strong> chacune. Combien de parcelles peut-il créer ?",
+      answer: '80',
+      tip: "Convertis d'abord les hectares en ares : 4 ha = 400 a. Divise ensuite la surface totale par la surface d'une parcelle : 400 a ÷ 5 a = 80 parcelles.",
+      placeholder: "Nombre de parcelles"
+    },
+    {
+      type: 'problem',
+      text: "Une commune achète un terrain boisé pour un montant total de <strong>75 000 €</strong>. Le prix de ce terrain est de <strong>15 € par centiare (ca)</strong>. Quelle est la superficie de ce bois en <strong>ares (a)</strong> ?",
+      answer: '50',
+      tip: "Calcule d'abord la surface en centiares (ca) : 75 000 € ÷ 15 €/ca = 5 000 ca. Convertis ensuite en ares sachant que 1 are = 100 centiares : 5 000 ca ÷ 100 = 50 ares.",
+      placeholder: "Superficie en ares"
+    },
+    {
+      type: 'problem',
+      text: "Une ferme dispose d'une prairie rectangulaire mesurant <strong>300 mètres</strong> de long et <strong>150 mètres</strong> de large. Quelle est la superficie de cette prairie en <strong>hectares (ha)</strong> ?",
+      answer: '4.5',
+      tip: "Calcule d'abord l'aire de la prairie en m² : 300 m × 150 m = 45 000 m². Convertis ensuite en hectares sachant que 1 ha = 10 000 m² (ou 1 hm²) : 45 000 ÷ 10 000 = 4,5 ha.",
+      placeholder: "Superficie en hectares"
+    },
+    {
+      type: 'problem',
+      text: "Monsieur Jardinier achète un terrain à bâtir de <strong>8 ares et 50 centiares</strong>. Il y construit une maison qui occupe <strong>150 m²</strong> au sol. Quelle surface libre en <strong>centiares (ca)</strong> reste-t-il pour son jardin ?",
+      answer: '700',
+      tip: "La superficie totale du terrain est de 850 ca (8 a = 800 ca + 50 ca). La maison occupe 150 m², soit 150 ca. La surface libre restante est de : 850 ca - 150 ca = 700 ca.",
+      placeholder: "Surface libre en centiares"
+    },
+    {
+      type: 'problem',
+      text: "Un viticulteur récolte en moyenne <strong>800 litres de vin par are</strong>. Sa vigne s'étend sur une superficie de <strong>1,2 hectare (ha)</strong>. Quelle quantité totale de vin (en litres) peut-il espérer récolter ?",
+      answer: '96000',
+      tip: "Convertis d'abord la superficie en ares : 1,2 ha = 120 ares. Calcule la récolte totale : 120 ares × 800 litres/are = 96 000 litres.",
+      placeholder: "Quantité en litres"
+    },
+    {
+      type: 'problem',
+      text: "Un vignoble s'étend sur <strong>2,4 hectares (ha)</strong>. Les deux tiers de cette surface sont plantés en raisins rouges, et le reste en raisins blancs. Quelle est la surface réservée aux raisins blancs en <strong>ares (a)</strong> ?",
+      answer: '80',
+      tip: "La superficie totale est de 2,4 ha = 240 ares. Si les 2/3 sont plantés en raisins rouges, il reste 1/3 pour les raisins blancs. 240 ares ÷ 3 = 80 ares.",
+      placeholder: "Surface en ares"
+    },
+    {
+      type: 'problem',
+      text: "Une réserve naturelle de <strong>12 hectares (ha)</strong> est entourée d'un sentier de randonnée. Un quart de la réserve est recouvert d'un grand étang. Quelle est l'aire terrestre de la réserve (hors étang) en <strong>m²</strong> ?",
+      answer: '90000',
+      tip: "La surface totale est de 12 ha = 120 000 m². L'étang occupant 1/4 (30 000 m²), l'aire terrestre représente les 3/4 restants : 120 000 m² - 30 000 m² = 90 000 m².",
+      placeholder: "Aire terrestre en m²"
+    },
+    {
+      type: 'problem',
+      text: "Pour aménager un terrain de sport municipal de <strong>20 ares</strong>, on utilise une pelouse synthétique vendue en rouleaux couvrant chacun <strong>50 m²</strong>. Combien de rouleaux entiers de pelouse sont nécessaires ?",
+      answer: '40',
+      tip: "La superficie du terrain est de 20 ares = 2 000 m². On divise ensuite cette aire par celle d'un rouleau : 2 000 m² ÷ 50 m² = 40 rouleaux.",
+      placeholder: "Nombre de rouleaux"
+    },
+    {
+      type: 'problem',
+      text: "Un parc communal de <strong>2 hectares (ha)</strong> dispose d'une aire de jeux pour enfants de <strong>40 ares</strong>. Quelle est la superficie restante du parc en <strong>hectares (ha)</strong> ?",
+      answer: '1.6',
+      tip: "40 ares = 0,4 ha (car 100 ares = 1 ha). La superficie restante est de : 2 ha - 0,4 ha = 1,6 ha.",
+      placeholder: "Superficie en hectares"
+    },
+    {
+      type: 'problem',
+      text: "Un maraîcher possède une serre de <strong>350 m²</strong> et un champ de <strong>1,5 are</strong>. Quelle est sa surface totale de culture en <strong>centiares (ca)</strong> ?",
+      answer: '500',
+      tip: "La serre fait 350 m² = 350 ca. Le champ fait 1,5 are = 150 ca. Au total, la surface cultivée est de : 350 ca + 150 ca = 500 ca.",
+      placeholder: "Surface totale en centiares"
+    }
+  ];
+
+  const TOTAL_QUESTIONS = 10;
+  let currentStep = 1;
+  let currentScore = 0;
+  let questionSession = [];
+  let isAnswered = false;
+  
+  // Abaque state: 3 rows, 14 columns
+  let abaqueData = [
+    Array(14).fill(''),
+    Array(14).fill(''),
+    Array(14).fill('')
+  ];
+  let abaqueCommas = [
+    Array(14).fill(false),
+    Array(14).fill(false),
+    Array(14).fill(false)
+  ];
+  let selectedCell = { row: 0, col: 7 }; // Default selection (middle column)
+  let inputModeTarget = 'abaque'; // 'abaque' or 'answer'
+
+  function shuffle(array) {
+    const a = [...array];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  // Helper to print formatting numbers
+  function formatOutput(numStr) {
+    if (isNaN(numStr.replace(',', '.'))) return numStr;
+    const parts = numStr.split(/[\.,]/);
+    let intPart = parts[0];
+    // Add spaces for thousands separator
+    intPart = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+    return parts[1] !== undefined ? intPart + "," + parts[1] : intPart;
+  }
+
+  // ═══════════════════════════════════════════════════════════════
+  // INITIALIZATION AND HUB
+  // ═══════════════════════════════════════════════════════════════
+  window.addEventListener('DOMContentLoaded', () => {
+    buildAbaqueGrid();
+    initSession();
+    renderQuestion();
+  });
+
+  function initSession() {
+    // Sélectionner 5 conversions aléatoires parmi les 10 et 5 problèmes aléatoires parmi les 10
+    const conversions = shuffle(QUESTIONS.filter(q => q.type === 'conversion')).slice(0, 5);
+    const problems = shuffle(QUESTIONS.filter(q => q.type === 'problem')).slice(0, 5);
+    
+    // Combiner les 5 conversions puis les 5 problèmes
+    questionSession = [...conversions, ...problems];
+    currentStep = 1;
+    currentScore = 0;
+    isAnswered = false;
+  }
+
+  // ═══════════════════════════════════════════════════════════════
+  // ABAQUE RENDERING & LOGIC
+  // ═══════════════════════════════════════════════════════════════
+  function buildAbaqueGrid() {
+    const tbody = document.getElementById('abaque-body');
+    tbody.innerHTML = '';
+    
+    for (let r = 0; r < 3; r++) {
+      const tr = document.createElement('tr');
+      for (let c = 0; c < 14; c++) {
+        const td = document.createElement('td');
+        td.id = `cell-${r}-${c}`;
+        td.className = 'abaque-cell';
+        
+        // Add color backgrounds matching metrics or agrarian
+        // km2: 0-1, hm2: 2-3, dam2: 4-5, m2: 6-7, dm2: 8-9, cm2: 10-11, mm2: 12-13
+        if (c >= 2 && c <= 7) {
+          td.classList.add('cell-agr-bg');
+        } else {
+          td.classList.add('cell-metric-bg');
+        }
+        
+        // Dashed lines between 'd' and 'u' of same units
+        if (c % 2 === 0) {
+          td.classList.add('border-dashed-right');
+        }
+        
+        // Selection click handler
+        td.addEventListener('click', (e) => {
+          selectCell(r, c);
+          sndTap();
+          e.stopPropagation();
+        });
+        
+        tr.appendChild(td);
+      }
+      tbody.appendChild(tr);
+    }
+    updateAbaqueDOM();
+  }
+
+  function selectCell(r, c) {
+    // Remove previous selection
+    document.querySelectorAll('.abaque-cell').forEach(cell => {
+      cell.classList.remove('selected');
+    });
+    
+    selectedCell = { row: r, col: c };
+    inputModeTarget = 'abaque';
+    
+    const activeCell = document.getElementById(`cell-${r}-${c}`);
+    if (activeCell) {
+      activeCell.classList.add('selected');
+    }
+  }
+
+  function updateAbaqueDOM() {
+    for (let r = 0; r < 3; r++) {
+      for (let c = 0; c < 14; c++) {
+        const td = document.getElementById(`cell-${r}-${c}`);
+        if (td) {
+          td.textContent = abaqueData[r][c];
+          
+          // Commas handling
+          if (abaqueCommas[r][c]) {
+            td.classList.add('has-comma');
+          } else {
+            td.classList.remove('has-comma');
+          }
+        }
+      }
+    }
+  }
+
+  function clearAbaque() {
+    abaqueData = [
+      Array(14).fill(''),
+      Array(14).fill(''),
+      Array(14).fill('')
+    ];
+    abaqueCommas = [
+      Array(14).fill(false),
+      Array(14).fill(false),
+      Array(14).fill(false)
+    ];
+    sndDel();
+    updateAbaqueDOM();
+  }
+
+  // ═══════════════════════════════════════════════════════════════
+  // INPUT & KEYBOARD EVENTS
+  // ═══════════════════════════════════════════════════════════════
+  function onInputFocus() {
+    inputModeTarget = 'answer';
+    // Remove abaque highlighting temporarily
+    document.querySelectorAll('.abaque-cell').forEach(cell => {
+      cell.classList.remove('selected');
+    });
+  }
+
+  function pressNumpadKey(key) {
+    if (inputModeTarget === 'answer') {
+      const input = document.getElementById('ans-input');
+      if (input.disabled) return;
+      
+      sndTap();
+      if (key === 'Backspace') {
+        input.value = input.value.slice(0, -1);
+      } else if (key === ',') {
+        if (!input.value.includes(',') && !input.value.includes('.')) {
+          input.value += ',';
+        }
+      } else {
+        input.value += key;
+      }
+      input.focus();
+    } else {
+      // Abaque input mode
+      let r = selectedCell.row;
+      let c = selectedCell.col;
+      
+      if (key === 'Backspace') {
+        sndDel();
+        abaqueData[r][c] = '';
+        abaqueCommas[r][c] = false;
+        // Move selection left if possible
+        if (c > 0) {
+          selectCell(r, c - 1);
+        }
+      } else if (key === ',') {
+        sndTap();
+        abaqueCommas[r][c] = !abaqueCommas[r][c]; // Toggle comma on current cell
+      } else {
+        // Digits 0-9
+        sndTap();
+        abaqueData[r][c] = key;
+        // Move selection right if possible
+        if (c < 13) {
+          selectCell(r, c + 1);
+        }
+      }
+      updateAbaqueDOM();
+    }
+  }
+
+  // Listen to physical keyboard presses
+  document.addEventListener('keydown', (e) => {
+    if (isAnswered) {
+      if (e.key === 'Enter') {
+        nextQuestion();
+      }
+      return;
+    }
+
+    if (inputModeTarget === 'answer') {
+      // Allow natural HTML input typing
+      if (e.key === 'Enter') {
+        validateAnswer();
+      }
+      return;
+    }
+
+    // Abaque inputs
+    if (e.key >= '0' && e.key <= '9') {
+      pressNumpadKey(e.key);
+      e.preventDefault();
+    } else if (e.key === ',' || e.key === '.') {
+      pressNumpadKey(',');
+      e.preventDefault();
+    } else if (e.key === 'Backspace') {
+      pressNumpadKey('Backspace');
+      e.preventDefault();
+    } else if (e.key === 'ArrowLeft') {
+      sndTap();
+      if (selectedCell.col > 0) {
+        selectCell(selectedCell.row, selectedCell.col - 1);
+      }
+      e.preventDefault();
+    } else if (e.key === 'ArrowRight') {
+      sndTap();
+      if (selectedCell.col < 13) {
+        selectCell(selectedCell.row, selectedCell.col + 1);
+      }
+      e.preventDefault();
+    } else if (e.key === 'ArrowUp') {
+      sndTap();
+      if (selectedCell.row > 0) {
+        selectCell(selectedCell.row - 1, selectedCell.col);
+      }
+      e.preventDefault();
+    } else if (e.key === 'ArrowDown') {
+      sndTap();
+      if (selectedCell.row < 2) {
+        selectCell(selectedCell.row + 1, selectedCell.col);
+      }
+      e.preventDefault();
+    } else if (e.key === 'Delete') {
+      sndDel();
+      abaqueData[selectedCell.row][selectedCell.col] = '';
+      abaqueCommas[selectedCell.row][selectedCell.col] = false;
+      updateAbaqueDOM();
+      e.preventDefault();
+    }
+  });
+
+  // ═══════════════════════════════════════════════════════════════
+  // PLAYING / RENDER QUESTIONS
+  // ═══════════════════════════════════════════════════════════════
+  function renderQuestion() {
+    isAnswered = false;
+    document.getElementById('feedback-area').innerHTML = '';
+    document.getElementById('next-area').innerHTML = '';
+    
+    const input = document.getElementById('ans-input');
+    input.value = '';
+    input.disabled = false;
+    document.getElementById('btn-val').disabled = false;
+    
+    const q = questionSession[currentStep - 1];
+    
+    // Set headers
+    document.getElementById('q-num').textContent = currentStep;
+    document.getElementById('score-disp').textContent = currentScore;
+    document.getElementById('prog-bar').style.width = `${((currentStep - 1) / TOTAL_QUESTIONS) * 100}%`;
+    
+    const typeLabel = q.type === 'conversion' ? `🔄 Conversion n°${currentStep}` : `🧩 Problème n°${currentStep}`;
+    document.getElementById('q-tag-type').textContent = typeLabel;
+    document.getElementById('q-text-content').innerHTML = q.text;
+    
+    // Set placeholder and unit unit indicators
+    if (q.type === 'conversion') {
+      document.getElementById('ans-unit-label').textContent = q.to;
+      input.placeholder = "?";
+    } else {
+      document.getElementById('ans-unit-label').textContent = "";
+      input.placeholder = q.placeholder || "Réponse";
+    }
+    
+    // Auto-select cell matching unit to start helpfully
+    if (q.type === 'conversion') {
+      // Select appropriate columns based on from-unit
+      let targetCol = 7; // defaults to m² (ca) units column
+      if (q.from === 'ha') targetCol = 3;
+      else if (q.from === 'a') targetCol = 5;
+      else if (q.from === 'ca') targetCol = 7;
+      selectCell(0, targetCol);
+    } else {
+      selectCell(0, 7); // m² default
+    }
+  }
+
+  function validateAnswer() {
+    if (isAnswered) return;
+    
+    const input = document.getElementById('ans-input');
+    const rawVal = input.value.trim().replace(/\s/g, '').replace(',', '.');
+    
+    if (rawVal === '') {
+      alert("S'il te plaît, entre une réponse !");
+      return;
+    }
+    
+    const q = questionSession[currentStep - 1];
+    const expected = q.answer.replace(',', '.');
+    
+    // Float comparison tolerance
+    const studentNum = parseFloat(rawVal);
+    const expectedNum = parseFloat(expected);
+    
+    let isCorrect = false;
+    if (!isNaN(studentNum) && !isNaN(expectedNum)) {
+      isCorrect = Math.abs(studentNum - expectedNum) < 0.001;
+    } else {
+      isCorrect = (rawVal.toLowerCase() === expected.toLowerCase());
+    }
+    
+    isAnswered = true;
+    input.disabled = true;
+    document.getElementById('btn-val').disabled = true;
+    
+    if (isCorrect) {
+      currentScore++;
+      sndCorrect();
+    } else {
+      sndWrong();
+    }
+    document.getElementById('score-disp').textContent = currentScore;
+
+    // Display detailed feedback panel
+    const feedbackPanel = document.getElementById('feedback-area');
+    const fbClass = isCorrect ? 'fb-correct' : 'fb-wrong';
+    const fbIcon = isCorrect ? '🎯' : '💡';
+    const fbTitle = isCorrect ? 'Bravo ! C\'est exact.' : `Oups ! La bonne réponse est : <strong>${formatOutput(q.answer)} ${q.type === 'conversion' ? q.to : ''}</strong>`;
+    
+    let fbText = "";
+    if (q.type === 'conversion') {
+      fbText = `En effet, <strong>${formatOutput(q.val.toString())} ${q.from}</strong> est bien égal à <strong>${formatOutput(q.answer)} ${q.to}</strong>.`;
+    } else {
+      fbText = `La réponse correcte est <strong>${formatOutput(q.answer)}</strong>.`;
+    }
+
+    feedbackPanel.innerHTML = `
+      <div class="feedback ${fbClass}">
+        <div class="fb-icon">${fbIcon}</div>
+        <div>
+          <div class="fb-title">${fbTitle}</div>
+          <div class="fb-text">${fbText}</div>
+          <div class="fb-explanation">💡 Explication : ${q.tip}</div>
+        </div>
+      </div>
+    `;
+    
+    // Render next button
+    const nextArea = document.getElementById('next-area');
+    if (currentStep < TOTAL_QUESTIONS) {
+      nextArea.innerHTML = `<button class="btn-next" onclick="nextQuestion()">Question suivante 👉</button>`;
+    } else {
+      nextArea.innerHTML = `<button class="btn-next" onclick="finishGame()">Voir mon résultat 👑</button>`;
+    }
+  }
+
+  function nextQuestion() {
+    currentStep++;
+    renderQuestion();
+  }
+
+  // ═══════════════════════════════════════════════════════════════
+  // CONGRATULATIONS & CONFETTI
+  // ═══════════════════════════════════════════════════════════════
+  function finishGame() {
+    document.getElementById('game-interface').style.display = 'none';
+    const congrats = document.getElementById('congrats-flow');
+    congrats.style.display = 'block';
+    
+    const pct = Math.round((currentScore / TOTAL_QUESTIONS) * 100);
+    let msg = "";
+    let stars = "";
+    
+    if (currentScore === 10) {
+      msg = `Incroyable ! <strong>${currentScore}/${TOTAL_QUESTIONS}</strong> (${pct}%) — Tu maîtrises parfaitement les mesures agraires (hectare, are, centiare) !`;
+      stars = "⭐⭐⭐";
+      sndFanfare();
+      triggerConfettiShower();
+    } else if (currentScore >= 8) {
+      msg = `Excellent travail ! <strong>${currentScore}/${TOTAL_QUESTIONS}</strong> (${pct}%) — Tu as une très bonne compréhension des conversions et des problèmes agraires.`;
+      stars = "⭐⭐";
+      sndFanfare();
+    } else if (currentScore >= 5) {
+      msg = `Pas mal ! <strong>${currentScore}/${TOTAL_QUESTIONS}</strong> (${pct}%) — C'est encourageant, mais tu devrais revoir les équivalences comme $1\\text{ ha} = 1\\text{ hm}^2$ et t'entraîner à nouveau.`;
+      stars = "⭐";
+      playTone(523.25, 0.15, 0, 'sine', 0.1);
+      playTone(659.25, 0.25, 0.1, 'sine', 0.1);
+    } else {
+      msg = `<strong>${currentScore}/${TOTAL_QUESTIONS}</strong> (${pct}%) — N'hésite pas à réutiliser l'abaque de conversion pour poser chaque chiffre pas-à-pas. Relis bien les indices !`;
+      stars = "❌";
+      playTone(220, 0.3, 0, 'sawtooth', 0.1);
+    }
+    
+    document.getElementById('congrats-msg').innerHTML = msg;
+    document.getElementById('stars-disp').textContent = stars;
+  }
+
+  function resetGame() {
+    document.getElementById('game-interface').style.display = 'block';
+    document.getElementById('congrats-flow').style.display = 'none';
+    clearAbaque();
+    initSession();
+    renderQuestion();
+  }
+
+  // CSS Confetti Shower
+  function triggerConfettiShower() {
+    const colors = ['#a855f7', '#10b981', '#f59e0b', '#3b82f6', '#ec4899', '#34d399', '#f43f5e'];
+    for (let i = 0; i < 120; i++) {
+      const confetti = document.createElement('div');
+      confetti.className = 'confetti';
+      confetti.style.left = Math.random() * 100 + 'vw';
+      confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+      confetti.style.animationDelay = Math.random() * 2 + 's';
+      confetti.style.width = Math.random() * 8 + 6 + 'px';
+      confetti.style.height = confetti.style.width;
+      confetti.style.transform = `scale(${Math.random() * 0.8 + 0.5})`;
+      confetti.style.animationDuration = Math.random() * 2 + 1.5 + 's';
+      
+      document.body.appendChild(confetti);
+      
+      // Auto-remove confetti elements
+      setTimeout(() => {
+        confetti.remove();
+      }, 3500);
+    }
+  }
+</script>
+</body>
+</html>
