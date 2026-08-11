@@ -110,7 +110,7 @@ export default function EveilActivity({ onBack, studentName }: EveilActivityProp
       ) : activityType === "europe" ? (
         <div className="animate-fadeIn w-full">
           <iframe
-            src="/europe_cartes.html"
+            src="/fiches/europe_cartes.html"
             title="Carte de l'Europe"
             className="w-full border-2 border-neutral-900 rounded-3xl shadow-[6px_6px_0px_rgba(0,0,0,1)] bg-neutral-50"
             style={{ height: "680px" }}
