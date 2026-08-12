@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Le Défi des Registres — Jeu de Vocabulaire</title>
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<!-- TailwindCSS CDN -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    corePlugins: {
+      preflight: false,
+    },
+    theme: {
+      extend: {
+        borderWidth: {
+          '3': '3px',
+        },
+        fontFamily: {
+          sans: ['Inter', 'sans-serif'],
+          display: ['Fredoka', 'sans-serif'],
+          mono: ['Space Mono', 'monospace'],
+        }
+      }
+    }
+  }
+</script>
+<style>
+  :root {
+    --encre: #1a1a2e;
+    --papier: #f7efe2;
+    
+    --bleu-familier: #3b82f6;
+    --bleu-familier-clair: #eff6ff;
+    --orange-courant: #f97316;
+    --orange-courant-clair: #fff7ed;
+    --violet-soutenu: #a855f7;
+    --violet-soutenu-clair: #faf5ff;
+    
+    --vert: #16a34a;
+    --vert-clair: #d4f5e2;
+    --rouge: #dc2626;
+    --rouge-clair: #fdd9d7;
+    
+    --radius: 16px;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: 'Inter', system-ui, sans-serif;
+    color: var(--encre);
+    background: 
+      radial-gradient(circle at 1px 1px, rgba(177, 106, 9, 0.04) 1px, transparent 0) 0 0/24px 24px,
+      var(--papier);
+    line-height: 1.5;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: 'Fredoka', sans-serif;
+    line-height: 1.2;
+    margin: 0;
+  }
+
+  /* BOUTONS 3D */
+  .btn-3d {
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 700;
+    border: 3px solid var(--encre) !important;
+    box-shadow: 3px 3px 0px var(--encre);
+    transition: all 0.1s ease;
+    cursor: pointer;
+    user-select: none;
+  }
+  .btn-3d:active {
+    transform: translate(1px, 1px);
+    box-shadow: 1px 1px 0px var(--encre);
+  }
+
+  /* CARTES */
+  .card-premium {
+    background: #ffffff;
+    border: 3px solid var(--encre);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin: 16px 0;
+    box-shadow: 4px 4px 0px rgba(26, 26, 46, 0.08);
+  }
+
+  /* ZONE DE TRI */
+  .drop-zone {
+    border: 3px solid var(--encre);
+    border-radius: 16px;
+    padding: 16px;
+    background: #ffffff;
+    text-align: center;
+    transition: all 0.2s ease;
+    box-shadow: 3px 3px 0px var(--encre);
+    position: relative;
+    overflow: hidden;
+  }
+  .drop-zone.hovered {
+    transform: scale(1.03);
+  }
+  .drop-zone.zone-familier { background: var(--bleu-familier-clair); border-color: var(--bleu-familier); }
+  .drop-zone.zone-courant { background: var(--orange-courant-clair); border-color: var(--orange-courant); }
+  .drop-zone.zone-soutenu { background: var(--violet-soutenu-clair); border-color: var(--violet-soutenu); }
+
+  /* COMPORTEMENT AVATARS */
+  .avatar-img {
+    width: 90px;
+    height: 90px;
+    border-radius: 12px;
+    border: 3px solid var(--encre);
+    object-cover: cover;
+    margin-bottom: 8px;
+    transition: transform 0.2s ease;
+  }
+  
+  /* ANIMATIONS AVATARS */
+  .avatar-yes {
+    animation: nod 0.5s ease-in-out;
+  }
+  .avatar-no {
+    animation: shake-head 0.5s ease-in-out;
+  }
+
+  @keyframes nod {
+    0%, 100% { transform: translateY(0); }
+    30% { transform: translateY(-10px) scale(1.05); }
+    70% { transform: translateY(5px); }
+  }
+
+  @keyframes shake-head {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-8px) rotate(-3deg); }
+    75% { transform: translateX(8px) rotate(3deg); }
+  }
+
+  /* CARTE A DEPLACER */
+  .sorting-card {
+    background: #ffffff;
+    border: 3px solid var(--encre);
+    border-radius: 16px;
+    padding: 24px;
+    width: 100%;
+    max-width: 450px;
+    min-height: 120px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    box-shadow: 6px 6px 0px var(--encre);
+    user-select: none;
+    touch-action: none;
+    position: relative;
+    z-index: 30;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  
+  .sorting-card.card-correct {
+    background: var(--vert-clair) !important;
+    border-color: var(--vert) !important;
+    box-shadow: 4px 4px 0px var(--vert) !important;
+  }
+  
+  .sorting-card.card-incorrect {
+    background: var(--rouge-clair) !important;
+    border-color: var(--rouge) !important;
+    color: var(--rouge) !important;
+    animation: shake 0.4s ease-in-out;
+  }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-8px); }
+    40%, 80% { transform: translateX(8px); }
+  }
+
+  @keyframes pop {
+    0% { transform: scale(0.8); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  .pop-anim {
+    animation: pop 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+</style>
+</head>
+<body>
+
+<!-- EN-TÊTE -->
+<header class="bg-gradient-to-r from-amber-950 to-orange-900 text-white border-b-4 border-amber-600 py-6 px-6 relative overflow-hidden">
+  <div class="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(177,106,9,0.22),transparent_50%)] pointer-events-none"></div>
+  <div class="max-w-[900px] mx-auto flex items-center justify-between relative z-10">
+    <div>
+      <h1 class="text-2xl md:text-3xl font-display font-black flex items-center gap-2">
+        🗣️ Le Défi des Registres
+      </h1>
+      <p class="mt-1 text-amber-100 font-sans text-xs md:text-sm">
+        Classe les expressions selon leur niveau de langue : Familier, Courant ou Soutenu !
+      </p>
+    </div>
+    <div class="text-3xl hidden sm:block">🎭</div>
+  </div>
+</header>
+
+<!-- CONTENU PRINCIPAL -->
+<main class="flex-1 max-w-[900px] w-full mx-auto p-4 md:py-6 flex flex-col justify-between">
+
+  <!-- ================= CARTE DE VOCABULAIRE ET PROGRESSION ================= -->
+  <div class="w-full flex flex-col items-center mb-6">
+    <!-- Barre de progression -->
+    <div class="w-full max-w-[500px] bg-slate-200 border-2 border-slate-900 rounded-full h-4 overflow-hidden mb-2 relative">
+      <div id="progress-bar" class="bg-amber-500 h-full w-0 transition-all duration-300"></div>
+    </div>
+    <div class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-6" id="progress-text">
+      Expression 1 / 15
+    </div>
+
+    <!-- Zone contenant la carte active -->
+    <div class="relative flex items-center justify-center min-h-[160px] w-full px-4" id="card-holder">
+      <div id="active-card" class="sorting-card pop-anim">
+        Expression active
+      </div>
+    </div>
+  </div>
+
+  <!-- Boutons de choix -->
+  <div id="choices-container" class="flex flex-row justify-center gap-4 mb-8 w-full max-w-[600px] mx-auto">
+    <button class="btn-3d flex-1 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-xl text-xs sm:text-sm font-bold flex flex-col items-center gap-1" onclick="submitChoice('familier')">
+      <span>🧢</span>
+      <span>Familier</span>
+    </button>
+    <button class="btn-3d flex-1 py-3 bg-orange-500 hover:bg-orange-600 text-white rounded-xl text-xs sm:text-sm font-bold flex flex-col items-center gap-1" onclick="submitChoice('courant')">
+      <span>🏫</span>
+      <span>Courant</span>
+    </button>
+    <button class="btn-3d flex-1 py-3 bg-purple-500 hover:bg-purple-600 text-white rounded-xl text-xs sm:text-sm font-bold flex flex-col items-center gap-1" onclick="submitChoice('soutenu')">
+      <span>👑</span>
+      <span>Soutenu</span>
+    </button>
+  </div>
+
+  <!-- Bouton Continuer (Révélé après bonne réponse) -->
+  <div id="continue-container" class="hidden flex flex-row justify-center mb-8 w-full max-w-[600px] mx-auto">
+    <button class="btn-3d w-full py-4 bg-green-600 hover:bg-green-700 text-white rounded-xl text-sm font-bold flex items-center justify-center gap-1.5" onclick="goToNextCard()">
+      Continuer ➔
+    </button>
+  </div>
+
+  <!-- ================= ZONES DE DEPÔT / PERSONNAGES ================= -->
+  <div class="grid grid-cols-3 gap-4 w-full">
+    
+    <!-- Zone Familier -->
+    <div class="drop-zone zone-familier" id="zone-familier">
+      <img src="assets/logos/registre_familier.png" id="avatar-familier" class="avatar-img" alt="Familier" />
+      <h3 class="text-blue-800 font-bold text-xs sm:text-sm font-display mb-1">🧢 Familier</h3>
+      <p class="text-[9px] sm:text-xxs text-blue-600 leading-tight">À l'oral avec tes copains, de façon très détendue.</p>
+    </div>
+
+    <!-- Zone Courant -->
+    <div class="drop-zone zone-courant" id="zone-courant">
+      <img src="assets/logos/registre_courant.png" id="avatar-courant" class="avatar-img" alt="Courant" />
+      <h3 class="text-orange-800 font-bold text-xs sm:text-sm font-display mb-1">🏫 Courant</h3>
+      <p class="text-[9px] sm:text-xxs text-orange-600 leading-tight">En classe avec l'enseignant, ou avec des adultes.</p>
+    </div>
+
+    <!-- Zone Soutenu -->
+    <div class="drop-zone zone-soutenu" id="zone-soutenu">
+      <img src="assets/logos/registre_soutenu.png" id="avatar-soutenu" class="avatar-img" alt="Soutenu" />
+      <h3 class="text-purple-800 font-bold text-xs sm:text-sm font-display mb-1">👑 Soutenu</h3>
+      <p class="text-[9px] sm:text-xxs text-purple-600 leading-tight">À l'écrit, dans des textes littéraires ou officiels.</p>
+    </div>
+
+  </div>
+
+  <!-- Panneau de fin (Masqué par défaut) -->
+  <div class="card-premium bg-amber-50 border-amber-600 hidden text-center pop-anim" id="panel-final">
+    <h3 class="text-amber-950 font-bold text-xl mb-2">🎉 Niveau terminé !</h3>
+    <p class="text-slate-700 text-sm leading-relaxed mb-4" id="final-score-text">
+      Tu as classé toutes les expressions avec brio.
+    </p>
+    <button class="btn-3d px-6 py-2.5 bg-amber-600 text-white rounded-xl text-sm font-bold" onclick="restartGame()">
+      Recommencer une partie
+    </button>
+  </div>
+
+</main>
+
+<script>
+  // ================================================================
+  // BANQUE DES EXPRESSIONS (20 séries de 3 synonymes = 60 expressions)
+  // ================================================================
+  const ITEM_BANK = [
+    { text: "un canasson", register: "familier", ex: "Ce vieux canasson avance moins vite qu'un escargot !" },
+    { text: "un cheval", register: "courant", ex: "Le cheval galope joyeusement dans la prairie verte." },
+    { text: "un destrier", register: "soutenu", ex: "Le preux chevalier monta son fier destrier avant le combat." },
+
+    { text: "un bouquin", register: "familier", ex: "J'ai acheté un super bouquin d'aventures à la brocante." },
+    { text: "un livre", register: "courant", ex: "Range ce livre d'histoire sur l'étagère de la bibliothèque." },
+    { text: "un ouvrage", register: "soutenu", ex: "Ce dictionnaire est un ouvrage de référence très précieux." },
+
+    { text: "un flic", register: "familier", ex: "Dans cette bande dessinée, le flic mène l'enquête dans la rue." },
+    { text: "un policier", register: "courant", ex: "Le policier aide les enfants à traverser devant l'école." },
+    { text: "un gendarme", register: "soutenu", ex: "Les forces de l'ordre ont dépêché un gendarme pour sécuriser les lieux." },
+
+    { text: "se casser", register: "familier", ex: "Allez, il se fait tard, on va se casser d'ici !" },
+    { text: "s'en aller", register: "courant", ex: "Nous devons nous en aller avant le coucher du soleil." },
+    { text: "se retirer", register: "soutenu", ex: "Le roi décida de se retirer dans ses appartements privés." },
+
+    { text: "bouffer", register: "familier", ex: "On va bouffer des frites à la kermesse du village." },
+    { text: "manger", register: "courant", ex: "Il est important de manger cinq fruits et légumes par jour." },
+    { text: "se restaurer", register: "soutenu", ex: "Les voyageurs s'arrêtèrent dans une auberge pour se restaurer." },
+
+    { text: "pioncer", register: "familier", ex: "Je vais aller pioncer, je suis fatigué par ce long voyage." },
+    { text: "dormir", register: "courant", ex: "Les bébés ont besoin de dormir beaucoup d'heures par jour." },
+    { text: "sommeiller", register: "soutenu", ex: "Le vieux chat aime sommeiller au coin du feu de bois." },
+
+    { text: "une bagnole", register: "familier", ex: "Mon oncle a garé sa vieille bagnole rouillée dans la cour." },
+    { text: "une voiture", register: "courant", ex: "La voiture électrique fait très peu de bruit en roulant." },
+    { text: "un véhicule", register: "soutenu", ex: "Ce véhicule prioritaire a le droit d'utiliser sa sirène." },
+
+    { text: "choper", register: "familier", ex: "Le gardien a réussi à choper le ballon juste avant la ligne." },
+    { text: "attraper", register: "courant", ex: "Essaie d'attraper ce frisbee avant qu'il ne touche le sol." },
+    { text: "appréhender", register: "soutenu", ex: "La police a pu appréhender le suspect à la sortie de la banque." },
+
+    { text: "piger", register: "familier", ex: "Je n'ai rien pigé à la blague de mon voisin de classe." },
+    { text: "comprendre", register: "courant", ex: "Le maître réexplique la leçon pour aider tout le monde à comprendre." },
+    { text: "saisir", register: "soutenu", ex: "L'auditeur attentif a su saisir toute la subtilité du discours." },
+
+    { text: "Je me marre.", register: "familier", ex: "Je me marre bien en lisant les blagues de cette BD." },
+    { text: "Je ris.", register: "courant", ex: "Je ris de bon cœur en entendant son histoire amusante." },
+    { text: "Je souris.", register: "soutenu", ex: "Je souris poliment aux invités pour leur souhaiter la bienvenue." },
+
+    { text: "C'est la dèche.", register: "familier", ex: "C'est la dèche ce mois-ci, ma tirelire est vide !" },
+    { text: "Je n'ai plus d'argent.", register: "courant", ex: "Je n'ai plus d'argent pour m'acheter ce jeu vidéo." },
+    { text: "Je suis sans ressources.", register: "soutenu", ex: "Après l'incendie de sa ferme, il s'est retrouvé sans ressources." },
+
+    { text: "une bécane", register: "familier", ex: "Il adore nettoyer sa bécane avant de partir en balade." },
+    { text: "un vélo", register: "courant", ex: "Nous faisons une promenade à vélo le long du canal." },
+    { text: "une bicyclette", register: "soutenu", ex: "La bicyclette d'époque était exposée au musée de la ville." },
+
+    { text: "flipper", register: "familier", ex: "J'ai commencé à flipper quand l'orage a coupé le courant." },
+    { text: "avoir peur", register: "courant", ex: "Il ne faut pas avoir peur des petites araignées inoffensives." },
+    { text: "s'effrayer", register: "soutenu", ex: "Le jeune faon s'est effrayé au moindre craquement de branche." },
+
+    { text: "un toubib", register: "familier", ex: "Je dois aller voir le toubib pour soigner mon mal de gorge." },
+    { text: "un médecin", register: "courant", ex: "Le médecin m'a prescrit du sirop pour calmer ma toux." },
+    { text: "un praticien", register: "soutenu", ex: "Ce praticien renommé consulte uniquement sur rendez-vous." },
+
+    { text: "C'est pas mal.", register: "familier", ex: "C'est pas mal ton dessin de dinosaure, j'aime bien !" },
+    { text: "C'est assez bien.", register: "courant", ex: "C'est assez bien fait pour un premier essai de peinture." },
+    { text: "C'est fort convenable.", register: "soutenu", ex: "Votre comportement lors de la cérémonie fut fort convenable." },
+
+    { text: "T'as pigé ?", register: "familier", ex: "T'as pigé l'heure du rendez-vous pour demain ?" },
+    { text: "As-tu compris ?", register: "courant", ex: "As-tu compris comment faire cette division difficile ?" },
+    { text: "As-tu saisi ?", register: "soutenu", ex: "As-tu saisi la portée philosophique de ce poème ?" },
+
+    { text: "un gosse", register: "familier", ex: "Le gosse du voisin joue souvent dans le jardin." },
+    { text: "un enfant", register: "courant", ex: "Chaque enfant de la classe a reçu un livre de conte." },
+    { text: "un descendant", register: "soutenu", ex: "Ce prince est le dernier descendant d'une longue dynastie." },
+
+    { text: "une piaule", register: "familier", ex: "Range ta piaule, il y a des jouets partout par terre !" },
+    { text: "une chambre", register: "courant", ex: "Ma chambre a des murs bleus et un grand tapis jaune." },
+    { text: "une demeure", register: "soutenu", ex: "Ce vieux manoir en pierre était la demeure de ses ancêtres." },
+
+    { text: "barboter", register: "familier", ex: "Le voleur a profité du chahut pour lui barboter son goûter." },
+    { text: "voler", register: "courant", ex: "Il est interdit de voler le matériel d'écriture des autres." },
+    { text: "dérober", register: "soutenu", ex: "Le renard rusé est parvenu à dérober un fromage dans le garde-manger." },
+
+    { text: "chialer", register: "familier", ex: "Arrête de chialer pour un petit bobo sans importance !" },
+    { text: "pleurer", register: "courant", ex: "L'oignon pique les yeux et fait pleurer quand on le coupe." },
+    { text: "larmoyer", register: "soutenu", ex: "L'acteur s'est mis à larmoyer d'une tristesse affectée sur scène." }
+  ];
+
+  // ================================================================
+  // VARIABLES DU JEU
+  // ================================================================
+  let sessionList = [];
+  let currentIndex = 0;
+  let activeItem = null;
+  let isAnimating = false;
+
+  // ================================================================
+  // INITIALISATION DU JEU
+  // ================================================================
+  function initGame() {
+    // Sélectionne 15 cartes aléatoires dans la banque de 60
+    const shuffledBank = shuffleArray([...ITEM_BANK]);
+    sessionList = shuffledBank.slice(0, 15);
+    currentIndex = 0;
+    isAnimating = false;
+
+    document.getElementById('panel-final').classList.add('hidden');
+    document.getElementById('card-holder').classList.remove('hidden');
+    
+    // Rétablit l'état des conteneurs de boutons
+    document.getElementById('choices-container').classList.remove('hidden');
+    document.getElementById('continue-container').classList.add('hidden');
+    
+    loadNextCard();
+  }
+
+  function loadNextCard() {
+    if (currentIndex >= sessionList.length) {
+      endGame();
+      return;
+    }
+
+    activeItem = sessionList[currentIndex];
+    
+    // Met à jour la barre de progression
+    const percent = (currentIndex / sessionList.length) * 100;
+    document.getElementById('progress-bar').style.width = `${percent}%`;
+    document.getElementById('progress-text').innerText = `Expression ${currentIndex + 1} / ${sessionList.length}`;
+
+    // Affiche le mot dans la carte active
+    const card = document.getElementById('active-card');
+    card.innerHTML = `
+      <div class="text-[10px] text-slate-400 font-mono tracking-wider uppercase mb-1">À classer :</div>
+      <div class="text-xl font-bold text-slate-800">« ${activeItem.text} »</div>
+    `;
+    card.className = "sorting-card pop-anim";
+    card.style.transform = "translate(0px, 0px)";
+  }
+
+  // ================================================================
+  // LOGIQUE DE SOUMISSION DE CHOIX
+  // ================================================================
+  function submitChoice(chosenRegister) {
+    if (isAnimating || !activeItem) return;
+    
+    const card = document.getElementById('active-card');
+    const isCorrect = (activeItem.register === chosenRegister);
+    const avatar = document.getElementById(`avatar-${chosenRegister}`);
+
+    if (isCorrect) {
+      isAnimating = true; // Empêche d'autres clics pendant l'animation
+
+      if (avatar) {
+        avatar.classList.add('avatar-yes');
+        setTimeout(() => avatar.classList.remove('avatar-yes'), 500);
+      }
+
+      // Applique le style de réussite à la carte
+      card.className = "sorting-card pop-anim card-correct text-left block";
+
+      const badgeColors = {
+        familier: "bg-blue-100 text-blue-800 border-blue-300",
+        courant: "bg-orange-100 text-orange-800 border-orange-300",
+        soutenu: "bg-purple-100 text-purple-800 border-purple-300"
+      };
+
+      const badgeLabels = {
+        familier: "🧢 Registre Familier",
+        courant: "🏫 Registre Courant",
+        soutenu: "👑 Registre Soutenu"
+      };
+
+      // Affiche le mot avec son étiquette et l'exemple d'utilisation
+      card.innerHTML = `
+        <div class="flex items-center justify-between mb-3 w-full border-b border-dashed border-green-200 pb-2">
+          <span class="text-[10px] font-bold px-2 py-0.5 border rounded-md ${badgeColors[activeItem.register]}">${badgeLabels[activeItem.register]}</span>
+          <span class="text-xs text-green-700 font-bold">🎉 Correct !</span>
+        </div>
+        <div class="text-base font-bold text-slate-800 mb-2">« ${activeItem.text} »</div>
+        <div class="text-xs sm:text-sm font-normal text-slate-700 leading-relaxed">
+          <strong class="text-green-800">En contexte :</strong> <span class="italic font-serif">"${activeItem.ex}"</span>
+        </div>
+      `;
+
+      // Masque les boutons de sélection et montre le bouton continuer
+      document.getElementById('choices-container').classList.add('hidden');
+      document.getElementById('continue-container').classList.remove('hidden');
+
+    } else {
+      isAnimating = true;
+      // Animation d'erreur sur la carte (secousse et couleur rouge)
+      card.classList.add('card-incorrect');
+      if (avatar) {
+        avatar.classList.add('avatar-no');
+        setTimeout(() => avatar.classList.remove('avatar-no'), 500);
+      }
+
+      // Réinitialise la carte
+      setTimeout(() => {
+        card.classList.remove('card-incorrect');
+        isAnimating = false;
+      }, 500);
+    }
+  }
+
+  function goToNextCard() {
+    // Rétablit les boutons de choix et masque le bouton continuer
+    document.getElementById('choices-container').classList.remove('hidden');
+    document.getElementById('continue-container').classList.add('hidden');
+    
+    isAnimating = false;
+    currentIndex++;
+    loadNextCard();
+  }
+
+  function endGame() {
+    // Complète la barre de progression
+    document.getElementById('progress-bar').style.width = `100%`;
+    document.getElementById('progress-text').innerText = `Entraînement terminé !`;
+
+    document.getElementById('card-holder').classList.add('hidden');
+    document.getElementById('panel-final').classList.remove('hidden');
+    document.getElementById('choices-container').classList.add('hidden');
+    document.getElementById('continue-container').classList.add('hidden');
+    
+    document.getElementById('final-score-text').innerText = `Félicitations ! Tu as réussi à trier correctement les 15 expressions de cette session.`;
+
+    if (window.parent && window.parent.saveResult) {
+      window.parent.saveResult({
+        activity: 'vocabulaire_registres',
+        bookTitle: 'Vocabulaire — Le Défi des Registres',
+        score: 15,
+        total: 15,
+        pct: 100,
+        date: new Date().toLocaleDateString('fr-BE'),
+        time: new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})
+      });
+    }
+  }
+
+  function restartGame() {
+    initGame();
+  }
+
+  // ================================================================
+  // UTILS
+  // ================================================================
+  function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  }
+
+  // Lancement automatique au chargement
+  window.onload = () => {
+    initGame();
+    
+    // Correction automatique des chemins d'images pour le mode fiche
+    if (window.location.pathname.includes('/fiches/')) {
+      document.querySelectorAll('img').forEach(img => {
+        const src = img.getAttribute('src');
+        if (src && !src.startsWith('http') && !src.startsWith('../') && !src.startsWith('/') && !src.startsWith('data:')) {
+          img.setAttribute('src', '../' + src);
+        }
+      });
+    }
+  };
+</script>
+</body>
+</html>

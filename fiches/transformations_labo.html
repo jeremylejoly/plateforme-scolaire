@@ -1,0 +1,1568 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Le Laboratoire des Transformations — Translations & Rotations</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --paper: #fcfdff;
+      --ink: #1e293b;
+      --muted: #64748b;
+      --grid: #cbe8f6;
+      --grid-strong: #94d2f2;
+      --center-color: #f59e0b;
+      --tint: #f0f9ff;
+      --student: #3b82f6;
+      --ok: #10b981;
+      --extra: #ef4444;
+      --missing: #f59e0b;
+      --accent: #10b981;
+      --accent-dark: #059669;
+      --line: #e2e8f0;
+      --card: #ffffff;
+      --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Nunito", system-ui, -apple-system, sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(1200px 500px at 80% -10%, #e0f2fe 0%, transparent 60%),
+        radial-gradient(900px 500px at -10% 110%, #fdf2f8 0%, transparent 55%),
+        var(--paper);
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.4;
+    }
+
+    .wrap {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 20px 15px 40px;
+    }
+
+    /* HEADER */
+    header.app {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .title-block h1 {
+      font-family: "Fredoka", sans-serif;
+      font-weight: 700;
+      font-size: clamp(22px, 4vw, 30px);
+      margin: 0;
+      color: var(--ink);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .title-block h1 span.highlight {
+      color: var(--student);
+    }
+
+    .title-block p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .badge {
+      font-family: "Fredoka", sans-serif;
+      font-weight: 600;
+      font-size: 13px;
+      color: #0369a1;
+      background: #e0f2fe;
+      border: 1px solid #bae6fd;
+      padding: 6px 14px;
+      border-radius: 999px;
+    }
+
+    /* PROGRESS BAR */
+    .progress-container {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 12px 16px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow);
+    }
+
+    .progress-bar {
+      display: flex;
+      justify-content: space-between;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .progress-step {
+      flex: 1;
+      height: 10px;
+      border-radius: 999px;
+      background: #e2e8f0;
+      transition: background-color 0.3s ease;
+    }
+
+    .progress-step.correct {
+      background: var(--ok);
+    }
+
+    .progress-step.wrong {
+      background: var(--extra);
+    }
+
+    .progress-step.current {
+      background: var(--student);
+      box-shadow: 0 0 8px rgba(59, 130, 246, 0.5);
+    }
+
+    .progress-text {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--muted);
+    }
+
+    /* MAIN PANEL */
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      overflow: hidden;
+    }
+
+    @media (max-width: 800px) {
+      .panel {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* LEFT SCREEN - SVG CANVAS */
+    .canvas-section {
+      padding: 20px;
+      border-right: 1px solid var(--line);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: #f8fafc;
+    }
+
+    @media (max-width: 800px) {
+      .canvas-section {
+        border-right: none;
+        border-bottom: 1px solid var(--line);
+      }
+    }
+
+    .canvas-container {
+      width: 100%;
+      max-width: 440px;
+      background: var(--card);
+      border: 1.5px solid var(--line);
+      border-radius: 16px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+      overflow: hidden;
+      aspect-ratio: 1;
+    }
+
+    .canvas-container svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+      touch-action: none;
+      user-select: none;
+    }
+
+    .node-hit {
+      fill: transparent;
+      cursor: pointer;
+      transition: fill 0.15s;
+    }
+
+    .node-hit:hover {
+      fill: rgba(59, 130, 246, 0.15);
+    }
+
+    /* RIGHT SCREEN - WORKSPACE */
+    .control-section {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .instruction-card {
+      background: var(--tint);
+      border: 1px solid #bae6fd;
+      border-radius: 16px;
+      padding: 16px 20px;
+      color: #0369a1;
+    }
+
+    .instruction-card h3 {
+      font-family: "Fredoka", sans-serif;
+      margin: 0 0 6px 0;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .instruction-card p {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 700;
+      line-height: 1.5;
+    }
+
+    /* BUTTONS */
+    .button-group {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    button.btn {
+      font-family: "Nunito", sans-serif;
+      font-weight: 700;
+      font-size: 14px;
+      padding: 12px 16px;
+      border-radius: 12px;
+      border: 1.5px solid var(--line);
+      background: #ffffff;
+      color: var(--ink);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      user-select: none;
+    }
+
+    button.btn:hover:not(:disabled) {
+      border-color: var(--grid-strong);
+      background: #f8fafc;
+      transform: translateY(-1px);
+    }
+
+    button.btn:active:not(:disabled) {
+      transform: translateY(0);
+    }
+
+    button.btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    button.btn.primary {
+      background: var(--accent);
+      border-color: var(--accent-dark);
+      color: #ffffff;
+      grid-column: span 2;
+    }
+
+    button.btn.primary:hover:not(:disabled) {
+      background: var(--accent-dark);
+      color: #ffffff;
+    }
+
+    button.btn.action-next {
+      background: var(--student);
+      border-color: #2563eb;
+      color: #ffffff;
+      grid-column: span 2;
+    }
+
+    button.btn.action-next:hover {
+      background: #2563eb;
+    }
+
+    /* FEEDBACK CARD */
+    .feedback-card {
+      border-radius: 16px;
+      padding: 16px;
+      font-size: 14px;
+      font-weight: 700;
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .feedback-card.correct {
+      display: block;
+      background: #ecfdf5;
+      border: 1px solid #a7f3d0;
+      color: #065f46;
+    }
+
+    .feedback-card.wrong {
+      display: block;
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      color: #991b1b;
+    }
+
+    .feedback-card .feedback-header {
+      font-family: "Fredoka", sans-serif;
+      font-size: 16px;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .feedback-card p {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 1.5;
+    }
+
+    .feedback-card ul {
+      margin: 6px 0 0 20px;
+      padding: 0;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    /* LEGEND */
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--muted);
+      border-top: 1px solid var(--line);
+      padding-top: 12px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .legend-color {
+      width: 14px;
+      height: 14px;
+      border-radius: 4px;
+      border: 1px solid var(--line);
+    }
+
+    /* SUMMARY PAGE */
+    .summary-page {
+      display: none;
+      text-align: center;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 40px 30px;
+      box-shadow: var(--shadow);
+      animation: scaleUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .summary-page.active {
+      display: block;
+    }
+
+    .summary-trophy {
+      font-size: 80px;
+      margin-bottom: 10px;
+      animation: pulse 2s infinite;
+    }
+
+    .summary-page h2 {
+      font-family: "Fredoka", sans-serif;
+      font-size: 32px;
+      margin: 0 0 10px 0;
+      color: var(--ink);
+    }
+
+    .summary-page p.desc {
+      font-size: 16px;
+      color: var(--muted);
+      margin: 0 0 30px 0;
+      font-weight: 600;
+      max-width: 480px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .score-circle {
+      width: 130px;
+      height: 130px;
+      border-radius: 50%;
+      background: #eff6ff;
+      border: 4px solid var(--student);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 30px;
+      box-shadow: 0 8px 16px rgba(59, 130, 246, 0.15);
+    }
+
+    .score-circle .number {
+      font-family: "Fredoka", sans-serif;
+      font-size: 38px;
+      font-weight: 700;
+      color: var(--student);
+      line-height: 1;
+    }
+
+    .score-circle .label {
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 700;
+      margin-top: 4px;
+    }
+
+    .loader {
+      font-size: 14px;
+      color: var(--muted);
+      font-weight: 700;
+      margin-top: 10px;
+      display: none;
+    }
+
+    /* CONFETTI ANIMATION */
+    .confetti {
+      position: fixed;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      animation: confettiFall 2.5s ease-out forwards;
+    }
+
+    @keyframes confettiFall {
+      0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(105vh) rotate(360deg); opacity: 0; }
+    }
+
+    /* KEYFRAMES */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes scaleUp {
+      from { transform: scale(0.95); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <header class="app">
+    <div class="title-block">
+      <h1>Le Laboratoire des <span class="highlight">Transformations</span></h1>
+    </div>
+  </header>
+
+  <!-- PROGRESS BAR -->
+  <div class="progress-container" id="progressBarContainer">
+    <div class="progress-text">
+      <span>Progression</span>
+      <span id="progressTextLabel">Question 1 / 10</span>
+    </div>
+    <div class="progress-bar" id="progressBar">
+      <div class="progress-step current"></div>
+      <div class="progress-step"></div>
+      <div class="progress-step"></div>
+      <div class="progress-step"></div>
+      <div class="progress-step"></div>
+      <div class="progress-step"></div>
+      <div class="progress-step"></div>
+      <div class="progress-step"></div>
+      <div class="progress-step"></div>
+      <div class="progress-step"></div>
+    </div>
+  </div>
+
+  <!-- PLAYING PANEL -->
+  <div class="panel" id="playPanel">
+    <!-- SVG CANVAS AREA -->
+    <div class="canvas-section">
+      <div class="canvas-container">
+        <svg id="svgGrid" viewBox="0 0 480 480" xmlns="http://www.w3.org/2000/svg">
+          <!-- Markers for vectors/arcs -->
+          <defs>
+            <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="rgba(59, 130, 246, 0.8)"/>
+            </marker>
+            <marker id="arrow-green" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="rgba(16, 185, 129, 0.8)"/>
+            </marker>
+            <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur stdDeviation="4" result="blur" />
+              <feComposite in="SourceGraphic" in2="blur" operator="over" />
+            </filter>
+          </defs>
+          
+          <!-- Static grid background will be injected by JavaScript -->
+          <g id="gridBg"></g>
+          <!-- Coordinate labels will be injected by JavaScript -->
+          <g id="gridLabels"></g>
+          <!-- Visual movement corrections (vectors/arcs) -->
+          <g id="correctionAid"></g>
+          <!-- Source shape layer -->
+          <g id="sourceShapeLayer"></g>
+          <!-- Target shape correction layer -->
+          <g id="targetShapeCorrectionLayer"></g>
+          <!-- Student shape layer -->
+          <g id="studentShapeLayer"></g>
+          <!-- Hit target nodes (intersections) -->
+          <g id="hitTargetsLayer"></g>
+        </svg>
+      </div>
+    </div>
+
+    <!-- CONTROL & INSTRUCTION AREA -->
+    <div class="control-section">
+      <div class="instruction-card">
+        <h3 id="instructionTitle">🔄 Translation</h3>
+        <p id="instructionText">Glisser de 4 cases vers la droite et 2 cases vers le bas.</p>
+      </div>
+
+      <!-- FEEDBACK CARD -->
+      <div class="feedback-card" id="feedbackCard">
+        <div class="feedback-header" id="feedbackHeader">🎉 Parfait !</div>
+        <p id="feedbackText">C'est tout à fait correct.</p>
+        <ul id="feedbackDetails"></ul>
+      </div>
+
+      <!-- BUTTONS -->
+      <div class="button-group">
+        <button class="btn" id="btnUndo" title="Annuler le dernier point placé">
+          <span>↩️ Annuler</span>
+        </button>
+        <button class="btn" id="btnClear" title="Effacer tout ton dessin">
+          <span>🗑️ Effacer</span>
+        </button>
+        <button class="btn primary" id="btnValidate">
+          <span>✓ Vérifier</span>
+        </button>
+        <button class="btn action-next" id="btnNext" style="display: none;">
+          <span>Suivant ➡️</span>
+        </button>
+      </div>
+
+      <!-- LEGEND -->
+      <div class="legend">
+        <div class="legend-item">
+          <div class="legend-color" style="background: rgba(30, 41, 59, 0.08); border-color: #1e293b;"></div>
+          <span>Figure de départ</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-color" style="background: rgba(59, 130, 246, 0.15); border-color: #3b82f6;"></div>
+          <span>Ton tracé</span>
+        </div>
+        <div class="legend-item" id="legendCenterItem" style="display: none;">
+          <div class="legend-color" style="background: #f59e0b; border-color: #ffffff;"></div>
+          <span>Centre de rotation</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUMMARY PAGE -->
+  <div class="summary-page" id="summaryPage">
+    <div class="summary-trophy" id="summaryTrophy">🏆</div>
+    <h2 id="summaryTitle">Félicitations !</h2>
+    <p class="desc" id="summaryDesc">Tu as complété le Laboratoire des Transformations avec brio.</p>
+    
+    <div class="score-circle">
+      <span class="number" id="finalScore">10/10</span>
+      <span class="label" id="finalPct">100%</span>
+    </div>
+
+    <button class="btn primary" id="btnRestart" style="max-width: 250px; margin: 0 auto;">
+      <span>Recommencer l'exercice</span>
+    </button>
+    <div class="loader" id="loader">Enregistrement du score en cours...</div>
+  </div>
+</div>
+
+<script>
+  "use strict";
+
+  // --- QUESTIONS DEFINITION ---
+  const ALL_QUESTIONS = [
+    // 1. Translation: dx=+4, dy=+2
+    {
+      type: 'translation',
+      title: '↔️ Glisse la figure',
+      instruction: 'Glisser de 4 cases vers la droite et 2 cases vers le bas.',
+      shape: [[2,2], [5,2], [2,5]], // Triangle
+      dx: 4,
+      dy: 2
+    },
+    // 2. Translation: dx=+5, dy=-4
+    {
+      type: 'translation',
+      title: '↔️ Glisse la figure',
+      instruction: 'Glisser de 5 cases vers la droite et 4 cases vers le haut.',
+      shape: [[1,7], [4,7], [4,10], [1,10]], // Rectangle
+      dx: 5,
+      dy: -4
+    },
+    // 3. Translation: dx=-5, dy=-3
+    {
+      type: 'translation',
+      title: '↔️ Glisse la figure',
+      instruction: 'Glisser de 5 cases vers la gauche et 3 cases vers le haut.',
+      shape: [[7,6], [9,6], [9,7], [8,7], [8,9], [7,9]], // L-shape
+      dx: -5,
+      dy: -3
+    },
+    // 4. Translation: dx=-4, dy=+4
+    {
+      type: 'translation',
+      title: '↔️ Glisse la figure',
+      instruction: 'Glisser de 4 cases vers la gauche et 4 cases vers le bas.',
+      shape: [[7,2], [10,2], [8,5], [5,5]], // Parallélogramme
+      dx: -4,
+      dy: 4
+    },
+    // 5. Translation: dx=+4, dy=-3
+    {
+      type: 'translation',
+      title: '↔️ Glisse la figure',
+      instruction: 'Glisser de 4 cases vers la droite et 3 cases vers le haut.',
+      shape: [[2,8], [5,8], [5,7], [7,9], [5,11], [5,10], [2,10]], // Flèche
+      dx: 4,
+      dy: -3
+    },
+    // 6. Translation: dx=-3, dy=-3
+    {
+      type: 'translation',
+      title: '↔️ Glisse la figure',
+      instruction: 'Glisser de 3 cases vers la gauche et 3 cases vers le haut.',
+      shape: [[6,6], [8,6], [8,8], [6,8]], // Carré
+      dx: -3,
+      dy: -3
+    },
+    // 7. Translation: dx=+3, dy=+4
+    {
+      type: 'translation',
+      title: '↔️ Glisse la figure',
+      instruction: 'Glisser de 3 cases vers la droite et 4 cases vers le bas.',
+      shape: [[2,1], [4,1], [3,3]], // Triangle
+      dx: 3,
+      dy: 4
+    },
+    // 8. Translation: dx=-4, dy=+3
+    {
+      type: 'translation',
+      title: '↔️ Glisse la figure',
+      instruction: 'Glisser de 4 cases vers la gauche et 3 cases vers le bas.',
+      shape: [[8,2], [10,2], [9,4]], // Triangle
+      dx: -4,
+      dy: 3
+    },
+    // 9. Translation: dx=+4, dy=-4
+    {
+      type: 'translation',
+      title: '↔️ Glisse la figure',
+      instruction: 'Glisser de 4 cases vers la droite et 4 cases vers le haut.',
+      shape: [[1,6], [3,6], [2,9]], // Triangle
+      dx: 4,
+      dy: -4
+    },
+    // 10. Translation: dx=-3, dy=+5
+    {
+      type: 'translation',
+      title: '↔️ Glisse la figure',
+      instruction: 'Glisser de 3 cases vers la gauche et 5 cases vers le bas.',
+      shape: [[5,1], [7,1], [7,3], [5,3]], // Carré
+      dx: -3,
+      dy: 5
+    },
+    // 11. Rotation: 90° Clockwise around (4,5)
+    {
+      type: 'rotation',
+      title: '🔄 Fais tourner la figure',
+      instruction: "Fais tourner la figure d'un quart de tour vers la droite (90° horaire) autour du point orange.",
+      shape: [[4,3], [6,3], [4,1]], // Triangle
+      center: [4,5],
+      angle: 90,
+      dir: 'clockwise'
+    },
+    // 12. Rotation: 90° Counter-Clockwise around (7,5)
+    {
+      type: 'rotation',
+      title: '🔄 Fais tourner la figure',
+      instruction: "Fais tourner la figure d'un quart de tour vers la gauche (90° anti-horaire) autour du point orange.",
+      shape: [[7,3], [9,3], [9,4], [8,4], [8,5], [7,5]], // L-shape
+      center: [7,5],
+      angle: 90,
+      dir: 'counter-clockwise'
+    },
+    // 13. Rotation: 180° around (5,5)
+    {
+      type: 'rotation',
+      title: '🔄 Fais tourner la figure',
+      instruction: "Fais tourner la figure d'un demi-tour (180°) autour du point orange.",
+      shape: [[3,3], [5,3], [6,5], [3,5]], // Trapèze
+      center: [5,5],
+      angle: 180,
+      dir: '180'
+    },
+    // 14. Rotation: 90° Clockwise around (8,8)
+    {
+      type: 'rotation',
+      title: '🔄 Fais tourner la figure',
+      instruction: "Fais tourner la figure d'un quart de tour vers la droite (90° horaire) autour du point orange.",
+      shape: [[6,8], [6,10], [8,10], [8,8], [7,7]], // Maison
+      center: [8,8],
+      angle: 90,
+      dir: 'clockwise'
+    },
+    // 15. Rotation: 90° Counter-Clockwise around (5,9)
+    {
+      type: 'rotation',
+      title: '🔄 Fais tourner la figure',
+      instruction: "Fais tourner la figure d'un quart de tour vers la gauche (90° anti-horaire) autour du point orange.",
+      shape: [[3,7], [5,7], [3,9]], // Triangle
+      center: [5,9],
+      angle: 90,
+      dir: 'counter-clockwise'
+    },
+    // 16. Rotation: 90° Clockwise around (6,6)
+    {
+      type: 'rotation',
+      title: '🔄 Fais tourner la figure',
+      instruction: "Fais tourner la figure d'un quart de tour vers la droite (90° horaire) autour du point orange.",
+      shape: [[6,4], [8,4], [6,2]], // Triangle
+      center: [6,6],
+      angle: 90,
+      dir: 'clockwise'
+    },
+    // 17. Rotation: 90° Counter-Clockwise around (5,5)
+    {
+      type: 'rotation',
+      title: '🔄 Fais tourner la figure',
+      instruction: "Fais tourner la figure d'un quart de tour vers la gauche (90° anti-horaire) autour du point orange.",
+      shape: [[5,3], [7,3], [7,4], [5,4]], // Rectangle
+      center: [5,5],
+      angle: 90,
+      dir: 'counter-clockwise'
+    },
+    // 18. Rotation: 180° around (6,6)
+    {
+      type: 'rotation',
+      title: '🔄 Fais tourner la figure',
+      instruction: "Fais tourner la figure d'un demi-tour (180°) autour du point orange.",
+      shape: [[5,5], [7,5], [7,6], [5,6]], // Rectangle
+      center: [6,6],
+      angle: 180,
+      dir: '180'
+    },
+    // 19. Rotation: 90° Clockwise around (7,7)
+    {
+      type: 'rotation',
+      title: '🔄 Fais tourner la figure',
+      instruction: "Fais tourner la figure d'un quart de tour vers la droite (90° horaire) autour du point orange.",
+      shape: [[7,5], [9,5], [7,3]], // Triangle
+      center: [7,7],
+      angle: 90,
+      dir: 'clockwise'
+    },
+    // 20. Rotation: 90° Counter-Clockwise around (4,4)
+    {
+      type: 'rotation',
+      title: '🔄 Fais tourner la figure',
+      instruction: "Fais tourner la figure d'un quart de tour vers la gauche (90° anti-horaire) autour du point orange.",
+      shape: [[4,2], [6,2], [4,1]], // Triangle
+      center: [4,4],
+      angle: 90,
+      dir: 'counter-clockwise'
+    }
+  ];
+
+  let QUESTIONS = [];
+
+  function shuffleAndSelectQuestions() {
+    const arr = [...ALL_QUESTIONS];
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    QUESTIONS = arr.slice(0, 10);
+  }
+
+  // --- LAYOUT CONSTANTS ---
+  const PAD = 30;
+  const CELL = 35;
+  const GRID_SIZE = 12; // 0 to 12 inclusive
+
+  // Map logic to pixel position
+  function X(c) { return PAD + c * CELL; }
+  function Y(r) { return PAD + r * CELL; } // Standard screen coordinates: y goes down
+
+  // --- AUDIO SYNTHESIS ---
+  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  function playSound(type) {
+    if (audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    
+    const now = audioCtx.currentTime;
+
+    if (type === 'success') {
+      osc.frequency.setValueAtTime(523.25, now); // C5
+      osc.frequency.setValueAtTime(659.25, now + 0.08); // E5
+      osc.frequency.setValueAtTime(783.99, now + 0.16); // G5
+      osc.frequency.setValueAtTime(1046.50, now + 0.24); // C6
+      gain.gain.setValueAtTime(0.12, now);
+      gain.gain.exponentialRampToValueAtTime(0.005, now + 0.45);
+      osc.start(now);
+      osc.stop(now + 0.45);
+    } else if (type === 'error') {
+      osc.frequency.setValueAtTime(220, now); // A3
+      osc.frequency.setValueAtTime(147, now + 0.12); // D3
+      gain.gain.setValueAtTime(0.15, now);
+      gain.gain.exponentialRampToValueAtTime(0.005, now + 0.35);
+      osc.start(now);
+      osc.stop(now + 0.35);
+    } else if (type === 'click') {
+      osc.frequency.setValueAtTime(580, now);
+      gain.gain.setValueAtTime(0.04, now);
+      gain.gain.exponentialRampToValueAtTime(0.005, now + 0.08);
+      osc.start(now);
+      osc.stop(now + 0.08);
+    } else if (type === 'perfect') {
+      const notes = [523.25, 659.25, 783.99, 1046.50, 783.99, 1046.50];
+      const durations = [0.08, 0.08, 0.08, 0.12, 0.08, 0.25];
+      let time = now;
+      notes.forEach((freq, idx) => {
+        const noteOsc = audioCtx.createOscillator();
+        const noteGain = audioCtx.createGain();
+        noteOsc.connect(noteGain);
+        noteGain.connect(audioCtx.destination);
+        noteOsc.frequency.setValueAtTime(freq, time);
+        noteGain.gain.setValueAtTime(0.1, time);
+        noteGain.gain.exponentialRampToValueAtTime(0.005, time + durations[idx]);
+        noteOsc.start(time);
+        noteOsc.stop(time + durations[idx]);
+        time += durations[idx] * 0.85;
+      });
+    }
+  }
+
+  // --- STATE VARIABLES ---
+  let qIdx = 0;
+  let score = 0;
+  let history = []; // array of 'correct' or 'wrong'
+  let studentPts = []; // array of [c, r]
+  let isClosed = false;
+  let isVerified = false;
+
+  // --- COMPUTE TARGET VERTICES ---
+  function computeTargetShape(q) {
+    const target = [];
+    q.shape.forEach(p => {
+      const x = p[0];
+      const y = p[1];
+      if (q.type === 'translation') {
+        target.push([x + q.dx, y + q.dy]);
+      } else {
+        const cx = q.center[0];
+        const cy = q.center[1];
+        if (q.dir === 'clockwise') {
+          target.push([cx - (y - cy), cy + (x - cx)]);
+        } else if (q.dir === 'counter-clockwise') {
+          target.push([cx + (y - cy), cy - (x - cx)]);
+        } else if (q.dir === '180') {
+          target.push([2 * cx - x, 2 * cy - y]);
+        }
+      }
+    });
+    return target;
+  }
+
+  // --- SEGMENT MATHS & CANONICAL COMPARISON ---
+  function ekey(p1, p2) {
+    const k1 = p1[0] + ',' + p1[1];
+    const k2 = p2[0] + ',' + p2[1];
+    return k1 < k2 ? k1 + '|' + k2 : k2 + '|' + k1;
+  }
+
+  function getShapeSegments(pts, closed) {
+    const segs = [];
+    if (pts.length < 2) return segs;
+    for (let i = 0; i < pts.length - 1; i++) {
+      segs.push([pts[i], pts[i+1]]);
+    }
+    if (closed && pts.length > 2) {
+      segs.push([pts[pts.length - 1], pts[0]]);
+    }
+    return segs;
+  }
+
+  // --- STATIC GRID INITIALIZATION ---
+  function drawStaticGrid() {
+    const gridBg = document.getElementById('gridBg');
+    const gridLabels = document.getElementById('gridLabels');
+    gridBg.innerHTML = '';
+    gridLabels.innerHTML = '';
+
+    // Outer boundary
+    const w = PAD * 2 + GRID_SIZE * CELL;
+    const boundary = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    boundary.setAttribute('x', PAD);
+    boundary.setAttribute('y', PAD);
+    boundary.setAttribute('width', GRID_SIZE * CELL);
+    boundary.setAttribute('height', GRID_SIZE * CELL);
+    boundary.setAttribute('fill', '#fdfdfd');
+    boundary.setAttribute('stroke', '#cbd5e1');
+    boundary.setAttribute('stroke-width', '2');
+    gridBg.appendChild(boundary);
+
+    // Grid lines
+    for (let i = 1; i < GRID_SIZE; i++) {
+      // Horizontal
+      const hLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      hLine.setAttribute('x1', PAD);
+      hLine.setAttribute('y1', Y(i));
+      hLine.setAttribute('x2', PAD + GRID_SIZE * CELL);
+      hLine.setAttribute('y2', Y(i));
+      hLine.setAttribute('stroke', 'var(--grid)');
+      hLine.setAttribute('stroke-width', '1');
+      gridBg.appendChild(hLine);
+
+      // Vertical
+      const vLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      vLine.setAttribute('x1', X(i));
+      vLine.setAttribute('y1', PAD);
+      vLine.setAttribute('x2', X(i));
+      vLine.setAttribute('y2', PAD + GRID_SIZE * CELL);
+      vLine.setAttribute('stroke', 'var(--grid)');
+      vLine.setAttribute('stroke-width', '1');
+      gridBg.appendChild(vLine);
+    }
+
+    // Grid points
+    for (let c = 0; c <= GRID_SIZE; c++) {
+      for (let r = 0; r <= GRID_SIZE; r++) {
+        const pt = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        pt.setAttribute('cx', X(c));
+        pt.setAttribute('cy', Y(r));
+        pt.setAttribute('r', '2');
+        pt.setAttribute('fill', 'var(--grid-strong)');
+        gridBg.appendChild(pt);
+      }
+    }
+
+    // Axis Labels
+    for (let i = 0; i <= GRID_SIZE; i++) {
+      // Horizontal labels
+      const hText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      hText.setAttribute('x', X(i));
+      hText.setAttribute('y', PAD + GRID_SIZE * CELL + 18);
+      hText.setAttribute('text-anchor', 'middle');
+      hText.setAttribute('font-size', '10px');
+      hText.setAttribute('font-weight', '700');
+      hText.setAttribute('fill', 'var(--muted)');
+      hText.textContent = i;
+      gridLabels.appendChild(hText);
+
+      // Vertical labels
+      const vText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      vText.setAttribute('x', PAD - 12);
+      vText.setAttribute('y', Y(i) + 4);
+      vText.setAttribute('text-anchor', 'end');
+      vText.setAttribute('font-size', '10px');
+      vText.setAttribute('font-weight', '700');
+      vText.setAttribute('fill', 'var(--muted)');
+      vText.textContent = i;
+      gridLabels.appendChild(vText);
+    }
+  }
+
+  // --- RENDER GAME SCENE ---
+  function renderScene() {
+    const q = QUESTIONS[qIdx];
+    const targets = computeTargetShape(q);
+    
+    // Toggle Legend Rotation center
+    document.getElementById('legendCenterItem').style.display = q.type === 'rotation' ? 'flex' : 'none';
+
+    // 1. Draw source figure
+    const sourceShapeLayer = document.getElementById('sourceShapeLayer');
+    sourceShapeLayer.innerHTML = '';
+    let srcPathD = 'M ' + X(q.shape[0][0]) + ' ' + Y(q.shape[0][1]);
+    for (let i = 1; i < q.shape.length; i++) {
+      srcPathD += ' L ' + X(q.shape[i][0]) + ' ' + Y(q.shape[i][1]);
+    }
+    srcPathD += ' Z';
+    
+    const srcPoly = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    srcPoly.setAttribute('d', srcPathD);
+    srcPoly.setAttribute('fill', 'rgba(30, 41, 59, 0.08)');
+    srcPoly.setAttribute('stroke', '#1e293b');
+    srcPoly.setAttribute('stroke-width', '3');
+    srcPoly.setAttribute('stroke-linejoin', 'round');
+    sourceShapeLayer.appendChild(srcPoly);
+
+    // Source points
+    q.shape.forEach(p => {
+      const srcPt = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      srcPt.setAttribute('cx', X(p[0]));
+      srcPt.setAttribute('cy', Y(p[1]));
+      srcPt.setAttribute('r', '4');
+      srcPt.setAttribute('fill', '#1e293b');
+      sourceShapeLayer.appendChild(srcPt);
+    });
+
+    // 2. Draw Rotation center if applicable
+    if (q.type === 'rotation') {
+      const centerCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      centerCircle.setAttribute('cx', X(q.center[0]));
+      centerCircle.setAttribute('cy', Y(q.center[1]));
+      centerCircle.setAttribute('r', '8');
+      centerCircle.setAttribute('fill', 'var(--center-color)');
+      centerCircle.setAttribute('stroke', '#ffffff');
+      centerCircle.setAttribute('stroke-width', '2');
+      centerCircle.setAttribute('filter', 'url(#glow)');
+      sourceShapeLayer.appendChild(centerCircle);
+
+      const centerDot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      centerDot.setAttribute('cx', X(q.center[0]));
+      centerDot.setAttribute('cy', Y(q.center[1]));
+      centerDot.setAttribute('r', '2.5');
+      centerDot.setAttribute('fill', '#ffffff');
+      sourceShapeLayer.appendChild(centerDot);
+    }
+
+    // 3. Draw Student figure
+    const studentShapeLayer = document.getElementById('studentShapeLayer');
+    studentShapeLayer.innerHTML = '';
+
+    if (studentPts.length > 0) {
+      let stPathD = 'M ' + X(studentPts[0][0]) + ' ' + Y(studentPts[0][1]);
+      for (let i = 1; i < studentPts.length; i++) {
+        stPathD += ' L ' + X(studentPts[i][0]) + ' ' + Y(studentPts[i][1]);
+      }
+      if (isClosed) stPathD += ' Z';
+
+      const stPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      stPath.setAttribute('d', stPathD);
+      stPath.setAttribute('fill', isClosed ? 'rgba(59, 130, 246, 0.15)' : 'none');
+      
+      let stStroke = 'var(--student)';
+      if (isVerified) {
+        // color check
+        const isOk = checkAnswerQuietly();
+        stStroke = isOk ? 'var(--ok)' : 'var(--extra)';
+        stPath.setAttribute('fill', isOk ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.1)');
+      }
+
+      stPath.setAttribute('stroke', stStroke);
+      stPath.setAttribute('stroke-width', '4');
+      stPath.setAttribute('stroke-linejoin', 'round');
+      stPath.setAttribute('stroke-linecap', 'round');
+      studentShapeLayer.appendChild(stPath);
+
+      // Student vertices
+      studentPts.forEach((p, idx) => {
+        const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        circle.setAttribute('cx', X(p[0]));
+        circle.setAttribute('cy', Y(p[1]));
+        circle.setAttribute('r', idx === studentPts.length - 1 && !isClosed ? '6' : '4');
+        circle.setAttribute('fill', idx === studentPts.length - 1 && !isClosed ? '#ffffff' : stStroke);
+        circle.setAttribute('stroke', stStroke);
+        circle.setAttribute('stroke-width', idx === studentPts.length - 1 && !isClosed ? '3' : '0');
+        studentShapeLayer.appendChild(circle);
+      });
+    }
+
+    // 4. Target Correction Layer (Only shown after validation if incorrect)
+    const targetShapeCorrectionLayer = document.getElementById('targetShapeCorrectionLayer');
+    targetShapeCorrectionLayer.innerHTML = '';
+    const correctionAid = document.getElementById('correctionAid');
+    correctionAid.innerHTML = '';
+
+    if (isVerified && !checkAnswerQuietly()) {
+      // Draw target dashed shape
+      let tgtPathD = 'M ' + X(targets[0][0]) + ' ' + Y(targets[0][1]);
+      for (let i = 1; i < targets.length; i++) {
+        tgtPathD += ' L ' + X(targets[i][0]) + ' ' + Y(targets[i][1]);
+      }
+      tgtPathD += ' Z';
+
+      const tgtPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      tgtPath.setAttribute('d', tgtPathD);
+      tgtPath.setAttribute('fill', 'rgba(16, 185, 129, 0.08)');
+      tgtPath.setAttribute('stroke', 'var(--ok)');
+      tgtPath.setAttribute('stroke-width', '3');
+      tgtPath.setAttribute('stroke-dasharray', '5,5');
+      tgtPath.setAttribute('stroke-linejoin', 'round');
+      targetShapeCorrectionLayer.appendChild(tgtPath);
+
+      targets.forEach(p => {
+        const tgtPt = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        tgtPt.setAttribute('cx', X(p[0]));
+        tgtPt.setAttribute('cy', Y(p[1]));
+        tgtPt.setAttribute('r', '4');
+        tgtPt.setAttribute('fill', 'var(--ok)');
+        targetShapeCorrectionLayer.appendChild(tgtPt);
+      });
+
+      // Draw vector arrows or rotation arcs
+      if (q.type === 'translation') {
+        q.shape.forEach((p, idx) => {
+          const t = targets[idx];
+          const arrow = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+          arrow.setAttribute('x1', X(p[0]));
+          arrow.setAttribute('y1', Y(p[1]));
+          arrow.setAttribute('x2', X(t[0]));
+          arrow.setAttribute('y2', Y(t[1]));
+          arrow.setAttribute('stroke', 'rgba(59, 130, 246, 0.7)');
+          arrow.setAttribute('stroke-width', '2');
+          arrow.setAttribute('stroke-dasharray', '4,4');
+          arrow.setAttribute('marker-end', 'url(#arrow)');
+          correctionAid.appendChild(arrow);
+        });
+      } else {
+        // Rotation: draw rotation guide for each vertex
+        q.shape.forEach((p, idx) => {
+          const t = targets[idx];
+          const cx = q.center[0];
+          const cy = q.center[1];
+
+          // Dotted line to center
+          const radialLine1 = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+          radialLine1.setAttribute('x1', X(cx));
+          radialLine1.setAttribute('y1', Y(cy));
+          radialLine1.setAttribute('x2', X(p[0]));
+          radialLine1.setAttribute('y2', Y(p[1]));
+          radialLine1.setAttribute('stroke', 'rgba(245, 158, 11, 0.4)');
+          radialLine1.setAttribute('stroke-width', '1.5');
+          radialLine1.setAttribute('stroke-dasharray', '3,3');
+          correctionAid.appendChild(radialLine1);
+
+          // Dotted line to target
+          const radialLine2 = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+          radialLine2.setAttribute('x1', X(cx));
+          radialLine2.setAttribute('y1', Y(cy));
+          radialLine2.setAttribute('x2', X(t[0]));
+          radialLine2.setAttribute('y2', Y(t[1]));
+          radialLine2.setAttribute('stroke', 'rgba(245, 158, 11, 0.4)');
+          radialLine2.setAttribute('stroke-width', '1.5');
+          radialLine2.setAttribute('stroke-dasharray', '3,3');
+          correctionAid.appendChild(radialLine2);
+
+          // Arc path showing rotation
+          const rPixel = Math.sqrt(Math.pow(X(p[0]) - X(cx), 2) + Math.pow(Y(p[1]) - Y(cy), 2));
+          if (rPixel > 5) { // do not draw arc if vertex is the center itself
+            const sweep = q.dir === 'clockwise' ? 1 : (q.dir === 'counter-clockwise' ? 0 : 1);
+            
+            // Generate path for the arc
+            const arcPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            const dStr = `M ${X(p[0])} ${Y(p[1])} A ${rPixel} ${rPixel} 0 0 ${sweep} ${X(t[0])} ${Y(t[1])}`;
+            arcPath.setAttribute('d', dStr);
+            arcPath.setAttribute('fill', 'none');
+            arcPath.setAttribute('stroke', 'rgba(245, 158, 11, 0.6)');
+            arcPath.setAttribute('stroke-width', '2');
+            arcPath.setAttribute('stroke-dasharray', '3,3');
+            correctionAid.appendChild(arcPath);
+          }
+        });
+      }
+    }
+
+    // 5. Hit targets
+    const hitTargetsLayer = document.getElementById('hitTargetsLayer');
+    hitTargetsLayer.innerHTML = '';
+    if (!isVerified) {
+      for (let c = 0; c <= GRID_SIZE; c++) {
+        for (let r = 0; r <= GRID_SIZE; r++) {
+          const hit = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+          hit.setAttribute('cx', X(c));
+          hit.setAttribute('cy', Y(r));
+          hit.setAttribute('r', '15');
+          hit.setAttribute('class', 'node-hit');
+          hit.addEventListener('click', () => handleNodeClick(c, r));
+          hitTargetsLayer.appendChild(hit);
+        }
+      }
+    }
+  }
+
+  // --- ACTIONS ---
+  function handleNodeClick(c, r) {
+    if (isVerified) return;
+
+    playSound('click');
+
+    // If shape is empty
+    if (studentPts.length === 0) {
+      studentPts.push([c, r]);
+      renderScene();
+      return;
+    }
+
+    // Check if clicked the first point again to close
+    const first = studentPts[0];
+    if (c === first[0] && r === first[1]) {
+      if (studentPts.length >= 3) {
+        isClosed = true;
+        renderScene();
+      }
+      return;
+    }
+
+    // Avoid double clicks on the same last point
+    const last = studentPts[studentPts.length - 1];
+    if (c === last[0] && r === last[1]) return;
+
+    // Add point
+    if (!isClosed) {
+      studentPts.push([c, r]);
+    }
+    renderScene();
+  }
+
+  // Handle undo button
+  function handleUndo() {
+    if (isVerified) return;
+    playSound('click');
+
+    if (isClosed) {
+      isClosed = false;
+    } else {
+      studentPts.pop();
+    }
+    renderScene();
+  }
+
+  // Handle clear button
+  function handleClear() {
+    if (isVerified) return;
+    playSound('click');
+
+    studentPts = [];
+    isClosed = false;
+    renderScene();
+  }
+
+  // Check function returning bool without setting UI
+  function checkAnswerQuietly() {
+    const q = QUESTIONS[qIdx];
+    const targets = computeTargetShape(q);
+    
+    const expectedSegs = getShapeSegments(targets, true);
+    const studentSegs = getShapeSegments(studentPts, isClosed);
+
+    if (studentSegs.length === 0 || !isClosed) return false;
+
+    const expectedSet = new Set(expectedSegs.map(s => ekey(s[0], s[1])));
+    const studentKeys = studentSegs.map(s => ekey(s[0], s[1]));
+    const studentSet = new Set(studentKeys);
+
+    let correct = 0;
+    let extra = 0;
+    studentKeys.forEach(k => {
+      if (expectedSet.has(k)) correct++;
+      else extra++;
+    });
+
+    let missing = 0;
+    expectedSet.forEach(k => {
+      if (!studentSet.has(k)) missing++;
+    });
+
+    return (missing === 0 && extra === 0 && correct > 0);
+  }
+
+  // Validate answer and display feedback
+  function handleValidate() {
+    if (isVerified) return;
+    
+    // Close the shape automatically if they have drawn the right number of points but forgot to close
+    const q = QUESTIONS[qIdx];
+    if (!isClosed && studentPts.length === q.shape.length) {
+      isClosed = true;
+    }
+
+    isVerified = true;
+    const isCorrect = checkAnswerQuietly();
+
+    // Feedback elements
+    const feedbackCard = document.getElementById('feedbackCard');
+    const feedbackHeader = document.getElementById('feedbackHeader');
+    const feedbackText = document.getElementById('feedbackText');
+    const feedbackDetails = document.getElementById('feedbackDetails');
+    
+    feedbackDetails.innerHTML = '';
+    feedbackCard.className = 'feedback-card ' + (isCorrect ? 'correct' : 'wrong');
+    
+    if (isCorrect) {
+      playSound('success');
+      score++;
+      history.push('correct');
+      feedbackHeader.innerHTML = '🎉 Bravo ! C\'est parfait !';
+      feedbackText.innerHTML = q.type === 'translation'
+        ? 'Tu as correctement glissé la figure selon le vecteur donné.'
+        : 'Tu as correctement effectué la rotation autour du centre orange.';
+    } else {
+      playSound('error');
+      history.push('wrong');
+      feedbackHeader.innerHTML = '🟧 Oups, ce n\'est pas correct !';
+      feedbackText.innerHTML = 'Analyse le mouvement de correction ci-dessous :';
+      
+      const targets = computeTargetShape(q);
+      const expectedSegs = getShapeSegments(targets, true);
+      const studentSegs = getShapeSegments(studentPts, isClosed);
+      
+      const expectedSet = new Set(expectedSegs.map(s => ekey(s[0], s[1])));
+      const studentKeys = studentSegs.map(s => ekey(s[0], s[1]));
+      const studentSet = new Set(studentKeys);
+
+      let correct = 0;
+      let extra = 0;
+      studentKeys.forEach(k => {
+        if (expectedSet.has(k)) correct++;
+        else extra++;
+      });
+
+      let missing = 0;
+      expectedSet.forEach(k => {
+        if (!studentSet.has(k)) missing++;
+      });
+
+      // detailed feedback bullet points
+      if (studentPts.length === 0) {
+        const li = document.createElement('li');
+        li.textContent = "Tu n'as rien tracé sur la grille. Clique sur les intersections pour placer les sommets.";
+        feedbackDetails.appendChild(li);
+      } else if (!isClosed) {
+        const li = document.createElement('li');
+        li.textContent = "La figure n'est pas fermée. Pense à recliquer sur ton point de départ pour boucler le contour.";
+        feedbackDetails.appendChild(li);
+      } else {
+        if (correct > 0) {
+          const li = document.createElement('li');
+          li.innerHTML = `✅ <b>${correct}</b> segment(s) bien positionné(s).`;
+          feedbackDetails.appendChild(li);
+        }
+        if (missing > 0) {
+          const li = document.createElement('li');
+          li.innerHTML = `🟧 <b>${missing}</b> segment(s) manquant(s) (indiqué(s) en vert pointillé).`;
+          feedbackDetails.appendChild(li);
+        }
+        if (extra > 0) {
+          const li = document.createElement('li');
+          li.innerHTML = `🟥 <b>${extra}</b> segment(s) erroné(s) (indiqué(s) en rouge).`;
+          feedbackDetails.appendChild(li);
+        }
+      }
+    }
+
+    // Update progress steps
+    const steps = document.querySelectorAll('#progressBar .progress-step');
+    steps[qIdx].className = 'progress-step ' + (isCorrect ? 'correct' : 'wrong');
+
+    // Toggle buttons
+    document.getElementById('btnValidate').style.display = 'none';
+    document.getElementById('btnUndo').disabled = true;
+    document.getElementById('btnClear').disabled = true;
+    document.getElementById('btnNext').style.display = 'inline-flex';
+
+    renderScene();
+  }
+
+  // Advance to next question
+  function handleNext() {
+    qIdx++;
+    if (qIdx < QUESTIONS.length) {
+      // Load next question
+      studentPts = [];
+      isClosed = false;
+      isVerified = false;
+      
+      document.getElementById('btnValidate').style.display = 'inline-flex';
+      document.getElementById('btnUndo').disabled = false;
+      document.getElementById('btnClear').disabled = false;
+      document.getElementById('btnNext').style.display = 'none';
+      document.getElementById('feedbackCard').style.className = 'feedback-card';
+      document.getElementById('feedbackCard').style.display = 'none';
+
+      // Update progress current step highlight
+      const steps = document.querySelectorAll('#progressBar .progress-step');
+      steps.forEach((step, idx) => {
+        if (idx === qIdx) step.classList.add('current');
+        else step.classList.remove('current');
+      });
+
+      document.getElementById('progressTextLabel').textContent = `Question ${qIdx + 1} / ${QUESTIONS.length}`;
+
+      loadQuestionData();
+      renderScene();
+    } else {
+      showSummary();
+    }
+  }
+
+  function loadQuestionData() {
+    const q = QUESTIONS[qIdx];
+    document.getElementById('instructionTitle').textContent = q.title;
+    document.getElementById('instructionText').textContent = q.instruction;
+  }
+
+  function showSummary() {
+    document.getElementById('playPanel').style.display = 'none';
+    document.getElementById('progressBarContainer').style.display = 'none';
+    document.getElementById('summaryPage').classList.add('active');
+
+    const pct = Math.round((score / QUESTIONS.length) * 100);
+    document.getElementById('finalScore').textContent = `${score} / ${QUESTIONS.length}`;
+    document.getElementById('finalPct').textContent = `${pct}%`;
+
+    const trophy = document.getElementById('summaryTrophy');
+    const title = document.getElementById('summaryTitle');
+    const desc = document.getElementById('summaryDesc');
+
+    if (pct === 100) {
+      playSound('perfect');
+      launchConfetti();
+      trophy.textContent = '🏆';
+      title.textContent = 'Exceptionnel ! 🎉';
+      desc.textContent = 'Un sans-faute parfait ! Tu as assimilé les translations et les rotations comme un véritable expert géomètre.';
+    } else if (pct >= 70) {
+      playSound('success');
+      trophy.textContent = '🥈';
+      title.textContent = 'Superbe travail ! 👍';
+      desc.textContent = "C'est une excellente performance. La majorité des transformations n'ont plus de secret pour toi.";
+    } else if (pct >= 50) {
+      playSound('success');
+      trophy.textContent = '🥉';
+      title.textContent = 'Bien joué !';
+      desc.textContent = 'Tu as réussi la moitié des exercices. Relance le jeu pour tenter le sans-faute !';
+    } else {
+      playSound('error');
+      trophy.textContent = '🎯';
+      title.textContent = "Continue d'apprendre ! 💪";
+      desc.textContent = "Les transformations géométriques demandent un peu d'entraînement. Reprends l'exercice calmement pour progresser.";
+    }
+
+    // Firebase save
+    if (window.parent && window.parent.saveResult) {
+      document.getElementById('loader').style.display = 'block';
+      window.parent.saveResult({
+        activity: 'solide_transformations_labo',
+        bookTitle: "Géométrie — Le Laboratoire des Transformations",
+        score: score,
+        total: QUESTIONS.length,
+        pct: pct,
+        date: new Date().toLocaleDateString('fr-BE'),
+        time: new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })
+      }).then(() => {
+        document.getElementById('loader').textContent = 'Score enregistré avec succès !';
+      }).catch(e => {
+        console.warn('Firebase error:', e);
+        document.getElementById('loader').textContent = 'Score sauvegardé localement.';
+      });
+    }
+  }
+
+  function handleRestart() {
+    shuffleAndSelectQuestions();
+    qIdx = 0;
+    score = 0;
+    history = [];
+    studentPts = [];
+    isClosed = false;
+    isVerified = false;
+
+    // Reset progress steps UI
+    const steps = document.querySelectorAll('#progressBar .progress-step');
+    steps.forEach((step, idx) => {
+      step.className = 'progress-step' + (idx === 0 ? ' current' : '');
+    });
+
+    document.getElementById('progressTextLabel').textContent = `Question 1 / ${QUESTIONS.length}`;
+    document.getElementById('playPanel').style.display = 'grid';
+    document.getElementById('progressBarContainer').style.display = 'block';
+    document.getElementById('summaryPage').classList.remove('active');
+    
+    document.getElementById('btnValidate').style.display = 'inline-flex';
+    document.getElementById('btnUndo').disabled = false;
+    document.getElementById('btnClear').disabled = false;
+    document.getElementById('btnNext').style.display = 'none';
+    document.getElementById('feedbackCard').style.display = 'none';
+
+    loadQuestionData();
+    renderScene();
+  }
+
+  // --- NATIVE CONFETTI ANIMATION ---
+  function launchConfetti() {
+    const colors = ['#3b82f6', '#10b981', '#f59e0b', '#ec4899', '#8b5cf6'];
+    for (let i = 0; i < 80; i++) {
+      const confetti = document.createElement('div');
+      confetti.className = 'confetti';
+      confetti.style.left = Math.random() * 100 + 'vw';
+      confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+      confetti.style.animationDelay = Math.random() * 1.5 + 's';
+      
+      const size = Math.random() * 10 + 6;
+      confetti.style.width = size + 'px';
+      confetti.style.height = size + 'px';
+      confetti.style.transform = `scale(${Math.random() * 0.8 + 0.5})`;
+      
+      document.body.appendChild(confetti);
+      setTimeout(() => confetti.remove(), 2500);
+    }
+  }
+
+  // --- EVENTS BINDING ---
+  document.getElementById('btnUndo').addEventListener('click', handleUndo);
+  document.getElementById('btnClear').addEventListener('click', handleClear);
+  document.getElementById('btnValidate').addEventListener('click', handleValidate);
+  document.getElementById('btnNext').addEventListener('click', handleNext);
+  document.getElementById('btnRestart').addEventListener('click', handleRestart);
+
+  // --- INITIALIZATION ---
+  shuffleAndSelectQuestions();
+  drawStaticGrid();
+  loadQuestionData();
+  renderScene();
+</script>
+</body>
+</html>

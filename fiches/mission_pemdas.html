@@ -1,0 +1,1711 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mission PEMDAS — L'ordre des opérations</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg1: #d6f6ea;
+      --bg2: #b9ecd8;
+      --teal: #12bd8e;
+      --teal-dark: #0c9d76;
+      --teal-deep: #0a7d5e;
+      --ink: #0f4d40;
+      --ink-soft: #3f7a6c;
+      --card: #ffffff;
+      --field: #eafaf3;
+      --line: #cdeede;
+      --coral: #ff885c;
+      --coral-light: #ffdcd0;
+      --yellow: #ffce4a;
+      --blue: #3aa0e8;
+      --purple: #9a86f0;
+      --green: #2ec27e;
+      --red: #ef5b6e;
+      --shadow: 0 10px 28px rgba(12, 120, 90, 0.16);
+      --shadow-sm: 0 4px 12px rgba(12, 120, 90, 0.12);
+    }
+    * {
+      box-sizing: border-box;
+    }
+    html, body {
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: "Nunito", system-ui, -apple-system, sans-serif;
+      color: var(--ink);
+      background: linear-gradient(160deg, var(--bg1), var(--bg2));
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+    h1, h2, h3, h4, .f {
+      font-family: "Fredoka", "Nunito", sans-serif;
+      font-weight: 600;
+    }
+    .wrap {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 22px 18px 60px;
+    }
+
+    /* ---------- Boutons ---------- */
+    .btn {
+      font-family: "Fredoka", sans-serif;
+      font-size: 1.05rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 18px;
+      padding: 14px 22px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      transition: transform .12s ease, box-shadow .12s ease, background .15s ease;
+      justify-content: center;
+    }
+    .btn:active {
+      transform: translateY(1px) scale(.99);
+    }
+    .btn-primary {
+      background: var(--teal);
+      color: #fff;
+      box-shadow: 0 6px 0 var(--teal-deep);
+    }
+    .btn-primary:hover {
+      background: var(--teal-dark);
+    }
+    .btn-primary:active {
+      box-shadow: 0 2px 0 var(--teal-deep);
+      transform: translateY(3px);
+    }
+    .btn-ghost {
+      background: #ffffff;
+      color: var(--ink);
+      box-shadow: var(--shadow-sm);
+      border: 2px solid var(--line);
+    }
+    .btn-ghost:hover {
+      background: var(--field);
+    }
+    .btn-coral {
+      background: var(--coral);
+      color: #fff;
+      box-shadow: 0 6px 0 #d9683f;
+    }
+    .btn-coral:hover {
+      background: #f77d50;
+    }
+    .btn-coral:active {
+      box-shadow: 0 2px 0 #d9683f;
+      transform: translateY(3px);
+    }
+    .btn-home {
+      border-radius: 14px;
+      padding: 8px 14px;
+      font-size: 0.95rem;
+      background: #fff;
+      color: var(--ink);
+      border: 2px solid var(--line);
+      box-shadow: var(--shadow-sm);
+    }
+    .btn-home:hover {
+      background: var(--field);
+      border-color: var(--teal);
+    }
+
+    /* ---------- Écran de départ ---------- */
+    #start {
+      min-height: calc(100vh - 80px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px 0;
+    }
+    .start-card {
+      background: var(--card);
+      border-radius: 34px;
+      box-shadow: var(--shadow);
+      padding: 48px 40px;
+      max-width: 620px;
+      width: 100%;
+      text-align: center;
+      border: 3px solid var(--line);
+    }
+    .start-card h1 {
+      font-size: 2.3rem;
+      margin: 18px 0 6px;
+      color: var(--ink);
+    }
+    .start-card p.lead {
+      color: var(--ink-soft);
+      font-size: 1.25rem;
+      margin: 0 0 30px;
+      font-weight: 600;
+    }
+    .level-select {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-bottom: 26px;
+    }
+    .level-btn {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: #fff;
+      border: 2px solid var(--line);
+      border-radius: 20px;
+      padding: 16px 20px;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.2s ease;
+      box-shadow: var(--shadow-sm);
+    }
+    .level-btn:hover {
+      border-color: var(--teal);
+      transform: translateY(-2px);
+      background: var(--field);
+    }
+    .level-btn.active {
+      border-color: var(--teal);
+      background: var(--field);
+      box-shadow: 0 0 0 2px var(--teal);
+    }
+    .level-num {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--teal-pale, #e2f7ef);
+      color: var(--teal-deep);
+      font-family: "Fredoka", sans-serif;
+      font-weight: 700;
+      font-size: 1.4rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .level-info {
+      flex: 1;
+    }
+    .level-title {
+      display: block;
+      font-family: "Fredoka", sans-serif;
+      font-weight: 600;
+      font-size: 1.15rem;
+      color: var(--ink);
+    }
+    .level-desc {
+      display: block;
+      font-size: 0.9rem;
+      color: var(--ink-soft);
+    }
+    .start-badge {
+      font-size: 4rem;
+      margin: 0 auto;
+      display: block;
+      animation: bounce 2s infinite ease-in-out;
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    /* ---------- Écran de théorie (Niveau 0) ---------- */
+    #theory {
+      min-height: calc(100vh - 80px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px 0;
+    }
+    .theory-card {
+      background: var(--card);
+      border-radius: 34px;
+      box-shadow: var(--shadow);
+      padding: 40px;
+      max-width: 720px;
+      width: 100%;
+      border: 3px solid var(--line);
+      animation: pop-in 0.3s ease;
+      text-align: center;
+    }
+    .theory-card h1 {
+      font-size: 2.1rem;
+      margin-top: 0;
+      color: var(--ink);
+    }
+    .theory-card p.lead {
+      color: var(--ink-soft);
+      font-size: 1.15rem;
+      margin: 0 0 30px;
+      font-weight: 600;
+    }
+    .pemdas-explainer {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .pemdas-letter-card {
+      display: flex;
+      gap: 16px;
+      background: #fdfbf7;
+      border: 2px solid var(--line);
+      border-radius: 20px;
+      padding: 16px 20px;
+      align-items: flex-start;
+      text-align: left;
+    }
+    .pemdas-letter-card .letter-badge {
+      width: 50px;
+      height: 50px;
+      border-radius: 14px;
+      color: #fff;
+      font-family: "Fredoka", sans-serif;
+      font-weight: 700;
+      font-size: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: var(--shadow-sm);
+    }
+    .letter-p .letter-badge { background: var(--purple); }
+    .letter-e .letter-badge { background: var(--red); }
+    .letter-md .letter-badge { background: var(--blue); }
+    .letter-as .letter-badge { background: var(--teal); }
+
+    .pemdas-letter-card .letter-info {
+      flex: 1;
+    }
+    .pemdas-letter-card .letter-info strong {
+      font-family: "Fredoka", sans-serif;
+      font-size: 1.15rem;
+      color: var(--ink);
+      display: block;
+      margin-bottom: 4px;
+    }
+    .pemdas-letter-card .letter-info p {
+      margin: 0;
+      font-size: 0.95rem;
+      color: var(--ink-soft);
+      line-height: 1.4;
+    }
+    .example-box {
+      margin-top: 10px;
+      background: #fff;
+      border-radius: 10px;
+      padding: 6px 12px;
+      font-family: "Nunito", sans-serif;
+      font-weight: 800;
+      font-size: 0.98rem;
+      border: 1px solid var(--line);
+      display: inline-block;
+      color: var(--ink);
+    }
+    .example-box .highlight {
+      color: var(--coral);
+      background: var(--coral-light);
+      padding: 2px 6px;
+      border-radius: 6px;
+    }
+    .theory-summary-box {
+      background: var(--field);
+      border: 2px solid var(--line);
+      border-radius: 20px;
+      padding: 16px 20px;
+      text-align: left;
+    }
+    .theory-summary-box h4 {
+      margin: 0 0 6px 0;
+      color: var(--ink);
+      font-size: 1.1rem;
+    }
+    .theory-summary-box p {
+      margin: 0;
+      font-size: 0.95rem;
+      color: var(--ink-soft);
+      line-height: 1.4;
+    }
+
+    /* ---------- Barre de progression / Topbar ---------- */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+    .topbar h2 {
+      font-size: 1.4rem;
+      margin: 0;
+      color: var(--ink);
+    }
+    .progress-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .progress-dots {
+      display: flex;
+      gap: 8px;
+    }
+    .progress-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: inset 0 0 0 2px rgba(12, 80, 64, 0.18);
+      transition: all 0.2s ease;
+    }
+    .progress-dot.current {
+      box-shadow: inset 0 0 0 3px var(--coral);
+      background: var(--coral-light);
+      transform: scale(1.15);
+    }
+    .progress-dot.correct {
+      background: var(--green);
+      box-shadow: none;
+    }
+    .progress-dot.mistake {
+      background: var(--coral);
+      box-shadow: none;
+    }
+    .score-chip {
+      font-family: "Fredoka", sans-serif;
+      font-weight: 600;
+      background: #fff;
+      border-radius: 14px;
+      padding: 6px 14px;
+      box-shadow: var(--shadow-sm);
+      color: var(--ink);
+      font-size: 1.05rem;
+    }
+
+    /* ---------- Fiche d'exercice principale ---------- */
+    .game-card {
+      background: var(--card);
+      border-radius: 34px;
+      box-shadow: var(--shadow);
+      padding: 38px 40px;
+      margin-bottom: 24px;
+      border: 3px solid var(--line);
+      text-align: center;
+      position: relative;
+    }
+    .prompt {
+      font-family: "Fredoka", sans-serif;
+      font-size: 1.6rem;
+      font-weight: 500;
+      color: var(--ink-soft);
+      margin-top: 0;
+      margin-bottom: 20px;
+    }
+
+    /* ---------- Rendu de l'expression mathématique ---------- */
+    .expression-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 6px 2px;
+      font-family: "Nunito", sans-serif;
+      font-size: 2.6rem;
+      font-weight: 800;
+      color: var(--ink);
+      margin: 36px 0;
+      min-height: 90px;
+      user-select: none;
+    }
+    .op-group {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      border-radius: 18px;
+      padding: 4px 6px;
+      border: 2px dashed transparent;
+      transition: all 0.2s ease;
+    }
+    .op-group.hovered {
+      background-color: rgba(18, 189, 142, 0.08);
+      border-color: rgba(18, 189, 142, 0.35);
+    }
+    .token {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 60px;
+    }
+    .token.number {
+      padding: 0 4px;
+      font-variant-numeric: tabular-nums;
+    }
+    .token.paren {
+      font-weight: 600;
+      color: var(--ink-soft);
+      padding: 0 2px;
+    }
+    .token.operator-btn {
+      font-family: "Fredoka", sans-serif;
+      font-size: 2.1rem;
+      font-weight: 700;
+      color: var(--teal);
+      background: #eafaf3;
+      border: 2px solid var(--line);
+      border-radius: 14px;
+      height: 52px;
+      min-width: 52px;
+      padding: 0 10px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      box-shadow: 0 4px 0 #b2ebd0;
+      margin: 0 6px;
+    }
+    .token.operator-btn:hover {
+      background: var(--teal);
+      color: #fff;
+      border-color: var(--teal);
+      box-shadow: 0 4px 0 var(--teal-deep);
+      transform: translateY(-2px);
+    }
+    .token.operator-btn:active {
+      transform: translateY(2px);
+      box-shadow: 0 1px 0 var(--teal-deep);
+    }
+    .token.operator-btn.correct-flash {
+      background: var(--green) !important;
+      color: #fff !important;
+      border-color: var(--green) !important;
+      box-shadow: 0 4px 0 #1b8d5a !important;
+      transform: translateY(2px) !important;
+    }
+
+    /* Animation Pop-in */
+    @keyframes pop-in {
+      0% { transform: scale(0.96); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .pop-animation {
+      animation: pop-in 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.15);
+    }
+
+    /* ---------- Feedback pédagogique ---------- */
+    .feedback-box {
+      display: none;
+      align-items: flex-start;
+      gap: 16px;
+      background: #fff;
+      border-radius: 20px;
+      padding: 20px;
+      margin-top: 20px;
+      text-align: left;
+      box-shadow: var(--shadow-sm);
+      border-left: 6px solid transparent;
+      animation: slideUp .25s ease;
+    }
+    @keyframes slideUp {
+      from { transform: translateY(10px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    .feedback-box.wrong {
+      border-left-color: var(--coral);
+      background: #fff6e3;
+    }
+    .feedback-box.correct {
+      border-left-color: var(--green);
+      background: #e8fbf1;
+    }
+    .feedback-icon {
+      font-size: 1.8rem;
+      line-height: 1;
+    }
+    .feedback-content {
+      flex: 1;
+    }
+    .feedback-content h4 {
+      margin: 0 0 6px 0;
+      font-size: 1.15rem;
+      color: var(--ink);
+    }
+    .feedback-content p {
+      margin: 0;
+      font-size: 0.98rem;
+      color: var(--ink-soft);
+      line-height: 1.45;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-8px); }
+      40%, 80% { transform: translateX(8px); }
+    }
+    .feedback-box.shake {
+      animation: shake 0.4s ease;
+    }
+
+    /* ---------- Historique des étapes ---------- */
+    .steps-card {
+      background: #ffffff;
+      border-radius: 24px;
+      box-shadow: var(--shadow-sm);
+      border: 2px solid var(--line);
+      padding: 22px 28px;
+      margin-bottom: 24px;
+      text-align: left;
+    }
+    .steps-card h3 {
+      font-size: 1.2rem;
+      margin-top: 0;
+      margin-bottom: 14px;
+      color: var(--ink);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .steps-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .step-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-size: 1.2rem;
+      font-family: "Nunito", sans-serif;
+      font-weight: 700;
+      color: var(--ink-soft);
+      padding-bottom: 6px;
+      border-bottom: 1px dashed var(--line);
+    }
+    .step-item:last-child {
+      border-bottom: none;
+      color: var(--ink);
+      font-size: 1.3rem;
+      font-weight: 800;
+    }
+    .step-num {
+      color: var(--teal);
+      font-family: "Fredoka", sans-serif;
+      font-weight: 500;
+      font-size: 0.95rem;
+      width: 70px;
+      flex-shrink: 0;
+    }
+
+    /* ---------- Action bar (Suivant...) ---------- */
+    .actions-bar {
+      margin-top: 24px;
+      display: flex;
+      justify-content: center;
+    }
+
+    /* ---------- Mémo Règle (Aide) ---------- */
+    .memo-card {
+      background: #ffffff;
+      border-radius: 24px;
+      box-shadow: var(--shadow-sm);
+      border: 2px solid var(--line);
+      padding: 24px 28px;
+      margin-bottom: 24px;
+    }
+    .memo-card h3 {
+      font-size: 1.2rem;
+      margin-top: 0;
+      margin-bottom: 18px;
+      color: var(--ink);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .memo-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .memo-step {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+    .memo-step .step-badge {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-family: "Fredoka", sans-serif;
+    }
+    .step-p .step-badge { background: var(--purple); }
+    .step-md .step-badge { background: var(--blue); }
+    .step-as .step-badge { background: var(--teal); }
+
+    .memo-step .step-info {
+      display: flex;
+      flex-direction: column;
+      text-align: left;
+    }
+    .memo-step .step-info strong {
+      font-size: 1.05rem;
+      color: var(--ink);
+    }
+    .memo-step .step-info span {
+      font-size: 0.92rem;
+      color: var(--ink-soft);
+    }
+
+    /* ---------- Écran de fin ---------- */
+    .end-card-container {
+      min-height: calc(100vh - 80px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px 0;
+    }
+    .end-card {
+      background: var(--card);
+      border-radius: 34px;
+      box-shadow: var(--shadow);
+      padding: 48px 40px;
+      max-width: 620px;
+      width: 100%;
+      text-align: center;
+      border: 3px solid var(--line);
+    }
+    .trophy-img {
+      width: 140px;
+      height: 140px;
+      margin: 0 auto 20px;
+      display: block;
+      object-fit: contain;
+    }
+    .end-card h1 {
+      font-size: 2.4rem;
+      margin: 0 0 10px 0;
+      color: var(--ink);
+    }
+    .end-card p.lead {
+      color: var(--ink);
+      font-size: 1.3rem;
+      margin: 0 0 8px 0;
+      font-weight: 700;
+    }
+    .end-comment {
+      color: var(--ink-soft);
+      font-size: 1.1rem;
+      margin: 0 0 30px 0;
+      font-weight: 600;
+    }
+    .results-summary {
+      background: var(--field);
+      border-radius: 22px;
+      padding: 20px;
+      margin-bottom: 30px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      text-align: left;
+    }
+    .summary-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: "Nunito", sans-serif;
+      font-weight: 700;
+      font-size: 1.05rem;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--line);
+    }
+    .summary-item:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+    .summary-q {
+      font-family: "Fredoka", sans-serif;
+      color: var(--ink);
+      font-size: 0.95rem;
+      width: 90px;
+    }
+    .summary-expr {
+      flex: 1;
+      color: var(--ink-soft);
+      font-weight: 800;
+      font-size: 1.1rem;
+    }
+    .summary-status {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.95rem;
+      font-family: "Fredoka", sans-serif;
+    }
+    .summary-status.good {
+      color: var(--green);
+    }
+    .summary-status.mistake {
+      color: var(--coral);
+    }
+
+    @media (max-width: 600px) {
+      .wrap {
+        padding: 10px 10px 40px;
+      }
+      .game-card {
+        padding: 24px 18px;
+      }
+      .expression-container {
+        font-size: 1.8rem;
+        margin: 24px 0;
+      }
+      .token.operator-btn {
+        font-size: 1.5rem;
+        height: 40px;
+        min-width: 40px;
+        border-radius: 10px;
+        margin: 0 3px;
+      }
+      .token {
+        height: 48px;
+      }
+      .start-card, .end-card, .theory-card {
+        padding: 30px 20px;
+      }
+      .start-card h1, .theory-card h1 {
+        font-size: 1.8rem;
+      }
+      .topbar h2 {
+        font-size: 1.1rem;
+      }
+      .steps-card {
+        padding: 16px 20px;
+      }
+      .step-item {
+        font-size: 1rem;
+      }
+      .step-item:last-child {
+        font-size: 1.1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    
+    <!-- 1. ECRAN DE DEPART -->
+    <div id="start">
+      <div class="start-card">
+        <h1>Mission PEMDAS</h1>
+        <p class="lead">Deviens le champion de l'ordre des opérations !</p>
+        
+        <div class="level-select">
+          <button class="level-btn" data-level="0">
+            <div class="level-num" style="background: var(--coral-light); color: var(--coral);">0</div>
+            <div class="level-info">
+              <span class="level-title">Rappel de la théorie</span>
+              <span class="level-desc">Découvre la signification de PEMDAS et l'ordre des opérations</span>
+            </div>
+          </button>
+
+          <button class="level-btn" data-level="1">
+            <div class="level-num">1</div>
+            <div class="level-info">
+              <span class="level-title">Les fondations</span>
+              <span class="level-desc">Priorité de la multiplication et de la division (sans parenthèse)</span>
+            </div>
+          </button>
+          
+          <button class="level-btn" data-level="2">
+            <div class="level-num">2</div>
+            <div class="level-info">
+              <span class="level-title">L'effet parenthèses</span>
+              <span class="level-desc">Calculs avec parenthèses simples</span>
+            </div>
+          </button>
+          
+          <button class="level-btn" data-level="3">
+            <div class="level-num">3</div>
+            <div class="level-info">
+              <span class="level-title">Le grand défi</span>
+              <span class="level-desc">Formules complexes (parenthèses et priorités mélangées)</span>
+            </div>
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 1.5. ECRAN DE THEORIE (Niveau 0) -->
+    <div id="theory" style="display:none;">
+      <div class="theory-card">
+        <span class="start-badge" style="animation:none; font-size:3.5rem;">📖</span>
+        <h1 class="f">PEMDAS : La Règle du Jeu</h1>
+        <p class="lead">Découvre la signification de ce mot magique pour calculer dans le bon ordre !</p>
+        
+        <div class="pemdas-explainer">
+          <div class="pemdas-letter-card letter-p">
+            <div class="letter-badge">P</div>
+            <div class="letter-info">
+              <strong>Parenthèses ( )</strong>
+              <p>On commence <strong>toujours</strong> par calculer ce qui est entre parenthèses. C'est le chef d'orchestre !</p>
+              <div class="example-box">Exemple : 2 × <span class="highlight">(3 + 4)</span> = 2 × <span class="highlight">7</span> = 14</div>
+            </div>
+          </div>
+          
+          <div class="pemdas-letter-card letter-e">
+            <div class="letter-badge">E</div>
+            <div class="letter-info">
+              <strong>Exposants</strong>
+              <p>Les exposants (comme \(5^2\) = 25) viennent juste après. <em>(Tu les étudieras plus tard, pas d'inquiétude pour l'instant !)</em></p>
+            </div>
+          </div>
+          
+          <div class="pemdas-letter-card letter-md">
+            <div class="letter-badge">M & D</div>
+            <div class="letter-info">
+              <strong>Multiplication (×) et division (:)</strong>
+              <p>Elles sont à égalité ! On les résout juste après les parenthèses, de <strong>gauche à droite</strong> (dans le sens de la lecture).</p>
+              <div class="example-box">Exemple : 15 − <span class="highlight">3 × 4</span> = 15 − <span class="highlight">12</span> = 3</div>
+            </div>
+          </div>
+          
+          <div class="pemdas-letter-card letter-as">
+            <div class="letter-badge">A & S</div>
+            <div class="letter-info">
+              <strong>Addition (+) et soustraction (−)</strong>
+              <p>Elles viennent en tout dernier. Elles sont aussi à égalité, donc on les calcule également de <strong>gauche à droite</strong>.</p>
+              <div class="example-box">Exemple : <span class="highlight">10 − 3</span> + 2 = <span class="highlight">7</span> + 2 = 9</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="theory-summary-box">
+          <h4>💡 La règle d'or "de gauche à droite" :</h4>
+          <p>Quand des opérations ont la même importance (ex: multiplication et division), on ne choisit pas au hasard, on calcule de gauche à droite, tout simplement !</p>
+        </div>
+        
+        <button class="btn btn-primary" id="theoryBackBtn" style="width: 100%; margin-top: 24px; font-size:1.1rem; padding: 14px 22px;">
+          <span>J'ai compris, je vais jouer !</span> ↩️
+        </button>
+      </div>
+    </div>
+
+    <!-- 2. ECRAN DE JEU -->
+    <div id="play" style="display:none;">
+      
+      <!-- Barre d'état supérieure -->
+      <div class="topbar">
+        <button class="btn-home" id="quitGameBtn">↩️ Niveaux</button>
+        <h2 id="levelTitleText">Niveau 1 : Les fondations</h2>
+        
+        <div class="progress-container">
+          <div class="progress-dots" id="progressDots">
+            <!-- 5 dots will be injected here -->
+          </div>
+          <div class="score-chip" id="scoreChip">Score : 0 / 5</div>
+        </div>
+      </div>
+      
+      <!-- Carte principale de l'exercice -->
+      <div class="game-card">
+        <p class="prompt">Clique sur l'opération prioritaire :</p>
+        
+        <!-- Conteneur de l'expression interactive -->
+        <div class="expression-container" id="expressionContainer">
+          <!-- Dynamically generated clickable math expression -->
+        </div>
+        
+        <!-- Boîte de retours (correct/erreur) -->
+        <div class="feedback-box wrong" id="feedbackBox">
+          <span class="feedback-icon" id="feedbackIcon">⚠️</span>
+          <div class="feedback-content">
+            <h4 id="feedbackTitle">Oups, ce n'est pas tout à fait ça !</h4>
+            <p id="feedbackText">La multiplication est prioritaire sur l'addition.</p>
+          </div>
+        </div>
+        
+        <!-- Bouton Suivant -->
+        <div class="actions-bar">
+          <button class="btn btn-coral" id="nextBtn" style="display:none;">
+            <span>Question suivante</span> ➡️
+          </button>
+        </div>
+      </div>
+      
+      <!-- Carte d'historique de calcul -->
+      <div class="steps-card" id="stepsCard">
+        <h3>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--teal)">
+            <path d="M12 20h9"></path>
+            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+          </svg>
+          Résolution étape par étape :
+        </h3>
+        <ul class="steps-list" id="stepsList">
+          <!-- Steps will be injected here -->
+        </ul>
+      </div>
+      
+      <!-- Fiche Mémo -->
+      <div class="memo-card">
+        <h3>💡 Rappel : L'ordre des opérations (PEMDAS)</h3>
+        <div class="memo-steps">
+          <div class="memo-step step-p">
+            <div class="step-badge">1</div>
+            <div class="step-info">
+              <strong>Les parenthèses ( )</strong>
+              <span>On calcule d'abord tout ce qui se trouve entre parenthèses.</span>
+            </div>
+          </div>
+          
+          <div class="memo-step step-md">
+            <div class="step-badge">2</div>
+            <div class="step-info">
+              <strong>Multiplications (×) et divisions (:)</strong>
+              <span>Ensuite, de gauche à droite. Elles ont la même priorité !</span>
+            </div>
+          </div>
+          
+          <div class="memo-step step-as">
+            <div class="step-badge">3</div>
+            <div class="step-info">
+              <strong>Additions (+) et soustractions (−)</strong>
+              <span>En dernier, de gauche à droite. Elles ont la même priorité !</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+    
+    <!-- 3. ECRAN DE FIN -->
+    <div id="end" style="display:none;" class="end-card-container">
+      <div class="end-card">
+        <img src="../trophy_success.jpg" alt="Trophée" class="trophy-img" id="trophyImg">
+        <h1>Mission Réussie !</h1>
+        <p class="lead" id="endScoreText">Tu as obtenu 5 / 5 !</p>
+        <p class="end-comment" id="endCommentText">Tu es un expert de l'ordre des opérations !</p>
+        
+        <div class="results-summary" id="resultsSummary">
+          <!-- Detailed list of questions and mistakes -->
+        </div>
+        
+        <button class="btn btn-primary" id="restartGameBtn" style="width: 100%;">
+          <span>Rejouer ou changer de niveau</span> 🔄
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // Bank of questions per level
+    const questionsDatabase = {
+      1: [
+        { expression: "5 + 3 × 4" },
+        { expression: "18 − 10 : 2" },
+        { expression: "4 × 6 + 3" },
+        { expression: "24 : 3 − 5" },
+        { expression: "3 × 5 + 4 × 2" },
+        { expression: "15 − 3 × 4 + 2" },
+        { expression: "8 + 12 : 4 − 2" },
+        { expression: "10 × 2 − 15 : 3" },
+        { expression: "7 + 9 : 3 × 2" },
+        { expression: "30 − 5 × 4 + 6" },
+        { expression: "20 − 4 × 3" },
+        { expression: "12 + 18 : 6" },
+        { expression: "3 × 9 − 12" },
+        { expression: "28 : 7 + 14" },
+        { expression: "14 − 2 × 5 + 6" },
+        { expression: "9 + 25 : 5 − 3" },
+        { expression: "6 × 4 − 15 : 3" },
+        { expression: "16 − 8 : 4 × 3" },
+        { expression: "5 × 5 − 12 : 2" },
+        { expression: "3 + 24 : 4 × 2" }
+      ],
+      2: [
+        { expression: "(5 + 2) × 3" },
+        { expression: "20 : (7 − 3)" },
+        { expression: "3 × (6 + 2)" },
+        { expression: "(15 − 3) : 4" },
+        { expression: "(4 + 5) × (10 − 8)" },
+        { expression: "12 − (3 + 5) : 2" },
+        { expression: "(18 − 6) : 3 + 4" },
+        { expression: "10 + (12 − 4) × 2" },
+        { expression: "25 − (5 + 5) : 2" },
+        { expression: "(8 + 4) : (6 − 2)" },
+        { expression: "(9 + 3) : 4 + 8" },
+        { expression: "24 − (3 + 5) × 2" },
+        { expression: "(15 − 6) × 3 − 10" },
+        { expression: "2 + (18 − 8) : 5" },
+        { expression: "(4 + 8) : 3 × 5" },
+        { expression: "15 − (9 − 3) : 2" },
+        { expression: "(3 × 4) : (2 + 4)" },
+        { expression: "30 − (6 + 4) × 2" },
+        { expression: "(12 + 8) : 4 + 7" },
+        { expression: "3 × (15 − 7) − 12" }
+      ],
+      3: [
+        { expression: "5 + 2 × (10 − 3)" },
+        { expression: "(12 − 4) : 2 + 5 × 3" },
+        { expression: "30 − (4 + 2 × 3)" },
+        { expression: "(5 + 3 × 2) × (8 − 6)" },
+        { expression: "15 + (18 − 6 : 2) : 5" },
+        { expression: "((4 + 2) × 3) − 5" },
+        { expression: "24 : (2 × (7 − 4))" },
+        { expression: "(10 − (3 + 5)) × 4" },
+        { expression: "(15 − 3 × 2) : (5 − 2)" },
+        { expression: "((9 − 3) : 2 + 4) × 3" },
+        { expression: "28 − (4 + 2 × 3) × 2" },
+        { expression: "((15 − 9) × 4) : 8 + 9" },
+        { expression: "5 × (12 − 8 : 2) − 15" },
+        { expression: "(18 : (3 + 3)) × (10 − 4)" },
+        { expression: "30 − ((3 + 5) : 2 + 6)" },
+        { expression: "((6 + 9) : 3 + 7) × 2" },
+        { expression: "(24 − 4 × 5) × (3 + 2)" },
+        { expression: "18 + (20 − 6 × 2) : 4" },
+        { expression: "(12 + 18 : 3) : (5 − 2)" },
+        { expression: "((10 − 4) × 3 − 6) : 2" }
+      ]
+    };
+
+    // Game state
+    let selectedLevelVal = 1;
+    let questionIndex = 0;
+    let activeSet = [];
+    let currentTree = null;
+    let currentMistakes = 0;
+    let score = 0;
+    let stepsHistory = [];
+    let resultsHistory = [];
+
+    // Initialize level selection listeners
+    function selectLevel(lvl) {
+      selectedLevelVal = lvl;
+      document.querySelectorAll('.level-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      document.querySelector(`.level-btn[data-level="${lvl}"]`).classList.add('active');
+    }
+
+    function confirmQuit() {
+      if (confirm("Es-tu sûr de vouloir quitter cette partie ?")) {
+        showLevelSelection();
+      }
+    }
+
+    // Adapt layout slightly if loaded inside iframe (remove redundant margins/wrapping)
+    if (window.self !== window.top) {
+      document.body.style.background = "none";
+      const wrap = document.querySelector('.wrap');
+      if (wrap) {
+        wrap.style.padding = "10px 0";
+        wrap.style.maxWidth = "100%";
+      }
+    }
+
+    function showTheoryScreen() {
+      document.getElementById('start').style.display = 'none';
+      document.getElementById('play').style.display = 'none';
+      document.getElementById('end').style.display = 'none';
+      document.getElementById('theory').style.display = 'flex';
+    }
+
+    function showLevelSelection() {
+      document.getElementById('start').style.display = 'flex';
+      document.getElementById('play').style.display = 'none';
+      document.getElementById('end').style.display = 'none';
+      document.getElementById('theory').style.display = 'none';
+      
+      // Clean up selection highlight
+      document.querySelectorAll('.level-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+    }
+
+    // Start Game / Start Theory
+    function startGame() {
+      if (selectedLevelVal === 0) {
+        showTheoryScreen();
+        return;
+      }
+
+      // Pick 5 random questions from database for selected level
+      const db = questionsDatabase[selectedLevelVal];
+      const shuffled = [...db].sort(() => 0.5 - Math.random());
+      activeSet = shuffled.slice(0, 5);
+      
+      questionIndex = 0;
+      score = 0;
+      resultsHistory = [];
+      
+      // Update UI title
+      const titles = {
+        1: "Niveau 1 : Les fondations",
+        2: "Niveau 2 : L'effet parenthèses",
+        3: "Niveau 3 : Le grand défi"
+      };
+      document.getElementById('levelTitleText').textContent = titles[selectedLevelVal];
+      
+      // Build progress dots
+      const dotsContainer = document.getElementById('progressDots');
+      dotsContainer.innerHTML = "";
+      for (let i = 0; i < 5; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'progress-dot';
+        dot.id = `progressDot_${i}`;
+        dotsContainer.appendChild(dot);
+      }
+      
+      document.getElementById('start').style.display = 'none';
+      document.getElementById('play').style.display = 'block';
+      
+      loadQuestion(0);
+    }
+
+    // Load a Question
+    function loadQuestion(index) {
+      questionIndex = index;
+      currentMistakes = 0;
+      const q = activeSet[index];
+      stepsHistory = [q.expression];
+      
+      // Parse expression into AST
+      try {
+        const tokens = tokenize(q.expression);
+        currentTree = parse(tokens);
+      } catch (err) {
+        console.error("Parsing error", err);
+        alert("Erreur lors de la génération de la formule.");
+        return;
+      }
+      
+      // Update UI
+      hideFeedback();
+      document.getElementById('nextBtn').style.display = 'none';
+      
+      // Highlight current progress dot
+      for (let i = 0; i < 5; i++) {
+        const dot = document.getElementById(`progressDot_${i}`);
+        if (i === index) {
+          dot.className = 'progress-dot current';
+        } else if (i > index) {
+          dot.className = 'progress-dot';
+        }
+      }
+      
+      document.getElementById('scoreChip').textContent = `Score : ${score} / 5`;
+      
+      renderHistory();
+      renderGame();
+    }
+
+    // Mathematical Tokenizer
+    function tokenize(str) {
+      // Normalize symbols
+      let normalized = str
+        .replace(/×/g, '*')
+        .replace(/÷/g, '/')
+        .replace(/:/g, '/')
+        .replace(/−/g, '-');
+      
+      const matches = normalized.match(/\d+|[+\-*\/()]/g);
+      return matches || [];
+    }
+
+    // Mathematical AST Parser (Recursive Descent)
+    function parse(tokens) {
+      let index = 0;
+
+      function peek() {
+        return tokens[index];
+      }
+
+      function consume(expected) {
+        const token = tokens[index];
+        if (expected && token !== expected) {
+          throw new Error(`Expected ${expected} but got ${token}`);
+        }
+        index++;
+        return token;
+      }
+
+      // Expression -> Term ((+ | -) Term)*
+      function parseExpression() {
+        let node = parseTerm();
+        while (peek() === '+' || peek() === '-') {
+          const op = consume();
+          const right = parseTerm();
+          node = {
+            id: 'n_' + Math.random().toString(36).substr(2, 9),
+            type: 'operator',
+            value: op,
+            left: node,
+            right: right,
+            hasParentheses: false
+          };
+        }
+        return node;
+      }
+
+      // Term -> Factor ((* | /) Factor)*
+      function parseTerm() {
+        let node = parseFactor();
+        while (peek() === '*' || peek() === '/') {
+          const op = consume();
+          const right = parseFactor();
+          node = {
+            id: 'n_' + Math.random().toString(36).substr(2, 9),
+            type: 'operator',
+            value: op,
+            left: node,
+            right: right,
+            hasParentheses: false
+          };
+        }
+        return node;
+      }
+
+      // Factor -> Number | ( Expression )
+      function parseFactor() {
+        const token = peek();
+        if (token === '(') {
+          consume('(');
+          const node = parseExpression();
+          consume(')');
+          node.hasParentheses = true;
+          return node;
+        } else if (/^\d+$/.test(token)) {
+          consume();
+          return {
+            id: 'n_' + Math.random().toString(36).substr(2, 9),
+            type: 'number',
+            value: parseInt(token, 10),
+            left: null,
+            right: null,
+            hasParentheses: false
+          };
+        } else {
+          throw new Error(`Unexpected token: ${token}`);
+        }
+      }
+
+      return parseExpression();
+    }
+
+    // Helper: check if operator can be computed (both children are numbers)
+    function isCandidate(node) {
+      if (node.type !== 'operator') return false;
+      return node.left.type === 'number' && node.right.type === 'number';
+    }
+
+    // In-order traversal to collect all operators with metadata
+    function collectOperators(node, depth = 0, list = []) {
+      if (!node) return list;
+      
+      const currentDepth = node.hasParentheses ? depth + 1 : depth;
+      
+      collectOperators(node.left, currentDepth, list);
+      
+      if (node.type === 'operator') {
+        list.push({
+          node: node,
+          depth: currentDepth,
+          isCandidate: isCandidate(node),
+          priority: (node.value === '*' || node.value === '/') ? 2 : 1
+        });
+      }
+      
+      collectOperators(node.right, currentDepth, list);
+      return list;
+    }
+
+    // Find the correct priority operator based on PEMDAS rules
+    function getPriorityOperator(operatorsList) {
+      const candidates = operatorsList.filter(op => op.isCandidate);
+      if (candidates.length === 0) return null;
+      
+      // 1. Max parenthetical depth
+      let maxDepth = -1;
+      candidates.forEach(c => {
+        if (c.depth > maxDepth) maxDepth = c.depth;
+      });
+      const maxDepthCandidates = candidates.filter(c => c.depth === maxDepth);
+      
+      // 2. Max operator priority (multiplication/division over addition/soustraction)
+      let maxPriority = -1;
+      maxDepthCandidates.forEach(c => {
+        if (c.priority > maxPriority) maxPriority = c.priority;
+      });
+      const maxPriorityCandidates = maxDepthCandidates.filter(c => c.priority === maxPriority);
+      
+      // 3. Left-to-right (first one in in-order list)
+      return maxPriorityCandidates[0];
+    }
+
+    // Render tree to HTML
+    function renderNode(node) {
+      if (node.type === 'number') {
+        return `<span class="token number" id="num_${node.id}">${node.value}</span>`;
+      }
+      
+      const leftHtml = renderNode(node.left);
+      const rightHtml = renderNode(node.right);
+      
+      let opSymbol = node.value;
+      if (opSymbol === '*') opSymbol = '×';
+      if (opSymbol === '/') opSymbol = ':';
+      if (opSymbol === '-') opSymbol = '−';
+      
+      const opHtml = `<button class="token operator-btn" data-id="${node.id}">${opSymbol}</button>`;
+      
+      let html = '';
+      if (node.hasParentheses) {
+        html = `<span class="op-group" id="group_${node.id}"><span class="token paren">(</span>${leftHtml} ${opHtml} ${rightHtml}<span class="token paren">)</span></span>`;
+      } else {
+        html = `<span class="op-group" id="group_${node.id}">${leftHtml} ${opHtml} ${rightHtml}</span>`;
+      }
+      
+      return html;
+    }
+
+    function renderGame() {
+      const container = document.getElementById('expressionContainer');
+      container.innerHTML = renderNode(currentTree);
+      
+      // Pop-in animation
+      container.classList.remove('pop-animation');
+      void container.offsetWidth; // trigger reflow
+      container.classList.add('pop-animation');
+      
+      // Attach click listeners to operator buttons
+      const buttons = container.querySelectorAll('.operator-btn');
+      buttons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const nodeId = btn.getAttribute('data-id');
+          handleOperatorClick(nodeId);
+        });
+      });
+    }
+
+    // Format AST to plain string for steps history
+    function getExpressionString(node) {
+      if (node.type === 'number') {
+        return node.value.toString();
+      }
+      
+      let leftStr = getExpressionString(node.left);
+      let rightStr = getExpressionString(node.right);
+      
+      let opSymbol = node.value;
+      if (opSymbol === '*') opSymbol = '×';
+      if (opSymbol === '/') opSymbol = ':';
+      if (opSymbol === '-') opSymbol = '−';
+      
+      let str = `${leftStr} ${opSymbol} ${rightStr}`;
+      if (node.hasParentheses) {
+        str = `(${str})`;
+      }
+      return str;
+    }
+
+    // Render Steps History
+    function renderHistory() {
+      const list = document.getElementById('stepsList');
+      list.innerHTML = "";
+      stepsHistory.forEach((step, idx) => {
+        const li = document.createElement('li');
+        li.className = 'step-item';
+        li.innerHTML = `<span class="step-num">Étape ${idx + 1} :</span> <span class="step-expr">${step}</span>`;
+        list.appendChild(li);
+      });
+    }
+
+    // Handle Click on Operator
+    function handleOperatorClick(nodeId) {
+      // Don't register clicks if already solved
+      if (currentTree.type === 'number') return;
+      
+      const operatorsList = collectOperators(currentTree);
+      const clickedOp = operatorsList.find(op => op.node.id === nodeId);
+      if (!clickedOp) return;
+      
+      const correctOp = getPriorityOperator(operatorsList);
+      
+      if (clickedOp.node.id === correctOp.node.id) {
+        // Flash correct green
+        playCorrectAnimation(nodeId, () => {
+          // Reduce node
+          currentTree = reduceTree(currentTree, nodeId);
+          
+          // Append new step
+          const newExpr = getExpressionString(currentTree);
+          stepsHistory.push(newExpr);
+          renderHistory();
+          
+          hideFeedback();
+          
+          if (currentTree.type === 'number') {
+            handleQuestionSolved();
+          } else {
+            renderGame();
+          }
+        });
+      } else {
+        // Mistake
+        currentMistakes++;
+        showFeedback(clickedOp, correctOp);
+      }
+    }
+
+    function playCorrectAnimation(nodeId, callback) {
+      const btn = document.querySelector(`.operator-btn[data-id="${nodeId}"]`);
+      if (btn) {
+        btn.classList.add('correct-flash');
+        setTimeout(() => {
+          callback();
+        }, 300);
+      } else {
+        callback();
+      }
+    }
+
+    // Evaluate single node and replace it with number node
+    function reduceTree(node, nodeId) {
+      if (!node) return null;
+      
+      if (node.id === nodeId) {
+        const leftVal = node.left.value;
+        const rightVal = node.right.value;
+        let result = 0;
+        if (node.value === '+') result = leftVal + rightVal;
+        else if (node.value === '-') result = leftVal - rightVal;
+        else if (node.value === '*') result = leftVal * rightVal;
+        else if (node.value === '/') result = Math.floor(leftVal / rightVal);
+        
+        return {
+          id: 'n_' + Math.random().toString(36).substr(2, 9),
+          type: 'number',
+          value: result,
+          left: null,
+          right: null,
+          hasParentheses: false
+        };
+      }
+      
+      node.left = reduceTree(node.left, nodeId);
+      node.right = reduceTree(node.right, nodeId);
+      
+      // If a nested parenthesis now holds a single number, the parent node does not need parenthesis
+      if (node.left && node.left.type === 'number' && node.left.hasParentheses) {
+        node.left.hasParentheses = false;
+      }
+      if (node.right && node.right.type === 'number' && node.right.hasParentheses) {
+        node.right.hasParentheses = false;
+      }
+      
+      return node;
+    }
+
+    // Feedback Management
+    function showFeedback(clickedOp, correctOp) {
+      const box = document.getElementById('feedbackBox');
+      const text = document.getElementById('feedbackText');
+      const title = document.getElementById('feedbackTitle');
+      const icon = document.getElementById('feedbackIcon');
+      
+      box.style.display = 'flex';
+      box.className = 'feedback-box wrong';
+      box.classList.remove('shake');
+      void box.offsetWidth; // trigger reflow
+      box.classList.add('shake');
+      
+      title.textContent = "Oups, ce n'est pas tout à fait ça !";
+      icon.textContent = "⚠️";
+      
+      let msg = "";
+      if (correctOp.depth > clickedOp.depth) {
+        msg = "<strong>Règle : parenthèses d'abord !</strong><br>Tu dois d'abord calculer ce qui se trouve à l'intérieur des parenthèses.";
+      } else if (correctOp.depth === clickedOp.depth && correctOp.priority > clickedOp.priority) {
+        msg = "<strong>Règle : priorité des opérations !</strong><br>La multiplication (×) et la division (:) sont prioritaires sur l'addition (+) et la soustraction (−).";
+      } else if (correctOp.depth === clickedOp.depth && correctOp.priority === clickedOp.priority) {
+        msg = "<strong>Règle : de gauche à droite !</strong><br>Quand des opérations ont la même priorité, on effectue les calculs de gauche à droite (en commençant par la gauche).";
+      } else {
+        msg = "Regarde bien l'ordre de priorité des opérations (PEMDAS).";
+      }
+      
+      text.innerHTML = msg;
+    }
+
+    function hideFeedback() {
+      const box = document.getElementById('feedbackBox');
+      box.style.display = 'none';
+    }
+
+    function handleQuestionSolved() {
+      // Show next button
+      const nextBtn = document.getElementById('nextBtn');
+      nextBtn.style.display = 'inline-flex';
+      
+      // Update progress dot status
+      const dot = document.getElementById(`progressDot_${questionIndex}`);
+      
+      // Show feedback
+      const box = document.getElementById('feedbackBox');
+      const text = document.getElementById('feedbackText');
+      const title = document.getElementById('feedbackTitle');
+      const icon = document.getElementById('feedbackIcon');
+      
+      box.style.display = 'flex';
+      box.className = 'feedback-box correct';
+      
+      let firstTry = (currentMistakes === 0);
+      if (firstTry) {
+        score++;
+        dot.className = 'progress-dot correct';
+        title.textContent = "Excellent !";
+        icon.textContent = "🌟";
+        text.innerHTML = "Tu as résolu ce calcul sans faire la moindre erreur. Bravo !";
+      } else {
+        dot.className = 'progress-dot mistake';
+        title.textContent = "Bien joué !";
+        icon.textContent = "👍";
+        text.innerHTML = `Tu as réussi à terminer le calcul après avoir corrigé tes erreurs. C'est en faisant des erreurs qu'on apprend !`;
+      }
+      
+      // Save result in history
+      resultsHistory.push({
+        expression: activeSet[questionIndex].expression,
+        mistakes: currentMistakes
+      });
+      
+      // Update score chip
+      document.getElementById('scoreChip').textContent = `Score : ${score} / 5`;
+      
+      // Update next button label if last question
+      if (questionIndex === 4) {
+        nextBtn.innerHTML = `<span>Voir mes résultats</span> 🏆`;
+      } else {
+        nextBtn.innerHTML = `<span>Question suivante</span> ➡️`;
+      }
+    }
+
+    function clickNext() {
+      if (questionIndex < 4) {
+        loadQuestion(questionIndex + 1);
+      } else {
+        showEndScreen();
+      }
+    }
+
+    function showEndScreen() {
+      document.getElementById('play').style.display = 'none';
+      document.getElementById('end').style.display = 'block';
+      
+      const endScoreText = document.getElementById('endScoreText');
+      endScoreText.innerHTML = `Tu as réussi <strong>${score}</strong> question${score > 1 ? 's' : ''} du premier coup !`;
+      
+      const endCommentText = document.getElementById('endCommentText');
+      if (score === 5) {
+        endCommentText.innerHTML = "Incroyable ! Un sans-faute parfait. Tu es un vrai champion/championne ! 👑🏆";
+      } else if (score >= 3) {
+        endCommentText.innerHTML = "Super travail ! Tu maîtrises très bien l'ordre des opérations. 🌟";
+      } else {
+        endCommentText.innerHTML = "Bien essayé ! Entraîne-toi à nouveau pour faire encore mieux. Tu vas y arriver ! 💪";
+      }
+      
+      const summary = document.getElementById('resultsSummary');
+      summary.innerHTML = "";
+      resultsHistory.forEach((res, i) => {
+        const item = document.createElement('div');
+        item.className = 'summary-item';
+        
+        let icon = "✅";
+        let statusClass = "good";
+        let detail = "Du premier coup !";
+        
+        if (res.mistakes > 0) {
+          icon = "⚠️";
+          statusClass = "mistake";
+          detail = `${res.mistakes} erreur${res.mistakes > 1 ? 's' : ''}`;
+        }
+        
+        item.innerHTML = `
+          <div class="summary-q">Question ${i + 1}</div>
+          <div class="summary-expr">${res.expression}</div>
+          <div class="summary-status ${statusClass}">${icon} ${detail}</div>
+        `;
+        summary.appendChild(item);
+      });
+    }
+
+    // Add Hover Event Delegation for highlighting sub-expressions
+    document.addEventListener('mouseover', function(e) {
+      if (e.target.classList.contains('operator-btn')) {
+        const nodeId = e.target.getAttribute('data-id');
+        const group = document.getElementById('group_' + nodeId);
+        if (group) {
+          group.classList.add('hovered');
+        }
+      }
+    });
+
+    document.addEventListener('mouseout', function(e) {
+      if (e.target.classList.contains('operator-btn')) {
+        const nodeId = e.target.getAttribute('data-id');
+        const group = document.getElementById('group_' + nodeId);
+        if (group) {
+          group.classList.remove('hovered');
+        }
+      }
+    });
+
+    // Event listeners binding using addEventListener (solves inline onclick issues)
+    // Bind level buttons to select and start immediately
+    document.querySelectorAll('.level-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const lvl = parseInt(btn.getAttribute('data-level'), 10);
+        selectLevel(lvl);
+        startGame();
+      });
+    });
+
+    // Bind theory back button
+    const theoryBackBtn = document.getElementById('theoryBackBtn');
+    if (theoryBackBtn) theoryBackBtn.addEventListener('click', showLevelSelection);
+
+    // Bind quit game button
+    const quitBtn = document.getElementById('quitGameBtn');
+    if (quitBtn) quitBtn.addEventListener('click', confirmQuit);
+
+    // Bind next button
+    const nextBtn = document.getElementById('nextBtn');
+    if (nextBtn) nextBtn.addEventListener('click', clickNext);
+
+    // Bind restart button
+    const restartBtn = document.getElementById('restartGameBtn');
+    if (restartBtn) restartBtn.addEventListener('click', showLevelSelection);
+
+    // Bind trophy image error fallback
+    const trophyImg = document.getElementById('trophyImg');
+    if (trophyImg) {
+      trophyImg.addEventListener('error', () => {
+        trophyImg.style.display = 'none';
+      });
+    }
+  </script>
+</body>
+</html>

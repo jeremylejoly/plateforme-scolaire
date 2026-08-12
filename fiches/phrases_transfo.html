@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Le Transformateur de Phrases</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@700;800;900&family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800;900&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --purple: #5B4FCF;
+      --purple-light: #EEF0FF;
+      --purple-mid: #C7C2F5;
+      --green: #1A9E75;
+      --green-light: #E2F5EE;
+      --red: #D94F3D;
+      --red-light: #FDECEA;
+      --amber: #C97B1A;
+      --amber-light: #FEF3E2;
+      --blue: #1A6FA0;
+      --blue-light: #E2F0FA;
+      --bg: #FDFBF7;
+      --surface: #FFFFFF;
+      --text: #1A1A2E;
+      --muted: #6B7080;
+      --border: #1A1A2E;
+      --r: 20px;
+      --rsm: 10px;
+    }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 0;
+    }
+    
+    .font-display {
+      font-family: 'Outfit', sans-serif;
+    }
+    
+    .font-title {
+      font-family: 'Nunito', sans-serif;
+    }
+    
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 1.5rem 1rem 4rem;
+    }
+    
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border: 2px solid var(--border);
+      border-radius: var(--rsm);
+      background: var(--surface);
+      font-family: 'Nunito', sans-serif;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      color: var(--text);
+      box-shadow: 2px 2px 0px var(--border);
+      transition: all .15s;
+      margin-bottom: 1.5rem;
+    }
+    
+    .back-btn:hover {
+      transform: translate(-1px, -1px);
+      box-shadow: 3px 3px 0px var(--border);
+      background: #F3F4F6;
+    }
+    
+    .back-btn:active {
+      transform: translate(1px, 1px);
+      box-shadow: 1px 1px 0px var(--border);
+    }
+    
+    /* Neo-Brutalist cards */
+    .neo-card {
+      background: var(--surface);
+      border: 3px solid var(--border);
+      border-radius: var(--r);
+      box-shadow: 6px 6px 0px var(--border);
+      padding: 2rem;
+      transition: all 0.2s ease;
+    }
+    
+    /* Input design */
+    .neo-input {
+      width: 100%;
+      padding: 1rem 1.25rem;
+      border: 3px solid var(--border);
+      border-radius: 14px;
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text);
+      background-color: var(--surface);
+      box-shadow: 3px 3px 0px var(--border);
+      outline: none;
+      transition: all 0.15s ease;
+    }
+    
+    .neo-input:focus {
+      transform: translate(-1px, -1px);
+      box-shadow: 5px 5px 0px var(--border);
+      border-color: var(--purple);
+    }
+    
+    /* Interactive buttons */
+    .neo-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem 1.5rem;
+      border: 3px solid var(--border);
+      border-radius: 14px;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 900;
+      font-size: 18px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      box-shadow: 4px 4px 0px var(--border);
+      text-align: center;
+      width: 100%;
+    }
+    
+    .neo-btn:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: 6px 6px 0px var(--border);
+    }
+    
+    .neo-btn:active {
+      transform: translate(2px, 2px);
+      box-shadow: 2px 2px 0px var(--border);
+    }
+    
+    /* Progress bar */
+    .progress-outer {
+      width: 100%;
+      height: 16px;
+      border: 2px solid var(--border);
+      background: #E5E7EB;
+      border-radius: 999px;
+      overflow: hidden;
+      box-shadow: 2px 2px 0px var(--border);
+    }
+    
+    .progress-inner {
+      height: 100%;
+      background-color: var(--purple);
+      transition: width 0.3s ease;
+    }
+    
+    /* Shake animation on error */
+    .shake-anim {
+      animation: shake 0.4s ease;
+    }
+    
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      15% { transform: translateX(-8px); }
+      30% { transform: translateX(6px); }
+      45% { transform: translateX(-6px); }
+      60% { transform: translateX(4px); }
+      75% { transform: translateX(-2px); }
+    }
+    
+    /* Fade animation */
+    .fade-in {
+      animation: fadeIn 0.3s ease-out forwards;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Confetti canvas */
+    #confetti-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1000;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="confetti-canvas"></canvas>
+  
+  <div class="container">
+    <!-- Back Button -->
+    <button class="back-btn" onclick="goBack()">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+      </svg>
+      Retour
+    </button>
+    
+    <!-- Title Section -->
+    <div class="text-center mb-8">
+      <h1 class="font-display font-black text-3xl sm:text-4xl text-neutral-900 mb-2 flex justify-center items-center gap-2">
+        ✏️ Écris à la forme négative
+      </h1>
+    </div>
+    
+    <!-- Active Screen Container -->
+    <div id="screen-container" class="fade-in">
+      <!-- Content loaded dynamically via JS -->
+    </div>
+  </div>
+
+  <script>
+    // --- DATABASE OF TRANSFORMATION SENTENCES ---
+    const DB_EXERCICES = {
+      level1: [
+        {
+          text: "Le soleil brille.",
+          accept: ["le soleil ne brille pas"],
+          explanation: "La négation standard <strong>ne ... pas</strong> entoure le verbe conjugué <em>brille</em>."
+        },
+        {
+          text: "Il mange encore.",
+          accept: ["il ne mange plus"],
+          explanation: "Le mot <em>encore</em> se transforme en <strong>ne ... plus</strong> à la forme négative."
+        },
+        {
+          text: "Elle sourit toujours.",
+          accept: ["elle ne sourit jamais"],
+          explanation: "Le mot <em>toujours</em> se transforme en <strong>ne ... jamais</strong> à la forme négative."
+        },
+        {
+          text: "Nous partons demain.",
+          accept: ["nous ne partons pas demain"],
+          explanation: "La négation <strong>ne ... pas</strong> entoure le verbe <em>partons</em>."
+        },
+        {
+          text: "J'aime la glace.",
+          accept: ["je n'aime pas la glace"],
+          explanation: "N'oublie pas l'élision : devant une voyelle, <em>ne</em> s'écrit <strong>n'</strong> (<em>je n'aime pas</em>)."
+        },
+        {
+          text: "Le chat dort.",
+          accept: ["le chat ne dort pas"],
+          explanation: "La négation <strong>ne ... pas</strong> encadre le verbe <em>dort</em>."
+        },
+        {
+          text: "Il pleut.",
+          accept: ["il ne pleut pas"],
+          explanation: "Le verbe impersonnel <em>pleut</em> est encadré par <strong>ne ... pas</strong>."
+        },
+        {
+          text: "Vous écoutez la radio.",
+          accept: ["vous n'écoutez pas la radio"],
+          explanation: "Le verbe commence par une voyelle, la négation devient donc <strong>n' ... pas</strong>."
+        },
+        {
+          text: "Elle a fini son livre.",
+          accept: ["elle n'a pas fini son livre"],
+          explanation: "Dans un temps composé, la négation entoure l'auxiliaire (<em>elle <strong>n'</strong>a <strong>pas</strong> fini</em>)."
+        },
+        {
+          text: "Ils ont rangé la classe.",
+          accept: ["ils n'ont pas rangé la classe"],
+          explanation: "La négation encadre l'auxiliaire <em>ont</em> (<em>ils <strong>n'</strong>ont <strong>pas</strong> rangé</em>)."
+        },
+        {
+          text: "Le chien aboie.",
+          accept: ["le chien n'aboie pas"],
+          explanation: "Élision du <em>ne</em> devant la voyelle du verbe <em>aboie</em> (<em>le chien <strong>n'</strong>aboie <strong>pas</strong></em>)."
+        },
+        {
+          text: "Tu pleures souvent.",
+          accept: ["tu ne pleures jamais", "tu ne pleures pas souvent"],
+          explanation: "Pour nier l'habitude exprimée par <em>souvent</em>, on utilise <strong>ne ... jamais</strong> (ou <strong>ne ... pas souvent</strong>)."
+        },
+        {
+          text: "Nous habitons ici.",
+          accept: ["nous n'habitons pas ici"],
+          explanation: "Le verbe commence par un <em>h muet</em>, <em>ne</em> s'élide en <strong>n'</strong> (<em>nous <strong>n'</strong>habitons pas</em>)."
+        },
+        {
+          text: "Vous parlez fort.",
+          accept: ["vous ne parlez pas fort"],
+          explanation: "La négation <strong>ne ... pas</strong> entoure le verbe <em>parlez</em>."
+        },
+        {
+          text: "Il a gagné le match.",
+          accept: ["il n'a pas gagné le match"],
+          explanation: "La négation entoure l'auxiliaire <em>a</em> dans le verbe conjugué au passé composé."
+        },
+        {
+          text: "Le menuisier répare la table en bois.",
+          accept: ["le menuisier ne répare pas la table en bois"],
+          explanation: "Simple phrase affirmative transformée à la forme négative avec <strong>ne ... pas</strong>."
+        },
+        {
+          text: "Les oiseaux chantent dès l'aube.",
+          accept: ["les oiseaux ne chantent pas dès l'aube"],
+          explanation: "La négation <strong>ne ... pas</strong> entoure le verbe <em>chantent</em>."
+        },
+        {
+          text: "Nous lisons une histoire intéressante.",
+          accept: ["nous ne lisons pas une histoire intéressante"],
+          explanation: "On transforme en négatif simple en insérant <strong>ne ... pas</strong> autour de <em>lisons</em>."
+        },
+        {
+          text: "Mon frère a trouvé un joli coquillage.",
+          accept: ["mon frère n'a pas trouvé un joli coquillage", "mon frère n'a pas trouvé de joli coquillage"],
+          explanation: "L'auxiliaire du passé composé <em>a</em> est encadré par la négation."
+        },
+        {
+          text: "La chatte surveille ses petits chatons.",
+          accept: ["la chatte ne surveille pas ses petits chatons"],
+          explanation: "Le verbe <em>surveille</em> est encadré par <strong>ne ... pas</strong>."
+        },
+        {
+          text: "Le train roule encore.",
+          accept: ["le train ne roule plus"],
+          explanation: "L'adverbe <em>encore</em> appelle la négation <strong>ne ... plus</strong>."
+        },
+        {
+          text: "Tu travailles encore.",
+          accept: ["tu ne travailles plus"],
+          explanation: "Pour exprimer la fin d'une action commencée, <em>encore</em> devient <strong>ne ... plus</strong>."
+        },
+        {
+          text: "Elle habite encore ici.",
+          accept: ["elle n'habite plus ici"],
+          explanation: "Élision du <em>ne</em> devant la voyelle du verbe <em>habite</em> : <strong>n' ... plus</strong>."
+        },
+        {
+          text: "Nous attendons encore.",
+          accept: ["nous n'attendons plus"],
+          explanation: "Le verbe commençant par une voyelle, la négation de <em>encore</em> devient <strong>n' ... plus</strong>."
+        },
+        {
+          text: "Ils jouent encore.",
+          accept: ["ils ne jouent plus"],
+          explanation: "La négation <strong>ne ... plus</strong> entoure le verbe <em>jouent</em>."
+        },
+        {
+          text: "Le vent souffle encore.",
+          accept: ["le vent ne souffle plus"],
+          explanation: "On transforme <em>encore</em> en <strong>ne ... plus</strong>."
+        },
+        {
+          text: "J'écoute encore la musique.",
+          accept: ["je n'écoute plus la musique"],
+          explanation: "Élision devant voyelle, la négation de <em>encore</em> s'écrit <strong>n' ... plus</strong>."
+        },
+        {
+          text: "Vous chantez encore.",
+          accept: ["vous ne chantez plus"],
+          explanation: "Le verbe <em>chantez</em> est encadré par <strong>ne ... plus</strong>."
+        },
+        {
+          text: "Elle dort encore.",
+          accept: ["elle ne dort plus"],
+          explanation: "<em>encore</em> se transforme en <strong>ne ... plus</strong>."
+        },
+        {
+          text: "Il ment toujours.",
+          accept: ["il ne ment jamais"],
+          explanation: "La négation de la fréquence habituelle (<em>toujours</em>) se fait avec <strong>ne ... jamais</strong>."
+        }
+      ],
+      level2: [
+        {
+          text: "Elle mange des pommes.",
+          accept: ["elle ne mange pas de pommes"],
+          explanation: "<strong>Piège déjoué !</strong> À la forme négative, le déterminant indéfini <em>des</em> se transforme en <strong>de</strong>."
+        },
+        {
+          text: "Il a un chien.",
+          accept: ["il n'a pas de chien"],
+          explanation: "<strong>Piège déjoué !</strong> Le déterminant indéfini <em>un</em> se transforme en <strong>de</strong> après la négation."
+        },
+        {
+          text: "C'est un grand savant.",
+          accept: ["ce n'est pas un grand savant"],
+          explanation: "<strong>Piège déjoué !</strong> Exception importante : le déterminant <em>un</em> ne change pas si le verbe de la phrase est <strong>être</strong> (<em>ce n'est pas <strong>un</strong> grand savant</em>)."
+        },
+        {
+          text: "J'aime le chocolat et le thé.",
+          accept: ["je n'aime ni le chocolat ni le thé", "je n'aime pas le chocolat ni le thé"],
+          explanation: "<strong>Piège déjoué !</strong> La conjonction <em>et</em> reliant deux compléments d'objet se transforme en négation coordonnée <strong>ni ... ni</strong>."
+        },
+        {
+          text: "Courir dans les couloirs.",
+          accept: ["ne pas courir dans les couloirs"],
+          explanation: "<strong>Piège déjoué !</strong> Devant un verbe à l'infinitif (<em>courir</em>), la négation <strong>ne pas</strong> se place entière devant le verbe."
+        },
+        {
+          text: "Quelqu'un frappe à la porte.",
+          accept: ["personne ne frappe à la porte"],
+          explanation: "<strong>Piège déjoué !</strong> Le pronom affirmatif <em>quelqu'un</em> devient le pronom négatif sujet <strong>personne</strong>, accompagné de <strong>ne</strong>."
+        },
+        {
+          text: "J'ai vu quelque chose bouger.",
+          accept: ["je n'ai rien vu bouger"],
+          explanation: "<strong>Piège déjoué !</strong> Le pronom <em>quelque chose</em> devient <strong>rien</strong> à la forme négative, placé devant le participe passé."
+        },
+        {
+          text: "Il y a encore des cookies.",
+          accept: ["il n'y a plus de cookies", "il n'y a plus de cookie"],
+          explanation: "<strong>Double piège !</strong> <em>encore</em> se transforme en <strong>ne ... plus</strong> et le déterminant <em>des</em> devient <strong>de</strong>."
+        },
+        {
+          text: "Nous avons vu des oiseaux.",
+          accept: ["nous n'avons pas vu d'oiseaux", "nous n'avons pas vu d'oiseau"],
+          explanation: "<strong>Piège déjoué !</strong> Le déterminant <em>des</em> devient <strong>d'</strong> devant le mot <em>oiseaux</em> (commençant par une voyelle)."
+        },
+        {
+          text: "Il veut du pain et du beurre.",
+          accept: ["il ne veut ni pain ni beurre", "il ne veut ni du pain ni du beurre", "il ne veut pas de pain ni de beurre"],
+          explanation: "<strong>Piège déjoué !</strong> La coordination de deux compléments partitifs (<em>du... et du...</em>) s'écrit avec la négation coordonnée <strong>ni ... ni</strong> (les articles sont souvent omis)."
+        },
+        {
+          text: "C'est une bonne idée.",
+          accept: ["ce n'est pas une bonne idée"],
+          explanation: "<strong>Piège déjoué !</strong> Le verbe est <em>être</em> (<em>est</em>), donc le déterminant <em>une</em> ne se transforme pas en <em>de</em>."
+        },
+        {
+          text: "Parler à voix haute.",
+          accept: ["ne pas parler à voix haute"],
+          explanation: "<strong>Piège déjoué !</strong> Pour un verbe à l'infinitif (<em>parler</em>), la négation <strong>ne pas</strong> se positionne entièrement devant lui."
+        },
+        {
+          text: "Tout le monde est venu.",
+          accept: ["personne n'est venu"],
+          explanation: "<strong>Piège déjoué !</strong> L'expression <em>tout le monde</em> se transforme en pronom négatif sujet <strong>personne</strong> avec la particule négative <strong>n'</strong>."
+        },
+        {
+          text: "Il a acheté une voiture.",
+          accept: ["il n'a pas acheté de voiture"],
+          explanation: "<strong>Piège déjoué !</strong> Le déterminant indéfini <em>une</em> devient <strong>de</strong> après la négation (<em>il n'a pas acheté <strong>de</strong> voiture</em>)."
+        },
+        {
+          text: "Elle boit de l'eau.",
+          accept: ["elle ne boit pas d'eau"],
+          explanation: "<strong>Piège déjoué !</strong> Le déterminant partitif <em>de l'</em> se transforme en <strong>d'</strong> après la négation (<em>elle ne boit pas <strong>d'</strong>eau</em>)."
+        },
+        {
+          text: "Écrire sur les murs.",
+          accept: ["ne pas écrire sur les murs"],
+          explanation: "<strong>Piège déjoué !</strong> Phrase injonctive à l'infinitif. La négation <strong>ne pas</strong> se place devant le verbe <em>écrire</em>."
+        },
+        {
+          text: "Elle aime chanter et danser.",
+          accept: ["elle n'aime ni chanter ni danser", "elle n'aime pas chanter ni danser"],
+          explanation: "<strong>Piège déjoué !</strong> La conjonction <em>et</em> coordonnant deux infinitifs appelle l'emploi de <strong>ni ... ni</strong>."
+        },
+        {
+          text: "Faire du bruit pendant la leçon.",
+          accept: ["ne pas faire de bruit pendant la leçon", "ne pas faire du bruit pendant la leçon"],
+          explanation: "<strong>Piège déjoué !</strong> Le verbe est à l'infinitif et l'article partitif <em>du</em> se transforme idéalement en <em>de</em> à la forme négative."
+        },
+        {
+          text: "Il possède un chat et un chien.",
+          accept: ["il ne possède ni chat ni chien", "il ne possède pas de chat ni de chien", "il ne possède ni un chat ni un chien"],
+          explanation: "<strong>Piège déjoué !</strong> Combinaison de déterminants indéfinis coordonnés. On emploie <strong>ni ... ni</strong> en omettant les articles."
+        },
+        {
+          text: "Il mange encore des pommes.",
+          accept: ["il ne mange plus de pommes", "il ne mange plus de pomme"],
+          explanation: "<strong>Double transformation !</strong> L'adverbe <em>encore</em> devient <strong>ne ... plus</strong> et le déterminant indéfini <em>des</em> devient <strong>de</strong>."
+        },
+        {
+          text: "J'ai encore des questions.",
+          accept: ["je n'ai plus de questions", "je n'ai plus de question"],
+          explanation: "<strong>Double transformation !</strong> <em>encore</em> devient <strong>n' ... plus</strong> (avec élision) et le déterminant <em>des</em> devient <strong>de</strong>."
+        },
+        {
+          text: "Quelqu'un mange encore.",
+          accept: ["personne ne mange plus"],
+          explanation: "<strong>Double transformation !</strong> Le sujet <em>quelqu'un</em> devient le pronom négatif <strong>personne</strong> avec <strong>ne</strong>, et <em>encore</em> devient <strong>plus</strong>."
+        },
+        {
+          text: "Il a encore trouvé quelque chose.",
+          accept: ["il n'a plus rien trouvé"],
+          explanation: "<strong>Double transformation !</strong> <em>encore</em> devient <strong>n' ... plus</strong>, et le pronom indéfini <em>quelque chose</em> devient <strong>rien</strong>."
+        },
+        {
+          text: "Tout le monde sourit toujours.",
+          accept: ["personne ne sourit jamais"],
+          explanation: "<strong>Double transformation !</strong> L'expression <em>tout le monde</em> devient le sujet négatif <strong>personne</strong> avec <strong>ne</strong>, et <em>toujours</em> devient <strong>jamais</strong>."
+        },
+        {
+          text: "Il y a encore du bruit partout.",
+          accept: ["il n'y a plus de bruit nulle part"],
+          explanation: "<strong>Triple transformation !</strong> <em>encore</em> devient <strong>n' ... plus</strong>, le partitif <em>du</em> devient <strong>de</strong>, et l'adverbe de lieu <em>partout</em> devient <strong>nulle part</strong> !"
+        },
+        {
+          text: "Quelqu'un a toujours raison.",
+          accept: ["personne n'a jamais raison"],
+          explanation: "<strong>Double transformation !</strong> <em>quelqu'un</em> devient le sujet négatif <strong>personne</strong> (avec <strong>n'</strong> devant le verbe <em>a</em>) et <em>toujours</em> devient <strong>jamais</strong>."
+        },
+        {
+          text: "J'ai encore vu quelqu'un.",
+          accept: ["je n'ai plus vu personne"],
+          explanation: "<strong>Double transformation !</strong> <em>encore</em> devient <strong>n' ... plus</strong> et le pronom <em>quelqu'un</em> devient <strong>personne</strong> placé en fin de groupe verbal."
+        },
+        {
+          text: "Il veut encore du pain.",
+          accept: ["il ne veut plus de pain"],
+          explanation: "<strong>Double transformation !</strong> <em>encore</em> devient <strong>ne ... plus</strong> et le partitif <em>du</em> se transforme en <strong>de</strong>."
+        },
+        {
+          text: "Elle trouve toujours quelque chose d'intéressant.",
+          accept: ["elle ne trouve jamais rien d'intéressant"],
+          explanation: "<strong>Double transformation !</strong> <em>toujours</em> devient <strong>ne ... jamais</strong> et le pronom <em>quelque chose d'intéressant</em> devient <strong>rien d'intéressant</strong>."
+        },
+        {
+          text: "Ce sont des élèves sérieux.",
+          accept: ["ce ne sont pas des élèves sérieux"],
+          explanation: "<strong>Piège déjoué !</strong> Le verbe est <em>être</em> (<em>sont</em>), le déterminant <em>des</em> est donc maintenu inchangé."
+        }
+      ]
+    };
+
+    // --- GAME STATE ---
+    let gameState = {
+      level: null,
+      questions: [],
+      currentIndex: 0,
+      score: 0,
+      submitted: false,
+      studentInput: "",
+      history: []
+    };
+
+    // --- INITIALIZATION ---
+    window.onload = function() {
+      showMenu();
+    };
+
+    function goBack() {
+      if (gameState.level === null) {
+        if (window.opener || window.history.length > 1) {
+          window.close();
+        } else {
+          alert("Fermez cet onglet pour revenir à la plateforme principale LCML.");
+        }
+      } else {
+        resetGame();
+        showMenu();
+      }
+    }
+
+    function resetGame() {
+      gameState = {
+        level: null,
+        questions: [],
+        currentIndex: 0,
+        score: 0,
+        submitted: false,
+        studentInput: "",
+        history: []
+      };
+    }
+
+    // --- RENDER MENU ---
+    function showMenu() {
+      gameState.level = null;
+      const screenContainer = document.getElementById("screen-container");
+      
+      screenContainer.innerHTML = `
+        <div class="neo-card fade-in">
+          <h2 class="font-title font-black text-2xl text-neutral-800 mb-4 text-center">
+            Choisis ton niveau de transformation :
+          </h2>
+          <p class="text-neutral-500 mb-6 text-center text-sm sm:text-base">
+            Écris la phrase proposée à la <strong>forme négative</strong>. Relis-toi bien avant de valider pour éviter les fautes d'orthographe !
+          </p>
+          
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <!-- Level 1 Card -->
+            <div onclick="startLevel('level1')" class="cursor-pointer border-3 border-neutral-900 rounded-2xl p-6 bg-[#E2F5EE] hover:bg-[#D1F0E4] shadow-[4px_4px_0px_#1A1A2E] hover:shadow-[6px_6px_0px_#1A1A2E] hover:-translate-y-1 transition-all flex flex-col justify-between items-center text-center h-full min-h-[220px]">
+              <div>
+                <h3 class="font-title font-black text-xl text-[#1A9E75] mb-2 mt-4">Apprenti Détective</h3>
+                <p class="text-neutral-700 text-xs sm:text-sm">
+                  Des transformations de phrases simples, sans pièges de déterminants.
+                </p>
+              </div>
+              <button class="mt-4 px-4 py-2 bg-[#1A9E75] text-white font-title font-black rounded-lg border-2 border-neutral-900 shadow-[2px_2px_0px_#1A1A2E]">
+                C'est parti !
+              </button>
+            </div>
+            
+            <!-- Level 2 Card -->
+            <div onclick="startLevel('level2')" class="cursor-pointer border-3 border-neutral-900 rounded-2xl p-6 bg-[#FEF3E2] hover:bg-[#FEECD1] shadow-[4px_4px_0px_#1A1A2E] hover:shadow-[6px_6px_0px_#1A1A2E] hover:-translate-y-1 transition-all flex flex-col justify-between items-center text-center h-full min-h-[220px]">
+              <div>
+                <h3 class="font-title font-black text-xl text-[#C97B1A] mb-2 mt-4">Maître Détective</h3>
+                <p class="text-neutral-700 text-xs sm:text-sm">
+                  Garde l'œil ouvert : transformations de déterminants, coordinations, infinitifs !
+                </p>
+              </div>
+              <button class="mt-4 px-4 py-2 bg-[#C97B1A] text-white font-title font-black rounded-lg border-2 border-neutral-900 shadow-[2px_2px_0px_#1A1A2E]">
+                Relever le défi !
+              </button>
+            </div>
+          </div>
+          
+          <!-- Rules reminder -->
+          <div class="mt-8 pt-6 border-t-2 border-dashed border-neutral-200">
+            <h4 class="font-title font-black text-md text-neutral-800 mb-2">Conseils d'écriture :</h4>
+            <ul class="text-xs text-neutral-600 space-y-2 list-disc pl-4">
+              <li>Pense à faire l'élision de la particule <em>ne</em> en <strong>n'</strong> devant une voyelle ou un <em>h muet</em>.</li>
+              <li>Fais attention à la transformation des déterminants <em>un / une / des</em> en <strong>de / d'</strong> (sauf après le verbe <em>être</em>).</li>
+              <li>Le point final n'est pas obligatoire pour valider la réponse, concentre-toi sur la négation !</li>
+            </ul>
+          </div>
+        </div>
+      `;
+    }
+
+    // --- START GAME LEVEL ---
+    function startLevel(levelKey) {
+      gameState.level = levelKey;
+      const shuffled = [...DB_EXERCICES[levelKey]].sort(() => Math.random() - 0.5);
+      gameState.questions = shuffled.slice(0, 10);
+      gameState.currentIndex = 0;
+      gameState.score = 0;
+      gameState.submitted = false;
+      gameState.studentInput = "";
+      gameState.history = [];
+      
+      renderQuestion();
+    }
+
+    // --- RENDER CURRENT QUESTION ---
+    function renderQuestion() {
+      const screenContainer = document.getElementById("screen-container");
+      const question = gameState.questions[gameState.currentIndex];
+      const pct = ((gameState.currentIndex) / gameState.questions.length) * 100;
+      
+      screenContainer.innerHTML = `
+        <div id="game-card" class="neo-card fade-in">
+          <!-- Progress -->
+          <div class="flex justify-between items-center mb-4">
+            <span class="font-title font-black text-xs sm:text-sm text-neutral-500">
+              Phrase ${gameState.currentIndex + 1} sur ${gameState.questions.length}
+            </span>
+            <span class="font-title font-black text-xs sm:text-sm text-neutral-700 bg-neutral-100 border-2 border-neutral-900 px-3 py-1 rounded-full shadow-[1px_1px_0px_#1A1A2E]">
+              Score : ${gameState.score} / ${gameState.currentIndex}
+            </span>
+          </div>
+          
+          <div class="progress-outer mb-6">
+            <div class="progress-inner" style="width: ${pct}%"></div>
+          </div>
+          
+          <!-- Instructions -->
+          <p class="font-title font-black text-sm text-neutral-500 mb-2">
+            Transforme cette phrase à la forme négative :
+          </p>
+          
+          <!-- Sentence container -->
+          <div class="border-3 border-neutral-900 rounded-2xl p-6 bg-[#FFFDF5] text-center shadow-[3px_3px_0px_#1A1A2E] mb-6">
+            <p class="font-display font-extrabold text-xl sm:text-2xl text-neutral-800 tracking-wide leading-relaxed">
+              « ${question.text} »
+            </p>
+          </div>
+          
+          <!-- Input Area -->
+          <div class="mb-6">
+            <div class="flex gap-2 items-center">
+              <input type="text" id="answer-input" autocomplete="off" placeholder="Écris la phrase négative ici..." class="neo-input flex-1 py-4 text-lg" onkeydown="handleKeyDown(event)">
+              <span class="font-display font-black text-2xl text-neutral-800 px-2 select-none">.</span>
+            </div>
+          </div>
+          
+          <!-- Control Buttons -->
+          <div class="flex justify-end gap-4" id="controls-container">
+            <button onclick="checkAnswer()" class="px-8 py-4 font-title font-black text-lg bg-[#5B4FCF] text-white rounded-xl hover:bg-[#493DB8] transition-all border-3 border-neutral-900 shadow-[3px_3px_0px_#1A1A2E] hover:-translate-y-0.5 active:translate-y-0">
+              Valider la réponse
+            </button>
+          </div>
+          
+          <!-- Explanation / Feedback Panel (Hidden initially) -->
+          <div id="feedback-panel" class="hidden mt-6 pt-6 border-t-3 border-dashed border-neutral-900 fade-in">
+            <div id="feedback-content" class="border-3 border-neutral-900 p-5 rounded-xl mb-4 shadow-[3px_3px_0px_#1A1A2E]">
+              <!-- Loaded dynamically -->
+            </div>
+            
+            <div class="flex justify-end">
+              <button onclick="nextQuestion()" class="px-6 py-3 font-title font-black text-lg bg-neutral-900 text-white rounded-xl hover:bg-neutral-800 transition-all border-2 border-neutral-900 shadow-[3px_3px_0px_#CBCBCB] hover:-translate-y-0.5 active:translate-y-0">
+                ${gameState.currentIndex < gameState.questions.length - 1 ? "Phrase suivante ➔" : "Voir les résultats ➔"}
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+      
+      // Auto-focus input
+      setTimeout(() => {
+        const input = document.getElementById("answer-input");
+        if(input) input.focus();
+      }, 50);
+    }
+
+    function handleKeyDown(event) {
+      if (event.key === "Enter") {
+        if (!gameState.submitted) {
+          checkAnswer();
+        } else {
+          nextQuestion();
+        }
+      }
+    }
+
+    // --- SMART COMPARISON ENGINE ---
+    function normalizeString(str) {
+      if (!str) return "";
+      return str
+        .toLowerCase()
+        .replace(/[’`’‘]/g, "'") // Normalize curly apostrophes to straight
+        .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?]/g, "") // Remove punctuation (periods, exclamation, question marks)
+        .replace(/\s+/g, " ") // Reduce multiple whitespaces to single space
+        .trim();
+    }
+
+    // --- CHECK ANSWER ---
+    function checkAnswer() {
+      if (gameState.submitted) return;
+      
+      const inputEl = document.getElementById("answer-input");
+      const answerVal = inputEl.value;
+      
+      if (!answerVal.trim()) {
+        alert("S'il te plaît, écris quelque chose avant de valider !");
+        return;
+      }
+      
+      gameState.submitted = true;
+      gameState.studentInput = answerVal;
+      
+      const question = gameState.questions[gameState.currentIndex];
+      const normalizedStudent = normalizeString(answerVal);
+      
+      // Check if the normalized student input matches any of the accepted forms
+      const isCorrect = question.accept.some(acceptedForm => normalizeString(acceptedForm) === normalizedStudent);
+      
+      if (isCorrect) {
+        gameState.score++;
+      } else {
+        const card = document.getElementById("game-card");
+        card.classList.add("shake-anim");
+        setTimeout(() => card.classList.remove("shake-anim"), 500);
+      }
+      
+      gameState.history.push({
+        questionText: question.text,
+        studentAnswer: answerVal,
+        correctAnswers: question.accept,
+        correct: isCorrect,
+        explanation: question.explanation
+      });
+      
+      inputEl.disabled = true;
+      inputEl.style.opacity = "0.7";
+      inputEl.style.cursor = "not-allowed";
+      
+      // Disable check button
+      const controls = document.getElementById("controls-container");
+      controls.style.display = "none";
+      
+      const feedbackPanel = document.getElementById("feedback-panel");
+      const feedbackContent = document.getElementById("feedback-content");
+      
+      // Display model answer (first one in accept list) formatted nicely
+      const modelAnswer = question.accept[0];
+      const displayModel = modelAnswer.charAt(0).toUpperCase() + modelAnswer.slice(1) + ".";
+      
+      if (isCorrect) {
+        feedbackContent.className = "border-3 border-neutral-900 p-5 rounded-xl mb-4 shadow-[3px_3px_0px_#1A1A2E] bg-[#E2F5EE] text-[#137A5A]";
+        feedbackContent.innerHTML = `
+          <h4 class="font-title font-black text-xl mb-2 flex items-center gap-2">
+            🎉 Excellent ! Ta réponse est tout à fait correcte !
+          </h4>
+          <p class="text-sm leading-relaxed mb-3 text-neutral-800">
+            <strong>Ta réponse :</strong> « ${answerVal} »<br>
+            <strong>Correction modèle :</strong> « ${displayModel} »
+          </p>
+          <div class="bg-white/80 p-3 rounded-lg border-2 border-neutral-900/10 text-neutral-800 text-xs sm:text-sm">
+            ${question.explanation}
+          </div>
+        `;
+      } else {
+        feedbackContent.className = "border-3 border-neutral-900 p-5 rounded-xl mb-4 shadow-[3px_3px_0px_#1A1A2E] bg-[#FDECEA] text-[#B91C1C]";
+        feedbackContent.innerHTML = `
+          <h4 class="font-title font-black text-xl mb-2 flex items-center gap-2">
+            😢 Mince, il y a une petite erreur...
+          </h4>
+          <p class="text-sm leading-relaxed mb-3 text-neutral-800">
+            <strong>Ta réponse :</strong> « <span class="line-through text-red-600">${answerVal}</span> »<br>
+            <strong>Correction attendue :</strong> « <strong>${displayModel}</strong> »
+          </p>
+          <div class="bg-white/80 p-3 rounded-lg border-2 border-neutral-900/10 text-neutral-800 text-xs sm:text-sm">
+            <strong>Règle grammaticale appliquée :</strong><br>
+            ${question.explanation}
+          </div>
+        `;
+      }
+      
+      feedbackPanel.classList.remove("hidden");
+    }
+
+    function nextQuestion() {
+      gameState.currentIndex++;
+      gameState.submitted = false;
+      gameState.studentInput = "";
+      
+      if (gameState.currentIndex < gameState.questions.length) {
+        renderQuestion();
+      } else {
+        renderResults();
+      }
+    }
+
+    // --- RENDER RESULTS SCREEN ---
+    function renderResults() {
+      const screenContainer = document.getElementById("screen-container");
+      
+      let scoreTitle = "";
+      let scoreMessage = "";
+      let scoreEmoji = "";
+      
+      if (gameState.score === gameState.questions.length) {
+        scoreTitle = "Parfait ! Maître de la Négation !";
+        scoreMessage = "Tu as réussi le sans-faute sur les transformations les plus pièges de FWB. Félicitations !";
+        scoreEmoji = "🏆🥇";
+        triggerConfettiFull();
+      } else if (gameState.score >= 7) {
+        scoreTitle = "Superbe score !";
+        scoreMessage = "Tu as très bien maîtrisé les transformations et déjoué la majorité des pièges.";
+        scoreEmoji = "🌟🎉";
+        triggerConfettiMini();
+      } else if (gameState.score >= 5) {
+        scoreTitle = "Pas mal du tout !";
+        scoreMessage = "L'essentiel est compris. Relis bien le tableau ci-dessous pour repérer tes erreurs de déterminants.";
+        scoreEmoji = "👍🔍";
+      } else {
+        scoreTitle = "Continue de t'entraîner !";
+        scoreMessage = "La négation peut être complexe avec les changements de mots. Reprends le niveau 1 pour te rassurer.";
+        scoreEmoji = "📚💪";
+      }
+      
+      let historyRowsHTML = "";
+      
+      gameState.history.forEach((h, idx) => {
+        const modelStr = h.correctAnswers[0];
+        const displayModel = modelStr.charAt(0).toUpperCase() + modelStr.slice(1) + ".";
+        
+        historyRowsHTML += `
+          <tr class="border-b border-neutral-200 hover:bg-neutral-50 transition-all">
+            <td class="p-3 text-xs sm:text-sm font-bold text-neutral-800">
+              ${idx + 1}
+            </td>
+            <td class="p-3 text-xs sm:text-sm font-medium text-neutral-800">
+              « ${h.questionText} »
+            </td>
+            <td class="p-3 text-xs sm:text-sm text-neutral-600 italic">
+              « ${h.studentAnswer} »
+            </td>
+            <td class="p-3 text-center">
+              ${h.correct 
+                ? `<span class="text-green-600 font-extrabold text-lg">✓</span>` 
+                : `<span class="text-red-500 font-extrabold text-lg">✗</span>`
+              }
+            </td>
+          </tr>
+          ${!h.correct ? `
+            <tr class="bg-red-50/50">
+              <td colspan="4" class="p-3 pl-8 text-xs text-red-800 border-b border-neutral-200">
+                <strong>Réponse attendue :</strong> « ${displayModel} »<br>
+                <strong>Explication :</strong> ${h.explanation}
+              </td>
+            </tr>
+          ` : ''}
+        `;
+      });
+      
+      screenContainer.innerHTML = `
+        <div class="neo-card fade-in">
+          <!-- Main Feedback Block -->
+          <div class="text-center border-3 border-neutral-900 rounded-2xl p-6 sm:p-8 bg-[#EEF0FF] shadow-[4px_4px_0px_#1A1A2E] mb-8">
+            <span class="text-5xl sm:text-6xl mb-4 block">${scoreEmoji}</span>
+            <h2 class="font-display font-black text-2xl sm:text-3xl text-[#5B4FCF] mb-2">
+              ${scoreTitle}
+            </h2>
+            <div class="inline-block border-3 border-neutral-900 bg-white px-6 py-2 rounded-full font-title font-black text-2xl sm:text-3xl text-neutral-900 my-4 shadow-[2px_2px_0px_#1A1A2E]">
+              Note : ${gameState.score} / ${gameState.questions.length}
+            </div>
+            <p class="text-neutral-700 text-sm sm:text-md max-w-lg mx-auto font-medium">
+              ${scoreMessage}
+            </p>
+          </div>
+          
+          <!-- Detailed analysis table -->
+          <h3 class="font-title font-black text-xl text-neutral-800 mb-4 flex items-center gap-2">
+            📊 Tableau d'analyse des phrases
+          </h3>
+          
+          <div class="border-3 border-neutral-900 rounded-xl overflow-hidden shadow-[3px_3px_0px_#1A1A2E] bg-white mb-8">
+            <div class="overflow-x-auto">
+              <table class="w-full text-left border-collapse">
+                <thead>
+                  <tr class="bg-neutral-100 border-b-3 border-neutral-900">
+                    <th class="p-3 text-xs sm:text-sm font-black text-neutral-700 w-10">N°</th>
+                    <th class="p-3 text-xs sm:text-sm font-black text-neutral-700">Phrase modèle</th>
+                    <th class="p-3 text-xs sm:text-sm font-black text-neutral-700">Ta proposition</th>
+                    <th class="p-3 text-xs sm:text-sm font-black text-neutral-700 text-center w-16">Statut</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${historyRowsHTML}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          
+          <!-- Control Actions -->
+          <div class="flex flex-col sm:flex-row gap-4">
+            <button onclick="startLevel('${gameState.level}')" class="neo-btn flex-1 bg-neutral-900 text-white hover:bg-neutral-800">
+              🔄 Recommencer
+            </button>
+            <button onclick="showMenu()" class="neo-btn flex-1 bg-white text-neutral-900 border-3 border-neutral-900 hover:bg-neutral-50">
+              🏠 Choisir un autre niveau
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    // --- CONFETTI ENGINE ---
+    let confettiActive = false;
+    
+    function triggerConfettiFull() {
+      startConfetti(150, 6);
+    }
+    
+    function triggerConfettiMini() {
+      startConfetti(40, 2);
+    }
+    
+    function startConfetti(particlesCount, durationSeconds) {
+      const canvas = document.getElementById("confetti-canvas");
+      const ctx = canvas.getContext("2d");
+      
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      
+      window.addEventListener("resize", () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      });
+      
+      const colors = ["#5B4FCF", "#1A9E75", "#D94F3D", "#C97B1A", "#1A6FA0", "#E0F2FE", "#FEF08A", "#F5D0FE"];
+      const particles = [];
+      
+      for (let i = 0; i < particlesCount; i++) {
+        particles.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * -canvas.height - 20,
+          size: Math.random() * 8 + 6,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          speedX: Math.random() * 4 - 2,
+          speedY: Math.random() * 5 + 3,
+          rotation: Math.random() * 360,
+          rotationSpeed: Math.random() * 4 - 2
+        });
+      }
+      
+      confettiActive = true;
+      let startTime = Date.now();
+      
+      function update() {
+        if (!confettiActive) return;
+        
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        let allOut = true;
+        
+        particles.forEach(p => {
+          p.x += p.speedX;
+          p.y += p.speedY;
+          p.rotation += p.rotationSpeed;
+          
+          if (p.y < canvas.height) {
+            allOut = false;
+          }
+          
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate((p.rotation * Math.PI) / 180);
+          ctx.fillStyle = p.color;
+          ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+          ctx.restore();
+          
+          if (p.y > canvas.height && Date.now() - startTime < durationSeconds * 1000) {
+            p.y = -20;
+            p.x = Math.random() * canvas.width;
+            p.speedY = Math.random() * 5 + 3;
+            p.speedX = Math.random() * 4 - 2;
+          }
+        });
+        
+        if (allOut && Date.now() - startTime >= durationSeconds * 1000) {
+          confettiActive = false;
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+        } else {
+          requestAnimationFrame(update);
+        }
+      }
+      
+      requestAnimationFrame(update);
+    }
+  </script>
+</body>
+</html>

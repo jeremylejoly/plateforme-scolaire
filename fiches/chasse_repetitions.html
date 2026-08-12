@@ -1,0 +1,1148 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>La Chasse aux Répétitions</title>
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --foreground: #0f172a;
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --primary-light: #e0e7ff;
+      --accent-red: #ef4444;
+      --accent-red-light: #fee2e2;
+      --border-color: #0f172a;
+      --card-bg: #ffffff;
+      --shadow-color: #000000;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg);
+      color: var(--foreground);
+      padding: 1.5rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .game-container {
+      width: 100%;
+      max-width: 800px;
+      background-color: var(--card-bg);
+      border: 4px solid var(--border-color);
+      border-radius: 24px;
+      padding: 2rem;
+      box-shadow: 8px 8px 0px var(--shadow-color);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Néobrutalisme Header */
+    .game-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      border-bottom: 4px solid var(--border-color);
+      padding-bottom: 1rem;
+    }
+
+    .game-title {
+      font-size: 1.8rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .score-badge {
+      background-color: #fef08a;
+      border: 3px solid var(--border-color);
+      padding: 0.5rem 1rem;
+      font-weight: 800;
+      border-radius: 12px;
+      box-shadow: 3px 3px 0px var(--shadow-color);
+    }
+
+    /* Bar de progression */
+    .progress-container {
+      margin-bottom: 1.5rem;
+    }
+
+    .progress-text {
+      font-size: 0.9rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+      color: #64748b;
+    }
+
+    .progress-bar {
+      height: 16px;
+      background-color: #e2e8f0;
+      border: 3px solid var(--border-color);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background-color: var(--primary);
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    /* Cartes & Zones */
+    .instruction-card {
+      background-color: #eff6ff;
+      border: 3px solid var(--border-color);
+      border-radius: 16px;
+      padding: 1rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 4px 4px 0px rgba(0,0,0,0.05);
+    }
+
+    .instruction-title {
+      font-weight: 800;
+      color: #1e3a8a;
+      margin-bottom: 0.25rem;
+      font-size: 0.95rem;
+    }
+
+    .instruction-desc {
+      font-size: 0.85rem;
+      color: #1e40af;
+    }
+
+    /* Zone d'édition du texte */
+    .editor-zone {
+      border: 3px solid var(--border-color);
+      background-color: #fafafa;
+      border-radius: 20px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      line-height: 2;
+      font-size: 1.2rem;
+      box-shadow: 4px 4px 0px var(--shadow-color);
+    }
+
+    /* Slots de répétitions interactifs */
+    .repetition-slot {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2px 8px;
+      margin: 0 4px;
+      border: 2px dashed var(--accent-red);
+      background-color: var(--accent-red-light);
+      color: #b91c1c;
+      font-weight: 700;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: inherit;
+      font-size: 1.1rem;
+      line-height: 1.4;
+      vertical-align: middle;
+    }
+
+    .repetition-slot:hover {
+      background-color: #fecaca;
+      transform: translateY(-2px);
+    }
+
+    .repetition-slot.active {
+      border: 3.5px solid var(--primary);
+      background-color: var(--primary-light);
+      color: var(--primary);
+      box-shadow: 2px 2px 0px var(--shadow-color);
+    }
+
+    .repetition-slot.filled {
+      border: 3px solid var(--primary);
+      background-color: #e0e7ff;
+      color: #3730a3;
+      border-style: solid;
+    }
+
+    .repetition-slot.correct-match {
+      border: 3px solid #10b981;
+      background-color: #d1fae5;
+      color: #065f46;
+      border-style: solid;
+      cursor: default;
+      transform: none !important;
+      box-shadow: none !important;
+    }
+
+    /* Banque de Pronoms */
+    .pool-zone {
+      border: 3px solid var(--border-color);
+      border-radius: 20px;
+      padding: 1.25rem;
+      background-color: #f8fafc;
+      margin-bottom: 1.5rem;
+      box-shadow: 4px 4px 0px var(--shadow-color);
+    }
+
+    .pool-title {
+      font-weight: 800;
+      font-size: 0.9rem;
+      color: #475569;
+      margin-bottom: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      text-align: center;
+    }
+
+    .pool-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      justify-content: center;
+    }
+
+    .pronoun-badge {
+      background-color: #ffffff;
+      border: 3px solid var(--border-color);
+      padding: 0.5rem 1rem;
+      font-weight: 700;
+      font-size: 1rem;
+      border-radius: 12px;
+      cursor: pointer;
+      box-shadow: 3px 3px 0px var(--shadow-color);
+      transition: all 0.2s ease;
+      font-family: inherit;
+    }
+
+    .pronoun-badge:hover {
+      background-color: var(--primary-light);
+      transform: translate(-2px, -2px);
+      box-shadow: 5px 5px 0px var(--shadow-color);
+    }
+
+    .pronoun-badge:active {
+      transform: translate(1px, 1px);
+      box-shadow: 2px 2px 0px var(--shadow-color);
+    }
+
+    .pronoun-badge.selected {
+      background-color: var(--primary);
+      color: #ffffff;
+      transform: translate(2px, 2px);
+      box-shadow: 1px 1px 0px var(--shadow-color);
+    }
+
+    /* Section Actions */
+    .btn-container {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+    }
+
+    .action-btn {
+      background-color: #fef08a;
+      color: var(--foreground);
+      border: 4px solid var(--border-color);
+      padding: 0.75rem 2rem;
+      font-size: 1.2rem;
+      font-weight: 800;
+      border-radius: 16px;
+      cursor: pointer;
+      box-shadow: 4px 4px 0px var(--shadow-color);
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: inherit;
+    }
+
+    .action-btn:hover {
+      background-color: #fde047;
+      transform: translate(-3px, -3px);
+      box-shadow: 7px 7px 0px var(--shadow-color);
+    }
+
+    .action-btn:active {
+      transform: translate(2px, 2px);
+      box-shadow: 2px 2px 0px var(--shadow-color);
+    }
+
+    .action-btn.correct-btn {
+      background-color: #86efac;
+    }
+    .action-btn.correct-btn:hover {
+      background-color: #4ade80;
+    }
+
+    /* Zone d'explication */
+    .explanation-panel {
+      margin-top: 1.5rem;
+      background-color: #f0fdf4;
+      border: 3px solid #10b981;
+      border-radius: 16px;
+      padding: 1.25rem;
+      display: none;
+      animation: slideIn 0.3s ease-out;
+    }
+
+    .explanation-title {
+      font-weight: 800;
+      color: #065f46;
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .explanation-text {
+      color: #064e3b;
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    /* Écran des résultats */
+    .results-screen {
+      text-align: center;
+      display: none;
+      animation: fadeIn 0.5s ease-out;
+    }
+
+    .results-icon {
+      font-size: 5rem;
+      margin-bottom: 1rem;
+    }
+
+    .results-title {
+      font-size: 2.2rem;
+      font-weight: 900;
+      margin-bottom: 1rem;
+    }
+
+    .results-score {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      color: var(--primary);
+    }
+
+    .results-feedback {
+      font-size: 1.1rem;
+      margin-bottom: 2rem;
+      color: #475569;
+      line-height: 1.6;
+    }
+
+    /* Animations */
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* Secousse d'erreur */
+    .shake-container {
+      animation: shake 0.5s ease-in-out;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      10%, 30%, 50%, 70%, 90% { transform: translateX(-6px); }
+      20%, 40%, 60%, 80% { transform: translateX(6px); }
+    }
+
+    /* Tremblement rouge des mauvais slots */
+    .wrong-match {
+      animation: wrongShake 0.4s ease-in-out;
+      background-color: var(--accent-red-light) !important;
+      border-color: var(--accent-red) !important;
+      color: #b91c1c !important;
+    }
+
+    @keyframes wrongShake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-4px); }
+      40%, 80% { transform: translateX(4px); }
+    }
+
+    #confetti-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    /* Astuce/Tip d'aide */
+    .tip-msg {
+      background-color: #fef3c7;
+      border: 2px solid #d97706;
+      color: #b45309;
+      padding: 0.5rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 1rem;
+      display: none;
+      animation: slideIn 0.2s ease-out;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="game-container" id="game-container">
+    <canvas id="confetti-canvas"></canvas>
+
+    <!-- ÉCRAN DE JEU -->
+    <div id="game-screen">
+      <div class="game-header">
+        <div class="game-title">📝 La Chasse aux Répétitions</div>
+        <div class="score-badge" id="score-badge">Score : 0</div>
+      </div>
+
+      <div class="progress-container">
+        <div class="progress-text" id="progress-text">Texte 1 sur 6</div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="progress-fill"></div>
+        </div>
+      </div>
+
+      <div class="instruction-card">
+        <div class="instruction-title">💡 Consigne :</div>
+        <div class="instruction-desc">
+          Clique sur une répétition en rouge pointillé dans le texte, puis sélectionne le pronom adéquat dans la banque en bas pour la remplacer.
+        </div>
+      </div>
+
+      <!-- Astuce interactive -->
+      <div class="tip-msg" id="tip-msg"></div>
+
+      <!-- Zone texte -->
+      <div class="editor-zone" id="editor-text"></div>
+
+      <!-- Banque de pronoms -->
+      <div class="pool-zone">
+        <div class="pool-title">Boîte à pronoms :</div>
+        <div class="pool-badges" id="pool-badges"></div>
+      </div>
+
+      <!-- Boutons d'action -->
+      <div class="btn-container">
+        <button class="action-btn" id="validate-btn">Valider ➔</button>
+        <button class="action-btn correct-btn" id="next-btn" style="display:none">Continuer ➔</button>
+      </div>
+
+      <!-- Panel d'explication -->
+      <div class="explanation-panel" id="explanation-panel">
+        <div class="explanation-title">💡 Explications grammaticales :</div>
+        <div class="explanation-text" id="explanation-text"></div>
+      </div>
+    </div>
+
+    <!-- ÉCRAN DES RÉSULTATS -->
+    <div class="results-screen" id="results-screen">
+      <div class="results-icon" id="feedback-icon">🏆</div>
+      <div class="results-title" id="feedback-title">Félicitations !</div>
+      <div class="results-score" id="final-score">5 / 5</div>
+      <div class="results-feedback" id="final-feedback">Tu as éliminé toutes les répétitions avec brio !</div>
+      <button class="action-btn" id="restart-btn">Recommencer ↺</button>
+    </div>
+  </div>
+
+  <script>
+    // --- SYNTHÈSE AUDIO (Web Audio API) ---
+    class SoundEffects {
+      constructor() {
+        this.ctx = null;
+      }
+      init() {
+        if (!this.ctx) {
+          this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+      }
+      playTick() {
+        this.init();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(600, now);
+        gain.gain.setValueAtTime(0.08, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.08);
+      }
+      playCorrect() {
+        this.init();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        
+        // Note 1 (Mi 5)
+        const osc1 = this.ctx.createOscillator();
+        const gain1 = this.ctx.createGain();
+        osc1.type = 'triangle';
+        osc1.frequency.setValueAtTime(659.25, now);
+        gain1.gain.setValueAtTime(0.1, now);
+        gain1.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+        osc1.connect(gain1);
+        gain1.connect(this.ctx.destination);
+        osc1.start(now);
+        osc1.stop(now + 0.15);
+
+        // Note 2 (La 5)
+        const osc2 = this.ctx.createOscillator();
+        const gain2 = this.ctx.createGain();
+        osc2.type = 'triangle';
+        osc2.frequency.setValueAtTime(880.00, now + 0.08);
+        gain2.gain.setValueAtTime(0.1, now + 0.08);
+        gain2.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+        osc2.connect(gain2);
+        gain2.connect(this.ctx.destination);
+        osc2.start(now + 0.08);
+        osc2.stop(now + 0.3);
+      }
+      playWrong() {
+        this.init();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(150, now);
+        osc.frequency.linearRampToValueAtTime(100, now + 0.25);
+        
+        gain.gain.setValueAtTime(0.15, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+        
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.25);
+      }
+    }
+    const sounds = new SoundEffects();
+
+    // --- BANQUE DE QUESTIONS ---
+    const QUESTIONS = [
+      {
+        tokens: [
+          { type: "text", text: "Nous entrons dans la grande serre du jardinier, " },
+          { type: "slot", id: "slot0", original: "dans cette serre" },
+          { type: "text", text: " poussent des orchidées exotiques. L'atmosphère est chaude et humide. Mon ami a sorti son appareil photo pour prendre des clichés, mais j'ai oublié " },
+          { type: "slot", id: "slot1", original: "mon appareil photo" },
+          { type: "text", text: " à la maison. De toutes les plantes exposées, nous préférons admirer " },
+          { type: "slot", id: "slot2", original: "ces plantes-là" },
+          { type: "text", text: " pour leurs couleurs vives." }
+        ],
+        correct: {
+          slot0: "où",
+          slot1: "le mien",
+          slot2: "celles-là"
+        },
+        explanation: "1. <strong>où</strong> est un pronom relatif indiquant le lieu.<br>2. <strong>le mien</strong> est le pronom possessif masculin singulier désignant mon appareil photo.<br>3. <strong>celles-là</strong> est le pronom démonstratif féminin pluriel désignant les plantes exposées les plus éloignées."
+      },
+      {
+        tokens: [
+          { type: "text", text: "Sur la table de la cuisine, mon père a posé un poisson grillé " },
+          { type: "slot", id: "slot0", original: "ce poisson grillé" },
+          { type: "text", text: " le chat surveille du coin de l'œil. L'animal cherche le moment idéal pour s'en emparer. Il y a deux assiettes sur la table : " },
+          { type: "slot", id: "slot1", original: "cette assiette-ci" },
+          { type: "text", text: " contient le poisson, et l'autre est vide. Le chien mange sagement ses croquettes, mais le chat dédaigne " },
+          { type: "slot", id: "slot2", original: "les croquettes du chat" },
+          { type: "text", text: " pour lorgner notre repas." }
+        ],
+        correct: {
+          slot0: "que",
+          slot1: "celle-ci",
+          slot2: "les siennes"
+        },
+        explanation: "1. <strong>que</strong> est le pronom relatif COD remplaçant <i>le poisson grillé</i>.<br>2. <strong>celle-ci</strong> est le pronom démonstratif féminin singulier remplaçant <i>cette assiette-ci</i>.<br>3. <strong>les siennes</strong> est le pronom possessif féminin pluriel désignant les croquettes du chat."
+      },
+      {
+        tokens: [
+          { type: "text", text: "Nous explorons les rayons de la vieille bibliothèque de l'école, " },
+          { type: "slot", id: "slot0", original: "de cette bibliothèque" },
+          { type: "text", text: " le calme nous impressionne. Soudain, je découvre un coffret caché derrière de gros volumes. Mon ami prend ses crayons pour dessiner le plan du trésor, mais le bibliothécaire préfère nous prêter " },
+          { type: "slot", id: "slot1", original: "les crayons du bibliothécaire" },
+          { type: "text", text: ". Parmi les deux parchemins trouvés, je choisis d'étudier " },
+          { type: "slot", id: "slot2", original: "ce parchemin-ci" },
+          { type: "text", text: " car il semble plus ancien." }
+        ],
+        correct: {
+          slot0: "dont",
+          slot1: "les siens",
+          slot2: "celui-ci"
+        },
+        explanation: "1. Le nom est précédé de <i>de</i> (le calme <i>de</i> la bibliothèque) : on emploie le pronom relatif <strong>dont</strong>.<br>2. <strong>les siens</strong> est le pronom possessif masculin pluriel remplaçant <i>les crayons du bibliothécaire</i>.<br>3. <strong>celui-ci</strong> est le pronom démonstratif masculin singulier désignant le parchemin le plus proche."
+      },
+      {
+        tokens: [
+          { type: "text", text: "Les élèves de CM2 répètent leur pièce de théâtre sous l'œil attentif de la maîtresse. Nous applaudissons l'actrice principale " },
+          { type: "slot", id: "slot0", original: "l'actrice principale" },
+          { type: "text", text: " incarne une reine courageuse. Cependant, la jeune fille a égaré sa couronne dorée juste avant d'entrer en scène. Heureusement, sa camarade lui prête " },
+          { type: "slot", id: "slot1", original: "la couronne de sa camarade" },
+          { type: "text", text: ". Pour le décor, nous installons deux trônes peints en rouge : l'actrice choisit " },
+          { type: "slot", id: "slot2", original: "ce trône-ci" },
+          { type: "text", text: " car il est plus stable." }
+        ],
+        correct: {
+          slot0: "qui",
+          slot1: "la sienne",
+          slot2: "celui-ci"
+        },
+        explanation: "1. <strong>qui</strong> est le pronom relatif sujet remplaçant <i>l'actrice principale</i>.<br>2. <strong>la sienne</strong> désigne la couronne de sa camarade.<br>3. <strong>celui-ci</strong> désigne le trône proche."
+      },
+      {
+        tokens: [
+          { type: "text", text: "Dans le bois derrière la maison, nous construisons un fortin en bois pour nous cacher. Les branches de sapin " },
+          { type: "slot", id: "slot0", original: "les branches de sapin" },
+          { type: "text", text: " nous assemblons forment un toit solide contre la pluie. Mon frère utilise ses outils pour fixer les planches, tandis que je sors " },
+          { type: "slot", id: "slot1", original: "mes outils" },
+          { type: "text", text: " de mon sac à dos. Il y a deux troncs d'arbres pour s'asseoir : mon frère préfère grimper sur " },
+          { type: "slot", id: "slot2", original: "ce tronc-là" },
+          { type: "text", text: " pour monter la garde." }
+        ],
+        correct: {
+          slot0: "que",
+          slot1: "les miens",
+          slot2: "celui-là"
+        },
+        explanation: "1. <strong>que</strong> est le pronom relatif COD remplaçant <i>les branches de sapin</i>.<br>2. <strong>les miens</strong> désigne mes outils à moi.<br>3. <strong>celui-là</strong> désigne le tronc éloigné."
+      },
+      {
+        tokens: [
+          { type: "text", text: "Notre école participe à un échange avec une classe de Londres, " },
+          { type: "slot", id: "slot0", original: "dans cette classe" },
+          { type: "text", text: " étudient nos correspondants anglais. Chaque semaine, nous attendons le courrier avec impatience. Les correspondants ont écrit leur lettre en français, et nos élèves rédigent " },
+          { type: "slot", id: "slot1", original: "leur lettre" },
+          { type: "text", text: " en anglais avec soin. Nous collons leurs photos sur un grand panneau : je préfère " },
+          { type: "slot", id: "slot2", original: "cette photo-ci" },
+          { type: "text", text: " où l'on voit le célèbre pont de la Tamise." }
+        ],
+        correct: {
+          slot0: "où",
+          slot1: "la leur",
+          slot2: "celle-ci"
+        },
+        explanation: "1. <strong>où</strong> est le pronom relatif indiquant le lieu.<br>2. <strong>la leur</strong> désigne la lettre de nos élèves.<br>3. <strong>celle-ci</strong> désigne la photo proche."
+      },
+      {
+        tokens: [
+          { type: "text", text: "Ce soir, nous installons nos trépieds sur le sommet de la colline, " },
+          { type: "slot", id: "slot0", original: "de cette colline" },
+          { type: "text", text: " la vue sur le ciel nocturne est magnifique. Les étoiles filantes traversent le ciel et nous montrons " },
+          { type: "slot", id: "slot1", original: "ces étoiles" },
+          { type: "text", text: " du doigt avec excitation. L'animateur règle sa grande lunette astronomique, puis ma sœur ajuste " },
+          { type: "slot", id: "slot2", original: "la lunette de ma sœur" },
+          { type: "text", text: " afin d'observer les cratères glacés de la Lune." }
+        ],
+        correct: {
+          slot0: "dont",
+          slot1: "celles-ci",
+          slot2: "la sienne"
+        },
+        explanation: "1. Le nom est précédé de <i>de</i> (la vue <i>de</i> la colline) : on emploie le pronom relatif <strong>dont</strong>.<br>2. <strong>celles-ci</strong> désigne ces étoiles.<br>3. <strong>la sienne</strong> désigne la lunette de ma sœur."
+      },
+      {
+        tokens: [
+          { type: "text", text: "Nous suivons attentivement le guide forestier " },
+          { type: "slot", id: "slot0", original: "le guide forestier" },
+          { type: "text", text: " nous emmène pour un grand jeu de piste. Sur les vieux chênes, des flèches colorées indiquent le chemin. Les enfants suivent " },
+          { type: "slot", id: "slot1", original: "ces flèches" },
+          { type: "text", text: " pour éviter de s'égarer dans les fourrés. Marc utilise ses propres jumelles, tandis que Julie et Thomas sortent " },
+          { type: "slot", id: "slot2", original: "les jumelles de Julie et Thomas" },
+          { type: "text", text: " pour essayer de repérer la ligne d'arrivée." }
+        ],
+        correct: {
+          slot0: "qui",
+          slot1: "celles-ci",
+          slot2: "les leurs"
+        },
+        explanation: "1. <strong>qui</strong> est le pronom relatif sujet remplaçant <i>le guide forestier</i>.<br>2. <strong>celles-ci</strong> désigne ces flèches.<br>3. <strong>les leurs</strong> désigne les jumelles de Julie et de Thomas."
+      },
+      {
+        tokens: [
+          { type: "text", text: "Notre classe se rassemble dans la galerie principale devant le chef-d'œuvre " },
+          { type: "slot", id: "slot0", original: "le chef-d'œuvre" },
+          { type: "text", text: " le peintre a réalisé au XIXe siècle. Pour examiner les petits détails de la peinture, le guide prête sa loupe à Léa, puis le professeur offre " },
+          { type: "slot", id: "slot1", original: "la loupe du professeur" },
+          { type: "text", text: " à un autre élève. De tous les tableaux exposés dans cette salle, le groupe préfère étudier " },
+          { type: "slot", id: "slot2", original: "ce tableau-ci" },
+          { type: "text", text: " car ses couleurs sont plus chaleureuses." }
+        ],
+        correct: {
+          slot0: "que",
+          slot1: "la sienne",
+          slot2: "celui-ci"
+        },
+        explanation: "1. <strong>que</strong> est le pronom relatif COD remplaçant <i>le chef-d'œuvre</i>.<br>2. <strong>la sienne</strong> désigne la loupe du professeur.<br>3. <strong>celui-ci</strong> désigne le tableau proche."
+      },
+      {
+        tokens: [
+          { type: "text", text: "Les élèves s'affrontent pour la finale du tournoi de basket dans le gymnase, " },
+          { type: "slot", id: "slot0", original: "dans ce gymnase" },
+          { type: "text", text: " retentissent les encouragements des spectateurs. L'ambiance est fantastique. L'arbitre a confisqué le ballon de Paul, alors j'ai sorti " },
+          { type: "slot", id: "slot1", original: "mon ballon" },
+          { type: "text", text: " de mon sac de sport pour continuer le match. Parmi les deux gourdes posées au sol, le capitaine choisit " },
+          { type: "slot", id: "slot2", original: "cette gourde-ci" },
+          { type: "text", text: " pour boire une gorgée d'eau fraîche." }
+        ],
+        correct: {
+          slot0: "où",
+          slot1: "le mien",
+          slot2: "celle-ci"
+        },
+        explanation: "1. <strong>où</strong> est le pronom relatif de lieu.<br>2. <strong>le mien</strong> désigne mon ballon à moi.<br>3. <strong>celle-ci</strong> désigne la gourde la plus proche."
+      },
+      {
+        tokens: [
+          { type: "text", text: "Nous préparons tous ensemble une tarte aux abricots, " },
+          { type: "slot", id: "slot0", original: "de cette tarte" },
+          { type: "text", text: " la bonne odeur se répand déjà dans toute la cuisine. Les fruits proviennent du grand verger de notre oncle. Nous trions soigneusement les abricots, " },
+          { type: "slot", id: "slot1", original: "ces abricots" },
+          { type: "text", text: " sont mûrs et bien sucrés. J'adore ranger mes ustensiles après la vaisselle, mais ma sœur préfère laisser " },
+          { type: "slot", id: "slot2", original: "les ustensiles de ma sœur" },
+          { type: "text", text: " sur la table." }
+        ],
+        correct: {
+          slot0: "dont",
+          slot1: "qui",
+          slot2: "les siens"
+        },
+        explanation: "1. Le nom est précédé de <i>de</i> (la bonne odeur <i>de</i> la tarte) : on utilise le pronom relatif <strong>dont</strong>.<br>2. <strong>qui</strong> est le pronom relatif sujet remplaçant <i>ces abricots</i>.<br>3. <strong>les siens</strong> désigne les ustensiles de ma sœur."
+      },
+      {
+        tokens: [
+          { type: "text", text: "Les jeunes danseurs s'apprêtent à monter sur la scène du grand théâtre. Les magnifiques costumes " },
+          { type: "slot", id: "slot0", original: "les costumes" },
+          { type: "text", text: " les couturières ont confectionnés sont suspendus dans les loges. Les filles nouent soigneusement leurs chaussons de danse, tandis que les garçons ajustent " },
+          { type: "slot", id: "slot1", original: "leurs chaussons" },
+          { type: "text", text: " avec concentration. Parmi tous les chapeaux pailletés posés sur l'étagère, la soliste choisit " },
+          { type: "slot", id: "slot2", original: "ces chapeaux-ci" },
+          { type: "text", text: " pour l'acte final." }
+        ],
+        correct: {
+          slot0: "que",
+          slot1: "les leurs",
+          slot2: "ceux-ci"
+        },
+        explanation: "1. <strong>que</strong> est le pronom relatif COD remplaçant <i>les costumes</i>.<br>2. <strong>les leurs</strong> désigne les chaussons des garçons.<br>3. <strong>ceux-ci</strong> désigne ces chapeaux."
+      }
+    ];
+
+    const PRONOUNS = [
+      "qui", "que", "dont", "où", 
+      "le mien", "la mienne", "les miens",
+      "le sien", "la sienne", "les siens", "les siennes", 
+      "le leur", "la leur", "les leurs", 
+      "celui-ci", "celle-ci", "celui-là", "celles-là", "ceux-ci", "celles-ci"
+    ];
+
+    // --- ÉTAT DU JEU ---
+    let state = {
+      currentIndex: 0,
+      score: 0,
+      submitted: false,
+      incorrectAttempts: 0,
+      questions: [],
+      activeSlotId: null, // Le slot actuellement sélectionné
+      slotAnswers: {} // Map slotId -> pronom
+    };
+
+    // --- SÉLECTEURS ---
+    const gameScreen = document.getElementById('game-screen');
+    const resultsScreen = document.getElementById('results-screen');
+    const scoreBadge = document.getElementById('score-badge');
+    const progressText = document.getElementById('progress-text');
+    const progressFill = document.getElementById('progress-fill');
+    const editorText = document.getElementById('editor-text');
+    const poolBadges = document.getElementById('pool-badges');
+    const validateBtn = document.getElementById('validate-btn');
+    const nextBtn = document.getElementById('next-btn');
+    const explanationPanel = document.getElementById('explanation-panel');
+    const explanationText = document.getElementById('explanation-text');
+    const restartBtn = document.getElementById('restart-btn');
+    const gameContainer = document.getElementById('game-container');
+    const tipMsg = document.getElementById('tip-msg');
+
+    // --- UTILS ---
+    function capitalizeFirstLetter(str) {
+      if (!str) return str;
+      return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+
+    function shuffle(array) {
+      const arr = [...array];
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    // --- ACTIONS ---
+    function initGame() {
+      state.currentIndex = 0;
+      state.score = 0;
+      state.submitted = false;
+      state.incorrectAttempts = 0;
+      state.activeSlotId = null;
+      state.questions = shuffle(QUESTIONS).slice(0, 6); // 6 questions aléatoires par session (2 jeux d'histoires sur un pool de 12)
+
+      scoreBadge.textContent = "Score : 0";
+      gameScreen.style.display = 'block';
+      resultsScreen.style.display = 'none';
+
+      loadQuestion();
+    }
+
+    function loadQuestion() {
+      state.submitted = false;
+      state.incorrectAttempts = 0;
+      state.activeSlotId = null;
+      state.slotAnswers = {};
+      
+      validateBtn.style.display = 'inline-flex';
+      nextBtn.style.display = 'none';
+      explanationPanel.style.display = 'none';
+      gameContainer.classList.remove('shake-container');
+      hideTip();
+
+      const question = state.questions[state.currentIndex];
+
+      // Progress UI
+      progressText.textContent = `Texte ${state.currentIndex + 1} sur ${state.questions.length}`;
+      const pct = (state.currentIndex / state.questions.length) * 100;
+      progressFill.style.width = `${pct}%`;
+
+      // Init answers
+      question.tokens.forEach(tok => {
+        if (tok.type === 'slot') {
+          state.slotAnswers[tok.id] = "";
+        }
+      });
+
+      renderText();
+      renderPool();
+    }
+
+    function showTip(msg) {
+      tipMsg.textContent = msg;
+      tipMsg.style.display = 'block';
+    }
+
+    function hideTip() {
+      tipMsg.style.display = 'none';
+    }
+
+    function renderText() {
+      editorText.innerHTML = '';
+      const question = state.questions[state.currentIndex];
+
+      question.tokens.forEach(tok => {
+        if (tok.type === 'text') {
+          const span = document.createElement('span');
+          span.textContent = tok.text;
+          editorText.appendChild(span);
+        } else if (tok.type === 'slot') {
+          const slotVal = state.slotAnswers[tok.id];
+          const btn = document.createElement('button');
+          btn.className = 'repetition-slot';
+          btn.setAttribute('data-slot-id', tok.id);
+
+          // Capitaliser automatiquement si le texte original était capitalisé
+          let displayText = slotVal || tok.original;
+          const isCapitalized = tok.original.charAt(0) === tok.original.charAt(0).toUpperCase() && tok.original.charAt(0) !== tok.original.charAt(0).toLowerCase();
+          if (isCapitalized) {
+            displayText = capitalizeFirstLetter(displayText);
+          }
+
+          btn.textContent = displayText;
+
+          if (state.submitted) {
+            btn.classList.add('correct-match');
+          } else {
+            if (slotVal) {
+              btn.classList.add('filled');
+            }
+            if (state.activeSlotId === tok.id) {
+              btn.classList.add('active');
+            }
+
+            btn.addEventListener('click', (e) => {
+              e.preventDefault();
+              sounds.playTick();
+              hideTip();
+
+              if (state.activeSlotId === tok.id) {
+                // Déjà actif -> déselectionner
+                state.activeSlotId = null;
+              } else {
+                // Activer ce slot
+                state.activeSlotId = tok.id;
+                // Si déjà rempli, on le vide pour permettre de refaire le choix
+                if (state.slotAnswers[tok.id]) {
+                  state.slotAnswers[tok.id] = "";
+                }
+              }
+              renderText();
+              renderPool();
+            });
+          }
+
+          editorText.appendChild(btn);
+        }
+      });
+    }
+
+    // --- RENDER POOL ---
+    function renderPool() {
+      poolBadges.innerHTML = '';
+      PRONOUNS.forEach(prn => {
+        const btn = document.createElement('button');
+        btn.className = 'pronoun-badge';
+        btn.textContent = prn;
+
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          if (state.submitted) return;
+          sounds.playTick();
+
+          if (!state.activeSlotId) {
+            showTip("💡 Clique d'abord sur une répétition en rouge pointillé dans le texte ci-dessus pour la remplacer !");
+            return;
+          }
+
+          // Remplir le slot actif
+          state.slotAnswers[state.activeSlotId] = prn;
+          state.activeSlotId = null;
+          hideTip();
+
+          renderText();
+          renderPool();
+        });
+
+        poolBadges.appendChild(btn);
+      });
+    }
+
+    function handleValidation() {
+      if (state.submitted) return;
+
+      const question = state.questions[state.currentIndex];
+      
+      // Check if all slots are filled
+      let allFilled = true;
+      Object.keys(question.correct).forEach(slotId => {
+        if (!state.slotAnswers[slotId]) {
+          allFilled = false;
+        }
+      });
+
+      if (!allFilled) {
+        sounds.playWrong();
+        showTip("⚠️ Remplis toutes les répétitions avant de valider !");
+        return;
+      }
+
+      // Check correctness
+      let isCorrect = true;
+      Object.keys(question.correct).forEach(slotId => {
+        const expected = question.correct[slotId];
+        const actual = state.slotAnswers[slotId] || "";
+        if (expected !== actual) {
+          isCorrect = false;
+        }
+      });
+
+      if (isCorrect) {
+        // Success
+        state.submitted = true;
+        sounds.playCorrect();
+        hideTip();
+
+        renderText();
+
+        if (state.incorrectAttempts === 0) {
+          state.score++;
+          scoreBadge.textContent = `Score : ${state.score}`;
+        }
+
+        explanationText.innerHTML = question.explanation;
+        explanationPanel.style.display = 'block';
+        validateBtn.style.display = 'none';
+        nextBtn.style.display = 'inline-flex';
+      } else {
+        // Fail
+        sounds.playWrong();
+        state.incorrectAttempts++;
+
+        // Secouer l'ensemble
+        gameContainer.classList.remove('shake-container');
+        void gameContainer.offsetWidth; // Trigger reflow
+        gameContainer.classList.add('shake-container');
+
+        // Animation sur les mauvais slots
+        Object.keys(question.correct).forEach(slotId => {
+          const expected = question.correct[slotId];
+          const actual = state.slotAnswers[slotId] || "";
+          if (expected !== actual) {
+            const btn = editorText.querySelector(`[data-slot-id="${slotId}"]`);
+            if (btn) {
+              btn.classList.add('wrong-match');
+              setTimeout(() => {
+                btn.classList.remove('wrong-match');
+              }, 400);
+            }
+          }
+        });
+
+        // Vider les mauvais choix seulement pour aider l'élève
+        Object.keys(question.correct).forEach(slotId => {
+          const expected = question.correct[slotId];
+          const actual = state.slotAnswers[slotId] || "";
+          if (expected !== actual) {
+            state.slotAnswers[slotId] = "";
+          }
+        });
+        state.activeSlotId = null;
+
+        setTimeout(() => {
+          renderText();
+          renderPool();
+        }, 500);
+      }
+    }
+
+    function handleNext() {
+      state.currentIndex++;
+      if (state.currentIndex < state.questions.length) {
+        loadQuestion();
+      } else {
+        showResults();
+      }
+    }
+
+    function showResults() {
+      gameScreen.style.display = 'none';
+      resultsScreen.style.display = 'block';
+
+      const finalScore = document.getElementById('final-score');
+      finalScore.textContent = `${state.score} / ${state.questions.length}`;
+
+      const titleEl = document.getElementById('feedback-title');
+      const textEl = document.getElementById('final-feedback');
+      const iconEl = document.getElementById('feedback-icon');
+
+      if (state.score === state.questions.length) {
+        iconEl.textContent = '🏆';
+        titleEl.textContent = 'Parfait !';
+        textEl.textContent = 'Exceptionnel ! Tu as débusqué toutes les répétitions sans faire de fautes !';
+        startConfetti();
+      } else if (state.score >= 4) {
+        iconEl.textContent = '🌟';
+        titleEl.textContent = 'Excellent !';
+        textEl.textContent = 'Félicitations ! Ton style est maintenant beaucoup plus fluide.';
+        startConfetti();
+      } else if (state.score >= 2) {
+        iconEl.textContent = '👍';
+        titleEl.textContent = 'Bravo !';
+        textEl.textContent = 'Bon travail. Relis bien les explications pour t\'améliorer encore.';
+      } else {
+        iconEl.textContent = '🌱';
+        titleEl.textContent = 'Essaie encore !';
+        textEl.textContent = 'Recommence pour bien assimiler l\'usage des pronoms relatifs, possessifs et démonstratifs.';
+      }
+    }
+
+    // --- ENGIN CONFETTI ---
+    let confettiActive = false;
+    function startConfetti() {
+      confettiActive = true;
+      const canvas = document.getElementById('confetti-canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = canvas.parentElement.offsetWidth;
+      canvas.height = canvas.parentElement.offsetHeight;
+
+      const colors = ['#4f46e5', '#f59e0b', '#ef4444', '#10b981', '#3b82f6'];
+      const confettis = Array.from({ length: 80 }).map(() => ({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height - canvas.height,
+        r: Math.random() * 6 + 4,
+        d: Math.random() * canvas.height,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        tilt: Math.random() * 10 - 5,
+        tiltAngleIncremental: Math.random() * 0.07 + 0.02,
+        tiltAngle: 0
+      }));
+
+      function draw() {
+        if (!confettiActive) return;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        confettis.forEach((c, index) => {
+          c.tiltAngle += c.tiltAngleIncremental;
+          c.y += (Math.cos(c.d) + 3 + c.r / 2) / 2;
+          c.tilt = Math.sin(c.tiltAngle - index / 3) * 15;
+
+          if (c.y > canvas.height) {
+            c.x = Math.random() * canvas.width;
+            c.y = -20;
+            c.tilt = Math.random() * 10 - 5;
+          }
+
+          ctx.beginPath();
+          ctx.lineWidth = c.r;
+          ctx.strokeStyle = c.color;
+          ctx.moveTo(c.x + c.tilt + c.r / 2, c.y);
+          ctx.lineTo(c.x + c.tilt, c.y + c.tilt + c.r / 2);
+          ctx.stroke();
+        });
+
+        requestAnimationFrame(draw);
+      }
+      draw();
+
+      setTimeout(() => {
+        confettiActive = false;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }, 5000);
+    }
+
+    // --- LISTENERS ---
+    validateBtn.addEventListener('click', handleValidation);
+    nextBtn.addEventListener('click', handleNext);
+    restartBtn.addEventListener('click', initGame);
+
+    window.onload = initGame;
+  </script>
+</body>
+</html>

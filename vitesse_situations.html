@@ -1,0 +1,1319 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Situations-Problèmes : Vitesse Moyenne</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&family=Plus+Jakarta+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #0f172a;
+      --bg-card: #1e293b;
+      --primary: #8b5cf6;
+      --primary-glow: rgba(139, 92, 246, 0.25);
+      --true-color: #10b981;
+      --true-glow: rgba(16, 185, 129, 0.25);
+      --false-color: #f43f5e;
+      --false-glow: rgba(244, 63, 94, 0.25);
+      --accent: #f59e0b;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --border-color: #334155;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 1.5rem;
+    }
+
+    .game-container {
+      width: 100%;
+      max-width: 820px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 24px;
+      padding: 2rem 2.5rem 2.5rem;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    }
+
+    .game-container::before {
+      content: '';
+      position: absolute;
+      top: -120px; right: -120px;
+      width: 280px; height: 280px;
+      background: radial-gradient(circle, rgba(139,92,246,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    /* En-tête */
+    header { text-align: center; margin-bottom: 1.5rem; position: relative; z-index: 1; }
+
+    h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 2rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #c4b5fd 0%, #8b5cf6 60%, #6d28d9 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.4rem;
+    }
+
+    .subtitle { color: var(--text-muted); font-size: 0.95rem; }
+
+    /* Écran d'accueil - Choix du niveau */
+    .menu-screen {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      align-items: center;
+      padding: 1rem 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    .level-card {
+      width: 100%;
+      background: rgba(30, 41, 59, 0.4);
+      border: 2px solid var(--border-color);
+      border-radius: 20px;
+      padding: 1.5rem 2rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .level-card:hover {
+      border-color: var(--primary);
+      background: rgba(139, 92, 246, 0.05);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    }
+
+    .level-info {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .level-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .level-card:nth-child(1) .level-title {
+      color: #34d399;
+    }
+    .level-card:nth-child(2) .level-title {
+      color: #fbbf24;
+    }
+
+    .level-desc {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    .level-badge {
+      padding: 0.5rem 1rem;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-color);
+      font-family: 'Outfit', sans-serif;
+      font-weight: 600;
+      font-size: 0.85rem;
+      color: var(--text-main);
+      white-space: nowrap;
+    }
+
+    /* Tableau des scores et de progression */
+    .scoreboard {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 0.9rem 1.25rem;
+      margin-bottom: 1.5rem;
+      position: relative; z-index: 1;
+    }
+
+    .score-block { display: flex; align-items: center; gap: 0.6rem; }
+    .score-label { font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); }
+    .score-value { font-family: 'Outfit', sans-serif; font-size: 1.4rem; font-weight: 700; color: var(--accent); }
+
+    .progress-track {
+      flex: 1; height: 8px;
+      background: rgba(51,65,85,0.5);
+      border-radius: 999px; margin: 0 1.5rem; overflow: hidden;
+    }
+    .progress-bar {
+      height: 100%; width: 0%;
+      background: linear-gradient(90deg, var(--primary) 0%, #a78bfa 100%);
+      border-radius: 999px;
+      transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Carte de la Situation */
+    .situation-card {
+      background: rgba(30, 41, 59, 0.5);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+      position: relative; z-index: 1;
+      min-height: 120px;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      justify-content: center;
+    }
+
+    .situation-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.25rem 0.75rem;
+      border-radius: 99px;
+      background: rgba(139, 92, 246, 0.15);
+      border: 1px solid rgba(139, 92, 246, 0.3);
+      color: #c4b5fd;
+      font-size: 0.78rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      width: fit-content;
+    }
+
+    .situation-text {
+      font-size: 1.2rem;
+      font-weight: 600;
+      line-height: 1.5;
+      color: #e2e8f0;
+    }
+
+    /* Options QCM */
+    .options-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      position: relative; z-index: 1;
+      margin-bottom: 1.5rem;
+    }
+
+    .btn-option {
+      background: rgba(30, 41, 59, 0.3);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 1.2rem;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #f1f5f9;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+
+    .btn-option:hover:not(:disabled) {
+      border-color: var(--primary);
+      background: rgba(139, 92, 246, 0.08);
+      transform: translateY(-2px);
+    }
+
+    .btn-option:active:not(:disabled) {
+      transform: translateY(0);
+    }
+
+    .btn-option:disabled {
+      cursor: not-allowed;
+    }
+
+    /* États de validation des boutons */
+    .btn-option.correct {
+      background: rgba(16, 185, 129, 0.15) !important;
+      border-color: var(--true-color) !important;
+      color: #a7f3d0 !important;
+      box-shadow: 0 0 15px rgba(16, 185, 129, 0.15);
+    }
+
+    .btn-option.wrong {
+      background: rgba(244, 63, 94, 0.15) !important;
+      border-color: var(--false-color) !important;
+      color: #fecdd3 !important;
+      box-shadow: 0 0 15px rgba(244, 63, 94, 0.15);
+      opacity: 0.8;
+    }
+
+    .btn-option.faded {
+      opacity: 0.3;
+    }
+
+    /* Panneau de correction */
+    .feedback-panel {
+      border-radius: 18px;
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      position: relative; z-index: 1;
+      margin-bottom: 1.5rem;
+    }
+
+    .feedback-correct {
+      background: rgba(16, 185, 129, 0.08);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+    }
+    .feedback-wrong {
+      background: rgba(244, 63, 94, 0.08);
+      border: 1px solid rgba(244, 63, 94, 0.25);
+    }
+
+    .feedback-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 700;
+      font-size: 1.05rem;
+    }
+    .feedback-correct .feedback-header { color: #34d399; }
+    .feedback-wrong .feedback-header { color: #fb7185; }
+
+    .feedback-expl {
+      font-size: 0.92rem;
+      line-height: 1.55;
+      color: #cbd5e1;
+    }
+
+    .rule-of-three {
+      margin-top: 0.6rem;
+      padding: 0.75rem 1rem;
+      border-radius: 10px;
+      background: rgba(139, 92, 246, 0.08);
+      border-left: 3px solid var(--primary);
+      font-size: 0.9rem;
+      line-height: 1.5;
+      color: #c4b5fd;
+    }
+
+    .rule-of-three ul {
+      margin-left: 1.25rem;
+      margin-top: 0.3rem;
+    }
+
+    .rule-of-three li {
+      margin-bottom: 0.25rem;
+    }
+
+    /* Bouton Suivant */
+    .btn-next {
+      width: 100%;
+      border: none;
+      color: white;
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      padding: 1rem;
+      border-radius: 14px;
+      cursor: pointer;
+      background: linear-gradient(135deg, var(--primary) 0%, #6d28d9 100%);
+      box-shadow: 0 4px 16px var(--primary-glow);
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      position: relative; z-index: 1;
+    }
+    .btn-next:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(139,92,246,0.4); }
+
+    /* Bouton Retour menu */
+    .btn-back {
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: color 0.15s;
+    }
+    .btn-back:hover {
+      color: var(--text-main);
+    }
+
+    /* Écran félicitations */
+    .congrats-screen {
+      display: none;
+      text-align: center;
+      padding: 2rem 1rem;
+      animation: scaleIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+      position: relative;
+      z-index: 1;
+    }
+    .trophy-glow {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+      display: inline-block;
+      animation: float 3s ease-in-out infinite;
+    }
+    .congrats-title { font-family: 'Outfit', sans-serif; font-size: 2.2rem; font-weight: 800; color: var(--accent); margin-bottom: 0.6rem; }
+    .congrats-text { color: var(--text-muted); font-size: 1.05rem; line-height: 1.6; max-width: 480px; margin: 0 auto 2rem; }
+    .score-total {
+      font-family: 'Outfit', sans-serif;
+      font-size: 3.5rem;
+      font-weight: 800;
+      color: var(--text-main);
+      margin-bottom: 1.5rem;
+      display: flex;
+      justify-content: center;
+      align-items: baseline;
+      gap: 0.2rem;
+    }
+    .score-total-max {
+      font-size: 1.5rem;
+      color: var(--text-muted);
+    }
+
+    .btn-replay {
+      background: linear-gradient(135deg, var(--true-color) 0%, #059669 100%);
+      border: none; color: white;
+      font-family: 'Outfit', sans-serif; font-size: 1.1rem; font-weight: 700;
+      padding: 1rem 2.5rem; border-radius: 14px; cursor: pointer;
+      box-shadow: 0 4px 16px rgba(16,185,129,0.3);
+      transition: all 0.2s ease;
+      display: inline-flex; align-items: center; gap: 0.5rem;
+    }
+    .btn-replay:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(16,185,129,0.4); }
+
+
+
+    /* Animations */
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes scaleIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    /* Responsive */
+    @media (max-width: 640px) {
+      .game-container { padding: 1.5rem; }
+      .options-grid { grid-template-columns: 1fr; gap: 0.75rem; }
+      h1 { font-size: 1.7rem; }
+      .btn-option { padding: 1rem; font-size: 1.05rem; }
+      .level-card { flex-direction: column; align-items: flex-start; gap: 0.8rem; padding: 1.25rem; }
+      .level-badge { align-self: flex-end; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="game-container">
+  <!-- En-tête -->
+  <header>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+      <button class="btn-back" id="btnBackToMenu" onclick="backToMenu()" style="display: none;">
+        ➔ Retour au menu
+      </button>
+      <div style="flex: 1;"></div>
+    </div>
+    <h1 id="mainTitle">Situations de Vitesse</h1>
+    <p class="subtitle" id="mainSubtitle">Résous des situations réelles et trouve la bonne vitesse moyenne</p>
+  </header>
+
+  <!-- ÉCRAN D'ACCUEIL : SÉLECTION DU NIVEAU -->
+  <div class="menu-screen" id="menuScreen">
+    <div class="level-card" onclick="startLevel(1)">
+      <div class="level-info">
+        <div class="level-title">Niveau 1 : Initiation</div>
+        <div class="level-desc">Calculs directs simples avec 1 seule opération (multiplication ou division) pour trouver la vitesse horaire ou en m/s.</div>
+      </div>
+      <div class="level-badge">10 questions</div>
+    </div>
+
+    <div class="level-card" onclick="startLevel(2)">
+      <div class="level-info">
+        <div class="level-title">Niveau 2 : Entraînement</div>
+        <div class="level-desc">Problèmes plus complexes utilisant des durées fractionnaires (45 min, 1h30, 1h15, 2h30). Utilise la règle de trois pour raisonner étape par étape.</div>
+      </div>
+      <div class="level-badge">5 questions</div>
+    </div>
+  </div>
+
+  <!-- ZONE DE JEU (MASQUÉE PAR DÉFAUT) -->
+  <div id="playZone" style="display: none;">
+    <!-- Scoreboard -->
+    <div class="scoreboard">
+      <div class="score-block">
+        <span class="score-label">Question</span>
+        <span class="score-value" id="currentQuestionNum">1</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+      <div class="score-block">
+        <span class="score-label">Score</span>
+        <span class="score-value" id="scoreValue">0</span>
+      </div>
+    </div>
+
+    <!-- Situation -->
+    <div class="situation-card">
+      <div class="situation-tag" id="situationTag">Situation</div>
+      <div class="situation-text" id="situationText">Situation-problème écrite ici...</div>
+    </div>
+
+    <!-- Choix multiples (QCM) -->
+    <div class="options-grid" id="optionsGrid">
+      <button class="btn-option" onclick="selectOption(0)">Option A</button>
+      <button class="btn-option" onclick="selectOption(1)">Option B</button>
+      <button class="btn-option" onclick="selectOption(2)">Option C</button>
+      <button class="btn-option" onclick="selectOption(3)">Option D</button>
+    </div>
+
+    <!-- Correction détaillée -->
+    <div class="feedback-panel" id="feedbackPanel" style="display: none;">
+      <div class="feedback-header" id="feedbackHeader">
+        Correction
+      </div>
+      <div class="feedback-expl" id="feedbackExpl">
+        Explication de la réponse...
+      </div>
+      <div class="rule-of-three" id="ruleOfThreeBox" style="display: none;">
+        Explication règle de trois...
+      </div>
+    </div>
+
+    <!-- Bouton Continuer -->
+    <button class="btn-next" id="btnNext" onclick="nextQuestion()" style="display: none;">
+      Question suivante ➔
+    </button>
+  </div>
+
+  <!-- ÉCRAN DE FÉLICITATIONS (MASQUÉ PAR DÉFAUT) -->
+  <div class="congrats-screen" id="congratsScreen">
+    <div class="trophy-glow">🏅</div>
+    <div class="congrats-title" id="congratsTitle">Félicitations !</div>
+    <div class="congrats-text" id="congratsText">Tu as terminé l'exercice !</div>
+    <div class="score-total">
+      <span id="finalScore">0</span>
+      <span class="score-total-max" id="maxScore">/ 10</span>
+    </div>
+    <button class="btn-replay" onclick="initLevel()">Rejouer ce niveau ⟳</button>
+  </div>
+
+
+</div>
+
+<script>
+// ==================== BANQUE DE QUESTIONS ====================
+
+// NIVEAU 1 : 30 situations faciles (calculs directs simples)
+const level1Questions = [
+  {
+    text: "Julie se rend à l'école à pied. Elle parcourt les 2 km en 30 minutes. Quelle est sa vitesse moyenne ?",
+    options: ["4 km/h", "2 km/h", "1 km/h", "15 km/h"],
+    correct: 0,
+    expl: "Puisque Julie parcourt 2 km en 30 minutes, elle fera le double en 1 heure (60 minutes).",
+    steps: [
+      "En 30 minutes, elle parcourt 2 km.",
+      "En 1 heure (30 min × 2), elle parcourt 2 km × 2 = 4 km.",
+      "Sa vitesse est de 4 km/h."
+    ]
+  },
+  {
+    text: "Un cycliste a parcouru 160 km en 4 heures. Quelle était sa vitesse moyenne ?",
+    options: ["30 km/h", "40 km/h", "50 km/h", "160 km/h"],
+    correct: 1,
+    expl: "Pour trouver la vitesse horaire moyenne, on divise la distance totale par le nombre d'heures.",
+    steps: [
+      "Distance = 160 km, Durée = 4 heures.",
+      "Calcul direct : 160 km ÷ 4 = 40 km en 1 heure.",
+      "Sa vitesse moyenne est de 40 km/h."
+    ]
+  },
+  {
+    text: "Un joggeur court à vitesse constante et parcourt 12 km en 2 heures. Quelle est sa vitesse moyenne ?",
+    options: ["6 km/h", "12 km/h", "24 km/h", "8 km/h"],
+    correct: 0,
+    expl: "On divise la distance totale (12 km) par la durée (2 heures) pour obtenir la distance en 1 heure.",
+    steps: [
+      "12 km ÷ 2 heures = 6 km en 1 heure.",
+      "Sa vitesse moyenne est de 6 km/h."
+    ]
+  },
+  {
+    text: "Une voiture parcourt 270 km en 3 heures sur l'autoroute. Quelle est sa vitesse horaire moyenne ?",
+    options: ["70 km/h", "80 km/h", "90 km/h", "100 km/h"],
+    correct: 2,
+    expl: "On divise la distance (270 km) par la durée de conduite (3 heures).",
+    steps: [
+      "270 km ÷ 3 = 90 km en 1 heure.",
+      "Sa vitesse horaire moyenne est de 90 km/h."
+    ]
+  },
+  {
+    text: "Un avion de ligne parcourt 1 200 km en 2 heures. Quelle est sa vitesse moyenne ?",
+    options: ["500 km/h", "600 km/h", "700 km/h", "1 200 km/h"],
+    correct: 1,
+    expl: "On calcule la distance parcourue en une seule heure.",
+    steps: [
+      "1 200 km ÷ 2 heures = 600 km par heure.",
+      "Sa vitesse moyenne est de 600 km/h."
+    ]
+  },
+  {
+    text: "Un guépard sprinte et parcourt 120 mètres en 4 secondes. Quelle est sa vitesse moyenne en mètres par seconde (m/s) ?",
+    options: ["12 m/s", "30 m/s", "40 m/s", "480 m/s"],
+    correct: 1,
+    expl: "On divise le nombre de mètres par le nombre de secondes pour avoir la vitesse par seconde.",
+    steps: [
+      "120 mètres ÷ 4 secondes = 30 mètres en 1 seconde.",
+      "Sa vitesse moyenne est de 30 m/s."
+    ]
+  },
+  {
+    text: "Un piéton se promène et parcourt 10 km en 2 heures. Quelle est sa vitesse moyenne ?",
+    options: ["5 km/h", "2 km/h", "20 km/h", "4 km/h"],
+    correct: 0,
+    expl: "La division simple de la distance par le temps nous donne sa vitesse.",
+    steps: [
+      "10 km ÷ 2 heures = 5 km en 1 heure.",
+      "Sa vitesse moyenne est de 5 km/h."
+    ]
+  },
+  {
+    text: "Un bateau à voile avance régulièrement et fait 45 km en 3 heures. Quelle est sa vitesse moyenne ?",
+    options: ["12 km/h", "15 km/h", "20 km/h", "135 km/h"],
+    correct: 1,
+    expl: "On divise la distance parcourue par les heures de navigation.",
+    steps: [
+      "45 km ÷ 3 heures = 15 km en 1 heure.",
+      "Sa vitesse moyenne est de 15 km/h."
+    ]
+  },
+  {
+    text: "Une abeille s'envole et parcourt 15 mètres en 3 secondes. Quelle est sa vitesse moyenne en mètres par seconde (m/s) ?",
+    options: ["3 m/s", "5 m/s", "15 m/s", "45 m/s"],
+    correct: 1,
+    expl: "Pour trouver les mètres par seconde, on divise la distance (15 m) par le temps (3 s).",
+    steps: [
+      "15 mètres ÷ 3 secondes = 5 mètres en 1 seconde.",
+      "Sa vitesse moyenne est de 5 m/s."
+    ]
+  },
+  {
+    text: "Un usager en trottinette électrique parcourt 6 km en 30 minutes. Quelle est sa vitesse moyenne ?",
+    options: ["3 km/h", "6 km/h", "12 km/h", "18 km/h"],
+    correct: 2,
+    expl: "Comme 30 minutes représentent une demi-heure, on multiplie la distance par 2 pour obtenir la distance en 1 heure.",
+    steps: [
+      "En 30 minutes, la trottinette fait 6 km.",
+      "En 60 minutes (1 heure), elle fait 6 km × 2 = 12 km.",
+      "Sa vitesse est de 12 km/h."
+    ]
+  },
+  {
+    text: "Un camion de livraison roule 160 km en 2 heures sur la route. Quelle est sa vitesse moyenne ?",
+    options: ["60 km/h", "70 km/h", "80 km/h", "90 km/h"],
+    correct: 2,
+    expl: "On calcule le nombre de kilomètres parcourus en une heure de trajet.",
+    steps: [
+      "160 km ÷ 2 heures = 80 km en 1 heure.",
+      "Sa vitesse moyenne est de 80 km/h."
+    ]
+  },
+  {
+    text: "Un randonneur motivé parcourt 15 km en 3 heures de marche. Quelle est sa vitesse moyenne ?",
+    options: ["3 km/h", "5 km/h", "8 km/h", "45 km/h"],
+    correct: 1,
+    expl: "On divise la distance de 15 km par la durée de 3 heures.",
+    steps: [
+      "15 km ÷ 3 heures = 5 km par heure.",
+      "Sa vitesse moyenne est de 5 km/h."
+    ]
+  },
+  {
+    text: "Le TGV relie deux grandes villes et parcourt 500 km en 2 heures. Quelle est sa vitesse moyenne ?",
+    options: ["200 km/h", "250 km/h", "300 km/h", "1 000 km/h"],
+    correct: 1,
+    expl: "On divise la distance par le temps de trajet pour trouver la vitesse horaire.",
+    steps: [
+      "500 km ÷ 2 heures = 250 km en 1 heure.",
+      "Sa vitesse moyenne est de 250 km/h."
+    ]
+  },
+  {
+    text: "Une mouche vole d'une pièce à l'autre et parcourt 8 mètres en 4 secondes. Quelle est sa vitesse moyenne en mètres par seconde (m/s) ?",
+    options: ["2 m/s", "4 m/s", "8 m/s", "32 m/s"],
+    correct: 0,
+    expl: "On divise la distance en mètres (8 m) par le temps en secondes (4 s).",
+    steps: [
+      "8 mètres ÷ 4 secondes = 2 mètres par seconde.",
+      "Sa vitesse moyenne est de 2 m/s."
+    ]
+  },
+  {
+    text: "Un athlète de niveau national court le 200 mètres en 20 secondes. Quelle est sa vitesse moyenne en m/s ?",
+    options: ["5 m/s", "10 m/s", "20 m/s", "40 m/s"],
+    correct: 1,
+    expl: "On divise la distance du sprint (200 m) par le temps de course (20 s).",
+    steps: [
+      "200 mètres ÷ 20 secondes = 10 mètres en une seconde.",
+      "Sa vitesse moyenne est de 10 m/s."
+    ]
+  },
+  {
+    text: "Un escargot se déplace dans un potager et fait 12 centimètres en 3 minutes. Quelle est sa vitesse moyenne en cm/min ?",
+    options: ["3 cm/min", "4 cm/min", "6 cm/min", "36 cm/min"],
+    correct: 1,
+    expl: "On calcule la distance franchie par minute.",
+    steps: [
+      "12 cm ÷ 3 minutes = 4 cm en une minute.",
+      "Sa vitesse moyenne est de 4 cm/min."
+    ]
+  },
+  {
+    text: "Une voiture télécommandée parcourt 18 mètres en 3 secondes. Quelle est sa vitesse moyenne en m/s ?",
+    options: ["3 m/s", "6 m/s", "9 m/s", "54 m/s"],
+    correct: 1,
+    expl: "On divise les mètres par les secondes pour trouver la vitesse.",
+    steps: [
+      "18 mètres ÷ 3 secondes = 6 mètres par seconde.",
+      "Sa vitesse moyenne est de 6 m/s."
+    ]
+  },
+  {
+    text: "Un adolescent parcourt 15 km en 30 minutes avec son scooter. Quelle est sa vitesse horaire moyenne ?",
+    options: ["15 km/h", "30 km/h", "45 km/h", "60 km/h"],
+    correct: 1,
+    expl: "30 minutes équivaut à la moitié d'une heure. En 1 heure, il parcourra donc deux fois cette distance.",
+    steps: [
+      "En 30 minutes, il fait 15 km.",
+      "En 60 minutes (1 heure), il fait 15 km × 2 = 30 km.",
+      "Sa vitesse moyenne est de 30 km/h."
+    ]
+  },
+  {
+    text: "Un nageur traverse un bassin olympique et fait 100 mètres en 50 secondes. Quelle est sa vitesse moyenne en m/s ?",
+    options: ["1 m/s", "2 m/s", "4 m/s", "50 m/s"],
+    correct: 1,
+    expl: "On divise la distance en mètres (100 m) par la durée de la nage (50 s).",
+    steps: [
+      "100 mètres ÷ 50 secondes = 2 mètres en une seconde.",
+      "Sa vitesse moyenne est de 2 m/s."
+    ]
+  },
+  {
+    text: "Un oiseau migrateur parcourt 80 mètres en 10 secondes. Quelle est sa vitesse en mètres par seconde (m/s) ?",
+    options: ["8 m/s", "10 m/s", "80 m/s", "800 m/s"],
+    correct: 0,
+    expl: "On divise la distance par le temps écoulé.",
+    steps: [
+      "80 mètres ÷ 10 secondes = 8 mètres par seconde.",
+      "Sa vitesse est de 8 m/s."
+    ]
+  },
+  {
+    text: "Un métro circule en ville et parcourt 20 km en 15 minutes. Quelle est sa vitesse horaire moyenne ?",
+    options: ["20 km/h", "40 km/h", "60 km/h", "80 km/h"],
+    correct: 3,
+    expl: "15 minutes représentent un quart d'heure. Dans une heure entière (60 minutes), il y a quatre fois 15 minutes.",
+    steps: [
+      "En 15 minutes, il parcourt 20 km.",
+      "En 60 minutes (15 min × 4), il parcourt 20 km × 4 = 80 km.",
+      "Sa vitesse horaire moyenne est de 80 km/h."
+    ]
+  },
+  {
+    text: "Un drone télécommandé vole en ligne droite et parcourt 16 mètres en 4 secondes. Quelle est sa vitesse en m/s ?",
+    options: ["2 m/s", "4 m/s", "8 m/s", "64 m/s"],
+    correct: 1,
+    expl: "On divise la distance par la durée.",
+    steps: [
+      "16 mètres ÷ 4 secondes = 4 mètres en une seconde.",
+      "Sa vitesse est de 4 m/s."
+    ]
+  },
+  {
+    text: "Un paresseux grimpe le long d'une branche et parcourt 10 mètres en 5 minutes. Quelle est sa vitesse moyenne en m/min ?",
+    options: ["2 m/min", "5 m/min", "10 m/min", "50 m/min"],
+    correct: 0,
+    expl: "On divise la distance (10 m) par la durée (5 min).",
+    steps: [
+      "10 mètres ÷ 5 minutes = 2 mètres par minute.",
+      "Sa vitesse moyenne est de 2 m/min."
+    ]
+  },
+  {
+    text: "Un motard roule sur une voie rapide et parcourt 220 km en 2 heures. Quelle est sa vitesse moyenne ?",
+    options: ["100 km/h", "110 km/h", "120 km/h", "220 km/h"],
+    correct: 1,
+    expl: "On divise la distance (220 km) par la durée de route (2 heures).",
+    steps: [
+      "220 km ÷ 2 heures = 110 km en 1 heure.",
+      "Sa vitesse moyenne est de 110 km/h."
+    ]
+  },
+  {
+    text: "Un ballon de football est frappé et roule sur 12 mètres en 3 secondes. Quelle est sa vitesse moyenne en m/s ?",
+    options: ["3 m/s", "4 m/s", "6 m/s", "36 m/s"],
+    correct: 1,
+    expl: "On calcule les mètres franchis par seconde.",
+    steps: [
+      "12 mètres ÷ 3 secondes = 4 mètres par seconde.",
+      "Sa vitesse moyenne est de 4 m/s."
+    ]
+  },
+  {
+    text: "Une navette autonome effectue sa boucle urbaine de 15 km en 15 minutes. Quelle est sa vitesse horaire ?",
+    options: ["15 km/h", "30 km/h", "45 km/h", "60 km/h"],
+    correct: 3,
+    expl: "15 minutes entrent quatre fois dans une heure (60 minutes).",
+    steps: [
+      "En 15 minutes, la navette fait 15 km.",
+      "En 60 minutes, elle fait 15 km × 4 = 60 km.",
+      "Sa vitesse horaire est de 60 km/h."
+    ]
+  },
+  {
+    text: "Un enfant sur son skateboard parcourt 5 km en 30 minutes. Quelle est sa vitesse moyenne ?",
+    options: ["5 km/h", "10 km/h", "15 km/h", "20 km/h"],
+    correct: 1,
+    expl: "Comme 30 minutes correspondent à une demi-heure, on multiplie la distance par 2 pour 1 heure.",
+    steps: [
+      "En 30 minutes, il parcourt 5 km.",
+      "En 1 heure, il parcourt 5 km × 2 = 10 km.",
+      "Sa vitesse moyenne est de 10 km/h."
+    ]
+  },
+  {
+    text: "Un tracteur agricole parcourt 36 km en 2 heures pour rejoindre un champ. Quelle est sa vitesse horaire moyenne ?",
+    options: ["12 km/h", "18 km/h", "24 km/h", "36 km/h"],
+    correct: 1,
+    expl: "On divise la distance parcourue par la durée.",
+    steps: [
+      "36 km ÷ 2 heures = 18 km en 1 heure.",
+      "Sa vitesse moyenne est de 18 km/h."
+    ]
+  },
+  {
+    text: "Une loutre nage le long d'une rivière et fait 24 km en 3 heures. Quelle est sa vitesse horaire moyenne ?",
+    options: ["6 km/h", "8 km/h", "12 km/h", "72 km/h"],
+    correct: 1,
+    expl: "On divise la distance (24 km) par la durée de nage (3 heures).",
+    steps: [
+      "24 km ÷ 3 heures = 8 km par heure.",
+      "Sa vitesse moyenne est de 8 km/h."
+    ]
+  },
+  {
+    text: "Un poney galope dans une prairie et parcourt 15 km en 30 minutes. Quelle est sa vitesse horaire moyenne ?",
+    options: ["15 km/h", "30 km/h", "45 km/h", "150 km/h"],
+    correct: 1,
+    expl: "30 minutes représentent la moitié d'une heure. On multiplie la distance par 2 pour obtenir la vitesse par heure.",
+    steps: [
+      "En 30 minutes, il fait 15 km.",
+      "En 60 minutes (1 heure), il parcourt 15 km × 2 = 30 km.",
+      "Sa vitesse moyenne est de 30 km/h."
+    ]
+  }
+];
+
+// NIVEAU 2 : 20 situations plus difficiles (durées fractionnaires, règle de trois requise)
+const level2Questions = [
+  {
+    text: "Antoine décide de faire un tour à vélo. Il parcourt 30 km en 1h30. Quelle est sa vitesse horaire ?",
+    options: ["20 km/h", "15 km/h", "45 km/h", "23 km/h"],
+    correct: 0,
+    expl: "1h30 équivaut à 90 minutes. Pour trouver la distance en 1 heure (60 minutes), on applique la règle de trois.",
+    steps: [
+      "En 90 minutes, Antoine parcourt 30 km.",
+      "Divisons par 3 pour trouver la distance en 30 minutes : 30 km ÷ 3 = 10 km.",
+      "Multiplions par 2 pour trouver la distance en 60 minutes (1 heure) : 10 km × 2 = 20 km.",
+      "Sa vitesse horaire est donc de 20 km/h (et non 23 km/h qui serait l'erreur de diviser 30 par 1,30)."
+    ]
+  },
+  {
+    text: "Un coureur à pied s'entraîne et parcourt 9 km en 45 minutes. Quelle est sa vitesse moyenne ?",
+    options: ["12 km/h", "9 km/h", "10 km/h", "18 km/h"],
+    correct: 0,
+    expl: "45 minutes représentent les trois quarts d'une heure. On utilise la règle de trois pour trouver la vitesse en 60 minutes.",
+    steps: [
+      "En 45 minutes, le coureur fait 9 km.",
+      "Divisons par 3 pour trouver la distance en 15 minutes : 9 km ÷ 3 = 3 km.",
+      "Multiplions par 4 pour trouver la distance en 60 minutes (1 heure) : 3 km × 4 = 12 km.",
+      "Sa vitesse moyenne est de 12 km/h."
+    ]
+  },
+  {
+    text: "Un marcheur randonne et parcourt 6 km en 1h30. Quelle est sa vitesse moyenne ?",
+    options: ["3 km/h", "4 km/h", "4,5 km/h", "5 km/h"],
+    correct: 1,
+    expl: "1h30 correspond à 90 minutes. Utilisons la proportionnalité pour ramener à 60 minutes.",
+    steps: [
+      "En 90 minutes, il fait 6 km.",
+      "Divisons par 3 pour trouver la distance en 30 minutes : 6 km ÷ 3 = 2 km.",
+      "Multiplions par 2 pour trouver la distance en 60 minutes (1 heure) : 2 km × 2 = 4 km.",
+      "Sa vitesse moyenne est de 4 km/h."
+    ]
+  },
+  {
+    text: "Une moto parcourt 120 km en 1h30 de trajet. Quelle est sa vitesse horaire moyenne ?",
+    options: ["80 km/h", "90 km/h", "100 km/h", "92 km/h"],
+    correct: 0,
+    expl: "1h30 = 90 minutes. Appliquons la règle de trois pour connaître la vitesse en 1 heure (60 minutes).",
+    steps: [
+      "En 90 minutes, la moto parcourt 120 km.",
+      "Divisons par 3 pour trouver la distance en 30 minutes : 120 km ÷ 3 = 40 km.",
+      "Multiplions par 2 pour trouver la distance en 60 minutes (1 heure) : 40 km × 2 = 80 km.",
+      "Sa vitesse moyenne est de 80 km/h (éviter le piège de faire 120 ÷ 1,30 = 92)."
+    ]
+  },
+  {
+    text: "Un cycliste parcourt une distance de 45 km en 1h30. Quelle est sa vitesse horaire moyenne ?",
+    options: ["30 km/h", "15 km/h", "35 km/h", "34,6 km/h"],
+    correct: 0,
+    expl: "1h30 équivaut à 1,5 heure ou 90 minutes. Faisons le calcul par la règle de trois.",
+    steps: [
+      "En 90 minutes, il parcourt 45 km.",
+      "Divisons par 3 pour trouver la distance en 30 minutes : 45 km ÷ 3 = 15 km.",
+      "Multiplions par 2 pour trouver la distance en 60 minutes (1 heure) : 15 km × 2 = 30 km.",
+      "Sa vitesse moyenne est de 30 km/h."
+    ]
+  },
+  {
+    text: "Un joggeur en endurance parcourt 15 km en 1h15. Quelle est sa vitesse moyenne ?",
+    options: ["12 km/h", "10 km/h", "14 km/h", "12,5 km/h"],
+    correct: 0,
+    expl: "1h15 correspond à 75 minutes. Faisons le calcul avec la règle de trois pour trouver la vitesse en 60 minutes.",
+    steps: [
+      "En 75 minutes, le joggeur parcourt 15 km.",
+      "Divisons par 5 pour trouver la distance en 15 minutes : 15 km ÷ 5 = 3 km.",
+      "Multiplions par 4 pour trouver la distance en 60 minutes (1 heure) : 3 km × 4 = 12 km.",
+      "Sa vitesse moyenne est de 12 km/h."
+    ]
+  },
+  {
+    text: "Un marcheur parcourt 5 km en 1h15. Quelle est sa vitesse horaire moyenne ?",
+    options: ["4 km/h", "3,5 km/h", "4,5 km/h", "5 km/h"],
+    correct: 0,
+    expl: "1h15 = 75 minutes. Appliquons la règle de trois.",
+    steps: [
+      "En 75 minutes, il parcourt 5 km.",
+      "Divisons par 5 pour trouver la distance en 15 minutes : 5 km ÷ 5 = 1 km.",
+      "Multiplions par 4 pour trouver la distance en 60 minutes (1 heure) : 1 km × 4 = 4 km.",
+      "Sa vitesse moyenne est de 4 km/h."
+    ]
+  },
+  {
+    text: "Une automobile roule sur une route nationale et fait 100 km en 1h15. Quelle est sa vitesse moyenne ?",
+    options: ["80 km/h", "75 km/h", "90 km/h", "85 km/h"],
+    correct: 0,
+    expl: "1h15 = 75 minutes. On applique la règle de trois pour trouver la distance en 60 minutes.",
+    steps: [
+      "En 75 minutes, la voiture fait 100 km.",
+      "Divisons par 5 pour trouver la distance en 15 minutes : 100 km ÷ 5 = 20 km.",
+      "Multiplions par 4 pour trouver la distance en 60 minutes (1 heure) : 20 km × 4 = 80 km.",
+      "Sa vitesse moyenne est de 80 km/h."
+    ]
+  },
+  {
+    text: "Un camion de fret parcourt 75 km en 1h15. Quelle est sa vitesse moyenne ?",
+    options: ["60 km/h", "50 km/h", "55 km/h", "65 km/h"],
+    correct: 0,
+    expl: "1h15 correspond à 75 minutes. Par coïncidence numérique simple, en 75 minutes il fait 75 km. Donc il parcourt 1 km par minute.",
+    steps: [
+      "En 75 minutes, il fait 75 km.",
+      "En 1 minute (75 km ÷ 75), il fait 1 km.",
+      "En 60 minutes (1 heure), il fait 1 km × 60 = 60 km.",
+      "Sa vitesse moyenne est de 60 km/h."
+    ]
+  },
+  {
+    text: "Un randonneur en montagne parcourt 10 km en 2h30. Quelle est sa vitesse moyenne ?",
+    options: ["4 km/h", "3 km/h", "5 km/h", "4.2 km/h"],
+    correct: 0,
+    expl: "2h30 équivaut à 2,5 heures ou 150 minutes. Utilisons la proportionnalité pour 1 heure (60 minutes).",
+    steps: [
+      "En 150 minutes (2h30), il fait 10 km.",
+      "Divisons par 5 pour trouver la distance en 30 minutes : 10 km ÷ 5 = 2 km.",
+      "Multiplions par 2 pour trouver la distance en 60 minutes (1 heure) : 2 km × 2 = 4 km.",
+      "Sa vitesse moyenne est de 4 km/h."
+    ]
+  },
+  {
+    text: "Une voiture parcourt 200 km en 2h30 sur l'autoroute. Quelle est sa vitesse horaire moyenne ?",
+    options: ["80 km/h", "75 km/h", "85 km/h", "90 km/h"],
+    correct: 0,
+    expl: "2h30 = 150 minutes. Utilisons la règle de trois pour connaître la vitesse en 60 minutes.",
+    steps: [
+      "En 150 minutes, la voiture fait 200 km.",
+      "Divisons par 5 pour trouver la distance en 30 minutes : 200 km ÷ 5 = 40 km.",
+      "Multiplions par 2 pour trouver la distance en 60 minutes (1 heure) : 40 km × 2 = 80 km.",
+      "Sa vitesse horaire moyenne est de 80 km/h."
+    ]
+  },
+  {
+    text: "Un autocar touristique parcourt 125 km en 2h30 de trajet. Quelle est sa vitesse moyenne ?",
+    options: ["50 km/h", "45 km/h", "55 km/h", "60 km/h"],
+    correct: 0,
+    expl: "2h30 = 150 minutes. Utilisons la proportionnalité pour trouver sa vitesse.",
+    steps: [
+      "En 150 minutes, l'autocar parcourt 125 km.",
+      "Divisons par 5 pour trouver la distance en 30 minutes : 125 km ÷ 5 = 25 km.",
+      "Multiplions par 2 pour trouver la distance en 60 minutes (1 heure) : 25 km × 2 = 50 km.",
+      "Sa vitesse moyenne est de 50 km/h."
+    ]
+  },
+  {
+    text: "Un cycliste s'entraîne et parcourt 35 km en 1h45. Quelle est sa vitesse moyenne ?",
+    options: ["20 km/h", "18 km/h", "22 km/h", "25 km/h"],
+    correct: 0,
+    expl: "1h45 équivaut à 105 minutes. Faisons le calcul avec la règle de trois.",
+    steps: [
+      "En 105 minutes, le cycliste fait 35 km.",
+      "Divisons par 7 pour trouver la distance en 15 minutes : 35 km ÷ 7 = 5 km.",
+      "Multiplions par 4 pour trouver la distance en 60 minutes (1 heure) : 5 km × 4 = 20 km.",
+      "Sa vitesse moyenne est de 20 km/h."
+    ]
+  },
+  {
+    text: "Un joggeur courageux parcourt 14 km en 1h45. Quelle est sa vitesse horaire moyenne ?",
+    options: ["8 km/h", "7 km/h", "9 km/h", "10 km/h"],
+    correct: 0,
+    expl: "1h45 = 105 minutes. Utilisons la règle de trois.",
+    steps: [
+      "En 105 minutes, il parcourt 14 km.",
+      "Divisons par 7 pour trouver la distance en 15 minutes : 14 km ÷ 7 = 2 km.",
+      "Multiplions par 4 pour trouver la distance en 60 minutes (1 heure) : 2 km × 4 = 8 km.",
+      "Sa vitesse moyenne est de 8 km/h."
+    ]
+  },
+  {
+    text: "Une voiture familiale parcourt 140 km en 1h45 de voyage. Quelle est sa vitesse moyenne ?",
+    options: ["80 km/h", "75 km/h", "85 km/h", "90 km/h"],
+    correct: 0,
+    expl: "1h45 = 105 minutes. Utilisons la règle de trois pour trouver la vitesse en 60 minutes.",
+    steps: [
+      "En 105 minutes, la voiture fait 140 km.",
+      "Divisons par 7 pour trouver la distance en 15 minutes : 140 km ÷ 7 = 20 km.",
+      "Multiplions par 4 pour trouver la distance en 60 minutes (1 heure) : 20 km × 4 = 80 km.",
+      "Sa vitesse moyenne est de 80 km/h."
+    ]
+  },
+  {
+    text: "Un marcheur fait le tour d'un lac et parcourt 3 km en 45 minutes. Quelle est sa vitesse moyenne ?",
+    options: ["4 km/h", "3 km/h", "4,5 km/h", "5 km/h"],
+    correct: 0,
+    expl: "45 minutes = 3 quarts d'heure. Utilisons la règle de trois pour 60 minutes.",
+    steps: [
+      "En 45 minutes, il fait 3 km.",
+      "Divisons par 3 pour trouver la distance en 15 minutes : 3 km ÷ 3 = 1 km.",
+      "Multiplions par 4 pour trouver la distance en 60 minutes (1 heure) : 1 km × 4 = 4 km.",
+      "Sa vitesse moyenne est de 4 km/h."
+    ]
+  },
+  {
+    text: "Un cycliste parcourt 15 km en 45 minutes de promenade. Quelle est sa vitesse moyenne ?",
+    options: ["20 km/h", "15 km/h", "25 km/h", "30 km/h"],
+    correct: 0,
+    expl: "En 45 minutes, le cycliste fait 15 km. Utilisons la règle de trois pour 60 minutes.",
+    steps: [
+      "En 45 minutes, il parcourt 15 km.",
+      "Divisons par 3 pour trouver la distance en 15 minutes : 15 km ÷ 3 = 5 km.",
+      "Multiplions par 4 pour trouver la distance en 60 minutes (1 heure) : 5 km × 4 = 20 km.",
+      "Sa vitesse moyenne est de 20 km/h."
+    ]
+  },
+  {
+    text: "Un scooter roule à vitesse constante et parcourt 30 km en 45 minutes. Quelle est sa vitesse moyenne ?",
+    options: ["40 km/h", "30 km/h", "35 km/h", "45 km/h"],
+    correct: 0,
+    expl: "45 minutes correspond à 3 quarts d'heure. Faisons le calcul pour 60 minutes.",
+    steps: [
+      "En 45 minutes, le scooter parcourt 30 km.",
+      "Divisons par 3 pour trouver la distance en 15 minutes : 30 km ÷ 3 = 10 km.",
+      "Multiplions par 4 pour trouver la distance en 60 minutes (1 heure) : 10 km × 4 = 40 km.",
+      "Sa vitesse moyenne est de 40 km/h."
+    ]
+  },
+  {
+    text: "Une ambulance en mission parcourt 60 km en 45 minutes. Quelle est sa vitesse moyenne ?",
+    options: ["80 km/h", "75 km/h", "90 km/h", "60 km/h"],
+    correct: 0,
+    expl: "45 minutes = 3 quarts d'heure. On ramène à 1 heure (60 minutes) avec la proportionnalité.",
+    steps: [
+      "En 45 minutes, elle parcourt 60 km.",
+      "Divisons par 3 pour trouver la distance en 15 minutes : 60 km ÷ 3 = 20 km.",
+      "Multiplions par 4 pour trouver la distance en 60 minutes (1 heure) : 20 km × 4 = 80 km.",
+      "Sa vitesse moyenne est de 80 km/h."
+    ]
+  },
+  {
+    text: "Un canot à moteur navigue sur un fleuve et parcourt 25 km en 1h15. Quelle est sa vitesse moyenne ?",
+    options: ["20 km/h", "15 km/h", "25 km/h", "30 km/h"],
+    correct: 0,
+    expl: "1h15 correspond à 75 minutes. Faisons la règle de trois pour connaître la vitesse en 60 minutes.",
+    steps: [
+      "En 75 minutes, le canot fait 25 km.",
+      "Divisons par 5 pour trouver la distance en 15 minutes : 25 km ÷ 5 = 5 km.",
+      "Multiplions par 4 pour trouver la distance en 60 minutes (1 heure) : 5 km × 4 = 20 km.",
+      "Sa vitesse moyenne est de 20 km/h."
+    ]
+  }
+];
+
+// ==================== LOGIQUE DU JEU ====================
+let currentLevel = 1;
+let currentQuestions = [];
+let currentIndex = 0;
+let score = 0;
+let userHasAnswered = false;
+
+// Démarrer un niveau
+function startLevel(level) {
+  currentLevel = level;
+  score = 0;
+  currentIndex = 0;
+  userHasAnswered = false;
+
+  // Sélectionner la banque de questions correspondante
+  let sourceBank = [];
+  let numQuestionsNeeded = 10;
+  
+  if (level === 1) {
+    sourceBank = [...level1Questions];
+    numQuestionsNeeded = 10;
+    document.getElementById('mainTitle').textContent = "Situations de Vitesse — Niveau 1";
+    document.getElementById('mainSubtitle').textContent = "Entraînement aux calculs de vitesse simples (10 questions)";
+    document.getElementById('maxScore').textContent = "/ 10";
+  } else {
+    sourceBank = [...level2Questions];
+    numQuestionsNeeded = 5;
+    document.getElementById('mainTitle').textContent = "Situations de Vitesse — Niveau 2";
+    document.getElementById('mainSubtitle').textContent = "Problèmes avec règle de trois et fractions d'heures (5 questions)";
+    document.getElementById('maxScore').textContent = "/ 5";
+  }
+
+  // Mélanger et piocher le nombre nécessaire de questions
+  const shuffled = sourceBank.sort(() => 0.5 - Math.random());
+  currentQuestions = shuffled.slice(0, numQuestionsNeeded);
+
+  // Basculer l'affichage vers la zone de jeu
+  document.getElementById('menuScreen').style.display = 'none';
+  document.getElementById('playZone').style.display = 'block';
+  document.getElementById('congratsScreen').style.display = 'none';
+  document.getElementById('btnBackToMenu').style.display = 'block';
+
+  // Lancer la première question
+  loadQuestion();
+}
+
+// Charger la question courante
+function loadQuestion() {
+  userHasAnswered = false;
+  const q = currentQuestions[currentIndex];
+
+  // Mettre à jour l'en-tête et scoreboard
+  document.getElementById('currentQuestionNum').textContent = currentIndex + 1;
+  document.getElementById('scoreValue').textContent = score;
+
+  // Mettre à jour la barre de progression
+  const percentage = (currentIndex / currentQuestions.length) * 100;
+  document.getElementById('progressBar').style.width = `${percentage}%`;
+
+  // Mettre à jour l'intitulé de la situation
+  document.getElementById('situationTag').textContent = `Défi ${currentIndex + 1} sur ${currentQuestions.length}`;
+  document.getElementById('situationText').textContent = q.text;
+
+  // Réinitialiser les boutons d'options
+  const optionsGrid = document.getElementById('optionsGrid');
+  optionsGrid.innerHTML = '';
+
+  // Créer les boutons QCM
+  q.options.forEach((opt, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'btn-option';
+    btn.textContent = opt;
+    btn.onclick = () => selectOption(idx);
+    optionsGrid.appendChild(btn);
+  });
+
+  // Cacher le panneau de correction et le bouton suivant
+  document.getElementById('feedbackPanel').style.display = 'none';
+  document.getElementById('btnNext').style.display = 'none';
+}
+
+// Sélectionner une option
+function selectOption(selectedIdx) {
+  if (userHasAnswered) return;
+  userHasAnswered = true;
+
+  const q = currentQuestions[currentIndex];
+  const correctIdx = q.correct;
+  const isCorrect = (selectedIdx === correctIdx);
+
+  const optionsGrid = document.getElementById('optionsGrid');
+  const buttons = optionsGrid.getElementsByTagName('button');
+
+  // Appliquer les styles de validation sur les boutons
+  for (let i = 0; i < buttons.length; i++) {
+    buttons[i].disabled = true; // Désactiver le clic
+    if (i === correctIdx) {
+      buttons[i].classList.add('correct');
+    } else if (i === selectedIdx) {
+      buttons[i].classList.add('wrong');
+    } else {
+      buttons[i].classList.add('faded');
+    }
+  }
+
+  // Mettre à jour le score si correct
+  if (isCorrect) {
+    score++;
+    document.getElementById('scoreValue').textContent = score;
+    showFeedback(true, q);
+  } else {
+    showFeedback(false, q);
+  }
+
+  // Afficher le bouton Continuer
+  document.getElementById('btnNext').style.display = 'flex';
+}
+
+// Afficher la correction
+function showFeedback(isCorrect, q) {
+  const panel = document.getElementById('feedbackPanel');
+  const header = document.getElementById('feedbackHeader');
+  const expl = document.getElementById('feedbackExpl');
+  const ruleBox = document.getElementById('ruleOfThreeBox');
+
+  panel.style.display = 'flex';
+
+  if (isCorrect) {
+    panel.className = 'feedback-panel feedback-correct';
+    header.innerHTML = '🎉 Correct !';
+  } else {
+    panel.className = 'feedback-panel feedback-wrong';
+    header.innerHTML = '❌ Oups, ce n\'est pas tout à fait ça...';
+  }
+
+  expl.innerHTML = q.expl;
+
+  // Afficher la règle de trois sous forme de liste propre
+  if (q.steps && q.steps.length > 0) {
+    ruleBox.style.display = 'block';
+    let stepsHTML = '<strong>Étapes de calcul :</strong><ul>';
+    q.steps.forEach(step => {
+      stepsHTML += `<li>${step}</li>`;
+    });
+    stepsHTML += '</ul>';
+    ruleBox.innerHTML = stepsHTML;
+  } else {
+    ruleBox.style.display = 'none';
+  }
+}
+
+// Passer à la question suivante
+function nextQuestion() {
+  currentIndex++;
+  if (currentIndex < currentQuestions.length) {
+    loadQuestion();
+  } else {
+    showCongrats();
+  }
+}
+
+// Afficher l'écran de fin
+function showCongrats() {
+  document.getElementById('playZone').style.display = 'none';
+  document.getElementById('congratsScreen').style.display = 'block';
+
+  // Barre de progression finale à 100%
+  document.getElementById('progressBar').style.width = '100%';
+
+  document.getElementById('finalScore').textContent = score;
+
+  let title = "Bravo !";
+  let message = "";
+
+  if (currentLevel === 1) {
+    if (score === 10) {
+      title = "🏆 Sans-faute !";
+      message = "Incroyable ! Tu as résolu toutes les situations avec brio. Tu as d'excellentes bases !";
+    } else if (score >= 7) {
+      title = "☀️ Super score !";
+      message = "Excellent travail ! Tu as très bien compris le lien simple entre la distance et la durée.";
+    } else if (score >= 5) {
+      title = "👍 Bien joué !";
+      message = "C'est un bon début. Relis bien les explications pour progresser lors de ta prochaine partie.";
+    } else {
+      title = "💪 Courage !";
+      message = "Entraîne-toi encore ! Diviser la distance totale par les heures est la clé. Recommence pour t'améliorer.";
+    }
+  } else { // Niveau 2
+    if (score === 5) {
+      title = "🏆 Maître de la Règle de 3 !";
+      message = "Fantastique ! Les durées complexes et le raisonnement proportionnel n'ont plus aucun secret pour toi.";
+    } else if (score >= 3) {
+      title = "☀️ Très bon niveau !";
+      message = "Félicitations ! Tu as réussi à appliquer la règle de trois sur des fractions d'heures difficiles.";
+    } else {
+      title = "💪 Ne baisse pas les bras !";
+      message = "La règle de trois sur les heures et minutes demande de l'entraînement. Prends ton temps pour bien lire chaque étape de correction.";
+    }
+  }
+
+  document.getElementById('congratsTitle').textContent = title;
+  document.getElementById('congratsText').textContent = message;
+}
+
+// Réinitialiser le niveau actuel
+function initLevel() {
+  startLevel(currentLevel);
+}
+
+// Retourner à l'écran d'accueil / menu
+function backToMenu() {
+  document.getElementById('menuScreen').style.display = 'flex';
+  document.getElementById('playZone').style.display = 'none';
+  document.getElementById('congratsScreen').style.display = 'none';
+  document.getElementById('btnBackToMenu').style.display = 'none';
+
+  document.getElementById('mainTitle').textContent = "Situations de Vitesse";
+  document.getElementById('mainSubtitle').textContent = "Résous des situations réelles et trouve la bonne vitesse moyenne";
+}
+</script>
+</body>
+</html>

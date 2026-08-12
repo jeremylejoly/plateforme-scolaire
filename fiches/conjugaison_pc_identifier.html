@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Conjugaison — Passé composé ou pas ?</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800;900&family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<style>
+  :root {
+    --primary: #6366f1;
+    --primary-light: #e0e7ff;
+    --primary-dark: #4f46e5;
+    --secondary: #ec4899;
+    --secondary-light: #fce7f3;
+    --success: #10b981;
+    --success-light: #d1fae5;
+    --danger: #ef4444;
+    --danger-light: #fee2e2;
+    --neutral-dark: #1e1b4b;
+    --neutral-light: #f8fafc;
+    --neutral-gray: #64748b;
+    --border: #e2e8f0;
+    --shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.1), 0 8px 10px -6px rgba(99, 102, 241, 0.1);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: radial-gradient(circle at 50% 50%, #f1f5f9 0%, #e2e8f0 100%);
+    min-height: 100vh;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .container {
+    width: 100%;
+    max-width: 620px;
+    background: white;
+    border-radius: 24px;
+    padding: 2rem;
+    box-shadow: var(--shadow);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .header {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  .title {
+    font-family: 'Outfit', sans-serif;
+    font-size: 24px;
+    font-weight: 900;
+    color: var(--neutral-dark);
+    margin-bottom: 0.5rem;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .subtitle {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--neutral-gray);
+  }
+
+  .info-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--neutral-light);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 0.75rem 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .info-num {
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--primary-dark);
+  }
+
+  .dots {
+    display: flex;
+    gap: 6px;
+  }
+
+  .dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--border);
+    transition: all 0.3s;
+  }
+
+  .dot.correct { background: var(--success); }
+  .dot.incorrect { background: var(--danger); }
+  .dot.current { background: var(--primary); transform: scale(1.2); }
+
+  .question-card {
+    background: var(--neutral-light);
+    border: 2px solid var(--border);
+    border-radius: 20px;
+    padding: 2rem 1.5rem;
+    margin-bottom: 1.5rem;
+    min-height: 140px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.3s ease;
+  }
+
+  .q-phrase {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--neutral-dark);
+    line-height: 1.6;
+    text-align: center;
+    margin-bottom: 0.5rem;
+  }
+
+  .choices {
+    display: flex;
+    gap: 1rem;
+    width: 100%;
+    margin-bottom: 1rem;
+  }
+
+  .choice-btn {
+    flex: 1;
+    padding: 1rem;
+    font-family: 'Outfit', sans-serif;
+    font-size: 16px;
+    font-weight: 800;
+    border-radius: 16px;
+    border: 2.5px solid var(--border);
+    background: white;
+    color: var(--neutral-dark);
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .choice-btn:hover:not(:disabled) {
+    border-color: var(--primary);
+    background: var(--primary-light);
+    color: var(--primary-dark);
+    transform: translateY(-2px);
+  }
+
+  .choice-btn:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  .choice-btn.selected-yes {
+    border-color: var(--primary);
+    background: var(--primary-light);
+    color: var(--primary-dark);
+  }
+
+  .choice-btn.correct {
+    border-color: var(--success);
+    background: var(--success-light);
+    color: var(--success);
+  }
+
+  .choice-btn.incorrect {
+    border-color: var(--danger);
+    background: var(--danger-light);
+    color: var(--danger);
+  }
+
+  .feedback-box {
+    width: 100%;
+    border-radius: 16px;
+    padding: 1rem 1.25rem;
+    margin-top: 1rem;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.5;
+    display: none;
+    animation: slideUp 0.3s ease;
+  }
+
+  .feedback-box.correct {
+    background: var(--success-light);
+    color: #065f46;
+    border: 1px solid rgba(16, 185, 129, 0.2);
+  }
+
+  .feedback-box.incorrect {
+    background: var(--danger-light);
+    color: #991b1b;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+  }
+
+  .action-btn {
+    width: 100%;
+    padding: 1rem;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    color: white;
+    border: none;
+    border-radius: 16px;
+    font-family: 'Outfit', sans-serif;
+    font-size: 16px;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+    transition: all 0.2s;
+    display: none;
+  }
+
+  .action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(99, 102, 241, 0.4);
+  }
+
+  .action-btn:active {
+    transform: translateY(0);
+  }
+
+  .score-screen {
+    display: none;
+    text-align: center;
+    padding: 2rem 1rem;
+    animation: zoomIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .big-emoji {
+    font-size: 80px;
+    margin-bottom: 1rem;
+    animation: bounce 2s infinite;
+  }
+
+  .big-score {
+    font-family: 'Outfit', sans-serif;
+    font-size: 40px;
+    font-weight: 900;
+    color: var(--neutral-dark);
+    margin-bottom: 0.75rem;
+  }
+
+  .final-msg {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--neutral-gray);
+    margin-bottom: 2rem;
+    line-height: 1.6;
+  }
+
+  .restart-btn {
+    padding: 1rem 2rem;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    color: white;
+    border: none;
+    border-radius: 16px;
+    font-family: 'Outfit', sans-serif;
+    font-size: 16px;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(236, 72, 153, 0.3);
+    transition: all 0.2s;
+  }
+
+  .restart-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(236, 72, 153, 0.4);
+  }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes zoomIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-6px); }
+    40%, 80% { transform: translateX(6px); }
+  }
+
+  .shake {
+    animation: shake 0.4s ease-in-out;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <div id="exercise-zone">
+    <div class="header">
+      <h1 class="title">Passé composé ou pas ?</h1>
+      <p class="subtitle">Observe bien la phrase pour identifier si le verbe est au passé composé.</p>
+    </div>
+
+    <div class="info-bar">
+      <span class="info-num" id="info-numero">Phrase 1/10</span>
+      <div class="dots" id="dots-progress"></div>
+    </div>
+
+    <div class="question-card" id="question-card">
+      <p class="q-phrase" id="q-phrase">Chargement de la phrase...</p>
+    </div>
+
+    <div class="choices">
+      <button class="choice-btn" id="btn-oui" onclick="submitAnswer('oui')">
+        <span>👍 Oui, c'est du passé composé</span>
+      </button>
+      <button class="choice-btn" id="btn-non" onclick="submitAnswer('non')">
+        <span>👎 Non</span>
+      </button>
+    </div>
+
+    <div class="feedback-box" id="feedback-box"></div>
+    <button class="action-btn" id="btn-action" onclick="nextQuestion()">➡️ Phrase suivante</button>
+  </div>
+
+  <div class="score-screen" id="score-screen">
+    <div class="big-emoji" id="final-emoji">🎉</div>
+    <div class="big-score" id="final-score">10 / 10</div>
+    <p class="final-msg" id="final-msg">Félicitations ! Tu as un score parfait.</p>
+    <button class="restart-btn" onclick="startExercise()">🔄 Recommencer un entraînement</button>
+  </div>
+</div>
+
+<script>
+// BANQUE DE 100 PHRASES
+// 45% passé composé (45 phrases), 25% imparfait (25 phrases), 15% présent (15 phrases), 15% futur (15 phrases)
+const BANK = [
+  // --- PASSÉ COMPOSÉ (45) ---
+  { p: "Les élèves ont fini leurs devoirs à temps.", pc: true, verb: "ont fini", tense: "le passé composé" },
+  { p: "J'ai mangé une délicieuse pomme rouge ce matin.", pc: true, verb: "ai mangé", tense: "le passé composé" },
+  { p: "Elle est allée à la boulangerie pour acheter du pain.", pc: true, verb: "est allée", tense: "le passé composé" },
+  { p: "Nous avons rencontré notre nouveau professeur.", pc: true, verb: "avons rencontré", tense: "le passé composé" },
+  { p: "Le vent a soufflé très fort durant la nuit.", pc: true, verb: "a soufflé", tense: "le passé composé" },
+  { p: "Les randonneurs sont montés tout en haut de la colline.", pc: true, verb: "sont montés", tense: "le passé composé" },
+  { p: "Tu as écrit une magnifique poésie pour la fête.", pc: true, verb: "as écrit", tense: "le passé composé" },
+  { p: "Ils ont pris le train de huit heures ce matin.", pc: true, verb: "ont pris", tense: "le passé composé" },
+  { p: "La maîtresse a distribué les nouveaux cahiers.", pc: true, verb: "a distribué", tense: "le passé composé" },
+  { p: "Le chat a attrapé une petite souris dans le jardin.", pc: true, verb: "a attrapé", tense: "le passé composé" },
+  { p: "Nous sommes restés à la maison à cause de la pluie.", pc: true, verb: "sommes restés", tense: "le passé composé" },
+  { p: "Vous avez fait un travail remarquable.", pc: true, verb: "avez fait", tense: "le passé composé" },
+  { p: "Le soleil a brillé tout l'après-midi.", pc: true, verb: "a brillé", tense: "le passé composé" },
+  { p: "Le petit oiseau est tombé du nid ce matin.", pc: true, verb: "est tombé", tense: "le passé composé" },
+  { p: "Mes cousins ont construit une cabane dans les bois.", pc: true, verb: "ont construit", tense: "le passé composé" },
+  { p: "Tu as appris ta leçon par cœur.", pc: true, verb: "as appris", tense: "le passé composé" },
+  { p: "J'ai perdu mes clés dans la cour de récréation.", pc: true, verb: "ai perdu", tense: "le passé composé" },
+  { p: "Elle a préparé une superbe tarte aux fraises.", pc: true, verb: "a préparé", tense: "le passé composé" },
+  { p: "Nous avons écouté une très jolie mélodie.", pc: true, verb: "avons écouté", tense: "le passé composé" },
+  { p: "Les feuilles sont tombées des arbres en automne.", pc: true, verb: "sont tombées", tense: "le passé composé" },
+  { p: "Vous avez dit la vérité à vos parents.", pc: true, verb: "avez dit", tense: "le passé composé" },
+  { p: "La voiture a démarré au quart de tour.", pc: true, verb: "a démarré", tense: "le passé composé" },
+  { p: "Ils sont nés le même jour de l'année.", pc: true, verb: "sont nés", tense: "le passé composé" },
+  { p: "Le chien a aboyé toute la soirée.", pc: true, verb: "a aboyé", tense: "le passé composé" },
+  { p: "Nous avons réussi notre examen de géographie.", pc: true, verb: "avons réussi", tense: "le passé composé" },
+  { p: "J'ai bu un grand verre d'eau après ma course.", pc: true, verb: "ai bu", tense: "le passé composé" },
+  { p: "Elle a ouvert son cadeau avec beaucoup de joie.", pc: true, verb: "a ouvert", tense: "le passé composé" },
+  { p: "Tu as garé ton vélo sous le préau de l'école.", pc: true, verb: "as garé", tense: "le passé composé" },
+  { p: "Vous êtes partis très tôt ce matin.", pc: true, verb: "êtes partis", tense: "le passé composé" },
+  { p: "Les enfants ont beaucoup ri en regardant le clown.", pc: true, verb: "ont ri", tense: "le passé composé" },
+  { p: "La petite fille a dessiné un beau paysage.", pc: true, verb: "a dessiné", tense: "le passé composé" },
+  { p: "L'eau a bouilli dans la casserole.", pc: true, verb: "a bouilli", tense: "le passé composé" },
+  { p: "Le boulanger a cuit des croissants frais.", pc: true, verb: "a cuit", tense: "le passé composé" },
+  { p: "Nous avons lu une histoire passionnante.", pc: true, verb: "avons lu", tense: "le passé composé" },
+  { p: "Tu es devenu un grand champion d'échecs.", pc: true, verb: "es devenu", tense: "le passé composé" },
+  { p: "Ils ont vu un film fantastique hier soir.", pc: true, verb: "ont vu", tense: "le passé composé" },
+  { p: "Elle a mis ses bottes pour aller dans la boue.", pc: true, verb: "a mis", tense: "le passé composé" },
+  { p: "Le jardinier a arrosé toutes les salades.", pc: true, verb: "a arrosé", tense: "le passé composé" },
+  { p: "J'ai reçu une jolie carte postale d'Italie.", pc: true, verb: "ai reçu", tense: "le passé composé" },
+  { p: "Nous sommes venus vous encourager pour le match.", pc: true, verb: "sommes venus", tense: "le passé composé" },
+  { p: "Vous avez couru le marathon le week-end dernier.", pc: true, verb: "avez couru", tense: "le passé composé" },
+  { p: "La neige a recouvert toute la vallée.", pc: true, verb: "a recouvert", tense: "le passé composé" },
+  { p: "Ils sont rentrés tard de leur promenade en forêt.", pc: true, verb: "sont rentrés", tense: "le passé composé" },
+  { p: "Tu as choisi une très belle couleur pour ton dessin.", pc: true, verb: "as choisi", tense: "le passé composé" },
+  { p: "J'ai peint une magnifique aquarelle.", pc: true, verb: "ai peint", tense: "le passé composé" },
+
+  // --- IMPARFAIT (25) ---
+  { p: "Les enfants jouaient tranquillement dans le parc.", pc: false, verb: "jouaient", tense: "l'imparfait" },
+  { p: "Chaque matin, nous prenions le bus pour aller en classe.", pc: false, verb: "prenions", tense: "l'imparfait" },
+  { p: "Tu avais peur de l'orage quand tu étais petit.", pc: false, verb: "avais / étais", tense: "l'imparfait" },
+  { p: "Le vieux château dominait toute la plaine.", pc: false, verb: "dominait", tense: "l'imparfait" },
+  { p: "Ils chantaient joyeusement au bord du feu de camp.", pc: false, verb: "chantaient", tense: "l'imparfait" },
+  { p: "Elle finissait toujours ses assiettes de légumes.", pc: false, verb: "finissait", tense: "l'imparfait" },
+  { p: "Je faisais souvent de la bicyclette avec mes amis.", pc: false, verb: "faisais", tense: "l'imparfait" },
+  { p: "Vous lisiez un livre captivant au coin du feu.", pc: false, verb: "lisiez", tense: "l'imparfait" },
+  { p: "Le soleil brillait doucement à travers la brume.", pc: false, verb: "brillait", tense: "l'imparfait" },
+  { p: "Nous allions chez nos grands-parents tous les dimanches.", pc: false, verb: "allions", tense: "l'imparfait" },
+  { p: "Il pleuvait sans cesse sur la petite ville côtière.", pc: false, verb: "pleuvait", tense: "l'imparfait" },
+  { p: "Tu venais souvent nous raconter de drôles d'histoires.", pc: false, verb: "venais", tense: "l'imparfait" },
+  { p: "Le vent soufflait fort à travers les branches du chêne.", pc: false, verb: "soufflait", tense: "l'imparfait" },
+  { p: "Ils voulaient construire un grand bonhomme de neige.", pc: false, verb: "voulaient", tense: "l'imparfait" },
+  { p: "J'écrivais une longue lettre à mon cousin du Canada.", pc: false, verb: "écrivais", tense: "l'imparfait" },
+  { p: "Nous mangions de délicieuses crêpes chaque mercredi.", pc: false, verb: "mangions", tense: "l'imparfait" },
+  { p: "La maîtresse expliquait la règle de grammaire au tableau.", pc: false, verb: "expliquait", tense: "l'imparfait" },
+  { p: "Vous saviez déjà nager sans bouée.", pc: false, verb: "saviez", tense: "l'imparfait" },
+  { p: "Les oiseaux gazouillaient dès le lever du soleil.", pc: false, verb: "gazouillaient", tense: "l'imparfait" },
+  { p: "Il faisait très froid dans la cabane de montagne.", pc: false, verb: "faisait", tense: "l'imparfait" },
+  { p: "Tu dessinais des bateaux sur ton cahier de brouillon.", pc: false, verb: "dessinais", tense: "l'imparfait" },
+  { p: "Les lumières de la ville scintillaient dans la nuit.", pc: false, verb: "scintillaient", tense: "l'imparfait" },
+  { p: "Nous habitions dans un charmant petit village fleuri.", pc: false, verb: "habitions", tense: "l'imparfait" },
+  { p: "Elle portait toujours un joli chapeau de paille.", pc: false, verb: "portait", tense: "l'imparfait" },
+  { p: "Le ruisseau coulait paisiblement au milieu du pré.", pc: false, verb: "coulait", tense: "l'imparfait" },
+
+  // --- PRÉSENT (15) ---
+  { p: "Aujourd'hui, le soleil brille dans le ciel bleu.", pc: false, verb: "brille", tense: "le présent de l'indicatif" },
+  { p: "Les enfants écoutent attentivement l'histoire.", pc: false, verb: "écoutent", tense: "le présent de l'indicatif" },
+  { p: "Nous mangeons une bonne salade de fruits frais.", pc: false, verb: "mangeons", tense: "le présent de l'indicatif" },
+  { p: "Tu termines tes calculs très rapidement.", pc: false, verb: "termines", tense: "le présent de l'indicatif" },
+  { p: "Je prends mon sac et je pars à l'école.", pc: false, verb: "prends / pars", tense: "le présent de l'indicatif" },
+  { p: "Ils font une belle partie de football dans la cour.", pc: false, verb: "font", tense: "le présent de l'indicatif" },
+  { p: "Vous écrivez le résumé dans votre cahier rouge.", pc: false, verb: "écrivez", tense: "le présent de l'indicatif" },
+  { p: "Le chat dort paisiblement sur le fauteuil du salon.", pc: false, verb: "dort", tense: "le présent de l'indicatif" },
+  { p: "Ma mère prépare un bon gâteau pour le goûter.", pc: false, verb: "prépare", tense: "le présent de l'indicatif" },
+  { p: "Nous lisons un article de journal intéressant.", pc: false, verb: "lisons", tense: "le présent de l'indicatif" },
+  { p: "Tu as de la chance d'avoir un si beau vélo.", pc: false, verb: "as", tense: "le présent de l'indicatif" },
+  { p: "Ils vont à la piscine tous les jeudis après-midi.", pc: false, verb: "vont", tense: "le présent de l'indicatif" },
+  { p: "Je vois mes amis qui jouent sous le grand préau.", pc: false, verb: "vois / jouent", tense: "le présent de l'indicatif" },
+  { p: "Vous faites de gros progrès en orthographe.", pc: false, verb: "faites", tense: "le présent de l'indicatif" },
+  { p: "Le boulanger sort des baguettes chaudes du four.", pc: false, verb: "sort", tense: "le présent de l'indicatif" },
+
+  // --- FUTUR SIMPLE (15) ---
+  { p: "Demain, nous irons visiter le musée des sciences.", pc: false, verb: "irons", tense: "le futur simple" },
+  { p: "L'année prochaine, tu auras dix ans en novembre.", pc: false, verb: "auras", tense: "le futur simple" },
+  { p: "Ils chanteront une jolie chanson pour la fête.", pc: false, verb: "chanteront", tense: "le futur simple" },
+  { p: "Je ferai mes devoirs dès mon retour à la maison.", pc: false, verb: "ferai", tense: "le futur simple" },
+  { p: "Elle finira son grand dessin ce soir après le repas.", pc: false, verb: "finira", tense: "le futur simple" },
+  { p: "Le jardinier plantera des fleurs au printemps prochain.", pc: false, verb: "plantera", tense: "le futur simple" },
+  { p: "Nous prendrons le train à la gare de Liège.", pc: false, verb: "prendrons", tense: "le futur simple" },
+  { p: "Vous verrez un beau spectacle d'acrobates dimanche.", pc: false, verb: "verrez", tense: "le futur simple" },
+  { p: "Le vent soufflera fort sur la mer demain matin.", pc: false, verb: "soufflera", tense: "le futur simple" },
+  { p: "Tu écriras une lettre à ta grand-mère pendant les vacances.", pc: false, verb: "écriras", tense: "le futur simple" },
+  { p: "Ils viendront nous rendre visite pendant le week-end.", pc: false, verb: "viendront", tense: "le futur simple" },
+  { p: "Je saurai bientôt parler anglais grâce à mes cours.", pc: false, verb: "saurai", tense: "le futur simple" },
+  { p: "Le magasin ouvrira ses portes à huit heures tapantes.", pc: false, verb: "ouvrira", tense: "le futur simple" },
+  { p: "Nous pourrons faire du vélo s'il fait beau.", pc: false, verb: "pourrons", tense: "le futur simple" },
+  { p: "Vous direz bonjour de ma part à votre grand-père.", pc: false, verb: "direz", tense: "le futur simple" }
+];
+
+let state = {
+  questions: [],
+  currentIndex: 0,
+  score: 0,
+  submitted: false,
+  results: []
+};
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function startExercise() {
+  const selected = shuffle(BANK).slice(0, 10);
+  
+  state = {
+    questions: selected,
+    currentIndex: 0,
+    score: 0,
+    submitted: false,
+    results: []
+  };
+
+  document.getElementById('exercise-zone').style.display = 'block';
+  document.getElementById('score-screen').style.display = 'none';
+  
+  const progress = document.getElementById('dots-progress');
+  progress.innerHTML = '';
+  for (let i = 0; i < 10; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'dot';
+    progress.appendChild(dot);
+  }
+
+  showQuestion();
+}
+
+function showQuestion() {
+  state.submitted = false;
+  const q = state.questions[state.currentIndex];
+  
+  document.getElementById('info-numero').textContent = `Phrase ${state.currentIndex + 1} / 10`;
+  document.getElementById('q-phrase').textContent = q.p;
+  
+  const btnOui = document.getElementById('btn-oui');
+  const btnNon = document.getElementById('btn-non');
+  const feedback = document.getElementById('feedback-box');
+  const btnAction = document.getElementById('btn-action');
+
+  btnOui.disabled = false;
+  btnNon.disabled = false;
+  btnOui.className = 'choice-btn';
+  btnNon.className = 'choice-btn';
+  
+  feedback.style.display = 'none';
+  feedback.className = 'feedback-box';
+  feedback.innerHTML = '';
+  
+  btnAction.style.display = 'none';
+
+  const dots = document.querySelectorAll('.dot');
+  dots.forEach((dot, idx) => {
+    dot.classList.remove('current');
+    if (idx === state.currentIndex) dot.classList.add('current');
+  });
+}
+
+function submitAnswer(ans) {
+  if (state.submitted) return;
+  state.submitted = true;
+
+  const q = state.questions[state.currentIndex];
+  const isCorrect = (ans === 'oui' && q.pc) || (ans === 'non' && !q.pc);
+
+  const btnOui = document.getElementById('btn-oui');
+  const btnNon = document.getElementById('btn-non');
+  const feedback = document.getElementById('feedback-box');
+  const btnAction = document.getElementById('btn-action');
+  const card = document.getElementById('question-card');
+  const dots = document.querySelectorAll('.dot');
+
+  btnOui.disabled = true;
+  btnNon.disabled = true;
+
+  if (ans === 'oui') {
+    btnOui.classList.add(q.pc ? 'correct' : 'incorrect');
+  } else {
+    btnNon.classList.add(!q.pc ? 'correct' : 'incorrect');
+  }
+
+  if (!isCorrect) {
+    if (q.pc) btnOui.classList.add('correct');
+    else btnNon.classList.add('correct');
+    
+    card.classList.add('shake');
+    setTimeout(() => card.classList.remove('shake'), 400);
+  }
+
+  if (isCorrect) {
+    state.score++;
+    state.results.push('correct');
+    dots[state.currentIndex].className = 'dot correct';
+  } else {
+    state.results.push('incorrect');
+    dots[state.currentIndex].className = 'dot incorrect';
+  }
+
+  let explicationText = '';
+  if (q.pc) {
+    explicationText = `✅ **Oui !** C'est du passé composé. Le verbe conjugué est **« ${q.verb} »** (composé de l'auxiliaire et du participe passé).`;
+  } else {
+    explicationText = `❌ **Non !** Ce n'est pas du passé composé. Le verbe conjugué était **« ${q.verb} »**, qui est à **${q.tense}**.`;
+  }
+
+  feedback.innerHTML = explicationText.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+  feedback.className = `feedback-box ${isCorrect ? 'correct' : 'incorrect'}`;
+  feedback.style.display = 'block';
+
+  btnAction.style.display = 'block';
+  btnAction.textContent = state.currentIndex === 9 ? "🏁 Terminer l'exercice" : "➡️ Phrase suivante";
+}
+
+function nextQuestion() {
+  if (state.currentIndex < 9) {
+    state.currentIndex++;
+    showQuestion();
+  } else {
+    showScore();
+  }
+}
+
+function showScore() {
+  document.getElementById('exercise-zone').style.display = 'none';
+  
+  const scoreScreen = document.getElementById('score-screen');
+  const finalScore = document.getElementById('final-score');
+  const finalMsg = document.getElementById('final-msg');
+  const finalEmoji = document.getElementById('final-emoji');
+  
+  scoreScreen.style.display = 'block';
+  finalScore.textContent = `${state.score} / 10`;
+
+  let msg = '';
+  let emoji = '🎉';
+  
+  if (state.score === 10) {
+    msg = "Score parfait ! Tu distingues le passé composé des autres temps comme un vrai chef ! 🏆";
+    emoji = '👑';
+    triggerConfetti();
+  } else if (state.score >= 8) {
+    msg = "Excellent travail ! Tu as très bien compris le rôle du passé composé. Continue comme ça ! 🌟";
+    emoji = '🎉';
+  } else if (state.score >= 5) {
+    msg = "Pas mal du tout ! Relis bien les explications pour les phrases où tu as fait des erreurs pour encore t'améliorer. 👍";
+    emoji = '👏';
+  } else {
+    msg = "Il reste encore quelques confusions. N'hésite pas à refaire un entraînement pour bien repérer les verbes composés ! 💪";
+    emoji = '✍️';
+  }
+
+  finalMsg.textContent = msg;
+  finalEmoji.textContent = emoji;
+
+  try {
+    const pct = Math.round((state.score / 10) * 100);
+    const dateStr = new Date().toLocaleDateString('fr-BE');
+    window.parent.postMessage({
+      type: 'fiche_result',
+      score: state.score,
+      total: 10,
+      pct: pct,
+      date: dateStr,
+      activity: 'fiche_conj_pc_identifier'
+    }, '*');
+  } catch (e) {
+    console.warn("Impossible d'envoyer le score au parent:", e);
+  }
+}
+
+function triggerConfetti() {
+  if (typeof confetti === 'function') {
+    confetti({
+      particleCount: 150,
+      spread: 70,
+      origin: { y: 0.6 }
+    });
+  }
+}
+
+window.onload = startExercise;
+</script>
+</body>
+</html>
