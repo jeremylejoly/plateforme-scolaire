@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Résolution de problèmes</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=Inter:wght@300..800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --purple: #5B4FCF;
+    --purple-light: #EEF0FF;
+    --purple-mid: #C7C2F5;
+    --green: #1A9E75;
+    --green-light: #E2F5EE;
+    --red: #D94F3D;
+    --red-light: #FDECEA;
+    --amber: #C97B1A;
+    --amber-light: #FEF3E2;
+    --blue: #1A6FA0;
+    --blue-light: #E2F0FA;
+    --bg: #FDFBF7;
+    --surface: #FFFFFF;
+    --text: #1A1A2E;
+    --muted: #6B7080;
+    --border: #1A1A2E;
+    --slate-bg: #0F172A;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    padding: 1.5rem;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .container {
+    max-width: 620px;
+    margin: 0 auto;
+    width: 100%;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  /* PROGRESS CARD */
+  .info-card {
+    background: var(--blue-light);
+    border: 3px solid var(--border);
+    border-radius: 16px;
+    padding: 0.8rem 1.2rem;
+    box-shadow: 4px 4px 0px var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .info-card p {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 1.05rem;
+    color: var(--blue);
+    font-weight: 700;
+  }
+
+  .dots {
+    display: flex;
+    gap: 6px;
+  }
+
+  .dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: #D1D5DB;
+    transition: all 0.3s ease;
+  }
+
+  /* GAME CARD */
+  .game-card {
+    background: var(--surface);
+    border: 3px solid var(--border);
+    border-radius: 18px;
+    padding: 1.5rem;
+    box-shadow: 4px 4px 0px var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .q-label {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    color: var(--purple);
+    text-align: center;
+  }
+
+  /* RIDDLE BOX */
+  .riddle-box {
+    background: var(--amber-light);
+    border: 3px solid var(--border);
+    border-radius: 14px;
+    padding: 1.5rem 1.2rem;
+    text-align: center;
+    box-shadow: 3px 3px 0px var(--border);
+    min-height: 85px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .riddle-text {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #854d0e;
+    line-height: 1.4;
+  }
+
+  /* INPUT ZONE */
+  .input-zone {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0.25rem 0;
+  }
+
+  .answer-input {
+    width: 100%;
+    max-width: 220px;
+    text-align: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 2.2rem;
+    font-weight: 700;
+    padding: 0.5rem;
+    border: 3px solid var(--border);
+    border-radius: 14px;
+    outline: none;
+    background: var(--bg);
+    color: var(--text);
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.05), 2px 2px 0px var(--border);
+    transition: all 0.2s ease;
+  }
+
+  .answer-input::placeholder {
+    color: #CBD5E1;
+  }
+
+  .answer-input.correct {
+    border-color: var(--green) !important;
+    background: var(--green-light) !important;
+    color: #115e59 !important;
+    box-shadow: 2px 2px 0px var(--green) !important;
+  }
+
+  .answer-input.incorrect {
+    border-color: var(--red) !important;
+    background: var(--red-light) !important;
+    color: #991b1b !important;
+    box-shadow: 2px 2px 0px var(--red) !important;
+    animation: shake 0.35s ease-in-out;
+  }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+  }
+
+  /* CUSTOM KEYPAD */
+  .keypad {
+    display: grid;
+    grid-template-cols: repeat(3, 1fr);
+    gap: 0.6rem;
+    max-width: 260px;
+    margin: 0.5rem auto 0;
+    width: 100%;
+  }
+
+  .key-btn {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    padding: 0.75rem;
+    background: var(--surface);
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    cursor: pointer;
+    text-align: center;
+    box-shadow: 2px 2px 0px var(--border);
+    transition: all 0.1s ease;
+    user-select: none;
+  }
+
+  .key-btn:hover:not(:disabled) {
+    background: var(--purple-light);
+    border-color: var(--purple);
+    transform: translateY(-1px);
+    box-shadow: 3px 3px 0px var(--border);
+  }
+
+  .key-btn:active:not(:disabled) {
+    transform: translateY(1px);
+    box-shadow: 1px 1px 0px var(--border);
+  }
+
+  .key-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+
+  .key-btn.action-del {
+    color: var(--red);
+    background: var(--red-light);
+  }
+
+  .key-btn.action-val {
+    color: var(--green);
+    background: var(--green-light);
+  }
+
+  .key-btn.action-val:hover:not(:disabled) {
+    background: #d1f2e1;
+    border-color: var(--green);
+  }
+
+  /* PEDAGOGICAL EXPLAIN BOX */
+  .feedback-box {
+    display: none;
+    background: var(--purple-light);
+    border: 2px solid var(--purple-mid);
+    border-radius: 14px;
+    padding: 1rem;
+    animation: slideDown 0.3s ease-out;
+  }
+
+  @keyframes slideDown {
+    0% { transform: translateY(-10px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+  }
+
+  .feedback-content {
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+    line-height: 1.45;
+    font-size: 0.95rem;
+    font-weight: 500;
+  }
+
+  .feedback-icon {
+    font-size: 1.4rem;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+
+  /* BUTTON NEXT */
+  .btn-next {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    padding: 0.85rem;
+    background: var(--purple);
+    color: white;
+    border: 2px solid var(--border);
+    border-radius: 14px;
+    cursor: pointer;
+    box-shadow: 3px 3px 0px var(--border);
+    transition: all 0.15s ease;
+    text-align: center;
+    width: 100%;
+    margin-top: 0.5rem;
+    display: none;
+  }
+
+  .btn-next:hover {
+    background: #4a3eb3;
+    transform: translateY(-1px);
+    box-shadow: 4px 4px 0px var(--border);
+  }
+
+  .btn-next:active {
+    transform: translateY(1px);
+    box-shadow: 1px 1px 0px var(--border);
+  }
+
+  /* SCORE SUMMARY */
+  .score-card {
+    display: none;
+    background: var(--surface);
+    border: 3px solid var(--border);
+    border-radius: 18px;
+    padding: 2rem;
+    box-shadow: 4px 4px 0px var(--border);
+    text-align: center;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.25rem;
+    animation: popIn 0.3s ease-out;
+  }
+
+  @keyframes popIn {
+    0% { transform: scale(0.9); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  .score-emoji {
+    font-size: 3.8rem;
+  }
+
+  .score-value {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 2.4rem;
+    font-weight: 800;
+  }
+
+  .score-pct {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--muted);
+    margin-bottom: 0.5rem;
+  }
+
+  .score-detail {
+    font-size: 0.9rem;
+    color: var(--muted);
+    font-weight: 600;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+  }
+
+  .btn-restart {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    padding: 0.85rem 2rem;
+    background: var(--purple);
+    color: white;
+    border: 2px solid var(--border);
+    border-radius: 14px;
+    cursor: pointer;
+    box-shadow: 3px 3px 0px var(--border);
+    transition: all 0.15s ease;
+    width: 220px;
+  }
+
+  .btn-restart:hover {
+    background: #4a3eb3;
+    transform: translateY(-1px);
+    box-shadow: 4px 4px 0px var(--border);
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <!-- Progress Header -->
+  <div class="info-card" id="progress-card">
+    <p id="info-question-num">Question 1/10</p>
+    <div class="dots" id="dots-container"></div>
+  </div>
+
+  <!-- Game Zone -->
+  <div class="game-card" id="exercice-zone">
+    <div class="q-label">🧩 Résolution de problèmes</div>
+    
+    <!-- Riddle display -->
+    <div class="riddle-box">
+      <div class="riddle-text" id="riddle-text">Chargement de la devinette...</div>
+    </div>
+
+    <!-- Saisie input -->
+    <div class="input-zone">
+      <input type="text" class="answer-input" id="answer-input" readonly placeholder="…" autocomplete="off" />
+    </div>
+
+    <!-- On screen keypad -->
+    <div class="keypad" id="keypad">
+      <button class="key-btn" onclick="pressNumber('1')">1</button>
+      <button class="key-btn" onclick="pressNumber('2')">2</button>
+      <button class="key-btn" onclick="pressNumber('3')">3</button>
+      <button class="key-btn" onclick="pressNumber('4')">4</button>
+      <button class="key-btn" onclick="pressNumber('5')">5</button>
+      <button class="key-btn" onclick="pressNumber('6')">6</button>
+      <button class="key-btn" onclick="pressNumber('7')">7</button>
+      <button class="key-btn" onclick="pressNumber('8')">8</button>
+      <button class="key-btn" onclick="pressNumber('9')">9</button>
+      <button class="key-btn action-del" onclick="pressDelete()">⌫</button>
+      <button class="key-btn" onclick="pressNumber('0')">0</button>
+      <button class="key-btn action-val" id="key-val" onclick="validateAnswer()">OK</button>
+    </div>
+
+    <!-- Explanation feedback -->
+    <div class="feedback-box" id="feedback-box">
+      <div class="feedback-content">
+        <span class="feedback-icon">💡</span>
+        <div id="feedback-explain">Explication pédagogique...</div>
+      </div>
+    </div>
+
+    <button class="btn-next" id="btn-next" onclick="nextQuestion()">Question suivante ➔</button>
+  </div>
+
+  <!-- Score Summary -->
+  <div class="score-card" id="score-card">
+    <div class="score-emoji" id="score-emoji">🎉</div>
+    <div class="score-value" id="score-value">10/10</div>
+    <div class="score-pct" id="score-pct">100%</div>
+    <div class="score-detail" id="score-detail">Q1 : ✅  Q2 : ✅  Q3 : ✅</div>
+    <p id="score-comment" style="font-weight: 700; margin-bottom: 0.5rem;"></p>
+    <button class="btn-restart" onclick="startExercise()">🔄 Recommencer</button>
+  </div>
+</div>
+
+<script>
+  const RIDDLES = [
+    {
+      text: "Je suis le produit de 7 par 11. Qui suis-je ?",
+      answer: "77",
+      explain: "Le produit est le résultat de la multiplication : 7 x 11 = 77."
+    },
+    {
+      text: "Je suis la différence entre 100 et 25. Qui suis-je ?",
+      answer: "75",
+      explain: "La différence est le résultat de la soustraction : 100 - 25 = 75."
+    },
+    {
+      text: "Calcule la somme de 15 et 33.",
+      answer: "48",
+      explain: "La somme est le résultat de l'addition : 15 + 33 = 48."
+    },
+    {
+      text: "Calcule le quotient de 45 par 9.",
+      answer: "5",
+      explain: "Le quotient est le résultat de la division : 45 : 9 = 5."
+    },
+    {
+      text: "Je suis la somme de 9 et de la différence entre 200 et 100. Qui suis-je ?",
+      answer: "109",
+      explain: "La différence entre 200 et 100 vaut 100, et la somme de 9 et 100 est : 9 + (200 - 100) = 109."
+    },
+    {
+      text: "Je suis le produit du facteur 2 et de la somme de 2 et 2. Qui suis-je ?",
+      answer: "8",
+      explain: "La somme de 2 et 2 vaut 4. Le produit du facteur 2 par cette somme est : 2 x (2 + 2) = 8."
+    },
+    {
+      text: "Je suis le quotient du dividende 18 par le diviseur 2, divisé par 3. Qui suis-je ?",
+      answer: "3",
+      explain: "Le quotient de 18 par 2 vaut 9. Divisé par 3, on obtient : (18 : 2) : 3 = 3."
+    },
+    {
+      text: "Calcule la différence entre le produit des facteurs 15 et 2, et le terme 2.",
+      answer: "28",
+      explain: "Le produit des facteurs 15 et 2 vaut 30. La différence entre 30 et le terme 2 est : (15 x 2) - 2 = 28."
+    },
+    {
+      text: "Calcule la somme de 3 et du produit des facteurs 5 et 8.",
+      answer: "43",
+      explain: "Le produit des facteurs 5 et 8 vaut 40. La somme de 3 et 40 est : 3 + (5 x 8) = 43."
+    },
+    {
+      text: "Je suis la somme des termes 1200 et 34. Qui suis-je ?",
+      answer: "1234",
+      explain: "La somme est le résultat de l'addition de ses termes : 1200 + 34 = 1234."
+    },
+    {
+      text: "Je suis la différence entre 60 et 6. Qui suis-je ?",
+      answer: "54",
+      explain: "La différence est le résultat de la soustraction : 60 - 6 = 54."
+    },
+    {
+      text: "Je suis la somme de 11 et du quotient du dividende 200 par le diviseur 2. Qui suis-je ?",
+      answer: "111",
+      explain: "Le quotient de 200 par 2 vaut 100. La somme de 11 et 100 est : 11 + (200 : 2) = 111."
+    }
+  ];
+
+  let selectedRiddles = [];
+  let currentIdx = 0;
+  let firstTryScores = [];
+  let currentAttemptsCount = 0;
+  let isAnswered = false;
+
+  function shuffle(array) {
+    const arr = [...array];
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }
+
+  function startExercise() {
+    selectedRiddles = shuffle(RIDDLES).slice(0, 10);
+    currentIdx = 0;
+    firstTryScores = [];
+    isAnswered = false;
+
+    document.getElementById('exercice-zone').style.display = 'flex';
+    document.getElementById('progress-card').style.display = 'flex';
+    document.getElementById('score-card').style.display = 'none';
+
+    loadQuestion();
+  }
+
+  function loadQuestion() {
+    isAnswered = false;
+    currentAttemptsCount = 0;
+    document.getElementById('answer-input').value = '';
+    document.getElementById('answer-input').className = 'answer-input';
+
+    const r = selectedRiddles[currentIdx];
+
+    // Update Header question num
+    document.getElementById('info-question-num').textContent = `Question ${currentIdx + 1}/10`;
+
+    // Draw progress dots
+    const dotsContainer = document.getElementById('dots-container');
+    dotsContainer.innerHTML = '';
+    selectedRiddles.forEach((_, idx) => {
+      const dot = document.createElement('div');
+      dot.className = 'dot';
+      if (idx < currentIdx) {
+        dot.style.background = firstTryScores[idx] ? 'var(--green)' : 'var(--amber)';
+      } else if (idx === currentIdx) {
+        dot.style.background = 'var(--blue)';
+      }
+      dotsContainer.appendChild(dot);
+    });
+
+    // Load riddle text
+    document.getElementById('riddle-text').textContent = r.text;
+
+    // Enable keypad
+    const keypadButtons = document.querySelectorAll('#keypad .key-btn');
+    keypadButtons.forEach(btn => btn.disabled = false);
+
+    // Hide feedback & next button
+    document.getElementById('feedback-box').style.display = 'none';
+    document.getElementById('btn-next').style.display = 'none';
+  }
+
+  // Virtual Keypad controls
+  function pressNumber(num) {
+    if (isAnswered) return;
+    const input = document.getElementById('answer-input');
+    // Limit to 5 digits
+    if (input.value.length >= 5) return;
+    input.value += num;
+  }
+
+  function pressDelete() {
+    if (isAnswered) return;
+    const input = document.getElementById('answer-input');
+    input.value = input.value.slice(0, -1);
+  }
+
+  function validateAnswer() {
+    if (isAnswered) return;
+    const inputEl = document.getElementById('answer-input');
+    const userVal = inputEl.value.trim();
+
+    if (userVal === '') return;
+
+    const r = selectedRiddles[currentIdx];
+    currentAttemptsCount++;
+
+    if (userVal === r.answer) {
+      // Correct!
+      isAnswered = true;
+      inputEl.className = 'answer-input correct';
+      firstTryScores.push(currentAttemptsCount === 1);
+
+      // Disable keypad
+      const keypadButtons = document.querySelectorAll('#keypad .key-btn');
+      keypadButtons.forEach(btn => btn.disabled = true);
+
+      // Show explain box
+      document.getElementById('feedback-explain').textContent = r.explain;
+      document.getElementById('feedback-box').style.display = 'block';
+
+      // Show next button
+      const nextBtn = document.getElementById('btn-next');
+      nextBtn.style.display = 'block';
+      if (currentIdx === 9) {
+        nextBtn.textContent = '🏁 Voir mon score final';
+      } else {
+        nextBtn.textContent = 'Question suivante ➔';
+      }
+
+      // Update current dot progress color instantly
+      const currentDot = document.getElementById('dots-container').children[currentIdx];
+      if (currentDot) {
+        currentDot.style.background = (currentAttemptsCount === 1) ? 'var(--green)' : 'var(--amber)';
+      }
+    } else {
+      // Incorrect!
+      inputEl.className = 'answer-input incorrect';
+      setTimeout(() => {
+        if (!isAnswered) {
+          inputEl.className = 'answer-input';
+          inputEl.value = ''; // auto clear on error to let them retry easily
+        }
+      }, 800);
+    }
+  }
+
+  function nextQuestion() {
+    if (currentIdx < 9) {
+      currentIdx++;
+      loadQuestion();
+    } else {
+      showFinalScore();
+    }
+  }
+
+  // Physical Keyboard listener
+  document.addEventListener('keydown', (e) => {
+    // If inputting in an iframe, focus handling is automated
+    if (isAnswered) {
+      if (e.key === 'Enter') {
+        nextQuestion();
+      }
+      return;
+    }
+
+    if (e.key >= '0' && e.key <= '9') {
+      pressNumber(e.key);
+    } else if (e.key === 'Backspace') {
+      pressDelete();
+    } else if (e.key === 'Enter') {
+      validateAnswer();
+    }
+  });
+
+  function showFinalScore() {
+    document.getElementById('exercice-zone').style.display = 'none';
+    document.getElementById('progress-card').style.display = 'none';
+
+    const scoreCard = document.getElementById('score-card');
+    scoreCard.style.display = 'flex';
+
+    // Calculate score
+    const correctOnFirst = firstTryScores.filter(Boolean).length;
+    const total = 10;
+    const pct = Math.round((correctOnFirst / total) * 100);
+
+    document.getElementById('score-value').textContent = `${correctOnFirst} / ${total}`;
+    document.getElementById('score-pct').textContent = `${pct}%`;
+
+    // Detailed scores list
+    const detailContainer = document.getElementById('score-detail');
+    detailContainer.innerHTML = firstTryScores.map((s, i) => `<span>Q${i+1} : ${s ? '✅' : '❌'}</span>`).join('&nbsp;&nbsp;');
+
+    const emojiEl = document.getElementById('score-emoji');
+    const commentEl = document.getElementById('score-comment');
+
+    if (pct === 100) {
+      emojiEl.textContent = '🎉';
+      commentEl.textContent = 'Exceptionnel ! Tu as parfaitement résolu tous les problèmes !';
+      commentEl.style.color = 'var(--green)';
+    } else if (pct >= 70) {
+      emojiEl.textContent = '👍';
+      commentEl.textContent = 'Très bien ! Ta maîtrise du vocabulaire est solide.';
+      commentEl.style.color = 'var(--green)';
+    } else if (pct >= 50) {
+      emojiEl.textContent = '🟠';
+      commentEl.textContent = 'Pas mal ! Relis attentivement les formules et réessaie.';
+      commentEl.style.color = 'var(--amber)';
+    } else {
+      emojiEl.textContent = '💪';
+      commentEl.textContent = 'Courage ! Révise le nom des résultats et réessaie pour t\'améliorer.';
+      commentEl.style.color = 'var(--red)';
+    }
+
+    // Save results to classroom database
+    if (window.parent && window.parent.saveResult && window.parent.state && window.parent.state.student) {
+      try {
+        var state = window.parent.state;
+        var classes = window.parent.CLASSES;
+        var className = classes && classes[state.studentCls] ? classes[state.studentCls].name : state.studentCls;
+        window.parent.saveResult({
+          student: state.student,
+          cls: state.studentCls,
+          className: className,
+          activity: 'op_vocabulaire_prob',
+          bookTitle: 'Vocabulaire des opérations — Résolution de problèmes',
+          score: correctOnFirst,
+          total: total,
+          pct: pct,
+          date: new Date().toLocaleDateString('fr-BE'),
+          time: new Date().toLocaleTimeString('fr-BE', {hour: '2-digit', minute: '2-digit'})
+        });
+      } catch (e) {
+        console.warn('Error saving operations problems score:', e);
+      }
+    }
+  }
+
+  // Start on load
+  startExercise();
+</script>
+</body>
+</html>

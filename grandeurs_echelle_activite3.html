@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Le Convertisseur d'Échelles (P5-P6)</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --purple: #5B4FCF;
+    --purple-light: #EEF0FF;
+    --purple-dark: #3F35A3;
+    --green: #2ECC71;
+    --green-light: #E8F8F0;
+    --red: #E74C3C;
+    --red-light: #FDEDEC;
+    --yellow: #F1C40F;
+    --bg: #FDFBF7;
+    --panel: #FFFFFF;
+    --ink: #1A1A2E;
+    --muted: #6B7080;
+    --line: #1A1A2E;
+    --shadow: 6px 6px 0px #1A1A2E;
+    --shadow-active: 2px 2px 0px #1A1A2E;
+  }
+
+  * {
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+  }
+
+  body {
+    background: var(--bg);
+    margin: 0;
+    padding: 20px;
+    color: var(--ink);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: 'Fredoka', sans-serif;
+    margin: 0 0 10px 0;
+  }
+
+  /* --- HEADER & CONTROLS --- */
+  .header {
+    width: 100%;
+    max-width: 1200px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    background: var(--panel);
+    border: 3px solid var(--line);
+    padding: 15px 25px;
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+  }
+
+  .header-title {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .logo-icon {
+    font-size: 2.5rem;
+  }
+
+  .level-badge {
+    background: var(--purple-light);
+    color: var(--purple);
+    border: 2px solid var(--purple);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    font-family: 'Fredoka', sans-serif;
+  }
+
+  .stats-container {
+    display: flex;
+    gap: 20px;
+  }
+
+  .stat-card {
+    background: var(--panel);
+    border: 2px solid var(--line);
+    padding: 8px 15px;
+    border-radius: 10px;
+    font-weight: 800;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* --- MAIN CONTENT LAYOUT --- */
+  .game-container {
+    width: 100%;
+    max-width: 1200px;
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+  }
+
+  /* --- LEFT PANEL: VISUAL CONTEXT --- */
+  .visual-panel {
+    position: relative;
+    width: 600px;
+    height: 480px;
+    background: var(--purple-light);
+    border: 3px solid var(--line);
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .context-image {
+    width: 100%;
+    height: calc(100% - 50px);
+    object-fit: cover;
+    border-bottom: 3px solid var(--line);
+    transition: opacity 0.3s ease;
+  }
+
+  .context-caption {
+    height: 50px;
+    background: #FFF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--purple-dark);
+  }
+
+  /* --- RIGHT PANEL: CALCULATION LAB --- */
+  .control-panel {
+    flex: 1;
+    background: var(--panel);
+    border: 3px solid var(--line);
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+    padding: 24px;
+    min-height: 480px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .scenario-card {
+    background: var(--purple-light);
+    border: 2px solid var(--purple);
+    padding: 15px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+  }
+
+  .scenario-theme {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 1.15rem;
+    color: var(--purple-dark);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .scenario-text {
+    font-size: 1.1rem;
+    font-weight: 600;
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  /* --- STEPS --- */
+  .step-container {
+    margin-bottom: 20px;
+    opacity: 0.5;
+    pointer-events: none;
+    transition: all 0.3s ease;
+  }
+
+  .step-container.active-step {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .step-title {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 1.1rem;
+    color: var(--ink);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .step-badge {
+    background: var(--ink);
+    color: #FFF;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: 800;
+  }
+
+  /* --- INPUT TABLES --- */
+  .prop-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 15px;
+    border: 2px solid var(--line);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .prop-table th, .prop-table td {
+    border: 1px solid var(--line);
+    padding: 10px;
+    text-align: center;
+    font-size: 0.95rem;
+  }
+
+  .prop-table th {
+    background: var(--purple-light);
+    font-weight: 700;
+  }
+
+  .input-with-unit {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .num-input {
+    width: 110px;
+    padding: 8px;
+    border: 2px solid var(--line);
+    border-radius: 6px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    text-align: center;
+    outline: none;
+    box-shadow: 2px 2px 0px var(--line);
+    transition: all 0.1s ease;
+  }
+
+  .num-input:focus {
+    box-shadow: 1px 1px 0px var(--line);
+    transform: translate(1px, 1px);
+  }
+
+  .unit-select {
+    padding: 8px;
+    border: 2px solid var(--line);
+    border-radius: 6px;
+    font-weight: 700;
+    background: #FFF;
+    outline: none;
+    box-shadow: 2px 2px 0px var(--line);
+    cursor: pointer;
+  }
+
+  /* --- BUTTONS --- */
+  .btn {
+    background: var(--purple);
+    color: #FFF;
+    border: 2px solid var(--line);
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    cursor: pointer;
+    box-shadow: var(--shadow);
+    transition: all 0.1s ease;
+    width: 100%;
+    text-align: center;
+  }
+
+  .btn:hover {
+    background: var(--purple-dark);
+  }
+
+  .btn:active {
+    transform: translate(4px, 4px);
+    box-shadow: var(--shadow-active);
+  }
+
+  .btn.btn-success {
+    background: var(--green);
+  }
+  .btn.btn-success:hover {
+    background: #27AE60;
+  }
+
+  /* --- FEEDBACK BOXES --- */
+  .feedback-box {
+    margin-top: 15px;
+    padding: 12px 18px;
+    border-radius: 10px;
+    border: 2px solid var(--line);
+    font-weight: 600;
+    line-height: 1.5;
+    display: none;
+    animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+
+  .feedback-success {
+    background: var(--green-light);
+    color: #196F3D;
+    border-color: var(--green);
+  }
+
+  .feedback-error {
+    background: var(--red-light);
+    color: #7B241C;
+    border-color: var(--red);
+  }
+
+  @keyframes popIn {
+    0% { transform: scale(0.9); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  /* --- LEVEL SELECTION OVERLAY --- */
+  .level-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(26, 26, 46, 0.85);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .level-card {
+    background: var(--panel);
+    border: 4px solid var(--line);
+    border-radius: 24px;
+    padding: 40px;
+    max-width: 500px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 10px 10px 0px #000;
+  }
+
+  .level-btns {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 25px;
+  }
+
+  .level-btn {
+    background: #FFF;
+    border: 3px solid var(--line);
+    padding: 18px;
+    border-radius: 16px;
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 700;
+    font-size: 1.3rem;
+    cursor: pointer;
+    box-shadow: 5px 5px 0px var(--line);
+    transition: all 0.1s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .level-btn .sub-text {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85rem;
+    color: var(--muted);
+    font-weight: 400;
+    margin-top: 5px;
+  }
+
+  .level-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 7px 7px 0px var(--line);
+  }
+
+  .level-btn.btn-p5:hover { background: var(--purple-light); }
+  .level-btn.btn-p6:hover { background: var(--green-light); }
+
+  .level-btn:active {
+    transform: translate(3px, 3px);
+    box-shadow: 2px 2px 0px var(--line);
+  }
+
+  /* --- FIN OVERLAY --- */
+  .end-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(26, 26, 46, 0.9);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    display: none;
+  }
+
+  .end-card {
+    background: var(--panel);
+    border: 4px solid var(--line);
+    border-radius: 24px;
+    padding: 40px;
+    max-width: 550px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 10px 10px 0px #000;
+  }
+
+  .trophy {
+    font-size: 5rem;
+    margin-bottom: 20px;
+  }
+</style>
+</head>
+<body>
+
+<!-- LEVEL SELECTION -->
+<div id="level-overlay" class="level-overlay">
+  <div class="level-card">
+    <h2>Choisis ton niveau</h2>
+    <p>Sélectionne la difficulté correspondant à ton programme scolaire.</p>
+    <div class="level-btns">
+      <button class="level-btn btn-p5" onclick="selectLevel('Niveau 1')">
+        Niveau 1
+        <span class="sub-text">Échelles simples de réduction (1:10, 1:100, 1:1000). Ratios faciles.</span>
+      </button>
+      <button class="level-btn btn-p6" onclick="selectLevel('Niveau 2')">
+        Niveau 2
+        <span class="sub-text">Échelles de cartes complexes, échelles d'agrandissement (biologie) et conversions km.</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- END GAME SCREEN -->
+<div id="end-overlay" class="end-overlay">
+  <div class="end-card">
+    <div class="trophy">🏆</div>
+    <h2>Entraînement Terminé !</h2>
+    <p style="font-size: 1.15rem; margin-bottom: 25px;">Tu as complété les calculs du laboratoire de cartographie.</p>
+    <div class="stat-card" style="justify-content: center; font-size: 1.5rem; margin-bottom: 30px; border-width: 3px;">
+      Score Final : <span id="final-score">0</span> / 100
+    </div>
+    <button class="btn" onclick="restartGame()">Recommencer l'activité</button>
+  </div>
+</div>
+
+<!-- MAIN INTERFACE -->
+<div class="header">
+  <div class="header-title">
+    <span class="logo-icon">🧭</span>
+    <div>
+      <h1 style="margin: 0; font-size: 1.8rem;">Le Convertisseur d'Échelles</h1>
+      <div style="display: flex; gap: 8px; align-items: center; margin-top: 4px;">
+        <span class="level-badge" id="current-level-badge">Niveau 1</span>
+        <span style="font-size: 0.85rem; color: var(--muted);">Résoudre des conversions et rapports d'échelles</span>
+      </div>
+    </div>
+  </div>
+  
+  <div class="stats-container">
+    <div class="stat-card">
+      🎯 Question : <span id="stat-question-num">1</span>/10
+    </div>
+    <div class="stat-card" style="border-color: var(--purple); color: var(--purple);">
+      ⭐ Score : <span id="stat-score">0</span> pts
+    </div>
+  </div>
+</div>
+
+<div class="game-container">
+  <!-- THE VISUAL CONTEXT PANEL -->
+  <div class="visual-panel">
+    <img src="assets/images/contexte_carte.jpg" alt="Contexte visuel" class="context-image" id="context-image">
+    <div class="context-caption" id="context-caption">Visualisation en cours...</div>
+  </div>
+
+  <!-- THE CALCULATION LAB PANEL -->
+  <div class="control-panel">
+    <div class="scenario-card">
+      <div class="scenario-theme" id="scenario-theme-text">Chargement...</div>
+      <p class="scenario-text" id="scenario-text-content">Génération de la consigne...</p>
+    </div>
+
+    <!-- STEP 1: CONVERT TO CENTIMETERS FIRST -->
+    <div class="step-container active-step" id="step-1-container">
+      <div class="step-title">
+        <span class="step-badge">1</span>
+        <span id="step-1-title-text">Première étape de conversion</span>
+      </div>
+      <p style="font-size: 0.85rem; color: var(--muted); margin: 0 0 12px 0;" id="step-1-helper-text">
+        Convertis la mesure réelle en centimètres pour pouvoir appliquer l'échelle facilement.
+      </p>
+      
+      <div class="input-with-unit" style="justify-content: flex-start;">
+        <label for="step-1-input" id="step-1-input-label" style="font-weight: 700;">Valeur :</label>
+        <input type="number" id="step-1-input" class="num-input">
+        <span id="step-1-input-unit" style="font-weight: 800; font-size: 1.1rem;">cm</span>
+      </div>
+      <button class="btn" style="margin-top: 15px;" id="btn-validate-step-1" onclick="validateStep1()">Valider cette étape</button>
+      <div class="feedback-box" id="feedback-step-1"></div>
+    </div>
+
+    <!-- STEP 2: APPLY THE SCALE & FIND THE RESULT -->
+    <div class="step-container" id="step-2-container">
+      <div class="step-title">
+        <span class="step-badge">2</span>
+        <span id="step-2-title-text">Deuxième étape : Calcule le résultat final</span>
+      </div>
+      <p style="font-size: 0.85rem; color: var(--muted); margin: 0 0 12px 0;" id="step-2-helper-text">
+        Applique l'échelle (multiplication ou division) puis convertis le résultat final dans l'unité demandée.
+      </p>
+
+      <div class="input-with-unit" style="justify-content: flex-start;">
+        <label for="step-2-input" id="step-2-input-label" style="font-weight: 700;">Résultat final :</label>
+        <input type="number" id="step-2-input" class="num-input" step="0.001">
+        <select id="step-2-unit-select" class="unit-select">
+          <option value="mm">mm</option>
+          <option value="cm">cm</option>
+          <option value="m">m</option>
+          <option value="km">km</option>
+        </select>
+      </div>
+      
+      <button class="btn btn-success" style="margin-top: 15px;" id="btn-validate-step-2" onclick="validateStep2()">Vérifier la réponse</button>
+      <div class="feedback-box" id="feedback-step-2"></div>
+    </div>
+
+    <!-- NEXT QUESTION BUTTON -->
+    <button class="btn" id="btn-next-question" style="display: none; margin-top: auto;" onclick="nextQuestion()">Question suivante →</button>
+  </div>
+</div>
+
+<script>
+  // --- SOUND EFFECTS (Web Audio API Synthesizer) ---
+  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  
+  function playSound(type) {
+    if (audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+
+    const now = audioCtx.currentTime;
+
+    if (type === 'success') {
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(330, now);
+      osc.frequency.exponentialRampToValueAtTime(660, now + 0.15);
+      gain.gain.setValueAtTime(0.15, now);
+      gain.gain.linearRampToValueAtTime(0.01, now + 0.2);
+      osc.start(now);
+      osc.stop(now + 0.2);
+    } else if (type === 'error') {
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(180, now);
+      osc.frequency.linearRampToValueAtTime(100, now + 0.25);
+      gain.gain.setValueAtTime(0.2, now);
+      gain.gain.linearRampToValueAtTime(0.01, now + 0.3);
+      osc.start(now);
+      osc.stop(now + 0.3);
+    } else if (type === 'complete') {
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(523.25, now);
+      osc.frequency.setValueAtTime(659.25, now + 0.1);
+      osc.frequency.setValueAtTime(783.99, now + 0.2);
+      osc.frequency.setValueAtTime(1046.50, now + 0.3);
+      gain.gain.setValueAtTime(0.2, now);
+      gain.gain.linearRampToValueAtTime(0.01, now + 0.6);
+      osc.start(now);
+      osc.stop(now + 0.6);
+    } else if (type === 'click') {
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(400, now);
+      gain.gain.setValueAtTime(0.05, now);
+      gain.gain.linearRampToValueAtTime(0.01, now + 0.05);
+      osc.start(now);
+      osc.stop(now + 0.05);
+    }
+  }
+
+  // --- THEMED DATABASE & SCENARIOS ---
+  const THEMES = {
+    carte: {
+      name: "🎒 Cartographie & Randonnée",
+      caption: "Carte topographique - Ardennes Belges",
+      image: "assets/images/contexte_carte.jpg",
+      // Scenarios: templates
+      planToRealTemplates: [
+        "Sur une carte de randonnée de la Semois à l'échelle {scaleText}, un sentier pédestre mesure {planVal} cm. Quelle est sa longueur réelle ?",
+        "À l'échelle {scaleText}, la distance en ligne droite sur la carte entre deux abbayes belges est de {planVal} cm. Quelle est cette distance réelle ?"
+      ],
+      realToPlanTemplates: [
+        "Un sentier forestier mesure en réalité {realVal} {realUnit}. Quelle sera sa longueur en centimètres sur une carte à l'échelle {scaleText} ?",
+        "Une route cyclable mesure en réalité {realVal} {realUnit}. Combien de centimètres mesurera-t-elle sur le plan à l'échelle {scaleText} ?"
+      ],
+      scalesN1: [
+        { ratio: 1000, text: "1 : 1 000" },
+        { ratio: 2000, text: "1 : 2 000" }
+      ],
+      scalesN2: [
+        { ratio: 20000, text: "1 : 20 000" },
+        { ratio: 25000, text: "1 : 25 000" },
+        { ratio: 50000, text: "1 : 50 000" },
+        { ratio: 100000, text: "1 : 100 000" }
+      ]
+    },
+    maquette: {
+      name: "🚗 Modélisme & Maquettes",
+      caption: "Maquette de voiture de collection",
+      image: "assets/images/contexte_maquette.jpg",
+      planToRealTemplates: [
+        "Une maquette de voiture ancienne est construite à l'échelle {scaleText}. Sur la maquette, la portière mesure {planVal} cm. Quelle est sa taille réelle ?",
+        "À l'échelle {scaleText}, le capot d'une locomotive miniature mesure {planVal} cm. Quelle est sa longueur en réalité ?"
+      ],
+      realToPlanTemplates: [
+        "Une véritable voiture de course mesure {realVal} {realUnit} de long. Quelle sera sa longueur sur sa maquette à l'échelle {scaleText} ?",
+        "Un camion de pompiers mesure {realVal} {realUnit} de long en réalité. Combien de centimètres mesurera sa miniature à l'échelle {scaleText} ?"
+      ],
+      scalesN1: [
+        { ratio: 10, text: "1 : 10" },
+        { ratio: 20, text: "1 : 20" },
+        { ratio: 50, text: "1 : 50" }
+      ],
+      scalesN2: [
+        { ratio: 24, text: "1 : 24" },
+        { ratio: 43, text: "1 : 43" },
+        { ratio: 87, text: "1 : 87" }
+      ]
+    },
+    plan: {
+      name: "🏗️ Architecture & Plans",
+      caption: "Plan au sol d'une villa contemporaine",
+      image: "assets/images/contexte_plan.jpg",
+      planToRealTemplates: [
+        "Sur le plan de sol d'une maison à l'échelle {scaleText}, une cuisine mesure {planVal} cm de largeur. Quelle est sa dimension réelle ?",
+        "À l'échelle {scaleText}, la piscine sur le plan d'un architecte mesure {planVal} cm de long. Quelle est sa longueur dans la réalité ?"
+      ],
+      realToPlanTemplates: [
+        "Un salon de coiffure mesure {realVal} {realUnit} de longueur en réalité. Quelle sera sa dimension en centimètres sur un plan au {scaleText} ?",
+        "Une terrasse de jardin mesure {realVal} {realUnit} de largeur en réalité. Quelle sera sa largeur sur le plan d'aménagement à l'échelle {scaleText} ?"
+      ],
+      scalesN1: [
+        { ratio: 100, text: "1 : 100" },
+        { ratio: 200, text: "1 : 200" }
+      ],
+      scalesN2: [
+        { ratio: 50, text: "1 : 50" },
+        { ratio: 150, text: "1 : 150" }
+      ]
+    },
+    insecte: {
+      name: "🔬 Sciences & Grossissements",
+      caption: "Gros plan naturaliste d'un animal",
+      image: "assets/images/contexte_insecte.jpg",
+      // Note: Here we deal with magnification! Scale text like "2 : 1" (meaning drawing is bigger)
+      planToRealTemplates: [
+        "Sur un dessin scientifique agrandi à l'échelle {scaleText}, le corps d'une fourmi rousse mesure {planVal} cm. Quelle est sa taille réelle ?",
+        "Sur une photo macro de coccinelle prise à l'échelle {scaleText}, sa tache noire mesure {planVal} cm. Quelle est sa taille réelle ?"
+      ],
+      realToPlanTemplates: [
+        "Une coccinelle mesure en réalité {realVal} {realUnit}. Quelle sera sa largeur sur un schéma scientifique agrandi à l'échelle {scaleText} ?",
+        "Un acarien microscopique mesure {realVal} {realUnit} en réalité. Quelle sera sa taille sur un poster à l'échelle {scaleText} ?"
+      ],
+      // N1 scales (agrandissement simple)
+      scalesN1: [
+        { ratio: 0.5, text: "2 : 1", factor: 2 }, // ratio is drawing/real, so real = drawing / 2
+        { ratio: 0.2, text: "5 : 1", factor: 5 },
+        { ratio: 0.1, text: "10 : 1", factor: 10 }
+      ],
+      // N2 scales
+      scalesN2: [
+        { ratio: 0.05, text: "20 : 1", factor: 20 },
+        { ratio: 0.02, text: "50 : 1", factor: 50 }
+      ]
+    }
+  };
+
+  const THEME_KEYS = Object.keys(THEMES);
+
+  // --- GAME STATE ---
+  let currentLevel = 'Niveau 1';
+  let score = 0;
+  let questionNum = 1;
+  let currentQuestion = null;
+
+  function selectLevel(level) {
+    playSound('click');
+    currentLevel = level;
+    document.getElementById('current-level-badge').textContent = level;
+    document.getElementById('level-overlay').style.display = 'none';
+    restartGame();
+  }
+
+  function restartGame() {
+    score = 0;
+    questionNum = 1;
+    document.getElementById('stat-score').textContent = score;
+    document.getElementById('stat-question-num').textContent = questionNum;
+    document.getElementById('end-overlay').style.display = 'none';
+    generateQuestion();
+  }
+
+  function generateQuestion() {
+    // Hide buttons & feedback
+    document.getElementById('btn-next-question').style.display = 'none';
+    document.getElementById('feedback-step-1').style.display = 'none';
+    document.getElementById('feedback-step-2').style.display = 'none';
+
+    // Enable Step 1 and reset inputs
+    document.getElementById('step-1-container').classList.add('active-step');
+    document.getElementById('step-2-container').classList.remove('active-step');
+    
+    document.getElementById('step-1-input').value = '';
+    document.getElementById('step-1-input').disabled = false;
+    document.getElementById('btn-validate-step-1').disabled = false;
+
+    document.getElementById('step-2-input').value = '';
+    document.getElementById('step-2-input').disabled = false;
+    document.getElementById('btn-validate-step-2').disabled = false;
+    document.getElementById('step-2-unit-select').disabled = false;
+
+    // Pick a random theme
+    const themeKey = THEME_KEYS[Math.floor(Math.random() * THEME_KEYS.length)];
+    const theme = THEMES[themeKey];
+
+    // Load theme assets
+    document.getElementById('context-image').src = theme.image;
+    document.getElementById('context-caption').textContent = theme.caption;
+    document.getElementById('scenario-theme-text').textContent = theme.name;
+
+    // Pick type of calculation: 0 = Plan -> Real (reduction/agrandissement), 1 = Real -> Plan
+    // For simplicity, we choose randomly
+    const questionType = Math.floor(Math.random() * 2); 
+
+    // Select scale based on level
+    const levelScales = (currentLevel === 'Niveau 1') ? theme.scalesN1 : theme.scalesN2;
+    const scaleObj = levelScales[Math.floor(Math.random() * levelScales.length)];
+
+    let questionText = "";
+    let mathData = {};
+
+    if (themeKey === 'insecte') {
+      // MAGNIFICATION (AGRANDISSEMENT: factor > 1)
+      const factor = scaleObj.factor; // ex: 5 (for 5:1)
+      
+      if (questionType === 0) {
+        // Find Real (Plan -> Real)
+        // Formula: Real = Plan / factor
+        // Let's generate a nice plan value in cm that divides nicely, e.g. 5 cm, 10 cm, 15 cm
+        const planCm = parseFloat((factor * (1 + Math.floor(Math.random() * 3))).toFixed(1));
+        const realCm = planCm / factor; // in cm
+        const realMm = realCm * 10; // in mm (in biology, real size is often in mm)
+
+        questionText = theme.planToRealTemplates[Math.floor(Math.random() * theme.planToRealTemplates.length)]
+          .replace('{scaleText}', scaleObj.text)
+          .replace('{planVal}', planCm);
+
+        mathData = {
+          type: 'plan_to_real_agrandissement',
+          factor: factor,
+          planCm: planCm,
+          realCm: realCm,
+          realMm: realMm,
+          scaleText: scaleObj.text
+        };
+      } else {
+        // Find Plan (Real -> Plan)
+        // Formula: Plan = Real * factor
+        // Let's generate a real value in mm (e.g. 2 mm, 4 mm, 8 mm)
+        const realMm = 1 + Math.floor(Math.random() * 10);
+        const realCm = realMm / 10;
+        const planCm = realCm * factor;
+
+        questionText = theme.realToPlanTemplates[Math.floor(Math.random() * theme.realToPlanTemplates.length)]
+          .replace('{scaleText}', scaleObj.text)
+          .replace('{realVal}', realMm)
+          .replace('{realUnit}', 'mm');
+
+        mathData = {
+          type: 'real_to_plan_agrandissement',
+          factor: factor,
+          realMm: realMm,
+          realCm: realCm,
+          planCm: planCm,
+          scaleText: scaleObj.text
+        };
+      }
+    } else {
+      // REDUCTION (ratio > 1, e.g. 1:50, 1:10 000)
+      const ratio = scaleObj.ratio;
+
+      if (questionType === 0) {
+        // Find Real (Plan -> Real)
+        // Formula: Real = Plan * ratio (in cm)
+        // Let's generate a nice plan value in cm (e.g. 2, 4, 5, 8, 10 cm)
+        const planCm = 2 + Math.floor(Math.random() * 9); 
+        const realCm = planCm * ratio;
+        const realM = realCm / 100;
+        const realKm = realM / 1000;
+
+        questionText = theme.planToRealTemplates[Math.floor(Math.random() * theme.planToRealTemplates.length)]
+          .replace('{scaleText}', scaleObj.text)
+          .replace('{planVal}', planCm);
+
+        mathData = {
+          type: 'plan_to_real_reduction',
+          ratio: ratio,
+          planCm: planCm,
+          realCm: realCm,
+          realM: realM,
+          realKm: realKm,
+          scaleText: scaleObj.text
+        };
+      } else {
+        // Find Plan (Real -> Plan)
+        // Formula: Plan = Real / ratio (in cm)
+        // Let's generate a real value that divides cleanly.
+        // We pick a clean planCm first (e.g. 2, 3, 5, 6 cm), then calculate real meters
+        const planCm = 2 + Math.floor(Math.random() * 8);
+        const realCm = planCm * ratio;
+        const realM = realCm / 100;
+        const realKm = realM / 1000;
+
+        // Display in meters if small, kilometers if large
+        const useKm = (realM >= 1000 && Math.random() > 0.3) || (ratio >= 50000);
+        const displayVal = useKm ? realKm : realM;
+        const displayUnit = useKm ? 'km' : 'm';
+
+        questionText = theme.realToPlanTemplates[Math.floor(Math.random() * theme.realToPlanTemplates.length)]
+          .replace('{scaleText}', scaleObj.text)
+          .replace('{realVal}', displayVal)
+          .replace('{realUnit}', displayUnit);
+
+        mathData = {
+          type: 'real_to_plan_reduction',
+          ratio: ratio,
+          planCm: planCm,
+          realCm: realCm,
+          realM: realM,
+          realKm: realKm,
+          displayVal: displayVal,
+          displayUnit: displayUnit,
+          scaleText: scaleObj.text
+        };
+      }
+    }
+
+    currentQuestion = mathData;
+    document.getElementById('scenario-text-content').innerHTML = questionText;
+
+    // Adapt Step Titles & Help Texts depending on calculation direction
+    const step1Title = document.getElementById('step-1-title-text');
+    const step1Help = document.getElementById('step-1-helper-text');
+    const step1Unit = document.getElementById('step-1-input-unit');
+    const step1Label = document.getElementById('step-1-input-label');
+
+    const step2Title = document.getElementById('step-2-title-text');
+    const step2Help = document.getElementById('step-2-helper-text');
+    const step2Label = document.getElementById('step-2-input-label');
+
+    // Default dropdown options
+    const select = document.getElementById('step-2-unit-select');
+    select.innerHTML = '';
+
+    if (currentQuestion.type.startsWith('plan_to_real')) {
+      // Direction: Plan -> Real
+      // Step 1: Calculate real size in cm
+      step1Title.textContent = "Trouve la mesure réelle en centimètres";
+      step1Help.textContent = currentQuestion.type.includes('agrandissement') 
+        ? `Divise la taille dessinée par le facteur d'agrandissement (${currentQuestion.factor}) pour trouver la taille réelle en cm.`
+        : `Multiplie la taille sur la carte (${currentQuestion.planCm} cm) par le dénominateur de l'échelle (${currentQuestion.ratio}) pour trouver les cm réels.`;
+      step1Unit.textContent = "cm";
+      step1Label.textContent = "Taille réelle :";
+
+      // Step 2: Convert to meters or kilometers
+      step2Title.textContent = "Convertis dans l'unité adaptée";
+      step2Help.textContent = "Convertis les centimètres réels calculés ci-dessus dans une unité plus parlante (m ou km, ou mm pour la biologie).";
+      step2Label.textContent = "Taille réelle convertie :";
+
+      // Populate options
+      if (currentQuestion.type.includes('agrandissement')) {
+        addOption(select, 'mm', 'mm');
+        addOption(select, 'cm', 'cm');
+      } else {
+        addOption(select, 'm', 'm');
+        addOption(select, 'km', 'km');
+        addOption(select, 'cm', 'cm');
+      }
+    } else {
+      // Direction: Real -> Plan
+      // Step 1: Convert real size to cm
+      step1Title.textContent = "Convertis la taille réelle en centimètres";
+      step1Help.textContent = currentQuestion.type.includes('agrandissement')
+        ? `Convertis la taille réelle (${currentQuestion.realMm} mm) en centimètres.`
+        : `Convertis la distance réelle (${currentQuestion.displayVal} ${currentQuestion.displayUnit}) en centimètres.`;
+      step1Unit.textContent = "cm";
+      step1Label.textContent = "Distance réelle :";
+
+      // Step 2: Apply scale to find plan size in cm
+      step2Title.textContent = "Calcule la longueur dessinée";
+      step2Help.textContent = currentQuestion.type.includes('agrandissement')
+        ? `Multiplie les cm réels par le facteur d'agrandissement (${currentQuestion.factor}) pour trouver la taille sur le dessin.`
+        : `Divise la distance réelle en cm par le diviseur d'échelle (${currentQuestion.ratio}) pour trouver la longueur sur le plan.`;
+      step2Label.textContent = "Longueur dessinée :";
+
+      addOption(select, 'cm', 'cm');
+    }
+  }
+
+  function addOption(selectEl, value, text) {
+    const opt = document.createElement('option');
+    opt.value = value;
+    opt.textContent = text;
+    selectEl.appendChild(opt);
+  }
+
+  // --- VALIDATION FLOW ---
+
+  function validateStep1() {
+    const userVal = parseFloat(document.getElementById('step-1-input').value);
+    const feedback = document.getElementById('feedback-step-1');
+    feedback.style.display = 'block';
+
+    if (isNaN(userVal)) {
+      feedback.className = 'feedback-box feedback-error';
+      feedback.textContent = 'Veuillez saisir un nombre.';
+      playSound('error');
+      return;
+    }
+
+    let expected = 0;
+    if (currentQuestion.type.startsWith('plan_to_real')) {
+      expected = currentQuestion.realCm;
+    } else {
+      expected = currentQuestion.realCm;
+    }
+
+    // Small tolerance check
+    const isCorrect = Math.abs(userVal - expected) <= 0.05;
+
+    if (isCorrect) {
+      feedback.className = 'feedback-box feedback-success';
+      feedback.textContent = `Correct ! La dimension est bien de ${expected} cm.`;
+      playSound('success');
+
+      // Lock Step 1
+      document.getElementById('step-1-input').disabled = true;
+      document.getElementById('btn-validate-step-1').disabled = true;
+
+      // Enable Step 2
+      document.getElementById('step-2-container').classList.add('active-step');
+      document.getElementById('step-2-input').focus();
+    } else {
+      feedback.className = 'feedback-box feedback-error';
+      let hint = "Calcul incorrect.";
+      if (currentQuestion.type === 'plan_to_real_reduction') {
+        hint += ` Rappel : multiplie ${currentQuestion.planCm} cm par le dénominateur de l'échelle (${currentQuestion.ratio}).`;
+      } else if (currentQuestion.type === 'real_to_plan_reduction') {
+        if (currentQuestion.displayUnit === 'm') {
+          hint += ` Rappel : 1 m = 100 cm. Multiplie ${currentQuestion.displayVal} par 100.`;
+        } else {
+          hint += ` Rappel : 1 km = 100 000 cm. Multiplie ${currentQuestion.displayVal} par 100 000.`;
+        }
+      } else if (currentQuestion.type === 'plan_to_real_agrandissement') {
+        hint += ` Rappel : l'échelle ${currentQuestion.scaleText} signifie que le dessin est ${currentQuestion.factor}x plus grand que le réel. Divise ${currentQuestion.planCm} par ${currentQuestion.factor}.`;
+      } else if (currentQuestion.type === 'real_to_plan_agrandissement') {
+        hint += ` Rappel : 1 mm = 0.1 cm. Divise ${currentQuestion.realMm} par 10.`;
+      }
+      feedback.textContent = hint;
+      playSound('error');
+    }
+  }
+
+  function validateStep2() {
+    const userVal = parseFloat(document.getElementById('step-2-input').value);
+    const userUnit = document.getElementById('step-2-unit-select').value;
+    const feedback = document.getElementById('feedback-step-2');
+    feedback.style.display = 'block';
+
+    if (isNaN(userVal)) {
+      feedback.className = 'feedback-box feedback-error';
+      feedback.textContent = 'Veuillez saisir un nombre.';
+      playSound('error');
+      return;
+    }
+
+    let expectedValue = 0;
+    let expectedUnit = '';
+
+    if (currentQuestion.type.startsWith('plan_to_real')) {
+      // Finding real dimension
+      if (currentQuestion.type.includes('agrandissement')) {
+        // Biology (realMm or realCm)
+        if (userUnit === 'mm') {
+          expectedValue = currentQuestion.realMm;
+          expectedUnit = 'mm';
+        } else {
+          expectedValue = currentQuestion.realCm;
+          expectedUnit = 'cm';
+        }
+      } else {
+        // Reductions (realM or realKm)
+        if (userUnit === 'km') {
+          expectedValue = currentQuestion.realKm;
+          expectedUnit = 'km';
+        } else if (userUnit === 'm') {
+          expectedValue = currentQuestion.realM;
+          expectedUnit = 'm';
+        } else {
+          expectedValue = currentQuestion.realCm;
+          expectedUnit = 'cm';
+        }
+      }
+    } else {
+      // Finding plan dimension in cm
+      expectedValue = currentQuestion.planCm;
+      expectedUnit = 'cm';
+    }
+
+    const diff = Math.abs(userVal - expectedValue);
+    // Allow smaller tolerance for km conversion
+    const tolerance = expectedUnit === 'km' ? 0.005 : 0.05;
+
+    if (diff <= tolerance) {
+      feedback.className = 'feedback-box feedback-success';
+      feedback.innerHTML = `Félicitations ! C'est tout à fait exact : <strong>${expectedValue} ${expectedUnit}</strong>.`;
+      playSound('success');
+
+      // Add points
+      score += 10;
+      document.getElementById('stat-score').textContent = score;
+
+      // Lock controls
+      document.getElementById('step-2-input').disabled = true;
+      document.getElementById('step-2-unit-select').disabled = true;
+      document.getElementById('btn-validate-step-2').disabled = true;
+
+      // Show Next
+      document.getElementById('btn-next-question').style.display = 'block';
+    } else {
+      feedback.className = 'feedback-box feedback-error';
+      let explanation = "Calcul incorrect.";
+      if (currentQuestion.type.startsWith('plan_to_real')) {
+        if (currentQuestion.type.includes('agrandissement')) {
+          explanation += ` Convertis ${currentQuestion.realCm} cm dans l'unité sélectionnée.`;
+        } else {
+          explanation += ` Convertis ${currentQuestion.realCm} cm dans l'unité sélectionnée (rappel : diviser par 100 pour les mètres, ou 100 000 pour les km).`;
+        }
+      } else {
+        if (currentQuestion.type.includes('agrandissement')) {
+          explanation += ` Multiplie les cm réels (${currentQuestion.realCm} cm) par le facteur d'agrandissement (${currentQuestion.factor}).`;
+        } else {
+          explanation += ` Divise les cm réels (${currentQuestion.realCm} cm) par le diviseur d'échelle (${currentQuestion.ratio}).`;
+        }
+      }
+      feedback.textContent = explanation;
+      playSound('error');
+    }
+  }
+
+  function nextQuestion() {
+    playSound('click');
+    if (questionNum < 10) {
+      questionNum++;
+      document.getElementById('stat-question-num').textContent = questionNum;
+      generateQuestion();
+    } else {
+      // Completed session
+      playSound('complete');
+      document.getElementById('final-score').textContent = score;
+      document.getElementById('end-overlay').style.display = 'flex';
+    }
+  }
+</script>
+</body>
+</html>

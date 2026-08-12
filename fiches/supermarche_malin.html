@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Le supermarché malin</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=Inter:wght@300..800&family=Nunito:wght@300..900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --purple: #5B4FCF;
+    --purple-light: #EEF0FF;
+    --purple-mid: #C7C2F5;
+    --green: #1A9E75;
+    --green-light: #E2F5EE;
+    --red: #D94F3D;
+    --red-light: #FCEBE8;
+    --yellow: #F4C430;
+    --yellow-light: #FFFBE6;
+    --mint: #E2F5EE;
+    --ink: #1A1A2E;
+    --line: #1A1A2E;
+    --panel: #FFFFFF;
+    --muted: #64748B;
+    --shadow: 8px 8px 0px var(--line);
+    --shadow-sm: 4px 4px 0px var(--line);
+  }
+
+  body {
+    background-color: var(--mint);
+    color: var(--ink);
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    padding: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 32px);
+  }
+
+  /* Container néo-brutaliste */
+  .panel {
+    background: var(--panel);
+    border: 4px solid var(--line);
+    border-radius: 20px;
+    padding: 24px;
+    max-width: 800px;
+    width: 100%;
+    box-shadow: var(--shadow);
+    box-sizing: border-box;
+  }
+
+  .topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 4px solid var(--line);
+    padding-bottom: 16px;
+  }
+
+  .topbar h1 {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 24px;
+    margin: 0;
+    color: var(--ink);
+  }
+
+  .round-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 3px solid var(--line);
+    background: var(--purple-light);
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.1s, box-shadow 0.1s;
+  }
+  .round-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 6px 6px 0px var(--line);
+  }
+  .round-btn:active {
+    transform: translateY(2px);
+    box-shadow: 2px 2px 0px var(--line);
+  }
+  .round-btn svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .lives {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .heart {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .pip {
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--line);
+    border-radius: 50%;
+    background: #FFF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .pip.done {
+    background: var(--green);
+  }
+  .pip.done svg {
+    width: 12px;
+    height: 12px;
+    stroke: #FFF;
+  }
+
+  .instructions {
+    background: var(--yellow-light);
+    border: 3px solid var(--line);
+    border-radius: 12px;
+    padding: 12px 16px;
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 24px;
+    font-family: 'Fredoka', sans-serif;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  /* Rayonnage et produits */
+  .shelf {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 24px;
+  }
+
+  .product-card {
+    flex: 1;
+    background: #FFF;
+    border: 4px solid var(--line);
+    border-radius: 16px;
+    padding: 16px;
+    text-align: center;
+    position: relative;
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .product-card.selected {
+    background: var(--purple-light);
+    border-color: var(--purple);
+    transform: translateY(-4px);
+    box-shadow: 6px 10px 0px var(--line);
+  }
+
+  .badge-option {
+    position: absolute;
+    top: -12px;
+    left: -12px;
+    background: var(--purple);
+    color: #FFF;
+    font-weight: 800;
+    font-size: 18px;
+    padding: 6px 14px;
+    border: 3px solid var(--line);
+    border-radius: 10px;
+    font-family: 'Fredoka', sans-serif;
+    box-shadow: 2px 2px 0 var(--line);
+  }
+
+  .product-image-container {
+    height: 150px;
+    margin: 10px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .product-image {
+    max-height: 100%;
+    max-width: 100%;
+    object-fit: contain;
+    border: 3px solid var(--line);
+    border-radius: 12px;
+  }
+
+  .product-name {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    margin: 8px 0;
+  }
+
+  .product-details {
+    font-size: 18px;
+    font-weight: 800;
+    margin-bottom: 16px;
+  }
+  .product-qty { color: var(--muted); }
+  .product-price { color: var(--purple); font-size: 22px; }
+
+  /* Section calcul élève */
+  .calc-box {
+    background: #F8FAFC;
+    border: 2px dashed var(--line);
+    border-radius: 12px;
+    padding: 12px;
+    margin-top: 12px;
+  }
+
+  .calc-label {
+    font-size: 14px;
+    font-weight: bold;
+    color: var(--muted);
+    margin-bottom: 6px;
+    display: block;
+  }
+
+  .calc-input-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .input-price {
+    width: 90px;
+    height: 40px;
+    border: 3px solid var(--line);
+    border-radius: 10px;
+    font-size: 18px;
+    font-weight: 800;
+    text-align: center;
+    outline: none;
+    font-family: 'Nunito', sans-serif;
+  }
+  .input-price:focus {
+    border-color: var(--purple);
+  }
+  .input-price.correct-val {
+    background: var(--green-light);
+    border-color: var(--green);
+  }
+  .input-price.wrong-val {
+    background: var(--red-light);
+    border-color: var(--red);
+  }
+
+  .currency {
+    font-size: 18px;
+    font-weight: 800;
+  }
+
+  /* Comparateur et sélection */
+  .decision-box {
+    text-align: center;
+    background: #FFF;
+    border: 3px solid var(--line);
+    border-radius: 16px;
+    padding: 18px;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow-sm);
+  }
+  .decision-title {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+
+  .decision-btns {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+  }
+
+  .decision-btn {
+    flex: 1;
+    max-width: 200px;
+    background: #FFF;
+    border: 3px solid var(--line);
+    border-radius: 12px;
+    padding: 10px;
+    font-size: 18px;
+    font-weight: 800;
+    cursor: pointer;
+    font-family: 'Fredoka', sans-serif;
+    transition: transform 0.1s, box-shadow 0.1s, background-color 0.1s;
+  }
+  .decision-btn:hover {
+    background: #F1F5F9;
+  }
+  .decision-btn.active {
+    background: var(--purple);
+    color: #FFF;
+    box-shadow: inset 4px 4px 0 rgba(0,0,0,0.15);
+  }
+
+  /* Actions et Feedback */
+  .action-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 24px;
+    min-height: 56px;
+  }
+
+  .feedback {
+    font-size: 18px;
+    font-weight: 800;
+    font-family: 'Fredoka', sans-serif;
+    max-width: 60%;
+  }
+  .feedback.correct { color: var(--green); }
+  .feedback.wrong { color: var(--red); }
+
+  .buttons-group {
+    display: flex;
+    gap: 12px;
+  }
+
+  .btn-valider {
+    background: var(--yellow);
+    border: 3px solid var(--line);
+    border-radius: 14px;
+    padding: 14px 28px;
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--ink);
+    cursor: pointer;
+    box-shadow: var(--shadow-sm);
+    font-family: 'Fredoka', sans-serif;
+    transition: transform 0.1s, box-shadow 0.1s;
+  }
+  .btn-valider:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 6px 6px 0px var(--line);
+  }
+  .btn-valider:active:not(:disabled) {
+    transform: translateY(2px);
+    box-shadow: 2px 2px 0px var(--line);
+  }
+  .btn-valider:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
+  .btn-next {
+    background: var(--green);
+    border: 3px solid var(--line);
+    border-radius: 14px;
+    padding: 14px 28px;
+    font-size: 20px;
+    font-weight: 800;
+    color: #FFF;
+    cursor: pointer;
+    box-shadow: var(--shadow-sm);
+    font-family: 'Fredoka', sans-serif;
+    transition: transform 0.1s, box-shadow 0.1s;
+  }
+  .btn-next:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 6px 6px 0px var(--line);
+  }
+  .btn-next:active:not(:disabled) {
+    transform: translateY(2px);
+    box-shadow: 2px 2px 0px var(--line);
+  }
+  .btn-next:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+
+  /* Écran de Fin */
+  .end-screen {
+    text-align: center;
+    padding: 40px 20px;
+    background: var(--panel);
+    border: 4px solid var(--line);
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+  }
+  .end-screen h2 {
+    color: var(--ink);
+    font-size: 32px;
+    margin: 0 0 10px;
+    font-family: 'Fredoka', sans-serif;
+  }
+  .end-screen .score-num {
+    font-size: 80px;
+    font-weight: 900;
+    color: var(--purple);
+    font-family: 'Nunito', sans-serif;
+    -webkit-text-stroke: 2px var(--line);
+    paint-order: stroke fill;
+    margin: 16px 0;
+  }
+  .end-screen p {
+    color: var(--muted);
+    font-size: 19px;
+    font-weight: bold;
+    font-family: 'Fredoka', sans-serif;
+    margin-bottom: 24px;
+  }
+  .btn-restart {
+    background: var(--red);
+    border: 3px solid var(--line);
+    border-radius: 30px;
+    padding: 15px 36px;
+    font-size: 20px;
+    font-weight: 800;
+    color: #FFF;
+    cursor: pointer;
+    box-shadow: var(--shadow-sm);
+    font-family: 'Fredoka', sans-serif;
+    transition: transform 0.1s, box-shadow 0.1s;
+  }
+  .btn-restart:hover {
+    transform: translateY(-2px);
+    box-shadow: 6px 6px 0px var(--line);
+  }
+  .btn-restart:active {
+    transform: translateY(2px);
+    box-shadow: 2px 2px 0px var(--line);
+  }
+
+  .credit {
+    text-align: center;
+    margin-top: 24px;
+    font-size: 12px;
+    color: var(--muted);
+    opacity: 0.75;
+  }
+
+  @media (max-width: 650px) {
+    .shelf {
+      flex-direction: column;
+      gap: 16px;
+    }
+    .product-card {
+      margin-bottom: 12px;
+    }
+    .decision-btns {
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+    .decision-btn {
+      width: 100%;
+      max-width: 100%;
+    }
+    .action-row {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 16px;
+      text-align: center;
+    }
+    .feedback {
+      max-width: 100%;
+    }
+  }
+</style>
+</head>
+<body>
+<div class="panel">
+
+  <div id="gameScreen">
+    <div class="topbar">
+      <button class="round-btn" onclick="restartGame()" title="Recommencer">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--line)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 12a9 9 0 1 0 3-6.7"/><polyline points="3 3 3 8 8 8"/>
+        </svg>
+      </button>
+      <h1>Le supermarché malin</h1>
+      <div class="lives" id="lives"></div>
+    </div>
+
+    <div class="instructions">
+      <span>🛒</span>
+      <span id="instructionText">Calcule le prix à l'unité de chaque option pour trouver le meilleur achat !</span>
+    </div>
+
+    <!-- Le Rayonnage (Shelf) -->
+    <div class="shelf">
+      <!-- Option A -->
+      <div class="product-card" id="cardA" onclick="selectOption('A')">
+        <div class="badge-option">Option A</div>
+        <div class="product-image-container">
+          <img id="imgA" class="product-image" src="" alt="Produit A">
+        </div>
+        <div>
+          <div class="product-name" id="nameA">Céréales</div>
+          <div class="product-details">
+            <span class="product-qty" id="qtyA">500 g</span> pour <span class="product-price" id="priceA">3,00 €</span>
+          </div>
+        </div>
+        <div class="calc-box" onclick="event.stopPropagation()">
+          <span class="calc-label" id="lblCalcA">Prix au kg</span>
+          <div class="calc-input-row">
+            <input type="number" step="0.01" class="input-price" id="inputPriceA" placeholder="ex: 1.50">
+            <span class="currency">€</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Option B -->
+      <div class="product-card" id="cardB" onclick="selectOption('B')">
+        <div class="badge-option">Option B</div>
+        <div class="product-image-container">
+          <img id="imgB" class="product-image" src="" alt="Produit B">
+        </div>
+        <div>
+          <div class="product-name" id="nameB">Céréales</div>
+          <div class="product-details">
+            <span class="product-qty" id="qtyB">750 g</span> pour <span class="product-price" id="priceB">4,20 €</span>
+          </div>
+        </div>
+        <div class="calc-box" onclick="event.stopPropagation()">
+          <span class="calc-label" id="lblCalcB">Prix au kg</span>
+          <div class="calc-input-row">
+            <input type="number" step="0.01" class="input-price" id="inputPriceB" placeholder="ex: 1.50">
+            <span class="currency">€</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Décision de l'élève -->
+    <div class="decision-box">
+      <div class="decision-title">Quel est le meilleur achat (le moins cher à l'unité) ?</div>
+      <div class="decision-btns">
+        <button class="decision-btn" id="btnChooseA" onclick="selectOption('A')">Option A</button>
+        <button class="decision-btn" id="btnChooseB" onclick="selectOption('B')">Option B</button>
+      </div>
+    </div>
+
+    <div class="action-row">
+      <div class="feedback" id="feedback"></div>
+      <div class="buttons-group">
+        <button class="btn-valider" id="btnValidate" onclick="validate()">Valider</button>
+        <button class="btn-next" id="btnNext" onclick="nextExercise()" disabled>Suivant</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="endScreen" class="end-screen" style="display:none;">
+    <h2>Parcours terminé !</h2>
+    <div class="score-num" id="finalScore"></div>
+    <p id="endMessage"></p>
+    <button class="btn-restart" onclick="restartGame()">Recommencer les courses</button>
+  </div>
+
+  <div class="credit">Illustrations : Conception originale – Licence Plateforme Scolaire</div>
+
+</div>
+
+<script>
+const exerciseBank = [
+  {
+    name: 'Céréales croustillantes',
+    image: 'assets/supermarche/cereales.jpg',
+    unitLabel: 'Prix au kg',
+    optA: { qty: '500 g', price: 3.00, unitPrice: 6.00 },
+    optB: { qty: '750 g', price: 4.20, unitPrice: 5.60 },
+    best: 'B'
+  },
+  {
+    name: 'Jus d\'orange pressé',
+    image: 'assets/supermarche/jus.jpg',
+    unitLabel: 'Prix au litre',
+    optA: { qty: '1 L', price: 1.80, unitPrice: 1.80 },
+    optB: { qty: '2 L', price: 3.20, unitPrice: 1.60 },
+    best: 'B'
+  },
+  {
+    name: 'Œufs de ferme',
+    image: 'assets/supermarche/oeufs.jpg',
+    unitLabel: 'Prix à l\'unité',
+    optA: { qty: '6 œufs', price: 1.50, unitPrice: 0.25 },
+    optB: { qty: '10 œufs', price: 2.80, unitPrice: 0.28 },
+    best: 'A'
+  },
+  {
+    name: 'Lait entier',
+    image: 'assets/supermarche/lait.jpg',
+    unitLabel: 'Prix au litre',
+    optA: { qty: '2 L', price: 2.00, unitPrice: 1.00 },
+    optB: { qty: '5 L', price: 5.50, unitPrice: 1.10 },
+    best: 'A'
+  },
+  {
+    name: 'Chocolat au lait',
+    image: 'assets/supermarche/chocolat.jpg',
+    unitLabel: 'Prix au kg (pour 1 kg)',
+    optA: { qty: '100 g', price: 1.50, unitPrice: 15.00 },
+    optB: { qty: '250 g', price: 3.50, unitPrice: 14.00 },
+    best: 'B'
+  },
+  {
+    name: 'Pommes de terre',
+    image: 'assets/supermarche/pommes_de_terre.jpg',
+    unitLabel: 'Prix au kg',
+    optA: { qty: '2 kg', price: 2.80, unitPrice: 1.40 },
+    optB: { qty: '5 kg', price: 7.50, unitPrice: 1.50 },
+    best: 'A'
+  },
+  {
+    name: 'Lessive liquide',
+    image: 'assets/supermarche/lessive.jpg',
+    unitLabel: 'Prix par lavage',
+    optA: { qty: '40 lavages', price: 8.00, unitPrice: 0.20 },
+    optB: { qty: '60 lavages', price: 10.80, unitPrice: 0.18 },
+    best: 'B'
+  }
+];
+
+const EXERCISES_PER_SESSION = 5;
+let sessionExercises = [];
+let currentIndex = 0;
+let score = 0;
+let results = [];
+let answered = false;
+let selectedBest = null; // 'A' or 'B'
+
+const checkSVG = `<svg viewBox="0 0 24 24" fill="none" stroke="#FFF" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 10 18 20 6"/></svg>`;
+const cartSVG = `<svg viewBox="0 0 24 24" fill="none" stroke="var(--line)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>`;
+
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+
+function pickSession() {
+  const shuffled = shuffle([...exerciseBank]);
+  return shuffled.slice(0, EXERCISES_PER_SESSION);
+}
+
+function renderLives() {
+  const box = document.getElementById('lives');
+  box.innerHTML = '<span class="heart">' + cartSVG + '</span>';
+  for (let i = 0; i < EXERCISES_PER_SESSION; i++) {
+    const pip = document.createElement('div');
+    pip.className = 'pip';
+    if (i < currentIndex) {
+      if (results[i]) {
+        pip.classList.add('done');
+        pip.innerHTML = checkSVG;
+      } else {
+        pip.classList.add('pip');
+        pip.style.backgroundColor = 'var(--red)';
+        pip.innerHTML = '<span style="color:#fff;font-size:10px;font-weight:900">X</span>';
+      }
+    } else if (i === currentIndex) {
+      pip.style.borderColor = 'var(--purple)';
+      pip.style.borderWidth = '3px';
+    }
+    box.appendChild(pip);
+  }
+}
+
+function selectOption(opt) {
+  if (answered) return;
+  selectedBest = opt;
+
+  document.getElementById('cardA').classList.remove('selected');
+  document.getElementById('cardB').classList.remove('selected');
+  document.getElementById('btnChooseA').classList.remove('active');
+  document.getElementById('btnChooseB').classList.remove('active');
+
+  if (opt === 'A') {
+    document.getElementById('cardA').classList.add('selected');
+    document.getElementById('btnChooseA').classList.add('active');
+  } else if (opt === 'B') {
+    document.getElementById('cardB').classList.add('selected');
+    document.getElementById('btnChooseB').classList.add('active');
+  }
+}
+
+function loadExercise() {
+  answered = false;
+  selectedBest = null;
+  document.getElementById('feedback').className = 'feedback';
+  document.getElementById('feedback').textContent = '';
+  document.getElementById('btnNext').disabled = true;
+  document.getElementById('btnValidate').disabled = false;
+
+  // Reset inputs
+  const inputA = document.getElementById('inputPriceA');
+  const inputB = document.getElementById('inputPriceB');
+  inputA.value = '';
+  inputB.value = '';
+  inputA.className = 'input-price';
+  inputB.className = 'input-price';
+  inputA.disabled = false;
+  inputB.disabled = false;
+
+  // Reset card styles
+  document.getElementById('cardA').classList.remove('selected');
+  document.getElementById('cardB').classList.remove('selected');
+  document.getElementById('btnChooseA').classList.remove('active');
+  document.getElementById('btnChooseB').classList.remove('active');
+
+  renderLives();
+
+  const ex = sessionExercises[currentIndex];
+
+  // Set texts and images
+  document.getElementById('imgA').src = ex.image;
+  document.getElementById('imgB').src = ex.image;
+
+  document.getElementById('nameA').textContent = ex.name;
+  document.getElementById('nameB').textContent = ex.name;
+
+  document.getElementById('qtyA').textContent = ex.optA.qty;
+  document.getElementById('priceA').textContent = formatPrice(ex.optA.price);
+
+  document.getElementById('qtyB').textContent = ex.optB.qty;
+  document.getElementById('priceB').textContent = formatPrice(ex.optB.price);
+
+  document.getElementById('lblCalcA').textContent = ex.unitLabel;
+  document.getElementById('lblCalcB').textContent = ex.unitLabel;
+}
+
+function formatPrice(val) {
+  return val.toFixed(2).replace('.', ',') + ' €';
+}
+
+function validate() {
+  if (answered) return;
+
+  const ex = sessionExercises[currentIndex];
+  const inputA = document.getElementById('inputPriceA');
+  const inputB = document.getElementById('inputPriceB');
+
+  const valA = parseFloat(inputA.value.replace(',', '.'));
+  const valB = parseFloat(inputB.value.replace(',', '.'));
+
+  if (isNaN(valA) || isNaN(valB) || !selectedBest) {
+    const fb = document.getElementById('feedback');
+    fb.className = 'feedback wrong';
+    fb.textContent = 'Complète les deux calculs et choisis la meilleure option !';
+    return;
+  }
+
+  answered = true;
+  document.getElementById('btnValidate').disabled = true;
+  document.getElementById('btnNext').disabled = false;
+
+  inputA.disabled = true;
+  inputB.disabled = true;
+
+  // Check student calculations
+  const margin = 0.011; // float approximation margin
+  const calcACorrect = Math.abs(valA - ex.optA.unitPrice) < margin;
+  const calcBCorrect = Math.abs(valB - ex.optB.unitPrice) < margin;
+  const choiceCorrect = selectedBest === ex.best;
+
+  inputA.className = calcACorrect ? 'input-price correct-val' : 'input-price wrong-val';
+  inputB.className = calcBCorrect ? 'input-price correct-val' : 'input-price wrong-val';
+
+  const correctColor = 'var(--green)';
+  const wrongColor = 'var(--red)';
+
+  const fb = document.getElementById('feedback');
+
+  if (calcACorrect && calcBCorrect && choiceCorrect) {
+    score++;
+    results.push(true);
+    fb.className = 'feedback correct';
+    fb.innerHTML = '🌟 Supermarché malin ! Tout est parfaitement correct !';
+  } else {
+    results.push(false);
+    fb.className = 'feedback wrong';
+    let correctionText = 'Aïe... ';
+    if (!calcACorrect) correctionText += `A = ${formatPrice(ex.optA.unitPrice)}. `;
+    if (!calcBCorrect) correctionText += `B = ${formatPrice(ex.optB.unitPrice)}. `;
+    correctionText += `Le meilleur choix est l'option ${ex.best}.`;
+    fb.textContent = correctionText;
+  }
+
+  renderLives();
+}
+
+function nextExercise() {
+  currentIndex++;
+  if (currentIndex < EXERCISES_PER_SESSION) {
+    loadExercise();
+  } else {
+    showEndScreen();
+  }
+}
+
+function showEndScreen() {
+  document.getElementById('gameScreen').style.display = 'none';
+  document.getElementById('endScreen').style.display = 'block';
+
+  document.getElementById('finalScore').textContent = `${score} / ${EXERCISES_PER_SESSION}`;
+
+  let message = '';
+  if (score === EXERCISES_PER_SESSION) message = 'Excellent ! Tu es le roi ou la reine des bonnes affaires au supermarché ! 🛒🌟';
+  else if (score >= EXERCISES_PER_SESSION - 1) message = 'Très bon parcours ! Tu sais repérer le meilleur rapport quantité/prix ! 👍';
+  else if (score >= EXERCISES_PER_SESSION / 2) message = 'Pas mal, mais garde l\'œil ouvert sur le prix unitaire la prochaine fois !';
+  else message = 'Entraîne-toi à diviser le prix par la quantité pour trouver le meilleur achat !';
+
+  document.getElementById('endMessage').textContent = message;
+
+  if (window.parent && window.parent.saveResult) {
+    const pct = Math.round(score / EXERCISES_PER_SESSION * 100);
+    window.parent.saveResult({
+      activity: 'grandeur_proportionnalite_supermarche_malin',
+      bookTitle: 'Grandeurs — Le supermarché malin',
+      score: score,
+      total: EXERCISES_PER_SESSION,
+      pct: pct,
+      date: new Date().toLocaleDateString('fr-BE'),
+      time: new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })
+    });
+  }
+}
+
+function restartGame() {
+  sessionExercises = pickSession();
+  currentIndex = 0;
+  score = 0;
+  results = [];
+  document.getElementById('gameScreen').style.display = 'block';
+  document.getElementById('endScreen').style.display = 'none';
+  loadExercise();
+}
+
+// Initialisation
+window.onload = function() {
+  restartGame();
+};
+</script>
+</body>
+</html>

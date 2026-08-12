@@ -1,0 +1,2252 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>La Classification Phylogénétique — Leçon Interactive</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  
+  <!-- TailwindCSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      corePlugins: {
+        preflight: false,
+      },
+      theme: {
+        extend: {
+          borderWidth: {
+            '3': '3px',
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            display: ['Fredoka', 'sans-serif'],
+            mono: ['Space Mono', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    :root {
+      /* Palette HSL - Thème Nature et Éveil */
+      --encre: #0f172a;        /* Noir ardoise très foncé */
+      --ardoise: #475569;      /* Gris ardoise secondaire */
+      --papier: #f8fafc;       /* Fond de page gris-bleu très doux */
+      --papier-2: #ffffff;     /* Blanc pour les cartes */
+      --ligne: #e2e8f0;        /* Filets de bordure secondaires */
+      
+      /* Couleurs thématiques */
+      --vert-theme: #16a34a;       /* Vert nature */
+      --vert-theme-fonce: #15803d;
+      --vert-theme-clair: #f0fdf4;
+      
+      --orange-theme: #d97706;     /* Brun / Terre ocre */
+      --orange-theme-fonce: #b45309;
+      --orange-theme-clair: #fef3c7;
+      
+      --bleu-theme: #0ea5e9;       /* Bleu eau / rivière */
+      --bleu-theme-fonce: #0284c7;
+      --bleu-theme-clair: #f0f9ff;
+      
+      --vert-val: #10b981;         /* Succès / Validation */
+      --vert-val-clair: #ecfdf5;
+      
+      --rouge-val: #ef4444;        /* Erreur */
+      --rouge-val-clair: #fef2f2;
+      
+      --ombre: 0 4px 12px rgba(15, 23, 42, 0.04);
+      --radius: 16px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: 'Inter', system-ui, sans-serif;
+      color: var(--encre);
+      background: 
+        radial-gradient(circle at 1px 1px, rgba(15, 23, 42, 0.02) 1px, transparent 0) 0 0/24px 24px,
+        var(--papier);
+      line-height: 1.6;
+    }
+
+    h1, h2, h3, h4 {
+      font-family: 'Fredoka', sans-serif;
+      line-height: 1.2;
+      margin: 0;
+    }
+
+    /* BOUTONS 3D FLAT DESIGN */
+    .btn-3d {
+      font-family: 'Fredoka', sans-serif;
+      font-weight: 700;
+      border: 3px solid var(--encre) !important;
+      box-shadow: 3px 3px 0px var(--encre);
+      transition: all 0.1s ease;
+      cursor: pointer;
+      user-select: none;
+    }
+    .btn-3d:active {
+      transform: translate(1px, 1px);
+      box-shadow: 1px 1px 0px var(--encre);
+    }
+    .btn-3d:disabled {
+      background: #e2e8f0 !important;
+      color: #94a3b8 !important;
+      cursor: not-allowed;
+      transform: none !important;
+      box-shadow: 2px 2px 0px var(--encre) !important;
+    }
+
+    /* ONGLETS NAVIGATION */
+    nav.tabs {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: #ffffff;
+      border-bottom: 3px solid var(--encre);
+      box-shadow: var(--ombre);
+    }
+    .tabs-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding: 8px 12px;
+      scrollbar-width: none;
+    }
+    .tabs-inner::-webkit-scrollbar { display: none; }
+    
+    .tab-btn {
+      flex: 0 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: transparent;
+      border: 2px solid transparent;
+      border-radius: 12px;
+      padding: 8px 14px;
+      font-family: 'Fredoka', sans-serif;
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--ardoise);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s;
+    }
+    .tab-btn:hover {
+      background: var(--papier);
+      color: var(--encre);
+    }
+    .tab-btn.active {
+      background: var(--encre);
+      color: #ffffff;
+      border-color: var(--encre);
+    }
+    .tab-btn .num {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.75rem;
+      background: rgba(22, 163, 74, 0.12);
+      color: var(--vert-theme-fonce);
+      border-radius: 6px;
+      padding: 2px 6px;
+    }
+    .tab-btn.active .num {
+      background: var(--vert-theme);
+      color: #ffffff;
+    }
+
+    /* PAGES CONTENU */
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 24px 16px 80px;
+    }
+    .page {
+      display: none;
+      animation: fade 0.25s ease-out;
+    }
+    .page.active {
+      display: block;
+    }
+    @keyframes fade {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* CARTES */
+    .card-premium {
+      background: #ffffff;
+      border: 3px solid var(--encre);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin: 16px 0;
+      box-shadow: 4px 4px 0px rgba(15, 23, 42, 0.1);
+    }
+
+    /* ÉTIQUETTES / TAGS */
+    .tag-custom {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'Fredoka', sans-serif;
+      font-weight: 700;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border: 2px solid var(--encre);
+      border-radius: 999px;
+      margin-bottom: 8px;
+    }
+
+    /* HOTSPOTS SUR IMAGE */
+    .scene-wrap {
+      position: relative;
+      display: inline-block;
+      max-width: 100%;
+    }
+    .hotspot {
+      position: absolute;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(22, 163, 74, 0.25);
+      border: 3px solid var(--vert-theme);
+      cursor: pointer;
+      transition: all 0.2s;
+      transform: translate(-50%, -50%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--vert-theme-fonce);
+      box-shadow: 0 0 10px rgba(22, 163, 74, 0.5);
+      user-select: none;
+      z-index: 10;
+    }
+    .hotspot:hover {
+      transform: translate(-50%, -50%) scale(1.3);
+      background: rgba(22, 163, 74, 0.45);
+      box-shadow: 0 0 15px rgba(22, 163, 74, 0.7);
+    }
+    .hotspot.active {
+      border-color: var(--orange-theme-fonce);
+      background: var(--orange-theme);
+      color: #ffffff;
+      box-shadow: 0 0 12px var(--orange-theme);
+    }
+
+    /* LISTE DES ANIMAUX */
+    .animal-list-item {
+      background: #ffffff;
+      border: 2px solid var(--ligne);
+      border-radius: 12px;
+      padding: 10px 14px;
+      cursor: pointer;
+      transition: all 0.15s;
+      font-weight: 600;
+    }
+    .animal-list-item:hover {
+      border-color: var(--vert-theme);
+      background: var(--vert-theme-clair);
+    }
+    .animal-list-item.active {
+      border-color: var(--vert-theme);
+      background: var(--vert-theme);
+      color: #ffffff;
+    }
+
+    /* ENSEMBLES EMBOITÉS DYNAMIQUES */
+    .box-nested {
+      border: 2px solid var(--encre);
+      border-radius: 12px;
+      padding: 8px;
+      margin: 0; /* Reset margins - use grid gap or top spacing */
+      background: #ffffff;
+      box-shadow: 3px 3px 0px var(--encre);
+      transition: all 0.3s ease;
+      position: relative;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    
+    /* Nesting level 2 */
+    .box-nested .box-nested {
+      border-width: 1.5px;
+      border-radius: 10px;
+      padding: 6px;
+      box-shadow: 2px 2px 0px var(--encre);
+      margin-top: 4px;
+    }
+    
+    /* Nesting level 3 */
+    .box-nested .box-nested .box-nested {
+      border-width: 1.2px;
+      border-radius: 8px;
+      padding: 4px;
+      box-shadow: 1px 1px 0px var(--encre);
+      margin-top: 3px;
+    }
+    
+    /* Nesting level 4 */
+    .box-nested .box-nested .box-nested .box-nested {
+      border-width: 1px;
+      border-radius: 6px;
+      padding: 3px 2px;
+      box-shadow: none;
+      margin-top: 2px;
+      text-align: center;
+    }
+
+    .box-title {
+      font-family: 'Fredoka', sans-serif;
+      font-weight: 700;
+      font-size: 0.78rem; /* Level 1 font size (~12px) */
+      color: var(--encre);
+      margin-bottom: 4px;
+      display: block; /* block to allow centering and full-width auto height */
+      text-align: center;
+      padding: 2px 4px;
+      border-radius: 4px;
+      border: 1.2px solid var(--encre);
+      background: #ffffff;
+      white-space: normal; /* wrap long labels */
+      word-break: break-word;
+    }
+
+    /* Scaling nested box titles */
+    .box-nested .box-nested .box-title {
+      font-size: 0.7rem; /* Level 2 (~11px) */
+      padding: 1.5px 3px;
+      margin-bottom: 3px;
+      border-width: 1px;
+    }
+
+    .box-nested .box-nested .box-nested .box-title {
+      font-size: 0.64rem; /* Level 3 (~10px) */
+      padding: 1px 2px;
+      margin-bottom: 2px;
+      border-width: 0.8px;
+    }
+
+    .box-nested .box-nested .box-nested .box-nested .box-title {
+      font-size: 0.58rem; /* Level 4 (~9px) */
+      padding: 0.5px 1px;
+      margin-bottom: 1px;
+      border-width: 0.8px;
+    }
+    
+    /* Couleurs thématiques des boîtes */
+    .box-nested.b-vivant { background-color: #f8fafc; border-color: #0f172a; }
+    .box-nested.b-squelette-int { background-color: #ecfdf5; border-color: #059669; }
+    .box-nested.b-squelette-ext { background-color: #fffbeb; border-color: #d97706; }
+    .box-nested.b-corps-mou { background-color: #f0f9ff; border-color: #0284c7; }
+    .box-nested.b-tetrapode { background-color: #f0fdf4; border-color: #10b981; }
+    .box-nested.b-poisson { background-color: #f0fdfa; border-color: #0d9488; }
+    .box-nested.b-mammifere { background-color: #ecfdf5; border-color: #047857; }
+    .box-nested.b-oiseau { background-color: #f0fdf4; border-color: #15803d; }
+    .box-nested.b-amphibien { background-color: #f2fdf5; border-color: #166534; }
+    .box-nested.b-insecte { background-color: #fef3c7; border-color: #b45309; }
+    .box-nested.b-arachnide { background-color: #fffbeb; border-color: #78350f; }
+    .box-nested.b-gastropode { background-color: #e0f2fe; border-color: #0369a1; }
+    .box-nested.b-annelide { background-color: #f0f9ff; border-color: #0369a1; }
+
+    /* VIGNETTES ANIMALES DANS LES BOITES */
+    .animal-tag {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: #ffffff;
+      border: 1.5px solid var(--encre);
+      border-radius: 6px;
+      padding: 3px 6px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      margin: 2px;
+      box-shadow: 1.5px 1.5px 0px var(--encre);
+      box-sizing: border-box;
+    }
+
+    /* Scaling animal tags inside nested boxes */
+    .box-nested .box-nested .animal-tag {
+      font-size: 0.68rem;
+      padding: 2px 4px;
+      margin: 1.5px;
+      border-width: 1.2px;
+      box-shadow: 1px 1px 0px var(--encre);
+    }
+
+    .box-nested .box-nested .box-nested .animal-tag {
+      font-size: 0.64rem;
+      padding: 1.5px 3px;
+      margin: 1px;
+      border-width: 1px;
+      box-shadow: 1px 1px 0px var(--encre);
+    }
+
+    .box-nested .box-nested .box-nested .box-nested .animal-tag {
+      font-size: 0.58rem;
+      padding: 1px 2px;
+      margin: 1px auto 0;
+      border-width: 1px;
+      box-shadow: 0.5px 0.5px 0px var(--encre);
+      display: block; /* Full width inside innermost box */
+      width: 100%;
+      text-align: center;
+    }
+
+    /* ARBRE PHYLOGÉNÉTIQUE SVG */
+    .node-tree {
+      cursor: pointer;
+    }
+    .node-tree rect {
+      transition: all 0.2s ease;
+    }
+    .node-tree:hover rect {
+      stroke: var(--orange-theme-fonce) !important;
+      stroke-dasharray: none !important;
+      stroke-width: 3px !important;
+    }
+    .node-label {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      fill: var(--encre);
+      text-anchor: middle !important;
+    }
+    .animal-tree-badge text {
+      text-anchor: middle !important;
+      font-family: 'Fredoka', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      fill: var(--encre);
+    }
+    .subtaxa-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 12.5px;
+      font-weight: 600;
+      fill: #64748b;
+    }
+    .tree-link {
+      fill: none;
+      stroke: var(--encre);
+      stroke-width: 3px;
+    }
+
+    /* RESPONSIVE DESIGN */
+    @media(max-width:768px) {
+      .tabs-inner { padding: 6px; }
+      .tab-btn { font-size: 0.85rem; padding: 6px 10px; }
+    }
+    @media print {
+      nav.tabs, .controls, .btn-3d { display: none !important; }
+      .page { display: block !important; }
+      body { background: #ffffff; }
+      .card-premium { box-shadow: none; break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- EN-TÊTE -->
+<header class="bg-gradient-to-r from-emerald-900 to-slate-900 text-white border-b-4 border-emerald-500 relative overflow-hidden py-8 px-6">
+  <!-- Image de fond décorative subtile -->
+  <div class="absolute inset-0 bg-cover bg-center opacity-10 pointer-events-none" style="background-image: url('photos/classification_banniere.png');"></div>
+  <div class="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(16,185,129,0.15),transparent_50%)] pointer-events-none"></div>
+  
+  <div class="max-w-[1100px] mx-auto relative z-10">
+    <h1 class="text-3xl md:text-4xl font-display font-black flex items-center gap-2">
+      La Classification du Vivant
+    </h1>
+    <p class="mt-2 text-emerald-200 font-sans max-w-2xl text-sm md:text-base">
+      Deviens naturaliste&nbsp;: observe les attributs physiques des espèces locales, comprends leurs liens de parenté et classe-les selon la méthode scientifique moderne.
+    </p>
+  </div>
+</header>
+
+<!-- ONGLET DE NAVIGATION -->
+<nav class="tabs" aria-label="Onglets de la leçon">
+  <div class="tabs-inner" id="tabBar">
+    <button class="tab-btn active" data-tab="accueil"><span class="num">00</span>Accueil</button>
+    <button class="tab-btn" data-tab="schema"><span class="num">01</span>1. Les Attributs</button>
+    <button class="tab-btn" data-tab="mecanique"><span class="num">02</span>2. Tri Scientifique</button>
+    <button class="tab-btn" data-tab="echanges"><span class="num">03</span>3. Ensembles &amp; Arbre</button>
+    <button class="tab-btn" data-tab="arbre-vie"><span class="num">04</span>4. L'Arbre de la Vie</button>
+    <button class="tab-btn" data-tab="conservation"><span class="num">05</span>5. Secrets &amp; Biodiversité</button>
+  </div>
+</nav>
+
+<!-- CONTENU PRINCIPAL -->
+<main>
+
+  <!-- ====================== 00 ACCUEIL ====================== -->
+  <section class="page active" id="accueil" role="tabpanel">
+    <h2 class="text-xl md:text-2xl font-display font-bold text-slate-800 mb-2 flex items-center gap-2">
+      <span class="bg-slate-900 text-white font-mono text-xs px-2.5 py-1 rounded-md">00</span>
+      L'Enquête : Classer le vivant
+    </h2>
+    <p class="text-slate-600 mb-6 text-sm md:text-base leading-relaxed">
+      Bonjour, jeune naturaliste&nbsp;! Bienvenue dans notre laboratoire de recherche. Ta mission aujourd'hui est d'aider Mr Lejoly à classer scientifiquement les espèces qui vivent autour de notre école. Pour y parvenir, tu vas devoir mener l'enquête, observer de très près les caractères physiques des animaux et oublier tes vieilles habitudes de classement.
+    </p>
+
+    <!-- Plan d'investigation -->
+    <div class="card-premium">
+      <span class="tag-custom bg-emerald-50 text-emerald-800 border-emerald-500">Le plan d'investigation</span>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4">
+        <div class="bg-slate-50 border border-slate-200 border-dashed rounded-xl p-3 text-center">
+          <span class="font-mono text-xs text-emerald-600 font-bold block mb-1">ÉTAPE 1</span>
+          <p class="font-display font-bold text-xs text-slate-900 m-0">L'observation des attributs</p>
+        </div>
+        <div class="bg-slate-50 border border-slate-200 border-dashed rounded-xl p-3 text-center">
+          <span class="font-mono text-xs text-emerald-600 font-bold block mb-1">ÉTAPE 2</span>
+          <p class="font-display font-bold text-xs text-slate-900 m-0">Le piège du mode de vie</p>
+        </div>
+        <div class="bg-slate-50 border border-slate-200 border-dashed rounded-xl p-3 text-center">
+          <span class="font-mono text-xs text-emerald-600 font-bold block mb-1">ÉTAPE 3</span>
+          <p class="font-display font-bold text-xs text-slate-900 m-0">Les boîtes emboîtées</p>
+        </div>
+        <div class="bg-slate-50 border border-slate-200 border-dashed rounded-xl p-3 text-center">
+          <span class="font-mono text-xs text-emerald-600 font-bold block mb-1">ÉTAPE 4</span>
+          <p class="font-display font-bold text-xs text-slate-900 m-0">L'arbre de parenté</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Objectifs -->
+    <div class="grid md:grid-cols-2 gap-4">
+      <div class="card-premium">
+        <span class="tag-custom bg-emerald-50 text-emerald-800 border-emerald-500">Ce que je vais savoir faire</span>
+        <ul class="list-none p-0 m-0 mt-3 text-xs md:text-sm text-slate-600 space-y-2.5">
+          <li class="flex items-start gap-2">
+            <!-- SVG Check Icon -->
+            <svg class="w-4 h-4 text-emerald-500 flex-shrink-0 mt-1" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"></path>
+            </svg>
+            Définir scientifiquement ce qu'est une espèce.
+          </li>
+          <li class="flex items-start gap-2">
+            <svg class="w-4 h-4 text-emerald-500 flex-shrink-0 mt-1" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"></path>
+            </svg>
+            Identifier et nommer les attributs physiques d'un animal (poils, squelette, antennes, etc.).
+          </li>
+          <li class="flex items-start gap-2">
+            <svg class="w-4 h-4 text-emerald-500 flex-shrink-0 mt-1" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"></path>
+            </svg>
+            Réaliser une classification sous forme d'ensembles emboîtés (des boîtes dans des boîtes).
+          </li>
+          <li class="flex items-start gap-2">
+            <svg class="w-4 h-4 text-emerald-500 flex-shrink-0 mt-1" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"></path>
+            </svg>
+            Traduire cette classification sous forme d'arbre phylogénétique.
+          </li>
+        </ul>
+      </div>
+      
+      <div class="card-premium">
+        <span class="tag-custom bg-cyan-50 text-cyan-800 border-cyan-500">Ce que je vais comprendre</span>
+        <ul class="list-none p-0 m-0 mt-3 text-xs md:text-sm text-slate-600 space-y-2.5">
+          <li class="flex items-start gap-2">
+            <svg class="w-4 h-4 text-cyan-500 flex-shrink-0 mt-1" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"></path>
+            </svg>
+            Pourquoi la ressemblance physique ne suffit pas pour définir une espèce (notion de descendance féconde).
+          </li>
+          <li class="flex items-start gap-2">
+            <svg class="w-4 h-4 text-cyan-500 flex-shrink-0 mt-1" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"></path>
+            </svg>
+            La différence entre classer par «&nbsp;ce que font&nbsp;» les animaux (mode de vie) et «&nbsp;ce qu'ils ont&nbsp;» (attributs).
+          </li>
+          <li class="flex items-start gap-2">
+            <svg class="w-4 h-4 text-cyan-500 flex-shrink-0 mt-1" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"></path>
+            </svg>
+            Que la classification phylogénétique montre les véritables liens de parenté évolutive.
+          </li>
+          <li class="flex items-start gap-2">
+            <svg class="w-4 h-4 text-cyan-500 flex-shrink-0 mt-1" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"></path>
+            </svg>
+            Que tous les êtres vivants descendent d'un même ancêtre commun.
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Définition d'espèce -->
+    <div class="card-premium bg-emerald-50 border-emerald-500 mt-6">
+      <h3 class="text-lg font-display font-bold text-emerald-900 mb-2">Définition clé&nbsp;: Qu'est-ce qu'une espèce&nbsp;?</h3>
+      <p class="text-sm text-slate-700 leading-relaxed m-0">
+        En sciences, une <strong>espèce</strong> regroupe des êtres vivants qui partagent des caractéristiques physiques similaires, mais surtout qui sont capables de <strong>se reproduire entre eux</strong> et d'avoir des <strong>descendants féconds</strong> (c'est-à-dire des petits qui pourront eux-mêmes avoir des bébés plus tard). 
+        <br><br>
+        <em>Exemple&nbsp;:</em> Un chat et une chatte forment la même espèce car ils peuvent faire des chatons qui, une fois grands, pourront faire d'autres chatons. En revanche, le cheval et l'ânesse peuvent faire un petit (le mulet), mais ce mulet est stérile (il ne peut pas faire de bébés)&nbsp;: le cheval et l'âne ne font donc pas partie de la même espèce&nbsp;!
+      </p>
+    </div>
+  </section>
+
+  <!-- ====================== 01 LE SCHEMA INTERACTIF ====================== -->
+  <section class="page" id="schema" role="tabpanel">
+    <h2 class="text-xl md:text-2xl font-display font-bold text-slate-800 mb-2 flex items-center gap-2">
+      <span class="bg-slate-900 text-white font-mono text-xs px-2.5 py-1 rounded-md">01</span>
+      L'Observation : Repérer les attributs physiques
+    </h2>
+    <p class="text-slate-600 mb-6 text-sm md:text-base leading-relaxed">
+      Pour classer scientifiquement les animaux, nous devons dresser la liste de leurs <strong>attributs</strong> (les caractères physiques qu'ils possèdent, comme des poils, un squelette interne ou externe, des antennes...). Observe notre planche de biodiversité. Clique sur les cercles verts ou sur les noms des animaux pour analyser leurs attributs.
+    </p>
+
+    <div class="grid md:grid-cols-3 gap-6">
+      <!-- Zone Image et hotspots -->
+      <div class="md:col-span-2 card-premium flex flex-col items-center justify-center relative bg-slate-50">
+        <div class="scene-wrap border-2 border-slate-900 rounded-2xl relative shadow-md overflow-hidden max-w-[600px]">
+          <!-- Planche de biodiversité générée -->
+          <img src="photos/classification_biodiversite.png" alt="Planche de biodiversité Mr Lejoly" class="w-full h-auto block rounded-xl" id="biodiversiteImage">
+          
+          <!-- Hotspots positionnés -->
+          <div class="hotspot" id="hs-chat" data-id="chat" style="left: 28%; top: 16%;">1</div>
+          <div class="hotspot" id="hs-pigeon" data-id="pigeon" style="left: 75%; top: 16%;">2</div>
+          <div class="hotspot" id="hs-grenouille" data-id="grenouille" style="left: 26%; top: 42%;">3</div>
+          <div class="hotspot" id="hs-guepe" data-id="guepe" style="left: 21%; top: 63%;">4</div>
+          <div class="hotspot" id="hs-truite" data-id="truite" style="left: 71%; top: 41%;">5</div>
+          <div class="hotspot" id="hs-araignee" data-id="araignee" style="left: 76%; top: 64%;">6</div>
+          <div class="hotspot" id="hs-escargot" data-id="escargot" style="left: 27%; top: 85%;">7</div>
+          <div class="hotspot" id="hs-ver" data-id="ver" style="left: 72%; top: 86%;">8</div>
+        </div>
+        
+        <p class="statut off w-full mt-3 py-2 text-center rounded-xl font-bold border-2 border-emerald-300 text-emerald-800 bg-emerald-50" id="schemaProgress">
+          Espèces observées&nbsp;: 0 / 8
+        </p>
+      </div>
+
+      <!-- Fiche technique & Liste des animaux -->
+      <div class="flex flex-col gap-4">
+        <!-- Fiche descriptive dynamique -->
+        <div class="bg-emerald-50 border-3 border-emerald-600 rounded-2xl p-5 min-h-[260px] flex flex-col justify-center shadow-sm" id="schemaDetailsBox">
+          <h4 class="text-emerald-900 text-lg mb-2 font-bold" id="detailsTitle">Fiche de naturaliste</h4>
+          <div id="detailsContent">
+            <p class="text-slate-700 text-sm m-0">Clique sur un numéro vert du schéma ou sur une espèce de la liste ci-dessous pour lancer l'observation de ses attributs physiques.</p>
+          </div>
+          <div class="mt-3 text-xs font-semibold px-2 py-1 rounded hidden" id="detailsGroupLabel">Groupe</div>
+        </div>
+
+        <!-- Liste cliquable -->
+        <div class="grid grid-cols-2 md:grid-cols-1 gap-2" id="animalsList">
+          <div class="animal-list-item" data-id="chat">1. Chat sauvage</div>
+          <div class="animal-list-item" data-id="pigeon">2. Pigeon ramier</div>
+          <div class="animal-list-item" data-id="grenouille">3. Grenouille rousse</div>
+          <div class="animal-list-item" data-id="guepe">4. Guêpe commune</div>
+          <div class="animal-list-item" data-id="truite">5. Truite de rivière</div>
+          <div class="animal-list-item" data-id="araignee">6. Épeire (Araignée)</div>
+          <div class="animal-list-item" data-id="escargot">7. Escargot des bois</div>
+          <div class="animal-list-item" data-id="ver">8. Ver de terre</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================== 02 LE TRI SCIENTIFIQUE ====================== -->
+  <section class="page" id="mecanique" role="tabpanel">
+    <h2 class="text-xl md:text-2xl font-display font-bold text-slate-800 mb-2 flex items-center gap-2">
+      <span class="bg-slate-900 text-white font-mono text-xs px-2.5 py-1 rounded-md">02</span>
+      La Mécanique : Trier ou Classer&nbsp;?
+    </h2>
+    <p class="text-slate-600 mb-6 text-sm md:text-base leading-relaxed">
+      Pendant des siècles, l'Homme a <strong>trié</strong> les animaux selon leur mode de déplacement (ceux qui volent, nagent, rampent) ou leur lieu de vie (aquatique, terrestre). C'est un <strong>tri non-scientifique</strong>. Aujourd'hui, la biologie moderne <strong>classe</strong> les êtres vivants selon leurs <strong>attributs partagés</strong>. C'est la méthode phylogénétique.
+    </p>
+
+    <!-- Image comparateur et explications -->
+    <div class="grid md:grid-cols-3 gap-6 items-stretch">
+      <!-- Zone Image et hotspots -->
+      <div class="md:col-span-2 card-premium flex flex-col items-center justify-center relative bg-slate-50 p-4">
+        <span class="tag-custom bg-indigo-50 text-indigo-800 border-indigo-500 mb-3">Schéma interactif&nbsp;: clique sur les zones (1 à 4)</span>
+        
+        <div class="scene-wrap border-2 border-slate-900 rounded-2xl relative shadow-md overflow-hidden max-w-[550px]">
+          <!-- Image comparateur -->
+          <img src="photos/classification_comparaison_fond.png" alt="Comparaison tri ancien vs moderne" class="w-full h-auto block rounded-xl" id="comparaisonImage">
+          
+          <!-- Hotspots positionnés sur le schéma -->
+          <div class="hotspot" id="hs-tri-1" data-zone="1" style="left: 26%; top: 30%;">1</div>
+          <div class="hotspot" id="hs-tri-2" data-zone="2" style="left: 26%; top: 74%;">2</div>
+          <div class="hotspot" id="hs-tri-3" data-zone="3" style="left: 75%; top: 30%;">3</div>
+          <div class="hotspot" id="hs-tri-4" data-zone="4" style="left: 75%; top: 75%;">4</div>
+        </div>
+      </div>
+
+      <!-- Fiche explicative dynamique -->
+      <div class="flex flex-col justify-center">
+        <div class="bg-amber-50 border-3 border-amber-600 rounded-2xl p-5 min-h-[300px] flex flex-col justify-between shadow-sm transition-all duration-300" id="triDetailsBox">
+          <div>
+            <h4 class="text-amber-900 text-lg mb-2 font-bold flex items-center gap-1.5" id="triDetailsTitle">
+              🔍 Explorateur de classement
+            </h4>
+            <div id="triDetailsContent" class="text-slate-700 text-xs leading-relaxed space-y-2">
+              <p>Le schéma ci-contre montre la différence entre <strong>trier</strong> et <strong>classer</strong>.</p>
+              <p class="font-bold text-amber-800">Clique sur les numéros verts de 1 à 4 pour comprendre les pièges et les règles du classement scientifique&nbsp;!</p>
+            </div>
+          </div>
+          <div class="mt-4 text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md text-center border" id="triDetailsStatus" style="display: none;">
+            Statut
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Jeu interactif de Tri Scientifique -->
+    <div class="card-premium mt-6">
+      <span class="tag-custom bg-emerald-50 text-emerald-800 border-emerald-500">Le défi du naturaliste</span>
+      <h3 class="text-lg font-display font-bold text-slate-800 mt-2 mb-3">Deviens détective&nbsp;: ne te laisse pas piéger&nbsp;!</h3>
+      <p class="text-slate-600 text-sm mb-4 leading-relaxed">
+        Pour chaque situation ci-dessous, retrouve le véritable plus proche parent de l'animal en évitant le piège du mode de vie ou de l'habitat. Clique sur les boutons pour tester tes connaissances.
+      </p>
+
+      <div class="space-y-4">
+        <!-- Question 1 : Le Dauphin -->
+        <div class="p-4 bg-slate-50 border-2 border-slate-900 rounded-xl shadow-[3px_3px_0px_#0f172a]">
+          <h4 class="font-display font-bold text-sm text-slate-900 mb-2">1. Qui est le plus proche cousin du Dauphin&nbsp;?</h4>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <button class="btn-3d px-3 py-2 bg-white text-slate-800 rounded-lg text-xs font-bold text-left" onclick="showQuizFeedback('q1', 'faux', '❌ Tri pratique (Faux)&nbsp;: Le Requin vit dans l\'eau comme le dauphin, mais c\'est un poisson cartilagineux. Le dauphin est un Mammifère&nbsp;!')">
+              🐬 &amp; 🦈 Le Requin (Ils vivent dans l'eau)
+            </button>
+            <button class="btn-3d px-3 py-2 bg-white text-slate-800 rounded-lg text-xs font-bold text-left" onclick="showQuizFeedback('q1', 'vrai', '✅ Classement scientifique (Vrai)&nbsp;: Le Chat sauvage&nbsp;! Le chat et le dauphin sont tous deux des Mammifères&nbsp;: ils ont un squelette interne osseux, des poils et des mamelles pour allaiter.')">
+              🐬 &amp; 🐈 Le Chat sauvage (Ils ont des mamelles)
+            </button>
+          </div>
+          <div id="feedback-q1" class="hidden mt-3 p-3 text-xs rounded-lg font-semibold transition-all"></div>
+        </div>
+
+        <!-- Question 2 : La Chauve-souris -->
+        <div class="p-4 bg-slate-50 border-2 border-slate-900 rounded-xl shadow-[3px_3px_0px_#0f172a]">
+          <h4 class="font-display font-bold text-sm text-slate-900 mb-2">2. Qui est le plus proche cousin de la Chauve-souris&nbsp;?</h4>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <button class="btn-3d px-3 py-2 bg-white text-slate-800 rounded-lg text-xs font-bold text-left" onclick="showQuizFeedback('q2', 'faux', '❌ Tri pratique (Faux)&nbsp;: Le Pigeon vole comme la chauve-souris, mais c\'est un oiseau avec des plumes et un bec. La chauve-souris a des poils et des dents&nbsp;!')">
+              🦇 &amp; 🐦 Le Pigeon (Ils volent dans les airs)
+            </button>
+            <button class="btn-3d px-3 py-2 bg-white text-slate-800 rounded-lg text-xs font-bold text-left" onclick="showQuizFeedback('q2', 'vrai', '✅ Classement scientifique (Vrai)&nbsp;: Le Chat sauvage&nbsp;! La chauve-souris possède des poils et des mamelles (c\'est un mammifère), et son aile est une main modifiée avec des doigts.')">
+              🦇 &amp; 🐈 Le Chat sauvage (Ils ont des poils &amp; mamelles)
+            </button>
+          </div>
+          <div id="feedback-q2" class="hidden mt-3 p-3 text-xs rounded-lg font-semibold transition-all"></div>
+        </div>
+
+        <!-- Question 3 : L'Orvet -->
+        <div class="p-4 bg-slate-50 border-2 border-slate-900 rounded-xl shadow-[3px_3px_0px_#0f172a]">
+          <h4 class="font-display font-bold text-sm text-slate-900 mb-2">3. Qui est le plus proche cousin de l'Orvet (lézard sans pattes)&nbsp;?</h4>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <button class="btn-3d px-3 py-2 bg-white text-slate-800 rounded-lg text-xs font-bold text-left" onclick="showQuizFeedback('q3', 'faux', '❌ Tri pratique (Faux)&nbsp;: Le Ver de terre rampe aussi sans pattes, mais son corps est mou et annelé sans squelette. L\'orvet a des os et une colonne vertébrale&nbsp;!')">
+              🦎 &amp; 🪱 Le Ver de terre (Ils rampent sans pattes)
+            </button>
+            <button class="btn-3d px-3 py-2 bg-white text-slate-800 rounded-lg text-xs font-bold text-left" onclick="showQuizFeedback('q3', 'vrai', '✅ Classement scientifique (Vrai)&nbsp;: La Grenouille / Le Lézard&nbsp;! L\'orvet a perdu ses pattes au cours de l\'évolution, mais c\'est un vertébré qui possède un squelette interne osseux et des écailles soudées.')">
+              🦎 &amp; 🐸 La Grenouille / Le Lézard (Squelette interne osseux)
+            </button>
+          </div>
+          <div id="feedback-q3" class="hidden mt-3 p-3 text-xs rounded-lg font-semibold transition-all"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================== 03 ENSEMBLES & ARBRE ====================== -->
+  <section class="page" id="echanges" role="tabpanel">
+    <h2 class="text-xl md:text-2xl font-display font-bold text-slate-800 mb-2 flex items-center gap-2">
+      <span class="bg-slate-900 text-white font-mono text-xs px-2.5 py-1 rounded-md">03</span>
+      Les Groupes&nbsp;: Ensembles emboîtés et Arbre de parenté
+    </h2>
+    <p class="text-slate-600 mb-6 text-sm md:text-base leading-relaxed">
+      Découvre comment nous pouvons classer nos 8 animaux locaux. Observe d'abord le tableau d'observation, puis suis les étapes pas à pas pour construire la classification sous forme d'<strong>ensembles emboîtés</strong> (les boîtes) et l'arbre de parenté final.
+    </p>
+
+    <!-- Tableau des Attributs -->
+    <div class="card-premium overflow-x-auto">
+      <span class="tag-custom bg-emerald-50 text-emerald-800 border-emerald-500">Étape préliminaire&nbsp;: Le tableau de caractères</span>
+      <h3 class="text-base font-display font-bold text-slate-800 mt-2 mb-3">Tableau d'observation des attributs</h3>
+      <table class="w-full text-xs text-left border-collapse border-3 border-slate-900 rounded-xl overflow-hidden min-w-[700px]">
+        <thead>
+          <tr class="bg-slate-100 border-b-3 border-slate-900">
+            <th class="p-2 border-r-2 border-slate-900 font-display font-bold">Animaux</th>
+            <th class="p-2 border-r border-slate-300 font-sans font-semibold text-center bg-emerald-50/50">Squelette interne</th>
+            <th class="p-2 border-r border-slate-300 font-sans font-semibold text-center bg-emerald-50/50">4 membres</th>
+            <th class="p-2 border-r border-slate-300 font-sans font-semibold text-center bg-emerald-50/50">Poils &amp; Mamelles</th>
+            <th class="p-2 border-r border-slate-300 font-sans font-semibold text-center bg-emerald-50/50">Plumes &amp; Bec</th>
+            <th class="p-2 border-r border-slate-300 font-sans font-semibold text-center bg-emerald-50/50">Peau nue</th>
+            <th class="p-2 border-r border-slate-300 font-sans font-semibold text-center bg-emerald-50/50">Écailles soudées</th>
+            <th class="p-2 border-r border-slate-300 font-sans font-semibold text-center bg-amber-50/50">Pattes articulées</th>
+            <th class="p-2 border-r border-slate-300 font-sans font-semibold text-center bg-blue-50/50">Coquille calcaire</th>
+            <th class="p-2 font-sans font-semibold text-center bg-blue-50/50">Corps annelé</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="border-b border-slate-200">
+            <td class="p-2 border-r-2 border-slate-900 font-bold bg-slate-50">Chat sauvage</td>
+            <td class="p-2 border-r border-slate-300 text-center font-bold text-emerald-600 bg-emerald-50/20">Oui</td>
+            <td class="p-2 border-r border-slate-300 text-center font-bold text-emerald-600 bg-emerald-50/20">Oui</td>
+            <td class="p-2 border-r border-slate-300 text-center font-bold text-emerald-600 bg-emerald-50/20">Oui</td>
+            <td class="p-2 border-r border-slate-300 text-center text-slate-300 bg-emerald-50/20">-</td>
+            <td class="p-2 border-r border-slate-300 text-center text-slate-300 bg-emerald-50/20">-</td>
+            <td class="p-2 border-r border-slate-300 text-center text-slate-300 bg-emerald-50/20">-</td>
+            <td class="p-2 border-r border-slate-300 text-center text-slate-300 bg-amber-50/20">-</td>
+            <td class="p-2 border-r border-slate-300 text-center text-slate-300 bg-blue-50/20">-</td>
+            <td class="p-2 text-center text-slate-300 bg-blue-50/20">-</td>
+          </tr>
+          <tr class="border-b border-slate-200">
+            <td class="p-2 border-r-2 border-slate-900 font-bold bg-slate-50">Pigeon ramier</td>
+            <td class="p-2 border-r border-slate-300 text-center font-bold text-emerald-600 bg-emerald-50/20">Oui</td>
+            <td class="p-2 border-r border-slate-300 text-center font-bold text-emerald-600 bg-emerald-50/20">Oui</td>
+            <td class="p-2 border-r border-slate-300 text-center text-slate-300 bg-emerald-50/20">-</td>
+            <td class="p-2 border-r border-slate-300 text-center font-bold text-emerald-600 bg-emerald-50/20">Oui</td>
+            <td class="p-2 border-r border-slate-300 text-center text-slate-300 bg-emerald-50/20">-</td>
+            <td class="p-2 border-r border-slate-300 text-center text-slate-300 bg-emerald-50/20">-</td>
+            <td class="p-2 border-r border-slate-300 text-center text-slate-300 bg-amber-50/20">-</td>
+            <td class="p-2 border-r border-slate-300 text-center text-slate-300 bg-blue-50/20">-</td>
+            <td class="p-2 text-center text-slate-300 bg-blue-50/20">-</td>
+          </tr>
+          <tr class="border-b border-slate-200">
+            <td class="p-2 border-r-2 border-slate-900 font-bold bg-slate-50">Grenouille rousse</td>
+            <td class="p-2 border-r border-slate-300 text-center font-bold text-emerald-600 bg-emerald-50/20">Oui</td>
+            <td class="p-2 border-r border-slate-300 text-center font-bold text-emerald-600 bg-emerald-50/20">Oui</td>
+            <td class="p-2 border-r border-slate-300 text-center text-slate-300 bg-emerald-50/20">-</td>
+            <td class="p-2 border-r border-slate-300 text-center text-slate-300 bg-emerald-50/20">-</td>
+            <td class="p-2 border-r border-slate-300 text-center font-bold text-emerald-600 bg-emerald-50/20">Oui</td>
+            <td class="p-2 border-r border-slate-300 text-center text-slate-300 bg-emerald-50/20">-</td>
+            <td class="p-2 border-r border-slate-300 text-center text-slate-300 bg-amber-50/20">-</td>
+            <td class="p-2 border-r border-slate-300 text-center text-slate-300 bg-blue-50/20">-</td>
+            <td class="p-2 text-center text-slate-300 bg-blue-50/20">-</td>
+          </tr>
+          <tr class="border-b border-slate-200">
+            <td class="p-2 border-r-2 border-slate-900 font-bold bg-slate-50">Truite de rivière</td>
+            <td class="p-2 border-r border-slate-300 text-center font-bold text-emerald-600 bg-emerald-50/20">Oui</td>
+            <td class="p-2 border-r border-slate-300 text-center text-slate-300 bg-emerald-50/20">-</td>
+            <td class="p-2 border-r border-slate-300 text-center text-slate-300 bg-emerald-50/20">-</td>
+            <td class="p-2 border-r border-slate-300 text-center text-slate-300 bg-emerald-50/20">-</td>
+            <td class="p-2 border-r border-slate-300 text-center text-slate-300 bg-emerald-50/20">-</td>
+            <td class="p-2 border-r border-slate-300 text-center font-bold text-emerald-600 bg-emerald-50/20">Oui</td>
+            <td class="p-2 border-r border-slate-300 text-center text-slate-300 bg-amber-50/20">-</td>
+            <td class="p-2 border-r border-slate-300 text-center text-slate-300 bg-blue-50/20">-</td>
+            <td class="p-2 text-center text-slate-300 bg-blue-50/20">-</td>
+          </tr>
+          <tr class="border-b border-slate-200">
+            <td class="p-2 border-r-2 border-slate-900 font-bold bg-slate-50">Guêpe commune</td>
+            <td class="p-2 border-r border-slate-300 text-center text-slate-300 bg-emerald-50/20">-</td>
+            <td class="p-2 border-r border-slate-300 text-center text-slate-300 bg-emerald-50/20">-</td>
+            <td class="p-2 border-r border-slate-300 text-center text-slate-300 bg-emerald-50/20">-</td>
+            <td class="p-2 border-r border-slate-300 text-center text-slate-300 bg-emerald-50/20">-</td>
+            <td class="p-2 border-r border-slate-300 text-center text-slate-300 bg-emerald-50/20">-</td>
+            <td class="p-2 border-r border-slate-300 text-center text-slate-300 bg-emerald-50/20">-</td>
+            <td class="p-2 border-r border-slate-300 text-center font-bold text-amber-600 bg-amber-50/20">Oui (6)</td>
+            <td class="p-2 border-r border-slate-300 text-center text-slate-300 bg-blue-50/20">-</td>
+            <td class="p-2 text-center text-slate-300 bg-blue-50/20">-</td>
+          </tr>
+          <tr class="border-b border-slate-200">
+            <td class="p-2 border-r-2 border-slate-900 font-bold bg-slate-50">Araignée (Épeire)</td>
+            <td class="p-2 border-r border-slate-300 text-center text-slate-300 bg-emerald-50/20">-</td>
+            <td class="p-2 border-r border-slate-300 text-center text-slate-300 bg-emerald-50/20">-</td>
+            <td class="p-2 border-r border-slate-300 text-center text-slate-300 bg-emerald-50/20">-</td>
+            <td class="p-2 border-r border-slate-300 text-center text-slate-300 bg-emerald-50/20">-</td>
+            <td class="p-2 border-r border-slate-300 text-center text-slate-300 bg-emerald-50/20">-</td>
+            <td class="p-2 border-r border-slate-300 text-center text-slate-300 bg-emerald-50/20">-</td>
+            <td class="p-2 border-r border-slate-300 text-center font-bold text-amber-600 bg-amber-50/20">Oui (8)</td>
+            <td class="p-2 border-r border-slate-300 text-center text-slate-300 bg-blue-50/20">-</td>
+            <td class="p-2 text-center text-slate-300 bg-blue-50/20">-</td>
+          </tr>
+          <tr class="border-b border-slate-200">
+            <td class="p-2 border-r-2 border-slate-900 font-bold bg-slate-50">Escargot des bois</td>
+            <td class="p-2 border-r border-slate-300 text-center text-slate-300 bg-emerald-50/20">-</td>
+            <td class="p-2 border-r border-slate-300 text-center text-slate-300 bg-emerald-50/20">-</td>
+            <td class="p-2 border-r border-slate-300 text-center text-slate-300 bg-emerald-50/20">-</td>
+            <td class="p-2 border-r border-slate-300 text-center text-slate-300 bg-emerald-50/20">-</td>
+            <td class="p-2 border-r border-slate-300 text-center text-slate-300 bg-emerald-50/20">-</td>
+            <td class="p-2 border-r border-slate-300 text-center text-slate-300 bg-emerald-50/20">-</td>
+            <td class="p-2 border-r border-slate-300 text-center text-slate-300 bg-amber-50/20">-</td>
+            <td class="p-2 border-r border-slate-300 text-center font-bold text-blue-600 bg-blue-50/20">Oui</td>
+            <td class="p-2 text-center text-slate-300 bg-blue-50/20">-</td>
+          </tr>
+          <tr class="border-b border-slate-900">
+            <td class="p-2 border-r-2 border-slate-900 font-bold bg-slate-50">Ver de terre</td>
+            <td class="p-2 border-r border-slate-300 text-center text-slate-300 bg-emerald-50/20">-</td>
+            <td class="p-2 border-r border-slate-300 text-center text-slate-300 bg-emerald-50/20">-</td>
+            <td class="p-2 border-r border-slate-300 text-center text-slate-300 bg-emerald-50/20">-</td>
+            <td class="p-2 border-r border-slate-300 text-center text-slate-300 bg-emerald-50/20">-</td>
+            <td class="p-2 border-r border-slate-300 text-center text-slate-300 bg-emerald-50/20">-</td>
+            <td class="p-2 border-r border-slate-300 text-center text-slate-300 bg-emerald-50/20">-</td>
+            <td class="p-2 border-r border-slate-300 text-center text-slate-300 bg-amber-50/20">-</td>
+            <td class="p-2 border-r border-slate-300 text-center text-slate-300 bg-blue-50/20">-</td>
+            <td class="p-2 text-center font-bold text-blue-600 bg-blue-50/20">Oui</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Contrôle des étapes -->
+    <div class="flex flex-col md:flex-row gap-4 items-center justify-between card-premium bg-slate-50 border-slate-300 py-3 mt-4">
+      <div class="flex items-center gap-2">
+        <span class="font-display font-bold text-sm text-slate-800">Étape de classification&nbsp;:</span>
+        <span class="font-mono font-bold text-xs bg-emerald-100 text-emerald-800 px-3 py-1 rounded-md" id="stepCounter">1 / 6</span>
+        <span class="font-display font-bold text-xs text-slate-600" id="stepDescription">Départ avec toutes les espèces</span>
+      </div>
+      <div class="flex gap-2">
+        <button class="btn-3d px-3 py-1.5 bg-slate-200 text-slate-800 rounded-lg text-xs font-bold" id="btnPrevStep" disabled>
+          Étape précédente
+        </button>
+        <button class="btn-3d px-3 py-1.5 bg-emerald-600 text-white rounded-lg text-xs font-bold" id="btnNextStep">
+          Étape suivante
+        </button>
+      </div>
+    </div>
+
+    <!-- Sélecteur de sous-onglets Flat 3D -->
+    <div class="flex gap-4 justify-center mt-6" id="subtabBar">
+      <button class="subtab-btn btn-3d px-4 py-2 bg-emerald-600 text-white rounded-xl text-xs font-bold" data-subtab="classification">
+        La boîte de classification
+      </button>
+      <button class="subtab-btn btn-3d px-4 py-2 bg-slate-100 text-slate-800 rounded-xl text-xs font-bold" data-subtab="arbre">
+        L'arbre de parenté
+      </button>
+    </div>
+
+    <!-- Conteneurs des sous-onglets -->
+    <div class="mt-4 w-full">
+      
+      <!-- Sous-onglet : Boîte de classification -->
+      <div id="panel-classification" class="subtab-panel w-full">
+        <div class="card-premium">
+          <h3 class="text-base font-display font-bold text-slate-800 border-b pb-2 mb-3">La boîte de classification (Ensembles emboîtés)</h3>
+          
+          <!-- Conteneur fixe stable en hauteur bloquée pour éviter tout saut de layout -->
+          <div id="nestedContainer" class="p-3 bg-slate-100 border-2 border-slate-300 rounded-xl min-h-[440px] max-h-[440px] flex flex-col box-border overflow-hidden">
+            <!-- Le contenu est généré dynamiquement en JS selon l'étape courante -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Sous-onglet : Arbre phylogénétique -->
+      <div id="panel-arbre" class="subtab-panel w-full hidden">
+        <div class="card-premium">
+          <h3 class="text-base font-display font-bold text-slate-800 border-b pb-2 mb-3">L'Arbre de parenté (Cladogramme)</h3>
+          <p class="text-xs text-slate-500 mb-4 leading-relaxed">
+            Ce diagramme montre les liens de parenté. Clique sur un nœud (l'attribut partagé) ou un animal pour mettre en valeur son groupe.
+          </p>
+          <div class="w-full bg-white border border-slate-200 rounded-xl p-4 overflow-x-auto">
+            <svg viewBox="0 0 780 440" class="mx-auto block w-auto max-h-[390px] md:max-h-[420px] lg:max-h-[440px] h-auto font-sans" style="background-color: #ffffff;">
+              <!-- Définitions pour les ombres 3D Flat -->
+              <defs>
+                <filter id="shadow-flat" x="-20%" y="-20%" width="140%" height="140%">
+                  <feDropShadow dx="2" dy="2" stdDeviation="0" flood-color="#0f172a" />
+                </filter>
+              </defs>
+
+              <!-- Lignes de connexion de l'arbre (cladogramme) -->
+              <!-- Protostomiens Subtree -->
+              <path d="M 620 45 L 440 45" fill="none" stroke="#0f172a" stroke-width="3" stroke-linecap="round" data-step="5" />
+              <path d="M 620 95 L 440 95" fill="none" stroke="#0f172a" stroke-width="3" stroke-linecap="round" data-step="5" />
+              <path d="M 620 145 L 440 145" fill="none" stroke="#0f172a" stroke-width="3" stroke-linecap="round" data-step="5" />
+              <path d="M 620 195 L 440 195" fill="none" stroke="#0f172a" stroke-width="3" stroke-linecap="round" data-step="5" />
+              <path d="M 440 45 L 440 95" fill="none" stroke="#0f172a" stroke-width="3" stroke-linecap="round" data-step="5" />
+              <path d="M 440 145 L 440 195" fill="none" stroke="#0f172a" stroke-width="3" stroke-linecap="round" data-step="5" />
+              <path d="M 440 70 L 290 70" fill="none" stroke="#0f172a" stroke-width="3" stroke-linecap="round" data-step="2" />
+              <path d="M 440 170 L 290 170" fill="none" stroke="#0f172a" stroke-width="3" stroke-linecap="round" data-step="2" />
+              <path d="M 290 70 L 290 170" fill="none" stroke="#0f172a" stroke-width="3" stroke-linecap="round" data-step="2" />
+              <path d="M 290 120 L 110 120" fill="none" stroke="#0f172a" stroke-width="3" stroke-linecap="round" data-step="2" />
+
+              <!-- Vertébrés Subtree -->
+              <path d="M 620 245 L 200 245" fill="none" stroke="#0f172a" stroke-width="3" stroke-linecap="round" data-step="3" />
+              <path d="M 620 295 L 310 295" fill="none" stroke="#0f172a" stroke-width="3" stroke-linecap="round" data-step="4" />
+              <path d="M 620 345 L 440 345" fill="none" stroke="#0f172a" stroke-width="3" stroke-linecap="round" data-step="4" />
+              <path d="M 620 395 L 440 395" fill="none" stroke="#0f172a" stroke-width="3" stroke-linecap="round" data-step="4" />
+              <path d="M 440 345 L 440 395" fill="none" stroke="#0f172a" stroke-width="3" stroke-linecap="round" data-step="4" />
+              <path d="M 440 370 L 310 370" fill="none" stroke="#0f172a" stroke-width="3" stroke-linecap="round" data-step="4" />
+              <path d="M 310 295 L 310 370" fill="none" stroke="#0f172a" stroke-width="3" stroke-linecap="round" data-step="4" />
+              <path d="M 310 332 L 200 332" fill="none" stroke="#0f172a" stroke-width="3" stroke-linecap="round" data-step="3" />
+              <path d="M 200 245 L 200 332" fill="none" stroke="#0f172a" stroke-width="3" stroke-linecap="round" data-step="3" />
+              <path d="M 200 288 L 110 288" fill="none" stroke="#0f172a" stroke-width="3" stroke-linecap="round" data-step="2" />
+
+              <!-- Racine Commune -->
+              <path d="M 110 120 L 110 288" fill="none" stroke="#0f172a" stroke-width="3" stroke-linecap="round" data-step="1" />
+              <path d="M 110 204 L 15 204" fill="none" stroke="#0f172a" stroke-width="3" stroke-linecap="round" data-step="1" />
+
+              <!-- Noms des espèces (Badges cliquables de groupes terminaux) -->
+              <g class="node-tree cursor-pointer animal-tree-badge" data-box="box-annelide" data-step="5">
+                <rect x="620" y="29" width="140" height="32" rx="6" fill="#f0f9ff" stroke="#0f172a" stroke-width="2" filter="url(#shadow-flat)" />
+                <text x="690" y="51" text-anchor="middle">Ver de terre</text>
+              </g>
+              <g class="node-tree cursor-pointer animal-tree-badge" data-box="box-gastropode" data-step="5">
+                <rect x="620" y="79" width="140" height="32" rx="6" fill="#f0f9ff" stroke="#0f172a" stroke-width="2" filter="url(#shadow-flat)" />
+                <text x="690" y="101" text-anchor="middle">Escargot des bois</text>
+              </g>
+              <g class="node-tree cursor-pointer animal-tree-badge" data-box="box-arachnide" data-step="5">
+                <rect x="620" y="129" width="140" height="32" rx="6" fill="#fef3c7" stroke="#0f172a" stroke-width="2" filter="url(#shadow-flat)" />
+                <text x="690" y="151" text-anchor="middle">Araignée (Épeire)</text>
+              </g>
+              <g class="node-tree cursor-pointer animal-tree-badge" data-box="box-insecte" data-step="5">
+                <rect x="620" y="179" width="140" height="32" rx="6" fill="#fef3c7" stroke="#0f172a" stroke-width="2" filter="url(#shadow-flat)" />
+                <text x="690" y="201" text-anchor="middle">Guêpe commune</text>
+              </g>
+              <g class="node-tree cursor-pointer animal-tree-badge" data-box="box-poisson" data-step="3">
+                <rect x="620" y="229" width="140" height="32" rx="6" fill="#ecfdf5" stroke="#0f172a" stroke-width="2" filter="url(#shadow-flat)" />
+                <text x="690" y="251" text-anchor="middle">Truite de rivière</text>
+              </g>
+              <g class="node-tree cursor-pointer animal-tree-badge" data-box="box-amphibien" data-step="4">
+                <rect x="620" y="279" width="140" height="32" rx="6" fill="#ecfdf5" stroke="#0f172a" stroke-width="2" filter="url(#shadow-flat)" />
+                <text x="690" y="301" text-anchor="middle">Grenouille rousse</text>
+              </g>
+              <g class="node-tree cursor-pointer animal-tree-badge" data-box="box-oiseau" data-step="4">
+                <rect x="620" y="329" width="140" height="32" rx="6" fill="#ecfdf5" stroke="#0f172a" stroke-width="2" filter="url(#shadow-flat)" />
+                <text x="690" y="351" text-anchor="middle">Pigeon ramier</text>
+              </g>
+              <g class="node-tree cursor-pointer animal-tree-badge" data-box="box-mammifere" data-step="4">
+                <rect x="620" y="379" width="140" height="32" rx="6" fill="#ecfdf5" stroke="#0f172a" stroke-width="2" filter="url(#shadow-flat)" />
+                <text x="690" y="401" text-anchor="middle">Chat sauvage</text>
+              </g>
+
+              <!-- Taxons le long des branches (Noms des groupes) -->
+              <text x="515" y="27" text-anchor="middle" class="subtaxa-label" data-step="5">Annélides</text>
+              <text x="515" y="77" text-anchor="middle" class="subtaxa-label" data-step="5">Mollusques</text>
+              <text x="515" y="127" text-anchor="middle" class="subtaxa-label" data-step="5">Arachnides</text>
+              <text x="515" y="177" text-anchor="middle" class="subtaxa-label" data-step="5">Insectes</text>
+              <text x="515" y="227" text-anchor="middle" class="subtaxa-label" data-step="3">Poissons</text>
+              <text x="515" y="277" text-anchor="middle" class="subtaxa-label" data-step="4">Amphibiens</text>
+              <text x="515" y="327" text-anchor="middle" class="subtaxa-label" data-step="4">Oiseaux</text>
+              <text x="515" y="377" text-anchor="middle" class="subtaxa-label" data-step="4">Mammifères</text>
+
+              <!-- Nœuds de branchement (interactifs avec classes JS) -->
+              <!-- Lophotrochozoaires (node-mou) -->
+              <g class="node-tree cursor-pointer" id="node-mou" data-box="box-corps-mou" data-step="2">
+                <rect x="330" y="58" width="105" height="24" rx="6" fill="#f0f9ff" stroke="#0f172a" stroke-width="2" filter="url(#shadow-flat)" />
+                <text x="382.5" y="75" text-anchor="middle" class="node-label">Corps mou</text>
+              </g>
+
+              <!-- Arthropodes (node-extern) -->
+              <g class="node-tree cursor-pointer" id="node-extern" data-box="box-squelette-ext" data-step="2">
+                <rect x="285" y="152" width="150" height="36" rx="6" fill="#fef3c7" stroke="#0f172a" stroke-width="2" filter="url(#shadow-flat)" />
+                <text x="360" y="166" text-anchor="middle" class="node-label" style="font-size: 12px;">Squelette externe</text>
+                <text x="360" y="179" text-anchor="middle" class="node-label" style="font-size: 12px;">&amp; pattes articulées</text>
+              </g>
+
+              <!-- Protostomiens (node-protostome) -->
+              <g class="node-tree cursor-pointer" id="node-protostome" data-box="box-vivant" data-step="2">
+                <rect x="110" y="108" width="175" height="24" rx="6" fill="#f5f3ff" stroke="#0f172a" stroke-width="2" filter="url(#shadow-flat)" />
+                <text x="197.5" y="124" text-anchor="middle" class="node-label">Sans squelette interne</text>
+              </g>
+
+              <!-- Vertébrés (node-intern) -->
+              <g class="node-tree cursor-pointer" id="node-intern" data-box="box-squelette-int" data-step="2">
+                <rect x="55" y="270" width="140" height="36" rx="6" fill="#ecfdf5" stroke="#0f172a" stroke-width="2" filter="url(#shadow-flat)" />
+                <text x="125" y="284" text-anchor="middle" class="node-label" style="font-size: 12px;">Squelette interne</text>
+                <text x="125" y="298" text-anchor="middle" class="node-label" style="font-size: 12px;">(Vertébrés)</text>
+              </g>
+
+              <!-- Tétrapodes (node-tetrapode) -->
+              <g class="node-tree cursor-pointer" id="node-tetrapode" data-box="box-tetrapode" data-step="3">
+                <rect x="205" y="320" width="100" height="24" rx="6" fill="#ecfdf5" stroke="#0f172a" stroke-width="2" filter="url(#shadow-flat)" />
+                <text x="255" y="336" text-anchor="middle" class="node-label">4 membres</text>
+              </g>
+
+              <!-- Amniotes (node-amniote) -->
+              <g class="node-tree cursor-pointer" id="node-amniote" data-box="box-tetrapode" data-step="4">
+                <rect x="310" y="358" width="125" height="24" rx="6" fill="#ecfdf5" stroke="#0f172a" stroke-width="2" filter="url(#shadow-flat)" />
+                <text x="372.5" y="374" text-anchor="middle" class="node-label">Poils / Plumes</text>
+              </g>
+
+              <!-- Racine (node-cellule) -->
+              <g class="node-tree cursor-pointer" id="node-cellule" data-box="box-vivant" data-step="1">
+                <rect x="2" y="192" width="103" height="24" rx="6" fill="#f8fafc" stroke="#0f172a" stroke-width="2" filter="url(#shadow-flat)" />
+                <text x="53.5" y="208" text-anchor="middle" class="node-label">Êtres Vivants</text>
+              </g>
+
+              <!-- Nouveaux Caractères terminaux (Spécifiques à chaque animal) -->
+              <!-- Ver de terre (Corps annelé) -->
+              <g class="node-tree cursor-pointer" id="node-ver-attribut" data-box="box-annelide" data-step="5">
+                <rect x="460" y="34" width="110" height="22" rx="6" fill="#f0f9ff" stroke="#0f172a" stroke-width="2" filter="url(#shadow-flat)" />
+                <text x="515" y="50" text-anchor="middle" class="node-label">Corps annelé</text>
+              </g>
+
+              <!-- Escargot des bois (Coquille) -->
+              <g class="node-tree cursor-pointer" id="node-escargot-attribut" data-box="box-gastropode" data-step="5">
+                <rect x="460" y="84" width="110" height="22" rx="6" fill="#f0f9ff" stroke="#0f172a" stroke-width="2" filter="url(#shadow-flat)" />
+                <text x="515" y="100" text-anchor="middle" class="node-label">Coquille</text>
+              </g>
+
+              <!-- Araignée (8 pattes) -->
+              <g class="node-tree cursor-pointer" id="node-araignee-attribut" data-box="box-arachnide" data-step="5">
+                <rect x="460" y="134" width="110" height="22" rx="6" fill="#fef3c7" stroke="#0f172a" stroke-width="2" filter="url(#shadow-flat)" />
+                <text x="515" y="150" text-anchor="middle" class="node-label">8 pattes</text>
+              </g>
+
+              <!-- Guêpe commune (6 pattes) -->
+              <g class="node-tree cursor-pointer" id="node-guepe-attribut" data-box="box-insecte" data-step="5">
+                <rect x="460" y="184" width="110" height="22" rx="6" fill="#fef3c7" stroke="#0f172a" stroke-width="2" filter="url(#shadow-flat)" />
+                <text x="515" y="200" text-anchor="middle" class="node-label">6 pattes</text>
+              </g>
+
+              <!-- Truite de rivière (Nageoires à rayons) -->
+              <g class="node-tree cursor-pointer" id="node-truite-attribut" data-box="box-poisson" data-step="3">
+                <rect x="460" y="234" width="110" height="22" rx="6" fill="#ecfdf5" stroke="#0f172a" stroke-width="2" filter="url(#shadow-flat)" />
+                <text x="515" y="250" text-anchor="middle" class="node-label" style="font-size: 11px;">Nageoires à rayons</text>
+              </g>
+
+              <!-- Grenouille rousse (Peau nue) -->
+              <g class="node-tree cursor-pointer" id="node-grenouille-attribut" data-box="box-amphibien" data-step="4">
+                <rect x="460" y="284" width="110" height="22" rx="6" fill="#ecfdf5" stroke="#0f172a" stroke-width="2" filter="url(#shadow-flat)" />
+                <text x="515" y="300" text-anchor="middle" class="node-label">Peau nue</text>
+              </g>
+
+              <!-- Pigeon ramier (Plumes & bec) -->
+              <g class="node-tree cursor-pointer" id="node-pigeon-attribut" data-box="box-oiseau" data-step="4">
+                <rect x="460" y="334" width="110" height="22" rx="6" fill="#ecfdf5" stroke="#0f172a" stroke-width="2" filter="url(#shadow-flat)" />
+                <text x="515" y="350" text-anchor="middle" class="node-label">Plumes &amp; bec</text>
+              </g>
+
+              <!-- Chat sauvage (Poils & mamelles) -->
+              <g class="node-tree cursor-pointer" id="node-chat-attribut" data-box="box-mammifere" data-step="4">
+                <rect x="460" y="384" width="110" height="22" rx="6" fill="#ecfdf5" stroke="#0f172a" stroke-width="2" filter="url(#shadow-flat)" />
+                <text x="515" y="400" text-anchor="middle" class="node-label" style="font-size: 11px;">Poils &amp; mamelles</text>
+              </g>
+            </svg>
+          </div>
+
+          <!-- Légende de l'arbre Flat 3D -->
+          <div class="mt-4 p-3 bg-slate-50 border-2 border-slate-300 rounded-xl text-xs flex flex-wrap gap-4 justify-center items-center">
+            <span class="font-bold text-slate-700">Légende de l'arbre&nbsp;:</span>
+            <div class="flex items-center gap-1.5">
+              <span class="px-2 py-0.5 border border-slate-900 rounded bg-indigo-50 font-bold font-display" style="font-size: 10px;">Caractère</span>
+              <span class="text-slate-600 font-semibold">Attribut partagé (nœud)</span>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <span class="w-6 h-0.5 bg-slate-900 inline-block"></span>
+              <span class="text-slate-600 font-semibold">Lien de parenté (branche)</span>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <span class="px-2 py-0.5 border border-slate-900 rounded bg-slate-100 font-bold font-display" style="font-size: 10px;">Animal</span>
+              <span class="text-slate-600 font-semibold">Espèce classée</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================== 04 L'ARBRE DE LA VIE ====================== -->
+  <section class="page" id="arbre-vie" role="tabpanel">
+    <h2 class="text-xl md:text-2xl font-display font-bold text-slate-800 mb-2 flex items-center gap-2">
+      <span class="bg-slate-900 text-white font-mono text-xs px-2.5 py-1 rounded-md">04</span>
+      L'Arbre de la Vie&nbsp;: Tous parents, tous reliés
+    </h2>
+    <p class="text-slate-600 mb-6 text-sm md:text-base leading-relaxed">
+      À l'image de la sculpture suspendue au Muséum des Sciences Naturelles de Bruxelles, la biologie moderne représente la parenté de toutes les espèces sous la forme d'un immense <strong>Arbre de la Vie</strong>. Explore les branches de l'arbre en cliquant sur les zones numérotées pour comprendre comment tout le vivant remonte à un unique ancêtre commun.
+    </p>
+
+    <div class="grid md:grid-cols-3 gap-6 items-stretch">
+      <!-- Zone Image et hotspots -->
+      <div class="md:col-span-2 card-premium flex flex-col items-center justify-center relative bg-slate-50 p-4">
+        <span class="tag-custom bg-indigo-50 text-indigo-800 border-indigo-500 mb-3" id="arbre-view-tag">Sculpture en 3D (Musée de Bruxelles)</span>
+        
+        <div class="scene-wrap border-2 border-slate-900 rounded-2xl relative shadow-md overflow-hidden max-w-[550px] bg-white w-full">
+          
+          <!-- Vue 3D Sculpture initiale -->
+          <div id="arbre-3d-view" class="relative w-full h-full block">
+            <img src="photos/classification_arbre_3d.png" alt="Sculpture 3D de l'Arbre de la vie" class="w-full h-auto block rounded-xl">
+            <!-- Overlay cliquable -->
+            <div class="absolute inset-0 flex flex-col items-center justify-center cursor-pointer text-white p-4 text-center transition-all bg-slate-950/20 hover:bg-slate-950/40" id="btn-reveal-arbre">
+              <span class="btn-3d px-4 py-2.5 bg-emerald-500 text-white rounded-xl text-sm font-bold flex items-center gap-2 shadow-lg">
+                🔍 Découvrir l'Arbre de la Vie interactif
+              </span>
+            </div>
+          </div>
+
+          <!-- Vue 2D Interactive -->
+          <div id="arbre-2d-view" class="relative w-full h-full hidden">
+            <!-- Bouton de retour -->
+            <button class="absolute top-2.5 left-2.5 btn-3d px-2.5 py-1.5 bg-slate-900 text-white rounded-xl text-[10px] font-bold z-20 flex items-center gap-1 cursor-pointer" onclick="toggleArbreView('3d')">
+              ⬅ Retourner à la sculpture 3D
+            </button>
+            
+            <!-- Image Arbre de la vie -->
+            <img src="photos/classification_arbre_vie.png" alt="Arbre de la vie phylogénétique" class="w-full h-auto block rounded-xl" id="arbreVieImage">
+            
+            <!-- Hotspots positionnés sur le schéma -->
+            <div class="hotspot" id="hs-life-1" data-zone="1" style="left: 50%; top: 50%;">1</div>
+            <div class="hotspot" id="hs-life-2" data-zone="2" style="left: 18%; top: 20%;">2</div>
+            <div class="hotspot" id="hs-life-3" data-zone="3" style="left: 18%; top: 80%;">3</div>
+            <div class="hotspot" id="hs-life-4" data-zone="4" style="left: 55%; top: 15%;">4</div>
+            <div class="hotspot" id="hs-life-5" data-zone="5" style="left: 73%; top: 48%;">5</div>
+            <div class="hotspot" id="hs-life-6" data-zone="6" style="left: 84%; top: 70%;">6</div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Fiche descriptive dynamique -->
+      <div class="flex flex-col justify-center">
+        <div class="bg-indigo-50 border-3 border-indigo-600 rounded-2xl p-5 min-h-[300px] flex flex-col justify-between shadow-sm transition-all duration-300" id="lifeDetailsBox">
+          <div>
+            <h4 class="text-indigo-900 text-lg mb-2 font-bold flex items-center gap-1.5" id="lifeDetailsTitle">
+              🌳 Explorateur de l'arbre
+            </h4>
+            <div id="lifeDetailsContent" class="text-slate-700 text-xs leading-relaxed space-y-2">
+              <p>L'arbre suspendu dans le musée représente les liens d'évolution de toutes les espèces vivantes.</p>
+              <p class="font-bold text-indigo-800">Clique sur le bouton vert au centre de l'image pour déployer l'Arbre de la Vie interactif et l'explorer&nbsp;!</p>
+            </div>
+          </div>
+          <div class="mt-4 text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md text-center border bg-indigo-100 text-indigo-800 border-indigo-300" id="lifeDetailsDomain">
+            Généalogie du vivant
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================== 05 SECRETS & SANTE ====================== -->
+  <section class="page" id="conservation" role="tabpanel">
+    <h2 class="text-xl md:text-2xl font-display font-bold text-slate-800 mb-2 flex items-center gap-2">
+      <span class="bg-slate-900 text-white font-mono text-xs px-2.5 py-1 rounded-md">05</span>
+      Approfondissement&nbsp;: Secrets de la nature et Biodiversité
+    </h2>
+    <p class="text-slate-600 mb-6 text-sm md:text-base leading-relaxed">
+      La classification moderne révèle les mystères les plus fous de l'évolution biologique. Découvre des animaux insolites qui bousculent nos repères et comprends pourquoi protéger chaque branche du vivant est vital.
+    </p>
+
+    <div class="grid md:grid-cols-2 gap-6">
+      <!-- Biodiversité en danger -->
+      <div class="card-premium">
+        <span class="tag-custom bg-emerald-50 text-emerald-800 border-emerald-500">Protéger la biodiversité</span>
+        <p class="text-sm text-slate-600 mt-2 mb-4 leading-relaxed">
+          Toutes les espèces vivantes de la planète sont reliées par des <strong>liens de parenté évolutifs</strong>. C'est l'arbre du vivant. 
+        </p>
+        <div class="space-y-3">
+          <div class="p-3 bg-slate-50 border-l-4 border-emerald-500 rounded-r-lg">
+            <h4 class="text-xs font-bold text-emerald-800 uppercase tracking-wider">Un arbre précieux</h4>
+            <p class="text-xs text-slate-600 m-0 mt-1">Chaque fois qu'une espèce s'éteint en raison des activités humaines (pollution, déforestation, réchauffement), c'est une feuille ou une branche entière de l'arbre généalogique de la Terre qui disparaît pour toujours. Nous perdons une pièce unique de l'histoire de la vie.</p>
+          </div>
+          <div class="p-3 bg-slate-50 border-l-4 border-amber-500 rounded-r-lg">
+            <h4 class="text-xs font-bold text-amber-800 uppercase tracking-wider">La dépendance mutuelle</h4>
+            <p class="text-xs text-slate-600 m-0 mt-1">Les espèces d'un même écosystème partagent de fortes interactions. Par exemple, sans le ver de terre pour aérer et enrichir le sol, les plantes sauvages ne poussent plus. Sans plantes, plus d'insectes, et sans insectes, plus d'oiseaux.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Le coin des curieux -->
+      <div class="card-premium">
+        <span class="tag-custom bg-amber-50 text-amber-800 border-amber-500">Le coin des curieux</span>
+        
+        <div class="mt-3 space-y-4">
+          <div class="flex items-start gap-3">
+            <div class="w-8 h-8 bg-amber-100 text-amber-700 rounded-xl flex items-center justify-center font-bold flex-shrink-0 font-display">O</div>
+            <div>
+              <h4 class="text-sm font-bold text-slate-800">L'Ornithorynque&nbsp;: le casse-tête</h4>
+              <p class="text-xs text-slate-600 m-0 mt-0.5 leading-relaxed">Cet animal d'Australie possède des poils et allaite ses petits (attributs des mammifères)&nbsp;! Cependant, il n'a pas de mamelles visibles (les petits lèchent le lait qui suinte de sa peau), il pond des œufs (comme un oiseau ou un reptile) et possède un bec de canard. C'est la preuve vivante que les attributs évolutifs se combinent de façon fascinante au cours du temps.</p>
+            </div>
+          </div>
+          
+          <div class="flex items-start gap-3">
+            <div class="w-8 h-8 bg-teal-100 text-teal-700 rounded-xl flex items-center justify-center font-bold flex-shrink-0 font-display">C</div>
+            <div>
+              <h4 class="text-sm font-bold text-slate-800">Le Cœlacanthe&nbsp;: plus proche de nous&nbsp;?</h4>
+              <p class="text-xs text-slate-600 m-0 mt-0.5 leading-relaxed">Ce poisson des profondeurs marines possède des nageoires charnues et épaisses contenant de véritables os articulés, au lieu des rayons habituels. Scientifiquement, il est beaucoup plus proche du chat ou du pigeon que de la truite&nbsp;! Ses nageoires sont le vestige des ancêtres qui ont un jour développé 4 pattes pour marcher sur terre.</p>
+            </div>
+          </div>
+
+          <div class="flex items-start gap-3">
+            <div class="w-8 h-8 bg-emerald-100 text-emerald-700 rounded-xl flex items-center justify-center font-bold flex-shrink-0 font-display">T</div>
+            <div>
+              <h4 class="text-sm font-bold text-slate-800">Le Tardigrade&nbsp;: l'indestructible</h4>
+              <p class="text-xs text-slate-600 m-0 mt-0.5 leading-relaxed">Cet animal microscopique à 8 petites pattes (proche des arthropodes) est l'être le plus résistant de la Terre. Il survit à des températures extrêmes de -270&nbsp;°C à +150&nbsp;°C, à la pression gigantesque des océans et même au vide spatial&nbsp;!</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chiffres incroyables -->
+    <div class="card-premium mt-6 bg-slate-50 border-slate-900">
+      <span class="tag-custom bg-slate-100 text-slate-800 border-slate-500">Le vivant en chiffres records</span>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+        <div class="bg-white border-2 border-slate-900 rounded-xl p-4 shadow-[2px_2px_0px_rgba(15,23,42,1)]">
+          <h4 class="text-emerald-800 text-sm font-bold">1,8 Million d'espèces</h4>
+          <p class="text-slate-600 text-xs m-0 mt-1">C'est le nombre d'espèces d'êtres vivants déjà découvertes, décrites et classées par les scientifiques à ce jour.</p>
+        </div>
+        <div class="bg-white border-2 border-slate-900 rounded-xl p-4 shadow-[2px_2px_0px_rgba(15,23,42,1)]">
+          <h4 class="text-emerald-800 text-sm font-bold">10 Millions estimées</h4>
+          <p class="text-slate-600 text-xs m-0 mt-1">Les scientifiques estiment qu'il existe en réalité près de 10 millions d'espèces sur Terre. L'immense majorité n'a donc pas encore été découverte&nbsp;!</p>
+        </div>
+        <div class="bg-white border-2 border-slate-900 rounded-xl p-4 shadow-[2px_2px_0px_rgba(15,23,42,1)]">
+          <h4 class="text-emerald-800 text-sm font-bold">50 par jour</h4>
+          <p class="text-slate-600 text-xs m-0 mt-1">Chaque jour dans le monde, les expéditions de naturalistes découvrent et décrivent en moyenne 50 nouvelles espèces (surtout des insectes et des champignons).</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- PIED DE PAGE -->
+<footer class="bg-white border-t-2 border-slate-200 py-6 text-center text-xs text-slate-500 font-semibold mt-auto">
+  <div class="max-w-[1100px] mx-auto px-4">
+    Classe de Mr Lejoly — Activités d'Éveil Scientifique — Conforme au programme FWB / CECP
+  </div>
+</footer>
+
+<!-- SYSTEME DE CALIBRAGE DE HOTSPOTS (DEBUG) -->
+<div id="calibratorBox" class="fixed bottom-4 right-4 bg-slate-900 text-white p-4 rounded-xl border border-slate-700 text-xs font-mono hidden z-50 max-w-sm">
+  <h4 class="font-bold text-emerald-400 mb-2">Calibrateur de hotspots (Touche 'd')</h4>
+  <p class="mb-2 text-slate-400">Fais glisser les numéros sur l'image pour les ajuster, puis copie la configuration.</p>
+  <textarea id="calibratorOutput" class="w-full h-24 bg-slate-800 text-green-400 p-2 rounded border border-slate-700 text-[10px]" readonly></textarea>
+</div>
+
+<!-- CODE SCRIPT -->
+<script>
+  // Correction automatique des chemins d'images pour le mode fiche hors-ligne
+  if (window.location.pathname.includes('/fiches/')) {
+    document.querySelectorAll('img').forEach(img => {
+      const src = img.getAttribute('src');
+      if (src && !src.startsWith('http') && !src.startsWith('../')) {
+        img.setAttribute('src', '../' + src);
+      }
+    });
+    document.querySelectorAll('[style*="background-image"]').forEach(el => {
+      const style = el.getAttribute('style');
+      if (style.includes("url('photos/")) {
+        el.setAttribute('style', style.replace("url('photos/", "url('../photos/"));
+      }
+    });
+  }
+
+  // ================================================================
+  // GESTION DU MENU DES ONGLETS
+  // ================================================================
+  const tabButtons = document.querySelectorAll('.tab-btn');
+  const pages = document.querySelectorAll('.page');
+
+  tabButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const tabId = btn.dataset.tab;
+      
+      tabButtons.forEach(b => b.classList.remove('active'));
+      pages.forEach(p => p.classList.remove('active'));
+      
+      btn.classList.add('active');
+      const targetPage = document.getElementById(tabId);
+      if (targetPage) {
+        targetPage.classList.add('active');
+      }
+
+      // Initialisations spécifiques aux onglets lors du clic
+      if (tabId === 'echanges') {
+        renderNestedClassification(currentStep);
+      } else if (tabId === 'mecanique') {
+        selectTriZone("1");
+      } else if (tabId === 'arbre-vie') {
+        toggleArbreView('3d');
+      }
+    });
+  });
+
+  // ================================================================
+  // ONGLET 01 : SCHEMA INTERACTIF & LISTE
+  // ================================================================
+  const ANIMAL_DATA = {
+    chat: {
+      title: "Chat sauvage",
+      desc: "Le chat sauvage d'Europe possède un squelette interne osseux avec un crâne et une colonne vertébrale. Son corps est recouvert de poils isolants. Les femelles possèdent des mamelles pour allaiter les petits.",
+      group: "Mammifères",
+      attributes: ["Squelette interne osseux", "4 membres (pattes)", "Poils", "Mamelles"]
+    },
+    pigeon: {
+      title: "Pigeon ramier",
+      desc: "Le pigeon ramier possède un squelette interne osseux. Ses membres antérieurs sont transformés en ailes. Sa peau est recouverte de plumes légères. Il possède un bec corné dur dépourvu de dents.",
+      group: "Oiseaux",
+      attributes: ["Squelette interne osseux", "4 membres (dont 2 ailes)", "Plumes", "Bec corné sans dents"]
+    },
+    grenouille: {
+      title: "Grenouille rousse",
+      desc: "La grenouille rousse est un vertébré (squelette interne). Elle possède 4 pattes (les pattes arrière sont allongées pour le saut). Sa peau est complètement nue (sans poils ni plumes ni écailles) et doit rester humide.",
+      group: "Amphibiens",
+      attributes: ["Squelette interne osseux", "4 membres (pattes palmées)", "Peau nue"]
+    },
+    truite: {
+      title: "Truite de rivière",
+      desc: "La truite de rivière possède un squelette interne osseux. Ses membres ne sont pas des pattes mais des nageoires munies de rayons souples ou rigides. Ses écailles transparentes sont soudées dans sa peau.",
+      group: "Actinoptérygiens (Poissons osseux)",
+      attributes: ["Squelette interne osseux", "Nageoires à rayons", "Écailles soudées dans la peau"]
+    },
+    guepe: {
+      title: "Guêpe commune",
+      desc: "La guêpe a un squelette externe composé d'une cuticule rigide en chitine. Son corps est divisé en trois parties (tête, thorax, abdomen). Elle possède 6 pattes articulées, 2 antennes sensorielles et 4 ailes membraneuses.",
+      group: "Insectes",
+      attributes: ["Squelette externe rigide", "Pattes articulées (6)", "Antennes (2)", "Ailes (4)"]
+    },
+    araignee: {
+      title: "Épeire (Araignée)",
+      desc: "L'araignée épeire a un squelette externe rigide. Son corps est divisé en deux parties (céphalothorax et abdomen). Elle possède 8 pattes articulées. Attention&nbsp;: les araignées ne possèdent jamais d'antennes ni d'ailes&nbsp;!",
+      group: "Arachnides",
+      attributes: ["Squelette externe rigide", "Pattes articulées (8)", "Pas d'antennes", "Pas d'ailes"]
+    },
+    escargot: {
+      title: "Escargot des bois",
+      desc: "L'escargot des bois possède un corps mou non divisé en anneaux. Il est protégé par une coquille calcaire spiralée fabriquée par son manteau. Il possède 2 paires de tentacules rétractiles sur la tête.",
+      group: "Gastéropodes (Mollusques)",
+      attributes: ["Corps mou sans squelette", "Coquille calcaire spiralée", "Tentacules sur la tête"]
+    },
+    ver: {
+      title: "Ver de terre",
+      desc: "Le lombric a un corps mou allongé entièrement dépourvu de squelette (interne ou externe) et de pattes. Son corps est divisé en une centaine de petits anneaux successifs contenant des faisceaux de muscles.",
+      group: "Annélides",
+      attributes: ["Corps mou allongé", "Corps formé d'anneaux", "Sans pattes", "Sans coquille"]
+    }
+  };
+
+  let exploredAnimals = new Set();
+  const hotspots = document.querySelectorAll('#schema .hotspot');
+  const listItems = document.querySelectorAll('.animal-list-item');
+  const detailsTitle = document.getElementById('detailsTitle');
+  const detailsContent = document.getElementById('detailsContent');
+  const detailsGroupLabel = document.getElementById('detailsGroupLabel');
+  const progressText = document.getElementById('schemaProgress');
+
+  function selectAnimal(id) {
+    // Retirer les classes actives des hotspots et listes
+    hotspots.forEach(h => h.classList.remove('active'));
+    listItems.forEach(item => item.classList.remove('active'));
+
+    const data = ANIMAL_DATA[id];
+    if (!data) return;
+
+    // Remplir la fiche descriptive
+    detailsTitle.textContent = data.title;
+    
+    // Construire la liste d'attributs sous forme de badges
+    let attrHTML = `<ul class="list-none p-0 m-0 mt-3 space-y-2">`;
+    data.attributes.forEach(attr => {
+      attrHTML += `
+        <li class="flex items-center gap-2 text-xs font-semibold text-slate-700 bg-slate-100 border border-slate-300 px-2 py-1.5 rounded-lg">
+          <svg class="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"></path>
+          </svg>
+          ${attr}
+        </li>`;
+    });
+    attrHTML += `</ul>`;
+
+    detailsContent.innerHTML = `
+      <p class="text-slate-700 text-sm mt-1 mb-3 leading-relaxed">${data.desc}</p>
+      <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Attributs observés&nbsp;:</div>
+      ${attrHTML}
+    `;
+
+    detailsGroupLabel.classList.remove('hidden');
+    detailsGroupLabel.innerHTML = `Classification&nbsp;: ${data.group}`;
+    detailsGroupLabel.style.backgroundColor = "var(--vert-theme-clair)";
+    detailsGroupLabel.style.color = "var(--vert-theme-fonce)";
+    detailsGroupLabel.style.border = "1px solid var(--vert-theme)";
+
+    // Activer l'élément de la liste et le hotspot
+    const activeHotspot = document.querySelector(`#schema .hotspot[data-id="${id}"]`);
+    if (activeHotspot) activeHotspot.classList.add('active');
+
+    const activeListItem = document.querySelector(`.animal-list-item[data-id="${id}"]`);
+    if (activeListItem) activeListItem.classList.add('active');
+
+    // Enregistrer le progrès
+    exploredAnimals.add(id);
+    progressText.innerHTML = `Espèces observées&nbsp;: ${exploredAnimals.size} / 8`;
+    if (exploredAnimals.size === 8) {
+      progressText.style.borderColor = "var(--vert-val)";
+      progressText.style.background = "var(--vert-val-clair)";
+      progressText.style.color = "var(--vert-val)";
+      progressText.innerHTML = "Observation de la biodiversité terminée&nbsp;! Félicitations&nbsp;!";
+    }
+  }
+
+  hotspots.forEach(h => {
+    h.addEventListener('click', () => {
+      selectAnimal(h.dataset.id);
+    });
+  });
+
+  listItems.forEach(item => {
+    item.addEventListener('click', () => {
+      selectAnimal(item.dataset.id);
+    });
+  });
+
+  // Initialisation de l'onglet 1
+  selectAnimal("chat");
+
+  // ================================================================
+  // ONGLET 02 : JEU DES CONFLITS (TRI ANCIEN VS CLASSEMENT MODERNE)
+  // ================================================================
+  function toggleConflictCard(id) {
+    const card = document.getElementById(id);
+    if (card) {
+      card.classList.toggle('hidden');
+    }
+  }
+
+  // ================================================================
+  // ONGLET 03 : ENSEMBLES EMBOITÉS ET ARBRE PHYLOGÉNÉTIQUE
+  // ================================================================
+  let currentStep = 1;
+  const maxSteps = 6;
+
+  const stepInfo = [
+    { num: "1 / 6", desc: "Toutes les espèces ensemble (Êtres Vivants possédant des cellules)" },
+    { num: "2 / 6", desc: "Séparation selon le type de squelette" },
+    { num: "3 / 6", desc: "Division de la boîte Squelette Interne (4 membres ou nageoires)" },
+    { num: "4 / 6", desc: "Division de la boîte 4 membres (Mammifères, Oiseaux, Amphibiens)" },
+    { num: "5 / 6", desc: "Division des boîtes Squelette Externe et Corps Mou" },
+    { num: "6 / 6", desc: "Classification complète finale avec Arbre phylogénétique" }
+  ];
+
+  const btnPrevStep = document.getElementById('btnPrevStep');
+  const btnNextStep = document.getElementById('btnNextStep');
+  const stepCounter = document.getElementById('stepCounter');
+  const stepDescription = document.getElementById('stepDescription');
+  const nestedContainer = document.getElementById('nestedContainer');
+  const treeNodes = document.querySelectorAll('.node-tree');
+
+  function renderNestedClassification(step) {
+    let html = '';
+
+    // Modèle HTML des boîtes selon l'étape
+    if (step === 1) {
+      html = `
+        <div class="box-nested b-vivant w-full h-full flex flex-col" id="box-vivant">
+          <span class="box-title">Êtres Vivants (Cellules)</span>
+          <div class="flex flex-wrap gap-2 mt-4 justify-center items-center flex-grow">
+            <span class="animal-tag">Chat</span>
+            <span class="animal-tag">Pigeon</span>
+            <span class="animal-tag">Grenouille</span>
+            <span class="animal-tag">Truite</span>
+            <span class="animal-tag">Guêpe</span>
+            <span class="animal-tag">Araignée</span>
+            <span class="animal-tag">Escargot</span>
+            <span class="animal-tag">Ver de terre</span>
+          </div>
+        </div>
+      `;
+    } 
+    else if (step === 2) {
+      html = `
+        <div class="box-nested b-vivant w-full h-full flex flex-col" id="box-vivant">
+          <span class="box-title">Êtres Vivants (Cellules)</span>
+          
+          <div class="grid grid-cols-8 gap-2 mt-2 flex-grow">
+            <!-- Squelette Interne (Vertébrés) -->
+            <div class="col-span-4 box-nested b-squelette-int flex flex-col h-full" id="box-squelette-int">
+              <span class="box-title">Squelette interne (Vertébrés)</span>
+              <div class="flex flex-wrap gap-1 mt-auto mb-auto justify-center items-center">
+                <span class="animal-tag">Chat</span>
+                <span class="animal-tag">Pigeon</span>
+                <span class="animal-tag">Grenouille</span>
+                <span class="animal-tag">Truite</span>
+              </div>
+            </div>
+            
+            <!-- Squelette Externe (Arthropodes) -->
+            <div class="col-span-2 box-nested b-squelette-ext flex flex-col h-full" id="box-squelette-ext">
+              <span class="box-title">Squelette externe (Arthropodes)</span>
+              <div class="flex flex-wrap gap-1 mt-auto mb-auto justify-center items-center">
+                <span class="animal-tag">Guêpe</span>
+                <span class="animal-tag">Araignée</span>
+              </div>
+            </div>
+
+            <!-- Corps Mou -->
+            <div class="col-span-2 box-nested b-corps-mou flex flex-col h-full" id="box-corps-mou">
+              <span class="box-title">Corps Mou</span>
+              <div class="flex flex-wrap gap-1 mt-auto mb-auto justify-center items-center">
+                <span class="animal-tag">Escargot</span>
+                <span class="animal-tag">Ver de terre</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    } 
+    else if (step === 3) {
+      html = `
+        <div class="box-nested b-vivant w-full h-full flex flex-col" id="box-vivant">
+          <span class="box-title">Êtres Vivants (Cellules)</span>
+          
+          <div class="grid grid-cols-8 gap-2 mt-2 flex-grow">
+            <!-- Squelette Interne (Vertébrés) -->
+            <div class="col-span-4 box-nested b-squelette-int flex flex-col h-full" id="box-squelette-int">
+              <span class="box-title">Squelette interne (Vertébrés)</span>
+              
+              <div class="grid grid-cols-4 gap-2 mt-2 flex-grow">
+                <!-- 4 membres (Tétrapodes) -->
+                <div class="col-span-3 box-nested b-tetrapode flex flex-col h-full" id="box-tetrapode">
+                  <span class="box-title">4 membres (Tétrapodes)</span>
+                  <div class="flex flex-wrap gap-1 mt-auto mb-auto justify-center items-center">
+                    <span class="animal-tag">Chat</span>
+                    <span class="animal-tag">Pigeon</span>
+                    <span class="animal-tag">Grenouille</span>
+                  </div>
+                </div>
+                
+                <!-- Nageoires à rayons -->
+                <div class="col-span-1 box-nested b-poisson flex flex-col h-full" id="box-poisson">
+                  <span class="box-title">Nageoires à rayons</span>
+                  <div class="flex flex-wrap gap-1 mt-auto mb-auto justify-center items-center">
+                    <span class="animal-tag">Truite</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Squelette Externe (Arthropodes) -->
+            <div class="col-span-2 box-nested b-squelette-ext flex flex-col h-full" id="box-squelette-ext">
+              <span class="box-title">Squelette externe (Arthropodes)</span>
+              <div class="flex flex-wrap gap-1 mt-auto mb-auto justify-center items-center">
+                <span class="animal-tag">Guêpe</span>
+                <span class="animal-tag">Araignée</span>
+              </div>
+            </div>
+
+            <!-- Corps Mou -->
+            <div class="col-span-2 box-nested b-corps-mou flex flex-col h-full" id="box-corps-mou">
+              <span class="box-title">Corps Mou</span>
+              <div class="flex flex-wrap gap-1 mt-auto mb-auto justify-center items-center">
+                <span class="animal-tag">Escargot</span>
+                <span class="animal-tag">Ver de terre</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    } 
+    else if (step === 4) {
+      html = `
+        <div class="box-nested b-vivant w-full h-full flex flex-col" id="box-vivant">
+          <span class="box-title">Êtres Vivants (Cellules)</span>
+          
+          <div class="grid grid-cols-8 gap-2 mt-2 flex-grow">
+            <!-- Squelette Interne (Vertébrés) -->
+            <div class="col-span-4 box-nested b-squelette-int flex flex-col h-full" id="box-squelette-int">
+              <span class="box-title">Squelette interne (Vertébrés)</span>
+              
+              <div class="grid grid-cols-4 gap-2 mt-2 flex-grow">
+                <!-- 4 membres (Tétrapodes) -->
+                <div class="col-span-3 box-nested b-tetrapode flex flex-col h-full" id="box-tetrapode">
+                  <span class="box-title">4 membres (Tétrapodes)</span>
+                  
+                  <div class="grid grid-cols-3 gap-1 mt-2 flex-grow">
+                    <div class="col-span-1 box-nested b-mammifere flex flex-col justify-between h-full" id="box-mammifere">
+                      <span class="box-title">Poils / Mamelles</span>
+                      <span class="animal-tag mt-auto">Chat</span>
+                    </div>
+                    <div class="col-span-1 box-nested b-oiseau flex flex-col justify-between h-full" id="box-oiseau">
+                      <span class="box-title">Plumes / Bec</span>
+                      <span class="animal-tag mt-auto">Pigeon</span>
+                    </div>
+                    <div class="col-span-1 box-nested b-amphibien flex flex-col justify-between h-full" id="box-amphibien">
+                      <span class="box-title">Peau nue</span>
+                      <span class="animal-tag mt-auto">Grenouille</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="col-span-1 box-nested b-poisson flex flex-col justify-between h-full" id="box-poisson">
+                  <span class="box-title">Nageoires à rayons</span>
+                  <span class="animal-tag mt-auto">Truite</span>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Squelette Externe (Arthropodes) -->
+            <div class="col-span-2 box-nested b-squelette-ext flex flex-col h-full" id="box-squelette-ext">
+              <span class="box-title">Squelette externe (Arthropodes)</span>
+              <div class="flex flex-wrap gap-1 mt-auto mb-auto justify-center items-center">
+                <span class="animal-tag">Guêpe</span>
+                <span class="animal-tag">Araignée</span>
+              </div>
+            </div>
+
+            <!-- Corps Mou -->
+            <div class="col-span-2 box-nested b-corps-mou flex flex-col h-full" id="box-corps-mou">
+              <span class="box-title">Corps Mou</span>
+              <div class="flex flex-wrap gap-1 mt-auto mb-auto justify-center items-center">
+                <span class="animal-tag">Escargot</span>
+                <span class="animal-tag">Ver de terre</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+    else if (step === 5 || step === 6) {
+      html = `
+        <div class="box-nested b-vivant w-full h-full flex flex-col" id="box-vivant">
+          <span class="box-title">Êtres Vivants (Cellules)</span>
+          
+          <div class="grid grid-cols-8 gap-2 mt-2 flex-grow">
+            <!-- Squelette Interne (Vertébrés) -->
+            <div class="col-span-4 box-nested b-squelette-int flex flex-col h-full" id="box-squelette-int">
+              <span class="box-title">Squelette interne (Vertébrés)</span>
+              
+              <div class="grid grid-cols-4 gap-2 mt-2 flex-grow">
+                <!-- 4 membres (Tétrapodes) -->
+                <div class="col-span-3 box-nested b-tetrapode flex flex-col h-full" id="box-tetrapode">
+                  <span class="box-title">4 membres (Tétrapodes)</span>
+                  
+                  <div class="grid grid-cols-3 gap-1 mt-2 flex-grow">
+                    <div class="col-span-1 box-nested b-mammifere flex flex-col justify-between h-full" id="box-mammifere">
+                      <span class="box-title">Poils / Mamelles</span>
+                      <span class="animal-tag mt-auto">Chat</span>
+                    </div>
+                    <div class="col-span-1 box-nested b-oiseau flex flex-col justify-between h-full" id="box-oiseau">
+                      <span class="box-title">Plumes / Bec</span>
+                      <span class="animal-tag mt-auto">Pigeon</span>
+                    </div>
+                    <div class="col-span-1 box-nested b-amphibien flex flex-col justify-between h-full" id="box-amphibien">
+                      <span class="box-title">Peau nue</span>
+                      <span class="animal-tag mt-auto">Grenouille</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="col-span-1 box-nested b-poisson flex flex-col justify-between h-full" id="box-poisson">
+                  <span class="box-title">Nageoires à rayons</span>
+                  <span class="animal-tag mt-auto">Truite</span>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Squelette Externe Divisé -->
+            <div class="col-span-2 box-nested b-squelette-ext flex flex-col h-full" id="box-squelette-ext">
+              <span class="box-title">Squelette externe</span>
+              <div class="grid grid-cols-2 gap-1.5 mt-2 flex-grow">
+                <div class="col-span-1 box-nested b-insecte flex flex-col justify-between h-full" id="box-insecte">
+                  <span class="box-title">6 pattes</span>
+                  <span class="animal-tag mt-auto">Guêpe</span>
+                </div>
+                <div class="col-span-1 box-nested b-arachnide flex flex-col justify-between h-full" id="box-arachnide">
+                  <span class="box-title">8 pattes</span>
+                  <span class="animal-tag mt-auto">Araignée</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Corps Mou Divisé -->
+            <div class="col-span-2 box-nested b-corps-mou flex flex-col h-full" id="box-corps-mou">
+              <span class="box-title">Corps Mou</span>
+              <div class="grid grid-cols-2 gap-1.5 mt-2 flex-grow">
+                <div class="col-span-1 box-nested b-gastropode flex flex-col justify-between h-full" id="box-gastropode">
+                  <span class="box-title">Coquille</span>
+                  <span class="animal-tag mt-auto">Escargot</span>
+                </div>
+                <div class="col-span-1 box-nested b-annelide flex flex-col justify-between h-full" id="box-annelide">
+                  <span class="box-title">Anneaux</span>
+                  <span class="animal-tag mt-auto">Ver</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    nestedContainer.innerHTML = html;
+
+    // Mettre à jour les boutons
+    btnPrevStep.disabled = (step === 1);
+    btnNextStep.disabled = (step === maxSteps);
+
+    // Mettre à jour les compteurs textuels
+    stepCounter.textContent = stepInfo[step - 1].num;
+    stepDescription.textContent = stepInfo[step - 1].desc;
+
+    // Cacher/Afficher les éléments de l'arbre selon l'étape actuelle
+    document.querySelectorAll('#panel-arbre [data-step]').forEach(el => {
+      const minStep = parseInt(el.dataset.step);
+      if (step >= minStep) {
+        el.classList.remove('hidden');
+      } else {
+        el.classList.add('hidden');
+      }
+    });
+
+    // Mettre à jour l'état visuel de l'arbre phylogénétique
+    highlightTreeNodesForStep(step);
+  }
+
+  function highlightTreeNodesForStep(step) {
+    // Réinitialiser les nœuds actifs
+    treeNodes.forEach(node => {
+      node.classList.remove('active');
+      const rect = node.querySelector('rect');
+      if (rect) {
+        rect.style.stroke = "var(--encre)";
+        rect.style.strokeWidth = "2px";
+      }
+    });
+
+    if (step >= 1) {
+      activateNode('node-cellule', '#3b82f6'); // Bleu vivant
+    }
+    if (step >= 2) {
+      activateNode('node-intern', '#10b981');  // Vert squelette interne
+      activateNode('node-extern', '#d97706');  // Orange squelette externe
+      activateNode('node-mou', '#0ea5e9');     // Bleu corps mou
+      activateNode('node-protostome', '#8b5cf6'); // Violet protostome
+    }
+    if (step >= 3) {
+      activateNode('node-tetrapode', '#059669'); // Vert tétrapode
+      activateNode('node-truite-attribut', '#0d9488'); // Truite (Poissons)
+    }
+    if (step >= 4) {
+      activateNode('node-amniote', '#ec4899'); // Rose amniote
+      activateNode('node-grenouille-attribut', '#10b981'); // Grenouille (Amphibiens)
+      activateNode('node-pigeon-attribut', '#15803d'); // Pigeon (Oiseaux)
+      activateNode('node-chat-attribut', '#047857'); // Chat (Mammifères)
+    }
+    if (step >= 5) {
+      activateNode('node-ver-attribut', '#3b82f6'); // Ver (Annélides)
+      activateNode('node-escargot-attribut', '#0ea5e9'); // Escargot (Mollusques)
+      activateNode('node-araignee-attribut', '#d97706'); // Araignée (Arachnides)
+      activateNode('node-guepe-attribut', '#b45309'); // Guêpe (Insectes)
+    }
+    if (step >= 6) {
+      // Highlight all branching nodes in step 6
+      activateNode('node-cellule', '#3b82f6');
+      activateNode('node-intern', '#10b981');
+      activateNode('node-extern', '#d97706');
+      activateNode('node-mou', '#0ea5e9');
+      activateNode('node-protostome', '#8b5cf6');
+      activateNode('node-tetrapode', '#059669');
+      activateNode('node-amniote', '#ec4899');
+      
+      activateNode('node-ver-attribut', '#3b82f6');
+      activateNode('node-escargot-attribut', '#0ea5e9');
+      activateNode('node-araignee-attribut', '#d97706');
+      activateNode('node-guepe-attribut', '#b45309');
+      activateNode('node-truite-attribut', '#0d9488');
+      activateNode('node-grenouille-attribut', '#10b981');
+      activateNode('node-pigeon-attribut', '#15803d');
+      activateNode('node-chat-attribut', '#047857');
+    }
+  }
+
+  function activateNode(id, strokeColor) {
+    const node = document.getElementById(id);
+    if (node) {
+      node.classList.add('active');
+      const rect = node.querySelector('rect');
+      if (rect) {
+        rect.style.stroke = strokeColor;
+        rect.style.strokeWidth = "3.5px";
+      }
+    }
+  }
+
+  btnPrevStep.addEventListener('click', () => {
+    if (currentStep > 1) {
+      currentStep--;
+      renderNestedClassification(currentStep);
+    }
+  });
+
+  btnNextStep.addEventListener('click', () => {
+    if (currentStep < maxSteps) {
+      currentStep++;
+      renderNestedClassification(currentStep);
+    }
+  });
+
+  // ================================================================
+  // GESTION DES SOUS-ONGLETS (BOÎTE VS ARBRE)
+  // ================================================================
+  const subtabButtons = document.querySelectorAll('.subtab-btn');
+  const subtabPanels = document.querySelectorAll('.subtab-panel');
+
+  subtabButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      selectSubtab(btn.dataset.subtab);
+    });
+  });
+
+  function selectSubtab(subtabId, resetStep = true) {
+    if (resetStep) {
+      currentStep = 1;
+      renderNestedClassification(currentStep);
+    }
+
+    subtabButtons.forEach(b => {
+      if (b.dataset.subtab === subtabId) {
+        b.classList.add('bg-emerald-600', 'text-white');
+        b.classList.remove('bg-slate-100', 'text-slate-800');
+      } else {
+        b.classList.remove('bg-emerald-600', 'text-white');
+        b.classList.add('bg-slate-100', 'text-slate-800');
+      }
+    });
+
+    subtabPanels.forEach(p => {
+      if (p.id === `panel-${subtabId}`) {
+        p.classList.remove('hidden');
+      } else {
+        p.classList.add('hidden');
+      }
+    });
+  }
+
+  // Initialisation du sous-onglet actif
+  selectSubtab('classification', false); // Pas de réinitialisation lors du chargement initial
+
+  // Connecter le clic sur l'arbre pour mettre en évidence la boîte
+  treeNodes.forEach(node => {
+    node.addEventListener('click', () => {
+      // Basculer vers la boîte de classification sans réinitialiser
+      selectSubtab('classification', false);
+
+      // Forcer l'étape 6 si on clique sur un nœud pour tout voir
+      if (currentStep < 5) {
+        currentStep = 6;
+        renderNestedClassification(currentStep);
+      }
+      
+      // Retirer les surbrillances existantes
+      document.querySelectorAll('.box-nested').forEach(box => {
+        box.style.transform = "";
+        box.style.boxShadow = "";
+      });
+
+      const targetBoxId = node.dataset.box;
+      const targetBox = document.getElementById(targetBoxId);
+      if (targetBox) {
+        targetBox.style.transform = 'scale(1.02)';
+        targetBox.style.boxShadow = '6px 6px 0px var(--encre), 0 0 16px rgba(217, 119, 6, 0.7)';
+        targetBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    });
+  });
+
+  // Initialisation de la classification
+  renderNestedClassification(1);
+
+  // ================================================================
+  // UTILIATEUR DE CALIBRAGE DE HOTSPOTS (CLAVIER 'd')
+  // ================================================================
+  const calibratorBox = document.getElementById('calibratorBox');
+  const calibratorOutput = document.getElementById('calibratorOutput');
+  const biodiversiteImage = document.getElementById('biodiversiteImage');
+  const hotspotsList = document.querySelectorAll('#schema .hotspot');
+  let isCalibrating = false;
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'd' || e.key === 'D') {
+      isCalibrating = !isCalibrating;
+      calibratorBox.classList.toggle('hidden', !isCalibrating);
+      
+      // Rendre les hotspots glissables (draggable)
+      hotspotsList.forEach(hs => {
+        if (isCalibrating) {
+          hs.style.cursor = 'move';
+          makeElementDraggable(hs);
+        } else {
+          hs.style.cursor = 'pointer';
+          hs.onmousedown = null;
+          hs.ontouchstart = null;
+        }
+      });
+      if (isCalibrating) {
+        updateCalibratorJSON();
+      }
+    }
+  });
+
+  function makeElementDraggable(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    elmnt.onmousedown = dragMouseDown;
+    elmnt.ontouchstart = dragTouchStart;
+
+    function dragMouseDown(e) {
+      e = e || window.event;
+      e.preventDefault();
+      pos3 = e.clientX;
+      pos4 = e.clientY;
+      document.onmouseup = closeDragElement;
+      document.onmousemove = elementDrag;
+    }
+
+    function dragTouchStart(e) {
+      pos3 = e.touches[0].clientX;
+      pos4 = e.touches[0].clientY;
+      document.ontouchend = closeDragElement;
+      document.ontouchmove = elementTouchDrag;
+    }
+
+    function elementDrag(e) {
+      e = e || window.event;
+      e.preventDefault();
+      pos1 = pos3 - e.clientX;
+      pos2 = pos4 - e.clientY;
+      pos3 = e.clientX;
+      pos4 = e.clientY;
+      updatePosition(elmnt.offsetTop - pos2, elmnt.offsetLeft - pos1);
+    }
+
+    function elementTouchDrag(e) {
+      pos1 = pos3 - e.touches[0].clientX;
+      pos2 = pos4 - e.touches[0].clientY;
+      pos3 = e.touches[0].clientX;
+      pos4 = e.touches[0].clientY;
+      updatePosition(elmnt.offsetTop - pos2, elmnt.offsetLeft - pos1);
+    }
+
+    function updatePosition(topPx, leftPx) {
+      const containerRect = biodiversiteImage.getBoundingClientRect();
+      const relativeTopPct = Math.round((topPx / containerRect.height) * 100);
+      const relativeLeftPct = Math.round((leftPx / containerRect.width) * 100);
+      
+      elmnt.style.top = relativeTopPct + "%";
+      elmnt.style.left = relativeLeftPct + "%";
+      updateCalibratorJSON();
+    }
+
+    function closeDragElement() {
+      document.onmouseup = null;
+      document.onmousemove = null;
+      document.ontouchend = null;
+      document.ontouchmove = null;
+    }
+  }
+
+  function updateCalibratorJSON() {
+    const coords = {};
+    hotspotsList.forEach(hs => {
+      coords[hs.dataset.id] = {
+        left: hs.style.left,
+        top: hs.style.top
+      };
+    });
+    calibratorOutput.value = JSON.stringify(coords, null, 2);
+  }
+
+  // ================================================================
+  // GESTION DE L'EXPLORATEUR TRI VS CLASSER (ONGLET 02)
+  // ================================================================
+  const triHotspots = document.querySelectorAll('#mecanique .hotspot');
+  const triDetailsTitle = document.getElementById('triDetailsTitle');
+  const triDetailsContent = document.getElementById('triDetailsContent');
+  const triDetailsBox = document.getElementById('triDetailsBox');
+  const triDetailsStatus = document.getElementById('triDetailsStatus');
+
+  const TRI_ZONE_DATA = {
+    "1": {
+      title: "1. Dauphin &amp; Poisson (Piège de l'habitat)",
+      desc: "<strong>Trier</strong> regroupe les animaux selon l'endroit où ils vivent. Ici, le dauphin et le poisson sont triés ensemble car ils vivent dans l'eau.<br><br>❌ <strong>Le Piège&nbsp;:</strong> C'est une fausse ressemblance&nbsp;! Le dauphin possède des mamelles pour allaiter ses petits et des poumons pour respirer de l'air. Le poisson a des branchies et des nageoires rayonnées. Ils ne partagent pas d'ancêtre commun direct exclusif.",
+      status: "Trier (Non-scientifique)",
+      isCorrect: false
+    },
+    "2": {
+      title: "2. Pigeon &amp; Chauve-souris (Piège du vol)",
+      desc: "Ici, on trie ces animaux parce qu'ils volent dans les airs.<br><br>❌ <strong>Le Piège&nbsp;:</strong> Leurs ailes ont des structures différentes. L'aile de la chauve-souris est une main avec de longs doigts recouverts d'une membrane de peau. La chauve-souris a des poils, des dents et allaite ses petits. Le pigeon a des plumes et un bec corné. Voler est juste une adaptation de locomotion différente&nbsp;!",
+      status: "Trier (Non-scientifique)",
+      isCorrect: false
+    },
+    "3": {
+      title: "3. Chat sauvage &amp; Dauphin (Mammifères)",
+      desc: "<strong>Classer</strong> regroupe les animaux selon <strong>ce qu'ils ont</strong> (les attributs physiques partagés). Le chat et le dauphin vivent dans des milieux totalement différents.<br><br>✅ <strong>La Réalité&nbsp;:</strong> Ils partagent pourtant deux attributs majeurs&nbsp;: des <strong>poils</strong> (le dauphin en a autour du museau avant de naître&nbsp;!) et des <strong>mamelles</strong>. Ils appartiennent au groupe des <strong>Mammifères</strong> et descendent d'un ancêtre commun&nbsp;!",
+      status: "Classer (Scientifique)",
+      isCorrect: true
+    },
+    "4": {
+      title: "4. Araignée &amp; Guêpe (Arthropodes)",
+      desc: "L'araignée (8 pattes, sans ailes) et la guêpe (6 pattes, avec ailes) ont des modes de vie très différents.<br><br>✅ <strong>La Réalité&nbsp;:</strong> Elles possèdent toutes les deux des <strong>pattes articulées</strong> (divisées en segments mobiles) et un <strong>squelette externe</strong> rigide (carapace). Elles sont donc classées ensemble dans le groupe des <strong>Arthropodes</strong>, montrant leur proche parenté évolutive&nbsp;!",
+      status: "Classer (Scientifique)",
+      isCorrect: true
+    }
+  };
+
+  function selectTriZone(zoneId) {
+    triHotspots.forEach(h => h.classList.remove('active'));
+    
+    const data = TRI_ZONE_DATA[zoneId];
+    if (!data) return;
+
+    // Activer le hotspot cliqué
+    const activeHs = document.querySelector(`#mecanique .hotspot[data-zone="${zoneId}"]`);
+    if (activeHs) activeHs.classList.add('active');
+
+    // Mettre à jour la fiche
+    triDetailsTitle.innerHTML = data.title;
+    triDetailsContent.innerHTML = `<p>${data.desc}</p>`;
+    
+    // Style de la boîte
+    triDetailsStatus.style.display = "block";
+    triDetailsStatus.textContent = data.status;
+
+    if (data.isCorrect) {
+      triDetailsBox.style.borderColor = "var(--vert-theme)";
+      triDetailsBox.style.backgroundColor = "var(--vert-theme-clair)";
+      triDetailsTitle.style.color = "var(--vert-theme-fonce)";
+      triDetailsStatus.style.backgroundColor = "var(--vert-val-clair)";
+      triDetailsStatus.style.color = "var(--vert-val)";
+      triDetailsStatus.style.borderColor = "var(--vert-val)";
+    } else {
+      triDetailsBox.style.borderColor = "var(--orange-theme-fonce)";
+      triDetailsBox.style.backgroundColor = "var(--orange-theme-clair)";
+      triDetailsTitle.style.color = "var(--orange-theme-fonce)";
+      triDetailsStatus.style.backgroundColor = "#fffbeb";
+      triDetailsStatus.style.color = "var(--orange-theme-fonce)";
+      triDetailsStatus.style.borderColor = "var(--orange-theme-fonce)";
+    }
+  }
+
+  triHotspots.forEach(h => {
+    h.addEventListener('click', () => {
+      selectTriZone(h.dataset.zone);
+    });
+  });
+
+  // Initialisation par défaut
+  selectTriZone("1");
+
+  // ================================================================
+  // GESTION DE L'EXPLORATEUR DE L'ARBRE DE LA VIE (ONGLET 04)
+  // ================================================================
+  const lifeHotspots = document.querySelectorAll('#arbre-vie .hotspot');
+  const lifeDetailsTitle = document.getElementById('lifeDetailsTitle');
+  const lifeDetailsContent = document.getElementById('lifeDetailsContent');
+  const lifeDetailsBox = document.getElementById('lifeDetailsBox');
+  const lifeDetailsDomain = document.getElementById('lifeDetailsDomain');
+
+  const LIFE_ZONE_DATA = {
+    "1": {
+      title: "1. LUCA (L'Ancêtre Commun Universel)",
+      desc: "<strong>LUCA</strong> (<em>Last Universal Common Ancestor</em>) n'est pas le tout premier être vivant sur Terre, mais il est le <strong>dernier ancêtre commun à tout le vivant actuel</strong>.<br><br>🧬 <strong>Son héritage&nbsp;:</strong> C'est de lui que toutes les espèces vivantes de la Terre sans exception ont hérité de leur code génétique (ADN), de leur membrane cellulaire et de leur manière de fabriquer des protéines. Il vivait il y a environ 3,8 milliards d'années, probablement dans des sources chaudes sous-marines.",
+      domain: "Racine du vivant"
+    },
+    "2": {
+      title: "2. Le Domaine des Bactéries",
+      desc: "Les <strong>Bactéries</strong> sont des organismes microscopiques formés d'une seule cellule **sans noyau** (on les appelle procaryotes).<br><br>🔬 <strong>Leur rôle&nbsp;:</strong> Elles forment une branche immense de l'arbre. Elles sont indispensables à la vie sur Terre&nbsp;: certaines produisent l'oxygène que nous respirons (cyanobactéries), d'autres permettent la digestion ou fabriquent des yaourts. Il y en a des milliards dans et autour de nous&nbsp;!",
+      domain: "Domaine des Bactéries"
+    },
+    "3": {
+      title: "3. Le Domaine des Archées",
+      desc: "Les <strong>Archées</strong> ressemblent beaucoup aux bactéries sous le microscope (unicellulaires et sans noyau), mais leur fonctionnement interne est totalement différent&nbsp;!<br><br>🌋 <strong>Les Extrémophiles&nbsp;:</strong> Nombre d'entre elles sont célèbres pour survivre dans des conditions invivables pour les autres êtres vivants&nbsp;: dans l'eau bouillante des geysers, dans les lacs très acides ou très salés, ou sous la pression extrême des abysses.",
+      domain: "Domaine des Archées"
+    },
+    "4": {
+      title: "4. Le Règne des Plantes",
+      desc: "Les <strong>Plantes</strong> font partie du domaine des Eucaryotes (leurs cellules possèdent un noyau).<br><br>☀️ <strong>Leur super-pouvoir&nbsp;:</strong> Elles fabriquent leur propre nourriture et leur propre énergie en capturant la lumière du Soleil grâce à la photosynthèse. Leurs cellules possèdent une paroi rigide. Elles regroupent les mousses, les fougères, les conifères et les plantes à fleurs.",
+      domain: "Domaine des Eucaryotes (Règne Végétal)"
+    },
+    "5": {
+      title: "5. Le Règne des Champignons",
+      desc: "Les <strong>Champignons</strong> ne sont pas des végétaux&nbsp;! Contrairement aux plantes, ils ne font pas de photosynthèse et se nourrissent en absorbant les nutriments de leur milieu.<br><br>🍄 <strong>Leurs cousins&nbsp;:</strong> D'un point de vue évolutif, les champignons sont <strong>beaucoup plus proches des animaux que des plantes</strong>&nbsp;! Ils possèdent un noyau cellulaire et jouent un rôle clé dans le recyclage de la matière organique de la forêt.",
+      domain: "Domaine des Eucaryotes (Règne des Fungi)"
+    },
+    "6": {
+      title: "6. Le Règne des Animaux",
+      desc: "Les <strong>Animaux</strong> sont des organismes complexes formés de plusieurs cellules avec noyau. Ils doivent consommer d'autres êtres vivants pour se nourrir et sont généralement capables de se déplacer activement.<br><br>🦁 <strong>Notre branche&nbsp;:</strong> C'est dans ce groupe que l'on retrouve nos 8 espèces de la leçon (le pigeon, le ver, la truite...) ainsi que l'être humain&nbsp;! Nous partageons tous les attributs hérités de nos ancêtres communs.",
+      domain: "Domaine des Eucaryotes (Règne Animal)"
+    }
+  };
+
+  function selectLifeZone(zoneId) {
+    lifeHotspots.forEach(h => h.classList.remove('active'));
+    
+    const data = LIFE_ZONE_DATA[zoneId];
+    if (!data) return;
+
+    // Activer le hotspot cliqué
+    const activeHs = document.querySelector(`#arbre-vie .hotspot[data-zone="${zoneId}"]`);
+    if (activeHs) activeHs.classList.add('active');
+
+    // Mettre à jour la fiche
+    lifeDetailsTitle.innerHTML = data.title;
+    lifeDetailsContent.innerHTML = `<p>${data.desc}</p>`;
+    
+    // Domaine
+    lifeDetailsDomain.textContent = data.domain;
+
+    // Style de la boîte (couleur bleue/indigo premium)
+    lifeDetailsBox.style.borderColor = "var(--bleu-theme-fonce)";
+    lifeDetailsBox.style.backgroundColor = "var(--bleu-theme-clair)";
+    lifeDetailsTitle.style.color = "var(--bleu-theme-fonce)";
+    lifeDetailsDomain.style.backgroundColor = "#e0f2fe";
+    lifeDetailsDomain.style.color = "var(--bleu-theme-fonce)";
+    lifeDetailsDomain.style.borderColor = "var(--bleu-theme)";
+  }
+
+  lifeHotspots.forEach(h => {
+    h.addEventListener('click', () => {
+      selectLifeZone(h.dataset.zone);
+    });
+  });
+
+  const view3d = document.getElementById('arbre-3d-view');
+  const view2d = document.getElementById('arbre-2d-view');
+  const viewTag = document.getElementById('arbre-view-tag');
+
+  function toggleArbreView(view) {
+    if (view === '2d') {
+      view3d.classList.add('hidden');
+      view2d.classList.remove('hidden');
+      if (viewTag) {
+        viewTag.innerHTML = "Arbre de la vie interactif&nbsp;: clique sur les zones (1 à 6)";
+        viewTag.style.backgroundColor = "var(--vert-theme-clair)";
+        viewTag.style.color = "var(--vert-theme-fonce)";
+        viewTag.style.borderColor = "var(--vert-theme)";
+      }
+      selectLifeZone("1");
+    } else {
+      view2d.classList.add('hidden');
+      view3d.classList.remove('hidden');
+      if (viewTag) {
+        viewTag.innerHTML = "Sculpture en 3D (Musée de Bruxelles)";
+        viewTag.style.backgroundColor = "var(--bleu-theme-clair)";
+        viewTag.style.color = "var(--bleu-theme-fonce)";
+        viewTag.style.borderColor = "var(--bleu-theme)";
+      }
+      
+      // Réinitialiser le panneau d'exploration
+      lifeDetailsTitle.innerHTML = "🌳 Explorateur de l'arbre";
+      lifeDetailsContent.innerHTML = `
+        <p>L'arbre suspendu dans le musée représente les liens d'évolution de toutes les espèces vivantes.</p>
+        <p class="font-bold text-indigo-800">Clique sur le bouton vert au centre de l'image pour déployer l'Arbre de la Vie interactif et l'explorer&nbsp;!</p>
+      `;
+      lifeDetailsDomain.textContent = "Généalogie du vivant";
+    }
+  }
+
+  const btnRevealArbre = document.getElementById('btn-reveal-arbre');
+  if (btnRevealArbre) {
+    btnRevealArbre.addEventListener('click', () => {
+      toggleArbreView('2d');
+    });
+  }
+
+  // Initialisation par défaut (vue 3D de la sculpture)
+  toggleArbreView("3d");
+
+  // ================================================================
+  // GESTION DU QUIZ DU TRI SCIENTIFIQUE (ONGLET 02)
+  // ================================================================
+  function showQuizFeedback(questionId, status, text) {
+    const feedbackBox = document.getElementById(`feedback-${questionId}`);
+    if (feedbackBox) {
+      feedbackBox.classList.remove('hidden', 'bg-emerald-50', 'text-emerald-800', 'border-emerald-500', 'bg-rose-50', 'text-rose-800', 'border-rose-500');
+      feedbackBox.innerHTML = text;
+      
+      if (status === 'vrai') {
+        feedbackBox.classList.add('bg-emerald-50', 'text-emerald-800', 'border', 'border-emerald-500');
+      } else {
+        feedbackBox.classList.add('bg-rose-50', 'text-rose-800', 'border', 'border-rose-500');
+      }
+      feedbackBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  }
+</script>
+</body>
+</html>

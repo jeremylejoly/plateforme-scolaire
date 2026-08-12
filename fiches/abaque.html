@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Numération — Sélectionne le bon chiffre</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap');
+
+:root{
+  --mint-bg:#CDEFE1;
+  --mint-bg2:#BCE8D4;
+  --card:#FFFFFF;
+  --ink:#11231D;
+  --ink-soft:#5A7065;
+  --teal:#16B597;
+  --teal-deep:#0C9A80;
+  --teal-pale:#E2F7EF;
+  --amber:#FFC24B;
+  --amber-deep:#D98A00;
+  --correct:#16A86E;
+  --correct-pale:#D7F2E4;
+  --wrong:#F2545B;
+  --wrong-pale:#FCE2E3;
+  /* couleurs des classes du tableau de numération */
+  --c-milliards:#7C6BF0;
+  --c-millions:#1FA1C9;
+  --c-mille:#16B597;
+  --c-unites:#E8951B;
+  --c-decimale:#F2545B;
+}
+
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  font-family:'Nunito',system-ui,'Trebuchet MS',sans-serif;
+  color:var(--ink);
+  background-color:var(--mint-bg);
+  background-image:
+    radial-gradient(circle at 12% 18%, rgba(255,255,255,.55) 0 6px, transparent 7px),
+    radial-gradient(circle at 78% 64%, rgba(255,255,255,.45) 0 5px, transparent 6px),
+    radial-gradient(circle at 42% 88%, rgba(255,255,255,.40) 0 7px, transparent 8px),
+    radial-gradient(circle at 90% 22%, rgba(255,255,255,.45) 0 4px, transparent 5px),
+    radial-gradient(circle at 30% 50%, rgba(255,255,255,.30) 0 9px, transparent 10px);
+  background-size:240px 240px,300px 300px,200px 200px,260px 260px,340px 340px;
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+}
+
+.app{max-width:1080px;margin:0 auto;padding:22px 18px 60px;}
+
+/* ---------- En-tête ---------- */
+header{text-align:center;margin-bottom:14px;}
+h1{
+  font-family:'Fredoka',sans-serif;font-weight:600;
+  font-size:clamp(22px,4.5vw,34px);margin:4px 0 2px;letter-spacing:.2px;
+}
+.subtitle{color:var(--ink-soft);font-weight:600;font-size:clamp(13px,2.4vw,16px);margin:0;}
+
+.levels{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:18px 0 6px;}
+.level{
+  border:none;cursor:pointer;font-family:'Fredoka',sans-serif;font-weight:500;
+  background:#fff;color:var(--ink);border-radius:16px;padding:10px 16px;
+  box-shadow:0 3px 0 rgba(12,80,64,.12);transition:transform .12s ease, box-shadow .12s ease;
+  text-align:left;min-width:150px;
+}
+.level:hover{transform:translateY(-2px);}
+.level .lv-name{display:block;font-size:16px;line-height:1.1;}
+.level .lv-desc{display:block;font-size:11px;color:var(--ink-soft);font-weight:600;margin-top:3px;}
+.level.active{background:var(--teal);color:#fff;box-shadow:0 3px 0 var(--teal-deep);}
+.level.active .lv-desc{color:rgba(255,255,255,.9);}
+
+/* ---------- Barre d'état ---------- */
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  flex-wrap:wrap;margin:18px auto 10px;max-width:840px;
+}
+.progress{display:flex;align-items:center;gap:12px;font-weight:700;}
+.qcount{font-family:'Fredoka',sans-serif;font-size:16px;}
+.dots{display:flex;gap:5px;}
+.dot{width:11px;height:11px;border-radius:50%;background:#fff;box-shadow:inset 0 0 0 2px rgba(12,80,64,.18);}
+.dot.done{background:var(--teal);box-shadow:none;}
+.dot.current{box-shadow:inset 0 0 0 3px var(--amber);}
+.score{font-family:'Fredoka',sans-serif;font-weight:600;background:#fff;border-radius:14px;
+  padding:6px 14px;box-shadow:0 2px 0 rgba(12,80,64,.12);}
+.hint-toggle{
+  border:none;cursor:pointer;background:#fff;border-radius:14px;padding:8px 14px;
+  font-family:'Nunito';font-weight:700;color:var(--teal-deep);font-size:14px;
+  box-shadow:0 2px 0 rgba(12,80,64,.12);
+}
+.hint-toggle.on{background:var(--teal-deep);color:#fff;box-shadow:0 2px 0 #086e5b;}
+
+/* ---------- Consigne ---------- */
+.prompt{
+  text-align:center;font-family:'Fredoka',sans-serif;font-weight:500;
+  font-size:clamp(20px,4vw,30px);margin:16px 0 18px;line-height:1.25;
+}
+.pill{
+  display:inline-block;background:var(--teal-pale);color:var(--teal-deep);
+  border-radius:999px;padding:2px 16px;font-weight:600;
+}
+
+/* ---------- Carte du nombre ---------- */
+.card{
+  background:var(--card);border-radius:28px;padding:26px 18px;
+  box-shadow:0 10px 0 rgba(12,80,64,.10),0 18px 40px rgba(12,80,64,.10);
+  max-width:980px;margin:0 auto;
+}
+.number{
+  display:flex;align-items:flex-start;justify-content:center;flex-wrap:nowrap;
+  font-family:'Fredoka',sans-serif;font-variant-numeric:tabular-nums;
+  font-size:clamp(30px,6.5vw,56px);          /* pilote la taille ET les espacements en em */
+  overflow-x:auto;padding:4px 2px;
+}
+.group{display:inline-flex;flex-direction:column;align-items:center;}
+.group + .group{margin-left:0.55em;}         /* ESPACE ENTRE LES CLASSES */
+.row{display:flex;gap:0.03em;}               /* chiffres d'une même classe : resserrés */
+.cell{display:flex;flex-direction:column;align-items:center;}
+.digit{
+  font-family:'Fredoka',sans-serif;font-weight:600;
+  font-size:1em;line-height:1;
+  background:transparent;border:none;cursor:pointer;color:var(--ink);
+  padding:0.08em 0.05em;border-radius:0.18em;
+  display:flex;align-items:center;justify-content:center;
+  transition:background .12s ease, transform .1s ease, color .12s ease;
+}
+.digit:hover{background:#EEF7F3;}
+.digit:focus-visible{outline:3px solid var(--amber);outline-offset:2px;}
+.digit.selected{background:var(--amber);color:#3a2a00;}
+.digit.correct{background:var(--correct);color:#fff;}
+.digit.wrong{background:var(--wrong);color:#fff;}
+.comma{
+  font-family:'Fredoka',sans-serif;font-weight:600;
+  font-size:1em;line-height:1;align-self:flex-start;
+  padding:0.08em 0.02em 0;
+}
+/* sous-étiquettes (abaque) — masquées par défaut, n'influencent pas la mise en page */
+.sub{font-size:11px;font-weight:800;color:var(--ink-soft);margin-top:6px;
+  display:none;font-family:'Nunito';}
+.band{font-size:12px;font-weight:800;margin-top:8px;border-radius:8px;padding:3px 8px;
+  display:none;color:#fff;text-align:center;font-family:'Nunito';white-space:nowrap;}
+.show-abaque .sub{display:block;}
+.show-abaque .band{display:block;}
+.group[data-classe="milliards"] .band{background:var(--c-milliards);}
+.group[data-classe="millions"] .band{background:var(--c-millions);}
+.group[data-classe="mille"] .band{background:var(--c-mille);}
+.group[data-classe="unites"] .band{background:var(--c-unites);}
+.group[data-classe="decimale"] .band{background:var(--c-decimale);}
+
+.legend{
+  text-align:center;color:var(--ink-soft);font-size:12.5px;font-weight:700;
+  margin:14px auto 0;max-width:760px;height:0;opacity:0;overflow:hidden;transition:opacity .15s;
+}
+.show-abaque .legend{height:auto;opacity:1;margin-top:18px;}
+
+/* ---------- Retour ---------- */
+.feedback{
+  text-align:center;font-weight:800;font-size:clamp(16px,3vw,20px);
+  min-height:30px;margin:18px auto 4px;max-width:760px;
+}
+.feedback.ok{color:var(--correct);}
+.feedback.no{color:var(--wrong);}
+
+/* ---------- Boutons ---------- */
+.actions{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:14px;}
+.btn{
+  border:none;cursor:pointer;font-family:'Fredoka',sans-serif;font-weight:500;
+  font-size:18px;border-radius:18px;padding:13px 28px;display:inline-flex;
+  align-items:center;gap:9px;transition:transform .12s ease, box-shadow .12s ease, filter .12s;
+}
+.btn:hover{transform:translateY(-2px);}
+.btn:active{transform:translateY(0);}
+.btn.ghost{background:#A9E3D0;color:var(--ink);box-shadow:0 4px 0 #7fc9b3;}
+.btn.primary{background:var(--teal);color:#fff;box-shadow:0 4px 0 var(--teal-deep);}
+.btn.next{background:var(--amber);color:#3a2a00;box-shadow:0 4px 0 var(--amber-deep);}
+.btn:disabled{filter:grayscale(.4) opacity(.55);cursor:not-allowed;transform:none;}
+.btn svg{width:20px;height:20px;}
+
+/* ---------- Écran de fin ---------- */
+.endcard{
+  background:#fff;border-radius:28px;max-width:520px;margin:24px auto 0;
+  padding:34px 26px;text-align:center;
+  box-shadow:0 10px 0 rgba(12,80,64,.10),0 18px 40px rgba(12,80,64,.12);
+}
+.endcard h2{font-family:'Fredoka',sans-serif;font-weight:600;font-size:28px;margin:0 0 6px;}
+.endcard .big-score{font-family:'Fredoka',sans-serif;font-size:54px;font-weight:600;color:var(--teal-deep);margin:8px 0;}
+.endcard p{color:var(--ink-soft);font-weight:700;margin:6px 0 20px;font-size:17px;}
+
+.hidden{display:none !important;}
+
+@media (max-width:560px){
+  .number{gap:10px;}
+  .level{min-width:0;flex:1 1 auto;}
+  .topbar{justify-content:center;}
+}
+@media (prefers-reduced-motion: reduce){
+  *{transition:none !important;}
+  .btn:hover,.level:hover{transform:none;}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <h1>Sélectionne le bon chiffre</h1>
+    <p class="subtitle">Clique sur le chiffre qui occupe la place demandée dans le nombre.</p>
+    <div class="levels" id="levels"></div>
+  </header>
+
+  <div id="game">
+    <div class="topbar">
+      <div class="progress">
+        <span class="qcount">Exercice <span id="qnum">1</span> / 10</span>
+        <span class="dots" id="dots"></span>
+      </div>
+      <span class="score">⭐ <span id="score">0</span></span>
+      <button class="hint-toggle" id="hintBtn">Afficher l’abaque</button>
+    </div>
+
+    <p class="prompt">Sélectionne le chiffre des <span class="pill" id="placeName">—</span>.</p>
+
+    <div class="card">
+      <div class="number" id="number"></div>
+      <div class="legend">
+        Dans une classe : <b>c</b> = centaines · <b>d</b> = dizaines · <b>u</b> = unités &nbsp;—&nbsp;
+        Partie décimale : <b>d</b> = dixièmes · <b>c</b> = centièmes · <b>m</b> = millièmes
+      </div>
+    </div>
+
+    <div class="feedback" id="feedback"></div>
+
+    <div class="actions">
+      <button class="btn ghost" id="generateBtn" title="Propose un autre nombre">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 4v5h-5"/></svg>
+        Générer
+      </button>
+      <button class="btn primary" id="validateBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-11"/></svg>
+        Valider
+      </button>
+      <button class="btn next hidden" id="nextBtn">
+        Suivant
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13"/><path d="M13 6l6 6-6 6"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="endcard hidden" id="endcard">
+    <h2>Série terminée !</h2>
+    <div class="big-score" id="endScore">0 / 10</div>
+    <p id="endMsg"></p>
+    <div class="actions">
+      <button class="btn primary" id="restartBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 4v5h-5"/></svg>
+        Recommencer
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============ Données de numération ============ */
+// exp = puissance de 10 ; code = repère abaque ; classe = colonne du tableau
+const PLACES = {
+  11:{label:"centaines de milliards", code:"c", classe:"milliards"},
+  10:{label:"dizaines de milliards",  code:"d", classe:"milliards"},
+   9:{label:"unités de milliards",    code:"u", classe:"milliards"},
+   8:{label:"centaines de millions",  code:"c", classe:"millions"},
+   7:{label:"dizaines de millions",   code:"d", classe:"millions"},
+   6:{label:"unités de millions",     code:"u", classe:"millions"},
+   5:{label:"centaines de mille",     code:"c", classe:"mille"},
+   4:{label:"dizaines de mille",      code:"d", classe:"mille"},
+   3:{label:"unités de mille",        code:"u", classe:"mille"},
+   2:{label:"centaines",              code:"c", classe:"unites"},
+   1:{label:"dizaines",               code:"d", classe:"unites"},
+   0:{label:"unités",                 code:"u", classe:"unites"},
+  "-1":{label:"dixièmes",  code:"d", classe:"decimale"},
+  "-2":{label:"centièmes", code:"c", classe:"decimale"},
+  "-3":{label:"millièmes", code:"m", classe:"decimale"},
+};
+const CLASS_BAND = {milliards:"milliards", millions:"millions", mille:"mille", unites:"unités", decimale:"partie décimale"};
+
+// Réglages des trois niveaux
+// minInt/maxInt = bornes du nombre de chiffres de la partie entière (longueur variable)
+// minDec/maxDec = bornes du nombre de décimales (0 = pas de décimales)
+const LEVELS = {
+  1:{name:"Niveau 1", desc:"Des millions à l’unité",
+     minInt:4, maxInt:9,  minDec:0, maxDec:0, exps:[8,7,6,5,4,3,2,1,0]},
+  2:{name:"Niveau 2", desc:"Des millions aux millièmes",
+     minInt:4, maxInt:9,  minDec:1, maxDec:3, exps:[8,7,6,5,4,3,2,1,0,-1,-2,-3]},
+  3:{name:"Niveau 3", desc:"Des milliards aux millièmes",
+     minInt:5, maxInt:12, minDec:1, maxDec:3, exps:[11,10,9,8,7,6,5,4,3,2,1,0,-1,-2,-3]},
+};
+
+/* ============ Utilitaires ============ */
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function rint(n){return Math.floor(Math.random()*n);}
+
+// Génère un exercice dont la place ciblée existe forcément,
+// avec une longueur de nombre variable (toutes les classes ne sont pas toujours remplies).
+function exerciseWithTarget(cfg, targetExp){
+  let intLen, decLen=0;
+  if(targetExp>=0){
+    const lo=Math.max(cfg.minInt, targetExp+1);     // assez de chiffres pour atteindre la classe visée
+    intLen = lo + rint(cfg.maxInt - lo + 1);
+    if(cfg.maxDec>0) decLen = cfg.minDec + rint(cfg.maxDec - cfg.minDec + 1);
+  } else {
+    const need = -targetExp;                          // décimales nécessaires
+    const lo = Math.max(cfg.minDec, need);
+    decLen = lo + rint(cfg.maxDec - lo + 1);
+    intLen = cfg.minInt + rint(cfg.maxInt - cfg.minInt + 1);
+  }
+  const intd=[]; for(let i=0;i<intLen;i++) intd.push(i===0 ? 1+rint(9) : rint(10));
+  const decd=[]; for(let j=0;j<decLen;j++) decd.push(rint(10));
+  return {intd, decd, targetExp};
+}
+
+// Banque de 40 exercices : places réparties équitablement entre les classes
+function buildBank(cfg){
+  const bank=[];
+  let pool=shuffle(cfg.exps), p=0;
+  while(bank.length<40){
+    if(p>=pool.length){pool=shuffle(cfg.exps);p=0;}
+    bank.push(exerciseWithTarget(cfg, pool[p++]));
+  }
+  return bank;
+}
+
+/* ============ État ============ */
+let levelKey=1, cfg=LEVELS[1];
+let bank=[], queue=[], qIndex=0;
+let current=null, selectedExp=null, answered=false, score=0;
+let hintOn=false;
+
+/* ============ Rendu ============ */
+function expForIntDigit(i){ return current.intd.length-1-i; }   // i=0 -> chiffre de gauche
+function expForDecDigit(j){ return -(j+1); }
+
+function classOfExp(exp){ return PLACES[exp].classe; }
+
+function buildGroups(){
+  // regroupe les chiffres par classe (paquets de 3)
+  const groups=[]; // {classe, cells:[{exp,val}]}
+  const order=["milliards","millions","mille","unites"];
+  // entiers
+  let map={};
+  for(let i=0;i<current.intd.length;i++){
+    const exp=expForIntDigit(i), cl=classOfExp(exp);
+    (map[cl]=map[cl]||[]).push({exp, val:current.intd[i]});
+  }
+  order.forEach(cl=>{ if(map[cl]) groups.push({classe:cl, cells:map[cl]}); });
+  // décimaux
+  if(current.decd.length){
+    const cells=[];
+    for(let j=0;j<current.decd.length;j++) cells.push({exp:expForDecDigit(j), val:current.decd[j]});
+    groups.push({classe:"decimale", cells, decimal:true});
+  }
+  return groups;
+}
+
+function render(){
+  const box=document.getElementById("number");
+  box.innerHTML="";
+  const groups=buildGroups();
+  groups.forEach((g,gi)=>{
+    // virgule avant la classe décimale
+    if(g.decimal){
+      const comma=document.createElement("span");
+      comma.className="comma"; comma.textContent=",";
+      box.appendChild(comma);
+    }
+    const gEl=document.createElement("div");
+    gEl.className="group"; gEl.dataset.classe=g.classe;
+    const row=document.createElement("div"); row.className="row";
+    g.cells.forEach(c=>{
+      const cell=document.createElement("div"); cell.className="cell";
+      const b=document.createElement("button");
+      b.className="digit"; b.textContent=c.val; b.dataset.exp=c.exp;
+      b.setAttribute("aria-label","chiffre "+c.val+", "+PLACES[c.exp].label);
+      if(selectedExp===c.exp) b.classList.add("selected");
+      if(answered){
+        if(c.exp===current.targetExp) b.classList.add("correct");
+        else if(c.exp===selectedExp) b.classList.add("wrong");
+      }
+      const sub=document.createElement("span");
+      sub.className="sub"; sub.textContent=PLACES[c.exp].code;
+      cell.appendChild(b); cell.appendChild(sub);
+      row.appendChild(cell);
+    });
+    const band=document.createElement("div");
+    band.className="band"; band.textContent=CLASS_BAND[g.classe];
+    gEl.appendChild(row); gEl.appendChild(band);
+    box.appendChild(gEl);
+  });
+  // consigne
+  const place=PLACES[current.targetExp];
+  const pn=document.getElementById("placeName");
+  pn.textContent=place.label;
+  pn.style.background=""; pn.style.color="";
+}
+
+function updateProgress(){
+  document.getElementById("qnum").textContent=qIndex+1;
+  document.getElementById("score").textContent=score;
+  const dots=document.getElementById("dots"); dots.innerHTML="";
+  for(let i=0;i<10;i++){
+    const d=document.createElement("span"); d.className="dot";
+    if(i<qIndex) d.classList.add("done");
+    if(i===qIndex) d.classList.add("current");
+    dots.appendChild(d);
+  }
+}
+
+/* ============ Logique de jeu ============ */
+function loadQuestion(){
+  current=queue[qIndex];
+  selectedExp=null; answered=false;
+  document.getElementById("feedback").textContent=""; 
+  document.getElementById("feedback").className="feedback";
+  document.getElementById("nextBtn").classList.add("hidden");
+  document.getElementById("validateBtn").disabled=false;
+  document.getElementById("generateBtn").disabled=false;
+  render(); updateProgress();
+}
+
+function startSession(){
+  cfg=LEVELS[levelKey];
+  bank=buildBank(cfg);
+  queue=shuffle(bank).slice(0,10);
+  qIndex=0; score=0;
+  document.getElementById("endcard").classList.add("hidden");
+  document.getElementById("game").classList.remove("hidden");
+  loadQuestion();
+}
+
+// "Générer" : propose un autre nombre (longueur et place différentes) pour l'exercice en cours
+function generate(){
+  const exp = cfg.exps[rint(cfg.exps.length)];
+  current = exerciseWithTarget(cfg, exp);
+  queue[qIndex]=current;
+  selectedExp=null; answered=false;
+  document.getElementById("feedback").textContent="";
+  document.getElementById("feedback").className="feedback";
+  document.getElementById("nextBtn").classList.add("hidden");
+  document.getElementById("validateBtn").disabled=false;
+  render();
+}
+
+function pickDigit(exp){
+  if(answered) return;
+  selectedExp=exp;
+  render();
+}
+
+function validate(){
+  if(answered) return;
+  const fb=document.getElementById("feedback");
+  if(selectedExp===null){
+    fb.textContent="Clique d’abord sur un chiffre dans le nombre.";
+    fb.className="feedback no";
+    return;
+  }
+  answered=true;
+  const place=PLACES[current.targetExp];
+  if(selectedExp===current.targetExp){
+    score++;
+    fb.textContent="Bravo ! C’est bien le chiffre des "+place.label+".";
+    fb.className="feedback ok";
+  }else{
+    fb.textContent="Pas tout à fait. Le chiffre des "+place.label+" est surligné en vert.";
+    fb.className="feedback no";
+  }
+  render(); updateProgress();
+  document.getElementById("validateBtn").disabled=true;
+  document.getElementById("generateBtn").disabled=true;
+  document.getElementById("nextBtn").classList.remove("hidden");
+}
+
+function next(){
+  qIndex++;
+  if(qIndex>=10){ showEnd(); return; }
+  loadQuestion();
+}
+
+function showEnd(){
+  document.getElementById("game").classList.add("hidden");
+  const card=document.getElementById("endcard");
+  card.classList.remove("hidden");
+  document.getElementById("endScore").textContent=score+" / 10";
+  let msg;
+  if(score>=9) msg="Excellent ! Tu maîtrises les classes et les rangs. 🎉";
+  else if(score>=7) msg="Très bien ! Encore un petit effort sur quelques rangs.";
+  else if(score>=5) msg="C’est un bon début. Recommence pour progresser !";
+  else msg="Continue à t’entraîner : observe bien l’abaque pour t’aider.";
+  document.getElementById("endMsg").textContent=msg;
+}
+
+/* ============ Interface ============ */
+function buildLevelTabs(){
+  const wrap=document.getElementById("levels");
+  Object.keys(LEVELS).forEach(k=>{
+    const L=LEVELS[k];
+    const btn=document.createElement("button");
+    btn.className="level"+(k==levelKey?" active":"");
+    btn.innerHTML='<span class="lv-name">'+L.name+'</span><span class="lv-desc">'+L.desc+'</span>';
+    btn.addEventListener("click",()=>{
+      levelKey=parseInt(k);
+      document.querySelectorAll(".level").forEach(e=>e.classList.remove("active"));
+      btn.classList.add("active");
+      startSession();
+    });
+    wrap.appendChild(btn);
+  });
+}
+
+function toggleHint(){
+  hintOn=!hintOn;
+  const card=document.querySelector(".card");
+  const btn=document.getElementById("hintBtn");
+  card.classList.toggle("show-abaque",hintOn);
+  btn.classList.toggle("on",hintOn);
+  btn.textContent=hintOn?"Masquer l’abaque":"Afficher l’abaque";
+}
+
+document.getElementById("number").addEventListener("click",e=>{
+  const b=e.target.closest(".digit");
+  if(b) pickDigit(parseInt(b.dataset.exp));
+});
+document.getElementById("generateBtn").addEventListener("click",generate);
+document.getElementById("validateBtn").addEventListener("click",validate);
+document.getElementById("nextBtn").addEventListener("click",next);
+document.getElementById("restartBtn").addEventListener("click",startSession);
+document.getElementById("hintBtn").addEventListener("click",toggleHint);
+
+buildLevelTabs();
+startSession();
+</script>
+</body>
+</html>

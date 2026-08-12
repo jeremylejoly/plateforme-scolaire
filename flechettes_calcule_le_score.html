@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cible aux fléchettes – Calcule le score</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --mint:#DCF1EA; --ink:#22303A; --muted:#5d7079; --paper:#ffffff;
+    --rim:#E59A47; --good:#2E9E6B; --bad:#E2574C; --line:#e4e9e7;
+    --disp:'Fredoka', system-ui, sans-serif; --body:'Nunito', system-ui, sans-serif;
+  }
+  html,body{margin:0;padding:16px;background:#f1f5f9;min-height:100vh;display:flex;justify-content:center;align-items:center;}
+  .fb-wrap{
+    font-family:var(--body); color:var(--ink); background:var(--mint);
+    width:100%;max-width:540px; padding:20px 16px 28px; border-radius:22px;
+    border:3px solid var(--ink); box-shadow:6px 6px 0 var(--ink);
+  }
+  .fb-wrap h1{font-family:var(--disp); font-weight:700; font-size:28px; margin:0 0 4px; text-align:center}
+  .fb-wrap .sub{margin:0 0 16px; text-align:center; color:var(--muted); font-size:15px}
+  .fb-status{display:flex; justify-content:space-between; gap:10px; margin-bottom:12px}
+  .fb-pill{background:#fff; border:2px solid var(--ink); border-radius:999px; padding:6px 14px; font-weight:700; font-size:14px}
+  .fb-card{background:#fff; border:3px solid var(--ink); border-radius:20px; padding:14px; text-align:center; box-shadow:0 5px 0 var(--ink)}
+  .fb-tname{font-family:var(--disp); font-weight:600; font-size:17px}
+  .fb-dcount{color:var(--muted); font-size:14px; margin-bottom:6px}
+  .fb-card svg{width:100%; max-width:340px; display:block; margin:0 auto}
+  .fb-answer{display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin:18px 0 10px; justify-content:center}
+  .fb-answer label{font-family:var(--disp); font-weight:600; font-size:17px}
+  .fb-answer input{font-family:var(--disp); font-size:20px; font-weight:600; width:110px; text-align:center;
+    padding:8px 10px; border:3px solid var(--ink); border-radius:14px; background:#fff; color:var(--ink)}
+  .fb-answer input:focus-visible{outline:3px solid var(--rim); outline-offset:2px}
+  .fb-btn{font-family:var(--disp); font-weight:600; font-size:16px; padding:11px 20px; cursor:pointer;
+    border:3px solid var(--ink); border-radius:14px; background:#fff; color:var(--ink); box-shadow:0 4px 0 var(--ink);
+    transition:transform .06s, box-shadow .06s}
+  .fb-btn:hover{transform:translateY(-1px)}
+  .fb-btn:active{transform:translateY(4px); box-shadow:0 0 0 var(--ink)}
+  .fb-btn:focus-visible{outline:3px solid var(--rim); outline-offset:2px}
+  .fb-btn.primary{background:var(--good); color:#fff}
+  .fb-btn:disabled{opacity:.45; cursor:not-allowed; transform:none; box-shadow:0 4px 0 var(--ink)}
+  .fb-feedback{min-height:26px; text-align:center; font-weight:700; font-size:16px; margin:6px 0}
+  .fb-feedback.good{color:var(--good)} .fb-feedback.bad{color:var(--bad)} .fb-feedback.muted{color:var(--muted)}
+  .fb-actions{text-align:center}
+  .fb-final{text-align:center; background:#fff; border:3px solid var(--ink); border-radius:20px; padding:22px; box-shadow:0 5px 0 var(--ink)}
+  .fb-final p{font-family:var(--disp); font-weight:700; font-size:22px; margin:0 0 14px}
+  #fbBoard text{font-family:var(--disp)}
+  @media (prefers-reduced-motion:reduce){.fb-btn{transition:none}}
+</style>
+</head>
+<body>
+<div class="fb-wrap" id="fbCalc">
+  <h1>Calcule le score</h1>
+  <p class="sub">Additionne les points de toutes les fléchettes plantées dans la cible.</p>
+
+  <div id="fbExercise">
+    <div class="fb-status">
+      <span class="fb-pill" id="fbProgress">Lancer 1 / 30</span>
+      <span class="fb-pill" id="fbScore">Score : 0</span>
+    </div>
+
+    <div class="fb-card">
+      <div class="fb-tname" id="fbTname"></div>
+      <div class="fb-dcount" id="fbDcount"></div>
+      <svg id="fbBoard" viewBox="-20 -20 440 440" role="img" aria-label="Cible avec des fléchettes plantées"></svg>
+    </div>
+
+    <div class="fb-answer">
+      <label for="fbAns">Total des points :</label>
+      <input id="fbAns" type="number" inputmode="numeric" min="0">
+      <button id="fbValidate" class="fb-btn primary">Valider</button>
+    </div>
+
+    <div id="fbFeedback" class="fb-feedback"></div>
+
+    <div class="fb-actions">
+      <button id="fbNext" class="fb-btn" disabled>Lancer suivant →</button>
+    </div>
+  </div>
+
+  <div id="fbFinal" class="fb-final" hidden>
+    <p id="fbFinalMsg"></p>
+    <button id="fbRestart" class="fb-btn primary">Recommencer</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  var TARGETS=[
+    {name:'Cible classique', vals:[25,10,5,2], ring2:'#F2917A'},
+    {name:'Petite cible',    vals:[12,6,3,1],  ring2:'#9FD17E'},
+    {name:'Grande cible',    vals:[50,20,10,5],ring2:'#C9A9E8'},
+    {name:'Cible orange',    vals:[30,15,8,4], ring2:'#F4B860'}
+  ];
+  function rnd(a,b){return Math.floor(Math.random()*(b-a+1))+a;}
+
+  function makeThrow(){
+    var t=TARGETS[rnd(0,TARGETS.length-1)];
+    var n=rnd(3,5);
+    var base=Math.random()*Math.PI*2;
+    var ranges=[[16,44],[62,90],[104,130],[144,170]];
+    var darts=[];
+    for(var i=0;i<n;i++){
+      var zone=rnd(0,3);
+      var ang=base+(i/n)*2*Math.PI+(Math.random()-0.5)*0.5;
+      var r=ranges[zone][0]+Math.random()*(ranges[zone][1]-ranges[zone][0]);
+      darts.push({zone:zone,ang:ang,r:r});
+    }
+    var sum=darts.reduce(function(s,d){return s+t.vals[d.zone];},0);
+    return {t:t,darts:darts,sum:sum};
+  }
+
+  function circle(cx,cy,r,fill,w){
+    return '<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="'+fill+'" stroke="#111" stroke-width="'+w+'"/>';
+  }
+  function label(cx,cy,v){
+    return '<text x="'+cx+'" y="'+cy+'" text-anchor="middle" dominant-baseline="middle" font-size="28" font-weight="700" fill="#111" stroke="#fff" stroke-width="5" paint-order="stroke">'+v+'</text>';
+  }
+  function dart(x,y,deg){
+    return '<g transform="translate('+x.toFixed(1)+','+y.toFixed(1)+') rotate('+deg.toFixed(1)+') scale(1.2)">'+
+      '<line x1="0" y1="0" x2="-28" y2="0" stroke="#1a1a1a" stroke-width="3"/>'+
+      '<polygon points="-28,-9 -16,-6 -22,0 -16,6 -28,9" fill="#F5D23E" stroke="#1a1a1a" stroke-width="2" stroke-linejoin="round"/>'+
+      '<polygon points="3,0 -6,-4 -6,4" fill="#1a1a1a"/></g>';
+  }
+  function drawBoard(t,darts){
+    var cx=200,cy=200,s='';
+    s+=circle(cx,cy,192,'#E59A47',5);
+    s+=circle(cx,cy,180,'#FFFFFF',3);
+    s+=circle(cx,cy,138,t.ring2,3);
+    s+=circle(cx,cy,96,'#FFFFFF',3);
+    s+=circle(cx,cy,54,'#88B9EC',3);
+    s+=label(cx,cy-150,t.vals[3]);
+    s+=label(cx,cy-108,t.vals[2]);
+    s+=label(cx,cy-66,t.vals[1]);
+    s+=label(cx,cy+8,t.vals[0]);
+    for(var i=0;i<darts.length;i++){
+      var d=darts[i];
+      var x=cx+d.r*Math.cos(d.ang), y=cy+d.r*Math.sin(d.ang);
+      s+=dart(x,y,d.ang*180/Math.PI+180);
+    }
+    return s;
+  }
+
+  var $=function(id){return document.getElementById(id);};
+  var throws=[], idx=0, score=0, answered=false;
+
+  function newSet(){throws=[];for(var i=0;i<10;i++)throws.push(makeThrow());}
+  function setFeedback(t,c){var f=$('fbFeedback'); f.textContent=t; f.className='fb-feedback '+(c||'');}
+  function breakdown(cur){
+    var parts=cur.darts.map(function(d){return cur.t.vals[d.zone];}).sort(function(a,b){return b-a;});
+    return parts.join(' + ')+' = '+cur.sum;
+  }
+  function render(){
+    var cur=throws[idx];
+    $('fbProgress').textContent='Lancer '+(idx+1)+' / '+throws.length;
+    $('fbScore').textContent='Score : '+score;
+    $('fbTname').textContent=cur.t.name;
+    $('fbDcount').textContent=cur.darts.length+' fléchettes';
+    $('fbBoard').innerHTML=drawBoard(cur.t,cur.darts);
+    var inp=$('fbAns'); inp.value=''; inp.disabled=false;
+    setFeedback('','');
+    $('fbValidate').disabled=false;
+    $('fbNext').disabled=true;
+    inp.focus();
+  }
+  function submit(){
+    if(answered) return;
+    var cur=throws[idx];
+    var v=parseInt($('fbAns').value,10);
+    if(isNaN(v)){setFeedback('Écris un nombre.','muted'); return;}
+    answered=true;
+    if(v===cur.sum){score++; setFeedback('Bravo ! '+breakdown(cur),'good');}
+    else{setFeedback('Pas tout à fait. Le calcul : '+breakdown(cur),'bad');}
+    $('fbScore').textContent='Score : '+score;
+    $('fbValidate').disabled=true; $('fbAns').disabled=true; $('fbNext').disabled=false;
+  }
+  function next(){
+    idx++;
+    if(idx>=throws.length){showFinal(); return;}
+    answered=false; render();
+  }
+  function showFinal(){
+    $('fbExercise').hidden=true; $('fbFinal').hidden=false;
+    var msg='Tu as réussi '+score+' lancers sur '+throws.length+' !';
+    if(score===throws.length) msg='Parfait ! '+score+' / '+throws.length;
+    else if(score>=throws.length*0.7) msg='Très bien ! '+score+' / '+throws.length;
+    $('fbFinalMsg').textContent=msg;
+
+    if (window.parent && window.parent.saveResult && window.parent.state && window.parent.state.student) {
+      try {
+        var state = window.parent.state;
+        var classes = window.parent.CLASSES;
+        var className = classes && classes[state.studentCls] ? classes[state.studentCls].name : state.studentCls;
+        window.parent.saveResult({
+          student: state.student,
+          cls: state.studentCls,
+          className: className,
+          activity: 'op_add_sous_flechettes_calcule',
+          score: score,
+          total: throws.length,
+          pct: Math.round((score / throws.length) * 100),
+          date: new Date().toLocaleDateString('fr-BE'),
+          time: new Date().toLocaleTimeString('fr-BE', {hour: '2-digit', minute: '2-digit'})
+        });
+      } catch(e) { console.warn('Error saving flechettes score:', e); }
+    }
+  }
+  function restart(){newSet(); idx=0; score=0; answered=false; $('fbFinal').hidden=true; $('fbExercise').hidden=false; render();}
+
+  $('fbValidate').addEventListener('click',submit);
+  $('fbNext').addEventListener('click',next);
+  $('fbRestart').addEventListener('click',restart);
+  $('fbAns').addEventListener('keydown',function(e){
+    if(e.key==='Enter'){e.preventDefault(); if(!$('fbNext').disabled) next(); else submit();}
+  });
+  newSet(); render();
+})();
+</script>
+</body>
+</html>

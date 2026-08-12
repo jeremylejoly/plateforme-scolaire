@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Conjugaison — Texte lacunaire Passé Composé</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800;900&family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<style>
+  :root {
+    --primary: #6366f1;
+    --primary-light: #e0e7ff;
+    --primary-dark: #4f46e5;
+    --secondary: #ec4899;
+    --secondary-light: #fce7f3;
+    --success: #10b981;
+    --success-light: #d1fae5;
+    --danger: #ef4444;
+    --danger-light: #fee2e2;
+    --neutral-dark: #1e1b4b;
+    --neutral-light: #f8fafc;
+    --neutral-gray: #64748b;
+    --border: #e2e8f0;
+    --shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.1), 0 8px 10px -6px rgba(99, 102, 241, 0.1);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: radial-gradient(circle at 50% 50%, #f1f5f9 0%, #e2e8f0 100%);
+    min-height: 100vh;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .container {
+    width: 100%;
+    max-width: 720px;
+    background: white;
+    border-radius: 24px;
+    padding: 2rem;
+    box-shadow: var(--shadow);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+
+  .title {
+    font-family: 'Outfit', sans-serif;
+    font-size: 24px;
+    font-weight: 900;
+    color: var(--neutral-dark);
+    margin-bottom: 0.5rem;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .subtitle {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--neutral-gray);
+  }
+
+  .selector-zone {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 1.5rem;
+    background: var(--neutral-light);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 0.75rem 1rem;
+  }
+
+  .selector-label {
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--primary-dark);
+  }
+
+  .text-select {
+    font-family: 'Nunito', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    padding: 6px 12px;
+    border-radius: 10px;
+    border: 1.5px solid var(--border);
+    outline: none;
+    cursor: pointer;
+    background: white;
+    color: var(--neutral-dark);
+    transition: border-color 0.2s;
+  }
+
+  .text-select:focus {
+    border-color: var(--primary);
+  }
+
+  .storybook-card {
+    background: #fffdf9; /* Légère teinte parchemin */
+    border: 2px solid #f3ebd8;
+    border-radius: 20px;
+    padding: 2.5rem 2rem;
+    margin-bottom: 1.5rem;
+    box-shadow: inset 0 0 40px rgba(243, 235, 216, 0.2);
+    line-height: 2.2;
+    font-size: 17px;
+    color: var(--neutral-dark);
+    font-weight: 700;
+  }
+
+  .storybook-card p {
+    margin-bottom: 1rem;
+    text-indent: 1.5rem;
+  }
+
+  .hole-input {
+    font-family: 'Nunito', sans-serif;
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--neutral-dark);
+    text-align: center;
+    border: none;
+    border-bottom: 2.5px solid var(--primary);
+    background: transparent;
+    outline: none;
+    width: 140px;
+    padding: 0 4px;
+    transition: all 0.2s;
+    display: inline-block;
+  }
+
+  .hole-input:focus {
+    border-bottom-color: var(--secondary);
+    background: rgba(99, 102, 241, 0.05);
+  }
+
+  .hole-input.correct {
+    border-bottom-color: var(--success);
+    color: #065f46;
+    background: rgba(16, 185, 129, 0.05);
+  }
+
+  .hole-input.incorrect {
+    border-bottom-color: var(--danger);
+    color: #991b1b;
+    background: rgba(239, 68, 68, 0.05);
+  }
+
+  .hole-input:disabled {
+    opacity: 1;
+  }
+
+  .verb-hint {
+    font-size: 12px;
+    font-weight: 800;
+    color: var(--neutral-gray);
+    vertical-align: super;
+    margin-left: 2px;
+    user-select: none;
+  }
+
+  .correction-badge {
+    font-size: 12px;
+    font-weight: 800;
+    background: var(--success-light);
+    color: #065f46;
+    border-radius: 6px;
+    padding: 1px 6px;
+    margin-left: 4px;
+    display: none;
+    white-space: nowrap;
+  }
+
+  .action-btn {
+    width: 100%;
+    padding: 1rem;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    color: white;
+    border: none;
+    border-radius: 16px;
+    font-family: 'Outfit', sans-serif;
+    font-size: 16px;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+    transition: all 0.2s;
+  }
+
+  .action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(99, 102, 241, 0.4);
+  }
+
+  .feedback-area {
+    margin-top: 1.5rem;
+    display: none;
+  }
+
+  .score-badge {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border-radius: 12px;
+    font-size: 18px;
+    font-weight: 900;
+    margin-bottom: 1rem;
+    font-family: 'Outfit', sans-serif;
+  }
+
+  .score-badge.perfect {
+    background: var(--success-light);
+    color: #065f46;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+  }
+
+  .score-badge.good {
+    background: var(--primary-light);
+    color: var(--primary-dark);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+  }
+
+  .score-badge.retry {
+    background: var(--danger-light);
+    color: #991b1b;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+  }
+
+  .explications-list {
+    background: var(--neutral-light);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1.25rem;
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--neutral-dark);
+    line-height: 1.6;
+  }
+
+  .explications-list h3 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--neutral-dark);
+    margin-bottom: 0.75rem;
+    border-bottom: 1.5px solid var(--border);
+    padding-bottom: 4px;
+  }
+
+  .exp-item {
+    margin-bottom: 0.5rem;
+    padding-left: 1.25rem;
+    position: relative;
+  }
+
+  .exp-item::before {
+    content: "•";
+    position: absolute;
+    left: 0.25rem;
+    color: var(--primary);
+    font-weight: 900;
+  }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .shake {
+    animation: shake 0.4s ease-in-out;
+  }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-6px); }
+    40%, 80% { transform: translateX(6px); }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1 class="title">Bilan : Récit au Passé Composé</h1>
+    <p class="subtitle">Complète l'histoire en écrivant les verbes au passé composé.</p>
+  </div>
+
+  <div class="selector-zone">
+    <span class="selector-label">📖 Choisis ton histoire :</span>
+    <select class="text-select" id="story-select" onchange="loadStory()">
+      <option value="0">Histoire 1 : Une aventure en forêt 🌲</option>
+      <option value="1">Histoire 2 : La fête d'anniversaire 🎂</option>
+      <option value="2">Histoire 3 : Un chat très espiègle 🐱</option>
+      <option value="3">Histoire 4 : La classe verte à la mer 🌊</option>
+      <option value="4">Histoire 5 : Une enquête policière 🕵️</option>
+    </select>
+  </div>
+
+  <div class="storybook-card" id="storybook-card">
+    <!-- Le texte de l'histoire s'affiche ici -->
+  </div>
+
+  <button class="action-btn" id="btn-action" onclick="handleAction()">✅ Valider mes réponses</button>
+
+  <div class="feedback-area" id="feedback-area">
+    <div class="score-badge" id="score-badge">Score : 10 / 10</div>
+    <div class="explications-list">
+      <h3>🔍 Explications des accords dans ce texte :</h3>
+      <div id="explications-container"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// LES 5 STORIES AVEC LES INFOS DE CORRECTION ET D'EXPLICATION
+const STORIES = [
+  {
+    // STORY 1
+    title: "Une aventure en forêt",
+    template: `Hier matin, la famille {input-0} (décider) de faire une randonnée. Les randonneurs {input-1} (partir) sous un grand ciel bleu. Ma sœur {input-2} (prendre) sa gourde rouge. La bouteille d'eau qu'elle {input-3} (remplir) était bien fraîche. En chemin, nous {input-4} (rencontrer) un petit écureuil. La petite bête {input-5} (monter) tout en haut d'un grand chêne. Les enfants {input-6} (vouloir) l'approcher sans l'effrayer. Soudain, des gouttes de pluie {input-7} (tomber) sur nos têtes. La cabane que nous {input-8} (trouver) nous a abrités. Finalement, nous {input-9} (rentrer) fatigués mais heureux !`,
+    answers: ["a décidé", "sont partis", "a pris", "a remplie", "avons rencontré", "est montée", "ont voulu", "sont tombées", "avons trouvée", "sommes rentrés"],
+    verbs: ["décider", "partir", "prendre", "remplir", "rencontrer", "monter", "vouloir", "tomber", "trouver", "rentrer"],
+    exps: [
+      "**a décidé** : conjugué avec l'auxiliaire *avoir*, le CDV est placé après, donc pas d'accord.",
+      "**sont partis** : conjugué avec *être*, s'accorde au masculin pluriel avec le sujet *les randonneurs*.",
+      "**a pris** : conjugué avec *avoir*, prend un **s** muet final car on dit *prise* au féminin.",
+      "**a remplie** : conjugué avec *avoir*, s'accorde au féminin singulier avec le CDV *que* (représentant *la bouteille*) placé **avant**.",
+      "**avons rencontré** : conjugué avec *avoir*, le CDV *un écureuil* est placé après, donc pas d'accord.",
+      "**est montée** : conjugué avec *être*, s'accorde au féminin singulier avec le sujet *la petite bête*.",
+      "**ont voulu** : conjugué avec *avoir*, pas de CDV direct avant le verbe, pas d'accord.",
+      "**sont tombées** : conjugué avec *être*, s'accorde au féminin pluriel avec le sujet *des gouttes de pluie*.",
+      "**avons trouvée** : conjugué avec *avoir*, s'accorde au féminin singulier avec le CDV *que* (représentant *la cabane*) placé **avant**.",
+      "**sommes rentrés** : conjugué avec *être*, s'accorde au masculin pluriel avec le sujet *nous*."
+    ]
+  },
+  {
+    // STORY 2
+    title: "La fête d'anniversaire",
+    template: `Hier après-midi, Léa {input-0} (fêter) ses dix ans. Ses amies {input-1} (arriver) à quatorze heures précises. La magnifique tarte aux fraises que son père {input-2} (préparer) était délicieuse. Léa {input-3} (souffler) toutes ses bougies d'un seul coup. Les cadeaux qu'elle {input-4} (recevoir) de la part de ses invités l'ont beaucoup réjouie. Ses copines {input-5} (apporter) plusieurs jeux de société amusants. Elles {input-6} (ouvrir) les paquets avec beaucoup d'impatience. Puis, elles {input-7} (sortir) courir dans le jardin. La chanson joyeuse qu'elles {input-8} (chanter) résonnait partout. Finalement, toutes les filles {input-9} (repartir) avec un sachet de bonbons.`,
+    answers: ["a fêté", "sont arrivées", "a préparée", "a soufflé", "a reçus", "ont apporté", "ont ouvert", "sont sorties", "ont chantée", "sont reparties"],
+    verbs: ["fêter", "arriver", "préparer", "souffler", "recevoir", "apporter", "ouvrir", "sortir", "chanter", "repartir"],
+    exps: [
+      "**a fêté** : auxiliaire *avoir*, CDV placé après, pas d'accord.",
+      "**sont arrivées** : auxiliaire *être*, accord au féminin pluriel avec le sujet *Ses amies*.",
+      "**a préparée** : auxiliaire *avoir*, accord au féminin singulier avec le CDV *que* (représentant *la tarte*) placé **avant**.",
+      "**a soufflé** : auxiliaire *avoir*, CDV placé après, pas d'accord.",
+      "**a reçus** : auxiliaire *avoir*, accord au masculin pluriel avec le CDV *que* (représentant *les cadeaux*) placé **avant**.",
+      "**ont apporté** : auxiliaire *avoir*, CDV placé après, pas d'accord.",
+      "**ont ouvert** : auxiliaire *avoir*, se termine par **t** (féminin *ouverte*), pas d'accord car CDV après.",
+      "**sont sorties** : auxiliaire *être*, accord au féminin pluriel avec le sujet *elles*.",
+      "**ont chantée** : auxiliaire *avoir*, accord au féminin singulier avec le CDV *que* (représentant *la chanson*) placé **avant**.",
+      "**sont reparties** : auxiliaire *être*, accord au féminin pluriel avec le sujet *toutes les filles*."
+    ]
+  },
+  {
+    // STORY 3
+    title: "Un chat très espiègle",
+    template: `Ce matin, le chat gris {input-0} (entrer) discrètement dans la cuisine. Il {input-1} (voir) un grand bol de lait frais posé sur la table. La souris qu'il {input-2} (attraper) hier s'était déjà échappée. Alors, le félin {input-3} (sauter) avec agilité sur le comptoir. Les tasses en porcelaine {input-4} (tomber) sur le carrelage. La maîtresse de maison {input-5} (entendre) le grand fracas. Elle {input-6} (accourir) immédiatement pour voir les dégâts. Les bêtises que ce chat espiègle {input-7} (faire) l'ont fâchée. Le chat {input-8} (partir) se cacher sous le canapé. Il {input-9} (comprendre) sa leçon pour le reste de la journée !`,
+    answers: ["est entré", "a vu", "a attrapée", "a sauté", "sont tombées", "a entendu", "est accourue", "a faites", "est parti", "a compris"],
+    verbs: ["entrer", "voir", "attraper", "sauter", "tomber", "entendre", "accourir", "faire", "partir", "comprendre"],
+    exps: [
+      "**est entré** : auxiliaire *être*, s'accorde au masculin singulier avec *le chat*.",
+      "**a vu** : auxiliaire *avoir*, CDV placé après, pas d'accord.",
+      "**a attrapée** : auxiliaire *avoir*, s'accorde au féminin singulier avec le CDV *que* (représentant *la souris*) placé **avant**.",
+      "**a sauté** : auxiliaire *avoir*, pas d'accord.",
+      "**sont tombées** : auxiliaire *être*, s'accorde au féminin pluriel avec *les tasses*.",
+      "**a entendu** : auxiliaire *avoir*, CDV après, pas d'accord.",
+      "**est accourue** : auxiliaire *être*, s'accorde au féminin singulier avec *elle* (*la maîtresse*).",
+      "**a faites** : auxiliaire *avoir*, s'accorde au féminin pluriel avec le CDV *que* (pour *les bêtises*) placé **avant**.",
+      "**est parti** : auxiliaire *être*, s'accorde au masculin singulier avec *le chat*.",
+      "**a compris** : auxiliaire *avoir*, se termine par **s** car féminin *comprise*."
+    ]
+  },
+  {
+    // STORY 4
+    title: "La classe verte à la mer",
+    template: `La semaine dernière, les élèves {input-0} (partir) en classe verte à la mer. Le car scolaire {input-1} (arriver) à destination à midi. Les animateurs {input-2} (accueillir) les enfants avec un grand sourire. Les chambres que les filles {input-3} (choisir) étaient situées à l'étage. L'après-midi, nous {input-4} (faire) une promenade sur la plage de sable. La mer {input-5} (monter) rapidement avec la marée haute. Les coquillages que nous {input-6} (ramasser) le long de l'eau étaient très jolis. Une mouette curieuse {input-7} (voler) au-dessus de nos têtes. Les enseignants {input-8} (distribuer) les carnets de bord. Finalement, les élèves {input-9} (aller) se coucher bien fatigués de leur première journée.`,
+    answers: ["sont partis", "est arrivé", "ont accueilli", "ont choisies", "avons fait", "est montée", "avons ramassés", "a volé", "ont distribué", "sont allés"],
+    verbs: ["partir", "arriver", "accueillir", "choisir", "faire", "monter", "ramasser", "voler", "distribuer", "aller"],
+    exps: [
+      "**sont partis** : auxiliaire *être*, accord au masculin pluriel avec *les élèves*.",
+      "**est arrivé** : auxiliaire *être*, accord avec *le car scolaire* (m. sing.).",
+      "**ont accueilli** : auxiliaire *avoir*, CDV après, pas d'accord.",
+      "**ont choisies** : auxiliaire *avoir*, s'accorde au féminin pluriel avec le CDV *que* (représentant *les chambres*) placé **avant**.",
+      "**avons fait** : auxiliaire *avoir*, CDV après, pas d'accord.",
+      "**est montée** : auxiliaire *être*, accord au féminin singulier avec *la mer*.",
+      "**avons ramassés** : auxiliaire *avoir*, accord au masculin pluriel avec le CDV *que* (représentant *les coquillages*) placé **avant**.",
+      "**a volé** : auxiliaire *avoir*, pas d'accord.",
+      "**ont distribué** : auxiliaire *avoir*, CDV après, pas d'accord.",
+      "**sont allés** : auxiliaire *être*, accord au masculin pluriel avec *les élèves*."
+    ]
+  },
+  {
+    // STORY 5
+    title: "Une enquête policière",
+    template: `Hier soir, un mystérieux cambriolage {input-0} (avoir) lieu dans le musée de la ville. Le directeur affolé {input-1} (appeler) la police. Les inspecteurs {input-2} (arriver) très rapidement sur les lieux du crime. La précieuse statue en or que le voleur {input-3} (prendre) dans la vitrine a disparu. Les maigres indices que la police {input-4} (trouver) n'aident pas beaucoup. La gardienne du musée {input-5} (descendre) inspecter le sous-sol. Le cambrioleur {input-6} (ouvrir) la lourde porte métallique du coffre. La grande porte que les inspecteurs {input-7} (examiner) présentait de grosses rayures. Les empreintes qu'ils {input-8} (relever) sur place appartenaient à un suspect connu. Les policiers {input-9} (revenir) au commissariat avec de bons espoirs.`,
+    answers: ["a eu", "a appelé", "sont arrivés", "a prise", "a trouvés", "est descendue", "a ouvert", "ont examinée", "ont relevées", "sont revenus"],
+    verbs: ["avoir", "appeler", "arriver", "prendre", "trouver", "descendre", "ouvrir", "examiner", "relever", "revenir"],
+    exps: [
+      "**a eu** : passé composé de *avoir*, le CDV *lieu* est après, pas d'accord.",
+      "**a appelé** : auxiliaire *avoir*, CDV après, pas d'accord.",
+      "**sont arrivés** : auxiliaire *être*, accord au masculin pluriel avec *les inspecteurs*.",
+      "**a prise** : auxiliaire *avoir*, accord au féminin singulier avec le CDV *que* (représentant *la statue*) placé **avant**.",
+      "**a trouvés** : auxiliaire *avoir*, accord au masculin pluriel avec le CDV *que* (représentant *les indices*) placé **avant**.",
+      "**est descendue** : auxiliaire *être*, accord au féminin singulier avec *la gardienne*.",
+      "**a ouvert** : auxiliaire *avoir*, CDV après (*la porte*), pas d'accord.",
+      "**ont examinée** : auxiliaire *avoir*, accord au féminin singulier avec le CDV *que* (représentant *la grande porte*) placé **avant**.",
+      "**ont relevées** : auxiliaire *avoir*, accord au féminin pluriel avec le CDV *que* (représentant *les empreintes*) placé **avant**.",
+      "**sont revenus** : auxiliaire *être*, accord au masculin pluriel avec *les policiers*."
+    ]
+  }
+];
+
+let currentStoryIndex = 0;
+let submitted = false;
+
+function loadStory() {
+  submitted = false;
+  document.getElementById('feedback-area').style.display = 'none';
+  document.getElementById('btn-action').textContent = "✅ Valider mes réponses";
+  
+  const select = document.getElementById('story-select');
+  currentStoryIndex = parseInt(select.value, 10);
+  const story = STORIES[currentStoryIndex];
+
+  // Remplacer les {input-X} par des éléments input HTML réels
+  let html = story.template;
+  for (let i = 0; i < 10; i++) {
+    const hint = `<span class="verb-hint">(${story.verbs[i]})</span>`;
+    const inputHtml = `<input type="text" class="hole-input" id="hole-${i}" placeholder="???" autocomplete="off" autocorrect="off" spellcheck="false" />${hint}<span class="correction-badge" id="badge-${i}"></span>`;
+    html = html.replace(`{input-${i}}`, inputHtml);
+  }
+
+  // Mettre en forme les paragraphes du texte
+  const paragraphs = html.split('\n\n');
+  let finalHtml = '';
+  paragraphs.forEach(p => {
+    finalHtml += `<p>${p}</p>`;
+  });
+
+  const card = document.getElementById('storybook-card');
+  card.innerHTML = finalHtml;
+
+  // Reposer le focus sur le premier champ
+  setTimeout(() => {
+    const firstInput = document.getElementById('hole-0');
+    if (firstInput) firstInput.focus();
+  }, 100);
+}
+
+function handleAction() {
+  if (!submitted) {
+    validateAnswers();
+  } else {
+    // Recommencer l'histoire actuelle
+    loadStory();
+  }
+}
+
+function validateAnswers() {
+  submitted = true;
+  const story = STORIES[currentStoryIndex];
+  let score = 0;
+  let hasErrors = false;
+
+  const card = document.getElementById('storybook-card');
+
+  for (let i = 0; i < 10; i++) {
+    const input = document.getElementById(`hole-${i}`);
+    const badge = document.getElementById(`badge-${i}`);
+    
+    const given = input.value.trim().toLowerCase().replace(/\s+/g, ' ');
+    const expected = story.answers[i].trim().toLowerCase();
+    const isCorrect = (given === expected);
+
+    input.disabled = true;
+
+    if (isCorrect) {
+      input.className = "hole-input correct";
+      score++;
+    } else {
+      input.className = "hole-input incorrect";
+      badge.textContent = `(${story.answers[i]})`;
+      badge.style.display = "inline-block";
+      hasErrors = true;
+    }
+  }
+
+  if (hasErrors) {
+    card.classList.add('shake');
+    setTimeout(() => card.classList.remove('shake'), 400);
+  }
+
+  // Afficher la zone de feedback et le score
+  const feedbackArea = document.getElementById('feedback-area');
+  const scoreBadge = document.getElementById('score-badge');
+  const expContainer = document.getElementById('explications-container');
+
+  feedbackArea.style.display = 'block';
+  scoreBadge.textContent = `Score : ${score} / 10`;
+
+  // Choisir le style du score
+  if (score === 10) {
+    scoreBadge.className = "score-badge perfect";
+    scoreBadge.textContent = "🏆 Score parfait : 10 / 10 !";
+    triggerConfetti();
+  } else if (score >= 7) {
+    scoreBadge.className = "score-badge good";
+    scoreBadge.textContent = `🌟 Très bon travail : ${score} / 10`;
+  } else {
+    scoreBadge.className = "score-badge retry";
+    scoreBadge.textContent = `✍️ Score : ${score} / 10 (Réessaie !)`;
+  }
+
+  // Générer la liste d'explications
+  let expHtml = '';
+  story.exps.forEach(exp => {
+    expHtml += `<div class="exp-item">${exp.replace(/\*(.*?)\*/g, '<strong>$1</strong>')}</div>`;
+  });
+  expContainer.innerHTML = expHtml;
+
+  // Modifier le bouton principal pour permettre de recommencer
+  document.getElementById('btn-action').textContent = "🔄 Recommencer cette histoire";
+
+  // Envoyer le résultat
+  try {
+    const pct = Math.round((score / 10) * 100);
+    const dateStr = new Date().toLocaleDateString('fr-BE');
+    window.parent.postMessage({
+      type: 'fiche_result',
+      score: score,
+      total: 10,
+      pct: pct,
+      date: dateStr,
+      activity: `fiche_conj_pc_mix_texte_${currentStoryIndex}`
+    }, '*');
+  } catch (e) {
+    console.warn("Impossible d'envoyer le score:", e);
+  }
+}
+
+function triggerConfetti() {
+  if (typeof confetti === 'function') {
+    confetti({
+      particleCount: 150,
+      spread: 75,
+      origin: { y: 0.65 }
+    });
+  }
+}
+
+// Initialisation
+window.onload = loadStory;
+</script>
+</body>
+</html>

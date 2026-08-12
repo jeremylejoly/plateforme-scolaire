@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QCM — Le squelette</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <!-- TailwindCSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      corePlugins: {
+        preflight: false,
+      },
+      theme: {
+        extend: {
+          borderWidth: {
+            '3': '3px',
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            display: ['Fredoka', 'sans-serif'],
+            mono: ['Space Mono', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    :root {
+      --encre: #0f172a;
+      --ardoise: #475569;
+      --papier: #f8fafc;
+      --papier-2: #ffffff;
+      --ligne: #e2e8f0;
+      
+      --squelette: #6366f1;
+      --squelette-fonce: #4338ca;
+      --squelette-clair: #e0e7ff;
+      
+      --vert: #10b981;
+      --vert-clair: #ecfdf5;
+      --rouge: #ef4444;
+      --rouge-clair: #fef2f2;
+      
+      --border: #0f172a;
+      --radius: 16px;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Inter', system-ui, sans-serif;
+      color: var(--encre);
+      background: var(--papier);
+      line-height: 1.5;
+      padding: 1rem;
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 800px;
+      width: 100%;
+    }
+
+    /* CARD STYLE */
+    .card-premium {
+      background: #ffffff;
+      border: 3px solid var(--encre);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin: 12px 0;
+      box-shadow: 4px 4px 0px rgba(15, 23, 42, 0.1);
+    }
+
+    /* FLAT 3D BUTTON */
+    .btn-3d {
+      font-family: 'Fredoka', sans-serif;
+      font-weight: 700;
+      border: 3px solid var(--encre) !important;
+      box-shadow: 3px 3px 0px var(--encre);
+      transition: all 0.1s ease;
+      cursor: pointer;
+      user-select: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .btn-3d:active {
+      transform: translate(1px, 1px);
+      box-shadow: 1px 1px 0px var(--encre);
+    }
+
+    /* SCORE PANEL */
+    .geo-score-panel {
+      background: var(--vert-clair);
+      border: 3px solid var(--vert);
+      border-radius: var(--radius);
+      padding: 20px;
+      text-align: center;
+      margin-top: 16px;
+      box-shadow: 4px 4px 0px var(--vert);
+    }
+    .score-title {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: var(--vert);
+      margin-bottom: 6px;
+    }
+    .score-msg {
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: #065f46;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="card-premium bg-indigo-50 border-indigo-200" style="margin-top: 0;">
+    <p class="text-xs md:text-sm font-bold text-indigo-900 m-0">
+      Réponds aux 10 questions suivantes. Une seule réponse est correcte par question.
+    </p>
+  </div>
+  
+  <div id="qcm-questions-container" class="mt-4"></div>
+
+  <button id="qcm-validate-btn" class="btn-3d w-full py-3.5 bg-indigo-500 text-white rounded-xl text-sm font-bold mt-4" onclick="validateQCM()">
+    ✅ Valider mes réponses
+  </button>
+  <div id="qcm-score" style="display:none" class="geo-score-panel"></div>
+</div>
+
+<script>
+  // UTILS
+  function shuffle(array) {
+    let currentIndex = array.length, randomIndex;
+    while (currentIndex != 0) {
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex--;
+      [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+    }
+    return array;
+  }
+
+  // QUESTION BANK
+  const QCM_DATA = [
+    { q: "Quel os protège notre cerveau ?", opts: ["La colonne vertébrale", "Le fémur", "Le crâne", "Le sternum"], correct: 2 },
+    { q: "Quel est l'os le plus long du corps humain ?", opts: ["L'humérus", "La colonne vertébrale", "Le fémur", "Le tibia"], correct: 2 },
+    { q: "Où se situe l'os appelé la rotule ?", opts: ["Dans l'épaule", "Dans le genou", "Dans le bras", "Dans le pied"], correct: 1 },
+    { q: "Quelle partie du squelette protège le cœur et les poumons ?", opts: ["Le bassin", "La cage thoracique", "Le crâne", "La colonne vertébrale"], correct: 1 },
+    { q: "Qu'est-ce qu'une articulation ?", opts: ["Le point de contact reliant un muscle à un os", "La zone de jonction entre deux os qui permet le mouvement", "Un cordon très résistant qui fait plier le bras", "La partie interne de la moelle épinière"], correct: 1 },
+    { q: "Quel tissu lisse protège l'extrémité des os au niveau d'une articulation ?", opts: ["Le tendon", "Le muscle", "Le cartilage", "Le ligament"], correct: 2 },
+    { q: "Qu'est-ce qui maintient et relie les os entre eux au niveau des articulations ?", opts: ["Les tendons", "Les ligaments", "Les cartilages", "Les muscles"], correct: 1 },
+    { q: "Qu'est-ce qui attache les muscles squelettiques aux os ?", opts: ["Les articulations", "Les ligaments", "Les tendons", "Le cartilage"], correct: 2 },
+    { q: "Comment qualifie-t-on deux muscles qui fonctionnent en opposition pour créer un mouvement ?", opts: ["Des muscles collaborateurs", "Des muscles antagonistes", "Des muscles symétriques", "Des muscles involontaires"], correct: 1 },
+    { q: "Quand un muscle se contracte, comment change-t-il ?", opts: ["Il s'allonge et s'amincit", "Il devient plus court et se gonfle", "Il reste identique mais change de couleur", "Il se sépare de son tendon"], correct: 1 },
+    { q: "Pendant la flexion du bras (quand on le plie), que font les muscles ?", opts: ["Le triceps se contracte et le biceps se détend", "Le biceps se contracte et le triceps se détend", "Le biceps et le triceps se contractent en même temps", "Le biceps et le triceps se détendent"], correct: 1 },
+    { q: "Pendant l'extension du bras (quand on le déplie), que font les muscles ?", opts: ["Le biceps se contracte et le triceps se détend", "Le triceps se contracte et le biceps se détend", "Le biceps et le triceps s'allongent en même temps", "Le triceps se détache de l'os"], correct: 1 },
+    { q: "Quel os forme notre mâchoire inférieure et s'articule pour nous permettre de mâcher ?", opts: ["Le sternum", "La clavicule", "La mandibule", "L'omoplate"], correct: 2 },
+    { q: "Quels nutriments sont indispensables pour rendre les os durs et solides ?", opts: ["Le fer et la vitamine C", "Le calcium et la vitamine D", "Le sucre et les protéines", "Le sodium et la vitamine E"], correct: 1 },
+    { q: "Comment le corps produit-il principalement la vitamine D ?", opts: ["En mangeant des féculents", "Grâce à une exposition modérée de notre peau au soleil", "En buvant beaucoup d'eau", "Pendant le sommeil"], correct: 1 },
+    { q: "Quel traumatisme correspond à un étirement ou une déchirure d'un ligament ?", opts: ["Une luxation", "Une fracture", "Une entorse", "Une crampe"], correct: 2 },
+    { q: "Qu'est-ce qu'une fracture ?", opts: ["Une articulation déboîtée", "Un os fêlé ou cassé", "Un muscle froissé", "Un tendon sectionné"], correct: 1 },
+    { q: "Qu'est-ce qu'une luxation ?", opts: ["Un os sorti de son logement articulaire", "Un ligament déchiré", "Une carence en calcium", "Une mauvaise posture"], correct: 0 },
+    { q: "Pourquoi une mauvaise posture prolongée peut-elle provoquer des douleurs ?", opts: ["Parce qu'elle accélère les battements cardiaques", "Parce qu'elle déforme l'alignement naturel de la colonne vertébrale", "Parce qu'elle détruit le calcium des os", "Parce qu'elle paralyse les membres"], correct: 1 },
+    { q: "Combien de vertèbres compte environ la colonne vertébrale humaine ?", opts: ["12 vertèbres", "24 vertèbres", "33 vertèbres", "100 vertèbres"], correct: 2 },
+    { q: "Quels sont les deux os constituant notre avant-bras ?", opts: ["Le tibia et le péroné", "Le radius et le cubitus", "L'humérus et la clavicule", "Le fémur et la rotule"], correct: 1 },
+    { q: "Quel est l'os unique de notre cuisse (le plus résistant du corps) ?", opts: ["Le tibia", "Le fémur", "L'humérus", "Le péroné"], correct: 1 },
+    { q: "Quels sont les deux os qui soutiennent notre jambe sous le genou ?", opts: ["Le radius et le cubitus", "L'humérus et le sternum", "Le tibia et le péroné", "Le bassin et le fémur"], correct: 2 },
+    { q: "Quel est le rôle du liquide synovial dans l'articulation ?", opts: ["Transporter l'oxygène aux cellules", "Lubrifier l'articulation pour faciliter les glissements et éviter l'usure", "Solder les os après une fracture", "Transmettre le message nerveux"], correct: 1 },
+    { q: "Que protège la colonne vertébrale dans son canal central ?", opts: ["Les poumons", "Le cerveau", "La moelle épinière", "Les reins"], correct: 2 },
+    { q: "Quelles sont les trois grandes fonctions de notre squelette ?", opts: ["Digestion, respiration et circulation", "Soutien, protection des organes et mouvement", "Production de chaleur, de salive et de sueur", "Pensée, équilibre et audition"], correct: 1 },
+    { q: "Quel os plat est situé au centre avant de notre poitrine et ferme la cage thoracique ?", opts: ["L'omoplate", "Le sternum", "La clavicule", "La mandibule"], correct: 1 },
+    { q: "Quel os relie le haut du sternum à l'épaule ?", opts: ["Le radius", "La clavicule", "L'omoplate", "L'humérus"], correct: 1 },
+    { q: "Où se situe l'omoplate (scapula) ?", opts: ["Dans la mâchoire", "Dans le haut du dos", "Dans la cuisse", "Dans le genou"], correct: 1 },
+    { q: "En cas de carence sévère en calcium et vitamine D, à quel problème s'expose-t-on ?", opts: ["À des os fragiles, mous et faciles à casser", "À une décoloration de la peau", "À des pertes de mémoire", "À des problèmes respiratoires uniquement"], correct: 0 },
+    { q: "Combien d'os possède un être humain adulte en moyenne ?", opts: ["Environ 100 os", "Environ 206 os", "Environ 350 os", "Environ 600 os"], correct: 1 },
+    { q: "Pourquoi les bébés ont-ils plus d'os que les adultes ?", opts: ["Parce que certains de leurs os vont fusionner en grandissant", "Parce qu'ils perdent des os en grandissant", "Parce que leurs os sont plus grands", "C'est faux, ils ont le même nombre d'os"], correct: 0 },
+    { q: "Quel os protège la moelle épinière ?", opts: ["La colonne vertébrale", "Le crâne", "Le fémur", "Le bassin"], correct: 0 },
+    { q: "Dans quelle partie du corps se trouvent les plus petits os (le marteau, l'enclume et l'étrier) ?", opts: ["Dans le nez", "Dans l'oreille moyenne", "Dans le pied", "Dans la main"], correct: 1 },
+    { q: "Parmi ces aliments, lequel est le plus riche en calcium pour nos os ?", opts: ["Les pâtes", "Les produits laitiers (lait, fromage)", "La viande rouge", "Les pommes de terre"], correct: 1 },
+    { q: "Quel type de mouvement éloigne deux parties d'un membre (comme tendre la jambe) ?", opts: ["La flexion", "La rotation", "L'extension", "L'adduction"], correct: 2 },
+    { q: "Quel organe commande tous nos mouvements volontaires ?", opts: ["Le cœur", "Le cerveau", "La moelle osseuse", "Les poumons"], correct: 1 },
+    { q: "Comment le message de commande du cerveau arrive-t-il jusqu'aux muscles du bras ?", opts: ["Par les vaisseaux sanguins", "Par les nerfs moteurs", "Par la salive", "Par les tendons"], correct: 1 },
+    { q: "Quel type d'os est l'omoplate ?", opts: ["Un os long", "Un os plat", "Un os court", "Un os rond"], correct: 1 },
+    { q: "Quel type d'os est le fémur ?", opts: ["Un os court", "Un os plat", "Un os long", "Un os irrégulier"], correct: 2 },
+    { q: "Parmi ces os, lequel fait partie de la cage thoracique ?", opts: ["La rotule", "Le sternum", "Le bassin", "Le cubitus"], correct: 1 },
+    { q: "Quelle maladie des os est due à un manque de calcium et de vitamine D chez l'enfant en croissance ?", opts: ["La grippe", "Le rachitisme", "L'asthme", "L'angine"], correct: 1 },
+    { q: "Que se passe-t-il au niveau d'une articulation lors d'une entorse ?", opts: ["Un os est cassé en deux", "Des ligaments sont trop étirés ou déchirés", "L'os sort complètement de sa place", "Le muscle s'est déchiré"], correct: 1 },
+    { q: "Qu'est-ce que la colonne vertébrale ?", opts: ["Un long os d'un seul bloc", "Un empilement de petits os appelés vertèbres", "Un muscle qui soutient le dos", "Un tendon très solide"], correct: 1 },
+    { q: "Pourquoi le sport est-il bon pour notre squelette ?", opts: ["Il réduit le nombre d'os", "Il aide à fortifier les os et à renforcer les muscles", "Il remplace le cartilage par de l'os", "Il empêche la transpiration"], correct: 1 },
+    { q: "Comment appelle-t-on le mouvement qui plie un membre (comme ramener la main vers l'épaule) ?", opts: ["L'extension", "La flexion", "La rotation", "L'abduction"], correct: 1 },
+    { q: "Quel muscle se trouve à l'arrière du haut du bras et s'étire quand on plie le bras ?", opts: ["Le biceps", "Le triceps", "Le deltoïde", "Le pectoral"], correct: 1 },
+    { q: "Quelle partie de l'os produit les cellules sanguines (globules rouges et blancs) ?", opts: ["Le cartilage", "La moelle osseuse", "Le calcium", "Le périoste"], correct: 1 },
+    { q: "Combien de muscles possède environ le corps humain ?", opts: ["Moins de 50 muscles", "Environ 200 muscles", "Plus de 600 muscles", "Exactement 206 muscles"], correct: 2 },
+    { q: "Quel type d'os sont les vertèbres ?", opts: ["Des os longs", "Des os plats", "Des os courts et irréguliers", "Des os mous"], correct: 2 }
+  ];
+
+  let qcmActiveQuestions = [];
+  let qcmAnswers = [];
+  let qcmValidated = false;
+
+  function initQCMGame() {
+    qcmActiveQuestions = shuffle([...QCM_DATA]).slice(0, 10);
+    qcmAnswers = new Array(10).fill(-1);
+    qcmValidated = false;
+    document.getElementById('qcm-score').style.display = 'none';
+    document.getElementById('qcm-validate-btn').style.display = 'inline-flex';
+    renderQCMHtml();
+  }
+
+  function renderQCMHtml() {
+    const container = document.getElementById('qcm-questions-container');
+    let html = '';
+
+    qcmActiveQuestions.forEach((q, qIdx) => {
+      html += `
+        <div class="card-premium mt-0 mb-4">
+          <p class="font-bold text-slate-800 text-sm md:text-base mb-3">${qIdx + 1}. ${q.q}</p>
+          <div class="flex flex-col gap-2">`;
+          
+      q.opts.forEach((opt, optIdx) => {
+        const isSelected = qcmAnswers[qIdx] === optIdx;
+        let border = 'var(--border)';
+        let bg = '#ffffff';
+        
+        if (qcmValidated) {
+          if (optIdx === q.correct) {
+            border = 'var(--vert)';
+            bg = 'var(--vert-clair)';
+          } else if (isSelected && optIdx !== q.correct) {
+            border = 'var(--rouge)';
+            bg = 'var(--rouge-clair)';
+          }
+        } else if (isSelected) {
+          border = 'var(--squelette-fonce)';
+          bg = 'var(--squelette-clair)';
+        }
+
+        html += `
+          <button onclick="${qcmValidated ? '' : `selectQcmAnswer(${qIdx}, ${optIdx})`}"
+            class="text-left py-2.5 px-4 rounded-xl text-xs md:text-sm font-sans font-medium transition-all"
+            style="border: 2px solid ${border}; background: ${bg}; cursor: ${qcmValidated ? 'default' : 'pointer'};">
+            ${opt} ${qcmValidated && optIdx === q.correct ? ' ✅' : ''} ${qcmValidated && isSelected && optIdx !== q.correct ? ' ❌' : ''}
+          </button>`;
+      });
+
+      html += `
+          </div>
+        </div>`;
+    });
+
+    container.innerHTML = html;
+  }
+
+  function selectQcmAnswer(qIdx, optIdx) {
+    qcmAnswers[qIdx] = optIdx;
+    renderQCMHtml();
+  }
+
+  function validateQCM() {
+    // Check if all questions are answered
+    const unanswered = qcmAnswers.findIndex(ans => ans === -1);
+    if (unanswered !== -1) {
+      alert(`N'oublie pas de répondre à toutes les questions avant de valider ! (Question ${unanswered + 1} non répondue)`);
+      return;
+    }
+
+    qcmValidated = true;
+    let score = 0;
+    qcmActiveQuestions.forEach((q, i) => {
+      if (qcmAnswers[i] === q.correct) score++;
+    });
+
+    renderQCMHtml();
+    document.getElementById('qcm-validate-btn').style.display = 'none';
+
+    const panel = document.getElementById('qcm-score');
+    panel.style.display = 'block';
+    const pct = Math.round((score / 10) * 100);
+    panel.innerHTML = `
+      <div class="score-title">${score} / 10</div>
+      <div class="score-msg">${pct === 100 ? 'Parfait ! 🏆 Un vrai sans faute d\'expert !' : pct >= 70 ? 'Bien joué ! 👍 Tu as de très solides bases.' : 'Recommence pour améliorer ton score ! 💪'}</div>
+      <button class="btn-3d px-4 py-2 mt-3 bg-white text-slate-800 rounded-xl" onclick="initQCMGame()">🔄 Recommencer</button>
+    `;
+
+    // Save score to parent dashboard
+    if (window.parent && window.parent.saveResult) {
+      window.parent.saveResult({
+        activity: 'sci_sq_qcm',
+        bookTitle: 'Le squelette — QCM de récapitulation',
+        score: score,
+        total: 10,
+        pct: pct,
+        date: new Date().toLocaleDateString('fr-BE'),
+        time: new Date().toLocaleTimeString('fr-BE', {hour: '2-digit', minute: '2-digit'})
+      });
+    }
+  }
+
+  window.onload = initQCMGame;
+</script>
+
+</body>
+</html>

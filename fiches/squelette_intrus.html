@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chasseur d'intrus — Le squelette</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <!-- TailwindCSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      corePlugins: {
+        preflight: false,
+      },
+      theme: {
+        extend: {
+          borderWidth: {
+            '3': '3px',
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            display: ['Fredoka', 'sans-serif'],
+            mono: ['Space Mono', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    :root {
+      --encre: #0f172a;
+      --ardoise: #475569;
+      --papier: #f8fafc;
+      --papier-2: #ffffff;
+      --ligne: #e2e8f0;
+      
+      --squelette: #6366f1;
+      --squelette-fonce: #4338ca;
+      --squelette-clair: #e0e7ff;
+      
+      --vert: #10b981;
+      --vert-clair: #ecfdf5;
+      --rouge: #ef4444;
+      --rouge-clair: #fef2f2;
+      
+      --border: #0f172a;
+      --radius: 16px;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Inter', system-ui, sans-serif;
+      color: var(--encre);
+      background: var(--papier);
+      line-height: 1.5;
+      padding: 1rem;
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 650px;
+      width: 100%;
+    }
+
+    /* CARD STYLE */
+    .card-premium {
+      background: #ffffff;
+      border: 3px solid var(--encre);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin: 12px 0;
+      box-shadow: 4px 4px 0px rgba(15, 23, 42, 0.1);
+    }
+
+    /* FLAT 3D BUTTON */
+    .btn-3d {
+      font-family: 'Fredoka', sans-serif;
+      font-weight: 700;
+      border: 3px solid var(--encre) !important;
+      box-shadow: 3px 3px 0px var(--encre);
+      transition: all 0.1s ease;
+      cursor: pointer;
+      user-select: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .btn-3d:active:not(:disabled) {
+      transform: translate(1px, 1px);
+      box-shadow: 1px 1px 0px var(--encre);
+    }
+    .btn-3d:disabled {
+      cursor: not-allowed;
+    }
+
+    /* INTRUDER OPTION CARD */
+    .intruder-opt {
+      width: 100%;
+      min-height: 90px;
+      border: 3px solid var(--encre);
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 3px 3px 0px var(--encre);
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--encre);
+      transition: all 0.15s;
+    }
+    .intruder-opt:hover:not(:disabled) {
+      background: #f8fafc;
+      transform: translateY(-2px);
+    }
+    .intruder-opt.correct {
+      background: var(--vert-clair) !important;
+      border-color: var(--vert) !important;
+      color: #065f46 !important;
+      box-shadow: 3px 3px 0px var(--vert) !important;
+    }
+    .intruder-opt.incorrect {
+      background: var(--rouge-clair) !important;
+      border-color: var(--rouge) !important;
+      color: #991b1b !important;
+      box-shadow: 3px 3px 0px var(--rouge) !important;
+      opacity: 0.7;
+    }
+
+    /* PROGRESS BAR */
+    .progress-bar-bg {
+      width: 100%;
+      height: 12px;
+      background: var(--ligne);
+      border: 2px solid var(--encre);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: var(--squelette);
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    /* EXPLANATION BOX */
+    .explanation-box {
+      border: 3px solid var(--vert);
+      background: var(--vert-clair);
+      border-radius: 12px;
+      padding: 16px;
+      margin-top: 16px;
+      color: #065f46;
+      box-shadow: 3px 3px 0px var(--vert);
+    }
+
+    /* SCORE PANEL */
+    .geo-score-panel {
+      background: var(--vert-clair);
+      border: 3px solid var(--vert);
+      border-radius: var(--radius);
+      padding: 20px;
+      text-align: center;
+      margin-top: 16px;
+      box-shadow: 4px 4px 0px var(--vert);
+    }
+    .score-title {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: var(--vert);
+      margin-bottom: 6px;
+    }
+    .score-msg {
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: #065f46;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <!-- Header & Progresse -->
+  <div class="card-premium bg-indigo-50 border-indigo-200" style="margin-top: 0;">
+    <div class="flex justify-between items-center mb-2">
+      <span class="font-display font-bold text-indigo-950 text-sm md:text-base">🎯 Chasseur d'intrus !</span>
+      <span class="font-mono font-bold text-indigo-700 text-xs bg-indigo-100 px-2 py-0.5 rounded-md" id="round-num">Round 1/5</span>
+    </div>
+    <div class="progress-bar-bg">
+      <div class="progress-bar-fill" id="progress-bar"></div>
+    </div>
+    <p class="text-xs text-indigo-900 mt-2 font-medium mb-0">
+      Trouve le mot qui ne fait pas partie du même groupe logique et clique dessus pour découvrir pourquoi.
+    </p>
+  </div>
+
+  <!-- Game Area -->
+  <div id="game-area"></div>
+
+  <!-- Feedback Area -->
+  <div id="feedback-area"></div>
+</div>
+
+<script>
+  // INTRUDER DATABASE
+  const INTRUDERS_POOL = [
+    {
+      words: ["Biceps", "Triceps", "Humérus", "Pectoral"],
+      intruder: "Humérus",
+      explanation: "L'humérus est un os du bras, tandis que les trois autres sont des muscles !"
+    },
+    {
+      words: ["Crâne", "Cage thoracique", "Bassin", "Fémur"],
+      intruder: "Fémur",
+      explanation: "Le fémur est un os de soutien et de mouvement, alors que le crâne, le bassin et la cage thoracique protègent nos organes vitaux (cerveau, cœur, moelle, etc.)."
+    },
+    {
+      words: ["Cartilage", "Tendon", "Ligament", "Calcium"],
+      intruder: "Calcium",
+      explanation: "Le calcium est un minéral indispensable pour solidifier les os, alors que les trois autres sont des tissus ou des liaisons physiques de nos articulations et muscles."
+    },
+    {
+      words: ["Entorse", "Luxation", "Fracture", "Toux"],
+      intruder: "Toux",
+      explanation: "La toux est un symptôme lié à la respiration, tandis que les trois autres sont des traumatismes ou des blessures du squelette et des articulations."
+    },
+    {
+      words: ["Radius", "Tibia", "Cubitus", "Humérus"],
+      intruder: "Tibia",
+      explanation: "Le tibia est un os du membre inférieur (la jambe), alors que le radius, le cubitus et l'humérus sont des os du membre supérieur (le bras)."
+    },
+    {
+      words: ["Rotule", "Coude", "Hanche", "Nerf"],
+      intruder: "Nerf",
+      explanation: "Le nerf fait partie du système nerveux qui commande le mouvement, alors que la rotule, le coude et la hanche sont des parties articulaires ou osseuses."
+    },
+    {
+      words: ["Se contracter", "Gonfler", "Se durcir", "S'allonger"],
+      intruder: "S'allonger",
+      explanation: "Lorsqu'un muscle travaille (se contracte), il se raccourcit, gonfle et se durcit. Il ne s'allonge pas (l'allongement correspond à la phase de relâchement)."
+    },
+    {
+      words: ["Moelle épinière", "Cerveau", "Nerf moteur", "Cartilage"],
+      intruder: "Cartilage",
+      explanation: "Le cartilage est un tissu de protection articulaire, tandis que le cerveau, la moelle épinière et le nerf moteur font partie du système nerveux qui coordonne le mouvement."
+    },
+    {
+      words: ["Tibia", "Fémur", "Rotule", "Radius"],
+      intruder: "Radius",
+      explanation: "Le radius est un os du bras (membre supérieur), alors que le tibia, le fémur et la rotule sont des os de la jambe (membre inférieur) !"
+    },
+    {
+      words: ["Vertèbre", "Clavicule", "Omoplate", "Sternum"],
+      intruder: "Vertèbre",
+      explanation: "La vertèbre est un os court et irrégulier formant la colonne vertébrale, alors que la clavicule, l'omoplate et le sternum sont des os plats situés sur le buste."
+    },
+    {
+      words: ["Calcium", "Vitamine D", "Soleil", "Soda"],
+      intruder: "Soda",
+      explanation: "Les boissons gazeuses très sucrées (sodas) ne contiennent aucun élément bon pour notre squelette. Le calcium, la vitamine D et le soleil aident quant à eux à le renforcer !"
+    },
+    {
+      words: ["Synovie", "Cartilage", "Rotule", "Biceps"],
+      intruder: "Biceps",
+      explanation: "Le biceps est un muscle squelettique, alors que la synovie (liquide lubrifiant), le cartilage et la rotule font tous partie de la structure articulaire du genou."
+    },
+    {
+      words: ["Réflexe", "Flexion", "Extension", "Rotation"],
+      intruder: "Réflexe",
+      explanation: "Le réflexe est un geste involontaire et automatique, tandis que la flexion, l'extension et la rotation désignent des types de mouvements articulaires volontaires."
+    },
+    {
+      words: ["Plâtre", "Attelle", "Béquilles", "Stéthoscope"],
+      intruder: "Stéthoscope",
+      explanation: "Le stéthoscope sert à écouter les battements cardiaques ou pulmonaires. Le plâtre, l'attelle et les béquilles servent à soigner, soutenir ou immobiliser une blessure du squelette."
+    },
+    {
+      words: ["Casser", "Fêler", "Fracturer", "Tordre"],
+      intruder: "Tordre",
+      explanation: "Tordre (comme lors d'une entorse) s'applique aux ligaments de l'articulation, tandis que casser, fêler et fracturer désignent des blessures s'appliquant aux os."
+    }
+  ];
+
+  // UTILS
+  function shuffle(array) {
+    let currentIndex = array.length, randomIndex;
+    while (currentIndex != 0) {
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex--;
+      [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+    }
+    return array;
+  }
+
+  // STATE VARIABLES
+  let activeRounds = [];
+  let currentRoundIdx = 0;
+  let score = 0;
+  let hasFailedInRound = false;
+  let roundCompleted = false;
+
+  function initGame() {
+    activeRounds = shuffle([...INTRUDERS_POOL]).slice(0, 5);
+    currentRoundIdx = 0;
+    score = 0;
+    loadRound();
+  }
+
+  function loadRound() {
+    hasFailedInRound = false;
+    roundCompleted = false;
+    
+    // Update progress panel
+    document.getElementById('round-num').textContent = `Groupe ${currentRoundIdx + 1}/5`;
+    document.getElementById('progress-bar').style.width = `${currentRoundIdx * 20}%`;
+
+    // Clear feedback
+    document.getElementById('feedback-area').innerHTML = '';
+
+    const roundData = activeRounds[currentRoundIdx];
+    // Copy and shuffle options layout
+    const shuffledOptions = shuffle([...roundData.words]);
+
+    const gameArea = document.getElementById('game-area');
+    gameArea.innerHTML = `
+      <div class="grid grid-cols-2 gap-4 mt-4" id="options-grid"></div>
+    `;
+
+    const grid = document.getElementById('options-grid');
+    shuffledOptions.forEach(opt => {
+      const btn = document.createElement('button');
+      btn.className = 'btn-3d intruder-opt';
+      btn.textContent = opt;
+      btn.onclick = () => checkSelection(btn, opt);
+      grid.appendChild(btn);
+    });
+  }
+
+  function checkSelection(btn, textVal) {
+    if (roundCompleted) return;
+    const roundData = activeRounds[currentRoundIdx];
+
+    if (textVal === roundData.intruder) {
+      roundCompleted = true;
+      btn.classList.add('correct');
+      
+      // Calculate score
+      if (!hasFailedInRound) {
+        score++;
+      }
+
+      // Disable all buttons in grid
+      document.querySelectorAll('.intruder-opt').forEach(b => {
+        b.disabled = true;
+      });
+
+      // Show explanation
+      const feedbackArea = document.getElementById('feedback-area');
+      feedbackArea.innerHTML = `
+        <div class="explanation-box animate-fadeIn">
+          <p class="font-bold text-sm md:text-base m-0 flex items-center gap-2">
+            🎯 Bravo ! Tu as démasqué l'intrus : <strong>${textVal}</strong>
+          </p>
+          <p class="text-xs md:text-sm mt-2 mb-0 leading-relaxed font-sans font-medium">
+            ${roundData.explanation}
+          </p>
+        </div>
+        <button class="btn-3d w-full py-3.5 bg-indigo-500 text-white rounded-xl text-sm font-bold mt-4 animate-fadeIn" onclick="nextRound()">
+          ${currentRoundIdx === 4 ? '🏁 Voir le score final' : 'Groupe suivant ➡️'}
+        </button>
+      `;
+    } else {
+      btn.classList.add('incorrect');
+      btn.disabled = true;
+      hasFailedInRound = true;
+    }
+  }
+
+  function nextRound() {
+    if (currentRoundIdx < 4) {
+      currentRoundIdx++;
+      loadRound();
+    } else {
+      showFinalScore();
+    }
+  }
+
+  function showFinalScore() {
+    document.getElementById('round-num').textContent = `Terminé !`;
+    document.getElementById('progress-bar').style.width = `100%`;
+    document.getElementById('game-area').innerHTML = '';
+    document.getElementById('feedback-area').innerHTML = '';
+
+    const pct = Math.round((score / 5) * 100);
+    const scorePanel = document.createElement('div');
+    scorePanel.className = 'geo-score-panel animate-fadeIn';
+    scorePanel.innerHTML = `
+      <div class="score-title">${score} / 5</div>
+      <div class="score-msg">
+        ${pct === 100 ? 'Magnifique ! 🏆 Tu as débusqué tous les intrus dès le premier coup !' : pct >= 60 ? 'Bien joué ! 👍 Tu as une bonne vue d\'ensemble de la matière.' : 'Recommence pour améliorer ta vigilance scientifique ! 💪'}
+      </div>
+      <button class="btn-3d px-4 py-2 mt-4 bg-white text-slate-800 rounded-xl" onclick="initGame()">🔄 Recommencer</button>
+    `;
+    document.getElementById('game-area').appendChild(scorePanel);
+
+    // Save score to parent platform dashboard
+    if (window.parent && window.parent.saveResult) {
+      window.parent.saveResult({
+        activity: 'sci_sq_intrus',
+        bookTitle: "Le squelette — Chasseur d'intrus",
+        score: score,
+        total: 5,
+        pct: pct,
+        date: new Date().toLocaleDateString('fr-BE'),
+        time: new Date().toLocaleTimeString('fr-BE', {hour: '2-digit', minute: '2-digit'})
+      });
+    }
+  }
+
+  window.onload = initGame;
+</script>
+
+</body>
+</html>

@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Europe — Cartes interactives</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Nunito', sans-serif; background: #f5f6fa; padding: 1.5rem; }
+.container { max-width: 960px; margin: 0 auto; }
+
+/* Sélecteur de carte */
+.carte-select { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 1.25rem; }
+.carte-btn {
+  padding: 6px 14px; border-radius: 20px; border: 1.5px solid #d1d5db;
+  background: white; font-family: 'Nunito', sans-serif; font-size: 12px;
+  font-weight: 700; cursor: pointer; color: #6b7280; transition: all .15s;
+}
+.carte-btn:hover { border-color: #8b5cf6; color: #8b5cf6; }
+.carte-btn.active { background: #8b5cf6; border-color: #8b5cf6; color: white; }
+.carte-btn.physique { border-color: #16a34a; color: #16a34a; }
+.carte-btn.physique.active { background: #16a34a; border-color: #16a34a; color: white; }
+.carte-btn.capitale { border-color: #dc2626; color: #dc2626; }
+.carte-btn.capitale.active { background: #dc2626; border-color: #dc2626; color: white; }
+
+.info-card {
+  border-radius: 12px; padding: .8rem 1rem; margin-bottom: 1.25rem;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.info-card p { font-size: 13px; font-weight: 700; margin: 0; }
+
+/* Layout principal */
+.main-layout {
+  display: grid; grid-template-columns: 1fr 320px;
+  gap: 16px; align-items: start;
+}
+@media(max-width: 700px){ .main-layout { grid-template-columns: 1fr; } }
+
+/* Carte image */
+.carte-wrap img { width: 100%; border-radius: 10px; display: block; }
+
+/* Colonne droite */
+.right-col { display: flex; flex-direction: column; gap: 12px; }
+
+/* Banque d'étiquettes */
+.banque-titre {
+  font-size: 11px; font-weight: 800; text-transform: uppercase;
+  letter-spacing: .05em; color: #9ca3af; margin-bottom: 4px;
+}
+.banque { display: flex; flex-wrap: wrap; gap: 6px; }
+.etiquette {
+  padding: 6px 12px; background: #8b5cf6; color: white;
+  border-radius: 20px; font-size: 12px; font-weight: 700;
+  cursor: grab; user-select: none; touch-action: none;
+  transition: opacity .15s;
+}
+.etiquette.physique { background: #16a34a; }
+.etiquette.capitale { background: #dc2626; }
+.etiquette.used { opacity: .3; cursor: default; }
+
+/* Tableau numéros */
+.tableau { border-collapse: collapse; width: 100%; }
+.tableau th {
+  background: #f3f4f6; font-size: 11px; font-weight: 800;
+  text-transform: uppercase; letter-spacing: .05em; color: #6b7280;
+  padding: 6px 10px; border: 1px solid #e5e7eb; text-align: left;
+}
+.tableau td { padding: 4px 6px; border: 1px solid #e5e7eb; vertical-align: middle; }
+.td-num {
+  font-size: 14px; font-weight: 900; color: #1e1b4b;
+  text-align: center; width: 32px;
+}
+.drop-zone {
+  min-height: 34px; padding: 4px 8px;
+  border: 2px dashed #8b5cf6; border-radius: 8px;
+  background: #ede9fe; font-size: 12px; font-weight: 700;
+  color: #9ca3af; display: flex; align-items: center;
+  transition: background .15s; cursor: pointer;
+}
+.drop-zone.physique { border-color: #16a34a; background: #dcfce7; }
+.drop-zone.capitale { border-color: #dc2626; background: #fee2e2; }
+.drop-zone.drag-over { background: #ddd6fe; }
+.drop-zone.filled { color: #4f46e5; border-style: solid; }
+.drop-zone.filled.physique { color: #166534; }
+.drop-zone.filled.capitale { color: #991b1b; }
+.drop-zone.correct { background: #d4f5e2; border-color: #16a34a; color: #166534; border-style: solid; }
+.drop-zone.incorrect { background: #fdd9d7; border-color: #dc2626; color: #dc2626; border-style: solid; }
+.drop-zone.vide-ok { background: #f3f4f6; border-color: #9ca3af; border-style: dashed; color: #9ca3af; }
+
+.btn {
+  width: 100%; padding: 10px; background: #8b5cf6; color: white;
+  border: none; border-radius: 12px; font-size: 14px; font-weight: 800;
+  cursor: pointer; font-family: 'Nunito', sans-serif; transition: background .2s;
+}
+.btn.physique { background: #16a34a; }
+.btn.capitale { background: #dc2626; }
+.btn:hover { opacity: .9; }
+
+.score-panel {
+  display: none; text-align: center; padding: 1rem;
+  background: white; border-radius: 12px; box-shadow: 0 1px 4px rgba(0,0,0,.08);
+}
+.score-panel .emoji { font-size: 36px; }
+.score-panel .score { font-size: 24px; font-weight: 900; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<div style="font-size:12px;font-weight:800;text-transform:uppercase;color:#9ca3af;margin-bottom:6px">Choisis une carte</div>
+<div class="carte-select" id="carte-select"></div>
+
+<div class="info-card" id="info-card">
+  <p id="info-titre">—</p>
+</div>
+
+<div style="background:#fef9c3;border:1px solid #f59e0b;border-radius:10px;padding:.75rem 1rem;margin-bottom:1rem;font-size:13px;font-weight:700;color:#92400e;">
+  📌 Place les étiquettes près du bon numéro. Attention, il y a 3 cases qui devront rester vides.
+</div>
+<div class="main-layout">
+  <div class="carte-wrap">
+    <img id="carte-img" src="" alt="Carte Europe"/>
+  </div>
+  <div class="right-col">
+    <div>
+      <div class="banque-titre">🏷️ Étiquettes à placer</div>
+      <div class="banque" id="banque"></div>
+    </div>
+    <div>
+      <table class="tableau">
+        <thead><tr><th>N°</th><th>Ton choix</th></tr></thead>
+        <tbody id="tableau-body"></tbody>
+      </table>
+    </div>
+    <button class="btn" id="btn-valider" onclick="valider()">✅ Valider</button>
+    <button class="btn" id="btn-reset" style="background:#6b7280;display:none" onclick="resetCarte()">🔄 Recommencer</button>
+    <div class="score-panel" id="score-panel">
+      <div class="emoji" id="score-emoji"></div>
+      <div class="score" id="score-txt"></div>
+    </div>
+  </div>
+</div>
+
+</div>
+<script>
+const BASE = 'https://jeremylejoly.github.io/plateforme-scolaire/';
+
+const CARTES = [
+  {
+    id: 'phys1', type: 'physique',
+    titre: '🏔️ Europe physique — Carte 1',
+    img: BASE + 'europe_physique_1.jpg',
+    zones: [
+      {n:1,  label:'Alpes scandinaves'},
+      {n:2,  label:'Alpes'},
+      {n:3,  label:''},
+      {n:4,  label:'Océan Atlantique'},
+      {n:5,  label:'Océan Arctique'},
+      {n:6,  label:'Mer Méditerranée'},
+      {n:7,  label:''},
+      {n:8,  label:'Mer Baltique'},
+      {n:9,  label:'Mer Noire'},
+      {n:10, label:'Rhin'},
+      {n:11, label:''},
+      {n:12, label:'Carpates'},
+      {n:13, label:'Monts Oural'},
+    ]
+  },
+  {
+    id: 'phys2', type: 'physique',
+    titre: '🏔️ Europe physique — Carte 2',
+    img: BASE + 'europe_physique_2.jpg',
+    zones: [
+      {n:1,  label:'Pyrénées'},
+      {n:2,  label:'Mer Adriatique'},
+      {n:3,  label:'Alpes'},
+      {n:4,  label:'Mer du Nord'},
+      {n:5,  label:''},
+      {n:6,  label:''},
+      {n:7,  label:'Alpes scandinaves'},
+      {n:8,  label:'Caucase'},
+      {n:9,  label:''},
+      {n:10, label:'Océan Atlantique'},
+      {n:11, label:'Monts Oural'},
+      {n:12, label:'Danube'},
+      {n:13, label:'Mer Méditerranée'},
+    ]
+  },
+  {
+    id: 'pol1', type: 'pays',
+    titre: '🗺️ Europe politique — Pays 1',
+    img: BASE + 'europe_politique_1.gif',
+    zones: [
+      {n:1,  label:'France'},
+      {n:2,  label:'Ukraine'},
+      {n:3,  label:'Islande'},
+      {n:4,  label:'Suède'},
+      {n:5,  label:'Allemagne'},
+      {n:6,  label:''},
+      {n:7,  label:'Espagne'},
+      {n:8,  label:'Turquie'},
+      {n:9,  label:''},
+      {n:10, label:'Royaume-Uni'},
+      {n:11, label:''},
+      {n:12, label:'Italie'},
+      {n:13, label:'Roumanie'},
+    ]
+  },
+  {
+    id: 'pol2', type: 'pays',
+    titre: '🗺️ Europe politique — Pays 2',
+    img: BASE + 'europe_politique_2.gif',
+    zones: [
+      {n:1,  label:''},
+      {n:2,  label:'Belgique'},
+      {n:3,  label:'Grèce'},
+      {n:4,  label:'Croatie'},
+      {n:5,  label:''},
+      {n:6,  label:'Biélorussie'},
+      {n:7,  label:'République Tchèque'},
+      {n:8,  label:'Finlande'},
+      {n:9,  label:'Lettonie'},
+      {n:10, label:'Pologne'},
+      {n:11, label:'Russie'},
+      {n:12, label:'Irlande'},
+      {n:13, label:''},
+    ]
+  },
+  {
+    id: 'pol3', type: 'pays',
+    titre: '🗺️ Europe politique — Pays 3',
+    img: BASE + 'europe_politique_3.gif',
+    zones: [
+      {n:1,  label:'Pays-Bas'},
+      {n:2,  label:'Autriche'},
+      {n:3,  label:''},
+      {n:4,  label:'Estonie'},
+      {n:5,  label:'Malte'},
+      {n:6,  label:''},
+      {n:7,  label:'Slovénie'},
+      {n:8,  label:'Allemagne'},
+      {n:9,  label:'Portugal'},
+      {n:10, label:''},
+      {n:11, label:'Hongrie'},
+      {n:12, label:'Bulgarie'},
+      {n:13, label:'France'},
+    ]
+  },
+  {
+    id: 'pol4', type: 'pays',
+    titre: '🗺️ Europe politique — Pays 4',
+    img: BASE + 'europe_politique_4.gif',
+    zones: [
+      {n:1,  label:'Chypre'},
+      {n:2,  label:''},
+      {n:3,  label:'Luxembourg'},
+      {n:4,  label:''},
+      {n:5,  label:'Danemark'},
+      {n:6,  label:'Norvège'},
+      {n:7,  label:'Belgique'},
+      {n:8,  label:'Lituanie'},
+      {n:9,  label:''},
+      {n:10, label:'Slovaquie'},
+      {n:11, label:'Suisse'},
+      {n:12, label:'Espagne'},
+      {n:13, label:'Italie'},
+    ]
+  },
+  {
+    id: 'cap1', type: 'capitale',
+    titre: '🏛️ Capitales européennes — Carte 1',
+    img: BASE + 'europe_politique_5.gif',
+    zones: [
+      {n:1,  label:''},
+      {n:2,  label:'Helsinki'},
+      {n:3,  label:'Luxembourg-ville'},
+      {n:4,  label:'Moscou'},
+      {n:5,  label:'Berlin'},
+      {n:6,  label:'Athènes'},
+      {n:7,  label:'Prague'},
+      {n:8,  label:''},
+      {n:9,  label:'Tallinn'},
+      {n:10, label:'Lisbonne'},
+      {n:11, label:'Dublin'},
+      {n:12, label:''},
+      {n:13, label:'Sofia'},
+    ]
+  },
+  {
+    id: 'cap2', type: 'capitale',
+    titre: '🏛️ Capitales européennes — Carte 2',
+    img: BASE + 'europe_politique_6.gif',
+    zones: [
+      {n:1,  label:'Vienne'},
+      {n:2,  label:'Bruxelles'},
+      {n:3,  label:'Budapest'},
+      {n:4,  label:'Riga'},
+      {n:5,  label:'Varsovie'},
+      {n:6,  label:'Ankara'},
+      {n:7,  label:''},
+      {n:8,  label:'Reykjavik'},
+      {n:9,  label:'Kiev'},
+      {n:10, label:'Oslo'},
+      {n:11, label:'Copenhague'},
+      {n:12, label:''},
+      {n:13, label:''},
+    ]
+  },
+  {
+    id: 'cap3', type: 'capitale',
+    titre: '🏛️ Capitales européennes — Carte 3',
+    img: BASE + 'europe_politique_7.gif',
+    zones: [
+      {n:1,  label:'Paris'},
+      {n:2,  label:'Zagreb'},
+      {n:3,  label:''},
+      {n:4,  label:'Berne'},
+      {n:5,  label:''},
+      {n:6,  label:'Vilnius'},
+      {n:7,  label:'Londres'},
+      {n:8,  label:'Amsterdam'},
+      {n:9,  label:'Stockholm'},
+      {n:10, label:''},
+      {n:11, label:'Bucarest'},
+      {n:12, label:'Madrid'},
+      {n:13, label:'Rome'},
+    ]
+  },
+];
+
+// État
+let curCarte = null;
+let placed = {};
+let dragging = null, touchEl = null, touchClone = null;
+
+// ===== INIT =====
+function buildCarteSelect(){
+  const el = document.getElementById('carte-select');
+  el.innerHTML = CARTES.map((c,i) =>
+    `<button class="carte-btn ${c.type}" onclick="chargerCarte(${i})">${c.titre}</button>`
+  ).join('');
+}
+
+function chargerCarte(idx){
+  curCarte = CARTES[idx];
+  placed = {};
+
+  // Boutons actifs
+  document.querySelectorAll('.carte-btn').forEach((b,i) => b.classList.toggle('active', i===idx));
+
+  // Info
+  const infoCard = document.getElementById('info-card');
+  const colors = {physique:'#dcfce7', pays:'#ede9fe', capitale:'#fee2e2'};
+  const textColors = {physique:'#166534', pays:'#6d28d9', capitale:'#991b1b'};
+  infoCard.style.background = colors[curCarte.type];
+  infoCard.style.border = `1px solid ${textColors[curCarte.type]}`;
+  document.getElementById('info-titre').textContent = curCarte.titre;
+  document.getElementById('info-titre').style.color = textColors[curCarte.type];
+
+  // Image
+  document.getElementById('carte-img').src = curCarte.img;
+
+  // Étiquettes (seulement les non-vides, mélangées)
+  const etiquettes = curCarte.zones.filter(z=>z.label!=='').map(z=>z.label);
+  shuffle(etiquettes);
+  const banque = document.getElementById('banque');
+  banque.innerHTML = etiquettes.map(lbl =>
+    `<div class="etiquette ${curCarte.type}" id="etiq-${slug(lbl)}" data-label="${lbl}"
+      draggable="true"
+      ondragstart="dragStart(event)" ondragend="dragEnd(event)"
+      ontouchstart="touchStart(event)" ontouchmove="touchMove(event)" ontouchend="touchEnd(event)">
+      ${lbl}
+    </div>`
+  ).join('');
+
+  // Tableau
+  const tbody = document.getElementById('tableau-body');
+  tbody.innerHTML = curCarte.zones.map(z =>
+    `<tr>
+      <td class="td-num">${z.n}</td>
+      <td>
+        <div class="drop-zone ${curCarte.type}" id="zone-${z.n}" data-n="${z.n}" onclick="clearZone(this)"
+          ondragover="dzOver(event)" ondrop="dzDrop(event)" ondragleave="dzLeave(event)">
+          ${z.label===''?'<span style="font-size:11px;color:#d1d5db">Case vide</span>':'<span style="opacity:.4">Glisse ici…</span>'}
+        </div>
+      </td>
+    </tr>`
+  ).join('');
+
+  // Boutons
+  const btn = document.getElementById('btn-valider');
+  btn.className = `btn ${curCarte.type}`;
+  document.getElementById('btn-reset').style.display='none';
+  document.getElementById('score-panel').style.display='none';
+}
+
+function slug(s){ return s.replace(/[^a-zA-Z0-9]/g,'-'); }
+function shuffle(a){ a.sort(()=>Math.random()-.5); }
+
+// ===== DRAG DESKTOP =====
+function dragStart(e){ dragging=e.currentTarget.dataset.label; e.dataTransfer.setData('text/plain',dragging); e.currentTarget.style.opacity='.4'; }
+function dragEnd(e){ e.currentTarget.style.opacity=''; dragging=null; }
+function dzOver(e){ e.preventDefault(); e.currentTarget.classList.add('drag-over'); }
+function dzLeave(e){ e.currentTarget.classList.remove('drag-over'); }
+function dzDrop(e){ e.preventDefault(); e.currentTarget.classList.remove('drag-over'); placer(e.currentTarget, e.dataTransfer.getData('text/plain')); }
+
+function placer(zone, label){
+  const n = parseInt(zone.dataset.n);
+  // Retourner l'ancienne étiquette si zone occupée
+  const old = placed[n];
+  if(old) retourner(old);
+  // Retirer de l'autre zone si déjà placée
+  Object.entries(placed).forEach(([k,v])=>{
+    if(v===label && parseInt(k)!==n){
+      const oz = document.getElementById('zone-'+k);
+      if(oz){ oz.innerHTML='<span style="opacity:.4">Glisse ici…</span>'; oz.classList.remove('filled'); }
+      delete placed[parseInt(k)];
+    }
+  });
+  // Retirer de la banque
+  retirer(label);
+  placed[n] = label;
+  zone.textContent = label;
+  zone.classList.add('filled');
+}
+
+function retourner(label){
+  const tag = document.getElementById('etiq-'+slug(label));
+  if(tag){ tag.classList.remove('used'); tag.draggable=true; }
+}
+function retirer(label){
+  const tag = document.getElementById('etiq-'+slug(label));
+  if(tag){ tag.classList.add('used'); tag.draggable=false; }
+}
+function clearZone(zone){
+  const panel = document.getElementById('score-panel');
+  if(panel && panel.style.display === 'block') return;
+  const n = parseInt(zone.dataset.n);
+  const z = curCarte.zones.find(x => x.n === n);
+  if(z && z.label === '') return;
+  const label = placed[n];
+  if(!label) return;
+  zone.innerHTML = '<span style="opacity:.4">Glisse ici…</span>';
+  zone.classList.remove('filled');
+  retourner(label);
+  delete placed[n];
+}
+
+// ===== TOUCH MOBILE =====
+function touchStart(e){
+  const tag=e.currentTarget; if(tag.classList.contains('used')) return;
+  touchEl=tag;
+  const clone=tag.cloneNode(true);
+  clone.style.cssText='position:fixed;z-index:9999;opacity:.85;pointer-events:none;border-radius:20px;padding:6px 12px;font-size:12px;font-weight:700;color:white;';
+  clone.style.background = curCarte.type==='physique'?'#16a34a':curCarte.type==='capitale'?'#dc2626':'#8b5cf6';
+  const t=e.touches[0]; clone.style.left=(t.clientX-40)+'px'; clone.style.top=(t.clientY-20)+'px';
+  document.body.appendChild(clone); touchClone=clone; tag.style.opacity='.4';
+}
+function touchMove(e){ e.preventDefault(); if(!touchClone) return; const t=e.touches[0]; touchClone.style.left=(t.clientX-40)+'px'; touchClone.style.top=(t.clientY-20)+'px'; }
+function touchEnd(e){
+  if(!touchClone) return; const t=e.changedTouches[0]; touchClone.remove(); touchClone=null;
+  if(touchEl) touchEl.style.opacity='';
+  const el=document.elementFromPoint(t.clientX,t.clientY);
+  const zone=el?el.closest('.drop-zone'):null;
+  if(zone&&touchEl) placer(zone,touchEl.dataset.label);
+  touchEl=null;
+}
+
+// ===== VALIDATION =====
+function valider(){
+  const c = curCarte;
+  let ok=0, total=0;
+  c.zones.forEach(z=>{
+    const zone = document.getElementById('zone-'+z.n);
+    if(!zone) return;
+    if(z.label===''){
+      // Case vide : correct si rien n'est placé
+      if(!placed[z.n]){
+        zone.classList.add('vide-ok');
+        ok++;
+      } else {
+        zone.classList.add('incorrect');
+        zone.textContent += ' ✗';
+      }
+      total++;
+    } else {
+      total++;
+      if(placed[z.n]===z.label){
+        zone.classList.add('correct'); ok++;
+      } else {
+        zone.classList.add('incorrect');
+        if(!placed[z.n]) zone.textContent='→ '+z.label;
+      }
+    }
+    zone.classList.remove('filled');
+  });
+
+  const pct=Math.round(ok/total*100);
+  const panel=document.getElementById('score-panel'); panel.style.display='block';
+  document.getElementById('score-emoji').textContent=pct===100?'🎉':pct>=70?'👍':'💪';
+  document.getElementById('score-txt').textContent=`${ok}/${total} — ${pct}%`;
+  document.getElementById('score-txt').style.color=pct===100?'#16a34a':pct>=70?'#f59e0b':'#dc2626';
+
+  document.getElementById('btn-valider').style.display='none';
+  document.getElementById('btn-reset').style.display='block';
+
+  // Désactiver les étiquettes
+  document.querySelectorAll('.etiquette').forEach(t=>{ t.draggable=false; t.style.cursor='default'; });
+}
+
+function resetCarte(){
+  const idx = CARTES.indexOf(curCarte);
+  chargerCarte(idx);
+}
+
+// Init
+buildCarteSelect();
+chargerCarte(0);
+</script>
+</body>
+</html>

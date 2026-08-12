@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Conjugaison — Imparfait écriture</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Nunito', sans-serif; background: #f5f6fa; padding: 1.5rem; }
+.container { max-width: 680px; margin: 0 auto; }
+.info-card { background:#fce7f3;border:1px solid #ec4899;border-radius:12px;padding:.8rem 1rem;margin-bottom:1.5rem;display:flex;justify-content:space-between;align-items:center; }
+.info-card p { font-size:13px;color:#9d174d;font-weight:700;margin:0; }
+.dots { display:flex;gap:6px; }
+.dot { width:12px;height:12px;border-radius:50%; }
+.question-card { background:white;border-radius:16px;padding:1.75rem 1.5rem;margin-bottom:1.25rem;box-shadow:0 2px 8px rgba(0,0,0,.08);border:2px solid #e5e7eb; }
+.q-label { font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:#9ca3af;margin-bottom:.75rem;text-align:center; }
+.q-verbe { display:inline-block;background:#fce7f3;border:1.5px solid #ec4899;border-radius:8px;padding:3px 10px;font-size:13px;font-weight:800;color:#9d174d;margin-bottom:1rem; }
+.q-phrase { font-size:17px;font-weight:800;color:#1e1b4b;margin-bottom:1.5rem;text-align:center;line-height:1.8; }
+.saisie-row { display:flex;align-items:center;justify-content:center;gap:10px; }
+.fleche { color:#ec4899;font-size:20px;flex-shrink:0; }
+.q-input { font-family:'Nunito',sans-serif;font-size:18px;font-weight:800;color:#1e1b4b;text-align:center;border:none;border-bottom:2.5px solid #ec4899;background:transparent;outline:none;width:180px;padding:4px 8px;transition:border-color .2s; }
+.q-input:focus { border-color:#9d174d; }
+.q-input.correct { border-color:#16a34a;color:#16a34a; }
+.q-input.incorrect { border-color:#dc2626;color:#dc2626; }
+.correction { font-size:13px;font-weight:700;color:#dc2626;margin-top:.75rem;text-align:center;display:none; }
+.btn { width:100%;padding:12px;background:#ec4899;color:white;border:none;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;transition:background .2s;margin-bottom:.75rem; }
+.btn:hover { background:#db2777; }
+.score-final { display:none;text-align:center;padding:2rem;background:white;border-radius:16px;box-shadow:0 2px 12px rgba(0,0,0,.1); }
+.big-emoji { font-size:64px;margin-bottom:.5rem; }
+.big-score { font-size:36px;font-weight:900;margin-bottom:1rem; }
+.score-detail { font-size:13px;color:#6b7280;margin-bottom:1.5rem;line-height:2; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div id="exercice-zone">
+    <div class="info-card">
+      <p id="info-numero">Question 1/10</p>
+      <div class="dots" id="dots-progress"></div>
+    </div>
+    <div id="question-zone"></div>
+    <button class="btn" id="btn-valider" onclick="valider()">✅ Valider</button>
+    <button class="btn" id="btn-suivant" style="display:none" onclick="suivant()">➡️ Question suivante</button>
+  </div>
+  <div class="score-final" id="score-final">
+    <div class="big-emoji" id="final-emoji">🎉</div>
+    <div class="big-score" id="final-score"></div>
+    <div class="score-detail" id="final-detail"></div>
+    <button class="btn" onclick="demarrer()">🔄 Recommencer</button>
+  </div>
+</div>
+<script>
+const QUESTIONS = [
+  // Verbes en -CER
+  { p:"Chaque hiver, nous <em>...</em> à faire du ski.",       verbe:"commencer (nous)", rep:"commencions" },
+  { p:"Il <em>...</em> toujours ses affaires au bon endroit.", verbe:"placer (il)",       rep:"plaçait" },
+  { p:"Ils <em>...</em> leurs adversaires depuis le début.",   verbe:"lancer (ils)",      rep:"lançaient" },
+  // Verbes en -GER
+  { p:"Nous <em>...</em> souvent des crêpes le dimanche.",     verbe:"manger (nous)",     rep:"mangions" },
+  { p:"Elle <em>...</em> toujours ses jouets après avoir joué.", verbe:"ranger (elle)",   rep:"rangeait" },
+  { p:"Nous <em>...</em> ensemble dans le lac.",               verbe:"nager (nous)",      rep:"nagions" },
+  // Verbes en -YER
+  { p:"Tu <em>...</em> toujours par carte bancaire.",          verbe:"payer (tu)",        rep:"payais" },
+  { p:"Elle <em>...</em> les vitres chaque samedi.",           verbe:"essuyer (elle)",    rep:"essuyait" },
+  { p:"Nous <em>...</em> sur la sonnette.",                    verbe:"appuyer (nous)",    rep:"appuyions" },
+  { p:"Ils <em>...</em> l'entrée chaque matin.",               verbe:"balayer (ils)",     rep:"balayaient" },
+  // Verbes en -ELER/-ETER
+  { p:"Tu <em>...</em> ta mère dès que tu arrivais.",          verbe:"appeler (tu)",      rep:"appelais" },
+  { p:"Je <em>...</em> mes vieux cahiers en fin d'année.",     verbe:"jeter (je)",        rep:"jetais" },
+  { p:"Il <em>...</em> souvent la balle trop loin.",           verbe:"rejeter (il)",      rep:"rejetait" },
+  { p:"Elle <em>...</em> ses amis pour chaque anniversaire.",  verbe:"rappeler (elle)",   rep:"rappelait" },
+  // Verbes E+consonne+ER
+  { p:"J'<em>...</em> toujours mes affaires à l'école.",       verbe:"amener (je)",       rep:"amenais" },
+  { p:"Tu <em>...</em> le bras pour répondre.",                verbe:"lever (tu)",        rep:"levais" },
+  { p:"Il <em>...</em> ses légumes au marché du village.",     verbe:"acheter (il)",      rep:"achetait" },
+  { p:"Nous <em>...</em> le chien deux fois par jour.",        verbe:"promener (nous)",   rep:"promenions" },
+  { p:"Elle <em>...</em> doucement le rideau.",                verbe:"soulever (elle)",   rep:"soulevait" },
+  { p:"L'eau <em>...</em> sur les pierres du ruisseau.",       verbe:"ruisseler (elle)",  rep:"ruisselait" },
+  // Verbes en -IER
+  { p:"Nous <em>...</em> nos amis depuis la fenêtre.",         verbe:"crier (nous)",      rep:"criions" },
+  { p:"Vous <em>...</em> entièrement de votre professeur.",    verbe:"se fier (vous)",    rep:"vous fiiez" },
+  { p:"Nous <em>...</em> nos leçons tous les soirs.",          verbe:"étudier (nous)",    rep:"étudiions" },
+  { p:"Vous <em>...</em> souvent ensemble avant le repas.",    verbe:"prier (vous)",      rep:"priiez" },
+  // Être et avoir
+  { p:"Tu <em>...</em> très timide quand tu étais petit.",     verbe:"être (tu)",         rep:"étais" },
+  { p:"Nous <em>...</em> un chien et deux chats.",             verbe:"avoir (nous)",      rep:"avions" },
+  { p:"Ils <em>...</em> toujours à l'heure.",                  verbe:"être (ils)",        rep:"étaient" },
+  { p:"Elle <em>...</em> peur des araignées.",                 verbe:"avoir (elle)",      rep:"avait" },
+  // Verbes en -IR irréguliers
+  { p:"Nous <em>...</em> chez nos cousins chaque été.",        verbe:"venir (nous)",      rep:"venions" },
+  { p:"Tu <em>...</em> très vite sur le terrain.",             verbe:"courir (tu)",       rep:"courais" },
+  { p:"Ils <em>...</em> tôt pour attraper le train.",          verbe:"partir (ils)",      rep:"partaient" },
+  { p:"Elle <em>...</em> la fenêtre pour aérer la pièce.",     verbe:"ouvrir (elle)",     rep:"ouvrait" },
+  { p:"Je <em>...</em> bien toutes les nuits.",                verbe:"dormir (je)",       rep:"dormais" },
+  { p:"Nous <em>...</em> toujours nos engagements.",           verbe:"tenir (nous)",      rep:"tenions" },
+  { p:"Il <em>...</em> souvent des fleurs à sa maman.",        verbe:"offrir (il)",       rep:"offrait" },
+  // Verbes du 3ème groupe irréguliers
+  { p:"Nous <em>...</em> un film ensemble chaque vendredi.",   verbe:"voir (nous)",       rep:"voyions" },
+  { p:"Je <em>...</em> du sport tous les matins.",             verbe:"faire (je)",        rep:"faisais" },
+  { p:"Tu <em>...</em> une lettre à ta correspondante.",       verbe:"écrire (tu)",       rep:"écrivais" },
+  { p:"Ils <em>...</em> les problèmes un par un.",             verbe:"résoudre (ils)",    rep:"résolvaient" },
+  { p:"Nous <em>...</em> le sucre dans l'eau chaude.",         verbe:"dissoudre (nous)",  rep:"dissolvions" },
+  { p:"Je <em>...</em> tout ce qu'il me disait.",              verbe:"croire (je)",       rep:"croyais" },
+  { p:"Ils <em>...</em> dès qu'ils avaient peur.",             verbe:"fuir (ils)",        rep:"fuyaient" },
+  { p:"Tu <em>...</em> les murs de ta chambre en bleu.",       verbe:"peindre (tu)",      rep:"peignais" },
+  { p:"Nous <em>...</em> toujours le pire.",                   verbe:"craindre (nous)",   rep:"craignions" },
+  { p:"Ils <em>...</em> leurs amis après les cours.",          verbe:"rejoindre (ils)",   rep:"rejoignaient" },
+  { p:"Vous <em>...</em> toujours la vérité.",                 verbe:"dire (vous)",       rep:"disiez" },
+  { p:"Je <em>...</em> rentrer avant la nuit.",                verbe:"devoir (je)",       rep:"devais" },
+  { p:"Nous <em>...</em> déjà la réponse.",                    verbe:"savoir (nous)",     rep:"savions" },
+  { p:"Tu <em>...</em> venir quand tu voulais.",               verbe:"pouvoir (tu)",      rep:"pouvais" },
+  { p:"Elle <em>...</em> une lettre chaque semaine.",          verbe:"recevoir (elle)",   rep:"recevait" },
+];
+
+function shuffle(a){ return [...a].sort(()=>Math.random()-.5); }
+function normaliser(v){ return v.trim().toLowerCase().normalize('NFC'); }
+
+let selection=[], curIdx=0, scores=[];
+
+function demarrer(){
+  selection = shuffle([...QUESTIONS]).slice(0,10);
+  curIdx=0; scores=[];
+  document.getElementById('score-final').style.display='none';
+  document.getElementById('exercice-zone').style.display='block';
+  afficherQuestion();
+}
+
+function afficherQuestion(){
+  const q = selection[curIdx];
+  document.getElementById('info-numero').textContent = `Question ${curIdx+1}/10`;
+  document.getElementById('dots-progress').innerHTML =
+    selection.map((_,i)=>`<div class="dot" style="background:${i<curIdx?'#16a34a':i===curIdx?'#ec4899':'#d1d5db'}"></div>`).join('');
+  const phraseAff = q.p.replace(/<em>\.\.\.?<\/em>/, '<span style="color:#ec4899;font-size:20px">...</span>');
+  document.getElementById('question-zone').innerHTML = `
+    <div class="question-card">
+      <div class="q-label">✏️ Indicatif imparfait — Écris la bonne forme</div>
+      <div style="text-align:center;margin-bottom:.75rem">
+        <span class="q-verbe">🔧 ${q.verbe}</span>
+      </div>
+      <div class="q-phrase">${phraseAff}</div>
+      <div class="saisie-row">
+        <span class="fleche">→</span>
+        <input type="text" class="q-input" id="q-inp" placeholder="………"
+          autocomplete="off" autocorrect="off" spellcheck="false"
+          onkeydown="if(event.key==='Enter') valider()"/>
+      </div>
+      <div class="correction" id="correction"></div>
+    </div>`;
+  document.getElementById('btn-valider').style.display='block';
+  document.getElementById('btn-suivant').style.display='none';
+  setTimeout(()=>{ document.getElementById('q-inp')?.focus(); }, 100);
+}
+
+function valider(){
+  const q = selection[curIdx];
+  const inp = document.getElementById('q-inp');
+  if(!inp) return;
+  const val = normaliser(inp.value);
+  const ok = (val === normaliser(q.rep));
+  inp.disabled = true;
+  inp.classList.add(ok ? 'correct' : 'incorrect');
+  scores.push(ok);
+  if(!ok){
+    const corr = document.getElementById('correction');
+    corr.style.display = 'block';
+    corr.textContent = `La bonne réponse est : ${q.rep}`;
+  }
+  document.getElementById('btn-valider').style.display='none';
+  const isLast = curIdx >= 9;
+  const btn = document.getElementById('btn-suivant');
+  btn.style.display='block';
+  btn.textContent = isLast ? '🏁 Voir mon score final' : '➡️ Question suivante';
+  btn.onclick = isLast ? afficherScoreFinal : suivant;
+}
+
+function suivant(){ curIdx++; afficherQuestion(); }
+
+function afficherScoreFinal(){
+  document.getElementById('exercice-zone').style.display='none';
+  const sf=document.getElementById('score-final'); sf.style.display='block';
+  const ok=scores.filter(Boolean).length, total=scores.length;
+  const pct=Math.round(ok/total*100);
+  document.getElementById('final-emoji').textContent=pct===100?'🎉':pct>=60?'👍':'💪';
+  document.getElementById('final-score').textContent=`${ok}/${total} — ${pct}%`;
+  document.getElementById('final-score').style.color=pct===100?'#16a34a':pct>=60?'#f59e0b':'#dc2626';
+  document.getElementById('final-detail').innerHTML=scores.map((s,i)=>`Q${i+1} : ${s?'✅':'❌'}`).join('  ');
+}
+
+demarrer();
+</script>
+</body>
+</html>
