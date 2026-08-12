@@ -1,0 +1,1310 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Le Décodeur de Camemberts — LCML</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- TailwindCSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      corePlugins: {
+        preflight: false,
+      },
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Nunito', 'sans-serif'],
+            display: ['Fredoka', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #1e293b;
+      --border: #334155;
+      --primary: #a855f7;
+      --primary-hover: #9333ea;
+      --primary-glow: rgba(168, 85, 247, 0.22);
+      --accent: #f59e0b;
+      --accent-glow: rgba(245, 158, 11, 0.2);
+      --green: #10b981;
+      --green-soft: rgba(16, 185, 129, 0.1);
+      --red: #f43f5e;
+      --red-soft: rgba(244, 63, 94, 0.1);
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 1.5rem 1rem;
+      overflow-y: auto;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 960px;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    h1, h2, h3, .stat-val, .action-btn, .option-btn {
+      font-family: 'Fredoka', sans-serif;
+    }
+
+    /* ── Header ── */
+    header {
+      text-align: center;
+    }
+    h1 {
+      font-size: 2.2rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #e879f9, #a855f7, #6366f1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.35rem;
+    }
+    .subtitle {
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    /* ── Progress Bar & Stats ── */
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(30, 41, 59, 0.7);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 0.75rem 1.25rem;
+    }
+    .stat-block {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .stat-label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+    }
+    .stat-val {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+    .prog-track {
+      flex: 1;
+      height: 10px;
+      background: rgba(51, 65, 85, 0.5);
+      border-radius: 99px;
+      margin: 0 1.5rem;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    .prog-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--primary), #c084fc);
+      border-radius: 99px;
+      transition: width 0.4s ease;
+    }
+
+    /* ── Cards ── */
+    .card {
+      background: var(--card);
+      border: 2px solid var(--border);
+      border-radius: 20px;
+      padding: 1.75rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+      transition: all 0.3s ease;
+    }
+    .q-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.25rem 0.75rem;
+      border-radius: 99px;
+      background: rgba(168, 85, 247, 0.12);
+      border: 1px solid rgba(168, 85, 247, 0.3);
+      color: #d8b4fe;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-bottom: 1.25rem;
+    }
+    .q-text {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: #f1f5f9;
+      line-height: 1.5;
+      margin-bottom: 1.5rem;
+    }
+
+    /* ── Layout grid ── */
+    .layout-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    @media (min-width: 768px) {
+      .layout-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    /* ── Dynamic Tables ── */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 2px solid var(--border);
+      font-size: 0.95rem;
+    }
+    .data-table th {
+      background: #334155;
+      color: #f8fafc;
+      padding: 10px 14px;
+      text-align: left;
+      font-weight: 700;
+    }
+    .data-table td {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
+      background: #1e293b;
+      color: #cbd5e1;
+    }
+    .data-table tr:last-child td {
+      border-bottom: none;
+    }
+    .data-table tr.total-row td {
+      background: #0f172a;
+      font-weight: 800;
+      color: var(--accent);
+      border-top: 2px solid var(--border);
+    }
+
+    /* ── Options Area ── */
+    .option-btn {
+      width: 100%;
+      text-align: left;
+      background: rgba(30, 41, 59, 0.6);
+      border: 2px solid var(--border);
+      border-radius: 16px;
+      padding: 1rem 1.25rem;
+      color: var(--text);
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+      position: relative;
+    }
+    .option-btn:hover:not(:disabled) {
+      background: rgba(168, 85, 247, 0.08);
+      border-color: var(--primary);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(168, 85, 247, 0.15);
+    }
+    .option-btn:disabled {
+      cursor: not-allowed;
+      opacity: 0.7;
+    }
+    .option-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #334155;
+      color: #f1f5f9;
+      font-weight: 700;
+      font-size: 0.95rem;
+      flex-shrink: 0;
+    }
+    .option-btn.selected {
+      border-color: var(--accent);
+      background: rgba(245, 158, 11, 0.06);
+    }
+    .option-btn.correct {
+      border-color: var(--green) !important;
+      background: var(--green-soft) !important;
+    }
+    .option-btn.wrong {
+      border-color: var(--red) !important;
+      background: var(--red-soft) !important;
+    }
+
+    /* ── SVG choices ── */
+    .svg-choices {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+    @media (min-width: 640px) {
+      .svg-choices {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+    .svg-choice-btn {
+      background: #1e293b;
+      border: 2px solid var(--border);
+      border-radius: 16px;
+      padding: 0.75rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .svg-choice-btn:hover:not(:disabled) {
+      border-color: var(--primary);
+      transform: translateY(-3px);
+      box-shadow: 0 6px 16px rgba(168, 85, 247, 0.15);
+    }
+    .svg-choice-btn.correct {
+      border-color: var(--green) !important;
+      background: var(--green-soft) !important;
+    }
+    .svg-choice-btn.wrong {
+      border-color: var(--red) !important;
+      background: var(--red-soft) !important;
+    }
+    .choice-label {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    /* ── Action Buttons ── */
+    .action-btn {
+      display: block;
+      width: 100%;
+      background: linear-gradient(135deg, var(--primary), #c084fc);
+      color: #ffffff;
+      border: none;
+      border-radius: 16px;
+      padding: 1rem;
+      font-size: 1.1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 15px var(--primary-glow);
+      text-align: center;
+      margin-top: 1.5rem;
+    }
+    .action-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(168, 85, 247, 0.35);
+    }
+    .action-btn:active {
+      transform: translateY(1px);
+    }
+
+    /* ── Feedback area ── */
+    .feedback-panel {
+      margin-top: 1.5rem;
+      padding: 1.25rem;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      line-height: 1.6;
+    }
+    .feedback-panel.correct-style {
+      background: rgba(16, 185, 129, 0.08);
+      border-color: rgba(16, 185, 129, 0.3);
+      color: #a7f3d0;
+    }
+    .feedback-panel.wrong-style {
+      background: rgba(244, 63, 94, 0.08);
+      border-color: rgba(244, 63, 94, 0.3);
+      color: #fecdd3;
+    }
+    .feedback-title {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* ── Confetti effect elements ── */
+    .confetti {
+      position: fixed;
+      width: 10px;
+      height: 10px;
+      top: -10px;
+      z-index: 9999;
+      pointer-events: none;
+      animation: confettiFall 2.5s ease-out forwards;
+    }
+
+    @keyframes confettiFall {
+      0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(105vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    /* ── Legends list ── */
+    .legend-container {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+      background: rgba(30, 41, 59, 0.5);
+      padding: 0.75rem;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.85rem;
+      color: #cbd5e1;
+    }
+    .legend-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 3px;
+      flex-shrink: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🍕 Le Décodeur de Camemberts</h1>
+      <p class="subtitle">Diagrammes circulaires & tableaux de données</p>
+    </header>
+
+    <!-- Topbar : Progression et Score -->
+    <div class="topbar">
+      <div class="stat-block">
+        <span class="stat-label">Question</span>
+        <span id="q-num" class="stat-val">1/10</span>
+      </div>
+      <div class="prog-track">
+        <div id="prog-bar" class="prog-bar"></div>
+      </div>
+      <div class="stat-block">
+        <span class="stat-label">Score</span>
+        <span id="score-val" class="stat-val">0</span>
+      </div>
+    </div>
+
+    <!-- Interface principale de l'exercice -->
+    <div id="game-interface" class="card">
+      <div class="q-tag">Traitement de données</div>
+      <div id="question-text" class="q-text">Chargement de la question...</div>
+      
+      <!-- Zone interactive dynamique -->
+      <div id="interactive-container" class="w-full flex flex-col gap-4">
+        <!-- Rempli par le JS -->
+      </div>
+
+      <!-- Zone de correction et feedback -->
+      <div id="feedback-area" class="feedback-panel" style="display:none;"></div>
+      
+      <!-- Bouton de validation / suivant -->
+      <button id="action-btn" class="action-btn" style="display:none;" onclick="handleActionClick()"></button>
+    </div>
+
+    <!-- Écran final de réussite -->
+    <div id="congrats-flow" class="card" style="display:none;">
+      <h2 style="font-family:'Fredoka'; font-size:2rem; text-align:center; color:var(--accent);">Session terminée !</h2>
+      <div id="stars-disp" style="font-size:3.5rem; text-align:center; margin:1rem 0;">⭐⭐⭐</div>
+      <p id="congrats-msg" style="text-align:center; line-height:1.7; margin-bottom:1.5rem; font-size:1.1rem; color:#cbd5e1;"></p>
+      <button class="action-btn" onclick="resetGame()">Recommencer ↺</button>
+    </div>
+  </div>
+
+  <script>
+    // ═══════════════════════════════════════════════════════════════
+    // RETRO 8-BIT AUDIO SYNTHESIZER (WEB AUDIO API)
+    // ═══════════════════════════════════════════════════════════════
+    let audioCtx = null;
+    
+    function playTone(freq, dur = 0.12, delay = 0, type = 'sine', vol = 0.15) {
+      try {
+        audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') {
+          audioCtx.resume();
+        }
+        const osc = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+        
+        osc.type = type;
+        osc.frequency.value = freq;
+        
+        gainNode.gain.setValueAtTime(vol, audioCtx.currentTime + delay);
+        gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + delay + dur);
+        
+        osc.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+        
+        osc.start(audioCtx.currentTime + delay);
+        osc.stop(audioCtx.currentTime + delay + dur + 0.02);
+      } catch (e) {
+        console.warn("Audio Context Error: ", e);
+      }
+    }
+
+    const sndTap = () => playTone(800, 0.04, 0, 'sine', 0.1);
+    const sndCorrect = () => {
+      playTone(523.25, 0.08, 0, 'sine', 0.15);
+      playTone(659.25, 0.08, 0.06, 'sine', 0.15);
+      playTone(783.99, 0.12, 0.12, 'sine', 0.15);
+    };
+    const sndWrong = () => {
+      playTone(220, 0.15, 0, 'sawtooth', 0.12);
+      playTone(180, 0.2, 0.05, 'sawtooth', 0.12);
+    };
+    const sndFanfare = () => {
+      const tones = [523.25, 659.25, 783.99, 1046.50];
+      tones.forEach((t, i) => {
+        playTone(t, 0.15, i * 0.12, 'square', 0.08);
+      });
+      playTone(1318.51, 0.35, 0.48, 'square', 0.08);
+    };
+
+    // Colors database for visual segments
+    const SEG_COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ec4899', '#8b5cf6', '#06b6d4'];
+
+    // ═══════════════════════════════════════════════════════════════
+    // DATABASE OF 10 QUESTIONS
+    // ═══════════════════════════════════════════════════════════════
+    const QUESTIONS_POOL = [
+      {
+        type: 'TABLE_TO_PIE',
+        title: "Voici le tableau des votes pour l'élection du délégué de classe. Quel diagramme en secteurs correspond exactement à ces données ?",
+        data: {
+          headers: ["Candidat", "Votes", "Proportion"],
+          rows: [
+            ["Thomas", 10, "50% (la moitié)"],
+            ["Sarah", 5, "25% (un quart)"],
+            ["Inès", 3, "15%"],
+            ["Lucas", 2, "10% (un dixième)"]
+          ],
+          total: 20
+        },
+        slices: [
+          { name: "Thomas", value: 10, color: SEG_COLORS[0] },
+          { name: "Sarah", value: 5, color: SEG_COLORS[1] },
+          { name: "Inès", value: 3, color: SEG_COLORS[2] },
+          { name: "Lucas", value: 2, color: SEG_COLORS[3] }
+        ],
+        options: [
+          {
+            label: "Option A",
+            slices: [
+              { name: "Thomas", value: 10, color: SEG_COLORS[0] },
+              { name: "Sarah", value: 5, color: SEG_COLORS[1] },
+              { name: "Inès", value: 3, color: SEG_COLORS[2] },
+              { name: "Lucas", value: 2, color: SEG_COLORS[3] }
+            ],
+            isCorrect: true
+          },
+          {
+            label: "Option B",
+            slices: [
+              { name: "Thomas", value: 5, color: SEG_COLORS[0] },
+              { name: "Sarah", value: 10, color: SEG_COLORS[1] },
+              { name: "Inès", value: 3, color: SEG_COLORS[2] },
+              { name: "Lucas", value: 2, color: SEG_COLORS[3] }
+            ],
+            isCorrect: false
+          },
+          {
+            label: "Option C",
+            slices: [
+              { name: "Thomas", value: 5, color: SEG_COLORS[0] },
+              { name: "Sarah", value: 5, color: SEG_COLORS[1] },
+              { name: "Inès", value: 5, color: SEG_COLORS[2] },
+              { name: "Lucas", value: 5, color: SEG_COLORS[3] }
+            ],
+            isCorrect: false
+          }
+        ],
+        explanation: "Thomas a obtenu 10 votes sur 20, soit exactement 50% (la moitié du diagramme). Sarah a obtenu 5 votes, soit 25% (un quart). Le secteur bleu de la moitié et le secteur vert du quart correspondent à l'Option correcte !"
+      },
+      {
+        type: 'PIE_TO_TABLE',
+        title: "Regarde ce diagramme représentant les parfums de glace préférés d'un groupe d'enfants. Quel tableau de données lui correspond ?",
+        slices: [
+          { name: "Chocolat", value: 30, color: SEG_COLORS[0] }, // 50%
+          { name: "Vanille", value: 15, color: SEG_COLORS[1] },  // 25%
+          { name: "Fraise", value: 9, color: SEG_COLORS[2] },    // 15%
+          { name: "Menthe", value: 6, color: SEG_COLORS[3] }     // 10%
+        ],
+        options: [
+          {
+            isCorrect: true,
+            table: {
+              headers: ["Parfum", "Nombre d'enfants"],
+              rows: [
+                ["Chocolat", 30],
+                ["Vanille", 15],
+                ["Fraise", 9],
+                ["Menthe", 6]
+              ],
+              total: 60
+            }
+          },
+          {
+            isCorrect: false,
+            table: {
+              headers: ["Parfum", "Nombre d'enfants"],
+              rows: [
+                ["Chocolat", 15],
+                ["Vanille", 30],
+                ["Fraise", 9],
+                ["Menthe", 6]
+              ],
+              total: 60
+            }
+          },
+          {
+            isCorrect: false,
+            table: {
+              headers: ["Parfum", "Nombre d'enfants"],
+              rows: [
+                ["Chocolat", 20],
+                ["Vanille", 20],
+                ["Fraise", 10],
+                ["Menthe", 10]
+              ],
+              total: 60
+            }
+          }
+        ],
+        explanation: "Sur le diagramme, le Chocolat représente 50% (la moitié de 60, soit 30 enfants) et la Vanille représente 25% (un quart de 60, soit 15 enfants). Le bon tableau est donc celui qui indique ces valeurs !"
+      },
+      {
+        type: 'CALCULATE',
+        title: "Ce diagramme montre comment Léa dépense son argent de poche. Si son budget total est de 80 €, quelle somme a-t-elle dépensée pour les bonbons ?",
+        slices: [
+          { name: "Livres", value: 40, color: SEG_COLORS[0] }, 
+          { name: "Bonbons", value: 20, color: SEG_COLORS[1] }, // 25% (1/4)
+          { name: "Cinéma", value: 12, color: SEG_COLORS[2] }, 
+          { name: "Épargne", value: 8, color: SEG_COLORS[3] }  
+        ],
+        options: [
+          { text: "10 €", isCorrect: false },
+          { text: "20 €", isCorrect: true },
+          { text: "40 €", isCorrect: false },
+          { text: "15 €", isCorrect: false }
+        ],
+        explanation: "Sur le diagramme, le secteur vert des bonbons représente un quart (25%) du cercle. Pour calculer un quart de 80 €, on divise par 4 : 80 € ÷ 4 = 20 €."
+      },
+      {
+        type: 'TABLE_TO_PIE',
+        title: "Voici le tableau du tri des déchets ramassés à l'école. Quel diagramme circulaire représente fidèlement ce tri ?",
+        data: {
+          headers: ["Déchet", "Masse", "Proportion"],
+          rows: [
+            ["Papier", 40, "50% (la moitié)"],
+            ["Plastique", 20, "25% (un quart)"],
+            ["Métal", 12, "15%"],
+            ["Verre", 8, "10% (un dixième)"]
+          ],
+          total: 80
+        },
+        slices: [
+          { name: "Papier", value: 40, color: SEG_COLORS[4] },
+          { name: "Plastique", value: 20, color: SEG_COLORS[1] },
+          { name: "Métal", value: 12, color: SEG_COLORS[2] },
+          { name: "Verre", value: 8, color: SEG_COLORS[5] }
+        ],
+        options: [
+          {
+            label: "Option A",
+            slices: [
+              { name: "Papier", value: 40, color: SEG_COLORS[4] },
+              { name: "Plastique", value: 20, color: SEG_COLORS[1] },
+              { name: "Métal", value: 12, color: SEG_COLORS[2] },
+              { name: "Verre", value: 8, color: SEG_COLORS[5] }
+            ],
+            isCorrect: true
+          },
+          {
+            label: "Option B",
+            slices: [
+              { name: "Papier", value: 20, color: SEG_COLORS[4] },
+              { name: "Plastique", value: 40, color: SEG_COLORS[1] },
+              { name: "Métal", value: 12, color: SEG_COLORS[2] },
+              { name: "Verre", value: 8, color: SEG_COLORS[5] }
+            ],
+            isCorrect: false
+          },
+          {
+            label: "Option C",
+            slices: [
+              { name: "Papier", value: 8, color: SEG_COLORS[4] },
+              { name: "Plastique", value: 20, color: SEG_COLORS[1] },
+              { name: "Métal", value: 12, color: SEG_COLORS[2] },
+              { name: "Verre", value: 40, color: SEG_COLORS[5] }
+            ],
+            isCorrect: false
+          }
+        ],
+        explanation: "Le Papier représente la moitié (50%) et le Plastique représente un quart (25%). C'est le diagramme montrant le secteur du papier couvrant un demi-cercle et celui du plastique formant un angle droit (90°) qui est correct !"
+      },
+      {
+        type: 'CALCULATE',
+        title: "Le bus représente 10% des moyens de transport des élèves. Combien d'élèves viennent en bus si l'école compte 200 élèves en tout ?",
+        slices: [
+          { name: "Vélo", value: 100, color: SEG_COLORS[0] }, 
+          { name: "À pied", value: 50, color: SEG_COLORS[1] }, 
+          { name: "Voiture", value: 30, color: SEG_COLORS[2] }, 
+          { name: "Bus", value: 20, color: SEG_COLORS[3] }  
+        ],
+        options: [
+          { text: "10 élèves", isCorrect: false },
+          { text: "20 élèves", isCorrect: true },
+          { text: "50 élèves", isCorrect: false },
+          { text: "15 élèves", isCorrect: false }
+        ],
+        explanation: "Le secteur du bus représente 10% (soit un dixième, 1/10) du diagramme. Pour trouver 1/10 de 200 élèves, on divise par 10 : 200 ÷ 10 = 20 élèves."
+      },
+      {
+        type: 'PIE_TO_TABLE',
+        title: "Voici la répartition des animaux de compagnie des élèves de l'école. Les chiens représentent les trois quarts (75%). Quel tableau correspond à ce diagramme ?",
+        slices: [
+          { name: "Chiens", value: 30, color: SEG_COLORS[2] }, 
+          { name: "Chats", value: 6, color: SEG_COLORS[1] },  
+          { name: "Poissons", value: 4, color: SEG_COLORS[0] } 
+        ],
+        options: [
+          {
+            isCorrect: true,
+            table: {
+              headers: ["Animal", "Nombre d'élèves"],
+              rows: [
+                ["Chiens", 30],
+                ["Chats", 6],
+                ["Poissons", 4]
+              ],
+              total: 40
+            }
+          },
+          {
+            isCorrect: false,
+            table: {
+              headers: ["Animal", "Nombre d'élèves"],
+              rows: [
+                ["Chiens", 20],
+                ["Chats", 10],
+                ["Poissons", 10]
+              ],
+              total: 40
+            }
+          },
+          {
+            isCorrect: false,
+            table: {
+              headers: ["Animal", "Nombre d'élèves"],
+              rows: [
+                ["Chiens", 15],
+                ["Chats", 15],
+                ["Poissons", 10]
+              ],
+              total: 40
+            }
+          }
+        ],
+        explanation: "Les Chiens représentent 75% du total (les trois quarts). Trois quarts de 40 se calculent en faisant : (40 ÷ 4) × 3 = 10 × 3 = 30 élèves. Le tableau correct doit donc indiquer 30 Chiens."
+      },
+      {
+        type: 'COLOR_MATCH',
+        title: "Dans ce diagramme de la bibliothèque de classe (100 livres au total), quelle catégorie de livres correspond au secteur vert (qui représente 15% du cercle) ?",
+        slices: [
+          { name: "Romans", value: 50, color: '#3b82f6' }, 
+          { name: "BD", value: 25, color: '#f59e0b' },     
+          { name: "Documentaires", value: 15, color: '#10b981' }, 
+          { name: "Poésie", value: 10, color: '#ec4899' }  
+        ],
+        data: {
+          headers: ["Genre", "Nombre de livres"],
+          rows: [
+            ["Romans", 50],
+            ["BD", 25],
+            ["Documentaires", 15],
+            ["Poésie", 10]
+          ],
+          total: 100
+        },
+        slicesWithFixedColors: [
+          { name: "Romans", value: 50, color: '#3b82f6' }, 
+          { name: "BD", value: 25, color: '#f59e0b' },     
+          { name: "Documentaires", value: 15, color: '#10b981' }, 
+          { name: "Poésie", value: 10, color: '#ec4899' }  
+        ],
+        options: [
+          { text: "Romans", isCorrect: false },
+          { text: "BD", isCorrect: false },
+          { text: "Documentaires", isCorrect: true },
+          { text: "Poésie", isCorrect: false }
+        ],
+        explanation: "Le secteur vert représente 15% du cercle. En regardant le tableau, sur un total de 100 livres, c'est la catégorie des documentaires (15 livres, soit 15%) qui lui correspond."
+      },
+      {
+        type: 'CALCULATE',
+        title: "D'après ce diagramme représentant la terre d'un jardin, la proportion de terreau est de 75% (les 3/4). Quelle masse de terreau y a-t-il dans un sac de mélange de 120 kg ?",
+        slices: [
+          { name: "Terreau", value: 90, color: SEG_COLORS[4] }, 
+          { name: "Sable", value: 18, color: SEG_COLORS[1] },  
+          { name: "Argile", value: 12, color: SEG_COLORS[3] }  
+        ],
+        options: [
+          { text: "60 kg", isCorrect: false },
+          { text: "90 kg", isCorrect: true },
+          { text: "30 kg", isCorrect: false },
+          { text: "80 kg", isCorrect: false }
+        ],
+        explanation: "Le terreau représente les trois quarts (3/4) de 120 kg. On calcule 1/4 de 120 (120 ÷ 4 = 30 kg), puis on multiplie par 3 : 30 kg × 3 = 90 kg."
+      },
+      {
+        type: 'CALCULATE',
+        title: "Le football occupe exactement la moitié (50%) de ce diagramme circulaire. Combien d'enfants pratiquent le football si le groupe complet compte 150 enfants ?",
+        slices: [
+          { name: "Football", value: 75, color: SEG_COLORS[0] }, 
+          { name: "Basket-ball", value: 37.5, color: SEG_COLORS[1] }, 
+          { name: "Tennis", value: 22.5, color: SEG_COLORS[2] }, 
+          { name: "Judo", value: 15, color: SEG_COLORS[3] } 
+        ],
+        options: [
+          { text: "50 enfants", isCorrect: false },
+          { text: "75 enfants", isCorrect: true },
+          { text: "100 enfants", isCorrect: false },
+          { text: "25 enfants", isCorrect: false }
+        ],
+        explanation: "Le football occupe la moitié (50%) du diagramme. La moitié de 150 s'obtient simplement en divisant par 2 : 150 ÷ 2 = 75 enfants."
+      },
+      {
+        type: 'CALCULATE',
+        title: "En observant ce diagramme de la récolte de fruits d'un verger, quelle quantité de cerises (qui représentent 15% du cercle) a été cueillie sur un total de 400 kg ?",
+        slices: [
+          { name: "Pommes", value: 200, color: SEG_COLORS[0] }, 
+          { name: "Poires", value: 100, color: SEG_COLORS[1] }, 
+          { name: "Cerises", value: 60, color: SEG_COLORS[2] }, 
+          { name: "Prunes", value: 40, color: SEG_COLORS[3] }  
+        ],
+        options: [
+          { text: "100 kg", isCorrect: false },
+          { text: "60 kg", isCorrect: true },
+          { text: "40 kg", isCorrect: false },
+          { text: "150 kg", isCorrect: false }
+        ],
+        explanation: "Les cerises représentent 15% du total. Pour calculer 15% de 400 kg : 10% de 400 kg = 40 kg, et 5% = 20 kg (la moitié de 10%). Ainsi, 15% correspond à 40 kg + 20 kg = 60 kg."
+      }
+    ];
+
+    // ═══════════════════════════════════════════════════════════════
+    // SESSION STATE & GAME ENGINE
+    // ═══════════════════════════════════════════════════════════════
+    let currentQuestionIndex = 0;
+    let currentScore = 0;
+    let questions = [];
+    let selectedOptionIndex = null;
+    let answerSubmitted = false;
+
+    const TOTAL_QUESTIONS = 10;
+
+    function initSession() {
+      questions = [...QUESTIONS_POOL].sort(() => Math.random() - 0.5);
+      currentQuestionIndex = 0;
+      currentScore = 0;
+      answerSubmitted = false;
+      selectedOptionIndex = null;
+      
+      document.getElementById('game-interface').style.display = 'block';
+      document.getElementById('congrats-flow').style.display = 'none';
+      updateTopbar();
+    }
+
+    function updateTopbar() {
+      document.getElementById('q-num').textContent = `${currentQuestionIndex + 1}/${TOTAL_QUESTIONS}`;
+      document.getElementById('score-val').textContent = currentScore;
+      const pct = (currentQuestionIndex / TOTAL_QUESTIONS) * 100;
+      document.getElementById('prog-bar').style.width = `${pct}%`;
+    }
+
+    function generatePieChartSVG(slices, showLabels = true) {
+      const total = slices.reduce((sum, s) => sum + s.value, 0);
+      let startAngle = -90; 
+      let svgContent = '';
+      
+      svgContent += `<circle cx="100" cy="100" r="82" fill="#1e293b" stroke="#475569" stroke-width="2" />`;
+      
+      slices.forEach((slice) => {
+        const angle = (slice.value / total) * 360;
+        const endAngle = startAngle + angle;
+        
+        const rad1 = (startAngle * Math.PI) / 180;
+        const rad2 = (endAngle * Math.PI) / 180;
+        
+        const cx = 100;
+        const cy = 100;
+        const r = 80;
+        
+        const x1 = cx + r * Math.cos(rad1);
+        const y1 = cy + r * Math.sin(rad1);
+        const x2 = cx + r * Math.cos(rad2);
+        const y2 = cy + r * Math.sin(rad2);
+        
+        const largeArcFlag = angle > 180 ? 1 : 0;
+        
+        svgContent += `<path d="M ${cx} ${cy} L ${x1} ${y1} A ${r} ${r} 0 ${largeArcFlag} 1 ${x2} ${y2} Z" fill="${slice.color}" stroke="#1e293b" stroke-width="2" />`;
+        
+        const midAngle = startAngle + angle / 2;
+        const midRad = (midAngle * Math.PI) / 180;
+        const lx = cx + (r * 0.58) * Math.cos(midRad);
+        const ly = cy + (r * 0.58) * Math.sin(midRad);
+        
+        const pct = Math.round((slice.value / total) * 100);
+        if (pct >= 8 && showLabels) {
+          svgContent += `<text x="${lx}" y="${ly}" fill="#ffffff" font-weight="bold" font-family="'Fredoka', sans-serif" font-size="10.5" text-anchor="middle" dominant-baseline="middle" style="text-shadow: 1.5px 1.5px 2px rgba(0,0,0,0.9);">${pct}%</text>`;
+        }
+        
+        startAngle = endAngle;
+      });
+      
+      return `<svg viewBox="0 0 200 200" class="w-48 h-48 sm:w-56 sm:h-56 mx-auto">${svgContent}</svg>`;
+    }
+
+    function generateTableHTML(tableData) {
+      let html = `<table class="data-table">`;
+      html += `<thead><tr>`;
+      tableData.headers.forEach(h => {
+        html += `<th>${h}</th>`;
+      });
+      html += `</tr></thead><tbody>`;
+      
+      tableData.rows.forEach(row => {
+        html += `<tr>`;
+        row.forEach(cell => {
+          html += `<td>${cell}</td>`;
+        });
+        html += `</tr>`;
+      });
+      
+      if (tableData.total) {
+        html += `<tr class="total-row">`;
+        html += `<td>Total</td>`;
+        html += `<td colspan="${tableData.headers.length - 1}">${tableData.total}</td>`;
+        html += `</tr>`;
+      }
+      
+      html += `</tbody></table>`;
+      return html;
+    }
+
+    function generateLegendHTML(slices) {
+      let html = `<div class="legend-container">`;
+      slices.forEach(s => {
+        html += `
+          <div class="legend-item">
+            <span class="legend-dot" style="background:${s.color}"></span>
+            <span><strong>${s.name}</strong></span>
+          </div>`;
+      });
+      html += `</div>`;
+      return html;
+    }
+
+    function renderQuestion() {
+      const q = questions[currentQuestionIndex];
+      selectedOptionIndex = null;
+      answerSubmitted = false;
+      
+      document.getElementById('question-text').textContent = `${currentQuestionIndex + 1}. ${q.title}`;
+      
+      const feedbackArea = document.getElementById('feedback-area');
+      feedbackArea.style.display = 'none';
+      feedbackArea.className = 'feedback-panel';
+      
+      const actionBtn = document.getElementById('action-btn');
+      actionBtn.style.display = 'none';
+      actionBtn.disabled = true;
+
+      const container = document.getElementById('interactive-container');
+      container.innerHTML = '';
+      
+      if (q.type === 'TABLE_TO_PIE') {
+        const grid = document.createElement('div');
+        grid.className = 'layout-grid';
+        
+        const leftCol = document.createElement('div');
+        leftCol.className = 'flex flex-col justify-center';
+        leftCol.innerHTML = generateTableHTML(q.data);
+        grid.appendChild(leftCol);
+        
+        const rightCol = document.createElement('div');
+        rightCol.className = 'flex flex-col justify-center gap-2';
+        
+        const choicesGrid = document.createElement('div');
+        choicesGrid.className = 'svg-choices';
+        
+        q.options.forEach((opt, idx) => {
+          const btn = document.createElement('button');
+          btn.className = 'svg-choice-btn';
+          btn.id = `choice-${idx}`;
+          btn.onclick = () => selectSvgChoice(idx);
+          btn.innerHTML = `
+            <span class="choice-label">${opt.label}</span>
+            ${generatePieChartSVG(opt.slices, true)}
+          `;
+          choicesGrid.appendChild(btn);
+        });
+        
+        rightCol.appendChild(choicesGrid);
+        grid.appendChild(rightCol);
+        container.appendChild(grid);
+        
+      } else if (q.type === 'PIE_TO_TABLE') {
+        const grid = document.createElement('div');
+        grid.className = 'layout-grid';
+        
+        const leftCol = document.createElement('div');
+        leftCol.className = 'flex flex-col items-center justify-center';
+        leftCol.innerHTML = generatePieChartSVG(q.slices, true) + generateLegendHTML(q.slices);
+        grid.appendChild(leftCol);
+        
+        const rightCol = document.createElement('div');
+        rightCol.className = 'flex flex-col gap-4';
+        
+        q.options.forEach((opt, idx) => {
+          const btn = document.createElement('button');
+          btn.className = 'option-btn items-stretch flex-col text-left';
+          btn.id = `choice-${idx}`;
+          btn.onclick = () => selectOption(idx);
+          
+          let btnHtml = `
+            <div class="flex items-center gap-3 mb-2">
+              <span class="option-badge">${String.fromCharCode(65 + idx)}</span>
+              <span class="font-bold text-slate-300">Tableau ${String.fromCharCode(65 + idx)}</span>
+            </div>
+            ${generateTableHTML(opt.table)}
+          `;
+          btn.innerHTML = btnHtml;
+          rightCol.appendChild(btn);
+        });
+        
+        grid.appendChild(rightCol);
+        container.appendChild(grid);
+        
+      } else if (q.type === 'CALCULATE') {
+        const grid = document.createElement('div');
+        grid.className = 'layout-grid';
+        
+        const leftCol = document.createElement('div');
+        leftCol.className = 'flex flex-col items-center justify-center';
+        leftCol.innerHTML = generatePieChartSVG(q.slices, true) + generateLegendHTML(q.slices);
+        grid.appendChild(leftCol);
+        
+        const rightCol = document.createElement('div');
+        rightCol.className = 'flex flex-col justify-center';
+        
+        q.options.forEach((opt, idx) => {
+          const btn = document.createElement('button');
+          btn.className = 'option-btn';
+          btn.id = `choice-${idx}`;
+          btn.onclick = () => selectOption(idx);
+          btn.innerHTML = `
+            <span class="option-badge">${String.fromCharCode(65 + idx)}</span>
+            <span class="text-lg">${opt.text}</span>
+          `;
+          rightCol.appendChild(btn);
+        });
+        
+        grid.appendChild(rightCol);
+        container.appendChild(grid);
+        
+      } else if (q.type === 'COLOR_MATCH') {
+        const grid = document.createElement('div');
+        grid.className = 'layout-grid';
+        
+        const leftCol = document.createElement('div');
+        leftCol.className = 'flex flex-col items-center justify-center';
+        leftCol.innerHTML = generatePieChartSVG(q.slicesWithFixedColors, true) + generateLegendHTML(q.slicesWithFixedColors);
+        grid.appendChild(leftCol);
+        
+        const rightCol = document.createElement('div');
+        rightCol.className = 'flex flex-col gap-4';
+        
+        const tblContainer = document.createElement('div');
+        tblContainer.innerHTML = generateTableHTML(q.data);
+        rightCol.appendChild(tblContainer);
+        
+        const btnsContainer = document.createElement('div');
+        btnsContainer.className = 'flex flex-col gap-2';
+        
+        q.options.forEach((opt, idx) => {
+          const btn = document.createElement('button');
+          btn.className = 'option-btn';
+          btn.id = `choice-${idx}`;
+          btn.onclick = () => selectOption(idx);
+          btn.innerHTML = `
+            <span class="option-badge">${String.fromCharCode(65 + idx)}</span>
+            <span class="text-lg">${opt.text}</span>
+          `;
+          btnsContainer.appendChild(btn);
+        });
+        
+        rightCol.appendChild(btnsContainer);
+        grid.appendChild(rightCol);
+        container.appendChild(grid);
+      }
+    }
+
+    function selectOption(idx) {
+      if (answerSubmitted) return;
+      sndTap();
+      
+      const q = questions[currentQuestionIndex];
+      q.options.forEach((_, i) => {
+        const btn = document.getElementById(`choice-${i}`);
+        if (btn) btn.classList.remove('selected');
+      });
+      
+      selectedOptionIndex = idx;
+      const selectedBtn = document.getElementById(`choice-${idx}`);
+      if (selectedBtn) selectedBtn.classList.add('selected');
+      
+      const actionBtn = document.getElementById('action-btn');
+      actionBtn.style.display = 'block';
+      actionBtn.disabled = false;
+      actionBtn.textContent = "Valider ➔";
+    }
+
+    function selectSvgChoice(idx) {
+      if (answerSubmitted) return;
+      sndTap();
+      
+      const q = questions[currentQuestionIndex];
+      q.options.forEach((_, i) => {
+        const btn = document.getElementById(`choice-${i}`);
+        if (btn) {
+          btn.style.borderColor = 'var(--border)';
+          btn.style.background = '#1e293b';
+        }
+      });
+      
+      selectedOptionIndex = idx;
+      const selectedBtn = document.getElementById(`choice-${idx}`);
+      if (selectedBtn) {
+        selectedBtn.style.borderColor = 'var(--accent)';
+        selectedBtn.style.background = 'rgba(245, 158, 11, 0.08)';
+      }
+      
+      const actionBtn = document.getElementById('action-btn');
+      actionBtn.style.display = 'block';
+      actionBtn.disabled = false;
+      actionBtn.textContent = "Valider ➔";
+    }
+
+    function handleActionClick() {
+      if (!answerSubmitted) {
+        checkAnswer();
+      } else {
+        goToNextQuestion();
+      }
+    }
+
+    function checkAnswer() {
+      answerSubmitted = true;
+      const q = questions[currentQuestionIndex];
+      const selectedChoice = q.options[selectedOptionIndex];
+      const isCorrect = selectedChoice.isCorrect;
+      
+      const feedbackArea = document.getElementById('feedback-area');
+      feedbackArea.style.display = 'block';
+      
+      q.options.forEach((opt, idx) => {
+        const btn = document.getElementById(`choice-${idx}`);
+        if (!btn) return;
+        
+        btn.disabled = true; 
+        
+        if (q.type === 'TABLE_TO_PIE') {
+          if (opt.isCorrect) {
+            btn.classList.add('correct');
+            btn.style.borderColor = 'var(--green)';
+            btn.style.background = 'var(--green-soft)';
+          } else if (idx === selectedOptionIndex) {
+            btn.classList.add('wrong');
+            btn.style.borderColor = 'var(--red)';
+            btn.style.background = 'var(--red-soft)';
+          }
+        } else {
+          if (opt.isCorrect) {
+            btn.classList.add('correct');
+          } else if (idx === selectedOptionIndex) {
+            btn.classList.add('wrong');
+          }
+        }
+      });
+      
+      if (isCorrect) {
+        currentScore++;
+        sndCorrect();
+        feedbackArea.className = 'feedback-panel correct-style';
+        feedbackArea.innerHTML = `
+          <div class="feedback-title">
+            <span>✅</span>
+            <span>Bravo ! C'est tout à fait correct.</span>
+          </div>
+          <p>${q.explanation}</p>
+        `;
+      } else {
+        sndWrong();
+        feedbackArea.className = 'feedback-panel wrong-style';
+        feedbackArea.innerHTML = `
+          <div class="feedback-title">
+            <span>❌</span>
+            <span>Oups ! Ce n'est pas la bonne réponse.</span>
+          </div>
+          <p>${q.explanation}</p>
+        `;
+      }
+      
+      const actionBtn = document.getElementById('action-btn');
+      if (currentQuestionIndex + 1 < TOTAL_QUESTIONS) {
+        actionBtn.textContent = "Question suivante ➔";
+      } else {
+        actionBtn.textContent = "Terminer la fiche ➔";
+      }
+      
+      document.getElementById('score-val').textContent = currentScore;
+    }
+
+    function goToNextQuestion() {
+      currentQuestionIndex++;
+      if (currentQuestionIndex < TOTAL_QUESTIONS) {
+        updateTopbar();
+        renderQuestion();
+      } else {
+        finishSession();
+      }
+    }
+
+    function finishSession() {
+      document.getElementById('game-interface').style.display = 'none';
+      document.getElementById('congrats-flow').style.display = 'block';
+      
+      document.getElementById('prog-bar').style.width = '100%';
+      document.getElementById('q-num').textContent = `${TOTAL_QUESTIONS}/${TOTAL_QUESTIONS}`;
+      
+      const pct = Math.round((currentScore / TOTAL_QUESTIONS) * 100);
+      let stars = "";
+      let msg = "";
+      
+      if (currentScore === 10) {
+        msg = `<strong>Félicitations ! Sans-faute parfait ! 10/10 (${pct}%)</strong><br>Tu as parfaitement décodé tous les diagrammes circulaires et maîtrisé les fractions de référence (1/2, 1/4, 3/4, 1/10). Magnifique travail !`;
+        stars = "⭐⭐⭐";
+        sndFanfare();
+        triggerConfettiShower();
+      } else if (currentScore >= 8) {
+        msg = `<strong>Super travail ! ${currentScore}/10 (${pct}%)</strong><br>Tu as une excellente estimation visuelle et une très bonne logique pour passer des tableaux de données aux graphiques circulaires. Continue comme ça !`;
+        stars = "⭐⭐";
+        sndFanfare();
+      } else if (currentScore >= 5) {
+        msg = `<strong>Pas mal ! ${currentScore}/10 (${pct}%)</strong><br>C'est encourageant, mais fais bien attention à repérer la moitié (50%), le quart (25%) ou le dixième (10%) pour t'aider. Réessaie encore pour t'améliorer !`;
+        stars = "⭐";
+        playTone(523.25, 0.15, 0, 'sine', 0.1);
+        playTone(659.25, 0.25, 0.1, 'sine', 0.1);
+      } else {
+        msg = `<strong>${currentScore}/10 (${pct}%)</strong><br>Prends le temps de bien relire les explications pour chaque question. Utilise les fractions clés (1/2, 1/4) comme repères visuels sur le camembert. Entraîne-toi à nouveau !`;
+        stars = "❌";
+        playTone(220, 0.3, 0, 'sawtooth', 0.1);
+      }
+      
+      document.getElementById('congrats-msg').innerHTML = msg;
+      document.getElementById('stars-disp').textContent = stars;
+      
+      if (window.parent && window.parent.saveResult) {
+        window.parent.saveResult({
+          activity: 'td_donnees_circulaires',
+          bookTitle: 'Le décodeur de camemberts',
+          score: currentScore,
+          total: TOTAL_QUESTIONS,
+          pct: pct,
+          date: new Date().toLocaleDateString('fr-BE'),
+          time: new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })
+        });
+      }
+    }
+
+    function resetGame() {
+      initSession();
+      renderQuestion();
+    }
+
+    function triggerConfettiShower() {
+      const colors = ['#a855f7', '#10b981', '#f59e0b', '#3b82f6', '#ec4899', '#34d399', '#f43f5e'];
+      for (let i = 0; i < 100; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.style.left = Math.random() * 100 + 'vw';
+        confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        confetti.style.animationDelay = Math.random() * 1.5 + 's';
+        confetti.style.width = Math.random() * 8 + 6 + 'px';
+        confetti.style.height = confetti.style.width;
+        confetti.style.transform = `scale(${Math.random() * 0.8 + 0.5})`;
+        confetti.style.animationDuration = Math.random() * 1.8 + 1.2 + 's';
+        
+        document.body.appendChild(confetti);
+        
+        setTimeout(() => {
+          confetti.remove();
+        }, 3200);
+      }
+    }
+
+    window.onload = () => {
+      initSession();
+      renderQuestion();
+    };
+  </script>
+</body>
+</html>

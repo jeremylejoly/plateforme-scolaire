@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Les Hauteurs du Triangle — LCML</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- TailwindCSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      corePlugins: {
+        preflight: false,
+      },
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Nunito', 'sans-serif'],
+            display: ['Fredoka', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  
+  <style>
+    :root {
+      --bg-gradient: linear-gradient(135deg, #fef2f2 0%, #e0f2fe 100%);
+      --card: #ffffff;
+      --text: #0f172a;
+      --text-muted: #475569;
+      --primary: #ef4444;
+      --primary-hover: #dc2626;
+      --primary-soft: #fee2e2;
+      --secondary: #3b82f6;
+      --secondary-soft: #dbeafe;
+      --success: #10b981;
+      --success-soft: #d1fae5;
+      --danger: #ef4444;
+      --danger-soft: #fee2e2;
+      --warning: #f59e0b;
+      --warning-soft: #fef3c7;
+      --border-color: #cbd5e1;
+      --border-focus: #ef4444;
+      
+      --shadow-md: 0 10px 15px -3px rgba(239, 68, 68, 0.1), 0 4px 6px -4px rgba(239, 68, 68, 0.05);
+      --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+      
+      --radius-md: 16px;
+      --radius-lg: 24px;
+      --transition: all 0.2s ease-in-out;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: var(--bg-gradient);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3, h4, .btn, .score-label {
+      font-family: 'Fredoka', sans-serif;
+    }
+
+    /* PREMIUM CARD */
+    .card-premium {
+      background: var(--card);
+      border-radius: var(--radius-lg);
+      border: 3px solid #0f172a;
+      box-shadow: 6px 6px 0px #0f172a;
+      transition: var(--transition);
+    }
+
+    /* 3D BUTTONS */
+    .btn-3d {
+      font-weight: 700;
+      border: 3px solid #0f172a;
+      box-shadow: 4px 4px 0px #0f172a;
+      transition: all 0.1s ease;
+      cursor: pointer;
+      user-select: none;
+    }
+    .btn-3d:active:not(:disabled) {
+      transform: translate(2px, 2px);
+      box-shadow: 2px 2px 0px #0f172a;
+    }
+    .btn-3d:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* RETRO PROGRESS DOTS */
+    .progress-dot {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: #f1f5f9;
+      border: 3px solid #0f172a;
+      box-shadow: 2px 2px 0px #0f172a;
+      transition: var(--transition);
+    }
+    .progress-dot.active {
+      background: #ffffff;
+      box-shadow: 0 0 0 3px var(--secondary-soft), 2px 2px 0px #0f172a;
+      transform: scale(1.1);
+    }
+    .progress-dot.correct {
+      background: var(--success);
+    }
+    .progress-dot.helped {
+      background: var(--warning);
+    }
+    .progress-dot.wrong {
+      background: var(--danger);
+    }
+
+    /* CONFETTI ANIMATION */
+    .confetti {
+      position: fixed;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      animation: confettiFall 2.5s ease-out forwards;
+    }
+    @keyframes confettiFall {
+      0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(105vh) rotate(360deg); opacity: 0; }
+    }
+  </style>
+</head>
+<body class="flex flex-col min-h-screen">
+
+  <!-- HEADER -->
+  <header class="bg-white border-b-4 border-slate-900 py-3 px-6 sticky top-0 z-40">
+    <div class="max-w-4xl mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <button onclick="window.parent && window.parent.showScreen ? window.parent.showScreen('screen-solides-triangles') : window.close();" class="btn-3d bg-slate-100 hover:bg-slate-200 text-slate-800 px-3 py-1 rounded-lg text-sm font-semibold flex items-center gap-1">
+          ← Menu
+        </button>
+        <span class="text-xl md:text-2xl font-black text-rose-600 tracking-tight flex items-center gap-2">
+          <span>🔺</span> Les Hauteurs du Triangle
+        </span>
+      </div>
+      <div class="flex items-center gap-4">
+        <div class="bg-rose-50 border-2 border-slate-900 rounded-full px-4 py-1.5 font-bold text-rose-800 text-sm md:text-base flex items-center gap-1.5 shadow-sm">
+          <span>🎯 Score :</span>
+          <span id="current-score" class="font-black">0</span>
+          <span class="text-slate-400">/</span>
+          <span>10</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <main class="flex-1 max-w-2xl w-full mx-auto p-4 md:py-8 flex flex-col justify-center">
+
+    <!-- SCREEN 1: WELCOME -->
+    <div id="screen-welcome" class="card-premium p-6 md:p-10 text-center flex flex-col gap-6">
+      <div class="text-6xl md:text-7xl animate-bounce mt-4">🔺📐📏</div>
+      <h2 class="text-2xl md:text-3xl font-black text-slate-800">Prêt pour le défi géométrique ?</h2>
+      <p class="text-slate-600 text-base md:text-lg leading-relaxed max-w-md mx-auto">
+        Tu vas devoir identifier la hauteur d'un triangle relative à un côté ou l'orthocentre parmi 10 questions. Reste bien attentif aux angles droits !
+      </p>
+      
+      <!-- Pedagogical Mini-Tutorial -->
+      <div class="bg-rose-50 border-2 border-rose-200 rounded-xl p-4 text-left text-sm text-rose-900 flex flex-col gap-2 max-w-lg mx-auto">
+        <div class="font-black text-rose-800 flex items-center gap-1.5">
+          <span>💡 Rappel de cours</span>
+        </div>
+        <p class="leading-relaxed">
+          Une <strong>hauteur</strong> d'un triangle est une droite passant par un <strong>sommet</strong> et qui coupe le côté opposé (sa base) perpendiculairement (en formant un <strong>angle droit à 90°</strong>).
+        </p>
+        <ul class="list-disc pl-5 flex flex-col gap-1">
+          <li><strong>Triangle acutangle</strong> : les 3 hauteurs sont à l'intérieur.</li>
+          <li><strong>Triangle rectangle</strong> : 2 des hauteurs sont confondues avec les côtés de l'angle droit.</li>
+          <li><strong>Triangle obtusangle</strong> : 2 des hauteurs tombent à l'extérieur, sur le prolongement des côtés.</li>
+          <li>L'intersection des trois hauteurs s'appelle l'<strong>orthocentre</strong>.</li>
+        </ul>
+      </div>
+
+      <button id="btn-start" onclick="startGame()" class="btn-3d bg-rose-400 hover:bg-rose-500 text-slate-900 px-8 py-3.5 rounded-xl font-bold text-lg md:text-xl w-fit mx-auto mt-4">
+        C'est parti ! 🚀
+      </button>
+    </div>
+
+    <!-- SCREEN 2: GAMEPLAY -->
+    <div id="screen-game" class="hidden flex flex-col gap-6">
+      
+      <!-- Progress Track -->
+      <div class="flex items-center justify-between px-2">
+        <div id="progress-dots" class="flex gap-2">
+          <!-- Dots dynamically populated -->
+        </div>
+        <div class="text-xs font-bold text-slate-500 uppercase tracking-wider" id="progress-text">
+          Question 1 / 10
+        </div>
+      </div>
+
+      <!-- Main Exercise Card -->
+      <div class="card-premium p-6 md:p-8 flex flex-col gap-6 relative overflow-hidden">
+        
+        <!-- Question label -->
+        <div class="text-center">
+          <h3 id="question-label" class="text-lg md:text-xl font-bold text-slate-800 leading-relaxed">
+            <!-- Question text injected here -->
+          </h3>
+        </div>
+
+        <!-- SVG Helper Area -->
+        <div class="bg-slate-50 border-2 border-slate-200 rounded-xl p-4 flex items-center justify-center min-h-[220px]">
+          <svg id="svg-triangle" viewBox="0 0 320 220" class="w-full max-w-[340px] h-auto overflow-visible">
+            <!-- Dynamic elements will be injected here -->
+          </svg>
+        </div>
+
+        <!-- Selection Area -->
+        <div id="options-container" class="flex flex-col sm:flex-row items-center justify-center gap-4 mt-2">
+          <!-- Option buttons will be injected here -->
+        </div>
+
+        <!-- Feedback Box -->
+        <div id="feedback-box" class="hidden border-3 border-slate-900 rounded-xl p-4 flex flex-col gap-2 transition-all duration-300">
+          <div class="flex items-center gap-2 font-black text-lg" id="feedback-title"></div>
+          <p class="text-slate-800 leading-relaxed text-sm md:text-base" id="feedback-detail"></p>
+          <button id="btn-continue" onclick="nextQuestion()" class="btn-3d bg-slate-900 hover:bg-slate-800 text-white px-6 py-2 rounded-xl font-bold text-sm mt-2 w-fit">
+            Continuer →
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- SCREEN 3: END -->
+    <div id="screen-end" class="hidden card-premium p-6 md:p-10 text-center flex flex-col gap-6">
+      <div id="end-trophy" class="text-6xl md:text-7xl mt-4">🏆</div>
+      <h2 id="end-title" class="text-2xl md:text-3xl font-black text-slate-800">Félicitations !</h2>
+      <p id="end-description" class="text-slate-600 text-base md:text-lg leading-relaxed max-w-md mx-auto"></p>
+      
+      <!-- Stats block -->
+      <div class="bg-slate-50 border-3 border-slate-900 rounded-xl p-4 max-w-sm mx-auto w-full flex flex-col gap-2 font-bold text-slate-700">
+        <div class="flex justify-between border-b pb-1 border-slate-200">
+          <span>🎯 Score final :</span>
+          <span class="text-slate-900 font-black" id="end-score-text">0 / 10</span>
+        </div>
+        <div class="flex justify-between border-b pb-1 border-slate-200">
+          <span>⏱️ Temps passé :</span>
+          <span class="text-slate-900 font-black" id="end-time-text">00:00</span>
+        </div>
+      </div>
+
+      <div class="flex gap-4 justify-center mt-4">
+        <button onclick="startGame()" class="btn-3d bg-rose-400 hover:bg-rose-500 text-slate-900 px-6 py-3 rounded-xl font-bold">
+          Recommencer 🔄
+        </button>
+        <button onclick="window.parent && window.parent.showScreen ? window.parent.showScreen('screen-solides-triangles') : window.close();" class="btn-3d bg-slate-200 hover:bg-slate-300 text-slate-800 px-6 py-3 rounded-xl font-bold">
+          Retour au menu 🏠
+        </button>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    // --- DYNAMIC QUESTION GENERATOR (INFINITE REPLAYABLE POOL) ---
+    let questions = [];
+    let currentIdx = 0;
+    let score = 0;
+    let startTime = 0;
+    let questionsHistory = []; 
+
+    function generateQuestions() {
+      const list = [];
+
+      // 1. Acute Triangles (3 questions with shuffled bases)
+      const bases = ['AB', 'BC', 'CA'];
+      bases.sort(() => Math.random() - 0.5);
+      for (let i = 0; i < 3; i++) {
+        const A = { x: 50 + Math.random() * 20, y: 150 + Math.random() * 20 };
+        const B = { x: 230 + Math.random() * 30, y: 150 + Math.random() * 20 };
+        const C = { x: 120 + Math.random() * 80, y: 40 + Math.random() * 20 };
+        const baseName = bases[i];
+        
+        let opposite = 'C';
+        if (baseName === 'BC') opposite = 'A';
+        else if (baseName === 'CA') opposite = 'B';
+
+        list.push({
+          type: 'visual_height',
+          triangle: { A, B, C },
+          baseName: baseName,
+          label: `Dans ce triangle ABC, quelle droite de couleur représente la <strong>hauteur</strong> relative au côté <strong>[${baseName}]</strong> (en orange) ?`,
+          explain: `La hauteur relative au côté [${baseName}] est la droite passant par le sommet opposé ${opposite} et coupant perpendiculairement la ligne [${baseName}] (ou son prolongement) en formant un angle droit (90°).`
+        });
+      }
+
+      // 2. Right Triangles (3 questions)
+      const rightTypes = ['side1', 'side2', 'hypotenuse'];
+      rightTypes.sort(() => Math.random() - 0.5);
+      for (let i = 0; i < 3; i++) {
+        const type = rightTypes[i];
+        const A = { x: 80, y: 150 };
+        const B = { x: 240, y: 150 };
+        const C = { x: 80, y: 50 };
+
+        if (type === 'side1') {
+          list.push({
+            type: 'text_right_triangle',
+            triangle: { A, B, C },
+            baseName: 'AB',
+            label: 'Dans ce triangle ABC <strong>rectangle en A</strong>, quelle droite/segment représente la <strong>hauteur</strong> relative au côté <strong>[AB]</strong> ?',
+            options: [
+              { text: 'Le côté [AC]', isCorrect: true },
+              { text: 'Le côté [BC] (l\'hypoténuse)', isCorrect: false },
+              { text: 'Une droite passant par le milieu de [AB]', isCorrect: false }
+            ],
+            explain: "Puisque le triangle est rectangle en A, le côté [AC] est perpendiculaire au côté [AB]. Ainsi, le côté [AC] est lui-même la hauteur relative au côté [AB] !"
+          });
+        } else if (type === 'side2') {
+          list.push({
+            type: 'text_right_triangle',
+            triangle: { A, B, C },
+            baseName: 'AC',
+            label: 'Dans ce triangle ABC <strong>rectangle en A</strong>, quelle droite/segment représente la <strong>hauteur</strong> relative au côté <strong>[AC]</strong> ?',
+            options: [
+              { text: 'Le côté [AB]', isCorrect: true },
+              { text: 'Le côté [BC] (l\'hypoténuse)', isCorrect: false },
+              { text: 'Une droite passant par le milieu de [AC]', isCorrect: false }
+            ],
+            explain: "Le côté [AB] est perpendiculaire au côté [AC]. C'est donc le côté [AB] qui représente la hauteur relative au côté [AC] !"
+          });
+        } else {
+          list.push({
+            type: 'visual_height',
+            triangle: { A, B, C },
+            baseName: 'BC',
+            label: 'Dans ce triangle rectangle en A, quelle droite de couleur représente la <strong>hauteur</strong> relative à l\'hypoténuse <strong>[BC]</strong> (en orange) ?',
+            explain: "Pour l'hypoténuse [BC], la hauteur est tracée à l'intérieur du triangle, depuis le sommet de l'angle droit A perpendiculairement à [BC]."
+          });
+        }
+      }
+
+      // 3. Obtuse Triangles (3 questions)
+      const obtuseBases = ['AB', 'AC', 'BC'];
+      obtuseBases.sort(() => Math.random() - 0.5);
+      for (let i = 0; i < 3; i++) {
+        const baseName = obtuseBases[i];
+        const A = { x: 140, y: 150 };
+        const B = { x: 260, y: 150 };
+        const C = { x: 60, y: 50 };
+
+        let opposite = 'C';
+        if (baseName === 'BC') opposite = 'A';
+        else if (baseName === 'CA' || baseName === 'AC') opposite = 'B';
+
+        if (baseName === 'BC') {
+          list.push({
+            type: 'visual_height',
+            triangle: { A, B, C },
+            baseName: 'BC',
+            label: 'Dans ce triangle avec un angle obtus en A, quelle droite de couleur représente la <strong>hauteur</strong> relative au côté <strong>[BC]</strong> (en orange) ?',
+            explain: "La hauteur relative au plus grand côté [BC] (qui fait face à l'angle obtus) est située à l'intérieur du triangle et passe par le sommet opposé A."
+          });
+        } else {
+          list.push({
+            type: 'visual_height',
+            triangle: { A, B, C },
+            baseName: baseName,
+            label: `Dans ce triangle avec un angle obtus en A, quelle droite de couleur représente la <strong>hauteur</strong> relative au côté <strong>[${baseName}]</strong> (en orange) ?`,
+            explain: `L'angle en A étant obtus, la hauteur relative au côté [${baseName}] tombe à l'extérieur. On a prolongé le côté par des pointillés pour pouvoir tracer la hauteur perpendiculaire issue du sommet opposé ${opposite}.`
+          });
+        }
+      }
+
+      // 4. Orthocenter (1 question)
+      list.push({
+        type: 'orthocenter',
+        triangle: { A: { x: 60, y: 150 }, B: { x: 250, y: 150 }, C: { x: 150, y: 40 } },
+        label: 'Comment s\'appelle le point d\'intersection (marqué en rouge) des <strong>trois hauteurs</strong> d\'un triangle ?',
+        options: [
+          { text: "L'orthocentre", isCorrect: true },
+          { text: 'Le centre de gravité', isCorrect: false },
+          { text: 'Le centre du cercle circonscrit', isCorrect: false },
+          { text: 'Le centre du cercle inscrit', isCorrect: false }
+        ],
+        explain: "Les trois hauteurs d'un triangle se croisent toujours en un point unique appelé l'<strong>orthocentre</strong>. Dans un triangle acutangle il est à l'intérieur, dans un triangle rectangle il est sur le sommet de l'angle droit, et dans un triangle obtusangle il est à l'extérieur."
+      });
+
+      list.sort(() => Math.random() - 0.5);
+      return list;
+    }
+
+    // --- AUDIO RETRO SYNTH ---
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playSound(type) {
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      
+      const now = audioCtx.currentTime;
+
+      if (type === 'success') {
+        osc.frequency.setValueAtTime(523.25, now); 
+        osc.frequency.setValueAtTime(659.25, now + 0.08); 
+        osc.frequency.setValueAtTime(783.99, now + 0.16); 
+        osc.frequency.setValueAtTime(1046.50, now + 0.24); 
+        gain.gain.setValueAtTime(0.12, now);
+        gain.gain.exponentialRampToValueAtTime(0.005, now + 0.45);
+        osc.start(now);
+        osc.stop(now + 0.45);
+      } else if (type === 'error') {
+        osc.frequency.setValueAtTime(220, now); 
+        osc.frequency.setValueAtTime(147, now + 0.12); 
+        gain.gain.setValueAtTime(0.15, now);
+        gain.gain.exponentialRampToValueAtTime(0.005, now + 0.35);
+        osc.start(now);
+        osc.stop(now + 0.35);
+      } else if (type === 'click') {
+        osc.frequency.setValueAtTime(580, now);
+        gain.gain.setValueAtTime(0.04, now);
+        gain.gain.exponentialRampToValueAtTime(0.005, now + 0.08);
+        osc.start(now);
+        osc.stop(now + 0.08);
+      } else if (type === 'perfect') {
+        const notes = [523.25, 659.25, 783.99, 1046.50, 783.99, 1046.50];
+        const durations = [0.08, 0.08, 0.08, 0.12, 0.08, 0.25];
+        let time = now;
+        notes.forEach((freq, idx) => {
+          const noteOsc = audioCtx.createOscillator();
+          const noteGain = audioCtx.createGain();
+          noteOsc.connect(noteGain);
+          noteGain.connect(audioCtx.destination);
+          noteOsc.frequency.setValueAtTime(freq, time);
+          noteGain.gain.setValueAtTime(0.1, time);
+          noteGain.gain.exponentialRampToValueAtTime(0.005, time + durations[idx]);
+          noteOsc.start(time);
+          noteOsc.stop(time + durations[idx]);
+          time += durations[idx] * 0.85;
+        });
+      }
+    }
+
+    function startGame() {
+      playSound('click');
+      questions = generateQuestions();
+      currentIdx = 0;
+      score = 0;
+      questionsHistory = [];
+      startTime = Date.now();
+      
+      document.getElementById('current-score').innerText = '0';
+      document.getElementById('screen-welcome').classList.add('hidden');
+      document.getElementById('screen-end').classList.add('hidden');
+      document.getElementById('screen-game').classList.remove('hidden');
+      
+      initProgressDots();
+      loadQuestion();
+    }
+
+    function initProgressDots() {
+      const container = document.getElementById('progress-dots');
+      container.innerHTML = '';
+      for (let i = 0; i < questions.length; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'progress-dot';
+        dot.id = `dot-${i}`;
+        container.appendChild(dot);
+      }
+    }
+
+    function solveGeometry(A, B, C, baseName) {
+      let baseStart, baseEnd, opposite;
+      if (baseName === 'AB') {
+        baseStart = A; baseEnd = B; opposite = C;
+      } else if (baseName === 'BC') {
+        baseStart = B; baseEnd = C; opposite = A;
+      } else {
+        baseStart = C; baseEnd = A; opposite = B;
+      }
+
+      const dx = baseEnd.x - baseStart.x;
+      const dy = baseEnd.y - baseStart.y;
+      const lenSq = dx * dx + dy * dy;
+
+      const ox = opposite.x - baseStart.x;
+      const oy = opposite.y - baseStart.y;
+      const t = (ox * dx + oy * dy) / lenSq;
+
+      const P = {
+        x: baseStart.x + t * dx,
+        y: baseStart.y + t * dy
+      };
+
+      const M = {
+        x: baseStart.x + 0.5 * dx,
+        y: baseStart.y + 0.5 * dy
+      };
+
+      let tSkew = 0.3;
+      if (Math.abs(tSkew - t) < 0.15 || Math.abs(tSkew - 0.5) < 0.1) {
+        tSkew = 0.75;
+      }
+      const S = {
+        x: baseStart.x + tSkew * dx,
+        y: baseStart.y + tSkew * dy
+      };
+
+      return { baseStart, baseEnd, opposite, P, M, S, t };
+    }
+
+    function getRightAnglePath(baseStart, baseEnd, P, opposite, size = 10) {
+      const dx = baseEnd.x - baseStart.x;
+      const dy = baseEnd.y - baseStart.y;
+      const baseLen = Math.sqrt(dx * dx + dy * dy);
+      const ux = dx / baseLen;
+      const uy = dy / baseLen;
+
+      const hx = opposite.x - P.x;
+      const hy = opposite.y - P.y;
+      const heightLen = Math.sqrt(hx * hx + hy * hy);
+      if (heightLen === 0) return '';
+      const vx = hx / heightLen;
+      const vy = hy / heightLen;
+
+      const sign = -1; 
+      
+      const pt1 = { x: P.x + size * ux * sign, y: P.y + size * uy * sign };
+      const pt2 = { x: P.x + size * ux * sign + size * vx, y: P.y + size * uy * sign + size * vy };
+      const pt3 = { x: P.x + size * vx, y: P.y + size * vy };
+
+      return `M ${P.x} ${P.y} L ${pt1.x} ${pt1.y} L ${pt2.x} ${pt2.y} L ${pt3.x} ${pt3.y} Z`;
+    }
+
+    function loadQuestion() {
+      const q = questions[currentIdx];
+      
+      document.querySelectorAll('.progress-dot').forEach((dot, idx) => {
+        dot.classList.remove('active');
+        if (idx === currentIdx) dot.classList.add('active');
+      });
+
+      document.getElementById('progress-text').innerText = `Question ${currentIdx + 1} / 10`;
+      document.getElementById('question-label').innerHTML = q.label;
+      document.getElementById('feedback-box').classList.add('hidden');
+
+      const optContainer = document.getElementById('options-container');
+      optContainer.innerHTML = '';
+
+      const svg = document.getElementById('svg-triangle');
+      svg.innerHTML = '';
+
+      if (q.type === 'visual_height') {
+        const geom = solveGeometry(q.triangle.A, q.triangle.B, q.triangle.C, q.baseName);
+
+        let triangleHtml = `
+          <polygon points="${q.triangle.A.x},${q.triangle.A.y} ${q.triangle.B.x},${q.triangle.B.y} ${q.triangle.C.x},${q.triangle.C.y}" 
+                   fill="#eff6ff" stroke="#1e293b" stroke-width="3" />
+          
+          <line x1="${geom.baseStart.x}" y1="${geom.baseStart.y}" x2="${geom.baseEnd.x}" y2="${geom.baseEnd.y}" 
+                stroke="#f97316" stroke-width="5" stroke-linecap="round" />
+        `;
+
+        if (geom.t < 0) {
+          triangleHtml += `
+            <line x1="${geom.baseStart.x}" y1="${geom.baseStart.y}" x2="${geom.P.x}" y2="${geom.P.y}" 
+                  stroke="#64748b" stroke-width="2.5" stroke-dasharray="4,4" />
+          `;
+        } else if (geom.t > 1) {
+          triangleHtml += `
+            <line x1="${geom.baseEnd.x}" y1="${geom.baseEnd.y}" x2="${geom.P.x}" y2="${geom.P.y}" 
+                  stroke="#64748b" stroke-width="2.5" stroke-dasharray="4,4" />
+          `;
+        }
+
+        const candidates = [
+          { type: 'height', target: geom.P, color: '#10b981', name: 'verte', soft: '#d1fae5' },
+          { type: 'median', target: geom.M, color: '#3b82f6', name: 'bleue', soft: '#dbeafe' },
+          { type: 'skewed', target: geom.S, color: '#8b5cf6', name: 'violette', soft: '#ede9fe' }
+        ];
+
+        candidates.sort(() => Math.random() - 0.5);
+
+        candidates.forEach((cand) => {
+          triangleHtml += `
+            <line id="line-${cand.type}" x1="${geom.opposite.x}" y1="${geom.opposite.y}" x2="${cand.target.x}" y2="${cand.target.y}" 
+                  stroke="${cand.color}" stroke-width="4.5" stroke-linecap="round" />
+          `;
+        });
+
+        const pathData = getRightAnglePath(geom.baseStart, geom.baseEnd, geom.P, geom.opposite, 12);
+        triangleHtml += `
+          <path id="right-angle-marker" d="${pathData}" fill="none" stroke="#1e293b" stroke-width="2.5" class="hidden" />
+        `;
+
+        const offsets = {
+          A: { dx: -15, dy: 15 },
+          B: { dx: 15, dy: 15 },
+          C: { dx: 0, dy: -12 }
+        };
+
+        ['A', 'B', 'C'].forEach(v => {
+          const pt = q.triangle[v];
+          const off = offsets[v];
+          triangleHtml += `
+            <circle cx="${pt.x}" cy="${pt.y}" r="6" fill="#1e293b" />
+            <text x="${pt.x + off.dx}" y="${pt.y + off.dy}" font-family="Fredoka" font-size="16" font-weight="bold" fill="#0f172a" text-anchor="middle" dominant-baseline="middle">${v}</text>
+          `;
+        });
+
+        svg.innerHTML = triangleHtml;
+
+        candidates.forEach((cand) => {
+          const btn = document.createElement('button');
+          btn.className = 'btn-3d px-5 py-3.5 rounded-xl text-slate-800 font-bold transition-all text-sm sm:text-base';
+          btn.style.backgroundColor = cand.soft;
+          btn.innerHTML = `La droite ${cand.name}`;
+          btn.onclick = () => {
+            playSound('click');
+            revealFeedback(cand.type === 'height', q.explain);
+          };
+          optContainer.appendChild(btn);
+        });
+
+      } else if (q.type === 'text_right_triangle') {
+        const geom = solveGeometry(q.triangle.A, q.triangle.B, q.triangle.C, q.baseName);
+        
+        let triangleHtml = `
+          <polygon points="${q.triangle.A.x},${q.triangle.A.y} ${q.triangle.B.x},${q.triangle.B.y} ${q.triangle.C.x},${q.triangle.C.y}" 
+                   fill="#eff6ff" stroke="#1e293b" stroke-width="3" />
+          
+          <line x1="${geom.baseStart.x}" y1="${geom.baseStart.y}" x2="${geom.baseEnd.x}" y2="${geom.baseEnd.y}" 
+                stroke="#f97316" stroke-width="5" stroke-linecap="round" />
+        `;
+
+        const targetSide = q.baseName === 'AB' ? { start: q.triangle.A, end: q.triangle.C } : { start: q.triangle.A, end: q.triangle.B };
+        triangleHtml += `
+          <line id="height-side-highlight" x1="${targetSide.start.x}" y1="${targetSide.start.y}" x2="${targetSide.end.x}" y2="${targetSide.end.y}" 
+                stroke="#10b981" stroke-width="5.5" stroke-linecap="round" class="hidden" />
+        `;
+
+        const pathData = getRightAnglePath(q.triangle.B, q.triangle.A, q.triangle.A, q.triangle.C, 12);
+        triangleHtml += `
+          <path d="${pathData}" fill="none" stroke="#1e293b" stroke-width="2.5" />
+        `;
+
+        const offsets = {
+          A: { dx: -15, dy: 15 },
+          B: { dx: 15, dy: 15 },
+          C: { dx: 0, dy: -12 }
+        };
+
+        ['A', 'B', 'C'].forEach(v => {
+          const pt = q.triangle[v];
+          const off = offsets[v];
+          triangleHtml += `
+            <circle cx="${pt.x}" cy="${pt.y}" r="6" fill="#1e293b" />
+            <text x="${pt.x + off.dx}" y="${pt.y + off.dy}" font-family="Fredoka" font-size="16" font-weight="bold" fill="#0f172a" text-anchor="middle" dominant-baseline="middle">${v}</text>
+          `;
+        });
+
+        svg.innerHTML = triangleHtml;
+
+        const shuffledOpts = [...q.options].sort(() => Math.random() - 0.5);
+        shuffledOpts.forEach((opt) => {
+          const btn = document.createElement('button');
+          btn.className = 'btn-3d bg-slate-100 hover:bg-slate-200 px-4 py-3.5 rounded-xl text-slate-800 font-bold transition-all text-sm w-full sm:w-auto text-center';
+          btn.innerHTML = opt.text;
+          btn.onclick = () => {
+            playSound('click');
+            revealFeedback(opt.isCorrect, q.explain);
+          };
+          optContainer.appendChild(btn);
+        });
+
+      } else if (q.type === 'orthocenter') {
+        const A = q.triangle.A;
+        const B = q.triangle.B;
+        const C = q.triangle.C;
+
+        const geomAB = solveGeometry(A, B, C, 'AB');
+        const geomBC = solveGeometry(A, B, C, 'BC');
+        const geomCA = solveGeometry(A, B, C, 'CA');
+
+        let triangleHtml = `
+          <polygon points="${A.x},${A.y} ${B.x},${B.y} ${C.x},${C.y}" 
+                   fill="#eff6ff" stroke="#1e293b" stroke-width="3" />
+          
+          <line x1="${C.x}" y1="${C.y}" x2="${geomAB.P.x}" y2="${geomAB.P.y}" stroke="#64748b" stroke-width="2.5" stroke-dasharray="2,2" />
+          <line x1="${A.x}" y1="${A.y}" x2="${geomBC.P.x}" y2="${geomBC.P.y}" stroke="#64748b" stroke-width="2.5" stroke-dasharray="2,2" />
+          <line x1="${B.x}" y1="${B.y}" x2="${geomCA.P.x}" y2="${geomCA.P.y}" stroke="#64748b" stroke-width="2.5" stroke-dasharray="2,2" />
+          
+          <circle cx="${geomAB.P.x}" cy="${geomBC.P.y - 28}" r="8" fill="#ef4444" />
+          <text x="${geomAB.P.x + 16}" y="${geomBC.P.y - 28}" font-family="Fredoka" font-size="16" font-weight="bold" fill="#ef4444">H</text>
+        `;
+
+        triangleHtml += `<path d="${getRightAnglePath(A, B, geomAB.P, C, 10)}" fill="none" stroke="#64748b" stroke-width="1.5" />`;
+        triangleHtml += `<path d="${getRightAnglePath(B, C, geomBC.P, A, 10)}" fill="none" stroke="#64748b" stroke-width="1.5" />`;
+        triangleHtml += `<path d="${getRightAnglePath(C, A, geomCA.P, B, 10)}" fill="none" stroke="#64748b" stroke-width="1.5" />`;
+
+        const offsets = {
+          A: { dx: -15, dy: 15 },
+          B: { dx: 15, dy: 15 },
+          C: { dx: 0, dy: -12 }
+        };
+
+        ['A', 'B', 'C'].forEach(v => {
+          const pt = q.triangle[v];
+          const off = offsets[v];
+          triangleHtml += `
+            <circle cx="${pt.x}" cy="${pt.y}" r="6" fill="#1e293b" />
+            <text x="${pt.x + off.dx}" y="${pt.y + off.dy}" font-family="Fredoka" font-size="16" font-weight="bold" fill="#0f172a" text-anchor="middle" dominant-baseline="middle">${v}</text>
+          `;
+        });
+
+        svg.innerHTML = triangleHtml;
+
+        const shuffledOpts = [...q.options].sort(() => Math.random() - 0.5);
+        shuffledOpts.forEach((opt) => {
+          const btn = document.createElement('button');
+          btn.className = 'btn-3d bg-slate-100 hover:bg-slate-200 px-4 py-3.5 rounded-xl text-slate-800 font-bold transition-all text-sm w-full sm:w-auto text-center';
+          btn.innerHTML = opt.text;
+          btn.onclick = () => {
+            playSound('click');
+            revealFeedback(opt.isCorrect, q.explain);
+          };
+          optContainer.appendChild(btn);
+        });
+      }
+    }
+
+    function revealFeedback(isCorrect, explanationText) {
+      const feedbackBox = document.getElementById('feedback-box');
+      const feedbackTitle = document.getElementById('feedback-title');
+      const feedbackDetail = document.getElementById('feedback-detail');
+      const optContainer = document.getElementById('options-container');
+
+      optContainer.querySelectorAll('button').forEach(btn => btn.disabled = true);
+
+      const marker = document.getElementById('right-angle-marker');
+      if (marker) marker.classList.remove('hidden');
+
+      const sideHighlight = document.getElementById('height-side-highlight');
+      if (sideHighlight) sideHighlight.classList.remove('hidden');
+
+      const dot = document.getElementById(`dot-${currentIdx}`);
+
+      if (isCorrect) {
+        score++;
+        document.getElementById('current-score').innerText = score;
+        feedbackBox.className = "border-3 border-emerald-950 bg-emerald-50 text-emerald-900 rounded-xl p-4 flex flex-col gap-2 mt-4";
+        feedbackTitle.innerHTML = "<span>✅ Correct !</span>";
+        playSound('success');
+        dot.classList.add('correct');
+        questionsHistory.push({ index: currentIdx, status: 'correct' });
+      } else {
+        feedbackBox.className = "border-3 border-rose-950 bg-rose-50 text-rose-900 rounded-xl p-4 flex flex-col gap-2 mt-4";
+        feedbackTitle.innerHTML = "<span>❌ Incorrect</span>";
+        playSound('error');
+        dot.classList.add('wrong');
+        questionsHistory.push({ index: currentIdx, status: 'wrong' });
+      }
+
+      feedbackDetail.innerHTML = explanationText;
+      feedbackBox.classList.remove('hidden');
+    }
+
+    function nextQuestion() {
+      currentIdx++;
+      if (currentIdx < questions.length) {
+        loadQuestion();
+      } else {
+        endGame();
+      }
+    }
+
+    function endGame() {
+      document.getElementById('screen-game').classList.add('hidden');
+      document.getElementById('screen-end').classList.remove('hidden');
+
+      const titleEl = document.getElementById('end-title');
+      const descEl = document.getElementById('end-description');
+      const trophyEl = document.getElementById('end-trophy');
+
+      const pct = Math.round((score / questions.length) * 100);
+      const timeSpent = Math.round((Date.now() - startTime) / 1000);
+      const minutes = Math.floor(timeSpent / 60).toString().padStart(2, '0');
+      const seconds = (timeSpent % 60).toString().padStart(2, '0');
+
+      document.getElementById('end-score-text').innerText = `${score} / ${questions.length} (${pct}%)`;
+      document.getElementById('end-time-text').innerText = `${minutes}:${seconds}`;
+
+      if (score === questions.length) {
+        titleEl.innerText = "Score Parfait ! 🏆";
+        descEl.innerText = "Incroyable ! Tu as identifié toutes les hauteurs et l'orthocentre sans aucune erreur. Tu es un as de la géométrie !";
+        trophyEl.innerText = "👑";
+        playSound('perfect');
+        launchConfetti();
+      } else if (score >= 7) {
+        titleEl.innerText = "Super score ! 🌟";
+        descEl.innerText = "Excellent travail ! Tu as une très bonne maîtrise de la notion de hauteur dans le triangle.";
+        trophyEl.innerText = "🏆";
+        playSound('success');
+      } else if (score >= 5) {
+        titleEl.innerText = "Pas mal ! 👍";
+        descEl.innerText = "Tu as réussi la moitié ou plus des questions. Relance le jeu pour essayer de t'améliorer !";
+        trophyEl.innerText = "🥈";
+      } else {
+        titleEl.innerText = "Continue à t'entraîner ! 💪";
+        descEl.innerText = "C'était un peu difficile, mais ne te décourage pas. Prends le temps d'analyser le schéma et les angles droits !";
+        trophyEl.innerText = "🎯";
+      }
+
+      if (window.parent && window.parent.saveResult) {
+        window.parent.saveResult({
+          activity: 'solide_triangles_hauteurs',
+          bookTitle: "Géométrie — Les Hauteurs du Triangle",
+          score: score,
+          total: questions.length,
+          pct: pct,
+          date: new Date().toLocaleDateString('fr-BE'),
+          time: new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })
+        });
+      }
+    }
+
+    function launchConfetti() {
+      const colors = ['#f43f5e', '#3b82f6', '#10b981', '#f59e0b', '#8b5cf6'];
+      for (let i = 0; i < 60; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.style.left = Math.random() * 100 + 'vw';
+        confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        confetti.style.animationDelay = Math.random() * 1.5 + 's';
+        
+        const size = Math.random() * 10 + 6;
+        confetti.style.width = size + 'px';
+        confetti.style.height = size + 'px';
+        
+        document.body.appendChild(confetti);
+        
+        setTimeout(() => confetti.remove(), 2500);
+      }
+    }
+  </script>
+</body>
+</html>
