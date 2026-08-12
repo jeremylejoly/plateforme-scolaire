@@ -148,3 +148,27 @@ Un nouveau sous-module complet sur **la vitesse horaire** a été ajouté pour l
   * Enregistrement des labels de suivi dans le dictionnaire des activités (`getActivityLabel`).
   * Enregistrement dans la liste des activités verrouillables par défaut (`getLockedActivities`).
   * Configuration de l'héritage de statut parent/enfant (`ACTIVITY_PARENTS`).
+
+---
+
+## 6. Géométrie : Laboratoire de transformations géométriques
+
+Un nouveau laboratoire interactif d'entraînement sur les translations et rotations a été ajouté et configuré :
+
+### 🎯 Fichier créé : [transformations_labo.html](file:///Users/jeremy/antigravity/LCML/public/fiches/transformations_labo.html)
+* **Concept** : Entraîner les élèves à effectuer des translations (selon un vecteur donné) et des rotations (de 90° horaire, 90° anti-horaire, ou 180° autour d'un point pivot central) sur un quadrillage interactif $12 \times 12$.
+* **Interaction** :
+  * L'élève clique sur le quadrillage pour placer les sommets de la figure transformée.
+  * Validation interactive avec tracé immédiat de la correction si besoin et calcul du score.
+* **Améliorations apportées suite aux retours** :
+  * **Nettoyage de l'en-tête** : Suppression de la mention « Fiche D » et du sous-titre de l'en-tête pour un affichage plus épuré.
+  * **Mélange aléatoire** : Les questions sont maintenant mélangées de manière aléatoire à chaque lancement ou au clic sur le bouton « Recommencer ».
+  * **Pool de questions étendu** : La banque d'exercices a été doublée et contient désormais **20 questions variées** (10 translations et 10 rotations). Une série de 10 questions aléatoires est tirée parmi celles-ci à chaque partie.
+
+### 🗂️ Intégration dans le Dashboard & la Navigation
+* **Mise à jour des menus principaux** ([index.html](file:///Users/jeremy/antigravity/LCML/index.html) et [public/fiches/index.html](file:///Users/jeremy/antigravity/LCML/public/fiches/index.html)) :
+  * Ajout du bouton d'accès direct dans la section **Solides et figures** (avec icône 🔄).
+  * Création des écrans d'affichage correspondants (`screen-solides-transformations`).
+  * Enregistrement des labels de suivi dans le dictionnaire des activités (`getActivityLabel`).
+  * Enregistrement dans la liste des activités verrouillables par défaut (`getLockedActivities`) et correction d'une accolade orpheline présente dans le code d'origine de `public/fiches/index.html`.
+  * Configuration de l'héritage de statut parent/enfant (`ACTIVITY_PARENTS`).
