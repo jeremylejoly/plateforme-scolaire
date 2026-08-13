@@ -1,0 +1,1388 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Les Vues 3D & Empilements — LCML</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #1e293b;
+      --border: #334155;
+      --primary: #8b5cf6;
+      --primary-light: #c084fc;
+      --primary-glow: rgba(139, 92, 246, 0.25);
+      --accent: #f59e0b;
+      --green: #10b981;
+      --red: #f43f5e;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --r-md: 12px;
+      --r-lg: 20px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+    .container {
+      width: 100%;
+      max-width: 720px;
+    }
+
+    /* Header */
+    header { text-align: center; margin-bottom: 1.25rem; }
+    h1 {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1.95rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #c084fc, #8b5cf6, #6366f1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.35rem;
+    }
+    .subtitle { color: var(--muted); font-size: 0.95rem; font-weight: 600; }
+
+    /* Stats & progress bar */
+    .scorebar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(30, 41, 59, 0.7);
+      border: 2px solid var(--border);
+      border-radius: var(--r-md);
+      padding: 0.8rem 1.2rem;
+      margin-bottom: 1.25rem;
+      box-shadow: 4px 4px 0px #000;
+    }
+    .sb-block { display: flex; align-items: center; gap: 0.4rem; }
+    .sb-label { font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+    .sb-val { font-family: 'Fredoka', sans-serif; font-size: 1.35rem; font-weight: 700; color: var(--accent); }
+    .prog-track { flex:1; height:8px; background:rgba(51,65,85,.5); border-radius:99px; margin:0 1.25rem; overflow:hidden; }
+    .prog-bar { height:100%; width:0%; background:linear-gradient(90deg,var(--primary),var(--primary-light)); border-radius:99px; transition:width .4s ease; }
+
+    /* Card styling */
+    .game-card {
+      background: var(--card);
+      border: 3px solid var(--border);
+      border-radius: var(--r-lg);
+      padding: 1.5rem;
+      margin-bottom: 1.25rem;
+      box-shadow: 6px 6px 0px #000;
+    }
+
+    .question-title {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1.2rem;
+      color: var(--text);
+      margin-bottom: 1rem;
+      line-height: 1.4;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Views Layout */
+    .workspace {
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .viewport-wrapper {
+      position: relative;
+      background: #090d16;
+      border: 3px solid var(--border);
+      border-radius: var(--r-md);
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 0.5rem;
+    }
+
+    svg#isometric-svg {
+      display: block;
+      max-width: 100%;
+      height: auto;
+    }
+
+    /* Selection options grid for MCQ */
+    .choices-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .choice-card {
+      background: rgba(15, 23, 42, 0.4);
+      border: 3px solid var(--border);
+      border-radius: var(--r-md);
+      padding: 0.8rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      position: relative;
+    }
+
+    .choice-card:hover:not(.disabled) {
+      border-color: var(--primary-light);
+      background: rgba(139, 92, 246, 0.08);
+      transform: translateY(-2px);
+    }
+
+    .choice-card.selected {
+      border-color: var(--primary);
+      background: rgba(139, 92, 246, 0.15);
+      box-shadow: 0 0 10px rgba(139, 92, 246, 0.25);
+    }
+
+    .choice-card.correct-ans {
+      border-color: var(--green) !important;
+      background: rgba(16, 185, 129, 0.1) !important;
+    }
+
+    .choice-card.wrong-ans {
+      border-color: var(--red) !important;
+      background: rgba(244, 63, 94, 0.1) !important;
+    }
+
+    .choice-label {
+      font-size: 0.78rem;
+      font-weight: 800;
+      color: var(--muted);
+      margin-top: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .choice-card.selected .choice-label {
+      color: var(--primary-light);
+    }
+
+    /* Input row for counting questions */
+    .input-row {
+      display: flex;
+      gap: 0.85rem;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.25rem;
+      flex-wrap: wrap;
+    }
+
+    .input-label {
+      font-weight: 700;
+      font-size: 1.05rem;
+    }
+
+    .count-input {
+      width: 90px;
+      padding: 0.6rem 0.8rem;
+      background: #090d16;
+      border: 3px solid var(--border);
+      border-radius: var(--r-md);
+      color: var(--text);
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      text-align: center;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .count-input:focus {
+      border-color: var(--primary);
+    }
+
+    .count-input:disabled {
+      opacity: 0.5;
+    }
+
+    /* Buttons */
+    .btn-3d {
+      font-family: 'Fredoka', sans-serif;
+      font-weight: 700;
+      font-size: 1.05rem;
+      padding: 0.75rem 1.6rem;
+      border-radius: var(--r-md);
+      border: 2px solid #000;
+      box-shadow: 4px 4px 0px #000;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.1s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-3d:active:not(:disabled) {
+      transform: translate(2px, 2px);
+      box-shadow: 2px 2px 0px #000;
+    }
+
+    .btn-3d:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), #6366f1);
+      color: #fff;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background: linear-gradient(135deg, var(--primary-light), #818cf8);
+    }
+
+    .btn-success {
+      background: linear-gradient(135deg, var(--green), #059669);
+      color: #fff;
+    }
+
+    .btn-success:hover:not(:disabled) {
+      background: linear-gradient(135deg, #34d399, #10b981);
+    }
+
+    /* Feedback Box */
+    .feedback-box {
+      border-radius: var(--r-md);
+      border: 2px solid var(--border);
+      padding: 1.1rem;
+      margin-bottom: 1.25rem;
+      display: flex;
+      gap: 0.85rem;
+      align-items: flex-start;
+      animation: slideUp 0.3s ease forwards;
+    }
+
+    .fb-correct {
+      background: rgba(16, 185, 129, 0.08);
+      border-color: rgba(16, 185, 129, 0.3);
+    }
+
+    .fb-wrong {
+      background: rgba(244, 63, 94, 0.08);
+      border-color: rgba(244, 63, 94, 0.3);
+    }
+
+    .fb-icon {
+      font-size: 1.6rem;
+      flex-shrink: 0;
+    }
+
+    .fb-title {
+      font-family: 'Fredoka', sans-serif;
+      font-weight: 700;
+      font-size: 1.1rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .fb-correct .fb-title { color: #34d399; }
+    .fb-wrong .fb-title { color: #fb7185; }
+    .fb-desc {
+      font-size: 0.92rem;
+      color: #cbd5e1;
+      line-height: 1.5;
+    }
+    .fb-desc strong { color: #fff; }
+
+    /* Detailed correction layout */
+    .correction-detail {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .correction-subtitle {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1rem;
+      color: var(--accent);
+      margin-bottom: 0.8rem;
+    }
+
+    .projections-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 0.5rem;
+      margin-bottom: 1.25rem;
+      flex-wrap: wrap;
+    }
+
+    .projection-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: rgba(15, 23, 42, 0.3);
+      border: 1px solid var(--border);
+      border-radius: var(--r-md);
+      padding: 0.5rem;
+      flex: 1;
+      min-width: 85px;
+    }
+
+    .projection-item-title {
+      font-size: 0.72rem;
+      font-weight: 800;
+      color: var(--muted);
+      margin-top: 0.4rem;
+      text-transform: uppercase;
+    }
+
+    /* Rotation panel */
+    .rotation-control {
+      background: rgba(15, 23, 42, 0.5);
+      border: 1px solid var(--border);
+      border-radius: var(--r-md);
+      padding: 0.8rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .rotation-label {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .rotation-buttons {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .btn-rot {
+      background: var(--card);
+      border: 1.5px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      font-size: 0.78rem;
+      font-weight: 700;
+      padding: 4px 8px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .btn-rot:hover, .btn-rot.active {
+      border-color: var(--primary);
+      background: rgba(139, 92, 246, 0.15);
+      color: var(--primary-light);
+    }
+
+    /* End Screen styling */
+    .congrats-card {
+      text-align: center;
+      padding: 3rem 1.5rem;
+    }
+
+    .trophy {
+      font-size: 4.5rem;
+      display: inline-block;
+      animation: float 3s ease-in-out infinite;
+      margin-bottom: 1rem;
+    }
+
+    .congrats-title {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 2.1rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 0.6rem;
+    }
+
+    .congrats-msg {
+      color: var(--muted);
+      font-size: 1.05rem;
+      max-width: 480px;
+      margin: 0 auto 1.5rem;
+      line-height: 1.6;
+    }
+
+    .congrats-msg strong {
+      color: #fff;
+    }
+
+    .stars {
+      font-size: 2.2rem;
+      margin-bottom: 1.5rem;
+      letter-spacing: 4px;
+    }
+
+    /* CSS Confetti Fallback */
+    .confetti {
+      position: fixed;
+      width: 12px;
+      height: 12px;
+      border-radius: 3px;
+      pointer-events: none;
+      z-index: 9999;
+      animation: confettiFall 2.5s ease-out forwards;
+    }
+
+    @keyframes confettiFall {
+      0% { transform: translateY(-10px) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    @media (max-width: 580px) {
+      .choices-grid {
+        grid-template-columns: 1fr;
+      }
+      .sb-label {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <!-- GAME INTERFACE -->
+  <div id="game-flow">
+    <header>
+      <h1>🧊 Les Vues 3D & Empilements</h1>
+      <div class="subtitle">Identifie les projections planes et dénombre les cubes cachés.</div>
+    </header>
+
+    <div class="scorebar">
+      <div class="sb-block">
+        <span class="sb-label" style="margin-right:2px;">Question</span>
+        <span class="sb-val" id="q-num">1</span>
+        <span style="color:var(--muted);font-family:'Fredoka',sans-serif;font-size:1.05rem;">/10</span>
+      </div>
+      <div class="prog-track"><div class="prog-bar" id="prog-bar"></div></div>
+      <div class="sb-block">
+        <span class="sb-label" style="margin-right:2px;">Score</span>
+        <span class="sb-val" id="score-disp">0</span>
+        <span style="color:var(--muted);font-family:'Fredoka',sans-serif;font-size:1.05rem;">/10</span>
+      </div>
+    </div>
+
+    <!-- MAIN INTERACTIVE CARD -->
+    <div class="game-card">
+      <div class="question-title" id="q-title">
+        <span>❓</span> Chargement de la question...
+      </div>
+
+      <div class="workspace">
+        <!-- SVG isometric view -->
+        <div class="viewport-wrapper">
+          <svg id="isometric-svg" width="360" height="320" viewBox="0 0 360 320"></svg>
+        </div>
+
+        <!-- Right area: choices or input -->
+        <div style="flex: 1; min-width: 250px;">
+          <!-- 1. Selection option list for MCQ (Q1-5) -->
+          <div id="mcq-section" style="display: none;">
+            <div class="choices-grid" id="choices-grid">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+
+          <!-- 2. Text input for Counting (Q6-10) -->
+          <div id="counting-section" style="display: none; text-align: center; padding: 1rem 0;">
+            <div class="input-row">
+              <span class="input-label">Nombre total de cubes :</span>
+              <input type="number" id="count-input" class="count-input" min="1" step="1" placeholder="?">
+            </div>
+          </div>
+
+          <!-- Action buttons -->
+          <div style="text-align: center; margin-top: 0.5rem;">
+            <button class="btn-3d btn-primary" id="btn-validate" onclick="submitAnswer()" style="width: 100%;">✓ Valider ma réponse</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- FEEDBACK ZONE -->
+      <div id="feedback-area"></div>
+      
+      <!-- NEXT ACTION ZONE -->
+      <div id="next-area" style="text-align: right; display: none;">
+        <button class="btn-3d btn-success" id="btn-next" onclick="nextQuestion()">Question suivante 👉</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONGRATULATIONS SCREEN -->
+  <div id="congrats-flow" style="display: none;">
+    <div class="game-card congrats-card">
+      <div class="trophy">🏆</div>
+      <h2 class="congrats-title" id="congrats-title">Félicitations !</h2>
+      <p class="congrats-msg" id="congrats-msg">Chargement des résultats...</p>
+      <div class="stars" id="stars">⭐⭐⭐</div>
+      <button class="btn-3d btn-success" onclick="restartGame()">🔄 Recommencer l'exercice</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // ════════════════════════════════════════════════
+  // 1. SHAPE CONFIGURATIONS (15 Predefined Shapes)
+  // ════════════════════════════════════════════════
+  const SHAPES = [
+    {
+      name: "La Tour Simple",
+      grid: [
+        [0, 0, 0],
+        [0, 4, 0],
+        [0, 0, 0]
+      ],
+      hint: "Une unique colonne verticale empilée.",
+      desc: "L'assemblage est composé d'une seule colonne contenant <strong>4 cubes</strong>."
+    },
+    {
+      name: "Le Canapé",
+      grid: [
+        [2, 2, 2],
+        [1, 1, 1],
+        [0, 0, 0]
+      ],
+      hint: "Compte la rangée de derrière (hauteur 2) puis l'assise de devant (hauteur 1).",
+      desc: "Il y a 3 colonnes arrière de hauteur 2 (6 cubes) et 3 colonnes avant de hauteur 1 (3 cubes). Total : 6 + 3 = <strong>9 cubes</strong>."
+    },
+    {
+      name: "Le Petit Escalier",
+      grid: [
+        [0, 0, 0],
+        [1, 2, 3],
+        [0, 0, 0]
+      ],
+      hint: "Trois colonnes alignées qui grandissent régulièrement.",
+      desc: "Les colonnes ont pour hauteurs respectives 1, 2 et 3. Total : 1 + 2 + 3 = <strong>6 cubes</strong>."
+    },
+    {
+      name: "La Pyramide",
+      grid: [
+        [1, 1, 1],
+        [1, 3, 1],
+        [1, 1, 1]
+      ],
+      hint: "Le cube du sommet de hauteur 3 a besoin de cubes en dessous pour tenir !",
+      desc: "Le pourtour contient 8 colonnes de hauteur 1 (8 cubes). Le centre a une hauteur de 3 (3 cubes, dont 2 sont cachés au milieu sous le sommet). Total : 8 + 3 = <strong>11 cubes</strong>."
+    },
+    {
+      name: "Le Château Fort",
+      grid: [
+        [2, 0, 2],
+        [0, 0, 0],
+        [2, 0, 2]
+      ],
+      hint: "Quatre tours distinctes situées aux coins de la grille.",
+      desc: "Quatre colonnes d'angle de hauteur 2 chacune. Total : 4 × 2 = <strong>8 cubes</strong>."
+    },
+    {
+      name: "Le Pont Suspendu",
+      grid: [
+        [3, 1, 3],
+        [0, 0, 0],
+        [0, 0, 0]
+      ],
+      hint: "Deux piliers de hauteur 3 reliés par un bloc de hauteur 1 au milieu.",
+      desc: "Deux colonnes de hauteur 3 (6 cubes) et une colonne centrale de hauteur 1 (1 cube). Total : 3 + 1 + 3 = <strong>7 cubes</strong>."
+    },
+    {
+      name: "La Lettre U",
+      grid: [
+        [2, 0, 2],
+        [2, 0, 2],
+        [2, 2, 2]
+      ],
+      hint: "Un bloc en forme de U de hauteur 2 constante.",
+      desc: "7 colonnes de hauteur 2 disposées en forme de U. Le centre est entièrement vide. Total : 7 × 2 = <strong>14 cubes</strong>."
+    },
+    {
+      name: "Le Coin Caché",
+      grid: [
+        [3, 2, 1],
+        [2, 1, 0],
+        [1, 0, 0]
+      ],
+      hint: "Les hauteurs diminuent en partant du coin supérieur arrière.",
+      desc: "Les colonnes ont pour hauteurs : 3, 2, 2, 1, 1, 1. Les autres cases sont vides. Total : 3 + 2 + 2 + 1 + 1 + 1 = <strong>10 cubes</strong>."
+    },
+    {
+      name: "Le Bloc Creux",
+      grid: [
+        [2, 2, 2],
+        [2, 0, 2],
+        [2, 2, 2]
+      ],
+      hint: "Un bloc de 3x3 de hauteur 2 auquel il manque juste la colonne centrale.",
+      desc: "8 colonnes périphériques de hauteur 2. Le centre est vide. Total : 8 × 2 = <strong>16 cubes</strong>."
+    },
+    {
+      name: "Les Tours Jumelles",
+      grid: [
+        [3, 1, 3],
+        [1, 1, 1],
+        [0, 0, 0]
+      ],
+      hint: "Deux tours hautes de 3 cubes reliées par des blocs de hauteur 1.",
+      desc: "Deux colonnes de hauteur 3 (6 cubes) et trois colonnes de hauteur 1 (3 cubes). Total : 6 + 3 = <strong>9 cubes</strong>."
+    },
+    {
+      name: "L'Escalier Double",
+      grid: [
+        [1, 2, 3],
+        [0, 1, 2],
+        [0, 0, 1]
+      ],
+      hint: "Les hauteurs diminuent sur deux axes.",
+      desc: "Les colonnes ont des hauteurs de 3, 2, 2, 1, 1, 1. Total : 3 + 2 + 2 + 1 + 1 + 1 = <strong>10 cubes</strong>."
+    },
+    {
+      name: "La Muraille avec Donjon",
+      grid: [
+        [2, 3, 2],
+        [1, 1, 1],
+        [0, 0, 0]
+      ],
+      hint: "Un donjon central de hauteur 3 entouré de tours de hauteur 2 et de remparts de hauteur 1.",
+      desc: "Une colonne centrale de hauteur 3 (3 cubes), deux colonnes arrière de hauteur 2 (4 cubes) et trois colonnes avant de hauteur 1 (3 cubes). Total : 3 + 4 + 3 = <strong>10 cubes</strong>."
+    },
+    {
+      name: "Le Trident",
+      grid: [
+        [2, 0, 2],
+        [2, 2, 2],
+        [2, 0, 2]
+      ],
+      hint: "Une base centrale de 3 colonnes et deux dents latérales de hauteur 2.",
+      desc: "7 colonnes de hauteur 2 disposées en trident. Total : 7 × 2 = <strong>14 cubes</strong>."
+    },
+    {
+      name: "La Lettre H",
+      grid: [
+        [2, 0, 2],
+        [2, 1, 2],
+        [2, 0, 2]
+      ],
+      hint: "Deux colonnes latérales reliées par une barre de hauteur 1 au centre.",
+      desc: "6 colonnes latérales de hauteur 2 (12 cubes) et une colonne centrale de hauteur 1 (1 cube). Total : 12 + 1 = <strong>13 cubes</strong>."
+    },
+    {
+      name: "La Croix avec Donjon",
+      grid: [
+        [0, 1, 0],
+        [1, 3, 1],
+        [0, 1, 0]
+      ],
+      hint: "Une colonne centrale haute entourée de 4 branches simples.",
+      desc: "Une colonne de hauteur 3 au centre et 4 colonnes de hauteur 1 sur les côtés. Total : 3 + 4 = <strong>7 cubes</strong>."
+    }
+  ];
+
+  // ════════════════════════════════════════════════
+  // 2. STATE MANAGER
+  // ════════════════════════════════════════════════
+  const TOTAL_Q = 10;
+  let currentStep = 1;
+  let score = 0;
+  let sessionShapes = [];
+  let currentViewType = 'face'; // 'face', 'profil_gauche', 'profil_droit', 'haut'
+  let currentRotateAngle = 0;   // 0, 90, 180, 270
+  let isMCQ = true;
+  let selectedChoiceIdx = null;
+  let answered = false;
+  let generatedChoices = [];
+
+  // Web Audio Context
+  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+  // ════════════════════════════════════════════════
+  // 3. ISOMETRIC & 2D SVG RENDERING ENGINE
+  // ════════════════════════════════════════════════
+  const ORIGIN_X = 180;
+  const ORIGIN_Y = 190;
+  const W = 28;      // Isometric cell half-width
+  const H = 14;      // Isometric cell half-height
+  const CUBE_H = 28; // Vertical height of a cube face
+
+  // Rotates 3x3 height grid by 0, 90, 180, or 270 degrees clockwise
+  function rotateGrid(grid, angle) {
+    let rotated = Array(3).fill(0).map(() => Array(3).fill(0));
+    for (let r = 0; r < 3; r++) {
+      for (let c = 0; c < 3; c++) {
+        if (angle === 0) {
+          rotated[r][c] = grid[r][c];
+        } else if (angle === 90) {
+          rotated[c][2 - r] = grid[r][c];
+        } else if (angle === 180) {
+          rotated[2 - r][2 - c] = grid[r][c];
+        } else if (angle === 270) {
+          rotated[2 - c][r] = grid[r][c];
+        }
+      }
+    }
+    return rotated;
+  }
+
+  // Draw ground grid
+  function drawGround(svg, rotatedGrid) {
+    for (let y = 0; y < 3; y++) {
+      for (let x = 0; x < 3; x++) {
+        const cx = ORIGIN_X + x * W - y * W;
+        const cy = ORIGIN_Y + x * H + y * H;
+
+        const poly = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+        poly.setAttribute('points', `${cx},${cy + CUBE_H} ${cx + W},${cy + H + CUBE_H} ${cx},${cy + 2 * H + CUBE_H} ${cx - W},${cy + H + CUBE_H}`);
+        poly.setAttribute('fill', '#0f172a');
+        poly.setAttribute('stroke', '#334155');
+        poly.setAttribute('stroke-width', '1.5');
+        svg.appendChild(poly);
+      }
+    }
+  }
+
+  // Draw a single isometric cube
+  function drawCube(svg, x, y, z) {
+    const cx = ORIGIN_X + x * W - y * W;
+    const cy = ORIGIN_Y + x * H + y * H - z * CUBE_H;
+
+    const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+
+    // Top Face (Purple-Light pastel)
+    const top = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+    top.setAttribute('points', `${cx},${cy} ${cx + W},${cy + H} ${cx},${cy + 2 * H} ${cx - W},${cy + H}`);
+    top.setAttribute('fill', '#c084fc');
+    top.setAttribute('stroke', '#090d16');
+    top.setAttribute('stroke-width', '1.5');
+    top.setAttribute('stroke-linejoin', 'round');
+    g.appendChild(top);
+
+    // Left Face (Purple-Medium)
+    const left = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+    left.setAttribute('points', `${cx - W},${cy + H} ${cx},${cy + 2 * H} ${cx},${cy + 2 * H + CUBE_H} ${cx - W},${cy + H + CUBE_H}`);
+    left.setAttribute('fill', '#8b5cf6');
+    left.setAttribute('stroke', '#090d16');
+    left.setAttribute('stroke-width', '1.5');
+    left.setAttribute('stroke-linejoin', 'round');
+    g.appendChild(left);
+
+    // Right Face (Purple-Dark)
+    const right = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+    right.setAttribute('points', `${cx},${cy + 2 * H} ${cx + W},${cy + H} ${cx + W},${cy + H + CUBE_H} ${cx},${cy + 2 * H + CUBE_H}`);
+    right.setAttribute('fill', '#6d28d9');
+    right.setAttribute('stroke', '#090d16');
+    right.setAttribute('stroke-width', '1.5');
+    right.setAttribute('stroke-linejoin', 'round');
+    g.appendChild(right);
+
+    svg.appendChild(g);
+  }
+
+  // Painter's algorithm implementation to render structure
+  function renderIsometric(shape, angle = 0) {
+    const svg = document.getElementById('isometric-svg');
+    svg.innerHTML = '';
+
+    const rotatedGrid = rotateGrid(shape.grid, angle);
+    
+    // Draw ground grid first
+    drawGround(svg, rotatedGrid);
+
+    // Draw cubes from back to front (x=0..2, y=0..2)
+    for (let x = 0; x < 3; x++) {
+      for (let y = 0; y < 3; y++) {
+        const height = rotatedGrid[x][y];
+        for (let z = 0; z < height; z++) {
+          drawCube(svg, x, y, z);
+        }
+      }
+    }
+  }
+
+  // Generates 3x3 boolean matrix representing the requested plane projection view
+  function getViewMatrix(grid, viewType) {
+    let matrix = Array(3).fill(0).map(() => Array(3).fill(false));
+    if (viewType === 'haut') {
+      for (let r = 0; r < 3; r++) {
+        for (let c = 0; c < 3; c++) {
+          matrix[r][c] = (grid[r][c] > 0);
+        }
+      }
+    } else {
+      let heights = [0, 0, 0];
+      if (viewType === 'face') {
+        heights = [
+          Math.max(grid[0][0], grid[1][0], grid[2][0]),
+          Math.max(grid[0][1], grid[1][1], grid[2][1]),
+          Math.max(grid[0][2], grid[1][2], grid[2][2])
+        ];
+      } else if (viewType === 'profil_gauche') {
+        heights = [
+          Math.max(grid[0][0], grid[0][1], grid[0][2]),
+          Math.max(grid[1][0], grid[1][1], grid[1][2]),
+          Math.max(grid[2][0], grid[2][1], grid[2][2])
+        ];
+      } else if (viewType === 'profil_droit') {
+        heights = [
+          Math.max(grid[2][0], grid[2][1], grid[2][2]),
+          Math.max(grid[1][0], grid[1][1], grid[1][2]),
+          Math.max(grid[0][0], grid[0][1], grid[0][2])
+        ];
+      }
+      for (let c = 0; c < 3; c++) {
+        const h = heights[c];
+        for (let r = 0; r < 3; r++) {
+          // Bottom row in 3x3 grid is index 2, middle is 1, top is 0
+          if (r >= 3 - h) {
+            matrix[r][c] = true;
+          }
+        }
+      }
+    }
+    return matrix;
+  }
+
+  // Generates a 3x3 grid in HTML/SVG to represent a projection view
+  function drawViewSVG(matrix, viewType, size = 80) {
+    const cellSize = size / 3;
+    let strokeColor = '#334155';
+    let fillColor = viewType === 'haut' ? '#fbbf24' : '#a78bfa'; // Yellow for Top, Purple for Front/Profiles
+    
+    let html = `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" style="background:#090d16; border:1.5px solid #334155; border-radius:6px; display:block;">`;
+    
+    // Draw grid lines
+    for (let i = 0; i <= 3; i++) {
+      html += `<line x1="${i * cellSize}" y1="0" x2="${i * cellSize}" y2="${size}" stroke="${strokeColor}" stroke-width="1" stroke-dasharray="2,2"/>`;
+      html += `<line x1="0" y1="${i * cellSize}" x2="${size}" y2="${i * cellSize}" stroke="${strokeColor}" stroke-width="1" stroke-dasharray="2,2"/>`;
+    }
+    
+    // Draw cells
+    for (let r = 0; r < 3; r++) {
+      for (let c = 0; c < 3; c++) {
+        if (matrix[r][c]) {
+          html += `<rect x="${c * cellSize + 1.5}" y="${r * cellSize + 1.5}" width="${cellSize - 3}" height="${cellSize - 3}" fill="${fillColor}" rx="3"/>`;
+        }
+      }
+    }
+    
+    html += `</svg>`;
+    return html;
+  }
+
+  // Helper comparison
+  function areMatricesEqual(m1, m2) {
+    for (let r = 0; r < 3; r++) {
+      for (let c = 0; c < 3; c++) {
+        if (m1[r][c] !== m2[r][c]) return false;
+      }
+    }
+    return true;
+  }
+
+  function serializeMatrix(m) {
+    return m.map(row => row.map(v => v ? '1' : '0').join('')).join(',');
+  }
+
+  // ════════════════════════════════════════════════
+  // 4. MULTIPLE CHOICE QUESTION GENERATOR
+  // ════════════════════════════════════════════════
+  function generateMCQChoices(shape, correctView) {
+    const correctMatrix = getViewMatrix(shape.grid, correctView);
+    let choices = [
+      { matrix: correctMatrix, viewType: correctView, isCorrect: true }
+    ];
+
+    let matrixSet = new Set();
+    matrixSet.add(serializeMatrix(correctMatrix));
+
+    // Try adding other real views of the same shape as distractors
+    const otherViews = ['face', 'profil_gauche', 'profil_droit', 'haut'].filter(v => v !== correctView);
+    for (let v of otherViews) {
+      const mat = getViewMatrix(shape.grid, v);
+      const ser = serializeMatrix(mat);
+      if (!matrixSet.has(ser)) {
+        matrixSet.add(ser);
+        choices.push({ matrix: mat, viewType: v, isCorrect: false });
+      }
+    }
+
+    // If we have less than 4 choices, generate mutated variations of the correct view
+    let attempts = 0;
+    while (choices.length < 4 && attempts < 50) {
+      attempts++;
+      // Clone correct matrix
+      let mutated = choices[Math.floor(Math.random() * choices.length)].matrix.map(row => [...row]);
+      
+      // Randomly flip 1 cell
+      const rr = Math.floor(Math.random() * 3);
+      const rc = Math.floor(Math.random() * 3);
+      mutated[rr][rc] = !mutated[rr][rc];
+
+      // If we are mutating a Face/Profil, ensure columns sit on the bottom row (gravity)
+      if (correctView !== 'haut') {
+        // Fix gravity in columns: solid cells should not hang in the air
+        for (let col = 0; col < 3; col++) {
+          let count = 0;
+          for (let row = 0; row < 3; row++) {
+            if (mutated[row][col]) count++;
+          }
+          // Fill from bottom up
+          for (let row = 0; row < 3; row++) {
+            mutated[row][col] = (row >= 3 - count);
+          }
+        }
+      }
+
+      // Check if mutated matrix has at least one cell colored
+      let hasCell = false;
+      for (let r = 0; r < 3; r++) {
+        for (let c = 0; c < 3; c++) {
+          if (mutated[r][c]) hasCell = true;
+        }
+      }
+
+      if (!hasCell) continue;
+
+      const ser = serializeMatrix(mutated);
+      if (!matrixSet.has(ser)) {
+        matrixSet.add(ser);
+        choices.push({ matrix: mutated, viewType: null, isCorrect: false });
+      }
+    }
+
+    // Shuffle the array
+    for (let i = choices.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [choices[i], choices[j]] = [choices[j], choices[i]];
+    }
+
+    return choices;
+  }
+
+  // ════════════════════════════════════════════════
+  // 5. GAME ACTIONS
+  // ════════════════════════════════════════════════
+  function loadQuestion() {
+    answered = false;
+    selectedChoiceIdx = null;
+    currentRotateAngle = 0;
+    document.getElementById('feedback-area').innerHTML = '';
+    document.getElementById('next-area').style.display = 'none';
+
+    // Configure question mode
+    isMCQ = (currentStep <= 5);
+
+    document.getElementById('btn-validate').disabled = isMCQ;
+    document.getElementById('count-input').value = '';
+    document.getElementById('count-input').disabled = false;
+
+    // Load shapes
+    const shape = sessionShapes[currentStep - 1];
+
+    // Setup stats display
+    document.getElementById('q-num').textContent = currentStep;
+    document.getElementById('score-disp').textContent = score;
+    document.getElementById('prog-bar').style.width = `${((currentStep - 1) / TOTAL_Q) * 100}%`;
+
+    const titleEl = document.getElementById('q-title');
+    if (isMCQ) {
+      // Pick random view type
+      const views = ['face', 'profil_gauche', 'profil_droit', 'haut'];
+      currentViewType = views[Math.floor(Math.random() * views.length)];
+      
+      let viewLabel = '';
+      if (currentViewType === 'face') viewLabel = 'vue de face';
+      else if (currentViewType === 'profil_gauche') viewLabel = 'vue de profil gauche';
+      else if (currentViewType === 'profil_droit') viewLabel = 'vue de profil droit';
+      else if (currentViewType === 'haut') viewLabel = 'vue de haut';
+
+      titleEl.innerHTML = `<span>❓</span> Quelle est la <strong>${viewLabel}</strong> de cet assemblage 3D ?`;
+      
+      // Show MCQ area, hide counting area
+      document.getElementById('mcq-section').style.display = 'block';
+      document.getElementById('counting-section').style.display = 'none';
+
+      // Render choices
+      generatedChoices = generateMCQChoices(shape, currentViewType);
+      const gridEl = document.getElementById('choices-grid');
+      gridEl.innerHTML = '';
+
+      generatedChoices.forEach((ch, idx) => {
+        const card = document.createElement('div');
+        card.className = 'choice-card';
+        card.id = `choice-${idx}`;
+        card.onclick = () => selectChoice(idx);
+        
+        const svgHTML = drawViewSVG(ch.matrix, currentViewType, 90);
+        card.innerHTML = `
+          ${svgHTML}
+          <div class="choice-label">Option ${String.fromCharCode(65 + idx)}</div>
+        `;
+        gridEl.appendChild(card);
+      });
+
+    } else {
+      // Counting mode
+      titleEl.innerHTML = `<span>❓</span> Combien de petits cubes composent cet assemblage au total ? (Fais attention aux cubes cachés !)`;
+      
+      // Hide MCQ area, show counting area
+      document.getElementById('mcq-section').style.display = 'none';
+      document.getElementById('counting-section').style.display = 'block';
+      document.getElementById('count-input').focus();
+    }
+
+    // Render 3D
+    renderIsometric(shape, currentRotateAngle);
+  }
+
+  function selectChoice(idx) {
+    if (answered) return;
+    playSound('click');
+
+    // Deselect previous
+    if (selectedChoiceIdx !== null) {
+      document.getElementById(`choice-${selectedChoiceIdx}`).classList.remove('selected');
+    }
+
+    selectedChoiceIdx = idx;
+    document.getElementById(`choice-${idx}`).classList.add('selected');
+    document.getElementById('btn-validate').disabled = false;
+  }
+
+  function submitAnswer() {
+    if (answered) return;
+    const shape = sessionShapes[currentStep - 1];
+    
+    // Calculate total cubes
+    let correctCubes = 0;
+    for (let r = 0; r < 3; r++) {
+      for (let c = 0; c < 3; c++) {
+        correctCubes += shape.grid[r][c];
+      }
+    }
+
+    let isCorrect = false;
+    let detailMsg = '';
+
+    if (isMCQ) {
+      if (selectedChoiceIdx === null) return;
+      answered = true;
+      document.getElementById('btn-validate').disabled = true;
+
+      const choice = generatedChoices[selectedChoiceIdx];
+      isCorrect = choice.isCorrect;
+
+      // Color choice cards
+      generatedChoices.forEach((ch, idx) => {
+        const el = document.getElementById(`choice-${idx}`);
+        el.classList.add('disabled');
+        if (ch.isCorrect) {
+          el.classList.add('correct-ans');
+        } else if (idx === selectedChoiceIdx) {
+          el.classList.add('wrong-ans');
+        }
+      });
+
+      let viewName = '';
+      if (currentViewType === 'face') viewName = 'de face';
+      else if (currentViewType === 'profil_gauche') viewName = 'de profil gauche';
+      else if (currentViewType === 'profil_droit') viewName = 'de profil droit';
+      else if (currentViewType === 'haut') viewName = 'de haut';
+
+      detailMsg = `Pour cet assemblage, la bonne vue <strong>${viewName}</strong> correspond à l'<strong>Option ${String.fromCharCode(65 + generatedChoices.findIndex(c => c.isCorrect))}</strong>.`;
+
+    } else {
+      // Counting validation
+      const inputEl = document.getElementById('count-input');
+      const val = parseInt(inputEl.value, 10);
+      if (isNaN(val) || val <= 0) {
+        alert("Saisis un nombre entier de cubes valide !");
+        return;
+      }
+      answered = true;
+      document.getElementById('btn-validate').disabled = true;
+      inputEl.disabled = true;
+
+      isCorrect = (val === correctCubes);
+
+      detailMsg = `L'assemblage contient exactement <strong>${correctCubes} cubes</strong>.<br>${shape.desc}`;
+    }
+
+    if (isCorrect) score++;
+    document.getElementById('score-disp').textContent = score;
+
+    // Play retro sounds
+    playSound(isCorrect ? 'success' : 'error');
+
+    // Build detailed feedback and views row
+    const mHaut = getViewMatrix(shape.grid, 'haut');
+    const mFace = getViewMatrix(shape.grid, 'face');
+    const mG = getViewMatrix(shape.grid, 'profil_gauche');
+    const mD = getViewMatrix(shape.grid, 'profil_droit');
+
+    const feedbackArea = document.getElementById('feedback-area');
+    feedbackArea.innerHTML = `
+      <div class="feedback-box ${isCorrect ? 'fb-correct' : 'fb-wrong'}">
+        <div class="fb-icon">${isCorrect ? '🎯' : '💡'}</div>
+        <div style="flex:1;">
+          <div class="fb-title">${isCorrect ? 'Excellent travail !' : 'Ce n\'est pas tout à fait ça.'}</div>
+          <div class="fb-desc">
+            ${detailMsg}
+          </div>
+          
+          <!-- Detailed projections analysis during correction -->
+          <div class="correction-detail">
+            <div class="correction-subtitle">🔍 Analyse des 4 projections :</div>
+            <div class="projections-row">
+              <div class="projection-item">
+                ${drawViewSVG(mHaut, 'haut', 60)}
+                <span class="projection-item-title">Vue de Haut</span>
+              </div>
+              <div class="projection-item">
+                ${drawViewSVG(mFace, 'face', 60)}
+                <span class="projection-item-title">Vue de Face</span>
+              </div>
+              <div class="projection-item">
+                ${drawViewSVG(mG, 'profil_gauche', 60)}
+                <span class="projection-item-title">Profil G.</span>
+              </div>
+              <div class="projection-item">
+                ${drawViewSVG(mD, 'profil_droit', 60)}
+                <span class="projection-item-title">Profil D.</span>
+              </div>
+            </div>
+            
+            <!-- Rotation control for pedagogical explanation -->
+            <div class="rotation-control">
+              <span class="rotation-label">👀 Observe l'assemblage sous d'autres angles :</span>
+              <div class="rotation-buttons">
+                <button class="btn-rot active" id="rot-btn-0" onclick="changeRotation(0)">Standard</button>
+                <button class="btn-rot" id="rot-btn-90" onclick="changeRotation(90)">+90°</button>
+                <button class="btn-rot" id="rot-btn-180" onclick="changeRotation(180)">+180°</button>
+                <button class="btn-rot" id="rot-btn-270" onclick="changeRotation(270)">+270°</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    document.getElementById('next-area').style.display = 'block';
+    
+    // Set focus on next button
+    document.getElementById('btn-next').focus();
+  }
+
+  function changeRotation(deg) {
+    if (!answered) return;
+    playSound('click');
+    
+    // Toggle active class in rotation buttons
+    [0, 90, 180, 270].forEach(d => {
+      const btn = document.getElementById(`rot-btn-${d}`);
+      if (d === deg) btn.classList.add('active');
+      else btn.classList.remove('active');
+    });
+
+    currentRotateAngle = deg;
+    const shape = sessionShapes[currentStep - 1];
+    renderIsometric(shape, currentRotateAngle);
+  }
+
+  // Proceed to next question
+  function nextQuestion() {
+    if (currentStep < TOTAL_Q) {
+      currentStep++;
+      loadQuestion();
+    } else {
+      finishSession();
+    }
+  }
+
+  function finishSession() {
+    document.getElementById('game-flow').style.display = 'none';
+    document.getElementById('congrats-flow').style.display = 'block';
+
+    const pct = Math.round((score / TOTAL_Q) * 100);
+    const titleEl = document.getElementById('congrats-title');
+    const msgEl = document.getElementById('congrats-msg');
+    const starsEl = document.getElementById('stars');
+
+    if (score === TOTAL_Q) {
+      titleEl.textContent = "Score Parfait ! 🏆";
+      msgEl.innerHTML = `Géomètre d'exception ! Tu as résolu les 10 questions sans aucune erreur (score : <strong>${score}/${TOTAL_Q}</strong>, soit ${pct}%). Ton sens de la perspective 3D est parfait !`;
+      starsEl.textContent = "⭐⭐⭐";
+      playSound('perfect');
+      launchConfetti();
+    } else if (score >= 8) {
+      titleEl.textContent = "Félicitations ! 🥈";
+      msgEl.innerHTML = `Excellent résultat ! Tu as obtenu un score de <strong>${score}/${TOTAL_Q}</strong> (${pct}%). Ton sens de la perspective 3D est excellent !`;
+      starsEl.textContent = "⭐⭐";
+      playSound('success');
+    } else if (score >= 5) {
+      titleEl.textContent = "Bien joué ! 🎯";
+      msgEl.innerHTML = `Bon travail ! Tu as un score de <strong>${score}/${TOTAL_Q}</strong> (${pct}%). Essaie à nouveau pour faire encore mieux, et fais bien attention aux cubes cachés !`;
+      starsEl.textContent = "⭐";
+      playSound('success');
+    } else {
+      titleEl.textContent = "Entraîne-toi encore ! 💪";
+      msgEl.innerHTML = `Score : <strong>${score}/${TOTAL_Q}</strong> (${pct}%). Ne te décourage pas ! Relance l'exercice et prends ton temps pour analyser la structure face par face.`;
+      starsEl.textContent = "❌";
+      playSound('error');
+    }
+
+    // Save result to Firebase parent if available
+    if (window.parent && window.parent.saveResult) {
+      window.parent.saveResult({
+        activity: 'solide_projections_cubes',
+        bookTitle: "Géométrie — Vues 3D & Empilements de Cubes",
+        score: score,
+        total: TOTAL_Q,
+        pct: pct,
+        date: new Date().toLocaleDateString('fr-BE'),
+        time: new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })
+      });
+    }
+  }
+
+  function startSession() {
+    // Shuffle shapes index array
+    const indices = SHAPES.map((_, i) => i);
+    for (let i = indices.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [indices[i], indices[j]] = [indices[j], indices[i]];
+    }
+    
+    // Choose 10 random shapes
+    sessionShapes = indices.slice(0, TOTAL_Q).map(idx => SHAPES[idx]);
+  }
+
+  function restartGame() {
+    currentStep = 1;
+    score = 0;
+    document.getElementById('game-flow').style.display = 'block';
+    document.getElementById('congrats-flow').style.display = 'none';
+    startSession();
+    loadQuestion();
+  }
+
+  // ════════════════════════════════════════════════
+  // 6. AUDIO retro synth (Web Audio API)
+  // ════════════════════════════════════════════════
+  function playSound(type) {
+    if (audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    
+    const now = audioCtx.currentTime;
+
+    if (type === 'success') {
+      osc.frequency.setValueAtTime(523.25, now); // C5
+      osc.frequency.setValueAtTime(659.25, now + 0.08); // E5
+      osc.frequency.setValueAtTime(783.99, now + 0.16); // G5
+      osc.frequency.setValueAtTime(1046.50, now + 0.24); // C6
+      gain.gain.setValueAtTime(0.12, now);
+      gain.gain.exponentialRampToValueAtTime(0.005, now + 0.45);
+      osc.start(now);
+      osc.stop(now + 0.45);
+    } else if (type === 'error') {
+      osc.frequency.setValueAtTime(220, now); // A3
+      osc.frequency.setValueAtTime(147, now + 0.12); // D3
+      gain.gain.setValueAtTime(0.15, now);
+      gain.gain.exponentialRampToValueAtTime(0.005, now + 0.35);
+      osc.start(now);
+      osc.stop(now + 0.35);
+    } else if (type === 'click') {
+      osc.frequency.setValueAtTime(580, now);
+      gain.gain.setValueAtTime(0.04, now);
+      gain.gain.exponentialRampToValueAtTime(0.005, now + 0.08);
+      osc.start(now);
+      osc.stop(now + 0.08);
+    } else if (type === 'perfect') {
+      const notes = [523.25, 659.25, 783.99, 1046.50, 783.99, 1046.50];
+      const durations = [0.08, 0.08, 0.08, 0.12, 0.08, 0.25];
+      let time = now;
+      notes.forEach((freq, idx) => {
+        const noteOsc = audioCtx.createOscillator();
+        const noteGain = audioCtx.createGain();
+        noteOsc.connect(noteGain);
+        noteGain.connect(audioCtx.destination);
+        noteOsc.frequency.setValueAtTime(freq, time);
+        noteGain.gain.setValueAtTime(0.1, time);
+        noteGain.gain.exponentialRampToValueAtTime(0.005, time + durations[idx]);
+        noteOsc.start(time);
+        noteOsc.stop(time + durations[idx]);
+        time += durations[idx] * 0.85;
+      });
+    }
+  }
+
+  // ════════════════════════════════════════════════
+  // 7. CONFETTI ANIMATION EFFECT
+  // ════════════════════════════════════════════════
+  function launchConfetti() {
+    const colors = ['#c084fc', '#8b5cf6', '#3b82f6', '#10b981', '#f59e0b', '#f43f5e'];
+    for (let i = 0; i < 80; i++) {
+      const conf = document.createElement('div');
+      conf.className = 'confetti';
+      conf.style.left = Math.random() * 100 + 'vw';
+      conf.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+      conf.style.animationDelay = Math.random() * 1.5 + 's';
+      
+      const size = Math.random() * 10 + 6;
+      conf.style.width = size + 'px';
+      conf.style.height = size + 'px';
+      conf.style.transform = `scale(${Math.random() * 0.8 + 0.5})`;
+      
+      document.body.appendChild(conf);
+      setTimeout(() => conf.remove(), 2500);
+    }
+  }
+
+  // Key event listeners
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+      if (!answered) {
+        if (!isMCQ || selectedChoiceIdx !== null) {
+          submitAnswer();
+        }
+      } else {
+        nextQuestion();
+      }
+    }
+  });
+
+  // Start on load
+  window.addEventListener('DOMContentLoaded', () => {
+    startSession();
+    loadQuestion();
+  });
+</script>
+</body>
+</html>
