@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Défi : Voix Active vs Voix Passive</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@700;800;900&family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800;900&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --yellow: #B45309;
+      --yellow-light: #FEF3C7;
+      --yellow-border: #D97706;
+      --green: #047857;
+      --green-light: #ECFDF5;
+      --green-border: #10B981;
+      --blue: #1D4ED8;
+      --blue-light: #EFF6FF;
+      --blue-border: #3B82F6;
+      --bg: #FDFBF7;
+      --surface: #FFFFFF;
+      --text: #1A1A2E;
+      --muted: #6B7280;
+      --border: #1A1A2E;
+      --r-lg: 24px;
+      --r-md: 16px;
+      --r-sm: 8px;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+    }
+    .font-display {
+      font-family: 'Outfit', sans-serif;
+    }
+    .font-title {
+      font-family: 'Fredoka', sans-serif;
+    }
+    .font-nunito {
+      font-family: 'Nunito', sans-serif;
+    }
+    
+    /* 3D Flat Styling Buttons */
+    .btn-3d {
+      border: 3px solid var(--border) !important;
+      box-shadow: 4px 4px 0px var(--border) !important;
+      transition: all 0.15s ease-out;
+      transform: translate(0px, 0px);
+    }
+    .btn-3d:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: 6px 6px 0px var(--border) !important;
+    }
+    .btn-3d:active {
+      transform: translate(2px, 2px);
+      box-shadow: 2px 2px 0px var(--border) !important;
+    }
+
+    /* Option Button themes */
+    .btn-option-active {
+      background-color: var(--blue-light);
+      border-color: var(--blue-border);
+      color: var(--blue);
+      border: 3px solid var(--border) !important;
+      box-shadow: 4px 4px 0px var(--border) !important;
+      transition: all 0.15s ease-out;
+    }
+    .btn-option-active:hover {
+      background-color: #DBEAFE;
+      transform: translate(-2px, -2px);
+      box-shadow: 6px 6px 0px var(--border) !important;
+    }
+    .btn-option-active:active {
+      transform: translate(2px, 2px);
+      box-shadow: 2px 2px 0px var(--border) !important;
+    }
+
+    .btn-option-passive {
+      background-color: var(--green-light);
+      border-color: var(--green-border);
+      color: var(--green);
+      border: 3px solid var(--border) !important;
+      box-shadow: 4px 4px 0px var(--border) !important;
+      transition: all 0.15s ease-out;
+    }
+    .btn-option-passive:hover {
+      background-color: #D1FAE5;
+      transform: translate(-2px, -2px);
+      box-shadow: 6px 6px 0px var(--border) !important;
+    }
+    .btn-option-passive:active {
+      transform: translate(2px, 2px);
+      box-shadow: 2px 2px 0px var(--border) !important;
+    }
+
+    .btn-option-agent {
+      background-color: var(--yellow-light);
+      border-color: var(--yellow-border);
+      color: var(--yellow);
+      border: 3px solid var(--border) !important;
+      box-shadow: 4px 4px 0px var(--border) !important;
+      transition: all 0.15s ease-out;
+    }
+    .btn-option-agent:hover {
+      background-color: #FDE68A;
+      transform: translate(-2px, -2px);
+      box-shadow: 6px 6px 0px var(--border) !important;
+    }
+    .btn-option-agent:active {
+      transform: translate(2px, 2px);
+      box-shadow: 2px 2px 0px var(--border) !important;
+    }
+
+    /* Highlight box style inside sentence */
+    .target-highlight {
+      background-color: #FFEDD5;
+      border: 2.5px dashed #EA580C;
+      color: #C2410C;
+      padding: 2px 8px;
+      border-radius: var(--r-sm);
+      font-weight: 800;
+      display: inline-block;
+      box-shadow: 2px 2px 0px rgba(234,88,12,0.25);
+    }
+
+    /* Confetti canvas */
+    #confetti-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 9999;
+    }
+    
+    /* Transition effects */
+    .fade-in {
+      animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-start p-4 md:p-8">
+  <canvas id="confetti-canvas"></canvas>
+
+  <div class="w-full max-w-4xl flex flex-col gap-6">
+    <!-- Header Navigation -->
+    <div class="flex items-center justify-between">
+      <button onclick="handleBack();" class="inline-flex items-center gap-2 px-4 py-2 border-2 border-neutral-900 bg-white rounded-xl text-sm font-bold font-nunito text-neutral-600 hover:bg-neutral-50 active:translate-y-0.5 transition-all">
+        ← Retour
+      </button>
+    </div>
+
+    <!-- MAIN CARD CONTAINER -->
+    <div class="bg-white border-3 border-neutral-900 rounded-[28px] shadow-[6px_6px_0px_#1A1A2E] p-6 md:p-8 relative overflow-hidden">
+      
+      <!-- SCREEN 1: LESSON / SYNTHESIS -->
+      <div id="screen-lesson" class="fade-in flex flex-col gap-6">
+        <div class="text-center">
+          <h1 class="font-display text-2xl md:text-3xl font-black text-neutral-900">💡 Synthèse interactive</h1>
+          <p class="text-neutral-500 font-nunito text-sm mt-1">Découvre la différence entre voix active et passive avant de commencer le jeu !</p>
+        </div>
+
+        <!-- 3 Columns grid -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mt-2">
+          <!-- CARD ACTIVE -->
+          <div class="bg-blue-50/50 border-2 border-blue-500/30 rounded-2xl p-5 flex flex-col gap-3">
+            <span class="text-xs font-bold uppercase tracking-wider text-blue-600 bg-blue-100 px-3 py-1 rounded-full w-max">Sujet Actif</span>
+            <h3 class="font-display text-lg font-bold text-blue-800">La Voix Active</h3>
+            <p class="text-xs text-neutral-600 leading-relaxed">Le sujet <strong>fait l'action</strong> exprimée par le verbe. La phrase a généralement un CDV (Complément Direct du Verbe).</p>
+            <div class="bg-white border border-blue-200 rounded-xl p-3 text-xs italic mt-auto">
+              <span class="text-neutral-500">Exemple :</span><br>
+              "Le chat <strong class="text-blue-700 font-bold">poursuit</strong> la souris."<br>
+              <span class="text-neutral-400 text-[10px]">(Le chat fait l'action de poursuivre)</span>
+            </div>
+          </div>
+
+          <!-- CARD PASSIVE -->
+          <div class="bg-green-50/50 border-2 border-green-500/30 rounded-2xl p-5 flex flex-col gap-3">
+            <span class="text-xs font-bold uppercase tracking-wider text-green-600 bg-green-100 px-3 py-1 rounded-full w-max">Sujet Passif</span>
+            <h3 class="font-display text-lg font-bold text-green-800">La Voix Passive</h3>
+            <p class="text-xs text-neutral-600 leading-relaxed">Le sujet <strong>subit l'action</strong>. Le verbe se forme avec l'auxiliaire <strong>être</strong> + le <strong>participe passé</strong> (s'accorde avec le sujet).</p>
+            <div class="bg-white border border-green-200 rounded-xl p-3 text-xs italic mt-auto">
+              <span class="text-neutral-500">Exemple :</span><br>
+              "La souris <strong class="text-green-700 font-bold">est poursuivie</strong> par le chat."<br>
+              <span class="text-neutral-400 text-[10px]">(La souris subit l'action)</span>
+            </div>
+          </div>
+
+          <!-- CARD COMPLEMENT AGENT -->
+          <div class="bg-amber-50/50 border-2 border-amber-500/30 rounded-2xl p-5 flex flex-col gap-3">
+            <span class="text-xs font-bold uppercase tracking-wider text-amber-600 bg-amber-100 px-3 py-1 rounded-full w-max">Qui fait l'action</span>
+            <h3 class="font-display text-lg font-bold text-amber-800">Le Complément d'Agent</h3>
+            <p class="text-xs text-neutral-600 leading-relaxed">Dans une phrase passive, il désigne <strong>l'auteur réel</strong> de l'action. Il commence souvent par la préposition <strong>par</strong> (ou <strong>de</strong>).</p>
+            <div class="bg-white border border-amber-200 rounded-xl p-3 text-xs italic mt-auto">
+              <span class="text-neutral-500">Exemple :</span><br>
+              "La souris est poursuivie <strong class="text-amber-700 font-bold">par le chat</strong>."<br>
+              <span class="text-neutral-400 text-[10px]">(par le chat fait réellement l'action)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- VERB TRANSFORMATION BOX -->
+        <div class="bg-neutral-50 border-2 border-neutral-200 rounded-2xl p-5">
+          <h4 class="font-display text-sm font-bold text-neutral-800 mb-2">🔄 Règle d'or : Le temps de l'auxiliaire "être"</h4>
+          <p class="text-xs text-neutral-600 leading-relaxed mb-3">Lorsqu'on transforme une phrase active en phrase passive, l'auxiliaire <strong>être</strong> doit être conjugué au <strong>même temps</strong> que le verbe actif :</p>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+            <div class="bg-white border border-neutral-200 rounded-lg p-3">
+              <span class="font-semibold text-neutral-700">Présent actif ➔ Présent passif :</span><br>
+              "Le chat <strong class="text-blue-600">poursuit</strong>..." ➔ "... <strong class="text-green-600">est</strong> poursuivie."
+            </div>
+            <div class="bg-white border border-neutral-200 rounded-lg p-3">
+              <span class="font-semibold text-neutral-700">Passé composé actif ➔ Passé composé passif :</span><br>
+              "Le chat <strong class="text-blue-600">a poursuivi</strong>..." ➔ "... <strong class="text-green-600">a été</strong> poursuivie."
+            </div>
+            <div class="bg-white border border-neutral-200 rounded-lg p-3">
+              <span class="font-semibold text-neutral-700">Futur actif ➔ Futur passif :</span><br>
+              "Le chat <strong class="text-blue-600">poursuivra</strong>..." ➔ "... <strong class="text-green-600">sera</strong> poursuivie."
+            </div>
+          </div>
+        </div>
+
+        <button onclick="startGame();" class="btn-3d w-full mt-2 py-4 bg-amber-400 hover:bg-amber-300 font-display text-lg font-black text-neutral-900 rounded-2xl transition-all">
+          🚀 Lancer le Défi !
+        </button>
+      </div>
+
+      <!-- SCREEN 2: GAMEPLAY -->
+      <div id="screen-game" class="fade-in hidden flex flex-col gap-6">
+        <!-- Top Stats Row -->
+        <div class="flex justify-between items-center border-b border-neutral-100 pb-4">
+          <div class="flex flex-col">
+            <span class="text-xs font-bold uppercase tracking-wider text-neutral-400">Progression</span>
+            <span class="font-display text-base font-bold text-neutral-800" id="progress-text">Question 1 / 10</span>
+          </div>
+          <div class="flex flex-col items-end">
+            <span class="text-xs font-bold uppercase tracking-wider text-neutral-400">Score</span>
+            <span class="font-display text-base font-bold text-green-600" id="score-text">0 / 10</span>
+          </div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="w-full bg-neutral-100 h-3 rounded-full overflow-hidden border border-neutral-200">
+          <div id="progress-bar-fill" class="bg-amber-400 h-full transition-all duration-300" style="width: 10%;"></div>
+        </div>
+
+        <!-- Question Box -->
+        <div class="bg-neutral-50 border-2 border-neutral-200 rounded-2xl p-6 md:p-8 text-center flex flex-col gap-4">
+          <span class="text-xs font-bold uppercase tracking-wider text-amber-600 bg-amber-100 px-3 py-1 rounded-full w-max mx-auto">Analyse grammaticale</span>
+          <div class="font-display text-lg md:text-2xl font-black text-neutral-900 leading-relaxed" id="sentence-container">
+            <!-- Sentence html injects here -->
+          </div>
+          <p class="text-neutral-500 font-nunito text-xs md:text-sm">Quelle est la fonction ou la voix de la cible surlignée ?</p>
+        </div>
+
+        <!-- Options grid -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
+          <button onclick="checkAnswer('active');" class="btn-option-active p-4 rounded-xl font-display font-black text-base transition-all text-center">
+            Actif
+          </button>
+          <button onclick="checkAnswer('passive');" class="btn-option-passive p-4 rounded-xl font-display font-black text-base transition-all text-center">
+            Passif
+          </button>
+          <button onclick="checkAnswer('agent');" class="btn-option-agent p-4 rounded-xl font-display font-black text-base transition-all text-center">
+            Complément d'Agent
+          </button>
+        </div>
+      </div>
+
+      <!-- SCREEN 3: CONGRATS -->
+      <div id="screen-congrats" class="fade-in hidden flex flex-col items-center justify-center text-center gap-6 py-6">
+        <div class="w-24 h-24 bg-amber-100 rounded-full flex items-center justify-center text-5xl animate-bounce border-3 border-neutral-900 shadow-[4px_4px_0px_#1A1A2E]">
+          🏆
+        </div>
+        
+        <div>
+          <h2 class="font-display text-2xl md:text-4xl font-black text-neutral-900" id="congrats-title">Défi terminé !</h2>
+          <p class="text-neutral-500 font-nunito text-sm mt-1" id="congrats-message">Bravo pour tes efforts !</p>
+        </div>
+
+        <!-- Final score display -->
+        <div class="bg-neutral-50 border-2 border-neutral-200 rounded-2xl px-8 py-4 flex flex-col items-center shadow-[4px_4px_0px_rgba(0,0,0,0.05)]">
+          <span class="text-xs font-bold uppercase tracking-wider text-neutral-400">Score final</span>
+          <span class="font-display text-4xl md:text-5xl font-black text-amber-500 my-1" id="final-score">8 / 10</span>
+          <span class="font-title text-2xl text-amber-400" id="final-stars">⭐⭐</span>
+        </div>
+
+        <!-- Footer Actions -->
+        <div class="flex flex-col md:flex-row gap-4 w-full max-w-md mt-2">
+          <button onclick="restartGame();" class="btn-3d flex-1 py-3 bg-neutral-900 hover:bg-neutral-800 text-white font-display font-bold rounded-xl transition-all">
+            🔁 Recommencer
+          </button>
+          <button onclick="handleBack();" class="btn-3d flex-1 py-3 bg-amber-400 hover:bg-amber-300 text-neutral-900 font-display font-bold rounded-xl transition-all">
+            🏠 Quitter
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MODAL FEEDBACK DIALOG -->
+  <div id="feedback-modal" class="fixed inset-0 bg-neutral-900/60 backdrop-blur-xs hidden items-center justify-center p-4 z-50">
+    <div class="bg-white border-3 border-neutral-900 rounded-[24px] shadow-[6px_6px_0px_#1A1A2E] max-w-lg w-full p-6 md:p-8 flex flex-col gap-5 text-center fade-in">
+      <div id="feedback-icon" class="text-5xl">🎉</div>
+      <h3 id="feedback-title" class="font-display text-xl md:text-2xl font-black text-neutral-900">Correct !</h3>
+      <p id="feedback-explanation" class="text-neutral-600 font-nunito text-xs md:text-sm leading-relaxed bg-neutral-50 p-4 border border-neutral-200 rounded-xl text-left">
+        Explication pédagogique...
+      </p>
+      <button onclick="closeFeedback();" class="btn-3d w-full py-3 bg-neutral-900 hover:bg-neutral-800 text-white font-display font-bold rounded-xl transition-all">
+        Continuer ➡️
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // Audio Context Synth helper
+    let audioCtx = null;
+    function playTone(freq, duration, type = 'sine') {
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch (e) {
+        console.warn('Audio Context not supported or allowed', e);
+      }
+    }
+
+    // 8-bit Sounds
+    function playSuccessSound() {
+      playTone(523.25, 0.08, 'square'); // C5
+      setTimeout(() => playTone(659.25, 0.12, 'square'), 70); // E5
+    }
+    function playErrorSound() {
+      playTone(180, 0.12, 'sawtooth');
+      setTimeout(() => playTone(130, 0.22, 'sawtooth'), 100);
+    }
+    function playClickSound() {
+      playTone(350, 0.04, 'triangle');
+    }
+
+    // Questions Database (30 items)
+    const QUESTION_POOL = [
+      // VOIX ACTIVE (10 questions)
+      {
+        sentence: "Le chat poursuit la souris.",
+        htmlSentence: "Le chat <span class=\"target-highlight\">poursuit</span> la souris.",
+        answer: "active",
+        explanation: "Le verbe « <strong>poursuit</strong> » est à la <strong>voix active</strong> : le sujet « Le chat » réalise lui-même l'action de poursuivre."
+      },
+      {
+        sentence: "Le jardinier arrose les fleurs chaque matin.",
+        htmlSentence: "Le jardinier <span class=\"target-highlight\">arrose</span> les fleurs chaque matin.",
+        answer: "active",
+        explanation: "Le verbe « <strong>arrose</strong> » est à la <strong>voix active</strong>. C'est le sujet « Le jardinier » qui effectue l'action d'arroser."
+      },
+      {
+        sentence: "Le maire inaugurera la nouvelle bibliothèque demain.",
+        htmlSentence: "Le maire <span class=\"target-highlight\">inaugurera</span> la nouvelle bibliothèque.",
+        answer: "active",
+        explanation: "Le verbe « <strong>inaugurera</strong> » (au futur simple) est à la <strong>voix active</strong> : le sujet « Le maire » fera l'action d'inaugurer."
+      },
+      {
+        sentence: "Les élèves de CM2 écrivent un beau poème.",
+        htmlSentence: "Les élèves de CM2 <span class=\"target-highlight\">écrivent</span> un beau poème.",
+        answer: "active",
+        explanation: "Le verbe « <strong>écrivent</strong> » est à la <strong>voix active</strong> car le sujet « Les élèves » fait l'action d'écrire."
+      },
+      {
+        sentence: "Le soleil réchauffe doucement le sable de la plage.",
+        htmlSentence: "Le soleil <span class=\"target-highlight\">réchauffe</span> doucement le sable.",
+        answer: "active",
+        explanation: "Le verbe « <strong>réchauffe</strong> » est à la <strong>voix active</strong>. Le sujet « Le soleil » produit l'action de réchauffer."
+      },
+      {
+        sentence: "Le célèbre cuisinier prépare un dessert aux pommes.",
+        htmlSentence: "Le célèbre cuisinier <span class=\"target-highlight\">prépare</span> un dessert.",
+        answer: "active",
+        explanation: "Le verbe « <strong>prépare</strong> » est à la <strong>voix active</strong>. Le sujet « Le célèbre cuisinier » réalise l'action de préparer."
+      },
+      {
+        sentence: "La tempête a cassé plusieurs branches d'arbre dans le parc.",
+        htmlSentence: "La tempête <span class=\"target-highlight\">a cassé</span> plusieurs branches.",
+        answer: "active",
+        explanation: "Le verbe « <strong>a cassé</strong> » (au passé composé) est à la <strong>voix active</strong> : le sujet « La tempête » fait l'action de casser."
+      },
+      {
+        sentence: "Les scientifiques étudient les étoiles très lointaines.",
+        htmlSentence: "Les scientifiques <span class=\"target-highlight\">étudient</span> les étoiles lointaines.",
+        answer: "active",
+        explanation: "Le verbe « <strong>étudient</strong> » est à la <strong>voix active</strong> car le sujet « Les scientifiques » réalise l'action d'étudier."
+      },
+      {
+        sentence: "Le guide accompagne les touristes dans la grotte.",
+        htmlSentence: "Le guide <span class=\"target-highlight\">accompagne</span> les touristes.",
+        answer: "active",
+        explanation: "Le verbe « <strong>accompagne</strong> » est à la <strong>voix active</strong>. Le sujet « Le guide » fait l'action d'accompagner."
+      },
+      {
+        sentence: "Mon frère réparera son vélo de course ce week-end.",
+        htmlSentence: "Mon frère <span class=\"target-highlight\">réparera</span> son vélo de course.",
+        answer: "active",
+        explanation: "Le verbe « <strong>réparera</strong> » est conjugué au futur simple de la <strong>voix active</strong>. C'est le sujet « Mon frère » qui fera la réparation."
+      },
+
+      // VOIX PASSIVE (10 questions)
+      {
+        sentence: "La souris est poursuivie par le chat.",
+        htmlSentence: "La souris <span class=\"target-highlight\">est poursuivie</span> par le chat.",
+        answer: "passive",
+        explanation: "Le verbe « <strong>est poursuivie</strong> » est à la <strong>voix passive</strong> (auxiliaire être au présent + participe passé). Le sujet « La souris » subit l'action de poursuivre."
+      },
+      {
+        sentence: "La nouvelle bibliothèque sera inaugurée par le maire.",
+        htmlSentence: "La nouvelle bibliothèque <span class=\"target-highlight\">sera inaugurée</span> par le maire.",
+        answer: "passive",
+        explanation: "Le verbe « <strong>sera inaugurée</strong> » est au futur simple à la <strong>voix passive</strong>. Le sujet « La nouvelle bibliothèque » subit l'action d'inauguration."
+      },
+      {
+        sentence: "Ce magnifique tableau a été peint par un artiste du quartier.",
+        htmlSentence: "Ce magnifique tableau <span class=\"target-highlight\">a été peint</span> par un artiste.",
+        answer: "passive",
+        explanation: "Le verbe « <strong>a été peint</strong> » (au passé composé passif) est à la <strong>voix passive</strong>. Le sujet « Ce magnifique tableau » subit l'action de peindre."
+      },
+      {
+        sentence: "Les fleurs sont arrosées chaque matin par le jardinier.",
+        htmlSentence: "Les fleurs <span class=\"target-highlight\">sont arrosées</span> chaque matin par le jardinier.",
+        answer: "passive",
+        explanation: "Le verbe « <strong>sont arrosées</strong> » est à la <strong>voix passive</strong> car les fleurs subissent l'action d'arroser faite par le jardinier."
+      },
+      {
+        sentence: "Un beau poème est écrit par les élèves de CM2.",
+        htmlSentence: "Un beau poème <span class=\"target-highlight\">est écrit</span> par les élèves de CM2.",
+        answer: "passive",
+        explanation: "Le verbe « <strong>est écrit</strong> » est à la <strong>voix passive</strong>. Le sujet « Un beau poème » reçoit et subit l'action d'écrire."
+      },
+      {
+        sentence: "La plage est doucement réchauffée par le soleil.",
+        htmlSentence: "La plage <span class=\"target-highlight\">est réchauffée</span> par le soleil.",
+        answer: "passive",
+        explanation: "Le verbe « <strong>est réchauffée</strong> » est conjugué à la <strong>voix passive</strong>. Le sujet « La plage » subit l'action."
+      },
+      {
+        sentence: "Le dessert a été préparé par un célèbre cuisinier.",
+        htmlSentence: "Le dessert <span class=\"target-highlight\">a été préparé</span> par un cuisinier.",
+        answer: "passive",
+        explanation: "Le verbe « <strong>a été préparé</strong> » est au passé composé à la <strong>voix passive</strong>."
+      },
+      {
+        sentence: "Plusieurs branches ont été cassées par la tempête.",
+        htmlSentence: "Plusieurs branches <span class=\"target-highlight\">ont été cassées</span> par la tempête.",
+        answer: "passive",
+        explanation: "Le verbe « <strong>ont été cassées</strong> » est à la <strong>voix passive</strong> car les branches ont subi l'action d'être cassées par la tempête."
+      },
+      {
+        sentence: "Les étoiles lointaines sont étudiées par les scientifiques.",
+        htmlSentence: "Les étoiles lointaines <span class=\"target-highlight\">sont étudiées</span> par les scientifiques.",
+        answer: "passive",
+        explanation: "Le verbe « <strong>sont étudiées</strong> » est à la <strong>voix passive</strong>."
+      },
+      {
+        sentence: "Les touristes sont accompagnés par le guide dans la grotte.",
+        htmlSentence: "Les touristes <span class=\"target-highlight\">sont accompagnés</span> par le guide.",
+        answer: "passive",
+        explanation: "Le verbe « <strong>sont accompagnés</strong> » est à la <strong>voix passive</strong> : le sujet « Les touristes » subit l'action."
+      },
+
+      // COMPLEMENT D'AGENT (10 questions)
+      {
+        sentence: "La souris est poursuivie par le chat.",
+        htmlSentence: "La souris est poursuivie <span class=\"target-highlight\">par le chat</span>.",
+        answer: "agent",
+        explanation: "Le groupe de mots « <strong>par le chat</strong> » est introduit par la préposition « par ». Dans cette phrase passive, il indique qui fait réellement l'action. C'est le <strong>complément d'agent</strong>."
+      },
+      {
+        sentence: "La nouvelle bibliothèque sera inaugurée par le maire.",
+        htmlSentence: "La nouvelle bibliothèque sera inaugurée <span class=\"target-highlight\">par le maire</span>.",
+        answer: "agent",
+        explanation: "Le groupe nominal « <strong>par le maire</strong> » désigne l'auteur de l'action de la phrase passive. C'est le <strong>complément d'agent</strong>."
+      },
+      {
+        sentence: "L'exercice difficile est résolu par les élèves.",
+        htmlSentence: "L'exercice difficile est résolu <span class=\"target-highlight\">par les élèves</span>.",
+        answer: "agent",
+        explanation: "Dans cette phrase passive, le groupe « <strong>par les élèves</strong> » réalise l'action d'écrire/résoudre. C'est le <strong>complément d'agent</strong>."
+      },
+      {
+        sentence: "Le vieux château fort est entouré d'une haute muraille.",
+        htmlSentence: "Le vieux château fort est entouré <span class=\"target-highlight\">d'une haute muraille</span>.",
+        answer: "agent",
+        explanation: "Le groupe nominal « <strong>d'une haute muraille</strong> » est introduit par la préposition « de » ('d''). Il indique ce qui entoure le château à la voix passive. C'est le <strong>complément d'agent</strong>."
+      },
+      {
+        sentence: "Le coupable a été arrêté rapidement par les gendarmes.",
+        htmlSentence: "Le coupable a été arrêté rapidement <span class=\"target-highlight\">par les gendarmes</span>.",
+        answer: "agent",
+        explanation: "Introduit par « par », le groupe nominal « <strong>par les gendarmes</strong> » désigne ceux qui font l'action d'arrêter à la voix passive. C'est le <strong>complément d'agent</strong>."
+      },
+      {
+        sentence: "Les blés mûrs sont coupés par la moissonneuse.",
+        htmlSentence: "Les blés mûrs sont coupés <span class=\"target-highlight\">par la moissonneuse</span>.",
+        answer: "agent",
+        explanation: "Le groupe « <strong>par la moissonneuse</strong> » indique l'outil qui fait l'action de couper à la voix passive. C'est le <strong>complément d'agent</strong>."
+      },
+      {
+        sentence: "Cet écrivain célèbre est apprécié de tous ses lecteurs.",
+        htmlSentence: "Cet écrivain célèbre est apprécié <span class=\"target-highlight\">de tous ses lecteurs</span>.",
+        answer: "agent",
+        explanation: "Le groupe nominal « <strong>de tous ses lecteurs</strong> » est introduit par la préposition « de » après le verbe de sentiment passif « est apprécié ». C'est le <strong>complément d'agent</strong>."
+      },
+      {
+        sentence: "La lettre recommandée sera envoyée par ma sœur.",
+        htmlSentence: "La lettre recommandée sera envoyée <span class=\"target-highlight\">par ma sœur</span>.",
+        answer: "agent",
+        explanation: "Le groupe « <strong>par ma sœur</strong> » désigne la personne qui fait l'action d'envoyer la lettre. C'est le <strong>complément d'agent</strong>."
+      },
+      {
+        sentence: "Le délicieux gâteau a été mangé par les enfants gourmands.",
+        htmlSentence: "Le délicieux gâteau a été mangé <span class=\"target-highlight\">par les enfants</span>.",
+        answer: "agent",
+        explanation: "Le groupe « <strong>par les enfants</strong> » indique qui a fait l'action de manger à la voix passive. C'est le <strong>complément d'agent</strong>."
+      },
+      {
+        sentence: "La colline est entièrement recouverte d'une épaisse forêt.",
+        htmlSentence: "La colline est entièrement recouverte <span class=\"target-highlight\">d'une épaisse forêt</span>.",
+        answer: "agent",
+        explanation: "Le groupe « <strong>d'une épaisse forêt</strong> » est introduit par « de » après le verbe « est recouverte ». Il indique ce qui recouvre la colline. C'est le <strong>complément d'agent</strong>."
+      }
+    ];
+
+    // Game variables
+    let gameQuestions = [];
+    let currentQ = 0;
+    let score = 0;
+    let sourceScreen = 'screen-fiches';
+
+    // Parse parameters if any
+    const urlParams = new URLSearchParams(window.location.search);
+    if(urlParams.has('source')) {
+      sourceScreen = urlParams.get('source');
+    }
+
+    // Shuffle helper
+    function shuffleArray(array) {
+      const arrCopy = [...array];
+      for (let i = arrCopy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arrCopy[i], arrCopy[j]] = [arrCopy[j], arrCopy[i]];
+      }
+      return arrCopy;
+    }
+
+    // Navigation and screen control
+    function handleBack() {
+      playClickSound();
+      if (window.parent && window.parent.closeFicheViewer) {
+        window.parent.closeFicheViewer();
+      } else {
+        // Fallback for direct offline file access
+        window.history.back();
+      }
+    }
+
+    function startGame() {
+      playClickSound();
+      document.getElementById('screen-lesson').classList.add('hidden');
+      document.getElementById('screen-game').classList.remove('hidden');
+      
+      // Select 10 questions randomly (balanced draw: 4 active, 3 passive, 3 agent)
+      const actives = shuffleArray(QUESTION_POOL.filter(q => q.answer === 'active')).slice(0, 4);
+      const passives = shuffleArray(QUESTION_POOL.filter(q => q.answer === 'passive')).slice(0, 3);
+      const agents = shuffleArray(QUESTION_POOL.filter(q => q.answer === 'agent')).slice(0, 3);
+      
+      gameQuestions = shuffleArray([...actives, ...passives, ...agents]);
+      currentQ = 0;
+      score = 0;
+      
+      renderQuestion();
+    }
+
+    function renderQuestion() {
+      // Stats updating
+      document.getElementById('progress-text').textContent = `Question ${currentQ + 1} / 10`;
+      document.getElementById('score-text').textContent = `${score} / 10`;
+      document.getElementById('progress-bar-fill').style.width = `${((currentQ) / 10) * 100}%`;
+      
+      // Question rendering
+      const q = gameQuestions[currentQ];
+      document.getElementById('sentence-container').innerHTML = q.htmlSentence;
+    }
+
+    function checkAnswer(selectedOption) {
+      const q = gameQuestions[currentQ];
+      const correct = (selectedOption === q.answer);
+      
+      if (correct) {
+        score++;
+        playSuccessSound();
+        document.getElementById('feedback-title').textContent = "🎉 Correct !";
+        document.getElementById('feedback-icon').textContent = "🎉";
+        document.getElementById('feedback-title').className = "font-display text-xl md:text-2xl font-black text-green-600";
+      } else {
+        playErrorSound();
+        let expectedLabel = "Actif";
+        if (q.answer === 'passive') expectedLabel = "Passif";
+        if (q.answer === 'agent') expectedLabel = "Complément d'Agent";
+        
+        document.getElementById('feedback-title').textContent = `❌ Incorrect ! (Réponse : ${expectedLabel})`;
+        document.getElementById('feedback-icon').textContent = "❌";
+        document.getElementById('feedback-title').className = "font-display text-xl md:text-2xl font-black text-red-600";
+      }
+      
+      document.getElementById('feedback-explanation').innerHTML = q.explanation;
+      document.getElementById('feedback-modal').style.display = 'flex';
+    }
+
+    function closeFeedback() {
+      playClickSound();
+      document.getElementById('feedback-modal').style.display = 'none';
+      currentQ++;
+      
+      if (currentQ < 10) {
+        renderQuestion();
+      } else {
+        endGame();
+      }
+    }
+
+    function endGame() {
+      document.getElementById('screen-game').classList.add('hidden');
+      document.getElementById('screen-congrats').classList.remove('hidden');
+      
+      document.getElementById('final-score').textContent = `${score} / 10`;
+      
+      // Stars & Messages depending on score
+      let stars = "";
+      let title = "💪 Continue d'apprendre !";
+      let message = "Relis bien la synthèse interactive pour mieux repérer le sujet passif, le verbe et le complément d'agent.";
+      
+      if (score === 10) {
+        stars = "⭐⭐⭐";
+        title = "👑 Sans-faute incroyable !";
+        message = "Tu maîtrises parfaitement la transformation passive et la reconnaissance du complément d'agent !";
+        triggerConfettis();
+      } else if (score >= 7) {
+        stars = "⭐⭐";
+        title = "☀️ Très bon score !";
+        message = "C'est un excellent travail. Tu distingues très bien l'actif et le passif.";
+      } else if (score >= 5) {
+        stars = "⭐";
+        title = "👍 Pas mal !";
+        message = "Tu as compris l'essentiel. Entraîne-toi à nouveau pour perfectionner tes connaissances !";
+      }
+      
+      document.getElementById('final-stars').textContent = stars;
+      document.getElementById('congrats-title').textContent = title;
+      document.getElementById('congrats-message').textContent = message;
+
+      // Save result using parent saveResult helper
+      if (window.parent && window.parent.saveResult) {
+        window.parent.saveResult({
+          activity: 'gram_pass_act',
+          bookTitle: 'Exercice : Voix active / passive',
+          score: score,
+          total: 10,
+          pct: Math.round((score / 10) * 100),
+          date: new Date().toLocaleDateString('fr-BE'),
+          time: new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })
+        });
+      }
+    }
+
+    // Restart game
+    function restartGame() {
+      playClickSound();
+      document.getElementById('screen-congrats').classList.add('hidden');
+      document.getElementById('screen-lesson').classList.remove('hidden');
+    }
+
+    // Confetti Effect (fallback native implementation to avoid cross-domain loading bugs)
+    function triggerConfettis() {
+      const canvas = document.getElementById('confetti-canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      
+      let confettiActive = true;
+      const count = 120;
+      const colors = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#EC4899'];
+      const confettis = Array.from({ length: count }).map(() => ({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height - canvas.height,
+        r: Math.random() * 6 + 4,
+        d: Math.random() * count,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        tilt: Math.random() * 10 - 5,
+        tiltAngleIncremental: Math.random() * 0.07 + 0.02,
+        tiltAngle: 0
+      }));
+
+      function draw() {
+        if (!confettiActive) return;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        confettis.forEach((c, index) => {
+          c.tiltAngle += c.tiltAngleIncremental;
+          c.y += (Math.cos(c.d) + 3 + c.r / 2) / 2;
+          c.tilt = Math.sin(c.tiltAngle - index / 3) * 15;
+          if (c.y > canvas.height) {
+            c.x = Math.random() * canvas.width;
+            c.y = -20;
+            c.tilt = Math.random() * 10 - 5;
+          }
+          ctx.beginPath();
+          ctx.lineWidth = c.r;
+          ctx.strokeStyle = c.color;
+          ctx.moveTo(c.x + c.tilt + c.r / 2, c.y);
+          ctx.lineTo(c.x + c.tilt, c.y + c.tilt + c.r / 2);
+          ctx.stroke();
+        });
+        requestAnimationFrame(draw);
+      }
+      draw();
+      setTimeout(() => {
+        confettiActive = false;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }, 4000);
+    }
+  </script>
+</body>
+</html>
