@@ -126,6 +126,8 @@ const CORE_ASSETS = [
   'assets/logos/sub_chasseur_intrus.png',
   'fabrique-mots.html',
   'fiches/fabrique-mots.html',
+  'vocabulaire_relations_lexicales.html',
+  'fiches/vocabulaire_relations_lexicales.html',
   'assets/logos/sub_fabrique_mots.png',
   'assets/logos/registre_familier.png',
   'assets/logos/registre_courant.png',
