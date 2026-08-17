@@ -1,0 +1,1225 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calcul d'angles manquants - LCML</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@700;800;900&family=Outfit:wght@600;700;800;900&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg: #FAF6EE;
+      --text: #1A1A2E;
+      --border: #1A1A2E;
+      --primary: #FFB347;     /* Pastel Orange */
+      --secondary: #B19FFC;   /* Pastel Purple */
+      --success: #7AE582;     /* Pastel Green */
+      --danger: #FF8B94;      /* Pastel Red */
+      --info: #8AD1FC;        /* Pastel Blue */
+      --surface: #FFFFFF;
+    }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+    }
+    .font-title {
+      font-family: 'Fredoka', sans-serif;
+    }
+    .font-display {
+      font-family: 'Outfit', sans-serif;
+    }
+
+    /* Flat 3D Styling Buttons & Cards */
+    .btn-3d {
+      border: 3px solid var(--border) !important;
+      box-shadow: 4px 4px 0px var(--border) !important;
+      transition: all 0.1s ease-out;
+      transform: translate(0px, 0px);
+    }
+    .btn-3d:hover:not(:disabled) {
+      transform: translate(-2px, -2px);
+      box-shadow: 6px 6px 0px var(--border) !important;
+    }
+    .btn-3d:active:not(:disabled) {
+      transform: translate(2px, 2px);
+      box-shadow: 2px 2px 0px var(--border) !important;
+    }
+    .btn-3d:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none !important;
+      box-shadow: 2px 2px 0px var(--border) !important;
+    }
+
+    .card-3d {
+      border: 3px solid var(--border);
+      box-shadow: 6px 6px 0px var(--border);
+      background-color: var(--surface);
+    }
+
+    /* Confetti Canvas */
+    #confetti-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* Transition effects */
+    .fade-in {
+      animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .input-focused {
+      background-color: #FEF3C7 !important; /* light amber */
+      border-color: var(--primary) !important;
+      box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.4);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-start p-4 md:p-8">
+  <canvas id="confetti-canvas"></canvas>
+
+  <div class="w-full max-w-3xl flex flex-col gap-6">
+    
+    <!-- MAIN CARD CONTAINER -->
+    <div class="card-3d rounded-[24px] p-6 md:p-8 relative overflow-hidden">
+      
+      <!-- SCREEN 1: LESSON / SYNTHESIS -->
+      <div id="screen-lesson" class="fade-in flex flex-col gap-6">
+        <div class="flex items-center justify-between">
+          <button onclick="handleBack();" class="btn-3d px-4 py-2 bg-white text-sm font-title rounded-xl font-bold">
+            ← Menu
+          </button>
+          <div class="text-right">
+            <span class="text-xs uppercase tracking-wider font-bold text-neutral-500">Géométrie</span>
+          </div>
+        </div>
+
+        <div class="text-center">
+          <h1 class="font-display text-3xl md:text-4xl font-black text-neutral-900">🧩 Calcul d'angles manquants</h1>
+          <p class="text-neutral-600 text-sm mt-1">Apprends les propriétés des polygones et trouve la valeur des angles cachés !</p>
+        </div>
+
+        <!-- Synthesis Tabs Header -->
+        <div class="grid grid-cols-3 gap-2 border-b-3 border-[#1A1A2E] pb-2">
+          <button id="tab-btn-tri" onclick="switchTab('tri')" class="py-2 px-1 font-title font-bold text-sm md:text-base border-3 border-transparent rounded-t-xl transition-all duration-100 bg-[#E3F5FF] border-[#1A1A2E]">
+            🔺 Triangles
+          </button>
+          <button id="tab-btn-quad" onclick="switchTab('quad')" class="py-2 px-1 font-title font-bold text-sm md:text-base border-3 border-transparent rounded-t-xl transition-all duration-100 bg-white">
+            🟦 Quadrilatères
+          </button>
+          <button id="tab-btn-lines" onclick="switchTab('lines')" class="py-2 px-1 font-title font-bold text-sm md:text-base border-3 border-transparent rounded-t-xl transition-all duration-100 bg-white">
+            📏 Ligne Droite
+          </button>
+        </div>
+
+        <!-- Tab 1: Triangles -->
+        <div id="tab-content-tri" class="flex flex-col md:flex-row gap-6 items-center">
+          <div class="flex-1 flex flex-col gap-4">
+            <h3 class="font-title text-xl font-bold flex items-center gap-2">
+              <span class="text-2xl text-blue-500">🔺</span>
+              La somme fait toujours 180°
+            </h3>
+            <p class="text-sm md:text-base text-neutral-700 leading-relaxed">
+              Dans n'importe quel triangle (quelconque, rectangle, ou isocèle), la somme des 3 angles intérieurs est <strong>toujours égale à 180°</strong>.
+            </p>
+            <div class="bg-blue-50 border-2 border-blue-200 rounded-xl p-4 text-sm font-mono text-blue-900">
+              <span class="font-bold">Règle de calcul :</span>
+              <br>Angle manquant = 180° - (Somme des deux angles connus)
+            </div>
+            <button onclick="cycleLessonTriangle()" class="btn-3d w-full py-2 bg-blue-100 hover:bg-blue-200 font-title text-sm font-bold text-neutral-900 rounded-xl">
+              🔄 Essayer un autre triangle
+            </button>
+          </div>
+          <div class="w-full md:w-[260px] flex justify-center flex-col items-center gap-2">
+            <div id="lesson-triangle-svg-container"></div>
+            <span id="lesson-triangle-formula" class="font-title text-sm font-bold text-neutral-800"></span>
+          </div>
+        </div>
+
+        <!-- Tab 2: Quadrilaterals -->
+        <div id="tab-content-quad" class="hidden flex flex-col md:flex-row gap-6 items-center">
+          <div class="flex-1 flex flex-col gap-4">
+            <h3 class="font-title text-xl font-bold flex items-center gap-2">
+              <span class="text-2xl text-purple-500">🟦</span>
+              La somme fait toujours 360°
+            </h3>
+            <p class="text-sm md:text-base text-neutral-700 leading-relaxed">
+              Dans n'importe quel quadrilatère (carré, parallélogramme, trapèze, ou quelconque), la somme des 4 angles intérieurs est <strong>toujours égale à 360°</strong>.
+            </p>
+            <div class="bg-purple-50 border-2 border-purple-200 rounded-xl p-4 text-sm font-mono text-purple-900">
+              <span class="font-bold">Règle de calcul :</span>
+              <br>Angle manquant = 360° - (Somme des trois angles connus)
+            </div>
+            <button onclick="cycleLessonQuad()" class="btn-3d w-full py-2 bg-purple-100 hover:bg-purple-200 font-title text-sm font-bold text-neutral-900 rounded-xl">
+              🔄 Essayer un autre quadrilatère
+            </button>
+          </div>
+          <div class="w-full md:w-[260px] flex justify-center flex-col items-center gap-2">
+            <div id="lesson-quad-svg-container"></div>
+            <span id="lesson-quad-formula" class="font-title text-sm font-bold text-neutral-800"></span>
+          </div>
+        </div>
+
+        <!-- Tab 3: Straight Lines -->
+        <div id="tab-content-lines" class="hidden flex flex-col md:flex-row gap-6 items-center">
+          <div class="flex-1 flex flex-col gap-4">
+            <h3 class="font-title text-xl font-bold flex items-center gap-2">
+              <span class="text-2xl text-emerald-500">📏</span>
+              Angles supplémentaires et complémentaires
+            </h3>
+            <p class="text-sm md:text-base text-neutral-700 leading-relaxed">
+              • Sur une <strong>ligne droite</strong>, les angles forment un angle plat. Leur somme fait <strong>180°</strong>. On les appelle des angles <em>supplémentaires</em>.
+              <br>• Dans un <strong>angle droit</strong> (90°), la somme des angles formés fait <strong>90°</strong>. On les appelle des angles <em>complémentaires</em>.
+            </p>
+            <div class="flex gap-2">
+              <button onclick="toggleLineLesson('supp')" id="btn-line-supp" class="flex-1 btn-3d py-1.5 bg-emerald-100 text-xs font-bold font-title rounded-lg">
+                Supplé. (180°)
+              </button>
+              <button onclick="toggleLineLesson('comp')" id="btn-line-comp" class="flex-1 btn-3d py-1.5 bg-white text-xs font-bold font-title rounded-lg">
+                Complé. (90°)
+              </button>
+            </div>
+          </div>
+          <div class="w-full md:w-[260px] flex justify-center flex-col items-center gap-2">
+            <div id="lesson-line-svg-container"></div>
+            <span id="lesson-line-formula" class="font-title text-sm font-bold text-neutral-800"></span>
+          </div>
+        </div>
+
+        <button onclick="startGame();" class="btn-3d w-full py-4 mt-4 bg-orange-400 hover:bg-orange-300 font-title text-xl font-bold text-neutral-900 rounded-2xl">
+          Commencer le jeu ! 🎮
+        </button>
+      </div>
+
+      <!-- SCREEN 2: GAMEPLAY -->
+      <div id="screen-game" class="fade-in hidden flex flex-col gap-6">
+        
+        <!-- Header Info -->
+        <div class="flex items-center justify-between">
+          <button onclick="showLessonScreen();" class="btn-3d px-3 py-1.5 bg-white text-xs font-title rounded-xl font-bold">
+            📖 Voir la leçon
+          </button>
+          <div class="flex items-center gap-4">
+            <div class="font-title text-sm font-bold bg-[#E3F5FF] border-2 border-[#1A1A2E] px-3 py-1 rounded-xl shadow-[2px_2px_0px_#1A1A2E]">
+              Question : <span id="current-question-idx" class="text-blue-600">1</span>/10
+            </div>
+            <div class="font-title text-sm font-bold bg-emerald-50 border-2 border-[#1A1A2E] px-3 py-1 rounded-xl shadow-[2px_2px_0px_#1A1A2E]">
+              Score : <span id="current-score" class="text-emerald-600">0</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Question description -->
+        <div class="text-center bg-[#FDFBF7] border-2 border-[#1A1A2E] p-3 rounded-xl">
+          <h2 id="question-title" class="font-title text-lg font-bold text-neutral-800">Calcule l'angle inconnu ? dans ce triangle :</h2>
+        </div>
+
+        <!-- SVG graphic and Keypad area -->
+        <div class="flex flex-col md:flex-row gap-6 items-center justify-center">
+          
+          <!-- Left side: dynamic SVG -->
+          <div class="w-full md:w-1/2 flex justify-center">
+            <div id="svg-question-container" class="w-full max-w-[320px] flex justify-center"></div>
+          </div>
+
+          <!-- Right side: Input & keypad -->
+          <div class="w-full md:w-1/2 flex flex-col gap-4">
+            <div class="flex flex-col gap-1">
+              <label class="text-xs font-bold uppercase text-neutral-500">Ta réponse (en degrés) :</label>
+              <div class="flex items-center gap-2">
+                <input type="text" id="input-angle" readonly onclick="focusAngleField();" class="input-focused w-full border-3 border-[#1A1A2E] rounded-xl text-center font-display text-2xl font-black py-2 shadow-[2px_2px_0px_#1A1A2E]" placeholder="?">
+                <span class="text-2xl font-bold">°</span>
+              </div>
+            </div>
+
+            <!-- Virtual Keypad -->
+            <div class="grid grid-cols-3 gap-2 w-full max-w-[240px] mx-auto">
+              <button onclick="pressKey('1');" class="btn-3d bg-white font-title text-lg py-2.5 rounded-xl">1</button>
+              <button onclick="pressKey('2');" class="btn-3d bg-white font-title text-lg py-2.5 rounded-xl">2</button>
+              <button onclick="pressKey('3');" class="btn-3d bg-white font-title text-lg py-2.5 rounded-xl">3</button>
+              <button onclick="pressKey('4');" class="btn-3d bg-white font-title text-lg py-2.5 rounded-xl">4</button>
+              <button onclick="pressKey('5');" class="btn-3d bg-white font-title text-lg py-2.5 rounded-xl">5</button>
+              <button onclick="pressKey('6');" class="btn-3d bg-white font-title text-lg py-2.5 rounded-xl">6</button>
+              <button onclick="pressKey('7');" class="btn-3d bg-white font-title text-lg py-2.5 rounded-xl">7</button>
+              <button onclick="pressKey('8');" class="btn-3d bg-white font-title text-lg py-2.5 rounded-xl">8</button>
+              <button onclick="pressKey('9');" class="btn-3d bg-white font-title text-lg py-2.5 rounded-xl">9</button>
+              <button onclick="pressKey('clear');" class="btn-3d bg-[#FF8B94]/30 font-title text-xs py-2.5 rounded-xl">Effacer</button>
+              <button onclick="pressKey('0');" class="btn-3d bg-white font-title text-lg py-2.5 rounded-xl">0</button>
+              <button onclick="pressKey('backspace');" class="btn-3d bg-[#FF8B94]/30 font-title text-lg py-2.5 rounded-xl">⌫</button>
+            </div>
+
+            <!-- Validate button -->
+            <button id="btn-validate" onclick="checkAnswer();" class="btn-3d w-full py-3 bg-orange-400 hover:bg-orange-300 font-title text-lg font-bold text-neutral-900 rounded-xl" disabled>
+              Valider ✔️
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- SCREEN 3: END OF GAME / CONGRATS -->
+      <div id="screen-congrats" class="fade-in hidden flex flex-col items-center justify-center text-center gap-6 py-6">
+        <div class="w-24 h-24 bg-orange-100 rounded-full flex items-center justify-center text-5xl animate-bounce border-3 border-[#1A1A2E] shadow-[4px_4px_0px_#1A1A2E]">
+          🏆
+        </div>
+        
+        <div>
+          <h2 class="font-display text-3xl md:text-4xl font-black text-neutral-900" id="congrats-title">Félicitations !</h2>
+          <p class="text-neutral-600 font-title text-base mt-2" id="congrats-message">Tu as terminé le calcul d'angles manquants.</p>
+        </div>
+
+        <div class="flex flex-col gap-1 items-center bg-[#F8F9FA] border-3 border-[#1A1A2E] rounded-2xl p-4 shadow-[4px_4px_0px_#1A1A2E]">
+          <span class="text-xs uppercase text-neutral-500 font-bold font-title">Score Final</span>
+          <span class="font-display text-4xl font-black text-neutral-900" id="final-score">8 / 10</span>
+          <span class="text-2xl tracking-wider mt-1" id="final-stars">⭐⭐</span>
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-3 w-full max-w-md">
+          <button onclick="restartGame();" class="flex-1 btn-3d py-3 bg-[#B19FFC] hover:bg-[#9f88fc] font-title text-base font-bold text-neutral-900 rounded-xl">
+            🔄 Recommencer
+          </button>
+          <button onclick="handleBack();" class="flex-1 btn-3d py-3 bg-white hover:bg-neutral-100 font-title text-base font-bold text-neutral-900 rounded-xl">
+            🚪 Quitter
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- FEEDBACK MODAL (AS AN OVERLAY IN CARD) -->
+  <div id="feedback-modal" class="fixed inset-0 bg-neutral-900/50 flex items-center justify-center p-4 z-50" style="display: none;">
+    <div class="card-3d bg-white rounded-3xl p-6 max-w-md w-full flex flex-col gap-4 relative animate-[fadeIn_0.2s_ease-out]">
+      
+      <!-- Feedback Icon and Header -->
+      <div class="flex items-center gap-3">
+        <span class="text-4xl" id="feedback-icon">🎉</span>
+        <h3 id="feedback-title" class="font-display text-2xl font-black">Excellent !</h3>
+      </div>
+
+      <!-- Comparison of answers (if wrong) -->
+      <div id="comparison-container" class="hidden bg-rose-50 border-2 border-rose-200 p-3 rounded-xl text-sm flex flex-col gap-1">
+        <div>Ta réponse : <strong id="comparison-user-ans" class="text-rose-600">80°</strong></div>
+        <div>Réponse correcte : <strong id="comparison-correct-ans" class="text-emerald-600">70°</strong></div>
+      </div>
+
+      <!-- Step by step explanation -->
+      <div class="text-neutral-700 text-sm md:text-base leading-relaxed bg-[#F8F9FA] border-2 border-neutral-200 p-4 rounded-2xl">
+        <p id="feedback-explanation"></p>
+      </div>
+
+      <!-- Next Button -->
+      <button id="btn-next" onclick="closeFeedback();" class="btn-3d w-full py-3 bg-orange-400 hover:bg-orange-300 font-title text-lg font-bold text-neutral-900 rounded-xl">
+        Continuer ➔
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // Helper to calculate angle label positions dynamically along the angle bisector.
+    // Places labels inside the polygon at the specified distance from the vertex.
+    function getLabelPosition(vertices, index, distance) {
+      const n = vertices.length;
+      const curr = vertices[index];
+      const prev = vertices[(index - 1 + n) % n];
+      const next = vertices[(index + 1) % n];
+
+      const dx1 = prev.x - curr.x;
+      const dy1 = prev.y - curr.y;
+      const len1 = Math.hypot(dx1, dy1);
+      
+      const dx2 = next.x - curr.x;
+      const dy2 = next.y - curr.y;
+      const len2 = Math.hypot(dx2, dy2);
+
+      if (len1 === 0 || len2 === 0) return { x: curr.x, y: curr.y };
+
+      const ux = dx1 / len1;
+      const uy = dy1 / len1;
+      const vx = dx2 / len2;
+      const vy = dy2 / len2;
+
+      let bx = ux + vx;
+      let by = uy + vy;
+      let blen = Math.hypot(bx, by);
+
+      if (blen === 0) {
+        bx = -uy;
+        by = ux;
+        blen = 1;
+      } else {
+        bx /= blen;
+        by /= blen;
+      }
+
+      return {
+        x: Math.round(curr.x + bx * distance),
+        y: Math.round(curr.y + by * distance)
+      };
+    }
+
+    // Audio Context Setup
+    let audioCtx = null;
+    function playTone(freq, duration, type = 'sine') {
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.005, audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch (e) {
+        console.warn('Audio Context error', e);
+      }
+    }
+
+    function playSuccessSound() {
+      playTone(523.25, 0.08, 'square'); // C5
+      setTimeout(() => playTone(659.25, 0.12, 'square'), 70); // E5
+    }
+    
+    function playErrorSound() {
+      playTone(220, 0.12, 'sawtooth'); // A3
+      setTimeout(() => playTone(147, 0.2, 'sawtooth'), 100); // D3
+    }
+
+    function playClickSound() {
+      playTone(587.33, 0.04, 'triangle'); // D5
+    }
+
+    // Interactive lesson data
+    const lessonTriangles = [
+      { vertices: [{x:60,y:170}, {x:260,y:170}, {x:160,y:50}], labelPos: [{x:90,y:155}, {x:230,y:155}, {x:160,y:85}], angles: [60, 60, 60], name: "Triangle équilatéral" },
+      { vertices: [{x:60,y:170}, {x:260,y:170}, {x:60,y:50}], labelPos: [{x:85,y:150}, {x:220,y:160}, {x:80,y:85}], angles: [90, 30, 60], name: "Triangle rectangle" },
+      { vertices: [{x:60,y:170}, {x:260,y:170}, {x:160,y:70}], labelPos: [{x:90,y:155}, {x:230,y:155}, {x:160,y:100}], angles: [70, 70, 40], name: "Triangle isocèle" }
+    ];
+    let lessonTriIdx = 0;
+
+    const lessonQuads = [
+      { vertices: [{x:60,y:160}, {x:220,y:160}, {x:220,y:60}, {x:60,y:60}], labelPos: [{x:80,y:145}, {x:200,y:145}, {x:200,y:80}, {x:80,y:80}], angles: [90, 90, 90, 90], name: "Carré (Somme 360°)" },
+      { vertices: [{x:60,y:160}, {x:240,y:160}, {x:280,y:60}, {x:100,y:60}], labelPos: [{x:85,y:145}, {x:220,y:145}, {x:255,y:75}, {x:120,y:75}], angles: [60, 120, 60, 120], name: "Parallélogramme (Somme 360°)" },
+      { vertices: [{x:60,y:170}, {x:260,y:170}, {x:200,y:60}, {x:100,y:60}], labelPos: [{x:85,y:150}, {x:230,y:150}, {x:185,y:80}, {x:120,y:80}], angles: [80, 60, 120, 100], name: "Trapèze quelconque (Somme 360°)" }
+    ];
+    let lessonQuadIdx = 0;
+
+    let currentLineLessonMode = 'supp'; // supp or comp
+
+    // Database of 30 questions (15 triangles, 15 quadrilaterals)
+    const QUESTION_POOL = [
+      // 1-15 Triangles (Sum 180)
+      {
+        id: 1,
+        shapeType: 'triangle',
+        subType: 'quelconque (scalène)',
+        angles: [50, 60, 70],
+        targetIndex: 2,
+        vertices: [{x:50,y:170}, {x:270,y:170}, {x:160,y:50}],
+        labelPositions: [{x:80,y:155}, {x:230,y:155}, {x:160,y:85}],
+        correctAnswer: 70,
+        explanation: "La somme des angles dans un triangle fait <strong>180°</strong>.<br>On calcule les angles connus : 50° + 60° = 110°.<br>L'angle manquant fait donc : <strong>180° - 110° = 70°</strong>."
+      },
+      {
+        id: 2,
+        shapeType: 'triangle',
+        subType: 'rectangle',
+        angles: [90, 35, 55],
+        targetIndex: 2,
+        vertices: [{x:60,y:170}, {x:260,y:170}, {x:60,y:50}],
+        labelPositions: [{x:85,y:150}, {x:220,y:160}, {x:80,y:85}],
+        correctAnswer: 55,
+        explanation: "Ce triangle possède un angle droit (90°).<br>La somme fait 180°.<br>On fait : 90° + 35° = 125°.<br>L'angle manquant est : <strong>180° - 125° = 55°</strong>."
+      },
+      {
+        id: 3,
+        shapeType: 'triangle',
+        subType: 'isocèle',
+        angles: [70, 70, 40],
+        targetIndex: 2,
+        vertices: [{x:60,y:170}, {x:260,y:170}, {x:160,y:65}],
+        labelPositions: [{x:90,y:155}, {x:230,y:155}, {x:160,y:95}],
+        correctAnswer: 40,
+        explanation: "C'est un triangle isocèle : ses deux angles à la base sont égaux (70° et 70°).<br>Leur somme fait 70° + 70° = 140°.<br>L'angle au sommet fait donc : <strong>180° - 140° = 40°</strong>."
+      },
+      {
+        id: 4,
+        shapeType: 'triangle',
+        subType: 'isocèle',
+        angles: [50, 50, 80],
+        targetIndex: 1,
+        vertices: [{x:50,y:160}, {x:270,y:160}, {x:160,y:40}],
+        labelPositions: [{x:80,y:145}, {x:240,y:145}, {x:160,y:75}],
+        correctAnswer: 50,
+        explanation: "Un triangle isocèle a deux angles à la base de même mesure. Les angles connus étant de 50° et 80° au sommet, le deuxième angle à la base doit faire <strong>50°</strong> pour que la somme fasse 180° (50° + 50° + 80° = 180°)."
+      },
+      {
+        id: 5,
+        shapeType: 'triangle',
+        subType: 'rectangle isocèle',
+        angles: [90, 45, 45],
+        targetIndex: 1,
+        vertices: [{x:60,y:170}, {x:220,y:170}, {x:60,y:10}],
+        labelPositions: [{x:80,y:150}, {x:180,y:155}, {x:80,y:45}],
+        correctAnswer: 45,
+        explanation: "Ce triangle possède un angle droit (90°) et deux côtés égaux. Ses deux angles aigus sont identiques.<br>180° - 90° = 90°.<br>90° ÷ 2 = <strong>45°</strong>."
+      },
+      {
+        id: 6,
+        shapeType: 'triangle',
+        subType: 'quelconque (scalène)',
+        angles: [40, 65, 75],
+        targetIndex: 1,
+        vertices: [{x:50,y:170}, {x:270,y:170}, {x:190,y:50}],
+        labelPositions: [{x:85,y:155}, {x:230,y:155}, {x:180,y:85}],
+        correctAnswer: 65,
+        explanation: "Somme des angles d'un triangle = 180°.<br>Les angles connus sont 40° et 75°, dont la somme fait 115°.<br>On calcule l'angle restant : <strong>180° - 115° = 65°</strong>."
+      },
+      {
+        id: 7,
+        shapeType: 'triangle',
+        subType: 'obtusangle (quelconque)',
+        angles: [30, 110, 40],
+        targetIndex: 1,
+        vertices: [{x:40,y:150}, {x:280,y:150}, {x:90,y:60}],
+        labelPositions: [{x:70,y:140}, {x:105,y:85}, {x:240,y:140}],
+        correctAnswer: 110,
+        explanation: "Ce triangle possède un angle obtus (supérieur à 90°).<br>La somme fait 180°.<br>On additionne : 30° + 40° = 70°.<br>L'angle obtus fait : <strong>180° - 70° = 110°</strong>."
+      },
+      {
+        id: 8,
+        shapeType: 'triangle',
+        subType: 'rectangle',
+        angles: [90, 30, 60],
+        targetIndex: 1,
+        vertices: [{x:60,y:170}, {x:260,y:170}, {x:60,y:55}],
+        labelPositions: [{x:80,y:150}, {x:220,y:160}, {x:80,y:85}],
+        correctAnswer: 30,
+        explanation: "L'angle droit mesure 90°. L'autre angle connu mesure 60°.<br>Somme = 150°.<br>L'angle recherché fait donc : <strong>180° - 150° = 30°</strong>."
+      },
+      {
+        id: 9,
+        shapeType: 'triangle',
+        subType: 'isocèle obtusangle',
+        angles: [30, 30, 120],
+        targetIndex: 2,
+        vertices: [{x:40,y:160}, {x:280,y:160}, {x:160,y:110}],
+        labelPositions: [{x:70,y:150}, {x:250,y:150}, {x:160,y:130}],
+        correctAnswer: 120,
+        explanation: "La somme fait 180°. Les angles à la base font 30° chacun (somme = 60°).<br>L'angle au sommet vaut donc : <strong>180° - 60° = 120°</strong>."
+      },
+      {
+        id: 10,
+        shapeType: 'triangle',
+        subType: 'quelconque (scalène)',
+        angles: [45, 60, 75],
+        targetIndex: 0,
+        vertices: [{x:50,y:170}, {x:270,y:170}, {x:170,y:50}],
+        labelPositions: [{x:80,y:155}, {x:230,y:155}, {x:170,y:85}],
+        correctAnswer: 45,
+        explanation: "On additionne les angles connus : 60° + 75° = 135°.<br>Comme la somme globale fait 180°, l'angle restant fait : <strong>180° - 135° = 45°</strong>."
+      },
+      {
+        id: 11,
+        shapeType: 'triangle',
+        subType: 'quelconque (obtus)',
+        angles: [25, 125, 30],
+        targetIndex: 0,
+        vertices: [{x:40,y:160}, {x:280,y:160}, {x:90,y:80}],
+        labelPositions: [{x:70,y:150}, {x:105,y:105}, {x:245,y:150}],
+        correctAnswer: 25,
+        explanation: "Somme des angles connus : 125° + 30° = 155°.<br>L'angle manquant fait donc : <strong>180° - 155° = 25°</strong>."
+      },
+      {
+        id: 12,
+        shapeType: 'triangle',
+        subType: 'quelconque (scalène)',
+        angles: [55, 40, 85],
+        targetIndex: 2,
+        vertices: [{x:60,y:170}, {x:260,y:170}, {x:130,y:40}],
+        labelPositions: [{x:90,y:155}, {x:225,y:155}, {x:135,y:75}],
+        correctAnswer: 85,
+        explanation: "Somme des angles connus : 55° + 40° = 95°.<br>L'angle restant fait : <strong>180° - 95° = 85°</strong>."
+      },
+      {
+        id: 13,
+        shapeType: 'triangle',
+        subType: 'rectangle',
+        angles: [90, 20, 70],
+        targetIndex: 2,
+        vertices: [{x:60,y:170}, {x:260,y:170}, {x:60,y:40}],
+        labelPositions: [{x:80,y:150}, {x:220,y:160}, {x:80,y:75}],
+        correctAnswer: 70,
+        explanation: "On a un angle droit (90°) et un angle de 20°. Leur somme est de 110°.<br>L'angle manquant est égal à : <strong>180° - 110° = 70°</strong>."
+      },
+      {
+        id: 14,
+        shapeType: 'triangle',
+        subType: 'isocèle',
+        angles: [50, 50, 80],
+        targetIndex: 2,
+        vertices: [{x:60,y:170}, {x:260,y:170}, {x:160,y:50}],
+        labelPositions: [{x:90,y:155}, {x:230,y:155}, {x:160,y:80}],
+        correctAnswer: 80,
+        explanation: "Les deux angles de base mesurent 50° chacun (somme = 100°).<br>L'angle restant au sommet est égal à : <strong>180° - 100° = 80°</strong>."
+      },
+      {
+        id: 15,
+        shapeType: 'triangle',
+        subType: 'quelconque',
+        angles: [35, 115, 30],
+        targetIndex: 2,
+        vertices: [{x:40,y:160}, {x:280,y:160}, {x:100,y:80}],
+        labelPositions: [{x:70,y:150}, {x:115,y:105}, {x:245,y:150}],
+        correctAnswer: 30,
+        explanation: "La somme fait 180°.<br>Somme des connus : 35° + 115° = 150°.<br>L'angle caché fait : <strong>180° - 150° = 30°</strong>."
+      },
+
+      // 16-30 Quadrilaterals (Sum 360)
+      {
+        id: 16,
+        shapeType: 'quadrilatère',
+        subType: 'parallélogramme',
+        angles: [60, 120, 60, 120],
+        targetIndex: 0,
+        vertices: [{x:60,y:160}, {x:240,y:160}, {x:280,y:60}, {x:100,y:60}],
+        labelPositions: [{x:85,y:145}, {x:220,y:145}, {x:255,y:75}, {x:120,y:75}],
+        correctAnswer: 60,
+        explanation: "La somme des 4 angles d'un quadrilatère vaut toujours <strong>360°</strong>.<br>Somme des angles connus : 120° + 60° + 120° = 300°.<br>L'angle manquant mesure : <strong>360° - 300° = 60°</strong>.<br><em>Note : Dans un parallélogramme, les angles opposés sont égaux et les angles consécutifs sont supplémentaires (font 180°). Donc 180° - 120° = 60°.</em>"
+      },
+      {
+        id: 17,
+        shapeType: 'quadrilatère',
+        subType: 'parallélogramme',
+        angles: [70, 110, 70, 110],
+        targetIndex: 3,
+        vertices: [{x:70,y:160}, {x:230,y:160}, {x:270,y:60}, {x:110,y:60}],
+        labelPositions: [{x:95,y:145}, {x:210,y:145}, {x:245,y:75}, {x:130,y:75}],
+        correctAnswer: 110,
+        explanation: "La somme fait 360°.<br>Somme des connus : 70° + 110° + 70° = 250°.<br>L'angle manquant fait : <strong>360° - 250° = 110°</strong>."
+      },
+      {
+        id: 18,
+        shapeType: 'quadrilatère',
+        subType: 'trapèze rectangle',
+        angles: [90, 60, 120, 90],
+        targetIndex: 2,
+        vertices: [{x:60,y:170}, {x:260,y:170}, {x:200,y:60}, {x:60,y:60}],
+        labelPositions: [{x:80,y:150}, {x:230,y:150}, {x:180,y:80}, {x:80,y:80}],
+        correctAnswer: 120,
+        explanation: "Ce trapèze possède deux angles droits (90° + 90° = 180°) et un angle aigu de 60°.<br>La somme des angles connus fait : 180° + 60° = 240°.<br>L'angle restant fait : <strong>360° - 240° = 120°</strong>."
+      },
+      {
+        id: 19,
+        shapeType: 'quadrilatère',
+        subType: 'trapèze isocèle',
+        angles: [70, 70, 110, 110],
+        targetIndex: 1,
+        vertices: [{x:50,y:170}, {x:270,y:170}, {x:220,y:60}, {x:100,y:60}],
+        labelPositions: [{x:80,y:150}, {x:240,y:150}, {x:200,y:80}, {x:120,y:80}],
+        correctAnswer: 70,
+        explanation: "Dans un trapèze isocèle, les angles adjacents à une même base sont égaux. Les deux angles du haut font 110° chacun, et l'angle en bas à gauche fait 70°.<br>Somme = 110° + 110° + 70° = 290°.<br>L'angle restant fait : <strong>360° - 290° = 70°</strong>."
+      },
+      {
+        id: 20,
+        shapeType: 'quadrilatère',
+        subType: 'cerf-volant',
+        angles: [100, 70, 100, 90],
+        targetIndex: 2,
+        vertices: [{x:160,y:40}, {x:260,y:110}, {x:160,y:180}, {x:60,y:110}],
+        labelPositions: [{x:160,y:70}, {x:230,y:110}, {x:160,y:150}, {x:90,y:110}],
+        correctAnswer: 100,
+        explanation: "La somme des angles d'un quadrilatère est 360°.<br>On fait l'addition des 3 angles connus : 100° + 70° + 90° = 260°.<br>L'angle caché vaut : <strong>360° - 260° = 100°</strong>."
+      },
+      {
+        id: 21,
+        shapeType: 'quadrilatère',
+        subType: 'quelconque',
+        angles: [85, 70, 110, 95],
+        targetIndex: 1,
+        vertices: [{x:60,y:170}, {x:250,y:170}, {x:220,y:50}, {x:90,y:70}],
+        labelPositions: [{x:90,y:150}, {x:220,y:150}, {x:200,y:80}, {x:110,y:90}],
+        correctAnswer: 70,
+        explanation: "Pour trouver l'angle inconnu dans un quadrilatère quelconque, on somme les 3 angles connus : 85° + 110° + 95° = 290°.<br>On soustrait ensuite de 360° : <strong>360° - 290° = 70°</strong>."
+      },
+      {
+        id: 22,
+        shapeType: 'quadrilatère',
+        subType: 'trapèze rectangle',
+        angles: [90, 50, 130, 90],
+        targetIndex: 1,
+        vertices: [{x:60,y:170}, {x:260,y:170}, {x:190,y:60}, {x:60,y:60}],
+        labelPositions: [{x:80,y:150}, {x:230,y:150}, {x:170,y:80}, {x:80,y:80}],
+        correctAnswer: 50,
+        explanation: "La somme fait 360°. Deux angles droits mesurent 90° chacun et le troisième angle mesure 130°. Somme = 90° + 90° + 130° = 310°.<br>L'angle manquant fait : <strong>360° - 310° = 50°</strong>."
+      },
+      {
+        id: 23,
+        shapeType: 'quadrilatère',
+        subType: 'parallélogramme',
+        angles: [50, 130, 50, 130],
+        targetIndex: 1,
+        vertices: [{x:60,y:160}, {x:230,y:160}, {x:270,y:60}, {x:100,y:60}],
+        labelPositions: [{x:85,y:145}, {x:210,y:145}, {x:245,y:75}, {x:120,y:75}],
+        correctAnswer: 130,
+        explanation: "Dans un parallélogramme, les angles consécutifs font 180°.<br>Ici, l'angle manquant est consécutif à un angle de 50°.<br>On fait donc : <strong>180° - 50° = 130°</strong>. (Ou par somme globale : 360° - (50° + 50° + 130°) = 130°)."
+      },
+      {
+        id: 24,
+        shapeType: 'quadrilatère',
+        subType: 'quelconque',
+        angles: [75, 60, 120, 105],
+        targetIndex: 2,
+        vertices: [{x:50,y:170}, {x:260,y:170}, {x:210,y:50}, {x:90,y:80}],
+        labelPositions: [{x:80,y:150}, {x:230,y:150}, {x:190,y:80}, {x:110,y:100}],
+        correctAnswer: 120,
+        explanation: "Additionnons les trois angles connus : 75° + 60° + 105° = 240°.<br>La somme complète d'un quadrilatère est 360°.<br>L'angle caché fait : <strong>360° - 240° = 120°</strong>."
+      },
+      {
+        id: 25,
+        shapeType: 'quadrilatère',
+        subType: 'trapèze',
+        angles: [80, 60, 120, 100],
+        targetIndex: 0,
+        vertices: [{x:50,y:170}, {x:260,y:170}, {x:210,y:60}, {x:100,y:60}],
+        labelPositions: [{x:80,y:150}, {x:230,y:150}, {x:190,y:80}, {x:120,y:80}],
+        correctAnswer: 80,
+        explanation: "Les angles connus font 60°, 120° et 100° (somme = 280°).<br>Pour arriver à 360°, on calcule : <strong>360° - 280° = 80°</strong>."
+      },
+      {
+        id: 26,
+        shapeType: 'quadrilatère',
+        subType: 'cerf-volant',
+        angles: [110, 60, 110, 80],
+        targetIndex: 3,
+        vertices: [{x:160,y:40}, {x:250,y:100}, {x:160,y:180}, {x:70,y:100}],
+        labelPositions: [{x:160,y:70}, {x:220,y:100}, {x:160,y:150}, {x:100,y:100}],
+        correctAnswer: 80,
+        explanation: "Somme des angles connus : 110° + 60° + 110° = 280°.<br>L'angle manquant à la base du cerf-volant mesure : <strong>360° - 280° = 80°</strong>."
+      },
+      {
+        id: 27,
+        shapeType: 'quadrilatère',
+        subType: 'quelconque',
+        angles: [90, 75, 115, 80],
+        targetIndex: 2,
+        vertices: [{x:60,y:170}, {x:250,y:170}, {x:220,y:60}, {x:80,y:70}],
+        labelPositions: [{x:85,y:150}, {x:220,y:150}, {x:195,y:85}, {x:100,y:90}],
+        correctAnswer: 115,
+        explanation: "Calculons la somme des trois angles donnés : 90° + 75° + 80° = 245°.<br>L'angle inconnu vaut donc : <strong>360° - 245° = 115°</strong>."
+      },
+      {
+        id: 28,
+        shapeType: 'quadrilatère',
+        subType: 'trapèze isocèle',
+        angles: [65, 65, 115, 115],
+        targetIndex: 2,
+        vertices: [{x:50,y:170}, {x:270,y:170}, {x:210,y:60}, {x:110,y:60}],
+        labelPositions: [{x:80,y:150}, {x:240,y:150}, {x:190,y:80}, {x:130,y:80}],
+        correctAnswer: 115,
+        explanation: "Les angles à la base font 65° chacun (somme = 130°). L'autre angle connu du haut mesure 115°.<br>La somme des trois fait : 130° + 115° = 245°.<br>L'angle caché fait : <strong>360° - 245° = 115°</strong>."
+      },
+      {
+        id: 29,
+        shapeType: 'quadrilatère',
+        subType: 'parallélogramme',
+        angles: [80, 100, 80, 100],
+        targetIndex: 0,
+        vertices: [{x:60,y:160}, {x:240,y:160}, {x:280,y:60}, {x:100,y:60}],
+        labelPositions: [{x:85,y:145}, {x:220,y:145}, {x:255,y:75}, {x:120,y:75}],
+        correctAnswer: 80,
+        explanation: "Dans ce parallélogramme, les angles consécutifs font 180°.<br>180° - 100° = 80°.<br>Ou par somme complète : 360° - (100° + 80° + 100°) = 80°."
+      },
+      {
+        id: 30,
+        shapeType: 'quadrilatère',
+        subType: 'quelconque',
+        angles: [82, 60, 120, 98],
+        targetIndex: 3,
+        vertices: [{x:60,y:170}, {x:260,y:170}, {x:210,y:50}, {x:90,y:80}],
+        labelPositions: [{x:90,y:150}, {x:230,y:150}, {x:190,y:80}, {x:110,y:100}],
+        correctAnswer: 98,
+        explanation: "On additionne les trois angles connus : 82° + 60° + 120° = 262°.<br>L'angle restant est égal à : <strong>360° - 262° = 98°</strong>."
+      }
+    ];
+
+    // Game state
+    let gameQuestions = [];
+    let currentQ = 0;
+    let score = 0;
+    let feedbackReady = false;
+
+    // Switch synthesis tab
+    function switchTab(tab) {
+      playClickSound();
+      document.getElementById('tab-btn-tri').className = `py-2 px-1 font-title font-bold text-sm md:text-base border-3 border-transparent rounded-t-xl transition-all duration-100 ${tab === 'tri' ? 'bg-[#E3F5FF] border-[#1A1A2E]' : 'bg-white'}`;
+      document.getElementById('tab-btn-quad').className = `py-2 px-1 font-title font-bold text-sm md:text-base border-3 border-transparent rounded-t-xl transition-all duration-100 ${tab === 'quad' ? 'bg-[#FDF2F8] border-[#1A1A2E]' : 'bg-white'}`;
+      document.getElementById('tab-btn-lines').className = `py-2 px-1 font-title font-bold text-sm md:text-base border-3 border-transparent rounded-t-xl transition-all duration-100 ${tab === 'lines' ? 'bg-[#E6F4EA] border-[#1A1A2E]' : 'bg-white'}`;
+
+      document.getElementById('tab-content-tri').classList.add('hidden');
+      document.getElementById('tab-content-quad').classList.add('hidden');
+      document.getElementById('tab-content-lines').classList.add('hidden');
+
+      if (tab === 'tri') {
+        document.getElementById('tab-content-tri').classList.remove('hidden');
+      } else if (tab === 'quad') {
+        document.getElementById('tab-content-quad').classList.remove('hidden');
+      } else if (tab === 'lines') {
+        document.getElementById('tab-content-lines').classList.remove('hidden');
+      }
+    }
+
+    // Dynamic lesson drawings
+    function renderLessonTriangle() {
+      const data = lessonTriangles[lessonTriIdx];
+      const pts = data.vertices.map(v => `${v.x},${v.y}`).join(' ');
+      let textHTML = '';
+      data.angles.forEach((ang, i) => {
+        const p = getLabelPosition(data.vertices, i, 36);
+        textHTML += `<text x="${p.x}" y="${p.y}" text-anchor="middle" dominant-baseline="middle" fill="#1A1A2E" font-size="14" font-weight="bold" font-family="Fredoka">${ang}°</text>`;
+      });
+
+      document.getElementById('lesson-triangle-svg-container').innerHTML = `
+        <svg viewBox="0 0 320 220" class="w-[200px] h-[140px] bg-white border-2 border-[#1A1A2E] rounded-xl shadow-[3px_3px_0px_#1A1A2E]">
+          <clipPath id="l-tri-clip">
+            <polygon points="${pts}" />
+          </clipPath>
+          <polygon points="${pts}" fill="#E3F5FF" stroke="#1A1A2E" stroke-width="3" stroke-linejoin="round" />
+          <g clip-path="url(#l-tri-clip)">
+            ${data.vertices.map(v => `<circle cx="${v.x}" cy="${v.y}" r="22" fill="none" stroke="#8AD1FC" stroke-width="2"/>`).join('')}
+          </g>
+          ${textHTML}
+        </svg>
+      `;
+
+      document.getElementById('lesson-triangle-formula').innerHTML = `${data.name} : <br>${data.angles[0]}° + ${data.angles[1]}° + ${data.angles[2]}° = <strong>180°</strong>`;
+    }
+
+    function cycleLessonTriangle() {
+      lessonTriIdx = (lessonTriIdx + 1) % lessonTriangles.length;
+      playClickSound();
+      renderLessonTriangle();
+    }
+
+    // Quad Lesson
+    function renderLessonQuad() {
+      const data = lessonQuads[lessonQuadIdx];
+      const pts = data.vertices.map(v => `${v.x},${v.y}`).join(' ');
+      let textHTML = '';
+      data.angles.forEach((ang, i) => {
+        const p = getLabelPosition(data.vertices, i, 36);
+        textHTML += `<text x="${p.x}" y="${p.y}" text-anchor="middle" dominant-baseline="middle" fill="#1A1A2E" font-size="14" font-weight="bold" font-family="Fredoka">${ang}°</text>`;
+      });
+
+      document.getElementById('lesson-quad-svg-container').innerHTML = `
+        <svg viewBox="0 0 320 220" class="w-[200px] h-[140px] bg-white border-2 border-[#1A1A2E] rounded-xl shadow-[3px_3px_0px_#1A1A2E]">
+          <clipPath id="l-quad-clip">
+            <polygon points="${pts}" />
+          </clipPath>
+          <polygon points="${pts}" fill="#FDF2F8" stroke="#1A1A2E" stroke-width="3" stroke-linejoin="round" />
+          <g clip-path="url(#l-quad-clip)">
+            ${data.vertices.map(v => `<circle cx="${v.x}" cy="${v.y}" r="22" fill="none" stroke="#F472B6" stroke-width="2"/>`).join('')}
+          </g>
+          ${textHTML}
+        </svg>
+      `;
+
+      document.getElementById('lesson-quad-formula').innerHTML = `${data.name} : <br>${data.angles[0]}° + ${data.angles[1]}° + ${data.angles[2]}° + ${data.angles[3]}° = <strong>360°</strong>`;
+    }
+
+    function cycleLessonQuad() {
+      lessonQuadIdx = (lessonQuadIdx + 1) % lessonQuads.length;
+      playClickSound();
+      renderLessonQuad();
+    }
+
+    // Line Lesson
+    function renderLessonLine() {
+      let svgContent = '';
+      let textFormula = '';
+
+      if (currentLineLessonMode === 'supp') {
+        svgContent = `
+          <svg viewBox="0 0 320 180" class="w-[200px] h-[140px] bg-white border-2 border-[#1A1A2E] rounded-xl shadow-[3px_3px_0px_#1A1A2E]">
+            <!-- Straight line -->
+            <line x1="30" y1="140" x2="290" y2="140" stroke="#1A1A2E" stroke-width="4" stroke-linecap="round" />
+            <!-- Ray -->
+            <line x1="160" y1="140" x2="100" y2="50" stroke="#1A1A2E" stroke-width="4" stroke-linecap="round" />
+            <!-- Arcs -->
+            <path d="M 130 140 A 30 30 0 0 1 140 110" fill="none" stroke="#10B981" stroke-width="3" />
+            <path d="M 180 140 A 20 20 0 0 0 140 110" fill="none" stroke="#3B82F6" stroke-width="3" />
+            <!-- Text labels -->
+            <text x="120" y="115" text-anchor="middle" fill="#10B981" font-size="14" font-weight="bold" font-family="Fredoka">120°</text>
+            <text x="195" y="115" text-anchor="middle" fill="#3B82F6" font-size="14" font-weight="bold" font-family="Fredoka">60°</text>
+          </svg>
+        `;
+        textFormula = "Angles supplémentaires :<br>120° + 60° = <strong>180°</strong>";
+      } else {
+        svgContent = `
+          <svg viewBox="0 0 320 180" class="w-[200px] h-[140px] bg-white border-2 border-[#1A1A2E] rounded-xl shadow-[3px_3px_0px_#1A1A2E]">
+            <!-- Right angle corner lines -->
+            <line x1="60" y1="140" x2="260" y2="140" stroke="#1A1A2E" stroke-width="4" stroke-linecap="round" />
+            <line x1="60" y1="140" x2="60" y2="30" stroke="#1A1A2E" stroke-width="4" stroke-linecap="round" />
+            <!-- Split ray -->
+            <line x1="60" y1="140" x2="180" y2="60" stroke="#1A1A2E" stroke-width="4" stroke-linecap="round" />
+            <!-- Square corner symbol -->
+            <rect x="60" y="125" width="15" height="15" fill="none" stroke="#1A1A2E" stroke-width="2" />
+            <!-- Labels -->
+            <text x="110" y="125" text-anchor="middle" fill="#10B981" font-size="14" font-weight="bold" font-family="Fredoka">35°</text>
+            <text x="85" y="95" text-anchor="middle" fill="#3B82F6" font-size="14" font-weight="bold" font-family="Fredoka">55°</text>
+          </svg>
+        `;
+        textFormula = "Angles complémentaires :<br>35° + 55° = <strong>90°</strong>";
+      }
+
+      document.getElementById('lesson-line-svg-container').innerHTML = svgContent;
+      document.getElementById('lesson-line-formula').innerHTML = textFormula;
+    }
+
+    function toggleLineLesson(mode) {
+      currentLineLessonMode = mode;
+      playClickSound();
+      document.getElementById('btn-line-supp').className = `flex-1 btn-3d py-1.5 text-xs font-bold font-title rounded-lg ${mode === 'supp' ? 'bg-emerald-100' : 'bg-white'}`;
+      document.getElementById('btn-line-comp').className = `flex-1 btn-3d py-1.5 text-xs font-bold font-title rounded-lg ${mode === 'comp' ? 'bg-emerald-100' : 'bg-white'}`;
+      renderLessonLine();
+    }
+
+    // Start Game logic
+    function startGame() {
+      playClickSound();
+      document.getElementById('screen-lesson').classList.add('hidden');
+      document.getElementById('screen-game').classList.remove('hidden');
+
+      // Pick 10 random questions from pool
+      gameQuestions = [];
+      const shuffled = [...QUESTION_POOL].sort(() => 0.5 - Math.random());
+      gameQuestions = shuffled.slice(0, 10);
+      
+      currentQ = 0;
+      score = 0;
+
+      document.getElementById('current-score').textContent = score;
+
+      renderQuestion();
+    }
+
+    function renderQuestion() {
+      const q = gameQuestions[currentQ];
+      document.getElementById('current-question-idx').textContent = currentQ + 1;
+      
+      // Update instruction text
+      document.getElementById('question-title').innerHTML = `Calcule l'angle inconnu <span class="text-rose-500 font-bold">?</span> dans ce <strong>${q.shapeType}</strong> (${q.subType}) :`;
+      
+      // Clear input
+      document.getElementById('input-angle').value = '';
+      document.getElementById('btn-validate').disabled = true;
+
+      // Draw SVG
+      const pts = q.vertices.map(v => `${v.x},${v.y}`).join(' ');
+      let labelsHTML = '';
+      q.angles.forEach((angle, idx) => {
+        const isTarget = (idx === q.targetIndex);
+        const labelText = isTarget ? '?' : `${angle}°`;
+        const dist = isTarget ? 45 : 38;
+        const pos = getLabelPosition(q.vertices, idx, dist);
+        
+        if (isTarget) {
+          labelsHTML += `
+            <g>
+              <circle cx="${pos.x}" cy="${pos.y}" r="15" fill="#FFEAEB" stroke="#FF8B94" stroke-width="1.5" />
+              <text x="${pos.x}" y="${pos.y + 1}" text-anchor="middle" dominant-baseline="middle" fill="#E11D48" font-size="18" font-weight="black" font-family="Fredoka">${labelText}</text>
+            </g>
+          `;
+        } else {
+          labelsHTML += `
+            <text x="${pos.x}" y="${pos.y}" text-anchor="middle" dominant-baseline="middle" fill="#1A1A2E" font-size="14" font-weight="bold" font-family="Fredoka">${labelText}</text>
+          `;
+        }
+      });
+
+      const arcColor = q.shapeType === 'triangle' ? '#8AD1FC' : '#F472B6';
+      const bgColor = q.shapeType === 'triangle' ? '#F0F9FF' : '#FDF2F8';
+      const strokeColor = '#1A1A2E';
+
+      document.getElementById('svg-question-container').innerHTML = `
+        <svg viewBox="0 0 320 220" class="w-full max-w-[320px] h-[220px] bg-white border-3 border-[#1A1A2E] rounded-2xl shadow-[4px_4px_0px_#1A1A2E]">
+          <clipPath id="q-poly-clip-${q.id}">
+            <polygon points="${pts}" />
+          </clipPath>
+          
+          <!-- Colored Polygon -->
+          <polygon points="${pts}" fill="${bgColor}" stroke="${strokeColor}" stroke-width="3" stroke-linejoin="round" />
+          
+          <!-- Angle corner arcs (clipped to interior) -->
+          <g clip-path="url(#q-poly-clip-${q.id})">
+            ${q.vertices.map(v => `<circle cx="${v.x}" cy="${v.y}" r="25" fill="none" stroke="${arcColor}" stroke-width="2.5" />`).join('')}
+          </g>
+
+          <!-- Labels -->
+          ${labelsHTML}
+        </svg>
+      `;
+
+      setupKeyboardListeners();
+      focusAngleField();
+    }
+
+    // Input handlers
+    function focusAngleField() {
+      playClickSound();
+      document.getElementById('input-angle').classList.add('input-focused');
+    }
+
+    function pressKey(key) {
+      playClickSound();
+      const input = document.getElementById('input-angle');
+      if (key === 'clear') {
+        input.value = '';
+      } else if (key === 'backspace') {
+        input.value = input.value.slice(0, -1);
+      } else {
+        if (input.value.length < 3) {
+          input.value += key;
+        }
+      }
+      document.getElementById('btn-validate').disabled = (input.value.length === 0);
+    }
+
+    function setupKeyboardListeners() {
+      document.onkeydown = function(e) {
+        if (e.key >= '0' && e.key <= '9') {
+          pressKey(e.key);
+        } else if (e.key === 'Backspace') {
+          pressKey('backspace');
+        } else if (e.key === 'Escape' || e.key === 'Delete') {
+          pressKey('clear');
+        } else if (e.key === 'Enter') {
+          if (document.getElementById('input-angle').value.length > 0) {
+            checkAnswer();
+          }
+        }
+      };
+    }
+
+    function checkAnswer() {
+      const q = gameQuestions[currentQ];
+      const userVal = parseInt(document.getElementById('input-angle').value);
+      const isCorrect = (userVal === q.correctAnswer);
+
+      const comparisonContainer = document.getElementById('comparison-container');
+      const compUserAns = document.getElementById('comparison-user-ans');
+      const compCorrectAns = document.getElementById('comparison-correct-ans');
+
+      if (isCorrect) {
+        score++;
+        playSuccessSound();
+        document.getElementById('feedback-title').textContent = "🎉 Excellent !";
+        document.getElementById('feedback-icon').textContent = "🎉";
+        document.getElementById('feedback-title').className = "font-display text-2xl font-black text-emerald-500";
+        comparisonContainer.classList.add('hidden');
+      } else {
+        playErrorSound();
+        document.getElementById('feedback-title').textContent = "❌ Oups !";
+        document.getElementById('feedback-icon').textContent = "❌";
+        document.getElementById('feedback-title').className = "font-display text-2xl font-black text-rose-500";
+        
+        compUserAns.textContent = `${userVal}°`;
+        compCorrectAns.textContent = `${q.correctAnswer}°`;
+        comparisonContainer.classList.remove('hidden');
+      }
+
+      document.getElementById('feedback-explanation').innerHTML = q.explanation;
+      document.getElementById('current-score').textContent = score;
+
+      // Show Feedback Overlay
+      document.onkeydown = null;
+      feedbackReady = false;
+      const btnNext = document.getElementById('btn-next');
+      btnNext.disabled = true;
+      btnNext.style.opacity = '0.5';
+
+      document.getElementById('feedback-modal').style.display = 'flex';
+
+      setTimeout(() => {
+        btnNext.disabled = false;
+        btnNext.style.opacity = '1';
+        btnNext.focus();
+        feedbackReady = true;
+
+        document.onkeydown = function(e) {
+          if (e.key === 'Enter') {
+            closeFeedback();
+          }
+        };
+      }, 500);
+    }
+
+    function closeFeedback() {
+      if (!feedbackReady) return;
+      playClickSound();
+      document.getElementById('feedback-modal').style.display = 'none';
+      currentQ++;
+
+      if (currentQ < 10) {
+        renderQuestion();
+      } else {
+        endGame();
+      }
+    }
+
+    function endGame() {
+      document.getElementById('screen-game').classList.add('hidden');
+      document.getElementById('screen-congrats').classList.remove('hidden');
+
+      document.getElementById('final-score').textContent = `${score} / 10`;
+
+      let stars = "";
+      let title = "💪 Continue de t'entraîner !";
+      let message = "Relis bien la leçon et réessaie pour obtenir 3 étoiles !";
+
+      if (score === 10) {
+        stars = "⭐⭐⭐";
+        title = "👑 Parfait ! Un sans-faute !";
+        message = "Incroyable ! Tu maîtrises parfaitement le calcul d'angles manquants !";
+        triggerConfettis();
+      } else if (score >= 7) {
+        stars = "⭐⭐";
+        title = "☀️ Très bon travail !";
+        message = "Tu as une super compréhension de la somme des angles des polygones !";
+        triggerConfettis();
+      } else if (score >= 5) {
+        stars = "⭐";
+        title = "👍 Pas mal !";
+        message = "Tu as compris l'essentiel, encore quelques efforts !";
+      }
+
+      document.getElementById('final-stars').textContent = stars;
+      document.getElementById('congrats-title').textContent = title;
+      document.getElementById('congrats-message').textContent = message;
+
+      // Parent SaveResult API
+      if (window.parent && window.parent.saveResult) {
+        window.parent.saveResult({
+          activity: 'geometrie_angles_manquants',
+          bookTitle: "Calcul d'angles manquants",
+          score: score,
+          total: 10,
+          pct: Math.round((score / 10) * 100),
+          date: new Date().toLocaleDateString('fr-BE'),
+          time: new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })
+        });
+      }
+    }
+
+    function restartGame() {
+      playClickSound();
+      document.getElementById('screen-congrats').classList.add('hidden');
+      document.getElementById('screen-lesson').classList.remove('hidden');
+    }
+
+    // Toggle back to lesson
+    function showLessonScreen() {
+      playClickSound();
+      document.getElementById('screen-game').classList.add('hidden');
+      document.getElementById('screen-lesson').classList.remove('hidden');
+    }
+
+    function handleBack() {
+      playClickSound();
+      if (window.parent) {
+        const activeScreen = window.parent.document.querySelector('.screen.active');
+        const activeId = activeScreen ? activeScreen.id : '';
+        
+        if (activeId === 'screen-angles-manquants') {
+          if (typeof window.parent.showScreen === 'function') {
+            window.parent.showScreen('screen-solides-angles');
+          }
+        } else if (typeof window.parent.closeFicheViewer === 'function') {
+          window.parent.closeFicheViewer();
+        } else {
+          window.history.back();
+        }
+      } else {
+        window.history.back();
+      }
+    }
+
+    // Canvas Confetti
+    function triggerConfettis() {
+      const canvas = document.getElementById('confetti-canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      
+      let confettiActive = true;
+      const count = 120;
+      const colors = ['#FFB347', '#B19FFC', '#7AE582', '#FF8B94', '#8AD1FC'];
+      const confettis = Array.from({ length: count }).map(() => ({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height - canvas.height,
+        r: Math.random() * 6 + 4,
+        d: Math.random() * count,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        tilt: Math.random() * 10 - 5,
+        tiltAngleIncremental: Math.random() * 0.07 + 0.02,
+        tiltAngle: 0
+      }));
+
+      function draw() {
+        if (!confettiActive) return;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        confettis.forEach((c, index) => {
+          c.tiltAngle += c.tiltAngleIncremental;
+          c.y += (Math.cos(c.d) + 3 + c.r / 2) / 2;
+          c.tilt = Math.sin(c.tiltAngle - index / 3) * 15;
+          if (c.y > canvas.height) {
+            c.x = Math.random() * canvas.width;
+            c.y = -20;
+            c.tilt = Math.random() * 10 - 5;
+          }
+          ctx.beginPath();
+          ctx.lineWidth = c.r;
+          ctx.strokeStyle = c.color;
+          ctx.moveTo(c.x + c.tilt + c.r / 2, c.y);
+          ctx.lineTo(c.x + c.tilt, c.y + c.tilt + c.r / 2);
+          ctx.stroke();
+        });
+        requestAnimationFrame(draw);
+      }
+      draw();
+      setTimeout(() => {
+        confettiActive = false;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }, 4000);
+    }
+
+    // Page Load initialization
+    window.onload = function() {
+      renderLessonTriangle();
+      renderLessonQuad();
+      renderLessonLine();
+    };
+  </script>
+</body>
+</html>
