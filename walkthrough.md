@@ -172,3 +172,43 @@ Un nouveau laboratoire interactif d'entraînement sur les translations et rotati
   * Enregistrement des labels de suivi dans le dictionnaire des activités (`getActivityLabel`).
   * Enregistrement dans la liste des activités verrouillables par défaut (`getLockedActivities`) et correction d'une accolade orpheline présente dans le code d'origine de `public/fiches/index.html`.
   * Configuration de l'héritage de statut parent/enfant (`ACTIVITY_PARENTS`).
+
+---
+
+## 7. Numération : Les nombres mixtes (P5-P6)
+
+Un nouveau module complet sur les **nombres mixtes** a été ajouté dans la section Numération > Fractions.
+
+### 🎯 Fichier créé : [numeration_nombres_mixtes.html](file:///Users/jeremy/antigravity/LCML/numeration_nombres_mixtes.html)
+* **Concept** : Entraîner les élèves à passer d'une fraction impropre à un nombre mixte (ex: $\frac{7}{3} \rightarrow 2 + \frac{1}{3}$) et inversement.
+* **Interface Premium & Aide Visuelle** :
+  * Représentation visuelle interactive en SVG représentant des piles de crêpes (pancakes) pour illustrer concrètement les fractions d'unités entières et les parts restantes.
+  * Clavier numérique virtuel tactile intégré.
+  * Validation immédiate et explications pédagogiques détaillées.
+  * Enregistrement des résultats et du score via `saveResult`.
+
+---
+
+## 8. Lecture : Les substituts (P5-P6)
+
+Un nouveau module d'entraînement sur la reconnaissance des substituts a été ajouté dans la section Français > Lecture.
+
+### 🎯 Fichier créé : [lecture_substituts.html](file:///Users/jeremy/antigravity/LCML/lecture_substituts.html)
+* **Concept** : Identifier le référent d'un substitut (pronom, synonyme, terme générique) mis en valeur dans un court texte.
+* **Interface Interactive** :
+  * L'élève lit un court texte avec un mot surligné en bleu (le substitut) et doit cliquer sur le mot ou groupe de mots qui est remplacé par ce substitut.
+  * 10 questions tirées aléatoirement parmi un pool de 20 textes littéraires et documentaires originaux.
+  * Feedback vert/rouge instantané avec explications contextuelles détaillées.
+  * Enregistrement automatique des scores via `saveResult` et effets de confettis en fin de session.
+
+---
+
+## 9. Intégration Dashboard & Navigation pour les deux modules
+
+Les modifications ont été répercutées de manière cohérente dans [index.html](file:///Users/jeremy/antigravity/LCML/index.html), [fiches/index.html](file:///Users/jeremy/antigravity/LCML/fiches/index.html) et [public/fiches/index.html](file:///Users/jeremy/antigravity/LCML/public/fiches/index.html) :
+* **Menus Fractions & Lecture** : Ajout des boutons d'accès direct avec les icônes correspondantes (🥞 pour les nombres mixtes, 📖 / 🔍 pour les substituts).
+* **Écrans d'affichage** : Enregistrement et configuration des conteneurs iFrame (`screen-num-nombres-mixtes` et `screen-lecture-substituts`).
+* **Suivi Enseignant** :
+  * Enregistrement des libellés dans `getActivityLabel`.
+  * Ajout dans le système de verrous d'activités (`getLockedActivities` et `ACTIVITY_PARENTS`) pour permettre le masquage individuel par le professeur.
+
