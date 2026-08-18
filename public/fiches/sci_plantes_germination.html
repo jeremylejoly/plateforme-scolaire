@@ -45,7 +45,7 @@
       background-color: var(--sand-light);
       color: var(--text);
       line-height: 1.5;
-      padding-bottom: 90px; /* Space for sticky footer */
+      padding-bottom: 3rem;
     }
     
     .container {
@@ -598,22 +598,6 @@
     .correction-message.ok { color: var(--sage-dark); }
     .correction-message.err { color: #A62B1D; }
 
-    /* --- STICKY FOOTER --- */
-    .sticky-footer {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      background: var(--surface);
-      border-top: 3.5px solid var(--border);
-      padding: 12px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      z-index: 100;
-      box-shadow: 0 -4px 10px rgba(0,0,0,0.05);
-    }
-    
     .progress-info {
       font-family: 'Fredoka', sans-serif;
       font-weight: 600;
@@ -749,7 +733,6 @@
   <!-- SITE HEADER -->
   <header class="site-header">
     <h1 class="font-title">🌱 Reproduction & Germination</h1>
-    <p>Sciences P5 - P6 • Carnet de l'élève scientifique</p>
   </header>
 
   <div class="container">
@@ -953,9 +936,19 @@
         </div>
       </div>
       
-      <div style="display:flex; justify-content:space-between; margin-top: 1rem;">
-        <button class="flat-btn btn-accent" onclick="switchTab('synthesis')">📚 Leçon</button>
-        <button class="flat-btn btn-sage" onclick="switchTab('part2')">Continuer ➡️</button>
+      <div style="display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap: 15px; margin-top: 1.5rem; background: var(--surface); border: 3px solid var(--border); padding: 10px 15px; border-radius: var(--rsm); box-shadow: 3px 3px 0px var(--shadow);">
+        <div class="progress-info" style="margin:0;">
+          <span id="part1-placed-count" style="font-size:0.95rem; font-weight:700;">Cartes placées : 0 / 7</span>
+          <div class="progress-bar-bg" style="width: 150px; margin-top: 2px;">
+            <div class="progress-bar-fill" id="part1-progress-bar"></div>
+          </div>
+        </div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <button class="flat-btn btn-accent" onclick="switchTab('synthesis')">📚 Leçon</button>
+          <button class="flat-btn btn-sage" id="btn-validate-part1" onclick="validatePart1()">Valider ✔️</button>
+          <button class="flat-btn btn-terracotta hidden" id="btn-reset-part1" onclick="resetPart1()">Recommencer 🔄</button>
+          <button class="flat-btn btn-sage hidden" id="btn-next-part1" onclick="goToPart2()">Continuer ➡️</button>
+        </div>
       </div>
     </div>
 
@@ -1004,41 +997,61 @@
         </div>
       </div>
       
-      <div style="display:flex; justify-content:space-between; margin-top: 1rem;">
-        <button class="flat-btn btn-accent" onclick="switchTab('part1')">⬅️ Étape précédente</button>
-        <button class="flat-btn btn-sage" id="btn-validate-nav" onclick="triggerValidation()">Valider mes réponses ! ✔️</button>
+      <div style="display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap: 15px; margin-top: 1.5rem; background: var(--surface); border: 3px solid var(--border); padding: 10px 15px; border-radius: var(--rsm); box-shadow: 3px 3px 0px var(--shadow);">
+        <div class="progress-info" style="margin:0;">
+          <span id="part2-placed-count" style="font-size:0.95rem; font-weight:700;">Facteurs classés : 0 / 5</span>
+          <div class="progress-bar-bg" style="width: 150px; margin-top: 2px;">
+            <div class="progress-bar-fill" id="part2-progress-bar"></div>
+          </div>
+        </div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <button class="flat-btn btn-accent" onclick="switchTab('part1')">⬅️ Exercice 1</button>
+          <button class="flat-btn btn-sage" id="btn-validate-part2" onclick="validatePart2()">Valider ✔️</button>
+          <button class="flat-btn btn-terracotta hidden" id="btn-reset-part2" onclick="resetPart2()">Recommencer 🔄</button>
+        </div>
       </div>
     </div>
 
   </div>
 
-  <!-- STICKY FOOTER -->
-  <div class="sticky-footer">
-    <div class="progress-info">
-      <span id="footer-placed-count">Placées : 0 / 12</span>
-      <div class="progress-bar-bg">
-        <div class="progress-bar-fill" id="footer-progress-bar"></div>
-      </div>
-    </div>
-    <button class="flat-btn btn-sage" id="btn-validate" onclick="triggerValidation()">
-      Valider ✔️
-    </button>
-  </div>
-
-  <!-- RESULTS MODAL -->
-  <div class="flat-modal-overlay hidden" id="resultsModal">
+  <!-- RESULTS MODAL PART 1 -->
+  <div class="flat-modal-overlay hidden" id="modalPart1">
     <div class="flat-modal">
-      <div class="modal-stars" id="resultsStars">⭐⭐⭐</div>
-      <div class="modal-score" id="resultsScore">12 / 12</div>
-      <div class="modal-score-pct" id="resultsScorePct">100 % de réussite</div>
-      <div class="modal-comment" id="resultsComment">Excellent travail ! Tu as parfaitement maîtrisé le cycle de vie de la plante et déjoué tous les pièges sur la germination !</div>
+      <div class="modal-stars" id="starsPart1">⭐⭐⭐</div>
+      <div class="modal-score" id="scorePart1">7 / 7</div>
+      <div class="modal-comment" id="commentPart1">Félicitations ! Tu as ordonné le cycle de vie de la plante de manière parfaite !</div>
       
       <div class="modal-actions">
-        <button class="flat-btn btn-accent" onclick="closeModalAndShowErrors()">
+        <button class="flat-btn btn-accent" id="btn-modal-errors-part1" onclick="closeModal('modalPart1')">
           🔍 Voir mes erreurs
         </button>
-        <button class="flat-btn btn-sage" onclick="restartGame()">
-          🔄 Recommencer
+        <button class="flat-btn btn-sage" id="btn-modal-next-part1" onclick="goToPart2FromModal()">
+          Passer à la suite ➡️
+        </button>
+        <button class="flat-btn btn-terracotta hidden" id="btn-modal-retry-part1" onclick="retryPart1FromModal()">
+          Réessayer 🔄
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESULTS MODAL PART 2 -->
+  <div class="flat-modal-overlay hidden" id="modalPart2">
+    <div class="flat-modal">
+      <div class="modal-stars" id="starsPart2">⭐⭐⭐</div>
+      <div class="modal-score" id="scorePart2">12 / 12</div>
+      <div class="modal-score-pct" id="pctPart2">100 % de réussite</div>
+      <div class="modal-comment" id="commentPart2">Excellent travail ! Tu as parfaitement maîtrisé les deux exercices !</div>
+      
+      <div class="modal-actions">
+        <button class="flat-btn btn-accent" id="btn-modal-errors-part2" onclick="closeModal('modalPart2')">
+          🔍 Voir mes erreurs
+        </button>
+        <button class="flat-btn btn-sage" id="btn-modal-restart" onclick="restartEntireGame()">
+          🔄 Tout recommencer
+        </button>
+        <button class="flat-btn btn-terracotta hidden" id="btn-modal-retry-part2" onclick="retryPart2FromModal()">
+          Réessayer 🔄
         </button>
       </div>
     </div>
@@ -1110,16 +1123,17 @@
     ];
 
     const FACTOR_ITEMS = [
-      { id: 'fact-eau', isIndispensable: true, text: 'L\'eau', expl: 'Indispensable pour hydrater et réveiller l\'embryon.' },
-      { id: 'fact-chaleur', isIndispensable: true, text: 'La chaleur (température correcte)', expl: 'Indispensable pour déclencher le métabolisme de la graine.' },
-      { id: 'fact-oxygene', isIndispensable: true, text: 'L\'oxygène (l\'air)', expl: 'Indispensable car la graine respire activement pendant la germination.' },
-      { id: 'fact-terre', isIndispensable: false, text: 'La terre (sur coton humide)', expl: 'Non indispensable. La graine a ses propres réserves et germe hors-sol.' },
-      { id: 'fact-lumiere', isIndispensable: false, text: 'La lumière (dans l\'obscurité)', expl: 'Non indispensable. La graine germe parfaitement sous terre, dans le noir.' }
+      { id: 'fact-eau', isIndispensable: true, text: 'L\'eau', expl: 'Indispensable : elle hydrate la graine, ramollit son enveloppe et réveille l\'embryon.' },
+      { id: 'fact-chaleur', isIndispensable: true, text: 'La chaleur', expl: 'Indispensable : une température correcte est nécessaire pour activer la vie ralentie.' },
+      { id: 'fact-oxygene', isIndispensable: true, text: 'L\'oxygène', expl: 'Indispensable : la graine respire activement pendant qu\'elle germe.' },
+      { id: 'fact-terre', isIndispensable: false, text: 'La terre', expl: 'Non indispensable : la graine possède ses propres réserves et peut germer hors-sol (sur du coton humide).' },
+      { id: 'fact-lumiere', isIndispensable: false, text: 'La lumière', expl: 'Non indispensable : la graine germe dans l\'obscurité complète sous la terre.' }
     ];
 
     // Game state variables
     let selectedItemElement = null;
-    let validated = false;
+    let part1Validated = false;
+    let part2Validated = false;
 
     // ==========================================
     // INITIALIZATION & TAB SWITCHING
@@ -1146,20 +1160,6 @@
       }
     }
 
-    function toggleStep(headerEl) {
-      sndTap();
-      const card = headerEl.parentElement;
-      const arrow = headerEl.querySelector('span:last-child');
-      
-      if (card.classList.contains('expanded')) {
-        card.classList.remove('expanded');
-        arrow.textContent = '▼';
-      } else {
-        card.classList.add('expanded');
-        arrow.textContent = '▲';
-      }
-    }
-
     // Shuffle helper
     function shuffleArray(array) {
       const arr = [...array];
@@ -1174,28 +1174,32 @@
     // GAME CORE ENGINE
     // ==========================================
     function initGame() {
-      validated = false;
+      part1Validated = false;
+      part2Validated = false;
       selectedItemElement = null;
       
-      // Enable validation buttons
-      const btnVal = document.getElementById('btn-validate');
-      btnVal.classList.remove('btn-disabled');
-      btnVal.innerText = "Valider ✔️";
+      // Reset validation buttons UI
+      const btnVal1 = document.getElementById('btn-validate-part1');
+      btnVal1.classList.remove('hidden');
+      btnVal1.classList.remove('btn-disabled');
       
-      const btnValNav = document.getElementById('btn-validate-nav');
-      btnValNav.classList.remove('btn-disabled');
-      btnValNav.innerText = "Valider mes réponses ! ✔️";
+      const btnReset1 = document.getElementById('btn-reset-part1');
+      btnReset1.classList.add('hidden');
+      
+      const btnNext1 = document.getElementById('btn-next-part1');
+      btnNext1.classList.add('hidden');
+
+      const btnVal2 = document.getElementById('btn-validate-part2');
+      btnVal2.classList.remove('hidden');
+      btnVal2.classList.remove('btn-disabled');
+      
+      const btnReset2 = document.getElementById('btn-reset-part2');
+      btnReset2.classList.add('hidden');
 
       // Clear slots
       document.querySelectorAll('.timeline-slot').forEach((slot, idx) => {
         slot.className = 'timeline-slot';
         slot.innerHTML = `<span class="slot-number">${idx+1}</span><span class="slot-label">${idx === 0 ? 'Début' : (idx === 6 ? 'Fin' : 'Étape ' + (idx+1))}</span>`;
-        
-        // Remove correction text if exists
-        const oldMsg = slot.nextElementSibling;
-        if (oldMsg && oldMsg.classList.contains('correction-message')) {
-          oldMsg.remove();
-        }
       });
       
       // Clear columns
@@ -1204,7 +1208,7 @@
         col.innerHTML = '';
       });
       
-      // Remove column corrections
+      // Remove all correction messages
       document.querySelectorAll('.correction-message').forEach(msg => msg.remove());
 
       // Shuffle and render Part 1 cards
@@ -1225,7 +1229,8 @@
         pool2.appendChild(card);
       });
 
-      updateProgress();
+      updateProgressPart1();
+      updateProgressPart2();
     }
 
     function createCard(id, text, part) {
@@ -1250,7 +1255,9 @@
     // HYBRID SELECT AND CLICK MECHANICS
     // ==========================================
     function handleCardClick(e) {
-      if (validated) return;
+      if (this.dataset.part === 'part1' && part1Validated) return;
+      if (this.dataset.part === 'part2' && part2Validated) return;
+
       e.stopPropagation();
       sndTap();
 
@@ -1267,7 +1274,7 @@
     }
 
     function slotClicked(slotIndex) {
-      if (validated) return;
+      if (part1Validated) return;
       
       const slot = document.querySelectorAll('.timeline-slot')[slotIndex];
       
@@ -1287,19 +1294,19 @@
         selectedItemElement.classList.remove('selected');
         selectedItemElement = null;
         
-        updateProgress();
+        updateProgressPart1();
       } else {
         const existingCard = slot.querySelector('.game-card');
         if (existingCard) {
           sndTap();
           document.getElementById('poolPart1').appendChild(existingCard);
-          updateProgress();
+          updateProgressPart1();
         }
       }
     }
 
     function columnClicked(colName) {
-      if (validated) return;
+      if (part2Validated) return;
       
       const colBody = document.getElementById('col-' + colName);
       
@@ -1311,18 +1318,25 @@
         selectedItemElement.classList.remove('selected');
         selectedItemElement = null;
         
-        updateProgress();
+        updateProgressPart2();
       }
     }
 
+    // Clicking pool container directly returns selected card to pool
     function poolClicked(partType) {
-      if (validated) return;
+      if (partType === 'part1' && part1Validated) return;
+      if (partType === 'part2' && part2Validated) return;
+
       if (selectedItemElement && selectedItemElement.dataset.part === partType) {
         sndTap();
         document.getElementById('poolPart' + (partType === 'part1' ? '1' : '2')).appendChild(selectedItemElement);
         selectedItemElement.classList.remove('selected');
         selectedItemElement = null;
-        updateProgress();
+        if (partType === 'part1') {
+          updateProgressPart1();
+        } else {
+          updateProgressPart2();
+        }
       }
     }
 
@@ -1332,10 +1346,15 @@
     let draggedElement = null;
 
     function handleDragStart(e) {
-      if (validated) {
+      if (this.dataset.part === 'part1' && part1Validated) {
         e.preventDefault();
         return;
       }
+      if (this.dataset.part === 'part2' && part2Validated) {
+        e.preventDefault();
+        return;
+      }
+
       draggedElement = this;
       this.classList.add('selected');
       e.dataTransfer.setData('text/plain', this.id);
@@ -1350,9 +1369,15 @@
     }
 
     function allowDrop(e) {
-      if (validated) return;
       e.preventDefault();
       const target = e.currentTarget;
+      
+      const isTimeline = target.classList.contains('timeline-slot') || target.id === 'poolPart1';
+      const isColumn = target.classList.contains('tri-column-body') || target.id === 'poolPart2';
+      
+      if (isTimeline && part1Validated) return;
+      if (isColumn && part2Validated) return;
+
       target.classList.add('dragover');
     }
 
@@ -1362,18 +1387,20 @@
     }
 
     function handleDrop(e) {
-      if (validated) return;
       e.preventDefault();
       const target = e.currentTarget;
       target.classList.remove('dragover');
       
+      const isTimeline = target.classList.contains('timeline-slot');
+      const isColumn = target.classList.contains('tri-column-body');
+      
+      if (isTimeline && part1Validated) return;
+      if (isColumn && part2Validated) return;
+
       const id = e.dataTransfer.getData('text/plain');
       const card = document.getElementById(id);
       
       if (card) {
-        const isTimeline = target.classList.contains('timeline-slot');
-        const isColumn = target.classList.contains('tri-column-body');
-        
         if (isTimeline && card.dataset.part === 'part1') {
           const existingCard = target.querySelector('.game-card');
           if (existingCard) {
@@ -1381,76 +1408,95 @@
           }
           target.appendChild(card);
           playTone(600, 0.05, 0, 'sine', 0.08);
+          updateProgressPart1();
         } else if (isColumn && card.dataset.part === 'part2') {
           target.appendChild(card);
           playTone(600, 0.05, 0, 'sine', 0.08);
+          updateProgressPart2();
         }
         
         if (selectedItemElement) {
           selectedItemElement.classList.remove('selected');
           selectedItemElement = null;
         }
-        
-        updateProgress();
       }
     }
 
     function handleReturnToPool(e, partType) {
-      if (validated) return;
+      if (partType === 'part1' && part1Validated) return;
+      if (partType === 'part2' && part2Validated) return;
+
       e.preventDefault();
       const id = e.dataTransfer.getData('text/plain');
       const card = document.getElementById(id);
       if (card && card.dataset.part === partType) {
         document.getElementById('poolPart' + (partType === 'part1' ? '1' : '2')).appendChild(card);
         playTone(500, 0.05, 0, 'sine', 0.08);
-        updateProgress();
+        if (partType === 'part1') {
+          updateProgressPart1();
+        } else {
+          updateProgressPart2();
+        }
       }
     }
 
     // ==========================================
     // STATUS & PROGRESS TRACKING
     // ==========================================
-    function getPlacedCount() {
+    function getPlacedCountPart1() {
       let count = 0;
       document.querySelectorAll('.timeline-slot').forEach(slot => {
         if (slot.querySelector('.game-card')) count++;
       });
+      return count;
+    }
+
+    function getPlacedCountPart2() {
+      let count = 0;
       document.querySelectorAll('.tri-column-body').forEach(col => {
         count += col.querySelectorAll('.game-card').length;
       });
       return count;
     }
 
-    function updateProgress() {
-      const placed = getPlacedCount();
-      document.getElementById('footer-placed-count').textContent = `Placées : ${placed} / 12`;
+    function updateProgressPart1() {
+      const placed = getPlacedCountPart1();
+      document.getElementById('part1-placed-count').textContent = `Cartes placées : ${placed} / 7`;
       
-      const pct = (placed / 12) * 100;
-      document.getElementById('footer-progress-bar').style.width = `${pct}%`;
+      const pct = (placed / 7) * 100;
+      document.getElementById('part1-progress-bar').style.width = `${pct}%`;
+    }
+
+    function updateProgressPart2() {
+      const placed = getPlacedCountPart2();
+      document.getElementById('part2-placed-count').textContent = `Facteurs classés : ${placed} / 5`;
+      
+      const pct = (placed / 5) * 100;
+      document.getElementById('part2-progress-bar').style.width = `${pct}%`;
     }
 
     // ==========================================
     // VALIDATION & FEEDBACK SYSTEM
     // ==========================================
-    function triggerValidation() {
-      if (validated) return;
+    function validatePart1() {
+      if (part1Validated) return;
       
-      const placedCount = getPlacedCount();
+      const placedCount = getPlacedCountPart1();
       
-      if (placedCount < 12) {
+      if (placedCount < 7) {
         playTone(300, 0.2, 0, 'triangle', 0.15);
-        alert(`Oups ! Tu as placé seulement ${placedCount} carte(s) sur 12. S'il te plaît, termine de trier et de classer toutes les cartes avant de valider !`);
+        alert(`Oups ! Tu as placé seulement ${placedCount} carte(s) sur 7. Place toutes les étapes du cycle de vie avant de valider !`);
         return;
       }
       
-      validated = true;
-      
-      document.getElementById('btn-validate').classList.add('btn-disabled');
-      document.getElementById('btn-validate-nav').classList.add('btn-disabled');
+      part1Validated = true;
+
+      // Disable validate button
+      document.getElementById('btn-validate-part1').classList.add('hidden');
 
       let score = 0;
-
-      // 1. Validate Part 1: Timeline Slots
+      
+      // Validate Part 1 timeline slots
       const slots = document.querySelectorAll('.timeline-slot');
       slots.forEach((slot, idx) => {
         const card = slot.querySelector('.game-card');
@@ -1464,7 +1510,7 @@
           card.classList.add('correct');
           card.innerHTML = `<span class="feedback-icon">✓</span> ${correctItem.short}`;
           correctionDiv.className += ' ok';
-          correctionDiv.innerHTML = `<strong>Étape ${idx+1} Correcte !</strong>`;
+          correctionDiv.innerHTML = `<strong>Correct !</strong>`;
         } else {
           if (card) {
             card.classList.add('incorrect');
@@ -1477,14 +1523,118 @@
         slot.after(correctionDiv);
       });
 
-      // 2. Validate Part 2: Columns
+      // Disable drag and click on part1 cards
+      document.querySelectorAll('#poolPart1 .game-card, .timeline-slot .game-card').forEach(card => {
+        card.draggable = false;
+        card.style.cursor = 'default';
+      });
+
+      // Setup Modal Part 1
+      const starsEl = document.getElementById('starsPart1');
+      const scoreEl = document.getElementById('scorePart1');
+      const commentEl = document.getElementById('commentPart1');
+      const btnNext = document.getElementById('btn-modal-next-part1');
+      const btnRetry = document.getElementById('btn-modal-retry-part1');
+
+      scoreEl.textContent = `${score} / 7`;
+
+      if (score === 7) {
+        // Success
+        starsEl.textContent = "⭐⭐⭐";
+        commentEl.textContent = "Félicitations ! Tu as ordonné le cycle de vie de la plante sans aucune erreur. Tu es prêt pour la suite !";
+        btnNext.classList.remove('hidden');
+        btnRetry.classList.add('hidden');
+        
+        document.getElementById('btn-next-part1').classList.remove('hidden');
+        
+        sndFanfare();
+        triggerConfettiShower();
+      } else {
+        // Fail
+        starsEl.textContent = "❌";
+        commentEl.textContent = "Aïe, il y a des erreurs dans la chronologie de ton cycle de vie. Regarde bien les étiquettes en rouge, puis recommence l'exercice 1 !";
+        btnNext.classList.add('hidden');
+        btnRetry.classList.remove('hidden');
+        
+        document.getElementById('btn-reset-part1').classList.remove('hidden');
+        
+        sndWrong();
+      }
+
+      document.getElementById('modalPart1').classList.remove('hidden');
+    }
+
+    function resetPart1() {
+      sndTap();
+      part1Validated = false;
+      selectedItemElement = null;
+
+      // Reset buttons
+      document.getElementById('btn-validate-part1').classList.remove('hidden');
+      document.getElementById('btn-reset-part1').classList.add('hidden');
+      document.getElementById('btn-next-part1').classList.add('hidden');
+
+      // Clear slots
+      document.querySelectorAll('.timeline-slot').forEach((slot, idx) => {
+        slot.className = 'timeline-slot';
+        slot.innerHTML = `<span class="slot-number">${idx+1}</span><span class="slot-label">${idx === 0 ? 'Début' : (idx === 6 ? 'Fin' : 'Étape ' + (idx+1))}</span>`;
+        
+        // Remove correction messages
+        const oldMsg = slot.nextElementSibling;
+        if (oldMsg && oldMsg.classList.contains('correction-message')) {
+          oldMsg.remove();
+        }
+      });
+
+      // Re-render pool
+      const shuffledPart1 = shuffleArray(CYCLE_ITEMS);
+      const pool1 = document.getElementById('poolPart1');
+      pool1.innerHTML = '<div class="cards-pool-title">Cartes des étapes à trier</div>';
+      shuffledPart1.forEach(item => {
+        const card = createCard(item.id, item.text, 'part1');
+        pool1.appendChild(card);
+      });
+
+      updateProgressPart1();
+    }
+
+    function retryPart1FromModal() {
+      closeModal('modalPart1');
+      resetPart1();
+    }
+
+    function goToPart2() {
+      switchTab('part2');
+    }
+
+    function goToPart2FromModal() {
+      closeModal('modalPart1');
+      goToPart2();
+    }
+
+    function validatePart2() {
+      if (part2Validated) return;
+
+      const placedCount = getPlacedCountPart2();
+      
+      if (placedCount < 5) {
+        playTone(300, 0.2, 0, 'triangle', 0.15);
+        alert(`Oups ! Tu as classé seulement ${placedCount} facteur(s) sur 5. Trie tous les facteurs de germination avant de valider !`);
+        return;
+      }
+
+      part2Validated = true;
+      document.getElementById('btn-validate-part2').classList.add('hidden');
+
+      let score = 0;
+
+      // Validate Columns
       const indispCol = document.getElementById('col-indispensable');
       const nonindispCol = document.getElementById('col-non-indispensable');
 
       const indispCards = indispCol.querySelectorAll('.game-card');
       indispCards.forEach(card => {
         const factor = FACTOR_ITEMS.find(f => f.id === card.id);
-        
         const corrMsg = document.createElement('div');
         corrMsg.className = 'correction-message';
         
@@ -1493,12 +1643,12 @@
           card.classList.add('correct');
           card.innerHTML = `🟢 ${factor.text} <span class="feedback-icon">✓</span>`;
           corrMsg.className += ' ok';
-          corrMsg.innerHTML = `<strong>Félicitations :</strong> ${factor.expl}`;
+          corrMsg.innerHTML = `<strong>Exact :</strong> ${factor.expl}`;
         } else {
           card.classList.add('incorrect');
           card.innerHTML = `⚪ ${factor.text} <span class="feedback-icon">✗</span>`;
           corrMsg.className += ' err';
-          corrMsg.innerHTML = `<strong>Erreur !</strong> ${factor.expl}`;
+          corrMsg.innerHTML = `<strong>Oups !</strong> ${factor.expl}`;
         }
         card.after(corrMsg);
       });
@@ -1506,7 +1656,6 @@
       const nonindispCards = nonindispCol.querySelectorAll('.game-card');
       nonindispCards.forEach(card => {
         const factor = FACTOR_ITEMS.find(f => f.id === card.id);
-        
         const corrMsg = document.createElement('div');
         corrMsg.className = 'correction-message';
 
@@ -1520,68 +1669,111 @@
           card.classList.add('incorrect');
           card.innerHTML = `🟢 ${factor.text} <span class="feedback-icon">✗</span>`;
           corrMsg.className += ' err';
-          corrMsg.innerHTML = `<strong>Faux !</strong> ${factor.expl}`;
+          corrMsg.innerHTML = `<strong>Oups !</strong> ${factor.expl}`;
         }
         card.after(corrMsg);
       });
 
-      // 3. Compute score & Show Modal
-      const pct = Math.round((score / 12) * 100);
-      
-      let stars = "";
-      let comment = "";
-      
-      if (score === 12) {
-        stars = "⭐⭐⭐";
-        comment = "Félicitations ! C'est un parcours sans faute. Tu es un(e) véritable expert(e) de la vie végétale et de la germination ! 🌸🌱";
+      // Disable drag and click on part2 cards
+      document.querySelectorAll('#poolPart2 .game-card, .tri-column-body .game-card').forEach(card => {
+        card.draggable = false;
+        card.style.cursor = 'default';
+      });
+
+      // Setup Modal Part 2
+      const starsEl = document.getElementById('starsPart2');
+      const scoreEl = document.getElementById('scorePart2');
+      const commentEl = document.getElementById('commentPart2');
+      const pctEl = document.getElementById('pctPart2');
+      const btnRestart = document.getElementById('btn-modal-restart');
+      const btnRetry = document.getElementById('btn-modal-retry-part2');
+
+      if (score === 5) {
+        // Success Part 2 (which completes the whole activity, since Part 1 had to be 7/7 to proceed)
+        scoreEl.textContent = "12 / 12";
+        pctEl.textContent = "100 % de réussite";
+        pctEl.classList.remove('hidden');
+        starsEl.textContent = "⭐⭐⭐";
+        commentEl.textContent = "Excellent travail ! Tu as parfaitement maîtrisé le cycle de vie de la plante et déjoué tous les pièges sur la germination !";
+        btnRestart.classList.remove('hidden');
+        btnRetry.classList.add('hidden');
+        
         sndFanfare();
         triggerConfettiShower();
-      } else if (score >= 9) {
-        stars = "⭐⭐";
-        comment = "Superbe travail ! Tu as très bien compris le cycle de vie et les facteurs indispensables. Revois tes quelques erreurs pour être parfait ! 👍";
-        sndFanfare();
-        triggerConfettiShower();
-      } else if (score >= 6) {
-        stars = "⭐";
-        comment = "Pas mal, tu y es presque ! Relis bien la synthèse interactive de la leçon et fais attention aux pièges sur la lumière et la terre ! 📚";
-        sndCorrect();
+
+        // Save results parent hook
+        if (window.parent && window.parent.saveResult) {
+          window.parent.saveResult({
+            activity: 'sci_plantes_germination',
+            bookTitle: 'Sciences : Reproduction des plantes et germination',
+            score: 12,
+            total: 12,
+            pct: 100,
+            date: new Date().toLocaleDateString('fr-BE'),
+            time: new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })
+          });
+        }
       } else {
-        stars = "❌";
-        comment = "C'est un début, mais il faut continuer à s'entraîner ! Je t'invite à relire attentivement la leçon puis à recommencer l'activité. Courage ! 💪";
+        // Fail
+        scoreEl.textContent = `${score} / 5`;
+        pctEl.classList.add('hidden');
+        starsEl.textContent = "❌";
+        commentEl.textContent = "Aïe, il y a des erreurs dans ton classement des facteurs. Regarde bien les étiquettes en rouge, puis recommence l'exercice 2 !";
+        btnRestart.classList.add('hidden');
+        btnRetry.classList.remove('hidden');
+        
+        document.getElementById('btn-reset-part2').classList.remove('hidden');
+        
         sndWrong();
       }
 
-      document.getElementById('resultsStars').textContent = stars;
-      document.getElementById('resultsScore').textContent = `${score} / 12`;
-      document.getElementById('resultsScorePct').textContent = `${pct}% de réussite`;
-      document.getElementById('resultsComment').textContent = comment;
-      
-      document.getElementById('resultsModal').classList.remove('hidden');
-
-      // 4. Save results parent hook
-      if (window.parent && window.parent.saveResult) {
-        window.parent.saveResult({
-          activity: 'sci_plantes_germination',
-          bookTitle: 'Sciences : Reproduction des plantes et germination',
-          score: score,
-          total: 12,
-          pct: pct,
-          date: new Date().toLocaleDateString('fr-BE'),
-          time: new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })
-        });
-      }
+      document.getElementById('modalPart2').classList.remove('hidden');
     }
 
-    function closeModalAndShowErrors() {
+    function resetPart2() {
       sndTap();
-      document.getElementById('resultsModal').classList.add('hidden');
+      part2Validated = false;
+      selectedItemElement = null;
+
+      // Reset buttons
+      document.getElementById('btn-validate-part2').classList.remove('hidden');
+      document.getElementById('btn-reset-part2').classList.add('hidden');
+
+      // Clear columns
+      document.querySelectorAll('.tri-column-body').forEach(col => {
+        col.className = 'tri-column-body';
+        col.innerHTML = '';
+      });
+
+      // Remove column corrections
+      document.querySelectorAll('#screen-part2 .correction-message').forEach(msg => msg.remove());
+
+      // Re-render pool
+      const shuffledPart2 = shuffleArray(FACTOR_ITEMS);
+      const pool2 = document.getElementById('poolPart2');
+      pool2.innerHTML = '<div class="cards-pool-title">Facteurs à trier</div>';
+      shuffledPart2.forEach(item => {
+        const card = createCard(item.id, item.text, 'part2');
+        pool2.appendChild(card);
+      });
+
+      updateProgressPart2();
     }
 
-    function restartGame() {
-      sndTap();
-      document.getElementById('resultsModal').classList.add('hidden');
+    function retryPart2FromModal() {
+      closeModal('modalPart2');
+      resetPart2();
+    }
+
+    function restartEntireGame() {
+      closeModal('modalPart2');
       initGame();
       switchTab('part1');
+    }
+
+    function closeModal(modalId) {
+      sndTap();
+      document.getElementById(modalId).classList.add('hidden');
     }
 
     // ==========================================
