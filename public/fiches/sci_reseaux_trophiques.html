@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Les Réseaux Trophiques - LCML</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Canvas Confetti CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --deep-green: #1b4332;
+      --green-medium: #2d6a4f;
+      --green-light: #40916c;
+      --green-pastel: #d8f3dc;
+      --brown-dark: #582f0e;
+      --brown-medium: #7f5539;
+      --brown-light: #9c6644;
+      --brown-pastel: #ede0d4;
+      --orange-warm: #e65f2b;
+      --orange-light: #f68e5f;
+      --orange-pastel: #ffe6d9;
+      --bg-cream: #faf6ee;
+      --text-dark: #1a1a2e;
+      --border-color: #1a1a2e;
+    }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background-color: var(--bg-cream);
+      color: var(--text-dark);
+      margin: 0;
+      padding: 0;
+    }
+
+    .font-title {
+      font-family: 'Fredoka', sans-serif;
+    }
+
+    /* Flat 3D Styles */
+    .card-3d {
+      background: #ffffff;
+      border: 3.5px solid var(--border-color);
+      box-shadow: 6px 6px 0px var(--border-color);
+      border-radius: 20px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-3d {
+      border: 3.5px solid var(--border-color);
+      box-shadow: 4px 4px 0px var(--border-color);
+      border-radius: 12px;
+      font-weight: 800;
+      transition: all 0.1s ease-out;
+      transform: translate(0px, 0px);
+    }
+    
+    .btn-3d:hover:not(:disabled) {
+      transform: translate(-2px, -2px);
+      box-shadow: 6px 6px 0px var(--border-color);
+    }
+
+    .btn-3d:active:not(:disabled) {
+      transform: translate(2px, 2px);
+      box-shadow: 2px 2px 0px var(--border-color);
+    }
+
+    .btn-3d:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none !important;
+      box-shadow: 2px 2px 0px var(--border-color) !important;
+    }
+
+    /* Selection options for QCM */
+    .option-card {
+      border: 3px solid var(--border-color);
+      box-shadow: 4px 4px 0px var(--border-color);
+      border-radius: 14px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    
+    .option-card:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: 6px 6px 0px var(--border-color);
+    }
+
+    .option-card.selected {
+      background-color: var(--orange-pastel);
+      border-color: var(--orange-warm);
+      box-shadow: 3px 3px 0px var(--orange-warm);
+      transform: translate(1px, 1px);
+    }
+
+    /* Animation effects */
+    .fade-in {
+      animation: fadeIn 0.4s ease-out forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Simulation animations */
+    .pulse-danger {
+      animation: pulseDanger 1.5s infinite;
+    }
+    @keyframes pulseDanger {
+      0%, 100% { border-color: var(--border-color); box-shadow: 4px 4px 0px var(--border-color); }
+      50% { border-color: #ef4444; box-shadow: 4px 4px 0px #ef4444; transform: scale(0.98); }
+    }
+
+    .pulse-success {
+      animation: pulseSuccess 1.5s infinite;
+    }
+    @keyframes pulseSuccess {
+      0%, 100% { border-color: var(--border-color); box-shadow: 4px 4px 0px var(--border-color); }
+      50% { border-color: #22c55e; box-shadow: 6px 6px 0px #22c55e; transform: scale(1.02); }
+    }
+
+    .shake-slow {
+      animation: shakeSlow 2s infinite ease-in-out;
+    }
+    @keyframes shakeSlow {
+      0%, 100% { transform: rotate(0deg); }
+      20%, 60% { transform: rotate(-2deg); }
+      40%, 80% { transform: rotate(2deg); }
+    }
+
+    /* Progress bar */
+    .progress-bar-fill {
+      transition: width 0.4s ease-in-out;
+    }
+  </style>
+</head>
+<body class="min-h-screen py-6 px-4 md:px-8 flex flex-col items-center">
+
+  <div class="w-full max-w-4xl flex flex-col gap-6">
+
+    <!-- Header Navigation -->
+    <div class="flex items-center justify-between w-full">
+      <button onclick="handleBack();" class="btn-3d px-4 py-2 bg-white text-sm font-title rounded-xl flex items-center gap-2">
+        <span>←</span> Retour
+      </button>
+      <div></div>
+    </div>
+
+    <!-- MAIN INTERACTIVE CARD -->
+    <div class="card-3d p-6 md:p-8 relative overflow-hidden bg-white">
+      
+      <!-- SCREEN 1: LESSON AND SIMULATION -->
+      <div id="screen-lesson" class="fade-in flex flex-col gap-6">
+        
+        <!-- Title Section -->
+        <div class="text-center pb-4 border-b-4 border-dashed border-neutral-200">
+          <h1 class="font-title text-3xl md:text-4xl font-bold text-[#1b4332] flex justify-center items-center gap-3">
+            🕸️ Réseaux trophiques & Équilibres
+          </h1>
+          <p class="text-neutral-600 text-sm md:text-base mt-2 font-medium">
+            Découvre comment circule l'énergie dans la nature et simule l'impact d'une perturbation sur l'écosystème !
+          </p>
+        </div>
+
+        <!-- Simulation Section -->
+        <div class="flex flex-col gap-4">
+          <div class="flex justify-between items-center">
+            <h2 class="font-title text-xl font-bold text-neutral-800">🔍 Le Simulateur d'Écosystème</h2>
+            <span class="text-xs font-bold bg-[#d8f3dc] text-[#1b4332] px-2.5 py-1 rounded-md border-2 border-[#1b4332]">
+              Interactif
+            </span>
+          </div>
+
+          <p class="text-sm text-neutral-600">
+            <strong>Consigne :</strong> Choisis un état ci-dessous pour voir l'impact en temps réel sur la chaîne alimentaire. Observe le flux d'énergie (les flèches) et la santé de chaque être vivant.
+          </p>
+
+          <!-- Ecosystem Diagram Container -->
+          <div class="bg-[#fafafa] border-3 border-neutral-200 rounded-2xl p-4 md:p-6 my-2">
+            
+            <!-- Food Chain Row -->
+            <div class="flex flex-col md:flex-row items-center justify-between gap-2 md:gap-0">
+              
+              <!-- Element: Soleil -->
+              <div id="card-soleil" class="card-3d p-3 flex flex-col items-center w-36 text-center bg-amber-50">
+                <span class="text-3xl md:text-4xl mb-1">☀️</span>
+                <span class="font-title text-sm font-bold text-amber-800">Soleil</span>
+                <span class="text-[10px] uppercase font-bold text-amber-600 mt-1 bg-amber-100 px-1.5 py-0.5 rounded">Source d'Énergie</span>
+                <span id="status-soleil" class="text-[11px] font-bold text-neutral-500 mt-1.5">Brille toujours</span>
+              </div>
+
+              <!-- Arrow 1 -->
+              <div id="arrow-1" class="flex items-center justify-center py-1 md:py-0 md:px-1 transition-all duration-300">
+                <span class="text-2xl text-amber-500 font-black md:rotate-0 rotate-90">➔</span>
+              </div>
+
+              <!-- Element: Herbe -->
+              <div id="card-herbe" class="card-3d p-3 flex flex-col items-center w-36 text-center bg-green-50">
+                <span class="text-3xl md:text-4xl mb-1">🌱</span>
+                <span class="font-title text-sm font-bold text-green-800">Herbe</span>
+                <span class="text-[10px] uppercase font-bold text-green-700 mt-1 bg-green-100 px-1.5 py-0.5 rounded">Producteur</span>
+                <span id="status-herbe" class="text-[11px] font-bold text-green-600 mt-1.5">Pousse bien</span>
+              </div>
+
+              <!-- Arrow 2 -->
+              <div id="arrow-2" class="flex items-center justify-center py-1 md:py-0 md:px-1 transition-all duration-300">
+                <span class="text-2xl text-[#1a1a2e] font-black md:rotate-0 rotate-90">➔</span>
+              </div>
+
+              <!-- Element: Sauterelle -->
+              <div id="card-sauterelle" class="card-3d p-3 flex flex-col items-center w-36 text-center bg-emerald-50">
+                <span class="text-3xl md:text-4xl mb-1">🦗</span>
+                <span class="font-title text-sm font-bold text-emerald-800">Sauterelle</span>
+                <span class="text-[10px] uppercase font-bold text-emerald-700 mt-1 bg-emerald-100 px-1.5 py-0.5 rounded">Consom. 1</span>
+                <span id="status-sauterelle" class="text-[11px] font-bold text-emerald-600 mt-1.5">Mange l'herbe</span>
+              </div>
+
+              <!-- Arrow 3 -->
+              <div id="arrow-3" class="flex items-center justify-center py-1 md:py-0 md:px-1 transition-all duration-300">
+                <span class="text-2xl text-[#1a1a2e] font-black md:rotate-0 rotate-90">➔</span>
+              </div>
+
+              <!-- Element: Grenouille -->
+              <div id="card-grenouille" class="card-3d p-3 flex flex-col items-center w-36 text-center bg-teal-50">
+                <span class="text-3xl md:text-4xl mb-1">🐸</span>
+                <span class="font-title text-sm font-bold text-teal-800">Grenouille</span>
+                <span class="text-[10px] uppercase font-bold text-teal-700 mt-1 bg-teal-100 px-1.5 py-0.5 rounded">Consom. 2</span>
+                <span id="status-grenouille" class="text-[11px] font-bold text-teal-600 mt-1.5">Mange l'insecte</span>
+              </div>
+
+              <!-- Arrow 4 -->
+              <div id="arrow-4" class="flex items-center justify-center py-1 md:py-0 md:px-1 transition-all duration-300">
+                <span class="text-2xl text-[#1a1a2e] font-black md:rotate-0 rotate-90">➔</span>
+              </div>
+
+              <!-- Element: Héron -->
+              <div id="card-heron" class="card-3d p-3 flex flex-col items-center w-36 text-center bg-blue-50">
+                <span class="text-3xl md:text-4xl mb-1">🐦</span>
+                <span class="font-title text-sm font-bold text-blue-800">Héron</span>
+                <span class="text-[10px] uppercase font-bold text-blue-700 mt-1 bg-blue-100 px-1.5 py-0.5 rounded">Consom. 3</span>
+                <span id="status-heron" class="text-[11px] font-bold text-blue-600 mt-1.5">Super prédateur</span>
+              </div>
+
+            </div>
+
+            <!-- Decomposers Section -->
+            <div class="mt-6 pt-6 border-t-2 border-dashed border-neutral-300 flex flex-col items-center">
+              
+              <!-- SVG loop connecting decomposers -->
+              <div class="flex flex-col md:flex-row items-center gap-3">
+                <div class="text-neutral-500 font-bold text-xs uppercase tracking-wide">Recyclage des déchets :</div>
+                
+                <div id="card-decomm" class="card-3d p-3 flex items-center gap-3 w-72 bg-amber-50/50">
+                  <span class="text-3xl">🍄</span>
+                  <div class="flex flex-col text-left">
+                    <span class="font-title text-sm font-bold text-[#582f0e]">Décomposeurs (Vers, Champignons)</span>
+                    <span id="status-decomm" class="text-[11px] font-bold text-amber-700">Restituent les sels minéraux au sol 🌱</span>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+          <!-- Controls for Simulation -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mt-2">
+            
+            <button id="sim-btn-normal" onclick="setSimulationState('normal')" class="btn-3d py-3 bg-[#d8f3dc] hover:bg-[#b7e4c7] text-[#1b4332] text-sm md:text-base">
+              🟢 Écosystème équilibré
+            </button>
+            
+            <button id="sim-btn-pesticide" onclick="setSimulationState('pesticide')" class="btn-3d py-3 bg-white hover:bg-neutral-50 text-neutral-800 text-sm md:text-base">
+              🚫 Pesticide (plus d'herbe)
+            </button>
+            
+            <button id="sim-btn-maladie" onclick="setSimulationState('maladie')" class="btn-3d py-3 bg-white hover:bg-neutral-50 text-neutral-800 text-sm md:text-base">
+              🚫 Maladie (plus de grenouilles)
+            </button>
+
+          </div>
+
+          <!-- Explanatory note context -->
+          <div id="sim-explanation-box" class="bg-blue-50 border-2 border-blue-200 text-blue-900 rounded-xl p-4 text-sm mt-2">
+            <span class="font-bold font-title">💡 Ce qu'il faut retenir :</span>
+            <p class="mt-1 leading-relaxed">
+              Dans un écosystème, tous les êtres vivants sont liés. Les plantes (producteurs primaires) captent l'énergie du soleil. Les animaux (consommateurs) se nourrissent d'autres vivants. Si un maillon de la chaîne est abîmé, c'est tout le réseau trophique qui est déséquilibré !
+            </p>
+          </div>
+
+        </div>
+
+        <!-- Start Quiz Button -->
+        <div class="mt-6 flex justify-center">
+          <button onclick="startQuiz();" class="btn-3d py-4 px-8 bg-[#e65f2b] text-white hover:bg-[#d44d1a] font-title text-lg md:text-xl w-full md:w-auto">
+            🚀 Commencer le Défi Quiz
+          </button>
+        </div>
+
+      </div>
+
+      <!-- SCREEN 2: QUIZ INTERACTIVE PLAY -->
+      <div id="screen-game" class="fade-in hidden flex flex-col gap-6">
+        
+        <!-- Score and progress bar -->
+        <div class="flex items-center justify-between pb-3 border-b-2 border-neutral-100">
+          <div class="flex flex-col gap-1 w-2/3">
+            <span class="text-xs uppercase tracking-wider font-bold text-neutral-500 font-title">
+              Défi en cours — Question <span id="current-question-idx">1</span> sur 5
+            </span>
+            <div class="w-full bg-neutral-200 h-3 rounded-full overflow-hidden border-2 border-[#1a1a2e]">
+              <div id="progress-bar" class="progress-bar-fill bg-emerald-500 h-full w-0"></div>
+            </div>
+          </div>
+          <div class="text-right">
+            <span class="text-xs font-bold text-neutral-500 block">Score</span>
+            <span class="text-2xl font-black font-title text-emerald-600" id="current-score">0</span>
+          </div>
+        </div>
+
+        <!-- Question Prompt Area -->
+        <div class="bg-neutral-50 border-3 border-neutral-200 rounded-2xl p-5 md:p-6 text-center">
+          <span id="question-category" class="text-xs uppercase tracking-wide font-black bg-amber-100 text-amber-800 border-2 border-amber-300 px-3 py-1 rounded-full inline-block mb-3 font-title">
+            Question
+          </span>
+          <h3 id="question-title" class="font-title text-lg md:text-xl font-bold text-neutral-800 leading-relaxed">
+            [Loading question...]
+          </h3>
+        </div>
+
+        <!-- Options Container -->
+        <div id="options-container" class="flex flex-col gap-3">
+          <!-- Dynamically populated options cards -->
+        </div>
+
+        <!-- Action Button (Validate / Continue) -->
+        <div class="mt-4 flex justify-end">
+          <button id="btn-validate" onclick="checkAnswer();" disabled class="btn-3d py-3 px-8 bg-[#40916c] text-white hover:bg-[#2d6a4f] font-title text-base md:text-lg flex items-center gap-2">
+            Valider la réponse ➔
+          </button>
+        </div>
+
+      </div>
+
+      <!-- SCREEN 3: CONGRATS / SCORE SCREEN -->
+      <div id="screen-congrats" class="fade-in hidden flex flex-col gap-6 items-center text-center py-6">
+        
+        <!-- Stars Award -->
+        <div class="text-6xl md:text-7xl select-none" id="final-stars">
+          ⭐⭐⭐
+        </div>
+
+        <div class="flex flex-col gap-2">
+          <h2 id="congrats-title" class="font-title text-3xl font-black text-[#1b4332]">
+            👑 Excellent ! Un sans-faute !
+          </h2>
+          <p id="congrats-message" class="text-neutral-600 text-sm md:text-base max-w-lg leading-relaxed">
+            Incroyable ! Tu as compris tous les rouages des réseaux trophiques et des équilibres écologiques.
+          </p>
+        </div>
+
+        <!-- Score Box -->
+        <div class="card-3d p-6 bg-emerald-50 border-emerald-600 shadow-emerald-800/20 w-full max-w-sm my-4">
+          <span class="text-xs uppercase tracking-wider font-bold text-emerald-800 font-title block">Score Final</span>
+          <span class="text-5xl font-black font-title text-emerald-600 block mt-1" id="final-score">
+            5 / 5
+          </span>
+          <div id="score-percentage-badge" class="mt-2 inline-block bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full border-2 border-emerald-500 font-title">
+            100% Correct
+          </div>
+        </div>
+
+        <!-- Navigation Actions -->
+        <div class="flex flex-col sm:flex-row gap-4 w-full justify-center">
+          
+          <button onclick="restartGame();" class="btn-3d py-3 px-6 bg-white hover:bg-neutral-50 text-neutral-800 font-title text-base flex items-center justify-center gap-2">
+            🔄 Recommencer le quiz
+          </button>
+          
+          <button onclick="showLessonScreen();" class="btn-3d py-3 px-6 bg-[#d8f3dc] hover:bg-[#b7e4c7] text-[#1b4332] font-title text-base flex items-center justify-center gap-2">
+            📖 Revoir le simulateur
+          </button>
+          
+          <button onclick="handleBack();" class="btn-3d py-3 px-6 bg-[#e65f2b] hover:bg-[#d44d1a] text-white font-title text-base flex items-center justify-center gap-2">
+            ➔ Retour au menu
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- FEEDBACK OVERLAY MODAL -->
+    <div id="feedback-modal" style="display: none;" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-neutral-900/60 backdrop-blur-sm">
+      <div class="card-3d bg-white max-w-lg w-full p-6 md:p-8 flex flex-col gap-4 fade-in">
+        
+        <!-- Status Icon and Title -->
+        <div class="flex items-center gap-4">
+          <span id="feedback-icon" class="text-4xl">🎉</span>
+          <div class="flex flex-col">
+            <h4 id="feedback-title" class="font-title text-xl md:text-2xl font-black">
+              Excellent !
+            </h4>
+            <span class="text-xs font-bold text-neutral-500 uppercase tracking-wider font-title">Explication</span>
+          </div>
+        </div>
+
+        <!-- User Answer VS Correct Answer indicator -->
+        <div id="comparison-container" class="hidden grid grid-cols-2 gap-3 bg-neutral-50 p-3 border-2 border-neutral-200 rounded-xl text-xs font-bold">
+          <div class="text-rose-700">
+            <span>Ta réponse :</span>
+            <div id="comparison-user-ans" class="text-sm font-black truncate">A. Mauvaise réponse</div>
+          </div>
+          <div class="text-emerald-700">
+            <span>Bonne réponse :</span>
+            <div id="comparison-correct-ans" class="text-sm font-black truncate">B. Bonne réponse</div>
+          </div>
+        </div>
+
+        <!-- Explanation content -->
+        <p id="feedback-explanation" class="text-neutral-700 text-sm md:text-base leading-relaxed">
+          La grenouille se nourrit de sauterelles. Si elle disparaît, les sauterelles ne sont plus chassées et prolifèrent !
+        </p>
+
+        <!-- Next button -->
+        <div class="mt-4 flex justify-end">
+          <button id="btn-next" onclick="closeFeedback();" class="btn-3d py-2.5 px-6 bg-[#1a1a2e] text-white hover:bg-neutral-800 font-title text-sm md:text-base flex items-center gap-2">
+            Continuer ➔
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // Audio Context Setup
+    let audioCtx = null;
+    function playTone(freq, duration, type = 'sine', volume = 0.08) {
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(volume, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.005, audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch (e) {
+        console.warn('Audio Context error', e);
+      }
+    }
+
+    function playSuccessSound() {
+      playTone(523.25, 0.08, 'square'); // C5
+      setTimeout(() => playTone(659.25, 0.10, 'square'), 70); // E5
+      setTimeout(() => playTone(783.99, 0.16, 'square'), 140); // G5
+    }
+
+    function playErrorSound() {
+      playTone(220, 0.14, 'sawtooth', 0.1); // A3
+      setTimeout(() => playTone(147, 0.22, 'sawtooth', 0.1), 100); // D3
+    }
+
+    function playClickSound() {
+      playTone(587.33, 0.04, 'triangle', 0.1); // D5
+    }
+
+    function playPerturbSound() {
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(350, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(70, audioCtx.currentTime + 0.35);
+        gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.35);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.35);
+      } catch (e) {
+        console.warn('Audio Context error', e);
+      }
+    }
+
+    // Interactive simulator logic
+    const simulatorStates = {
+      normal: {
+        soleil: { bg: 'bg-amber-50', border: 'border-[#1a1a2e]', shake: false, status: 'Brille toujours', pulse: null },
+        herbe: { bg: 'bg-green-50', border: 'border-[#1a1a2e]', shake: false, status: 'Pousse bien', pulse: null },
+        sauterelle: { bg: 'bg-emerald-50', border: 'border-[#1a1a2e]', shake: false, status: "Mange l'herbe", pulse: null },
+        grenouille: { bg: 'bg-teal-50', border: 'border-[#1a1a2e]', shake: false, status: "Mange l'insecte", pulse: null },
+        heron: { bg: 'bg-blue-50', border: 'border-[#1a1a2e]', shake: false, status: 'Super prédateur', pulse: null },
+        decomm: { status: 'Recyclent les déchets 🌱' },
+        arrows: {
+          'arrow-1': { text: '➔', color: 'text-amber-500', size: 'text-2xl', label: '' },
+          'arrow-2': { text: '➔', color: 'text-[#1a1a2e]', size: 'text-2xl', label: '' },
+          'arrow-3': { text: '➔', color: 'text-[#1a1a2e]', size: 'text-2xl', label: '' },
+          'arrow-4': { text: '➔', color: 'text-[#1a1a2e]', size: 'text-2xl', label: '' }
+        }
+      },
+      pesticide: {
+        soleil: { bg: 'bg-amber-50', border: 'border-[#1a1a2e]', shake: false, status: 'Brille toujours', pulse: null },
+        herbe: { bg: 'bg-neutral-100 opacity-50', border: 'border-red-500', shake: true, status: '❌ Détruite', pulse: 'pulse-danger' },
+        sauterelle: { bg: 'bg-neutral-100 opacity-50', border: 'border-red-500', shake: true, status: '💀 Famine (pas d\'herbe)', pulse: 'pulse-danger' },
+        grenouille: { bg: 'bg-neutral-100 opacity-50', border: 'border-red-500', shake: true, status: '💀 Famine (sans sauterelle)', pulse: 'pulse-danger' },
+        heron: { bg: 'bg-neutral-100 opacity-50', border: 'border-red-500', shake: true, status: '💀 Famine (sans grenouille)', pulse: 'pulse-danger' },
+        decomm: { status: '⚠️ Suractivité (matière morte)' },
+        arrows: {
+          'arrow-1': { text: '➔', color: 'text-amber-500', size: 'text-2xl', label: '' },
+          'arrow-2': { text: '❌', color: 'text-red-500', size: 'text-xl', label: '' },
+          'arrow-3': { text: '❌', color: 'text-red-500', size: 'text-xl', label: '' },
+          'arrow-4': { text: '❌', color: 'text-red-500', size: 'text-xl', label: '' }
+        }
+      },
+      maladie: {
+        soleil: { bg: 'bg-amber-50', border: 'border-[#1a1a2e]', shake: false, status: 'Brille toujours', pulse: null },
+        herbe: { bg: 'bg-green-50', border: 'border-amber-500', shake: false, status: '📉 Surconsommée !', pulse: 'pulse-danger' },
+        sauterelle: { bg: 'bg-emerald-100', border: 'border-green-500', shake: false, status: '📈 Prolifération (+200%)', pulse: 'pulse-success' },
+        grenouille: { bg: 'bg-neutral-100 opacity-50', border: 'border-red-500', shake: true, status: '❌ Disparue', pulse: 'pulse-danger' },
+        heron: { bg: 'bg-neutral-100 opacity-50', border: 'border-red-500', shake: true, status: '💀 Famine (plus de proies)', pulse: 'pulse-danger' },
+        decomm: { status: 'Recyclent les déchets 🌱' },
+        arrows: {
+          'arrow-1': { text: '➔', color: 'text-amber-500', size: 'text-2xl', label: '' },
+          'arrow-2': { text: '➔ ➔', color: 'text-green-600', size: 'text-2xl', label: '' },
+          'arrow-3': { text: '❌', color: 'text-red-500', size: 'text-xl', label: '' },
+          'arrow-4': { text: '❌', color: 'text-red-500', size: 'text-xl', label: '' }
+        }
+      }
+    };
+
+    function setSimulationState(state) {
+      if (state !== 'normal') {
+        playPerturbSound();
+      } else {
+        playClickSound();
+      }
+
+      // Reset button styles
+      ['normal', 'pesticide', 'maladie'].forEach(s => {
+        const btn = document.getElementById(`sim-btn-${s}`);
+        if (s === state) {
+          btn.className = `btn-3d py-3 text-sm md:text-base px-4 ${
+            s === 'normal' ? 'bg-[#d8f3dc] text-[#1b4332]' : 'bg-[#ffe6d9] text-[#e65f2b] border-[#e65f2b]'
+          }`;
+        } else {
+          btn.className = "btn-3d py-3 bg-white hover:bg-neutral-50 text-neutral-800 text-sm md:text-base px-4";
+        }
+      });
+
+      const config = simulatorStates[state];
+
+      // Update Cards
+      ['soleil', 'herbe', 'sauterelle', 'grenouille', 'heron'].forEach(id => {
+        const card = document.getElementById(`card-${id}`);
+        const statusSpan = document.getElementById(`status-${id}`);
+        const itemConfig = config[id];
+
+        // Base Classes
+        let classList = `card-3d p-3 flex flex-col items-center w-36 text-center ${itemConfig.bg} ${itemConfig.border}`;
+        if (itemConfig.shake) classList += ' shake-slow';
+        if (itemConfig.pulse) classList += ` ${itemConfig.pulse}`;
+        card.className = classList;
+
+        statusSpan.textContent = itemConfig.status;
+      });
+
+      // Update Decomposers Card
+      const decommCard = document.getElementById('card-decomm');
+      const decommStatus = document.getElementById('status-decomm');
+      decommStatus.textContent = config.decomm.status;
+      if (state === 'pesticide') {
+        decommCard.className = "card-3d p-3 flex items-center gap-3 w-72 bg-red-50 border-red-500 pulse-danger";
+      } else {
+        decommCard.className = "card-3d p-3 flex items-center gap-3 w-72 bg-amber-50/50 border-[#1a1a2e]";
+      }
+
+      // Update Arrows
+      Object.keys(config.arrows).forEach(arrowId => {
+        const arrow = document.getElementById(arrowId);
+        const arrowConfig = config.arrows[arrowId];
+        
+        // Arrow span update
+        const arrowSpan = arrow.querySelector('span');
+        arrowSpan.className = `${arrowConfig.color} ${arrowConfig.size} font-black transition-transform duration-300 `;
+        
+        // Handle mobile vertical layout rotation
+        if (arrowConfig.text === '❌') {
+          arrowSpan.className += ' rotate-0';
+          arrowSpan.textContent = '❌';
+        } else {
+          arrowSpan.className += ' md:rotate-0 rotate-90';
+          arrowSpan.textContent = arrowConfig.text;
+        }
+      });
+    }
+
+    // Database of QCM questions
+    const QUESTIONS_POOL = [
+      {
+        id: 1,
+        category: "Déséquilibre écologique",
+        title: "Si une maladie fait disparaître toutes les grenouilles, que va-t-il se passer à court terme pour les sauterelles ?",
+        options: [
+          "Leur nombre va augmenter car elles ont moins de prédateurs.",
+          "Leur nombre va diminuer car elles n'ont plus rien à manger.",
+          "Rien ne va changer, l'écosystème reste identique."
+        ],
+        correctIndex: 0,
+        explanation: "La grenouille est le <strong>prédateur direct</strong> de la sauterelle. Sans prédateurs pour limiter leur population, les sauterelles vont rapidement se multiplier à court terme."
+      },
+      {
+        id: 2,
+        category: "Rôle trophique",
+        title: "Dans ce réseau alimentaire (Soleil -> Herbe -> Sauterelle -> Grenouille -> Héron), qui est le producteur primaire ?",
+        options: [
+          "Le Soleil",
+          "La sauterelle",
+          "L'herbe",
+          "Le héron"
+        ],
+        correctIndex: 2,
+        explanation: "Les <strong>producteurs primaires</strong> sont les êtres vivants capables de fabriquer leur propre matière organique à partir d'éléments minéraux et de lumière. Ce sont toujours des plantes vertes (comme l'herbe)."
+      },
+      {
+        id: 3,
+        category: "Cycle de la matière",
+        title: "Quel est le rôle des décomposeurs (comme les champignons ou les vers de terre) dans un réseau trophique ?",
+        options: [
+          "Chasser les animaux malades pour nettoyer la forêt.",
+          "Transformer la matière organique morte en nutriments minéraux pour le sol.",
+          "Produire de l'énergie en captant directement les rayons du soleil."
+        ],
+        correctIndex: 1,
+        explanation: "Les <strong>décomposeurs</strong> dégradent les restes de plantes et d'animaux morts. Ils les transforment en minéraux utiles aux plantes, fermant ainsi la boucle du cycle de la matière."
+      },
+      {
+        id: 4,
+        category: "Chaîne alimentaire",
+        title: "Si un pesticide chimique détruit toute l'herbe de cet écosystème, quel impact cela aura-t-il sur les hérons ?",
+        options: [
+          "Aucun impact, car les hérons mangent des grenouilles et pas de l'herbe.",
+          "Les hérons vont se transformer en producteurs primaires pour survivre.",
+          "Ils finiront par manquer de nourriture car toute la chaîne dépend de l'herbe."
+        ],
+        correctIndex: 2,
+        explanation: "C'est l'effet cascade : sans herbe, les sauterelles disparaissent, donc les grenouilles n'ont plus à manger, et finalement les hérons meurent aussi. <strong>Toute la chaîne repose sur l'herbe</strong>."
+      },
+      {
+        id: 5,
+        category: "Vocabulaire scientifique",
+        title: "Comment appelle-t-on les animaux (comme la grenouille ou le héron) qui se nourrissent d'autres animaux ?",
+        options: [
+          "Les producteurs secondaires",
+          "Les herbivores ou consommateurs primaires",
+          "Les carnivores (ou zoophages), qui sont des consommateurs secondaires ou tertiaires"
+        ],
+        correctIndex: 2,
+        explanation: "Les animaux mangeant d'autres animaux sont des <strong>carnivores</strong>. On les qualifie aussi de consommateurs secondaires (mangeurs d'herbivores) ou tertiaires (mangeurs de carnivores)."
+      },
+      {
+        id: 6,
+        category: "Régimes alimentaires",
+        title: "Comment appelle-t-on les êtres vivants qui mangent uniquement des végétaux (comme la sauterelle) ?",
+        options: [
+          "Les carnivores",
+          "Les herbivores ou consommateurs primaires",
+          "Les décomposeurs"
+        ],
+        correctIndex: 1,
+        explanation: "Les animaux qui se nourrissent uniquement de producteurs primaires (plantes) sont des <strong>herbivores</strong>. Dans notre chaîne alimentaire, la sauterelle est un herbivore."
+      },
+      {
+        id: 7,
+        category: "Source d'énergie",
+        title: "D'où provient toute l'énergie qui entre au départ dans notre chaîne alimentaire ?",
+        options: [
+          "Du sol et des nutriments minéraux",
+          "Du Soleil grâce à la photosynthèse",
+          "De l'eau de pluie et de l'air"
+        ],
+        correctIndex: 1,
+        explanation: "La source d'énergie primaire de la quasi-totalité des écosystèmes terrestres est le <strong>Soleil</strong>. Les plantes captent sa lumière pour fabriquer de la matière organique."
+      },
+      {
+        id: 8,
+        category: "Relations prédateur-proie",
+        title: "Si la population de hérons augmente brusquement, quel impact cela aura-t-il à court terme sur les grenouilles ?",
+        options: [
+          "Leur nombre va diminuer car elles seront plus chassées.",
+          "Leur nombre va augmenter car elles auront plus de compagnie.",
+          "Cela n'aura aucun impact sur les grenouilles."
+        ],
+        correctIndex: 0,
+        explanation: "Le héron mange la grenouille. Si le nombre de prédateurs augmente brusquement, la pression de chasse s'accroît, ce qui fait temporairement <strong>diminuer</strong> la population de grenouilles."
+      },
+      {
+        id: 9,
+        category: "Définition scientifique",
+        title: "Qu'est-ce qu'un réseau trophique ?",
+        options: [
+          "Une chaîne alimentaire isolée avec un seul type d'animal.",
+          "L'ensemble des chaînes alimentaires interconnectées dans un écosystème.",
+          "Un outil pour filtrer l'eau des rivières d'un milieu naturel."
+        ],
+        correctIndex: 1,
+        explanation: "Un <strong>réseau trophique</strong> est l'interconnexion de plusieurs chaînes alimentaires au sein d'un même écosystème. Un même être vivant peut faire partie de plusieurs chaînes."
+      },
+      {
+        id: 10,
+        category: "Cycle de la matière",
+        title: "Pourquoi dit-on que la matière est recyclée dans l'écosystème ?",
+        options: [
+          "Parce que les animaux ramassent et trient leurs déchets.",
+          "Parce que les décomposeurs renvoient les nutriments de la matière morte dans le sol pour nourrir les plantes.",
+          "Parce que les animaux ne meurent jamais et se transforment."
+        ],
+        correctIndex: 1,
+        explanation: "La matière circule en <strong>boucle fermée</strong> : les décomposeurs transforment les restes morts en nutriments minéraux pour le sol, qui sont ensuite réabsorbés par les plantes pour grandir."
+      }
+    ];
+
+    let gameQuestions = [];
+    let currentQ = 0;
+    let score = 0;
+    let selectedOptionIndex = null;
+    let feedbackReady = false;
+
+    function initQuiz() {
+      // Shuffle QUESTIONS_POOL and select 5 questions
+      gameQuestions = [...QUESTIONS_POOL]
+        .sort(() => 0.5 - Math.random())
+        .slice(0, 5);
+      currentQ = 0;
+      score = 0;
+      document.getElementById('current-score').textContent = score;
+    }
+
+    // Start game workflow
+    function startQuiz() {
+      playClickSound();
+      document.getElementById('screen-lesson').classList.add('hidden');
+      document.getElementById('screen-game').classList.remove('hidden');
+      
+      initQuiz();
+      renderQuestion();
+    }
+
+    function renderQuestion() {
+      const q = gameQuestions[currentQ];
+      
+      // Reset variables
+      selectedOptionIndex = null;
+      document.getElementById('btn-validate').disabled = true;
+
+      // Update Header progress
+      document.getElementById('current-question-idx').textContent = currentQ + 1;
+      const progressPercent = ((currentQ) / 5) * 100;
+      document.getElementById('progress-bar').style.width = `${progressPercent}%`;
+
+      // Update question text
+      document.getElementById('question-category').textContent = q.category;
+      document.getElementById('question-title').innerHTML = q.title;
+
+      // Draw options cards
+      const container = document.getElementById('options-container');
+      container.innerHTML = '';
+      
+      const letters = ["A", "B", "C", "D"];
+      q.options.forEach((optText, idx) => {
+        const optionCard = document.createElement('div');
+        optionCard.id = `option-${idx}`;
+        optionCard.className = "option-card p-4 bg-white hover:bg-neutral-50 flex items-center gap-4";
+        optionCard.onclick = () => selectOption(idx);
+        
+        optionCard.innerHTML = `
+          <div class="flex-shrink-0 w-8 h-8 rounded-full border-2 border-[#1a1a2e] flex items-center justify-center font-title font-bold text-sm bg-neutral-100 select-none">
+            ${letters[idx]}
+          </div>
+          <div class="text-sm md:text-base font-semibold text-neutral-800">
+            ${optText}
+          </div>
+        `;
+        container.appendChild(optionCard);
+      });
+
+      // Key Listener for choice selection (1, 2, 3, 4) or Enter
+      document.onkeydown = function(e) {
+        if (e.key >= '1' && e.key <= q.options.length.toString()) {
+          selectOption(parseInt(e.key) - 1);
+        } else if (e.key === 'Enter') {
+          if (selectedOptionIndex !== null) {
+            checkAnswer();
+          }
+        }
+      };
+    }
+
+    function selectOption(index) {
+      playClickSound();
+      selectedOptionIndex = index;
+      
+      // Update visual style
+      const q = gameQuestions[currentQ];
+      for (let i = 0; i < q.options.length; i++) {
+        const el = document.getElementById(`option-${i}`);
+        if (i === index) {
+          el.className = "option-card p-4 flex items-center gap-4 bg-[#ffe6d9] border-[#e65f2b] shadow-[#e65f2b]/40 scale-[1.01] translate-x-1";
+          const badge = el.querySelector('div');
+          badge.className = "flex-shrink-0 w-8 h-8 rounded-full border-2 border-[#e65f2b] flex items-center justify-center font-title font-bold text-sm bg-[#e65f2b] text-white";
+        } else {
+          el.className = "option-card p-4 bg-white hover:bg-neutral-50 flex items-center gap-4 border-[#1a1a2e]";
+          const badge = el.querySelector('div');
+          badge.className = "flex-shrink-0 w-8 h-8 rounded-full border-2 border-[#1a1a2e] flex items-center justify-center font-title font-bold text-sm bg-neutral-100";
+        }
+      }
+
+      document.getElementById('btn-validate').disabled = false;
+    }
+
+    function checkAnswer() {
+      const q = gameQuestions[currentQ];
+      const isCorrect = (selectedOptionIndex === q.correctIndex);
+
+      const comparisonContainer = document.getElementById('comparison-container');
+      const compUserAns = document.getElementById('comparison-user-ans');
+      const compCorrectAns = document.getElementById('comparison-correct-ans');
+
+      if (isCorrect) {
+        score++;
+        playSuccessSound();
+        document.getElementById('feedback-title').textContent = "🎉 Excellent !";
+        document.getElementById('feedback-icon').textContent = "🎉";
+        document.getElementById('feedback-title').className = "font-title text-2xl font-black text-emerald-600";
+        comparisonContainer.classList.add('hidden');
+      } else {
+        playErrorSound();
+        document.getElementById('feedback-title').textContent = "❌ Oups !";
+        document.getElementById('feedback-icon').textContent = "❌";
+        document.getElementById('feedback-title').className = "font-title text-2xl font-black text-rose-600";
+        
+        compUserAns.textContent = q.options[selectedOptionIndex];
+        compCorrectAns.textContent = q.options[q.correctIndex];
+        comparisonContainer.classList.remove('hidden');
+      }
+
+      document.getElementById('feedback-explanation').innerHTML = q.explanation;
+      document.getElementById('current-score').textContent = score;
+
+      // Show Feedback Overlay
+      document.onkeydown = null;
+      feedbackReady = false;
+      const btnNext = document.getElementById('btn-next');
+      btnNext.disabled = true;
+      btnNext.style.opacity = '0.5';
+
+      document.getElementById('feedback-modal').style.display = 'flex';
+
+      // Small delay before enabling the continue action
+      setTimeout(() => {
+        btnNext.disabled = false;
+        btnNext.style.opacity = '1';
+        btnNext.focus();
+        feedbackReady = true;
+
+        document.onkeydown = function(e) {
+          if (e.key === 'Enter') {
+            closeFeedback();
+          }
+        };
+      }, 500);
+    }
+
+    function closeFeedback() {
+      if (!feedbackReady) return;
+      playClickSound();
+      document.getElementById('feedback-modal').style.display = 'none';
+      currentQ++;
+
+      if (currentQ < 5) {
+        renderQuestion();
+      } else {
+        endGame();
+      }
+    }
+
+    function endGame() {
+      document.getElementById('screen-game').classList.add('hidden');
+      document.getElementById('screen-congrats').classList.remove('hidden');
+
+      // Update progress bar to full
+      document.getElementById('progress-bar').style.width = `100%`;
+
+      document.getElementById('final-score').textContent = `${score} / 5`;
+
+      let stars = "";
+      let title = "💪 Continue de t'entraîner !";
+      let message = "Relis bien la leçon ou utilise le simulateur pour obtenir un score parfait de 3 étoiles !";
+      let badgeColor = "bg-rose-100 text-rose-800 border-rose-500";
+      let badgePct = `${Math.round((score / 5) * 100)}% de réussite`;
+
+      if (score === 5) {
+        stars = "⭐⭐⭐";
+        title = "👑 Parfait ! Un sans-faute !";
+        message = "Incroyable ! Tu as compris tous les secrets du réseau trophique de notre écosystème !";
+        badgeColor = "bg-emerald-100 text-emerald-800 border-emerald-500";
+        triggerConfettis();
+      } else if (score >= 4) {
+        stars = "⭐⭐";
+        title = "☀️ Très bon travail !";
+        message = "C'est presque un sans-faute ! Tu as une très bonne compréhension de la chaîne alimentaire.";
+        badgeColor = "bg-green-100 text-green-800 border-green-500";
+        triggerConfettis();
+      } else if (score >= 3) {
+        stars = "⭐";
+        title = "👍 Pas mal !";
+        message = "Tu as compris l'essentiel, mais tu devrais refaire un essai pour augmenter ton score !";
+        badgeColor = "bg-amber-100 text-amber-800 border-amber-500";
+      }
+
+      document.getElementById('final-stars').textContent = stars;
+      document.getElementById('congrats-title').textContent = title;
+      document.getElementById('congrats-message').textContent = message;
+      
+      const scoreBadge = document.getElementById('score-percentage-badge');
+      scoreBadge.className = `mt-2 inline-block text-xs font-bold px-3 py-1 rounded-full border-2 font-title ${badgeColor}`;
+      scoreBadge.textContent = badgePct;
+
+      // Parent SaveResult API Integration
+      if (window.parent && window.parent.saveResult) {
+        window.parent.saveResult({
+          activity: 'sci_reseaux_trophiques',
+          bookTitle: "Réseaux trophiques et chaînes alimentaires",
+          score: score,
+          total: 5,
+          pct: Math.round((score / 5) * 100),
+          date: new Date().toLocaleDateString('fr-BE'),
+          time: new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })
+        });
+      }
+    }
+
+    function restartGame() {
+      playClickSound();
+      document.getElementById('screen-congrats').classList.add('hidden');
+      document.getElementById('screen-game').classList.remove('hidden');
+      
+      initQuiz();
+      renderQuestion();
+    }
+
+    function showLessonScreen() {
+      playClickSound();
+      document.getElementById('screen-congrats').classList.add('hidden');
+      document.getElementById('screen-lesson').classList.remove('hidden');
+    }
+
+    // Toggle back to menu
+    function handleBack() {
+      playClickSound();
+      if (window.parent) {
+        const activeScreen = window.parent.document.querySelector('.screen.active');
+        const activeId = activeScreen ? activeScreen.id : '';
+        
+        if (activeId === 'screen-reseaux-trophiques') {
+          if (typeof window.parent.showScreen === 'function') {
+            window.parent.showScreen('screen-eveil-sciences');
+          }
+        } else if (typeof window.parent.closeFicheViewer === 'function') {
+          window.parent.closeFicheViewer();
+        } else {
+          window.history.back();
+        }
+      } else {
+        window.history.back();
+      }
+    }
+
+    // Confetti celebration function using canvas-confetti library
+    function triggerConfettis() {
+      try {
+        if (typeof confetti === 'function') {
+          // Fire multiple confetti bursts for awesome premium feeling
+          const duration = 2.5 * 1000;
+          const end = Date.now() + duration;
+
+          (function frame() {
+            confetti({
+              particleCount: 3,
+              angle: 60,
+              spread: 55,
+              origin: { x: 0 },
+              colors: ['#40916c', '#7f5539', '#e65f2b', '#d8f3dc', '#ffe6d9']
+            });
+            confetti({
+              particleCount: 3,
+              angle: 120,
+              spread: 55,
+              origin: { x: 1 },
+              colors: ['#40916c', '#7f5539', '#e65f2b', '#d8f3dc', '#ffe6d9']
+            });
+
+            if (Date.now() < end) {
+              requestAnimationFrame(frame);
+            }
+          }());
+        }
+      } catch (e) {
+        console.warn("Confetti error", e);
+      }
+    }
+
+    // Initialize state on load
+    window.onload = function() {
+      setSimulationState('normal');
+    };
+  </script>
+</body>
+</html>
