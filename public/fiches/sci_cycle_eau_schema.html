@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Le Cycle de l'Eau — Schéma Interactif</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- TailwindCSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      corePlugins: {
+        preflight: false,
+      },
+      theme: {
+        extend: {
+          borderWidth: {
+            '3': '3px',
+          },
+          fontFamily: {
+            sans: ['Nunito', 'sans-serif'],
+            display: ['Fredoka', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    :root {
+      /* Palette Flat 3D - Cycle de l'eau */
+      --encre: #0f172a;        /* Bleu ardoise foncé pour les contours/textes */
+      --ardoise: #475569;      /* Gris secondaire */
+      --papier: #f0f9ff;       /* Fond de page bleu ciel très doux (sky-50) */
+      --papier-2: #ffffff;     /* Blanc pour les cartes */
+      --ligne: #e2e8f0;        /* Bordures secondaires */
+      
+      /* Couleurs thématiques */
+      --eau: #0284c7;          /* Bleu eau */
+      --eau-fonce: #0369a1;
+      --eau-clair: #e0f2fe;
+      
+      --vert: #22c55e;         /* Vert nature / réussite */
+      --vert-fonce: #166534;
+      --vert-clair: #f0fdf4;
+      
+      --soleil: #eab308;       /* Jaune soleil */
+      --soleil-clair: #fef9c3;
+      
+      --rouge: #ef4444;        /* Rouge erreur / validation */
+      --rouge-clair: #fef2f2;
+      
+      --ombre: 4px 4px 0px var(--encre);
+      --radius: 16px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Nunito', system-ui, sans-serif;
+      color: var(--encre);
+      background-color: var(--papier);
+      background-image: radial-gradient(circle at 1px 1px, rgba(15, 23, 42, 0.03) 1px, transparent 0);
+      background-size: 24px 24px;
+      line-height: 1.5;
+    }
+
+    h1, h2, h3, h4 {
+      font-family: 'Fredoka', sans-serif;
+      margin: 0;
+      line-height: 1.2;
+    }
+
+    /* Cartes Flat 3D */
+    .card-premium {
+      background: var(--papier-2);
+      border: 3px solid var(--encre);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--ombre);
+    }
+
+    /* Boutons 3D */
+    .btn-3d {
+      font-family: 'Fredoka', sans-serif;
+      font-weight: 700;
+      font-size: 1.05rem;
+      padding: 10px 20px;
+      background: var(--eau);
+      color: #ffffff;
+      border: 3px solid var(--encre);
+      border-radius: 12px;
+      box-shadow: 3px 3px 0px var(--encre);
+      transition: all 0.1s ease;
+      cursor: pointer;
+      user-select: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .btn-3d:active:not(:disabled) {
+      transform: translate(2px, 2px);
+      box-shadow: 1px 1px 0px var(--encre);
+    }
+    .btn-3d:disabled {
+      background: #cbd5e1 !important;
+      color: #94a3b8 !important;
+      border-color: #94a3b8 !important;
+      box-shadow: none !important;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+
+    /* Badges */
+    .tag-custom {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'Fredoka', sans-serif;
+      font-weight: 700;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border: 2px solid var(--encre);
+      border-radius: 999px;
+      background: var(--soleil-clair);
+      color: var(--encre);
+    }
+
+    /* Conteneur de Schéma interactif */
+    .schema-container {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      border: 3px solid var(--encre);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: 6px 6px 0px var(--encre);
+      background: #ffffff;
+      user-select: none;
+    }
+
+    /* Zones de dépôt (Drop zones) */
+    .drop-zone {
+      position: absolute;
+      width: 165px;
+      height: 44px;
+      transform: translate(-50%, -50%);
+      background: rgba(255, 255, 255, 0.95);
+      border: 3px dashed var(--encre);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      z-index: 20;
+    }
+
+    .drop-zone:hover:not(.correct):not(.incorrect) {
+      background: var(--eau-clair);
+      border-color: var(--eau);
+      transform: translate(-50%, -50%) scale(1.05);
+    }
+
+    .drop-zone.active-target:not(.correct):not(.incorrect) {
+      background: var(--soleil-clair);
+      border-color: var(--soleil);
+      border-style: solid;
+    }
+
+    /* Badge numéro sur zone */
+    .zone-number-badge {
+      position: absolute;
+      top: -12px;
+      left: -12px;
+      width: 24px;
+      height: 24px;
+      background: var(--soleil);
+      color: var(--encre);
+      border: 2px solid var(--encre);
+      border-radius: 50%;
+      font-family: 'Fredoka', sans-serif;
+      font-weight: 700;
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 1px 1px 0px var(--encre);
+      z-index: 25;
+    }
+
+    .drop-zone.filled {
+      background: #ffffff;
+      border-style: solid;
+      box-shadow: 2px 2px 0px var(--encre);
+    }
+
+    .drop-zone.filled:hover:not(.correct):not(.incorrect) {
+      background: var(--rouge-clair);
+      border-color: var(--rouge);
+    }
+
+    .drop-zone.filled:hover:not(.correct):not(.incorrect) .zone-text {
+      color: var(--rouge);
+      text-decoration: line-through;
+    }
+
+    .zone-text {
+      font-family: 'Nunito', sans-serif;
+      font-weight: 700;
+      font-size: 0.85rem;
+      text-align: center;
+      padding: 0 4px;
+      color: var(--encre);
+      pointer-events: none;
+    }
+
+    /* États de correction */
+    .drop-zone.correct {
+      background: var(--vert-clair) !important;
+      border-color: var(--vert) !important;
+      border-style: solid !important;
+      color: var(--vert-fonce) !important;
+      box-shadow: 2px 2px 0px var(--vert-fonce) !important;
+      cursor: default !important;
+    }
+    .drop-zone.correct .zone-number-badge {
+      background: var(--vert) !important;
+      color: #ffffff !important;
+      border-color: var(--vert-fonce) !important;
+    }
+    .drop-zone.correct .zone-text {
+      color: var(--vert-fonce) !important;
+    }
+
+    .drop-zone.incorrect {
+      background: var(--rouge-clair) !important;
+      border-color: var(--rouge) !important;
+      border-style: solid !important;
+      color: var(--rouge) !important;
+      box-shadow: 2px 2px 0px var(--rouge) !important;
+      cursor: default !important;
+    }
+    .drop-zone.incorrect .zone-number-badge {
+      background: var(--rouge) !important;
+      color: #ffffff !important;
+      border-color: var(--encre) !important;
+    }
+    .drop-zone.incorrect .zone-text {
+      color: var(--rouge) !important;
+    }
+
+    /* Étiquettes de la réserve */
+    .drag-tag {
+      background: #ffffff;
+      border: 3px solid var(--encre);
+      border-radius: 12px;
+      padding: 8px 14px;
+      font-family: 'Fredoka', sans-serif;
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--encre);
+      cursor: grab;
+      user-select: none;
+      box-shadow: 3px 3px 0px var(--encre);
+      transition: all 0.15s ease;
+      touch-action: none;
+    }
+
+    .drag-tag:hover:not(.dragging) {
+      background: var(--eau-clair);
+      transform: translateY(-2px);
+      box-shadow: 5px 5px 0px var(--encre);
+    }
+
+    .drag-tag:active:not(.dragging) {
+      cursor: grabbing;
+      transform: translateY(1px);
+      box-shadow: 2px 2px 0px var(--encre);
+    }
+
+    .drag-tag.dragging {
+      opacity: 0.4;
+      transform: scale(0.95);
+      box-shadow: none;
+    }
+
+    .drag-tag.selected {
+      background: var(--soleil-clair);
+      border-color: var(--soleil);
+      box-shadow: 3px 3px 0px var(--soleil);
+      transform: translateY(-2px);
+    }
+
+    /* Confettis overlay */
+    #confetti-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 100;
+    }
+
+    /* Affichage du score */
+    .score-banner {
+      animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    @keyframes popIn {
+      0% { opacity: 0; transform: scale(0.8); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+  </style>
+</head>
+<body class="p-4 md:p-8">
+
+  <!-- Confetti Canvas overlay -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <div class="max-w-[1250px] mx-auto flex flex-col gap-6">
+    
+    <!-- EN-TÊTE DE LA FICHE -->
+    <header class="bg-gradient-to-r from-sky-800 to-sky-600 border-b-4 border-sky-400 rounded-2xl relative overflow-hidden py-6 px-6 text-white shadow-[4px_4px_0px_#0f172a]">
+      <div class="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(2,132,199,0.2),transparent_50%)] pointer-events-none"></div>
+      <div class="relative z-10">
+        <div class="flex items-center gap-2 mb-2">
+          <span class="tag-custom">Sciences Naturelles • P5-P6</span>
+        </div>
+        <h1 class="text-2xl md:text-3xl font-display font-black">Le Cycle Naturel de l'Eau</h1>
+        <p class="mt-1.5 text-sky-100 font-sans text-xs sm:text-sm md:text-base max-w-3xl leading-relaxed">
+          Sous l'action du soleil et de la gravité, l'eau circule perpétuellement sur Terre. Remets chaque terme scientifique à sa place pour compléter le schéma.
+        </p>
+      </div>
+    </header>
+
+    <!-- INSTRUCTIONS RAPIDES -->
+    <div class="bg-emerald-50 border-3 border-slate-900 rounded-xl p-4 flex items-start gap-3 shadow-[3px_3px_0px_#0f172a]">
+      <div class="bg-emerald-500 text-white rounded-full w-6 h-6 flex items-center justify-center font-bold text-sm shrink-0 border-2 border-slate-900 shadow-[1px_1px_0px_#0f172a]">i</div>
+      <div class="text-xs sm:text-sm text-emerald-950 font-medium leading-relaxed">
+        <strong>Comment jouer ?</strong> 
+        Glisse une étiquette sur sa zone de dépôt (en pointillés) ou clique sur l'étiquette puis sur la zone cible. Clique sur un terme déjà placé pour le retirer. Les définitions s'affichent pour t'aider.
+      </div>
+    </div>
+
+    <!-- ZONE DE JEU PRINCIPALE -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      
+      <!-- COLONNE SCHÉMA (IMAGE DÉCORATIVE + ZONES ABSOLUES) -->
+      <div class="lg:col-span-2 flex flex-col items-center justify-center">
+        <div class="schema-container" id="schema-wrapper">
+          <!-- Illustration officielle du cycle naturel de l'eau -->
+          <img src="../photos/cycle_naturel.png" alt="Illustration du cycle de l'eau" class="w-full h-full object-cover block">
+          
+          <!-- Zones de Dépôt Absolues -->
+          <!-- 1. Évaporation (au-dessus de la mer) -->
+          <div class="drop-zone" id="zone-evaporation" data-zone="zone-evaporation" style="left: 82%; top: 60%;">
+            <span class="zone-number-badge">1</span>
+            <span class="zone-text">Dépose ici...</span>
+          </div>
+
+          <!-- 2. Condensation (dans le nuage blanc de mer) -->
+          <div class="drop-zone" id="zone-condensation" data-zone="zone-condensation" style="left: 68%; top: 24%;">
+            <span class="zone-number-badge">2</span>
+            <span class="zone-text">Dépose ici...</span>
+          </div>
+
+          <!-- 3. Précipitations (pluie/neige du nuage de montagne) -->
+          <div class="drop-zone" id="zone-precipitations" data-zone="zone-precipitations" style="left: 28%; top: 26%;">
+            <span class="zone-number-badge">3</span>
+            <span class="zone-text">Dépose ici...</span>
+          </div>
+
+          <!-- 4. Ruissellement (eau coulant sur la montagne) -->
+          <div class="drop-zone" id="zone-ruissellement" data-zone="zone-ruissellement" style="left: 36%; top: 57%;">
+            <span class="zone-number-badge">4</span>
+            <span class="zone-text">Dépose ici...</span>
+          </div>
+
+          <!-- 5. Infiltration (eau entrant dans le sol) -->
+          <div class="drop-zone" id="zone-infiltration" data-zone="zone-infiltration" style="left: 27%; top: 75%;">
+            <span class="zone-number-badge">5</span>
+            <span class="zone-text">Dépose ici...</span>
+          </div>
+
+          <!-- 6. Nappe phréatique (dans la coupe géologique) -->
+          <div class="drop-zone" id="zone-nappe" data-zone="zone-nappe" style="left: 18%; top: 88%;">
+            <span class="zone-number-badge">6</span>
+            <span class="zone-text">Dépose ici...</span>
+          </div>
+
+          <!-- 7. Transpiration (provenant de la forêt de montagne) -->
+          <div class="drop-zone" id="zone-transpiration" data-zone="zone-transpiration" style="left: 12%; top: 44%;">
+            <span class="zone-number-badge">7</span>
+            <span class="zone-text">Dépose ici...</span>
+          </div>
+
+          <!-- 8. Évapo-transpiration (provenant des plantes de la plaine) -->
+          <div class="drop-zone" id="zone-evapotranspiration" data-zone="zone-evapotranspiration" style="left: 66%; top: 46%;">
+            <span class="zone-number-badge">8</span>
+            <span class="zone-text">Dépose ici...</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- COLONNE ACTIONS & RÉSERVE -->
+      <div class="flex flex-col gap-5">
+        
+        <!-- CARD RÉSERVE D'ÉTIQUETTES -->
+        <div class="card-premium flex flex-col gap-3">
+          <div class="flex items-center justify-between border-b-2 border-slate-100 pb-2">
+            <h3 class="text-lg font-bold text-slate-800">Étiquettes à placer</h3>
+            <span id="tags-count" class="font-mono text-xs bg-slate-100 text-slate-600 px-2.5 py-0.5 rounded-md font-bold">8 restantes</span>
+          </div>
+          
+          <!-- Pool des étiquettes -->
+          <div id="labels-pool" class="flex flex-wrap gap-2.5 p-2 bg-slate-50 border-2 border-dashed border-slate-200 rounded-xl min-h-[140px] items-center justify-center">
+            <!-- Étiquettes générées dynamiquement -->
+          </div>
+        </div>
+
+        <!-- CARD INFO SCIENTIFIQUE -->
+        <div id="info-box" class="card-premium flex flex-col gap-2 min-h-[120px] bg-sky-50/50 border-sky-400">
+          <h4 id="info-title" class="text-sm font-bold text-sky-900 flex items-center gap-1.5 uppercase tracking-wider">
+            🔍 Définitions
+          </h4>
+          <p id="info-text" class="text-xs sm:text-sm text-slate-600 m-0 leading-relaxed">
+            Clique sur un mot de la réserve pour lire sa définition scientifique ici avant de l'associer à sa zone.
+          </p>
+        </div>
+
+        <!-- CARD VALIDATION & RÉSULTATS -->
+        <div class="card-premium flex flex-col gap-4">
+          <!-- Score Banner -->
+          <div id="score-panel" class="score-banner hidden border-3 border-emerald-500 bg-emerald-50 rounded-xl p-4 flex flex-col items-center text-center gap-1 shadow-[2px_2px_0px_#166534]">
+            <span class="text-2xl font-display font-black text-emerald-700" id="score-text">0 / 8 — 0%</span>
+            <p class="text-xs sm:text-sm text-emerald-800 font-bold m-0" id="score-comment">Essaie encore pour faire un sans-faute !</p>
+          </div>
+
+          <!-- Contrôles -->
+          <div class="flex flex-col gap-2">
+            <button id="btn-valider" class="btn-3d w-full" onclick="validerExercice()">
+              <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              Valider mes réponses
+            </button>
+            <button id="btn-reset" class="btn-3d w-full bg-slate-600 hover:bg-slate-700 hidden" onclick="resetExercice()">
+              <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"></path>
+              </svg>
+              Recommencer
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <script>
+    // --- DICTIONNAIRE DES TERMES ---
+    const WATER_CYCLE_TERMS = {
+      evaporation: {
+        id: 'evaporation',
+        text: 'Évaporation',
+        correctZone: 'zone-evaporation',
+        desc: "L'eau liquide de l'océan chauffe sous l'action du Soleil et se transforme en vapeur d'eau (gaz) qui s'élève dans le ciel."
+      },
+      condensation: {
+        id: 'condensation',
+        text: 'Condensation',
+        correctZone: 'zone-condensation',
+        desc: "La vapeur d'eau refroidit en montant et se retransforme en minuscules gouttelettes d'eau liquide, formant les nuages."
+      },
+      precipitations: {
+        id: 'precipitations',
+        text: 'Précipitations',
+        correctZone: 'zone-precipitations',
+        desc: "L'eau condensée des nuages tombe sur le sol sous forme de pluie sur la plaine, et de neige sur le sommet froid de la montagne."
+      },
+      ruissellement: {
+        id: 'ruissellement',
+        text: 'Ruissellement',
+        correctZone: 'zone-ruissellement',
+        desc: "L'eau de pluie ou de fonte des neiges s'écoule sur la surface rocheuse de la montagne pour gonfler la rivière."
+      },
+      infiltration: {
+        id: 'infiltration',
+        text: 'Infiltration',
+        correctZone: 'zone-infiltration',
+        desc: "L'eau pénètre dans les pores du sol pour s'infiltrer verticalement à travers la roche et la terre humide."
+      },
+      nappe: {
+        id: 'nappe',
+        text: 'Nappe phréatique',
+        correctZone: 'zone-nappe',
+        desc: "La couche rocheuse souterraine saturée d'eau (aquifère). L'eau y circule très lentement avant de se jeter dans l'océan."
+      },
+      transpiration: {
+        id: 'transpiration',
+        text: 'Transpiration',
+        correctZone: 'zone-transpiration',
+        desc: "Les arbres de la forêt absorbent l'eau du sol et rejettent de la vapeur d'eau invisible par les pores des feuilles des arbres."
+      },
+      evapotranspiration: {
+        id: 'evapotranspiration',
+        text: 'Évapo-transpiration',
+        correctZone: 'zone-evapotranspiration',
+        desc: "Le rejet combiné de vapeur d'eau dans l'atmosphère par l'évaporation du sol humide et par la transpiration des plantes."
+      }
+    };
+
+    // --- ÉTAT DU JEU ---
+    let userPlacements = {
+      'zone-evaporation': null,
+      'zone-condensation': null,
+      'zone-precipitations': null,
+      'zone-ruissellement': null,
+      'zone-infiltration': null,
+      'zone-nappe': null,
+      'zone-transpiration': null,
+      'zone-evapotranspiration': null
+    };
+
+    let selectedTagId = null;
+    let submitted = false;
+
+    // --- SYNTHÈSE AUDIO (Web Audio API) ---
+    let audioCtx = null;
+    function playSound(type) {
+      try {
+        if (!audioCtx) {
+          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (audioCtx.state === 'suspended') {
+          audioCtx.resume();
+        }
+        
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        
+        if (type === 'success') {
+          osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); // C5
+          osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.1); // E5
+          osc.frequency.setValueAtTime(783.99, audioCtx.currentTime + 0.2); // G5
+          osc.frequency.setValueAtTime(1046.50, audioCtx.currentTime + 0.3); // C6
+          gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.005, audioCtx.currentTime + 0.5);
+          osc.start();
+          osc.stop(audioCtx.currentTime + 0.5);
+        } else if (type === 'error') {
+          osc.frequency.setValueAtTime(220, audioCtx.currentTime); // A3
+          osc.frequency.setValueAtTime(147, audioCtx.currentTime + 0.15); // D3
+          gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.005, audioCtx.currentTime + 0.4);
+          osc.start();
+          osc.stop(audioCtx.currentTime + 0.4);
+        } else if (type === 'click') {
+          osc.frequency.setValueAtTime(580, audioCtx.currentTime);
+          gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.005, audioCtx.currentTime + 0.08);
+          osc.start();
+          osc.stop(audioCtx.currentTime + 0.08);
+        }
+      } catch (e) {
+        console.error("Audio error:", e);
+      }
+    }
+
+    // --- LOGIQUE INTERACTIVE DES ÉTIQUETTES ---
+
+    // Mélanger un tableau (Fisher-Yates)
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    // Récupérer la liste des termes non placés
+    function getRemainingTerms() {
+      const placedIds = Object.values(userPlacements);
+      return Object.values(WATER_CYCLE_TERMS).filter(term => !placedIds.includes(term.id));
+    }
+
+    // Générer la réserve d'étiquettes
+    let shuffledPool = [];
+    function initPool() {
+      if (shuffledPool.length === 0) {
+        shuffledPool = shuffleArray(Object.keys(WATER_CYCLE_TERMS));
+      }
+      renderPool();
+    }
+
+    function renderPool() {
+      const poolContainer = document.getElementById('labels-pool');
+      poolContainer.innerHTML = '';
+      
+      const remaining = getRemainingTerms();
+      document.getElementById('tags-count').textContent = `${remaining.length} restante${remaining.length > 1 ? 's' : ''}`;
+      
+      if (remaining.length === 0) {
+        poolContainer.innerHTML = '<span class="text-xs text-slate-400 font-bold py-4">Toutes les étiquettes sont placées !</span>';
+        return;
+      }
+
+      const orderedRemaining = shuffledPool
+        .map(key => WATER_CYCLE_TERMS[key])
+        .filter(term => remaining.includes(term));
+
+      orderedRemaining.forEach(term => {
+        const tag = document.createElement('div');
+        tag.className = 'drag-tag';
+        tag.id = `tag-${term.id}`;
+        tag.dataset.id = term.id;
+        tag.draggable = !submitted;
+        tag.textContent = term.text;
+
+        if (selectedTagId === term.id) {
+          tag.classList.add('selected');
+        }
+
+        // Click-to-Place (Tactile)
+        tag.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (submitted) return;
+          selectTag(term.id);
+        });
+
+        // Drag & Drop natif (Bureau)
+        tag.addEventListener('dragstart', (e) => {
+          if (submitted) {
+            e.preventDefault();
+            return;
+          }
+          selectedTagId = null; 
+          tag.classList.add('dragging');
+          e.dataTransfer.setData('text/plain', term.id);
+          e.dataTransfer.effectAllowed = 'move';
+        });
+
+        tag.addEventListener('dragend', () => {
+          tag.classList.remove('dragging');
+          clearHoverStyles();
+        });
+
+        poolContainer.appendChild(tag);
+      });
+    }
+
+    // Gérer la sélection d'une étiquette
+    function selectTag(tagId) {
+      playSound('click');
+      if (selectedTagId === tagId) {
+        selectedTagId = null;
+      } else {
+        selectedTagId = tagId;
+      }
+      
+      const infoBox = document.getElementById('info-box');
+      const infoTitle = document.getElementById('info-title');
+      const infoText = document.getElementById('info-text');
+
+      if (selectedTagId) {
+        const term = WATER_CYCLE_TERMS[selectedTagId];
+        infoTitle.textContent = `🔍 ${term.text}`;
+        infoText.textContent = term.desc;
+        infoBox.style.borderColor = 'var(--soleil)';
+        infoBox.style.backgroundColor = 'var(--soleil-clair)';
+      } else {
+        resetInfoBox();
+      }
+
+      renderPool();
+      updateDropZoneHighlights();
+    }
+
+    function resetInfoBox() {
+      const infoBox = document.getElementById('info-box');
+      const infoTitle = document.getElementById('info-title');
+      const infoText = document.getElementById('info-text');
+      infoTitle.textContent = '🔍 Définitions';
+      infoText.textContent = "Clique sur un mot de la réserve pour lire sa définition scientifique ici avant de l'associer à sa zone.";
+      infoBox.style.borderColor = 'var(--eau)';
+      infoBox.style.backgroundColor = 'var(--papier)';
+    }
+
+    // Mise en évidence des zones éligibles
+    function updateDropZoneHighlights() {
+      document.querySelectorAll('.drop-zone').forEach(zone => {
+        if (selectedTagId && !zone.classList.contains('filled')) {
+          zone.classList.add('active-target');
+        } else {
+          zone.classList.remove('active-target');
+        }
+      });
+    }
+
+    // Rendu des drop zones
+    function renderDropZones() {
+      document.querySelectorAll('.drop-zone').forEach(zone => {
+        const zoneId = zone.dataset.zone;
+        const placedTagId = userPlacements[zoneId];
+        const textElement = zone.querySelector('.zone-text');
+
+        zone.className = 'drop-zone';
+        
+        if (placedTagId) {
+          zone.classList.add('filled');
+          const term = WATER_CYCLE_TERMS[placedTagId];
+          
+          if (submitted) {
+            const isCorrect = term.correctZone === zoneId;
+            if (isCorrect) {
+              zone.classList.add('correct');
+              textElement.innerHTML = `${term.text} <span class="text-emerald-700 ml-1">✓</span>`;
+            } else {
+              zone.classList.add('incorrect');
+              textElement.innerHTML = `${term.text} <span class="text-rose-700 ml-1">✗</span>`;
+            }
+          } else {
+            textElement.textContent = term.text;
+          }
+        } else {
+          if (submitted) {
+            zone.classList.add('incorrect');
+            textElement.innerHTML = `<span class="text-rose-500 italic">Vide ✗</span>`;
+          } else {
+            textElement.textContent = 'Dépose ici...';
+          }
+        }
+      });
+      updateDropZoneHighlights();
+    }
+
+    // Liaison des événements de dépôt
+    function initDropZones() {
+      document.querySelectorAll('.drop-zone').forEach(zone => {
+        const zoneId = zone.dataset.zone;
+
+        zone.addEventListener('click', () => {
+          if (submitted) return;
+
+          if (selectedTagId) {
+            userPlacements[zoneId] = selectedTagId;
+            selectedTagId = null;
+            playSound('click');
+            resetInfoBox();
+            renderPool();
+            renderDropZones();
+          } else {
+            if (userPlacements[zoneId]) {
+              userPlacements[zoneId] = null;
+              playSound('click');
+              renderPool();
+              renderDropZones();
+            }
+          }
+        });
+
+        zone.addEventListener('dragover', (e) => {
+          if (submitted) return;
+          e.preventDefault();
+          if (!userPlacements[zoneId]) {
+            zone.classList.add('active-target');
+          }
+        });
+
+        zone.addEventListener('dragleave', () => {
+          zone.classList.remove('active-target');
+        });
+
+        zone.addEventListener('drop', (e) => {
+          if (submitted) return;
+          e.preventDefault();
+          zone.classList.remove('active-target');
+          
+          const tagId = e.dataTransfer.getData('text/plain');
+          if (tagId) {
+            userPlacements[zoneId] = tagId;
+            playSound('click');
+            renderPool();
+            renderDropZones();
+          }
+        });
+      });
+    }
+
+    function clearHoverStyles() {
+      document.querySelectorAll('.drop-zone').forEach(zone => {
+        zone.classList.remove('active-target');
+      });
+    }
+
+    // --- CORRECTION ET PERSISTANCE ---
+
+    function validerExercice() {
+      if (submitted) return;
+
+      let correctCount = 0;
+      let totalCount = 8;
+
+      Object.entries(userPlacements).forEach(([zoneId, tagId]) => {
+        if (tagId) {
+          const term = WATER_CYCLE_TERMS[tagId];
+          if (term.correctZone === zoneId) {
+            correctCount++;
+          }
+        }
+      });
+
+      const pct = Math.round((correctCount / totalCount) * 100);
+      submitted = true;
+
+      document.getElementById('btn-valider').style.display = 'none';
+      document.getElementById('btn-reset').style.display = 'block';
+
+      renderDropZones();
+      renderPool();
+
+      const scorePanel = document.getElementById('score-panel');
+      const scoreText = document.getElementById('score-text');
+      const scoreComment = document.getElementById('score-comment');
+
+      scorePanel.classList.remove('hidden');
+      scoreText.textContent = `${correctCount} / ${totalCount} — ${pct}%`;
+
+      if (pct === 100) {
+        scorePanel.style.backgroundColor = 'var(--vert-clair)';
+        scorePanel.style.borderColor = 'var(--vert)';
+        scoreComment.innerHTML = '🎉 <strong>Félicitations !</strong> Un sans-faute parfait, le cycle de l\'eau n\'a plus de secret pour toi !';
+        playSound('success');
+        startConfetti();
+      } else if (pct >= 50) {
+        scorePanel.style.backgroundColor = 'var(--soleil-clair)';
+        scorePanel.style.borderColor = 'var(--soleil)';
+        scoreComment.innerHTML = '👍 <strong>Bien joué !</strong> Tu as trouvé la majorité des termes. Corrige tes erreurs pour atteindre 100% !';
+        playSound('success');
+      } else {
+        scorePanel.style.backgroundColor = 'var(--rouge-clair)';
+        scorePanel.style.borderColor = 'var(--rouge)';
+        scoreComment.innerHTML = '✍️ <strong>Prends ton temps.</strong> Relis les définitions et observe le schéma avant de réessayer.';
+        playSound('error');
+      }
+
+      if (window.parent && window.parent.saveResult) {
+        window.parent.saveResult({
+          activity: 'sci_cycle_eau_schema',
+          bookTitle: "Le cycle naturel de l'eau (Schéma)",
+          score: correctCount,
+          total: totalCount,
+          pct: pct,
+          date: new Date().toLocaleDateString('fr-BE'),
+          time: new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })
+        });
+      }
+
+      scorePanel.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function resetExercice() {
+      Object.keys(userPlacements).forEach(key => {
+        userPlacements[key] = null;
+      });
+      selectedTagId = null;
+      submitted = false;
+
+      document.getElementById('btn-valider').style.display = 'block';
+      document.getElementById('btn-reset').style.display = 'none';
+      document.getElementById('score-panel').classList.add('hidden');
+      resetInfoBox();
+      stopConfetti();
+
+      shuffledPool = shuffleArray(Object.keys(WATER_CYCLE_TERMS));
+      
+      initPool();
+      renderDropZones();
+    }
+
+    // --- EFFET CONFETTI MULTICOLORE ---
+    let confettiActive = false;
+    let confettiParticles = [];
+    const confettiCanvas = document.getElementById('confetti-canvas');
+    const cCtx = confettiCanvas.getContext('2d');
+
+    function resizeConfetti() {
+      confettiCanvas.width = window.innerWidth;
+      confettiCanvas.height = window.innerHeight;
+    }
+
+    function startConfetti() {
+      confettiActive = true;
+      confettiParticles = [];
+      resizeConfetti();
+      window.addEventListener('resize', resizeConfetti);
+      for (let i = 0; i < 120; i++) {
+        confettiParticles.push({
+          x: Math.random() * confettiCanvas.width,
+          y: Math.random() * confettiCanvas.height - confettiCanvas.height,
+          r: Math.random() * 6 + 5,
+          d: Math.random() * confettiCanvas.height,
+          color: `hsl(${Math.random() * 360}, 90%, 60%)`,
+          tilt: Math.random() * 10 - 5,
+          tiltAngleIncremental: Math.random() * 0.07 + 0.03,
+          tiltAngle: 0
+        });
+      }
+      animateConfetti();
+    }
+
+    function stopConfetti() {
+      confettiActive = false;
+      window.removeEventListener('resize', resizeConfetti);
+      cCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+    }
+
+    function animateConfetti() {
+      if (!confettiActive) return;
+      requestAnimationFrame(animateConfetti);
+      cCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+      
+      for (let i = 0; i < confettiParticles.length; i++) {
+        let p = confettiParticles[i];
+        p.tiltAngle += p.tiltAngleIncremental;
+        p.y += (Math.cos(p.d) + 3 + p.r / 2) / 2.2;
+        p.x += Math.sin(p.tiltAngle);
+        p.tilt = Math.sin(p.tiltAngle - i / 3) * 12;
+        
+        if (p.y > confettiCanvas.height) {
+          p.x = Math.random() * confettiCanvas.width;
+          p.y = -20;
+          p.tilt = Math.random() * 10 - 5;
+        }
+        
+        cCtx.beginPath();
+        cCtx.lineWidth = p.r;
+        cCtx.strokeStyle = p.color;
+        cCtx.moveTo(p.x + p.tilt + p.r / 2, p.y);
+        cCtx.lineTo(p.x + p.tilt, p.y + p.tilt + p.r / 2);
+        cCtx.stroke();
+      }
+    }
+
+    // --- CHARGEMENT ---
+    window.addEventListener('load', () => {
+      initPool();
+      initDropZones();
+      renderDropZones();
+    });
+  </script>
+</body>
+</html>
