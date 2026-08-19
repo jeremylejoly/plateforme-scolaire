@@ -113,6 +113,8 @@ const CORE_ASSETS = [
   'fiches/vocabulaire-jeu.html',
   'cycle-eau.html',
   'fiches/cycle-eau.html',
+  'sci_cycle_eau_schema.html',
+  'fiches/sci_cycle_eau_schema.html',
   'sci_reseaux_trophiques.html',
   'fiches/sci_reseaux_trophiques.html',
   'questionnaire-cycle-eau-LCML.html',
