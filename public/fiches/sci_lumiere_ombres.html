@@ -104,8 +104,42 @@
       display: flex;
       align-items: center;
       gap: 8px;
+    }
+
+    /* Flat 3D Tab buttons at the top of the card */
+    .tabs-container {
+      display: flex;
+      gap: 10px;
       border-bottom: 2px dashed #334155;
       padding-bottom: 0.75rem;
+      margin-top: 0.25rem;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 8px 12px;
+      background-color: #1e293b;
+      color: #94a3b8;
+      border: 2px solid #0f172a;
+      border-radius: 10px;
+      font-family: 'Fredoka', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 3px 0 #0f172a;
+      transition: transform 0.1s, box-shadow 0.1s, background-color 0.2s, color 0.2s;
+    }
+
+    .tab-btn:hover {
+      background-color: #334155;
+      color: #cbd5e1;
+    }
+
+    .tab-btn.active {
+      background-color: #8b5cf6;
+      color: #ffffff;
+      transform: translateY(2px);
+      box-shadow: 0 1px 0 #0f172a;
     }
 
     /* ────────────────────────────────────────────────────────────────
@@ -126,11 +160,24 @@
       height: auto;
     }
 
+    /* Interactive cursors linked to states */
     .flashlight-interactive {
-      cursor: grab;
-      transition: opacity 0.2s;
+      cursor: default;
     }
-    .flashlight-interactive:active {
+    .tab1-active .flashlight-interactive {
+      cursor: grab;
+    }
+    .tab1-active .flashlight-interactive:active {
+      cursor: grabbing;
+    }
+
+    .ball-interactive {
+      cursor: default;
+    }
+    .tab2-active .ball-interactive {
+      cursor: grab;
+    }
+    .tab2-active .ball-interactive:active {
       cursor: grabbing;
     }
 
@@ -246,12 +293,12 @@
 
     .progress-dots {
       display: flex;
-      gap: 6px;
+      gap: 5px;
     }
 
     .progress-dot {
-      width: 12px;
-      height: 12px;
+      width: 10px;
+      height: 10px;
       border-radius: 50%;
       border: 2px solid #0f172a;
       background-color: #334155;
@@ -536,13 +583,16 @@
     
     <!-- Left Column: Interactive Simulation -->
     <div class="flat-card">
-      <div class="card-title">
-        <span>🔬 Labo d'Optique</span>
+      
+      <!-- Experience Tab Switchers -->
+      <div class="tabs-container">
+        <button class="tab-btn active" id="tab-exp1" onclick="switchTab('tab1')">Expérience 1 : Source mobile</button>
+        <button class="tab-btn" id="tab-exp2" onclick="switchTab('tab2')">Expérience 2 : Balle mobile</button>
       </div>
       
       <!-- Interactive SVG Chambre Noire -->
       <div class="svg-wrapper" id="svg-wrapper">
-        <svg id="sim-svg" viewBox="0 0 700 300" xmlns="http://www.w3.org/2000/svg">
+        <svg id="sim-svg" class="tab1-active" viewBox="0 0 700 300" xmlns="http://www.w3.org/2000/svg">
           
           <!-- Defs for lighting effects and ball textures -->
           <defs>
@@ -597,18 +647,24 @@
           <line id="ray-bottom" x1="0" y1="0" x2="0" y2="0" stroke="#facc15" stroke-dasharray="6,4" stroke-width="1.5" opacity="0.6" />
           
           <!-- ── LAB LABELS ── -->
-          <text x="150" y="25" fill="#64748b" font-family="Fredoka" font-size="11" font-weight="600" text-anchor="middle">🔦 SOURCE DE LUMIÈRE</text>
+          <text id="light-label" x="150" y="25" fill="#64748b" font-family="Fredoka" font-size="11" font-weight="600" text-anchor="middle">🔦 SOURCE DE LUMIÈRE</text>
           <text id="obj-label" x="400" y="25" fill="#64748b" font-family="Fredoka" font-size="11" font-weight="600" text-anchor="middle">🪵 OBJET (BALLE EN BOIS)</text>
           <text x="600" y="25" fill="#64748b" font-family="Fredoka" font-size="11" font-weight="600" text-anchor="middle">🧱 ÉCRAN (MUR)</text>
           
           <!-- ── DRAG INSTRUCTIONS ── -->
           <text id="drag-tooltip" x="180" y="275" fill="#94a3b8" font-family="Fredoka" font-size="12" font-weight="500" text-anchor="middle" opacity="0.8">🖱️ Fais glisser la lampe de gauche à droite !</text>
           
-          <!-- ── THE OBJECT (BALL) ── -->
-          <circle id="ball" cx="400" cy="130" r="25" fill="url(#woodGradient)" stroke="#451a03" stroke-width="2" />
-          
-          <!-- Glass reflection shine curve overlay -->
-          <path id="glass-shine" d="M 385 118 A 20 20 0 0 1 410 112 A 23 23 0 0 0 385 125 Z" fill="#ffffff" opacity="0.75" display="none" pointer-events="none" />
+          <!-- ── THE OBJECT (BALL GROUP) ── -->
+          <g id="ball-group" class="ball-interactive" transform="translate(400, 0)">
+            <circle id="ball" cx="0" cy="130" r="25" fill="url(#woodGradient)" stroke="#451a03" stroke-width="2" />
+            <!-- Glass reflection shine curve overlay -->
+            <path id="glass-shine" d="M -15 118 A 20 20 0 0 1 10 112 A 23 23 0 0 0 -15 125 Z" fill="#ffffff" opacity="0.75" display="none" pointer-events="none" />
+            <!-- Drag indicator only shown in Exp 2 -->
+            <g id="ball-drag-icon" transform="translate(0, 95)" opacity="0" pointer-events="none">
+              <circle cx="0" cy="0" r="10" fill="#a855f7" stroke="#0f172a" stroke-width="1.5" />
+              <path d="M-6,0 L6,0 M-3,-3 L-6,0 L-3,3 M3,-3 L6,0 L3,3" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+            </g>
+          </g>
           
           <!-- ── THE SOURCE (FLASHLIGHT) ── -->
           <g id="flashlight" class="flashlight-interactive" transform="translate(200, 130)">
@@ -624,8 +680,8 @@
             <ellipse cx="15" cy="0" rx="3" ry="21" fill="#fef08a" />
             <!-- Switch -->
             <rect x="-38" y="-13" width="10" height="4" rx="1" fill="#bf616a" />
-            <!-- Visual arrows indicators for dragging -->
-            <g transform="translate(-25, -28)" opacity="0.8">
+            <!-- Drag indicator only shown in Exp 1 -->
+            <g id="light-drag-icon" transform="translate(-25, -28)" opacity="0.8">
               <circle cx="0" cy="0" r="10" fill="#facc15" stroke="#0f172a" stroke-width="1.5" />
               <path d="M-6,0 L6,0 M-3,-3 L-6,0 L-3,3 M3,-3 L6,0 L3,3" stroke="#0f172a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
             </g>
@@ -645,7 +701,7 @@
         </div>
         
         <div class="slider-container">
-          <span class="control-label">Distance :</span>
+          <span class="control-label" id="slider-label">Distance :</span>
           <input type="range" class="range-input" id="light-slider" min="80" max="300" value="200" oninput="onSliderChange(this.value)">
         </div>
       </div>
@@ -655,7 +711,7 @@
     <!-- Right Column: Interactive Quiz -->
     <div class="flat-card" id="quiz-card">
       <div class="qcm-header">
-        <span class="qcm-step-title" id="qcm-step-title">Question 1 sur 4</span>
+        <span class="qcm-step-title" id="qcm-step-title">Question 1 sur 8</span>
         <div class="progress-dots" id="progress-dots">
           <!-- Dots dynamically rendered -->
         </div>
@@ -671,7 +727,7 @@
         <!-- Options dynamically rendered -->
       </div>
       
-      <!-- Feedback Alert Box -->
+      <!-- Feedback Box -->
       <div class="feedback-box" id="feedback-box">
         <div class="feedback-title" id="feedback-title"></div>
         <div id="feedback-explanation"></div>
@@ -689,7 +745,7 @@
     <div class="flat-card score-screen" id="score-card">
       <div class="big-emoji" id="final-emoji">🏆</div>
       <h1>Activité terminée !</h1>
-      <div class="score-badge" id="final-score-badge">4 / 4</div>
+      <div class="score-badge" id="final-score-badge">8 / 8</div>
       <div class="score-text" id="final-details-text">
         Félicitations ! Tu as réussi avec brio toutes les épreuves scientifiques sur les ombres !
       </div>
@@ -704,9 +760,10 @@
 
 <script>
   // ────────────────────────────────────────────────────────────────
-  // EXERCISE STATE & QUESTIONS DATABASE
+  // EXERCISE STATE & QUESTIONS DATABASE (8 QUESTIONS total)
   // ────────────────────────────────────────────────────────────────
   const questions = [
+    // --- EXP 1: LAMPE MOBILE (Q1-Q4) ---
     {
       num: 1,
       text: "Plus la source de lumière est proche de l'objet, plus l'ombre sur l'écran est...",
@@ -746,15 +803,65 @@
         { text: "Elle devient plus noire", correct: false, letter: "C" }
       ],
       explanation: "La balle en verre transparent laisse passer la lumière. Les rayons lumineux la traversent donc pour atteindre l'écran, ce qui fait disparaître l'ombre projetée (ou la rend presque invisible)."
+    },
+    // --- EXP 2: BALLE MOBILE (Q5-Q8) ---
+    {
+      num: 5,
+      text: "Plus l'objet (la balle) est proche de la source de lumière, plus son ombre sur l'écran est...",
+      options: [
+        { text: "Grande", correct: true, letter: "A" },
+        { text: "Petite", correct: false, letter: "B" },
+        { text: "Identique", correct: false, letter: "C" }
+      ],
+      explanation: "Quand la balle se rapproche de la lampe, elle intercepte une plus grande partie du cône de lumière. Les rayons qui la contournent s'écartent beaucoup plus, agrandissant l'ombre sur le mur."
+    },
+    {
+      num: 6,
+      text: "Si on colle l'objet (la balle) contre l'écran (le mur), qu'advient-il de la taille de l'ombre ?",
+      options: [
+        { text: "Elle a presque exactement la même taille que la balle", correct: true, letter: "A" },
+        { text: "Elle devient deux fois plus grande", correct: false, letter: "B" },
+        { text: "Elle devient totalement invisible", correct: false, letter: "C" }
+      ],
+      explanation: "Lorsque l'objet est collé à l'écran, les rayons lumineux n'ont pas la distance nécessaire pour s'écarter après avoir contourné l'objet. L'ombre fait donc presque exactement la taille réelle de l'objet."
+    },
+    {
+      num: 7,
+      text: "Dans cette deuxième expérience, si on décidait de reculer le mur (l'écran) vers la droite, qu'arriverait-il à l'ombre ?",
+      options: [
+        { text: "L'ombre s'agrandirait", correct: true, letter: "A" },
+        { text: "L'ombre rétrécirait", correct: false, letter: "B" },
+        { text: "L'ombre garderait la même taille", correct: false, letter: "C" }
+      ],
+      explanation: "Les rayons de lumière s'écartent en forme de cône depuis la lampe. Plus on recule le mur vers la droite, plus l'espace entre le rayon du haut et celui du bas s'élargit, ce qui agrandit l'ombre."
+    },
+    {
+      num: 8,
+      text: "Comment appelle-t-on la zone sombre sur la balle elle-même, du côté opposé à la lampe ?",
+      options: [
+        { text: "L'ombre propre", correct: true, letter: "A" },
+        { text: "L'ombre portée", correct: false, letter: "B" },
+        { text: "La pénombre", correct: false, letter: "C" }
+      ],
+      explanation: "L'ombre propre est la partie de la balle qui n'est pas éclairée directement (face sombre). L'ombre portée est la silhouette noire projetée sur l'écran (le mur)."
     }
   ];
 
   let currentQuestionIdx = 0;
   let score = 0;
-  let userAnswers = []; // records boolean true/false for each step
+  let userAnswers = []; // records boolean values
   let selectedOptionIdx = null;
   let questionAnswered = false;
+  
+  // Simulation positions
+  let currentTab = 'tab1'; // 'tab1' or 'tab2'
+  let x_light = 200; // variable in tab1, fixed at 120 in tab2
+  let x_ball = 400;  // fixed at 400 in tab1, variable in tab2
   let ballMaterial = 'wood'; // 'wood' or 'glass'
+  
+  const y_ball = 130;
+  const r_ball = 25;
+  const x_screen = 600;
   
   // ────────────────────────────────────────────────────────────────
   // WEB AUDIO SYNTHESIZER (Web Audio API)
@@ -844,18 +951,17 @@
   // ────────────────────────────────────────────────────────────────
   // SVG SIMULATION GEOMETRY CALCULATIONS
   // ────────────────────────────────────────────────────────────────
-  const x_ball = 400;
-  const y_ball = 130;
-  const r_ball = 25;
-  const x_screen = 600;
-
-  function updateSimulation(x_light) {
+  function updateSimulation() {
+    // 1. Move Flashlight & Ball group dynamically
     const flashlight = document.getElementById('flashlight');
     flashlight.setAttribute('transform', `translate(${x_light}, 130)`);
     
-    // 1. Update yellow light beam cone coordinates
+    const ballGroup = document.getElementById('ball-group');
+    ballGroup.setAttribute('transform', `translate(${x_ball}, 0)`);
+    
+    // 2. Update yellow light beam cone coordinates
     const lightBeam = document.getElementById('light-beam');
-    // Front aperture points of flashlight (lens at x_light + 15, height +/- 21)
+    // Front aperture of flashlight (lens at x_light + 15, height +/- 21)
     lightBeam.setAttribute('points', `${x_light + 15},109 600,20 600,240 ${x_light + 15},151`);
     
     const shadowCone = document.getElementById('shadow-cone');
@@ -864,7 +970,6 @@
     const rayBottom = document.getElementById('ray-bottom');
     
     if (ballMaterial === 'wood') {
-      // Show shadows and rays
       shadowCone.setAttribute('display', 'block');
       screenShadow.setAttribute('display', 'block');
       rayTop.setAttribute('display', 'block');
@@ -886,9 +991,13 @@
       // Update SVG Shadow Cone behind the ball
       shadowCone.setAttribute('points', `${x_tan_top},${y_tan_top} ${x_screen},${y_shadow_top} ${x_screen},${y_shadow_bottom} ${x_tan_bottom},${y_tan_bottom}`);
       
-      // Update screen shadow rectangle
-      screenShadow.setAttribute('y', y_shadow_top);
-      screenShadow.setAttribute('height', y_shadow_bottom - y_shadow_top);
+      // Clamp screen shadow coordinates within screen range [30, 230]
+      const draw_y_top = Math.max(30, y_shadow_top);
+      const draw_y_bottom = Math.min(230, y_shadow_bottom);
+      const draw_height = Math.max(0, draw_y_bottom - draw_y_top);
+      
+      screenShadow.setAttribute('y', draw_y_top);
+      screenShadow.setAttribute('height', draw_height);
       
       // Update light rays
       rayTop.setAttribute('x1', x_light);
@@ -903,7 +1012,6 @@
       
     } else {
       // Glass material: Light propagates straight without shadows
-      shadowCone.setAttribute('none', 'none'); // Trigger redraw
       shadowCone.setAttribute('display', 'none');
       screenShadow.setAttribute('display', 'none');
       rayTop.setAttribute('display', 'none');
@@ -913,7 +1021,13 @@
 
   // Handle manual input of the horizontal range slider
   function onSliderChange(val) {
-    updateSimulation(parseInt(val));
+    const intVal = parseInt(val);
+    if (currentTab === 'tab1') {
+      x_light = intVal;
+    } else {
+      x_ball = intVal;
+    }
+    updateSimulation();
   }
 
   // Toggle Wood Opaque vs Glass Transparent Ball
@@ -933,41 +1047,119 @@
       ballElement.setAttribute('fill', 'url(#woodGradient)');
       ballElement.setAttribute('stroke', '#451a03');
       glassShine.setAttribute('display', 'none');
-      objLabel.textContent = '🪵 OBJET (BALLE EN BOIS)';
+      objLabel.textContent = (currentTab === 'tab1') ? '🪵 OBJET (BALLE EN BOIS)' : '🪵 OBJET MOBILE (BALLE EN BOIS)';
     } else {
       btnWood.classList.remove('active');
       btnGlass.classList.add('active');
       ballElement.setAttribute('fill', 'url(#glassGradient)');
       ballElement.setAttribute('stroke', '#bae6fd');
       glassShine.setAttribute('display', 'block');
-      objLabel.textContent = '💎 OBJET (BALLE EN VERRE)';
+      objLabel.textContent = (currentTab === 'tab1') ? '💎 OBJET (BALLE EN VERRE)' : '💎 OBJET MOBILE (BALLE EN VERRE)';
     }
     
-    // Refresh simulation coordinates
-    const slider = document.getElementById('light-slider');
-    updateSimulation(parseInt(slider.value));
+    updateSimulation();
   }
 
   // ────────────────────────────────────────────────────────────────
-  // SVG DRAG AND DROP MECHANICS
+  // TAB NAVIGATION SYSTEM
+  // ────────────────────────────────────────────────────────────────
+  function switchTab(tab) {
+    if (dragging) return;
+    
+    currentTab = tab;
+    
+    const btnTab1 = document.getElementById('tab-exp1');
+    const btnTab2 = document.getElementById('tab-exp2');
+    const svgEl = document.getElementById('sim-svg');
+    const slider = document.getElementById('light-slider');
+    const sliderLabel = document.getElementById('slider-label');
+    const dragTooltip = document.getElementById('drag-tooltip');
+    
+    const lightDragIcon = document.getElementById('light-drag-icon');
+    const ballDragIcon = document.getElementById('ball-drag-icon');
+    
+    const lightLabel = document.getElementById('light-label');
+    const objLabel = document.getElementById('obj-label');
+    
+    if (tab === 'tab1') {
+      btnTab1.classList.add('active');
+      btnTab2.classList.remove('active');
+      svgEl.className.baseVal = 'tab1-active';
+      
+      lightDragIcon.setAttribute('opacity', '0.8');
+      ballDragIcon.setAttribute('opacity', '0');
+      
+      // Reset position states for Exp 1
+      x_ball = 400; 
+      
+      slider.min = 80;
+      slider.max = 300;
+      slider.value = x_light;
+      sliderLabel.textContent = 'Distance Lampe :';
+      
+      lightLabel.textContent = '🔦 SOURCE MOBILE (LAMPE)';
+      objLabel.textContent = (ballMaterial === 'wood') ? '🪵 OBJET (BALLE EN BOIS)' : '💎 OBJET (BALLE EN VERRE)';
+      
+      dragTooltip.textContent = '🖱️ Fais glisser la lampe de gauche à droite !';
+    } else {
+      btnTab2.classList.add('active');
+      btnTab1.classList.remove('active');
+      svgEl.className.baseVal = 'tab2-active';
+      
+      lightDragIcon.setAttribute('opacity', '0');
+      ballDragIcon.setAttribute('opacity', '0.85');
+      
+      // Reset position states for Exp 2
+      x_light = 120;
+      
+      slider.min = 180;
+      slider.max = 520;
+      slider.value = x_ball;
+      sliderLabel.textContent = 'Position Balle :';
+      
+      lightLabel.textContent = '🔦 SOURCE DE LUMIÈRE';
+      objLabel.textContent = (ballMaterial === 'wood') ? '🪵 OBJET MOBILE (BALLE EN BOIS)' : '💎 OBJET MOBILE (BALLE EN VERRE)';
+      
+      dragTooltip.textContent = '🖱️ Fais glisser la balle de gauche à droite !';
+    }
+    
+    dragTooltip.setAttribute('opacity', '0.8');
+    updateSimulation();
+  }
+
+  // ────────────────────────────────────────────────────────────────
+  // SVG DRAG AND DROP MECHANICS (Support both flashlight & ball)
   // ────────────────────────────────────────────────────────────────
   let dragging = false;
+  let dragType = null; // 'flashlight' or 'ball'
+  
   const flashlightG = document.getElementById('flashlight');
-  const slider = document.getElementById('light-slider');
+  const ballGroupG = document.getElementById('ball-group');
   const svgEl = document.getElementById('sim-svg');
   const tooltipText = document.getElementById('drag-tooltip');
 
-  flashlightG.addEventListener('mousedown', startDrag);
+  flashlightG.addEventListener('mousedown', (e) => startDrag(e, 'flashlight'));
+  flashlightG.addEventListener('touchstart', (e) => startDrag(e, 'flashlight'), { passive: false });
+  
+  ballGroupG.addEventListener('mousedown', (e) => startDrag(e, 'ball'));
+  ballGroupG.addEventListener('touchstart', (e) => startDrag(e, 'ball'), { passive: false });
+  
   window.addEventListener('mousemove', drag);
-  window.addEventListener('mouseup', stopDrag);
-
-  flashlightG.addEventListener('touchstart', startDrag, { passive: false });
   window.addEventListener('touchmove', drag, { passive: false });
+  
+  window.addEventListener('mouseup', stopDrag);
   window.addEventListener('touchend', stopDrag);
 
-  function startDrag(e) {
+  function startDrag(e, type) {
     initAudio();
+    
+    // Safety check: Dragging is only allowed for the target of the active tab
+    if (currentTab === 'tab1' && type !== 'flashlight') return;
+    if (currentTab === 'tab2' && type !== 'ball') return;
+    
     dragging = true;
+    dragType = type;
+    
     playSound('click');
     tooltipText.setAttribute('opacity', '0'); // Hide tooltip when active dragging starts
     document.body.style.userSelect = 'none';
@@ -979,19 +1171,26 @@
     
     const rect = svgEl.getBoundingClientRect();
     const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-    
-    // Translate screen mouse X to SVG coordinate space (box scale 700px width)
     const svgX = ((clientX - rect.left) / rect.width) * 700;
+    const slider = document.getElementById('light-slider');
     
-    // Constrain flashlight range horizontally to [80, 300]
     let newX = Math.round(svgX);
-    if (newX < 80) newX = 80;
-    if (newX > 300) newX = 300;
     
-    // Update slider position & simulation
-    slider.value = newX;
-    updateSimulation(newX);
+    if (dragType === 'flashlight') {
+      // Constrain flashlight range horizontally to [80, 300]
+      if (newX < 80) newX = 80;
+      if (newX > 300) newX = 300;
+      x_light = newX;
+      slider.value = newX;
+    } else if (dragType === 'ball') {
+      // Constrain ball range horizontally to [180, 520]
+      if (newX < 180) newX = 180;
+      if (newX > 520) newX = 520;
+      x_ball = newX;
+      slider.value = newX;
+    }
     
+    updateSimulation();
     e.preventDefault();
   }
 
@@ -1005,7 +1204,6 @@
   // ────────────────────────────────────────────────────────────────
   // QUIZ CONTROL & SYSTEM LOGIC
   // ────────────────────────────────────────────────────────────────
-  
   function initQuiz() {
     currentQuestionIdx = 0;
     score = 0;
@@ -1032,6 +1230,17 @@
   function renderQuestion() {
     questionAnswered = false;
     selectedOptionIdx = null;
+    
+    // Auto switch active lab tabs depending on the question context
+    if (currentQuestionIdx < 4) {
+      if (currentTab !== 'tab1') {
+        switchTab('tab1');
+      }
+    } else {
+      if (currentTab !== 'tab2') {
+        switchTab('tab2');
+      }
+    }
     
     const q = questions[currentQuestionIdx];
     document.getElementById('qcm-step-title').textContent = `Question ${q.num} sur ${questions.length}`;
@@ -1174,13 +1383,13 @@
     
     if (score === questions.length) {
       emojiEl.textContent = '🏆';
-      detailsEl.innerHTML = "Félicitations ! Tu as résolu correctement toutes les étapes de l'exercice. Tu es un vrai scientifique de la lumière ! 🌟";
+      detailsEl.innerHTML = "Félicitations ! Tu as résolu correctement toutes les étapes de l'exercice ! Tu es un vrai scientifique de la lumière ! 🌟";
       // Perfect score confettis
       playSound('success_final');
       triggerConfettiShower();
-    } else if (score >= 2) {
+    } else if (score >= 5) {
       emojiEl.textContent = '👏';
-      detailsEl.innerHTML = `Pas mal du tout ! Tu as obtenu un score de <strong>${percent}%</strong>. Recommence l'activité pour obtenir le score parfait de 4/4 !`;
+      detailsEl.innerHTML = `Pas mal du tout ! Tu as obtenu un score de <strong>${percent}%</strong> (${score}/${questions.length}). Recommence l'activité pour obtenir le score parfait !`;
       playSound('success_step');
     } else {
       emojiEl.textContent = '💪';
@@ -1209,11 +1418,13 @@
     document.getElementById('quiz-card').style.display = 'flex';
     document.getElementById('score-card').style.display = 'none';
     
-    // Reset simulation
+    // Reset simulation positions
+    x_light = 200;
+    x_ball = 400;
+    
+    // Reset material
     toggleMaterial('wood');
-    const slider = document.getElementById('light-slider');
-    slider.value = 200;
-    updateSimulation(200);
+    switchTab('tab1');
     
     // Re-initialize quiz database
     initQuiz();
@@ -1254,7 +1465,7 @@
   // ────────────────────────────────────────────────────────────────
   window.onload = () => {
     // Initialise simulation to center
-    updateSimulation(200);
+    switchTab('tab1');
     initQuiz();
     
     // Auto-adjust paths for stand-alone mode inside subfolders
