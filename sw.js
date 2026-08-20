@@ -129,6 +129,8 @@ const CORE_ASSETS = [
   'fiches/chasseur-intrus.html',
   'sci_electricite_labo.html',
   'fiches/sci_electricite_labo.html',
+  'sci_lumiere_ombres.html',
+  'fiches/sci_lumiere_ombres.html',
   'assets/logos/sub_chasseur_intrus.png',
   'fabrique-mots.html',
   'fiches/fabrique-mots.html',
