@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>États de la Matière - Sciences P5-P6</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Canvas Confetti CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --color-dark: #1e293b; /* slate-800 for text and borders */
+      --border-width: 3.5px;
+      
+      /* State Theme Colors */
+      --solide-bg: #bae6fd; /* sky-200 */
+      --solide-active: #0284c7; /* sky-600 */
+      --liquide-bg: #cffafe; /* cyan-200 */
+      --liquide-active: #00acc1; /* cyan-600 */
+      --gaz-bg: #e2e8f0; /* slate-200 */
+      --gaz-active: #64748b; /* slate-500 */
+      
+      /* Feedbacks */
+      --color-correct: #10b981; /* emerald-500 */
+      --color-incorrect: #ef4444; /* red-500 */
+      --bg-cream: #fdfbfc; /* warm background */
+    }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background-color: var(--bg-cream);
+      color: var(--color-dark);
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+    }
+
+    .font-title {
+      font-family: 'Fredoka', sans-serif;
+    }
+
+    /* Flat 3D Styles */
+    .card-3d {
+      background: #ffffff;
+      border: var(--border-width) solid var(--color-dark);
+      box-shadow: 5px 5px 0px var(--color-dark);
+      border-radius: 20px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-3d {
+      border: var(--border-width) solid var(--color-dark);
+      box-shadow: 4px 4px 0px var(--color-dark);
+      border-radius: 12px;
+      font-weight: 800;
+      transition: all 0.1s ease-out;
+      transform: translate(0px, 0px);
+    }
+    
+    .btn-3d:hover:not(:disabled) {
+      transform: translate(-2px, -2px);
+      box-shadow: 6px 6px 0px var(--color-dark);
+    }
+
+    .btn-3d:active:not(:disabled) {
+      transform: translate(2px, 2px);
+      box-shadow: 2px 2px 0px var(--color-dark);
+    }
+
+    .btn-3d:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none !important;
+      box-shadow: 2px 2px 0px var(--color-dark) !important;
+    }
+
+    /* Row Card styling */
+    .row-card {
+      border: 3.5px solid var(--color-dark);
+      box-shadow: 4px 4px 0px var(--color-dark);
+      border-radius: 18px;
+      background-color: white;
+      transition: all 0.25s ease;
+    }
+
+    .row-card.row-correct {
+      background-color: #f0fdf4 !important; /* light green */
+      border-color: var(--color-correct) !important;
+      box-shadow: 4px 4px 0px var(--color-correct) !important;
+    }
+
+    .row-card.row-incorrect {
+      background-color: #fef2f2 !important; /* light red */
+      border-color: var(--color-incorrect) !important;
+      box-shadow: 4px 4px 0px var(--color-incorrect) !important;
+    }
+
+    /* Flat 3D State selection buttons */
+    .btn-state {
+      border: 2.5px solid var(--color-dark);
+      box-shadow: 2px 2px 0px var(--color-dark);
+      border-radius: 10px;
+      font-weight: 700;
+      transition: all 0.1s ease-out;
+      transform: translate(0px, 0px);
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .btn-state:hover:not(:disabled) {
+      transform: translate(-1px, -1px);
+      box-shadow: 3px 3px 0px var(--color-dark);
+    }
+
+    .btn-state:active:not(:disabled) {
+      transform: translate(1px, 1px);
+      box-shadow: 1px 1px 0px var(--color-dark);
+    }
+
+    /* Selected styles for state buttons */
+    .btn-state.selected-solide {
+      background-color: var(--solide-bg) !important;
+      color: #0369a1 !important; /* sky-700 */
+      transform: translate(1px, 1px);
+      box-shadow: 1px 1px 0px var(--color-dark) !important;
+    }
+
+    .btn-state.selected-liquide {
+      background-color: var(--liquide-bg) !important;
+      color: #0e7490 !important; /* cyan-700 */
+      transform: translate(1px, 1px);
+      box-shadow: 1px 1px 0px var(--color-dark) !important;
+    }
+
+    .btn-state.selected-gaz {
+      background-color: #94a3b8 !important; /* slate-400 - darker grey-blue */
+      color: #0f172a !important; /* slate-900 - dark text for high visibility */
+      transform: translate(1px, 1px);
+      box-shadow: 1px 1px 0px var(--color-dark) !important;
+    }
+
+    /* Validation assistance indicators */
+    .btn-state.btn-missed {
+      border: 2.5px dashed var(--color-correct) !important;
+      background-color: #ecfdf5 !important;
+      box-shadow: none !important;
+      animation: pulseGreen 1.5s infinite;
+    }
+
+    .btn-state.btn-error {
+      border: 2.5px solid var(--color-incorrect) !important;
+      background-color: #fef2f2 !important;
+      color: var(--color-incorrect) !important;
+      box-shadow: none !important;
+    }
+
+    @keyframes pulseGreen {
+      0%, 100% { border-color: var(--color-correct); }
+      50% { border-color: #34d399; }
+    }
+
+    .fade-in {
+      animation: fadeIn 0.4s ease-out forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Progress bar transition */
+    .progress-bar-fill {
+      transition: width 0.3s ease-in-out;
+    }
+  </style>
+</head>
+<body class="flex flex-col items-center py-6 px-4 md:px-8">
+
+  <div class="w-full max-w-5xl flex flex-col gap-6">
+
+    <!-- Header Navigation -->
+    <div class="flex items-center justify-between w-full">
+      <button onclick="handleBack();" class="btn-3d px-4 py-2 bg-white text-sm font-title rounded-xl flex items-center gap-2">
+        <span>←</span> Retour
+      </button>
+      <div class="score-badge bg-white font-title text-sm md:text-base border-[3px] border-slate-800 rounded-xl px-4 py-2 shadow-[3px_3px_0px_rgba(30,41,59,1)] flex items-center gap-2">
+        <span class="text-amber-500">🏆</span>
+        <span>Score de passage : <span id="header-progress" class="font-bold text-sky-600">0 / 10</span></span>
+      </div>
+    </div>
+
+    <!-- MAIN INTERACTIVE CARD -->
+    <div class="card-3d p-6 md:p-8 bg-white relative overflow-hidden">
+      
+      <!-- SCREEN 1: THE GAME -->
+      <div id="screen-game" class="fade-in flex flex-col gap-6">
+        
+        <!-- Header Banner -->
+        <div class="text-center pb-5 border-b-4 border-dashed border-slate-200">
+          <h1 class="font-title text-3xl md:text-4xl font-bold text-slate-800 flex justify-center items-center gap-3">
+            🧪 Propriétés de la Matière
+          </h1>
+          <p class="text-slate-600 text-sm md:text-base mt-2 font-semibold">
+            Pour chaque propriété physique, coche le ou les états de la matière correspondants.
+          </p>
+          <div class="bg-amber-50 border-2 border-amber-300 text-amber-800 rounded-xl p-3 text-xs md:text-sm mt-3 inline-block max-w-2xl font-medium shadow-sm">
+            💡 <strong>Comment jouer ?</strong> Clique sur les boutons **Solide**, **Liquide** et/ou **Gaz** dans chaque ligne pour attribuer la propriété. Attention, certaines propriétés s'appliquent à plusieurs états à la fois !
+          </div>
+        </div>
+
+        <!-- Progress Tracking -->
+        <div class="w-full bg-slate-100 rounded-full h-5 border-2 border-slate-800 overflow-hidden relative shadow-inner">
+          <div id="progress-bar" class="progress-bar-fill bg-sky-400 h-full w-0" style="border-right: 2px solid var(--color-dark);"></div>
+          <span id="progress-text" class="absolute inset-0 flex items-center justify-center text-[10px] md:text-xs font-black text-slate-700 uppercase tracking-wider">
+            0% complété (0 sur 10 propriétés répondues)
+          </span>
+        </div>
+
+        <!-- GRID OF PROPERTIES -->
+        <div id="properties-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Loaded dynamically -->
+        </div>
+
+        <!-- ACTION BUTTONS -->
+        <div class="flex flex-wrap gap-4 justify-center items-center mt-4">
+          <button id="btn-validate" class="btn-3d px-8 py-3.5 bg-emerald-500 hover:bg-emerald-400 text-white font-title text-lg flex items-center gap-2" onclick="validateGame()">
+            Valider ✔️
+          </button>
+          <button id="btn-clear" class="btn-3d px-6 py-3.5 bg-white hover:bg-slate-50 text-slate-700 font-title text-lg flex items-center gap-2" onclick="confirmReset()">
+            Tout effacer 🔄
+          </button>
+          <button id="btn-correct-errors" class="btn-3d px-6 py-3.5 bg-amber-400 hover:bg-amber-300 text-slate-800 font-title text-lg flex items-center gap-2 hidden" onclick="correctErrorsOnly()">
+            Corriger les erreurs 🛠️
+          </button>
+        </div>
+
+      </div>
+
+      <!-- SCREEN 2: CONGRATULATIONS / RESULTS -->
+      <div id="screen-congrats" class="fade-in hidden flex flex-col items-center justify-center text-center gap-6 py-8">
+        <div class="w-24 h-24 bg-amber-100 border-[4px] border-slate-800 rounded-full flex items-center justify-center text-5xl shadow-[4px_4px_0px_rgba(30,41,59,1)]">
+          🎉
+        </div>
+        
+        <div>
+          <h2 class="font-title text-3xl md:text-4xl font-extrabold text-slate-800">Excellent travail !</h2>
+          <p class="text-slate-500 text-sm md:text-base mt-2 font-semibold">Tu as maîtrisé les propriétés physiques des états de la matière !</p>
+        </div>
+
+        <!-- Score & Percent -->
+        <div class="bg-slate-50 border-[3.5px] border-slate-800 rounded-2xl p-6 shadow-[5px_5px_0px_rgba(30,41,59,1)] max-w-md w-full">
+          <div class="flex justify-between items-center border-b-2 border-slate-200 pb-3 mb-3">
+            <span class="font-bold text-slate-600">Bonnes réponses :</span>
+            <span id="final-score" class="font-title text-2xl font-black text-emerald-600">10 / 10</span>
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="font-bold text-slate-600">Pourcentage :</span>
+            <span id="final-percent" class="font-title text-2xl font-black text-sky-600">100 %</span>
+          </div>
+        </div>
+
+        <!-- Pedagogical comment -->
+        <p id="final-comment" class="text-slate-700 max-w-xl font-medium text-base px-4">
+          Génial ! Tu as classé correctement toutes les propriétés physiques des solides, liquides et gaz.
+        </p>
+
+        <!-- Final Actions -->
+        <div class="flex flex-wrap gap-4 justify-center mt-4">
+          <button class="btn-3d px-6 py-3.5 bg-sky-500 hover:bg-sky-400 text-white font-title text-lg flex items-center gap-2" onclick="restartEntireGame()">
+            Recommencer 🔄
+          </button>
+          <button class="btn-3d px-6 py-3.5 bg-white hover:bg-slate-50 text-slate-700 font-title text-lg flex items-center gap-2" onclick="handleBack()">
+            Retour 🚪
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <script>
+    // Properties data bank
+    const PROPERTIES_BANK = [
+      { id: 'p1', text: "A sa forme propre (qui ne change pas)", states: { solide: true, liquide: false, gaz: false } },
+      { id: 'p2', text: "S'attrape facilement avec les doigts", states: { solide: true, liquide: false, gaz: false } },
+      { id: 'p3', text: "Ne s'écoule pas si on le pose sur une table", states: { solide: true, liquide: false, gaz: false } },
+      { id: 'p4', text: "Garde sa forme quel que soit le récipient", states: { solide: true, liquide: false, gaz: false } },
+      { id: 'p5', text: "Sa surface au repos est plane et horizontale", states: { solide: false, liquide: true, gaz: false } },
+      { id: 'p6', text: "Reste au fond d'un récipient ouvert en prenant sa forme", states: { solide: false, liquide: true, gaz: false } },
+      { id: 'p7', text: "Coule et s'adapte au récipient sans s'échapper (si ouvert)", states: { solide: false, liquide: true, gaz: false } },
+      { id: 'p8', text: "Prend toute la place disponible dans un récipient fermé", states: { solide: false, liquide: false, gaz: true } },
+      { id: 'p9', text: "Est compressible (son volume peut diminuer facilement)", states: { solide: false, liquide: false, gaz: true } },
+      { id: 'p10', text: "Est expansible (son volume peut augmenter facilement)", states: { solide: false, liquide: false, gaz: true } },
+      { id: 'p11', text: "Peut être comprimé en poussant sur le piston d'une seringue fermée", states: { solide: false, liquide: false, gaz: true } },
+      { id: 'p12', text: "S'échappe et se disperse si le récipient est ouvert", states: { solide: false, liquide: false, gaz: true } },
+      { id: 'p13', text: "Pratiquement incompressible (son volume ne change presque pas)", states: { solide: true, liquide: true, gaz: false } },
+      { id: 'p14', text: "A un volume propre (ne change pas de volume d'un récipient à l'autre)", states: { solide: true, liquide: true, gaz: false } },
+      { id: 'p15', text: "N'occupe pas tout le volume du récipient fermé dans lequel on le place", states: { solide: true, liquide: true, gaz: false } },
+      { id: 'p16', text: "N'a pas de forme propre (n'a pas de forme définie à lui-même)", states: { solide: false, liquide: true, gaz: true } },
+      { id: 'p17', text: "Prend la forme du récipient qui le contient", states: { solide: false, liquide: true, gaz: true } },
+      { id: 'p18', text: "Peut s'écouler (se déplacer comme un fluide)", states: { solide: false, liquide: true, gaz: true } },
+      { id: 'p19', text: "Ne peut pas être saisi entre les doigts", states: { solide: false, liquide: true, gaz: true } },
+      { id: 'p20', text: "Possède à la fois une forme propre et un volume propre", states: { solide: true, liquide: false, gaz: false } }
+    ];
+
+    let PROPERTIES_DATA = [];
+
+    // Student selections tracker
+    let userSelections = {};
+    let rowValidationStates = {}; // Track rows that are 100% correct to lock them on partial retries
+    let hasValidated = false;
+
+    // Audio Context Setup
+    let audioCtx = null;
+    
+    function initAudio() {
+      try {
+        if (!audioCtx) {
+          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (audioCtx.state === 'suspended') {
+          audioCtx.resume();
+        }
+      } catch (e) {
+        console.warn('Web Audio API not supported or blocked:', e);
+      }
+    }
+
+    function playTone(freq, duration, type = 'sine', volume = 0.08) {
+      try {
+        initAudio();
+        if (!audioCtx) return;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(volume, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.005, audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch (e) {
+        console.warn('Audio Context tone play failure:', e);
+      }
+    }
+
+    // Audio feedback helpers
+    function sndTap() {
+      playTone(600, 0.05, 'triangle', 0.06);
+    }
+
+    function sndSuccess() {
+      playTone(523.25, 0.1, 'sine', 0.08); // C5
+      setTimeout(() => playTone(659.25, 0.1, 'sine', 0.08), 80); // E5
+      setTimeout(() => playTone(783.99, 0.1, 'sine', 0.08), 160); // G5
+      setTimeout(() => playTone(1046.5, 0.25, 'sine', 0.08), 240); // C6
+    }
+
+    function sndError() {
+      playTone(293.66, 0.12, 'sawtooth', 0.08); // D4
+      setTimeout(() => playTone(220, 0.25, 'sawtooth', 0.08), 100); // A3
+    }
+
+    // Shuffle helper for properties list
+    function shuffleArray(arr) {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    // Initialize/Build game board
+    function initGame() {
+      userSelections = {};
+      rowValidationStates = {};
+      hasValidated = false;
+
+      document.getElementById('btn-validate').disabled = true;
+      document.getElementById('btn-correct-errors').classList.add('hidden');
+      document.getElementById('btn-clear').classList.remove('hidden');
+
+      const grid = document.getElementById('properties-grid');
+      grid.innerHTML = '';
+
+      // Randomize and select 10 properties from the bank
+      const shuffledBank = shuffleArray([...PROPERTIES_BANK]);
+      PROPERTIES_DATA = shuffledBank.slice(0, 10);
+
+      shuffledBank.forEach(p => {
+        rowValidationStates[p.id] = false;
+      });
+
+      PROPERTIES_DATA.forEach(prop => {
+        // Initialize student choices for this property
+        userSelections[prop.id] = { solide: false, liquide: false, gaz: false };
+        rowValidationStates[prop.id] = false;
+
+        const row = createRowElement(prop);
+        grid.appendChild(row);
+      });
+
+      updateProgress();
+    }
+
+    // Build row element html
+    function createRowElement(prop) {
+      const div = document.createElement('div');
+      div.className = 'row-card p-4 flex flex-col sm:flex-row justify-between items-center gap-4 transition-all duration-300';
+      div.id = `row-${prop.id}`;
+
+      // Left: property description text
+      const textSpan = document.createElement('span');
+      textSpan.className = 'font-bold text-slate-700 text-sm md:text-base text-center sm:text-left flex-grow';
+      textSpan.id = `text-${prop.id}`;
+      textSpan.textContent = prop.text;
+      div.appendChild(textSpan);
+
+      // Right: 3 state buttons container
+      const btnContainer = document.createElement('div');
+      btnContainer.className = 'flex gap-2.5 shrink-0 justify-center w-full sm:w-auto';
+
+      const statesList = ['solide', 'liquide', 'gaz'];
+      statesList.forEach(state => {
+        const btn = document.createElement('button');
+        btn.className = `btn-state px-3.5 py-2 text-[11px] md:text-xs font-bold uppercase transition-all duration-100`;
+        btn.id = `btn-${prop.id}-${state}`;
+        btn.textContent = state;
+        btn.addEventListener('click', () => toggleStateSelection(prop.id, state));
+        btnContainer.appendChild(btn);
+      });
+
+      div.appendChild(btnContainer);
+      return div;
+    }
+
+    // Toggle button selection
+    function toggleStateSelection(propId, stateName) {
+      if (hasValidated || rowValidationStates[propId]) return; // Block changes if validated
+      initAudio();
+      sndTap();
+
+      // Toggle state selection
+      const current = userSelections[propId][stateName];
+      userSelections[propId][stateName] = !current;
+
+      // Update button styling
+      const btn = document.getElementById(`btn-${propId}-${stateName}`);
+      if (userSelections[propId][stateName]) {
+        btn.classList.add(`selected-${stateName}`);
+      } else {
+        btn.classList.remove(`selected-${stateName}`);
+      }
+
+      updateProgress();
+    }
+
+    // Update progress bar tracking
+    function updateProgress() {
+      const total = PROPERTIES_DATA.length;
+      let completedCount = 0;
+
+      PROPERTIES_DATA.forEach(prop => {
+        const sel = userSelections[prop.id];
+        // A row is considered "responded" if at least one checkbox is checked
+        if (sel && (sel.solide || sel.liquide || sel.gaz)) {
+          completedCount++;
+        }
+      });
+
+      const pct = Math.round((completedCount / total) * 100);
+
+      document.getElementById('header-progress').textContent = `${completedCount} / ${total}`;
+      document.getElementById('progress-bar').style.width = `${pct}%`;
+      document.getElementById('progress-text').textContent = `${pct}% complété (${completedCount} sur ${total} propriétés répondues)`;
+
+      const btnValidate = document.getElementById('btn-validate');
+      if (completedCount === total) {
+        btnValidate.disabled = false;
+        btnValidate.classList.remove('opacity-50');
+      } else {
+        btnValidate.disabled = true;
+        btnValidate.classList.add('opacity-50');
+      }
+    }
+
+    // Validation checks
+    function validateGame() {
+      initAudio();
+      hasValidated = true;
+
+      document.getElementById('btn-validate').disabled = true;
+      document.getElementById('btn-clear').classList.add('hidden');
+
+      let score = 0;
+      const total = PROPERTIES_DATA.length;
+
+      PROPERTIES_DATA.forEach(prop => {
+        const rowEl = document.getElementById(`row-${prop.id}`);
+        const textEl = document.getElementById(`text-${prop.id}`);
+        
+        const sel = userSelections[prop.id];
+        const answers = prop.states;
+
+        // Check if all three buttons match the answer sheet exactly
+        const isSolideCorrect = (sel.solide === answers.solide);
+        const isLiquideCorrect = (sel.liquide === answers.liquide);
+        const isGazCorrect = (sel.gaz === answers.gaz);
+
+        const isRowCorrect = isSolideCorrect && isLiquideCorrect && isGazCorrect;
+
+        // Visual states styling
+        if (isRowCorrect) {
+          rowEl.classList.remove('row-incorrect');
+          rowEl.classList.add('row-correct');
+          if (!textEl.textContent.includes('✔️')) {
+            textEl.textContent = textEl.textContent + '  ✔️';
+          }
+          rowValidationStates[prop.id] = true; // Lock this row
+          score++;
+        } else {
+          rowEl.classList.remove('row-correct');
+          rowEl.classList.add('row-incorrect');
+          if (!textEl.textContent.includes('❌')) {
+            textEl.textContent = textEl.textContent + '  ❌';
+          }
+          rowValidationStates[prop.id] = false;
+        }
+
+        // Simply disable buttons to lock input during validation review
+        const statesList = ['solide', 'liquide', 'gaz'];
+        statesList.forEach(state => {
+          const btn = document.getElementById(`btn-${prop.id}-${state}`);
+          btn.disabled = true;
+          btn.classList.remove('btn-missed', 'btn-error');
+        });
+      });
+
+      const pct = Math.round((score / total) * 100);
+
+      // Trigger audios
+      if (score === total) {
+        sndSuccess();
+        triggerConfettiShower();
+        showCongratsScreen(score, total, pct);
+      } else {
+        sndError();
+        document.getElementById('btn-correct-errors').classList.remove('hidden');
+        alert(`Tu as des erreurs dans ton classement (${score} / ${total}). Repère les lignes marquées d'une croix rouge (❌), puis clique sur "Corriger les erreurs" pour modifier tes réponses.`);
+      }
+
+      // Save results LCML parent hook
+      if (window.parent && window.parent.saveResult) {
+        window.parent.saveResult({
+          activity: 'sci_matiere_etats',
+          bookTitle: 'Sciences : États et propriétés de la matière',
+          score: score,
+          total: total,
+          pct: pct,
+          date: new Date().toLocaleDateString('fr-BE'),
+          time: new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })
+        });
+      }
+    }
+
+    // Allow user to correct incorrect rows only
+    function correctErrorsOnly() {
+      initAudio();
+      sndTap();
+
+      PROPERTIES_DATA.forEach(prop => {
+        if (rowValidationStates[prop.id]) {
+          // Locked row, ignore
+          return;
+        }
+
+        // Reset incorrect row feedback styles
+        const rowEl = document.getElementById(`row-${prop.id}`);
+        const textEl = document.getElementById(`text-${prop.id}`);
+        rowEl.classList.remove('row-incorrect');
+        textEl.textContent = textEl.textContent.replace('  ❌', '');
+
+        const statesList = ['solide', 'liquide', 'gaz'];
+        statesList.forEach(state => {
+          const btn = document.getElementById(`btn-${prop.id}-${state}`);
+          btn.disabled = false;
+          btn.classList.remove('btn-missed', 'btn-error');
+        });
+      });
+
+      hasValidated = false;
+      document.getElementById('btn-correct-errors').classList.add('hidden');
+      document.getElementById('btn-clear').classList.remove('hidden');
+
+      updateProgress();
+    }
+
+    // Reset everything
+    function confirmReset() {
+      initAudio();
+      if (confirm("Es-tu sûr(e) de vouloir tout effacer et recommencer ?")) {
+        sndTap();
+        initGame();
+      }
+    }
+
+    // Final screen transition
+    function showCongratsScreen(score, total, pct) {
+      document.getElementById('screen-game').classList.add('hidden');
+      document.getElementById('final-score').textContent = `${score} / ${total}`;
+      document.getElementById('final-percent').textContent = `${pct} %`;
+      document.getElementById('screen-congrats').classList.remove('hidden');
+    }
+
+    function restartEntireGame() {
+      initAudio();
+      sndTap();
+      document.getElementById('screen-congrats').classList.add('hidden');
+      document.getElementById('screen-game').classList.remove('hidden');
+      initGame();
+    }
+
+    function handleBack() {
+      sndTap();
+      if (window.parent && typeof window.parent.closeFicheViewer === 'function') {
+        window.parent.closeFicheViewer();
+      } else {
+        window.history.back();
+      }
+    }
+
+    function triggerConfettiShower() {
+      const duration = 3 * 1000;
+      const end = Date.now() + duration;
+
+      (function frame() {
+        confetti({
+          particleCount: 4,
+          angle: 60,
+          spread: 55,
+          origin: { x: 0, y: 0.8 },
+          colors: ['#38bdf8', '#06b6d4', '#64748b', '#10b981', '#fbbf24']
+        });
+        confetti({
+          particleCount: 4,
+          angle: 120,
+          spread: 55,
+          origin: { x: 1, y: 0.8 },
+          colors: ['#38bdf8', '#06b6d4', '#64748b', '#10b981', '#fbbf24']
+        });
+
+        if (Date.now() < end) {
+          requestAnimationFrame(frame);
+        }
+      }());
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      initGame();
+    });
+  </script>
+</body>
+</html>

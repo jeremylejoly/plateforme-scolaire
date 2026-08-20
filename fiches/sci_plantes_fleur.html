@@ -1,0 +1,1190 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Anatomie de la Fleur — Schéma de la Reproduction</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Nunito:wght@500;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  
+  <!-- canvas-confetti library -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <style>
+    :root {
+      /* Colors */
+      --green-leaf: #3D644F;
+      --green-leaf-hover: #294536;
+      --green-pastel: #EBF3EE;
+      --green-pastel-dark: #D1E3D7;
+      
+      --terracotta: #D07A65;
+      --terracotta-pastel: #F9EBE8;
+      --terracotta-dark: #B35842;
+      
+      --pollen: #F5D35B;
+      --pollen-pastel: #FEF9E6;
+      
+      --beige: #FAF8F5;
+      --white: #FFFFFF;
+      --dark: #2C3E35;
+      --grey: #5A6D63;
+      
+      /* States */
+      --correct: #1A9E75;
+      --correct-pastel: #E2F5EE;
+      --correct-dark: #157E5D;
+      
+      --incorrect: #D94F3D;
+      --incorrect-pastel: #FDECEA;
+      --incorrect-dark: #A83628;
+
+      --selected: #5B4FCF;
+      --selected-pastel: #EEF0FF;
+      
+      /* Flat 3D parameters */
+      --border-width: 3.5px;
+      --radius: 16px;
+      --radius-sm: 10px;
+      --shadow: 6px 6px 0px var(--dark);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background-color: var(--beige);
+      color: var(--dark);
+      padding: 1.5rem;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      line-height: 1.5;
+    }
+
+    h1, h2, h3, h4 {
+      font-family: 'Fredoka', sans-serif;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1100px;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    /* header card */
+    header.flat-header {
+      background: var(--white);
+      border: var(--border-width) solid var(--dark);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      background-image: radial-gradient(var(--green-pastel-dark) 1.5px, transparent 1.5px);
+      background-size: 20px 20px;
+    }
+
+    .header-text h1 {
+      font-size: 1.8rem;
+      color: var(--dark);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .header-text p {
+      font-size: 0.95rem;
+      color: var(--grey);
+      margin-top: 0.25rem;
+      font-weight: 600;
+    }
+
+    /* Score Badge */
+    .score-badge {
+      font-family: 'Space Mono', monospace;
+      font-weight: 700;
+      background: var(--white);
+      border: 2.5px solid var(--dark);
+      border-radius: var(--radius-sm);
+      padding: 6px 12px;
+      font-size: 0.9rem;
+      white-space: nowrap;
+      box-shadow: 3px 3px 0px var(--dark);
+    }
+
+    /* Main workspace grid */
+    .workspace {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    @media (min-width: 900px) {
+      .workspace {
+        grid-template-columns: 240px 1fr;
+      }
+    }
+
+    /* Sidebar - reserve area */
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .flat-card {
+      background: var(--white);
+      border: var(--border-width) solid var(--dark);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 1.25rem;
+    }
+
+    .flat-card h3 {
+      font-size: 1.15rem;
+      margin-bottom: 0.75rem;
+      border-bottom: 2px dashed var(--dark);
+      padding-bottom: 0.5rem;
+      color: var(--dark);
+    }
+
+    /* Labels bank container */
+    .labels-bank {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      justify-content: center;
+      min-height: 100px;
+      align-content: flex-start;
+    }
+
+    @media (min-width: 900px) {
+      .labels-bank {
+        flex-direction: column;
+        align-items: stretch;
+      }
+    }
+
+    /* Interactive Label Cards */
+    .label-card {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 14px;
+      background: var(--white);
+      border: var(--border-width) solid var(--dark);
+      border-radius: var(--radius-sm);
+      box-shadow: 3px 3px 0px var(--dark);
+      font-weight: 800;
+      font-size: 0.95rem;
+      cursor: grab;
+      user-select: none;
+      transition: all 0.15s ease;
+      touch-action: none;
+      text-align: center;
+    }
+
+    .label-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 5px 5px 0px var(--dark);
+      background-color: var(--green-pastel);
+    }
+
+    .label-card:active {
+      transform: translate(2px, 2px);
+      box-shadow: 1px 1px 0px var(--dark);
+      cursor: grabbing;
+    }
+
+    .label-card.selected {
+      background-color: var(--pollen-pastel);
+      border-color: var(--dark);
+      outline: 3px dashed var(--dark);
+      outline-offset: 3px;
+      animation: pulse 1.5s infinite alternate;
+    }
+
+    .label-card.placed {
+      opacity: 0.25;
+      cursor: default;
+      pointer-events: none;
+      box-shadow: none;
+      transform: none;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      100% { transform: scale(1.03); }
+    }
+
+    /* Diagram Wrapper and Interactive drop zones */
+    .diagram-panel {
+      position: relative;
+      background: var(--white);
+      border: var(--border-width) solid var(--dark);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 1rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .diagram-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 800px;
+      aspect-ratio: 1000 / 650;
+      user-select: none;
+    }
+
+    .diagram-svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* Drop Zones styled absolutely on diagram */
+    .drop-zone {
+      position: absolute;
+      width: 125px;
+      height: 38px;
+      border: 2px dashed var(--grey);
+      border-radius: var(--radius-sm);
+      background: rgba(255, 255, 255, 0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--grey);
+      transform: translate(-50%, -50%);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      z-index: 20;
+    }
+
+    .drop-zone:hover {
+      border-color: var(--green-leaf);
+      background: var(--green-pastel);
+      color: var(--green-leaf);
+      transform: translate(-50%, -50%) scale(1.04);
+    }
+
+    .drop-zone.active-target {
+      border-color: var(--selected);
+      background: var(--selected-pastel);
+      color: var(--selected);
+      box-shadow: 0 0 10px rgba(91, 79, 207, 0.2);
+    }
+
+    .drop-zone.filled {
+      border-style: solid;
+      border-width: var(--border-width);
+      border-color: var(--dark);
+      background: var(--white);
+      color: var(--dark);
+      box-shadow: 3px 3px 0px var(--dark);
+    }
+
+    .drop-zone.filled:hover {
+      transform: translate(-50%, -50%) translateY(-2px);
+      box-shadow: 5px 5px 0px var(--dark);
+    }
+
+    .drop-zone.correct {
+      border-color: var(--correct) !important;
+      background: var(--correct-pastel) !important;
+      color: var(--correct-dark) !important;
+      box-shadow: 3px 3px 0px var(--correct) !important;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    .drop-zone.incorrect {
+      border-color: var(--incorrect) !important;
+      background: var(--incorrect-pastel) !important;
+      color: var(--incorrect-dark) !important;
+      box-shadow: 3px 3px 0px var(--incorrect) !important;
+      animation: shake 0.4s ease;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translate(-50%, -50%) translateX(0); }
+      25% { transform: translate(-50%, -50%) translateX(-6px); }
+      75% { transform: translate(-50%, -50%) translateX(6px); }
+    }
+
+    /* Brackets style */
+    .bracket-label {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--dark);
+      fill: var(--dark);
+    }
+
+    /* Info Bar at the bottom */
+    .info-bar {
+      background: var(--green-pastel);
+      border: 2px solid var(--green-leaf);
+      border-radius: var(--radius-sm);
+      padding: 0.75rem 1rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      min-height: 52px;
+    }
+
+    .info-bar .icon {
+      font-size: 1.2rem;
+    }
+
+    /* Action buttons bar */
+    .action-bar {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-top: 0.5rem;
+    }
+
+    /* Flat 3D Buttons */
+    .flat-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Fredoka', sans-serif;
+      font-weight: 700;
+      font-size: 1.05rem;
+      padding: 12px 24px;
+      border: var(--border-width) solid var(--dark);
+      border-radius: var(--radius-sm);
+      box-shadow: 4px 4px 0px var(--dark);
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.1s ease;
+      background: var(--white);
+      color: var(--dark);
+    }
+
+    .flat-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 6px 6px 0px var(--dark);
+    }
+
+    .flat-btn:active {
+      transform: translate(2px, 2px);
+      box-shadow: 2px 2px 0px var(--dark);
+    }
+
+    .flat-btn:disabled {
+      background: #e2e8f0;
+      border-color: var(--grey);
+      color: #94a3b8;
+      box-shadow: 2px 2px 0px var(--grey);
+      cursor: not-allowed;
+      transform: none !important;
+    }
+
+    .btn-green {
+      background-color: var(--green-leaf);
+      color: var(--white);
+    }
+    .btn-green:hover {
+      background-color: var(--green-leaf-hover);
+    }
+
+    .btn-terracotta {
+      background-color: var(--terracotta);
+      color: var(--white);
+    }
+    .btn-terracotta:hover {
+      background-color: var(--terracotta-dark);
+    }
+
+    /* Custom Floating Drag Element (for native drag shadow) */
+    .drag-clone {
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.85;
+      transform: translate(-50%, -50%) scale(1.05);
+      box-shadow: 8px 8px 0px var(--dark);
+      border: var(--border-width) solid var(--dark);
+      border-radius: var(--radius-sm);
+      background: var(--white);
+      font-weight: 800;
+      padding: 8px 14px;
+      font-family: 'Nunito', sans-serif;
+    }
+
+    /* Modal / Success overlay */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(44, 62, 53, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 1rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .success-modal {
+      background: var(--white);
+      border: var(--border-width) solid var(--dark);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 2.5rem 2rem;
+      width: 100%;
+      max-width: 520px;
+      text-align: center;
+      transform: translateY(30px);
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .modal-overlay.active .success-modal {
+      transform: translateY(0);
+    }
+
+    .success-modal h2 {
+      font-size: 2.2rem;
+      color: var(--green-leaf);
+      margin-bottom: 0.5rem;
+    }
+
+    .success-modal .stars {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .success-modal p {
+      font-size: 1.1rem;
+      color: var(--grey);
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+    }
+
+    .success-modal .score-val {
+      font-size: 1.8rem;
+      font-family: 'Fredoka', sans-serif;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: 1.5rem;
+      background: var(--pollen-pastel);
+      border: 2px dashed var(--dark);
+      padding: 8px 16px;
+      display: inline-block;
+      border-radius: var(--radius-sm);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    
+    <!-- HEADER -->
+    <header class="flat-header">
+      <div class="header-text">
+        <h1>🌸 L'Anatomie de la Fleur</h1>
+        <p>Glisse ou clique sur les étiquettes pour nommer les organes reproducteurs de la fleur (P5-P6).</p>
+      </div>
+      <div class="score-badge" id="scoreBadge">Organes placés : 0 / 9</div>
+    </header>
+
+    <!-- WORKSPACE -->
+    <div class="workspace">
+      
+      <!-- SIDEBAR (Reserve) -->
+      <div class="sidebar">
+        <div class="flat-card" style="flex-grow: 1;">
+          <h3>Étiquettes</h3>
+          <div class="labels-bank" id="labelsBank">
+            <div class="label-card" data-id="sepale" draggable="true">Sépale</div>
+            <div class="label-card" data-id="petale" draggable="true">Pétale</div>
+            <div class="label-card" data-id="stigmate" draggable="true">Stigmate</div>
+            <div class="label-card" data-id="style" draggable="true">Style</div>
+            <div class="label-card" data-id="ovaire" draggable="true">Ovaire</div>
+            <div class="label-card" data-id="pistil" draggable="true">Pistil</div>
+            <div class="label-card" data-id="pollen" draggable="true">Pollen</div>
+            <div class="label-card" data-id="filet" draggable="true">Filet</div>
+            <div class="label-card" data-id="etamine" draggable="true">Étamine</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DIAGRAM PANEL -->
+      <div class="diagram-panel">
+        <div class="diagram-wrapper" id="diagramWrapper">
+          
+          <!-- INLINE SVG DIAGRAM -->
+          <svg class="diagram-svg" viewBox="0 0 1000 650">
+            
+            <!-- Background grids/decorative circles -->
+            <rect width="1000" height="650" fill="none" />
+            
+            <!-- FLOWER VECTOR GRAPHIC FIRST (renders below leader lines) -->
+            
+            <!-- Back Petals (2x, dark terracotta) -->
+            <path d="M 370 450 C 200 240, 290 190, 390 320 Z" fill="#BF6752" stroke="#2C3E35" stroke-width="3" />
+            <path d="M 430 450 C 600 240, 510 190, 410 320 Z" fill="#BF6752" stroke="#2C3E35" stroke-width="3" />
+            
+            <!-- Center Back Petal -->
+            <path d="M 340 430 C 260 140, 540 140, 460 430 Z" fill="#E58A73" stroke="#2C3E35" stroke-width="3" />
+            
+            <!-- Pédoncule (Stem) -->
+            <path d="M 393 470 L 393 570 C 393 590, 407 590, 407 570 L 407 470 Z" fill="#587B68" stroke="#2C3E35" stroke-width="3" />
+            
+            <!-- Front Petals (Large, Terracotta) -->
+            <path d="M 350 450 C 120 300, 240 210, 365 410 Z" fill="#D07A65" stroke="#2C3E35" stroke-width="3" />
+            <path d="M 450 450 C 680 300, 560 210, 435 410 Z" fill="#D07A65" stroke="#2C3E35" stroke-width="3" />
+
+            <!-- Réceptacle (Base) -->
+            <path d="M 350 450 C 350 495, 450 495, 450 450 C 450 440, 350 440, 350 450 Z" fill="#587B68" stroke="#2C3E35" stroke-width="3" />
+
+            <!-- Sepals (Sépales - 2x, drawn on top of petals so they are visible!) -->
+            <path d="M 350 450 C 290 410, 330 380, 375 440 Z" fill="#4E6E5D" stroke="#2C3E35" stroke-width="3" />
+            <path d="M 450 450 C 510 410, 470 380, 425 440 Z" fill="#4E6E5D" stroke="#2C3E35" stroke-width="3" />
+
+            <!-- PISTIL (Female Organ - Center) -->
+            <!-- 1. Ovary (Ovaire - swollen base) -->
+            <path d="M 380 365 C 345 385, 345 450, 400 450 C 455 450, 455 385, 420 365 Z" fill="#A9DFBF" stroke="#2C3E35" stroke-width="3" />
+            <!-- 2. Ovary Cutaway to show Ovules -->
+            <path d="M 388 380 C 365 395, 365 440, 400 440 C 435 440, 435 395, 412 380 Z" fill="#D4EFDF" stroke="none" />
+            <!-- 3. Ovules (inside ovary) -->
+            <circle cx="390" cy="403" r="5" fill="#FEF9E6" stroke="#2C3E35" stroke-width="2" />
+            <circle cx="390" cy="420" r="5" fill="#FEF9E6" stroke="#2C3E35" stroke-width="2" />
+            <circle cx="400" cy="395" r="5" fill="#FEF9E6" stroke="#2C3E35" stroke-width="2" />
+            <circle cx="400" cy="425" r="5" fill="#FEF9E6" stroke="#2C3E35" stroke-width="2" />
+            <circle cx="410" cy="403" r="5" fill="#FEF9E6" stroke="#2C3E35" stroke-width="2" />
+            <circle cx="410" cy="420" r="5" fill="#FEF9E6" stroke="#2C3E35" stroke-width="2" />
+            <!-- 4. Style (vertical neck) -->
+            <rect x="391" y="225" width="18" height="140" fill="#A9DFBF" stroke="#2C3E35" stroke-width="3" />
+            <!-- 5. Stigma (Stigmate - 3-lobed top) -->
+            <path d="M 383 225 C 370 215, 375 200, 392 210 C 400 195, 410 195, 408 210 C 425 200, 430 215, 417 225 Z" fill="#7DCEA0" stroke="#2C3E35" stroke-width="3" />
+
+            <!-- STAMENS (Étamines - 4x) -->
+            <!-- Stamen Left 1 -->
+            <path d="M 360 445 C 310 390, 270 310, 290 260" fill="none" stroke="#E5B233" stroke-width="4.5" stroke-linecap="round" />
+            <!-- Anther L1 -->
+            <path d="M 283 253 C 278 245, 298 240, 298 250 C 298 240, 308 245, 303 253 C 298 260, 288 260, 283 253 Z" fill="#F5D35B" stroke="#2C3E35" stroke-width="2.5" />
+            <!-- Stamen Left 2 -->
+            <path d="M 375 448 C 340 370, 310 290, 330 240" fill="none" stroke="#E5B233" stroke-width="4.5" stroke-linecap="round" />
+            <!-- Anther L2 -->
+            <path d="M 323 233 C 318 225, 338 220, 338 230 C 338 220, 348 225, 343 233 C 338 240, 328 240, 323 233 Z" fill="#F5D35B" stroke="#2C3E35" stroke-width="2.5" />
+            <!-- Stamen Right 1 -->
+            <path d="M 425 448 C 460 370, 490 290, 470 240" fill="none" stroke="#E5B233" stroke-width="4.5" stroke-linecap="round" />
+            <!-- Anther R1 -->
+            <path d="M 463 233 C 458 225, 478 220, 478 230 C 478 220, 488 225, 483 233 C 478 240, 468 240, 463 233 Z" fill="#F5D35B" stroke="#2C3E35" stroke-width="2.5" />
+            <!-- Stamen Right 2 -->
+            <path d="M 440 445 C 490 390, 530 310, 510 260" fill="none" stroke="#E5B233" stroke-width="4.5" stroke-linecap="round" />
+            <!-- Anther R2 -->
+            <path d="M 503 253 C 498 245, 518 240, 518 250 C 518 240, 528 245, 523 253 C 518 260, 508 260, 503 253 Z" fill="#F5D35B" stroke="#2C3E35" stroke-width="2.5" />
+
+            <!-- Little pollen grains around stamens (decorative) -->
+            <circle cx="280" cy="235" r="2" fill="#E5B233" />
+            <circle cx="295" cy="230" r="1.5" fill="#E5B233" />
+            <circle cx="335" cy="210" r="2" fill="#E5B233" />
+            <circle cx="345" cy="215" r="1.5" fill="#E5B233" />
+            <circle cx="455" cy="215" r="2" fill="#E5B233" />
+            <circle cx="465" cy="210" r="1.5" fill="#E5B233" />
+            <circle cx="510" cy="235" r="2" fill="#E5B233" />
+            <circle cx="525" cy="230" r="1.5" fill="#E5B233" />
+
+
+            <!-- LEADER LINES, BRACKETS & TEXT SECOND (renders on top of flower) -->
+            
+            <!-- Connection lines with terminal dots (dashed) -->
+            <!-- 1. Stigmate -->
+            <line id="line-stigmate" x1="295" y1="140" x2="400" y2="215" stroke="#2C3E35" stroke-width="2.5" stroke-dasharray="6,6" />
+            <circle id="circle-stigmate" cx="400" cy="215" r="5.5" fill="#2C3E35" />
+
+            <!-- 2. Style -->
+            <line id="line-style" x1="295" y1="290" x2="400" y2="290" stroke="#2C3E35" stroke-width="2.5" stroke-dasharray="6,6" />
+            <circle id="circle-style" cx="400" cy="290" r="5.5" fill="#2C3E35" />
+
+            <!-- 3. Ovaire -->
+            <line id="line-ovaire" x1="295" y1="440" x2="400" y2="437" stroke="#2C3E35" stroke-width="2.5" stroke-dasharray="6,6" />
+            <circle id="circle-ovaire" cx="400" cy="437" r="5.5" fill="#2C3E35" />
+
+            <!-- 4. Sepale -->
+            <line id="line-sepale" x1="250" y1="541" x2="329" y2="425" stroke="#2C3E35" stroke-width="2.5" stroke-dasharray="6,6" />
+            <circle id="circle-sepale" cx="329" cy="425" r="5.5" fill="#2C3E35" />
+
+            <!-- 5. Pollen -->
+            <line id="line-pollen" x1="705" y1="180" x2="514" y2="235" stroke="#2C3E35" stroke-width="2.5" stroke-dasharray="6,6" />
+            <circle id="circle-pollen" cx="514" cy="235" r="5.5" fill="#2C3E35" />
+
+            <!-- 6. Filet -->
+            <line id="line-filet" x1="705" y1="320" x2="513" y2="315" stroke="#2C3E35" stroke-width="2.5" stroke-dasharray="6,6" />
+            <circle id="circle-filet" cx="513" cy="315" r="5.5" fill="#2C3E35" />
+
+            <!-- 7. Petale -->
+            <line id="line-petale" x1="705" y1="460" x2="536" y2="354" stroke="#2C3E35" stroke-width="2.5" stroke-dasharray="6,6" />
+            <circle id="circle-petale" cx="536" cy="354" r="5.5" fill="#2C3E35" />
+
+            <!-- Brackets representing groups -->
+            <!-- Left Bracket for Pistil (Organe femelle) -->
+            <!-- Spans from Y=140 to Y=440 at X=150, pointing left to X=120 -->
+            <path d="M 160 140 L 145 140 A 10 10 0 0 0 135 150 L 135 280 A 10 10 0 0 1 125 290 A 10 10 0 0 1 135 300 L 135 430 A 10 10 0 0 0 145 440 L 160 440" 
+                  fill="none" stroke="#2C3E35" stroke-width="3" stroke-linecap="round" />
+            <line x1="120" y1="290" x2="110" y2="290" stroke="#2C3E35" stroke-width="3" />
+            
+            <!-- Right Bracket for Étamine (Organe mâle) -->
+            <!-- Spans from Y=180 to Y=320 at X=840, pointing right to X=870 -->
+            <path d="M 830 180 L 845 180 A 10 10 0 0 1 855 190 L 855 240 A 10 10 0 0 0 865 250 A 10 10 0 0 0 865 260 L 865 310 A 10 10 0 0 1 845 320 L 830 320" 
+                  fill="none" stroke="#2C3E35" stroke-width="3" stroke-linecap="round" />
+            <line x1="865" y1="250" x2="875" y2="250" stroke="#2C3E35" stroke-width="3" />
+
+            <!-- Labels for groups inside SVG (Moved out of overlapping zones) -->
+            <text x="80" y="105" class="bracket-label" text-anchor="middle" font-weight="bold">Organe Femelle</text>
+            <text x="920" y="145" class="bracket-label" text-anchor="middle" font-weight="bold">Organe Mâle</text>
+
+          </svg>
+
+          <!-- Drop Zones (HTML Overlaid on top of SVG viewBox coordinates) -->
+          <!-- Left side -->
+          <div class="drop-zone" id="dz-pistil" data-correct-id="pistil" style="left: 5.0%; top: 44.6%;">Déposer ici</div>
+          <div class="drop-zone" id="dz-stigmate" data-correct-id="stigmate" style="left: 23.0%; top: 21.5%;">Déposer ici</div>
+          <div class="drop-zone" id="dz-style" data-correct-id="style" style="left: 23.0%; top: 44.6%;">Déposer ici</div>
+          <div class="drop-zone" id="dz-ovaire" data-correct-id="ovaire" style="left: 23.0%; top: 67.7%;">Déposer ici</div>
+          <div class="drop-zone" id="dz-sepale" data-correct-id="sepale" style="left: 25.0%; top: 86.2%;">Déposer ici</div>
+
+          <!-- Right side -->
+          <div class="drop-zone" id="dz-pollen" data-correct-id="pollen" style="left: 77.0%; top: 27.7%;">Déposer ici</div>
+          <div class="drop-zone" id="dz-filet" data-correct-id="filet" style="left: 77.0%; top: 49.2%;">Déposer ici</div>
+          <div class="drop-zone" id="dz-petale" data-correct-id="petale" style="left: 77.0%; top: 70.8%;">Déposer ici</div>
+          <div class="drop-zone" id="dz-etamine" data-correct-id="etamine" style="left: 93.5%; top: 38.5%;">Déposer ici</div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <!-- INFO BOX -->
+    <div class="info-bar">
+      <span class="icon">💡</span>
+      <span id="infoText">Clique sur une étiquette pour commencer, puis clique sur la zone de dépôt correspondante.</span>
+    </div>
+
+    <!-- CONTROLS -->
+    <div class="action-bar">
+      <button class="flat-btn" id="btnReset">↺ Recommencer</button>
+      <button class="flat-btn btn-green" id="btnValidate" disabled>✅ Valider mes réponses</button>
+    </div>
+
+  </div>
+
+  <!-- SUCCESS MODAL OVERLAY -->
+  <div class="modal-overlay" id="successOverlay">
+    <div class="success-modal">
+      <h2>Incroyable ! 🎉</h2>
+      <div class="stars">⭐⭐⭐</div>
+      <p>Tu as légendé le schéma de la fleur avec un parfait sans-faute !</p>
+      <div class="score-val">Score : 9 / 9 (100%)</div>
+      <div>
+        <button class="flat-btn btn-terracotta" id="btnModalClose">Fermer &amp; Recommencer</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // --- State Management ---
+    let state = {
+      student: 'Élève',
+      studentCls: 'Classe'
+    };
+    
+    // Retrieve parent platform student context
+    if (window.parent && window.parent.state) {
+      state.student = window.parent.state.student || 'Élève';
+      state.studentCls = window.parent.state.studentCls || 'Classe';
+    }
+
+    const correctAnswers = {
+      'dz-pistil': 'pistil',
+      'dz-stigmate': 'stigmate',
+      'dz-style': 'style',
+      'dz-ovaire': 'ovaire',
+      'dz-sepale': 'sepale',
+      'dz-pollen': 'pollen',
+      'dz-filet': 'filet',
+      'dz-petale': 'petale',
+      'dz-etamine': 'etamine'
+    };
+
+    const descriptions = {
+      'pistil': "Le Pistil est l'organe reproducteur femelle au centre de la fleur. Il comprend le stigmate, le style et l'ovaire.",
+      'stigmate': "Le Stigmate est l'extrémité collante du pistil. Il capture les grains de pollen transportés par le vent ou les insectes.",
+      'style': "Le Style est le tube allongé qui relie le stigmate à l'ovaire. Il sert de conduit de descente pour le pollen.",
+      'ovaire': "L'Ovaire est la base gonflée du pistil contenant les ovules. Après fécondation, il gonfle pour devenir un fruit protecteur.",
+      'sepale': "Le Sépale est une petite feuille verte située sous la fleur. Ensemble, les sépales protègent le bouton floral fermé.",
+      'pollen': "Le Pollen est constitué de grains microscopiques (cellules mâles) formés dans l'anthère (tête jaune de l'étamine).",
+      'filet': "Le Filet est la fine tige de l'étamine qui porte l'anthère et la maintient exposée au vent et aux insectes.",
+      'petale': "Le Pétale est coloré pour attirer les insectes pollinisateurs. L'ensemble des pétales forme la corolle de la fleur.",
+      'etamine': "L'Étamine est l'organe reproducteur mâle de la fleur. Elle comprend le filet et l'anthère chargée de pollen."
+    };
+
+    const labelTexts = {
+      'pistil': 'Pistil',
+      'stigmate': 'Stigmate',
+      'style': 'Style',
+      'ovaire': 'Ovaire',
+      'sepale': 'Sépale',
+      'pollen': 'Pollen',
+      'filet': 'Filet',
+      'petale': 'Pétale',
+      'etamine': 'Étamine'
+    };
+
+    // Keep track of placed labels: { zoneId: labelId }
+    let placedLabels = {};
+    let selectedLabelId = null;
+    let firstAttemptDone = false;
+
+    // --- Audio Synthesis Setup ---
+    let audioCtx = null;
+
+    function playTone(freq, duration, type = 'sine', volume = 0.08) {
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        
+        gain.gain.setValueAtTime(volume, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.005, audioCtx.currentTime + duration);
+        
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch (e) {
+        console.warn('Web Audio API not supported or blocked by user gesture.', e);
+      }
+    }
+
+    function playClickSound() {
+      playTone(600, 0.05, 'triangle', 0.05);
+    }
+
+    function playSuccessSound() {
+      // Happy ascending arpeggio (C major: C5 -> E5 -> G5 -> C6)
+      playTone(523.25, 0.1, 'sine', 0.1);
+      setTimeout(() => playTone(659.25, 0.1, 'sine', 0.1), 80);
+      setTimeout(() => playTone(783.99, 0.1, 'sine', 0.1), 160);
+      setTimeout(() => playTone(1046.50, 0.25, 'sine', 0.1), 240);
+    }
+
+    function playErrorSound() {
+      // Lower discordant slide
+      playTone(220, 0.15, 'sawtooth', 0.08);
+      setTimeout(() => playTone(165, 0.25, 'sawtooth', 0.08), 120);
+    }
+
+    // --- UI Helpers ---
+    const labelsBank = document.getElementById('labelsBank');
+    const labelElements = document.querySelectorAll('.label-card');
+    const dropZones = document.querySelectorAll('.drop-zone');
+    const btnValidate = document.getElementById('btnValidate');
+    const btnReset = document.getElementById('btnReset');
+    const scoreBadge = document.getElementById('scoreBadge');
+    const infoText = document.getElementById('infoText');
+    const successOverlay = document.getElementById('successOverlay');
+    const btnModalClose = document.getElementById('btnModalClose');
+
+    // Update progress state
+    function updateState() {
+      const totalZones = Object.keys(correctAnswers).length;
+      const filledCount = Object.keys(placedLabels).length;
+      
+      scoreBadge.textContent = `Organes placés : ${filledCount} / ${totalZones}`;
+      
+      // Enable validation button only if all zones are filled
+      btnValidate.disabled = (filledCount < totalZones);
+    }
+
+    // Display info text on hover/select
+    function showInfo(text, isImportant = false) {
+      infoText.textContent = text;
+      if (isImportant) {
+        infoText.parentElement.style.backgroundColor = 'var(--pollen-pastel)';
+      } else {
+        infoText.parentElement.style.backgroundColor = 'var(--green-pastel)';
+      }
+    }
+
+    // Select label (Click-to-place)
+    function selectLabel(id) {
+      if (selectedLabelId === id) {
+        // Deselect
+        selectedLabelId = null;
+        labelElements.forEach(el => el.classList.remove('selected'));
+        showInfo("Clique sur une étiquette pour commencer, puis clique sur la zone de dépôt correspondante.");
+        return;
+      }
+
+      // Deselect others
+      selectedLabelId = id;
+      labelElements.forEach(el => {
+        if (el.dataset.id === id) {
+          el.classList.add('selected');
+        } else {
+          el.classList.remove('selected');
+        }
+      });
+
+      const text = labelTexts[id];
+      showInfo(`Étiquette "${text}" sélectionnée ! Clique sur une zone "Déposer ici" du schéma.`);
+      playClickSound();
+    }
+
+    // Clear selection
+    function clearSelection() {
+      selectedLabelId = null;
+      labelElements.forEach(el => el.classList.remove('selected'));
+    }
+
+    // Place label in zone
+    function placeLabelInZone(zoneId, labelId) {
+      playClickSound();
+      
+      // If zone already had a label, free it first
+      if (placedLabels[zoneId]) {
+        freeLabel(placedLabels[zoneId]);
+      }
+
+      // If this label was placed elsewhere, free that zone
+      for (const zId in placedLabels) {
+        if (placedLabels[zId] === labelId) {
+          delete placedLabels[zId];
+          const prevZone = document.getElementById(zId);
+          prevZone.textContent = 'Déposer ici';
+          prevZone.classList.remove('filled');
+        }
+      }
+
+      // Assign label to zone
+      placedLabels[zoneId] = labelId;
+      
+      const zoneEl = document.getElementById(zoneId);
+      zoneEl.textContent = labelTexts[labelId];
+      zoneEl.classList.add('filled');
+      
+      // Mark as placed in the bank
+      const bankEl = document.querySelector(`.label-card[data-id="${labelId}"]`);
+      if (bankEl) bankEl.classList.add('placed');
+
+      clearSelection();
+      updateState();
+      
+      // Show details
+      showInfo(descriptions[labelId]);
+    }
+
+    // Free label from zone
+    function freeLabel(labelId) {
+      // Find where it was placed
+      for (const zId in placedLabels) {
+        if (placedLabels[zId] === labelId) {
+          delete placedLabels[zId];
+          const zoneEl = document.getElementById(zId);
+          zoneEl.textContent = 'Déposer ici';
+          zoneEl.classList.remove('filled', 'correct', 'incorrect');
+        }
+      }
+
+      // Reactivate in bank
+      const bankEl = document.querySelector(`.label-card[data-id="${labelId}"]`);
+      if (bankEl) bankEl.classList.remove('placed');
+
+      updateState();
+    }
+
+    // --- Drag and Drop Touch/Pointer Implementation ---
+    let dragEl = null;
+    let dragClone = null;
+    let dragStartPos = { x: 0, y: 0 };
+    
+    labelElements.forEach(el => {
+      // Disable default HTML5 drag-and-drop to let PointerEvents do the work smoothly
+      el.addEventListener('dragstart', (e) => e.preventDefault());
+
+      el.addEventListener('pointerdown', (e) => {
+        // Only drag if not already placed
+        if (el.classList.contains('placed')) return;
+        
+        // Select on click
+        selectLabel(el.dataset.id);
+
+        dragEl = el;
+        dragStartPos = { x: e.clientX, y: e.clientY };
+        
+        // Set pointer capture to receive events even if moving outside the element
+        el.setPointerCapture(e.pointerId);
+      });
+
+      el.addEventListener('pointermove', (e) => {
+        if (!dragEl || dragEl !== el) return;
+
+        const deltaX = e.clientX - dragStartPos.x;
+        const deltaY = e.clientY - dragStartPos.y;
+
+        // Start real drag cloning only after small movement threshold
+        if (Math.hypot(deltaX, deltaY) > 8 && !dragClone) {
+          dragClone = document.createElement('div');
+          dragClone.className = 'drag-clone';
+          dragClone.textContent = el.textContent;
+          document.body.appendChild(dragClone);
+          
+          el.classList.add('selected');
+        }
+
+        if (dragClone) {
+          dragClone.style.left = e.clientX + 'px';
+          dragClone.style.top = e.clientY + 'px';
+
+          // Highlight drop zone under drag clone
+          checkHoveredZone(e.clientX, e.clientY);
+        }
+      });
+
+      el.addEventListener('pointerup', (e) => {
+        if (!dragEl || dragEl !== el) return;
+        el.releasePointerCapture(e.pointerId);
+
+        if (dragClone) {
+          dragClone.remove();
+          dragClone = null;
+
+          // Attempt drop
+          const zoneId = checkHoveredZone(e.clientX, e.clientY, true);
+          if (zoneId) {
+            placeLabelInZone(zoneId, el.dataset.id);
+          } else {
+            clearSelection();
+            showInfo("Déposé en dehors de toute zone de dépôt.");
+          }
+        }
+
+        dragEl = null;
+      });
+    });
+
+    // Check which drop zone is currently hovered
+    function checkHoveredZone(x, y, performDrop = false) {
+      let hoveredZoneId = null;
+      
+      dropZones.forEach(zone => {
+        if (zone.classList.contains('correct')) return; // skip completed
+
+        const rect = zone.getBoundingClientRect();
+        const buffer = 15; // slightly larger target area for easier touch drop
+        
+        const isHovered = (
+          x >= rect.left - buffer &&
+          x <= rect.right + buffer &&
+          y >= rect.top - buffer &&
+          y <= rect.bottom + buffer
+        );
+
+        if (isHovered) {
+          hoveredZoneId = zone.id;
+          if (!performDrop) {
+            zone.classList.add('active-target');
+          }
+        } else {
+          if (!performDrop) {
+            zone.classList.remove('active-target');
+          }
+        }
+      });
+
+      if (performDrop) {
+        // Clean up highlights
+        dropZones.forEach(z => z.classList.remove('active-target'));
+      }
+
+      return hoveredZoneId;
+    }
+
+    // --- Click-to-place Drop Zones ---
+    dropZones.forEach(zone => {
+      zone.addEventListener('click', () => {
+        if (zone.classList.contains('correct')) return; // locked
+
+        if (selectedLabelId) {
+          // Place currently selected label
+          placeLabelInZone(zone.id, selectedLabelId);
+        } else if (placedLabels[zone.id]) {
+          // If label already exists, return it to reserve
+          const labelId = placedLabels[zone.id];
+          freeLabel(labelId);
+          playClickSound();
+          showInfo(`Étiquette "${labelTexts[labelId]}" renvoyée à la réserve.`);
+        } else {
+          showInfo("Sélectionne d'abord une étiquette dans la colonne de gauche.");
+        }
+      });
+    });
+
+    // --- Validation Mechanism ---
+    btnValidate.addEventListener('click', () => {
+      let correctCount = 0;
+      let totalCount = Object.keys(correctAnswers).length;
+      let incorrectZones = [];
+
+      dropZones.forEach(zone => {
+        const placedLabelId = placedLabels[zone.id];
+        const correctLabelId = correctAnswers[zone.id];
+
+        if (placedLabelId === correctLabelId) {
+          correctCount++;
+          zone.classList.remove('incorrect');
+          zone.classList.add('correct');
+        } else {
+          incorrectZones.push(zone);
+          zone.classList.add('incorrect');
+        }
+      });
+
+      const pct = Math.round((correctCount / totalCount) * 100);
+
+      // Persist results on parent frame (on the first attempt and every subsequent validation)
+      if (window.parent && window.parent.saveResult) {
+        window.parent.saveResult({
+          student: state.student,
+          cls: state.studentCls,
+          activity: 'sci_plantes_fleur',
+          bookTitle: 'Reproduction des plantes — Schéma de la fleur',
+          score: correctCount,
+          total: totalCount,
+          pct: pct,
+          date: new Date().toLocaleDateString('fr-BE'),
+          time: new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })
+        });
+      }
+
+      firstAttemptDone = true;
+
+      if (correctCount === totalCount) {
+        // PERFECT SCORE
+        playSuccessSound();
+        showInfo("Félicitations ! Tu as légendé toute la fleur sans aucune erreur ! 🌸", true);
+        
+        // Launch confetti fireworks
+        launchFireworks();
+        
+        // Show success modal
+        setTimeout(() => {
+          successOverlay.classList.add('active');
+        }, 600);
+      } else {
+        // ERRORS FOUND
+        playErrorSound();
+        showInfo(`Correction : ${correctCount} correct(s), ${totalCount - correctCount} erreur(s). Réessaie pour corriger les étiquettes fausses !`, true);
+
+        // After 1.5 seconds, automatically return incorrect items to the reserve
+        setTimeout(() => {
+          incorrectZones.forEach(zone => {
+            zone.classList.remove('incorrect');
+            const labelId = placedLabels[zone.id];
+            if (labelId) {
+              freeLabel(labelId);
+            }
+          });
+        }, 1500);
+      }
+    });
+
+    // --- Fireworks Confetti Animation ---
+    function launchFireworks() {
+      const duration = 3 * 1000;
+      const animationEnd = Date.now() + duration;
+      const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 1100 };
+
+      function randomInRange(min, max) {
+        return Math.random() * (max - min) + min;
+      }
+
+      const interval = setInterval(function() {
+        const timeLeft = animationEnd - Date.now();
+
+        if (timeLeft <= 0) {
+          return clearInterval(interval);
+        }
+
+        const particleCount = 50 * (timeLeft / duration);
+        // since particles fall down, animate a bit higher than random
+        confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
+        confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
+      }, 250);
+    }
+
+    // --- Reset Game ---
+    function resetGame() {
+      placedLabels = {};
+      clearSelection();
+      
+      dropZones.forEach(zone => {
+        zone.textContent = 'Déposer ici';
+        zone.className = 'drop-zone';
+      });
+
+      labelElements.forEach(el => {
+        el.className = 'label-card';
+      });
+
+      firstAttemptDone = false;
+      updateState();
+      showInfo("L'exercice a été réinitialisé. Place toutes les étiquettes !");
+      playClickSound();
+    }
+
+    btnReset.addEventListener('click', resetGame);
+    btnModalClose.addEventListener('click', () => {
+      successOverlay.classList.remove('active');
+      resetGame();
+    });
+
+
+
+    // Initialize progress indicators
+    updateState();
+
+  </script>
+</body>
+</html>
