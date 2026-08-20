@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Défi Sciences : Mélanges et Séparations</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --dark: #1A1A2E;
+      --light-bg: #FAF8F5;
+      --card-bg: #FFFFFF;
+      --primary: #8B5CF6; /* Purple */
+      --primary-light: #F3E8FF;
+      --success: #10B981; /* Green */
+      --success-light: #E6F4EA;
+      --error: #EF4444; /* Red */
+      --error-light: #FCE8E6;
+      --warning: #F59E0B; /* Amber */
+      --warning-light: #FEF3C7;
+      --blue: #0284C7; /* Blue */
+      --blue-light: #E0F2FE;
+    }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background-color: var(--light-bg);
+      color: var(--dark);
+      margin: 0;
+      padding: 0;
+    }
+
+    .font-title {
+      font-family: 'Fredoka', sans-serif;
+    }
+
+    /* Flat 3D Border and Shadow styles */
+    .flat-card {
+      background-color: var(--card-bg);
+      border: 3px solid var(--dark);
+      box-shadow: 6px 6px 0px var(--dark);
+      border-radius: 24px;
+    }
+
+    .btn-3d {
+      border: 3px solid var(--dark) !important;
+      box-shadow: 4px 4px 0px var(--dark) !important;
+      transition: all 0.1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      transform: translate(0px, 0px);
+    }
+
+    .btn-3d:hover:not(:disabled) {
+      transform: translate(-2px, -2px);
+      box-shadow: 6px 6px 0px var(--dark) !important;
+    }
+
+    .btn-3d:active:not(:disabled) {
+      transform: translate(2px, 2px);
+      box-shadow: 2px 2px 0px var(--dark) !important;
+    }
+
+    .btn-3d:disabled {
+      cursor: not-allowed;
+    }
+
+    /* Options specific flat-3d styles */
+    .option-btn {
+      background-color: white;
+      color: var(--dark);
+      border: 3px solid var(--dark);
+      box-shadow: 4px 4px 0px var(--dark);
+      border-radius: 16px;
+      transition: all 0.1s ease-out;
+    }
+
+    .option-btn:hover:not(:disabled) {
+      transform: translate(-2px, -2px);
+      box-shadow: 6px 6px 0px var(--dark);
+      background-color: var(--blue-light);
+      color: var(--blue);
+    }
+
+    .option-btn:active:not(:disabled) {
+      transform: translate(2px, 2px);
+      box-shadow: 2px 2px 0px var(--dark);
+    }
+
+    .option-btn.correct {
+      background-color: var(--success-light) !important;
+      color: #047857 !important;
+      border-color: #047857 !important;
+      box-shadow: 4px 4px 0px #047857 !important;
+    }
+
+    .option-btn.incorrect {
+      background-color: var(--error-light) !important;
+      color: #B91C1C !important;
+      border-color: #B91C1C !important;
+      box-shadow: 4px 4px 0px #B91C1C !important;
+    }
+
+    .option-btn.neutral-disabled {
+      opacity: 0.5;
+      transform: none !important;
+      box-shadow: 2px 2px 0px var(--dark) !important;
+    }
+
+    /* Confetti Canvas overlay */
+    #confetti-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* Animation effects */
+    .fade-in {
+      animation: fadeIn 0.35s ease-out forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Wave effect for science bubbler */
+    .bubbly {
+      position: relative;
+    }
+    .bubbly::after {
+      content: '';
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.4);
+      border-radius: 50%;
+      top: 80%;
+      left: 35%;
+      animation: bubbleUp 3s infinite ease-in;
+    }
+
+    @keyframes bubbleUp {
+      0% { transform: translateY(0) scale(0.8); opacity: 0; }
+      50% { opacity: 0.8; }
+      100% { transform: translateY(-30px) scale(1.2); opacity: 0; }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-start p-4 md:p-8">
+  <canvas id="confetti-canvas"></canvas>
+
+  <div class="w-full max-w-2xl flex flex-col gap-6">
+    
+    <!-- HEADER BAR -->
+    <div class="w-full flex items-center justify-between px-2">
+      <button onclick="handleBack();" class="btn-3d px-4 py-2 bg-white text-sm font-bold rounded-xl flex items-center gap-2">
+        🏠 Quitter
+      </button>
+      <button id="btn-help" onclick="openHelpModal();" class="hidden btn-3d px-4 py-2 bg-amber-400 hover:bg-amber-300 text-sm font-bold rounded-xl flex items-center gap-2">
+        💡 Aide Mémo
+      </button>
+    </div>
+
+    <!-- MAIN INTERACTIVE CONTAINER -->
+    <div id="main-container" class="flat-card p-6 md:p-8 relative overflow-hidden">
+      
+      <!-- SCREEN 1: START -->
+      <div id="screen-start" class="fade-in flex flex-col items-center text-center gap-6 py-4">
+        <div class="flex gap-4 items-center justify-center">
+          <div class="w-16 h-16 bg-blue-100 border-2 border-neutral-900 rounded-full flex items-center justify-center text-3xl shadow-[3px_3px_0px_#1A1A2E]">🧪</div>
+          <div class="w-16 h-16 bg-amber-100 border-2 border-neutral-900 rounded-full flex items-center justify-center text-3xl shadow-[3px_3px_0px_#1A1A2E]">🧲</div>
+          <div class="w-16 h-16 bg-emerald-100 border-2 border-neutral-900 rounded-full flex items-center justify-center text-3xl shadow-[3px_3px_0px_#1A1A2E]">☕</div>
+        </div>
+
+        <h1 class="font-title text-3xl md:text-4xl font-black tracking-wide leading-tight">
+          Mélanges & Séparations
+        </h1>
+        
+        <p class="text-neutral-600 font-medium leading-relaxed max-w-md">
+          Deviens un as de la chimie ! Teste tes connaissances sur les mélanges homogènes et hétérogènes, le vocabulaire des solutions et les techniques pour séparer la matière.
+        </p>
+
+        <div class="flex flex-col gap-3.5 w-full max-w-xs mt-2">
+          <button onclick="startGame();" class="btn-3d w-full py-3.5 bg-violet-500 hover:bg-violet-400 text-white font-title text-lg font-bold rounded-2xl tracking-wide">
+            Lancer le Défi ! 🚀
+          </button>
+          <button onclick="showSynthesis();" class="btn-3d w-full py-3.5 bg-amber-400 hover:bg-amber-300 text-neutral-900 font-title text-lg font-bold rounded-2xl tracking-wide">
+            📖 Fiche de Révision
+          </button>
+        </div>
+      </div>
+
+      <!-- SCREEN 1B: SYNTHESIS / LESSON -->
+      <div id="screen-synthesis" class="hidden fade-in flex flex-col gap-6 py-2">
+        <div id="screen-synthesis-content"></div>
+        <div class="flex flex-col sm:flex-row gap-4 w-full justify-center mt-4">
+          <button onclick="hideSynthesis();" class="btn-3d px-6 py-3 bg-white hover:bg-neutral-100 font-title font-bold text-base rounded-xl">
+            ⬅️ Retour
+          </button>
+          <button onclick="startGameFromSynthesis();" class="btn-3d px-8 py-3 bg-violet-500 hover:bg-violet-400 text-white font-title font-bold text-base rounded-xl flex-1 max-w-xs">
+            Lancer le Défi ! 🚀
+          </button>
+        </div>
+      </div>
+
+      <!-- SCREEN 2: GAMEPLAY -->
+      <div id="screen-game" class="hidden fade-in flex flex-col gap-6">
+        
+        <!-- PROGRESS HEADER -->
+        <div class="flex flex-col gap-3">
+          <div class="flex justify-between items-center text-sm font-bold">
+            <span class="text-violet-600 font-title text-base" id="question-index-label">Question 1 / 10</span>
+            <span class="text-neutral-500 font-title" id="progress-percentage">0%</span>
+          </div>
+          
+          <!-- PROGRESS BAR (Fluid Flat 3D) -->
+          <div class="w-full h-5 bg-neutral-100 border-3 border-neutral-900 rounded-full overflow-hidden p-0.5 shadow-[2px_2px_0px_#1A1A2E]">
+            <div id="progress-bar-fill" class="h-full bg-violet-500 rounded-full transition-all duration-300" style="width: 10%;"></div>
+          </div>
+
+          <!-- PROGRESS DOTS -->
+          <div id="progress-dots" class="flex gap-2 justify-center items-center mt-1">
+            <!-- Dynamically populated dots -->
+          </div>
+        </div>
+
+        <hr class="border-t-2 border-neutral-200 my-1">
+
+        <!-- QUESTION BOX -->
+        <div class="flex flex-col gap-5">
+          <!-- Illustration Box -->
+          <div id="illustration-container" class="w-full p-4 bg-neutral-50 border-3 border-neutral-900 rounded-2xl flex items-center justify-center min-h-[140px] shadow-[4px_4px_0px_#1A1A2E]">
+            <!-- Dynamic SVG -->
+          </div>
+
+          <!-- Question Text -->
+          <div class="text-center font-title text-lg md:text-xl font-bold px-2" id="question-text">
+            Chargement de la question...
+          </div>
+
+          <!-- Choices Options -->
+          <div class="flex flex-col gap-3.5" id="options-container">
+            <!-- Dynamically populated option buttons -->
+          </div>
+
+          <!-- FEEDBACK & NEXT SECTION -->
+          <div id="feedback-panel" class="hidden fade-in p-4 rounded-2xl border-3 border-neutral-900 flex flex-col gap-4 shadow-[4px_4px_0px_#1A1A2E]">
+            <div class="flex items-center gap-3">
+              <span id="feedback-emoji" class="text-3xl">🎉</span>
+              <h3 id="feedback-title" class="font-title text-lg font-bold">Correct !</h3>
+            </div>
+            <p id="feedback-explanation" class="text-sm font-semibold text-neutral-700 leading-relaxed bg-white/60 p-3 rounded-xl border border-black/10">
+              Explication...
+            </p>
+            <button onclick="nextQuestion();" class="btn-3d py-3 bg-neutral-900 hover:bg-neutral-800 text-white font-title text-base font-bold rounded-xl w-full">
+              Continuer ➡️
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- SCREEN 3: CONGRATS / END -->
+      <div id="screen-congrats" class="hidden fade-in flex flex-col items-center text-center gap-6 py-4">
+        
+        <div id="congrats-stars" class="text-4xl text-amber-400 drop-shadow-md">
+          ⭐⭐⭐
+        </div>
+
+        <div class="flex flex-col gap-2">
+          <h2 id="congrats-title" class="font-title text-3xl font-black">Superbe !</h2>
+          <p id="congrats-message" class="text-neutral-500 font-bold max-w-sm">
+            Tu as obtenu un excellent score !
+          </p>
+        </div>
+
+        <!-- Score display card -->
+        <div class="flat-card px-8 py-5 flex flex-col items-center justify-center bg-violet-50 min-w-[200px]">
+          <span class="text-xs uppercase font-extrabold tracking-widest text-violet-500">Ton Score</span>
+          <span id="final-score" class="font-title text-4xl md:text-5xl font-black text-violet-700 my-1">8 / 10</span>
+          <span id="final-percent" class="text-sm font-bold text-neutral-500">80% de réussite</span>
+        </div>
+
+        <!-- Review Grid -->
+        <div class="w-full max-w-md bg-neutral-50 p-4 border-2 border-neutral-900 rounded-2xl shadow-[3px_3px_0px_#1A1A2E]">
+          <h4 class="font-title text-sm font-bold text-neutral-500 uppercase tracking-wider mb-3 text-left pl-1">Détail des réponses :</h4>
+          <div id="review-grid" class="grid grid-cols-5 gap-2.5">
+            <!-- Dynamically populated boxes -->
+          </div>
+        </div>
+
+        <!-- Action buttons -->
+        <div class="flex flex-col sm:flex-row gap-4 w-full max-w-md mt-2">
+          <button onclick="startGame();" class="btn-3d flex-1 py-3.5 bg-violet-500 hover:bg-violet-400 text-white font-title font-bold text-lg rounded-xl">
+            🔁 Recommencer
+          </button>
+          <button onclick="handleBack();" class="btn-3d flex-1 py-3.5 bg-amber-400 hover:bg-amber-300 text-neutral-900 font-title font-bold text-lg rounded-xl">
+            🏠 Quitter
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- HELP OVERLAY MODAL -->
+  <div id="help-modal" class="fixed inset-0 bg-neutral-900/60 backdrop-blur-xs hidden items-center justify-center p-4 z-50">
+    <div class="bg-white border-3 border-neutral-900 rounded-[28px] shadow-[6px_6px_0px_#1A1A2E] max-w-2xl w-full p-6 md:p-8 flex flex-col gap-6 fade-in max-h-[90vh] overflow-y-auto my-auto">
+      <div id="help-modal-content" class="overflow-y-auto pr-1"></div>
+      <button onclick="closeHelpModal();" class="btn-3d py-3.5 bg-neutral-900 hover:bg-neutral-800 text-white font-title text-base font-bold rounded-xl w-full mt-2">
+        Fermer et reprendre l'exercice ❌
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // Audio Context Setup
+    let audioCtx = null;
+
+    function playTone(freq, duration, type = 'sine', volume = 0.1) {
+      try {
+        if (!audioCtx) {
+          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (audioCtx.state === 'suspended') {
+          audioCtx.resume();
+        }
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(volume, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch (e) {
+        console.warn('Audio Context not supported or allowed', e);
+      }
+    }
+
+    function playClickSound() {
+      playTone(550, 0.05, 'triangle', 0.15);
+    }
+
+    function playSuccessSound() {
+      playTone(523.25, 0.1, 'square', 0.08); // C5
+      setTimeout(() => playTone(659.25, 0.1, 'square', 0.08), 80); // E5
+      setTimeout(() => playTone(783.99, 0.15, 'square', 0.08), 160); // G5
+    }
+
+    function playErrorSound() {
+      playTone(220, 0.15, 'sawtooth', 0.12); // A3
+      setTimeout(() => playTone(147, 0.25, 'sawtooth', 0.12), 100); // D3
+    }
+
+    function playFanfareSound() {
+      const notes = [261.63, 329.63, 392.00, 523.25, 659.25, 783.99, 1046.50]; // Arpège de Do majeur
+      notes.forEach((freq, i) => {
+        setTimeout(() => {
+          playTone(freq, 0.25, 'sine', 0.12);
+        }, i * 100);
+      });
+    }
+
+    // Questions Database (20 items)
+    const QUESTION_POOL = [
+      {
+        question: "Si tu mélanges complètement du sel dans un verre d'eau, tu obtiens un liquide limpide où le sel n'est plus visible. De quel type de mélange s'agit-il ?",
+        options: ["Un mélange homogène", "Un mélange hétérogène", "Un corps pur"],
+        correctIndex: 0,
+        type: "melange_homogene",
+        explanation: "Comme on ne peut distinguer qu'une seule phase (l'eau salée uniforme), c'est un mélange homogène. Le sel s'est dissous dans l'eau."
+      },
+      {
+        question: "Si tu verses de l'huile dans un verre d'eau, même après avoir bien mélangé, l'huile finit par flotter au-dessus de l'eau. De quel type de mélange s'agit-il ?",
+        options: ["Un mélange homogène", "Un mélange hétérogène", "Une solution saturée"],
+        correctIndex: 1,
+        type: "melange_heterogene",
+        explanation: "On peut voir deux phases distinctes (l'eau et l'huile). Ce mélange dont on peut distinguer les composants à l'œil nu est hétérogène."
+      },
+      {
+        question: "Après avoir agité du sable dans de l'eau, le sable finit par se déposer au fond du verre. De quel type de mélange s'agit-il ?",
+        options: ["Un mélange homogène", "Un mélange hétérogène", "Une dissolution complète"],
+        correctIndex: 1,
+        type: "melange_heterogene",
+        explanation: "Le sable reste visible et se sépare de l'eau. C'est un mélange hétérogène car on voit plusieurs composants."
+      },
+      {
+        question: "Dans une solution d'eau salée, comment appelle-t-on l'eau (le liquide qui permet de dissoudre le sel) ?",
+        options: ["Le soluté", "Le solvant", "La saturation"],
+        correctIndex: 1,
+        type: "solvant_solute",
+        explanation: "Le solvant est le liquide qui dissout un autre corps. Dans l'eau salée, l'eau est le solvant."
+      },
+      {
+        question: "Dans un chocolat chaud, comment appelle-t-on le cacao en poudre qui est dissous dans le lait chaud ?",
+        options: ["Le solvant", "Le soluté", "La solution"],
+        correctIndex: 1,
+        type: "solvant_solute",
+        explanation: "Le soluté est le corps (solide, liquide ou gaz) qui est dissous dans un solvant. Ici, le cacao est le soluté."
+      },
+      {
+        question: "Comment appelle-t-on le mélange homogène obtenu en dissolvant du sucre dans de l'eau ?",
+        options: ["La solution", "Le soluté", "Le solvant"],
+        correctIndex: 0,
+        type: "solvant_solute",
+        explanation: "La solution est le résultat du mélange homogène d'un soluté (le sucre) dissous dans un solvant (l'eau)."
+      },
+      {
+        question: "Si tu ajoutes trop de sel dans un verre d'eau et que, malgré tes efforts pour mélanger, le sel reste visible au fond, on dit que la solution est...",
+        options: ["Évaporée", "Saturée", "Infiltrée"],
+        correctIndex: 1,
+        type: "decantation",
+        explanation: "Une solution est saturée quand le solvant ne peut plus dissoudre de soluté supplémentaire. Le surplus reste au fond."
+      },
+      {
+        question: "Quelle technique utilise-t-on pour séparer les grains de sable en suspension dans l'eau en faisant passer le liquide à travers un filtre en papier ?",
+        options: ["La décantation", "La filtration", "L'évaporation"],
+        correctIndex: 1,
+        type: "filtration",
+        explanation: "La filtration sépare les constituants solides d'un mélange liquide. Le solide (résidu) reste dans le filtre et le liquide limpide (filtrat) passe à travers."
+      },
+      {
+        question: "Comment appelle-t-on le liquide limpide obtenu après avoir filtré un mélange d'eau et de terre ?",
+        options: ["Le résidu", "Le filtrat", "Le soluté"],
+        correctIndex: 1,
+        type: "filtration",
+        explanation: "Le liquide obtenu après filtration s'appelle le filtrat. Le solide resté dans le filtre est le résidu."
+      },
+      {
+        question: "Si on laisse reposer de l'eau boueuse pendant plusieurs heures, la terre se dépose au fond et l'eau s'éclaircit au-dessus. Quelle est cette technique ?",
+        options: ["La décantation", "La filtration", "L'aimantation"],
+        correctIndex: 0,
+        type: "decantation",
+        explanation: "La décantation consiste à laisser reposer un mélange hétérogène pour que les particules plus lourdes se déposent au fond sous l'action de la gravité."
+      },
+      {
+        question: "Lors d'une décantation d'eau et d'huile, l'huile se retrouve toujours au-dessus de l'eau. Pourquoi ?",
+        options: ["Car l'huile est plus dense que l'eau", "Car l'huile est moins dense que l'eau", "Car l'huile s'est dissoute dans l'eau"],
+        correctIndex: 1,
+        type: "melange_heterogene",
+        explanation: "L'huile flotte sur l'eau parce que sa densité est plus faible (elle est moins dense). De plus, ces deux liquides sont non miscibles."
+      },
+      {
+        question: "Tu as mélangé du sel dans de l'eau. Quelle technique permet de récupérer le sel solide sous forme de cristaux ?",
+        options: ["La filtration", "L'évaporation", "La décantation"],
+        correctIndex: 1,
+        type: "evaporation",
+        explanation: "L'évaporation consiste à chauffer ou laisser sécher la solution. L'eau (solvant) s'évapore sous forme de gaz, et le sel (soluté) reste au fond du récipient."
+      },
+      {
+        question: "Des petits trombones en fer sont tombés dans un bac à sable. Quelle technique rapide permet de les récupérer sans toucher au sable ?",
+        options: ["L'aimantation", "La décantation", "La filtration"],
+        correctIndex: 0,
+        type: "aimantation",
+        explanation: "L'aimantation permet de séparer les métaux magnétiques (comme le fer) d'autres matières non magnétiques à l'aide d'un aimant."
+      },
+      {
+        question: "L'air que nous respirons est composé de plusieurs gaz (azote, oxygène...) invisibles et parfaitement mélangés. De quel type de mélange s'agit-il ?",
+        options: ["Un mélange hétérogène", "Un mélange homogène", "Une solution saturée"],
+        correctIndex: 1,
+        type: "melange_homogene",
+        explanation: "Comme on ne distingue pas les différents gaz à l'œil nu et qu'ils forment une seule phase, l'air est un mélange homogène."
+      },
+      {
+        question: "Tu viens d'ouvrir une bouteille d'eau pétillante. De petites bulles de gaz se forment et montent à la surface. De quel type de mélange s'agit-il ?",
+        options: ["Un mélange homogène", "Un mélange hétérogène", "Un corps pur"],
+        correctIndex: 1,
+        type: "melange_heterogene",
+        explanation: "On voit deux phases : le liquide de l'eau et le gaz des bulles. C'est donc un mélange hétérogène."
+      },
+      {
+        question: "Le sucre se dissout parfaitement dans l'eau. On dit que le sucre est ... dans l'eau.",
+        options: ["Miscible", "Soluble", "Insoluble"],
+        correctIndex: 1,
+        type: "solvant_solute",
+        explanation: "Un solide qui peut se dissoudre dans un solvant est qualifié de 'soluble'. S'il ne peut pas se dissoudre, il est 'insoluble'."
+      },
+      {
+        question: "Le sirop de grenadine et l'eau se mélangent très bien pour former une boisson uniforme. On dit que ces deux liquides sont...",
+        options: ["Solubles", "Insolubles", "Miscibles"],
+        correctIndex: 2,
+        type: "melange_homogene",
+        explanation: "Deux liquides qui se mélangent intimement pour former un mélange homogène sont dits 'miscibles'."
+      },
+      {
+        question: "Le pétrole brut flotte sur l'eau de mer après une marée noire sans se mélanger. On dit que l'eau et le pétrole sont...",
+        options: ["Insolubles", "Non miscibles", "Saturés"],
+        correctIndex: 1,
+        type: "melange_heterogene",
+        explanation: "Deux liquides qui ne se mélangent pas et forment deux couches distinctes sont qualifiés de 'non miscibles'."
+      },
+      {
+        question: "Lorsqu'on filtre un mélange, comment appelle-t-on le solide qui reste coincé dans le filtre en papier ?",
+        options: ["Le filtrat", "Le résidu", "Le soluté"],
+        correctIndex: 1,
+        type: "filtration",
+        explanation: "Le solide retenu par le filtre s'appelle le résidu. Le liquide qui passe à travers est le filtrat."
+      },
+      {
+        question: "Tu mélanges de la farine et de l'eau. La farine ne se dissout pas et rend l'eau opaque. Si tu laisses reposer le mélange, la farine se dépose. Quel mot décrit le fait que la farine ne se dissout pas ?",
+        options: ["Insoluble", "Non miscible", "Saturé"],
+        correctIndex: 0,
+        type: "solvant_solute",
+        explanation: "Comme la farine est un solide qui ne se dissout pas dans le solvant (l'eau), on dit qu'elle est insoluble."
+      }
+    ];
+
+    // Helper function for SVGs
+    function getIllustrationSVG(type) {
+      switch (type) {
+        case 'melange_homogene':
+          return `
+            <svg viewBox="0 0 120 120" class="w-24 h-24 md:w-28 md:h-28 mx-auto">
+              <circle cx="60" cy="60" r="50" fill="#E0F2FE" stroke="#1A1A2E" stroke-width="3"/>
+              <path d="M35,60 L85,60 L85,90 A10,10 0 0,1 75,100 L45,100 A10,10 0 0,1 35,90 Z" fill="#60A5FA" stroke="#1A1A2E" stroke-width="3"/>
+              <path d="M35,35 L35,90 A10,10 0 0,0 45,100 L75,100 A10,10 0 0,0 85,90 L85,35" fill="none" stroke="#1A1A2E" stroke-width="3" stroke-linecap="round"/>
+              <path d="M30,35 L90,35" stroke="#1A1A2E" stroke-width="3" stroke-linecap="round"/>
+              <circle cx="50" cy="75" r="4" fill="#93C5FD"/>
+              <circle cx="70" cy="85" r="3" fill="#93C5FD"/>
+              <path d="M45,15 L70,75" fill="none" stroke="#1A1A2E" stroke-width="3" stroke-linecap="round"/>
+              <path d="M66,71 L74,79" fill="none" stroke="#1A1A2E" stroke-width="3" stroke-linecap="round"/>
+            </svg>
+          `;
+        case 'melange_heterogene':
+          return `
+            <svg viewBox="0 0 120 120" class="w-24 h-24 md:w-28 md:h-28 mx-auto">
+              <circle cx="60" cy="60" r="50" fill="#FEE2E2" stroke="#1A1A2E" stroke-width="3"/>
+              <path d="M35,68 L85,68 L85,90 A10,10 0 0,1 75,100 L45,100 A10,10 0 0,1 35,90 Z" fill="#60A5FA" stroke="#1A1A2E" stroke-width="3"/>
+              <path d="M35,50 L85,50 L85,68 L35,68 Z" fill="#FBBF24" stroke="#1A1A2E" stroke-width="3"/>
+              <path d="M35,35 L35,90 A10,10 0 0,0 45,100 L75,100 A10,10 0 0,0 85,90 L85,35" fill="none" stroke="#1A1A2E" stroke-width="3" stroke-linecap="round"/>
+              <path d="M30,35 L90,35" stroke="#1A1A2E" stroke-width="3" stroke-linecap="round"/>
+              <circle cx="45" cy="59" r="4.5" fill="#F59E0B" stroke="#1A1A2E" stroke-width="2"/>
+              <circle cx="70" cy="74" r="5.5" fill="#FBBF24" stroke="#1A1A2E" stroke-width="2"/>
+              <circle cx="53" cy="82" r="3.5" fill="#FBBF24" stroke="#1A1A2E" stroke-width="2"/>
+            </svg>
+          `;
+        case 'solvant_solute':
+          return `
+            <svg viewBox="0 0 120 120" class="w-24 h-24 md:w-28 md:h-28 mx-auto">
+              <circle cx="60" cy="60" r="50" fill="#F5F3FF" stroke="#1A1A2E" stroke-width="3"/>
+              <path d="M35,60 L85,60 L85,90 A10,10 0 0,1 75,100 L45,100 A10,10 0 0,1 35,90 Z" fill="#93C5FD" stroke="#1A1A2E" stroke-width="3"/>
+              <path d="M35,35 L35,90 A10,10 0 0,0 45,100 L75,100 A10,10 0 0,0 85,90 L85,35" fill="none" stroke="#1A1A2E" stroke-width="3" stroke-linecap="round"/>
+              <path d="M30,35 L90,35" stroke="#1A1A2E" stroke-width="3" stroke-linecap="round"/>
+              <rect x="52" y="40" width="14" height="14" rx="2.5" fill="#FFFFFF" stroke="#1A1A2E" stroke-width="2.5" transform="rotate(15 59 47)"/>
+              <circle cx="48" cy="70" r="2" fill="#FFFFFF" stroke="#1A1A2E" stroke-width="1.5"/>
+              <circle cx="68" cy="73" r="2.5" fill="#FFFFFF" stroke="#1A1A2E" stroke-width="1.5"/>
+              <circle cx="58" cy="85" r="1.8" fill="#FFFFFF" stroke="#1A1A2E" stroke-width="1.5"/>
+              <path d="M60,15 L60,30 M56,26 L60,30 L64,26" fill="none" stroke="#8B5CF6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          `;
+        case 'filtration':
+          return `
+            <svg viewBox="0 0 120 120" class="w-24 h-24 md:w-28 md:h-28 mx-auto">
+              <circle cx="60" cy="60" r="50" fill="#ECFDF5" stroke="#1A1A2E" stroke-width="3"/>
+              <path d="M45,85 L45,105 A5,5 0 0,0 50,110 L70,110 A5,5 0 0,0 75,105 L75,85" fill="none" stroke="#1A1A2E" stroke-width="2.5"/>
+              <path d="M45,95 L75,95 L75,105 A5,5 0 0,1 70,110 L50,110 A5,5 0 0,1 45,105 Z" fill="#93C5FD"/>
+              <path d="M35,35 L85,35 L65,65 L65,80 L55,80 L55,65 Z" fill="#F3F4F6" stroke="#1A1A2E" stroke-width="2.5" stroke-linejoin="round"/>
+              <path d="M38,37 L82,37 Q60,60 38,37 Z" fill="#D97706" stroke="#1A1A2E" stroke-width="2"/>
+              <circle cx="60" cy="73" r="3" fill="#3B82F6"/>
+              <circle cx="60" cy="85" r="3" fill="#3B82F6"/>
+            </svg>
+          `;
+        case 'decantation':
+          return `
+            <svg viewBox="0 0 120 120" class="w-24 h-24 md:w-28 md:h-28 mx-auto">
+              <circle cx="60" cy="60" r="50" fill="#FFFBEB" stroke="#1A1A2E" stroke-width="3"/>
+              <path d="M35,80 L85,80 L85,90 A10,10 0 0,1 75,100 L45,100 A10,10 0 0,1 35,90 Z" fill="#78350F" stroke="#1A1A2E" stroke-width="2.5"/>
+              <path d="M35,55 L85,55 L85,80 L35,80 Z" fill="#93C5FD" stroke="#1A1A2E" stroke-width="2.5"/>
+              <path d="M35,35 L35,90 A10,10 0 0,0 45,100 L75,100 A10,10 0 0,0 85,90 L85,35" fill="none" stroke="#1A1A2E" stroke-width="3"/>
+              <path d="M30,35 L90,35" stroke="#1A1A2E" stroke-width="3"/>
+              <path d="M100,45 L100,70 M96,65 L100,70 L104,65" fill="none" stroke="#D97706" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          `;
+        case 'evaporation':
+          return `
+            <svg viewBox="0 0 120 120" class="w-24 h-24 md:w-28 md:h-28 mx-auto">
+              <circle cx="60" cy="60" r="50" fill="#EFF6FF" stroke="#1A1A2E" stroke-width="3"/>
+              <path d="M50,110 C50,110 52,90 60,90 C68,90 70,110 70,110 Z" fill="#EF4444" stroke="#1A1A2E" stroke-width="2.5"/>
+              <path d="M55,110 C55,110 56,98 60,98 C64,98 65,110 65,110 Z" fill="#F59E0B"/>
+              <path d="M35,85 L85,85 M40,85 L30,110 M80,85 L90,110" stroke="#1A1A2E" stroke-width="3" stroke-linecap="round"/>
+              <path d="M35,70 C35,85 85,85 85,70 Z" fill="#F3F4F6" stroke="#1A1A2E" stroke-width="3"/>
+              <circle cx="52" cy="77" r="3" fill="#FFFFFF" stroke="#1A1A2E" stroke-width="1.5"/>
+              <circle cx="60" cy="78" r="3.5" fill="#FFFFFF" stroke="#1A1A2E" stroke-width="1.5"/>
+              <circle cx="68" cy="76" r="2.5" fill="#FFFFFF" stroke="#1A1A2E" stroke-width="1.5"/>
+              <path d="M45,60 C45,50 50,50 50,40" fill="none" stroke="#3B82F6" stroke-width="2.5" stroke-linecap="round"/>
+              <path d="M60,57 C60,47 65,47 65,37" fill="none" stroke="#3B82F6" stroke-width="2.5" stroke-linecap="round"/>
+              <path d="M75,60 C75,50 80,50 80,40" fill="none" stroke="#3B82F6" stroke-width="2.5" stroke-linecap="round"/>
+            </svg>
+          `;
+        case 'aimantation':
+          return `
+            <svg viewBox="0 0 120 120" class="w-24 h-24 md:w-28 md:h-28 mx-auto">
+              <circle cx="60" cy="60" r="50" fill="#F0FDF4" stroke="#1A1A2E" stroke-width="3"/>
+              <path d="M30,95 Q60,75 90,95 Z" fill="#FDE047" stroke="#1A1A2E" stroke-width="3"/>
+              <path d="M48,88 L54,86 M60,83 L64,88 M70,87 L75,85" stroke="#4B5563" stroke-width="2.5" stroke-linecap="round"/>
+              <g transform="translate(60, 45) rotate(-25) translate(-15, -25)">
+                <path d="M10,10 L10,35 A10,10 0 0,0 30,35 L30,10" fill="none" stroke="#EF4444" stroke-width="8" stroke-linecap="square"/>
+                <path d="M30,10 L30,22" fill="none" stroke="#3B82F6" stroke-width="8" stroke-linecap="square"/>
+                <path d="M10,10 L10,22" fill="none" stroke="#3B82F6" stroke-width="8" stroke-linecap="square"/>
+                <path d="M6,10 L6,35 A14,14 0 0,0 34,35 L34,10 L26,10 L26,35 A6,6 0 0,1 14,35 L14,10 Z" fill="#EF4444" stroke="#1A1A2E" stroke-width="2" stroke-linejoin="round"/>
+                <rect x="6" y="9" width="8" height="12" fill="#3B82F6" stroke="#1A1A2E" stroke-width="2"/>
+                <rect x="26" y="9" width="8" height="12" fill="#3B82F6" stroke="#1A1A2E" stroke-width="2"/>
+              </g>
+              <path d="M48,68 L50,58 M58,68 L56,58 M68,70 L64,60" stroke="#4B5563" stroke-width="2" stroke-linecap="round" stroke-dasharray="3,3"/>
+            </svg>
+          `;
+        default:
+          return '';
+      }
+    }
+
+    // Game Variables
+    let selectedQuestions = [];
+    let currentQuestionIndex = 0;
+    let scores = []; // stores true/false for each question answered
+
+    function shuffleArray(array) {
+      const arr = [...array];
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    function handleBack() {
+      playClickSound();
+      if (window.parent && window.parent.closeFicheViewer) {
+        window.parent.closeFicheViewer();
+      } else {
+        window.history.back();
+      }
+    }
+
+    function startGame() {
+      playClickSound();
+      
+      // Select 10 random questions from pool
+      selectedQuestions = shuffleArray(QUESTION_POOL).slice(0, 10);
+      currentQuestionIndex = 0;
+      scores = [];
+
+      // Hide start screen & congrats screen, show game screen
+      document.getElementById('screen-start').classList.add('hidden');
+      document.getElementById('screen-synthesis').classList.add('hidden');
+      document.getElementById('screen-congrats').classList.add('hidden');
+      document.getElementById('screen-game').classList.remove('hidden');
+      document.getElementById('btn-help').classList.remove('hidden');
+
+      // Build dot elements for progress indicator
+      const dotsContainer = document.getElementById('progress-dots');
+      dotsContainer.innerHTML = '';
+      for (let i = 0; i < 10; i++) {
+        const dot = document.createElement('div');
+        dot.id = `dot-${i}`;
+        dot.className = 'w-3 h-3 rounded-full border border-neutral-900 bg-neutral-300 transition-all duration-300';
+        dotsContainer.appendChild(dot);
+      }
+
+      loadQuestion();
+    }
+
+    function loadQuestion() {
+      const question = selectedQuestions[currentQuestionIndex];
+
+      // Update progress visuals
+      document.getElementById('question-index-label').textContent = `Question ${currentQuestionIndex + 1} / 10`;
+      const percentage = Math.round((currentQuestionIndex / 10) * 100);
+      document.getElementById('progress-percentage').textContent = `${percentage}%`;
+      document.getElementById('progress-bar-fill').style.width = `${(currentQuestionIndex + 1) * 10}%`;
+
+      // Highlight active dot
+      const currentDot = document.getElementById(`dot-${currentQuestionIndex}`);
+      if (currentDot) {
+        currentDot.classList.remove('bg-neutral-300');
+        currentDot.classList.add('bg-violet-400', 'scale-125');
+      }
+
+      // Load illustration SVG
+      document.getElementById('illustration-container').innerHTML = getIllustrationSVG(question.type);
+
+      // Set text
+      document.getElementById('question-text').textContent = question.question;
+
+      // Build options
+      const optionsContainer = document.getElementById('options-container');
+      optionsContainer.innerHTML = '';
+
+      // Randomize options indexing but keep track of correct index
+      const indices = [0, 1, 2];
+      const shuffledIndices = shuffleArray(indices);
+
+      shuffledIndices.forEach((origIdx, displayIdx) => {
+        const optText = question.options[origIdx];
+        const btn = document.createElement('button');
+        btn.id = `option-${origIdx}`;
+        btn.className = 'option-btn w-full py-3.5 px-5 font-semibold text-left flex items-center gap-3.5';
+        
+        // Add a badge letter (A, B, C)
+        const letterBadge = document.createElement('span');
+        letterBadge.className = 'w-7 h-7 bg-neutral-100 border-2 border-neutral-900 rounded-full flex items-center justify-center font-bold text-xs shadow-[1.5px_1.5px_0px_#1A1A2E] flex-shrink-0';
+        letterBadge.textContent = String.fromCharCode(65 + displayIdx); // A, B, C
+        btn.appendChild(letterBadge);
+
+        const textSpan = document.createElement('span');
+        textSpan.textContent = optText;
+        btn.appendChild(textSpan);
+
+        btn.onclick = () => selectOption(origIdx, question.correctIndex);
+
+        optionsContainer.appendChild(btn);
+      });
+
+      // Hide feedback panel
+      document.getElementById('feedback-panel').classList.add('hidden');
+    }
+
+    function selectOption(selectedIndex, correctIndex) {
+      const isCorrect = (selectedIndex === correctIndex);
+      scores.push(isCorrect);
+
+      // Disable all options & highlight correct/incorrect
+      const question = selectedQuestions[currentQuestionIndex];
+      question.options.forEach((_, idx) => {
+        const btn = document.getElementById(`option-${idx}`);
+        if (btn) {
+          btn.disabled = true;
+          if (idx === correctIndex) {
+            btn.classList.add('correct');
+          } else if (idx === selectedIndex) {
+            btn.classList.add('incorrect');
+          } else {
+            btn.classList.add('neutral-disabled');
+          }
+        }
+      });
+
+      // Update dot color
+      const currentDot = document.getElementById(`dot-${currentQuestionIndex}`);
+      if (currentDot) {
+        currentDot.classList.remove('bg-violet-400', 'scale-125');
+        if (isCorrect) {
+          currentDot.classList.add('bg-emerald-500');
+        } else {
+          currentDot.classList.add('bg-red-500');
+        }
+      }
+
+      // Configure feedback box
+      const fbPanel = document.getElementById('feedback-panel');
+      const fbEmoji = document.getElementById('feedback-emoji');
+      const fbTitle = document.getElementById('feedback-title');
+      const fbExplanation = document.getElementById('feedback-explanation');
+
+      fbExplanation.textContent = question.explanation;
+
+      if (isCorrect) {
+        playSuccessSound();
+        fbPanel.style.backgroundColor = 'var(--success-light)';
+        fbPanel.style.borderColor = '#047857';
+        fbEmoji.textContent = '🎉';
+        fbTitle.textContent = 'Bien joué !';
+        fbTitle.style.color = '#047857';
+      } else {
+        playErrorSound();
+        fbPanel.style.backgroundColor = 'var(--error-light)';
+        fbPanel.style.borderColor = '#B91C1C';
+        fbEmoji.textContent = '💡';
+        fbTitle.textContent = 'Oups, ce n\'est pas tout à fait ça...';
+        fbTitle.style.color = '#B91C1C';
+      }
+
+      fbPanel.classList.remove('hidden');
+      
+      // Auto-scroll to feedback panel to ensure visibility on mobile screens
+      setTimeout(() => {
+        fbPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }, 50);
+    }
+
+    function nextQuestion() {
+      playClickSound();
+      currentQuestionIndex++;
+
+      if (currentQuestionIndex < 10) {
+        loadQuestion();
+      } else {
+        finishGame();
+      }
+    }
+
+    function finishGame() {
+      // Calculate results
+      const correctCount = scores.filter(Boolean).length;
+      const pct = Math.round((correctCount / 10) * 100);
+
+      // Hide game screen, show congrats
+      document.getElementById('screen-game').classList.add('hidden');
+      document.getElementById('btn-help').classList.add('hidden');
+      const congratsScreen = document.getElementById('screen-congrats');
+      congratsScreen.classList.remove('hidden');
+
+      // Update text details
+      document.getElementById('final-score').textContent = `${correctCount} / 10`;
+      document.getElementById('final-percent').textContent = `${pct}% de réussite`;
+
+      // Set feedback values
+      const titleElem = document.getElementById('congrats-title');
+      const msgElem = document.getElementById('congrats-message');
+      const starsElem = document.getElementById('congrats-stars');
+
+      if (correctCount === 10) {
+        titleElem.textContent = 'Chimiste d\'or ! 🏆';
+        msgElem.textContent = 'Félicitations, tu as réalisé un parcours parfait !';
+        starsElem.textContent = '⭐⭐⭐';
+        starsElem.style.color = '#FBBF24';
+        
+        playFanfareSound();
+        triggerConfettis();
+      } else if (correctCount >= 8) {
+        titleElem.textContent = 'Excellent ! 👍';
+        msgElem.textContent = 'Tu maîtrises très bien le sujet, bravo !';
+        starsElem.textContent = '⭐⭐';
+        starsElem.style.color = '#FBBF24';
+        playFanfareSound();
+      } else if (correctCount >= 5) {
+        titleElem.textContent = 'Pas mal ! 💪';
+        msgElem.textContent = 'Bon travail ! Relis bien les explications pour t\'améliorer encore.';
+        starsElem.textContent = '⭐';
+        starsElem.style.color = '#FBBF24';
+        playSuccessSound();
+      } else {
+        titleElem.textContent = 'Entraîne-toi encore ! 😅';
+        msgElem.textContent = 'Révise les mélanges et les techniques et tente à nouveau ta chance.';
+        starsElem.textContent = '✨';
+        starsElem.style.color = '#94A3B8';
+        playErrorSound();
+      }
+
+      // Build review boxes
+      const reviewGrid = document.getElementById('review-grid');
+      reviewGrid.innerHTML = '';
+      for (let i = 0; i < 10; i++) {
+        const box = document.createElement('div');
+        box.className = `flex flex-col items-center justify-center p-2 rounded-xl border-2 font-bold text-sm shadow-[2px_2px_0px_#1A1A2E] ${
+          scores[i] ? 'bg-emerald-100 text-emerald-800 border-emerald-500' : 'bg-red-100 text-red-800 border-red-500'
+        }`;
+        
+        const qNum = document.createElement('span');
+        qNum.textContent = `Q${i + 1}`;
+        qNum.className = 'text-xs opacity-75';
+        box.appendChild(qNum);
+
+        const qMark = document.createElement('span');
+        qMark.textContent = scores[i] ? '✅' : '❌';
+        box.appendChild(qMark);
+
+        reviewGrid.appendChild(box);
+      }
+
+      // Save score to parent
+      if (window.parent && window.parent.saveResult) {
+        try {
+          window.parent.saveResult({
+            activity: 'sci_melanges_qcm',
+            bookTitle: 'Sciences : Mélanges et séparations',
+            score: correctCount,
+            total: 10,
+            pct: pct,
+            date: new Date().toLocaleDateString('fr-BE'),
+            time: new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })
+          });
+        } catch (e) {
+          console.error("Failed to save result to parent frame:", e);
+        }
+      } else {
+        console.log("Mock saveResult:", {
+          activity: 'sci_melanges_qcm',
+          score: correctCount,
+          total: 10,
+          pct: pct
+        });
+      }
+    }
+
+    // Synthesis HTML Content definition
+    const SYNTHESIS_HTML = `
+      <div class="flex flex-col gap-5 text-left font-nunito max-w-xl mx-auto">
+        <h2 class="font-title text-2xl md:text-3xl font-black text-center text-violet-700 mb-1">📖 Fiche de Révision</h2>
+        
+        <!-- Les Mélanges -->
+        <div class="border-3 border-[#1A1A2E] bg-blue-50 p-4 rounded-2xl shadow-[3px_3px_0px_#1A1A2E]">
+          <h3 class="font-title font-bold text-blue-900 text-lg mb-2 flex items-center gap-2">
+            <span>🧪</span> Les Mélanges
+          </h3>
+          <ul class="list-disc pl-5 text-sm font-bold text-neutral-800 space-y-1.5">
+            <li><strong class="text-blue-700">Mélange Homogène :</strong> On ne distingue qu'une seule phase à l'œil nu. L'ensemble est parfaitement uniforme (ex: eau sucrée, sirop dilué dans l'eau, l'air).</li>
+            <li><strong class="text-blue-700">Mélange Hétérogène :</strong> On peut distinguer plusieurs composants à l'œil nu (ex: eau + sable, eau + huile, soupe avec morceaux).</li>
+          </ul>
+        </div>
+
+        <!-- Le Vocabulaire -->
+        <div class="border-3 border-[#1A1A2E] bg-purple-50 p-4 rounded-2xl shadow-[3px_3px_0px_#1A1A2E]">
+          <h3 class="font-title font-bold text-purple-900 text-lg mb-2 flex items-center gap-2">
+            <span>💬</span> Le Vocabulaire des Solutions
+          </h3>
+          <ul class="list-disc pl-5 text-sm font-bold text-neutral-800 space-y-1.5">
+            <li><strong class="text-purple-700">Solvant :</strong> Le liquide qui dissout le corps (ex: l'eau).</li>
+            <li><strong class="text-purple-700">Soluté :</strong> Le corps solide, liquide ou gazeux qui est dissous (ex: le sucre, le sel, le cacao).</li>
+            <li><strong class="text-purple-700">Solution :</strong> Le mélange homogène obtenu après dissolution.</li>
+            <li><strong class="text-purple-700">Saturation :</strong> Quand le solvant ne peut plus dissoudre de soluté. Le surplus se dépose au fond (la solution est alors dite <em>saturée</em>).</li>
+            <li><strong class="text-purple-700">Soluble / Insoluble :</strong> Un corps est <em>soluble</em> s'il se dissout dans le solvant, sinon il est <em>insoluble</em> (ex: le sable).</li>
+            <li><strong class="text-purple-700">Miscible / Non miscible :</strong> Deux liquides sont <em>miscibles</em> s'ils se mélangent de façon homogène, sinon ils sont <em>non miscibles</em> (ex: eau et huile).</li>
+          </ul>
+        </div>
+
+        <!-- Les Techniques -->
+        <div class="border-3 border-[#1A1A2E] bg-amber-50 p-4 rounded-2xl shadow-[3px_3px_0px_#1A1A2E]">
+          <h3 class="font-title font-bold text-amber-900 text-lg mb-2 flex items-center gap-2">
+            <span>⚙️</span> Les Techniques de Séparation
+          </h3>
+          <ul class="list-disc pl-5 text-sm font-bold text-neutral-800 space-y-2">
+            <li><strong class="text-amber-700">Filtration :</strong> Utiliser un filtre en papier pour séparer les constituants solides d'un mélange liquide. On obtient le <em class="text-amber-800">filtrat</em> (liquide) et le <em class="text-amber-800">résidu</em> (solide resté dans le filtre).</li>
+            <li><strong class="text-amber-700">Décantation :</strong> Laisser reposer un mélange hétérogène. Les constituants de densités différentes se séparent d'eux-mêmes (les solides lourds tombent au fond, les liquides légers comme l'huile flottent au-dessus).</li>
+            <li><strong class="text-amber-700">Évaporation :</strong> Chauffer la solution pour faire évaporer l'eau (solvant) et récupérer le solide dissous (soluté) sous forme de cristaux.</li>
+            <li><strong class="text-amber-700">Aimantation :</strong> Utiliser un aimant pour attirer et séparer les matériaux magnétiques (comme le fer) des autres solides (comme le sable).</li>
+          </ul>
+        </div>
+      </div>
+    `;
+
+    function showSynthesis() {
+      playClickSound();
+      document.getElementById('screen-start').classList.add('hidden');
+      document.getElementById('screen-synthesis').classList.remove('hidden');
+      document.getElementById('btn-help').classList.add('hidden');
+    }
+
+    function hideSynthesis() {
+      playClickSound();
+      document.getElementById('screen-synthesis').classList.add('hidden');
+      document.getElementById('screen-start').classList.remove('hidden');
+    }
+
+    function startGameFromSynthesis() {
+      document.getElementById('screen-synthesis').classList.add('hidden');
+      startGame();
+    }
+
+    function openHelpModal() {
+      playClickSound();
+      const modal = document.getElementById('help-modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeHelpModal() {
+      playClickSound();
+      const modal = document.getElementById('help-modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    // Inject content immediately
+    document.getElementById('screen-synthesis-content').innerHTML = SYNTHESIS_HTML;
+    document.getElementById('help-modal-content').innerHTML = SYNTHESIS_HTML;
+
+    // Confetti Effect
+    function triggerConfettis() {
+      const canvas = document.getElementById('confetti-canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      
+      let confettiActive = true;
+      const count = 120;
+      const colors = ['#3B82F6', '#8B5CF6', '#10B981', '#F59E0B', '#EF4444'];
+      const confettis = Array.from({ length: count }).map(() => ({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height - canvas.height,
+        r: Math.random() * 6 + 4,
+        d: Math.random() * count,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        tilt: Math.random() * 10 - 5,
+        tiltAngleIncremental: Math.random() * 0.07 + 0.02,
+        tiltAngle: 0
+      }));
+
+      function draw() {
+        if (!confettiActive) return;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        confettis.forEach((c, index) => {
+          c.tiltAngle += c.tiltAngleIncremental;
+          c.y += (Math.cos(c.d) + 3 + c.r / 2) / 2;
+          c.tilt = Math.sin(c.tiltAngle - index / 3) * 15;
+          if (c.y > canvas.height) {
+            c.x = Math.random() * canvas.width;
+            c.y = -20;
+            c.tilt = Math.random() * 10 - 5;
+          }
+          ctx.beginPath();
+          ctx.lineWidth = c.r;
+          ctx.strokeStyle = c.color;
+          ctx.moveTo(c.x + c.tilt + c.r / 2, c.y);
+          ctx.lineTo(c.x + c.tilt, c.y + c.tilt + c.r / 2);
+          ctx.stroke();
+        });
+        requestAnimationFrame(draw);
+      }
+      draw();
+      setTimeout(() => {
+        confettiActive = false;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }, 4500);
+    }
+
+    // Auto-resize handler for confetti canvas
+    window.addEventListener('resize', () => {
+      const canvas = document.getElementById('confetti-canvas');
+      if (canvas) {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+    });
+
+    // Touch gesture activation helper for Web Audio
+    function resumeAudio() {
+      if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+    }
+    document.addEventListener('click', resumeAudio);
+    document.addEventListener('touchstart', resumeAudio);
+
+  </script>
+</body>
+</html>
