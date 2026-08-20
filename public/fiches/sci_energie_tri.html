@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sources et conversions d'énergie - Sciences P5-P6</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Canvas Confetti CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --color-dark: #1e293b;
+      --border-width: 3.5px;
+      --bg-cream: #fdfbfc;
+      
+      /* Energy Theme Colors */
+      --eco-green: #10b981;
+      --solar-orange: #f97316;
+      --electric-yellow: #eab308;
+      --fossil-grey: #64748b;
+    }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background-color: var(--bg-cream);
+      color: var(--color-dark);
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+    }
+
+    .font-title {
+      font-family: 'Fredoka', sans-serif;
+    }
+
+    /* Flat 3D card layout */
+    .card-3d {
+      background: #ffffff;
+      border: var(--border-width) solid var(--color-dark);
+      box-shadow: 4px 4px 0px var(--color-dark);
+      border-radius: 20px;
+      transition: all 0.2s ease;
+    }
+
+    /* Flat 3D buttons */
+    .btn-3d {
+      font-family: 'Fredoka', sans-serif;
+      border: var(--border-width) solid var(--color-dark);
+      box-shadow: 4px 4px 0px var(--color-dark);
+      border-radius: 12px;
+      font-weight: 800;
+      transition: all 0.1s ease-out;
+      transform: translate(0px, 0px);
+      cursor: pointer;
+    }
+    
+    .btn-3d:hover:not(:disabled) {
+      transform: translate(-2px, -2px);
+      box-shadow: 6px 6px 0px var(--color-dark);
+    }
+
+    .btn-3d:active:not(:disabled) {
+      transform: translate(2px, 2px);
+      box-shadow: 2px 2px 0px var(--color-dark);
+    }
+
+    .btn-3d:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none !important;
+      box-shadow: 2px 2px 0px var(--color-dark) !important;
+    }
+
+    /* Energy card layout (drag elements) */
+    .energy-card {
+      border: 3px solid var(--color-dark);
+      box-shadow: 3px 3px 0px var(--color-dark);
+      border-radius: 12px;
+      transition: all 0.2s ease;
+    }
+    
+    .energy-card:hover:not([data-locked="true"]) {
+      transform: translateY(-2px);
+      box-shadow: 4px 5px 0px var(--color-dark);
+    }
+
+    .energy-card.selected-card {
+      border-color: #fbbf24 !important; /* electric yellow */
+      box-shadow: 0 0 0 4px #fbbf24 !important;
+      transform: scale(1.05) translateY(-2px);
+    }
+
+    /* Custom 3D State buttons (Dropdown triggers) */
+    .btn-state {
+      border: 2.5px solid var(--color-dark);
+      box-shadow: 2px 2px 0px var(--color-dark);
+      border-radius: 10px;
+      font-weight: 700;
+      transition: all 0.1s ease-out;
+      transform: translate(0px, 0px);
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .btn-state:hover:not(:disabled) {
+      transform: translate(-1px, -1px);
+      box-shadow: 3px 3px 0px var(--color-dark);
+    }
+
+    .btn-state:active:not(:disabled) {
+      transform: translate(1px, 1px);
+      box-shadow: 1px 1px 0px var(--color-dark);
+    }
+
+    /* Drag over column highlight */
+    .drop-zone.drag-over {
+      border-color: #fbbf24 !important;
+      background-color: #fef9c3 !important;
+    }
+
+    /* Correct & Incorrect Styles for 3D Cards and Buttons */
+    .energy-card.card-correct {
+      border-color: var(--eco-green) !important;
+      box-shadow: 3px 3px 0px var(--eco-green) !important;
+      background-color: #ecfdf5 !important;
+    }
+
+    .energy-card.card-incorrect {
+      border-color: #ef4444 !important;
+      box-shadow: 3px 3px 0px #ef4444 !important;
+      background-color: #fef2f2 !important;
+    }
+
+    .btn-state.correct {
+      border-color: var(--eco-green) !important;
+      box-shadow: 2px 2px 0px var(--eco-green) !important;
+    }
+
+    .btn-state.incorrect {
+      border-color: #ef4444 !important;
+      box-shadow: 2px 2px 0px #ef4444 !important;
+    }
+
+    .fade-in {
+      animation: fadeIn 0.4s ease-out forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .progress-bar-fill {
+      transition: width 0.3s ease-in-out;
+    }
+  </style>
+</head>
+<body class="flex flex-col items-center py-6 px-4 md:px-8">
+
+  <div class="w-full max-w-5xl flex flex-col gap-6">
+
+    <!-- Header Navigation -->
+    <div class="flex items-center justify-between w-full">
+      <button onclick="handleBack();" class="btn-3d px-4 py-2 bg-white text-sm font-title rounded-xl flex items-center gap-2">
+        <span>←</span> Retour
+      </button>
+      <div class="score-badge bg-white font-title text-sm md:text-base border-[3px] border-slate-800 rounded-xl px-4 py-2 shadow-[3px_3px_0px_rgba(30,41,59,1)] flex items-center gap-2">
+        <span class="text-amber-500">🏆</span>
+        <span>Score de passage : <span id="header-progress" class="font-bold text-sky-600">0 / 17</span></span>
+      </div>
+    </div>
+
+    <!-- MAIN INTERACTIVE CARD -->
+    <div class="card-3d p-6 md:p-8 bg-white relative overflow-visible">
+      
+      <!-- SCREEN 1: THE GAME -->
+      <div id="screen-game" class="fade-in flex flex-col gap-6">
+        
+        <!-- Header Banner -->
+        <div class="text-center pb-5 border-b-4 border-dashed border-slate-200">
+          <h1 class="font-title text-3xl md:text-4xl font-bold text-slate-800 flex justify-center items-center gap-3">
+            ⚡ Sources et conversions d'énergie
+          </h1>
+          <p class="text-slate-600 text-sm md:text-base mt-2 font-semibold">
+            Distingue les sources d'énergie et identifie les conversions dans les appareils courants.
+          </p>
+        </div>
+
+        <!-- How to play instructions -->
+        <div class="bg-amber-50 border-2 border-amber-300 text-amber-800 rounded-xl p-4 text-xs md:text-sm font-medium shadow-sm space-y-2">
+          <div class="font-bold text-sm">💡 Comment jouer ?</div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <span class="font-bold">Partie 1 :</span> Glisse les sources d'énergie dans la bonne colonne, ou clique sur une étiquette puis sur la colonne correspondante. Clique sur un élément classé pour le renvoyer en haut.
+            </div>
+            <div>
+              <span class="font-bold">Partie 2 :</span> Pour chaque appareil, clique sur les cases <strong>[ Choisir ▼ ]</strong> pour sélectionner l'énergie d'entrée (à gauche) et l'énergie produite (à droite).
+            </div>
+          </div>
+        </div>
+
+        <!-- Progress Tracking -->
+        <div class="w-full bg-slate-100 rounded-full h-5 border-2 border-slate-800 overflow-hidden relative shadow-inner">
+          <div id="progress-bar" class="progress-bar-fill bg-sky-400 h-full w-0" style="border-right: 2px solid var(--color-dark);"></div>
+          <span id="progress-text" class="absolute inset-0 flex items-center justify-center text-[10px] md:text-xs font-black text-slate-700 uppercase tracking-wider">
+            0% complété (0 sur 17 réponses complétées)
+          </span>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- PART 1: CLASSIFICATION OF ENERGY SOURCES -->
+        <!-- ========================================== -->
+        <div class="border-b-2 border-slate-100 pb-6">
+          <h2 class="font-title text-xl md:text-2xl font-bold text-slate-800 mb-4 flex items-center gap-2">
+            <span class="bg-emerald-100 text-emerald-600 w-8 h-8 rounded-lg flex items-center justify-center text-sm border-2 border-slate-800">1</span>
+            Trier les sources d'énergie
+          </h2>
+
+          <!-- Reservoir Zone -->
+          <div class="mb-4 bg-slate-50 border-2 border-slate-200 rounded-xl p-4">
+            <div class="text-xs font-extrabold uppercase text-slate-400 tracking-wide mb-2">Sources d'énergie à classer :</div>
+            <div id="reservoir" class="drop-zone min-h-[90px] p-2 flex flex-wrap justify-center gap-3 bg-white border-2 border-dashed border-slate-300 rounded-xl" ondragover="dragOver(event)" ondrop="drop(event)" onclick="handleZoneClick(event)">
+              <div id="card-soleil" class="energy-card px-4 py-2.5 bg-white cursor-pointer select-none text-slate-800 font-bold flex items-center justify-between text-sm md:text-base" draggable="true" ondragstart="dragStart(event)" ondragend="dragEnd(event)" onclick="handleCardClick(event)" data-source-id="soleil">
+                <span>☀️ Le Soleil</span>
+              </div>
+              <div id="card-vent" class="energy-card px-4 py-2.5 bg-white cursor-pointer select-none text-slate-800 font-bold flex items-center justify-between text-sm md:text-base" draggable="true" ondragstart="dragStart(event)" ondragend="dragEnd(event)" onclick="handleCardClick(event)" data-source-id="vent">
+                <span>💨 Le Vent</span>
+              </div>
+              <div id="card-eau" class="energy-card px-4 py-2.5 bg-white cursor-pointer select-none text-slate-800 font-bold flex items-center justify-between text-sm md:text-base" draggable="true" ondragstart="dragStart(event)" ondragend="dragEnd(event)" onclick="handleCardClick(event)" data-source-id="eau">
+                <span>💧 L'eau (barrage)</span>
+              </div>
+              <div id="card-biomasse" class="energy-card px-4 py-2.5 bg-white cursor-pointer select-none text-slate-800 font-bold flex items-center justify-between text-sm md:text-base" draggable="true" ondragstart="dragStart(event)" ondragend="dragEnd(event)" onclick="handleCardClick(event)" data-source-id="biomasse">
+                <span>🪵 La biomasse (bois, déchets)</span>
+              </div>
+              <div id="card-geothermie" class="energy-card px-4 py-2.5 bg-white cursor-pointer select-none text-slate-800 font-bold flex items-center justify-between text-sm md:text-base" draggable="true" ondragstart="dragStart(event)" ondragend="dragEnd(event)" onclick="handleCardClick(event)" data-source-id="geothermie">
+                <span>🌋 La géothermie</span>
+              </div>
+              <div id="card-petrole" class="energy-card px-4 py-2.5 bg-white cursor-pointer select-none text-slate-800 font-bold flex items-center justify-between text-sm md:text-base" draggable="true" ondragstart="dragStart(event)" ondragend="dragEnd(event)" onclick="handleCardClick(event)" data-source-id="petrole">
+                <span>🛢️ Le pétrole</span>
+              </div>
+              <div id="card-charbon" class="energy-card px-4 py-2.5 bg-white cursor-pointer select-none text-slate-800 font-bold flex items-center justify-between text-sm md:text-base" draggable="true" ondragstart="dragStart(event)" ondragend="dragEnd(event)" onclick="handleCardClick(event)" data-source-id="charbon">
+                <span>🪨 Le charbon</span>
+              </div>
+              <div id="card-gaz" class="energy-card px-4 py-2.5 bg-white cursor-pointer select-none text-slate-800 font-bold flex items-center justify-between text-sm md:text-base" draggable="true" ondragstart="dragStart(event)" ondragend="dragEnd(event)" onclick="handleCardClick(event)" data-source-id="gaz">
+                <span>🔥 Le gaz naturel</span>
+              </div>
+              <div id="card-uranium" class="energy-card px-4 py-2.5 bg-white cursor-pointer select-none text-slate-800 font-bold flex items-center justify-between text-sm md:text-base" draggable="true" ondragstart="dragStart(event)" ondragend="dragEnd(event)" onclick="handleCardClick(event)" data-source-id="uranium">
+                <span>☢️ L'uranium (nucléaire)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Two Columns -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+            <!-- Renewable Column -->
+            <div class="card-3d overflow-hidden flex flex-col min-h-[220px]">
+              <div class="bg-emerald-500 text-white font-title text-base font-bold py-2.5 px-4 border-b-[3.5px] border-slate-800 flex justify-between items-center">
+                <span>♻️ Renouvelables</span>
+                <span class="text-xs px-2 py-0.5 bg-emerald-600/80 rounded-full font-bold text-white uppercase tracking-wider">Naturelle & Infinie</span>
+              </div>
+              <div id="col-renouvelable" class="drop-zone flex-1 p-4 flex flex-wrap content-start gap-3 bg-emerald-50/10" ondragover="dragOver(event)" ondrop="drop(event)" onclick="handleZoneClick(event)"></div>
+            </div>
+
+            <!-- Non-Renewable Column -->
+            <div class="card-3d overflow-hidden flex flex-col min-h-[220px]">
+              <div class="bg-slate-500 text-white font-title text-base font-bold py-2.5 px-4 border-b-[3.5px] border-slate-800 flex justify-between items-center">
+                <span>🛢️ Non renouvelables (fossiles ou fissiles)</span>
+                <span class="text-xs px-2 py-0.5 bg-slate-600/80 rounded-full font-bold text-white uppercase tracking-wider">Stock limité</span>
+              </div>
+              <div id="col-non-renouvelable" class="drop-zone flex-1 p-4 flex flex-wrap content-start gap-3 bg-slate-100/30" ondragover="dragOver(event)" ondrop="drop(event)" onclick="handleZoneClick(event)"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- PART 2: ENERGY CONVERSIONS -->
+        <!-- ========================================== -->
+        <div class="pb-6">
+          <h2 class="font-title text-xl md:text-2xl font-bold text-slate-800 mb-4 flex items-center gap-2">
+            <span class="bg-orange-100 text-orange-600 w-8 h-8 rounded-lg flex items-center justify-center text-sm border-2 border-slate-800">2</span>
+            Conversions d'énergie des appareils
+          </h2>
+
+          <div class="flex flex-col gap-4">
+            
+            <!-- Ampoule Row -->
+            <div class="card-3d p-4 bg-white flex flex-col md:flex-row items-center justify-between gap-4 relative">
+              <div class="w-full md:w-auto flex items-center justify-between md:justify-start gap-2">
+                <span class="text-xs uppercase font-extrabold text-slate-400 font-sans tracking-wide">Énergie d'entrée :</span>
+                <div class="relative inline-block w-36">
+                  <button id="btn-ampoule-input" class="energy-btn btn-state w-36 text-center py-2 px-3 bg-white text-slate-400 border-2 border-dashed border-slate-300 font-bold rounded-xl cursor-pointer hover:bg-slate-50 transition-all text-sm flex items-center justify-center" onclick="toggleDropdown(event, 'ampoule', 'input')">
+                    Choisir ▼
+                  </button>
+                  <div id="dropdown-ampoule-input" class="dropdown-menu absolute hidden left-0 top-full mt-1 z-50 bg-white border-2 border-slate-800 rounded-xl shadow-[3px_3px_0px_rgba(30,41,59,1)] py-1 w-44 font-bold text-slate-800">
+                    <button class="w-full text-left px-3 py-1.5 hover:bg-slate-100 flex items-center gap-2" onclick="selectEnergy('ampoule', 'input', 'chimique')">🧪 Chimique</button>
+                    <button class="w-full text-left px-3 py-1.5 hover:bg-slate-100 flex items-center gap-2" onclick="selectEnergy('ampoule', 'input', 'electrique')">⚡ Électrique</button>
+                    <button class="w-full text-left px-3 py-1.5 hover:bg-slate-100 flex items-center gap-2" onclick="selectEnergy('ampoule', 'input', 'lumineuse')">☀️ Lumineuse</button>
+                    <button class="w-full text-left px-3 py-1.5 hover:bg-slate-100 flex items-center gap-2" onclick="selectEnergy('ampoule', 'input', 'mecanique')">⚙️ Mécanique</button>
+                    <button class="w-full text-left px-3 py-1.5 hover:bg-slate-100 flex items-center gap-2" onclick="selectEnergy('ampoule', 'input', 'thermique')">🔥 Thermique</button>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="flex-1 text-center bg-slate-50 border-2 border-slate-800 py-2.5 px-4 rounded-xl shadow-[2px_2px_0px_rgba(30,41,59,1)] flex items-center justify-center gap-2 min-w-[200px]">
+                <span class="text-2xl">💡</span>
+                <span class="font-title font-bold text-slate-800">Une ampoule</span>
+              </div>
+
+              <div class="w-full md:w-auto flex items-center justify-between md:justify-start gap-2">
+                <span class="text-xs uppercase font-extrabold text-slate-400 font-sans tracking-wide">Énergie produite :</span>
+                <div class="relative inline-block w-36">
+                  <button id="btn-ampoule-output" class="energy-btn btn-state w-36 text-center py-2 px-3 bg-white text-slate-400 border-2 border-dashed border-slate-300 font-bold rounded-xl cursor-pointer hover:bg-slate-50 transition-all text-sm flex items-center justify-center" onclick="toggleDropdown(event, 'ampoule', 'output')">
+                    Choisir ▼
+                  </button>
+                  <div id="dropdown-ampoule-output" class="dropdown-menu absolute hidden right-0 md:left-0 top-full mt-1 z-50 bg-white border-2 border-slate-800 rounded-xl shadow-[3px_3px_0px_rgba(30,41,59,1)] py-1 w-44 font-bold text-slate-800">
+                    <button class="w-full text-left px-3 py-1.5 hover:bg-slate-100 flex items-center gap-2" onclick="selectEnergy('ampoule', 'output', 'chimique')">🧪 Chimique</button>
+                    <button class="w-full text-left px-3 py-1.5 hover:bg-slate-100 flex items-center gap-2" onclick="selectEnergy('ampoule', 'output', 'electrique')">⚡ Électrique</button>
+                    <button class="w-full text-left px-3 py-1.5 hover:bg-slate-100 flex items-center gap-2" onclick="selectEnergy('ampoule', 'output', 'lumineuse')">☀️ Lumineuse</button>
+                    <button class="w-full text-left px-3 py-1.5 hover:bg-slate-100 flex items-center gap-2" onclick="selectEnergy('ampoule', 'output', 'mecanique')">⚙️ Mécanique</button>
+                    <button class="w-full text-left px-3 py-1.5 hover:bg-slate-100 flex items-center gap-2" onclick="selectEnergy('ampoule', 'output', 'thermique')">🔥 Thermique</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Radiateur Row -->
+            <div class="card-3d p-4 bg-white flex flex-col md:flex-row items-center justify-between gap-4 relative">
+              <div class="w-full md:w-auto flex items-center justify-between md:justify-start gap-2">
+                <span class="text-xs uppercase font-extrabold text-slate-400 font-sans tracking-wide">Énergie d'entrée :</span>
+                <div class="relative inline-block w-36">
+                  <button id="btn-radiateur-input" class="energy-btn btn-state w-36 text-center py-2 px-3 bg-white text-slate-400 border-2 border-dashed border-slate-300 font-bold rounded-xl cursor-pointer hover:bg-slate-50 transition-all text-sm flex items-center justify-center" onclick="toggleDropdown(event, 'radiateur', 'input')">
+                    Choisir ▼
+                  </button>
+                  <div id="dropdown-radiateur-input" class="dropdown-menu absolute hidden left-0 top-full mt-1 z-50 bg-white border-2 border-slate-800 rounded-xl shadow-[3px_3px_0px_rgba(30,41,59,1)] py-1 w-44 font-bold text-slate-800">
+                    <button class="w-full text-left px-3 py-1.5 hover:bg-slate-100 flex items-center gap-2" onclick="selectEnergy('radiateur', 'input', 'chimique')">🧪 Chimique</button>
+                    <button class="w-full text-left px-3 py-1.5 hover:bg-slate-100 flex items-center gap-2" onclick="selectEnergy('radiateur', 'input', 'electrique')">⚡ Électrique</button>
+                    <button class="w-full text-left px-3 py-1.5 hover:bg-slate-100 flex items-center gap-2" onclick="selectEnergy('radiateur', 'input', 'lumineuse')">☀️ Lumineuse</button>
+                    <button class="w-full text-left px-3 py-1.5 hover:bg-slate-100 flex items-center gap-2" onclick="selectEnergy('radiateur', 'input', 'mecanique')">⚙️ Mécanique</button>
+                    <button class="w-full text-left px-3 py-1.5 hover:bg-slate-100 flex items-center gap-2" onclick="selectEnergy('radiateur', 'input', 'thermique')">🔥 Thermique</button>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="flex-1 text-center bg-slate-50 border-2 border-slate-800 py-2.5 px-4 rounded-xl shadow-[2px_2px_0px_rgba(30,41,59,1)] flex items-center justify-center gap-2 min-w-[200px]">
+                <span class="text-2xl">🔥</span>
+                <span class="font-title font-bold text-slate-800">Un radiateur électrique</span>
+              </div>
+
+              <div class="w-full md:w-auto flex items-center justify-between md:justify-start gap-2">
+                <span class="text-xs uppercase font-extrabold text-slate-400 font-sans tracking-wide">Énergie produite :</span>
+                <div class="relative inline-block w-36">
+                  <button id="btn-radiateur-output" class="energy-btn btn-state w-36 text-center py-2 px-3 bg-white text-slate-400 border-2 border-dashed border-slate-300 font-bold rounded-xl cursor-pointer hover:bg-slate-50 transition-all text-sm flex items-center justify-center" onclick="toggleDropdown(event, 'radiateur', 'output')">
+                    Choisir ▼
+                  </button>
+                  <div id="dropdown-radiateur-output" class="dropdown-menu absolute hidden right-0 md:left-0 top-full mt-1 z-50 bg-white border-2 border-slate-800 rounded-xl shadow-[3px_3px_0px_rgba(30,41,59,1)] py-1 w-44 font-bold text-slate-800">
+                    <button class="w-full text-left px-3 py-1.5 hover:bg-slate-100 flex items-center gap-2" onclick="selectEnergy('radiateur', 'output', 'chimique')">🧪 Chimique</button>
+                    <button class="w-full text-left px-3 py-1.5 hover:bg-slate-100 flex items-center gap-2" onclick="selectEnergy('radiateur', 'output', 'electrique')">⚡ Électrique</button>
+                    <button class="w-full text-left px-3 py-1.5 hover:bg-slate-100 flex items-center gap-2" onclick="selectEnergy('radiateur', 'output', 'lumineuse')">☀️ Lumineuse</button>
+                    <button class="w-full text-left px-3 py-1.5 hover:bg-slate-100 flex items-center gap-2" onclick="selectEnergy('radiateur', 'output', 'mecanique')">⚙️ Mécanique</button>
+                    <button class="w-full text-left px-3 py-1.5 hover:bg-slate-100 flex items-center gap-2" onclick="selectEnergy('radiateur', 'output', 'thermique')">🔥 Thermique</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Voiture Row -->
+            <div class="card-3d p-4 bg-white flex flex-col md:flex-row items-center justify-between gap-4 relative">
+              <div class="w-full md:w-auto flex items-center justify-between md:justify-start gap-2">
+                <span class="text-xs uppercase font-extrabold text-slate-400 font-sans tracking-wide">Énergie d'entrée :</span>
+                <div class="relative inline-block w-36">
+                  <button id="btn-voiture-input" class="energy-btn btn-state w-36 text-center py-2 px-3 bg-white text-slate-400 border-2 border-dashed border-slate-300 font-bold rounded-xl cursor-pointer hover:bg-slate-50 transition-all text-sm flex items-center justify-center" onclick="toggleDropdown(event, 'voiture', 'input')">
+                    Choisir ▼
+                  </button>
+                  <div id="dropdown-voiture-input" class="dropdown-menu absolute hidden left-0 top-full mt-1 z-50 bg-white border-2 border-slate-800 rounded-xl shadow-[3px_3px_0px_rgba(30,41,59,1)] py-1 w-44 font-bold text-slate-800">
+                    <button class="w-full text-left px-3 py-1.5 hover:bg-slate-100 flex items-center gap-2" onclick="selectEnergy('voiture', 'input', 'chimique')">🧪 Chimique</button>
+                    <button class="w-full text-left px-3 py-1.5 hover:bg-slate-100 flex items-center gap-2" onclick="selectEnergy('voiture', 'input', 'electrique')">⚡ Électrique</button>
+                    <button class="w-full text-left px-3 py-1.5 hover:bg-slate-100 flex items-center gap-2" onclick="selectEnergy('voiture', 'input', 'lumineuse')">☀️ Lumineuse</button>
+                    <button class="w-full text-left px-3 py-1.5 hover:bg-slate-100 flex items-center gap-2" onclick="selectEnergy('voiture', 'input', 'mecanique')">⚙️ Mécanique</button>
+                    <button class="w-full text-left px-3 py-1.5 hover:bg-slate-100 flex items-center gap-2" onclick="selectEnergy('voiture', 'input', 'thermique')">🔥 Thermique</button>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="flex-1 text-center bg-slate-50 border-2 border-slate-800 py-2.5 px-4 rounded-xl shadow-[2px_2px_0px_rgba(30,41,59,1)] flex items-center justify-center gap-2 min-w-[200px]">
+                <span class="text-2xl">🚗</span>
+                <span class="font-title font-bold text-slate-800">Une voiture à essence</span>
+              </div>
+
+              <div class="w-full md:w-auto flex items-center justify-between md:justify-start gap-2">
+                <span class="text-xs uppercase font-extrabold text-slate-400 font-sans tracking-wide">Énergie produite :</span>
+                <div class="relative inline-block w-36">
+                  <button id="btn-voiture-output" class="energy-btn btn-state w-36 text-center py-2 px-3 bg-white text-slate-400 border-2 border-dashed border-slate-300 font-bold rounded-xl cursor-pointer hover:bg-slate-50 transition-all text-sm flex items-center justify-center" onclick="toggleDropdown(event, 'voiture', 'output')">
+                    Choisir ▼
+                  </button>
+                  <div id="dropdown-voiture-output" class="dropdown-menu absolute hidden right-0 md:left-0 top-full mt-1 z-50 bg-white border-2 border-slate-800 rounded-xl shadow-[3px_3px_0px_rgba(30,41,59,1)] py-1 w-44 font-bold text-slate-800">
+                    <button class="w-full text-left px-3 py-1.5 hover:bg-slate-100 flex items-center gap-2" onclick="selectEnergy('voiture', 'output', 'chimique')">🧪 Chimique</button>
+                    <button class="w-full text-left px-3 py-1.5 hover:bg-slate-100 flex items-center gap-2" onclick="selectEnergy('voiture', 'output', 'electrique')">⚡ Électrique</button>
+                    <button class="w-full text-left px-3 py-1.5 hover:bg-slate-100 flex items-center gap-2" onclick="selectEnergy('voiture', 'output', 'lumineuse')">☀️ Lumineuse</button>
+                    <button class="w-full text-left px-3 py-1.5 hover:bg-slate-100 flex items-center gap-2" onclick="selectEnergy('voiture', 'output', 'mecanique')">⚙️ Mécanique</button>
+                    <button class="w-full text-left px-3 py-1.5 hover:bg-slate-100 flex items-center gap-2" onclick="selectEnergy('voiture', 'output', 'thermique')">🔥 Thermique</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Panneau Row -->
+            <div class="card-3d p-4 bg-white flex flex-col md:flex-row items-center justify-between gap-4 relative">
+              <div class="w-full md:w-auto flex items-center justify-between md:justify-start gap-2">
+                <span class="text-xs uppercase font-extrabold text-slate-400 font-sans tracking-wide">Énergie d'entrée :</span>
+                <div class="relative inline-block w-36">
+                  <button id="btn-panneau-input" class="energy-btn btn-state w-36 text-center py-2 px-3 bg-white text-slate-400 border-2 border-dashed border-slate-300 font-bold rounded-xl cursor-pointer hover:bg-slate-50 transition-all text-sm flex items-center justify-center" onclick="toggleDropdown(event, 'panneau', 'input')">
+                    Choisir ▼
+                  </button>
+                  <div id="dropdown-panneau-input" class="dropdown-menu absolute hidden left-0 top-full mt-1 z-50 bg-white border-2 border-slate-800 rounded-xl shadow-[3px_3px_0px_rgba(30,41,59,1)] py-1 w-44 font-bold text-slate-800">
+                    <button class="w-full text-left px-3 py-1.5 hover:bg-slate-100 flex items-center gap-2" onclick="selectEnergy('panneau', 'input', 'chimique')">🧪 Chimique</button>
+                    <button class="w-full text-left px-3 py-1.5 hover:bg-slate-100 flex items-center gap-2" onclick="selectEnergy('panneau', 'input', 'electrique')">⚡ Électrique</button>
+                    <button class="w-full text-left px-3 py-1.5 hover:bg-slate-100 flex items-center gap-2" onclick="selectEnergy('panneau', 'input', 'lumineuse')">☀️ Lumineuse</button>
+                    <button class="w-full text-left px-3 py-1.5 hover:bg-slate-100 flex items-center gap-2" onclick="selectEnergy('panneau', 'input', 'mecanique')">⚙️ Mécanique</button>
+                    <button class="w-full text-left px-3 py-1.5 hover:bg-slate-100 flex items-center gap-2" onclick="selectEnergy('panneau', 'input', 'thermique')">🔥 Thermique</button>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="flex-1 text-center bg-slate-50 border-2 border-slate-800 py-2.5 px-4 rounded-xl shadow-[2px_2px_0px_rgba(30,41,59,1)] flex items-center justify-center gap-2 min-w-[200px]">
+                <span class="text-2xl">☀️</span>
+                <span class="font-title font-bold text-slate-800">Un panneau solaire photovoltaïque</span>
+              </div>
+
+              <div class="w-full md:w-auto flex items-center justify-between md:justify-start gap-2">
+                <span class="text-xs uppercase font-extrabold text-slate-400 font-sans tracking-wide">Énergie produite :</span>
+                <div class="relative inline-block w-36">
+                  <button id="btn-panneau-output" class="energy-btn btn-state w-36 text-center py-2 px-3 bg-white text-slate-400 border-2 border-dashed border-slate-300 font-bold rounded-xl cursor-pointer hover:bg-slate-50 transition-all text-sm flex items-center justify-center" onclick="toggleDropdown(event, 'panneau', 'output')">
+                    Choisir ▼
+                  </button>
+                  <div id="dropdown-panneau-output" class="dropdown-menu absolute hidden right-0 md:left-0 top-full mt-1 z-50 bg-white border-2 border-slate-800 rounded-xl shadow-[3px_3px_0px_rgba(30,41,59,1)] py-1 w-44 font-bold text-slate-800">
+                    <button class="w-full text-left px-3 py-1.5 hover:bg-slate-100 flex items-center gap-2" onclick="selectEnergy('panneau', 'output', 'chimique')">🧪 Chimique</button>
+                    <button class="w-full text-left px-3 py-1.5 hover:bg-slate-100 flex items-center gap-2" onclick="selectEnergy('panneau', 'output', 'electrique')">⚡ Électrique</button>
+                    <button class="w-full text-left px-3 py-1.5 hover:bg-slate-100 flex items-center gap-2" onclick="selectEnergy('panneau', 'output', 'lumineuse')">☀️ Lumineuse</button>
+                    <button class="w-full text-left px-3 py-1.5 hover:bg-slate-100 flex items-center gap-2" onclick="selectEnergy('panneau', 'output', 'mecanique')">⚙️ Mécanique</button>
+                    <button class="w-full text-left px-3 py-1.5 hover:bg-slate-100 flex items-center gap-2" onclick="selectEnergy('panneau', 'output', 'thermique')">🔥 Thermique</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ACTION BUTTONS -->
+        <div class="flex flex-wrap gap-4 justify-center items-center mt-4">
+          <button id="btn-validate" class="btn-3d px-8 py-3.5 bg-emerald-500 hover:bg-emerald-400 text-white font-title text-lg flex items-center gap-2 disabled:opacity-50" onclick="validateGame()" disabled>
+            Valider mes réponses ✔️
+          </button>
+          <button id="btn-correct-errors" class="btn-3d px-6 py-3.5 bg-orange-400 hover:bg-orange-300 text-slate-800 font-title text-lg flex items-center gap-2 hidden" onclick="correctErrorsOnly()">
+            Corriger les erreurs 🛠️
+          </button>
+          <button id="btn-clear" class="btn-3d px-6 py-3.5 bg-white hover:bg-slate-50 text-slate-700 font-title text-lg flex items-center gap-2" onclick="restartEntireGame()">
+            Tout effacer 🔄
+          </button>
+        </div>
+
+      </div>
+
+      <!-- RESULTS PANEL -->
+      <div id="score-panel" class="fade-in hidden flex flex-col items-center justify-center text-center gap-6 py-8 border-t-4 border-dashed border-slate-200 mt-6">
+        <div class="w-24 h-24 bg-amber-100 border-[4px] border-slate-800 rounded-full flex items-center justify-center text-5xl shadow-[4px_4px_0px_rgba(30,41,59,1)]">
+          🎉
+        </div>
+        
+        <div>
+          <h2 id="score-title" class="font-title text-3xl font-extrabold text-slate-800">Excellent travail !</h2>
+          <p id="score-comment" class="text-slate-500 text-sm md:text-base mt-2 font-semibold"></p>
+        </div>
+
+        <!-- Score & Percent Display -->
+        <div class="bg-slate-50 border-[3.5px] border-slate-800 rounded-2xl p-6 shadow-[5px_5px_0px_rgba(30,41,59,1)] max-w-md w-full">
+          <div class="flex justify-between items-center border-b-2 border-slate-200 pb-3 mb-3">
+            <span class="font-bold text-slate-600">Bonnes réponses :</span>
+            <span id="final-score" class="font-title text-2xl font-black text-emerald-600">0 / 17</span>
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="font-bold text-slate-600">Pourcentage :</span>
+            <span id="final-percent" class="font-title text-2xl font-black text-sky-600">0 %</span>
+          </div>
+        </div>
+
+        <!-- Restart or back -->
+        <div class="flex flex-wrap gap-4 justify-center mt-2">
+          <button id="btn-restart" class="btn-3d px-6 py-3.5 bg-sky-500 hover:bg-sky-400 text-white font-title text-lg flex items-center gap-2" onclick="restartEntireGame()">
+            Recommencer 🔄
+          </button>
+          <button class="btn-3d px-6 py-3.5 bg-white hover:bg-slate-50 text-slate-700 font-title text-lg flex items-center gap-2" onclick="handleBack()">
+            Retour 🚪
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <script>
+    // ==========================================
+    // DATA CONFIGURATION
+    // ==========================================
+    const SOURCE_ANSWERS = {
+      soleil: 'renouvelable',
+      vent: 'renouvelable',
+      eau: 'renouvelable',
+      biomasse: 'renouvelable',
+      geothermie: 'renouvelable',
+      petrole: 'non-renouvelable',
+      charbon: 'non-renouvelable',
+      gaz: 'non-renouvelable',
+      uranium: 'non-renouvelable'
+    };
+
+    const CONVERSION_ANSWERS = {
+      ampoule: { input: 'electrique', output: 'lumineuse' },
+      radiateur: { input: 'electrique', output: 'thermique' },
+      voiture: { input: 'chimique', output: 'mecanique' },
+      panneau: { input: 'lumineuse', output: 'electrique' }
+    };
+
+    const ENERGY_TYPES = {
+      chimique: { label: '🧪 Chimique', bg: 'bg-emerald-100', text: 'text-emerald-800' },
+      electrique: { label: '⚡ Électrique', bg: 'bg-amber-100', text: 'text-amber-800' },
+      lumineuse: { label: '☀️ Lumineuse', bg: 'bg-sky-50', text: 'text-sky-800' },
+      mecanique: { label: '⚙️ Mécanique', bg: 'bg-slate-100', text: 'text-slate-800' },
+      thermique: { label: '🔥 Thermique', bg: 'bg-orange-100', text: 'text-orange-800' }
+    };
+
+    // User state tracking
+    let conversionsSelections = {
+      ampoule: { input: null, output: null },
+      radiateur: { input: null, output: null },
+      voiture: { input: null, output: null },
+      panneau: { input: null, output: null }
+    };
+
+    let selectedCard = null;
+    let hasValidated = false;
+
+    // ==========================================
+    // AUDIO SYNTHESIS (Web Audio API)
+    // ==========================================
+    let audioCtx = null;
+    
+    function initAudio() {
+      try {
+        if (!audioCtx) {
+          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (audioCtx.state === 'suspended') {
+          audioCtx.resume();
+        }
+      } catch (e) {
+        console.warn('Web Audio API not supported or blocked:', e);
+      }
+    }
+
+    function playTone(freq, duration, type = 'sine', volume = 0.08) {
+      try {
+        initAudio();
+        if (!audioCtx) return;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(volume, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.005, audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch (e) {
+        console.warn('Audio Context tone play failure:', e);
+      }
+    }
+
+    function sndTap() {
+      playTone(600, 0.05, 'triangle', 0.06);
+    }
+
+    // Success chime melody (ascending C5 - E5 - G5 - C6)
+    function sndSuccess() {
+      playTone(523.25, 0.1, 'sine', 0.08); // C5
+      setTimeout(() => playTone(659.25, 0.1, 'sine', 0.08), 80); // E5
+      setTimeout(() => playTone(783.99, 0.1, 'sine', 0.08), 160); // G5
+      setTimeout(() => playTone(1046.5, 0.25, 'sine', 0.08), 240); // C6
+    }
+
+    // Error double-tone (D4 - A3 sawtooth)
+    function sndError() {
+      playTone(293.66, 0.12, 'sawtooth', 0.08); // D4
+      setTimeout(() => playTone(220, 0.25, 'sawtooth', 0.08), 100); // A3
+    }
+
+    // ==========================================
+    // INTERACTION LOGIC: PART 1 (SORTING)
+    // ==========================================
+    
+    // Drag & Drop Handlers
+    function dragStart(e) {
+      if (e.target.dataset.locked === 'true' || hasValidated) {
+        e.preventDefault();
+        return;
+      }
+      e.dataTransfer.setData('text/plain', e.target.id);
+      e.target.classList.add('opacity-40');
+      deselectCard();
+    }
+
+    function dragEnd(e) {
+      e.target.classList.remove('opacity-40');
+    }
+
+    function dragOver(e) {
+      e.preventDefault();
+    }
+
+    function drop(e) {
+      e.preventDefault();
+      if (hasValidated) return;
+      const id = e.dataTransfer.getData('text/plain');
+      const card = document.getElementById(id);
+      if (!card || card.dataset.locked === 'true') return;
+      
+      let target = e.target;
+      while (target && !target.classList.contains('drop-zone')) {
+        target = target.parentElement;
+      }
+      
+      if (target) {
+        target.appendChild(card);
+        sndTap();
+        updateProgress();
+      }
+    }
+
+    // Click to Place Handlers
+    function handleCardClick(e) {
+      if (hasValidated) return;
+      const card = e.currentTarget;
+      if (card.dataset.locked === 'true') return;
+      
+      e.stopPropagation();
+      sndTap();
+      
+      const currentParent = card.parentElement;
+      if (currentParent.id === 'reservoir') {
+        // In reservoir: select it
+        if (selectedCard === card) {
+          deselectCard();
+        } else {
+          if (selectedCard) {
+            selectedCard.classList.remove('selected-card');
+          }
+          selectedCard = card;
+          selectedCard.classList.add('selected-card');
+        }
+      } else {
+        // In column: return to reservoir
+        document.getElementById('reservoir').appendChild(card);
+        deselectCard();
+        updateProgress();
+      }
+    }
+
+    function handleZoneClick(e) {
+      if (hasValidated) return;
+      if (selectedCard) {
+        const zone = e.currentTarget;
+        if (selectedCard.parentElement !== zone) {
+          zone.appendChild(selectedCard);
+          deselectCard();
+          sndTap();
+          updateProgress();
+        }
+      }
+    }
+
+    function deselectCard() {
+      if (selectedCard) {
+        selectedCard.classList.remove('selected-card');
+        selectedCard = null;
+      }
+    }
+
+    // ==========================================
+    // INTERACTION LOGIC: PART 2 (CONVERSIONS)
+    // ==========================================
+    function toggleDropdown(e, devId, type) {
+      const btn = document.getElementById(`btn-${devId}-${type}`);
+      if (btn.dataset.locked === 'true' || hasValidated) return;
+      
+      e.stopPropagation();
+      sndTap();
+      
+      const menuId = `dropdown-${devId}-${type}`;
+      const menu = document.getElementById(menuId);
+      
+      // Close other menus
+      document.querySelectorAll('.dropdown-menu').forEach(m => {
+        if (m.id !== menuId) m.classList.add('hidden');
+      });
+      
+      menu.classList.toggle('hidden');
+    }
+
+    function selectEnergy(devId, type, val) {
+      sndTap();
+      conversionsSelections[devId][type] = val;
+      
+      const btn = document.getElementById(`btn-${devId}-${type}`);
+      const details = ENERGY_TYPES[val];
+      
+      // Clear classes & apply new style
+      btn.className = 'energy-btn btn-state w-36 text-center py-2 px-3 font-extrabold rounded-xl cursor-pointer transition-all border-[2.5px] border-slate-800 shadow-[2px_2px_0px_rgba(30,41,59,1)] text-sm flex items-center justify-center';
+      btn.classList.add(details.bg, details.text);
+      btn.innerHTML = details.label;
+      
+      // Close menu
+      document.getElementById(`dropdown-${devId}-${type}`).classList.add('hidden');
+      
+      updateProgress();
+    }
+
+    // Close dropdowns on clicking outside
+    window.addEventListener('click', () => {
+      document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.add('hidden'));
+    });
+
+    // ==========================================
+    // PROGRESS TRACKING & VALIDATION
+    // ==========================================
+    function updateProgress() {
+      // Part 1: Placed cards
+      const placedCardsCount = document.querySelectorAll('#col-renouvelable .energy-card, #col-non-renouvelable .energy-card').length;
+      
+      // Part 2: Selected dropdown values
+      let selectedDropdownsCount = 0;
+      Object.values(conversionsSelections).forEach(dev => {
+        if (dev.input) selectedDropdownsCount++;
+        if (dev.output) selectedDropdownsCount++;
+      });
+      
+      const completedCount = placedCardsCount + selectedDropdownsCount;
+      const totalCount = 17;
+      const pct = Math.round((completedCount / totalCount) * 100);
+      
+      document.getElementById('header-progress').textContent = `${completedCount} / ${totalCount}`;
+      document.getElementById('progress-bar').style.width = `${pct}%`;
+      document.getElementById('progress-text').textContent = `${pct}% complété (${completedCount} sur ${totalCount} réponses complétées)`;
+      
+      const btnValidate = document.getElementById('btn-validate');
+      if (completedCount === totalCount && !hasValidated) {
+        btnValidate.disabled = false;
+        btnValidate.classList.remove('opacity-50');
+      } else {
+        btnValidate.disabled = true;
+        btnValidate.classList.add('opacity-50');
+      }
+    }
+
+    function validateGame() {
+      initAudio();
+      hasValidated = true;
+      deselectCard();
+      
+      document.getElementById('btn-validate').disabled = true;
+      document.getElementById('btn-validate').classList.add('opacity-50');
+      document.getElementById('btn-clear').classList.add('hidden');
+      
+      let correctCount = 0;
+      const totalCount = 17;
+      
+      // 1. Validate Part 1
+      const colRenouvelable = document.getElementById('col-renouvelable');
+      const colNonRenouvelable = document.getElementById('col-non-renouvelable');
+      
+      colRenouvelable.querySelectorAll('.energy-card').forEach(card => {
+        const sId = card.dataset.sourceId;
+        if (SOURCE_ANSWERS[sId] === 'renouvelable') {
+          correctCount++;
+          markCardCorrect(card);
+        } else {
+          markCardIncorrect(card);
+        }
+      });
+      
+      colNonRenouvelable.querySelectorAll('.energy-card').forEach(card => {
+        const sId = card.dataset.sourceId;
+        if (SOURCE_ANSWERS[sId] === 'non-renouvelable') {
+          correctCount++;
+          markCardCorrect(card);
+        } else {
+          markCardIncorrect(card);
+        }
+      });
+      
+      // 2. Validate Part 2
+      Object.keys(CONVERSION_ANSWERS).forEach(devId => {
+        const answers = CONVERSION_ANSWERS[devId];
+        const user = conversionsSelections[devId];
+        
+        // Input check
+        const btnInput = document.getElementById(`btn-${devId}-input`);
+        if (user.input === answers.input) {
+          correctCount++;
+          markDropdownCorrect(btnInput);
+        } else {
+          markDropdownIncorrect(btnInput);
+        }
+        
+        // Output check
+        const btnOutput = document.getElementById(`btn-${devId}-output`);
+        if (user.output === answers.output) {
+          correctCount++;
+          markDropdownCorrect(btnOutput);
+        } else {
+          markDropdownIncorrect(btnOutput);
+        }
+      });
+
+      const pct = Math.round((correctCount / totalCount) * 100);
+      
+      // Show results
+      const scorePanel = document.getElementById('score-panel');
+      const scoreTitle = document.getElementById('score-title');
+      const scoreComment = document.getElementById('score-comment');
+      const finalScore = document.getElementById('final-score');
+      const finalPercent = document.getElementById('final-percent');
+      
+      finalScore.textContent = `${correctCount} / ${totalCount}`;
+      finalPercent.textContent = `${pct} %`;
+      scorePanel.classList.remove('hidden');
+      
+      if (correctCount === totalCount) {
+        scoreTitle.textContent = "Excellent travail ! 🎉";
+        scoreComment.innerHTML = "Génial ! Tu as classé correctement toutes les sources d'énergie et identifié toutes les conversions.";
+        sndSuccess();
+        triggerConfettiShower();
+        document.getElementById('btn-correct-errors').classList.add('hidden');
+      } else {
+        scoreTitle.textContent = "Prends ton temps ! ✍️";
+        scoreComment.innerHTML = `Tu as obtenu ${correctCount} sur ${totalCount} réponses correctes. Repère les erreurs marquées d'une croix rouge (❌), puis clique sur <strong>"Corriger les erreurs"</strong> pour réessayer !`;
+        sndError();
+        document.getElementById('btn-correct-errors').classList.remove('hidden');
+      }
+      
+      // Call parent hook
+      if (window.parent && window.parent.saveResult) {
+        window.parent.saveResult({
+          activity: 'sci_energie_tri',
+          bookTitle: "Sciences : Sources et conversions d'énergie",
+          score: correctCount,
+          total: totalCount,
+          pct: pct,
+          date: new Date().toLocaleDateString('fr-BE'),
+          time: new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })
+        });
+      }
+      
+      // Smooth scroll to results
+      scorePanel.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function markCardCorrect(card) {
+      card.classList.add('card-correct');
+      card.dataset.correct = "true";
+      card.dataset.locked = "true";
+      card.setAttribute('draggable', 'false');
+      if (!card.querySelector('.status-icon')) {
+        const span = document.createElement('span');
+        span.className = 'status-icon text-emerald-600 ml-2 font-bold';
+        span.textContent = '✔️';
+        card.appendChild(span);
+      }
+    }
+
+    // Mark card incorrect but do not lock it (it will get reset to reservoir when correcting errors)
+    function markCardIncorrect(card) {
+      card.classList.add('card-incorrect');
+      card.dataset.correct = "false";
+      if (!card.querySelector('.status-icon')) {
+        const span = document.createElement('span');
+        span.className = 'status-icon text-red-600 ml-2 font-bold';
+        span.textContent = '❌';
+        card.appendChild(span);
+      }
+    }
+
+    function markDropdownCorrect(btn) {
+      btn.classList.add('correct');
+      btn.dataset.correct = "true";
+      btn.dataset.locked = "true";
+      btn.disabled = true;
+      if (!btn.querySelector('.status-icon')) {
+        const span = document.createElement('span');
+        span.className = 'status-icon text-emerald-600 ml-1.5 font-bold';
+        span.textContent = '✔️';
+        btn.appendChild(span);
+      }
+    }
+
+    // Mark dropdown incorrect but don't disable or lock it (will be cleared when correcting errors)
+    function markDropdownIncorrect(btn) {
+      btn.classList.add('incorrect');
+      btn.dataset.correct = "false";
+      if (!btn.querySelector('.status-icon')) {
+        const span = document.createElement('span');
+        span.className = 'status-icon text-red-600 ml-1.5 font-bold';
+        span.textContent = '❌';
+        btn.appendChild(span);
+      }
+    }
+
+    // ==========================================
+    // ERROR CORRECTION & CLEAR STATE
+    // ==========================================
+    function correctErrorsOnly() {
+      sndTap();
+      hasValidated = false;
+      
+      // Hide panels
+      document.getElementById('score-panel').classList.add('hidden');
+      document.getElementById('btn-correct-errors').classList.add('hidden');
+      document.getElementById('btn-clear').classList.remove('hidden');
+      
+      // 1. Reset incorrect cards in Part 1 back to reservoir
+      const placedCards = document.querySelectorAll('#col-renouvelable .energy-card, #col-non-renouvelable .energy-card');
+      placedCards.forEach(card => {
+        if (card.dataset.correct === "false") {
+          const icon = card.querySelector('.status-icon');
+          if (icon) icon.remove();
+          
+          // Reset card styling
+          card.className = 'energy-card px-4 py-2.5 bg-white cursor-pointer select-none text-slate-800 font-bold flex items-center justify-between text-sm md:text-base';
+          card.removeAttribute('data-correct');
+          card.removeAttribute('data-locked');
+          card.setAttribute('draggable', 'true');
+          
+          document.getElementById('reservoir').appendChild(card);
+        }
+      });
+      
+      // 2. Reset incorrect selections in Part 2 back to Choose state
+      Object.keys(conversionsSelections).forEach(devId => {
+        const dev = conversionsSelections[devId];
+        
+        ['input', 'output'].forEach(type => {
+          const btn = document.getElementById(`btn-${devId}-${type}`);
+          if (btn.dataset.correct === "false") {
+            dev[type] = null;
+            
+            const icon = btn.querySelector('.status-icon');
+            if (icon) icon.remove();
+            
+            btn.removeAttribute('data-correct');
+            btn.removeAttribute('data-locked');
+            btn.disabled = false;
+            
+            // Set back to Choose button placeholder styling
+            btn.className = 'energy-btn btn-state w-36 text-center py-2 px-3 bg-white text-slate-400 border-2 border-dashed border-slate-300 font-bold rounded-xl cursor-pointer hover:bg-slate-50 transition-all text-sm flex items-center justify-center';
+            btn.innerHTML = 'Choisir ▼';
+          }
+        });
+      });
+      
+      updateProgress();
+    }
+
+    function restartEntireGame() {
+      sndTap();
+      hasValidated = false;
+      selectedCard = null;
+      conversionsSelections = {
+        ampoule: { input: null, output: null },
+        radiateur: { input: null, output: null },
+        voiture: { input: null, output: null },
+        panneau: { input: null, output: null }
+      };
+      
+      // Hide results panel
+      document.getElementById('score-panel').classList.add('hidden');
+      document.getElementById('btn-correct-errors').classList.add('hidden');
+      document.getElementById('btn-clear').classList.remove('hidden');
+      
+      // Shuffle & return all cards to reservoir
+      const reservoir = document.getElementById('reservoir');
+      const allCards = Array.from(document.querySelectorAll('.energy-card'));
+      shuffleArray(allCards);
+      
+      allCards.forEach(card => {
+        const icon = card.querySelector('.status-icon');
+        if (icon) icon.remove();
+        
+        card.className = 'energy-card px-4 py-2.5 bg-white cursor-pointer select-none text-slate-800 font-bold flex items-center justify-between text-sm md:text-base';
+        card.removeAttribute('data-correct');
+        card.removeAttribute('data-locked');
+        card.setAttribute('draggable', 'true');
+        
+        reservoir.appendChild(card);
+      });
+      
+      // Clear dropdowns
+      const allDropdownBtns = document.querySelectorAll('.energy-btn');
+      allDropdownBtns.forEach(btn => {
+        const icon = btn.querySelector('.status-icon');
+        if (icon) icon.remove();
+        
+        btn.removeAttribute('data-correct');
+        btn.removeAttribute('data-locked');
+        btn.disabled = false;
+        
+        btn.className = 'energy-btn btn-state w-36 text-center py-2 px-3 bg-white text-slate-400 border-2 border-dashed border-slate-300 font-bold rounded-xl cursor-pointer hover:bg-slate-50 transition-all text-sm flex items-center justify-center';
+        btn.innerHTML = 'Choisir ▼';
+      });
+      
+      updateProgress();
+    }
+
+    function handleBack() {
+      sndTap();
+      if (window.parent && typeof window.parent.closeFicheViewer === 'function') {
+        window.parent.closeFicheViewer();
+      } else {
+        window.history.back();
+      }
+    }
+
+    // ==========================================
+    // CONFETTI SHOWER EFFECT
+    // ==========================================
+    function triggerConfettiShower() {
+      const duration = 3 * 1000;
+      const end = Date.now() + duration;
+      
+      (function frame() {
+        confetti({
+          particleCount: 4,
+          angle: 60,
+          spread: 55,
+          origin: { x: 0, y: 0.8 },
+          colors: ['#10b981', '#f97316', '#fbbf24', '#38bdf8', '#a855f7']
+        });
+        confetti({
+          particleCount: 4,
+          angle: 120,
+          spread: 55,
+          origin: { x: 1, y: 0.8 },
+          colors: ['#10b981', '#f97316', '#fbbf24', '#38bdf8', '#a855f7']
+        });
+        
+        if (Date.now() < end) {
+          requestAnimationFrame(frame);
+        }
+      }());
+    }
+
+    // ==========================================
+    // UTILITY HELPER
+    // ==========================================
+    function shuffleArray(arr) {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    // Initial setup on DOM Ready
+    window.addEventListener('DOMContentLoaded', () => {
+      // Setup drop zones for drag over styling feedback
+      document.querySelectorAll('.drop-zone').forEach(zone => {
+        zone.addEventListener('dragenter', (e) => {
+          if (hasValidated) return;
+          e.preventDefault();
+          zone.classList.add('drag-over');
+        });
+        
+        zone.addEventListener('dragover', (e) => {
+          if (hasValidated) return;
+          e.preventDefault();
+          zone.classList.add('drag-over');
+        });
+        
+        zone.addEventListener('dragleave', () => {
+          zone.classList.remove('drag-over');
+        });
+        
+        zone.addEventListener('drop', () => {
+          zone.classList.remove('drag-over');
+        });
+      });
+      
+      // Shuffle initial cards
+      const reservoir = document.getElementById('reservoir');
+      const cards = Array.from(reservoir.children);
+      shuffleArray(cards);
+      cards.forEach(card => reservoir.appendChild(card));
+      
+      updateProgress();
+    });
+  </script>
+</body>
+</html>
