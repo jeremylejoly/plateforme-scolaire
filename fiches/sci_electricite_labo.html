@@ -1,0 +1,1577 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Laboratoire Électricité — Sciences LCML</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          borderWidth: {
+            '3': '3px',
+            '4': '4px',
+          },
+          fontFamily: {
+            fredoka: ['Fredoka', 'sans-serif'],
+            nunito: ['Nunito', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  
+  <style>
+    :root {
+      --slate-dark: #0f172a;
+      --paper: #f8fafc;
+    }
+    
+    body {
+      font-family: 'Nunito', sans-serif;
+      background-color: var(--paper);
+      background-image: radial-gradient(#cbd5e1 1.5px, transparent 1.5px);
+      background-size: 24px 24px;
+      color: var(--slate-dark);
+    }
+    
+    #circuit-board {
+      background-color: #1e293b !important;
+      background-image: radial-gradient(rgba(255, 255, 255, 0.12) 1.5px, transparent 1.5px) !important;
+      background-size: 22px 22px !important;
+    }
+    
+    /* Boutons 3D */
+    .btn-3d {
+      font-family: 'Fredoka', sans-serif;
+      font-weight: 700;
+      border: 3px solid var(--slate-dark);
+      box-shadow: 3px 3px 0px var(--slate-dark);
+      transition: all 0.1s ease;
+      cursor: pointer;
+      user-select: none;
+    }
+    .btn-3d:active {
+      transform: translate(2px, 2px);
+      box-shadow: 1px 1px 0px var(--slate-dark);
+    }
+    
+    .btn-3d-blue {
+      background-color: #3b82f6;
+      color: white;
+    }
+    .btn-3d-blue:hover { background-color: #2563eb; }
+    
+    .btn-3d-red {
+      background-color: #ef4444;
+      color: white;
+    }
+    .btn-3d-red:hover { background-color: #dc2626; }
+    
+    .btn-3d-green {
+      background-color: #10b981;
+      color: white;
+    }
+    .btn-3d-green:hover { background-color: #059669; }
+    
+    .btn-3d-gray {
+      background-color: #e2e8f0;
+      color: var(--slate-dark);
+    }
+    .btn-3d-gray:hover { background-color: #cbd5e1; }
+    
+    /* Rendu des connexions SVG */
+    .wire-svg {
+      filter: drop-shadow(2px 3px 0px rgba(15, 23, 42, 0.15));
+      transition: stroke 0.2s;
+    }
+    
+    /* Animation circuit en fonctionnement */
+    @keyframes wireGlow {
+      0%, 100% { stroke: #3b82f6; }
+      50% { stroke: #fbbf24; }
+    }
+    .wire-active-glow {
+      animation: wireGlow 1.2s infinite ease-in-out;
+    }
+    
+    /* Animation court-circuit */
+    @keyframes shortCircuitGlow {
+      0%, 100% { stroke: #ef4444; }
+      50% { stroke: #f97316; }
+    }
+    .wire-short-glow {
+      animation: shortCircuitGlow 0.3s infinite ease-in-out;
+    }
+    
+    /* Éclats de l'ampoule */
+    @keyframes rayGlow {
+      0%, 100% { transform: scale(1); opacity: 0.6; }
+      50% { transform: scale(1.2); opacity: 1; }
+    }
+    .ray-glow {
+      animation: rayGlow 1s infinite ease-in-out;
+    }
+    
+    /* Secousse (erreur / court-circuit) */
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-6px); }
+      40%, 80% { transform: translateX(6px); }
+    }
+    .animate-shake {
+      animation: shake 0.3s ease-in-out;
+    }
+    
+    /* Objet qui flotte légèrement dans la zone de test */
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-3px) rotate(1deg); }
+    }
+    .animate-float {
+      animation: float 2s infinite ease-in-out;
+    }
+    
+    /* Pop in animation */
+    @keyframes popIn {
+      0% { transform: scale(0.8); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .pop-anim {
+      animation: popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col py-6 px-4 md:px-8">
+
+  <div class="max-w-[1000px] w-full mx-auto flex-1 flex flex-col justify-between">
+    
+    <!-- EN-TÊTE -->
+    <header class="mb-4 flex flex-col md:flex-row md:items-center md:justify-between border-b-4 border-slate-900 pb-4">
+      <div>
+        <h1 class="text-2xl md:text-3xl font-fredoka font-bold flex items-center gap-2 select-none">
+          ⚡ Laboratoire d'Électricité
+        </h1>
+        <p class="text-slate-500 font-nunito font-semibold text-xs md:text-sm mt-1">
+          Apprends à allumer une ampoule et trie les matériaux conducteurs et isolants !
+        </p>
+      </div>
+      
+      <!-- ÉTAPES INDICATEURS -->
+      <div class="flex items-center gap-2 mt-3 md:mt-0 select-none">
+        <div id="step-1-badge" class="px-3 py-1.5 bg-blue-600 text-white rounded-xl border-2 border-slate-900 shadow-[2px_2px_0px_#0f172a] font-fredoka font-bold text-xs">
+          Étape 1 : Circuit Simple
+        </div>
+        <div class="text-slate-400 font-black">➔</div>
+        <div id="step-2-badge" class="px-3 py-1.5 bg-slate-200 text-slate-400 rounded-xl border-2 border-dashed border-slate-300 font-fredoka font-bold text-xs">
+          Étape 2 : Conducteurs / Isolants
+        </div>
+      </div>
+    </header>
+
+    <!-- ZONE PRINCIPALE -->
+    <main class="grid grid-cols-1 lg:grid-cols-5 gap-6">
+      
+      <!-- COLONNE GAUCHE: TABLEAU DE MONTAGE (3/5) -->
+      <section class="lg:col-span-3 flex flex-col gap-4">
+        
+        <!-- SECTION TITLE & BOUTON D'ACTION -->
+        <div class="flex justify-between items-center">
+          <h2 class="font-fredoka font-bold text-lg flex items-center gap-1.5 select-none">
+            🛠️ Tableau de montage
+          </h2>
+          <button onclick="clearWires()" class="px-3 py-1.5 text-xs btn-3d btn-3d-red flex items-center gap-1 shadow-[2px_2px_0px_#0f172a]">
+            🗑️ <span>Effacer les fils</span>
+          </button>
+        </div>
+
+        <!-- LE CIRCUIT BOARD -->
+        <div id="circuit-board" class="relative w-full border-4 border-slate-900 rounded-3xl shadow-[6px_6px_0px_#0f172a] p-5 min-h-[460px] flex flex-col justify-between">
+          <!-- Canevas SVG pour tracé de fils -->
+          <svg id="wire-svg-canvas" class="absolute inset-0 w-full h-full pointer-events-none z-30 overflow-visible"></svg>
+          
+          <!-- Ligne de composants supérieure (Générateur + Interrupteur) -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 relative z-20">
+            
+            <!-- Pile -->
+            <div class="bg-white border-3 border-slate-900 rounded-2xl shadow-[3px_3px_0px_#0f172a] p-3 flex flex-col items-center justify-between min-h-[160px]">
+              <div class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Générateur</div>
+              <h3 class="font-fredoka font-bold text-xs text-slate-800 mb-2">Pile (4.5V)</h3>
+              
+              <div class="relative w-36 h-18 bg-gradient-to-r from-red-600 to-red-500 border-3 border-slate-900 rounded-lg shadow-[3px_3px_0px_#0f172a] flex items-center justify-between px-3 py-1">
+                <!-- Anode metal tip (left) -->
+                <div class="absolute -left-2.5 top-5 w-2.5 h-8 bg-slate-400 border-3 border-r-0 border-slate-900 rounded-l-md"></div>
+                
+                <!-- Borne Positif -->
+                <div class="flex flex-col items-center">
+                  <div id="term-pile_pos" class="w-8 h-8 rounded-full bg-amber-400 hover:bg-amber-300 border-3 border-slate-900 shadow-[0_2px_0px_#0f172a] flex items-center justify-center text-slate-900 font-black text-lg transition-transform hover:scale-110 active:scale-95 cursor-pointer select-none" onclick="selectTerminal('pile_pos', event)">+</div>
+                  <span class="text-white font-extrabold text-[9px] mt-1 select-none">Borne +</span>
+                </div>
+                
+                <!-- Label de la pile -->
+                <div class="flex flex-col items-center bg-slate-900 text-yellow-400 font-black px-1.5 py-0.5 rounded text-[10px] rotate-[-4deg] border border-yellow-400 shadow select-none">
+                  <span>PILE</span>
+                  <span class="text-[8px]">4.5V</span>
+                </div>
+                
+                <!-- Borne Négatif -->
+                <div class="flex flex-col items-center">
+                  <div id="term-pile_neg" class="w-8 h-8 rounded-full bg-slate-400 hover:bg-slate-300 border-3 border-slate-900 shadow-[0_2px_0px_#0f172a] flex items-center justify-center text-slate-900 font-black text-lg transition-transform hover:scale-110 active:scale-95 cursor-pointer select-none" onclick="selectTerminal('pile_neg', event)">-</div>
+                  <span class="text-white font-extrabold text-[9px] mt-1 select-none">Borne -</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Interrupteur -->
+            <div class="bg-white border-3 border-slate-900 rounded-2xl shadow-[3px_3px_0px_#0f172a] p-3 flex flex-col items-center justify-between min-h-[160px]">
+              <div class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Commande</div>
+              <h3 class="font-fredoka font-bold text-xs text-slate-800 mb-1">Interrupteur</h3>
+              
+              <div class="flex-1 flex items-center justify-center cursor-pointer select-none py-1 w-full" onclick="toggleSwitch()">
+                <svg class="w-24 h-10 overflow-visible" viewBox="0 0 100 40">
+                  <!-- Contacts -->
+                  <circle cx="20" cy="30" r="7" fill="#64748b" stroke="#0f172a" stroke-width="3"/>
+                  <circle cx="80" cy="30" r="7" fill="#64748b" stroke="#0f172a" stroke-width="3"/>
+                  <!-- Blade -->
+                  <g id="switch-blade" style="transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform-origin: 20px 30px; transform: rotate(-35deg);">
+                    <rect x="15" y="27" width="70" height="6" rx="2" fill="#cbd5e1" stroke="#0f172a" stroke-width="3" />
+                    <circle cx="80" cy="30" r="7" fill="#ef4444" stroke="#0f172a" stroke-width="3" />
+                  </g>
+                </svg>
+              </div>
+              
+              <div class="w-full flex justify-between items-center px-1">
+                <div class="flex items-center gap-1">
+                  <div id="term-inter_a" class="w-6 h-6 rounded-full bg-amber-400 hover:bg-amber-300 border-3 border-slate-900 shadow-[0_2px_0px_#0f172a] flex items-center justify-center text-slate-900 font-black text-[10px] transition-transform hover:scale-110 active:scale-95 cursor-pointer select-none" onclick="selectTerminal('inter_a', event)">A</div>
+                  <span class="text-slate-600 font-black text-[9px] select-none">Borne A</span>
+                </div>
+                
+                <div id="switch-badge" class="bg-red-100 text-red-600 border-2 border-red-500 font-black px-1.5 py-0.5 rounded text-[8px] uppercase shadow-sm select-none">OUVERT</div>
+                
+                <div class="flex items-center gap-1">
+                  <span class="text-slate-600 font-black text-[9px] select-none">Borne B</span>
+                  <div id="term-inter_b" class="w-6 h-6 rounded-full bg-amber-400 hover:bg-amber-300 border-3 border-slate-900 shadow-[0_2px_0px_#0f172a] flex items-center justify-center text-slate-900 font-black text-[10px] transition-transform hover:scale-110 active:scale-95 cursor-pointer select-none" onclick="selectTerminal('inter_b', event)">B</div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Ligne de composants inférieure (Test Slot + Récepteur Ampoule) -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-6 relative z-20">
+            
+            <!-- Emplacement de Test (BLOQUÉ EN ÉTAPE 1) -->
+            <div id="component-test-slot" class="relative min-h-[160px]">
+              <!-- Version déverrouillée (visible en étape 2) -->
+              <div id="test-slot-active" style="display: none;" class="bg-white border-3 border-slate-900 rounded-2xl shadow-[3px_3px_0px_#0f172a] p-3 flex-col items-center justify-between h-full pop-anim">
+                <div class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Testeur de matériaux</div>
+                <h3 class="font-fredoka font-bold text-xs text-slate-800 mb-1">Emplacement d'Objet</h3>
+                
+                <div class="w-full flex items-center justify-between gap-1 flex-1 my-1">
+                  <!-- Clip de gauche -->
+                  <div class="w-5 h-5 bg-slate-400 border-3 border-slate-900 rounded shadow-sm flex items-center justify-end pr-0.5">
+                    <div class="w-1.5 h-1.5 rounded-full bg-slate-900"></div>
+                  </div>
+                  
+                  <!-- Zone de dépôt -->
+                  <div id="test-slot-box" class="flex-1 h-12 border-3 border-dashed border-slate-300 rounded-xl flex items-center justify-center bg-slate-50 relative overflow-hidden transition-colors">
+                    <span id="test-slot-placeholder" class="text-[9px] text-slate-400 text-center font-bold px-2 select-none">Place un objet à tester</span>
+                    
+                    <div id="test-slot-content" class="hidden flex flex-col items-center justify-center animate-float">
+                      <span id="test-obj-emoji" class="text-2xl">📎</span>
+                      <span id="test-obj-name" class="text-[9px] font-black text-slate-800 leading-none mt-1">Trombone en fer</span>
+                    </div>
+                  </div>
+                  
+                  <!-- Clip de droite -->
+                  <div class="w-5 h-5 bg-slate-400 border-3 border-slate-900 rounded shadow-sm flex items-center justify-start pl-0.5">
+                    <div class="w-1.5 h-1.5 rounded-full bg-slate-900"></div>
+                  </div>
+                </div>
+                
+                <div class="w-full flex justify-between items-center px-1">
+                  <div class="flex items-center gap-1">
+                    <div id="term-test_a" class="w-6 h-6 rounded-full bg-amber-400 hover:bg-amber-300 border-3 border-slate-900 shadow-[0_2px_0px_#0f172a] flex items-center justify-center text-slate-900 font-black text-[10px] transition-transform hover:scale-110 active:scale-95 cursor-pointer select-none" onclick="selectTerminal('test_a', event)">A</div>
+                    <span class="text-slate-600 font-black text-[9px] select-none">Borne A</span>
+                  </div>
+                  
+                  <button id="btn-remove-test" class="hidden bg-slate-200 hover:bg-slate-300 border-2 border-slate-900 text-slate-800 font-black text-[8px] px-2 py-0.5 rounded shadow-[1px_1px_0px_#0f172a] active:translate-x-0.5 active:translate-y-0.5 active:shadow-none transition-all uppercase" onclick="removeObjectFromTest()">Retirer</button>
+                  
+                  <div class="flex items-center gap-1">
+                    <span class="text-slate-600 font-black text-[9px] select-none">Borne B</span>
+                    <div id="term-test_b" class="w-6 h-6 rounded-full bg-amber-400 hover:bg-amber-300 border-3 border-slate-900 shadow-[0_2px_0px_#0f172a] flex items-center justify-center text-slate-900 font-black text-[10px] transition-transform hover:scale-110 active:scale-95 cursor-pointer select-none" onclick="selectTerminal('test_b', event)">B</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Version verrouillée (visible en étape 1) -->
+              <div id="test-slot-locked" style="display: flex;" class="bg-slate-100/70 border-3 border-dashed border-slate-300 rounded-2xl p-4 flex flex-col items-center justify-center text-center h-full select-none">
+                <span class="text-3xl mb-1 filter grayscale">🔒</span>
+                <h3 class="font-fredoka font-bold text-xs text-slate-400">Emplacement d'Objet</h3>
+                <p class="text-[9px] text-slate-400 font-bold max-w-[150px] mt-1">Résous le Défi 1 pour débloquer cet outil.</p>
+              </div>
+            </div>
+
+            <!-- Ampoule -->
+            <div class="bg-white border-3 border-slate-900 rounded-2xl shadow-[3px_3px_0px_#0f172a] p-3 flex flex-col items-center justify-between min-h-[160px]">
+              <div class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Récepteur</div>
+              <h3 class="font-fredoka font-bold text-xs text-slate-800 mb-1">Ampoule</h3>
+              
+              <div class="flex-1 flex items-center justify-center relative py-1">
+                <!-- Glow yellow circle -->
+                <div id="bulb-glow" class="absolute w-14 h-14 bg-yellow-300 rounded-full blur-md opacity-0 scale-75 transition-all duration-300"></div>
+                
+                <svg class="w-16 h-10 overflow-visible relative z-10" viewBox="0 0 60 40">
+                  <!-- Rays -->
+                  <g id="bulb-rays" class="hidden ray-glow">
+                    <line x1="30" y1="5" x2="30" y2="0" stroke="#f59e0b" stroke-width="2.5" stroke-linecap="round" />
+                    <line x1="18" y1="10" x2="14" y2="6" stroke="#f59e0b" stroke-width="2.5" stroke-linecap="round" />
+                    <line x1="42" y1="10" x2="46" y2="6" stroke="#f59e0b" stroke-width="2.5" stroke-linecap="round" />
+                    <line x1="12" y1="20" x2="7" y2="20" stroke="#f59e0b" stroke-width="2.5" stroke-linecap="round" />
+                    <line x1="48" y1="20" x2="53" y2="20" stroke="#f59e0b" stroke-width="2.5" stroke-linecap="round" />
+                  </g>
+                  <!-- Socket base -->
+                  <path d="M 22 36 L 38 36 L 36 28 L 24 28 Z" fill="#94a3b8" stroke="#0f172a" stroke-width="3" />
+                  <rect x="25" y="36" width="10" height="3" fill="#475569" stroke="#0f172a" stroke-width="1.5" />
+                  <!-- Glass -->
+                  <path id="bulb-glass" d="M 24 28 C 12 20 18 4 30 4 C 42 4 48 20 36 28 Z" fill="#cbd5e1" stroke="#0f172a" stroke-width="3" style="transition: fill 0.3s;" />
+                  <!-- Filament -->
+                  <path id="bulb-filament" d="M 27 28 L 29 18 L 31 18 L 33 28" fill="none" stroke="#475569" stroke-width="2" stroke-linecap="round" style="transition: stroke 0.3s;" />
+                </svg>
+              </div>
+              
+              <div class="w-full flex justify-between items-center px-1">
+                <div class="flex items-center gap-1">
+                  <div id="term-ampoule_a" class="w-6 h-6 rounded-full bg-amber-400 hover:bg-amber-300 border-3 border-slate-900 shadow-[0_2px_0px_#0f172a] flex items-center justify-center text-slate-900 font-black text-[10px] transition-transform hover:scale-110 active:scale-95 cursor-pointer select-none" onclick="selectTerminal('ampoule_a', event)">A</div>
+                  <span class="text-slate-600 font-black text-[9px] select-none">Borne A</span>
+                </div>
+                
+                <div class="flex items-center gap-1">
+                  <span class="text-slate-600 font-black text-[9px] select-none">Borne B</span>
+                  <div id="term-ampoule_b" class="w-6 h-6 rounded-full bg-amber-400 hover:bg-amber-300 border-3 border-slate-900 shadow-[0_2px_0px_#0f172a] flex items-center justify-center text-slate-900 font-black text-[10px] transition-transform hover:scale-110 active:scale-95 cursor-pointer select-none" onclick="selectTerminal('ampoule_b', event)">B</div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- BANDEAU DE STATUT / MESSAGES PEDAGOGIQUES -->
+          <div class="mt-6">
+            <div id="circuit-status-msg" class="flex items-center gap-2 p-3 bg-blue-50 border-2 border-blue-200 rounded-xl text-blue-700 font-bold text-xs shadow-sm">
+              💡 <span>Aide : Relie les composants en cliquant sur une borne dorée, puis sur une autre.</span>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- COLONNE DROITE: ENTRAÎNEMENT & TRI (2/5) -->
+      <section class="lg:col-span-2 flex flex-col gap-6">
+        
+        <!-- MODULE DES DEFIS (Étape 1 ou Étape 2 selon l'état) -->
+        <div class="bg-white border-3 border-slate-900 rounded-2xl p-4 shadow-[4px_4px_0px_#0f172a]">
+          <h2 class="font-fredoka font-bold text-base mb-3 flex items-center gap-1 select-none">
+            🎯 Ton objectif actuel
+          </h2>
+          
+          <!-- CONTENU ÉTAPE 1 -->
+          <div id="goal-step-1" style="display: flex;" class="flex-col gap-3">
+            <div class="flex items-start gap-2.5 p-3 bg-blue-50 border-2 border-blue-500 rounded-xl text-blue-800 font-bold text-xs shadow-sm">
+              <span class="text-base leading-none">💡</span>
+              <div class="flex-1 leading-tight">
+                <div>Défi 1 : Le premier circuit électrique</div>
+                <p class="text-[10px] text-slate-500 font-normal mt-1">Connecte la pile, l'interrupteur et l'ampoule en boucle fermée. Ferme l'interrupteur pour voir briller l'ampoule !</p>
+              </div>
+            </div>
+            
+            <!-- Bouton pour passer à l'étape 2 (caché par défaut) -->
+            <div id="step-transition-container" class="hidden mt-1 pop-anim">
+              <button onclick="goToStep2()" class="w-full py-2.5 btn-3d btn-3d-green text-xs shadow-[3px_3px_0px_#0f172a] animate-bounce flex items-center justify-center gap-1">
+                <span>Passer au Défi 2 🧪</span>
+                <span class="text-sm">➔</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- CONTENU ÉTAPE 2 -->
+          <div id="goal-step-2" style="display: none;" class="flex-col gap-3 pop-anim">
+            <div class="flex items-start gap-2.5 p-3 bg-emerald-50 border-2 border-emerald-500 rounded-xl text-emerald-800 font-bold text-xs shadow-sm">
+              <span class="text-base leading-none">🧪</span>
+              <div class="flex-1 leading-tight">
+                <div>Défi 2 : Conducteurs et Isolants</div>
+                <p class="text-[10px] text-slate-500 font-normal mt-1">L'emplacement de test est débloqué ! Insère-le dans le circuit, teste les 6 objets, puis trie-les dans les bons tableaux.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ZONE DE TEST / CLASSIFICATION DES MATÉRIAUX -->
+        <div id="experiments-panel" class="relative">
+          
+          <!-- Masque d'étape 1 -->
+          <div id="experiments-locked" style="display: flex;" class="bg-white border-3 border-slate-900 rounded-2xl p-6 shadow-[4px_4px_0px_#0f172a] flex-col items-center justify-center text-center select-none">
+            <span class="text-5xl mb-2 filter grayscale">🔒</span>
+            <h2 class="font-fredoka font-bold text-base text-slate-800 mb-1">Coffre d'expériences</h2>
+            <p class="font-nunito font-semibold text-slate-400 text-xs max-w-[200px]">
+              Allume d'abord l'ampoule (Défi 1) pour débloquer les 6 objets scientifiques à analyser !
+            </p>
+          </div>
+
+          <!-- Panneau actif en étape 2 -->
+          <div id="experiments-active" style="display: none;" class="bg-white border-3 border-slate-900 rounded-2xl p-4 shadow-[4px_4px_0px_#0f172a] pop-anim">
+            <div class="flex justify-between items-center mb-3">
+              <h2 class="font-fredoka font-bold text-base flex items-center gap-1 select-none">
+                📦 Objets à tester
+              </h2>
+              <div class="flex items-center gap-2">
+                <span id="score-text" class="text-xs font-black text-blue-600">0 / 6</span>
+                <div class="w-16 h-3 bg-slate-100 border-2 border-slate-900 rounded-full overflow-hidden">
+                  <div id="score-progress-bar" class="bg-blue-500 h-full w-0 transition-all duration-300"></div>
+                </div>
+              </div>
+            </div>
+            <!-- Étagère des objets restants -->
+            <div id="inventory-shelf" class="grid grid-cols-2 gap-3 mb-4">
+              <!-- Rempli par JavaScript -->
+            </div>
+            
+            <!-- Tables de classification -->
+            <div class="border-t-2 border-slate-900 pt-4">
+              <h3 class="font-fredoka font-bold text-xs text-slate-500 uppercase tracking-wider mb-3 select-none">📊 Classement des matériaux</h3>
+              
+              <div class="grid grid-cols-2 gap-3">
+                <!-- Colonne Conducteurs -->
+                <div class="bg-emerald-50 border-3 border-slate-900 rounded-2xl p-2.5 shadow-[2px_2px_0px_#0f172a]">
+                  <h4 class="font-fredoka font-bold text-xs text-emerald-800 border-b border-emerald-300 pb-1 mb-2 text-center select-none">⚡ Conducteurs</h4>
+                  <div id="conductors-list" class="min-h-[140px] flex flex-col gap-1.5">
+                    <!-- Inséré par JS -->
+                  </div>
+                </div>
+                
+                <!-- Colonne Isolants -->
+                <div class="bg-slate-100 border-3 border-slate-900 rounded-2xl p-2.5 shadow-[2px_2px_0px_#0f172a]">
+                  <h4 class="font-fredoka font-bold text-xs text-slate-600 border-b border-slate-300 pb-1 mb-2 text-center select-none">🛡️ Isolants</h4>
+                  <div id="insulators-list" class="min-h-[140px] flex flex-col gap-1.5">
+                    <!-- Inséré par JS -->
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </section>
+
+    </main>
+    
+    <!-- PIED DE PAGE -->
+    <footer class="mt-8 text-center text-[11px] font-bold text-slate-400 select-none">
+      Plateforme Scolaire LCML • Fiche Sciences P5-P6 • Électricité
+    </footer>
+
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="notification-toast" class="fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-slate-900 border-3 border-amber-400 text-white font-bold text-xs py-2.5 px-6 rounded-2xl shadow-[4px_4px_0px_#000] z-50 transition-all duration-300 opacity-0 pointer-events-none text-center max-w-[90%] md:max-w-md"></div>
+
+  <!-- MODAL DE VICTOIRE -->
+  <div id="success-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white border-4 border-slate-900 rounded-3xl shadow-[8px_8px_0px_#0f172a] p-6 max-w-md w-full text-center pop-anim">
+      <span class="text-6xl mb-4 block select-none">🏆</span>
+      <h2 class="font-fredoka font-bold text-2xl text-slate-800 mb-2">Excellent travail !</h2>
+      <p class="font-nunito font-semibold text-slate-500 text-sm mb-4">
+        Tu as allumé l'ampoule avec succès et classé correctement les 6 objets !
+      </p>
+      
+      <!-- Résumé scientifique -->
+      <div class="bg-slate-50 border-3 border-slate-900 rounded-2xl p-4 text-left text-xs font-semibold mb-6 flex flex-col gap-2">
+        <div class="flex gap-2">
+          <span>⚡</span>
+          <p><strong class="text-emerald-700">Les Conducteurs</strong> (le trombone, la pièce, la clé) laissent passer le courant car ils sont en métal.</p>
+        </div>
+        <div class="flex gap-2">
+          <span>🛡️</span>
+          <p><strong class="text-slate-600">Les Isolants</strong> (la règle, la gomme, le bâtonnet en bois) bloquent le passage du courant électrique.</p>
+        </div>
+      </div>
+      
+      <div class="flex flex-col gap-2">
+        <button onclick="restartExperiment()" class="w-full py-2.5 btn-3d btn-3d-blue shadow-[3px_3px_0px_#0f172a]">🧪 Recommencer le labo</button>
+        <button onclick="closeModal()" class="w-full py-2 bg-slate-200 hover:bg-slate-300 border-2 border-slate-900 text-slate-800 font-bold rounded-lg text-xs">Fermer</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CANVAS CONFETTIS -->
+  <canvas id="confetti-canvas" class="fixed inset-0 pointer-events-none z-50 w-full h-full"></canvas>
+
+  <!-- CODE INTERACTIF ET SIMULATION -->
+  <script>
+    // State variables
+    let wires = [];
+    let activeTerminal = null;
+    let switchClosed = false;
+    let currentObject = null;
+    let score = 0;
+    
+    let currentStep = 1;
+    let challenge1Completed = false;
+    let challenge2Completed = false;
+    
+    let cursorX = 0;
+    let cursorY = 0;
+
+    // Web Audio Variables
+    let audioCtx = null;
+    let humNode = null;
+    let humOsc1 = null;
+    let humOsc2 = null;
+
+    // Objects database
+    const objectsData = [
+      { id: 'trombone', name: 'Trombone en fer', emoji: '📎', type: 'conducteur', desc: 'Métal (Fer)' },
+      { id: 'monnaie', name: 'Pièce en métal', emoji: '🪙', type: 'conducteur', desc: 'Métal (Cuivre/Nickel)' },
+      { id: 'cle', name: 'Clé en acier', emoji: '🔑', type: 'conducteur', desc: 'Métal (Acier)' },
+      { id: 'regle', name: 'Règle en plastique', emoji: '📏', type: 'isolant', desc: 'Plastique' },
+      { id: 'gomme', name: 'Gomme en caoutchouc', emoji: '🧼', type: 'isolant', desc: 'Caoutchouc' },
+      { id: 'baton_bois', name: 'Bâtonnet en bois', emoji: '🪵', type: 'isolant', desc: 'Bois' }
+    ];
+
+    // User's classifications
+    let classifications = {
+      trombone: null,
+      monnaie: null,
+      cle: null,
+      regle: null,
+      gomme: null,
+      baton_bois: null
+    };
+
+    // ================================================================
+    // AUDIO SYNTHESIS (Web Audio API)
+    // ================================================================
+    function initAudio() {
+      if (audioCtx) return;
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+
+    // Lazy load audio on first user action
+    document.addEventListener('click', () => {
+      initAudio();
+    }, { once: true });
+
+    function playClickSound() {
+      initAudio();
+      if (!audioCtx) return;
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+
+      const now = audioCtx.currentTime;
+      const osc = audioCtx.createOscillator();
+      const gainNode = audioCtx.createGain();
+
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(600, now);
+      osc.frequency.exponentialRampToValueAtTime(150, now + 0.06);
+
+      gainNode.gain.setValueAtTime(0.04, now);
+      gainNode.gain.exponentialRampToValueAtTime(0.0001, now + 0.06);
+
+      osc.connect(gainNode);
+      gainNode.connect(audioCtx.destination);
+
+      osc.start(now);
+      osc.stop(now + 0.07);
+    }
+
+    function playSuccessSound() {
+      initAudio();
+      if (!audioCtx) return;
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+
+      const now = audioCtx.currentTime;
+      const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+      const duration = 0.1;
+
+      notes.forEach((freq, i) => {
+        const osc = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, now + i * 0.08);
+
+        gainNode.gain.setValueAtTime(0.06, now + i * 0.08);
+        gainNode.gain.exponentialRampToValueAtTime(0.0001, now + i * 0.08 + duration);
+
+        osc.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+
+        osc.start(now + i * 0.08);
+        osc.stop(now + i * 0.08 + duration);
+      });
+    }
+
+    function playErrorSound() {
+      initAudio();
+      if (!audioCtx) return;
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+
+      const now = audioCtx.currentTime;
+      const osc = audioCtx.createOscillator();
+      const gainNode = audioCtx.createGain();
+      const filter = audioCtx.createBiquadFilter();
+
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(110, now);
+      osc.frequency.linearRampToValueAtTime(80, now + 0.22);
+
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(250, now);
+
+      gainNode.gain.setValueAtTime(0.08, now);
+      gainNode.gain.exponentialRampToValueAtTime(0.0001, now + 0.22);
+
+      osc.connect(filter);
+      filter.connect(gainNode);
+      gainNode.connect(audioCtx.destination);
+
+      osc.start(now);
+      osc.stop(now + 0.25);
+    }
+
+    function startHum() {
+      initAudio();
+      if (!audioCtx) return;
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      if (humNode) return; // Already humming
+
+      const filter = audioCtx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(150, audioCtx.currentTime);
+
+      humOsc1 = audioCtx.createOscillator();
+      humOsc1.type = 'sawtooth';
+      humOsc1.frequency.setValueAtTime(60, audioCtx.currentTime); // 60Hz hum
+
+      humOsc2 = audioCtx.createOscillator();
+      humOsc2.type = 'triangle';
+      humOsc2.frequency.setValueAtTime(120, audioCtx.currentTime); // Harmonics
+
+      humNode = audioCtx.createGain();
+      humNode.gain.setValueAtTime(0.015, audioCtx.currentTime);
+
+      humOsc1.connect(filter);
+      humOsc2.connect(filter);
+      filter.connect(humNode);
+      humNode.connect(audioCtx.destination);
+
+      humOsc1.start();
+      humOsc2.start();
+    }
+
+    // Fade-out hum to prevent loud sound cut click
+    function stopHum() {
+      if (!humNode) return;
+      
+      const tempGain = humNode;
+      const tempOsc1 = humOsc1;
+      const tempOsc2 = humOsc2;
+
+      humNode = null;
+      humOsc1 = null;
+      humOsc2 = null;
+
+      if (audioCtx && audioCtx.state !== 'closed') {
+        try {
+          tempGain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.08);
+          setTimeout(() => {
+            try {
+              tempOsc1.stop();
+              tempOsc2.stop();
+              tempOsc1.disconnect();
+              tempOsc2.disconnect();
+              tempGain.disconnect();
+            } catch (e) {}
+          }, 100);
+        } catch (e) {}
+      }
+    }
+
+    // ================================================================
+    // CIRCUIT EVALUATION LOGIC
+    // ================================================================
+    function selectTerminal(termId, event) {
+      if (event) event.stopPropagation();
+      
+      // Stop interaction on locked components
+      if (currentStep === 1 && termId.startsWith('test')) {
+        return;
+      }
+      
+      playClickSound();
+
+      if (activeTerminal === termId) {
+        activeTerminal = null;
+      } else if (activeTerminal === null) {
+        // Enforce max 1 wire per terminal
+        const count = wires.filter(w => w.from === termId || w.to === termId).length;
+        if (count >= 1) {
+          playErrorSound();
+          showNotification("⚠️ Cette borne est déjà occupée par un fil. Supprime-le d'abord !");
+          return;
+        }
+        activeTerminal = termId;
+      } else {
+        const from = activeTerminal;
+        const to = termId;
+        activeTerminal = null;
+
+        if (from === to) {
+          updateTerminalUI();
+          return;
+        }
+
+        // Enforce max 1 wire on the destination terminal
+        const countTo = wires.filter(w => w.from === to || w.to === to).length;
+        if (countTo >= 1) {
+          playErrorSound();
+          showNotification("⚠️ Cette borne est déjà occupée par un fil. Supprime-le d'abord !");
+          updateTerminalUI();
+          return;
+        }
+
+        // Prevent duplicate wires
+        const exists = wires.some(w => (w.from === from && w.to === to) || (w.from === to && w.to === from));
+        if (!exists) {
+          wires.push({ from, to });
+          playClickSound();
+        }
+      }
+
+      updateTerminalUI();
+      checkCircuit();
+      updateWires();
+    }
+
+    function updateTerminalUI() {
+      const terminals = ['pile_pos', 'pile_neg', 'inter_a', 'inter_b', 'ampoule_a', 'ampoule_b', 'test_a', 'test_b'];
+      terminals.forEach(t => {
+        const el = document.getElementById(`term-${t}`);
+        if (!el) return;
+
+        if (activeTerminal === t) {
+          el.classList.add('ring-4', 'ring-blue-500', 'animate-pulse', 'scale-110');
+          el.classList.remove('hover:scale-110');
+        } else {
+          el.classList.remove('ring-4', 'ring-blue-500', 'animate-pulse', 'scale-110');
+          el.classList.add('hover:scale-110');
+        }
+      });
+    }
+
+    function clearWires() {
+      playClickSound();
+      wires = [];
+      activeTerminal = null;
+      updateTerminalUI();
+      checkCircuit();
+      updateWires();
+    }
+
+    function removeWire(index) {
+      wires.splice(index, 1);
+      playClickSound();
+      checkCircuit();
+      updateWires();
+    }
+
+    function toggleSwitch() {
+      switchClosed = !switchClosed;
+      playClickSound();
+
+      const blade = document.getElementById('switch-blade');
+      const badge = document.getElementById('switch-badge');
+
+      if (switchClosed) {
+        blade.style.transform = 'rotate(0deg)';
+        badge.className = 'bg-emerald-100 text-emerald-600 border-2 border-emerald-500 font-black px-1.5 py-0.5 rounded text-[8px] uppercase shadow-sm select-none';
+        badge.innerText = 'FERMÉ';
+      } else {
+        blade.style.transform = 'rotate(-35deg)';
+        badge.className = 'bg-red-100 text-red-600 border-2 border-red-500 font-black px-1.5 py-0.5 rounded text-[8px] uppercase shadow-sm select-none';
+        badge.innerText = 'OUVERT';
+      }
+
+      checkCircuit();
+    }
+
+    // Graph helper BFS to check if end is reachable from start
+    function bfs(graph, start, end) {
+      const visited = new Set();
+      const queue = [start];
+      visited.add(start);
+
+      while (queue.length > 0) {
+        const curr = queue.shift();
+        if (curr === end) return true;
+
+        const neighbors = graph[curr] || [];
+        for (const neighbor of neighbors) {
+          if (!visited.has(neighbor)) {
+            visited.add(neighbor);
+            queue.push(neighbor);
+          }
+        }
+      }
+      return false;
+    }
+
+    // BFS to find the active path
+    function findActivePath(graph, start, end) {
+      const visited = new Set();
+      const queue = [[start]];
+      visited.add(start);
+
+      while (queue.length > 0) {
+        const path = queue.shift();
+        const curr = path[path.length - 1];
+
+        if (curr === end) return path;
+
+        const neighbors = graph[curr] || [];
+        for (const neighbor of neighbors) {
+          if (!visited.has(neighbor)) {
+            visited.add(neighbor);
+            queue.push([...path, neighbor]);
+          }
+        }
+      }
+      return null;
+    }
+
+    // Build the connection graph
+    function buildGraph(includeSwitch, includeTestSlotObject, includeBulbFilament) {
+      const terminals = ['pile_pos', 'pile_neg', 'inter_a', 'inter_b', 'ampoule_a', 'ampoule_b', 'test_a', 'test_b'];
+      const graph = {};
+      terminals.forEach(t => graph[t] = []);
+
+      // User wires
+      wires.forEach(w => {
+        graph[w.from].push(w.to);
+        graph[w.to].push(w.from);
+      });
+
+      // Switch
+      if (includeSwitch && switchClosed) {
+        graph['inter_a'].push('inter_b');
+        graph['inter_b'].push('inter_a');
+      }
+
+      // Test slot
+      if (currentStep === 2 && includeTestSlotObject && currentObject && currentObject.type === 'conducteur') {
+        graph['test_a'].push('test_b');
+        graph['test_b'].push('test_a');
+      }
+
+      // Bulb filament
+      if (includeBulbFilament) {
+        graph['ampoule_a'].push('ampoule_b');
+        graph['ampoule_b'].push('ampoule_a');
+      }
+
+      return graph;
+    }
+
+    function checkCircuit() {
+      // 1. Check for Short Circuit
+      const graphNoBulb = buildGraph(true, true, false);
+      const isShort = bfs(graphNoBulb, 'pile_pos', 'pile_neg');
+
+      // 2. Check if bulb is on
+      const graphFull = buildGraph(true, true, true);
+      const hasClosedPath = bfs(graphFull, 'pile_pos', 'pile_neg');
+
+      const bulbOn = hasClosedPath && !isShort;
+
+      updateUIStates(bulbOn, isShort);
+    }
+
+    function isSwitchInCircuit() {
+      const g = buildGraph(true, true, true);
+      const path = findActivePath(g, 'pile_pos', 'pile_neg');
+      return path ? (path.includes('inter_a') && path.includes('inter_b')) : false;
+    }
+
+    function isTestSlotInCircuit() {
+      if (currentStep === 1) return false;
+      const g = buildGraph(true, true, true);
+      const path = findActivePath(g, 'pile_pos', 'pile_neg');
+      return path ? (path.includes('test_a') && path.includes('test_b')) : false;
+    }
+
+    // ================================================================
+    // INTERFACE AND RENDERING UPDATES
+    // ================================================================
+    function updateUIStates(bulbOn, isShort) {
+      const glass = document.getElementById('bulb-glass');
+      const filament = document.getElementById('bulb-filament');
+      const glow = document.getElementById('bulb-glow');
+      const rays = document.getElementById('bulb-rays');
+      const board = document.getElementById('circuit-board');
+      const statusMsg = document.getElementById('circuit-status-msg');
+
+      board.classList.remove('animate-shake');
+      const svgWires = document.querySelectorAll('.wire-svg');
+
+      if (isShort) {
+        // Red bulb warning, filament cold
+        glass.style.fill = '#f87171';
+        filament.style.stroke = '#991b1b';
+        glow.classList.add('opacity-0');
+        glow.classList.remove('scale-100');
+        rays.classList.add('hidden');
+
+        // Paint wires red
+        svgWires.forEach(w => {
+          w.setAttribute('stroke', '#ef4444');
+          w.setAttribute('class', 'wire-svg wire-short-glow');
+        });
+
+        statusMsg.className = 'flex items-center gap-2 p-3 bg-red-100 border-2 border-red-500 rounded-xl text-red-700 font-bold text-xs shadow-sm';
+        statusMsg.innerHTML = `⚠️ <span>Court-circuit ! Le courant retourne directement à la pile sans passer par l'ampoule. Retire ce fil pour éviter la surchauffe.</span>`;
+
+        playErrorSound();
+        stopHum();
+        board.classList.add('animate-shake');
+      } else if (bulbOn) {
+        // Light up!
+        glass.style.fill = '#facc15';
+        filament.style.stroke = '#b45309';
+        glow.classList.remove('opacity-0');
+        glow.classList.add('scale-100');
+        rays.classList.remove('hidden');
+
+        // Glowing wires
+        svgWires.forEach(w => {
+          w.setAttribute('stroke', '#3b82f6');
+          w.setAttribute('class', 'wire-svg wire-active-glow');
+        });
+
+        statusMsg.className = 'flex items-center gap-2 p-3 bg-emerald-100 border-2 border-emerald-500 rounded-xl text-emerald-700 font-bold text-xs shadow-sm';
+        statusMsg.innerHTML = `⚡ <span>Bravo ! Le circuit est fermé, le courant circule et l'ampoule s'allume.</span>`;
+
+        startHum();
+
+        // Validate Challenge 1
+        if (currentStep === 1) {
+          const g = buildGraph(true, true, true);
+          const path = findActivePath(g, 'pile_pos', 'pile_neg');
+          if (path && path.includes('inter_a') && path.includes('inter_b')) {
+            if (!challenge1Completed) {
+              challenge1Completed = true;
+              playSuccessSound();
+              showNotification("🎉 Défi 1 Réussi ! L'ampoule est allumée !");
+              document.getElementById('step-transition-container').classList.remove('hidden');
+            }
+          }
+        }
+      } else {
+        // Bulb remains OFF, normal wires
+        glass.style.fill = '#cbd5e1';
+        filament.style.stroke = '#475569';
+        glow.classList.add('opacity-0');
+        glow.classList.remove('scale-100');
+        rays.classList.add('hidden');
+
+        svgWires.forEach(w => {
+          w.setAttribute('stroke', '#3b82f6');
+          w.setAttribute('class', 'wire-svg');
+        });
+
+        // Smart help hints
+        const graphSimple = buildGraph(false, false, false);
+        const hasPos = graphSimple['pile_pos'].length > 0;
+        const hasNeg = graphSimple['pile_neg'].length > 0;
+
+        if (wires.length === 0) {
+          statusMsg.className = 'flex items-center gap-2 p-3 bg-blue-50 border-2 border-blue-200 rounded-xl text-blue-700 font-bold text-xs shadow-sm';
+          statusMsg.innerHTML = `💡 <span>Aide : Branche un premier fil sur la Borne (+) de la pile pour commencer le circuit.</span>`;
+        } else if (!hasPos || !hasNeg) {
+          statusMsg.className = 'flex items-center gap-2 p-3 bg-amber-50 border-2 border-amber-300 rounded-xl text-amber-700 font-bold text-xs shadow-sm';
+          statusMsg.innerHTML = `💡 <span>Aide : Relie à la fois la borne (+) et la borne (-) de la pile pour faire circuler l'électricité.</span>`;
+        } else {
+          if (!switchClosed && isSwitchInCircuit()) {
+            statusMsg.className = 'flex items-center gap-2 p-3 bg-amber-50 border-2 border-amber-300 rounded-xl text-amber-700 font-bold text-xs shadow-sm';
+            statusMsg.innerHTML = `💡 <span>Aide : L'interrupteur est ouvert ! Clique dessus pour fermer le circuit et allumer la lampe.</span>`;
+          } else if (currentStep === 2 && currentObject && currentObject.type === 'isolant' && isTestSlotInCircuit()) {
+            statusMsg.className = 'flex items-center gap-2 p-3 bg-slate-200 border-2 border-slate-400 rounded-xl text-slate-700 font-bold text-xs shadow-sm';
+            statusMsg.innerHTML = `🛡️ <span>Le circuit est fermé mais l'ampoule reste éteinte car le/la <strong>${currentObject.name}</strong> est un ISOLANT.</span>`;
+          } else {
+            statusMsg.className = 'flex items-center gap-2 p-3 bg-amber-50 border-2 border-amber-300 rounded-xl text-amber-700 font-bold text-xs shadow-sm';
+            statusMsg.innerHTML = `💡 <span>Aide : Circuit ouvert. Connecte les composants en boucle pour allumer l'ampoule.</span>`;
+          }
+        }
+        stopHum();
+      }
+
+      updateChallengeChecklist();
+    }
+
+    function updateChallengeChecklist() {
+      // Step indicator colors updates
+      const badge1 = document.getElementById('step-1-badge');
+      const badge2 = document.getElementById('step-2-badge');
+
+      if (currentStep === 1) {
+        badge1.className = 'px-3 py-1.5 bg-blue-600 text-white rounded-xl border-2 border-slate-900 shadow-[2px_2px_0px_#0f172a] font-fredoka font-bold text-xs';
+        badge2.className = 'px-3 py-1.5 bg-slate-100 text-slate-400 rounded-xl border-2 border-dashed border-slate-300 font-fredoka font-bold text-xs';
+      } else {
+        badge1.className = 'px-3 py-1.5 bg-emerald-100 text-emerald-700 border-2 border-emerald-500 rounded-xl font-fredoka font-bold text-xs';
+        badge1.innerHTML = 'Étape 1 : Réussie ✅';
+        badge2.className = 'px-3 py-1.5 bg-blue-600 text-white rounded-xl border-2 border-slate-900 shadow-[2px_2px_0px_#0f172a] font-fredoka font-bold text-xs';
+      }
+
+      document.getElementById('score-text').innerText = `${score} / 6`;
+      const pct = Math.round((score / 6) * 100);
+      document.getElementById('score-progress-bar').style.width = `${pct}%`;
+    }
+
+    // ================================================================
+    // STEP TRANSITION
+    // ================================================================
+    function goToStep2() {
+      playClickSound();
+      currentStep = 2;
+
+      // Reset wires and selection to let them build the new circuit containing the test slot
+      wires = [];
+      activeTerminal = null;
+      updateTerminalUI();
+
+      // Show unlocked components
+      document.getElementById('test-slot-locked').style.display = 'none';
+      document.getElementById('test-slot-active').style.display = 'flex';
+
+      // Show right side panels
+      document.getElementById('goal-step-1').style.display = 'none';
+      document.getElementById('goal-step-2').style.display = 'flex';
+
+      document.getElementById('experiments-locked').style.display = 'none';
+      document.getElementById('experiments-active').style.display = 'block';
+
+      checkCircuit();
+      renderInventory();
+      renderClassifications();
+      updateWires();
+
+      showNotification("🧪 Défi 2 Débloqué ! Insère l'emplacement de test dans le circuit pour analyser les objets.");
+    }
+
+    // ================================================================
+    // SVG WIRE DRAWING ENGINE
+    // ================================================================
+    function updateWires() {
+      const svg = document.getElementById('wire-svg-canvas');
+      if (!svg) return;
+      svg.innerHTML = '';
+
+      document.querySelectorAll('.wire-delete-btn').forEach(btn => btn.remove());
+      const board = document.getElementById('circuit-board');
+      const boardRect = board.getBoundingClientRect();
+
+      wires.forEach((wire, index) => {
+        const elFrom = document.getElementById(`term-${wire.from}`);
+        const elTo = document.getElementById(`term-${wire.to}`);
+        if (!elFrom || !elTo) return;
+
+        const rectFrom = elFrom.getBoundingClientRect();
+        const rectTo = elTo.getBoundingClientRect();
+
+        const x1 = rectFrom.left - boardRect.left + rectFrom.width / 2;
+        const y1 = rectFrom.top - boardRect.top + rectFrom.height / 2;
+        const x2 = rectTo.left - boardRect.left + rectTo.width / 2;
+        const y2 = rectTo.top - boardRect.top + rectTo.height / 2;
+
+        const midX = (x1 + x2) / 2;
+        const dist = Math.hypot(x2 - x1, y2 - y1);
+        const hang = Math.min(60, dist * 0.25);
+        const midY = (y1 + y2) / 2 + hang;
+
+        // Layer 1: Black outline
+        const outline = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        outline.setAttribute('d', `M ${x1} ${y1} Q ${midX} ${midY} ${x2} ${y2}`);
+        outline.setAttribute('fill', 'none');
+        outline.setAttribute('stroke', '#0f172a');
+        outline.setAttribute('stroke-width', '10');
+        outline.setAttribute('stroke-linecap', 'round');
+        svg.appendChild(outline);
+
+        // Layer 2: Colored wire body (animated when active)
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        path.setAttribute('d', `M ${x1} ${y1} Q ${midX} ${midY} ${x2} ${y2}`);
+        path.setAttribute('fill', 'none');
+        path.setAttribute('stroke', '#3b82f6');
+        path.setAttribute('stroke-width', '6');
+        path.setAttribute('stroke-linecap', 'round');
+        path.setAttribute('class', 'wire-svg');
+        svg.appendChild(path);
+
+        // Layer 3: Light neon core highlight
+        const core = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        core.setAttribute('d', `M ${x1} ${y1} Q ${midX} ${midY} ${x2} ${y2}`);
+        core.setAttribute('fill', 'none');
+        core.setAttribute('stroke', '#e0f2fe');
+        core.setAttribute('stroke-width', '2');
+        core.setAttribute('stroke-linecap', 'round');
+        svg.appendChild(core);
+
+        // Wire center coordinates to place the delete button
+        const btnX = 0.25 * x1 + 0.5 * midX + 0.25 * x2;
+        const btnY = 0.25 * y1 + 0.5 * midY + 0.25 * y2;
+
+        const delBtn = document.createElement('button');
+        delBtn.className = 'wire-delete-btn absolute w-5 h-5 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center text-[10px] font-black shadow-[1.5px_1.5px_0px_#0f172a] border-2 border-slate-900 transition-transform hover:scale-110 active:scale-90 z-40 select-none';
+        delBtn.style.left = `${btnX - 10}px`;
+        delBtn.style.top = `${btnY - 10}px`;
+        delBtn.innerHTML = '×';
+        delBtn.title = 'Supprimer ce fil';
+        delBtn.onclick = (e) => {
+          e.stopPropagation();
+          removeWire(index);
+        };
+        board.appendChild(delBtn);
+      });
+
+      // Draw wire preview if active
+      if (activeTerminal !== null) {
+        const elFrom = document.getElementById(`term-${activeTerminal}`);
+        if (elFrom) {
+          const rectFrom = elFrom.getBoundingClientRect();
+          const x1 = rectFrom.left - boardRect.left + rectFrom.width / 2;
+          const y1 = rectFrom.top - boardRect.top + rectFrom.height / 2;
+
+          const midX = (x1 + cursorX) / 2;
+          const dist = Math.hypot(cursorX - x1, cursorY - y1);
+          const hang = Math.min(50, dist * 0.22);
+          const midY = (y1 + cursorY) / 2 + hang;
+
+          const preview = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+          preview.setAttribute('d', `M ${x1} ${y1} Q ${midX} ${midY} ${cursorX} ${cursorY}`);
+          preview.setAttribute('fill', 'none');
+          preview.setAttribute('stroke', '#c084fc');
+          preview.setAttribute('stroke-width', '4');
+          preview.setAttribute('stroke-linecap', 'round');
+          preview.setAttribute('stroke-dasharray', '5,5');
+          svg.appendChild(preview);
+        }
+      }
+    }
+
+    // Keep track of cursor coordinates relative to board
+    document.getElementById('circuit-board').addEventListener('mousemove', (e) => {
+      if (activeTerminal === null) return;
+      const board = document.getElementById('circuit-board');
+      const boardRect = board.getBoundingClientRect();
+      cursorX = e.clientX - boardRect.left;
+      cursorY = e.clientY - boardRect.top;
+      updateWires();
+    });
+
+    window.addEventListener('resize', updateWires);
+
+    // ================================================================
+    // INVENTORY & CLASSIFICATION GAMEPLAY
+    // ================================================================
+    function renderInventory() {
+      const shelf = document.getElementById('inventory-shelf');
+      if (!shelf) return;
+      shelf.innerHTML = '';
+
+      if (currentStep === 1) return;
+
+      const unsorted = objectsData.filter(o => classifications[o.id] === null);
+
+      if (unsorted.length === 0) {
+        shelf.innerHTML = `
+          <div class="col-span-2 flex flex-col items-center justify-center p-4 bg-emerald-50 border-2 border-dashed border-emerald-300 rounded-2xl text-emerald-800 font-bold text-center">
+            <span class="text-2xl mb-1 select-none">🎉 Bravo !</span>
+            <span class="text-[10px]">Tous les objets ont été classés avec succès !</span>
+          </div>
+        `;
+        return;
+      }
+
+      unsorted.forEach(obj => {
+        const isTesting = currentObject && currentObject.id === obj.id;
+        const card = document.createElement('div');
+        card.className = `bg-white border-3 border-slate-900 rounded-2xl shadow-[3px_3px_0px_#0f172a] p-2 flex flex-col justify-between items-center text-center transition-all ${isTesting ? 'ring-3 ring-blue-500 bg-blue-50' : ''}`;
+
+        card.innerHTML = `
+          <span class="text-2xl mb-0.5 select-none">${obj.emoji}</span>
+          <h4 class="font-fredoka font-bold text-[10px] text-slate-800 leading-tight mb-0.5">${obj.name}</h4>
+          <span class="text-[8px] font-black text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded-full uppercase mb-2 select-none">${obj.desc}</span>
+          
+          <div class="w-full flex flex-col gap-1 mt-auto">
+            <button onclick="testObject('${obj.id}')" class="w-full py-1 text-[9px] btn-3d btn-3d-blue flex items-center justify-center gap-1 leading-none shadow-[1.5px_1.5px_0px_#0f172a] ${isTesting ? 'opacity-50 pointer-events-none' : ''}">
+              <span>🧪 Tester</span>
+            </button>
+            <div class="grid grid-cols-2 gap-1">
+              <button onclick="classifyDirect('${obj.id}', 'conducteur')" class="py-1 text-[8px] bg-emerald-500 hover:bg-emerald-600 border-2 border-slate-900 text-white rounded-lg font-black shadow-[1px_1px_0px_#0f172a] active:translate-x-0.5 active:translate-y-0.5 active:shadow-none uppercase">⚡ Cond.</button>
+              <button onclick="classifyDirect('${obj.id}', 'isolant')" class="py-1 text-[8px] bg-slate-500 hover:bg-slate-600 border-2 border-slate-900 text-white rounded-lg font-black shadow-[1px_1px_0px_#0f172a] active:translate-x-0.5 active:translate-y-0.5 active:shadow-none uppercase">🛡️ Isol.</button>
+            </div>
+          </div>
+        `;
+        shelf.appendChild(card);
+      });
+    }
+
+    function renderClassifications() {
+      const condList = document.getElementById('conductors-list');
+      const isolList = document.getElementById('insulators-list');
+
+      condList.innerHTML = '';
+      isolList.innerHTML = '';
+
+      let condCount = 0;
+      let isolCount = 0;
+
+      objectsData.forEach(obj => {
+        const cls = classifications[obj.id];
+        if (cls === 'conducteur') {
+          condCount++;
+          const card = document.createElement('div');
+          card.className = 'flex items-center gap-2 p-2 bg-emerald-50 border-2 border-emerald-500 text-emerald-800 font-bold rounded-xl text-[10px] shadow-sm pop-anim';
+          card.innerHTML = `<span class="text-xl select-none">${obj.emoji}</span> <div class="flex-1 leading-tight"><div>${obj.name}</div><span class="text-[8px] text-emerald-600 font-medium">L'ampoule s'allume !</span></div> <button onclick="unclassifyObject('${obj.id}')" class="text-slate-400 hover:text-slate-600 hover:scale-110 font-bold text-xs p-1 select-none transition-transform" title="Retirer de la liste">×</button>`;
+          condList.appendChild(card);
+        } else if (cls === 'isolant') {
+          isolCount++;
+          const card = document.createElement('div');
+          card.className = 'flex items-center gap-2 p-2 bg-slate-50 border-2 border-slate-400 text-slate-700 font-bold rounded-xl text-[10px] shadow-sm pop-anim';
+          card.innerHTML = `<span class="text-xl select-none">${obj.emoji}</span> <div class="flex-1 leading-tight"><div>${obj.name}</div><span class="text-[8px] text-slate-500 font-medium">L'ampoule reste éteinte</span></div> <button onclick="unclassifyObject('${obj.id}')" class="text-slate-400 hover:text-slate-600 hover:scale-110 font-bold text-xs p-1 select-none transition-transform" title="Retirer de la liste">×</button>`;
+          isolList.appendChild(card);
+        }
+      });
+
+      const maxCond = objectsData.filter(o => o.type === 'conducteur').length;
+      const maxIsol = objectsData.filter(o => o.type === 'isolant').length;
+
+      // Dashed placeholders for remaining empty spots
+      for (let i = condCount; i < maxCond; i++) {
+        const item = document.createElement('div');
+        item.className = 'border-2 border-dashed border-slate-300 rounded-xl p-2.5 text-center text-[9px] text-slate-400 font-bold select-none';
+        item.innerText = 'Vide';
+        condList.appendChild(item);
+      }
+      for (let i = isolCount; i < maxIsol; i++) {
+        const item = document.createElement('div');
+        item.className = 'border-2 border-dashed border-slate-300 rounded-xl p-2.5 text-center text-[9px] text-slate-400 font-bold select-none';
+        item.innerText = 'Vide';
+        isolList.appendChild(item);
+      }
+    }
+
+    function testObject(objId) {
+      if (currentStep === 1) return;
+      playClickSound();
+      const obj = objectsData.find(o => o.id === objId);
+      if (!obj) return;
+
+      currentObject = obj;
+
+      // Update Slot
+      document.getElementById('test-slot-placeholder').classList.add('hidden');
+      const content = document.getElementById('test-slot-content');
+      content.classList.remove('hidden');
+      document.getElementById('test-obj-emoji').innerText = obj.emoji;
+      document.getElementById('test-obj-name').innerText = obj.name;
+      document.getElementById('btn-remove-test').classList.remove('hidden');
+
+      renderInventory();
+      checkCircuit();
+      updateWires();
+    }
+
+    function removeObjectFromTest() {
+      playClickSound();
+      currentObject = null;
+
+      document.getElementById('test-slot-placeholder').classList.remove('hidden');
+      document.getElementById('test-slot-content').classList.add('hidden');
+      document.getElementById('btn-remove-test').classList.add('hidden');
+
+      renderInventory();
+      checkCircuit();
+      updateWires();
+    }
+
+    function classifyDirect(objId, classType) {
+      if (currentStep === 1) return;
+      const obj = objectsData.find(o => o.id === objId);
+      if (!obj) return;
+
+      currentObject = obj;
+
+      // Visually update slot
+      document.getElementById('test-slot-placeholder').classList.add('hidden');
+      const content = document.getElementById('test-slot-content');
+      content.classList.remove('hidden');
+      document.getElementById('test-obj-emoji').innerText = obj.emoji;
+      document.getElementById('test-obj-name').innerText = obj.name;
+      document.getElementById('btn-remove-test').classList.remove('hidden');
+
+      // Small delay to make it feel natural
+      setTimeout(() => {
+        classifyObject(classType);
+      }, 50);
+    }
+
+    function classifyObject(classType) {
+      if (!currentObject) return;
+
+      const obj = currentObject;
+      const isCorrect = (obj.type === classType);
+
+      if (isCorrect) {
+        classifications[obj.id] = classType;
+        playSuccessSound();
+        currentObject = null;
+
+        // Reset slot
+        document.getElementById('test-slot-placeholder').classList.remove('hidden');
+        document.getElementById('test-slot-content').classList.add('hidden');
+        document.getElementById('btn-remove-test').classList.add('hidden');
+
+        showNotification(`✅ Super ! <strong>${obj.name}</strong> est bien un <strong>${classType === 'conducteur' ? 'conducteur' : 'isolant'}</strong>.`);
+        calculateScore();
+        checkMissionCompleted();
+      } else {
+        playErrorSound();
+
+        // Shake slot
+        const box = document.getElementById('test-slot-box');
+        box.classList.add('animate-shake', 'border-red-500');
+        setTimeout(() => {
+          box.classList.remove('animate-shake', 'border-red-500');
+        }, 300);
+
+        if (classType === 'conducteur') {
+          showNotification(`❌ Faux ! L'ampoule ne s'allume pas. Ce n'est pas un conducteur.`);
+        } else {
+          showNotification(`❌ Faux ! Le courant passe et l'ampoule brille. Ce n'est pas un isolant.`);
+        }
+      }
+
+      renderInventory();
+      checkCircuit();
+      renderClassifications();
+      updateWires();
+    }
+
+    function unclassifyObject(objId) {
+      playClickSound();
+      classifications[objId] = null;
+      challenge2Completed = false;
+      calculateScore();
+
+      // If the object was currently being tested, reset currentObject
+      if (currentObject && currentObject.id === objId) {
+        currentObject = null;
+        document.getElementById('test-slot-placeholder').classList.remove('hidden');
+        document.getElementById('test-slot-content').classList.add('hidden');
+        document.getElementById('btn-remove-test').classList.add('hidden');
+      }
+
+      checkCircuit();
+      renderInventory();
+      renderClassifications();
+      updateWires();
+    }
+
+
+    function calculateScore() {
+      score = 0;
+      objectsData.forEach(o => {
+        if (classifications[o.id] !== null) score++;
+      });
+    }
+
+    function checkMissionCompleted() {
+      if (challenge1Completed && score === 6) {
+        challenge2Completed = true;
+        updateChallengeChecklist();
+        
+        setTimeout(() => {
+          document.getElementById('success-modal').classList.remove('hidden');
+          startConfetti();
+          playSuccessSound();
+          saveScore();
+        }, 600);
+      }
+    }
+
+    function saveScore() {
+      if (window.parent && window.parent.saveResult) {
+        window.parent.saveResult({
+          activity: 'sci_electricite_labo',
+          bookTitle: "Sciences — Labo Électricité",
+          score: score,
+          total: 6,
+          pct: Math.round((score / 6) * 100),
+          date: new Date().toLocaleDateString('fr-BE'),
+          time: new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })
+        });
+      }
+    }
+
+    function restartExperiment() {
+      playClickSound();
+      stopConfetti();
+      document.getElementById('success-modal').classList.add('hidden');
+      
+      wires = [];
+      activeTerminal = null;
+      switchClosed = false;
+      currentObject = null;
+      score = 0;
+      currentStep = 1;
+      challenge1Completed = false;
+      challenge2Completed = false;
+      
+      // Hide transition button
+      document.getElementById('step-transition-container').classList.add('hidden');
+
+      // Reset switch UI
+      const blade = document.getElementById('switch-blade');
+      const badge = document.getElementById('switch-badge');
+      blade.style.transform = 'rotate(-35deg)';
+      badge.className = 'bg-red-100 text-red-600 border-2 border-red-500 font-black px-1.5 py-0.5 rounded text-[8px] uppercase shadow-sm select-none';
+      badge.innerText = 'OUVERT';
+
+      // Lock test components
+      document.getElementById('test-slot-locked').style.display = 'flex';
+      document.getElementById('test-slot-active').style.display = 'none';
+      document.getElementById('goal-step-1').style.display = 'flex';
+      document.getElementById('goal-step-2').style.display = 'none';
+      document.getElementById('experiments-locked').style.display = 'flex';
+      document.getElementById('experiments-active').style.display = 'none';
+
+      // Reset slot UI
+      document.getElementById('test-slot-placeholder').classList.remove('hidden');
+      document.getElementById('test-slot-content').classList.add('hidden');
+      document.getElementById('btn-remove-test').classList.add('hidden');
+
+      Object.keys(classifications).forEach(k => classifications[k] = null);
+
+      updateTerminalUI();
+      checkCircuit();
+      renderInventory();
+      renderClassifications();
+      updateWires();
+    }
+
+    function closeModal() {
+      document.getElementById('success-modal').classList.add('hidden');
+    }
+
+    // ================================================================
+    // TOAST NOTIFICATIONS
+    // ================================================================
+    let notificationTimeout = null;
+    function showNotification(msg) {
+      const toast = document.getElementById('notification-toast');
+      toast.innerHTML = msg;
+      toast.classList.remove('opacity-0');
+      toast.classList.add('opacity-100');
+
+      if (notificationTimeout) clearTimeout(notificationTimeout);
+      notificationTimeout = setTimeout(() => {
+        toast.classList.remove('opacity-100');
+        toast.classList.add('opacity-0');
+      }, 4000);
+    }
+
+    // ================================================================
+    // CONFETTI CELEBRATION (Offline autonomous canvas particle emitter)
+    // ================================================================
+    let confettiActive = false;
+    let confettiParticles = [];
+    const confettiColors = ['#3b82f6', '#2563eb', '#eab308', '#facc15', '#dc2626', '#ef4444', '#10b981', '#34d399', '#a855f7', '#c084fc'];
+
+    function startConfetti() {
+      confettiActive = true;
+      const canvas = document.getElementById('confetti-canvas');
+      const ctx = canvas.getContext('2d');
+
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      confettiParticles = [];
+      for (let i = 0; i < 120; i++) {
+        confettiParticles.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height - canvas.height,
+          r: Math.random() * 5 + 4,
+          d: Math.random() * canvas.height,
+          color: confettiColors[Math.floor(Math.random() * confettiColors.length)],
+          tilt: Math.random() * 8 - 4,
+          tiltAngleIncremental: Math.random() * 0.05 + 0.02,
+          tiltAngle: 0
+        });
+      }
+
+      function draw() {
+        if (!confettiActive) return;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        confettiParticles.forEach((p) => {
+          p.tiltAngle += p.tiltAngleIncremental;
+          p.y += (Math.cos(p.d) + 2.5 + p.r / 2) / 2;
+          p.x += Math.sin(p.tiltAngle);
+          p.tilt = Math.sin(p.tiltAngle - p.r / 2) * 4;
+
+          if (p.y > canvas.height) {
+            p.x = Math.random() * canvas.width;
+            p.y = -20;
+            p.tilt = Math.random() * 8 - 4;
+          }
+
+          ctx.beginPath();
+          ctx.lineWidth = p.r;
+          ctx.strokeStyle = p.color;
+          ctx.moveTo(p.x + p.tilt + p.r / 2, p.y);
+          ctx.lineTo(p.x + p.tilt, p.y + p.tilt + p.r / 2);
+          ctx.stroke();
+        });
+
+        requestAnimationFrame(draw);
+      }
+      draw();
+    }
+
+    // Stop and clear confetti canvas
+    function stopConfetti() {
+      confettiActive = false;
+      const canvas = document.getElementById('confetti-canvas');
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    // ================================================================
+    // INITIALIZATION
+    // ================================================================
+    window.onload = () => {
+      renderInventory();
+      renderClassifications();
+      setTimeout(updateWires, 150);
+    };
+  </script>
+</body>
+</html>

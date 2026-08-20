@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Les Changements d'État de la Matière — Exercice Interactif</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <!-- TailwindCSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      corePlugins: {
+        preflight: true,
+      },
+      theme: {
+        extend: {
+          borderWidth: {
+            '3': '3px',
+          },
+          fontFamily: {
+            fredoka: ['Fredoka', 'sans-serif'],
+            nunito: ['Nunito', 'sans-serif'],
+            mono: ['Space Mono', 'monospace'],
+          },
+          boxShadow: {
+            'flat': '4px 4px 0px #0f172a',
+            'flat-hover': '2px 2px 0px #0f172a',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    :root {
+      --encre: #0f172a;
+      --papier: #f8fafc;
+      --rouge-chaud: #ef4444;
+      --bleu-froid: #3b82f6;
+    }
+    
+    body {
+      background-color: var(--papier);
+      background-image: radial-gradient(circle at 1px 1px, rgba(15, 23, 42, 0.05) 1px, transparent 0);
+      background-size: 20px 20px;
+    }
+
+    .btn-3d {
+      border: 3px solid var(--encre) !important;
+      box-shadow: 4px 4px 0px var(--encre);
+      transition: all 0.1s ease;
+    }
+    .btn-3d:active {
+      transform: translate(2px, 2px);
+      box-shadow: 2px 2px 0px var(--encre);
+    }
+    .btn-3d:disabled {
+      background-color: #cbd5e1 !important;
+      color: #64748b !important;
+      box-shadow: 2px 2px 0px var(--encre) !important;
+      transform: translate(2px, 2px) !important;
+      cursor: not-allowed;
+    }
+
+    .label-card {
+      touch-action: none;
+    }
+
+    .label-card.correct {
+      border-color: #10b981 !important;
+      box-shadow: 3px 3px 0px #10b981 !important;
+      background-color: #ecfdf5 !important;
+    }
+
+    .label-card.incorrect {
+      border-color: #ef4444 !important;
+      box-shadow: 3px 3px 0px #ef4444 !important;
+      background-color: #fef2f2 !important;
+    }
+
+    .slot {
+      z-index: 20;
+    }
+
+    .slot.occupied {
+      border-color: transparent !important;
+      background-color: transparent !important;
+      box-shadow: none !important;
+    }
+
+    .slot .label-card {
+      width: 100% !important;
+      height: 100% !important;
+      margin: 0 !important;
+      transform: none !important;
+      box-shadow: 3px 3px 0px var(--encre) !important;
+    }
+
+    @keyframes confetti-fall {
+      0% { transform: translateY(-10px) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+    }
+    .confetti {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      animation: confetti-fall 3s linear forwards;
+      pointer-events: none;
+      z-index: 100;
+    }
+  </style>
+</head>
+<body class="min-h-screen text-[#0f172a] font-nunito p-4 md:p-8 flex flex-col items-center">
+
+  <!-- Main Container -->
+  <div class="w-full max-w-5xl bg-white border-3 border-[#0f172a] rounded-3xl p-6 md:p-8 shadow-flat mb-8">
+    
+    <!-- Header -->
+    <header class="text-center mb-6">
+      <div class="inline-block bg-[#fef08a] border-3 border-[#0f172a] px-6 py-3 rounded-2xl shadow-flat mb-4">
+        <h1 class="font-fredoka text-2xl md:text-4xl text-[#0f172a] uppercase tracking-wide">
+          🧪 Les changements d'état de la matière
+        </h1>
+      </div>
+      <p class="text-gray-700 font-nunito text-base md:text-lg max-w-2xl mx-auto mt-2">
+        Aide chaque flèche à retrouver son changement d'état ! Glisse les étiquettes ou clique dessus pour les placer au bon endroit.
+      </p>
+    </header>
+
+    <!-- Legend -->
+    <div class="flex flex-wrap justify-center gap-6 mb-8 p-4 bg-slate-50 border-3 border-[#0f172a] rounded-2xl shadow-flat max-w-2xl mx-auto text-sm">
+      <div class="flex items-center gap-2">
+        <div class="w-6 h-3 bg-[#ef4444] rounded-full border-2 border-[#0f172a]"></div>
+        <span class="font-bold text-[#ef4444] uppercase tracking-wider text-xs">Apport de chaleur (Réchauffement)</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <div class="w-6 h-3 bg-[#3b82f6] rounded-full border-2 border-[#0f172a]"></div>
+        <span class="font-bold text-[#3b82f6] uppercase tracking-wider text-xs">Perte de chaleur (Refroidissement)</span>
+      </div>
+    </div>
+
+    <!-- Interaction Hint -->
+    <div class="text-center text-xs text-slate-500 font-semibold mb-6 flex justify-center items-center gap-1">
+      <span>💡</span>
+      <span>Astuce : Tu peux glisser les étiquettes OU cliquer sur une étiquette puis sur une case pour la déposer.</span>
+    </div>
+
+    <!-- Labels Tray -->
+    <section class="mb-8">
+      <h2 class="font-fredoka text-center text-lg text-slate-700 mb-4 uppercase tracking-wide">Étiquettes à placer :</h2>
+      <div id="labels-container" class="flex flex-wrap justify-center gap-3 p-4 bg-slate-50 border-3 border-dashed border-slate-300 rounded-2xl min-h-[70px]">
+        <!-- Labels will be populated dynamically -->
+      </div>
+    </section>
+
+    <!-- Diagram Container -->
+    <section class="relative w-full max-w-4xl mx-auto aspect-[800/550] border-3 border-[#0f172a] rounded-3xl bg-slate-50 overflow-hidden shadow-inner">
+      
+      <!-- SVG Arrows -->
+      <svg class="absolute inset-0 w-full h-full pointer-events-none select-none" viewBox="0 0 800 550" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="arrow-red" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 1.5 L 8 5 L 0 8.5 Z" fill="#ef4444" stroke="#0f172a" stroke-width="1" />
+          </marker>
+          <marker id="arrow-blue" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 1.5 L 8 5 L 0 8.5 Z" fill="#3b82f6" stroke="#0f172a" stroke-width="1" />
+          </marker>
+        </defs>
+
+        <!-- 1. Solide -> Liquide (Fusion) - Red -->
+        <path d="M 200 310 Q 210 190 340 175" stroke="#0f172a" stroke-width="9" fill="none" stroke-linecap="round" />
+        <path d="M 200 310 Q 210 190 340 175" stroke="#ef4444" stroke-width="5" fill="none" stroke-linecap="round" marker-end="url(#arrow-red)" />
+
+        <!-- 2. Liquide -> Solide (Solidification) - Blue -->
+        <path d="M 360 185 Q 310 310 220 320" stroke="#0f172a" stroke-width="9" fill="none" stroke-linecap="round" />
+        <path d="M 360 185 Q 310 310 220 320" stroke="#3b82f6" stroke-width="5" fill="none" stroke-linecap="round" marker-end="url(#arrow-blue)" />
+
+        <!-- 3. Liquide -> Gaz (Vaporisation) - Red -->
+        <path d="M 440 185 Q 490 310 580 320" stroke="#0f172a" stroke-width="9" fill="none" stroke-linecap="round" />
+        <path d="M 440 185 Q 490 310 580 320" stroke="#ef4444" stroke-width="5" fill="none" stroke-linecap="round" marker-end="url(#arrow-red)" />
+
+        <!-- 4. Gaz -> Liquide (Liquéfaction) - Blue -->
+        <path d="M 600 310 Q 590 190 460 175" stroke="#0f172a" stroke-width="9" fill="none" stroke-linecap="round" />
+        <path d="M 600 310 Q 590 190 460 175" stroke="#3b82f6" stroke-width="5" fill="none" stroke-linecap="round" marker-end="url(#arrow-blue)" />
+
+        <!-- 5. Solide -> Gaz (Sublimation) - Red -->
+        <path d="M 220 375 Q 400 305 580 375" stroke="#0f172a" stroke-width="9" fill="none" stroke-linecap="round" />
+        <path d="M 220 375 Q 400 305 580 375" stroke="#ef4444" stroke-width="5" fill="none" stroke-linecap="round" marker-end="url(#arrow-red)" />
+
+        <!-- 6. Gaz -> Solide (Condensation solide) - Blue -->
+        <path d="M 580 410 Q 400 480 220 410" stroke="#0f172a" stroke-width="9" fill="none" stroke-linecap="round" />
+        <path d="M 580 410 Q 400 480 220 410" stroke="#3b82f6" stroke-width="5" fill="none" stroke-linecap="round" marker-end="url(#arrow-blue)" />
+      </svg>
+
+      <!-- 3 State Nodes -->
+      <!-- A. SOLIDE (Ice Cube) -->
+      <div class="absolute w-36 h-36 bg-white border-3 border-[#0f172a] rounded-2xl p-2 flex flex-col items-center justify-between shadow-flat select-none" style="left: 18%; top: 70%; transform: translate(-50%, -50%);">
+        <span class="font-fredoka text-base text-[#0f172a] font-bold tracking-wider">SOLIDE</span>
+        <!-- Ice Cube SVG -->
+        <svg class="w-16 h-16" viewBox="0 0 100 100">
+          <ellipse cx="50" cy="85" rx="35" ry="8" fill="#e2e8f0" opacity="0.8" />
+          <g transform="translate(10, 8)">
+            <!-- Top Face -->
+            <polygon points="40,15 70,30 40,45 10,30" fill="#e0f2fe" stroke="#0f172a" stroke-width="3" stroke-linejoin="round" />
+            <!-- Left Face -->
+            <polygon points="10,30 40,45 40,70 10,55" fill="#7dd3fc" stroke="#0f172a" stroke-width="3" stroke-linejoin="round" />
+            <!-- Right Face -->
+            <polygon points="40,45 70,30 70,55 40,70" fill="#0284c7" stroke="#0f172a" stroke-width="3" stroke-linejoin="round" />
+            <line x1="40" y1="45" x2="40" y2="70" stroke="#0f172a" stroke-width="3" />
+            <polygon points="20,33 35,40 35,53 20,46" fill="#bae6fd" opacity="0.6" />
+          </g>
+          <!-- Drops -->
+          <path d="M22,78 A3,3 0 0,0 25,81 A3,3 0 0,0 28,78 Q25,72 22,78 Z" fill="#38bdf8" stroke="#0f172a" stroke-width="1.5" />
+          <path d="M74,80 A2.5,2.5 0 0,0 76.5,82.5 A2.5,2.5 0 0,0 79,80 Q76.5,75 74,80 Z" fill="#38bdf8" stroke="#0f172a" stroke-width="1.5" />
+        </svg>
+        <span class="text-[10px] text-gray-500 font-bold uppercase">(ex: Glaçon)</span>
+      </div>
+
+      <!-- B. LIQUIDE (Glass of water) -->
+      <div class="absolute w-36 h-36 bg-white border-3 border-[#0f172a] rounded-2xl p-2 flex flex-col items-center justify-between shadow-flat select-none" style="left: 50%; top: 20%; transform: translate(-50%, -50%);">
+        <span class="font-fredoka text-base text-[#0f172a] font-bold tracking-wider">LIQUIDE</span>
+        <!-- Water Beaker SVG -->
+        <svg class="w-16 h-16" viewBox="0 0 100 100">
+          <ellipse cx="50" cy="88" rx="28" ry="6" fill="#e2e8f0" opacity="0.8" />
+          <path d="M 32,20 L 26,75 A 8,8 0 0,0 34,83 L 66,83 A 8,8 0 0,0 74,75 L 68,20" fill="none" stroke="#0f172a" stroke-width="3" stroke-linejoin="round" />
+          <!-- Water -->
+          <path d="M 28,50 Q 39,46 50,50 T 72,50 L 70.3,75 A 5,5 0 0,1 65.3,80 L 34.7,80 A 5,5 0 0,1 29.7,75 Z" fill="#38bdf8" stroke="#0f172a" stroke-width="2" stroke-linejoin="round" />
+          <!-- Bubbles -->
+          <circle cx="38" cy="62" r="3.5" fill="white" stroke="#0f172a" stroke-width="1.2" />
+          <circle cx="58" cy="70" r="2.5" fill="white" stroke="#0f172a" stroke-width="1.2" />
+          <circle cx="47" cy="72" r="2" fill="white" stroke="#0f172a" stroke-width="1.2" />
+        </svg>
+        <span class="text-[10px] text-gray-500 font-bold uppercase">(ex: Eau liquide)</span>
+      </div>
+
+      <!-- C. GAZ (Cloud / Steam) -->
+      <div class="absolute w-36 h-36 bg-white border-3 border-[#0f172a] rounded-2xl p-2 flex flex-col items-center justify-between shadow-flat select-none" style="left: 82%; top: 70%; transform: translate(-50%, -50%);">
+        <span class="font-fredoka text-base text-[#0f172a] font-bold tracking-wider">GAZ</span>
+        <!-- Steam Cloud SVG -->
+        <svg class="w-16 h-16" viewBox="0 0 100 100">
+          <ellipse cx="50" cy="84" rx="32" ry="6" fill="#e2e8f0" opacity="0.8" />
+          <!-- Waves of steam -->
+          <path d="M 38,16 Q 42,10 38,4 Q 34,10 38,16 Z" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" />
+          <path d="M 50,19 Q 54,12 50,5 Q 46,12 50,19 Z" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" />
+          <path d="M 62,16 Q 66,10 62,4 Q 58,10 62,16 Z" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" />
+          <!-- Cloud -->
+          <path d="M 26,72 A 13,13 0 0,1 26,45 A 16,16 0 0,1 54,36 A 14,14 0 0,1 76,48 A 12,12 0 0,1 74,72 Z" fill="#f8fafc" stroke="#0f172a" stroke-width="3" stroke-linejoin="round" />
+          <line x1="26" y1="72" x2="74" y2="72" stroke="#0f172a" stroke-width="3" />
+        </svg>
+        <span class="text-[10px] text-gray-500 font-bold uppercase">(ex: Vapeur / Nuage)</span>
+      </div>
+
+
+      <!-- 6 Interactive Slots (Absolute coordinates at curve midpoints) -->
+      
+      <!-- 1. Solide -> Liquide (Fusion) -->
+      <div class="slot absolute w-36 h-10 sm:w-[170px] sm:h-[44px] border-3 border-dashed border-slate-400 bg-white/90 hover:bg-slate-100/95 hover:border-slate-600 rounded-xl transition-all flex items-center justify-center cursor-pointer" 
+           style="left: 28%; top: 36%; transform: translate(-50%, -50%);" 
+           data-arrow="solide-liquide" 
+           data-correct="Fusion">
+        <span class="slot-placeholder text-slate-400 font-fredoka font-bold text-lg select-none">?</span>
+      </div>
+
+      <!-- 2. Liquide -> Solide (Solidification) -->
+      <div class="slot absolute w-36 h-10 sm:w-[170px] sm:h-[44px] border-3 border-dashed border-slate-400 bg-white/90 hover:bg-slate-100/95 hover:border-slate-600 rounded-xl transition-all flex items-center justify-center cursor-pointer" 
+           style="left: 37.5%; top: 51%; transform: translate(-50%, -50%);" 
+           data-arrow="liquide-solide" 
+           data-correct="Solidification">
+        <span class="slot-placeholder text-slate-400 font-fredoka font-bold text-lg select-none">?</span>
+      </div>
+
+      <!-- 3. Liquide -> Gaz (Vaporisation) -->
+      <div class="slot absolute w-36 h-10 sm:w-[170px] sm:h-[44px] border-3 border-dashed border-slate-400 bg-white/90 hover:bg-slate-100/95 hover:border-slate-600 rounded-xl transition-all flex items-center justify-center cursor-pointer" 
+           style="left: 62.5%; top: 51%; transform: translate(-50%, -50%);" 
+           data-arrow="liquide-gaz" 
+           data-correct="Vaporisation">
+        <span class="slot-placeholder text-slate-400 font-fredoka font-bold text-lg select-none">?</span>
+      </div>
+
+      <!-- 4. Gaz -> Liquide (Liquéfaction) -->
+      <div class="slot absolute w-36 h-10 sm:w-[170px] sm:h-[44px] border-3 border-dashed border-slate-400 bg-white/90 hover:bg-slate-100/95 hover:border-slate-600 rounded-xl transition-all flex items-center justify-center cursor-pointer" 
+           style="left: 72%; top: 36%; transform: translate(-50%, -50%);" 
+           data-arrow="gaz-liquide" 
+           data-correct="Liquéfaction">
+        <span class="slot-placeholder text-slate-400 font-fredoka font-bold text-lg select-none">?</span>
+      </div>
+
+      <!-- 5. Solide -> Gaz (Sublimation) -->
+      <div class="slot absolute w-36 h-10 sm:w-[170px] sm:h-[44px] border-3 border-dashed border-slate-400 bg-white/90 hover:bg-slate-100/95 hover:border-slate-600 rounded-xl transition-all flex items-center justify-center cursor-pointer" 
+           style="left: 50%; top: 61.8%; transform: translate(-50%, -50%);" 
+           data-arrow="solide-gaz" 
+           data-correct="Sublimation">
+        <span class="slot-placeholder text-slate-400 font-fredoka font-bold text-lg select-none">?</span>
+      </div>
+
+      <!-- 6. Gaz -> Solide (Condensation solide) -->
+      <div class="slot absolute w-36 h-10 sm:w-[170px] sm:h-[44px] border-3 border-dashed border-slate-400 bg-white/90 hover:bg-slate-100/95 hover:border-slate-600 rounded-xl transition-all flex items-center justify-center cursor-pointer" 
+           style="left: 50%; top: 80.9%; transform: translate(-50%, -50%);" 
+           data-arrow="gaz-solide" 
+           data-correct="Condensation solide">
+        <span class="slot-placeholder text-slate-400 font-fredoka font-bold text-lg select-none">?</span>
+      </div>
+
+    </section>
+
+    <!-- Actions Control Panel -->
+    <div class="mt-8 flex flex-wrap justify-center gap-4">
+      <button id="btn-validate" class="btn-3d px-8 py-3 bg-[#10b981] hover:bg-[#059669] text-white font-fredoka text-lg rounded-2xl flex items-center gap-2">
+        <span>✓</span> Valider mes réponses
+      </button>
+      <button id="btn-reset" class="btn-3d px-8 py-3 bg-[#e2e8f0] hover:bg-[#cbd5e1] text-[#0f172a] font-fredoka text-lg rounded-2xl flex items-center gap-2 hidden">
+        <span>⟲</span> Recommencer
+      </button>
+    </div>
+
+    <!-- Feedback Panel -->
+    <section id="feedback-panel" class="mt-8 border-3 border-[#0f172a] rounded-2xl p-6 bg-slate-50 shadow-flat hidden">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-6 mb-6">
+        <div>
+          <h3 id="feedback-title" class="font-fredoka text-2xl mb-2 text-[#0f172a]"></h3>
+          <p id="feedback-message" class="text-gray-700"></p>
+        </div>
+        <!-- Score Circle/Badge -->
+        <div class="flex-shrink-0 w-24 h-24 rounded-full border-4 border-[#0f172a] bg-yellow-300 shadow-flat flex flex-col items-center justify-center select-none animate-bounce">
+          <span class="text-xs font-bold font-fredoka uppercase tracking-wider text-slate-700">Score</span>
+          <span id="score-badge" class="font-fredoka text-2xl font-bold">0 / 6</span>
+        </div>
+      </div>
+
+      <!-- Flat 3D Progress Bar -->
+      <div class="w-full bg-slate-200 border-2 border-[#0f172a] h-6 rounded-full overflow-hidden mb-6">
+        <div id="progress-bar" class="bg-[#10b981] h-full transition-all duration-500" style="width: 0%;"></div>
+      </div>
+
+      <!-- Explanations Box -->
+      <div class="mt-4 border-2 border-[#0f172a] bg-white rounded-xl p-4">
+        <h4 class="font-fredoka text-lg text-slate-800 mb-3">📖 Explication des changements d'état :</h4>
+        <ul class="text-sm space-y-2 text-slate-700 list-disc pl-5 font-nunito">
+          <li><strong>Fusion</strong> (Solide ➔ Liquide) : Le glaçon absorbe de la chaleur et fond.</li>
+          <li><strong>Solidification</strong> (Liquide ➔ Solide) : L'eau refroidit et se transforme en glace.</li>
+          <li><strong>Vaporisation / Évaporation</strong> (Liquide ➔ Gaz) : L'eau chauffe et s'évapore en gaz.</li>
+          <li><strong>Liquéfaction / Condensation</strong> (Gaz ➔ Liquide) : La vapeur d'eau refroidit et redevient liquide.</li>
+          <li><strong>Sublimation</strong> (Solide ➔ Gaz) : La glace passe directement à l'état de vapeur sans fondre.</li>
+          <li><strong>Condensation solide</strong> (Gaz ➔ Solide) : La vapeur passe directement à l'état solide (givre).</li>
+        </ul>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Audio Context Setup & Interactive Logic -->
+  <script>
+    // Audio synthesis using Web Audio API
+    let audioCtx = null;
+
+    function playTone(freq, duration, type = 'sine', volume = 0.08) {
+      try {
+        if (!audioCtx) {
+          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (audioCtx.state === 'suspended') {
+          audioCtx.resume();
+        }
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        
+        gain.gain.setValueAtTime(volume, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.005, audioCtx.currentTime + duration);
+        
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch (e) {
+        console.warn('Audio Context error', e);
+      }
+    }
+
+    function playSuccessSound() {
+      // Ascending arpeggio C5 -> E5 -> G5 -> C6
+      playTone(523.25, 0.1, 'sine');
+      setTimeout(() => playTone(659.25, 0.1, 'sine'), 80);
+      setTimeout(() => playTone(783.99, 0.1, 'sine'), 160);
+      setTimeout(() => playTone(1046.50, 0.15, 'sine'), 240);
+    }
+
+    // A slightly simplified sound context for correct and incorrect answers
+    function playErrorSound() {
+      // Descending slides A3 -> D3
+      playTone(220, 0.15, 'sawtooth', 0.06);
+      setTimeout(() => playTone(147, 0.25, 'sawtooth', 0.06), 120);
+    }
+
+    function playClickSound() {
+      playTone(600, 0.05, 'triangle', 0.08);
+    }
+
+    function playPlacementSound() {
+      playTone(800, 0.08, 'sine', 0.05);
+    }
+
+    // Confetti particles generator
+    function launchConfetti() {
+      const colors = ['#f43f5e', '#3b82f6', '#10b981', '#eab308', '#a855f7', '#ff7849'];
+      for (let i = 0; i < 80; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.style.left = Math.random() * 100 + 'vw';
+        confetti.style.top = '-10px';
+        confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        confetti.style.width = Math.random() * 8 + 6 + 'px';
+        confetti.style.height = confetti.style.width;
+        confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+        confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+        confetti.style.animationDelay = Math.random() * 1.5 + 's';
+        confetti.style.animationDuration = Math.random() * 2 + 1.5 + 's';
+        document.body.appendChild(confetti);
+        
+        setTimeout(() => confetti.remove(), 3500);
+      }
+    }
+
+    // Exercise Core Logic
+    const labelsData = [
+      { id: 'lbl-fusion', text: 'Fusion' },
+      { id: 'lbl-solidification', text: 'Solidification' },
+      { id: 'lbl-vaporisation', text: 'Vaporisation' },
+      { id: 'lbl-liquefaction', text: 'Liquéfaction' },
+      { id: 'lbl-sublimation', text: 'Sublimation' },
+      { id: 'lbl-condensation', text: 'Condensation solide' }
+    ];
+
+    let activeLabelId = null;
+    let isGameOver = false;
+
+    const tray = document.getElementById('labels-container');
+    const slots = document.querySelectorAll('.slot');
+    const validateBtn = document.getElementById('btn-validate');
+    const resetBtn = document.getElementById('btn-reset');
+    const feedbackPanel = document.getElementById('feedback-panel');
+
+    // Initialize Exercise
+    function init() {
+      tray.innerHTML = '';
+      activeLabelId = null;
+      isGameOver = false;
+
+      // Reset slots
+      slots.forEach(slot => {
+        slot.classList.remove('occupied', 'correct', 'incorrect');
+        // Restore placeholder
+        const placeholder = slot.querySelector('.slot-placeholder');
+        if (placeholder) placeholder.style.display = 'flex';
+        // Remove old label elements
+        const labelEl = slot.querySelector('.label-card');
+        if (labelEl) labelEl.remove();
+        
+        // Remove correction indicators
+        const correctionIndicators = slot.querySelectorAll('.correction-badge');
+        correctionIndicators.forEach(el => el.remove());
+      });
+
+      // Shuffle and create labels in tray
+      const shuffledLabels = [...labelsData].sort(() => Math.random() - 0.5);
+      shuffledLabels.forEach(label => {
+        const card = document.createElement('div');
+        card.id = label.id;
+        card.className = 'label-card font-fredoka font-bold text-sm text-[#0f172a] bg-white border-3 border-[#0f172a] shadow-flat hover:shadow-flat-hover hover:translate-x-[2px] hover:translate-y-[2px] px-4 py-2 rounded-xl cursor-grab active:cursor-grabbing select-none transition-all duration-75 flex items-center justify-center';
+        card.innerText = label.text;
+        card.setAttribute('draggable', 'true');
+        
+        // Drag events
+        card.addEventListener('dragstart', handleDragStart);
+        card.addEventListener('dragend', handleDragEnd);
+
+        // Click selection events
+        card.addEventListener('click', handleLabelClick);
+
+        tray.appendChild(card);
+      });
+
+      // Actions panel reset
+      validateBtn.removeAttribute('disabled');
+      validateBtn.classList.remove('hidden');
+      resetBtn.classList.add('hidden');
+      feedbackPanel.classList.add('hidden');
+    }
+
+    // Click selection logic
+    function handleLabelClick(e) {
+      if (isGameOver) return;
+      e.stopPropagation(); // Avoid triggering deselect
+      playClickSound();
+
+      const card = e.currentTarget;
+
+      // If the clicked card is already inside a slot, return it to the tray
+      if (card.parentElement.classList.contains('slot')) {
+        // If there's an active card selection, clear it
+        clearLabelSelection();
+        returnLabelToTray(card);
+        return;
+      }
+
+      // If the card is in the tray
+      if (activeLabelId === card.id) {
+        clearLabelSelection();
+      } else {
+        clearLabelSelection();
+        activeLabelId = card.id;
+        card.classList.add('selected', 'bg-amber-100');
+        card.style.borderColor = '#f59e0b';
+      }
+    }
+
+    function clearLabelSelection() {
+      if (activeLabelId) {
+        const card = document.getElementById(activeLabelId);
+        if (card) {
+          card.classList.remove('selected', 'bg-amber-100');
+          card.style.borderColor = '#0f172a';
+        }
+      }
+      activeLabelId = null;
+    }
+
+    // Return label element to tray
+    function returnLabelToTray(labelEl) {
+      tray.appendChild(labelEl);
+      updateSlotPlaceholders();
+    }
+
+    // Place label inside slot
+    function placeLabel(labelEl, slotEl) {
+      // Find if slot is occupied
+      const existingLabel = slotEl.querySelector('.label-card');
+      if (existingLabel) {
+        returnLabelToTray(existingLabel);
+      }
+
+      // Hide placeholder
+      const placeholder = slotEl.querySelector('.slot-placeholder');
+      if (placeholder) placeholder.style.display = 'none';
+
+      slotEl.appendChild(labelEl);
+      slotEl.classList.add('occupied');
+      
+      clearLabelSelection();
+      playPlacementSound();
+    }
+
+    function updateSlotPlaceholders() {
+      slots.forEach(slot => {
+        const hasLabel = slot.querySelector('.label-card');
+        const placeholder = slot.querySelector('.slot-placeholder');
+        if (!hasLabel) {
+          slot.classList.remove('occupied');
+          if (placeholder) placeholder.style.display = 'flex';
+        } else {
+          slot.classList.add('occupied');
+          if (placeholder) placeholder.style.display = 'none';
+        }
+      });
+    }
+
+    // Drag and drop handlers
+    function handleDragStart(e) {
+      if (isGameOver) {
+        e.preventDefault();
+        return;
+      }
+      clearLabelSelection();
+      e.dataTransfer.setData('text/plain', e.target.id);
+      e.currentTarget.classList.add('opacity-50');
+    }
+
+    // Prevent default dragend style
+    function handleDragEnd(e) {
+      e.currentTarget.classList.remove('opacity-50');
+    }
+
+    // Set up slot events
+    slots.forEach(slot => {
+      // Drag over allows dropping
+      slot.addEventListener('dragover', (e) => {
+        if (isGameOver) return;
+        e.preventDefault();
+        slot.classList.add('border-amber-400', 'bg-amber-50/80');
+      });
+
+      slot.addEventListener('dragleave', () => {
+        slot.classList.remove('border-amber-400', 'bg-amber-50/80');
+      });
+
+      slot.addEventListener('drop', (e) => {
+        if (isGameOver) return;
+        e.preventDefault();
+        slot.classList.remove('border-amber-400', 'bg-amber-50/80');
+        
+        const labelId = e.dataTransfer.getData('text/plain');
+        const card = document.getElementById(labelId);
+        if (card) {
+          placeLabel(card, slot);
+        }
+      });
+
+      // Click event for slots
+      slot.addEventListener('click', (e) => {
+        if (isGameOver) return;
+        
+        if (activeLabelId) {
+          const card = document.getElementById(activeLabelId);
+          if (card) {
+            placeLabel(card, slot);
+          }
+        }
+      });
+    });
+
+    // Tray Drag Over to return items
+    tray.addEventListener('dragover', (e) => {
+      e.preventDefault();
+    });
+
+    tray.addEventListener('drop', (e) => {
+      if (isGameOver) return;
+      e.preventDefault();
+      const labelId = e.dataTransfer.getData('text/plain');
+      const card = document.getElementById(labelId);
+      if (card && card.parentElement !== tray) {
+        returnLabelToTray(card);
+        playPlacementSound();
+      }
+    });
+
+    // Deselect if clicking outside
+    document.addEventListener('click', (e) => {
+      if (isGameOver) return;
+      if (!e.target.closest('.label-card') && !e.target.closest('.slot')) {
+        clearLabelSelection();
+      }
+    });
+
+    // Validation logic
+    validateBtn.addEventListener('click', () => {
+      if (isGameOver) return;
+
+      // Count placed answers
+      let placedCount = 0;
+      slots.forEach(slot => {
+        if (slot.querySelector('.label-card')) {
+          placedCount++;
+        }
+      });
+
+      if (placedCount < 6) {
+        playTone(300, 0.15, 'sawtooth');
+        alert("Oups ! Complète le schéma en plaçant les 6 étiquettes avant de valider.");
+        return;
+      }
+
+      isGameOver = true;
+      let score = 0;
+
+      // Validate each slot
+      slots.forEach(slot => {
+        const correctValue = slot.getAttribute('data-correct');
+        const label = slot.querySelector('.label-card');
+        const isCorrect = label && label.innerText === correctValue;
+
+        // Strip drag behaviors
+        if (label) {
+          label.removeAttribute('draggable');
+          label.style.cursor = 'default';
+        }
+
+        if (isCorrect) {
+          score++;
+          slot.classList.add('correct');
+          label.classList.add('correct');
+          
+          // Add check indicator
+          const indicator = document.createElement('div');
+          indicator.className = 'correction-badge absolute -top-3 -right-3 w-6 h-6 rounded-full bg-green-500 border-2 border-[#0f172a] text-white flex items-center justify-center text-xs font-bold shadow-flat select-none z-30';
+          indicator.innerText = '✓';
+          slot.appendChild(indicator);
+        } else {
+          slot.classList.add('incorrect');
+          if (label) {
+            label.classList.add('incorrect');
+          }
+
+          // Add cross indicator
+          const indicator = document.createElement('div');
+          indicator.className = 'correction-badge absolute -top-3 -right-3 w-6 h-6 rounded-full bg-red-500 border-2 border-[#0f172a] text-white flex items-center justify-center text-xs font-bold shadow-flat select-none z-30';
+          indicator.innerText = '✗';
+          slot.appendChild(indicator);
+
+          // Render the correct answer helper below the slot
+          const helper = document.createElement('div');
+          helper.className = 'correction-badge absolute -bottom-5 left-1/2 transform -translate-x-1/2 bg-green-500 border-2 border-[#0f172a] px-2 py-0.5 rounded-lg text-white text-[10px] font-bold shadow-flat whitespace-nowrap z-30 select-none';
+          helper.innerText = `Correction : ${correctValue}`;
+          slot.appendChild(helper);
+        }
+      });
+
+      // Sound feedback
+      if (score === 6) {
+        playSuccessSound();
+        launchConfetti();
+      } else {
+        playErrorSound();
+      }
+
+      // Display feedback panel
+      const pct = Math.round((score / 6) * 100);
+      document.getElementById('score-badge').innerText = `${score} / 6`;
+      document.getElementById('progress-bar').style.width = `${pct}%`;
+      
+      const titleEl = document.getElementById('feedback-title');
+      const msgEl = document.getElementById('feedback-message');
+
+      if (score === 6) {
+        titleEl.innerText = "🏆 Félicitations ! Sans-faute !";
+        titleEl.className = "font-fredoka text-2xl mb-2 text-green-600 font-bold";
+        msgEl.innerText = "Tu as parfaitement identifié tous les changements d'état de la matière. Excellent travail !";
+      } else if (score >= 4) {
+        titleEl.innerText = "👍 Très bien joué !";
+        titleEl.className = "font-fredoka text-2xl mb-2 text-blue-600 font-bold";
+        msgEl.innerText = `Tu as obtenu ${score} bonnes réponses sur 6. Observe attentivement la correction pour retenir les changements restants.`;
+      } else {
+        titleEl.innerText = "💪 Tu y es presque !";
+        titleEl.className = "font-fredoka text-2xl mb-2 text-orange-500 font-bold";
+        msgEl.innerText = "Relis bien la leçon ou regarde le schéma corrigé, puis réessaie pour t'améliorer !";
+      }
+
+      validateBtn.classList.add('hidden');
+      resetBtn.classList.remove('hidden');
+      feedbackPanel.classList.remove('hidden');
+      feedbackPanel.scrollIntoView({ behavior: 'smooth' });
+
+      // Persist Result to parent portal
+      if (window.parent && window.parent.saveResult) {
+        window.parent.saveResult({
+          activity: 'sci_matiere_changements',
+          bookTitle: "Les changements d'état de la matière",
+          score: score,
+          total: 6,
+          pct: pct,
+          date: new Date().toLocaleDateString('fr-BE'),
+          time: new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })
+        });
+      }
+    });
+
+    // Reset logic
+    resetBtn.addEventListener('click', () => {
+      playClickSound();
+      init();
+    });
+
+    // Start exercise
+    init();
+  </script>
+
+</body>
+</html>
