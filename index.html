@@ -6904,6 +6904,69 @@ input[type=text].calc-input.incorrect {
     <iframe src="fiches/sci_lumiere_ombres.html" style="width:100%;height:calc(100vh - 120px);border:none;border-radius:12px;overflow-y:auto;" allowfullscreen scrolling="yes"></iframe>
   </div>
 
+  <!-- SCREEN: Sciences - La matière (Menu) -->
+  <div id="screen-sci-matiere" class="screen">
+    <button class="back-btn" onclick="state.role==='teacher'?showScreen('screen-teacher-sciences'):showScreen('screen-sciences');renderSciencesScreen();">← Retour</button>
+    <div class="page-title">🧊 La matière</div>
+    <div id="sci-matiere-menu"></div>
+  </div>
+
+  <!-- SCREEN: Sciences - La matière - États et propriétés -->
+  <div id="screen-sci-matiere-etats" class="screen">
+    <button class="back-btn" onclick="showScreen('screen-sci-matiere');renderSciMatiereMenu();">← Retour</button>
+    <div class="page-title">🧊 États et propriétés de la matière</div>
+    <iframe src="fiches/sci_matiere_etats.html" style="width:100%;height:calc(100vh - 120px);border:none;border-radius:12px;overflow-y:auto;" allowfullscreen scrolling="yes"></iframe>
+  </div>
+
+  <!-- SCREEN: Sciences - La matière - Changements d'état -->
+  <div id="screen-sci-matiere-changements" class="screen">
+    <button class="back-btn" onclick="showScreen('screen-sci-matiere');renderSciMatiereMenu();">← Retour</button>
+    <div class="page-title">🌡️ Les changements d'état</div>
+    <iframe src="fiches/sci_matiere_changements.html" style="width:100%;height:calc(100vh - 120px);border:none;border-radius:12px;overflow-y:auto;" allowfullscreen scrolling="yes"></iframe>
+  </div>
+
+  <!-- SCREEN: Sciences - Les mélanges -->
+  <div id="screen-sci-melanges" class="screen">
+    <button class="back-btn" onclick="state.role==='teacher'?showScreen('screen-teacher-sciences'):showScreen('screen-sciences');renderSciencesScreen();">← Retour</button>
+    <div class="page-title">🧪 Les mélanges</div>
+    <iframe src="fiches/sci_melanges_qcm.html" style="width:100%;height:calc(100vh - 120px);border:none;border-radius:12px;overflow-y:auto;" allowfullscreen scrolling="yes"></iframe>
+  </div>
+
+  <!-- SCREEN: Sciences - Les réseaux trophiques -->
+  <div id="screen-sci-reseaux-trophiques" class="screen">
+    <button class="back-btn" onclick="state.role==='teacher'?showScreen('screen-teacher-sciences'):showScreen('screen-sciences');renderSciencesScreen();">← Retour</button>
+    <div class="page-title">🕸️ Les réseaux trophiques</div>
+    <iframe src="fiches/sci_reseaux_trophiques.html" style="width:100%;height:calc(100vh - 120px);border:none;border-radius:12px;overflow-y:auto;" allowfullscreen scrolling="yes"></iframe>
+  </div>
+
+  <!-- SCREEN: Sciences - Le cycle de l'eau (Menu) -->
+  <div id="screen-sci-cycle-eau" class="screen">
+    <button class="back-btn" onclick="state.role==='teacher'?showScreen('screen-teacher-sciences'):showScreen('screen-sciences');renderSciencesScreen();">← Retour</button>
+    <div class="page-title">💧 Le cycle de l'eau</div>
+    <div id="sci-cycle-eau-menu"></div>
+  </div>
+
+  <!-- SCREEN: Sciences - Le cycle de l'eau (QCM) -->
+  <div id="screen-sci-cycle-eau-qcm" class="screen">
+    <button class="back-btn" onclick="showScreen('screen-sci-cycle-eau');renderSciCycleEauMenu();">← Retour</button>
+    <div class="page-title">💧 Le cycle de l'eau (QCM)</div>
+    <iframe src="fiches/cycle-eau.html" style="width:100%;height:calc(100vh - 120px);border:none;border-radius:12px;overflow-y:auto;" allowfullscreen scrolling="yes"></iframe>
+  </div>
+
+  <!-- SCREEN: Sciences - Le cycle de l'eau (Schéma) -->
+  <div id="screen-sci-cycle-eau-schema" class="screen">
+    <button class="back-btn" onclick="showScreen('screen-sci-cycle-eau');renderSciCycleEauMenu();">← Retour</button>
+    <div class="page-title">🗺️ Le cycle de l'eau (Schéma)</div>
+    <iframe src="fiches/sci_cycle_eau_schema.html" style="width:100%;height:calc(100vh - 120px);border:none;border-radius:12px;overflow-y:auto;" allowfullscreen scrolling="yes"></iframe>
+  </div>
+
+  <!-- SCREEN: Sciences - Les énergies -->
+  <div id="screen-sci-energie" class="screen">
+    <button class="back-btn" onclick="state.role==='teacher'?showScreen('screen-teacher-sciences'):showScreen('screen-sciences');renderSciencesScreen();">← Retour</button>
+    <div class="page-title">🔌 Les énergies</div>
+    <iframe src="fiches/sci_energie_tri.html" style="width:100%;height:calc(100vh - 120px);border:none;border-radius:12px;overflow-y:auto;" allowfullscreen scrolling="yes"></iframe>
+  </div>
+
   <!-- SCREEN: Sciences - Le système solaire -->
   <div id="screen-sci-systeme-solaire" class="screen">
     <button class="back-btn" onclick="showScreen('screen-sciences');renderSciencesScreen();">← Retour</button>
@@ -8520,7 +8583,32 @@ async function syncFromFirebase(){
     // Sync activités verrouillées
     const locked = await window.FB_loadLockedActivities();
     if(locked && Array.isArray(locked)){
-      localStorage.setItem('lq_locked_activities', JSON.stringify(locked));
+      // Migration : force-lock new activities by default on teacher login so students can't access them immediately
+      if (state.role === 'teacher' && !localStorage.getItem('lq_migrated_new_locked_v3')) {
+        const newLockIds = [
+          'sci_plantes_fleur', 'sci_plantes_germination',
+          'sci_matiere', 'sci_matiere_etats', 'sci_matiere_changements',
+          'sci_melanges', 'sci_melanges_qcm',
+          'sci_reseaux_trophiques',
+          'sci_cycle_eau_cat', 'fiche_cycle_eau', 'sci_cycle_eau_schema',
+          'sci_energie', 'sci_energie_tri',
+          'sci_electricite_labo', 'sci_lumiere_ombres', 'sci_engrenages',
+          'lecture_substituts', 'num_nombres_mixtes', 'geometrie_angles_manquants',
+          'num_diviseurs_premiers', 'num_decimaux_arrondir', 'td_donnees_circulaires',
+          'td_logique_tri', 'angles_reconnaitre', 'angles_estimation', 'angles_mesurer',
+          'grandeur_durees_situations', 'solide_projections_cubes', 'ortho_adjectifs_couleur',
+          'ortho_pluriels', 'homo_complexes', 'conj_passe_simple', 'conj_subj_imp',
+          'conj_cond_pqpf', 'gram_phrase_simple_complexe', 'gram_attribut_cdn'
+        ];
+        const mergedSet = new Set([...locked, ...newLockIds]);
+        const mergedArray = Array.from(mergedSet);
+        localStorage.setItem('lq_locked_activities', JSON.stringify(mergedArray));
+        await window.FB_saveLockedActivities(mergedArray);
+        localStorage.setItem('lq_migrated_new_locked_v3', 'true');
+        console.log('🛡️ Les nouvelles activités ont été verrouillées par défaut dans Firebase.');
+      } else {
+        localStorage.setItem('lq_locked_activities', JSON.stringify(locked));
+      }
     } else {
       // Pas encore dans Firebase → on pousse les valeurs locales
       const localLocked = getLockedActivities();
