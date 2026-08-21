@@ -232,4 +232,9 @@ Les modifications ont été répercutées de manière cohérente dans [index.htm
 ### 🔄 Synchronisation multi-fichiers
 * **Automatisation** : Création d'un script de synchronisation Python ([`sync_index_files.py`](file:///Users/jeremy/antigravity/LCML/scratch/sync_index_files.py)) pour propager automatiquement les changements de l'index principal à `fiches/index.html` et `public/fiches/index.html` tout en ajustant automatiquement les chemins relatifs d'iframes et de ressources (`assets/` -> `../assets/` et `fiches/` -> ``).
 
+### ↩️ Problème résolu : Doublon des boutons retour
+* **Cause** : Certains exercices possèdent un bouton "← Retour" interne à la fiche (pour une utilisation autonome), qui s'affiche en dessous du bouton "← Retour" général de la plateforme LCML lorsque l'exercice est chargé dans un `<iframe>`.
+* **Correction** : Ajout d'un écouteur d'événement global de phase de capture `load` sur le document dans `index.html` (synchronisé dans tous les fichiers index). Dès qu'un `<iframe>` est chargé, l'application recherche et masque automatiquement tout bouton interne de retour (`← Retour`), tout en préservant le bouton final d'action de fin de partie (`Retour au menu`). Cette correction est universelle et couvre instantanément l'intégralité des 12 exercices récents concernés.
+
+
 
