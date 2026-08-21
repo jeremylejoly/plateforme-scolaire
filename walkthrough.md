@@ -212,3 +212,24 @@ Les modifications ont été répercutées de manière cohérente dans [index.htm
   * Enregistrement des libellés dans `getActivityLabel`.
   * Ajout dans le système de verrous d'activités (`getLockedActivities` et `ACTIVITY_PARENTS`) pour permettre le masquage individuel par le professeur.
 
+---
+
+## 10. Correction des Écrans de Sciences & Migration de Verrouillage Auto
+
+### 🎯 Problème résolu : Écrans vides en Sciences
+* **Cause** : Les conteneurs HTML (`<div class="screen">` avec leurs `<iframe>` respectifs) pour les nouveaux modules de sciences n'avaient pas été déclarés dans le fichier principal `index.html`.
+* **Correction** : Ajout des conteneurs d'écrans pour les modules suivants :
+  * **La matière** (`screen-sci-matiere` pour le menu, `screen-sci-matiere-etats` et `screen-sci-matiere-changements` pour les exercices).
+  * **Les mélanges** (`screen-sci-melanges` chargeant `sci_melanges_qcm.html`).
+  * **Les réseaux trophiques** (`screen-sci-reseaux-trophiques` chargeant `sci_reseaux_trophiques.html`).
+  * **Le cycle de l'eau** (`screen-sci-cycle-eau` pour le menu, `screen-sci-cycle-eau-qcm` et `screen-sci-cycle-eau-schema` pour les exercices).
+  * **Les énergies** (`screen-sci-energie` chargeant `sci_energie_tri.html`).
+
+### 🛡️ Problème résolu : Accès non-autorisé des élèves aux nouveaux exercices
+* **Cause** : Lors de la connexion, le profil Enseignant synchronise sa configuration avec Firebase. Comme la base de données Firebase ne contenait pas encore les nouveaux identifiants d'exercices dans son tableau `locked_activities`, la synchronisation écrasait le stockage local et déclarait ces activités comme **déverrouillées**, les rendant immédiatement accessibles aux élèves.
+* **Correction** : Implémentation d'une fonction de migration automatique exécutée lors du chargement de l'Espace Enseignant (`lq_migrated_new_locked_v3`). Si de nouveaux exercices par défaut sont détectés comme manquants dans la liste Firebase, ils sont automatiquement fusionnés et enregistrés comme verrouillés dans la base de données en temps réel. Les élèves reçoivent instantanément la mise à jour et ne peuvent plus y accéder.
+
+### 🔄 Synchronisation multi-fichiers
+* **Automatisation** : Création d'un script de synchronisation Python ([`sync_index_files.py`](file:///Users/jeremy/antigravity/LCML/scratch/sync_index_files.py)) pour propager automatiquement les changements de l'index principal à `fiches/index.html` et `public/fiches/index.html` tout en ajustant automatiquement les chemins relatifs d'iframes et de ressources (`assets/` -> `../assets/` et `fiches/` -> ``).
+
+
