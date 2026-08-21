@@ -27167,6 +27167,33 @@ document.addEventListener('click', function(e){
   if(overlay && overlay.style.display === 'flex' && e.target === overlay) closeEmojiPicker();
 });
 
+// Centralized iframe back button hider to prevent double back buttons on embedded exercises
+document.addEventListener('load', function(e) {
+  if (e.target && e.target.tagName === 'IFRAME') {
+    try {
+      const iframe = e.target;
+      const doc = iframe.contentDocument || iframe.contentWindow.document;
+      if (doc) {
+        const hideElements = () => {
+          const buttons = doc.querySelectorAll('button, a');
+          buttons.forEach(btn => {
+            const text = (btn.innerText || btn.textContent || "").trim();
+            const isBack = /^(←|◀|⬅|↩️)?\s*retour\s*$/i.test(text) || (text.toLowerCase().includes('retour') && !text.toLowerCase().includes('menu') && !text.toLowerCase().includes('continuer'));
+            if (isBack) {
+              btn.style.setProperty('display', 'none', 'important');
+            }
+          });
+        };
+        hideElements();
+        setTimeout(hideElements, 100);
+        setTimeout(hideElements, 500);
+      }
+    } catch (err) {
+      console.warn("Could not inspect iframe for back buttons:", err);
+    }
+  }
+}, true);
+
 // Compatibilité avec l'ancien code avatar (fonctions vides pour ne pas planter)
 function showAvatarCreator(){ showEmojiPicker(); }
 function hideAvatarCreator(){ closeEmojiPicker(); }
