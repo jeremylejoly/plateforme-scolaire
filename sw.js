@@ -133,6 +133,8 @@ const CORE_ASSETS = [
   'fiches/sci_lumiere_ombres.html',
   'sci_mecanique_engrenages.html',
   'fiches/sci_mecanique_engrenages.html',
+  'sci_mecanique_leviers.html',
+  'fiches/sci_mecanique_leviers.html',
   'assets/logos/sub_chasseur_intrus.png',
   'fabrique-mots.html',
   'fiches/fabrique-mots.html',
