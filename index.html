@@ -7809,14 +7809,21 @@ const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyx3QR3lM62oOmknDAJg
 
 function getClassStudents(cls) {
   const saved = localStorage.getItem('lq_students_'+cls);
-  if(saved) return JSON.parse(saved);
+  if(saved) {
+    try {
+      const list = JSON.parse(saved);
+      if(Array.isArray(list)) {
+        return list.filter(s => s && s.name && s.name !== 'Alexandre' && s.name !== 'Lovianna');
+      }
+    } catch(e) {}
+  }
   if(cls==='lejoly') return [
     {name:"Nomeniavo",code:"3039"},{name:"Ethan",code:"3036"},
     {name:"Noah",code:"2702"},{name:"Timothé",code:"2666"},
     {name:"Morane",code:"2682"},{name:"Théo",code:"2812"},
     {name:"Aaron",code:"2888"},{name:"Loan",code:"2710"},
-    {name:"Mathis",code:"2711"},{name:"Lovianna",code:"3023"},
-    {name:"Alicia",code:"2689"},{name:"Alexandre",code:"2841"},
+    {name:"Mathis",code:"2711"},
+    {name:"Alicia",code:"2689"},
     {name:"Viktoriia",code:"2910"},{name:"Thibaut",code:"2701"},
     {name:"Tessa",code:"2695"},{name:"Mila",code:"2663"},
     {name:"Sarah",code:"2683"},{name:"Malou",code:"2705"},
@@ -7962,8 +7969,8 @@ function saveBooks(b){
 
 function loadResults(cls){
   let all = JSON.parse(localStorage.getItem('lq_results')||'[]');
-  // Nettoyage automatique des anomalies (résultats sans élève valide)
-  const valid = all.filter(r => r && r.student && r.student !== 'undefined');
+  // Nettoyage automatique des anomalies (résultats sans élève valide ou élèves supprimés)
+  const valid = all.filter(r => r && r.student && r.student !== 'undefined' && r.student !== 'Alexandre' && r.student !== 'Lovianna');
   if (valid.length !== all.length) {
     localStorage.setItem('lq_results', JSON.stringify(valid));
     all = valid;
@@ -8136,7 +8143,99 @@ function showScreen(id){
   }
 }
 
+function purgeDeletedStudents() {
+  const deletedNames = ['Alexandre', 'Lovianna'];
+  // 1. Purge locale élèves
+  const saved = localStorage.getItem('lq_students_lejoly');
+  if (saved) {
+    try {
+      const parsed = JSON.parse(saved);
+      if (Array.isArray(parsed)) {
+        const filtered = parsed.filter(s => s && s.name && !deletedNames.includes(s.name));
+        if (filtered.length !== parsed.length) {
+          localStorage.setItem('lq_students_lejoly', JSON.stringify(filtered));
+        }
+      }
+    } catch(e) {}
+  }
+  // 2. Purge locale résultats
+  const resSaved = localStorage.getItem('lq_results');
+  if (resSaved) {
+    try {
+      const results = JSON.parse(resSaved);
+      if (Array.isArray(results)) {
+        const filteredResults = results.filter(r => r && r.student && !deletedNames.includes(r.student));
+        if (filteredResults.length !== results.length) {
+          localStorage.setItem('lq_results', JSON.stringify(filteredResults));
+        }
+      }
+    } catch(e) {}
+  }
+  // 3. Purge plans individuels et conjugaisons
+  deletedNames.forEach(name => {
+    localStorage.removeItem('lq_plan_travail_individual_' + name);
+    localStorage.removeItem('lq_conj_lejoly_' + name);
+  });
+  const indPlanSaved = localStorage.getItem('lq_plan_travail_individual');
+  if (indPlanSaved) {
+    try {
+      const indPlan = JSON.parse(indPlanSaved);
+      let changed = false;
+      deletedNames.forEach(name => {
+        if (indPlan && indPlan[name]) {
+          delete indPlan[name];
+          changed = true;
+        }
+      });
+      if (changed) {
+        localStorage.setItem('lq_plan_travail_individual', JSON.stringify(indPlan));
+      }
+    } catch(e) {}
+  }
+  // 4. Purge Firebase
+  function purgeFirebase() {
+    if (!window.FB_ready || !window.FB_DB) {
+      setTimeout(purgeFirebase, 1500);
+      return;
+    }
+    if (window.FB_loadStudents && window.FB_saveStudents) {
+      window.FB_loadStudents('lejoly').then(fbStudents => {
+        if (fbStudents && Array.isArray(fbStudents)) {
+          const filtered = fbStudents.filter(s => s && s.name && !deletedNames.includes(s.name));
+          if (filtered.length !== fbStudents.length) {
+            window.FB_saveStudents('lejoly', filtered);
+            console.log('✅ Élèves supprimés purgés de Firebase (classes/lejoly/students)');
+          }
+        }
+      }).catch(e => console.warn('Erreur purge Firebase students:', e));
+    }
+    try {
+      const dbRef = window.FB_ref(window.FB_DB, 'results');
+      window.FB_get(dbRef).then(snap => {
+        if (!snap.exists()) return;
+        snap.forEach(child => {
+          const r = child.val();
+          if (r && (deletedNames.includes(r.student) || deletedNames.includes(r.name))) {
+            const childRef = window.FB_ref(window.FB_DB, 'results/' + child.key);
+            window.FB_remove(childRef).catch(e => console.warn(e));
+          }
+        });
+      }).catch(e => console.warn(e));
+    } catch(e) {}
+    deletedNames.forEach(name => {
+      const cleanName = name.replace(/\s+/g, '_');
+      try {
+        window.FB_remove(window.FB_ref(window.FB_DB, 'student_results/lejoly/' + cleanName)).catch(e => {});
+        window.FB_remove(window.FB_ref(window.FB_DB, 'plan_progress/lejoly/' + name)).catch(e => {});
+        window.FB_remove(window.FB_ref(window.FB_DB, 'presence/lejoly/' + name)).catch(e => {});
+      } catch(e) {}
+    });
+  }
+  purgeFirebase();
+}
+
 function init(){
+  purgeDeletedStudents();
   renderBooks();
   initFiches();
 }
@@ -8181,6 +8280,7 @@ function renderNamesForClass(cls){
   if(window.FB_loadStudents){
     window.FB_loadStudents(cls).then(function(fbStudents){
       if(fbStudents && Array.isArray(fbStudents) && fbStudents.length > 0){
+        fbStudents = fbStudents.filter(s => s && s.name && s.name !== 'Alexandre' && s.name !== 'Lovianna');
         localStorage.setItem('lq_students_'+cls, JSON.stringify(fbStudents));
         displayStudents(fbStudents);
       } else {
@@ -8342,9 +8442,13 @@ async function syncStudentFromFirebase(){
   if(!window.FB_ready){ setTimeout(syncStudentFromFirebase, 1000); return; }
   try {
     initRealtimeStudentSync();
-    window.FB_loadStudents('lejoly').then(students => {
+    window.FB_loadStudents('lejoly').then(async students => {
       if(students && Array.isArray(students) && students.length > 0){
-        localStorage.setItem('lq_students_lejoly', JSON.stringify(students));
+        const filtered = students.filter(s => s && s.name && s.name !== 'Alexandre' && s.name !== 'Lovianna');
+        if (filtered.length !== students.length && window.FB_saveStudents) {
+          await window.FB_saveStudents('lejoly', filtered);
+        }
+        localStorage.setItem('lq_students_lejoly', JSON.stringify(filtered));
       }
     }).catch(e => console.warn('Erreur chargement élèves en tâche de fond:', e));
     renderAppsManage();
@@ -8567,7 +8671,14 @@ async function syncFromFirebase(){
   if(!window.FB_ready) return;
   try {
     // Sync élèves
-    const fbStudents = await window.FB_loadStudents('lejoly');
+    let fbStudents = await window.FB_loadStudents('lejoly');
+    if(fbStudents && Array.isArray(fbStudents)){
+      const filtered = fbStudents.filter(s => s && s.name && s.name !== 'Alexandre' && s.name !== 'Lovianna');
+      if (filtered.length !== fbStudents.length) {
+        fbStudents = filtered;
+        await window.FB_saveStudents('lejoly', fbStudents);
+      }
+    }
     const localStudents = getClassStudents('lejoly');
     if(fbStudents && Array.isArray(fbStudents) && fbStudents.length >= localStudents.length){
       // Firebase a autant ou plus d'élèves → on prend Firebase
@@ -8579,10 +8690,11 @@ async function syncFromFirebase(){
     // Sync résultats
     const results = await window.FB_loadResults(null);
     if(results && results.length > 0){
-      const local = JSON.parse(localStorage.getItem('lq_results')||'[]');
+      const local = JSON.parse(localStorage.getItem('lq_results')||'[]').filter(r => r && r.student && r.student !== 'Alexandre' && r.student !== 'Lovianna');
       const localKeys = new Set(local.map(r=>r.student+'|'+r.date+'|'+r.activity));
       const merged = [...local];
       results.forEach(r=>{
+        if (!r || !r.student || r.student === 'Alexandre' || r.student === 'Lovianna') return;
         const k = r.student+'|'+r.date+'|'+r.activity;
         if(!localKeys.has(k)){ merged.push(r); localKeys.add(k); }
       });
