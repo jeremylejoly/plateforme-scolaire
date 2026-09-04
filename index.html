@@ -3216,17 +3216,29 @@ input[type=text].calc-input.incorrect {
     } catch(e) { console.warn('Firebase deleteResults error:', e); }
   };
 
-  // ===== SYNC ACTIVITÉS VERROUILLÉES =====
-  window.FB_saveLockedActivities = async function(arr) {
+  // ===== SYNC ACTIVITÉS VERROUILLÉES (PAR CLASSE) =====
+  window.FB_saveLockedActivities = async function(cls, arr) {
+    if (Array.isArray(cls)) {
+      arr = cls;
+      cls = (typeof teacherCls !== 'undefined' ? teacherCls : 'lejoly');
+    }
+    const targetCls = cls || 'lejoly';
     try {
-      await set(ref(db, 'settings/locked_activities'), arr);
+      await set(ref(db, 'settings/locked_activities/' + targetCls), arr);
     } catch(e) { console.warn('Firebase saveLockedActivities error:', e); }
   };
 
-  window.FB_loadLockedActivities = async function() {
+  window.FB_loadLockedActivities = async function(cls) {
     try {
-      const snap = await get(ref(db, 'settings/locked_activities'));
-      return snap.exists() ? snap.val() : null;
+      const classKey = cls || (typeof state !== 'undefined' && state.studentCls) || (typeof teacherCls !== 'undefined' ? teacherCls : 'lejoly');
+      const snap = await get(ref(db, 'settings/locked_activities/' + classKey));
+      if (snap.exists() && Array.isArray(snap.val())) return snap.val();
+      // Fallback pour la racine globale legacy
+      if (classKey === 'lejoly') {
+        const rootSnap = await get(ref(db, 'settings/locked_activities'));
+        if (rootSnap.exists() && Array.isArray(rootSnap.val())) return rootSnap.val();
+      }
+      return null;
     } catch(e) { console.warn('Firebase loadLockedActivities error:', e); return null; }
   };
 
@@ -3763,11 +3775,11 @@ input[type=text].calc-input.incorrect {
     <div class="absolute top-6 left-6 text-yellow-500 text-lg animate-pulse">★</div>
 
     <span class="text-xl md:text-2xl text-indigo-500 block rotate-[-3deg] mb-3 font-sketch" style="font-family: 'Architects Daughter', cursive;">
-      Bienvenue dans ta classe !
+      Bienvenue dans votre classe !
     </span>
 
-    <h1 class="font-display font-black text-4xl md:text-5xl text-neutral-800 tracking-tight leading-none mb-1 text-center select-none" style="font-family: 'Fredoka', sans-serif;">
-      La classe de <span class="text-neutral-900 block mt-2 text-5xl md:text-6xl font-black italic relative inline-block">Mr Lejoly<span class="absolute left-0 bottom-1 w-full h-3 bg-amber-200/60 -z-10 rotate-[-1deg]"></span></span>
+    <h1 class="font-display font-black text-3xl sm:text-4xl md:text-5xl text-neutral-800 tracking-tight leading-tight mb-1 text-center select-none" style="font-family: 'Fredoka', sans-serif;">
+      Les classes de <span class="text-neutral-900 block mt-2 text-3xl sm:text-4xl md:text-5xl font-black italic relative inline-block">Mr Lejoly &amp; Mr Verryken<span class="absolute left-0 bottom-1 w-full h-3 bg-amber-200/60 -z-10 rotate-[-1deg]"></span></span>
     </h1>
 
     <div class="font-sans font-medium text-neutral-500 text-sm md:text-base space-y-0.5 mt-4 mb-10" style="font-family: 'Inter', sans-serif;">
@@ -3831,17 +3843,31 @@ input[type=text].calc-input.incorrect {
 <div class="container">
 
   <div id="screen-welcome" class="screen active">
-    <div class="class-tabs" style="display:none;">
-      <button class="class-tab" id="tab-lejoly" onclick="selectClassTab('lejoly')">
-        <span class="class-tab-icon">👨‍🏫</span>
-        <span class="class-tab-name">Classe de Mr Lejoly</span>
-      </button>
-
+    <!-- Sélecteur de classe -->
+    <div id="class-select-section" style="margin-bottom:1.5rem;">
+      <div class="card" style="text-align:center;padding:1.5rem;">
+        <div class="card-title" style="font-family:'KGHaventSlept',cursive;font-size:22px;font-weight:normal;justify-content:center;margin-bottom:1.25rem;">🏫 Choisis ta classe</div>
+        <div class="class-tabs" style="display:grid;grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));gap:16px;">
+          <button class="class-tab" id="tab-lejoly" onclick="selectClassTab('lejoly')">
+            <span class="class-tab-icon">👨‍🏫</span>
+            <span class="class-tab-name">Classe de Mr Lejoly</span>
+          </button>
+          <button class="class-tab" id="tab-verryken" onclick="selectClassTab('verryken')">
+            <span class="class-tab-icon">👨‍🏫</span>
+            <span class="class-tab-name">Classe de Mr Verryken</span>
+          </button>
+        </div>
+      </div>
     </div>
 
     <div id="names-section" style="display:none">
       <div class="card">
-        <div class="card-title" style="font-family:'KGHaventSlept',cursive;font-size:20px;font-weight:normal;">👤 Qui es-tu ?</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem;flex-wrap:wrap;gap:8px;">
+          <div class="card-title" id="names-section-title" style="font-family:'KGHaventSlept',cursive;font-size:20px;font-weight:normal;margin-bottom:0;">👤 Qui es-tu ?</div>
+          <button class="btn btn-sm" onclick="backToClassSelect()" style="font-size:12px;padding:6px 12px;display:inline-flex;align-items:center;gap:6px;border-radius:20px;background:#f3f4f6;border:1.5px solid #d1d5db;cursor:pointer;font-weight:700;color:var(--text);transition:all 0.2s;">
+            <span>⬅ Changer de classe</span>
+          </button>
+        </div>
         <div id="names-grid" class="names-grid"></div>
       </div>
     </div>
@@ -7748,10 +7774,19 @@ input[type=text].calc-input.incorrect {
       <svg class="w-5 h-5 text-neutral-800 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/></svg>
       <span>Espace enseignant</span>
     </h3>
-    <p>Entrez votre mot de passe pour accéder à l'espace Mr Lejoly.</p>
+    <p style="margin-bottom:0.75rem;font-weight:600;">Choisis ta classe :</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:1rem;">
+      <button type="button" class="btn teacher-select-btn" id="teacher-btn-lejoly" onclick="selectTeacherModalClass('lejoly')" style="padding:10px 8px;border:2px solid var(--purple);background:var(--purple-light);color:var(--purple);font-weight:700;border-radius:12px;cursor:pointer;font-family:'Fredoka',sans-serif;font-size:14px;display:flex;align-items:center;justify-content:center;gap:6px;">
+        <span>👨‍🏫</span> <span>Mr Lejoly</span>
+      </button>
+      <button type="button" class="btn teacher-select-btn" id="teacher-btn-verryken" onclick="selectTeacherModalClass('verryken')" style="padding:10px 8px;border:2px solid #e5e7eb;background:#f9fafb;color:var(--text);font-weight:700;border-radius:12px;cursor:pointer;font-family:'Fredoka',sans-serif;font-size:14px;display:flex;align-items:center;justify-content:center;gap:6px;">
+        <span>👨‍🏫</span> <span>Mr Verryken</span>
+      </button>
+    </div>
+    <p id="teacher-modal-prompt" style="font-size:13px;color:var(--muted);margin-bottom:0.5rem;">Entrez votre mot de passe pour accéder à l'espace Mr Lejoly :</p>
     <input type="password" id="pw-input" placeholder="Mot de passe" onkeydown="if(event.key==='Enter')checkPw()"/>
     <div class="err-msg" id="pw-error">Mot de passe incorrect.</div>
-    <div style="display:flex;gap:8px;">
+    <div style="display:flex;gap:8px;margin-top:1rem;">
       <button class="btn btn-primary" style="flex:1" onclick="checkPw()">Accéder</button>
       <button class="btn" onclick="closeModal('teacher-modal')">Annuler</button>
     </div>
@@ -7803,7 +7838,8 @@ input[type=text].calc-input.incorrect {
 
 <script>
 const CLASSES = {
-  lejoly: { name:"Mr Lejoly", pwKey:"pw_lejoly", defaultPw:"JL1985" }
+  lejoly: { name:"Mr Lejoly", pwKey:"pw_lejoly", defaultPw:"JL1985" },
+  verryken: { name:"Mr Verryken", pwKey:"pw_verryken", defaultPw:"PV1971" }
 };
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyx3QR3lM62oOmknDAJgEO5oPAnURXUrtlSzprXKJCoDSveKDKCzuvf7NEEuwUJc63n/exec";
 
@@ -7830,6 +7866,7 @@ function getClassStudents(cls) {
     {name:"Dimitri",code:"2766"},{name:"Colin",code:"2694"},
     {name:"Naël",code:"2896"}
   ];
+  if(cls==='verryken') return [];
   return [];
 }
 function saveClassStudents(cls,s){
@@ -7843,7 +7880,11 @@ function saveClassStudents(cls,s){
 }
 
 function getAllStudents() {
-  return getClassStudents('lejoly').map(s=>({...s,cls:'lejoly'}));
+  const all = [];
+  Object.keys(CLASSES).forEach(c => {
+    all.push(...getClassStudents(c).map(s=>({...s,cls:c})));
+  });
+  return all;
 }
 
 function loadBooks() {
@@ -8242,12 +8283,30 @@ function init(){
 
 function selectClassTab(cls){
   document.querySelectorAll('.class-tab').forEach(t=>t.classList.remove('active'));
-  document.getElementById('tab-'+cls).classList.add('active');
+  const tab = document.getElementById('tab-'+cls);
+  if(tab) tab.classList.add('active');
   state.student=''; state.studentCls=cls;
   pinInput='';
   document.getElementById('pin-section').style.display='none';
+  const titleEl = document.getElementById('names-section-title');
+  if(titleEl && CLASSES[cls]) {
+    titleEl.textContent = '👤 Qui es-tu ? (' + CLASSES[cls].name + ')';
+  }
   renderNamesForClass(cls);
-  document.getElementById('names-section').style.display='block';
+  const namesSec = document.getElementById('names-section');
+  if(namesSec) {
+    namesSec.style.display='block';
+    namesSec.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+}
+
+function backToClassSelect(){
+  state.student=''; state.studentCls='';
+  document.querySelectorAll('.class-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('pin-section').style.display='none';
+  document.getElementById('names-section').style.display='none';
+  const classSec = document.getElementById('class-select-section');
+  if(classSec) classSec.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 function renderNamesForClass(cls){
@@ -8619,7 +8678,27 @@ function showTeacherLogin(){
   document.getElementById('teacher-modal').classList.add('open');
   document.getElementById('pw-input').value='';
   document.getElementById('pw-error').style.display='none';
-  teacherCls='lejoly';
+  selectTeacherModalClass(teacherCls || 'lejoly');
+}
+
+function selectTeacherModalClass(cls){
+  teacherCls = cls;
+  document.querySelectorAll('.teacher-select-btn').forEach(b => {
+    b.style.borderColor = '#e5e7eb';
+    b.style.background = '#f9fafb';
+    b.style.color = 'var(--text)';
+  });
+  const activeBtn = document.getElementById('teacher-btn-' + cls);
+  if(activeBtn) {
+    activeBtn.style.borderColor = 'var(--purple)';
+    activeBtn.style.background = 'var(--purple-light)';
+    activeBtn.style.color = 'var(--purple)';
+  }
+  const promptEl = document.getElementById('teacher-modal-prompt');
+  if(promptEl && CLASSES[cls]) {
+    promptEl.textContent = `Entrez votre mot de passe pour accéder à l'espace ${CLASSES[cls].name} :`;
+  }
+  document.getElementById('pw-error').style.display='none';
 }
 
 function selectTeacherClass(cls,btn){
@@ -8632,9 +8711,9 @@ function selectTeacherClass(cls,btn){
 function closeModal(id){ document.getElementById(id).classList.remove('open'); }
 
 function checkPw(){
-  teacherCls='lejoly';
-  const pw=getTeacherPw(teacherCls);
-  if(document.getElementById('pw-input').value===pw){
+  if(!teacherCls) teacherCls = 'lejoly';
+  const pw = getTeacherPw(teacherCls);
+  if(document.getElementById('pw-input').value === pw){
     closeModal('teacher-modal');
     openTeacherPanel();
   } else {
@@ -8652,6 +8731,7 @@ function openSetPassword(){
 function openTeacherPanel(){
   state.role='teacher';
   localStorage.setItem('lq_teacher_session','1');
+  localStorage.setItem('lq_teacher_cls', teacherCls);
   document.getElementById('teacher-class-title').textContent='Classe de '+CLASSES[teacherCls].name;
   // Synchronisation Firebase au chargement
   syncFromFirebase().then(()=>{
@@ -8669,24 +8749,28 @@ function openTeacherPanel(){
 
 async function syncFromFirebase(){
   if(!window.FB_ready) return;
+  const currentClass = teacherCls || 'lejoly';
   try {
     // Sync élèves
-    let fbStudents = await window.FB_loadStudents('lejoly');
+    let fbStudents = await window.FB_loadStudents(currentClass);
     if(fbStudents && Array.isArray(fbStudents)){
       const filtered = fbStudents.filter(s => s && s.name && s.name !== 'Alexandre' && s.name !== 'Lovianna');
       if (filtered.length !== fbStudents.length) {
         fbStudents = filtered;
-        await window.FB_saveStudents('lejoly', fbStudents);
+        await window.FB_saveStudents(currentClass, fbStudents);
       }
     }
-    const localStudents = getClassStudents('lejoly');
-    if(fbStudents && Array.isArray(fbStudents) && fbStudents.length >= localStudents.length){
-      // Firebase a autant ou plus d'élèves → on prend Firebase
-      localStorage.setItem('lq_students_lejoly', JSON.stringify(fbStudents));
-    } else {
-      // Local a plus d'élèves → on pousse vers Firebase
-      await window.FB_saveStudents('lejoly', localStudents);
+    const localStudents = getClassStudents(currentClass);
+    if(fbStudents && Array.isArray(fbStudents)){
+      if (fbStudents.length >= localStudents.length || localStudents.length === 0) {
+        localStorage.setItem('lq_students_' + currentClass, JSON.stringify(fbStudents));
+      } else {
+        await window.FB_saveStudents(currentClass, localStudents);
+      }
+    } else if (localStudents.length > 0) {
+      await window.FB_saveStudents(currentClass, localStudents);
     }
+
     // Sync résultats
     const results = await window.FB_loadResults(null);
     if(results && results.length > 0){
@@ -8700,11 +8784,12 @@ async function syncFromFirebase(){
       });
       localStorage.setItem('lq_results', JSON.stringify(merged));
     }
-    // Sync activités verrouillées
-    const locked = await window.FB_loadLockedActivities();
+
+    // Sync activités verrouillées pour la classe courante
+    const locked = await window.FB_loadLockedActivities(currentClass);
     if(locked && Array.isArray(locked)){
       // Migration : force-lock new activities by default on teacher login so students can't access them immediately
-      if (state.role === 'teacher' && !localStorage.getItem('lq_migrated_new_locked_v3')) {
+      if (state.role === 'teacher' && !localStorage.getItem('lq_migrated_new_locked_v3_' + currentClass)) {
         const newLockIds = [
           'sci_plantes_fleur', 'sci_plantes_germination',
           'sci_matiere', 'sci_matiere_etats', 'sci_matiere_changements',
@@ -8722,17 +8807,19 @@ async function syncFromFirebase(){
         ];
         const mergedSet = new Set([...locked, ...newLockIds]);
         const mergedArray = Array.from(mergedSet);
-        localStorage.setItem('lq_locked_activities', JSON.stringify(mergedArray));
-        await window.FB_saveLockedActivities(mergedArray);
-        localStorage.setItem('lq_migrated_new_locked_v3', 'true');
-        console.log('🛡️ Les nouvelles activités ont été verrouillées par défaut dans Firebase.');
+        localStorage.setItem('lq_locked_activities_' + currentClass, JSON.stringify(mergedArray));
+        if (currentClass === 'lejoly') localStorage.setItem('lq_locked_activities', JSON.stringify(mergedArray));
+        await window.FB_saveLockedActivities(currentClass, mergedArray);
+        localStorage.setItem('lq_migrated_new_locked_v3_' + currentClass, 'true');
+        console.log(`🛡️ Les nouvelles activités ont été synchronisées par défaut pour ${currentClass}.`);
       } else {
-        localStorage.setItem('lq_locked_activities', JSON.stringify(locked));
+        localStorage.setItem('lq_locked_activities_' + currentClass, JSON.stringify(locked));
+        if (currentClass === 'lejoly') localStorage.setItem('lq_locked_activities', JSON.stringify(locked));
       }
     } else {
       // Pas encore dans Firebase → on pousse les valeurs locales
-      const localLocked = getLockedActivities();
-      await window.FB_saveLockedActivities(localLocked);
+      const localLocked = getLockedActivities(currentClass);
+      await window.FB_saveLockedActivities(currentClass, localLocked);
     }
     // Sync livres archivés
     const archived = await window.FB_loadArchivedBooks();
@@ -8743,7 +8830,7 @@ async function syncFromFirebase(){
     if(document.getElementById('prehistoire-menu')) renderPrehistoireMenu();
     if(document.getElementById('sci-circulatoire-menu')) renderSciCirculatoireMenu();
     if(document.getElementById('sci-systeme-solaire-menu')) renderSciSystemeSolaireMenu();
-    console.log('✅ Synchronisation Firebase terminée');
+    console.log(`✅ Synchronisation Firebase terminée pour ${currentClass}`);
     renderDashboard();
     renderStudentsManage();
     renderAppsManage();
@@ -9199,8 +9286,9 @@ function teacherGoToRecitsExpress(){
 
 // ===== GESTION =====
 function renderGestion(){
-  const results = loadResults('lejoly');
-  const students = getClassStudents('lejoly');
+  const cls = teacherCls || 'lejoly';
+  const results = loadResults(cls);
+  const students = getClassStudents(cls);
   const emojis=['😊','🌟','🎯','🚀','🦁','🐬','🦊','🐧','🌈','⚡'];
 
   // Summary metrics
@@ -9245,7 +9333,8 @@ function renderGestion(){
 }
 
 function showStudentDetail(studentName){
-  const results = loadResults('lejoly').filter(r=>r.student===studentName);
+  const cls = teacherCls || 'lejoly';
+  const results = loadResults(cls).filter(r=>r.student===studentName);
   const emojis=['😊','🌟','🎯','🚀','🦁','🐬','🦊','🐧','🌈','⚡'];
   const emoji = emojis[studentName.charCodeAt(0)%emojis.length];
 
@@ -9573,16 +9662,32 @@ function loadConjResults(cls, student){
 
 
 // ===== ACTIVITY LOCK SYSTEM =====
-function getLockedActivities(){
-  const s = localStorage.getItem('lq_locked_activities');
-  return s ? JSON.parse(s) : ['passe_compose','td_tableau','td_graphique','td_moyenne','td_la_moyenne_menu','td_moyenne_qcm','td_arbre_dichotomique','td_quelle_question','connecteurs','synonymes','antonymes','mes_ecrits','dial_armstrong','dial_conseil','dial_marche','qvgdm_prehistoire','conte_chatbotte','conte_breme','poeme_cancre','poeme_ecriture','poeme_dormeur','poeme_sorciere','jeu_memory','jeu_tetris','jeu_rushhour','jeu_robot','jeu_mots_croises','jeu_mots_caches','jeu_sudoku','dial_ecrans','dial_bio','dial_voiture','dial_animal','grandeur_masses','grandeur_capacites','grandeur_longueurs','grandeur_perimetre','grandeur_perimetre_calcul','grandeur_perimetre_problemes','grandeur_aire','grandeur_aire_composee','grandeur_volume','grandeur_durees','grandeur_durees_conversions','grandeur_durees_entre','grandeur_durees_heure_secondes','grandeur_durees_situations','grandeur_monnaie','grandeur_monnaie_deux_objets','grandeur_proportionnalite','grandeur_proportionnalite_exercice','grandeur_vitesse_horaire','grandeur_vitesse_horaire_qcm','grandeur_echelle','solide_points','solide_polygones','solide_triangles','solide_triangles_hauteurs','triangles_qcm','triangles_caracteristiques','solide_quadrilateres','solide_polyedres','solide_symetrie','solide_transformations_labo','num_decimaux','num_entiers_decimaux','num_fractions','num_fractions_simples','num_fractions_complexes','num_balance_fractions','num_fractions_colorie','num_fractions_operations','num_fraction_quantite','num_entiers_decimaux_abaque','num_entiers_decimaux_comparaison','num_pourcentages','num_tout','op_vocabulaire','op_vocabulaire_def','op_vocabulaire_calc','op_vocabulaire_prob','op_add_sous','op_add_sous_100','op_add_sous_1000','op_add_sous_10000','op_add_sous_100000','op_add_sous_1000000','op_add_sous_compte_est_bon','op_add_sous_flechettes_calcule','op_add_sous_flechettes_atteins','op_mult_div','op_mult_div_tables','op_4_operations','op_4_operations_melangees','op_4_operations_calculs','op_4_operations_lacunaires','op_tables','op_x10','op_x5','op_x9','op_x11','op_divisibilite','op_compensation','op_calcul_ecrit','op_ordre','trait_graphiques','trait_regle3','trait_problemes','hist_prehistoire','prehistoire_assoc','prehistoire_doc','hist_antiquite','qvgdm_antiquite','antiquite_assoc','antiquite_doc','hist_moyen_age','qvgdm_moyen_age','moyen_age_assoc','moyen_age_doc','hist_temps_modernes','hist_contemporaine','sci_respiratoire','sci_digestif','sci_circulatoire','sci_coeur','sci_trajet_sang','sci_circulatoire_qcm','sci_circulatoire_assoc','sci_resp_schema','sci_resp_texte','sci_resp_qcm','sci_resp_assoc','sci_dig_schema','sci_dig_texte','sci_dig_qcm','sci_dig_assoc','sci_squelette','sci_engrenages','sci_electricite','sci_systeme_solaire','geo_planisphere_interactif','geo_planispheres','geo_continents_qcm','geo_tour_monde','geo_oceans','geo_europe','geo_europe_climats','geo_europe_relief_fleuves','geo_belgique','geo_belgique_provinces','geo_belgique_hydro','geo_belgique_communes','geo_belgique_qcm','geo_paysages','geo_hydro','geo_cartes','gram_nom','gram_determinant','gram_adjectif','gram_verbe','gram_pronom','gram_adverbe','gram_complement_nom','gram_tri_mots','gram_sujet','gram_verbe_fonc','gram_predicat','gram_cdv_civ','gram_cc','gram_attribut','gram_pass_act','savoir_ecouter_1','savoir_ecouter_2','savoir_ecouter_3','savoir_ecouter_4','savoir_ecouter_5','savoir_ecouter_6','savoir_ecouter_7','savoir_ecouter_8','sci_resp_ordre','sci_dig_ordre','sci_circ_ordre','sci_circ_petite','sci_circ_grande','sci_circ_ensemble','vocabulaire_proverbes','vocabulaire_atelier_mots','vocabulaire_registres','vocabulaire_verbes_ternes','vocabulaire_chasseur_intrus','vocabulaire_fabrique_mots','sci_planetes_ordre','sci_planetes_infos','sci_planetes_qcm','num_diviseurs_premiers','gram_attribut_cdn','conj_cond_pqpf','conj_subj_imp','ortho_pluriels','homo_complexes','num_decimaux_arrondir','td_donnees_circulaires','td_logique_tri','solide_projections_cubes','vocabulaire_relations_lexicales','gram_mots_liaison','ortho_adjectifs_couleur','gram_phrase_simple_complexe','conj_passe_simple','lecture_substituts','num_nombres_mixtes','geometrie_angles_manquants','sci_matiere','sci_matiere_etats','sci_matiere_changements','sci_melanges','sci_melanges_qcm','sci_reseaux_trophiques','sci_cycle_eau_cat','fiche_cycle_eau','sci_cycle_eau_schema','sci_energie','sci_energie_tri','sci_electricite_labo','sci_lumiere_ombres','sci_mecanique_leviers'];
+function getCurrentClassId() {
+  if (typeof state !== 'undefined' && state.studentCls) return state.studentCls;
+  if (typeof teacherCls !== 'undefined' && teacherCls) return teacherCls;
+  return 'lejoly';
 }
-function saveLockedActivities(arr){
-  localStorage.setItem('lq_locked_activities', JSON.stringify(arr));
+
+function getDefaultLockedActivities() {
+  return ['passe_compose','td_tableau','td_graphique','td_moyenne','td_la_moyenne_menu','td_moyenne_qcm','td_arbre_dichotomique','td_quelle_question','connecteurs','synonymes','antonymes','mes_ecrits','dial_armstrong','dial_conseil','dial_marche','qvgdm_prehistoire','conte_chatbotte','conte_breme','poeme_cancre','poeme_ecriture','poeme_dormeur','poeme_sorciere','jeu_memory','jeu_tetris','jeu_rushhour','jeu_robot','jeu_mots_croises','jeu_mots_caches','jeu_sudoku','dial_ecrans','dial_bio','dial_voiture','dial_animal','grandeur_masses','grandeur_capacites','grandeur_longueurs','grandeur_perimetre','grandeur_perimetre_calcul','grandeur_perimetre_problemes','grandeur_aire','grandeur_aire_composee','grandeur_volume','grandeur_durees','grandeur_durees_conversions','grandeur_durees_entre','grandeur_durees_heure_secondes','grandeur_durees_situations','grandeur_monnaie','grandeur_monnaie_deux_objets','grandeur_proportionnalite','grandeur_proportionnalite_exercice','grandeur_vitesse_horaire','grandeur_vitesse_horaire_qcm','grandeur_echelle','solide_points','solide_polygones','solide_triangles','solide_triangles_hauteurs','triangles_qcm','triangles_caracteristiques','solide_quadrilateres','solide_polyedres','solide_symetrie','solide_transformations_labo','num_decimaux','num_entiers_decimaux','num_fractions','num_fractions_simples','num_fractions_complexes','num_balance_fractions','num_fractions_colorie','num_fractions_operations','num_fraction_quantite','num_entiers_decimaux_abaque','num_entiers_decimaux_comparaison','num_pourcentages','num_tout','op_vocabulaire','op_vocabulaire_def','op_vocabulaire_calc','op_vocabulaire_prob','op_add_sous','op_add_sous_100','op_add_sous_1000','op_add_sous_10000','op_add_sous_100000','op_add_sous_1000000','op_add_sous_compte_est_bon','op_add_sous_flechettes_calcule','op_add_sous_flechettes_atteins','op_mult_div','op_mult_div_tables','op_4_operations','op_4_operations_melangees','op_4_operations_calculs','op_4_operations_lacunaires','op_tables','op_x10','op_x5','op_x9','op_x11','op_divisibilite','op_compensation','op_calcul_ecrit','op_ordre','trait_graphiques','trait_regle3','trait_problemes','hist_prehistoire','prehistoire_assoc','prehistoire_doc','hist_antiquite','qvgdm_antiquite','antiquite_assoc','antiquite_doc','hist_moyen_age','qvgdm_moyen_age','moyen_age_assoc','moyen_age_doc','hist_temps_modernes','hist_contemporaine','sci_respiratoire','sci_digestif','sci_circulatoire','sci_coeur','sci_trajet_sang','sci_circulatoire_qcm','sci_circulatoire_assoc','sci_resp_schema','sci_resp_texte','sci_resp_qcm','sci_resp_assoc','sci_dig_schema','sci_dig_texte','sci_dig_qcm','sci_dig_assoc','sci_squelette','sci_engrenages','sci_electricite','sci_systeme_solaire','geo_planisphere_interactif','geo_planispheres','geo_continents_qcm','geo_tour_monde','geo_oceans','geo_europe','geo_europe_climats','geo_europe_relief_fleuves','geo_belgique','geo_belgique_provinces','geo_belgique_hydro','geo_belgique_communes','geo_belgique_qcm','geo_paysages','geo_hydro','geo_cartes','gram_nom','gram_determinant','gram_adjectif','gram_verbe','gram_pronom','gram_adverbe','gram_complement_nom','gram_tri_mots','gram_sujet','gram_verbe_fonc','gram_predicat','gram_cdv_civ','gram_cc','gram_attribut','gram_pass_act','savoir_ecouter_1','savoir_ecouter_2','savoir_ecouter_3','savoir_ecouter_4','savoir_ecouter_5','savoir_ecouter_6','savoir_ecouter_7','savoir_ecouter_8','sci_resp_ordre','sci_dig_ordre','sci_circ_ordre','sci_circ_petite','sci_circ_grande','sci_circ_ensemble','vocabulaire_proverbes','vocabulaire_atelier_mots','vocabulaire_registres','vocabulaire_verbes_ternes','vocabulaire_chasseur_intrus','vocabulaire_fabrique_mots','sci_planetes_ordre','sci_planetes_infos','sci_planetes_qcm','num_diviseurs_premiers','gram_attribut_cdn','conj_cond_pqpf','conj_subj_imp','ortho_pluriels','homo_complexes','num_decimaux_arrondir','td_donnees_circulaires','td_logique_tri','solide_projections_cubes','vocabulaire_relations_lexicales','gram_mots_liaison','ortho_adjectifs_couleur','gram_phrase_simple_complexe','conj_passe_simple','lecture_substituts','num_nombres_mixtes','geometrie_angles_manquants','sci_matiere','sci_matiere_etats','sci_matiere_changements','sci_melanges','sci_melanges_qcm','sci_reseaux_trophiques','sci_cycle_eau_cat','fiche_cycle_eau','sci_cycle_eau_schema','sci_energie','sci_energie_tri','sci_electricite_labo','sci_lumiere_ombres','sci_mecanique_leviers'];
+}
+
+function getLockedActivities(targetCls){
+  const cls = targetCls || getCurrentClassId();
+  const s = localStorage.getItem('lq_locked_activities_' + cls) || (cls === 'lejoly' ? localStorage.getItem('lq_locked_activities') : null);
+  return s ? JSON.parse(s) : getDefaultLockedActivities();
+}
+
+function saveLockedActivities(arr, targetCls){
+  const cls = targetCls || getCurrentClassId();
+  localStorage.setItem('lq_locked_activities_' + cls, JSON.stringify(arr));
+  if (cls === 'lejoly') {
+    localStorage.setItem('lq_locked_activities', JSON.stringify(arr));
+  }
   if(window.FB_saveLockedActivities){
-    window.FB_saveLockedActivities(arr);
+    window.FB_saveLockedActivities(cls, arr);
   } else {
-    setTimeout(()=>{ if(window.FB_saveLockedActivities) window.FB_saveLockedActivities(arr); }, 2000);
+    setTimeout(()=>{ if(window.FB_saveLockedActivities) window.FB_saveLockedActivities(cls, arr); }, 2000);
   }
 }
 const ACTIVITY_PARENTS = {
@@ -29243,19 +29348,23 @@ function renderStudentsManageNew(){
     <div class="card-title">👤 Élèves — ${CLASSES[teacherCls].name}</div>
     <div class="student-manage-grid">`;
   
-  students.forEach((s,i)=>{
-    html+=`<div class="student-manage-card">
-      <div class="student-avatar">${s.name[0]}</div>
-      <div class="student-manage-info">
-        <div class="student-name">${s.name}</div>
-        <div class="student-pin-display">PIN : <strong>${s.code}</strong></div>
-      </div>
-      <div class="student-manage-actions">
-        <button class="btn btn-sm" onclick="changeStudentPin(${i})" title="Modifier le PIN">✏️</button>
-        <button class="btn btn-sm btn-delete" onclick="deleteStudentNew(${i})" title="Supprimer l'élève">🗑️</button>
-      </div>
-    </div>`;
-  });
+  if(students.length === 0){
+    html += `<p style="grid-column:1/-1;color:var(--muted);font-size:14px;padding:1rem 0;">Aucun élève enregistré pour le moment dans cette classe. Utilise le formulaire ci-dessous pour ajouter tes premiers élèves.</p>`;
+  } else {
+    students.forEach((s,i)=>{
+      html+=`<div class="student-manage-card">
+        <div class="student-avatar">${s.name[0]}</div>
+        <div class="student-manage-info">
+          <div class="student-name">${s.name}</div>
+          <div class="student-pin-display">PIN : <strong>${s.code}</strong></div>
+        </div>
+        <div class="student-manage-actions">
+          <button class="btn btn-sm" onclick="changeStudentPin(${i})" title="Modifier le PIN">✏️</button>
+          <button class="btn btn-sm btn-delete" onclick="deleteStudentNew(${i})" title="Supprimer l'élève">🗑️</button>
+        </div>
+      </div>`;
+    });
+  }
   
   html+=`</div>
     <div style="margin-top:1.5rem;padding-top:1.25rem;border-top:1px dashed var(--border);display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
@@ -29378,12 +29487,11 @@ function goToLogin(){
   showScreen('screen-welcome');
   // Reset complet de l'interface de connexion
   document.getElementById('pin-section').style.display='none';
-  document.getElementById('names-section').style.display='block';
-  // Désélectionner tous les boutons de nom
+  document.getElementById('names-section').style.display='none';
+  // Désélectionner tous les onglets et boutons de nom
+  document.querySelectorAll('.class-tab').forEach(t=>t.classList.remove('active'));
   document.querySelectorAll('.name-btn').forEach(b=>b.classList.remove('selected'));
   resetPinDisplay();
-  selectClassTab('lejoly');
-  renderNamesForClass('lejoly');
 }
 
 function createStars(){
@@ -29867,17 +29975,26 @@ function initRealtimeStudentSync() {
   clearRealtimeStudentSync();
   console.log('📡 Initialisation de la synchronisation temps réel pour', student);
 
-  // 1. Observer pour les activités verrouillées
-  const lockedRef = window.FB_ref(window.FB_DB, 'settings/locked_activities');
+  // 1. Observer pour les activités verrouillées (spécifiques à la classe)
+  const lockedRef = window.FB_ref(window.FB_DB, 'settings/locked_activities/' + cls);
   fbStudentListeners.locked = window.FB_onValue(lockedRef, (snap) => {
-    const val = snap.val();
+    let val = snap.val();
     if (val && Array.isArray(val)) {
-      localStorage.setItem('lq_locked_activities', JSON.stringify(val));
-    } else {
-      localStorage.setItem('lq_locked_activities', '[]');
+      localStorage.setItem('lq_locked_activities_' + cls, JSON.stringify(val));
+      if (cls === 'lejoly') localStorage.setItem('lq_locked_activities', JSON.stringify(val));
+      renderAppsManage();
+      refreshCurrentMenu();
+    } else if (cls === 'lejoly') {
+      // Fallback si la sous-branche lejoly n'a pas encore été migrée
+      window.FB_get(window.FB_ref(window.FB_DB, 'settings/locked_activities')).then(legacySnap => {
+        if (legacySnap.exists() && Array.isArray(legacySnap.val())) {
+          localStorage.setItem('lq_locked_activities_lejoly', JSON.stringify(legacySnap.val()));
+          localStorage.setItem('lq_locked_activities', JSON.stringify(legacySnap.val()));
+          renderAppsManage();
+          refreshCurrentMenu();
+        }
+      }).catch(()=>{});
     }
-    renderAppsManage();
-    refreshCurrentMenu();
   }, (err) => console.warn('Realtime locked_activities error:', err));
 
   // 2. Observer pour le plan de travail global
