@@ -3200,7 +3200,13 @@ input[type=text].calc-input.incorrect {
       if (!snap.exists()) return [];
       const all = [];
       snap.forEach(child => { all.push(child.val()); });
-      return cls ? all.filter(r => r.cls === cls) : all;
+      if (!cls) return all;
+      const classStudentNames = (typeof getClassStudents === 'function') ? new Set(getClassStudents(cls).map(s=>s.name)) : new Set();
+      return all.filter(r => {
+        if (r.cls) return r.cls === cls;
+        if (classStudentNames.has(r.student)) return true;
+        return cls === 'lejoly';
+      });
     } catch(e) { console.warn('Firebase loadResults error:', e); return []; }
   };
 
@@ -3209,8 +3215,13 @@ input[type=text].calc-input.incorrect {
       const snap = await get(ref(db, 'results'));
       if (!snap.exists()) return;
       const deletes = [];
+      const classStudentNames = (typeof getClassStudents === 'function') ? new Set(getClassStudents(cls).map(s=>s.name)) : new Set();
       snap.forEach(child => {
-        if (child.val().cls === cls) deletes.push(remove(ref(db, 'results/' + child.key)));
+        const val = child.val();
+        if (val) {
+          const match = val.cls ? (val.cls === cls) : (classStudentNames.has(val.student) || cls === 'lejoly');
+          if (match) deletes.push(remove(ref(db, 'results/' + child.key)));
+        }
       });
       await Promise.all(deletes);
     } catch(e) { console.warn('Firebase deleteResults error:', e); }
@@ -8022,7 +8033,13 @@ function loadResults(cls){
     localStorage.setItem('lq_results', JSON.stringify(valid));
     all = valid;
   }
-  return cls ? all.filter(r=>!r.cls || r.cls===cls) : all;
+  if (!cls) return all;
+  const classStudentNames = (typeof getClassStudents === 'function') ? new Set(getClassStudents(cls).map(s=>s.name)) : new Set();
+  return all.filter(r => {
+    if (r.cls) return r.cls === cls;
+    if (classStudentNames.has(r.student)) return true;
+    return cls === 'lejoly';
+  });
 }
 function saveResult(entry){
   if (!entry.student && typeof state !== 'undefined' && state.student) {
@@ -8086,8 +8103,12 @@ window.syncOfflineResults = function() {
 };
 function deleteResultsForClass(cls){
   const all = JSON.parse(localStorage.getItem('lq_results')||'[]');
-  localStorage.setItem('lq_results',JSON.stringify(all.filter(r=>r.cls!==cls)));
-  if(window.FB_ready) window.FB_deleteResultsForClass(cls);
+  const classStudentNames = (typeof getClassStudents === 'function') ? new Set(getClassStudents(cls).map(s=>s.name)) : new Set();
+  localStorage.setItem('lq_results', JSON.stringify(all.filter(r => {
+    const isThisClass = r.cls ? (r.cls === cls) : (classStudentNames.has(r.student) || cls === 'lejoly');
+    return !isThisClass;
+  })));
+  if(window.FB_ready && window.FB_deleteResultsForClass) window.FB_deleteResultsForClass(cls);
 }
 
 function getTeacherPw(cls){
@@ -29360,7 +29381,7 @@ function renderGestionResults(){
 }
 
 function doRenderGestionResults(){
-  const results = JSON.parse(localStorage.getItem('lq_results')||'[]');
+  const results = loadResults(teacherCls);
   const students = getClassStudents(teacherCls);
   const summary = document.getElementById('gestion-summary');
   const list = document.getElementById('gestion-students-list');
@@ -29371,6 +29392,12 @@ function doRenderGestionResults(){
     <div class="gestion-stat"><div class="gestion-stat-val">${students.length}</div><div class="gestion-stat-lbl">Élèves</div></div>
     <div class="gestion-stat"><div class="gestion-stat-val">${total}</div><div class="gestion-stat-lbl">Tentatives</div></div>
     <div class="gestion-stat"><div class="gestion-stat-val">${avg}%</div><div class="gestion-stat-lbl">Moyenne</div></div>`;
+  
+  if(students.length === 0){
+    list.innerHTML = '<div class="alert alert-info" style="margin-top:1rem;">Aucun élève enregistré pour le moment dans cette classe. Rendez-vous dans l\'onglet "Élèves" pour en ajouter.</div>';
+    return;
+  }
+
   let html='<div class="student-results-grid">';
   students.slice().sort((a,b)=>a.name.localeCompare(b.name,'fr')).forEach(st=>{
     const stR=results.filter(r=>r.student===st.name);
