@@ -9628,7 +9628,15 @@ function startConjExercise(tense, type){
     submitted: false
   };
   if(type === 'qcm'){
-    conjState.questions = shuffleArray(data.qcm_bank).slice(0,10);
+    conjState.questions = shuffleArray(data.qcm_bank).slice(0,10).map(q => {
+      const correctVal = q.options[q.answer];
+      const shuffledOpts = shuffleArray([...q.options]);
+      return {
+        ...q,
+        options: shuffledOpts,
+        answer: shuffledOpts.indexOf(correctVal)
+      };
+    });
     document.getElementById('conj-exercise-title').textContent = '🎯 Entraînement QCM — ' + tenseLabel;
   } else {
     conjState.questions = shuffleArray(data.trous_bank).slice(0,10);
@@ -9668,7 +9676,16 @@ function startConjEvaluation(tense){
   };
 
   // Mix QCM + trous from evaluation
-  const evalQcm = data.evaluation.qcm.map(q=>({...q, evalType:'qcm'}));
+  const evalQcm = data.evaluation.qcm.map(q => {
+    const correctVal = q.options[q.answer];
+    const shuffledOpts = shuffleArray([...q.options]);
+    return {
+      ...q,
+      options: shuffledOpts,
+      answer: shuffledOpts.indexOf(correctVal),
+      evalType: 'qcm'
+    };
+  });
   const evalTrous = data.evaluation.trous.map(q=>({...q, evalType:'trous'}));
   conjState.questions = shuffleArray([...evalQcm, ...evalTrous]);
 
@@ -21453,7 +21470,15 @@ function buildVocabExercice(bodyId, pool, type){
     : 'Trouve le mot qui a le sens <strong>contraire</strong> du mot en gras.';
 
   const shuffled = [...pool].sort(()=>Math.random()-0.5);
-  const phrases = shuffled.slice(0, 10);
+  const phrases = shuffled.slice(0, 10).map(p => {
+    const correctVal = p.options[p.correct];
+    const shuffledOpts = [...p.options].sort(()=>Math.random()-0.5);
+    return {
+      ...p,
+      options: shuffledOpts,
+      correct: shuffledOpts.indexOf(correctVal)
+    };
+  });
 
   window[`vocabSels_${type}`] = {};
   window[`vocabPhrases_${type}`] = phrases;
