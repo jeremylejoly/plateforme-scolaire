@@ -930,8 +930,21 @@
       const workspace = document.getElementById('workspace');
       workspace.classList.add('visible');
       
-      // Charger les données de l'exercice
-      const ex = EXERCISES[index];
+      // Charger les données de l'exercice avec options mélangées
+      const exRaw = EXERCISES[index];
+      currentExerciseData = {
+        ...exRaw,
+        questions: exRaw.questions.map(q => {
+          const correctVal = q.options[q.correct];
+          const shuffledOpts = [...q.options].sort(() => Math.random() - 0.5);
+          return {
+            ...q,
+            options: shuffledOpts,
+            correct: shuffledOpts.indexOf(correctVal)
+          };
+        })
+      };
+      const ex = currentExerciseData;
       document.getElementById('ex-context').innerText = ex.contexte;
       
       // Construire le graphique
@@ -1023,7 +1036,7 @@
 
     // Charger la question courante
     function loadQuestion() {
-      const ex = EXERCISES[activeExerciseIndex];
+      const ex = (typeof currentExerciseData !== 'undefined' && currentExerciseData) ? currentExerciseData : EXERCISES[activeExerciseIndex];
       const question = ex.questions[currentQuestionIndex];
       selectedOptionIndex = null;
       
@@ -1106,7 +1119,7 @@
     function submitAnswer() {
       if (selectedOptionIndex === null) return;
       
-      const ex = EXERCISES[activeExerciseIndex];
+      const ex = (typeof currentExerciseData !== 'undefined' && currentExerciseData) ? currentExerciseData : EXERCISES[activeExerciseIndex];
       const question = ex.questions[currentQuestionIndex];
       const isCorrect = selectedOptionIndex === question.correct;
       
