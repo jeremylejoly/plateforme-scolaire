@@ -5195,7 +5195,7 @@ input[type=text].calc-input.incorrect {
 
   <!-- SCREEN: Lecture rapide - texte -->
   <div id="screen-lecture-rapide-texte" class="screen">
-    <button class="back-btn" onclick="showScreen('screen-lecture-rapide');renderLectureRapideMenu();">← Retour</button>
+    <button class="back-btn" onclick="arreterLectureRapide();showScreen('screen-lecture-rapide');renderLectureRapideMenu();">← Retour</button>
     <div class="page-title" id="lr-titre"></div>
     <div id="lr-body"></div>
   </div>
@@ -25752,11 +25752,18 @@ function choisirLongueursQcm(idx){
 
 let lrState = {
   niveau: null, texteIdx: null, texteData: null,
-  timer: null, charIdx: 0, totalChars: 0,
+  timer: null, countInterval: null, startTimeout: null,
+  charIdx: 0, totalChars: 0,
   phase: 'lecture', // 'lecture' | 'qcm'
   selections: {},
   tentative: 0
 };
+
+function arreterLectureRapide(){
+  if(lrState.timer) { clearInterval(lrState.timer); lrState.timer = null; }
+  if(lrState.countInterval) { clearInterval(lrState.countInterval); lrState.countInterval = null; }
+  if(lrState.startTimeout) { clearTimeout(lrState.startTimeout); lrState.startTimeout = null; }
+}
 
 function renderLectureRapideMenu(){
   const menu = document.getElementById('lecture-rapide-menu');
@@ -25816,21 +25823,21 @@ function lancerLectureRapide(niv, texteIdx){
 }
 
 function afficherLectureTexte(){
+  arreterLectureRapide();
   const body = document.getElementById('lr-body');
   const texte = lrState.texteData.texte;
   lrState.charIdx = 0;
   lrState.phase = 'lecture';
-  if(lrState.timer) clearInterval(lrState.timer);
 
   const niv = LECTURE_RAPIDE_DATA[lrState.niveau];
-  const motsMoyens = texte.split(' ').length;
+  const motsMoyens = texte.split(' ').filter(Boolean).length;
   const dureeMs = (motsMoyens / niv.vitesse) * 60 * 1000;
   const delaiParChar = dureeMs / texte.length;
 
-  // Phase 1 : décompte SANS texte
+  // Phase 1 : décompte SANS texte (3, 2, 1)
   body.innerHTML = `
     <div class="card" style="margin-bottom:1rem;padding:0.8rem 1rem;background:var(--purple-light);border:1px solid var(--purple);">
-      <p style="margin:0;font-size:13px;color:var(--purple);font-weight:700">⚡ Le texte va s'effacer lettre par lettre. Lis vite !</p>
+      <p style="margin:0;font-size:13px;color:var(--purple);font-weight:700">⚡ Le texte va s'afficher puis s'effacer progressivement. Lis vite !</p>
     </div>
     <div class="lr-progress"><div class="lr-progress-bar" id="lr-bar" style="width:0%"></div></div>
     <div class="lr-texte-container" id="lr-texte-wrapper" style="display:flex;align-items:center;justify-content:center;min-height:200px;">
@@ -25839,16 +25846,16 @@ function afficherLectureTexte(){
   `;
 
   let compte = 3;
-  const countInterval = setInterval(() => {
+  lrState.countInterval = setInterval(() => {
     compte--;
     const countdownEl = document.getElementById('lr-countdown');
     const wrapper = document.getElementById('lr-texte-wrapper');
     if(compte > 0){
       if(countdownEl) countdownEl.textContent = compte;
     } else {
-      clearInterval(countInterval);
-      // Phase 2 : afficher le texte avec un span par caractère
-      // color:transparent sur chaque span = le texte reste à sa place, seule la couleur change
+      if(lrState.countInterval) { clearInterval(lrState.countInterval); lrState.countInterval = null; }
+      // Phase 2 : afficher le texte COMPLET et intact avec un span par caractère
+      lrState.charIdx = 0;
       if(wrapper){
         let spansHtml = '';
         for(let i=0; i<texte.length; i++){
@@ -25856,7 +25863,7 @@ function afficherLectureTexte(){
           if(c === '\n'){
             spansHtml += '<br>';
           } else {
-            spansHtml += '<span id="lrc-'+i+'" style="font-size:17px;line-height:1.8;">'+c.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</span>';
+            spansHtml += '<span id="lrc-'+i+'" style="font-size:17px;line-height:1.8;color:var(--text);">'+c.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</span>';
           }
         }
         wrapper.style.display = 'block';
@@ -25864,8 +25871,9 @@ function afficherLectureTexte(){
         wrapper.style.justifyContent = '';
         wrapper.innerHTML = '<div id="lr-texte">'+spansHtml+'</div>';
       }
-      // Phase 3 : 1 seconde après, démarrer l'effacement
-      setTimeout(() => {
+      // Phase 3 : 2 secondes après l'affichage du texte, démarrer l'effacement
+      lrState.startTimeout = setTimeout(() => {
+        lrState.charIdx = 0;
         lrState.timer = setInterval(() => {
           const span = document.getElementById('lrc-' + lrState.charIdx);
           if(span) span.style.color = 'transparent';
@@ -25874,11 +25882,11 @@ function afficherLectureTexte(){
           if(bar) bar.style.width = pct + '%';
           lrState.charIdx++;
           if(lrState.charIdx >= texte.length){
-            clearInterval(lrState.timer);
+            arreterLectureRapide();
             setTimeout(afficherQCM, 500);
           }
         }, delaiParChar);
-      }, 1000);
+      }, 2000);
     }
   }, 1000);
 }
