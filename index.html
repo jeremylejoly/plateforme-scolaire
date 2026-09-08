@@ -9810,12 +9810,15 @@ function saveLockedActivities(arr, targetCls){
 }
 const ACTIVITY_PARENTS = {
   // --- FRANCAIS ---
-  'conte_chatbotte': 'francais-lecture',
-  'conte_breme': 'francais-lecture',
-  'poeme_cancre': 'francais-lecture',
-  'poeme_ecriture': 'francais-lecture',
-  'poeme_dormeur': 'francais-lecture',
-  'poeme_sorciere': 'francais-lecture',
+  'recits_express': 'francais-lecture',
+  'contes': 'francais-lecture',
+  'poemes': 'francais-lecture',
+  'conte_chatbotte': 'contes',
+  'conte_breme': 'contes',
+  'poeme_cancre': 'poemes',
+  'poeme_ecriture': 'poemes',
+  'poeme_dormeur': 'poemes',
+  'poeme_sorciere': 'poemes',
   'fiche_1': 'francais-lecture',
   'fiche_2': 'francais-lecture',
   'fiche_3': 'francais-lecture',
@@ -10154,6 +10157,10 @@ function isActivityLocked(id){
   if (typeof state !== 'undefined' && state.role === 'student' && isProposedInPlan(id)) {
     return false;
   }
+  if (typeof getArchivedBooks === 'function') {
+    const archivedBooks = getArchivedBooks();
+    if (archivedBooks.includes(id)) return true;
+  }
   const locked = getLockedActivities();
   if (locked.includes(id)) return true;
   let currentId = id;
@@ -10165,6 +10172,20 @@ function isActivityLocked(id){
   return false;
 }
 function toggleActivity(id){
+  if (typeof loadBooks === 'function') {
+    const books = loadBooks();
+    if (books.some(b => b.id === id)) {
+      const archived = getArchivedBooks();
+      if (archived.includes(id)) {
+        restoreBook(id);
+      } else {
+        archiveBook(id);
+      }
+      refreshAllToggles();
+      return;
+    }
+  }
+
   let arr = getLockedActivities();
   const idMapping = {
     'vocabulaire_proverbes': 'fiche_proverbes',
@@ -30419,7 +30440,31 @@ let gestionActivitiesCollapsed = {};
 function getActivitiesMasterRegistry() {
   const registry = JSON.parse(JSON.stringify(PLAN_CATALOGUE));
 
-  // 1. Ajouter les jeux éducatifs
+  // 1. Ajouter les livres Récits Express
+  if (typeof loadBooks === 'function') {
+    const books = loadBooks();
+    if (books && books.length > 0) {
+      const francaisIndex = registry.findIndex(sec => sec.cat === '📖 Français');
+      const recitsSection = {
+        cat: '📖 Français',
+        sub: '📚 Lecture — Récits Express (Livres)',
+        items: books.map(bk => ({
+          id: bk.id,
+          label: `${bk.title} (${bk.questions ? bk.questions.length : 0} questions)`,
+          icon: '📖',
+          screen: 'screen-quiz',
+          fn: `() => { state.book = '${bk.id}'; startQuiz(); }`
+        }))
+      };
+      if (francaisIndex !== -1) {
+        registry.splice(francaisIndex, 0, recitsSection);
+      } else {
+        registry.push(recitsSection);
+      }
+    }
+  }
+
+  // 2. Ajouter les jeux éducatifs
   registry.push({
     cat: '🎮 Jeux & Réflexion',
     sub: '🎮 Jeux et défis',
@@ -30435,7 +30480,7 @@ function getActivitiesMasterRegistry() {
     ]
   });
 
-  // 2. Ajouter les fiches interactives personnalisées non déjà présentes
+  // 3. Ajouter les fiches interactives personnalisées non déjà présentes
   if (typeof fiches !== 'undefined' && Array.isArray(fiches) && fiches.length > 0) {
     const existingIds = new Set();
     registry.forEach(sec => sec.items.forEach(it => existingIds.add(it.id)));
@@ -30481,14 +30526,24 @@ function toggleActivityVisibility(id) {
 
 function bulkToggleSubCategory(itemIds, makeActive) {
   let arr = getLockedActivities();
+  const books = (typeof loadBooks === 'function') ? loadBooks() : [];
+  const bookIdSet = new Set(books.map(b => b.id));
+  let archived = (typeof getArchivedBooks === 'function') ? getArchivedBooks() : [];
+
   if (makeActive) {
     const idsToRemove = new Set(itemIds);
     arr = arr.filter(id => !idsToRemove.has(id));
+    archived = archived.filter(id => !idsToRemove.has(id));
   } else {
     itemIds.forEach(id => {
-      if (!arr.includes(id)) arr.push(id);
+      if (bookIdSet.has(id)) {
+        if (!archived.includes(id)) archived.push(id);
+      } else {
+        if (!arr.includes(id)) arr.push(id);
+      }
     });
   }
+  if (typeof saveArchivedBooks === 'function') saveArchivedBooks(archived);
   saveLockedActivities(arr);
   refreshAllToggles();
   renderGestionActivities();
@@ -30501,16 +30556,19 @@ function bulkToggleAllSite(makeActive) {
 
   const currentCls = (typeof teacherCls !== 'undefined' && teacherCls) ? teacherCls : getCurrentClassId();
   const className = currentCls === 'verryken' ? 'Mr Verryken' : 'Mr Lejoly';
+  const books = (typeof loadBooks === 'function') ? loadBooks() : [];
 
   if (makeActive) {
     if (confirm(`Voulez-vous vraiment ACTIVER TOUS les exercices et jeux (${allIds.length}) pour la classe de ${className} ?`)) {
       saveLockedActivities([]);
+      if (typeof saveArchivedBooks === 'function') saveArchivedBooks([]);
       refreshAllToggles();
       renderGestionActivities();
     }
   } else {
     if (confirm(`Voulez-vous vraiment MASQUER TOUS les exercices et jeux (${allIds.length}) pour la classe de ${className} ?`)) {
       saveLockedActivities([...new Set(allIds)]);
+      if (typeof saveArchivedBooks === 'function') saveArchivedBooks(books.map(b => b.id));
       refreshAllToggles();
       renderGestionActivities();
     }
