@@ -1486,6 +1486,10 @@ input:focus{border-color:var(--purple);}
 .toggle-activity-btn.locked{border-color:var(--amber);color:var(--amber);background:transparent;}
 .toggle-activity-btn.locked:hover{background:var(--amber-light);}
 
+.btn-preview{padding:5px 12px;border-radius:6px;border:1.5px solid #6366f1;color:#4f46e5;background:#eef2ff;font-size:12px;font-weight:700;cursor:pointer;transition:all .15s;white-space:nowrap;display:inline-flex;align-items:center;gap:4px;}
+.btn-preview:hover{background:#4f46e5;color:#ffffff;}
+
+
 
 /* ===== TEACHER TOGGLE ON CARD HOVER ===== */
 .sub-subject-card{position:relative;}
@@ -7716,6 +7720,7 @@ input[type=text].calc-input.incorrect {
       <button class="panel-tab active" id="gtab-results-btn" onclick="switchGestionTab('results')">📊 Résultats</button>
       <button class="panel-tab" id="gtab-students-btn" onclick="switchGestionTab('students')">👤 Élèves</button>
       <button class="panel-tab" id="gtab-journal-btn" onclick="switchGestionTab('journal')">📋 Journal des résultats</button>
+      <button class="panel-tab" id="gtab-activities-btn" onclick="switchGestionTab('activities')">🎯 Liste des activités</button>
     </div>
     <div id="gtab-results">
       <div id="gestion-summary" class="gestion-summary"></div>
@@ -7726,6 +7731,9 @@ input[type=text].calc-input.incorrect {
     </div>
     <div id="gtab-journal" style="display:none;">
       <div id="gestion-journal-list"></div>
+    </div>
+    <div id="gtab-activities" style="display:none;">
+      <div id="gestion-activities-container"></div>
     </div>
   </div>
 
@@ -7784,6 +7792,19 @@ input[type=text].calc-input.incorrect {
     <button onclick="showTeacherLogin()" class="px-5 py-2.5 bg-white text-rose-500 font-display font-bold rounded-full border-2 border-rose-200 hover:border-rose-500 hover:bg-rose-50 active:scale-95 transition-all duration-200 cursor-pointer flex items-center gap-2" style="font-family: 'Fredoka', sans-serif;">
       <svg class="w-4 h-4 text-rose-500 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/></svg>
       <span>Espace enseignant</span>
+    </button>
+  </div>
+
+  <!-- FLOATING BAR: Teacher Preview Mode -->
+  <div id="teacher-preview-floating-bar" style="display:none;position:fixed;top:0;left:0;right:0;z-index:99999;background:linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);color:#ffffff;padding:10px 16px;box-shadow:0 4px 20px rgba(0,0,0,0.35);align-items:center;justify-content:space-between;border-bottom:2px solid #818cf8;font-family:'Fredoka', sans-serif;">
+    <div style="display:flex;align-items:center;gap:12px;font-weight:600;font-size:14px;min-width:0;">
+      <span style="background:#4f46e5;color:#fff;padding:4px 10px;border-radius:9999px;font-size:12px;font-weight:700;display:inline-flex;align-items:center;gap:5px;border:1px solid rgba(255,255,255,0.2);white-space:nowrap;">
+        👁️ Aperçu Enseignant
+      </span>
+      <span id="teacher-preview-activity-title" style="color:#e0e7ff;font-weight:700;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">Nom de l'exercice</span>
+    </div>
+    <button onclick="returnFromTeacherPreview()" style="background:#ef4444;color:white;border:none;padding:8px 16px;border-radius:9999px;font-weight:700;font-size:13px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:all 0.2s;box-shadow:0 2px 8px rgba(239,68,68,0.4);white-space:nowrap;font-family:'Fredoka', sans-serif;" onmouseover="this.style.background='#dc2626';this.style.transform='scale(1.02)';" onmouseout="this.style.background='#ef4444';this.style.transform='scale(1)';">
+      ⬅️ Revenir à la liste des activités
     </button>
   </div>
 
@@ -10247,6 +10268,12 @@ function refreshAllToggles(){
   if (typeof renderAppsManage === 'function') renderAppsManage();
   if (typeof renderFichesScreen === 'function') renderFichesScreen();
   if (typeof renderFichesScreenTeacher === 'function') renderFichesScreenTeacher();
+  if (typeof renderGestionActivities === 'function') {
+    const actTab = document.getElementById('gtab-activities');
+    if (actTab && actTab.style.display !== 'none') {
+      renderGestionActivities();
+    }
+  }
   if (typeof window.replaceEmojisOnPage === 'function') {
     window.replaceEmojisOnPage(document);
   }
@@ -29351,12 +29378,19 @@ function switchGestionTab(tab){
   document.getElementById('gtab-results').style.display = tab==='results'?'':'none';
   document.getElementById('gtab-students').style.display = tab==='students'?'':'none';
   document.getElementById('gtab-journal').style.display = tab==='journal'?'':'none';
+  const gtabAct = document.getElementById('gtab-activities');
+  if(gtabAct) gtabAct.style.display = tab==='activities'?'':'none';
+
   document.getElementById('gtab-results-btn').classList.toggle('active', tab==='results');
   document.getElementById('gtab-students-btn').classList.toggle('active', tab==='students');
   document.getElementById('gtab-journal-btn').classList.toggle('active', tab==='journal');
+  const gtabActBtn = document.getElementById('gtab-activities-btn');
+  if(gtabActBtn) gtabActBtn.classList.toggle('active', tab==='activities');
+
   if(tab==='students') renderStudentsManageNew();
   if(tab==='results') renderGestionResults();
   if(tab==='journal') renderGestionJournal();
+  if(tab==='activities') renderGestionActivities();
 }
 
 function renderGestionJournal(){
@@ -30370,6 +30404,425 @@ function planNavigateToId(itemId) {
     console.warn('Plan item not found in catalogue:', itemId);
   }
 }
+
+// ============================================================
+// GESTION — LISTE DES ACTIVITÉS & MODE APERÇU ENSEIGNANT
+// ============================================================
+
+window.teacherPreviewActive = false;
+window.teacherPreviewReturn = null;
+
+let gestionActivitiesSearch = '';
+let gestionActivitiesFilter = 'all'; // 'all' | 'active' | 'locked'
+let gestionActivitiesCollapsed = {};
+
+function getActivitiesMasterRegistry() {
+  const registry = JSON.parse(JSON.stringify(PLAN_CATALOGUE));
+
+  // 1. Ajouter les jeux éducatifs
+  registry.push({
+    cat: '🎮 Jeux & Réflexion',
+    sub: '🎮 Jeux et défis',
+    items: [
+      { id:'jeu_tables', label:'Tables de multiplication (Calcul rapide)', icon:'✖️', screen:'screen-jeu-tables', fn:'renderJeuTables' },
+      { id:'jeu_memory', label:'Memory Calcul', icon:'🃏', screen:'screen-jeu-memory', fn:'renderJeuMemory' },
+      { id:'jeu_tetris', label:'Tetris (Structuration spatiale)', icon:'🟦', screen:'screen-jeu-tetris', fn:'renderJeuTetris' },
+      { id:'jeu_rushhour', label:'Rush Hour (Logique)', icon:'🚗', screen:'screen-jeu-rushhour', fn:'renderJeuRushHour' },
+      { id:'jeu_robot', label:'Le Robot (Labyrinthe)', icon:'🤖', screen:'screen-jeu-robot', fn:'' },
+      { id:'jeu_mots_croises', label:'Mots croisés', icon:'🔠', screen:'screen-jeu-mots-croises', fn:'' },
+      { id:'jeu_mots_caches', label:'Mots cachés', icon:'🔎', screen:'screen-jeu-mots-caches', fn:'' },
+      { id:'jeu_sudoku', label:'Sudoku', icon:'🔢', screen:'screen-jeu-sudoku', fn:'' }
+    ]
+  });
+
+  // 2. Ajouter les fiches interactives personnalisées non déjà présentes
+  if (typeof fiches !== 'undefined' && Array.isArray(fiches) && fiches.length > 0) {
+    const existingIds = new Set();
+    registry.forEach(sec => sec.items.forEach(it => existingIds.add(it.id)));
+
+    const extraFiches = fiches.filter(f => !existingIds.has(f.id));
+    if (extraFiches.length > 0) {
+      registry.push({
+        cat: '📄 Fiches pédagogiques',
+        sub: '📄 Fiches de travail interactives',
+        items: extraFiches.map(f => ({
+          id: f.id,
+          label: f.title,
+          icon: (typeof getFicheIcon === 'function') ? getFicheIcon(f) : '📄',
+          screen: 'screen-fiche-viewer',
+          filename: f.filename
+        }))
+      });
+    }
+  }
+
+  return registry;
+}
+
+function onGestionActivitiesSearch(val) {
+  gestionActivitiesSearch = val;
+  renderGestionActivities();
+}
+
+function setGestionActivitiesFilter(f) {
+  gestionActivitiesFilter = f;
+  renderGestionActivities();
+}
+
+function toggleGestionActivitiesCategory(catKey) {
+  gestionActivitiesCollapsed[catKey] = !gestionActivitiesCollapsed[catKey];
+  renderGestionActivities();
+}
+
+function toggleActivityVisibility(id) {
+  toggleActivity(id);
+  renderGestionActivities();
+}
+
+function bulkToggleSubCategory(itemIds, makeActive) {
+  let arr = getLockedActivities();
+  if (makeActive) {
+    const idsToRemove = new Set(itemIds);
+    arr = arr.filter(id => !idsToRemove.has(id));
+  } else {
+    itemIds.forEach(id => {
+      if (!arr.includes(id)) arr.push(id);
+    });
+  }
+  saveLockedActivities(arr);
+  refreshAllToggles();
+  renderGestionActivities();
+}
+
+function bulkToggleAllSite(makeActive) {
+  const reg = getActivitiesMasterRegistry();
+  const allIds = [];
+  reg.forEach(sec => sec.items.forEach(it => allIds.push(it.id)));
+
+  const currentCls = (typeof teacherCls !== 'undefined' && teacherCls) ? teacherCls : getCurrentClassId();
+  const className = currentCls === 'verryken' ? 'Mr Verryken' : 'Mr Lejoly';
+
+  if (makeActive) {
+    if (confirm(`Voulez-vous vraiment ACTIVER TOUS les exercices et jeux (${allIds.length}) pour la classe de ${className} ?`)) {
+      saveLockedActivities([]);
+      refreshAllToggles();
+      renderGestionActivities();
+    }
+  } else {
+    if (confirm(`Voulez-vous vraiment MASQUER TOUS les exercices et jeux (${allIds.length}) pour la classe de ${className} ?`)) {
+      saveLockedActivities([...new Set(allIds)]);
+      refreshAllToggles();
+      renderGestionActivities();
+    }
+  }
+}
+
+function teacherPreviewActivity(id, screen, fn, filename, label) {
+  window.teacherPreviewActive = true;
+  window.teacherPreviewReturn = { screen: 'screen-gestion', tab: 'activities' };
+
+  const bar = document.getElementById('teacher-preview-floating-bar');
+  if (bar) {
+    const titleEl = document.getElementById('teacher-preview-activity-title');
+    if (titleEl) titleEl.textContent = label || id;
+    bar.style.display = 'flex';
+  }
+
+  if (filename) {
+    openFiche(filename, label || 'Aperçu', 'screen-gestion');
+  } else if (screen) {
+    planNavigateTo(screen, fn);
+  }
+}
+
+function returnFromTeacherPreview() {
+  const bar = document.getElementById('teacher-preview-floating-bar');
+  if (bar) bar.style.display = 'none';
+  window.teacherPreviewActive = false;
+
+  const iframe = document.getElementById('fiche-viewer-iframe');
+  if (iframe) iframe.src = 'about:blank';
+
+  if (typeof tetStop === 'function') tetStop();
+
+  showScreen('screen-gestion');
+  switchGestionTab('activities');
+}
+
+function renderGestionActivities() {
+  const container = document.getElementById('gestion-activities-container');
+  if (!container) return;
+
+  const currentCls = (typeof teacherCls !== 'undefined' && teacherCls) ? teacherCls : getCurrentClassId();
+  const classTitle = currentCls === 'verryken' ? 'Classe de Mr Verryken' : 'Classe de Mr Lejoly';
+
+  const registry = getActivitiesMasterRegistry();
+  const lockedArr = getLockedActivities();
+
+  // Calcul des totaux globaux
+  let totalItemsCount = 0;
+  let activeItemsCount = 0;
+  let lockedItemsCount = 0;
+
+  registry.forEach(sec => {
+    sec.items.forEach(it => {
+      totalItemsCount++;
+      if (isActivityLocked(it.id)) {
+        lockedItemsCount++;
+      } else {
+        activeItemsCount++;
+      }
+    });
+  });
+
+  // Groupement par catégorie principale
+  const groupedCats = {};
+  const query = (gestionActivitiesSearch || '').toLowerCase().trim();
+
+  registry.forEach((section, sIdx) => {
+    // Filtrage des items
+    const filteredItems = section.items.filter(item => {
+      const isLocked = isActivityLocked(item.id);
+      
+      // Filtre statut
+      if (gestionActivitiesFilter === 'active' && isLocked) return false;
+      if (gestionActivitiesFilter === 'locked' && !isLocked) return false;
+
+      // Filtre recherche
+      if (query) {
+        const matchLabel = (item.label || '').toLowerCase().includes(query);
+        const matchId = (item.id || '').toLowerCase().includes(query);
+        const matchCat = (section.cat || '').toLowerCase().includes(query);
+        const matchSub = (section.sub || '').toLowerCase().includes(query);
+        if (!matchLabel && !matchId && !matchCat && !matchSub) return false;
+      }
+
+      return true;
+    });
+
+    if (filteredItems.length > 0 || !query) {
+      if (!groupedCats[section.cat]) groupedCats[section.cat] = [];
+      groupedCats[section.cat].push({
+        ...section,
+        sIdx,
+        allItems: section.items,
+        filteredItems
+      });
+    }
+  });
+
+  // Construction du HTML
+  let html = `
+    <!-- CARTE D'EN-TÊTE & STATISTIQUES -->
+    <div class="card" style="padding:1.25rem;margin-bottom:1.25rem;background:linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);border:1.5px solid #e2e8f0;border-radius:18px;box-shadow:0 4px 20px rgba(0,0,0,0.04);">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:14px;margin-bottom:1rem;">
+        <div>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;flex-wrap:wrap;">
+            <h3 style="font-size:19px;font-weight:800;color:#1e293b;margin:0;font-family:'Fredoka',sans-serif;">🎯 Liste de toutes les activités</h3>
+            <span style="font-size:12px;padding:3px 10px;background:#e0e7ff;color:#4338ca;border-radius:9999px;font-weight:700;font-family:'Inter',sans-serif;">${classTitle}</span>
+          </div>
+          <p style="font-size:13px;color:#64748b;margin:0;font-family:'Inter',sans-serif;">
+            Gérez en un clic ce que vos élèves peuvent voir ou faire sur le site.
+          </p>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button onclick="bulkToggleAllSite(true)" class="btn btn-sm" style="background:#10b981;color:white;border:none;border-radius:10px;font-weight:700;font-size:12px;padding:7px 14px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:all .15s;box-shadow:0 2px 6px rgba(16,185,129,0.25);" onmouseover="this.style.background='#059669'" onmouseout="this.style.background='#10b981'">
+            ✅ Tout activer (Site)
+          </button>
+          <button onclick="bulkToggleAllSite(false)" class="btn btn-sm btn-danger" style="border-radius:10px;font-weight:700;font-size:12px;padding:7px 14px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:all .15s;">
+            🔒 Tout masquer (Site)
+          </button>
+        </div>
+      </div>
+
+      <!-- Compteurs en direct -->
+      <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;padding:10px 14px;background:#f1f5f9;border-radius:12px;font-size:13px;font-weight:700;font-family:'Inter',sans-serif;">
+        <span style="color:#0f172a;display:inline-flex;align-items:center;gap:5px;">📊 Total : <strong>${totalItemsCount}</strong> activités</span>
+        <span style="color:#cbd5e1;">•</span>
+        <span style="color:#059669;display:inline-flex;align-items:center;gap:5px;">🟢 <strong>${activeItemsCount}</strong> actives</span>
+        <span style="color:#cbd5e1;">•</span>
+        <span style="color:#dc2626;display:inline-flex;align-items:center;gap:5px;">🔴 <strong>${lockedItemsCount}</strong> masquées</span>
+      </div>
+    </div>
+
+    <!-- BARRE D'OUTILS : RECHERCHE & FILTRES -->
+    <div style="display:flex;gap:12px;margin-bottom:1.5rem;flex-wrap:wrap;align-items:center;justify-content:space-between;">
+      <!-- Champ de recherche -->
+      <div style="position:relative;flex:1;min-width:260px;">
+        <input type="text" id="gact-search-input" value="${escapeHTML(gestionActivitiesSearch)}" 
+               placeholder="🔍 Rechercher un exercice, un jeu, un mot-clé (ex: fraction, verbe, tétraèdre)..." 
+               oninput="onGestionActivitiesSearch(this.value)" 
+               style="width:100%;padding:10px 38px 10px 14px;border:1.5px solid #cbd5e1;border-radius:12px;font-size:14px;background:#ffffff;outline:none;font-family:'Inter',sans-serif;margin-bottom:0;transition:border-color .15s;" 
+               onfocus="this.style.borderColor='var(--purple)'" onblur="this.style.borderColor='#cbd5e1'" />
+        ${gestionActivitiesSearch ? `
+          <button onclick="onGestionActivitiesSearch('')" title="Effacer la recherche" 
+                  style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:#94a3b8;font-size:16px;cursor:pointer;padding:4px 6px;line-height:1;">
+            ✕
+          </button>` : ''}
+      </div>
+
+      <!-- Filtres d'état -->
+      <div style="display:flex;gap:6px;flex-wrap:wrap;">
+        <button onclick="setGestionActivitiesFilter('all')" class="panel-tab ${gestionActivitiesFilter==='all'?'active':''}" style="font-size:13px;padding:7px 14px;border-radius:9999px;font-family:'Fredoka',sans-serif;">
+          Tous (${totalItemsCount})
+        </button>
+        <button onclick="setGestionActivitiesFilter('active')" class="panel-tab ${gestionActivitiesFilter==='active'?'active':''}" style="font-size:13px;padding:7px 14px;border-radius:9999px;font-family:'Fredoka',sans-serif;">
+          🟢 Actifs (${activeCount = activeItemsCount})
+        </button>
+        <button onclick="setGestionActivitiesFilter('locked')" class="panel-tab ${gestionActivitiesFilter==='locked'?'active':''}" style="font-size:13px;padding:7px 14px;border-radius:9999px;font-family:'Fredoka',sans-serif;">
+          🔴 Masqués (${lockedCount = lockedItemsCount})
+        </button>
+      </div>
+    </div>
+  `;
+
+  // Thèmes et couleurs des catégories principales
+  const catThemes = {
+    '📖 Français': { color: '#4f46e5', bg: '#eef2ff', border: '#c7d2fe' },
+    '📐 Mathématiques': { color: '#0284c7', bg: '#f0f9ff', border: '#bae6fd' },
+    '🌍 Éveil': { color: '#059669', bg: '#ecfdf5', border: '#a7f3d0' },
+    '🎮 Jeux & Réflexion': { color: '#d97706', bg: '#fffbeb', border: '#fde68a' },
+    '📄 Fiches pédagogiques': { color: '#e11d48', bg: '#fff1f2', border: '#fecdd3' }
+  };
+
+  let renderedCategoriesCount = 0;
+
+  Object.entries(groupedCats).forEach(([catName, sections]) => {
+    // Calculer stats de la catégorie
+    let catTotal = 0;
+    let catActive = 0;
+    let catLocked = 0;
+    let hasMatchingItems = false;
+
+    sections.forEach(sec => {
+      catTotal += sec.allItems.length;
+      sec.allItems.forEach(it => {
+        if (isActivityLocked(it.id)) catLocked++;
+        else catActive++;
+      });
+      if (sec.filteredItems.length > 0) hasMatchingItems = true;
+    });
+
+    if (!hasMatchingItems && query) return;
+
+    renderedCategoriesCount++;
+    const theme = catThemes[catName] || { color: '#6366f1', bg: '#f8fafc', border: '#e2e8f0' };
+    const isCollapsed = !!gestionActivitiesCollapsed[catName];
+
+    html += `
+      <div class="card" style="margin-bottom:1.5rem;padding:0;overflow:hidden;border:1.5px solid ${theme.border};border-radius:18px;box-shadow:0 4px 14px rgba(0,0,0,0.03);">
+        <!-- EN-TÊTE CATÉGORIE MAJEURE -->
+        <div onclick="toggleGestionActivitiesCategory('${catName.replace(/'/g, "\\'")}')" 
+             style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:${theme.bg};cursor:pointer;user-select:none;border-bottom:${isCollapsed ? 'none' : '1px solid ' + theme.border};">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span style="font-size:18px;font-weight:800;color:${theme.color};font-family:'Fredoka',sans-serif;">${catName}</span>
+            <span style="font-size:12px;font-weight:700;padding:2px 8px;border-radius:12px;background:#ffffff;color:${theme.color};border:1px solid ${theme.border};font-family:'Inter',sans-serif;">
+              ${catActive} / ${catTotal} actifs
+            </span>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-size:13px;font-weight:700;color:${theme.color};">${isCollapsed ? '▶ Afficher' : '▼ Masquer'}</span>
+          </div>
+        </div>
+
+        ${!isCollapsed ? `
+        <div style="padding:14px 16px;display:flex;flex-col;gap:14px;background:#ffffff;">
+          ${sections.map(section => {
+            if (section.filteredItems.length === 0 && query) return '';
+
+            const subItemIds = section.allItems.map(it => it.id);
+            const subActiveCount = section.allItems.filter(it => !isActivityLocked(it.id)).length;
+            const subTotalCount = section.allItems.length;
+
+            return `
+              <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:14px;padding:12px 14px;margin-bottom:12px;">
+                <!-- Sous-en-tête de section -->
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px;">
+                  <div style="display:flex;align-items:center;gap:8px;">
+                    <span style="font-weight:800;font-size:14px;color:#1e293b;font-family:'Fredoka',sans-serif;">${section.sub}</span>
+                    <span style="font-size:11px;font-weight:700;padding:2px 6px;border-radius:8px;background:${subActiveCount === subTotalCount ? '#dcfce7' : subActiveCount === 0 ? '#fee2e2' : '#fef3c7'};color:${subActiveCount === subTotalCount ? '#15803d' : subActiveCount === 0 ? '#b91c1c' : '#b45309'};">
+                      ${subActiveCount} / ${subTotalCount} actifs
+                    </span>
+                  </div>
+                  <div style="display:flex;gap:6px;">
+                    <button onclick="bulkToggleSubCategory(${JSON.stringify(subItemIds).replace(/"/g, '&quot;')}, true)" 
+                            class="btn-xs" style="background:#ffffff;border:1px solid #10b981;color:#059669;padding:3px 8px;border-radius:6px;font-weight:700;font-size:11px;cursor:pointer;transition:all .15s;" 
+                            onmouseover="this.style.background='#dcfce7'" onmouseout="this.style.background='#ffffff'">
+                      Tout activer
+                    </button>
+                    <button onclick="bulkToggleSubCategory(${JSON.stringify(subItemIds).replace(/"/g, '&quot;')}, false)" 
+                            class="btn-xs" style="background:#ffffff;border:1px solid #ef4444;color:#dc2626;padding:3px 8px;border-radius:6px;font-weight:700;font-size:11px;cursor:pointer;transition:all .15s;" 
+                            onmouseover="this.style.background='#fee2e2'" onmouseout="this.style.background='#ffffff'">
+                      Tout masquer
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Lignes d'activités -->
+                <div style="display:flex;flex-direction:column;gap:6px;">
+                  ${section.filteredItems.map(item => {
+                    const isLocked = isActivityLocked(item.id);
+                    const btnClass = isLocked ? 'locked' : 'active';
+                    const btnLabel = isLocked ? '🔒 Masqué — Activer' : '✅ Actif — Masquer';
+                    const itemIcon = item.icon || '📄';
+
+                    return `
+                      <div class="manage-item" style="background:#ffffff;border:1px solid ${isLocked ? '#fed7aa' : '#e2e8f0'};border-radius:10px;padding:8px 12px;display:flex;align-items:center;justify-content:space-between;gap:10px;opacity:${isLocked ? '0.85' : '1'};">
+                        <!-- Icône & Titre -->
+                        <div style="display:flex;align-items:center;gap:10px;flex:1;min-width:0;">
+                          <div style="width:34px;height:34px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;overflow:hidden;">
+                            ${itemIcon}
+                          </div>
+                          <div style="flex:1;min-width:0;">
+                            <div class="item-name" style="font-size:13.5px;font-weight:700;color:#1e293b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:'Fredoka',sans-serif;">
+                              ${item.label}
+                            </div>
+                            <div style="display:flex;gap:6px;align-items:center;margin-top:2px;">
+                              <span style="font-size:10px;font-family:monospace;color:#64748b;background:#f1f5f9;padding:1px 5px;border-radius:4px;">${item.id}</span>
+                              <span style="font-size:10px;font-weight:700;color:${isLocked ? '#dc2626' : '#16a34a'};">${isLocked ? '🔴 Masqué aux élèves' : '🟢 Visible aux élèves'}</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        <!-- Boutons Aperçu & Bascule -->
+                        <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
+                          <button class="btn-preview" onclick="teacherPreviewActivity('${item.id}', '${item.screen || ''}', '${(item.fn || '').replace(/'/g, "\\'")}', '${item.filename || ''}', '${item.label.replace(/'/g, "\\'")}')" 
+                                  title="Tester / voir l'activité immédiatement">
+                            👁️ Aperçu
+                          </button>
+                          <button class="toggle-activity-btn ${btnClass}" onclick="toggleActivityVisibility('${item.id}')">
+                            ${btnLabel}
+                          </button>
+                        </div>
+                      </div>
+                    `;
+                  }).join('')}
+                </div>
+              </div>
+            `;
+          }).join('')}
+        </div>` : ''}
+      </div>
+    `;
+  });
+
+  if (renderedCategoriesCount === 0) {
+    html += `
+      <div class="card text-center" style="padding:2.5rem;text-align:center;color:#64748b;">
+        <div style="font-size:32px;margin-bottom:8px;">🔍</div>
+        <div style="font-size:16px;font-weight:700;color:#1e293b;margin-bottom:4px;">Aucune activité ne correspond à vos critères</div>
+        <p style="font-size:13px;margin:0;">Essayez un autre mot-clé ou modifiez les filtres d'état.</p>
+      </div>
+    `;
+  }
+
+  container.innerHTML = html;
+
+  if (typeof window.replaceEmojisOnPage === 'function') {
+    setTimeout(() => { window.replaceEmojisOnPage(container); }, 30);
+  }
+}
+
 
 // ============================================================
 // RENDU CÔTÉ ENSEIGNANT
@@ -44144,6 +44597,12 @@ function openFiche(filename, title, sourceScreen) {
 function closeFicheViewer() {
   const iframe = document.getElementById('fiche-viewer-iframe');
   if (iframe) iframe.src = 'about:blank';
+  if (typeof window.teacherPreviewActive !== 'undefined' && window.teacherPreviewActive) {
+    if (typeof returnFromTeacherPreview === 'function') {
+      returnFromTeacherPreview();
+      return;
+    }
+  }
   showScreen(ficheViewerSourceScreen);
 }
 
