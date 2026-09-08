@@ -3258,16 +3258,27 @@ input[type=text].calc-input.incorrect {
   };
 
   // ===== SYNC LIVRES ARCHIVÉS =====
-  window.FB_saveArchivedBooks = async function(arr) {
+  window.FB_saveArchivedBooks = async function(clsOrArr, maybeArr) {
     try {
-      await set(ref(db, 'settings/archived_books'), arr);
+      const cls = (typeof maybeArr !== 'undefined') ? clsOrArr : (typeof teacherCls !== 'undefined' ? teacherCls : 'lejoly');
+      const arr = (typeof maybeArr !== 'undefined') ? maybeArr : clsOrArr;
+      await set(ref(db, 'settings/archived_books_' + cls), arr);
+      if (cls === 'lejoly') {
+        await set(ref(db, 'settings/archived_books'), arr);
+      }
     } catch(e) { console.warn('Firebase saveArchivedBooks error:', e); }
   };
 
-  window.FB_loadArchivedBooks = async function() {
+  window.FB_loadArchivedBooks = async function(targetCls) {
     try {
-      const snap = await get(ref(db, 'settings/archived_books'));
-      return snap.exists() ? snap.val() : null;
+      const cls = targetCls || (typeof teacherCls !== 'undefined' ? teacherCls : 'lejoly');
+      const snap = await get(ref(db, 'settings/archived_books_' + cls));
+      if (snap.exists()) return snap.val();
+      if (cls === 'lejoly') {
+        const fallback = await get(ref(db, 'settings/archived_books'));
+        return fallback.exists() ? fallback.val() : null;
+      }
+      return null;
     } catch(e) { console.warn('Firebase loadArchivedBooks error:', e); return null; }
   };
 
@@ -8443,16 +8454,21 @@ function renderNamesForClass(cls){
   }
 }
 
-function getArchivedBooks(){
-  const s=localStorage.getItem('lq_archived');
-  return s?JSON.parse(s):[];
+function getArchivedBooks(targetCls){
+  const cls = targetCls || (typeof teacherCls !== 'undefined' && teacherCls ? teacherCls : getCurrentClassId());
+  const s = localStorage.getItem('lq_archived_' + cls) || (cls === 'lejoly' ? localStorage.getItem('lq_archived') : null);
+  return s ? JSON.parse(s) : [];
 }
-function saveArchivedBooks(arr){
-  localStorage.setItem('lq_archived',JSON.stringify(arr));
+function saveArchivedBooks(arr, targetCls){
+  const cls = targetCls || (typeof teacherCls !== 'undefined' && teacherCls ? teacherCls : getCurrentClassId());
+  localStorage.setItem('lq_archived_' + cls, JSON.stringify(arr));
+  if (cls === 'lejoly') {
+    localStorage.setItem('lq_archived', JSON.stringify(arr));
+  }
   if(window.FB_saveArchivedBooks){
-    window.FB_saveArchivedBooks(arr);
+    window.FB_saveArchivedBooks(cls, arr);
   } else {
-    setTimeout(()=>{ if(window.FB_saveArchivedBooks) window.FB_saveArchivedBooks(arr); }, 2000);
+    setTimeout(()=>{ if(window.FB_saveArchivedBooks) window.FB_saveArchivedBooks(cls, arr); }, 2000);
   }
 }
 function loadVisibleBooks(){
