@@ -10785,7 +10785,7 @@ window.EXERCICES_DETERMINANT_TRI = [
     exp: "« toutes » englobe la totalité du groupe au féminin, c'est un déterminant indéfini."
   },
   {
-    phrase: "Le chat a dormi <span class='target-highlight'>tout</span> le après-midi au soleil.",
+    phrase: "Le chat a dormi <span class='target-highlight'>tout</span> l'après-midi au soleil.",
     word: "tout",
     cat: "autre",
     exp: "« tout » englobe la totalité de la période, c'est un déterminant indéfini."
