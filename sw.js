@@ -269,9 +269,17 @@ const CORE_ASSETS = [
 // Installe le Service Worker et met en cache les ressources de base
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
+    caches.open(CACHE_NAME).then(async (cache) => {
       console.log('[Service Worker] Caching core assets');
-      return cache.addAll(CORE_ASSETS);
+      await Promise.allSettled(
+        CORE_ASSETS.map(async (url) => {
+          try {
+            await cache.add(url);
+          } catch (err) {
+            // Ignorer silencieusement si un fichier statique est absent
+          }
+        })
+      );
     })
   );
   self.skipWaiting();
