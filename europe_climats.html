@@ -66,6 +66,51 @@ body {
   color: white;
 }
 
+.tab-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.tab-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 8px;
+  background: rgba(0,0,0,0.08);
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 900;
+  transition: all .2s;
+}
+.tab-btn.active .tab-badge {
+  background: rgba(255,255,255,0.25);
+  color: white;
+}
+.tab-badge.done {
+  background: #16a34a !important;
+  color: white !important;
+}
+.btn-jump {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #4f46e5;
+  color: white;
+  border: none;
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+  margin-left: 8px;
+  transition: all .15s;
+}
+.btn-jump:hover {
+  background: #4338ca;
+}
+
 /* Zone de contenu */
 .tab-content {
   display: none;
@@ -337,9 +382,9 @@ body {
 
   <!-- Navigation par onglets -->
   <div class="tabs-nav">
-    <button class="tab-btn active" onclick="switchTab(0)">1. Découverte & Paysages</button>
-    <button class="tab-btn" onclick="switchTab(1)">2. Quiz des Climats</button>
-    <button class="tab-btn" onclick="switchTab(2)">3. Défi Climagrammes</button>
+    <button class="tab-btn active" id="tab-btn-0" onclick="switchTab(0)">1. Découverte & Paysages</button>
+    <button class="tab-btn" id="tab-btn-1" onclick="switchTab(1)">2. Quiz des Climats <span id="badge-quiz" class="tab-badge">0/5</span></button>
+    <button class="tab-btn" id="tab-btn-2" onclick="switchTab(2)">3. Défi Climagrammes <span id="badge-clim" class="tab-badge">0/10</span></button>
   </div>
 
   <!-- CONTENU : Onglet 1 (Découverte) -->
@@ -699,67 +744,131 @@ function switchTab(idx) {
   document.querySelectorAll('.tab-content').forEach((c, i) => c.classList.toggle('active', i === idx));
 }
 
+function jumpToTab(idx) {
+  switchTab(idx);
+  const target = document.getElementById('tab-' + idx);
+  if(target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function updateBadges() {
+  const quizDone = Object.keys(userSelections.quiz).length;
+  const badgeQuiz = document.getElementById('badge-quiz');
+  if (badgeQuiz) {
+    badgeQuiz.textContent = `${quizDone}/5` + (quizDone === 5 ? ' ✅' : '');
+    badgeQuiz.classList.toggle('done', quizDone === 5);
+  }
+
+  let climDone = 0;
+  CLIMAGRAMMES.forEach(c => {
+    if (userSelections.cities[c.id]) climDone++;
+    if (userSelections.subQ[c.id] !== undefined) climDone++;
+  });
+  const badgeClim = document.getElementById('badge-clim');
+  if (badgeClim) {
+    badgeClim.textContent = `${climDone}/10` + (climDone === 10 ? ' ✅' : '');
+    badgeClim.classList.toggle('done', climDone === 10);
+  }
+}
+
 function selectQuiz(qi, oi) {
   if (submitted) return;
   userSelections.quiz[qi] = oi;
-  // Mettre à jour l'aspect visuel de la sélection
   QUIZ_QUESTIONS[qi].options.forEach((_, idx) => {
     const el = document.getElementById(`quiz-lbl-${qi}-${idx}`);
-    el.classList.toggle('selected', idx === oi);
+    if(el) el.classList.toggle('selected', idx === oi);
   });
+  updateBadges();
 }
 
 function selectCity(cid, val) {
   if (submitted) return;
   userSelections.cities[cid] = val;
+  updateBadges();
 }
 
-// Correction d'un bug d'événement
 function selectSubQ(cid, oi) {
   if (submitted) return;
   userSelections.subQ[cid] = oi;
+  CLIMAGRAMMES.find(c => c.id === cid)?.subOpts.forEach((_, idx) => {
+    const el = document.getElementById(`subq-lbl-${cid}-${idx}`);
+    if(el) el.classList.toggle('selected', idx === oi);
+  });
+  updateBadges();
 }
 
 // --- VALIDATION ---
-function validerTout() {
-  // Vérifier si toutes les questions ont reçu une réponse
+function validerTout(force = false) {
+  if (submitted) return;
+
   const quizCount = QUIZ_QUESTIONS.length;
-  const climCount = CLIMAGRAMMES.length;
-  
-  let missingQuiz = false;
+  const missingQuizIndexes = [];
   for(let i = 0; i < quizCount; i++) {
     if(userSelections.quiz[i] === undefined) {
-      missingQuiz = true;
-      break;
+      missingQuizIndexes.push(i);
     }
   }
 
-  let missingClimCity = false;
-  let missingClimSub = false;
-  CLIMAGRAMMES.forEach(c => {
-    if(!userSelections.cities[c.id]) missingClimCity = true;
-    if(userSelections.subQ[c.id] === undefined) missingClimSub = true;
+  const missingClimCities = [];
+  const missingClimSubs = [];
+  CLIMAGRAMMES.forEach((c, idx) => {
+    if(!userSelections.cities[c.id]) missingClimCities.push({ id: c.id, num: idx + 1 });
+    if(userSelections.subQ[c.id] === undefined) missingClimSubs.push({ id: c.id, num: idx + 1 });
   });
 
-  if(missingQuiz || missingClimCity || missingClimSub) {
-    let msg = "Oups ! Il reste des questions sans réponse :\n\n";
-    let list = [];
-    if(missingQuiz) {
-      list.push("• Onglet « 2. Quiz des Climats » (il reste des questions à choix multiples)");
+  const hasMissing = missingQuizIndexes.length > 0 || missingClimCities.length > 0 || missingClimSubs.length > 0;
+
+  if(hasMissing && !force) {
+    const oldModal = document.getElementById('missing-prompt');
+    if(oldModal) oldModal.remove();
+
+    let detailsHtml = '';
+    if(missingQuizIndexes.length > 0) {
+      detailsHtml += `<div style="margin-bottom:8px;">
+        <strong>• Onglet « 2. Quiz des Climats » :</strong> ${missingQuizIndexes.length} question(s) restante(s)
+        <button type="button" class="btn-jump" onclick="jumpToTab(1)">👉 Aller au Quiz</button>
+      </div>`;
     }
-    if(missingClimCity || missingClimSub) {
-      let subDetails = [];
-      if(missingClimCity) subDetails.push("associer des villes");
-      if(missingClimSub) subDetails.push("répondre aux questions d'analyse");
-      list.push("• Onglet « 3. Défi Climagrammes » (il reste à : " + subDetails.join(" et ") + ")");
+    if(missingClimCities.length > 0 || missingClimSubs.length > 0) {
+      let climParts = [];
+      if(missingClimCities.length > 0) climParts.push(`${missingClimCities.length} ville(s) à associer`);
+      if(missingClimSubs.length > 0) climParts.push(`${missingClimSubs.length} question(s) d'analyse`);
+      detailsHtml += `<div>
+        <strong>• Onglet « 3. Défi Climagrammes » :</strong> ${climParts.join(' et ')}
+        <button type="button" class="btn-jump" onclick="jumpToTab(2)">👉 Aller aux Climagrammes</button>
+      </div>`;
     }
-    msg += list.join("\n\n") + "\n\nMerci de compléter ces sections avant de valider.";
-    alert(msg);
+
+    const modal = document.createElement('div');
+    modal.id = 'missing-prompt';
+    modal.style.cssText = 'background:#fff7ed; border:2px solid #ea580c; border-radius:16px; padding:18px; margin:1.5rem 0; box-shadow:0 4px 12px rgba(234,88,12,0.15);';
+    modal.innerHTML = `
+      <div style="font-size:16px; font-weight:900; color:#c2410c; margin-bottom:8px; display:flex; align-items:center; gap:8px;">
+        <span>⚠️</span> Attention : des questions n'ont pas encore été complétées !
+      </div>
+      <div style="font-size:14px; color:#7c2d12; line-height:1.6; margin-bottom:14px;">
+        ${detailsHtml}
+      </div>
+      <div style="display:flex; flex-wrap:wrap; gap:10px; align-items:center;">
+        <button type="button" onclick="validerTout(true)" style="background:#ea580c; color:white; border:none; padding:10px 16px; border-radius:10px; font-weight:800; font-family:'Nunito',sans-serif; cursor:pointer; font-size:13px;">
+          Valider quand même (les questions vides compteront pour 0 point)
+        </button>
+        <button type="button" onclick="document.getElementById('missing-prompt').remove()" style="background:#fed7aa; color:#9a3412; border:none; padding:10px 16px; border-radius:10px; font-weight:800; font-family:'Nunito',sans-serif; cursor:pointer; font-size:13px;">
+          Compléter mes réponses
+        </button>
+      </div>
+    `;
+    const validerBtn = document.getElementById('btn-valider');
+    validerBtn.parentNode.insertBefore(modal, validerBtn);
+    modal.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     return;
   }
 
+  const oldModal = document.getElementById('missing-prompt');
+  if(oldModal) oldModal.remove();
+
   submitted = true;
   let correctPoints = 0;
+  const climCount = CLIMAGRAMMES.length;
   const totalPoints = quizCount + climCount * 2; // Quiz (5) + Villes (5) + Sous-questions (5) = 15 points
 
   // 1. Correction Quiz
@@ -770,9 +879,11 @@ function validerTout() {
 
     q.options.forEach((_, oi) => {
       const el = document.getElementById(`quiz-lbl-${qi}-${oi}`);
-      el.classList.remove('selected');
-      if (oi === q.correct) el.classList.add('correct');
-      else if (oi === userSel) el.classList.add('incorrect');
+      if(el) {
+        el.classList.remove('selected');
+        if (oi === q.correct) el.classList.add('correct');
+        else if (oi === userSel) el.classList.add('incorrect');
+      }
     });
   });
 
@@ -784,8 +895,10 @@ function validerTout() {
     if(isCityOk) correctPoints++;
 
     const selectEl = document.getElementById(`select-city-${c.id}`);
-    selectEl.disabled = true;
-    selectEl.classList.add(isCityOk ? 'correct' : 'incorrect');
+    if(selectEl) {
+      selectEl.disabled = true;
+      selectEl.classList.add(isCityOk ? 'correct' : 'incorrect');
+    }
 
     // Sous-question
     const selSub = userSelections.subQ[c.id];
@@ -794,10 +907,12 @@ function validerTout() {
 
     c.subOpts.forEach((_, oi) => {
       const el = document.getElementById(`subq-lbl-${c.id}-${oi}`);
-      const radio = el.querySelector('input');
-      if(radio) radio.disabled = true;
-      if (oi === c.subCorrect) el.classList.add('correct');
-      else if (oi === selSub) el.classList.add('incorrect');
+      if(el) {
+        const radio = el.querySelector('input');
+        if(radio) radio.disabled = true;
+        if (oi === c.subCorrect) el.classList.add('correct');
+        else if (oi === selSub) el.classList.add('incorrect');
+      }
     });
   });
 
@@ -806,17 +921,22 @@ function validerTout() {
   
   // Affichage du score
   const scorePanel = document.getElementById('score-panel');
-  scorePanel.style.display = 'block';
-  const scoreTxt = document.getElementById('score-txt');
-  scoreTxt.textContent = `${correctPoints} / ${totalPoints} — ${pct}%`;
-  
-  if (pct >= 80) scoreTxt.style.color = 'var(--success)';
-  else if (pct >= 50) scoreTxt.style.color = 'var(--warning)';
-  else scoreTxt.style.color = 'var(--danger)';
+  if(scorePanel) {
+    scorePanel.style.display = 'block';
+    const scoreTxt = document.getElementById('score-txt');
+    if(scoreTxt) {
+      scoreTxt.textContent = `${correctPoints} / ${totalPoints} — ${pct}%`;
+      if (pct >= 80) scoreTxt.style.color = 'var(--success)';
+      else if (pct >= 50) scoreTxt.style.color = 'var(--warning)';
+      else scoreTxt.style.color = 'var(--danger)';
+    }
+  }
 
-  document.getElementById('btn-valider').style.display = 'none';
-  document.getElementById('btn-reset').style.display = 'block';
-  scorePanel.scrollIntoView({ behavior: 'smooth' });
+  const btnVal = document.getElementById('btn-valider');
+  if(btnVal) btnVal.style.display = 'none';
+  const btnRes = document.getElementById('btn-reset');
+  if(btnRes) btnRes.style.display = 'block';
+  if(scorePanel) scorePanel.scrollIntoView({ behavior: 'smooth' });
 
   // Communication avec la plateforme parent pour persister les résultats
   if (window.parent && window.parent.saveResult) {
@@ -838,6 +958,7 @@ function resetExercice() {
 
 // Initialisation
 init();
+
 </script>
 </body>
 </html>
