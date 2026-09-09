@@ -26,7 +26,7 @@ window.LIVRES = [
         "text": "Qui est Bill et quel rôle joue-t-il dans l'histoire ?",
         "options": [
           "C'est un pêcheur maori qui protège les eaux de Great Barrier",
-          "C'est un ancien pilote d'hélicoptère australien retraité, voisin de la mère d'Alice sur l'île, qui l'invite à une sortie en mer",
+          "C'est un ancien pilote d'hélicoptère ayant travaillé en Australie et désormais retraité, voisin de la mère d'Alice sur l'île, qui l'invite à une sortie en mer",
           "C'est le médecin qui s'est occupé de la mère d'Alice à l'hôpital d'Auckland",
           "C'est le capitaine du cargo qui les emmène à Great Barrier"
         ],
@@ -129,7 +129,7 @@ window.LIVRES = [
         "id": "q10",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "La mère d'Alice parle le maori, contrairement à son père.",
+        "text": "La mère d'Alice est géographe et se trouve en Nouvelle-Zélande pour une mission professionnelle.",
         "answer": true,
         "points": 1
       },
@@ -406,7 +406,7 @@ window.LIVRES = [
         "options": [
           "Résumé A : Marine découvre une montgolfière dans le débarras et apprend à coudre seule pour la réparer. Lors du premier vol d'essai, elle monte directement dans la nacelle avec son père et sa mère. Alain décide ensuite de devenir pilote de ligne pour une grande compagnie aérienne.",
           "Résumé B : Après un grave accident de voiture qui empêche son père de travailler, Marine répare une montgolfière pour lui offrir un baptême de l'air. Alain et son ex-femme Mireille décident de se remettre ensemble après avoir survolé leur village et ouvrent un musée de l'aviation.",
-          "Résumé C : Pour aider son père Alain à surmonter une profonde dépression, Marine décide de restaurer une vieille montgolfière trouvée dans le débarras. Avec l'aide de sa mère qui lui apprend la couture en secret, elle répare la toile. Alain retrouve l'espoir lors d'un vol en solitaire, trouve sa vocation dans le tourisme aérien et la famille retrouve enfin la sérénité."
+          "Résumé C : Pour aider son père Alain à surmonter une profonde dépression, Marine décide de restaurer une vieille montgolfière trouvée dans le débarras. Avec l'aide de sa mère qui lui apprend la couture en secret, elle répare la toile. Alain retrouve l'espoir lors d'un vol partagé avec sa fille Marine, trouve sa vocation dans le tourisme aérien et la famille retrouve enfin la sérénité."
         ],
         "answer": 2,
         "points": 1
@@ -1076,7 +1076,7 @@ window.LIVRES = [
         "options": [
           "Elle veut convaincre Rorrr de soigner la blessure que le chien lui a infligée à la jambe.",
           "Elle a tellement peur qu'elle perd la raison et confond les animaux et les membres de sa famille.",
-          "Elle comprend que Rorrr cherche une logique d'évolution et exploite son traducteur pour surcharger le vaisseau et l'obliger à renoncer à emmener sa famille.",
+          "Elle veut ajouter un passager supplémentaire pour dépasser la capacité du vaisseau et obliger Rorrr à renoncer à enlever sa famille.",
           "Elle espère que Rorrr aura peur des crocs de Rex et s'enfuira immédiatement."
         ],
         "answer": 2,
@@ -1579,7 +1579,7 @@ window.LIVRES = [
         "section": "Vrai ou Faux",
         "type": "tf",
         "text": "C'est le grand-père d'Emma qui a eu l'idée d'aller en Camargue pour libérer Comète.",
-        "answer": false,
+        "answer": true,
         "points": 1
       },
       {
@@ -4233,12 +4233,12 @@ window.LIVRES = [
         "id": "q7",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Pourquoi le maître du jeu a-t-il choisi le cimetière comme lieu de la révélation finale ?",
+        "text": "Pourquoi la révélation finale se déroule-t-elle précisément près de la tombe du grand-père au cimetière ?",
         "options": [
-          "Pour faire peur à Milo",
-          "Pour impliquer symboliquement grand-père dans l'anniversaire",
-          "Parce que c'est un endroit désert et discret",
-          "Parce que Milo y va souvent seul"
+          "Pour faire peur à Milo en le piégeant dans un lieu lugubre",
+          "Pour associer symboliquement le grand-père à ce jeu de piste et à l'anniversaire de Milo",
+          "Parce que c'est un endroit désert où personne ne risque d'intervenir",
+          "Parce que Milo avait l'habitude d'y aller seul tous les jours"
         ],
         "answer": 1,
         "points": 1
