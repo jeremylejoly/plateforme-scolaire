@@ -8348,6 +8348,38 @@ function backToClassSelect(){
   if(classSec) classSec.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
+function getStudentAvatarUrl(name) {
+  if (!name) return null;
+  const clean = name.toLowerCase()
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]/g, "");
+  const map = {
+    'jeremy': 'avatar/jeremy_avatar.png',
+    'aaron': 'avatar/aaron_avatar.png',
+    'nael': 'avatar/nael_avatar.png',
+    'timothe': 'avatar/timothe_avatar.png',
+    'joshua': 'avatar/joshua_avatar.png',
+    'mila': 'avatar/mila_avatar.png',
+    'nome': 'avatar/nome_avatar.png',
+    'nomeniavo': 'avatar/nome_avatar.png',
+    'sarah': 'avatar/sarah_avatar.png',
+    'colin': 'avatar/colin_avatar.png',
+    'noah': 'avatar/noah_avatar.png',
+    'dimitri': 'avatar/dimitri_avatar.png',
+    'tessa': 'avatar/tessa_avatar.png',
+    'thibaut': 'avatar/thibaut_avatar.png',
+    'malou': 'avatar/malou_avatar.png',
+    'mathis': 'avatar/mathis_avatar.png',
+    'loan': 'avatar/loan_avatar.png',
+    'theo': 'avatar/theo_avatar.png',
+    'alicia': 'avatar/alicia_avatar.png',
+    'ethan': 'avatar/ethan_avatar.png',
+    'morane': 'avatar/morane_avatar.png',
+    'viktoriia': 'avatar/viktoriia_avatar.png'
+  };
+  return map[clean] || null;
+}
+
 function renderNamesForClass(cls){
   const grid = document.getElementById('names-grid');
   grid.innerHTML = '<p style="color:var(--muted);font-size:14px;grid-column:1/-1">Chargement...</p>';
@@ -8361,13 +8393,14 @@ function renderNamesForClass(cls){
     students.forEach(s=>{
       const b = document.createElement('button');
       b.className='name-btn';
-      const isJeremy = s.name.toLowerCase() === 'jeremy';
-      if (isJeremy) {
+      const avatarUrl = getStudentAvatarUrl(s.name);
+      if (avatarUrl) {
         b.style.display = 'inline-flex';
         b.style.alignItems = 'center';
-        b.style.gap = '8px';
+        b.style.gap = '10px';
         b.style.justifyContent = 'center';
-        b.innerHTML = `<img src="photos/jeremy_avatar.png" alt="Jeremy" style="width:24px;height:24px;border-radius:50%;object-fit:cover;border:1.5px solid var(--border);" /> <span>${s.name}</span>`;
+        b.style.padding = '8px 16px';
+        b.innerHTML = `<img src="${avatarUrl}" alt="${s.name}" style="width:34px;height:34px;border-radius:50%;object-fit:cover;border:2px solid var(--border);box-shadow:1px 1px 0 rgba(0,0,0,0.8);" /> <span>${s.name}</span>`;
       } else {
         b.textContent=s.name;
       }
@@ -27714,13 +27747,57 @@ function selectEmoji(emoji){
   closeEmojiPicker();
 }
 
+function openAvatarModal(url, name) {
+  let modal = document.getElementById('global-avatar-modal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'global-avatar-modal';
+    modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.65);backdrop-filter:blur(4px);z-index:99999;display:flex;align-items:center;justify-content:center;padding:16px;';
+    modal.onclick = (e) => { if (e.target === modal) modal.style.display = 'none'; };
+    document.body.appendChild(modal);
+  }
+  modal.innerHTML = `
+    <div style="background:#fff;border:4px solid #1e293b;border-radius:24px;padding:24px;max-width:380px;width:100%;text-align:center;box-shadow:8px 8px 0 rgba(0,0,0,1);position:relative;">
+      <button onclick="document.getElementById('global-avatar-modal').style.display='none'" style="position:absolute;top:12px;right:12px;background:#f1f5f9;border:2px solid #1e293b;border-radius:10px;width:36px;height:36px;font-weight:bold;font-size:18px;cursor:pointer;box-shadow:2px 2px 0 rgba(0,0,0,1);">✕</button>
+      <div style="font-size:12px;font-family:monospace;font-weight:bold;background:#fef3c7;border:1px solid #fde68a;color:#92400e;display:inline-block;padding:4px 12px;border-radius:999px;margin-bottom:8px;">🎨 MON AVATAR PERSONNALISÉ</div>
+      <h3 style="margin:0 0 16px 0;font-size:24px;font-family:sans-serif;font-weight:900;color:#1e293b;">${name}</h3>
+      <div style="width:240px;height:240px;margin:0 auto 16px auto;border:3px solid #1e293b;border-radius:20px;overflow:hidden;box-shadow:4px 4px 0 rgba(0,0,0,1);">
+        <img src="${url}" alt="${name}" style="width:100%;height:100%;object-fit:cover;" />
+      </div>
+      <div style="display:flex;gap:8px;justify-content:center;margin-bottom:12px;">
+        <a href="${url}" download="avatar_${name.toLowerCase()}.png" style="display:inline-flex;align-items:center;gap:6px;background:#6366f1;color:#fff;font-weight:bold;font-size:13px;padding:10px 16px;border-radius:12px;border:2px solid #1e293b;box-shadow:2px 2px 0 rgba(0,0,0,1);text-decoration:none;cursor:pointer;">💾 Télécharger</a>
+        <button id="copy-avatar-btn" onclick="copyAvatarImage('${url}')" style="display:inline-flex;align-items:center;gap:6px;background:#f1f5f9;color:#1e293b;font-weight:bold;font-size:13px;padding:10px 16px;border-radius:12px;border:2px solid #1e293b;box-shadow:2px 2px 0 rgba(0,0,0,1);cursor:pointer;">📋 Copier</button>
+      </div>
+      <p style="margin:0;font-size:11px;color:#64748b;">💡 Clic-droit sur l'image pour copier ou enregistrer !</p>
+    </div>
+  `;
+  modal.style.display = 'flex';
+}
+
+function copyAvatarImage(url) {
+  fetch(url)
+    .then(r => r.blob())
+    .then(blob => {
+      navigator.clipboard.write([new ClipboardItem({ [blob.type]: blob })]).then(() => {
+        const btn = document.getElementById('copy-avatar-btn');
+        if (btn) { btn.textContent = '✅ Copié !'; setTimeout(() => btn.textContent = '📋 Copier', 2000); }
+      });
+    })
+    .catch(() => {
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'avatar.png';
+      link.click();
+    });
+}
+
 function loadAndApplyEmoji(){
-  const isJeremy = state.student.toLowerCase() === 'jeremy';
-  if (isJeremy) {
+  const avatarUrl = getStudentAvatarUrl(state.student);
+  if (avatarUrl) {
     ['subjects-avatar','home-avatar'].forEach(id => {
       const el = document.getElementById(id);
       if(el){
-        el.innerHTML = '<img src="photos/jeremy_avatar.png" alt="Jeremy" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" />';
+        el.innerHTML = `<img src="${avatarUrl}" alt="${state.student}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;cursor:pointer;transition:transform 0.2s;" title="Clique pour agrandir ton avatar !" onclick="openAvatarModal('${avatarUrl}','${state.student}')" />`;
         el.style.fontSize = ''; 
       }
     });
