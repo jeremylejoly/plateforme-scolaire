@@ -1,64 +1,33 @@
-# 🎨 Liste des Avatars Élèves — Classe de Mr Lejoly
+# 🎨 Galerie des Avatars Élèves — Classe de Mr Lejoly (21/21)
 
-## 🎨 Ajustements demandés sur les avatars existants :
-1. **Mila** (`mila_avatar.png`) 🐴 : Modifier la couleur du cheval pour qu'il soit **blanc** (cheval blanc / robe blanche), en conservant exactement la même pose de saut d'obstacle, la tenue d'équitation et le fond rose bonbon.
-2. **Jérémy** (`jeremy_avatar.png`) 🚴 : Mettre en pleine couleur (carnation peau, t-shirt coloré) avec un **VTT tout-suspendu (full suspendu) KTM orange et noir**, en conservant le même visage avec lunettes, cheveux noirs ébouriffés, sourire et fond bleu ciel avec étoiles.
-3. **Naël** (`nael_avatar.png`) 🛴 : Ajouter la carnation de peau, détails colorés sur la trottinette et la casquette.
-4. **Joshua** (`joshua_avatar.png`) 🧢 : Ajouter la carnation de peau et un joli fond pastel doux avec symboles discrets.
-5. **Colin** (`colin_avatar.png`) 🎿 : Coloriser la peau, la tenue de ski Nike / baggy et les skis.
-6. **Noah** (`noah_avatar.png`) 🛹 : Coloriser la peau, le bonnet, le sweat/pantalon, le skate et la rampe.
-
-*Note : Tous les nouveaux avatars (Thibaut, Malou, Mathis, Loan, Théo, Alicia, Ethan, Morane, Viktoriia) seront d'emblée générés en pleine couleur comme Aaron, Nomé, Dimitri, Sarah, Tessa et Timothé.*
+Tous les avatars ont été générés en **pleine couleur**, au format **doodle vectoriel épuré avec contour noir**, avec **fond pastel doux**, et **strictement SANS AUCUN texte ni prénom**.
 
 ---
 
+## 🌟 Liste complète des avatars finalisés :
 
-## ⏳ Avatars en attente de génération (descriptions enregistrées) :
+1. **Jérémy** (`jeremy_avatar.png`) — VTT full suspendu KTM orange & noir, lunettes rondes, t-shirt bleu, fond bleu ciel & étoiles.
+2. **Aaron** (`aaron_avatar.png`) — Karaté coup de pied sauté, coupe dégradée espagnole, tenue kaki, fond vert menthe & feuilles.
+3. **Naël** (`nael_avatar.png`) — Trottinette électrique les bras grands ouverts sans les mains, casquette & tenue Nike, fond bleu ciel & cœurs.
+4. **Timothé** (`timothe_avatar.png`) — Magie, livre de sort & baguette avec étincelles, veste rouge, fond vert menthe & éclairs.
+5. **Joshua** (`joshua_avatar.png`) — Chill mains dans les poches, casquette Nike, t-shirt gris & pantalon noir, fond vert menthe doux & étincelles.
+6. **Mila** (`mila_avatar.png`) — Saut d'obstacle avec son magnifique **cheval blanc**, veste d'équitation bleue, fond rose bonbon, cœurs & feuilles.
+7. **Nomé** (`nome_avatar.png`) — Travail en classe avec son vélo garé à côté, t-shirt coloré, fond pêche/abricot, feuilles & notes de musique.
+8. **Sarah** (`sarah_avatar.png`) — Câlin avec son chien berger australien, pull bordeaux & legging, fond lilas & cœurs.
+9. **Colin** (`colin_avatar.png`) — Ski les mains derrière la tête, coupe dégradée espagnole, veste Nike bleue & skis, fond rose bonbon & éclairs.
+10. **Noah** (`noah_avatar.png`) — Skate sur une rampe en bois, bonnet moutarde, sweat à capuche bleu & pantalon large, fond rose bonbon & feuilles.
+11. **Dimitri** (`dimitri_avatar.png`) — Vélo et smartphone, casquette à l'envers, lunettes de soleil & bomber vert, fond bleu ciel & éclairs.
+12. **Tessa** (`tessa_avatar.png`) — Gymnastique en équilibre sur la poutre, pull coloré géométrique, fond rose bonbon & étincelles.
+13. **Thibaut** (`thibaut_avatar.png`) — Voiture de sport décapotable, casquette rouge à l'envers & hoodie orange, fond bleu ciel & éclairs.
+14. **Malou** (`malou_avatar.png`) — Tennis en mouvement, chevelure blonde bouclée, ensemble sporty coloré, fond rose bonbon & feuilles.
+15. **Mathis** (`mathis_avatar.png`) — Foot FC Barcelone avec ballon sous le pied, lunettes & sourire malicieux, fond bleu ciel & étoiles.
+16. **Loan** (`loan_avatar.png`) — Retourné acrobatique (bicyclette) en l'air au football, tenue jaune #10, fond bleu ciel & étincelles.
+17. **Théo** (`theo_avatar.png`) — Promenade avec un adorable panda roux en laisse, ensemble Adidas noir, fond bleu ciel & feuilles d'automne.
+18. **Alicia** (`alicia_avatar.png`) — Au galop sur son cheval, cheveux bruns bouclés & t-shirt noir, fond rose bonbon & feuilles.
+19. **Ethan** (`ethan_avatar.png`) — Célébration de but au football, vareuse #9 blanche & dorée, cheveux blonds en pétard, fond pêche & étincelles/éclairs.
+20. **Morane** (`morane_avatar.png`) — Gymnastique artistique fière sur poutre, lunettes, t-shirt rose bonbon & pantalon bleu ciel, fond rose bonbon & étoiles.
+21. **Viktoriia** (`viktoriia_avatar.png`) — Guitare acoustique au dos, carnet de croquis en main, grand sweat cosy bordeaux & casquette gavroche noire, fond vert menthe & notes.
 
-### 🏎️ Thibaut
-- **Portrait :** Blond, yeux bleus, grand sourire, casquette rouge, pull à capuche orange.
-- **Passion :** Au volant d'une voiture de sport.
-- **Décor :** Bleu ciel pastel avec des éclairs d'énergie ⚡.
-
-### 🎾 Malou
-- **Portrait :** Cheveux blonds bouclés lâchés, souriante, quelques taches de rousseur, crop top.
-- **Passion :** En action avec une raquette de tennis en main, grand sourire.
-- **Décor :** Rose bonbon pastel avec des feuilles de nature 🍃.
-
-### ⚽ Mathis
-- **Portrait :** Cheveux bruns mi-longs coupe casquette, sourire en coin, lunettes, chaussures de foot Adidas, vareuse du FC Barcelone.
-- **Passion :** Joyeux avec un ballon de football sous le pied.
-- **Décor :** Bleu ciel pastel uni.
-
-### ⚽ Loan
-- **Portrait :** Cheveux bruns dégradés espagnols, sourire, vareuse de foot de Neymar Jr.
-- **Passion :** En plein mouvement acrobatique en réalisant une bicyclette / retourné au football.
-- **Décor :** Bleu ciel pastel uni.
-
-### 🦝 Théo
-- **Portrait :** Cheveux châtains courts, regard normal, sourire, ensemble noir Adidas.
-- **Passion :** Heureux en train de promener un adorable panda roux.
-- **Décor :** Bleu ciel pastel avec des feuilles d'automne 🍂.
-
-### 🐴 Alicia
-- **Portrait :** Cheveux courts, crolés / bouclés, bruns mi-longs, petit sourire mignon, tee-shirt noir.
-- **Passion :** En train de galoper avec son cheval.
-- **Décor :** Rose bonbon pastel avec des feuilles de nature 🍃.
-
-### ⚽ Ethan
-- **Portrait :** Cheveux blonds clairs en pétard, vareuse de foot de CR9 (Cristiano Ronaldo).
-- **Passion :** En train de célébrer / marquer un but au football avec sa vareuse de CR9.
-- **Décor :** Pêche / abricot pastel avec des étincelles ✨ et des éclairs d'énergie ⚡.
-
-### 🤸 Morane
-- **Portrait :** Cheveux bruns foncés légèrement plus bas que les épaules, souriante, lunettes, t-shirt rose bonbon, pantalon bleu ciel, chaussures Adidas.
-- **Passion :** Debout et contente à la gymnastique (en tenue/pose de gym).
-- **Décor :** Rose bonbon pastel avec des étoiles ⭐.
-
-### 🎸 Viktoriia
-- **Portrait & Tenue (d'après son dessin) :** Cheveux bruns clairs/châtains dégradés ébouriffés, jolis yeux verts, pommettes rosées, doux sourire calme, casquette gavroche/noire, grand sweat bordeaux/marron oversize à manches très longues, petite jupe plissée claire, chaussettes et baskets noires.
-- **Passion :** Guitare acoustique portée en bandoulière dans le dos, carnet de dessin/croquis en main.
-- **Décor :** Vert menthe avec notes de musique 🎵 et feuilles de nature 🍃.
 
 
 
