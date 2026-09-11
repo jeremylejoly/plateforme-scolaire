@@ -4,7 +4,7 @@ import FrancaisActivity from "./FrancaisActivity";
 import MathsActivity from "./MathsActivity";
 import EveilActivity from "./EveilActivity";
 import JeuxActivity from "./JeuxActivity";
-import { LogOut, ArrowRight, Sparkles, BookOpen, Calculator, Globe, Gamepad2, GraduationCap } from "lucide-react";
+import { LogOut, ArrowRight, Sparkles, BookOpen, Calculator, Globe, Gamepad2, GraduationCap, X, Download, Maximize2, Copy, Check } from "lucide-react";
 import { Subject, SubjectId } from "../types";
 import { DEFAULT_STUDENTS } from "./StudentList";
 
@@ -54,10 +54,38 @@ const SUBJECTS_DATA: Subject[] = [
 
 export default function ClassroomDashboard({ studentName, onLogout }: ClassroomDashboardProps) {
   const [activeSubject, setActiveSubject] = useState<SubjectId | null>(null);
+  const [showAvatarModal, setShowAvatarModal] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   const currentStudent = DEFAULT_STUDENTS.find(
     (s) => s.name.toLowerCase() === studentName.toLowerCase()
   );
+
+  const copyImageToClipboard = async () => {
+    if (!currentStudent?.photoUrl) return;
+    try {
+      const response = await fetch(currentStudent.photoUrl);
+      const blob = await response.blob();
+      await navigator.clipboard.write([
+        new ClipboardItem({ [blob.type]: blob })
+      ]);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2500);
+    } catch (e) {
+      // Fallback: download image directly
+      downloadAvatar();
+    }
+  };
+
+  const downloadAvatar = () => {
+    if (!currentStudent?.photoUrl) return;
+    const link = document.createElement("a");
+    link.href = currentStudent.photoUrl;
+    link.download = `avatar_${studentName.toLowerCase()}.png`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   // Return the selected activity component based on the active subject ID
   const renderActiveActivity = () => {
@@ -99,14 +127,31 @@ export default function ClassroomDashboard({ studentName, onLogout }: ClassroomD
             </div>
           </div>
 
-          <button
-            onClick={onLogout}
-            className="flex items-center gap-2 px-4 py-2 bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-700 font-display font-medium text-xs md:text-sm rounded-xl transition duration-200 active:scale-95"
-            title="Se déconnecter"
-          >
-            <LogOut className="w-4 h-4" />
-            <span>Changer d'élève</span>
-          </button>
+          <div className="flex items-center gap-3 relative z-10">
+            <button
+              onClick={() => setShowAvatarModal(true)}
+              className="flex items-center gap-2 px-3 py-1.5 bg-neutral-100 hover:bg-neutral-200 border-2 border-neutral-900 rounded-xl shadow-[2px_2px_0px_rgba(0,0,0,1)] transition duration-200 active:scale-95 cursor-pointer group"
+              title="Voir mon avatar en grand"
+            >
+              <div className="w-8 h-8 rounded-lg overflow-hidden border border-neutral-900 bg-white flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform duration-200">
+                {currentStudent?.photoUrl ? (
+                  <img src={currentStudent.photoUrl} alt={studentName} className="w-full h-full object-cover" />
+                ) : (
+                  <span className="text-base" role="img" aria-label="avatar">{currentStudent?.avatar || "🚴"}</span>
+                )}
+              </div>
+              <span className="font-display font-bold text-xs md:text-sm text-neutral-800">{studentName}</span>
+            </button>
+
+            <button
+              onClick={onLogout}
+              className="flex items-center gap-2 px-3.5 py-2 bg-rose-50 hover:bg-rose-100 border-2 border-neutral-900 text-rose-700 font-display font-bold text-xs md:text-sm rounded-xl shadow-[2px_2px_0px_rgba(0,0,0,1)] transition duration-200 active:scale-95 cursor-pointer"
+              title="Se déconnecter"
+            >
+              <LogOut className="w-4 h-4" />
+              <span>Changer d'élève</span>
+            </button>
+          </div>
         </header>
 
         {activeSubject ? (
@@ -119,24 +164,42 @@ export default function ClassroomDashboard({ studentName, onLogout }: ClassroomD
           <div className="space-y-8 animate-fadeIn">
             
             {/* Peach / Pink connected greeting widget banner */}
-            <div className="bg-gradient-to-r from-rose-100 to-amber-100/70 border border-rose-200/50 rounded-3xl p-6 md:p-8 flex items-center gap-5 relative overflow-hidden shadow-sm">
+            <div className="bg-gradient-to-r from-rose-100 to-amber-100/70 border-2 border-neutral-900 rounded-3xl p-6 md:p-8 flex flex-col sm:flex-row items-center gap-5 relative overflow-hidden shadow-[4px_4px_0px_rgba(0,0,0,1)]">
               <div className="absolute top-2 right-2 opacity-5 select-none text-7xl font-black">✏️</div>
               
-              {/* Cycling/running active custom avatar circle */}
-              <div className="w-16 h-16 bg-white border-2 border-neutral-900 rounded-2xl flex items-center justify-center shadow-[3px_3px_0px_rgba(0,0,0,1)] shrink-0 select-none transform hover:scale-105 transition duration-200 overflow-hidden">
+              {/* Clickable Custom Avatar frame */}
+              <button
+                type="button"
+                onClick={() => setShowAvatarModal(true)}
+                className="group relative w-20 h-20 bg-white border-2 border-neutral-900 rounded-2xl flex items-center justify-center shadow-[3px_3px_0px_rgba(0,0,0,1)] shrink-0 cursor-pointer transform hover:scale-105 transition-all duration-200 overflow-hidden focus:outline-none focus:ring-4 focus:ring-amber-400"
+                title="Clique pour voir ton avatar en grand !"
+              >
                 {currentStudent?.photoUrl ? (
                   <img src={currentStudent.photoUrl} alt={studentName} className="w-full h-full object-cover" />
                 ) : (
-                  <span className="text-3xl" role="img" aria-label="avatar">
+                  <span className="text-4xl" role="img" aria-label="avatar">
                     {currentStudent?.avatar || "🚴"}
                   </span>
                 )}
-              </div>
+                
+                {/* Hover overlay hint */}
+                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center">
+                  <Maximize2 className="w-6 h-6 text-white drop-shadow-md" />
+                </div>
+              </button>
               
-              <div>
-                <h2 className="font-display font-bold text-2xl md:text-3xl text-neutral-800 tracking-tight flex items-center gap-2">
-                  Bonjour {studentName} ! <Sparkles className="w-5 h-5 text-amber-500 fill-amber-400 animate-pulse" />
-                </h2>
+              <div className="text-center sm:text-left flex-1">
+                <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
+                  <h2 className="font-display font-black text-2xl md:text-3xl text-neutral-800 tracking-tight flex items-center gap-2">
+                    Bonjour {studentName} ! <Sparkles className="w-5 h-5 text-amber-500 fill-amber-400 animate-pulse" />
+                  </h2>
+                  <button
+                    onClick={() => setShowAvatarModal(true)}
+                    className="text-xs font-mono font-bold text-neutral-600 bg-white/80 hover:bg-white border border-neutral-300 px-2 py-0.5 rounded-full shadow-sm transition inline-flex items-center gap-1 cursor-pointer"
+                  >
+                    <Maximize2 className="w-3 h-3" /> Agrandir mon avatar
+                  </button>
+                </div>
                 <p className="text-sm md:text-base text-neutral-600 font-sans font-medium mt-1">
                   Que veux-tu faire aujourd'hui ? Choisis une matière ci-dessous pour t'entraîner !
                 </p>
@@ -154,41 +217,46 @@ export default function ClassroomDashboard({ studentName, onLogout }: ClassroomD
             {/* Responsive grid with 4 minimalist category cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-6">
               {SUBJECTS_DATA.map((sub) => {
-                // Determine colors based on category id
                 const pathColors = {
                   francais: "hover:border-indigo-300 focus-within:ring-indigo-100 bg-white",
                   mathematiques: "hover:border-sky-300 focus-within:ring-sky-100 bg-white",
                   eveil: "hover:border-emerald-300 focus-within:ring-emerald-100 bg-white",
                   jeux: "hover:border-amber-300 focus-within:ring-amber-100 bg-white"
-                };
+                }[sub.id];
 
                 return (
                   <button
                     key={sub.id}
                     onClick={() => setActiveSubject(sub.id)}
-                    className={`text-left rounded-3xl border-2 border-neutral-100 ${pathColors[sub.id]} p-4 flex flex-col gap-4 cursor-pointer transition-all duration-300 hover:shadow-lg focus:outline-none focus:ring-4 group`}
+                    className={`group text-left border-2 border-neutral-900 rounded-2xl p-6 shadow-[4px_4px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_rgba(0,0,0,1)] hover:-translate-y-1 transition duration-200 cursor-pointer flex flex-col justify-between gap-4 ${pathColors}`}
                   >
-                    {/* Header line containing color dot and visual indicator */}
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <span className={`w-3 h-3 rounded-full ${sub.dotColor} shadow-xs`}></span>
-                        <h4 className="font-display font-bold text-xl text-neutral-800 group-hover:text-neutral-900 leading-none">
-                          {sub.title}
-                        </h4>
+                      <div className="flex items-center gap-3">
+                        <div className="p-2.5 rounded-xl border border-neutral-200 bg-neutral-50 group-hover:scale-110 transition duration-200">
+                          {sub.id === "francais" && <BookOpen className="w-6 h-6 text-indigo-500" />}
+                          {sub.id === "mathematiques" && <Calculator className="w-6 h-6 text-sky-500" />}
+                          {sub.id === "eveil" && <Globe className="w-6 h-6 text-emerald-500" />}
+                          {sub.id === "jeux" && <Gamepad2 className="w-6 h-6 text-amber-500" />}
+                        </div>
+                        <div>
+                          <h4 className="font-display font-black text-xl text-neutral-800 tracking-tight leading-tight">
+                            {sub.title}
+                          </h4>
+                          <span className="text-xs font-mono text-neutral-400 font-medium">
+                            {sub.caption}
+                          </span>
+                        </div>
                       </div>
                       
-                      {/* Interactive arrow floating */}
                       <span className="text-neutral-300 group-hover:text-neutral-600 transition-colors duration-200 transform translate-x-0 group-hover:translate-x-1 duration-200">
                         <ArrowRight className="w-5 h-5" />
                       </span>
                     </div>
 
-                    {/* Minimalist Modern Illustration Vector container */}
                     <div className="rounded-xl overflow-hidden border border-neutral-100/50">
                       <MinimalistCategoryIcon id={sub.id} />
                     </div>
 
-                    {/* Caption description footer */}
                     <div>
                       <p className="text-xs font-mono font-bold tracking-wide text-neutral-400 group-hover:text-neutral-500 uppercase mb-1">
                         Détail du cours :
@@ -209,6 +277,90 @@ export default function ClassroomDashboard({ studentName, onLogout }: ClassroomD
 
           </div>
         )}
+
+        {/* 🌟 Avatar Lightbox Modal */}
+        {showAvatarModal && (
+          <div 
+            className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 animate-fadeIn"
+            onClick={() => setShowAvatarModal(false)}
+          >
+            <div 
+              className="bg-white border-4 border-neutral-900 rounded-3xl p-6 md:p-8 max-w-md w-full shadow-[8px_8px_0px_rgba(0,0,0,1)] relative animate-scaleUp text-center"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Close button */}
+              <button
+                onClick={() => setShowAvatarModal(false)}
+                className="absolute top-4 right-4 w-10 h-10 bg-neutral-100 hover:bg-neutral-200 border-2 border-neutral-900 rounded-xl flex items-center justify-center shadow-[2px_2px_0px_rgba(0,0,0,1)] active:scale-95 transition cursor-pointer"
+                title="Fermer"
+              >
+                <X className="w-5 h-5 text-neutral-800" />
+              </button>
+
+              {/* Title & Name */}
+              <div className="mb-4">
+                <span className="inline-block px-3 py-1 bg-amber-100 border border-amber-300 rounded-full text-xs font-mono font-bold text-amber-800 mb-2">
+                  🎨 MON AVATAR PERSONNALISÉ
+                </span>
+                <h3 className="font-display font-black text-2xl md:text-3xl text-neutral-800 tracking-tight">
+                  {studentName}
+                </h3>
+              </div>
+
+              {/* Large Image Frame */}
+              <div className="relative mx-auto w-64 h-64 sm:w-72 sm:h-72 rounded-3xl border-4 border-neutral-900 overflow-hidden shadow-[4px_4px_0px_rgba(0,0,0,1)] bg-white mb-6">
+                {currentStudent?.photoUrl ? (
+                  <img 
+                    src={currentStudent.photoUrl} 
+                    alt={studentName} 
+                    className="w-full h-full object-cover select-none" 
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-7xl select-none">
+                    {currentStudent?.avatar || "🚴"}
+                  </div>
+                )}
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex flex-col sm:flex-row gap-3 justify-center mb-3">
+                <button
+                  onClick={downloadAvatar}
+                  className="flex items-center justify-center gap-2 px-4 py-3 bg-indigo-500 hover:bg-indigo-600 text-white font-display font-bold text-sm rounded-xl border-2 border-neutral-900 shadow-[3px_3px_0px_rgba(0,0,0,1)] active:scale-95 transition cursor-pointer"
+                >
+                  <Download className="w-4 h-4" />
+                  <span>Télécharger l'image</span>
+                </button>
+
+                <button
+                  onClick={copyImageToClipboard}
+                  className={`flex items-center justify-center gap-2 px-4 py-3 font-display font-bold text-sm rounded-xl border-2 border-neutral-900 shadow-[3px_3px_0px_rgba(0,0,0,1)] active:scale-95 transition cursor-pointer ${
+                    copied 
+                      ? "bg-emerald-500 text-white" 
+                      : "bg-neutral-100 hover:bg-neutral-200 text-neutral-800"
+                  }`}
+                >
+                  {copied ? (
+                    <>
+                      <Check className="w-4 h-4 text-white" />
+                      <span>Copié dans le presse-papier !</span>
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="w-4 h-4" />
+                      <span>Copier l'image</span>
+                    </>
+                  )}
+                </button>
+              </div>
+
+              <p className="text-xs text-neutral-400 font-sans">
+                💡 Tu peux aussi faire un <strong>clic-droit</strong> sur l'image pour la copier ou l'enregistrer !
+              </p>
+            </div>
+          </div>
+        )}
+
       </div>
     </div>
   );
