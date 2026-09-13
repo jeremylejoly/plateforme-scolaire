@@ -42,6 +42,11 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
         <div className="absolute top-6 left-6 text-yellow-500 font-sketch text-lg">★</div>
         <div className="absolute bottom-6 right-6 text-pink-500 font-sketch text-2xl">❤</div>
 
+        {/* Teacher Avatar */}
+        <div className="w-20 h-20 md:w-24 md:h-24 mx-auto mb-4 rounded-2xl border-3 border-neutral-900 shadow-[4px_4px_0px_rgba(0,0,0,1)] overflow-hidden bg-[#FFEEDC] p-1 flex items-center justify-center transform -rotate-2 hover:rotate-0 transition-transform duration-200">
+          <img src="/avatar/jeremy_avatar.png" onError={(e) => { (e.currentTarget as HTMLImageElement).src = "/photos/jeremy_avatar.png"; }} alt="Mr Lejoly" className="w-full h-full object-cover rounded-xl" />
+        </div>
+
         {/* Cursive Subtitle */}
         <span className="font-sketch text-xl md:text-2xl text-indigo-500 block rotate-[-3deg] mb-3 animate-pulse">
           Bienvenue dans ta classe !
