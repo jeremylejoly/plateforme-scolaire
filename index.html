@@ -8063,13 +8063,23 @@ function loadResults(cls){
   });
 }
 function saveResult(entry){
+  // 1. Ne JAMAIS enregistrer de résultat si l'enseignant est connecté ou prévisualise
+  if (typeof state !== 'undefined' && state.role === 'teacher') {
+    console.log('Mode enseignant actif : résultat ignoré (pas de sauvegarde).');
+    return;
+  }
+  if (typeof window.teacherPreviewActive !== 'undefined' && window.teacherPreviewActive) {
+    return;
+  }
+  if (!entry) return;
+
   if (!entry.student && typeof state !== 'undefined' && state.student) {
     entry.student = state.student;
     entry.cls = state.studentCls;
     entry.className = CLASSES[state.studentCls] ? CLASSES[state.studentCls].name : state.studentCls;
   }
-  // Ne pas enregistrer de résultat s'il n'y a pas d'élève connecté (ex: mode enseignant ou prévisualisation)
-  if (!entry.student) {
+  // Ne pas enregistrer de résultat s'il n'y a pas d'élève connecté
+  if (!entry.student || entry.student === 'undefined' || entry.student.startsWith('Enseignant')) {
     console.warn("⚠️ Tentative d'enregistrement de résultat sans élève connecté. Enregistrement annulé.");
     return;
   }
@@ -8911,6 +8921,8 @@ function resetToWelcome(){
 }
 
 function showTeacherLogin(){
+  state.student = '';
+  state.studentCls = '';
   document.getElementById('teacher-modal').classList.add('open');
   document.getElementById('pw-input').value='';
   document.getElementById('pw-error').style.display='none';
@@ -8919,6 +8931,8 @@ function showTeacherLogin(){
 
 function selectTeacherModalClass(cls){
   teacherCls = cls;
+  state.student = '';
+  state.studentCls = '';
   planTravailLoaded = false;
   planTravailAssigned = [];
   planTravailIndividual = {};
@@ -8943,6 +8957,8 @@ function selectTeacherModalClass(cls){
 
 function selectTeacherClass(cls,btn){
   teacherCls=cls;
+  state.student = '';
+  state.studentCls = '';
   planTravailLoaded = false;
   planTravailAssigned = [];
   planTravailIndividual = {};
@@ -8974,6 +8990,8 @@ function openSetPassword(){
 
 function openTeacherPanel(){
   state.role='teacher';
+  state.student = '';
+  state.studentCls = '';
   planTravailLoaded = false;
   planTravailAssigned = [];
   planTravailIndividual = {};
@@ -9227,7 +9245,7 @@ function doRenderStudentDetail(studentName){
   const color=avg>=70?'var(--green)':avg>=50?'var(--amber)':'var(--red)';
 
   let html=`<button class="back-to-list" onclick="renderGestionResults()">← Retour à la liste</button>
-  <button onclick="deleteStudentResults('${studentName}')" style="float:right;background:#fee2e2;color:#e74c3c;border:1px solid #e74c3c;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;margin-bottom:0.5rem;">🗑 Effacer les résultats</button>`;
+  <button onclick="deleteStudentResults('${studentName}')" style="float:right;background:#fee2e2;color:#e74c3c;border:1px solid #e74c3c;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;margin-bottom:0.5rem;">🗑 Effacer tous les résultats</button>`;
   html+=`<div style="font-family:'Nunito',sans-serif;font-weight:800;font-size:20px;margin-bottom:0.3rem">${studentName}</div>`;
   html+=`<div style="font-size:13px;color:var(--muted);margin-bottom:1.2rem">${results.length} activité${results.length>1?'s':''} · Moyenne : <span style="color:${color};font-weight:700">${avg}%</span></div>`;
 
@@ -9240,7 +9258,12 @@ function doRenderStudentDetail(studentName){
       let activity = r.bookTitle || r.activityLabel || r.activity || r.book || 'Exercice';
       if(activity.includes('undefined')) activity = r.activityLabel || r.activity || 'Exercice';
       const tempsHtml = r.time_sec ? `<span style="margin-left:6px;background:var(--purple-light);color:var(--purple);border-radius:10px;padding:1px 7px;font-size:11px;font-weight:700;">⏱️ ${r.time_sec}s</span>` : '';
-      html+=`<div class="student-detail-row">
+      const actKey = r.activity || r.book || '';
+      const rDate = r.date || '';
+      const rTime = r.time || '';
+      const deleteSingleBtn = `<button onclick="event.stopPropagation(); deleteSingleResult('${studentName}', '${encodeURIComponent(actKey)}', '${encodeURIComponent(rDate)}', '${encodeURIComponent(rTime)}')" title="Supprimer uniquement ce résultat" style="background:transparent;border:none;color:#ef4444;font-size:14px;cursor:pointer;padding:4px 6px;border-radius:6px;margin-left:8px;" onmouseover="this.style.background='#fee2e2'" onmouseout="this.style.background='transparent'">🗑️</button>`;
+
+      html+=`<div class="student-detail-row" style="align-items:center;">
         <div style="flex:1">
           <div style="font-weight:600;font-size:14px">${activity}${tempsHtml}</div>
           <div style="font-size:12px;color:var(--muted)">${r.date} ${r.time||''}</div>
@@ -9251,6 +9274,9 @@ function doRenderStudentDetail(studentName){
         </div>
         <div style="width:60px;flex-shrink:0">
           <div class="bar-wrap"><div class="bar-fill" style="width:${r.pct}%;background:${c}"></div></div>
+        </div>
+        <div style="flex-shrink:0;">
+          ${deleteSingleBtn}
         </div>
       </div>`;
     });
@@ -9266,6 +9292,57 @@ function doRenderStudentDetail(studentName){
   }
 }  // fin doRenderStudentDetail
 
+function deleteSingleResult(studentName, encActivity, encDate, encTime){
+  const activity = decodeURIComponent(encActivity);
+  const date = decodeURIComponent(encDate);
+  const time = decodeURIComponent(encTime);
+  if(!confirm(`Supprimer ce résultat de ${studentName} (${activity} du ${date} ${time}) ?`)) return;
+
+  const cls = teacherCls || 'lejoly';
+  const studentClean = studentName.replace(/\s+/g, '_');
+
+  // 1. Supprimer en local
+  const all = JSON.parse(localStorage.getItem('lq_results')||'[]');
+  const filtered = all.filter(r => !(
+    r.student === studentName &&
+    (r.activity === activity || r.book === activity || r.bookTitle === activity) &&
+    r.date === date &&
+    (r.time === time || !time)
+  ));
+  localStorage.setItem('lq_results', JSON.stringify(filtered));
+
+  // 2. Supprimer dans Firebase
+  if(window.FB_ready && window.FB_DB){
+    // Table globale results
+    const dbRef = window.FB_ref(window.FB_DB, 'results');
+    window.FB_get(dbRef).then(snap => {
+      if(snap.exists()){
+        snap.forEach(child => {
+          const r = child.val();
+          if(r && r.student === studentName && (r.activity === activity || r.book === activity || r.bookTitle === activity) && r.date === date && (r.time === time || !time)){
+            window.FB_remove(window.FB_ref(window.FB_DB, 'results/' + child.key)).catch(()=>{});
+          }
+        });
+      }
+    }).catch(()=>{});
+
+    // Table personnelle student_results
+    const studRef = window.FB_ref(window.FB_DB, 'student_results/' + cls + '/' + studentClean);
+    window.FB_get(studRef).then(snap => {
+      if(snap.exists()){
+        snap.forEach(child => {
+          const r = child.val();
+          if(r && (r.activity === activity || r.book === activity || r.bookTitle === activity) && r.date === date && (r.time === time || !time)){
+            window.FB_remove(window.FB_ref(window.FB_DB, 'student_results/' + cls + '/' + studentClean + '/' + child.key)).catch(()=>{});
+          }
+        });
+      }
+    }).catch(()=>{});
+  }
+
+  doRenderStudentDetail(studentName);
+}
+
 function exportCSV(){
   const results=loadResults(teacherCls);
   const header="Élève,Classe,Livre,Score,Total,Pourcentage,Date,Heure\n";
@@ -9276,13 +9353,25 @@ function exportCSV(){
 }
 
 function deleteStudentResults(studentName){
-  if(!confirm('Effacer tous les résultats de ' + studentName + ' ?')) return;
+  if(!confirm('Effacer TOUS les résultats de ' + studentName + ' ?')) return;
+  const cls = teacherCls || 'lejoly';
+  const studentClean = studentName.replace(/\s+/g, '_');
+
   // Supprimer en local
   const all = JSON.parse(localStorage.getItem('lq_results')||'[]');
-  const filtered = all.filter(function(r){ return r.student !== studentName; });
+  const filtered = all.filter(function(r){ return !(r.student === studentName && (!r.cls || r.cls === cls)); });
   localStorage.setItem('lq_results', JSON.stringify(filtered));
+  localStorage.removeItem('lq_plan_progress_' + cls + '_' + studentName);
+
   // Supprimer dans Firebase
   if(window.FB_ready && window.FB_DB){
+    // 1. Tables student_results et plan_progress
+    try {
+      window.FB_remove(window.FB_ref(window.FB_DB, 'student_results/' + cls + '/' + studentClean)).catch(e=>{});
+      window.FB_remove(window.FB_ref(window.FB_DB, 'plan_progress/' + cls + '/' + studentName)).catch(e=>{});
+    } catch(e) {}
+
+    // 2. Table globale results
     const dbRef = window.FB_ref(window.FB_DB, 'results');
     window.FB_get(dbRef).then(function(snap){
       if(!snap.exists()){
@@ -9292,13 +9381,11 @@ function deleteStudentResults(studentName){
       const promises = [];
       snap.forEach(function(child){
         const r = child.val();
-        console.log('Entrée Firebase:', child.key, r && r.student);
-        if(r && (r.student === studentName || r.name === studentName)){
+        if(r && (r.student === studentName || r.name === studentName) && (!r.cls || r.cls === cls)){
           const childRef = window.FB_ref(window.FB_DB, 'results/' + child.key);
           promises.push(window.FB_remove(childRef));
         }
       });
-      console.log(promises.length + ' résultats à supprimer pour', studentName);
       Promise.all(promises).then(function(){
         renderGestionResults();
       }).catch(function(e){
@@ -23064,6 +23151,7 @@ function loadStudentResultsFallback() {
       snap.forEach(function(child){
         const r = child.val();
         if(!r || !r.student || r.student !== state.student) return;
+        if(r.cls && r.cls !== state.studentCls) return;
         myResults.push(r);
         const act = r.activity;
         if(!act) return;
