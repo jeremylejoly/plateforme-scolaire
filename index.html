@@ -36,13 +36,9 @@
           .catch(function(err) { console.error('❌ Échec enregistrement Service Worker :', err); });
       });
 
-      // Recharger automatiquement quand le service worker est mis à jour
-      let refreshing = false;
+      // Notification de mise à jour du Service Worker sans interruption de l'utilisateur
       navigator.serviceWorker.addEventListener('controllerchange', function() {
-        if (!refreshing) {
-          window.location.reload();
-          refreshing = true;
-        }
+        console.log('✨ Service Worker mis à jour en arrière-plan (sans rechargement forcé).');
       });
     }
   }
@@ -8159,6 +8155,31 @@ window.addEventListener('load',function(){
       document.getElementById('main-area').style.display='block';
       openTeacherPanel();
     },100);
+    return;
+  }
+  const studentSessionRaw = localStorage.getItem('lq_student_session');
+  if (studentSessionRaw) {
+    try {
+      const sess = JSON.parse(studentSessionRaw);
+      if (sess && sess.student && sess.studentCls) {
+        state.student = sess.student;
+        state.studentCls = sess.studentCls;
+        state.role = 'student';
+        setTimeout(function(){
+          document.getElementById('screen-landing').style.display='none';
+          document.getElementById('main-area').style.display='block';
+          goToHome();
+          const activeScreen = localStorage.getItem('lq_active_screen');
+          if (activeScreen && activeScreen !== 'screen-landing' && activeScreen !== 'screen-welcome' && activeScreen !== 'screen-subjects' && !activeScreen.startsWith('screen-teacher')) {
+            const screenEl = document.getElementById(activeScreen);
+            if (screenEl) {
+              showScreen(activeScreen);
+              if (typeof refreshCurrentMenu === 'function') refreshCurrentMenu();
+            }
+          }
+        }, 100);
+      }
+    } catch(e) {}
   }
 });
 
@@ -8197,6 +8218,15 @@ function showScreen(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   window.scrollTo(0,0);
+
+  // Mémoriser l'écran actif de l'élève pour reprise automatique après veille
+  if (typeof state !== 'undefined' && state.role === 'student' && state.student) {
+    if (!HOME_SCREENS.has(id) && !id.startsWith('screen-teacher')) {
+      localStorage.setItem('lq_active_screen', id);
+    } else if (id === 'screen-subjects') {
+      localStorage.setItem('lq_active_screen', 'screen-subjects');
+    }
+  }
 
   // Afficher / masquer le bouton logo accueil
   const btn = document.getElementById('home-logo-btn');
@@ -8655,6 +8685,16 @@ function doCheckPin(){
 function goToHome(){
   state.role='student';
   localStorage.removeItem('lq_teacher_session');
+  if (state.student && state.studentCls) {
+    try {
+      localStorage.setItem('lq_student_session', JSON.stringify({
+        student: state.student,
+        studentCls: state.studentCls,
+        role: 'student',
+        timestamp: Date.now()
+      }));
+    } catch(e) {}
+  }
   updateAppLogo(state.studentCls);
   // Charger les résultats de l'élève depuis Firebase
   loadStudentResults();
@@ -30265,9 +30305,10 @@ function goToLogin(){
   // Full reset
   state={student:'',studentCls:'',book:'',answers:{},currentQ:0,role:'student'};
   pinInput='';
-  // Invalider le cache de résultats
-  invalidateResultsCache();
+  localStorage.removeItem('lq_student_session');
+  localStorage.removeItem('lq_active_screen');
   localStorage.removeItem('lq_teacher_session');
+  invalidateResultsCache();
   // Afficher la zone de connexion
   document.getElementById('screen-landing').style.display='none';
   document.getElementById('main-area').style.display='block';
