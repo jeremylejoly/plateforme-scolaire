@@ -3313,26 +3313,47 @@ input[type=text].calc-input.incorrect {
   console.log('✅ Firebase initialisé');
 
   // ===== SYNC PLAN DE TRAVAIL =====
-  window.FB_savePlanTravail = async function(assigned) {
+  window.FB_savePlanTravail = async function(clsOrAssigned, maybeAssigned) {
     try {
-      await set(ref(db, 'settings/plan_travail'), assigned);
+      const cls = (typeof maybeAssigned !== 'undefined') ? clsOrAssigned : (typeof teacherCls !== 'undefined' ? teacherCls : 'lejoly');
+      const assigned = (typeof maybeAssigned !== 'undefined') ? maybeAssigned : clsOrAssigned;
+      await set(ref(db, 'settings/plan_travail/' + cls), assigned);
+      if (cls === 'lejoly') {
+        await set(ref(db, 'settings/plan_travail'), assigned);
+      }
     } catch(e) { console.warn('Firebase savePlanTravail error:', e); }
   };
-  window.FB_loadPlanTravail = async function() {
+  window.FB_loadPlanTravail = async function(targetCls) {
     try {
-      const snap = await get(ref(db, 'settings/plan_travail'));
-      return snap.exists() ? snap.val() : null;
+      const cls = targetCls || (typeof teacherCls !== 'undefined' ? teacherCls : (typeof state !== 'undefined' && state.studentCls ? state.studentCls : 'lejoly'));
+      const snap = await get(ref(db, 'settings/plan_travail/' + cls));
+      if (snap.exists()) return snap.val();
+      if (cls === 'lejoly') {
+        const fallback = await get(ref(db, 'settings/plan_travail'));
+        return fallback.exists() ? fallback.val() : null;
+      }
+      return null;
     } catch(e) { console.warn('Firebase loadPlanTravail error:', e); return null; }
   };
   window.FB_savePlanTravailIndividual = async function(cls, individual) {
     try {
-      await set(ref(db, 'settings/plan_travail_individual/' + cls), individual);
+      const classKey = cls || (typeof teacherCls !== 'undefined' ? teacherCls : 'lejoly');
+      await set(ref(db, 'settings/plan_travail_individual/' + classKey), individual);
+      if (classKey === 'lejoly') {
+        await set(ref(db, 'settings/plan_travail_individual'), individual);
+      }
     } catch(e) { console.warn('Firebase savePlanTravailIndividual error:', e); }
   };
   window.FB_loadPlanTravailIndividual = async function(cls) {
     try {
-      const snap = await get(ref(db, 'settings/plan_travail_individual/' + cls));
-      return snap.exists() ? snap.val() : null;
+      const classKey = cls || (typeof teacherCls !== 'undefined' ? teacherCls : (typeof state !== 'undefined' && state.studentCls ? state.studentCls : 'lejoly'));
+      const snap = await get(ref(db, 'settings/plan_travail_individual/' + classKey));
+      if (snap.exists()) return snap.val();
+      if (classKey === 'lejoly') {
+        const fallback = await get(ref(db, 'settings/plan_travail_individual'));
+        return fallback.exists() ? fallback.val() : null;
+      }
+      return null;
     } catch(e) { console.warn('Firebase loadPlanTravailIndividual error:', e); return null; }
   };
   window.FB_saveStudentPlanProgress = async function(cls, student, progress) {
@@ -8237,11 +8258,14 @@ function purgeDeletedStudents() {
     } catch(e) {}
   }
   // 3. Purge plans individuels et conjugaisons
+  const purgeCls = (typeof teacherCls !== 'undefined' && teacherCls) ? teacherCls : 'lejoly';
   deletedNames.forEach(name => {
+    localStorage.removeItem('lq_plan_travail_individual_' + purgeCls + '_' + name);
     localStorage.removeItem('lq_plan_travail_individual_' + name);
+    localStorage.removeItem('lq_conj_' + purgeCls + '_' + name);
     localStorage.removeItem('lq_conj_lejoly_' + name);
   });
-  const indPlanSaved = localStorage.getItem('lq_plan_travail_individual');
+  const indPlanSaved = localStorage.getItem('lq_plan_travail_individual_' + purgeCls) || localStorage.getItem('lq_plan_travail_individual');
   if (indPlanSaved) {
     try {
       const indPlan = JSON.parse(indPlanSaved);
@@ -8253,7 +8277,8 @@ function purgeDeletedStudents() {
         }
       });
       if (changed) {
-        localStorage.setItem('lq_plan_travail_individual', JSON.stringify(indPlan));
+        localStorage.setItem('lq_plan_travail_individual_' + purgeCls, JSON.stringify(indPlan));
+        if (purgeCls === 'lejoly') localStorage.setItem('lq_plan_travail_individual', JSON.stringify(indPlan));
       }
     } catch(e) {}
   }
@@ -8587,10 +8612,11 @@ function goToHome(){
   }
   loadAndApplyEmoji();
   // Afficher immédiatement la carte plan si données locales disponibles
-  loadPlanTravailLocal();
+  const sCls = (typeof state !== 'undefined' && state.studentCls) ? state.studentCls : 'lejoly';
+  loadPlanTravailLocal(sCls);
   let individualPlan = [];
   if (state.student) {
-    const s = localStorage.getItem('lq_plan_travail_individual_' + state.student);
+    const s = localStorage.getItem('lq_plan_travail_individual_' + sCls + '_' + state.student) || localStorage.getItem('lq_plan_travail_individual_' + state.student);
     individualPlan = s ? JSON.parse(s) : [];
   }
   const _vis = (planTravailAssigned.length > 0 || individualPlan.length > 0) ? '' : 'none';
@@ -8606,13 +8632,14 @@ async function syncStudentFromFirebase(){
   if(!window.FB_ready){ setTimeout(syncStudentFromFirebase, 1000); return; }
   try {
     initRealtimeStudentSync();
-    window.FB_loadStudents('lejoly').then(async students => {
+    const cls = (typeof state !== 'undefined' && state.studentCls) ? state.studentCls : 'lejoly';
+    window.FB_loadStudents(cls).then(async students => {
       if(students && Array.isArray(students) && students.length > 0){
         const filtered = students.filter(s => s && s.name && s.name !== 'Alexandre' && s.name !== 'Lovianna');
         if (filtered.length !== students.length && window.FB_saveStudents) {
-          await window.FB_saveStudents('lejoly', filtered);
+          await window.FB_saveStudents(cls, filtered);
         }
-        localStorage.setItem('lq_students_lejoly', JSON.stringify(filtered));
+        localStorage.setItem('lq_students_' + cls, JSON.stringify(filtered));
       }
     }).catch(e => console.warn('Erreur chargement élèves en tâche de fond:', e));
     renderAppsManage();
@@ -8620,7 +8647,7 @@ async function syncStudentFromFirebase(){
     if(document.getElementById('prehistoire-menu')) renderPrehistoireMenu();
     if(document.getElementById('sci-circulatoire-menu')) renderSciCirculatoireMenu();
     if(document.getElementById('sci-systeme-solaire-menu')) renderSciSystemeSolaireMenu();
-    console.log('✅ Sync élève démarrée (Realtime listeners activés)');
+    console.log('✅ Sync élève démarrée (Realtime listeners activés) pour ' + cls);
   } catch(e){
     console.warn('Sync élève échouée:', e);
   }
@@ -8788,6 +8815,10 @@ function showTeacherLogin(){
 
 function selectTeacherModalClass(cls){
   teacherCls = cls;
+  planTravailLoaded = false;
+  planTravailAssigned = [];
+  planTravailIndividual = {};
+  planTravailTarget = 'class';
   document.querySelectorAll('.teacher-select-btn').forEach(b => {
     b.style.borderColor = '#e5e7eb';
     b.style.background = '#f9fafb';
@@ -8808,6 +8839,10 @@ function selectTeacherModalClass(cls){
 
 function selectTeacherClass(cls,btn){
   teacherCls=cls;
+  planTravailLoaded = false;
+  planTravailAssigned = [];
+  planTravailIndividual = {};
+  planTravailTarget = 'class';
   document.querySelectorAll('.teacher-class-btn').forEach(b=>b.classList.remove('selected'));
   btn.classList.add('selected');
   document.getElementById('no-class-error').style.display='none';
@@ -8835,6 +8870,10 @@ function openSetPassword(){
 
 function openTeacherPanel(){
   state.role='teacher';
+  planTravailLoaded = false;
+  planTravailAssigned = [];
+  planTravailIndividual = {};
+  planTravailTarget = 'class';
   localStorage.setItem('lq_teacher_session','1');
   localStorage.setItem('lq_teacher_cls', teacherCls);
   updateAppLogo(teacherCls);
@@ -8931,6 +8970,21 @@ async function syncFromFirebase(){
     const archived = await window.FB_loadArchivedBooks();
     if(archived && Array.isArray(archived)){
       localStorage.setItem('lq_archived', JSON.stringify(archived));
+    }
+    // Sync plan de travail
+    if (window.FB_loadPlanTravail) {
+      const fbPlan = await window.FB_loadPlanTravail(currentClass);
+      if (fbPlan && Array.isArray(fbPlan)) {
+        localStorage.setItem('lq_plan_travail_' + currentClass, JSON.stringify(fbPlan));
+        if (currentClass === 'lejoly') localStorage.setItem('lq_plan_travail', JSON.stringify(fbPlan));
+      }
+    }
+    if (window.FB_loadPlanTravailIndividual) {
+      const fbIndPlan = await window.FB_loadPlanTravailIndividual(currentClass);
+      if (fbIndPlan) {
+        localStorage.setItem('lq_plan_travail_individual_' + currentClass, JSON.stringify(fbIndPlan));
+        if (currentClass === 'lejoly') localStorage.setItem('lq_plan_travail_individual', JSON.stringify(fbIndPlan));
+      }
     }
     // Refresh sub-menus after sync
     if(document.getElementById('prehistoire-menu')) renderPrehistoireMenu();
@@ -10166,12 +10220,13 @@ const ACTIVITY_PARENTS = {
 };
 
 function getStudentPlanTravail() {
-  const localClass = localStorage.getItem('lq_plan_travail');
-  const classPlan = localClass ? JSON.parse(localClass) : [];
+  const cls = (typeof state !== 'undefined' && state.studentCls) ? state.studentCls : (typeof teacherCls !== 'undefined' && teacherCls ? teacherCls : 'lejoly');
+  const localClass = localStorage.getItem('lq_plan_travail_' + cls) || (cls === 'lejoly' ? localStorage.getItem('lq_plan_travail') : null);
+  const classPlan = localClass ? JSON.parse(localClass) : (planTravailAssigned || []);
   let indPlan = [];
   if (typeof state !== 'undefined' && state.student) {
-    const localInd = localStorage.getItem('lq_plan_travail_individual_' + state.student);
-    indPlan = localInd ? JSON.parse(localInd) : [];
+    const localInd = localStorage.getItem('lq_plan_travail_individual_' + cls + '_' + state.student) || localStorage.getItem('lq_plan_travail_individual_' + state.student);
+    indPlan = localInd ? JSON.parse(localInd) : ((planTravailIndividual && planTravailIndividual[state.student]) || []);
   }
   return [...new Set([...classPlan, ...indPlan])];
 }
@@ -30696,14 +30751,21 @@ let studentPlanProgress = {}; // {id: true/false} côté élève
 
 // --- Sauvegarde/chargement plan enseignant ---
 function savePlanTravail() {
-  localStorage.setItem('lq_plan_travail', JSON.stringify(planTravailAssigned));
+  const cls = (typeof teacherCls !== 'undefined' && teacherCls) ? teacherCls : 'lejoly';
+  localStorage.setItem('lq_plan_travail_' + cls, JSON.stringify(planTravailAssigned));
+  if (cls === 'lejoly') {
+    localStorage.setItem('lq_plan_travail', JSON.stringify(planTravailAssigned));
+  }
   if (window.FB_savePlanTravail) {
-    window.FB_savePlanTravail(planTravailAssigned);
+    window.FB_savePlanTravail(cls, planTravailAssigned);
   }
   
-  localStorage.setItem('lq_plan_travail_individual', JSON.stringify(planTravailIndividual));
+  localStorage.setItem('lq_plan_travail_individual_' + cls, JSON.stringify(planTravailIndividual));
+  if (cls === 'lejoly') {
+    localStorage.setItem('lq_plan_travail_individual', JSON.stringify(planTravailIndividual));
+  }
   if (window.FB_savePlanTravailIndividual) {
-    window.FB_savePlanTravailIndividual(teacherCls, planTravailIndividual);
+    window.FB_savePlanTravailIndividual(cls, planTravailIndividual);
   }
 }
 let fbStudentListeners = {};
@@ -30713,7 +30775,7 @@ function initRealtimeStudentSync() {
   const cls = state.studentCls;
   const student = state.student;
   clearRealtimeStudentSync();
-  console.log('📡 Initialisation de la synchronisation temps réel pour', student);
+  console.log('📡 Initialisation de la synchronisation temps réel pour', student, 'classe', cls);
 
   // 1. Observer pour les activités verrouillées (spécifiques à la classe)
   const lockedRef = window.FB_ref(window.FB_DB, 'settings/locked_activities/' + cls);
@@ -30737,16 +30799,29 @@ function initRealtimeStudentSync() {
     }
   }, (err) => console.warn('Realtime locked_activities error:', err));
 
-  // 2. Observer pour le plan de travail global
-  const planRef = window.FB_ref(window.FB_DB, 'settings/plan_travail');
+  // 2. Observer pour le plan de travail global de la classe
+  const planRef = window.FB_ref(window.FB_DB, 'settings/plan_travail/' + cls);
   fbStudentListeners.plan = window.FB_onValue(planRef, (snap) => {
-    const val = snap.val();
+    let val = snap.val();
+    if (!snap.exists() && cls === 'lejoly') {
+      window.FB_get(window.FB_ref(window.FB_DB, 'settings/plan_travail')).then(legacySnap => {
+        if (legacySnap.exists() && Array.isArray(legacySnap.val())) {
+          planTravailAssigned = legacySnap.val();
+          localStorage.setItem('lq_plan_travail_' + cls, JSON.stringify(planTravailAssigned));
+          localStorage.setItem('lq_plan_travail', JSON.stringify(planTravailAssigned));
+          updateHomePlanCardUI();
+        }
+      }).catch(()=>{});
+      return;
+    }
     if (val && Array.isArray(val)) {
       planTravailAssigned = val;
-      localStorage.setItem('lq_plan_travail', JSON.stringify(val));
+      localStorage.setItem('lq_plan_travail_' + cls, JSON.stringify(val));
+      if (cls === 'lejoly') localStorage.setItem('lq_plan_travail', JSON.stringify(val));
     } else {
       planTravailAssigned = [];
-      localStorage.setItem('lq_plan_travail', '[]');
+      localStorage.setItem('lq_plan_travail_' + cls, '[]');
+      if (cls === 'lejoly') localStorage.setItem('lq_plan_travail', '[]');
     }
     updateHomePlanCardUI();
   }, (err) => console.warn('Realtime plan_travail error:', err));
@@ -30754,13 +30829,29 @@ function initRealtimeStudentSync() {
   // 3. Observer pour le plan de travail individuel
   const indPlanRef = window.FB_ref(window.FB_DB, 'settings/plan_travail_individual/' + cls);
   fbStudentListeners.indPlan = window.FB_onValue(indPlanRef, (snap) => {
-    const val = snap.val();
+    let val = snap.val();
+    if (!snap.exists() && cls === 'lejoly') {
+      window.FB_get(window.FB_ref(window.FB_DB, 'settings/plan_travail_individual')).then(legacySnap => {
+        if (legacySnap.exists()) {
+          planTravailIndividual = legacySnap.val();
+          const myIndPlan = planTravailIndividual[student] || [];
+          localStorage.setItem('lq_plan_travail_individual_' + cls + '_' + student, JSON.stringify(myIndPlan));
+          localStorage.setItem('lq_plan_travail_individual_' + student, JSON.stringify(myIndPlan));
+          localStorage.setItem('lq_plan_travail_individual_' + cls, JSON.stringify(planTravailIndividual));
+          updateHomePlanCardUI();
+        }
+      }).catch(()=>{});
+      return;
+    }
     if (val) {
       planTravailIndividual = val;
       const myIndPlan = val[student] || [];
+      localStorage.setItem('lq_plan_travail_individual_' + cls + '_' + student, JSON.stringify(myIndPlan));
       localStorage.setItem('lq_plan_travail_individual_' + student, JSON.stringify(myIndPlan));
+      localStorage.setItem('lq_plan_travail_individual_' + cls, JSON.stringify(val));
     } else {
       planTravailIndividual = {};
+      localStorage.setItem('lq_plan_travail_individual_' + cls + '_' + student, '[]');
       localStorage.setItem('lq_plan_travail_individual_' + student, '[]');
     }
     updateHomePlanCardUI();
@@ -30792,10 +30883,11 @@ function clearRealtimeStudentSync() {
 }
 
 function updateHomePlanCardUI() {
+  const cls = (typeof state !== 'undefined' && state.studentCls) ? state.studentCls : (typeof teacherCls !== 'undefined' && teacherCls ? teacherCls : 'lejoly');
   let individualPlan = [];
   if (state.student) {
-    const s = localStorage.getItem('lq_plan_travail_individual_' + state.student);
-    individualPlan = s ? JSON.parse(s) : [];
+    const s = localStorage.getItem('lq_plan_travail_individual_' + cls + '_' + state.student) || localStorage.getItem('lq_plan_travail_individual_' + state.student);
+    individualPlan = s ? JSON.parse(s) : ((planTravailIndividual && planTravailIndividual[state.student]) || []);
   }
   const validIds = new Set();
   const masterCatalogue = (typeof getActivitiesMasterRegistry === 'function') ? getActivitiesMasterRegistry() : PLAN_CATALOGUE;
@@ -30813,12 +30905,12 @@ function updateHomePlanCardUI() {
   }
 }
 
-function loadPlanTravailLocal() {
-
-  const s = localStorage.getItem('lq_plan_travail');
+function loadPlanTravailLocal(targetCls) {
+  const cls = targetCls || (typeof teacherCls !== 'undefined' && teacherCls ? teacherCls : (typeof state !== 'undefined' && state.studentCls ? state.studentCls : 'lejoly'));
+  const s = localStorage.getItem('lq_plan_travail_' + cls) || (cls === 'lejoly' ? localStorage.getItem('lq_plan_travail') : null);
   planTravailAssigned = s ? JSON.parse(s) : [];
   
-  const sInd = localStorage.getItem('lq_plan_travail_individual');
+  const sInd = localStorage.getItem('lq_plan_travail_individual_' + cls) || (cls === 'lejoly' ? localStorage.getItem('lq_plan_travail_individual') : null);
   planTravailIndividual = sInd ? JSON.parse(sInd) : {};
 }
 
@@ -31410,23 +31502,34 @@ async function renderPlanTravailTeacher() {
 
 async function _renderPlanTravailInto(el) {
   const masterCatalogue = (typeof getActivitiesMasterRegistry === 'function') ? getActivitiesMasterRegistry() : PLAN_CATALOGUE;
+  const cls = (typeof teacherCls !== 'undefined' && teacherCls) ? teacherCls : 'lejoly';
   if (!planTravailLoaded) {
     // Charger depuis Firebase si dispo
     if (window.FB_loadPlanTravail) {
-      const fb = await window.FB_loadPlanTravail();
-      if (fb) { planTravailAssigned = fb; localStorage.setItem('lq_plan_travail', JSON.stringify(fb)); }
+      const fb = await window.FB_loadPlanTravail(cls);
+      if (fb) {
+        planTravailAssigned = fb;
+        localStorage.setItem('lq_plan_travail_' + cls, JSON.stringify(fb));
+        if (cls === 'lejoly') localStorage.setItem('lq_plan_travail', JSON.stringify(fb));
+      } else {
+        loadPlanTravailLocal(cls);
+      }
     } else {
-      loadPlanTravailLocal();
+      loadPlanTravailLocal(cls);
     }
     
     if (window.FB_loadPlanTravailIndividual) {
-      const fbInd = await window.FB_loadPlanTravailIndividual(teacherCls);
+      const fbInd = await window.FB_loadPlanTravailIndividual(cls);
       if (fbInd) {
         planTravailIndividual = fbInd;
-        localStorage.setItem('lq_plan_travail_individual', JSON.stringify(fbInd));
+        localStorage.setItem('lq_plan_travail_individual_' + cls, JSON.stringify(fbInd));
+        if (cls === 'lejoly') localStorage.setItem('lq_plan_travail_individual', JSON.stringify(fbInd));
+      } else {
+        const s = localStorage.getItem('lq_plan_travail_individual_' + cls) || (cls === 'lejoly' ? localStorage.getItem('lq_plan_travail_individual') : null);
+        planTravailIndividual = s ? JSON.parse(s) : {};
       }
     } else {
-      const s = localStorage.getItem('lq_plan_travail_individual');
+      const s = localStorage.getItem('lq_plan_travail_individual_' + cls) || (cls === 'lejoly' ? localStorage.getItem('lq_plan_travail_individual') : null);
       planTravailIndividual = s ? JSON.parse(s) : {};
     }
 
@@ -31666,10 +31769,11 @@ function renderPlanTravailStudent() {
   const el = document.getElementById('plan-student-body');
   if (!el) return;
 
+  const cls = (typeof state !== 'undefined' && state.studentCls) ? state.studentCls : (typeof teacherCls !== 'undefined' && teacherCls ? teacherCls : 'lejoly');
   let individualPlan = [];
   if (state.student) {
-    const s = localStorage.getItem('lq_plan_travail_individual_' + state.student);
-    individualPlan = s ? JSON.parse(s) : [];
+    const s = localStorage.getItem('lq_plan_travail_individual_' + cls + '_' + state.student) || localStorage.getItem('lq_plan_travail_individual_' + state.student);
+    individualPlan = s ? JSON.parse(s) : ((planTravailIndividual && planTravailIndividual[state.student]) || []);
   }
   const validIds = new Set();
   const masterCatalogue = (typeof getActivitiesMasterRegistry === 'function') ? getActivitiesMasterRegistry() : PLAN_CATALOGUE;
@@ -31708,8 +31812,8 @@ function renderPlanTravailStudent() {
         const score = getPlanItemScore(item.id);
         let scoreBadge = '';
         if (score) {
-          const cls = score.pct >= 80 ? 'pt-score-good' : score.pct >= 50 ? 'pt-score-mid' : 'pt-score-bad';
-          scoreBadge = `<span class="pt-score-badge ${cls}">${score.score}/${score.total} — ${score.pct}%</span>`;
+          const clsBadge = score.pct >= 80 ? 'pt-score-good' : score.pct >= 50 ? 'pt-score-mid' : 'pt-score-bad';
+          scoreBadge = `<span class="pt-score-badge ${clsBadge}">${score.score}/${score.total} — ${score.pct}%</span>`;
         }
         html += `
         <div class="pt-item">
@@ -31732,10 +31836,11 @@ function ptStudentToggle(id, checked) {
   studentPlanProgress[id] = checked;
   saveStudentProgress();
 
+  const cls = (typeof state !== 'undefined' && state.studentCls) ? state.studentCls : (typeof teacherCls !== 'undefined' && teacherCls ? teacherCls : 'lejoly');
   let individualPlan = [];
   if (state.student) {
-    const s = localStorage.getItem('lq_plan_travail_individual_' + state.student);
-    individualPlan = s ? JSON.parse(s) : [];
+    const s = localStorage.getItem('lq_plan_travail_individual_' + cls + '_' + state.student) || localStorage.getItem('lq_plan_travail_individual_' + state.student);
+    individualPlan = s ? JSON.parse(s) : ((planTravailIndividual && planTravailIndividual[state.student]) || []);
   }
   const validIds = new Set();
   const masterCatalogue = (typeof getActivitiesMasterRegistry === 'function') ? getActivitiesMasterRegistry() : PLAN_CATALOGUE;
