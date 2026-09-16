@@ -7243,5 +7243,451 @@ window.LIVRES = [
         "points": 1
       }
     ]
+  },
+  {
+    "id": "du_sel_sur_mes_levres",
+    "title": "Du sel sur mes lèvres",
+    "series": "Récits Express",
+    "totalPoints": 16,
+    "questions": [
+      {
+        "id": "q1",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Pourquoi Paul appréhende-t-il cette semaine de vacances au camping au début de l'histoire ?",
+        "options": [
+          "Ses parents lui ont formellement interdit d'aller se baigner dans la mer et à la piscine.",
+          "Sa cousine Salomé le délaisse et le considère désormais comme un « petit », ce qui le condamne à l'ennui.",
+          "Il a oublié d'emporter ses bandes dessinées et ses raquettes de plage favorites.",
+          "Il a peur de dormir seul sous une tente à côté des grands camping-cars."
+        ],
+        "answer": 1,
+        "points": 1,
+        "explanation": "Paul constate que Salomé a grandi et passe tout son temps avec ses copines. À ses yeux, il n'est plus qu'un petit et il craint de passer une semaine « catastrophique d'ennui »."
+      },
+      {
+        "id": "q2",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Pourquoi Paul s'invente-t-il le personnage imaginaire de « Super Paulo » ?",
+        "options": [
+          "Pour impressionner les adultes et obtenir le droit de veiller tard le soir au bar.",
+          "Pour se donner du courage, masquer sa timidité et compenser son sentiment d'infériorité face aux grands.",
+          "Parce qu'il est officiellement inscrit à un tournoi de raquettes organisé par le camping.",
+          "Parce qu'il rêve de devenir comédien et de faire rire sa tante et son oncle."
+        ],
+        "answer": 1,
+        "points": 1,
+        "explanation": "« Super Paulo » est l'alter ego héroïque et plein d'assurance que Paul convoque intérieurement pour surmonter sa gêne, son jeune âge et sa timidité."
+      },
+      {
+        "id": "q3",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quelle idée originale Paul a-t-il pour surprendre Zélie lors de leur première soirée d'escapade ?",
+        "options": [
+          "L'emmener boire des cocktails multicolores au bar du camping.",
+          "L'aider à grimper sur le toit du cabanon numéro 8 pour contempler la mer et déguster des glaces sous la lune.",
+          "Lui faire une démonstration de lancer de frisbee à longue distance sur la plage déserte.",
+          "Se faufiler en cachette dans la piscine municipale fermée pour nager dans le grand bassin."
+        ],
+        "answer": 1,
+        "points": 1,
+        "explanation": "Paul hisse Zélie sur le toit du cabanon numéro 8 pour lui offrir une vue panoramique sur les reflets de la mer et les lumières de la ville, tout en partageant deux glaces."
+      },
+      {
+        "id": "q4",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Qui intervient à la plage pour que Salomé accepte finalement que Paul reste avec le groupe d'adolescents ?",
+        "options": [
+          "Les parents de Paul qui surveillent discrètement depuis la promenade.",
+          "Le maître-nageur sauveteur qui demande aux ados de veiller sur lui.",
+          "Lorenzo (le petit ami de Salomé) et Zélie qui prennent la défense de Paul.",
+          "Hanna et Louison qui souhaitent jouer avec son frisbee."
+        ],
+        "answer": 2,
+        "points": 1,
+        "explanation": "Lorenzo intervient en disant « Laisse-le, c'est ton cousin, il fait pas de mal », suivi de Zélie qui l'invite chaleureusement à rester avec eux."
+      },
+      {
+        "id": "q5",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Pourquoi Zélie interrompt-elle brusquement la baignade et la partie de raquettes avec Paul à la plage ?",
+        "options": [
+          "Elle a marché sur une vive dans le sable mouillé et doit se faire soigner.",
+          "Elle aperçoit Salomé et les autres arriver et a peur d'être jugée ou moquée par le groupe des ados.",
+          "Sa grande sœur Louison lui ordonne sèchement de ranger ses affaires.",
+          "Elle est très mauvaise joueuse et ne supporte pas de voir Paul marquer des points."
+        ],
+        "answer": 1,
+        "points": 1,
+        "explanation": "Zélie panique à l'idée d'être vue en train de jouer avec le « petit cousin » et fuit sur sa serviette pour sauver les apparences et préserver son image de fille « cool »."
+      },
+      {
+        "id": "q6",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quelle confidence inattendue Zélie fait-elle à Paul lors de leurs explications le soir ?",
+        "options": [
+          "Elle habite dans le même quartier que lui et fréquente la même école.",
+          "Elle n'est pas plus âgée que lui : elle est dans la même classe et a le même âge, elle est simplement très grande en taille.",
+          "Louison n'est pas sa véritable sœur mais une amie d'enfance de sa famille.",
+          "Elle a fait semblant de savoir jouer aux raquettes de plage pour lui faire plaisir."
+        ],
+        "answer": 1,
+        "points": 1,
+        "explanation": "Zélie avoue à Paul qu'elle a le même âge que lui et qu'elle joue les « suiveuses » auprès des grands uniquement par crainte de se retrouver seule pendant les vacances."
+      },
+      {
+        "id": "q7",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quel geste Paul fait-il en échange de la lettre et de la photo que Zélie lui a données ?",
+        "options": [
+          "Il lui offre son frisbee avec lequel il a battu son record de distance.",
+          "Il lui remet une photo d'identité de lui récupérée dans le portefeuille de sa mère pour être « à égalité ».",
+          "Il lui achète un coquillage gravé à la boutique de souvenirs du camping.",
+          "Il lui écrit un poème sur le dos du plan du camping."
+        ],
+        "answer": 1,
+        "points": 1,
+        "explanation": "Paul court demander à sa mère la photo de lui qu'elle garde dans son portefeuille et la tend à Zélie en lui disant : « Comme ça, on est à égalité »."
+      },
+      {
+        "id": "q8",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Que signifie la présence de Zélie au pied du cabanon numéro 10 lors du départ en camping-car ?",
+        "options": [
+          "Elle s'est perdue sur la plage en cherchant le chemin du mobil-home.",
+          "Elle confirme que leur histoire continue : après le cabanon 8 et le cabanon 9, le rendez-vous au suivant est pris.",
+          "Elle vient réclamer l'adresse postale que Paul a oublié de lui inscrire.",
+          "Elle attend l'arrivée de nouveaux vacanciers pour commencer une nouvelle partie."
+        ],
+        "answer": 1,
+        "points": 1,
+        "explanation": "Zélie salue Paul au pied du cabanon 10 pour lui rappeler leur jeu et leur promesse : leur lien et leurs lettres continueront bien après ces vacances."
+      },
+      {
+        "id": "q9",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Paul et sa cousine Salomé dorment dans le même camping-car avec leurs parents respectifs.",
+        "answer": false,
+        "points": 1,
+        "explanation": "C'est FAUX. Les adultes dorment dans les camping-cars, tandis que Paul et Salomé ont chacun leur propre tente sur l'emplacement 359."
+      },
+      {
+        "id": "q10",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Zélie et Louison sont sœurs et résident dans un mobil-home situé dans le camping.",
+        "answer": true,
+        "points": 1,
+        "explanation": "C'est VRAI. Paul observe qu'elles ont un net air de famille et rejoignent le même mobil-home."
+      },
+      {
+        "id": "q11",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Lors de la soirée disco du vendredi, Paul refuse de danser le slow avec Zélie par peur du ridicule.",
+        "answer": false,
+        "points": 1,
+        "explanation": "C'est FAUX. Au contraire, Paul saisit cette occasion pour inviter Zélie et prouver aux autres qu'il ne se dégonfle pas."
+      },
+      {
+        "id": "q12",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "À la fin de l'histoire, Paul a gardé l'habitude de poser des grains de sel sur ses lèvres pour retrouver le souvenir de Zélie.",
+        "answer": true,
+        "points": 1,
+        "explanation": "C'est VRAI. Ce rituel lui rappelle le goût salé de leurs baisers, l'écume de la mer et leur dessert partagé sur le toit du cabanon."
+      },
+      {
+        "id": "q13",
+        "section": "Vocabulaire",
+        "type": "mcq",
+        "text": "« Salomé avait déjà pris la tangente et le chemin de la plage. » Dans cette phrase, que signifie l'expression « prendre la tangente » ?",
+        "options": [
+          "Mesurer un angle précis le long d'une courbe de niveau.",
+          "S'éclipser ou s'enfuir discrètement pour échapper à une corvée ou à une présence gênante.",
+          "Marcher en ligne droite sur la route goudronnée du littoral.",
+          "Changer brusquement d'avis au dernier moment."
+        ],
+        "answer": 1,
+        "points": 1,
+        "explanation": "« Prendre la tangente » signifie filer ou s'échapper rapidement et discrètement pour éviter une contrainte (ici, faire la vaisselle ou devoir emmener son cousin)."
+      },
+      {
+        "id": "q14",
+        "section": "Vocabulaire",
+        "type": "mcq",
+        "text": "« Nous étions tous les deux dans une situation un peu similaire, des « suiveurs ». » Dans ce contexte, que désigne un « suiveur » ?",
+        "options": [
+          "Un sportif qui suit la trajectoire du vent lors d'une course de char à voile.",
+          "Une personne qui s'efforce d'imiter et de suivre les autres pour être acceptée dans un groupe, sans imposer ses choix.",
+          "Un détective privé qui surveille les faits et gestes des adolescents.",
+          "Un élève qui révise ses leçons en suivant scrupuleusement le programme."
+        ],
+        "answer": 1,
+        "points": 1,
+        "explanation": "Un « suiveur » est une personne qui se met en retrait et adopte l'attitude des membres dominants d'un groupe pour ne pas être rejetée."
+      },
+      {
+        "id": "q15",
+        "section": "Vocabulaire",
+        "type": "mcq",
+        "text": "« Mes parents s’attelaient déjà à ranger ce qui pouvait l'être. » Que signifie le verbe « s'atteler à » dans cette phrase ?",
+        "options": [
+          "Attacher une caravane à l'arrière d'un véhicule à moteur.",
+          "Se mettre résolument au travail et entreprendre une tâche difficile ou importante.",
+          "Remettre à plus tard une obligation ennuyeuse.",
+          "Se plaindre de la quantité de travail à accomplir."
+        ],
+        "answer": 1,
+        "points": 1,
+        "explanation": "« S'atteler à » une tâche signifie s'y engager pleinement et commencer à y travailler avec détermination."
+      },
+      {
+        "id": "q16",
+        "section": "Synthèse",
+        "type": "mcq",
+        "text": "Un seul de ces trois résumés est totalement correct. Lequel ?",
+        "options": [
+          "Résumé A : Paul passe des vacances décevantes au camping car sa cousine Salomé l'ignore pour rester avec ses copines. Pour s'occuper, il participe à un tournoi de frisbee qu'il remporte face à Lorenzo. Tombé amoureux de Louison, une collégienne plus âgée, il tente de l'inviter à la soirée disco mais celle-ci le rejette devant tout le monde.",
+          "Résumé B : Délaissé au camping par sa cousine Salomé qui fréquente une bande d'adolescents, Paul fait la rencontre de Zélie. Pensant d'abord qu'elle est plus âgée, il découvre qu'elle a son âge et partage les mêmes doutes face au regard du groupe. De leur complicité nocturne sur les cabanons de plage à la soirée disco, naît leur premier amour de vacances, scellé par une promesse d'adieu.",
+          "Résumé C : En vacances à la montagne avec ses parents, Paul passe ses journées à lire des livres sous sa tente. Après une bagarre avec les jeunes du village, il est recueilli par Zélie qui lui apprend à nager dans un lac. Le jour du départ, Paul s'enfuit du camping-car pour rester vivre au village avec son amie."
+        ],
+        "answer": 1,
+        "points": 1,
+        "explanation": "Le Résumé B retrace parfaitement l'intrigue, les personnages (Paul, Salomé, Zélie), le cadre (camping en bord de mer), les thèmes clés (peur du regard des autres, passage à l'adolescence) et le dénouement émouvant."
+      }
+    ]
+  },
+  {
+    "id": "nature_et_sortilege_institulemn",
+    "title": "Nature et sortilège à l'institut Lemn",
+    "series": "Récits Express",
+    "totalPoints": 16,
+    "questions": [
+      {
+        "id": "q1",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Pourquoi Lili est-elle mise à l'écart et surnommée « Poison Ivy » ou « Lili la dingo » par ses camarades de collège ?",
+        "options": [
+          "Elle refuse de porter des vêtements modernes et mange des racines crues au réfectoire.",
+          "Elle a été surprise l'année précédente en train d'utiliser ses pouvoirs magiques pour faire pousser une plante dans la serre.",
+          "Elle a empoisonné le goûter de deux élèves populaires avec des baies sauvages.",
+          "Elle passe ses nuits à fabriquer des potions sur le toit de l'internat."
+        ],
+        "answer": 1,
+        "points": 1,
+        "explanation": "Lili a commis l'imprudence de faire pousser une plante par magie dans la serre ; deux élèves l'ont vue parler à la plante et ont répandu la rumeur qu'elle était folle ou sorcière."
+      },
+      {
+        "id": "q2",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quelle est la cause réelle de la démolition soudaine de la serre par le directeur au début du récit ?",
+        "options": [
+          "La serre était trop vétuste et menaçait de s'effondrer sous le poids de la neige.",
+          "Lili a aspergé les hortensias d'une potion urticante pour chasser le directeur et la conseillère d'orientation qui s'y retrouvaient en secret.",
+          "L'école avait un besoin urgent d'espace pour installer un nouveau terrain de sport.",
+          "Une colonie de parasites rares avait contaminé l'ensemble des espèces végétales."
+        ],
+        "answer": 1,
+        "points": 1,
+        "explanation": "Pour empêcher le directeur et la conseillère d'abîmer les fleurs lors de leurs rendez-vous secrets, Lili a préparé une potion provoquant une crise d'urticaire. Pris de panique, le directeur a décrété que la serre était contaminée et l'a fait détruire."
+      },
+      {
+        "id": "q3",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "De qui Lili tient-elle son don rare de communion et de communication avec les végétaux ?",
+        "options": [
+          "De son professeur de SVT qui dirige le club de jardinage de l'école.",
+          "De son père qui exerce comme herboriste réputé en ville.",
+          "De son arrière-grand-mère Agatha, le pouvoir ayant sauté deux générations dans sa famille de druides.",
+          "D'un ancien grimoire trouvé par hasard dans la bibliothèque de l'internat."
+        ],
+        "answer": 2,
+        "points": 1,
+        "explanation": "Lili explique que la dernière personne de sa lignée à posséder ce pouvoir de communion végétale était son arrière-grand-mère Agatha."
+      },
+      {
+        "id": "q4",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Pourquoi Drago vit-il seul dans la maison forestière de sa grand-tante Miruna ?",
+        "options": [
+          "Il a été banni de sa communauté après avoir échoué à un examen de sorcellerie.",
+          "Il est en désaccord avec sa famille traditionaliste et souhaite étudier une magie noire alternative et pacifique.",
+          "Il a été engagé par la mairie pour surveiller la faune et la flore de la forêt.",
+          "Ses parents ont déménagé à l'étranger et l'ont laissé garder la maison."
+        ],
+        "answer": 1,
+        "points": 1,
+        "explanation": "Drago rejette les pratiques néfastes et orgueilleuses de sa famille de mages noirs et s'est installé à l'écart pour maîtriser ses nouveaux pouvoirs en toute liberté."
+      },
+      {
+        "id": "q5",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quel projet destructeur le directeur annonce-t-il au retour des vacances d'avril ?",
+        "options": [
+          "Construire un gigantesque parking bitumé pour les bus scolaires.",
+          "Abattre une grande portion de la forêt pour aménager un terrain de golf et un terrain de paintball.",
+          "Vendre le bois de la forêt à une scierie industrielle pour financer le réfectoire.",
+          "Remplacer les dortoirs par des bungalows de vacances touristiques."
+        ],
+        "answer": 1,
+        "points": 1,
+        "explanation": "Obsédé par la dangerosité des plantes, le directeur veut raser les arbres pour installer un golf et un terrain de paintball."
+      },
+      {
+        "id": "q6",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Comment Lili parvient-elle à neutraliser les engins de chantier à la lisière du bois ?",
+        "options": [
+          "En versant une potion acide sur les moteurs des pelleteuses.",
+          "En canalisant l'énergie naturelle pour ordonner aux racines d'enserrer les roues et aux branches d'écraser les cabines.",
+          "En demandant à Drago de lancer des éclairs de magie noire sur les scies circulaires.",
+          "En subtilisant les clés de contact dans la loge du gardien de l'internat."
+        ],
+        "answer": 1,
+        "points": 1,
+        "explanation": "Lili fait appel aux arbres de la forêt : de puissantes racines bloquent les roues et des branches tordent les cabines, rendant les machines inutilisables pour le lendemain matin."
+      },
+      {
+        "id": "q7",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quel titre de propriété Maître Renard présente-t-il pour stopper net le projet du directeur ?",
+        "options": [
+          "Un arrêté préfectoral classant la forêt en réserve naturelle protégée.",
+          "Des actes prouvant que le terrain appartient à la famille de Drago et que la forêt constitue son jardin privé.",
+          "Une lettre du ministre de l'Environnement annulant les permis de construire.",
+          "Un contrat stipulant que le bois doit être préservé pour les activités d'orientation des élèves."
+        ],
+        "answer": 1,
+        "points": 1,
+        "explanation": "Le notaire démontre que la famille Gregoriu est propriétaire du terrain loué à la ville et que le directeur n'a aucun droit légal de toucher aux arbres du « jardin » de Drago."
+      },
+      {
+        "id": "q8",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quelle est la cause médicale de la crise de folie furieuse et de la haine des plantes du directeur ?",
+        "options": [
+          "Un sortilège d'envoûtement lancé par les anciens mages noirs de la région.",
+          "Une démence causée par une allergie et un surdosage de son traitement contre l'urticaire provoqué par la potion de Lili.",
+          "Une intoxication après avoir respiré le pollen d'une fleur rare du jardin de Miruna.",
+          "Une insolation sévère contractée en surveillant les ouvriers sur le chantier."
+        ],
+        "answer": 1,
+        "points": 1,
+        "explanation": "Le directeur a fait une réaction toxique au traitement médical prescrit à haute dose contre sa crise d'urticaire initiale, ce qui a déclenché son obsession maladive."
+      },
+      {
+        "id": "q9",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Lorsque Drago lui révèle qu'il est un mage noir, Lili reste très calme et lui propose immédiatement son aide.",
+        "answer": false,
+        "points": 1,
+        "explanation": "C'est FAUX. Terrifiée à l'idée de faire face à un mage noir réputé dangereux, Lili ramasse ses affaires et tente de s'enfuir immédiatement."
+      },
+      {
+        "id": "q10",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Drago a utilisé ses talents d'hypnose pour effacer le souvenir de l'altercation dans l'esprit des trois brutes du collège.",
+        "answer": true,
+        "points": 1,
+        "explanation": "C'est VRAI. C'est grâce à ses dons d'hypnose que les trois garçons n'ont jamais reparlé de leur tentative de saccage ni dénoncé Lili."
+      },
+      {
+        "id": "q11",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "À la fin de l'aventure, le directeur est hospitalisé d'urgence et la reconstruction de la serre pédagogique est programmée.",
+        "answer": true,
+        "points": 1,
+        "explanation": "C'est VRAI. Le directeur est pris en charge par les médecins et l'école envisage de rebâtir la serre tant attendue par Lili."
+      },
+      {
+        "id": "q12",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Une fois la forêt sauvée, Lili décide d'arrêter totalement de s'occuper du jardin de la maison de Miruna.",
+        "answer": false,
+        "points": 1,
+        "explanation": "C'est FAUX. Lili demande expressément à Drago l'autorisation de continuer à venir soigner bénévolement les plantes chaque soir."
+      },
+      {
+        "id": "q13",
+        "section": "Vocabulaire",
+        "type": "mcq",
+        "text": "« Un éducateur vient chercher les derniers « traînards » pour les faire rentrer. » Dans cette phrase, que désigne le mot « traînard » ?",
+        "options": [
+          "Une personne qui pilote un traîneau sur un chemin de terre.",
+          "Quelqu'un qui marche avec lenteur, tarde à partir et reste en arrière des autres.",
+          "Un élève puni chargé du ramassage des feuilles mortes.",
+          "Un outil de jardinage utilisé pour aplanir les plates-bandes."
+        ],
+        "answer": 1,
+        "points": 1,
+        "explanation": "Un « traînard » est une personne qui traîne, avance lentement ou s'attarde loin derrière le groupe."
+      },
+      {
+        "id": "q14",
+        "section": "Vocabulaire",
+        "type": "mcq",
+        "text": "« Il a parlé d'une voix posée, rauque et assez menaçante pour inquiéter les trois nigauds. » Que signifie le nom « nigaud » ?",
+        "options": [
+          "Un adversaire coriace et respecté de tous.",
+          "Une personne sotte, bête ou niaise.",
+          "Un prédateur nocturne vivant dans la forêt.",
+          "Un ouvrier qualifié dans les travaux forestiers."
+        ],
+        "answer": 1,
+        "points": 1,
+        "explanation": "Un « nigaud » est un individu niais, maladroit ou stupide (utilisé ici pour désigner les trois élèves moqueurs qui se dégonflent)."
+      },
+      {
+        "id": "q15",
+        "section": "Vocabulaire",
+        "type": "mcq",
+        "text": "« Nous apprenons plus tard qu'il était en fait pris de démence... » Dans ce contexte médical, que signifie le mot « démence » ?",
+        "options": [
+          "Une immense fatigue physique nécessitant du repos complet.",
+          "Une grave altération des facultés mentales entraînant une perte de la raison et un comportement incohérent.",
+          "Une violente rage de dents passagère.",
+          "Une timidité maladive devant un public nombreux."
+        ],
+        "answer": 1,
+        "points": 1,
+        "explanation": "La « démence » est un trouble psychique majeur caractérisé par une perte de la raison, du discernement et du sens des réalités."
+      },
+      {
+        "id": "q16",
+        "section": "Synthèse",
+        "type": "mcq",
+        "text": "Un seul de ces trois résumés est totalement correct. Lequel ?",
+        "options": [
+          "Résumé A : Lili, jeune druidesse incomprise à l'Institut Lemn, découvre dans la forêt le jardin secret de Drago, un mage noir bienveillant. Lorsque le directeur de l'école, pris de démence médicale, veut raser les bois pour bâtir un golf, Lili sabote les engins avec les arbres tandis que Drago fait valoir ses titres de propriété avec son notaire. La forêt est préservée et leur amitié consolidée.",
+          "Résumé B : Rejetée par ses camarades de classe, Lili décide de s'enfuir dans la forêt pour fonder sa propre communauté de druides. Avec l'aide de sa grand-tante Miruna, elle concocte un poison mortel pour détruire l'Institut Lemn. Après un combat magique contre le directeur, elle rachète l'école pour la transformer en réserve botanique.",
+          "Résumé C : Élève modèle de l'Institut Lemn, Lili s'associe à trois camarades pour participer à un concours de jardinage. Ils découvrent des engins de chantier abandonnés dans la forêt et décident de les réparer pour construire une nouvelle serre. Impressionné par leur travail, le directeur leur offre une bourse d'études en herboristerie."
+        ],
+        "answer": 0,
+        "points": 1,
+        "explanation": "Le Résumé A résume fidèlement toute l'intrigue : le don de Lili, sa rencontre avec Drago, le sabotage végétal des machines, l'intervention juridique du notaire et la résolution finale."
+      }
+    ]
   }
 ];
