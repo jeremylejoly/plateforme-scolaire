@@ -230,12 +230,12 @@ window.LIVRES = [
         "id": "q2",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Que trouve Marine dans le débarras de l'appartement de son père ?",
+        "text": "Quel objet insolite et volumineux, lié à la passion de son père, Marine découvre-t-elle dans le débarras ?",
         "options": [
-          "Des photos de ses parents quand ils étaient encore ensemble",
-          "Le premier vélo de son père et des jouets d'enfance",
+          "Des cartons remplis de vieilles photos de famille",
+          "Le premier vélo de son père",
           "Une grande bâche en toile épaisse qui servait à faire une montgolfière",
-          "Des lettres de son grand-père qu'elle ne connaissait pas"
+          "Une collection de maquettes d'avions"
         ],
         "answer": 2,
         "points": 1
@@ -2683,7 +2683,7 @@ window.LIVRES = [
         "options": [
           "Résumé A : Elisabeth découvre des documents dans le bureau prouvant que sa tante travaille pour la police.",
           "Résumé B : Elisabeth pénètre dans le bureau de sa tante, mais doit fuir avant d'y découvrir quoi que ce soit. En accumulant les indices, elle finit par croire que sa tante est Jack l'Éventreur, la suit jusqu'à Scotland Yard et se fait frapper avec le parapluie. Miss Tucson lui révèle qu'elle est enquêtrice secrète et lui explique aussi qu'elle a dû se fâcher avec sa mère il y a vingt ans sur ordre de Scotland Yard. Les deux se réconcilient.",
-          "Résumé C : Miss Tucson la frappe avec son parapluie mais il n'est pas question de la brouille forcée avec la mère d'Elisabeth dans ce résumé."
+          "Résumé C : Elisabeth découvre dans le bureau de sa tante des documents secrets prouvant que celle-ci est Jack l'Éventreur. Elle alerte immédiatement la police de Scotland Yard, qui arrête Miss Tucson devant la maison."
         ],
         "answer": 1,
         "points": 1
@@ -3142,7 +3142,7 @@ window.LIVRES = [
         "id": "q3",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Qu'est-ce que Max rapporte lors de sa deuxième fouille, devant l'appartement de madame Jansen ?",
+        "text": "Qu'est-ce que Max trouve et rapporte lors de sa fouille devant l'appartement de madame Jansen ?",
         "options": [
           "Un bouton arraché d'un manteau.",
           "Un bout de fil bleu.",
@@ -3656,7 +3656,7 @@ window.LIVRES = [
         "id": "q11",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "La pépite d'or que Nils offre à Alexis est celle que le renne avait découverte sous la glace.",
+        "text": "La pépite d'or que Nils offre à Alexis est exactement celle que le renne venait de découvrir dans la rivière sous leurs yeux.",
         "answer": false,
         "points": 1
       },
@@ -4114,7 +4114,7 @@ window.LIVRES = [
         "id": "q15",
         "section": "Vocabulaire",
         "type": "mcq",
-        "text": "« Le navire était nimbé d'une douce lumière orangée. » Que signifie le mot nimbé ?",
+        "text": "« Le bateau était nimbé d'une douce lumière orangée. » Que signifie le mot nimbé ?",
         "options": [
           "Caché et invisible depuis la côte",
           "Secoué par les vagues et le vent",
@@ -4338,7 +4338,7 @@ window.LIVRES = [
         "text": "Un seul de ces trois résumés est totalement correct. Lequel ?",
         "options": [
           "Résumé A : Après plusieurs étapes, Milo se rend au parc du quartier où sa famille l'attend pour lui révéler que le téléphone est son cadeau d'anniversaire.",
-          "Résumé B : Milo, un garçon de dix ans, trouve un smartphone dans le parterre de fleurs devant chez lui. Des rendez-vous mystérieux l'entraînent dans un jeu de piste à travers la ville. Inquiet d'être mêlé à des activités criminelles, il suit chaque indice jusqu'au cimetière, où il découvre que tout a été organisé par sa famille pour lui offrir le téléphone comme cadeau d'anniversaire surprise.",
+          "Résumé B : Milo, un jeune garçon, trouve un smartphone dans le parterre de fleurs devant chez lui. Des rendez-vous mystérieux l'entraînent dans un jeu de piste à travers la ville. Inquiet d'être mêlé à des activités criminelles, il suit chaque indice jusqu'au cimetière, où il découvre que tout a été organisé par sa famille pour lui offrir le téléphone comme cadeau d'anniversaire surprise.",
           "Résumé C : C'est finalement sa grand-mère qui révèle avoir tout organisé : le jeu de piste était une façon originale de lui offrir le smartphone pour son anniversaire."
         ],
         "answer": 1,
@@ -5038,7 +5038,7 @@ window.LIVRES = [
           "Elle a décidé de ne plus parler à personne par timidité naturelle",
           "Madame Bourdelet lui a demandé de rester à l'écart des autres",
           "Elle attend de connaître les élèves avant de se faire des amis",
-          "Elle a beaucoup grandi pendant l'été et les moqueries sur sa taille l'ont poussée à s'isoler"
+          "Elle a beaucoup grandi pendant l'été et son changement physique la fait se sentir différente et mal à l'aise au milieu des autres"
         ],
         "answer": 3,
         "points": 1
@@ -5405,11 +5405,11 @@ window.LIVRES = [
         "id": "q2",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Que découvre Sophie en feuilletant le vieux roman à couverture bleue ?",
+        "text": "Que découvre Sophie cachée dans les replis de la couverture du vieux livre ?",
         "options": [
           "Un carnet intime rempli de dessins",
           "Une liasse de billets de banque anciens",
-          "Une grande enveloppe contenant six petites lettres",
+          "Une grande enveloppe contenant six petites enveloppes",
           "Une photographie de famille en noir et blanc"
         ],
         "answer": 2,
@@ -5461,9 +5461,9 @@ window.LIVRES = [
         "id": "q6",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Pourquoi Sophie ment-elle à Erwan en appelant son amie « Estelle » plutôt qu'« Esther » ?",
+        "text": "Pourquoi Sophie ment-elle à son cousin Erwan en inventant le prénom « Estelle » plutôt que de parler d'Esther ?",
         "options": [
-          "Elle a peur qu'Erwan se moque d'elle si elle parle de vieilles lettres",
+          "Elle veut garder son secret et n'est pas encore prête à partager l'histoire d'Esther avec les autres",
           "Elle ne se souvient plus du vrai prénom",
           "Elle ne fait pas confiance à Erwan",
           "Esther lui a demandé de garder le secret"
@@ -6184,7 +6184,7 @@ window.LIVRES = [
         "id": "q15",
         "section": "Vocabulaire",
         "type": "mcq",
-        "text": "« Lewis se montre très perspicace, intelligent, et digne de confiance. » — Que signifie perspicace ?",
+        "text": "« En tout cas, il me semble drôlement perspicace, intelligent, et digne de confiance. » — Que signifie le mot perspicace ?",
         "options": [
           "Timide et réservé face aux inconnus",
           "Capable de voir et comprendre rapidement ce que les autres ne remarquent pas",
@@ -6598,7 +6598,7 @@ window.LIVRES = [
         "id": "q15",
         "section": "Vocabulaire",
         "type": "mcq",
-        "text": "« Archibald se frotte le nez. Sa peur des avions lui semble dérisoire à côté du courage de Valentine. » — Que signifie dérisoire ?",
+        "text": "« Sa peur des avions lui semble dérisoire à côté du courage de Valentine. » — Que signifie le mot dérisoire ?",
         "options": [
           "Dangereux et impossible à surmonter",
           "Si petit et insignifiant qu'il ne mérite pas qu'on s'y attarde",
@@ -6777,7 +6777,7 @@ window.LIVRES = [
         "id": "q13",
         "section": "Vocabulaire",
         "type": "mcq",
-        "text": "« Ces machines sont si perfectionnées qu'on les dit infaillibles. » — Que signifie infaillibles ?",
+        "text": "« — Je croyais les robots humanoïdes infaillibles. » — Que signifie le mot infaillibles ?",
         "options": [
           "Très puissantes et difficiles à arrêter",
           "Incapables de se tromper ou de faire des erreurs",
@@ -7205,7 +7205,7 @@ window.LIVRES = [
         "id": "q14",
         "section": "Vocabulaire",
         "type": "mcq",
-        "text": "« Grand-mère venait de refermer à double tour la porte en marmonnant entre ses dents. » — Que signifie marmonnant ?",
+        "text": "« Grand-mère est venue vers nous en marmonnant entre ses dents… » — Que signifie le mot marmonnant ?",
         "options": [
           "En criant très fort pour que tout le monde entende",
           "En chantant doucement pour se calmer",
