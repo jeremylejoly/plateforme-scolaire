@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CEB Sciences 2026 — Questionnaire Interactif | LCML</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Canvas Confetti CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+  <!-- Google Fonts: Fredoka & Nunito -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            display: ['Fredoka', 'sans-serif'],
+            body: ['Nunito', 'sans-serif'],
+          },
+          colors: {
+            primary: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              200: '#c7d2fe',
+              300: '#a5b4fc',
+              400: '#818cf8',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+              800: '#3730a3',
+              900: '#312e81',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      font-family: 'Nunito', sans-serif;
+      background-color: #f8fafc;
+      background-image: radial-gradient(#e2e8f0 1.2px, transparent 1.2px);
+      background-size: 24px 24px;
+    }
+    .font-display {
+      font-family: 'Fredoka', sans-serif;
+    }
+    .custom-shadow {
+      box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05), 0 2px 6px -1px rgba(0, 0, 0, 0.03);
+    }
+    .option-btn {
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .option-btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+    }
+    .tf-btn {
+      transition: all 0.2s ease;
+    }
+    .tf-btn:hover:not(:disabled) {
+      transform: translateY(-1px);
+    }
+  </style>
+</head>
+<body class="text-slate-700 min-h-screen flex flex-col antialiased selection:bg-indigo-500 selection:text-white">
+
+  <!-- ================= EN-TÊTE PRINCIPAL ================= -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-40 custom-shadow backdrop-blur-md bg-white/90">
+    <div class="max-w-5xl mx-auto px-4 h-16 sm:h-20 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <span class="text-2xl sm:text-3xl">🕯️</span>
+        <div>
+          <h1 class="font-display font-bold text-lg sm:text-xl text-slate-800 leading-tight">
+            CEB Sciences <span class="text-indigo-600">2026</span>
+          </h1>
+          <p class="text-xs text-slate-500 font-medium">Classification du vivant • Collections • Combustion & Bougies</p>
+        </div>
+      </div>
+
+      <!-- COMPTEUR DE SCORE -->
+      <div class="flex items-center space-x-2 bg-slate-50 border border-slate-200 px-3 py-1.5 sm:px-4 sm:py-2 rounded-2xl">
+        <span class="text-xs font-bold text-slate-500 uppercase tracking-wider hidden sm:inline">Score</span>
+        <span class="text-lg sm:text-xl font-display font-black text-indigo-600" id="currentScore">0</span>
+        <span class="text-xs font-bold text-slate-400">/ 20</span>
+      </div>
+    </div>
+
+    <!-- BARRE DE PROGRESSION -->
+    <div class="w-full bg-slate-100 h-1.5">
+      <div id="mainProgressBar" class="bg-gradient-to-r from-indigo-500 to-blue-500 h-1.5 transition-all duration-500 w-0"></div>
+    </div>
+  </header>
+
+  <!-- ================= CONTENU PRINCIPAL ================= -->
+  <main class="max-w-4xl mx-auto px-4 py-8 flex-1 w-full">
+
+    <!-- NAVIGATION PAR THÈMES (ONGLETS) -->
+    <nav class="flex flex-wrap gap-2 mb-8 justify-center">
+      <button onclick="switchTab(0)" class="tab-btn active px-4 py-2.5 rounded-xl font-display font-semibold text-sm transition-all flex items-center gap-2 bg-indigo-600 text-white shadow-md" data-tab="0">
+        <span>🐾</span> 1. Groupes du vivant (p.3-4)
+      </button>
+      <button onclick="switchTab(1)" class="tab-btn px-4 py-2.5 rounded-xl font-display font-semibold text-sm transition-all flex items-center gap-2 bg-white text-slate-600 hover:bg-slate-100 border border-slate-200" data-tab="1">
+        <span>🔎</span> 2. Collection 3 (p.4-5)
+      </button>
+      <button onclick="switchTab(2)" class="tab-btn px-4 py-2.5 rounded-xl font-display font-semibold text-sm transition-all flex items-center gap-2 bg-white text-slate-600 hover:bg-slate-100 border border-slate-200" data-tab="2">
+        <span>🕯️</span> 3. Combustion & Bocaux (p.6-7)
+      </button>
+      <button onclick="switchTab(3)" class="tab-btn px-4 py-2.5 rounded-xl font-display font-semibold text-sm transition-all flex items-center gap-2 bg-white text-slate-600 hover:bg-slate-100 border border-slate-200" data-tab="3">
+        <span>🔥</span> 4. Flammes & Durées (p.8-10)
+      </button>
+    </nav>
+
+    <!-- BANNIÈRE D'INSTRUCTION PORTFOLIO PAPIER -->
+    <div class="bg-amber-50 border-l-4 border-amber-400 p-4 rounded-r-xl mb-6 shadow-sm flex items-start space-x-3">
+      <span class="text-2xl">📖</span>
+      <div class="text-sm text-amber-900">
+        <p class="font-bold font-display text-base">Garde ton livret portfolio sous les yeux !</p>
+        <p class="text-amber-800">Toutes les questions se résolvent en observant attentivement les planches d'animaux, tableaux et graphiques d'expériences du portfolio papier <strong>CEB Sciences 2026</strong>.</p>
+      </div>
+    </div>
+
+    <!-- ================= CONTENEURS DES THÈMES ================= -->
+
+    <!-- ================= THÈME 1 : GROUPES DU VIVANT ================= -->
+    <section id="section-0" class="theme-section space-y-6">
+      
+      <!-- En-tête de section -->
+      <div class="bg-emerald-50 border border-emerald-200 p-5 rounded-2xl">
+        <div class="flex items-center gap-3">
+          <span class="text-3xl">🐾</span>
+          <div>
+            <span class="bg-emerald-200 text-emerald-900 text-xs font-bold px-2 py-0.5 rounded-full uppercase">Pages 3 et 4</span>
+            <h2 class="font-display text-xl font-bold text-emerald-950">La classification des vivants et les grands groupes animaux</h2>
+          </div>
+        </div>
+      </div>
+
+      <!-- Question 1.1 (Bonne réponse : C) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q1_1">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-emerald-100 text-emerald-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">1.1</span>
+            <h3 class="font-bold text-slate-800 text-base">En observant la Collection 1 (page 3), à quel groupe d'animaux vertébrés appartient la <strong>pipistrelle commune</strong> (chauve-souris) ?</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 1</span>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+          <button type="button" onclick="selectSingleOption('q1_1', 0)" class="option-btn p-3 rounded-xl border border-slate-200 text-center text-sm font-medium hover:bg-slate-50 transition">
+            Les oiseaux
+          </button>
+          <button type="button" onclick="selectSingleOption('q1_1', 1)" class="option-btn p-3 rounded-xl border border-slate-200 text-center text-sm font-medium hover:bg-slate-50 transition">
+            Les insectes
+          </button>
+          <button type="button" onclick="selectSingleOption('q1_1', 2)" class="option-btn p-3 rounded-xl border border-slate-200 text-center text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            Les mammifères
+          </button>
+          <button type="button" onclick="selectSingleOption('q1_1', 3)" class="option-btn p-3 rounded-xl border border-slate-200 text-center text-sm font-medium hover:bg-slate-50 transition">
+            Les reptiles
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 1.2 (Bonne réponse : A) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q1_2">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-emerald-100 text-emerald-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">1.2</span>
+            <h3 class="font-bold text-slate-800 text-base">D'après la Collection 2 (page 4), à quel groupe d'arthropodes appartiennent le <strong>homard</strong> et le <strong>gammare des ruisseaux</strong> ?</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 2</span>
+        </div>
+        <div class="space-y-2.5">
+          <button type="button" onclick="selectSingleOption('q1_2', 0)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            A) Les crustacés
+          </button>
+          <button type="button" onclick="selectSingleOption('q1_2', 1)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            B) Les insectes
+          </button>
+          <button type="button" onclick="selectSingleOption('q1_2', 2)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            C) Les annélides
+          </button>
+          <button type="button" onclick="selectSingleOption('q1_2', 3)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            D) Les actinoptérygiens
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 1.3 (Vrai / Faux) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q1_3">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-emerald-100 text-emerald-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">1.3</span>
+            <h3 class="font-bold text-slate-800 text-base">En observant la Collection 2 de la page 4, indique si chaque affirmation est Vraie ou Fausse.</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 3</span>
+        </div>
+        <div class="space-y-3">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200 gap-2" data-sub="q1_3_a">
+            <span class="text-sm text-slate-700">La sangsue piscicole et le lombric font tous les deux partie du groupe des annélides.</span>
+            <div class="flex gap-2 shrink-0">
+              <button type="button" onclick="selectTrueFalse('q1_3_a', true)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="true" data-correct="true">VRAI</button>
+              <button type="button" onclick="selectTrueFalse('q1_3_a', false)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="false">FAUX</button>
+            </div>
+          </div>
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200 gap-2" data-sub="q1_3_b">
+            <span class="text-sm text-slate-700">La carpe koï et le gardon font partie du groupe des mammifères.</span>
+            <div class="flex gap-2 shrink-0">
+              <button type="button" onclick="selectTrueFalse('q1_3_b', true)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="true">VRAI</button>
+              <button type="button" onclick="selectTrueFalse('q1_3_b', false)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="false" data-correct="true">FAUX</button>
+            </div>
+          </div>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 1.4 (Bonne réponse : D) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q1_4">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-emerald-100 text-emerald-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">1.4</span>
+            <h3 class="font-bold text-slate-800 text-base">Parmi les êtres vivants présentés dans la Collection 1 (page 3), lequel est un <strong>mollusque</strong> au corps mou sans squelette ?</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 4</span>
+        </div>
+        <div class="space-y-2.5">
+          <button type="button" onclick="selectSingleOption('q1_4', 0)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            A) Le homard
+          </button>
+          <button type="button" onclick="selectSingleOption('q1_4', 1)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            B) Le poisson-chat
+          </button>
+          <button type="button" onclick="selectSingleOption('q1_4', 2)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            C) La piéride du chou
+          </button>
+          <button type="button" onclick="selectSingleOption('q1_4', 3)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            D) La grande limace
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 1.5 (Bonne réponse : B) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q1_5">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-emerald-100 text-emerald-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">1.5</span>
+            <h3 class="font-bold text-slate-800 text-base">Dans la Collection 2 (page 4), quels sont les deux animaux regroupés sous la catégorie des <strong>insectes</strong> ?</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 5</span>
+        </div>
+        <div class="space-y-2.5">
+          <button type="button" onclick="selectSingleOption('q1_5', 0)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            A) Le moineau domestique et la pie bavarde
+          </button>
+          <button type="button" onclick="selectSingleOption('q1_5', 1)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            B) La guêpe commune et la piéride du chou
+          </button>
+          <button type="button" onclick="selectSingleOption('q1_5', 2)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            C) Le homard et le gammare des ruisseaux
+          </button>
+          <button type="button" onclick="selectSingleOption('q1_5', 3)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            D) Le chien domestique et le chimpanzé commun
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+    </section>
+
+    <!-- ================= THÈME 2 : COLLECTION 3 ================= -->
+    <section id="section-1" class="theme-section hidden space-y-6">
+      
+      <!-- En-tête de section -->
+      <div class="bg-teal-50 border border-teal-200 p-5 rounded-2xl">
+        <div class="flex items-center gap-3">
+          <span class="text-3xl">🔎</span>
+          <div>
+            <span class="bg-teal-200 text-teal-900 text-xs font-bold px-2 py-0.5 rounded-full uppercase">Pages 4 et 5</span>
+            <h2 class="font-display text-xl font-bold text-teal-950">Attributs anatomiques et analyse de la Collection 3</h2>
+          </div>
+        </div>
+      </div>
+
+      <!-- Question 2.1 (Bonne réponse : B) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q2_1">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-teal-100 text-teal-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">2.1</span>
+            <h3 class="font-bold text-slate-800 text-base">D'après la Collection 3 (page 5), à quel groupe d'animaux correspondent les numéros <strong>5 et 6</strong> ?</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 6</span>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+          <button type="button" onclick="selectSingleOption('q2_1', 0)" class="option-btn p-3 rounded-xl border border-slate-200 text-center text-sm font-medium hover:bg-slate-50 transition">
+            Les mammifères
+          </button>
+          <button type="button" onclick="selectSingleOption('q2_1', 1)" class="option-btn p-3 rounded-xl border border-slate-200 text-center text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            Les oiseaux
+          </button>
+          <button type="button" onclick="selectSingleOption('q2_1', 2)" class="option-btn p-3 rounded-xl border border-slate-200 text-center text-sm font-medium hover:bg-slate-50 transition">
+            Les insectes
+          </button>
+          <button type="button" onclick="selectSingleOption('q2_1', 3)" class="option-btn p-3 rounded-xl border border-slate-200 text-center text-sm font-medium hover:bg-slate-50 transition">
+            Les actinoptérygiens
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 2.2 (Bonne réponse : D) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q2_2">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-teal-100 text-teal-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">2.2</span>
+            <h3 class="font-bold text-slate-800 text-base">Dans la Collection 3 (page 5), quel groupe d'animaux aquatiques vertébrés regroupe la <strong>carpe koï (7)</strong> et le <strong>gardon (8)</strong> ?</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 7</span>
+        </div>
+        <div class="space-y-2.5">
+          <button type="button" onclick="selectSingleOption('q2_2', 0)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            A) Les annélides
+          </button>
+          <button type="button" onclick="selectSingleOption('q2_2', 1)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            B) Les crustacés
+          </button>
+          <button type="button" onclick="selectSingleOption('q2_2', 2)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            C) Les mammifères
+          </button>
+          <button type="button" onclick="selectSingleOption('q2_2', 3)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            D) Les actinoptérygiens (poissons à nageoires rayonnées)
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 2.3 (Bonne réponse : A) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q2_3">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-teal-100 text-teal-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">2.3</span>
+            <h3 class="font-bold text-slate-800 text-base">Quel attribut anatomique partagent le <strong>chien domestique (1)</strong> et le <strong>chimpanzé commun (2)</strong> en tant que mammifères ?</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 8</span>
+        </div>
+        <div class="space-y-2.5">
+          <button type="button" onclick="selectSingleOption('q2_3', 0)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            A) Ils possèdent des poils, un squelette interne d'os et les femelles allaitent leurs petits
+          </button>
+          <button type="button" onclick="selectSingleOption('q2_3', 1)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            B) Ils possèdent un squelette externe et 6 pattes articulées
+          </button>
+          <button type="button" onclick="selectSingleOption('q2_3', 2)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            C) Ils possèdent des plumes et un bec sans dents
+          </button>
+          <button type="button" onclick="selectSingleOption('q2_3', 3)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            D) Ils possèdent des écailles non soudées et des nageoires
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 2.4 (Bonne réponse : C) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q2_4">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-teal-100 text-teal-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">2.4</span>
+            <h3 class="font-bold text-slate-800 text-base">Sur la planche de la Collection 3 (page 5), quel numéro identifie la <strong>piéride du chou</strong> ?</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 9</span>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+          <button type="button" onclick="selectSingleOption('q2_4', 0)" class="option-btn p-3 rounded-xl border border-slate-200 text-center text-sm font-medium hover:bg-slate-50 transition">
+            Numéro 2
+          </button>
+          <button type="button" onclick="selectSingleOption('q2_4', 1)" class="option-btn p-3 rounded-xl border border-slate-200 text-center text-sm font-medium hover:bg-slate-50 transition">
+            Numéro 3
+          </button>
+          <button type="button" onclick="selectSingleOption('q2_4', 2)" class="option-btn p-3 rounded-xl border border-slate-200 text-center text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            Numéro 4
+          </button>
+          <button type="button" onclick="selectSingleOption('q2_4', 3)" class="option-btn p-3 rounded-xl border border-slate-200 text-center text-sm font-medium hover:bg-slate-50 transition">
+            Numéro 6
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 2.5 (Vrai / Faux) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q2_5">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-teal-100 text-teal-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">2.5</span>
+            <h3 class="font-bold text-slate-800 text-base">En observant attentivement les Collections 2 et 3 (pages 4 et 5), indique si chaque affirmation est Vraie ou Fausse.</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 10</span>
+        </div>
+        <div class="space-y-3">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200 gap-2" data-sub="q2_5_a">
+            <span class="text-sm text-slate-700">Le moineau domestique (5) et la pie bavarde (6) possèdent des plumes, deux ailes et un bec corné.</span>
+            <div class="flex gap-2 shrink-0">
+              <button type="button" onclick="selectTrueFalse('q2_5_a', true)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="true" data-correct="true">VRAI</button>
+              <button type="button" onclick="selectTrueFalse('q2_5_a', false)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="false">FAUX</button>
+            </div>
+          </div>
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200 gap-2" data-sub="q2_5_b">
+            <span class="text-sm text-slate-700">La guêpe commune (3) possède 8 pattes articulées comme les araignées.</span>
+            <div class="flex gap-2 shrink-0">
+              <button type="button" onclick="selectTrueFalse('q2_5_b', true)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="true">VRAI</button>
+              <button type="button" onclick="selectTrueFalse('q2_5_b', false)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="false" data-correct="true">FAUX</button>
+            </div>
+          </div>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+    </section>
+
+    <!-- ================= THÈME 3 : COMBUSTION & BOCAUX ================= -->
+    <section id="section-2" class="theme-section hidden space-y-6">
+      
+      <!-- En-tête de section -->
+      <div class="bg-amber-50 border border-amber-200 p-5 rounded-2xl">
+        <div class="flex items-center gap-3">
+          <span class="text-3xl">🕯️</span>
+          <div>
+            <span class="bg-amber-200 text-amber-900 text-xs font-bold px-2 py-0.5 rounded-full uppercase">Pages 6 et 7</span>
+            <h2 class="font-display text-xl font-bold text-amber-950">Expérience 1 : Influence du volume du récipient sur la combustion</h2>
+          </div>
+        </div>
+      </div>
+
+      <!-- Question 3.1 (Bonne réponse : A) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q3_1">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-amber-100 text-amber-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">3.1</span>
+            <h3 class="font-bold text-slate-800 text-base">Dans l'Expérience 1 (pages 6 et 7), sous quel récipient la bougie s'est-elle éteinte <strong>le plus rapidement</strong> (en seulement 2 secondes) ?</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 11</span>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+          <button type="button" onclick="selectSingleOption('q3_1', 0)" class="option-btn p-3 rounded-xl border border-slate-200 text-center text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            Récipient 1 (90 ml)
+          </button>
+          <button type="button" onclick="selectSingleOption('q3_1', 1)" class="option-btn p-3 rounded-xl border border-slate-200 text-center text-sm font-medium hover:bg-slate-50 transition">
+            Récipient 3 (250 ml)
+          </button>
+          <button type="button" onclick="selectSingleOption('q3_1', 2)" class="option-btn p-3 rounded-xl border border-slate-200 text-center text-sm font-medium hover:bg-slate-50 transition">
+            Récipient 5 (1 900 ml)
+          </button>
+          <button type="button" onclick="selectSingleOption('q3_1', 3)" class="option-btn p-3 rounded-xl border border-slate-200 text-center text-sm font-medium hover:bg-slate-50 transition">
+            Récipient 6 (2 800 ml)
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 3.2 (Bonne réponse : C) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q3_2">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-amber-100 text-amber-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">3.2</span>
+            <h3 class="font-bold text-slate-800 text-base">En observant le graphique en bâtonnets de la page 7, quelle est la durée de combustion mesurée pour le <strong>récipient 3 (250 ml)</strong> ?</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 12</span>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+          <button type="button" onclick="selectSingleOption('q3_2', 0)" class="option-btn p-3 rounded-xl border border-slate-200 text-center text-sm font-medium hover:bg-slate-50 transition">
+            2 secondes
+          </button>
+          <button type="button" onclick="selectSingleOption('q3_2', 1)" class="option-btn p-3 rounded-xl border border-slate-200 text-center text-sm font-medium hover:bg-slate-50 transition">
+            5 secondes
+          </button>
+          <button type="button" onclick="selectSingleOption('q3_2', 2)" class="option-btn p-3 rounded-xl border border-slate-200 text-center text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            8 secondes
+          </button>
+          <button type="button" onclick="selectSingleOption('q3_2', 3)" class="option-btn p-3 rounded-xl border border-slate-200 text-center text-sm font-medium hover:bg-slate-50 transition">
+            14 secondes
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 3.3 (Vrai / Faux) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q3_3">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-amber-100 text-amber-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">3.3</span>
+            <h3 class="font-bold text-slate-800 text-base">En analysant le tableau et le graphique de l'Expérience 1 (page 7), indique si chaque affirmation est Vraie ou Fausse.</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 13</span>
+        </div>
+        <div class="space-y-3">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200 gap-2" data-sub="q3_3_a">
+            <span class="text-sm text-slate-700">Plus le volume du récipient en verre est grand, plus la durée de combustion de la bougie est longue.</span>
+            <div class="flex gap-2 shrink-0">
+              <button type="button" onclick="selectTrueFalse('q3_3_a', true)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="true" data-correct="true">VRAI</button>
+              <button type="button" onclick="selectTrueFalse('q3_3_a', false)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="false">FAUX</button>
+            </div>
+          </div>
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200 gap-2" data-sub="q3_3_b">
+            <span class="text-sm text-slate-700">Sous un bocal en verre fermé hermétiquement, la flamme d'une bougie peut brûler indéfiniment.</span>
+            <div class="flex gap-2 shrink-0">
+              <button type="button" onclick="selectTrueFalse('q3_3_b', true)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="true">VRAI</button>
+              <button type="button" onclick="selectTrueFalse('q3_3_b', false)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="false" data-correct="true">FAUX</button>
+            </div>
+          </div>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 3.4 (Bonne réponse : B) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q3_4">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-amber-100 text-amber-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">3.4</span>
+            <h3 class="font-bold text-slate-800 text-base">Pourquoi la bougie finit-elle inévitablement par s'éteindre lorsqu'on la recouvre d'un bocal en verre ?</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 14</span>
+        </div>
+        <div class="space-y-2.5">
+          <button type="button" onclick="selectSingleOption('q3_4', 0)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            A) Parce que le verre refroidit la cire de la bougie
+          </button>
+          <button type="button" onclick="selectSingleOption('q3_4', 1)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            B) Parce que la combustion consomme tout le dioxygène (O₂) disponible dans l'air emprisonné
+          </button>
+          <button type="button" onclick="selectSingleOption('q3_4', 2)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            C) Parce que la mèche de la bougie se dissout dans le verre
+          </button>
+          <button type="button" onclick="selectSingleOption('q3_4', 3)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            D) Parce que la lumière du soleil traverse le bocal
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 3.5 (Bonne réponse : D) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q3_5">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-amber-100 text-amber-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">3.5</span>
+            <h3 class="font-bold text-slate-800 text-base">D'après les données du tableau de la page 7, combien de temps a brûlé la bougie sous le <strong>récipient 5 (volume de 1 900 ml)</strong> ?</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 15</span>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+          <button type="button" onclick="selectSingleOption('q3_5', 0)" class="option-btn p-3 rounded-xl border border-slate-200 text-center text-sm font-medium hover:bg-slate-50 transition">
+            14 secondes
+          </button>
+          <button type="button" onclick="selectSingleOption('q3_5', 1)" class="option-btn p-3 rounded-xl border border-slate-200 text-center text-sm font-medium hover:bg-slate-50 transition">
+            28 secondes
+          </button>
+          <button type="button" onclick="selectSingleOption('q3_5', 2)" class="option-btn p-3 rounded-xl border border-slate-200 text-center text-sm font-medium hover:bg-slate-50 transition">
+            38 secondes
+          </button>
+          <button type="button" onclick="selectSingleOption('q3_5', 3)" class="option-btn p-3 rounded-xl border border-slate-200 text-center text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            48 secondes
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+    </section>
+
+    <!-- ================= THÈME 4 : FLAMMES & DURÉES ================= -->
+    <section id="section-3" class="theme-section hidden space-y-6">
+      
+      <!-- En-tête de section -->
+      <div class="bg-rose-50 border border-rose-200 p-5 rounded-2xl">
+        <div class="flex items-center gap-3">
+          <span class="text-3xl">🔥</span>
+          <div>
+            <span class="bg-rose-200 text-rose-900 text-xs font-bold px-2 py-0.5 rounded-full uppercase">Pages 8 à 10</span>
+            <h2 class="font-display text-xl font-bold text-rose-950">Expériences 2 et 3 : Nombre de bougies et hauteur des flammes</h2>
+          </div>
+        </div>
+      </div>
+
+      <!-- Question 4.1 (Bonne réponse : B) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q4_1">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-rose-100 text-rose-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">4.1</span>
+            <h3 class="font-bold text-slate-800 text-base">Dans l'Expérience 2 (pages 8 et 9), comment évolue la durée de combustion lorsqu'on augmente le nombre de bougies sous le même récipient de 2 800 ml ?</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 16</span>
+        </div>
+        <div class="space-y-2.5">
+          <button type="button" onclick="selectSingleOption('q4_1', 0)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            A) La durée de combustion augmente car 3 bougies produisent plus d'énergie
+          </button>
+          <button type="button" onclick="selectSingleOption('q4_1', 1)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            B) La durée de combustion diminue fortement (de 66 s à 28 s) car l'oxygène est consommé beaucoup plus vite
+          </button>
+          <button type="button" onclick="selectSingleOption('q4_1', 2)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            C) La durée de combustion reste exactement égale à 66 secondes
+          </button>
+          <button type="button" onclick="selectSingleOption('q4_1', 3)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            D) Les bougies refusent de s'allumer
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 4.2 (Bonne réponse : D) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q4_2">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-rose-100 text-rose-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">4.2</span>
+            <h3 class="font-bold text-slate-800 text-base">D'après le tableau et le graphique de l'Expérience 2 (page 9), quelle est la durée de combustion mesurée pour <strong>deux bougies</strong> ?</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 17</span>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+          <button type="button" onclick="selectSingleOption('q4_2', 0)" class="option-btn p-3 rounded-xl border border-slate-200 text-center text-sm font-medium hover:bg-slate-50 transition">
+            66 secondes
+          </button>
+          <button type="button" onclick="selectSingleOption('q4_2', 1)" class="option-btn p-3 rounded-xl border border-slate-200 text-center text-sm font-medium hover:bg-slate-50 transition">
+            48 secondes
+          </button>
+          <button type="button" onclick="selectSingleOption('q4_2', 2)" class="option-btn p-3 rounded-xl border border-slate-200 text-center text-sm font-medium hover:bg-slate-50 transition">
+            28 secondes
+          </button>
+          <button type="button" onclick="selectSingleOption('q4_2', 3)" class="option-btn p-3 rounded-xl border border-slate-200 text-center text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            38 secondes
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 4.3 (Vrai / Faux) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q4_3">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-rose-100 text-rose-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">4.3</span>
+            <h3 class="font-bold text-slate-800 text-base">En observant les photos des Expériences 2 et 3 (pages 8 à 10), indique si chaque affirmation est Vraie ou Fausse.</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 18</span>
+        </div>
+        <div class="space-y-3">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200 gap-2" data-sub="q4_3_a">
+            <span class="text-sm text-slate-700">Dans l'Expérience 2 (page 9), 3 bougies sous un même bocal s'éteignent plus vite qu'une seule bougie.</span>
+            <div class="flex gap-2 shrink-0">
+              <button type="button" onclick="selectTrueFalse('q4_3_a', true)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="true" data-correct="true">VRAI</button>
+              <button type="button" onclick="selectTrueFalse('q4_3_a', false)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="false">FAUX</button>
+            </div>
+          </div>
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200 gap-2" data-sub="q4_3_b">
+            <span class="text-sm text-slate-700">Dans l'Expérience 3 (page 10), la petite bougie de 5 cm s'est éteinte avant la grande bougie de 10 cm.</span>
+            <div class="flex gap-2 shrink-0">
+              <button type="button" onclick="selectTrueFalse('q4_3_b', true)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="true">VRAI</button>
+              <button type="button" onclick="selectTrueFalse('q4_3_b', false)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="false" data-correct="true">FAUX</button>
+            </div>
+          </div>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 4.4 (Bonne réponse : A) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q4_4">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-rose-100 text-rose-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">4.4</span>
+            <h3 class="font-bold text-slate-800 text-base">En observant la séquence de photos de l'Expérience 3 (page 10), quelle bougie s'éteint <strong>en premier</strong> sous le bocal ?</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 19</span>
+        </div>
+        <div class="space-y-2.5">
+          <button type="button" onclick="selectSingleOption('q4_4', 0)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            A) La grande bougie de 10 cm de hauteur (les gaz chauds de combustion montent au sommet du bocal)
+          </button>
+          <button type="button" onclick="selectSingleOption('q4_4', 1)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            B) La petite bougie de 5 cm de hauteur
+          </button>
+          <button type="button" onclick="selectSingleOption('q4_4', 2)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            C) Les deux bougies s'éteignent exactement à la même seconde
+          </button>
+          <button type="button" onclick="selectSingleOption('q4_4', 3)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            D) Aucune des deux bougies ne s'éteint
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 4.5 (Bonne réponse : C) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q4_5">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-rose-100 text-rose-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">4.5</span>
+            <h3 class="font-bold text-slate-800 text-base">Dans le protocole de l'Expérience 1 (page 6), quelle consigne de sécurité et d'organisation est particulièrement importante lors d'expériences avec le feu ?</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 20</span>
+        </div>
+        <div class="space-y-2.5">
+          <button type="button" onclick="selectSingleOption('q4_5', 0)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            A) Éteindre toutes les lumières de la classe
+          </button>
+          <button type="button" onclick="selectSingleOption('q4_5', 1)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            B) Courir avec l'allumette allumée
+          </button>
+          <button type="button" onclick="selectSingleOption('q4_5', 2)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            C) Manipuler le feu avec prudence sous la surveillance d'un adulte et arrêter immédiatement le chronomètre dès l'extinction
+          </button>
+          <button type="button" onclick="selectSingleOption('q4_5', 3)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            D) Toucher la flamme avec les doigts
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+    </section>
+
+    <!-- BOUTON DE VALIDATION GLOBALE DU THÈME EN COURS -->
+    <div class="mt-8 flex justify-between items-center bg-white p-4 rounded-2xl border border-slate-200 custom-shadow">
+      <button id="prevBtn" onclick="prevTab()" class="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-bold text-sm hover:bg-slate-50 transition disabled:opacity-30 disabled:pointer-events-none">
+        ← Thème précédent
+      </button>
+      <button id="nextBtn" onclick="nextTab()" class="px-6 py-2.5 rounded-xl bg-indigo-600 text-white font-bold text-sm hover:bg-indigo-700 transition shadow-md">
+        Thème suivant →
+      </button>
+    </div>
+
+  </main>
+
+  <!-- ================= MODAL BILAN / RÉSULTATS ================= -->
+  <div id="resultsModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 custom-shadow text-center space-y-6 transform transition-all scale-95 opacity-0 duration-300" id="modalContent">
+      <div id="modalIcon" class="text-6xl animate-bounce">🏆</div>
+      <h2 class="font-display font-black text-2xl sm:text-3xl text-slate-800" id="modalTitle">Résultat de ton entraînement</h2>
+      
+      <div class="bg-indigo-50 border border-indigo-100 p-6 rounded-2xl">
+        <p class="text-xs font-bold text-indigo-700 uppercase tracking-wider mb-1">Score total obtenu</p>
+        <p class="font-display font-black text-5xl text-indigo-600">
+          <span id="finalScore">0</span> <span class="text-2xl text-indigo-400 font-bold">/ 20</span>
+        </p>
+        <p class="text-sm font-semibold text-slate-600 mt-2" id="scorePercentage">0 % de réussite</p>
+      </div>
+
+      <p class="text-slate-600 text-sm leading-relaxed" id="modalMessage">
+        Félicitations pour ton investissement !
+      </p>
+
+      <div class="flex flex-col sm:flex-row gap-3 pt-2">
+        <button onclick="closeModal()" class="flex-1 py-3 px-4 rounded-xl border border-slate-200 text-slate-700 font-bold text-sm hover:bg-slate-50 transition">
+          Revoir mes réponses
+        </button>
+        <button onclick="restartQuiz()" class="flex-1 py-3 px-4 rounded-xl bg-indigo-600 text-white font-bold text-sm hover:bg-indigo-700 transition shadow-md">
+          Recommencer le test
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= SCRIPT JAVASCRIPT LOGIQUE ================= -->
+  <script>
+    // État du quiz
+    const state = {
+      currentTab: 0,
+      totalQuestions: 20,
+      answers: {},
+      scores: {},
+    };
+
+    // Gestion des onglets
+    function switchTab(index) {
+      state.currentTab = index;
+      document.querySelectorAll('.tab-btn').forEach((btn, idx) => {
+        if (idx === index) {
+          btn.classList.add('bg-indigo-600', 'text-white', 'shadow-md');
+          btn.classList.remove('bg-white', 'text-slate-600', 'hover:bg-slate-100', 'border');
+        } else {
+          btn.classList.remove('bg-indigo-600', 'text-white', 'shadow-md');
+          btn.classList.add('bg-white', 'text-slate-600', 'hover:bg-slate-100', 'border');
+        }
+      });
+
+      document.querySelectorAll('.theme-section').forEach((sec, idx) => {
+        sec.classList.toggle('hidden', idx !== index);
+      });
+
+      // Gestion des boutons Précédent / Suivant
+      const prevBtn = document.getElementById('prevBtn');
+      const nextBtn = document.getElementById('nextBtn');
+      prevBtn.disabled = (index === 0);
+      
+      if (index === 3) {
+        nextBtn.innerHTML = "Voir mon bilan final 🏆";
+        nextBtn.classList.remove('bg-indigo-600', 'hover:bg-indigo-700');
+        nextBtn.classList.add('bg-emerald-600', 'hover:bg-emerald-700');
+      } else {
+        nextBtn.innerHTML = "Thème suivant →";
+        nextBtn.classList.add('bg-indigo-600', 'hover:bg-indigo-700');
+        nextBtn.classList.remove('bg-emerald-600', 'hover:bg-emerald-700');
+      }
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function prevTab() {
+      if (state.currentTab > 0) {
+        switchTab(state.currentTab - 1);
+      }
+    }
+
+    function nextTab() {
+      if (state.currentTab < 3) {
+        switchTab(state.currentTab + 1);
+      } else {
+        showResults();
+      }
+    }
+
+    // Gestion d'un choix simple (QCM)
+    function selectSingleOption(qid, optionIndex) {
+      const questionCard = document.querySelector(`[data-qid="${qid}"]`);
+      if (!questionCard) return;
+
+      const buttons = questionCard.querySelectorAll('.option-btn');
+      const feedbackBox = questionCard.querySelector('.feedback-box');
+      const selectedBtn = buttons[optionIndex];
+      const isCorrect = selectedBtn.hasAttribute('data-correct');
+
+      // Verrouiller les boutons de cette question
+      buttons.forEach(btn => {
+        btn.disabled = true;
+        if (btn.hasAttribute('data-correct')) {
+          btn.classList.remove('border-slate-200', 'hover:bg-slate-50');
+          btn.classList.add('bg-emerald-50', 'border-emerald-500', 'text-emerald-800', 'font-bold');
+        }
+      });
+
+      if (!isCorrect) {
+        selectedBtn.classList.remove('border-slate-200', 'hover:bg-slate-50');
+        selectedBtn.classList.add('bg-rose-50', 'border-rose-400', 'text-rose-800', 'font-semibold');
+      }
+
+      // Afficher le message d'explication
+      if (feedbackBox) {
+        feedbackBox.classList.remove('hidden', 'bg-emerald-50', 'text-emerald-800', 'border-emerald-200', 'bg-rose-50', 'text-rose-800', 'border-rose-200');
+        feedbackBox.classList.add('border');
+        if (isCorrect) {
+          feedbackBox.classList.add('bg-emerald-50', 'text-emerald-800', 'border-emerald-200');
+          feedbackBox.innerHTML = "✨ <strong>Bravo !</strong> Bonne réponse.";
+          state.scores[qid] = 1;
+        } else {
+          feedbackBox.classList.add('bg-rose-50', 'text-rose-800', 'border-rose-200');
+          feedbackBox.innerHTML = "❌ <strong>Pas tout à fait.</strong> Observe bien le document de ton livret portfolio pour retrouver l'information.";
+          state.scores[qid] = 0;
+        }
+      }
+
+      updateTotalScore();
+    }
+
+    // Gestion du Vrai / Faux (sous-questions multiples)
+    function selectTrueFalse(subId, userVal) {
+      const subRow = document.querySelector(`[data-sub="${subId}"]`);
+      if (!subRow) return;
+
+      const buttons = subRow.querySelectorAll('.tf-btn');
+      const trueBtn = buttons[0];
+      const falseBtn = buttons[1];
+      const correctVal = trueBtn.hasAttribute('data-correct');
+
+      buttons.forEach(b => b.disabled = true);
+
+      if (userVal === correctVal) {
+        // Bonne réponse
+        const activeBtn = userVal ? trueBtn : falseBtn;
+        activeBtn.classList.add('bg-emerald-500', 'text-white', 'border-emerald-600');
+        subRow.classList.add('bg-emerald-50/50', 'border-emerald-200');
+        state.answers[subId] = true;
+      } else {
+        // Mauvaise réponse
+        const wrongBtn = userVal ? trueBtn : falseBtn;
+        const rightBtn = correctVal ? trueBtn : falseBtn;
+        wrongBtn.classList.add('bg-rose-500', 'text-white', 'border-rose-600');
+        rightBtn.classList.add('bg-emerald-100', 'text-emerald-800', 'border-emerald-400');
+        subRow.classList.add('bg-rose-50/50', 'border-rose-200');
+        state.answers[subId] = false;
+      }
+
+      // Vérifier si toute la question composite est complétée
+      const parentCard = subRow.closest('[data-qid]');
+      if (parentCard) {
+        const qid = parentCard.getAttribute('data-qid');
+        const allSubRows = parentCard.querySelectorAll('[data-sub]');
+        let allAnswered = true;
+        let allCorrect = true;
+
+        allSubRows.forEach(row => {
+          const sId = row.getAttribute('data-sub');
+          if (state.answers[sId] === undefined) {
+            allAnswered = false;
+          } else if (state.answers[sId] === false) {
+            allCorrect = false;
+          }
+        });
+
+        if (allAnswered) {
+          const feedbackBox = parentCard.querySelector('.feedback-box');
+          if (feedbackBox) {
+            feedbackBox.classList.remove('hidden', 'bg-emerald-50', 'text-emerald-800', 'border-emerald-200', 'bg-rose-50', 'text-rose-800', 'border-rose-200');
+            feedbackBox.classList.add('border');
+            if (allCorrect) {
+              feedbackBox.classList.add('bg-emerald-50', 'text-emerald-800', 'border-emerald-200');
+              feedbackBox.innerHTML = "✨ <strong>Excellent !</strong> Toutes les affirmations de cette question sont exactes.";
+              state.scores[qid] = 1;
+            } else {
+              feedbackBox.classList.add('bg-rose-50', 'text-rose-800', 'border-rose-200');
+              feedbackBox.innerHTML = "❌ <strong>Attention :</strong> certaines affirmations étaient fausses. Vérifie bien les légendes du portfolio.";
+              state.scores[qid] = 0;
+            }
+          }
+          updateTotalScore();
+        }
+      }
+    }
+
+    // Mise à jour du score total
+    function updateTotalScore() {
+      let total = 0;
+      for (const q in state.scores) {
+        total += state.scores[q];
+      }
+      document.getElementById('currentScore').innerText = total;
+
+      const answeredCount = Object.keys(state.scores).length;
+      const progressPercent = (answeredCount / state.totalQuestions) * 100;
+      document.getElementById('mainProgressBar').style.width = `${progressPercent}%`;
+    }
+
+    // Affichage des résultats finaux
+    function showResults() {
+      let score = 0;
+      for (const q in state.scores) {
+        score += state.scores[q];
+      }
+
+      document.getElementById('finalScore').innerText = score;
+      const percentage = Math.round((score / state.totalQuestions) * 100);
+      document.getElementById('scorePercentage').innerText = `${percentage} % de réussite`;
+
+      const modalIcon = document.getElementById('modalIcon');
+      const modalTitle = document.getElementById('modalTitle');
+      const modalMessage = document.getElementById('modalMessage');
+
+      if (score >= 18) {
+        modalIcon.innerText = '🌟';
+        modalTitle.innerText = "Magnifique performance !";
+        modalMessage.innerText = "Tu maîtrises parfaitement l'observation et le raisonnement scientifique de ce portfolio 2026. Tu es fin prêt-e pour le CEB !";
+        confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+      } else if (score >= 14) {
+        modalIcon.innerText = '👏';
+        modalTitle.innerText = "Très bon travail !";
+        modalMessage.innerText = "Tu as de très bons réflexes scientifiques. Relis attentivement les questions où tu as hésité pour perfectionner tes détails.";
+      } else if (score >= 10) {
+        modalIcon.innerText = '👍';
+        modalTitle.innerText = "Bon entraînement !";
+        modalMessage.innerText = "C'est un résultat encourageant. Prends le temps de bien relire les légendes et tableaux du portfolio avant chaque réponse.";
+      } else {
+        modalIcon.innerText = '💪';
+        modalTitle.innerText = "Ne te décourage pas !";
+        modalMessage.innerText = "Rouvre ton livret portfolio 2026 et refais le questionnaire tranquillement pour repérer les indices scientifiques clés.";
+      }
+
+      const modal = document.getElementById('resultsModal');
+      const modalContent = document.getElementById('modalContent');
+      modal.classList.remove('hidden');
+      setTimeout(() => {
+        modalContent.classList.remove('scale-95', 'opacity-0');
+        modalContent.classList.add('scale-100', 'opacity-100');
+      }, 10);
+    }
+
+    function closeModal() {
+      const modal = document.getElementById('resultsModal');
+      const modalContent = document.getElementById('modalContent');
+      modalContent.classList.remove('scale-100', 'opacity-100');
+      modalContent.classList.add('scale-95', 'opacity-0');
+      setTimeout(() => {
+        modal.classList.add('hidden');
+      }, 200);
+    }
+
+    function restartQuiz() {
+      window.location.reload();
+    }
+  </script>
+</body>
+</html>
