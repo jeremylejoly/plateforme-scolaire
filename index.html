@@ -10935,6 +10935,18 @@ const CEB_SCIENCES_ITEMS = [
   { id: 'ceb_sci_2013', year: '2013', label: 'CEB Sciences 2013', file: 'CEB sciences/ceb_sciences_2013.html', desc: 'Épreuve officielle interactive de sciences 2013.' }
 ];
 
+const CEB_HISTGEO_ITEMS = [
+  { id: 'ceb_hg_2026', year: '2026', label: 'CEB Histoire/Géo 2026', file: 'CEB histoire:géo/ceb_histoire_geo_2026.html', desc: 'Épreuve officielle interactive d\'histoire et géographie 2026.' },
+  { id: 'ceb_hg_2025', year: '2025', label: 'CEB Histoire/Géo 2025', file: 'CEB histoire:géo/ceb_histoire_geo_2025.html', desc: 'Épreuve officielle interactive d\'histoire et géographie 2025.' },
+  { id: 'ceb_hg_2024', year: '2024', label: 'CEB Histoire/Géo 2024', file: 'CEB histoire:géo/ceb_histoire_geo_2024.html', desc: 'Épreuve officielle interactive d\'histoire et géographie 2024.' },
+  { id: 'ceb_hg_2023', year: '2023', label: 'CEB Histoire/Géo 2023', file: 'CEB histoire:géo/ceb_histoire_geo_2023.html', desc: 'Épreuve officielle interactive d\'histoire et géographie 2023.' },
+  { id: 'ceb_hg_2022', year: '2022', label: 'CEB Histoire/Géo 2022', file: 'CEB histoire:géo/ceb_histoire_geo_2022.html', desc: 'Épreuve officielle interactive d\'histoire et géographie 2022.' },
+  { id: 'ceb_hg_2021', year: '2021', label: 'CEB Histoire/Géo 2021', file: 'CEB histoire:géo/ceb_histoire_geo_2021.html', desc: 'Épreuve officielle interactive d\'histoire et géographie 2021.' },
+  { id: 'ceb_hg_2019', year: '2019', label: 'CEB Histoire/Géo 2019', file: 'CEB histoire:géo/ceb_histoire_geo_2019.html', desc: 'Épreuve officielle interactive d\'histoire et géographie 2019.' },
+  { id: 'ceb_hg_2016', year: '2016', label: 'CEB Histoire/Géo 2016', file: 'CEB histoire:géo/ceb_histoire_geo_2016.html', desc: 'Épreuve officielle interactive d\'histoire et géographie 2016.' },
+  { id: 'ceb_hg_2013', year: '2013', label: 'CEB Histoire/Géo 2013', file: 'CEB histoire:géo/ceb_histoire_geo_2013.html', desc: 'Épreuve officielle interactive d\'histoire et géographie 2013.' }
+];
+
 let cebViewerSourceScreen = 'screen-ceb';
 
 function openCEB(file, title, sourceScreen) {
@@ -10996,15 +11008,32 @@ function renderCEBScreen() {
 
     const hgGrid = document.getElementById(pair.hg);
     if (hgGrid) {
-      hgGrid.innerHTML = `
-        <div class="col-span-full bg-white rounded-3xl border-2 border-dashed border-amber-300 p-8 text-center flex flex-col items-center justify-center gap-3 shadow-xs" style="grid-column: 1 / -1;">
-          <div style="font-size: 40px;">🏛️ 🌍</div>
-          <div class="font-display font-bold text-xl text-neutral-800" style="font-family:'Fredoka',sans-serif;">Épreuves CEB Histoire & Géographie</div>
-          <p class="text-sm text-neutral-500 max-w-md font-medium" style="font-family:'Inter',sans-serif;">
-            Les questionnaires interactifs officiels pour l'histoire et la géographie sont actuellement en cours de préparation et seront ajoutés très prochainement !
-          </p>
-        </div>
-      `;
+      hgGrid.innerHTML = '';
+      CEB_HISTGEO_ITEMS.forEach(t => {
+        const locked = isActivityLocked(t.id);
+        const div = document.createElement('div');
+        div.className = 'sub-subject-card' + (locked && !isTeacher ? ' disabled' : ' active-card');
+        div.onclick = (locked && !isTeacher) ? null : () => {
+          openCEB(t.file, t.label, isTeacher ? 'screen-teacher-ceb' : 'screen-ceb');
+        };
+
+        const toggleBtn = isTeacher
+          ? `<button class="card-teacher-toggle ${locked ? 'btn-show' : 'btn-hide'}"
+               onclick="event.stopPropagation();toggleActivity('${t.id}');renderCEBScreen();">
+               ${locked ? '🔓 Réactiver' : '🔒 Masquer'}
+             </button>`
+          : '';
+
+        const badge = isTeacher ? '' : renderScoreBadge(t.id);
+        div.innerHTML = `
+          ${toggleBtn}
+          <div class="sub-icon" style="font-size:32px;">🌍</div>
+          <div class="sub-title">${t.label}</div>
+          <div class="sub-desc">${locked && !isTeacher ? '🔒 Non disponible pour le moment' : (t.desc || '')}</div>
+          ${badge}
+        `;
+        hgGrid.appendChild(div);
+      });
       if (typeof window.replaceEmojisOnPage === 'function') {
         window.replaceEmojisOnPage(hgGrid);
       }
@@ -31144,6 +31173,17 @@ const PLAN_CATALOGUE = [
     { id:'ceb_sci_2019', label:'CEB Sciences 2019', icon:'🔬', screen:'screen-ceb-viewer', fn:"() => openCEB('CEB sciences/ceb_sciences_2019.html', 'CEB Sciences 2019', 'screen-plan-travail-student')" },
     { id:'ceb_sci_2016', label:'CEB Sciences 2016', icon:'🔬', screen:'screen-ceb-viewer', fn:"() => openCEB('CEB sciences/ceb_sciences_2016.html', 'CEB Sciences 2016', 'screen-plan-travail-student')" },
     { id:'ceb_sci_2013', label:'CEB Sciences 2013', icon:'🔬', screen:'screen-ceb-viewer', fn:"() => openCEB('CEB sciences/ceb_sciences_2013.html', 'CEB Sciences 2013', 'screen-plan-travail-student')" },
+  ]},
+  { cat: '🎓 CEB', sub: '🌍 Histoire / Géographie', items: [
+    { id:'ceb_hg_2026', label:'CEB Histoire/Géo 2026', icon:'🌍', screen:'screen-ceb-viewer', fn:"() => openCEB('CEB histoire:géo/ceb_histoire_geo_2026.html', 'CEB Histoire/Géo 2026', 'screen-plan-travail-student')" },
+    { id:'ceb_hg_2025', label:'CEB Histoire/Géo 2025', icon:'🌍', screen:'screen-ceb-viewer', fn:"() => openCEB('CEB histoire:géo/ceb_histoire_geo_2025.html', 'CEB Histoire/Géo 2025', 'screen-plan-travail-student')" },
+    { id:'ceb_hg_2024', label:'CEB Histoire/Géo 2024', icon:'🌍', screen:'screen-ceb-viewer', fn:"() => openCEB('CEB histoire:géo/ceb_histoire_geo_2024.html', 'CEB Histoire/Géo 2024', 'screen-plan-travail-student')" },
+    { id:'ceb_hg_2023', label:'CEB Histoire/Géo 2023', icon:'🌍', screen:'screen-ceb-viewer', fn:"() => openCEB('CEB histoire:géo/ceb_histoire_geo_2023.html', 'CEB Histoire/Géo 2023', 'screen-plan-travail-student')" },
+    { id:'ceb_hg_2022', label:'CEB Histoire/Géo 2022', icon:'🌍', screen:'screen-ceb-viewer', fn:"() => openCEB('CEB histoire:géo/ceb_histoire_geo_2022.html', 'CEB Histoire/Géo 2022', 'screen-plan-travail-student')" },
+    { id:'ceb_hg_2021', label:'CEB Histoire/Géo 2021', icon:'🌍', screen:'screen-ceb-viewer', fn:"() => openCEB('CEB histoire:géo/ceb_histoire_geo_2021.html', 'CEB Histoire/Géo 2021', 'screen-plan-travail-student')" },
+    { id:'ceb_hg_2019', label:'CEB Histoire/Géo 2019', icon:'🌍', screen:'screen-ceb-viewer', fn:"() => openCEB('CEB histoire:géo/ceb_histoire_geo_2019.html', 'CEB Histoire/Géo 2019', 'screen-plan-travail-student')" },
+    { id:'ceb_hg_2016', label:'CEB Histoire/Géo 2016', icon:'🌍', screen:'screen-ceb-viewer', fn:"() => openCEB('CEB histoire:géo/ceb_histoire_geo_2016.html', 'CEB Histoire/Géo 2016', 'screen-plan-travail-student')" },
+    { id:'ceb_hg_2013', label:'CEB Histoire/Géo 2013', icon:'🌍', screen:'screen-ceb-viewer', fn:"() => openCEB('CEB histoire:géo/ceb_histoire_geo_2013.html', 'CEB Histoire/Géo 2013', 'screen-plan-travail-student')" },
   ]},
 ];
 
