@@ -3224,11 +3224,9 @@ input[type=text].calc-input.incorrect {
       const all = [];
       snap.forEach(child => { all.push(child.val()); });
       if (!cls) return all;
-      const classStudentNames = (typeof getClassStudents === 'function') ? new Set(getClassStudents(cls).map(s=>s.name)) : new Set();
       return all.filter(r => {
-        if (r.cls) return r.cls === cls;
-        if (classStudentNames.has(r.student)) return true;
-        return cls === 'lejoly';
+        const rCls = r.cls || 'lejoly';
+        return rCls === cls;
       });
     } catch(e) { console.warn('Firebase loadResults error:', e); return []; }
   };
@@ -8159,11 +8157,9 @@ function loadResults(cls){
     all = valid;
   }
   if (!cls) return all;
-  const classStudentNames = (typeof getClassStudents === 'function') ? new Set(getClassStudents(cls).map(s=>s.name)) : new Set();
   return all.filter(r => {
-    if (r.cls) return r.cls === cls;
-    if (classStudentNames.has(r.student)) return true;
-    return cls === 'lejoly';
+    const rCls = r.cls || 'lejoly';
+    return rCls === cls;
   });
 }
 function saveResult(entry){
@@ -8179,8 +8175,11 @@ function saveResult(entry){
 
   if (!entry.student && typeof state !== 'undefined' && state.student) {
     entry.student = state.student;
-    entry.cls = state.studentCls;
-    entry.className = CLASSES[state.studentCls] ? CLASSES[state.studentCls].name : state.studentCls;
+    entry.cls = state.studentCls || (typeof teacherCls !== 'undefined' ? teacherCls : 'lejoly');
+    entry.className = CLASSES[entry.cls] ? CLASSES[entry.cls].name : entry.cls;
+  }
+  if (!entry.cls) {
+    entry.cls = (typeof state !== 'undefined' && state.studentCls) ? state.studentCls : (typeof teacherCls !== 'undefined' ? teacherCls : 'lejoly');
   }
   // Ne pas enregistrer de résultat s'il n'y a pas d'élève connecté
   if (!entry.student || entry.student === 'undefined' || entry.student.startsWith('Enseignant')) {
@@ -8556,8 +8555,12 @@ function backToClassSelect(){
   if(classSec) classSec.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-function getStudentAvatarUrl(name) {
+function getStudentAvatarUrl(name, cls) {
   if (!name) return null;
+  const currentCls = cls || (typeof state !== 'undefined' && state.studentCls) || (typeof teacherCls !== 'undefined' && teacherCls) || 'lejoly';
+  if (currentCls !== 'lejoly') {
+    return null; // Seule la classe de Mr Lejoly dispose d'avatars illustrés personnalisés
+  }
   const clean = name.toLowerCase()
     .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
     .replace(/[^a-z0-9]/g, "");
@@ -8601,7 +8604,7 @@ function renderNamesForClass(cls){
     students.forEach(s=>{
       const b = document.createElement('button');
       b.className='name-btn';
-      const avatarUrl = getStudentAvatarUrl(s.name);
+      const avatarUrl = getStudentAvatarUrl(s.name, cls);
       if (avatarUrl) {
         b.style.display = 'inline-flex';
         b.style.alignItems = 'center';
@@ -9146,11 +9149,11 @@ async function syncFromFirebase(){
     const results = await window.FB_loadResults(null);
     if(results && results.length > 0){
       const local = JSON.parse(localStorage.getItem('lq_results')||'[]').filter(r => r && r.student && r.student !== 'Alexandre' && r.student !== 'Lovianna');
-      const localKeys = new Set(local.map(r=>r.student+'|'+r.date+'|'+r.activity));
+      const localKeys = new Set(local.map(r=>(r.cls||'lejoly')+'|'+r.student+'|'+r.date+'|'+(r.activity||r.book||'')));
       const merged = [...local];
       results.forEach(r=>{
         if (!r || !r.student || r.student === 'Alexandre' || r.student === 'Lovianna') return;
-        const k = r.student+'|'+r.date+'|'+r.activity;
+        const k = (r.cls||'lejoly')+'|'+r.student+'|'+r.date+'|'+(r.activity||r.book||'');
         if(!localKeys.has(k)){ merged.push(r); localKeys.add(k); }
       });
       localStorage.setItem('lq_results', JSON.stringify(merged));
@@ -9248,13 +9251,13 @@ function switchTabById(tabId){
 function renderDashboard(){
   // Charger depuis Firebase si disponible, puis rafraîchir
   if(window.FB_loadResults){
-    window.FB_loadResults(null).then(function(fbResults){
+    window.FB_loadResults(teacherCls).then(function(fbResults){
       if(fbResults && fbResults.length > 0){
         const local = JSON.parse(localStorage.getItem('lq_results')||'[]');
-        const localKeys = new Set(local.map(r=>r.student+'|'+r.date+'|'+r.activity));
+        const localKeys = new Set(local.map(r=>(r.cls||'lejoly')+'|'+r.student+'|'+r.date+'|'+(r.activity||r.book||'')));
         const merged = [...local];
         fbResults.forEach(r=>{
-          const k = r.student+'|'+r.date+'|'+r.activity;
+          const k = (r.cls||'lejoly')+'|'+r.student+'|'+r.date+'|'+(r.activity||r.book||'');
           if(!localKeys.has(k)){ merged.push(r); localKeys.add(k); }
         });
         localStorage.setItem('lq_results', JSON.stringify(merged));
@@ -9325,13 +9328,13 @@ function renderStudentResultList(results){
 function renderStudentDetail(studentName){
   // Sync Firebase avant d'afficher
   if(window.FB_loadResults){
-    window.FB_loadResults(null).then(function(fbResults){
+    window.FB_loadResults(teacherCls).then(function(fbResults){
       if(fbResults && fbResults.length > 0){
         const local = JSON.parse(localStorage.getItem('lq_results')||'[]');
-        const localKeys = new Set(local.map(r=>r.student+'|'+r.date+'|'+r.activity));
+        const localKeys = new Set(local.map(r=>(r.cls||'lejoly')+'|'+r.student+'|'+r.date+'|'+(r.activity||r.book||'')));
         const merged = [...local];
         fbResults.forEach(r=>{
-          const k = r.student+'|'+r.date+'|'+r.activity;
+          const k = (r.cls||'lejoly')+'|'+r.student+'|'+r.date+'|'+(r.activity||r.book||'');
           if(!localKeys.has(k)){ merged.push(r); localKeys.add(k); }
         });
         localStorage.setItem('lq_results', JSON.stringify(merged));
@@ -23379,7 +23382,8 @@ function loadStudentResultsFallback() {
       snap.forEach(function(child){
         const r = child.val();
         if(!r || !r.student || r.student !== state.student) return;
-        if(r.cls && r.cls !== state.studentCls) return;
+        const rCls = r.cls || 'lejoly';
+        if(rCls !== state.studentCls) return;
         myResults.push(r);
         const act = r.activity;
         if(!act) return;
@@ -28332,7 +28336,7 @@ function copyAvatarImage(url) {
 }
 
 function loadAndApplyEmoji(){
-  const avatarUrl = getStudentAvatarUrl(state.student);
+  const avatarUrl = getStudentAvatarUrl(state.student, state.studentCls);
   if (avatarUrl) {
     ['subjects-avatar','home-avatar'].forEach(id => {
       const el = document.getElementById(id);
@@ -30286,13 +30290,13 @@ function switchGestionTab(tab){
 
 function renderGestionJournal(){
   if(window.FB_loadResults){
-    window.FB_loadResults(null).then(function(fbResults){
+    window.FB_loadResults(teacherCls).then(function(fbResults){
       if(fbResults && fbResults.length > 0){
         const local = JSON.parse(localStorage.getItem('lq_results')||'[]');
-        const localKeys = new Set(local.map(r=>r.student+'|'+r.date+'|'+r.activity));
+        const localKeys = new Set(local.map(r=>(r.cls||'lejoly')+'|'+r.student+'|'+r.date+'|'+(r.activity||r.book||'')));
         const merged = [...local];
         fbResults.forEach(r=>{
-          const k = r.student+'|'+r.date+'|'+r.activity;
+          const k = (r.cls||'lejoly')+'|'+r.student+'|'+r.date+'|'+(r.activity||r.book||'');
           if(!localKeys.has(k)){ merged.push(r); localKeys.add(k); }
         });
         localStorage.setItem('lq_results', JSON.stringify(merged));
@@ -30409,13 +30413,13 @@ function doRenderGestionJournal(){
 
 function renderGestionResults(){
   if(window.FB_loadResults){
-    window.FB_loadResults(null).then(function(fbResults){
+    window.FB_loadResults(teacherCls).then(function(fbResults){
       if(fbResults && fbResults.length > 0){
         const local = JSON.parse(localStorage.getItem('lq_results')||'[]');
-        const localKeys = new Set(local.map(r=>r.student+'|'+r.date+'|'+r.activity));
+        const localKeys = new Set(local.map(r=>(r.cls||'lejoly')+'|'+r.student+'|'+r.date+'|'+(r.activity||r.book||'')));
         const merged = [...local];
         fbResults.forEach(r=>{
-          const k = r.student+'|'+r.date+'|'+r.activity;
+          const k = (r.cls||'lejoly')+'|'+r.student+'|'+r.date+'|'+(r.activity||r.book||'');
           if(!localKeys.has(k)){ merged.push(r); localKeys.add(k); }
         });
         localStorage.setItem('lq_results', JSON.stringify(merged));
