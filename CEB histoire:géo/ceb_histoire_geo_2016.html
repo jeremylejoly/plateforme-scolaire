@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CEB Histoire & Géographie 2016 — Questionnaire Interactif | LCML</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Canvas Confetti CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+  <!-- Google Fonts: Fredoka & Nunito -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            display: ['Fredoka', 'sans-serif'],
+            body: ['Nunito', 'sans-serif'],
+          },
+          colors: {
+            primary: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              200: '#c7d2fe',
+              300: '#a5b4fc',
+              400: '#818cf8',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+              800: '#3730a3',
+              900: '#312e81',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      font-family: 'Nunito', sans-serif;
+    }
+    h1, h2, h3, .font-heading {
+      font-family: 'Fredoka', sans-serif;
+    }
+    .custom-shadow {
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+    }
+    .option-btn {
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .option-btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15);
+    }
+    .tf-btn {
+      transition: all 0.2s ease;
+    }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-800 min-h-screen pb-16">
+
+  <!-- Header sticky -->
+  <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200">
+    <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <span class="text-2xl">🌍</span>
+        <div>
+          <h1 class="text-lg md:text-xl font-bold text-slate-800 leading-tight">CEB Histoire & Géo 2016</h1>
+          <p class="text-xs font-semibold text-indigo-600">Éveil historique & géographique — Entraînement interactif</p>
+        </div>
+      </div>
+      
+      <!-- Live Score & Progress -->
+      <div class="flex items-center gap-4">
+        <div class="hidden sm:flex flex-col items-end">
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Progression</span>
+          <div class="w-32 bg-slate-200 h-2.5 rounded-full overflow-hidden mt-1">
+            <div id="mainProgressBar" class="bg-indigo-600 h-full rounded-full transition-all duration-300" style="width: 0%"></div>
+          </div>
+        </div>
+        <div class="bg-indigo-50 border border-indigo-200 px-3 py-1.5 rounded-xl flex items-center gap-2">
+          <span class="text-sm font-bold text-indigo-900">Score :</span>
+          <span id="currentScore" class="text-lg font-extrabold text-indigo-600">0</span>
+          <span class="text-xs font-bold text-indigo-400">/ 20</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="max-w-4xl mx-auto px-4 pt-6 space-y-6">
+
+    <!-- Instructions Card -->
+    <div class="bg-gradient-to-r from-indigo-500 to-primary-600 rounded-3xl p-6 text-white shadow-lg relative overflow-hidden">
+      <div class="relative z-10 space-y-2">
+        <div class="inline-flex items-center gap-2 bg-white/20 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider backdrop-blur-sm">
+          <span>📖</span> Livret Portfolio 2016 à portée de main
+        </div>
+        <h2 class="text-2xl font-bold font-heading">Entraîne-toi avec les documents officiels !</h2>
+        <p class="text-sm md:text-base text-indigo-100 max-w-2xl leading-relaxed">
+          Ouvre ton portfolio papier <strong>CEB 2016</strong> (pages 12 à 17). Analyse la carte des renards à Bruxelles, le diagramme des espaces verts, l'évolution de l'agriculture, le planisphère de Martellus, la carte politique de la Belgique et les plages d'Haïti pour répondre aux 20 questions interactives.
+        </p>
+      </div>
+    </div>
+
+    <!-- Navigation par Thèmes (Tabs) -->
+    <div class="flex flex-wrap gap-2 p-1.5 bg-slate-200/80 rounded-2xl">
+      <button type="button" onclick="switchTheme('theme1')" id="tab-theme1" class="tab-btn flex-1 min-w-[130px] py-2.5 px-3 rounded-xl font-bold text-xs sm:text-sm text-center transition bg-white text-indigo-700 shadow-sm">
+        1. Espaces verts & Renards
+      </button>
+      <button type="button" onclick="switchTheme('theme2')" id="tab-theme2" class="tab-btn flex-1 min-w-[130px] py-2.5 px-3 rounded-xl font-bold text-xs sm:text-sm text-center transition text-slate-600 hover:text-slate-900">
+        2. Carte de Belgique
+      </button>
+      <button type="button" onclick="switchTheme('theme3')" id="tab-theme3" class="tab-btn flex-1 min-w-[130px] py-2.5 px-3 rounded-xl font-bold text-xs sm:text-sm text-center transition text-slate-600 hover:text-slate-900">
+        3. Modes de vie & Terres
+      </button>
+      <button type="button" onclick="switchTheme('theme4')" id="tab-theme4" class="tab-btn flex-1 min-w-[130px] py-2.5 px-3 rounded-xl font-bold text-xs sm:text-sm text-center transition text-slate-600 hover:text-slate-900">
+        4. Découvertes & Haïti
+      </button>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- THÈME 1 : LES ESPACES VERTS & LES RENARDS À BRUXELLES (pages 12 et 13)    -->
+    <!-- ========================================================================= -->
+    <section id="theme1" class="theme-panel space-y-6">
+      
+      <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between gap-4">
+        <div>
+          <span class="text-xs font-bold text-indigo-600 uppercase tracking-wider">Thème 1 • Pages 12 et 13</span>
+          <h2 class="text-xl font-bold text-slate-800">Les Espaces verts & les Renards à Bruxelles</h2>
+        </div>
+        <span class="bg-indigo-100 text-indigo-800 font-bold px-3 py-1 rounded-xl text-xs">5 questions</span>
+      </div>
+
+      <!-- Question 1.1 (Bonne réponse : C) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q1_1">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-indigo-100 text-indigo-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">1.1</span>
+            <h3 class="font-bold text-slate-800 text-base">D'après le texte d'introduction et la carte de la page 12, par quelle voie de pénétration les renards roux ont-ils principalement réussi à entrer jusqu'au cœur de la ville de Bruxelles ?</h3>
+          </div>
+        </div>
+        <div class="space-y-2.5">
+          <button type="button" onclick="selectSingleOption('q1_1', 0)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            A) En empruntant les tunnels du métro souterrain
+          </button>
+          <button type="button" onclick="selectSingleOption('q1_1', 1)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            B) En traversant les autoroutes à la tombée de la nuit
+          </button>
+          <button type="button" onclick="selectSingleOption('q1_1', 2)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            C) En suivant les talus de verdure le long des voies de chemin de fer
+          </button>
+          <button type="button" onclick="selectSingleOption('q1_1', 3)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            D) En nageant le long des canaux de navigation
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 1.2 (Bonne réponse : A) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q1_2">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-indigo-100 text-indigo-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">1.2</span>
+            <h3 class="font-bold text-slate-800 text-base">En observant le diagramme circulaire de la page 13, quelle catégorie représente <strong>la plus grande part</strong> (la plus vaste superficie) de tous les espaces verts bruxellois ?</h3>
+          </div>
+        </div>
+        <div class="space-y-2.5">
+          <button type="button" onclick="selectSingleOption('q1_2', 0)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            A) Les jardins privés (avec 32 %)
+          </button>
+          <button type="button" onclick="selectSingleOption('q1_2', 1)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            B) Les bois (avec 20 %)
+          </button>
+          <button type="button" onclick="selectSingleOption('q1_2', 2)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            C) Les parcs et jardins publics (avec 12 %)
+          </button>
+          <button type="button" onclick="selectSingleOption('q1_2', 3)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            D) Les terres agricoles (avec 7 %)
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 1.3 (VRAI / FAUX : 1.3a VRAI, 1.3b FAUX) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q1_3">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-indigo-100 text-indigo-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">1.3</span>
+            <h3 class="font-bold text-slate-800 text-base">Indique pour chaque affirmation si elle est <strong>VRAIE</strong> ou <strong>FAUSSE</strong> d'après les documents des pages 12 et 13 :</h3>
+          </div>
+        </div>
+        <div class="space-y-3">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200 gap-2" data-sub="q1_3_a">
+            <span class="text-sm text-slate-700">D'après la rose des vents et la carte (page 12), la Forêt de Soignes se trouve au sud-est (SE) de la Région de Bruxelles-Capitale.</span>
+            <div class="flex gap-2 shrink-0">
+              <button type="button" onclick="selectTrueFalse('q1_3_a', true)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="true" data-correct="true">VRAI</button>
+              <button type="button" onclick="selectTrueFalse('q1_3_a', false)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="false">FAUX</button>
+            </div>
+          </div>
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200 gap-2" data-sub="q1_3_b">
+            <span class="text-sm text-slate-700">D'après le diagramme (page 13), l'ensemble cumulé des bois (20 %) et des parcs publics (12 %) dépasse la superficie des jardins privés (32 %).</span>
+            <div class="flex gap-2 shrink-0">
+              <button type="button" onclick="selectTrueFalse('q1_3_b', true)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="true">VRAI</button>
+              <button type="button" onclick="selectTrueFalse('q1_3_b', false)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="false" data-correct="true">FAUX</button>
+            </div>
+          </div>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 1.4 (Bonne réponse : D) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q1_4">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-indigo-100 text-indigo-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">1.4</span>
+            <h3 class="font-bold text-slate-800 text-base">D'après le diagramme de la page 13, quel pourcentage exact des espaces verts de la région bruxelloise est constitué par les <strong>terres agricoles</strong> ?</h3>
+          </div>
+        </div>
+        <div class="space-y-2.5">
+          <button type="button" onclick="selectSingleOption('q1_4', 0)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            A) 20 %
+          </button>
+          <button type="button" onclick="selectSingleOption('q1_4', 1)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            B) 12 %
+          </button>
+          <button type="button" onclick="selectSingleOption('q1_4', 2)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            C) 3 %
+          </button>
+          <button type="button" onclick="selectSingleOption('q1_4', 3)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            D) 7 %
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 1.5 (Bonne réponse : B) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q1_5">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-indigo-100 text-indigo-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">1.5</span>
+            <h3 class="font-bold text-slate-800 text-base">En reportant l'échelle graphique de la carte (page 12), quelle distance approximative à vol d'oiseau sépare la <strong>Gare du Midi</strong> de la <strong>Gare du Nord</strong> ?</h3>
+          </div>
+        </div>
+        <div class="space-y-2.5">
+          <button type="button" onclick="selectSingleOption('q1_5', 0)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            A) Moins de 500 mètres
+          </button>
+          <button type="button" onclick="selectSingleOption('q1_5', 1)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            B) Environ 3 à 3,5 km
+          </button>
+          <button type="button" onclick="selectSingleOption('q1_5', 2)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            C) Environ 15 km
+          </button>
+          <button type="button" onclick="selectSingleOption('q1_5', 3)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            D) Plus de 50 km
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <div class="flex justify-end pt-2">
+        <button type="button" onclick="switchTheme('theme2')" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-5 py-2.5 rounded-xl text-sm transition flex items-center gap-2">
+          Passer au Thème 2 <span>➔</span>
+        </button>
+      </div>
+
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- THÈME 2 : LA CARTE POLITIQUE DE LA BELGIQUE (page 16)                    -->
+    <!-- ========================================================================= -->
+    <section id="theme2" class="theme-panel space-y-6 hidden">
+      
+      <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between gap-4">
+        <div>
+          <span class="text-xs font-bold text-indigo-600 uppercase tracking-wider">Thème 2 • Page 16</span>
+          <h2 class="text-xl font-bold text-slate-800">La Carte politique de la Belgique</h2>
+        </div>
+        <span class="bg-indigo-100 text-indigo-800 font-bold px-3 py-1 rounded-xl text-xs">5 questions</span>
+      </div>
+
+      <!-- Question 2.1 (Bonne réponse : B) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q2_1">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-indigo-100 text-indigo-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">2.1</span>
+            <h3 class="font-bold text-slate-800 text-base">Sur la carte politique de la Belgique (page 16), quel est le chef-lieu officiel de la province du <strong>Brabant wallon</strong> ?</h3>
+          </div>
+        </div>
+        <div class="space-y-2.5">
+          <button type="button" onclick="selectSingleOption('q2_1', 0)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            A) Mons
+          </button>
+          <button type="button" onclick="selectSingleOption('q2_1', 1)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            B) Wavre
+          </button>
+          <button type="button" onclick="selectSingleOption('q2_1', 2)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            C) Namur
+          </button>
+          <button type="button" onclick="selectSingleOption('q2_1', 3)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            D) Louvain
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 2.2 (Bonne réponse : D) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q2_2">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-indigo-100 text-indigo-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">2.2</span>
+            <h3 class="font-bold text-slate-800 text-base">D'après la carte politique (page 16), quel pays limitrophe borde la Belgique au <strong>sud</strong> et au <strong>sud-ouest</strong> ?</h3>
+          </div>
+        </div>
+        <div class="space-y-2.5">
+          <button type="button" onclick="selectSingleOption('q2_2', 0)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            A) Les Pays-Bas
+          </button>
+          <button type="button" onclick="selectSingleOption('q2_2', 1)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            B) L'Allemagne
+          </button>
+          <button type="button" onclick="selectSingleOption('q2_2', 2)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            C) Le Grand-Duché de Luxembourg
+          </button>
+          <button type="button" onclick="selectSingleOption('q2_2', 3)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            D) La France
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 2.3 (VRAI / FAUX : 2.3a FAUX, 2.3b VRAI) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q2_3">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-indigo-100 text-indigo-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">2.3</span>
+            <h3 class="font-bold text-slate-800 text-base">Indique pour chaque affirmation si elle est <strong>VRAIE</strong> ou <strong>FAUSSE</strong> d'après la carte de la page 16 :</h3>
+          </div>
+        </div>
+        <div class="space-y-3">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200 gap-2" data-sub="q2_3_a">
+            <span class="text-sm text-slate-700">La Communauté germanophone (zone hachurée rouge) est située dans la province de Luxembourg.</span>
+            <div class="flex gap-2 shrink-0">
+              <button type="button" onclick="selectTrueFalse('q2_3_a', true)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="true">VRAI</button>
+              <button type="button" onclick="selectTrueFalse('q2_3_a', false)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="false" data-correct="true">FAUX</button>
+            </div>
+          </div>
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200 gap-2" data-sub="q2_3_b">
+            <span class="text-sm text-slate-700">La Région de Bruxelles-Capitale (en jaune) est entièrement enclavée à l'intérieur de la province du Brabant flamand.</span>
+            <div class="flex gap-2 shrink-0">
+              <button type="button" onclick="selectTrueFalse('q2_3_b', true)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="true" data-correct="true">VRAI</button>
+              <button type="button" onclick="selectTrueFalse('q2_3_b', false)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="false">FAUX</button>
+            </div>
+          </div>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 2.4 (Bonne réponse : A) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q2_4">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-indigo-100 text-indigo-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">2.4</span>
+            <h3 class="font-bold text-slate-800 text-base">Combien de provinces distinctes composent la <strong>Région flamande</strong> (en violet sur la carte page 16) ?</h3>
+          </div>
+        </div>
+        <div class="space-y-2.5">
+          <button type="button" onclick="selectSingleOption('q2_4', 0)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            A) 5 provinces (Flandre occidentale, Flandre orientale, Anvers, Brabant flamand, Limbourg)
+          </button>
+          <button type="button" onclick="selectSingleOption('q2_4', 1)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            B) 4 provinces
+          </button>
+          <button type="button" onclick="selectSingleOption('q2_4', 2)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            C) 10 provinces
+          </button>
+          <button type="button" onclick="selectSingleOption('q2_4', 3)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            D) 3 provinces
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 2.5 (Bonne réponse : C) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q2_5">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-indigo-100 text-indigo-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">2.5</span>
+            <h3 class="font-bold text-slate-800 text-base">D'après la rose des vents et la carte politique (page 16), dans quelle direction cardinale se situe la <strong>province de Luxembourg</strong> (chef-lieu : Arlon) par rapport à Bruxelles ?</h3>
+          </div>
+        </div>
+        <div class="space-y-2.5">
+          <button type="button" onclick="selectSingleOption('q2_5', 0)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            A) Au nord-ouest
+          </button>
+          <button type="button" onclick="selectSingleOption('q2_5', 1)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            B) Au nord-est
+          </button>
+          <button type="button" onclick="selectSingleOption('q2_5', 2)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            C) Au sud-est
+          </button>
+          <button type="button" onclick="selectSingleOption('q2_5', 3)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            D) Plein ouest
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <div class="flex justify-between pt-2">
+        <button type="button" onclick="switchTheme('theme1')" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold px-5 py-2.5 rounded-xl text-sm transition flex items-center gap-2">
+          <span>⬅</span> Thème précédent
+        </button>
+        <button type="button" onclick="switchTheme('theme3')" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-5 py-2.5 rounded-xl text-sm transition flex items-center gap-2">
+          Passer au Thème 3 <span>➔</span>
+        </button>
+      </div>
+
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- THÈME 3 : L'AGRICULTURE & L'ÉVOLUTION DES MODES DE VIE (page 14)          -->
+    <!-- ========================================================================= -->
+    <section id="theme3" class="theme-panel space-y-6 hidden">
+      
+      <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between gap-4">
+        <div>
+          <span class="text-xs font-bold text-indigo-600 uppercase tracking-wider">Thème 3 • Page 14</span>
+          <h2 class="text-xl font-bold text-slate-800">L'Agriculture & l'Évolution des Modes de vie</h2>
+        </div>
+        <span class="bg-indigo-100 text-indigo-800 font-bold px-3 py-1 rounded-xl text-xs">5 questions</span>
+      </div>
+
+      <!-- Question 3.1 (Bonne réponse : A) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q3_1">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-indigo-100 text-indigo-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">3.1</span>
+            <h3 class="font-bold text-slate-800 text-base">En comparant les documents A et B de la page 14, quelle différence majeure observe-t-on dans la manière de <strong>travailler la terre (le labourage)</strong> ?</h3>
+          </div>
+        </div>
+        <div class="space-y-2.5">
+          <button type="button" onclick="selectSingleOption('q3_1', 0)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            A) Dans le document A (1412), le paysan utilise la force animale (attelage de bœufs), tandis que dans le document B (2014), l'agriculteur utilise un tracteur à moteur
+          </button>
+          <button type="button" onclick="selectSingleOption('q3_1', 1)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            B) Dans le document A, on utilise un tracteur électrique et dans le document B, des chevaux de trait
+          </button>
+          <button type="button" onclick="selectSingleOption('q3_1', 2)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            C) Le mode de travail agricole est strictement identique entre 1412 et 2014
+          </button>
+          <button type="button" onclick="selectSingleOption('q3_1', 3)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            D) Dans le document A, la terre n'est pas travaillée
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 3.2 (Bonne réponse : C) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q3_2">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-indigo-100 text-indigo-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">3.2</span>
+            <h3 class="font-bold text-slate-800 text-base">À quelle grande période conventionnelle de l'Histoire humaine appartient le <strong>Document A</strong> (peint entre 1412 et 1414) ?</h3>
+          </div>
+        </div>
+        <div class="space-y-2.5">
+          <button type="button" onclick="selectSingleOption('q3_2', 0)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            A) La Préhistoire
+          </button>
+          <button type="button" onclick="selectSingleOption('q3_2', 1)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            B) L'Antiquité
+          </button>
+          <button type="button" onclick="selectSingleOption('q3_2', 2)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            C) Le Moyen Âge
+          </button>
+          <button type="button" onclick="selectSingleOption('q3_2', 3)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            D) Les Temps Modernes
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 3.3 (VRAI / FAUX : 3.3a VRAI, 3.3b FAUX) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q3_3">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-indigo-100 text-indigo-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">3.3</span>
+            <h3 class="font-bold text-slate-800 text-base">Indique pour chaque affirmation si elle est <strong>VRAIE</strong> ou <strong>FAUSSE</strong> d'après l'analyse des images de la page 14 :</h3>
+          </div>
+        </div>
+        <div class="space-y-3">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200 gap-2" data-sub="q3_3_a">
+            <span class="text-sm text-slate-700">Sur le document A (1412), on aperçoit des ouvriers agricoles taillant la vigne à la main au pied du château fort.</span>
+            <div class="flex gap-2 shrink-0">
+              <button type="button" onclick="selectTrueFalse('q3_3_a', true)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="true" data-correct="true">VRAI</button>
+              <button type="button" onclick="selectTrueFalse('q3_3_a', false)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="false">FAUX</button>
+            </div>
+          </div>
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200 gap-2" data-sub="q3_3_b">
+            <span class="text-sm text-slate-700">Le château médiéval de Lusignan (document A) possède de grandes baies vitrées modernes et un toit plat en béton armé.</span>
+            <div class="flex gap-2 shrink-0">
+              <button type="button" onclick="selectTrueFalse('q3_3_b', true)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="true">VRAI</button>
+              <button type="button" onclick="selectTrueFalse('q3_3_b', false)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="false" data-correct="true">FAUX</button>
+            </div>
+          </div>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 3.4 (Bonne réponse : B) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q3_4">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-indigo-100 text-indigo-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">3.4</span>
+            <h3 class="font-bold text-slate-800 text-base">Quelle transformation importante des paysages agricoles peut-on déduire de la comparaison entre le document A (1412) et le document B (2014) ?</h3>
+          </div>
+        </div>
+        <div class="space-y-2.5">
+          <button type="button" onclick="selectSingleOption('q3_4', 0)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            A) Les habitations et les villages ont totalement disparu des campagnes au 21e siècle
+          </button>
+          <button type="button" onclick="selectSingleOption('q3_4', 1)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            B) Les parcelles agricoles contemporaines sont plus vastes et ouvertes pour faciliter le passage des gros engins motorisés
+          </button>
+          <button type="button" onclick="selectSingleOption('q3_4', 2)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            C) L'agriculture contemporaine ne produit plus de nourriture
+          </button>
+          <button type="button" onclick="selectSingleOption('q3_4', 3)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            D) Les agriculteurs d'aujourd'hui ne cultivent plus que dans des pots en ville
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 3.5 (Bonne réponse : D) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q3_5">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-indigo-100 text-indigo-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">3.5</span>
+            <h3 class="font-bold text-slate-800 text-base">Le Document A (page 14) provient d'un livre manuscrit médiéval. Comment appelle-t-on ce type de peinture minutieuse réalisée à la main sur parchemin au Moyen Âge ?</h3>
+          </div>
+        </div>
+        <div class="space-y-2.5">
+          <button type="button" onclick="selectSingleOption('q3_5', 0)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            A) Une photographie argentique
+          </button>
+          <button type="button" onclick="selectSingleOption('q3_5', 1)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            B) Une gravure sur linoléum
+          </button>
+          <button type="button" onclick="selectSingleOption('q3_5', 2)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            C) Une mosaïque antique en marbre
+          </button>
+          <button type="button" onclick="selectSingleOption('q3_5', 3)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            D) Une enluminure (ou miniature)
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <div class="flex justify-between pt-2">
+        <button type="button" onclick="switchTheme('theme2')" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold px-5 py-2.5 rounded-xl text-sm transition flex items-center gap-2">
+          <span>⬅</span> Thème précédent
+        </button>
+        <button type="button" onclick="switchTheme('theme4')" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-5 py-2.5 rounded-xl text-sm transition flex items-center gap-2">
+          Passer au Thème 4 <span>➔</span>
+        </button>
+      </div>
+
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- THÈME 4 : LES GRANDES DÉCOUVERTES & LE PLANISPHÈRE DE MARTELLUS (p. 15-17)-->
+    <!-- ========================================================================= -->
+    <section id="theme4" class="theme-panel space-y-6 hidden">
+      
+      <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between gap-4">
+        <div>
+          <span class="text-xs font-bold text-indigo-600 uppercase tracking-wider">Thème 4 • Pages 15 et 17</span>
+          <h2 class="text-xl font-bold text-slate-800">Grandes Découvertes & Haïti à deux époques</h2>
+        </div>
+        <span class="bg-indigo-100 text-indigo-800 font-bold px-3 py-1 rounded-xl text-xs">5 questions</span>
+      </div>
+
+      <!-- Question 4.1 (Bonne réponse : D) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q4_1">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-indigo-100 text-indigo-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">4.1</span>
+            <h3 class="font-bold text-slate-800 text-base">En observant attentivement le planisphère dressé par Martellus en 1490 (page 15), quelle partie du monde est <strong>totalement absente</strong> de cette carte ?</h3>
+          </div>
+        </div>
+        <div class="space-y-2.5">
+          <button type="button" onclick="selectSingleOption('q4_1', 0)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            A) Le continent européen
+          </button>
+          <button type="button" onclick="selectSingleOption('q4_1', 1)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            B) Le bassin de la mer Méditerranée
+          </button>
+          <button type="button" onclick="selectSingleOption('q4_1', 2)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            C) Le continent africain
+          </button>
+          <button type="button" onclick="selectSingleOption('q4_1', 3)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            D) Le continent américain
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 4.2 (Bonne réponse : B) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q4_2">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-indigo-100 text-indigo-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">4.2</span>
+            <h3 class="font-bold text-slate-800 text-base">Sur la gravure du Document A (page 17), que dressent les membres de l'expédition de Christophe Colomb dès leur arrivée sur la plage d'Hispaniola en 1493 ?</h3>
+          </div>
+        </div>
+        <div class="space-y-2.5">
+          <button type="button" onclick="selectSingleOption('q4_2', 0)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            A) Un parasol de plage
+          </button>
+          <button type="button" onclick="selectSingleOption('q4_2', 1)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            B) Une grande croix chrétienne en bois (symbole de la prise de possession au nom de la couronne d'Espagne)
+          </button>
+          <button type="button" onclick="selectSingleOption('q4_2', 2)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            C) Un phare moderne de guidage maritime
+          </button>
+          <button type="button" onclick="selectSingleOption('q4_2', 3)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            D) Une tente médicale de premiers secours
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 4.3 (VRAI / FAUX : 4.3a FAUX, 4.3b VRAI) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q4_3">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-indigo-100 text-indigo-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">4.3</span>
+            <h3 class="font-bold text-slate-800 text-base">Indique pour chaque affirmation si elle est <strong>VRAIE</strong> ou <strong>FAUSSE</strong> d'après les documents de la page 17 :</h3>
+          </div>
+        </div>
+        <div class="space-y-3">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200 gap-2" data-sub="q4_3_a">
+            <span class="text-sm text-slate-700">La gravure du document A (page 17) est une photographie contemporaine en couleur prise par un témoin direct en 1493.</span>
+            <div class="flex gap-2 shrink-0">
+              <button type="button" onclick="selectTrueFalse('q4_3_a', true)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="true">VRAI</button>
+              <button type="button" onclick="selectTrueFalse('q4_3_a', false)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="false" data-correct="true">FAUX</button>
+            </div>
+          </div>
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200 gap-2" data-sub="q4_3_b">
+            <span class="text-sm text-slate-700">Sur le document B (2014), la plage d'Haïti est devenue un lieu de tourisme et de loisirs accueillant des baigneurs et des paquebots de croisière.</span>
+            <div class="flex gap-2 shrink-0">
+              <button type="button" onclick="selectTrueFalse('q4_3_b', true)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="true" data-correct="true">VRAI</button>
+              <button type="button" onclick="selectTrueFalse('q4_3_b', false)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="false">FAUX</button>
+            </div>
+          </div>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 4.4 (Bonne réponse : A) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q4_4">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-indigo-100 text-indigo-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">4.4</span>
+            <h3 class="font-bold text-slate-800 text-base">D'après la notice historique accompagnant le Document A (page 17), à quelle date précise Christophe Colomb arrive-t-il à Hispaniola (Haïti) ?</h3>
+          </div>
+        </div>
+        <div class="space-y-2.5">
+          <button type="button" onclick="selectSingleOption('q4_4', 0)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            A) Le 10 janvier 1493
+          </button>
+          <button type="button" onclick="selectSingleOption('q4_4', 1)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            B) Le 14 juillet 1789
+          </button>
+          <button type="button" onclick="selectSingleOption('q4_4', 2)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            C) Le 8 mai 1945
+          </button>
+          <button type="button" onclick="selectSingleOption('q4_4', 3)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            D) Le 21 juillet 1831
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 4.5 (Bonne réponse : C) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q4_5">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-indigo-100 text-indigo-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">4.5</span>
+            <h3 class="font-bold text-slate-800 text-base">En observant les embarcations entre le document A (1493) et le document B (2014) page 17, quelle évolution des transports maritimes constate-t-on ?</h3>
+          </div>
+        </div>
+        <div class="space-y-2.5">
+          <button type="button" onclick="selectSingleOption('q4_5', 0)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            A) Les bateaux modernes naviguent exclusivement grâce à des voiles en toile
+          </button>
+          <button type="button" onclick="selectSingleOption('q4_5', 1)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            B) Les navires sont devenus beaucoup plus petits et construits en roseaux
+          </button>
+          <button type="button" onclick="selectSingleOption('q4_5', 2)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            C) Le passage de petites caravelles en bois à voiles vers de gigantesques paquebots motorisés en acier
+          </button>
+          <button type="button" onclick="selectSingleOption('q4_5', 3)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            D) Les bateaux ont totalement cessé d'exister au 21e siècle
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <div class="flex justify-between pt-2">
+        <button type="button" onclick="switchTheme('theme3')" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold px-5 py-2.5 rounded-xl text-sm transition flex items-center gap-2">
+          <span>⬅</span> Thème précédent
+        </button>
+        <button type="button" onclick="showResults()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-6 py-2.5 rounded-xl text-sm transition flex items-center gap-2 shadow-md">
+          <span>🏁</span> Voir mon bilan
+        </button>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- Modal Résultat Final -->
+  <div id="resultsModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+    <div id="modalContent" class="bg-white rounded-3xl max-w-md w-full p-6 text-center space-y-4 shadow-2xl transform transition-all duration-300 scale-95 opacity-0">
+      <div id="modalIcon" class="text-5xl">🏆</div>
+      <h3 id="modalTitle" class="text-2xl font-bold font-heading text-slate-800">Résultat du CEB 2016</h3>
+      
+      <div class="bg-indigo-50 border border-indigo-100 rounded-2xl p-4">
+        <div class="text-3xl font-extrabold text-indigo-600">
+          <span id="finalScore">0</span> <span class="text-xl font-bold text-slate-400">/ 20</span>
+        </div>
+        <p id="scorePercentage" class="text-sm font-bold text-indigo-800 mt-1">0 % de réussite</p>
+      </div>
+
+      <p id="modalMessage" class="text-sm text-slate-600 leading-relaxed"></p>
+
+      <div class="flex flex-col gap-2 pt-2">
+        <button type="button" onclick="closeModal()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2.5 rounded-xl text-sm transition">
+          Revoir mes réponses
+        </button>
+        <button type="button" onclick="restartQuiz()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 rounded-xl text-sm transition">
+          Recommencer le questionnaire
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // État global de l'application
+    const state = {
+      scores: {},
+      answers: {},
+      totalQuestions: 20
+    };
+
+    // Explications pédagogiques instantanées
+    const explanations = {
+      q1_1: "Le texte de la page 12 indique que les renards ont colonisé la ville en suivant la végétation des talus de chemin de fer jusqu'aux grandes gares centrales.",
+      q1_2: "Le graphique de la page 13 montre que les jardins privés occupent 32 % du total des espaces verts bruxellois, devant les bois (20 %).",
+      q1_4: "Le secteur orange du graphique circulaire (page 13) indique que les terres agricoles représentent 7 % des espaces verts de la région.",
+      q1_5: "En reportant le segment de 1 km de l'échelle graphique, on constate que la distance entre la Gare du Midi et la Gare du Nord est d'environ 3 à 3,5 km.",
+      q2_1: "Sur la carte de la page 16, Wavre est le chef-lieu de la province du Brabant wallon (Louvain étant celui du Brabant flamand).",
+      q2_2: "La France est le pays voisin situé au sud et au sud-ouest de la Belgique.",
+      q2_4: "La Région flamande compte 5 provinces : Flandre occidentale, Flandre orientale, Anvers, Brabant flamand et Limbourg.",
+      q2_5: "D'après la rose des vents, la province de Luxembourg et la ville d'Arlon se situent au sud-est par rapport à Bruxelles.",
+      q3_1: "Le document A (1412) montre le travail avec des bœufs de trait et une charrue en bois, alors que le document B (2014) montre la mécanisation par tracteur.",
+      q3_2: "Les années 1412-1414 se situent au début du 15e siècle, ce qui correspond à la fin du Moyen Âge.",
+      q3_4: "L'agriculture mécanisée moderne a entraîné un agrandissement des parcelles cultivées pour permettre le travail des grands tracteurs et moissonneuses.",
+      q3_5: "Les peintures réalisées à la main pour illustrer les manuscrits du Moyen Âge sont appelées des enluminures (ou miniatures).",
+      q4_1: "En 1490, Christophe Colomb n'avait pas encore traversé l'océan Atlantique (1492) : l'Amérique était inconnue des Européens et ne figure pas sur la carte de Martellus.",
+      q4_2: "Sur la gauche de la gravure (page 17), les marins espagnols érigent une haute croix de bois pour symboliser la christianisation et la domination espagnole.",
+      q4_4: "La légende du document A indique précisément la date du 10 janvier 1493 pour l'arrivée de Colomb à Hispaniola.",
+      q4_5: "Entre 1493 et 2014, les petits voiliers d'exploration en bois ont cédé la place à d'immenses navires de croisière motorisés en acier."
+    };
+
+    // Navigation par onglets (Tabs)
+    function switchTheme(themeId) {
+      document.querySelectorAll('.theme-panel').forEach(panel => {
+        panel.classList.add('hidden');
+      });
+      const activePanel = document.getElementById(themeId);
+      if (activePanel) activePanel.classList.remove('hidden');
+
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('bg-white', 'text-indigo-700', 'shadow-sm');
+        btn.classList.add('text-slate-600');
+      });
+      const activeBtn = document.getElementById(`tab-${themeId}`);
+      if (activeBtn) {
+        activeBtn.classList.add('bg-white', 'text-indigo-700', 'shadow-sm');
+        activeBtn.classList.remove('text-slate-600');
+      }
+    }
+
+    // Gestion des questions QCM à choix unique
+    function selectSingleOption(qid, chosenIndex) {
+      const card = document.querySelector(`[data-qid="${qid}"]`);
+      if (!card) return;
+
+      const buttons = card.querySelectorAll('.option-btn');
+      const feedbackBox = card.querySelector('.feedback-box');
+      const chosenBtn = buttons[chosenIndex];
+      const isCorrect = chosenBtn.hasAttribute('data-correct');
+
+      // Désactiver les boutons de la question
+      buttons.forEach(btn => {
+        btn.disabled = true;
+        btn.classList.remove('hover:bg-slate-50', 'border-slate-200');
+        if (btn.hasAttribute('data-correct')) {
+          btn.classList.add('bg-emerald-100', 'border-emerald-400', 'text-emerald-900', 'font-bold');
+        } else {
+          btn.classList.add('opacity-60');
+        }
+      });
+
+      if (!isCorrect) {
+        chosenBtn.classList.remove('opacity-60');
+        chosenBtn.classList.add('bg-rose-100', 'border-rose-400', 'text-rose-900', 'font-bold');
+      }
+
+      // Feedback
+      feedbackBox.classList.remove('hidden', 'bg-emerald-50', 'text-emerald-800', 'border-emerald-200', 'bg-rose-50', 'text-rose-800', 'border-rose-200');
+      feedbackBox.classList.add('border');
+
+      if (isCorrect) {
+        feedbackBox.classList.add('bg-emerald-50', 'text-emerald-800', 'border-emerald-200');
+        feedbackBox.innerHTML = `✨ <strong>Bravo !</strong> ${explanations[qid] || 'Excellente réponse.'}`;
+        state.scores[qid] = 1;
+      } else {
+        feedbackBox.classList.add('bg-rose-50', 'text-rose-800', 'border-rose-200');
+        feedbackBox.innerHTML = `❌ <strong>Ce n'est pas tout à fait ça.</strong> ${explanations[qid] || 'Consulte attentivement le livret.'}`;
+        state.scores[qid] = 0;
+      }
+
+      state.answers[qid] = chosenIndex;
+      updateTotalScore();
+    }
+
+    // Gestion des questions Vrai / Faux composites
+    function selectTrueFalse(subId, userVal) {
+      const subRow = document.querySelector(`[data-sub="${subId}"]`);
+      if (!subRow) return;
+
+      const buttons = subRow.querySelectorAll('.tf-btn');
+      const trueBtn = buttons[0];
+      const falseBtn = buttons[1];
+      const correctVal = trueBtn.hasAttribute('data-correct');
+
+      buttons.forEach(b => b.disabled = true);
+
+      if (userVal === correctVal) {
+        // Bonne réponse
+        const targetBtn = userVal ? trueBtn : falseBtn;
+        targetBtn.classList.add('bg-emerald-500', 'text-white', 'border-emerald-600');
+        subRow.classList.add('bg-emerald-50/50', 'border-emerald-200');
+        state.answers[subId] = true;
+      } else {
+        // Mauvaise réponse
+        const wrongBtn = userVal ? trueBtn : falseBtn;
+        const rightBtn = correctVal ? trueBtn : falseBtn;
+        wrongBtn.classList.add('bg-rose-500', 'text-white', 'border-rose-600');
+        rightBtn.classList.add('bg-emerald-100', 'text-emerald-800', 'border-emerald-400');
+        subRow.classList.add('bg-rose-50/50', 'border-rose-200');
+        state.answers[subId] = false;
+      }
+
+      // Vérifier si toute la question composite est complétée
+      const parentCard = subRow.closest('[data-qid]');
+      if (parentCard) {
+        const qid = parentCard.getAttribute('data-qid');
+        const allSubRows = parentCard.querySelectorAll('[data-sub]');
+        let allAnswered = true;
+        let allCorrect = true;
+
+        allSubRows.forEach(row => {
+          const sId = row.getAttribute('data-sub');
+          if (state.answers[sId] === undefined) {
+            allAnswered = false;
+          } else if (state.answers[sId] === false) {
+            allCorrect = false;
+          }
+        });
+
+        if (allAnswered) {
+          const feedbackBox = parentCard.querySelector('.feedback-box');
+          if (feedbackBox) {
+            feedbackBox.classList.remove('hidden', 'bg-emerald-50', 'text-emerald-800', 'border-emerald-200', 'bg-rose-50', 'text-rose-800', 'border-rose-200');
+            feedbackBox.classList.add('border');
+            if (allCorrect) {
+              feedbackBox.classList.add('bg-emerald-50', 'text-emerald-800', 'border-emerald-200');
+              feedbackBox.innerHTML = "✨ <strong>Excellent !</strong> Toutes les affirmations de cette question sont exactes.";
+              state.scores[qid] = 1;
+            } else {
+              feedbackBox.classList.add('bg-rose-50', 'text-rose-800', 'border-rose-200');
+              feedbackBox.innerHTML = "❌ <strong>Attention :</strong> certaines affirmations étaient fausses. Vérifie bien les documents du portfolio.";
+              state.scores[qid] = 0;
+            }
+          }
+          updateTotalScore();
+        }
+      }
+    }
+
+    // Mise à jour du score total
+    function updateTotalScore() {
+      let total = 0;
+      for (const q in state.scores) {
+        total += state.scores[q];
+      }
+      document.getElementById('currentScore').innerText = total;
+
+      const answeredCount = Object.keys(state.scores).length;
+      const progressPercent = (answeredCount / state.totalQuestions) * 100;
+      document.getElementById('mainProgressBar').style.width = `${progressPercent}%`;
+    }
+
+    // Affichage des résultats finaux
+    function showResults() {
+      let score = 0;
+      for (const q in state.scores) {
+        score += state.scores[q];
+      }
+
+      document.getElementById('finalScore').innerText = score;
+      const percentage = Math.round((score / state.totalQuestions) * 100);
+      document.getElementById('scorePercentage').innerText = `${percentage} % de réussite`;
+
+      const modalIcon = document.getElementById('modalIcon');
+      const modalTitle = document.getElementById('modalTitle');
+      const modalMessage = document.getElementById('modalMessage');
+
+      if (score >= 18) {
+        modalIcon.innerText = '🌟';
+        modalTitle.innerText = "Magnifique performance !";
+        modalMessage.innerText = "Tu maîtrises parfaitement l'analyse des cartes, du diagramme des espaces verts et des repères historiques du portfolio 2016. Tu es fin prêt-e pour le CEB !";
+        confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+      } else if (score >= 14) {
+        modalIcon.innerText = '👏';
+        modalTitle.innerText = "Très bon travail !";
+        modalMessage.innerText = "Tu as de très bons réflexes méthodologiques en histoire et géographie. Relis attentivement les quelques questions où tu as hésité pour te perfectionner.";
+      } else if (score >= 10) {
+        modalIcon.innerText = '👍';
+        modalTitle.innerText = "Bon entraînement !";
+        modalMessage.innerText = "C'est un résultat encourageant. Prends le temps de bien relire les légendes des cartes et les repères chronologiques avant chaque réponse.";
+      } else {
+        modalIcon.innerText = '💪';
+        modalTitle.innerText = "Ne te décourage pas !";
+        modalMessage.innerText = "Rouvre ton livret portfolio 2016 et refais le questionnaire tranquillement pour repérer les indices clés dans chaque document.";
+      }
+
+      const modal = document.getElementById('resultsModal');
+      const modalContent = document.getElementById('modalContent');
+      modal.classList.remove('hidden');
+      setTimeout(() => {
+        modalContent.classList.remove('scale-95', 'opacity-0');
+        modalContent.classList.add('scale-100', 'opacity-100');
+      }, 10);
+    }
+
+    function closeModal() {
+      const modal = document.getElementById('resultsModal');
+      const modalContent = document.getElementById('modalContent');
+      modalContent.classList.remove('scale-100', 'opacity-100');
+      modalContent.classList.add('scale-95', 'opacity-0');
+      setTimeout(() => {
+        modal.classList.add('hidden');
+      }, 200);
+    }
+
+    function restartQuiz() {
+      window.location.reload();
+    }
+  </script>
+</body>
+</html>
