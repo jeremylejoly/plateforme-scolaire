@@ -7703,24 +7703,26 @@ window.LIVRES = [
         "text": "Qui est Frode et quelle tragédie le frappe au début du récit ?",
         "options": [
           "Un jeune marchand dont le navire a fait naufrage près des côtes franques",
-          "Le fils du chef viking Agnar, qui vient d'être tué lors d'un combat contre les Francs",
+          "Le fils du chef viking Agnar, qui meurt de ses blessures après un combat contre les Francs",
           "Un serviteur frison qui cherche à s'échapper du village viking",
           "Le pisteur du clan qui a été banni par le conseil des anciens"
         ],
-        "correct": 1
+        "correct": 1,
+        "explanation": "Agnar, chef du clan et père de Frode, est ramené très grièvement blessé après une expédition contre les Francs et s'éteint au cours de la nuit."
       },
       {
         "id": "q2",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Pourquoi le destin de la jeune servante Hisse est-il soudainement menacé ?",
+        "text": "Pourquoi le destin de la jeune esclave Hisse est-il soudainement menacé ?",
         "options": [
           "Elle a été choisie par la coutume pour être sacrifiée sur le drakkar funéraire du chef",
           "Elle a été accusée d'avoir volé les bijoux de la mère de Frode",
           "Les guerriers veulent la vendre comme esclave dans un pays lointain",
           "Elle est tombée gravement malade après la rude saison d'hiver"
         ],
-        "correct": 0
+        "correct": 0,
+        "explanation": "Selon la tradition viking, un esclave doit accompagner le chef défunt dans l'au-delà (le Valhalla) lors de la crémation sur le drakkar funéraire, et Hisse a été désignée."
       },
       {
         "id": "q3",
@@ -7733,20 +7735,22 @@ window.LIVRES = [
           "Il a promis au chef du port de Kaupang de lui ramener la jeune fille saine et sauve",
           "Il espère obtenir une immense récompense en argent de la part des Francs"
         ],
-        "correct": 1
+        "correct": 1,
+        "explanation": "Avant la mort d'Eida pendant le rude hiver, Frode lui avait juré sur sa sépulture de protéger sa fille Hisse envers et contre tout."
       },
       {
         "id": "q4",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Comment Frode et Hisse parviennent-ils à s'échapper du village sans éveiller les soupçons ?",
+        "text": "Comment Frode et Hisse s'échappent-ils et effacent-ils leurs traces pour ne pas être suivis ?",
         "options": [
-          "Ils volent une petite barque et descendent le fleuve au crépuscule",
-          "Ils se cachent dans un tonneau de poisson chargé sur une charrette de marchands",
-          "Ils profitent de la nuit pour fuir à dos de cheval à travers les sentiers de la forêt",
-          "Ils se déguisent en guerriers vikings lors de la cérémonie du bûcher"
+          "Ils descendent la rivière cachés dans une barque de pêcheurs",
+          "Ils fuient sur le cheval Sleipnir en longeant la côte et en marchant dans l'eau de mer",
+          "Ils se cachent dans un chariot de foin tiré par des marchands",
+          "Ils s'enfuient à travers les marécages en portant des raquettes en bois"
         ],
-        "correct": 2
+        "correct": 1,
+        "explanation": "Frode monte son cheval Sleipnir avec Hisse et longe le rivage, faisant marcher le cheval dans les vagues pour que l'eau efface immédiatement leurs empreintes."
       },
       {
         "id": "q5",
@@ -7759,7 +7763,8 @@ window.LIVRES = [
           "Il refuse de désobéir aux ordres et ramène uniquement le cheval Sleipnir",
           "Il comprend la noblesse du geste de Frode et choisit de les aider plutôt que de les dénoncer"
         ],
-        "correct": 3
+        "correct": 3,
+        "explanation": "Knut est impressionné par le courage de Frode et sa fidélité à son serment. Il décide donc de fermer les yeux et de les aider à s'échapper."
       },
       {
         "id": "q6",
@@ -7772,7 +7777,8 @@ window.LIVRES = [
           "Il prétend avoir vu les deux fugitifs se noyer dans un lac profond",
           "Il abandonne ses propres armes pour faire croire à une attaque des Francs"
         ],
-        "correct": 0
+        "correct": 0,
+        "explanation": "Knut fabrique de fausses pistes et indique aux poursuivants que les fuyards ont pris la direction de la Suède, leur laissant le champ libre vers le port de Kaupang."
       },
       {
         "id": "q7",
@@ -7785,7 +7791,8 @@ window.LIVRES = [
           "Frode gagne un tournoi de tir à l'arc dont le prix est une traversée en mer",
           "Knut les rejoint avec une armée pour les escorter jusqu'en sécurité"
         ],
-        "correct": 1
+        "correct": 1,
+        "explanation": "Sur le port de Kaupang, des marchands originaires de Frise reconnaissent la jeune fille et proposent de la ramener libre dans son pays natal."
       },
       {
         "id": "q8",
@@ -7795,38 +7802,43 @@ window.LIVRES = [
         "options": [
           "Il a été formellement banni par sa mère qui refuse de le revoir",
           "Il a toujours rêvé de devenir le chef des pirates en Frise",
-          "Il sait qu'en restant chez les siens il serait un traître, et préfère bâtir une vie libre avec Hisse",
+          "Il sait qu'en restant chez les siens il serait considéré comme un traître, et préfère bâtir une vie libre",
           "Il espère revenir très vite avec une troupe de guerriers pour attaquer son village"
         ],
-        "correct": 2
+        "correct": 2,
+        "explanation": "Frode a enfreint les lois de son clan pour sauver Hisse. Ne pouvant plus vivre parmi les siens en homme d'honneur, il choisit de partir vers un nouvel avenir."
       },
       {
         "id": "q9",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Agnar, le père de Frode, a perdu la vie lors d'une expédition guerrière contre les Francs.",
-        "correct": true
+        "text": "Agnar est ramené mourant au village et s'éteint la nuit suivante des suites de ses blessures.",
+        "correct": true,
+        "explanation": "VRAI : Agnar n'est pas mort sur le champ de bataille, mais a succombé à ses graves blessures après avoir été ramené au village par ses guerriers."
       },
       {
         "id": "q10",
         "section": "Vrai ou Faux",
         "type": "tf",
         "text": "La mère de Frode approuve la fuite d'Hisse et prépare elle-même les provisions pour le voyage.",
-        "correct": false
+        "correct": false,
+        "explanation": "FAUX : La mère de Frode respecte strictement les coutumes sacrées du clan et n'est absolument pas au courant du projet d'évasion de son fils."
       },
       {
         "id": "q11",
         "section": "Vrai ou Faux",
         "type": "tf",
         "text": "Le comptoir de Kaupang est une ville portuaire animée où se croisent des marins et commerçants venus d'horizons variés.",
-        "correct": true
+        "correct": true,
+        "explanation": "VRAI : Kaupang est un important carrefour commercial où se rassemblent des marchands vikings, frisons et d'autres contrées lointaines."
       },
       {
         "id": "q12",
         "section": "Vrai ou Faux",
         "type": "tf",
         "text": "À la fin de l'histoire, Frode abandonne Hisse sur le quai et rentre seul dans son village.",
-        "correct": false
+        "correct": false,
+        "explanation": "FAUX : Frode décide d'embarquer lui aussi sur le navire frison avec Hisse pour commencer une nouvelle existence libre."
       },
       {
         "id": "q13",
@@ -7839,7 +7851,8 @@ window.LIVRES = [
           "Un grand bouclier de bois renforcé de métal",
           "Un étendard royal porté lors des batailles"
         ],
-        "correct": 1
+        "correct": 1,
+        "explanation": "Le drakkar est le bateau traditionnel des Vikings, conçu pour naviguer aussi bien en haute mer que sur les rivières peu profondes."
       },
       {
         "id": "q14",
@@ -7852,7 +7865,8 @@ window.LIVRES = [
           "Âgés et affaiblis par les épreuves",
           "Riches et couverts d'ornements précieux"
         ],
-        "correct": 1
+        "correct": 1,
+        "explanation": "« Valeureux » est un synonyme de courageux, brave et plein de vaillance."
       },
       {
         "id": "q15",
@@ -7865,7 +7879,8 @@ window.LIVRES = [
           "La partie avant de l'embarcation",
           "Le mât central qui soutient les voiles"
         ],
-        "correct": 2
+        "correct": 2,
+        "explanation": "La proue désigne l'avant d'un navire (par opposition à la poupe, qui désigne l'arrière)."
       },
       {
         "id": "q16",
@@ -7877,7 +7892,8 @@ window.LIVRES = [
           "Résumé B : À la mort de son père Agnar, Frode refuse que la jeune esclave frisonne Hisse soit sacrifiée sur le bûcher funéraire. Respectant un serment, il s'enfuit avec elle, échappe aux poursuivants grâce à l'aide de Knut et s'embarque vers la Frise pour vivre libre.",
           "Résumé C : Capturé par des marchands vikings au port de Kaupang, le jeune Frode tente de prouver son innocence avec le soutien d'Hisse. Après un long voyage en bateau vers la Suède, il parvient à convaincre le conseil du clan de le proclamer nouveau chef."
         ],
-        "correct": 1
+        "correct": 1,
+        "explanation": "Le résumé B résume fidèlement les enjeux majeurs : la promesse de Frode, le sauvetage d'Hisse de la crémation rituelle, la complicité de Knut et leur départ vers la liberté en Frise."
       }
     ]
   },
@@ -7898,7 +7914,8 @@ window.LIVRES = [
           "Une classe rousse d'automne en Périgord, hébergée dans un gîte rural",
           "Un camp de vacances d'été sur une île de la Méditerranée"
         ],
-        "correct": 2
+        "correct": 2,
+        "explanation": "Les élèves de CM2 partent en « classe rousse » (classe découverte en automne) en Dordogne (Périgord) et logent au gîte « La glycine »."
       },
       {
         "id": "q2",
@@ -7907,11 +7924,12 @@ window.LIVRES = [
         "text": "Quels événements troublants viennent perturber le bon déroulement du séjour dès le début ?",
         "options": [
           "Des disparitions répétées de bagages et des vols de téléphones",
-          "Des sabotages techniques comme un court-circuit et une chaudière endommagée",
+          "Des sabotages ciblés comme un court-circuit et une chaudière endommagée",
           "Une tempête violente qui arrache entièrement le toit du bâtiment principal",
           "Une épidémie soudaine qui contraint tous les élèves à rester alités"
         ],
-        "correct": 1
+        "correct": 1,
+        "explanation": "Des pannes anormales surviennent : le courant saute à cause d'un court-circuit provoqué et la chaudière est dégradée dans le local technique."
       },
       {
         "id": "q3",
@@ -7924,7 +7942,8 @@ window.LIVRES = [
           "Le lébérou, un être métamorphe mi-homme mi-loup",
           "Le dragon des grottes souterraines"
         ],
-        "correct": 2
+        "correct": 2,
+        "explanation": "Les rumeurs évoquent le lébérou, nom donné au loup-garou dans les légendes traditionnelles du Périgord."
       },
       {
         "id": "q4",
@@ -7932,12 +7951,13 @@ window.LIVRES = [
         "type": "mcq",
         "text": "Pourquoi Nathan et Marie refusent-ils de croire à la présence d'un monstre surnaturel ?",
         "options": [
-          "Leur maître Monsieur Maillard leur a interdit de faire des suppositions",
-          "Ils ont repéré des indices concrets prouvant une intervention humaine préméditée",
+          "Leur maître Monsieur Maillard leur a formellement interdit de faire des suppositions",
+          "Ils ont repéré des indices matériels montrant que ces incidents sont provoqués par un humain",
           "Ils ont capturé un renard blessé dans le local technique",
           "Les caméras de surveillance ont immédiatement filmé le visage du rôdeur"
         ],
-        "correct": 1
+        "correct": 1,
+        "explanation": "Les jumeaux remarquent des anomalies concrètes (câble dénudé, cadenas forcé avec un outil) qui prouvent qu'un être humain est à l'origine des dégâts."
       },
       {
         "id": "q5",
@@ -7945,12 +7965,13 @@ window.LIVRES = [
         "type": "mcq",
         "text": "Quel trésor naturel le terrain abandonné de l'ancien voisin Lucien Lafarge abrite-t-il ?",
         "options": [
-          "Un gisement exceptionnel de diamants noirs, c'est-à-dire de truffes précieuses",
+          "Une riche truffière naturelle produisant « l'or noir du Périgord »",
           "Un filon d'or caché dans une ancienne mine désaffectée",
           "Des peintures préhistoriques inestimables dans une caverne secrète",
           "Un trésor de pièces médiévales enterré sous les ruines d'un château"
         ],
-        "correct": 0
+        "correct": 0,
+        "explanation": "Le terrain voisin recèle une magnifique truffière naturelle. Les truffes sont surnommées « l'or noir du Périgord » en raison de leur grande valeur."
       },
       {
         "id": "q6",
@@ -7959,24 +7980,26 @@ window.LIVRES = [
         "text": "Quel rôle le chien Rox a-t-il joué dans la découverte de cette richesse secrète ?",
         "options": [
           "Il s'est enfui dans la forêt et a conduit les gendarmes jusqu'à la cachette",
-          "Il a déterré des truffes et alerté son maître Michel sur la présence de cette truffière",
+          "Il a déterré des truffes et révélé leur présence à son maître Michel",
           "Il a mordu le coupable lors d'une ronde de nuit autour du gîte",
           "Il a sauvé Nathan qui était tombé dans un trou au fond des bois"
         ],
-        "correct": 1
+        "correct": 1,
+        "explanation": "Le chien Rox a creusé le sol et trouvé des truffes, ce qui a mis la puce à l'oreille de son propriétaire Michel."
       },
       {
         "id": "q7",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Quel était le véritable mobile du fournisseur de légumes Michel pour terroriser le gîte ?",
+        "text": "Quel était le véritable mobile de Michel, le fournisseur de légumes, en sabotant le gîte ?",
         "options": [
-          "Il voulait faire fermer le gîte pour racheter le domaine et la parcelle aux enchères à bas prix",
-          "Il cherchait à se venger de l'oncle Raymond après une dispute commerciale",
-          "Il voulait simplement faire une mauvaise plaisanterie aux enfants de la ville",
-          "Il espérait faire annuler la classe rousse pour transformer le gîte en hôtel de luxe"
+          "Dissuader les propriétaires du gîte d'enchérir sur le terrain voisin pour pouvoir le racheter pour une bouchée de pain",
+          "Se venger de l'oncle Raymond après une querelle sur les prix de ses légumes",
+          "Faire une mauvaise farce aux enfants venus de la ville",
+          "Forcer les propriétaires à transformer leur gîte en magasin de souvenirs"
         ],
-        "correct": 0
+        "correct": 0,
+        "explanation": "La tante d'Alice voulait acheter le terrain voisin aux enchères. Michel a créé la panique au gîte pour la décourager et remporter l'enchère sans concurrence à bas prix."
       },
       {
         "id": "q8",
@@ -7985,39 +8008,44 @@ window.LIVRES = [
         "text": "Comment toute cette machination se termine-t-elle finalement pour Michel ?",
         "options": [
           "Il parvient à s'échapper à l'étranger avec l'argent des truffes",
-          "Il est démasqué grâce à la perspicacité des jumeaux et arrêté par les gendarmes",
+          "Il est démasqué grâce à la perspicacité des enfants et arrêté par les gendarmes",
           "Il s'excuse auprès des propriétaires et promet de réparer gratuitement la chaudière",
           "Il est innocenté car le véritable coupable s'avère être un braconnier inconnu"
         ],
-        "correct": 1
+        "correct": 1,
+        "explanation": "Marie (« Miss détective ») et Nathan rassemblent les preuves décisives et Michel est arrêté par la gendarmerie."
       },
       {
         "id": "q9",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Nathan et Marie sont des faux jumeaux : Marie est sportive tandis que Nathan est passionné de lecture et d'enquêtes.",
-        "correct": true
+        "text": "Marie, surnommée « Miss détective », adore mener l'enquête tandis que son frère Nathan est plus calme et prudent.",
+        "correct": true,
+        "explanation": "VRAI : Marie est sportive, dynamique et passionnée par les énigmes, tandis que Nathan est plus réfléchi et posé."
       },
       {
         "id": "q10",
         "section": "Vrai ou Faux",
         "type": "tf",
         "text": "Le gîte rural « La glycine » est la propriété personnelle des parents de Nathan et Marie.",
-        "correct": false
+        "correct": false,
+        "explanation": "FAUX : Le gîte appartient à l'oncle Raymond et à la tante Jeanne, qui sont en réalité les proches de leur camarade Alicia."
       },
       {
         "id": "q11",
         "section": "Vrai ou Faux",
         "type": "tf",
         "text": "Les sabotages subis par le gîte étaient l'œuvre d'un véritable loup-garou magique surgi de la forêt.",
-        "correct": false
+        "correct": false,
+        "explanation": "FAUX : La légende du lébérou a simplement été utilisée par Michel pour dissimuler ses actes malveillants."
       },
       {
         "id": "q12",
         "section": "Vrai ou Faux",
         "type": "tf",
         "text": "La truffe du Périgord est un champignon souterrain rare et très recherché en gastronomie.",
-        "correct": true
+        "correct": true,
+        "explanation": "VRAI : Surnommée « l'or noir du Périgord », la truffe noire est un mets gastronomique rare qui pousse sous la terre."
       },
       {
         "id": "q13",
@@ -8030,7 +8058,8 @@ window.LIVRES = [
           "Remplacée par un modèle plus moderne et économique",
           "Vendue secrètement à un commerçant voisin"
         ],
-        "correct": 1
+        "correct": 1,
+        "explanation": "Vandaliser signifie dégrader, abîmer ou détruire volontairement des installations ou des biens."
       },
       {
         "id": "q14",
@@ -8043,7 +8072,8 @@ window.LIVRES = [
           "Un ruisseau rapide serpentant entre les rochers",
           "Un abri de chasseurs construit en rondins de bois"
         ],
-        "correct": 1
+        "correct": 1,
+        "explanation": "Un gouffre est une grande fosse naturelle, profonde et abrupte, creusée dans la roche calcaire."
       },
       {
         "id": "q15",
@@ -8056,7 +8086,8 @@ window.LIVRES = [
           "Un mur de protection dressé contre le vent",
           "Une collection de fossiles rares et polis"
         ],
-        "correct": 0
+        "correct": 0,
+        "explanation": "Un éboulis est un amas désordonné de pierres ou de blocs de roche tombés suite à un écroulement."
       },
       {
         "id": "q16",
@@ -8066,9 +8097,10 @@ window.LIVRES = [
         "options": [
           "Résumé A : Durant une classe de découverte en Dordogne, les élèves participent à un concours de cuisine périgourdine. Avec l'aide de leur chien Rox, ils découvrent une vieille recette de truffes qui permet au gîte de remporter le premier prix régional.",
           "Résumé B : Invités dans un gîte hanté par la légende du lébérou, les jumeaux Nathan et Marie découvrent qu'un loup sauvage vit dans les sous-sols. En l'apprivoisant, ils réussissent à le protéger des braconniers qui voulaient s'emparer de son territoire.",
-          "Résumé C : Lors d'une classe rousse en Périgord, des sabotages inexpliqués et des rumeurs de loup-garou menacent la fermeture du gîte. En menant l'enquête, Nathan et Marie démasquent Michel, un commerçant cupide qui terrorisait les lieux pour racheter à vil prix un terrain truffier."
+          "Résumé C : Lors d'une classe rousse en Périgord, des sabotages inexpliqués et des rumeurs de loup-garou inquiètent le gîte. En menant l'enquête, Marie et Nathan démasquent Michel, un commerçant qui effrayait les propriétaires pour racheter à bas prix un terrain truffier aux enchères."
         ],
-        "correct": 2
+        "correct": 2,
+        "explanation": "Le résumé C retrace fidèlement la trame complète : l'enquête de Marie et Nathan, le faux monstre et le mobile financier de Michel concernant la parcelle truffière aux enchères."
       }
     ]
   },
@@ -8089,20 +8121,22 @@ window.LIVRES = [
           "Il a été confié à un internat militaire en raison de ses mauvais résultats scolaires",
           "Il a fugué de chez lui pour vivre en autonomie à la campagne"
         ],
-        "correct": 1
+        "correct": 1,
+        "explanation": "La mère de Noé ayant été arrêtée par la police et condamnée à une peine de prison, le juge a ordonné le placement de Noé au foyer des Aubépines."
       },
       {
         "id": "q2",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Quelle réaction brutale Noé a-t-il eue le jour de ses 12 ans à la réception du gâteau envoyé par sa mère ?",
+        "text": "Pourquoi Noé réagit-il avec colère le jour de ses 12 ans quand Capucine lui apporte un gâteau ?",
         "options": [
-          "Il a partagé immédiatement le gâteau avec tous les pensionnaires du foyer",
-          "Il l'a caché sous son lit pour le déguster seul pendant la nuit",
-          "Submergé par la colère et le chagrin, il l'a projeté par terre avant de prendre la fuite",
-          "Il l'a offert aux éducateurs en signe de remerciement"
+          "Il n'aime pas le goût du chocolat préparé par la cuisinière",
+          "Ce gâteau lui rappelle douloureusement l'absence de sa mère avec qui il partageait ce rituel d'anniversaire",
+          "Les autres enfants du foyer se sont moqués de son anniversaire",
+          "Les éducateurs ont oublié de mettre le bon nombre de bougies"
         ],
-        "correct": 2
+        "correct": 1,
+        "explanation": "Noé et sa mère fêtaient toujours leur anniversaire ensemble le 6 juillet. Voir la cuisinière Capucine apporter ce gâteau sans sa mère réveille sa profonde souffrance."
       },
       {
         "id": "q3",
@@ -8115,7 +8149,8 @@ window.LIVRES = [
           "En les aidant à réparer leur vieux tracteur en panne sur le bord de la route",
           "En participant à un atelier scolaire d'initiation aux travaux agricoles"
         ],
-        "correct": 1
+        "correct": 1,
+        "explanation": "Après s'être enfui du foyer, Noé grimpe dans un cerisier pour manger des bigarreaux et se fait surprendre par Odile et ses amis, qui l'accueillent avec gentillesse."
       },
       {
         "id": "q4",
@@ -8128,20 +8163,22 @@ window.LIVRES = [
           "Octave est en réalité le grand-père secret que Noé n'avait jamais rencontré",
           "Ils partagent une passion commune pour la fabrication de gâteaux au chocolat"
         ],
-        "correct": 0
+        "correct": 0,
+        "explanation": "Octave a grandi comme enfant placé aux Aubépines et a lui aussi fait de la prison après des erreurs de jeunesse, ce qui lui permet de comprendre parfaitement Noé."
       },
       {
         "id": "q5",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Pourquoi Noé gardait-il les lettres hebdomadaires de sa mère cachées sans les lire ?",
+        "text": "Pourquoi Noé gardait-il les lettres hebdomadaires de sa mère cachées dans son armoire sans les lire ?",
         "options": [
           "Les éducateurs lui avaient confisqué son courrier jusqu'à sa majorité",
           "Il ne savait pas encore lire couramment et avait honte de demander de l'aide",
           "Il était blessé et refusait d'affronter l'amour et les regrets exprimés par sa mère",
           "Il pensait que ces lettres étaient écrites par le juge du tribunal"
         ],
-        "correct": 2
+        "correct": 2,
+        "explanation": "Noé ressentait un mélange de tristesse et de rancœur envers sa mère ; ouvrir ces lettres le confrontait à des émotions trop douloureuses."
       },
       {
         "id": "q6",
@@ -8150,11 +8187,12 @@ window.LIVRES = [
         "text": "Quel rôle décisif joue Géraldine, la criminologue, auprès de Noé ?",
         "options": [
           "Elle mène l'enquête pour prouver que Marion a été accusée à tort",
-          "Elle lui apporte un soutien bienveillant pour rétablir le lien avec sa mère et aller la voir au parloir",
+          "Elle l'aide avec bienveillance à retisser le lien avec sa mère et prépare leur visite au parloir",
           "Elle le prépare à être adopté définitivement par une nouvelle famille d'accueil",
           "Elle lui donne des cours particuliers pour rattraper son retard à l'école"
         ],
-        "correct": 1
+        "correct": 1,
+        "explanation": "Géraldine travaille dans une association d'aide aux détenus pour recréer le lien entre les enfants et leurs parents emprisonnés et préparer la rencontre au parloir."
       },
       {
         "id": "q7",
@@ -8167,7 +8205,8 @@ window.LIVRES = [
           "Un emploi de cuisinière en chef au sein du restaurant du village",
           "Un voyage d'un an pour faire le tour du monde et oublier ses soucis"
         ],
-        "correct": 1
+        "correct": 1,
+        "explanation": "Odile, Octave, Marie et Jean proposent à Marion de s'installer à la ferme, de cultiver le potager et d'aménager le combi d'Octave en magasin ambulant."
       },
       {
         "id": "q8",
@@ -8175,40 +8214,45 @@ window.LIVRES = [
         "type": "mcq",
         "text": "Que symbolise le gros bigarreau déposé avec émotion sur le gâteau des 14 ans de Noé ?",
         "options": [
-          "Le rappel de sa première rencontre à la ferme et le retour tant attendu du bonheur en famille",
+          "Le souvenir de sa rencontre dans le cerisier de la ferme et le retour du bonheur en famille",
           "Le prix qu'il a remporté lors du grand concours agricole régional",
           "Le souvenir douloureux du cambriolage commis par Octave",
           "La promesse faite au directeur du foyer de ne plus jamais faire de bêtises"
         ],
-        "correct": 0
+        "correct": 0,
+        "explanation": "Le bigarreau posé sur la crème rappelle le cerisier de leur première rencontre à la ferme et scelle la renaissance de leur vie heureuse tous ensemble."
       },
       {
         "id": "q9",
         "section": "Vrai ou Faux",
         "type": "tf",
         "text": "Noé et sa mère Marion célèbrent leur anniversaire le même jour, le 6 juillet.",
-        "correct": true
+        "correct": true,
+        "explanation": "VRAI : Noé et sa mère sont nés le même jour (le 6 juillet), à 22 ans d'intervalle."
       },
       {
         "id": "q10",
         "section": "Vrai ou Faux",
         "type": "tf",
         "text": "Les éducateurs du foyer interdisent strictement à Noé de revoir les retraités de la ferme.",
-        "correct": false
+        "correct": false,
+        "explanation": "FAUX : Les éducateurs (Étienne et Guillaume) établissent un contrat de confiance avec Noé pour qu'il puisse passer ses journées de vacances à la ferme."
       },
       {
         "id": "q11",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Louis, le camarade de chambre de Noé, le réconforte et l'encourage à ouvrir les lettres de sa mère.",
-        "correct": true
+        "text": "Louis surprend Noé en pleurs dans sa chambre alors que celui-ci a enfin osé ouvrir les lettres de sa mère.",
+        "correct": true,
+        "explanation": "VRAI : Louis entre à l'improviste dans la chambre et découvre Noé très ému, assis à côté des lettres de sa mère qu'il vient de décacheter."
       },
       {
         "id": "q12",
         "section": "Vrai ou Faux",
         "type": "tf",
         "text": "À la fin de l'histoire, Marion décide de repartir seule en Angleterre sans son fils Noé.",
-        "correct": false
+        "correct": false,
+        "explanation": "FAUX : Marion reste avec son fils Noé pour commencer leur nouvelle vie commune et travailler à la ferme avec leurs amis."
       },
       {
         "id": "q13",
@@ -8221,7 +8265,8 @@ window.LIVRES = [
           "Sévère et pleine de reproches",
           "Fatiguée et désintéressée"
         ],
-        "correct": 1
+        "correct": 1,
+        "explanation": "« Dubitatif » qualifie une attitude qui manifeste le doute, l'incertitude ou l'hésitation."
       },
       {
         "id": "q14",
@@ -8234,7 +8279,8 @@ window.LIVRES = [
           "Un concours culinaire entre voisins",
           "Une punition attribuée après une faute"
         ],
-        "correct": 1
+        "correct": 1,
+        "explanation": "Un rituel désigne une action ou une habitude qu'on répète toujours de la même manière lors d'une occasion particulière."
       },
       {
         "id": "q15",
@@ -8242,12 +8288,13 @@ window.LIVRES = [
         "type": "mcq",
         "text": "Dans la phrase : « Après être passés par le détecteur de métal, ils suivent un long couloir et finalement entrent dans le parloir. », qu'est-ce qu'un « parloir » ?",
         "options": [
-          "Une salle où les détenus reçoivent les visites de leurs proches",
+          "Une salle où les personnes détenues reçoivent les visites de leurs proches",
           "Le bureau où le juge prononce les sanctions judiciaires",
-          "La cantine où les gardiens prennent leurs repas",
-          "Une cellule disciplinaire isolée du reste du bâtiment"
+          "La cantine où les surveillants prennent leurs repas",
+          "Une cellule isolée du reste du bâtiment"
         ],
-        "correct": 0
+        "correct": 0,
+        "explanation": "Le parloir est la pièce réservée aux rencontres entre les personnes emprisonnées et les membres de leur famille."
       },
       {
         "id": "q16",
@@ -8259,7 +8306,8 @@ window.LIVRES = [
           "Résumé B : Fuyant le foyer des Aubépines pour échapper à ses éducateurs, Noé trouve refuge chez des fermiers qui lui apprennent la mécanique. Après avoir retrouvé son père biologique en Angleterre, il décide de s'y installer définitivement pour ouvrir une pâtisserie.",
           "Résumé C : Après l'arrestation de sa mère lors de son anniversaire, Noé mène sa propre enquête pour prouver son innocence. Avec l'aide de son ami Louis et d'Octave, il retrouve les véritables cambrioleurs de la bijouterie et obtient la libération immédiate de Marion."
         ],
-        "correct": 0
+        "correct": 0,
+        "explanation": "Le résumé A traduit fidèlement l'évolution de Noé, le rôle salvateur des retraités de la ferme, la réconciliation avec sa mère et la symbolique des gâteaux d'anniversaire."
       }
     ]
   },
@@ -8273,133 +8321,145 @@ window.LIVRES = [
         "id": "q1",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Où Thémis fait-il l'acquisition de l'étrange recueil signé par Frédégore ?",
+        "text": "Dans quelles conditions étranges Thémis se retrouve-t-il en possession de l'ouvrage de Frédégore ?",
         "options": [
-          "Dans la bibliothèque municipale de son collège lors d'une heure d'étude",
-          "À la foire aux livres anciens de Saint-Barthélémy auprès d'un mystérieux bouquiniste",
-          "Dans le grenier de la maison de campagne de ses grands-parents",
-          "Sur une boutique en ligne spécialisée dans les mangas rares et anciens"
+          "Il l'emprunte à la bibliothèque de son école pour préparer un exposé",
+          "Un mystérieux bouquiniste encapuchonné le lui impose de force sur une foire aux vieux livres",
+          "Il le déniche dans une malle poussiéreuse au fond du grenier de sa grand-mère",
+          "Il l'achète d'occasion sur un site internet avec son argent de poche"
         ],
-        "correct": 1
+        "correct": 1,
+        "explanation": "À la foire aux livres de Saint-Barthélémy, un bouquiniste mystérieux et inquiétant met d'autorité le livre dans son sac tout en lui intimant de ne jamais l'ouvrir."
       },
       {
         "id": "q2",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Pourquoi Thémis décide-t-il d'ouvrir l'ouvrage malgré l'avertissement solennel sur la couverture ?",
+        "text": "Pourquoi Thémis finit-il par ouvrir le livre une fois rentré dans sa chambre ?",
         "options": [
-          "Ses parents l'obligent à faire un exposé sur les livres du Moyen Âge",
-          "Il a accidentellement fait tomber le livre et le fermoir s'est brisé",
-          "Piqué par la curiosité et attiré par l'énigmatique comptine, il ne résiste pas à la tentation",
-          "Il espère y trouver une carte au trésor pour devenir immensément riche"
+          "Il doit absolument recopier un devoir pour l'école le lendemain",
+          "Il a fait tomber le livre par terre et les pages se sont détachées",
+          "Il est poussé par une force magique irrésistible et ne parvient plus à résister à la formule",
+          "Ses parents lui demandent de lire une histoire à voix haute"
         ],
-        "correct": 2
+        "correct": 2,
+        "explanation": "Le livre exerce une attraction mystérieuse et ensorcelante sur Thémis, qui se sent irrésistiblement contraint de prononcer la comptine et d'ouvrir le recueil."
       },
       {
         "id": "q3",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Que se produit-il immédiatement lorsque Thémis prononce la formule magique et ouvre le livre ?",
+        "text": "Que se produit-il immédiatement dès que Thémis prononce la formule et ouvre le livre ?",
         "options": [
-          "Le livre s'enflamme subitement et brûle tous les meubles de sa chambre",
-          "Il est instantanément aspiré et projeté dans un univers parallèle hostile et mystérieux",
-          "Des créatures fantastiques bienveillantes apparaissent pour lui accorder trois vœux",
-          "Il s'endort profondément et fait un rêve paisible sur son manga préféré"
+          "Le livre prend feu et déclenche l'alarme incendie de la maison",
+          "Il est aspiré et projeté dans un monde parallèle hostile et inconnu",
+          "Un génie apparaît pour exaucer trois souhaits extraordinaires",
+          "Il s'endort profondément et se réveille dans le salon"
         ],
-        "correct": 1
+        "correct": 1,
+        "explanation": "Dès l'ouverture du livre, Thémis bascule dans une autre dimension sauvage, marécageuse et peuplée de créatures inquiétantes."
       },
       {
         "id": "q4",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Quelle aide providentielle Thémis reçoit-il dès ses premiers pas dans cet environnement menaçant ?",
+        "text": "Quelle aide précieuse Thémis trouve-t-il à son arrivée dans cet univers inconnu ?",
         "options": [
-          "Un vieux sage lui remet une épée magique et une armure étincelante",
-          "Un oiseau parlant le guide directement vers la sortie du monde parallèle",
-          "Il rencontre Titouan, un autre garçon piégé par le livre qui lui enseigne les règles de survie",
-          "Il retrouve ses parents qui étaient partis à sa recherche dans la forêt"
+          "Un vieux sage lui offre une boussole magique pour s'orienter",
+          "Un animal parlant lui montre le chemin du retour vers sa ville",
+          "Il rencontre Titouan, un garçon piégé avant lui qui lui apprend à survivre",
+          "Il croise des touristes égarés qui disposent d'une trousse de secours"
         ],
-        "correct": 2
+        "correct": 2,
+        "explanation": "Titouan, déjà captif de cette île maudite, l'accueille dans sa cabane, allume un feu avec des silex et lui donne les règles essentielles pour survivre."
       },
       {
         "id": "q5",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Quelle découverte cruciale les deux compagnons font-ils sur les parois rocheuses de la grotte ?",
+        "text": "Quelle découverte capitale Thémis fait-il dans la grotte pendant l'absence de Titouan ?",
         "options": [
-          "Des messages gravés au fil des siècles par d'anciennes victimes prisonnières du sortilège",
-          "Une recette secrète permettant de fabriquer une potion d'invisibilité",
-          "Une fresque préhistorique indiquant l'emplacement d'un passage secret vers la ville",
-          "Les portraits dessinés des jumeaux Nathanaël et Jahel"
+          "Des messages gravés dans la roche par les victimes successives piégées au cours des siècles",
+          "Une malle remplie de nourriture et d'équipements de camping",
+          "Une porte en fer forgé fermée à double tour avec une grosse serrure",
+          "Un parchemin décrivant comment fabriquer une potion d'invisibilité"
         ],
-        "correct": 0
+        "correct": 0,
+        "explanation": "En explorant seul la grotte alors que Titouan est parti relever ses pièges, Thémis découvre des textes gravés sur les parois par d'autres enfants piégés depuis le Moyen Âge."
       },
       {
         "id": "q6",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Quel conseil capital a été gravé en 1821 par le jeune Louis-Marie Deschamps ?",
+        "text": "Quel conseil capital le jeune Louis-Marie Deschamps a-t-il gravé sur la paroi en 1821 ?",
         "options": [
-          "Il faut brûler le livre maudit au fond d'un brasier ardent pour briser le charme",
-          "Il faut réciter la comptine d'ouverture exactement à l'envers pour s'échapper",
-          "Il faut trouver sept perles sacrées cachées au sommet des arbres géants",
-          "Il faut attendre la prochaine pleine lune pour voir apparaître la porte de sortie"
+          "Il faut jeter le livre dans un volcan pour dissoudre la malédiction",
+          "Il faut réciter la comptine exactement à l'envers pour briser le sort et s'échapper",
+          "Il faut chercher une clé en argent cachée au sommet d'un grand chêne",
+          "Il faut attendre le lever du soleil pour voir s'ouvrir un passage secret"
         ],
-        "correct": 1
+        "correct": 1,
+        "explanation": "Le message gravé en 1821 (« di la contine lanver... ») révèle que la clé pour sortir de ce cauchemar est de prononcer la comptine de Frédégore à l'envers."
       },
       {
         "id": "q7",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Pourquoi la rencontre avec les jumeaux Nathanaël et Jahel s'avère-t-elle particulièrement dangereuse ?",
+        "text": "Pourquoi les jumeaux Nathanaël et Jahel représentent-ils un grand danger ?",
         "options": [
-          "Ils sont devenus les serviteurs maléfiques du livre et tentent de piéger Thémis pour lui voler l'ouvrage",
-          "Ils sont armés d'arcs et prennent les garçons pour des bêtes sauvages",
-          "Ils ont contaminé les sources d'eau douce avec un puissant poison végétal",
-          "Ils ont construit un mur infranchissable pour empêcher quiconque de quitter la vallée"
+          "Ils sont sous l'emprise du livre et attirent Thémis dans un piège pour lui voler l'ouvrage",
+          "Ils sont armés d'arcs et prennent les arrivants pour du gibier",
+          "Ils ont empoisonné les fruits jaunes qui poussent sur les arbres",
+          "Ils construisent des palissades pour empêcher quiconque de rejoindre la côte"
         ],
-        "correct": 0
+        "correct": 0,
+        "explanation": "Les jumeaux obéissent à Frédégore : sous une fausse gentillesse, ils conduisent Thémis vers des sables mouvants pour s'emparer de son exemplaire du livre."
       },
       {
         "id": "q8",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Comment Thémis réussit-il in extremis à s'arracher à ce piège et à réintégrer le monde réel ?",
+        "text": "Comment Thémis parvient-il au tout dernier moment à s'échapper du monde parallèle ?",
         "options": [
-          "En vainquant Frédégore lors d'un duel à l'épée au bord de la falaise",
-          "Tandis que Titouan le retient avec une liane, il récite la formule inversée de la comptine",
-          "En sautant dans une rivière souterraine qui le recrache dans la baignoire de sa maison",
-          "En fermant les yeux et en comptant jusqu'à cent tout en touchant le silex"
+          "En sautant dans une cascade lumineuse qui le transporte directement chez lui",
+          "Tandis que Titouan le retient avec une liane, il récite la comptine à l'envers",
+          "En fermant les yeux et en prononçant trois fois le prénom de ses parents",
+          "En détruisant le livre maudit d'un coup de silex sur une pierre"
         ],
-        "correct": 1
+        "correct": 1,
+        "explanation": "Enlisé dans la boue et soutenu par la liane lancée par Titouan, Thémis récite la formule inversée, ce qui brise le maléfice et le renvoie dans son lit."
       },
       {
         "id": "q9",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Au début du livre, Thémis est ravi d'accompagner ses parents à la foire aux livres car il adore chiner des reliures anciennes.",
-        "correct": false
+        "text": "Au début du récit, Thémis est un grand passionné de mangas japonais comme Naruto ou One Piece.",
+        "correct": true,
+        "explanation": "VRAI : Thémis explique dès le premier chapitre qu'il adore les mangas et déteste flâner dans les foires aux vieux livres."
       },
       {
         "id": "q10",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Les parents de Thémis ne semblent pas prêter attention à l'existence du livre mystérieux rapporté par leur fils.",
-        "correct": true
+        "text": "Les parents de Thémis ne semblent pas remarquer l'existence du livre mystérieux rapporté par leur fils.",
+        "correct": true,
+        "explanation": "VRAI : Le livre paraît invisible aux yeux de ses parents, comme s'il était protégé par un sortilège."
       },
       {
         "id": "q11",
         "section": "Vrai ou Faux",
         "type": "tf",
         "text": "Le message gravé par Louis-Marie Deschamps dans la roche était rédigé sans aucune faute d'orthographe.",
-        "correct": false
+        "correct": false,
+        "explanation": "FAUX : Le texte contient de nombreuses fautes phonétiques (« sette afreu cochemard... »)."
       },
       {
         "id": "q12",
         "section": "Vrai ou Faux",
         "type": "tf",
         "text": "À son réveil dans sa chambre, Thémis découvre que c'est le jour de son anniversaire et retrouve sa famille.",
-        "correct": true
+        "correct": true,
+        "explanation": "VRAI : Thémis revient à lui dans sa chambre le matin de son anniversaire, entouré de ses parents qui viennent le fêter."
       },
       {
         "id": "q13",
@@ -8407,12 +8467,13 @@ window.LIVRES = [
         "type": "mcq",
         "text": "Dans la phrase : « Ça fait des heures qu'on piétine, j'ai les jambes en guimauve et je suis fatigué de flâner et de me faire bousculer par les badauds. », que désigne le mot « badauds » ?",
         "options": [
-          "Des marchands ambulants qui crient pour vendre leurs produits",
-          "Des gardes chargés de maintenir la sécurité dans les allées",
-          "Des passants flâneurs et curieux qui se promènent sans but précis",
-          "Des artistes de rue qui jouent des spectacles de marionnettes"
+          "Des commerçants installés derrière leurs stands",
+          "Des gardes chargés de faire respecter l'ordre",
+          "Des personnes curieuses qui se promènent dans les rues en regardant autour d'elles",
+          "Des musiciens qui animent les places publiques"
         ],
-        "correct": 2
+        "correct": 2,
+        "explanation": "Les badauds sont des passants qui flânent et s'attardent par simple curiosité."
       },
       {
         "id": "q14",
@@ -8420,12 +8481,13 @@ window.LIVRES = [
         "type": "mcq",
         "text": "Dans la phrase : « Mais Titouan me rassure en allumant en deux coups de silex un feu digne d'un camp scout. », qu'est-ce qu'un « silex » ?",
         "options": [
-          "Une boîte d'allumettes étanche utilisée par les explorateurs",
-          "Une pierre très dure capable de produire des étincelles par percussion",
-          "Une loupe spéciale concentrant les rayons du soleil",
-          "Un morceau de bois sec imbibé de résine inflammable"
+          "Une boîte d'allumettes imperméable",
+          "Une roche très dure capable de produire des étincelles par choc",
+          "Une loupe spéciale utilisée pour concentrer la lumière du soleil",
+          "Une branche résineuse très inflammable"
         ],
-        "correct": 1
+        "correct": 1,
+        "explanation": "Le silex est une pierre très dure utilisée depuis la Préhistoire pour allumer du feu en créant des étincelles par percussion."
       },
       {
         "id": "q15",
@@ -8433,12 +8495,13 @@ window.LIVRES = [
         "type": "mcq",
         "text": "Dans la phrase : « La malédiction de Frédégore sévirait donc depuis bien longtemps. », que signifie le mot « malédiction » ?",
         "options": [
-          "Un mauvais sort ou une parole néfaste qui attire le malheur",
-          "Une légende amusante transmise de génération en génération",
-          "Une récompense accordée aux aventuriers les plus courageux",
-          "Une vieille chanson traditionnelle fredonnée lors des fêtes"
+          "Un mauvais sort ou une influence néfaste qui apporte le malheur",
+          "Une histoire drôle racontée pour faire rire les enfants",
+          "Une récompense offerte aux plus vaillants explorateurs",
+          "Un vieux chant entonné pendant les moissons"
         ],
-        "correct": 0
+        "correct": 0,
+        "explanation": "Une malédiction est un sortilège maléfique jeté pour condamner une personne ou un lieu au malheur."
       },
       {
         "id": "q16",
@@ -8446,11 +8509,12 @@ window.LIVRES = [
         "type": "synthesis",
         "text": "Quel résumé correspond le mieux à l'intrigue du récit « Surtout n'ouvre jamais ce livre maudit » ?",
         "options": [
-          "Résumé A : Passionné de bandes dessinées anciennes, Thémis achète un recueil magique qui lui donne le pouvoir de donner vie à ses dessins. Avec l'aide de Titouan, il repousse une armée de monstres et organise une foire aux livres géante dans sa ville.",
-          "Résumé B : Attiré par un mystérieux livre ancien acheté sur une foire, Thémis l'ouvre et se retrouve projeté dans un monde parallèle hostile. Guidé par Titouan et un message séculaire, il déjoue le piège des jumeaux maléfiques et parvient à s'échapper en inversant la formule magique.",
-          "Résumé C : Après avoir découvert un livre secret dans la bibliothèque familiale, Thémis part explorer une grotte souterraine avec les jumeaux Nathanaël et Jahel. Ensemble, ils découvrent un trésor médiéval oublié et rompent la malédiction d'un seigneur nommé Frédégore."
+          "Résumé A : Passionné de bandes dessinées anciennes, Thémis trouve un livre magique qui lui donne le pouvoir de donner vie à ses dessins. Avec l'aide de Titouan, il combat les monstres de sa chambre et organise une foire géante dans sa ville.",
+          "Résumé B : Après s'être fait imposer un mystérieux grimoire par un bouquiniste, Thémis l'ouvre sous une pulsion magique et se retrouve piégé dans un monde hostile. Tombé dans le piège des jumeaux maléfiques, il est sauvé par Titouan et s'échappe en récitant la comptine à l'envers.",
+          "Résumé C : En explorant une brocante avec ses parents, Thémis découvre un vieux grimoire contenant des énigmes. Avec l'aide des jumeaux Nathanaël et Jahel, il visite une grotte secrète et trouve un trésor enfoui depuis le Moyen Âge."
         ],
-        "correct": 1
+        "correct": 1,
+        "explanation": "Le résumé B relate avec une parfaite exactitude les événements clés : l'imposition du livre par le bouquiniste, l'attraction magique, le piège des jumeaux, le sauvetage par Titouan et la formule inversée."
       }
     ]
   }
