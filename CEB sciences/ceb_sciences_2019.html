@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CEB Sciences 2019 — Questionnaire Interactif | LCML</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Canvas Confetti CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+  <!-- Google Fonts: Fredoka & Nunito -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            display: ['Fredoka', 'sans-serif'],
+            body: ['Nunito', 'sans-serif'],
+          },
+          colors: {
+            primary: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              200: '#c7d2fe',
+              300: '#a5b4fc',
+              400: '#818cf8',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+              800: '#3730a3',
+              900: '#312e81',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      font-family: 'Nunito', sans-serif;
+      background-color: #f8fafc;
+      background-image: radial-gradient(#e2e8f0 1.2px, transparent 1.2px);
+      background-size: 24px 24px;
+    }
+    .font-display {
+      font-family: 'Fredoka', sans-serif;
+    }
+    .custom-shadow {
+      box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05), 0 2px 6px -1px rgba(0, 0, 0, 0.03);
+    }
+    .option-btn {
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .option-btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+    }
+    .tf-btn {
+      transition: all 0.2s ease;
+    }
+    .tf-btn:hover:not(:disabled) {
+      transform: translateY(-1px);
+    }
+  </style>
+</head>
+<body class="text-slate-700 min-h-screen flex flex-col antialiased selection:bg-indigo-500 selection:text-white">
+
+  <!-- ================= EN-TÊTE PRINCIPAL ================= -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-40 custom-shadow backdrop-blur-md bg-white/90">
+    <div class="max-w-5xl mx-auto px-4 h-16 sm:h-20 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <span class="text-2xl sm:text-3xl">🌸</span>
+        <div>
+          <h1 class="font-display font-bold text-lg sm:text-xl text-slate-800 leading-tight">
+            CEB Sciences <span class="text-indigo-600">2019</span>
+          </h1>
+          <p class="text-xs text-slate-500 font-medium">Végétaux & Animaux • Évaporation & Eau • Météo & Beaufort • Équilibres</p>
+        </div>
+      </div>
+
+      <!-- COMPTEUR DE SCORE -->
+      <div class="flex items-center space-x-2 bg-slate-50 border border-slate-200 px-3 py-1.5 sm:px-4 sm:py-2 rounded-2xl">
+        <span class="text-xs font-bold text-slate-500 uppercase tracking-wider hidden sm:inline">Score</span>
+        <span class="text-lg sm:text-xl font-display font-black text-indigo-600" id="currentScore">0</span>
+        <span class="text-xs font-bold text-slate-400">/ 20</span>
+      </div>
+    </div>
+
+    <!-- BARRE DE PROGRESSION -->
+    <div class="w-full bg-slate-100 h-1.5">
+      <div id="mainProgressBar" class="bg-gradient-to-r from-indigo-500 to-blue-500 h-1.5 transition-all duration-500 w-0"></div>
+    </div>
+  </header>
+
+  <!-- ================= CONTENU PRINCIPAL ================= -->
+  <main class="max-w-4xl mx-auto px-4 py-8 flex-1 w-full">
+
+    <!-- NAVIGATION PAR THÈMES (ONGLETS) -->
+    <nav class="flex flex-wrap gap-2 mb-8 justify-center">
+      <button onclick="switchTab(0)" class="tab-btn active px-4 py-2.5 rounded-xl font-display font-semibold text-sm transition-all flex items-center gap-2 bg-indigo-600 text-white shadow-md" data-tab="0">
+        <span>🌸</span> 1. Végétaux & Animaux (p.2-4)
+      </button>
+      <button onclick="switchTab(1)" class="tab-btn px-4 py-2.5 rounded-xl font-display font-semibold text-sm transition-all flex items-center gap-2 bg-white text-slate-600 hover:bg-slate-100 border border-slate-200" data-tab="1">
+        <span>💧</span> 2. Eau & Évaporation (p.5-9)
+      </button>
+      <button onclick="switchTab(2)" class="tab-btn px-4 py-2.5 rounded-xl font-display font-semibold text-sm transition-all flex items-center gap-2 bg-white text-slate-600 hover:bg-slate-100 border border-slate-200" data-tab="2">
+        <span>💨</span> 3. Météo & Beaufort (p.10-11)
+      </button>
+      <button onclick="switchTab(3)" class="tab-btn px-4 py-2.5 rounded-xl font-display font-semibold text-sm transition-all flex items-center gap-2 bg-white text-slate-600 hover:bg-slate-100 border border-slate-200" data-tab="3">
+        <span>🏗️</span> 4. Équilibres & Grue (p.12-15)
+      </button>
+    </nav>
+
+    <!-- BANNIÈRE D'INSTRUCTION PORTFOLIO PAPIER -->
+    <div class="bg-amber-50 border-l-4 border-amber-400 p-4 rounded-r-xl mb-6 shadow-sm flex items-start space-x-3">
+      <span class="text-2xl">📖</span>
+      <div class="text-sm text-amber-900">
+        <p class="font-bold font-display text-base">Garde ton livret portfolio sous les yeux !</p>
+        <p class="text-amber-800">Toutes les questions se résolvent en observant attentivement les schémas, tableaux et expériences du portfolio papier <strong>CEB Sciences 2019</strong>.</p>
+      </div>
+    </div>
+
+    <!-- ================= CONTENEURS DES THÈMES ================= -->
+
+    <!-- ================= THÈME 1 : VÉGÉTAUX & ANIMAUX ================= -->
+    <section id="section-0" class="theme-section space-y-6">
+      
+      <!-- En-tête de section -->
+      <div class="bg-rose-50 border border-rose-200 p-5 rounded-2xl">
+        <div class="flex items-center gap-3">
+          <span class="text-3xl">🌸</span>
+          <div>
+            <span class="bg-rose-200 text-rose-900 text-xs font-bold px-2 py-0.5 rounded-full uppercase">Pages 2 à 4</span>
+            <h2 class="font-display text-xl font-bold text-rose-950">Le cycle de vie des végétaux à fleurs et la classification animale</h2>
+          </div>
+        </div>
+      </div>
+
+      <!-- Question 1.1 (Bonne réponse : A) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q1_1">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-rose-100 text-rose-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">1.1</span>
+            <h3 class="font-bold text-slate-800 text-base">En observant le cycle de vie du haricot à la page 2, quelle étape succède directement à la <strong>pollinisation et fécondation</strong> ?</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 1</span>
+        </div>
+        <div class="space-y-2.5">
+          <button type="button" onclick="selectSingleOption('q1_1', 0)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            A) La formation des fruits et des graines
+          </button>
+          <button type="button" onclick="selectSingleOption('q1_1', 1)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            B) La germination de la graine
+          </button>
+          <button type="button" onclick="selectSingleOption('q1_1', 2)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            C) La croissance de la tige
+          </button>
+          <button type="button" onclick="selectSingleOption('q1_1', 3)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            D) La floraison
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 1.2 (Bonne réponse : C) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q1_2">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-rose-100 text-rose-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">1.2</span>
+            <h3 class="font-bold text-slate-800 text-base">D'après les photos des étapes du cycle de vie de la <strong>capucine</strong> (page 3), quel est l'ordre chronologique exact de développement ?</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 2</span>
+        </div>
+        <div class="space-y-2.5">
+          <button type="button" onclick="selectSingleOption('q1_2', 0)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            A) Fleur orange → Graines sèches → Jeunes pousses → Feuilles rondes
+          </button>
+          <button type="button" onclick="selectSingleOption('q1_2', 1)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            B) Feuilles rondes → Fleur orange → Graines sèches → Jeunes pousses
+          </button>
+          <button type="button" onclick="selectSingleOption('q1_2', 2)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            C) Graines sèches → Germination des jeunes pousses → Développement des feuilles → Floraison
+          </button>
+          <button type="button" onclick="selectSingleOption('q1_2', 3)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            D) Germination des jeunes pousses → Graines sèches → Floraison → Feuilles rondes
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 1.3 (Vrai / Faux) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q1_3">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-rose-100 text-rose-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">1.3</span>
+            <h3 class="font-bold text-slate-800 text-base">En observant les animaux et le squelette à la page 4, indique si chaque affirmation est Vraie ou Fausse.</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 3</span>
+        </div>
+        <div class="space-y-3">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200 gap-2" data-sub="q1_3_a">
+            <span class="text-sm text-slate-700">La grenouille, le triton, le lézard et la salamandre possèdent tous un squelette interne et 4 membres munis de doigts.</span>
+            <div class="flex gap-2 shrink-0">
+              <button type="button" onclick="selectTrueFalse('q1_3_a', true)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="true" data-correct="true">VRAI</button>
+              <button type="button" onclick="selectTrueFalse('q1_3_a', false)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="false">FAUX</button>
+            </div>
+          </div>
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200 gap-2" data-sub="q1_3_b">
+            <span class="text-sm text-slate-700">Sur le squelette de la grenouille, les membres antérieurs (avant) sont beaucoup plus longs et développés que les membres postérieurs (arrière).</span>
+            <div class="flex gap-2 shrink-0">
+              <button type="button" onclick="selectTrueFalse('q1_3_b', true)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="true">VRAI</button>
+              <button type="button" onclick="selectTrueFalse('q1_3_b', false)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="false" data-correct="true">FAUX</button>
+            </div>
+          </div>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 1.4 (Bonne réponse : B) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q1_4">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-rose-100 text-rose-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">1.4</span>
+            <h3 class="font-bold text-slate-800 text-base">Sur la photo de la page 2 illustrant l'étape de pollinisation du végétal, quel être vivant transporte le pollen de fleur en fleur ?</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 4</span>
+        </div>
+        <div class="space-y-2.5">
+          <button type="button" onclick="selectSingleOption('q1_4', 0)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            A) Un escargot
+          </button>
+          <button type="button" onclick="selectSingleOption('q1_4', 1)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            B) Une abeille butineuse
+          </button>
+          <button type="button" onclick="selectSingleOption('q1_4', 2)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            C) Une araignée
+          </button>
+          <button type="button" onclick="selectSingleOption('q1_4', 3)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            D) Un oiseau de proie
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 1.5 (Bonne réponse : D) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q1_5">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-rose-100 text-rose-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">1.5</span>
+            <h3 class="font-bold text-slate-800 text-base">En observant attentivement les détails anatomiques des pattes à la page 4, quelle particularité possèdent les pattes arrière de la grenouille ?</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 5</span>
+        </div>
+        <div class="space-y-2.5">
+          <button type="button" onclick="selectSingleOption('q1_5', 0)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            A) Elles sont munies de puissantes griffes acérées
+          </button>
+          <button type="button" onclick="selectSingleOption('q1_5', 1)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            B) Elles sont recouvertes de poils imperméables
+          </button>
+          <button type="button" onclick="selectSingleOption('q1_5', 2)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            C) Elles sont transformées en sabots rigides
+          </button>
+          <button type="button" onclick="selectSingleOption('q1_5', 3)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            D) Elles sont palmées entre les longs doigts pour nager efficacement
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+    </section>
+
+    <!-- ================= THÈME 2 : EAU & ÉVAPORATION ================= -->
+    <section id="section-1" class="theme-section hidden space-y-6">
+      
+      <!-- En-tête de section -->
+      <div class="bg-sky-50 border border-sky-200 p-5 rounded-2xl">
+        <div class="flex items-center gap-3">
+          <span class="text-3xl">💧</span>
+          <div>
+            <span class="bg-sky-200 text-sky-900 text-xs font-bold px-2 py-0.5 rounded-full uppercase">Pages 5 à 9</span>
+            <h2 class="font-display text-xl font-bold text-sky-950">Le cycle naturel et domestique de l'eau & Les facteurs d'évaporation</h2>
+          </div>
+        </div>
+      </div>
+
+      <!-- Question 2.1 (Bonne réponse : A) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q2_1">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-sky-100 text-sky-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">2.1</span>
+            <h3 class="font-bold text-slate-800 text-base">Sur le schéma du cycle de l'eau (page 5), par quelle infrastructure passent les eaux usées des habitations avant d'être rejetées dans la nature ?</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 6</span>
+        </div>
+        <div class="space-y-2.5">
+          <button type="button" onclick="selectSingleOption('q2_1', 0)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            A) La station d'épuration
+          </button>
+          <button type="button" onclick="selectSingleOption('q2_1', 1)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            B) Le château d'eau
+          </button>
+          <button type="button" onclick="selectSingleOption('q2_1', 2)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            C) Le captage de nappe phréatique
+          </button>
+          <button type="button" onclick="selectSingleOption('q2_1', 3)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            D) Les nuages d'altitude
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 2.2 (Bonne réponse : C) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q2_2">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-sky-100 text-sky-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">2.2</span>
+            <h3 class="font-bold text-slate-800 text-base">Dans l'expérience de la salade sur la balance (page 6), pourquoi la salade est-elle devenue plus légère le lendemain ?</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 7</span>
+        </div>
+        <div class="space-y-2.5">
+          <button type="button" onclick="selectSingleOption('q2_2', 0)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            A) Parce que quelqu'un a mangé la moitié des feuilles
+          </button>
+          <button type="button" onclick="selectSingleOption('q2_2', 1)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            B) Parce que la salade a absorbé l'air de la pièce
+          </button>
+          <button type="button" onclick="selectSingleOption('q2_2', 2)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            C) Parce qu'une partie de l'eau contenue dans les feuilles s'est évaporée dans l'air
+          </button>
+          <button type="button" onclick="selectSingleOption('q2_2', 3)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            D) Parce que les poids de la balance sont devenus plus lourds
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 2.3 (Bonne réponse : B) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q2_3">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-sky-100 text-sky-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">2.3</span>
+            <h3 class="font-bold text-slate-800 text-base">Dans le Dispositif expérimental 1 (page 7 et 8), quel facteur influençant l'évaporation les élèves comparent-ils entre la bouteille A et la bouteille B ?</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 8</span>
+        </div>
+        <div class="space-y-2.5">
+          <button type="button" onclick="selectSingleOption('q2_3', 0)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            A) La quantité initiale d'eau
+          </button>
+          <button type="button" onclick="selectSingleOption('q2_3', 1)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            B) La surface de contact entre l'eau et l'air
+          </button>
+          <button type="button" onclick="selectSingleOption('q2_3', 2)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            C) La salinité de l'eau
+          </button>
+          <button type="button" onclick="selectSingleOption('q2_3', 3)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            D) La couleur de la bouteille
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 2.4 (Bonne réponse : D) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q2_4">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-sky-100 text-sky-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">2.4</span>
+            <h3 class="font-bold text-slate-800 text-base">Dans le Dispositif expérimental 2 (page 8), pourquoi l'eau s'évapore-t-elle plus vite dans la bouteille C que dans la bouteille A ?</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 9</span>
+        </div>
+        <div class="space-y-2.5">
+          <button type="button" onclick="selectSingleOption('q2_4', 0)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            A) Parce que la bouteille C est plus haute dans la pièce
+          </button>
+          <button type="button" onclick="selectSingleOption('q2_4', 1)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            B) Parce que la bouteille C est fermée par un bouchon
+          </button>
+          <button type="button" onclick="selectSingleOption('q2_4', 2)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            C) Parce que la bouteille C contient moins d'eau au départ
+          </button>
+          <button type="button" onclick="selectSingleOption('q2_4', 3)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            D) Parce que la bouteille C est posée sur un radiateur chaud (la température accélère l'évaporation)
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 2.5 (Vrai / Faux) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q2_5">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-sky-100 text-sky-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">2.5</span>
+            <h3 class="font-bold text-slate-800 text-base">En observant le cycle de l'eau et les expériences d'évaporation (pages 5 à 9), indique si chaque affirmation est Vraie ou Fausse.</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 10</span>
+        </div>
+        <div class="space-y-3">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200 gap-2" data-sub="q2_5_a">
+            <span class="text-sm text-slate-700">D'après la page 5, l'eau infiltrée dans la nappe phréatique est pompée par un captage avant d'être distribuée via le château d'eau.</span>
+            <div class="flex gap-2 shrink-0">
+              <button type="button" onclick="selectTrueFalse('q2_5_a', true)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="true" data-correct="true">VRAI</button>
+              <button type="button" onclick="selectTrueFalse('q2_5_a', false)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="false">FAUX</button>
+            </div>
+          </div>
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200 gap-2" data-sub="q2_5_b">
+            <span class="text-sm text-slate-700">D'après l'Expérience 1 (page 7), plus la surface de contact entre l'eau et l'air est petite, plus l'eau s'évapore rapidement.</span>
+            <div class="flex gap-2 shrink-0">
+              <button type="button" onclick="selectTrueFalse('q2_5_b', true)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="true">VRAI</button>
+              <button type="button" onclick="selectTrueFalse('q2_5_b', false)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="false" data-correct="true">FAUX</button>
+            </div>
+          </div>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+    </section>
+
+    <!-- ================= THÈME 3 : MÉTÉO & BEAUFORT ================= -->
+    <section id="section-2" class="theme-section hidden space-y-6">
+      
+      <!-- En-tête de section -->
+      <div class="bg-teal-50 border border-teal-200 p-5 rounded-2xl">
+        <div class="flex items-center gap-3">
+          <span class="text-3xl">💨</span>
+          <div>
+            <span class="bg-teal-200 text-teal-900 text-xs font-bold px-2 py-0.5 rounded-full uppercase">Pages 10 et 11</span>
+            <h2 class="font-display text-xl font-bold text-teal-950">La carte météorologique de Belgique et l'échelle de Beaufort</h2>
+          </div>
+        </div>
+      </div>
+
+      <!-- Question 3.1 (Bonne réponse : B) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q3_1">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-teal-100 text-teal-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">3.1</span>
+            <h3 class="font-bold text-slate-800 text-base">En observant les températures prévues sur la carte météo de la page 10, quelle ville enregistre la température minimale la plus basse (-3 °C) ?</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 11</span>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+          <button type="button" onclick="selectSingleOption('q3_1', 0)" class="option-btn p-3 rounded-xl border border-slate-200 text-center text-sm font-medium hover:bg-slate-50 transition">
+            Bruxelles
+          </button>
+          <button type="button" onclick="selectSingleOption('q3_1', 1)" class="option-btn p-3 rounded-xl border border-slate-200 text-center text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            Verviers
+          </button>
+          <button type="button" onclick="selectSingleOption('q3_1', 2)" class="option-btn p-3 rounded-xl border border-slate-200 text-center text-sm font-medium hover:bg-slate-50 transition">
+            Tournai
+          </button>
+          <button type="button" onclick="selectSingleOption('q3_1', 3)" class="option-btn p-3 rounded-xl border border-slate-200 text-center text-sm font-medium hover:bg-slate-50 transition">
+            Ostende
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 3.2 (Bonne réponse : D) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q3_2">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-teal-100 text-teal-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">3.2</span>
+            <h3 class="font-bold text-slate-800 text-base">D'après la flèche du vent repérée par le numéro 3 en bas de la carte météo (page 10), quelle est la vitesse du vent annoncée ?</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 12</span>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+          <button type="button" onclick="selectSingleOption('q3_2', 0)" class="option-btn p-3 rounded-xl border border-slate-200 text-center text-sm font-medium hover:bg-slate-50 transition">
+            10 km/h
+          </button>
+          <button type="button" onclick="selectSingleOption('q3_2', 1)" class="option-btn p-3 rounded-xl border border-slate-200 text-center text-sm font-medium hover:bg-slate-50 transition">
+            28 km/h
+          </button>
+          <button type="button" onclick="selectSingleOption('q3_2', 2)" class="option-btn p-3 rounded-xl border border-slate-200 text-center text-sm font-medium hover:bg-slate-50 transition">
+            45 km/h
+          </button>
+          <button type="button" onclick="selectSingleOption('q3_2', 3)" class="option-btn p-3 rounded-xl border border-slate-200 text-center text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            60 km/h
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 3.3 (Vrai / Faux) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q3_3">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-teal-100 text-teal-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">3.3</span>
+            <h3 class="font-bold text-slate-800 text-base">En croisant la carte météo (page 10) et le tableau de l'échelle de Beaufort (page 11), indique si chaque affirmation est Vraie ou Fausse.</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 13</span>
+        </div>
+        <div class="space-y-3">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200 gap-2" data-sub="q3_3_a">
+            <span class="text-sm text-slate-700">Une vitesse de vent de 60 km/h correspond à un « vent très violent » de Force 7 sur l'échelle de Beaufort.</span>
+            <div class="flex gap-2 shrink-0">
+              <button type="button" onclick="selectTrueFalse('q3_3_a', true)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="true" data-correct="true">VRAI</button>
+              <button type="button" onclick="selectTrueFalse('q3_3_a', false)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="false">FAUX</button>
+            </div>
+          </div>
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200 gap-2" data-sub="q3_3_b">
+            <span class="text-sm text-slate-700">D'après les informations solaires de la page 10, le soleil se couche à 08h36 et se lève à 17h08.</span>
+            <div class="flex gap-2 shrink-0">
+              <button type="button" onclick="selectTrueFalse('q3_3_b', true)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="true">VRAI</button>
+              <button type="button" onclick="selectTrueFalse('q3_3_b', false)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="false" data-correct="true">FAUX</button>
+            </div>
+          </div>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 3.4 (Bonne réponse : A) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q3_4">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-teal-100 text-teal-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">3.4</span>
+            <h3 class="font-bold text-slate-800 text-base">D'après le tableau de l'échelle de Beaufort (page 11), quel effet observe-t-on à terre lors d'un <strong>« vent assez fort »</strong> (Force 5 : 29 à 38 km/h) ?</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 14</span>
+        </div>
+        <div class="space-y-2.5">
+          <button type="button" onclick="selectSingleOption('q3_4', 0)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            A) Les petits arbres plient sous le vent
+          </button>
+          <button type="button" onclick="selectSingleOption('q3_4', 1)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            B) Les tuiles s'envolent des toits des maisons
+          </button>
+          <button type="button" onclick="selectSingleOption('q3_4', 2)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            C) La fumée s'élève parfaitement à la verticale
+          </button>
+          <button type="button" onclick="selectSingleOption('q3_4', 3)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            D) Les arbres centenaires sont déracinés
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 3.5 (Bonne réponse : C) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q3_5">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-teal-100 text-teal-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">3.5</span>
+            <h3 class="font-bold text-slate-800 text-base">En observant la flèche rose n°3 et la rose des vents (page 10), de quelle direction cardinale générale provient ce vent de 60 km/h ?</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 15</span>
+        </div>
+        <div class="space-y-2.5">
+          <button type="button" onclick="selectSingleOption('q3_5', 0)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            A) Du Nord (vers le Sud)
+          </button>
+          <button type="button" onclick="selectSingleOption('q3_5', 1)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            B) De l'Est (vers l'Ouest)
+          </button>
+          <button type="button" onclick="selectSingleOption('q3_5', 2)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            C) De l'Ouest / Sud-Ouest (soufflant vers l'Est)
+          </button>
+          <button type="button" onclick="selectSingleOption('q3_5', 3)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            D) Du pôle Sud
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+    </section>
+
+    <!-- ================= THÈME 4 : ÉQUILIBRES & GRUE ================= -->
+    <section id="section-3" class="theme-section hidden space-y-6">
+      
+      <!-- En-tête de section -->
+      <div class="bg-amber-50 border border-amber-200 p-5 rounded-2xl">
+        <div class="flex items-center gap-3">
+          <span class="text-3xl">🏗️</span>
+          <div>
+            <span class="bg-amber-200 text-amber-900 text-xs font-bold px-2 py-0.5 rounded-full uppercase">Pages 12 à 15</span>
+            <h2 class="font-display text-xl font-bold text-amber-950">L'équilibre des forces et la stabilité d'une grue</h2>
+          </div>
+        </div>
+      </div>
+
+      <!-- Question 4.1 (Bonne réponse : B) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q4_1">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-amber-100 text-amber-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">4.1</span>
+            <h3 class="font-bold text-slate-800 text-base">Sur le schéma technique du Document 2 (page 12), comment appelle-t-on le grand bras horizontal métallique sur lequel est suspendue la charge ?</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 16</span>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+          <button type="button" onclick="selectSingleOption('q4_1', 0)" class="option-btn p-3 rounded-xl border border-slate-200 text-center text-sm font-medium hover:bg-slate-50 transition">
+            La tour
+          </button>
+          <button type="button" onclick="selectSingleOption('q4_1', 1)" class="option-btn p-3 rounded-xl border border-slate-200 text-center text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            La flèche
+          </button>
+          <button type="button" onclick="selectSingleOption('q4_1', 2)" class="option-btn p-3 rounded-xl border border-slate-200 text-center text-sm font-medium hover:bg-slate-50 transition">
+            Le contrepoids
+          </button>
+          <button type="button" onclick="selectSingleOption('q4_1', 3)" class="option-btn p-3 rounded-xl border border-slate-200 text-center text-sm font-medium hover:bg-slate-50 transition">
+            La base
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 4.2 (Bonne réponse : D) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q4_2">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-amber-100 text-amber-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">4.2</span>
+            <h3 class="font-bold text-slate-800 text-base">Dans l'Expérience 1 de la page 14, comment les élèves ont-ils réussi à faire tenir la maquette de grue en équilibre ?</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 17</span>
+        </div>
+        <div class="space-y-2.5">
+          <button type="button" onclick="selectSingleOption('q4_2', 0)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            A) En collant la tour au plafond
+          </button>
+          <button type="button" onclick="selectSingleOption('q4_2', 1)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            B) En coupant la flèche en deux
+          </button>
+          <button type="button" onclick="selectSingleOption('q4_2', 2)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            C) En utilisant une plaque de base encore plus étroite
+          </button>
+          <button type="button" onclick="selectSingleOption('q4_2', 3)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            D) En fixant une plaque de base plus large sous la tour pour élargir la surface d'appui
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 4.3 (Vrai / Faux) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q4_3">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-amber-100 text-amber-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">4.3</span>
+            <h3 class="font-bold text-slate-800 text-base">En observant les Expériences 3 et 4 (page 15), indique si chaque affirmation est Vraie ou Fausse.</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 18</span>
+        </div>
+        <div class="space-y-3">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200 gap-2" data-sub="q4_3_a">
+            <span class="text-sm text-slate-700">Dans l'Expérience 3, l'ajout de 2 boules de plasticine à l'arrière permet de faire contrepoids et d'équilibrer la grue.</span>
+            <div class="flex gap-2 shrink-0">
+              <button type="button" onclick="selectTrueFalse('q4_3_a', true)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="true" data-correct="true">VRAI</button>
+              <button type="button" onclick="selectTrueFalse('q4_3_a', false)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="false">FAUX</button>
+            </div>
+          </div>
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200 gap-2" data-sub="q4_3_b">
+            <span class="text-sm text-slate-700">Dans l'Expérience 4, une flèche très longue de 50 cm permet à la grue de rester debout sans basculer.</span>
+            <div class="flex gap-2 shrink-0">
+              <button type="button" onclick="selectTrueFalse('q4_3_b', true)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="true">VRAI</button>
+              <button type="button" onclick="selectTrueFalse('q4_3_b', false)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="false" data-correct="true">FAUX</button>
+            </div>
+          </div>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 4.4 (Bonne réponse : A) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q4_4">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-amber-100 text-amber-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">4.4</span>
+            <h3 class="font-bold text-slate-800 text-base">Dans l'Expérience 2 (page 14), pourquoi le fait de placer <strong>4 billes</strong> au fond de la tour stabilise-t-il la maquette ?</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 19</span>
+        </div>
+        <div class="space-y-2.5">
+          <button type="button" onclick="selectSingleOption('q4_4', 0)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            A) Cela alourdit le bas de la grue et abaisse son centre de gravité vers le sol
+          </button>
+          <button type="button" onclick="selectSingleOption('q4_4', 1)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            B) Cela permet à la tour de tourner sur elle-même
+          </button>
+          <button type="button" onclick="selectSingleOption('q4_4', 2)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            C) Cela réduit la hauteur de la grue
+          </button>
+          <button type="button" onclick="selectSingleOption('q4_4', 3)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            D) Cela réchauffe le plastique
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 4.5 (Bonne réponse : C) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q4_5">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-amber-100 text-amber-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">4.5</span>
+            <h3 class="font-bold text-slate-800 text-base">D'après les documents 1 et 2 (page 12), quel élément lourd situé à l'arrière permet de compenser le poids de la charge soulevée par la grue ?</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 20</span>
+        </div>
+        <div class="space-y-2.5">
+          <button type="button" onclick="selectSingleOption('q4_5', 0)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            A) Le câble de levage
+          </button>
+          <button type="button" onclick="selectSingleOption('q4_5', 1)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            B) La cabine du grutier
+          </button>
+          <button type="button" onclick="selectSingleOption('q4_5', 2)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            C) Le contrepoids
+          </button>
+          <button type="button" onclick="selectSingleOption('q4_5', 3)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            D) Les rails de guidage
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+    </section>
+
+    <!-- BOUTON DE VALIDATION GLOBALE DU THÈME EN COURS -->
+    <div class="mt-8 flex justify-between items-center bg-white p-4 rounded-2xl border border-slate-200 custom-shadow">
+      <button id="prevBtn" onclick="prevTab()" class="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-bold text-sm hover:bg-slate-50 transition disabled:opacity-30 disabled:pointer-events-none">
+        ← Thème précédent
+      </button>
+      <button id="nextBtn" onclick="nextTab()" class="px-6 py-2.5 rounded-xl bg-indigo-600 text-white font-bold text-sm hover:bg-indigo-700 transition shadow-md">
+        Thème suivant →
+      </button>
+    </div>
+
+  </main>
+
+  <!-- ================= MODAL BILAN / RÉSULTATS ================= -->
+  <div id="resultsModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 custom-shadow text-center space-y-6 transform transition-all scale-95 opacity-0 duration-300" id="modalContent">
+      <div id="modalIcon" class="text-6xl animate-bounce">🏆</div>
+      <h2 class="font-display font-black text-2xl sm:text-3xl text-slate-800" id="modalTitle">Résultat de ton entraînement</h2>
+      
+      <div class="bg-indigo-50 border border-indigo-100 p-6 rounded-2xl">
+        <p class="text-xs font-bold text-indigo-700 uppercase tracking-wider mb-1">Score total obtenu</p>
+        <p class="font-display font-black text-5xl text-indigo-600">
+          <span id="finalScore">0</span> <span class="text-2xl text-indigo-400 font-bold">/ 20</span>
+        </p>
+        <p class="text-sm font-semibold text-slate-600 mt-2" id="scorePercentage">0 % de réussite</p>
+      </div>
+
+      <p class="text-slate-600 text-sm leading-relaxed" id="modalMessage">
+        Félicitations pour ton investissement !
+      </p>
+
+      <div class="flex flex-col sm:flex-row gap-3 pt-2">
+        <button onclick="closeModal()" class="flex-1 py-3 px-4 rounded-xl border border-slate-200 text-slate-700 font-bold text-sm hover:bg-slate-50 transition">
+          Revoir mes réponses
+        </button>
+        <button onclick="restartQuiz()" class="flex-1 py-3 px-4 rounded-xl bg-indigo-600 text-white font-bold text-sm hover:bg-indigo-700 transition shadow-md">
+          Recommencer le test
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= SCRIPT JAVASCRIPT LOGIQUE ================= -->
+  <script>
+    // État du quiz
+    const state = {
+      currentTab: 0,
+      totalQuestions: 20,
+      answers: {},
+      scores: {},
+    };
+
+    // Gestion des onglets
+    function switchTab(index) {
+      state.currentTab = index;
+      document.querySelectorAll('.tab-btn').forEach((btn, idx) => {
+        if (idx === index) {
+          btn.classList.add('bg-indigo-600', 'text-white', 'shadow-md');
+          btn.classList.remove('bg-white', 'text-slate-600', 'hover:bg-slate-100', 'border');
+        } else {
+          btn.classList.remove('bg-indigo-600', 'text-white', 'shadow-md');
+          btn.classList.add('bg-white', 'text-slate-600', 'hover:bg-slate-100', 'border');
+        }
+      });
+
+      document.querySelectorAll('.theme-section').forEach((sec, idx) => {
+        sec.classList.toggle('hidden', idx !== index);
+      });
+
+      // Gestion des boutons Précédent / Suivant
+      const prevBtn = document.getElementById('prevBtn');
+      const nextBtn = document.getElementById('nextBtn');
+      prevBtn.disabled = (index === 0);
+      
+      if (index === 3) {
+        nextBtn.innerHTML = "Voir mon bilan final 🏆";
+        nextBtn.classList.remove('bg-indigo-600', 'hover:bg-indigo-700');
+        nextBtn.classList.add('bg-emerald-600', 'hover:bg-emerald-700');
+      } else {
+        nextBtn.innerHTML = "Thème suivant →";
+        nextBtn.classList.add('bg-indigo-600', 'hover:bg-indigo-700');
+        nextBtn.classList.remove('bg-emerald-600', 'hover:bg-emerald-700');
+      }
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function prevTab() {
+      if (state.currentTab > 0) {
+        switchTab(state.currentTab - 1);
+      }
+    }
+
+    function nextTab() {
+      if (state.currentTab < 3) {
+        switchTab(state.currentTab + 1);
+      } else {
+        showResults();
+      }
+    }
+
+    // Gestion d'un choix simple (QCM)
+    function selectSingleOption(qid, optionIndex) {
+      const questionCard = document.querySelector(`[data-qid="${qid}"]`);
+      if (!questionCard) return;
+
+      const buttons = questionCard.querySelectorAll('.option-btn');
+      const feedbackBox = questionCard.querySelector('.feedback-box');
+      const selectedBtn = buttons[optionIndex];
+      const isCorrect = selectedBtn.hasAttribute('data-correct');
+
+      // Verrouiller les boutons de cette question
+      buttons.forEach(btn => {
+        btn.disabled = true;
+        if (btn.hasAttribute('data-correct')) {
+          btn.classList.remove('border-slate-200', 'hover:bg-slate-50');
+          btn.classList.add('bg-emerald-50', 'border-emerald-500', 'text-emerald-800', 'font-bold');
+        }
+      });
+
+      if (!isCorrect) {
+        selectedBtn.classList.remove('border-slate-200', 'hover:bg-slate-50');
+        selectedBtn.classList.add('bg-rose-50', 'border-rose-400', 'text-rose-800', 'font-semibold');
+      }
+
+      // Afficher le message d'explication
+      if (feedbackBox) {
+        feedbackBox.classList.remove('hidden', 'bg-emerald-50', 'text-emerald-800', 'border-emerald-200', 'bg-rose-50', 'text-rose-800', 'border-rose-200');
+        feedbackBox.classList.add('border');
+        if (isCorrect) {
+          feedbackBox.classList.add('bg-emerald-50', 'text-emerald-800', 'border-emerald-200');
+          feedbackBox.innerHTML = "✨ <strong>Bravo !</strong> Bonne réponse.";
+          state.scores[qid] = 1;
+        } else {
+          feedbackBox.classList.add('bg-rose-50', 'text-rose-800', 'border-rose-200');
+          feedbackBox.innerHTML = "❌ <strong>Pas tout à fait.</strong> Observe bien le document de ton livret portfolio pour retrouver l'information.";
+          state.scores[qid] = 0;
+        }
+      }
+
+      updateTotalScore();
+    }
+
+    // Gestion du Vrai / Faux (sous-questions multiples)
+    function selectTrueFalse(subId, userVal) {
+      const subRow = document.querySelector(`[data-sub="${subId}"]`);
+      if (!subRow) return;
+
+      const buttons = subRow.querySelectorAll('.tf-btn');
+      const trueBtn = buttons[0];
+      const falseBtn = buttons[1];
+      const correctVal = trueBtn.hasAttribute('data-correct');
+
+      buttons.forEach(b => b.disabled = true);
+
+      if (userVal === correctVal) {
+        // Bonne réponse
+        const activeBtn = userVal ? trueBtn : falseBtn;
+        activeBtn.classList.add('bg-emerald-500', 'text-white', 'border-emerald-600');
+        subRow.classList.add('bg-emerald-50/50', 'border-emerald-200');
+        state.answers[subId] = true;
+      } else {
+        // Mauvaise réponse
+        const wrongBtn = userVal ? trueBtn : falseBtn;
+        const rightBtn = correctVal ? trueBtn : falseBtn;
+        wrongBtn.classList.add('bg-rose-500', 'text-white', 'border-rose-600');
+        rightBtn.classList.add('bg-emerald-100', 'text-emerald-800', 'border-emerald-400');
+        subRow.classList.add('bg-rose-50/50', 'border-rose-200');
+        state.answers[subId] = false;
+      }
+
+      // Vérifier si toute la question composite est complétée
+      const parentCard = subRow.closest('[data-qid]');
+      if (parentCard) {
+        const qid = parentCard.getAttribute('data-qid');
+        const allSubRows = parentCard.querySelectorAll('[data-sub]');
+        let allAnswered = true;
+        let allCorrect = true;
+
+        allSubRows.forEach(row => {
+          const sId = row.getAttribute('data-sub');
+          if (state.answers[sId] === undefined) {
+            allAnswered = false;
+          } else if (state.answers[sId] === false) {
+            allCorrect = false;
+          }
+        });
+
+        if (allAnswered) {
+          const feedbackBox = parentCard.querySelector('.feedback-box');
+          if (feedbackBox) {
+            feedbackBox.classList.remove('hidden', 'bg-emerald-50', 'text-emerald-800', 'border-emerald-200', 'bg-rose-50', 'text-rose-800', 'border-rose-200');
+            feedbackBox.classList.add('border');
+            if (allCorrect) {
+              feedbackBox.classList.add('bg-emerald-50', 'text-emerald-800', 'border-emerald-200');
+              feedbackBox.innerHTML = "✨ <strong>Excellent !</strong> Toutes les affirmations de cette question sont exactes.";
+              state.scores[qid] = 1;
+            } else {
+              feedbackBox.classList.add('bg-rose-50', 'text-rose-800', 'border-rose-200');
+              feedbackBox.innerHTML = "❌ <strong>Attention :</strong> certaines affirmations étaient fausses. Vérifie bien les légendes du portfolio.";
+              state.scores[qid] = 0;
+            }
+          }
+          updateTotalScore();
+        }
+      }
+    }
+
+    // Mise à jour du score total
+    function updateTotalScore() {
+      let total = 0;
+      for (const q in state.scores) {
+        total += state.scores[q];
+      }
+      document.getElementById('currentScore').innerText = total;
+
+      const answeredCount = Object.keys(state.scores).length;
+      const progressPercent = (answeredCount / state.totalQuestions) * 100;
+      document.getElementById('mainProgressBar').style.width = `${progressPercent}%`;
+    }
+
+    // Affichage des résultats finaux
+    function showResults() {
+      let score = 0;
+      for (const q in state.scores) {
+        score += state.scores[q];
+      }
+
+      document.getElementById('finalScore').innerText = score;
+      const percentage = Math.round((score / state.totalQuestions) * 100);
+      document.getElementById('scorePercentage').innerText = `${percentage} % de réussite`;
+
+      const modalIcon = document.getElementById('modalIcon');
+      const modalTitle = document.getElementById('modalTitle');
+      const modalMessage = document.getElementById('modalMessage');
+
+      if (score >= 18) {
+        modalIcon.innerText = '🌟';
+        modalTitle.innerText = "Magnifique performance !";
+        modalMessage.innerText = "Tu maîtrises parfaitement l'observation et le raisonnement scientifique de ce portfolio 2019. Tu es fin prêt-e pour le CEB !";
+        confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+      } else if (score >= 14) {
+        modalIcon.innerText = '👏';
+        modalTitle.innerText = "Très bon travail !";
+        modalMessage.innerText = "Tu as de très bons réflexes scientifiques. Relis attentivement les questions où tu as hésité pour perfectionner tes détails.";
+      } else if (score >= 10) {
+        modalIcon.innerText = '👍';
+        modalTitle.innerText = "Bon entraînement !";
+        modalMessage.innerText = "C'est un résultat encourageant. Prends le temps de bien relire les légendes et tableaux du portfolio avant chaque réponse.";
+      } else {
+        modalIcon.innerText = '💪';
+        modalTitle.innerText = "Ne te décourage pas !";
+        modalMessage.innerText = "Rouvre ton livret portfolio 2019 et refais le questionnaire tranquillement pour repérer les indices scientifiques clés.";
+      }
+
+      const modal = document.getElementById('resultsModal');
+      const modalContent = document.getElementById('modalContent');
+      modal.classList.remove('hidden');
+      setTimeout(() => {
+        modalContent.classList.remove('scale-95', 'opacity-0');
+        modalContent.classList.add('scale-100', 'opacity-100');
+      }, 10);
+    }
+
+    function closeModal() {
+      const modal = document.getElementById('resultsModal');
+      const modalContent = document.getElementById('modalContent');
+      modalContent.classList.remove('scale-100', 'opacity-100');
+      modalContent.classList.add('scale-95', 'opacity-0');
+      setTimeout(() => {
+        modal.classList.add('hidden');
+      }, 200);
+    }
+
+    function restartQuiz() {
+      window.location.reload();
+    }
+  </script>
+</body>
+</html>

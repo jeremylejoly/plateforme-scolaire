@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CEB Sciences 2022 — Questionnaire Interactif | LCML</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Canvas Confetti CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+  <!-- Google Fonts: Fredoka & Nunito -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            display: ['Fredoka', 'sans-serif'],
+            body: ['Nunito', 'sans-serif'],
+          },
+          colors: {
+            primary: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              200: '#c7d2fe',
+              300: '#a5b4fc',
+              400: '#818cf8',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+              800: '#3730a3',
+              900: '#312e81',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      font-family: 'Nunito', sans-serif;
+      background-color: #f8fafc;
+      background-image: radial-gradient(#e2e8f0 1.2px, transparent 1.2px);
+      background-size: 24px 24px;
+    }
+    .font-display {
+      font-family: 'Fredoka', sans-serif;
+    }
+    .custom-shadow {
+      box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05), 0 2px 6px -1px rgba(0, 0, 0, 0.03);
+    }
+    .option-btn {
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .option-btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+    }
+    .tf-btn {
+      transition: all 0.2s ease;
+    }
+    .tf-btn:hover:not(:disabled) {
+      transform: translateY(-1px);
+    }
+  </style>
+</head>
+<body class="text-slate-700 min-h-screen flex flex-col antialiased selection:bg-indigo-500 selection:text-white">
+
+  <!-- ================= EN-TÊTE PRINCIPAL ================= -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-40 custom-shadow backdrop-blur-md bg-white/90">
+    <div class="max-w-5xl mx-auto px-4 h-16 sm:h-20 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <span class="text-2xl sm:text-3xl">🐚</span>
+        <div>
+          <h1 class="font-display font-bold text-lg sm:text-xl text-slate-800 leading-tight">
+            CEB Sciences <span class="text-indigo-600">2022</span>
+          </h1>
+          <p class="text-xs text-slate-500 font-medium">Cycles & Littoral • Oiseaux des jardins • Chaleur & Habitat • Fonte des glaces</p>
+        </div>
+      </div>
+
+      <!-- COMPTEUR DE SCORE -->
+      <div class="flex items-center space-x-2 bg-slate-50 border border-slate-200 px-3 py-1.5 sm:px-4 sm:py-2 rounded-2xl">
+        <span class="text-xs font-bold text-slate-500 uppercase tracking-wider hidden sm:inline">Score</span>
+        <span class="text-lg sm:text-xl font-display font-black text-indigo-600" id="currentScore">0</span>
+        <span class="text-xs font-bold text-slate-400">/ 20</span>
+      </div>
+    </div>
+
+    <!-- BARRE DE PROGRESSION -->
+    <div class="w-full bg-slate-100 h-1.5">
+      <div id="mainProgressBar" class="bg-gradient-to-r from-indigo-500 to-blue-500 h-1.5 transition-all duration-500 w-0"></div>
+    </div>
+  </header>
+
+  <!-- ================= CONTENU PRINCIPAL ================= -->
+  <main class="max-w-4xl mx-auto px-4 py-8 flex-1 w-full">
+
+    <!-- NAVIGATION PAR THÈMES (ONGLETS) -->
+    <nav class="flex flex-wrap gap-2 mb-8 justify-center">
+      <button onclick="switchTab(0)" class="tab-btn active px-4 py-2.5 rounded-xl font-display font-semibold text-sm transition-all flex items-center gap-2 bg-indigo-600 text-white shadow-md" data-tab="0">
+        <span>🐚</span> 1. Cycles & Littoral (p.8-11)
+      </button>
+      <button onclick="switchTab(1)" class="tab-btn px-4 py-2.5 rounded-xl font-display font-semibold text-sm transition-all flex items-center gap-2 bg-white text-slate-600 hover:bg-slate-100 border border-slate-200" data-tab="1">
+        <span>🐦</span> 2. Oiseaux des jardins (p.12-13)
+      </button>
+      <button onclick="switchTab(2)" class="tab-btn px-4 py-2.5 rounded-xl font-display font-semibold text-sm transition-all flex items-center gap-2 bg-white text-slate-600 hover:bg-slate-100 border border-slate-200" data-tab="2">
+        <span>🏠</span> 3. Chaleur & Habitat (p.14-16)
+      </button>
+      <button onclick="switchTab(3)" class="tab-btn px-4 py-2.5 rounded-xl font-display font-semibold text-sm transition-all flex items-center gap-2 bg-white text-slate-600 hover:bg-slate-100 border border-slate-200" data-tab="3">
+        <span>🧊</span> 4. Climat & Glaces (p.17-19)
+      </button>
+    </nav>
+
+    <!-- BANNIÈRE D'INSTRUCTION PORTFOLIO PAPIER -->
+    <div class="bg-amber-50 border-l-4 border-amber-400 p-4 rounded-r-xl mb-6 shadow-sm flex items-start space-x-3">
+      <span class="text-2xl">📖</span>
+      <div class="text-sm text-amber-900">
+        <p class="font-bold font-display text-base">Garde ton livret portfolio sous les yeux !</p>
+        <p class="text-amber-800">Toutes les questions se résolvent en observant attentivement les photos, graphiques et clés de détermination du portfolio papier <strong>CEB Sciences 2022</strong>.</p>
+      </div>
+    </div>
+
+    <!-- ================= CONTENEURS DES THÈMES ================= -->
+
+    <!-- ================= THÈME 1 : CYCLES & LITTORAL ================= -->
+    <section id="section-0" class="theme-section space-y-6">
+      
+      <!-- En-tête de section -->
+      <div class="bg-teal-50 border border-teal-200 p-5 rounded-2xl">
+        <div class="flex items-center gap-3">
+          <span class="text-3xl">🐚</span>
+          <div>
+            <span class="bg-teal-200 text-teal-900 text-xs font-bold px-2 py-0.5 rounded-full uppercase">Pages 8 à 11</span>
+            <h2 class="font-display text-xl font-bold text-teal-950">Les cycles de vie, la faune et la flore du littoral belge</h2>
+          </div>
+        </div>
+      </div>
+
+      <!-- Question 1.1 (Bonne réponse : A) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q1_1">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-teal-100 text-teal-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">1.1</span>
+            <h3 class="font-bold text-slate-800 text-base">En observant les photos de la page 8, quel est l'ordre chronologique exact du cycle de vie du <strong>cormoran</strong> ?</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 1</span>
+        </div>
+        <div class="space-y-2.5">
+          <button type="button" onclick="selectSingleOption('q1_1', 0)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            A) Œufs (E) → Oisillons au nid (F) → Cormoran juvénile (B) → Cormoran adulte (I)
+          </button>
+          <button type="button" onclick="selectSingleOption('q1_1', 1)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            B) Cormoran adulte (I) → Cormoran juvénile (B) → Œufs (E) → Oisillons au nid (F)
+          </button>
+          <button type="button" onclick="selectSingleOption('q1_1', 2)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            C) Œufs (E) → Cormoran juvénile (B) → Oisillons au nid (F) → Cormoran adulte (I)
+          </button>
+          <button type="button" onclick="selectSingleOption('q1_1', 3)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            D) Oisillons au nid (F) → Œufs (E) → Cormoran juvénile (B) → Cormoran adulte (I)
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 1.2 (Bonne réponse : C) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q1_2">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-teal-100 text-teal-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">1.2</span>
+            <h3 class="font-bold text-slate-800 text-base">Sur la planche de photos de la page 8, quelle lettre correspond à la photo de l'<strong>œuf de roussette</strong> ?</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 2</span>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+          <button type="button" onclick="selectSingleOption('q1_2', 0)" class="option-btn p-3 rounded-xl border border-slate-200 text-center text-sm font-medium hover:bg-slate-50 transition">
+            Photo E
+          </button>
+          <button type="button" onclick="selectSingleOption('q1_2', 1)" class="option-btn p-3 rounded-xl border border-slate-200 text-center text-sm font-medium hover:bg-slate-50 transition">
+            Photo H
+          </button>
+          <button type="button" onclick="selectSingleOption('q1_2', 2)" class="option-btn p-3 rounded-xl border border-slate-200 text-center text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            Photo J
+          </button>
+          <button type="button" onclick="selectSingleOption('q1_2', 3)" class="option-btn p-3 rounded-xl border border-slate-200 text-center text-sm font-medium hover:bg-slate-50 transition">
+            Photo K
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 1.3 (Vrai / Faux) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q1_3">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-teal-100 text-teal-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">1.3</span>
+            <h3 class="font-bold text-slate-800 text-base">En observant les documents sur la faune et la flore du littoral (pages 9 et 10), indique si chaque affirmation est Vraie ou Fausse.</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 3</span>
+        </div>
+        <div class="space-y-3">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200 gap-2" data-sub="q1_3_a">
+            <span class="text-sm text-slate-700">L'étrille, le homard, la moule, le bigorneau et l'étoile de mer font partie des animaux du littoral présentés à la page 9.</span>
+            <div class="flex gap-2 shrink-0">
+              <button type="button" onclick="selectTrueFalse('q1_3_a', true)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="true" data-correct="true">VRAI</button>
+              <button type="button" onclick="selectTrueFalse('q1_3_a', false)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="false">FAUX</button>
+            </div>
+          </div>
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200 gap-2" data-sub="q1_3_b">
+            <span class="text-sm text-slate-700">D'après la page 10, le chou marin pousse dans les premières dunes et possède des épis serrés.</span>
+            <div class="flex gap-2 shrink-0">
+              <button type="button" onclick="selectTrueFalse('q1_3_b', true)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="true">VRAI</button>
+              <button type="button" onclick="selectTrueFalse('q1_3_b', false)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="false" data-correct="true">FAUX</button>
+            </div>
+          </div>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 1.4 (Bonne réponse : B) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q1_4">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-teal-100 text-teal-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">1.4</span>
+            <h3 class="font-bold text-slate-800 text-base">En observant la clé de détermination de la page 11, quelles sont les caractéristiques de floraison de la <strong>bette maritime</strong> ?</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 4</span>
+        </div>
+        <div class="space-y-2.5">
+          <button type="button" onclick="selectSingleOption('q1_4', 0)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            A) Fleurs jaunes à 5 pétales séparés
+          </button>
+          <button type="button" onclick="selectSingleOption('q1_4', 1)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            B) Fleurs sur épi ramifié et feuilles simples à bord lisse
+          </button>
+          <button type="button" onclick="selectSingleOption('q1_4', 2)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            C) Fleurs blanches à 4 pétales et feuilles lobées
+          </button>
+          <button type="button" onclick="selectSingleOption('q1_4', 3)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            D) Pétales soudés formant un tube rose
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 1.5 (Bonne réponse : D) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q1_5">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-teal-100 text-teal-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">1.5</span>
+            <h3 class="font-bold text-slate-800 text-base">D'après les fiches de la page 10, quelle plante pousse dans les premières dunes et présente des <strong>épis très serrés</strong> avec des feuilles simples linéaires ?</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 5</span>
+        </div>
+        <div class="space-y-2.5">
+          <button type="button" onclick="selectSingleOption('q1_5', 0)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            A) Le chou marin
+          </button>
+          <button type="button" onclick="selectSingleOption('q1_5', 1)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            B) La laiche des sables
+          </button>
+          <button type="button" onclick="selectSingleOption('q1_5', 2)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            C) L'orpin âcre
+          </button>
+          <button type="button" onclick="selectSingleOption('q1_5', 3)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            D) L'oyat
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+    </section>
+
+    <!-- ================= THÈME 2 : OISEAUX DES JARDINS ================= -->
+    <section id="section-1" class="theme-section hidden space-y-6">
+      
+      <!-- En-tête de section -->
+      <div class="bg-sky-50 border border-sky-200 p-5 rounded-2xl">
+        <div class="flex items-center gap-3">
+          <span class="text-3xl">🐦</span>
+          <div>
+            <span class="bg-sky-200 text-sky-900 text-xs font-bold px-2 py-0.5 rounded-full uppercase">Pages 12 et 13</span>
+            <h2 class="font-display text-xl font-bold text-sky-950">Les oiseaux de nos jardins et l'enquête Natagora</h2>
+          </div>
+        </div>
+      </div>
+
+      <!-- Question 2.1 (Bonne réponse : A) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q2_1">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-sky-100 text-sky-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">2.1</span>
+            <h3 class="font-bold text-slate-800 text-base">En analysant le graphique circulaire de la page 13, quel est l'oiseau le <strong>plus fréquemment observé</strong> dans nos jardins (32 % des observations) ?</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 6</span>
+        </div>
+        <div class="space-y-2.5">
+          <button type="button" onclick="selectSingleOption('q2_1', 0)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            A) Le moineau domestique
+          </button>
+          <button type="button" onclick="selectSingleOption('q2_1', 1)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            B) La mésange charbonnière
+          </button>
+          <button type="button" onclick="selectSingleOption('q2_1', 2)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            C) Le pinson des arbres
+          </button>
+          <button type="button" onclick="selectSingleOption('q2_1', 3)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            D) Le rougegorge
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 2.2 (Bonne réponse : C) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q2_2">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-sky-100 text-sky-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">2.2</span>
+            <h3 class="font-bold text-slate-800 text-base">D'après la note explicative en bas de la page 12, que désigne précisément l'<strong>envergure</strong> chez un oiseau ?</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 7</span>
+        </div>
+        <div class="space-y-2.5">
+          <button type="button" onclick="selectSingleOption('q2_2', 0)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            A) La longueur totale du corps depuis le bec jusqu'à la queue
+          </button>
+          <button type="button" onclick="selectSingleOption('q2_2', 1)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            B) La hauteur maximale à laquelle l'oiseau peut voler
+          </button>
+          <button type="button" onclick="selectSingleOption('q2_2', 2)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            C) La distance entre les extrémités des ailes étendues
+          </button>
+          <button type="button" onclick="selectSingleOption('q2_2', 3)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            D) Le poids total moyen de l'oiseau adulte
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 2.3 (Bonne réponse : B) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q2_3">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-sky-100 text-sky-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">2.3</span>
+            <h3 class="font-bold text-slate-800 text-base">En lisant la légende et les pourcentages du graphique de la page 13, quelle est la proportion d'observations de la <strong>mésange bleue</strong> ?</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 8</span>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+          <button type="button" onclick="selectSingleOption('q2_3', 0)" class="option-btn p-3 rounded-xl border border-slate-200 text-center text-sm font-medium hover:bg-slate-50 transition">
+            6 %
+          </button>
+          <button type="button" onclick="selectSingleOption('q2_3', 1)" class="option-btn p-3 rounded-xl border border-slate-200 text-center text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            16 %
+          </button>
+          <button type="button" onclick="selectSingleOption('q2_3', 2)" class="option-btn p-3 rounded-xl border border-slate-200 text-center text-sm font-medium hover:bg-slate-50 transition">
+            20 %
+          </button>
+          <button type="button" onclick="selectSingleOption('q2_3', 3)" class="option-btn p-3 rounded-xl border border-slate-200 text-center text-sm font-medium hover:bg-slate-50 transition">
+            32 %
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 2.4 (Bonne réponse : D) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q2_4">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-sky-100 text-sky-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">2.4</span>
+            <h3 class="font-bold text-slate-800 text-base">D'après le graphique de la page 13, quel est le classement correct des 4 oiseaux les plus fréquents (du plus observé au moins observé) ?</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 9</span>
+        </div>
+        <div class="space-y-2.5">
+          <button type="button" onclick="selectSingleOption('q2_4', 0)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            A) Mésange charbonnière > Moineau domestique > Pinson des arbres > Mésange bleue
+          </button>
+          <button type="button" onclick="selectSingleOption('q2_4', 1)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            B) Moineau domestique > Mésange bleue > Mésange charbonnière > Pinson des arbres
+          </button>
+          <button type="button" onclick="selectSingleOption('q2_4', 2)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            C) Pinson des arbres > Mésange bleue > Mésange charbonnière > Moineau domestique
+          </button>
+          <button type="button" onclick="selectSingleOption('q2_4', 3)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            D) Moineau domestique > Mésange charbonnière > Mésange bleue > Pinson des arbres
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 2.5 (Vrai / Faux) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q2_5">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-sky-100 text-sky-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">2.5</span>
+            <h3 class="font-bold text-slate-800 text-base">En analysant les données du graphique Natagora (page 13), indique si chaque affirmation est Vraie ou Fausse.</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 10</span>
+        </div>
+        <div class="space-y-3">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200 gap-2" data-sub="q2_5_a">
+            <span class="text-sm text-slate-700">En additionnant les deux espèces de mésanges (charbonnière 20 % et bleue 16 %), elles représentent ensemble 36 % des observations totales.</span>
+            <div class="flex gap-2 shrink-0">
+              <button type="button" onclick="selectTrueFalse('q2_5_a', true)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="true" data-correct="true">VRAI</button>
+              <button type="button" onclick="selectTrueFalse('q2_5_a', false)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="false">FAUX</button>
+            </div>
+          </div>
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200 gap-2" data-sub="q2_5_b">
+            <span class="text-sm text-slate-700">Le chardonneret élégant a été observé plus souvent dans les jardins que le rougegorge.</span>
+            <div class="flex gap-2 shrink-0">
+              <button type="button" onclick="selectTrueFalse('q2_5_b', true)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="true">VRAI</button>
+              <button type="button" onclick="selectTrueFalse('q2_5_b', false)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="false" data-correct="true">FAUX</button>
+            </div>
+          </div>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+    </section>
+
+    <!-- ================= THÈME 3 : CHALEUR & HABITAT ================= -->
+    <section id="section-2" class="theme-section hidden space-y-6">
+      
+      <!-- En-tête de section -->
+      <div class="bg-amber-50 border border-amber-200 p-5 rounded-2xl">
+        <div class="flex items-center gap-3">
+          <span class="text-3xl">🏠</span>
+          <div>
+            <span class="bg-amber-200 text-amber-900 text-xs font-bold px-2 py-0.5 rounded-full uppercase">Pages 14 à 16</span>
+            <h2 class="font-display text-xl font-bold text-amber-950">L'influence des couleurs et l'isolation thermique des maisons</h2>
+          </div>
+        </div>
+      </div>
+
+      <!-- Question 3.1 (Bonne réponse : B) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q3_1">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-amber-100 text-amber-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">3.1</span>
+            <h3 class="font-bold text-slate-800 text-base">En observant le graphique des températures à la page 15, quelle température atteint l'eau à 13h dans la bouteille noire par rapport à la blanche ?</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 11</span>
+        </div>
+        <div class="space-y-2.5">
+          <button type="button" onclick="selectSingleOption('q3_1', 0)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            A) 25 °C dans la bouteille noire contre 30 °C dans la blanche
+          </button>
+          <button type="button" onclick="selectSingleOption('q3_1', 1)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            B) 30 °C dans la bouteille noire contre 25 °C dans la blanche
+          </button>
+          <button type="button" onclick="selectSingleOption('q3_1', 2)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            C) 19 °C dans les deux bouteilles
+          </button>
+          <button type="button" onclick="selectSingleOption('q3_1', 3)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            D) 35 °C dans la bouteille noire contre 20 °C dans la blanche
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 3.2 (Bonne réponse : D) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q3_2">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-amber-100 text-amber-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">3.2</span>
+            <h3 class="font-bold text-slate-800 text-base">En vous basant sur les photos (page 14) et l'expérience de la page 15, pourquoi les maisons d'Alicante ou de Santorin sont-elles peintes en blanc ?</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 12</span>
+        </div>
+        <div class="space-y-2.5">
+          <button type="button" onclick="selectSingleOption('q3_2', 0)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            A) Parce que le blanc absorbe les rayons du soleil pour chauffer les pièces
+          </button>
+          <button type="button" onclick="selectSingleOption('q3_2', 1)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            B) Parce que la peinture blanche résiste mieux aux tremblements de terre
+          </button>
+          <button type="button" onclick="selectSingleOption('q3_2', 2)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            C) Uniquement pour une raison décorative sans aucun effet thermique
+          </button>
+          <button type="button" onclick="selectSingleOption('q3_2', 3)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            D) Parce que les couleurs claires réfléchissent la lumière du soleil et absorbent moins la chaleur
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 3.3 (Vrai / Faux) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q3_3">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-amber-100 text-amber-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">3.3</span>
+            <h3 class="font-bold text-slate-800 text-base">En analysant les expériences d'isolation des maisons (page 16), indique si chaque affirmation est Vraie ou Fausse.</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 13</span>
+        </div>
+        <div class="space-y-3">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200 gap-2" data-sub="q3_3_a">
+            <span class="text-sm text-slate-700">L'isolation thermique sert à la fois à conserver la chaleur intérieure en hiver et à se protéger de la chaleur excessive en été.</span>
+            <div class="flex gap-2 shrink-0">
+              <button type="button" onclick="selectTrueFalse('q3_3_a', true)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="true" data-correct="true">VRAI</button>
+              <button type="button" onclick="selectTrueFalse('q3_3_a', false)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="false">FAUX</button>
+            </div>
+          </div>
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200 gap-2" data-sub="q3_3_b">
+            <span class="text-sm text-slate-700">Dans le frigo (Expérience 1), la température dans la maison non isolée (B) reste plus élevée que dans la maison isolée (A).</span>
+            <div class="flex gap-2 shrink-0">
+              <button type="button" onclick="selectTrueFalse('q3_3_b', true)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="true">VRAI</button>
+              <button type="button" onclick="selectTrueFalse('q3_3_b', false)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="false" data-correct="true">FAUX</button>
+            </div>
+          </div>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 3.4 (Bonne réponse : A) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q3_4">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-amber-100 text-amber-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">3.4</span>
+            <h3 class="font-bold text-slate-800 text-base">En observant le tout premier relevé à 9h sur le graphique de la page 15, que constate-t-on pour les deux bouteilles ?</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 14</span>
+        </div>
+        <div class="space-y-2.5">
+          <button type="button" onclick="selectSingleOption('q3_4', 0)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            A) Elles affichent exactement la même température initiale de 19 °C
+          </button>
+          <button type="button" onclick="selectSingleOption('q3_4', 1)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            B) La bouteille noire est déjà 10 °C plus chaude que la blanche
+          </button>
+          <button type="button" onclick="selectSingleOption('q3_4', 2)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            C) La bouteille blanche est plus chaude que la noire
+          </button>
+          <button type="button" onclick="selectSingleOption('q3_4', 3)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            D) L'eau a déjà commencé à bouillir dans les deux récipients
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 3.5 (Bonne réponse : C) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q3_5">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-amber-100 text-amber-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">3.5</span>
+            <h3 class="font-bold text-slate-800 text-base">Dans l'Expérience 2 de la page 16 (au soleil à 28 °C), quel est le rôle de la couche de matériau isolant placée dans la maison A ?</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 15</span>
+        </div>
+        <div class="space-y-2.5">
+          <button type="button" onclick="selectSingleOption('q3_5', 0)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            A) Produire du froid comme un climatiseur électrique
+          </button>
+          <button type="button" onclick="selectSingleOption('q3_5', 1)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            B) Permettre à la lumière du soleil de traverser le toit
+          </button>
+          <button type="button" onclick="selectSingleOption('q3_5', 2)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            C) Freiner le passage de la chaleur extérieure pour garder l'intérieur plus frais
+          </button>
+          <button type="button" onclick="selectSingleOption('q3_5', 3)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            D) Accélérer le réchauffement des pièces de la maison
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+    </section>
+
+    <!-- ================= THÈME 4 : CLIMAT & GLACES ================= -->
+    <section id="section-3" class="theme-section hidden space-y-6">
+      
+      <!-- En-tête de section -->
+      <div class="bg-indigo-50 border border-indigo-200 p-5 rounded-2xl">
+        <div class="flex items-center gap-3">
+          <span class="text-3xl">🧊</span>
+          <div>
+            <span class="bg-indigo-200 text-indigo-900 text-xs font-bold px-2 py-0.5 rounded-full uppercase">Pages 17 à 19</span>
+            <h2 class="font-display text-xl font-bold text-indigo-950">Le réchauffement climatique et la fonte des glaces</h2>
+          </div>
+        </div>
+      </div>
+
+      <!-- Question 4.1 (Bonne réponse : D) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q4_1">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-indigo-100 text-indigo-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">4.1</span>
+            <h3 class="font-bold text-slate-800 text-base">D'après les informations de la page 17, quelle est la différence essentielle entre les glaces du pôle Nord et celles du pôle Sud ?</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 16</span>
+        </div>
+        <div class="space-y-2.5">
+          <button type="button" onclick="selectSingleOption('q4_1', 0)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            A) Les glaces du pôle Sud flottent sur l'eau et celles du pôle Nord reposent sur la roche
+          </button>
+          <button type="button" onclick="selectSingleOption('q4_1', 1)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            B) Les deux pôles sont uniquement formés de terres rocheuses sans océan
+          </button>
+          <button type="button" onclick="selectSingleOption('q4_1', 2)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            C) Les glaces du pôle Nord sont formées d'eau chaude
+          </button>
+          <button type="button" onclick="selectSingleOption('q4_1', 3)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            D) Les glaces de l'Arctique flottent sur l'océan, tandis que celles de l'Antarctique reposent sur un continent (terre ferme)
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 4.2 (Bonne réponse : A) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q4_2">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-indigo-100 text-indigo-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">4.2</span>
+            <h3 class="font-bold text-slate-800 text-base">En observant l'Expérience 1 de la page 18 (glaçons flottant dans l'eau), que constate-t-on après 30 minutes lorsque les glaçons sont totalement fondus ?</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 17</span>
+        </div>
+        <div class="space-y-2.5">
+          <button type="button" onclick="selectSingleOption('q4_2', 0)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            A) Le niveau de l'eau reste exactement au niveau du trait rouge initial (il n'a pas monté)
+          </button>
+          <button type="button" onclick="selectSingleOption('q4_2', 1)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            B) L'eau a débordé au-dessus du verre
+          </button>
+          <button type="button" onclick="selectSingleOption('q4_2', 2)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            C) Le niveau d'eau a baissé de moitié jusqu'au fond
+          </button>
+          <button type="button" onclick="selectSingleOption('q4_2', 3)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            D) L'eau s'est transformée en bloc solide
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 4.3 (Vrai / Faux) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q4_3">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-indigo-100 text-indigo-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">4.3</span>
+            <h3 class="font-bold text-slate-800 text-base">En observant attentivement les Expériences 1 et 2 (pages 18 et 19), indique si chaque affirmation est Vraie ou Fausse.</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 18</span>
+        </div>
+        <div class="space-y-3">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200 gap-2" data-sub="q4_3_a">
+            <span class="text-sm text-slate-700">Dans l'Expérience 2 (page 19), la fonte des glaçons situés sur la terre ferme fait monter le niveau de l'eau au-dessus du trait bleu.</span>
+            <div class="flex gap-2 shrink-0">
+              <button type="button" onclick="selectTrueFalse('q4_3_a', true)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="true" data-correct="true">VRAI</button>
+              <button type="button" onclick="selectTrueFalse('q4_3_a', false)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="false">FAUX</button>
+            </div>
+          </div>
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200 gap-2" data-sub="q4_3_b">
+            <span class="text-sm text-slate-700">Dans l'Expérience 1 (page 18), la fonte de la glace flottante fait déborder l'eau du verre.</span>
+            <div class="flex gap-2 shrink-0">
+              <button type="button" onclick="selectTrueFalse('q4_3_b', true)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="true">VRAI</button>
+              <button type="button" onclick="selectTrueFalse('q4_3_b', false)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="false" data-correct="true">FAUX</button>
+            </div>
+          </div>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 4.4 (Bonne réponse : C) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q4_4">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-indigo-100 text-indigo-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">4.4</span>
+            <h3 class="font-bold text-slate-800 text-base">En comparant les résultats des deux expériences (pages 18 et 19), quel type de fonte de glace provoque réellement l'<strong>élévation du niveau marin</strong> ?</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 19</span>
+        </div>
+        <div class="space-y-2.5">
+          <button type="button" onclick="selectSingleOption('q4_4', 0)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            A) Uniquement la fonte de la banquise flottant déjà dans l'eau
+          </button>
+          <button type="button" onclick="selectSingleOption('q4_4', 1)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            B) Aucune fonte de glace ne modifie le niveau de l'eau
+          </button>
+          <button type="button" onclick="selectSingleOption('q4_4', 2)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            C) La fonte des glaces situées sur la terre ferme (continents et calottes terrestres)
+          </button>
+          <button type="button" onclick="selectSingleOption('q4_4', 3)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            D) La congélation de l'eau de pluie
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 4.5 (Bonne réponse : B) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q4_5">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-indigo-100 text-indigo-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">4.5</span>
+            <h3 class="font-bold text-slate-800 text-base">Dans le protocole de l'Expérience 2 (page 19), que représente la <strong>pâte à modeler</strong> disposée au fond du verre ?</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 20</span>
+        </div>
+        <div class="space-y-2.5">
+          <button type="button" onclick="selectSingleOption('q4_5', 0)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            A) Une île de glace flottante
+          </button>
+          <button type="button" onclick="selectSingleOption('q4_5', 1)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            B) Le continent Antarctique (la terre ferme)
+          </button>
+          <button type="button" onclick="selectSingleOption('q4_5', 2)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            C) Un iceberg sous-marin
+          </button>
+          <button type="button" onclick="selectSingleOption('q4_5', 3)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            D) Le sel dissous dans l'océan
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+    </section>
+
+    <!-- BOUTON DE VALIDATION GLOBALE DU THÈME EN COURS -->
+    <div class="mt-8 flex justify-between items-center bg-white p-4 rounded-2xl border border-slate-200 custom-shadow">
+      <button id="prevBtn" onclick="prevTab()" class="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-bold text-sm hover:bg-slate-50 transition disabled:opacity-30 disabled:pointer-events-none">
+        ← Thème précédent
+      </button>
+      <button id="nextBtn" onclick="nextTab()" class="px-6 py-2.5 rounded-xl bg-indigo-600 text-white font-bold text-sm hover:bg-indigo-700 transition shadow-md">
+        Thème suivant →
+      </button>
+    </div>
+
+  </main>
+
+  <!-- ================= MODAL BILAN / RÉSULTATS ================= -->
+  <div id="resultsModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 custom-shadow text-center space-y-6 transform transition-all scale-95 opacity-0 duration-300" id="modalContent">
+      <div id="modalIcon" class="text-6xl animate-bounce">🏆</div>
+      <h2 class="font-display font-black text-2xl sm:text-3xl text-slate-800" id="modalTitle">Résultat de ton entraînement</h2>
+      
+      <div class="bg-indigo-50 border border-indigo-100 p-6 rounded-2xl">
+        <p class="text-xs font-bold text-indigo-700 uppercase tracking-wider mb-1">Score total obtenu</p>
+        <p class="font-display font-black text-5xl text-indigo-600">
+          <span id="finalScore">0</span> <span class="text-2xl text-indigo-400 font-bold">/ 20</span>
+        </p>
+        <p class="text-sm font-semibold text-slate-600 mt-2" id="scorePercentage">0 % de réussite</p>
+      </div>
+
+      <p class="text-slate-600 text-sm leading-relaxed" id="modalMessage">
+        Félicitations pour ton investissement !
+      </p>
+
+      <div class="flex flex-col sm:flex-row gap-3 pt-2">
+        <button onclick="closeModal()" class="flex-1 py-3 px-4 rounded-xl border border-slate-200 text-slate-700 font-bold text-sm hover:bg-slate-50 transition">
+          Revoir mes réponses
+        </button>
+        <button onclick="restartQuiz()" class="flex-1 py-3 px-4 rounded-xl bg-indigo-600 text-white font-bold text-sm hover:bg-indigo-700 transition shadow-md">
+          Recommencer le test
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= SCRIPT JAVASCRIPT LOGIQUE ================= -->
+  <script>
+    // État du quiz
+    const state = {
+      currentTab: 0,
+      totalQuestions: 20,
+      answers: {},
+      scores: {},
+    };
+
+    // Gestion des onglets
+    function switchTab(index) {
+      state.currentTab = index;
+      document.querySelectorAll('.tab-btn').forEach((btn, idx) => {
+        if (idx === index) {
+          btn.classList.add('bg-indigo-600', 'text-white', 'shadow-md');
+          btn.classList.remove('bg-white', 'text-slate-600', 'hover:bg-slate-100', 'border');
+        } else {
+          btn.classList.remove('bg-indigo-600', 'text-white', 'shadow-md');
+          btn.classList.add('bg-white', 'text-slate-600', 'hover:bg-slate-100', 'border');
+        }
+      });
+
+      document.querySelectorAll('.theme-section').forEach((sec, idx) => {
+        sec.classList.toggle('hidden', idx !== index);
+      });
+
+      // Gestion des boutons Précédent / Suivant
+      const prevBtn = document.getElementById('prevBtn');
+      const nextBtn = document.getElementById('nextBtn');
+      prevBtn.disabled = (index === 0);
+      
+      if (index === 3) {
+        nextBtn.innerHTML = "Voir mon bilan final 🏆";
+        nextBtn.classList.remove('bg-indigo-600', 'hover:bg-indigo-700');
+        nextBtn.classList.add('bg-emerald-600', 'hover:bg-emerald-700');
+      } else {
+        nextBtn.innerHTML = "Thème suivant →";
+        nextBtn.classList.add('bg-indigo-600', 'hover:bg-indigo-700');
+        nextBtn.classList.remove('bg-emerald-600', 'hover:bg-emerald-700');
+      }
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function prevTab() {
+      if (state.currentTab > 0) {
+        switchTab(state.currentTab - 1);
+      }
+    }
+
+    function nextTab() {
+      if (state.currentTab < 3) {
+        switchTab(state.currentTab + 1);
+      } else {
+        showResults();
+      }
+    }
+
+    // Gestion d'un choix simple (QCM)
+    function selectSingleOption(qid, optionIndex) {
+      const questionCard = document.querySelector(`[data-qid="${qid}"]`);
+      if (!questionCard) return;
+
+      const buttons = questionCard.querySelectorAll('.option-btn');
+      const feedbackBox = questionCard.querySelector('.feedback-box');
+      const selectedBtn = buttons[optionIndex];
+      const isCorrect = selectedBtn.hasAttribute('data-correct');
+
+      // Verrouiller les boutons de cette question
+      buttons.forEach(btn => {
+        btn.disabled = true;
+        if (btn.hasAttribute('data-correct')) {
+          btn.classList.remove('border-slate-200', 'hover:bg-slate-50');
+          btn.classList.add('bg-emerald-50', 'border-emerald-500', 'text-emerald-800', 'font-bold');
+        }
+      });
+
+      if (!isCorrect) {
+        selectedBtn.classList.remove('border-slate-200', 'hover:bg-slate-50');
+        selectedBtn.classList.add('bg-rose-50', 'border-rose-400', 'text-rose-800', 'font-semibold');
+      }
+
+      // Afficher le message d'explication
+      if (feedbackBox) {
+        feedbackBox.classList.remove('hidden', 'bg-emerald-50', 'text-emerald-800', 'border-emerald-200', 'bg-rose-50', 'text-rose-800', 'border-rose-200');
+        feedbackBox.classList.add('border');
+        if (isCorrect) {
+          feedbackBox.classList.add('bg-emerald-50', 'text-emerald-800', 'border-emerald-200');
+          feedbackBox.innerHTML = "✨ <strong>Bravo !</strong> Bonne réponse.";
+          state.scores[qid] = 1;
+        } else {
+          feedbackBox.classList.add('bg-rose-50', 'text-rose-800', 'border-rose-200');
+          feedbackBox.innerHTML = "❌ <strong>Pas tout à fait.</strong> Observe bien le document de ton livret portfolio pour retrouver l'information.";
+          state.scores[qid] = 0;
+        }
+      }
+
+      updateTotalScore();
+    }
+
+    // Gestion du Vrai / Faux (sous-questions multiples)
+    function selectTrueFalse(subId, userVal) {
+      const subRow = document.querySelector(`[data-sub="${subId}"]`);
+      if (!subRow) return;
+
+      const buttons = subRow.querySelectorAll('.tf-btn');
+      const trueBtn = buttons[0];
+      const falseBtn = buttons[1];
+      const correctVal = trueBtn.hasAttribute('data-correct');
+
+      buttons.forEach(b => b.disabled = true);
+
+      if (userVal === correctVal) {
+        // Bonne réponse
+        const activeBtn = userVal ? trueBtn : falseBtn;
+        activeBtn.classList.add('bg-emerald-500', 'text-white', 'border-emerald-600');
+        subRow.classList.add('bg-emerald-50/50', 'border-emerald-200');
+        state.answers[subId] = true;
+      } else {
+        // Mauvaise réponse
+        const wrongBtn = userVal ? trueBtn : falseBtn;
+        const rightBtn = correctVal ? trueBtn : falseBtn;
+        wrongBtn.classList.add('bg-rose-500', 'text-white', 'border-rose-600');
+        rightBtn.classList.add('bg-emerald-100', 'text-emerald-800', 'border-emerald-400');
+        subRow.classList.add('bg-rose-50/50', 'border-rose-200');
+        state.answers[subId] = false;
+      }
+
+      // Vérifier si toute la question composite est complétée
+      const parentCard = subRow.closest('[data-qid]');
+      if (parentCard) {
+        const qid = parentCard.getAttribute('data-qid');
+        const allSubRows = parentCard.querySelectorAll('[data-sub]');
+        let allAnswered = true;
+        let allCorrect = true;
+
+        allSubRows.forEach(row => {
+          const sId = row.getAttribute('data-sub');
+          if (state.answers[sId] === undefined) {
+            allAnswered = false;
+          } else if (state.answers[sId] === false) {
+            allCorrect = false;
+          }
+        });
+
+        if (allAnswered) {
+          const feedbackBox = parentCard.querySelector('.feedback-box');
+          if (feedbackBox) {
+            feedbackBox.classList.remove('hidden', 'bg-emerald-50', 'text-emerald-800', 'border-emerald-200', 'bg-rose-50', 'text-rose-800', 'border-rose-200');
+            feedbackBox.classList.add('border');
+            if (allCorrect) {
+              feedbackBox.classList.add('bg-emerald-50', 'text-emerald-800', 'border-emerald-200');
+              feedbackBox.innerHTML = "✨ <strong>Excellent !</strong> Toutes les affirmations de cette question sont exactes.";
+              state.scores[qid] = 1;
+            } else {
+              feedbackBox.classList.add('bg-rose-50', 'text-rose-800', 'border-rose-200');
+              feedbackBox.innerHTML = "❌ <strong>Attention :</strong> certaines affirmations étaient fausses. Vérifie bien les légendes du portfolio.";
+              state.scores[qid] = 0;
+            }
+          }
+          updateTotalScore();
+        }
+      }
+    }
+
+    // Mise à jour du score total
+    function updateTotalScore() {
+      let total = 0;
+      for (const q in state.scores) {
+        total += state.scores[q];
+      }
+      document.getElementById('currentScore').innerText = total;
+
+      const answeredCount = Object.keys(state.scores).length;
+      const progressPercent = (answeredCount / state.totalQuestions) * 100;
+      document.getElementById('mainProgressBar').style.width = `${progressPercent}%`;
+    }
+
+    // Affichage des résultats finaux
+    function showResults() {
+      let score = 0;
+      for (const q in state.scores) {
+        score += state.scores[q];
+      }
+
+      document.getElementById('finalScore').innerText = score;
+      const percentage = Math.round((score / state.totalQuestions) * 100);
+      document.getElementById('scorePercentage').innerText = `${percentage} % de réussite`;
+
+      const modalIcon = document.getElementById('modalIcon');
+      const modalTitle = document.getElementById('modalTitle');
+      const modalMessage = document.getElementById('modalMessage');
+
+      if (score >= 18) {
+        modalIcon.innerText = '🌟';
+        modalTitle.innerText = "Magnifique performance !";
+        modalMessage.innerText = "Tu maîtrises parfaitement l'observation et le raisonnement scientifique de ce portfolio 2022. Tu es fin prêt-e pour le CEB !";
+        confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+      } else if (score >= 14) {
+        modalIcon.innerText = '👏';
+        modalTitle.innerText = "Très bon travail !";
+        modalMessage.innerText = "Tu as de très bons réflexes scientifiques. Relis attentivement les questions où tu as hésité pour perfectionner tes détails.";
+      } else if (score >= 10) {
+        modalIcon.innerText = '👍';
+        modalTitle.innerText = "Bon entraînement !";
+        modalMessage.innerText = "C'est un résultat encourageant. Prends le temps de bien relire les légendes et tableaux du portfolio avant chaque réponse.";
+      } else {
+        modalIcon.innerText = '💪';
+        modalTitle.innerText = "Ne te décourage pas !";
+        modalMessage.innerText = "Rouvre ton livret portfolio 2022 et refais le questionnaire tranquillement pour repérer les indices scientifiques clés.";
+      }
+
+      const modal = document.getElementById('resultsModal');
+      const modalContent = document.getElementById('modalContent');
+      modal.classList.remove('hidden');
+      setTimeout(() => {
+        modalContent.classList.remove('scale-95', 'opacity-0');
+        modalContent.classList.add('scale-100', 'opacity-100');
+      }, 10);
+    }
+
+    function closeModal() {
+      const modal = document.getElementById('resultsModal');
+      const modalContent = document.getElementById('modalContent');
+      modalContent.classList.remove('scale-100', 'opacity-100');
+      modalContent.classList.add('scale-95', 'opacity-0');
+      setTimeout(() => {
+        modal.classList.add('hidden');
+      }, 200);
+    }
+
+    function restartQuiz() {
+      window.location.reload();
+    }
+  </script>
+</body>
+</html>

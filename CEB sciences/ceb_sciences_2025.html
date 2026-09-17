@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CEB Sciences 2025 — Entraînement Interactif</title>
+  
+  <!-- Polices Google Fonts (Charte LCML) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800;900&family=Space+Mono:wght@700&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            display: ["Fredoka", "sans-serif"],
+            body: ["Nunito", "sans-serif"],
+            mono: ["Space Mono", "monospace"],
+          },
+          colors: {
+            brand: {
+              50: "#f0fdf4",
+              100: "#dcfce7",
+              500: "#10b981",
+              600: "#059669",
+              700: "#047857",
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Canvas Confetti pour la fin -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <style>
+    :root {
+      --paper: #f8fafc;
+      --grid-line: #e2e8f0;
+      --ink: #1e293b;
+    }
+    body {
+      background-color: var(--paper);
+      background-image: 
+        linear-gradient(var(--grid-line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+      background-size: 24px 24px;
+      font-family: "Nunito", sans-serif;
+      color: var(--ink);
+    }
+    .custom-shadow {
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05), 0 10px 24px rgba(0, 0, 0, 0.03);
+    }
+    .hover-lift {
+      transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .hover-lift:hover {
+      transform: translateY(-2px);
+    }
+    .hover-lift:active {
+      transform: translateY(1px);
+    }
+    .option-btn.selected {
+      border-color: #3b82f6 !important;
+      background-color: #eff6ff !important;
+      font-weight: 700;
+      box-shadow: 0 0 0 2px #3b82f6;
+    }
+    .option-btn.correct {
+      border-color: #10b981 !important;
+      background-color: #ecfdf5 !important;
+      color: #065f46 !important;
+      font-weight: 700;
+    }
+    .option-btn.wrong {
+      border-color: #ef4444 !important;
+      background-color: #fef2f2 !important;
+      color: #991b1b !important;
+      text-decoration: line-through;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between pb-12">
+
+  <!-- ================= EN-TÊTE FIXE ================= -->
+  <header class="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-sm">
+    <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
+      <!-- Logo & Titre -->
+      <div class="flex items-center space-x-3">
+        <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white font-display text-2xl shadow-md">
+          🔬
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">CEB Sciences</span>
+            <span class="bg-slate-100 text-slate-700 text-xs font-semibold px-2 py-0.5 rounded-full">Édition 2025</span>
+          </div>
+          <h1 class="font-display font-bold text-lg md:text-xl text-slate-800 leading-tight">Entraînement au Portfolio</h1>
+        </div>
+      </div>
+
+      <!-- Score Global -->
+      <div class="flex items-center space-x-3">
+        <div class="flex items-center bg-amber-50 border border-amber-200 px-3.5 py-1.5 rounded-xl text-amber-900 font-bold text-sm space-x-1.5 shadow-sm">
+          <span>⭐</span>
+          <span id="globalScore">0</span>
+          <span class="text-xs text-amber-600 font-normal">/ <span id="totalPossibleScore">20</span> questions réussies</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Barre de progression générale -->
+    <div class="w-full bg-slate-100 h-1.5">
+      <div id="mainProgressBar" class="bg-gradient-to-r from-emerald-500 to-teal-500 h-1.5 transition-all duration-500 w-0"></div>
+    </div>
+  </header>
+
+  <!-- ================= CONTENU PRINCIPAL ================= -->
+  <main class="max-w-4xl mx-auto px-4 py-8 flex-1 w-full">
+
+    <!-- NAVIGATION PAR THÈMES (ONGLETS) -->
+    <nav class="flex flex-wrap gap-2 mb-8 justify-center">
+      <button onclick="switchTab(0)" class="tab-btn active px-4 py-2.5 rounded-xl font-display font-semibold text-sm transition-all flex items-center gap-2 bg-emerald-600 text-white shadow-md" data-tab="0">
+        <span>🌱</span> 1. Cycles de vie (p.20-21)
+      </button>
+      <button onclick="switchTab(1)" class="tab-btn px-4 py-2.5 rounded-xl font-display font-semibold text-sm transition-all flex items-center gap-2 bg-white text-slate-600 hover:bg-slate-100 border border-slate-200" data-tab="1">
+        <span>⚡</span> 2. L'électricité (p.22-23)
+      </button>
+      <button onclick="switchTab(2)" class="tab-btn px-4 py-2.5 rounded-xl font-display font-semibold text-sm transition-all flex items-center gap-2 bg-white text-slate-600 hover:bg-slate-100 border border-slate-200" data-tab="2">
+        <span>🎈</span> 3. Les ballons (p.24-27)
+      </button>
+      <button onclick="switchTab(3)" class="tab-btn px-4 py-2.5 rounded-xl font-display font-semibold text-sm transition-all flex items-center gap-2 bg-white text-slate-600 hover:bg-slate-100 border border-slate-200" data-tab="3">
+        <span>🏗️</span> 4. Les poulies (p.28-31)
+      </button>
+    </nav>
+
+    <!-- BANNIÈRE D'INSTRUCTION PORTFOLIO PAPIER -->
+    <div class="bg-amber-50 border-l-4 border-amber-400 p-4 rounded-r-xl mb-6 shadow-sm flex items-start space-x-3">
+      <span class="text-2xl">📖</span>
+      <div class="text-sm text-amber-900">
+        <p class="font-bold font-display text-base">Garde ton livret portfolio sous les yeux !</p>
+        <p class="text-amber-800">Toutes les questions se résolvent en observant attentivement les textes, schémas et tableaux du portfolio papier <strong>CEB Sciences 2025</strong>.</p>
+      </div>
+    </div>
+
+    <!-- ================= THÈME 1 : CYCLES DE VIE ================= -->
+    <section id="section-0" class="theme-section space-y-6">
+      
+      <!-- En-tête de section -->
+      <div class="bg-emerald-50 border border-emerald-200 p-5 rounded-2xl">
+        <div class="flex items-center gap-3">
+          <span class="text-3xl">🐣</span>
+          <div>
+            <span class="bg-emerald-200 text-emerald-900 text-xs font-bold px-2 py-0.5 rounded-full uppercase">Pages 20 et 21</span>
+            <h2 class="font-display text-xl font-bold text-emerald-950">Des cycles de vie : La poule et le papillon</h2>
+          </div>
+        </div>
+      </div>
+
+      <!-- Question 1.1 (Bonne réponse : A) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q1_1">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-emerald-100 text-emerald-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">1.1</span>
+            <h3 class="font-bold text-slate-800 text-base">D'après le texte de la page 20, de quoi l'embryon grandit-il en se nourrissant à l'intérieur de l'œuf ?</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 1</span>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+          <button type="button" onclick="selectSingleOption('q1_1', 0)" class="option-btn p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            A) Du vitellus et de l'albumen
+          </button>
+          <button type="button" onclick="selectSingleOption('q1_1', 1)" class="option-btn p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            B) De la coquille calcaire
+          </button>
+          <button type="button" onclick="selectSingleOption('q1_1', 2)" class="option-btn p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            C) De l'air et de l'eau ambiants
+          </button>
+          <button type="button" onclick="selectSingleOption('q1_1', 3)" class="option-btn p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            D) Des graines apportées par la poule
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 1.2 -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q1_2">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-emerald-100 text-emerald-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">1.2</span>
+            <h3 class="font-bold text-slate-800 text-base">La reproduction de la poule (Page 20) : Indique pour chaque affirmation si elle est Vraie ou Fausse.</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 2</span>
+        </div>
+        <div class="space-y-3">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200 gap-2" data-sub="q1_2_a">
+            <span class="text-sm text-slate-700">Une poule ne peut pondre des œufs que si elle a été fécondée par un coq.</span>
+            <div class="flex gap-2 shrink-0">
+              <button type="button" onclick="selectTrueFalse('q1_2_a', true)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="true">VRAI</button>
+              <button type="button" onclick="selectTrueFalse('q1_2_a', false)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="false" data-correct="true">FAUX</button>
+            </div>
+          </div>
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200 gap-2" data-sub="q1_2_b">
+            <span class="text-sm text-slate-700">L'incubation apporte la chaleur et l'humidité nécessaires au développement des embryons.</span>
+            <div class="flex gap-2 shrink-0">
+              <button type="button" onclick="selectTrueFalse('q1_2_b', true)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="true" data-correct="true">VRAI</button>
+              <button type="button" onclick="selectTrueFalse('q1_2_b', false)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="false">FAUX</button>
+            </div>
+          </div>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 1.3 (Strictement basée sur les 4 étapes roses du schéma p.21) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q1_3">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-emerald-100 text-emerald-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">1.3</span>
+            <h3 class="font-bold text-slate-800 text-base">Le cycle du papillon (Page 21) : En suivant les flèches du schéma, associe chaque <u>étape</u> (en rose) à l'<u>état</u> (en bleu) qui lui succède directement.</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 3</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between gap-2">
+            <span class="text-sm font-bold text-rose-700">Après l'ACCOUPLEMENT ➔</span>
+            <select class="match-select bg-white border border-slate-300 rounded-lg p-1.5 text-xs font-semibold text-slate-700 focus:ring-2 focus:ring-emerald-500 outline-none" data-correct="oeufs">
+              <option value="">-- Choisis l'état --</option>
+              <option value="oeufs">Œufs (après la ponte)</option>
+              <option value="chenille">Chenille (ou larve)</option>
+              <option value="chrysalide">Chrysalide (ou nymphe)</option>
+              <option value="papillon">Papillon adulte</option>
+            </select>
+          </div>
+          <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between gap-2">
+            <span class="text-sm font-bold text-rose-700">Après la PONTE ➔</span>
+            <select class="match-select bg-white border border-slate-300 rounded-lg p-1.5 text-xs font-semibold text-slate-700 focus:ring-2 focus:ring-emerald-500 outline-none" data-correct="oeufs">
+              <option value="">-- Choisis l'état --</option>
+              <option value="oeufs">Œufs</option>
+              <option value="chenille">Chenille (ou larve)</option>
+              <option value="chrysalide">Chrysalide (ou nymphe)</option>
+              <option value="papillon">Papillon adulte</option>
+            </select>
+          </div>
+          <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between gap-2">
+            <span class="text-sm font-bold text-rose-700">Après la MUE (nymphose) ➔</span>
+            <select class="match-select bg-white border border-slate-300 rounded-lg p-1.5 text-xs font-semibold text-slate-700 focus:ring-2 focus:ring-emerald-500 outline-none" data-correct="chrysalide">
+              <option value="">-- Choisis l'état --</option>
+              <option value="oeufs">Œufs</option>
+              <option value="chenille">Chenille (ou larve)</option>
+              <option value="chrysalide">Chrysalide (ou nymphe)</option>
+              <option value="papillon">Papillon adulte</option>
+            </select>
+          </div>
+          <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between gap-2">
+            <span class="text-sm font-bold text-rose-700">Après la MÉTAMORPHOSE ➔</span>
+            <select class="match-select bg-white border border-slate-300 rounded-lg p-1.5 text-xs font-semibold text-slate-700 focus:ring-2 focus:ring-emerald-500 outline-none" data-correct="papillon">
+              <option value="">-- Choisis l'état --</option>
+              <option value="oeufs">Œufs</option>
+              <option value="chenille">Chenille (ou larve)</option>
+              <option value="chrysalide">Chrysalide (ou nymphe)</option>
+              <option value="papillon">Papillon adulte</option>
+            </select>
+          </div>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 1.4 (Bonne réponse : C) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q1_4">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-emerald-100 text-emerald-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">1.4</span>
+            <h3 class="font-bold text-slate-800 text-base">D'après le dernier paragraphe et la photo de la page 20, de quoi le poussin a-t-il besoin juste après avoir cassé sa coquille avant de pouvoir se déplacer ?</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 4</span>
+        </div>
+        <div class="space-y-2.5">
+          <button type="button" onclick="selectSingleOption('q1_4', 0)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            A) D'une nouvelle période d'incubation de 21 jours
+          </button>
+          <button type="button" onclick="selectSingleOption('q1_4', 1)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            B) D'une mue immédiate pour changer de duvet
+          </button>
+          <button type="button" onclick="selectSingleOption('q1_4', 2)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            C) D'une phase de séchage qui dure quelques heures
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 1.5 (Bonne réponse : A) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q1_5">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-emerald-100 text-emerald-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">1.5</span>
+            <h3 class="font-bold text-slate-800 text-base">En observant la légende et les flèches du schéma de la page 21, quelle différence est faite entre les termes en rose (en pointillés) et les termes en bleu (en trait plein) ?</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 5</span>
+        </div>
+        <div class="space-y-2.5">
+          <button type="button" onclick="selectSingleOption('q1_5', 0)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            A) Les flèches roses représentent les étapes (actions/transformations) et les bulles bleues représentent les états (formes de l'animal)
+          </button>
+          <button type="button" onclick="selectSingleOption('q1_5', 1)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            B) Les flèches roses représentent les mâles et les bulles bleues représentent les femelles
+          </button>
+          <button type="button" onclick="selectSingleOption('q1_5', 2)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            C) Les flèches roses se déroulent en hiver et les bulles bleues en été
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Bouton de validation de la section -->
+      <div class="flex justify-end pt-2">
+        <button onclick="validateSection(0)" class="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-display font-bold rounded-xl shadow-md hover-lift flex items-center gap-2">
+          <span>✔️</span> Valider la partie 1
+        </button>
+      </div>
+
+    </section>
+
+    <!-- ================= THÈME 2 : L'ÉLECTRICITÉ ================= -->
+    <section id="section-1" class="theme-section space-y-6 hidden">
+      
+      <div class="bg-amber-50 border border-amber-200 p-5 rounded-2xl">
+        <div class="flex items-center gap-3">
+          <span class="text-3xl">⚡</span>
+          <div>
+            <span class="bg-amber-200 text-amber-900 text-xs font-bold px-2 py-0.5 rounded-full uppercase">Pages 22 et 23</span>
+            <h2 class="font-display text-xl font-bold text-amber-950">L'électricité et les isolateurs</h2>
+          </div>
+        </div>
+      </div>
+
+      <!-- Question 2.1 (Bonne réponse : B) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q2_1">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-amber-100 text-amber-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">2.1</span>
+            <h3 class="font-bold text-slate-800 text-base">En observant la photo et la loupe de la page 23, entre quels éléments l'<u>isolateur électrique</u> est-il positionné ?</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 6</span>
+        </div>
+        <div class="space-y-2.5">
+          <button type="button" onclick="selectSingleOption('q2_1', 0)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            A) Entre les pieds du pylône et la terre du champ
+          </button>
+          <button type="button" onclick="selectSingleOption('q2_1', 1)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            B) Entre le câble électrique conducteur et la structure métallique du pylône
+          </button>
+          <button type="button" onclick="selectSingleOption('q2_1', 2)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            C) Au sommet de la cheminée de la centrale de Seraing
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 2.2 -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q2_2">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-amber-100 text-amber-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">2.2</span>
+            <h3 class="font-bold text-slate-800 text-base">En observant les photos de la page 22, associe chaque image à son rôle principal :</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 7</span>
+        </div>
+
+        <div class="space-y-3">
+          <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <span class="text-sm font-bold text-slate-800">1. Le train électrique</span>
+            <select class="match-select bg-white border border-slate-300 rounded-lg p-1.5 text-xs font-semibold text-slate-700 outline-none" data-correct="consommateur">
+              <option value="">-- Choisis la fonction --</option>
+              <option value="production_fossile">Production d'électricité non renouvelable</option>
+              <option value="production_renouvelable">Production d'électricité renouvelable</option>
+              <option value="consommateur">Consommation d'électricité</option>
+            </select>
+          </div>
+          <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <span class="text-sm font-bold text-slate-800">2. La centrale gaz-vapeur de Seraing</span>
+            <select class="match-select bg-white border border-slate-300 rounded-lg p-1.5 text-xs font-semibold text-slate-700 outline-none" data-correct="production_fossile">
+              <option value="">-- Choisis la fonction --</option>
+              <option value="production_fossile">Production d'électricité non renouvelable</option>
+              <option value="production_renouvelable">Production d'électricité renouvelable</option>
+              <option value="consommateur">Consommation d'électricité</option>
+            </select>
+          </div>
+          <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <span class="text-sm font-bold text-slate-800">3. Les panneaux solaires sur le toit</span>
+            <select class="match-select bg-white border border-slate-300 rounded-lg p-1.5 text-xs font-semibold text-slate-700 outline-none" data-correct="production_renouvelable">
+              <option value="">-- Choisis la fonction --</option>
+              <option value="production_fossile">Production d'électricité non renouvelable</option>
+              <option value="production_renouvelable">Production d'électricité renouvelable</option>
+              <option value="consommateur">Consommation d'électricité</option>
+            </select>
+          </div>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 2.3 (Bonne réponse : A) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q2_3">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-amber-100 text-amber-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">2.3</span>
+            <h3 class="font-bold text-slate-800 text-base">En observant la photo 2 de la page 22 (centrale de Seraing) et la photo de la page 23, comment l'électricité produite est-elle transportée jusqu'aux villes ?</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 8</span>
+        </div>
+        <div class="space-y-2.5">
+          <button type="button" onclick="selectSingleOption('q2_3', 0)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            A) Par des lignes et câbles électriques suspendus à des pylônes
+          </button>
+          <button type="button" onclick="selectSingleOption('q2_3', 1)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            B) Par les rails des trains uniquement
+          </button>
+          <button type="button" onclick="selectSingleOption('q2_3', 2)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            C) Par les cheminées d'évacuation de vapeur
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 2.4 (Bonne réponse : C) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q2_4">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-amber-100 text-amber-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">2.4</span>
+            <h3 class="font-bold text-slate-800 text-base">Le pylône de la page 23 est construit en métal (acier). Que se passerait-il si les câbles électriques étaient attachés directement au métal sans l'isolateur ?</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 9</span>
+        </div>
+        <div class="space-y-2.5">
+          <button type="button" onclick="selectSingleOption('q2_4', 0)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            A) Les câbles se détacheraient immédiatement sous leur propre poids
+          </button>
+          <button type="button" onclick="selectSingleOption('q2_4', 1)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            B) Le pylône s'envolerait sous la force du courant
+          </button>
+          <button type="button" onclick="selectSingleOption('q2_4', 2)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            C) Le métal conduirait le courant vers le sol et électrifierait dangereusement tout le pylône
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 2.5 -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q2_5">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-amber-100 text-amber-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">2.5</span>
+            <h3 class="font-bold text-slate-800 text-base">D'après les photos et documents des pages 22 et 23, indique si chaque affirmation est Vraie ou Fausse :</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 10</span>
+        </div>
+        <div class="space-y-3">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200 gap-2" data-sub="q2_5_a">
+            <span class="text-sm text-slate-700">Sur la photo 1, le train est alimenté par l'électricité grâce aux câbles électriques situés au-dessus des voies.</span>
+            <div class="flex gap-2 shrink-0">
+              <button type="button" onclick="selectTrueFalse('q2_5_a', true)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="true" data-correct="true">VRAI</button>
+              <button type="button" onclick="selectTrueFalse('q2_5_a', false)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="false">FAUX</button>
+            </div>
+          </div>
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200 gap-2" data-sub="q2_5_b">
+            <span class="text-sm text-slate-700">L'isolateur électrique (page 23) a pour rôle de faire passer le courant du câble directement dans le pylône.</span>
+            <div class="flex gap-2 shrink-0">
+              <button type="button" onclick="selectTrueFalse('q2_5_b', true)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="true">VRAI</button>
+              <button type="button" onclick="selectTrueFalse('q2_5_b', false)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="false" data-correct="true">FAUX</button>
+            </div>
+          </div>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Bouton de validation de la section -->
+      <div class="flex justify-end pt-2">
+        <button onclick="validateSection(1)" class="px-6 py-3 bg-amber-600 hover:bg-amber-700 text-white font-display font-bold rounded-xl shadow-md hover-lift flex items-center gap-2">
+          <span>✔️</span> Valider la partie 2
+        </button>
+      </div>
+
+    </section>
+
+    <!-- ================= THÈME 3 : DÉMARCHE EXPÉRIMENTALE - BALLONS ================= -->
+    <section id="section-2" class="theme-section space-y-6 hidden">
+      
+      <div class="bg-blue-50 border border-blue-200 p-5 rounded-2xl">
+        <div class="flex items-center gap-3">
+          <span class="text-3xl">🎈</span>
+          <div>
+            <span class="bg-blue-200 text-blue-900 text-xs font-bold px-2 py-0.5 rounded-full uppercase">Pages 24 à 27</span>
+            <h2 class="font-display text-xl font-bold text-blue-950">L'expérience des ballons et les frottements</h2>
+          </div>
+        </div>
+      </div>
+
+      <!-- Question 3.1 (Bonne réponse : B) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q3_1">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-blue-100 text-blue-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">3.1</span>
+            <h3 class="font-bold text-slate-800 text-base">D'après la note en bas de la page 24, quelle est la définition exacte du <u>lubrifiant</u> ?</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 11</span>
+        </div>
+        <div class="space-y-2.5">
+          <button type="button" onclick="selectSingleOption('q3_1', 0)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            A) Une colle qui sert à fixer la paille en carton sur le ballon
+          </button>
+          <button type="button" onclick="selectSingleOption('q3_1', 1)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            B) Une matière qui rend glissant et permet de réduire les frottements
+          </button>
+          <button type="button" onclick="selectSingleOption('q3_1', 2)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            C) Un gaz plus léger que l'air pour faire monter le ballon
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 3.2 (Bonne réponse : D) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q3_2">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-blue-100 text-blue-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">3.2</span>
+            <h3 class="font-bold text-slate-800 text-base">Lecture des résultats (Tableau 1, page 27 - SANS lubrifiant) :<br>Quelle distance parcourt le ballon gonflé avec <strong>10,4 l</strong> d'air sur une corde de <strong>3 mm</strong> de diamètre ?</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 12</span>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+          <button type="button" onclick="selectSingleOption('q3_2', 0)" class="option-btn p-3 rounded-xl border border-slate-200 text-center text-sm font-medium hover:bg-slate-50 transition">
+            490 mm
+          </button>
+          <button type="button" onclick="selectSingleOption('q3_2', 1)" class="option-btn p-3 rounded-xl border border-slate-200 text-center text-sm font-medium hover:bg-slate-50 transition">
+            705 mm
+          </button>
+          <button type="button" onclick="selectSingleOption('q3_2', 2)" class="option-btn p-3 rounded-xl border border-slate-200 text-center text-sm font-medium hover:bg-slate-50 transition">
+            795 mm
+          </button>
+          <button type="button" onclick="selectSingleOption('q3_2', 3)" class="option-btn p-3 rounded-xl border border-slate-200 text-center text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            620 mm
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 3.3 -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q3_3">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-blue-100 text-blue-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">3.3</span>
+            <h3 class="font-bold text-slate-800 text-base">Analyse des tableaux 1 et 2 (Page 27) : Indique si chaque conclusion est Vraie ou Fausse.</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 13</span>
+        </div>
+
+        <div class="space-y-3">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200 gap-2" data-sub="q3_3_a">
+            <span class="text-sm text-slate-700">À volume d'air égal, plus la corde est fine (1 mm), plus le ballon parcourt une grande distance.</span>
+            <div class="flex gap-2 shrink-0">
+              <button type="button" onclick="selectTrueFalse('q3_3_a', true)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="true" data-correct="true">VRAI</button>
+              <button type="button" onclick="selectTrueFalse('q3_3_a', false)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="false">FAUX</button>
+            </div>
+          </div>
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200 gap-2" data-sub="q3_3_b">
+            <span class="text-sm text-slate-700">L'utilisation du lubrifiant permet au ballon d'aller plus loin pour un même volume d'air et une même corde.</span>
+            <div class="flex gap-2 shrink-0">
+              <button type="button" onclick="selectTrueFalse('q3_3_b', true)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="true" data-correct="true">VRAI</button>
+              <button type="button" onclick="selectTrueFalse('q3_3_b', false)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="false">FAUX</button>
+            </div>
+          </div>
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200 gap-2" data-sub="q3_3_c">
+            <span class="text-sm text-slate-700">Quand on augmente le nombre de litres d'air dans le ballon, la distance parcourue diminue.</span>
+            <div class="flex gap-2 shrink-0">
+              <button type="button" onclick="selectTrueFalse('q3_3_c', true)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="true">VRAI</button>
+              <button type="button" onclick="selectTrueFalse('q3_3_c', false)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="false" data-correct="true">FAUX</button>
+            </div>
+          </div>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 3.4 -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q3_4">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-blue-100 text-blue-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">3.4</span>
+            <div>
+              <h3 class="font-bold text-slate-800 text-base">Analyse du Tableau 2 (page 27) : Dans ce tableau, trois cases de résultats sont restées vides (____).</h3>
+              <p class="text-xs text-slate-500 mt-0.5">En observant la logique des colonnes et des lignes, dans quelle case replacerais-tu chacun des trois nombres suivants ?</p>
+              <p class="text-xs text-blue-600 font-semibold mt-1">💡 <em>Indice : observe comment les nombres augmentent ligne par ligne quand le volume d'air augmente, et diminuent de gauche à droite quand le diamètre augmente.</em></p>
+            </div>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 14</span>
+        </div>
+
+        <div class="space-y-3">
+          <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <span class="text-sm font-bold text-blue-900">Le nombre « 650 mm » se place dans :</span>
+            <select class="match-select bg-white border border-slate-300 rounded-lg p-2 text-xs font-semibold text-slate-700 outline-none focus:ring-2 focus:ring-blue-500" data-correct="pos_650">
+              <option value="">-- Choisis la case --</option>
+              <option value="pos_650">Corde de 2 mm de diamètre, avec 5,2 litres d'air</option>
+              <option value="pos_1110">Corde de 1 mm de diamètre, avec 15,6 litres d'air</option>
+              <option value="pos_720">Corde de 4 mm de diamètre, avec 10,4 litres d'air</option>
+            </select>
+          </div>
+
+          <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <span class="text-sm font-bold text-blue-900">Le nombre « 1 110 mm » se place dans :</span>
+            <select class="match-select bg-white border border-slate-300 rounded-lg p-2 text-xs font-semibold text-slate-700 outline-none focus:ring-2 focus:ring-blue-500" data-correct="pos_1110">
+              <option value="">-- Choisis la case --</option>
+              <option value="pos_650">Corde de 2 mm de diamètre, avec 5,2 litres d'air</option>
+              <option value="pos_1110">Corde de 1 mm de diamètre, avec 15,6 litres d'air</option>
+              <option value="pos_720">Corde de 4 mm de diamètre, avec 10,4 litres d'air</option>
+            </select>
+          </div>
+
+          <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <span class="text-sm font-bold text-blue-900">Le nombre « 720 mm » se place dans :</span>
+            <select class="match-select bg-white border border-slate-300 rounded-lg p-2 text-xs font-semibold text-slate-700 outline-none focus:ring-2 focus:ring-blue-500" data-correct="pos_720">
+              <option value="">-- Choisis la case --</option>
+              <option value="pos_650">Corde de 2 mm de diamètre, avec 5,2 litres d'air</option>
+              <option value="pos_1110">Corde de 1 mm de diamètre, avec 15,6 litres d'air</option>
+              <option value="pos_720">Corde de 4 mm de diamètre, avec 10,4 litres d'air</option>
+            </select>
+          </div>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 3.5 (Bonne réponse : C) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q3_5">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-blue-100 text-blue-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">3.5</span>
+            <h3 class="font-bold text-slate-800 text-base">En observant les schémas 2 et 3 de la page 26, dans quelle direction le ballon avance-t-il par rapport à l'expulsion de l'air ?</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 15</span>
+        </div>
+        <div class="space-y-2.5">
+          <button type="button" onclick="selectSingleOption('q3_5', 0)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            A) Le ballon recule dans le même sens que l'air expulsé
+          </button>
+          <button type="button" onclick="selectSingleOption('q3_5', 1)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            B) Le ballon tourne en rond sans suivre la corde
+          </button>
+          <button type="button" onclick="selectSingleOption('q3_5', 2)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            C) Le ballon avance vers la droite alors que l'air est expulsé vers la gauche (sens opposé)
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Bouton de validation de la section -->
+      <div class="flex justify-end pt-2">
+        <button onclick="validateSection(2)" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-display font-bold rounded-xl shadow-md hover-lift flex items-center gap-2">
+          <span>✔️</span> Valider la partie 3
+        </button>
+      </div>
+
+    </section>
+
+    <!-- ================= THÈME 4 : MÉCANIQUE - POULIES ================= -->
+    <section id="section-3" class="theme-section space-y-6 hidden">
+      
+      <div class="bg-purple-50 border border-purple-200 p-5 rounded-2xl">
+        <div class="flex items-center gap-3">
+          <span class="text-3xl">🏗️</span>
+          <div>
+            <span class="bg-purple-200 text-purple-900 text-xs font-bold px-2 py-0.5 rounded-full uppercase">Pages 28 à 31</span>
+            <h2 class="font-display text-xl font-bold text-purple-950">Une corde et des poulies : Les forces de traction</h2>
+          </div>
+        </div>
+      </div>
+
+      <!-- Question 4.1 (Bonne réponse : A) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q4_1">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-purple-100 text-purple-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">4.1</span>
+            <h3 class="font-bold text-slate-800 text-base">Dans l'Expérience 1 (Page 30), une seule poulie simple est fixée en haut. Quel est l'effet de ce montage sur la force nécessaire pour soulever 5 kg ?</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 16</span>
+        </div>
+        <div class="space-y-2.5">
+          <button type="button" onclick="selectSingleOption('q4_1', 0)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            A) La force reste identique (5 kg), la poulie change seulement la direction de traction
+          </button>
+          <button type="button" onclick="selectSingleOption('q4_1', 1)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            B) La force est divisée par deux (on ne tire que 2,5 kg)
+          </button>
+          <button type="button" onclick="selectSingleOption('q4_1', 2)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            C) La charge devient deux fois plus lourde
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 4.2 (Bonne réponse : C) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q4_2">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-purple-100 text-purple-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">4.2</span>
+            <h3 class="font-bold text-slate-800 text-base">D'après le tableau de résultats de la page 31, quel est le lien direct entre le nombre de portions de corde supportant la charge et la force de traction mesurée ?</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 17</span>
+        </div>
+        <div class="space-y-2.5">
+          <button type="button" onclick="selectSingleOption('q4_2', 0)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            A) Plus il y a de portions de corde, plus la force à fournir est grande
+          </button>
+          <button type="button" onclick="selectSingleOption('q4_2', 1)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            B) Le nombre de portions de corde ne change rien à la force mesurée
+          </button>
+          <button type="button" onclick="selectSingleOption('q4_2', 2)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            C) La force de traction est égale à la masse soulevée divisée par le nombre de portions de corde supportant la charge
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 4.3 (Bonne réponse : B) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q4_3">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-purple-100 text-purple-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">4.3</span>
+            <h3 class="font-bold text-slate-800 text-base">Déduction : Un ouvrier utilise le montage de l'<strong>Expérience 3</strong> (4 portions de corde) pour soulever une charge de <strong>20 kg</strong>. Quelle force de traction sera mesurée sur le pèse-bagage ?</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 18</span>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+          <button type="button" onclick="selectSingleOption('q4_3', 0)" class="option-btn p-3 rounded-xl border border-slate-200 text-center text-sm font-medium hover:bg-slate-50 transition">
+            20 kg
+          </button>
+          <button type="button" onclick="selectSingleOption('q4_3', 1)" class="option-btn p-3 rounded-xl border border-slate-200 text-center text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            5 kg
+          </button>
+          <button type="button" onclick="selectSingleOption('q4_3', 2)" class="option-btn p-3 rounded-xl border border-slate-200 text-center text-sm font-medium hover:bg-slate-50 transition">
+            10 kg
+          </button>
+          <button type="button" onclick="selectSingleOption('q4_3', 3)" class="option-btn p-3 rounded-xl border border-slate-200 text-center text-sm font-medium hover:bg-slate-50 transition">
+            2,5 kg
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 4.4 (Bonne réponse : B) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q4_4">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-purple-100 text-purple-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">4.4</span>
+            <h3 class="font-bold text-slate-800 text-base">En observant le schéma de l'Expérience 2 (page 30), comment sont réparties les deux poulies simples ?</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 19</span>
+        </div>
+        <div class="space-y-2.5">
+          <button type="button" onclick="selectSingleOption('q4_4', 0)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            A) Les deux poulies sont posées au sol
+          </button>
+          <button type="button" onclick="selectSingleOption('q4_4', 1)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            B) Une poulie est fixée à la barre en haut, et la seconde poulie est attachée directement à la charge (poulie mobile)
+          </button>
+          <button type="button" onclick="selectSingleOption('q4_4', 2)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            C) Les deux poulies sont fixées côte à côte sur la barre en haut
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 4.5 (Bonne réponse : A) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q4_5">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-purple-100 text-purple-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">4.5</span>
+            <h3 class="font-bold text-slate-800 text-base">D'après la page 28, pourquoi les constructeurs de grues varient-ils le nombre de poulies et de portions de câbles sur les crochets ?</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 20</span>
+        </div>
+        <div class="space-y-2.5">
+          <button type="button" onclick="selectSingleOption('q4_5', 0)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            A) Pour permettre au moteur de la grue de soulever des charges beaucoup plus lourdes en réduisant la force nécessaire
+          </button>
+          <button type="button" onclick="selectSingleOption('q4_5', 1)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            B) Pour empêcher la grue de rouler sur le chantier
+          </button>
+          <button type="button" onclick="selectSingleOption('q4_5', 2)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            C) Pour mesurer la hauteur des bâtiments
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Bouton de validation de la section -->
+      <div class="flex justify-end pt-2">
+        <button onclick="validateSection(3)" class="px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white font-display font-bold rounded-xl shadow-md hover-lift flex items-center gap-2">
+          <span>✔️</span> Valider la partie 4 & Voir mon bilan
+        </button>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- ================= MODAL BILAN FINAL ================= -->
+  <div id="finalModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 md:p-8 border border-slate-200 shadow-2xl space-y-6 text-center">
+      <div id="modalIcon" class="text-6xl mx-auto">🎉</div>
+      <div>
+        <h2 id="modalTitle" class="font-display text-2xl md:text-3xl font-bold text-slate-800">Bravo pour ton entraînement !</h2>
+        <p id="modalSubtitle" class="text-slate-600 text-sm mt-1">Voici ton bilan pour le CEB Sciences 2025 :</p>
+      </div>
+
+      <!-- Score Card -->
+      <div class="bg-gradient-to-br from-slate-50 to-slate-100 p-5 rounded-2xl border border-slate-200 flex items-center justify-around">
+        <div>
+          <div class="text-xs uppercase font-bold text-slate-500">Score Final</div>
+          <div class="font-display font-bold text-3xl text-emerald-600"><span id="finalScoreVal">0</span> / <span id="maxScoreDisplay">20</span></div>
+        </div>
+        <div class="h-10 w-px bg-slate-300"></div>
+        <div>
+          <div class="text-xs uppercase font-bold text-slate-500">Réussite</div>
+          <div class="font-display font-bold text-3xl text-slate-800"><span id="finalPercentVal">0</span>%</div>
+        </div>
+      </div>
+
+      <p id="modalAdvice" class="text-sm text-slate-700 font-medium bg-emerald-50 text-emerald-900 p-3 rounded-xl border border-emerald-200"></p>
+
+      <div class="flex gap-3 justify-center pt-2">
+        <button onclick="closeModal()" class="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl text-sm transition">
+          Revoir mes réponses
+        </button>
+        <button onclick="resetAll()" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-xl text-sm transition shadow-md">
+          🔄 Recommencer
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= LOGIQUE JAVASCRIPT ================= -->
+  <script>
+    let currentScore = 0;
+    const totalQuestions = 20;
+
+    function switchTab(index) {
+      document.querySelectorAll(".tab-btn").forEach((btn, i) => {
+        if (i === index) {
+          btn.className = "tab-btn active px-4 py-2.5 rounded-xl font-display font-semibold text-sm transition-all flex items-center gap-2 bg-emerald-600 text-white shadow-md";
+        } else {
+          btn.className = "tab-btn px-4 py-2.5 rounded-xl font-display font-semibold text-sm transition-all flex items-center gap-2 bg-white text-slate-600 hover:bg-slate-100 border border-slate-200";
+        }
+      });
+
+      document.querySelectorAll(".theme-section").forEach((sec, i) => {
+        sec.classList.toggle("hidden", i !== index);
+      });
+      window.scrollTo({ top: 120, behavior: "smooth" });
+    }
+
+    function selectSingleOption(qid, optIndex) {
+      const container = document.querySelector(`[data-qid="${qid}"]`);
+      const buttons = container.querySelectorAll(".option-btn");
+      buttons.forEach((btn, idx) => {
+        if (idx === optIndex) {
+          btn.classList.add("selected");
+        } else {
+          btn.classList.remove("selected");
+        }
+      });
+    }
+
+    function selectTrueFalse(subId, val) {
+      const row = document.querySelector(`[data-sub="${subId}"]`);
+      const buttons = row.querySelectorAll(".tf-btn");
+      buttons.forEach(btn => {
+        const btnVal = btn.getAttribute("data-val") === "true";
+        if (btnVal === val) {
+          btn.classList.add("bg-blue-600", "text-white", "border-blue-600", "selected");
+          btn.classList.remove("hover:bg-white");
+        } else {
+          btn.classList.remove("bg-blue-600", "text-white", "border-blue-600", "selected");
+          btn.classList.add("hover:bg-white");
+        }
+      });
+    }
+
+    function validateSection(secIndex) {
+      let section = document.getElementById(`section-${secIndex}`);
+      let allSectionCorrect = true;
+
+      section.querySelectorAll("[data-qid]").forEach(qBox => {
+        const feedback = qBox.querySelector(".feedback-box");
+        const optionBtns = qBox.querySelectorAll(".option-btn");
+        const tfRows = qBox.querySelectorAll("[data-sub]");
+        const matchSelects = qBox.querySelectorAll(".match-select");
+
+        if (optionBtns.length > 0) {
+          let selected = null;
+          let correct = null;
+          optionBtns.forEach(b => {
+            if (b.classList.contains("selected")) selected = b;
+            if (b.hasAttribute("data-correct")) correct = b;
+          });
+
+          if (!selected) {
+            allSectionCorrect = false;
+            showFeedback(feedback, false, "⚠️ N'oublie pas de sélectionner une réponse !");
+            return;
+          }
+
+          if (selected === correct) {
+            selected.classList.add("correct");
+            showFeedback(feedback, true, "✨ Exact ! Très bonne observation du document.");
+          } else {
+            allSectionCorrect = false;
+            selected.classList.add("wrong");
+            correct.classList.add("correct");
+            showFeedback(feedback, false, "Regarde bien le document du portfolio pour trouver la réponse indiquée en vert.");
+          }
+        } else if (tfRows.length > 0) {
+          let qCorrect = true;
+          tfRows.forEach(row => {
+            const selectedBtn = row.querySelector(".tf-btn.selected");
+            const correctBtn = row.querySelector(".tf-btn[data-correct='true']");
+            if (!selectedBtn) {
+              qCorrect = false;
+              allSectionCorrect = false;
+            } else if (selectedBtn === correctBtn) {
+              selectedBtn.classList.add("!bg-emerald-600", "!border-emerald-600", "!text-white");
+            } else {
+              qCorrect = false;
+              allSectionCorrect = false;
+              selectedBtn.classList.add("!bg-rose-500", "!border-rose-500", "!text-white");
+              correctBtn.classList.add("!bg-emerald-600", "!border-emerald-600", "!text-white");
+            }
+          });
+          if (qCorrect) {
+            showFeedback(feedback, true, "✨ Parfait ! Toutes tes réponses sont exactes.");
+          } else {
+            showFeedback(feedback, false, "Certaines réponses étaient inexactes. Vérifie les corrections en vert.");
+          }
+        } else if (matchSelects.length > 0) {
+          let matchCorrect = true;
+          matchSelects.forEach(sel => {
+            const expected = sel.getAttribute("data-correct");
+            if (!sel.value) {
+              matchCorrect = false;
+              allSectionCorrect = false;
+            } else if (sel.value === expected) {
+              sel.classList.add("!border-emerald-500", "!bg-emerald-50", "!text-emerald-900");
+              sel.classList.remove("!border-rose-500", "!bg-rose-50", "!text-rose-900");
+            } else {
+              matchCorrect = false;
+              allSectionCorrect = false;
+              sel.classList.add("!border-rose-500", "!bg-rose-50", "!text-rose-900");
+              sel.classList.remove("!border-emerald-500", "!bg-emerald-50", "!text-emerald-900");
+            }
+          });
+          if (matchCorrect) {
+            showFeedback(feedback, true, "✨ Bravo ! Toutes les associations sont correctes.");
+          } else {
+            showFeedback(feedback, false, "Certaines associations sont inexactes. Compare bien avec les colonnes et lignes du document.");
+          }
+        }
+      });
+
+      updateGlobalScore();
+
+      if (secIndex === 3) {
+        setTimeout(showFinalBilan, 600);
+      }
+    }
+
+    function showFeedback(el, isOk, msg) {
+      if (!el) return;
+      el.classList.remove("hidden", "bg-emerald-50", "text-emerald-900", "border-emerald-200", "bg-rose-50", "text-rose-900", "border-rose-200");
+      if (isOk) {
+        el.classList.add("bg-emerald-50", "text-emerald-900", "border", "border-emerald-200");
+      } else {
+        el.classList.add("bg-rose-50", "text-rose-900", "border", "border-rose-200");
+      }
+      el.innerHTML = msg;
+    }
+
+    function updateGlobalScore() {
+      let score = 0;
+      document.querySelectorAll("[data-qid]").forEach(qBox => {
+        const feedback = qBox.querySelector(".feedback-box");
+        if (feedback && feedback.classList.contains("bg-emerald-50")) {
+          score += 1;
+        }
+      });
+      currentScore = score;
+      document.getElementById("globalScore").innerText = score;
+      
+      const pct = Math.round((score / totalQuestions) * 100);
+      document.getElementById("mainProgressBar").style.width = pct + "%";
+    }
+
+    function showFinalBilan() {
+      updateGlobalScore();
+      const modal = document.getElementById("finalModal");
+      document.getElementById("finalScoreVal").innerText = currentScore;
+      document.getElementById("maxScoreDisplay").innerText = totalQuestions;
+      const pct = Math.round((currentScore / totalQuestions) * 100);
+      document.getElementById("finalPercentVal").innerText = pct;
+
+      const advice = document.getElementById("modalAdvice");
+      const icon = document.getElementById("modalIcon");
+
+      if (pct >= 80) {
+        icon.innerText = "🏆";
+        advice.innerHTML = "🌟 <strong>Excellent travail !</strong> Tu maîtrises parfaitement la lecture des documents et la démarche scientifique de ce CEB !";
+        if (typeof confetti === "function") {
+          confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+        }
+      } else if (pct >= 50) {
+        icon.innerText = "👍";
+        advice.innerHTML = "👏 <strong>Bon travail !</strong> La majorité des notions sont comprises. Prends le temps de relire les corrections pour perfectionner tes connaissances.";
+      } else {
+        icon.innerText = "💪";
+        advice.innerHTML = "📖 <strong>Continue tes efforts !</strong> Rouvre ton livret portfolio et relis attentivement chaque document avant de recommencer.";
+      }
+
+      modal.classList.remove("hidden");
+      modal.classList.add("flex");
+    }
+
+    function closeModal() {
+      const modal = document.getElementById("finalModal");
+      modal.classList.add("hidden");
+      modal.classList.remove("flex");
+    }
+
+    function resetAll() {
+      window.location.reload();
+    }
+  </script>
+</body>
+</html>

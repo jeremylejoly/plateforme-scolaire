@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CEB Sciences 2024 — Entraînement Interactif</title>
+  
+  <!-- Polices Google Fonts (Charte LCML) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800;900&family=Space+Mono:wght@700&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            display: ["Fredoka", "sans-serif"],
+            body: ["Nunito", "sans-serif"],
+            mono: ["Space Mono", "monospace"],
+          },
+          colors: {
+            brand: {
+              50: "#f0fdf4",
+              100: "#dcfce7",
+              500: "#10b981",
+              600: "#059669",
+              700: "#047857",
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Canvas Confetti pour la fin -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <style>
+    :root {
+      --paper: #f8fafc;
+      --grid-line: #e2e8f0;
+      --ink: #1e293b;
+    }
+    body {
+      background-color: var(--paper);
+      background-image: 
+        linear-gradient(var(--grid-line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+      background-size: 24px 24px;
+      font-family: "Nunito", sans-serif;
+      color: var(--ink);
+    }
+    .custom-shadow {
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05), 0 10px 24px rgba(0, 0, 0, 0.03);
+    }
+    .hover-lift {
+      transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .hover-lift:hover {
+      transform: translateY(-2px);
+    }
+    .hover-lift:active {
+      transform: translateY(1px);
+    }
+    .option-btn.selected {
+      border-color: #3b82f6 !important;
+      background-color: #eff6ff !important;
+      font-weight: 700;
+      box-shadow: 0 0 0 2px #3b82f6;
+    }
+    .option-btn.correct {
+      border-color: #10b981 !important;
+      background-color: #ecfdf5 !important;
+      color: #065f46 !important;
+      font-weight: 700;
+    }
+    .option-btn.wrong {
+      border-color: #ef4444 !important;
+      background-color: #fef2f2 !important;
+      color: #991b1b !important;
+      text-decoration: line-through;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between pb-12">
+
+  <!-- ================= EN-TÊTE FIXE ================= -->
+  <header class="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-sm">
+    <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
+      <!-- Logo & Titre -->
+      <div class="flex items-center space-x-3">
+        <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-indigo-500 to-blue-600 flex items-center justify-center text-white font-display text-2xl shadow-md">
+          🔬
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="bg-indigo-100 text-indigo-800 text-xs font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">CEB Sciences</span>
+            <span class="bg-slate-100 text-slate-700 text-xs font-semibold px-2 py-0.5 rounded-full">Édition 2024</span>
+          </div>
+          <h1 class="font-display font-bold text-lg md:text-xl text-slate-800 leading-tight">Entraînement au Portfolio</h1>
+        </div>
+      </div>
+
+      <!-- Score Global -->
+      <div class="flex items-center space-x-3">
+        <div class="flex items-center bg-amber-50 border border-amber-200 px-3.5 py-1.5 rounded-xl text-amber-900 font-bold text-sm space-x-1.5 shadow-sm">
+          <span>⭐</span>
+          <span id="globalScore">0</span>
+          <span class="text-xs text-amber-600 font-normal">/ <span id="totalPossibleScore">20</span> questions réussies</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Barre de progression générale -->
+    <div class="w-full bg-slate-100 h-1.5">
+      <div id="mainProgressBar" class="bg-gradient-to-r from-indigo-500 to-blue-500 h-1.5 transition-all duration-500 w-0"></div>
+    </div>
+  </header>
+
+  <!-- ================= CONTENU PRINCIPAL ================= -->
+  <main class="max-w-4xl mx-auto px-4 py-8 flex-1 w-full">
+
+    <!-- NAVIGATION PAR THÈMES (ONGLETS) -->
+    <nav class="flex flex-wrap gap-2 mb-8 justify-center">
+      <button onclick="switchTab(0)" class="tab-btn active px-4 py-2.5 rounded-xl font-display font-semibold text-sm transition-all flex items-center gap-2 bg-indigo-600 text-white shadow-md" data-tab="0">
+        <span>🌿</span> 1. Vivant & Cycles (p.23-25)
+      </button>
+      <button onclick="switchTab(1)" class="tab-btn px-4 py-2.5 rounded-xl font-display font-semibold text-sm transition-all flex items-center gap-2 bg-white text-slate-600 hover:bg-slate-100 border border-slate-200" data-tab="1">
+        <span>🥗</span> 2. Santé & Dents (p.27-28)
+      </button>
+      <button onclick="switchTab(2)" class="tab-btn px-4 py-2.5 rounded-xl font-display font-semibold text-sm transition-all flex items-center gap-2 bg-white text-slate-600 hover:bg-slate-100 border border-slate-200" data-tab="2">
+        <span>🧪</span> 3. Expériences & Liquides (p.22, 29-30)
+      </button>
+      <button onclick="switchTab(3)" class="tab-btn px-4 py-2.5 rounded-xl font-display font-semibold text-sm transition-all flex items-center gap-2 bg-white text-slate-600 hover:bg-slate-100 border border-slate-200" data-tab="3">
+        <span>⚡</span> 4. Météo & Électricité (p.26, 31)
+      </button>
+    </nav>
+
+    <!-- BANNIÈRE D'INSTRUCTION PORTFOLIO PAPIER -->
+    <div class="bg-amber-50 border-l-4 border-amber-400 p-4 rounded-r-xl mb-6 shadow-sm flex items-start space-x-3">
+      <span class="text-2xl">📖</span>
+      <div class="text-sm text-amber-900">
+        <p class="font-bold font-display text-base">Garde ton livret portfolio sous les yeux !</p>
+        <p class="text-amber-800">Toutes les questions se résolvent en observant attentivement les textes, schémas et tableaux du portfolio papier <strong>CEB Sciences 2024</strong>.</p>
+      </div>
+    </div>
+
+    <!-- ================= CONTENEURS DES THÈMES ================= -->
+
+    <!-- ================= THÈME 1 : VIVANT & CYCLES ================= -->
+    <section id="section-0" class="theme-section space-y-6">
+      
+      <!-- En-tête de section -->
+      <div class="bg-emerald-50 border border-emerald-200 p-5 rounded-2xl">
+        <div class="flex items-center gap-3">
+          <span class="text-3xl">🌿</span>
+          <div>
+            <span class="bg-emerald-200 text-emerald-900 text-xs font-bold px-2 py-0.5 rounded-full uppercase">Pages 23 à 25</span>
+            <h2 class="font-display text-xl font-bold text-emerald-950">La classification du vivant et les cycles de vie</h2>
+          </div>
+        </div>
+      </div>
+
+      <!-- Question 1.1 (Bonne réponse : B) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q1_1">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-emerald-100 text-emerald-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">1.1</span>
+            <h3 class="font-bold text-slate-800 text-base">D'après le texte de la page 24, comment s'appelle la larve allongée qui naît de l'œuf de méduse avant de se fixer au fond de l'eau ?</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 1</span>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+          <button type="button" onclick="selectSingleOption('q1_1', 0)" class="option-btn p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            A) Le polype
+          </button>
+          <button type="button" onclick="selectSingleOption('q1_1', 1)" class="option-btn p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            B) La planule
+          </button>
+          <button type="button" onclick="selectSingleOption('q1_1', 2)" class="option-btn p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            C) Le strobile
+          </button>
+          <button type="button" onclick="selectSingleOption('q1_1', 3)" class="option-btn p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            D) L'éphyrule
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 1.2 -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q1_2">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-emerald-100 text-emerald-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">1.2</span>
+            <h3 class="font-bold text-slate-800 text-base">En observant le schéma du cycle du papillon (page 25), indique si chaque affirmation est Vraie ou Fausse.</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 2</span>
+        </div>
+        <div class="space-y-3">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200 gap-2" data-sub="q1_2_a">
+            <span class="text-sm text-slate-700">La métamorphose est l'étape qui permet de passer de la chrysalide au papillon adulte.</span>
+            <div class="flex gap-2 shrink-0">
+              <button type="button" onclick="selectTrueFalse('q1_2_a', true)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="true" data-correct="true">VRAI</button>
+              <button type="button" onclick="selectTrueFalse('q1_2_a', false)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="false">FAUX</button>
+            </div>
+          </div>
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200 gap-2" data-sub="q1_2_b">
+            <span class="text-sm text-slate-700">La reproduction donne directement naissance à une chenille sans passer par l'état d'œuf.</span>
+            <div class="flex gap-2 shrink-0">
+              <button type="button" onclick="selectTrueFalse('q1_2_b', true)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="true">VRAI</button>
+              <button type="button" onclick="selectTrueFalse('q1_2_b', false)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="false" data-correct="true">FAUX</button>
+            </div>
+          </div>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 1.3 -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q1_3">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-emerald-100 text-emerald-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">1.3</span>
+            <h3 class="font-bold text-slate-800 text-base">Le cycle de vie de la méduse (page 24) : Associe chaque nom à sa description exacte dans le texte.</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 3</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between gap-2">
+            <span class="text-sm font-bold text-teal-800">Le polype ➔</span>
+            <select class="match-select bg-white border border-slate-300 rounded-lg p-1.5 text-xs font-semibold text-slate-700 focus:ring-2 focus:ring-emerald-500 outline-none" data-correct="polype_desc">
+              <option value="">-- Choisis la description --</option>
+              <option value="polype_desc">Organisme fixé au fond en forme de vase bordé de tentacules</option>
+              <option value="strobile_desc">Empilement de disques formé par division</option>
+              <option value="ephyrule_desc">« Bébé » méduse qui se détache et commence à grandir</option>
+            </select>
+          </div>
+          <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between gap-2">
+            <span class="text-sm font-bold text-teal-800">Le strobile ➔</span>
+            <select class="match-select bg-white border border-slate-300 rounded-lg p-1.5 text-xs font-semibold text-slate-700 focus:ring-2 focus:ring-emerald-500 outline-none" data-correct="strobile_desc">
+              <option value="">-- Choisis la description --</option>
+              <option value="polype_desc">Organisme fixé au fond en forme de vase bordé de tentacules</option>
+              <option value="strobile_desc">Empilement de disques formé par division</option>
+              <option value="ephyrule_desc">« Bébé » méduse qui se détache et commence à grandir</option>
+            </select>
+          </div>
+          <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between gap-2">
+            <span class="text-sm font-bold text-teal-800">L'éphyrule ➔</span>
+            <select class="match-select bg-white border border-slate-300 rounded-lg p-1.5 text-xs font-semibold text-slate-700 focus:ring-2 focus:ring-emerald-500 outline-none" data-correct="ephyrule_desc">
+              <option value="">-- Choisis la description --</option>
+              <option value="polype_desc">Organisme fixé au fond en forme de vase bordé de tentacules</option>
+              <option value="strobile_desc">Empilement de disques formé par division</option>
+              <option value="ephyrule_desc">« Bébé » méduse qui se détache et commence à grandir</option>
+            </select>
+          </div>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 1.4 (Bonne réponse : A) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q1_4">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-emerald-100 text-emerald-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">1.4</span>
+            <h3 class="font-bold text-slate-800 text-base">En observant la collection d'animaux de la page 23, quel être vivant possède <u>2 paires d'antennes</u> bien visibles ?</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 4</span>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+          <button type="button" onclick="selectSingleOption('q1_4', 0)" class="option-btn p-3 rounded-xl border border-slate-200 text-center text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            L'aselle aquatique
+          </button>
+          <button type="button" onclick="selectSingleOption('q1_4', 1)" class="option-btn p-3 rounded-xl border border-slate-200 text-center text-sm font-medium hover:bg-slate-50 transition">
+            La libellule
+          </button>
+          <button type="button" onclick="selectSingleOption('q1_4', 2)" class="option-btn p-3 rounded-xl border border-slate-200 text-center text-sm font-medium hover:bg-slate-50 transition">
+            L'argynonète
+          </button>
+          <button type="button" onclick="selectSingleOption('q1_4', 3)" class="option-btn p-3 rounded-xl border border-slate-200 text-center text-sm font-medium hover:bg-slate-50 transition">
+            La limnée des étangs
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 1.5 (Bonne réponse : C) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q1_5">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-emerald-100 text-emerald-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">1.5</span>
+            <h3 class="font-bold text-slate-800 text-base">D'après la page 23, quel attribut particulier est pointé par un trait rouge au niveau de la tête de l'<u>Argynonète</u> ?</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 5</span>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+          <button type="button" onclick="selectSingleOption('q1_5', 0)" class="option-btn p-3 rounded-xl border border-slate-200 text-center text-sm font-medium hover:bg-slate-50 transition">
+            Des nageoires
+          </button>
+          <button type="button" onclick="selectSingleOption('q1_5', 1)" class="option-btn p-3 rounded-xl border border-slate-200 text-center text-sm font-medium hover:bg-slate-50 transition">
+            Une carapace
+          </button>
+          <button type="button" onclick="selectSingleOption('q1_5', 2)" class="option-btn p-3 rounded-xl border border-slate-200 text-center text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            Des chélicères
+          </button>
+          <button type="button" onclick="selectSingleOption('q1_5', 3)" class="option-btn p-3 rounded-xl border border-slate-200 text-center text-sm font-medium hover:bg-slate-50 transition">
+            Des ailes
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Bouton de validation de la section -->
+      <div class="flex justify-end pt-2">
+        <button onclick="validateSection(0)" class="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-display font-bold rounded-xl shadow-md hover-lift flex items-center gap-2">
+          <span>✔️</span> Valider la partie 1
+        </button>
+      </div>
+
+    </section>
+
+    <!-- ================= THÈME 2 : SANTÉ & DENTS ================= -->
+    <section id="section-1" class="theme-section space-y-6 hidden">
+      
+      <div class="bg-rose-50 border border-rose-200 p-5 rounded-2xl">
+        <div class="flex items-center gap-3">
+          <span class="text-3xl">🥗</span>
+          <div>
+            <span class="bg-rose-200 text-rose-900 text-xs font-bold px-2 py-0.5 rounded-full uppercase">Pages 27 et 28</span>
+            <h2 class="font-display text-xl font-bold text-rose-950">La santé de l'humain, les dents et les régimes alimentaires</h2>
+          </div>
+        </div>
+      </div>
+
+      <!-- Question 2.1 (Bonne réponse : Adolescent-e 16 ans) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q2_1">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-rose-100 text-rose-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">2.1</span>
+            <h3 class="font-bold text-slate-800 text-base">En observant le graphique de la page 27, à quelle période de la vie les besoins énergétiques moyens (en kcal) atteignent-ils leur maximum ?</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 6</span>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2.5">
+          <button type="button" onclick="selectSingleOption('q2_1', 0)" class="option-btn p-3 rounded-xl border border-slate-200 text-center text-sm font-medium hover:bg-slate-50 transition">
+            Enfant (3 ans)
+          </button>
+          <button type="button" onclick="selectSingleOption('q2_1', 1)" class="option-btn p-3 rounded-xl border border-slate-200 text-center text-sm font-medium hover:bg-slate-50 transition">
+            Enfant (10 ans)
+          </button>
+          <button type="button" onclick="selectSingleOption('q2_1', 2)" class="option-btn p-3 rounded-xl border border-slate-200 text-center text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            Adolescent-e (16 ans)
+          </button>
+          <button type="button" onclick="selectSingleOption('q2_1', 3)" class="option-btn p-3 rounded-xl border border-slate-200 text-center text-sm font-medium hover:bg-slate-50 transition">
+            Adulte (30-60 ans)
+          </button>
+          <button type="button" onclick="selectSingleOption('q2_1', 4)" class="option-btn p-3 rounded-xl border border-slate-200 text-center text-sm font-medium hover:bg-slate-50 transition">
+            Adulte (+ de 70 ans)
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 2.2 (Bonne réponse : Enfant 3 ans) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q2_2">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-rose-100 text-rose-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">2.2</span>
+            <h3 class="font-bold text-slate-800 text-base">D'après le graphique de la page 27, pour quelle tranche d'âge les besoins énergétiques des filles et des garçons sont-ils <u>strictement égaux</u> ?</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 7</span>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2.5">
+          <button type="button" onclick="selectSingleOption('q2_2', 0)" class="option-btn p-3 rounded-xl border border-slate-200 text-center text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            Enfant (3 ans)
+          </button>
+          <button type="button" onclick="selectSingleOption('q2_2', 1)" class="option-btn p-3 rounded-xl border border-slate-200 text-center text-sm font-medium hover:bg-slate-50 transition">
+            Enfant (10 ans)
+          </button>
+          <button type="button" onclick="selectSingleOption('q2_2', 2)" class="option-btn p-3 rounded-xl border border-slate-200 text-center text-sm font-medium hover:bg-slate-50 transition">
+            Adolescent-e (16 ans)
+          </button>
+          <button type="button" onclick="selectSingleOption('q2_2', 3)" class="option-btn p-3 rounded-xl border border-slate-200 text-center text-sm font-medium hover:bg-slate-50 transition">
+            Adulte (30-60 ans)
+          </button>
+          <button type="button" onclick="selectSingleOption('q2_2', 4)" class="option-btn p-3 rounded-xl border border-slate-200 text-center text-sm font-medium hover:bg-slate-50 transition">
+            Adulte (+ de 70 ans)
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 2.3 (Bonne réponse : A) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q2_3">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-rose-100 text-rose-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">2.3</span>
+            <h3 class="font-bold text-slate-800 text-base">D'après le tableau de la page 28, quelle est la forme des <u>canines</u> chez les animaux <strong>carnivores</strong> ?</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 8</span>
+        </div>
+        <div class="space-y-2.5">
+          <button type="button" onclick="selectSingleOption('q2_3', 0)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            A) Longues, pointues et recourbées
+          </button>
+          <button type="button" onclick="selectSingleOption('q2_3', 1)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            B) Larges, plates et en forme de bêche
+          </button>
+          <button type="button" onclick="selectSingleOption('q2_3', 2)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            C) Aplaties avec un léger relief
+          </button>
+          <button type="button" onclick="selectSingleOption('q2_3', 3)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            D) Généralement absentes
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 2.4 -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q2_4">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-rose-100 text-rose-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">2.4</span>
+            <h3 class="font-bold text-slate-800 text-base">En observant le tableau des régimes alimentaires (page 28), indique si chaque affirmation est Vraie ou Fausse.</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 9</span>
+        </div>
+        <div class="space-y-3">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200 gap-2" data-sub="q2_4_a">
+            <span class="text-sm text-slate-700">Les herbivores n'ont généralement pas de canines.</span>
+            <div class="flex gap-2 shrink-0">
+              <button type="button" onclick="selectTrueFalse('q2_4_a', true)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="true" data-correct="true">VRAI</button>
+              <button type="button" onclick="selectTrueFalse('q2_4_a', false)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="false">FAUX</button>
+            </div>
+          </div>
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200 gap-2" data-sub="q2_4_b">
+            <span class="text-sm text-slate-700">Chez les carnivores, les prémolaires et molaires sont aplaties avec un léger relief pour broyer l'herbe.</span>
+            <div class="flex gap-2 shrink-0">
+              <button type="button" onclick="selectTrueFalse('q2_4_b', true)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="true">VRAI</button>
+              <button type="button" onclick="selectTrueFalse('q2_4_b', false)" class="tf-btn px-3.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-white transition" data-val="false" data-correct="true">FAUX</button>
+            </div>
+          </div>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 2.5 (Bonne réponse : D) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q2_5">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-rose-100 text-rose-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">2.5</span>
+            <h3 class="font-bold text-slate-800 text-base">En observant le schéma de la mâchoire humaine et le tableau de la page 28, à quelle famille de régime alimentaire la dentition de l'humain correspond-elle ?</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 10</span>
+        </div>
+        <div class="space-y-2.5">
+          <button type="button" onclick="selectSingleOption('q2_5', 0)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            A) Carnivore
+          </button>
+          <button type="button" onclick="selectSingleOption('q2_5', 1)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            B) Herbivore
+          </button>
+          <button type="button" onclick="selectSingleOption('q2_5', 2)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            C) Insectivore
+          </button>
+          <button type="button" onclick="selectSingleOption('q2_5', 3)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            D) Omnivore
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Bouton de validation de la section -->
+      <div class="flex justify-end pt-2">
+        <button onclick="validateSection(1)" class="px-6 py-3 bg-rose-600 hover:bg-rose-700 text-white font-display font-bold rounded-xl shadow-md hover-lift flex items-center gap-2">
+          <span>✔️</span> Valider la partie 2
+        </button>
+      </div>
+
+    </section>
+
+    <!-- ================= THÈME 3 : EXPÉRIENCES & LIQUIDES ================= -->
+    <section id="section-2" class="theme-section space-y-6 hidden">
+      
+      <div class="bg-blue-50 border border-blue-200 p-5 rounded-2xl">
+        <div class="flex items-center gap-3">
+          <span class="text-3xl">🧪</span>
+          <div>
+            <span class="bg-blue-200 text-blue-900 text-xs font-bold px-2 py-0.5 rounded-full uppercase">Pages 22, 29 et 30</span>
+            <h2 class="font-display text-xl font-bold text-blue-950">Démarches expérimentales, chaleur et liquides</h2>
+          </div>
+        </div>
+      </div>
+
+      <!-- Question 3.1 -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q3_1">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-blue-100 text-blue-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">3.1</span>
+            <div>
+              <h3 class="font-bold text-slate-800 text-base">L'expérience de la bouteille (page 22) : Les étapes sont présentées dans le désordre.</h3>
+              <p class="text-xs text-slate-500 mt-0.5">En observant les photos, associe les étapes dans leur ordre chronologique :</p>
+            </div>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 11</span>
+        </div>
+
+        <div class="space-y-3">
+          <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <span class="text-sm font-bold text-blue-900">1ère action ➔</span>
+            <select class="match-select bg-white border border-slate-300 rounded-lg p-2 text-xs font-semibold text-slate-700 outline-none focus:ring-2 focus:ring-blue-500" data-correct="act_1">
+              <option value="">-- Choisis l'action --</option>
+              <option value="act_1">De l'eau chaude est versée dans la bouteille</option>
+              <option value="act_2">L'eau chaude est retirée de la bouteille</option>
+              <option value="act_3">La bouteille est retournée et posée au centre de l'assiette</option>
+            </select>
+          </div>
+          <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <span class="text-sm font-bold text-blue-900">2ème action ➔</span>
+            <select class="match-select bg-white border border-slate-300 rounded-lg p-2 text-xs font-semibold text-slate-700 outline-none focus:ring-2 focus:ring-blue-500" data-correct="act_2">
+              <option value="">-- Choisis l'action --</option>
+              <option value="act_1">De l'eau chaude est versée dans la bouteille</option>
+              <option value="act_2">L'eau chaude est retirée de la bouteille</option>
+              <option value="act_3">La bouteille est retournée et posée au centre de l'assiette</option>
+            </select>
+          </div>
+          <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <span class="text-sm font-bold text-blue-900">3ème action ➔</span>
+            <select class="match-select bg-white border border-slate-300 rounded-lg p-2 text-xs font-semibold text-slate-700 outline-none focus:ring-2 focus:ring-blue-500" data-correct="act_3">
+              <option value="">-- Choisis l'action --</option>
+              <option value="act_1">De l'eau chaude est versée dans la bouteille</option>
+              <option value="act_2">L'eau chaude est retirée de la bouteille</option>
+              <option value="act_3">La bouteille est retournée et posée au centre de l'assiette</option>
+            </select>
+          </div>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 3.2 (Bonne réponse : C) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q3_2">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-blue-100 text-blue-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">3.2</span>
+            <h3 class="font-bold text-slate-800 text-base">Dans l'Expérience 1 de la page 29 (des fleurs dans un vase), à quoi sert le filet d'huile versé dans l'éprouvette n°1 ?</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 12</span>
+        </div>
+        <div class="space-y-2.5">
+          <button type="button" onclick="selectSingleOption('q3_2', 0)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            A) À nourrir la plante avec des lipides
+          </button>
+          <button type="button" onclick="selectSingleOption('q3_2', 1)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            B) À rendre l'eau opaque pour cacher les racines
+          </button>
+          <button type="button" onclick="selectSingleOption('q3_2', 2)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            C) À empêcher l'eau de s'évaporer à l'air libre
+          </button>
+          <button type="button" onclick="selectSingleOption('q3_2', 3)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            D) À faire geler l'eau plus rapidement
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 3.3 (Bonne réponse : A) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q3_3">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-blue-100 text-blue-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">3.3</span>
+            <h3 class="font-bold text-slate-800 text-base">Dans l'Expérience 2 (page 29), pourquoi le niveau d'eau a-t-il nettement baissé dans l'éprouvette 2 au dernier jour, alors que l'huile empêchait l'évaporation ?</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 13</span>
+        </div>
+        <div class="space-y-2.5">
+          <button type="button" onclick="selectSingleOption('q3_3', 0)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            A) La tulipe a absorbé l'eau par sa tige pour ses besoins
+          </button>
+          <button type="button" onclick="selectSingleOption('q3_3', 1)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            B) L'huile a bu toute l'eau du fond de l'éprouvette
+          </button>
+          <button type="button" onclick="selectSingleOption('q3_3', 2)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            C) L'éprouvette s'est fendue et a fui
+          </button>
+          <button type="button" onclick="selectSingleOption('q3_3', 3)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            D) L'eau est passée à l'état gazeux sous l'huile
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 3.4 (Bonne réponse : B) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q3_4">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-blue-100 text-blue-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">3.4</span>
+            <h3 class="font-bold text-slate-800 text-base">Dans l'Expérience 1 de la page 30, du lait et de l'huile ont été mélangés puis laissés au repos 5 minutes. Pourquoi l'huile se retrouve-t-elle au-dessus du lait ?</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 14</span>
+        </div>
+        <div class="space-y-2.5">
+          <button type="button" onclick="selectSingleOption('q3_4', 0)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            A) Parce que le lait est plus chaud que l'huile
+          </button>
+          <button type="button" onclick="selectSingleOption('q3_4', 1)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            B) Parce que l'huile est moins dense (plus légère à volume égal) que le lait et flotte au-dessus
+          </button>
+          <button type="button" onclick="selectSingleOption('q3_4', 2)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            C) Parce que le lait a dissous l'huile
+          </button>
+          <button type="button" onclick="selectSingleOption('q3_4', 3)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            D) Parce que l'huile a gelé
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 3.5 (Bonne réponse : D) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q3_5">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-blue-100 text-blue-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">3.5</span>
+            <h3 class="font-bold text-slate-800 text-base">Dans l'Expérience 2 de la page 30, pourquoi la bouteille en verre remplie d'eau s'est-elle brisée au congélateur ?</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 15</span>
+        </div>
+        <div class="space-y-2.5">
+          <button type="button" onclick="selectSingleOption('q3_5', 0)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            A) Le verre a rétréci au froid jusqu'à imploser
+          </button>
+          <button type="button" onclick="selectSingleOption('q3_5', 1)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            B) L'eau liquide est devenue plus lourde
+          </button>
+          <button type="button" onclick="selectSingleOption('q3_5', 2)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            C) Le congélateur a fait fondre le fond de la bouteille
+          </button>
+          <button type="button" onclick="selectSingleOption('q3_5', 3)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            D) En se transformant en glace solide, l'eau a augmenté de volume et a fait éclater le verre
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Bouton de validation de la section -->
+      <div class="flex justify-end pt-2">
+        <button onclick="validateSection(2)" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-display font-bold rounded-xl shadow-md hover-lift flex items-center gap-2">
+          <span>✔️</span> Valider la partie 3
+        </button>
+      </div>
+
+    </section>
+
+    <!-- ================= THÈME 4 : MÉTÉO & ÉLECTRICITÉ ================= -->
+    <section id="section-3" class="theme-section space-y-6 hidden">
+      
+      <div class="bg-indigo-50 border border-indigo-200 p-5 rounded-2xl">
+        <div class="flex items-center gap-3">
+          <span class="text-3xl">⚡</span>
+          <div>
+            <span class="bg-indigo-200 text-indigo-900 text-xs font-bold px-2 py-0.5 rounded-full uppercase">Pages 26 et 31</span>
+            <h2 class="font-display text-xl font-bold text-indigo-950">Météorologie, instruments et circuits électriques</h2>
+          </div>
+        </div>
+      </div>
+
+      <!-- Question 4.1 (Bonne réponse : B) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q4_1">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-indigo-100 text-indigo-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">4.1</span>
+            <h3 class="font-bold text-slate-800 text-base">D'après le tableau météorologique de la page 26, quel jour a enregistré la plus grande quantité de précipitations (80 mm) avec des orages ?</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 16</span>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+          <button type="button" onclick="selectSingleOption('q4_1', 0)" class="option-btn p-3 rounded-xl border border-slate-200 text-center text-sm font-medium hover:bg-slate-50 transition">
+            Lundi 24/06
+          </button>
+          <button type="button" onclick="selectSingleOption('q4_1', 1)" class="option-btn p-3 rounded-xl border border-slate-200 text-center text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            Mardi 25/06
+          </button>
+          <button type="button" onclick="selectSingleOption('q4_1', 2)" class="option-btn p-3 rounded-xl border border-slate-200 text-center text-sm font-medium hover:bg-slate-50 transition">
+            Mercredi 26/06
+          </button>
+          <button type="button" onclick="selectSingleOption('q4_1', 3)" class="option-btn p-3 rounded-xl border border-slate-200 text-center text-sm font-medium hover:bg-slate-50 transition">
+            Vendredi 28/06
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 4.2 -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q4_2">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-indigo-100 text-indigo-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">4.2</span>
+            <h3 class="font-bold text-slate-800 text-base">Associe chaque instrument météorologique de la page 26 à la grandeur qu'il mesure :</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 17</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between gap-2">
+            <span class="text-sm font-bold text-indigo-900">Le pluviomètre ➔</span>
+            <select class="match-select bg-white border border-slate-300 rounded-lg p-1.5 text-xs font-semibold text-slate-700 focus:ring-2 focus:ring-indigo-500 outline-none" data-correct="mesure_pluie">
+              <option value="">-- Choisis la mesure --</option>
+              <option value="mesure_pluie">La quantité de précipitations / pluie (mm)</option>
+              <option value="mesure_vent_vit">La vitesse du vent (km/h)</option>
+              <option value="mesure_vent_dir">La direction du vent (N, S, O, E)</option>
+              <option value="mesure_temp">La température (°C)</option>
+            </select>
+          </div>
+          <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between gap-2">
+            <span class="text-sm font-bold text-indigo-900">L'anémomètre ➔</span>
+            <select class="match-select bg-white border border-slate-300 rounded-lg p-1.5 text-xs font-semibold text-slate-700 focus:ring-2 focus:ring-indigo-500 outline-none" data-correct="mesure_vent_vit">
+              <option value="">-- Choisis la mesure --</option>
+              <option value="mesure_pluie">La quantité de précipitations / pluie (mm)</option>
+              <option value="mesure_vent_vit">La vitesse du vent (km/h)</option>
+              <option value="mesure_vent_dir">La direction du vent (N, S, O, E)</option>
+              <option value="mesure_temp">La température (°C)</option>
+            </select>
+          </div>
+          <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between gap-2">
+            <span class="text-sm font-bold text-indigo-900">La girouette ➔</span>
+            <select class="match-select bg-white border border-slate-300 rounded-lg p-1.5 text-xs font-semibold text-slate-700 focus:ring-2 focus:ring-indigo-500 outline-none" data-correct="mesure_vent_dir">
+              <option value="">-- Choisis la mesure --</option>
+              <option value="mesure_pluie">La quantité de précipitations / pluie (mm)</option>
+              <option value="mesure_vent_vit">La vitesse du vent (km/h)</option>
+              <option value="mesure_vent_dir">La direction du vent (N, S, O, E)</option>
+              <option value="mesure_temp">La température (°C)</option>
+            </select>
+          </div>
+          <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between gap-2">
+            <span class="text-sm font-bold text-indigo-900">Le thermomètre ➔</span>
+            <select class="match-select bg-white border border-slate-300 rounded-lg p-1.5 text-xs font-semibold text-slate-700 focus:ring-2 focus:ring-indigo-500 outline-none" data-correct="mesure_temp">
+              <option value="">-- Choisis la mesure --</option>
+              <option value="mesure_pluie">La quantité de précipitations / pluie (mm)</option>
+              <option value="mesure_vent_vit">La vitesse du vent (km/h)</option>
+              <option value="mesure_vent_dir">La direction du vent (N, S, O, E)</option>
+              <option value="mesure_temp">La température (°C)</option>
+            </select>
+          </div>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 4.3 (Bonne réponse : D) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q4_3">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-indigo-100 text-indigo-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">4.3</span>
+            <h3 class="font-bold text-slate-800 text-base">En lisant la ligne « Vitesse du vent » du tableau de la page 26, quelle est la vitesse maximale atteinte au cours de la semaine ?</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 18</span>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+          <button type="button" onclick="selectSingleOption('q4_3', 0)" class="option-btn p-3 rounded-xl border border-slate-200 text-center text-sm font-medium hover:bg-slate-50 transition">
+            8 km/h
+          </button>
+          <button type="button" onclick="selectSingleOption('q4_3', 1)" class="option-btn p-3 rounded-xl border border-slate-200 text-center text-sm font-medium hover:bg-slate-50 transition">
+            22 km/h
+          </button>
+          <button type="button" onclick="selectSingleOption('q4_3', 2)" class="option-btn p-3 rounded-xl border border-slate-200 text-center text-sm font-medium hover:bg-slate-50 transition">
+            54 km/h
+          </button>
+          <button type="button" onclick="selectSingleOption('q4_3', 3)" class="option-btn p-3 rounded-xl border border-slate-200 text-center text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            72 km/h
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 4.4 (Bonne réponse : A) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q4_4">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-indigo-100 text-indigo-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">4.4</span>
+            <h3 class="font-bold text-slate-800 text-base">Dans le <strong>Montage électrique 2</strong> de la page 31, pourquoi la lampe LED s'allume-t-elle alors que les deux fils métalliques ne se touchent pas ?</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 19</span>
+        </div>
+        <div class="space-y-2.5">
+          <button type="button" onclick="selectSingleOption('q4_4', 0)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            A) Parce que l'eau salée est conductrice d'électricité et permet de fermer le circuit
+          </button>
+          <button type="button" onclick="selectSingleOption('q4_4', 1)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            B) Parce que le verre produit lui-même du courant électrique
+          </button>
+          <button type="button" onclick="selectSingleOption('q4_4', 2)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            C) Parce que la lampe LED éclaire sans avoir besoin de circuit fermé
+          </button>
+          <button type="button" onclick="selectSingleOption('q4_4', 3)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            D) Parce que les batteries flottent dans le verre
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Question 4.5 (Bonne réponse : C) -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow space-y-4" data-qid="q4_5">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex gap-2">
+            <span class="bg-indigo-100 text-indigo-800 font-bold px-2.5 py-0.5 rounded-lg text-sm h-fit">4.5</span>
+            <h3 class="font-bold text-slate-800 text-base">D'après la liste de matériel de la page 31, quel composant joue le rôle de <u>récepteur</u> d'énergie électrique ?</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question 20</span>
+        </div>
+        <div class="space-y-2.5">
+          <button type="button" onclick="selectSingleOption('q4_5', 0)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            A) Les 2 batteries de 1,2 volt
+          </button>
+          <button type="button" onclick="selectSingleOption('q4_5', 1)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            B) Les câbles électriques rouges et noirs
+          </button>
+          <button type="button" onclick="selectSingleOption('q4_5', 2)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition" data-correct="true">
+            C) La lampe LED de 2,5 volts
+          </button>
+          <button type="button" onclick="selectSingleOption('q4_5', 3)" class="option-btn w-full p-3 rounded-xl border border-slate-200 text-left text-sm font-medium hover:bg-slate-50 transition">
+            D) Le support en plastique pour 2 batteries
+          </button>
+        </div>
+        <div class="feedback-box hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+      </div>
+
+      <!-- Bouton de validation de la section -->
+      <div class="flex justify-end pt-2">
+        <button onclick="validateSection(3)" class="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-display font-bold rounded-xl shadow-md hover-lift flex items-center gap-2">
+          <span>✔️</span> Valider la partie 4 & Voir mon bilan
+        </button>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- ================= MODAL BILAN FINAL ================= -->
+  <div id="finalModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 md:p-8 border border-slate-200 shadow-2xl space-y-6 text-center">
+      <div id="modalIcon" class="text-6xl mx-auto">🎉</div>
+      <div>
+        <h2 id="modalTitle" class="font-display text-2xl md:text-3xl font-bold text-slate-800">Bravo pour ton entraînement !</h2>
+        <p id="modalSubtitle" class="text-slate-600 text-sm mt-1">Voici ton bilan pour le CEB Sciences 2024 :</p>
+      </div>
+
+      <!-- Score Card -->
+      <div class="bg-gradient-to-br from-slate-50 to-slate-100 p-5 rounded-2xl border border-slate-200 flex items-center justify-around">
+        <div>
+          <div class="text-xs uppercase font-bold text-slate-500">Score Final</div>
+          <div class="font-display font-bold text-3xl text-indigo-600"><span id="finalScoreVal">0</span> / <span id="maxScoreDisplay">20</span></div>
+        </div>
+        <div class="h-10 w-px bg-slate-300"></div>
+        <div>
+          <div class="text-xs uppercase font-bold text-slate-500">Réussite</div>
+          <div class="font-display font-bold text-3xl text-slate-800"><span id="finalPercentVal">0</span>%</div>
+        </div>
+      </div>
+
+      <p id="modalAdvice" class="text-sm text-slate-700 font-medium bg-indigo-50 text-indigo-900 p-3 rounded-xl border border-indigo-200"></p>
+
+      <div class="flex gap-3 justify-center pt-2">
+        <button onclick="closeModal()" class="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl text-sm transition">
+          Revoir mes réponses
+        </button>
+        <button onclick="resetAll()" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl text-sm transition shadow-md">
+          🔄 Recommencer
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= LOGIQUE JAVASCRIPT ================= -->
+  <script>
+    let currentScore = 0;
+    const totalQuestions = 20;
+
+    function switchTab(index) {
+      document.querySelectorAll(".tab-btn").forEach((btn, i) => {
+        if (i === index) {
+          btn.className = "tab-btn active px-4 py-2.5 rounded-xl font-display font-semibold text-sm transition-all flex items-center gap-2 bg-indigo-600 text-white shadow-md";
+        } else {
+          btn.className = "tab-btn px-4 py-2.5 rounded-xl font-display font-semibold text-sm transition-all flex items-center gap-2 bg-white text-slate-600 hover:bg-slate-100 border border-slate-200";
+        }
+      });
+
+      document.querySelectorAll(".theme-section").forEach((sec, i) => {
+        sec.classList.toggle("hidden", i !== index);
+      });
+      window.scrollTo({ top: 120, behavior: "smooth" });
+    }
+
+    function selectSingleOption(qid, optIndex) {
+      const container = document.querySelector(`[data-qid="${qid}"]`);
+      const buttons = container.querySelectorAll(".option-btn");
+      buttons.forEach((btn, idx) => {
+        if (idx === optIndex) {
+          btn.classList.add("selected");
+        } else {
+          btn.classList.remove("selected");
+        }
+      });
+    }
+
+    function selectTrueFalse(subId, val) {
+      const row = document.querySelector(`[data-sub="${subId}"]`);
+      const buttons = row.querySelectorAll(".tf-btn");
+      buttons.forEach(btn => {
+        const btnVal = btn.getAttribute("data-val") === "true";
+        if (btnVal === val) {
+          btn.classList.add("bg-blue-600", "text-white", "border-blue-600", "selected");
+          btn.classList.remove("hover:bg-white");
+        } else {
+          btn.classList.remove("bg-blue-600", "text-white", "border-blue-600", "selected");
+          btn.classList.add("hover:bg-white");
+        }
+      });
+    }
+
+    function validateSection(secIndex) {
+      let section = document.getElementById(`section-${secIndex}`);
+      let allSectionCorrect = true;
+
+      section.querySelectorAll("[data-qid]").forEach(qBox => {
+        const feedback = qBox.querySelector(".feedback-box");
+        const optionBtns = qBox.querySelectorAll(".option-btn");
+        const tfRows = qBox.querySelectorAll("[data-sub]");
+        const matchSelects = qBox.querySelectorAll(".match-select");
+
+        if (optionBtns.length > 0) {
+          let selected = null;
+          let correct = null;
+          optionBtns.forEach(b => {
+            if (b.classList.contains("selected")) selected = b;
+            if (b.hasAttribute("data-correct")) correct = b;
+          });
+
+          if (!selected) {
+            allSectionCorrect = false;
+            showFeedback(feedback, false, "⚠️ N'oublie pas de sélectionner une réponse !");
+            return;
+          }
+
+          if (selected === correct) {
+            selected.classList.add("correct");
+            showFeedback(feedback, true, "✨ Exact ! Très bonne observation du document.");
+          } else {
+            allSectionCorrect = false;
+            selected.classList.add("wrong");
+            correct.classList.add("correct");
+            showFeedback(feedback, false, "Regarde bien le document du portfolio pour trouver la réponse indiquée en vert.");
+          }
+        } else if (tfRows.length > 0) {
+          let qCorrect = true;
+          tfRows.forEach(row => {
+            const selectedBtn = row.querySelector(".tf-btn.selected");
+            const correctBtn = row.querySelector(".tf-btn[data-correct='true']");
+            if (!selectedBtn) {
+              qCorrect = false;
+              allSectionCorrect = false;
+            } else if (selectedBtn === correctBtn) {
+              selectedBtn.classList.add("!bg-emerald-600", "!border-emerald-600", "!text-white");
+            } else {
+              qCorrect = false;
+              allSectionCorrect = false;
+              selectedBtn.classList.add("!bg-rose-500", "!border-rose-500", "!text-white");
+              correctBtn.classList.add("!bg-emerald-600", "!border-emerald-600", "!text-white");
+            }
+          });
+          if (qCorrect) {
+            showFeedback(feedback, true, "✨ Parfait ! Toutes tes réponses sont exactes.");
+          } else {
+            showFeedback(feedback, false, "Certaines réponses étaient inexactes. Vérifie les corrections en vert.");
+          }
+        } else if (matchSelects.length > 0) {
+          let matchCorrect = true;
+          matchSelects.forEach(sel => {
+            const expected = sel.getAttribute("data-correct");
+            if (!sel.value) {
+              matchCorrect = false;
+              allSectionCorrect = false;
+            } else if (sel.value === expected) {
+              sel.classList.add("!border-emerald-500", "!bg-emerald-50", "!text-emerald-900");
+              sel.classList.remove("!border-rose-500", "!bg-rose-50", "!text-rose-900");
+            } else {
+              matchCorrect = false;
+              allSectionCorrect = false;
+              sel.classList.add("!border-rose-500", "!bg-rose-50", "!text-rose-900");
+              sel.classList.remove("!border-emerald-500", "!bg-emerald-50", "!text-emerald-900");
+            }
+          });
+          if (matchCorrect) {
+            showFeedback(feedback, true, "✨ Bravo ! Toutes les associations sont correctes.");
+          } else {
+            showFeedback(feedback, false, "Certaines associations sont inexactes. Compare bien avec les documents du livret.");
+          }
+        }
+      });
+
+      updateGlobalScore();
+
+      if (secIndex === 3) {
+        setTimeout(showFinalBilan, 600);
+      }
+    }
+
+    function showFeedback(el, isOk, msg) {
+      if (!el) return;
+      el.classList.remove("hidden", "bg-emerald-50", "text-emerald-900", "border-emerald-200", "bg-rose-50", "text-rose-900", "border-rose-200");
+      if (isOk) {
+        el.classList.add("bg-emerald-50", "text-emerald-900", "border", "border-emerald-200");
+      } else {
+        el.classList.add("bg-rose-50", "text-rose-900", "border", "border-rose-200");
+      }
+      el.innerHTML = msg;
+    }
+
+    function updateGlobalScore() {
+      let score = 0;
+      document.querySelectorAll("[data-qid]").forEach(qBox => {
+        const feedback = qBox.querySelector(".feedback-box");
+        if (feedback && feedback.classList.contains("bg-emerald-50")) {
+          score += 1;
+        }
+      });
+      currentScore = score;
+      document.getElementById("globalScore").innerText = score;
+      
+      const pct = Math.round((score / totalQuestions) * 100);
+      document.getElementById("mainProgressBar").style.width = pct + "%";
+    }
+
+    function showFinalBilan() {
+      updateGlobalScore();
+      const modal = document.getElementById("finalModal");
+      document.getElementById("finalScoreVal").innerText = currentScore;
+      document.getElementById("maxScoreDisplay").innerText = totalQuestions;
+      const pct = Math.round((currentScore / totalQuestions) * 100);
+      document.getElementById("finalPercentVal").innerText = pct;
+
+      const advice = document.getElementById("modalAdvice");
+      const icon = document.getElementById("modalIcon");
+
+      if (pct >= 80) {
+        icon.innerText = "🏆";
+        advice.innerHTML = "🌟 <strong>Excellent travail !</strong> Tu maîtrises parfaitement la lecture des documents et la démarche scientifique de ce CEB !";
+        if (typeof confetti === "function") {
+          confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+        }
+      } else if (pct >= 50) {
+        icon.innerText = "👍";
+        advice.innerHTML = "👏 <strong>Bon travail !</strong> La majorité des notions sont comprises. Prends le temps de relire les corrections pour perfectionner tes connaissances.";
+      } else {
+        icon.innerText = "💪";
+        advice.innerHTML = "📖 <strong>Continue tes efforts !</strong> Rouvre ton livret portfolio et relis attentivement chaque document avant de recommencer.";
+      }
+
+      modal.classList.remove("hidden");
+      modal.classList.add("flex");
+    }
+
+    function closeModal() {
+      const modal = document.getElementById("finalModal");
+      modal.classList.add("hidden");
+      modal.classList.remove("flex");
+    }
+
+    function resetAll() {
+      window.location.reload();
+    }
+  </script>
+</body>
+</html>
