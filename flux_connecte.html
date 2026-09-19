@@ -1,0 +1,1293 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flux Connecté — Plateforme Scolaire LCML</title>
+  <meta name="description" content="Jeu de réflexion et de logique spatiale : relie les flux de même couleur pour recouvrir toute la grille.">
+  <meta name="theme-color" content="#5B4FCF">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+  
+  <!-- Confetti pour la victoire -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <style>
+    :root {
+      --purple: #5B4FCF;
+      --purple-light: #EEF0FF;
+      --purple-mid: #C7C2F5;
+      --purple-dark: #4338A8;
+
+      --green: #1A9E75;
+      --green-light: #E2F5EE;
+      --green-dark: #0F6348;
+
+      --red: #D94F3D;
+      --red-light: #FDECEA;
+
+      --amber: #F59E0B;
+      --amber-dark: #C97B1A;
+      --amber-light: #FEF3E2;
+
+      --blue: #1A6FA0;
+      --blue-light: #E2F0FA;
+
+      --bg: #FDFBF7;
+      --surface: #FFFFFF;
+      --text: #1A1A2E;
+      --muted: #6B7080;
+      --border: #1A1A2E;
+
+      --grid-line: #E2E8F0;
+      --board-bg: #F8FAFC;
+
+      --r-lg: 20px;
+      --r-md: 14px;
+      --r-sm: 10px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background-color: var(--bg);
+      background-image: 
+        radial-gradient(circle at 1px 1px, rgba(26, 26, 46, 0.05) 1px, transparent 0);
+      background-size: 24px 24px;
+      color: var(--text);
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    h1, h2, h3, h4, .font-title {
+      font-family: 'Fredoka', sans-serif;
+      color: var(--text);
+    }
+
+    /* ---------- Boutons & Cartes Flat 3D LCML ---------- */
+    .flat-card {
+      background: var(--surface);
+      border: 3px solid var(--border);
+      border-radius: var(--r-lg);
+      box-shadow: 4px 4px 0px var(--border);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .flat-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-family: 'Fredoka', 'Nunito', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--text);
+      background: var(--surface);
+      border: 2.5px solid var(--border);
+      border-radius: var(--r-sm);
+      box-shadow: 3px 3px 0px var(--border);
+      padding: 8px 16px;
+      cursor: pointer;
+      user-select: none;
+      text-decoration: none;
+      transition: all 0.15s ease;
+    }
+
+    .flat-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 5px 5px 0px var(--border);
+    }
+
+    .flat-btn:active {
+      transform: translate(2px, 2px);
+      box-shadow: 1px 1px 0px var(--border);
+    }
+
+    .btn-purple {
+      background: var(--purple);
+      color: #FFFFFF;
+    }
+    .btn-purple:hover {
+      background: var(--purple-dark);
+      color: #FFFFFF;
+    }
+
+    .btn-green {
+      background: var(--green);
+      color: #FFFFFF;
+    }
+    .btn-green:hover {
+      background: var(--green-dark);
+      color: #FFFFFF;
+    }
+
+    .btn-amber {
+      background: var(--amber);
+      color: var(--text);
+    }
+    .btn-amber:hover {
+      background: #FBBF24;
+    }
+
+    .btn-secondary {
+      background: var(--surface);
+      color: var(--text);
+    }
+    .btn-secondary:hover {
+      background: #F1F5F9;
+    }
+
+    /* ---------- Barre de Navigation Haute ---------- */
+    .lcml-header {
+      background: #FFFFFF;
+      border-bottom: 3px solid var(--border);
+      padding: 12px 16px;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+
+    .lcml-header-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .brand-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-icon {
+      width: 42px;
+      height: 42px;
+      background: var(--purple-light);
+      border: 2.5px solid var(--border);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      box-shadow: 2px 2px 0px var(--border);
+      flex-shrink: 0;
+    }
+
+    .brand-title {
+      font-size: 20px;
+      font-weight: 700;
+      line-height: 1.1;
+    }
+
+    .brand-subtitle {
+      font-size: 11px;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    /* ---------- Container Central ---------- */
+    .main-container {
+      max-width: 720px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 24px 16px 48px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ---------- Écran Sélection des Niveaux ---------- */
+    .hero-card {
+      padding: 20px 24px;
+      margin-bottom: 24px;
+      background: linear-gradient(135deg, #FFFFFF 0%, var(--purple-light) 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      font-family: 'Fredoka', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      background: var(--amber-light);
+      color: var(--amber-dark);
+      border: 2px solid var(--border);
+      border-radius: 999px;
+      margin-bottom: 8px;
+    }
+
+    .hero-title {
+      font-size: clamp(24px, 5vw, 32px);
+      font-weight: 800;
+      margin-bottom: 6px;
+      color: var(--purple);
+    }
+
+    .hero-desc {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .progress-section {
+      margin-bottom: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--muted);
+    }
+
+    .progress-bar-container {
+      background: #E2E8F0;
+      border: 2px solid var(--border);
+      border-radius: 999px;
+      height: 16px;
+      overflow: hidden;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.08);
+      position: relative;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--purple), var(--green));
+      border-radius: 999px;
+      transition: width 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .level-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+
+    .tile-level {
+      background: var(--surface);
+      border: 3px solid var(--border);
+      border-radius: var(--r-md);
+      padding: 14px 12px;
+      box-shadow: 4px 4px 0px var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      cursor: pointer;
+      text-align: left;
+      position: relative;
+      transition: all 0.15s ease;
+      user-select: none;
+    }
+
+    .tile-level:hover:not(.locked) {
+      transform: translateY(-3px);
+      box-shadow: 6px 6px 0px var(--border);
+    }
+
+    .tile-level:active:not(.locked) {
+      transform: translate(2px, 2px);
+      box-shadow: 2px 2px 0px var(--border);
+    }
+
+    .tile-level.locked {
+      background: #F1F5F9;
+      opacity: 0.65;
+      cursor: not-allowed;
+      border-color: #94A3B8;
+      box-shadow: 2px 2px 0px #94A3B8;
+    }
+
+    .tile-level.completed {
+      background: #F0FDF4;
+      border-color: var(--green-dark);
+      box-shadow: 4px 4px 0px var(--green-dark);
+    }
+
+    .tile-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .tile-number {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .tile-level.completed .tile-number {
+      color: var(--green-dark);
+    }
+
+    .tile-badge-icon {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 900;
+      border: 2px solid var(--border);
+    }
+
+    .tile-badge-done {
+      background: var(--green);
+      color: white;
+      border-color: var(--green-dark);
+    }
+
+    .tile-badge-locked {
+      background: #E2E8F0;
+      color: #64748B;
+      border-color: #94A3B8;
+      font-size: 11px;
+    }
+
+    .tile-meta-text {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+    }
+
+    .tile-dots-preview {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+      margin-top: 4px;
+    }
+
+    .tile-dots-preview span {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      border: 1px solid rgba(0,0,0,0.15);
+    }
+
+    .rules-card {
+      padding: 18px 20px;
+      background: #FFFFFF;
+      border-left: 6px solid var(--purple);
+    }
+
+    .rules-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--purple);
+    }
+
+    .rules-body {
+      font-size: 13.5px;
+      color: var(--text);
+      line-height: 1.55;
+    }
+
+    /* ---------- Écran de Jeu ---------- */
+    .play-top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .play-level-info {
+      text-align: center;
+      flex: 1;
+    }
+
+    .play-level-info h2 {
+      font-size: 22px;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .play-level-info p {
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .stats-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+
+    .stat-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      background: #FFFFFF;
+      border: 2px solid var(--border);
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 700;
+      box-shadow: 2px 2px 0px var(--border);
+    }
+
+    .stat-pill strong {
+      color: var(--purple);
+      font-family: 'Fredoka', sans-serif;
+      font-size: 15px;
+    }
+
+    .board-card {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .board-wrap {
+      width: min(88vw, 55svh, 480px);
+      aspect-ratio: 1/1;
+      margin: 0 auto;
+      touch-action: none;
+      user-select: none;
+      -webkit-user-select: none;
+      border-radius: var(--r-md);
+      overflow: hidden;
+      border: 2px solid var(--border);
+      box-shadow: inset 0 2px 6px rgba(0,0,0,0.06);
+      background: var(--board-bg);
+      cursor: pointer;
+    }
+
+    .board-wrap svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* ---------- Bannière de Victoire ---------- */
+    .win-modal-card {
+      margin-top: 18px;
+      padding: 20px 24px;
+      background: linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 100%);
+      border: 3px solid var(--green-dark);
+      box-shadow: 5px 5px 0px var(--green-dark);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      animation: popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    @keyframes popIn {
+      0% { transform: scale(0.92); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .win-text-zone b {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 20px;
+      color: var(--green-dark);
+      display: block;
+    }
+
+    .win-text-zone span {
+      font-size: 13px;
+      color: #166534;
+      font-weight: 500;
+    }
+
+    .hint-card {
+      padding: 10px 16px;
+      margin-bottom: 16px;
+      background: var(--amber-light);
+      border: 2.5px solid var(--border);
+      border-radius: var(--r-md);
+      box-shadow: 3px 3px 0px var(--border);
+      font-size: 13px;
+      line-height: 1.45;
+      color: var(--text);
+      text-align: center;
+    }
+
+    [hidden] {
+      display: none !important;
+    }
+
+    /* Responsive */
+    @media (max-width: 500px) {
+      .lcml-header-inner {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .brand-left {
+        justify-content: space-between;
+      }
+      .play-top-bar {
+        gap: 8px;
+      }
+      .play-level-info {
+        order: -1;
+        width: 100%;
+        margin-bottom: 4px;
+      }
+      .stats-container {
+        gap: 8px;
+      }
+      .stat-pill {
+        font-size: 12px;
+        padding: 4px 10px;
+      }
+      .win-modal-card {
+        flex-direction: column;
+        text-align: center;
+      }
+      .win-modal-card .flat-btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- EN-TÊTE LCML -->
+  <header class="lcml-header">
+    <div class="lcml-header-inner">
+      <div class="brand-left">
+        <div class="brand-icon">⚡</div>
+        <div>
+          <h1 class="brand-title">Flux Connecté</h1>
+          <p class="brand-subtitle">Plateforme Scolaire LCML · Logique & Géométrie</p>
+        </div>
+      </div>
+      <div>
+        <a href="index.html" class="flat-btn btn-secondary text-sm" title="Retour à l'accueil de la plateforme">
+          <span>🏠 Accueil</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- CONTENU PRINCIPAL -->
+  <main class="main-container">
+
+    <!-- ÉCRAN 1 : SÉLECTION DES NIVEAUX -->
+    <div id="screen-select">
+      
+      <!-- CARTE TITRE HERO -->
+      <div class="flat-card hero-card">
+        <div class="hero-badge">🧩 Défi de réflexion</div>
+        <h2 class="hero-title">Relie tous les flux !</h2>
+        <p class="hero-desc">
+          Trace des chemins entre les pastilles de même couleur pour recouvrir <strong>l'intégralité de la grille</strong> sans qu'aucun chemin ne se croise.
+        </p>
+      </div>
+
+      <!-- PROGRESSION GLOBALE -->
+      <div class="progress-section">
+        <div class="progress-header">
+          <span>Progression des niveaux</span>
+          <span id="progress-label">0 / 12 terminés</span>
+        </div>
+        <div class="progress-bar-container">
+          <div class="progress-bar-fill" id="progress-fill" style="width: 0%"></div>
+        </div>
+      </div>
+
+      <!-- GRILLE DES NIVEAUX -->
+      <div class="level-grid" id="level-grid"></div>
+
+      <!-- CARTE CONSIGNES -->
+      <div class="flat-card rules-card">
+        <div class="rules-title">
+          <span>💡</span>
+          <span>Règles & But du jeu</span>
+        </div>
+        <div class="rules-body">
+          <p>• Fais glisser la souris ou ton doigt d'une pastille colorée jusqu'à sa paire correspondante.</p>
+          <p>• Tu peux recouper un tracé à tout moment pour le modifier ou le faire serpenter.</p>
+          <p>• <strong>Condition obligatoire :</strong> Pour débloquer le niveau suivant, toutes les paires doivent être reliées <strong>ET 100% des cases de la grille</strong> doivent être recouvertes !</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ÉCRAN 2 : JEU ACTIF -->
+    <div id="screen-play" hidden>
+      
+      <!-- BARRE DU HAUT DE JEU -->
+      <div class="play-top-bar">
+        <button class="flat-btn btn-secondary" id="btn-back">
+          <span>← Niveaux</span>
+        </button>
+
+        <div class="play-level-info">
+          <h2 id="play-lvl-name">Niveau 1</h2>
+          <p id="play-lvl-sub">5 × 5 · 3 couleurs</p>
+        </div>
+
+        <button class="flat-btn btn-secondary" id="btn-reset" title="Réinitialiser la grille">
+          <span>⟲ Effacer</span>
+        </button>
+      </div>
+
+      <!-- BADGES D'ÉTAT -->
+      <div class="stats-container">
+        <div class="stat-pill">
+          <span>🟦 Grille :</span>
+          <strong id="stat-cells">0/25</strong>
+        </div>
+        <div class="stat-pill">
+          <span>🎨 Flux reliés :</span>
+          <strong id="stat-colors">0/3</strong>
+        </div>
+      </div>
+
+      <!-- MESSAGE D'AIDE LORSQUE LES FLUX SONT RELIÉS MAIS GRILLE INCOMPLÈTE -->
+      <div id="play-hint-zone" class="flat-card hint-card" hidden></div>
+
+      <!-- PLATEAU DE JEU -->
+      <div class="flat-card board-card">
+        <div class="board-wrap" id="board-wrap">
+          <svg id="board-svg" viewBox="0 0 10 10" preserveAspectRatio="xMidYMid meet"></svg>
+        </div>
+      </div>
+
+      <!-- BANNIÈRE DE VICTOIRE -->
+      <div class="flat-card win-modal-card" id="win-banner" hidden>
+        <div class="win-text-zone">
+          <b>🎉 Bravo ! Niveau complété !</b>
+          <span id="win-sub">100% de la grille est recouverte et tous les flux sont connectés.</span>
+        </div>
+        <button class="flat-btn btn-green" id="btn-next">
+          <span>Niveau suivant →</span>
+        </button>
+      </div>
+
+    </div>
+
+  </main>
+
+  <script>
+  (function(){
+    "use strict";
+
+    // Palette saturée et contrastée adaptée pour le jeu sur fond clair
+    var LCML_COLORS = [
+      "#E11D48", // Rose vif / Rouge
+      "#2563EB", // Bleu roi
+      "#16A34A", // Vert émeraude
+      "#D97706", // Ambre / Orange
+      "#9333EA", // Violet
+      "#0891B2", // Cyan profond
+      "#EA580C", // Mandarine
+      "#4F46E5", // Indigo
+      "#DB2777", // Magenta
+      "#0D9488"  // Sarcelle / Teal
+    ];
+
+    var LEVELS = [
+      {"size":5,"name":"Niveau 1","colors":[{"start":[2,0],"end":[2,1]},{"start":[1,2],"end":[1,1]},{"start":[4,4],"end":[2,4]}]},
+      {"size":5,"name":"Niveau 2","colors":[{"start":[4,3],"end":[3,3]},{"start":[3,0],"end":[2,4]},{"start":[2,0],"end":[1,2]},{"start":[4,2],"end":[4,0]}]},
+      {"size":6,"name":"Niveau 3","colors":[{"start":[3,3],"end":[1,1]},{"start":[1,2],"end":[5,0]},{"start":[4,2],"end":[4,3]},{"start":[0,5],"end":[0,3]},{"start":[5,5],"end":[1,5]}]},
+      {"size":6,"name":"Niveau 4","colors":[{"start":[2,5],"end":[0,3]},{"start":[1,1],"end":[2,1]},{"start":[3,4],"end":[4,4]},{"start":[4,1],"end":[2,0]},{"start":[5,3],"end":[3,5]},{"start":[1,3],"end":[1,4]}]},
+      {"size":7,"name":"Niveau 5","colors":[{"start":[4,3],"end":[1,5]},{"start":[3,0],"end":[2,0]},{"start":[5,1],"end":[5,3]},{"start":[3,6],"end":[1,4]},{"start":[5,4],"end":[6,2]},{"start":[6,6],"end":[4,6]}]},
+      {"size":7,"name":"Niveau 6","colors":[{"start":[6,5],"end":[4,1]},{"start":[4,4],"end":[0,3]},{"start":[0,2],"end":[4,2]},{"start":[0,4],"end":[3,4]},{"start":[2,0],"end":[6,0]},{"start":[0,5],"end":[3,5]},{"start":[5,3],"end":[5,2]}]},
+      {"size":8,"name":"Niveau 7","colors":[{"start":[4,4],"end":[7,6]},{"start":[4,7],"end":[2,6]},{"start":[2,4],"end":[5,2]},{"start":[1,1],"end":[0,5]},{"start":[5,0],"end":[5,1]},{"start":[7,0],"end":[7,1]},{"start":[3,6],"end":[7,7]}]},
+      {"size":8,"name":"Niveau 8","colors":[{"start":[3,0],"end":[2,3]},{"start":[3,2],"end":[1,1]},{"start":[5,4],"end":[1,4]},{"start":[1,3],"end":[4,6]},{"start":[6,4],"end":[5,3]},{"start":[7,2],"end":[4,0]},{"start":[5,5],"end":[0,7]},{"start":[7,6],"end":[7,7]}]},
+      {"size":9,"name":"Niveau 9","colors":[{"start":[2,5],"end":[4,0]},{"start":[0,7],"end":[1,2]},{"start":[0,4],"end":[0,0]},{"start":[6,3],"end":[6,2]},{"start":[4,1],"end":[3,2]},{"start":[6,8],"end":[8,7]},{"start":[2,6],"end":[5,5]},{"start":[8,0],"end":[6,6]},{"start":[3,8],"end":[2,8]}]},
+      {"size":9,"name":"Niveau 10","colors":[{"start":[4,5],"end":[4,0]},{"start":[7,2],"end":[8,0]},{"start":[6,7],"end":[4,7]},{"start":[4,8],"end":[1,3]},{"start":[8,8],"end":[8,5]},{"start":[0,5],"end":[2,8]},{"start":[8,4],"end":[8,2]},{"start":[1,0],"end":[0,0]},{"start":[3,0],"end":[2,2]}]},
+      {"size":10,"name":"Niveau 11","colors":[{"start":[8,9],"end":[3,9]},{"start":[6,8],"end":[1,8]},{"start":[9,9],"end":[7,5]},{"start":[7,0],"end":[9,2]},{"start":[8,4],"end":[8,7]},{"start":[1,0],"end":[0,0]},{"start":[6,3],"end":[2,3]},{"start":[2,2],"end":[1,3]},{"start":[2,9],"end":[4,4]},{"start":[4,1],"end":[4,2]}]},
+      {"size":10,"name":"Niveau 12","colors":[{"start":[5,4],"end":[0,0]},{"start":[1,8],"end":[1,3]},{"start":[6,7],"end":[8,6]},{"start":[4,4],"end":[2,8]},{"start":[7,3],"end":[6,2]},{"start":[9,0],"end":[5,0]},{"start":[2,3],"end":[4,6]},{"start":[7,4],"end":[8,9]},{"start":[2,9],"end":[4,9]},{"start":[1,1],"end":[1,0]},{"start":[4,2],"end":[5,1]}]}
+    ];
+
+    var STORAGE_KEY = "flux-connecte-progress-v1";
+
+    // Synthétiseur de sons légers Web Audio
+    var audioCtx = null;
+    function playSound(type){
+      try {
+        if (!audioCtx) {
+          var AudioContext = window.AudioContext || window.webkitAudioContext;
+          if (AudioContext) audioCtx = new AudioContext();
+        }
+        if (!audioCtx) return;
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+
+        var osc = audioCtx.createOscillator();
+        var gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        var now = audioCtx.currentTime;
+
+        if (type === 'step') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(320, now);
+          osc.frequency.exponentialRampToValueAtTime(480, now + 0.05);
+          gain.gain.setValueAtTime(0.06, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+          osc.start(now);
+          osc.stop(now + 0.05);
+        } else if (type === 'connect') {
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(520, now);
+          osc.frequency.exponentialRampToValueAtTime(780, now + 0.12);
+          gain.gain.setValueAtTime(0.12, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+          osc.start(now);
+          osc.stop(now + 0.12);
+        } else if (type === 'win') {
+          var notes = [523.25, 659.25, 783.99, 1046.50];
+          notes.forEach(function(freq, idx){
+            var o = audioCtx.createOscillator();
+            var g = audioCtx.createGain();
+            o.connect(g);
+            g.connect(audioCtx.destination);
+            o.type = 'triangle';
+            o.frequency.setValueAtTime(freq, now + idx * 0.08);
+            g.gain.setValueAtTime(0.15, now + idx * 0.08);
+            g.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.08 + 0.25);
+            o.start(now + idx * 0.08);
+            o.stop(now + idx * 0.08 + 0.25);
+          });
+        }
+      } catch(e){}
+    }
+
+    function loadProgress(){
+      try{
+        var raw = localStorage.getItem(STORAGE_KEY);
+        if(!raw) return {unlocked:0, completed:new Array(LEVELS.length).fill(false)};
+        var parsed = JSON.parse(raw);
+        if(!parsed || typeof parsed.unlocked !== "number") throw 0;
+        if(!Array.isArray(parsed.completed)) parsed.completed = new Array(LEVELS.length).fill(false);
+        while(parsed.completed.length < LEVELS.length) parsed.completed.push(false);
+        return parsed;
+      }catch(e){
+        return {unlocked:0, completed:new Array(LEVELS.length).fill(false)};
+      }
+    }
+
+    function saveProgress(p){
+      try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(p)); }catch(e){}
+    }
+
+    var progress = loadProgress();
+
+    function getColorHex(i, total){
+      if (i < LCML_COLORS.length) {
+        return LCML_COLORS[i];
+      }
+      var hue = Math.round((i / total) * 360);
+      return "hsl(" + hue + ", 75%, 45%)";
+    }
+
+    // ---------- Éléments DOM ----------
+    var screenSelect = document.getElementById("screen-select");
+    var screenPlay = document.getElementById("screen-play");
+    var levelGrid = document.getElementById("level-grid");
+    var progressLabel = document.getElementById("progress-label");
+    var progressFill = document.getElementById("progress-fill");
+
+    function renderLevelSelect(){
+      levelGrid.innerHTML = "";
+      var doneCount = progress.completed.filter(Boolean).length;
+      progressLabel.textContent = doneCount + " / " + LEVELS.length + " terminés";
+      progressFill.style.width = Math.round((doneCount / LEVELS.length) * 100) + "%";
+
+      LEVELS.forEach(function(lvl, i){
+        var locked = i > progress.unlocked;
+        var done = !!progress.completed[i];
+        
+        var tile = document.createElement("button");
+        tile.className = "tile-level" + (locked ? " locked" : "") + (done ? " completed" : "");
+        tile.setAttribute("aria-disabled", locked ? "true" : "false");
+
+        var top = document.createElement("div");
+        top.className = "tile-top";
+
+        var num = document.createElement("div");
+        num.className = "tile-number";
+        num.textContent = "Niveau " + (i + 1);
+        top.appendChild(num);
+
+        var badge = document.createElement("div");
+        if(done){
+          badge.className = "tile-badge-icon tile-badge-done";
+          badge.textContent = "✓";
+        } else if(locked){
+          badge.className = "tile-badge-icon tile-badge-locked";
+          badge.textContent = "🔒";
+        } else {
+          badge.className = "tile-badge-icon";
+          badge.style.background = "var(--purple-light)";
+          badge.style.color = "var(--purple)";
+          badge.textContent = "▶";
+        }
+        top.appendChild(badge);
+        tile.appendChild(top);
+
+        var meta = document.createElement("div");
+        meta.className = "tile-meta-text";
+        meta.textContent = lvl.size + " × " + lvl.size + " • " + lvl.colors.length + " couleurs";
+        tile.appendChild(meta);
+
+        var dots = document.createElement("div");
+        dots.className = "tile-dots-preview";
+        lvl.colors.forEach(function(c, ci){
+          var d = document.createElement("span");
+          d.style.background = getColorHex(ci, lvl.colors.length);
+          dots.appendChild(d);
+        });
+        tile.appendChild(dots);
+
+        if(!locked){
+          tile.addEventListener("click", function(){ startLevel(i); });
+        }
+        levelGrid.appendChild(tile);
+      });
+    }
+
+    // ---------- Gestion de la Partie ----------
+    var currentLevelIndex = -1;
+    var size = 0;
+    var gridOwner = [];
+    var colorState = [];
+    var dragging = false;
+    var dragColor = -1;
+
+    var boardSvg = document.getElementById("board-svg");
+    var boardWrap = document.getElementById("board-wrap");
+    var playLvlName = document.getElementById("play-lvl-name");
+    var playLvlSub = document.getElementById("play-lvl-sub");
+    var statCells = document.getElementById("stat-cells");
+    var statColors = document.getElementById("stat-colors");
+    var winBanner = document.getElementById("win-banner");
+
+    var SVG_NS = "http://www.w3.org/2000/svg";
+
+    function startLevel(i){
+      currentLevelIndex = i;
+      var lvl = LEVELS[i];
+      size = lvl.size;
+      gridOwner = [];
+      for(var r = 0; r < size; r++){
+        var row = [];
+        for(var c = 0; c < size; c++) row.push(-1);
+        gridOwner.push(row);
+      }
+      colorState = lvl.colors.map(function(c, ci){
+        return {
+          start: c.start.slice(),
+          end: c.end.slice(),
+          path: [],
+          done: false,
+          color: getColorHex(ci, lvl.colors.length)
+        };
+      });
+
+      playLvlName.textContent = lvl.name || ("Niveau " + (i + 1));
+      playLvlSub.textContent = size + " × " + size + " • " + lvl.colors.length + " couleurs";
+      winBanner.hidden = true;
+
+      screenSelect.hidden = true;
+      screenPlay.hidden = false;
+
+      boardSvg.setAttribute("viewBox", "0 0 " + size + " " + size);
+      renderBoard();
+      updateStatus();
+    }
+
+    function resetLevel(){
+      if(currentLevelIndex < 0) return;
+      startLevel(currentLevelIndex);
+    }
+
+    function backToSelect(){
+      screenPlay.hidden = true;
+      screenSelect.hidden = false;
+      renderLevelSelect();
+    }
+
+    function eq(a,b){ return a[0] === b[0] && a[1] === b[1]; }
+    function adjacent(a,b){
+      var dr = Math.abs(a[0] - b[0]), dc = Math.abs(a[1] - b[1]);
+      return (dr + dc) === 1;
+    }
+    function endpointOwner(r,c){
+      for(var i = 0; i < colorState.length; i++){
+        var cs = colorState[i];
+        if(eq(cs.start, [r,c]) || eq(cs.end, [r,c])) return i;
+      }
+      return -1;
+    }
+
+    function farEndpoint(cs){
+      if(cs.path.length === 0) return null;
+      return eq(cs.path[0], cs.start) ? cs.end : cs.start;
+    }
+
+    function recomputeDone(cs){
+      var target = farEndpoint(cs);
+      var wasDone = cs.done;
+      cs.done = !!(target && cs.path.length > 1 && eq(cs.path[cs.path.length - 1], target));
+      if (!wasDone && cs.done) {
+        playSound('connect');
+      }
+    }
+
+    function clearCellsFrom(colorIdx, fromIdx){
+      var cs = colorState[colorIdx];
+      var removed = cs.path.splice(fromIdx);
+      removed.forEach(function(cell){ gridOwner[cell[0]][cell[1]] = -1; });
+      recomputeDone(cs);
+    }
+
+    function tryStep(colorIdx, r, c){
+      var cs = colorState[colorIdx];
+      var path = cs.path;
+      var last = path[path.length - 1];
+      if(eq(last, [r,c])) return true;
+      if(!adjacent(last, [r,c])) return false;
+
+      if(path.length >= 2){
+        var second = path[path.length - 2];
+        if(eq(second, [r,c])){
+          clearCellsFrom(colorIdx, path.length - 1);
+          playSound('step');
+          return true;
+        }
+      }
+      if(cs.done) return false;
+
+      var epOwner = endpointOwner(r,c);
+      if(epOwner !== -1 && epOwner !== colorIdx) return false;
+
+      var owner = gridOwner[r][c];
+      if(owner === colorIdx) return false;
+
+      if(owner !== -1){
+        var opath = colorState[owner].path;
+        var oIdx = -1;
+        for(var k = 0; k < opath.length; k++){ if(eq(opath[k], [r,c])){ oIdx = k; break; } }
+        if(oIdx !== -1) clearCellsFrom(owner, oIdx);
+      }
+
+      path.push([r,c]);
+      gridOwner[r][c] = colorIdx;
+      recomputeDone(cs);
+      playSound('step');
+      return true;
+    }
+
+    function stepToward(colorIdx, r0, c0, r1, c1){
+      var r = r0, c = c0;
+      var guard = 0;
+      while((r !== r1 || c !== c1) && guard < (size * 2 + 4)){
+        guard++;
+        var dr = r1 - r, dc = c1 - c;
+        if(Math.abs(dr) >= Math.abs(dc) && dr !== 0){
+          r += dr > 0 ? 1 : -1;
+        } else if(dc !== 0){
+          c += dc > 0 ? 1 : -1;
+        } else {
+          break;
+        }
+        if(!tryStep(colorIdx, r, c)) return false;
+      }
+      return true;
+    }
+
+    function cellFromEvent(evt){
+      var rect = boardWrap.getBoundingClientRect();
+      var x = evt.clientX - rect.left;
+      var y = evt.clientY - rect.top;
+      var col = Math.floor((x / rect.width) * size);
+      var row = Math.floor((y / rect.height) * size);
+      if(col < 0) col = 0; if(col > size - 1) col = size - 1;
+      if(row < 0) row = 0; if(row > size - 1) row = size - 1;
+      return [row, col];
+    }
+
+    var lastCell = null;
+
+    function onPointerDown(evt){
+      if(currentLevelIndex < 0) return;
+      var rc = cellFromEvent(evt);
+      var owner = gridOwner[rc[0]][rc[1]];
+
+      if(owner === -1){
+        var epOwner = endpointOwner(rc[0], rc[1]);
+        if(epOwner === -1) return;
+        evt.preventDefault();
+        var freshCs = colorState[epOwner];
+        clearCellsFrom(epOwner, 0);
+        freshCs.path.push(rc);
+        gridOwner[rc[0]][rc[1]] = epOwner;
+        dragging = true;
+        dragColor = epOwner;
+        lastCell = rc;
+        try{ boardSvg.setPointerCapture(evt.pointerId); }catch(e){}
+        renderBoard();
+        updateStatus();
+        return;
+      }
+
+      evt.preventDefault();
+      var cs = colorState[owner];
+      var idx = -1;
+      for(var k = 0; k < cs.path.length; k++){ if(eq(cs.path[k], rc)){ idx = k; break; } }
+      if(idx === -1) return;
+      clearCellsFrom(owner, idx + 1);
+      dragging = true;
+      dragColor = owner;
+      lastCell = rc;
+      try{ boardSvg.setPointerCapture(evt.pointerId); }catch(e){}
+      renderBoard();
+      updateStatus();
+    }
+
+    function onPointerMove(evt){
+      if(!dragging) return;
+      evt.preventDefault();
+      var rc = cellFromEvent(evt);
+      if(lastCell && rc[0] === lastCell[0] && rc[1] === lastCell[1]) return;
+      var from = lastCell || colorState[dragColor].path[colorState[dragColor].path.length - 1];
+      stepToward(dragColor, from[0], from[1], rc[0], rc[1]);
+      lastCell = rc;
+      renderBoard();
+      updateStatus();
+    }
+
+    function onPointerUp(evt){
+      if(!dragging) return;
+      dragging = false;
+      dragColor = -1;
+      lastCell = null;
+      checkWin();
+    }
+
+    function svgEl(name, attrs){
+      var el = document.createElementNS(SVG_NS, name);
+      for(var k in attrs) el.setAttribute(k, attrs[k]);
+      return el;
+    }
+
+    function renderBoard(){
+      boardSvg.innerHTML = "";
+      
+      // Fond de la grille
+      boardSvg.appendChild(svgEl("rect", {
+        x: 0, y: 0, width: size, height: size, fill: "#F8FAFC"
+      }));
+
+      // Lignes de quadrillage élégantes
+      for(var i = 1; i < size; i++){
+        boardSvg.appendChild(svgEl("line", {
+          x1: i, y1: 0, x2: i, y2: size,
+          stroke: "#CBD5E1", "stroke-width": 0.03
+        }));
+        boardSvg.appendChild(svgEl("line", {
+          x1: 0, y1: i, x2: size, y2: i,
+          stroke: "#CBD5E1", "stroke-width": 0.03
+        }));
+      }
+
+      // Trajets reliés
+      colorState.forEach(function(cs){
+        if(cs.path.length > 1){
+          var pts = cs.path.map(function(p){ return (p[1] + 0.5) + "," + (p[0] + 0.5); }).join(" ");
+          
+          // Ombre légère sous le trait
+          boardSvg.appendChild(svgEl("polyline", {
+            points: pts,
+            fill: "none",
+            stroke: "rgba(0,0,0,0.12)",
+            "stroke-width": 0.52,
+            "stroke-linecap": "round",
+            "stroke-linejoin": "round"
+          }));
+
+          // Trait coloré principal
+          boardSvg.appendChild(svgEl("polyline", {
+            points: pts,
+            fill: "none",
+            stroke: cs.color,
+            "stroke-width": 0.44,
+            "stroke-linecap": "round",
+            "stroke-linejoin": "round",
+            opacity: cs.done ? 1 : 0.88
+          }));
+        }
+      });
+
+      // Pastilles (terminaisons)
+      colorState.forEach(function(cs){
+        [cs.start, cs.end].forEach(function(p){
+          // Cercle d'aura / contour si complété
+          if (cs.done) {
+            boardSvg.appendChild(svgEl("circle", {
+              cx: p[1] + 0.5, cy: p[0] + 0.5, r: 0.36,
+              fill: "none",
+              stroke: cs.color,
+              "stroke-width": 0.06,
+              opacity: 0.6
+            }));
+          }
+
+          // Pastille centrale
+          boardSvg.appendChild(svgEl("circle", {
+            cx: p[1] + 0.5, cy: p[0] + 0.5, r: 0.28,
+            fill: cs.color,
+            stroke: "#FFFFFF",
+            "stroke-width": 0.04
+          }));
+
+          // Point blanc central mignon
+          boardSvg.appendChild(svgEl("circle", {
+            cx: p[1] + 0.5, cy: p[0] + 0.5, r: 0.09,
+            fill: "#FFFFFF"
+          }));
+        });
+      });
+    }
+
+    function updateStatus(){
+      var total = size * size;
+      var filled = 0;
+      for(var r = 0; r < size; r++) for(var c = 0; c < size; c++) if(gridOwner[r][c] !== -1) filled++;
+      var doneColors = colorState.filter(function(cs){ return cs.done; }).length;
+      statCells.textContent = filled + "/" + total;
+      statColors.textContent = doneColors + "/" + colorState.length;
+
+      var hintZone = document.getElementById("play-hint-zone");
+      if(hintZone){
+        if(doneColors === colorState.length && filled < total){
+          hintZone.hidden = false;
+          var remaining = total - filled;
+          hintZone.innerHTML = "⚠️ <strong>Tous les flux sont reliés</strong>, mais il reste <strong>" + remaining + " case(s) vide(s)</strong> ! Fais serpenter tes tracés pour recouvrir 100% de la grille.";
+        } else {
+          hintZone.hidden = true;
+        }
+      }
+    }
+
+    function triggerConfetti() {
+      if (typeof confetti === 'function') {
+        confetti({
+          particleCount: 50,
+          spread: 60,
+          origin: { y: 0.65 }
+        });
+      }
+    }
+
+    function checkWin(){
+      var total = size * size;
+      var filled = 0;
+      for(var r = 0; r < size; r++) for(var c = 0; c < size; c++) if(gridOwner[r][c] !== -1) filled++;
+      var allDone = colorState.every(function(cs){ return cs.done; });
+      
+      if(filled === total && allDone){
+        var hintZone = document.getElementById("play-hint-zone");
+        if(hintZone) hintZone.hidden = true;
+
+        winBanner.hidden = false;
+        playSound('win');
+        triggerConfetti();
+
+        var winSub = document.getElementById("win-sub");
+        if(winSub) winSub.textContent = "🌟 100% de la grille est recouverte et tous les flux sont connectés !";
+
+        if(currentLevelIndex >= progress.unlocked && progress.unlocked < LEVELS.length - 1){
+          progress.unlocked = Math.max(progress.unlocked, currentLevelIndex + 1);
+        }
+        progress.completed[currentLevelIndex] = true;
+        saveProgress(progress);
+
+        var nextBtn = document.getElementById("btn-next");
+        if(currentLevelIndex >= LEVELS.length - 1){
+          nextBtn.textContent = "🏆 Terminé ! Revoir les niveaux";
+        } else {
+          nextBtn.textContent = "Niveau suivant →";
+        }
+      }
+    }
+
+    document.getElementById("btn-back").addEventListener("click", backToSelect);
+    document.getElementById("btn-reset").addEventListener("click", resetLevel);
+    document.getElementById("btn-next").addEventListener("click", function(){
+      if(currentLevelIndex >= LEVELS.length - 1){
+        backToSelect();
+      } else {
+        startLevel(currentLevelIndex + 1);
+      }
+    });
+
+    boardSvg.addEventListener("pointerdown", onPointerDown);
+    boardSvg.addEventListener("pointermove", onPointerMove);
+    boardSvg.addEventListener("pointerup", onPointerUp);
+    boardSvg.addEventListener("pointercancel", onPointerUp);
+    boardSvg.addEventListener("pointerleave", function(evt){ if(dragging){ /* maintenu via pointer capture */ } });
+
+    renderLevelSelect();
+
+    // Gestion du bouton accueil dans l'iframe du site LCML
+    if (window.self !== window.top) {
+      var homeBtn = document.querySelector('.lcml-header a.flat-btn');
+      if (homeBtn) {
+        homeBtn.addEventListener('click', function(e){
+          e.preventDefault();
+          try {
+            if (window.parent && typeof window.parent.showScreen === 'function') {
+              window.parent.showScreen('screen-jeux');
+              if (typeof window.parent.renderJeuxMenu === 'function') {
+                window.parent.renderJeuxMenu();
+              }
+            } else {
+              window.location.href = 'index.html';
+            }
+          } catch(err){
+            window.location.href = 'index.html';
+          }
+        });
+      }
+    }
+  })();
+  </script>
+
+</body>
+</html>
+
