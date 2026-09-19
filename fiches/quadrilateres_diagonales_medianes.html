@@ -1,0 +1,1250 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Médianes et Diagonales des Quadrilatères — LCML</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <!-- TailwindCSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      corePlugins: { preflight: false },
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Nunito', 'sans-serif'],
+            display: ['Fredoka', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  
+  <style>
+    :root {
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --secondary: #06b6d4;
+      --accent-diag: #8b5cf6;
+      --accent-med: #f97316;
+      --success: #10b981;
+      --danger: #ef4444;
+      --card-bg: #ffffff;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: linear-gradient(135deg, #f0f4ff 0%, #e0e7ff 50%, #f5f3ff 100%);
+      color: #1e293b;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3, h4, .btn-font {
+      font-family: 'Fredoka', sans-serif;
+    }
+
+    /* 3D Button styles matching LCML theme */
+    .btn-3d {
+      font-family: 'Fredoka', sans-serif;
+      font-weight: 600;
+      border: 2px solid #0f172a;
+      box-shadow: 0 4px 0 #0f172a;
+      transition: all 0.12s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+      user-select: none;
+    }
+    .btn-3d:active:not(:disabled) {
+      transform: translateY(3px);
+      box-shadow: 0 1px 0 #0f172a;
+    }
+    .btn-3d:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      box-shadow: 0 2px 0 #0f172a;
+    }
+
+    .card-3d {
+      background: #ffffff;
+      border: 3px solid #0f172a;
+      border-radius: 20px;
+      box-shadow: 6px 6px 0 #0f172a;
+    }
+
+    .opt-card {
+      background: #ffffff;
+      border: 2px solid #cbd5e1;
+      border-radius: 14px;
+      padding: 14px 18px;
+      font-size: 15px;
+      font-weight: 700;
+      color: #334155;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: all 0.15s ease;
+      text-align: left;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+      width: 100%;
+    }
+    .opt-card:hover:not(:disabled) {
+      border-color: #6366f1;
+      background: #eef2ff;
+      transform: translateX(4px);
+      color: #4338ca;
+    }
+    .opt-card .opt-letter {
+      width: 32px;
+      height: 32px;
+      border-radius: 10px;
+      background: #f1f5f9;
+      border: 2px solid #cbd5e1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Fredoka', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      color: #64748b;
+      flex-shrink: 0;
+      transition: all 0.15s ease;
+    }
+    .opt-card:hover:not(:disabled) .opt-letter {
+      background: #6366f1;
+      border-color: #4f46e5;
+      color: #ffffff;
+    }
+    .opt-card.correct {
+      border-color: #10b981 !important;
+      background: #ecfdf5 !important;
+      color: #065f46 !important;
+    }
+    .opt-card.correct .opt-letter {
+      background: #10b981 !important;
+      border-color: #059669 !important;
+      color: #ffffff !important;
+    }
+    .opt-card.incorrect {
+      border-color: #ef4444 !important;
+      background: #fef2f2 !important;
+      color: #991b1b !important;
+    }
+    .opt-card.incorrect .opt-letter {
+      background: #ef4444 !important;
+      border-color: #dc2626 !important;
+      color: #ffffff !important;
+    }
+    .opt-card.disabled-neutral {
+      opacity: 0.55;
+      cursor: default;
+    }
+
+    /* Progress bar */
+    .progress-track {
+      height: 12px;
+      background: #e2e8f0;
+      border-radius: 9999px;
+      overflow: hidden;
+      border: 2px solid #0f172a;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #6366f1, #06b6d4);
+      transition: width 0.3s ease;
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.7);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 50;
+      padding: 16px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* Badges */
+    .badge-diag {
+      background: #ede9fe;
+      color: #6d28d9;
+      border: 1.5px solid #c4b5fd;
+      padding: 2px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 800;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .badge-med {
+      background: #ffedd5;
+      color: #c2410c;
+      border: 1.5px solid #fed7aa;
+      padding: 2px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 800;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* Confetti */
+    .confetti {
+      position: fixed;
+      width: 10px;
+      height: 10px;
+      top: -10px;
+      z-index: 9999;
+      pointer-events: none;
+      animation: fall 3s linear forwards;
+    }
+    @keyframes fall {
+      to {
+        transform: translateY(105vh) rotate(720deg);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body class="p-3 sm:p-6">
+
+  <div class="max-w-3xl mx-auto w-full flex-1 flex flex-col">
+    
+    <!-- HEADER -->
+    <header class="flex flex-wrap items-center justify-between gap-3 mb-4">
+      <div class="flex items-center gap-2">
+        <button onclick="leaveActivity()" class="btn-3d bg-white hover:bg-slate-100 text-slate-800 px-3 py-1.5 rounded-xl text-sm flex items-center gap-1.5">
+          <span>←</span> <span class="hidden sm:inline">Retour</span>
+        </button>
+        <h1 class="text-xl sm:text-2xl font-bold text-slate-900 tracking-wide flex items-center gap-2">
+          <span>📐</span> Médianes & Diagonales
+        </h1>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <!-- Memo Button -->
+        <button onclick="openMemoModal()" class="btn-3d bg-amber-300 hover:bg-amber-400 text-slate-900 px-3 py-1.5 rounded-xl text-sm flex items-center gap-1.5">
+          <span>📖</span> <span class="font-bold">Fiche Mémo</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- SCREEN 1: MENU / THEMES -->
+    <div id="screen-menu" class="card-3d p-5 sm:p-7 flex-1 flex flex-col justify-between">
+      <div>
+        <div class="text-center max-w-xl mx-auto mb-6">
+          <div class="inline-flex items-center gap-2 px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-xs font-bold uppercase tracking-wider mb-2">
+            Géométrie · 5e & 6e primaire
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 mb-2">Entraîne-toi sur les quadrilatères !</h2>
+          <p class="text-slate-600 text-sm sm:text-base">
+            Connais-tu la différence entre une <strong>médiane</strong> et une <strong>diagonale</strong> ? Découvre leurs propriétés pour chaque quadrilatère et teste tes connaissances !
+          </p>
+        </div>
+
+        <!-- Mode selection cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-6">
+          
+          <button onclick="startExercise('all')" class="card-3d bg-gradient-to-br from-indigo-50 to-purple-50 hover:from-indigo-100 hover:to-purple-100 p-4 sm:p-5 text-left transition transform hover:-translate-y-1 cursor-pointer">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-2xl">🌟</span>
+              <span class="text-xs font-bold bg-indigo-600 text-white px-2.5 py-0.5 rounded-full">Recommandé</span>
+            </div>
+            <div class="font-bold text-slate-900 text-base sm:text-lg mb-1 btn-font">Entraînement Complet</div>
+            <div class="text-xs sm:text-sm text-slate-600">10 questions variées : définitions, reconnaissance visuelle et propriétés.</div>
+          </button>
+
+          <button onclick="startExercise('def')" class="card-3d bg-gradient-to-br from-amber-50 to-orange-50 hover:from-amber-100 hover:to-orange-100 p-4 sm:p-5 text-left transition transform hover:-translate-y-1 cursor-pointer">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-2xl">📖</span>
+              <span class="text-xs font-bold bg-amber-600 text-white px-2.5 py-0.5 rounded-full">Bases</span>
+            </div>
+            <div class="font-bold text-slate-900 text-base sm:text-lg mb-1 btn-font">1. Définitions & Vocabulaire</div>
+            <div class="text-xs sm:text-sm text-slate-600">Sommets opposés, milieux des côtés, nombres de segments...</div>
+          </button>
+
+          <button onclick="startExercise('diag')" class="card-3d bg-gradient-to-br from-purple-50 to-pink-50 hover:from-purple-100 hover:to-pink-100 p-4 sm:p-5 text-left transition transform hover:-translate-y-1 cursor-pointer">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-2xl">🟣</span>
+              <span class="text-xs font-bold bg-purple-600 text-white px-2.5 py-0.5 rounded-full">Propriétés</span>
+            </div>
+            <div class="font-bold text-slate-900 text-base sm:text-lg mb-1 btn-font">2. Les Diagonales</div>
+            <div class="text-xs sm:text-sm text-slate-600">Perpendicularité, isométrie, milieu commun...</div>
+          </button>
+
+          <button onclick="startExercise('med')" class="card-3d bg-gradient-to-br from-orange-50 to-amber-50 hover:from-orange-100 hover:to-amber-100 p-4 sm:p-5 text-left transition transform hover:-translate-y-1 cursor-pointer">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-2xl">🟠</span>
+              <span class="text-xs font-bold bg-orange-600 text-white px-2.5 py-0.5 rounded-full">Propriétés</span>
+            </div>
+            <div class="font-bold text-slate-900 text-base sm:text-lg mb-1 btn-font">3. Les Médianes</div>
+            <div class="text-xs sm:text-sm text-slate-600">Perpendicularité et isométrie des médianes dans chaque forme.</div>
+          </button>
+
+          <button onclick="startExercise('riddle')" class="sm:col-span-2 card-3d bg-gradient-to-br from-emerald-50 to-teal-50 hover:from-emerald-100 hover:to-teal-100 p-4 sm:p-5 text-left transition transform hover:-translate-y-1 cursor-pointer">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-2xl">🧩</span>
+              <span class="text-xs font-bold bg-emerald-600 text-white px-2.5 py-0.5 rounded-full">Logique</span>
+            </div>
+            <div class="font-bold text-slate-900 text-base sm:text-lg mb-1 btn-font">4. Devinettes « Qui suis-je ? »</div>
+            <div class="text-xs sm:text-sm text-slate-600">Retrouve le bon quadrilatère à partir des indices sur ses diagonales et ses médianes.</div>
+          </button>
+
+        </div>
+      </div>
+
+      <!-- Quick summary reminder -->
+      <div class="bg-slate-100 border-2 border-slate-300 rounded-xl p-3 sm:p-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs sm:text-sm">
+        <div class="flex items-center gap-2.5">
+          <span class="text-xl">💡</span>
+          <div>
+            <strong class="text-slate-800">Besoin d'un petit rappel avant de commencer ?</strong>
+            <p class="text-slate-600">Consulte la fiche mémo pour revoir toutes les caractéristiques en un coup d'œil.</p>
+          </div>
+        </div>
+        <button onclick="openMemoModal()" class="btn-3d bg-white hover:bg-slate-50 text-slate-800 px-4 py-2 rounded-xl font-bold whitespace-nowrap text-xs sm:text-sm">
+          Voir le mémo 👀
+        </button>
+      </div>
+    </div>
+
+    <!-- SCREEN 2: QUESTION PLAYER -->
+    <div id="screen-game" class="card-3d p-4 sm:p-6 flex-1 flex flex-col justify-between hidden">
+      <div>
+        <!-- Top Info bar -->
+        <div class="flex items-center justify-between gap-3 mb-3">
+          <div class="flex items-center gap-2">
+            <span id="badge-theme" class="badge-diag">🌟 Thème</span>
+            <span id="q-counter" class="text-xs sm:text-sm font-bold text-slate-500">Question 1/10</span>
+          </div>
+          <div class="flex items-center gap-1 font-bold text-sm text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
+            <span>Score :</span>
+            <span id="live-score">0</span>
+          </div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="progress-track mb-5">
+          <div id="progress-bar" class="progress-fill" style="width: 10%;"></div>
+        </div>
+
+        <!-- Question Card Container -->
+        <div id="question-container" class="mb-4">
+          <!-- Dynamically populated -->
+        </div>
+
+        <!-- Dynamic Options Container -->
+        <div id="options-container" class="flex flex-col gap-2.5 mb-4">
+          <!-- Dynamically populated -->
+        </div>
+
+        <!-- Feedback container (hidden initially) -->
+        <div id="feedback-container" class="hidden mb-4 p-4 rounded-xl border-2 transition-all">
+          <div id="feedback-header" class="flex items-center gap-2 font-bold text-base mb-1.5"></div>
+          <div id="feedback-text" class="text-sm leading-relaxed text-slate-700 mb-3"></div>
+          <div id="feedback-svg" class="flex justify-center my-2"></div>
+        </div>
+      </div>
+
+      <!-- Action Button Footer -->
+      <div class="pt-2">
+        <button id="next-btn" onclick="nextQuestion()" class="btn-3d w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3.5 px-6 rounded-xl text-base sm:text-lg font-bold hidden">
+          Question suivante ➔
+        </button>
+      </div>
+    </div>
+
+    <!-- SCREEN 3: FINAL SCORE -->
+    <div id="screen-result" class="card-3d p-6 sm:p-8 flex-1 flex flex-col items-center justify-center text-center hidden">
+      <div id="res-emoji" class="text-6xl sm:text-7xl mb-3 animate-bounce">🎉</div>
+      <h2 id="res-title" class="text-2xl sm:text-3xl font-bold text-slate-900 mb-2">Bravo !</h2>
+      <p id="res-desc" class="text-slate-600 text-sm sm:text-base max-w-md mb-6">Tu as terminé cet entraînement.</p>
+
+      <!-- Score display badge -->
+      <div class="bg-indigo-50 border-3 border-indigo-500 rounded-2xl p-4 sm:p-6 mb-6 w-full max-w-sm">
+        <div class="text-xs font-extrabold uppercase tracking-wider text-indigo-600 mb-1">Ton résultat</div>
+        <div id="res-score" class="text-4xl sm:text-5xl font-black text-indigo-900 mb-1 btn-font">8 / 10</div>
+        <div id="res-pct" class="text-sm font-bold text-indigo-700">80% de réussite</div>
+      </div>
+
+      <!-- Recap of questions -->
+      <div id="res-recap" class="w-full max-w-md bg-slate-50 border-2 border-slate-200 rounded-xl p-3 sm:p-4 mb-6 text-left max-h-48 overflow-y-auto text-xs sm:text-sm">
+        <!-- Injected dynamically -->
+      </div>
+
+      <!-- Actions -->
+      <div class="flex flex-col sm:flex-row gap-3 w-full max-w-md">
+        <button onclick="restartSameTheme()" class="btn-3d flex-1 bg-indigo-600 hover:bg-indigo-700 text-white py-3 px-5 rounded-xl font-bold text-sm sm:text-base">
+          🔄 Recommencer
+        </button>
+        <button onclick="goToMenu()" class="btn-3d flex-1 bg-slate-200 hover:bg-slate-300 text-slate-800 py-3 px-5 rounded-xl font-bold text-sm sm:text-base">
+          📋 Choisir un thème
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- MEMO / HELP MODAL -->
+  <div id="memo-modal" class="modal-overlay">
+    <div class="card-3d bg-white w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden">
+      <!-- Modal Header -->
+      <div class="p-4 sm:p-5 border-b-2 border-slate-200 flex items-center justify-between bg-indigo-50">
+        <div class="flex items-center gap-2">
+          <span class="text-2xl">📖</span>
+          <h3 class="text-lg sm:text-xl font-bold text-indigo-950">Fiche Mémo : Diagonales & Médianes</h3>
+        </div>
+        <button onclick="closeMemoModal()" class="btn-3d bg-white hover:bg-slate-100 text-slate-700 px-3 py-1 rounded-lg text-sm font-bold">
+          ✕
+        </button>
+      </div>
+
+      <!-- Modal Body (Scrollable) -->
+      <div class="p-4 sm:p-6 overflow-y-auto space-y-6 text-sm">
+        
+        <!-- Definitions Section -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Diagonale -->
+          <div class="bg-purple-50 border-2 border-purple-200 rounded-xl p-4">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="w-4 h-4 rounded-full bg-purple-600"></span>
+              <h4 class="font-bold text-purple-950 text-base">La Diagonale</h4>
+            </div>
+            <p class="text-slate-700 mb-2 leading-relaxed">
+              C'est le segment de droite qui relie deux sommets opposés (non consécutifs) d'un quadrilatère.
+            </p>
+            <div class="bg-white rounded-lg p-2 border border-purple-100 flex items-center justify-center">
+              <svg viewBox="0 0 160 100" width="140" height="90">
+                <!-- Rectangle with diagonals -->
+                <polygon points="20,20 140,20 140,80 20,80" fill="#f3e8ff" stroke="#6b21a8" stroke-width="2"/>
+                <line x1="20" y1="20" x2="140" y2="80" stroke="#8b5cf6" stroke-width="2.5" stroke-dasharray="4 3"/>
+                <line x1="140" y1="20" x2="20" y2="80" stroke="#8b5cf6" stroke-width="2.5" stroke-dasharray="4 3"/>
+                <circle cx="20" cy="20" r="3.5" fill="#6b21a8"/>
+                <circle cx="140" cy="20" r="3.5" fill="#6b21a8"/>
+                <circle cx="140" cy="80" r="3.5" fill="#6b21a8"/>
+                <circle cx="20" cy="80" r="3.5" fill="#6b21a8"/>
+              </svg>
+            </div>
+            <div class="text-center text-purple-800 text-xs mt-1.5">Un quadrilatère a 2 diagonales</div>
+          </div>
+
+          <!-- Médiane -->
+          <div class="bg-orange-50 border-2 border-orange-200 rounded-xl p-4">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="w-4 h-4 rounded-full bg-orange-500"></span>
+              <h4 class="font-bold text-orange-950 text-base">La Médiane</h4>
+            </div>
+            <p class="text-slate-700 mb-2 leading-relaxed">
+              C'est le segment de droite qui relie les milieux de deux côtés opposés d'un quadrilatère.
+            </p>
+            <div class="bg-white rounded-lg p-2 border border-orange-100 flex items-center justify-center">
+              <svg viewBox="0 0 160 100" width="140" height="90">
+                <!-- Rectangle with medians -->
+                <polygon points="20,20 140,20 140,80 20,80" fill="#ffedd5" stroke="#9a3412" stroke-width="2"/>
+                <line x1="80" y1="20" x2="80" y2="80" stroke="#f97316" stroke-width="2.5" stroke-dasharray="4 3"/>
+                <line x1="20" y1="50" x2="140" y2="50" stroke="#f97316" stroke-width="2.5" stroke-dasharray="4 3"/>
+                <!-- Midpoint dots -->
+                <circle cx="80" cy="20" r="3.5" fill="#ea580c"/>
+                <circle cx="80" cy="80" r="3.5" fill="#ea580c"/>
+                <circle cx="20" cy="50" r="3.5" fill="#ea580c"/>
+                <circle cx="140" cy="50" r="3.5" fill="#ea580c"/>
+              </svg>
+            </div>
+            <div class="text-center text-orange-800 text-xs mt-1.5">Un quadrilatère a 2 médianes</div>
+          </div>
+        </div>
+
+        <!-- Interactive Inspector / Shape Tabs -->
+        <div>
+          <h4 class="font-bold text-slate-900 text-base mb-2">Tableau récapitulatif des caractéristiques :</h4>
+          <div class="overflow-x-auto border-2 border-slate-200 rounded-xl">
+            <table class="w-full text-left text-xs border-collapse">
+              <thead>
+                <tr class="bg-slate-100 text-slate-800 font-bold border-b-2 border-slate-200">
+                  <th class="p-2.5">Quadrilatère</th>
+                  <th class="p-2.5 bg-purple-50 text-purple-900">Diagonales 🟣</th>
+                  <th class="p-2.5 bg-orange-50 text-orange-900">Médianes 🟠</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200">
+                <tr class="hover:bg-slate-50">
+                  <td class="p-2.5 font-bold text-slate-900">🟩 Carré</td>
+                  <td class="p-2.5 text-purple-950 bg-purple-50/50">
+                    • Perpendiculaires ⟂<br>
+                    • Isométriques<br>
+                    • Se coupent en leur milieu
+                  </td>
+                  <td class="p-2.5 text-orange-950 bg-orange-50/50">
+                    • Perpendiculaires ⟂<br>
+                    • Isométriques<br>
+                    • Se coupent en leur milieu
+                  </td>
+                </tr>
+                <tr class="hover:bg-slate-50">
+                  <td class="p-2.5 font-bold text-slate-900">🟦 Rectangle</td>
+                  <td class="p-2.5 text-purple-950 bg-purple-50/50">
+                    • Isométriques<br>
+                    • Se coupent en leur milieu<br>
+                    • Non perpendiculaires
+                  </td>
+                  <td class="p-2.5 text-orange-950 bg-orange-50/50">
+                    • Perpendiculaires ⟂<br>
+                    • Non isométriques<br>
+                    • Se coupent en leur milieu
+                  </td>
+                </tr>
+                <tr class="hover:bg-slate-50">
+                  <td class="p-2.5 font-bold text-slate-900">🔶 Losange</td>
+                  <td class="p-2.5 text-purple-950 bg-purple-50/50">
+                    • Perpendiculaires ⟂<br>
+                    • Non isométriques<br>
+                    • Se coupent en leur milieu
+                  </td>
+                  <td class="p-2.5 text-orange-950 bg-orange-50/50">
+                    • Isométriques<br>
+                    • Non perpendiculaires<br>
+                    • Se coupent en leur milieu
+                  </td>
+                </tr>
+                <tr class="hover:bg-slate-50">
+                  <td class="p-2.5 font-bold text-slate-900">🔷 Parallélogramme</td>
+                  <td class="p-2.5 text-purple-950 bg-purple-50/50">
+                    • Non isométriques<br>
+                    • Non perpendiculaires<br>
+                    • Se coupent en leur milieu
+                  </td>
+                  <td class="p-2.5 text-orange-950 bg-orange-50/50">
+                    • Non isométriques<br>
+                    • Non perpendiculaires<br>
+                    • Se coupent en leur milieu
+                  </td>
+                </tr>
+                <tr class="hover:bg-slate-50">
+                  <td class="p-2.5 font-bold text-slate-900">🟨 Trapèze isocèle</td>
+                  <td class="p-2.5 text-purple-950 bg-purple-50/50">
+                    • Isométriques<br>
+                    • Ne se coupent pas en leur milieu
+                  </td>
+                  <td class="p-2.5 text-orange-950 bg-orange-50/50">
+                    • 1 médiane axe de symétrie<br>
+                    • Non isométriques
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="p-3 bg-slate-50 border-t-2 border-slate-200 text-right">
+        <button onclick="closeMemoModal()" class="btn-3d bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded-xl text-sm font-bold">
+          J'ai compris ! 👍
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* =========================================================================
+       QUESTIONS DATABASE (36 rich pedagogical questions with custom SVGs)
+       ========================================================================= */
+    const QUESTION_BANK = [
+      // -------------------------------------------------------------
+      // THEME 1 : DÉFINITIONS & VOCABULAIRE (def)
+      // -------------------------------------------------------------
+      {
+        id: "def_1",
+        category: "def",
+        badge: "📖 Définition",
+        question: "Qu'est-ce qu'une <strong>diagonale</strong> dans un quadrilatère ?",
+        options: [
+          "Un segment qui relie deux sommets opposés",
+          "Un segment qui relie les milieux de deux côtés opposés",
+          "Une ligne droite qui fait le tour du polygone",
+          "Une droite perpendiculaire à la base"
+        ],
+        answer: 0,
+        explanation: "<strong>Une diagonale</strong> relie deux sommets opposés (non consécutifs). Dans tout quadrilatère, il y a exactement 2 diagonales.",
+        svg: `<svg viewBox="0 0 160 110" width="150" height="100">
+          <polygon points="25,20 135,20 135,90 25,90" fill="#f3e8ff" stroke="#6b21a8" stroke-width="2"/>
+          <line x1="25" y1="20" x2="135" y2="90" stroke="#8b5cf6" stroke-width="2.5" stroke-dasharray="4 3"/>
+          <line x1="135" y1="20" x2="25" y2="90" stroke="#8b5cf6" stroke-width="2.5" stroke-dasharray="4 3"/>
+          <circle cx="25" cy="20" r="4" fill="#6b21a8"/><circle cx="135" cy="20" r="4" fill="#6b21a8"/>
+          <circle cx="135" cy="90" r="4" fill="#6b21a8"/><circle cx="25" cy="90" r="4" fill="#6b21a8"/>
+          <text x="80" y="105" text-anchor="middle" font-size="10" font-weight="bold" fill="#6b21a8">Diagonales (violettes)</text>
+        </svg>`
+      },
+      {
+        id: "def_2",
+        category: "def",
+        badge: "📖 Définition",
+        question: "Qu'est-ce qu'une <strong>médiane</strong> dans un quadrilatère ?",
+        options: [
+          "Un segment qui relie les milieux de deux côtés opposés",
+          "Un segment qui relie deux sommets opposés",
+          "Le segment qui coupe un angle en deux parts égales",
+          "Un côté extérieur du quadrilatère"
+        ],
+        answer: 0,
+        explanation: "<strong>Une médiane</strong> relie les <em>milieux</em> de deux côtés opposés. Tout quadrilatère possède 2 médianes.",
+        svg: `<svg viewBox="0 0 160 110" width="150" height="100">
+          <polygon points="25,20 135,20 135,90 25,90" fill="#ffedd5" stroke="#c2410c" stroke-width="2"/>
+          <line x1="80" y1="20" x2="80" y2="90" stroke="#f97316" stroke-width="2.5" stroke-dasharray="4 3"/>
+          <line x1="25" y1="55" x2="135" y2="55" stroke="#f97316" stroke-width="2.5" stroke-dasharray="4 3"/>
+          <circle cx="80" cy="20" r="3.5" fill="#ea580c"/><circle cx="80" cy="90" r="3.5" fill="#ea580c"/>
+          <circle cx="25" cy="55" r="3.5" fill="#ea580c"/><circle cx="135" cy="55" r="3.5" fill="#ea580c"/>
+          <text x="80" y="105" text-anchor="middle" font-size="10" font-weight="bold" fill="#c2410c">Médianes (oranges)</text>
+        </svg>`
+      },
+      {
+        id: "def_3",
+        category: "def",
+        badge: "📖 Nombre de segments",
+        question: "Combien de <strong>diagonales</strong> possède un quadrilatère ?",
+        options: ["2", "4", "3", "1"],
+        answer: 0,
+        explanation: "Un quadrilatère possède toujours exactement <strong>2 diagonales</strong> (reliant chacune une paire de sommets opposés).",
+        svg: null
+      },
+      {
+        id: "def_4",
+        category: "def",
+        badge: "📖 Nombre de segments",
+        question: "Combien de <strong>médianes</strong> possède un quadrilatère ?",
+        options: ["2", "4", "3", "8"],
+        answer: 0,
+        explanation: "Comme un quadrilatère a 4 côtés (donc 2 paires de côtés opposés), il possède exactement <strong>2 médianes</strong>.",
+        svg: null
+      },
+      {
+        id: "def_5",
+        category: "def",
+        badge: "👁️ Observation",
+        question: "Sur la figure ci-dessous, comment s'appelle le segment tracé en <strong>violet pointillé</strong> ?",
+        options: ["Une diagonale", "Une médiane", "Une hauteur", "Une médiatrice"],
+        answer: 0,
+        explanation: "Ce segment relie deux sommets opposés du quadrilatère : il s'agit donc bien d'une <strong>diagonale</strong>.",
+        svg: `<svg viewBox="0 0 160 110" width="150" height="100">
+          <polygon points="30,25 130,25 150,85 50,85" fill="#ede9fe" stroke="#4c1d95" stroke-width="2"/>
+          <line x1="30" y1="25" x2="150" y2="85" stroke="#7c3aed" stroke-width="3" stroke-dasharray="5 3"/>
+          <circle cx="30" cy="25" r="4" fill="#7c3aed"/><circle cx="150" cy="85" r="4" fill="#7c3aed"/>
+        </svg>`
+      },
+      {
+        id: "def_6",
+        category: "def",
+        badge: "👁️ Observation",
+        question: "Sur la figure ci-dessous, le segment orange relie les milieux M₁ et M₂ de deux côtés opposés. C'est...",
+        options: ["Une médiane", "Une diagonale", "Un côté", "Un axe de symétrie"],
+        answer: 0,
+        explanation: "Le segment relie les milieux de deux côtés opposés : c'est la définition exacte d'une <strong>médiane</strong> !",
+        svg: `<svg viewBox="0 0 160 110" width="150" height="100">
+          <polygon points="30,20 130,20 145,85 15,85" fill="#ffedd5" stroke="#9a3412" stroke-width="2"/>
+          <!-- Midpoint line -->
+          <line x1="80" y1="20" x2="80" y2="85" stroke="#ea580c" stroke-width="3" stroke-dasharray="5 3"/>
+          <circle cx="80" cy="20" r="4" fill="#ea580c"/><circle cx="80" cy="85" r="4" fill="#ea580c"/>
+          <text x="80" y="14" text-anchor="middle" font-size="10" font-weight="bold" fill="#ea580c">M₁</text>
+          <text x="80" y="98" text-anchor="middle" font-size="10" font-weight="bold" fill="#ea580c">M₂</text>
+        </svg>`
+      },
+
+      // -------------------------------------------------------------
+      // THEME 2 : LES DIAGONALES (diag)
+      // -------------------------------------------------------------
+      {
+        id: "diag_1",
+        category: "diag",
+        badge: "🟣 Diagonales",
+        question: "Dans quels quadrilatères les <strong>diagonales sont-elles TOUJOURS perpendiculaires</strong> (forment un angle droit) ?",
+        options: [
+          "Le carré et le losange",
+          "Le rectangle et le parallélogramme",
+          "Le trapèze et le rectangle",
+          "Tous les quadrilatères"
+        ],
+        answer: 0,
+        explanation: "Le <strong>carré</strong> et le <strong>losange</strong> ont toujours leurs diagonales perpendiculaires. (Attention : dans le rectangle, elles ne sont PAS perpendiculaires !)",
+        svg: null
+      },
+      {
+        id: "diag_2",
+        category: "diag",
+        badge: "🟣 Diagonales",
+        question: "Les diagonales d'un <strong>rectangle</strong> sont-elles perpendiculaires ?",
+        options: [
+          "Non, sauf si le rectangle est aussi un carré",
+          "Oui, toujours",
+          "Oui, si la longueur est le double de la largeur",
+          "Un rectangle n'a pas de diagonales"
+        ],
+        answer: 0,
+        explanation: "Dans un rectangle général, les diagonales sont <strong>isométriques</strong> mais ne forment <strong>pas d'angle droit</strong>.",
+        svg: null
+      },
+      {
+        id: "diag_3",
+        category: "diag",
+        badge: "🟣 Diagonales",
+        question: "Quels quadrilatères ont des <strong>diagonales isométriques</strong> ?",
+        options: [
+          "Le carré, le rectangle et le trapèze isocèle",
+          "Le losange et le parallélogramme",
+          "Uniquement le carré",
+          "Le losange et le carré"
+        ],
+        answer: 0,
+        explanation: "Le <strong>carré</strong>, le <strong>rectangle</strong> et le <strong>trapèze isocèle</strong> ont des diagonales isométriques.",
+        svg: null
+      },
+      {
+        id: "diag_4",
+        category: "diag",
+        badge: "🟣 Diagonales",
+        question: "Dans un <strong>losange</strong>, les diagonales sont-elles isométriques ?",
+        options: [
+          "Non, elles sont non isométriques (une grande et une petite diagonale)",
+          "Oui, elles sont toujours isométriques",
+          "Oui, car le losange a 4 côtés égaux",
+          "Cela dépend de la couleur du losange"
+        ],
+        answer: 0,
+        explanation: "Dans un losange, les diagonales sont <strong>perpendiculaires</strong> mais <strong>non isométriques</strong> (sauf s'il s'agit d'un carré).",
+        svg: null
+      },
+      {
+        id: "diag_5",
+        category: "diag",
+        badge: "🟣 Diagonales",
+        question: "Dans quels quadrilatères les <strong>diagonales se coupent-elles en leur milieu</strong> ?",
+        options: [
+          "Dans tous les parallélogrammes (carré, rectangle, losange, parallélogramme)",
+          "Uniquement dans le carré",
+          "Dans tous les trapèzes",
+          "Dans aucun quadrilatère"
+        ],
+        answer: 0,
+        explanation: "La propriété fondamentale des <strong>parallélogrammes</strong> (y compris carré, rectangle et losange) est que leurs diagonales <strong>se coupent en leur milieu</strong>.",
+        svg: null
+      },
+      {
+        id: "diag_6",
+        category: "diag",
+        badge: "🟣 Diagonales",
+        question: "Dans un <strong>trapèze isocèle</strong>, les diagonales...",
+        options: [
+          "Sont isométriques mais ne se coupent pas en leur milieu",
+          "Sont perpendiculaires et se coupent en leur milieu",
+          "Sont non isométriques",
+          "Sont confondues"
+        ],
+        answer: 0,
+        explanation: "Dans un trapèze isocèle, les deux diagonales sont <strong>isométriques</strong>, mais le point de croisement n'est <em>pas le milieu</em> de ces diagonales.",
+        svg: null
+      },
+      {
+        id: "diag_7",
+        category: "diag",
+        badge: "🟣 Diagonales",
+        question: "Le <strong>carré</strong> possède des diagonales qui sont :",
+        options: [
+          "Perpendiculaires, isométriques et qui se coupent en leur milieu",
+          "Perpendiculaires mais non isométriques",
+          "Isométriques mais non perpendiculaires",
+          "Parallèles entre elles"
+        ],
+        answer: 0,
+        explanation: "Le carré réunit toutes les propriétés : ses diagonales sont <strong>isométriques</strong>, <strong>perpendiculaires</strong> et <strong>se coupent en leur milieu</strong> !",
+        svg: null
+      },
+
+      // -------------------------------------------------------------
+      // THEME 3 : LES MÉDIANES (med)
+      // -------------------------------------------------------------
+      {
+        id: "med_1",
+        category: "med",
+        badge: "🟠 Médianes",
+        question: "Dans quels quadrilatères les <strong>médianes sont-elles perpendiculaires</strong> ?",
+        options: [
+          "Le carré et le rectangle",
+          "Le losange et le carré",
+          "Le parallélogramme et le losange",
+          "Le trapèze quelconque"
+        ],
+        answer: 0,
+        explanation: "Dans le <strong>carré</strong> et le <strong>rectangle</strong>, les médianes sont parallèles aux côtés et sont donc <strong>perpendiculaires entre elles</strong> !",
+        svg: null
+      },
+      {
+        id: "med_2",
+        category: "med",
+        badge: "🟠 Médianes",
+        question: "Dans un <strong>losange</strong>, les médianes...",
+        options: [
+          "Sont isométriques mais ne sont PAS perpendiculaires",
+          "Sont perpendiculaires et isométriques",
+          "Sont perpendiculaires et non isométriques",
+          "Sont parallèles"
+        ],
+        answer: 0,
+        explanation: "Dans un losange, ce sont les <em>diagonales</em> qui sont perpendiculaires. Ses <strong>médianes sont isométriques</strong> mais ne sont <em>pas perpendiculaires</em>.",
+        svg: null
+      },
+      {
+        id: "med_3",
+        category: "med",
+        badge: "🟠 Médianes",
+        question: "Quels quadrilatères ont des <strong>médianes isométriques</strong> ?",
+        options: [
+          "Le carré et le losange",
+          "Le rectangle et le carré",
+          "Le rectangle et le parallélogramme",
+          "Tous les trapèzes"
+        ],
+        answer: 0,
+        explanation: "Le <strong>carré</strong> et le <strong>losange</strong> ont tous les deux des médianes isométriques !",
+        svg: null
+      },
+      {
+        id: "med_4",
+        category: "med",
+        badge: "🟠 Médianes",
+        question: "Dans un <strong>rectangle</strong>, les médianes sont-elles isométriques ?",
+        options: [
+          "Non, elles sont non isométriques (l'une mesure la longueur L et l'autre la largeur l)",
+          "Oui, elles mesurent toujours 10 cm",
+          "Oui, les médianes sont toujours isométriques dans tous les rectangles",
+          "Le rectangle n'a qu'une seule médiane"
+        ],
+        answer: 0,
+        explanation: "Dans un rectangle, les médianes sont parallèles aux côtés : l'une a pour longueur la <strong>largeur</strong> et l'autre a pour longueur la <strong>longueur</strong> du rectangle. Elles sont donc <strong>non isométriques</strong> !",
+        svg: null
+      },
+      {
+        id: "med_5",
+        category: "med",
+        badge: "🟠 Médianes",
+        question: "Dans un <strong>parallélogramme quelconque</strong>, les médianes...",
+        options: [
+          "Se coupent en leur milieu, ne sont pas perpendiculaires et sont non isométriques",
+          "Sont perpendiculaires et isométriques",
+          "Sont isométriques et perpendiculaires",
+          "Ne se croisent jamais"
+        ],
+        answer: 0,
+        explanation: "Dans un parallélogramme non particulier, les médianes <strong>se coupent en leur milieu</strong> mais ne sont <strong>ni isométriques, ni perpendiculaires</strong>.",
+        svg: null
+      },
+      {
+        id: "med_6",
+        category: "med",
+        badge: "🟠 Médianes",
+        question: "Le <strong>carré</strong> possède des médianes qui sont :",
+        options: [
+          "Perpendiculaires, isométriques et qui se coupent en leur milieu",
+          "Non perpendiculaires",
+          "Non isométriques",
+          "Identiques à ses côtés"
+        ],
+        answer: 0,
+        explanation: "Comme ses 4 côtés sont égaux et perpendiculaires, les médianes du carré sont <strong>perpendiculaires</strong>, <strong>isométriques</strong> et <strong>se coupent en leur milieu</strong>.",
+        svg: null
+      },
+
+      // -------------------------------------------------------------
+      // THEME 4 : DEVINETTES "QUI SUIS-JE ?" (riddle)
+      // -------------------------------------------------------------
+      {
+        id: "rid_1",
+        category: "riddle",
+        badge: "🧩 Devinette",
+        question: "« Mes diagonales sont <strong>perpendiculaires</strong> et <strong>isométriques</strong>. Elles se coupent en leur milieu. Qui suis-je ? »",
+        options: ["Le carré", "Le rectangle", "Le losange", "Le trapèze quelconque"],
+        answer: 0,
+        explanation: "C'est le <strong>carré</strong> ! Seul le carré possède des diagonales à la fois perpendiculaires ET isométriques.",
+        svg: null
+      },
+      {
+        id: "rid_2",
+        category: "riddle",
+        badge: "🧩 Devinette",
+        question: "« Mes diagonales sont <strong>perpendiculaires</strong> mais <strong>non isométriques</strong>. Qui suis-je ? »",
+        options: ["Le losange", "Le rectangle", "Le carré", "Le parallélogramme"],
+        answer: 0,
+        explanation: "C'est le <strong>losange</strong> ! Ses diagonales forment une croix perpendiculaire avec une grande diagonale et une petite diagonale.",
+        svg: null
+      },
+      {
+        id: "rid_3",
+        category: "riddle",
+        badge: "🧩 Devinette",
+        question: "« Mes diagonales sont <strong>isométriques</strong> mais ne sont <strong>PAS perpendiculaires</strong>. Mes médianes, elles, sont perpendiculaires. Qui suis-je ? »",
+        options: ["Le rectangle", "Le losange", "Le carré", "Le parallélogramme quelconque"],
+        answer: 0,
+        explanation: "C'est le <strong>rectangle</strong> ! Diagonales isométriques (non ⟂) et médianes perpendiculaires.",
+        svg: null
+      },
+      {
+        id: "rid_4",
+        category: "riddle",
+        badge: "🧩 Devinette",
+        question: "« Mes médianes sont <strong>isométriques</strong> mais ne sont <strong>pas perpendiculaires</strong>. Qui suis-je ? »",
+        options: ["Le losange", "Le rectangle", "Le carré", "Le trapèze isocèle"],
+        answer: 0,
+        explanation: "C'est le <strong>losange</strong> ! Ses médianes sont isométriques mais obliques entre elles.",
+        svg: null
+      },
+      {
+        id: "rid_5",
+        category: "riddle",
+        badge: "🧩 Devinette",
+        question: "« Mes diagonales sont <strong>isométriques</strong>, mais elles ne se coupent <strong>PAS en leur milieu</strong>. Qui suis-je ? »",
+        options: ["Le trapèze isocèle", "Le rectangle", "Le carré", "Le losange"],
+        answer: 0,
+        explanation: "C'est le <strong>trapèze isocèle</strong> ! Ses diagonales sont isométriques mais le point de croisement est plus proche de la petite base.",
+        svg: null
+      },
+      {
+        id: "rid_6",
+        category: "riddle",
+        badge: "🧩 Devinette",
+        question: "« J'ai 2 paires de côtés opposés parallèles. Mes diagonales se coupent en leur milieu, mais ne sont ni perpendiculaires, ni isométriques. Qui suis-je ? »",
+        options: ["Le parallélogramme quelconque", "Le losange", "Le carré", "Le rectangle"],
+        answer: 0,
+        explanation: "C'est le <strong>parallélogramme</strong> quelconque !",
+        svg: null
+      },
+      {
+        id: "rid_7",
+        category: "riddle",
+        badge: "🧩 Vrai ou Faux",
+        question: "Vrai ou Faux : <em>« Si un quadrilatère a des diagonales perpendiculaires, c'est forcément un carré. »</em>",
+        options: [
+          "Faux (cela peut être un losange ou un cerf-volant)",
+          "Vrai, seul le carré peut avoir des diagonales perpendiculaires"
+        ],
+        answer: 0,
+        explanation: "<strong>C'est FAUX !</strong> Le losange et le cerf-volant ont aussi des diagonales perpendiculaires sans être des carrés.",
+        svg: null
+      },
+      {
+        id: "rid_8",
+        category: "riddle",
+        badge: "🧩 Vrai ou Faux",
+        question: "Vrai ou Faux : <em>« Si un quadrilatère a des diagonales isométriques, c'est forcément un rectangle. »</em>",
+        options: [
+          "Faux (le carré et le trapèze isocèle ont aussi des diagonales isométriques)",
+          "Vrai, seul le rectangle a des diagonales isométriques"
+        ],
+        answer: 0,
+        explanation: "<strong>C'est FAUX !</strong> Le carré et le trapèze isocèle ont également des diagonales isométriques.",
+        svg: null
+      }
+    ];
+
+    /* =========================================================================
+       GAME STATE & LOGIC
+       ========================================================================= */
+    const TOTAL_QUESTIONS_PER_SESSION = 10;
+    const LETTERS = ['A', 'B', 'C', 'D'];
+
+    let currentMode = 'all';
+    let activeQuestions = [];
+    let currentIndex = 0;
+    let currentScore = 0;
+    let selectedOption = null;
+    let hasAnswered = false;
+    let sessionResults = [];
+
+    function shuffle(array) {
+      const arr = [...array];
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    function shuffleOptions(q) {
+      const pairs = q.options.map((opt, idx) => ({
+        text: opt,
+        isCorrect: idx === q.answer
+      }));
+      const shuffled = shuffle(pairs);
+      return {
+        ...q,
+        options: shuffled.map(p => p.text),
+        answer: shuffled.findIndex(p => p.isCorrect)
+      };
+    }
+
+    function startExercise(mode) {
+      currentMode = mode;
+      let pool = [];
+
+      if (mode === 'all') {
+        const defs = shuffle(QUESTION_BANK.filter(q => q.category === 'def')).slice(0, 3);
+        const diags = shuffle(QUESTION_BANK.filter(q => q.category === 'diag')).slice(0, 3);
+        const meds = shuffle(QUESTION_BANK.filter(q => q.category === 'med')).slice(0, 2);
+        const riddles = shuffle(QUESTION_BANK.filter(q => q.category === 'riddle')).slice(0, 2);
+        pool = shuffle([...defs, ...diags, ...meds, ...riddles]);
+      } else {
+        const filtered = QUESTION_BANK.filter(q => q.category === mode);
+        pool = shuffle(filtered).slice(0, Math.min(TOTAL_QUESTIONS_PER_SESSION, filtered.length));
+      }
+
+      activeQuestions = pool.map(shuffleOptions);
+      currentIndex = 0;
+      currentScore = 0;
+      sessionResults = [];
+      hasAnswered = false;
+
+      document.getElementById('screen-menu').classList.add('hidden');
+      document.getElementById('screen-result').classList.add('hidden');
+      document.getElementById('screen-game').classList.remove('hidden');
+
+      renderQuestion();
+    }
+
+    function restartSameTheme() {
+      startExercise(currentMode);
+    }
+
+    function goToMenu() {
+      document.getElementById('screen-game').classList.add('hidden');
+      document.getElementById('screen-result').classList.add('hidden');
+      document.getElementById('screen-menu').classList.remove('hidden');
+    }
+
+    function leaveActivity() {
+      if (window.parent && window.parent.showScreen) {
+        window.parent.showScreen('screen-solides-quadrilateres');
+      } else {
+        goToMenu();
+      }
+    }
+
+    function renderQuestion() {
+      hasAnswered = false;
+      selectedOption = null;
+
+      const q = activeQuestions[currentIndex];
+      const total = activeQuestions.length;
+
+      document.getElementById('badge-theme').innerText = q.badge;
+      document.getElementById('q-counter').innerText = `Question ${currentIndex + 1} / ${total}`;
+      document.getElementById('live-score').innerText = currentScore;
+      document.getElementById('progress-bar').style.width = `${((currentIndex + 1) / total) * 100}%`;
+
+      const fb = document.getElementById('feedback-container');
+      fb.classList.add('hidden');
+      fb.className = 'hidden mb-4 p-4 rounded-xl border-2 transition-all';
+      document.getElementById('next-btn').classList.add('hidden');
+
+      const container = document.getElementById('question-container');
+      let svgHtml = q.svg ? `<div class="flex justify-center my-3">${q.svg}</div>` : '';
+      container.innerHTML = `
+        <div class="text-base sm:text-lg font-extrabold text-slate-900 leading-snug text-center mb-2">
+          ${q.question}
+        </div>
+        ${svgHtml}
+      `;
+
+      const optsContainer = document.getElementById('options-container');
+      optsContainer.innerHTML = q.options.map((opt, idx) => `
+        <button id="opt-btn-${idx}" onclick="handleChoice(${idx})" class="opt-card">
+          <span class="opt-letter">${LETTERS[idx]}</span>
+          <span class="flex-1">${opt}</span>
+        </button>
+      `).join('');
+    }
+
+    function handleChoice(idx) {
+      if (hasAnswered) return;
+      hasAnswered = true;
+      selectedOption = idx;
+
+      const q = activeQuestions[currentIndex];
+      const isCorrect = (idx === q.answer);
+
+      if (isCorrect) {
+        currentScore++;
+      }
+
+      sessionResults.push({
+        question: q.question,
+        isCorrect: isCorrect,
+        chosen: q.options[idx],
+        correctAnswer: q.options[q.answer],
+        explanation: q.explanation
+      });
+
+      document.getElementById('live-score').innerText = currentScore;
+
+      q.options.forEach((_, i) => {
+        const btn = document.getElementById(`opt-btn-${i}`);
+        if (!btn) return;
+        btn.disabled = true;
+
+        if (i === q.answer) {
+          btn.classList.add('correct');
+        } else if (i === idx && !isCorrect) {
+          btn.classList.add('incorrect');
+        } else {
+          btn.classList.add('disabled-neutral');
+        }
+      });
+
+      const fb = document.getElementById('feedback-container');
+      const fbHeader = document.getElementById('feedback-header');
+      const fbText = document.getElementById('feedback-text');
+      const fbSvg = document.getElementById('feedback-svg');
+
+      fb.classList.remove('hidden');
+      if (isCorrect) {
+        fb.classList.add('bg-emerald-50', 'border-emerald-300', 'text-emerald-950');
+        fbHeader.innerHTML = `<span class="text-emerald-600 text-xl">✓</span> <span class="text-emerald-800">Excellent !</span>`;
+      } else {
+        fb.classList.add('bg-rose-50', 'border-rose-300', 'text-rose-950');
+        fbHeader.innerHTML = `<span class="text-rose-600 text-xl">✗</span> <span class="text-rose-800">Attention :</span>`;
+      }
+
+      fbText.innerHTML = q.explanation;
+      fbSvg.innerHTML = '';
+
+      const nextBtn = document.getElementById('next-btn');
+      nextBtn.classList.remove('hidden');
+      const isLast = (currentIndex >= activeQuestions.length - 1);
+      nextBtn.innerText = isLast ? '🏁 Voir mon bilan' : 'Question suivante ➔';
+    }
+
+    function nextQuestion() {
+      if (currentIndex < activeQuestions.length - 1) {
+        currentIndex++;
+        renderQuestion();
+      } else {
+        showResults();
+      }
+    }
+
+    function showResults() {
+      document.getElementById('screen-game').classList.add('hidden');
+      document.getElementById('screen-result').classList.remove('hidden');
+
+      const total = activeQuestions.length;
+      const pct = Math.round((currentScore / total) * 100);
+
+      const emojiEl = document.getElementById('res-emoji');
+      const titleEl = document.getElementById('res-title');
+      const descEl = document.getElementById('res-desc');
+      const scoreEl = document.getElementById('res-score');
+      const pctEl = document.getElementById('res-pct');
+      const recapEl = document.getElementById('res-recap');
+
+      scoreEl.innerText = `${currentScore} / ${total}`;
+      pctEl.innerText = `${pct}% de réussite`;
+
+      if (pct === 100) {
+        emojiEl.innerText = '🏆';
+        titleEl.innerText = 'Parfait ! Félicitations !';
+        descEl.innerText = 'Tu maîtrises parfaitement les diagonales et les médianes des quadrilatères !';
+        launchConfetti();
+      } else if (pct >= 70) {
+        emojiEl.innerText = '🎉';
+        titleEl.innerText = 'Très bon travail !';
+        descEl.innerText = 'Tu as une très bonne connaissance des propriétés des quadrilatères.';
+      } else if (pct >= 50) {
+        emojiEl.innerText = '👍';
+        titleEl.innerText = 'Bien joué !';
+        descEl.innerText = 'Tu es sur la bonne voie. Consulte la fiche mémo pour revoir les quelques erreurs !';
+      } else {
+        emojiEl.innerText = '💪';
+        titleEl.innerText = 'Continue tes efforts !';
+        descEl.innerText = 'Prends le temps de relire la fiche mémo et réessaie pour t\'améliorer !';
+      }
+
+      recapEl.innerHTML = sessionResults.map((res, i) => `
+        <div class="py-1.5 border-b border-slate-200 last:border-0 flex items-start gap-2">
+          <span>${res.isCorrect ? '✅' : '❌'}</span>
+          <div class="flex-1">
+            <div class="font-bold text-slate-800">Q${i+1} : ${res.question.replace(/<[^>]*>/g, '')}</div>
+            ${!res.isCorrect ? `<div class="text-rose-700 text-xs mt-0.5">Bonne réponse : <strong>${res.correctAnswer}</strong></div>` : ''}
+          </div>
+        </div>
+      `).join('');
+
+      if (window.parent && window.parent.saveResult) {
+        window.parent.saveResult({
+          activity: 'quadrilateres_diagonales_medianes',
+          bookTitle: "Géométrie — Médianes et Diagonales des Quadrilatères",
+          score: currentScore,
+          total: total,
+          pct: pct,
+          date: new Date().toLocaleDateString('fr-BE'),
+          time: new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })
+        });
+      }
+    }
+
+    /* =========================================================================
+       MODAL CONTROLLER
+       ========================================================================= */
+    function openMemoModal() {
+      document.getElementById('memo-modal').classList.add('open');
+    }
+
+    function closeMemoModal() {
+      document.getElementById('memo-modal').classList.remove('open');
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeMemoModal();
+    });
+
+    /* =========================================================================
+       CONFETTI EFFECT
+       ========================================================================= */
+    function launchConfetti() {
+      const colors = ['#8b5cf6', '#3b82f6', '#10b981', '#f59e0b', '#ec4899', '#f97316'];
+      for (let i = 0; i < 50; i++) {
+        const c = document.createElement('div');
+        c.className = 'confetti';
+        c.style.left = Math.random() * 100 + 'vw';
+        c.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        c.style.animationDelay = Math.random() * 1.5 + 's';
+        const size = Math.random() * 8 + 6;
+        c.style.width = size + 'px';
+        c.style.height = size + 'px';
+        c.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+        document.body.appendChild(c);
+
+        setTimeout(() => c.remove(), 4000);
+      }
+    }
+  </script>
+</body>
+</html>
