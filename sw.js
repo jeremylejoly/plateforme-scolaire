@@ -1,4 +1,4 @@
-const CACHE_NAME = 'classe-mr-lejoly-cache-v331';
+const CACHE_NAME = 'classe-mr-lejoly-cache-v332';
 const CORE_ASSETS = [
   './',
   'index.html',
@@ -12,6 +12,9 @@ const CORE_ASSETS = [
   'assets/logos/jeu_sudoku.png',
   'flux_connecte.html',
   'assets/logos/jeu_flux.png',
+  'jeu_code_secret.html',
+  'fiches/jeu_code_secret.html',
+  'assets/logos/jeu_code_secret.png',
   'assets/logos/sub_durees_conversions.png',
   'assets/logos/sub_durees_duree.png',
   'assets/logos/sub_durees_heure.png',
