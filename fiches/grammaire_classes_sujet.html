@@ -1,0 +1,1178 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exercice : Les 4 classes du sujet (P5-P6)</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@700;800;900&family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800;900&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg: #FDFBF7;
+      --surface: #FFFFFF;
+      --text: #1A1A2E;
+      --border: #1A1A2E;
+      --sujet-blue: #0284c7;
+      --sujet-bg: #e0f2fe;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+    }
+    .font-display {
+      font-family: 'Outfit', sans-serif;
+    }
+    .font-title {
+      font-family: 'Fredoka', sans-serif;
+    }
+    .font-nunito {
+      font-family: 'Nunito', sans-serif;
+    }
+    
+    /* 3D Neo-brutalist Buttons */
+    .btn-3d {
+      border: 2.5px solid var(--border) !important;
+      box-shadow: 3px 3px 0px var(--border) !important;
+      transition: all 0.15s ease-out;
+    }
+    .btn-3d:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: 5px 5px 0px var(--border) !important;
+    }
+    .btn-3d:active {
+      transform: translate(2px, 2px);
+      box-shadow: 1px 1px 0px var(--border) !important;
+    }
+
+    .btn-word {
+      border: 2px solid #cbd5e1;
+      background-color: #ffffff;
+      color: #1e293b;
+      box-shadow: 2px 2px 0px rgba(0,0,0,0.08);
+      transition: all 0.15s ease;
+      cursor: pointer;
+      user-select: none;
+    }
+    .btn-word:hover:not(:disabled) {
+      background-color: #f8fafc;
+      transform: translateY(-2px);
+      box-shadow: 3px 3px 0px rgba(0,0,0,0.15);
+    }
+    .btn-word.selected {
+      border-color: #0284c7 !important;
+      background-color: #e0f2fe !important;
+      color: #0369a1 !important;
+      box-shadow: 2px 2px 0px #0284c7 !important;
+      font-weight: 700;
+    }
+    .btn-word.correct-found {
+      border-color: #16a34a !important;
+      background-color: #dcfce7 !important;
+      color: #15803d !important;
+      box-shadow: 2px 2px 0px #16a34a !important;
+    }
+    .btn-word.wrong-selected {
+      border-color: #dc2626 !important;
+      background-color: #fee2e2 !important;
+      color: #991b1b !important;
+      box-shadow: 2px 2px 0px #dc2626 !important;
+    }
+    .btn-word.missed-sujet {
+      border-color: #ea580c !important;
+      border-style: dashed !important;
+      background-color: #ffedd5 !important;
+      color: #9a3412 !important;
+    }
+
+    /* Class option cards */
+    .class-option-card {
+      border: 2.5px solid #cbd5e1;
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 12px 16px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      box-shadow: 2px 2px 0px rgba(0,0,0,0.06);
+      user-select: none;
+    }
+    .class-option-card:hover:not(.disabled) {
+      border-color: #64748b;
+      transform: translateY(-2px);
+      box-shadow: 4px 4px 0px rgba(0,0,0,0.12);
+    }
+    .class-option-card.active {
+      border-color: #7c3aed !important;
+      background-color: #f5f3ff !important;
+      box-shadow: 3px 3px 0px #7c3aed !important;
+    }
+    .class-option-card.correct {
+      border-color: #16a34a !important;
+      background-color: #f0fdf4 !important;
+      box-shadow: 3px 3px 0px #16a34a !important;
+    }
+    .class-option-card.incorrect {
+      border-color: #dc2626 !important;
+      background-color: #fef2f2 !important;
+      box-shadow: 3px 3px 0px #dc2626 !important;
+    }
+
+    /* Animations */
+    .fade-in {
+      animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    #confetti-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 9999;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-start p-3 sm:p-6 md:p-8">
+  <canvas id="confetti-canvas"></canvas>
+
+  <div class="w-full max-w-4xl flex flex-col gap-5">
+    
+    <!-- Top Bar Navigation & Info -->
+    <header class="flex items-center justify-between gap-4">
+      <div class="flex items-center gap-2">
+        <a href="index.html" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 border-2 border-neutral-900 bg-white rounded-xl text-xs sm:text-sm font-bold font-nunito text-neutral-700 hover:bg-neutral-50 active:translate-y-0.5 transition-all shadow-[2px_2px_0px_#1A1A2E]">
+          ← Retour
+        </a>
+        <button id="toggle-lesson-btn" class="inline-flex items-center gap-1 px-3 py-1.5 border-2 border-purple-900 bg-purple-100 text-purple-900 rounded-xl text-xs sm:text-sm font-bold font-nunito hover:bg-purple-200 active:translate-y-0.5 transition-all shadow-[2px_2px_0px_#581c87]">
+          📖 Rappel des 4 classes
+        </button>
+      </div>
+    </header>
+
+    <!-- LESSON / REMINDER DRAWER (COLLAPSIBLE) -->
+    <div id="lesson-panel" class="hidden bg-white border-3 border-neutral-900 rounded-3xl p-5 md:p-6 shadow-[5px_5px_0px_#1A1A2E] fade-in">
+      <div class="flex items-center justify-between mb-4 border-b pb-3 border-neutral-200">
+        <h2 class="font-display font-bold text-lg md:text-xl text-neutral-900 flex items-center gap-2">
+          <span>👑</span> Les 4 classes grammaticales (natures) du sujet
+        </h2>
+        <button id="close-lesson-btn" class="text-neutral-400 hover:text-neutral-700 font-black text-xl px-2">✕</button>
+      </div>
+
+      <p class="text-neutral-600 text-xs sm:text-sm mb-4">
+        Le <strong>sujet</strong> indique qui fait l'action ou de qui/quoi on parle. Pour le trouver, on pose la question : 
+        <span class="bg-yellow-100 text-yellow-900 font-bold px-2 py-0.5 rounded border border-yellow-300">« Qui est-ce qui... ? »</span> ou 
+        <span class="bg-yellow-100 text-yellow-900 font-bold px-2 py-0.5 rounded border border-yellow-300">« Qu'est-ce qui... ? »</span> devant le verbe.
+      </p>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs sm:text-sm">
+        <!-- 1. GN -->
+        <div class="bg-sky-50 border-2 border-sky-300 rounded-2xl p-3.5 flex flex-col justify-between">
+          <div>
+            <div class="font-display font-black text-sky-900 text-sm md:text-base flex items-center gap-1.5 mb-1">
+              <span>🏷️</span> Groupe nominal
+            </div>
+            <p class="text-neutral-700 text-xs mb-2">Un nom commun accompagné d'un déterminant et parfois d'expansions (adjectifs, complément du nom, relative).</p>
+          </div>
+          <div class="bg-white border border-sky-200 rounded-xl p-2 text-xs italic text-sky-950 font-medium">
+            « <span class="text-sky-700 font-bold">Les enfants du village</span> jouent dehors. »
+          </div>
+        </div>
+
+        <!-- 2. Nom propre -->
+        <div class="bg-purple-50 border-2 border-purple-300 rounded-2xl p-3.5 flex flex-col justify-between">
+          <div>
+            <div class="font-display font-black text-purple-900 text-sm md:text-base flex items-center gap-1.5 mb-1">
+              <span>👤</span> Nom propre
+            </div>
+            <p class="text-neutral-700 text-xs mb-2">Un prénom, un nom de famille ou un nom de lieu (commence toujours par une majuscule).</p>
+          </div>
+          <div class="bg-white border border-purple-200 rounded-xl p-2 text-xs italic text-purple-950 font-medium">
+            « <span class="text-purple-700 font-bold">Nicolas</span> lit un livre. »<br>
+            « <span class="text-purple-700 font-bold">Bruxelles</span> est magnifique. »
+          </div>
+        </div>
+
+        <!-- 3. Infinitif -->
+        <div class="bg-emerald-50 border-2 border-emerald-300 rounded-2xl p-3.5 flex flex-col justify-between">
+          <div>
+            <div class="font-display font-black text-emerald-900 text-sm md:text-base flex items-center gap-1.5 mb-1">
+              <span>⚡</span> Verbe à l'infinitif
+            </div>
+            <p class="text-neutral-700 text-xs mb-2">Un verbe non conjugué (terminé par -er, -ir, -re, -oir), parfois suivi d'un complément.</p>
+          </div>
+          <div class="bg-white border border-emerald-200 rounded-xl p-2 text-xs italic text-emerald-950 font-medium">
+            « <span class="text-emerald-700 font-bold">Fumer</span> est mauvais pour la santé. »<br>
+            « <span class="text-emerald-700 font-bold">Bien manger</span> donne de la force. »
+          </div>
+        </div>
+
+        <!-- 4. Pronom -->
+        <div class="bg-rose-50 border-2 border-rose-300 rounded-2xl p-3.5 flex flex-col justify-between">
+          <div>
+            <div class="font-display font-black text-rose-900 text-sm md:text-base flex items-center gap-1.5 mb-1">
+              <span>🔄</span> Pronom
+            </div>
+            <p class="text-neutral-700 text-xs mb-2">Un mot court qui remplace un nom (pronoms personnels : <em>il, elle, nous</em> ; démonstratifs : <em>celui-ci, ceux-là</em> ; indéfinis : <em>chacun, tous</em>).</p>
+          </div>
+          <div class="bg-white border border-rose-200 rounded-xl p-2 text-xs italic text-rose-950 font-medium">
+            « <span class="text-rose-700 font-bold">Il</span> adore ce chocolat. »<br>
+            « <span class="text-rose-700 font-bold">Celui-ci</span> est meilleur. »
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MAIN EXERCISE CARD -->
+    <main id="game-card" class="bg-white border-3 border-neutral-900 rounded-[28px] shadow-[6px_6px_0px_#1A1A2E] p-5 sm:p-7 md:p-9 relative">
+      
+      <!-- QUIZ VIEW -->
+      <div id="quiz-view" class="flex flex-col gap-6">
+        
+        <!-- Progress Bar & Question Counter -->
+        <div class="flex items-center justify-between gap-4">
+          <div class="flex items-center gap-2">
+            <span class="font-display font-black text-base sm:text-lg text-neutral-800" id="question-index-label">
+              Phrase 1 / 10
+            </span>
+            <span id="score-pill" class="text-xs font-bold font-nunito bg-neutral-100 border border-neutral-300 px-2.5 py-1 rounded-full text-neutral-600">
+              Score : 0
+            </span>
+          </div>
+
+          <!-- Mini Progress Track -->
+          <div class="w-32 sm:w-48 bg-neutral-100 rounded-full h-3.5 border-2 border-neutral-900 overflow-hidden shadow-[1px_1px_0px_#1A1A2E]">
+            <div id="progress-bar-fill" class="bg-purple-600 h-full w-0 transition-all duration-300"></div>
+          </div>
+        </div>
+
+        <!-- Instruction Banner -->
+        <div class="bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-2xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-[2px_2px_0px_rgba(0,0,0,0.03)]">
+          <div class="flex items-center gap-3">
+            <span class="text-2xl sm:text-3xl">🎯</span>
+            <div class="text-xs sm:text-sm text-neutral-800">
+              <strong class="text-blue-900 block sm:inline">Double mission :</strong>
+              <span class="text-neutral-700">1. Clique sur <strong>tous les mots du sujet</strong>. 2. Choisis sa <strong>classe grammaticale</strong>.</span>
+            </div>
+          </div>
+          <button id="clear-selection-btn" class="text-xs font-bold text-neutral-500 hover:text-neutral-800 underline self-end sm:self-auto cursor-pointer">
+            Effacer ma sélection
+          </button>
+        </div>
+
+        <!-- 2nd chance alert -->
+        <div id="second-chance-alert" class="hidden bg-amber-50 border-2 border-amber-300 text-amber-900 rounded-2xl p-3.5 font-nunito text-xs sm:text-sm font-bold flex items-center gap-2.5 animate-pulse shadow-[2px_2px_0px_rgba(245,158,11,0.4)]">
+          <span class="text-lg">⚠️</span>
+          <span>Ce n'est pas tout à fait exact ! Vérifie bien tous les mots du sujet et sa classe pour ta 2<sup>e</sup> chance.</span>
+        </div>
+
+        <!-- STEP 1: THE SENTENCE WORDS -->
+        <div class="flex flex-col gap-2">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold uppercase tracking-wider text-sky-800 bg-sky-100 px-3 py-0.5 rounded-full border border-sky-300 w-max">
+              Étape 1 : Sélectionne les mots du sujet
+            </span>
+            <span class="text-xs text-neutral-500 font-medium" id="selected-words-count">0 mot(s) sélectionné(s)</span>
+          </div>
+
+          <div id="sentence-container" class="bg-neutral-50/70 border-2 border-neutral-900 rounded-2xl p-5 sm:p-7 flex flex-wrap gap-2 sm:gap-2.5 items-center justify-center min-h-[110px] shadow-[3px_3px_0px_rgba(0,0,0,0.04)]">
+            <!-- Words dynamically inserted here -->
+          </div>
+        </div>
+
+        <!-- STEP 2: GRAMMATICAL CLASS SELECTOR -->
+        <div class="flex flex-col gap-2">
+          <span class="text-xs font-bold uppercase tracking-wider text-purple-800 bg-purple-100 px-3 py-0.5 rounded-full border border-purple-300 w-max">
+            Étape 2 : De quelle classe le sujet fait-il partie ?
+          </span>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3" id="class-options-container">
+            
+            <!-- Option 1: GN -->
+            <div class="class-option-card flex flex-col gap-1" data-class="gn">
+              <div class="flex items-center justify-between">
+                <span class="text-lg">🏷️</span>
+                <span class="class-badge text-[11px] font-black uppercase text-sky-700 bg-sky-100 px-2 py-0.5 rounded-md">GN</span>
+              </div>
+              <div class="font-display font-bold text-sm text-neutral-900">Groupe nominal</div>
+              <div class="text-[11px] text-neutral-500">Ex: <em>Les enfants, La fleur</em></div>
+            </div>
+
+            <!-- Option 2: Nom propre -->
+            <div class="class-option-card flex flex-col gap-1" data-class="nom_propre">
+              <div class="flex items-center justify-between">
+                <span class="text-lg">👤</span>
+                <span class="class-badge text-[11px] font-black uppercase text-purple-700 bg-purple-100 px-2 py-0.5 rounded-md">Nom propre</span>
+              </div>
+              <div class="font-display font-bold text-sm text-neutral-900">Nom propre</div>
+              <div class="text-[11px] text-neutral-500">Ex: <em>Nicolas, Bruxelles</em></div>
+            </div>
+
+            <!-- Option 3: Infinitif -->
+            <div class="class-option-card flex flex-col gap-1" data-class="infinitif">
+              <div class="flex items-center justify-between">
+                <span class="text-lg">⚡</span>
+                <span class="class-badge text-[11px] font-black uppercase text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-md">Infinitif</span>
+              </div>
+              <div class="font-display font-bold text-sm text-neutral-900">Verbe à l'infinitif</div>
+              <div class="text-[11px] text-neutral-500">Ex: <em>Fumer, Bien manger</em></div>
+            </div>
+
+            <!-- Option 4: Pronom -->
+            <div class="class-option-card flex flex-col gap-1" data-class="pronom">
+              <div class="flex items-center justify-between">
+                <span class="text-lg">🔄</span>
+                <span class="class-badge text-[11px] font-black uppercase text-rose-700 bg-rose-100 px-2 py-0.5 rounded-md">Pronom</span>
+              </div>
+              <div class="font-display font-bold text-sm text-neutral-900">Pronom</div>
+              <div class="text-[11px] text-neutral-500">Ex: <em>Il, Nous, Celui-ci</em></div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- EXPLANATION PANEL (AFTER VALIDATION) -->
+        <div id="explanation-box" class="hidden bg-neutral-50 border-2 border-neutral-900 rounded-2xl p-4 sm:p-5 fade-in shadow-[3px_3px_0px_#1A1A2E]">
+          <div class="flex items-start gap-3">
+            <span class="text-2xl" id="explanation-icon">💡</span>
+            <div class="flex flex-col gap-1">
+              <h4 class="font-display font-bold text-sm sm:text-base text-neutral-900" id="explanation-title">Explication :</h4>
+              <p class="text-xs sm:text-sm text-neutral-700 leading-relaxed" id="explanation-text"></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- ACTION FOOTER -->
+        <div class="flex items-center justify-end border-t border-neutral-200 pt-4 mt-2">
+          <div class="flex items-center gap-3">
+            <button id="validate-btn" class="btn-3d px-6 py-2.5 rounded-2xl font-display font-bold text-sm sm:text-base bg-purple-600 text-white hover:bg-purple-700 cursor-pointer">
+              Vérifier ma réponse ➔
+            </button>
+            <button id="next-btn" class="hidden btn-3d px-6 py-2.5 rounded-2xl font-display font-bold text-sm sm:text-base bg-green-600 text-white hover:bg-green-700 cursor-pointer">
+              Phrase suivante ➔
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RESULTS SCREEN VIEW (AFTER 10 QUESTIONS) -->
+      <div id="results-view" class="hidden flex flex-col items-center justify-center text-center py-6 gap-6 fade-in">
+        
+        <div id="result-badge" class="w-24 h-24 rounded-full border-3 border-neutral-900 flex items-center justify-center text-5xl shadow-[4px_4px_0px_#1A1A2E] bg-yellow-100">
+          🏆
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <h2 class="font-display font-black text-2xl sm:text-3xl text-neutral-900" id="result-title">
+            Bravo ! Entraînement terminé !
+          </h2>
+          <p class="text-neutral-600 font-nunito text-sm sm:text-base max-w-md mx-auto" id="result-subtitle">
+            Tu as analysé les 10 phrases sur les classes du sujet.
+          </p>
+        </div>
+
+        <!-- Score summary box -->
+        <div class="bg-purple-50 border-3 border-neutral-900 rounded-3xl p-6 w-full max-w-sm shadow-[5px_5px_0px_#1A1A2E] flex flex-col gap-2">
+          <div class="text-xs uppercase tracking-widest font-black text-purple-900">Score Final</div>
+          <div class="font-display font-black text-5xl text-purple-700" id="result-score-digits">
+            10 <span class="text-2xl text-purple-400 font-normal">/ 10</span>
+          </div>
+          <div class="text-sm font-bold text-purple-950 mt-1" id="result-feedback-msg">
+            Sans-faute exceptionnel !
+          </div>
+        </div>
+
+        <!-- 4 Classes Mastery Summary -->
+        <div class="w-full max-w-lg bg-neutral-50 border-2 border-neutral-300 rounded-2xl p-4 text-left">
+          <h4 class="font-display font-bold text-xs uppercase text-neutral-600 tracking-wider mb-3">Rappel des 4 classes du sujet :</h4>
+          <div class="grid grid-cols-2 gap-2 text-xs font-semibold">
+            <div class="flex items-center gap-1.5 text-sky-800 bg-sky-50 p-2 rounded-xl border border-sky-200">
+              <span>🏷️</span> <span>Groupe nominal (GN)</span>
+            </div>
+            <div class="flex items-center gap-1.5 text-purple-800 bg-purple-50 p-2 rounded-xl border border-purple-200">
+              <span>👤</span> <span>Nom propre</span>
+            </div>
+            <div class="flex items-center gap-1.5 text-emerald-800 bg-emerald-50 p-2 rounded-xl border border-emerald-200">
+              <span>⚡</span> <span>Verbe à l'infinitif</span>
+            </div>
+            <div class="flex items-center gap-1.5 text-rose-800 bg-rose-50 p-2 rounded-xl border border-rose-200">
+              <span>🔄</span> <span>Pronom</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Buttons -->
+        <div class="flex flex-wrap gap-3 justify-center mt-2">
+          <button id="restart-btn" class="btn-3d px-6 py-3 rounded-2xl font-display font-bold text-sm sm:text-base bg-purple-600 text-white hover:bg-purple-700 cursor-pointer">
+            🔄 Recommencer (10 nouvelles phrases)
+          </button>
+          <a href="index.html" class="btn-3d px-6 py-3 rounded-2xl font-display font-bold text-sm sm:text-base bg-white text-neutral-800 hover:bg-neutral-50 cursor-pointer">
+            Retourner au menu
+          </a>
+        </div>
+
+      </div>
+
+    </main>
+  </div>
+
+  <script>
+    // ==========================================
+    // BANQUE DE +30 PHRASES VARIÉES POUR P5-P6
+    // ==========================================
+    const BANQUE_PHRASES = [
+      // --- 1. GROUPE NOMINAL (GN) ---
+      {
+        tokens: ["Les", "enfants", "jouent", "au", "ballon", "dans", "la", "cour", "de", "récréation."],
+        sujetIndices: [0, 1],
+        classe: "gn",
+        sujetText: "Les enfants",
+        explanation: "« Les enfants » est le groupe sujet (Qui est-ce qui joue ? → Les enfants). C'est un **groupe nominal** composé d'un déterminant et d'un nom commun."
+      },
+      {
+        tokens: ["Un", "violent", "orage", "d'été", "a", "éclaté", "pendant", "la", "nuit."],
+        sujetIndices: [0, 1, 2, 3],
+        classe: "gn",
+        sujetText: "Un violent orage d'été",
+        explanation: "« Un violent orage d'été » est le groupe sujet. C'est un **groupe nominal étendu** avec un adjectif épithète (« violent ») et un complément du nom (« d'été »)."
+      },
+      {
+        tokens: ["Le", "vieux", "château", "de", "sable", "s'écroule", "sous", "la", "première", "vague."],
+        sujetIndices: [0, 1, 2, 3, 4],
+        classe: "gn",
+        sujetText: "Le vieux château de sable",
+        explanation: "« Le vieux château de sable » est le groupe sujet. C'est un **groupe nominal** enrichi d'un adjectif (« vieux ») et d'un complément du nom (« de sable »)."
+      },
+      {
+        tokens: ["La", "fille", "qui", "habite", "en", "face", "prend", "le", "bus", "tous", "les", "matins."],
+        sujetIndices: [0, 1, 2, 3, 4, 5],
+        classe: "gn",
+        sujetText: "La fille qui habite en face",
+        explanation: "« La fille qui habite en face » est le groupe sujet. C'est un **groupe nominal** enrichi d'une proposition relative (« qui habite en face »)."
+      },
+      {
+        tokens: ["Une", "délicieuse", "odeur", "de", "gaufres", "chaudes", "embaume", "toute", "la", "cuisine."],
+        sujetIndices: [0, 1, 2, 3, 4, 5],
+        classe: "gn",
+        sujetText: "Une délicieuse odeur de gaufres chaudes",
+        explanation: "« Une délicieuse odeur de gaufres chaudes » est le groupe sujet. C'est un **groupe nominal** avec son nom noyau « odeur » et ses expansions."
+      },
+      {
+        tokens: ["Dans", "le", "ciel", "d'automne", "volent", "les", "oiseaux", "migrateurs."],
+        sujetIndices: [5, 6, 7],
+        classe: "gn",
+        sujetText: "les oiseaux migrateurs",
+        explanation: "« les oiseaux migrateurs » est le groupe sujet, placé après le verbe « volent ». C'est un **groupe nominal** (déterminant + nom + adjectif)."
+      },
+      {
+        tokens: ["Les", "magnifiques", "photos", "de", "vacances", "prises", "en", "Ardenne", "décorent", "le", "salon."],
+        sujetIndices: [0, 1, 2, 3, 4, 5, 6, 7],
+        classe: "gn",
+        sujetText: "Les magnifiques photos de vacances prises en Ardenne",
+        explanation: "« Les magnifiques photos de vacances prises en Ardenne » est un long **groupe nominal** sujet avec plusieurs compléments."
+      },
+      {
+        tokens: ["Chaque", "matin,", "les", "élèves", "de", "sixième", "primaire", "préparent", "leurs", "affaires."],
+        sujetIndices: [2, 3, 4, 5, 6],
+        classe: "gn",
+        sujetText: "les élèves de sixième primaire",
+        explanation: "« les élèves de sixième primaire » est le groupe sujet. C'est un **groupe nominal** formé du nom « élèves » et du complément du nom « de sixième primaire »."
+      },
+      {
+        tokens: ["Le", "petit", "ruisseau", "au", "fond", "du", "jardin", "coule", "paisiblement."],
+        sujetIndices: [0, 1, 2, 3, 4, 5, 6],
+        classe: "gn",
+        sujetText: "Le petit ruisseau au fond du jardin",
+        explanation: "« Le petit ruisseau au fond du jardin » est le groupe sujet. C'est un **groupe nominal** complété par un groupe prépositionnel de lieu."
+      },
+      {
+        tokens: ["Ce", "grand", "chêne", "centenaire", "abrite", "de", "nombreux", "écureuils."],
+        sujetIndices: [0, 1, 2, 3],
+        classe: "gn",
+        sujetText: "Ce grand chêne centenaire",
+        explanation: "« Ce grand chêne centenaire » est le groupe sujet. C'est un **groupe nominal** avec déterminant démonstratif et deux adjectifs."
+      },
+      {
+        tokens: ["Dans", "cette", "cabane", "se", "cache", "un", "vieux", "sorcier", "aux", "redoutables", "pouvoirs", "magiques."],
+        sujetIndices: [5, 6, 7, 8, 9, 10, 11],
+        classe: "gn",
+        sujetText: "un vieux sorcier aux redoutables pouvoirs magiques",
+        explanation: "« un vieux sorcier aux redoutables pouvoirs magiques » est le groupe sujet, inversé après le verbe « se cache ». C'est un **groupe nominal étendu** avec adjectif et complément du nom."
+      },
+
+      // --- 2. NOM PROPRE ---
+      {
+        tokens: ["Nicolas", "range", "soigneusement", "ses", "crayons", "dans", "sa", "trousse."],
+        sujetIndices: [0],
+        classe: "nom_propre",
+        sujetText: "Nicolas",
+        explanation: "« Nicolas » est le sujet du verbe « range ». C'est un **nom propre** (prénom de personne, qui prend une majuscule)."
+      },
+      {
+        tokens: ["Bruxelles", "accueille", "des", "visiteurs", "venus", "du", "monde", "entier."],
+        sujetIndices: [0],
+        classe: "nom_propre",
+        sujetText: "Bruxelles",
+        explanation: "« Bruxelles » est le sujet du verbe « accueille ». C'est un **nom propre** (nom de ville/capitale)."
+      },
+      {
+        tokens: ["Tintin", "et", "Milou", "explorent", "le", "mystérieux", "temple", "inca."],
+        sujetIndices: [0, 1, 2],
+        classe: "nom_propre",
+        sujetText: "Tintin et Milou",
+        explanation: "« Tintin et Milou » forme le sujet coordonné. Il est constitué de **noms propres** désignant des personnages célèbres."
+      },
+      {
+        tokens: ["Marie", "Curie", "a", "reçu", "deux", "prix", "Nobel", "pour", "ses", "travaux."],
+        sujetIndices: [0, 1],
+        classe: "nom_propre",
+        sujetText: "Marie Curie",
+        explanation: "« Marie Curie » est le sujet du verbe « a reçu ». C'est un **nom propre** composé d'un prénom et d'un nom de famille."
+      },
+      {
+        tokens: ["La", "Meuse", "traverse", "de", "magnifiques", "villes", "belges."],
+        sujetIndices: [0, 1],
+        classe: "nom_propre",
+        sujetText: "La Meuse",
+        explanation: "« La Meuse » est le sujet du verbe « traverse ». C'est un **nom propre géographique** (fleuve)."
+      },
+      {
+        tokens: ["Demain", "matin,", "Léa", "partira", "en", "classe", "de", "mer."],
+        sujetIndices: [2],
+        classe: "nom_propre",
+        sujetText: "Léa",
+        explanation: "« Léa » est le sujet du verbe « partira » (placé après le complément de temps). C'est un **nom propre**."
+      },
+      {
+        tokens: ["Victor", "Hugo", "a", "écrit", "de", "grands", "romans", "au", "dix-neuvième", "siècle."],
+        sujetIndices: [0, 1],
+        classe: "nom_propre",
+        sujetText: "Victor Hugo",
+        explanation: "« Victor Hugo » est le sujet du verbe « a écrit ». C'est un **nom propre** d'auteur."
+      },
+      {
+        tokens: ["À", "Namur,", "Thomas", "et", "Lucas", "participent", "à", "la", "fête", "populaire."],
+        sujetIndices: [2, 3, 4],
+        classe: "nom_propre",
+        sujetText: "Thomas et Lucas",
+        explanation: "« Thomas et Lucas » est le sujet du verbe « participent ». Ce sont des **noms propres** reliés par « et »."
+      },
+      {
+        tokens: ["Sur", "le", "quai", "de", "la", "gare", "attendait", "Nicolas", "avec", "impatience."],
+        sujetIndices: [7],
+        classe: "nom_propre",
+        sujetText: "Nicolas",
+        explanation: "« Nicolas » est le sujet du verbe « attendait » (inversé après le verbe). C'est un **nom propre**."
+      },
+
+      // --- 3. VERBE À L'INFINITIF ---
+      {
+        tokens: ["Fumer", "est", "très", "mauvais", "pour", "la", "santé."],
+        sujetIndices: [0],
+        classe: "infinitif",
+        sujetText: "Fumer",
+        explanation: "« Fumer » est le sujet du verbe « est ». C'est un **verbe à l'infinitif** employé comme sujet."
+      },
+      {
+        tokens: ["Pratiquer", "un", "sport", "régulièrement", "maintient", "le", "corps", "en", "bonne", "santé."],
+        sujetIndices: [0, 1, 2, 3],
+        classe: "infinitif",
+        sujetText: "Pratiquer un sport régulièrement",
+        explanation: "« Pratiquer un sport régulièrement » est le groupe sujet. Sa tête est le **verbe à l'infinitif** « Pratiquer », complété par son complément."
+      },
+      {
+        tokens: ["Lire", "tous", "les", "soirs", "enrichit", "le", "vocabulaire", "des", "enfants."],
+        sujetIndices: [0, 1, 2, 3],
+        classe: "infinitif",
+        sujetText: "Lire tous les soirs",
+        explanation: "« Lire tous les soirs » est le groupe sujet du verbe « enrichit ». Il a pour noyau un **verbe à l'infinitif** (« Lire »)."
+      },
+      {
+        tokens: ["Mentir", "à", "ses", "amis", "détruit", "la", "confiance."],
+        sujetIndices: [0, 1, 2, 3],
+        classe: "infinitif",
+        sujetText: "Mentir à ses amis",
+        explanation: "« Mentir à ses amis » est le sujet du verbe « détruit ». C'est un **verbe à l'infinitif** accompagné de son complément."
+      },
+      {
+        tokens: ["Manger", "équilibré", "donne", "de", "l'énergie", "pour", "toute", "la", "journée."],
+        sujetIndices: [0, 1],
+        classe: "infinitif",
+        sujetText: "Manger équilibré",
+        explanation: "« Manger équilibré » est le sujet de « donne ». C'est un **verbe à l'infinitif** (« Manger »)."
+      },
+      {
+        tokens: ["Observer", "les", "étoiles", "pendant", "la", "nuit", "fascine", "les", "jeunes", "astronomes."],
+        sujetIndices: [0, 1, 2, 3, 4, 5],
+        classe: "infinitif",
+        sujetText: "Observer les étoiles pendant la nuit",
+        explanation: "« Observer les étoiles pendant la nuit » est le groupe sujet. C'est un **verbe à l'infinitif** (« Observer ») avec ses compléments."
+      },
+      {
+        tokens: ["Traverser", "la", "rue", "sans", "regarder", "représente", "un", "grand", "danger."],
+        sujetIndices: [0, 1, 2, 3, 4],
+        classe: "infinitif",
+        sujetText: "Traverser la rue sans regarder",
+        explanation: "« Traverser la rue sans regarder » est le sujet du verbe « représente ». Il s'agit d'un **verbe à l'infinitif**."
+      },
+      {
+        tokens: ["Bien", "dormir", "permet", "de", "rester", "attentif", "en", "classe."],
+        sujetIndices: [0, 1],
+        classe: "infinitif",
+        sujetText: "Bien dormir",
+        explanation: "« Bien dormir » est le groupe sujet du verbe « permet ». C'est un **verbe à l'infinitif** (« dormir ») précédé d'un adverbe."
+      },
+      {
+        tokens: ["Apprendre", "une", "nouvelle", "langue", "demande", "de", "la", "patience."],
+        sujetIndices: [0, 1, 2, 3],
+        classe: "infinitif",
+        sujetText: "Apprendre une nouvelle langue",
+        explanation: "« Apprendre une nouvelle langue » est le groupe sujet du verbe « demande ». C'est un **verbe à l'infinitif**."
+      },
+
+      // --- 4. PRONOM ---
+      {
+        tokens: ["Penses-", "tu", "venir", "me", "rendre", "visite", "?"],
+        sujetIndices: [1],
+        classe: "pronom",
+        sujetText: "tu",
+        explanation: "Dans la phrase interrogative « Penses-tu venir me rendre visite ? », le sujet est le pronom « tu », inversé après le verbe « penses ». C'est un **pronom personnel**."
+      },
+      {
+        tokens: ["Il", "adore", "déguster", "une", "glace", "au", "chocolat", "après", "l'école."],
+        sujetIndices: [0],
+        classe: "pronom",
+        sujetText: "Il",
+        explanation: "« Il » est le sujet du verbe « adore ». C'est un **pronom personnel** de la 3e personne du singulier."
+      },
+      {
+        tokens: ["Nous", "préparons", "un", "gâteau", "surprise", "pour", "l'anniversaire", "de", "maman."],
+        sujetIndices: [0],
+        classe: "pronom",
+        sujetText: "Nous",
+        explanation: "« Nous » est le sujet du verbe « préparons ». C'est un **pronom personnel** de la 1re personne du pluriel."
+      },
+      {
+        tokens: ["Celui-ci", "semble", "beaucoup", "plus", "facile", "à", "résoudre."],
+        sujetIndices: [0],
+        classe: "pronom",
+        sujetText: "Celui-ci",
+        explanation: "« Celui-ci » est le sujet du verbe « semble ». C'est un **pronom démonstratif**."
+      },
+      {
+        tokens: ["Chacun", "doit", "ranger", "ses", "affaires", "avant", "la", "sonnerie."],
+        sujetIndices: [0],
+        classe: "pronom",
+        sujetText: "Chacun",
+        explanation: "« Chacun » est le sujet du verbe « doit ». C'est un **pronom indéfini**."
+      },
+      {
+        tokens: ["Elles", "applaudissent", "avec", "joie", "les", "acteurs", "sur", "scène."],
+        sujetIndices: [0],
+        classe: "pronom",
+        sujetText: "Elles",
+        explanation: "« Elles » est le sujet du verbe « applaudissent ». C'est un **pronom personnel** féminin pluriel."
+      },
+      {
+        tokens: ["Tous", "ont", "obtenu", "leur", "brevet", "de", "natation."],
+        sujetIndices: [0],
+        classe: "pronom",
+        sujetText: "Tous",
+        explanation: "« Tous » est le sujet du verbe « ont obtenu ». C'est un **pronom indéfini** qui remplace un ensemble de personnes."
+      },
+      {
+        tokens: ["Ceux-là", "préfèrent", "lire", "au", "calme", "dans", "la", "bibliothèque."],
+        sujetIndices: [0],
+        classe: "pronom",
+        sujetText: "Ceux-là",
+        explanation: "« Ceux-là » est le sujet du verbe « préfèrent ». C'est un **pronom démonstratif** pluriel."
+      },
+      {
+        tokens: ["Hier", "soir,", "vous", "avez", "regardé", "un", "beau", "documentaire."],
+        sujetIndices: [2],
+        classe: "pronom",
+        sujetText: "vous",
+        explanation: "« vous » est le sujet du verbe « avez regardé ». C'est un **pronom personnel** de la 2e personne du pluriel."
+      },
+      {
+        tokens: ["Certains", "refusent", "d'abandonner", "malgré", "la", "fatigue."],
+        sujetIndices: [0],
+        classe: "pronom",
+        sujetText: "Certains",
+        explanation: "« Certains » est le sujet du verbe « refusent ». C'est un **pronom indéfini**."
+      }
+    ];
+
+    // ==========================================
+    // ÉTAT DU JEU
+    // ==========================================
+    let currentQuestions = [];
+    let currentIndex = 0;
+    let currentScore = 0;
+    let selectedWordIndices = new Set();
+    let selectedClass = null;
+    let attemptsCount = 0;
+    let isSubmitted = false;
+
+    // ==========================================
+    // INITIALISATION DU QUIZ
+    // ==========================================
+    function initQuiz() {
+      const shuffle = arr => [...arr].sort(() => 0.5 - Math.random());
+      
+      const gnPool = shuffle(BANQUE_PHRASES.filter(q => q.classe === 'gn'));
+      const npPool = shuffle(BANQUE_PHRASES.filter(q => q.classe === 'nom_propre'));
+      const infPool = shuffle(BANQUE_PHRASES.filter(q => q.classe === 'infinitif'));
+      const proPool = shuffle(BANQUE_PHRASES.filter(q => q.classe === 'pronom'));
+
+      // Tirage équilibré : 4 GN, 2 Nom propre, 2 Infinitif, 2 Pronom = 10 questions
+      currentQuestions = shuffle([
+        ...gnPool.slice(0, 4),
+        ...npPool.slice(0, 2),
+        ...infPool.slice(0, 2),
+        ...proPool.slice(0, 2)
+      ]);
+
+      if (currentQuestions.length < 10) {
+        currentQuestions = shuffle(BANQUE_PHRASES).slice(0, 10);
+      }
+
+      currentIndex = 0;
+      currentScore = 0;
+      
+      document.getElementById('quiz-view').classList.remove('hidden');
+      document.getElementById('results-view').classList.add('hidden');
+      
+      renderQuestion();
+    }
+
+    // ==========================================
+    // AFFICHAGE D'UNE QUESTION
+    // ==========================================
+    function renderQuestion() {
+      const q = currentQuestions[currentIndex];
+      selectedWordIndices.clear();
+      selectedClass = null;
+      attemptsCount = 0;
+      isSubmitted = false;
+
+      document.getElementById('question-index-label').textContent = `Phrase ${currentIndex + 1} / ${currentQuestions.length}`;
+      document.getElementById('score-pill').textContent = `Score : ${currentScore}`;
+      const pct = (currentIndex / currentQuestions.length) * 100;
+      document.getElementById('progress-bar-fill').style.width = `${pct}%`;
+
+      document.getElementById('second-chance-alert').classList.add('hidden');
+      document.getElementById('explanation-box').classList.add('hidden');
+      document.getElementById('validate-btn').classList.remove('hidden');
+      document.getElementById('validate-btn').textContent = "Vérifier ma réponse ➔";
+      document.getElementById('next-btn').classList.add('hidden');
+      document.getElementById('clear-selection-btn').classList.remove('hidden');
+
+      updateSelectedWordsCount();
+
+      const sentenceContainer = document.getElementById('sentence-container');
+      sentenceContainer.innerHTML = '';
+
+      q.tokens.forEach((token, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'btn-word px-3.5 py-2 rounded-xl font-sans font-semibold text-base sm:text-lg md:text-xl';
+        btn.textContent = token;
+        btn.dataset.index = idx;
+        btn.onclick = () => toggleWordSelection(idx, btn);
+        sentenceContainer.appendChild(btn);
+      });
+
+      document.querySelectorAll('.class-option-card').forEach(card => {
+        card.className = 'class-option-card flex flex-col gap-1';
+        card.onclick = () => selectClassOption(card.dataset.class);
+      });
+    }
+
+    // ==========================================
+    // GESTION DU CLIC SUR UN MOT
+    // ==========================================
+    function toggleWordSelection(idx, btn) {
+      if (isSubmitted) return;
+
+      playTickSound();
+
+      if (selectedWordIndices.has(idx)) {
+        selectedWordIndices.delete(idx);
+        btn.classList.remove('selected');
+      } else {
+        selectedWordIndices.add(idx);
+        btn.classList.add('selected');
+      }
+      updateSelectedWordsCount();
+    }
+
+    function updateSelectedWordsCount() {
+      const count = selectedWordIndices.size;
+      const label = document.getElementById('selected-words-count');
+      label.textContent = count === 0 ? "0 mot sélectionné" : (count === 1 ? "1 mot sélectionné" : `${count} mots sélectionnés`);
+    }
+
+    // ==========================================
+    // GESTION DU CHOIX DE LA CLASSE
+    // ==========================================
+    function selectClassOption(className) {
+      if (isSubmitted) return;
+
+      playTickSound();
+      selectedClass = className;
+
+      document.querySelectorAll('.class-option-card').forEach(card => {
+        if (card.dataset.class === className) {
+          card.classList.add('active');
+        } else {
+          card.classList.remove('active');
+        }
+      });
+    }
+
+    // ==========================================
+    // VALIDATION DE LA RÉPONSE
+    // ==========================================
+    function validateAnswer() {
+      if (isSubmitted) return;
+
+      const q = currentQuestions[currentIndex];
+
+      if (selectedWordIndices.size === 0 && !selectedClass) {
+        alert("Clique d'abord sur les mots du sujet ET choisis sa classe grammaticale !");
+        return;
+      }
+      if (selectedWordIndices.size === 0) {
+        alert("N'oublie pas de cliquer sur les mots faisant partie du sujet !");
+        return;
+      }
+      if (!selectedClass) {
+        alert("N'oublie pas de sélectionner la classe grammaticale du sujet !");
+        return;
+      }
+
+      const expectedIndices = new Set(q.sujetIndices);
+      let wordsCorrect = (expectedIndices.size === selectedWordIndices.size);
+      if (wordsCorrect) {
+        for (let idx of expectedIndices) {
+          if (!selectedWordIndices.has(idx)) {
+            wordsCorrect = false;
+            break;
+          }
+        }
+      }
+
+      const classCorrect = (selectedClass === q.classe);
+      const isPerfect = wordsCorrect && classCorrect;
+
+      if (isPerfect) {
+        playSuccessSound();
+        currentScore++;
+        document.getElementById('score-pill').textContent = `Score : ${currentScore}`;
+        finishQuestion(true, q);
+      } else {
+        if (attemptsCount === 0) {
+          playWrongSound();
+          attemptsCount = 1;
+          document.getElementById('second-chance-alert').classList.remove('hidden');
+          document.getElementById('validate-btn').textContent = "Vérifier à nouveau (2e chance) ➔";
+        } else {
+          playWrongSound();
+          finishQuestion(false, q);
+        }
+      }
+    }
+
+    // ==========================================
+    // CLÔTURE ET CORRECTION DÉTAILLÉE
+    // ==========================================
+    function finishQuestion(isSuccess, q) {
+      isSubmitted = true;
+      document.getElementById('second-chance-alert').classList.add('hidden');
+      document.getElementById('clear-selection-btn').classList.add('hidden');
+
+      const expectedSet = new Set(q.sujetIndices);
+      const wordButtons = document.querySelectorAll('#sentence-container .btn-word');
+
+      wordButtons.forEach((btn, idx) => {
+        btn.disabled = true;
+        btn.classList.remove('selected');
+
+        const isExpected = expectedSet.has(idx);
+        const isSelected = selectedWordIndices.has(idx);
+
+        if (isExpected && isSelected) {
+          btn.classList.add('correct-found');
+        } else if (!isExpected && isSelected) {
+          btn.classList.add('wrong-selected');
+        } else if (isExpected && !isSelected) {
+          btn.classList.add('missed-sujet');
+        }
+      });
+
+      document.querySelectorAll('.class-option-card').forEach(card => {
+        card.classList.add('disabled');
+        const c = card.dataset.class;
+        card.classList.remove('active');
+
+        if (c === q.classe) {
+          card.classList.add('correct');
+        } else if (c === selectedClass && selectedClass !== q.classe) {
+          card.classList.add('incorrect');
+        }
+      });
+
+      const expBox = document.getElementById('explanation-box');
+      const expIcon = document.getElementById('explanation-icon');
+      const expTitle = document.getElementById('explanation-title');
+      const expText = document.getElementById('explanation-text');
+
+      expBox.classList.remove('hidden');
+      if (isSuccess) {
+        expBox.className = "bg-green-50/90 border-2 border-green-500 rounded-2xl p-4 sm:p-5 fade-in shadow-[3px_3px_0px_#15803d]";
+        expIcon.textContent = "🎉";
+        expTitle.textContent = "Excellent ! C'est parfaitement exact.";
+        expTitle.className = "font-display font-bold text-sm sm:text-base text-green-900";
+      } else {
+        expBox.className = "bg-amber-50/90 border-2 border-amber-400 rounded-2xl p-4 sm:p-5 fade-in shadow-[3px_3px_0px_#b45309]";
+        expIcon.textContent = "💡";
+        expTitle.textContent = "Correction :";
+        expTitle.className = "font-display font-bold text-sm sm:text-base text-amber-950";
+      }
+
+      const formattedExp = q.explanation.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+      expText.innerHTML = formattedExp;
+
+      document.getElementById('validate-btn').classList.add('hidden');
+      const nextBtn = document.getElementById('next-btn');
+      nextBtn.classList.remove('hidden');
+      nextBtn.textContent = (currentIndex < currentQuestions.length - 1) ? "Phrase suivante ➔" : "Voir mon bilan final ➔";
+    }
+
+    // ==========================================
+    // QUESTION SUIVANTE OU RÉSULTAT
+    // ==========================================
+    function nextQuestion() {
+      if (currentIndex < currentQuestions.length - 1) {
+        currentIndex++;
+        renderQuestion();
+      } else {
+        showResults();
+      }
+    }
+
+    // ==========================================
+    // ÉCRAN DE RÉSULTATS FINAUX
+    // ==========================================
+    function showResults() {
+      document.getElementById('quiz-view').classList.add('hidden');
+      const resView = document.getElementById('results-view');
+      resView.classList.remove('hidden');
+
+      const digits = document.getElementById('result-score-digits');
+      const feedback = document.getElementById('result-feedback-msg');
+      const title = document.getElementById('result-title');
+      const subtitle = document.getElementById('result-subtitle');
+      const badge = document.getElementById('result-badge');
+
+      digits.innerHTML = `${currentScore} <span class="text-2xl text-purple-400 font-normal">/ 10</span>`;
+
+      if (currentScore === 10) {
+        badge.textContent = "🏆";
+        badge.className = "w-24 h-24 rounded-full border-3 border-neutral-900 flex items-center justify-center text-5xl shadow-[4px_4px_0px_#1A1A2E] bg-yellow-200 animate-bounce";
+        title.textContent = "🌟 Score Parfait ! 10 / 10 !";
+        subtitle.textContent = "Tu maîtrises le sujet et ses 4 classes sur le bout des doigts !";
+        feedback.textContent = "Félicitations pour ce sans-faute remarquable !";
+        launchConfetti();
+      } else if (currentScore >= 8) {
+        badge.textContent = "⭐️";
+        badge.className = "w-24 h-24 rounded-full border-3 border-neutral-900 flex items-center justify-center text-5xl shadow-[4px_4px_0px_#1A1A2E] bg-green-100";
+        title.textContent = "Très bon travail !";
+        subtitle.textContent = "Tu distingues très bien les différentes natures de sujets dans la phrase.";
+        feedback.textContent = "Encore un tout petit effort pour le 10/10 !";
+        launchConfetti();
+      } else if (currentScore >= 5) {
+        badge.textContent = "👍";
+        badge.className = "w-24 h-24 rounded-full border-3 border-neutral-900 flex items-center justify-center text-5xl shadow-[4px_4px_0px_#1A1A2E] bg-blue-100";
+        title.textContent = "C'est un bon début !";
+        subtitle.textContent = "N'hésite pas à bien relire la leçon pour consolider tes connaissances.";
+        feedback.textContent = "Recommence une série pour t'entraîner davantage !";
+      } else {
+        badge.textContent = "💪";
+        badge.className = "w-24 h-24 rounded-full border-3 border-neutral-900 flex items-center justify-center text-5xl shadow-[4px_4px_0px_#1A1A2E] bg-purple-100";
+        title.textContent = "Continue à t'entraîner !";
+        subtitle.textContent = "Consulte le rappel des 4 classes et refais une partie pour progresser.";
+        feedback.textContent = "La persévérance est la clé de la réussite !";
+      }
+    }
+
+    // ==========================================
+    // EFFETS SONORES AUTONOMES (WEB AUDIO API)
+    // ==========================================
+    let audioCtx = null;
+    function getAudioContext() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      return audioCtx;
+    }
+
+    function playTickSound() {
+      try {
+        const ctx = getAudioContext();
+        if (ctx.state === 'suspended') ctx.resume();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(440, ctx.currentTime);
+        gain.gain.setValueAtTime(0.04, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.05);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.05);
+      } catch (e) {}
+    }
+
+    function playSuccessSound() {
+      try {
+        const ctx = getAudioContext();
+        if (ctx.state === 'suspended') ctx.resume();
+        const now = ctx.currentTime;
+        const notes = [523.25, 659.25, 783.99, 1046.50];
+        notes.forEach((freq, i) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(freq, now + i * 0.07);
+          gain.gain.setValueAtTime(0.12, now + i * 0.07);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.07 + 0.18);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now + i * 0.07);
+          osc.stop(now + i * 0.07 + 0.18);
+        });
+      } catch (e) {}
+    }
+
+    function playWrongSound() {
+      try {
+        const ctx = getAudioContext();
+        if (ctx.state === 'suspended') ctx.resume();
+        const now = ctx.currentTime;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(220, now);
+        osc.frequency.exponentialRampToValueAtTime(140, now + 0.2);
+        gain.gain.setValueAtTime(0.1, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.2);
+      } catch (e) {}
+    }
+
+    // ==========================================
+    // CONFETTI CANVAS AUTONOME
+    // ==========================================
+    function launchConfetti() {
+      const canvas = document.getElementById('confetti-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      const particles = [];
+      const colors = ['#7c3aed', '#10b981', '#f59e0b', '#ef4444', '#0284c7', '#ec4899'];
+
+      for (let i = 0; i < 90; i++) {
+        particles.push({
+          x: canvas.width / 2,
+          y: canvas.height / 2,
+          vx: (Math.random() - 0.5) * 16,
+          vy: (Math.random() - 0.7) * 18,
+          size: Math.random() * 8 + 4,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          rotation: Math.random() * 360,
+          rotSpeed: (Math.random() - 0.5) * 8,
+          opacity: 1
+        });
+      }
+
+      let frame = 0;
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        let alive = false;
+
+        particles.forEach(p => {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += 0.35;
+          p.rotation += p.rotSpeed;
+          p.opacity -= 0.012;
+
+          if (p.opacity > 0) {
+            alive = true;
+            ctx.save();
+            ctx.translate(p.x, p.y);
+            ctx.rotate((p.rotation * Math.PI) / 180);
+            ctx.fillStyle = p.color;
+            ctx.globalAlpha = Math.max(0, p.opacity);
+            ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+            ctx.restore();
+          }
+        });
+
+        if (alive && frame < 120) {
+          frame++;
+          requestAnimationFrame(animate);
+        } else {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+      }
+      animate();
+    }
+
+    // ==========================================
+    // ATTACHEMENT DES ÉVÉNEMENTS
+    // ==========================================
+    document.addEventListener('DOMContentLoaded', () => {
+      const toggleLessonBtn = document.getElementById('toggle-lesson-btn');
+      const closeLessonBtn = document.getElementById('close-lesson-btn');
+      const lessonPanel = document.getElementById('lesson-panel');
+
+      toggleLessonBtn.onclick = () => {
+        lessonPanel.classList.toggle('hidden');
+      };
+      closeLessonBtn.onclick = () => {
+        lessonPanel.classList.add('hidden');
+      };
+
+      document.getElementById('clear-selection-btn').onclick = () => {
+        if (isSubmitted) return;
+        selectedWordIndices.clear();
+        document.querySelectorAll('#sentence-container .btn-word').forEach(b => b.classList.remove('selected'));
+        updateSelectedWordsCount();
+      };
+
+      document.getElementById('validate-btn').onclick = validateAnswer;
+      document.getElementById('next-btn').onclick = nextQuestion;
+      document.getElementById('restart-btn').onclick = initQuiz;
+
+      initQuiz();
+    });
+  </script>
+</body>
+</html>
