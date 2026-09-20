@@ -122,7 +122,12 @@ def main():
             img_w, img_h = img.size
             
             # Gestion du rectangle de découpe
+            use_custom_normbox = False
             if bid in crops_data and 'normBox' in crops_data[bid]:
+                if bid not in landscape_ids or crops_data[bid].get('rotation', 0) != 0:
+                    use_custom_normbox = True
+
+            if use_custom_normbox:
                 nb = crops_data[bid]['normBox']
                 crop_x = int(nb['x'] * img_w)
                 crop_y = int(nb['y'] * img_h)
@@ -133,7 +138,7 @@ def main():
                 crop_h = int(crop_w * 1.42)
                 crop_x = (img_w - crop_w) // 2
                 crop_y = (img_h - crop_h) // 2
-                if crop_y < 0:
+                if crop_y < 0 or crop_h > img_h:
                     crop_h = int(img_h * 0.94)
                     crop_w = int(crop_h / 1.42)
                     crop_x = (img_w - crop_w) // 2
