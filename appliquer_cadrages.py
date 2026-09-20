@@ -99,11 +99,17 @@ def main():
         with Image.open(src_path) as img:
             img = img.convert('RGB')
             
+            landscape_ids = [
+                'back_to_the_80s', 'comme_sur_des_roulettes', 'crash_coeur_jungle', 'droles_darbres',
+                'la_villa', 'le_mysterieux_inconnu', 'le_vieil_homme_et_le_chien', 'qui_a_le_plus_de_chance',
+                'princesse_moche', 'mouche_mai', 'quelle_histoire', 'vie_robot', 'nouveau_depart'
+            ]
+            
             # Gestion de la rotation
             rot = 0
-            if bid in crops_data and 'rotation' in crops_data[bid]:
+            if bid in crops_data and 'rotation' in crops_data[bid] and crops_data[bid]['rotation'] != 0:
                 rot = crops_data[bid]['rotation']
-            elif bid in ['princesse_moche', 'mouche_mai', 'quelle_histoire', 'vie_robot', 'nouveau_depart']:
+            elif bid in landscape_ids:
                 rot = 90
                 
             if rot == 90:
