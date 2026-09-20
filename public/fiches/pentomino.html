@@ -1,0 +1,1814 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Les Pentominos — Plateforme LCML</title>
+  <link rel="icon" type="image/svg+xml" href="logo.svg"/>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&family=Nunito:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <!-- Canvas Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <style>
+    :root {
+      /* LCML Signature Color Palette */
+      --purple: #5B4FCF;
+      --purple-hover: #4A3FB8;
+      --purple-light: #EEF0FF;
+      --purple-mid: #C7C2F5;
+      
+      --green: #1A9E75;
+      --green-light: #E2F5EE;
+      --green-dark: #127958;
+      
+      --red: #D94F3D;
+      --red-light: #FDECEA;
+      
+      --amber: #F59E0B;
+      --amber-dark: #C97B1A;
+      --amber-light: #FEF3E2;
+      
+      --blue: #1A6FA0;
+      --blue-light: #E2F0FA;
+      
+      --pink: #EC4899;
+      --pink-light: #FCE7F3;
+
+      --bg: #FDFBF7;
+      --surface: #FFFFFF;
+      --surface-alt: #F4F1EB;
+      --grid-bg: #F8F6F0;
+      --grid-line: #DCD6C8;
+      --text: #1A1A2E;
+      --text-muted: #6B7080;
+      --border: #1A1A2E;
+
+      --r-lg: 22px;
+      --r-md: 14px;
+      --r-sm: 8px;
+
+      --shadow-solid: 4px 4px 0px var(--border);
+      --shadow-solid-sm: 2px 2px 0px var(--border);
+      --shadow-solid-lg: 6px 6px 0px var(--border);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg);
+      background-image: 
+        radial-gradient(rgba(26, 26, 46, 0.07) 1px, transparent 1px),
+        radial-gradient(rgba(91, 79, 207, 0.05) 1px, #FDFBF7 1px);
+      background-size: 24px 24px, 48px 48px;
+      background-position: 0 0, 12px 12px;
+      color: var(--text);
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      min-height: 100vh;
+      padding: 16px 14px 48px;
+      display: flex;
+      flex-direction: column;
+      user-select: none;
+    }
+
+    h1, h2, h3, h4, .font-display {
+      font-family: 'Fredoka', cursive, sans-serif !important;
+    }
+
+    button {
+      font-family: 'Fredoka', sans-serif;
+      cursor: pointer;
+      border: none;
+      background: none;
+      user-select: none;
+      color: inherit;
+    }
+
+    button:focus-visible, .board-tile:focus-visible, .tray-piece:focus-visible {
+      outline: 3px solid var(--purple);
+      outline-offset: 2px;
+    }
+
+    .wrap {
+      max-width: 860px;
+      width: 100%;
+      margin: 0 auto;
+      flex: 1;
+    }
+
+    /* ===== BOUTON FIXE RETOUR ACCUEIL LCML ===== */
+    #home-logo-btn {
+      position: fixed;
+      top: 14px;
+      right: 14px;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #FFFFFF;
+      border: 2px solid var(--border);
+      border-radius: 16px;
+      padding: 6px 14px 6px 8px;
+      box-shadow: 3px 3px 0px var(--border);
+      cursor: pointer;
+      text-decoration: none;
+      font-family: 'Fredoka', sans-serif;
+      font-weight: 700;
+      font-size: 13px;
+      color: var(--text);
+      transition: transform 0.12s, box-shadow 0.12s;
+    }
+    #home-logo-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 3px 5px 0px var(--border);
+    }
+    #home-logo-btn:active {
+      transform: translateY(1px);
+      box-shadow: 1px 1px 0px var(--border);
+    }
+    #home-logo-btn .logo-icon {
+      width: 24px;
+      height: 24px;
+      object-fit: contain;
+    }
+    #home-logo-btn .logo-label {
+      line-height: 1.1;
+      text-align: left;
+    }
+    #home-logo-btn .logo-label span {
+      display: block;
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-muted);
+      font-family: 'Inter', sans-serif;
+    }
+
+    /* ===== APP HEADER LCML ===== */
+    .app-header {
+      background: var(--surface);
+      border: 3px solid var(--border);
+      border-radius: var(--r-lg);
+      padding: 20px 24px;
+      box-shadow: var(--shadow-solid);
+      margin-bottom: 22px;
+      position: relative;
+      overflow: hidden;
+    }
+    .app-header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 6px;
+      background: linear-gradient(90deg, var(--purple), var(--blue), var(--green), var(--amber), var(--pink));
+    }
+    .school-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--purple-light);
+      color: var(--purple);
+      border: 1.5px solid var(--purple);
+      font-weight: 800;
+      font-size: 11.5px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 999px;
+      margin-bottom: 8px;
+      font-family: 'Fredoka', sans-serif;
+    }
+    .brand-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .brand-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .brand-title h1 {
+      font-size: clamp(24px, 5.5vw, 32px);
+      font-weight: 800;
+      color: var(--text);
+      line-height: 1.1;
+      margin: 0;
+    }
+    .brand-title .game-badge {
+      font-size: 32px;
+      animation: floatIcon 3s ease-in-out infinite;
+      display: inline-block;
+    }
+    @keyframes floatIcon {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-3px) rotate(4deg); }
+    }
+    .tagline {
+      color: var(--text-muted);
+      font-size: 14.5px;
+      line-height: 1.5;
+      margin-top: 8px;
+      max-width: 65ch;
+    }
+
+    /* BOUTON GUIDE / REGLES */
+    .btn-help-guide {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #FFF8E7;
+      border: 2px solid var(--amber-dark);
+      color: #8C5303;
+      font-weight: 800;
+      font-size: 13.5px;
+      padding: 8px 16px;
+      border-radius: 999px;
+      box-shadow: 2px 2px 0px var(--amber-dark);
+      transition: all 0.12s;
+    }
+    .btn-help-guide:hover {
+      background: #FEEBC8;
+      transform: translateY(-2px);
+      box-shadow: 3px 4px 0px var(--amber-dark);
+    }
+
+    /* ===== LEVEL SELECT GRID ===== */
+    .section-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .board-grid-select {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .board-tile {
+      text-align: left;
+      background: var(--surface);
+      border: 3px solid var(--border);
+      border-radius: var(--r-md);
+      padding: 18px;
+      box-shadow: var(--shadow-solid);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+    .board-tile:hover {
+      transform: translate(-3px, -3px);
+      box-shadow: var(--shadow-solid-lg);
+    }
+    .board-tile:active {
+      transform: translate(1px, 1px);
+      box-shadow: var(--shadow-solid-sm);
+    }
+    .board-tile-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .board-tile-name {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--purple);
+    }
+    .board-tile-badge {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 3px 9px;
+      border-radius: 999px;
+      border: 1.5px solid var(--border);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .badge-easy { background: var(--green-light); color: var(--green-dark); }
+    .badge-med { background: var(--blue-light); color: var(--blue); }
+    .badge-hard { background: var(--amber-light); color: var(--amber-dark); }
+    .badge-expert { background: var(--red-light); color: var(--red); }
+    
+    .board-tile-desc {
+      font-size: 13.5px;
+      color: var(--text-muted);
+      line-height: 1.4;
+      flex: 1;
+    }
+    .board-tile-fact {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--purple);
+      background: var(--purple-light);
+      padding: 6px 10px;
+      border-radius: var(--r-sm);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .board-tile-cta {
+      margin-top: 6px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-family: 'Fredoka', sans-serif;
+      font-weight: 800;
+      font-size: 14px;
+      color: white;
+      background: var(--purple);
+      border: 2px solid var(--border);
+      border-radius: 999px;
+      padding: 7px 14px;
+      box-shadow: 2px 2px 0px var(--border);
+    }
+
+    /* EXPLAINER CARD */
+    .howto-card {
+      background: var(--surface);
+      border: 3px solid var(--border);
+      border-radius: var(--r-md);
+      padding: 20px;
+      box-shadow: var(--shadow-solid);
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--text);
+    }
+    .howto-card h3 {
+      font-size: 17px;
+      margin-bottom: 8px;
+      color: var(--purple);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .howto-steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+      margin-top: 12px;
+    }
+    .howto-step {
+      background: var(--surface-alt);
+      border: 2px solid var(--border);
+      border-radius: var(--r-sm);
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .howto-step-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      background: var(--amber);
+      color: var(--border);
+      border: 2px solid var(--border);
+      border-radius: 50%;
+      font-weight: 900;
+      font-size: 12px;
+    }
+    .howto-step-title {
+      font-family: 'Fredoka', sans-serif;
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--text);
+    }
+    .howto-step-text {
+      font-size: 12.5px;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    /* ===== PLAY SCREEN ===== */
+    .play-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    .btn-action {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--surface);
+      border: 2px solid var(--border);
+      border-radius: 999px;
+      padding: 8px 16px;
+      font-weight: 700;
+      font-size: 13.5px;
+      color: var(--text);
+      box-shadow: 2px 2px 0px var(--border);
+      transition: all 0.12s;
+    }
+    .btn-action:hover {
+      background: var(--surface-alt);
+      transform: translate(-1px, -1px);
+      box-shadow: 3px 3px 0px var(--border);
+    }
+    .btn-action:active {
+      transform: translate(1px, 1px);
+      box-shadow: 1px 1px 0px var(--border);
+    }
+    .btn-back-play {
+      color: var(--purple);
+      border-color: var(--purple);
+      background: var(--purple-light);
+    }
+    .play-board-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--surface);
+      border: 2px solid var(--border);
+      border-radius: 999px;
+      padding: 6px 14px;
+      box-shadow: 2px 2px 0px var(--border);
+    }
+    .play-board-title {
+      font-family: 'Fredoka', sans-serif;
+      font-weight: 800;
+      font-size: 18px;
+      color: var(--text);
+    }
+    .play-timer {
+      font-family: 'Fredoka', sans-serif;
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--purple);
+      background: var(--purple-light);
+      padding: 3px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--purple-mid);
+    }
+
+    /* BOARD SHELL */
+    .board-shell {
+      background: var(--surface);
+      border: 3px solid var(--border);
+      border-radius: var(--r-lg);
+      padding: 20px 18px;
+      box-shadow: var(--shadow-solid);
+      margin-bottom: 16px;
+    }
+
+    .board-outer-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 12px;
+      overflow-x: auto;
+      padding: 10px 4px;
+    }
+    .board {
+      border: 3px solid var(--border);
+      background-color: var(--grid-bg);
+      box-shadow: 3px 3px 0px var(--border);
+      border-radius: 8px;
+      position: relative;
+      touch-action: manipulation;
+    }
+    .board-cell {
+      box-sizing: border-box;
+      border: 1px solid var(--grid-line);
+      transition: background-color 0.08s ease, transform 0.08s ease;
+      position: relative;
+    }
+    .board-cell.preview-ok {
+      background-color: rgba(26, 158, 117, 0.45) !important;
+      outline: 2px solid var(--green);
+      z-index: 2;
+    }
+    .board-cell.preview-bad {
+      background-color: rgba(217, 79, 61, 0.45) !important;
+      outline: 2px solid var(--red);
+      z-index: 2;
+    }
+    .board-cell.anchor-indicator::after {
+      content: "";
+      position: absolute;
+      inset: 28%;
+      border-radius: 50%;
+      background: #FFFFFF;
+      box-shadow: 0 0 3px rgba(0,0,0,0.5);
+      z-index: 3;
+    }
+
+    .board-cell.placed-piece {
+      border: 1.5px solid rgba(0,0,0,0.25);
+      border-radius: 2px;
+      cursor: pointer;
+      box-shadow: inset 1px 1px 0 rgba(255,255,255,0.4), inset -1px -1px 0 rgba(0,0,0,0.25);
+      transition: filter 0.12s;
+    }
+    .board-cell.placed-piece:hover {
+      filter: brightness(1.12);
+    }
+
+    .board-shake {
+      animation: shakeAnim 0.3s cubic-bezier(.36,.07,.19,.97) both;
+    }
+    @keyframes shakeAnim {
+      10%, 90% { transform: translate3d(-2px, 0, 0); }
+      20%, 80% { transform: translate3d(3px, 0, 0); }
+      30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+      40%, 60% { transform: translate3d(4px, 0, 0); }
+    }
+
+    /* FEEDBACK TEXT */
+    .place-feedback {
+      text-align: center;
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--red);
+      min-height: 22px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    /* ACTIVE SELECTION CONTROL PANEL */
+    .selected-panel {
+      background: var(--surface-alt);
+      border: 2px solid var(--border);
+      border-radius: var(--r-md);
+      padding: 14px 18px;
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      min-height: 80px;
+      box-shadow: inset 2px 2px 0px rgba(0,0,0,0.05);
+    }
+    .selected-panel .empty-msg {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .piece-preview-box {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px;
+      background: #FFFFFF;
+      border: 2px solid var(--border);
+      border-radius: var(--r-sm);
+      box-shadow: 2px 2px 0px var(--border);
+    }
+    .piece-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .ctrl-btn {
+      background: var(--surface);
+      border: 2px solid var(--border);
+      border-radius: 999px;
+      font-weight: 800;
+      font-size: 13.5px;
+      padding: 9px 16px;
+      box-shadow: 2px 2px 0px var(--border);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.12s;
+    }
+    .ctrl-btn:hover {
+      background: var(--purple-light);
+      color: var(--purple);
+      transform: translate(-1px, -1px);
+      box-shadow: 3px 3px 0px var(--border);
+    }
+    .ctrl-btn:active {
+      transform: translate(1px, 1px);
+      box-shadow: 1px 1px 0px var(--border);
+    }
+    .ctrl-btn-danger {
+      color: var(--red);
+    }
+    .ctrl-btn-danger:hover {
+      background: var(--red-light);
+      color: var(--red);
+    }
+
+    /* TRAY SECTION */
+    .tray-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .tray-title {
+      font-size: 13px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .tray {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+      background: var(--grid-bg);
+      border: 2px solid var(--grid-line);
+      border-radius: var(--r-md);
+      padding: 14px;
+      min-height: 80px;
+    }
+    .tray-piece {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 8px 10px;
+      border-radius: 12px;
+      background: var(--surface);
+      border: 2px solid var(--border);
+      box-shadow: 2px 2px 0px var(--border);
+      transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+      cursor: pointer;
+      position: relative;
+    }
+    .tray-piece:hover {
+      transform: translateY(-3px);
+      box-shadow: 3px 5px 0px var(--border);
+    }
+    .tray-piece.selected {
+      border-color: var(--purple);
+      border-width: 2.5px;
+      background: var(--purple-light);
+      box-shadow: 0 0 0 3px var(--purple-mid), 3px 5px 0px var(--border);
+      transform: translateY(-2px);
+    }
+    .tray-piece-letter {
+      font-family: 'Fredoka', sans-serif;
+      font-weight: 800;
+      font-size: 11px;
+      color: var(--text-muted);
+      letter-spacing: 0.05em;
+    }
+
+    /* PIECE CELLS RENDERING */
+    .mini-grid {
+      display: grid;
+    }
+    .mini-cell {
+      border-radius: 3px;
+      position: relative;
+      box-shadow: inset 1px 1px 0 rgba(255,255,255,0.4), inset -1px -1px 0 rgba(0,0,0,0.25);
+    }
+    .mini-cell.anchor::after {
+      content: "";
+      position: absolute;
+      inset: 25%;
+      border-radius: 50%;
+      background: #FFFFFF;
+      box-shadow: 0 0 2px rgba(0,0,0,0.6);
+    }
+
+    /* PROGRESS & STATUS BAR */
+    .status-card {
+      background: var(--surface);
+      border: 3px solid var(--border);
+      border-radius: var(--r-md);
+      padding: 12px 18px;
+      box-shadow: var(--shadow-solid);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .status-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .status-progress-track {
+      width: 140px;
+      height: 12px;
+      background: var(--surface-alt);
+      border: 1.5px solid var(--border);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .status-progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--green), var(--purple));
+      border-radius: 999px;
+      transition: width 0.3s ease;
+    }
+    .status-text {
+      font-family: 'Fredoka', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--text);
+    }
+    .sound-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--surface-alt);
+      border: 1.5px solid var(--border);
+      border-radius: 999px;
+      padding: 5px 12px;
+      font-weight: 700;
+      font-size: 12.5px;
+    }
+
+    /* WIN MODAL / BANNER */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(26, 26, 46, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .modal-card {
+      background: var(--surface);
+      border: 4px solid var(--border);
+      border-radius: var(--r-lg);
+      padding: 28px 24px;
+      max-width: 480px;
+      width: 100%;
+      box-shadow: var(--shadow-solid-lg);
+      text-align: center;
+      animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      position: relative;
+    }
+    @keyframes popIn {
+      from { transform: scale(0.85); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    .modal-icon {
+      font-size: 52px;
+      margin-bottom: 10px;
+      animation: bounceWin 1.5s infinite;
+    }
+    @keyframes bounceWin {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+    .modal-card h2 {
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--green-dark);
+      margin-bottom: 8px;
+    }
+    .modal-card p {
+      font-size: 14.5px;
+      color: var(--text-muted);
+      line-height: 1.5;
+      margin-bottom: 18px;
+    }
+    .modal-stats {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+    .modal-stat-box {
+      background: var(--purple-light);
+      border: 2px solid var(--purple);
+      border-radius: var(--r-sm);
+      padding: 10px 16px;
+      min-width: 110px;
+    }
+    .modal-stat-val {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--purple);
+    }
+    .modal-stat-lbl {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+    .modal-actions {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .btn-primary-modal {
+      background: var(--green);
+      color: white;
+      border: 2px solid var(--border);
+      border-radius: 999px;
+      padding: 10px 22px;
+      font-weight: 800;
+      font-size: 15px;
+      box-shadow: 2px 3px 0px var(--border);
+      transition: all 0.12s;
+    }
+    .btn-primary-modal:hover {
+      background: var(--green-dark);
+      transform: translateY(-2px);
+      box-shadow: 3px 5px 0px var(--border);
+    }
+    .btn-secondary-modal {
+      background: var(--surface-alt);
+      color: var(--text);
+      border: 2px solid var(--border);
+      border-radius: 999px;
+      padding: 10px 20px;
+      font-weight: 800;
+      font-size: 14px;
+      box-shadow: 2px 3px 0px var(--border);
+    }
+
+    /* RULES MODAL */
+    .rules-content {
+      text-align: left;
+      font-size: 13.5px;
+      line-height: 1.6;
+      max-height: 60vh;
+      overflow-y: auto;
+      padding-right: 6px;
+      margin-bottom: 18px;
+    }
+    .rules-piece-gallery {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      background: var(--surface-alt);
+      border: 1.5px solid var(--border);
+      border-radius: var(--r-sm);
+      padding: 10px;
+      margin: 12px 0;
+    }
+
+    /* FOOTER */
+    .app-footer {
+      text-align: center;
+      margin-top: 28px;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    [hidden] {
+      display: none !important;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- BOUTON RETOUR ACCUEIL LCML -->
+  <a href="index.html" id="home-logo-btn" title="Retourner à la plateforme LCML">
+    <img src="logo.svg" alt="LCML" class="logo-icon">
+    <div class="logo-label">
+      <span>Plateforme</span>
+      LCML
+    </div>
+  </a>
+
+  <div class="wrap">
+
+    <!-- ==================== ECRAN 1 : SELECTION DU PLATEAU ==================== -->
+    <div id="screen-select">
+      
+      <!-- HEADER LCML -->
+      <header class="app-header">
+        <div class="school-tag">📐 Mathématiques & Géométrie • 5e & 6e primaire</div>
+        <div class="brand-row">
+          <div class="brand-title">
+            <span class="game-badge">🧩</span>
+            <h1>Les Pentominos</h1>
+          </div>
+          <button class="btn-help-guide" id="btn-open-rules" aria-label="Règles du jeu">
+            <span>💡</span> Comment jouer ?
+          </button>
+        </div>
+        <p class="tagline">
+          Un pentomino est une figure géométrique constituée de <strong>5 carrés identiques</strong> assemblés par leurs côtés. Emboîte les 12 pièces uniques pour remplir intégralement chaque rectangle sans trou ni chevauchement !
+        </p>
+      </header>
+
+      <!-- TITRE DE SECTION -->
+      <div class="section-title">
+        <span>🎯</span> Choisis ton défi géométrique :
+      </div>
+
+      <!-- GRILLE DES NIVEAUX / PLATEAUX -->
+      <div class="board-grid-select" id="board-grid-select"></div>
+
+      <!-- CARTE EXPLICATIVE DU JEU -->
+      <div class="howto-card">
+        <h3><span>🧠</span> Les 3 étapes pour réussir :</h3>
+        <div class="howto-steps">
+          <div class="howto-step">
+            <div class="howto-step-num">1</div>
+            <div class="howto-step-title">Choisis une pièce</div>
+            <div class="howto-step-text">Clique sur l'une des 12 pièces dans la réserve du bas.</div>
+          </div>
+          <div class="howto-step">
+            <div class="howto-step-num">2</div>
+            <div class="howto-step-title">Pivote & Retourne</div>
+            <div class="howto-step-text">Utilise les boutons <strong>↻ Tourner</strong> ou <strong>⇋ Retourner</strong> (ou les touches <em>R</em> / <em>Espace</em>).</div>
+          </div>
+          <div class="howto-step">
+            <div class="howto-step-num">3</div>
+            <div class="howto-step-title">Pose sur la grille</div>
+            <div class="howto-step-text">Survole le plateau (vert = OK, rouge = dépassement) et clique pour poser la pièce !</div>
+          </div>
+        </div>
+      </div>
+
+      <footer class="app-footer">
+        Plateforme Pédagogique LCML — Classe de M. Lejoly
+      </footer>
+    </div>
+
+    <!-- ==================== ECRAN 2 : JEU EN COURS ==================== -->
+    <div id="screen-play" hidden>
+      
+      <!-- TOPBAR JEU -->
+      <div class="play-topbar">
+        <button class="btn-action btn-back-play" id="btn-back">
+          <span>←</span> Changer de défi
+        </button>
+
+        <div class="play-board-badge">
+          <span class="play-board-title" id="play-board-name">6 × 10</span>
+          <span class="play-timer" id="play-timer">⏱️ 00:00</span>
+        </div>
+
+        <button class="btn-action" id="btn-reset" title="Vider le plateau">
+          <span>⟲</span> Recommencer
+        </button>
+      </div>
+
+      <!-- CONTENEUR DU PLATEAU & PIECES -->
+      <div class="board-shell">
+        <div class="board-outer-container">
+          <div class="board" id="board"></div>
+        </div>
+
+        <div class="place-feedback" id="place-feedback"></div>
+
+        <!-- CONTROLEUR DE LA PIECE SELECTIONNEE -->
+        <div class="selected-panel" id="selected-panel"></div>
+
+        <!-- RESERVE DE PENTOMINOS -->
+        <div class="tray-header">
+          <div class="tray-title">
+            <span>📦</span> Réserve de pentominos restants :
+          </div>
+          <span style="font-size:12px; font-weight:700; color:var(--text-muted);" id="tray-count">12 disponibles</span>
+        </div>
+        <div class="tray" id="tray"></div>
+      </div>
+
+      <!-- BARRE DE STATUT ET PROGRESSION -->
+      <div class="status-card">
+        <div class="status-left">
+          <div class="status-text">
+            Pièces placées : <span id="stat-placed" style="color:var(--purple); font-weight:800;">0</span> / 12
+          </div>
+          <div class="status-progress-track">
+            <div class="status-progress-bar" id="stat-progress-bar"></div>
+          </div>
+        </div>
+
+        <button class="sound-btn" id="btn-sound-toggle">
+          <span id="sound-icon">🔊</span> Son activé
+        </button>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- ==================== MODAL VICTOIRE ==================== -->
+  <div class="modal-backdrop" id="modal-win" hidden>
+    <div class="modal-card">
+      <div class="modal-icon">🏆</div>
+      <h2>Plateau Réussi !</h2>
+      <p>
+        Formidable ! Tu as réussi à emboîter parfaitement les 12 pentominos sans laisser aucun vide !
+      </p>
+      
+      <div class="modal-stats">
+        <div class="modal-stat-box">
+          <div class="modal-stat-val" id="win-time">01:45</div>
+          <div class="modal-stat-lbl">Temps écoulé</div>
+        </div>
+        <div class="modal-stat-box">
+          <div class="modal-stat-val" id="win-board-lbl">6 × 10</div>
+          <div class="modal-stat-lbl">Plateau</div>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-primary-modal" id="btn-win-next">
+          Relever un autre défi ➔
+        </button>
+        <button class="btn-secondary-modal" id="btn-win-replay">
+          Rejouer ce plateau ⟲
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL REGLES DU JEU ==================== -->
+  <div class="modal-backdrop" id="modal-rules" hidden>
+    <div class="modal-card" style="max-width: 540px;">
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
+        <h2 style="color:var(--purple); font-size:22px; margin:0;">💡 Tout sur les Pentominos</h2>
+        <button id="btn-close-rules" style="font-size:20px; font-weight:800; padding:4px 8px; cursor:pointer;">✕</button>
+      </div>
+
+      <div class="rules-content">
+        <p style="margin-bottom:10px;">
+          Un <strong>pentomino</strong> est une figure géométrique formée de 5 carrés adjacents. Il existe exactement <strong>12 formes différentes</strong> dans le monde (souvent nommées d'après les lettres de l'alphabet : F, I, L, N, P, T, U, V, W, X, Y, Z).
+        </p>
+
+        <div class="rules-piece-gallery" id="rules-gallery"></div>
+
+        <h4 style="font-size:15px; margin:10px 0 4px; color:var(--text);">🎮 Astuces pour réussir :</h4>
+        <ul style="padding-left:18px; margin-bottom:8px;">
+          <li>Chaque forme a une surface de 5 cases. 12 × 5 = <strong>60 cases au total</strong>.</li>
+          <li>Commence souvent par placer les pièces les plus difficiles ou biscornues (comme X, W, F ou V) près des coins ou des bords.</li>
+          <li>Garde les pièces longues ou compactes (comme I, L, P) pour combler les espaces restants.</li>
+          <li><strong>Tu peux retirer une pièce posée</strong> à tout moment en cliquant simplement dessus sur le plateau !</li>
+        </ul>
+
+        <h4 style="font-size:15px; margin:10px 0 4px; color:var(--text);">⌨️ Raccourcis clavier pratiques :</h4>
+        <p style="font-size:12.5px; color:var(--text-muted);">
+          • <strong>R</strong> ou <strong>Espace</strong> : Pivoter la pièce choisie (90°)<br>
+          • <strong>F</strong> ou <strong>M</strong> : Retourner la pièce (symétrie miroir)<br>
+          • <strong>Échap</strong> : Désélectionner la pièce
+        </p>
+      </div>
+
+      <button class="btn-primary-modal" id="btn-rules-ok" style="width:100%;">
+        J'ai compris, je joue !
+      </button>
+    </div>
+  </div>
+
+  <!-- SCRIPT DU JEU -->
+  <script>
+  (function(){
+    "use strict";
+
+    // 12 PENTOMINOS STANDARD (coordonnées relatives normalisées)
+    var BASE_SHAPES = {
+      F: [[0,1],[0,2],[1,0],[1,1],[2,1]],
+      I: [[0,0],[1,0],[2,0],[3,0],[4,0]],
+      L: [[0,0],[1,0],[2,0],[3,0],[3,1]],
+      N: [[0,1],[1,1],[2,0],[2,1],[3,0]],
+      P: [[0,0],[0,1],[1,0],[1,1],[2,0]],
+      T: [[0,0],[0,1],[0,2],[1,1],[2,1]],
+      U: [[0,0],[0,2],[1,0],[1,1],[1,2]],
+      V: [[0,0],[1,0],[2,0],[2,1],[2,2]],
+      W: [[0,0],[1,0],[1,1],[2,1],[2,2]],
+      X: [[0,1],[1,0],[1,1],[1,2],[2,1]],
+      Y: [[0,1],[1,0],[1,1],[2,1],[3,1]],
+      Z: [[0,0],[0,1],[1,1],[2,1],[2,2]]
+    };
+    var LETTERS = Object.keys(BASE_SHAPES);
+
+    // PALETTE COULEUR ATTRAYANTE POUR CHAQUE PIECE
+    var PIECE_COLOR = {
+      F: "#E11D48", // Rose Framboise
+      I: "#2563EB", // Bleu Roi
+      L: "#D97706", // Ambre / Orange
+      N: "#059669", // Emeraude
+      P: "#7C3AED", // Violet
+      T: "#0D9488", // Sarcelle / Cyan
+      U: "#EA580C", // Mandarine
+      V: "#DB2777", // Rose Bonbon
+      W: "#65A30D", // Vert Lime
+      X: "#CA8A04", // Or
+      Y: "#0284C7", // Bleu Ciel
+      Z: "#4F46E5"  // Indigo
+    };
+
+    // DEFINITION DES NIVEAUX DE PLATEAUX
+    var BOARDS = [
+      {
+        rows: 6, cols: 10, label: "Rectangle 6 × 10", 
+        diff: "Initiation", badgeClass: "badge-easy",
+        desc: "Le format classique idéal pour commencer. Les pièces s'agencent facilement.",
+        fact: "✨ 2 339 solutions distinctes possibles !"
+      },
+      {
+        rows: 5, cols: 12, label: "Rectangle 5 × 12", 
+        diff: "Intermédiaire", badgeClass: "badge-med",
+        desc: "Un rectangle un peu plus allongé demandant de la stratégie.",
+        fact: "✨ 1 010 solutions différentes répertoriées !"
+      },
+      {
+        rows: 4, cols: 15, label: "Rectangle 4 × 15", 
+        diff: "Difficile", badgeClass: "badge-hard",
+        desc: "Un couloir étroit où les pièces volumineuses nécessitent beaucoup d'attention.",
+        fact: "✨ 368 solutions seulement !"
+      },
+      {
+        rows: 3, cols: 20, label: "Rectangle 3 × 20", 
+        diff: "Défi Ultime", badgeClass: "badge-expert",
+        desc: "Une bande ultra-fine ! Un véritable casse-tête mondial pour les experts.",
+        fact: "🔥 Seulement 2 solutions au monde entier !"
+      }
+    ];
+
+    // ==================== SYSTEME AUDIO SYNTHETIQUE (Web Audio) ====================
+    var audioCtx = null;
+    var soundEnabled = true;
+
+    function getAudioContext(){
+      if(!audioCtx){
+        var AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if(AudioCtx) audioCtx = new AudioCtx();
+      }
+      if(audioCtx && audioCtx.state === 'suspended'){
+        audioCtx.resume();
+      }
+      return audioCtx;
+    }
+
+    function playSound(type){
+      if(!soundEnabled) return;
+      try {
+        var ctx = getAudioContext();
+        if(!ctx) return;
+        var now = ctx.currentTime;
+
+        if(type === 'select'){
+          var osc = ctx.createOscillator();
+          var gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(440, now);
+          osc.frequency.exponentialRampToValueAtTime(660, now + 0.08);
+          gain.gain.setValueAtTime(0.12, now);
+          gain.gain.linearRampToValueAtTime(0.01, now + 0.08);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.08);
+        } else if(type === 'rotate'){
+          var osc2 = ctx.createOscillator();
+          var gain2 = ctx.createGain();
+          osc2.type = 'triangle';
+          osc2.frequency.setValueAtTime(520, now);
+          osc2.frequency.exponentialRampToValueAtTime(780, now + 0.1);
+          gain2.gain.setValueAtTime(0.14, now);
+          gain2.gain.linearRampToValueAtTime(0.01, now + 0.1);
+          osc2.connect(gain2);
+          gain2.connect(ctx.destination);
+          osc2.start(now);
+          osc2.stop(now + 0.1);
+        } else if(type === 'place'){
+          var osc3 = ctx.createOscillator();
+          var gain3 = ctx.createGain();
+          osc3.type = 'sine';
+          osc3.frequency.setValueAtTime(320, now);
+          osc3.frequency.exponentialRampToValueAtTime(580, now + 0.12);
+          gain3.gain.setValueAtTime(0.18, now);
+          gain3.gain.linearRampToValueAtTime(0.01, now + 0.12);
+          osc3.connect(gain3);
+          gain3.connect(ctx.destination);
+          osc3.start(now);
+          osc3.stop(now + 0.12);
+        } else if(type === 'pickup'){
+          var osc4 = ctx.createOscillator();
+          var gain4 = ctx.createGain();
+          osc4.type = 'sine';
+          osc4.frequency.setValueAtTime(580, now);
+          osc4.frequency.exponentialRampToValueAtTime(320, now + 0.1);
+          gain4.gain.setValueAtTime(0.14, now);
+          gain4.gain.linearRampToValueAtTime(0.01, now + 0.1);
+          osc4.connect(gain4);
+          gain4.connect(ctx.destination);
+          osc4.start(now);
+          osc4.stop(now + 0.1);
+        } else if(type === 'error'){
+          var osc5 = ctx.createOscillator();
+          var gain5 = ctx.createGain();
+          osc5.type = 'sawtooth';
+          osc5.frequency.setValueAtTime(160, now);
+          osc5.frequency.linearRampToValueAtTime(110, now + 0.15);
+          gain5.gain.setValueAtTime(0.16, now);
+          gain5.gain.linearRampToValueAtTime(0.01, now + 0.15);
+          osc5.connect(gain5);
+          gain5.connect(ctx.destination);
+          osc5.start(now);
+          osc5.stop(now + 0.15);
+        } else if(type === 'win'){
+          var notes = [523.25, 659.25, 783.99, 1046.50]; // Do, Mi, Sol, Do
+          notes.forEach(function(freq, idx){
+            var o = ctx.createOscillator();
+            var g = ctx.createGain();
+            o.type = 'triangle';
+            o.frequency.value = freq;
+            var start = now + (idx * 0.12);
+            g.gain.setValueAtTime(0.2, start);
+            g.gain.exponentialRampToValueAtTime(0.001, start + 0.4);
+            o.connect(g);
+            g.connect(ctx.destination);
+            o.start(start);
+            o.stop(start + 0.45);
+          });
+        }
+      } catch(e) {
+        console.warn("Audio error:", e);
+      }
+    }
+
+    // ==================== OUTILS GEOMETRIQUES ====================
+    function normalize(cells){
+      var minR = Math.min.apply(null, cells.map(function(c){ return c[0]; }));
+      var minC = Math.min.apply(null, cells.map(function(c){ return c[1]; }));
+      return cells.map(function(c){ return [c[0]-minR, c[1]-minC]; });
+    }
+    function rotate90(cells){
+      return normalize(cells.map(function(c){ return [c[1], -c[0]]; }));
+    }
+    function flipH(cells){
+      return normalize(cells.map(function(c){ return [c[0], -c[1]]; }));
+    }
+    function dims(cells){
+      var maxR = Math.max.apply(null, cells.map(function(c){ return c[0]; }));
+      var maxC = Math.max.apply(null, cells.map(function(c){ return c[1]; }));
+      return {rows: maxR+1, cols: maxC+1};
+    }
+
+    // ==================== ETAT GLOBAL ====================
+    var screenSelect = document.getElementById("screen-select");
+    var screenPlay = document.getElementById("screen-play");
+    var boardGridSelect = document.getElementById("board-grid-select");
+
+    var currentBoardIdx = 0;
+    var currentBoard = null;
+    var boardRows = 0, boardCols = 0;
+    var grid = [];              // grid[r][c] = letter or null
+    var tray = [];              // array of {letter, cells}
+    var selectedTrayIdx = null;
+
+    var boardEl = document.getElementById("board");
+    var trayEl = document.getElementById("tray");
+    var trayCountEl = document.getElementById("tray-count");
+    var selectedPanel = document.getElementById("selected-panel");
+    var playBoardName = document.getElementById("play-board-name");
+    var statPlaced = document.getElementById("stat-placed");
+    var statProgressBar = document.getElementById("stat-progress-bar");
+    var placeFeedback = document.getElementById("place-feedback");
+    var playTimer = document.getElementById("play-timer");
+    var boardCellEls = [];
+    var activePreviewFootprint = null;
+
+    var CELL_PX = 32;
+
+    // TIMER
+    var timerInterval = null;
+    var secondsElapsed = 0;
+
+    function startTimer(){
+      clearInterval(timerInterval);
+      secondsElapsed = 0;
+      updateTimerDisplay();
+      timerInterval = setInterval(function(){
+        secondsElapsed++;
+        updateTimerDisplay();
+      }, 1000);
+    }
+    function stopTimer(){
+      clearInterval(timerInterval);
+    }
+    function updateTimerDisplay(){
+      var m = Math.floor(secondsElapsed / 60);
+      var s = secondsElapsed % 60;
+      var str = (m < 10 ? "0" + m : m) + ":" + (s < 10 ? "0" + s : s);
+      playTimer.textContent = "⏱️ " + str;
+    }
+
+    // ==================== ECRAN DE SELECTION ====================
+    function renderBoardSelect(){
+      boardGridSelect.innerHTML = "";
+      BOARDS.forEach(function(b, idx){
+        var tile = document.createElement("div");
+        tile.className = "board-tile";
+        tile.setAttribute("role", "button");
+        tile.setAttribute("tabindex", "0");
+        tile.innerHTML =
+          '<div class="board-tile-top">' +
+            '<div class="board-tile-name">' + b.label + '</div>' +
+            '<div class="board-tile-badge ' + b.badgeClass + '">' + b.diff + '</div>' +
+          '</div>' +
+          '<div class="board-tile-desc">' + b.desc + '</div>' +
+          '<div class="board-tile-fact">' + b.fact + '</div>' +
+          '<div class="board-tile-cta">Jouer ce plateau ➔</div>';
+        
+        function handleOpen(){
+          playSound('select');
+          openBoard(idx);
+        }
+        tile.addEventListener("click", handleOpen);
+        tile.addEventListener("keydown", function(e){
+          if(e.key === "Enter" || e.key === " "){ e.preventDefault(); handleOpen(); }
+        });
+        boardGridSelect.appendChild(tile);
+      });
+    }
+
+    function openBoard(idx){
+      currentBoardIdx = idx;
+      currentBoard = BOARDS[idx];
+      boardRows = currentBoard.rows;
+      boardCols = currentBoard.cols;
+      playBoardName.textContent = currentBoard.label;
+      screenSelect.hidden = true;
+      screenPlay.hidden = false;
+      resetPuzzle();
+    }
+
+    function backToSelect(){
+      stopTimer();
+      screenPlay.hidden = true;
+      screenSelect.hidden = false;
+      renderBoardSelect();
+    }
+
+    // ==================== INITIALISATION D'UNE PARTIE ====================
+    function resetPuzzle(){
+      grid = [];
+      for(var r = 0; r < boardRows; r++){
+        grid.push(new Array(boardCols).fill(null));
+      }
+      tray = LETTERS.map(function(letter){
+        return {letter: letter, cells: BASE_SHAPES[letter]};
+      });
+      selectedTrayIdx = null;
+      placeFeedback.textContent = "";
+      document.getElementById("modal-win").hidden = true;
+      
+      calculateCellSize();
+      renderBoard();
+      renderTray();
+      renderSelectedPanel();
+      updateStatus();
+      startTimer();
+    }
+
+    function calculateCellSize(){
+      var screenW = window.innerWidth;
+      var maxAvailableWidth = Math.min(screenW - 60, 760);
+      var calcW = Math.floor(maxAvailableWidth / boardCols);
+      CELL_PX = Math.max(18, Math.min(38, calcW));
+    }
+
+    window.addEventListener("resize", function(){
+      if(!screenPlay.hidden && currentBoard){
+        calculateCellSize();
+        renderBoard();
+      }
+    });
+
+    // Empreinte sur la grille selon la case de référence (cells[0])
+    function footprintFor(cells, atR, atC){
+      var ref = cells[0];
+      return cells.map(function(c){ return [c[0]-ref[0]+atR, c[1]-ref[1]+atC]; });
+    }
+
+    function canPlace(cells, atR, atC){
+      var footprint = footprintFor(cells, atR, atC);
+      for(var i = 0; i < footprint.length; i++){
+        var r = footprint[i][0], c = footprint[i][1];
+        if(r < 0 || c < 0 || r >= boardRows || c >= boardCols) return false;
+        if(grid[r][c] !== null) return false;
+      }
+      return true;
+    }
+
+    function paintPreview(footprint, valid){
+      footprint.forEach(function(cell){
+        var r = cell[0], c = cell[1];
+        if(r < 0 || c < 0 || r >= boardRows || c >= boardCols) return;
+        if(grid[r][c] !== null) return;
+        var el = boardCellEls[r][c];
+        el.classList.add(valid ? "preview-ok" : "preview-bad");
+      });
+    }
+
+    function clearPreview(){
+      if(!activePreviewFootprint) return;
+      activePreviewFootprint.forEach(function(cell){
+        var r = cell[0], c = cell[1];
+        if(r < 0 || c < 0 || r >= boardRows || c >= boardCols) return;
+        var el = boardCellEls[r][c];
+        el.classList.remove("preview-ok", "preview-bad");
+      });
+      activePreviewFootprint = null;
+    }
+
+    // ==================== RENDU DU PLATEAU ====================
+    function renderBoard(){
+      boardEl.innerHTML = "";
+      boardEl.style.display = "grid";
+      boardEl.style.gridTemplateColumns = "repeat(" + boardCols + ", " + CELL_PX + "px)";
+      boardEl.style.gridTemplateRows = "repeat(" + boardRows + ", " + CELL_PX + "px)";
+      boardCellEls = [];
+      activePreviewFootprint = null;
+
+      for(var r = 0; r < boardRows; r++){
+        var rowEls = [];
+        for(var c = 0; c < boardCols; c++){
+          var cell = document.createElement("div");
+          cell.className = "board-cell";
+          cell.style.width = CELL_PX + "px";
+          cell.style.height = CELL_PX + "px";
+          
+          var letter = grid[r][c];
+          if(letter){
+            cell.className += " placed-piece";
+            cell.style.backgroundColor = PIECE_COLOR[letter];
+            cell.setAttribute("title", "Pièce " + letter + " (clique pour la reprendre)");
+            cell.addEventListener("click", (function(l){
+              return function(){
+                playSound('pickup');
+                pickUpPiece(l);
+              };
+            })(letter));
+          } else {
+            cell.addEventListener("mouseenter", (function(rr,cc){ return function(){ updatePreview(rr,cc); }; })(r,c));
+            cell.addEventListener("mouseleave", clearPreview);
+            cell.addEventListener("click", (function(rr,cc){ return function(){ attemptPlace(rr,cc); }; })(r,c));
+          }
+          boardEl.appendChild(cell);
+          rowEls.push(cell);
+        }
+        boardCellEls.push(rowEls);
+      }
+    }
+
+    // Rendu d'une vignette miniature de pentomino
+    function miniShape(cells, color, cellPx, showAnchor){
+      var d = dims(cells);
+      var ref = cells[0];
+      var box = document.createElement("div");
+      box.className = "mini-grid";
+      box.style.gridTemplateColumns = "repeat(" + d.cols + ", " + cellPx + "px)";
+      box.style.gridTemplateRows = "repeat(" + d.rows + ", " + cellPx + "px)";
+      box.style.gap = "2px";
+
+      for(var r = 0; r < d.rows; r++){
+        for(var c = 0; c < d.cols; c++){
+          var cellDiv = document.createElement("div");
+          var has = cells.some(function(cc){ return cc[0] === r && cc[1] === c; });
+          cellDiv.className = "mini-cell";
+          cellDiv.style.width = cellPx + "px";
+          cellDiv.style.height = cellPx + "px";
+          cellDiv.style.backgroundColor = has ? color : "transparent";
+
+          if(showAnchor && has && r === ref[0] && c === ref[1]){
+            cellDiv.className += " anchor";
+          }
+          box.appendChild(cellDiv);
+        }
+      }
+      return box;
+    }
+
+    // ==================== RENDU DE LA RESERVE ====================
+    function renderTray(){
+      trayEl.innerHTML = "";
+      trayCountEl.textContent = tray.length + " disponible" + (tray.length > 1 ? "s" : "");
+
+      tray.forEach(function(piece, idx){
+        var wrap = document.createElement("button");
+        wrap.className = "tray-piece" + (idx === selectedTrayIdx ? " selected" : "");
+        wrap.setAttribute("title", "Choisir la pièce " + piece.letter);
+        wrap.appendChild(miniShape(piece.cells, PIECE_COLOR[piece.letter], 11, true));
+
+        var lbl = document.createElement("span");
+        lbl.className = "tray-piece-letter";
+        lbl.textContent = piece.letter;
+        wrap.appendChild(lbl);
+
+        wrap.addEventListener("click", function(){
+          playSound('select');
+          selectTrayPiece(idx);
+        });
+        trayEl.appendChild(wrap);
+      });
+    }
+
+    // ==================== PANNEAU DE CONTROLE DE LA PIECE SELECTIONNEE ====================
+    function renderSelectedPanel(){
+      selectedPanel.innerHTML = "";
+      if(selectedTrayIdx === null){
+        var msg = document.createElement("div");
+        msg.className = "empty-msg";
+        msg.innerHTML = "<span>👈</span> <span>Choisis une pièce dans la réserve ci-dessous pour la placer.</span>";
+        selectedPanel.appendChild(msg);
+        return;
+      }
+      
+      var piece = tray[selectedTrayIdx];
+      
+      // Aperçu plus grand de la pièce
+      var previewBox = document.createElement("div");
+      previewBox.className = "piece-preview-box";
+      previewBox.appendChild(miniShape(piece.cells, PIECE_COLOR[piece.letter], 22, true));
+      selectedPanel.appendChild(previewBox);
+
+      // Boutons d'action
+      var controls = document.createElement("div");
+      controls.className = "piece-controls";
+
+      var rotateBtn = document.createElement("button");
+      rotateBtn.className = "ctrl-btn";
+      rotateBtn.innerHTML = "<span>↻</span> Tourner (90°)";
+      rotateBtn.setAttribute("title", "Raccourci : Touche R ou Espace");
+      rotateBtn.addEventListener("click", function(){
+        playSound('rotate');
+        tray[selectedTrayIdx].cells = rotate90(tray[selectedTrayIdx].cells);
+        renderTray();
+        renderSelectedPanel();
+      });
+
+      var flipBtn = document.createElement("button");
+      flipBtn.className = "ctrl-btn";
+      flipBtn.innerHTML = "<span>⇋</span> Retourner";
+      flipBtn.setAttribute("title", "Raccourci : Touche F ou M");
+      flipBtn.addEventListener("click", function(){
+        playSound('rotate');
+        tray[selectedTrayIdx].cells = flipH(tray[selectedTrayIdx].cells);
+        renderTray();
+        renderSelectedPanel();
+      });
+
+      var cancelBtn = document.createElement("button");
+      cancelBtn.className = "ctrl-btn ctrl-btn-danger";
+      cancelBtn.innerHTML = "<span>✕</span> Déselectionner";
+      cancelBtn.setAttribute("title", "Raccourci : Touche Échap");
+      cancelBtn.addEventListener("click", function(){
+        selectedTrayIdx = null;
+        clearPreview();
+        placeFeedback.textContent = "";
+        renderTray();
+        renderSelectedPanel();
+      });
+
+      controls.appendChild(rotateBtn);
+      controls.appendChild(flipBtn);
+      controls.appendChild(cancelBtn);
+      selectedPanel.appendChild(controls);
+    }
+
+    function selectTrayPiece(idx){
+      selectedTrayIdx = (selectedTrayIdx === idx) ? null : idx;
+      clearPreview();
+      placeFeedback.textContent = "";
+      renderTray();
+      renderSelectedPanel();
+    }
+
+    function updatePreview(r, c){
+      clearPreview();
+      if(selectedTrayIdx === null) return;
+      var piece = tray[selectedTrayIdx];
+      var footprint = footprintFor(piece.cells, r, c);
+      var valid = canPlace(piece.cells, r, c);
+      paintPreview(footprint, valid);
+      activePreviewFootprint = footprint;
+    }
+
+    function attemptPlace(r, c){
+      if(selectedTrayIdx === null){
+        placeFeedback.innerHTML = "⚠️ <em>Choisis d'abord une pièce dans la réserve ci-dessous.</em>";
+        return;
+      }
+      var piece = tray[selectedTrayIdx];
+      if(!canPlace(piece.cells, r, c)){
+        playSound('error');
+        placeFeedback.innerHTML = "❌ <strong>Emplacement impossible !</strong> La pièce dépasserait ou chevaucherait une autre pièce.";
+        boardEl.classList.remove("board-shake");
+        void boardEl.offsetWidth; // retrigger reflow
+        boardEl.classList.add("board-shake");
+        return;
+      }
+
+      // Placement réussi
+      playSound('place');
+      var footprint = footprintFor(piece.cells, r, c);
+      footprint.forEach(function(cell){ grid[cell[0]][cell[1]] = piece.letter; });
+      tray.splice(selectedTrayIdx, 1);
+      selectedTrayIdx = null;
+      placeFeedback.textContent = "";
+
+      renderBoard();
+      renderTray();
+      renderSelectedPanel();
+      updateStatus();
+      checkWin();
+    }
+
+    function pickUpPiece(letter){
+      var cells = [];
+      for(var r = 0; r < boardRows; r++){
+        for(var c = 0; c < boardCols; c++){
+          if(grid[r][c] === letter){
+            cells.push([r,c]);
+            grid[r][c] = null;
+          }
+        }
+      }
+      if(cells.length === 0) return;
+      
+      var normalized = normalize(cells);
+      tray.push({letter: letter, cells: normalized});
+      selectedTrayIdx = tray.length - 1; // sélectionne automatiquement la pièce reprise
+      placeFeedback.textContent = "";
+
+      renderBoard();
+      renderTray();
+      renderSelectedPanel();
+      updateStatus();
+    }
+
+    function updateStatus(){
+      var placed = 12 - tray.length;
+      statPlaced.textContent = placed;
+      var percent = Math.round((placed / 12) * 100);
+      statProgressBar.style.width = percent + "%";
+    }
+
+    function checkWin(){
+      if(tray.length === 0){
+        stopTimer();
+        playSound('win');
+
+        // Confettis de victoire
+        if(typeof confetti === 'function'){
+          confetti({
+            particleCount: 120,
+            spread: 80,
+            origin: { y: 0.6 }
+          });
+          setTimeout(function(){
+            confetti({
+              particleCount: 80,
+              angle: 60,
+              spread: 55,
+              origin: { x: 0 }
+            });
+            confetti({
+              particleCount: 80,
+              angle: 120,
+              spread: 55,
+              origin: { x: 1 }
+            });
+          }, 350);
+        }
+
+        var m = Math.floor(secondsElapsed / 60);
+        var s = secondsElapsed % 60;
+        var timeStr = (m < 10 ? "0" + m : m) + ":" + (s < 10 ? "0" + s : s);
+        document.getElementById("win-time").textContent = timeStr;
+        document.getElementById("win-board-lbl").textContent = currentBoard.label;
+        document.getElementById("modal-win").hidden = false;
+      }
+    }
+
+    // ==================== GESTION DES TOUCHES CLAVIER ====================
+    window.addEventListener("keydown", function(e){
+      if(screenPlay.hidden || selectedTrayIdx === null) return;
+      var key = e.key.toLowerCase();
+      if(key === "r" || e.code === "Space"){
+        e.preventDefault();
+        playSound('rotate');
+        tray[selectedTrayIdx].cells = rotate90(tray[selectedTrayIdx].cells);
+        renderTray();
+        renderSelectedPanel();
+      } else if(key === "f" || key === "m"){
+        e.preventDefault();
+        playSound('rotate');
+        tray[selectedTrayIdx].cells = flipH(tray[selectedTrayIdx].cells);
+        renderTray();
+        renderSelectedPanel();
+      } else if(key === "escape"){
+        selectedTrayIdx = null;
+        clearPreview();
+        placeFeedback.textContent = "";
+        renderTray();
+        renderSelectedPanel();
+      }
+    });
+
+    // ==================== DIALOGUE REGLES DU JEU ====================
+    var modalRules = document.getElementById("modal-rules");
+    var rulesGallery = document.getElementById("rules-gallery");
+
+    function populateRulesGallery(){
+      rulesGallery.innerHTML = "";
+      LETTERS.forEach(function(letter){
+        var item = document.createElement("div");
+        item.style.display = "flex";
+        item.style.flexDirection = "column";
+        item.style.alignItems = "center";
+        item.style.gap = "2px";
+        item.style.padding = "4px 6px";
+        item.style.background = "#FFFFFF";
+        item.style.border = "1.5px solid var(--border)";
+        item.style.borderRadius = "6px";
+        
+        item.appendChild(miniShape(BASE_SHAPES[letter], PIECE_COLOR[letter], 8, false));
+        var span = document.createElement("span");
+        span.style.fontFamily = "Fredoka, sans-serif";
+        span.style.fontSize = "10px";
+        span.style.fontWeight = "800";
+        span.textContent = letter;
+        item.appendChild(span);
+        rulesGallery.appendChild(item);
+      });
+    }
+
+    document.getElementById("btn-open-rules").addEventListener("click", function(){
+      playSound('select');
+      populateRulesGallery();
+      modalRules.hidden = false;
+    });
+    document.getElementById("btn-close-rules").addEventListener("click", function(){ modalRules.hidden = true; });
+    document.getElementById("btn-rules-ok").addEventListener("click", function(){ modalRules.hidden = true; });
+
+    // ==================== BOUTONS D'ACTION ET VICTOIRE ====================
+    document.getElementById("btn-back").addEventListener("click", backToSelect);
+    document.getElementById("btn-reset").addEventListener("click", function(){
+      playSound('select');
+      resetPuzzle();
+    });
+
+    document.getElementById("btn-win-next").addEventListener("click", function(){
+      document.getElementById("modal-win").hidden = true;
+      backToSelect();
+    });
+    document.getElementById("btn-win-replay").addEventListener("click", function(){
+      document.getElementById("modal-win").hidden = true;
+      resetPuzzle();
+    });
+
+    // BASCULE DU SON
+    var soundToggleBtn = document.getElementById("btn-sound-toggle");
+    var soundIcon = document.getElementById("sound-icon");
+    soundToggleBtn.addEventListener("click", function(){
+      soundEnabled = !soundEnabled;
+      soundIcon.textContent = soundEnabled ? "🔊" : "🔇";
+      soundToggleBtn.innerHTML = soundIcon.outerHTML + (soundEnabled ? " Son activé" : " Son coupé");
+      if(soundEnabled) playSound('select');
+    });
+
+    // Lancement initial
+    renderBoardSelect();
+  })();
+  </script>
+
+</body>
+</html>
