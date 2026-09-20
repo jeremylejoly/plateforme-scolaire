@@ -3,6 +3,7 @@
 """
 Script pour appliquer les cadrages calibrés (issus de calibrage_couvertures.html / cadrage_couvertures.json)
 et générer les images .webp en haute résolution (1200x1600) dans tous les dossiers d'assets du projet.
+Toutes les photos sources dans 'Couvertures récits express' sont désormais en mode portrait (1200x1600).
 """
 
 import os
@@ -17,7 +18,7 @@ def norm(s):
 def main():
     root_dir = os.path.dirname(os.path.abspath(__file__))
     
-    # 1. Dossier source des photos brutes
+    # 1. Dossier source des photos brutes (toutes redressées en portrait)
     couv_dir = os.path.join(root_dir, 'Couvertures récits express')
     if not os.path.exists(couv_dir):
         couv_dir = os.path.join(root_dir, 'Couvertures récits express')
@@ -34,6 +35,7 @@ def main():
         
     # 3. Charger cadrage_couvertures.json si présent
     json_path = os.path.join(root_dir, 'cadrage_couvertures.json')
+    json_in_couv1 = os.path.join(couv_dir, 'cadrage_couvertures (1).json')
     json_in_couv = os.path.join(couv_dir, 'cadrage_couvertures.json')
     home_dl = os.path.expanduser('~/Downloads/cadrage_couvertures.json')
     
@@ -42,6 +44,10 @@ def main():
         with open(json_in_couv, 'r', encoding='utf-8') as f:
             crops_data = json.load(f)
         print(f"📖 Chargement des cadrages depuis: {json_in_couv}")
+    elif os.path.exists(json_in_couv1):
+        with open(json_in_couv1, 'r', encoding='utf-8') as f:
+            crops_data = json.load(f)
+        print(f"📖 Chargement des cadrages depuis: {json_in_couv1}")
     elif os.path.exists(json_path):
         with open(json_path, 'r', encoding='utf-8') as f:
             crops_data = json.load(f)
@@ -51,7 +57,7 @@ def main():
             crops_data = json.load(f)
         print(f"📖 Chargement des cadrages depuis: {home_dl}")
     else:
-        print("ℹ️ Aucun fichier 'cadrage_couvertures.json' trouvé. Application du cadrage centré par défaut.")
+        print("ℹ️ Application du cadrage centré par défaut.")
 
     # 4. Mapper les fichiers
     raw_files = os.listdir(couv_dir)
@@ -98,36 +104,10 @@ def main():
         src_path = os.path.join(couv_dir, matched_file)
         with Image.open(src_path) as img:
             img = img.convert('RGB')
-            
-            landscape_ids = [
-                'back_to_the_80s', 'comme_sur_des_roulettes', 'crash_coeur_jungle', 'droles_darbres',
-                'la_villa', 'le_mysterieux_inconnu', 'le_vieil_homme_et_le_chien', 'qui_a_le_plus_de_chance',
-                'princesse_moche', 'mouche_mai', 'quelle_histoire', 'vie_robot', 'nouveau_depart'
-            ]
-            
-            # Gestion de la rotation
-            rot = 0
-            if bid in crops_data and 'rotation' in crops_data[bid] and crops_data[bid]['rotation'] != 0:
-                rot = crops_data[bid]['rotation']
-            elif bid in landscape_ids:
-                rot = 90
-                
-            if rot == 90:
-                img = img.transpose(Image.Transpose.ROTATE_270)
-            elif rot == 180:
-                img = img.transpose(Image.Transpose.ROTATE_180)
-            elif rot == 270:
-                img = img.transpose(Image.Transpose.ROTATE_90)
-                
             img_w, img_h = img.size
             
             # Gestion du rectangle de découpe
-            use_custom_normbox = False
             if bid in crops_data and 'normBox' in crops_data[bid]:
-                if bid not in landscape_ids or crops_data[bid].get('rotation', 0) != 0:
-                    use_custom_normbox = True
-
-            if use_custom_normbox:
                 nb = crops_data[bid]['normBox']
                 crop_x = int(nb['x'] * img_w)
                 crop_y = int(nb['y'] * img_h)
