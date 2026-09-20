@@ -17,7 +17,8 @@ window.LIVRES = [
           "Alice a gagné un voyage scolaire à l'autre bout du monde"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q2",
@@ -31,7 +32,8 @@ window.LIVRES = [
           "C'est le capitaine du cargo qui les emmène à Great Barrier"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q3",
@@ -45,7 +47,8 @@ window.LIVRES = [
           "Il ne supportait plus de voir des bateaux de pêche sur les lieux où son dauphin ami avait été tué par des pêcheurs à la dynamite"
         ],
         "answer": 3,
-        "points": 1
+        "points": 1,
+        "correct": 3
       },
       {
         "id": "q4",
@@ -59,7 +62,8 @@ window.LIVRES = [
           "Il lui prépare un festin de langoustes pêchées avec le vieux Bill"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q5",
@@ -73,7 +77,8 @@ window.LIVRES = [
           "Elle veut mener elle-même l'enquête sur l'identité de cet homme mystérieux"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q6",
@@ -87,7 +92,8 @@ window.LIVRES = [
           "Que le chien a déjà été blessé par cet homme lors d'une rencontre précédente"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q7",
@@ -101,7 +107,8 @@ window.LIVRES = [
           "Que les pêcheurs néo-zélandais respectent en général la nature et les coutumes maoies"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q8",
@@ -115,7 +122,8 @@ window.LIVRES = [
           "Elle sait qu'Emma adore les animaux et veut lui faire découvrir cette espèce exotique"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q9",
@@ -123,7 +131,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Alice et son père arrivent en Nouvelle-Zélande en plein hiver, sous la neige.",
         "answer": false,
-        "points": 1
+        "points": 1,
+        "correct": false
       },
       {
         "id": "q10",
@@ -131,7 +140,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "La mère d'Alice est géographe et se trouve en Nouvelle-Zélande pour une mission professionnelle.",
         "answer": true,
-        "points": 1
+        "points": 1,
+        "correct": true
       },
       {
         "id": "q11",
@@ -139,7 +149,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Pita Witkaire est un simple pêcheur maori qui vit seul sur l'île de Great Barrier.",
         "answer": false,
-        "points": 1
+        "points": 1,
+        "correct": false
       },
       {
         "id": "q12",
@@ -147,7 +158,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "À la fin du roman, Pita et ses amis maoris dansent le haka pour Alice et sa famille avant leur départ.",
         "answer": true,
-        "points": 1
+        "points": 1,
+        "correct": true
       },
       {
         "id": "q13",
@@ -161,7 +173,8 @@ window.LIVRES = [
           "Aigu et perçant, qui résonne au loin comme un sifflet"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q14",
@@ -175,7 +188,8 @@ window.LIVRES = [
           "Demander de l'aide à voix haute pour attirer l'attention"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q15",
@@ -189,7 +203,8 @@ window.LIVRES = [
           "Être envahi par une colère si violente qu'on perd le contrôle de ses actes"
         ],
         "answer": 3,
-        "points": 1
+        "points": 1,
+        "correct": 3
       },
       {
         "id": "q16",
@@ -202,7 +217,8 @@ window.LIVRES = [
           "Résumé C : Alice et son père partent en vacances de Noël en Nouvelle-Zélande. Après le naufrage de leur Zodiac provoqué par Pita, Alice avoue immédiatement l'incident à ses parents. Son père et Bill portent plainte auprès des autorités de l'île, mais Alice convainc la police de pardonner à Pita après qu'il lui a appris à danser le haka."
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       }
     ]
   },
@@ -224,7 +240,8 @@ window.LIVRES = [
           "Il est en conflit avec sa fille et ne veut plus la voir"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q2",
@@ -238,7 +255,8 @@ window.LIVRES = [
           "Une collection de maquettes d'avions"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q3",
@@ -252,7 +270,8 @@ window.LIVRES = [
           "La météo se dégrade et le vol doit être annulé"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q4",
@@ -266,7 +285,8 @@ window.LIVRES = [
           "Travailler comme pilote pour une compagnie aérienne"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q5",
@@ -280,7 +300,8 @@ window.LIVRES = [
           "Elle a honte de son projet et ne veut pas qu'on se moque d'elle"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q6",
@@ -294,7 +315,8 @@ window.LIVRES = [
           "La confiance qu'il place dans le travail de réparation fait par Marine et sa mère"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q7",
@@ -308,7 +330,8 @@ window.LIVRES = [
           "Elle se sent coupable de la dépression d'Alain et veut réparer ses torts"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q8",
@@ -322,7 +345,8 @@ window.LIVRES = [
           "Sa mère lui fait comprendre qu'elle aimerait aussi faire un tour en montgolfière"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q9",
@@ -330,7 +354,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Marine comprend immédiatement ce que signifie le mot « dépression » quand elle l'entend pour la première fois.",
         "answer": false,
-        "points": 1
+        "points": 1,
+        "correct": false
       },
       {
         "id": "q10",
@@ -338,7 +363,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "C'est la mère de Marine qui lui apprend à coudre pour l'aider à réparer la bâche de la montgolfière.",
         "answer": true,
-        "points": 1
+        "points": 1,
+        "correct": true
       },
       {
         "id": "q11",
@@ -346,7 +372,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Le premier vol en montgolfière se déroule sans aucun incident et l'atterrissage est parfaitement réussi.",
         "answer": false,
-        "points": 1
+        "points": 1,
+        "correct": false
       },
       {
         "id": "q12",
@@ -354,7 +381,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "À la fin de l'histoire, la montgolfière est rangée dans le cabanon du grand-père de Marine.",
         "answer": true,
-        "points": 1
+        "points": 1,
+        "correct": true
       },
       {
         "id": "q13",
@@ -368,7 +396,8 @@ window.LIVRES = [
           "Cachée derrière un grand sourire forcé"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q14",
@@ -382,7 +411,8 @@ window.LIVRES = [
           "Trop occupé pour voir sa fille régulièrement"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q15",
@@ -396,7 +426,8 @@ window.LIVRES = [
           "Elle imite les gestes de son père pour apprendre le plus vite possible"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q16",
@@ -409,7 +440,8 @@ window.LIVRES = [
           "Résumé C : Pour aider son père Alain à surmonter une profonde dépression, Marine décide de restaurer une vieille montgolfière trouvée dans le débarras. Avec l'aide de sa mère qui lui apprend la couture en secret, elle répare la toile. Alain retrouve l'espoir lors d'un vol partagé avec sa fille Marine, trouve sa vocation dans le tourisme aérien et la famille retrouve enfin la sérénité."
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       }
     ]
   },
@@ -431,7 +463,8 @@ window.LIVRES = [
           "Ils l'aperçoivent dans le vestibule du Château Frontenac et l'abordent"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q2",
@@ -445,7 +478,8 @@ window.LIVRES = [
           "Il est champion de snowboard et participe à des compétitions professionnelles"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q3",
@@ -459,7 +493,8 @@ window.LIVRES = [
           "Le cadenas cassé et la porte grande ouverte"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q4",
@@ -473,7 +508,8 @@ window.LIVRES = [
           "Ils voulaient saboter la compétition de snowboard"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q5",
@@ -487,7 +523,8 @@ window.LIVRES = [
           "Ils veulent retarder le moment de lui rendre son argent"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q6",
@@ -501,7 +538,8 @@ window.LIVRES = [
           "Il a oublié son casque sur le siège et veut le récupérer"
         ],
         "answer": 0,
-        "points": 1
+        "points": 1,
+        "correct": 0
       },
       {
         "id": "q7",
@@ -515,7 +553,8 @@ window.LIVRES = [
           "Frédéric lui signale discrètement la présence de l'homme suspect"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q8",
@@ -529,7 +568,8 @@ window.LIVRES = [
           "Ils préfèrent s'amuser plutôt que d'aider les adultes en difficulté"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q9",
@@ -537,7 +577,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Francis et Frédéric sont des jumeaux de dix ans qui habitent à Montréal.",
         "answer": false,
-        "points": 1
+        "points": 1,
+        "correct": false
       },
       {
         "id": "q10",
@@ -545,7 +586,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Le père des jumeaux a abandonné le ski alpin après un accident grave qui l'a conduit à l'hôpital.",
         "answer": true,
-        "points": 1
+        "points": 1,
+        "correct": true
       },
       {
         "id": "q11",
@@ -553,7 +595,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Le Château de glace où emmène Mathieu les jumeaux est construit chaque hiver avec de la neige et de la glace.",
         "answer": true,
-        "points": 1
+        "points": 1,
+        "correct": true
       },
       {
         "id": "q12",
@@ -561,7 +604,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Kevin est arrêté parce que Francis le reconnaît à son manteau jaune citron.",
         "answer": false,
-        "points": 1
+        "points": 1,
+        "correct": false
       },
       {
         "id": "q13",
@@ -575,7 +619,8 @@ window.LIVRES = [
           "Partager quelque chose avec les autres"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q14",
@@ -589,7 +634,8 @@ window.LIVRES = [
           "L'adresse dont ils ont fait preuve pour identifier le propriétaire"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q15",
@@ -603,7 +649,8 @@ window.LIVRES = [
           "Qui résiste aux températures les plus extrêmes"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q16",
@@ -616,7 +663,8 @@ window.LIVRES = [
           "Résumé C : Francis et Frédéric retrouvent le portefeuille de leur père sur les pistes de ski. Lors d'une sortie en traîneau à chiens avec Mathieu, les jumeaux sont capturés et enfermés dans la cabane blanche par deux braconniers. Mathieu parvient à défoncer la porte et à maîtriser seul Kevin et Sacha."
         ],
         "answer": 0,
-        "points": 1
+        "points": 1,
+        "correct": 0
       }
     ]
   },
@@ -638,7 +686,8 @@ window.LIVRES = [
           "Elle voulait retrouver sa sœur Nanako qui lui manquait trop"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q2",
@@ -652,7 +701,8 @@ window.LIVRES = [
           "Une figurine artisanale qu'elle a fabriquée elle-même en cours de calligraphie"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q3",
@@ -666,7 +716,8 @@ window.LIVRES = [
           "Elle les place dans le four à micro-ondes de la cuisine du collège"
         ],
         "answer": 3,
-        "points": 1
+        "points": 1,
+        "correct": 3
       },
       {
         "id": "q4",
@@ -680,7 +731,8 @@ window.LIVRES = [
           "Elle affirme que leur professeur de calligraphie les attend à la bibliothèque"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q5",
@@ -694,7 +746,8 @@ window.LIVRES = [
           "Aiko fait des cauchemars éveillés à cause de sa solitude au pensionnat"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q6",
@@ -708,7 +761,8 @@ window.LIVRES = [
           "Yui utilise les haïkus pour communiquer secrètement avec Aiko sans éveiller les soupçons"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q7",
@@ -722,7 +776,8 @@ window.LIVRES = [
           "La possession par les poupées s'est étendue à tous les élèves et professeurs d'un autre collège, confirmant que la menace est bien réelle"
         ],
         "answer": 3,
-        "points": 1
+        "points": 1,
+        "correct": 3
       },
       {
         "id": "q8",
@@ -736,7 +791,8 @@ window.LIVRES = [
           "Elle est courageuse, déterminée et lucide : malgré sa peur, elle analyse les événements, prend des décisions seule et agit pour sauver son amie"
         ],
         "answer": 3,
-        "points": 1
+        "points": 1,
+        "correct": 3
       },
       {
         "id": "q9",
@@ -744,7 +800,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Aiko est une mauvaise élève que ses parents ont envoyée à Momiji pour la redresser.",
         "answer": false,
-        "points": 1
+        "points": 1,
+        "correct": false
       },
       {
         "id": "q10",
@@ -752,7 +809,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Yui est consciente de ce qui lui arrive et demande elle-même de l'aide à Aiko.",
         "answer": false,
-        "points": 1
+        "points": 1,
+        "correct": false
       },
       {
         "id": "q11",
@@ -760,7 +818,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Les parents d'Aiko refusent de croire son histoire et décident de la ramener au collège.",
         "answer": true,
-        "points": 1
+        "points": 1,
+        "correct": true
       },
       {
         "id": "q12",
@@ -768,7 +827,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "La poupée trouvée sous le lit d'Aiko est identique à celle de Yui, mais dans un état vieux et dégradé.",
         "answer": true,
-        "points": 1
+        "points": 1,
+        "correct": true
       },
       {
         "id": "q13",
@@ -782,7 +842,8 @@ window.LIVRES = [
           "Souriante et joyeuse pour rassurer ceux qui l'entourent"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q14",
@@ -796,7 +857,8 @@ window.LIVRES = [
           "Longue et ennuyeuse à écouter"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q15",
@@ -810,7 +872,8 @@ window.LIVRES = [
           "Sculpté dans un matériau précieux comme l'ivoire"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q16",
@@ -823,7 +886,8 @@ window.LIVRES = [
           "Résumé C : Témoin de phénomènes surnaturels au collège Momiji, Aiko tente d'alerter ses parents qui refusent de la croire. Elle retourne alors au pensionnat pour secourir son amie Yui, possédée par une poupée traditionnelle d'impératrice. Grâce à son courage et aux indices cachés dans des haïkus, Aiko détruit les deux poupées maléfiques dans un micro-ondes et s'enfuit avec Yui, même si la menace plane encore ailleurs."
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       }
     ]
   },
@@ -845,7 +909,8 @@ window.LIVRES = [
           "Eléna propose d'y aller pour distraire Erwan et l'empêcher de mener l'enquête sur les cambriolages"
         ],
         "answer": 3,
-        "points": 1
+        "points": 1,
+        "correct": 3
       },
       {
         "id": "q2",
@@ -859,7 +924,8 @@ window.LIVRES = [
           "C'est un ami d'Erwan qui leur a révélé l'existence de la cachette derrière la machine à laver"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q3",
@@ -873,7 +939,8 @@ window.LIVRES = [
           "Il laisse son téléphone allumé dans sa poche et glisse des indices dans ses compliments aux bandits"
         ],
         "answer": 3,
-        "points": 1
+        "points": 1,
+        "correct": 3
       },
       {
         "id": "q4",
@@ -887,7 +954,8 @@ window.LIVRES = [
           "Des documents prouvant l'identité des voleurs"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q5",
@@ -901,7 +969,8 @@ window.LIVRES = [
           "Thomas leur a fait promettre de garder le secret pour protéger les sites d'Urbex"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q6",
@@ -915,7 +984,8 @@ window.LIVRES = [
           "Ils préparent un feu d'artifice illégal dans la cave de l'hôpital"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q7",
@@ -929,7 +999,8 @@ window.LIVRES = [
           "Il est calme, rusé et capable de réfléchir vite dans une situation de danger pour trouver une solution ingénieuse"
         ],
         "answer": 3,
-        "points": 1
+        "points": 1,
+        "correct": 3
       },
       {
         "id": "q8",
@@ -943,7 +1014,8 @@ window.LIVRES = [
           "Elle sait qu'Erwan n'en a pas et ne veut pas le vexer"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q9",
@@ -951,7 +1023,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Laïka, la chienne d'Eléna, est un animal féroce qui protège efficacement la maison contre les intrus.",
         "answer": false,
-        "points": 1
+        "points": 1,
+        "correct": false
       },
       {
         "id": "q10",
@@ -959,7 +1032,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "C'est la première fois qu'Eléna et Erwan se rendent à l'hôpital désaffecté dans ce roman.",
         "answer": false,
-        "points": 1
+        "points": 1,
+        "correct": false
       },
       {
         "id": "q11",
@@ -967,7 +1041,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Erwan retourne seul à l'hôpital après la semaine de brouille avec Eléna pour vérifier sa théorie sur la machine à laver.",
         "answer": true,
-        "points": 1
+        "points": 1,
+        "correct": true
       },
       {
         "id": "q12",
@@ -975,7 +1050,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "À la fin du roman, les parents d'Eléna lui offrent un téléphone portable et elle accepte avec joie.",
         "answer": false,
-        "points": 1
+        "points": 1,
+        "correct": false
       },
       {
         "id": "q13",
@@ -989,7 +1065,8 @@ window.LIVRES = [
           "Une personne qui dit des mensonges pour impressionner les autres"
         ],
         "answer": 0,
-        "points": 1
+        "points": 1,
+        "correct": 0
       },
       {
         "id": "q14",
@@ -1003,7 +1080,8 @@ window.LIVRES = [
           "Une activité identique à ce qu'on vient de faire"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q15",
@@ -1017,7 +1095,8 @@ window.LIVRES = [
           "Ressentir une grande joie, souvent parce qu'on avait raison ou qu'on a réussi quelque chose"
         ],
         "answer": 3,
-        "points": 1
+        "points": 1,
+        "correct": 3
       },
       {
         "id": "q16",
@@ -1030,7 +1109,8 @@ window.LIVRES = [
           "Résumé C : Après avoir découvert des bijoux volés dans la cave de son père, Erwan convainc Eléna de mener l'enquête dans un hôpital abandonné. Les deux adolescents piègent les trois vigiles de l'hôpital qui cachaient des appareils électroménagers et reçoivent une récompense officielle du commissariat de quartier."
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       }
     ]
   },
@@ -1052,7 +1132,8 @@ window.LIVRES = [
           "Il collectionne les créatures étranges à cinq doigts pour les exposer dans un zoo intergalactique."
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q2",
@@ -1066,7 +1147,8 @@ window.LIVRES = [
           "Parce qu'il pense que les enfants terriens sont des animaux domestiques dressés par les adultes."
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q3",
@@ -1080,7 +1162,8 @@ window.LIVRES = [
           "Elle espère que Rorrr aura peur des crocs de Rex et s'enfuira immédiatement."
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q4",
@@ -1094,7 +1177,8 @@ window.LIVRES = [
           "Élise imite le bruit des poussins (« Cui cui »), ce qui prouve scientifiquement à Rorrr le lien de parenté."
         ],
         "answer": 0,
-        "points": 1
+        "points": 1,
+        "correct": 0
       },
       {
         "id": "q5",
@@ -1108,7 +1192,8 @@ window.LIVRES = [
           "Parce que Grand-père voulait garder les meilleurs œufs pour son propre élevage."
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q6",
@@ -1122,7 +1207,8 @@ window.LIVRES = [
           "Elle estime qu'Anne a dépassé le temps de parole imparti et n'a pas répondu aux questions de ses camarades."
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q7",
@@ -1136,7 +1222,8 @@ window.LIVRES = [
           "Qu'elle veut remplacer les poussins de son grand-père par une nouvelle espèce plus rentable."
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q8",
@@ -1150,7 +1237,8 @@ window.LIVRES = [
           "Anne a utilisé un faux exposé pour sauver sa vie, mais a échoué à son vrai exposé scolaire."
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q9",
@@ -1158,7 +1246,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Sur la planète Sidérius, les membres et les doigts des créatures se divisent par deux, ce qui fait que les cinq doigts des humains paraissent anormaux à Rorrr.",
         "answer": true,
-        "points": 1
+        "points": 1,
+        "correct": true
       },
       {
         "id": "q10",
@@ -1166,7 +1255,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Anne parvient à prendre plusieurs photos du vaisseau spatial avec son smartphone pour prouver son histoire à l'école.",
         "answer": false,
-        "points": 1
+        "points": 1,
+        "correct": false
       },
       {
         "id": "q11",
@@ -1174,7 +1264,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "La petite sœur Élise a mordu le doigt de Rorrr et recraché des graines bleues dans l'allée de la ferme.",
         "answer": true,
-        "points": 1
+        "points": 1,
+        "correct": true
       },
       {
         "id": "q12",
@@ -1182,7 +1273,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Rorrr repart de la Terre en emmenant Rex et les parents d'Anne congelés dans son armoire spatiale.",
         "answer": false,
-        "points": 1
+        "points": 1,
+        "correct": false
       },
       {
         "id": "q13",
@@ -1196,7 +1288,8 @@ window.LIVRES = [
           "Aveugles et insensibles aux mouvements environnants."
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q14",
@@ -1210,7 +1303,8 @@ window.LIVRES = [
           "S'arrêter momentanément après un effort physique intense."
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q15",
@@ -1224,7 +1318,8 @@ window.LIVRES = [
           "Qui ont été cuits sous les lampes chauffantes de la couveuse."
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q16",
@@ -1237,7 +1332,8 @@ window.LIVRES = [
           "Résumé C : Rorrr tente d'enlever Anne et sa famille pour les emmener sur Sidérius. Grâce à Rex qui mord le pilote extraterrestre, le vaisseau s'écrase dans la grange. Anne et son grand-père capturent Rorrr et l'emmènent à l'école le lendemain pour prouver la réalité de leur aventure devant toute la classe."
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       }
     ]
   },
@@ -1259,7 +1355,8 @@ window.LIVRES = [
           "Laura lui avait demandé de se préparer à la remplacer"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q2",
@@ -1273,7 +1370,8 @@ window.LIVRES = [
           "Accessoiriste et habilleuse pour la troupe"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q3",
@@ -1287,7 +1385,8 @@ window.LIVRES = [
           "Elle quitte le collège pendant plusieurs semaines"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q4",
@@ -1301,7 +1400,8 @@ window.LIVRES = [
           "Elle s'est blessée à la cheville en trébuchant sur un accessoire durant la dernière répétition"
         ],
         "answer": 3,
-        "points": 1
+        "points": 1,
+        "correct": 3
       },
       {
         "id": "q5",
@@ -1315,7 +1415,8 @@ window.LIVRES = [
           "Monsieur Léoton a découvert que Laura sabotait les répétitions"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q6",
@@ -1329,7 +1430,8 @@ window.LIVRES = [
           "Que les autres élèves ne savent pas que Samira et Laura sont amies"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q7",
@@ -1343,7 +1445,8 @@ window.LIVRES = [
           "Parce que Tiago s'est moqué d'elle avec les autres acteurs"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q8",
@@ -1357,7 +1460,8 @@ window.LIVRES = [
           "Qu'elle a grandi et qu'elle est capable de mettre leur amitié avant sa fierté personnelle"
         ],
         "answer": 3,
-        "points": 1
+        "points": 1,
+        "correct": 3
       },
       {
         "id": "q9",
@@ -1365,7 +1469,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Tiago accueille chaleureusement Samira dans la troupe dès la première répétition.",
         "answer": true,
-        "points": 1
+        "points": 1,
+        "correct": true
       },
       {
         "id": "q10",
@@ -1373,7 +1478,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Laura rejoint la troupe de théâtre comme accessoiriste parce qu'elle le demande elle-même.",
         "answer": false,
-        "points": 1
+        "points": 1,
+        "correct": false
       },
       {
         "id": "q11",
@@ -1381,7 +1487,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Samira connaît son texte par cœur bien avant la représentation finale.",
         "answer": true,
-        "points": 1
+        "points": 1,
+        "correct": true
       },
       {
         "id": "q12",
@@ -1389,7 +1496,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "C'est Samira elle-même qui décide de retourner jouer malgré sa cheville blessée.",
         "answer": false,
-        "points": 1
+        "points": 1,
+        "correct": false
       },
       {
         "id": "q13",
@@ -1403,7 +1511,8 @@ window.LIVRES = [
           "Une grande agitation et beaucoup de nervosité"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q14",
@@ -1417,7 +1526,8 @@ window.LIVRES = [
           "Un comité qui s'occupe de la décoration de la scène"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q15",
@@ -1431,7 +1541,8 @@ window.LIVRES = [
           "Rient de façon moqueuse et un peu méchante"
         ],
         "answer": 3,
-        "points": 1
+        "points": 1,
+        "correct": 3
       },
       {
         "id": "q16",
@@ -1444,7 +1555,8 @@ window.LIVRES = [
           "Résumé C : Laura joue pendant toute la représentation finale. À la fin, Samira monte sur scène et demande au public d'applaudir Laura, ce qui les réconcilie."
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       }
     ]
   },
@@ -1466,7 +1578,8 @@ window.LIVRES = [
           "Clara"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q2",
@@ -1480,7 +1593,8 @@ window.LIVRES = [
           "13 ans"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q3",
@@ -1494,7 +1608,8 @@ window.LIVRES = [
           "Fusée"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q4",
@@ -1508,7 +1623,8 @@ window.LIVRES = [
           "Dans les Alpes"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q5",
@@ -1522,7 +1638,8 @@ window.LIVRES = [
           "Elle est jalouse des autres enfants qui peuvent monter à cheval"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q6",
@@ -1536,7 +1653,8 @@ window.LIVRES = [
           "Il les échange contre la promesse qu'elle lui rapporte un souvenir"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q7",
@@ -1550,7 +1668,8 @@ window.LIVRES = [
           "Elle apprend que Comète est gravement malade"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q8",
@@ -1564,7 +1683,8 @@ window.LIVRES = [
           "Il veut apprendre à être gardian"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q9",
@@ -1572,7 +1692,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Emma vit avec son père, sa mère et son petit frère Antoine.",
         "answer": false,
-        "points": 1
+        "points": 1,
+        "correct": false
       },
       {
         "id": "q10",
@@ -1580,7 +1701,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "C'est le grand-père d'Emma qui a eu l'idée d'aller en Camargue pour libérer Comète.",
         "answer": true,
-        "points": 1
+        "points": 1,
+        "correct": true
       },
       {
         "id": "q11",
@@ -1588,7 +1710,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Comète est en réalité une jument et elle attend un poulain.",
         "answer": true,
-        "points": 1
+        "points": 1,
+        "correct": true
       },
       {
         "id": "q12",
@@ -1596,7 +1719,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Le grand-père a obtenu la maison de gardian en la payant de sa poche.",
         "answer": false,
-        "points": 1
+        "points": 1,
+        "correct": false
       },
       {
         "id": "q13",
@@ -1610,7 +1734,8 @@ window.LIVRES = [
           "Solides et bien formées"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q14",
@@ -1624,7 +1749,8 @@ window.LIVRES = [
           "Elle chante pour se donner une contenance"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q15",
@@ -1638,7 +1764,8 @@ window.LIVRES = [
           "Il recule de peur dans un coin"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q16",
@@ -1651,7 +1778,8 @@ window.LIVRES = [
           "Résumé C : Le père d'Emma est vétérinaire en Camargue. Une vétérinaire extérieure aide Comète à mettre bas. Emma repart avec sa mère."
         ],
         "answer": 0,
-        "points": 1
+        "points": 1,
+        "correct": 0
       }
     ]
   },
@@ -1673,7 +1801,8 @@ window.LIVRES = [
           "Moira"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q2",
@@ -1687,7 +1816,8 @@ window.LIVRES = [
           "Il aimait les voyages et les découvertes"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q3",
@@ -1701,7 +1831,8 @@ window.LIVRES = [
           "Un arrêt du temps qui permet d'accéder à un autre monde"
         ],
         "answer": 3,
-        "points": 1
+        "points": 1,
+        "correct": 3
       },
       {
         "id": "q4",
@@ -1715,7 +1846,8 @@ window.LIVRES = [
           "Dans une ruine à l'extérieur de la ville"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q5",
@@ -1729,7 +1861,8 @@ window.LIVRES = [
           "Il ignorait lui-même que Moira était encore en vie"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q6",
@@ -1743,7 +1876,8 @@ window.LIVRES = [
           "Par désir de vivre une destinée extraordinaire et hors du commun"
         ],
         "answer": 3,
-        "points": 1
+        "points": 1,
+        "correct": 3
       },
       {
         "id": "q7",
@@ -1757,7 +1891,8 @@ window.LIVRES = [
           "Faustine utilise Vivian pour obtenir des informations sur les hommes noirs"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q8",
@@ -1771,7 +1906,8 @@ window.LIVRES = [
           "Elle veut se venger de Moira en lui montrant qu'elle sera une meilleure mère"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q9",
@@ -1779,7 +1915,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Faustine avait de nombreux amis avant de rencontrer Fanny, car elle avait beaucoup voyagé.",
         "answer": false,
-        "points": 1
+        "points": 1,
+        "correct": false
       },
       {
         "id": "q10",
@@ -1787,7 +1924,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Les eaux vives donnent l'immortalité à ceux qui s'y baignent.",
         "answer": false,
-        "points": 1
+        "points": 1,
+        "correct": false
       },
       {
         "id": "q11",
@@ -1795,7 +1933,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "C'est Yasmine qui a trahi les gardiennes en ouvrant la grille du parc à l'ennemi.",
         "answer": true,
-        "points": 1
+        "points": 1,
+        "correct": true
       },
       {
         "id": "q12",
@@ -1803,7 +1942,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Le père de Faustine est un homme ordinaire, sans pouvoirs magiques.",
         "answer": false,
-        "points": 1
+        "points": 1,
+        "correct": false
       },
       {
         "id": "q13",
@@ -1817,7 +1957,8 @@ window.LIVRES = [
           "Un regard triste et plein de larmes"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q14",
@@ -1831,7 +1972,8 @@ window.LIVRES = [
           "Calmer quelqu'un de mécontent en étant gentil et en lui faisant plaisir"
         ],
         "answer": 3,
-        "points": 1
+        "points": 1,
+        "correct": 3
       },
       {
         "id": "q15",
@@ -1845,7 +1987,8 @@ window.LIVRES = [
           "Dangereuses et réservées aux adultes"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q16",
@@ -1858,7 +2001,8 @@ window.LIVRES = [
           "Résumé C : Faustine, une jeune fille surprotégée par son père, découvre lors d'une sortie que des hommes-chauves-souris la recherchent. Des femmes-panthères la sauvent et lui révèlent qu'elle est destinée à devenir gardienne des eaux vives, comme sa mère Moira qu'elle croyait morte. Elle rejoint le temple, participe au combat final. Ses deux parents meurent lors de la bataille. Faustine devient grande prêtresse et attend un enfant de Vivian, qu'elle promet de ne pas abandonner."
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       }
     ]
   },
@@ -1880,7 +2024,8 @@ window.LIVRES = [
           "Pour trouver quelqu'un qui accepte de garder son chat pendant les vacances"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q2",
@@ -1894,7 +2039,8 @@ window.LIVRES = [
           "Charlotte l'appelle après avoir trouvé l'avis de recherche de Catsou dans sa boîte aux lettres"
         ],
         "answer": 3,
-        "points": 1
+        "points": 1,
+        "correct": 3
       },
       {
         "id": "q3",
@@ -1908,7 +2054,8 @@ window.LIVRES = [
           "Un reportage photo sur un métier du quartier"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q4",
@@ -1922,7 +2069,8 @@ window.LIVRES = [
           "Il est soudainement pris d'un malaise physique"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q5",
@@ -1936,7 +2084,8 @@ window.LIVRES = [
           "Line est dévastée par la mort de Catsou et rejette sa douleur sur la première personne disponible, sans chercher à comprendre"
         ],
         "answer": 3,
-        "points": 1
+        "points": 1,
+        "correct": 3
       },
       {
         "id": "q6",
@@ -1950,7 +2099,8 @@ window.LIVRES = [
           "Que Catsou souffrait depuis longtemps"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q7",
@@ -1964,7 +2114,8 @@ window.LIVRES = [
           "Que le papa de Line souhaite faire un reportage photo sur la cyclodanse"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q8",
@@ -1978,7 +2129,8 @@ window.LIVRES = [
           "Parce que « drop » signifie « goutte d'eau » en anglais, et que c'est Catsou — la goutte d'eau qui a fait déborder le vase — qui a déclenché toute cette chaîne d'événements heureux"
         ],
         "answer": 3,
-        "points": 1
+        "points": 1,
+        "correct": 3
       },
       {
         "id": "q9",
@@ -1986,7 +2138,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "C'est Line elle-même qui décide d'aller présenter ses excuses à Charlotte, sans que personne ne le lui suggère.",
         "answer": false,
-        "points": 1
+        "points": 1,
+        "correct": false
       },
       {
         "id": "q10",
@@ -1994,7 +2147,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Charlotte pratique la cyclodanse depuis son enfance, bien avant son accident.",
         "answer": false,
-        "points": 1
+        "points": 1,
+        "correct": false
       },
       {
         "id": "q11",
@@ -2002,7 +2156,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Monsieur Briard est le père biologique de Charlotte.",
         "answer": false,
-        "points": 1
+        "points": 1,
+        "correct": false
       },
       {
         "id": "q12",
@@ -2010,7 +2165,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "L'accident de Charlotte a été causé par un conducteur qui avait consommé de l'alcool.",
         "answer": false,
-        "points": 1
+        "points": 1,
+        "correct": false
       },
       {
         "id": "q13",
@@ -2024,7 +2180,8 @@ window.LIVRES = [
           "Baisser les bras = demander de l'aide ; être une battante = être très sportive"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q14",
@@ -2038,7 +2195,8 @@ window.LIVRES = [
           "Une envie irrésistible de recommencer quelque chose"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q15",
@@ -2052,7 +2210,8 @@ window.LIVRES = [
           "Elles ont encadré les meilleures idées pour les retenir"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q16",
@@ -2065,7 +2224,8 @@ window.LIVRES = [
           "Résumé C : Line apporte des cookies pour s'excuser. Charlotte n'est pas la fille biologique de Monsieur Briard mais sa belle-fille. La brouille date de deux ans avant l'histoire."
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       }
     ]
   },
@@ -2087,7 +2247,8 @@ window.LIVRES = [
           "Euclave"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q2",
@@ -2101,7 +2262,8 @@ window.LIVRES = [
           "La tradition exige qu'elle trouve un mari avant de devenir reine"
         ],
         "answer": 3,
-        "points": 1
+        "points": 1,
+        "correct": 3
       },
       {
         "id": "q3",
@@ -2115,7 +2277,8 @@ window.LIVRES = [
           "Un chevalier de la garde royale"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q4",
@@ -2129,7 +2292,8 @@ window.LIVRES = [
           "Elle se déguise en homme pour aller combattre à la place de Séraphin lors du duel"
         ],
         "answer": 3,
-        "points": 1
+        "points": 1,
+        "correct": 3
       },
       {
         "id": "q5",
@@ -2143,7 +2307,8 @@ window.LIVRES = [
           "Elle avait peur de quitter le château"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q6",
@@ -2157,7 +2322,8 @@ window.LIVRES = [
           "Qu'elle est trop orgueilleuse pour admettre qu'elle est moche"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q7",
@@ -2171,7 +2337,8 @@ window.LIVRES = [
           "Sa victoire inattendue contre Gondard lui donne une image de courage et de force qui convainc le peuple"
         ],
         "answer": 3,
-        "points": 1
+        "points": 1,
+        "correct": 3
       },
       {
         "id": "q8",
@@ -2185,7 +2352,8 @@ window.LIVRES = [
           "Le roi n'avait plus assez d'argent pour organiser un grand bal"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q9",
@@ -2193,7 +2361,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "C'est Marjolaine elle-même qui a décidé de fuir le château après avoir surpris la conversation de ses parents.",
         "answer": true,
-        "points": 1
+        "points": 1,
+        "correct": true
       },
       {
         "id": "q10",
@@ -2201,7 +2370,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Le duc de Gondard est un ennemi de longue date du père de Marjolaine.",
         "answer": false,
-        "points": 1
+        "points": 1,
+        "correct": false
       },
       {
         "id": "q11",
@@ -2209,7 +2379,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Séraphin gagne le duel contre Gondard et lui laisse ensuite la vie sauve.",
         "answer": false,
-        "points": 1
+        "points": 1,
+        "correct": false
       },
       {
         "id": "q12",
@@ -2217,7 +2388,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Lors du mariage, c'est Séraphin qui porte des habits simples et Marjolaine qui est habillée de façon somptueuse.",
         "answer": false,
-        "points": 1
+        "points": 1,
+        "correct": false
       },
       {
         "id": "q13",
@@ -2231,7 +2403,8 @@ window.LIVRES = [
           "Organisés très rapidement et sans préparation"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q14",
@@ -2245,7 +2418,8 @@ window.LIVRES = [
           "Un prince qui est arrivé en carrosse"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q15",
@@ -2259,7 +2433,8 @@ window.LIVRES = [
           "La rumeur était confirmée par le roi"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q16",
@@ -2272,7 +2447,8 @@ window.LIVRES = [
           "Résumé C : Marjolaine emprisonne Gondard pour l'empêcher de se battre, et Séraphin remporte le duel grâce à ses talents de combattant. Le mariage a lieu loin du château, sur un rocher."
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       }
     ]
   },
@@ -2294,7 +2470,8 @@ window.LIVRES = [
           "Korog"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q2",
@@ -2308,7 +2485,8 @@ window.LIVRES = [
           "Berger"
         ],
         "answer": 3,
-        "points": 1
+        "points": 1,
+        "correct": 3
       },
       {
         "id": "q3",
@@ -2322,7 +2500,8 @@ window.LIVRES = [
           "Une tempête magique qui enferme les habitants dans leurs maisons"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q4",
@@ -2336,7 +2515,8 @@ window.LIVRES = [
           "Une mandoline"
         ],
         "answer": 3,
-        "points": 1
+        "points": 1,
+        "correct": 3
       },
       {
         "id": "q5",
@@ -2350,7 +2530,8 @@ window.LIVRES = [
           "Ils portent tous une marque de naissance qui les protège"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q6",
@@ -2364,7 +2545,8 @@ window.LIVRES = [
           "Il reconnaît sur Picolino la même marque de naissance que la sienne, signe qu'ils appartiennent au même peuple"
         ],
         "answer": 3,
-        "points": 1
+        "points": 1,
+        "correct": 3
       },
       {
         "id": "q7",
@@ -2378,7 +2560,8 @@ window.LIVRES = [
           "Il avoue qu'il a utilisé sa magie pour devenir roi sans l'accord du peuple"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q8",
@@ -2392,7 +2575,8 @@ window.LIVRES = [
           "Luigi possède lui aussi un pouvoir magique, et son avenir sera extraordinaire mais incertain"
         ],
         "answer": 3,
-        "points": 1
+        "points": 1,
+        "correct": 3
       },
       {
         "id": "q9",
@@ -2400,7 +2584,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Picolino a toujours aimé l'île et ses habitants depuis son enfance.",
         "answer": false,
-        "points": 1
+        "points": 1,
+        "correct": false
       },
       {
         "id": "q10",
@@ -2408,7 +2593,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Pendant que les adultes sont sous le charme, les enfants s'organisent seuls pour survivre et se répartissent des tâches précises.",
         "answer": true,
-        "points": 1
+        "points": 1,
+        "correct": true
       },
       {
         "id": "q11",
@@ -2416,7 +2602,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Picolino parvient à libérer ses parents adoptifs dès sa première visite à la mine, en leur parlant avec douceur.",
         "answer": false,
-        "points": 1
+        "points": 1,
+        "correct": false
       },
       {
         "id": "q12",
@@ -2424,7 +2611,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "À la fin du combat, les brigands sont tous tués par la magie de la mandoline de Picolino.",
         "answer": false,
-        "points": 1
+        "points": 1,
+        "correct": false
       },
       {
         "id": "q13",
@@ -2438,7 +2626,8 @@ window.LIVRES = [
           "Triste et mélancolique"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q14",
@@ -2452,7 +2641,8 @@ window.LIVRES = [
           "Stimulé, rempli d'énergie et de motivation pour agir"
         ],
         "answer": 3,
-        "points": 1
+        "points": 1,
+        "correct": 3
       },
       {
         "id": "q15",
@@ -2466,7 +2656,8 @@ window.LIVRES = [
           "Bizarre, absurde, qui paraît complètement ridicule au premier abord"
         ],
         "answer": 3,
-        "points": 1
+        "points": 1,
+        "correct": 3
       },
       {
         "id": "q16",
@@ -2479,7 +2670,8 @@ window.LIVRES = [
           "Résumé C : Picolino propose de combattre avec une armée de soldats recrutés dans les îles voisines. Ils remportent la victoire grâce à ce renfort extérieur."
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       }
     ]
   },
@@ -2501,7 +2693,8 @@ window.LIVRES = [
           "Elle a été envoyée chez sa tante par l'école"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q2",
@@ -2515,7 +2708,8 @@ window.LIVRES = [
           "Elle profite d'une porte laissée ouverte par inadvertance par une domestique"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q3",
@@ -2529,7 +2723,8 @@ window.LIVRES = [
           "Elle travaille pour Scotland Yard et enquête sur des affaires criminelles, dont celle de Jack l'Éventreur"
         ],
         "answer": 3,
-        "points": 1
+        "points": 1,
+        "correct": 3
       },
       {
         "id": "q4",
@@ -2543,7 +2738,8 @@ window.LIVRES = [
           "Elle s'enfuit en courant et demande au lieutenant Ridge de l'intercepter"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q5",
@@ -2557,7 +2753,8 @@ window.LIVRES = [
           "Parce que les deux sœurs s'étaient disputées pour une question d'héritage familial"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q6",
@@ -2571,7 +2768,8 @@ window.LIVRES = [
           "Que Miss Tucson connaît personnellement Jack l'Éventreur et n'a donc rien à craindre de lui"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q7",
@@ -2585,7 +2783,8 @@ window.LIVRES = [
           "Qu'elle a compris que Miss Tucson aime Ridge sans l'avoir épousé, ce qui explique son choix de rester célibataire"
         ],
         "answer": 3,
-        "points": 1
+        "points": 1,
+        "correct": 3
       },
       {
         "id": "q8",
@@ -2599,7 +2798,8 @@ window.LIVRES = [
           "Miss Tucson veut s'assurer qu'Elisabeth se taira par peur des conséquences"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q9",
@@ -2607,7 +2807,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Miss Tucson occupe un poste officiel et reconnu au sein de Scotland Yard.",
         "answer": false,
-        "points": 1
+        "points": 1,
+        "correct": false
       },
       {
         "id": "q10",
@@ -2615,7 +2816,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Elisabeth réussit à lire des documents secrets dans le bureau de sa tante lors de son intrusion nocturne.",
         "answer": false,
-        "points": 1
+        "points": 1,
+        "correct": false
       },
       {
         "id": "q11",
@@ -2623,7 +2825,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Miss Tucson est plus sévère avec Elisabeth depuis que cette dernière lui a répondu avec insolence à propos de son voyage à Londres.",
         "answer": true,
-        "points": 1
+        "points": 1,
+        "correct": true
       },
       {
         "id": "q12",
@@ -2631,7 +2834,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Elisabeth suit sa tante à Londres parce qu'elle veut l'empêcher de se rendre à la police, pensant qu'elle est Jack l'Éventreur.",
         "answer": true,
-        "points": 1
+        "points": 1,
+        "correct": true
       },
       {
         "id": "q13",
@@ -2645,7 +2849,8 @@ window.LIVRES = [
           "Crier si fort que tout le monde dans la maison l'entendrait"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q14",
@@ -2659,7 +2864,8 @@ window.LIVRES = [
           "Être prête à tout sacrifier pour obtenir ce qu'elle veut"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q15",
@@ -2673,7 +2879,8 @@ window.LIVRES = [
           "Un calme tranquille et imperturbable, même dans les situations agitées"
         ],
         "answer": 3,
-        "points": 1
+        "points": 1,
+        "correct": 3
       },
       {
         "id": "q16",
@@ -2686,7 +2893,8 @@ window.LIVRES = [
           "Résumé C : Elisabeth découvre dans le bureau de sa tante des documents secrets prouvant que celle-ci est Jack l'Éventreur. Elle alerte immédiatement la police de Scotland Yard, qui arrête Miss Tucson devant la maison."
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       }
     ]
   },
@@ -2708,7 +2916,8 @@ window.LIVRES = [
           "Chez le voisin Jo"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q2",
@@ -2722,7 +2931,8 @@ window.LIVRES = [
           "Il s'est noyé dans la rivière"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q3",
@@ -2736,7 +2946,8 @@ window.LIVRES = [
           "Il lance des outils par la fenêtre"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q4",
@@ -2750,7 +2961,8 @@ window.LIVRES = [
           "Il enfonce la porte à coups de pied"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q5",
@@ -2764,7 +2976,8 @@ window.LIVRES = [
           "Parce qu'il a peur qu'ils lui interdisent de revenir à Fontagnac"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q6",
@@ -2778,7 +2991,8 @@ window.LIVRES = [
           "Parce qu'une tempête a tout détruit"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q7",
@@ -2792,7 +3006,8 @@ window.LIVRES = [
           "Il le fait uniquement pour éviter les ennuis avec ses parents"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q8",
@@ -2806,7 +3021,8 @@ window.LIVRES = [
           "Parce qu'elle est fière de ses bêtises"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q9",
@@ -2814,7 +3030,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Justin est le nom d'un camarade de classe de Bastien.",
         "answer": false,
-        "points": 1
+        "points": 1,
+        "correct": false
       },
       {
         "id": "q10",
@@ -2822,7 +3039,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "C'est Nelson qui convainc finalement Henriette de poser la carabine en disant que le dindon n'est pas méchant.",
         "answer": true,
-        "points": 1
+        "points": 1,
+        "correct": true
       },
       {
         "id": "q11",
@@ -2830,7 +3048,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Mamie Henriette avait réellement perdu la tête et tout organisé seule.",
         "answer": false,
-        "points": 1
+        "points": 1,
+        "correct": false
       },
       {
         "id": "q12",
@@ -2838,7 +3057,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "L'eau rouge de la fontaine contenait du poison.",
         "answer": false,
-        "points": 1
+        "points": 1,
+        "correct": false
       },
       {
         "id": "q13",
@@ -2852,7 +3072,8 @@ window.LIVRES = [
           "Dessinait mentalement"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q14",
@@ -2866,7 +3087,8 @@ window.LIVRES = [
           "Organisée en plein air"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q15",
@@ -2880,7 +3102,8 @@ window.LIVRES = [
           "Exagérée et théâtrale"
         ],
         "answer": 0,
-        "points": 1
+        "points": 1,
+        "correct": 0
       },
       {
         "id": "q16",
@@ -2893,7 +3116,8 @@ window.LIVRES = [
           "Résumé C : Henriette, furieuse contre son petit-fils, organise seule une série de bêtises dans le village pour lui donner une leçon. Bastien répare tous les dégâts et se réconcilie avec sa grand-mère."
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       }
     ]
   },
@@ -2915,7 +3139,8 @@ window.LIVRES = [
           "Séb"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q2",
@@ -2929,7 +3154,8 @@ window.LIVRES = [
           "Il avale des médicaments"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q3",
@@ -2943,7 +3169,8 @@ window.LIVRES = [
           "Une alarme incendie"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q4",
@@ -2957,7 +3184,8 @@ window.LIVRES = [
           "Des portes arrachées de leurs gonds"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q5",
@@ -2971,7 +3199,8 @@ window.LIVRES = [
           "Il a oublié ce qui s'était passé"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q6",
@@ -2985,7 +3214,8 @@ window.LIVRES = [
           "Au menu de la cantine"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q7",
@@ -2999,7 +3229,8 @@ window.LIVRES = [
           "Elle veut protéger Théo"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q8",
@@ -3013,7 +3244,8 @@ window.LIVRES = [
           "Un film regardé en classe"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q9",
@@ -3021,7 +3253,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Le professeur Bertin est le professeur principal de la classe.",
         "answer": false,
-        "points": 1
+        "points": 1,
+        "correct": false
       },
       {
         "id": "q10",
@@ -3029,7 +3262,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Séb tente en premier de convaincre le professeur d'annuler le contrôle.",
         "answer": true,
-        "points": 1
+        "points": 1,
+        "correct": true
       },
       {
         "id": "q11",
@@ -3037,7 +3271,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Le morceau de comète s'écrase directement sur la ville de Rouen.",
         "answer": false,
-        "points": 1
+        "points": 1,
+        "correct": false
       },
       {
         "id": "q12",
@@ -3045,7 +3280,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "À la fin, le contrôle de géographie a bien eu lieu le lundi suivant.",
         "answer": false,
-        "points": 1
+        "points": 1,
+        "correct": false
       },
       {
         "id": "q13",
@@ -3059,7 +3295,8 @@ window.LIVRES = [
           "Chuchoté discrètement"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q14",
@@ -3073,7 +3310,8 @@ window.LIVRES = [
           "Regardé de haut avec mépris"
         ],
         "answer": 3,
-        "points": 1
+        "points": 1,
+        "correct": 3
       },
       {
         "id": "q15",
@@ -3087,7 +3325,8 @@ window.LIVRES = [
           "Ennuyeux et répétitifs"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q16",
@@ -3100,7 +3339,8 @@ window.LIVRES = [
           "Résumé C : Des miettes de céréales se transforment en virus géants. Séb sauve tout le groupe et ils rentrent sains et saufs au collège."
         ],
         "answer": 0,
-        "points": 1
+        "points": 1,
+        "correct": 0
       }
     ]
   },
@@ -3122,7 +3362,8 @@ window.LIVRES = [
           "Il le cache dans sa poche dès le départ."
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q2",
@@ -3136,7 +3377,8 @@ window.LIVRES = [
           "Babou discute avec monsieur Julien."
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q3",
@@ -3150,7 +3392,8 @@ window.LIVRES = [
           "Rien du tout."
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q4",
@@ -3164,7 +3407,8 @@ window.LIVRES = [
           "Elle voulait se venger de Babou."
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q5",
@@ -3178,7 +3422,8 @@ window.LIVRES = [
           "Il avait peur de la police à cause de son passé en prison."
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q6",
@@ -3192,7 +3437,8 @@ window.LIVRES = [
           "Il s'ennuie et cherche à passer le temps."
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q7",
@@ -3206,7 +3452,8 @@ window.LIVRES = [
           "C'était une habitude qu'elle avait prise en vieillissant."
         ],
         "answer": 0,
-        "points": 1
+        "points": 1,
+        "correct": 0
       },
       {
         "id": "q8",
@@ -3220,7 +3467,8 @@ window.LIVRES = [
           "Elle a peur de madame Jansen et obéit par terreur."
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q9",
@@ -3228,7 +3476,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Gabrielle et Dorian sont des jumeaux qui se ressemblent physiquement.",
         "answer": false,
-        "points": 1
+        "points": 1,
+        "correct": false
       },
       {
         "id": "q10",
@@ -3236,7 +3485,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "C'est Max qui permet aux jumeaux de découvrir que la véritable voleuse est madame Jansen, en rapportant un fil bleu de son appartement.",
         "answer": true,
-        "points": 1
+        "points": 1,
+        "correct": true
       },
       {
         "id": "q11",
@@ -3244,7 +3494,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Les boucles d'oreilles de Babou sont retrouvées dans le magasin d'occasion, encore en vitrine.",
         "answer": false,
-        "points": 1
+        "points": 1,
+        "correct": false
       },
       {
         "id": "q12",
@@ -3252,7 +3503,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Babou a du mal à sortir de chez elle après l'agression parce qu'elle a peur.",
         "answer": true,
-        "points": 1
+        "points": 1,
+        "correct": true
       },
       {
         "id": "q13",
@@ -3266,7 +3518,8 @@ window.LIVRES = [
           "hésite avant de parler"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q14",
@@ -3280,7 +3533,8 @@ window.LIVRES = [
           "cachés sous"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q15",
@@ -3294,7 +3548,8 @@ window.LIVRES = [
           "le fait de mentir à la police lors d'une enquête"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q16",
@@ -3307,7 +3562,8 @@ window.LIVRES = [
           "Résumé C : C'est Zoé, la petite-fille de monsieur Julien, que la police arrête : elle avait fait un double des clés pour entrer chez Babou."
         ],
         "answer": 0,
-        "points": 1
+        "points": 1,
+        "correct": 0
       }
     ]
   },
@@ -3329,7 +3585,8 @@ window.LIVRES = [
           "Chez sa meilleure amie Marguerite"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q2",
@@ -3343,7 +3600,8 @@ window.LIVRES = [
           "En regardant les photos de classe affichées dans le couloir"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q3",
@@ -3357,7 +3615,8 @@ window.LIVRES = [
           "La description d'un champ de tournesols près de l'école"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q4",
@@ -3371,7 +3630,8 @@ window.LIVRES = [
           "Le professeur de mathématiques, M. Lorient"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q5",
@@ -3385,7 +3645,8 @@ window.LIVRES = [
           "Parce qu'elle cherche un endroit calme pour étudier le Roi-Soleil"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q6",
@@ -3399,7 +3660,8 @@ window.LIVRES = [
           "Parce qu'elles veulent gagner du chocolat pour elles-mêmes"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q7",
@@ -3413,7 +3675,8 @@ window.LIVRES = [
           "Elles détestent les filles de leur classe"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q8",
@@ -3427,7 +3690,8 @@ window.LIVRES = [
           "Parce qu'il voulait que quelqu'un le retrouve et cherche à le lui rendre"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q9",
@@ -3435,7 +3699,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Lucie lit immédiatement le journal en entier dès qu'elle le trouve sur le banc.",
         "answer": false,
-        "points": 1
+        "points": 1,
+        "correct": false
       },
       {
         "id": "q10",
@@ -3443,7 +3708,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Les deux amies retournent deux jours de suite au « coin secret » pour attendre le propriétaire du journal.",
         "answer": true,
-        "points": 1
+        "points": 1,
+        "correct": true
       },
       {
         "id": "q11",
@@ -3451,7 +3717,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "L'écriture du journal permet aux deux amies d'identifier formellement son auteur.",
         "answer": false,
-        "points": 1
+        "points": 1,
+        "correct": false
       },
       {
         "id": "q12",
@@ -3459,7 +3726,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "L'écrivain Jean-Claude Sirop habitait dans la région et s'était inspiré des paysages locaux.",
         "answer": true,
-        "points": 1
+        "points": 1,
+        "correct": true
       },
       {
         "id": "q13",
@@ -3473,7 +3741,8 @@ window.LIVRES = [
           "La fait rire malgré elle"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q14",
@@ -3487,7 +3756,8 @@ window.LIVRES = [
           "Avec beaucoup d'humour"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q15",
@@ -3501,7 +3771,8 @@ window.LIVRES = [
           "Les deux amies commencent à se disputer"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q16",
@@ -3514,7 +3785,8 @@ window.LIVRES = [
           "Résumé C : Lucie trouve un journal intime sur un banc du parc. Avec son amie Marguerite, elle tente de retrouver son propriétaire grâce à plusieurs indices. Toutes leurs pistes échouent, jusqu'au jour où un écrivain vient rendre visite à leur classe et révèle qu'il a perdu le brouillon de son roman, rédigé sous forme de journal intime."
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       }
     ]
   },
@@ -3536,7 +3808,8 @@ window.LIVRES = [
           "Il veut retrouver son oncle Nils qu'il connaît bien"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q2",
@@ -3550,7 +3823,8 @@ window.LIVRES = [
           "Sami"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q3",
@@ -3564,7 +3838,8 @@ window.LIVRES = [
           "C'est un renne sauvage, il n'a pas de propriétaire"
         ],
         "answer": 3,
-        "points": 1
+        "points": 1,
+        "correct": 3
       },
       {
         "id": "q4",
@@ -3578,7 +3853,8 @@ window.LIVRES = [
           "Meri les leur avait données sans le savoir"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q5",
@@ -3592,7 +3868,8 @@ window.LIVRES = [
           "Il veut lui apprendre à conduire la motoneige"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q6",
@@ -3606,7 +3883,8 @@ window.LIVRES = [
           "Obéit aux ordres de Meri"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q7",
@@ -3620,7 +3898,8 @@ window.LIVRES = [
           "Il était allé chercher la pépite d'or dans sa cachette secrète pour l'offrir à Alexis"
         ],
         "answer": 3,
-        "points": 1
+        "points": 1,
+        "correct": 3
       },
       {
         "id": "q8",
@@ -3634,7 +3913,8 @@ window.LIVRES = [
           "La gentillesse de l'oncle Nils"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q9",
@@ -3642,7 +3922,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Alexis parle finlandais grâce aux cours qu'il a suivis à l'école.",
         "answer": false,
-        "points": 1
+        "points": 1,
+        "correct": false
       },
       {
         "id": "q10",
@@ -3650,7 +3931,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Meri propose d'attacher le renne à un arbre pour pouvoir retrouver la mine d'or.",
         "answer": true,
-        "points": 1
+        "points": 1,
+        "correct": true
       },
       {
         "id": "q11",
@@ -3658,7 +3940,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "La pépite d'or que Nils offre à Alexis est exactement celle que le renne venait de découvrir dans la rivière sous leurs yeux.",
         "answer": false,
-        "points": 1
+        "points": 1,
+        "correct": false
       },
       {
         "id": "q12",
@@ -3666,7 +3949,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Les voleurs sont arrêtés grâce aux informations données par Alexis sur le camion.",
         "answer": true,
-        "points": 1
+        "points": 1,
+        "correct": true
       },
       {
         "id": "q13",
@@ -3680,7 +3964,8 @@ window.LIVRES = [
           "Vidée complètement"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q14",
@@ -3694,7 +3979,8 @@ window.LIVRES = [
           "Épais, touffus et en désordre"
         ],
         "answer": 3,
-        "points": 1
+        "points": 1,
+        "correct": 3
       },
       {
         "id": "q15",
@@ -3708,7 +3994,8 @@ window.LIVRES = [
           "En chuchotant pour ne pas être entendu"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q16",
@@ -3721,7 +4008,8 @@ window.LIVRES = [
           "Résumé C : Alexis et Meri gardent le renne attaché pour pouvoir exploiter la mine et s'enrichir, et Nils approuve leur décision."
         ],
         "answer": 0,
-        "points": 1
+        "points": 1,
+        "correct": 0
       }
     ]
   },
@@ -3743,7 +4031,8 @@ window.LIVRES = [
           "Rejoindre Boulogne-sur-Mer en vélo depuis Calais"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q2",
@@ -3757,7 +4046,8 @@ window.LIVRES = [
           "Il cherchait à se venger du directeur de Nausicaa qui l'avait mal traité"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q3",
@@ -3771,7 +4061,8 @@ window.LIVRES = [
           "Ses amis lui ont indiqué l'adresse après avoir vu le camion"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q4",
@@ -3785,7 +4076,8 @@ window.LIVRES = [
           "Joachim demande lui-même qu'on le relâche dans la mer devant Nausicaa"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q5",
@@ -3799,7 +4091,8 @@ window.LIVRES = [
           "Ils ont peur que Philippe les empêche de remplir le camion d'eau de mer"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q6",
@@ -3813,7 +4106,8 @@ window.LIVRES = [
           "Il sait qu'Élisabeth va appeler la police à sa place"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q7",
@@ -3827,7 +4121,8 @@ window.LIVRES = [
           "Il veut que son père évite d'avoir des ennuis avec la justice"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q8",
@@ -3841,7 +4136,8 @@ window.LIVRES = [
           "Il dépend entièrement de ses amis pour surmonter les obstacles"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q9",
@@ -3849,7 +4145,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "C'est Olivier qui frappe Daniel Vézin avec un silex pour sauver Philippe lors de la dernière attaque.",
         "answer": false,
-        "points": 1
+        "points": 1,
+        "correct": false
       },
       {
         "id": "q10",
@@ -3857,7 +4154,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Le fils de Daniel Vézin, Joachim, est passionné par les requins et les considère comme des animaux à protéger.",
         "answer": true,
-        "points": 1
+        "points": 1,
+        "correct": true
       },
       {
         "id": "q11",
@@ -3865,7 +4163,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Le père d'Hélène est médecin et soigne le poignet blessé de Philippe.",
         "answer": false,
-        "points": 1
+        "points": 1,
+        "correct": false
       },
       {
         "id": "q12",
@@ -3873,7 +4172,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "À la fin de l'histoire, le requin est libéré dans la mer en présence de Philippe, Élisabeth, leurs amis et le directeur de Nausicaa.",
         "answer": true,
-        "points": 1
+        "points": 1,
+        "correct": true
       },
       {
         "id": "q13",
@@ -3887,7 +4187,8 @@ window.LIVRES = [
           "Admiratif devant la beauté du spectacle"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q14",
@@ -3901,7 +4202,8 @@ window.LIVRES = [
           "Retenir quelqu'un par la parole pour le calmer"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q15",
@@ -3915,7 +4217,8 @@ window.LIVRES = [
           "Soulagé d'avoir enfin terminé sa marche"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q16",
@@ -3928,7 +4231,8 @@ window.LIVRES = [
           "Résumé C : En vacances sur la côte, Philippe est témoin de la capture d'un requin et se retrouve traqué par le violent Daniel Vézin. Avec l'aide de ses amis Olivier et Hélène, et grâce au soutien inattendu de Joachim, le propre fils de Vézin passionné par la vie marine, Philippe déjoue les pièges et parvient à faire libérer le squale dans l'océan avec l'accord de Nausicaa."
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       }
     ]
   },
@@ -3950,7 +4254,8 @@ window.LIVRES = [
           "Gauthier doit rembourser une dette en travaillant avec son père"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q2",
@@ -3964,7 +4269,8 @@ window.LIVRES = [
           "Elle se lève et marche en dormant jusqu'à la plage sans que sa mère puisse l'arrêter"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q3",
@@ -3978,7 +4284,8 @@ window.LIVRES = [
           "Une carte indiquant le port d'attache du capitaine"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q4",
@@ -3992,7 +4299,8 @@ window.LIVRES = [
           "Gauthier est embauché par le père Loïk pour l'aider dans sa maison"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q5",
@@ -4006,7 +4314,8 @@ window.LIVRES = [
           "Il veut mettre en garde le garçon contre Bleuenn et sa mère"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q6",
@@ -4020,7 +4329,8 @@ window.LIVRES = [
           "Le coquillage nacré lui permet de comprendre toutes les langues"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q7",
@@ -4034,7 +4344,8 @@ window.LIVRES = [
           "Elle ne veut pas que Bleuenn apprenne qu'elle a été adoptée"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q8",
@@ -4048,7 +4359,8 @@ window.LIVRES = [
           "Robin, en repartant, a emporté avec lui la source des bruits nocturnes qui effrayaient la bête"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q9",
@@ -4056,7 +4368,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Robin est immédiatement rassuré et favorable à l'amitié entre Gauthier et le père Loïk.",
         "answer": false,
-        "points": 1
+        "points": 1,
+        "correct": false
       },
       {
         "id": "q10",
@@ -4064,7 +4377,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Le père Loïk voit lui aussi le navire fantôme et le capitaine sur la plage, la nuit où il accompagne Gauthier.",
         "answer": false,
-        "points": 1
+        "points": 1,
+        "correct": false
       },
       {
         "id": "q11",
@@ -4072,7 +4386,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Bleuenn découvre les origines de sa médaille en écoutant à la porte la conversation entre Anaïck et le père Loïk.",
         "answer": false,
-        "points": 1
+        "points": 1,
+        "correct": false
       },
       {
         "id": "q12",
@@ -4080,7 +4395,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "À la fin de l'histoire, Bleuenn ne fait plus jamais de cauchemar et porte désormais la médaille de son père autour du cou.",
         "answer": true,
-        "points": 1
+        "points": 1,
+        "correct": true
       },
       {
         "id": "q13",
@@ -4094,7 +4410,8 @@ window.LIVRES = [
           "Manger trop vite pendant la pause du déjeuner"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q14",
@@ -4108,7 +4425,8 @@ window.LIVRES = [
           "En avançant en groupe, comme une meute"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q15",
@@ -4122,7 +4440,8 @@ window.LIVRES = [
           "Peint d'une couleur vive pour être reconnu en mer"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q16",
@@ -4135,7 +4454,8 @@ window.LIVRES = [
           "Résumé C : Gauthier accompagne son père chaudronnier dans un village breton et découvre le drame de Bleuenn, prise de crises de folie les soirs de pleine lune. Comprenant que la jeune fille s'exprime en dialecte normand, Gauthier découvre qu'elle est l'unique rescapée d'un naufrage recherchée par le fantôme de son père capitaine. Grâce à une médaille gravée, il apaise les esprits et choisit de s'installer au village avec Bleuenn."
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       }
     ]
   },
@@ -4157,7 +4477,8 @@ window.LIVRES = [
           "Sa grand-mère s'y oppose"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q2",
@@ -4171,7 +4492,8 @@ window.LIVRES = [
           "Dans la boîte aux lettres de la chaussée des Coquelicots"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q3",
@@ -4185,7 +4507,8 @@ window.LIVRES = [
           "Par des notifications d'une application"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q4",
@@ -4199,7 +4522,8 @@ window.LIVRES = [
           "Un nouveau message de Louis"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q5",
@@ -4213,7 +4537,8 @@ window.LIVRES = [
           "Il ne sait pas où se trouvent les adresses"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q6",
@@ -4227,7 +4552,8 @@ window.LIVRES = [
           "Il pense que Louis est le propriétaire du smartphone"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q7",
@@ -4241,7 +4567,8 @@ window.LIVRES = [
           "Parce que Milo avait l'habitude d'y aller seul tous les jours"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q8",
@@ -4255,7 +4582,8 @@ window.LIVRES = [
           "Il est jaloux de son frère Louis"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q9",
@@ -4263,7 +4591,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Louis reçoit son smartphone pour ses dix ans.",
         "answer": false,
-        "points": 1
+        "points": 1,
+        "correct": false
       },
       {
         "id": "q10",
@@ -4271,7 +4600,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Milo se rend à la cafétéria du skatepark pour rendre le smartphone à son propriétaire.",
         "answer": true,
-        "points": 1
+        "points": 1,
+        "correct": true
       },
       {
         "id": "q11",
@@ -4279,7 +4609,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Jérôme Watrin est le grand frère de Louis.",
         "answer": false,
-        "points": 1
+        "points": 1,
+        "correct": false
       },
       {
         "id": "q12",
@@ -4287,7 +4618,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "C'est Louis qui a organisé tout le jeu de piste comme cadeau d'anniversaire.",
         "answer": true,
-        "points": 1
+        "points": 1,
+        "correct": true
       },
       {
         "id": "q13",
@@ -4301,7 +4633,8 @@ window.LIVRES = [
           "En s'amusant beaucoup"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q14",
@@ -4315,7 +4648,8 @@ window.LIVRES = [
           "L'utiliser sans vraiment l'apprécier"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q15",
@@ -4329,7 +4663,8 @@ window.LIVRES = [
           "De la pitié et de la compréhension pour quelqu'un"
         ],
         "answer": 3,
-        "points": 1
+        "points": 1,
+        "correct": 3
       },
       {
         "id": "q16",
@@ -4342,7 +4677,8 @@ window.LIVRES = [
           "Résumé C : C'est finalement sa grand-mère qui révèle avoir tout organisé : le jeu de piste était une façon originale de lui offrir le smartphone pour son anniversaire."
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       }
     ]
   },
@@ -4364,7 +4700,8 @@ window.LIVRES = [
           "Un festival de chant à Galway"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q2",
@@ -4378,7 +4715,8 @@ window.LIVRES = [
           "Le violon"
         ],
         "answer": 3,
-        "points": 1
+        "points": 1,
+        "correct": 3
       },
       {
         "id": "q3",
@@ -4392,7 +4730,8 @@ window.LIVRES = [
           "Le patron du pub l'avait rangé dans la réserve"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q4",
@@ -4406,7 +4745,8 @@ window.LIVRES = [
           "Avec la barque du vieux Jo"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q5",
@@ -4420,7 +4760,8 @@ window.LIVRES = [
           "Elle voudrait avoir les mêmes yeux que ses cousines"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q6",
@@ -4434,7 +4775,8 @@ window.LIVRES = [
           "Les deux familles se disputaient depuis des générations"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q7",
@@ -4448,7 +4790,8 @@ window.LIVRES = [
           "Il voulait faire une surprise à ses cousines avant la finale"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q8",
@@ -4462,7 +4805,8 @@ window.LIVRES = [
           "Que Veronica avait menti sur ce qui s'était passé au marché"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q9",
@@ -4470,7 +4814,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Kathleen joue du tin whistle comme son père.",
         "answer": false,
-        "points": 1
+        "points": 1,
+        "correct": false
       },
       {
         "id": "q10",
@@ -4478,7 +4823,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Les trois meilleurs groupes des sélections du mercredi sont retenus pour la finale du samedi.",
         "answer": true,
-        "points": 1
+        "points": 1,
+        "correct": true
       },
       {
         "id": "q11",
@@ -4486,7 +4832,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Lors de la finale, le trophée est remporté par les o'Reilly.",
         "answer": false,
-        "points": 1
+        "points": 1,
+        "correct": false
       },
       {
         "id": "q12",
@@ -4494,7 +4841,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Rory Clancy ne peut pas jouer lors de la finale à cause de ses mains blessées.",
         "answer": true,
-        "points": 1
+        "points": 1,
+        "correct": true
       },
       {
         "id": "q13",
@@ -4508,7 +4856,8 @@ window.LIVRES = [
           "Un accent irlandais très prononcé"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q14",
@@ -4522,7 +4871,8 @@ window.LIVRES = [
           "En colère contre ses sœurs"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q15",
@@ -4536,7 +4886,8 @@ window.LIVRES = [
           "Incapables de bouger à cause du froid"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q16",
@@ -4549,7 +4900,8 @@ window.LIVRES = [
           "Résumé C : Après de nombreuses aventures, les deux familles jouent ensemble lors de la finale et remportent finalement le trophée Gorumna."
         ],
         "answer": 0,
-        "points": 1
+        "points": 1,
+        "correct": 0
       }
     ]
   },
@@ -4571,7 +4923,8 @@ window.LIVRES = [
           "Un trouble autistique"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q2",
@@ -4585,7 +4938,8 @@ window.LIVRES = [
           "Elle s'entendait mal avec le père de Célia"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q3",
@@ -4599,7 +4953,8 @@ window.LIVRES = [
           "Dans la rue, près de chez elle"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q4",
@@ -4613,7 +4968,8 @@ window.LIVRES = [
           "Cuisinier dans un restaurant"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q5",
@@ -4627,7 +4983,8 @@ window.LIVRES = [
           "Elle préfère toujours se déplacer seule"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q6",
@@ -4641,7 +4998,8 @@ window.LIVRES = [
           "Elle pense que les vêtements originaux ne lui vont pas"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q7",
@@ -4655,7 +5013,8 @@ window.LIVRES = [
           "Tom lui avoue qu'il connaît déjà l'existence de Julie"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q8",
@@ -4669,7 +5028,8 @@ window.LIVRES = [
           "Elle réalise que son père avait tort de vouloir déménager"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q9",
@@ -4677,7 +5037,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Noémie est la meilleure amie de Célia depuis qu'elles ont cinq ans.",
         "answer": true,
-        "points": 1
+        "points": 1,
+        "correct": true
       },
       {
         "id": "q10",
@@ -4685,7 +5046,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Le père de Célia est gêné de pousser le fauteuil de Julie en public.",
         "answer": false,
-        "points": 1
+        "points": 1,
+        "correct": false
       },
       {
         "id": "q11",
@@ -4693,7 +5055,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Célia a onze ans dans le roman.",
         "answer": true,
-        "points": 1
+        "points": 1,
+        "correct": true
       },
       {
         "id": "q12",
@@ -4701,7 +5064,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Tom ignorait complètement l'existence de Julie avant que Célia lui en parle.",
         "answer": false,
-        "points": 1
+        "points": 1,
+        "correct": false
       },
       {
         "id": "q13",
@@ -4715,7 +5079,8 @@ window.LIVRES = [
           "Honnête et spontané"
         ],
         "answer": 0,
-        "points": 1
+        "points": 1,
+        "correct": 0
       },
       {
         "id": "q14",
@@ -4729,7 +5094,8 @@ window.LIVRES = [
           "Un sourire moqueur adressé aux passants"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q15",
@@ -4743,7 +5109,8 @@ window.LIVRES = [
           "La reformuler autrement"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q16",
@@ -4756,7 +5123,8 @@ window.LIVRES = [
           "Résumé C : C'est la mère de Célia qui a décidé et organisé le déménagement vers le centre-ville."
         ],
         "answer": 0,
-        "points": 1
+        "points": 1,
+        "correct": 0
       }
     ]
   },
@@ -4778,7 +5146,8 @@ window.LIVRES = [
           "Dans la boîte du grand-père de Loïc"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q2",
@@ -4792,7 +5161,8 @@ window.LIVRES = [
           "Parce que le lac est privé"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q3",
@@ -4806,7 +5176,8 @@ window.LIVRES = [
           "Ils attendent de passer clandestinement en Angleterre"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q4",
@@ -4820,7 +5191,8 @@ window.LIVRES = [
           "Un programme d'aide aux réfugiés organisé par l'UNICEF"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q5",
@@ -4834,7 +5206,8 @@ window.LIVRES = [
           "Il est perdu et ne connaît pas encore la région"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q6",
@@ -4848,7 +5221,8 @@ window.LIVRES = [
           "Parce que pêcher dans une zone protégée est une faute grave"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q7",
@@ -4862,7 +5236,8 @@ window.LIVRES = [
           "Ils espèrent être mieux vus du professeur"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q8",
@@ -4876,7 +5251,8 @@ window.LIVRES = [
           "Il cherche à impressionner ses nouveaux amis"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q9",
@@ -4884,7 +5260,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "C'est le grand-père de Loïc qui a offert la mouche de mai à Fadi.",
         "answer": true,
-        "points": 1
+        "points": 1,
+        "correct": true
       },
       {
         "id": "q10",
@@ -4892,7 +5269,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Fadi vient d'Afghanistan avec son père et sa mère.",
         "answer": false,
-        "points": 1
+        "points": 1,
+        "correct": false
       },
       {
         "id": "q11",
@@ -4900,7 +5278,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Nico, Loïc et Fadi se retrouvent tous les trois dans la même classe de rattachement au collège.",
         "answer": true,
-        "points": 1
+        "points": 1,
+        "correct": true
       },
       {
         "id": "q12",
@@ -4908,7 +5287,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Lors de la partie de pêche, c'est Loïc qui attrape le plus beau poisson.",
         "answer": false,
-        "points": 1
+        "points": 1,
+        "correct": false
       },
       {
         "id": "q13",
@@ -4922,7 +5302,8 @@ window.LIVRES = [
           "Regarder attentivement"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q14",
@@ -4936,7 +5317,8 @@ window.LIVRES = [
           "Avec indifférence"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q15",
@@ -4950,7 +5332,8 @@ window.LIVRES = [
           "Très petit et fin"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q16",
@@ -4963,7 +5346,8 @@ window.LIVRES = [
           "Résumé C : Nico, un collégien passionné de lecture et de basket, trouve une mouche de pêche artificielle au bord d'un lac grâce à son chien Pixels. Après avoir appris grâce au grand-père de son ami Loïc qu'il s'agit d'un objet très bien fabriqué, il rencontre Fadi, un jeune réfugié syrien qui avait perdu cet objet, cadeau du vieux pêcheur. Les trois garçons deviennent amis et Fadi rejoint leur collège à la rentrée. L'histoire se termine par une belle partie de pêche où Fadi réalise la plus belle prise."
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       }
     ]
   },
@@ -4985,7 +5369,8 @@ window.LIVRES = [
           "Bordeaux"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q2",
@@ -4999,7 +5384,8 @@ window.LIVRES = [
           "PowerGirl"
         ],
         "answer": 3,
-        "points": 1
+        "points": 1,
+        "correct": 3
       },
       {
         "id": "q3",
@@ -5013,7 +5399,8 @@ window.LIVRES = [
           "Les réseaux sociaux"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q4",
@@ -5027,7 +5414,8 @@ window.LIVRES = [
           "Agathe"
         ],
         "answer": 3,
-        "points": 1
+        "points": 1,
+        "correct": 3
       },
       {
         "id": "q5",
@@ -5041,7 +5429,8 @@ window.LIVRES = [
           "Elle a beaucoup grandi pendant l'été et son changement physique la fait se sentir différente et mal à l'aise au milieu des autres"
         ],
         "answer": 3,
-        "points": 1
+        "points": 1,
+        "correct": 3
       },
       {
         "id": "q6",
@@ -5055,7 +5444,8 @@ window.LIVRES = [
           "Elle pense que Juliette se moque d'elle comme les autres"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q7",
@@ -5069,7 +5459,8 @@ window.LIVRES = [
           "Que tout le monde peut changer s'il le veut vraiment"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q8",
@@ -5083,7 +5474,8 @@ window.LIVRES = [
           "Elle est invitée à un anniversaire, se fait une vraie amie et reçoit un SMS touchant de Gabriel"
         ],
         "answer": 3,
-        "points": 1
+        "points": 1,
+        "correct": 3
       },
       {
         "id": "q9",
@@ -5091,7 +5483,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Juliette pratique le judo dans son club à Lille.",
         "answer": true,
-        "points": 1
+        "points": 1,
+        "correct": true
       },
       {
         "id": "q10",
@@ -5099,7 +5492,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Marjorie est jalouse de Colombe parce qu'elle est plus grande qu'elle.",
         "answer": false,
-        "points": 1
+        "points": 1,
+        "correct": false
       },
       {
         "id": "q11",
@@ -5107,7 +5501,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Gabriel et Colombe se connaissent depuis le CP.",
         "answer": true,
-        "points": 1
+        "points": 1,
+        "correct": true
       },
       {
         "id": "q12",
@@ -5115,7 +5510,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "À la fin du roman, Colombe n'a toujours jamais parlé à Juliette de ses problèmes avec Marjorie.",
         "answer": false,
-        "points": 1
+        "points": 1,
+        "correct": false
       },
       {
         "id": "q13",
@@ -5129,7 +5525,8 @@ window.LIVRES = [
           "Qui exprime la mauvaise humeur, le mécontentement sur le visage"
         ],
         "answer": 3,
-        "points": 1
+        "points": 1,
+        "correct": 3
       },
       {
         "id": "q14",
@@ -5143,7 +5540,8 @@ window.LIVRES = [
           "Avancer lentement et en hésitant"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q15",
@@ -5157,7 +5555,8 @@ window.LIVRES = [
           "Impolies et irrespectueuses"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q16",
@@ -5170,7 +5569,8 @@ window.LIVRES = [
           "Résumé C : Juliette arrive en cours d'année dans une petite école du sud, loin de Lille et de ses amis. Elle remarque vite que Colombe, une camarade grande et solitaire, est la cible de moqueries répétées. Avec Gabriel, elle prépare un exposé sur le harcèlement scolaire, illustré par l'image d'une feuille froissée. Grâce à cela, le regard de la classe sur Colombe commence à changer, et les deux filles deviennent de vraies amies."
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       }
     ]
   },
@@ -5192,7 +5592,8 @@ window.LIVRES = [
           "Il a été renversé par une voiture en rentrant du collège"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q2",
@@ -5206,7 +5607,8 @@ window.LIVRES = [
           "Un article de journal sur un champion de saut en hauteur"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q3",
@@ -5220,7 +5622,8 @@ window.LIVRES = [
           "Pour lui faire rencontrer un peintre célèbre qui pourrait l'aider financièrement"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q4",
@@ -5234,7 +5637,8 @@ window.LIVRES = [
           "Elle a été championne de ski"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q5",
@@ -5248,7 +5652,8 @@ window.LIVRES = [
           "Ses parents ont décidé à sa place de l'inscrire à distance"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q6",
@@ -5262,7 +5667,8 @@ window.LIVRES = [
           "Sa grand-mère lui a conseillé d'aller voir Luc"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q7",
@@ -5276,7 +5682,8 @@ window.LIVRES = [
           "Il admire tellement ses performances sportives qu'il lui obéit sans réfléchir"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q8",
@@ -5290,7 +5697,8 @@ window.LIVRES = [
           "Il avait peur de retourner dans le salon retrouver Colette"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q9",
@@ -5298,7 +5706,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "C'est Max qui a eu l'idée de marcher sur le câble du filet de tennis.",
         "answer": true,
-        "points": 1
+        "points": 1,
+        "correct": true
       },
       {
         "id": "q10",
@@ -5306,7 +5715,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Patrick Rigaud est un peintre inconnu qui vend ses toiles dans des brocantes.",
         "answer": false,
-        "points": 1
+        "points": 1,
+        "correct": false
       },
       {
         "id": "q11",
@@ -5314,7 +5724,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Luc découvre le magazine caché par ses parents en fouillant lui-même sous le canapé.",
         "answer": true,
-        "points": 1
+        "points": 1,
+        "correct": true
       },
       {
         "id": "q12",
@@ -5322,7 +5733,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "À la fin du roman, Luc a déjà repris l'entraînement de tennis.",
         "answer": false,
-        "points": 1
+        "points": 1,
+        "correct": false
       },
       {
         "id": "q13",
@@ -5336,7 +5748,8 @@ window.LIVRES = [
           "Illustré de nombreuses photos"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q14",
@@ -5350,7 +5763,8 @@ window.LIVRES = [
           "Accepter poliment une remarque"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q15",
@@ -5364,7 +5778,8 @@ window.LIVRES = [
           "Se décourager face aux obstacles"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q16",
@@ -5377,7 +5792,8 @@ window.LIVRES = [
           "Résumé C : Max a causé l'accident volontairement, et Luc lui pardonne dès le lendemain."
         ],
         "answer": 0,
-        "points": 1
+        "points": 1,
+        "correct": 0
       }
     ]
   },
@@ -5399,7 +5815,8 @@ window.LIVRES = [
           "Elle veut aider Mamine à porter ses achats"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q2",
@@ -5413,7 +5830,8 @@ window.LIVRES = [
           "Une photographie de famille en noir et blanc"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q3",
@@ -5427,7 +5845,8 @@ window.LIVRES = [
           "Judith"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q4",
@@ -5441,7 +5860,8 @@ window.LIVRES = [
           "Le grand-père de Sophie"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q5",
@@ -5455,7 +5875,8 @@ window.LIVRES = [
           "Elle a oublié comment écrire son vrai prénom"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q6",
@@ -5469,7 +5890,8 @@ window.LIVRES = [
           "Esther lui a demandé de garder le secret"
         ],
         "answer": 0,
-        "points": 1
+        "points": 1,
+        "correct": 0
       },
       {
         "id": "q7",
@@ -5483,7 +5905,8 @@ window.LIVRES = [
           "Elle souffre d'un malaise cardiaque"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q8",
@@ -5497,7 +5920,8 @@ window.LIVRES = [
           "Que l'arbre a été planté par les parents d'Esther en souvenir de leur fils"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q9",
@@ -5505,7 +5929,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Sophie trouve les lettres dans une enveloppe cachée sous le tapis de sa chambre.",
         "answer": false,
-        "points": 1
+        "points": 1,
+        "correct": false
       },
       {
         "id": "q10",
@@ -5513,7 +5938,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Esther et Samuel sont frère et sœur.",
         "answer": true,
-        "points": 1
+        "points": 1,
+        "correct": true
       },
       {
         "id": "q11",
@@ -5521,7 +5947,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Mamine s'appelle en réalité Sarah Cohen et a été séparée de sa famille pendant la guerre.",
         "answer": true,
-        "points": 1
+        "points": 1,
+        "correct": true
       },
       {
         "id": "q12",
@@ -5529,7 +5956,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Sophie retrouve Samuel grâce aux recherches qu'elle mène au vide-grenier.",
         "answer": false,
-        "points": 1
+        "points": 1,
+        "correct": false
       },
       {
         "id": "q13",
@@ -5543,7 +5971,8 @@ window.LIVRES = [
           "Discuter longuement avec des inconnus"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q14",
@@ -5557,7 +5986,8 @@ window.LIVRES = [
           "Attirer l'attention de manière surprenante"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q15",
@@ -5571,7 +6001,8 @@ window.LIVRES = [
           "Observer attentivement quelque chose au loin"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q16",
@@ -5584,7 +6015,8 @@ window.LIVRES = [
           "Résumé C : Sophie, une adolescente en vacances chez sa grand-mère Mamine, découvre dans un carton acheté au vide-grenier six vieilles lettres écrites par une jeune fille nommée Esther à son frère jumeau Samuel, séparés pendant la Seconde Guerre mondiale. En cherchant à en savoir plus, Sophie apprend que Mamine est en réalité Sarah Cohen, une enfant juive sauvée de la guerre qui a connu Esther dans sa jeunesse. À la fin, une inscription gravée dans l'arbre du jardin révèle que Samuel est revenu et a retrouvé sa sœur."
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       }
     ]
   },
@@ -5606,7 +6038,8 @@ window.LIVRES = [
           "Ils ont fait le même rêve par hasard la même nuit"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q2",
@@ -5620,7 +6053,8 @@ window.LIVRES = [
           "Lucius"
         ],
         "answer": 3,
-        "points": 1
+        "points": 1,
+        "correct": 3
       },
       {
         "id": "q3",
@@ -5634,7 +6068,8 @@ window.LIVRES = [
           "L'éruption du mont Vésuve"
         ],
         "answer": 3,
-        "points": 1
+        "points": 1,
+        "correct": 3
       },
       {
         "id": "q4",
@@ -5648,7 +6083,8 @@ window.LIVRES = [
           "Une lampe de poche"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q5",
@@ -5662,7 +6098,8 @@ window.LIVRES = [
           "Que Maxime est capable d'apprendre s'il en a envie"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q6",
@@ -5676,7 +6113,8 @@ window.LIVRES = [
           "Il ne veut pas qu'elle parle à Lucius"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q7",
@@ -5690,7 +6128,8 @@ window.LIVRES = [
           "Les routes sont endommagées par les secousses et la mer est la seule voie d'évacuation possible"
         ],
         "answer": 3,
-        "points": 1
+        "points": 1,
+        "correct": 3
       },
       {
         "id": "q8",
@@ -5704,7 +6143,8 @@ window.LIVRES = [
           "Que Pompéi aurait pu être sauvée si les Romains avaient écouté les scientifiques"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q9",
@@ -5712,7 +6152,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Dans la Rome antique, Flavie vit dans la même maison que Maxime, mais ses parents y travaillent comme domestiques.",
         "answer": true,
-        "points": 1
+        "points": 1,
+        "correct": true
       },
       {
         "id": "q10",
@@ -5720,7 +6161,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Lucius est un enfant riche qui habite une belle maison près du Colisée.",
         "answer": false,
-        "points": 1
+        "points": 1,
+        "correct": false
       },
       {
         "id": "q11",
@@ -5728,7 +6170,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Maxime et Flavie assistent en secret à un combat de gladiateurs grâce à l'entraîneur de l'école.",
         "answer": true,
-        "points": 1
+        "points": 1,
+        "correct": true
       },
       {
         "id": "q12",
@@ -5736,7 +6179,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "À la fin du roman, Maxime et Flavie refusent de retourner en cours d'histoire.",
         "answer": false,
-        "points": 1
+        "points": 1,
+        "correct": false
       },
       {
         "id": "q13",
@@ -5750,7 +6194,8 @@ window.LIVRES = [
           "Tellement surpris qu'on ne comprend plus ce qui se passe"
         ],
         "answer": 3,
-        "points": 1
+        "points": 1,
+        "correct": 3
       },
       {
         "id": "q14",
@@ -5764,7 +6209,8 @@ window.LIVRES = [
           "Un élève qui ne comprend rien"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q15",
@@ -5778,7 +6224,8 @@ window.LIVRES = [
           "Convaincus qu'ils vont trouver une solution"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q16",
@@ -5791,7 +6238,8 @@ window.LIVRES = [
           "Résumé C : À la fin, Maxime et Flavie reprennent leur attitude habituelle : Maxime recommence à s'ennuyer en cours et Flavie à dessiner sur son cahier."
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       }
     ]
   },
@@ -5813,7 +6261,8 @@ window.LIVRES = [
           "Sophie a de mauvais résultats scolaires et ses parents la punissent"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q2",
@@ -5827,7 +6276,8 @@ window.LIVRES = [
           "Chez son amie Sandra"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q3",
@@ -5841,7 +6291,8 @@ window.LIVRES = [
           "Des photos de sa jeunesse comme championne sportive"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q4",
@@ -5855,7 +6306,8 @@ window.LIVRES = [
           "La fille d'un voisin qui aide au marché pendant les vacances"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q5",
@@ -5869,7 +6321,8 @@ window.LIVRES = [
           "Elle veut faire une surprise à Jacinthe à la rentrée"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q6",
@@ -5883,7 +6336,8 @@ window.LIVRES = [
           "Elle n'a jamais eu les moyens de s'acheter d'autres vêtements"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q7",
@@ -5897,7 +6351,8 @@ window.LIVRES = [
           "Elle a peur de se retrouver seule à la rentrée si Jacinthe l'abandonne"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q8",
@@ -5911,7 +6366,8 @@ window.LIVRES = [
           "Elle annonce à ses abonnés qu'elle ne publiera plus de photos retouchées"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q9",
@@ -5919,7 +6375,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "La famille de Sophie part chaque année au même endroit pour les vacances : un camping dans le sud de la France.",
         "answer": true,
-        "points": 1
+        "points": 1,
+        "correct": true
       },
       {
         "id": "q10",
@@ -5927,7 +6384,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Adélaïde est la mère de Papa, donc la grand-mère de Sophie.",
         "answer": false,
-        "points": 1
+        "points": 1,
+        "correct": false
       },
       {
         "id": "q11",
@@ -5935,7 +6393,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Jacinthe passe ses vacances d'été dans les îles avec ses parents, comme elle le laisse croire.",
         "answer": false,
-        "points": 1
+        "points": 1,
+        "correct": false
       },
       {
         "id": "q12",
@@ -5943,7 +6402,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Sophie finit par apprécier davantage son séjour chez Adélaïde grâce à Esteban et aux amis qu'il lui présente.",
         "answer": true,
-        "points": 1
+        "points": 1,
+        "correct": true
       },
       {
         "id": "q13",
@@ -5957,7 +6417,8 @@ window.LIVRES = [
           "Atteindre un niveau moyen et stable"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q14",
@@ -5971,7 +6432,8 @@ window.LIVRES = [
           "Des histoires racontées pour faire peur"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q15",
@@ -5985,7 +6447,8 @@ window.LIVRES = [
           "Refuser de participer aux conversations des autres"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q16",
@@ -5998,7 +6461,8 @@ window.LIVRES = [
           "Résumé C : Sandra est une nouvelle camarade rencontrée à la rentrée, pas la meilleure amie de Sophie depuis la maternelle."
         ],
         "answer": 0,
-        "points": 1
+        "points": 1,
+        "correct": 0
       }
     ]
   },
@@ -6020,7 +6484,8 @@ window.LIVRES = [
           "Elle trouve que Madeline lit trop tard le soir"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q2",
@@ -6034,7 +6499,8 @@ window.LIVRES = [
           "Écrivaine"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q3",
@@ -6048,7 +6514,8 @@ window.LIVRES = [
           "Elle la rencontre lors d'une sortie scolaire"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q4",
@@ -6062,7 +6529,8 @@ window.LIVRES = [
           "Elles se sont rencontrées dans un club de randonnée"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q5",
@@ -6076,7 +6544,8 @@ window.LIVRES = [
           "Elle pense que cette histoire n'intéresse pas sa fille"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q6",
@@ -6090,7 +6559,8 @@ window.LIVRES = [
           "Elle a perdu ses propres photos et veut les retrouver"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q7",
@@ -6104,7 +6574,8 @@ window.LIVRES = [
           "Marie-Ève ne répond pas à la question sur la photo"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q8",
@@ -6118,7 +6589,8 @@ window.LIVRES = [
           "Que les secrets de famille finissent toujours par faire du mal"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q9",
@@ -6126,7 +6598,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Madeline possède beaucoup de romans dans sa bibliothèque car elle adore lire des histoires.",
         "answer": false,
-        "points": 1
+        "points": 1,
+        "correct": false
       },
       {
         "id": "q10",
@@ -6134,7 +6607,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Lewis est le fils de Marie-Ève.",
         "answer": true,
-        "points": 1
+        "points": 1,
+        "correct": true
       },
       {
         "id": "q11",
@@ -6142,7 +6616,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Maman et Marie-Ève se sont brouillées parce que Marie-Ève a arrêté ses études pour se marier et écrire.",
         "answer": true,
-        "points": 1
+        "points": 1,
+        "correct": true
       },
       {
         "id": "q12",
@@ -6150,7 +6625,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Les retrouvailles entre maman et Marie-Ève ont lieu au Salon du Livre le dimanche.",
         "answer": false,
-        "points": 1
+        "points": 1,
+        "correct": false
       },
       {
         "id": "q13",
@@ -6164,7 +6640,8 @@ window.LIVRES = [
           "Une façon autoritaire de donner des ordres"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q14",
@@ -6178,7 +6655,8 @@ window.LIVRES = [
           "Un changement de programme décidé par les adultes"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q15",
@@ -6192,7 +6670,8 @@ window.LIVRES = [
           "Prudent et méfiant envers les étrangers"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q16",
@@ -6205,7 +6684,8 @@ window.LIVRES = [
           "Résumé C : Madeline remarque que sa mère réagit étrangement en voyant la photo de Marie-Ève sur un roman. Aidée de ses amies Mahé et Alice, elle mène l'enquête et finit par rencontrer Marie-Ève au Salon du Livre, où elle apprend que les deux femmes étaient meilleures amies au lycée avant de se brouiller. Avec la complicité de Lewis, Madeline organise des retrouvailles au Lac de Monteuil et réconcilie les deux anciennes amies."
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       }
     ]
   },
@@ -6227,7 +6707,8 @@ window.LIVRES = [
           "Le porte-plume"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q2",
@@ -6241,7 +6722,8 @@ window.LIVRES = [
           "Instituteur dans le village"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q3",
@@ -6255,7 +6737,8 @@ window.LIVRES = [
           "En voulant manier un pistolet, il a failli tuer son adjudant par accident"
         ],
         "answer": 3,
-        "points": 1
+        "points": 1,
+        "correct": 3
       },
       {
         "id": "q4",
@@ -6269,7 +6752,8 @@ window.LIVRES = [
           "Il a été fait prisonnier et n'est jamais revenu"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q5",
@@ -6283,7 +6767,8 @@ window.LIVRES = [
           "C'est le seul quadrisaïeul dont il connaissait l'histoire"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q6",
@@ -6297,7 +6782,8 @@ window.LIVRES = [
           "Il écrivait et distribuait le courrier, seul lien entre les soldats et leurs familles qui ne savaient parfois pas lire ou écrire"
         ],
         "answer": 3,
-        "points": 1
+        "points": 1,
+        "correct": 3
       },
       {
         "id": "q7",
@@ -6311,7 +6797,8 @@ window.LIVRES = [
           "Il décide de devenir historien après avoir découvert l'histoire de Gaston"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q8",
@@ -6325,7 +6812,8 @@ window.LIVRES = [
           "Il pense que les statistiques ne peuvent pas rendre hommage à Gaston correctement"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q9",
@@ -6333,7 +6821,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Gauthier s'appelle Platon parce qu'il a gagné un combat sur la plage contre deux Russes.",
         "answer": false,
-        "points": 1
+        "points": 1,
+        "correct": false
       },
       {
         "id": "q10",
@@ -6341,7 +6830,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Nona, la grand-mère de Gauthier, l'aide à construire son arbre généalogique grâce à ses recherches sur Internet.",
         "answer": true,
-        "points": 1
+        "points": 1,
+        "correct": true
       },
       {
         "id": "q11",
@@ -6349,7 +6839,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Gaston Semaille a reçu une médaille officielle après la guerre pour tout ce qu'il avait fait.",
         "answer": false,
-        "points": 1
+        "points": 1,
+        "correct": false
       },
       {
         "id": "q12",
@@ -6357,7 +6848,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Gauthier présente son exposé avec beaucoup de stress, comme pour tous ses exposés.",
         "answer": false,
-        "points": 1
+        "points": 1,
+        "correct": false
       },
       {
         "id": "q13",
@@ -6371,7 +6863,8 @@ window.LIVRES = [
           "Bouger ou s'agiter sur sa chaise"
         ],
         "answer": 0,
-        "points": 1
+        "points": 1,
+        "correct": 0
       },
       {
         "id": "q14",
@@ -6385,7 +6878,8 @@ window.LIVRES = [
           "Un mensonge, une histoire inventée de toutes pièces"
         ],
         "answer": 3,
-        "points": 1
+        "points": 1,
+        "correct": 3
       },
       {
         "id": "q15",
@@ -6399,7 +6893,8 @@ window.LIVRES = [
           "Le transporter d'un endroit à un autre"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q16",
@@ -6412,7 +6907,8 @@ window.LIVRES = [
           "Résumé C : Gaston a été officiellement décoré par l'armée belge après la guerre."
         ],
         "answer": 0,
-        "points": 1
+        "points": 1,
+        "correct": 0
       }
     ]
   },
@@ -6434,7 +6930,8 @@ window.LIVRES = [
           "Tèo l'a interpellé dans un couloir alors qu'il s'était trompé d'étage"
         ],
         "answer": 3,
-        "points": 1
+        "points": 1,
+        "correct": 3
       },
       {
         "id": "q2",
@@ -6448,7 +6945,8 @@ window.LIVRES = [
           "Il le porte en souvenir de sa mère Aliya"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q3",
@@ -6462,7 +6960,8 @@ window.LIVRES = [
           "Apprendre à dessiner les papillons avec un vrai artiste"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q4",
@@ -6476,7 +6975,8 @@ window.LIVRES = [
           "Il a gagné plus d'un million d'euros au Lotto grâce aux billets offerts par ses collègues"
         ],
         "answer": 3,
-        "points": 1
+        "points": 1,
+        "correct": 3
       },
       {
         "id": "q5",
@@ -6490,7 +6990,8 @@ window.LIVRES = [
           "Archibald en élève dans son jardin et les offre aux enfants pour les distraire"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q6",
@@ -6504,7 +7005,8 @@ window.LIVRES = [
           "Il a peur de l'avion, mais c'est la promesse faite à Valentine qui lui donne le courage de partir"
         ],
         "answer": 3,
-        "points": 1
+        "points": 1,
+        "correct": 3
       },
       {
         "id": "q7",
@@ -6518,7 +7020,8 @@ window.LIVRES = [
           "Il est maladroit mais toujours sincère dans ses intentions"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q8",
@@ -6532,7 +7035,8 @@ window.LIVRES = [
           "René s'est inscrit avec lui à la formation de cliniclown"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q9",
@@ -6540,7 +7044,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Archibald est venu à l'hôpital pour rendre visite à un ami malade le jour où il rencontre Tèo.",
         "answer": false,
-        "points": 1
+        "points": 1,
+        "correct": false
       },
       {
         "id": "q10",
@@ -6548,7 +7053,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Tèo a grandi en Belgique dans une maison d'accueil appelée « Les Lavandes bleues » après la mort de sa mère.",
         "answer": true,
-        "points": 1
+        "points": 1,
+        "correct": true
       },
       {
         "id": "q11",
@@ -6556,7 +7062,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Valentine guérit grâce à une greffe de moelle osseuse réalisée par sa sœur Capucine, compatible à 100%.",
         "answer": true,
-        "points": 1
+        "points": 1,
+        "correct": true
       },
       {
         "id": "q12",
@@ -6564,7 +7071,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Archibald était déjà cliniclown bénévole avant de rencontrer Tèo et Valentine à l'hôpital.",
         "answer": false,
-        "points": 1
+        "points": 1,
+        "correct": false
       },
       {
         "id": "q13",
@@ -6578,7 +7086,8 @@ window.LIVRES = [
           "Extraordinaire et difficile à expliquer"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q14",
@@ -6592,7 +7101,8 @@ window.LIVRES = [
           "Pleine d'agitation, de rebondissements et d'énergie"
         ],
         "answer": 3,
-        "points": 1
+        "points": 1,
+        "correct": 3
       },
       {
         "id": "q15",
@@ -6606,7 +7116,8 @@ window.LIVRES = [
           "Surprenant et difficile à expliquer"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q16",
@@ -6619,7 +7130,8 @@ window.LIVRES = [
           "Résumé C : Archibald, un homme solitaire qui vient de prendre sa retraite et de gagner plus d'un million d'euros au Lotto, se retrouve par hasard dans le service pédiatrique d'un hôpital. Il y rencontre Tèo et Valentine. Touché par ces deux enfants, il décide d'utiliser sa fortune pour réaliser leurs rêves. Au fil du roman, ce vieil homme discret découvre le bonheur de s'attacher à autrui et s'inscrit à une formation de cliniclown."
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       }
     ]
   },
@@ -6641,7 +7153,8 @@ window.LIVRES = [
           "Il a blessé sa fille Arabella par accident"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q2",
@@ -6655,7 +7168,8 @@ window.LIVRES = [
           "Un jardinier les a aidés à monter avant de garder leur secret"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q3",
@@ -6669,7 +7183,8 @@ window.LIVRES = [
           "Madame Turèche le lui donne gratuitement pour se débarrasser du robot"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q4",
@@ -6683,7 +7198,8 @@ window.LIVRES = [
           "Il pleure en apprenant qu'il a reçu un nouveau matricule"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q5",
@@ -6697,7 +7213,8 @@ window.LIVRES = [
           "Il a oublié d'apporter à manger à Arabella comme il le lui avait promis"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q6",
@@ -6711,7 +7228,8 @@ window.LIVRES = [
           "Il pense que les propriétaires de robots pourraient porter plainte"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q7",
@@ -6725,7 +7243,8 @@ window.LIVRES = [
           "Il fait confiance à son fils Jimmy qui lui a tout raconté en détail"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q8",
@@ -6739,7 +7258,8 @@ window.LIVRES = [
           "La technologie des robots est encore trop imparfaite pour leur donner une vraie personnalité"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q9",
@@ -6747,7 +7267,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Jimmy est venu travailler avec son père parce que ses parents l'ont puni.",
         "answer": false,
-        "points": 1
+        "points": 1,
+        "correct": false
       },
       {
         "id": "q10",
@@ -6755,7 +7276,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "C'est Arabella elle-même qui a ordonné à Alfie de briser la chaine pour s'échapper de la remise.",
         "answer": true,
-        "points": 1
+        "points": 1,
+        "correct": true
       },
       {
         "id": "q11",
@@ -6763,7 +7285,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Quand ses circuits sont remplacés, Alfie perd définitivement sa personnalité et son âme.",
         "answer": false,
-        "points": 1
+        "points": 1,
+        "correct": false
       },
       {
         "id": "q12",
@@ -6771,7 +7294,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "À la fin du roman, Jimmy vit avec Arabella et Alfie dans son premier appartement.",
         "answer": true,
-        "points": 1
+        "points": 1,
+        "correct": true
       },
       {
         "id": "q13",
@@ -6785,7 +7309,8 @@ window.LIVRES = [
           "Capables de comprendre toutes les langues humaines"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q14",
@@ -6799,7 +7324,8 @@ window.LIVRES = [
           "Assise très droite et sur ses gardes"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q15",
@@ -6813,7 +7339,8 @@ window.LIVRES = [
           "Elle est trop occupée pour s'intéresser aux gens qui l'entourent"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q16",
@@ -6826,7 +7353,8 @@ window.LIVRES = [
           "Résumé C : Jimmy accompagne son père chez Madame Turèche qui veut faire détruire son robot Y2832. Le robot s'est enfui avec Arabella. Jimmy et Antonin les retrouvent cachés dans une cabane. Alfie est grillé mais son âme survit au remplacement de ses circuits. Papa vend sa voiture de collection pour adopter Alfie. Onze ans plus tard, Jimmy et Arabella partagent leur vie avec Alfie et son chien Jiminy."
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       }
     ]
   },
@@ -6848,7 +7376,8 @@ window.LIVRES = [
           "Une guerre bactériologique entre plusieurs pays"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q2",
@@ -6862,7 +7391,8 @@ window.LIVRES = [
           "Il avait été hospitalisé à Liège avant l'arrivée du virus"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q3",
@@ -6876,7 +7406,8 @@ window.LIVRES = [
           "Ils trouvent une clé dans une maison et partent avec une Peugeot à boîte automatique"
         ],
         "answer": 3,
-        "points": 1
+        "points": 1,
+        "correct": 3
       },
       {
         "id": "q4",
@@ -6890,7 +7421,8 @@ window.LIVRES = [
           "La robe de sa mère et le pyjama de Léane : elles sont mortes ensemble dans le lit"
         ],
         "answer": 3,
-        "points": 1
+        "points": 1,
+        "correct": 3
       },
       {
         "id": "q5",
@@ -6904,7 +7436,8 @@ window.LIVRES = [
           "Il a peur que Tania refuse d'accueillir un enfant qu'il ne connaît pas"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q6",
@@ -6918,7 +7451,8 @@ window.LIVRES = [
           "Même dans un monde sans règles, il refuse de devenir violent ou de voler, voulant rester un exemple pour sa sœur"
         ],
         "answer": 3,
-        "points": 1
+        "points": 1,
+        "correct": 3
       },
       {
         "id": "q7",
@@ -6932,7 +7466,8 @@ window.LIVRES = [
           "Il peut maintenant partir librement à la ferme sans se sentir coupable"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q8",
@@ -6946,7 +7481,8 @@ window.LIVRES = [
           "L'espoir de reconstruire une vie et une communauté après la destruction du monde tel qu'il existait"
         ],
         "answer": 3,
-        "points": 1
+        "points": 1,
+        "correct": 3
       },
       {
         "id": "q9",
@@ -6954,7 +7490,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Tous les adultes et tous les enfants sont morts à cause du virus.",
         "answer": false,
-        "points": 1
+        "points": 1,
+        "correct": false
       },
       {
         "id": "q10",
@@ -6962,7 +7499,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Noah vote pour aller d'abord à la ferme de Tania et Renaud avant de se rendre à Namur.",
         "answer": false,
-        "points": 1
+        "points": 1,
+        "correct": false
       },
       {
         "id": "q11",
@@ -6970,7 +7508,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Camille est la petite voisine de Léane : elle s'est réfugiée dans la maison de Noah après la mort de ses parents.",
         "answer": true,
-        "points": 1
+        "points": 1,
+        "correct": true
       },
       {
         "id": "q12",
@@ -6978,7 +7517,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "La ferme de Tania et Renaud dispose de panneaux solaires, d'animaux et d'un potager pour assurer la survie du groupe.",
         "answer": true,
-        "points": 1
+        "points": 1,
+        "correct": true
       },
       {
         "id": "q13",
@@ -6992,7 +7532,8 @@ window.LIVRES = [
           "Brusquement et avec une grande force, sans pouvoir l'éviter"
         ],
         "answer": 3,
-        "points": 1
+        "points": 1,
+        "correct": 3
       },
       {
         "id": "q14",
@@ -7006,7 +7547,8 @@ window.LIVRES = [
           "Le signaler aux autorités compétentes"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q15",
@@ -7020,7 +7562,8 @@ window.LIVRES = [
           "Silencieux et parfaitement ordonné"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q16",
@@ -7033,7 +7576,8 @@ window.LIVRES = [
           "Résumé C : Camille est la petite sœur de Noah — c'est ainsi qu'il la présente et qu'elle est réellement."
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       }
     ]
   },
@@ -7055,7 +7599,8 @@ window.LIVRES = [
           "Dans la maison du père Henri"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q2",
@@ -7069,7 +7614,8 @@ window.LIVRES = [
           "En demandant à un enfant du camp de le prévenir"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q3",
@@ -7083,7 +7629,8 @@ window.LIVRES = [
           "Le père de Django et chef du campement"
         ],
         "answer": 3,
-        "points": 1
+        "points": 1,
+        "correct": 3
       },
       {
         "id": "q4",
@@ -7097,7 +7644,8 @@ window.LIVRES = [
           "Un groupe de gitans d'un autre camp"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q5",
@@ -7111,7 +7659,8 @@ window.LIVRES = [
           "Parce qu'elle a peur des romanichels arrivés dans le village"
         ],
         "answer": 3,
-        "points": 1
+        "points": 1,
+        "correct": 3
       },
       {
         "id": "q6",
@@ -7125,7 +7674,8 @@ window.LIVRES = [
           "Pour marquer l'emplacement de la cabane dans le jardin"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q7",
@@ -7139,7 +7689,8 @@ window.LIVRES = [
           "Parce que la lettre de Django était mal écrite et confuse"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q8",
@@ -7153,7 +7704,8 @@ window.LIVRES = [
           "Les étoiles les plus brillantes du ciel"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q9",
@@ -7161,7 +7713,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Grand-père pense, comme grand-mère, que les enfants ne doivent pas sortir à cause des romanichels.",
         "answer": false,
-        "points": 1
+        "points": 1,
+        "correct": false
       },
       {
         "id": "q10",
@@ -7169,7 +7722,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Django a déjà vécu dans une maison, dans un internat, pour aller à l'école.",
         "answer": true,
-        "points": 1
+        "points": 1,
+        "correct": true
       },
       {
         "id": "q11",
@@ -7177,7 +7731,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "Nicolas raconte à grand-mère qu'il a passé la nuit au camp des gitans.",
         "answer": false,
-        "points": 1
+        "points": 1,
+        "correct": false
       },
       {
         "id": "q12",
@@ -7185,7 +7740,8 @@ window.LIVRES = [
         "type": "tf",
         "text": "À la fin de l'histoire, Nicolas revoit Django quelques années plus tard.",
         "answer": false,
-        "points": 1
+        "points": 1,
+        "correct": false
       },
       {
         "id": "q13",
@@ -7199,7 +7755,8 @@ window.LIVRES = [
           "Très contents et soulagés"
         ],
         "answer": 2,
-        "points": 1
+        "points": 1,
+        "correct": 2
       },
       {
         "id": "q14",
@@ -7213,7 +7770,8 @@ window.LIVRES = [
           "En parlant tout bas, de façon peu compréhensible"
         ],
         "answer": 3,
-        "points": 1
+        "points": 1,
+        "correct": 3
       },
       {
         "id": "q15",
@@ -7227,7 +7785,8 @@ window.LIVRES = [
           "Un groupe de personnes qui se disputent bruyamment"
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       },
       {
         "id": "q16",
@@ -7240,7 +7799,8 @@ window.LIVRES = [
           "Résumé C : Django glisse une lettre sous la porte de la maison. La fête est triste. Nicolas avoue à grand-mère qu'il était au camp cette nuit-là."
         ],
         "answer": 1,
-        "points": 1
+        "points": 1,
+        "correct": 1
       }
     ]
   },
@@ -7263,7 +7823,8 @@ window.LIVRES = [
         ],
         "answer": 1,
         "points": 1,
-        "explanation": "Paul constate que Salomé a grandi et passe tout son temps avec ses copines. À ses yeux, il n'est plus qu'un petit et il craint de passer une semaine « catastrophique d'ennui »."
+        "explanation": "Paul constate que Salomé a grandi et passe tout son temps avec ses copines. À ses yeux, il n'est plus qu'un petit et il craint de passer une semaine « catastrophique d'ennui ».",
+        "correct": 1
       },
       {
         "id": "q2",
@@ -7278,7 +7839,8 @@ window.LIVRES = [
         ],
         "answer": 1,
         "points": 1,
-        "explanation": "« Super Paulo » est l'alter ego héroïque et plein d'assurance que Paul convoque intérieurement pour surmonter sa gêne, son jeune âge et sa timidité."
+        "explanation": "« Super Paulo » est l'alter ego héroïque et plein d'assurance que Paul convoque intérieurement pour surmonter sa gêne, son jeune âge et sa timidité.",
+        "correct": 1
       },
       {
         "id": "q3",
@@ -7293,7 +7855,8 @@ window.LIVRES = [
         ],
         "answer": 1,
         "points": 1,
-        "explanation": "Paul hisse Zélie sur le toit du cabanon numéro 8 pour lui offrir une vue panoramique sur les reflets de la mer et les lumières de la ville, tout en partageant deux glaces."
+        "explanation": "Paul hisse Zélie sur le toit du cabanon numéro 8 pour lui offrir une vue panoramique sur les reflets de la mer et les lumières de la ville, tout en partageant deux glaces.",
+        "correct": 1
       },
       {
         "id": "q4",
@@ -7308,7 +7871,8 @@ window.LIVRES = [
         ],
         "answer": 2,
         "points": 1,
-        "explanation": "Lorenzo intervient en disant « Laisse-le, c'est ton cousin, il fait pas de mal », suivi de Zélie qui l'invite chaleureusement à rester avec eux."
+        "explanation": "Lorenzo intervient en disant « Laisse-le, c'est ton cousin, il fait pas de mal », suivi de Zélie qui l'invite chaleureusement à rester avec eux.",
+        "correct": 2
       },
       {
         "id": "q5",
@@ -7323,7 +7887,8 @@ window.LIVRES = [
         ],
         "answer": 1,
         "points": 1,
-        "explanation": "Zélie panique à l'idée d'être vue en train de jouer avec le « petit cousin » et fuit sur sa serviette pour sauver les apparences et préserver son image de fille « cool »."
+        "explanation": "Zélie panique à l'idée d'être vue en train de jouer avec le « petit cousin » et fuit sur sa serviette pour sauver les apparences et préserver son image de fille « cool ».",
+        "correct": 1
       },
       {
         "id": "q6",
@@ -7338,7 +7903,8 @@ window.LIVRES = [
         ],
         "answer": 1,
         "points": 1,
-        "explanation": "Zélie avoue à Paul qu'elle a le même âge que lui et qu'elle joue les « suiveuses » auprès des grands uniquement par crainte de se retrouver seule pendant les vacances."
+        "explanation": "Zélie avoue à Paul qu'elle a le même âge que lui et qu'elle joue les « suiveuses » auprès des grands uniquement par crainte de se retrouver seule pendant les vacances.",
+        "correct": 1
       },
       {
         "id": "q7",
@@ -7353,7 +7919,8 @@ window.LIVRES = [
         ],
         "answer": 1,
         "points": 1,
-        "explanation": "Paul court demander à sa mère la photo de lui qu'elle garde dans son portefeuille et la tend à Zélie en lui disant : « Comme ça, on est à égalité »."
+        "explanation": "Paul court demander à sa mère la photo de lui qu'elle garde dans son portefeuille et la tend à Zélie en lui disant : « Comme ça, on est à égalité ».",
+        "correct": 1
       },
       {
         "id": "q8",
@@ -7368,7 +7935,8 @@ window.LIVRES = [
         ],
         "answer": 1,
         "points": 1,
-        "explanation": "Zélie salue Paul au pied du cabanon 10 pour lui rappeler leur jeu et leur promesse : leur lien et leurs lettres continueront bien après ces vacances."
+        "explanation": "Zélie salue Paul au pied du cabanon 10 pour lui rappeler leur jeu et leur promesse : leur lien et leurs lettres continueront bien après ces vacances.",
+        "correct": 1
       },
       {
         "id": "q9",
@@ -7377,7 +7945,8 @@ window.LIVRES = [
         "text": "Paul et sa cousine Salomé dorment dans le même camping-car avec leurs parents respectifs.",
         "answer": false,
         "points": 1,
-        "explanation": "C'est FAUX. Les adultes dorment dans les camping-cars, tandis que Paul et Salomé ont chacun leur propre tente sur l'emplacement 359."
+        "explanation": "C'est FAUX. Les adultes dorment dans les camping-cars, tandis que Paul et Salomé ont chacun leur propre tente sur l'emplacement 359.",
+        "correct": false
       },
       {
         "id": "q10",
@@ -7386,7 +7955,8 @@ window.LIVRES = [
         "text": "Zélie et Louison sont sœurs et résident dans un mobil-home situé dans le camping.",
         "answer": true,
         "points": 1,
-        "explanation": "C'est VRAI. Paul observe qu'elles ont un net air de famille et rejoignent le même mobil-home."
+        "explanation": "C'est VRAI. Paul observe qu'elles ont un net air de famille et rejoignent le même mobil-home.",
+        "correct": true
       },
       {
         "id": "q11",
@@ -7395,7 +7965,8 @@ window.LIVRES = [
         "text": "Lors de la soirée disco du vendredi, Paul refuse de danser le slow avec Zélie par peur du ridicule.",
         "answer": false,
         "points": 1,
-        "explanation": "C'est FAUX. Au contraire, Paul saisit cette occasion pour inviter Zélie et prouver aux autres qu'il ne se dégonfle pas."
+        "explanation": "C'est FAUX. Au contraire, Paul saisit cette occasion pour inviter Zélie et prouver aux autres qu'il ne se dégonfle pas.",
+        "correct": false
       },
       {
         "id": "q12",
@@ -7404,7 +7975,8 @@ window.LIVRES = [
         "text": "À la fin de l'histoire, Paul a gardé l'habitude de poser des grains de sel sur ses lèvres pour retrouver le souvenir de Zélie.",
         "answer": true,
         "points": 1,
-        "explanation": "C'est VRAI. Ce rituel lui rappelle le goût salé de leurs baisers, l'écume de la mer et leur dessert partagé sur le toit du cabanon."
+        "explanation": "C'est VRAI. Ce rituel lui rappelle le goût salé de leurs baisers, l'écume de la mer et leur dessert partagé sur le toit du cabanon.",
+        "correct": true
       },
       {
         "id": "q13",
@@ -7419,7 +7991,8 @@ window.LIVRES = [
         ],
         "answer": 1,
         "points": 1,
-        "explanation": "« Prendre la tangente » signifie filer ou s'échapper rapidement et discrètement pour éviter une contrainte (ici, faire la vaisselle ou devoir emmener son cousin)."
+        "explanation": "« Prendre la tangente » signifie filer ou s'échapper rapidement et discrètement pour éviter une contrainte (ici, faire la vaisselle ou devoir emmener son cousin).",
+        "correct": 1
       },
       {
         "id": "q14",
@@ -7434,7 +8007,8 @@ window.LIVRES = [
         ],
         "answer": 1,
         "points": 1,
-        "explanation": "Un « suiveur » est une personne qui se met en retrait et adopte l'attitude des membres dominants d'un groupe pour ne pas être rejetée."
+        "explanation": "Un « suiveur » est une personne qui se met en retrait et adopte l'attitude des membres dominants d'un groupe pour ne pas être rejetée.",
+        "correct": 1
       },
       {
         "id": "q15",
@@ -7449,7 +8023,8 @@ window.LIVRES = [
         ],
         "answer": 1,
         "points": 1,
-        "explanation": "« S'atteler à » une tâche signifie s'y engager pleinement et commencer à y travailler avec détermination."
+        "explanation": "« S'atteler à » une tâche signifie s'y engager pleinement et commencer à y travailler avec détermination.",
+        "correct": 1
       },
       {
         "id": "q16",
@@ -7463,7 +8038,8 @@ window.LIVRES = [
         ],
         "answer": 1,
         "points": 1,
-        "explanation": "Le Résumé B retrace parfaitement l'intrigue, les personnages (Paul, Salomé, Zélie), le cadre (camping en bord de mer), les thèmes clés (peur du regard des autres, passage à l'adolescence) et le dénouement émouvant."
+        "explanation": "Le Résumé B retrace parfaitement l'intrigue, les personnages (Paul, Salomé, Zélie), le cadre (camping en bord de mer), les thèmes clés (peur du regard des autres, passage à l'adolescence) et le dénouement émouvant.",
+        "correct": 1
       }
     ]
   },
@@ -7486,7 +8062,8 @@ window.LIVRES = [
         ],
         "answer": 1,
         "points": 1,
-        "explanation": "Lili a commis l'imprudence de faire pousser une plante par magie dans la serre ; deux élèves l'ont vue parler à la plante et ont répandu la rumeur qu'elle était folle ou sorcière."
+        "explanation": "Lili a commis l'imprudence de faire pousser une plante par magie dans la serre ; deux élèves l'ont vue parler à la plante et ont répandu la rumeur qu'elle était folle ou sorcière.",
+        "correct": 1
       },
       {
         "id": "q2",
@@ -7501,7 +8078,8 @@ window.LIVRES = [
         ],
         "answer": 1,
         "points": 1,
-        "explanation": "Pour empêcher le directeur et la conseillère d'abîmer les fleurs lors de leurs rendez-vous secrets, Lili a préparé une potion provoquant une crise d'urticaire. Pris de panique, le directeur a décrété que la serre était contaminée et l'a fait détruire."
+        "explanation": "Pour empêcher le directeur et la conseillère d'abîmer les fleurs lors de leurs rendez-vous secrets, Lili a préparé une potion provoquant une crise d'urticaire. Pris de panique, le directeur a décrété que la serre était contaminée et l'a fait détruire.",
+        "correct": 1
       },
       {
         "id": "q3",
@@ -7516,7 +8094,8 @@ window.LIVRES = [
         ],
         "answer": 2,
         "points": 1,
-        "explanation": "Lili explique que la dernière personne de sa lignée à posséder ce pouvoir de communion végétale était son arrière-grand-mère Agatha."
+        "explanation": "Lili explique que la dernière personne de sa lignée à posséder ce pouvoir de communion végétale était son arrière-grand-mère Agatha.",
+        "correct": 2
       },
       {
         "id": "q4",
@@ -7531,7 +8110,8 @@ window.LIVRES = [
         ],
         "answer": 1,
         "points": 1,
-        "explanation": "Drago rejette les pratiques néfastes et orgueilleuses de sa famille de mages noirs et s'est installé à l'écart pour maîtriser ses nouveaux pouvoirs en toute liberté."
+        "explanation": "Drago rejette les pratiques néfastes et orgueilleuses de sa famille de mages noirs et s'est installé à l'écart pour maîtriser ses nouveaux pouvoirs en toute liberté.",
+        "correct": 1
       },
       {
         "id": "q5",
@@ -7546,7 +8126,8 @@ window.LIVRES = [
         ],
         "answer": 1,
         "points": 1,
-        "explanation": "Obsédé par la dangerosité des plantes, le directeur veut raser les arbres pour installer un golf et un terrain de paintball."
+        "explanation": "Obsédé par la dangerosité des plantes, le directeur veut raser les arbres pour installer un golf et un terrain de paintball.",
+        "correct": 1
       },
       {
         "id": "q6",
@@ -7561,7 +8142,8 @@ window.LIVRES = [
         ],
         "answer": 1,
         "points": 1,
-        "explanation": "Lili fait appel aux arbres de la forêt : de puissantes racines bloquent les roues et des branches tordent les cabines, rendant les machines inutilisables pour le lendemain matin."
+        "explanation": "Lili fait appel aux arbres de la forêt : de puissantes racines bloquent les roues et des branches tordent les cabines, rendant les machines inutilisables pour le lendemain matin.",
+        "correct": 1
       },
       {
         "id": "q7",
@@ -7576,7 +8158,8 @@ window.LIVRES = [
         ],
         "answer": 1,
         "points": 1,
-        "explanation": "Le notaire démontre que la famille Gregoriu est propriétaire du terrain loué à la ville et que le directeur n'a aucun droit légal de toucher aux arbres du « jardin » de Drago."
+        "explanation": "Le notaire démontre que la famille Gregoriu est propriétaire du terrain loué à la ville et que le directeur n'a aucun droit légal de toucher aux arbres du « jardin » de Drago.",
+        "correct": 1
       },
       {
         "id": "q8",
@@ -7591,7 +8174,8 @@ window.LIVRES = [
         ],
         "answer": 1,
         "points": 1,
-        "explanation": "Le directeur a fait une réaction toxique au traitement médical prescrit à haute dose contre sa crise d'urticaire initiale, ce qui a déclenché son obsession maladive."
+        "explanation": "Le directeur a fait une réaction toxique au traitement médical prescrit à haute dose contre sa crise d'urticaire initiale, ce qui a déclenché son obsession maladive.",
+        "correct": 1
       },
       {
         "id": "q9",
@@ -7600,7 +8184,8 @@ window.LIVRES = [
         "text": "Lorsque Drago lui révèle qu'il est un mage noir, Lili reste très calme et lui propose immédiatement son aide.",
         "answer": false,
         "points": 1,
-        "explanation": "C'est FAUX. Terrifiée à l'idée de faire face à un mage noir réputé dangereux, Lili ramasse ses affaires et tente de s'enfuir immédiatement."
+        "explanation": "C'est FAUX. Terrifiée à l'idée de faire face à un mage noir réputé dangereux, Lili ramasse ses affaires et tente de s'enfuir immédiatement.",
+        "correct": false
       },
       {
         "id": "q10",
@@ -7609,7 +8194,8 @@ window.LIVRES = [
         "text": "Drago a utilisé ses talents d'hypnose pour effacer le souvenir de l'altercation dans l'esprit des trois brutes du collège.",
         "answer": true,
         "points": 1,
-        "explanation": "C'est VRAI. C'est grâce à ses dons d'hypnose que les trois garçons n'ont jamais reparlé de leur tentative de saccage ni dénoncé Lili."
+        "explanation": "C'est VRAI. C'est grâce à ses dons d'hypnose que les trois garçons n'ont jamais reparlé de leur tentative de saccage ni dénoncé Lili.",
+        "correct": true
       },
       {
         "id": "q11",
@@ -7618,7 +8204,8 @@ window.LIVRES = [
         "text": "À la fin de l'aventure, le directeur est hospitalisé d'urgence et la reconstruction de la serre pédagogique est programmée.",
         "answer": true,
         "points": 1,
-        "explanation": "C'est VRAI. Le directeur est pris en charge par les médecins et l'école envisage de rebâtir la serre tant attendue par Lili."
+        "explanation": "C'est VRAI. Le directeur est pris en charge par les médecins et l'école envisage de rebâtir la serre tant attendue par Lili.",
+        "correct": true
       },
       {
         "id": "q12",
@@ -7627,7 +8214,8 @@ window.LIVRES = [
         "text": "Une fois la forêt sauvée, Lili décide d'arrêter totalement de s'occuper du jardin de la maison de Miruna.",
         "answer": false,
         "points": 1,
-        "explanation": "C'est FAUX. Lili demande expressément à Drago l'autorisation de continuer à venir soigner bénévolement les plantes chaque soir."
+        "explanation": "C'est FAUX. Lili demande expressément à Drago l'autorisation de continuer à venir soigner bénévolement les plantes chaque soir.",
+        "correct": false
       },
       {
         "id": "q13",
@@ -7642,7 +8230,8 @@ window.LIVRES = [
         ],
         "answer": 1,
         "points": 1,
-        "explanation": "Un « traînard » est une personne qui traîne, avance lentement ou s'attarde loin derrière le groupe."
+        "explanation": "Un « traînard » est une personne qui traîne, avance lentement ou s'attarde loin derrière le groupe.",
+        "correct": 1
       },
       {
         "id": "q14",
@@ -7657,7 +8246,8 @@ window.LIVRES = [
         ],
         "answer": 1,
         "points": 1,
-        "explanation": "Un « nigaud » est un individu niais, maladroit ou stupide (utilisé ici pour désigner les trois élèves moqueurs qui se dégonflent)."
+        "explanation": "Un « nigaud » est un individu niais, maladroit ou stupide (utilisé ici pour désigner les trois élèves moqueurs qui se dégonflent).",
+        "correct": 1
       },
       {
         "id": "q15",
@@ -7672,7 +8262,8 @@ window.LIVRES = [
         ],
         "answer": 1,
         "points": 1,
-        "explanation": "La « démence » est un trouble psychique majeur caractérisé par une perte de la raison, du discernement et du sens des réalités."
+        "explanation": "La « démence » est un trouble psychique majeur caractérisé par une perte de la raison, du discernement et du sens des réalités.",
+        "correct": 1
       },
       {
         "id": "q16",
@@ -7686,7 +8277,8 @@ window.LIVRES = [
         ],
         "answer": 0,
         "points": 1,
-        "explanation": "Le Résumé A résume fidèlement toute l'intrigue : le don de Lili, sa rencontre avec Drago, le sabotage végétal des machines, l'intervention juridique du notaire et la résolution finale."
+        "explanation": "Le Résumé A résume fidèlement toute l'intrigue : le don de Lili, sa rencontre avec Drago, le sabotage végétal des machines, l'intervention juridique du notaire et la résolution finale.",
+        "correct": 0
       }
     ]
   },
@@ -8530,27 +9122,27 @@ window.LIVRES = [
         "type": "mcq",
         "text": "Quelle situation agace particulièrement Liam au tout début de l'histoire ?",
         "options": [
-          "Ses parents lui demandent de ranger sa chambre de fond en comble",
           "Sa mère lui demande d'arrêter sa console après seulement trente minutes de jeu pour mettre la table",
           "Son professeur d'anglais lui a donné une punition injuste",
+          "Ses parents lui demandent de ranger sa chambre de fond en comble",
           "Sa connexion internet est tombée en panne pendant une partie en ligne"
         ],
-        "correct": 1,
+        "correct": 0,
         "explanation": "Liam trouve très frustrant d'être limité à seulement une demi-heure de jeux vidéo par jour lorsque sa mère l'interrompt pour mettre la table."
       },
       {
         "id": "q2",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Quel événement extraordinaire survient lorsque Liam se retrouve projeté dans le passé ?",
+        "text": "À quelle date précise Liam se retrouve-t-il mystérieusement projeté dans le passé ?",
         "options": [
-          "Il se réveille à l'époque préhistorique parmi les hommes des cavernes",
-          "Il atterrit en pleine année 1984 et découvre le quotidien de l'époque de ses parents",
-          "Il est téléporté dans le futur au milieu de voitures volantes",
-          "Il devient le héros virtuel d'un nouveau jeu vidéo sur sa console"
+          "Le lundi 14 juillet 1990",
+          "Le jeudi 17 avril 1986",
+          "Le mardi 1er septembre 1980",
+          "Le samedi 24 décembre 1999"
         ],
         "correct": 1,
-        "explanation": "Liam est mystérieusement propulsé dans les années 1980 (1984), une époque sans internet ni smartphones où ses parents étaient adolescents."
+        "explanation": "Le texte indique clairement que Liam est transporté dans le temps jusqu'au jeudi 17 avril 1986, à l'époque de la jeunesse de ses parents."
       },
       {
         "id": "q3",
@@ -8558,26 +9150,26 @@ window.LIVRES = [
         "type": "mcq",
         "text": "Quels changements matériels frappent immédiatement Liam dans la maison des années 80 ?",
         "options": [
+          "Des robots ménagers s'occupent de toutes les corvées de cuisine",
           "Le salon est entièrement vide et repeint en noir",
           "Le home cinéma a été remplacé par une platine vinyle et les volets électriques par de vieux volets en bois",
-          "Des robots ménagers s'occupent de toutes les corvées de cuisine",
           "Il n'y a plus aucune source d'électricité ni de lumière"
         ],
-        "correct": 1,
-        "explanation": "Liam constate que tous les appareils modernes ont disparu au profit d'objets d'époque : platine pour disques vinyles, téléphone fixe à cadran et volets manuels."
+        "correct": 2,
+        "explanation": "Liam constate que les appareils modernes ont disparu au profit d'objets d'époque : platine pour disques vinyles, téléphone fixe à cadran et volets manuels."
       },
       {
         "id": "q4",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Comment les adolescents des années 80 réagissent-ils quand Liam leur parle de smartphones ou d'internet ?",
+        "text": "Comment les adolescents de 1986 réagissent-ils quand Liam leur parle de smartphones ou d'internet ?",
         "options": [
-          "Ils le félicitent pour ses inventions géniales et le croient aussitôt",
-          "Ils le regardent avec incompréhension et le prennent pour un doux rêveur qui raconte des bêtises",
+          "Ils lui montrent qu'ils possèdent déjà des tablettes tactiles",
           "Ils appellent immédiatement la police pour l'arrêter",
-          "Ils lui montrent qu'ils possèdent déjà des tablettes tactiles"
+          "Ils le félicitent pour ses inventions géniales et le croient aussitôt",
+          "Ils le regardent avec incompréhension et le prennent pour un rêveur qui raconte des bêtises"
         ],
-        "correct": 1,
+        "correct": 3,
         "explanation": "Dans les années 80, ces technologies n'existaient pas encore ; ses explications paraissent donc totalement loufoques et incompréhensibles pour ses camarades."
       },
       {
@@ -8586,61 +9178,61 @@ window.LIVRES = [
         "type": "mcq",
         "text": "Quel moyen de transport pétaradant les parents de Liam utilisent-ils à cette époque ?",
         "options": [
-          "Une trottinette électrique flambant neuve",
           "Une mobylette bruyante sur laquelle ils partent en fanfare",
+          "Une trottinette électrique flambant neuve",
           "Une calèche tirée par deux chevaux blancs",
           "Une voiture de sport décapotable rouge"
         ],
-        "correct": 1,
+        "correct": 0,
         "explanation": "Dans les années 80, la mobylette était le véhicule emblématique des jeunes, réputé pour son bruit de moteur pétaradant."
       },
       {
         "id": "q6",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Quelle découverte positive Liam fait-il malgré l'absence d'écrans et de technologie moderne ?",
+        "text": "Face aux réalités de l'année 1986, que découvre Liam sur la jeunesse de ses parents ?",
         "options": [
-          "Qu'on s'ennuie tellement qu'il vaut mieux dormir toute la journée",
-          "Que les jeunes partageaient de vrais moments d'amitié dehors, des rires et des jeux collectifs simples",
-          "Que la nourriture des années 80 était bien meilleure que celle d'aujourd'hui",
-          "Que l'école était facultative et qu'il n'y avait aucun devoir"
+          "Qu'ils ne travaillaient jamais et passaient leurs journées à la plage",
+          "Qu'ils vivaient déjà un quotidien rempli de devoirs, d'autonomie et de responsabilités sans l'assistance des écrans",
+          "Qu'ils possédaient des consoles de jeux bien plus puissantes que les siennes",
+          "Qu'ils ne parlaient aucune langue étrangère"
         ],
         "correct": 1,
-        "explanation": "Liam réalise que la vie sans écran permettait de tisser de véritables liens d'amitié, de discuter en face à face et de vivre des aventures en plein air."
+        "explanation": "Liam découvre la réalité du quotidien de l'époque, faite de cours exigeants, de mobylette et de responsabilités personnelles bien réelles."
       },
       {
         "id": "q7",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Comment se déroule le retour de Liam dans sa véritable époque contemporaine ?",
+        "text": "Où Liam reprend-il ses esprits lors de son retour dans son époque actuelle ?",
         "options": [
-          "Il reste bloqué dans les années 80 et doit refaire toute sa scolarité",
-          "Il réintègre son présent, heureux de retrouver son confort moderne mais avec un regard neuf",
-          "Il revient dans le présent mais a oublié l'intégralité de sa famille",
-          "Une machine à voyager dans le temps vient le chercher sur la place du village"
+          "Dans la cour de récréation de son collège",
+          "Au sommet d'un arbre dans son jardin",
+          "Sur le sol de la cuisine avant de regagner son lit",
+          "Sur la banquette arrière de la voiture de ses parents"
         ],
-        "correct": 1,
-        "explanation": "Liam revient dans son lit à notre époque, soulagé de retrouver son univers tout en comprenant enfin la jeunesse de ses parents."
+        "correct": 2,
+        "explanation": "Liam se réveille sur le carrelage de la cuisine, soulagé de retrouver son présent, avant d'aller se coucher dans son lit."
       },
       {
         "id": "q8",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Quelle leçon essentielle Liam tire-t-il de son voyage dans le temps ?",
+        "text": "Quelle prise de conscience essentielle ce saut dans le temps apporte-t-il à Liam ?",
         "options": [
-          "Qu'il faut jeter tous les téléphones portables et vivre sans électricité",
-          "Que la jeunesse de ses parents avait du charme et qu'il est précieux de savoir lever les yeux des écrans",
-          "Qu'il doit passer au moins huit heures par jour devant sa console",
-          "Que les années 80 étaient une époque sombre sans aucun intérêt"
+          "Qu'il doit passer au moins dix heures par jour sur sa console de jeux",
+          "Qu'il ne faut plus jamais adresser la parole à ses parents",
+          "Qu'il faut jeter tous les téléphones portables de la maison",
+          "Qu'il comprend mieux l'histoire de ses parents et la valeur de lever les yeux de ses écrans"
         ],
-        "correct": 1,
-        "explanation": "Liam comprend que la vie de ses parents n'était pas ennuyeuse et que les relations humaines directes valent bien plus que des heures passées sur un écran."
+        "correct": 3,
+        "explanation": "Liam comprend enfin les anecdotes de ses parents, réalise la valeur des relations directes et relativise sa frustration sur le temps d'écran."
       },
       {
         "id": "q9",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Au début de l'histoire, Liam est un passionné de jeux vidéo qui a du mal à lâcher sa console.",
+        "text": "Au début de l'histoire, Liam est un passionné de jeux vidéo qui a du mal à éteindre sa console.",
         "correct": true,
         "explanation": "VRAI : Liam adore jouer sur sa console et rechigne à s'arrêter lorsque sa mère l'appelle."
       },
@@ -8656,17 +9248,17 @@ window.LIVRES = [
         "id": "q11",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Les disques vinyles et les cassettes audio étaient les principaux supports pour écouter de la musique dans les années 80.",
+        "text": "Les disques vinyles et les cassettes audio étaient les principaux supports pour écouter de la musique en 1986.",
         "correct": true,
-        "explanation": "VRAI : Avant l'apparition des fichiers numériques et du streaming, la musique s'écoutait sur disques vinyles ou cassettes."
+        "explanation": "VRAI : Avant l'apparition du streaming et des fichiers numériques, la musique s'écoutait sur disques vinyles ou cassettes."
       },
       {
         "id": "q12",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "À la fin de l'histoire, Liam refuse de rentrer chez lui et choisit de s'installer définitivement en 1984.",
+        "text": "À la fin de l'histoire, Liam refuse de revenir dans le présent et choisit de s'installer définitivement en 1986.",
         "correct": false,
-        "explanation": "FAUX : Liam est très heureux de regagner sa chambre et son lit à notre époque contemporaine."
+        "explanation": "FAUX : Liam est très heureux de regagner son époque contemporaine et son lit après cette folle aventure."
       },
       {
         "id": "q13",
@@ -8674,12 +9266,12 @@ window.LIVRES = [
         "type": "mcq",
         "text": "Dans la phrase : « Je ne vois pas en quoi être limité à une demi-heure de console par jour est une chance. », que désigne le mot « console » dans ce contexte ?",
         "options": [
-          "Un meuble d'entrée sur lequel on dépose ses clés",
           "Un appareil électronique spécialement conçu pour faire fonctionner des jeux vidéo",
+          "Une table décorative d'entrée",
           "Une boîte à outils utilisée par les mécaniciens",
           "Un instrument de musique à cordes frottées"
         ],
-        "correct": 1,
+        "correct": 0,
         "explanation": "Une console de jeux est un appareil électronique connecté à un écran permettant de jouer à des jeux vidéo."
       },
       {
@@ -8702,12 +9294,12 @@ window.LIVRES = [
         "type": "mcq",
         "text": "Dans la phrase : « Notre home cinéma a été remplacé par une platine à côté de laquelle s'amoncèle une quantité impressionnante de vinyles... », que sont des « vinyles » ?",
         "options": [
+          "Des bandes dessinées cartonnées de collection",
+          "Des cassettes vidéo pour magnétoscope",
           "Des disques noirs microsillons servant à enregistrer et écouter de la musique",
-          "Des cassettes vidéo magnétiques pour magnétoscope",
-          "Des affiches de cinéma cartonnées",
-          "Des bandes dessinées de collection"
+          "Des affiches de cinéma en papier"
         ],
-        "correct": 0,
+        "correct": 2,
         "explanation": "Le disque vinyle est un disque phonographique noir en plastique sur lequel la musique est gravée en sillons."
       },
       {
@@ -8717,11 +9309,11 @@ window.LIVRES = [
         "text": "Quel résumé correspond le mieux à l'intrigue du récit « Back to the 80's ! » ?",
         "options": [
           "Résumé A : Passionné d'informatique, Liam invente une console révolutionnaire dans son garage. Ses amis des années 80 viennent le féliciter dans le futur et participent avec lui au grand championnat du monde de jeux d'arcade.",
-          "Résumé B : Frustré par les limites de temps d'écran imposées par ses parents, Liam est projeté dans l'année 1984. En découvrant la jeunesse de ses parents sans technologie moderne, il comprend le charme de cette époque et réapprend la valeur des échanges réels.",
+          "Résumé B : Frustré par les limites de temps d'écran imposées par ses parents, Liam est projeté en avril 1986. En découvrant le quotidien de ses parents adolescents sans technologie moderne, il comprend la réalité de leur jeunesse et pose un regard neuf sur son propre confort.",
           "Résumé C : Après avoir réparé une vieille mobylette trouvée dans sa cave, Liam part explorer les routes de campagne avec ses camarades de classe. Ensemble, ils créent un groupe de musique rock et enregistrent leur premier disque vinyle."
         ],
         "correct": 1,
-        "explanation": "Le résumé B synthétise parfaitement l'aventure : la frustration initiale de Liam, son saut temporel en 1984, la découverte de la vie sans écrans et sa prise de conscience finale."
+        "explanation": "Le résumé B synthétise parfaitement l'aventure : la frustration initiale de Liam, son saut temporel en 1986, la découverte de la vie à cette époque et sa prise de conscience finale."
       }
     ]
   },
@@ -8737,12 +9329,12 @@ window.LIVRES = [
         "type": "mcq",
         "text": "Quelle mauvaise surprise attend Melchior, Tifenn et Rachid un lundi d'octobre au collège ?",
         "options": [
+          "Leur club de roller a été annulé par la direction",
           "Leur professeur principal leur annonce un contrôle surprise très difficile",
-          "Leur ami Idriss manque à l'appel et son absence suscite une vive inquiétude",
           "La cour de récréation a été inondée pendant le week-end",
-          "Leur club de roller a été annulé par la direction"
+          "Leur ami Idriss manque à l'appel et son absence suscite une vive inquiétude"
         ],
-        "correct": 1,
+        "correct": 3,
         "explanation": "Le lundi matin, Idriss n'arrive pas en classe, ce qui surprend et alarme immédiatement son groupe d'amis très soudé."
       },
       {
@@ -8751,19 +9343,19 @@ window.LIVRES = [
         "type": "mcq",
         "text": "Quelle épreuve physique Idriss doit-il affronter à la suite de ses ennuis de santé ?",
         "options": [
-          "Il a perdu la voix et doit communiquer uniquement par écrit",
           "Il a de grandes difficultés à marcher et doit se déplacer principalement en fauteuil électrique",
+          "Il doit porter des lunettes spéciales pour lire au tableau",
           "Il a le bras plâtré pour toute l'année scolaire",
-          "Il doit porter des lunettes spéciales pour lire au tableau"
+          "Il a perdu la voix et doit communiquer uniquement par écrit"
         ],
-        "correct": 1,
+        "correct": 0,
         "explanation": "Faire dix pas est devenu épuisant pour Idriss, qui doit désormais utiliser un fauteuil roulant électrique pour ses déplacements."
       },
       {
         "id": "q3",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "D'où Idriss et sa maman étaient-ils arrivés quelques années auparavant ?",
+        "text": "D'où Idriss et sa maman étaient-ils arrivés un peu plus d'un an auparavant ?",
         "options": [
           "De Montréal, au Canada",
           "De Dakar, au Sénégal",
@@ -8771,7 +9363,7 @@ window.LIVRES = [
           "De Rome, en Italie"
         ],
         "correct": 1,
-        "explanation": "Le texte rappelle qu'Idriss et sa mère sont arrivés du Sénégal (Dakar) pour commencer une nouvelle vie."
+        "explanation": "Le texte rappelle qu'Idriss et sa mère sont arrivés de Dakar au Sénégal un peu plus d'un an auparavant pour commencer une nouvelle vie."
       },
       {
         "id": "q4",
@@ -8779,13 +9371,13 @@ window.LIVRES = [
         "type": "mcq",
         "text": "À quels obstacles majeurs Idriss se heurte-t-il dans son environnement quotidien ?",
         "options": [
-          "Le manque de livres à la bibliothèque municipale",
-          "L'inaccessibilité de nombreux lieux, les marches d'escalier et l'absence de rampes adaptées",
           "Le refus des autres élèves de lui parler en classe",
+          "Le manque de livres à la bibliothèque municipale",
+          "L'inaccessibilité des trottoirs abîmés, les ascenseurs en panne et les accès inadaptés",
           "L'interdiction stricte de circuler dans les couloirs du collège"
         ],
-        "correct": 1,
-        "explanation": "La ville et les bâtiments scolaires présentent de multiples barrières architecturales (marches, trottoirs hauts) difficiles à franchir en fauteuil."
+        "correct": 2,
+        "explanation": "La ville et les bâtiments présentent de multiples barrières (trottoirs endommagés, ascenseurs en panne) qui compliquent ses déplacements."
       },
       {
         "id": "q5",
@@ -8794,35 +9386,35 @@ window.LIVRES = [
         "text": "Comment Melchior, Tifenn et Rachid réagissent-ils face aux difficultés de leur ami ?",
         "options": [
           "Ils s'éloignent de lui parce qu'il ne peut plus courir aussi vite",
-          "Ils font preuve d'un formidable élan de solidarité et se mobilisent pour l'aider et adapter leur quotidien",
           "Ils demandent à changer de classe pour ne pas être ralentis",
-          "Ils attendent passivement que les adultes s'occupent de tout"
+          "Ils attendent passivement que les adultes s'occupent de tout",
+          "Ils font preuve d'un formidable élan de solidarité et se mobilisent pour l'épauler au quotidien"
         ],
-        "correct": 1,
+        "correct": 3,
         "explanation": "Les trois amis refusent d'abandonner Idriss : ils l'épaulent au quotidien et mettent en place des solutions concrètes pour faciliter son intégration."
       },
       {
         "id": "q6",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Quel trait de caractère remarquable Idriss démontre-t-il malgré son handicap ?",
+        "text": "Quelle volonté admirable Idriss démontre-t-il malgré sa situation ?",
         "options": [
+          "Il a envie de mordre la vie à pleines dents sans laisser son fauteuil le freiner",
           "Une amertume constante et un refus total de parler à quiconque",
-          "Une envie farouche de mordre la vie à pleines dents sans laisser sa chaise roulante le freiner",
           "Une peur panique de sortir de chez lui",
           "Un désintérêt complet pour ses études et ses camarades"
         ],
-        "correct": 1,
+        "correct": 0,
         "explanation": "Idriss fait preuve d'un courage exceptionnel et d'une volonté inébranlable de profiter de la vie aux côtés de ses amis."
       },
       {
         "id": "q7",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Que symbolise le quartier solidaire et cosmopolite où vivent les personnages ?",
+        "text": "Que symbolise le quartier solidaire et chaleureux où vivent les personnages ?",
         "options": [
           "Un lieu isolé où personne ne se connaît",
-          "Une véritable communauté où des gens d'origines et de cultures variées vivent en harmonie et s'entraident",
+          "Une communauté diverse où des personnes d'origines variées vivent en harmonie et s'entraident",
           "Un quartier d'affaires uniquement réservé aux commerces",
           "Une zone industrielle abandonnée"
         ],
@@ -8833,14 +9425,14 @@ window.LIVRES = [
         "id": "q8",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Comment se termine l'histoire entre Idriss et ses amis fidèles ?",
+        "text": "Comment se termine l'histoire entre Idriss et ses fidèles camarades ?",
         "options": [
+          "Par une dispute générale au sujet d'un devoir de mathématiques",
           "Idriss déménage dans une autre région sans laisser d'adresse",
           "Par un grand câlin collectif chaleureux où Idriss remercie ses amis d'être les meilleurs",
-          "Par une dispute générale au sujet d'un devoir de mathématiques",
           "Par la fermeture définitive du collège"
         ],
-        "correct": 1,
+        "correct": 2,
         "explanation": "L'histoire s'achève sur une grande étreinte collective pleine d'émotion, célébrant la puissance d'une amitié sincère et dévouée."
       },
       {
@@ -8881,12 +9473,12 @@ window.LIVRES = [
         "type": "mcq",
         "text": "Dans la phrase : « ...c'est pourquoi il se déplace principalement en fauteuil électrique. », qu'est-ce qu'un « fauteuil électrique » ?",
         "options": [
-          "Un siège de bureau qui pivote sur lui-même",
-          "Un siège roulant motorisé permettant aux personnes à mobilité réduite de se déplacer en autonomie",
           "Un fauteuil de cinéma avec des haut-parleurs intégrés",
-          "Une chaise pliante pour le camping"
+          "Une chaise pliante pour le camping",
+          "Un siège de bureau qui pivote sur lui-même",
+          "Un siège roulant motorisé permettant aux personnes à mobilité réduite de se déplacer en autonomie"
         ],
-        "correct": 1,
+        "correct": 3,
         "explanation": "Un fauteuil roulant électrique est équipé d'une batterie et d'un joystick pour permettre aux personnes en situation de handicap de circuler facilement."
       },
       {
@@ -8895,12 +9487,12 @@ window.LIVRES = [
         "type": "mcq",
         "text": "Dans la phrase : « Un élan de solidarité sans pareil. », que signifie le mot « solidarité » ?",
         "options": [
-          "Une compétition sportive très disputée",
           "Une aide mutuelle et un sentiment d'union fraternelle entre les membres d'un groupe",
+          "Une compétition sportive très disputée",
           "Une punition collective donnée à toute la classe",
           "Un long voyage effectué en solitaire"
         ],
-        "correct": 1,
+        "correct": 0,
         "explanation": "La solidarité est le lien moral qui pousse des personnes à s'épauler et se soutenir face aux difficultés."
       },
       {
@@ -8911,8 +9503,8 @@ window.LIVRES = [
         "options": [
           "Une récompense reçue à la fin de l'année scolaire",
           "Ce qui barre le passage ou rend une action difficile à accomplir",
-          "Un panneau publicitaire lumineux sur le trottoir",
-          "Un raccourci secret à travers un jardin public"
+          "Un raccourci secret à travers un jardin public",
+          "Un panneau publicitaire lumineux sur le trottoir"
         ],
         "correct": 1,
         "explanation": "Un obstacle est une gêne, une barrière ou une difficulté matérielle ou morale qui s'oppose à la progression."
@@ -8925,7 +9517,7 @@ window.LIVRES = [
         "options": [
           "Résumé A : Passionné de roller acrobatique, Melchior prépare une compétition intercollèges avec Rachid. Après la blessure de leur entraîneur, ils parviennent à remporter la coupe grâce à des entraînements intensifs chaque week-end.",
           "Résumé B : Arrivé récemment du Sénégal, Idriss décide de construire un kart électrique pour participer à une course de quartier. Avec l'aide de ses voisins mécaniciens, il termine sur le podium et devient la mascotte de son école.",
-          "Résumé C : Frappé par des soucis de santé le contraignant à se déplacer en fauteuil roulant, Idriss peut compter sur l'amitié indéfectible de Melchior, Tifenn et Rachid, qui se mobilisent pour surmonter les obstacles et célébrer la force de l'entraide."
+          "Résumé C : Frappé par des soucis de santé le contraignant à se déplacer en fauteuil roulant, Idriss peut compter sur l'amitié indéfectible de Melchior, Tifenn et Rachid, qui se mobilisent pour surmonter les obstacles du quotidien et célébrer la force de l'entraide."
         ],
         "correct": 2,
         "explanation": "Le résumé C retrace parfaitement l'histoire : l'apparition du handicap chez Idriss, la réaction solidaire exemplaire de ses trois camarades et la victoire de l'amitié."
@@ -8944,12 +9536,12 @@ window.LIVRES = [
         "type": "mcq",
         "text": "Quel type d'appareil les enfants et leur pilote empruntent-ils au début du voyage ?",
         "options": [
-          "Un avion bimoteur moderne (modèle DA62)",
           "Un hélicoptère militaire de sauvetage",
           "Une montgolfière touristique multicolore",
+          "Un avion bimoteur moderne (modèle DA62)",
           "Un hydravion jaune posé sur un grand lac"
         ],
-        "correct": 0,
+        "correct": 2,
         "explanation": "Le récit commence à bord d'un avion DA62 survolant la vaste forêt amazonienne au lever du jour."
       },
       {
@@ -8958,69 +9550,69 @@ window.LIVRES = [
         "type": "mcq",
         "text": "Quelle immense région sauvage l'avion survole-t-il avant l'accident ?",
         "options": [
+          "La savane sauvage d'Afrique du Sud",
           "Le désert aride du Sahara en Afrique",
-          "La canopée verdoyante de la forêt amazonienne",
           "Les glaciers enneigés du grand Nord canadien",
-          "La savane sauvage d'Afrique du Sud"
+          "La vaste forêt tropicale amazonienne en Guyane"
         ],
-        "correct": 1,
-        "explanation": "L'appareil survole la luxuriante forêt d'Amazonie en Guyane, caractérisée par ses arbres géants et sa végétation impénétrable."
+        "correct": 3,
+        "explanation": "L'appareil survole la forêt amazonienne en Guyane, caractérisée par ses arbres géants et sa riche végétation."
       },
       {
         "id": "q3",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Que se passe-t-il brutalement pendant le vol à travers la météo tropicale ?",
+        "text": "Que se passe-t-il brutalement pendant le vol au-dessus de la forêt ?",
         "options": [
-          "L'avion tombe en panne sèche au-dessus d'une grande ville",
-          "De fortes turbulences et une avarie mécanique contraignent l'appareil à un atterrissage forcé dans la jungle",
+          "De fortes turbulences et une avarie mécanique contraignent l'appareil à un crash dans les arbres",
+          "Un oiseau géant brise le pare-brise de la cabine",
           "Le pilote décide d'atterrir sur une piste pour faire une pause déjeuner",
-          "Un oiseau géant brise le pare-brise de la cabine"
+          "L'avion tombe en panne sèche au-dessus d'une grande ville"
         ],
-        "correct": 1,
+        "correct": 0,
         "explanation": "Pris dans de violentes secousses et un problème technique, l'appareil s'écrase en pleine végétation amazonienne."
       },
       {
         "id": "q4",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Quels dangers immédiats assaillent Lilou et Arthur après le crash ?",
+        "text": "Quels désagréments immédiats assaillent Lilou après le crash ?",
         "options": [
           "Une tempête de neige glaciale et le gel",
-          "Des nuées de moustiques agressifs, la chaleur étouffante et l'immensité menaçante de la jungle",
+          "Des nuées de moustiques agressifs, la chaleur étouffante et l'isolement dans la jungle",
           "Des attaques de pirates armés sur les rives d'un fleuve",
           "L'éruption soudaine d'un volcan voisin"
         ],
         "correct": 1,
-        "explanation": "Les survivants doivent faire face aux insectes piquants, à l'humidité tropicale écrasante, au manque de repères et à la faune sauvage."
+        "explanation": "Lilou doit faire face aux essaims de moustiques piquants, à la chaleur écrasante et à l'immensité de la forêt."
       },
       {
         "id": "q5",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Quel son naturel providentiel guide les enfants pour trouver de l'eau potable ?",
+        "text": "Comment Lilou parvient-elle à trouver de l'eau potable peu après l'accident ?",
         "options": [
-          "Le klaxon d'un camion de pompiers au loin",
-          "Le grondement d'une cascade d'eau douce",
-          "Le sifflet d'un train à vapeur traversant la forêt",
-          "La sonnerie d'un clocher de village"
+          "En creusant un puits profond dans le sable",
+          "En récupérant une gourde tombée d'un arbre",
+          "En tendant l'oreille vers un bruit de cascade apporté par le vent",
+          "En suivant les traces d'un tigre sauvage"
         ],
-        "correct": 1,
-        "explanation": "Le bruit de l'eau qui s'écoule d'une cascade permet aux enfants de s'orienter vers un point d'eau indispensable pour ne pas se déshydrater."
+        "correct": 2,
+        "explanation": "Lilou entend au loin le bruit d'une cascade d'eau douce portée par le vent et marche dans sa direction pour se désaltérer."
       },
       {
         "id": "q6",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Comment Arthur et Lilou parviennent-ils à surmonter la peur et la faim ?",
+        "text": "Comment Arthur et Lilou parviennent-ils à surmonter l'épreuve après leurs retrouvailles ?",
         "options": [
           "En se disputant sans arrêt jusqu'à épuisement",
-          "En faisant équipe avec courage, en s'entraidant et en partageant leurs compétences de survie",
-          "En attendant immobiles dans l'épave sans boire ni manger",
-          "En essayant de construire un nouvel avion avec des branches d'arbres"
+          "En attendant immobiles sans chercher à boire ni manger",
+          "En essayant de reconstruire l'avion brisé",
+          "En faisant équipe avec courage, en s'entraidant et en restant calmes"
         ],
-        "correct": 1,
-        "explanation": "La complicité, le calme et l'entraide mutuelle entre Lilou et Arthur sont la clé de leur survie dans la forêt."
+        "correct": 3,
+        "explanation": "La solidarité, le sang-froid et le soutien mutuel permettent aux deux enfants de tenir bon dans la forêt."
       },
       {
         "id": "q7",
@@ -9028,33 +9620,33 @@ window.LIVRES = [
         "type": "mcq",
         "text": "Quel outil moderne permet aux équipes de secours de localiser la zone du crash ?",
         "options": [
-          "Un drone sous-marin explorant les fonds marins",
           "Les images haute précision fournies par un satellite d'observation (SPOT)",
+          "Un drone sous-marin explorant les fonds marins",
           "Des signaux de fumée allumés par des randonneurs",
           "Un message envoyé par pigeon voyageur"
         ],
-        "correct": 1,
-        "explanation": "L'imagerie satellitaire permet aux secouristes de repérer la trouée laissée par l'avion dans la canopée et d'orienter les recherches."
+        "correct": 0,
+        "explanation": "L'imagerie satellitaire permet aux secouristes de repérer la zone touchée dans la végétation et de guider les secours."
       },
       {
         "id": "q8",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Qui retrouve finalement les enfants et assure leur sauvetage au cœur de la jungle ?",
+        "text": "Qui retrouve finalement les enfants pour assurer leur sauvetage dans la jungle ?",
         "options": [
           "Des chercheurs d'or clandestins",
-          "Des naturalistes et des guides expérimentés connaissant parfaitement la forêt",
-          "Une équipe de journalistes venue tourner un documentaire",
-          "Des bûcherons travaillant dans une scierie voisine"
+          "Une équipe de naturalistes qui menait des observations sur le terrain",
+          "Une équipe de journalistes de télévision",
+          "Des bûcherons d'une scierie voisine"
         ],
         "correct": 1,
-        "explanation": "Des spécialistes de la faune et de la flore (naturalistes) et des guides locaux réussissent à rejoindre les enfants et à les ramener sains et saufs."
+        "explanation": "Des naturalistes explorant la faune et la flore parviennent jusqu'aux enfants et assurent leur retour sains et saufs."
       },
       {
         "id": "q9",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "L'avion bimoteur s'est écrasé au milieu de la vaste forêt amazonienne.",
+        "text": "L'avion bimoteur s'est écrasé au cœur de la vaste forêt amazonienne.",
         "correct": true,
         "explanation": "VRAI : L'accident a lieu au-dessus de la grande forêt tropicale amazonienne."
       },
@@ -9062,17 +9654,17 @@ window.LIVRES = [
         "id": "q10",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Les enfants abandonnent tout espoir dès les premières minutes et refusent de chercher de l'eau.",
+        "text": "Lilou refuse d'explorer les alentours et ne cherche aucune source d'eau après le crash.",
         "correct": false,
-        "explanation": "FAUX : Les enfants font preuve de sang-froid et marchent vers le bruit de la cascade pour trouver de l'eau et s'abriter."
+        "explanation": "FAUX : Lilou fait preuve d'initiative et suit le bruit de la cascade pour trouver de l'eau."
       },
       {
         "id": "q11",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "La forêt amazonienne abrite une végétation si dense qu'elle forme un toit végétal appelé la canopée.",
+        "text": "Les enfants doivent affronter des essaims de moustiques et l'humidité de la jungle.",
         "correct": true,
-        "explanation": "VRAI : La canopée est l'épaisse couche supérieure formée par la cime des arbres géants de la forêt tropicale."
+        "explanation": "VRAI : Les milliers de moustiques et le climat tropical rendent la survie très éprouvante."
       },
       {
         "id": "q12",
@@ -9080,7 +9672,7 @@ window.LIVRES = [
         "type": "tf",
         "text": "À la fin de l'aventure, Arthur et Lilou sont définitivement perdus et jamais secourus.",
         "correct": false,
-        "explanation": "FAUX : Grâce aux secours terrestres et à l'appui satellite, les enfants sont retrouvés et fêtent leur délivrance."
+        "explanation": "FAUX : Les secours et les naturalistes les retrouvent et les ramènent sains et saufs auprès de leurs proches."
       },
       {
         "id": "q13",
@@ -9089,11 +9681,11 @@ window.LIVRES = [
         "text": "Dans la phrase : « Le DA62 flambant neuf survolait désormais la forêt amazonienne. », que signifie l'expression « flambant neuf » ?",
         "options": [
           "Qui est en train de brûler sous l'effet du feu",
-          "Totalement neuf, tout juste sorti de fabrication",
           "Peint en rouge vif comme une flamme",
+          "Totalement neuf, tout juste sorti de fabrication",
           "Très ancien et usé par les années"
         ],
-        "correct": 1,
+        "correct": 2,
         "explanation": "« Flambant neuf » qualifie un objet entièrement neuf qui n'a encore presque jamais servi."
       },
       {
@@ -9102,13 +9694,13 @@ window.LIVRES = [
         "type": "mcq",
         "text": "Dans la phrase : « Son regard s'arrêta sur la carcasse de l'avion. », que désigne la « carcasse » dans ce contexte ?",
         "options": [
+          "L'uniforme porté par le commandant de bord",
           "Le moteur en parfait état de marche",
-          "La structure métallique brisée et déformée de l'appareil accidenté",
           "La valise d'un passager posée sur le sol",
-          "L'uniforme porté par le commandant de bord"
+          "La structure métallique brisée et déformée de l'appareil accidenté"
         ],
-        "correct": 1,
-        "explanation": "La carcasse désigne l'armature ou les débris restants d'un véhicule ou d'un avion après un accident destructeur."
+        "correct": 3,
+        "explanation": "La carcasse désigne l'armature ou les débris restants d'un véhicule après un accident."
       },
       {
         "id": "q15",
@@ -9116,13 +9708,13 @@ window.LIVRES = [
         "type": "mcq",
         "text": "Dans la phrase : « Nous venons de recevoir des images du satellite SPOT. », qu'est-ce qu'un « satellite » d'observation ?",
         "options": [
-          "Un télescope posé au sommet d'une montagne",
           "Un engin spatial placé en orbite autour de la Terre pour capturer des photographies et des données",
+          "Un télescope posé au sommet d'une montagne",
           "Une fusée qui voyage vers la planète Mars",
           "Un avion de ligne volant à très haute altitude"
         ],
-        "correct": 1,
-        "explanation": "Un satellite artificiel gravite autour de la Terre et prend des clichés spatiaux très utiles pour la météo, la cartographie et les secours."
+        "correct": 0,
+        "explanation": "Un satellite artificiel gravite autour de la Terre et prend des clichés spatiaux très utiles pour les secours et la météo."
       },
       {
         "id": "q16",
@@ -9130,12 +9722,12 @@ window.LIVRES = [
         "type": "synthesis",
         "text": "Quel résumé correspond le mieux au déroulement du livre « Crash au cœur de la jungle » ?",
         "options": [
-          "Résumé A : Après le crash de leur avion bimoteur dans l'immensité amazonienne, Arthur et Lilou s'organisent avec courage pour survivre face aux moustiques et à la forêt hostile, avant d'être repérés par satellite et secourus par des naturalistes.",
+          "Résumé A : Après le crash de leur avion bimoteur dans l'immensité amazonienne, Arthur et Lilou s'organisent avec courage pour survivre face aux moustiques et à la forêt hostile, avant d'être repérés grâce aux satellites et secourus par des naturalistes.",
           "Résumé B : Partis explorer l'Amazonie en pirogue avec leur père naturaliste, Arthur et Lilou découvrent une espèce inconnue de papillons géants. Pris dans une tempête tropicale, ils trouvent refuge dans un village indigène où ils passent plusieurs semaines.",
           "Résumé C : Lors d'un vol au-dessus de la Guyane, un jeune pilote amateur perd le contrôle de son appareil suite à une panne d'essence. Atterri en urgence sur une plage, il répare son moteur avec l'aide de pêcheurs et redécolle vers Cayenne."
         ],
         "correct": 0,
-        "explanation": "Le résumé A récapitule avec exactitude le crash en Amazonie, la lutte héroïque des deux enfants pour survivre et leur sauvetage guidé par satellite."
+        "explanation": "Le résumé A récapitule avec exactitude le crash en Amazonie, la lutte des deux enfants pour survivre et leur sauvetage guidé par satellite."
       }
     ]
   },
@@ -9149,15 +9741,15 @@ window.LIVRES = [
         "id": "q1",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Où se déroule le séjour de Dimitri au début du récit ?",
+        "text": "Où Dimitri vit-il avec sa famille au début du récit ?",
         "options": [
-          "Dans un grand appartement au cœur d'une métropole bruyante",
-          "À la ferme de son grand-père GrandGris, dans un paysage d'hiver froid et enneigé",
-          "Sur un bateau de croisière naviguant vers les tropiques",
-          "Dans une base scientifique isolée sur une île volcanique"
+          "Dans un grand appartement en plein cœur d'une ville",
+          "À la ferme de GrandGris, aux côtés de ses parents et de son grand-père Papy Polo",
+          "Sur une péniche amarrée au bord d'un fleuve",
+          "Dans un chalet de vacances loué pour une semaine"
         ],
         "correct": 1,
-        "explanation": "Dimitri séjourne à la ferme de GrandGris, entouré par les flocons de neige et le vent d'hiver."
+        "explanation": "Dimitri habite toute l'année à la ferme de GrandGris, un cadre rural où vit également son grand-père Papy Polo."
       },
       {
         "id": "q2",
@@ -9165,69 +9757,69 @@ window.LIVRES = [
         "type": "mcq",
         "text": "Quelle habitude particulière Dimitri a-t-il avec son casque audio ?",
         "options": [
-          "Il écoute du rock à plein volume jour et nuit",
-          "Il le porte sur ses oreilles en toute saison, souvent éteint, pour s'isoler du froid et être dans sa bulle",
-          "Il s'en sert comme talkie-walkie pour espionner ses voisins",
-          "Il l'a fabriqué lui-même avec des coquilles de noix"
+          "Il s'en sert comme talkie-walkie avec ses voisins",
+          "Il écoute de la musique à fond pour ne pas entendre ses professeurs",
+          "Il le porte sur ses oreilles en toute saison, souvent éteint, pour s'isoler et écouter ses pensées",
+          "Il le prête à tous ses camarades de classe"
         ],
-        "correct": 1,
-        "explanation": "Dimitri garde souvent son casque sur les oreilles, même éteint, pour se protéger du froid et profiter du calme de ses pensées."
+        "correct": 2,
+        "explanation": "Dimitri garde souvent son casque sur les oreilles, même éteint, pour se protéger du froid et rester dans sa bulle."
       },
       {
         "id": "q3",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Quel secret extraordinaire Dimitri découvre-t-il au sujet de certains arbres de la forêt ?",
+        "text": "Quel secret extraordinaire Dimitri découvre-t-il au sujet de certains arbres ?",
         "options": [
-          "Qu'ils produisent des fruits en or massif une fois par siècle",
-          "Qu'il existe des « arbres à conscience », capables de ressentir, d'avoir une mémoire et de communiquer leur souffle",
-          "Qu'ils peuvent déraciner leurs troncs pour marcher pendant la nuit",
-          "Qu'ils abritent des colonies de lutins invisibles"
+          "Qu'ils produisent des pièces d'or au printemps",
+          "Qu'ils peuvent marcher la nuit lorsque tout le monde dort",
+          "Qu'ils abritent des oiseaux magiques aux plumes dorées",
+          "Qu'il existe des arbres à conscience, capables de ressentir, d'avoir une mémoire et de communiquer leur souffle"
         ],
-        "correct": 1,
-        "explanation": "Le récit révèle l'existence d'arbres dotés d'une conscience et d'une sensibilité, portant la mémoire vivante de la nature."
+        "correct": 3,
+        "explanation": "Le récit révèle l'existence d'arbres dotés d'une véritable conscience et d'une mémoire du vivant."
       },
       {
         "id": "q4",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Quelle grave menace pèse sur ces arbres précieux et sur le domaine ?",
+        "text": "Quelle inquiétude pousse Dimitri à vouloir agir de toute urgence ?",
         "options": [
-          "Une invasion de criquets géants venus du Sud",
-          "Un projet de déboisement et d'abattage massif qui détruirait ce patrimoine végétal unique",
-          "Un feu de forêt accidentel provoqué par la foudre",
-          "L'inondation de la vallée par une crue soudaine"
+          "La peur que les hommes n'écoutent plus la nature et que le souffle précieux des arbres ne s'éteigne",
+          "La crainte d'avoir une mauvaise note à son contrôle d'histoire",
+          "Le projet d'un voisin de construire une usine de bonbons",
+          "La perte de son casque audio dans la neige"
         ],
-        "correct": 1,
-        "explanation": "Les arbres risquent d'être coupés (abattus), ce qui anéantirait leur précieux souffle et l'équilibre de la forêt."
+        "correct": 0,
+        "explanation": "Dimitri comprend que la rupture du lien entre l'homme et la sensibilité des arbres menace la mémoire de la nature."
       },
       {
         "id": "q5",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Quels moyens originaux Dimitri utilise-t-il pour faire passer ses messages et agir ?",
+        "text": "Quel moyen poétique Dimitri utilise-t-il pour faire passer son message ?",
         "options": [
-          "Des signaux de fumée et des messages codés en morse",
-          "Des poèmes en rimes, des devinettes et une ruse inspirée du premier avril",
-          "Des graffitis peints en rouge sur les façades des maisons",
-          "Des courriers anonymes envoyés au ministre de l'Environnement"
+          "Il peint de grandes affiches publicitaires le long de la route",
+          "Il écrit des poèmes en rimes et fait passer ses idées avec malice",
+          "Il envoie des courriers anonymes au directeur de l'école",
+          "Il chante dans la rue avec un mégaphone"
         ],
         "correct": 1,
-        "explanation": "Dimitri recourt à la poésie, aux rimes et à l'humour pour éveiller les esprits et sensibiliser les adultes à la cause des arbres."
+        "explanation": "Dimitri compose des rimes et des textes poétiques pour toucher le cœur des gens et éveiller leur conscience."
       },
       {
         "id": "q6",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Quel rôle complice les grands-parents (Mamy et GrandGris) jouent-ils auprès de Dimitri ?",
+        "text": "Quelle relation Dimitri entretient-il avec ses proches à la ferme de GrandGris ?",
         "options": [
-          "Ils le punissent sévèrement dès qu'il s'approche de la forêt",
-          "Ils l'entourent d'amour, partagent des moments de tendresse et l'encouragent dans sa sensibilité",
-          "Ils refusent de lui adresser la parole pendant tout son séjour",
-          "Ils l'obligent à travailler du matin au soir aux champs sans repos"
+          "Une relation conflictuelle où personne ne s'écoute",
+          "Il ne voit ses proches que pendant les vacances d'été",
+          "Une complicité tendre faite d'histoires partagées, de câlins et d'affection",
+          "Il refuse de participer à la moindre tâche familiale"
         ],
-        "correct": 1,
-        "explanation": "Ses grands-parents lui offrent une écoute bienveillante, du réconfort et partagent avec lui de doux moments de complicité familiale."
+        "correct": 2,
+        "explanation": "Le soir, il partage des moments de tendresse, des récits et une profonde complicité avec sa famille."
       },
       {
         "id": "q7",
@@ -9235,13 +9827,13 @@ window.LIVRES = [
         "type": "mcq",
         "text": "Que signifie la phrase de Wilgar : « Ce qui sauve le monde, c'est la conscience » ?",
         "options": [
-          "Qu'il faut inventer des ordinateurs de plus en plus intelligents",
-          "Que le respect du vivant, la mémoire et l'attention portée à la nature sont indispensables à notre avenir",
-          "Que seuls les scientifiques les plus diplômés peuvent prendre des décisions",
-          "Qu'il faut interdire à quiconque d'entrer dans les forêts"
+          "Qu'il faut inventer des robots toujours plus rapides",
+          "Qu'il faut interdire aux enfants de jouer dehors",
+          "Que seuls les livres de sciences peuvent résoudre les problèmes",
+          "Que le respect du vivant, la mémoire et l'attention aux autres sont essentiels à l'avenir"
         ],
-        "correct": 1,
-        "explanation": "Cette maxime invite à développer une relation respectueuse et consciente avec notre environnement et les générations futures."
+        "correct": 3,
+        "explanation": "Cette pensée rappelle l'importance de vivre en harmonie avec le monde vivant et d'en préserver la mémoire."
       },
       {
         "id": "q8",
@@ -9249,35 +9841,35 @@ window.LIVRES = [
         "type": "mcq",
         "text": "À qui s'adresse l'épilogue émouvant à la fin du livre ?",
         "options": [
-          "Aux bûcherons pour leur donner de nouvelles consignes de coupe",
-          "Aux jeunes lecteurs pour leur rappeler qu'ils sont l'avenir et qu'il faut savoir écouter le souffle des arbres",
-          "Au maire du village pour lui réclamer une subvention",
-          "Aux marchands de bois de toute la région"
+          "Aux jeunes lecteurs, pour les inviter à rester attentifs au souffle des arbres et à la nature",
+          "Au maire de la commune",
+          "Aux marchands de bois de la région",
+          "Aux professeurs de sciences de l'école"
         ],
-        "correct": 1,
-        "explanation": "L'auteur s'adresse directement aux enfants pour transmettre ce message poétique de préservation de la nature et de transmission entre générations."
+        "correct": 0,
+        "explanation": "L'auteur invite directement les enfants à écouter le vivant et à préserver les liens entre générations."
       },
       {
         "id": "q9",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Dimitri passe ses vacances d'hiver chez ses grands-parents à la campagne.",
+        "text": "Dimitri vit à l'année à la ferme de GrandGris avec ses parents.",
         "correct": true,
-        "explanation": "VRAI : L'histoire commence à la ferme de GrandGris au cœur de l'hiver."
+        "explanation": "VRAI : Dimitri réside à la ferme avec sa famille et s'y rend à l'école comme un jour ordinaire."
       },
       {
         "id": "q10",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Dimitri encourage les bûcherons à raser tous les arbres centenaires de la forêt.",
+        "text": "Papy Polo est le nom donné au cheval de la ferme.",
         "correct": false,
-        "explanation": "FAUX : Dimitri fait tout son possible pour sauver les arbres à conscience et empêcher leur destruction."
+        "explanation": "FAUX : Papy Polo est le grand-père de Dimitri, tandis que GrandGris est le nom de la ferme."
       },
       {
         "id": "q11",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Les arbres à conscience décrits dans l'histoire sont porteurs d'émotions et de mémoire.",
+        "text": "Les « arbres à conscience » décrits dans l'histoire sont porteurs d'émotions et de mémoire.",
         "correct": true,
         "explanation": "VRAI : Ces arbres hors du commun sont capables de ressentir et de transmettre le souffle du vivant."
       },
@@ -9285,9 +9877,9 @@ window.LIVRES = [
         "id": "q12",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "La poésie et l'humour sont des armes utilisées par Dimitri pour défendre la nature.",
-        "correct": true,
-        "explanation": "VRAI : Dimitri compose des poèmes et utilise la malice pour éveiller les consciences."
+        "text": "Dimitri déteste la poésie et refuse de composer le moindre vers.",
+        "correct": false,
+        "explanation": "FAUX : Dimitri manie les rimes et la poésie avec talent pour faire entendre la voix des arbres."
       },
       {
         "id": "q13",
@@ -9295,10 +9887,10 @@ window.LIVRES = [
         "type": "mcq",
         "text": "Dans la phrase : « Heureusement, le soir, il restait toujours un peu de temps pour un câlin, une histoire ou un tendre moment de complicité ! », que signifie « complicité » ?",
         "options": [
-          "Une rivalité féroce entre deux personnes",
+          "Une dispute au sujet d'une corvée ménagère",
           "Une entente profonde, chaleureuse et pleine de confiance partagée",
-          "Une obligation imposée par le règlement de la maison",
-          "Une dispute au sujet d'une corvée ménagère"
+          "Une rivalité féroce entre deux personnes",
+          "Une punition imposée par les parents"
         ],
         "correct": 1,
         "explanation": "La complicité est une relation d'entente mutuelle intime et joyeuse entre des êtres qui s'aiment bien."
@@ -9309,13 +9901,13 @@ window.LIVRES = [
         "type": "mcq",
         "text": "Dans la phrase : « Dimitri était perplexe. », que signifie l'adjectif « perplexe » ?",
         "options": [
-          "Fou de joie et très enthousiaste",
-          "Indécis, perplexe, qui hésite et s'interroge sans savoir quoi penser",
-          "Extrêmement fatigué et prêt à dormir",
-          "Très en colère contre son entourage"
+          "Fou de joie et enthousiaste",
+          "Très en colère et furieux",
+          "Indécis et hésitant face à une situation difficile à comprendre",
+          "Épuisé et endormi"
         ],
-        "correct": 1,
-        "explanation": "Être perplexe signifie être embarrassé par le doute, hésitant face à une situation difficile à comprendre."
+        "correct": 2,
+        "explanation": "Être perplexe signifie éprouver de l'embarras, de l'hésitation ou du doute devant un mystère."
       },
       {
         "id": "q15",
@@ -9323,12 +9915,12 @@ window.LIVRES = [
         "type": "mcq",
         "text": "Dans la phrase : « Le jeune plant avait pris quelques bons centimètres et des petits bourgeons commençaient à se former. », qu'est-ce qu'un « bourgeon » ?",
         "options": [
-          "Une racine morte enfouie sous les pierres",
-          "Une petite excroissance végétale qui donnera naissance à une feuille, une branche ou une fleur",
-          "Un champignon vénéneux qui attaque l'écorce",
-          "Une feuille séchée tombée pendant l'automne"
+          "Une racine séchée sous la terre",
+          "Un champignon sur l'écorce",
+          "Une feuille morte tombée en automne",
+          "Une petite pousse végétale qui donnera naissance à une feuille, une branche ou une fleur"
         ],
-        "correct": 1,
+        "correct": 3,
         "explanation": "Le bourgeon est la pousse naissante sur une tige d'où se développent les futures feuilles ou fleurs."
       },
       {
@@ -9338,11 +9930,11 @@ window.LIVRES = [
         "text": "Quel résumé correspond le mieux au récit poétique « Drôles d'arbres » ?",
         "options": [
           "Résumé A : Envoyé en camp forestier pour apprendre le métier de bûcheron, Dimitri découvre une machine à abattre les arbres ultra-rapide. Il gagne le concours du meilleur ouvrier de la région avant de retourner à l'école.",
-          "Résumé B : En vacances chez son grand-père GrandGris, Dimitri découvre le secret des « arbres à conscience », menacés de destruction. Grâce à sa sensibilité, à la poésie et au soutien de ses proches, il s'engage pour protéger ce lien précieux entre l'homme et la nature.",
+          "Résumé B : Vivant à la ferme de GrandGris avec sa famille et son grand-père Papy Polo, Dimitri découvre le mystère des « arbres à conscience ». Grâce à sa sensibilité, à la poésie et à l'amour des siens, il s'engage pour préserver ce lien précieux entre les humains et la mémoire de la nature.",
           "Résumé C : Lors d'une tempête de neige en montagne, Dimitri et son chien se perdent dans une forêt de sapins géants. Ils trouvent refuge dans une cabane abandonnée où un vieil ermite leur apprend à fabriquer des sculptures sur bois."
         ],
         "correct": 1,
-        "explanation": "Le résumé B exprime avec justesse le cœur de l'histoire : la révélation des arbres à conscience, la menace de coupe, l'engagement poétique de Dimitri et l'amour familial."
+        "explanation": "Le résumé B exprime avec justesse le cœur de l'histoire : la vie à la ferme de GrandGris, la révélation des arbres à conscience, la poésie de Dimitri et l'amour familial."
       }
     ]
   },
@@ -9358,83 +9950,83 @@ window.LIVRES = [
         "type": "mcq",
         "text": "Dans quel contexte historique réel et dramatique l'histoire d'Anna et Ruben s'inscrit-elle ?",
         "options": [
-          "La Révolution française de 1789",
           "La Seconde Guerre mondiale et la persécution des familles juives",
           "La Première Guerre mondiale dans les tranchées de 1914",
+          "La Révolution française de 1789",
           "La guerre de Cent Ans au Moyen Âge"
         ],
-        "correct": 1,
-        "explanation": "Le récit repose sur des faits réels survenus sous l'Occupation durant la Seconde Guerre mondiale, marquée par les rafles et déportations."
+        "correct": 0,
+        "explanation": "Le récit repose sur des faits réels survenus sous l'Occupation durant la Seconde Guerre mondiale."
       },
       {
         "id": "q2",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Pourquoi Anna et Ruben se retrouvent-ils séparés de leurs parents au début de l'histoire ?",
+        "text": "Pourquoi Anna et Ruben se retrouvent-ils séparés de leur père au début de l'histoire ?",
         "options": [
-          "Leur père a été envoyé en France et des soldats viennent brutalement les emmener de chez eux",
-          "Leurs parents sont partis en voyage d'affaires à New York",
-          "Ils ont été envoyés en colonie de vacances au bord de la mer",
-          "Ils ont fugué pour explorer la capitale"
+          "Leur père est parti faire le tour du monde en bateau",
+          "Leur père a été envoyé au travail forcé en France depuis près d'un an",
+          "Ils ont été envoyés en pensionnat en Angleterre",
+          "Leur père a déménagé pour ouvrir un commerce en Suisse"
         ],
-        "correct": 0,
-        "explanation": "Le père a été déporté/envoyé en travail forcé en France depuis un an, et des soldats viennent arrêter les enfants dans leur maison."
+        "correct": 1,
+        "explanation": "Leur père a été envoyé en France depuis presque un an et des soldats viennent arrêter brutalement les enfants chez eux."
       },
       {
         "id": "q3",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Quel rôle admirable Madame Rosi joue-t-elle pour Anna, Ruben et d'autres enfants traqués ?",
+        "text": "Quel rôle admirable Madame Rosi joue-t-elle pour Anna, Ruben et d'autres enfants ?",
         "options": [
-          "Elle les dénonce aux autorités pour toucher une récompense",
-          "Elle les accueille dans sa villa, les cache avec courage et veille sur eux malgré le danger permanent",
-          "Elle les embauche comme ouvriers dans son usine textile",
-          "Elle refuse de leur ouvrir sa porte et les chasse dans la rue"
+          "Elle les embauche comme ouvriers dans son usine",
+          "Elle les dénonce aux soldats pour toucher une récompense",
+          "Elle les accueille dans sa villa, les protège avec courage et veille sur eux malgré le danger",
+          "Elle refuse de leur ouvrir sa porte"
         ],
-        "correct": 1,
-        "explanation": "Madame Rosi est une femme héroïque qui cache des enfants juifs dans sa villa au péril de sa propre vie."
+        "correct": 2,
+        "explanation": "Madame Rosi est une femme courageuse qui cache et nourrit des enfants menacés au péril de sa propre vie."
       },
       {
         "id": "q4",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Quelles conditions de vie très éprouvantes les enfants doivent-ils endurer au quotidien ?",
+        "text": "Quelles conditions de vie éprouvantes les enfants doivent-ils endurer au quotidien ?",
         "options": [
           "L'obligation de faire du sport toute la journée",
-          "La faim constante, le silence obligatoire et la terreur permanente d'une visite des soldats",
-          "L'ennui de devoir regarder la télévision en continu",
-          "L'obligation d'apprendre cinq langues étrangères à la fois"
+          "L'ennui de regarder la télévision en continu",
+          "L'obligation d'apprendre cinq langues étrangères à la fois",
+          "La faim quotidienne, le silence obligatoire et la peur permanente des rafles"
         ],
-        "correct": 1,
-        "explanation": "Cachés dans la clandestinité, les enfants manquent de nourriture, doivent rester extrêmement discrets et vivent dans l'angoisse des contrôles."
+        "correct": 3,
+        "explanation": "Cachés dans la clandestinité, les enfants manquent de nourriture, doivent rester discrets et vivent dans l'angoisse des contrôles."
       },
       {
         "id": "q5",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Où les enfants sont-ils précipitamment dissimulés lorsque des soldats font irruption dans la villa ?",
+        "text": "Que se passe-t-il lors de la visite indésirable des soldats venus faire une rafle à la villa ?",
         "options": [
-          "Sur le toit sous les panneaux solaires",
-          "Dans la cave secrète de la maison",
-          "Dans les arbres du jardin public d'en face",
-          "Dans le coffre d'une voiture garée dans la rue"
+          "Les enfants sont rassemblés et inspectés tandis que Madame Rosi fait preuve d'un immense sang-froid pour les protéger",
+          "Tous les enfants parviennent à s'enfuir par les toits",
+          "Les soldats repartent immédiatement sans entrer dans le bâtiment",
+          "Madame Rosi offre un banquet aux officiers pour fêter leur arrivée"
         ],
-        "correct": 1,
-        "explanation": "Lors des perquisitions et alertes, les enfants sont cachés dans l'obscurité de la cave pour ne pas être repérés par les soldats."
+        "correct": 0,
+        "explanation": "Lors de la rafle, les enfants sont rassemblés et contrôlés par l'officier, tandis que le courage de Madame Rosi permet d'éviter le pire."
       },
       {
         "id": "q6",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Vers quel nouveau refuge plus sûr Madame Rosi organise-t-elle la fuite des enfants menacés ?",
+        "text": "Vers quel nouveau refuge Madame Rosi organise-t-elle le transfert des enfants ?",
         "options": [
           "Vers un camp de vacances à la montagne",
           "Vers un cloître / couvent où des religieux acceptent de les dissimuler",
-          "Vers une ambassade étrangère en ville",
+          "Vers une ambassade étrangère",
           "Vers une caserne de pompiers"
         ],
         "correct": 1,
-        "explanation": "Face aux risques grandissants de rafle, Madame Rosi organise leur transfert vers un cloître protecteur."
+        "explanation": "Face aux risques grandissants, Madame Rosi organise leur départ vers un cloître protecteur."
       },
       {
         "id": "q7",
@@ -9442,27 +10034,27 @@ window.LIVRES = [
         "type": "mcq",
         "text": "Que deviennent Anna et Ruben après la fin de la guerre et la Libération ?",
         "options": [
-          "Ils sont contraints de quitter définitivement le continent",
-          "Ils grandissent, bâtissent leur avenir (Anna se fiance, Ruben étudie la radio) et gardent une profonde mémoire de Madame Rosi",
-          "Ils oublient totalement leur enfance et ne veulent plus en parler",
-          "Ils deviennent tous les deux soldats dans l'armée"
+          "Ils oublient totalement leur enfance",
+          "Ils sont contraints de quitter définitivement le pays",
+          "Ils grandissent en paix, bâtissent leur avenir et gardent une profonde mémoire de Madame Rosi",
+          "Ils s'engagent tous les deux dans la marine marchande"
         ],
-        "correct": 1,
+        "correct": 2,
         "explanation": "Les enfants ont pu survivre grâce à ces actes de bravoure, grandissent en paix et honorent la mémoire de leur bienfaitrice."
       },
       {
         "id": "q8",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Quel geste symbolique et émouvant est découvert à la fin sur la tombe de Madame Rosi à Verrewinkel ?",
+        "text": "Quel détail touchant est découvert vers la fin de l'été sur la tombe de Madame Rosi à Verrewinkel ?",
         "options": [
-          "Une médaille en or déposée par le gouvernement",
-          "Trois petites fleurs posées en signe d'éternelle reconnaissance",
-          "Un grand tableau représentant la villa",
-          "Un poème gravé dans le marbre par un soldat"
+          "Une médaille en or",
+          "Une lettre manuscrite scellée dans une bouteille",
+          "Un grand drapeau tricolore",
+          "Trois petites fleurs posées en hommage à sa mémoire"
         ],
-        "correct": 1,
-        "explanation": "Les trois petites fleurs déposées sur sa sépulture témoignent de la fidélité, de l'amour et de la gratitude impérissable des enfants sauvés."
+        "correct": 3,
+        "explanation": "Trois petites fleurs sont déposées sur sa tombe, symbole discret et émouvant de gratitude éternelle."
       },
       {
         "id": "q9",
@@ -9476,17 +10068,17 @@ window.LIVRES = [
         "id": "q10",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Madame Rosi exigeait de grosses sommes d'argent pour accepter de cacher les enfants.",
+        "text": "Madame Rosi demandait de grosses sommes d'argent pour accepter de cacher les enfants.",
         "correct": false,
-        "explanation": "FAUX : Madame Rosi a agi par pur humanisme, générosité et courage désintéressé au péril de sa vie."
+        "explanation": "FAUX : Madame Rosi a agi par pur humanisme et générosité au péril de sa vie."
       },
       {
         "id": "q11",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Les enfants cachés devaient supporter la faim et l'angoisse quotidienne d'être découverts.",
+        "text": "Les enfants cachés devaient supporter la faim et l'angoisse quotidienne des rafles.",
         "correct": true,
-        "explanation": "VRAI : Les restrictions alimentaires et la peur permanente des rafles faisaient partie de leur quotidien clandestin."
+        "explanation": "VRAI : Les restrictions alimentaires et la peur permanente des arrestations faisaient partie de leur quotidien clandestin."
       },
       {
         "id": "q12",
@@ -9494,7 +10086,7 @@ window.LIVRES = [
         "type": "tf",
         "text": "Madame Rosi a été oubliée de tous et personne n'a jamais fleuri sa tombe.",
         "correct": false,
-        "explanation": "FAUX : Les trois petites fleurs trouvées sur sa tombe prouvent que son souvenir est resté profondément vivant."
+        "explanation": "FAUX : Les trois petites fleurs trouvées sur sa sépulture prouvent que son souvenir est resté vivant."
       },
       {
         "id": "q13",
@@ -9502,12 +10094,12 @@ window.LIVRES = [
         "type": "mcq",
         "text": "Dans la phrase : « Ruben est en train d'éplucher des pommes de terre dans la grande cuisine lorsqu'il entend un tumulte dans la cour intérieure. », que signifie « tumulte » ?",
         "options": [
-          "Un grand silence paisible et reposant",
           "Un grand bruit confus d'agitation, de cris et de désordre",
-          "Une musique douce jouée au violon",
-          "Une sonnerie de réveil automatique"
+          "Une douce brise d'été",
+          "Un grand silence paisible et reposant",
+          "Une musique classique jouée au piano"
         ],
-        "correct": 1,
+        "correct": 0,
         "explanation": "Un tumulte est un grand vacarme accompagné d'agitation, de désordre et d'inquiétude."
       },
       {
@@ -9516,9 +10108,9 @@ window.LIVRES = [
         "type": "mcq",
         "text": "Dans la phrase : « Les soldats ont eu pour ordre de faire une rafle. », qu'est-ce qu'une « rafle » ?",
         "options": [
+          "Une distribution de bonbons dans les écoles",
+          "Une opération militaire ou policière soudaine visant à arrêter collectivement des personnes",
           "Une fête foraine organisée sur la grand-place",
-          "Une opération policière ou militaire soudaine et massive visant à arrêter un grand nombre de personnes",
-          "Une distribution gratuite de nourriture aux habitants",
           "Une cérémonie d'accueil pour de nouveaux arrivants"
         ],
         "correct": 1,
@@ -9530,19 +10122,19 @@ window.LIVRES = [
         "type": "mcq",
         "text": "Dans la phrase : « Je vous déposerai dans un cloitre. », que désigne un « cloître » (ou cloitre) ?",
         "options": [
+          "Un marché couvert de légumes",
+          "Une grande gare de triage pour les trains",
           "Une galerie fermée ou un monastère / couvent isolé du monde extérieur",
-          "Une grande gare de triage pour les trains de marchandises",
-          "Un marché couvert où l'on vend des légumes frais",
-          "Un stade municipal équipé d'une piste d'athlétisme"
+          "Un stade municipal de football"
         ],
-        "correct": 0,
-        "explanation": "Un cloître est la partie intérieure fermée d'un monastère ou d'un couvent, souvent synonyme de lieu religieux protecteur et retiré."
+        "correct": 2,
+        "explanation": "Un cloître est la partie intérieure fermée d'un monastère ou couvent, souvent synonyme de lieu religieux protecteur."
       },
       {
         "id": "q16",
         "section": "Compréhension globale",
         "type": "synthesis",
-        "text": "Quel résumé correspond le mieux à l'œuvre historique et testimoniale « La villa » ?",
+        "text": "Quel résumé correspond le mieux à l'œuvre historique « La villa » ?",
         "options": [
           "Résumé A : Durant l'été 1944, deux adolescents belges décident d'acheter une villa abandonnée pour y installer un atelier de réparation de postes de radio. Ils aident la Résistance en transmettant des messages secrets jusqu'à la Libération.",
           "Résumé B : Séparés de leur mère pendant un voyage en train, Anna et Ruben trouvent refuge chez un vieux fermier qui les cache dans sa grange. Après la guerre, ils partent s'installer en France pour retrouver leur père.",
@@ -9563,35 +10155,35 @@ window.LIVRES = [
         "id": "q1",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Qui est Walid et où se déroule l'intrigue au début du récit ?",
+        "text": "Qui est Walid et où se déroule l'histoire ?",
         "options": [
-          "Un collégien de 12 ans en classe de 5e vivant à Lille dans le Nord",
-          "Un jeune détective privé professionnel basé à Marseille",
+          "Un jeune détective privé basé à Marseille",
+          "Un voyageur sans abri parcourant la France",
           "Un champion de football junior habitant à Paris",
-          "Un voyageur sans abri qui parcourt toute la France"
+          "Un élève de 12 ans en classe de 5e vivant à Lille"
         ],
-        "correct": 0,
+        "correct": 3,
         "explanation": "Walid a 12 ans, est en classe de 5e à Lille, aime le foot, les frites de la cantine et le vent sur son visage."
       },
       {
         "id": "q2",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Quel comportement suspect d'un nouvel arrivant attire l'attention de Walid, Ruben et Altina ?",
+        "text": "Quels détails inhabituels concernant le nouvel élève éveillent la curiosité de ses camarades ?",
         "options": [
-          "Il roule en voiture de sport sans permis de conduire",
-          "Il rôde mystérieusement près des voies de chemin de fer et paraît vivre en marge des autres",
+          "Son silence, son dossier scolaire totalement vide et ses disparitions soudaines après les cours",
+          "Il porte un costume de super-héros en classe",
           "Il refuse de manger à la cantine scolaire",
-          "Il porte un déguisement de super-héros dans la rue"
+          "Il roule en limousine et distribue des billets de banque"
         ],
-        "correct": 1,
-        "explanation": "Les trois collégiens remarquent les allées et venues étranges et discrètes d'un nouveau garçon près des voies ferrées."
+        "correct": 0,
+        "explanation": "Le nouvel élève intrigue par son mutisme, le mystère entourant son inscription sans dossier et ses départs précipités."
       },
       {
         "id": "q3",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Quel outil Altina tient-elle minutieusement à jour pour mener leur enquête ?",
+        "text": "Quel outil Altina utilise-t-elle pour organiser leur enquête ?",
         "options": [
           "Un appareil photo instantané fixé sur son vélo",
           "Un carnet d'investigation où elle consigne leurs observations sous le titre « Filature du nouveau »",
@@ -9599,21 +10191,21 @@ window.LIVRES = [
           "Un dictaphone numérique prêté par son père"
         ],
         "correct": 1,
-        "explanation": "Altina adore jouer les fins limiers et note rigoureusement chaque étape de leur filature dans son carnet d'enquêtrice."
+        "explanation": "Altina note minutieusement leurs filatures et observations dans son carnet d'enquêtrice."
       },
       {
         "id": "q4",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Quelles théories fantaisistes les enfants imaginent-ils au début au sujet de l'inconnu ?",
+        "text": "Parmi les suppositions des enfants, quelle hypothèse amusante Ruben formule-t-il ?",
         "options": [
-          "Qu'il s'agit d'un agent secret d'élite ou d'un membre d'un gang de voleurs",
-          "Qu'il est un extraterrestre venu étudier les trains français",
-          "Qu'il est le fils caché d'une star de cinéma internationale",
-          "Qu'il cherche un trésor de pirates caché sous la gare"
+          "Qu'il s'agit d'un chef cuisinier venu espionner la cantine",
+          "Qu'il est le fils d'un roi d'un pays lointain",
+          "Qu'il est peut-être un extraterrestre venu sur Terre pour étudier les humains",
+          "Qu'il est un robot envoyé par une école concurrente"
         ],
-        "correct": 0,
-        "explanation": "Emportés par leur imagination, les collégiens échafaudent des scénarios romanesques d'espionnage et de cambriolage."
+        "correct": 2,
+        "explanation": "Ruben, avec son imagination débordante, imagine que le nouveau pourrait être un être venu d'une autre planète."
       },
       {
         "id": "q5",
@@ -9621,55 +10213,55 @@ window.LIVRES = [
         "type": "mcq",
         "text": "Quelle réalité poignante découvrent-ils en suivant le garçon jusqu'à son lieu de vie ?",
         "options": [
-          "Qu'il vit dans un hôtel cinq étoiles avec sa famille",
-          "Qu'il survit dans un camp de fortune précaire avec d'autres réfugiés migrants",
-          "Qu'il habite une maison normale juste à côté de l'école",
-          "Qu'il est hébergé chez le principal du collège"
+          "Qu'il habite un hôtel de luxe avec sa famille",
+          "Qu'il vit chez le principal du collège",
+          "Qu'il loge dans une cabane construite au fond d'un jardin",
+          "Qu'il survit dans un camp de fortune très précaire avec d'autres personnes migrantes"
         ],
-        "correct": 1,
-        "explanation": "Les enfants découvrent que l'inconnu vit dans des conditions extrêmement dures au sein d'un campement de fortune pour personnes migrantes."
+        "correct": 3,
+        "explanation": "Les collégiens découvrent les conditions très dures et précaires dans lesquelles vit le jeune réfugié."
       },
       {
         "id": "q6",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Quelle est la véritable identité et l'histoire tragique de ce garçon nommé Adnan ?",
+        "text": "Quelle est l'histoire tragique de ce garçon prénommé Adnan ?",
         "options": [
-          "Un acteur célèbre qui tournait un film en caméra cachée",
-          "Un jeune Syrien qui a dû fuir son pays natal ravagé par les horreurs de la guerre",
-          "Un champion d'échecs en fuite après un tournoi international",
-          "Un espion étranger envoyé pour une mission secrète"
+          "Il a fui la Syrie ravagée par la guerre pour trouver refuge et sécurité",
+          "Il est un jeune acteur en tournage pour une série télévisée",
+          "Il a fugué de son pensionnat pour faire du camping sauvage",
+          "Il est venu en France pour participer à un concours d'échecs"
         ],
-        "correct": 1,
-        "explanation": "Le garçon s'appelle Adnan ; il a fui la guerre en Syrie dans l'espoir de trouver la sécurité et un avenir paisible."
+        "correct": 0,
+        "explanation": "Adnan a été contraint d'abandonner sa terre natale en Syrie à cause des violences de la guerre."
       },
       {
         "id": "q7",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Quel événement brutal vient disperser le campement peu de temps après ?",
+        "text": "Que devient le campement peu de temps après leur découverte ?",
         "options": [
-          "Une fête de quartier organisée par la mairie",
-          "L'évacuation et la destruction par le feu du campement, contraignant les réfugiés à fuir à nouveau",
-          "La construction d'un nouveau centre d'accueil tout confort",
-          "L'arrivée d'un cirque ambulant sur le terrain vague"
+          "Il est transformé en village de vacances",
+          "Il est évacué et brûlé, forçant Adnan et les siens à fuir à nouveau",
+          "Il est agrandi par la mairie",
+          "Il accueille une fête de quartier"
         ],
         "correct": 1,
-        "explanation": "Le campement est détruit et brûlé, obligeant Adnan et les siens à reprendre la route dans la précarité."
+        "explanation": "Le campement est détruit par le feu lors d'une évacuation, dispersant les personnes qui y vivaient."
       },
       {
         "id": "q8",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Quelle phrase bouleversante Altina écrit-elle en conclusion dans son carnet d'enquête ?",
+        "text": "Quelle phrase émouvante Altina note-t-elle pour clore son carnet d'enquête ?",
         "options": [
-          "« Affaire suivante, nous avons perdu notre temps. »",
-          "« Conclusion : affaire classée. Commentaires éventuels : ça aurait pu être moi. »",
-          "« Je deviendrai inspectrice de police plus tard. »",
-          "« Les mystères de la gare ne seront jamais résolus. »"
+          "« Je veux devenir policière plus tard. »",
+          "« Enquête ratée, nous n'avons rien appris d'intéressant. »",
+          "« Affaire classée. Commentaires éventuels : ça aurait pu être moi. »",
+          "« Plus jamais je ne mènerai de filature. »"
         ],
-        "correct": 1,
-        "explanation": "Altina prend conscience de la fragilité du destin humain et comprend avec une profonde empathie que n'importe qui aurait pu être à la place d'Adnan."
+        "correct": 2,
+        "explanation": "Altina exprime une profonde prise de conscience humaine en réalisant que n'importe quel enfant aurait pu connaître le même sort."
       },
       {
         "id": "q9",
@@ -9677,23 +10269,23 @@ window.LIVRES = [
         "type": "tf",
         "text": "Walid, Ruben et Altina sont des collégiens lillois curieux et observateurs.",
         "correct": true,
-        "explanation": "VRAI : Les trois amis partagent la même curiosité et décident d'élucider ensemble le mystère du nouvel arrivant."
+        "explanation": "VRAI : Les trois amis partagent la même curiosité et décident d'élucider ensemble le mystère du nouveau camarade."
       },
       {
         "id": "q10",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "L'inconnu était en réalité un voleur dangereux recherché par toutes les polices d'Europe.",
+        "text": "L'inconnu était en réalité un voleur dangereux recherché par la police.",
         "correct": false,
-        "explanation": "FAUX : Il s'agissait simplement d'un jeune réfugié syrien sans défense cherchant à survivre."
+        "explanation": "FAUX : Il s'agissait simplement d'un jeune réfugié syrien sans défense cherchant à vivre en paix."
       },
       {
         "id": "q11",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Adnan a été forcé de quitter la Syrie pour fuir les violences de la guerre.",
+        "text": "Adnan a dû fuir son pays d'origine à cause des violences de la guerre.",
         "correct": true,
-        "explanation": "VRAI : Adnan est un jeune migrant qui a dû abandonner sa terre natale à cause des conflits armés."
+        "explanation": "VRAI : Adnan est un jeune réfugié syrien ayant fui les horreurs du conflit armé."
       },
       {
         "id": "q12",
@@ -9709,13 +10301,13 @@ window.LIVRES = [
         "type": "mcq",
         "text": "Dans la phrase : « Altina, on ne peut pas prévoir le jour et l'heure d'une filature. », que désigne une « filature » ?",
         "options": [
-          "Une usine où l'on fabrique du fil à coudre",
-          "L'action de suivre discrètement et sans être vu une personne pour surveiller ses faits et gestes",
-          "Une course d'orientation chronométrée en forêt",
-          "Une leçon de tricot à l'école"
+          "Une usine de fabrication de tissu",
+          "Une course d'endurance en stade",
+          "Une punition scolaire après les cours",
+          "L'action de suivre discrètement une personne pour observer ses déplacements"
         ],
-        "correct": 1,
-        "explanation": "Faire une filature consiste à marcher sur les pas de quelqu'un en secret pour découvrir où il va."
+        "correct": 3,
+        "explanation": "Faire une filature consiste à suivre quelqu'un en cachette pour découvrir où il se rend."
       },
       {
         "id": "q14",
@@ -9723,12 +10315,12 @@ window.LIVRES = [
         "type": "mcq",
         "text": "Dans la phrase : « Tous ces mystères qui régnaient autour de lui, c'était une aubaine à ne pas manquer. », que signifie le mot « aubaine » ?",
         "options": [
-          "Un gros problème financier",
           "Une occasion particulièrement favorable, une chance inespérée",
-          "Une punition reçue à la cantine",
-          "Un panneau d'interdiction de stationner"
+          "Une catastrophe redoutable",
+          "Une dispute entre amis",
+          "Une note éliminatoire à un devoir"
         ],
-        "correct": 1,
+        "correct": 0,
         "explanation": "Une aubaine est une chance inattendue, une opportunité avantageuse qu'il faut saisir."
       },
       {
@@ -9737,13 +10329,13 @@ window.LIVRES = [
         "type": "mcq",
         "text": "Dans la phrase : « Le nouveau vit ici, dans ce camp de migrants. », que désigne le mot « migrant » ?",
         "options": [
-          "Un oiseau qui reste toujours au même endroit toute l'année",
-          "Une personne qui quitte son pays d'origine pour s'installer dans un autre, souvent pour fuir un danger ou la misère",
-          "Un touriste en vacances pour une semaine à l'hôtel",
-          "Un conducteur de train de grandes lignes"
+          "Un touriste en voyage d'affaires",
+          "Une personne qui quitte son pays pour s'installer ailleurs, souvent pour fuir un danger ou la misère",
+          "Un habitant de longue date d'un quartier",
+          "Un explorateur professionnel"
         ],
         "correct": 1,
-        "explanation": "Un migrant est une personne qui se déplace d'un pays à un autre dans l'espoir de trouver de meilleures conditions de vie ou d'échapper à la guerre."
+        "explanation": "Un migrant est une personne qui se déplace d'un pays à un autre dans l'espoir de trouver la sécurité ou de meilleures conditions de vie."
       },
       {
         "id": "q16",
@@ -9751,12 +10343,12 @@ window.LIVRES = [
         "type": "synthesis",
         "text": "Quel résumé correspond le mieux au message du livre « Le mystérieux inconnu » ?",
         "options": [
-          "Résumé A : Intrigués par l'attitude solitaire d'un nouveau garçon près des voies ferrées, trois collégiens lillois mènent une filature qui les mène à un campement précaire. Ils découvrent qu'il s'agit d'Adnan, un réfugié syrien, une rencontre bouleversante qui balaie leurs préjugés.",
+          "Résumé A : Intrigués par le silence et les absences d'un nouvel élève, trois collégiens lillois mènent une filature qui les conduit à un campement précaire. Ils découvrent qu'il s'agit d'Adnan, un réfugié syrien, une rencontre bouleversante qui balaie leurs préjugés et leur enseigne une vraie leçon d'empathie.",
           "Résumé B : Convaincus qu'un espion international s'est infiltré dans leur collège de Lille, Walid et ses camarades piègent le suspect dans la cour de récréation et permettent l'arrestation d'un dangereux gang de trafiquants de bijoux.",
           "Résumé C : Après avoir trouvé un carnet d'enquête perdu dans la gare de Lille, Ruben et Altina partent à la recherche de son propriétaire. Leur périple les conduit à travers toute la ville jusqu'à un club secret de détectives amateurs."
         ],
         "correct": 0,
-        "explanation": "Le résumé A traduit fidèlement l'aventure : le point de vue d'enfants curieux, la découverte du campement de réfugiés, l'histoire d'Adnan et la profonde leçon d'humanité."
+        "explanation": "Le résumé A traduit fidèlement l'aventure : la curiosité des élèves, la découverte du campement de réfugiés, l'histoire d'Adnan et la leçon d'humanité."
       }
     ]
   },
@@ -9770,145 +10362,145 @@ window.LIVRES = [
         "id": "q1",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Quel devoir scolaire le narrateur doit-il rendre le lendemain et pourquoi cela l'embête-t-il ?",
+        "text": "Quel devoir scolaire Leyla doit-elle rendre le lendemain et pourquoi cela ne l'enthousiasme-t-il pas ?",
         "options": [
-          "Un problème de géométrie très complexe sur les triangles",
-          "Une rédaction sur le sujet « Mes plus belles vacances », alors qu'il n'a encore rien écrit",
-          "Un exposé en sciences sur le système solaire",
-          "Une poésie de trois strophes à apprendre par cœur"
+          "Un problème de géométrie très complexe",
+          "Une poésie de trois strophes à réciter par cœur",
+          "Une rédaction sur le sujet « Mes plus belles vacances », qui ne l'inspire guère au départ",
+          "Un dessin pour le cours d'arts plastiques"
         ],
-        "correct": 1,
-        "explanation": "Le narrateur doit rédiger un texte sur ses « plus belles vacances », un sujet qui ne l'inspire pas du tout au départ."
+        "correct": 2,
+        "explanation": "Leyla doit écrire une rédaction sur ses « plus belles vacances », un thème qui ne l'inspire pas du tout avant le début de l'aventure."
       },
       {
         "id": "q2",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Quelle rencontre inattendue fait-il au coin de la rue en rentrant chez lui ?",
+        "text": "Dans quelles circonstances Leyla découvre-t-elle la petite chienne Molly ?",
         "options": [
-          "Il croise son professeur de français qui promène son chat",
-          "Il découvre Molly, une petite chienne apeurée et tremblante",
-          "Il trouve un portefeuille rempli de billets de banque",
-          "Il rencontre un groupe de musiciens ambulants"
+          "Elle la gagne lors d'une tombola de quartier",
+          "Elle la croise errant au bord de l'autoroute",
+          "Elle l'adopte dans un refuge pour animaux",
+          "Elle la trouve chez son vieux voisin isolé qui vient d'être victime d'un malaise"
         ],
-        "correct": 1,
-        "explanation": "Il fait la connaissance d'une petite chienne nommée Molly, perdue et apeurée sur le trottoir."
+        "correct": 3,
+        "explanation": "Molly est la chienne du vieux voisin ; Leyla la découvre chez lui alors que le vieil homme a besoin de soins urgents."
       },
       {
         "id": "q3",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "À qui appartient réellement Molly ?",
+        "text": "Quelle situation critique touche soudainement le vieux maître de Molly ?",
         "options": [
-          "Au directeur de l'école primaire du quartier",
-          "À un vieil homme isolé et affaibli du voisinage",
-          "À une clinique vétérinaire du centre-ville",
-          "À une animalerie qui l'a égarée pendant une livraison"
+          "Il est victime d'un malaise et doit être hospitalisé d'urgence",
+          "Il part faire le tour du monde en croisière",
+          "Il déménage à la campagne sans prévenir",
+          "Il vend tous ses meubles aux enchères"
         ],
-        "correct": 1,
-        "explanation": "Molly est la compagne fidèle d'un vieux monsieur du quartier qui vit seul et a des problèmes de santé."
+        "correct": 0,
+        "explanation": "L'état de santé du vieil homme nécessite son transport et son admission immédiate à l'hôpital."
       },
       {
         "id": "q4",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Quelle situation critique touche soudainement le vieux maître de Molly ?",
+        "text": "Quelle décision généreuse Leyla prend-elle pour aider le vieil homme hospitalisé ?",
         "options": [
-          "Il part en voyage pour faire le tour du monde",
-          "Il est victime d'un malaise et doit être hospitalisé d'urgence",
-          "Il décide de vendre tous ses biens aux enchères",
-          "Il déménage dans un autre pays sans prévenir personne"
+          "Elle refuse de s'occuper de l'animal et le laisse dehors",
+          "Elle prend en charge Molly, la nourrit, la rassure et s'en occupe avec grand soin",
+          "Elle vend la chienne à un passant dans la rue",
+          "Elle confie immédiatement la chienne à la police municipale"
         ],
         "correct": 1,
-        "explanation": "L'état de santé du vieil homme se dégrade subitement, nécessitant son transport et son admission à l'hôpital."
+        "explanation": "Leyla assume avec dévouement la responsabilité de garder et choyer Molly pendant l'absence de son maître."
       },
       {
         "id": "q5",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Quelle décision courageuse et généreuse le narrateur prend-il pour aider ?",
+        "text": "Pourquoi Leyla tient-elle absolument à rendre visite au vieux monsieur à l'hôpital ?",
         "options": [
-          "Il dépose immédiatement la chienne dans un refuge lointain",
-          "Il prend en charge Molly, la nourrit, la rassure et s'en occupe avec dévouement",
-          "Il revend la chienne à un passant pour se faire de l'argent de poche",
-          "Il refuse de s'en mêler et rentre jouer à ses jeux vidéo"
+          "Pour lui faire signer un mot d'excuse pour l'école",
+          "Pour lui demander de rembourser les croquettes achetées",
+          "Pour lui montrer qu'elle prend bien soin de Molly et lui apporter du réconfort moral",
+          "Pour récupérer les clés de son appartement"
         ],
-        "correct": 1,
-        "explanation": "Le jeune garçon assume la garde de Molly avec un sens aigu des responsabilités, prenant soin d'elle jour après jour."
+        "correct": 2,
+        "explanation": "Elle sait combien Molly compte pour son maître et souhaite rassurer le vieil homme pour qu'il garde l'esprit tranquille."
       },
       {
         "id": "q6",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Pourquoi le narrateur tient-il absolument à rendre visite au vieil homme à l'hôpital ?",
+        "text": "Comment le père de Leyla réagit-il en découvrant l'attitude de sa fille ?",
         "options": [
-          "Pour lui demander de payer la nourriture de la chienne",
-          "Pour le rassurer, lui montrer qu'il prend bien soin de Molly et lui apporter du réconfort",
-          "Pour lui faire signer un autographe sur son cahier de devoirs",
-          "Pour récupérer les clés de sa maison"
+          "Il se fâche et refuse de lui parler",
+          "Il exige qu'elle se débarrasse immédiatement de la chienne",
+          "Il lui donne une punition pour avoir ramené un animal",
+          "Touché par sa sensibilité et sa maturité, il pose sur elle un regard plein de fierté et de tendresse"
         ],
-        "correct": 1,
-        "explanation": "Il sait combien le vieil homme aime sa chienne et veut apaiser ses inquiétudes en lui prouvant que Molly est entre de bonnes mains."
+        "correct": 3,
+        "explanation": "Le père, souvent réservé ou strict, est profondément ému par la générosité de sa fille et esquisse un sourire bienveillant."
       },
       {
         "id": "q7",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Comment l'attitude du père du narrateur évolue-t-elle au fil des événements ?",
+        "text": "Quel sujet formidable Leyla aura-t-elle finalement pour sa rédaction de français ?",
         "options": [
-          "Il devient de plus en plus sévère et interdit à son fils de sortir",
-          "Touché par la maturité et la sensibilité de son fils, il le regarde avec fierté, douceur et complicité",
-          "Il décide de ne plus jamais lui parler",
-          "Il exige que la chienne dorme dehors sous la pluie"
+          "Cette belle expérience humaine d'entraide, de tendresse et de responsabilité envers son voisin et Molly",
+          "Une partie de jeux vidéo en ligne",
+          "Un voyage imaginaire sur une planète lointaine",
+          "La recette de cuisine de son gâteau préféré"
         ],
-        "correct": 1,
-        "explanation": "Le père, souvent distant ou sérieux, découvre chez son fils une grande noblesse de cœur et esquisse un sourire bienveillant."
+        "correct": 0,
+        "explanation": "Cette aventure solidaire donne un sens profond à ses « plus belles vacances », fondées sur l'amour du vivant et l'altruisme."
       },
       {
         "id": "q8",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Quel sujet magnifique le narrateur aura-t-il finalement pour sa rédaction scolaire ?",
+        "text": "Quel lien se renforce au sein de la famille de Leyla grâce à cette histoire ?",
         "options": [
-          "Un voyage imaginaire sur la lune",
-          "Cette expérience humaine de dévouement, de compassion et de solidarité partagée avec Molly et son maître",
-          "Le récit d'une partie de football entre amis",
-          "La description détaillée d'une partie de jeux vidéo"
+          "Aucun changement, l'ambiance reste glaciale",
+          "Une complicité nouvelle et chaleureuse s'installe entre Leyla et son père",
+          "Ses parents décident de changer de ville",
+          "Leyla décide de partir vivre en internat"
         ],
         "correct": 1,
-        "explanation": "Cette aventure altruiste donne tout son sens à l'expression « plus belles vacances », faites d'actes de gentillesse et de liens humains forts."
+        "explanation": "Cette épreuve partagée rapproche le père et sa fille, favorisant un dialogue plus sensible et complice."
       },
       {
         "id": "q9",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Au départ, le narrateur manquait totalement d'idées pour rédiger son devoir sur les vacances.",
+        "text": "Au départ, Leyla manque d'enthousiasme pour le sujet de rédaction imposé par son professeur.",
         "correct": true,
-        "explanation": "VRAI : Il n'avait encore rien écrit et trouvait le sujet de rédaction peu enthousiasmant."
+        "explanation": "VRAI : Elle n'a encore rien rédigé et trouve le thème des vacances difficile à aborder."
       },
       {
         "id": "q10",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Le narrateur refuse d'approcher la petite chienne Molly car il en a très peur.",
+        "text": "Molly est un grand chien de garde féroce qui effraie tout le quartier.",
         "correct": false,
-        "explanation": "FAUX : Il s'approche avec douceur de la chienne pour la mettre en sécurité."
+        "explanation": "FAUX : Molly est une petite chienne douce, apeurée et très attachante."
       },
       {
         "id": "q11",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Le vieil homme est touché et rassuré de savoir que son animal est aimé et protégé pendant son hospitalisation.",
+        "text": "Le vieil homme est soulagé et rassuré de savoir que sa chienne est entre de bonnes mains.",
         "correct": true,
-        "explanation": "VRAI : Savoir Molly choyée et en sécurité permet au vieil homme de garder l'esprit tranquille à l'hôpital."
+        "explanation": "VRAI : Savoir Molly choyée par Leyla lui permet de se reposer l'esprit tranquille à l'hôpital."
       },
       {
         "id": "q12",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Le père du narrateur reste totalement indifférent et rejette son fils à la fin.",
+        "text": "À la fin de l'histoire, le père de Leyla chasse la chienne à la rue sans aucun remords.",
         "correct": false,
-        "explanation": "FAUX : Le père pose sur son fils un regard plein de sensibilité, de fierté et de tendresse."
+        "explanation": "FAUX : Le père soutient sa fille avec douceur et bienveillance dans son acte généreux."
       },
       {
         "id": "q13",
@@ -9916,13 +10508,13 @@ window.LIVRES = [
         "type": "mcq",
         "text": "Dans la phrase : « J'ai une rédaction à rendre demain et je n'ai encore rien écrit. », qu'est-ce qu'une « rédaction » à l'école ?",
         "options": [
-          "Un calcul de divisions posées",
-          "Un exercice d'écriture où l'élève compose un texte ou une histoire sur un sujet donné",
-          "Un dessin géométrique réalisé au compas",
-          "Un chant choral appris avec toute la classe"
+          "Une séance de gymnastique",
+          "Un problème de mathématiques",
+          "Un exercice d'écriture où l'élève compose un texte structuré sur un sujet donné",
+          "Un dessin à colorier"
         ],
-        "correct": 1,
-        "explanation": "Une rédaction est un travail scolaire d'expression écrite consistant à rédiger un texte structuré."
+        "correct": 2,
+        "explanation": "Une rédaction est un devoir scolaire d'expression écrite consistant à composer un texte personnel."
       },
       {
         "id": "q14",
@@ -9930,12 +10522,12 @@ window.LIVRES = [
         "type": "mcq",
         "text": "Dans la phrase : « En outre, j'ai un mauvais pressentiment depuis une heure. », que signifie un « pressentiment » ?",
         "options": [
-          "Un grand appétit avant le repas",
-          "L'intuition ou le sentiment intérieur que quelque chose va se produire, souvent de désagréable",
-          "Une douleur musculaire après une course",
-          "Un souvenir joyeux de la petite enfance"
+          "Un grand sentiment de faim",
+          "Une douleur dans le dos",
+          "Un éclat de rire incontrôlable",
+          "L'intuition ou le sentiment intérieur que quelque chose de fâcheux va arriver"
         ],
-        "correct": 1,
+        "correct": 3,
         "explanation": "Un pressentiment est une intuition ou un sentiment vague prédisant un événement à venir."
       },
       {
@@ -9944,13 +10536,13 @@ window.LIVRES = [
         "type": "mcq",
         "text": "Dans la phrase : « D'un coup de pied, je l'envoie contre le mur afin que personne d'autre ne trébuche dessus. », que signifie « trébucher » ?",
         "options": [
-          "Marcher d'un pas militaire très rapide",
-          "Perdre l'équilibre en butant sur un obstacle",
-          "Sauter par-dessus une flaque d'eau",
-          "S'asseoir par terre pour se reposer"
+          "Perdre l'équilibre en heurtant un obstacle avec le pied",
+          "Courir à toute vitesse",
+          "S'asseoir sur un banc public",
+          "Monter un escalier quatre à quatre"
         ],
-        "correct": 1,
-        "explanation": "Trébucher signifie heurter un obstacle avec son pied et manquer de tomber."
+        "correct": 0,
+        "explanation": "Trébucher signifie buter contre un obstacle et risquer de tomber."
       },
       {
         "id": "q16",
@@ -9958,12 +10550,12 @@ window.LIVRES = [
         "type": "synthesis",
         "text": "Quel résumé correspond le mieux au récit « Le vieil homme et le chien » ?",
         "options": [
-          "Résumé A : Pour gagner le premier prix d'un concours canin, un garçon achète une chienne dans une animalerie. Après plusieurs semaines d'entraînement intensif, il remporte la médaille d'or et fait la fierté de son école.",
-          "Résumé B : Alors qu'il cherche l'inspiration pour un devoir de vacances, un collégien recueille Molly, la chienne d'un vieil homme soudainement hospitalisé. En veillant sur l'animal et en soutenant le maître malade, il fait preuve d'une maturité exemplaire qui rapproche père et fils.",
-          "Résumé C : En vacances à la montagne chez son oncle vétérinaire, un garçon soigne un chien de berger blessé par un loup. Ensemble, ils guident un troupeau de moutons égaré à travers une violente tempête de neige."
+          "Résumé A : Pour gagner le premier prix d'un concours canin, Leyla achète une chienne dans une animalerie. Après plusieurs semaines d'entraînement intensif, elle remporte la médaille d'or et fait la fierté de son école.",
+          "Résumé B : Alors qu'elle cherche l'inspiration pour son devoir de vacances, Leyla recueille Molly, la chienne de son vieux voisin subitement hospitalisé. En veillant sur l'animal et en rassurant le maître malade, la jeune fille fait preuve d'une maturité exemplaire qui resserre les liens avec son père.",
+          "Résumé C : En vacances à la montagne chez son oncle vétérinaire, Leyla soigne un chien de berger blessé par un loup. Ensemble, ils guident un troupeau de moutons égaré à travers une violente tempête de neige."
         ],
         "correct": 1,
-        "explanation": "Le résumé B synthétise parfaitement l'histoire : le point de départ de la rédaction, le sauvetage de Molly, le dévouement pour le voisin hospitalisé et l'émouvante évolution de la relation avec le père."
+        "explanation": "Le résumé B synthétise parfaitement l'histoire : le devoir de Leyla, le sauvetage de Molly, le dévouement pour le voisin et le rapprochement complice avec son père."
       }
     ]
   },
@@ -9977,29 +10569,29 @@ window.LIVRES = [
         "id": "q1",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Quelle croyance partagée pousse la narratrice et Laurine à se jalouser mutuellement ?",
+        "text": "Quelle croyance partagée pousse la narratrice et Laurine à s'envier mutuellement ?",
         "options": [
-          "Elles pensent chacune que l'autre a des meilleures notes sans jamais étudier",
-          "Chacune est persuadée que sa meilleure amie a une famille idéale et beaucoup plus de « chance » qu'elle",
-          "Elles se disputent pour savoir qui a les plus beaux vêtements",
-          "Elles veulent toutes les deux devenir déléguées de classe"
+          "Elles veulent toutes les deux devenir déléguées de classe",
+          "Chacune est persuadée que sa meilleure amie a une famille idéale et beaucoup plus de chance qu'elle",
+          "Elles pensent chacune que l'autre obtient de meilleures notes sans jamais étudier",
+          "Elles se disputent au sujet de leurs vêtements de marque"
         ],
         "correct": 1,
-        "explanation": "Chacune des deux amies idéalise la vie et les parents de l'autre, s'imaginant que l'herbe est toujours plus verte ailleurs."
+        "explanation": "Chacune des deux amies idéalise la vie et la famille de l'autre, pensant que l'herbe est toujours plus verte ailleurs."
       },
       {
         "id": "q2",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Quelle idée surprenante les deux filles décident-elles de tester pour vérifier qui est la plus chanceuse ?",
+        "text": "Quelle expérience originale les deux filles décident-elles de tenter pour vérifier qui est la plus chanceuse ?",
         "options": [
-          "Participer à un jeu télévisé de questions-réponses",
+          "Faire un concours de cuisine entre leurs mères",
+          "Participer à un grand jeu télévisé en duo",
           "Échanger leurs familles et leurs quotidiens respectifs pendant un certain temps",
-          "Tirer à pile ou face pour décider de leur avenir",
-          "Faire un concours de cuisine entre leurs mères"
+          "Tirer à la courte paille pour décider de leur avenir"
         ],
-        "correct": 1,
-        "explanation": "Les deux amies conviennent d'échanger leurs places au sein de leurs familles pour vivre la vie de l'autre de l'intérieur."
+        "correct": 2,
+        "explanation": "Les deux amies conviennent d'échanger leurs places au sein de leurs familles pour vivre la vie de l'autre."
       },
       {
         "id": "q3",
@@ -10007,13 +10599,13 @@ window.LIVRES = [
         "type": "mcq",
         "text": "Que découvre la narratrice en vivant au sein de la famille de Laurine ?",
         "options": [
-          "Que tout est parfait et qu'il n'y a jamais la moindre dispute",
-          "Que derrière les apparences de richesse ou de liberté se cachent des tensions, des exigences et des souffrances réelles",
-          "Que les parents de Laurine sont en réalité des agents secrets",
-          "Qu'elle s'y ennuie tellement qu'elle veut rentrer après cinq minutes"
+          "Qu'elle préfère quitter l'école pour toujours",
+          "Que tout y est absolument parfait sans la moindre dispute",
+          "Que les parents de Laurine refusent de lui donner à manger",
+          "Que derrière les apparences de liberté ou de confort se cachent aussi des contraintes, des règles et des soucis réels"
         ],
-        "correct": 1,
-        "explanation": "La narratrice réalise que la vie de Laurine n'a rien d'un conte de fées et comporte son lot de contraintes et de non-dits."
+        "correct": 3,
+        "explanation": "La narratrice réalise que le quotidien de Laurine n'est pas sans nuages et comporte ses propres difficultés familiales."
       },
       {
         "id": "q4",
@@ -10021,101 +10613,101 @@ window.LIVRES = [
         "type": "mcq",
         "text": "Quel sentiment négatif vient temporairement troubler la belle amitié entre les deux jeunes filles ?",
         "options": [
-          "L'avarice et le goût de l'argent",
-          "Une pointe de jalousie et un sentiment de trahison dû à des secrets mal compris",
+          "Une pointe de jalousie et des non-dits qui provoquent des malentendus blessants",
+          "L'avarice et l'appât du gain",
           "La paresse et le refus d'aller en cours ensemble",
-          "La haine du sport"
+          "La rivalité lors d'une épreuve sportive"
         ],
-        "correct": 1,
-        "explanation": "La jalousie et le manque de communication directe provoquent des malentendus qui blessent les deux amies."
+        "correct": 0,
+        "explanation": "La jalousie et le manque de franchise provoquent des tensions et de la rancœur entre les deux amies."
       },
       {
         "id": "q5",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Pourquoi le dialogue direct et sincère s'avère-t-il indispensable entre elles ?",
+        "text": "Pourquoi le dialogue sincère et direct s'avère-t-il indispensable entre elles ?",
         "options": [
-          "Pour savoir qui va payer l'addition au restaurant",
-          "Parce que garder ses soucis pour soi détruit la confiance, alors qu'en parler permet de se comprendre et de pardonner",
-          "Pour préparer leur exposé de sciences naturelles",
-          "Pour impressionner les autres élèves du collège"
+          "Pour savoir qui payera les places de cinéma",
+          "Parce que garder ses tourments pour soi détruit la confiance, alors qu'en parler permet de se comprendre",
+          "Pour préparer leur exposé d'histoire",
+          "Pour faire plaisir à leurs enseignants"
         ],
         "correct": 1,
-        "explanation": "Le livre illustre l'adage « Si on a un problème, on en parle » : seule la franchise permet de dissiper les rancœurs."
+        "explanation": "Le récit illustre l'importance d'exprimer ses sentiments pour désamorcer les conflits et préserver l'amitié."
       },
       {
         "id": "q6",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Comment les deux amies réagissent-elles lorsqu'elles se rendent compte de leurs erreurs d'appréciation ?",
+        "text": "Comment les deux amies réagissent-elles lorsqu'elles crèvent enfin l'abcès ?",
         "options": [
-          "Elles décident de ne plus jamais se reparler et coupent les ponts",
-          "Elles s'expliquent à cœur ouvert, reconnaissent leurs torts et se réconcilient avec tendresse",
-          "Elles font appel au tribunal des enfants",
-          "Elles accusent leurs parents respectifs d'être les seuls coupables"
+          "Elles changent d'école pour s'éviter",
+          "Elles décident de ne plus jamais se reparler",
+          "Elles s'expliquent avec franchise, reconnaissent leurs erreurs et se réconcilient tendrement",
+          "Elles demandent l'avis de tout le collège"
         ],
-        "correct": 1,
-        "explanation": "La discussion franche et pleine d'émotion leur permet de constater à quel point elles tiennent l'une à l'autre."
+        "correct": 2,
+        "explanation": "Leur explication à cœur ouvert leur permet de réaliser à quel point leur amitié est précieuse."
       },
       {
         "id": "q7",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Quelle réflexion complice font-elles sur leur façon de penser synchronisée à la fin ?",
+        "text": "Quelle plaisanterie complice font-elles sur leur façon de penser identique à la fin ?",
         "options": [
-          "Qu'elles devraient monter une entreprise de mode ensemble",
-          "Qu'elles pensent toujours à la même chose en même temps comme si elles étaient télépathes",
           "Qu'elles vont devenir magiciennes professionnelles",
-          "Qu'elles vont écrire un livre sur les extraterrestres"
+          "Qu'elles devraient créer une marque de vêtements",
+          "Qu'elles vont écrire un roman d'espionnage",
+          "Qu'elles pensent toujours à la même chose en même temps comme si elles étaient télépathes"
         ],
-        "correct": 1,
-        "explanation": "Elles constatent avec humour qu'elles ont encore pensé exactement à la même chose en même temps."
+        "correct": 3,
+        "explanation": "Elles s'amusent de leur complicité naturelle qui les amène souvent à penser aux mêmes choses en même temps."
       },
       {
         "id": "q8",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Quelle est la conclusion morale de cette expérience pour les deux amies ?",
+        "text": "Quelle est la leçon essentielle que les deux amies retirent de cette aventure ?",
         "options": [
-          "Qu'il faut absolument changer de famille dès qu'on a un reproche à faire",
-          "Que la chance ne se mesure pas aux apparences matérielles, mais à l'amour que l'on reçoit et à la force de ses amitiés",
-          "Qu'il vaut mieux ne faire confiance à personne",
-          "Que les parents ont toujours tort dans toutes les situations"
+          "Que la vraie chance ne dépend pas des apparences, mais de l'amour reçu et de la sincérité des amitiés",
+          "Qu'il faut absolument changer de famille dès que l'on est contrarié",
+          "Qu'il vaut mieux cacher ses secrets à tout le monde",
+          "Que les parents ont toujours tort"
         ],
-        "correct": 1,
-        "explanation": "La véritable chance réside dans la capacité d'apprécier sa propre famille et de cultiver une amitié authentique et transparente."
+        "correct": 0,
+        "explanation": "Elles apprennent à apprécier leur propre famille et à bâtir une relation d'amitié solide et transparente."
       },
       {
         "id": "q9",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Au début de l'histoire, chacune des deux amies pense que l'autre a une vie de famille parfaite et sans soucis.",
+        "text": "Au début de l'histoire, chacune des amies imagine que l'autre a une vie parfaite sans le moindre souci.",
         "correct": true,
-        "explanation": "VRAI : Elles envient toutes les deux le quotidien de l'autre avant de vivre l'échange."
+        "explanation": "VRAI : Elles envient toutes les deux le quotidien de l'autre avant de tenter l'expérience."
       },
       {
         "id": "q10",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "L'expérience d'échange de familles démontre que la famille de Laurine ne connaît absolument aucune règle ni difficulté.",
+        "text": "L'immersion dans l'autre famille prouve que la vie de Laurine est exempte de toute difficulté.",
         "correct": false,
-        "explanation": "FAUX : L'immersion prouve que chaque famille a ses propres fragilités, secrets et exigences."
+        "explanation": "FAUX : Chaque famille a ses propres fragilités, exigences et zones d'ombre."
       },
       {
         "id": "q11",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "La communication honnête et l'écoute mutuelle permettent de surmonter la crise de confiance entre les deux filles.",
+        "text": "Le dialogue et l'honnêteté permettent de sauver la complicité entre les deux filles.",
         "correct": true,
-        "explanation": "VRAI : C'est en exprimant sincèrement leurs sentiments qu'elles parviennent à se pardonner."
+        "explanation": "VRAI : C'est en exprimant sincèrement ce qu'elles ont sur le cœur qu'elles se réconcilient."
       },
       {
         "id": "q12",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "À la fin du roman, Laurine et la narratrice mettent fin à leur amitié de manière irréversible.",
+        "text": "À la fin du roman, Laurine et la narratrice rompent définitivement leur amitié.",
         "correct": false,
-        "explanation": "FAUX : Leur amitié ressort grandie, plus forte et plus lucide de cette épreuve."
+        "explanation": "FAUX : Leur amitié en ressort grandie, plus lucide et plus forte que jamais."
       },
       {
         "id": "q13",
@@ -10123,13 +10715,13 @@ window.LIVRES = [
         "type": "mcq",
         "text": "Dans la phrase : « Un truc mauvais qu'on appelle la jalousie. », que signifie le mot « jalousie » ?",
         "options": [
-          "Un sentiment de joie partagée lors d'un anniversaire",
-          "Un sentiment d'envie amère ou d'inquiétude ressenti face aux avantages ou au bonheur d'autrui",
-          "Une envie irrésistible de manger des bonbons",
-          "Un instrument de mesure utilisé en géographie"
+          "Un sentiment de joie partagée lors d'une fête",
+          "Un sentiment d'amertume ou d'envie né du désir de posséder ce que l'autre a",
+          "Une envie d'aider les personnes dans le besoin",
+          "Une grande fatigue après une journée d'école"
         ],
         "correct": 1,
-        "explanation": "La jalousie est un sentiment d'amertume ou d'envie né du désir de posséder ce que l'autre a ou d'être à sa place."
+        "explanation": "La jalousie est un sentiment d'amertume éprouvé face au bonheur ou aux avantages d'autrui."
       },
       {
         "id": "q14",
@@ -10137,13 +10729,13 @@ window.LIVRES = [
         "type": "mcq",
         "text": "Dans la phrase : « J'avais envie de lui dire combien je regrettais, à quel point j'aurais voulu la prendre par la main et plonger ensemble dans la première boucle temporelle venue pour revenir en arrière. », que désigne une « boucle temporelle » ?",
         "options": [
-          "Un voyage imaginaire qui permet de remonter le temps ou de revivre le passé",
-          "Une montre à quartz avec un bracelet en cuir",
-          "Un cercle de danseurs tournant en rythme",
-          "Une ceinture portée lors d'une fête"
+          "Un cercle de danseurs en fête",
+          "Une montre avec un cadran doré",
+          "Un voyage imaginaire permettant de remonter le temps ou de revivre le passé",
+          "Une ceinture d'uniforme"
         ],
-        "correct": 0,
-        "explanation": "Dans les récits de science-fiction, une boucle temporelle permet de voyager dans le temps pour revivre ou modifier un moment passé."
+        "correct": 2,
+        "explanation": "Dans la science-fiction, une boucle temporelle permet de remonter dans le passé pour modifier ou revivre un événement."
       },
       {
         "id": "q15",
@@ -10151,13 +10743,13 @@ window.LIVRES = [
         "type": "mcq",
         "text": "Dans la phrase : « Ton père avait remarqué que quelque chose me tracassait et le soir où ma mère a téléphoné, je m'apprêtais à lui en parler. », que signifie le verbe « tracassait » ?",
         "options": [
-          "Rendait très joyeux et insouciant",
-          "Inquiétait, préoccupait et tourmentait l'esprit",
+          "Rendait joyeux et insouciant",
           "Faisait rire aux éclats",
-          "Donnait envie de dormir"
+          "Donnait envie de danser",
+          "Inquiétait, préoccupait et tourmentait l'esprit"
         ],
-        "correct": 1,
-        "explanation": "Tracasser signifie causer de l'inquiétude, des soucis ou des tourments d'esprit à quelqu'un."
+        "correct": 3,
+        "explanation": "Tracasser signifie causer du souci, de l'inquiétude ou des tourments d'esprit à quelqu'un."
       },
       {
         "id": "q16",
@@ -10167,7 +10759,7 @@ window.LIVRES = [
         "options": [
           "Résumé A : Laurine et sa meilleure amie s'inscrivent à un jeu télévisé national pour prouver leurs talents télépathiques. Malgré la jalousie de leurs camarades de classe, elles remportent le trophée et offrent le gain à une association.",
           "Résumé B : Après une violente dispute au collège, deux amies décident de ne plus jamais se parler et changent d'établissement scolaire. Des années plus tard, elles se retrouvent par hasard lors d'un casting de théâtre.",
-          "Résumé C : Convaincues que l'autre a une famille bien plus chanceuse, deux inséparables amies décident d'échanger leurs vies. Confrontées à la réalité des faux-semblants et aux blessures de la jalousie, elles apprennent à communiquer avec sincérité et découvrent la vraie valeur de leur amitié."
+          "Résumé C : Convaincues que l'autre a une vie de famille bien plus enviable, deux inséparables amies décident d'échanger leurs quotidiens. Confrontées à la réalité des faux-semblants et aux blessures de la jalousie, elles apprennent à communiquer avec franchise et découvrent la vraie valeur de leur amitié."
         ],
         "correct": 2,
         "explanation": "Le résumé C embrasse toute la trame : l'illusion initiale de la chance, l'échange des familles, l'épreuve des sentiments et la réconciliation grâce au dialogue franc."
