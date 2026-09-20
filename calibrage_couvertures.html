@@ -393,8 +393,8 @@
     <!-- Sidebar with filter tabs -->
     <div class="sidebar-wrapper">
       <div class="filter-tabs">
-        <button id="tab-new" class="filter-tab active" onclick="setFilter('new')">⭐ 12 Nouveaux</button>
-        <button id="tab-all" class="filter-tab" onclick="setFilter('all')">📚 Tous (46)</button>
+        <button id="tab-new" class="filter-tab active" onclick="setFilter('new')">⭐ 2 Nouveaux</button>
+        <button id="tab-all" class="filter-tab" onclick="setFilter('all')">📚 Tous (48)</button>
         <button id="tab-todo" class="filter-tab" onclick="setFilter('todo')">⏳ À faire</button>
         <button id="tab-done" class="filter-tab" onclick="setFilter('done')">✅ Faits</button>
       </div>
@@ -502,7 +502,7 @@
             "id": "back_to_the_80s",
             "title": "Back to the 80's !",
             "file": "Back to the 80's !.jpeg",
-            "isNew": true
+            "isNew": false
       },
       {
             "id": "college_momiji",
@@ -514,18 +514,24 @@
             "id": "comme_sur_des_roulettes",
             "title": "Comme sur des roulettes !",
             "file": "Comme sur des roulettes !.jpeg",
-            "isNew": true
+            "isNew": false
       },
       {
             "id": "crash_coeur_jungle",
             "title": "Crash au cœur de la jungle",
             "file": "Crash au coeur de la jungle.jpeg",
-            "isNew": true
+            "isNew": false
       },
       {
             "id": "droles_darbres",
             "title": "Drôles d'arbres",
             "file": "Drôles d'arbres.jpeg",
+            "isNew": false
+      },
+      {
+            "id": "du_sel_sur_mes_levres",
+            "title": "Du sel sur mes lèvres",
+            "file": "Du sel sur mes lèvres.jpeg",
             "isNew": true
       },
       {
@@ -587,7 +593,7 @@
             "id": "la_villa",
             "title": "La villa",
             "file": "La villa.jpeg",
-            "isNew": true
+            "isNew": false
       },
       {
             "id": "bug_mamie",
@@ -611,7 +617,7 @@
             "id": "le_mysterieux_inconnu",
             "title": "Le mystérieux inconnu",
             "file": "Le mystérieux inconnu.jpeg",
-            "isNew": true
+            "isNew": false
       },
       {
             "id": "renne_sabots",
@@ -647,7 +653,7 @@
             "id": "le_vieil_homme_et_le_chien",
             "title": "Le vieil homme et le chien",
             "file": "Le vieil homme et le chien.jpeg",
-            "isNew": true
+            "isNew": false
       },
       {
             "id": "petite_soeur",
@@ -659,6 +665,12 @@
             "id": "menace_classe_rousse",
             "title": "Menace sur la classe rousse",
             "file": "Menaces sur la classe rousse.jpeg",
+            "isNew": false
+      },
+      {
+            "id": "nature_et_sortilege_institulemn",
+            "title": "Nature et sortilège à l'institut Lemn",
+            "file": "Nature et sortilèges à l'Institut Lemn.jpeg",
             "isNew": true
       },
       {
@@ -697,7 +709,7 @@
             "id": "qui_a_le_plus_de_chance",
             "title": "Qui a le plus de chance ?",
             "file": "Qui a le plus de chance ?.jpeg",
-            "isNew": true
+            "isNew": false
       },
       {
             "id": "saint_jean_vignes",
@@ -715,13 +727,13 @@
             "id": "livre_maudit",
             "title": "Surtout n'ouvre jamais ce livre maudit",
             "file": "Surtout, n'ouvre jamais ce livre maudit !.jpeg",
-            "isNew": true
+            "isNew": false
       },
       {
             "id": "trois_gateaux_anniversaire",
             "title": "Trois gâteaux d'anniversaire",
             "file": "Trois gâteaux d'anniversaire.jpeg",
-            "isNew": true
+            "isNew": false
       },
       {
             "id": "porte_plume",
@@ -753,7 +765,7 @@
             "id": "voyage_valhalla",
             "title": "Voyage au Valhalla",
             "file": "Voyage au Valhalla.jpeg",
-            "isNew": true
+            "isNew": false
       },
       {
             "id": "etoiles_filantes",
@@ -892,18 +904,13 @@
       };
       
       currentImage.onerror = () => {
-        if (!currentImage._tryCount) currentImage._tryCount = 1;
-        else currentImage._tryCount++;
-
-        if (currentImage._tryCount === 2) {
-          currentImage.src = 'Couvertures récits express/' + encodeURIComponent(book.file);
-        } else if (currentImage._tryCount === 3) {
-          currentImage.src = 'Couvertures récits express/' + encodeURI(book.file);
-        } else {
-          console.warn('Impossible de charger automatiquement la photo:', book.file);
+        if (!currentImage._fallbackTried) {
+          currentImage._fallbackTried = true;
+          // Try unencoded / alternate folder path
+          currentImage.src = 'Couvertures récits express/' + book.file;
         }
       };
-      currentImage.src = 'Couvertures récits express/' + book.file;
+      currentImage.src = 'Couvertures récits express/' + encodeURIComponent(book.file);
     }
 
     function setupCanvas() {
@@ -1284,31 +1291,6 @@
       t.style.display = 'block';
       setTimeout(() => { t.style.display = 'none'; }, 3500);
     }
-
-    // Drag and drop image file directly from Finder
-    const canvasArea = document.getElementById('canvasContainer');
-    canvasArea.addEventListener('dragover', e => { e.preventDefault(); canvasArea.style.outline = '2px dashed var(--purple)'; });
-    canvasArea.addEventListener('dragleave', e => { e.preventDefault(); canvasArea.style.outline = 'none'; });
-    canvasArea.addEventListener('drop', e => {
-      e.preventDefault();
-      canvasArea.style.outline = 'none';
-      if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-        const file = e.dataTransfer.files[0];
-        const reader = new FileReader();
-        reader.onload = ev => {
-          currentImage = new Image();
-          currentImage.onload = () => {
-            setupCanvas();
-            autoAdjustCrop();
-            syncSliders();
-            draw();
-            updatePreview();
-          };
-          currentImage.src = ev.target.result;
-        };
-        reader.readAsDataURL(file);
-      }
-    });
 
     window.addEventListener('keydown', e => {
       if (e.key === 'ArrowRight') nextBook();
