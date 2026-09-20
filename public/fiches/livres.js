@@ -8517,5 +8517,1661 @@ window.LIVRES = [
         "explanation": "Le résumé B relate avec une parfaite exactitude les événements clés : l'imposition du livre par le bouquiniste, l'attraction magique, le piège des jumeaux, le sauvetage par Titouan et la formule inversée."
       }
     ]
+  },
+  {
+    "id": "back_to_the_80s",
+    "title": "Back to the 80's !",
+    "series": "Récits Express",
+    "totalPoints": 16,
+    "questions": [
+      {
+        "id": "q1",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quelle situation agace particulièrement Liam au tout début de l'histoire ?",
+        "options": [
+          "Ses parents lui demandent de ranger sa chambre de fond en comble",
+          "Sa mère lui demande d'arrêter sa console après seulement trente minutes de jeu pour mettre la table",
+          "Son professeur d'anglais lui a donné une punition injuste",
+          "Sa connexion internet est tombée en panne pendant une partie en ligne"
+        ],
+        "correct": 1,
+        "explanation": "Liam trouve très frustrant d'être limité à seulement une demi-heure de jeux vidéo par jour lorsque sa mère l'interrompt pour mettre la table."
+      },
+      {
+        "id": "q2",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quel événement extraordinaire survient lorsque Liam se retrouve projeté dans le passé ?",
+        "options": [
+          "Il se réveille à l'époque préhistorique parmi les hommes des cavernes",
+          "Il atterrit en pleine année 1984 et découvre le quotidien de l'époque de ses parents",
+          "Il est téléporté dans le futur au milieu de voitures volantes",
+          "Il devient le héros virtuel d'un nouveau jeu vidéo sur sa console"
+        ],
+        "correct": 1,
+        "explanation": "Liam est mystérieusement propulsé dans les années 1980 (1984), une époque sans internet ni smartphones où ses parents étaient adolescents."
+      },
+      {
+        "id": "q3",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quels changements matériels frappent immédiatement Liam dans la maison des années 80 ?",
+        "options": [
+          "Le salon est entièrement vide et repeint en noir",
+          "Le home cinéma a été remplacé par une platine vinyle et les volets électriques par de vieux volets en bois",
+          "Des robots ménagers s'occupent de toutes les corvées de cuisine",
+          "Il n'y a plus aucune source d'électricité ni de lumière"
+        ],
+        "correct": 1,
+        "explanation": "Liam constate que tous les appareils modernes ont disparu au profit d'objets d'époque : platine pour disques vinyles, téléphone fixe à cadran et volets manuels."
+      },
+      {
+        "id": "q4",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Comment les adolescents des années 80 réagissent-ils quand Liam leur parle de smartphones ou d'internet ?",
+        "options": [
+          "Ils le félicitent pour ses inventions géniales et le croient aussitôt",
+          "Ils le regardent avec incompréhension et le prennent pour un doux rêveur qui raconte des bêtises",
+          "Ils appellent immédiatement la police pour l'arrêter",
+          "Ils lui montrent qu'ils possèdent déjà des tablettes tactiles"
+        ],
+        "correct": 1,
+        "explanation": "Dans les années 80, ces technologies n'existaient pas encore ; ses explications paraissent donc totalement loufoques et incompréhensibles pour ses camarades."
+      },
+      {
+        "id": "q5",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quel moyen de transport pétaradant les parents de Liam utilisent-ils à cette époque ?",
+        "options": [
+          "Une trottinette électrique flambant neuve",
+          "Une mobylette bruyante sur laquelle ils partent en fanfare",
+          "Une calèche tirée par deux chevaux blancs",
+          "Une voiture de sport décapotable rouge"
+        ],
+        "correct": 1,
+        "explanation": "Dans les années 80, la mobylette était le véhicule emblématique des jeunes, réputé pour son bruit de moteur pétaradant."
+      },
+      {
+        "id": "q6",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quelle découverte positive Liam fait-il malgré l'absence d'écrans et de technologie moderne ?",
+        "options": [
+          "Qu'on s'ennuie tellement qu'il vaut mieux dormir toute la journée",
+          "Que les jeunes partageaient de vrais moments d'amitié dehors, des rires et des jeux collectifs simples",
+          "Que la nourriture des années 80 était bien meilleure que celle d'aujourd'hui",
+          "Que l'école était facultative et qu'il n'y avait aucun devoir"
+        ],
+        "correct": 1,
+        "explanation": "Liam réalise que la vie sans écran permettait de tisser de véritables liens d'amitié, de discuter en face à face et de vivre des aventures en plein air."
+      },
+      {
+        "id": "q7",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Comment se déroule le retour de Liam dans sa véritable époque contemporaine ?",
+        "options": [
+          "Il reste bloqué dans les années 80 et doit refaire toute sa scolarité",
+          "Il réintègre son présent, heureux de retrouver son confort moderne mais avec un regard neuf",
+          "Il revient dans le présent mais a oublié l'intégralité de sa famille",
+          "Une machine à voyager dans le temps vient le chercher sur la place du village"
+        ],
+        "correct": 1,
+        "explanation": "Liam revient dans son lit à notre époque, soulagé de retrouver son univers tout en comprenant enfin la jeunesse de ses parents."
+      },
+      {
+        "id": "q8",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quelle leçon essentielle Liam tire-t-il de son voyage dans le temps ?",
+        "options": [
+          "Qu'il faut jeter tous les téléphones portables et vivre sans électricité",
+          "Que la jeunesse de ses parents avait du charme et qu'il est précieux de savoir lever les yeux des écrans",
+          "Qu'il doit passer au moins huit heures par jour devant sa console",
+          "Que les années 80 étaient une époque sombre sans aucun intérêt"
+        ],
+        "correct": 1,
+        "explanation": "Liam comprend que la vie de ses parents n'était pas ennuyeuse et que les relations humaines directes valent bien plus que des heures passées sur un écran."
+      },
+      {
+        "id": "q9",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Au début de l'histoire, Liam est un passionné de jeux vidéo qui a du mal à lâcher sa console.",
+        "correct": true,
+        "explanation": "VRAI : Liam adore jouer sur sa console et rechigne à s'arrêter lorsque sa mère l'appelle."
+      },
+      {
+        "id": "q10",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Dans les années 80, Liam utilise son smartphone pour envoyer des messages instantanés à ses amis.",
+        "correct": false,
+        "explanation": "FAUX : Les smartphones et les réseaux sociaux n'existaient pas dans les années 1980 ; on utilisait des téléphones fixes filaires."
+      },
+      {
+        "id": "q11",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Les disques vinyles et les cassettes audio étaient les principaux supports pour écouter de la musique dans les années 80.",
+        "correct": true,
+        "explanation": "VRAI : Avant l'apparition des fichiers numériques et du streaming, la musique s'écoutait sur disques vinyles ou cassettes."
+      },
+      {
+        "id": "q12",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "À la fin de l'histoire, Liam refuse de rentrer chez lui et choisit de s'installer définitivement en 1984.",
+        "correct": false,
+        "explanation": "FAUX : Liam est très heureux de regagner sa chambre et son lit à notre époque contemporaine."
+      },
+      {
+        "id": "q13",
+        "section": "Vocabulaire en contexte",
+        "type": "mcq",
+        "text": "Dans la phrase : « Je ne vois pas en quoi être limité à une demi-heure de console par jour est une chance. », que désigne le mot « console » dans ce contexte ?",
+        "options": [
+          "Un meuble d'entrée sur lequel on dépose ses clés",
+          "Un appareil électronique spécialement conçu pour faire fonctionner des jeux vidéo",
+          "Une boîte à outils utilisée par les mécaniciens",
+          "Un instrument de musique à cordes frottées"
+        ],
+        "correct": 1,
+        "explanation": "Une console de jeux est un appareil électronique connecté à un écran permettant de jouer à des jeux vidéo."
+      },
+      {
+        "id": "q14",
+        "section": "Vocabulaire en contexte",
+        "type": "mcq",
+        "text": "Dans la phrase : « Mes parents viennent de quitter la maison en fanfare, juchés chacun sur une mobylette pétaradante. », que signifie l'adjectif « pétaradante » ?",
+        "options": [
+          "Complètement silencieuse et écologique",
+          "Qui produit une série de détonations sonores et de bruits d'échappement",
+          "Brillante et recouverte d'autocollants colorés",
+          "Peinte d'une couleur vive et éclatante"
+        ],
+        "correct": 1,
+        "explanation": "« Pétaradant » qualifie un moteur qui émet des bruits secs, répétés et éclatants en tournant."
+      },
+      {
+        "id": "q15",
+        "section": "Vocabulaire en contexte",
+        "type": "mcq",
+        "text": "Dans la phrase : « Notre home cinéma a été remplacé par une platine à côté de laquelle s'amoncèle une quantité impressionnante de vinyles... », que sont des « vinyles » ?",
+        "options": [
+          "Des disques noirs microsillons servant à enregistrer et écouter de la musique",
+          "Des cassettes vidéo magnétiques pour magnétoscope",
+          "Des affiches de cinéma cartonnées",
+          "Des bandes dessinées de collection"
+        ],
+        "correct": 0,
+        "explanation": "Le disque vinyle est un disque phonographique noir en plastique sur lequel la musique est gravée en sillons."
+      },
+      {
+        "id": "q16",
+        "section": "Compréhension globale",
+        "type": "synthesis",
+        "text": "Quel résumé correspond le mieux à l'intrigue du récit « Back to the 80's ! » ?",
+        "options": [
+          "Résumé A : Passionné d'informatique, Liam invente une console révolutionnaire dans son garage. Ses amis des années 80 viennent le féliciter dans le futur et participent avec lui au grand championnat du monde de jeux d'arcade.",
+          "Résumé B : Frustré par les limites de temps d'écran imposées par ses parents, Liam est projeté dans l'année 1984. En découvrant la jeunesse de ses parents sans technologie moderne, il comprend le charme de cette époque et réapprend la valeur des échanges réels.",
+          "Résumé C : Après avoir réparé une vieille mobylette trouvée dans sa cave, Liam part explorer les routes de campagne avec ses camarades de classe. Ensemble, ils créent un groupe de musique rock et enregistrent leur premier disque vinyle."
+        ],
+        "correct": 1,
+        "explanation": "Le résumé B synthétise parfaitement l'aventure : la frustration initiale de Liam, son saut temporel en 1984, la découverte de la vie sans écrans et sa prise de conscience finale."
+      }
+    ]
+  },
+  {
+    "id": "comme_sur_des_roulettes",
+    "title": "Comme sur des roulettes !",
+    "series": "Récits Express",
+    "totalPoints": 16,
+    "questions": [
+      {
+        "id": "q1",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quelle mauvaise surprise attend Melchior, Tifenn et Rachid un lundi d'octobre au collège ?",
+        "options": [
+          "Leur professeur principal leur annonce un contrôle surprise très difficile",
+          "Leur ami Idriss manque à l'appel et son absence suscite une vive inquiétude",
+          "La cour de récréation a été inondée pendant le week-end",
+          "Leur club de roller a été annulé par la direction"
+        ],
+        "correct": 1,
+        "explanation": "Le lundi matin, Idriss n'arrive pas en classe, ce qui surprend et alarme immédiatement son groupe d'amis très soudé."
+      },
+      {
+        "id": "q2",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quelle épreuve physique Idriss doit-il affronter à la suite de ses ennuis de santé ?",
+        "options": [
+          "Il a perdu la voix et doit communiquer uniquement par écrit",
+          "Il a de grandes difficultés à marcher et doit se déplacer principalement en fauteuil électrique",
+          "Il a le bras plâtré pour toute l'année scolaire",
+          "Il doit porter des lunettes spéciales pour lire au tableau"
+        ],
+        "correct": 1,
+        "explanation": "Faire dix pas est devenu épuisant pour Idriss, qui doit désormais utiliser un fauteuil roulant électrique pour ses déplacements."
+      },
+      {
+        "id": "q3",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "D'où Idriss et sa maman étaient-ils arrivés quelques années auparavant ?",
+        "options": [
+          "De Montréal, au Canada",
+          "De Dakar, au Sénégal",
+          "De Sydney, en Australie",
+          "De Rome, en Italie"
+        ],
+        "correct": 1,
+        "explanation": "Le texte rappelle qu'Idriss et sa mère sont arrivés du Sénégal (Dakar) pour commencer une nouvelle vie."
+      },
+      {
+        "id": "q4",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "À quels obstacles majeurs Idriss se heurte-t-il dans son environnement quotidien ?",
+        "options": [
+          "Le manque de livres à la bibliothèque municipale",
+          "L'inaccessibilité de nombreux lieux, les marches d'escalier et l'absence de rampes adaptées",
+          "Le refus des autres élèves de lui parler en classe",
+          "L'interdiction stricte de circuler dans les couloirs du collège"
+        ],
+        "correct": 1,
+        "explanation": "La ville et les bâtiments scolaires présentent de multiples barrières architecturales (marches, trottoirs hauts) difficiles à franchir en fauteuil."
+      },
+      {
+        "id": "q5",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Comment Melchior, Tifenn et Rachid réagissent-ils face aux difficultés de leur ami ?",
+        "options": [
+          "Ils s'éloignent de lui parce qu'il ne peut plus courir aussi vite",
+          "Ils font preuve d'un formidable élan de solidarité et se mobilisent pour l'aider et adapter leur quotidien",
+          "Ils demandent à changer de classe pour ne pas être ralentis",
+          "Ils attendent passivement que les adultes s'occupent de tout"
+        ],
+        "correct": 1,
+        "explanation": "Les trois amis refusent d'abandonner Idriss : ils l'épaulent au quotidien et mettent en place des solutions concrètes pour faciliter son intégration."
+      },
+      {
+        "id": "q6",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quel trait de caractère remarquable Idriss démontre-t-il malgré son handicap ?",
+        "options": [
+          "Une amertume constante et un refus total de parler à quiconque",
+          "Une envie farouche de mordre la vie à pleines dents sans laisser sa chaise roulante le freiner",
+          "Une peur panique de sortir de chez lui",
+          "Un désintérêt complet pour ses études et ses camarades"
+        ],
+        "correct": 1,
+        "explanation": "Idriss fait preuve d'un courage exceptionnel et d'une volonté inébranlable de profiter de la vie aux côtés de ses amis."
+      },
+      {
+        "id": "q7",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Que symbolise le quartier solidaire et cosmopolite où vivent les personnages ?",
+        "options": [
+          "Un lieu isolé où personne ne se connaît",
+          "Une véritable communauté où des gens d'origines et de cultures variées vivent en harmonie et s'entraident",
+          "Un quartier d'affaires uniquement réservé aux commerces",
+          "Une zone industrielle abandonnée"
+        ],
+        "correct": 1,
+        "explanation": "Le quartier est décrit comme un espace de mixité chaleureux où la diversité culturelle rime avec bienveillance et fraternité."
+      },
+      {
+        "id": "q8",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Comment se termine l'histoire entre Idriss et ses amis fidèles ?",
+        "options": [
+          "Idriss déménage dans une autre région sans laisser d'adresse",
+          "Par un grand câlin collectif chaleureux où Idriss remercie ses amis d'être les meilleurs",
+          "Par une dispute générale au sujet d'un devoir de mathématiques",
+          "Par la fermeture définitive du collège"
+        ],
+        "correct": 1,
+        "explanation": "L'histoire s'achève sur une grande étreinte collective pleine d'émotion, célébrant la puissance d'une amitié sincère et dévouée."
+      },
+      {
+        "id": "q9",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Melchior, Tifenn et Rachid forment avec Idriss une bande de camarades très unis.",
+        "correct": true,
+        "explanation": "VRAI : Les quatre collégiens partagent une amitié indéfectible et se soutiennent dans toutes les épreuves."
+      },
+      {
+        "id": "q10",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Idriss refuse toute aide et repousse méchamment ses camarades de classe.",
+        "correct": false,
+        "explanation": "FAUX : Idriss est extrêmement touché et reconnaissant du soutien indéfectible de ses amis."
+      },
+      {
+        "id": "q11",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Le manque d'aménagements pour les personnes à mobilité réduite représente un défi majeur dans la ville.",
+        "correct": true,
+        "explanation": "VRAI : Le récit met en lumière les nombreux obstacles urbains rencontrés au quotidien par les usagers en fauteuil roulant."
+      },
+      {
+        "id": "q12",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "À la fin du récit, Idriss reste seul et isolé chez lui sans retourner au collège.",
+        "correct": false,
+        "explanation": "FAUX : Grâce à ses amis, Idriss retrouve toute sa place, le sourire et le bonheur d'être entouré."
+      },
+      {
+        "id": "q13",
+        "section": "Vocabulaire en contexte",
+        "type": "mcq",
+        "text": "Dans la phrase : « ...c'est pourquoi il se déplace principalement en fauteuil électrique. », qu'est-ce qu'un « fauteuil électrique » ?",
+        "options": [
+          "Un siège de bureau qui pivote sur lui-même",
+          "Un siège roulant motorisé permettant aux personnes à mobilité réduite de se déplacer en autonomie",
+          "Un fauteuil de cinéma avec des haut-parleurs intégrés",
+          "Une chaise pliante pour le camping"
+        ],
+        "correct": 1,
+        "explanation": "Un fauteuil roulant électrique est équipé d'une batterie et d'un joystick pour permettre aux personnes en situation de handicap de circuler facilement."
+      },
+      {
+        "id": "q14",
+        "section": "Vocabulaire en contexte",
+        "type": "mcq",
+        "text": "Dans la phrase : « Un élan de solidarité sans pareil. », que signifie le mot « solidarité » ?",
+        "options": [
+          "Une compétition sportive très disputée",
+          "Une aide mutuelle et un sentiment d'union fraternelle entre les membres d'un groupe",
+          "Une punition collective donnée à toute la classe",
+          "Un long voyage effectué en solitaire"
+        ],
+        "correct": 1,
+        "explanation": "La solidarité est le lien moral qui pousse des personnes à s'épauler et se soutenir face aux difficultés."
+      },
+      {
+        "id": "q15",
+        "section": "Vocabulaire en contexte",
+        "type": "mcq",
+        "text": "Dans la phrase : « Qu'importent les nombreux obstacles placés sur son chemin, il a envie de mordre la vie à pleines dents... », que désigne un « obstacle » ?",
+        "options": [
+          "Une récompense reçue à la fin de l'année scolaire",
+          "Ce qui barre le passage ou rend une action difficile à accomplir",
+          "Un panneau publicitaire lumineux sur le trottoir",
+          "Un raccourci secret à travers un jardin public"
+        ],
+        "correct": 1,
+        "explanation": "Un obstacle est une gêne, une barrière ou une difficulté matérielle ou morale qui s'oppose à la progression."
+      },
+      {
+        "id": "q16",
+        "section": "Compréhension globale",
+        "type": "synthesis",
+        "text": "Quel résumé correspond le mieux au message du livre « Comme sur des roulettes ! » ?",
+        "options": [
+          "Résumé A : Passionné de roller acrobatique, Melchior prépare une compétition intercollèges avec Rachid. Après la blessure de leur entraîneur, ils parviennent à remporter la coupe grâce à des entraînements intensifs chaque week-end.",
+          "Résumé B : Arrivé récemment du Sénégal, Idriss décide de construire un kart électrique pour participer à une course de quartier. Avec l'aide de ses voisins mécaniciens, il termine sur le podium et devient la mascotte de son école.",
+          "Résumé C : Frappé par des soucis de santé le contraignant à se déplacer en fauteuil roulant, Idriss peut compter sur l'amitié indéfectible de Melchior, Tifenn et Rachid, qui se mobilisent pour surmonter les obstacles et célébrer la force de l'entraide."
+        ],
+        "correct": 2,
+        "explanation": "Le résumé C retrace parfaitement l'histoire : l'apparition du handicap chez Idriss, la réaction solidaire exemplaire de ses trois camarades et la victoire de l'amitié."
+      }
+    ]
+  },
+  {
+    "id": "crash_coeur_jungle",
+    "title": "Crash au cœur de la jungle",
+    "series": "Récits Express",
+    "totalPoints": 16,
+    "questions": [
+      {
+        "id": "q1",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quel type d'appareil les enfants et leur pilote empruntent-ils au début du voyage ?",
+        "options": [
+          "Un avion bimoteur moderne (modèle DA62)",
+          "Un hélicoptère militaire de sauvetage",
+          "Une montgolfière touristique multicolore",
+          "Un hydravion jaune posé sur un grand lac"
+        ],
+        "correct": 0,
+        "explanation": "Le récit commence à bord d'un avion DA62 survolant la vaste forêt amazonienne au lever du jour."
+      },
+      {
+        "id": "q2",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quelle immense région sauvage l'avion survole-t-il avant l'accident ?",
+        "options": [
+          "Le désert aride du Sahara en Afrique",
+          "La canopée verdoyante de la forêt amazonienne",
+          "Les glaciers enneigés du grand Nord canadien",
+          "La savane sauvage d'Afrique du Sud"
+        ],
+        "correct": 1,
+        "explanation": "L'appareil survole la luxuriante forêt d'Amazonie en Guyane, caractérisée par ses arbres géants et sa végétation impénétrable."
+      },
+      {
+        "id": "q3",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Que se passe-t-il brutalement pendant le vol à travers la météo tropicale ?",
+        "options": [
+          "L'avion tombe en panne sèche au-dessus d'une grande ville",
+          "De fortes turbulences et une avarie mécanique contraignent l'appareil à un atterrissage forcé dans la jungle",
+          "Le pilote décide d'atterrir sur une piste pour faire une pause déjeuner",
+          "Un oiseau géant brise le pare-brise de la cabine"
+        ],
+        "correct": 1,
+        "explanation": "Pris dans de violentes secousses et un problème technique, l'appareil s'écrase en pleine végétation amazonienne."
+      },
+      {
+        "id": "q4",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quels dangers immédiats assaillent Lilou et Arthur après le crash ?",
+        "options": [
+          "Une tempête de neige glaciale et le gel",
+          "Des nuées de moustiques agressifs, la chaleur étouffante et l'immensité menaçante de la jungle",
+          "Des attaques de pirates armés sur les rives d'un fleuve",
+          "L'éruption soudaine d'un volcan voisin"
+        ],
+        "correct": 1,
+        "explanation": "Les survivants doivent faire face aux insectes piquants, à l'humidité tropicale écrasante, au manque de repères et à la faune sauvage."
+      },
+      {
+        "id": "q5",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quel son naturel providentiel guide les enfants pour trouver de l'eau potable ?",
+        "options": [
+          "Le klaxon d'un camion de pompiers au loin",
+          "Le grondement d'une cascade d'eau douce",
+          "Le sifflet d'un train à vapeur traversant la forêt",
+          "La sonnerie d'un clocher de village"
+        ],
+        "correct": 1,
+        "explanation": "Le bruit de l'eau qui s'écoule d'une cascade permet aux enfants de s'orienter vers un point d'eau indispensable pour ne pas se déshydrater."
+      },
+      {
+        "id": "q6",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Comment Arthur et Lilou parviennent-ils à surmonter la peur et la faim ?",
+        "options": [
+          "En se disputant sans arrêt jusqu'à épuisement",
+          "En faisant équipe avec courage, en s'entraidant et en partageant leurs compétences de survie",
+          "En attendant immobiles dans l'épave sans boire ni manger",
+          "En essayant de construire un nouvel avion avec des branches d'arbres"
+        ],
+        "correct": 1,
+        "explanation": "La complicité, le calme et l'entraide mutuelle entre Lilou et Arthur sont la clé de leur survie dans la forêt."
+      },
+      {
+        "id": "q7",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quel outil moderne permet aux équipes de secours de localiser la zone du crash ?",
+        "options": [
+          "Un drone sous-marin explorant les fonds marins",
+          "Les images haute précision fournies par un satellite d'observation (SPOT)",
+          "Des signaux de fumée allumés par des randonneurs",
+          "Un message envoyé par pigeon voyageur"
+        ],
+        "correct": 1,
+        "explanation": "L'imagerie satellitaire permet aux secouristes de repérer la trouée laissée par l'avion dans la canopée et d'orienter les recherches."
+      },
+      {
+        "id": "q8",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Qui retrouve finalement les enfants et assure leur sauvetage au cœur de la jungle ?",
+        "options": [
+          "Des chercheurs d'or clandestins",
+          "Des naturalistes et des guides expérimentés connaissant parfaitement la forêt",
+          "Une équipe de journalistes venue tourner un documentaire",
+          "Des bûcherons travaillant dans une scierie voisine"
+        ],
+        "correct": 1,
+        "explanation": "Des spécialistes de la faune et de la flore (naturalistes) et des guides locaux réussissent à rejoindre les enfants et à les ramener sains et saufs."
+      },
+      {
+        "id": "q9",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "L'avion bimoteur s'est écrasé au milieu de la vaste forêt amazonienne.",
+        "correct": true,
+        "explanation": "VRAI : L'accident a lieu au-dessus de la grande forêt tropicale amazonienne."
+      },
+      {
+        "id": "q10",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Les enfants abandonnent tout espoir dès les premières minutes et refusent de chercher de l'eau.",
+        "correct": false,
+        "explanation": "FAUX : Les enfants font preuve de sang-froid et marchent vers le bruit de la cascade pour trouver de l'eau et s'abriter."
+      },
+      {
+        "id": "q11",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "La forêt amazonienne abrite une végétation si dense qu'elle forme un toit végétal appelé la canopée.",
+        "correct": true,
+        "explanation": "VRAI : La canopée est l'épaisse couche supérieure formée par la cime des arbres géants de la forêt tropicale."
+      },
+      {
+        "id": "q12",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "À la fin de l'aventure, Arthur et Lilou sont définitivement perdus et jamais secourus.",
+        "correct": false,
+        "explanation": "FAUX : Grâce aux secours terrestres et à l'appui satellite, les enfants sont retrouvés et fêtent leur délivrance."
+      },
+      {
+        "id": "q13",
+        "section": "Vocabulaire en contexte",
+        "type": "mcq",
+        "text": "Dans la phrase : « Le DA62 flambant neuf survolait désormais la forêt amazonienne. », que signifie l'expression « flambant neuf » ?",
+        "options": [
+          "Qui est en train de brûler sous l'effet du feu",
+          "Totalement neuf, tout juste sorti de fabrication",
+          "Peint en rouge vif comme une flamme",
+          "Très ancien et usé par les années"
+        ],
+        "correct": 1,
+        "explanation": "« Flambant neuf » qualifie un objet entièrement neuf qui n'a encore presque jamais servi."
+      },
+      {
+        "id": "q14",
+        "section": "Vocabulaire en contexte",
+        "type": "mcq",
+        "text": "Dans la phrase : « Son regard s'arrêta sur la carcasse de l'avion. », que désigne la « carcasse » dans ce contexte ?",
+        "options": [
+          "Le moteur en parfait état de marche",
+          "La structure métallique brisée et déformée de l'appareil accidenté",
+          "La valise d'un passager posée sur le sol",
+          "L'uniforme porté par le commandant de bord"
+        ],
+        "correct": 1,
+        "explanation": "La carcasse désigne l'armature ou les débris restants d'un véhicule ou d'un avion après un accident destructeur."
+      },
+      {
+        "id": "q15",
+        "section": "Vocabulaire en contexte",
+        "type": "mcq",
+        "text": "Dans la phrase : « Nous venons de recevoir des images du satellite SPOT. », qu'est-ce qu'un « satellite » d'observation ?",
+        "options": [
+          "Un télescope posé au sommet d'une montagne",
+          "Un engin spatial placé en orbite autour de la Terre pour capturer des photographies et des données",
+          "Une fusée qui voyage vers la planète Mars",
+          "Un avion de ligne volant à très haute altitude"
+        ],
+        "correct": 1,
+        "explanation": "Un satellite artificiel gravite autour de la Terre et prend des clichés spatiaux très utiles pour la météo, la cartographie et les secours."
+      },
+      {
+        "id": "q16",
+        "section": "Compréhension globale",
+        "type": "synthesis",
+        "text": "Quel résumé correspond le mieux au déroulement du livre « Crash au cœur de la jungle » ?",
+        "options": [
+          "Résumé A : Après le crash de leur avion bimoteur dans l'immensité amazonienne, Arthur et Lilou s'organisent avec courage pour survivre face aux moustiques et à la forêt hostile, avant d'être repérés par satellite et secourus par des naturalistes.",
+          "Résumé B : Partis explorer l'Amazonie en pirogue avec leur père naturaliste, Arthur et Lilou découvrent une espèce inconnue de papillons géants. Pris dans une tempête tropicale, ils trouvent refuge dans un village indigène où ils passent plusieurs semaines.",
+          "Résumé C : Lors d'un vol au-dessus de la Guyane, un jeune pilote amateur perd le contrôle de son appareil suite à une panne d'essence. Atterri en urgence sur une plage, il répare son moteur avec l'aide de pêcheurs et redécolle vers Cayenne."
+        ],
+        "correct": 0,
+        "explanation": "Le résumé A récapitule avec exactitude le crash en Amazonie, la lutte héroïque des deux enfants pour survivre et leur sauvetage guidé par satellite."
+      }
+    ]
+  },
+  {
+    "id": "droles_darbres",
+    "title": "Drôles d'arbres",
+    "series": "Récits Express",
+    "totalPoints": 16,
+    "questions": [
+      {
+        "id": "q1",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Où se déroule le séjour de Dimitri au début du récit ?",
+        "options": [
+          "Dans un grand appartement au cœur d'une métropole bruyante",
+          "À la ferme de son grand-père GrandGris, dans un paysage d'hiver froid et enneigé",
+          "Sur un bateau de croisière naviguant vers les tropiques",
+          "Dans une base scientifique isolée sur une île volcanique"
+        ],
+        "correct": 1,
+        "explanation": "Dimitri séjourne à la ferme de GrandGris, entouré par les flocons de neige et le vent d'hiver."
+      },
+      {
+        "id": "q2",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quelle habitude particulière Dimitri a-t-il avec son casque audio ?",
+        "options": [
+          "Il écoute du rock à plein volume jour et nuit",
+          "Il le porte sur ses oreilles en toute saison, souvent éteint, pour s'isoler du froid et être dans sa bulle",
+          "Il s'en sert comme talkie-walkie pour espionner ses voisins",
+          "Il l'a fabriqué lui-même avec des coquilles de noix"
+        ],
+        "correct": 1,
+        "explanation": "Dimitri garde souvent son casque sur les oreilles, même éteint, pour se protéger du froid et profiter du calme de ses pensées."
+      },
+      {
+        "id": "q3",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quel secret extraordinaire Dimitri découvre-t-il au sujet de certains arbres de la forêt ?",
+        "options": [
+          "Qu'ils produisent des fruits en or massif une fois par siècle",
+          "Qu'il existe des « arbres à conscience », capables de ressentir, d'avoir une mémoire et de communiquer leur souffle",
+          "Qu'ils peuvent déraciner leurs troncs pour marcher pendant la nuit",
+          "Qu'ils abritent des colonies de lutins invisibles"
+        ],
+        "correct": 1,
+        "explanation": "Le récit révèle l'existence d'arbres dotés d'une conscience et d'une sensibilité, portant la mémoire vivante de la nature."
+      },
+      {
+        "id": "q4",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quelle grave menace pèse sur ces arbres précieux et sur le domaine ?",
+        "options": [
+          "Une invasion de criquets géants venus du Sud",
+          "Un projet de déboisement et d'abattage massif qui détruirait ce patrimoine végétal unique",
+          "Un feu de forêt accidentel provoqué par la foudre",
+          "L'inondation de la vallée par une crue soudaine"
+        ],
+        "correct": 1,
+        "explanation": "Les arbres risquent d'être coupés (abattus), ce qui anéantirait leur précieux souffle et l'équilibre de la forêt."
+      },
+      {
+        "id": "q5",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quels moyens originaux Dimitri utilise-t-il pour faire passer ses messages et agir ?",
+        "options": [
+          "Des signaux de fumée et des messages codés en morse",
+          "Des poèmes en rimes, des devinettes et une ruse inspirée du premier avril",
+          "Des graffitis peints en rouge sur les façades des maisons",
+          "Des courriers anonymes envoyés au ministre de l'Environnement"
+        ],
+        "correct": 1,
+        "explanation": "Dimitri recourt à la poésie, aux rimes et à l'humour pour éveiller les esprits et sensibiliser les adultes à la cause des arbres."
+      },
+      {
+        "id": "q6",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quel rôle complice les grands-parents (Mamy et GrandGris) jouent-ils auprès de Dimitri ?",
+        "options": [
+          "Ils le punissent sévèrement dès qu'il s'approche de la forêt",
+          "Ils l'entourent d'amour, partagent des moments de tendresse et l'encouragent dans sa sensibilité",
+          "Ils refusent de lui adresser la parole pendant tout son séjour",
+          "Ils l'obligent à travailler du matin au soir aux champs sans repos"
+        ],
+        "correct": 1,
+        "explanation": "Ses grands-parents lui offrent une écoute bienveillante, du réconfort et partagent avec lui de doux moments de complicité familiale."
+      },
+      {
+        "id": "q7",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Que signifie la phrase de Wilgar : « Ce qui sauve le monde, c'est la conscience » ?",
+        "options": [
+          "Qu'il faut inventer des ordinateurs de plus en plus intelligents",
+          "Que le respect du vivant, la mémoire et l'attention portée à la nature sont indispensables à notre avenir",
+          "Que seuls les scientifiques les plus diplômés peuvent prendre des décisions",
+          "Qu'il faut interdire à quiconque d'entrer dans les forêts"
+        ],
+        "correct": 1,
+        "explanation": "Cette maxime invite à développer une relation respectueuse et consciente avec notre environnement et les générations futures."
+      },
+      {
+        "id": "q8",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "À qui s'adresse l'épilogue émouvant à la fin du livre ?",
+        "options": [
+          "Aux bûcherons pour leur donner de nouvelles consignes de coupe",
+          "Aux jeunes lecteurs pour leur rappeler qu'ils sont l'avenir et qu'il faut savoir écouter le souffle des arbres",
+          "Au maire du village pour lui réclamer une subvention",
+          "Aux marchands de bois de toute la région"
+        ],
+        "correct": 1,
+        "explanation": "L'auteur s'adresse directement aux enfants pour transmettre ce message poétique de préservation de la nature et de transmission entre générations."
+      },
+      {
+        "id": "q9",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Dimitri passe ses vacances d'hiver chez ses grands-parents à la campagne.",
+        "correct": true,
+        "explanation": "VRAI : L'histoire commence à la ferme de GrandGris au cœur de l'hiver."
+      },
+      {
+        "id": "q10",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Dimitri encourage les bûcherons à raser tous les arbres centenaires de la forêt.",
+        "correct": false,
+        "explanation": "FAUX : Dimitri fait tout son possible pour sauver les arbres à conscience et empêcher leur destruction."
+      },
+      {
+        "id": "q11",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Les arbres à conscience décrits dans l'histoire sont porteurs d'émotions et de mémoire.",
+        "correct": true,
+        "explanation": "VRAI : Ces arbres hors du commun sont capables de ressentir et de transmettre le souffle du vivant."
+      },
+      {
+        "id": "q12",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "La poésie et l'humour sont des armes utilisées par Dimitri pour défendre la nature.",
+        "correct": true,
+        "explanation": "VRAI : Dimitri compose des poèmes et utilise la malice pour éveiller les consciences."
+      },
+      {
+        "id": "q13",
+        "section": "Vocabulaire en contexte",
+        "type": "mcq",
+        "text": "Dans la phrase : « Heureusement, le soir, il restait toujours un peu de temps pour un câlin, une histoire ou un tendre moment de complicité ! », que signifie « complicité » ?",
+        "options": [
+          "Une rivalité féroce entre deux personnes",
+          "Une entente profonde, chaleureuse et pleine de confiance partagée",
+          "Une obligation imposée par le règlement de la maison",
+          "Une dispute au sujet d'une corvée ménagère"
+        ],
+        "correct": 1,
+        "explanation": "La complicité est une relation d'entente mutuelle intime et joyeuse entre des êtres qui s'aiment bien."
+      },
+      {
+        "id": "q14",
+        "section": "Vocabulaire en contexte",
+        "type": "mcq",
+        "text": "Dans la phrase : « Dimitri était perplexe. », que signifie l'adjectif « perplexe » ?",
+        "options": [
+          "Fou de joie et très enthousiaste",
+          "Indécis, perplexe, qui hésite et s'interroge sans savoir quoi penser",
+          "Extrêmement fatigué et prêt à dormir",
+          "Très en colère contre son entourage"
+        ],
+        "correct": 1,
+        "explanation": "Être perplexe signifie être embarrassé par le doute, hésitant face à une situation difficile à comprendre."
+      },
+      {
+        "id": "q15",
+        "section": "Vocabulaire en contexte",
+        "type": "mcq",
+        "text": "Dans la phrase : « Le jeune plant avait pris quelques bons centimètres et des petits bourgeons commençaient à se former. », qu'est-ce qu'un « bourgeon » ?",
+        "options": [
+          "Une racine morte enfouie sous les pierres",
+          "Une petite excroissance végétale qui donnera naissance à une feuille, une branche ou une fleur",
+          "Un champignon vénéneux qui attaque l'écorce",
+          "Une feuille séchée tombée pendant l'automne"
+        ],
+        "correct": 1,
+        "explanation": "Le bourgeon est la pousse naissante sur une tige d'où se développent les futures feuilles ou fleurs."
+      },
+      {
+        "id": "q16",
+        "section": "Compréhension globale",
+        "type": "synthesis",
+        "text": "Quel résumé correspond le mieux au récit poétique « Drôles d'arbres » ?",
+        "options": [
+          "Résumé A : Envoyé en camp forestier pour apprendre le métier de bûcheron, Dimitri découvre une machine à abattre les arbres ultra-rapide. Il gagne le concours du meilleur ouvrier de la région avant de retourner à l'école.",
+          "Résumé B : En vacances chez son grand-père GrandGris, Dimitri découvre le secret des « arbres à conscience », menacés de destruction. Grâce à sa sensibilité, à la poésie et au soutien de ses proches, il s'engage pour protéger ce lien précieux entre l'homme et la nature.",
+          "Résumé C : Lors d'une tempête de neige en montagne, Dimitri et son chien se perdent dans une forêt de sapins géants. Ils trouvent refuge dans une cabane abandonnée où un vieil ermite leur apprend à fabriquer des sculptures sur bois."
+        ],
+        "correct": 1,
+        "explanation": "Le résumé B exprime avec justesse le cœur de l'histoire : la révélation des arbres à conscience, la menace de coupe, l'engagement poétique de Dimitri et l'amour familial."
+      }
+    ]
+  },
+  {
+    "id": "la_villa",
+    "title": "La villa",
+    "series": "Récits Express",
+    "totalPoints": 16,
+    "questions": [
+      {
+        "id": "q1",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Dans quel contexte historique réel et dramatique l'histoire d'Anna et Ruben s'inscrit-elle ?",
+        "options": [
+          "La Révolution française de 1789",
+          "La Seconde Guerre mondiale et la persécution des familles juives",
+          "La Première Guerre mondiale dans les tranchées de 1914",
+          "La guerre de Cent Ans au Moyen Âge"
+        ],
+        "correct": 1,
+        "explanation": "Le récit repose sur des faits réels survenus sous l'Occupation durant la Seconde Guerre mondiale, marquée par les rafles et déportations."
+      },
+      {
+        "id": "q2",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Pourquoi Anna et Ruben se retrouvent-ils séparés de leurs parents au début de l'histoire ?",
+        "options": [
+          "Leur père a été envoyé en France et des soldats viennent brutalement les emmener de chez eux",
+          "Leurs parents sont partis en voyage d'affaires à New York",
+          "Ils ont été envoyés en colonie de vacances au bord de la mer",
+          "Ils ont fugué pour explorer la capitale"
+        ],
+        "correct": 0,
+        "explanation": "Le père a été déporté/envoyé en travail forcé en France depuis un an, et des soldats viennent arrêter les enfants dans leur maison."
+      },
+      {
+        "id": "q3",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quel rôle admirable Madame Rosi joue-t-elle pour Anna, Ruben et d'autres enfants traqués ?",
+        "options": [
+          "Elle les dénonce aux autorités pour toucher une récompense",
+          "Elle les accueille dans sa villa, les cache avec courage et veille sur eux malgré le danger permanent",
+          "Elle les embauche comme ouvriers dans son usine textile",
+          "Elle refuse de leur ouvrir sa porte et les chasse dans la rue"
+        ],
+        "correct": 1,
+        "explanation": "Madame Rosi est une femme héroïque qui cache des enfants juifs dans sa villa au péril de sa propre vie."
+      },
+      {
+        "id": "q4",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quelles conditions de vie très éprouvantes les enfants doivent-ils endurer au quotidien ?",
+        "options": [
+          "L'obligation de faire du sport toute la journée",
+          "La faim constante, le silence obligatoire et la terreur permanente d'une visite des soldats",
+          "L'ennui de devoir regarder la télévision en continu",
+          "L'obligation d'apprendre cinq langues étrangères à la fois"
+        ],
+        "correct": 1,
+        "explanation": "Cachés dans la clandestinité, les enfants manquent de nourriture, doivent rester extrêmement discrets et vivent dans l'angoisse des contrôles."
+      },
+      {
+        "id": "q5",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Où les enfants sont-ils précipitamment dissimulés lorsque des soldats font irruption dans la villa ?",
+        "options": [
+          "Sur le toit sous les panneaux solaires",
+          "Dans la cave secrète de la maison",
+          "Dans les arbres du jardin public d'en face",
+          "Dans le coffre d'une voiture garée dans la rue"
+        ],
+        "correct": 1,
+        "explanation": "Lors des perquisitions et alertes, les enfants sont cachés dans l'obscurité de la cave pour ne pas être repérés par les soldats."
+      },
+      {
+        "id": "q6",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Vers quel nouveau refuge plus sûr Madame Rosi organise-t-elle la fuite des enfants menacés ?",
+        "options": [
+          "Vers un camp de vacances à la montagne",
+          "Vers un cloître / couvent où des religieux acceptent de les dissimuler",
+          "Vers une ambassade étrangère en ville",
+          "Vers une caserne de pompiers"
+        ],
+        "correct": 1,
+        "explanation": "Face aux risques grandissants de rafle, Madame Rosi organise leur transfert vers un cloître protecteur."
+      },
+      {
+        "id": "q7",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Que deviennent Anna et Ruben après la fin de la guerre et la Libération ?",
+        "options": [
+          "Ils sont contraints de quitter définitivement le continent",
+          "Ils grandissent, bâtissent leur avenir (Anna se fiance, Ruben étudie la radio) et gardent une profonde mémoire de Madame Rosi",
+          "Ils oublient totalement leur enfance et ne veulent plus en parler",
+          "Ils deviennent tous les deux soldats dans l'armée"
+        ],
+        "correct": 1,
+        "explanation": "Les enfants ont pu survivre grâce à ces actes de bravoure, grandissent en paix et honorent la mémoire de leur bienfaitrice."
+      },
+      {
+        "id": "q8",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quel geste symbolique et émouvant est découvert à la fin sur la tombe de Madame Rosi à Verrewinkel ?",
+        "options": [
+          "Une médaille en or déposée par le gouvernement",
+          "Trois petites fleurs posées en signe d'éternelle reconnaissance",
+          "Un grand tableau représentant la villa",
+          "Un poème gravé dans le marbre par un soldat"
+        ],
+        "correct": 1,
+        "explanation": "Les trois petites fleurs déposées sur sa sépulture témoignent de la fidélité, de l'amour et de la gratitude impérissable des enfants sauvés."
+      },
+      {
+        "id": "q9",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Ce livre est inspiré de faits réels survenus pendant la Seconde Guerre mondiale.",
+        "correct": true,
+        "explanation": "VRAI : Le livre rend hommage à l'histoire vraie de Madame Rosi, d'Anna et de Ruben."
+      },
+      {
+        "id": "q10",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Madame Rosi exigeait de grosses sommes d'argent pour accepter de cacher les enfants.",
+        "correct": false,
+        "explanation": "FAUX : Madame Rosi a agi par pur humanisme, générosité et courage désintéressé au péril de sa vie."
+      },
+      {
+        "id": "q11",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Les enfants cachés devaient supporter la faim et l'angoisse quotidienne d'être découverts.",
+        "correct": true,
+        "explanation": "VRAI : Les restrictions alimentaires et la peur permanente des rafles faisaient partie de leur quotidien clandestin."
+      },
+      {
+        "id": "q12",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Madame Rosi a été oubliée de tous et personne n'a jamais fleuri sa tombe.",
+        "correct": false,
+        "explanation": "FAUX : Les trois petites fleurs trouvées sur sa tombe prouvent que son souvenir est resté profondément vivant."
+      },
+      {
+        "id": "q13",
+        "section": "Vocabulaire en contexte",
+        "type": "mcq",
+        "text": "Dans la phrase : « Ruben est en train d'éplucher des pommes de terre dans la grande cuisine lorsqu'il entend un tumulte dans la cour intérieure. », que signifie « tumulte » ?",
+        "options": [
+          "Un grand silence paisible et reposant",
+          "Un grand bruit confus d'agitation, de cris et de désordre",
+          "Une musique douce jouée au violon",
+          "Une sonnerie de réveil automatique"
+        ],
+        "correct": 1,
+        "explanation": "Un tumulte est un grand vacarme accompagné d'agitation, de désordre et d'inquiétude."
+      },
+      {
+        "id": "q14",
+        "section": "Vocabulaire en contexte",
+        "type": "mcq",
+        "text": "Dans la phrase : « Les soldats ont eu pour ordre de faire une rafle. », qu'est-ce qu'une « rafle » ?",
+        "options": [
+          "Une fête foraine organisée sur la grand-place",
+          "Une opération policière ou militaire soudaine et massive visant à arrêter un grand nombre de personnes",
+          "Une distribution gratuite de nourriture aux habitants",
+          "Une cérémonie d'accueil pour de nouveaux arrivants"
+        ],
+        "correct": 1,
+        "explanation": "Une rafle est une arrestation collective et brutale menée par des forces armées ou policières contre une population ciblée."
+      },
+      {
+        "id": "q15",
+        "section": "Vocabulaire en contexte",
+        "type": "mcq",
+        "text": "Dans la phrase : « Je vous déposerai dans un cloitre. », que désigne un « cloître » (ou cloitre) ?",
+        "options": [
+          "Une galerie fermée ou un monastère / couvent isolé du monde extérieur",
+          "Une grande gare de triage pour les trains de marchandises",
+          "Un marché couvert où l'on vend des légumes frais",
+          "Un stade municipal équipé d'une piste d'athlétisme"
+        ],
+        "correct": 0,
+        "explanation": "Un cloître est la partie intérieure fermée d'un monastère ou d'un couvent, souvent synonyme de lieu religieux protecteur et retiré."
+      },
+      {
+        "id": "q16",
+        "section": "Compréhension globale",
+        "type": "synthesis",
+        "text": "Quel résumé correspond le mieux à l'œuvre historique et testimoniale « La villa » ?",
+        "options": [
+          "Résumé A : Durant l'été 1944, deux adolescents belges décident d'acheter une villa abandonnée pour y installer un atelier de réparation de postes de radio. Ils aident la Résistance en transmettant des messages secrets jusqu'à la Libération.",
+          "Résumé B : Séparés de leur mère pendant un voyage en train, Anna et Ruben trouvent refuge chez un vieux fermier qui les cache dans sa grange. Après la guerre, ils partent s'installer en France pour retrouver leur père.",
+          "Résumé C : Pendant la Seconde Guerre mondiale, Anna et Ruben sont arrachés à leur maison et recueillis dans la villa de Madame Rosi, une femme au dévouement héroïque qui cache des enfants juifs au péril de sa vie, leur permettant de survivre jusqu'à la paix."
+        ],
+        "correct": 2,
+        "explanation": "Le résumé C rend un hommage fidèle aux faits historiques : l'arrestation, le courage inouï de Madame Rosi, la clandestinité dans la villa et la survie d'Anna et Ruben."
+      }
+    ]
+  },
+  {
+    "id": "le_mysterieux_inconnu",
+    "title": "Le mystérieux inconnu",
+    "series": "Récits Express",
+    "totalPoints": 16,
+    "questions": [
+      {
+        "id": "q1",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Qui est Walid et où se déroule l'intrigue au début du récit ?",
+        "options": [
+          "Un collégien de 12 ans en classe de 5e vivant à Lille dans le Nord",
+          "Un jeune détective privé professionnel basé à Marseille",
+          "Un champion de football junior habitant à Paris",
+          "Un voyageur sans abri qui parcourt toute la France"
+        ],
+        "correct": 0,
+        "explanation": "Walid a 12 ans, est en classe de 5e à Lille, aime le foot, les frites de la cantine et le vent sur son visage."
+      },
+      {
+        "id": "q2",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quel comportement suspect d'un nouvel arrivant attire l'attention de Walid, Ruben et Altina ?",
+        "options": [
+          "Il roule en voiture de sport sans permis de conduire",
+          "Il rôde mystérieusement près des voies de chemin de fer et paraît vivre en marge des autres",
+          "Il refuse de manger à la cantine scolaire",
+          "Il porte un déguisement de super-héros dans la rue"
+        ],
+        "correct": 1,
+        "explanation": "Les trois collégiens remarquent les allées et venues étranges et discrètes d'un nouveau garçon près des voies ferrées."
+      },
+      {
+        "id": "q3",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quel outil Altina tient-elle minutieusement à jour pour mener leur enquête ?",
+        "options": [
+          "Un appareil photo instantané fixé sur son vélo",
+          "Un carnet d'investigation où elle consigne leurs observations sous le titre « Filature du nouveau »",
+          "Une chaîne vidéo sur internet diffusée en direct",
+          "Un dictaphone numérique prêté par son père"
+        ],
+        "correct": 1,
+        "explanation": "Altina adore jouer les fins limiers et note rigoureusement chaque étape de leur filature dans son carnet d'enquêtrice."
+      },
+      {
+        "id": "q4",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quelles théories fantaisistes les enfants imaginent-ils au début au sujet de l'inconnu ?",
+        "options": [
+          "Qu'il s'agit d'un agent secret d'élite ou d'un membre d'un gang de voleurs",
+          "Qu'il est un extraterrestre venu étudier les trains français",
+          "Qu'il est le fils caché d'une star de cinéma internationale",
+          "Qu'il cherche un trésor de pirates caché sous la gare"
+        ],
+        "correct": 0,
+        "explanation": "Emportés par leur imagination, les collégiens échafaudent des scénarios romanesques d'espionnage et de cambriolage."
+      },
+      {
+        "id": "q5",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quelle réalité poignante découvrent-ils en suivant le garçon jusqu'à son lieu de vie ?",
+        "options": [
+          "Qu'il vit dans un hôtel cinq étoiles avec sa famille",
+          "Qu'il survit dans un camp de fortune précaire avec d'autres réfugiés migrants",
+          "Qu'il habite une maison normale juste à côté de l'école",
+          "Qu'il est hébergé chez le principal du collège"
+        ],
+        "correct": 1,
+        "explanation": "Les enfants découvrent que l'inconnu vit dans des conditions extrêmement dures au sein d'un campement de fortune pour personnes migrantes."
+      },
+      {
+        "id": "q6",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quelle est la véritable identité et l'histoire tragique de ce garçon nommé Adnan ?",
+        "options": [
+          "Un acteur célèbre qui tournait un film en caméra cachée",
+          "Un jeune Syrien qui a dû fuir son pays natal ravagé par les horreurs de la guerre",
+          "Un champion d'échecs en fuite après un tournoi international",
+          "Un espion étranger envoyé pour une mission secrète"
+        ],
+        "correct": 1,
+        "explanation": "Le garçon s'appelle Adnan ; il a fui la guerre en Syrie dans l'espoir de trouver la sécurité et un avenir paisible."
+      },
+      {
+        "id": "q7",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quel événement brutal vient disperser le campement peu de temps après ?",
+        "options": [
+          "Une fête de quartier organisée par la mairie",
+          "L'évacuation et la destruction par le feu du campement, contraignant les réfugiés à fuir à nouveau",
+          "La construction d'un nouveau centre d'accueil tout confort",
+          "L'arrivée d'un cirque ambulant sur le terrain vague"
+        ],
+        "correct": 1,
+        "explanation": "Le campement est détruit et brûlé, obligeant Adnan et les siens à reprendre la route dans la précarité."
+      },
+      {
+        "id": "q8",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quelle phrase bouleversante Altina écrit-elle en conclusion dans son carnet d'enquête ?",
+        "options": [
+          "« Affaire suivante, nous avons perdu notre temps. »",
+          "« Conclusion : affaire classée. Commentaires éventuels : ça aurait pu être moi. »",
+          "« Je deviendrai inspectrice de police plus tard. »",
+          "« Les mystères de la gare ne seront jamais résolus. »"
+        ],
+        "correct": 1,
+        "explanation": "Altina prend conscience de la fragilité du destin humain et comprend avec une profonde empathie que n'importe qui aurait pu être à la place d'Adnan."
+      },
+      {
+        "id": "q9",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Walid, Ruben et Altina sont des collégiens lillois curieux et observateurs.",
+        "correct": true,
+        "explanation": "VRAI : Les trois amis partagent la même curiosité et décident d'élucider ensemble le mystère du nouvel arrivant."
+      },
+      {
+        "id": "q10",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "L'inconnu était en réalité un voleur dangereux recherché par toutes les polices d'Europe.",
+        "correct": false,
+        "explanation": "FAUX : Il s'agissait simplement d'un jeune réfugié syrien sans défense cherchant à survivre."
+      },
+      {
+        "id": "q11",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Adnan a été forcé de quitter la Syrie pour fuir les violences de la guerre.",
+        "correct": true,
+        "explanation": "VRAI : Adnan est un jeune migrant qui a dû abandonner sa terre natale à cause des conflits armés."
+      },
+      {
+        "id": "q12",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Cette aventure renforce les préjugés des enfants et les rend indifférents aux autres.",
+        "correct": false,
+        "explanation": "FAUX : Cette rencontre leur ouvre les yeux, fait tomber leurs préjugés et leur enseigne une magnifique leçon d'empathie."
+      },
+      {
+        "id": "q13",
+        "section": "Vocabulaire en contexte",
+        "type": "mcq",
+        "text": "Dans la phrase : « Altina, on ne peut pas prévoir le jour et l'heure d'une filature. », que désigne une « filature » ?",
+        "options": [
+          "Une usine où l'on fabrique du fil à coudre",
+          "L'action de suivre discrètement et sans être vu une personne pour surveiller ses faits et gestes",
+          "Une course d'orientation chronométrée en forêt",
+          "Une leçon de tricot à l'école"
+        ],
+        "correct": 1,
+        "explanation": "Faire une filature consiste à marcher sur les pas de quelqu'un en secret pour découvrir où il va."
+      },
+      {
+        "id": "q14",
+        "section": "Vocabulaire en contexte",
+        "type": "mcq",
+        "text": "Dans la phrase : « Tous ces mystères qui régnaient autour de lui, c'était une aubaine à ne pas manquer. », que signifie le mot « aubaine » ?",
+        "options": [
+          "Un gros problème financier",
+          "Une occasion particulièrement favorable, une chance inespérée",
+          "Une punition reçue à la cantine",
+          "Un panneau d'interdiction de stationner"
+        ],
+        "correct": 1,
+        "explanation": "Une aubaine est une chance inattendue, une opportunité avantageuse qu'il faut saisir."
+      },
+      {
+        "id": "q15",
+        "section": "Vocabulaire en contexte",
+        "type": "mcq",
+        "text": "Dans la phrase : « Le nouveau vit ici, dans ce camp de migrants. », que désigne le mot « migrant » ?",
+        "options": [
+          "Un oiseau qui reste toujours au même endroit toute l'année",
+          "Une personne qui quitte son pays d'origine pour s'installer dans un autre, souvent pour fuir un danger ou la misère",
+          "Un touriste en vacances pour une semaine à l'hôtel",
+          "Un conducteur de train de grandes lignes"
+        ],
+        "correct": 1,
+        "explanation": "Un migrant est une personne qui se déplace d'un pays à un autre dans l'espoir de trouver de meilleures conditions de vie ou d'échapper à la guerre."
+      },
+      {
+        "id": "q16",
+        "section": "Compréhension globale",
+        "type": "synthesis",
+        "text": "Quel résumé correspond le mieux au message du livre « Le mystérieux inconnu » ?",
+        "options": [
+          "Résumé A : Intrigués par l'attitude solitaire d'un nouveau garçon près des voies ferrées, trois collégiens lillois mènent une filature qui les mène à un campement précaire. Ils découvrent qu'il s'agit d'Adnan, un réfugié syrien, une rencontre bouleversante qui balaie leurs préjugés.",
+          "Résumé B : Convaincus qu'un espion international s'est infiltré dans leur collège de Lille, Walid et ses camarades piègent le suspect dans la cour de récréation et permettent l'arrestation d'un dangereux gang de trafiquants de bijoux.",
+          "Résumé C : Après avoir trouvé un carnet d'enquête perdu dans la gare de Lille, Ruben et Altina partent à la recherche de son propriétaire. Leur périple les conduit à travers toute la ville jusqu'à un club secret de détectives amateurs."
+        ],
+        "correct": 0,
+        "explanation": "Le résumé A traduit fidèlement l'aventure : le point de vue d'enfants curieux, la découverte du campement de réfugiés, l'histoire d'Adnan et la profonde leçon d'humanité."
+      }
+    ]
+  },
+  {
+    "id": "le_vieil_homme_et_le_chien",
+    "title": "Le vieil homme et le chien",
+    "series": "Récits Express",
+    "totalPoints": 16,
+    "questions": [
+      {
+        "id": "q1",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quel devoir scolaire le narrateur doit-il rendre le lendemain et pourquoi cela l'embête-t-il ?",
+        "options": [
+          "Un problème de géométrie très complexe sur les triangles",
+          "Une rédaction sur le sujet « Mes plus belles vacances », alors qu'il n'a encore rien écrit",
+          "Un exposé en sciences sur le système solaire",
+          "Une poésie de trois strophes à apprendre par cœur"
+        ],
+        "correct": 1,
+        "explanation": "Le narrateur doit rédiger un texte sur ses « plus belles vacances », un sujet qui ne l'inspire pas du tout au départ."
+      },
+      {
+        "id": "q2",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quelle rencontre inattendue fait-il au coin de la rue en rentrant chez lui ?",
+        "options": [
+          "Il croise son professeur de français qui promène son chat",
+          "Il découvre Molly, une petite chienne apeurée et tremblante",
+          "Il trouve un portefeuille rempli de billets de banque",
+          "Il rencontre un groupe de musiciens ambulants"
+        ],
+        "correct": 1,
+        "explanation": "Il fait la connaissance d'une petite chienne nommée Molly, perdue et apeurée sur le trottoir."
+      },
+      {
+        "id": "q3",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "À qui appartient réellement Molly ?",
+        "options": [
+          "Au directeur de l'école primaire du quartier",
+          "À un vieil homme isolé et affaibli du voisinage",
+          "À une clinique vétérinaire du centre-ville",
+          "À une animalerie qui l'a égarée pendant une livraison"
+        ],
+        "correct": 1,
+        "explanation": "Molly est la compagne fidèle d'un vieux monsieur du quartier qui vit seul et a des problèmes de santé."
+      },
+      {
+        "id": "q4",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quelle situation critique touche soudainement le vieux maître de Molly ?",
+        "options": [
+          "Il part en voyage pour faire le tour du monde",
+          "Il est victime d'un malaise et doit être hospitalisé d'urgence",
+          "Il décide de vendre tous ses biens aux enchères",
+          "Il déménage dans un autre pays sans prévenir personne"
+        ],
+        "correct": 1,
+        "explanation": "L'état de santé du vieil homme se dégrade subitement, nécessitant son transport et son admission à l'hôpital."
+      },
+      {
+        "id": "q5",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quelle décision courageuse et généreuse le narrateur prend-il pour aider ?",
+        "options": [
+          "Il dépose immédiatement la chienne dans un refuge lointain",
+          "Il prend en charge Molly, la nourrit, la rassure et s'en occupe avec dévouement",
+          "Il revend la chienne à un passant pour se faire de l'argent de poche",
+          "Il refuse de s'en mêler et rentre jouer à ses jeux vidéo"
+        ],
+        "correct": 1,
+        "explanation": "Le jeune garçon assume la garde de Molly avec un sens aigu des responsabilités, prenant soin d'elle jour après jour."
+      },
+      {
+        "id": "q6",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Pourquoi le narrateur tient-il absolument à rendre visite au vieil homme à l'hôpital ?",
+        "options": [
+          "Pour lui demander de payer la nourriture de la chienne",
+          "Pour le rassurer, lui montrer qu'il prend bien soin de Molly et lui apporter du réconfort",
+          "Pour lui faire signer un autographe sur son cahier de devoirs",
+          "Pour récupérer les clés de sa maison"
+        ],
+        "correct": 1,
+        "explanation": "Il sait combien le vieil homme aime sa chienne et veut apaiser ses inquiétudes en lui prouvant que Molly est entre de bonnes mains."
+      },
+      {
+        "id": "q7",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Comment l'attitude du père du narrateur évolue-t-elle au fil des événements ?",
+        "options": [
+          "Il devient de plus en plus sévère et interdit à son fils de sortir",
+          "Touché par la maturité et la sensibilité de son fils, il le regarde avec fierté, douceur et complicité",
+          "Il décide de ne plus jamais lui parler",
+          "Il exige que la chienne dorme dehors sous la pluie"
+        ],
+        "correct": 1,
+        "explanation": "Le père, souvent distant ou sérieux, découvre chez son fils une grande noblesse de cœur et esquisse un sourire bienveillant."
+      },
+      {
+        "id": "q8",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quel sujet magnifique le narrateur aura-t-il finalement pour sa rédaction scolaire ?",
+        "options": [
+          "Un voyage imaginaire sur la lune",
+          "Cette expérience humaine de dévouement, de compassion et de solidarité partagée avec Molly et son maître",
+          "Le récit d'une partie de football entre amis",
+          "La description détaillée d'une partie de jeux vidéo"
+        ],
+        "correct": 1,
+        "explanation": "Cette aventure altruiste donne tout son sens à l'expression « plus belles vacances », faites d'actes de gentillesse et de liens humains forts."
+      },
+      {
+        "id": "q9",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Au départ, le narrateur manquait totalement d'idées pour rédiger son devoir sur les vacances.",
+        "correct": true,
+        "explanation": "VRAI : Il n'avait encore rien écrit et trouvait le sujet de rédaction peu enthousiasmant."
+      },
+      {
+        "id": "q10",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Le narrateur refuse d'approcher la petite chienne Molly car il en a très peur.",
+        "correct": false,
+        "explanation": "FAUX : Il s'approche avec douceur de la chienne pour la mettre en sécurité."
+      },
+      {
+        "id": "q11",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Le vieil homme est touché et rassuré de savoir que son animal est aimé et protégé pendant son hospitalisation.",
+        "correct": true,
+        "explanation": "VRAI : Savoir Molly choyée et en sécurité permet au vieil homme de garder l'esprit tranquille à l'hôpital."
+      },
+      {
+        "id": "q12",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Le père du narrateur reste totalement indifférent et rejette son fils à la fin.",
+        "correct": false,
+        "explanation": "FAUX : Le père pose sur son fils un regard plein de sensibilité, de fierté et de tendresse."
+      },
+      {
+        "id": "q13",
+        "section": "Vocabulaire en contexte",
+        "type": "mcq",
+        "text": "Dans la phrase : « J'ai une rédaction à rendre demain et je n'ai encore rien écrit. », qu'est-ce qu'une « rédaction » à l'école ?",
+        "options": [
+          "Un calcul de divisions posées",
+          "Un exercice d'écriture où l'élève compose un texte ou une histoire sur un sujet donné",
+          "Un dessin géométrique réalisé au compas",
+          "Un chant choral appris avec toute la classe"
+        ],
+        "correct": 1,
+        "explanation": "Une rédaction est un travail scolaire d'expression écrite consistant à rédiger un texte structuré."
+      },
+      {
+        "id": "q14",
+        "section": "Vocabulaire en contexte",
+        "type": "mcq",
+        "text": "Dans la phrase : « En outre, j'ai un mauvais pressentiment depuis une heure. », que signifie un « pressentiment » ?",
+        "options": [
+          "Un grand appétit avant le repas",
+          "L'intuition ou le sentiment intérieur que quelque chose va se produire, souvent de désagréable",
+          "Une douleur musculaire après une course",
+          "Un souvenir joyeux de la petite enfance"
+        ],
+        "correct": 1,
+        "explanation": "Un pressentiment est une intuition ou un sentiment vague prédisant un événement à venir."
+      },
+      {
+        "id": "q15",
+        "section": "Vocabulaire en contexte",
+        "type": "mcq",
+        "text": "Dans la phrase : « D'un coup de pied, je l'envoie contre le mur afin que personne d'autre ne trébuche dessus. », que signifie « trébucher » ?",
+        "options": [
+          "Marcher d'un pas militaire très rapide",
+          "Perdre l'équilibre en butant sur un obstacle",
+          "Sauter par-dessus une flaque d'eau",
+          "S'asseoir par terre pour se reposer"
+        ],
+        "correct": 1,
+        "explanation": "Trébucher signifie heurter un obstacle avec son pied et manquer de tomber."
+      },
+      {
+        "id": "q16",
+        "section": "Compréhension globale",
+        "type": "synthesis",
+        "text": "Quel résumé correspond le mieux au récit « Le vieil homme et le chien » ?",
+        "options": [
+          "Résumé A : Pour gagner le premier prix d'un concours canin, un garçon achète une chienne dans une animalerie. Après plusieurs semaines d'entraînement intensif, il remporte la médaille d'or et fait la fierté de son école.",
+          "Résumé B : Alors qu'il cherche l'inspiration pour un devoir de vacances, un collégien recueille Molly, la chienne d'un vieil homme soudainement hospitalisé. En veillant sur l'animal et en soutenant le maître malade, il fait preuve d'une maturité exemplaire qui rapproche père et fils.",
+          "Résumé C : En vacances à la montagne chez son oncle vétérinaire, un garçon soigne un chien de berger blessé par un loup. Ensemble, ils guident un troupeau de moutons égaré à travers une violente tempête de neige."
+        ],
+        "correct": 1,
+        "explanation": "Le résumé B synthétise parfaitement l'histoire : le point de départ de la rédaction, le sauvetage de Molly, le dévouement pour le voisin hospitalisé et l'émouvante évolution de la relation avec le père."
+      }
+    ]
+  },
+  {
+    "id": "qui_a_le_plus_de_chance",
+    "title": "Qui a le plus de chance ?",
+    "series": "Récits Express",
+    "totalPoints": 16,
+    "questions": [
+      {
+        "id": "q1",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quelle croyance partagée pousse la narratrice et Laurine à se jalouser mutuellement ?",
+        "options": [
+          "Elles pensent chacune que l'autre a des meilleures notes sans jamais étudier",
+          "Chacune est persuadée que sa meilleure amie a une famille idéale et beaucoup plus de « chance » qu'elle",
+          "Elles se disputent pour savoir qui a les plus beaux vêtements",
+          "Elles veulent toutes les deux devenir déléguées de classe"
+        ],
+        "correct": 1,
+        "explanation": "Chacune des deux amies idéalise la vie et les parents de l'autre, s'imaginant que l'herbe est toujours plus verte ailleurs."
+      },
+      {
+        "id": "q2",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quelle idée surprenante les deux filles décident-elles de tester pour vérifier qui est la plus chanceuse ?",
+        "options": [
+          "Participer à un jeu télévisé de questions-réponses",
+          "Échanger leurs familles et leurs quotidiens respectifs pendant un certain temps",
+          "Tirer à pile ou face pour décider de leur avenir",
+          "Faire un concours de cuisine entre leurs mères"
+        ],
+        "correct": 1,
+        "explanation": "Les deux amies conviennent d'échanger leurs places au sein de leurs familles pour vivre la vie de l'autre de l'intérieur."
+      },
+      {
+        "id": "q3",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Que découvre la narratrice en vivant au sein de la famille de Laurine ?",
+        "options": [
+          "Que tout est parfait et qu'il n'y a jamais la moindre dispute",
+          "Que derrière les apparences de richesse ou de liberté se cachent des tensions, des exigences et des souffrances réelles",
+          "Que les parents de Laurine sont en réalité des agents secrets",
+          "Qu'elle s'y ennuie tellement qu'elle veut rentrer après cinq minutes"
+        ],
+        "correct": 1,
+        "explanation": "La narratrice réalise que la vie de Laurine n'a rien d'un conte de fées et comporte son lot de contraintes et de non-dits."
+      },
+      {
+        "id": "q4",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quel sentiment négatif vient temporairement troubler la belle amitié entre les deux jeunes filles ?",
+        "options": [
+          "L'avarice et le goût de l'argent",
+          "Une pointe de jalousie et un sentiment de trahison dû à des secrets mal compris",
+          "La paresse et le refus d'aller en cours ensemble",
+          "La haine du sport"
+        ],
+        "correct": 1,
+        "explanation": "La jalousie et le manque de communication directe provoquent des malentendus qui blessent les deux amies."
+      },
+      {
+        "id": "q5",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Pourquoi le dialogue direct et sincère s'avère-t-il indispensable entre elles ?",
+        "options": [
+          "Pour savoir qui va payer l'addition au restaurant",
+          "Parce que garder ses soucis pour soi détruit la confiance, alors qu'en parler permet de se comprendre et de pardonner",
+          "Pour préparer leur exposé de sciences naturelles",
+          "Pour impressionner les autres élèves du collège"
+        ],
+        "correct": 1,
+        "explanation": "Le livre illustre l'adage « Si on a un problème, on en parle » : seule la franchise permet de dissiper les rancœurs."
+      },
+      {
+        "id": "q6",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Comment les deux amies réagissent-elles lorsqu'elles se rendent compte de leurs erreurs d'appréciation ?",
+        "options": [
+          "Elles décident de ne plus jamais se reparler et coupent les ponts",
+          "Elles s'expliquent à cœur ouvert, reconnaissent leurs torts et se réconcilient avec tendresse",
+          "Elles font appel au tribunal des enfants",
+          "Elles accusent leurs parents respectifs d'être les seuls coupables"
+        ],
+        "correct": 1,
+        "explanation": "La discussion franche et pleine d'émotion leur permet de constater à quel point elles tiennent l'une à l'autre."
+      },
+      {
+        "id": "q7",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quelle réflexion complice font-elles sur leur façon de penser synchronisée à la fin ?",
+        "options": [
+          "Qu'elles devraient monter une entreprise de mode ensemble",
+          "Qu'elles pensent toujours à la même chose en même temps comme si elles étaient télépathes",
+          "Qu'elles vont devenir magiciennes professionnelles",
+          "Qu'elles vont écrire un livre sur les extraterrestres"
+        ],
+        "correct": 1,
+        "explanation": "Elles constatent avec humour qu'elles ont encore pensé exactement à la même chose en même temps."
+      },
+      {
+        "id": "q8",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quelle est la conclusion morale de cette expérience pour les deux amies ?",
+        "options": [
+          "Qu'il faut absolument changer de famille dès qu'on a un reproche à faire",
+          "Que la chance ne se mesure pas aux apparences matérielles, mais à l'amour que l'on reçoit et à la force de ses amitiés",
+          "Qu'il vaut mieux ne faire confiance à personne",
+          "Que les parents ont toujours tort dans toutes les situations"
+        ],
+        "correct": 1,
+        "explanation": "La véritable chance réside dans la capacité d'apprécier sa propre famille et de cultiver une amitié authentique et transparente."
+      },
+      {
+        "id": "q9",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Au début de l'histoire, chacune des deux amies pense que l'autre a une vie de famille parfaite et sans soucis.",
+        "correct": true,
+        "explanation": "VRAI : Elles envient toutes les deux le quotidien de l'autre avant de vivre l'échange."
+      },
+      {
+        "id": "q10",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "L'expérience d'échange de familles démontre que la famille de Laurine ne connaît absolument aucune règle ni difficulté.",
+        "correct": false,
+        "explanation": "FAUX : L'immersion prouve que chaque famille a ses propres fragilités, secrets et exigences."
+      },
+      {
+        "id": "q11",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "La communication honnête et l'écoute mutuelle permettent de surmonter la crise de confiance entre les deux filles.",
+        "correct": true,
+        "explanation": "VRAI : C'est en exprimant sincèrement leurs sentiments qu'elles parviennent à se pardonner."
+      },
+      {
+        "id": "q12",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "À la fin du roman, Laurine et la narratrice mettent fin à leur amitié de manière irréversible.",
+        "correct": false,
+        "explanation": "FAUX : Leur amitié ressort grandie, plus forte et plus lucide de cette épreuve."
+      },
+      {
+        "id": "q13",
+        "section": "Vocabulaire en contexte",
+        "type": "mcq",
+        "text": "Dans la phrase : « Un truc mauvais qu'on appelle la jalousie. », que signifie le mot « jalousie » ?",
+        "options": [
+          "Un sentiment de joie partagée lors d'un anniversaire",
+          "Un sentiment d'envie amère ou d'inquiétude ressenti face aux avantages ou au bonheur d'autrui",
+          "Une envie irrésistible de manger des bonbons",
+          "Un instrument de mesure utilisé en géographie"
+        ],
+        "correct": 1,
+        "explanation": "La jalousie est un sentiment d'amertume ou d'envie né du désir de posséder ce que l'autre a ou d'être à sa place."
+      },
+      {
+        "id": "q14",
+        "section": "Vocabulaire en contexte",
+        "type": "mcq",
+        "text": "Dans la phrase : « J'avais envie de lui dire combien je regrettais, à quel point j'aurais voulu la prendre par la main et plonger ensemble dans la première boucle temporelle venue pour revenir en arrière. », que désigne une « boucle temporelle » ?",
+        "options": [
+          "Un voyage imaginaire qui permet de remonter le temps ou de revivre le passé",
+          "Une montre à quartz avec un bracelet en cuir",
+          "Un cercle de danseurs tournant en rythme",
+          "Une ceinture portée lors d'une fête"
+        ],
+        "correct": 0,
+        "explanation": "Dans les récits de science-fiction, une boucle temporelle permet de voyager dans le temps pour revivre ou modifier un moment passé."
+      },
+      {
+        "id": "q15",
+        "section": "Vocabulaire en contexte",
+        "type": "mcq",
+        "text": "Dans la phrase : « Ton père avait remarqué que quelque chose me tracassait et le soir où ma mère a téléphoné, je m'apprêtais à lui en parler. », que signifie le verbe « tracassait » ?",
+        "options": [
+          "Rendait très joyeux et insouciant",
+          "Inquiétait, préoccupait et tourmentait l'esprit",
+          "Faisait rire aux éclats",
+          "Donnait envie de dormir"
+        ],
+        "correct": 1,
+        "explanation": "Tracasser signifie causer de l'inquiétude, des soucis ou des tourments d'esprit à quelqu'un."
+      },
+      {
+        "id": "q16",
+        "section": "Compréhension globale",
+        "type": "synthesis",
+        "text": "Quel résumé correspond le mieux au récit « Qui a le plus de chance ? » ?",
+        "options": [
+          "Résumé A : Laurine et sa meilleure amie s'inscrivent à un jeu télévisé national pour prouver leurs talents télépathiques. Malgré la jalousie de leurs camarades de classe, elles remportent le trophée et offrent le gain à une association.",
+          "Résumé B : Après une violente dispute au collège, deux amies décident de ne plus jamais se parler et changent d'établissement scolaire. Des années plus tard, elles se retrouvent par hasard lors d'un casting de théâtre.",
+          "Résumé C : Convaincues que l'autre a une famille bien plus chanceuse, deux inséparables amies décident d'échanger leurs vies. Confrontées à la réalité des faux-semblants et aux blessures de la jalousie, elles apprennent à communiquer avec sincérité et découvrent la vraie valeur de leur amitié."
+        ],
+        "correct": 2,
+        "explanation": "Le résumé C embrasse toute la trame : l'illusion initiale de la chance, l'échange des familles, l'épreuve des sentiments et la réconciliation grâce au dialogue franc."
+      }
+    ]
   }
 ];
