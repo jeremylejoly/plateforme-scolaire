@@ -85,6 +85,12 @@ def main():
             if bid == 'livre_maudit' and 'livre maudit' in norm(fn):
                 matched_file = fn
                 break
+            if bid == 'nature_et_sortilege_institulemn' and 'institu' in norm(fn):
+                matched_file = fn
+                break
+            if bid == 'du_sel_sur_mes_levres' and 'sel' in norm(fn):
+                matched_file = fn
+                break
                 
         if not matched_file:
             continue
