@@ -288,6 +288,30 @@
       border-color: var(--border-dark);
     }
 
+    .theme-card.completed {
+      background: #F0FDF4;
+      border-color: #059669;
+    }
+
+    .reset-theme-btn {
+      background: #FFFFFF;
+      border: 1.5px solid var(--border-dark);
+      border-radius: 8px;
+      padding: 3px 8px;
+      font-size: 0.75rem;
+      font-family: var(--font-display);
+      font-weight: 700;
+      color: var(--ink);
+      box-shadow: 1px 1px 0px var(--border-dark);
+      cursor: pointer;
+      transition: transform 0.1s ease, background-color 0.1s ease;
+    }
+
+    .reset-theme-btn:hover {
+      background: #FEF08A;
+      transform: scale(1.06);
+    }
+
     .theme-card-icon {
       font-size: 2rem;
       line-height: 1;
@@ -818,6 +842,10 @@
     </div>
     
     <div class="nav-right">
+      <div class="nav-stat-chip" id="student-chip" style="display:none;" title="Élève connecté">
+        <span>👤</span>
+        <span id="student-name"></span>
+      </div>
       <div class="nav-stat-chip" title="Mots trouvés au total">
         <span>🏆</span>
         <span id="stat-total-discovered">0</span>
@@ -873,6 +901,7 @@
         <div class="play-theme-badge">
           <span id="play-theme-icon">🐘</span>
           <span id="play-theme-title">Animaux</span>
+          <span id="play-theme-count" style="font-size:0.8rem;background:#FFFFFF;border:1.5px solid var(--border-dark);border-radius:8px;padding:2px 8px;margin-left:4px;font-weight:800;">0 / 15</span>
         </div>
 
         <div class="play-right-actions">
@@ -1165,13 +1194,55 @@
     }
   ];
 
+  // Associer à chaque mot sa clé de thème pour un suivi individuel sans répétition
+  THEMES.forEach(function(t) {
+    t.words.forEach(function(w) {
+      w.themeKey = t.key;
+    });
+  });
+
   /* Ballon SVG Colors */
   var BALLOON_COLORS = ["#EF4444", "#3B82F6", "#10B981", "#F59E0B", "#8B5CF6", "#EC4899"];
   var MAX_LIVES = 6;
   var ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
   var ACCENTS = ["É", "È", "Ê", "Ë", "À", "Â", "Î", "Ï", "Ô", "Û", "Ù", "Ç"];
 
-  var STORAGE_KEY = "lcml_pendu_mots_v2";
+  /* =========================================================================
+     SESSION ÉLÈVE & STOCKAGE LOCAL
+     ========================================================================= */
+  function getActiveStudent() {
+    try {
+      if (window.parent && window.parent.state && window.parent.state.student) {
+        return {
+          name: window.parent.state.student,
+          cls: window.parent.state.studentCls || ""
+        };
+      }
+    } catch(e) {}
+    try {
+      var raw = localStorage.getItem("lq_student_session");
+      if (raw) {
+        var sess = JSON.parse(raw);
+        if (sess && sess.student) {
+          return {
+            name: sess.student,
+            cls: sess.studentCls || ""
+          };
+        }
+      }
+    } catch(e) {}
+    return null;
+  }
+
+  var activeStudent = getActiveStudent();
+  var STORAGE_KEY = (function() {
+    if (activeStudent && activeStudent.name) {
+      var safeName = activeStudent.name.replace(/[^a-zA-Z0-9_\u00C0-\u00FF]/g, "_").toLowerCase();
+      var safeCls = (activeStudent.cls || "").replace(/[^a-zA-Z0-9_]/g, "_").toLowerCase();
+      return "lcml_pendu_mots_v2_" + (safeCls ? safeCls + "_" : "") + safeName;
+    }
+    return "lcml_pendu_mots_v2";
+  })();
   var SOUND_STORAGE_KEY = "lcml_sound_enabled";
 
   /* =========================================================================
@@ -1249,8 +1320,15 @@
   function loadDiscovered() {
     try {
       var raw = localStorage.getItem(STORAGE_KEY);
-      var parsed = raw ? JSON.parse(raw) : {};
-      return (parsed && typeof parsed === "object") ? parsed : {};
+      var parsed = raw ? JSON.parse(raw) : null;
+      if (parsed && typeof parsed === "object") return parsed;
+      // Récupérer les mots d'une session précédente s'ils existent
+      if (STORAGE_KEY !== "lcml_pendu_mots_v2") {
+        var legacyRaw = localStorage.getItem("lcml_pendu_mots_v2");
+        var legacyParsed = legacyRaw ? JSON.parse(legacyRaw) : null;
+        if (legacyParsed && typeof legacyParsed === "object") return legacyParsed;
+      }
+      return {};
     } catch(e) {
       return {};
     }
@@ -1283,9 +1361,18 @@
   var statTotalDiscovered = document.getElementById("stat-total-discovered");
   var statStreak = document.getElementById("stat-streak");
   var soundToggleBtn = document.getElementById("sound-toggle-btn");
+  var studentChip = document.getElementById("student-chip");
+  var studentNameEl = document.getElementById("student-name");
+
+  // Afficher le profil élève si connecté
+  if (activeStudent && activeStudent.name && studentChip && studentNameEl) {
+    studentNameEl.textContent = activeStudent.name;
+    studentChip.style.display = "inline-flex";
+  }
   
   var playThemeIcon = document.getElementById("play-theme-icon");
   var playThemeTitle = document.getElementById("play-theme-title");
+  var playThemeCount = document.getElementById("play-theme-count");
   var currentStreakVal = document.getElementById("current-streak-val");
   var livesBadge = document.getElementById("lives-badge");
   var livesText = document.getElementById("lives-text");
@@ -1311,7 +1398,7 @@
      ÉTAT DE JEU (GAME STATE)
      ========================================================================= */
   var currentTheme = null; // theme object or "mix"
-  var currentWordObj = null; // { word, hint }
+  var currentWordObj = null; // { word, hint, themeKey }
   var normalizedTargetWord = "";
   var lastWord = null;
   var guessedLetters = [];
@@ -1330,20 +1417,43 @@
     currentStreakVal.textContent = totalStreak;
   }
 
+  function updatePlayThemeBadge() {
+    if (!playThemeCount || !currentTheme) return;
+    if (currentTheme.key === "mix") {
+      var totalAll = 0;
+      THEMES.forEach(function(t) { totalAll += t.words.length; });
+      var totalFound = countTotalDiscovered();
+      playThemeCount.textContent = totalFound + " / " + totalAll;
+    } else {
+      var found = (discovered[currentTheme.key] || []).length;
+      var total = currentTheme.words.length;
+      playThemeCount.textContent = found + " / " + total;
+    }
+  }
+
   /* =========================================================================
      RENDU ÉCRAN 1 : CHOIX DU THÈME
      ========================================================================= */
   function renderThemeSelect() {
     themeGrid.innerHTML = "";
     
+    // Calcul pour le Défi Tous Thèmes
+    var totalAllWords = 0;
+    THEMES.forEach(function(t) { totalAllWords += t.words.length; });
+    var totalAllFound = countTotalDiscovered();
+    var mixPct = totalAllWords > 0 ? Math.min(100, Math.round((totalAllFound / totalAllWords) * 100)) : 0;
+
     // Carte Défi Mixte / Aléatoire
     var mixCard = document.createElement("button");
     mixCard.className = "theme-card special-mix";
     mixCard.innerHTML = 
       '<div class="theme-card-icon">🎲</div>' +
       '<div class="theme-card-name">Défi Tous Thèmes</div>' +
-      '<div class="theme-card-progress"><span>Mots variés au hasard</span><span>⭐</span></div>' +
-      '<div class="theme-progress-bar-bg"><div class="theme-progress-bar-fill" style="width: 100%; background: #F59E0B;"></div></div>';
+      '<div class="theme-card-progress">' +
+        '<span>Mots variés au hasard</span>' +
+        '<span>' + totalAllFound + ' / ' + totalAllWords + ' (' + mixPct + '%)</span>' +
+      '</div>' +
+      '<div class="theme-progress-bar-bg"><div class="theme-progress-bar-fill" style="width: ' + mixPct + '%; background: #F59E0B;"></div></div>';
     mixCard.addEventListener("click", function() {
       initAudio();
       playSound("click");
@@ -1355,25 +1465,53 @@
     THEMES.forEach(function(theme) {
       var foundCount = (discovered[theme.key] || []).length;
       var totalCount = theme.words.length;
+      var isCompleted = foundCount >= totalCount;
       var pct = Math.min(100, Math.round((foundCount / totalCount) * 100));
 
-      var card = document.createElement("button");
-      card.className = "theme-card";
+      var card = document.createElement("div");
+      card.className = "theme-card" + (isCompleted ? " completed" : "");
+      card.setAttribute("role", "button");
+      card.setAttribute("tabindex", "0");
+
+      var resetBtnHtml = isCompleted 
+        ? '<button class="reset-theme-btn" data-reset-theme="' + theme.key + '" title="Recommencer ce thème à zéro">🔄 Rejouer</button>' 
+        : '';
+
       card.innerHTML = 
         '<div class="theme-card-icon">' + theme.icon + '</div>' +
-        '<div class="theme-card-name">' + theme.label + '</div>' +
+        '<div class="theme-card-name">' + theme.label + (isCompleted ? ' 🏆' : '') + '</div>' +
         '<div class="theme-card-progress">' +
-          '<span>' + foundCount + ' / ' + totalCount + ' trouvés</span>' +
-          '<span>' + pct + '%</span>' +
+          '<span>' + (isCompleted ? '<b style="color:#059669;">100% Terminé !</b>' : foundCount + ' / ' + totalCount + ' trouvés') + '</span>' +
+          '<span>' + (isCompleted ? resetBtnHtml : pct + '%') + '</span>' +
         '</div>' +
         '<div class="theme-progress-bar-bg">' +
-          '<div class="theme-progress-bar-fill" style="width: ' + pct + '%;"></div>' +
+          '<div class="theme-progress-bar-fill" style="width: ' + pct + '%;' + (isCompleted ? ' background: #10B981;' : '') + '"></div>' +
         '</div>';
       
-      card.addEventListener("click", function() {
+      card.addEventListener("click", function(e) {
+        var resetBtn = e.target.closest ? e.target.closest("[data-reset-theme]") : null;
+        if (resetBtn) {
+          e.stopPropagation();
+          var rKey = resetBtn.getAttribute("data-reset-theme");
+          if (confirm("Veux-tu réinitialiser ce thème pour redécouvrir tous ses mots depuis le début ?")) {
+            discovered[rKey] = [];
+            saveDiscovered(discovered);
+            renderThemeSelect();
+          }
+          return;
+        }
         initAudio();
         playSound("click");
         openTheme(theme.key);
+      });
+
+      card.addEventListener("keydown", function(e) {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          initAudio();
+          playSound("click");
+          openTheme(theme.key);
+        }
       });
 
       themeGrid.appendChild(card);
@@ -1417,15 +1555,48 @@
     renderThemeSelect();
   }
 
+  function isWordDiscovered(wordObj) {
+    var key = wordObj.themeKey;
+    if (!key) return false;
+    var list = discovered[key] || [];
+    return list.indexOf(wordObj.word) !== -1;
+  }
+
+  function getUndiscoveredWords(theme) {
+    if (!theme || !theme.words) return [];
+    if (theme.key === "mix") {
+      return theme.words.filter(function(w) {
+        return !isWordDiscovered(w);
+      });
+    } else {
+      var list = discovered[theme.key] || [];
+      return theme.words.filter(function(w) {
+        return list.indexOf(w.word) === -1;
+      });
+    }
+  }
+
   function pickRandomWord(theme) {
-    var pool = theme.words;
+    var undiscovered = getUndiscoveredWords(theme);
+    var pool;
+
+    if (undiscovered.length > 0) {
+      // Priorité absolue : piocher uniquement parmi les mots non encore trouvés !
+      pool = undiscovered;
+    } else {
+      // Tous les mots du thème ont été découverts ! Mode révision / rejouer
+      pool = theme.words;
+    }
+
     if (pool.length === 1) return pool[0];
+
     var picked;
     var attempts = 0;
     do {
       picked = pool[Math.floor(Math.random() * pool.length)];
       attempts++;
-    } while (picked.word === lastWord && attempts < 10);
+    } while (picked.word === lastWord && attempts < 15);
+
     return picked;
   }
 
@@ -1576,6 +1747,7 @@
     renderKeyboard();
     updateHintState();
     updateGlobalStats();
+    updatePlayThemeBadge();
   }
 
   /* =========================================================================
@@ -1626,17 +1798,52 @@
           });
         }
 
-        // Sauvegarder dans découvertes
-        if (currentTheme && currentTheme.key !== "mix") {
-          var list = discovered[currentTheme.key] || [];
+        // Sauvegarder dans découvertes (même en mode défi mixte grâce à themeKey !)
+        var targetKey = currentWordObj.themeKey || (currentTheme ? currentTheme.key : null);
+        var wasAlreadyDiscovered = false;
+        if (targetKey && targetKey !== "mix") {
+          var list = discovered[targetKey] || [];
           if (list.indexOf(currentWordObj.word) === -1) {
             list.push(currentWordObj.word);
-            discovered[currentTheme.key] = list;
+            discovered[targetKey] = list;
             saveDiscovered(discovered);
+          } else {
+            wasAlreadyDiscovered = true;
           }
         }
 
-        winSummary.innerHTML = 'Tu as trouvé le mot <b>' + normalizedTargetWord + '</b> avec ' + wrongCount + ' erreur' + (wrongCount > 1 ? 's' : '') + '. <br><span style="color:#065F46; font-size:0.9rem;">💡 ' + currentWordObj.hint + '</span>';
+        var themeWordsCount = 0;
+        var themeFoundCount = 0;
+        var justCompletedTheme = false;
+
+        if (targetKey && targetKey !== "mix") {
+          var matchedTheme = THEMES.filter(function(t) { return t.key === targetKey; })[0];
+          if (matchedTheme) {
+            themeWordsCount = matchedTheme.words.length;
+            themeFoundCount = (discovered[targetKey] || []).length;
+            if (themeFoundCount === themeWordsCount && !wasAlreadyDiscovered) {
+              justCompletedTheme = true;
+            }
+          }
+        }
+
+        var winMsg = 'Tu as trouvé le mot <b>' + normalizedTargetWord + '</b> avec ' + wrongCount + ' erreur' + (wrongCount > 1 ? 's' : '') + '. <br><span style="color:#065F46; font-size:0.9rem;">💡 ' + currentWordObj.hint + '</span>';
+
+        if (justCompletedTheme) {
+          winMsg += '<br><div style="margin-top:10px; padding:8px 12px; background:#ECFDF5; border:2px solid #10B981; border-radius:10px; font-weight:800; color:#065F46;">🏆 FÉLICITATIONS ! Tu as découvert TOUS les ' + themeWordsCount + ' mots de ce thème !</div>';
+          if (typeof confetti === "function") {
+            setTimeout(function() {
+              confetti({ particleCount: 160, spread: 90, origin: { y: 0.5 } });
+            }, 300);
+          }
+        } else if (targetKey && targetKey !== "mix") {
+          var remaining = Math.max(0, themeWordsCount - themeFoundCount);
+          if (remaining > 0) {
+            winMsg += '<br><span style="color:#047857; font-size:0.85rem; font-weight:700;">Encore ' + remaining + ' nouveau' + (remaining > 1 ? 'x' : '') + ' mot' + (remaining > 1 ? 's' : '') + ' à découvrir dans ce thème !</span>';
+          }
+        }
+
+        winSummary.innerHTML = winMsg;
         bannerWin.hidden = false;
       }
     } else {
