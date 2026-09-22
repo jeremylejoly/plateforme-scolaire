@@ -1,0 +1,1219 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Le nonogram de LCML</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- TailwindCSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      corePlugins: {
+        preflight: false,
+      },
+      theme: {
+        extend: {
+          borderWidth: {
+            '3': '3px',
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            display: ['Fredoka', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <!-- Canvas Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <style>
+    :root {
+      --purple: #5B4FCF;
+      --purple-light: #EEF0FF;
+      --green: #1A9E75;
+      --green-light: #E2F5EE;
+      --red: #D94F3D;
+      --red-light: #FDECEA;
+      --amber: #C97B1A;
+      --amber-light: #FEF3E2;
+      --blue: #1A6FA0;
+      --blue-light: #E2F0FA;
+      --bg: #FDFBF7;
+      --surface: #FFFFFF;
+      --text: #1A1A2E;
+      --muted: #6B7080;
+      --border: #1A1A2E;
+      --rsm: 8px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif !important;
+      background: radial-gradient(rgba(26, 26, 46, 0.05) 1.5px, transparent 1.5px) 0 0/24px 24px, var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      user-select: none;
+    }
+
+    h1, h2, h3, h4, h5 {
+      font-family: 'Fredoka', sans-serif !important;
+    }
+
+    /* Neobrutalist components */
+    .card {
+      background: var(--surface);
+      border: 3px solid var(--border);
+      border-radius: 20px;
+      padding: 1.5rem;
+      box-shadow: 6px 6px 0px var(--border);
+    }
+
+    .btn {
+      padding: 10px 20px;
+      border: 2px solid var(--border);
+      border-radius: var(--rsm);
+      background: var(--surface);
+      font-family: 'Fredoka', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      color: var(--text);
+      transition: all .2s;
+      box-shadow: 2px 2px 0px var(--border);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      user-select: none;
+    }
+    .btn:hover {
+      background: var(--bg);
+      transform: translate(-1px, -1px);
+      box-shadow: 3px 3px 0px var(--border);
+    }
+    .btn:active {
+      transform: translate(1px, 1px);
+      box-shadow: 1px 1px 0px var(--border);
+    }
+    .btn-primary { background: var(--purple); color: #fff; border-color: var(--purple); box-shadow: 2px 2px 0px var(--border); }
+    .btn-primary:hover { background: #4a3fb8; }
+    .btn-success { background: var(--green); color: #fff; border-color: var(--green); box-shadow: 2px 2px 0px var(--border); }
+    .btn-success:hover { background: #148360; }
+    .btn-danger { background: var(--red); color: #fff; border-color: var(--red); box-shadow: 2px 2px 0px var(--border); }
+    .btn-danger:hover { background: #c24030; }
+    .btn-warning { background: var(--amber); color: #fff; border-color: var(--amber); box-shadow: 2px 2px 0px var(--border); }
+    .btn-warning:hover { background: #ad6712; }
+    .btn-secondary { background: var(--surface); color: var(--text); }
+
+    /* Level select tabs (Rush Hour / Sudoku style) */
+    .level-tab {
+      flex: 1;
+      text-align: center;
+      padding: 12px 6px;
+      font-family: 'Fredoka', sans-serif;
+      font-weight: 800;
+      font-size: 14px;
+      border: 3px solid var(--border);
+      border-radius: 12px;
+      cursor: pointer;
+      box-shadow: 3px 3px 0px var(--border);
+      transition: all 0.15s;
+    }
+    .level-tab:active {
+      transform: translate(1px, 1px);
+      box-shadow: 2px 2px 0px var(--border);
+    }
+
+    .tab-lvl1 { background-color: #E2F5EE; color: #148360; }
+    .tab-lvl1.active { background-color: var(--green) !important; color: white !important; transform: translate(-2px, -2px); box-shadow: 5px 5px 0px var(--border); }
+
+    .tab-lvl2 { background-color: #FEF3E2; color: #ad6712; }
+    .tab-lvl2.active { background-color: var(--amber) !important; color: white !important; transform: translate(-2px, -2px); box-shadow: 5px 5px 0px var(--border); }
+
+    .tab-lvl3 { background-color: #EEF0FF; color: #5B4FCF; }
+    .tab-lvl3.active { background-color: var(--purple) !important; color: white !important; transform: translate(-2px, -2px); box-shadow: 5px 5px 0px var(--border); }
+
+    /* Theme / Pattern selection cards */
+    .theme-card {
+      background: white;
+      border: 3px solid var(--border);
+      border-radius: 20px;
+      padding: 1.25rem 1rem;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 4px 4px 0px var(--border);
+    }
+    .theme-card:hover {
+      transform: translate(-3px, -3px);
+      box-shadow: 6px 6px 0px var(--border);
+    }
+    .theme-card:active {
+      transform: translate(1px, 1px);
+      box-shadow: 2px 2px 0px var(--border);
+    }
+    .theme-card .theme-icon {
+      font-size: 2.5rem;
+      margin-bottom: 0.35rem;
+      transition: transform 0.2s;
+    }
+    .theme-card:hover .theme-icon {
+      transform: scale(1.15) rotate(5deg);
+    }
+    .theme-card .theme-title {
+      font-family: 'Fredoka', sans-serif;
+      font-weight: 800;
+      font-size: 15px;
+      color: var(--text);
+    }
+    .theme-card .theme-desc {
+      font-size: 11px;
+      color: var(--muted);
+      font-weight: 600;
+      margin-top: 2px;
+    }
+
+    /* Mode toggle button */
+    .mode-toggle {
+      display: inline-flex;
+      background: #E5DFD3;
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      padding: 2px;
+      gap: 2px;
+    }
+    .mode-toggle button {
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-family: 'Fredoka', sans-serif;
+      font-weight: 700;
+      font-size: 13px;
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.12s;
+    }
+    .mode-toggle button.active {
+      background: white;
+      color: var(--text);
+      box-shadow: 1px 1px 0px var(--border);
+    }
+
+    /* Nonogram Board */
+    .board-container-wrapper {
+      overflow-x: auto;
+      padding: 6px 2px;
+      display: flex;
+      justify-content: center;
+      -webkit-overflow-scrolling: touch;
+      touch-action: none;
+    }
+    table.board {
+      border-collapse: collapse;
+      margin: 0 auto;
+      background: white;
+      border: 3px solid var(--border);
+      box-shadow: 5px 5px 0px var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+      user-select: none;
+      transition: box-shadow 0.3s ease;
+    }
+    table.board th, table.board td {
+      padding: 0;
+      text-align: center;
+      box-sizing: border-box;
+    }
+    th.corner {
+      background: #F4F1EB;
+      border-bottom: 3px solid var(--border);
+      border-right: 3px solid var(--border);
+    }
+    th.colclue, th.rowclue {
+      font-family: 'Fredoka', sans-serif;
+      font-weight: 700;
+      color: var(--text);
+      background: #FDFBF7;
+      transition: background 0.15s, color 0.15s, opacity 0.5s ease;
+    }
+    th.colclue {
+      vertical-align: bottom;
+      text-align: center;
+      border-bottom: 3px solid var(--border);
+      border-left: 1px solid #CBD5E1;
+      border-right: 1px solid #CBD5E1;
+      padding: 4px 2px;
+    }
+    th.colclue .clue-nums {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      line-height: 1.15;
+      gap: 2px;
+    }
+    th.colclue .clue-nums span {
+      font-size: clamp(11px, 2.4vw, 13px);
+      font-weight: 700;
+    }
+    th.rowclue {
+      text-align: right;
+      border-right: 3px solid var(--border);
+      border-top: 1px solid #CBD5E1;
+      border-bottom: 1px solid #CBD5E1;
+      padding: 2px 8px !important;
+      white-space: nowrap;
+    }
+    th.rowclue span.n {
+      font-size: clamp(11px, 2.4vw, 13px);
+      font-weight: 700;
+      margin-left: 3px;
+    }
+
+    /* Completed Row / Column */
+    th.colclue.done, th.rowclue.done {
+      color: #148360;
+      background: #E2F5EE;
+    }
+    th.colclue.done .clue-nums span, th.rowclue.done span.n {
+      text-decoration: line-through;
+      opacity: 0.65;
+    }
+
+    /* Cells */
+    td {
+      border: 1px solid #CBD5E1;
+      position: relative;
+    }
+    /* Thicker lines every 5 cells */
+    tr:nth-child(5n+1) td, tr:nth-child(5n+1) th {
+      border-top: 3px solid var(--border);
+    }
+    td:nth-child(5n+2), th.colclue:nth-child(5n+2) {
+      border-left: 3px solid var(--border);
+    }
+
+    button.cell {
+      display: block;
+      width: var(--cell-size, 38px);
+      height: var(--cell-size, 38px);
+      background: #FFFFFF;
+      padding: 0;
+      margin: 0;
+      border: none;
+      cursor: pointer;
+      position: relative;
+      transition: background-color 0.08s;
+    }
+    button.cell:hover {
+      background: #EEF0FF;
+    }
+    button.cell.filled {
+      background: var(--purple) !important;
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,0.15);
+    }
+    button.cell.crossed {
+      background: #F8F6F0;
+      position: relative;
+    }
+    button.cell.crossed::before, button.cell.crossed::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 56%;
+      height: 3px;
+      background: var(--red);
+      border-radius: 2px;
+    }
+    button.cell.crossed::before { transform: translate(-50%, -50%) rotate(45deg); }
+    button.cell.crossed::after { transform: translate(-50%, -50%) rotate(-45deg); }
+
+    /* Artwork revealed mode (after win) */
+    table.board.board-completed {
+      box-shadow: 7px 7px 0px var(--border);
+    }
+    table.board.board-completed th.colclue,
+    table.board.board-completed th.rowclue {
+      opacity: 0.22;
+      filter: grayscale(1);
+    }
+    table.board.board-completed button.cell.filled {
+      animation: pulseWinCell 0.5s ease;
+    }
+    @keyframes pulseWinCell {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.06); }
+      100% { transform: scale(1); }
+    }
+
+    /* Modals */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(26, 26, 46, 0.45);
+      backdrop-filter: blur(2px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 150;
+      transition: opacity 0.3s ease;
+    }
+    .modal-card {
+      background: var(--surface);
+      border: 3px solid var(--border);
+      border-radius: 24px;
+      padding: 28px;
+      width: 100%;
+      max-width: 480px;
+      box-shadow: 8px 8px 0px var(--border);
+      animation: popIn 0.25s cubic-bezier(0.26, 1.4, 0.4, 1);
+    }
+    @keyframes popIn {
+      from { transform: scale(0.85); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .rule-badge {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: var(--purple);
+      color: white;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Fredoka', sans-serif;
+      font-weight: 800;
+      font-size: 13px;
+      border: 2px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body class="flex flex-col min-h-screen">
+
+  <!-- HEADER LCML OFFICIAL -->
+  <header class="bg-white border-b-4 border-[#1A1A2E] py-3.5 px-6 relative overflow-hidden">
+    <div class="max-w-6xl mx-auto flex items-center justify-between relative z-10">
+      <div class="flex items-center gap-3">
+        <a href="index.html" class="flex items-center justify-center w-10 h-10 rounded-xl border-2 border-[#1A1A2E] bg-[#EEF0FF] shadow-[2px_2px_0px_#1A1A2E] hover:shadow-[3px_3px_0px_#1A1A2E] hover:-translate-y-0.5 active:translate-y-0 active:shadow-none transition-all no-underline text-xl" title="Retour à l'accueil LCML">
+          🏠
+        </a>
+        <div>
+          <h1 class="text-xl md:text-2xl font-display font-black flex items-center gap-2 m-0 text-[#1A1A2E]">
+            🧩 Le nonogram de LCML
+          </h1>
+          <p class="mt-0.5 text-[#6B7080] font-sans text-xs md:text-sm font-medium">
+            Devine l'image cachée en observant les indices de chaque ligne et colonne !
+          </p>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <button id="btn-open-rules" class="btn text-xs md:text-sm py-2 px-3.5 bg-[#FEF3E2] text-[#ad6712] border-2 border-[#1A1A2E] shadow-[2px_2px_0px_#1A1A2E]">
+          💡 Comment jouer ?
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN APP CONTAINER -->
+  <main class="flex-grow max-w-5xl w-full mx-auto p-4 flex flex-col gap-4 relative">
+
+    <!-- ==================== ECRAN MENU : SELECTION ==================== -->
+    <div id="screen-menu" class="flex flex-col gap-4">
+
+      <!-- Onglets de sélection du niveau (style Sudoku LCML) -->
+      <div class="card flex flex-col gap-3 p-4 md:p-5">
+        <h3 class="text-xs md:text-sm font-black text-slate-800 m-0 uppercase tracking-wider text-center sm:text-left">
+          ⚙️ Choisis ton niveau de difficulté :
+        </h3>
+        <div class="flex flex-col sm:flex-row gap-3">
+          <button class="level-tab tab-lvl1 active" data-level="facile" type="button">
+            Niveau 1<br><span class="text-[11px] font-sans font-medium opacity-85">Facile (5 × 5)</span>
+          </button>
+          <button class="level-tab tab-lvl2" data-level="moyen" type="button">
+            Niveau 2<br><span class="text-[11px] font-sans font-medium opacity-85">Moyen (10 × 10)</span>
+          </button>
+          <button class="level-tab tab-lvl3" data-level="difficile" type="button">
+            Niveau 3<br><span class="text-[11px] font-sans font-medium opacity-85">Difficile (15 × 15)</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Grille des motifs (Cartes Thématiques LCML) -->
+      <div class="card p-4 md:p-5 flex flex-col gap-4">
+        <div class="flex items-center justify-between flex-wrap gap-2">
+          <h3 class="text-xs md:text-sm font-black text-slate-800 m-0 uppercase tracking-wider" id="pattern-list-title">
+            🎨 Choisis ton image :
+          </h3>
+          <button class="btn btn-warning text-xs py-1.5 px-3" id="btn-random-puzzle" type="button">
+            🎲 Aléatoire
+          </button>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3.5" id="pattern-grid">
+          <!-- Injecté dynamiquement -->
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ==================== ECRAN DE JEU ==================== -->
+    <div id="screen-game" class="hidden flex flex-col gap-4">
+
+      <!-- Barre d'outils du jeu -->
+      <div class="card p-4 flex flex-wrap items-center justify-between gap-3">
+        <div class="flex items-center gap-3">
+          <button class="btn btn-secondary text-xs md:text-sm py-2 px-3" id="back-to-menu" type="button">
+            ⬅️ Changer d'image
+          </button>
+          <span class="font-display font-black text-sm md:text-base text-[#1A1A2E]" id="game-title">
+            ...
+          </span>
+        </div>
+
+        <div class="flex items-center gap-2 flex-wrap">
+          <div class="mode-toggle">
+            <button id="mode-fill" class="active" type="button">✏️ Remplir</button>
+            <button id="mode-cross" type="button">❌ Marquer</button>
+          </div>
+
+          <span class="btn text-xs md:text-sm py-2 px-3 bg-white cursor-default">
+            ⏱️ <span id="timer">0:00</span>
+          </span>
+
+          <button class="btn btn-danger text-xs md:text-sm py-2 px-3" id="clear-btn" type="button" title="Réinitialiser la grille">
+            🧹 Effacer
+          </button>
+        </div>
+      </div>
+
+      <!-- BANDEAU DE FELICITATIONS & ACTIONS D'ADMIRATION (s'affiche pour admirer l'oeuvre) -->
+      <div id="win-docked-bar" class="card p-4 hidden flex flex-wrap items-center justify-between gap-3 bg-[#EEF0FF] border-3 border-[#1A1A2E] shadow-[4px_4px_0px_#1A1A2E]">
+        <div class="flex items-center gap-3">
+          <span class="text-3xl">🏆</span>
+          <div>
+            <div class="font-display font-black text-sm md:text-base text-[#1A1A2E]" id="docked-title">
+              Bravo ! Image révélée
+            </div>
+            <div class="text-xs text-[#6B7080] font-semibold" id="docked-stats">
+              ⏱️ Temps : 0:00
+            </div>
+          </div>
+        </div>
+        <div class="flex items-center gap-2 flex-wrap">
+          <button class="btn btn-primary text-xs md:text-sm py-2 px-3" id="docked-replay" type="button">
+            🔁 Rejouer
+          </button>
+          <button class="btn btn-warning text-xs md:text-sm py-2 px-3" id="docked-another" type="button">
+            🎲 Autre image
+          </button>
+          <button class="btn btn-secondary text-xs md:text-sm py-2 px-3" id="docked-menu" type="button">
+            📋 Menu des grilles
+          </button>
+        </div>
+      </div>
+
+      <!-- Grille du Nonogram -->
+      <div class="card p-4 md:p-6 flex flex-col items-center justify-center">
+        <div class="board-container-wrapper w-full">
+          <div id="board-container"></div>
+        </div>
+
+        <p class="text-center text-xs text-[#6B7080] mt-3 font-medium" id="game-bottom-hint">
+          🖱️ Clic gauche ou glisser pour agir • Clic droit pour poser une croix (ou bascule en mode ❌ ci-dessus)
+        </p>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- ==================== MODAL DE VICTOIRE ==================== -->
+  <div id="win-overlay" class="modal-overlay hidden">
+    <div class="modal-card text-center relative" id="win-card-content">
+      <button id="win-close-btn" class="absolute top-3.5 right-3.5 text-slate-400 hover:text-slate-800 text-lg font-bold w-8 h-8 rounded-full border border-slate-300 flex items-center justify-center hover:bg-slate-100 transition-colors" title="Fermer pour admirer le dessin" type="button">✕</button>
+
+      <div class="text-5xl mb-2">🏆</div>
+      <h2 class="text-2xl font-display font-black text-[#1A1A2E] m-0">Bravo, bien joué !</h2>
+      <div class="text-base font-display font-bold text-[#5B4FCF] mt-1" id="win-pattern-name">Image révélée !</div>
+      
+      <div class="bg-[#FDFBF7] border-2 border-[#1A1A2E] rounded-xl p-3 my-4 text-sm font-semibold" id="win-times">
+        ⏱️ Temps : 0:45
+      </div>
+
+      <div class="flex flex-col gap-2.5">
+        <button class="btn btn-success w-full justify-center" id="win-view-art" type="button">
+          👁️ Admirer mon dessin
+        </button>
+        <div class="grid grid-cols-2 gap-2 mt-1">
+          <button class="btn btn-primary text-xs py-2 px-2 justify-center" id="win-replay" type="button">🔁 Rejouer</button>
+          <button class="btn btn-warning text-xs py-2 px-2 justify-center" id="win-another" type="button">🎲 Autre image</button>
+        </div>
+      </div>
+
+      <div class="text-[11px] text-[#6B7080] mt-3 font-medium">
+        Ce message disparaît dans 2 secondes pour te laisser admirer ton dessin...
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL REGLES DU JEU ==================== -->
+  <div id="rules-overlay" class="modal-overlay hidden">
+    <div class="modal-card">
+      <h3 class="text-xl font-display font-black text-[#1A1A2E] m-0 mb-4 flex items-center gap-2">
+        <span>💡</span> Comment jouer au Nonogram ?
+      </h3>
+
+      <div class="flex flex-col gap-3 text-xs md:text-sm text-slate-700 leading-relaxed">
+        <div class="flex gap-2.5 items-start">
+          <div class="rule-badge">1</div>
+          <div>
+            <strong>Comprendre les indices :</strong><br>
+            Les chiffres indiquent des blocs de cases consécutives à noircir. Par exemple, <strong>« 3 1 »</strong> signifie : 3 cases noircies d'affilée, puis au moins un espace vide, puis 1 case noircie.
+          </div>
+        </div>
+
+        <div class="flex gap-2.5 items-start">
+          <div class="rule-badge">2</div>
+          <div>
+            <strong>Ordre de lecture :</strong><br>
+            De gauche à droite pour les lignes, et de haut en bas pour les colonnes.
+          </div>
+        </div>
+
+        <div class="flex gap-2.5 items-start">
+          <div class="rule-badge">3</div>
+          <div>
+            <strong>Colorier ou marquer :</strong><br>
+            Utilise <strong>✏️ Remplir</strong> pour noircir les cases et <strong>❌ Marquer</strong> pour éliminer les cases vides qui t'aident à réfléchir sans te tromper !
+          </div>
+        </div>
+
+        <div class="flex gap-2.5 items-start">
+          <div class="rule-badge">4</div>
+          <div>
+            <strong>Indices validés :</strong><br>
+            Dès qu'une rangée ou colonne est exacte, ses chiffres passent en vert et sont automatiquement barrés.
+          </div>
+        </div>
+
+        <div class="bg-[#FEF3E2] border-2 border-[#C97B1A] rounded-xl p-3 text-xs text-[#78350F] mt-1 font-medium leading-normal">
+          🎯 <strong>Astuce :</strong> Commence par les plus grands chiffres (qui remplissent presque toute la ligne) pour débloquer le reste de la grille !
+        </div>
+      </div>
+
+      <div class="mt-5 text-center">
+        <button class="btn btn-primary w-full justify-center" id="btn-close-rules" type="button">
+          Compris, je joue ! 🚀
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  (function(){
+    "use strict";
+
+    /* ---------------- PUZZLE DATA ---------------- */
+    const LEVELS = {
+      facile: {
+        label: "Niveau 1 (Facile)", size: 5, cellSize: 48,
+        patterns: {
+          coeur:   ["01010","11111","11111","01110","00100"],
+          croix:   ["00100","00100","11111","00100","00100"],
+          cadre:   ["11111","10001","10001","10001","11111"],
+          losange: ["00100","01110","11111","01110","00100"],
+          maison:  ["00100","01110","11111","10101","11111"],
+          sapin:   ["00100","01110","11111","00100","00100"],
+          smiley:  ["01010","00000","00100","10001","01110"],
+          pomme:   ["00110","00100","11111","11111","01110"]
+        }
+      },
+      moyen: {
+        label: "Niveau 2 (Moyen)", size: 10, cellSize: 34,
+        patterns: {
+          coeur:     ["0110000110","1111111111","1111111111","1111111111","0111111110","0011111100","0001111000","0000110000","0000000000","0000000000"],
+          etoile:    ["0000110000","0000110000","0001111000","0011111100","1111111111","0111111110","0011111100","0110000110","1100000011","1000000001"],
+          chat:      ["1000000001","1100000011","0111111110","0111111110","0110110110","0111111110","0111001110","0111111110","0011111100","0001111000"],
+          papillon:  ["1100000011","1110000111","1111011111","1111111111","0111111110","0111111110","1111111111","1111011111","1110000111","1100000011"],
+          poisson:   ["0000000000","0011100000","0111111100","1111111110","1111101001","1111111110","0111111100","0011100000","0000000000","0000000000"],
+          fusee:     ["0001111000","0011111100","0011111100","0011111100","0111111110","0111111110","1111111111","0110000110","0110000110","0100000010"],
+          parapluie: ["0001111000","0111111110","1111111111","1101111011","0000110000","0000110000","0000110000","0000110000","0000111000","0000011000"]
+        }
+      },
+      difficile: {
+        label: "Niveau 3 (Difficile)", size: 15, cellSize: 25,
+        patterns: {
+          bateau:   ["000000000000000","000000010000000","000000011000000","000000011100000","000000011110000","000000011111000","000000011111100","000000011111110","000000011111111","000011111110000","000111111111000","001111111111100","011111111111110","000000000000000","000000000000000"],
+          chateau:  ["000000000000000","000000000000000","010100000001010","011100000001110","011100000001110","011100000001110","011110101011110","011111111111110","011111111111110","011111111111110","011111000111110","011111000111110","011111000111110","011111000111110","000000000000000"],
+          robot:    ["000000010000000","000001111100000","000001111100000","000001010100000","000001111100000","000001111100000","000000111000000","011111111111110","011110111011110","011110111011110","011111111111110","000111111111000","000011101110000","000011101110000","000011101110000"]
+        }
+      }
+    };
+
+    const PATTERN_LABELS = {
+      coeur:"Cœur", croix:"Croix", cadre:"Cadre", losange:"Losange", maison:"Maison", sapin:"Sapin",
+      smiley:"Sourire", pomme:"Pomme",
+      etoile:"Étoile", chat:"Chat", papillon:"Papillon", poisson:"Poisson", fusee:"Fusée", parapluie:"Parapluie",
+      bateau:"Bateau", chateau:"Château", robot:"Robot"
+    };
+    const PATTERN_EMOJI = {
+      coeur:"❤️", croix:"➕", cadre:"🖼️", losange:"🔷", maison:"🏠", sapin:"🌲",
+      smiley:"😊", pomme:"🍎",
+      etoile:"⭐", chat:"🐱", papillon:"🦋", poisson:"🐟", fusee:"🚀", parapluie:"☂️",
+      bateau:"⛵", chateau:"🏰", robot:"🤖"
+    };
+
+    /* ---------------- HELPERS ---------------- */
+    function parseSolution(rows){
+      return rows.map(r => r.split("").map(Number));
+    }
+    function lineClue(arr){
+      const clue = [];
+      let run = 0;
+      for(const v of arr){
+        if(v === 1){ run++; }
+        else { if(run > 0){ clue.push(run); run = 0; } }
+      }
+      if(run > 0) clue.push(run);
+      return clue.length ? clue : [0];
+    }
+    function computeClues(solution, size){
+      const rows = solution.map(lineClue);
+      const cols = [];
+      for(let c=0; c<size; c++){
+        const col = [];
+        for(let r=0; r<size; r++) col.push(solution[r][c]);
+        cols.push(lineClue(col));
+      }
+      return { rows, cols };
+    }
+    function arraysEqual(a, b){
+      if(a.length !== b.length) return false;
+      for(let i=0; i<a.length; i++) if(a[i] !== b[i]) return false;
+      return true;
+    }
+    function formatTime(sec){
+      const m = Math.floor(sec / 60);
+      const s = sec % 60;
+      return m + ":" + String(s).padStart(2, "0");
+    }
+
+    /* ---------------- STATE ---------------- */
+    let current = null;
+    let timerInterval = null;
+    let startTime = null;
+    let selectedLevel = "facile";
+    let mode = "fill"; // "fill" (1) | "cross" (2)
+    let isWon = false;
+    let winAutoDismissTimer = null;
+
+    let isMouseDown = false;
+    let dragAction = null; // 0, 1, or 2
+
+    /* ---------------- DOM REFS ---------------- */
+    const screenMenu = document.getElementById("screen-menu");
+    const screenGame = document.getElementById("screen-game");
+    const patternGrid = document.getElementById("pattern-grid");
+    const patternListTitle = document.getElementById("pattern-list-title");
+    const gameTitle = document.getElementById("game-title");
+    const boardContainer = document.getElementById("board-container");
+    const timerEl = document.getElementById("timer");
+    const modeFillBtn = document.getElementById("mode-fill");
+    const modeCrossBtn = document.getElementById("mode-cross");
+    const winOverlay = document.getElementById("win-overlay");
+    const winTimes = document.getElementById("win-times");
+    const winPatternName = document.getElementById("win-pattern-name");
+    const rulesOverlay = document.getElementById("rules-overlay");
+    const btnOpenRules = document.getElementById("btn-open-rules");
+    const btnCloseRules = document.getElementById("btn-close-rules");
+    const btnRandomPuzzle = document.getElementById("btn-random-puzzle");
+
+    // Docked banner refs
+    const winDockedBar = document.getElementById("win-docked-bar");
+    const dockedTitle = document.getElementById("docked-title");
+    const dockedStats = document.getElementById("docked-stats");
+    const dockedReplay = document.getElementById("docked-replay");
+    const dockedAnother = document.getElementById("docked-another");
+    const dockedMenu = document.getElementById("docked-menu");
+
+    function showScreen(name){
+      screenMenu.classList.toggle("hidden", name !== "menu");
+      screenGame.classList.toggle("hidden", name !== "game");
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    /* ---------------- RULES MODAL ---------------- */
+    btnOpenRules.addEventListener("click", () => rulesOverlay.classList.remove("hidden"));
+    btnCloseRules.addEventListener("click", () => rulesOverlay.classList.add("hidden"));
+    rulesOverlay.addEventListener("click", (e) => {
+      if (e.target === rulesOverlay) rulesOverlay.classList.add("hidden");
+    });
+
+    /* ---------------- LEVEL SELECTION TABS ---------------- */
+    document.querySelectorAll(".level-tab").forEach(tab => {
+      tab.addEventListener("click", () => {
+        document.querySelectorAll(".level-tab").forEach(t => t.classList.remove("active"));
+        tab.classList.add("active");
+        selectedLevel = tab.dataset.level;
+        renderPatternGrid(selectedLevel);
+      });
+    });
+
+    function renderPatternGrid(lvlKey){
+      const lvl = LEVELS[lvlKey];
+      patternListTitle.textContent = `🎨 Choisis ton image (${lvl.size} × ${lvl.size}) :`;
+      patternGrid.innerHTML = "";
+
+      Object.keys(lvl.patterns).forEach(key => {
+        const card = document.createElement("div");
+        card.className = "theme-card";
+        card.innerHTML = `
+          <div class="theme-icon">${PATTERN_EMOJI[key] || "🧩"}</div>
+          <div class="theme-title">${PATTERN_LABELS[key] || key}</div>
+          <div class="theme-desc">Grille ${lvl.size}×${lvl.size}</div>
+        `;
+        card.addEventListener("click", () => loadPuzzle(lvlKey, key));
+        patternGrid.appendChild(card);
+      });
+    }
+
+    btnRandomPuzzle.addEventListener("click", () => {
+      const keys = Object.keys(LEVELS[selectedLevel].patterns);
+      const pick = keys[Math.floor(Math.random() * keys.length)];
+      loadPuzzle(selectedLevel, pick);
+    });
+
+    document.getElementById("back-to-menu").addEventListener("click", () => {
+      stopTimer();
+      resetWinStates();
+      showScreen("menu");
+    });
+
+    function resetWinStates() {
+      if (winAutoDismissTimer) {
+        clearTimeout(winAutoDismissTimer);
+        winAutoDismissTimer = null;
+      }
+      isWon = false;
+      winOverlay.classList.add("hidden");
+      winDockedBar.classList.add("hidden");
+    }
+
+    /* ---------------- PUZZLE LOADING ---------------- */
+    function loadPuzzle(lvlKey, patternKey){
+      resetWinStates();
+      const lvl = LEVELS[lvlKey];
+      const solution = parseSolution(lvl.patterns[patternKey]);
+      const size = lvl.size;
+      const clues = computeClues(solution, size);
+      const player = Array.from({ length: size }, () => Array(size).fill(0));
+
+      current = {
+        lvlKey,
+        patternKey,
+        size,
+        solution,
+        clues,
+        player,
+        cellSize: lvl.cellSize,
+        completedRows: new Set(),
+        completedCols: new Set()
+      };
+
+      setMode("fill");
+      gameTitle.innerHTML = `${PATTERN_EMOJI[patternKey] || "🧩"} ${PATTERN_LABELS[patternKey] || patternKey} <span class="text-xs font-sans text-slate-500 font-semibold ml-1">(${lvl.size}×${lvl.size})</span>`;
+      buildBoard();
+      startTimer();
+      showScreen("game");
+    }
+
+    /* ---------------- MODE TOGGLE ---------------- */
+    function setMode(m){
+      mode = m;
+      modeFillBtn.classList.toggle("active", m === "fill");
+      modeCrossBtn.classList.toggle("active", m === "cross");
+    }
+    modeFillBtn.addEventListener("click", () => setMode("fill"));
+    modeCrossBtn.addEventListener("click", () => setMode("cross"));
+
+    /* ---------------- BOARD RENDERING ---------------- */
+    function buildBoard(){
+      const { size, clues, cellSize } = current;
+
+      let html = `<table class="board" style="--cell-size:${cellSize}px">`;
+      html += `<thead><tr><th class="corner"></th>`;
+      for(let c=0; c<size; c++){
+        html += `<th class="colclue" data-col="${c}"><div class="clue-nums">` +
+                clues.cols[c].map(n => `<span>${n}</span>`).join("") +
+                `</div></th>`;
+      }
+      html += `</tr></thead><tbody>`;
+
+      for(let r=0; r<size; r++){
+        html += `<tr><th class="rowclue" data-row="${r}">` +
+                clues.rows[r].map(n => `<span class="n">${n}</span>`).join(" ") +
+                `</th>`;
+        for(let c=0; c<size; c++){
+          html += `<td><button class="cell" data-row="${r}" data-col="${c}" aria-label="Ligne ${r+1}, colonne ${c+1}"></button></td>`;
+        }
+        html += `</tr>`;
+      }
+      html += `</tbody></table>`;
+      boardContainer.innerHTML = html;
+
+      // Écouteurs de souris & tactile
+      boardContainer.querySelectorAll("button.cell").forEach(btn => {
+        btn.addEventListener("mousedown", onCellMouseDown);
+        btn.addEventListener("mouseenter", onCellMouseEnter);
+        btn.addEventListener("contextmenu", onCellRightClick);
+      });
+    }
+
+    // Gestion de glisser global
+    window.addEventListener("mouseup", () => {
+      isMouseDown = false;
+      dragAction = null;
+    });
+
+    // Support tactile (Touch drag)
+    boardContainer.addEventListener("touchstart", onTouchStart, { passive: false });
+    boardContainer.addEventListener("touchmove", onTouchMove, { passive: false });
+    boardContainer.addEventListener("touchend", () => {
+      isMouseDown = false;
+      dragAction = null;
+      lastTouchedCell = null;
+    });
+
+    function getCellFromTouch(touch){
+      const el = document.elementFromPoint(touch.clientX, touch.clientY);
+      return el ? el.closest("button.cell") : null;
+    }
+
+    let lastTouchedCell = null;
+    function onTouchStart(e){
+      if(isWon) return;
+      if(e.touches.length === 1){
+        const cell = getCellFromTouch(e.touches[0]);
+        if(cell){
+          e.preventDefault();
+          lastTouchedCell = cell;
+          isMouseDown = true;
+          applyInitialCellAction(cell, false);
+        }
+      }
+    }
+    function onTouchMove(e){
+      if(isWon) return;
+      if(isMouseDown && e.touches.length === 1){
+        const cell = getCellFromTouch(e.touches[0]);
+        if(cell && cell !== lastTouchedCell){
+          e.preventDefault();
+          lastTouchedCell = cell;
+          applyDragCellAction(cell);
+        }
+      }
+    }
+
+    function onCellMouseDown(e){
+      if(isWon) return;
+      if(e.button === 2) return;
+      isMouseDown = true;
+      applyInitialCellAction(e.currentTarget, false);
+    }
+    function onCellRightClick(e){
+      if(isWon) return;
+      e.preventDefault();
+      applyInitialCellAction(e.currentTarget, true);
+    }
+    function onCellMouseEnter(e){
+      if(isWon) return;
+      if(isMouseDown && dragAction !== null){
+        applyDragCellAction(e.currentTarget);
+      }
+    }
+
+    function applyInitialCellAction(btn, isRightClick){
+      if(isWon) return;
+      const r = +btn.dataset.row;
+      const c = +btn.dataset.col;
+      const currentVal = current.player[r][c];
+      const targetState = isRightClick ? 2 : (mode === "fill" ? 1 : 2);
+
+      dragAction = (currentVal === targetState) ? 0 : targetState;
+
+      current.player[r][c] = dragAction;
+      updateCellVisual(r, c);
+      refreshClueStates();
+      checkWin();
+    }
+
+    function applyDragCellAction(btn){
+      if(isWon) return;
+      const r = +btn.dataset.row;
+      const c = +btn.dataset.col;
+      if(current.player[r][c] !== dragAction){
+        current.player[r][c] = dragAction;
+        updateCellVisual(r, c);
+        refreshClueStates();
+        checkWin();
+      }
+    }
+
+    function cellButton(r, c){
+      return boardContainer.querySelector(`button.cell[data-row="${r}"][data-col="${c}"]`);
+    }
+
+    function updateCellVisual(r, c){
+      const btn = cellButton(r, c);
+      if(!btn) return;
+      const v = current.player[r][c];
+      btn.classList.toggle("filled", v === 1);
+      btn.classList.toggle("crossed", v === 2);
+    }
+
+    /* ---------------- EFFACER ---------------- */
+    document.getElementById("clear-btn").addEventListener("click", () => {
+      resetWinStates();
+      const { size } = current;
+      for(let r=0; r<size; r++){
+        for(let c=0; c<size; c++){
+          current.player[r][c] = 0;
+          updateCellVisual(r, c);
+        }
+      }
+      current.completedRows.clear();
+      current.completedCols.clear();
+      const tableEl = boardContainer.querySelector("table.board");
+      if(tableEl) tableEl.classList.remove("board-completed");
+      refreshClueStates();
+      startTimer();
+    });
+
+    /* ---------------- REFRESH CLUES & WIN CHECK ---------------- */
+    function refreshClueStates(){
+      const { size, clues, player, completedRows, completedCols } = current;
+
+      for(let r=0; r<size; r++){
+        const line = player[r].map(v => v === 1 ? 1 : 0);
+        const done = arraysEqual(lineClue(line), clues.rows[r]);
+        const th = boardContainer.querySelector(`th.rowclue[data-row="${r}"]`);
+        if(th) th.classList.toggle("done", done);
+
+        if(done && !completedRows.has(r)){
+          completedRows.add(r);
+        } else if(!done && completedRows.has(r)){
+          completedRows.delete(r);
+        }
+      }
+
+      for(let c=0; c<size; c++){
+        const col = [];
+        for(let r=0; r<size; r++) col.push(player[r][c] === 1 ? 1 : 0);
+        const done = arraysEqual(lineClue(col), clues.cols[c]);
+        const th = boardContainer.querySelector(`th.colclue[data-col="${c}"]`);
+        if(th) th.classList.toggle("done", done);
+
+        if(done && !completedCols.has(c)){
+          completedCols.add(c);
+        } else if(!done && completedCols.has(c)){
+          completedCols.delete(c);
+        }
+      }
+    }
+
+    function checkWin(){
+      if(isWon) return false;
+      const { size, solution, player } = current;
+      for(let r=0; r<size; r++){
+        for(let c=0; c<size; c++){
+          const want = solution[r][c] === 1;
+          const got = player[r][c] === 1;
+          if(want !== got) return false;
+        }
+      }
+      isWon = true;
+      triggerWin();
+      return true;
+    }
+
+    /* ---------------- TIMER ---------------- */
+    function startTimer(){
+      stopTimer();
+      startTime = Date.now();
+      timerEl.textContent = "0:00";
+      timerInterval = setInterval(() => {
+        const sec = Math.floor((Date.now() - startTime) / 1000);
+        timerEl.textContent = formatTime(sec);
+      }, 1000);
+    }
+    function stopTimer(){
+      if(timerInterval){
+        clearInterval(timerInterval);
+        timerInterval = null;
+      }
+    }
+
+    /* ---------------- VICTOIRE & ADMIRATION DU DESSIN ---------------- */
+    function bestTimeKey(){
+      return `nonogram_best_${current.lvlKey}_${current.patternKey}`;
+    }
+
+    function fireConfetti(){
+      if (typeof confetti === 'function') {
+        confetti({
+          particleCount: 50,
+          spread: 70,
+          origin: { y: 0.6 },
+          colors: ['#5B4FCF', '#1A9E75', '#F59E0B', '#D94F3D', '#1A6FA0']
+        });
+        setTimeout(() => {
+          confetti({
+            particleCount: 35,
+            angle: 60,
+            spread: 55,
+            origin: { x: 0 },
+            colors: ['#5B4FCF', '#1A9E75', '#F59E0B']
+          });
+          confetti({
+            particleCount: 35,
+            angle: 120,
+            spread: 55,
+            origin: { x: 1 },
+            colors: ['#D94F3D', '#5B4FCF', '#1A6FA0']
+          });
+        }, 200);
+      }
+    }
+
+    function dismissWinModal() {
+      if (winAutoDismissTimer) {
+        clearTimeout(winAutoDismissTimer);
+        winAutoDismissTimer = null;
+      }
+      winOverlay.classList.add("hidden");
+      // Afficher le bandeau d'action pour admirer le dessin en toute tranquillité
+      winDockedBar.classList.remove("hidden");
+    }
+
+    function triggerWin(){
+      stopTimer();
+
+      // 1. Nettoyer les croix pour révéler le dessin parfait
+      const { size, player } = current;
+      for(let r=0; r<size; r++){
+        for(let c=0; c<size; c++){
+          if(player[r][c] === 2){
+            player[r][c] = 0;
+            updateCellVisual(r, c);
+          }
+        }
+      }
+
+      // Esthétique mode "oeuvre révélée" sur la grille
+      const tableEl = boardContainer.querySelector("table.board");
+      if(tableEl) tableEl.classList.add("board-completed");
+
+      // 2. Calcul du temps et record
+      const elapsed = Math.max(1, Math.floor((Date.now() - startTime) / 1000));
+      let best = null;
+      try {
+        const raw = localStorage.getItem(bestTimeKey());
+        best = raw ? parseInt(raw, 10) : null;
+        if(best === null || elapsed < best){
+          localStorage.setItem(bestTimeKey(), String(elapsed));
+          best = elapsed;
+        }
+      } catch(e) {}
+
+      const patternLabel = `${PATTERN_EMOJI[current.patternKey] || "🎨"} ${PATTERN_LABELS[current.patternKey] || current.patternKey}`;
+      winPatternName.innerHTML = `${patternLabel} terminé !`;
+
+      let msg = `⏱️ Temps : ${formatTime(elapsed)}`;
+      if(best !== null) msg += ` • 🏅 Record : ${formatTime(best)}`;
+      winTimes.textContent = msg;
+
+      // Préparation du bandeau d'admiration
+      dockedTitle.innerHTML = `Bravo ! ${patternLabel} révélé !`;
+      dockedStats.textContent = msg;
+
+      // 3. Petit délai (300ms) pour que le joueur voie sa dernière case se remplir, puis afficher félicitations
+      setTimeout(() => {
+        fireConfetti();
+        winOverlay.classList.remove("hidden");
+
+        // Le message disparaît automatiquement après 2.2 secondes pour admirer l'oeuvre
+        if (winAutoDismissTimer) clearTimeout(winAutoDismissTimer);
+        winAutoDismissTimer = setTimeout(() => {
+          dismissWinModal();
+        }, 2200);
+      }, 300);
+    }
+
+    // Fermeture manuelle immédiate de l'overlay pour admirer l'oeuvre
+    document.getElementById("win-view-art").addEventListener("click", dismissWinModal);
+    document.getElementById("win-close-btn").addEventListener("click", dismissWinModal);
+    winOverlay.addEventListener("click", (e) => {
+      if (e.target === winOverlay) dismissWinModal();
+    });
+
+    // Actions depuis la modale
+    document.getElementById("win-replay").addEventListener("click", () => {
+      resetWinStates();
+      loadPuzzle(current.lvlKey, current.patternKey);
+    });
+    document.getElementById("win-another").addEventListener("click", () => {
+      resetWinStates();
+      const keys = Object.keys(LEVELS[current.lvlKey].patterns);
+      const pick = keys[Math.floor(Math.random() * keys.length)];
+      loadPuzzle(current.lvlKey, pick);
+    });
+
+    // Actions depuis le bandeau d'admiration
+    dockedReplay.addEventListener("click", () => {
+      resetWinStates();
+      loadPuzzle(current.lvlKey, current.patternKey);
+    });
+    dockedAnother.addEventListener("click", () => {
+      resetWinStates();
+      const keys = Object.keys(LEVELS[current.lvlKey].patterns);
+      const pick = keys[Math.floor(Math.random() * keys.length)];
+      loadPuzzle(current.lvlKey, pick);
+    });
+    dockedMenu.addEventListener("click", () => {
+      resetWinStates();
+      showScreen("menu");
+    });
+
+    // Initialisation
+    renderPatternGrid(selectedLevel);
+    showScreen("menu");
+  })();
+  </script>
+</body>
+</html>
