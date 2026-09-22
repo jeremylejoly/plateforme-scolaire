@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>2048 — Plateforme LCML</title>
+<link rel="icon" type="image/svg+xml" href="logo.svg"/>
+
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+
+<!-- Canvas Confetti -->
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+<style>
+  :root {
+    /* Charte graphique officielle LCML */
+    --purple: #5B4FCF;
+    --purple-hover: #4A3FB8;
+    --purple-light: #EEF0FF;
+    --purple-mid: #C7C2F5;
+
+    --green: #1A9E75;
+    --green-light: #E2F5EE;
+    --green-dark: #127958;
+
+    --red: #D94F3D;
+    --red-light: #FDECEA;
+
+    --amber: #F59E0B;
+    --amber-dark: #C97B1A;
+    --amber-light: #FEF3E2;
+
+    --blue: #1A6FA0;
+    --blue-light: #E2F0FA;
+
+    --pink: #EC4899;
+    --pink-light: #FCE7F3;
+
+    --bg: #FDFBF7;
+    --surface: #FFFFFF;
+    --surface-alt: #F4F1EB;
+    --board-bg: #EAE6DC;
+    --slot-bg: rgba(255, 255, 255, 0.5);
+    --slot-border: rgba(26, 26, 46, 0.12);
+
+    --text: #1A1A2E;
+    --text-muted: #6B7080;
+    --border: #1A1A2E;
+
+    --r-lg: 22px;
+    --r-md: 14px;
+    --r-sm: 8px;
+
+    --shadow-solid: 4px 4px 0px var(--border);
+    --shadow-solid-sm: 2px 2px 0px var(--border);
+    --shadow-solid-lg: 6px 6px 0px var(--border);
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background-color: var(--bg);
+    background-image: 
+      radial-gradient(rgba(26, 26, 46, 0.07) 1px, transparent 1px),
+      radial-gradient(rgba(91, 79, 207, 0.05) 1px, #FDFBF7 1px);
+    background-size: 24px 24px, 48px 48px;
+    background-position: 0 0, 12px 12px;
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 16px 14px 40px;
+    user-select: none;
+  }
+
+  /* ===== BOUTON FIXE RETOUR ACCUEIL LCML ===== */
+  #home-logo-btn {
+    position: fixed;
+    top: 14px;
+    right: 14px;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--surface);
+    border: 2px solid var(--border);
+    border-radius: 16px;
+    padding: 6px 14px 6px 8px;
+    box-shadow: var(--shadow-solid-sm);
+    cursor: pointer;
+    text-decoration: none;
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--text);
+    transition: transform 0.12s ease, box-shadow 0.12s ease;
+  }
+  #home-logo-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 3px 5px 0px var(--border);
+  }
+  #home-logo-btn:active {
+    transform: translateY(1px);
+    box-shadow: 1px 1px 0px var(--border);
+  }
+  #home-logo-btn .logo-icon {
+    width: 26px;
+    height: 26px;
+    object-fit: contain;
+  }
+  #home-logo-btn .logo-label {
+    line-height: 1.1;
+    text-align: left;
+  }
+  #home-logo-btn .logo-label span {
+    display: block;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text-muted);
+    font-family: 'Inter', sans-serif;
+  }
+  @media (max-width: 480px) {
+    #home-logo-btn .logo-label { display: none; }
+    #home-logo-btn { padding: 6px 8px; top: 10px; right: 10px; }
+  }
+
+  #app {
+    width: 100%;
+    max-width: 460px;
+    margin-top: 10px;
+  }
+
+  /* ===== EN-TÊTE DU JEU ===== */
+  header.top {
+    text-align: center;
+    margin-bottom: 16px;
+    position: relative;
+  }
+  .header-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--purple-light);
+    color: var(--purple);
+    border: 1.5px solid var(--purple);
+    font-family: 'Fredoka', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 999px;
+    margin-bottom: 6px;
+    box-shadow: 1px 1px 0px var(--purple);
+  }
+  header.top h1 {
+    font-family: 'Fredoka', sans-serif;
+    font-size: clamp(2rem, 6vw, 2.6rem);
+    font-weight: 800;
+    margin: 2px 0 4px;
+    color: var(--text);
+    letter-spacing: -0.5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  header.top p {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    font-weight: 500;
+  }
+
+  /* ===== CARTE PRINCIPALE NÉO-BRUTALISTE ===== */
+  .card {
+    background: var(--surface);
+    border: 3px solid var(--border);
+    border-radius: var(--r-lg);
+    box-shadow: var(--shadow-solid-lg);
+    padding: 20px 18px;
+    margin-bottom: 14px;
+  }
+
+  .hidden { display: none !important; }
+
+  /* ===== BOUTONS STYLE LCML ===== */
+  button {
+    font-family: 'Fredoka', sans-serif;
+    cursor: pointer;
+    border: none;
+    user-select: none;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 18px;
+    border-radius: var(--r-sm);
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text);
+    background: var(--surface);
+    border: 2px solid var(--border);
+    box-shadow: var(--shadow-solid-sm);
+    transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.15s ease;
+  }
+  .btn:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: 3px 3px 0px var(--border);
+  }
+  .btn:active {
+    transform: translate(2px, 2px);
+    box-shadow: 1px 1px 0px var(--border);
+  }
+  .btn.btn-primary {
+    background: var(--purple);
+    color: #fff;
+    border-color: var(--border);
+  }
+  .btn.btn-primary:hover {
+    background: var(--purple-hover);
+  }
+  .btn.btn-amber {
+    background: var(--amber);
+    color: #fff;
+    border-color: var(--border);
+  }
+  .btn.btn-amber:hover {
+    background: #e08c04;
+  }
+  .btn.btn-green {
+    background: var(--green);
+    color: #fff;
+    border-color: var(--border);
+  }
+  .btn.btn-green:hover {
+    background: #158260;
+  }
+  .btn.btn-secondary {
+    background: var(--surface-alt);
+    color: var(--text);
+    border-color: var(--border);
+  }
+  .btn.btn-secondary:hover {
+    background: #e7e2d8;
+  }
+  .btn.small {
+    padding: 8px 14px;
+    font-size: 0.85rem;
+    border-radius: var(--r-sm);
+  }
+
+  /* ===== BARRE DES SCORES ===== */
+  .scorebar {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+  }
+  .scores {
+    display: flex;
+    gap: 10px;
+  }
+  .score-box {
+    background: var(--surface);
+    border: 2px solid var(--border);
+    border-radius: var(--r-md);
+    box-shadow: var(--shadow-solid-sm);
+    padding: 6px 14px;
+    text-align: center;
+    min-width: 82px;
+  }
+  .score-box .label {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .score-box .value {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 1.35rem;
+    font-weight: 800;
+    line-height: 1.15;
+    color: var(--purple);
+  }
+  .score-box.best-box .value {
+    color: var(--amber-dark);
+  }
+
+  /* ===== ACCORDÉON AIDE ===== */
+  .instructions-toggle-wrap {
+    display: flex;
+    justify-content: center;
+    margin: 4px 0 10px;
+  }
+  .instructions-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--purple-light);
+    color: var(--purple);
+    border: 1.5px solid var(--purple-mid);
+    border-radius: 999px;
+    padding: 6px 14px;
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .instructions-toggle:hover {
+    background: var(--purple-mid);
+    color: var(--purple-hover);
+  }
+  .info-box {
+    background: var(--amber-light);
+    border: 2px dashed var(--amber);
+    border-radius: var(--r-md);
+    padding: 12px 16px;
+    font-size: 0.88rem;
+    line-height: 1.5;
+    margin: 8px 0 14px;
+    color: var(--text);
+  }
+  .info-box b {
+    color: var(--amber-dark);
+  }
+
+  /* ===== PLATEAU DE JEU LCML ===== */
+  .board-wrap {
+    display: flex;
+    justify-content: center;
+    margin: 10px 0 12px;
+  }
+  .board {
+    position: relative;
+    width: min(88vw, 380px);
+    aspect-ratio: 1 / 1;
+    background: var(--board-bg);
+    border: 3px solid var(--border);
+    border-radius: var(--r-lg);
+    box-shadow: var(--shadow-solid);
+    padding: 10px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+    gap: 10px;
+    touch-action: none;
+  }
+
+  /* Tuiles du jeu */
+  .cell {
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 800;
+    border: 2px solid var(--border);
+    box-shadow: 2px 2px 0px var(--border);
+    transition: transform 0.08s ease;
+  }
+  .cell.empty {
+    background: var(--slot-bg);
+    border: 2px dashed var(--slot-border);
+    box-shadow: none;
+  }
+  .cell.len1, .cell.len2 { font-size: clamp(1.2rem, 8vw, 2.1rem); }
+  .cell.len3 { font-size: clamp(1rem, 6.5vw, 1.7rem); }
+  .cell.len4 { font-size: clamp(0.85rem, 5.5vw, 1.35rem); }
+  .cell.len5 { font-size: clamp(0.72rem, 4.5vw, 1.1rem); }
+
+  @keyframes popIn {
+    0% { transform: scale(0.3); opacity: 0; }
+    70% { transform: scale(1.14); opacity: 1; }
+    100% { transform: scale(1); }
+  }
+  @keyframes pulseMerge {
+    0% { transform: scale(1); }
+    40% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+  }
+  @keyframes sparkle2048 {
+    0%, 100% { box-shadow: 2px 2px 0px var(--border), 0 0 12px rgba(245, 158, 11, 0.4); }
+    50% { box-shadow: 2px 2px 0px var(--border), 0 0 20px rgba(236, 72, 153, 0.6); }
+  }
+
+  .cell.new { animation: popIn 0.22s ease-out; }
+  .cell.merged { animation: pulseMerge 0.22s ease-out; }
+  .cell.cell-2048 { animation: sparkle2048 2s infinite ease-in-out; }
+
+  /* ===== COMMANDES TACTILES (PAD) ===== */
+  .pad-wrap {
+    margin-top: 10px;
+    text-align: center;
+  }
+  .pad-hint {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+  }
+  .pad {
+    display: grid;
+    grid-template-columns: repeat(3, 56px);
+    grid-template-rows: repeat(2, 48px);
+    gap: 8px;
+    justify-content: center;
+    margin: 0 auto;
+  }
+  .pad button {
+    background: var(--surface);
+    border: 2px solid var(--border);
+    border-radius: var(--r-md);
+    box-shadow: var(--shadow-solid-sm);
+    font-size: 1.35rem;
+    color: var(--purple);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.08s ease, box-shadow 0.08s ease;
+  }
+  .pad button:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: 3px 3px 0px var(--border);
+    background: var(--purple-light);
+  }
+  .pad button:active {
+    transform: translate(2px, 2px);
+    box-shadow: 1px 1px 0px var(--border);
+  }
+  .pad .up { grid-column: 2; grid-row: 1; }
+  .pad .left { grid-column: 1; grid-row: 2; }
+  .pad .down { grid-column: 2; grid-row: 2; }
+  .pad .right { grid-column: 3; grid-row: 2; }
+
+  /* ===== MODALE FIN DE PARTIE (OVERLAY) ===== */
+  #overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(26, 26, 46, 0.65);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 500;
+  }
+  #overlay .modal-card {
+    background: var(--surface);
+    border: 3px solid var(--border);
+    border-radius: 24px;
+    box-shadow: var(--shadow-solid-lg);
+    padding: 28px 24px;
+    text-align: center;
+    max-width: 360px;
+    width: 100%;
+    animation: modalPop 0.3s cubic-bezier(0.26, 1.4, 0.4, 1);
+  }
+  @keyframes modalPop {
+    from { transform: scale(0.7); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+  #overlay .big-emoji {
+    font-size: 3.5rem;
+    display: block;
+    margin-bottom: 6px;
+    line-height: 1;
+  }
+  #overlay h2 {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 1.8rem;
+    font-weight: 800;
+    margin: 4px 0 8px;
+    color: var(--text);
+  }
+  #overlay .sub {
+    font-size: 0.95rem;
+    font-weight: 500;
+    margin-bottom: 18px;
+    color: var(--text-muted);
+  }
+  #overlay .modal-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  /* ===== PIED DE PAGE ===== */
+  footer.credit {
+    text-align: center;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-top: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+  footer.credit span {
+    color: var(--red);
+  }
+</style>
+</head>
+<body>
+
+<!-- Bouton fixe Retour Plateforme LCML -->
+<a href="index.html" id="home-logo-btn" title="Retourner à la plateforme LCML">
+  <img src="logo.svg" alt="LCML" class="logo-icon">
+  <div class="logo-label">
+    Plateforme LCML
+    <span>Accueil</span>
+  </div>
+</a>
+
+<div id="app">
+
+  <header class="top">
+    <div class="header-badge">📐 Mathématiques &amp; Logique</div>
+    <h1>🔢 2048</h1>
+    <p>Glisse les tuiles et fusionne les nombres jusqu'à <b>2048</b> !</p>
+  </header>
+
+  <section class="card">
+    <div class="scorebar">
+      <div class="scores">
+        <div class="score-box">
+          <div class="label">Score</div>
+          <div class="value" id="score">0</div>
+        </div>
+        <div class="score-box best-box">
+          <div class="label">Record</div>
+          <div class="value" id="best">0</div>
+        </div>
+      </div>
+      <button class="btn btn-amber small" id="new-game">🔁 Nouvelle partie</button>
+    </div>
+
+    <div class="instructions-toggle-wrap">
+      <button class="instructions-toggle" id="toggle-info">ℹ️ Comment jouer ?</button>
+    </div>
+
+    <div class="info-box hidden" id="info-box">
+      Utilise les <b>flèches du clavier</b>, <b>glisse ton doigt</b> sur la grille, ou les <b>touches fléchées</b> ci-dessous pour déplacer les tuiles.<br><br>
+      Quand deux tuiles avec le <b>même nombre</b> se touchent, elles fusionnent en une seule tuile valant le double (2+2=4, 4+4=8...) ! Essaie d'atteindre la tuile <b>2048</b> 🎯
+    </div>
+
+    <div class="board-wrap">
+      <div class="board" id="board" role="grid" aria-label="Grille 2048"></div>
+    </div>
+
+    <div class="pad-wrap">
+      <div class="pad-hint">Commandes tactiles :</div>
+      <div class="pad">
+        <button class="up" data-dir="up" title="Haut" aria-label="Déplacer vers le haut">⬆️</button>
+        <button class="left" data-dir="left" title="Gauche" aria-label="Déplacer vers la gauche">⬅️</button>
+        <button class="down" data-dir="down" title="Bas" aria-label="Déplacer vers le bas">⬇️</button>
+        <button class="right" data-dir="right" title="Droite" aria-label="Déplacer vers la droite">➡️</button>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- Modale de fin de partie / Victoire -->
+<div id="overlay" class="hidden" role="dialog" aria-modal="true">
+  <div class="modal-card">
+    <span class="big-emoji" id="overlay-emoji">🎉</span>
+    <h2 id="overlay-title">Bravo !</h2>
+    <div class="sub" id="overlay-sub"></div>
+    <div class="modal-actions" id="overlay-actions"></div>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  const N = 4;
+  const TARGET = 2048;
+  const BEST_KEY = "game2048_best";
+
+  /* Palette de couleurs Signature LCML pour chaque valeur de tuile */
+  const TILE_COLORS = {
+    2:    { bg: "#E2F0FA", fg: "#1A6FA0" }, // Bleu ciel doux
+    4:    { bg: "#E2F5EE", fg: "#127958" }, // Vert menthe doux
+    8:    { bg: "#FEF3E2", fg: "#C97B1A" }, // Ambre doux
+    16:   { bg: "#EEF0FF", fg: "#5B4FCF" }, // Violet lavande LCML
+    32:   { bg: "#FCE7F3", fg: "#D9277A" }, // Rose pastel
+    64:   { bg: "#1A6FA0", fg: "#FFFFFF" }, // Bleu vif
+    128:  { bg: "#1A9E75", fg: "#FFFFFF" }, // Vert vif
+    256:  { bg: "#F59E0B", fg: "#FFFFFF" }, // Ambre vif
+    512:  { bg: "#EC4899", fg: "#FFFFFF" }, // Rose vif
+    1024: { bg: "#5B4FCF", fg: "#FFFFFF" }, // Violet Signature LCML
+    2048: { bg: "linear-gradient(135deg, #FDE68A 0%, #F59E0B 45%, #EC4899 100%)", fg: "#FFFFFF", isGradient: true, isSpecial: true },
+    4096: { bg: "#1E1F29", fg: "#FDE68A" }, // Encre & or
+    8192: { bg: "#0D0E15", fg: "#A7F3D0" }  // Néo-sombre & menthe
+  };
+
+  function tileColor(v){
+    return TILE_COLORS[v] || { bg: "#1E1F29", fg: "#FDE68A" };
+  }
+
+  let grid, score, best, hasWon, continuedAfterWin, gameOver, spawnCoord, mergedCells;
+
+  const boardEl = document.getElementById("board");
+  const scoreEl = document.getElementById("score");
+  const bestEl = document.getElementById("best");
+  const overlay = document.getElementById("overlay");
+  const overlayEmoji = document.getElementById("overlay-emoji");
+  const overlayTitle = document.getElementById("overlay-title");
+  const overlaySub = document.getElementById("overlay-sub");
+  const overlayActions = document.getElementById("overlay-actions");
+  const infoBox = document.getElementById("info-box");
+
+  function loadBest(){
+    try { return parseInt(localStorage.getItem(BEST_KEY) || "0", 10) || 0; }
+    catch(e){ return 0; }
+  }
+  function saveBest(v){
+    try { localStorage.setItem(BEST_KEY, String(v)); } catch(e){ /* ignore */ }
+  }
+
+  function emptyGrid(){
+    return Array.from({length:N}, () => Array(N).fill(0));
+  }
+
+  function emptyCells(){
+    const list = [];
+    for(let r=0; r<N; r++){
+      for(let c=0; c<N; c++){
+        if(grid[r][c] === 0) list.push({r, c});
+      }
+    }
+    return list;
+  }
+
+  function addRandomTile(){
+    const cells = emptyCells();
+    if(cells.length === 0) return null;
+    const pick = cells[Math.floor(Math.random() * cells.length)];
+    grid[pick.r][pick.c] = Math.random() < 0.9 ? 2 : 4;
+    return pick;
+  }
+
+  function canMove(){
+    for(let r=0; r<N; r++){
+      for(let c=0; c<N; c++){
+        if(grid[r][c] === 0) return true;
+        if(c < N-1 && grid[r][c] === grid[r][c+1]) return true;
+        if(r < N-1 && grid[r][c] === grid[r+1][c]) return true;
+      }
+    }
+    return false;
+  }
+
+  function processLine(getCell, setCell, size, gainRef, mergeIdxOut){
+    const vals = [];
+    for(let i=0; i<size; i++) vals.push(getCell(i));
+    const filtered = vals.filter(v => v !== 0);
+    const result = [];
+    let i = 0;
+    let moved = false;
+    while(i < filtered.length){
+      if(i+1 < filtered.length && filtered[i] === filtered[i+1]){
+        const newVal = filtered[i] * 2;
+        result.push(newVal);
+        gainRef.total += newVal;
+        mergeIdxOut.push(result.length - 1);
+        i += 2;
+      } else {
+        result.push(filtered[i]);
+        i += 1;
+      }
+    }
+    while(result.length < size) result.push(0);
+    for(let k=0; k<size; k++){
+      if(vals[k] !== result[k]) moved = true;
+    }
+    for(let k=0; k<size; k++) setCell(k, result[k]);
+    return moved;
+  }
+
+  function move(direction){
+    if(gameOver) return;
+    const gainRef = { total: 0 };
+    let moved = false;
+    mergedCells = [];
+
+    if(direction === "left"){
+      for(let r=0; r<N; r++){
+        const mi = [];
+        const m = processLine(c => grid[r][c], (c, v) => { grid[r][c] = v; }, N, gainRef, mi);
+        if(m) moved = true;
+        mi.forEach(c => mergedCells.push({r, c}));
+      }
+    } else if(direction === "right"){
+      for(let r=0; r<N; r++){
+        const mi = [];
+        const m = processLine(c => grid[r][N-1-c], (c, v) => { grid[r][N-1-c] = v; }, N, gainRef, mi);
+        if(m) moved = true;
+        mi.forEach(c => mergedCells.push({r, c: N-1-c}));
+      }
+    } else if(direction === "up"){
+      for(let c=0; c<N; c++){
+        const mi = [];
+        const m = processLine(r => grid[r][c], (r, v) => { grid[r][c] = v; }, N, gainRef, mi);
+        if(m) moved = true;
+        mi.forEach(r => mergedCells.push({r, c}));
+      }
+    } else if(direction === "down"){
+      for(let c=0; c<N; c++){
+        const mi = [];
+        const m = processLine(r => grid[N-1-r][c], (r, v) => { grid[N-1-r][c] = v; }, N, gainRef, mi);
+        if(m) moved = true;
+        mi.forEach(r => mergedCells.push({r, c}));
+      }
+    }
+
+    if(!moved){ return; }
+
+    score += gainRef.total;
+    if(score > best){
+      best = score;
+      saveBest(best);
+    }
+
+    spawnCoord = addRandomTile();
+    render();
+
+    if(!hasWon){
+      for(let r=0; r<N; r++){
+        for(let c=0; c<N; c++){
+          if(grid[r][c] === TARGET){
+            hasWon = true;
+          }
+        }
+      }
+    }
+    if(hasWon && !continuedAfterWin){
+      showWin();
+      return;
+    }
+    if(!canMove()){
+      gameOver = true;
+      showGameOver();
+    }
+  }
+
+  function digitClass(v){
+    const len = String(v).length;
+    if(len <= 2) return "len2";
+    if(len === 3) return "len3";
+    if(len === 4) return "len4";
+    return "len5";
+  }
+
+  function fireConfetti(){
+    if(typeof confetti === "function"){
+      try {
+        confetti({
+          particleCount: 90,
+          spread: 70,
+          origin: { y: 0.6 },
+          colors: ['#5B4FCF', '#1A9E75', '#F59E0B', '#EC4899', '#1A6FA0']
+        });
+      } catch(e){}
+    }
+  }
+
+  function render(){
+    scoreEl.textContent = String(score);
+    bestEl.textContent = String(best);
+    boardEl.innerHTML = "";
+
+    for(let r=0; r<N; r++){
+      for(let c=0; c<N; c++){
+        const v = grid[r][c];
+        const div = document.createElement("div");
+        let cls = "cell";
+
+        if(v === 0){
+          cls += " empty";
+        } else {
+          cls += " " + digitClass(v);
+          const isNew = spawnCoord && spawnCoord.r === r && spawnCoord.c === c;
+          const isMerged = mergedCells.some(m => m.r === r && m.c === c);
+
+          if(isNew) cls += " new";
+          else if(isMerged) cls += " merged";
+
+          const col = tileColor(v);
+          if(col.isGradient){
+            div.style.background = col.bg;
+          } else {
+            div.style.backgroundColor = col.bg;
+          }
+          div.style.color = col.fg;
+          if(col.isSpecial) cls += " cell-2048";
+          div.textContent = v;
+        }
+        div.className = cls;
+        boardEl.appendChild(div);
+      }
+    }
+  }
+
+  function showWin(){
+    fireConfetti();
+    overlayEmoji.textContent = "🏆";
+    overlayTitle.textContent = "Victoire 2048 !";
+    overlaySub.textContent = "Tu as réussi à créer la tuile 2048 ! Score : " + score + " · Record : " + best;
+    overlayActions.innerHTML = "";
+
+    const btnContinue = document.createElement("button");
+    btnContinue.className = "btn btn-green";
+    btnContinue.textContent = "➡️ Continuer à jouer";
+    btnContinue.addEventListener("click", () => {
+      continuedAfterWin = true;
+      overlay.classList.add("hidden");
+    });
+
+    const btnNew = document.createElement("button");
+    btnNew.className = "btn btn-secondary";
+    btnNew.textContent = "🔁 Nouvelle partie";
+    btnNew.addEventListener("click", startNewGame);
+
+    overlayActions.appendChild(btnContinue);
+    overlayActions.appendChild(btnNew);
+    overlay.classList.remove("hidden");
+  }
+
+  function showGameOver(){
+    const isNewRecord = score >= best && score > 0;
+    if(isNewRecord) fireConfetti();
+
+    overlayEmoji.textContent = isNewRecord ? "⭐" : "😅";
+    overlayTitle.textContent = isNewRecord ? "Nouveau record !" : "Partie terminée";
+    overlaySub.textContent = "Score final : " + score + " · Meilleur record : " + best;
+    overlayActions.innerHTML = "";
+
+    const btnNew = document.createElement("button");
+    btnNew.className = "btn btn-primary";
+    btnNew.textContent = "🔁 Recommencer une partie";
+    btnNew.addEventListener("click", startNewGame);
+
+    overlayActions.appendChild(btnNew);
+    overlay.classList.remove("hidden");
+  }
+
+  function startNewGame(){
+    grid = emptyGrid();
+    score = 0;
+    hasWon = false;
+    continuedAfterWin = false;
+    gameOver = false;
+    mergedCells = [];
+    spawnCoord = addRandomTile();
+    addRandomTile();
+    spawnCoord = null;
+    overlay.classList.add("hidden");
+    render();
+  }
+
+  /* ---------------- Contrôles clavier ---------------- */
+  const KEY_MAP = {
+    ArrowUp: "up",
+    ArrowDown: "down",
+    ArrowLeft: "left",
+    ArrowRight: "right",
+    KeyW: "up",
+    KeyZ: "up",
+    KeyA: "left",
+    KeyQ: "left",
+    KeyS: "down",
+    KeyD: "right"
+  };
+
+  window.addEventListener("keydown", (e) => {
+    // Éviter de capturer si le focus est sur un champ de texte
+    if(e.target && (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA")) return;
+    const dir = KEY_MAP[e.code] || KEY_MAP[e.key];
+    if(dir){
+      e.preventDefault();
+      move(dir);
+    }
+  });
+
+  /* ---------------- Boutons tactiles (Pad) ---------------- */
+  document.querySelectorAll(".pad button").forEach(btn => {
+    btn.addEventListener("click", () => move(btn.dataset.dir));
+  });
+
+  /* ---------------- Glisser tactile (Swipe) ---------------- */
+  let touchStartX = 0, touchStartY = 0, touchActive = false;
+  boardEl.addEventListener("touchstart", (e) => {
+    if(e.touches.length !== 1) return;
+    touchActive = true;
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+  }, { passive: true });
+
+  boardEl.addEventListener("touchmove", (e) => {
+    if(touchActive) e.preventDefault();
+  }, { passive: false });
+
+  boardEl.addEventListener("touchend", (e) => {
+    if(!touchActive) return;
+    touchActive = false;
+    const touch = e.changedTouches[0];
+    const dx = touch.clientX - touchStartX;
+    const dy = touch.clientY - touchStartY;
+    const absX = Math.abs(dx), absY = Math.abs(dy);
+    const THRESHOLD = 24;
+    if(Math.max(absX, absY) < THRESHOLD) return;
+    if(absX > absY){
+      move(dx > 0 ? "right" : "left");
+    } else {
+      move(dy > 0 ? "down" : "up");
+    }
+  });
+
+  document.getElementById("new-game").addEventListener("click", startNewGame);
+  document.getElementById("toggle-info").addEventListener("click", () => {
+    infoBox.classList.toggle("hidden");
+  });
+
+  best = loadBest();
+  startNewGame();
+})();
+</script>
+</body>
+</html>
