@@ -1,37 +1,65 @@
 {
   "rules": {
-    // Par défaut, interdit la lecture et l'écriture à la racine de la base de données
+    // Par défaut : tout est interdit.
+    // ENSEIGNANT = compte Firebase e-mail/mot de passe jeremylejoly@gmail.com (onglet Authentication).
+    // ÉLÈVES = connexion anonyme automatique : lecture des réglages de la classe, création de leurs résultats,
+    //          mise à jour de leur progression / présence / avatar. Ils ne peuvent ni modifier ni supprimer
+    //          les résultats existants, ni toucher aux listes d'élèves et aux réglages.
     ".read": false,
     ".write": false,
 
-    // Autorise la lecture et l'écriture uniquement sur les chemins spécifiques requis par l'application
     "classes": {
       ".read": "auth != null",
-      ".write": "auth != null"
-    },
-    "results": {
-      ".read": "auth != null",
-      ".write": "auth != null"
-    },
-    "student_results": {
-      ".read": "auth != null",
-      ".write": "auth != null"
+      ".write": "auth != null && auth.token.email == 'jeremylejoly@gmail.com'"
     },
     "settings": {
       ".read": "auth != null",
-      ".write": "auth != null"
+      ".write": "auth != null && auth.token.email == 'jeremylejoly@gmail.com'"
+    },
+    "results": {
+      ".read": "auth != null && auth.token.email == 'jeremylejoly@gmail.com'",
+      ".write": "auth != null && auth.token.email == 'jeremylejoly@gmail.com'",
+      "$id": {
+        ".write": "auth != null && !data.exists() && newData.hasChild('student')"
+      }
+    },
+    "student_results": {
+      ".read": "auth != null",
+      ".write": "auth != null && auth.token.email == 'jeremylejoly@gmail.com'",
+      "$cls": {
+        "$student": {
+          "$id": {
+            ".write": "auth != null && !data.exists() && newData.hasChild('student')"
+          }
+        }
+      }
     },
     "plan_progress": {
       ".read": "auth != null",
-      ".write": "auth != null"
+      ".write": "auth != null && auth.token.email == 'jeremylejoly@gmail.com'",
+      "$cls": {
+        "$student": {
+          ".write": "auth != null && newData.exists()"
+        }
+      }
     },
     "avatars": {
       ".read": "auth != null",
-      ".write": "auth != null"
+      ".write": "auth != null && auth.token.email == 'jeremylejoly@gmail.com'",
+      "$cls": {
+        "$student": {
+          ".write": "auth != null && newData.exists()"
+        }
+      }
     },
     "presence": {
       ".read": "auth != null",
-      ".write": "auth != null"
+      ".write": "auth != null && auth.token.email == 'jeremylejoly@gmail.com'",
+      "$cls": {
+        "$student": {
+          ".write": "auth != null"
+        }
+      }
     }
   }
 }
