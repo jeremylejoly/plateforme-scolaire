@@ -1,360 +1,135 @@
-const CACHE_NAME = 'classe-mr-lejoly-cache-v342';
+/* Service Worker – Classe de Mr Lejoly
+ *
+ * Refonte perf (sept. 2026) :
+ *  - Avant : 277 fichiers (≈151 Mo) mis en cache à l'installation sur CHAQUE appareil,
+ *    et tout le cache effacé à chaque nouvelle version.
+ *  - Maintenant :
+ *    1. CORE  (versionné)  : seulement le « squelette » de l'appli (≈ 4 Mo).
+ *    2. PAGES (versionné)  : pages HTML / JS / CSS mises en cache au fur et à mesure qu'elles sont ouvertes.
+ *    3. MEDIA (permanent)  : images, polices… mises en cache à la première utilisation
+ *       et CONSERVÉES d'une version à l'autre (revérifiées au plus une fois par semaine).
+ *
+ *  ➜ Pour publier une mise à jour du site : incrémenter VERSION ci-dessous (comme avant).
+ *  ➜ Si vous remplacez une image en gardant le même nom et voulez forcer la mise à jour
+ *    immédiate sur les tablettes : incrémenter MEDIA_VERSION.
+ */
+const VERSION = 'v343';
+const MEDIA_VERSION = 'm1';
+
+const CORE_CACHE  = 'lcml-core-'  + VERSION;
+const PAGES_CACHE = 'lcml-pages-' + VERSION;
+const MEDIA_CACHE = 'lcml-media-' + MEDIA_VERSION;
+const KEEP = [CORE_CACHE, PAGES_CACHE, MEDIA_CACHE];
+
+const MEDIA_MAX_AGE_MS = 7 * 24 * 3600 * 1000; // revalidation des médias : 1 fois / semaine max
+
+// Squelette minimal indispensable au démarrage (et hors-ligne)
 const CORE_ASSETS = [
   './',
   'index.html',
-  'bescherelle_nouvelle_orthographe.html',
-  'Labyrinthe.html',
-  'mots-croises.html',
-  'assets/logos/jeu_mots_croises.png',
-  'mots-caches.html',
-  'assets/logos/jeu_mots_caches.png',
-  'sudoku.html',
-  'assets/logos/jeu_sudoku.png',
-  'flux_connecte.html',
-  'assets/logos/jeu_flux.png',
-  'jeu_code_secret.html',
-  'fiches/jeu_code_secret.html',
-  'assets/logos/jeu_code_secret.png',
-  'pentomino.html',
-  'fiches/pentomino.html',
-  'assets/logos/jeu_pentomino.png',
-  'tangram.html',
-  'fiches/tangram.html',
-  'assets/logos/jeu_tangram.png',
-  'nonogram.html',
-  'assets/logos/jeu_nonogram.png',
-  'assets/logos/sub_durees_conversions.png',
-  'assets/logos/sub_durees_duree.png',
-  'assets/logos/sub_durees_heure.png',
-  'assets/logos/hist_temps_modernes.png',
-  'assets/logos/hist_contemporaine.png',
-  'assets/logos/hist_grandes_periodes.png',
-  'assets/logos/subject_outils.png',
-  'assets/logos/gram_nom.png',
-  'assets/logos/gram_determinant.png',
-  'assets/logos/gram_adjectif.png',
-  'assets/logos/gram_verbe.png',
-  'assets/logos/gram_pronom.png',
-  'assets/logos/gram_adverbe.png',
-  'assets/logos/gram_complement_nom.png',
-  'assets/logos/gram_tri_mots.png',
-  'assets/logos/gram_sujet.png',
-  'assets/logos/gram_verbe_fonc.png',
-  'assets/logos/gram_predicat.png',
-  'assets/logos/gram_cdv_civ.png',
-  'assets/logos/gram_cc.png',
-  'assets/logos/gram_attribut.png',
-  'assets/logos/gram_agent.png',
-  'assets/logos/gram_analyse_phrase.png',
-  'fiches/Labyrinthe.html',
-  'planisphere-interactif.html',
-  'cartes-planisphere.html',
-  'cartes-europe.html',
-  'europe-shaded-relief.jpg',
   'manifest.json',
+  'livres.js',
   'exercices_francais.js',
   'exercices_maths.js',
   'exercices_eveil.js',
-  'trajet_de_lair.html',
-  'trajet_de_la_nourriture.html',
-  'trajet_du_sang_ordre.html',
-  'livres.js',
-  'KGElephantHiccups.ttf',
-  'KGHaventSleptShadow.ttf',
+  'logo.svg',
   'icon-192.png',
   'icon-512.png',
-  'savoir_ecouter.html',
-  'audio/soignes_audio.m4a',
-  'audio/bruges_audio.m4a',
-  'audio/fourmi_audio.m4a',
-  'audio/pain_perdu_audio.m4a',
-  'audio/fagnes_audio.m4a',
-  'audio/atelier_audio.m4a',
-  'audio/echecs_audio.m4a',
-  'audio/notice_audio.m4a',
-  'abaque_conversions.html',
-  'colorie_les_fractions.html',
-  'vocabulaire_solides.html',
-  'vocabulaire_operations.html',
-  'fiches/vocabulaire_operations.html',
-  'parties_calcul.html',
-  'fiches/parties_calcul.html',
-  'problemes_operations.html',
-  'fiches/problemes_operations.html',
-  'solide_symetrie.html',
-  'compte_est_bon.html',
-  'flechettes_calcule_le_score.html',
-  'flechettes_atteins_le_score.html',
-  'deux_objets_monnaie.html',
-  'payer_le_commercant.html',
-  'rendre_la_monnaie.html',
-  'heure_secondes.html',
-  'calculs.html',
-  'calculs-4-operations.html',
-  'comparaison.html',
-  'proportionnalite.html',
-  'globe-terrestre.html',
-  'soleil-terre-lune.html',
-  'fiches/soleil-terre-lune.html',
-  'fiches/questionnaire-jour-nuit-LCML.html',
-  'correctif-jour-nuit-LCML.html',
-  'fiches/correctif-jour-nuit-LCML.html',
-  'classification-phylogenetique.html',
-  'fiches/classification-phylogenetique.html',
-  'appareil-respiratoire.html',
-  'fiches/appareil-respiratoire.html',
-  'fiches/questionnaire-respiratoire.html',
-  'fiches/questionnaire-respiratoire-correctif.html',
-  'questionnaire-respiratoire-LCML.html',
-  'fiches/questionnaire-respiratoire-LCML.html',
-  'fiches/questionnaire-respiratoire-LCML-correctif.html',
-  'appareil-digestif.html',
-  'fiches/appareil-digestif.html',
-  'correctif-digestif.html',
-  'fiches/correctif-digestif.html',
-  'fiches/questionnaire-digestif.html',
-  'questionnaire-digestif-LCML.html',
-  'fiches/questionnaire-digestif-LCML.html',
-  'systeme-circulatoire.html',
-  'fiches/systeme-circulatoire.html',
-  'fiches/questionnaire-circulatoire.html',
-  'fiches/questionnaire-circulatoire-correctif.html',
-  'fiches/questionnaire-circulatoire-LCML.html',
-  'expressions-proverbes.html',
-  'fiches/expressions-proverbes.html',
-  'vocabulaire-jeu.html',
-  'fiches/vocabulaire-jeu.html',
-  'cycle-eau.html',
-  'fiches/cycle-eau.html',
-  'sci_cycle_eau_schema.html',
-  'fiches/sci_cycle_eau_schema.html',
-  'sci_reseaux_trophiques.html',
-  'fiches/sci_reseaux_trophiques.html',
-  'questionnaire-cycle-eau-LCML.html',
-  'fiches/questionnaire-cycle-eau-LCML.html',
-  'fiches/questionnaire-cycle-eau-correctif-LCML.html',
-  'registres-tri.html',
-  'fiches/registres-tri.html',
-  'verbes-ternes.html',
-  'fiches/verbes-ternes.html',
-  'assets/logos/sub_verbes_ternes.png',
-  'chasseur-intrus.html',
-  'fiches/chasseur-intrus.html',
-  'sci_electricite_labo.html',
-  'fiches/sci_electricite_labo.html',
-  'sci_lumiere_ombres.html',
-  'fiches/sci_lumiere_ombres.html',
-  'sci_eclipses.html',
-  'fiches/sci_eclipses.html',
-  'assets/eclipses/sun.jpg',
-  'assets/eclipses/earth.jpg',
-  'assets/eclipses/moon.jpg',
-  'assets/eclipses/moon_blood.jpg',
-  'assets/eclipses/solar_corona.jpg',
-  'assets/eclipses/solar_diagram.jpg',
-  'assets/eclipses/lunar_diagram.jpg',
-  'assets/eclipses/orbit_diagram.jpg',
-  'sci_mecanique_engrenages.html',
-  'fiches/sci_mecanique_engrenages.html',
-  'sci_mecanique_leviers.html',
-  'fiches/sci_mecanique_leviers.html',
-  'assets/logos/sub_chasseur_intrus.png',
-  'fabrique-mots.html',
-  'fiches/fabrique-mots.html',
-  'vocabulaire_relations_lexicales.html',
-  'fiches/vocabulaire_relations_lexicales.html',
-  'assets/logos/sub_fabrique_mots.png',
-  'assets/logos/registre_familier.png',
-  'assets/logos/registre_courant.png',
-  'assets/logos/registre_soutenu.png',
-  'assets/logos/sub_registres.png',
-  'assets/logos/subject_vocabulaire.png',
-  'assets/logos/sub_proverbes.png',
-  'assets/logos/sub_atelier_mots.png',
-  'assets/logos/theme_sentiments.png',
-  'assets/logos/theme_actions.png',
-  'assets/logos/theme_nature.png',
-  'assets/logos/theme_objets.png',
-  'assets/logos/theme_metiers.png',
-  'assets/logos/theme_melange.png',
-  'photos/l_habit_moine.png',
-  'photos/vole_oeuf_boeuf.png',
-  'photos/charrue_boeufs.png',
-  'photos/villi_step1.png',
-  'photos/villi_step2.png',
-  'photos/villi_step3.png',
-  'photos/villi_panel1.png',
-  'photos/villi_panel2.png',
-  'photos/villi_panel3.png',
-  'photos/villi_zoom_new.png',
-  'photos/villi_zoom_chatgpt.png',
-  'fiches/relief-hydrographie.html',
-  'photos/classification_banniere.png',
-  'photos/classification_biodiversite.png',
-  'photos/classification_comparaison_fond.png',
-  'photos/classification_arbre_vie.png',
-  'photos/classification_arbre_3d.png',
-  'frise-chronologique-histoire.html',
-  'lecon_frise_historique.html',
-  'ligne-du-temps_5.html',
-  'ne_110m_admin_0_countries.js',
-  'earth-blue-marble.jpg',
-  'world-time-zones-cropped.png',
-  'photos/comparaison_soleil_terre.png',
-  'photos/modelisation_lampe_globe.png',
-  'photos/globe_jour_nuit.png',
-  'photos/schema_soleil_terre_lune.png',
-  'photos/carte_du_monde_rotation.png',
-  'photos/doc_etiolles.png',
-  'photos/doc_paladru.png',
-  'photos/doc_villa_romaine.png',
-  'photos/doc_voie_romaine.png',
-  'photos/doc_charrue.png',
-  'photos/doc_sceaux_corporations.png',
-  'photos/doc_reglement_cockerill.png',
-  'photos/doc_fusillade_roux.png',
-  'photos/doc_biodiversite.png',
-  'photos/europe_illustration.png',
-  'photos/asia_illustration.png',
-  'photos/africa_illustration.png',
-  'photos/north_america_illustration.png',
-  'photos/south_america_illustration.png',
-  'photos/oceania_illustration.png',
-  'photos/antarctica_illustration.png',
-  'photos/pacifique_illustration.png',
-  'photos/atlantique_illustration.png',
-  'photos/indien_illustration.png',
-  'photos/arctique_illustration.png',
-  'photos/austral_illustration.png',
-  'photos/europe_animals.png',
-  'photos/asia_animals.png',
-  'photos/africa_animals.png',
-  'photos/north_america_animals.png',
-  'photos/south_america_animals.png',
-  'photos/oceania_animals.png',
-  'photos/antarctica_animals.png',
-  'photos/pacifique_animals.png',
-  'photos/atlantique_animals.png',
-  'photos/indien_animals.png',
-  'photos/arctique_animals.png',
-  'photos/austral_animals.png',
-  'photos/europe_icon.png',
-  'photos/asia_icon.png',
-  'photos/africa_icon.png',
-  'photos/north_america_icon.png',
-  'photos/south_america_icon.png',
-  'photos/oceania_icon.png',
-  'photos/antarctica_icon.png',
-  'photos/pacifique_icon.png',
-  'photos/atlantique_icon.png',
-  'photos/indien_icon.png',
-  'photos/arctique_icon.png',
-  'photos/austral_icon.png',
-  'qcm_arbre_feuilles.html',
-  'quelle_question.html',
-  'relief-hydrographie.html',
-  'photos/lexique_relief.png',
-  'photos/relief_belgique.png',
-  'photos/lexique_hydrographie.png',
-  'photos/detail_glacier.png',
-  'photos/detail_montagne.png',
-  'photos/detail_col.png',
-  'photos/detail_vallee.png',
-  'photos/detail_colline.png',
-  'photos/detail_plaine.png',
-  'photos/detail_plateau.png',
-  'photos/detail_source_montagne.png',
-  'photos/detail_source_plateau.png',
-  'photos/detail_affluent.png',
-  'photos/detail_confluent.png',
-  'photos/detail_meandre.png',
-  'photos/detail_fleuve.png',
-  'photos/detail_estuaire.png',
-  'photos/detail_delta.png',
-  'photos/detail_embouchure.png',
-  'photos/detail_mer.png',
-  'photos/carte_cours_eau_belgique.png',
-  'photos/carte_fond_cours_eau.png',
-  'photos/carte_relief_hydrographie_belgique.png',
-  'photos/riviere_regions.png'
+  'KGElephantHiccups.ttf',
+  'KGHaventSleptShadow.ttf'
 ];
 
-// Installe le Service Worker et met en cache les ressources de base
+const MEDIA_EXT = /\.(png|jpe?g|gif|webp|avif|svg|ico|ttf|otf|woff2?)$/i;
+
+// ---------- INSTALL ----------
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then(async (cache) => {
-      console.log('[Service Worker] Caching core assets');
-      await Promise.allSettled(
-        CORE_ASSETS.map(async (url) => {
-          try {
-            await cache.add(url);
-          } catch (err) {
-            // Ignorer silencieusement si un fichier statique est absent
-          }
-        })
-      );
-    })
+    caches.open(CORE_CACHE).then((cache) =>
+      Promise.allSettled(CORE_ASSETS.map((url) => cache.add(url).catch(() => {})))
+    )
   );
   self.skipWaiting();
 });
 
-// Active le Service Worker et nettoie les anciens caches
+// ---------- ACTIVATE : supprime les anciens caches (dont l'ancien cache de 151 Mo) ----------
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((keys) => {
-      return Promise.all(
-        keys.map((key) => {
-          if (key !== CACHE_NAME) {
-            console.log('[Service Worker] Deleting old cache:', key);
-            return caches.delete(key);
-          }
-        })
-      );
-    })
+    caches.keys()
+      .then((keys) => Promise.all(keys.filter((k) => !KEEP.includes(k)).map((k) => caches.delete(k))))
+      .then(() => self.clients.claim())
   );
-  self.clients.claim();
 });
 
-// Intercepte les requêtes réseau (Stratégie Stale-While-Revalidate)
+// ---------- Outils ----------
+function stampResponse(response) {
+  // Ajoute la date de mise en cache (pour la revalidation hebdomadaire des médias)
+  return response.blob().then((body) => {
+    const headers = new Headers(response.headers);
+    headers.set('sw-cached-at', String(Date.now()));
+    return new Response(body, { status: response.status, statusText: response.statusText, headers });
+  });
+}
+
+function fetchAndStore(request, cacheName, stamp) {
+  return fetch(request).then((res) => {
+    if (res && res.status === 200 && res.type === 'basic') {
+      const copy = res.clone();
+      (stamp ? stampResponse(copy) : Promise.resolve(copy))
+        .then((toStore) => caches.open(cacheName).then((c) => c.put(request, toStore)))
+        .catch(() => {});
+    }
+    return res;
+  });
+}
+
+// ---------- FETCH ----------
 self.addEventListener('fetch', (event) => {
-  // Ignorer les requêtes non-GET et les appels Firebase en direct
-  if (event.request.method !== 'GET') return;
-  if (event.request.url.includes('firebasejs') || event.request.url.includes('firebasedatabase.app')) return;
+  const req = event.request;
+  if (req.method !== 'GET') return;
+
+  const url = new URL(req.url);
+  // Autres domaines (Firebase, Google Fonts, Tailwind…) : gestion normale par le navigateur
+  if (url.origin !== self.location.origin) return;
+  // Audio / vidéo (requêtes « Range ») : laisser le navigateur gérer (évite des bugs de lecture sur iPad)
+  if (req.headers.has('range') || req.destination === 'audio' || req.destination === 'video') return;
+
+  const isMedia = MEDIA_EXT.test(url.pathname) || req.destination === 'image' || req.destination === 'font';
+
+  if (isMedia) {
+    // Cache d'abord ; revérifie en arrière-plan au plus 1 fois par semaine
+    event.respondWith(
+      caches.match(req).then((cached) => {
+        if (cached) {
+          const at = Number(cached.headers.get('sw-cached-at') || 0);
+          if (Date.now() - at > MEDIA_MAX_AGE_MS) {
+            event.waitUntil(fetchAndStore(req, MEDIA_CACHE, true).catch(() => {}));
+          }
+          return cached;
+        }
+        return fetchAndStore(req, MEDIA_CACHE, true);
+      })
+    );
+    return;
+  }
+
+  // Pages, scripts, styles : réponse immédiate depuis le cache + mise à jour en arrière-plan
+  // (la revérification passe par le cache HTTP du navigateur : le plus souvent une simple réponse 304)
+  const isCore = CORE_ASSETS.some((a) => a !== './' && url.pathname.endsWith('/' + a)) || url.pathname.endsWith('/');
+  const target = isCore ? CORE_CACHE : PAGES_CACHE;
 
   event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
-      if (cachedResponse) {
-        // Renvoie la version en cache immédiatement
-        // Et met à jour le cache en arrière-plan s'il y a du réseau
-        fetch(event.request).then((networkResponse) => {
-          if (networkResponse.status === 200) {
-            caches.open(CACHE_NAME).then((cache) => {
-              cache.put(event.request, networkResponse);
-            });
-          }
-        }).catch(() => {/* Ignore les échecs réseau en arrière-plan */});
-        
-        return cachedResponse;
+    caches.match(req, { ignoreSearch: false }).then((cached) => {
+      const network = fetchAndStore(req, target, false);
+      if (cached) {
+        event.waitUntil(network.catch(() => {}));
+        return cached;
       }
-
-      // Si pas en cache, récupère sur le réseau et met en cache pour la suite
-      return fetch(event.request).then((networkResponse) => {
-        if (!networkResponse || networkResponse.status !== 200 || networkResponse.type !== 'basic') {
-          return networkResponse;
-        }
-
-        const responseToCache = networkResponse.clone();
-        caches.open(CACHE_NAME).then((cache) => {
-          cache.put(event.request, responseToCache);
-        });
-
-        return networkResponse;
-      }).catch((err) => {
-        // Si complètement hors-ligne et que l'utilisateur navigue, renvoyer index.html
-        if (event.request.mode === 'navigate') {
+      return network.catch(() => {
+        // Hors-ligne : seule la page principale retombe sur l'accueil (pas les exercices en iframe)
+        if (req.mode === 'navigate' && req.destination === 'document') {
           return caches.match('index.html');
         }
-        throw err;
+        return Response.error();
       });
     })
   );
