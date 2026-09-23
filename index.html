@@ -3098,7 +3098,7 @@ input[type=text].calc-input.incorrect {
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getDatabase, ref, set, get, push, onValue, remove, onDisconnect } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
-  import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyAghgc_hRhcX0NZfPo3Kb1qpwtGxqJ96GY",
@@ -3125,15 +3125,37 @@ input[type=text].calc-input.incorrect {
   window.FB_onDisconnect = onDisconnect;
 
   // Connexion anonyme automatique pour sécuriser la base de données
-  signInAnonymously(auth)
-    .then(() => {
-      console.log('✅ Firebase Authentification Anonyme réussie');
+  // FB_authOk : vrai seulement si la connexion anonyme a RÉUSSI (sinon Firebase refuse toute lecture/écriture).
+  // FB_ready reste mis à true dans tous les cas pour ne pas bloquer l'interface.
+  window.FB_authOk = false;
+  let _authResolve;
+  window.FB_authReady = new Promise(res => { _authResolve = res; });
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      window.FB_authOk = true;
       window.FB_ready = true;
-    })
-    .catch((error) => {
-      console.error('❌ Firebase Authentification Anonyme échouée:', error);
-      window.FB_ready = true;
-    });
+      _authResolve(true);
+      // Dès que l'on est authentifié : envoyer les résultats restés en attente
+      setTimeout(() => { if (window.syncOfflineResults) window.syncOfflineResults(); }, 1000);
+    }
+  });
+  let _authAttempts = 0;
+  function _signIn() {
+    _authAttempts++;
+    signInAnonymously(auth)
+      .then(() => { console.log('✅ Firebase Authentification Anonyme réussie'); })
+      .catch((error) => {
+        console.error('❌ Firebase Authentification Anonyme échouée (tentative ' + _authAttempts + '):', error);
+        window.FB_ready = true;
+        // Nouvelle tentative (réseau de l'école instable, filtre temporaire…)
+        setTimeout(_signIn, Math.min(60000, 5000 * _authAttempts));
+      });
+  }
+  _signIn();
+  // Attend l'authentification au plus `ms` millisecondes
+  window.FB_waitAuth = function(ms) {
+    return Promise.race([window.FB_authReady, new Promise(r => setTimeout(() => r(false), ms || 15000))]);
+  };
 
   // ===== BIBLIOTHÈQUE GLOBALE D'ICÔNES ET LOGOS VECTORIELS SVG (SUPPRESSION DES EMOJIS) =====
   // window.EMOJI_SVG_MAP a été extrait vers un fichier JS externe
@@ -3186,14 +3208,32 @@ input[type=text].calc-input.incorrect {
   };
 
   // ===== SYNC RÉSULTATS =====
+  // Clé stable d'un résultat : identifiant unique si présent, sinon empreinte de son contenu.
+  // Renvoyer le même résultat plusieurs fois écrase donc la même entrée au lieu de créer des doublons.
+  window.FB_resultKey = function(entry) {
+    if (entry.uid) return entry.uid;
+    const txt = [entry.cls || 'lejoly', entry.student, entry.date, entry.time, entry.activity || entry.book || '', entry.score, entry.total, entry.pct].join('|');
+    let h1 = 0x811c9dc5, h2 = 0x01000193;
+    for (let i = 0; i < txt.length; i++) {
+      const c = txt.charCodeAt(i);
+      h1 = Math.imul(h1 ^ c, 16777619) >>> 0;
+      h2 = Math.imul(h2 ^ c, 2246822519) >>> 0;
+    }
+    return 'h' + h1.toString(36) + h2.toString(36);
+  };
+
+  // Enregistre un résultat. LÈVE une erreur en cas d'échec (le résultat reste alors « à envoyer »).
   window.FB_saveResult = async function(entry) {
-    try {
-      await push(ref(db, 'results'), entry);
-      if (entry.cls && entry.student) {
-        const studentClean = entry.student.replace(/\s+/g, '_');
-        await push(ref(db, 'student_results/' + entry.cls + '/' + studentClean), entry);
-      }
-    } catch(e) { console.warn('Firebase saveResult error:', e); }
+    const ok = await window.FB_waitAuth(15000);
+    if (!ok) throw new Error('Firebase : authentification non disponible');
+    const data = Object.assign({}, entry);
+    delete data.synced;
+    const key = window.FB_resultKey(entry);
+    await set(ref(db, 'results/' + key), data);
+    if (entry.cls && entry.student) {
+      const studentClean = entry.student.replace(/\s+/g, '_');
+      await set(ref(db, 'student_results/' + entry.cls + '/' + studentClean + '/' + key), data);
+    }
   };
 
   window.FB_loadStudentResults = async function(cls, student) {
@@ -3211,7 +3251,7 @@ input[type=text].calc-input.incorrect {
     try {
       const studentClean = student.replace(/\s+/g, '_');
       const studentRef = ref(db, 'student_results/' + cls + '/' + studentClean);
-      const promises = resultsArray.map(r => push(studentRef, r));
+      const promises = resultsArray.map(r => { const d = Object.assign({}, r); delete d.synced; return set(ref(db, 'student_results/' + cls + '/' + studentClean + '/' + window.FB_resultKey(r)), d); });
       await Promise.all(promises);
       console.log(`✅ ${resultsArray.length} résultats historiques migrés pour ${student}`);
     } catch(e) { console.warn('Firebase saveStudentResultsBatch error:', e); }
@@ -3755,6 +3795,9 @@ input[type=text].calc-input.incorrect {
       window.syncOfflineResults();
     }
   }, 2500);
+  // Nouvelles tentatives : toutes les 2 minutes et dès que le Wi-Fi revient
+  setInterval(function() { if (window.syncOfflineResults) window.syncOfflineResults(); }, 120000);
+  window.addEventListener('online', function() { setTimeout(function(){ if (window.syncOfflineResults) window.syncOfflineResults(); }, 2000); });
 </script>
 </head>
 <body>
@@ -8257,17 +8300,19 @@ function saveResult(entry){
     return;
   }
   invalidateResultsCache();
-  const all = JSON.parse(localStorage.getItem('lq_results')||'[]');
+  // Identifiant unique : permet de renvoyer le résultat sans jamais créer de doublon
+  if (!entry.uid) entry.uid = 'r' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
   entry.synced = false; // Par défaut, marqué comme non synchronisé sur Firebase
+  const all = JSON.parse(localStorage.getItem('lq_results')||'[]');
   all.push(entry);
-  localStorage.setItem('lq_results',JSON.stringify(all));
-  // Envoyer vers Firebase avec retry si pas encore prêt
+  saveLocalResultsSafe(all);
+  // Envoyer vers Firebase (en cas d'échec, le résultat reste « à envoyer » et sera réessayé)
   function trySend(attempts){
     if(window.FB_saveResult){
       window.FB_saveResult(entry).then(()=>{
         console.log('✅ Résultat envoyé à Firebase');
         markResultAsSynced(entry);
-      }).catch(e=>{ console.warn('Erreur Firebase saveResult:', e); });
+      }).catch(e=>{ console.warn('⏳ Résultat non envoyé (nouvelle tentative automatique plus tard):', e && e.message); });
     } else if(attempts > 0){
       setTimeout(()=>trySend(attempts-1), 1500);
     } else {
@@ -8277,33 +8322,58 @@ function saveResult(entry){
   trySend(5);
 }
 
+// Écrit lq_results sans jamais planter si la mémoire du navigateur est pleine :
+// on supprime alors les plus anciens résultats DÉJÀ envoyés à Firebase.
+function saveLocalResultsSafe(all) {
+  try {
+    localStorage.setItem('lq_results', JSON.stringify(all));
+  } catch (e) {
+    try {
+      const unsynced = all.filter(r => r && r.synced !== true);
+      const synced = all.filter(r => r && r.synced === true);
+      const keep = synced.slice(Math.floor(synced.length / 2)).concat(unsynced);
+      localStorage.setItem('lq_results', JSON.stringify(keep));
+      console.warn('Mémoire locale pleine : anciens résultats déjà synchronisés supprimés de cet appareil.');
+    } catch (e2) { console.error('Impossible d\'enregistrer les résultats localement', e2); }
+  }
+}
+
+function sameResult(a, b) {
+  if (a.uid || b.uid) return a.uid === b.uid;
+  return a.student === b.student && a.date === b.date && a.time === b.time && a.activity === b.activity;
+}
+
 function markResultAsSynced(entry) {
   const all = JSON.parse(localStorage.getItem('lq_results')||'[]');
   for (let i = all.length - 1; i >= 0; i--) {
     const r = all[i];
-    if (r.student === entry.student && r.date === entry.date && r.time === entry.time && r.activity === entry.activity && !r.synced) {
+    if (r && !r.synced && sameResult(r, entry)) {
       r.synced = true;
       break;
     }
   }
-  localStorage.setItem('lq_results', JSON.stringify(all));
+  saveLocalResultsSafe(all);
 }
 
+let _syncRunning = false;
 window.syncOfflineResults = function() {
-  if (!window.FB_saveResult) return;
+  if (!window.FB_saveResult || _syncRunning) return;
+  // Seuls les élèves produisent des résultats : un appareil enseignant n'envoie rien
+  // (les résultats qu'il affiche viennent de Firebase, les renvoyer créerait des doublons).
+  if (typeof state !== 'undefined' && state.role === 'teacher') return;
   const all = JSON.parse(localStorage.getItem('lq_results')||'[]');
-  const unsynced = all.filter(r => r.synced === false || r.synced === undefined);
+  // Seuls les résultats créés sur cet appareil (identifiant uid) ou explicitement marqués « non envoyés »
+  const unsynced = all.filter(r => r && r.synced === false);
   if (unsynced.length === 0) return;
-  
+  _syncRunning = true;
   console.log(`🔄 Synchronisation de ${unsynced.length} résultats hors-ligne...`);
-  unsynced.forEach(entry => {
+  Promise.all(unsynced.map(entry =>
     window.FB_saveResult(entry).then(() => {
-      console.log(`✅ Résultat hors-ligne de ${entry.student} (${entry.activity}) synchronisé avec succès !`);
       markResultAsSynced(entry);
     }).catch(e => {
-      console.warn('Erreur lors de la synchronisation de l\'entrée:', entry, e);
-    });
-  });
+      console.warn('⏳ Résultat toujours en attente:', entry.activity, e && e.message);
+    })
+  )).finally(() => { _syncRunning = false; });
 };
 function deleteResultsForClass(cls){
   const all = JSON.parse(localStorage.getItem('lq_results')||'[]');
@@ -9242,7 +9312,7 @@ async function syncFromFirebase(){
       results.forEach(r=>{
         if (!r || !r.student || r.student === 'Alexandre' || r.student === 'Lovianna') return;
         const k = (r.cls||'lejoly')+'|'+r.student+'|'+r.date+'|'+(r.activity||r.book||'');
-        if(!localKeys.has(k)){ merged.push(r); localKeys.add(k); }
+        if(!localKeys.has(k)){ merged.push(Object.assign({}, r, {synced: true})); localKeys.add(k); }
       });
       localStorage.setItem('lq_results', JSON.stringify(merged));
     }
@@ -9399,7 +9469,7 @@ function renderDashboard(){
         const merged = [...local];
         fbResults.forEach(r=>{
           const k = (r.cls||'lejoly')+'|'+r.student+'|'+r.date+'|'+(r.activity||r.book||'');
-          if(!localKeys.has(k)){ merged.push(r); localKeys.add(k); }
+          if(!localKeys.has(k)){ merged.push(Object.assign({}, r, {synced: true})); localKeys.add(k); }
         });
         localStorage.setItem('lq_results', JSON.stringify(merged));
         renderDashboardWithData(loadResults(teacherCls));
@@ -9476,7 +9546,7 @@ function renderStudentDetail(studentName){
         const merged = [...local];
         fbResults.forEach(r=>{
           const k = (r.cls||'lejoly')+'|'+r.student+'|'+r.date+'|'+(r.activity||r.book||'');
-          if(!localKeys.has(k)){ merged.push(r); localKeys.add(k); }
+          if(!localKeys.has(k)){ merged.push(Object.assign({}, r, {synced: true})); localKeys.add(k); }
         });
         localStorage.setItem('lq_results', JSON.stringify(merged));
       }
@@ -30509,7 +30579,7 @@ function renderGestionJournal(){
         const merged = [...local];
         fbResults.forEach(r=>{
           const k = (r.cls||'lejoly')+'|'+r.student+'|'+r.date+'|'+(r.activity||r.book||'');
-          if(!localKeys.has(k)){ merged.push(r); localKeys.add(k); }
+          if(!localKeys.has(k)){ merged.push(Object.assign({}, r, {synced: true})); localKeys.add(k); }
         });
         localStorage.setItem('lq_results', JSON.stringify(merged));
       }
@@ -30632,7 +30702,7 @@ function renderGestionResults(){
         const merged = [...local];
         fbResults.forEach(r=>{
           const k = (r.cls||'lejoly')+'|'+r.student+'|'+r.date+'|'+(r.activity||r.book||'');
-          if(!localKeys.has(k)){ merged.push(r); localKeys.add(k); }
+          if(!localKeys.has(k)){ merged.push(Object.assign({}, r, {synced: true})); localKeys.add(k); }
         });
         localStorage.setItem('lq_results', JSON.stringify(merged));
       }
