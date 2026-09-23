@@ -1,0 +1,1860 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Le Tangram — Plateforme LCML</title>
+  <link rel="icon" type="image/svg+xml" href="logo.svg"/>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Canvas Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <style>
+    :root {
+      /* LCML Signature Color Palette */
+      --purple: #5B4FCF;
+      --purple-hover: #4A3FB8;
+      --purple-light: #EEF0FF;
+      --purple-mid: #C7C2F5;
+
+      --green: #1A9E75;
+      --green-light: #E2F5EE;
+      --green-dark: #127958;
+
+      --red: #D94F3D;
+      --red-light: #FDECEA;
+
+      --amber: #F59E0B;
+      --amber-dark: #C97B1A;
+      --amber-light: #FEF3E2;
+
+      --blue: #1A6FA0;
+      --blue-light: #E2F0FA;
+
+      --pink: #EC4899;
+      --pink-light: #FCE7F3;
+
+      --bg: #FDFBF7;
+      --surface: #FFFFFF;
+      --surface-alt: #F4F1EB;
+      --text: #1A1A2E;
+      --text-muted: #6B7080;
+      --border: #1A1A2E;
+
+      --r-lg: 22px;
+      --r-md: 14px;
+      --r-sm: 8px;
+
+      --shadow-solid: 4px 4px 0px var(--border);
+      --shadow-solid-sm: 2px 2px 0px var(--border);
+      --shadow-solid-lg: 6px 6px 0px var(--border);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg);
+      background-image:
+        radial-gradient(rgba(26, 26, 46, 0.07) 1px, transparent 1px),
+        radial-gradient(rgba(91, 79, 207, 0.05) 1px, #FDFBF7 1px);
+      background-size: 24px 24px, 48px 48px;
+      background-position: 0 0, 12px 12px;
+      color: var(--text);
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      min-height: 100vh;
+      padding: 16px 14px 40px;
+      display: flex;
+      flex-direction: column;
+      user-select: none;
+    }
+
+    h1, h2, h3, h4, .font-display {
+      font-family: 'Fredoka', cursive, sans-serif !important;
+    }
+
+    button {
+      font-family: 'Fredoka', sans-serif;
+      cursor: pointer;
+      border: none;
+      background: none;
+      user-select: none;
+      color: inherit;
+    }
+
+    button:focus-visible {
+      outline: 3px solid var(--purple);
+      outline-offset: 2px;
+    }
+
+    .wrap {
+      max-width: 760px;
+      width: 100%;
+      margin: 0 auto;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ===== BOUTON FIXE RETOUR ACCUEIL LCML ===== */
+    #home-logo-btn {
+      position: fixed;
+      top: 14px;
+      right: 14px;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #FFFFFF;
+      border: 2.5px solid var(--border);
+      border-radius: 16px;
+      padding: 6px 14px 6px 8px;
+      box-shadow: var(--shadow-solid-sm);
+      cursor: pointer;
+      text-decoration: none;
+      font-family: 'Fredoka', sans-serif;
+      font-weight: 700;
+      font-size: 13px;
+      color: var(--text);
+      transition: transform 0.12s, box-shadow 0.12s;
+    }
+    #home-logo-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 3px 4px 0px var(--border);
+    }
+    #home-logo-btn:active {
+      transform: translateY(1px);
+      box-shadow: 1px 1px 0px var(--border);
+    }
+    #home-logo-btn .logo-icon {
+      width: 24px;
+      height: 24px;
+      object-fit: contain;
+    }
+    #home-logo-btn .logo-label {
+      line-height: 1.1;
+      text-align: left;
+    }
+    #home-logo-btn .logo-label span {
+      display: block;
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-muted);
+      font-family: 'Inter', sans-serif;
+    }
+
+    /* ===== HEADER LCML ===== */
+    .app-header {
+      background: var(--surface);
+      border: 3px solid var(--border);
+      border-radius: var(--r-lg);
+      padding: 20px 22px;
+      box-shadow: var(--shadow-solid);
+      margin-bottom: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    .app-header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 6px;
+      background: linear-gradient(90deg, var(--purple), var(--blue), var(--green), var(--amber), var(--pink));
+    }
+    .school-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--purple-light);
+      color: var(--purple);
+      border: 1.5px solid var(--purple);
+      font-weight: 800;
+      font-size: 11px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 999px;
+      margin-bottom: 8px;
+      font-family: 'Fredoka', sans-serif;
+    }
+    .brand-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .brand-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .brand-title h1 {
+      font-size: clamp(24px, 5vw, 32px);
+      font-weight: 800;
+      color: var(--text);
+      line-height: 1.1;
+      margin: 0;
+    }
+    .brand-title .game-badge {
+      font-size: 30px;
+      animation: floatIcon 3s ease-in-out infinite;
+      display: inline-block;
+    }
+    @keyframes floatIcon {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-3px) rotate(4deg); }
+    }
+    .tagline {
+      color: var(--text-muted);
+      font-size: 14px;
+      line-height: 1.5;
+      margin-top: 8px;
+      max-width: 65ch;
+    }
+
+    .btn-help-guide {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #FFF8E7;
+      border: 2px solid var(--amber-dark);
+      color: #8C5303;
+      font-weight: 800;
+      font-size: 13px;
+      padding: 7px 14px;
+      border-radius: 999px;
+      box-shadow: 2px 2px 0px var(--amber-dark);
+      transition: transform 0.12s, box-shadow 0.12s;
+    }
+    .btn-help-guide:hover {
+      background: #FEEBC8;
+      transform: translateY(-2px);
+      box-shadow: 3px 3px 0px var(--amber-dark);
+    }
+    .btn-help-guide:active {
+      transform: translateY(1px);
+      box-shadow: 1px 1px 0px var(--amber-dark);
+    }
+
+    /* ===== CARTES & CONTENEURS ===== */
+    .card {
+      background: var(--surface);
+      border: 3px solid var(--border);
+      border-radius: var(--r-lg);
+      padding: 20px;
+      box-shadow: var(--shadow-solid);
+      margin-bottom: 20px;
+    }
+    .hidden { display: none !important; }
+
+    /* ===== BOUTONS NEO-BRUTALISTES ===== */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 18px;
+      border-radius: var(--r-md);
+      border: 2.5px solid var(--border);
+      font-size: 14px;
+      font-weight: 800;
+      color: #fff;
+      background: var(--purple);
+      box-shadow: var(--shadow-solid-sm);
+      transition: transform 0.1s ease, box-shadow 0.1s ease;
+      cursor: pointer;
+    }
+    .btn:hover {
+      transform: translate(-1px, -1px);
+      box-shadow: 3px 3px 0px var(--border);
+    }
+    .btn:active {
+      transform: translate(1px, 1px);
+      box-shadow: 1px 1px 0px var(--border);
+    }
+    .btn.secondary {
+      background: var(--surface);
+      color: var(--text);
+    }
+    .btn.secondary:hover {
+      background: var(--surface-alt);
+    }
+    .btn.green { background: var(--green); }
+    .btn.amber { background: var(--amber); color: #fff; }
+    .btn.coral { background: #FF7A5C; color: #fff; }
+    .btn.pink { background: var(--pink); color: #fff; }
+    .btn.small {
+      padding: 8px 12px;
+      font-size: 13px;
+      border-radius: 10px;
+    }
+    .btn:disabled {
+      opacity: 0.45;
+      pointer-events: none;
+      filter: grayscale(40%);
+    }
+
+    /* ===== ECRAN 1 : SELECTION DES NIVEAUX ===== */
+    .section-title {
+      font-size: 17px;
+      font-weight: 800;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .level-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+    @media (min-width: 600px) {
+      .level-grid { grid-template-columns: 1fr 1fr 1fr; }
+    }
+
+    .level-card {
+      border-radius: var(--r-md);
+      border: 3px solid var(--border);
+      padding: 18px 14px;
+      text-align: center;
+      color: var(--text);
+      background: var(--surface);
+      box-shadow: var(--shadow-solid);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+    .level-card:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: var(--shadow-solid-lg);
+    }
+    .level-card:active {
+      transform: translate(1px, 1px);
+      box-shadow: var(--shadow-solid-sm);
+    }
+    .level-card.facile { border-top: 8px solid var(--green); }
+    .level-card.moyen { border-top: 8px solid var(--amber); }
+    .level-card.difficile { border-top: 8px solid var(--red); }
+    .level-card .emoji { font-size: 2.2rem; display: block; }
+    .level-card h3 {
+      margin: 2px 0 2px;
+      font-size: 1.25rem;
+      font-weight: 800;
+    }
+    .level-card .level-sub {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+    .level-card .level-figures {
+      display: flex;
+      gap: 6px;
+      margin-top: 6px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .figure-pill {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1.5px solid var(--border);
+      background: var(--surface-alt);
+    }
+
+    /* MINI EXPLICATIF */
+    .howto-card {
+      background: var(--surface);
+      border: 3px solid var(--border);
+      border-radius: var(--r-md);
+      padding: 18px 20px;
+      box-shadow: var(--shadow-solid);
+      margin-bottom: 14px;
+    }
+    .howto-card h3 {
+      font-size: 16px;
+      color: var(--purple);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .howto-steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+    }
+    .howto-step {
+      background: var(--surface-alt);
+      border: 2px solid var(--border);
+      border-radius: var(--r-sm);
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .howto-step-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 22px;
+      height: 22px;
+      background: var(--amber);
+      color: var(--border);
+      border: 1.5px solid var(--border);
+      border-radius: 50%;
+      font-weight: 900;
+      font-size: 11px;
+    }
+    .howto-step-title {
+      font-family: 'Fredoka', sans-serif;
+      font-weight: 700;
+      font-size: 13.5px;
+    }
+    .howto-step-text {
+      font-size: 12.5px;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    /* ===== ECRAN 2 : JEU EN COURS ===== */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .topbar h2 {
+      margin: 0;
+      font-size: 1.1rem;
+      font-weight: 800;
+      flex: 1;
+      text-align: center;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .subbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .stat-badge {
+      font-size: 13px;
+      font-weight: 800;
+      font-family: 'Fredoka', sans-serif;
+      background: var(--purple-light);
+      color: var(--purple);
+      border: 2px solid var(--border);
+      padding: 5px 12px;
+      border-radius: 12px;
+      box-shadow: 2px 2px 0px var(--border);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .stat-badge.timer {
+      background: var(--amber-light);
+      color: var(--amber-dark);
+    }
+    .stat-badge.best {
+      background: var(--green-light);
+      color: var(--green-dark);
+    }
+
+    /* ===== BOARD SVG CONTAINER ===== */
+    #board-wrap {
+      width: 100%;
+      border-radius: var(--r-md);
+      background: #FFFFFF;
+      border: 3px solid var(--border);
+      box-shadow: var(--shadow-solid);
+      overflow: hidden;
+      touch-action: none;
+      position: relative;
+    }
+    #board-svg {
+      width: 100%;
+      height: auto;
+      display: block;
+      background:
+        radial-gradient(rgba(91, 79, 207, 0.06) 1.5px, transparent 1.5px) 0 0/20px 20px,
+        #FAFAF7;
+    }
+
+    /* SVG Elements */
+    .target-backdrop {
+      fill: #EDEAF8;
+      stroke: var(--purple);
+      stroke-width: 2.5;
+      stroke-dasharray: 6, 5;
+    }
+    .target-hint-line {
+      stroke: #A89FE2;
+      stroke-width: 1.5;
+      stroke-dasharray: 4, 3;
+      fill: none;
+      opacity: 0.85;
+      pointer-events: none;
+    }
+    .target-slot-highlight {
+      fill: #C7C2F5;
+      stroke: var(--purple);
+      stroke-width: 2;
+      stroke-dasharray: 5, 3;
+      opacity: 0.6;
+      animation: pulseSlot 1.8s ease-in-out infinite;
+    }
+    @keyframes pulseSlot {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 0.8; }
+    }
+
+    .tray-divider {
+      stroke: var(--border);
+      stroke-width: 2;
+      stroke-dasharray: 6, 4;
+      opacity: 0.45;
+    }
+    .tray-label {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      fill: var(--text-muted);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      user-select: none;
+      pointer-events: none;
+    }
+
+    .piece {
+      cursor: grab;
+      transition: filter 0.15s ease;
+    }
+    .piece:hover {
+      filter: brightness(1.06);
+    }
+    .piece:active, .piece.dragging {
+      cursor: grabbing;
+      filter: drop-shadow(0px 8px 12px rgba(26, 26, 46, 0.25));
+    }
+    .piece polygon {
+      stroke: var(--border);
+      stroke-width: 2.5;
+      stroke-linejoin: round;
+      transition: stroke 0.15s, stroke-width 0.15s;
+    }
+    .piece.selected polygon {
+      stroke: #FFE600 !important;
+      stroke-width: 3.5;
+      stroke-dasharray: 6, 4;
+      animation: dashMarch 1s linear infinite;
+    }
+    @keyframes dashMarch {
+      to { stroke-dashoffset: -10; }
+    }
+    .piece.snapped polygon {
+      stroke: #127958;
+      stroke-width: 2.5;
+    }
+
+    /* ===== BARRE DE CONTROLE DU JEU ===== */
+    .controls-row {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+    .btn-ctrl {
+      font-size: 13.5px;
+      font-weight: 800;
+      padding: 9px 14px;
+      border-radius: 12px;
+      border: 2px solid var(--border);
+      box-shadow: 2px 2px 0px var(--border);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.12s;
+    }
+    .btn-ctrl:hover {
+      transform: translate(-1px, -1px);
+      box-shadow: 3px 3px 0px var(--border);
+    }
+    .btn-ctrl:active {
+      transform: translate(1px, 1px);
+      box-shadow: 1px 1px 0px var(--border);
+    }
+    .btn-ctrl:disabled {
+      opacity: 0.4;
+      pointer-events: none;
+    }
+    .btn-rotate { background: var(--amber); color: #fff; }
+    .btn-flip { background: var(--purple); color: #fff; }
+    .btn-hint { background: #FFF8E7; color: #8C5303; border-color: var(--amber-dark); }
+    .btn-reset { background: var(--surface); color: var(--text); }
+
+    /* ===== MODALE REGLES / AIDE ===== */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(26, 26, 46, 0.65);
+      backdrop-filter: blur(3px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 200;
+      animation: fadeIn 0.2s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .modal-card {
+      background: #FFFFFF;
+      border: 3.5px solid var(--border);
+      border-radius: var(--r-lg);
+      padding: 24px;
+      max-width: 480px;
+      width: 100%;
+      box-shadow: var(--shadow-solid-lg);
+      animation: popModal 0.25s cubic-bezier(0.18, 1.25, 0.4, 1);
+    }
+    @keyframes popModal {
+      from { transform: scale(0.85); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+    .modal-title {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .modal-close {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+      background: var(--surface-alt);
+      font-size: 16px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 2px 2px 0px var(--border);
+    }
+    .modal-body {
+      font-size: 13.5px;
+      line-height: 1.6;
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .pieces-pill-box {
+      background: var(--purple-light);
+      border: 2px dashed var(--purple);
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--purple);
+    }
+
+    /* ===== VICTOIRE OVERLAY ===== */
+    .win-card {
+      background: #FFFFFF;
+      border: 3.5px solid var(--border);
+      border-radius: var(--r-lg);
+      padding: 28px 24px;
+      text-align: center;
+      max-width: 380px;
+      width: 100%;
+      box-shadow: 8px 8px 0px var(--border);
+      animation: popModal 0.35s cubic-bezier(0.18, 1.35, 0.4, 1);
+    }
+    .win-emoji {
+      font-size: 56px;
+      display: block;
+      margin-bottom: 8px;
+      animation: tada 1s ease;
+    }
+    @keyframes tada {
+      0% { transform: scale(1); }
+      10%, 20% { transform: scale(0.9) rotate(-3deg); }
+      30%, 50%, 70%, 90% { transform: scale(1.1) rotate(3deg); }
+      40%, 60%, 80% { transform: scale(1.1) rotate(-3deg); }
+      100% { transform: scale(1) rotate(0); }
+    }
+    .win-title {
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+    .win-sub {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 18px;
+      line-height: 1.4;
+    }
+    .win-stats {
+      background: var(--green-light);
+      border: 2px solid var(--green);
+      border-radius: 14px;
+      padding: 10px 16px;
+      margin-bottom: 20px;
+      font-weight: 800;
+      font-size: 14px;
+      color: var(--green-dark);
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+    }
+    .win-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    /* ===== FOOTER LCML ===== */
+    .app-footer {
+      text-align: center;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+      margin-top: 24px;
+      padding-top: 14px;
+      border-top: 2px dashed rgba(26, 26, 46, 0.15);
+      font-family: 'Fredoka', sans-serif;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- BOUTON RETOUR ACCUEIL LCML -->
+  <a href="index.html" id="home-logo-btn" title="Retourner à la plateforme LCML">
+    <img src="logo.svg" alt="LCML" class="logo-icon">
+    <div class="logo-label">
+      <span>Plateforme</span>
+      LCML
+    </div>
+  </a>
+
+  <div class="wrap">
+
+    <!-- HEADER OFFICIEL LCML -->
+    <header class="app-header">
+      <div class="school-tag">📐 Mathématiques & Géométrie • 5e & 6e primaire</div>
+      <div class="brand-row">
+        <div class="brand-title">
+          <span class="game-badge">🧩</span>
+          <h1>Le Tangram</h1>
+        </div>
+        <button class="btn-help-guide" id="open-rules-btn" aria-label="Règles du jeu">
+          <span>💡</span> Comment jouer ?
+        </button>
+      </div>
+      <p class="tagline">
+        Le puzzle classique chinois aux <strong>7 pièces géométriques</strong> (les <em>tans</em>). Fais glisser, pivote et emboîte chaque pièce pour reconstituer intégralement la silhouette sans aucun trou ni chevauchement !
+      </p>
+    </header>
+
+    <!-- ECRAN 1 : CHOIX DU NIVEAU -->
+    <section id="screen-levels" class="card">
+      <div class="section-title">
+        <span>🎯</span> Choisis ta série de défis :
+      </div>
+
+      <div class="level-grid">
+        <button class="level-card facile" data-level="facile">
+          <span class="emoji">🌱</span>
+          <h3>Facile</h3>
+          <span class="level-sub">3 figures géométriques pures</span>
+          <div class="level-figures">
+            <span class="figure-pill">Carré</span>
+            <span class="figure-pill">Grand triangle</span>
+            <span class="figure-pill">Maison</span>
+          </div>
+        </button>
+
+        <button class="level-card moyen" data-level="moyen">
+          <span class="emoji">⭐</span>
+          <h3>Moyen</h3>
+          <span class="level-sub">3 figures architecturales & navires</span>
+          <div class="level-figures">
+            <span class="figure-pill">Rectangle</span>
+            <span class="figure-pill">Bateau</span>
+            <span class="figure-pill">Flèche</span>
+          </div>
+        </button>
+
+        <button class="level-card difficile" data-level="difficile">
+          <span class="emoji">🔥</span>
+          <h3>Difficile</h3>
+          <span class="level-sub">3 figures de la nature & animaux</span>
+          <div class="level-figures">
+            <span class="figure-pill">Sapin</span>
+            <span class="figure-pill">Chat</span>
+            <span class="figure-pill">Poisson</span>
+          </div>
+        </button>
+      </div>
+
+      <!-- CARTE D'AIDE PEDAGOGIQUE -->
+      <div class="howto-card">
+        <h3><span>🧠</span> Les 3 étapes pour réussir :</h3>
+        <div class="howto-steps">
+          <div class="howto-step">
+            <div class="howto-step-num">1</div>
+            <div class="howto-step-title">Sélectionne & Déplace</div>
+            <div class="howto-step-text">Glisse une pièce depuis la réserve vers la silhouette violette.</div>
+          </div>
+          <div class="howto-step">
+            <div class="howto-step-num">2</div>
+            <div class="howto-step-title">Oriente & Retourne</div>
+            <div class="howto-step-text">Utilise <strong>↻ Tourner</strong> (ou touche <em>R / Espace</em>) et <strong>⇋ Retourner</strong> (touche <em>F</em>).</div>
+          </div>
+          <div class="howto-step">
+            <div class="howto-step-num">3</div>
+            <div class="howto-step-title">Aimantation Magique</div>
+            <div class="howto-step-text">Approche la pièce de sa place : elle s'aimante automatiquement ! Active <strong>💡 Indice</strong> au besoin.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ECRAN 2 : PLATEAU DE JEU -->
+    <section id="screen-game" class="card hidden">
+      <div class="topbar">
+        <button class="btn secondary small" id="back-btn">⬅️ Menu</button>
+        <h2 id="game-title">Facile — Le Carré</h2>
+        <button class="btn secondary small" id="open-rules-game-btn">❓ Aide</button>
+      </div>
+
+      <div class="subbar">
+        <span class="stat-badge" id="puzzle-counter">Figure 1 / 3</span>
+        <span class="stat-badge timer" id="timer">⏱️ 0:00</span>
+        <span class="stat-badge best" id="best-time">🏆 Record : —</span>
+      </div>
+
+      <div id="board-wrap">
+        <svg id="board-svg" viewBox="0 0 400 485"></svg>
+      </div>
+
+      <div class="controls-row">
+        <button class="btn-ctrl btn-rotate" id="rotate-btn" disabled title="Pivoter de 45° (R ou Espace)">
+          ↻ Tourner (R)
+        </button>
+        <button class="btn-ctrl btn-flip" id="flip-btn" disabled title="Retourner le parallélogramme (F)">
+          ⇋ Retourner (F)
+        </button>
+        <button class="btn-ctrl btn-hint" id="hint-btn" title="Afficher ou masquer les contours intérieurs">
+          💡 Indice
+        </button>
+        <button class="btn-ctrl btn-reset" id="reset-btn" title="Replacer les pièces dans la réserve">
+          🔀 Réinitialiser
+        </button>
+      </div>
+    </section>
+
+    <!-- FOOTER OFFICIEL LCML -->
+    <footer class="app-footer">
+      Plateforme Pédagogique LCML — Classe de M. Lejoly
+    </footer>
+
+  </div>
+
+  <!-- MODALE REGLES DU JEU -->
+  <div id="rules-modal" class="modal-overlay hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title"><span>📖</span> Règles du Tangram</div>
+        <button class="modal-close" id="close-rules-btn">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="pieces-pill-box">
+          🧩 <strong>Les 7 pièces obligatoires :</strong><br>
+          • 2 grands triangles isocèles rectangles<br>
+          • 1 moyen triangle isocèle rectangle<br>
+          • 2 petits triangles isocèles rectangles<br>
+          • 1 carré • 1 parallélogramme
+        </div>
+        <p>
+          🖐️ <strong>Déplacement :</strong> Fais glisser chaque pièce sur l'écran tactile ou à la souris vers la zone supérieure.
+        </p>
+        <p>
+          ↻ <strong>Rotation :</strong> Touche une pièce pour la sélectionner (bordure jaune animée), puis clique sur <strong>↻ Tourner</strong> ou appuie sur la touche <strong>R</strong> ou <strong>Espace</strong>.
+        </p>
+        <p>
+          ⇋ <strong>Retournement :</strong> Le parallélogramme est la seule pièce qui n'est pas symétrique par réflexion. Tu peux le retourner avec <strong>⇋ Retourner</strong> ou la touche <strong>F</strong>.
+        </p>
+        <p>
+          ✨ <strong>Aimantation :</strong> Lorsque ta pièce est bien orientée et proche de son emplacement, elle s'accroche d'elle-même !
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODALE VICTOIRE -->
+  <div id="win-modal" class="modal-overlay hidden">
+    <div class="win-card">
+      <span class="win-emoji">🎉</span>
+      <h2 class="win-title">Magnifique !</h2>
+      <p class="win-sub" id="win-subtext">Tu as complété la silhouette avec brio !</p>
+      <div class="win-stats">
+        <span>⏱️ Temps : <strong id="win-time">0:00</strong></span>
+        <span id="win-best-record">🏆 Nouveau record !</span>
+      </div>
+      <div class="win-actions">
+        <button class="btn coral" id="next-puzzle-btn">➡️ Figure suivante</button>
+        <button class="btn secondary" id="menu-btn">🏠 Revenir aux niveaux</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  (function(){
+    "use strict";
+
+    /* ==========================================================================
+       1. DEFINITIONS CANONIQUES DES 7 PIECES DU TANGRAM
+       Centroid-relative exact unit polygons on the standard Tangram coordinate space.
+       ========================================================================== */
+    const CANONICAL = {
+      large: [ [-2.0, -2/3], [2.0, -2/3], [0.0, 4/3] ],
+      medium: [ [-2/3, -2/3], [4/3, -2/3], [-2/3, 4/3] ],
+      small: [ [-1.0, -1/3], [1.0, -1/3], [0.0, 2/3] ],
+      square: [ [0.0, 1.0], [1.0, 0.0], [0.0, -1.0], [-1.0, 0.0] ],
+      parallelogram: [ [-1.5, -0.5], [0.5, -0.5], [1.5, 0.5], [-0.5, 0.5] ]
+    };
+
+    // Les 7 pièces physiques avec la palette de couleurs officielle LCML
+    const PIECES_LIST = [
+      { id: "large1", type: "large", name: "Grand triangle rouge", color: "#FF7A5C" },
+      { id: "large2", type: "large", name: "Grand triangle vert", color: "#1A9E75" },
+      { id: "medium", type: "medium", name: "Moyen triangle orange", color: "#F59E0B" },
+      { id: "small1", type: "small", name: "Petit triangle violet", color: "#5B4FCF" },
+      { id: "small2", type: "small", name: "Petit triangle rose", color: "#EC4899" },
+      { id: "square", type: "square", name: "Carré bleu", color: "#1A6FA0" },
+      { id: "parallelogram", type: "parallelogram", name: "Parallélogramme lime", color: "#8BD450", canFlip: true }
+    ];
+
+    /* ==========================================================================
+       2. LES 9 FIGURES MATHEMATIQUEMENT PROUVEES (3 PAR NIVEAU)
+       Chaque figure définit l'emplacement exact (x, y, rot, flip) des 7 pièces.
+       Surface totale = 16.00 • Chevauchement = 0.00
+       ========================================================================== */
+    const PUZZLES = {
+      facile: [
+        {
+          id: "square",
+          name: "Le Carré",
+          emoji: "🟦",
+          slots: [
+            { type: "large", x: 2.0, y: 0.6667, rot: 0, flip: false },
+            { type: "large", x: 0.6667, y: 2.0, rot: 270, flip: false },
+            { type: "medium", x: 3.3333, y: 3.3333, rot: 180, flip: false },
+            { type: "square", x: 2.0, y: 3.0, rot: 0, flip: false },
+            { type: "small", x: 1.0, y: 3.6667, rot: 180, flip: false },
+            { type: "small", x: 2.6667, y: 2.0, rot: 90, flip: false },
+            { type: "parallelogram", x: 3.5, y: 1.5, rot: 90, flip: false }
+          ]
+        },
+        {
+          id: "big_triangle",
+          name: "Le Grand Triangle",
+          emoji: "📐",
+          slots: [
+            { type: "large", x: 2.0, y: 0.6667, rot: 0, flip: false },
+            { type: "large", x: 3.3333, y: 2.0, rot: 90, flip: false },
+            { type: "medium", x: 4.6667, y: 0.6667, rot: 0, flip: false },
+            { type: "square", x: 5.0, y: 2.0, rot: 0, flip: false },
+            { type: "small", x: 6.0, y: 1.3333, rot: 0, flip: false },
+            { type: "small", x: 4.3333, y: 3.0, rot: 270, flip: false },
+            { type: "parallelogram", x: 6.5, y: 0.5, rot: 0, flip: true }
+          ]
+        },
+        {
+          id: "house",
+          name: "La Maison",
+          emoji: "🏠",
+          slots: [
+            { type: "large", x: 4.0, y: 4.6667, rot: 0, flip: false },
+            { type: "small", x: 2.3333, y: 5.0, rot: 270, flip: false },
+            { type: "large", x: 3.5, y: 0.6667, rot: 0, flip: false },
+            { type: "medium", x: 2.3333, y: 2.6667, rot: 0, flip: false },
+            { type: "square", x: 3.6667, y: 3.0, rot: 0, flip: false },
+            { type: "parallelogram", x: 5.0, y: 2.5, rot: 45, flip: false },
+            { type: "small", x: 5.5, y: 1.3333, rot: 0, flip: false }
+          ]
+        }
+      ],
+      moyen: [
+        {
+          id: "rectangle",
+          name: "Le Rectangle",
+          emoji: "🔲",
+          slots: [
+            { type: "large", x: 2.0, y: 2.6667, rot: 0, flip: false },
+            { type: "large", x: 2.0, y: 1.3333, rot: 180, flip: false },
+            { type: "medium", x: 4.6667, y: 4.6667, rot: 0, flip: false },
+            { type: "square", x: 3.0, y: 4.0, rot: 0, flip: false },
+            { type: "small", x: 3.6667, y: 5.0, rot: 90, flip: false },
+            { type: "small", x: 4.0, y: 2.6667, rot: 180, flip: false },
+            { type: "parallelogram", x: 4.5, y: 3.5, rot: 0, flip: false }
+          ]
+        },
+        {
+          id: "boat",
+          name: "Le Bateau à Voile",
+          emoji: "⛵",
+          slots: [
+            { type: "large", x: 3.3333, y: 4.0, rot: 90, flip: false },
+            { type: "large", x: 4.6667, y: 4.0, rot: 270, flip: false },
+            { type: "medium", x: 1.6667, y: 0.6667, rot: 0, flip: false },
+            { type: "square", x: 3.0, y: 1.0, rot: 0, flip: false },
+            { type: "small", x: 4.0, y: 0.3333, rot: 0, flip: false },
+            { type: "small", x: 5.0, y: 1.3333, rot: 0, flip: false },
+            { type: "parallelogram", x: 5.5, y: 0.5, rot: 0, flip: true }
+          ]
+        },
+        {
+          id: "arrow",
+          name: "La Flèche",
+          emoji: "🏹",
+          slots: [
+            { type: "large", x: 4.0, y: 4.6667, rot: 0, flip: false },
+            { type: "large", x: 1.5, y: 0.6667, rot: 0, flip: false },
+            { type: "medium", x: 1.5, y: 2.6667, rot: 0, flip: false },
+            { type: "square", x: 3.0, y: 3.0, rot: 0, flip: false },
+            { type: "small", x: 3.3333, y: 1.5, rot: 0, flip: false },
+            { type: "small", x: 4.3333, y: 0.5, rot: 0, flip: false },
+            { type: "parallelogram", x: 1.5, y: 4.5, rot: 0, flip: false }
+          ]
+        }
+      ],
+      difficile: [
+        {
+          id: "tree",
+          name: "Le Sapin",
+          emoji: "🌲",
+          slots: [
+            { type: "small", x: 4.0, y: 6.3333, rot: 0, flip: false },
+            { type: "large", x: 1.5, y: 0.6667, rot: 0, flip: false },
+            { type: "large", x: 1.5, y: 2.6667, rot: 0, flip: false },
+            { type: "medium", x: 2.3333, y: 4.5, rot: 0, flip: false },
+            { type: "square", x: 3.5, y: 1.0, rot: 0, flip: false },
+            { type: "small", x: 3.5, y: 5.3333, rot: 0, flip: false },
+            { type: "parallelogram", x: 4.3333, y: 3.3333, rot: 0, flip: false }
+          ]
+        },
+        {
+          id: "cat",
+          name: "Le Chat Assis",
+          emoji: "🐱",
+          slots: [
+            { type: "square", x: 4.0, y: 6.0, rot: 0, flip: false },
+            { type: "small", x: 3.3333, y: 7.0, rot: 270, flip: false },
+            { type: "small", x: 4.6667, y: 7.0, rot: 90, flip: false },
+            { type: "large", x: 4.0, y: 3.6667, rot: 0, flip: false },
+            { type: "large", x: 1.0, y: 0.6667, rot: 0, flip: false },
+            { type: "medium", x: 2.6667, y: 1.6667, rot: 0, flip: false },
+            { type: "parallelogram", x: 4.5, y: 0.5, rot: 0, flip: false }
+          ]
+        },
+        {
+          id: "fish",
+          name: "Le Poisson",
+          emoji: "🐟",
+          slots: [
+            { type: "large", x: 4.0, y: 4.6667, rot: 0, flip: false },
+            { type: "large", x: 4.0, y: 3.3333, rot: 180, flip: false },
+            { type: "small", x: 1.6667, y: 4.0, rot: 90, flip: false },
+            { type: "medium", x: 3.0, y: 1.0, rot: 0, flip: false },
+            { type: "square", x: 3.0, y: 6.0, rot: 0, flip: false },
+            { type: "small", x: 4.3333, y: 1.6667, rot: 0, flip: false },
+            { type: "parallelogram", x: 5.0, y: 7.0, rot: 0, flip: false }
+          ]
+        }
+      ]
+    };
+
+    const TARGET_ZONE = { x: 25, y: 15, w: 350, h: 220, cx: 200, cy: 125 };
+    const TRAY_ZONE   = { x: 15, y: 255, w: 370, h: 215 };
+    const SVG_NS = "http://www.w3.org/2000/svg";
+
+    /* ==========================================================================
+       3. SYNTHETISEUR AUDIO WEB AUDIO (Léger, ludique & sans dépendance externe)
+       ========================================================================== */
+    let audioCtx = null;
+    function getAudioCtx() {
+      if (!audioCtx) {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (AudioCtx) audioCtx = new AudioCtx();
+      }
+      if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      return audioCtx;
+    }
+
+    function playTone(freq, type = 'sine', duration = 0.1, gainVal = 0.15) {
+      try {
+        const ctx = getAudioCtx();
+        if (!ctx) return;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, ctx.currentTime);
+        gain.gain.setValueAtTime(gainVal, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + duration);
+      } catch(e) {}
+    }
+
+    const soundFx = {
+      pickup: () => playTone(340, 'triangle', 0.08, 0.12),
+      drop: () => playTone(260, 'sine', 0.08, 0.1),
+      rotate: () => playTone(460, 'triangle', 0.09, 0.14),
+      flip: () => playTone(520, 'square', 0.09, 0.09),
+      snap: () => {
+        playTone(587.33, 'sine', 0.12, 0.2); // D5
+        setTimeout(() => playTone(880, 'triangle', 0.18, 0.22), 60); // A5
+      },
+      win: () => {
+        const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+        notes.forEach((freq, idx) => {
+          setTimeout(() => playTone(freq, 'triangle', 0.35, 0.25), idx * 100);
+        });
+      }
+    };
+
+    /* ==========================================================================
+       4. ETAT GLOBAL DU JEU
+       ========================================================================== */
+    let state = {
+      levelKey: null,
+      puzzleIndex: 0,
+      scale: 1,
+      pieces: {},         // pieceId -> { x, y, rot, flip, snappedSlot: index|null }
+      targetSlots: [],    // [{ type, svgX, svgY, svgRot, svgFlip, occupiedBy: pieceId|null, polySvg }]
+      selected: null,
+      showHint: false,
+      dragging: null,
+      startTime: 0,
+      timerInt: null,
+      solved: false
+    };
+
+    /* ==========================================================================
+       5. GEOMETRIE & CALCULS
+       ========================================================================== */
+    function rotatePoint(pt, deg) {
+      const rad = deg * Math.PI / 180;
+      const cos = Math.cos(rad);
+      const sin = Math.sin(rad);
+      return [ pt[0] * cos - pt[1] * sin, pt[0] * sin + pt[1] * cos ];
+    }
+
+    function transformCanonical(pieceType, cx, cy, rotDeg, flip, scale) {
+      const basePts = CANONICAL[pieceType];
+      return basePts.map(([bx, by]) => {
+        let x = flip ? -bx : bx;
+        let y = by;
+        // Invert Y for SVG cartesian conversion
+        const [rx, ry] = rotatePoint([x * scale, -y * scale], rotDeg);
+        return [ rx + cx, ry + cy ];
+      });
+    }
+
+    function polyBBox(pts) {
+      let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+      for (const [x, y] of pts) {
+        if (x < minX) minX = x;
+        if (x > maxX) maxX = x;
+        if (y < minY) minY = y;
+        if (y > maxY) maxY = y;
+      }
+      return { minX, minY, maxX, maxY };
+    }
+
+    /* Calcule la distance angulaire la plus courte mod 360 */
+    function angularDist(a, b) {
+      let d = Math.abs((a - b) % 360);
+      if (d > 180) d = 360 - d;
+      return d;
+    }
+
+    /* Vérifie si l'orientation d'une pièce correspond à un slot (prise en compte des symétries) */
+    function isOrientationMatching(pieceType, pieceRot, pieceFlip, slotRot, slotFlip) {
+      if (pieceType === "square") {
+        // Le carré a une symétrie d'ordre 4 (identique tous les 90°)
+        return (angularDist(pieceRot, slotRot) % 90) < 18;
+      }
+      if (pieceType === "parallelogram") {
+        // Le parallélogramme a une symétrie d'ordre 2 (180°) et dépend du flip
+        if (Boolean(pieceFlip) !== Boolean(slotFlip)) return false;
+        return (angularDist(pieceRot, slotRot) % 180) < 18;
+      }
+      // Triangles : orientation exacte requise (ou symétrie axiale via flip si applicable)
+      return angularDist(pieceRot, slotRot) < 18;
+    }
+
+    /* ==========================================================================
+       6. INITIALISATION D'UN PUZZLE
+       ========================================================================== */
+    function setupPuzzle(levelKey, puzzleIndex) {
+      state.levelKey = levelKey;
+      state.puzzleIndex = puzzleIndex;
+      state.selected = null;
+      state.solved = false;
+      state.dragging = null;
+
+      const puzzleDef = PUZZLES[levelKey][puzzleIndex];
+
+      // Calcul de la boîte englobante de la silhouette pour mise à l'échelle parfaite
+      let allSlotUnitPts = [];
+      puzzleDef.slots.forEach(slot => {
+        const pts = CANONICAL[slot.type].map(([x, y]) => {
+          let fx = slot.flip ? -x : x;
+          const [rx, ry] = rotatePoint([fx, y], slot.rot);
+          return [ rx + slot.x, ry + slot.y ];
+        });
+        allSlotUnitPts.push(...pts);
+      });
+
+      const bb = polyBBox(allSlotUnitPts);
+      const bw = bb.maxX - bb.minX;
+      const bh = bb.maxY - bb.minY;
+      const MAX_SCALE = 32;
+      const scale = Math.min(Math.min(TARGET_ZONE.w / bw, TARGET_ZONE.h / bh) * 0.88, MAX_SCALE);
+      state.scale = scale;
+
+      const bcx = (bb.minX + bb.maxX) / 2;
+      const bcy = (bb.minY + bb.maxY) / 2;
+
+      // Conversion des slots en coordonnées SVG dans TARGET_ZONE
+      state.targetSlots = puzzleDef.slots.map((slot, idx) => {
+        const svgX = TARGET_ZONE.cx + (slot.x - bcx) * scale;
+        const svgY = TARGET_ZONE.cy - (slot.y - bcy) * scale; // Inversion Y
+        const svgRot = (360 - (slot.rot || 0)) % 360;
+        const svgFlip = Boolean(slot.flip);
+        const polySvg = transformCanonical(slot.type, svgX, svgY, svgRot, svgFlip, scale);
+
+        return {
+          slotIndex: idx,
+          type: slot.type,
+          svgX,
+          svgY,
+          svgRot,
+          svgFlip,
+          polySvg,
+          occupiedBy: null
+        };
+      });
+
+      // Disposition ordonnée des 7 pièces dans la réserve du bas (TRAY_ZONE)
+      state.pieces = {};
+      const items = PIECES_LIST.map(p => {
+        const poly = transformCanonical(p.type, 0, 0, 0, false, scale);
+        const box = polyBBox(poly);
+        return { ...p, w: box.maxX - box.minX, h: box.maxY - box.minY, box };
+      });
+
+      const PAD_X = 14;
+      const PAD_Y = 16;
+      let curX = TRAY_ZONE.x + 8;
+      let curY = TRAY_ZONE.y + 12;
+      let rowMaxH = 0;
+
+      items.forEach(item => {
+        if (curX + item.w + PAD_X > TRAY_ZONE.x + TRAY_ZONE.w) {
+          curX = TRAY_ZONE.x + 8;
+          curY += rowMaxH + PAD_Y;
+          rowMaxH = 0;
+        }
+        const cx = curX - item.box.minX;
+        const cy = curY - item.box.minY;
+
+        state.pieces[item.id] = {
+          id: item.id,
+          type: item.type,
+          x: cx,
+          y: cy,
+          rot: 0,
+          flip: false,
+          snappedSlot: null
+        };
+
+        curX += item.w + PAD_X;
+        rowMaxH = Math.max(rowMaxH, item.h);
+      });
+
+      renderBoard();
+      updateGameTitle();
+      startTimer();
+      updateBestTimeDisplay();
+      updateSelectionUI();
+    }
+
+    function updateGameTitle() {
+      const lvl = PUZZLES[state.levelKey];
+      const puzzleDef = lvl[state.puzzleIndex];
+      const levelLabels = { facile: "Facile", moyen: "Moyen", difficile: "Difficile" };
+      document.getElementById("game-title").textContent = `${levelLabels[state.levelKey]} — ${puzzleDef.name}`;
+      document.getElementById("puzzle-counter").textContent = `Figure ${state.puzzleIndex + 1} / ${lvl.length}`;
+    }
+
+    /* ==========================================================================
+       7. RENDU SVG DU PLATEAU
+       ========================================================================== */
+    let svgEl, targetBackdropGroup, targetHintsGroup, piecesGroup;
+
+    function initSvg() {
+      svgEl = document.getElementById("board-svg");
+      svgEl.innerHTML = "";
+
+      // Séparateur entre la zone silhouette et la réserve
+      const divider = document.createElementNS(SVG_NS, "line");
+      divider.setAttribute("x1", "15");
+      divider.setAttribute("y1", "244");
+      divider.setAttribute("x2", "385");
+      divider.setAttribute("y2", "244");
+      divider.setAttribute("class", "tray-divider");
+      svgEl.appendChild(divider);
+
+      // Etiquette de la réserve
+      const trayLabel = document.createElementNS(SVG_NS, "text");
+      trayLabel.setAttribute("x", "200");
+      trayLabel.setAttribute("y", "262");
+      trayLabel.setAttribute("text-anchor", "middle");
+      trayLabel.setAttribute("class", "tray-label");
+      trayLabel.textContent = "▼  RÉSERVE DES 7 PIÈCES (TANS)  ▼";
+      svgEl.appendChild(trayLabel);
+
+      targetBackdropGroup = document.createElementNS(SVG_NS, "g");
+      targetBackdropGroup.id = "target-backdrop-group";
+      svgEl.appendChild(targetBackdropGroup);
+
+      targetHintsGroup = document.createElementNS(SVG_NS, "g");
+      targetHintsGroup.id = "target-hints-group";
+      svgEl.appendChild(targetHintsGroup);
+
+      piecesGroup = document.createElementNS(SVG_NS, "g");
+      piecesGroup.id = "pieces-group";
+      svgEl.appendChild(piecesGroup);
+    }
+
+    function renderBoard() {
+      if (!svgEl) initSvg();
+      targetBackdropGroup.innerHTML = "";
+      targetHintsGroup.innerHTML = "";
+      piecesGroup.innerHTML = "";
+
+      // 1. Rendu des polygones cibles de la silhouette
+      state.targetSlots.forEach(slot => {
+        const poly = document.createElementNS(SVG_NS, "polygon");
+        poly.setAttribute("points", slot.polySvg.map(p => p.join(",")).join(" "));
+        poly.setAttribute("class", "target-backdrop");
+        poly.dataset.slotIndex = slot.slotIndex;
+        targetBackdropGroup.appendChild(poly);
+
+        // Lignes d'indice (affichées si showHint = true)
+        const hintPoly = document.createElementNS(SVG_NS, "polygon");
+        hintPoly.setAttribute("points", slot.polySvg.map(p => p.join(",")).join(" "));
+        hintPoly.setAttribute("class", "target-hint-line");
+        if (!state.showHint) hintPoly.style.display = "none";
+        targetHintsGroup.appendChild(hintPoly);
+      });
+
+      // 2. Rendu des 7 pièces interactives
+      PIECES_LIST.forEach(item => renderPiece(item.id));
+    }
+
+    function renderPiece(id) {
+      const piece = state.pieces[id];
+      let g = document.getElementById("piece-" + id);
+
+      if (!g) {
+        g = document.createElementNS(SVG_NS, "g");
+        g.id = "piece-" + id;
+        g.classList.add("piece");
+        g.dataset.piece = id;
+
+        const poly = document.createElementNS(SVG_NS, "polygon");
+        poly.setAttribute("fill", pieceColor(id));
+        g.appendChild(poly);
+
+        g.addEventListener("pointerdown", onPointerDown);
+        piecesGroup.appendChild(g);
+      }
+
+      // Calcul des sommets de la pièce à l'échelle courante
+      const basePoints = transformCanonical(piece.type, 0, 0, 0, false, state.scale);
+      const poly = g.querySelector("polygon");
+      poly.setAttribute("points", basePoints.map(p => p.join(",")).join(" "));
+
+      const flipScale = piece.flip ? -1 : 1;
+      g.setAttribute("transform", `translate(${piece.x},${piece.y}) rotate(${piece.rot}) scale(${flipScale}, 1)`);
+      g.classList.toggle("selected", state.selected === id);
+      g.classList.toggle("snapped", piece.snappedSlot !== null);
+    }
+
+    function pieceColor(id) {
+      const found = PIECES_LIST.find(p => p.id === id);
+      return found ? found.color : "#5B4FCF";
+    }
+
+    function bringToFront(id) {
+      const g = document.getElementById("piece-" + id);
+      if (g) piecesGroup.appendChild(g);
+    }
+
+    /* ==========================================================================
+       8. GESTION DU GLISSER-DEPOSER & AIMANTATION MAGIQUE (SNAP-TO-SLOT)
+       ========================================================================== */
+    function svgPointFromEvent(evt) {
+      const pt = svgEl.createSVGPoint();
+      pt.x = evt.clientX;
+      pt.y = evt.clientY;
+      const ctm = svgEl.getScreenCTM().inverse();
+      return pt.matrixTransform(ctm);
+    }
+
+    let pointerDownInfo = null;
+
+    function onPointerDown(evt) {
+      if (state.solved) return;
+      const id = evt.currentTarget.dataset.piece;
+      evt.preventDefault();
+      const loc = svgPointFromEvent(evt);
+      const p = state.pieces[id];
+
+      // Détacher la pièce de son slot si elle était aimantée
+      if (p.snappedSlot !== null) {
+        state.targetSlots[p.snappedSlot].occupiedBy = null;
+        p.snappedSlot = null;
+        renderPiece(id);
+      }
+
+      pointerDownInfo = { id, startX: loc.x, startY: loc.y, moved: false };
+      state.dragging = { id, dx: loc.x - p.x, dy: loc.y - p.y, pointerId: evt.pointerId };
+
+      bringToFront(id);
+      evt.currentTarget.classList.add("dragging");
+      soundFx.pickup();
+
+      try { evt.currentTarget.setPointerCapture(evt.pointerId); } catch(e) {}
+
+      window.addEventListener("pointermove", onPointerMove);
+      window.addEventListener("pointerup", onPointerUp);
+    }
+
+    function onPointerMove(evt) {
+      if (!state.dragging) return;
+      const loc = svgPointFromEvent(evt);
+      const id = state.dragging.id;
+
+      if (pointerDownInfo && !pointerDownInfo.moved) {
+        const dist = Math.hypot(loc.x - pointerDownInfo.startX, loc.y - pointerDownInfo.startY);
+        if (dist > 3.5) pointerDownInfo.moved = true;
+      }
+
+      const p = state.pieces[id];
+      p.x = Math.max(10, Math.min(390, loc.x - state.dragging.dx));
+      p.y = Math.max(10, Math.min(475, loc.y - state.dragging.dy));
+
+      renderPiece(id);
+    }
+
+    function onPointerUp(evt) {
+      window.removeEventListener("pointermove", onPointerMove);
+      window.removeEventListener("pointerup", onPointerUp);
+
+      if (!state.dragging) return;
+      const id = state.dragging.id;
+      const pieceEl = document.getElementById("piece-" + id);
+      if (pieceEl) pieceEl.classList.remove("dragging");
+
+      state.dragging = null;
+
+      if (pointerDownInfo && !pointerDownInfo.moved) {
+        // Clic stationnaire : sélection / désélection pour rotation
+        selectPiece(id);
+      } else {
+        // Fin de glissement : test d'aimantation magnétique
+        trySnapPiece(id);
+        soundFx.drop();
+      }
+      pointerDownInfo = null;
+    }
+
+    /* Tente d'aimanter la pièce vers un slot compatible à proximité */
+    function trySnapPiece(id) {
+      const p = state.pieces[id];
+      const SNAP_DIST_THRESHOLD = 26; // pixels SVG de tolérance d'approche
+
+      let closestSlot = null;
+      let minDistance = Infinity;
+
+      state.targetSlots.forEach(slot => {
+        // Vérifier la compatibilité de type et la vacance du slot
+        if (slot.type !== p.type) return;
+        if (slot.occupiedBy !== null && slot.occupiedBy !== id) return;
+
+        const dist = Math.hypot(p.x - slot.svgX, p.y - slot.svgY);
+        if (dist < SNAP_DIST_THRESHOLD && dist < minDistance) {
+          // Vérifier si l'orientation correspond
+          if (isOrientationMatching(p.type, p.rot, p.flip, slot.svgRot, slot.svgFlip)) {
+            minDistance = dist;
+            closestSlot = slot;
+          }
+        }
+      });
+
+      if (closestSlot) {
+        // Aimantation réussie !
+        p.x = closestSlot.svgX;
+        p.y = closestSlot.svgY;
+        p.rot = closestSlot.svgRot;
+        p.flip = closestSlot.svgFlip;
+        p.snappedSlot = closestSlot.slotIndex;
+        closestSlot.occupiedBy = id;
+
+        renderPiece(id);
+        soundFx.snap();
+
+        checkVictory();
+        return true;
+      }
+      return false;
+    }
+
+    function selectPiece(id) {
+      state.selected = (state.selected === id) ? null : id;
+      PIECES_LIST.forEach(p => renderPiece(p.id));
+      updateSelectionUI();
+    }
+
+    function updateSelectionUI() {
+      const rotateBtn = document.getElementById("rotate-btn");
+      const flipBtn = document.getElementById("flip-btn");
+
+      if (state.selected && !state.solved) {
+        rotateBtn.disabled = false;
+        const pDef = PIECES_LIST.find(p => p.id === state.selected);
+        flipBtn.disabled = !pDef.canFlip;
+      } else {
+        rotateBtn.disabled = true;
+        flipBtn.disabled = true;
+      }
+    }
+
+    /* ==========================================================================
+       9. ACTIONS DES BOUTONS DE CONTROLE
+       ========================================================================== */
+    function rotateSelected() {
+      if (!state.selected || state.solved) return;
+      const p = state.pieces[state.selected];
+      p.rot = (p.rot + 45) % 360;
+
+      // Si elle était aimantée, vérifier si la nouvelle rotation convient toujours
+      if (p.snappedSlot !== null) {
+        const curSlot = state.targetSlots[p.snappedSlot];
+        if (!isOrientationMatching(p.type, p.rot, p.flip, curSlot.svgRot, curSlot.svgFlip)) {
+          curSlot.occupiedBy = null;
+          p.snappedSlot = null;
+        }
+      }
+
+      renderPiece(state.selected);
+      soundFx.rotate();
+
+      // Vérifier si la rotation permet maintenant une aimantation
+      trySnapPiece(state.selected);
+    }
+
+    function flipSelected() {
+      if (!state.selected || state.solved) return;
+      const p = state.pieces[state.selected];
+      const pDef = PIECES_LIST.find(p => p.id === state.selected);
+      if (!pDef.canFlip) return;
+
+      p.flip = !p.flip;
+
+      if (p.snappedSlot !== null) {
+        const curSlot = state.targetSlots[p.snappedSlot];
+        if (!isOrientationMatching(p.type, p.rot, p.flip, curSlot.svgRot, curSlot.svgFlip)) {
+          curSlot.occupiedBy = null;
+          p.snappedSlot = null;
+        }
+      }
+
+      renderPiece(state.selected);
+      soundFx.flip();
+
+      trySnapPiece(state.selected);
+    }
+
+    document.getElementById("rotate-btn").addEventListener("click", rotateSelected);
+    document.getElementById("flip-btn").addEventListener("click", flipSelected);
+
+    document.getElementById("reset-btn").addEventListener("click", () => {
+      soundFx.drop();
+      setupPuzzle(state.levelKey, state.puzzleIndex);
+    });
+
+    // Bascule de l'indice visuel
+    document.getElementById("hint-btn").addEventListener("click", () => {
+      state.showHint = !state.showHint;
+      const hintPolys = document.querySelectorAll(".target-hint-line");
+      hintPolys.forEach(el => {
+        el.style.display = state.showHint ? "block" : "none";
+      });
+      const hintBtn = document.getElementById("hint-btn");
+      hintBtn.style.background = state.showHint ? "#FEEBC8" : "#FFF8E7";
+      playTone(480, "sine", 0.08, 0.1);
+    });
+
+    // Raccourcis clavier (R = rotation, Espace = rotation, F = flip, Escape = désélection)
+    window.addEventListener("keydown", (evt) => {
+      if (state.solved) return;
+      if (evt.key === "r" || evt.key === "R" || evt.key === " ") {
+        evt.preventDefault();
+        rotateSelected();
+      } else if (evt.key === "f" || evt.key === "F") {
+        evt.preventDefault();
+        flipSelected();
+      } else if (evt.key === "Escape") {
+        state.selected = null;
+        PIECES_LIST.forEach(p => renderPiece(p.id));
+        updateSelectionUI();
+      }
+    });
+
+    // Clic sur l'espace vide du plateau pour désélectionner
+    document.getElementById("board-svg").addEventListener("pointerdown", (evt) => {
+      if (evt.target.closest(".piece")) return;
+      if (state.selected) {
+        state.selected = null;
+        PIECES_LIST.forEach(p => renderPiece(p.id));
+        updateSelectionUI();
+      }
+    });
+
+    /* ==========================================================================
+       10. VERIFICATION DE LA VICTOIRE (100% FIABLE)
+       ========================================================================== */
+    function checkVictory() {
+      if (state.solved) return;
+
+      // La victoire est atteinte quand les 7 slots sont occupés
+      const allSlotsFilled = state.targetSlots.every(slot => slot.occupiedBy !== null);
+
+      if (allSlotsFilled) {
+        onVictory();
+      }
+    }
+
+    function onVictory() {
+      state.solved = true;
+      stopTimer();
+      soundFx.win();
+
+      const sec = elapsedSeconds();
+      const isNewBest = maybeSaveBest(sec);
+
+      // Déclenchement de la pluie de confettis festifs
+      triggerCelebrationConfetti();
+
+      const lvl = PUZZLES[state.levelKey];
+      const puzzleDef = lvl[state.puzzleIndex];
+
+      document.getElementById("win-subtext").textContent = `Tu as reformé « ${puzzleDef.name} » avec succès !`;
+      document.getElementById("win-time").textContent = formatTime(sec);
+      document.getElementById("win-best-record").textContent = isNewBest ? "🏆 Nouveau record !" : `🏆 Record : ${formatTime(getBestTime())}`;
+
+      const isLastFigure = state.puzzleIndex >= lvl.length - 1;
+      document.getElementById("next-puzzle-btn").textContent = isLastFigure ? "🏠 Retour aux niveaux" : "➡️ Figure suivante";
+
+      setTimeout(() => {
+        document.getElementById("win-modal").classList.remove("hidden");
+      }, 350);
+    }
+
+    function triggerCelebrationConfetti() {
+      if (typeof confetti !== "function") return;
+      confetti({
+        particleCount: 80,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ['#5B4FCF', '#1A9E75', '#F59E0B', '#1A6FA0', '#EC4899']
+      });
+      setTimeout(() => {
+        confetti({
+          particleCount: 50,
+          angle: 60,
+          spread: 55,
+          origin: { x: 0 },
+          colors: ['#5B4FCF', '#1A9E75', '#F59E0B']
+        });
+        confetti({
+          particleCount: 50,
+          angle: 120,
+          spread: 55,
+          origin: { x: 1 },
+          colors: ['#1A6FA0', '#EC4899', '#FF7A5C']
+        });
+      }, 250);
+    }
+
+    document.getElementById("next-puzzle-btn").addEventListener("click", () => {
+      document.getElementById("win-modal").classList.add("hidden");
+      const lvl = PUZZLES[state.levelKey];
+      if (state.puzzleIndex >= lvl.length - 1) {
+        showScreen("levels");
+      } else {
+        setupPuzzle(state.levelKey, state.puzzleIndex + 1);
+      }
+    });
+
+    document.getElementById("menu-btn").addEventListener("click", () => {
+      document.getElementById("win-modal").classList.add("hidden");
+      showScreen("levels");
+    });
+
+    /* ==========================================================================
+       11. CHRONOMETRE & SAUVEGARDE DU RECORD (LOCALSTORAGE)
+       ========================================================================== */
+    function startTimer() {
+      stopTimer();
+      state.startTime = Date.now();
+      updateTimerDisplay();
+      state.timerInt = setInterval(updateTimerDisplay, 1000);
+    }
+
+    function stopTimer() {
+      if (state.timerInt) {
+        clearInterval(state.timerInt);
+        state.timerInt = null;
+      }
+    }
+
+    function elapsedSeconds() {
+      return Math.floor((Date.now() - state.startTime) / 1000);
+    }
+
+    function formatTime(sec) {
+      if (sec === null || sec === undefined) return "—";
+      const m = Math.floor(sec / 60);
+      const s = sec % 60;
+      return `${m}:${s < 10 ? "0" : ""}${s}`;
+    }
+
+    function updateTimerDisplay() {
+      document.getElementById("timer").textContent = "⏱️ " + formatTime(elapsedSeconds());
+    }
+
+    function storageKey() {
+      const puzzleDef = PUZZLES[state.levelKey][state.puzzleIndex];
+      return `lcml-tangram-best-${puzzleDef.id}`;
+    }
+
+    function getBestTime() {
+      try {
+        const v = localStorage.getItem(storageKey());
+        return v ? parseInt(v, 10) : null;
+      } catch(e) {
+        return null;
+      }
+    }
+
+    function updateBestTimeDisplay() {
+      const best = getBestTime();
+      document.getElementById("best-time").textContent = best !== null ? "🏆 Record : " + formatTime(best) : "🏆 Record : —";
+    }
+
+    function maybeSaveBest(sec) {
+      try {
+        const best = getBestTime();
+        if (best === null || sec < best) {
+          localStorage.setItem(storageKey(), String(sec));
+          updateBestTimeDisplay();
+          return true;
+        }
+      } catch(e) {}
+      return false;
+    }
+
+    /* ==========================================================================
+       12. NAVIGATION ENTRE ECRANS & MODALES
+       ========================================================================== */
+    function showScreen(name) {
+      document.getElementById("screen-levels").classList.toggle("hidden", name !== "levels");
+      document.getElementById("screen-game").classList.toggle("hidden", name !== "game");
+      if (name !== "game") stopTimer();
+    }
+
+    document.querySelectorAll(".level-card").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const level = btn.dataset.level;
+        showScreen("game");
+        setupPuzzle(level, 0);
+      });
+    });
+
+    document.getElementById("back-btn").addEventListener("click", () => showScreen("levels"));
+
+    // Modale de règles
+    function toggleRulesModal(show) {
+      document.getElementById("rules-modal").classList.toggle("hidden", !show);
+    }
+    document.getElementById("open-rules-btn").addEventListener("click", () => toggleRulesModal(true));
+    document.getElementById("open-rules-game-btn").addEventListener("click", () => toggleRulesModal(true));
+    document.getElementById("close-rules-btn").addEventListener("click", () => toggleRulesModal(false));
+
+    document.getElementById("rules-modal").addEventListener("click", (evt) => {
+      if (evt.target.id === "rules-modal") toggleRulesModal(false);
+    });
+
+  })();
+  </script>
+</body>
+</html>

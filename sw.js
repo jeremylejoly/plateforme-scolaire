@@ -1,4 +1,4 @@
-const CACHE_NAME = 'classe-mr-lejoly-cache-v341';
+const CACHE_NAME = 'classe-mr-lejoly-cache-v342';
 const CORE_ASSETS = [
   './',
   'index.html',
@@ -18,6 +18,9 @@ const CORE_ASSETS = [
   'pentomino.html',
   'fiches/pentomino.html',
   'assets/logos/jeu_pentomino.png',
+  'tangram.html',
+  'fiches/tangram.html',
+  'assets/logos/jeu_tangram.png',
   'nonogram.html',
   'assets/logos/jeu_nonogram.png',
   'assets/logos/sub_durees_conversions.png',
