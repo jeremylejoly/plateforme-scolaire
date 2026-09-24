@@ -10765,5 +10765,1629 @@ window.LIVRES = [
         "explanation": "Le résumé C embrasse toute la trame : l'illusion initiale de la chance, l'échange des familles, l'épreuve des sentiments et la réconciliation grâce au dialogue franc."
       }
     ]
+  },
+  {
+    "id": "la_ferme_aux_magots",
+    "title": "La ferme aux magots",
+    "series": "Récit Express",
+    "totalPoints": 16,
+    "questions": [
+      {
+        "id": "q1",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Où vit Noah au début de l'histoire et quel est son quotidien ?",
+        "options": [
+          "À Casablanca, où il étudie les sciences naturelles dans un grand collège",
+          "À Ourika près de Marrakech, où il effectue les corvées et travaille aux champs pour sa famille",
+          "À Fès, où il travaille comme apprenti artisan tanneur dans la médina",
+          "À Ifrane, où il élève des chèvres et des chevaux dans une grande bergerie"
+        ],
+        "correct": 1,
+        "explanation": "Noah vit à Ourika, un village près de Marrakech. Âgé de 11 ans, il est chargé des corvées pénibles (comme porter l'eau) et travaille aux champs."
+      },
+      {
+        "id": "q2",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quel incident amène le père à révéler accidentellement que Noah n'est pas son fils biologique ?",
+        "options": [
+          "Noah a perdu un troupeau de chèvres dans la montagne",
+          "Noah a déchiré le tapis du salon avec ses outils de jardinage",
+          "Noah a renversé son lourd seau d'eau sur une babouche en franchissant le seuil de la maison",
+          "Noah a refusé de manger la soupe harrira préparée par la mère"
+        ],
+        "correct": 2,
+        "explanation": "En rentrant épuisé avec son seau d'eau, Noah trébuche sur une babouche. L'eau inonde la pièce, provoquant la furie du père qui s'écrie : « Encore heureux que ce ne soit pas notre fils ! »."
+      },
+      {
+        "id": "q3",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quels objets précieux la mère adoptive remet-elle à Noah au sujet de ses origines ?",
+        "options": [
+          "Un collier en or et un passeport européen complet",
+          "Une lettre cachetée et une clé de coffre-fort",
+          "Une chaîne avec une main de Fatma et une demi-photo jaunie portant un mot au dos",
+          "Une bague en argent gravée et un extrait de naissance de Marrakech"
+        ],
+        "correct": 2,
+        "explanation": "Sa mère adoptive lui remet une petite chaîne avec une main de Fatma et une demi-photo d'une jeune femme avec l'inscription : « Il s'appelle Noah, prenez-en soin. 21/05/1999 »."
+      },
+      {
+        "id": "q4",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Comment Noah fait-il la connaissance de Nadir sur la place Jemaa El Fna à Marrakech ?",
+        "options": [
+          "Nadir lui vole son sac de pain alors qu'il fait la sieste",
+          "Nadir lui envoie accidentellement un ballon de football dans la tête pendant qu'il dort près d'un muret",
+          "Ils se rencontrent au commissariat en cherchant tous les deux du travail",
+          "Nadir lui vend une paire de claquettes neuves dans les ruelles du souk"
+        ],
+        "correct": 1,
+        "explanation": "Alors que Noah dort épuisé contre un muret à l'écart de la place Jemaa El Fna, un ballon de football le réveille en pleine tête : c'est Nadir qui jouait au foot."
+      },
+      {
+        "id": "q5",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quelle information capitale la vieille Lalla Fatna donne-t-elle à Noah et Nadir ?",
+        "options": [
+          "Elle affirme que la mère de Noah est partie vivre en Espagne",
+          "Elle annonce que la mère de Noah s'appelle Isia et habitait à « la Ferme aux magots » à Ifrane",
+          "Elle révèle que la photo a été prise dans une école primaire de Casablanca",
+          "Elle leur conseille d'abandonner immédiatement leurs recherches"
+        ],
+        "correct": 1,
+        "explanation": "Lalla Fatna reconnaît la jeune femme sur la photo : elle s'appelle Isia et vivait à « la Ferme aux magots » à la sortie d'Ifrane, reconnaissable à sa barrière blanche."
+      },
+      {
+        "id": "q6",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Que découvre Noah en pénétrant dans la Ferme aux magots à Ifrane ?",
+        "options": [
+          "Une famille de touristes anglais qui a racheté la propriété",
+          "Une maison entièrement vide et abandonnée, où se cache un petit singe apeuré",
+          "Un laboratoire secret de recherche gardé par des militaires",
+          "Sa mère qui l'attendait les bras ouverts avec un grand repas"
+        ],
+        "correct": 1,
+        "explanation": "La ferme est vide et recouverte de poussière. Mais au fond de la réserve, Noah aperçoit un petit singe qui tremble de peur."
+      },
+      {
+        "id": "q7",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Comment Noah apprivoise-t-il le singe et quel prénom lui donne-t-il ?",
+        "options": [
+          "Il lui donne des morceaux de pain et le baptise Rémy",
+          "Il l'attrape avec une serviette et le nomme Magot",
+          "Il lui parle doucement, lui offre des cacahuètes et l'appelle Cœurjol",
+          "Il lui joue de la flûte et le nomme Jolicœur"
+        ],
+        "correct": 2,
+        "explanation": "Noah utilise une voix douce et lui tend des cacahuètes. Il le baptise Cœurjol en souvenir du singe Jolicœur dans le roman *Sans famille*."
+      },
+      {
+        "id": "q8",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quel objet essentiel Noah trouve-t-il entre deux banquettes à la ferme avant de repartir ?",
+        "options": [
+          "Un carnet recouvert de toile rouge rempli d'écrits en français et de croquis de singes",
+          "Une boîte en fer contenant des bijoux de valeur",
+          "Un trousseau de clés menant à une cave secrète",
+          "Une lettre adressée au commissariat de police d'Ifrane"
+        ],
+        "correct": 0,
+        "explanation": "Un rayon de soleil éclaire un petit carnet relié de toile rouge contenant des croquis à l'aquarelle et des notes manuscrites en français."
+      },
+      {
+        "id": "q9",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quel quiproquo sur le mot « magot » est dissipé par le camionneur qui ramène Noah ?",
+        "options": [
+          "Noah pensait qu'un magot était une plante médicinale rare",
+          "Noah croyait qu'il y avait un trésor caché sous la maison, ignorant que les magots sont une espèce de singes",
+          "Noah pensait que c'était le nom de famille de son père biologique",
+          "Noah croyait que la ferme appartenait à un magicien du Moyen Âge"
+        ],
+        "correct": 1,
+        "explanation": "Noah pensait qu'un « magot » désignait un trésor enfoui. Le camionneur lui explique en riant que les magots sont les singes typiques de cette région du Maroc."
+      },
+      {
+        "id": "q10",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Comment Noah et Nadir gagnent-ils des pièces sur la place Jemaa El Fna grâce à Cœurjol ?",
+        "options": [
+          "Cœurjol fait des tours d'acrobatie sur un vélo miniature",
+          "Cœurjol simule la lecture du carnet rouge et joue le rôle d'un maître d'école comique",
+          "Cœurjol danse au son d'un tambourin joué par Nadir",
+          "Cœurjol distribue des fleurs aux touristes de passage"
+        ],
+        "correct": 1,
+        "explanation": "Noah donne son carnet à Cœurjol qui fait semblant de le lire attentivement, tape gentiment les garçons et imite un maître d'école, déclenchant les rires du public."
+      },
+      {
+        "id": "q11",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quelle proposition suspecte un homme menaçant fait-il à propos de Cœurjol ?",
+        "options": [
+          "Il veut l'échanger contre un âne et une charrette",
+          "Il propose de l'acheter pour 300 dirhams, ce que Noah refuse avant de s'enfuir",
+          "Il menace de confisquer le singe au nom de la mairie",
+          "Il propose de lui faire passer une audition pour le cirque de Marrakech"
+        ],
+        "correct": 1,
+        "explanation": "Un individu sombre et imposant propose d'acheter Cœurjol pour 300 dirhams. Noah refuse catégoriquement et s'enfuit en serrant son singe contre lui."
+      },
+      {
+        "id": "q12",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Qui aide Noah et Nadir à lire le contenu du carnet intime rouge ?",
+        "options": [
+          "Lalla Fatna, qui sait lire toutes les langues",
+          "Le maître d'école du village d'Ourika",
+          "Un étudiant marocain faisant ses études à Paris, rencontré dans un café",
+          "Un policier en patrouille dans le souk"
+        ],
+        "correct": 2,
+        "explanation": "Un jeune homme assis à leur table au café, étudiant à Paris et de retour à Marrakech pour les vacances, accepte de leur lire le journal intime."
+      },
+      {
+        "id": "q13",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Pourquoi Isia avait-elle été contrainte d'abandonner son bébé Noah en mai 1999 ?",
+        "options": [
+          "Elle était trop jeune et ses parents l'ont forcée par peur du scandale et de la honte",
+          "Elle devait partir en mission scientifique urgente en Amérique du Sud",
+          "L'enfant avait été enlevé par des marchands sur le marché",
+          "Elle avait perdu tout son argent lors d'une tempête à Ifrane"
+        ],
+        "correct": 0,
+        "explanation": "Le père de l'enfant s'étant enfui, les parents d'Isia l'ont obligée à laisser son bébé à l'assistance par crainte du jugement et de la honte sociale."
+      },
+      {
+        "id": "q14",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Que découvre Nadir après avoir suivi discrètement les deux hommes suspects à vélo ?",
+        "options": [
+          "Un campement de nomades dans le désert",
+          "Une propriété isolée avec une grande grange où des dizaines de singes sont séquestrés dans des cages",
+          "Un marché clandestin d'animaux au cœur du palais royal",
+          "Un bateau de pêche amarré sur un canal asséché"
+        ],
+        "correct": 1,
+        "explanation": "Perché sur un figuier, Nadir découvre un domaine avec une immense grange remplie de cages où s'entassent des singes destinés à un trafic international vers l'Europe."
+      },
+      {
+        "id": "q15",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Qui est la femme qui aborde les deux garçons sur la place après leur visite au commissariat ?",
+        "options": [
+          "Une journaliste internationale enquêtant sur le braconnage",
+          "La directrice du zoo de Marrakech",
+          "Isia, la mère de Noah, qui est une scientifique traquant les trafiquants de magots",
+          "L'ancienne institutrice de sciences de Settat"
+        ],
+        "correct": 2,
+        "explanation": "Avertie par un policier, la femme vient interroger les garçons : c'est Isia, biologiste spécialisée dans la protection des magots et véritable mère de Noah."
+      },
+      {
+        "id": "q16",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "À quelle condition Noah accepte-t-il d'aller vivre avec sa mère Isia à la fin de l'histoire ?",
+        "options": [
+          "À condition qu'elle lui achète un vélo neuf",
+          "À condition qu'il ne retourne plus jamais à l'école",
+          "À condition que ses deux précieux amis, Nadir et Cœurjol, viennent habiter avec eux",
+          "À condition de retourner d'abord dire au revoir à sa famille à Ourika"
+        ],
+        "correct": 2,
+        "explanation": "Noah refuse de se séparer de ses compagnons d'infortune : Isia accepte avec joie d'accueillir Nadir et Cœurjol pour former une véritable équipe unie."
+      }
+    ]
+  },
+  {
+    "id": "louistiti",
+    "title": "Louistiti, le promeneur de Masina",
+    "series": "Récit Express",
+    "totalPoints": 16,
+    "questions": [
+      {
+        "id": "q1",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Pourquoi le narrateur s'appelle-t-il Louis et est-il surnommé « Louistiti » ?",
+        "options": [
+          "Parce qu'il adore grimper aux arbres comme un petit ouistiti",
+          "Parce que son père lui disait « Allez, Louis... stiti » pour le faire sourire au moment de prendre des photos",
+          "Parce qu'il possède un ouistiti apprivoisé depuis son enfance au Pérou",
+          "Parce que ses copines de classe se moquaient de sa petite taille"
+        ],
+        "correct": 1,
+        "explanation": "Le père de Louis, qui n'arrivait jamais à le faire sourire sur les photos, lui répétait toujours « allez, Louis... stiti », d'où son surnom de Louistiti."
+      },
+      {
+        "id": "q2",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Qui est Mutombo Dikembe aux yeux de Louis ?",
+        "options": [
+          "Un grand chanteur de rumba congolaise très populaire à Kinshasa",
+          "Un footballeur légendaire ayant remporté la Coupe d'Afrique des Nations",
+          "Un immense basketteur congolais de NBA mesurant 2,18 m dont Louis est un fan absolu",
+          "Un explorateur belge qui a cartographié le fleuve Congo"
+        ],
+        "correct": 2,
+        "explanation": "Mutombo Dikembe est une légende congolaise du basket NBA (2,18 m pour 118 kg) et l'unique idole sportive de Louis."
+      },
+      {
+        "id": "q3",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quel cadeau surprenant le père de Louis lui offre-t-il pour ses 12 ans au Vietnam ?",
+        "options": [
+          "Un maillot officiel dédicacé des Houston Rockets",
+          "Un appareil photo reflex professionnel",
+          "Une carte du monde avec une vingtaine de pays pour choisir où la famille ira vivre",
+          "Un billet d'avion pour assister à un match de NBA aux États-Unis"
+        ],
+        "correct": 2,
+        "explanation": "Son père, coopérant international, lui offre une carte du monde où figurent seulement une vingtaine de pays présélectionnés pour sa prochaine mission, lui laissant le choix de leur future destination."
+      },
+      {
+        "id": "q4",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Que signifie l'énigme du père à l'arrivée : « Nous ne souperons pas chez Giulietta mais presque » ?",
+        "options": [
+          "Ils vont manger chez une cuisinière italienne installée à l'aéroport",
+          "Ils vont dîner dans la commune de Masina, en référence à l'actrice Giulietta Masina et au quartier de Mutombo",
+          "Ils vont commander une pizza dans le restaurant de l'hôtel Memling",
+          "Ils vont rendre visite à une ancienne collègue de travail en Italie"
+        ],
+        "correct": 1,
+        "explanation": "L'énigme fait référence à l'actrice italienne Giulietta Masina : ils vont souper dans la commune kinoise de Masina, où est né Mutombo Dikembe."
+      },
+      {
+        "id": "q5",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quel repas typique est servi à Louis chez Toussaint lors de sa première soirée ?",
+        "options": [
+          "Un couscous royal et du thé à la menthe",
+          "Des bananes plantains frites avec du poisson braisé",
+          "Des frites accompagnées de crudités et de sauterelles grillées",
+          "Un plat de riz au manioc avec du poulet moambe"
+        ],
+        "correct": 2,
+        "explanation": "Pour faire plaisir à leurs invités belges, l'épouse de Toussaint sert des frites, des crudités et un grand plat de sauterelles grillées bien croustillantes."
+      },
+      {
+        "id": "q6",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Pourquoi le père donne-t-il 15 dollars à Louis au marché des artistes ?",
+        "options": [
+          "Pour payer le taxi de retour vers l'hôtel Memling",
+          "Pour acheter ce qui lui plaît tout en s'exerçant à la négociation et au marchandage",
+          "Pour offrir un pourboire aux musiciens traditionnels",
+          "Pour acheter un cadeau d'anniversaire à sa maman"
+        ],
+        "correct": 1,
+        "explanation": "Le père lui confie 15 dollars en lui rappelant la règle d'or du marché : négocier et marchander les prix, qui est un véritable jeu entre acheteur et vendeur."
+      },
+      {
+        "id": "q7",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quelle explication le père donne-t-il sur les monticules de déchets aperçus dans les rues ?",
+        "options": [
+          "Il y a une grève des éboueurs depuis plusieurs semaines",
+          "Kinshasa ne possède que 4 camions poubelles pour 10 millions d'habitants, mais la population pratique une formidable culture de la récupération",
+          "Les habitants préfèrent brûler leurs déchets la nuit au bord du fleuve",
+          "C'est une tradition locale avant la saison des pluies"
+        ],
+        "correct": 1,
+        "explanation": "Kinshasa manque de camions poubelles, mais les habitants font preuve d'une incroyable ingéniosité pour récupérer, réparer et réutiliser chaque objet."
+      },
+      {
+        "id": "q8",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Qui est Félicien et pourquoi appelle-t-il Louis « cousin » ?",
+        "options": [
+          "Le fils de l'hôtelier, qui le traite de cousin parce qu'ils ont le même âge",
+          "Le fils de Jean-Baptiste, âgé de 11 ans ; il l'appelle cousin car les adultes belges sont appelés « Noko » (oncle)",
+          "Un danseur de rue qui veut lui vendre des souvenirs",
+          "Le neveu de Mutombo Dikembe en visite à Kinshasa"
+        ],
+        "correct": 1,
+        "explanation": "Félicien (11 ans) explique que les adultes belges sont surnommés « Noko » (oncle) et que, n'ayant pas envie d'avoir un oncle de son âge, il préfère l'appeler « cousin »."
+      },
+      {
+        "id": "q9",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quel monument impressionnant Félicien montre-t-il sur la route de Masina ?",
+        "options": [
+          "La tour de la RTNC",
+          "Le stade des Martyrs, pouvant accueillir jusqu'à 100 000 spectateurs",
+          "Le pont suspendu sur le fleuve Congo",
+          "Le palais présidentiel du Mont Ngaliema"
+        ],
+        "correct": 1,
+        "explanation": "Félicien lui fait découvrir le stade des Martyrs et ses 100 000 places, soit le double de la capacité du stade Roi Baudouin à Bruxelles."
+      },
+      {
+        "id": "q10",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quelle prouesse Félicien accomplit-il lors du spectacle des petits danseurs de Masina ?",
+        "options": [
+          "Il jongle avec trois ballons de basket en même temps",
+          "Il danse avec une bouteille de bière Skol posée sur sa tête sans jamais la renverser",
+          "Il saute à travers un cerceau enflammé au rythme des tam-tams",
+          "Il joue du xylophone avec les yeux bandés"
+        ],
+        "correct": 1,
+        "explanation": "Félicien se contorsionne et danse au milieu du groupe avec une bouteille de Skol remplie posée en parfait équilibre sur son crâne."
+      },
+      {
+        "id": "q11",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quelle surprise Louis découvre-t-il lorsqu'on le pousse au centre de la scène ?",
+        "options": [
+          "Il est acclamé par le président de la république",
+          "Son père et Jean-Baptiste sont assis dans la tribune, son père filmant la scène avec un grand sourire complice",
+          "Sa mère et sa sœur viennent d'atterrir et le rejoignent sur scène",
+          "Il gagne un trophée de danse traditionnelle"
+        ],
+        "correct": 1,
+        "explanation": "Son père était dans le coup : installé dans la tribune avec Jean-Baptiste et Toussaint, il filme son fils en train d'essayer de danser avec les petits danseurs."
+      },
+      {
+        "id": "q12",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quel établissement remarquable Félicien fait-il découvrir à Louis à Masina ?",
+        "options": [
+          "L'académie de basket des Houston Rockets",
+          "L'hôpital Biamba Marie Mutombo, fondé par Mutombo pour 15 millions de dollars en hommage à sa mère",
+          "Le conservatoire de musique de Kinshasa",
+          "La grande bibliothèque universitaire du Congo"
+        ],
+        "correct": 1,
+        "explanation": "Félicien emmène Louis devant l'hôpital Biamba Marie Mutombo, une infrastructure moderne construite par la star pour soigner la population de son quartier natal."
+      },
+      {
+        "id": "q13",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Qui reçoit les deux garçons au premier étage de l'hôpital ?",
+        "options": [
+          "Le ministre de la Santé",
+          "Le Docteur Sylvain Muteba, directeur de l'hôpital",
+          "La mère de Mutombo Dikembe",
+          "L'ambassadeur de Belgique en RDC"
+        ],
+        "correct": 1,
+        "explanation": "Le Docteur Sylvain Muteba, directeur de l'établissement, accueille chaleureusement Louis dans son bureau."
+      },
+      {
+        "id": "q14",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quelle promesse extraordinaire le directeur de l'hôpital fait-il à Louis ?",
+        "options": [
+          "Qu'il lui offrira une bourse d'études médicales",
+          "Que Mutombo appellera Louis sur son PC via webcam lorsqu'il sera à Bukavu",
+          "Qu'il sera invité d'honneur à la prochaine finale de NBA",
+          "Qu'une chambre de l'hôpital portera son nom"
+        ],
+        "correct": 1,
+        "explanation": "Le Dr Muteba explique qu'il a parlé de Louis à Mutombo lors de leur appel hebdomadaire et que la star a promis de le contacter par webcam sur son ordinateur."
+      },
+      {
+        "id": "q15",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quel cadeau précieux Félicien offre-t-il à Louis dans la salle d'attente ?",
+        "options": [
+          "Un collier de coquillages des petits danseurs",
+          "Un maillot dédicacé de l'équipe nationale",
+          "Une photo de Félicien avec Mutombo Dikembe dédicacée personnellement par le joueur",
+          "Une statuette en bois sculptée représentant un joueur de basket"
+        ],
+        "correct": 2,
+        "explanation": "Félicien offre à son nouvel ami une véritable photo souvenir où il pose aux côtés de Mutombo, portant la signature authentique de la star."
+      },
+      {
+        "id": "q16",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quelle dernière grande surprise Jean-Baptiste et le père réservent-ils à Louis sur le parking ?",
+        "options": [
+          "La famille ne partira plus à Bukavu et restera vivre à Kinshasa",
+          "Jean-Baptiste et Félicien déménagent eux aussi à Bukavu dans quelques jours pour le travail",
+          "Mutombo arrive en hélicoptère sur le parking de l'hôpital",
+          "Louis est sélectionné dans l'équipe de basket de Bukavu"
+        ],
+        "correct": 1,
+        "explanation": "Jean-Baptiste, ancien camarade d'études du père de Louis, annonce que lui et son fils Félicien vont également s'installer à Bukavu, prolongeant ainsi leur belle amitié."
+      }
+    ]
+  },
+  {
+    "id": "partie_de_poker",
+    "title": "Partie de poker à Nightingale House",
+    "series": "Récit Express",
+    "totalPoints": 16,
+    "questions": [
+      {
+        "id": "q1",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Qui est James Watson, le narrateur de cette histoire ?",
+        "options": [
+          "Le célèbre détective écossais de Scotland Yard",
+          "Le petit-neveu de 12 ans du célèbre docteur Watson, en vacances en Irlande en avril 1934",
+          "Le fils adoptif de Sherlock Holmes venu faire des études à Dublin",
+          "Un jeune groom employé à la pension Nightingale House"
+        ],
+        "correct": 1,
+        "explanation": "James Watson a presque 13 ans, vit à Dublin et est le petit-neveu du célèbre docteur Watson, compagnon de Sherlock Holmes."
+      },
+      {
+        "id": "q2",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Comment le corps du docteur Black est-il découvert le premier matin ?",
+        "options": [
+          "Empoisonné avec une tasse de thé dans la cuisine de Gran'Ma",
+          "Poignardé dans le dos avec le couteau à désosser les gigots de Gran'Ma dans le petit salon",
+          "Étranglé avec une corde dans la bibliothèque",
+          "Assommé avec une bouteille de whisky dans la salle de billard"
+        ],
+        "correct": 1,
+        "explanation": "James trouve le docteur Black affalé sur son bureau dans le petit salon, le grand couteau de cuisine à manche de corne de Gran'Ma planté entre les omoplates."
+      },
+      {
+        "id": "q3",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Qui est John Fitzgerald Pendwick qui arrive le soir même pour mener l'enquête ?",
+        "options": [
+          "L'inspecteur en chef de la police criminelle de Wexford",
+          "Le neveu de la riche Mrs Periwinkle, détective privé réputé à Dublin",
+          "Le médecin légiste envoyé par le tribunal de Dublin",
+          "Le frère caché du docteur Black venu réclamer son héritage"
+        ],
+        "correct": 1,
+        "explanation": "John Fitzgerald Pendwick est le neveu de Mrs Periwinkle ; alerté par télégramme, il se présente comme le meilleur détective privé de Dublin."
+      },
+      {
+        "id": "q4",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quel indice mystérieux Pendwick prélève-t-il sous le bras du cadavre du docteur Black ?",
+        "options": [
+          "Une carte à jouer (l'as de pique)",
+          "Un cheveu roux appartenant à Miss Rose, qu'il glisse dans une petite boîte métallique",
+          "Un bouton de manchette en or gravé d'un 'O'",
+          "Un morceau de tissu imprégné de chloroforme"
+        ],
+        "correct": 1,
+        "explanation": "Pendwick découvre un cheveu sous le bras du mort et le place discrètement dans sa boîte en fer sans en révéler la nature aux autres."
+      },
+      {
+        "id": "q5",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quelle deuxième victime est découverte assassinée le mercredi matin ?",
+        "options": [
+          "Gran'Ma, étouffée dans son garde-manger",
+          "Mrs White, empoisonnée dans la véranda",
+          "Miss Rose, retrouvée étranglée dans son lit avec le cordon des rideaux",
+          "Le colonel Mustard, abattu dans le couloir"
+        ],
+        "correct": 2,
+        "explanation": "Ne la voyant pas descendre à 9 heures, James monte à la chambre de Miss Rose et la découvre morte étranglée avec le cordon de ses rideaux."
+      },
+      {
+        "id": "q6",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Pourquoi les résidents ne peuvent-ils pas faire appel à la police extérieure ?",
+        "options": [
+          "La police refuse de se déplacer sans mandat du juge",
+          "La ligne téléphonique est coupée et une violente tempête rend la route impraticable",
+          "Gran'Ma a verrouillé toutes les issues de l'auberge",
+          "Le pont menant à Wexford s'est effondré sous le poids d'un camion"
+        ],
+        "correct": 1,
+        "explanation": "Le téléphone ne fonctionne plus et la tempête qui fait rage coupe tout accès à la pension, enfermant coupable et innocents sous le même toit."
+      },
+      {
+        "id": "q7",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quelle mission John confie-t-il à James pendant qu'il mène ses interrogatoires ?",
+        "options": [
+          "Garder la porte de la bibliothèque armé d'un chandelier",
+          "Espionner discrètement les allées et venues des pensionnaires dans la maison",
+          "Fouiller les bagages de tous les invités à la recherche d'une arme",
+          "Aider Gran'Ma à préparer les repas pour détendre l'ambiance"
+        ],
+        "correct": 1,
+        "explanation": "Pendwick demande à James de déambuler dans les couloirs et de noter les faits et gestes de chacun pour lui faire un rapport détaillé."
+      },
+      {
+        "id": "q8",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quelle comparaison John Pendwick utilise-t-il pour expliquer sa méthode d'enquête à James ?",
+        "options": [
+          "Une partie d'échecs où l'on sacrifie des pions",
+          "Une partie de poker où la psychologie et le bluff permettent de gagner même avec un mauvais jeu",
+          "Une chasse à courre avec des chiens de meute",
+          "Un puzzle dont chaque témoin détient une pièce"
+        ],
+        "correct": 1,
+        "explanation": "Pendwick répète à James qu'une affaire criminelle se mène comme une partie de poker : tout est affaire de psychologie et de bluff."
+      },
+      {
+        "id": "q9",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Comment Mrs Periwinkle, la tante de John, est-elle assassinée à son tour ?",
+        "options": [
+          "Elle a été empoisonnée avec un cookie au cyanure",
+          "Elle a eu le crâne fracassé dans sa chambre avec un lourd chandelier en bronze",
+          "Elle est tombée du haut des escaliers après avoir été poussée",
+          "Elle a été étouffée avec son oreiller en plumes"
+        ],
+        "correct": 1,
+        "explanation": "Le lendemain matin, John présente l'arme du crime : un chandelier de bronze du petit salon avec lequel sa tante a eu le crâne brisé."
+      },
+      {
+        "id": "q10",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Contre qui John porte-t-il des accusations formelles pour les trois meurtres ?",
+        "options": [
+          "Contre Gran'Ma",
+          "Contre le docteur Olive, arguant que ses empreintes sont sur le chandelier",
+          "Contre le professeur Purple",
+          "Contre le colonel Mustard"
+        ],
+        "correct": 1,
+        "explanation": "Pendwick accuse avec fracas le docteur Olive des trois meurtres en s'appuyant sur ses empreintes retrouvées sur le chandelier."
+      },
+      {
+        "id": "q11",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Comment James explique-t-il la présence des empreintes d'Olive sur le chandelier ?",
+        "options": [
+          "Olive avait nettoyé les cuivres de la maison la veille",
+          "Olive s'était servi du chandelier pour allumer sa pipe devant tout le monde, et le meurtrier l'a volé exprès la nuit",
+          "Olive avait utilisé le chandelier pour se défendre contre un voleur",
+          "Pendwick a lui-même appliqué les doigts d'Olive sur le bronze pendant son sommeil"
+        ],
+        "correct": 1,
+        "explanation": "James se souvient qu'Olive avait saisi le chandelier pour allumer sa bouffarde sous les yeux de tous ; le véritable assassin a profité de ce détail pour le piéger."
+      },
+      {
+        "id": "q12",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quel coup de bluff magistral James invente-t-il pour disculper le docteur Olive ?",
+        "options": [
+          "Il affirme avoir filmé les couloirs avec une caméra",
+          "Il prétend avoir versé de la poussière de charbon devant les portes et demande à chacun d'enlever ses chaussures",
+          "Il dit avoir enfermé le docteur dans sa chambre à clé toute la nuit",
+          "Il montre une fausse lettre d'aveux signée par un inconnu"
+        ],
+        "correct": 1,
+        "explanation": "James annonce avoir disposé de la suie devant les portes : les pieds nus d'Olive se révèlent parfaitement propres, prouvant qu'il n'a pas circulé la nuit."
+      },
+      {
+        "id": "q13",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Comment le vrai coupable se démasque-t-il sous la pression du bluff de James ?",
+        "options": [
+          "Il s'évanouit au milieu du salon",
+          "John Pendwick refuse d'enlever ses chaussures, sort un gros revolver et menace tout le monde",
+          "Le colonel Mustard s'enfuit par la fenêtre",
+          "Mrs White avoue tout en pleurant"
+        ],
+        "correct": 1,
+        "explanation": "Se voyant piégé, John Pendwick dégaine son arme, confirme être l'assassin de sa tante et ordonne à tous de reculer."
+      },
+      {
+        "id": "q14",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quel était le véritable mobile de John Pendwick pour assassiner sa tante ?",
+        "options": [
+          "Il voulait venger la mort de ses parents",
+          "Il était criblé de dettes de jeu de poker et voulait s'emparer immédiatement de son immense fortune",
+          "Elle refusait de lui financer son agence de détective",
+          "Elle menaçait de le déshériter au profit de l'église"
+        ],
+        "correct": 1,
+        "explanation": "Endetté jusqu'au cou à cause de sa passion du poker, John avait besoin de l'héritage colossal de Mrs Periwinkle pour sauver sa peau."
+      },
+      {
+        "id": "q15",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Comment Pendwick est-il finalement maîtrisé dans le salon ?",
+        "options": [
+          "James lui lance un livre de Jules Verne au visage",
+          "Le docteur Olive lui assène un violent coup de canne sur le bras puis le frappe à terre avant qu'on ne le saucissonne",
+          "Le colonel Mustard lui tire dessus avec son propre pistolet",
+          "Gran'Ma l'assomme avec une poêle à frire"
+        ],
+        "correct": 1,
+        "explanation": "Le docteur Olive profite d'un moment d'inattention pour frapper le bras armé de Pendwick avec sa canne. L'imposteur tombe et est rapidement ficelé."
+      },
+      {
+        "id": "q16",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quelle dernière déduction James expose-t-il sur le premier meurtre (docteur Black) et la mort de Miss Rose ?",
+        "options": [
+          "Black s'était suicidé et Rose n'était qu'un dommage collatéral",
+          "Miss Rose avait tué Black pour une querelle d'argent ; John l'a découvert (cheveu roux) et l'a éliminée pour pouvoir faire accuser Olive sans témoin",
+          "Le professeur Purple et Miss Rose étaient complices depuis le début",
+          "Black avait été empoisonné par un médicament frelaté vendu par Olive"
+        ],
+        "correct": 1,
+        "explanation": "Miss Rose avait tué Black. Ayant trouvé le cheveu roux, John l'a assassinée pour éliminer l'unique témoin et bâtir son coup monté contre Olive afin d'hériter de sa tante en toute impunité."
+      }
+    ]
+  },
+  {
+    "id": "trois_lezards",
+    "title": "Trois lézards pour six",
+    "series": "Récit Express",
+    "totalPoints": 16,
+    "questions": [
+      {
+        "id": "q1",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quelle est la particularité de la construction de ce récit écrit par Victoria ?",
+        "options": [
+          "C'est un échange de SMS entre deux détectives",
+          "Il est composé d'articles de blog présentés dans un ordre antichronologique (du vendredi 13 mars au lundi 9 mars)",
+          "C'est un recueil d'articles de journaux télévisés",
+          "C'est un journal de bord retrouvé dans une bouteille à la mer"
+        ],
+        "correct": 1,
+        "explanation": "Le récit s'ouvre sur le message de fin du vendredi 13 mars à 12h15 et remonte jour après jour jusqu'au premier post explicatif du lundi 9 mars."
+      },
+      {
+        "id": "q2",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Dans le chapitre 1 (vendredi 13 mars, midi), sous quelle apparence les extraterrestres envahissent-ils l'école ?",
+        "options": [
+          "En policiers municipaux contrôlant les sacs à l'entrée",
+          "En équipe d'ouvriers d'entretien pour les ascenseurs, avec boîte à outils et bleus de travail",
+          "En nouveaux professeurs remplaçants de sciences",
+          "En cuisiniers de la cantine scolaire"
+        ],
+        "correct": 1,
+        "explanation": "Victoria aperçoit trois individus déguisés en techniciens d'ascenseurs (un barbu, un grand à lunettes et un gros avec boîte à outils) dissimulant mal leur queue couverte d'écailles."
+      },
+      {
+        "id": "q3",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Comment Barthélémy est-il attaqué à la piscine de l'école ?",
+        "options": [
+          "Il est poussé au fond du grand bassin par un lézard",
+          "Un ouvrier sort un pistolet de sa boîte à outils et le désintègre d'un rayon vert fluo au bord de l'eau",
+          "Il est téléporté dans les vestiaires à travers un miroir",
+          "Il est emmené de force dans un camion d'entretien"
+        ],
+        "correct": 1,
+        "explanation": "Barthélémy, dispensé de natation et lisant au bord du bassin, est visé par le rayon vert du pistolet et disparaît instantanément."
+      },
+      {
+        "id": "q4",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Comment Victoria et Barthélémy s'étaient-ils déguisés le vendredi matin pour échapper aux regards ?",
+        "options": [
+          "Victoria en infirmière et Barthélémy en médecin",
+          "Victoria avec une perruque brune et des lunettes de soleil, Barthélémy sous un grand poncho rouge de cycliste",
+          "En clowns du cirque itinérant",
+          "Avec des masques de ski et des cagoules noires"
+        ],
+        "correct": 1,
+        "explanation": "Pour leur trajet à vélo vers l'école, Victoria porte une perruque brune avec lunettes noires et Barthélémy s'emmitoufle dans un poncho rouge."
+      },
+      {
+        "id": "q5",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Comment les deux amis neutralisent-ils le motard extraterrestre sur la piste cyclable le long du canal ?",
+        "options": [
+          "Barthélémy crève les pneus de la moto avec un couteau",
+          "Victoria jette son classeur de math, puis ils sautent dans l'herbe ; la moto heurte une poubelle et le pilote plonge dans l'eau",
+          "La police intercepte la moto au passage à niveau",
+          "Ils se réfugient dans une péniche amarrée"
+        ],
+        "correct": 1,
+        "explanation": "En sautant du vélo, ils provoquent l'accident du motard qui bute contre une poubelle sur le muret et s'envole pour s'écraser dans le canal."
+      },
+      {
+        "id": "q6",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quel détail superstitieux obsède Victoria dans son message du vendredi matin (chapitre 3) ?",
+        "options": [
+          "Un chat noir a traversé la cuisine",
+          "C'est un vendredi 13, jour redouté pour la malchance et les disparitions",
+          "Un miroir s'est brisé dans sa salle de bains",
+          "Elle a renversé la salière sur la table du petit-déjeuner"
+        ],
+        "correct": 1,
+        "explanation": "Victoria panique à l'idée de vivre ses dernières heures un vendredi 13, elle qui scrute chaque matin son horoscope."
+      },
+      {
+        "id": "q7",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Que faisaient les adolescents avant l'attaque tragique du car-wash le jeudi soir ?",
+        "options": [
+          "Ils faisaient leurs devoirs de français dans la véranda",
+          "Ils lavaient la voiture du père de Léa en s'arrosant joyeusement pour gagner un peu d'argent",
+          "Ils préparaient des banderoles pour un match de football",
+          "Ils réparaient les vélos de la bande dans la cour"
+        ],
+        "correct": 1,
+        "explanation": "Pour se changer les idées et payer une sortie au parc d'attractions, la bande lave la voiture familiale de Léa en s'aspergeant d'eau savonneuse."
+      },
+      {
+        "id": "q8",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Comment Théo et Léa sont-ils enlevés sous les yeux horrifiés de Victoria et Barthélémy ?",
+        "options": [
+          "Une soucoupe volante les aspire avec un rayon tracteur",
+          "Une voiture noire s'arrête et des lézards en combinaison fluo les désintègrent successivement avec des rayons lumineux",
+          "Des créatures invisibles les entraînent dans les égouts",
+          "Ils montent volontairement dans une voiture aux vitres teintées"
+        ],
+        "correct": 1,
+        "explanation": "Théo est touché sur le capot, puis Léa est foudroyée par le rayon aveuglant d'un lézard débarqué d'une voiture noire, disparaissant dans un bruit d'aspiration."
+      },
+      {
+        "id": "q9",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Où Victoria et Barthélémy se réfugient-ils pendant plus d'une heure après l'attaque de la voiture ?",
+        "options": [
+          "Dans le grenier de la maison voisine",
+          "Dans le garage de Léa, terrés derrière le congélateur, avant d'en sortir avec un râteau et une batte de baseball",
+          "Dans la cabane au fond du jardin public",
+          "Dans le coffre d'une camionnette en stationnement"
+        ],
+        "correct": 1,
+        "explanation": "Terrorisés, ils s'enferment dans le garage et restent cachés derrière le congélateur jusqu'à la tombée de la nuit."
+      },
+      {
+        "id": "q10",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quelle activité la bande pratiquait-elle pour l'anniversaire de Guillaume le mercredi après-midi ?",
+        "options": [
+          "Un tournoi de jeux vidéo en réseau chez Cindy",
+          "Une partie de pêche dans la rivière, suivie d'une baignade glacée et d'un jeu de rôle dans les bois",
+          "Une course d'orientation en forêt de Saint-Hubert",
+          "Une séance de cinéma pour voir un film d'extraterrestres"
+        ],
+        "correct": 1,
+        "explanation": "Après avoir dégusté des gâteaux, ils plongent tout habillés dans l'eau glacée puis improvisent une bataille spatiale dans les bois pour se réchauffer."
+      },
+      {
+        "id": "q11",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quelles étaient les deux équipes formées par les enfants dans la forêt ?",
+        "options": [
+          "Les Jedis contre les Siths",
+          "Les Guerrières des étoiles (les filles) contre les Mercenaires de l'Espace (les garçons)",
+          "Les Lézards Verts contre les Terrien(ne)s",
+          "Les Aigles de l'Espace contre les Requins Galactiques"
+        ],
+        "correct": 1,
+        "explanation": "Les filles forment l'équipe des Guerrières des étoiles avec des sabres laser imaginaires, opposées aux garçons, les Mercenaires de l'Espace."
+      },
+      {
+        "id": "q12",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Comment Guillaume et Cindy disparaissent-ils dans la rivière ?",
+        "options": [
+          "Leurs canots pneumatiques se sont retournés dans les rapides",
+          "Guillaume a trébuché sur une racine au bord de la falaise et a entraîné Cindy dans sa chute en voulant se rattraper",
+          "Un lézard les a poussés directement depuis la rive",
+          "Ils ont sauté volontairement pour échapper à un essaim de guêpes"
+        ],
+        "correct": 1,
+        "explanation": "En fuyant le lézard, Guillaume trébuche ; Cindy lui tend la main pour le retenir mais est entraînée par son poids au fond du ravin dans la rivière."
+      },
+      {
+        "id": "q13",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Avec quel instrument la bande observait-elle les étoiles le mardi soir dans le champ ?",
+        "options": [
+          "Une simple paire de jumelles de marine",
+          "Un télescope sur pied offert à Guillaume par son parrain pour son anniversaire",
+          "Un appareil photo équipé d'un téléobjectif géant",
+          "Une lunette astronomique prêtée par le club de sciences"
+        ],
+        "correct": 1,
+        "explanation": "Guillaume a acheté un superbe télescope sur pied avec l'argent reçu de son parrain, avec lequel ils observent Jupiter et ses lunes."
+      },
+      {
+        "id": "q14",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "À quoi ressemble l'engin spatial qui atterrit dans le champ derrière le bois ?",
+        "options": [
+          "À une soucoupe volante circulaire avec des feux rouges clignotants",
+          "À une immense boîte en métal vert brillant, semblable à une boîte à chaussures avec hublots et escalier rétractable",
+          "À une pyramide noire suspendue dans les airs",
+          "À une capsule spatiale calcinée couverte de parachutes"
+        ],
+        "correct": 1,
+        "explanation": "L'appareil ressemble à une grande boîte rectangulaire métallique lumineuse émettant une lueur verte avec des hublots et une rampe d'escalier."
+      },
+      {
+        "id": "q15",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quelle phrase bravache Guillaume crie-t-il aux extraterrestres avant de s'enfuir ?",
+        "options": [
+          "« Bienvenue sur la Terre, créatures de l'espace ! »",
+          "« Si c'est pour tout casser, les lézards, vous feriez mieux de rentrer chez vous ! »",
+          "« Rendez-vous immédiatement, nous sommes protégés par l'armée ! »",
+          "« Ne tirez pas, nous venons en paix ! »"
+        ],
+        "correct": 1,
+        "explanation": "Après avoir vu les lézards désintégrer des rochers et des arbres, Guillaume leur lance cette provocation qui déclenche leurs tirs de riposte."
+      },
+      {
+        "id": "q16",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quelle vérité stupéfiante est révélée dans le tout dernier chapitre (lundi 9 mars) ?",
+        "options": [
+          "Victoria a fait un cauchemar après avoir regardé un film d'horreur",
+          "Toute l'histoire est un canular inventé de toutes pièces par Victoria pour prouver qu'on peut faire gober n'importe quelle rumeur aux internautes",
+          "Victoria et ses amis ont été transportés dans une autre dimension temporelle",
+          "Les lézards étaient des robots créés par le professeur de technologie"
+        ],
+        "correct": 1,
+        "explanation": "Le lundi 9 mars, Victoria explique avoir monté ce faux blog de science-fiction suite à un pari avec Arthur et Jean pour démontrer la crédulité des gens sur Internet."
+      }
+    ]
+  },
+  {
+    "id": "murphy_halloween",
+    "title": "Murphy et le mystère d'Halloween",
+    "series": "Récit Express",
+    "totalPoints": 16,
+    "questions": [
+      {
+        "id": "q1",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Pourquoi le narrateur s'appelle-t-il Murphy ?",
+        "options": [
+          "En hommage à son grand-père d'origine irlandaise",
+          "Parce qu'il attire constamment les gaffes et la malchance, en référence à la célèbre loi de Murphy",
+          "Parce que ses parents voulaient qu'il devienne détective privé",
+          "C'est le nom de sa ville natale en Bretagne"
+        ],
+        "correct": 1,
+        "explanation": "Dès sa naissance marquée par des incidents, ses parents l'ont prénommé Murphy car il se retrouve toujours du mauvais côté des 50% de probabilité d'ennuis."
+      },
+      {
+        "id": "q2",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Avec qui Murphy passe-t-il la soirée d'Halloween et quel déguisement porte-t-il ?",
+        "options": [
+          "Avec ses camarades de classe parisiens, déguisé en zombie",
+          "Avec son cousin Romaric, Alain et la jolie Coraline, revêtu d'un costume de Dracula à la cape trop longue",
+          "Avec son frère cadet, déguisé en fantôme",
+          "Seul dans les rues, déguisé en loup-garou"
+        ],
+        "correct": 1,
+        "explanation": "Murphy défile à Bonnefleur en Normandie avec son cousin Romaric, son copain Alain et Coraline, vêtu d'un costume de Dracula dont la cape le fait trébucher."
+      },
+      {
+        "id": "q3",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quelle boutique étrange attire l'attention de Murphy lors de la tournée des bonbons ?",
+        "options": [
+          "Une confiserie hantée tenue par un squelette",
+          "La boutique fermée « Chez Morjana », surnommée la sorcière, surmontée d'une enseigne avec un corbeau barré d'un éclair",
+          "Un magasin d'antiquités où une momie est exposée en vitrine",
+          "Une boulangerie abandonnée depuis cinquante ans"
+        ],
+        "correct": 1,
+        "explanation": "La boutique fermée s'appelle « Chez Morjana », tenue par une femme appelée « la sorcière », avec une enseigne en fer ornée d'un corbeau et d'un éclair."
+      },
+      {
+        "id": "q4",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quelle rumeur inquiétante circule à Bonnefleur au sujet de la maison de J.O.L. ?",
+        "options": [
+          "Qu'elle abrite un trésor d'or gardé par des fantômes",
+          "Que personne n'ose y frapper et que ceux qui y sont entrés n'ont jamais été revus",
+          "Qu'elle sert de repaire à des cambrioleurs en fuite",
+          "Qu'elle s'effondre chaque nuit avant de réapparaître au matin"
+        ],
+        "correct": 1,
+        "explanation": "Les enfants racontent que la maison de J.O.L. est maudite et que tous les imprudents qui ont osé y pénétrer ont disparu à jamais."
+      },
+      {
+        "id": "q5",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Pourquoi Murphy se décide-t-il à frapper au heurtoir en forme de gargouille ?",
+        "options": [
+          "Pour impressionner Coraline et prouver à Alain qu'il n'est pas un lâche après ses provocations",
+          "Parce qu'il a cru voir une lumière chaleureuse à l'intérieur",
+          "Parce qu'il a perdu son sac de bonbons sur le perron",
+          "Pour s'abriter d'un orage soudain"
+        ],
+        "correct": 0,
+        "explanation": "Piqué au vif par les railleries d'Alain qui le traite de Parisien à grande bouche, Murphy veut impressionner Coraline et cogne à la porte."
+      },
+      {
+        "id": "q6",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Que se produit-il immédiatement après que les quatre enfants ont franchi la porte d'entrée ?",
+        "options": [
+          "Une musique d'orgue retentit et des bougies s'allument",
+          "La porte claque dans un bruit de tonnerre, le sol disparaît et ils tombent dans le noir absolu",
+          "Ils sont accueillis par un majordome en livrée noire",
+          "Un mur de flammes leur barre la retraite"
+        ],
+        "correct": 1,
+        "explanation": "La porte se referme violemment, le sol se dérobe et Murphy bascule dans un vide sans fond tandis que les cris de ses amis s'éloignent."
+      },
+      {
+        "id": "q7",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quelle est la première épreuve terrifiante à laquelle Murphy est confronté ?",
+        "options": [
+          "Une meute de loups affamés dans une cour enneigée",
+          "Une pièce où grouillent des millions de cafards noirs alors que le plafond descend pour l'écraser",
+          "Une fosse remplie de serpents venimeux et d'araignées géantes",
+          "Une chambre inondée d'eau glaciale montant jusqu'au plafond"
+        ],
+        "correct": 1,
+        "explanation": "Murphy atterrit au milieu d'une marée de cafards répugnants et voit les blocs de pierre du plafond s'abaisser inexorablement vers le sol."
+      },
+      {
+        "id": "q8",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Comment Murphy trouve-t-il la sortie pour échapper à l'écrasement ?",
+        "options": [
+          "Il casse une vitre avec sa chaussure",
+          "Il observe la file indienne des cafards en fuite et plonge courageusement à travers leur passage",
+          "Il actionne un levier dissimulé dans une torche",
+          "Il monte sur les épaules d'une statue de pierre"
+        ],
+        "correct": 1,
+        "explanation": "Remarquant que tous les insectes fuient dans la même direction, Murphy plonge en apnée dans la masse pour franchir l'ouverture secrète."
+      },
+      {
+        "id": "q9",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quel ennemi surgit de la grande tapisserie dans la galerie des tableaux ?",
+        "options": [
+          "Un dragon cracheur de flammes",
+          "Un chevalier enragé armé d'une épée, monté sur un cheval blanc bondissant hors de la toile",
+          "Un archer médiéval décochant des flèches enflammées",
+          "Un pirate squelette armé d'un sabre d'abordage"
+        ],
+        "correct": 1,
+        "explanation": "La scène de bataille peinte prend vie : un cavalier en armure charge et saute hors du tableau sur son cheval blanc pour affronter Murphy."
+      },
+      {
+        "id": "q10",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quelle ruse Murphy emploie-t-il pour terrasser le chevalier et sa monture ?",
+        "options": [
+          "Il utilise un extincteur trouvé dans le couloir",
+          "Il monte dans une toile napoléonienne pour faire rouler des boulets de canon sous les sabots, puis aveugle le chevalier avec un bout de sa cape",
+          "Il hypnotise le cheval avec son pendentif de vampire",
+          "Il attire le chevalier dans un trou recouvert de branchages"
+        ],
+        "correct": 1,
+        "explanation": "Murphy pénètre dans un tableau de bataille, fait rouler des boulets qui désarçonnent le chevalier, puis lui masque le heaume avec un morceau de sa cape pour le faire chuter."
+      },
+      {
+        "id": "q11",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quel cruel dilemme la voix de J.O.L. impose-t-elle à Murphy dans la caverne ?",
+        "options": [
+          "Donner tout son argent ou rester enfermé un an",
+          "Prendre la passerelle de gauche pour s'enfuir seul vivant, ou abaisser le levier de droite pour sauver ses trois amis au détriment de sa propre sortie",
+          "Combattre un ogre à mains nues ou boire une potion empoisonnée",
+          "Choisir lequel de ses trois camarades sera libéré en premier"
+        ],
+        "correct": 1,
+        "explanation": "J.O.L. lui offre le choix égoïste de s'enfuir par la sortie de gauche, ou de condamner sa propre issue en abaissant le levier qui sauve Coraline, Romaric et Alain."
+      },
+      {
+        "id": "q12",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quelle décision héroïque Murphy prend-il face au précipice ?",
+        "options": [
+          "Il s'enfuit en courant vers la sortie sans regarder en arrière",
+          "Il franchit la passerelle qui s'écroule derrière lui pour abaisser le levier et sauver ses amis, acceptant de périr",
+          "Il tente de négocier avec la voix de J.O.L.",
+          "Il lance son déguisement dans le gouffre pour faire diversion"
+        ],
+        "correct": 1,
+        "explanation": "Faisant passer la vie de ses camarades avant la sienne, Murphy court vers le levier, libère ses amis suspendus dans le vide et se retrouve piégé sur la corniche qui s'effrite."
+      },
+      {
+        "id": "q13",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Que découvre Murphy lorsqu'il arrive enfin dans le salon de J.O.L. ?",
+        "options": [
+          "Que J.O.L. est un robot programmé pour effrayer les passants",
+          "Que tous les dangers n'étaient que des illusions magiques et que ses amis sont sains et saufs sous hypnose",
+          "Que ses amis ont déjà été transformés en statues de cire",
+          "Que la maison est un décor de télévision pour une émission de caméra cachée"
+        ],
+        "correct": 1,
+        "explanation": "J.O.L. lui montre un écran où ses amis reposent paisiblement et lui révèle qu'il n'a jamais tué personne : toutes les épreuves n'étaient que des illusions destinées à tester le cœur humain."
+      },
+      {
+        "id": "q14",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Qui est véritablement J.O.L. et quelle est son histoire tragique ?",
+        "options": [
+          "Un ancien magicien de foire chassé de Paris",
+          "Jack O'Lantern, un esprit malin banni par les siens il y a 50 ans pour avoir voulu sauver par amour la sorcière Morgane",
+          "Un comte vampire exilé de Transylvanie après une défaite militaire",
+          "Un alchimiste cherchant la pierre philosophale depuis le Moyen Âge"
+        ],
+        "correct": 1,
+        "explanation": "J.O.L. est le véritable Jack O'Lantern : banni du monde des esprits car il est tombé amoureux de Morgane, un sentiment interdit chez les créatures maléfiques."
+      },
+      {
+        "id": "q15",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quel indice permet à Murphy de comprendre où se cache Morgane à Bonnefleur ?",
+        "options": [
+          "Une lettre cachetée trouvée sur la table",
+          "Une amulette chez Jack représentant un corbeau barré d'un éclair, identique à l'enseigne de la boutique de Morjana",
+          "Une bague en argent portant les armoiries de la ville",
+          "Un portrait miniature peint sur de l'ivoire"
+        ],
+        "correct": 1,
+        "explanation": "En voyant l'amulette de Jack ornée du corbeau et de l'éclair, Murphy fait le rapprochement immédiat avec l'enseigne de Morjana (Morgane) dans le village."
+      },
+      {
+        "id": "q16",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Que devient l'ancienne boutique sombre de la sorcière à la fin du récit ?",
+        "options": [
+          "Elle est démolie pour construire un parking municipal",
+          "Elle devient le magasin féerique « Chez Morgane et Jack », proposant costumes, livres magiques et spectacles",
+          "Elle est rachetée par la boulangère de la rue du Pré",
+          "Elle reste fermée définitivement après le départ des sorciers"
+        ],
+        "correct": 1,
+        "explanation": "Réunis et heureux, Jack et Morgane ouvrent « Chez Morgane et Jack », une boutique merveilleuse qui organise des ateliers contes, des cours de magie et prépare le grand spectacle d'Halloween."
+      }
+    ]
+  },
+  {
+    "id": "un_frere_tombe_du_ciel",
+    "title": "Un frère tombé du ciel",
+    "series": "Récit Express",
+    "totalPoints": 16,
+    "questions": [
+      {
+        "id": "q1",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quel succès scolaire rend Jessica très fière au tout début de l'histoire ?",
+        "options": [
+          "Elle a gagné le concours de dictée de l'école",
+          "Elle a obtenu un 19/20 en mathématiques et a battu Adrien, le premier de la classe",
+          "Elle a été élue déléguée de classe à l'unanimité",
+          "Elle a réussi son examen de passage au conservatoire"
+        ],
+        "correct": 1,
+        "explanation": "Jessica commence sa journée en beauté grâce à un 19 en mathématiques qui lui permet de devancer Adrien et son 17."
+      },
+      {
+        "id": "q2",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quelle grande nouvelle inattendue les parents de Jessica lui annoncent-ils ?",
+        "options": [
+          "Ils vont déménager dans une grande villa en bord de mer",
+          "Démouto, le fils que son père a eu en Afrique avant de venir en France, arrive pour vivre avec eux et partagera sa chambre",
+          "Sa mère attend des jumeaux pour le printemps prochain",
+          "Son père a été muté pour trois ans à l'étranger"
+        ],
+        "correct": 1,
+        "explanation": "Le père a enfin obtenu les papiers pour faire venir Démouto (qui a 2 ans de plus qu'elle) et demande à Jessica de partager sa chambre avec lui."
+      },
+      {
+        "id": "q3",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quel vêtement convoité Jessica rêve-t-elle de s'offrir dans les Grandes Galeries ?",
+        "options": [
+          "Une robe de soirée bleue à paillettes",
+          "Un pull rose et blanc avec un dessin de panthère sur le devant",
+          "Un blouson en cuir noir style motard",
+          "Une paire de baskets montantes dorées"
+        ],
+        "correct": 1,
+        "explanation": "Jessica a repéré le pull de ses rêves (rose et blanc avec une panthère) et comptait utiliser sa technique de persuasion pour l'obtenir."
+      },
+      {
+        "id": "q4",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quelle première impression Démouto donne-t-il lors de son arrivée à l'aéroport ?",
+        "options": [
+          "Il est joyeux, bavard et court partout dans le terminal",
+          "Il est très maigre, grelotte dans un tee-shirt fluo, semble intimidé et ne parle que lingala avec son père",
+          "Il est habillé en costume chic et refuse de saluer son père",
+          "Il est accompagné de musiciens traditionnels africains"
+        ],
+        "correct": 1,
+        "explanation": "Épuisé par le voyage, Démouto grelotte dans un tee-shirt trop léger, évite le regard de Jessica et de sa belle-mère et ne parle que sa langue natale."
+      },
+      {
+        "id": "q5",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Pourquoi la mère de Jessica refuse-t-elle finalement d'acheter le pull panthère lors du shopping ?",
+        "options": [
+          "Le pull a été vendu à une autre cliente sous ses yeux",
+          "Le voyage de Démouto et l'achat de tous ses vêtements d'hiver ont coûté très cher, repoussant l'achat au mois suivant",
+          "Jessica a eu une mauvaise note en français le matin même",
+          "La couleur du pull ne plaisait pas à son père"
+        ],
+        "correct": 1,
+        "explanation": "Le budget familial étant serré après les frais du voyage et l'achat indispensable d'un manteau chaud pour Démouto, la mère reporte l'achat du pull."
+      },
+      {
+        "id": "q6",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Pourquoi Démouto est-il placé dans la même classe d'école primaire que Jessica ?",
+        "options": [
+          "Parce que le collège refuse les nouveaux élèves au mois de décembre",
+          "Parce qu'il n'a pas été scolarisé ces derniers temps en Afrique et doit consolider son français",
+          "Parce qu'il a demandé à rester aux côtés de sa sœur en classe",
+          "Parce qu'il est trop jeune pour entrer en sixième"
+        ],
+        "correct": 1,
+        "explanation": "Sa mère n'ayant plus les moyens de l'envoyer à l'école en Afrique, Démouto doit rattraper son retard et perfectionner son français avant d'intégrer le collège."
+      },
+      {
+        "id": "q7",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quel camarade de classe désagréable s'en prend à Jessica et Démouto ?",
+        "options": [
+          "Adrien, jaloux de la note de math de Jessica",
+          "Lucas, qui affuble Jessica du sobriquet « Noix de coco » et lance des piques racistes",
+          "Jules, le voisin de table de Lucie",
+          "Marc, le délégué de classe du premier trimestre"
+        ],
+        "correct": 1,
+        "explanation": "Lucas est le perturbateur de la classe qui se moque des origines de Jessica et Démouto avec des remarques blessantes."
+      },
+      {
+        "id": "q8",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Comment Jessica réagit-elle lorsque Lucas humilie Démouto en leçon d'éducation civique ?",
+        "options": [
+          "Elle rit avec les autres pour ne pas se faire remarquer",
+          "Elle riposte vivement en remettant Lucas à sa place, ce qui lui vaut d'être collé par la maîtresse",
+          "Elle quitte la classe en pleurant",
+          "Elle demande à changer de place immédiatement"
+        ],
+        "correct": 1,
+        "explanation": "Indignée par l'attitude de Lucas, Jessica prend fermement la défense de son demi-frère en lançant une réplique cinglante à Lucas."
+      },
+      {
+        "id": "q9",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Que dit le père à Jessica lors de leur discussion intime dans la chambre ?",
+        "options": [
+          "Qu'elle doit cesser de regarder la télévision le soir",
+          "Qu'elle doit faire preuve de patience et qu'elle finira par découvrir tout ce qu'elle a en commun avec son frère",
+          "Qu'il regrette d'avoir fait venir Démouto en France",
+          "Qu'il va renvoyer Démouto vivre chez sa mère"
+        ],
+        "correct": 1,
+        "explanation": "Le père comprend le désarroi de Jessica mais lui demande d'être patiente, persuadé que le temps révélera leurs nombreux points communs fraternels."
+      },
+      {
+        "id": "q10",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Que se passe-t-il lorsque les parents sont absents au salon du jouet à Paris ?",
+        "options": [
+          "Une fuite d'eau inonde l'appartement",
+          "Démouto tombe gravement malade avec 39°C de fièvre et s'effondre sur son lit",
+          "Lucas vient jeter des cailloux sur les fenêtres",
+          "Démouto décide de s'enfuir pour retourner en Afrique"
+        ],
+        "correct": 1,
+        "explanation": "Resté seul avec Jessica, Démouto est pris d'une violente fièvre (39°C), de sueurs froides et de difficultés respiratoires alarmantes."
+      },
+      {
+        "id": "q11",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quels gestes de secours Jessica prodigue-t-elle à Démouto avant l'arrivée des secours ?",
+        "options": [
+          "Elle lui fait boire du thé brûlant au citron",
+          "Elle lui applique des compresses et un gant d'eau fraîche sur le front et la nuque pour apaiser sa fièvre",
+          "Elle lui donne des médicaments trouvés dans l'armoire",
+          "Elle lui fait faire des exercices de respiration sur le balcon"
+        ],
+        "correct": 1,
+        "explanation": "Imitant ce que fait sa mère lorsqu'elle est malade, Jessica tamponne le front et la nuque de Démouto avec un gant d'eau fraîche pour le soulager."
+      },
+      {
+        "id": "q12",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Pourquoi le médecin de l'hôpital garde-t-il Démouto sous surveillance médicale stricte ?",
+        "options": [
+          "Parce qu'il a contracté une maladie tropicale contagieuse",
+          "Parce que son organisme n'est pas encore habitué aux virus européens et que la grippe risque d'évoluer en infection pulmonaire",
+          "Parce qu'il doit subir une opération chirurgicale au genou",
+          "Parce qu'il a fait une grave intoxication alimentaire"
+        ],
+        "correct": 1,
+        "explanation": "Le médecin explique que le système immunitaire d'un enfant venant d'arriver d'Afrique n'a pas les défenses contre les virus hivernaux d'Europe."
+      },
+      {
+        "id": "q13",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quelle leçon de vie Démouto transmet-il à Jessica lors de leurs discussions à l'hôpital ?",
+        "options": [
+          "Qu'il vaut mieux toujours vivre seul sans famille",
+          "Qu'avoir deux origines et deux cultures différentes n'est pas une honte, mais une immense richesse personnelle",
+          "Qu'il faut ignorer les études et ne penser qu'au sport",
+          "Que la vie en Europe est trop compliquée pour lui"
+        ],
+        "correct": 1,
+        "explanation": "Alors que Jessica doute de son identité métisse (« 50% blanche, 50% noire »), Démouto lui ouvre les yeux sur la chance magnifique de posséder deux cultures."
+      },
+      {
+        "id": "q14",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Comment Démouto aide-t-il Jessica à se coiffer pour l'anniversaire de Lucie ?",
+        "options": [
+          "Il lui lisse les cheveux avec un fer chaud",
+          "Il lui tresse une trentaine de superbes petites tresses africaines avec son peigne en bois et des élastiques",
+          "Il lui confectionne un turban traditionnel",
+          "Il lui teint les pointes des cheveux en blond doré"
+        ],
+        "correct": 1,
+        "explanation": "Grâce au savoir-faire appris en observant sa mère, Démouto transforme la chevelure rebelle de Jessica en une magnifique coiffure tressée façon Alicia Keys."
+      },
+      {
+        "id": "q15",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quelle tenue originale Jessica invente-t-elle avec le tissu offert par Démouto ?",
+        "options": [
+          "Un déguisement de princesse orientale",
+          "Un ensemble « jean-pagne » stylé et métissé porté pour un défilé de mode improvisé dans la chambre",
+          "Une robe de bal longue jusqu'aux chevilles",
+          "Une veste d'hiver rembourrée avec de la laine"
+        ],
+        "correct": 1,
+        "explanation": "Jessica drape le pagne multicolore par-dessus son jean pour créer un look métissé et défile avec fierté sous les rires complices de son frère."
+      },
+      {
+        "id": "q16",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Comment Démouto mâte-t-il les insolences du petit cousin Jules lors du dîner de famille en Bretagne ?",
+        "options": [
+          "Il lui jette un verre d'eau au visage",
+          "Il lui déclare d'un air très sérieux qu'il est un grand sorcier capable de transformer les enfants malpolis en petits cochons roses",
+          "Il demande à sa grand-mère de le punir au piquet",
+          "Il quitte la table en claquant la porte de la salle à manger"
+        ],
+        "correct": 1,
+        "explanation": "Démouto fixe Jules sans ciller et lui sort cette réplique magique, pétrifiant le petit moqueur qui s'enfuit sans demander son reste, sous l'admiration de Jessica qui l'appelle enfin « mon frère »."
+      }
+    ]
+  },
+  {
+    "id": "hotel_bon_vent",
+    "title": "L'hôtel du bon vent",
+    "series": "Récit Express",
+    "totalPoints": 16,
+    "questions": [
+      {
+        "id": "q1",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Dans quel contexte la famille de Méline se retrouve-t-elle égarée au début de l'histoire ?",
+        "options": [
+          "En partant en vacances de ski dans les Alpes par temps de tempête de neige",
+          "En revenant de vacances de la Toussaint sous un épais brouillard et une pluie battante dans une forêt de sapins",
+          "En cherchant un camping au bord de l'océan Atlantique en plein été",
+          "En fuyant une inondation dans le sud de la France"
+        ],
+        "correct": 1,
+        "explanation": "La famille rentre de vacances de la Toussaint ; après avoir quitté la nationale, ils sont complètement perdus sous un déluge et une brume impénétrable."
+      },
+      {
+        "id": "q2",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quel est le nom du village mystérieux introuvable sur la carte et de l'auberge où ils font halte ?",
+        "options": [
+          "Saint-Martin-du-Lac et l'Auberge des Pins",
+          "Saint-Léger-sur-Veubray et l'Hôtel du Bon Vent",
+          "Châteauneuf-en-Morvan et le Relais Fleuri",
+          "Villeneuve-les-Sapins et l'Hôtel de la Brume"
+        ],
+        "correct": 1,
+        "explanation": "Un panneau surgit dans le brouillard indiquant « Saint-Léger-sur-Veubray », débouchant sur la place où scintille l'enseigne décrépite de « l'Hôtel du Bon Vent »."
+      },
+      {
+        "id": "q3",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Qui est Elsa Gullivan et pourquoi hésite-t-elle à accueillir des clients ?",
+        "options": [
+          "Une héritière française qui veut revendre la propriété aux enchères",
+          "Une jeune Anglaise qui a racheté l'hôtel abandonné par coup de foudre et dont les travaux de rénovation sont en cours",
+          "Une gardienne employée par une chaîne d'hôtels internationale",
+          "Une comédienne qui répète une pièce de théâtre dans un décor ancien"
+        ],
+        "correct": 1,
+        "explanation": "Elsa est une jeune femme britannique tombée sous le charme de cette bâtisse abandonnée l'été précédent, et qui tente courageusement de lui redonner vie."
+      },
+      {
+        "id": "q4",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quelles formes insolites ont les porte-clefs des chambres 104 (Méline) et 132 (ses parents) ?",
+        "options": [
+          "Une tour Eiffel et un arc de triomphe",
+          "Un jambon pour la 104 et un camembert pour la 132",
+          "Une pomme de pin et un gland de chêne",
+          "Un fer à cheval et un trèfle à quatre feuilles"
+        ],
+        "correct": 1,
+        "explanation": "Les clés sont munies de porte-clefs amusants et originaux : une tranche de jambon pour Méline et un camembert pour ses parents."
+      },
+      {
+        "id": "q5",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Qui sont Monsieur et Madame Grignard arrivés juste après la famille de Méline ?",
+        "options": [
+          "Des inspecteurs du guide Michelin venus noter l'établissement",
+          "Un couple de clients désagréables, constamment mécontents, hautains et râleurs",
+          "Des amis d'enfance d'Elsa venus d'Angleterre",
+          "Des artistes en tournée dans la région"
+        ],
+        "correct": 1,
+        "explanation": "Les Grignard sont des clients odieux qui exigent un traitement de faveur et ne cessent de formuler des plaintes ridicules dès leur arrivée."
+      },
+      {
+        "id": "q6",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quel premier phénomène anormal survient dans la salle de restaurant près de la table des Grignard ?",
+        "options": [
+          "Les lustres s'écrasent sur le sol",
+          "Les flammes de la cheminée s'emballent brusquement et s'étirent vers leur table lorsque la porte vitrée s'ouvre toute seule",
+          "Leurs chaises se mettent à léviter au-dessus du parquet",
+          "La soupe se transforme en glace solide dans leurs bols"
+        ],
+        "correct": 1,
+        "explanation": "Tandis que les Grignard râlent sur le menu, le feu de la cheminée grandit démesurément et vient menacer leur table avant de s'éteindre d'un coup sec."
+      },
+      {
+        "id": "q7",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quels nouveaux voyageurs égarés trouvent refuge à l'hôtel plus tard dans la soirée ?",
+        "options": [
+          "Une équipe de cyclistes participant à une course régionale",
+          "Quatre jeunes motards (deux garçons et deux filles) trempés par le déluge",
+          "Un chauffeur de bus et sa trentaine de touristes retraités",
+          "Deux randonneurs égarés avec leurs ânes de bât"
+        ],
+        "correct": 1,
+        "explanation": "Quatre motards arrivant d'un festival du cirque supplient Elsa de les héberger ; elle leur aménage une lingerie au deuxième étage."
+      },
+      {
+        "id": "q8",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quelle explication loufoque Elsa donne-t-elle lorsque la tarte aux fraises des Grignard disparaît ?",
+        "options": [
+          "Elle accuse le chat Billy d'avoir tout dévoré",
+          "Elle prétend que la plante verte sur la table est une espèce rare d'Amérique du Sud qui dévore les desserts",
+          "Elle affirme que les motards ont chipé l'assiette en passant",
+          "Elle dit que la tarte s'est évaporée à cause de la chaleur du feu"
+        ],
+        "correct": 1,
+        "explanation": "Prise de court face aux assiettes vidées par l'esprit de la maison, Elsa bredouille que la plante de table est une plante carnivore mangeuse de tartes."
+      },
+      {
+        "id": "q9",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Comment se termine la soirée dans le salon après le départ des Grignard dans leur chambre ?",
+        "options": [
+          "Une violente panne de courant plonge tout le monde dans l'obscurité",
+          "Un des motards joue de superbes morceaux de jazz au piano pendant que le gros chat Billy ronronne sur les genoux de Méline",
+          "Les clients jouent aux cartes jusqu'à l'aube",
+          "Elsa chante des ballades folkloriques irlandaises à la guitare"
+        ],
+        "correct": 1,
+        "explanation": "L'ambiance redevient chaleureuse et apaisante : un motard joue du jazz au vieux piano et le chat de l'hôtel vient se blottir contre Méline."
+      },
+      {
+        "id": "q10",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Pourquoi les parents de Méline échangent-ils leur chambre avec les Grignard à deux reprises ?",
+        "options": [
+          "Parce que les Grignard veulent admirer la lune par la fenêtre",
+          "Parce que les radiateurs cessent systématiquement de chauffer dès que les Grignard s'installent dans une pièce",
+          "Parce que le lit des Grignard est cassé",
+          "Parce que des chauves-souris sont entrées par la cheminée"
+        ],
+        "correct": 1,
+        "explanation": "La maison refuse de chauffer les Grignard : les radiateurs tombent en panne dans leur chambre mais refonctionnent dès que les parents de Méline y logent."
+      },
+      {
+        "id": "q11",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "À quelle scène incroyable Méline assiste-t-elle en descendant à la cuisine à 2 heures du matin ?",
+        "options": [
+          "Des fantômes de chevaliers préparent des crêpes pour le petit-déjeuner",
+          "Elsa dispute les murs de l'auberge et une voix d'homme puissante lui répond : l'Hôtel du Bon Vent est vivant et parle !",
+          "Le chat Billy est debout sur ses pattes arrière en train de faire la vaisselle",
+          "Les Grignard fouillent les placards pour voler des provisions"
+        ],
+        "correct": 1,
+        "explanation": "Méline découvre qu'Elsa s'adresse directement à la bâtisse elle-même : l'hôtel a une âme, une voix d'homme bienveillante mais têtue, et commande aux objets."
+      },
+      {
+        "id": "q12",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quelle est la véritable raison pour laquelle l'Hôtel du Bon Vent attire et retient certains voyageurs ?",
+        "options": [
+          "Il veut leur voler leurs économies pour payer ses réparations",
+          "Il se sent seul et abandonné sans clients, et adore la compagnie des personnes gentilles tout en chassant les mécontents",
+          "Il est sous l'emprise d'un sortilège jeté par un magicien médiéval",
+          "Il veut transformer les touristes en statues décoratives"
+        ],
+        "correct": 1,
+        "explanation": "L'hôtel souffre de la solitude depuis ses années d'abandon ; il guide les gens chaleureux pour prolonger leurs vacances et fait fuir les êtres désagréables."
+      },
+      {
+        "id": "q13",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quels désagréments subis pendant la nuit précipitent le départ furieux des Grignard au petit matin ?",
+        "options": [
+          "Leurs valises ont été jetées par la fenêtre dans une mare de boue",
+          "La tringle de douche est tombée sur le crâne de Monsieur Grignard et le dentier de Madame s'est brisé sur le lavabo",
+          "Des araignées ont envahi leurs pantoufles de nuit",
+          "Leur voiture a été repeinte en jaune vif pendant leur sommeil"
+        ],
+        "correct": 1,
+        "explanation": "Monsieur Grignard arbore une poche de glace sur son crâne après la chute de la barre de douche et son épouse n'a plus qu'une seule dent sur son dentier cassé."
+      },
+      {
+        "id": "q14",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Comment l'hôtel tente-t-il d'empêcher la famille de Méline de partir au matin ?",
+        "options": [
+          "En crevant les quatre pneus de la voiture familiale",
+          "En faisant disparaître les clés de contact de la veste du père pour les déposer sur le piano du salon",
+          "En bloquant la grille d'entrée avec un énorme tronc d'arbre",
+          "En déclenchant un nouvel orage de grêle sur le parking"
+        ],
+        "correct": 1,
+        "explanation": "Bien que le père ait vérifié ses poches trois fois, l'hôtel subtilise ses clés de voiture et les dépose discrètement sur le piano."
+      },
+      {
+        "id": "q15",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quel pacte Méline formule-t-elle à voix haute pour que l'hôtel les laisse repartir ?",
+        "options": [
+          "Elle promet de lui envoyer un chèque pour repeindre les volets",
+          "Elle promet solennellement qu'ils reviendront passer des vacances ici et lui enverront des clients charmants",
+          "Elle promet de ne jamais raconter ce qu'elle a vu à la police",
+          "Elle promet de lui apporter un sac de croquettes pour le chat Billy"
+        ],
+        "correct": 1,
+        "explanation": "Méline s'adresse aux murs en promettant qu'ils reviendront sans faute et recommanderont l'auberge à des personnes respectueuses et bienveillantes."
+      },
+      {
+        "id": "q16",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Que se passe-t-il exactement un an plus tard lors du retour de chez Mamie Cathy ?",
+        "options": [
+          "Méline reçoit une carte postale d'Elsa lui annonçant la vente de l'hôtel",
+          "À la suite d'un bouchon et d'une déviation, la voiture s'engage sur la route brumeuse bordée de sapins qui mène tout droit à l'Hôtel du Bon Vent",
+          "Méline apprend que le village a été rasé pour construire une autoroute",
+          "La famille décide de partir en vacances en Angleterre pour retrouver Elsa"
+        ],
+        "correct": 1,
+        "explanation": "Un an plus tard, une déviation ramène la voiture dans la brume vers Saint-Léger-sur-Veubray, permettant à Méline d'honorer avec joie sa promesse envers l'Hôtel du Bon Vent."
+      }
+    ]
   }
 ];
