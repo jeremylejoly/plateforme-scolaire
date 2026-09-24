@@ -9,216 +9,232 @@ window.LIVRES = [
         "id": "q1",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Pourquoi Alice et son père partent-ils en Nouvelle-Zélande ?",
+        "text": "Pourquoi Alice et son papa partent-ils en Nouvelle-Zélande ?",
         "options": [
-          "Sa mère les a invités à la rejoindre pour les vacances de Noël",
-          "Son père a toujours rêvé de visiter ce pays avec sa famille",
-          "Sa mère a eu un grave accident de parapente et ne peut pas rentrer en France",
-          "Alice a gagné un voyage scolaire à l'autre bout du monde"
+          "Pour passer des vacances de ski dans les montagnes",
+          "Parce que sa maman a eu un accident là-bas",
+          "Parce que son papa a trouvé du travail à Auckland",
+          "Pour rendre visite à leur voisin, le vieux Bill"
         ],
-        "answer": 2,
+        "correct": 1,
+        "answer": 1,
         "points": 1,
-        "correct": 2
+        "explanation": "La maman d'Alice, géographe, est tombée d'un parapente. Comme elle ne peut pas rentrer pour Noël, Alice et son papa vont la rejoindre."
       },
       {
         "id": "q2",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Qui est Bill et quel rôle joue-t-il dans l'histoire ?",
+        "text": "Où la maman d'Alice habite-t-elle pendant sa mission ?",
         "options": [
-          "C'est un pêcheur maori qui protège les eaux de Great Barrier",
-          "C'est un ancien pilote d'hélicoptère ayant travaillé en Australie et désormais retraité, voisin de la mère d'Alice sur l'île, qui l'invite à une sortie en mer",
-          "C'est le médecin qui s'est occupé de la mère d'Alice à l'hôpital d'Auckland",
-          "C'est le capitaine du cargo qui les emmène à Great Barrier"
+          "Dans un grand hôtel au centre d'Auckland",
+          "Dans un joli chalet en bois au milieu des montagnes du Jura",
+          "Dans l'hôpital où elle a été opérée",
+          "Dans une cabane sur pilotis, sur l'île de Great Barrier"
         ],
-        "answer": 1,
+        "correct": 3,
+        "answer": 3,
         "points": 1,
-        "correct": 1
+        "explanation": "Elle vit depuis un mois dans une petite « cabane » au bord de la mer, sur l'île de Great Barrier."
       },
       {
         "id": "q3",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Pourquoi Pita Witkaire, le chef maori, a-t-il tiré sur le Zodiac de Bill ?",
+        "text": "Que se passe-t-il quand Alice va chercher des jus de fruits sur le bateau ?",
         "options": [
-          "Il pensait que Bill chassait illégalement dans ses eaux territoriales",
-          "Il avait repéré Alice dans son cabanon et voulait la faire fuir de l'île",
-          "Il voulait tester son fusil à lunette depuis la falaise qui surplombe la baie",
-          "Il ne supportait plus de voir des bateaux de pêche sur les lieux où son dauphin ami avait été tué par des pêcheurs à la dynamite"
+          "Elle se cogne contre un grand Maori tatoué",
+          "Elle perd l'argent que son papa lui a donné",
+          "Elle se fait gronder par le capitaine du cargo",
+          "Elle voit un dauphin sauter près du bateau"
         ],
-        "answer": 3,
+        "correct": 0,
+        "answer": 0,
         "points": 1,
-        "correct": 3
+        "explanation": "Alice rebondit contre un colosse au visage tatoué. Il la regarde avec un air de défi et ne l'aide même pas à se relever."
       },
       {
         "id": "q4",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Quel est le cadeau de Noël que Pita offre à Alice ?",
+        "text": "Qu'est-ce qu'Alice découvre dans le cabanon, en haut de la falaise ?",
         "options": [
-          "Il lui apprend à exécuter le haka, la danse de guerre traditionnelle maorie",
-          "Il lui offre une statuette sculptée représentant un dauphin",
-          "Il l'emmène en mer assister au passage d'une horde de centaines de dauphins",
-          "Il lui prépare un festin de langoustes pêchées avec le vieux Bill"
+          "Une vieille carte au trésor dessinée sur une planche",
+          "Des langoustes enfermées dans des casiers",
+          "Une statuette grimaçante et un fusil à lunette",
+          "Un dauphin dessiné sur le mur en bois"
         ],
+        "correct": 2,
         "answer": 2,
         "points": 1,
-        "correct": 2
+        "explanation": "À l'entrée, il y a une statuette qui grimace. À l'intérieur, Alice voit du matériel de pêche, une corde et un fusil à lunette."
       },
       {
         "id": "q5",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Pourquoi Alice ne dit-elle rien de son escapade dans le bush à ses parents ni à Bill ?",
+        "text": "Que fait le Maori dans la clairière, au milieu de la forêt ?",
         "options": [
-          "Elle ne veut pas inquiéter sa mère qui est encore convalescente",
-          "Elle avait promis de ne pas emprunter les sentiers non balisés et avait pénétré dans une propriété privée",
-          "Elle pense que personne ne la croirait si elle parlait du Maori tatoué",
-          "Elle veut mener elle-même l'enquête sur l'identité de cet homme mystérieux"
+          "Il coupe du bois pour construire une pirogue",
+          "Il chasse les opossums avec son fusil",
+          "Il pêche des langoustes dans une rivière",
+          "Il danse une danse de guerre en criant"
         ],
-        "answer": 1,
+        "correct": 3,
+        "answer": 3,
         "points": 1,
-        "correct": 1
+        "explanation": "Le Maori chante, frappe le sol et ses cuisses, roule des yeux et tire la langue : c'est le haka, la danse de guerre maorie."
       },
       {
         "id": "q6",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Que révèle la réaction de Tobby, le chien de Bill, face à Pita Witkaire ?",
+        "text": "Que se passe-t-il pendant la partie de pêche avec Bill ?",
         "options": [
-          "Que le chien reconnaît Pita comme un habitant régulier de l'île",
-          "Qu'il est mal éduqué et réagit de manière imprévisible face aux inconnus",
-          "Que Pita inspire une peur instinctive même aux animaux, soulignant le danger qu'il représente",
-          "Que le chien a déjà été blessé par cet homme lors d'une rencontre précédente"
+          "Une énorme vague fait chavirer le Zodiac et le moteur",
+          "Quelqu'un tire sur le bateau depuis la côte",
+          "Tobby mord Bill en sautant dans l'eau",
+          "Le moteur tombe en panne loin de l'île"
         ],
-        "answer": 2,
+        "correct": 1,
+        "answer": 1,
         "points": 1,
-        "correct": 2
+        "explanation": "Deux coups de feu crèvent les boudins du Zodiac. Alice, Bill et Tobby doivent rejoindre la côte à la nage."
       },
       {
         "id": "q7",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Qu'est-ce que l'histoire de Pita et de son dauphin Sweety révèle sur la situation des Maoris ?",
+        "text": "Pourquoi Pita, le Maori, était-il si en colère contre les pêcheurs ?",
         "options": [
-          "Que les Maoris préfèrent vivre en isolation totale pour préserver leurs traditions",
-          "Que Pita est le seul Maori à encore pratiquer les anciennes coutumes de son peuple",
-          "Que les Maoris ont perdu leurs terres et leur mode de vie traditionnel, et que leur lien avec la nature est le dernier vestige de leur identité culturelle",
-          "Que les pêcheurs néo-zélandais respectent en général la nature et les coutumes maoies"
+          "Ils avaient volé toutes les terres de sa tribu maorie",
+          "Ils avaient pêché toutes les langoustes",
+          "Ils avaient tué son ami, le dauphin Sweety",
+          "Ils avaient cassé son fusil à lunette"
         ],
+        "correct": 2,
         "answer": 2,
         "points": 1,
-        "correct": 2
+        "explanation": "Des pêcheurs ont pêché à la dynamite, et le dauphin Sweety, avec qui Pita nageait chaque matin, est mort. Pita ne supporte plus les bateaux de pêche dans la baie."
       },
       {
         "id": "q8",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Pourquoi Alice écrit-elle à son amie Emma une lettre si détaillée sur les opossums ?",
+        "text": "Quel cadeau Pita offre-t-il à Alice le matin de Noël ?",
         "options": [
-          "Elle veut impressionner Emma avec ses connaissances scientifiques sur les espèces invasives",
-          "Elle partage une réflexion sur l'équilibre naturel et les conséquences désastreuses quand l'homme modifie l'écosystème, un thème qui fait écho à l'histoire de Pita et son dauphin",
-          "Elle cherche à décourager Emma de venir la rejoindre en Nouvelle-Zélande",
-          "Elle sait qu'Emma adore les animaux et veut lui faire découvrir cette espèce exotique"
+          "Il l'emmène voir des centaines de dauphins",
+          "Il lui offre une statuette en bois sculpté",
+          "Il lui apprend à danser le haka",
+          "Il lui fait un petit tatouage maori"
         ],
-        "answer": 1,
+        "correct": 0,
+        "answer": 0,
         "points": 1,
-        "correct": 1
+        "explanation": "Pita emmène Alice en bateau au large. Des centaines de dauphins passent en sautant : c'est le plus beau cadeau de Noël de sa vie."
       },
       {
         "id": "q9",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Alice et son père arrivent en Nouvelle-Zélande en plein hiver, sous la neige.",
-        "answer": false,
+        "text": "Pour aller sur l'île de Great Barrier, la famille doit prendre un cargo de marchandises.",
+        "correct": true,
+        "answer": true,
         "points": 1,
-        "correct": false
+        "explanation": "VRAI : il n'y a plus de ferry, car la ligne n'était pas rentable."
       },
       {
         "id": "q10",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "La mère d'Alice est géographe et se trouve en Nouvelle-Zélande pour une mission professionnelle.",
-        "answer": true,
+        "text": "Le vieux Bill parle très bien le français.",
+        "correct": false,
+        "answer": false,
         "points": 1,
-        "correct": true
+        "explanation": "FAUX : Bill parle le français « comme une vache espagnole ». Alice doit lui répondre en anglais."
       },
       {
         "id": "q11",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Pita Witkaire est un simple pêcheur maori qui vit seul sur l'île de Great Barrier.",
+        "text": "Selon Bill, les opossums sont des animaux utiles qui protègent la forêt.",
+        "correct": false,
         "answer": false,
         "points": 1,
-        "correct": false
+        "explanation": "FAUX : ils ont été amenés d'Australie et détruisent la forêt. Tuer un opossum est même devenu « un devoir national »."
       },
       {
         "id": "q12",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "À la fin du roman, Pita et ses amis maoris dansent le haka pour Alice et sa famille avant leur départ.",
+        "text": "À la fin, Pita casse son fusil et regrette ce qu'il a fait.",
+        "correct": true,
         "answer": true,
         "points": 1,
-        "correct": true
+        "explanation": "VRAI : quand il voit qu'ils auraient pu se noyer, il comprend son erreur. On le retrouve en train de pleurer, son fusil cassé en deux."
       },
       {
         "id": "q13",
-        "section": "Vocabulaire",
+        "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« Le Maori empoigna une sorte de casse-tête, lança un chant guttural et avança d'un pas en brandissant son arme. » Que signifie le mot guttural ?",
+        "text": "« J'étais toute raplapla en arrivant de l'autre côté de la Terre. » Que veut dire « raplapla » ?",
         "options": [
-          "Très mélodieux et agréable à entendre, comme un chant d'oiseau",
-          "Très doux et murmuré, pour ne pas être entendu de loin",
-          "Rauque et profond, qui vient du fond de la gorge",
-          "Aigu et perçant, qui résonne au loin comme un sifflet"
+          "Très en colère",
+          "Très joyeuse",
+          "Très fatiguée",
+          "Très affamée"
         ],
+        "correct": 2,
         "answer": 2,
         "points": 1,
-        "correct": 2
+        "explanation": "« Raplapla » est un mot familier qui veut dire fatigué, sans énergie. Alice a voyagé pendant presque deux jours."
       },
       {
         "id": "q14",
-        "section": "Vocabulaire",
+        "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« Je voulais lui demander s'il n'était pas plus prudent de rester sur ce qui restait du Zodiac, mais Bill ne m'a pas laissée tergiverser : si je me sentais capable de nager jusqu'à la côte, il fallait y aller maintenant. » Que signifie tergiverser ?",
+        "text": "« Les antipodes, on appelle ça. » Que sont les « antipodes » ?",
         "options": [
-          "Nager rapidement pour se mettre à l'abri",
-          "Hésiter, tarder à prendre une décision en cherchant des raisons de ne pas agir",
-          "Protester en criant pour exprimer son mécontentement",
-          "Demander de l'aide à voix haute pour attirer l'attention"
+          "L'endroit exactement de l'autre côté de la Terre",
+          "Les pays lointains où il fait chaud pendant toute l'année",
+          "Les îles où vivent les manchots",
+          "Les régions où on roule à gauche"
         ],
-        "answer": 1,
+        "correct": 0,
+        "answer": 0,
         "points": 1,
-        "correct": 1
+        "explanation": "Les antipodes, c'est le point de la Terre qui est à l'opposé de celui où l'on vit. La Nouvelle-Zélande est aux antipodes de la France."
       },
       {
         "id": "q15",
-        "section": "Vocabulaire",
+        "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« Il avait vu rouge en nous voyant pêcher sur les lieux du crime, mais il ne voulait pas aller jusque là. C'est en nous voyant dériver dangereusement qu'il avait réalisé ce qu'il avait fait. » Que signifie l'expression voir rouge ?",
+        "text": "« Le Maori empoigna une sorte de casse-tête. » Ici, qu'est-ce qu'un « casse-tête » ?",
         "options": [
-          "Apercevoir une couleur vive dans son champ de vision à cause du soleil",
-          "Regarder la mer avec inquiétude en espérant retrouver quelqu'un",
-          "Ressentir une grande tristesse face à une situation injuste",
-          "Être envahi par une colère si violente qu'on perd le contrôle de ses actes"
+          "Un jeu de réflexion difficile",
+          "Un fort mal de tête",
+          "Un tambour en bois",
+          "Une massue, une arme pour frapper"
         ],
+        "correct": 3,
         "answer": 3,
         "points": 1,
-        "correct": 3
+        "explanation": "Ici, le casse-tête est une arme : un bâton lourd, une massue que le guerrier maori brandit pendant sa danse."
       },
       {
         "id": "q16",
-        "section": "Synthèse",
-        "type": "mcq",
-        "text": "Un seul de ces trois résumés est totalement correct. Lequel ?",
+        "section": "Compréhension globale",
+        "type": "synthesis",
+        "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Résumé A : Alice et son père rejoignent sa mère en Nouvelle-Zélande. Lors d'une sortie en mer avec Bill, un pêcheur maori nommé Pita tire sur leur bateau car il les prend pour des braconniers d'opossums. Alice retrouve Pita dans le bush, lui offre une statuette de dauphin sculptée et Pita accepte d'accompagner la famille pour leur retour en France.",
-          "Résumé B : Alice et son père rejoignent sa mère convalescente en Nouvelle-Zélande sur l'île de Great Barrier. Lors d'une sortie en mer avec leur voisin Bill, leur Zodiac est pris pour cible par Pita, un chef maori blessé par la mort de son dauphin ami. Alice fait la connaissance de Pita dans le bush, découvre sa culture et apaise sa colère. Pour Noël, Pita lui offre le spectacle d'une horde de dauphins et lui danse un haka d'adieu.",
-          "Résumé C : Alice et son père partent en vacances de Noël en Nouvelle-Zélande. Après le naufrage de leur Zodiac provoqué par Pita, Alice avoue immédiatement l'incident à ses parents. Son père et Bill portent plainte auprès des autorités de l'île, mais Alice convainc la police de pardonner à Pita après qu'il lui a appris à danser le haka."
+          "Résumé A : Alice part en Nouvelle-Zélande pour apprendre à nager avec les dauphins. Elle rencontre Pita, un moniteur maori, qui l'entraîne tous les jours. À la fin des vacances, elle gagne une course de natation.",
+          "Résumé B : Alice rejoint sa maman blessée en Nouvelle-Zélande. Un Maori tatoué lui fait peur et tire même sur leur bateau. Elle découvre qu'il pleure son dauphin tué par des pêcheurs, et ils deviennent amis.",
+          "Résumé C : Alice passe Noël dans le Jura avec ses parents. Un soir, un Maori vient frapper à la porte du chalet pour leur raconter l'histoire de son peuple et leur apprendre le haka."
         ],
+        "correct": 1,
         "answer": 1,
         "points": 1,
-        "correct": 1
+        "explanation": "Seul le résumé B est correct : l'accident de la maman, la peur du Maori, les coups de feu, le dauphin Sweety et l'amitié finale."
       }
     ]
   },
@@ -232,216 +248,232 @@ window.LIVRES = [
         "id": "q1",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Quelles difficultés traversent le père de Marine au début de l'histoire ?",
+        "text": "Pourquoi Marine ne voit-elle son papa qu'un week-end sur deux ?",
         "options": [
-          "Il est gravement malade et doit être hospitalisé",
-          "Il a eu un accident de voiture et ne peut plus travailler",
-          "Il souffre d'une dépression liée à la séparation, à la perte de son travail et au deuil de son père",
-          "Il est en conflit avec sa fille et ne veut plus la voir"
+          "Parce que son papa travaille loin, à l'étranger",
+          "Parce qu'elle va en pension toute la semaine",
+          "Parce que ses parents sont séparés",
+          "Parce que son papa est à l'hôpital"
         ],
+        "correct": 2,
         "answer": 2,
         "points": 1,
-        "correct": 2
+        "explanation": "Les parents de Marine ne s'aiment plus et se sont séparés. Elle va chez son papa tous les quinze jours."
       },
       {
         "id": "q2",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Quel objet insolite et volumineux, lié à la passion de son père, Marine découvre-t-elle dans le débarras ?",
+        "text": "Pourquoi le papa de Marine est-il si triste ?",
         "options": [
-          "Des cartons remplis de vieilles photos de famille",
-          "Le premier vélo de son père",
-          "Une grande bâche en toile épaisse qui servait à faire une montgolfière",
-          "Une collection de maquettes d'avions"
+          "Il est séparé, il a perdu son travail et son papa lui manque",
+          "Il s'est cassé la jambe en tombant de sa vieille montgolfière",
+          "Il doit déménager très loin de sa fille",
+          "Ses amis se sont fâchés avec lui à cause d'une dispute"
         ],
-        "answer": 2,
+        "correct": 0,
+        "answer": 0,
         "points": 1,
-        "correct": 2
+        "explanation": "Alain souffre de dépression : la séparation, la perte de son travail et la mort de Papi lui pèsent beaucoup."
       },
       {
         "id": "q3",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Pourquoi Marine ne peut-elle pas monter dans la montgolfière lors du premier essai en plein air ?",
+        "text": "Que trouve Marine dans le débarras de l'appartement ?",
         "options": [
-          "La montgolfière est trop lourde pour emporter deux personnes",
-          "L'autorisation de vol n'est pas encore accordée par les autorités",
-          "Son père doit d'abord faire des vols d'essai seul pour vérifier que tout est sûr",
-          "La météo se dégrade et le vol doit être annulé"
+          "Un vieux vélo tout neuf, jamais utilisé",
+          "Une boîte de lettres d'amour de ses parents",
+          "Un parachute rangé dans une valise",
+          "Un gros sac avec une immense bâche trouée"
         ],
-        "answer": 2,
+        "correct": 3,
+        "answer": 3,
         "points": 1,
-        "correct": 2
+        "explanation": "Tout en haut de l'étagère, un sac lourd et poussiéreux contient une grande bâche : c'est le ballon d'une vieille montgolfière."
       },
       {
         "id": "q4",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Quelle idée de reconversion professionnelle Alain trouve-t-il lors du vol ?",
+        "text": "Pourquoi Marine demande-t-elle à sa maman de lui apprendre à coudre ?",
         "options": [
-          "Devenir professeur de sport et enseigner l'aéronautique",
-          "Ouvrir un musée consacré à l'histoire des montgolfières",
-          "Proposer des excursions touristiques en montgolfière et aider les gens à en construire",
-          "Travailler comme pilote pour une compagnie aérienne"
+          "Pour se fabriquer un costume de carnaval",
+          "Pour réparer les trous du ballon",
+          "Pour offrir un coussin à son papa",
+          "Pour un devoir de travaux manuels"
         ],
-        "answer": 2,
+        "correct": 1,
+        "answer": 1,
         "points": 1,
-        "correct": 2
+        "explanation": "Le ballon est plein de petits trous. Marine et sa maman les bouchent avec des morceaux de tissu de toutes les couleurs."
       },
       {
         "id": "q5",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Pourquoi Marine décide-t-elle d'apprendre à coudre sans dire à sa mère pour quoi faire ?",
+        "text": "Où se trouve la nacelle de la montgolfière ?",
         "options": [
-          "Elle sait que sa mère lui interdirait de toucher à la vieille montgolfière",
-          "Elle veut garder la surprise pour sa mère également",
-          "Elle craint que révéler trop tôt son plan ne le fasse échouer si son père change d'avis",
-          "Elle a honte de son projet et ne veut pas qu'on se moque d'elle"
+          "Dans la remise de Papi",
+          "Dans la cave de l'immeuble",
+          "Dans le champ de l'amie de sa maman",
+          "Dans le garage d'un voisin"
         ],
-        "answer": 2,
+        "correct": 0,
+        "answer": 0,
         "points": 1,
-        "correct": 2
+        "explanation": "La nacelle, la grande caisse en osier, est restée dans l'atelier de son grand-père, qui est décédé."
       },
       {
         "id": "q6",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Que symbolisent les sacs de lest qu'Alain jette par-dessus bord avant le décollage ?",
+        "text": "Pourquoi Marine ne peut-elle pas voler lors du premier essai ?",
         "options": [
-          "La fin du stage d'essai et le début du vol officiel autorisé",
-          "Le poids du matériel inutile qu'il faut alléger pour voler",
-          "Les fardeaux émotionnels — deuil, chagrin, travail perdu — dont il se libère enfin",
-          "La confiance qu'il place dans le travail de réparation fait par Marine et sa mère"
+          "Il y a trop de vent et de pluie ce jour-là",
+          "Sa maman refuse absolument qu'elle monte dans la nacelle",
+          "Son papa doit d'abord tester seul le matériel",
+          "Elle a peur et préfère rester au sol"
         ],
+        "correct": 2,
         "answer": 2,
         "points": 1,
-        "correct": 2
+        "explanation": "Alain doit faire des vols d'essai pour vérifier que tout fonctionne sans danger. Marine l'aide depuis le sol."
       },
       {
         "id": "q7",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Pourquoi Mireille, la mère de Marine, aide-t-elle son ex-compagnon à aller mieux malgré leur séparation ?",
+        "text": "Pendant le vol, quelle idée de nouveau métier le papa a-t-il ?",
         "options": [
-          "Elle espère secrètement que cette aventure les rapprochera et qu'ils se remettront ensemble",
-          "Elle agit uniquement pour faire plaisir à Marine et ne pense pas vraiment à Alain",
-          "Alain est le père de Marine pour toujours, et elle sera toujours là pour lui si besoin",
-          "Elle se sent coupable de la dépression d'Alain et veut réparer ses torts"
+          "Devenir professeur de sciences",
+          "Réparer des machines à coudre",
+          "Vendre des bouteilles de propane",
+          "Proposer des balades en montgolfière"
         ],
-        "answer": 2,
+        "correct": 3,
+        "answer": 3,
         "points": 1,
-        "correct": 2
+        "explanation": "Alain pense proposer des tours en montgolfière aux touristes. Il serait son propre chef et vivrait de sa passion."
       },
       {
         "id": "q8",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Que révèle la montgolfière phosphorescente collée au plafond de la chambre de Marine sur le rôle de sa mère dans cette aventure ?",
+        "text": "Quelle surprise la maman de Marine lui a-t-elle préparée à la fin ?",
         "options": [
-          "Sa mère veut lui montrer qu'elle est fière d'elle et de ses résultats scolaires",
-          "Sa mère a voulu décorer la chambre pour lui changer les idées",
-          "Sa mère tient à lui rappeler qu'elle aussi a participé pleinement au projet, scellant l'unité de la famille",
-          "Sa mère lui fait comprendre qu'elle aimerait aussi faire un tour en montgolfière"
+          "Un billet pour faire un deuxième tour en montgolfière avec sa maman",
+          "Une montgolfière qui brille dans le noir au plafond",
+          "Un gâteau en forme de montgolfière",
+          "Un livre sur l'histoire des montgolfières"
         ],
-        "answer": 2,
+        "correct": 1,
+        "answer": 1,
         "points": 1,
-        "correct": 2
+        "explanation": "Quand Marine éteint la veilleuse, elle découvre au plafond une grande montgolfière faite de petits morceaux phosphorescents."
       },
       {
         "id": "q9",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Marine comprend immédiatement ce que signifie le mot « dépression » quand elle l'entend pour la première fois.",
-        "answer": false,
+        "text": "Marine a lu et appris beaucoup de choses sur les montgolfières avant le vol.",
+        "correct": true,
+        "answer": true,
         "points": 1,
-        "correct": false
+        "explanation": "VRAI : pendant deux semaines, elle se renseigne sur leur histoire et leur fabrication."
       },
       {
         "id": "q10",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "C'est la mère de Marine qui lui apprend à coudre pour l'aider à réparer la bâche de la montgolfière.",
-        "answer": true,
+        "text": "Le papa de Marine a décollé seul avec la montgolfière du toit de l'immeuble.",
+        "correct": false,
+        "answer": false,
         "points": 1,
-        "correct": true
+        "explanation": "FAUX : il faut un grand champ. C'est le champ de la meilleure amie de sa maman qui sert de lieu de départ."
       },
       {
         "id": "q11",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Le premier vol en montgolfière se déroule sans aucun incident et l'atterrissage est parfaitement réussi.",
-        "answer": false,
+        "text": "Avant de décoller, Marine et son papa jettent les sacs de sable qui retiennent la montgolfière au sol.",
+        "correct": true,
+        "answer": true,
         "points": 1,
-        "correct": false
+        "explanation": "VRAI : pour Alain, ces sacs ressemblent à ses soucis. Il les laisse tomber un par un."
       },
       {
         "id": "q12",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "À la fin de l'histoire, la montgolfière est rangée dans le cabanon du grand-père de Marine.",
-        "answer": true,
+        "text": "À l'atterrissage, la nacelle se pose tout en douceur.",
+        "correct": false,
+        "answer": false,
         "points": 1,
-        "correct": true
+        "explanation": "FAUX : la nacelle se couche et les deux passagers tombent par terre… en riant !"
       },
       {
         "id": "q13",
-        "section": "Vocabulaire",
+        "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« L'émotion était palpable chez la jeune fille. » Que signifie le mot palpable ?",
+        "text": "« Marine l'avait entendu prononcer le mot dépression en parlant de lui. » Ici, la « dépression » est…",
         "options": [
-          "Difficile à comprendre et à expliquer",
-          "Très légère et à peine visible",
-          "Si forte et si évidente qu'on peut presque la toucher",
-          "Cachée derrière un grand sourire forcé"
+          "une tempête de vent et de pluie annoncée à la météo du soir",
+          "une maladie qui rend très triste et sans énergie",
+          "une grande fatigue après le sport",
+          "une colère très forte"
         ],
-        "answer": 2,
+        "correct": 1,
+        "answer": 1,
         "points": 1,
-        "correct": 2
+        "explanation": "Ici, la dépression est une maladie : la personne est très triste et n'a plus envie de rien. Marine avait déjà entendu ce mot à la météo, avec un autre sens."
       },
       {
         "id": "q14",
-        "section": "Vocabulaire",
+        "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« Il avait beau être indestructible à ses yeux, il ne l'était probablement pas en réalité. » Un peu plus tôt, on dit qu'il est « fraîchement coupé de tout ». Que signifie l'expression coupé de tout dans ce contexte ?",
+        "text": "« Il ne fallait surtout pas vendre la mèche. » Que veut dire « vendre la mèche » ?",
         "options": [
-          "Blessé physiquement et incapable de bouger",
-          "Parti en voyage loin de sa famille",
-          "Isolé, séparé des gens et des choses qui donnaient un sens à sa vie",
-          "Trop occupé pour voir sa fille régulièrement"
+          "Acheter de quoi allumer le brûleur",
+          "Couper ses cheveux très court",
+          "Faire une bêtise en cachette",
+          "Révéler un secret sans le vouloir"
         ],
-        "answer": 2,
+        "correct": 3,
+        "answer": 3,
         "points": 1,
-        "correct": 2
+        "explanation": "« Vendre la mèche », c'est dévoiler un secret. Marine ne veut pas que son papa découvre sa surprise trop tôt."
       },
       {
         "id": "q15",
-        "section": "Vocabulaire",
+        "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« Elle vérifia les derniers points importants. Elle agissait comme une vraie professionnelle. » Que révèle ce mot sur l'attitude de Marine ?",
+        "text": "« Son père resta coi devant les efforts de sa fille. » Que veut dire « rester coi » ?",
         "options": [
-          "Elle a suivi une formation officielle pour apprendre à voler",
-          "Elle gagne de l'argent grâce à ses compétences en couture",
-          "Elle prend ses responsabilités au sérieux et accomplit sa mission avec rigueur et compétence",
-          "Elle imite les gestes de son père pour apprendre le plus vite possible"
+          "Rester silencieux, sans voix",
+          "Rester assis sans bouger",
+          "Rester fâché longtemps",
+          "Rester dans son lit"
         ],
-        "answer": 2,
+        "correct": 0,
+        "answer": 0,
         "points": 1,
-        "correct": 2
+        "explanation": "Rester coi, c'est ne plus savoir quoi dire, être tellement surpris qu'on reste silencieux."
       },
       {
         "id": "q16",
-        "section": "Synthèse",
-        "type": "mcq",
-        "text": "Un seul de ces trois résumés est totalement correct. Lequel ?",
+        "section": "Compréhension globale",
+        "type": "synthesis",
+        "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Résumé A : Marine découvre une montgolfière dans le débarras et apprend à coudre seule pour la réparer. Lors du premier vol d'essai, elle monte directement dans la nacelle avec son père et sa mère. Alain décide ensuite de devenir pilote de ligne pour une grande compagnie aérienne.",
-          "Résumé B : Après un grave accident de voiture qui empêche son père de travailler, Marine répare une montgolfière pour lui offrir un baptême de l'air. Alain et son ex-femme Mireille décident de se remettre ensemble après avoir survolé leur village et ouvrent un musée de l'aviation.",
-          "Résumé C : Pour aider son père Alain à surmonter une profonde dépression, Marine décide de restaurer une vieille montgolfière trouvée dans le débarras. Avec l'aide de sa mère qui lui apprend la couture en secret, elle répare la toile. Alain retrouve l'espoir lors d'un vol partagé avec sa fille Marine, trouve sa vocation dans le tourisme aérien et la famille retrouve enfin la sérénité."
+          "Résumé A : Marine part en vacances avec sa maman et fait son premier tour en montgolfière. Là-haut, elle aperçoit la maison de son papa et décide de lui écrire une longue lettre.",
+          "Résumé B : Le papa de Marine gagne une montgolfière à un concours. Il emmène sa fille faire le tour du monde, mais un orage les oblige à atterrir dans un pays inconnu.",
+          "Résumé C : Marine voit que son papa est très triste. Avec l'aide de sa maman, elle répare la vieille montgolfière qu'elle a trouvée chez lui. Leur vol ensemble redonne le sourire à son papa."
         ],
+        "correct": 2,
         "answer": 2,
         "points": 1,
-        "correct": 2
+        "explanation": "Seul le résumé C est correct : la tristesse du papa, la bâche retrouvée, les réparations avec la maman et le vol qui lui fait du bien."
       }
     ]
   },
@@ -455,216 +487,232 @@ window.LIVRES = [
         "id": "q1",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Comment Francis et Frédéric font-ils la connaissance de Mathieu Roy ?",
+        "text": "Dans quelle ville vivent Francis et Frédéric ?",
         "options": [
-          "Ils le rencontrent au Centre de vacances Champlain lors d'une sortie scolaire",
-          "Ils trouvent son portefeuille dans la neige en cherchant un gant perdu",
-          "Leur père le connaît depuis ses années de ski alpin",
-          "Ils l'aperçoivent dans le vestibule du Château Frontenac et l'abordent"
+          "À Québec, au Canada",
+          "À Montréal, au Canada",
+          "À Paris, en France",
+          "À Genève, en Suisse"
         ],
-        "answer": 1,
+        "correct": 0,
+        "answer": 0,
         "points": 1,
-        "correct": 1
+        "explanation": "Les jumeaux habitent à Québec, une ville au bord du fleuve Saint-Laurent, où il neige beaucoup en hiver."
       },
       {
         "id": "q2",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Quel est le métier de Mathieu Roy ?",
+        "text": "Que trouve Francis dans la neige en cherchant le gant de son frère ?",
         "options": [
-          "Il est moniteur de ski alpin dans une école privée",
-          "Il travaille au Centre de vacances Champlain où il donne des cours, accueille les visiteurs et guide des promenades en traîneaux à chiens",
-          "Il est guide touristique au Château Frontenac",
-          "Il est champion de snowboard et participe à des compétitions professionnelles"
+          "Une paire de lunettes de ski cassée",
+          "Un téléphone portable encore allumé",
+          "Un portefeuille rempli de cartes et de billets",
+          "Une clé de voiture avec un porte-clés rouge"
         ],
-        "answer": 1,
+        "correct": 2,
+        "answer": 2,
         "points": 1,
-        "correct": 1
+        "explanation": "Frédéric a glissé sur une plaque de glace et a perdu son gant. En le cherchant, Francis trouve le portefeuille de Mathieu Roy."
       },
       {
         "id": "q3",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Que découvrent Francis et Frédéric en regardant par la fenêtre de la cabane blanche ?",
+        "text": "Comment les jumeaux vérifient-ils que l'homme est bien Mathieu Roy ?",
         "options": [
-          "Les trophées volés cachés sous des couvertures",
-          "Kevin et Sacha en train de forcer l'étagère des trophées",
-          "Mathieu ligoté et immobile",
-          "Le cadenas cassé et la porte grande ouverte"
+          "Ils lui demandent de leur montrer sa carte d'identité avec sa photo",
+          "Ils lui posent des questions sur ce qu'il y a dans le portefeuille",
+          "Ils demandent au réceptionniste du château",
+          "Ils appellent leurs parents pour les aider"
         ],
-        "answer": 2,
+        "correct": 1,
+        "answer": 1,
         "points": 1,
-        "correct": 2
+        "explanation": "Les garçons ont appris par cœur son adresse, son âge et ses cartes. Ils lui posent des questions pour ne pas se faire avoir."
       },
       {
         "id": "q4",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Pourquoi Kevin et Sacha ont-ils volé les trophées ?",
+        "text": "Pour remercier les jumeaux, que leur propose Mathieu ?",
         "options": [
-          "Ils voulaient les revendre à des collectionneurs de sport",
-          "Ils voulaient se venger de Mathieu après une dispute",
-          "Ils voulaient revendre le cuivre et les autres métaux qu'ils contenaient",
-          "Ils voulaient saboter la compétition de snowboard"
+          "De l'argent pour acheter des jeux vidéo",
+          "Un bon repas au restaurant chic du Château Frontenac",
+          "Une nouvelle paire de gants chauds",
+          "Une journée au Centre de vacances Champlain"
         ],
-        "answer": 2,
+        "correct": 3,
+        "answer": 3,
         "points": 1,
-        "correct": 2
+        "explanation": "Mathieu travaille au Centre de vacances Champlain. Il invite les jumeaux à y passer une journée pour essayer les sports d'hiver."
       },
       {
         "id": "q5",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Pourquoi Francis et Frédéric vérifient-ils l'identité de Mathieu Roy avant de lui remettre son portefeuille ?",
+        "text": "Que se passe-t-il au sommet du télésiège ?",
         "options": [
-          "Leur père leur a appris à toujours se méfier des inconnus",
-          "Ils veulent s'assurer de ne pas remettre le portefeuille à un imposteur",
-          "Ils espèrent que Mathieu leur offrira une récompense s'ils prouvent qu'ils sont honnêtes",
-          "Ils veulent retarder le moment de lui rendre son argent"
+          "Francis perd son snow dans le vide",
+          "Le télésiège tombe en panne pendant une heure",
+          "Francis n'ose pas sauter et reste assis",
+          "Frédéric tombe et se fait mal au dos"
         ],
-        "answer": 1,
+        "correct": 2,
+        "answer": 2,
         "points": 1,
-        "correct": 1
+        "explanation": "Francis a peur de sauter. Il reste seul sur le télésiège, et le préposé doit arrêter la machine pour qu'il descende."
       },
       {
         "id": "q6",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Pourquoi Francis ne saute-t-il pas du télésiège avec les autres lors de la première montée ?",
+        "text": "Qu'entend Francis quand il est coincé entre deux grosses pierres ?",
         "options": [
-          "Il a le vertige et a peur de tomber dans le vide",
-          "Il n'a pas encore réussi à boucler correctement sa fixation de snowboard",
-          "Il veut voir jusqu'où le télésiège va le mener",
-          "Il a oublié son casque sur le siège et veut le récupérer"
+          "Deux garçons qui parlent de compétitions et de cuivre",
+          "Un chien de traîneau qui aboie très fort",
+          "Son frère qui l'appelle en criant depuis le haut du télésiège",
+          "Mathieu qui donne une leçon de snow"
         ],
+        "correct": 0,
         "answer": 0,
         "points": 1,
-        "correct": 0
+        "explanation": "Francis entend deux voix qui parlent de « quatre compétitions » et d'une « manne de cuivre ». L'un d'eux porte du jaune citron."
       },
       {
         "id": "q7",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Comment Francis reconnaît-il Kevin parmi la foule lors de la remise des trophées ?",
+        "text": "Qu'est-ce que Mathieu montre aux jumeaux au bout du long tunnel ?",
         "options": [
-          "Il reconnaît son manteau jaune citron identique à celui de Mathieu",
-          "Il reconnaît sa voix, qu'il avait déjà entendue quand il était coincé dans le button",
-          "Il le voit sortir les trophées de son sac à dos devant la foule",
-          "Frédéric lui signale discrètement la présence de l'homme suspect"
+          "Une grotte avec des chauves-souris",
+          "La petite cabane blanche où sont gardés tous les trophées",
+          "Une patinoire cachée dans la forêt",
+          "Le Château de glace, fait de neige et de glace"
         ],
-        "answer": 1,
+        "correct": 3,
+        "answer": 3,
         "points": 1,
-        "correct": 1
+        "explanation": "Le tunnel mène au Château de glace : il contient un salon, un restaurant, une glissade et même des chambres avec des lits de glace."
       },
       {
         "id": "q8",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Que révèle le comportement des jumeaux tout au long de l'histoire ?",
+        "text": "Pourquoi les voleurs ont-ils pris les trophées ?",
         "options": [
-          "Ils sont imprudents et se mettent souvent en danger par manque de réflexion",
-          "Ils sont honnêtes, curieux et capables de faire preuve de courage au bon moment",
-          "Ils dépendent entièrement de Mathieu pour prendre les bonnes décisions",
-          "Ils préfèrent s'amuser plutôt que d'aider les adultes en difficulté"
+          "Pour les offrir aux perdants de la compétition",
+          "Pour revendre le cuivre et les métaux",
+          "Pour faire une blague au présentateur",
+          "Pour les garder comme souvenirs"
         ],
+        "correct": 1,
         "answer": 1,
         "points": 1,
-        "correct": 1
+        "explanation": "Kevin et Sacha voulaient revendre le cuivre et les autres métaux des trophées. Ils ont ligoté et assommé Mathieu."
       },
       {
         "id": "q9",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Francis et Frédéric sont des jumeaux de dix ans qui habitent à Montréal.",
-        "answer": false,
+        "text": "Les jumeaux ont dix ans et n'ont pas encore de téléphone portable.",
+        "correct": true,
+        "answer": true,
         "points": 1,
-        "correct": false
+        "explanation": "VRAI : leurs parents trouvent qu'ils sont trop jeunes. Ils utilisent une cabine téléphonique pour appeler Mathieu."
       },
       {
         "id": "q10",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Le père des jumeaux a abandonné le ski alpin après un accident grave qui l'a conduit à l'hôpital.",
-        "answer": true,
+        "text": "Dès la première leçon, Francis et Frédéric sont très doués en snow.",
+        "correct": false,
+        "answer": false,
         "points": 1,
-        "correct": true
+        "explanation": "FAUX : ils tombent tout le temps. Ils sont même entourés de petits enfants qui skient mieux qu'eux !"
       },
       {
         "id": "q11",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Le Château de glace où emmène Mathieu les jumeaux est construit chaque hiver avec de la neige et de la glace.",
+        "text": "Le papa des jumeaux a arrêté le ski après un grave accident.",
+        "correct": true,
         "answer": true,
         "points": 1,
-        "correct": true
+        "explanation": "VRAI : il gagnait beaucoup de médailles, mais une chute l'a envoyé à l'hôpital pendant quelques mois."
       },
       {
         "id": "q12",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Kevin est arrêté parce que Francis le reconnaît à son manteau jaune citron.",
+        "text": "C'est Mathieu qui a volé les trophées de la compétition.",
+        "correct": false,
         "answer": false,
         "points": 1,
-        "correct": false
+        "explanation": "FAUX : Mathieu est la victime : les voleurs l'ont ligoté et assommé dans la cabane. Le coupable est un employé en jaune, Kevin."
       },
       {
         "id": "q13",
-        "section": "Vocabulaire",
+        "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« Marcher m'oxygène le cerveau, me donne des couleurs aux joues, avive ma bonne humeur et mon goût d'aventure. » Que signifie le verbe aviver dans ce contexte ?",
+        "text": "« Maman va me chicaner. » Que veut dire « chicaner » au Québec ?",
         "options": [
-          "Calmer et apaiser une émotion trop forte",
-          "Stimuler, rendre plus vif et plus intense",
-          "Créer quelque chose à partir de rien",
-          "Partager quelque chose avec les autres"
+          "Féliciter",
+          "Chatouiller",
+          "Consoler",
+          "Disputer, gronder"
         ],
-        "answer": 1,
+        "correct": 3,
+        "answer": 3,
         "points": 1,
-        "correct": 1
+        "explanation": "Au Québec, « chicaner » veut dire disputer, gronder. Le lexique à la fin du livre l'explique."
       },
       {
         "id": "q14",
-        "section": "Vocabulaire",
+        "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« Je veux vous récompenser pour votre droiture. » Que signifie le mot droiture ?",
+        "text": "« Mets ta tuque avant de sortir. » Qu'est-ce qu'une « tuque » ?",
         "options": [
-          "La rapidité avec laquelle les jumeaux ont retrouvé le portefeuille",
-          "Le courage dont ils ont fait preuve en affrontant un inconnu",
-          "L'honnêteté et le sens moral qui les ont poussés à rendre le portefeuille",
-          "L'adresse dont ils ont fait preuve pour identifier le propriétaire"
+          "Une paire de gants",
+          "Un bonnet de laine",
+          "Une grosse écharpe",
+          "Un manteau à capuchon"
         ],
-        "answer": 2,
+        "correct": 1,
+        "answer": 1,
         "points": 1,
-        "correct": 2
+        "explanation": "Au Québec, une tuque est un bonnet de laine. Celui de Francis porte le logo des joueurs de hockey de Montréal."
       },
       {
         "id": "q15",
-        "section": "Vocabulaire",
+        "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« C'est une construction éphémère contenant 15 000 tonnes de neige et 500 tonnes de glace. » Que signifie le mot éphémère ?",
+        "text": "« Je suis plus poche que je pensais. » Au Québec, être « poche », c'est être…",
         "options": [
-          "Qui dure très longtemps grâce à des matériaux solides",
-          "Qui ne dure que peu de temps, destiné à disparaître",
-          "Qui est construit par des dizaines d'ouvriers spécialisés",
-          "Qui résiste aux températures les plus extrêmes"
+          "très rapide",
+          "très courageux",
+          "maladroit, pas doué",
+          "très fatigué"
         ],
-        "answer": 1,
+        "correct": 2,
+        "answer": 2,
         "points": 1,
-        "correct": 1
+        "explanation": "Être « poche », c'est être malhabile. Francis tombe sans arrêt sur la piste des débutants."
       },
       {
         "id": "q16",
-        "section": "Synthèse",
-        "type": "mcq",
-        "text": "Un seul de ces trois résumés est totalement correct. Lequel ?",
+        "section": "Compréhension globale",
+        "type": "synthesis",
+        "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Résumé A : Les jumeaux Francis et Frédéric rendent un portefeuille égaré à Mathieu Roy, moniteur au Québec. Pour les remercier, Mathieu leur fait découvrir les sports d'hiver. Mais les garçons découvrent Mathieu ligoté par Kevin et Sacha, venus voler des trophées en cuivre. Après avoir libéré leur ami, Francis identifie Kevin grâce à sa voix lors de la cérémonie et permet l'arrestation des voleurs.",
-          "Résumé B : En vacances à Montréal, Francis et Frédéric trouvent un portefeuille et le remettent à la police. Mathieu Roy les invite au Château Frontenac où il est directeur. Les jumeaux aperçoivent deux hommes en train de voler des snowboards et Kevin est immédiatement arrêté car Francis reconnaît son manteau jaune citron.",
-          "Résumé C : Francis et Frédéric retrouvent le portefeuille de leur père sur les pistes de ski. Lors d'une sortie en traîneau à chiens avec Mathieu, les jumeaux sont capturés et enfermés dans la cabane blanche par deux braconniers. Mathieu parvient à défoncer la porte et à maîtriser seul Kevin et Sacha."
+          "Résumé A : Les jumeaux Francis et Frédéric rendent un portefeuille perdu à son propriétaire, Mathieu. Pour les remercier, il les invite dans un centre de sports d'hiver. Là-bas, Francis démasque un employé qui a volé les trophées d'une compétition.",
+          "Résumé B : Les jumeaux Francis et Frédéric gagnent une compétition de snow au Centre Champlain. Mais leurs trophées sont volés pendant la nuit, et ils mènent l'enquête avec leur papa, ancien champion de ski.",
+          "Résumé C : Les jumeaux Francis et Frédéric se perdent dans une tempête de neige à Québec. Ils trouvent refuge dans le Château de glace, où Mathieu les retrouve le lendemain matin."
         ],
+        "correct": 0,
         "answer": 0,
         "points": 1,
-        "correct": 0
+        "explanation": "Seul le résumé A est correct : le portefeuille rendu, la journée au centre Champlain et le vol des trophées découvert par Francis."
       }
     ]
   },
@@ -678,216 +726,232 @@ window.LIVRES = [
         "id": "q1",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Pourquoi Aiko a-t-elle fugué du collège Momiji ?",
+        "text": "Au début de l'histoire, pourquoi les parents d'Aiko sont-ils si fâchés ?",
         "options": [
-          "Elle s'ennuyait dans ses cours et préférait rentrer chez elle",
-          "Elle s'était disputée violemment avec la préfète de discipline",
-          "Elle avait vécu des phénomènes surnaturels terrifiants et craignait pour sa vie",
-          "Elle voulait retrouver sa sœur Nanako qui lui manquait trop"
+          "Elle a eu de mauvaises notes au collège",
+          "Elle a cassé la tablette qu'ils lui avaient offerte",
+          "Elle a amené une amie sans les prévenir",
+          "Elle s'est enfuie du pensionnat"
         ],
-        "answer": 2,
+        "correct": 3,
+        "answer": 3,
         "points": 1,
-        "correct": 2
+        "explanation": "Aiko a fugué du collège Momiji. Pour ses parents, elle salit l'honneur de la famille."
       },
       {
         "id": "q2",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Que représente la poupée traditionnelle que Yui possède dans sa chambre ?",
+        "text": "Qu'est-ce qui est interdit dans les chambres du collège Momiji ?",
         "options": [
-          "Un souvenir de sa mère décédée qu'elle garde précieusement",
-          "Une poupée ordinaire que la préfète a acceptée par exception",
-          "Une poupée de Hina-matsuri représentant l'impératrice de la cour Heian, transmise de génération en génération",
-          "Une figurine artisanale qu'elle a fabriquée elle-même en cours de calligraphie"
+          "Les posters, les miroirs et les objets personnels",
+          "Les livres de poésie et les cahiers",
+          "Les lampes de travail allumées après vingt heures du soir",
+          "Les visites des autres élèves"
         ],
-        "answer": 2,
+        "correct": 0,
+        "answer": 0,
         "points": 1,
-        "correct": 2
+        "explanation": "Les chambres doivent rester vides : pas de poster, pas de miroir. Les élèves doivent penser à la communauté plutôt qu'à elles-mêmes."
       },
       {
         "id": "q3",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Comment Aiko parvient-elle à détruire les deux poupées maléfiques ?",
+        "text": "Que remarque Aiko en se regardant dans l'écran éteint de sa tablette ?",
         "options": [
-          "Elle les brûle dans la cheminée de la salle commune",
-          "Elle les jette dans l'étang aux carpes koï de la cour zen",
-          "Elle les enterre sous le cerisier de la cour intérieure",
-          "Elle les place dans le four à micro-ondes de la cuisine du collège"
+          "Son visage n'apparaît pas du tout",
+          "Une autre élève se tient derrière elle",
+          "Son reflet bouge un peu après elle",
+          "L'écran se rallume tout seul"
         ],
-        "answer": 3,
+        "correct": 2,
+        "answer": 2,
         "points": 1,
-        "correct": 3
+        "explanation": "Aiko a l'impression d'un léger décalage : son reflet hésite une fraction de seconde avant de faire la même grimace qu'elle."
       },
       {
         "id": "q4",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Quel prétexte Aiko invente-t-elle pour échapper à la préfète de discipline et fuir le collège ?",
+        "text": "Pourquoi Aiko aime-t-elle tant les cours de poésie ?",
         "options": [
-          "Elle dit qu'elles doivent soigner Yui qui s'est blessée",
-          "Elle prétend qu'une urgence familiale les oblige à rentrer immédiatement",
-          "Elle dit que le proviseur les a convoquées pour préparer la fête des poupées Hina-matsuri",
-          "Elle affirme que leur professeur de calligraphie les attend à la bibliothèque"
+          "Parce que sa maman est une poétesse célèbre",
+          "Parce qu'elle rêve d'écrire des haïkus",
+          "Parce qu'elle y retrouve sa petite sœur",
+          "Parce que ce cours se fait en plein air"
         ],
-        "answer": 2,
+        "correct": 1,
+        "answer": 1,
         "points": 1,
-        "correct": 2
+        "explanation": "Aiko adore les haïkus, ces petits poèmes japonais de 17 syllabes. En secret, elle rêve de devenir poétesse."
       },
       {
         "id": "q5",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Que signifient les premiers signes étranges qu'Aiko observe dans son reflet sur l'écran de sa tablette ?",
+        "text": "Qu'est-ce qui trône sur l'armoire de Yui ?",
         "options": [
-          "Aiko commence à développer des troubles de la vision à cause de la fatigue",
-          "Sa tablette est défectueuse et son écran crée des effets d'optique trompeurs",
-          "Une entité surnaturelle cherche à prendre son apparence et son identité, remplaçant peu à peu son reflet par celui d'une morte au teint blanchâtre",
-          "Aiko fait des cauchemars éveillés à cause de sa solitude au pensionnat"
+          "Une petite poupée d'impératrice en kimono rouge",
+          "Un petit érable en pot aux jolies feuilles rouges et orange",
+          "Un miroir entouré de fleurs de cerisier",
+          "Une photo de sa grand-mère"
         ],
-        "answer": 2,
+        "correct": 0,
+        "answer": 0,
         "points": 1,
-        "correct": 2
+        "explanation": "C'est une poupée de la fête des poupées, Hina-matsuri. Aiko est étonnée qu'on l'autorise, car tout objet personnel est interdit."
       },
       {
         "id": "q6",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Pourquoi la lecture des haïkus joue-t-elle un rôle important dans l'histoire ?",
+        "text": "Qu'est-ce qu'Aiko trouve sous son lit après une nuit de bruits étranges ?",
         "options": [
-          "Elle permet à Aiko de s'endormir plus facilement et d'éviter les cauchemars",
-          "Les haïkus sont les seuls livres autorisés dans le règlement strict du collège Momiji",
-          "Les poèmes éveillent la sensibilité d'Aiko aux signes surnaturels et l'aident à comprendre progressivement la menace qui pèse sur elle et Yui",
-          "Yui utilise les haïkus pour communiquer secrètement avec Aiko sans éveiller les soupçons"
+          "Une souris qui s'était cachée",
+          "Un haïku écrit sur un papier",
+          "Le cahier de poésie de Yui",
+          "Une vieille poupée lourde et sans visage"
         ],
-        "answer": 2,
+        "correct": 3,
+        "answer": 3,
         "points": 1,
-        "correct": 2
+        "explanation": "La poupée est très lourde, couverte de poussière blanche, et elle n'a ni yeux, ni nez, ni bouche."
       },
       {
         "id": "q7",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Qu'est-ce que la fin du roman laisse entendre sur la situation du collège Momiji ?",
+        "text": "Comment Aiko sauve-t-elle son amie Yui ?",
         "options": [
-          "Le collège va être fermé définitivement par les autorités après le départ des deux filles",
-          "La préfète de discipline a dénoncé les deux fugueuses à la police",
-          "Le père d'Aiko décide finalement de croire sa fille et refuse de la ramener à Momiji",
-          "La possession par les poupées s'est étendue à tous les élèves et professeurs d'un autre collège, confirmant que la menace est bien réelle"
+          "Elle la réveille en lui versant un grand verre d'eau froide",
+          "Elle brûle les deux poupées dans le four à micro-ondes",
+          "Elle prévient le proviseur du collège",
+          "Elle lui fait réciter un haïku de Bashô"
         ],
-        "answer": 3,
+        "correct": 1,
+        "answer": 1,
         "points": 1,
-        "correct": 3
+        "explanation": "Aiko emporte les deux poupées jusqu'à la cuisine et les met dans le four à micro-ondes. Quand elle revient, Yui est réveillée et a retrouvé son visage."
       },
       {
         "id": "q8",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Qu'est-ce que le comportement d'Aiko tout au long du roman révèle sur sa personnalité ?",
+        "text": "Que dit la radio à la toute fin de l'histoire ?",
         "options": [
-          "Elle est peureuse et cherche constamment l'aide des adultes pour résoudre ses problèmes",
-          "Elle est impulsive et agit sans réfléchir aux conséquences de ses actes",
-          "Elle est distante et n'accorde pas sa confiance facilement, même à ses proches",
-          "Elle est courageuse, déterminée et lucide : malgré sa peur, elle analyse les événements, prend des décisions seule et agit pour sauver son amie"
+          "Qu'une fugueuse a été retrouvée à la gare",
+          "Que le collège Momiji a brûlé pendant la nuit",
+          "Qu'un collège de garçons a été vidé et rempli de poupées",
+          "Qu'une grande fête des poupées aura lieu cette année dans les écoles"
         ],
-        "answer": 3,
+        "correct": 2,
+        "answer": 2,
         "points": 1,
-        "correct": 3
+        "explanation": "Dans un collège de garçons, tous les élèves et les professeurs ont disparu. À leur place, on a trouvé des centaines de grandes poupées."
       },
       {
         "id": "q9",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Aiko est une mauvaise élève que ses parents ont envoyée à Momiji pour la redresser.",
+        "text": "Aiko a une grande sœur qui s'appelle Nanako.",
+        "correct": false,
         "answer": false,
         "points": 1,
-        "correct": false
+        "explanation": "FAUX : Nanako est sa petite sœur. C'est Aiko, la grande sœur, qui est au pensionnat."
       },
       {
         "id": "q10",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Yui est consciente de ce qui lui arrive et demande elle-même de l'aide à Aiko.",
-        "answer": false,
+        "text": "Pour aller chez ses parents, Aiko doit voyager toute une journée en train.",
+        "correct": true,
+        "answer": true,
         "points": 1,
-        "correct": false
+        "explanation": "VRAI : c'est pour cela qu'elle ne rentre pas chez elle le week-end."
       },
       {
         "id": "q11",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Les parents d'Aiko refusent de croire son histoire et décident de la ramener au collège.",
-        "answer": true,
+        "text": "Aiko raconte tout à la préfète de discipline pour qu'elle les aide.",
+        "correct": false,
+        "answer": false,
         "points": 1,
-        "correct": true
+        "explanation": "FAUX : elle invente une excuse : elle dit que le proviseur les attend pour préparer la fête des poupées. Puis les deux filles s'enfuient."
       },
       {
         "id": "q12",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "La poupée trouvée sous le lit d'Aiko est identique à celle de Yui, mais dans un état vieux et dégradé.",
+        "text": "Au temple, Yui dit à Aiko de repasser sous le torii pour revenir dans le monde des vivants.",
+        "correct": true,
         "answer": true,
         "points": 1,
-        "correct": true
+        "explanation": "VRAI : le torii est le grand portail rouge. Le guide explique qu'il est comme un pont entre le monde des vivants et celui des esprits."
       },
       {
         "id": "q13",
-        "section": "Vocabulaire",
+        "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« Bien qu'elle soit morte de peur, elle ne doit surtout pas céder à la panique. Elle doit paraître calme et sereine. » Que signifie le mot sereine ?",
+        "text": "« Un haïku, un tout petit poème de 17 syllabes. » Qu'est-ce qu'un « haïku » ?",
         "options": [
-          "Triste et résignée face à une situation injuste",
-          "Épuisée mais déterminée à continuer malgré tout",
-          "Calme et tranquille, sans laisser paraître ses émotions ou son inquiétude",
-          "Souriante et joyeuse pour rassurer ceux qui l'entourent"
+          "Un poème japonais très court",
+          "Une danse traditionnelle japonaise",
+          "Une poupée de la fête des filles",
+          "Un dessin fait au pinceau"
         ],
-        "answer": 2,
+        "correct": 0,
+        "answer": 0,
         "points": 1,
-        "correct": 2
+        "explanation": "Le haïku est un poème japonais très court (17 syllabes), qui décrit souvent la nature ou une émotion."
       },
       {
         "id": "q14",
-        "section": "Vocabulaire",
+        "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« C'était tellement fou ! Jamais elle n'aurait avalé une histoire aussi abracadabrante ! » Que signifie le mot abracadabrante ?",
+        "text": "« Tu seras consignée à la maison. » Que veut dire « être consignée » ?",
         "options": [
-          "Triste et difficile à entendre",
-          "Dangereuse et qui mérite d'être signalée aux adultes",
-          "Tellement bizarre et invraisemblable qu'on a du mal à y croire",
-          "Longue et ennuyeuse à écouter"
+          "Être récompensée",
+          "Être invitée",
+          "Être punie et obligée de rester",
+          "Être soignée par un médecin"
         ],
+        "correct": 2,
         "answer": 2,
         "points": 1,
-        "correct": 2
+        "explanation": "Être consigné, c'est être puni et devoir rester quelque part sans sortir."
       },
       {
         "id": "q15",
-        "section": "Vocabulaire",
+        "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« Avec son visage fardé de blanc, ses yeux comme deux traits noirs et sa bouche comme une cerise rouge, Aiko reconnut immédiatement le personnage de l'impératrice. » Que signifie le mot fardé ?",
+        "text": "« Il lui avait semblé que ce havre de paix se transformerait en enfer. » Qu'est-ce qu'un « havre de paix » ?",
         "options": [
-          "Griffé et abîmé par le temps",
-          "Orné de motifs dessinés à la main",
-          "Recouvert de maquillage, de peinture appliquée sur le visage",
-          "Sculpté dans un matériau précieux comme l'ivoire"
+          "Un port pour les bateaux de pêche",
+          "Une école très sévère",
+          "Un jardin plein de cerisiers",
+          "Un endroit calme où l'on se sent bien"
         ],
-        "answer": 2,
+        "correct": 3,
+        "answer": 3,
         "points": 1,
-        "correct": 2
+        "explanation": "Un havre de paix est un lieu calme et rassurant. Au début, Momiji ressemble à un temple paisible."
       },
       {
         "id": "q16",
-        "section": "Synthèse",
-        "type": "mcq",
-        "text": "Un seul de ces trois résumés est totalement correct. Lequel ?",
+        "section": "Compréhension globale",
+        "type": "synthesis",
+        "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Résumé A : Renvoyée du collège Momiji à cause de ses mauvaises notes, Aiko découvre que son amie Yui a fabriqué une poupée ensorcelée pour se venger de la préfète de discipline. Aiko retourne au collège, jette les deux poupées dans l'étang aux carpes koï et convainc ses parents de fermer définitivement le collège.",
-          "Résumé B : Yui appelle Aiko à l'aide après avoir été attaquée par un fantôme dans la cour zen du pensionnat. Aiko prévient immédiatement la préfète de discipline qui organise une fouille de l'établissement. Elles découvrent les poupées sous le lit de la directrice et les brûlent dans la cheminée de la salle commune avant de rentrer chez elles.",
-          "Résumé C : Témoin de phénomènes surnaturels au collège Momiji, Aiko tente d'alerter ses parents qui refusent de la croire. Elle retourne alors au pensionnat pour secourir son amie Yui, possédée par une poupée traditionnelle d'impératrice. Grâce à son courage et aux indices cachés dans des haïkus, Aiko détruit les deux poupées maléfiques dans un micro-ondes et s'enfuit avec Yui, même si la menace plane encore ailleurs."
+          "Résumé A : Aiko entre dans un collège japonais où elle apprend la poésie. Elle gagne un concours de haïkus et devient la meilleure amie de la préfète de discipline, qui la félicite devant tout le collège.",
+          "Résumé B : Au collège Momiji, Aiko vit des choses étranges : son reflet bouge, une poupée sans visage apparaît sous son lit. Elle brûle les poupées pour sauver son amie Yui, puis elles s'enfuient. Mais personne ne les croit.",
+          "Résumé C : Aiko et sa petite sœur Nanako collectionnent des poupées de Hina-matsuri. Un jour, une poupée disparaît et les deux sœurs mènent l'enquête dans tout le pensionnat."
         ],
-        "answer": 2,
+        "correct": 1,
+        "answer": 1,
         "points": 1,
-        "correct": 2
+        "explanation": "Seul le résumé B est correct : les phénomènes étranges, les poupées brûlées pour sauver Yui, la fuite, et les parents qui ne les croient pas."
       }
     ]
   },
@@ -901,216 +965,232 @@ window.LIVRES = [
         "id": "q1",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Pourquoi Eléna et Erwan se rendent-ils à l'hôpital désaffecté ce jour-là ?",
+        "text": "Pourquoi le papa d'Eléna est-il si inquiet au petit-déjeuner ?",
         "options": [
-          "Erwan veut y mener une enquête sur les cambriolages du quartier",
-          "Thomas les a invités à l'accompagner pour une nouvelle séance d'Urbex",
-          "Eléna veut prendre des photos pour son journal personnel",
-          "Eléna propose d'y aller pour distraire Erwan et l'empêcher de mener l'enquête sur les cambriolages"
+          "Il a perdu son travail la veille",
+          "Il y a eu dix cambriolages dans le quartier en une semaine",
+          "Laïka s'est enfuie pendant la nuit",
+          "Eléna a eu une très mauvaise note à son examen de fin d'année"
         ],
-        "answer": 3,
+        "correct": 1,
+        "answer": 1,
         "points": 1,
-        "correct": 3
+        "explanation": "Le journal parle d'une vague de cambriolages, et le dernier s'est passé tout près de chez eux."
       },
       {
         "id": "q2",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Qui est Thomas et quel rôle a-t-il joué dans la vie des deux amis ?",
+        "text": "Qui a appris à Eléna et Erwan à pratiquer l'Urbex ?",
         "options": [
-          "C'est le gardien de l'hôpital qui leur a interdit d'entrer la première fois",
-          "C'est le grand frère d'Erwan, passionné d'Urbex, qui les a initiés à l'exploration de sites abandonnés",
-          "C'est un policier qui enquête sur les cambriolages du quartier",
-          "C'est un ami d'Erwan qui leur a révélé l'existence de la cachette derrière la machine à laver"
+          "Le papa d'Eléna",
+          "La grand-mère d'Erwan",
+          "Thomas, le grand frère d'Erwan",
+          "Un policier du quartier"
         ],
-        "answer": 1,
+        "correct": 2,
+        "answer": 2,
         "points": 1,
-        "correct": 1
+        "explanation": "Thomas, passionné d'exploration de bâtiments abandonnés, les a emmenés une première fois à l'hôpital désaffecté."
       },
       {
         "id": "q3",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Comment Erwan guide-t-il les policiers jusqu'à la cachette des voleurs ?",
+        "text": "Qu'est-ce que l'Urbex ?",
         "options": [
-          "Il leur envoie discrètement des SMS avec l'adresse exacte",
-          "Il leur crie les instructions par la fenêtre de la cave",
-          "Il demande à Laïka d'aller chercher de l'aide à l'extérieur",
-          "Il laisse son téléphone allumé dans sa poche et glisse des indices dans ses compliments aux bandits"
+          "Explorer des bâtiments abandonnés",
+          "Faire du vélo dans la forêt",
+          "Chasser les voleurs dans la ville",
+          "Prendre des photos d'animaux"
         ],
-        "answer": 3,
+        "correct": 0,
+        "answer": 0,
         "points": 1,
-        "correct": 3
+        "explanation": "L'Urbex (urban exploration) consiste à visiter des usines, des manoirs ou des hôpitaux abandonnés."
       },
       {
         "id": "q4",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Qu'est-ce qu'Eléna et Erwan découvrent dans la salle secrète derrière la machine à laver ?",
+        "text": "Pourquoi Eléna comprend-elle que les trois hommes ne sont pas de vrais gardiens ?",
         "options": [
-          "Les trois hommes en tenue de camouflage, endormis sur des matelas",
-          "Du matériel d'Urbex appartenant au groupe de Thomas",
-          "Le butin des cambrioleurs : appareils électroménagers, bijoux, peintures et objets de valeur",
-          "Des documents prouvant l'identité des voleurs"
+          "Ils ont un gros chien noir avec eux",
+          "Ils parlent une langue étrangère",
+          "Ils demandent aux deux enfants de leur donner tout leur argent",
+          "Leurs habits sont sales et ils regardent partout autour d'eux"
         ],
-        "answer": 2,
+        "correct": 3,
+        "answer": 3,
         "points": 1,
-        "correct": 2
+        "explanation": "Ils portent des tenues de camouflage pleines de boue et se retournent sans arrêt, comme s'ils n'avaient pas le droit d'être là."
       },
       {
         "id": "q5",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Pourquoi Eléna ne dit-elle pas à ses parents qu'elle pratique l'Urbex ?",
+        "text": "Pourquoi Erwan boude-t-il Eléna pendant une semaine ?",
         "options": [
-          "Elle sait que son père lui confisquerait son téléphone portable",
-          "Elle a honte de cette activité et ne veut pas que ses amis le sachent",
-          "Elle craint que son père ne la prive de sortie pendant des années s'il apprend les dangers réels du lieu",
-          "Thomas leur a fait promettre de garder le secret pour protéger les sites d'Urbex"
+          "Elle a raconté leur secret à ses parents",
+          "Elle l'a contredit devant son frère et ses amis",
+          "Elle a refusé de monter sur son vélo",
+          "Elle s'est moquée de son écharde"
         ],
-        "answer": 2,
+        "correct": 1,
+        "answer": 1,
         "points": 1,
-        "correct": 2
+        "explanation": "Thomas croit qu'Erwan a inventé les trois hommes. Eléna dit qu'ils n'ont pas pu partir, et Erwan se sent vexé."
       },
       {
         "id": "q6",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Pourquoi les trois hommes en tenue de camouflage se comportent-ils avec méfiance à l'hôpital ?",
+        "text": "Où les voleurs cachent-ils ce qu'ils ont volé ?",
         "options": [
-          "Ils sont des vigiles qui testent la sécurité du site",
-          "Ils font de l'Urbex mais ne veulent pas partager le site avec d'autres visiteurs",
-          "Comme les enfants, ils ne sont pas là légalement et craignent d'être découverts car c'est là qu'ils cachent leur butin",
-          "Ils préparent un feu d'artifice illégal dans la cave de l'hôpital"
+          "Dans le grenier de l'hôpital",
+          "Dans une vieille ambulance abandonnée au fond du grand jardin",
+          "Dans les buissons, près du grillage",
+          "Dans une pièce cachée derrière une machine à laver"
         ],
-        "answer": 2,
+        "correct": 3,
+        "answer": 3,
         "points": 1,
-        "correct": 2
+        "explanation": "À la cave, une énorme machine à laver bouche l'entrée d'une petite salle remplie d'objets volés."
       },
       {
         "id": "q7",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Qu'est-ce que le comportement d'Erwan face aux voleurs révèle sur sa personnalité ?",
+        "text": "Comment la police sait-elle où se trouvent les enfants ?",
         "options": [
-          "Il est impulsif et tente de fuir sans réfléchir aux conséquences",
-          "Il est lâche et obéit aux bandits par peur",
-          "Il est naïf et croit vraiment que les compliments vont le libérer plus vite",
-          "Il est calme, rusé et capable de réfléchir vite dans une situation de danger pour trouver une solution ingénieuse"
+          "Erwan a laissé le téléphone allumé dans sa poche",
+          "Laïka a guidé les policiers dans les couloirs en aboyant",
+          "Thomas est rentré plus tôt des Alpes",
+          "Les parents d'Eléna ont suivi le vélo"
         ],
-        "answer": 3,
+        "correct": 0,
+        "answer": 0,
         "points": 1,
-        "correct": 3
+        "explanation": "Erwan a appelé la police et caché le téléphone encore allumé. Ses « compliments » aux voleurs donnaient des indices aux policiers."
       },
       {
         "id": "q8",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Pourquoi Eléna refuse-t-elle le téléphone que ses parents lui proposent à la fin ?",
+        "text": "Pourquoi Eléna refuse-t-elle le téléphone portable à la fin ?",
         "options": [
-          "Elle préfère attendre ses dix-huit ans pour avoir un vrai smartphone",
-          "Elle est vexée que son père lui propose un téléphone uniquement par peur",
-          "Elle refuse d'être surveillée en permanence et veut garder sa liberté, tout en ayant prouvé qu'elle est capable de gérer les situations difficiles",
-          "Elle sait qu'Erwan n'en a pas et ne veut pas le vexer"
+          "Elle préfère recevoir un ordinateur portable pour ses devoirs",
+          "Elle trouve ce téléphone trop vieux",
+          "Elle ne veut pas être surveillée tout le temps",
+          "Erwan en a déjà un pour eux deux"
         ],
+        "correct": 2,
         "answer": 2,
         "points": 1,
-        "correct": 2
+        "explanation": "Eléna voulait un téléphone, mais pas pour avoir « un fil à la patte » : ses parents pourraient la joindre à tout moment."
       },
       {
         "id": "q9",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Laïka, la chienne d'Eléna, est un animal féroce qui protège efficacement la maison contre les intrus.",
-        "answer": false,
+        "text": "Chez les Bozelli, le petit-déjeuner est d'habitude un moment très calme.",
+        "correct": true,
+        "answer": true,
         "points": 1,
-        "correct": false
+        "explanation": "VRAI : on n'entend que les petites cuillères. Le papa lit le journal et la maman révise ses dossiers."
       },
       {
         "id": "q10",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "C'est la première fois qu'Eléna et Erwan se rendent à l'hôpital désaffecté dans ce roman.",
-        "answer": false,
+        "text": "Laïka, la chienne d'Eléna, est un gros bouvier bernois.",
+        "correct": true,
+        "answer": true,
         "points": 1,
-        "correct": false
+        "explanation": "VRAI : elle est énorme, mais pas du tout féroce : elle a même peur de tout !"
       },
       {
         "id": "q11",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Erwan retourne seul à l'hôpital après la semaine de brouille avec Eléna pour vérifier sa théorie sur la machine à laver.",
-        "answer": true,
+        "text": "Laïka attaque courageusement les voleurs pour défendre les enfants.",
+        "correct": false,
+        "answer": false,
         "points": 1,
-        "correct": true
+        "explanation": "FAUX : Laïka s'enfuit et se cache. Les voleurs se moquent d'elle en la prenant pour un mouton."
       },
       {
         "id": "q12",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "À la fin du roman, les parents d'Eléna lui offrent un téléphone portable et elle accepte avec joie.",
+        "text": "Erwan retourne à l'hôpital avec son frère Thomas pour trouver la cachette.",
+        "correct": false,
         "answer": false,
         "points": 1,
-        "correct": false
+        "explanation": "FAUX : il y retourne tout seul, ce qui est très imprudent. Thomas, lui, est parti deux semaines dans les Alpes."
       },
       {
         "id": "q13",
-        "section": "Vocabulaire",
+        "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« Mon père s'est mué en véritable moulin à paroles ; mon cerveau avait beau être au ralenti, j'ai quand même réussi à comprendre l'essentiel. » Que signifie l'expression moulin à paroles ?",
+        "text": "« Le toit menace de s'écrouler sur votre tête. » Que veut dire « s'écrouler » ?",
         "options": [
-          "Une personne qui parle sans arrêt et qu'on ne peut pas faire taire",
-          "Une personne qui parle très doucement et qu'on entend à peine",
-          "Une personne qui choisit ses mots avec beaucoup de soin",
-          "Une personne qui dit des mensonges pour impressionner les autres"
+          "Briller au soleil",
+          "Se remplir d'eau",
+          "Tomber en morceaux",
+          "S'envoler avec le vent"
         ],
-        "answer": 0,
+        "correct": 2,
+        "answer": 2,
         "points": 1,
-        "correct": 0
+        "explanation": "S'écrouler, c'est s'effondrer, tomber d'un coup. Les vieux bâtiments peuvent être dangereux."
       },
       {
         "id": "q14",
-        "section": "Vocabulaire",
+        "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« Pénétrer sur le site n'était que la première étape : s'introduire dans le bâtiment, c'était une autre paire de manches. » Que signifie l'expression une autre paire de manches ?",
+        "text": "« Il avait sa technique pour turbiner à cent à l'heure. » Ici, « turbiner », c'est…",
         "options": [
-          "Une tâche beaucoup plus simple que la précédente",
-          "Un problème sans aucune solution possible",
-          "Quelque chose de beaucoup plus difficile et compliqué à réaliser",
-          "Une activité identique à ce qu'on vient de faire"
+          "Réfléchir très vite",
+          "Pédaler très vite",
+          "Manger très vite",
+          "Dormir très longtemps"
         ],
-        "answer": 2,
+        "correct": 0,
+        "answer": 0,
         "points": 1,
-        "correct": 2
+        "explanation": "Eléna voit qu'Erwan réfléchit à toute vitesse : il pense déjà à mener l'enquête."
       },
       {
         "id": "q15",
-        "section": "Vocabulaire",
+        "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« Erwan jubilait : \"Tu vois, il y a bien quelque chose derrière ! Je te l'avais bien dit !\" » Que signifie le verbe jubiler ?",
+        "text": "« Les individus sécurisés » : ce sont les mots des policiers pour dire que les voleurs…",
         "options": [
-          "Parler très fort pour couvrir le bruit ambiant",
-          "Hésiter avant de prendre une décision importante",
-          "Pleurer de soulagement après une longue attente",
-          "Ressentir une grande joie, souvent parce qu'on avait raison ou qu'on a réussi quelque chose"
+          "se sont enfuis",
+          "sont arrêtés et ne sont plus dangereux",
+          "ont rendu les objets volés",
+          "sont blessés"
         ],
-        "answer": 3,
+        "correct": 1,
+        "answer": 1,
         "points": 1,
-        "correct": 3
+        "explanation": "Les policiers ont menotté les voleurs : ils ne peuvent plus faire de mal. Eléna trouve ces mots amusants."
       },
       {
         "id": "q16",
-        "section": "Synthèse",
-        "type": "mcq",
-        "text": "Un seul de ces trois résumés est totalement correct. Lequel ?",
+        "section": "Compréhension globale",
+        "type": "synthesis",
+        "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Résumé A : Erwan et Eléna se rendent à l'hôpital désaffecté accompagnés de Thomas, le frère d'Erwan. Surpris par trois cambrioleurs, Thomas parvient à s'échapper tandis que la chienne Laïka attaque les bandits. Eléna envoie discrètement des SMS à la police et accepte avec joie le nouveau téléphone offert par ses parents.",
-          "Résumé B : Pour détourner Erwan de son obsession pour les cambriolages du quartier, Eléna l'emmène explorer un hôpital désaffecté. Sur place, les deux amis tombent nez à nez avec les véritables voleurs et découvrent leur cachette derrière une machine à laver. Erwan réussit à guider les policiers en laissant son téléphone ouvert dans sa poche, permettant leur libération et l'arrestation de la bande.",
-          "Résumé C : Après avoir découvert des bijoux volés dans la cave de son père, Erwan convainc Eléna de mener l'enquête dans un hôpital abandonné. Les deux adolescents piègent les trois vigiles de l'hôpital qui cachaient des appareils électroménagers et reçoivent une récompense officielle du commissariat de quartier."
+          "Résumé A : Eléna et Erwan partent en vacances chez la grand-mère d'Erwan. Ils y découvrent un vieil hôpital hanté et passent la nuit à chercher des fantômes avec la chienne Laïka.",
+          "Résumé B : Après une série de cambriolages, le papa d'Eléna installe une alarme. Les voleurs se font prendre en essayant d'entrer dans sa maison, grâce aux aboiements de Laïka.",
+          "Résumé C : En explorant un hôpital abandonné, Eléna et Erwan tombent sur trois hommes menaçants. Erwan découvre leur cachette pleine d'objets volés. Pris au piège, les enfants sont sauvés par la police grâce au téléphone d'Erwan."
         ],
-        "answer": 1,
+        "correct": 2,
+        "answer": 2,
         "points": 1,
-        "correct": 1
+        "explanation": "Seul le résumé C est correct : l'Urbex, les trois voleurs, la cachette derrière la machine à laver et le téléphone resté allumé."
       }
     ]
   },
@@ -1124,216 +1204,232 @@ window.LIVRES = [
         "id": "q1",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Pourquoi Rorrr est-il venu sur Terre et cherche-t-il à capturer des êtres humains ?",
+        "text": "Au début de l'histoire, qu'est-ce que Grand-père montre à Anne dans la grange ?",
         "options": [
-          "Il a été envoyé par les chefs de Sidérius pour envahir et coloniser secrètement la Terre.",
-          "Il doit lui aussi réaliser un exposé scolaire sur les Terriens et cherche des spécimens vivants à présenter à sa classe.",
-          "Son vaisseau est tombé en panne d'énergie et il a besoin de la force des humains pour le réparer.",
-          "Il collectionne les créatures étranges à cinq doigts pour les exposer dans un zoo intergalactique."
+          "Un tracteur tout neuf",
+          "Une vache qui vient d'avoir un veau",
+          "Un nid d'hirondelles sous le toit",
+          "Des poussins qui sortent de leur œuf"
         ],
-        "answer": 1,
+        "correct": 3,
+        "answer": 3,
         "points": 1,
-        "correct": 1
+        "explanation": "Dans la couveuse, Anne regarde le premier poussin casser sa coquille. Grand-mère parle du « miracle de la vie »."
       },
       {
         "id": "q2",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Pourquoi la notion de « famille » et d'enfants mis au monde par des parents est-elle totalement incompréhensible pour Rorrr ?",
+        "text": "Quel nouveau « mot » la petite Élise apprend-elle ?",
         "options": [
-          "Parce que sur Sidérius, les adultes sont tous clonés à l'âge adulte dans des laboratoires souterrains.",
-          "Parce que sur sa planète, les créatures naissent à partir de graines plantées dans des serres et n'ont pas de parents biologiques.",
-          "Parce que les Sidériens sont des robots métalliques qui ne connaissent aucune émotion.",
-          "Parce qu'il pense que les enfants terriens sont des animaux domestiques dressés par les adultes."
+          "« Là »",
+          "« Cui cui »",
+          "« Maman »",
+          "« Rex »"
         ],
+        "correct": 1,
         "answer": 1,
         "points": 1,
-        "correct": 1
+        "explanation": "Élise ne sait dire que « lààà ». En entendant le poussin, elle se met à répéter « cui cui »."
       },
       {
         "id": "q3",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Qu'est-ce qui pousse Anne à faire croire à Rorrr que le chien Rex est son « frère » ?",
+        "text": "Pourquoi Anne n'arrive-t-elle pas à s'enfuir quand le vaisseau atterrit ?",
         "options": [
-          "Elle veut convaincre Rorrr de soigner la blessure que le chien lui a infligée à la jambe.",
-          "Elle a tellement peur qu'elle perd la raison et confond les animaux et les membres de sa famille.",
-          "Elle veut ajouter un passager supplémentaire pour dépasser la capacité du vaisseau et obliger Rorrr à renoncer à enlever sa famille.",
-          "Elle espère que Rorrr aura peur des crocs de Rex et s'enfuira immédiatement."
+          "Elle s'est tordu la cheville en courant dans l'allée",
+          "Élise la tient trop fort par la jambe",
+          "Un champ d'immobilisation l'empêche d'avancer",
+          "Elle est trop curieuse et veut tout voir"
         ],
+        "correct": 2,
         "answer": 2,
         "points": 1,
-        "correct": 2
+        "explanation": "Anne peut lever le pied, mais pas avancer. Rorrr explique qu'il utilise un « champ d'immobilisation »."
       },
       {
         "id": "q4",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Pourquoi le stratagème d'Anne avec les œufs de la couveuse fonctionne-t-il si bien auprès de Rorrr ?",
+        "text": "Qu'est-ce qui étonne le plus Rorrr chez les humains ?",
         "options": [
-          "Rorrr retrouve le principe des graines légères de sa planète et croit que ces œufs sont des humains miniatures en train de pousser.",
-          "Grand-père utilise une machine magique qui transforme temporairement les embryons de poussins en petits humains.",
-          "Rorrr est un scientifique naïf qui accepte n'importe quelle explication dès qu'on allume une lampe.",
-          "Élise imite le bruit des poussins (« Cui cui »), ce qui prouve scientifiquement à Rorrr le lien de parenté."
+          "Ils ont cinq doigts à chaque main",
+          "Ils parlent une langue très compliquée",
+          "Ils voyagent plus vite que la lumière",
+          "Ils ont une fourrure sur la tête"
         ],
+        "correct": 0,
         "answer": 0,
         "points": 1,
-        "correct": 0
+        "explanation": "Chez les autres créatures de l'univers, les membres se divisent en deux, puis encore en deux. Cinq doigts, pour Rorrr, ce n'est « pas logique » !"
       },
       {
         "id": "q5",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Pourquoi le fait que Grand-père donne des œufs « non fertilisés » à Rorrr est-il un détail crucial dans le plan des fermiers ?",
+        "text": "Pourquoi Rorrr veut-il emmener Anne sur sa planète ?",
         "options": [
-          "Parce que ces œufs sont plus légers et permettent au vaisseau de consommer moins d'énergie.",
-          "Parce que ces œufs ne donneront jamais naissance à des poussins, évitant ainsi de tromper la nature tout en se débarrassant de l'extraterrestre sans lui livrer aucun être vivant.",
-          "Parce que les œufs fertilisés auraient risqué d'exploser sous la pression du vide spatial.",
-          "Parce que Grand-père voulait garder les meilleurs œufs pour son propre élevage."
+          "Pour la présenter à son roi",
+          "Pour la mettre dans un zoo",
+          "Pour faire un exposé et avoir une bonne note",
+          "Pour qu'elle l'aide à réparer son vaisseau spatial en panne"
         ],
-        "answer": 1,
+        "correct": 2,
+        "answer": 2,
         "points": 1,
-        "correct": 1
+        "explanation": "Rorrr doit faire un exposé sur la vie sur Terre. Sans preuve, personne ne croira que les humains ont cinq doigts."
       },
       {
         "id": "q6",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Pourquoi l'institutrice sanctionne-t-elle Anne avec une note de 4/10 malgré la qualité de son récit oral ?",
+        "text": "Comment naissent les Sidériens, selon Rorrr ?",
         "options": [
-          "Elle trouve qu'Anne a manqué de respect en imitant la voix bizarre d'un extraterrestre devant ses camarades.",
-          "Elle est déçue car Anne n'a pas respecté la consigne d'un exposé, qui exige de transmettre des faits réels et vérifiables, et la prend pour une menteuse sans preuves.",
-          "Elle connaît déjà l'existence des Sidériens et reproche à Anne de ne rien lui avoir appris de nouveau.",
-          "Elle estime qu'Anne a dépassé le temps de parole imparti et n'a pas répondu aux questions de ses camarades."
+          "Ils sortent d'un œuf, exactement comme les petits poussins",
+          "Ils tombent du ciel avec la pluie",
+          "Ils sont fabriqués par des robots",
+          "Ils poussent à partir de graines dans une serre"
         ],
-        "answer": 1,
+        "correct": 3,
+        "answer": 3,
         "points": 1,
-        "correct": 1
+        "explanation": "Les Sidériens ont des graines sous les doigts. Dans une serre chaude, ces graines deviennent de jeunes pousses, puis de nouveaux Sidériens."
       },
       {
         "id": "q7",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Que révèle la réaction finale d'Anne lorsqu'elle dépose les graines bleues dans la couveuse (« C'est ce qu'on va voir ! ») ?",
+        "text": "Quelle ruse Anne invente-t-elle pour ne pas partir ?",
         "options": [
-          "Qu'elle est rancunière et veut utiliser les créatures extraterrestres pour effrayer sa maîtresse et ses camarades.",
-          "Qu'elle est persévérante et déterminée à obtenir la preuve vivante qui rétablira sa crédibilité et la vérité sur son aventure.",
-          "Qu'elle a oublié toute sa peur et souhaite devenir une éleveuse professionnelle d'extraterrestres.",
-          "Qu'elle veut remplacer les poussins de son grand-père par une nouvelle espèce plus rentable."
+          "Elle fait croire que Rex est un chien très méchant et dangereux",
+          "Elle dit que les humains naissent dans les œufs de poussins",
+          "Elle cache la clé du vaisseau spatial",
+          "Elle fait semblant de dormir"
         ],
+        "correct": 1,
         "answer": 1,
         "points": 1,
-        "correct": 1
+        "explanation": "Anne fait croire que les poussins sont des bébés humains. Rorrr repart avec cinq œufs, qui ne donneront jamais de poussins."
       },
       {
         "id": "q8",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Quelle est la grande ironie qui relie l'aventure vécue par Anne et son exposé à l'école ?",
+        "text": "Quelle note l'institutrice veut-elle donner à Anne pour son exposé ?",
         "options": [
-          "Rorrr et l'institutrice sont en réalité originaires de la même planète lointaine.",
-          "Rorrr préparait un exposé scolaire sur les Terriens pour sa classe, et Anne prépare elle-même un exposé scolaire sur Rorrr que personne ne croit.",
-          "Grand-père avait lui aussi rencontré un Sidérien lorsqu'il était enfant sans que personne ne le croie.",
-          "Anne a utilisé un faux exposé pour sauver sa vie, mais a échoué à son vrai exposé scolaire."
+          "Quatre, car elle pense que l'histoire est inventée",
+          "Huit, car l'histoire est très bien racontée et bien préparée",
+          "Dix, car Anne a apporté des photos",
+          "Zéro, car Anne n'a rien préparé"
         ],
-        "answer": 1,
+        "correct": 0,
+        "answer": 0,
         "points": 1,
-        "correct": 1
+        "explanation": "L'institutrice trouve l'histoire belle, mais pense que c'est une fiction. Un exposé doit parler de choses réelles."
       },
       {
         "id": "q9",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Sur la planète Sidérius, les membres et les doigts des créatures se divisent par deux, ce qui fait que les cinq doigts des humains paraissent anormaux à Rorrr.",
-        "answer": true,
+        "text": "Anne filme le vaisseau spatial avec son smartphone.",
+        "correct": false,
+        "answer": false,
         "points": 1,
-        "correct": true
+        "explanation": "FAUX : son téléphone est déchargé : l'écran s'éteint au bout de quelques secondes. Elle n'a donc aucune preuve."
       },
       {
         "id": "q10",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Anne parvient à prendre plusieurs photos du vaisseau spatial avec son smartphone pour prouver son histoire à l'école.",
-        "answer": false,
+        "text": "Pour que personne ne remarque rien pendant le voyage, Rorrr veut congeler ses passagers.",
+        "correct": true,
+        "answer": true,
         "points": 1,
-        "correct": false
+        "explanation": "VRAI : le voyage dure très longtemps. Rorrr veut les congeler, puis les décongeler au retour."
       },
       {
         "id": "q11",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "La petite sœur Élise a mordu le doigt de Rorrr et recraché des graines bleues dans l'allée de la ferme.",
+        "text": "Anne fait croire à Rorrr que Rex, le chien, est son frère.",
+        "correct": true,
         "answer": true,
         "points": 1,
-        "correct": true
+        "explanation": "VRAI : Anne veut ajouter du poids dans le vaisseau. Ses parents jouent le jeu, et c'est ce qui les sauve."
       },
       {
         "id": "q12",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Rorrr repart de la Terre en emmenant Rex et les parents d'Anne congelés dans son armoire spatiale.",
+        "text": "À la fin, Anne jette les graines bleues à la poubelle.",
+        "correct": false,
         "answer": false,
         "points": 1,
-        "correct": false
+        "explanation": "FAUX : elle les ramasse et les met dans la couveuse, sous les lampes. Peut-être qu'un petit Sidérien va pousser !"
       },
       {
         "id": "q13",
-        "section": "Vocabulaire",
+        "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« Rorrr les examine de ses quatre yeux inquisiteurs. Anne retient son souffle. » Que signifie l'adjectif inquisiteurs dans ce contexte ?",
+        "text": "« Anne réprime son envie d'attraper la balle. » Que veut dire « réprimer » ?",
         "options": [
-          "Fatigués et qui ont du mal à rester ouverts dans la lumière du jour.",
-          "Curieux et méfiants, qui cherchent à percer un secret ou à déceler un mensonge.",
-          "Pleins de gentillesse et d'admiration pour la famille d'Anne.",
-          "Aveugles et insensibles aux mouvements environnants."
+          "Montrer très fort",
+          "Retenir, empêcher de se montrer",
+          "Oublier complètement",
+          "Partager avec quelqu'un"
         ],
+        "correct": 1,
         "answer": 1,
         "points": 1,
-        "correct": 1
+        "explanation": "Réprimer une envie, c'est se retenir de faire quelque chose. Anne attend pour ne pas rendre sa petite sœur triste."
       },
       {
         "id": "q14",
-        "section": "Vocabulaire",
+        "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« Elle essaie de rester la plus naturelle possible, mais elle sent son cœur qui bat la chamade. » Que signifie l'expression battre la chamade ?",
+        "text": "« Ça t'en bouche un coin, hein ? » Que veut dire cette expression ?",
         "options": [
-          "Battre très lentement à cause de la fatigue accumulée.",
-          "Battre de manière irrégulière à cause d'une maladie passagère.",
-          "Battre très fort et à un rythme très rapide sous le coup d'une vive émotion ou de la peur.",
-          "S'arrêter momentanément après un effort physique intense."
+          "Ça te fait mal aux dents",
+          "Ça te donne faim",
+          "Ça te fait peur",
+          "Ça t'étonne beaucoup"
         ],
-        "answer": 2,
+        "correct": 3,
+        "answer": 3,
         "points": 1,
-        "correct": 2
+        "explanation": "« En boucher un coin à quelqu'un », c'est le surprendre, l'étonner. Rorrr n'en revient pas de voir cinq doigts."
       },
       {
         "id": "q15",
-        "section": "Vocabulaire",
+        "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« Alors Grand-père a donné à Rorrr cinq œufs non fertilisés. » Que signifie l'expression non fertilisés pour des œufs ?",
+        "text": "« Rorrr examine les parents de ses quatre yeux inquisiteurs. » Un regard « inquisiteur » est un regard…",
         "options": [
-          "Qui n'ont pas été lavés avant d'être rangés dans la boîte.",
-          "Qui ont été fécondés et donneront des poussins dans quelques jours.",
-          "Qui n'ont pas été fécondés par le coq et ne donneront jamais de poussins.",
-          "Qui ont été cuits sous les lampes chauffantes de la couveuse."
+          "qui cherche à tout savoir",
+          "très doux et gentil",
+          "qui est fatigué",
+          "qui pleure"
         ],
-        "answer": 2,
+        "correct": 0,
+        "answer": 0,
         "points": 1,
-        "correct": 2
+        "explanation": "Un regard inquisiteur observe avec méfiance pour découvrir la vérité. Rorrr se demande si on lui ment."
       },
       {
         "id": "q16",
-        "section": "Synthèse",
-        "type": "mcq",
-        "text": "Un seul de ces trois résumés est totalement correct. Lequel ?",
+        "section": "Compréhension globale",
+        "type": "synthesis",
+        "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Résumé A : Pour réussir son exposé scolaire, Anne invite un extraterrestre nommé Rorrr dans la ferme de ses grands-parents. Rorrr accepte de poser pour des photos avec Élise et le chien Rex. À l'école, la maîtresse félicite Anne et lui attribue la note de 10/10 pour sa démonstration scientifique.",
-          "Résumé B : Un extraterrestre nommé Rorrr débarque sur Terre pour capturer des humains afin de réaliser son propre exposé scolaire. Pour sauver sa famille, Anne lui fait croire que les humains naissent dans des œufs et lui remet des œufs de poule non fécondés. À l'école, l'institutrice ne croit pas à son exposé et lui met un 4/10 faute de preuves. Mais de retour à la ferme, Anne trouve des graines de Sidérien et les place dans la couveuse pour faire éclater la vérité.",
-          "Résumé C : Rorrr tente d'enlever Anne et sa famille pour les emmener sur Sidérius. Grâce à Rex qui mord le pilote extraterrestre, le vaisseau s'écrase dans la grange. Anne et son grand-père capturent Rorrr et l'emmènent à l'école le lendemain pour prouver la réalité de leur aventure devant toute la classe."
+          "Résumé A : Anne prépare un exposé sur la Voie lactée. Avec son grand-père, elle observe les étoiles au télescope et découvre une nouvelle planète, qu'elle appelle Sidérius.",
+          "Résumé B : Un extraterrestre gentil vient aider Anne à faire son exposé. Grâce à lui, elle obtient la meilleure note de la classe et part visiter sa planète pendant les vacances.",
+          "Résumé C : Rorrr, un extraterrestre, veut emmener Anne et sa famille sur sa planète pour son exposé. Anne le trompe en lui faisant croire que les humains naissent dans des œufs. Mais personne ne croit son exposé en classe."
         ],
-        "answer": 1,
+        "correct": 2,
+        "answer": 2,
         "points": 1,
-        "correct": 1
+        "explanation": "Seul le résumé C est correct : l'enlèvement, la ruse des œufs, puis l'exposé d'Anne qui passe pour une histoire inventée."
       }
     ]
   },
@@ -1347,216 +1443,232 @@ window.LIVRES = [
         "id": "q1",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Pourquoi Samira se retrouve-t-elle à donner la réplique à Laura lors de l'audition ?",
+        "text": "Pourquoi surnomme-t-on Samira « Sam-la-poisse » ?",
         "options": [
-          "Elle s'est inscrite à l'audition sans le dire à Laura",
-          "Elle voulait impressionner Monsieur Lopez",
-          "Monsieur Léoton l'y oblige pour que Laura, la dernière de la liste, puisse passer",
-          "Laura lui avait demandé de se préparer à la remplacer"
+          "Parce qu'elle est toujours la dernière à finir ses devoirs en classe",
+          "Parce qu'elle a les cheveux frisés et porte de grosses lunettes",
+          "Parce qu'il lui arrive toujours des malheurs",
+          "Parce qu'elle ne parle jamais à personne dans la cour de récréation"
         ],
+        "correct": 2,
         "answer": 2,
         "points": 1,
-        "correct": 2
+        "explanation": "Il lui arrive toujours des ennuis : elle est trempée par l'orage, fait tomber les livres de Tiago, arrive en retard…"
       },
       {
         "id": "q2",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Quel rôle Samira décroche-t-elle à l'issue de l'audition ?",
+        "text": "Pourquoi Samira monte-t-elle sur scène pendant l'audition ?",
         "options": [
-          "Arsinoé, l'antagoniste de la pièce",
-          "Un rôle secondaire dans la pièce de Molière",
-          "Célimène, le premier rôle féminin du Misanthrope",
-          "Accessoiriste et habilleuse pour la troupe"
+          "Pour donner la réplique à Laura",
+          "Pour montrer aux professeurs qu'elle connaît tout le texte",
+          "Parce que Tiago lui a demandé de passer l'audition avec lui",
+          "Parce que Monsieur Lopez l'avait inscrite sans lui demander"
         ],
-        "answer": 2,
+        "correct": 0,
+        "answer": 0,
         "points": 1,
-        "correct": 2
+        "explanation": "Laura, dernière de la liste, a besoin de quelqu'un pour lui donner la réplique. Monsieur Léoton demande à Samira de le faire."
       },
       {
         "id": "q3",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Que fait Laura après avoir appris qu'elle n'a pas obtenu le rôle de Célimène ?",
+        "text": "Qui obtient le rôle de Célimène après l'audition ?",
         "options": [
-          "Elle félicite Samira et continue à assister aux répétitions",
-          "Elle cesse de parler à Samira et passe son temps avec une autre fille de la classe",
-          "Elle demande à Monsieur Lopez de refaire une audition",
-          "Elle quitte le collège pendant plusieurs semaines"
+          "Laura, comme l'année dernière",
+          "Clothilde, une fille de la classe de Samira",
+          "Une élève de quatrième que personne ne connaît",
+          "Samira, à l'unanimité du jury"
         ],
-        "answer": 1,
+        "correct": 3,
+        "answer": 3,
         "points": 1,
-        "correct": 1
+        "explanation": "À la surprise de tous, le jury choisit Samira. Laura quitte la salle en claquant la porte."
       },
       {
         "id": "q4",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Pourquoi Samira ne peut-elle pas jouer lors de la représentation finale au départ ?",
+        "text": "Comment Laura réagit-elle aux résultats de l'audition ?",
         "options": [
-          "Elle a trop le trac et refuse de monter sur scène",
-          "Laura lui a volé sa robe de Célimène avant le spectacle",
-          "Monsieur Lopez décide de donner le rôle à Laura à la dernière minute",
-          "Elle s'est blessée à la cheville en trébuchant sur un accessoire durant la dernière répétition"
+          "Elle félicite Samira devant toute la classe",
+          "Elle ne lui parle plus et ne répond pas à ses messages",
+          "Elle demande aux professeurs de refaire l'audition",
+          "Elle décide de changer de collège à la toute fin de l'année scolaire"
         ],
-        "answer": 3,
+        "correct": 1,
+        "answer": 1,
         "points": 1,
-        "correct": 3
+        "explanation": "Laura en veut beaucoup à Samira. Elle ne répond à aucun message et passe son temps avec Clothilde."
       },
       {
         "id": "q5",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Pourquoi Samira dit-elle à la fin qu'elle est « presque sûre que Laura n'est pas étrangère aux petits incidents » qui lui sont arrivés ?",
+        "text": "Qui aide Samira à se sentir bien accueillie dans la troupe ?",
         "options": [
-          "Laura lui a avoué qu'elle avait organisé tous les accidents",
-          "Samira est jalouse de Laura et invente des raisons de la soupçonner",
-          "Tiago confirme qu'il a abîmé la chaise sur demande de Laura, laissant penser qu'elle a aussi provoqué d'autres incidents",
-          "Monsieur Léoton a découvert que Laura sabotait les répétitions"
+          "Monsieur Lopez, qui la félicite devant tout le monde",
+          "Laura, qui vient lui apporter son costume en souriant",
+          "Sohann, son grand frère, qui vient à la répétition",
+          "Tiago, qui lui souhaite la bienvenue"
         ],
-        "answer": 2,
+        "correct": 3,
+        "answer": 3,
         "points": 1,
-        "correct": 2
+        "explanation": "Les autres acteurs sont froids avec Samira. Mais Tiago dit qu'il est ravi qu'elle ait le rôle, et tout le monde se détend."
       },
       {
         "id": "q6",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Quand Sohann dit à Samira : « Au théâtre, tu es juste Sam, pas 'la copine de Laura' », que veut-il lui faire comprendre ?",
+        "text": "Quel rôle Laura finit-elle par prendre dans la troupe ?",
         "options": [
-          "Que Laura est une mauvaise amie dont il faut se méfier",
-          "Que Samira devrait changer de groupe d'amis",
-          "Que le théâtre lui permet de découvrir qui elle est vraiment, en dehors de l'ombre de Laura",
-          "Que les autres élèves ne savent pas que Samira et Laura sont amies"
+          "Le rôle d'Arsinoé, une amie de Célimène",
+          "Le rôle de metteuse en scène à la place du professeur",
+          "Accessoiriste, pour les objets et les costumes",
+          "Souffleuse, pour aider ceux qui oublient leur texte"
         ],
+        "correct": 2,
         "answer": 2,
         "points": 1,
-        "correct": 2
+        "explanation": "Madame Medjouel a demandé à Laura de s'occuper des accessoires et des costumes."
       },
       {
         "id": "q7",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Pourquoi Samira pleure-t-elle dans les coulisses après être tombée de la chaise ?",
+        "text": "Pourquoi Samira ne peut-elle presque pas jouer le soir de la première ?",
         "options": [
-          "Parce qu'elle s'est fait très mal et que la douleur est insupportable",
-          "Parce qu'elle a honte d'être maladroite devant toute la troupe",
-          "Parce qu'elle croit que Laura va reprendre son rôle et qu'elle va perdre à la fois le théâtre et son amie",
-          "Parce que Tiago s'est moqué d'elle avec les autres acteurs"
+          "Elle s'est fait une entorse à la cheville",
+          "Elle a perdu la voix à force de trop répéter",
+          "Elle a oublié sa robe de Célimène à la maison",
+          "Elle est tombée malade et a beaucoup de fièvre"
         ],
-        "answer": 2,
+        "correct": 0,
+        "answer": 0,
         "points": 1,
-        "correct": 2
+        "explanation": "Samira glisse sur quelque chose de mou et la grille lui tombe sur le pied. C'est une entorse."
       },
       {
         "id": "q8",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "À la fin de la représentation, Samira demande au public d'applaudir Laura. Qu'est-ce que ce geste révèle sur elle ?",
+        "text": "Qui aide Samira à monter sur scène malgré sa blessure ?",
         "options": [
-          "Qu'elle veut montrer à tout le collège qu'elle a pardonné à Laura",
-          "Qu'elle pense que Laura méritait davantage le rôle de Célimène",
-          "Qu'elle veut se faire bien voir des professeurs en montrant qu'elle est généreuse",
-          "Qu'elle a grandi et qu'elle est capable de mettre leur amitié avant sa fierté personnelle"
+          "Tiago, qui la porte dans ses bras jusqu'au rideau",
+          "Son grand frère Driss",
+          "Monsieur Léoton, le professeur d'allemand",
+          "Sa petite sœur Lila, qui lui tient la main"
         ],
-        "answer": 3,
+        "correct": 1,
+        "answer": 1,
         "points": 1,
-        "correct": 3
+        "explanation": "Driss la porte jusqu'aux coulisses. Laura lui rend alors sa robe et lui demande pardon."
       },
       {
         "id": "q9",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Tiago accueille chaleureusement Samira dans la troupe dès la première répétition.",
+        "text": "Monsieur Léoton est un professeur sévère, mais Samira le trouve plutôt gentil.",
+        "correct": true,
         "answer": true,
         "points": 1,
-        "correct": true
+        "explanation": "VRAI : il crie souvent, mais il punit rarement, et Samira trouve ses cours passionnants."
       },
       {
         "id": "q10",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Laura rejoint la troupe de théâtre comme accessoiriste parce qu'elle le demande elle-même.",
+        "text": "Samira a toujours rêvé de faire du théâtre.",
+        "correct": false,
         "answer": false,
         "points": 1,
-        "correct": false
+        "explanation": "FAUX : c'est Laura qui rêvait d'être comédienne. Samira préférait rester « dans les coulisses »."
       },
       {
         "id": "q11",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Samira connaît son texte par cœur bien avant la représentation finale.",
+        "text": "Pendant la pièce, Samira cache son attelle sous sa longue robe.",
+        "correct": true,
         "answer": true,
         "points": 1,
-        "correct": true
+        "explanation": "VRAI : les médicaments calment la douleur. Si elle marche lentement, personne ne remarque rien."
       },
       {
         "id": "q12",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "C'est Samira elle-même qui décide de retourner jouer malgré sa cheville blessée.",
+        "text": "À la fin, Samira refuse de faire applaudir Laura.",
+        "correct": false,
         "answer": false,
         "points": 1,
-        "correct": false
+        "explanation": "FAUX : au contraire, elle demande au public d'applaudir Laura, « notre accessoiriste et ma meilleure amie »."
       },
       {
         "id": "q13",
-        "section": "Vocabulaire",
+        "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« Elle s'avance sur la scène avec aplomb. » — Que signifie aplomb ?",
+        "text": "« Même s'il nous houspille régulièrement, il ne nous punit que très rarement. » Que veut dire « houspiller » ?",
         "options": [
-          "Une grande timidité difficile à surmonter",
-          "Une tenue de costume particulière pour le théâtre",
-          "Une assurance calme, un air confiant et décidé",
-          "Une grande agitation et beaucoup de nervosité"
+          "Féliciter",
+          "Aider",
+          "Oublier",
+          "Gronder"
         ],
-        "answer": 2,
+        "correct": 3,
+        "answer": 3,
         "points": 1,
-        "correct": 2
+        "explanation": "Houspiller, c'est gronder, faire des reproches à quelqu'un. Monsieur Léoton crie souvent, mais punit peu."
       },
       {
         "id": "q14",
-        "section": "Vocabulaire",
+        "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« Monsieur Lopez et Madame Medjouel font office de jury. » — Que signifie jury ?",
+        "text": "« Les élèves sont appelés par ordre alphabétique. » Cela veut dire qu'ils passent…",
         "options": [
-          "Un groupe de spectateurs venus regarder le spectacle",
-          "Un groupe de personnes chargées d'évaluer et de prendre une décision",
-          "Un groupe d'élèves qui préparent la pièce ensemble",
-          "Un comité qui s'occupe de la décoration de la scène"
+          "dans l'ordre des lettres de leur nom",
+          "selon leur âge, du plus petit au plus grand",
+          "dans le désordre, au hasard",
+          "d'abord les filles, puis les garçons"
         ],
-        "answer": 1,
+        "correct": 0,
+        "answer": 0,
         "points": 1,
-        "correct": 1
+        "explanation": "L'ordre alphabétique suit l'ordre des lettres A, B, C… Laura Zimmer passe donc en tout dernier."
       },
       {
         "id": "q15",
-        "section": "Vocabulaire",
+        "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« Quelques élèves ricannent dans le fond de la pièce. » — Que signifie ricannent ?",
+        "text": "« Le jury a choisi Samira à l'unanimité. » Que veut dire « à l'unanimité » ?",
         "options": [
-          "Chantent doucement pour se calmer",
-          "Parlent à voix haute sans écouter le professeur",
-          "Pleurent discrètement parce qu'ils sont déçus",
-          "Rient de façon moqueuse et un peu méchante"
+          "En hésitant très longtemps",
+          "Par erreur",
+          "Tous les membres étaient d'accord",
+          "Grâce à un tirage au sort"
         ],
-        "answer": 3,
+        "correct": 2,
+        "answer": 2,
         "points": 1,
-        "correct": 3
+        "explanation": "Une décision prise à l'unanimité est acceptée par tout le monde, sans exception."
       },
       {
         "id": "q16",
-        "section": "Synthèse",
-        "type": "mcq",
-        "text": "Un seul de ces trois résumés est totalement correct. Lequel ?",
+        "section": "Compréhension globale",
+        "type": "synthesis",
+        "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Résumé A : Lors de la dernière répétition, Samira se blesse et Laura joue à sa place pour la représentation finale. Samira monte quand même sur scène à la fin pour saluer et demande au public d'applaudir Laura.",
-          "Résumé B : Samira se blesse à la cheville. Son frère Driss et Laura la convainquent de jouer quand même. Elle monte sur scène malgré sa blessure, la représentation est un succès et elle demande au public d'applaudir Laura, ce qui les réconcilie.",
-          "Résumé C : Laura joue pendant toute la représentation finale. À la fin, Samira monte sur scène et demande au public d'applaudir Laura, ce qui les réconcilie."
+          "Résumé A : Samira accompagne sa meilleure amie Laura à une audition de théâtre et obtient le premier rôle à sa place. Laura lui en veut, mais Samira découvre qu'elle aime jouer. Malgré une entorse, elle joue le soir du spectacle et retrouve son amie.",
+          "Résumé B : Laura et Samira jouent ensemble dans la pièce de fin d'année. Le soir du spectacle, Laura se blesse à la cheville et Samira, qui connaît tout le texte, la remplace au dernier moment.",
+          "Résumé C : Samira veut devenir comédienne, mais le jury choisit Laura pour le premier rôle. Pour se venger, Samira abîme les accessoires, puis finit par demander pardon à son amie."
         ],
-        "answer": 1,
+        "correct": 0,
+        "answer": 0,
         "points": 1,
-        "correct": 1
+        "explanation": "Seul le résumé A est correct : l'audition, le rôle donné à Samira, la dispute avec Laura, l'entorse et la réconciliation."
       }
     ]
   },
@@ -1570,216 +1682,232 @@ window.LIVRES = [
         "id": "q1",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Quel est le prénom de la narratrice ?",
+        "text": "Pourquoi Emma se sent-elle mal pendant la visite du cirque ?",
         "options": [
-          "Léa",
-          "Emma",
-          "Lucie",
-          "Clara"
+          "Elle a eu une très mauvaise note en rédaction le matin même",
+          "Elle voit que les animaux sont maltraités",
+          "Sa maman lui achète un billet à demi-tarif comme une petite",
+          "Elle a peur des lions et des éléphants enfermés dans les cages"
         ],
+        "correct": 1,
         "answer": 1,
         "points": 1,
-        "correct": 1
+        "explanation": "En faisant le tour des animaux, Emma comprend qu'ils sont mal nourris, enfermés et privés de liberté."
       },
       {
         "id": "q2",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Quel âge a Emma au moment de l'histoire ?",
+        "text": "Que se passe-t-il avec le petit cheval brun pendant le spectacle ?",
         "options": [
-          "11 ans",
-          "10 ans",
-          "12 ans",
-          "13 ans"
+          "Il fait un numéro de danse sous les applaudissements du public",
+          "Il s'échappe de la piste et court jusqu'aux gradins",
+          "Il refuse d'entrer sous le chapiteau et rue devant le dresseur",
+          "Il glisse et tombe plusieurs fois"
         ],
-        "answer": 2,
+        "correct": 3,
+        "answer": 3,
         "points": 1,
-        "correct": 2
+        "explanation": "Maigre et fatigué, le cheval trébuche sur la piste mouillée. Le dresseur utilise son fouet. Emma décide de revenir le chercher."
       },
       {
         "id": "q3",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Comment s'appelle le cheval qu'Emma décide de libérer ?",
+        "text": "Qu'est-ce qu'Antoine donne à Emma avant qu'elle parte ?",
         "options": [
-          "Éclair",
-          "Tornado",
-          "Comète",
-          "Fusée"
+          "Ses bracelets lumineux, pour la guider dans la nuit",
+          "Sa tirelire, pour qu'elle puisse acheter à manger",
+          "Un paquet de gâteaux et des pommes du jardin",
+          "Une lampe de poche qu'il a reçue pour son anniversaire"
         ],
-        "answer": 2,
+        "correct": 0,
+        "answer": 0,
         "points": 1,
-        "correct": 2
+        "explanation": "Antoine promet de garder le secret et donne ses bracelets lumineux à sa sœur « pour la guider dans la nuit »."
       },
       {
         "id": "q4",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Où Emma et son grand-père amènent-ils Comète ?",
+        "text": "Qui Emma va-t-elle chercher pour l'aider ?",
         "options": [
-          "Dans une ferme près de Nangis",
-          "Dans un haras en Normandie",
-          "En Camargue, aux Saintes-Maries-de-la-Mer",
-          "Dans les Alpes"
+          "Son beau-père Claude, qui a une grande voiture",
+          "Nanard, un vieil ami de la famille qui a un van",
+          "Son grand-père, qui vit en maison de retraite",
+          "Sa meilleure amie, qui habite près de la gare"
         ],
+        "correct": 2,
         "answer": 2,
         "points": 1,
-        "correct": 2
+        "explanation": "Emma frappe à la fenêtre de Papy, à la maison de retraite. Il accepte de l'emmener avec le cheval en Camargue."
       },
       {
         "id": "q5",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Pourquoi Emma décide-t-elle de libérer Comète dès le spectacle ?",
+        "text": "Qui est le gardian qu'Emma rencontre en Camargue ?",
         "options": [
-          "Elle veut se venger du dresseur qui lui a été impoli",
-          "Elle a vu la souffrance du cheval dans ses yeux et a compris qu'il était maltraité",
-          "Elle veut offrir un cheval à son grand-père",
-          "Elle est jalouse des autres enfants qui peuvent monter à cheval"
+          "Le propriétaire du cirque, venu reprendre le cheval volé",
+          "Son papa, qu'elle n'avait pas vu depuis six ans",
+          "Un vétérinaire qui s'occupe des taureaux de la région",
+          "Le frère de Nanard, qui leur a prêté la maison"
         ],
+        "correct": 1,
         "answer": 1,
         "points": 1,
-        "correct": 1
+        "explanation": "Le gardian qui s'occupe des chevaux est le papa d'Emma. Il est parti vivre en Camargue après la séparation."
       },
       {
         "id": "q6",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Pourquoi Antoine tend-il ses bracelets lumineux à Emma avant qu'elle parte ?",
+        "text": "Que découvre le papa d'Emma en examinant Comète ?",
         "options": [
-          "Il n'en veut plus car ils sont cassés",
-          "C'est un cadeau d'anniversaire",
-          "Il veut l'aider à se guider dans la nuit",
-          "Il les échange contre la promesse qu'elle lui rapporte un souvenir"
+          "C'est une jument qui attend un poulain",
+          "C'est un cheval très vieux et malade qui ne guérira jamais",
+          "C'est un cheval volé à un autre cirque",
+          "C'est un cheval de course célèbre qui a gagné des prix"
         ],
-        "answer": 2,
+        "correct": 0,
+        "answer": 0,
         "points": 1,
-        "correct": 2
+        "explanation": "Comète n'est pas un cheval mais une jument, et elle va bientôt avoir un petit. En l'apprenant, Emma s'évanouit."
       },
       {
         "id": "q7",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Quand le gardian retire son chapeau et que leurs regards se croisent, Emma s'évanouit. Pourquoi ?",
+        "text": "Comment Papy a-t-il obtenu la maison de gardian ?",
         "options": [
-          "Elle a trop chaud et n'a pas dormi",
-          "Elle a peur des chevaux camarguais",
-          "Elle réalise que le gardian est son père qu'elle n'a pas revu depuis des années",
-          "Elle apprend que Comète est gravement malade"
+          "Il l'a louée avec l'argent de sa retraite",
+          "Le papa d'Emma la leur a prêtée pour les vacances",
+          "Nanard l'avait réservée pour eux depuis longtemps",
+          "Il a gagné une semaine de location au bingo"
         ],
-        "answer": 2,
+        "correct": 3,
+        "answer": 3,
         "points": 1,
-        "correct": 2
+        "explanation": "Papy a gagné un bon pour une semaine dans une maison de gardian, lors d'un bingo à la maison de retraite."
       },
       {
         "id": "q8",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "À la fin, le grand-père décide de rester en Camargue. Qu'est-ce que cela révèle sur lui ?",
+        "text": "Que décide Emma pour Comète et son poulain à la fin ?",
         "options": [
-          "Il est en mauvaise santé et a besoin d'air marin",
-          "Il veut surveiller le père d'Emma",
-          "La vie à la maison de retraite ne lui convenait pas et cette aventure lui a redonné goût à la vie",
-          "Il veut apprendre à être gardian"
+          "De les ramener au cirque pour éviter des ennuis à sa famille",
+          "De les emmener vivre dans le jardin de sa maman",
+          "De les laisser au ranch, chez son papa",
+          "De les vendre à la vétérinaire pour payer le voyage"
         ],
+        "correct": 2,
         "answer": 2,
         "points": 1,
-        "correct": 2
+        "explanation": "Emma sait que Comète et Bingo seront mieux en Camargue. Elle viendra les voir, et son papa aussi."
       },
       {
         "id": "q9",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Emma vit avec son père, sa mère et son petit frère Antoine.",
+        "text": "Emma a treize ans au début de l'histoire.",
+        "correct": false,
         "answer": false,
         "points": 1,
-        "correct": false
+        "explanation": "FAUX : Emma a douze ans. Sa maman dit qu'elle en a onze pour payer moins cher, ce qui l'énerve beaucoup."
       },
       {
         "id": "q10",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "C'est le grand-père d'Emma qui a eu l'idée d'aller en Camargue pour libérer Comète.",
+        "text": "Papy appelle la maman d'Emma pour lui dire qu'ils sont partis ensemble.",
+        "correct": true,
         "answer": true,
         "points": 1,
-        "correct": true
+        "explanation": "VRAI : elle n'est pas contente, mais au moins elle est rassurée."
       },
       {
         "id": "q11",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Comète est en réalité une jument et elle attend un poulain.",
-        "answer": true,
+        "text": "Le papa d'Emma dit qu'il est parti parce qu'il ne l'aimait plus.",
+        "correct": false,
+        "answer": false,
         "points": 1,
-        "correct": true
+        "explanation": "FAUX : il explique qu'il étouffait dans son travail à la banque, qu'il a fait un burn-out et qu'il avait honte. Il demande pardon à Emma."
       },
       {
         "id": "q12",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Le grand-père a obtenu la maison de gardian en la payant de sa poche.",
-        "answer": false,
+        "text": "Le poulain de Comète s'appelle Bingo.",
+        "correct": true,
+        "answer": true,
         "points": 1,
-        "correct": false
+        "explanation": "VRAI : Emma choisit ce nom en pensant au bingo qui leur a permis d'avoir la maison."
       },
       {
         "id": "q13",
-        "section": "Vocabulaire",
+        "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« On voit apparaître ses côtes saillantes sur son flanc. » — Que signifie saillantes ?",
+        "text": "« On voit apparaître ses côtes saillantes sur son flanc. » Des côtes « saillantes » sont des côtes…",
         "options": [
-          "Cachées sous le pelage",
-          "Très colorées et visibles",
-          "Qui ressortent de manière visible, qui dépassent",
-          "Solides et bien formées"
+          "cassées",
+          "cachées sous la graisse",
+          "qui dépassent, qu'on voit bien",
+          "très douces au toucher"
         ],
+        "correct": 2,
         "answer": 2,
         "points": 1,
-        "correct": 2
+        "explanation": "Le cheval est si maigre qu'on voit ses côtes sous la peau."
       },
       {
         "id": "q14",
-        "section": "Vocabulaire",
+        "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« Je baragouine un truc en rapport avec le cirque. » — Que signifie baragouine ?",
+        "text": "« Elle n'a plus rien de la jument craintive et famélique. » Que veut dire « famélique » ?",
         "options": [
-          "Elle explique clairement et précisément",
-          "Elle ment délibérément et calmement",
-          "Elle dit quelque chose de confus et peu compréhensible",
-          "Elle chante pour se donner une contenance"
+          "Très joyeuse",
+          "Très maigre, affamée",
+          "Très grande",
+          "Très rapide"
         ],
-        "answer": 2,
+        "correct": 1,
+        "answer": 1,
         "points": 1,
-        "correct": 2
+        "explanation": "Famélique veut dire très maigre, qui souffre de la faim. Au ranch, Comète a repris des forces."
       },
       {
         "id": "q15",
-        "section": "Vocabulaire",
+        "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« Comète commence à s'agiter dans le van. Il trépigne d'impatience. » — Que signifie trépigne ?",
+        "text": "« J'ai fait un burn-out, comme on dit maintenant. » Un « burn-out », c'est…",
         "options": [
-          "Il se couche et s'endort",
-          "Il s'agite en frappant le sol, tellement il est impatient",
-          "Il hennit très fort pour appeler ses congénères",
-          "Il recule de peur dans un coin"
+          "un épuisement à cause du travail",
+          "une maladie des chevaux",
+          "un incendie dans un bureau",
+          "un voyage à l'étranger"
         ],
-        "answer": 1,
+        "correct": 0,
+        "answer": 0,
         "points": 1,
-        "correct": 1
+        "explanation": "Un burn-out est un épuisement très fort, souvent causé par un travail trop difficile ou trop stressant."
       },
       {
         "id": "q16",
-        "section": "Synthèse",
-        "type": "mcq",
-        "text": "Un seul de ces trois résumés est totalement correct. Lequel ?",
+        "section": "Compréhension globale",
+        "type": "synthesis",
+        "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Résumé A : Emma, 12 ans, va au cirque avec sa famille et découvre les mauvaises conditions de vie des animaux. Elle décide de libérer Comète. La nuit venue, elle s'échappe avec l'aide de son grand-père et tous deux rejoignent la Camargue en van. Là-bas, Emma retrouve son père, un gardian, et apprend que Comète est une jument attendant un poulain. Après la naissance de Bingo, Emma repart avec sa famille, laissant Comète et son grand-père en Camargue.",
-          "Résumé B : Emma, 11 ans, prend le train en Camargue avec Antoine. Comète met bas un poulain que le père appelle Bingo. Emma repart avec sa mère après avoir réconcilié ses deux parents.",
-          "Résumé C : Le père d'Emma est vétérinaire en Camargue. Une vétérinaire extérieure aide Comète à mettre bas. Emma repart avec sa mère."
+          "Résumé A : Emma part en vacances en Camargue avec son papa et son grand-père. Elle apprend à monter à cheval et gagne une course sur la plage avec une jument qu'elle a achetée au marché.",
+          "Résumé B : Emma libère un cheval maltraité dans un cirque. Avec son grand-père, elle l'emmène en Camargue, où elle retrouve son papa. La jument met au monde un poulain, et Emma se réconcilie avec son père.",
+          "Résumé C : Emma travaille dans un cirque avec son beau-père. Un soir, un cheval s'échappe, et elle traverse toute la France pour le retrouver avant la police."
         ],
-        "answer": 0,
+        "correct": 1,
+        "answer": 1,
         "points": 1,
-        "correct": 0
+        "explanation": "Seul le résumé B est correct : le cheval libéré, le voyage avec Papy, les retrouvailles avec le papa et la naissance de Bingo."
       }
     ]
   },
@@ -1793,216 +1921,232 @@ window.LIVRES = [
         "id": "q1",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Quel est le prénom de la narratrice ?",
+        "text": "Pourquoi Faustine se dispute-t-elle avec son papa au début de l'histoire ?",
         "options": [
-          "Fanny",
-          "Assia",
-          "Faustine",
-          "Moira"
+          "Il refuse qu'elle sorte seule retrouver une amie",
+          "Il veut encore déménager dans un pays lointain à l'étranger",
+          "Il lui interdit de décorer sa chambre comme elle le souhaite",
+          "Il ne veut pas qu'elle aille au lycée avec les autres élèves"
         ],
-        "answer": 2,
+        "correct": 0,
+        "answer": 0,
         "points": 1,
-        "correct": 2
+        "explanation": "Faustine va avoir 18 ans, mais son papa l'accompagne partout. Il refuse qu'elle aille au café avec Fanny."
       },
       {
         "id": "q2",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Pourquoi le père de Faustine déménageait-il régulièrement ?",
+        "text": "Qu'est-ce qu'un « cristal », dans cette histoire ?",
         "options": [
-          "Il cherchait l'inspiration pour ses romans",
-          "Il changeait souvent de travail",
-          "Il voulait cacher et protéger Faustine des hommes-chauves-souris",
-          "Il aimait les voyages et les découvertes"
+          "Une pierre précieuse que porte la mère de Faustine autour du cou",
+          "Le nom du café où Faustine retrouve ses nouveaux amis",
+          "Un moment magique où tout se fige autour d'elle",
+          "Une potion que boivent les prêtresses avant le combat"
         ],
+        "correct": 2,
         "answer": 2,
         "points": 1,
-        "correct": 2
+        "explanation": "Pendant un cristal, les gens et les objets s'immobilisent. Cela permet d'accéder à un autre monde, sans que les autres s'en rendent compte."
       },
       {
         "id": "q3",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Qu'est-ce qu'un « cristal » dans ce récit ?",
+        "text": "Qui sauve Faustine des hommes-chauves-souris dans le café ?",
         "options": [
-          "Un objet magique que les prêtresses portent autour du cou",
-          "Une arme utilisée contre les hommes noirs",
-          "Le nom du temple secret des gardiennes",
-          "Un arrêt du temps qui permet d'accéder à un autre monde"
+          "Son papa, transformé en loup",
+          "Fanny et ses amis du lycée",
+          "Les gargouilles de la cathédrale",
+          "Une meute de femmes-panthères"
         ],
+        "correct": 3,
         "answer": 3,
         "points": 1,
-        "correct": 3
+        "explanation": "Des panthères entrent et se placent entre Faustine et les hommes noirs. Elles redeviennent ensuite des femmes : ce sont des gardiennes des eaux vives."
       },
       {
         "id": "q4",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Où se trouve le temple des gardiennes des eaux vives ?",
+        "text": "Que découvre Faustine au sujet de sa maman ?",
         "options": [
-          "Dans une forêt à la périphérie de la ville",
-          "Sous la cathédrale, dans des souterrains",
-          "Dans un jardin secret caché derrière des grilles près de la cathédrale de Chartres",
-          "Dans une ruine à l'extérieur de la ville"
+          "Elle est morte à sa naissance, comme son papa l'avait dit",
+          "Elle est vivante et elle est prêtresse",
+          "Elle habite dans un autre pays, très loin de la France",
+          "Elle travaille avec son papa comme écrivain"
         ],
-        "answer": 2,
+        "correct": 1,
+        "answer": 1,
         "points": 1,
-        "correct": 2
+        "explanation": "Son papa avait menti pour la protéger. Sa maman, Moïra, est la grande prêtresse qui garde la source des eaux vives."
       },
       {
         "id": "q5",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Pourquoi le père de Faustine lui a-t-il caché que sa mère était vivante ?",
+        "text": "Pourquoi les hommes-chauves-souris veulent-ils la source des eaux vives ?",
         "options": [
-          "Il était jaloux de Moira et ne voulait pas qu'elles se rencontrent",
-          "Moira lui avait interdit d'en parler",
-          "Il voulait protéger Faustine de la douleur et du danger lié à sa destinée",
-          "Il ignorait lui-même que Moira était encore en vie"
+          "Parce qu'ils ont très soif après leur long voyage",
+          "Parce qu'elle rend les gens riches",
+          "Parce qu'ils croient qu'elle donne l'immortalité",
+          "Parce qu'elle permet de se transformer en animal"
         ],
+        "correct": 2,
         "answer": 2,
         "points": 1,
-        "correct": 2
+        "explanation": "Hélios, leur chef, vieillit. Il croit que cette eau le rendra immortel. En réalité, la source montre surtout la santé de la Terre."
       },
       {
         "id": "q6",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Pourquoi Faustine accepte-t-elle de devenir gardienne des eaux vives ?",
+        "text": "Pour quelle leçon Faustine est-elle vraiment motivée au temple ?",
         "options": [
-          "Par obéissance envers sa mère Moira",
-          "Pour se rapprocher de son père qui habite près du temple",
-          "Par peur des hommes-chauves-souris",
-          "Par désir de vivre une destinée extraordinaire et hors du commun"
+          "Les cours de métamorphose, pour devenir panthère",
+          "Les cours de combat à l'épée et au sabre avec Assia",
+          "Les cours de soins avec les herbes médicinales du jardin",
+          "Les cours d'escalade et de course avec les autres novices"
         ],
-        "answer": 3,
+        "correct": 0,
+        "answer": 0,
         "points": 1,
-        "correct": 3
+        "explanation": "Faustine est maladroite en sport. Ce qui l'intéresse vraiment, c'est d'apprendre à se transformer en panthère."
       },
       {
         "id": "q7",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Que révèle la relation entre Faustine et Vivian sur leur situation respective ?",
+        "text": "Qui est Vivian ?",
         "options": [
-          "Ils sont ennemis et se battent constamment",
-          "Vivian espionne Faustine pour son père Helios",
-          "Tous deux rejettent la guerre que mènent leurs clans respectifs et cherchent la paix",
-          "Faustine utilise Vivian pour obtenir des informations sur les hommes noirs"
+          "Le frère de Fanny, qui étudie au même lycée que Faustine",
+          "Un homme-chauve-souris qui l'a épargnée",
+          "Un prêtre qui travaille dans la cathédrale",
+          "Le chef des hommes-hyènes venus de l'est"
         ],
-        "answer": 2,
+        "correct": 1,
+        "answer": 1,
         "points": 1,
-        "correct": 2
+        "explanation": "Dans la cathédrale, Vivian empêche un homme noir de s'en prendre à Faustine. Il est le fils d'Hélios, mais il déteste la guerre."
       },
       {
         "id": "q8",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "À la fin du récit, Faustine dit qu'elle n'abandonnera pas son enfant. Qu'est-ce que cela révèle ?",
+        "text": "Qui aide Faustine et les prêtresses à gagner la dernière bataille ?",
         "options": [
-          "Elle critique son père qui l'a mal élevée",
-          "Elle veut quitter le temple pour vivre une vie normale",
-          "Elle a compris et pardonné les choix de sa mère, mais refuse de reproduire la même erreur",
-          "Elle veut se venger de Moira en lui montrant qu'elle sera une meilleure mère"
+          "Les amis du lycée, prévenus par Fanny",
+          "Les hommes-loups, le peuple de son papa",
+          "Les policiers de la ville de Chartres",
+          "Les gargouilles de la cathédrale"
         ],
-        "answer": 2,
+        "correct": 3,
+        "answer": 3,
         "points": 1,
-        "correct": 2
+        "explanation": "Faustine appelle les gargouilles, comme dans la prophétie. Elles descendent de la cathédrale et chassent les ennemis."
       },
       {
         "id": "q9",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Faustine avait de nombreux amis avant de rencontrer Fanny, car elle avait beaucoup voyagé.",
-        "answer": false,
+        "text": "Faustine et son papa ont souvent déménagé avant de s'installer à Chartres.",
+        "correct": true,
+        "answer": true,
         "points": 1,
-        "correct": false
+        "explanation": "VRAI : ils changeaient de pays tous les six mois environ : son papa voulait la cacher des hommes-chauves-souris."
       },
       {
         "id": "q10",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Les eaux vives donnent l'immortalité à ceux qui s'y baignent.",
+        "text": "Au temple, Faustine se montre tout de suite très douée pour le combat.",
+        "correct": false,
         "answer": false,
         "points": 1,
-        "correct": false
+        "explanation": "FAUX : elle est maladroite et « pataude ». Les autres novices progressent bien plus vite qu'elle."
       },
       {
         "id": "q11",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "C'est Yasmine qui a trahi les gardiennes en ouvrant la grille du parc à l'ennemi.",
-        "answer": true,
+        "text": "Yasmine est l'amie fidèle qui protège Faustine pendant l'attaque.",
+        "correct": false,
+        "answer": false,
         "points": 1,
-        "correct": true
+        "explanation": "FAUX : Yasmine est la traîtresse : elle a ouvert la grille du parc aux ennemis."
       },
       {
         "id": "q12",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Le père de Faustine est un homme ordinaire, sans pouvoirs magiques.",
-        "answer": false,
+        "text": "Le papa de Faustine est en réalité un homme-loup.",
+        "correct": true,
+        "answer": true,
         "points": 1,
-        "correct": false
+        "explanation": "VRAI : pendant la bataille, Faustine le voit se transformer en loup. Il avait quitté son peuple pour vivre avec Moïra."
       },
       {
         "id": "q13",
-        "section": "Vocabulaire",
+        "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« À mes interrogations, il répondait, le regard fuyant. » — Que signifie regard fuyant ?",
+        "text": "« Je supportai ma vie de recluse sans rechigner. » Une « recluse » est une personne qui…",
         "options": [
-          "Un regard vif et joyeux",
-          "Un regard fixe et assuré",
-          "Un regard qui évite celui de l'autre, qui cherche à ne pas croiser les yeux",
-          "Un regard triste et plein de larmes"
+          "voyage beaucoup",
+          "travaille dans un café",
+          "a beaucoup d'amis",
+          "vit enfermée, à l'écart des autres"
         ],
-        "answer": 2,
+        "correct": 3,
+        "answer": 3,
         "points": 1,
-        "correct": 2
+        "explanation": "Une personne recluse vit enfermée chez elle. Faustine n'a pas le droit de sortir seule."
       },
       {
         "id": "q14",
-        "section": "Vocabulaire",
+        "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« papa tenta alors de m'amadouer : Tu as carte blanche pour ta chambre. » — Que signifie amadouer ?",
+        "text": "« Quelle inconscience ! » dit la panthère. Ici, « l'inconscience », c'est…",
         "options": [
-          "Gronder quelqu'un pour le faire obéir",
-          "Ignorer quelqu'un pour le punir",
-          "Expliquer clairement une situation difficile",
-          "Calmer quelqu'un de mécontent en étant gentil et en lui faisant plaisir"
+          "le fait de dormir très profondément",
+          "le fait de ne pas voir le danger",
+          "le fait d'être très intelligente",
+          "le fait d'avoir très peur"
         ],
-        "answer": 3,
+        "correct": 1,
+        "answer": 1,
         "points": 1,
-        "correct": 3
+        "explanation": "Être inconscient, c'est ne pas se rendre compte du danger. Faustine est sortie seule alors qu'on la cherchait."
       },
       {
         "id": "q15",
-        "section": "Vocabulaire",
+        "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« ces épreuves m'apparurent insurmontables, car ma constitution fragile m'avait tenue écartée des disciplines sportives. » — Que signifie insurmontables ?",
+        "text": "« Mes compagnes entamèrent leur métamorphose à la hâte. » Que veut dire « à la hâte » ?",
         "options": [
-          "Très ennuyeuses et sans intérêt",
-          "Faciles à réaliser avec un peu d'entraînement",
-          "Impossibles à surmonter, trop difficiles pour être réussies",
-          "Dangereuses et réservées aux adultes"
+          "Très lentement",
+          "En chantant",
+          "Très vite",
+          "En silence"
         ],
+        "correct": 2,
         "answer": 2,
         "points": 1,
-        "correct": 2
+        "explanation": "Faire quelque chose à la hâte, c'est le faire rapidement, parce qu'on est pressé. L'ennemi est aux portes du temple."
       },
       {
         "id": "q16",
-        "section": "Synthèse",
-        "type": "mcq",
-        "text": "Un seul de ces trois résumés est totalement correct. Lequel ?",
+        "section": "Compréhension globale",
+        "type": "synthesis",
+        "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Résumé A : Faustine apprend à se transformer en panthère. Lors du combat final, son père fait exploser le temple pour protéger la source. Faustine devient grande prêtresse mais le résumé omet Vivian, père de l'enfant.",
-          "Résumé B : Faustine appelle les gargouilles à la rescousse et remporte la victoire. Ses parents survivent à la bataille et restent vivre au temple avec elle.",
-          "Résumé C : Faustine, une jeune fille surprotégée par son père, découvre lors d'une sortie que des hommes-chauves-souris la recherchent. Des femmes-panthères la sauvent et lui révèlent qu'elle est destinée à devenir gardienne des eaux vives, comme sa mère Moira qu'elle croyait morte. Elle rejoint le temple, participe au combat final. Ses deux parents meurent lors de la bataille. Faustine devient grande prêtresse et attend un enfant de Vivian, qu'elle promet de ne pas abandonner."
+          "Résumé A : À 18 ans, Faustine découvre que sa maman est une prêtresse qui protège une source magique. Elle devient gardienne des eaux vives et, avec l'aide des gargouilles, repousse les hommes-chauves-souris. Elle devient ensuite grande prêtresse.",
+          "Résumé B : Faustine est une élève brillante qui veut devenir écrivain comme son papa. Au café, elle rencontre Vivian, et tous les deux partent vivre dans un autre pays pour écrire un livre ensemble.",
+          "Résumé C : Faustine se transforme en panthère la nuit et fait peur aux habitants de Chartres. Ses amis du lycée l'aident à retrouver sa forme humaine grâce à l'eau d'une source."
         ],
-        "answer": 2,
+        "correct": 0,
+        "answer": 0,
         "points": 1,
-        "correct": 2
+        "explanation": "Seul le résumé A est correct : la découverte de sa mère, la formation de gardienne, la bataille gagnée avec les gargouilles et son nouveau rôle."
       }
     ]
   },
@@ -2016,216 +2160,232 @@ window.LIVRES = [
         "id": "q1",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Pourquoi Line affiche-t-elle des avis de recherche dans le quartier ?",
+        "text": "Pourquoi la rentrée de Line commence-t-elle si mal ?",
         "options": [
-          "Pour retrouver son grand frère Jérôme parti au Canada",
-          "Pour signaler la disparition de son chat Catsou",
-          "Pour retrouver Catsou, le chat de son frère qu'elle gardait et qui a disparu",
-          "Pour trouver quelqu'un qui accepte de garder son chat pendant les vacances"
+          "Elle a déménagé et ne connaît personne dans sa nouvelle école",
+          "Sa meilleure amie Assia est partie vivre dans un autre pays",
+          "Son frère est parti et Catsou a disparu",
+          "Ses parents viennent de lui annoncer qu'ils vont divorcer"
         ],
+        "correct": 2,
         "answer": 2,
         "points": 1,
-        "correct": 2
+        "explanation": "Jérôme, son grand frère, est parti un an au Canada. Trois jours plus tard, Catsou, le chat qu'il lui a confié, ne rentre plus."
       },
       {
         "id": "q2",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Comment Line rencontre-t-elle Charlotte pour la première fois ?",
+        "text": "Pourquoi les élèves surnomment-ils Monsieur Briard « Garde à vous » ?",
         "options": [
-          "Charlotte est une voisine qui vient frapper à sa porte",
-          "C'est Assia qui lui présente Charlotte lors d'une sortie",
-          "Line la rencontre lors du cours de cyclodanse",
-          "Charlotte l'appelle après avoir trouvé l'avis de recherche de Catsou dans sa boîte aux lettres"
+          "Parce qu'il a été militaire pendant de nombreuses années",
+          "Parce qu'il est très sévère",
+          "Parce qu'il fait faire du sport tous les matins dans la cour",
+          "Parce qu'il porte toujours un uniforme gris à l'école"
         ],
-        "answer": 3,
+        "correct": 1,
+        "answer": 1,
         "points": 1,
-        "correct": 3
+        "explanation": "C'est le prof le plus sévère et le plus exigeant de l'école : avec lui, il faut « filer droit »."
       },
       {
         "id": "q3",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Quel est le sujet de l'exposé que Monsieur Briard demande à ses élèves ?",
+        "text": "Que dit Line à la jeune femme en fauteuil roulant, chez qui Catsou est mort ?",
         "options": [
-          "Un portrait de quelqu'un de la famille",
-          "Une présentation d'un sport paralympique",
-          "Une interview d'une personne passionnée, présentée à la classe avec des panneaux ou un PowerPoint",
-          "Un reportage photo sur un métier du quartier"
+          "Qu'elle la remercie beaucoup d'avoir appelé aussi vite",
+          "Qu'elle voudrait récupérer le torchon qui couvre son chat",
+          "Qu'elle aimerait revenir la voir avec son grand frère",
+          "Que c'est de sa faute, parce qu'elle est handicapée"
         ],
-        "answer": 2,
+        "correct": 3,
+        "answer": 3,
         "points": 1,
-        "correct": 2
+        "explanation": "Sous le choc, Line accuse Charlotte d'avoir laissé mourir le chat à cause de son handicap, puis elle s'enfuit."
       },
       {
         "id": "q4",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Pourquoi Monsieur Briard quitte-t-il la classe en claquant la porte lors de l'exposé de Line ?",
+        "text": "Pourquoi Line retourne-t-elle chez Charlotte ?",
         "options": [
-          "Il trouve le sujet de Line trop peu original",
-          "Line a commis une erreur grave dans sa présentation",
-          "Il reconnaît Charlotte sur les photos, sa belle-fille avec qui il est brouillé depuis deux ans",
-          "Il est soudainement pris d'un malaise physique"
+          "Pour s'excuser et lui offrir des cookies",
+          "Pour récupérer la cage de transport qu'elle avait oubliée",
+          "Pour lui demander de l'aider à faire un exposé sur les chats",
+          "Parce que sa maman l'oblige à y aller le dimanche"
         ],
-        "answer": 2,
+        "correct": 0,
+        "answer": 0,
         "points": 1,
-        "correct": 2
+        "explanation": "Line regrette ses paroles méchantes. Elle fait des cookies et les apporte à Charlotte pour lui demander pardon."
       },
       {
         "id": "q5",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Quand Line dit à Charlotte : « C'est de votre faute s'il est mort ! C'est parce que vous êtes handicapée ! », qu'est-ce qui explique cette réaction ?",
+        "text": "Pourquoi Charlotte n'a-t-elle pas pu aider Catsou ?",
         "options": [
-          "Line est convaincue que Charlotte aurait pu appeler les secours et ne l'a pas fait",
-          "Line est jalouse de Charlotte et cherche une raison de se disputer avec elle",
-          "Line est trop petite pour voir que Charlotte est en fauteuil",
-          "Line est dévastée par la mort de Catsou et rejette sa douleur sur la première personne disponible, sans chercher à comprendre"
+          "Elle n'était pas chez elle ce jour-là",
+          "Il était en haut d'un mur de quatre mètres",
+          "Elle avait peur des chats depuis toujours",
+          "Elle ne savait pas à qui appartenait ce chat"
         ],
-        "answer": 3,
+        "correct": 1,
+        "answer": 1,
         "points": 1,
-        "correct": 3
+        "explanation": "Catsou était tout en haut du mur du jardin. Même une personne debout n'aurait pas pu l'attraper sans une grande échelle."
       },
       {
         "id": "q6",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Charlotte montre à Line que Catsou était sur un mur de quatre mètres quand elle l'a vu. Que comprend Line à ce moment-là ?",
+        "text": "Quelle passion Charlotte partage-t-elle avec Line pour l'exposé ?",
         "options": [
-          "Que Charlotte aurait quand même dû appeler du secours pour elle",
-          "Que Catsou a grimpé là-haut pour s'échapper du jardin de Charlotte",
-          "Que même une personne valide n'aurait pas pu le récupérer, et que ses accusations étaient à la fois injustes et fausses",
-          "Que Catsou souffrait depuis longtemps"
+          "La pâtisserie, surtout les mousses au chocolat",
+          "La photographie, comme le papa de Line",
+          "La cyclodanse, la danse en fauteuil roulant",
+          "Les cactus, comme Harold, le compagnon de sa maman"
         ],
+        "correct": 2,
         "answer": 2,
         "points": 1,
-        "correct": 2
+        "explanation": "Charlotte fait de la cyclodanse. Line l'interroge et prend des photos pendant un cours."
       },
       {
         "id": "q7",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "À la fin du récit, le papa de Line rougit et bafouille qu'il faudra « aller remercier Charlotte un de ces jours ». Que laisse entendre ce détail ?",
+        "text": "Pourquoi Monsieur Briard quitte-t-il la classe en voyant la photo de Charlotte ?",
         "options": [
-          "Que le papa de Line veut demander à Charlotte des conseils pour son travail de photographe",
-          "Que le papa de Line est peut-être en train de tomber amoureux de Charlotte",
-          "Que le papa de Line se sent coupable de ne pas avoir aidé Line à retrouver Catsou",
-          "Que le papa de Line souhaite faire un reportage photo sur la cyclodanse"
+          "Charlotte est sa belle-fille, qu'il ne voit plus",
+          "Il n'aime pas du tout la danse",
+          "Il pense que Line a copié son exposé",
+          "Il est très malade ce jour-là"
         ],
-        "answer": 1,
+        "correct": 0,
+        "answer": 0,
         "points": 1,
-        "correct": 1
+        "explanation": "Monsieur Briard a élevé Charlotte depuis qu'elle était toute petite. Après une dispute, ils ne se parlaient plus."
       },
       {
         "id": "q8",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "À la fin, Line décide d'appeler sa chatte « Droppy ». Pourquoi ce nom est-il particulièrement bien choisi dans ce récit ?",
+        "text": "Quel cadeau Monsieur Briard offre-t-il à Line à la fin ?",
         "options": [
-          "Parce que la chatte est toute petite et fragile comme une goutte d'eau",
-          "Parce que Line veut lui donner un nom anglais en hommage à son frère parti au Canada",
-          "Parce que la chatte est tombée dans une flaque d'eau quand Line l'a rencontrée",
-          "Parce que « drop » signifie « goutte d'eau » en anglais, et que c'est Catsou — la goutte d'eau qui a fait déborder le vase — qui a déclenché toute cette chaîne d'événements heureux"
+          "Un appareil photo pour ses prochains exposés en classe",
+          "Une place pour aller voir Charlotte danser en compétition",
+          "Un voyage au Canada pour rendre visite à son frère Jérôme",
+          "Un chaton"
         ],
+        "correct": 3,
         "answer": 3,
         "points": 1,
-        "correct": 3
+        "explanation": "Pour la remercier de l'avoir réconcilié avec Charlotte, il lui offre une petite chatte. Line l'appelle Droppy, « goutte d'eau » en anglais."
       },
       {
         "id": "q9",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "C'est Line elle-même qui décide d'aller présenter ses excuses à Charlotte, sans que personne ne le lui suggère.",
-        "answer": false,
+        "text": "Les parents de Line sont divorcés, et elle vit tantôt chez sa maman, tantôt chez son papa.",
+        "correct": true,
+        "answer": true,
         "points": 1,
-        "correct": false
+        "explanation": "VRAI : c'est la garde alternée. Line trouve que cela demande beaucoup d'organisation."
       },
       {
         "id": "q10",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Charlotte pratique la cyclodanse depuis son enfance, bien avant son accident.",
+        "text": "Au début, Line raconte tout à Harold, y compris ce qu'elle a dit à Charlotte.",
+        "correct": false,
         "answer": false,
         "points": 1,
-        "correct": false
+        "explanation": "FAUX : elle ne lui dit pas que la dame est handicapée ni qu'elle l'a insultée. Elle en a honte."
       },
       {
         "id": "q11",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Monsieur Briard est le père biologique de Charlotte.",
-        "answer": false,
+        "text": "Charlotte est en fauteuil roulant à cause d'un accident de voiture.",
+        "correct": true,
+        "answer": true,
         "points": 1,
-        "correct": false
+        "explanation": "VRAI : il y a sept ans, le conducteur s'est endormi au volant. Charlotte avait 16 ans."
       },
       {
         "id": "q12",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "L'accident de Charlotte a été causé par un conducteur qui avait consommé de l'alcool.",
+        "text": "Le papa de Line pense qu'il ne faut pas aller s'excuser auprès de Charlotte.",
+        "correct": false,
         "answer": false,
         "points": 1,
-        "correct": false
+        "explanation": "FAUX : c'est lui qui conseille à Line d'aller présenter ses excuses. Plus tard, il dit même que c'est grâce à lui !"
       },
       {
         "id": "q13",
-        "section": "Vocabulaire",
+        "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« Elle n'avait jamais baissé les bras. C'est une battante, tu sais. » — Que signifient ces expressions ?",
+        "text": "« Il y avait comme une impression de gâchis terrible. » Un « gâchis », c'est…",
         "options": [
-          "Baisser les bras = s'étirer ; être une battante = aimer la boxe",
-          "Baisser les bras = avoir froid ; être une battante = être agressive",
-          "Baisser les bras = abandonner, renoncer face aux difficultés ; être une battante = quelqu'un qui ne se décourage pas et continue malgré les obstacles",
-          "Baisser les bras = demander de l'aide ; être une battante = être très sportive"
+          "un grand dommage, quelque chose d'abîmé pour rien",
+          "un repas raté",
+          "une maison en désordre",
+          "un jeu de société"
         ],
-        "answer": 2,
+        "correct": 0,
+        "answer": 0,
         "points": 1,
-        "correct": 2
+        "explanation": "Un gâchis, c'est quelque chose de beau ou d'utile qui est abîmé ou perdu. Line trouve injuste que Charlotte soit en fauteuil."
       },
       {
         "id": "q14",
-        "section": "Vocabulaire",
+        "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« Il dégageait des ondes de tristesse et de remords à 10 km à la ronde. » — Que signifie remords ?",
+        "text": "« Garde à vous nous mitraille de devoirs. » Ici, « mitrailler » veut dire…",
         "options": [
-          "Une grande colère difficile à contrôler",
-          "Une profonde fatigue après une longue journée de travail",
-          "Un sentiment de culpabilité douloureux lié à quelque chose qu'on a fait de mal",
-          "Une envie irrésistible de recommencer quelque chose"
+          "tirer avec une arme",
+          "prendre beaucoup de photos",
+          "corriger très sévèrement",
+          "donner énormément, sans arrêt"
         ],
-        "answer": 2,
+        "correct": 3,
+        "answer": 3,
         "points": 1,
-        "correct": 2
+        "explanation": "Ici, « mitrailler » est une image : le professeur donne des devoirs sans arrêt, comme une rafale."
       },
       {
         "id": "q15",
-        "section": "Vocabulaire",
+        "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« Je me suis dit que c'était du grand n'importe quoi, alors on les a barrées. » — Que signifie barrées ?",
+        "text": "« Il avait l'air perdu, avec son regard suppliant. » Un regard « suppliant » est un regard qui…",
         "options": [
-          "Elles ont fermé la liste à clé pour que personne ne la lise",
-          "Elles ont rayé certaines hypothèses de la liste parce qu'elles semblaient trop absurdes",
-          "Elles ont rangé la liste dans un tiroir pour ne plus y penser",
-          "Elles ont encadré les meilleures idées pour les retenir"
+          "fait très peur",
+          "demande quelque chose avec insistance",
+          "ne montre aucune émotion",
+          "se moque des autres"
         ],
+        "correct": 1,
         "answer": 1,
         "points": 1,
-        "correct": 1
+        "explanation": "Supplier, c'est demander avec insistance, presque en implorant. Le professeur a besoin de nouvelles de Charlotte."
       },
       {
         "id": "q16",
-        "section": "Synthèse",
-        "type": "mcq",
-        "text": "Un seul de ces trois résumés est totalement correct. Lequel ?",
+        "section": "Compréhension globale",
+        "type": "synthesis",
+        "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Résumé A : Line apporte des macarons pour s'excuser. Monsieur Briard est la fille biologique de Charlotte. À la fin, Monsieur Briard offre à Line un chaton qu'elle appelle Droppy.",
-          "Résumé B : Line retourne s'excuser avec des cookies. Monsieur Briard quitte la classe car Charlotte est sa belle-fille, brouillée depuis deux ans. Grâce à Line, ils se réconcilient. Monsieur Briard offre à Line un chaton qu'elle appelle Droppy, ce qui signifie « goutte d'eau » en anglais.",
-          "Résumé C : Line apporte des cookies pour s'excuser. Charlotte n'est pas la fille biologique de Monsieur Briard mais sa belle-fille. La brouille date de deux ans avant l'histoire."
+          "Résumé A : Line trouve un chaton abandonné dans la rue et le cache chez sa maman. Harold le découvre et veut le donner à Charlotte, une voisine qui adore les chats.",
+          "Résumé B : Line prépare un exposé sur la danse avec sa meilleure amie Assia. Leur professeur est si impressionné qu'il les inscrit à un grand concours de danse à Bruxelles.",
+          "Résumé C : Après la mort du chat de son frère, Line insulte Charlotte, une jeune femme en fauteuil roulant. Elle va s'excuser et elles deviennent amies. Grâce à son exposé, Line réconcilie Charlotte avec son beau-père, le professeur."
         ],
-        "answer": 1,
+        "correct": 2,
+        "answer": 2,
         "points": 1,
-        "correct": 1
+        "explanation": "Seul le résumé C est correct : la mort de Catsou, les excuses, l'amitié avec Charlotte et la réconciliation avec Monsieur Briard."
       }
     ]
   },
@@ -2239,216 +2399,232 @@ window.LIVRES = [
         "id": "q1",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Comment s'appelle la princesse de cette histoire ?",
+        "text": "Pourquoi les parents de Marjolaine veulent-ils qu'elle se marie ?",
         "options": [
-          "Séraphine",
-          "Fanny",
-          "Marjolaine",
-          "Euclave"
+          "Parce qu'elle s'ennuie toute seule dans son grand château",
+          "Pour qu'un prince riche paie les dettes du royaume",
+          "Parce qu'une fée l'a prédit le jour de sa naissance",
+          "Pour qu'elle devienne reine et qu'ils se reposent"
         ],
-        "answer": 2,
+        "correct": 3,
+        "answer": 3,
         "points": 1,
-        "correct": 2
+        "explanation": "Le roi et la reine sont vieux. La tradition veut que leur fille trouve un mari avant de devenir reine."
       },
       {
         "id": "q2",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Pourquoi Marjolaine doit-elle se marier ?",
+        "text": "Qui lance la rumeur que la princesse est « trop moche » ?",
         "options": [
-          "Elle est amoureuse et veut fonder une famille",
-          "Le roi a perdu un pari et doit donner sa fille en mariage",
-          "Elle veut quitter le château pour voir du pays",
-          "La tradition exige qu'elle trouve un mari avant de devenir reine"
+          "Euclave, un prince qu'elle a refusé",
+          "Le duc de Gondard, un cousin de la reine",
+          "Séraphin, le jeune paysan du lac",
+          "La reine, pendant une dispute avec le roi"
         ],
-        "answer": 3,
+        "correct": 0,
+        "answer": 0,
         "points": 1,
-        "correct": 3
+        "explanation": "Euclave, vexé d'avoir été repoussé, raconte partout que Marjolaine est laide. La rumeur se répand comme une traînée de poudre."
       },
       {
         "id": "q3",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Qui est Séraphin ?",
+        "text": "Pourquoi Marjolaine s'enfuit-elle du château ?",
         "options": [
-          "Un prince venu d'un pays lointain",
-          "Le cousin du duc de Gondard",
-          "Un jeune paysan que Marjolaine rencontre au bord d'un lac",
-          "Un chevalier de la garde royale"
+          "Elle ne veut pas épouser le prince choisi par son père",
+          "Elle part à la recherche d'un trésor caché près du lac",
+          "Elle entend ses parents dire qu'elle a un vilain nez",
+          "Un duc a menacé de l'enfermer dans un couvent"
         ],
+        "correct": 2,
         "answer": 2,
         "points": 1,
-        "correct": 2
+        "explanation": "Sous la fenêtre, elle entend le roi et la reine se disputer pour savoir de qui vient son « vilain nez »."
       },
       {
         "id": "q4",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Pourquoi Marjolaine se coupe-t-elle les cheveux ?",
+        "text": "Qui Marjolaine rencontre-t-elle au bord du lac ?",
         "options": [
-          "Elle veut suivre une nouvelle mode lancée par la reine",
-          "Elle punit une servante qui l'a trahie",
-          "Elle veut ressembler à une princesse d'un autre royaume",
-          "Elle se déguise en homme pour aller combattre à la place de Séraphin lors du duel"
+          "Un prince déguisé en berger qui la cherchait",
+          "Séraphin, un jeune paysan",
+          "Une vieille sorcière qui veut l'aider",
+          "Euclave, qui vient s'excuser"
         ],
-        "answer": 3,
+        "correct": 1,
+        "answer": 1,
         "points": 1,
-        "correct": 3
+        "explanation": "En se réveillant, elle voit un beau jeune homme aux sabots pleins de boue : c'est Séraphin, un paysan."
       },
       {
         "id": "q5",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Pourquoi Marjolaine repoussait-elle tous les prétendants avant de rencontrer Séraphin ?",
+        "text": "Que propose Marjolaine à Séraphin ?",
         "options": [
-          "Elle était trop timide pour parler aux princes",
-          "Ses parents lui interdisaient de choisir elle-même",
-          "Elle ne trouvait aucun prince intéressant et attendait quelqu'un qui lui ressemble vraiment",
-          "Elle avait peur de quitter le château"
+          "De l'épouser",
+          "De devenir son garde du corps au château",
+          "De l'accompagner dans un long voyage",
+          "De travailler dans les cuisines du roi"
         ],
-        "answer": 2,
+        "correct": 0,
+        "answer": 0,
         "points": 1,
-        "correct": 2
+        "explanation": "Séraphin lui conseille de ne pas épouser un prince. Elle lui demande alors : « Tu épouserais une princesse pas terrible ? »"
       },
       {
         "id": "q6",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Que révèle la rencontre avec Séraphin au bord du lac sur le caractère de Marjolaine ?",
+        "text": "Pourquoi le duc de Gondard provoque-t-il Séraphin en duel ?",
         "options": [
-          "Qu'elle est naïve et se laisse facilement tromper",
-          "Qu'elle est capricieuse et veut humilier les paysans",
-          "Qu'elle est directe, honnête, et capable d'apprécier quelqu'un au-delà des apparences et des conventions",
-          "Qu'elle est trop orgueilleuse pour admettre qu'elle est moche"
+          "Parce que Séraphin lui a volé son carrosse décapotable",
+          "Parce qu'il est lui aussi amoureux de Marjolaine",
+          "Parce que Séraphin s'est moqué de son armure",
+          "Parce qu'il refuse qu'un paysan devienne roi"
         ],
-        "answer": 2,
+        "correct": 3,
+        "answer": 3,
         "points": 1,
-        "correct": 2
+        "explanation": "Pour Gondard, un paysan ne peut pas épouser une princesse. Il espère même devenir roi à sa place."
       },
       {
         "id": "q7",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Pourquoi le peuple et les nobles changent-ils d'avis sur Séraphin après le duel ?",
+        "text": "Comment Marjolaine empêche-t-elle Séraphin d'aller au duel ?",
         "options": [
-          "Ils découvrent qu'il est en réalité d'origine noble",
-          "Le roi ordonne à tous de l'accepter comme futur roi",
-          "Marjolaine leur explique les vraies qualités de Séraphin",
-          "Sa victoire inattendue contre Gondard lui donne une image de courage et de force qui convainc le peuple"
+          "Elle cache son épée dans la chambre du roi",
+          "Elle demande à son père d'annuler le combat",
+          "Elle le fait enfermer au cachot",
+          "Elle lui fait boire une potion pour dormir"
         ],
-        "answer": 3,
+        "correct": 2,
+        "answer": 2,
         "points": 1,
-        "correct": 3
+        "explanation": "Marjolaine demande à deux gardes de l'emmener au cachot. Ainsi, il ne pourra pas se battre."
       },
       {
         "id": "q8",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "À la fin, le mariage a lieu sur un rocher en pleine nature, loin du château. Qu'est-ce que cela symbolise ?",
+        "text": "Qui combat vraiment le duc de Gondard dans la forêt ?",
         "options": [
-          "Marjolaine veut punir les nobles qui se sont moqués d'elle",
-          "Le château a été détruit pendant le duel",
-          "Marjolaine et Séraphin rejettent les conventions et choisissent l'amour vrai au-delà des traditions",
-          "Le roi n'avait plus assez d'argent pour organiser un grand bal"
+          "Séraphin, qui s'est échappé du cachot pendant la nuit",
+          "Marjolaine, déguisée en garçon dans l'armure",
+          "Un chevalier payé par le roi pour aider Séraphin",
+          "Un des paysans qui servaient de témoins"
         ],
-        "answer": 2,
+        "correct": 1,
+        "answer": 1,
         "points": 1,
-        "correct": 2
+        "explanation": "Marjolaine s'est coupé les cheveux et a pris la place de Séraphin. C'est elle qui gagne le duel."
       },
       {
         "id": "q9",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "C'est Marjolaine elle-même qui a décidé de fuir le château après avoir surpris la conversation de ses parents.",
+        "text": "Au début, Marjolaine refuse tous les princes parce qu'ils se ressemblent tous et l'ennuient.",
+        "correct": true,
         "answer": true,
         "points": 1,
-        "correct": true
+        "explanation": "VRAI : ils parlent tous de fêtes, de chasses et de voyages. Elle cherche autre chose, sans savoir quoi."
       },
       {
         "id": "q10",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Le duc de Gondard est un ennemi de longue date du père de Marjolaine.",
+        "text": "Pendant le duel, Séraphin tue le duc de Gondard.",
+        "correct": false,
         "answer": false,
         "points": 1,
-        "correct": false
+        "explanation": "FAUX : le vainqueur laisse la vie sauve au duc. Il pose seulement son épée sur sa poitrine, puis s'en va."
       },
       {
         "id": "q11",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Séraphin gagne le duel contre Gondard et lui laisse ensuite la vie sauve.",
-        "answer": false,
+        "text": "À la fin, beaucoup de gens copient la coiffure de Marjolaine et Séraphin.",
+        "correct": true,
+        "answer": true,
         "points": 1,
-        "correct": false
+        "explanation": "VRAI : les femmes se coupent les cheveux et les hommes les laissent pousser."
       },
       {
         "id": "q12",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Lors du mariage, c'est Séraphin qui porte des habits simples et Marjolaine qui est habillée de façon somptueuse.",
+        "text": "Le mariage a lieu dans la grande salle de bal du château.",
+        "correct": false,
         "answer": false,
         "points": 1,
-        "correct": false
+        "explanation": "FAUX : ils se marient sur un simple caillou plat, loin de tout. Les invités doivent venir à pied."
       },
       {
         "id": "q13",
-        "section": "Vocabulaire",
+        "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« le père de Marjolaine faisait donner des bals somptueux » — Que signifie somptueux ?",
+        "text": "« Il avait été éconduit par la princesse. » Un prince « éconduit » est un prince…",
         "options": [
-          "Secrets et réservés aux nobles",
-          "Ennuyeux et trop longs",
-          "D'une grande richesse et d'un grand luxe",
-          "Organisés très rapidement et sans préparation"
+          "qui conduit un carrosse",
+          "qui a été refusé",
+          "qui est très riche",
+          "qui arrive en retard"
         ],
-        "answer": 2,
+        "correct": 1,
+        "answer": 1,
         "points": 1,
-        "correct": 2
+        "explanation": "Être éconduit, c'est être repoussé, refusé. Euclave n'a pas plu à Marjolaine."
       },
       {
         "id": "q14",
-        "section": "Vocabulaire",
+        "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« une chose fut dite, en chuchotant, par un prince éconduit. » — Que signifie éconduit ?",
+        "text": "« Le fait fut de notoriété publique. » Que veut dire « de notoriété publique » ?",
         "options": [
-          "Un prince qui a accepté d'épouser Marjolaine",
-          "Un prince qui a été rejeté et renvoyé",
-          "Un prince qui s'est battu en duel pour conquérir la princesse",
-          "Un prince qui est arrivé en carrosse"
+          "Très secret",
+          "Tout à fait faux",
+          "Connu de tout le monde",
+          "Écrit dans un livre"
         ],
-        "answer": 1,
+        "correct": 2,
+        "answer": 2,
         "points": 1,
-        "correct": 1
+        "explanation": "Une chose de notoriété publique est connue de tous. Tout le royaume croit que la princesse est laide."
       },
       {
         "id": "q15",
-        "section": "Vocabulaire",
+        "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« Sournoisement, la rumeur enflait. » — Que signifie enflait ?",
+        "text": "« La rumeur allait bon train. » Qu'est-ce qu'une « rumeur » ?",
         "options": [
-          "La rumeur disparaissait peu à peu",
-          "La rumeur était inventée de toutes pièces",
-          "La rumeur grossissait et se répandait de plus en plus",
-          "La rumeur était confirmée par le roi"
+          "Un grand bruit de tonnerre",
+          "Un train très rapide",
+          "Un chant de fête",
+          "Une nouvelle qui circule sans être vérifiée"
         ],
-        "answer": 2,
+        "correct": 3,
+        "answer": 3,
         "points": 1,
-        "correct": 2
+        "explanation": "Une rumeur passe de bouche à oreille, sans qu'on sache si elle est vraie. La fin de l'histoire nous conseille de ne pas l'écouter."
       },
       {
         "id": "q16",
-        "section": "Synthèse",
-        "type": "mcq",
-        "text": "Un seul de ces trois résumés est totalement correct. Lequel ?",
+        "section": "Compréhension globale",
+        "type": "synthesis",
+        "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Résumé A : Séraphin affronte le duc de Gondard en duel et le blesse grièvement. Grâce à sa victoire, il est accepté par le peuple et les nobles. Le mariage a lieu dans le château royal en grande pompe.",
-          "Résumé B : Marjolaine, une princesse qu'on dit moche, peine à trouver un mari car elle refuse tous les prétendants. Elle rencontre Séraphin, un jeune paysan. Quand le duc de Gondard défie Séraphin en duel, Marjolaine se déguise en homme, le fait emprisonner et combat à sa place. Elle gagne le duel. Le mariage a lieu sur un rocher en pleine nature, loin des fastes royaux.",
-          "Résumé C : Marjolaine emprisonne Gondard pour l'empêcher de se battre, et Séraphin remporte le duel grâce à ses talents de combattant. Le mariage a lieu loin du château, sur un rocher."
+          "Résumé A : Une princesse très belle refuse tous les princes. Une fée la rend laide pour la punir, et seul un paysan réussit à rompre le sort grâce à un baiser.",
+          "Résumé B : On dit que la princesse Marjolaine est laide, et plus aucun prince ne vient la voir. Elle choisit d'épouser Séraphin, un paysan. Quand un duc le provoque en duel, Marjolaine se déguise et se bat à sa place.",
+          "Résumé C : Le paysan Séraphin veut devenir roi. Il gagne un tournoi contre tous les princes du royaume et reçoit la main de la princesse en récompense."
         ],
+        "correct": 1,
         "answer": 1,
         "points": 1,
-        "correct": 1
+        "explanation": "Seul le résumé B est correct : la rumeur, le choix de Séraphin et le duel gagné par Marjolaine déguisée."
       }
     ]
   },
@@ -2462,216 +2638,232 @@ window.LIVRES = [
         "id": "q1",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Comment s'appelle le narrateur de cette histoire, devenu roi ?",
+        "text": "Qui est Picolino, le narrateur, au début de l'histoire ?",
         "options": [
-          "Luigi",
-          "Tito",
-          "Picolino",
-          "Korog"
+          "Un riche marchand qui a trouvé de l'or dans la mine",
+          "Un vieux roi qui a choisi de rester pauvre",
+          "Un pêcheur qui raconte ses voyages en mer",
+          "Un pirate qui a changé de vie"
         ],
-        "answer": 2,
+        "correct": 1,
+        "answer": 1,
         "points": 1,
-        "correct": 2
+        "explanation": "Picolino est devenu roi par la volonté de tous, mais il a distribué le trésor royal aux habitants de l'île."
       },
       {
         "id": "q2",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Quel était le métier de Picolino avant de devenir roi ?",
+        "text": "Pourquoi Picolino était-il un enfant si difficile ?",
         "options": [
-          "Pêcheur",
-          "Boulanger",
-          "Forgeron",
-          "Berger"
+          "Il avait peur des chèvres et de la montagne",
+          "Ses parents le punissaient beaucoup trop sévèrement",
+          "Il était malade et ne pouvait pas aller à l'école",
+          "Il était orphelin et en voulait à tout le monde"
         ],
+        "correct": 3,
         "answer": 3,
         "points": 1,
-        "correct": 3
+        "explanation": "Ses vrais parents l'avaient abandonné. Il en voulait à Damia et Ouno, ses parents adoptifs, et à tous les habitants."
       },
       {
         "id": "q3",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Quel est le pouvoir magique de Mostar qui soumet les adultes de l'île ?",
+        "text": "Quel travail ses parents adoptifs confient-ils à Picolino ?",
         "options": [
-          "Un poison versé dans l'eau du village",
-          "Un drapeau noir qui hypnotise ceux qui le regardent",
-          "Un charme d'endormissement qui prive les adultes de tout sentiment et de leur volonté",
-          "Une tempête magique qui enferme les habitants dans leurs maisons"
+          "Garder les chèvres dans la montagne",
+          "Travailler dans la mine d'or",
+          "Aider le boulanger à faire le pain très tôt le matin",
+          "Réparer les filets des pêcheurs"
         ],
-        "answer": 2,
+        "correct": 0,
+        "answer": 0,
         "points": 1,
-        "correct": 2
+        "explanation": "Damia et Ouno lui confient le troupeau. Seul dans la montagne, Picolino se calme et devient un berger attentif."
       },
       {
         "id": "q4",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Quel instrument de musique Picolino utilise-t-il pour libérer les adultes ?",
+        "text": "Que fait le sort de Mostar aux adultes de l'île ?",
         "options": [
-          "Une flûte",
-          "Un tambourin",
-          "Un violon",
-          "Une mandoline"
+          "Il les transforme en animaux de la forêt",
+          "Il les fait tous disparaître au fond de la mer Méditerranée",
+          "Il les rend sans émotions, et ils travaillent à la mine",
+          "Il leur fait oublier leur nom et leur maison"
         ],
-        "answer": 3,
+        "correct": 2,
+        "answer": 2,
         "points": 1,
-        "correct": 3
+        "explanation": "Une brume envahit les habitants. Comme des fantômes, ils abandonnent tout pour extraire l'or de la mine."
       },
       {
         "id": "q5",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Pourquoi les enfants sont-ils les seuls à pouvoir résister au charme de Mostar ?",
+        "text": "Qui prend les commandes du groupe d'enfants après l'invasion ?",
         "options": [
-          "Ils ont bu une potion magique préparée par Picolino",
-          "Ils se cachaient dans la grotte au moment de l'invasion",
-          "Le charme n'a aucun effet sur les plus jeunes, que les brigands jugent sans danger",
-          "Ils portent tous une marque de naissance qui les protège"
+          "Picolino, dès son retour de la montagne",
+          "Les enfants du boulanger, qui ont de quoi manger",
+          "Petit Guido, le plus courageux de tous",
+          "Tito, Toscana et Cristina"
         ],
-        "answer": 2,
+        "correct": 3,
+        "answer": 3,
         "points": 1,
-        "correct": 2
+        "explanation": "Tito, Toscana et Cristina ont treize ans. Ils rassemblent les enfants et donnent un travail à chacun."
       },
       {
         "id": "q6",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Pourquoi Korog, le brigand, aide-t-il Picolino à s'échapper plutôt que de le capturer ?",
+        "text": "Pourquoi Korog, le brigand, épargne-t-il Picolino ?",
         "options": [
-          "Il veut trahir Mostar pour prendre sa place sur le trône",
-          "Il a pitié de Picolino car il est très jeune",
-          "Picolino lui a promis une partie de l'or de la mine",
-          "Il reconnaît sur Picolino la même marque de naissance que la sienne, signe qu'ils appartiennent au même peuple"
+          "Parce que Picolino lui promet de l'or de la mine",
+          "Parce qu'ils ont la même tache de naissance",
+          "Parce que Mostar lui a interdit de tuer des enfants",
+          "Parce que Picolino lui joue un air de mandoline"
         ],
-        "answer": 3,
+        "correct": 1,
+        "answer": 1,
         "points": 1,
-        "correct": 3
+        "explanation": "Korog voit la demi-lune dans le cou de Picolino : il a la même. Il lui dit qu'il a un pouvoir dans la musique."
       },
       {
         "id": "q7",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "À la fin, Picolino avoue un secret qu'il a longtemps caché. En quoi ce secret est-il douloureux pour lui ?",
+        "text": "Comment les enfants libèrent-ils les adultes ?",
         "options": [
-          "Il révèle qu'il n'a jamais vraiment aimé Toscana",
-          "Il admet que c'est Tito, et non lui, qui a eu l'idée de l'orchestre",
-          "Il confesse que son véritable père est Korog, un brigand ennemi, ce qui lui semble indigne de sa fonction de roi",
-          "Il avoue qu'il a utilisé sa magie pour devenir roi sans l'accord du peuple"
+          "En jouant de la musique et en chantant",
+          "En attaquant les brigands avec des pierres",
+          "En volant la couronne de Mostar",
+          "En allumant un grand feu près de la mine"
         ],
-        "answer": 2,
+        "correct": 0,
+        "answer": 0,
         "points": 1,
-        "correct": 2
+        "explanation": "Picolino compose le chant de la Liberté. Avec les instruments des enfants, la musique brise le sort de Mostar."
       },
       {
         "id": "q8",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "À la toute fin, Toscana révèle que Luigi porte la même marque de naissance que Picolino. Qu'est-ce que cela laisse présager ?",
+        "text": "Quel secret Picolino révèle-t-il à sa famille à la fin ?",
         "options": [
-          "Luigi devra quitter l'île pour rejoindre le peuple de Korog",
-          "Luigi est en réalité le fils de Mostar",
-          "Luigi sera le prochain à trahir les siens comme Mostar",
-          "Luigi possède lui aussi un pouvoir magique, et son avenir sera extraordinaire mais incertain"
+          "Sa mandoline a été volée à un pirate",
+          "Il ne sait pas lire les notes de musique",
+          "Son vrai père est Korog, le brigand",
+          "Il a caché une partie de l'or de la mine"
         ],
-        "answer": 3,
+        "correct": 2,
+        "answer": 2,
         "points": 1,
-        "correct": 3
+        "explanation": "Picolino a honte : il pense que sa tache de naissance prouve qu'il est le fils de Korog. Toscana le rassure."
       },
       {
         "id": "q9",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Picolino a toujours aimé l'île et ses habitants depuis son enfance.",
+        "text": "Picolino a gardé tout le trésor royal quand il est devenu roi.",
+        "correct": false,
         "answer": false,
         "points": 1,
-        "correct": false
+        "explanation": "FAUX : il a distribué le trésor aux habitants. Il n'a gardé que le sceptre de l'ancien roi Livio, en souvenir."
       },
       {
         "id": "q10",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Pendant que les adultes sont sous le charme, les enfants s'organisent seuls pour survivre et se répartissent des tâches précises.",
+        "text": "Les enfants se cachent dans une grotte au bord de la mer.",
+        "correct": true,
         "answer": true,
         "points": 1,
-        "correct": true
+        "explanation": "VRAI : Picolino connaît l'entrée secrète grâce à une de ses chèvres, tombée un jour dans un puits naturel."
       },
       {
         "id": "q11",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Picolino parvient à libérer ses parents adoptifs dès sa première visite à la mine, en leur parlant avec douceur.",
+        "text": "Pendant la libération, il y a une terrible bataille avec beaucoup de blessés.",
+        "correct": false,
         "answer": false,
         "points": 1,
-        "correct": false
+        "explanation": "FAUX : pas une goutte de sang n'est versée. Les brigands s'enfuient, effrayés par la musique."
       },
       {
         "id": "q12",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "À la fin du combat, les brigands sont tous tués par la magie de la mandoline de Picolino.",
-        "answer": false,
+        "text": "Luigi, le petit-fils de Picolino, a lui aussi la tache de naissance.",
+        "correct": true,
+        "answer": true,
         "points": 1,
-        "correct": false
+        "explanation": "VRAI : Toscana remarque que Luigi a la même marque, sur le cœur. L'histoire n'est peut-être pas terminée…"
       },
       {
         "id": "q13",
-        "section": "Vocabulaire",
+        "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« Garçon insoumis et belliqueux, je refusais de me laisser apprivoiser. » — Que signifie belliqueux ?",
+        "text": "« Il était un garçon insoumis et belliqueux. » Que veut dire « belliqueux » ?",
         "options": [
-          "Timide et renfermé sur lui-même",
-          "Curieux et avide d'apprendre",
-          "Agressif, toujours prêt à se battre et à provoquer les autres",
-          "Triste et mélancolique"
+          "Qui aime se battre",
+          "Qui aime la musique",
+          "Qui est très timide",
+          "Qui dort beaucoup"
         ],
-        "answer": 2,
+        "correct": 0,
+        "answer": 0,
         "points": 1,
-        "correct": 2
+        "explanation": "Une personne belliqueuse cherche la bagarre. Enfant, Picolino était toujours en colère."
       },
       {
         "id": "q14",
-        "section": "Vocabulaire",
+        "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« Le bavardage des deux hommes m'avait galvanisé. » — Que signifie galvanisé ?",
+        "text": "« Ma voix de fausset n'abusa pas Mostar. » Ici, « abuser », c'est…",
         "options": [
-          "Effrayé et paralysé par la peur",
-          "Mis en colère et rendu violent",
-          "Convaincu de fuir le plus loin possible",
-          "Stimulé, rempli d'énergie et de motivation pour agir"
+          "frapper très fort",
+          "crier plus fort que les autres",
+          "tromper, faire croire quelque chose de faux",
+          "se moquer de quelqu'un"
         ],
-        "answer": 3,
+        "correct": 2,
+        "answer": 2,
         "points": 1,
-        "correct": 3
+        "explanation": "Picolino fait semblant d'être endormi comme les mineurs, mais Mostar n'est pas trompé."
       },
       {
         "id": "q15",
-        "section": "Vocabulaire",
+        "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« Mon plan était insensé, saugrenu, peut-être irréalisable. » — Que signifie saugrenu ?",
+        "text": "« Un tyran venait de prendre le pouvoir sur l'île. » Qu'est-ce qu'un « tyran » ?",
         "options": [
-          "Dangereux et risqué pour tout le monde",
-          "Brillant et admiré de tous",
-          "Triste et sans espoir",
-          "Bizarre, absurde, qui paraît complètement ridicule au premier abord"
+          "Un roi très gentil et généreux",
+          "Un chef cruel qui impose sa loi par la force",
+          "Un marchand qui vend de l'or",
+          "Un musicien qui voyage"
         ],
-        "answer": 3,
+        "correct": 1,
+        "answer": 1,
         "points": 1,
-        "correct": 3
+        "explanation": "Un tyran gouverne de façon cruelle et injuste. Mostar réduit les habitants en esclavage."
       },
       {
         "id": "q16",
-        "section": "Synthèse",
-        "type": "mcq",
-        "text": "Un seul de ces trois résumés est totalement correct. Lequel ?",
+        "section": "Compréhension globale",
+        "type": "synthesis",
+        "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Résumé A : Picolino était pêcheur, pas berger. Les enfants fabriquèrent des armes pour combattre les brigands. Picolino est le fils du roi Livio.",
-          "Résumé B : Picolino, un berger orphelin devenu roi, raconte comment il a libéré son île envahie par le tyran Mostar. Seuls les enfants résistèrent au charme. Picolino organise un orchestre avec les enfants. Leur musique brise le charme et chasse les envahisseurs sans violence. À la fin, Picolino avoue que Korog est son véritable père, et Toscana révèle que leur petit-fils Luigi porte aussi la marque magique.",
-          "Résumé C : Picolino propose de combattre avec une armée de soldats recrutés dans les îles voisines. Ils remportent la victoire grâce à ce renfort extérieur."
+          "Résumé A : Picolino, un jeune pirate, attaque l'île de Figuélia pour voler l'or de la mine. Mais il tombe amoureux de Toscana et décide de rester vivre sur l'île comme berger.",
+          "Résumé B : Les enfants de l'île de Figuélia découvrent une grotte pleine d'or. Ils deviennent très riches et nomment Picolino roi, car il joue très bien de la mandoline.",
+          "Résumé C : Le vieux roi Picolino raconte comment, à seize ans, il a aidé les enfants de l'île à libérer leurs parents, ensorcelés par des brigands. Grâce au pouvoir de sa mandoline, ils ont chassé l'ennemi sans violence."
         ],
-        "answer": 1,
+        "correct": 2,
+        "answer": 2,
         "points": 1,
-        "correct": 1
+        "explanation": "Seul le résumé C est correct : l'invasion, le sort de Mostar, la résistance des enfants et la victoire grâce à la musique."
       }
     ]
   },
@@ -2685,216 +2877,232 @@ window.LIVRES = [
         "id": "q1",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Pourquoi Elisabeth se retrouve-t-elle chez sa tante Miss Tucson ?",
+        "text": "Pourquoi Elisabeth va-t-elle vivre chez sa tante, Miss Tucson ?",
         "options": [
-          "Elle a été renvoyée de son pensionnat",
-          "Sa mère est morte et son père, débordé, l'a placée chez sa tante plutôt que de l'envoyer à l'orphelinat",
-          "Elle a demandé elle-même à vivre chez sa tante pour fuir son père",
-          "Elle a été envoyée chez sa tante par l'école"
+          "Parce que son école l'a renvoyée pour la troisième fois",
+          "Parce qu'elle veut apprendre toutes les bonnes manières d'une vraie lady",
+          "Sa maman est morte et son papa ne veut plus s'occuper d'elle",
+          "Parce que sa tante l'a invitée pour les vacances d'été"
         ],
-        "answer": 1,
+        "correct": 2,
+        "answer": 2,
         "points": 1,
-        "correct": 1
+        "explanation": "La maman d'Elisabeth, Adélaïde, est morte. Son papa va se remarier et a trouvé ce moyen de se « débarrasser » d'elle."
       },
       {
         "id": "q2",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Comment Elisabeth réussit-elle à entrer dans le bureau interdit de Miss Tucson ?",
+        "text": "Quelle règle Miss Tucson impose-t-elle au petit-déjeuner ?",
         "options": [
-          "Elle attend que Miss Tucson parte à Londres et force la serrure avec une épingle",
-          "Elle convainc Augustine la cuisière de lui prêter la clé",
-          "Elle subtilise la clé à Marie-Louise en l'envoyant chercher son journal à l'étage pour avoir le temps de la voler",
-          "Elle profite d'une porte laissée ouverte par inadvertance par une domestique"
+          "Il faut être à table à six heures précises",
+          "On doit se taire pendant tout le repas du matin",
+          "On ne mange que des fruits servis bien glacés",
+          "Chacun doit préparer lui-même son petit-déjeuner"
         ],
-        "answer": 2,
+        "correct": 0,
+        "answer": 0,
         "points": 1,
-        "correct": 2
+        "explanation": "Toute la maison se lève à six heures. Le petit-déjeuner dure trente minutes : « Plus tard, c'est trop tard. »"
       },
       {
         "id": "q3",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Quelle est la vraie raison des voyages mensuels de Miss Tucson à Londres ?",
+        "text": "Qu'est-ce qui intrigue Elisabeth chez sa tante ?",
         "options": [
-          "Elle y retrouve un amant en secret",
-          "Elle y mène des affaires commerciales",
-          "Elle rend visite à des membres de sa famille",
-          "Elle travaille pour Scotland Yard et enquête sur des affaires criminelles, dont celle de Jack l'Éventreur"
+          "Elle ne sort jamais de sa chambre, même pour manger",
+          "Elle reçoit chaque soir des lettres d'un inconnu",
+          "Elle parle toujours en français avec sa cuisinière",
+          "Elle part à Londres chaque mois sans dire pourquoi"
         ],
+        "correct": 3,
         "answer": 3,
         "points": 1,
-        "correct": 3
+        "explanation": "Depuis vingt ans, Miss Tucson va à Londres la première semaine du mois. Personne ne sait ce qu'elle y fait."
       },
       {
         "id": "q4",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Que se passe-t-il quand Miss Tucson aperçoit son mystérieux poursuivant dans l'escalier de Scotland Yard ?",
+        "text": "Comment Elisabeth entre-t-elle dans le bureau de sa tante ?",
         "options": [
-          "Elle appelle les policiers à l'aide et le fait arrêter immédiatement",
-          "Elle reconnaît Elisabeth et lui crie dessus sans la frapper",
-          "Elle le frappe violemment avec son parapluie avant de réaliser qu'il s'agit d'Elisabeth",
-          "Elle s'enfuit en courant et demande au lieutenant Ridge de l'intercepter"
+          "Elle force la serrure avec une longue épingle à cheveux",
+          "Elle vole la clé à Marie-Louise pendant le dîner",
+          "Elle passe par la fenêtre en grimpant au mur",
+          "Elle demande la clé à Augustine, la cuisinière"
         ],
-        "answer": 2,
+        "correct": 1,
+        "answer": 1,
         "points": 1,
-        "correct": 2
+        "explanation": "Elle envoie Marie-Louise chercher un journal à l'étage et en profite pour prendre la clé cachée près des fourneaux."
       },
       {
         "id": "q5",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Pourquoi Miss Tucson a-t-elle prétendu se fâcher avec la mère d'Elisabeth, Adélaïde, il y a plus de vingt ans ?",
+        "text": "Qu'est-ce qu'Elisabeth trouve d'étrange dans le bureau ?",
         "options": [
-          "Parce qu'Adélaïde avait épousé un homme que Miss Tucson n'aimait pas",
-          "Parce que Miss Tucson était jalouse du bonheur de sa sœur",
-          "Parce que Scotland Yard lui avait imposé de couper les liens familiaux pour des raisons de confidentialité liées à son travail d'enquêtrice secrète",
-          "Parce que les deux sœurs s'étaient disputées pour une question d'héritage familial"
+          "Un coffre rempli de pièces d'or et de bijoux",
+          "Une arme cachée sous le tiroir du secrétaire",
+          "Une machine avec un écran, un clavier et un pédalier",
+          "Une vieille photo de sa maman quand elle était toute petite"
         ],
+        "correct": 2,
         "answer": 2,
         "points": 1,
-        "correct": 2
+        "explanation": "Elle découvre une boîte noire avec un côté en verre, reliée à un clavier et à des pédales de vélo. Elle ne sait pas à quoi elle sert."
       },
       {
         "id": "q6",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Quand Marie-Louise dit à Elisabeth : « C'est Londres qui doit trembler en ce moment-même, pas Miss Tucson ! », que révèle-t-elle sans le vouloir ?",
+        "text": "Pourquoi Elisabeth finit-elle par soupçonner sa tante ?",
         "options": [
-          "Que Miss Tucson est une femme très courageuse qui n'a peur de rien",
-          "Que Miss Tucson est tellement riche et puissante que personne n'oserait l'attaquer",
-          "Que Miss Tucson est du côté des enquêteurs et que c'est elle qui fait peur aux criminels, pas l'inverse",
-          "Que Miss Tucson connaît personnellement Jack l'Éventreur et n'a donc rien à craindre de lui"
+          "Parce que sa tante lit toujours les journaux en secret",
+          "Parce qu'elle est à Londres à chaque meurtre",
+          "Parce qu'elle a vu du sang sur la robe de sa tante",
+          "Parce que le cocher lui a raconté des choses étranges"
         ],
-        "answer": 2,
+        "correct": 1,
+        "answer": 1,
         "points": 1,
-        "correct": 2
+        "explanation": "Miss Tucson est à Londres quand ont lieu les crimes de Whitechapel. Et Marie-Louise dit que « c'est Londres qui doit trembler »."
       },
       {
         "id": "q7",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "À la fin du récit, Elisabeth demande si le lieutenant Ridge est « la différence entre le mariage et l'amour ». Que veut-elle dire ?",
+        "text": "Qui est vraiment le cocher qui conduit Miss Tucson à Londres ?",
         "options": [
-          "Qu'elle pense que Ridge et Miss Tucson devraient se marier pour être heureux",
-          "Qu'elle ne comprend pas pourquoi Miss Tucson travaille avec Ridge plutôt qu'avec d'autres policiers",
-          "Qu'elle veut savoir si Ridge est un homme marié et donc indisponible pour Miss Tucson",
-          "Qu'elle a compris que Miss Tucson aime Ridge sans l'avoir épousé, ce qui explique son choix de rester célibataire"
+          "Ridge, le collègue de Miss Tucson",
+          "Oscar, l'intendant de la maison",
+          "Le papa d'Elisabeth, déguisé",
+          "Elisabeth, déguisée"
         ],
+        "correct": 3,
         "answer": 3,
         "points": 1,
-        "correct": 3
+        "explanation": "Elisabeth s'est déguisée en cocher pour suivre sa tante. Miss Tucson, qui se croit suivie par un inconnu, l'assomme avec son parapluie."
       },
       {
         "id": "q8",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "À la fin, Miss Tucson dit à Elisabeth qu'elle est « à même de garder un secret » et lui fait un clin d'œil. Qu'est-ce que cela révèle sur l'évolution de leur relation ?",
+        "text": "Quel est le grand secret de Miss Tucson ?",
         "options": [
-          "Miss Tucson pense qu'Elisabeth est trop jeune pour comprendre les enjeux de son travail",
-          "Miss Tucson veut recruter Elisabeth comme apprentie enquêtrice dès son retour",
-          "Miss Tucson a appris à faire confiance à Elisabeth et la reconnaît désormais comme une égale digne de partager son secret",
-          "Miss Tucson veut s'assurer qu'Elisabeth se taira par peur des conséquences"
+          "Elle travaille pour la police, Scotland Yard",
+          "Elle est la meilleure amie de Jack l'Éventreur",
+          "Elle écrit des romans policiers en secret",
+          "Elle va bientôt se marier avec le papa d'Elisabeth"
         ],
-        "answer": 2,
+        "correct": 0,
+        "answer": 0,
         "points": 1,
-        "correct": 2
+        "explanation": "Miss Tucson enquête pour Scotland Yard, sans poste officiel parce qu'elle est une femme. On lui a confié l'enquête de Whitechapel."
       },
       {
         "id": "q9",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Miss Tucson occupe un poste officiel et reconnu au sein de Scotland Yard.",
-        "answer": false,
+        "text": "Au début, Elisabeth décide d'être obéissante, car c'est sa dernière chance avant l'orphelinat.",
+        "correct": true,
+        "answer": true,
         "points": 1,
-        "correct": false
+        "explanation": "VRAI : elle sait que son papa a eu du mal à trouver quelqu'un pour l'accueillir. Elle veut se montrer raisonnable."
       },
       {
         "id": "q10",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Elisabeth réussit à lire des documents secrets dans le bureau de sa tante lors de son intrusion nocturne.",
+        "text": "Miss Tucson et Adélaïde, la maman d'Elisabeth, se détestaient vraiment.",
+        "correct": false,
         "answer": false,
         "points": 1,
-        "correct": false
+        "explanation": "FAUX : elles étaient inséparables. Miss Tucson a dû faire semblant de se fâcher pour garder son travail secret."
       },
       {
         "id": "q11",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Miss Tucson est plus sévère avec Elisabeth depuis que cette dernière lui a répondu avec insolence à propos de son voyage à Londres.",
-        "answer": true,
+        "text": "Elisabeth adore les leçons de danse et de maintien.",
+        "correct": false,
+        "answer": false,
         "points": 1,
-        "correct": true
+        "explanation": "FAUX : elle les déteste plus que tout. Elle préfère les cours de mathématiques, de musique, de littérature et d'histoire."
       },
       {
         "id": "q12",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Elisabeth suit sa tante à Londres parce qu'elle veut l'empêcher de se rendre à la police, pensant qu'elle est Jack l'Éventreur.",
+        "text": "À la fin, Miss Tucson dit à Elisabeth qu'elle sait garder un secret.",
+        "correct": true,
         "answer": true,
         "points": 1,
-        "correct": true
+        "explanation": "VRAI : elle lui révèle la vérité et compte sur elle pour ne rien dire à personne."
       },
       {
         "id": "q13",
-        "section": "Vocabulaire",
+        "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« Elle se sait sur le point d'exploser. » — Que signifie exploser ici ?",
+        "text": "« Elisabeth est une enfant insolente. » Que veut dire « insolent » ?",
         "options": [
-          "Tomber malade à cause de sa colère trop longtemps retenue",
-          "S'enfuir en courant pour ne pas faire de bêtise",
-          "Ne plus pouvoir contenir sa colère et laisser éclater ses émotions",
-          "Crier si fort que tout le monde dans la maison l'entendrait"
+          "Très timide",
+          "Très triste",
+          "Très malade",
+          "Qui manque de respect"
         ],
-        "answer": 2,
+        "correct": 3,
+        "answer": 3,
         "points": 1,
-        "correct": 2
+        "explanation": "Une personne insolente répond de façon impolie, sans respect. Le papa d'Elisabeth l'a décrite ainsi à Miss Tucson."
       },
       {
         "id": "q14",
-        "section": "Vocabulaire",
+        "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« Elle meurt d'envie de le découvrir au plus vite. » — Que signifie mourir d'envie ?",
+        "text": "« Cette maison si austère. » Une maison « austère » est une maison…",
         "options": [
-          "Être tellement curieuse qu'elle risque de tomber malade",
-          "Avoir une envie si forte qu'elle est difficile à contenir",
-          "Vouloir quelque chose mais avoir trop peur pour le faire",
-          "Être prête à tout sacrifier pour obtenir ce qu'elle veut"
+          "triste, sévère, sans fantaisie",
+          "très grande et très riche",
+          "pleine d'enfants qui jouent",
+          "située au bord de la mer"
         ],
-        "answer": 1,
+        "correct": 0,
+        "answer": 0,
         "points": 1,
-        "correct": 1
+        "explanation": "Austère veut dire sévère, sans gaieté. Chez Miss Tucson, on ne rit pas et on ne parle pas à table."
       },
       {
         "id": "q15",
-        "section": "Vocabulaire",
+        "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« Tirant sur sa pipe avec flegme, il attend patiemment la suite des événements. » — Que signifie flegme ?",
+        "text": "« Il attend, tirant sur sa pipe avec flegme. » Que veut dire « avec flegme » ?",
         "options": [
-          "Une grande impatience cachée derrière un air calme",
-          "Une mauvaise humeur que l'on essaie de dissimuler",
-          "Un manque total d'intérêt pour ce qui se passe autour de soi",
-          "Un calme tranquille et imperturbable, même dans les situations agitées"
+          "Avec colère",
+          "Avec tristesse",
+          "Avec calme, sans s'énerver",
+          "Avec beaucoup de bruit"
         ],
-        "answer": 3,
+        "correct": 2,
+        "answer": 2,
         "points": 1,
-        "correct": 3
+        "explanation": "Le flegme, c'est le calme. Ridge a l'habitude des colères de Miss Tucson et ne s'énerve pas."
       },
       {
         "id": "q16",
-        "section": "Synthèse",
-        "type": "mcq",
-        "text": "Un seul de ces trois résumés est totalement correct. Lequel ?",
+        "section": "Compréhension globale",
+        "type": "synthesis",
+        "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Résumé A : Elisabeth découvre des documents dans le bureau prouvant que sa tante travaille pour la police.",
-          "Résumé B : Elisabeth pénètre dans le bureau de sa tante, mais doit fuir avant d'y découvrir quoi que ce soit. En accumulant les indices, elle finit par croire que sa tante est Jack l'Éventreur, la suit jusqu'à Scotland Yard et se fait frapper avec le parapluie. Miss Tucson lui révèle qu'elle est enquêtrice secrète et lui explique aussi qu'elle a dû se fâcher avec sa mère il y a vingt ans sur ordre de Scotland Yard. Les deux se réconcilient.",
-          "Résumé C : Elisabeth découvre dans le bureau de sa tante des documents secrets prouvant que celle-ci est Jack l'Éventreur. Elle alerte immédiatement la police de Scotland Yard, qui arrête Miss Tucson devant la maison."
+          "Résumé A : Elisabeth part vivre à Londres chez son papa, qui se remarie. Elle se dispute avec sa nouvelle belle-mère et s'enfuit chez sa tante, qui l'accueille à bras ouverts.",
+          "Résumé B : Elisabeth, orpheline de mère, vit chez sa tante très sévère, qui part souvent à Londres en secret. Elle la soupçonne d'être liée aux meurtres de Whitechapel et la suit. Elle découvre que sa tante enquête en réalité pour la police.",
+          "Résumé C : Elisabeth devient détective à Scotland Yard et arrête Jack l'Éventreur grâce à une machine inventée par sa tante."
         ],
+        "correct": 1,
         "answer": 1,
         "points": 1,
-        "correct": 1
+        "explanation": "Seul le résumé B est correct : la tante sévère, les voyages secrets, les soupçons d'Elisabeth et la révélation finale."
       }
     ]
   },
@@ -2908,216 +3116,232 @@ window.LIVRES = [
         "id": "q1",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Où se trouve Bastien au début de l'histoire ?",
+        "text": "Pourquoi Bastien est-il si triste au début de l'histoire ?",
         "options": [
-          "Dans le cabanon de son grand-père",
-          "Sur la tombe de son grand-père",
-          "Dans la cuisine de sa grand-mère",
-          "Chez le voisin Jo"
+          "Son grand-père Fernand vient de mourir",
+          "Ses parents l'ont envoyé en vacances contre son gré",
+          "Son petit frère est tombé très malade à Clermont",
+          "Il s'est fâché avec son amoureuse avant les vacances"
         ],
-        "answer": 1,
+        "correct": 0,
+        "answer": 0,
         "points": 1,
-        "correct": 1
+        "explanation": "Papy Fernand est mort d'une crise cardiaque. Bastien pense à tout ce qu'ils faisaient ensemble dans le cabanon."
       },
       {
         "id": "q2",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Comment Papy Fernand est-il décédé ?",
+        "text": "Que fait Bastien dans le cabanon, sous le coup de la colère ?",
         "options": [
-          "D'un accident de vélo",
-          "D'une longue maladie",
-          "D'un infarctus du myocarde",
-          "Il s'est noyé dans la rivière"
+          "Il casse toutes les vitres de l'atelier de son papy",
+          "Il jette tous les outils de son papy dans le jardin",
+          "Il part à vélo sans prévenir personne",
+          "Il tire sur un corbeau avec la carabine"
         ],
-        "answer": 2,
+        "correct": 3,
+        "answer": 3,
         "points": 1,
-        "correct": 2
+        "explanation": "Il vise un corbeau, mais la balle touche aussi la tête de Justin, l'épouvantail fabriqué avec son grand-père."
       },
       {
         "id": "q3",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Que fait Bastien dans un moment de colère dans le cabanon ?",
+        "text": "Comment Mamie Henriette réagit-elle en apprenant ce qu'a fait Bastien ?",
         "options": [
-          "Il casse l'établi de son grand-père",
-          "Il tire à la carabine sur un corbeau, détruisant accidentellement la tête de l'épouvantail",
-          "Il brise le moulin à vent",
-          "Il lance des outils par la fenêtre"
+          "Elle le gronde très fort et le prive de sortie",
+          "Elle appelle tout de suite les parents de Bastien",
+          "Elle prend la carabine et part se « venger »",
+          "Elle le prend dans ses bras pour le consoler"
         ],
-        "answer": 1,
+        "correct": 2,
+        "answer": 2,
         "points": 1,
-        "correct": 1
+        "explanation": "Henriette dit qu'elle aussi est en colère. Elle enferme Bastien dans le cabanon et part avec la carabine."
       },
       {
         "id": "q4",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Comment Bastien parvient-il à sortir du cabanon où Henriette l'a enfermé ?",
+        "text": "Qui libère Bastien, enfermé dans le cabanon ?",
         "options": [
-          "Il casse la fenêtre",
-          "Il sonne à l'aide avec le téléphone de Papy",
-          "Il souffle dans la corne de brume, et c'est Nelson qui vient l'ouvrir",
-          "Il enfonce la porte à coups de pied"
+          "Le vieil Hector, le fermier",
+          "Le petit Nelson",
+          "Jean-Gaston, le chauffeur de taxi",
+          "Sa grand-mère, qui revient"
         ],
-        "answer": 2,
+        "correct": 1,
+        "answer": 1,
         "points": 1,
-        "correct": 2
+        "explanation": "Bastien souffle dans la corne de brume de son grand-père. Le petit Nelson l'entend et vient lui ouvrir."
       },
       {
         "id": "q5",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Pourquoi Bastien ne veut-il pas appeler ses parents pour leur parler du comportement de Mamie Henriette ?",
+        "text": "Qu'est-ce qui est arrivé à la voiture de Jean-Gaston ?",
         "options": [
-          "Parce qu'il n'a pas de téléphone",
-          "Parce qu'il pense qu'ils ne le croiraient pas et qu'il devrait aussi avouer sa propre faute avec la carabine",
-          "Parce qu'ils sont en voyage à l'étranger",
-          "Parce qu'il a peur qu'ils lui interdisent de revenir à Fontagnac"
+          "Elle a été repeinte en rouge vif pendant la nuit",
+          "Ses pneus ont été crevés à coups de carabine",
+          "Elle a été poussée dans la fontaine du village",
+          "Elle a été recouverte de fumier"
         ],
-        "answer": 1,
+        "correct": 3,
+        "answer": 3,
         "points": 1,
-        "correct": 1
+        "explanation": "Un tas de bouse de vache a été versé sur le capot et le pare-brise du taxi tout neuf."
       },
       {
         "id": "q6",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Pourquoi le village semble-t-il « avoir perdu son âme » après la mort de Fernand ?",
+        "text": "Qu'est-ce que Mamie Henriette met dans son « gâteau » pour le chien de Gisèle ?",
         "options": [
-          "Parce que les habitants ont déménagé",
-          "Parce que tous les commerces sont fermés",
-          "Parce que Fernand était le cœur du village et que sa mort plonge tout le monde dans la tristesse",
-          "Parce qu'une tempête a tout détruit"
+          "De la mort-aux-rats",
+          "Du piment rouge très très fort",
+          "Des somnifères",
+          "Du colorant rouge"
         ],
-        "answer": 2,
+        "correct": 0,
+        "answer": 0,
         "points": 1,
-        "correct": 2
+        "explanation": "Bastien voit des grains roses et trouve la boîte de mort-aux-rats. Il jette tout à la poubelle, très en colère."
       },
       {
         "id": "q7",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Que révèle le comportement de Bastien (nettoyer la voiture, rentrer les moutons, réparer les jardinières) sur son caractère ?",
+        "text": "Qui révèle à Bastien que tout était une mise en scène ?",
         "options": [
-          "Il est obéissant parce qu'il a peur de sa grand-mère",
-          "Il est responsable et cherche à réparer le tort causé, même si ce n'est pas entièrement sa faute",
-          "Il veut se faire remarquer par les villageois",
-          "Il le fait uniquement pour éviter les ennuis avec ses parents"
+          "Nelson, pendant qu'ils nettoient la fontaine",
+          "Félicie, en replantant ses fleurs",
+          "Hector, le fermier",
+          "Sa grand-mère, le lendemain matin"
         ],
-        "answer": 1,
+        "correct": 2,
+        "answer": 2,
         "points": 1,
-        "correct": 1
+        "explanation": "Hector explique que Henriette a fait semblant d'être folle, avec l'aide des villageois, pour aider Bastien."
       },
       {
         "id": "q8",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Pourquoi Mamie Henriette sourit-elle quand Bastien la sermonne et lui dit qu'il a honte d'elle ?",
+        "text": "Pourquoi Mamie Henriette a-t-elle inventé tout ce « cataclysme » ?",
         "options": [
-          "Parce qu'elle se moque de lui",
-          "Parce que son plan a fonctionné : Bastien exprime enfin sa peine et sort de sa colère",
-          "Parce qu'elle est vraiment devenue folle",
-          "Parce qu'elle est fière de ses bêtises"
+          "Pour se venger des voisins qui avaient oublié Fernand",
+          "Pour que Bastien oublie sa colère et son chagrin",
+          "Pour obliger le maire à changer les lampadaires",
+          "Pour punir Bastien d'avoir utilisé la carabine"
         ],
+        "correct": 1,
         "answer": 1,
         "points": 1,
-        "correct": 1
+        "explanation": "En s'occupant des « bêtises » de sa grand-mère, Bastien a oublié sa colère et a tout réparé. C'était la leçon de Mamie."
       },
       {
         "id": "q9",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Justin est le nom d'un camarade de classe de Bastien.",
-        "answer": false,
+        "text": "Bastien passait toutes ses vacances dans le Cantal avec son grand-père.",
+        "correct": true,
+        "answer": true,
         "points": 1,
-        "correct": false
+        "explanation": "VRAI : toute l'année, il attendait ses vacances à Fontagnac pour retrouver le cabanon de Papy Fernand."
       },
       {
         "id": "q10",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "C'est Nelson qui convainc finalement Henriette de poser la carabine en disant que le dindon n'est pas méchant.",
-        "answer": true,
+        "text": "Henriette a vraiment voulu tuer le dindon de Jo.",
+        "correct": false,
+        "answer": false,
         "points": 1,
-        "correct": true
+        "explanation": "FAUX : tout était joué. Même Nelson était au courant du plan de Mamie Henriette."
       },
       {
         "id": "q11",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Mamie Henriette avait réellement perdu la tête et tout organisé seule.",
+        "text": "Bastien appelle ses parents pour leur raconter ce que fait sa grand-mère.",
+        "correct": false,
         "answer": false,
         "points": 1,
-        "correct": false
+        "explanation": "FAUX : il pense qu'ils ne le croiraient pas. Et il se sent coupable, car c'est lui qui a utilisé la carabine en premier."
       },
       {
         "id": "q12",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "L'eau rouge de la fontaine contenait du poison.",
-        "answer": false,
+        "text": "À la fin, Mamie Henriette recoud la tête de Justin, l'épouvantail.",
+        "correct": true,
+        "answer": true,
         "points": 1,
-        "correct": false
+        "explanation": "VRAI : elle retire la balle et remplit la tête avec des plumes données par Jo. Justin a maintenant une cicatrice."
       },
       {
         "id": "q13",
-        "section": "Vocabulaire",
+        "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« Bastien ressassait l'enterrement de la veille. » — Que signifie ressassait ?",
+        "text": "« Regarde ces vieilles toupies éplorées. » Des personnes « éplorées » sont des personnes…",
         "options": [
-          "Oubliait rapidement",
-          "Repassait sans cesse dans sa tête",
-          "Racontait à voix haute",
-          "Dessinait mentalement"
+          "très en colère",
+          "très bien habillées pour la fête",
+          "en larmes, qui pleurent",
+          "très âgées"
         ],
-        "answer": 1,
+        "correct": 2,
+        "answer": 2,
         "points": 1,
-        "correct": 1
+        "explanation": "Éploré veut dire en pleurs, très triste. Papy Fernand se moque des voisines qui pleurent à son enterrement."
       },
       {
         "id": "q14",
-        "section": "Vocabulaire",
+        "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« Le jeune garçon revoyait la cérémonie funèbre. » — Que signifie funèbre ?",
+        "text": "« Bastien aida Jo à déblayer ce capharnaüm. » Qu'est-ce qu'un « capharnaüm » ?",
         "options": [
-          "Joyeuse et colorée",
-          "Secrète et mystérieuse",
-          "Liée à un enterrement, à la mort",
-          "Organisée en plein air"
+          "Un grand désordre",
+          "Un poulailler",
+          "Une grosse tempête",
+          "Un outil de jardin"
         ],
-        "answer": 2,
+        "correct": 0,
+        "answer": 0,
         "points": 1,
-        "correct": 2
+        "explanation": "Un capharnaüm est un endroit en grand désordre. Les poules affolées ont tout renversé."
       },
       {
         "id": "q15",
-        "section": "Vocabulaire",
+        "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« Henriette n'eut pas du tout la réaction escomptée. » — Que signifie escomptée ?",
+        "text": "« Tu cautionnes ce qu'il a fait ? » Ici, « cautionner », c'est…",
         "options": [
-          "Espérée et prévue",
-          "Violente et imprévisible",
-          "Lente et hésitante",
-          "Exagérée et théâtrale"
+          "payer une amende à la police",
+          "faire une caution",
+          "punir sévèrement",
+          "être d'accord, approuver"
         ],
-        "answer": 0,
+        "correct": 3,
+        "answer": 3,
         "points": 1,
-        "correct": 0
+        "explanation": "Cautionner quelque chose, c'est l'approuver. Bastien est choqué que sa grand-mère semble d'accord avec son geste."
       },
       {
         "id": "q16",
-        "section": "Synthèse",
-        "type": "mcq",
-        "text": "Un seul de ces trois résumés est totalement correct. Lequel ?",
+        "section": "Compréhension globale",
+        "type": "synthesis",
+        "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Résumé A : Bastien tire sur un corbeau et blesse accidentellement Nelson. Henriette sème le chaos. Bastien répare les dégâts avant d'apprendre que tout était une mise en scène.",
-          "Résumé B : Bastien est en vacances chez ses grands-parents après la mort de Papy Fernand. Il tire sur un corbeau et détruit accidentellement l'épouvantail Justin. Sa grand-mère Henriette sème le chaos dans le village. Bastien répare les dégâts et apprend que tout était une mise en scène organisée avec les villageois pour l'aider à surmonter sa colère et son deuil.",
-          "Résumé C : Henriette, furieuse contre son petit-fils, organise seule une série de bêtises dans le village pour lui donner une leçon. Bastien répare tous les dégâts et se réconcilie avec sa grand-mère."
+          "Résumé A : Après la mort de son grand-père, Bastien part vivre chez sa grand-mère. Ensemble, ils construisent un épouvantail et gagnent le concours du plus beau jardin du village.",
+          "Résumé B : Après la mort de son grand-père, Bastien fait une bêtise sous le coup de la colère. Sa grand-mère fait semblant de devenir folle et de tout casser dans le village. En réparant ses « dégâts », Bastien oublie sa colère.",
+          "Résumé C : Mamie Henriette devient vraiment folle après la mort de son mari. Bastien doit appeler la police, et sa grand-mère part vivre dans une maison de repos."
         ],
+        "correct": 1,
         "answer": 1,
         "points": 1,
-        "correct": 1
+        "explanation": "Seul le résumé B est correct : la colère de Bastien, la fausse folie de Mamie et les réparations qui l'apaisent."
       }
     ]
   },
@@ -3131,216 +3355,232 @@ window.LIVRES = [
         "id": "q1",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Qui a eu l'idée de faire un vœu collectif pour éviter le contrôle ?",
+        "text": "Pourquoi Damien et ses amis veulent-ils retarder le cours de Monsieur Bertin ?",
         "options": [
-          "Damien",
-          "Laura",
-          "Théo",
-          "Séb"
+          "Parce qu'ils veulent préparer le spectacle du club de théâtre",
+          "Parce qu'ils ont prévu une grande fête pour l'anniversaire de Laura",
+          "Parce que Monsieur Bertin est malade depuis plusieurs jours",
+          "Pour ne pas avoir le contrôle de géographie du lendemain"
         ],
-        "answer": 2,
+        "correct": 3,
+        "answer": 3,
         "points": 1,
-        "correct": 2
+        "explanation": "Ils n'ont pas assez révisé. Ils essaient tout pour que le contrôle n'ait pas lieu : excuses, exposé, faux malaise…"
       },
       {
         "id": "q2",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Que fait Damien pour tenter de se faire passer pour malade le mercredi soir ?",
+        "text": "Quelle idée propose Théo, grâce à sa grande sœur ?",
         "options": [
-          "Il appelle le médecin",
-          "Il met le thermomètre dans l'eau chaude",
-          "Il chauffe le thermomètre au-dessus du radiateur",
-          "Il avale des médicaments"
+          "Cacher toutes les feuilles du contrôle au fond de la classe",
+          "Faire tous le même vœu en se concentrant très fort",
+          "Demander aux parents d'écrire un mot d'excuse",
+          "Aller se plaindre au directeur de l'école"
         ],
-        "answer": 2,
+        "correct": 1,
+        "answer": 1,
         "points": 1,
-        "correct": 2
+        "explanation": "Selon la sœur de Théo, si plusieurs personnes font un vœu en même temps, leurs « énergies positives » peuvent le réaliser."
       },
       {
         "id": "q3",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Qu'est-ce qui provoque l'interruption du contrôle le jeudi matin ?",
+        "text": "Pourquoi Damien pense-t-il à une comète ?",
         "options": [
-          "Une panne de chauffage",
-          "La grippe du professeur Bertin",
-          "Une lumière aveuglante suivie de tremblements",
-          "Une alarme incendie"
+          "Il a lu une B.D. de Tintin et entendu les infos",
+          "Son professeur de sciences en a longuement parlé en classe",
+          "Il a vu une étoile filante par la fenêtre",
+          "Sa maman lui a offert un livre sur l'espace"
         ],
-        "answer": 2,
+        "correct": 0,
+        "answer": 0,
         "points": 1,
-        "correct": 2
+        "explanation": "Damien lit « L'Étoile mystérieuse », où une comète menace la Terre. Au journal télévisé, on parle de la comète Peacock."
       },
       {
         "id": "q4",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Avec quoi Théo fabrique-t-il le radeau ?",
+        "text": "Comment Damien essaie-t-il de faire croire à sa maman qu'il a de la fièvre ?",
         "options": [
-          "Des tables et des chaises",
-          "Des planches trouvées dans le couloir",
-          "Des morceaux de polystyrène découpés en salle d'Arts Plastiques",
-          "Des portes arrachées de leurs gonds"
+          "Il se met un gant de toilette chaud sur le front",
+          "Il boit un grand bol de chocolat bien brûlant",
+          "Il pose le thermomètre sur le radiateur",
+          "Il court dans les escaliers avant de le prendre"
         ],
+        "correct": 2,
         "answer": 2,
         "points": 1,
-        "correct": 2
+        "explanation": "Le thermomètre affiche 43 °C ! Sa maman comprend la ruse et l'oblige à aller à l'école."
       },
       {
         "id": "q5",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Pourquoi Damien hésite-t-il à avouer qu'il n'a tenu que cinq minutes lors du vœu collectif ?",
+        "text": "Qu'est-ce qui empêche le contrôle d'avoir lieu, dans l'aventure ?",
         "options": [
-          "Il a peur de la punition de ses parents",
-          "Il veut paraître courageux devant le professeur",
-          "Il ne veut pas perdre la face devant ses amis",
-          "Il a oublié ce qui s'était passé"
+          "Un grave incendie dans la salle de géographie",
+          "Un morceau de comète tombé sur la Terre",
+          "Une panne d'électricité dans toute la ville",
+          "Une grève des bus qui bloque les professeurs"
         ],
-        "answer": 2,
+        "correct": 1,
+        "answer": 1,
         "points": 1,
-        "correct": 2
+        "explanation": "Une lumière aveuglante, un grondement, le sol qui tremble : un morceau de la comète est tombé dans l'océan Arctique."
       },
       {
         "id": "q6",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Quand Damien reconnaît l'odeur sucrée sur le « caillou », à quoi cela fait-il référence ?",
+        "text": "Comment les quatre amis quittent-ils l'école inondée ?",
         "options": [
-          "À un souvenir d'enfance",
-          "À son goûter de l'après-midi",
-          "À la bande dessinée L'Étoile mystérieuse qu'il avait lue la veille",
-          "Au menu de la cantine"
+          "Dans un grand bateau de pompiers venu spécialement les chercher",
+          "En hélicoptère, depuis le toit de l'école",
+          "À la nage, en se tenant par la main",
+          "Sur un radeau fait de gros blocs de polystyrène"
         ],
-        "answer": 2,
+        "correct": 3,
+        "answer": 3,
         "points": 1,
-        "correct": 2
+        "explanation": "Théo découpe un grand cube de polystyrène en quatre morceaux et fabrique même des rames."
       },
       {
         "id": "q7",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Pourquoi Laura nie-t-elle avec tant d'énergie que son vœu est responsable de la tempête de neige ?",
+        "text": "Que deviennent les miettes de barre de céréales que Damien a éternuées sur l'îlot ?",
         "options": [
-          "Elle est certaine d'avoir raison scientifiquement",
-          "Elle a oublié quel vœu elle avait fait",
-          "Elle sait probablement que son vœu est lié, mais elle a honte de l'admettre",
-          "Elle veut protéger Théo"
+          "Des colonnes géantes de céréales",
+          "Des cailloux durs comme de la pierre",
+          "Des flocons de neige très froids",
+          "De petits virus qui sautent partout"
         ],
-        "answer": 2,
+        "correct": 0,
+        "answer": 0,
         "points": 1,
-        "correct": 2
+        "explanation": "Comme dans la B.D., tout ce qui tombe sur le rocher grandit : les miettes deviennent de grandes barres de céréales."
       },
       {
         "id": "q8",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "À la fin du livre, on comprend que toute l'aventure était en réalité...",
+        "text": "Que découvre Damien en se réveillant à la fin ?",
         "options": [
-          "Un souvenir raconté à ses petits-enfants",
-          "Une histoire inventée par Damien pour ses amis",
-          "Un rêve fiévreux de Damien",
-          "Un film regardé en classe"
+          "Qu'il est à l'hôpital, soigné par des médecins",
+          "Que ses amis sont venus le sauver sur le radeau",
+          "Que toute l'aventure était un rêve dû à la fièvre",
+          "Que la ville a vraiment été inondée pendant toute cette nuit-là"
         ],
+        "correct": 2,
         "answer": 2,
         "points": 1,
-        "correct": 2
+        "explanation": "Damien était dans son lit, avec beaucoup de fièvre. Tout ce qu'il a vécu n'était qu'un cauchemar."
       },
       {
         "id": "q9",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Le professeur Bertin est le professeur principal de la classe.",
-        "answer": false,
+        "text": "Damien fait partie du club de théâtre et fait semblant d'être malade en classe.",
+        "correct": true,
+        "answer": true,
         "points": 1,
-        "correct": false
+        "explanation": "VRAI : il se plie en deux sur sa table en gémissant. Mais Monsieur Bertin ne se laisse pas avoir."
       },
       {
         "id": "q10",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Séb tente en premier de convaincre le professeur d'annuler le contrôle.",
-        "answer": true,
+        "text": "Les amis restent concentrés sur leur vœu pendant une heure entière, comme promis.",
+        "correct": false,
+        "answer": false,
         "points": 1,
-        "correct": true
+        "explanation": "FAUX : Damien abandonne au bout de cinq minutes pour lire sa B.D. À la fin du rêve, Laura avoue qu'elle aussi n'a pas tenu."
       },
       {
         "id": "q11",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Le morceau de comète s'écrase directement sur la ville de Rouen.",
-        "answer": false,
+        "text": "Dans le rêve, chaque ami a fait un vœu qui se réalise : comète, inondation, tempête de neige et extraterrestres.",
+        "correct": true,
+        "answer": true,
         "points": 1,
-        "correct": false
+        "explanation": "VRAI : Damien a imaginé la comète, Séb l'inondation, Laura la tempête de neige et Théo une invasion d'extraterrestres."
       },
       {
         "id": "q12",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "À la fin, le contrôle de géographie a bien eu lieu le lundi suivant.",
+        "text": "À la fin, le contrôle de géo a eu lieu pendant que Damien était malade.",
+        "correct": false,
         "answer": false,
         "points": 1,
-        "correct": false
+        "explanation": "FAUX : Monsieur Bertin était absent : il a la grippe ! Le contrôle est reporté au lundi."
       },
       {
         "id": "q13",
-        "section": "Vocabulaire",
+        "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« Séb s'est insurgé » — Que signifie s'est insurgé ?",
+        "text": "« Bertin l'a toisé, le sourcil en accent circonflexe. » Que veut dire « toiser » quelqu'un ?",
         "options": [
-          "Approuvé avec enthousiasme",
-          "Répondu poliment",
-          "Protesté avec indignation",
-          "Chuchoté discrètement"
+          "Le prendre dans ses bras",
+          "Le regarder de haut, avec mépris",
+          "Lui serrer la main",
+          "L'applaudir très fort"
         ],
-        "answer": 2,
+        "correct": 1,
+        "answer": 1,
         "points": 1,
-        "correct": 2
+        "explanation": "Toiser, c'est regarder quelqu'un de haut en bas, avec un air supérieur ou méprisant."
       },
       {
         "id": "q14",
-        "section": "Vocabulaire",
+        "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« Bertin l'a toisé, le sourcil gauche en accent circonflexe. » — Que signifie toisé ?",
+        "text": "« Je gémis d'une voix sépulcrale. » Une voix « sépulcrale » est une voix…",
         "options": [
-          "Ignoré complètement",
-          "Félicité chaleureusement",
-          "Interrogé à voix haute",
-          "Regardé de haut avec mépris"
+          "très aiguë et joyeuse, comme une chanson de fête",
+          "très rapide",
+          "très douce",
+          "sombre et lugubre, comme sortie d'une tombe"
         ],
+        "correct": 3,
         "answer": 3,
         "points": 1,
-        "correct": 3
+        "explanation": "« Sépulcral » vient de « sépulcre », qui veut dire tombeau. Damien prend une voix de mourant pour inquiéter sa maman."
       },
       {
         "id": "q15",
-        "section": "Vocabulaire",
+        "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« J'échafaude des scénarios de plus en plus farfelus. » — Que signifie farfelus ?",
+        "text": "« La maison ne reculant devant aucun sacrifice, les congélateurs ont été vidés. » Ici, « ne reculer devant aucun sacrifice », c'est…",
         "options": [
-          "Dangereux et risqués",
-          "Tristes et dramatiques",
-          "Bizarres et extravagants",
-          "Ennuyeux et répétitifs"
+          "faire de gros efforts, sans compter",
+          "refuser de faire quoi que ce soit",
+          "reculer quand on a peur",
+          "manger le plus possible"
         ],
-        "answer": 2,
+        "correct": 0,
+        "answer": 0,
         "points": 1,
-        "correct": 2
+        "explanation": "La cantine vide tous ses congélateurs pour nourrir les élèves : elle fait tous les efforts possibles."
       },
       {
         "id": "q16",
-        "section": "Synthèse",
-        "type": "mcq",
-        "text": "Un seul de ces trois résumés est totalement correct. Lequel ?",
+        "section": "Compréhension globale",
+        "type": "synthesis",
+        "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Résumé A : Damien et ses amis font un vœu collectif. Une comète s'écrase dans l'Arctique, provoquant des bouleversements. Les quatre amis s'échappent sur un radeau. Damien tombe à l'eau et se réveille dans son lit : tout était un rêve de fièvre. En réalité, c'est le professeur Bertin qui était absent ce jour-là.",
-          "Résumé B : La comète s'écrase directement sur Rouen, détruisant leur collège. Le contrôle a finalement bien eu lieu le jeudi comme prévu.",
-          "Résumé C : Des miettes de céréales se transforment en virus géants. Séb sauve tout le groupe et ils rentrent sains et saufs au collège."
+          "Résumé A : Quatre amis révisent ensemble leur contrôle de géographie. Grâce à leur travail, ils obtiennent tous une excellente note et Monsieur Bertin les félicite devant la classe.",
+          "Résumé B : Une comète tombe vraiment sur Rouen. Damien et ses amis sauvent tous les élèves de l'école en construisant un grand radeau, et ils deviennent des héros.",
+          "Résumé C : Pour éviter un contrôle, Damien et ses amis font chacun un vœu de catastrophe. Damien, malade, vit une aventure incroyable : comète, inondation, tempête… En se réveillant, il comprend qu'il a rêvé. Et le contrôle est reporté, car le professeur a la grippe."
         ],
-        "answer": 0,
+        "correct": 2,
+        "answer": 2,
         "points": 1,
-        "correct": 0
+        "explanation": "Seul le résumé C est correct : les vœux, le rêve dû à la fièvre et le contrôle finalement reporté."
       }
     ]
   },
@@ -3354,216 +3594,232 @@ window.LIVRES = [
         "id": "q1",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Que fait Dorian avec Max dans l'escalier ?",
+        "text": "Qui est Max ?",
         "options": [
-          "Il le met dans son sac à dos.",
-          "Il le pose par terre et l'encourage à monter les marches.",
-          "Il le donne à Gabrielle pour qu'elle le tienne.",
-          "Il le cache dans sa poche dès le départ."
+          "Le chien de Babou, qui garde l'appartement",
+          "Le voisin de Babou, qui a fait de la prison",
+          "Le rat apprivoisé de Dorian",
+          "Le policier chargé de l'enquête"
         ],
-        "answer": 1,
+        "correct": 2,
+        "answer": 2,
         "points": 1,
-        "correct": 1
+        "explanation": "Max est le rat de Dorian. Il le porte dans sa poche et lui a appris beaucoup de tours."
       },
       {
         "id": "q2",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Que découvrent les jumeaux en entrant dans la chambre de Babou ?",
+        "text": "Que découvrent les jumeaux en entrant chez Babou ?",
         "options": [
-          "Babou est endormie dans son lit.",
-          "Babou a disparu et l'appartement est vide.",
-          "Babou est assise sur une chaise, les mains ligotées, les yeux bandés et la bouche couverte de ruban adhésif.",
-          "Babou discute avec monsieur Julien."
+          "Babou ligotée sur une chaise, les yeux bandés",
+          "Babou endormie devant la télévision allumée",
+          "Un voleur en train de fouiller les tiroirs du salon",
+          "Une fenêtre cassée et des traces de pas sur le sol"
         ],
-        "answer": 2,
+        "correct": 0,
+        "answer": 0,
         "points": 1,
-        "correct": 2
+        "explanation": "Babou a les mains attachées, la bouche couverte de ruban adhésif et un œil au beurre noir."
       },
       {
         "id": "q3",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Qu'est-ce que Max trouve et rapporte lors de sa fouille devant l'appartement de madame Jansen ?",
+        "text": "Qu'est-ce que le voleur a emporté chez Babou ?",
         "options": [
-          "Un bouton arraché d'un manteau.",
-          "Un bout de fil bleu.",
-          "Une clé de l'appartement.",
-          "Rien du tout."
+          "Son portefeuille et ses cartes de banque",
+          "Sa boîte à bijoux",
+          "Le téléphone de l'appartement",
+          "Les clés de l'immeuble"
         ],
+        "correct": 1,
         "answer": 1,
         "points": 1,
-        "correct": 1
+        "explanation": "Le coffret en bois caché derrière les livres a disparu. Babou était très fière de ses bijoux."
       },
       {
         "id": "q4",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Pourquoi madame Jansen avait-elle volé les bijoux de Babou ?",
+        "text": "Quel indice Max trouve-t-il dans la chambre de Babou ?",
         "options": [
-          "Elle voulait les offrir à sa famille.",
-          "Elle n'avait plus payé son loyer depuis longtemps et avait besoin d'argent pour s'enfuir.",
-          "Elle était jalouse des bijoux de Babou.",
-          "Elle voulait se venger de Babou."
+          "Une clé qui n'ouvre aucune porte de l'immeuble",
+          "Un papier de bonbon à la cannelle",
+          "Un bouton tombé d'un pull noir et rouge",
+          "Un fil de laine bleu"
         ],
-        "answer": 1,
+        "correct": 3,
+        "answer": 3,
         "points": 1,
-        "correct": 1
+        "explanation": "Dorian demande à Max de chercher des indices. Le rat revient avec un petit fil bleu."
       },
       {
         "id": "q5",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Pourquoi monsieur Julien ne voulait-il pas appeler la police lorsqu'il a entendu des bruits suspects ?",
+        "text": "Pourquoi Monsieur Julien ne voulait-il pas appeler la police ?",
         "options": [
-          "Il pensait que ce n'était pas grave et qu'il valait mieux attendre.",
-          "Il voulait garder les bijoux pour lui.",
-          "Il soupçonnait sa petite-fille Zoé et ne voulait pas qu'elle ait des ennuis.",
-          "Il avait peur de la police à cause de son passé en prison."
+          "Il craignait que sa petite-fille soit la voleuse",
+          "Il avait peur que les policiers l'accusent, lui",
+          "Il pensait que Babou s'était juste disputée avec quelqu'un",
+          "Il avait perdu son téléphone"
         ],
-        "answer": 2,
+        "correct": 0,
+        "answer": 0,
         "points": 1,
-        "correct": 2
+        "explanation": "Gabrielle, cachée dans l'armoire, l'entend : Monsieur Julien soupçonne Zoé. Il a aussi fait de la prison autrefois."
       },
       {
         "id": "q6",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Pourquoi Dorian fait-il faire des tours à Max devant Zoé ?",
+        "text": "Où Gabrielle retrouve-t-elle les boucles d'oreilles de Babou ?",
         "options": [
-          "Il veut montrer que Max est un rat apprivoisé et inoffensif.",
-          "Il veut distraire Zoé pour que Gabrielle puisse fouiller son sac.",
-          "Il veut que Zoé adopte un rat comme animal de compagnie.",
-          "Il s'ennuie et cherche à passer le temps."
+          "Dans le sac à dos de Zoé, la petite-fille du voisin",
+          "Sur un site Internet, grâce au téléphone de Zoé",
+          "Dans la vitrine d'un magasin d'occasion",
+          "Dans l'armoire de Monsieur Julien"
         ],
-        "answer": 1,
+        "correct": 2,
+        "answer": 2,
         "points": 1,
-        "correct": 1
+        "explanation": "Au magasin d'occasion, Gabrielle reconnaît les boucles d'oreilles à leur petit diamant qui bouge un peu."
       },
       {
         "id": "q7",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Pourquoi madame Jansen utilisait-elle un déambulateur alors qu'elle pouvait très bien marcher et courir ?",
+        "text": "Comment le gérant du magasin décrit-il la personne qui a vendu les boucles d'oreilles ?",
         "options": [
-          "Elle voulait faire pitié à son propriétaire pour qu'il ne la mette pas à la porte.",
-          "Elle avait eu un accident et devait se rééduquer.",
-          "Elle voulait que les autres habitants lui rendent des services.",
-          "C'était une habitude qu'elle avait prise en vieillissant."
+          "Une jeune fille avec des piercings et des tatouages",
+          "Un homme grand qui rentrait d'un voyage en Inde",
+          "Un jeune homme en pull noir à rayures rouges",
+          "Une dame âgée aux cheveux gris, en robe à fleurs"
         ],
-        "answer": 0,
+        "correct": 3,
+        "answer": 3,
         "points": 1,
-        "correct": 0
+        "explanation": "Le gérant parle d'une dame de l'âge de Babou, aux yeux bleus, qui ne marchait pas avec un déambulateur."
       },
       {
         "id": "q8",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Lorsque Babou dit à madame Jansen de prendre les bijoux et de disparaître, que cherche-t-elle vraiment à faire ?",
+        "text": "Qui est vraiment la voleuse ?",
         "options": [
-          "Elle abandonne et accepte de perdre ses bijoux.",
-          "Elle essaie de faire fuir madame Jansen pour qu'elle libère Gabrielle, sachant que la police est en route.",
-          "Elle veut éviter une bagarre et pense que les bijoux ne sont pas importants.",
-          "Elle a peur de madame Jansen et obéit par terreur."
+          "Zoé, la petite-fille de Monsieur Julien",
+          "Madame Jansen, la voisine au déambulateur",
+          "Madame Maes, qui marche toujours très lentement",
+          "La femme de ménage de l'immeuble"
         ],
+        "correct": 1,
         "answer": 1,
         "points": 1,
-        "correct": 1
+        "explanation": "Madame Jansen faisait semblant d'avoir du mal à marcher. Elle voulait de l'argent pour s'enfuir, car elle ne payait plus son loyer."
       },
       {
         "id": "q9",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Gabrielle et Dorian sont des jumeaux qui se ressemblent physiquement.",
-        "answer": false,
+        "text": "Dorian arrive à ouvrir une porte simplement avec une carte de banque.",
+        "correct": true,
+        "answer": true,
         "points": 1,
-        "correct": false
+        "explanation": "VRAI : quand la porte n'est pas fermée à double tour, une carte suffit. C'est sans doute ainsi que le voleur est entré."
       },
       {
         "id": "q10",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "C'est Max qui permet aux jumeaux de découvrir que la véritable voleuse est madame Jansen, en rapportant un fil bleu de son appartement.",
-        "answer": true,
+        "text": "Gabrielle et Dorian se ressemblent comme deux gouttes d'eau.",
+        "correct": false,
+        "answer": false,
         "points": 1,
-        "correct": true
+        "explanation": "FAUX : ils sont jumeaux, mais ne se ressemblent pas. Madame Jansen se moque même de « un gros et une maigrichonne »."
       },
       {
         "id": "q11",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Les boucles d'oreilles de Babou sont retrouvées dans le magasin d'occasion, encore en vitrine.",
-        "answer": false,
+        "text": "Après l'agression, Babou a peur de sortir de chez elle.",
+        "correct": true,
+        "answer": true,
         "points": 1,
-        "correct": false
+        "explanation": "VRAI : c'est Monsieur Julien qui fait ses courses. Babou dit que « le temps guérit toutes les blessures »."
       },
       {
         "id": "q12",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Babou a du mal à sortir de chez elle après l'agression parce qu'elle a peur.",
-        "answer": true,
+        "text": "À la fin, c'est Max qui appelle la police.",
+        "correct": false,
+        "answer": false,
         "points": 1,
-        "correct": true
+        "explanation": "FAUX : c'est Babou qui appelle la police. Max l'a réveillée quand les enfants étaient en danger."
       },
       {
         "id": "q13",
-        "section": "Vocabulaire",
+        "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« Il lâche : Enfin, vous voilà ! » — Le mot lâche signifie ici :",
+        "text": "« Le policier parle d'une effraction. » Qu'est-ce qu'une « effraction » ?",
         "options": [
-          "abandonne, jette quelque chose par terre",
-          "dit, prononce (une parole)",
-          "libère un animal",
-          "hésite avant de parler"
+          "Le fait d'entrer chez quelqu'un en forçant",
+          "Une petite fracture au bras",
+          "Une dispute entre voisins",
+          "Une amende de la police"
         ],
-        "answer": 1,
+        "correct": 0,
+        "answer": 0,
         "points": 1,
-        "correct": 1
+        "explanation": "Une effraction, c'est entrer quelque part en forçant une porte ou une fenêtre, souvent pour voler."
       },
       {
         "id": "q14",
-        "section": "Vocabulaire",
+        "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« Certains bijoux sont ornés de diamants. » — Le mot ornés signifie :",
+        "text": "« Madame Jansen s'appuie sur son déambulateur. » Qu'est-ce qu'un « déambulateur » ?",
         "options": [
-          "fabriqués entièrement en diamants",
-          "décorés, agrémentés de",
-          "volés puis recouverts de",
-          "cachés sous"
+          "Une canne pour les aveugles",
+          "Un fauteuil roulant électrique",
+          "Un petit chariot à courses",
+          "Un cadre pour aider à marcher"
         ],
-        "answer": 1,
+        "correct": 3,
+        "answer": 3,
         "points": 1,
-        "correct": 1
+        "explanation": "Un déambulateur est un cadre, parfois avec des roues, qui aide les personnes âgées à marcher. Madame Jansen s'en servait pour faire semblant."
       },
       {
         "id": "q15",
-        "section": "Vocabulaire",
+        "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« Flagrant délit de recel. » — Le mot recel désigne :",
+        "text": "« Elle serre si fort que Gabrielle gémit. » Que veut dire « gémir » ?",
         "options": [
-          "le fait de cacher des personnes recherchées par la police",
-          "le fait d'acheter, de garder ou de vendre des objets dont on sait qu'ils ont été volés",
-          "le fait de voler directement dans une maison",
-          "le fait de mentir à la police lors d'une enquête"
+          "Rire très fort",
+          "Parler à voix basse",
+          "Pousser une petite plainte de douleur",
+          "Crier de joie"
         ],
-        "answer": 1,
+        "correct": 2,
+        "answer": 2,
         "points": 1,
-        "correct": 1
+        "explanation": "Gémir, c'est pousser un petit cri plaintif, quand on a mal ou qu'on est triste."
       },
       {
         "id": "q16",
-        "section": "Synthèse",
-        "type": "mcq",
-        "text": "Un seul de ces trois résumés est totalement correct. Lequel ?",
+        "section": "Compréhension globale",
+        "type": "synthesis",
+        "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Résumé A : Gabrielle et Dorian trouvent Babou ligotée dans sa chambre. Avec l'aide de leur rat Max, les jumeaux mènent l'enquête et découvrent les boucles d'oreilles de Babou dans un magasin d'occasion. Ils surprennent madame Jansen qui tente de fuir avec les bijoux. Babou appelle la police, qui arrête madame Jansen devant l'immeuble.",
-          "Résumé B : Max retrouve les bijoux cachés dans l'armoire de madame Jansen. La police arrête madame Jansen alors qu'elle tentait de prendre le train.",
-          "Résumé C : C'est Zoé, la petite-fille de monsieur Julien, que la police arrête : elle avait fait un double des clés pour entrer chez Babou."
+          "Résumé A : Babou est attaquée chez elle et ses bijoux sont volés. Les jumeaux Gabrielle et Dorian mènent l'enquête avec leur rat Max. Ils retrouvent des boucles d'oreilles dans un magasin et découvrent que la voleuse est Madame Jansen, qui faisait semblant de mal marcher.",
+          "Résumé B : Les jumeaux perdent leur rat Max dans l'immeuble de Babou. En le cherchant, ils découvrent que Monsieur Julien cache un trésor dans son armoire.",
+          "Résumé C : Zoé, la petite-fille de Monsieur Julien, vole les bijoux de Babou pour acheter des bonbons à la cannelle. La police l'arrête grâce aux jumeaux."
         ],
+        "correct": 0,
         "answer": 0,
         "points": 1,
-        "correct": 0
+        "explanation": "Seul le résumé A est correct : l'agression, l'enquête des jumeaux, les boucles d'oreilles retrouvées et la vraie coupable."
       }
     ]
   },
@@ -10776,225 +11032,232 @@ window.LIVRES = [
         "id": "q1",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Où vit Noah au début de l'histoire et quel est son quotidien ?",
+        "text": "Où vit Noah au début de l'histoire ?",
         "options": [
-          "À Casablanca, où il étudie les sciences naturelles dans un grand collège",
-          "À Ourika près de Marrakech, où il effectue les corvées et travaille aux champs pour sa famille",
-          "À Fès, où il travaille comme apprenti artisan tanneur dans la médina",
-          "À Ifrane, où il élève des chèvres et des chevaux dans une grande bergerie"
+          "À Marrakech, près de la grande mosquée",
+          "À Ifrane, dans une ferme à la barrière blanche",
+          "À Ourika, un village de montagne près de Marrakech",
+          "À Casablanca, dans une maison au bord de la mer"
         ],
-        "correct": 1,
-        "explanation": "Noah vit à Ourika, un village près de Marrakech. Âgé de 11 ans, il est chargé des corvées pénibles (comme porter l'eau) et travaille aux champs."
+        "correct": 2,
+        "answer": 2,
+        "points": 1,
+        "explanation": "Noah vit à Ourika, un petit village de montagne près de Marrakech, avec la famille qui l'a élevé."
       },
       {
         "id": "q2",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Quel incident amène le père à révéler accidentellement que Noah n'est pas son fils biologique ?",
+        "text": "Comment Noah apprend-il qu'il n'est pas le fils de ses parents ?",
         "options": [
-          "Noah a perdu un troupeau de chèvres dans la montagne",
-          "Noah a déchiré le tapis du salon avec ses outils de jardinage",
-          "Noah a renversé son lourd seau d'eau sur une babouche en franchissant le seuil de la maison",
-          "Noah a refusé de manger la soupe harrira préparée par la mère"
+          "Son père le crie, fâché que Noah ait renversé l'eau",
+          "Il trouve une lettre cachée sous son matelas de paille",
+          "Son grand frère Saïd le lui dit pendant une dispute",
+          "Une dame de l'assistance vient le chercher à la maison"
         ],
-        "correct": 2,
-        "explanation": "En rentrant épuisé avec son seau d'eau, Noah trébuche sur une babouche. L'eau inonde la pièce, provoquant la furie du père qui s'écrie : « Encore heureux que ce ne soit pas notre fils ! »."
+        "correct": 0,
+        "answer": 0,
+        "points": 1,
+        "explanation": "Le seau tombe à cause d'une babouche et l'eau inonde la pièce. En colère, le père crie : « Encore heureux que ce ne soit pas notre fils ! »"
       },
       {
         "id": "q3",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Quels objets précieux la mère adoptive remet-elle à Noah au sujet de ses origines ?",
+        "text": "Qui aide Noah dès son arrivée à Marrakech ?",
         "options": [
-          "Un collier en or et un passeport européen complet",
-          "Une lettre cachetée et une clé de coffre-fort",
-          "Une chaîne avec une main de Fatma et une demi-photo jaunie portant un mot au dos",
-          "Une bague en argent gravée et un extrait de naissance de Marrakech"
+          "Un camionneur qui connaît très bien les singes magots",
+          "Un jeune étudiant qui fait ses études à Paris",
+          "Un vieux policier du commissariat de la ville",
+          "Nadir, un garçon qui joue au foot sur la place"
         ],
-        "correct": 2,
-        "explanation": "Sa mère adoptive lui remet une petite chaîne avec une main de Fatma et une demi-photo d'une jeune femme avec l'inscription : « Il s'appelle Noah, prenez-en soin. 21/05/1999 »."
+        "correct": 3,
+        "answer": 3,
+        "points": 1,
+        "explanation": "Nadir envoie par accident son ballon sur la tête de Noah, endormi contre un muret. Il devient son ami et l'aide dans ses recherches."
       },
       {
         "id": "q4",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Comment Noah fait-il la connaissance de Nadir sur la place Jemaa El Fna à Marrakech ?",
+        "text": "Que trouve Noah dans la ferme aux magots, à Ifrane ?",
         "options": [
-          "Nadir lui vole son sac de pain alors qu'il fait la sieste",
-          "Nadir lui envoie accidentellement un ballon de football dans la tête pendant qu'il dort près d'un muret",
-          "Ils se rencontrent au commissariat en cherchant tous les deux du travail",
-          "Nadir lui vend une paire de claquettes neuves dans les ruelles du souk"
+          "Sa mère, qui l'attendait depuis très longtemps",
+          "Une maison vide, un petit singe et un carnet rouge",
+          "Deux hommes qui enferment des singes dans des cages",
+          "Une famille qui vient d'acheter la maison"
         ],
         "correct": 1,
-        "explanation": "Alors que Noah dort épuisé contre un muret à l'écart de la place Jemaa El Fna, un ballon de football le réveille en pleine tête : c'est Nadir qui jouait au foot."
+        "answer": 1,
+        "points": 1,
+        "explanation": "La maison a été vidée. Noah y apprivoise un petit singe et découvre un carnet rouge entre deux banquettes."
       },
       {
         "id": "q5",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Quelle information capitale la vieille Lalla Fatna donne-t-elle à Noah et Nadir ?",
+        "text": "Pourquoi Noah appelle-t-il le petit singe « Cœurjol » ?",
         "options": [
-          "Elle affirme que la mère de Noah est partie vivre en Espagne",
-          "Elle annonce que la mère de Noah s'appelle Isia et habitait à « la Ferme aux magots » à Ifrane",
-          "Elle révèle que la photo a été prise dans une école primaire de Casablanca",
-          "Elle leur conseille d'abandonner immédiatement leurs recherches"
+          "Parce que le singe a un cœur dessiné sur le dos",
+          "Parce que c'est le nom écrit dans le carnet rouge",
+          "En pensant à Jolicœur, le singe d'un livre lu en classe",
+          "Parce que Nadir lui a proposé ce nom rigolo"
         ],
-        "correct": 1,
-        "explanation": "Lalla Fatna reconnaît la jeune femme sur la photo : elle s'appelle Isia et vivait à « la Ferme aux magots » à la sortie d'Ifrane, reconnaissable à sa barrière blanche."
+        "correct": 2,
+        "answer": 2,
+        "points": 1,
+        "explanation": "Noah se souvient de Jolicœur, le singe du livre « Sans famille » que son maître avait lu en classe."
       },
       {
         "id": "q6",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Que découvre Noah en pénétrant dans la Ferme aux magots à Ifrane ?",
+        "text": "Que comprend Noah grâce au camionneur ?",
         "options": [
-          "Une famille de touristes anglais qui a racheté la propriété",
-          "Une maison entièrement vide et abandonnée, où se cache un petit singe apeuré",
-          "Un laboratoire secret de recherche gardé par des militaires",
-          "Sa mère qui l'attendait les bras ouverts avec un grand repas"
+          "Que les magots sont des singes, pas un trésor",
+          "Que sa mère travaille à l'université de Marrakech",
+          "Que les gendarmes cherchent les enfants de la rue",
+          "Que la ferme a été vendue au début de l'été"
         ],
-        "correct": 1,
-        "explanation": "La ferme est vide et recouverte de poussière. Mais au fond de la réserve, Noah aperçoit un petit singe qui tremble de peur."
+        "correct": 0,
+        "answer": 0,
+        "points": 1,
+        "explanation": "Noah croyait qu'un « magot » était un trésor caché. Le camionneur lui apprend que c'est une espèce de singe."
       },
       {
         "id": "q7",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Comment Noah apprivoise-t-il le singe et quel prénom lui donne-t-il ?",
+        "text": "Qui lit le carnet rouge aux deux garçons ?",
         "options": [
-          "Il lui donne des morceaux de pain et le baptise Rémy",
-          "Il l'attrape avec une serviette et le nomme Magot",
-          "Il lui parle doucement, lui offre des cacahuètes et l'appelle Cœurjol",
-          "Il lui joue de la flûte et le nomme Jolicœur"
+          "Lalla Fatna, la vieille dame qui connaît tout le monde",
+          "Le policier qui voulait parler à Noah au commissariat",
+          "L'homme aux gros sourcils qui voulait acheter Cœurjol",
+          "Un étudiant rencontré au café"
         ],
-        "correct": 2,
-        "explanation": "Noah utilise une voix douce et lui tend des cacahuètes. Il le baptise Cœurjol en souvenir du singe Jolicœur dans le roman *Sans famille*."
+        "correct": 3,
+        "answer": 3,
+        "points": 1,
+        "explanation": "Noah ne sait pas lire le français. Un jeune homme assis à côté d'eux au café, qui étudie à Paris, leur lit le carnet."
       },
       {
         "id": "q8",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Quel objet essentiel Noah trouve-t-il entre deux banquettes à la ferme avant de repartir ?",
+        "text": "Comment la maman de Noah le reconnaît-elle à la fin ?",
         "options": [
-          "Un carnet recouvert de toile rouge rempli d'écrits en français et de croquis de singes",
-          "Une boîte en fer contenant des bijoux de valeur",
-          "Un trousseau de clés menant à une cave secrète",
-          "Une lettre adressée au commissariat de police d'Ifrane"
+          "Elle reconnaît la main de Fatma qu'il porte au cou",
+          "Elle voit que le carnet rouge est le sien",
+          "Elle compare son visage avec la photo déchirée",
+          "Lalla Fatna lui a donné l'adresse de Noah"
         ],
-        "correct": 0,
-        "explanation": "Un rayon de soleil éclaire un petit carnet relié de toile rouge contenant des croquis à l'aquarelle et des notes manuscrites en français."
+        "correct": 1,
+        "answer": 1,
+        "points": 1,
+        "explanation": "Isia a vu Cœurjol jouer avec le carnet. Quand Noah le lui tend, elle reconnaît son propre carnet et comprend que c'est son fils."
       },
       {
         "id": "q9",
-        "section": "Compréhension (QCM)",
-        "type": "mcq",
-        "text": "Quel quiproquo sur le mot « magot » est dissipé par le camionneur qui ramène Noah ?",
-        "options": [
-          "Noah pensait qu'un magot était une plante médicinale rare",
-          "Noah croyait qu'il y avait un trésor caché sous la maison, ignorant que les magots sont une espèce de singes",
-          "Noah pensait que c'était le nom de famille de son père biologique",
-          "Noah croyait que la ferme appartenait à un magicien du Moyen Âge"
-        ],
-        "correct": 1,
-        "explanation": "Noah pensait qu'un « magot » désignait un trésor enfoui. Le camionneur lui explique en riant que les magots sont les singes typiques de cette région du Maroc."
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Noah quitte la maison en pleine nuit, pendant que toute sa famille dort.",
+        "correct": true,
+        "answer": true,
+        "points": 1,
+        "explanation": "VRAI : il part sans bruit, avec un morceau de pain, la photo et la chaîne avec la main de Fatma."
       },
       {
         "id": "q10",
-        "section": "Compréhension (QCM)",
-        "type": "mcq",
-        "text": "Comment Noah et Nadir gagnent-ils des pièces sur la place Jemaa El Fna grâce à Cœurjol ?",
-        "options": [
-          "Cœurjol fait des tours d'acrobatie sur un vélo miniature",
-          "Cœurjol simule la lecture du carnet rouge et joue le rôle d'un maître d'école comique",
-          "Cœurjol danse au son d'un tambourin joué par Nadir",
-          "Cœurjol distribue des fleurs aux touristes de passage"
-        ],
-        "correct": 1,
-        "explanation": "Noah donne son carnet à Cœurjol qui fait semblant de le lire attentivement, tape gentiment les garçons et imite un maître d'école, déclenchant les rires du public."
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Noah accepte de vendre Cœurjol pour 300 dirhams.",
+        "correct": false,
+        "answer": false,
+        "points": 1,
+        "explanation": "FAUX : Noah refuse et s'enfuit en serrant son singe contre lui. C'est Nadir qui a hésité."
       },
       {
         "id": "q11",
-        "section": "Compréhension (QCM)",
-        "type": "mcq",
-        "text": "Quelle proposition suspecte un homme menaçant fait-il à propos de Cœurjol ?",
-        "options": [
-          "Il veut l'échanger contre un âne et une charrette",
-          "Il propose de l'acheter pour 300 dirhams, ce que Noah refuse avant de s'enfuir",
-          "Il menace de confisquer le singe au nom de la mairie",
-          "Il propose de lui faire passer une audition pour le cirque de Marrakech"
-        ],
-        "correct": 1,
-        "explanation": "Un individu sombre et imposant propose d'acheter Cœurjol pour 300 dirhams. Noah refuse catégoriquement et s'enfuit en serrant son singe contre lui."
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Au commissariat, les deux policiers écoutent les garçons avec beaucoup d'attention.",
+        "correct": false,
+        "answer": false,
+        "points": 1,
+        "explanation": "FAUX : les policiers ont l'air fatigués et disent que « ce ne sont que des bestioles ». Heureusement, le deuxième policier prévient ensuite Isia."
       },
       {
         "id": "q12",
-        "section": "Compréhension (QCM)",
-        "type": "mcq",
-        "text": "Qui aide Noah et Nadir à lire le contenu du carnet intime rouge ?",
-        "options": [
-          "Lalla Fatna, qui sait lire toutes les langues",
-          "Le maître d'école du village d'Ourika",
-          "Un étudiant marocain faisant ses études à Paris, rencontré dans un café",
-          "Un policier en patrouille dans le souk"
-        ],
-        "correct": 2,
-        "explanation": "Un jeune homme assis à leur table au café, étudiant à Paris et de retour à Marrakech pour les vacances, accepte de leur lire le journal intime."
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Grâce aux deux garçons, les singes enfermés dans la grange sont libérés.",
+        "correct": true,
+        "answer": true,
+        "points": 1,
+        "explanation": "VRAI : la police arrête les deux trafiquants. Les singes seront soignés, puis relâchés près d'Ifrane."
       },
       {
         "id": "q13",
-        "section": "Compréhension (QCM)",
+        "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "Pourquoi Isia avait-elle été contrainte d'abandonner son bébé Noah en mai 1999 ?",
+        "text": "« Avec ses onze ans, il est juste bon pour les corvées. » Que sont des « corvées » ?",
         "options": [
-          "Elle était trop jeune et ses parents l'ont forcée par peur du scandale et de la honte",
-          "Elle devait partir en mission scientifique urgente en Amérique du Sud",
-          "L'enfant avait été enlevé par des marchands sur le marché",
-          "Elle avait perdu tout son argent lors d'une tempête à Ifrane"
+          "Des jeux qu'on fait le soir avec ses frères",
+          "Des repas qu'on partage en famille",
+          "Des travaux pénibles qu'on doit faire",
+          "Des cadeaux qu'on reçoit pour son anniversaire"
         ],
-        "correct": 0,
-        "explanation": "Le père de l'enfant s'étant enfui, les parents d'Isia l'ont obligée à laisser son bébé à l'assistance par crainte du jugement et de la honte sociale."
+        "correct": 2,
+        "answer": 2,
+        "points": 1,
+        "explanation": "Une corvée est un travail pénible ou ennuyeux qu'on est obligé de faire, comme porter de lourds seaux d'eau."
       },
       {
         "id": "q14",
-        "section": "Compréhension (QCM)",
+        "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "Que découvre Nadir après avoir suivi discrètement les deux hommes suspects à vélo ?",
+        "text": "« Ce sont des trafiquants, c'est sûr. » Qu'est-ce qu'un « trafiquant » ?",
         "options": [
-          "Un campement de nomades dans le désert",
-          "Une propriété isolée avec une grande grange où des dizaines de singes sont séquestrés dans des cages",
-          "Un marché clandestin d'animaux au cœur du palais royal",
-          "Un bateau de pêche amarré sur un canal asséché"
+          "Une personne qui fait un commerce interdit",
+          "Une personne qui soigne les animaux blessés",
+          "Une personne qui règle la circulation",
+          "Une personne qui vend des fruits au marché"
         ],
-        "correct": 1,
-        "explanation": "Perché sur un figuier, Nadir découvre un domaine avec une immense grange remplie de cages où s'entassent des singes destinés à un trafic international vers l'Europe."
+        "correct": 0,
+        "answer": 0,
+        "points": 1,
+        "explanation": "Un trafiquant achète et vend des choses interdites. Ici, les hommes capturent des singes pour les vendre en Europe."
       },
       {
         "id": "q15",
-        "section": "Compréhension (QCM)",
+        "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "Qui est la femme qui aborde les deux garçons sur la place après leur visite au commissariat ?",
+        "text": "« Noah est un peu fourbu, au petit matin. » Que veut dire « fourbu » ?",
         "options": [
-          "Une journaliste internationale enquêtant sur le braconnage",
-          "La directrice du zoo de Marrakech",
-          "Isia, la mère de Noah, qui est une scientifique traquant les trafiquants de magots",
-          "L'ancienne institutrice de sciences de Settat"
+          "Très en colère",
+          "Très fatigué",
+          "Très affamé",
+          "Très joyeux"
         ],
-        "correct": 2,
-        "explanation": "Avertie par un policier, la femme vient interroger les garçons : c'est Isia, biologiste spécialisée dans la protection des magots et véritable mère de Noah."
+        "correct": 1,
+        "answer": 1,
+        "points": 1,
+        "explanation": "Être fourbu, c'est être épuisé. Noah a dormi dehors, dans le froid et l'humidité."
       },
       {
         "id": "q16",
-        "section": "Compréhension (QCM)",
-        "type": "mcq",
-        "text": "À quelle condition Noah accepte-t-il d'aller vivre avec sa mère Isia à la fin de l'histoire ?",
+        "section": "Compréhension globale",
+        "type": "synthesis",
+        "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "À condition qu'elle lui achète un vélo neuf",
-          "À condition qu'il ne retourne plus jamais à l'école",
-          "À condition que ses deux précieux amis, Nadir et Cœurjol, viennent habiter avec eux",
-          "À condition de retourner d'abord dire au revoir à sa famille à Ourika"
+          "Résumé A : Noah, un garçon de onze ans, apprend qu'il a été abandonné quand il était bébé. Il part seul à Marrakech pour chercher sa mère. Avec son ami Nadir et un petit singe, il découvre un trafic de singes et retrouve sa maman, Isia.",
+          "Résumé B : Noah, un garçon de onze ans, s'enfuit de chez lui pour chercher un trésor caché dans une ferme d'Ifrane. Il y trouve un sac de pièces d'or, qu'il partage avec son ami Nadir. Ensemble, ils ouvrent un cirque avec des singes.",
+          "Résumé C : Noah, un garçon de onze ans, est vendu par ses parents à des trafiquants de singes. Il s'échappe grâce à un policier du commissariat. Il retourne ensuite à Ourika, où sa famille lui demande pardon."
         ],
-        "correct": 2,
-        "explanation": "Noah refuse de se séparer de ses compagnons d'infortune : Isia accepte avec joie d'accueillir Nadir et Cœurjol pour former une véritable équipe unie."
+        "correct": 0,
+        "answer": 0,
+        "points": 1,
+        "explanation": "Seul le résumé A raconte les vraies étapes : l'abandon, la fuite, l'amitié avec Nadir et Cœurjol, le trafic de singes et les retrouvailles avec Isia."
       }
     ]
   },
@@ -11008,225 +11271,232 @@ window.LIVRES = [
         "id": "q1",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Pourquoi le narrateur s'appelle-t-il Louis et est-il surnommé « Louistiti » ?",
+        "text": "D'où vient le surnom « Louistiti » ?",
         "options": [
-          "Parce qu'il adore grimper aux arbres comme un petit ouistiti",
-          "Parce que son père lui disait « Allez, Louis... stiti » pour le faire sourire au moment de prendre des photos",
-          "Parce qu'il possède un ouistiti apprivoisé depuis son enfance au Pérou",
-          "Parce que ses copines de classe se moquaient de sa petite taille"
+          "Son papa disait « Louis…stiti » pour le faire sourire en photo",
+          "Ses copains trouvent qu'il grimpe partout comme un petit singe",
+          "Sa petite sœur n'arrive pas à prononcer son vrai prénom",
+          "Sa maman l'appelait ainsi à la piscine quand il était bébé"
         ],
-        "correct": 1,
-        "explanation": "Le père de Louis, qui n'arrivait jamais à le faire sourire sur les photos, lui répétait toujours « allez, Louis... stiti », d'où son surnom de Louistiti."
+        "correct": 0,
+        "answer": 0,
+        "points": 1,
+        "explanation": "Louis ne souriait jamais au bon moment. Son papa lui disait « allez, Louis…stiti », et c'est devenu son surnom."
       },
       {
         "id": "q2",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Qui est Mutombo Dikembe aux yeux de Louis ?",
+        "text": "Quel cadeau Louis reçoit-il pour ses 12 ans ?",
         "options": [
-          "Un grand chanteur de rumba congolaise très populaire à Kinshasa",
-          "Un footballeur légendaire ayant remporté la Coupe d'Afrique des Nations",
-          "Un immense basketteur congolais de NBA mesurant 2,18 m dont Louis est un fan absolu",
-          "Un explorateur belge qui a cartographié le fleuve Congo"
+          "Un vélo neuf pour rouler au Vietnam",
+          "Un grand poster de Mutombo pour sa chambre",
+          "Un appareil photo comme celui de son papa",
+          "Une carte pour choisir leur prochain pays"
         ],
-        "correct": 2,
-        "explanation": "Mutombo Dikembe est une légende congolaise du basket NBA (2,18 m pour 118 kg) et l'unique idole sportive de Louis."
+        "correct": 3,
+        "answer": 3,
+        "points": 1,
+        "explanation": "Dans une énorme boîte, il trouve une carte du monde avec une vingtaine de pays. Il peut choisir le prochain pays où la famille ira vivre."
       },
       {
         "id": "q3",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Quel cadeau surprenant le père de Louis lui offre-t-il pour ses 12 ans au Vietnam ?",
+        "text": "Pourquoi Louis choisit-il la RDC ?",
         "options": [
-          "Un maillot officiel dédicacé des Houston Rockets",
-          "Un appareil photo reflex professionnel",
-          "Une carte du monde avec une vingtaine de pays pour choisir où la famille ira vivre",
-          "Un billet d'avion pour assister à un match de NBA aux États-Unis"
+          "Parce que sa maman veut y enseigner le français",
+          "Parce que c'est le pays de son idole, Mutombo",
+          "Parce que son papa y a déjà beaucoup d'amis",
+          "Parce qu'il veut y voir des gorilles en liberté"
         ],
-        "correct": 2,
-        "explanation": "Son père, coopérant international, lui offre une carte du monde où figurent seulement une vingtaine de pays présélectionnés pour sa prochaine mission, lui laissant le choix de leur future destination."
+        "correct": 1,
+        "answer": 1,
+        "points": 1,
+        "explanation": "Louis est un grand fan de Mutombo, le basketteur né à Kinshasa. Il rêve depuis longtemps de visiter sa ville."
       },
       {
         "id": "q4",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Que signifie l'énigme du père à l'arrivée : « Nous ne souperons pas chez Giulietta mais presque » ?",
+        "text": "Que veut dire l'énigme : « Nous ne souperons pas chez Giulietta mais presque » ?",
         "options": [
-          "Ils vont manger chez une cuisinière italienne installée à l'aéroport",
-          "Ils vont dîner dans la commune de Masina, en référence à l'actrice Giulietta Masina et au quartier de Mutombo",
-          "Ils vont commander une pizza dans le restaurant de l'hôtel Memling",
-          "Ils vont rendre visite à une ancienne collègue de travail en Italie"
+          "Qu'ils vont manger une pizza à l'hôtel",
+          "Qu'ils vont souper chez une collègue italienne",
+          "Qu'ils vont souper à Masina, comme Giulietta Masina",
+          "Qu'ils vont souper dans l'avion avant d'atterrir"
         ],
-        "correct": 1,
-        "explanation": "L'énigme fait référence à l'actrice italienne Giulietta Masina : ils vont souper dans la commune kinoise de Masina, où est né Mutombo Dikembe."
+        "correct": 2,
+        "answer": 2,
+        "points": 1,
+        "explanation": "L'actrice italienne s'appelle Giulietta Masina. Ils vont souper chez Toussaint, à Masina, le quartier de Mutombo."
       },
       {
         "id": "q5",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Quel repas typique est servi à Louis chez Toussaint lors de sa première soirée ?",
+        "text": "Qu'est-ce que Louis mange chez Toussaint ?",
         "options": [
-          "Un couscous royal et du thé à la menthe",
-          "Des bananes plantains frites avec du poisson braisé",
-          "Des frites accompagnées de crudités et de sauterelles grillées",
-          "Un plat de riz au manioc avec du poulet moambe"
+          "Du poisson grillé avec du riz blanc",
+          "Du poulet avec des bananes plantains",
+          "Une soupe de légumes avec du pain",
+          "Des frites, des crudités et des sauterelles"
         ],
-        "correct": 2,
-        "explanation": "Pour faire plaisir à leurs invités belges, l'épouse de Toussaint sert des frites, des crudités et un grand plat de sauterelles grillées bien croustillantes."
+        "correct": 3,
+        "answer": 3,
+        "points": 1,
+        "explanation": "L'épouse de Toussaint a préparé des frites pour faire plaisir aux Belges, avec des crudités et des sauterelles grillées."
       },
       {
         "id": "q6",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Pourquoi le père donne-t-il 15 dollars à Louis au marché des artistes ?",
+        "text": "Que fait Félicien pendant la fête des petits danseurs ?",
         "options": [
-          "Pour payer le taxi de retour vers l'hôtel Memling",
-          "Pour acheter ce qui lui plaît tout en s'exerçant à la négociation et au marchandage",
-          "Pour offrir un pourboire aux musiciens traditionnels",
-          "Pour acheter un cadeau d'anniversaire à sa maman"
+          "Il danse avec une bouteille sur la tête",
+          "Il joue du tambour devant la tribune",
+          "Il chante une chanson pour accueillir Louis",
+          "Il marche sur les mains autour du terrain"
         ],
-        "correct": 1,
-        "explanation": "Le père lui confie 15 dollars en lui rappelant la règle d'or du marché : négocier et marchander les prix, qui est un véritable jeu entre acheteur et vendeur."
+        "correct": 0,
+        "answer": 0,
+        "points": 1,
+        "explanation": "Félicien se tord dans tous les sens sans faire tomber la bouteille. Il s'entraîne depuis l'âge de six ans."
       },
       {
         "id": "q7",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Quelle explication le père donne-t-il sur les monticules de déchets aperçus dans les rues ?",
+        "text": "Quel lieu Félicien fait-il découvrir à Louis à la fin de la journée ?",
         "options": [
-          "Il y a une grève des éboueurs depuis plusieurs semaines",
-          "Kinshasa ne possède que 4 camions poubelles pour 10 millions d'habitants, mais la population pratique une formidable culture de la récupération",
-          "Les habitants préfèrent brûler leurs déchets la nuit au bord du fleuve",
-          "C'est une tradition locale avant la saison des pluies"
+          "Le stade des Martyrs et ses 100 000 places",
+          "Le marché des artistes, près de la gare",
+          "L'hôpital construit par Mutombo",
+          "La maison où Mutombo a grandi"
         ],
-        "correct": 1,
-        "explanation": "Kinshasa manque de camions poubelles, mais les habitants font preuve d'une incroyable ingéniosité pour récupérer, réparer et réutiliser chaque objet."
+        "correct": 2,
+        "answer": 2,
+        "points": 1,
+        "explanation": "Mutombo a payé 15 millions de dollars pour construire cet hôpital à Masina. Il lui a donné le nom de sa maman, Biamba Marie."
       },
       {
         "id": "q8",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Qui est Félicien et pourquoi appelle-t-il Louis « cousin » ?",
+        "text": "Quelle surprise Louis découvre-t-il sur le parking ?",
         "options": [
-          "Le fils de l'hôtelier, qui le traite de cousin parce qu'ils ont le même âge",
-          "Le fils de Jean-Baptiste, âgé de 11 ans ; il l'appelle cousin car les adultes belges sont appelés « Noko » (oncle)",
-          "Un danseur de rue qui veut lui vendre des souvenirs",
-          "Le neveu de Mutombo Dikembe en visite à Kinshasa"
+          "Mutombo l'attend à côté de la voiture",
+          "Félicien va aussi déménager à Bukavu",
+          "Sa maman et sa sœur sont arrivées plus tôt",
+          "Son papa a décidé de rester à Kinshasa"
         ],
         "correct": 1,
-        "explanation": "Félicien (11 ans) explique que les adultes belges sont surnommés « Noko » (oncle) et que, n'ayant pas envie d'avoir un oncle de son âge, il préfère l'appeler « cousin »."
+        "answer": 1,
+        "points": 1,
+        "explanation": "Jean-Baptiste, un ancien camarade d'études du papa, annonce qu'il part vivre à Bukavu avec son fils Félicien."
       },
       {
         "id": "q9",
-        "section": "Compréhension (QCM)",
-        "type": "mcq",
-        "text": "Quel monument impressionnant Félicien montre-t-il sur la route de Masina ?",
-        "options": [
-          "La tour de la RTNC",
-          "Le stade des Martyrs, pouvant accueillir jusqu'à 100 000 spectateurs",
-          "Le pont suspendu sur le fleuve Congo",
-          "Le palais présidentiel du Mont Ngaliema"
-        ],
-        "correct": 1,
-        "explanation": "Félicien lui fait découvrir le stade des Martyrs et ses 100 000 places, soit le double de la capacité du stade Roi Baudouin à Bruxelles."
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Louis adore le sport et joue au basket tous les jours.",
+        "correct": false,
+        "answer": false,
+        "points": 1,
+        "explanation": "FAUX : Louis déteste le sport, sauf la natation. Il regarde seulement les matchs de Mutombo."
       },
       {
         "id": "q10",
-        "section": "Compréhension (QCM)",
-        "type": "mcq",
-        "text": "Quelle prouesse Félicien accomplit-il lors du spectacle des petits danseurs de Masina ?",
-        "options": [
-          "Il jongle avec trois ballons de basket en même temps",
-          "Il danse avec une bouteille de bière Skol posée sur sa tête sans jamais la renverser",
-          "Il saute à travers un cerceau enflammé au rythme des tam-tams",
-          "Il joue du xylophone avec les yeux bandés"
-        ],
-        "correct": 1,
-        "explanation": "Félicien se contorsionne et danse au milieu du groupe avec une bouteille de Skol remplie posée en parfait équilibre sur son crâne."
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Le papa de Louis travaille dans des projets d'aide, dans différents pays du monde.",
+        "correct": true,
+        "answer": true,
+        "points": 1,
+        "explanation": "VRAI : il est coopérant. Il part plusieurs mois dans un pays pour y mener un projet, et sa famille le suit."
       },
       {
         "id": "q11",
-        "section": "Compréhension (QCM)",
-        "type": "mcq",
-        "text": "Quelle surprise Louis découvre-t-il lorsqu'on le pousse au centre de la scène ?",
-        "options": [
-          "Il est acclamé par le président de la république",
-          "Son père et Jean-Baptiste sont assis dans la tribune, son père filmant la scène avec un grand sourire complice",
-          "Sa mère et sa sœur viennent d'atterrir et le rejoignent sur scène",
-          "Il gagne un trophée de danse traditionnelle"
-        ],
-        "correct": 1,
-        "explanation": "Son père était dans le coup : installé dans la tribune avec Jean-Baptiste et Toussaint, il filme son fils en train d'essayer de danser avec les petits danseurs."
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Louis et son papa arrivent à Kinshasa quelques jours avant la maman et la petite sœur.",
+        "correct": true,
+        "answer": true,
+        "points": 1,
+        "explanation": "VRAI : c'est leur habitude : ils préparent le terrain « entre hommes » avant que les filles les rejoignent."
       },
       {
         "id": "q12",
-        "section": "Compréhension (QCM)",
-        "type": "mcq",
-        "text": "Quel établissement remarquable Félicien fait-il découvrir à Louis à Masina ?",
-        "options": [
-          "L'académie de basket des Houston Rockets",
-          "L'hôpital Biamba Marie Mutombo, fondé par Mutombo pour 15 millions de dollars en hommage à sa mère",
-          "Le conservatoire de musique de Kinshasa",
-          "La grande bibliothèque universitaire du Congo"
-        ],
-        "correct": 1,
-        "explanation": "Félicien emmène Louis devant l'hôpital Biamba Marie Mutombo, une infrastructure moderne construite par la star pour soigner la population de son quartier natal."
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Le directeur de l'hôpital dit que Mutombo ne tient jamais ses promesses.",
+        "correct": false,
+        "answer": false,
+        "points": 1,
+        "explanation": "FAUX : il dit au contraire que, quand Mutombo fait une promesse, il la tient toujours."
       },
       {
         "id": "q13",
-        "section": "Compréhension (QCM)",
+        "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "Qui reçoit les deux garçons au premier étage de l'hôpital ?",
+        "text": "« N'oublie pas de négocier. » Que veut dire « négocier » ici ?",
         "options": [
-          "Le ministre de la Santé",
-          "Le Docteur Sylvain Muteba, directeur de l'hôpital",
-          "La mère de Mutombo Dikembe",
-          "L'ambassadeur de Belgique en RDC"
+          "Payer tout de suite le prix demandé",
+          "Discuter pour obtenir un meilleur prix",
+          "Refuser d'acheter quoi que ce soit",
+          "Échanger un objet contre un autre"
         ],
         "correct": 1,
-        "explanation": "Le Docteur Sylvain Muteba, directeur de l'établissement, accueille chaleureusement Louis dans son bureau."
+        "answer": 1,
+        "points": 1,
+        "explanation": "Au marché, on discute avec le vendeur pour faire baisser le prix. On dit aussi « marchander »."
       },
       {
         "id": "q14",
-        "section": "Compréhension (QCM)",
+        "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "Quelle promesse extraordinaire le directeur de l'hôpital fait-il à Louis ?",
+        "text": "« Je règle mes yeux bioniques pour zoomer sur la carte. » Ici, Louis veut dire qu'il…",
         "options": [
-          "Qu'il lui offrira une bourse d'études médicales",
-          "Que Mutombo appellera Louis sur son PC via webcam lorsqu'il sera à Bukavu",
-          "Qu'il sera invité d'honneur à la prochaine finale de NBA",
-          "Qu'une chambre de l'hôpital portera son nom"
+          "met ses lunettes de soleil",
+          "ferme les yeux pour réfléchir",
+          "prend une loupe dans son sac",
+          "regarde la carte très attentivement"
         ],
-        "correct": 1,
-        "explanation": "Le Dr Muteba explique qu'il a parlé de Louis à Mutombo lors de leur appel hebdomadaire et que la star a promis de le contacter par webcam sur son ordinateur."
+        "correct": 3,
+        "answer": 3,
+        "points": 1,
+        "explanation": "Louis plaisante : il n'a pas de vrais yeux de robot. Il regarde simplement la carte de très près."
       },
       {
         "id": "q15",
-        "section": "Compréhension (QCM)",
+        "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "Quel cadeau précieux Félicien offre-t-il à Louis dans la salle d'attente ?",
+        "text": "« On me prend pour un garçon un peu monomaniaque. » Que veut dire « monomaniaque » ?",
         "options": [
-          "Un collier de coquillages des petits danseurs",
-          "Un maillot dédicacé de l'équipe nationale",
-          "Une photo de Félicien avec Mutombo Dikembe dédicacée personnellement par le joueur",
-          "Une statuette en bois sculptée représentant un joueur de basket"
+          "Qui ne pense qu'à un seul sujet",
+          "Qui a peur de tout et de tous",
+          "Qui parle plusieurs langues",
+          "Qui change souvent d'avis"
         ],
-        "correct": 2,
-        "explanation": "Félicien offre à son nouvel ami une véritable photo souvenir où il pose aux côtés de Mutombo, portant la signature authentique de la star."
+        "correct": 0,
+        "answer": 0,
+        "points": 1,
+        "explanation": "Un monomaniaque ne pense qu'à une seule chose. Pour Louis, c'est le Congo et Mutombo !"
       },
       {
         "id": "q16",
-        "section": "Compréhension (QCM)",
-        "type": "mcq",
-        "text": "Quelle dernière grande surprise Jean-Baptiste et le père réservent-ils à Louis sur le parking ?",
+        "section": "Compréhension globale",
+        "type": "synthesis",
+        "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "La famille ne partira plus à Bukavu et restera vivre à Kinshasa",
-          "Jean-Baptiste et Félicien déménagent eux aussi à Bukavu dans quelques jours pour le travail",
-          "Mutombo arrive en hélicoptère sur le parking de l'hôpital",
-          "Louis est sélectionné dans l'équipe de basket de Bukavu"
+          "Résumé A : Louis, un garçon belge de douze ans, part aux États-Unis pour voir un match de Mutombo. Il se perd dans la ville de Houston, mais un joueur de basket le retrouve et l'invite à s'entraîner avec son équipe.",
+          "Résumé B : Louis, un garçon belge de douze ans, déménage en RDC avec sa famille. À l'école de Kinshasa, il se dispute avec Félicien, puis ils deviennent amis en jouant au basket ensemble.",
+          "Résumé C : Louis, un garçon belge de douze ans, choisit de vivre en RDC, le pays de son idole Mutombo. À Kinshasa, il découvre la ville avec son papa et son ami Félicien, qui lui fait visiter l'hôpital de Mutombo."
         ],
-        "correct": 1,
-        "explanation": "Jean-Baptiste, ancien camarade d'études du père de Louis, annonce que lui et son fils Félicien vont également s'installer à Bukavu, prolongeant ainsi leur belle amitié."
+        "correct": 2,
+        "answer": 2,
+        "points": 1,
+        "explanation": "Seul le résumé C est correct : Louis choisit la RDC, découvre Kinshasa et Masina, et visite l'hôpital construit par Mutombo."
       }
     ]
   },
@@ -11240,225 +11510,232 @@ window.LIVRES = [
         "id": "q1",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Qui est James Watson, le narrateur de cette histoire ?",
+        "text": "Qui est James, le narrateur de l'histoire ?",
         "options": [
-          "Le célèbre détective écossais de Scotland Yard",
-          "Le petit-neveu de 12 ans du célèbre docteur Watson, en vacances en Irlande en avril 1934",
-          "Le fils adoptif de Sherlock Holmes venu faire des études à Dublin",
-          "Un jeune groom employé à la pension Nightingale House"
+          "Le fils de Gran'Ma, qui tient la pension",
+          "Un jeune policier de la ville de Wexford",
+          "Le neveu de la riche Mrs Periwinkle",
+          "Le petit-neveu du célèbre docteur Watson"
         ],
-        "correct": 1,
-        "explanation": "James Watson a presque 13 ans, vit à Dublin et est le petit-neveu du célèbre docteur Watson, compagnon de Sherlock Holmes."
+        "correct": 3,
+        "answer": 3,
+        "points": 1,
+        "explanation": "James a presque 13 ans. Il est le petit-neveu du docteur Watson, le compagnon du détective Sherlock Holmes."
       },
       {
         "id": "q2",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Comment le corps du docteur Black est-il découvert le premier matin ?",
+        "text": "Où James découvre-t-il le docteur Black, le mardi matin ?",
         "options": [
-          "Empoisonné avec une tasse de thé dans la cuisine de Gran'Ma",
-          "Poignardé dans le dos avec le couteau à désosser les gigots de Gran'Ma dans le petit salon",
-          "Étranglé avec une corde dans la bibliothèque",
-          "Assommé avec une bouteille de whisky dans la salle de billard"
+          "Dans la salle à manger, endormi sur sa chaise",
+          "Dans le petit salon, un couteau dans le dos",
+          "Dans la bibliothèque, caché derrière un fauteuil",
+          "Dans le jardin, allongé sous la pluie"
         ],
         "correct": 1,
-        "explanation": "James trouve le docteur Black affalé sur son bureau dans le petit salon, le grand couteau de cuisine à manche de corne de Gran'Ma planté entre les omoplates."
+        "answer": 1,
+        "points": 1,
+        "explanation": "Le docteur Black est mort, dans le petit salon. Le couteau est celui que Gran'Ma utilise pour les gigots."
       },
       {
         "id": "q3",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Qui est John Fitzgerald Pendwick qui arrive le soir même pour mener l'enquête ?",
+        "text": "Le mercredi, pourquoi ne peut-on plus appeler la police ?",
         "options": [
-          "L'inspecteur en chef de la police criminelle de Wexford",
-          "Le neveu de la riche Mrs Periwinkle, détective privé réputé à Dublin",
-          "Le médecin légiste envoyé par le tribunal de Dublin",
-          "Le frère caché du docteur Black venu réclamer son héritage"
+          "Le téléphone est coupé et la tempête bloque tout",
+          "Gran'Ma a caché le téléphone dans sa cuisine",
+          "Le policier de Wexford est parti en vacances",
+          "Le colonel refuse qu'on dérange la police"
         ],
-        "correct": 1,
-        "explanation": "John Fitzgerald Pendwick est le neveu de Mrs Periwinkle ; alerté par télégramme, il se présente comme le meilleur détective privé de Dublin."
+        "correct": 0,
+        "answer": 0,
+        "points": 1,
+        "explanation": "Le colonel Mustard explique que le téléphone est coupé et qu'avec la tempête, sortir serait trop dangereux."
       },
       {
         "id": "q4",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Quel indice mystérieux Pendwick prélève-t-il sous le bras du cadavre du docteur Black ?",
+        "text": "Que fait le docteur Olive avec le chandelier, le premier soir ?",
         "options": [
-          "Une carte à jouer (l'as de pique)",
-          "Un cheveu roux appartenant à Miss Rose, qu'il glisse dans une petite boîte métallique",
-          "Un bouton de manchette en or gravé d'un 'O'",
-          "Un morceau de tissu imprégné de chloroforme"
+          "Il menace le détective avec le chandelier",
+          "Il le range sur une étagère de la bibliothèque",
+          "Il allume sa pipe à la flamme d'une bougie",
+          "Il l'offre à Gran'Ma pour la remercier"
         ],
-        "correct": 1,
-        "explanation": "Pendwick découvre un cheveu sous le bras du mort et le place discrètement dans sa boîte en fer sans en révéler la nature aux autres."
+        "correct": 2,
+        "answer": 2,
+        "points": 1,
+        "explanation": "Le docteur allume sa pipe devant tout le monde. Ses empreintes restent sur le chandelier : ce détail sera très important."
       },
       {
         "id": "q5",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Quelle deuxième victime est découverte assassinée le mercredi matin ?",
+        "text": "Quelle mission John Pendwick donne-t-il à James ?",
         "options": [
-          "Gran'Ma, étouffée dans son garde-manger",
-          "Mrs White, empoisonnée dans la véranda",
-          "Miss Rose, retrouvée étranglée dans son lit avec le cordon des rideaux",
-          "Le colonel Mustard, abattu dans le couloir"
+          "Garder la porte de la chambre de sa tante",
+          "Observer ce que fait chaque pensionnaire",
+          "Fouiller les valises de tous les invités",
+          "Aider Gran'Ma à préparer les repas"
         ],
-        "correct": 2,
-        "explanation": "Ne la voyant pas descendre à 9 heures, James monte à la chambre de Miss Rose et la découvre morte étranglée avec le cordon de ses rideaux."
+        "correct": 1,
+        "answer": 1,
+        "points": 1,
+        "explanation": "John demande à James de fouiner discrètement dans la maison et de lui faire un rapport sur les allées et venues de chacun."
       },
       {
         "id": "q6",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Pourquoi les résidents ne peuvent-ils pas faire appel à la police extérieure ?",
+        "text": "Qui John Pendwick accuse-t-il des trois meurtres ?",
         "options": [
-          "La police refuse de se déplacer sans mandat du juge",
-          "La ligne téléphonique est coupée et une violente tempête rend la route impraticable",
-          "Gran'Ma a verrouillé toutes les issues de l'auberge",
-          "Le pont menant à Wexford s'est effondré sous le poids d'un camion"
+          "Gran'Ma, parce que le couteau est à elle",
+          "Le colonel Mustard, qui ne tient pas en place",
+          "Mrs White, qu'on a vue sortir de la salle de billard",
+          "Le docteur Olive, à cause de ses empreintes"
         ],
-        "correct": 1,
-        "explanation": "Le téléphone ne fonctionne plus et la tempête qui fait rage coupe tout accès à la pension, enfermant coupable et innocents sous le même toit."
+        "correct": 3,
+        "answer": 3,
+        "points": 1,
+        "explanation": "John accuse le docteur Olive, car ses empreintes sont sur le chandelier qui a servi à tuer Mrs Periwinkle."
       },
       {
         "id": "q7",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Quelle mission John confie-t-il à James pendant qu'il mène ses interrogatoires ?",
+        "text": "Quel bluff James invente-t-il pour démasquer le coupable ?",
         "options": [
-          "Garder la porte de la bibliothèque armé d'un chandelier",
-          "Espionner discrètement les allées et venues des pensionnaires dans la maison",
-          "Fouiller les bagages de tous les invités à la recherche d'une arme",
-          "Aider Gran'Ma à préparer les repas pour détendre l'ambiance"
+          "Il dit avoir mis du charbon devant des portes",
+          "Il dit avoir vu l'assassin par le trou de la serrure",
+          "Il dit avoir trouvé une lettre d'aveux dans un livre",
+          "Il dit que la police va arriver dans quelques minutes"
         ],
-        "correct": 1,
-        "explanation": "Pendwick demande à James de déambuler dans les couloirs et de noter les faits et gestes de chacun pour lui faire un rapport détaillé."
+        "correct": 0,
+        "answer": 0,
+        "points": 1,
+        "explanation": "C'est inventé ! James prétend que l'assassin, pieds nus, aurait des traces de charbon sous les pieds. Il demande à chacun d'enlever ses chaussures."
       },
       {
         "id": "q8",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Quelle comparaison John Pendwick utilise-t-il pour expliquer sa méthode d'enquête à James ?",
+        "text": "Pourquoi John Pendwick a-t-il tué sa tante ?",
         "options": [
-          "Une partie d'échecs où l'on sacrifie des pions",
-          "Une partie de poker où la psychologie et le bluff permettent de gagner même avec un mauvais jeu",
-          "Une chasse à courre avec des chiens de meute",
-          "Un puzzle dont chaque témoin détient une pièce"
+          "Elle voulait le chasser de la pension",
+          "Elle avait découvert qu'il n'était pas détective",
+          "Il avait des dettes de jeu et voulait son argent",
+          "Il voulait se venger du docteur Black"
         ],
-        "correct": 1,
-        "explanation": "Pendwick répète à James qu'une affaire criminelle se mène comme une partie de poker : tout est affaire de psychologie et de bluff."
+        "correct": 2,
+        "answer": 2,
+        "points": 1,
+        "explanation": "John avait d'énormes dettes de jeu. Il voulait hériter de la fortune de sa tante et faire accuser le docteur Olive à sa place."
       },
       {
         "id": "q9",
-        "section": "Compréhension (QCM)",
-        "type": "mcq",
-        "text": "Comment Mrs Periwinkle, la tante de John, est-elle assassinée à son tour ?",
-        "options": [
-          "Elle a été empoisonnée avec un cookie au cyanure",
-          "Elle a eu le crâne fracassé dans sa chambre avec un lourd chandelier en bronze",
-          "Elle est tombée du haut des escaliers après avoir été poussée",
-          "Elle a été étouffée avec son oreiller en plumes"
-        ],
-        "correct": 1,
-        "explanation": "Le lendemain matin, John présente l'arme du crime : un chandelier de bronze du petit salon avec lequel sa tante a eu le crâne brisé."
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Le docteur Olive est un vieil homme très calme et toujours souriant.",
+        "correct": false,
+        "answer": false,
+        "points": 1,
+        "explanation": "FAUX : il est très colérique et se dispute avec tout le monde. Pourtant, c'est le pensionnaire que James préfère."
       },
       {
         "id": "q10",
-        "section": "Compréhension (QCM)",
-        "type": "mcq",
-        "text": "Contre qui John porte-t-il des accusations formelles pour les trois meurtres ?",
-        "options": [
-          "Contre Gran'Ma",
-          "Contre le docteur Olive, arguant que ses empreintes sont sur le chandelier",
-          "Contre le professeur Purple",
-          "Contre le colonel Mustard"
-        ],
-        "correct": 1,
-        "explanation": "Pendwick accuse avec fracas le docteur Olive des trois meurtres en s'appuyant sur ses empreintes retrouvées sur le chandelier."
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Le mercredi matin, Miss Rose est retrouvée morte dans sa chambre.",
+        "correct": true,
+        "answer": true,
+        "points": 1,
+        "explanation": "VRAI : comme elle ne descend pas à neuf heures, James monte la chercher et la découvre étranglée."
       },
       {
         "id": "q11",
-        "section": "Compréhension (QCM)",
-        "type": "mcq",
-        "text": "Comment James explique-t-il la présence des empreintes d'Olive sur le chandelier ?",
-        "options": [
-          "Olive avait nettoyé les cuivres de la maison la veille",
-          "Olive s'était servi du chandelier pour allumer sa pipe devant tout le monde, et le meurtrier l'a volé exprès la nuit",
-          "Olive avait utilisé le chandelier pour se défendre contre un voleur",
-          "Pendwick a lui-même appliqué les doigts d'Olive sur le bronze pendant son sommeil"
-        ],
-        "correct": 1,
-        "explanation": "James se souvient qu'Olive avait saisi le chandelier pour allumer sa bouffarde sous les yeux de tous ; le véritable assassin a profité de ce détail pour le piéger."
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Pendant la nuit, James entend quelqu'un marcher du côté du petit salon.",
+        "correct": true,
+        "answer": true,
+        "points": 1,
+        "explanation": "VRAI : vers trois heures du matin, il entend des pas. C'était l'assassin qui venait prendre le chandelier."
       },
       {
         "id": "q12",
-        "section": "Compréhension (QCM)",
-        "type": "mcq",
-        "text": "Quel coup de bluff magistral James invente-t-il pour disculper le docteur Olive ?",
-        "options": [
-          "Il affirme avoir filmé les couloirs avec une caméra",
-          "Il prétend avoir versé de la poussière de charbon devant les portes et demande à chacun d'enlever ses chaussures",
-          "Il dit avoir enfermé le docteur dans sa chambre à clé toute la nuit",
-          "Il montre une fausse lettre d'aveux signée par un inconnu"
-        ],
-        "correct": 1,
-        "explanation": "James annonce avoir disposé de la suie devant les portes : les pieds nus d'Olive se révèlent parfaitement propres, prouvant qu'il n'a pas circulé la nuit."
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "C'est John Pendwick qui a tué le docteur Black.",
+        "correct": false,
+        "answer": false,
+        "points": 1,
+        "explanation": "FAUX : c'est Miss Rose, pour une histoire d'argent. John l'a découvert grâce à un cheveu roux trouvé sur le corps."
       },
       {
         "id": "q13",
-        "section": "Compréhension (QCM)",
+        "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "Comment le vrai coupable se démasque-t-il sous la pression du bluff de James ?",
+        "text": "« C'était à mon tour de jouer, et… de bluffer. » Que veut dire « bluffer » ?",
         "options": [
-          "Il s'évanouit au milieu du salon",
-          "John Pendwick refuse d'enlever ses chaussures, sort un gros revolver et menace tout le monde",
-          "Le colonel Mustard s'enfuit par la fenêtre",
-          "Mrs White avoue tout en pleurant"
+          "Tricher en cachant des cartes dans sa manche",
+          "Jouer lentement pour énerver les autres",
+          "Faire croire qu'on a un bon jeu",
+          "Perdre exprès pour faire plaisir aux autres"
         ],
-        "correct": 1,
-        "explanation": "Se voyant piégé, John Pendwick dégaine son arme, confirme être l'assassin de sa tante et ordonne à tous de reculer."
+        "correct": 2,
+        "answer": 2,
+        "points": 1,
+        "explanation": "Au poker, bluffer, c'est faire croire qu'on a de bonnes cartes alors que ce n'est pas vrai. James fait pareil : son histoire de charbon est inventée."
       },
       {
         "id": "q14",
-        "section": "Compréhension (QCM)",
+        "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "Quel était le véritable mobile de John Pendwick pour assassiner sa tante ?",
+        "text": "« C'est le vieil homme le plus colérique que j'aie rencontré. » Que veut dire « colérique » ?",
         "options": [
-          "Il voulait venger la mort de ses parents",
-          "Il était criblé de dettes de jeu de poker et voulait s'emparer immédiatement de son immense fortune",
-          "Elle refusait de lui financer son agence de détective",
-          "Elle menaçait de le déshériter au profit de l'église"
+          "Qui est souvent malade",
+          "Qui se fâche très facilement",
+          "Qui raconte beaucoup de blagues",
+          "Qui a très peur de tout"
         ],
         "correct": 1,
-        "explanation": "Endetté jusqu'au cou à cause de sa passion du poker, John avait besoin de l'héritage colossal de Mrs Periwinkle pour sauver sa peau."
+        "answer": 1,
+        "points": 1,
+        "explanation": "Une personne colérique se met facilement en colère, comme le docteur Olive qui tape avec sa canne."
       },
       {
         "id": "q15",
-        "section": "Compréhension (QCM)",
+        "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "Comment Pendwick est-il finalement maîtrisé dans le salon ?",
+        "text": "« Le détective pointa alors un doigt accusateur en direction du docteur Olive. » Un doigt « accusateur » est un doigt qui…",
         "options": [
-          "James lui lance un livre de Jules Verne au visage",
-          "Le docteur Olive lui assène un violent coup de canne sur le bras puis le frappe à terre avant qu'on ne le saucissonne",
-          "Le colonel Mustard lui tire dessus avec son propre pistolet",
-          "Gran'Ma l'assomme avec une poêle à frire"
+          "montre le chemin à suivre",
+          "demande la parole en classe",
+          "fait signe de se taire",
+          "désigne quelqu'un comme coupable"
         ],
-        "correct": 1,
-        "explanation": "Le docteur Olive profite d'un moment d'inattention pour frapper le bras armé de Pendwick avec sa canne. L'imposteur tombe et est rapidement ficelé."
+        "correct": 3,
+        "answer": 3,
+        "points": 1,
+        "explanation": "Accuser quelqu'un, c'est dire qu'il est coupable. Avec son doigt, John montre celui qu'il accuse."
       },
       {
         "id": "q16",
-        "section": "Compréhension (QCM)",
-        "type": "mcq",
-        "text": "Quelle dernière déduction James expose-t-il sur le premier meurtre (docteur Black) et la mort de Miss Rose ?",
+        "section": "Compréhension globale",
+        "type": "synthesis",
+        "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Black s'était suicidé et Rose n'était qu'un dommage collatéral",
-          "Miss Rose avait tué Black pour une querelle d'argent ; John l'a découvert (cheveu roux) et l'a éliminée pour pouvoir faire accuser Olive sans témoin",
-          "Le professeur Purple et Miss Rose étaient complices depuis le début",
-          "Black avait été empoisonné par un médicament frelaté vendu par Olive"
+          "Résumé A : James passe ses vacances dans une pension où un voleur prend les bijoux de Mrs Periwinkle. Avec l'aide du docteur Olive, il retrouve les bijoux cachés dans la cuisine de Gran'Ma.",
+          "Résumé B : James passe ses vacances dans une pension où plusieurs meurtres ont lieu. Le détective John Pendwick accuse le docteur Olive, mais James bluffe et prouve que c'est John qui a tué sa tante.",
+          "Résumé C : James passe ses vacances dans une pension où le docteur Black est assassiné. Le détective John Pendwick trouve vite le coupable, le colonel Mustard, et emmène James travailler avec lui à Dublin."
         ],
         "correct": 1,
-        "explanation": "Miss Rose avait tué Black. Ayant trouvé le cheveu roux, John l'a assassinée pour éliminer l'unique témoin et bâtir son coup monté contre Olive afin d'hériter de sa tante en toute impunité."
+        "answer": 1,
+        "points": 1,
+        "explanation": "Seul le résumé B est correct : il y a plusieurs meurtres, John accuse Olive à tort, et le bluff de James démasque John."
       }
     ]
   },
@@ -11472,225 +11749,232 @@ window.LIVRES = [
         "id": "q1",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Quelle est la particularité de la construction de ce récit écrit par Victoria ?",
+        "text": "Qui écrit l'histoire que l'on lit ?",
         "options": [
-          "C'est un échange de SMS entre deux détectives",
-          "Il est composé d'articles de blog présentés dans un ordre antichronologique (du vendredi 13 mars au lundi 9 mars)",
-          "C'est un recueil d'articles de journaux télévisés",
-          "C'est un journal de bord retrouvé dans une bouteille à la mer"
+          "Barthélémy, dans son journal intime",
+          "Victoria, sur son blog",
+          "Guillaume, dans un cahier de sciences",
+          "Un journaliste, dans un article"
         ],
         "correct": 1,
-        "explanation": "Le récit s'ouvre sur le message de fin du vendredi 13 mars à 12h15 et remonte jour après jour jusqu'au premier post explicatif du lundi 9 mars."
+        "answer": 1,
+        "points": 1,
+        "explanation": "Chaque chapitre est un message posté par Victoria sur son blog, avec la date et l'heure."
       },
       {
         "id": "q2",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Dans le chapitre 1 (vendredi 13 mars, midi), sous quelle apparence les extraterrestres envahissent-ils l'école ?",
+        "text": "Dans quel ordre les messages du blog sont-ils présentés ?",
         "options": [
-          "En policiers municipaux contrôlant les sacs à l'entrée",
-          "En équipe d'ouvriers d'entretien pour les ascenseurs, avec boîte à outils et bleus de travail",
-          "En nouveaux professeurs remplaçants de sciences",
-          "En cuisiniers de la cantine scolaire"
+          "Du plus ancien au plus récent",
+          "Dans le désordre, sans aucune date",
+          "Du plus récent au plus ancien",
+          "Par ordre alphabétique des prénoms"
         ],
-        "correct": 1,
-        "explanation": "Victoria aperçoit trois individus déguisés en techniciens d'ascenseurs (un barbu, un grand à lunettes et un gros avec boîte à outils) dissimulant mal leur queue couverte d'écailles."
+        "correct": 2,
+        "answer": 2,
+        "points": 1,
+        "explanation": "Le livre commence le vendredi 13 mars à 12 h 15 et remonte jusqu'au lundi 9 mars."
       },
       {
         "id": "q3",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Comment Barthélémy est-il attaqué à la piscine de l'école ?",
+        "text": "Comment les « lézards » sont-ils déguisés à l'école ?",
         "options": [
-          "Il est poussé au fond du grand bassin par un lézard",
-          "Un ouvrier sort un pistolet de sa boîte à outils et le désintègre d'un rayon vert fluo au bord de l'eau",
-          "Il est téléporté dans les vestiaires à travers un miroir",
-          "Il est emmené de force dans un camion d'entretien"
+          "En ouvriers qui réparent les ascenseurs",
+          "En professeurs de gymnastique",
+          "En cuisiniers de la cantine scolaire",
+          "En policiers qui contrôlent les élèves"
         ],
-        "correct": 1,
-        "explanation": "Barthélémy, dispensé de natation et lisant au bord du bassin, est visé par le rayon vert du pistolet et disparaît instantanément."
+        "correct": 0,
+        "answer": 0,
+        "points": 1,
+        "explanation": "Victoria voit trois ouvriers, mais elle remarque une queue verte couverte d'écailles qui dépasse du pantalon de l'un d'eux."
       },
       {
         "id": "q4",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Comment Victoria et Barthélémy s'étaient-ils déguisés le vendredi matin pour échapper aux regards ?",
+        "text": "Qu'arrive-t-il au motard qui poursuit Victoria et Barthélémy ?",
         "options": [
-          "Victoria en infirmière et Barthélémy en médecin",
-          "Victoria avec une perruque brune et des lunettes de soleil, Barthélémy sous un grand poncho rouge de cycliste",
-          "En clowns du cirque itinérant",
-          "Avec des masques de ski et des cagoules noires"
+          "Il perd leur trace dans la foule du centre-ville",
+          "Il tombe en panne d'essence devant l'école",
+          "Il est arrêté par un policier au feu rouge",
+          "Il perd le contrôle et tombe dans le canal"
         ],
-        "correct": 1,
-        "explanation": "Pour leur trajet à vélo vers l'école, Victoria porte une perruque brune avec lunettes noires et Barthélémy s'emmitoufle dans un poncho rouge."
+        "correct": 3,
+        "answer": 3,
+        "points": 1,
+        "explanation": "Les enfants sautent du vélo. La moto heurte le muret et une poubelle, et le motard vole jusque dans l'eau."
       },
       {
         "id": "q5",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Comment les deux amis neutralisent-ils le motard extraterrestre sur la piste cyclable le long du canal ?",
+        "text": "Que faisaient les enfants juste avant la disparition de Théo et Léa ?",
         "options": [
-          "Barthélémy crève les pneus de la moto avec un couteau",
-          "Victoria jette son classeur de math, puis ils sautent dans l'herbe ; la moto heurte une poubelle et le pilote plonge dans l'eau",
-          "La police intercepte la moto au passage à niveau",
-          "Ils se réfugient dans une péniche amarrée"
+          "Ils regardaient les étoiles avec un télescope",
+          "Ils pêchaient dans la rivière derrière la maison",
+          "Ils lavaient la voiture du papa de Léa",
+          "Ils faisaient leurs devoirs de mathématiques"
         ],
-        "correct": 1,
-        "explanation": "En sautant du vélo, ils provoquent l'accident du motard qui bute contre une poubelle sur le muret et s'envole pour s'écraser dans le canal."
+        "correct": 2,
+        "answer": 2,
+        "points": 1,
+        "explanation": "Ils lavaient la voiture pour gagner de l'argent de poche et se sont mis à s'arroser en riant."
       },
       {
         "id": "q6",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Quel détail superstitieux obsède Victoria dans son message du vendredi matin (chapitre 3) ?",
+        "text": "Que s'est-il passé pour Guillaume et Cindy, le jour de l'anniversaire ?",
         "options": [
-          "Un chat noir a traversé la cuisine",
-          "C'est un vendredi 13, jour redouté pour la malchance et les disparitions",
-          "Un miroir s'est brisé dans sa salle de bains",
-          "Elle a renversé la salière sur la table du petit-déjeuner"
+          "Ils se sont perdus dans les bois pendant la nuit",
+          "Ils sont tombés tous les deux dans la rivière",
+          "Ils ont été emmenés dans l'engin spatial vert",
+          "Ils se sont cachés dans un garage"
         ],
         "correct": 1,
-        "explanation": "Victoria panique à l'idée de vivre ses dernières heures un vendredi 13, elle qui scrute chaque matin son horoscope."
+        "answer": 1,
+        "points": 1,
+        "explanation": "Guillaume trébuche sur une racine. Cindy lui tend la main, mais elle est entraînée avec lui dans la rivière."
       },
       {
         "id": "q7",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Que faisaient les adolescents avant l'attaque tragique du car-wash le jeudi soir ?",
+        "text": "Comment les enfants remarquent-ils l'engin spatial, le mardi soir ?",
         "options": [
-          "Ils faisaient leurs devoirs de français dans la véranda",
-          "Ils lavaient la voiture du père de Léa en s'arrosant joyeusement pour gagner un peu d'argent",
-          "Ils préparaient des banderoles pour un match de football",
-          "Ils réparaient les vélos de la bande dans la cour"
+          "En entendant un bruit terrible dans la forêt",
+          "En lisant un article dans le journal du matin",
+          "En suivant des traces de pas dans la boue",
+          "En regardant le ciel avec un télescope"
         ],
-        "correct": 1,
-        "explanation": "Pour se changer les idées et payer une sortie au parc d'attractions, la bande lave la voiture familiale de Léa en s'aspergeant d'eau savonneuse."
+        "correct": 3,
+        "answer": 3,
+        "points": 1,
+        "explanation": "Pendant qu'ils observent Jupiter et les étoiles, ils voient une lueur verte descendre derrière le petit bois."
       },
       {
         "id": "q8",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Comment Théo et Léa sont-ils enlevés sous les yeux horrifiés de Victoria et Barthélémy ?",
+        "text": "Que révèle le dernier message du blog (lundi 9 mars) ?",
         "options": [
-          "Une soucoupe volante les aspire avec un rayon tracteur",
-          "Une voiture noire s'arrête et des lézards en combinaison fluo les désintègrent successivement avec des rayons lumineux",
-          "Des créatures invisibles les entraînent dans les égouts",
-          "Ils montent volontairement dans une voiture aux vitres teintées"
+          "Victoria va tout inventer pour tester les lecteurs",
+          "Victoria a fait un cauchemar après un film",
+          "Les lézards étaient des amis déguisés",
+          "La police a retrouvé les enfants disparus"
         ],
-        "correct": 1,
-        "explanation": "Théo est touché sur le capot, puis Léa est foudroyée par le rayon aveuglant d'un lézard débarqué d'une voiture noire, disparaissant dans un bruit d'aspiration."
+        "correct": 0,
+        "answer": 0,
+        "points": 1,
+        "explanation": "Victoria a fait un pari avec Arthur et Jean : elle veut prouver que les gens croient n'importe quoi sur Internet."
       },
       {
         "id": "q9",
-        "section": "Compréhension (QCM)",
-        "type": "mcq",
-        "text": "Où Victoria et Barthélémy se réfugient-ils pendant plus d'une heure après l'attaque de la voiture ?",
-        "options": [
-          "Dans le grenier de la maison voisine",
-          "Dans le garage de Léa, terrés derrière le congélateur, avant d'en sortir avec un râteau et une batte de baseball",
-          "Dans la cabane au fond du jardin public",
-          "Dans le coffre d'une camionnette en stationnement"
-        ],
-        "correct": 1,
-        "explanation": "Terrorisés, ils s'enferment dans le garage et restent cachés derrière le congélateur jusqu'à la tombée de la nuit."
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Victoria lit son horoscope tous les matins, mais pas le vendredi 13.",
+        "correct": true,
+        "answer": true,
+        "points": 1,
+        "explanation": "VRAI : ce matin-là, pour la première fois depuis des années, elle n'ose pas le lire, car elle a trop peur."
       },
       {
         "id": "q10",
-        "section": "Compréhension (QCM)",
-        "type": "mcq",
-        "text": "Quelle activité la bande pratiquait-elle pour l'anniversaire de Guillaume le mercredi après-midi ?",
-        "options": [
-          "Un tournoi de jeux vidéo en réseau chez Cindy",
-          "Une partie de pêche dans la rivière, suivie d'une baignade glacée et d'un jeu de rôle dans les bois",
-          "Une course d'orientation en forêt de Saint-Hubert",
-          "Une séance de cinéma pour voir un film d'extraterrestres"
-        ],
-        "correct": 1,
-        "explanation": "Après avoir dégusté des gâteaux, ils plongent tout habillés dans l'eau glacée puis improvisent une bataille spatiale dans les bois pour se réchauffer."
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Les enfants racontent à la police qu'ils ont vu un lézard dans les bois.",
+        "correct": false,
+        "answer": false,
+        "points": 1,
+        "explanation": "FAUX : ils se mettent d'accord pour ne pas parler du lézard, pour ne pas passer pour des fous."
       },
       {
         "id": "q11",
-        "section": "Compréhension (QCM)",
-        "type": "mcq",
-        "text": "Quelles étaient les deux équipes formées par les enfants dans la forêt ?",
-        "options": [
-          "Les Jedis contre les Siths",
-          "Les Guerrières des étoiles (les filles) contre les Mercenaires de l'Espace (les garçons)",
-          "Les Lézards Verts contre les Terrien(ne)s",
-          "Les Aigles de l'Espace contre les Requins Galactiques"
-        ],
-        "correct": 1,
-        "explanation": "Les filles forment l'équipe des Guerrières des étoiles avec des sabres laser imaginaires, opposées aux garçons, les Mercenaires de l'Espace."
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Guillaume a acheté son télescope avec l'argent reçu de son parrain.",
+        "correct": true,
+        "answer": true,
+        "points": 1,
+        "explanation": "VRAI : pour son anniversaire, il s'est offert un télescope sur pied avec l'argent de son parrain."
       },
       {
         "id": "q12",
-        "section": "Compréhension (QCM)",
-        "type": "mcq",
-        "text": "Comment Guillaume et Cindy disparaissent-ils dans la rivière ?",
-        "options": [
-          "Leurs canots pneumatiques se sont retournés dans les rapides",
-          "Guillaume a trébuché sur une racine au bord de la falaise et a entraîné Cindy dans sa chute en voulant se rattraper",
-          "Un lézard les a poussés directement depuis la rive",
-          "Ils ont sauté volontairement pour échapper à un essaim de guêpes"
-        ],
-        "correct": 1,
-        "explanation": "En fuyant le lézard, Guillaume trébuche ; Cindy lui tend la main pour le retenir mais est entraînée par son poids au fond du ravin dans la rivière."
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Victoria pense que la plupart des gens liront son blog jusqu'au dernier message.",
+        "correct": false,
+        "answer": false,
+        "points": 1,
+        "explanation": "FAUX : elle parie au contraire que la plupart des gens ne liront même pas jusque-là."
       },
       {
         "id": "q13",
-        "section": "Compréhension (QCM)",
+        "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "Avec quel instrument la bande observait-elle les étoiles le mardi soir dans le champ ?",
+        "text": "« Le corps de Barthélémy a grésillé puis il a disparu d'un coup, comme évaporé. » Que veut dire « évaporé » ?",
         "options": [
-          "Une simple paire de jumelles de marine",
-          "Un télescope sur pied offert à Guillaume par son parrain pour son anniversaire",
-          "Un appareil photo équipé d'un téléobjectif géant",
-          "Une lunette astronomique prêtée par le club de sciences"
+          "Disparu comme de l'eau qui chauffe",
+          "Tombé au fond de la piscine",
+          "Caché derrière la porte des douches",
+          "Transformé en statue de pierre"
         ],
-        "correct": 1,
-        "explanation": "Guillaume a acheté un superbe télescope sur pied avec l'argent reçu de son parrain, avec lequel ils observent Jupiter et ses lunes."
+        "correct": 0,
+        "answer": 0,
+        "points": 1,
+        "explanation": "Quand l'eau chauffe, elle s'évapore : elle se transforme en vapeur et disparaît. Barthélémy disparaît de la même façon."
       },
       {
         "id": "q14",
-        "section": "Compréhension (QCM)",
+        "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "À quoi ressemble l'engin spatial qui atterrit dans le champ derrière le bois ?",
+        "text": "« Je voulais éviter de ruminer dans ma tête toutes ces horribles histoires. » Que veut dire « ruminer » ici ?",
         "options": [
-          "À une soucoupe volante circulaire avec des feux rouges clignotants",
-          "À une immense boîte en métal vert brillant, semblable à une boîte à chaussures avec hublots et escalier rétractable",
-          "À une pyramide noire suspendue dans les airs",
-          "À une capsule spatiale calcinée couverte de parachutes"
+          "Manger lentement comme une vache",
+          "Oublier très vite quelque chose",
+          "Penser sans arrêt à la même chose",
+          "Raconter une histoire à ses amis"
         ],
-        "correct": 1,
-        "explanation": "L'appareil ressemble à une grande boîte rectangulaire métallique lumineuse émettant une lueur verte avec des hublots et une rampe d'escalier."
+        "correct": 2,
+        "answer": 2,
+        "points": 1,
+        "explanation": "Ruminer, c'est repenser sans cesse à la même chose, souvent quelque chose qui inquiète."
       },
       {
         "id": "q15",
-        "section": "Compréhension (QCM)",
+        "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "Quelle phrase bravache Guillaume crie-t-il aux extraterrestres avant de s'enfuir ?",
+        "text": "« Je vais flanquer la trouille à tous les internautes. » Que veut dire « flanquer la trouille » ?",
         "options": [
-          "« Bienvenue sur la Terre, créatures de l'espace ! »",
-          "« Si c'est pour tout casser, les lézards, vous feriez mieux de rentrer chez vous ! »",
-          "« Rendez-vous immédiatement, nous sommes protégés par l'armée ! »",
-          "« Ne tirez pas, nous venons en paix ! »"
+          "Faire rire",
+          "Faire très peur",
+          "Mettre en colère",
+          "Donner envie de dormir"
         ],
         "correct": 1,
-        "explanation": "Après avoir vu les lézards désintégrer des rochers et des arbres, Guillaume leur lance cette provocation qui déclenche leurs tirs de riposte."
+        "answer": 1,
+        "points": 1,
+        "explanation": "« La trouille », c'est la peur (langage familier). Victoria veut faire très peur à ses lecteurs."
       },
       {
         "id": "q16",
-        "section": "Compréhension (QCM)",
-        "type": "mcq",
-        "text": "Quelle vérité stupéfiante est révélée dans le tout dernier chapitre (lundi 9 mars) ?",
+        "section": "Compréhension globale",
+        "type": "synthesis",
+        "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Victoria a fait un cauchemar après avoir regardé un film d'horreur",
-          "Toute l'histoire est un canular inventé de toutes pièces par Victoria pour prouver qu'on peut faire gober n'importe quelle rumeur aux internautes",
-          "Victoria et ses amis ont été transportés dans une autre dimension temporelle",
-          "Les lézards étaient des robots créés par le professeur de technologie"
+          "Résumé A : Six amis découvrent une soucoupe volante dans un champ. Ils deviennent amis avec les extraterrestres, qui les emmènent visiter leur planète pendant une semaine avant de les ramener chez eux.",
+          "Résumé B : Victoria tient un blog sur les étoiles. Avec Guillaume et son télescope, elle découvre une nouvelle planète. Elle devient célèbre et passe à la télévision avec toute sa bande.",
+          "Résumé C : Sur son blog, Victoria raconte que des lézards venus de l'espace font disparaître ses amis. Mais le dernier message révèle qu'elle invente tout pour prouver que les gens croient n'importe quoi."
         ],
-        "correct": 1,
-        "explanation": "Le lundi 9 mars, Victoria explique avoir monté ce faux blog de science-fiction suite à un pari avec Arthur et Jean pour démontrer la crédulité des gens sur Internet."
+        "correct": 2,
+        "answer": 2,
+        "points": 1,
+        "explanation": "Seul le résumé C est correct : l'histoire des lézards est un canular inventé par Victoria."
       }
     ]
   },
@@ -11704,225 +11988,232 @@ window.LIVRES = [
         "id": "q1",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Pourquoi le narrateur s'appelle-t-il Murphy ?",
+        "text": "Pourquoi les parents du narrateur l'ont-ils appelé Murphy ?",
         "options": [
-          "En hommage à son grand-père d'origine irlandaise",
-          "Parce qu'il attire constamment les gaffes et la malchance, en référence à la célèbre loi de Murphy",
-          "Parce que ses parents voulaient qu'il devienne détective privé",
-          "C'est le nom de sa ville natale en Bretagne"
+          "Comme son grand-père, qui était irlandais",
+          "Comme un célèbre joueur de football anglais",
+          "À cause de la « loi de Murphy » et de sa malchance",
+          "Parce que c'est un prénom à la mode à Paris"
         ],
-        "correct": 1,
-        "explanation": "Dès sa naissance marquée par des incidents, ses parents l'ont prénommé Murphy car il se retrouve toujours du mauvais côté des 50% de probabilité d'ennuis."
+        "correct": 2,
+        "answer": 2,
+        "points": 1,
+        "explanation": "Dès sa naissance, tout allait de travers. Ses parents lui ont donné le nom de la « loi de Murphy », qui dit qu'on risque toujours de gaffer."
       },
       {
         "id": "q2",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Avec qui Murphy passe-t-il la soirée d'Halloween et quel déguisement porte-t-il ?",
+        "text": "Pourquoi Murphy entre-t-il dans la maison de J.O.L. ?",
         "options": [
-          "Avec ses camarades de classe parisiens, déguisé en zombie",
-          "Avec son cousin Romaric, Alain et la jolie Coraline, revêtu d'un costume de Dracula à la cape trop longue",
-          "Avec son frère cadet, déguisé en fantôme",
-          "Seul dans les rues, déguisé en loup-garou"
+          "Alain le provoque et il veut plaire à Coraline",
+          "Il a vu de la lumière et veut des bonbons",
+          "Il a perdu son sac de bonbons devant la porte",
+          "Il veut se mettre à l'abri de la pluie"
         ],
-        "correct": 1,
-        "explanation": "Murphy défile à Bonnefleur en Normandie avec son cousin Romaric, son copain Alain et Coraline, vêtu d'un costume de Dracula dont la cape le fait trébucher."
+        "correct": 0,
+        "answer": 0,
+        "points": 1,
+        "explanation": "Alain se moque du « Parisien à grande bouche ». Murphy est pris au piège de son orgueil et veut aussi impressionner Coraline."
       },
       {
         "id": "q3",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Quelle boutique étrange attire l'attention de Murphy lors de la tournée des bonbons ?",
+        "text": "Quelle est la première épreuve de Murphy ?",
         "options": [
-          "Une confiserie hantée tenue par un squelette",
-          "La boutique fermée « Chez Morjana », surnommée la sorcière, surmontée d'une enseigne avec un corbeau barré d'un éclair",
-          "Un magasin d'antiquités où une momie est exposée en vitrine",
-          "Une boulangerie abandonnée depuis cinquante ans"
+          "Un couloir rempli de toiles d'araignées géantes",
+          "Une salle de cafards où le plafond descend",
+          "Un lac glacé qu'il doit traverser à la nage",
+          "Un escalier dont les marches disparaissent"
         ],
         "correct": 1,
-        "explanation": "La boutique fermée s'appelle « Chez Morjana », tenue par une femme appelée « la sorcière », avec une enseigne en fer ornée d'un corbeau et d'un éclair."
+        "answer": 1,
+        "points": 1,
+        "explanation": "Des millions de cafards couvrent la pièce, et le plafond descend vers le sol. Murphy doit vite trouver une sortie."
       },
       {
         "id": "q4",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Quelle rumeur inquiétante circule à Bonnefleur au sujet de la maison de J.O.L. ?",
+        "text": "Comment Murphy trouve-t-il la sortie de la salle aux cafards ?",
         "options": [
-          "Qu'elle abrite un trésor d'or gardé par des fantômes",
-          "Que personne n'ose y frapper et que ceux qui y sont entrés n'ont jamais été revus",
-          "Qu'elle sert de repaire à des cambrioleurs en fuite",
-          "Qu'elle s'effondre chaque nuit avant de réapparaître au matin"
+          "Il trouve une clé cachée sous une grosse pierre",
+          "Il appelle ses amis, qui ouvrent une trappe",
+          "Il pousse un mur qui tourne sur lui-même",
+          "Il suit le chemin pris par les cafards"
         ],
-        "correct": 1,
-        "explanation": "Les enfants racontent que la maison de J.O.L. est maudite et que tous les imprudents qui ont osé y pénétrer ont disparu à jamais."
+        "correct": 3,
+        "answer": 3,
+        "points": 1,
+        "explanation": "Murphy remarque que les insectes fuient tous vers le même endroit. Il retient son souffle et plonge dans ce passage."
       },
       {
         "id": "q5",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Pourquoi Murphy se décide-t-il à frapper au heurtoir en forme de gargouille ?",
+        "text": "Comment Murphy fait-il tomber le cheval du chevalier ?",
         "options": [
-          "Pour impressionner Coraline et prouver à Alain qu'il n'est pas un lâche après ses provocations",
-          "Parce qu'il a cru voir une lumière chaleureuse à l'intérieur",
-          "Parce qu'il a perdu son sac de bonbons sur le perron",
-          "Pour s'abriter d'un orage soudain"
+          "Il fait rouler des boulets de canon",
+          "Il lui lance une hache trouvée près du mur",
+          "Il tend une corde entre deux piliers",
+          "Il fait peur au cheval en criant très fort"
         ],
         "correct": 0,
-        "explanation": "Piqué au vif par les railleries d'Alain qui le traite de Parisien à grande bouche, Murphy veut impressionner Coraline et cogne à la porte."
+        "answer": 0,
+        "points": 1,
+        "explanation": "Murphy entre dans un tableau de bataille et pousse des boulets de canon sous les sabots du cheval."
       },
       {
         "id": "q6",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Que se produit-il immédiatement après que les quatre enfants ont franchi la porte d'entrée ?",
+        "text": "Quel choix difficile J.O.L. impose-t-il à Murphy ?",
         "options": [
-          "Une musique d'orgue retentit et des bougies s'allument",
-          "La porte claque dans un bruit de tonnerre, le sol disparaît et ils tombent dans le noir absolu",
-          "Ils sont accueillis par un majordome en livrée noire",
-          "Un mur de flammes leur barre la retraite"
+          "Garder ses bonbons ou libérer ses amis",
+          "Combattre un monstre ou rester enfermé",
+          "Se sauver seul ou sauver ses trois amis",
+          "Dire la vérité ou mentir à ses parents"
         ],
-        "correct": 1,
-        "explanation": "La porte se referme violemment, le sol se dérobe et Murphy bascule dans un vide sans fond tandis que les cris de ses amis s'éloignent."
+        "correct": 2,
+        "answer": 2,
+        "points": 1,
+        "explanation": "À gauche, il y a une sortie pour lui seul. À droite, un levier libère ses amis mais l'empêche de fuir. Murphy choisit de sauver ses amis."
       },
       {
         "id": "q7",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Quelle est la première épreuve terrifiante à laquelle Murphy est confronté ?",
+        "text": "Qui est vraiment J.O.L. ?",
         "options": [
-          "Une meute de loups affamés dans une cour enneigée",
-          "Une pièce où grouillent des millions de cafards noirs alors que le plafond descend pour l'écraser",
-          "Une fosse remplie de serpents venimeux et d'araignées géantes",
-          "Une chambre inondée d'eau glaciale montant jusqu'au plafond"
+          "Un vieux magicien chassé de son cirque",
+          "Jack O'Lantern, un esprit malin amoureux",
+          "Le grand-père d'Alain, qui aime les farces",
+          "Un vampire qui vit là depuis mille ans"
         ],
         "correct": 1,
-        "explanation": "Murphy atterrit au milieu d'une marée de cafards répugnants et voit les blocs de pierre du plafond s'abaisser inexorablement vers le sol."
+        "answer": 1,
+        "points": 1,
+        "explanation": "Jack O'Lantern est un esprit malin. Dans son monde, il est interdit d'aimer. Parce qu'il a aimé la sorcière Morgane, les siens l'ont rejeté."
       },
       {
         "id": "q8",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Comment Murphy trouve-t-il la sortie pour échapper à l'écrasement ?",
+        "text": "Quel indice aide Murphy à retrouver Morgane ?",
         "options": [
-          "Il casse une vitre avec sa chaussure",
-          "Il observe la file indienne des cafards en fuite et plonge courageusement à travers leur passage",
-          "Il actionne un levier dissimulé dans une torche",
-          "Il monte sur les épaules d'une statue de pierre"
+          "Une lettre signée Morgane posée sur un meuble",
+          "Une photo de Morgane accrochée au mur du salon",
+          "Une adresse gravée au dos d'une vieille clé",
+          "Le dessin d'un corbeau barré d'un éclair"
         ],
-        "correct": 1,
-        "explanation": "Remarquant que tous les insectes fuient dans la même direction, Murphy plonge en apnée dans la masse pour franchir l'ouverture secrète."
+        "correct": 3,
+        "answer": 3,
+        "points": 1,
+        "explanation": "L'amulette de Jack porte le même dessin que l'enseigne de la boutique de Morjana. Murphy comprend que Morjana, c'est Morgane."
       },
       {
         "id": "q9",
-        "section": "Compréhension (QCM)",
-        "type": "mcq",
-        "text": "Quel ennemi surgit de la grande tapisserie dans la galerie des tableaux ?",
-        "options": [
-          "Un dragon cracheur de flammes",
-          "Un chevalier enragé armé d'une épée, monté sur un cheval blanc bondissant hors de la toile",
-          "Un archer médiéval décochant des flèches enflammées",
-          "Un pirate squelette armé d'un sabre d'abordage"
-        ],
-        "correct": 1,
-        "explanation": "La scène de bataille peinte prend vie : un cavalier en armure charge et saute hors du tableau sur son cheval blanc pour affronter Murphy."
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Le soir d'Halloween, la boutique « Chez Morjana » est la seule boutique fermée.",
+        "correct": true,
+        "answer": true,
+        "points": 1,
+        "explanation": "VRAI : Murphy trouve cela bizarre : une « sorcière » qui prend congé le jour d'Halloween !"
       },
       {
         "id": "q10",
-        "section": "Compréhension (QCM)",
-        "type": "mcq",
-        "text": "Quelle ruse Murphy emploie-t-il pour terrasser le chevalier et sa monture ?",
-        "options": [
-          "Il utilise un extincteur trouvé dans le couloir",
-          "Il monte dans une toile napoléonienne pour faire rouler des boulets de canon sous les sabots, puis aveugle le chevalier avec un bout de sa cape",
-          "Il hypnotise le cheval avec son pendentif de vampire",
-          "Il attire le chevalier dans un trou recouvert de branchages"
-        ],
-        "correct": 1,
-        "explanation": "Murphy pénètre dans un tableau de bataille, fait rouler des boulets qui désarçonnent le chevalier, puis lui masque le heaume avec un morceau de sa cape pour le faire chuter."
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Personne n'a jamais vu J.O.L., pas même l'épicière qui lui apporte ses courses.",
+        "correct": true,
+        "answer": true,
+        "points": 1,
+        "explanation": "VRAI : l'épicière pose les courses contre la porte et s'en va tout de suite."
       },
       {
         "id": "q11",
-        "section": "Compréhension (QCM)",
-        "type": "mcq",
-        "text": "Quel cruel dilemme la voix de J.O.L. impose-t-elle à Murphy dans la caverne ?",
-        "options": [
-          "Donner tout son argent ou rester enfermé un an",
-          "Prendre la passerelle de gauche pour s'enfuir seul vivant, ou abaisser le levier de droite pour sauver ses trois amis au détriment de sa propre sortie",
-          "Combattre un ogre à mains nues ou boire une potion empoisonnée",
-          "Choisir lequel de ses trois camarades sera libéré en premier"
-        ],
-        "correct": 1,
-        "explanation": "J.O.L. lui offre le choix égoïste de s'enfuir par la sortie de gauche, ou de condamner sa propre issue en abaissant le levier qui sauve Coraline, Romaric et Alain."
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "J.O.L. a fait mourir beaucoup de personnes entrées dans sa maison.",
+        "correct": false,
+        "answer": false,
+        "points": 1,
+        "explanation": "FAUX : il n'a jamais tué personne. Les épreuves étaient des illusions, et tous les visiteurs sont ressortis en bonne santé."
       },
       {
         "id": "q12",
-        "section": "Compréhension (QCM)",
-        "type": "mcq",
-        "text": "Quelle décision héroïque Murphy prend-il face au précipice ?",
-        "options": [
-          "Il s'enfuit en courant vers la sortie sans regarder en arrière",
-          "Il franchit la passerelle qui s'écroule derrière lui pour abaisser le levier et sauver ses amis, acceptant de périr",
-          "Il tente de négocier avec la voix de J.O.L.",
-          "Il lance son déguisement dans le gouffre pour faire diversion"
-        ],
-        "correct": 1,
-        "explanation": "Faisant passer la vie de ses camarades avant la sienne, Murphy court vers le levier, libère ses amis suspendus dans le vide et se retrouve piégé sur la corniche qui s'effrite."
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "À la fin, Murphy raconte à Romaric tout ce qui s'est passé chez J.O.L.",
+        "correct": false,
+        "answer": false,
+        "points": 1,
+        "explanation": "FAUX : il a promis à Jack de garder son secret."
       },
       {
         "id": "q13",
-        "section": "Compréhension (QCM)",
+        "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "Que découvre Murphy lorsqu'il arrive enfin dans le salon de J.O.L. ?",
+        "text": "« C'était un boui-boui à la vitrine débordant d'objets bizarres. » Qu'est-ce qu'un « boui-boui » ?",
         "options": [
-          "Que J.O.L. est un robot programmé pour effrayer les passants",
-          "Que tous les dangers n'étaient que des illusions magiques et que ses amis sont sains et saufs sous hypnose",
-          "Que ses amis ont déjà été transformés en statues de cire",
-          "Que la maison est un décor de télévision pour une émission de caméra cachée"
+          "Un grand magasin moderne",
+          "Une boulangerie de quartier",
+          "Une maison abandonnée",
+          "Une petite boutique peu soignée"
         ],
-        "correct": 1,
-        "explanation": "J.O.L. lui montre un écran où ses amis reposent paisiblement et lui révèle qu'il n'a jamais tué personne : toutes les épreuves n'étaient que des illusions destinées à tester le cœur humain."
+        "correct": 3,
+        "answer": 3,
+        "points": 1,
+        "explanation": "Un boui-boui (mot familier) est un petit magasin ou un petit restaurant mal tenu."
       },
       {
         "id": "q14",
-        "section": "Compréhension (QCM)",
+        "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "Qui est véritablement J.O.L. et quelle est son histoire tragique ?",
+        "text": "« J'étais pris au piège de mon orgueil. » Que veut dire « orgueil » ?",
         "options": [
-          "Un ancien magicien de foire chassé de Paris",
-          "Jack O'Lantern, un esprit malin banni par les siens il y a 50 ans pour avoir voulu sauver par amour la sorcière Morgane",
-          "Un comte vampire exilé de Transylvanie après une défaite militaire",
-          "Un alchimiste cherchant la pierre philosophale depuis le Moyen Âge"
+          "La peur du noir et des maisons hantées",
+          "Le fait de se croire meilleur que les autres",
+          "L'envie de manger tous ses bonbons",
+          "La tristesse d'être loin de sa maison"
         ],
         "correct": 1,
-        "explanation": "J.O.L. est le véritable Jack O'Lantern : banni du monde des esprits car il est tombé amoureux de Morgane, un sentiment interdit chez les créatures maléfiques."
+        "answer": 1,
+        "points": 1,
+        "explanation": "L'orgueil, c'est se croire supérieur aux autres. Murphy a trop parlé et n'ose plus reculer devant Alain."
       },
       {
         "id": "q15",
-        "section": "Compréhension (QCM)",
+        "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "Quel indice permet à Murphy de comprendre où se cache Morgane à Bonnefleur ?",
+        "text": "« Le plafond progressait inéluctablement. » Que veut dire « inéluctablement » ?",
         "options": [
-          "Une lettre cachetée trouvée sur la table",
-          "Une amulette chez Jack représentant un corbeau barré d'un éclair, identique à l'enseigne de la boutique de Morjana",
-          "Une bague en argent portant les armoiries de la ville",
-          "Un portrait miniature peint sur de l'ivoire"
+          "Sans qu'on puisse l'arrêter",
+          "Très doucement, puis plus du tout",
+          "En faisant beaucoup de bruit",
+          "De temps en temps"
         ],
-        "correct": 1,
-        "explanation": "En voyant l'amulette de Jack ornée du corbeau et de l'éclair, Murphy fait le rapprochement immédiat avec l'enseigne de Morjana (Morgane) dans le village."
+        "correct": 0,
+        "answer": 0,
+        "points": 1,
+        "explanation": "Ce qui est inéluctable ne peut pas être évité. Le plafond descend, et rien ne peut l'arrêter."
       },
       {
         "id": "q16",
-        "section": "Compréhension (QCM)",
-        "type": "mcq",
-        "text": "Que devient l'ancienne boutique sombre de la sorcière à la fin du récit ?",
+        "section": "Compréhension globale",
+        "type": "synthesis",
+        "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Elle est démolie pour construire un parking municipal",
-          "Elle devient le magasin féerique « Chez Morgane et Jack », proposant costumes, livres magiques et spectacles",
-          "Elle est rachetée par la boulangère de la rue du Pré",
-          "Elle reste fermée définitivement après le départ des sorciers"
+          "Résumé A : Le soir d'Halloween, Murphy, un garçon malchanceux, entre dans la maison de J.O.L. Il réussit des épreuves terrifiantes et choisit de sauver ses amis. Il découvre que J.O.L. est Jack O'Lantern et l'aide à retrouver Morgane.",
+          "Résumé B : Le soir d'Halloween, Murphy et ses amis se perdent dans une forêt. Une sorcière les enferme dans sa boutique, mais Romaric trouve la clé et ils s'échappent tous ensemble en courant.",
+          "Résumé C : Le soir d'Halloween, Murphy gagne le concours du plus beau déguisement grâce à son costume de Dracula. Comme prix, il reçoit une visite de la maison hantée de Bonnefleur."
         ],
-        "correct": 1,
-        "explanation": "Réunis et heureux, Jack et Morgane ouvrent « Chez Morgane et Jack », une boutique merveilleuse qui organise des ateliers contes, des cours de magie et prépare le grand spectacle d'Halloween."
+        "correct": 0,
+        "answer": 0,
+        "points": 1,
+        "explanation": "Seul le résumé A est correct : la maison de J.O.L., les épreuves, le choix courageux de Murphy et les retrouvailles de Jack et Morgane."
       }
     ]
   },
@@ -11936,225 +12227,232 @@ window.LIVRES = [
         "id": "q1",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Quel succès scolaire rend Jessica très fière au tout début de l'histoire ?",
+        "text": "Quelle nouvelle les parents annoncent-ils à Jessica ?",
         "options": [
-          "Elle a gagné le concours de dictée de l'école",
-          "Elle a obtenu un 19/20 en mathématiques et a battu Adrien, le premier de la classe",
-          "Elle a été élue déléguée de classe à l'unanimité",
-          "Elle a réussi son examen de passage au conservatoire"
+          "Ils vont bientôt déménager dans une maison plus grande",
+          "Sa maman attend un bébé pour le printemps",
+          "Son papa va partir travailler un an en Afrique",
+          "Démouto, le fils de son papa, vient vivre chez eux"
         ],
-        "correct": 1,
-        "explanation": "Jessica commence sa journée en beauté grâce à un 19 en mathématiques qui lui permet de devancer Adrien et son 17."
+        "correct": 3,
+        "answer": 3,
+        "points": 1,
+        "explanation": "Démouto est le fils que son papa a eu en Afrique. Il a deux ans de plus que Jessica et va partager sa chambre."
       },
       {
         "id": "q2",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Quelle grande nouvelle inattendue les parents de Jessica lui annoncent-ils ?",
+        "text": "Pourquoi Jessica n'a-t-elle pas le pull de ses rêves ?",
         "options": [
-          "Ils vont déménager dans une grande villa en bord de mer",
-          "Démouto, le fils que son père a eu en Afrique avant de venir en France, arrive pour vivre avec eux et partagera sa chambre",
-          "Sa mère attend des jumeaux pour le printemps prochain",
-          "Son père a été muté pour trois ans à l'étranger"
+          "Il n'y a plus sa taille dans le magasin",
+          "Il faut d'abord habiller Démouto pour l'hiver",
+          "Elle a eu une très mauvaise note en mathématiques",
+          "Son papa trouve que ce pull est trop voyant"
         ],
         "correct": 1,
-        "explanation": "Le père a enfin obtenu les papiers pour faire venir Démouto (qui a 2 ans de plus qu'elle) et demande à Jessica de partager sa chambre avec lui."
+        "answer": 1,
+        "points": 1,
+        "explanation": "Le voyage de Démouto a coûté cher. Sa maman doit d'abord lui acheter des vêtements chauds et promet le pull pour le mois suivant."
       },
       {
         "id": "q3",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Quel vêtement convoité Jessica rêve-t-elle de s'offrir dans les Grandes Galeries ?",
+        "text": "Pourquoi Démouto va-t-il dans la classe de Jessica ?",
         "options": [
-          "Une robe de soirée bleue à paillettes",
-          "Un pull rose et blanc avec un dessin de panthère sur le devant",
-          "Un blouson en cuir noir style motard",
-          "Une paire de baskets montantes dorées"
+          "Il a demandé à rester à côté de sa sœur",
+          "Il est arrivé trop tard pour l'école secondaire",
+          "Il n'allait plus à l'école et a du retard",
+          "La maîtresse de Jessica parle le lingala"
         ],
-        "correct": 1,
-        "explanation": "Jessica a repéré le pull de ses rêves (rose et blanc avec une panthère) et comptait utiliser sa technique de persuasion pour l'obtenir."
+        "correct": 2,
+        "answer": 2,
+        "points": 1,
+        "explanation": "Sa maman n'avait plus assez d'argent pour l'envoyer à l'école. Il n'a pas encore le niveau pour aller dans l'enseignement secondaire."
       },
       {
         "id": "q4",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Quelle première impression Démouto donne-t-il lors de son arrivée à l'aéroport ?",
+        "text": "Pourquoi Lucas se moque-t-il de Démouto en classe ?",
         "options": [
-          "Il est joyeux, bavard et court partout dans le terminal",
-          "Il est très maigre, grelotte dans un tee-shirt fluo, semble intimidé et ne parle que lingala avec son père",
-          "Il est habillé en costume chic et refuse de saluer son père",
-          "Il est accompagné de musiciens traditionnels africains"
+          "Démouto cite le premier ministre de son pays",
+          "Démouto ne sait pas lire l'heure sur l'horloge",
+          "Démouto s'est trompé de classe ce matin-là",
+          "Démouto parle lingala avec la maîtresse"
         ],
-        "correct": 1,
-        "explanation": "Épuisé par le voyage, Démouto grelotte dans un tee-shirt trop léger, évite le regard de Jessica et de sa belle-mère et ne parle que sa langue natale."
+        "correct": 0,
+        "answer": 0,
+        "points": 1,
+        "explanation": "La maîtresse demande le nom du premier ministre. Démouto donne celui de son pays d'Afrique, et Lucas éclate de rire."
       },
       {
         "id": "q5",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Pourquoi la mère de Jessica refuse-t-elle finalement d'acheter le pull panthère lors du shopping ?",
+        "text": "Que se passe-t-il quand les parents sont partis au salon du jouet ?",
         "options": [
-          "Le pull a été vendu à une autre cliente sous ses yeux",
-          "Le voyage de Démouto et l'achat de tous ses vêtements d'hiver ont coûté très cher, repoussant l'achat au mois suivant",
-          "Jessica a eu une mauvaise note en français le matin même",
-          "La couleur du pull ne plaisait pas à son père"
+          "Lucas vient sonner à la porte pour les embêter",
+          "Jessica se perd en rentrant de l'école",
+          "Démouto s'enfuit pour retourner en Afrique",
+          "Démouto tombe malade et a beaucoup de fièvre"
         ],
-        "correct": 1,
-        "explanation": "Le budget familial étant serré après les frais du voyage et l'achat indispensable d'un manteau chaud pour Démouto, la mère reporte l'achat du pull."
+        "correct": 3,
+        "answer": 3,
+        "points": 1,
+        "explanation": "Démouto a chaud, mal à la tête et 39 °C de fièvre. Jessica est seule avec lui et commence à avoir très peur."
       },
       {
         "id": "q6",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Pourquoi Démouto est-il placé dans la même classe d'école primaire que Jessica ?",
+        "text": "Comment Jessica aide-t-elle Démouto avant le retour des parents ?",
         "options": [
-          "Parce que le collège refuse les nouveaux élèves au mois de décembre",
-          "Parce qu'il n'a pas été scolarisé ces derniers temps en Afrique et doit consolider son français",
-          "Parce qu'il a demandé à rester aux côtés de sa sœur en classe",
-          "Parce qu'il est trop jeune pour entrer en sixième"
+          "Elle lui donne des médicaments trouvés dans l'armoire",
+          "Elle lui rafraîchit le front avec un gant mouillé",
+          "Elle lui prépare un grand bol de soupe chaude",
+          "Elle appelle le médecin de la famille"
         ],
         "correct": 1,
-        "explanation": "Sa mère n'ayant plus les moyens de l'envoyer à l'école en Afrique, Démouto doit rattraper son retard et perfectionner son français avant d'intégrer le collège."
+        "answer": 1,
+        "points": 1,
+        "explanation": "Jessica fait comme sa maman quand elle est malade : elle tamponne le front et la nuque de Démouto avec un gant de toilette mouillé."
       },
       {
         "id": "q7",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Quel camarade de classe désagréable s'en prend à Jessica et Démouto ?",
+        "text": "Qu'est-ce que Démouto explique à Jessica à l'hôpital ?",
         "options": [
-          "Adrien, jaloux de la note de math de Jessica",
-          "Lucas, qui affuble Jessica du sobriquet « Noix de coco » et lance des piques racistes",
-          "Jules, le voisin de table de Lucie",
-          "Marc, le délégué de classe du premier trimestre"
+          "Avoir deux cultures, c'est une richesse",
+          "Il préfère repartir vivre en Afrique avec sa maman",
+          "Il ne veut plus jamais aller à l'école",
+          "Il a peur de rester seul à l'hôpital"
         ],
-        "correct": 1,
-        "explanation": "Lucas est le perturbateur de la classe qui se moque des origines de Jessica et Démouto avec des remarques blessantes."
+        "correct": 0,
+        "answer": 0,
+        "points": 1,
+        "explanation": "Jessica ne sait pas si elle est « blanche ou noire ». Démouto lui dit qu'elle est riche, car elle a deux cultures."
       },
       {
         "id": "q8",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Comment Jessica réagit-elle lorsque Lucas humilie Démouto en leçon d'éducation civique ?",
+        "text": "Comment Démouto fait-il taire le petit cousin Jules ?",
         "options": [
-          "Elle rit avec les autres pour ne pas se faire remarquer",
-          "Elle riposte vivement en remettant Lucas à sa place, ce qui lui vaut d'être collé par la maîtresse",
-          "Elle quitte la classe en pleurant",
-          "Elle demande à changer de place immédiatement"
+          "Il le dispute très fort devant toute la famille réunie",
+          "Il demande à la grand-mère de le punir",
+          "Il dit qu'il peut le changer en petit cochon rose",
+          "Il quitte la table sans dire un mot"
         ],
-        "correct": 1,
-        "explanation": "Indignée par l'attitude de Lucas, Jessica prend fermement la défense de son demi-frère en lançant une réplique cinglante à Lucas."
+        "correct": 2,
+        "answer": 2,
+        "points": 1,
+        "explanation": "Démouto dit très sérieusement qu'il est un sorcier. Jules en reste bouche bée et s'en va. Jessica l'appelle alors « mon frère » pour la première fois."
       },
       {
         "id": "q9",
-        "section": "Compréhension (QCM)",
-        "type": "mcq",
-        "text": "Que dit le père à Jessica lors de leur discussion intime dans la chambre ?",
-        "options": [
-          "Qu'elle doit cesser de regarder la télévision le soir",
-          "Qu'elle doit faire preuve de patience et qu'elle finira par découvrir tout ce qu'elle a en commun avec son frère",
-          "Qu'il regrette d'avoir fait venir Démouto en France",
-          "Qu'il va renvoyer Démouto vivre chez sa mère"
-        ],
-        "correct": 1,
-        "explanation": "Le père comprend le désarroi de Jessica mais lui demande d'être patiente, persuadé que le temps révélera leurs nombreux points communs fraternels."
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Au début, Jessica pense dire à ses copines que Démouto est un cousin éloigné.",
+        "correct": true,
+        "answer": true,
+        "points": 1,
+        "explanation": "VRAI : elle ne veut pas expliquer qu'elle a un demi-frère. Elle pense même dire qu'il est venu se faire opérer du cœur !"
       },
       {
         "id": "q10",
-        "section": "Compréhension (QCM)",
-        "type": "mcq",
-        "text": "Que se passe-t-il lorsque les parents sont absents au salon du jouet à Paris ?",
-        "options": [
-          "Une fuite d'eau inonde l'appartement",
-          "Démouto tombe gravement malade avec 39°C de fièvre et s'effondre sur son lit",
-          "Lucas vient jeter des cailloux sur les fenêtres",
-          "Démouto décide de s'enfuir pour retourner en Afrique"
-        ],
-        "correct": 1,
-        "explanation": "Resté seul avec Jessica, Démouto est pris d'une violente fièvre (39°C), de sueurs froides et de difficultés respiratoires alarmantes."
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Quand il arrive, Démouto parle surtout le lingala avec son papa.",
+        "correct": true,
+        "answer": true,
+        "points": 1,
+        "explanation": "VRAI : il est intimidé. Parler sa langue avec son papa le rassure, mais Jessica se sent mise à l'écart."
       },
       {
         "id": "q11",
-        "section": "Compréhension (QCM)",
-        "type": "mcq",
-        "text": "Quels gestes de secours Jessica prodigue-t-elle à Démouto avant l'arrivée des secours ?",
-        "options": [
-          "Elle lui fait boire du thé brûlant au citron",
-          "Elle lui applique des compresses et un gant d'eau fraîche sur le front et la nuque pour apaiser sa fièvre",
-          "Elle lui donne des médicaments trouvés dans l'armoire",
-          "Elle lui fait faire des exercices de respiration sur le balcon"
-        ],
-        "correct": 1,
-        "explanation": "Imitant ce que fait sa mère lorsqu'elle est malade, Jessica tamponne le front et la nuque de Démouto avec un gant d'eau fraîche pour le soulager."
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Démouto ne sait pas du tout parler le français.",
+        "correct": false,
+        "answer": false,
+        "points": 1,
+        "explanation": "FAUX : il parle très bien le français. Il était surtout timide et perdu dans ce nouveau pays."
       },
       {
         "id": "q12",
-        "section": "Compréhension (QCM)",
-        "type": "mcq",
-        "text": "Pourquoi le médecin de l'hôpital garde-t-il Démouto sous surveillance médicale stricte ?",
-        "options": [
-          "Parce qu'il a contracté une maladie tropicale contagieuse",
-          "Parce que son organisme n'est pas encore habitué aux virus européens et que la grippe risque d'évoluer en infection pulmonaire",
-          "Parce qu'il doit subir une opération chirurgicale au genou",
-          "Parce qu'il a fait une grave intoxication alimentaire"
-        ],
-        "correct": 1,
-        "explanation": "Le médecin explique que le système immunitaire d'un enfant venant d'arriver d'Afrique n'a pas les défenses contre les virus hivernaux d'Europe."
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Après la dispute en classe, c'est Jessica qui est punie.",
+        "correct": false,
+        "answer": false,
+        "points": 1,
+        "explanation": "FAUX : c'est Lucas qui est puni : il doit rester en retenue pendant la récréation."
       },
       {
         "id": "q13",
-        "section": "Compréhension (QCM)",
+        "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "Quelle leçon de vie Démouto transmet-il à Jessica lors de leurs discussions à l'hôpital ?",
+        "text": "« Il reste planté comme un « i », alors que tout le monde est déjà assis. » Que veut dire « rester planté comme un i » ?",
         "options": [
-          "Qu'il vaut mieux toujours vivre seul sans famille",
-          "Qu'avoir deux origines et deux cultures différentes n'est pas une honte, mais une immense richesse personnelle",
-          "Qu'il faut ignorer les études et ne penser qu'au sport",
-          "Que la vie en Europe est trop compliquée pour lui"
+          "S'asseoir très vite",
+          "Rester debout, tout droit, sans bouger",
+          "Lever la main pour parler",
+          "Écrire la lettre i au tableau"
         ],
         "correct": 1,
-        "explanation": "Alors que Jessica doute de son identité métisse (« 50% blanche, 50% noire »), Démouto lui ouvre les yeux sur la chance magnifique de posséder deux cultures."
+        "answer": 1,
+        "points": 1,
+        "explanation": "Comme la lettre i, Démouto reste tout droit et immobile. Il n'ose pas s'asseoir."
       },
       {
         "id": "q14",
-        "section": "Compréhension (QCM)",
+        "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "Comment Démouto aide-t-il Jessica à se coiffer pour l'anniversaire de Lucie ?",
+        "text": "« Je me pavane avec mon jean-pagne, en secouant mes tresses. » Que veut dire « se pavaner » ?",
         "options": [
-          "Il lui lisse les cheveux avec un fer chaud",
-          "Il lui tresse une trentaine de superbes petites tresses africaines avec son peigne en bois et des élastiques",
-          "Il lui confectionne un turban traditionnel",
-          "Il lui teint les pointes des cheveux en blond doré"
+          "Marcher fièrement pour se faire admirer",
+          "Se cacher parce qu'on a un peu honte",
+          "Danser en faisant beaucoup d'erreurs",
+          "Courir vite pour ne pas être en retard"
         ],
-        "correct": 1,
-        "explanation": "Grâce au savoir-faire appris en observant sa mère, Démouto transforme la chevelure rebelle de Jessica en une magnifique coiffure tressée façon Alicia Keys."
+        "correct": 0,
+        "answer": 0,
+        "points": 1,
+        "explanation": "Se pavaner, c'est marcher avec fierté pour qu'on nous admire, comme un paon qui fait la roue."
       },
       {
         "id": "q15",
-        "section": "Compréhension (QCM)",
+        "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "Quelle tenue originale Jessica invente-t-elle avec le tissu offert par Démouto ?",
+        "text": "« Je comprends que cette nouvelle te bouleverse. » Que veut dire « bouleverser » ?",
         "options": [
-          "Un déguisement de princesse orientale",
-          "Un ensemble « jean-pagne » stylé et métissé porté pour un défilé de mode improvisé dans la chambre",
-          "Une robe de bal longue jusqu'aux chevilles",
-          "Une veste d'hiver rembourrée avec de la laine"
+          "Faire rire aux éclats",
+          "Rendre très fatigué",
+          "Laisser indifférent",
+          "Émouvoir très fort"
         ],
-        "correct": 1,
-        "explanation": "Jessica drape le pagne multicolore par-dessus son jean pour créer un look métissé et défile avec fierté sous les rires complices de son frère."
+        "correct": 3,
+        "answer": 3,
+        "points": 1,
+        "explanation": "Une nouvelle qui bouleverse provoque une très forte émotion. Jessica est choquée d'apprendre qu'elle a un frère."
       },
       {
         "id": "q16",
-        "section": "Compréhension (QCM)",
-        "type": "mcq",
-        "text": "Comment Démouto mâte-t-il les insolences du petit cousin Jules lors du dîner de famille en Bretagne ?",
+        "section": "Compréhension globale",
+        "type": "synthesis",
+        "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Il lui jette un verre d'eau au visage",
-          "Il lui déclare d'un air très sérieux qu'il est un grand sorcier capable de transformer les enfants malpolis en petits cochons roses",
-          "Il demande à sa grand-mère de le punir au piquet",
-          "Il quitte la table en claquant la porte de la salle à manger"
+          "Résumé A : Jessica part en vacances en Afrique chez son demi-frère Démouto. Elle a peur des animaux sauvages, mais Démouto lui apprend à les aimer. Elle décide alors de rester vivre là-bas avec lui.",
+          "Résumé B : Jessica apprend que son demi-frère Démouto vient vivre chez elle. Au début, elle est jalouse et le rejette. Mais quand il tombe malade, elle apprend à le connaître et finit par l'appeler « mon frère ».",
+          "Résumé C : Jessica et son demi-frère Démouto se disputent tout le temps à l'école. Lucas les aide à se réconcilier, et les trois enfants ouvrent ensemble une boutique de vêtements africains."
         ],
         "correct": 1,
-        "explanation": "Démouto fixe Jules sans ciller et lui sort cette réplique magique, pétrifiant le petit moqueur qui s'enfuit sans demander son reste, sous l'admiration de Jessica qui l'appelle enfin « mon frère »."
+        "answer": 1,
+        "points": 1,
+        "explanation": "Seul le résumé B est correct : la jalousie de Jessica au début, la maladie de Démouto, puis leur rapprochement."
       }
     ]
   },
@@ -12168,225 +12466,232 @@ window.LIVRES = [
         "id": "q1",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Dans quel contexte la famille de Méline se retrouve-t-elle égarée au début de l'histoire ?",
+        "text": "Pourquoi la famille de Méline s'arrête-t-elle à l'Hôtel du Bon Vent ?",
         "options": [
-          "En partant en vacances de ski dans les Alpes par temps de tempête de neige",
-          "En revenant de vacances de la Toussaint sous un épais brouillard et une pluie battante dans une forêt de sapins",
-          "En cherchant un camping au bord de l'océan Atlantique en plein été",
-          "En fuyant une inondation dans le sud de la France"
+          "Ils ont réservé une chambre depuis longtemps",
+          "Ils se sont perdus en rentrant de vacances",
+          "Leur voiture est tombée en panne devant l'hôtel",
+          "Des amis leur ont conseillé cet hôtel"
         ],
         "correct": 1,
-        "explanation": "La famille rentre de vacances de la Toussaint ; après avoir quitté la nationale, ils sont complètement perdus sous un déluge et une brume impénétrable."
+        "answer": 1,
+        "points": 1,
+        "explanation": "Le papa a quitté la nationale. Avec le brouillard et la pluie, ils se perdent dans la forêt et trouvent cet hôtel par hasard."
       },
       {
         "id": "q2",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Quel est le nom du village mystérieux introuvable sur la carte et de l'auberge où ils font halte ?",
+        "text": "Qui est Elsa Gullivan ?",
         "options": [
-          "Saint-Martin-du-Lac et l'Auberge des Pins",
-          "Saint-Léger-sur-Veubray et l'Hôtel du Bon Vent",
-          "Châteauneuf-en-Morvan et le Relais Fleuri",
-          "Villeneuve-les-Sapins et l'Hôtel de la Brume"
+          "La propriétaire d'un grand hôtel de Paris",
+          "Une cliente anglaise perdue dans le brouillard",
+          "Une cuisinière qui travaille pour le patron",
+          "Une jeune Anglaise qui s'occupe de l'hôtel"
         ],
-        "correct": 1,
-        "explanation": "Un panneau surgit dans le brouillard indiquant « Saint-Léger-sur-Veubray », débouchant sur la place où scintille l'enseigne décrépite de « l'Hôtel du Bon Vent »."
+        "correct": 3,
+        "answer": 3,
+        "points": 1,
+        "explanation": "Elsa a eu le coup de foudre pour ce vieil hôtel abandonné. Elle s'y est installée il y a un mois pour lui redonner vie."
       },
       {
         "id": "q3",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Qui est Elsa Gullivan et pourquoi hésite-t-elle à accueillir des clients ?",
+        "text": "Comment sont Monsieur et Madame Grignard ?",
         "options": [
-          "Une héritière française qui veut revendre la propriété aux enchères",
-          "Une jeune Anglaise qui a racheté l'hôtel abandonné par coup de foudre et dont les travaux de rénovation sont en cours",
-          "Une gardienne employée par une chaîne d'hôtels internationale",
-          "Une comédienne qui répète une pièce de théâtre dans un décor ancien"
+          "Désagréables : ils critiquent tout",
+          "Timides : ils n'osent rien demander",
+          "Joyeux : ils chantent tout le temps",
+          "Distraits : ils oublient tout"
         ],
-        "correct": 1,
-        "explanation": "Elsa est une jeune femme britannique tombée sous le charme de cette bâtisse abandonnée l'été précédent, et qui tente courageusement de lui redonner vie."
+        "correct": 0,
+        "answer": 0,
+        "points": 1,
+        "explanation": "Les Grignard se plaignent de tout : la chambre, le froid, le chat, la soupe trop salée…"
       },
       {
         "id": "q4",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Quelles formes insolites ont les porte-clefs des chambres 104 (Méline) et 132 (ses parents) ?",
+        "text": "Que disent les Grignard au sujet de leur tarte aux fraises ?",
         "options": [
-          "Une tour Eiffel et un arc de triomphe",
-          "Un jambon pour la 104 et un camembert pour la 132",
-          "Une pomme de pin et un gland de chêne",
-          "Un fer à cheval et un trèfle à quatre feuilles"
+          "Qu'elle est beaucoup trop sucrée",
+          "Que le chat Billy l'a mangée",
+          "Que la plante verte l'a dévorée",
+          "Qu'elle est tombée par terre"
         ],
-        "correct": 1,
-        "explanation": "Les clés sont munies de porte-clefs amusants et originaux : une tranche de jambon pour Méline et un camembert pour ses parents."
+        "correct": 2,
+        "answer": 2,
+        "points": 1,
+        "explanation": "Elsa, très gênée, explique que c'est une plante rare d'Amérique du Sud « dévoreuse de desserts »."
       },
       {
         "id": "q5",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Qui sont Monsieur et Madame Grignard arrivés juste après la famille de Méline ?",
+        "text": "Pourquoi les parents de Méline échangent-ils leur chambre avec les Grignard ?",
         "options": [
-          "Des inspecteurs du guide Michelin venus noter l'établissement",
-          "Un couple de clients désagréables, constamment mécontents, hautains et râleurs",
-          "Des amis d'enfance d'Elsa venus d'Angleterre",
-          "Des artistes en tournée dans la région"
+          "Les Grignard veulent surveiller leur voiture",
+          "Le chauffage des Grignard ne marche plus",
+          "Le lit des parents de Méline est cassé",
+          "Méline a peur de dormir toute seule"
         ],
         "correct": 1,
-        "explanation": "Les Grignard sont des clients odieux qui exigent un traitement de faveur et ne cessent de formuler des plaintes ridicules dès leur arrivée."
+        "answer": 1,
+        "points": 1,
+        "explanation": "Les radiateurs s'arrêtent dans la chambre des Grignard, mais ils remarchent dès que les parents de Méline s'y installent."
       },
       {
         "id": "q6",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Quel premier phénomène anormal survient dans la salle de restaurant près de la table des Grignard ?",
+        "text": "Que découvre Méline en pleine nuit, dans la cuisine ?",
         "options": [
-          "Les lustres s'écrasent sur le sol",
-          "Les flammes de la cheminée s'emballent brusquement et s'étirent vers leur table lorsque la porte vitrée s'ouvre toute seule",
-          "Leurs chaises se mettent à léviter au-dessus du parquet",
-          "La soupe se transforme en glace solide dans leurs bols"
+          "Elsa parle avec l'hôtel lui-même",
+          "Elsa prépare un piège pour les Grignard",
+          "Le chat Billy sait parler",
+          "Les motards font la fête en cachette"
         ],
-        "correct": 1,
-        "explanation": "Tandis que les Grignard râlent sur le menu, le feu de la cheminée grandit démesurément et vient menacer leur table avant de s'éteindre d'un coup sec."
+        "correct": 0,
+        "answer": 0,
+        "points": 1,
+        "explanation": "Elsa est seule, mais une grosse voix d'homme lui répond : c'est l'Hôtel du Bon Vent qui parle !"
       },
       {
         "id": "q7",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Quels nouveaux voyageurs égarés trouvent refuge à l'hôtel plus tard dans la soirée ?",
+        "text": "Comment l'hôtel essaie-t-il d'empêcher la famille de partir ?",
         "options": [
-          "Une équipe de cyclistes participant à une course régionale",
-          "Quatre jeunes motards (deux garçons et deux filles) trempés par le déluge",
-          "Un chauffeur de bus et sa trentaine de touristes retraités",
-          "Deux randonneurs égarés avec leurs ânes de bât"
+          "Il bloque la porte d'entrée",
+          "Il fait tomber un arbre sur la route",
+          "Il crève les pneus de la voiture",
+          "Il cache les clés de la voiture"
         ],
-        "correct": 1,
-        "explanation": "Quatre motards arrivant d'un festival du cirque supplient Elsa de les héberger ; elle leur aménage une lingerie au deuxième étage."
+        "correct": 3,
+        "answer": 3,
+        "points": 1,
+        "explanation": "Le papa ne trouve plus ses clés. Une motarde les retrouve plus tard… sur le piano !"
       },
       {
         "id": "q8",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Quelle explication loufoque Elsa donne-t-elle lorsque la tarte aux fraises des Grignard disparaît ?",
+        "text": "Que promet Méline pour que l'hôtel les laisse partir ?",
         "options": [
-          "Elle accuse le chat Billy d'avoir tout dévoré",
-          "Elle prétend que la plante verte sur la table est une espèce rare d'Amérique du Sud qui dévore les desserts",
-          "Elle affirme que les motards ont chipé l'assiette en passant",
-          "Elle dit que la tarte s'est évaporée à cause de la chaleur du feu"
+          "D'écrire un article sur l'hôtel dans le journal",
+          "De garder le chat Billy chez elle",
+          "De revenir et d'envoyer des clients gentils",
+          "De repeindre les volets de l'hôtel"
         ],
-        "correct": 1,
-        "explanation": "Prise de court face aux assiettes vidées par l'esprit de la maison, Elsa bredouille que la plante de table est une plante carnivore mangeuse de tartes."
+        "correct": 2,
+        "answer": 2,
+        "points": 1,
+        "explanation": "Méline parle bien fort pour que les murs l'entendent : « On reviendra, promis ! » L'hôtel accepte ce pacte."
       },
       {
         "id": "q9",
-        "section": "Compréhension (QCM)",
-        "type": "mcq",
-        "text": "Comment se termine la soirée dans le salon après le départ des Grignard dans leur chambre ?",
-        "options": [
-          "Une violente panne de courant plonge tout le monde dans l'obscurité",
-          "Un des motards joue de superbes morceaux de jazz au piano pendant que le gros chat Billy ronronne sur les genoux de Méline",
-          "Les clients jouent aux cartes jusqu'à l'aube",
-          "Elsa chante des ballades folkloriques irlandaises à la guitare"
-        ],
-        "correct": 1,
-        "explanation": "L'ambiance redevient chaleureuse et apaisante : un motard joue du jazz au vieux piano et le chat de l'hôtel vient se blottir contre Méline."
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Le village de Saint-Léger-sur-Veubray est bien indiqué sur la carte du papa.",
+        "correct": false,
+        "answer": false,
+        "points": 1,
+        "explanation": "FAUX : le village n'apparaît sur aucune carte, ni plus tard sur Internet."
       },
       {
         "id": "q10",
-        "section": "Compréhension (QCM)",
-        "type": "mcq",
-        "text": "Pourquoi les parents de Méline échangent-ils leur chambre avec les Grignard à deux reprises ?",
-        "options": [
-          "Parce que les Grignard veulent admirer la lune par la fenêtre",
-          "Parce que les radiateurs cessent systématiquement de chauffer dès que les Grignard s'installent dans une pièce",
-          "Parce que le lit des Grignard est cassé",
-          "Parce que des chauves-souris sont entrées par la cheminée"
-        ],
-        "correct": 1,
-        "explanation": "La maison refuse de chauffer les Grignard : les radiateurs tombent en panne dans leur chambre mais refonctionnent dès que les parents de Méline y logent."
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Quatre motards arrivent eux aussi à l'hôtel, perdus dans le brouillard.",
+        "correct": true,
+        "answer": true,
+        "points": 1,
+        "explanation": "VRAI : deux garçons et deux filles arrivent trempés. Elsa les fait dormir dans une ancienne lingerie."
       },
       {
         "id": "q11",
-        "section": "Compréhension (QCM)",
-        "type": "mcq",
-        "text": "À quelle scène incroyable Méline assiste-t-elle en descendant à la cuisine à 2 heures du matin ?",
-        "options": [
-          "Des fantômes de chevaliers préparent des crêpes pour le petit-déjeuner",
-          "Elsa dispute les murs de l'auberge et une voix d'homme puissante lui répond : l'Hôtel du Bon Vent est vivant et parle !",
-          "Le chat Billy est debout sur ses pattes arrière en train de faire la vaisselle",
-          "Les Grignard fouillent les placards pour voler des provisions"
-        ],
-        "correct": 1,
-        "explanation": "Méline découvre qu'Elsa s'adresse directement à la bâtisse elle-même : l'hôtel a une âme, une voix d'homme bienveillante mais têtue, et commande aux objets."
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "L'hôtel trouve la famille de Méline sympathique et voudrait qu'elle reste.",
+        "correct": true,
+        "answer": true,
+        "points": 1,
+        "explanation": "VRAI : la voix de l'hôtel dit qu'elle aimerait bien que la famille reste quelques jours de plus."
       },
       {
         "id": "q12",
-        "section": "Compréhension (QCM)",
-        "type": "mcq",
-        "text": "Quelle est la véritable raison pour laquelle l'Hôtel du Bon Vent attire et retient certains voyageurs ?",
-        "options": [
-          "Il veut leur voler leurs économies pour payer ses réparations",
-          "Il se sent seul et abandonné sans clients, et adore la compagnie des personnes gentilles tout en chassant les mécontents",
-          "Il est sous l'emprise d'un sortilège jeté par un magicien médiéval",
-          "Il veut transformer les touristes en statues décoratives"
-        ],
-        "correct": 1,
-        "explanation": "L'hôtel souffre de la solitude depuis ses années d'abandon ; il guide les gens chaleureux pour prolonger leurs vacances et fait fuir les êtres désagréables."
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Un an plus tard, Méline a peur de retourner à l'Hôtel du Bon Vent.",
+        "correct": false,
+        "answer": false,
+        "points": 1,
+        "explanation": "FAUX : elle n'a pas peur du tout : elle se réjouit de revoir l'hôtel et de tenir sa promesse."
       },
       {
         "id": "q13",
-        "section": "Compréhension (QCM)",
+        "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "Quels désagréments subis pendant la nuit précipitent le départ furieux des Grignard au petit matin ?",
+        "text": "« Les Grignard ont continué leurs jérémiades. » Que sont des « jérémiades » ?",
         "options": [
-          "Leurs valises ont été jetées par la fenêtre dans une mare de boue",
-          "La tringle de douche est tombée sur le crâne de Monsieur Grignard et le dentier de Madame s'est brisé sur le lavabo",
-          "Des araignées ont envahi leurs pantoufles de nuit",
-          "Leur voiture a été repeinte en jaune vif pendant leur sommeil"
+          "Des chansons joyeuses",
+          "Des histoires drôles",
+          "Des plaintes sans fin",
+          "Des compliments"
         ],
-        "correct": 1,
-        "explanation": "Monsieur Grignard arbore une poche de glace sur son crâne après la chute de la barre de douche et son épouse n'a plus qu'une seule dent sur son dentier cassé."
+        "correct": 2,
+        "answer": 2,
+        "points": 1,
+        "explanation": "Des jérémiades sont des plaintes qui n'en finissent pas, comme celles des Grignard pendant tout le repas."
       },
       {
         "id": "q14",
-        "section": "Compréhension (QCM)",
+        "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "Comment l'hôtel tente-t-il d'empêcher la famille de Méline de partir au matin ?",
+        "text": "« La bâtisse ne payait pas de mine. » Que veut dire « ne pas payer de mine » ?",
         "options": [
-          "En crevant les quatre pneus de la voiture familiale",
-          "En faisant disparaître les clés de contact de la veste du père pour les déposer sur le piano du salon",
-          "En bloquant la grille d'entrée avec un énorme tronc d'arbre",
-          "En déclenchant un nouvel orage de grêle sur le parking"
+          "Coûter très cher",
+          "Être très grande",
+          "Être toute neuve",
+          "Avoir l'air peu attirant"
         ],
-        "correct": 1,
-        "explanation": "Bien que le père ait vérifié ses poches trois fois, l'hôtel subtilise ses clés de voiture et les dépose discrètement sur le piano."
+        "correct": 3,
+        "answer": 3,
+        "points": 1,
+        "explanation": "Une maison qui ne paie pas de mine n'a pas l'air belle de l'extérieur : volets cassés, vitres en carton…"
       },
       {
         "id": "q15",
-        "section": "Compréhension (QCM)",
+        "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "Quel pacte Méline formule-t-elle à voix haute pour que l'hôtel les laisse repartir ?",
+        "text": "« Madame Grignard était au bord de la crise de nerfs. » Cela veut dire qu'elle…",
         "options": [
-          "Elle promet de lui envoyer un chèque pour repeindre les volets",
-          "Elle promet solennellement qu'ils reviendront passer des vacances ici et lui enverront des clients charmants",
-          "Elle promet de ne jamais raconter ce qu'elle a vu à la police",
-          "Elle promet de lui apporter un sac de croquettes pour le chat Billy"
+          "était assise au bord de son lit",
+          "allait bientôt s'énerver très fort",
+          "était fatiguée et voulait dormir",
+          "était contente de sa soirée"
         ],
         "correct": 1,
-        "explanation": "Méline s'adresse aux murs en promettant qu'ils reviendront sans faute et recommanderont l'auberge à des personnes respectueuses et bienveillantes."
+        "answer": 1,
+        "points": 1,
+        "explanation": "Être au bord de la crise de nerfs, c'est être sur le point de craquer et de s'énerver très fort."
       },
       {
         "id": "q16",
-        "section": "Compréhension (QCM)",
-        "type": "mcq",
-        "text": "Que se passe-t-il exactement un an plus tard lors du retour de chez Mamie Cathy ?",
+        "section": "Compréhension globale",
+        "type": "synthesis",
+        "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Méline reçoit une carte postale d'Elsa lui annonçant la vente de l'hôtel",
-          "À la suite d'un bouchon et d'une déviation, la voiture s'engage sur la route brumeuse bordée de sapins qui mène tout droit à l'Hôtel du Bon Vent",
-          "Méline apprend que le village a été rasé pour construire une autoroute",
-          "La famille décide de partir en vacances en Angleterre pour retrouver Elsa"
+          "Résumé A : Méline et ses parents passent une semaine de vacances dans un hôtel en Angleterre. Ils y rencontrent Elsa, qui leur apprend à cuisiner, et ils repartent avec plein de nouvelles recettes.",
+          "Résumé B : Méline et ses parents achètent un vieil hôtel abandonné dans la forêt. Avec l'aide de quatre motards, ils le rénovent pendant l'hiver et l'ouvrent aux clients l'été suivant.",
+          "Résumé C : Perdue avec ses parents, Méline passe une nuit dans un hôtel vivant, qui fait fuir les clients désagréables et veut garder ceux qu'il aime. Méline promet de revenir, et l'hôtel les laisse partir."
         ],
-        "correct": 1,
-        "explanation": "Un an plus tard, une déviation ramène la voiture dans la brume vers Saint-Léger-sur-Veubray, permettant à Méline d'honorer avec joie sa promesse envers l'Hôtel du Bon Vent."
+        "correct": 2,
+        "answer": 2,
+        "points": 1,
+        "explanation": "Seul le résumé C est correct : la nuit dans l'hôtel vivant, les Grignard chassés et la promesse de Méline."
       }
     ]
   }
