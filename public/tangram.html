@@ -506,16 +506,24 @@
     /* SVG Elements */
     .target-backdrop {
       fill: #EDEAF8;
+      stroke: #EDEAF8;
+      stroke-width: 1;
+    }
+    .target-outline {
+      fill: none;
       stroke: var(--purple);
       stroke-width: 2.5;
       stroke-dasharray: 6, 5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      pointer-events: none;
     }
     .target-hint-line {
-      stroke: #A89FE2;
-      stroke-width: 1.5;
+      stroke: var(--purple);
+      stroke-width: 1.8;
       stroke-dasharray: 4, 3;
       fill: none;
-      opacity: 0.85;
+      opacity: 0.75;
       pointer-events: none;
     }
     .target-slot-highlight {
@@ -1237,6 +1245,133 @@
       return angularDist(pieceRot, slotRot) < 18;
     }
 
+    /* Détermine les boucles fermées formant le contour extérieur strict d'un ensemble de polygones */
+    function computeBoundaryLoops(polys) {
+      function distSq(p1, p2) {
+        return (p1[0] - p2[0]) ** 2 + (p1[1] - p2[1]) ** 2;
+      }
+      function ptInPoly(x, y, poly) {
+        let inside = false;
+        const n = poly.length;
+        for (let i = 0; i < n; i++) {
+          const x1 = poly[i][0], y1 = poly[i][1];
+          const x2 = poly[(i + 1) % n][0], y2 = poly[(i + 1) % n][1];
+          if (((y1 > y) !== (y2 > y)) && (x < (x2 - x1) * (y - y1) / (y2 - y1 + 1e-12) + x1)) {
+            inside = !inside;
+          }
+        }
+        return inside;
+      }
+      function ptInUnion(x, y) {
+        for (let i = 0; i < polys.length; i++) {
+          if (ptInPoly(x, y, polys[i])) return true;
+        }
+        return false;
+      }
+      function ptOnSeg(p, a, b) {
+        const cross = (p[1] - a[1]) * (b[0] - a[0]) - (p[0] - a[0]) * (b[1] - a[1]);
+        if (Math.abs(cross) > 0.005) return false;
+        const dot = (p[0] - a[0]) * (b[0] - a[0]) + (p[1] - a[1]) * (b[1] - a[1]);
+        if (dot <= 0.005) return false;
+        const sqlen = (b[0] - a[0]) ** 2 + (b[1] - a[1]) ** 2;
+        if (dot >= sqlen - 0.005) return false;
+        return true;
+      }
+
+      const allPts = [];
+      for (let k = 0; k < polys.length; k++) {
+        for (let m = 0; m < polys[k].length; m++) {
+          const pt = polys[k][m];
+          if (!allPts.some(q => distSq(pt, q) < 1e-4)) {
+            allPts.push(pt);
+          }
+        }
+      }
+
+      const subSegs = [];
+      for (let k = 0; k < polys.length; k++) {
+        const poly = polys[k];
+        const n = poly.length;
+        for (let i = 0; i < n; i++) {
+          const p1 = poly[i];
+          const p2 = poly[(i + 1) % n];
+          const ptsOn = allPts.filter(q => ptOnSeg(q, p1, p2));
+          ptsOn.sort((q1, q2) => distSq(p1, q1) - distSq(p1, q2));
+          const chain = [p1, ...ptsOn, p2];
+          for (let j = 0; j < chain.length - 1; j++) {
+            const a = chain[j], b = chain[j + 1];
+            if (distSq(a, b) > 1e-4) subSegs.push([a, b]);
+          }
+        }
+      }
+
+      const boundary = [];
+      for (let i = 0; i < subSegs.length; i++) {
+        const a = subSegs[i][0], b = subSegs[i][1];
+        const mx = (a[0] + b[0]) / 2.0;
+        const my = (a[1] + b[1]) / 2.0;
+        const dx = b[0] - a[0];
+        const dy = b[1] - a[1];
+        const L = Math.hypot(dx, dy);
+        if (L < 1e-4) continue;
+        const nx = -dy / L;
+        const ny = dx / L;
+        const testEps = 0.01;
+        const inLeft = ptInUnion(mx + nx * testEps, my + ny * testEps);
+        const inRight = ptInUnion(mx - nx * testEps, my - ny * testEps);
+        if (inLeft !== inRight) {
+          boundary.push([a, b]);
+        }
+      }
+
+      const remaining = boundary.map(s => [[...s[0]], [...s[1]]]);
+      const chains = [];
+      const eps = 1e-4;
+      while (remaining.length > 0) {
+        const [startA, startB] = remaining.pop();
+        const chain = [startA, startB];
+        let grew = true;
+        while (grew) {
+          grew = false;
+          const head = chain[0];
+          const tail = chain[chain.length - 1];
+
+          for (let i = 0; i < remaining.length; i++) {
+            const [a, b] = remaining[i];
+            if (distSq(tail, a) < eps) {
+              chain.push(b);
+              remaining.splice(i, 1);
+              grew = true;
+              break;
+            } else if (distSq(tail, b) < eps) {
+              chain.push(a);
+              remaining.splice(i, 1);
+              grew = true;
+              break;
+            }
+          }
+          if (grew) continue;
+
+          for (let i = 0; i < remaining.length; i++) {
+            const [a, b] = remaining[i];
+            if (distSq(head, b) < eps) {
+              chain.unshift(a);
+              remaining.splice(i, 1);
+              grew = true;
+              break;
+            } else if (distSq(head, a) < eps) {
+              chain.unshift(b);
+              remaining.splice(i, 1);
+              grew = true;
+              break;
+            }
+          }
+        }
+        chains.push(chain);
+      }
+      return chains;
+    }
+
     /* ==========================================================================
        6. INITIALISATION D'UN PUZZLE
        ========================================================================== */
@@ -1251,14 +1386,14 @@
 
       // Calcul de la boîte englobante de la silhouette pour mise à l'échelle parfaite
       let allSlotUnitPts = [];
-      puzzleDef.slots.forEach(slot => {
-        const pts = CANONICAL[slot.type].map(([x, y]) => {
+      const slotPolysUnit = puzzleDef.slots.map(slot => {
+        return CANONICAL[slot.type].map(([x, y]) => {
           let fx = slot.flip ? -x : x;
           const [rx, ry] = rotatePoint([fx, y], slot.rot);
           return [ rx + slot.x, ry + slot.y ];
         });
-        allSlotUnitPts.push(...pts);
       });
+      slotPolysUnit.forEach(pts => allSlotUnitPts.push(...pts));
 
       const bb = polyBBox(allSlotUnitPts);
       const bw = bb.maxX - bb.minX;
@@ -1269,6 +1404,23 @@
 
       const bcx = (bb.minX + bb.maxX) / 2;
       const bcy = (bb.minY + bb.maxY) / 2;
+
+      // Calcul des boucles du contour extérieur uniquement (pas de lignes intérieures)
+      const chains = computeBoundaryLoops(slotPolysUnit);
+      state.boundaryLoopsSvg = chains.map(chain => {
+        return chain.map(pt => [
+          TARGET_ZONE.cx + (pt[0] - bcx) * scale,
+          TARGET_ZONE.cy - (pt[1] - bcy) * scale
+        ]);
+      });
+
+      // L'indice est masqué par défaut pour ne pas donner la réponse
+      state.showHint = false;
+      const hintBtn = document.getElementById("hint-btn");
+      if (hintBtn) {
+        hintBtn.innerHTML = "💡 Indice";
+        hintBtn.style.background = "#FFF8E7";
+      }
 
       // Conversion des slots en coordonnées SVG dans TARGET_ZONE
       state.targetSlots = puzzleDef.slots.map((slot, idx) => {
@@ -1345,7 +1497,7 @@
     /* ==========================================================================
        7. RENDU SVG DU PLATEAU
        ========================================================================== */
-    let svgEl, targetBackdropGroup, targetHintsGroup, piecesGroup;
+    let svgEl, targetBackdropGroup, targetOutlineGroup, targetHintsGroup, piecesGroup;
 
     function initSvg() {
       svgEl = document.getElementById("board-svg");
@@ -1373,6 +1525,10 @@
       targetBackdropGroup.id = "target-backdrop-group";
       svgEl.appendChild(targetBackdropGroup);
 
+      targetOutlineGroup = document.createElementNS(SVG_NS, "g");
+      targetOutlineGroup.id = "target-outline-group";
+      svgEl.appendChild(targetOutlineGroup);
+
       targetHintsGroup = document.createElementNS(SVG_NS, "g");
       targetHintsGroup.id = "target-hints-group";
       svgEl.appendChild(targetHintsGroup);
@@ -1385,10 +1541,11 @@
     function renderBoard() {
       if (!svgEl) initSvg();
       targetBackdropGroup.innerHTML = "";
+      if (targetOutlineGroup) targetOutlineGroup.innerHTML = "";
       targetHintsGroup.innerHTML = "";
       piecesGroup.innerHTML = "";
 
-      // 1. Rendu des polygones cibles de la silhouette
+      // 1. Remplissage uni de la silhouette (sans contours intérieurs pour ne pas donner la réponse)
       state.targetSlots.forEach(slot => {
         const poly = document.createElementNS(SVG_NS, "polygon");
         poly.setAttribute("points", slot.polySvg.map(p => p.join(",")).join(" "));
@@ -1396,15 +1553,29 @@
         poly.dataset.slotIndex = slot.slotIndex;
         targetBackdropGroup.appendChild(poly);
 
-        // Lignes d'indice (affichées si showHint = true)
+        // Lignes d'indice internes (affichées UNIQUEMENT si l'élève clique sur "Indice")
         const hintPoly = document.createElementNS(SVG_NS, "polygon");
         hintPoly.setAttribute("points", slot.polySvg.map(p => p.join(",")).join(" "));
         hintPoly.setAttribute("class", "target-hint-line");
-        if (!state.showHint) hintPoly.style.display = "none";
         targetHintsGroup.appendChild(hintPoly);
       });
 
-      // 2. Rendu des 7 pièces interactives
+      // 2. Contour extérieur global de la silhouette (pourtour uniquement)
+      if (targetOutlineGroup && state.boundaryLoopsSvg && state.boundaryLoopsSvg.length > 0) {
+        const pathD = state.boundaryLoopsSvg.map(loop => {
+          return "M " + loop[0][0].toFixed(1) + " " + loop[0][1].toFixed(1) + " " +
+                 loop.slice(1).map(p => "L " + p[0].toFixed(1) + " " + p[1].toFixed(1)).join(" ") + " Z";
+        }).join(" ");
+        const outlinePath = document.createElementNS(SVG_NS, "path");
+        outlinePath.setAttribute("d", pathD);
+        outlinePath.setAttribute("class", "target-outline");
+        targetOutlineGroup.appendChild(outlinePath);
+      }
+
+      // Masquer ou afficher les lignes d'indice selon l'état actuel
+      targetHintsGroup.style.display = state.showHint ? "block" : "none";
+
+      // 3. Rendu des 7 pièces interactives
       PIECES_LIST.forEach(item => renderPiece(item.id));
     }
 
@@ -1644,12 +1815,12 @@
     // Bascule de l'indice visuel
     document.getElementById("hint-btn").addEventListener("click", () => {
       state.showHint = !state.showHint;
-      const hintPolys = document.querySelectorAll(".target-hint-line");
-      hintPolys.forEach(el => {
-        el.style.display = state.showHint ? "block" : "none";
-      });
+      if (targetHintsGroup) {
+        targetHintsGroup.style.display = state.showHint ? "block" : "none";
+      }
       const hintBtn = document.getElementById("hint-btn");
       hintBtn.style.background = state.showHint ? "#FEEBC8" : "#FFF8E7";
+      hintBtn.innerHTML = state.showHint ? "💡 Masquer l'indice" : "💡 Indice";
       playTone(480, "sine", 0.08, 0.1);
     });
 
