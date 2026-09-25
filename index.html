@@ -3438,6 +3438,17 @@ input[type=text].calc-input.incorrect {
     } catch(e) { console.warn('Firebase saveArchivedBooks error:', e); }
   };
 
+  // ===== RÉCITS EXPRESS : une seule tentative, l'enseignant peut l'annuler =====
+  // settings/retakes/<classe>/<élève>/<livre> = moment où l'enseignant a annulé la tentative
+  window.FB_setRetake = async function(cls, student, book, ts) {
+    await set(ref(db, 'settings/retakes/' + cls + '/' + String(student).replace(/[\s.#$\[\]\/]+/g, '_') + '/' + book), ts);
+  };
+  window.FB_loadRetakes = async function(cls, student) {
+    const path = 'settings/retakes/' + cls + (student ? '/' + String(student).replace(/[\s.#$\[\]\/]+/g, '_') : '');
+    const snap = await get(ref(db, path));
+    return snap.exists() ? (snap.val() || {}) : {};
+  };
+
   window.FB_loadArchivedBooks = async function(targetCls) {
     try {
       const cls = targetCls || (typeof teacherCls !== 'undefined' ? teacherCls : 'lejoly');
@@ -9162,7 +9173,70 @@ function retourQuiz(){
   showScreen('screen-books');
 }
 
+// ===== Une seule tentative par livre (élève) =====
+function resultTimestamp(r){
+  if (r && r.ts) return r.ts;
+  const m = /^(\d{1,2})\/(\d{1,2})\/(\d{4})/.exec((r && r.date) || '');
+  if (!m) return 0;
+  const t = /^(\d{1,2})[:h](\d{2})/.exec((r && r.time) || '') || [0, 0, 0];
+  return new Date(+m[3], +m[2] - 1, +m[1], +t[1], +t[2]).getTime();
+}
+function withTimeout(p, ms, fallback){
+  return Promise.race([Promise.resolve(p).catch(() => fallback), new Promise(r => setTimeout(() => r(fallback), ms))]);
+}
+// Renvoie la tentative déjà faite (non annulée par l'enseignant), ou null.
+async function findBookAttempt(bookId){
+  const cls = state.studentCls || 'lejoly', student = state.student;
+  let attempts = [];
+  try {
+    attempts = JSON.parse(localStorage.getItem('lq_results') || '[]')
+      .filter(r => r && r.book === bookId && r.student === student && (r.cls || 'lejoly') === cls);
+  } catch(e) {}
+  if (window.FB_loadStudentResults) {
+    const online = await withTimeout(window.FB_loadStudentResults(cls, student), 6000, []);
+    (online || []).forEach(r => { if (r && r.book === bookId) attempts.push(r); });
+  }
+  let retakeTs = 0;
+  if (window.FB_loadRetakes) {
+    const rt = await withTimeout(window.FB_loadRetakes(cls, student), 6000, {});
+    retakeTs = Number((rt || {})[bookId]) || 0;
+  }
+  const valid = attempts.filter(r => resultTimestamp(r) > retakeTs);
+  if (!valid.length) return null;
+  return valid.sort((a, b) => resultTimestamp(b) - resultTimestamp(a))[0];
+}
+function showBookAlreadyDone(r, book){
+  const title = book ? book.title : 'ce livre';
+  document.getElementById('results-body').innerHTML = `
+    <div class="card" style="text-align:center;padding:2rem 1.25rem;">
+      <div style="font-size:44px;margin-bottom:.5rem;">📖✅</div>
+      <div style="font-family:Nunito;font-size:18px;font-weight:800;margin-bottom:.5rem;">Tu as déjà fait ce questionnaire</div>
+      <p style="color:var(--muted);font-size:14px;margin-bottom:1rem;">« ${title} » — le ${r.date || ''} à ${r.time || ''}</p>
+      <div style="font-family:Nunito;font-size:26px;font-weight:800;margin-bottom:1rem;">${r.score}/${r.total}</div>
+      <p style="font-size:14px;">Il n'y a qu'une seule tentative. Si tu dois le refaire, demande à ton enseignant.</p>
+    </div>`;
+  showScreen('screen-results');
+}
 function startQuiz(){
+  if(!state.book) return;
+  if (state.role === 'student' && state.student && !window.teacherPreviewActive) {
+    const bookId = state.book;
+    if (window._quizCheckBusy) return;
+    window._quizCheckBusy = true;
+    const qb = document.getElementById('quiz-body');
+    if (qb) qb.innerHTML = '<p style="text-align:center;color:var(--muted);padding:2rem">⏳ Un instant…</p>';
+    ['btn-prev','btn-next','btn-submit'].forEach(id => { const b = document.getElementById(id); if (b) b.style.display = 'none'; });
+    findBookAttempt(bookId).then(done => {
+      window._quizCheckBusy = false;
+      if (state.book !== bookId) return;
+      if (done) { showBookAlreadyDone(done, loadBooks().find(b => b.id === bookId)); return; }
+      beginQuiz();
+    }).catch(() => { window._quizCheckBusy = false; beginQuiz(); });
+    return;
+  }
+  beginQuiz();
+}
+function beginQuiz(){
   if(!state.book) return;
   state.answers={}; state.currentQ=0;
   showScreen('screen-quiz');
@@ -9231,7 +9305,7 @@ function submitQuiz(){
   const entry={
     student:state.student || 'Enseignant (Aperçu)', cls:state.studentCls || (typeof teacherCls !== 'undefined' ? teacherCls : 'lejoly'),
     className:clsName,
-    book:state.book, bookTitle:book.title,
+    book:state.book, bookTitle:book.title, ts: Date.now(),
     score, total:book.totalPoints, pct,
     answers:{...state.answers},
     date:now.toLocaleDateString('fr-BE'),
@@ -10146,8 +10220,25 @@ function renderGestion(){
   document.getElementById('gestion-students-list').innerHTML = html;
 }
 
-function showStudentDetail(studentName){
+let _teacherRetakes = {}; // { élève: { livre: ts } } pour la classe affichée
+async function cancelBookAttempt(studentName, bookId, bookTitle){
+  if (!confirm('Annuler la tentative de ' + studentName + ' pour « ' + bookTitle + ' » ?\n\nL\'élève pourra refaire ce questionnaire une fois. L\'ancien résultat reste visible dans l\'historique, marqué « annulée ».')) return;
   const cls = teacherCls || 'lejoly';
+  try {
+    await window.FB_setRetake(cls, studentName, bookId, Date.now());
+    alert('✅ Tentative annulée : ' + studentName + ' peut refaire « ' + bookTitle + ' ».');
+  } catch(e) {
+    alert('❌ Impossible d\'enregistrer l\'annulation (connexion ?). Réessaie dans un instant.');
+  }
+  showStudentDetail(studentName);
+}
+function showStudentDetail(studentName, _retakesLoaded){
+  const cls = teacherCls || 'lejoly';
+  if (!_retakesLoaded && window.FB_loadRetakes) {
+    window.FB_loadRetakes(cls, studentName).then(rt => { _teacherRetakes[studentName] = rt || {}; showStudentDetail(studentName, true); })
+      .catch(() => showStudentDetail(studentName, true));
+  }
+  const retakes = _teacherRetakes[studentName] || {};
   const results = loadResults(cls).filter(r=>r.student===studentName);
   const emojis=['😊','🌟','🎯','🚀','🦁','🐬','🦊','🐧','🌈','⚡'];
   const emoji = emojis[studentName.charCodeAt(0)%emojis.length];
@@ -10188,6 +10279,15 @@ function showStudentDetail(studentName){
         <div style="font-family:Nunito;font-size:14px;font-weight:800;">📖 ${bookTitle}</div>
         <div style="font-family:Nunito;font-size:14px;font-weight:800;color:${bookColor}">${bookAvg}% moy.</div>
       </div>`;
+    const bookId = attempts[0] && attempts[0].book;
+    const isRecit = bookId && loadBooks().some(b => b.id === bookId);
+    const retakeTs = isRecit ? (Number(retakes[bookId]) || 0) : 0;
+    const hasValid = isRecit && attempts.some(r => resultTimestamp(r) > retakeTs);
+    if (isRecit) {
+      html += hasValid
+        ? `<button class="btn btn-sm" style="margin-bottom:.75rem" onclick="cancelBookAttempt(${JSON.stringify(studentName).replace(/"/g,'&quot;')}, '${bookId}', ${JSON.stringify(bookTitle).replace(/"/g,'&quot;')})">↺ Annuler la tentative (l'élève pourra refaire)</button>`
+        : `<div style="font-size:12px;color:var(--green);font-weight:700;margin-bottom:.75rem">↺ Tentative annulée : l'élève peut refaire ce questionnaire.</div>`;
+    }
 
     attempts.slice().reverse().forEach((r,i)=>{
       const color = r.pct>=70?'var(--green)':r.pct>=50?'var(--amber)':'var(--red)';
@@ -10197,7 +10297,7 @@ function showStudentDetail(studentName){
         <div style="flex:1;height:6px;background:var(--border);border-radius:3px;overflow:hidden;">
           <div style="width:${r.pct}%;height:100%;background:${color};border-radius:3px;"></div>
         </div>
-        <span class="attempt-date">${r.date} ${r.time}</span>
+        <span class="attempt-date">${r.date} ${r.time}${(isRecit && resultTimestamp(r) <= retakeTs) ? ' · <em style="color:var(--muted)">annulée</em>' : ''}</span>
       </div>`;
     });
 
