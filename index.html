@@ -31785,6 +31785,26 @@ function initRealtimeStudentSync() {
     }
   }, (err) => console.warn('Realtime locked_activities error:', err));
 
+  // 1 bis. Livres Récits Express masqués : la liste EN LIGNE de la classe fait foi.
+  // (Avant : les élèves gardaient la liste restée en mémoire sur l'appareil, parfois
+  //  « tous les livres masqués » → carte Récits Express invisible, livre absent.)
+  const applyArchived = (list) => {
+    if (!Array.isArray(list)) list = (list && typeof list === 'object') ? Object.values(list) : [];
+    localStorage.setItem('lq_archived_' + cls, JSON.stringify(list));
+    if (cls === 'lejoly') localStorage.setItem('lq_archived', JSON.stringify(list));
+    if (typeof refreshCurrentMenu === 'function') refreshCurrentMenu();
+    const sb = document.getElementById('screen-books');
+    if (sb && sb.classList.contains('active') && typeof renderBooks === 'function') renderBooks();
+  };
+  fbStudentListeners.archived = window.FB_onValue(window.FB_ref(window.FB_DB, 'settings/archived_books_' + cls), (snap) => {
+    if (snap.exists()) { applyArchived(snap.val()); return; }
+    // Classe sans liste : celle de M. Lejoly, sinon l'ancienne liste commune, sinon rien de masqué
+    window.FB_get(window.FB_ref(window.FB_DB, 'settings/archived_books_lejoly')).then(s2 => {
+      if (s2.exists()) return applyArchived(s2.val());
+      return window.FB_get(window.FB_ref(window.FB_DB, 'settings/archived_books')).then(s3 => applyArchived(s3.exists() ? s3.val() : []));
+    }).catch(() => {});
+  }, (err) => console.warn('Realtime archived_books error:', err));
+
   // 2. Observer pour le plan de travail global de la classe
   const planRef = window.FB_ref(window.FB_DB, 'settings/plan_travail/' + cls);
   fbStudentListeners.plan = window.FB_onValue(planRef, (snap) => {
