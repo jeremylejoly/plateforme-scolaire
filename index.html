@@ -2,6 +2,30 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8"/>
+<script>
+/* Le site ne doit jamais s'afficher DANS un exercice ou un jeu.
+   Certains jeux ont un lien « Accueil » vers index.html : cliqué depuis le site, il chargeait
+   tout le site à l'intérieur du cadre du jeu (ex. : on cliquait sur « Pendu » et on voyait « Robot »).
+   Ici : on remet le jeu dans son cadre et on ramène l'élève au menu du vrai site. */
+(function(){
+  if (window.self === window.top) return;
+  try {
+    var fe = window.frameElement, pdoc = window.parent.document, pwin = window.parent;
+    if (fe && fe.id === 'fiche-viewer-iframe' && typeof pwin.closeFicheViewer === 'function') {
+      pwin.closeFicheViewer();
+      return;
+    }
+    var lazy = fe && fe.getAttribute('data-lazy-src');
+    var screen = fe && fe.closest ? fe.closest('.screen') : null;
+    var back = screen ? screen.querySelector('.back-btn') : null;
+    if (lazy) location.replace(new URL(lazy, pwin.location.href).href); else location.replace('about:blank');
+    if (back) setTimeout(function(){ back.click(); }, 0);
+  } catch (e) {
+    // Cadre d'un autre site : on affiche le site en pleine page
+    try { window.top.location.href = location.href; } catch (e2) {}
+  }
+})();
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Plateforme Scolaire – 5e & 6e primaire FWB</title>
 <meta name="theme-color" content="#1E1F29">
@@ -46960,8 +46984,24 @@ init();
   function framesOf(screen){
     return Array.prototype.filter.call(screen.querySelectorAll('iframe[data-lazy-src]'), function(f){ return f.closest('.screen')===screen; });
   }
+  // Vérifie que le cadre affiche bien SA page. Chrome peut, en restaurant un onglet
+  // (mise en veille, onglet déchargé, bouton Précédent), remettre une autre page
+  // dans un cadre : un élève cliquait sur « Pendu » et voyait « Robot ».
+  function expectedUrl(f){ return new URL(f.getAttribute('data-lazy-src'), location.href); }
+  function ensureRightPage(f){
+    try {
+      var w = f.contentWindow; if(!w) return;
+      var cur = w.location.href;
+      if(!cur || cur === 'about:blank') return; // encore en cours de chargement
+      var exp = expectedUrl(f);
+      if(new URL(cur).pathname !== exp.pathname) w.location.replace(exp.href);
+    } catch(e) {}
+  }
+  function showFrames(screen){
+    framesOf(screen).forEach(function(f){ if(isLoaded(f)) ensureRightPage(f); else load(f); });
+  }
   function onScreenChange(screen){
-    if(screen.classList.contains('active')){ framesOf(screen).forEach(load); return; }
+    if(screen.classList.contains('active')){ showFrames(screen); return; }
     framesOf(screen).forEach(function(f){
       var s=f.getAttribute('data-lazy-src');
       if(isLoaded(f) && UNLOAD_ON_LEAVE.some(function(n){return s.indexOf(n)!==-1;})) f.setAttribute('src','about:blank');
@@ -46971,6 +47011,10 @@ init();
     document.querySelectorAll('iframe[data-lazy-src]').forEach(function(f){
       var sc=f.closest('.screen');
       if(!sc || sc.classList.contains('active')) load(f); // hors écran ou écran déjà affiché : chargement immédiat
+    });
+    // Onglet restauré par le navigateur : revérifier l'écran affiché
+    window.addEventListener('pageshow', function(){
+      var a = document.querySelector('.screen.active'); if(a) showFrames(a);
     });
     new MutationObserver(function(muts){
       for(var i=0;i<muts.length;i++){
