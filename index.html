@@ -8458,30 +8458,11 @@ window.addEventListener('load',function(){
     },100);
     return;
   }
-  const studentSessionRaw = localStorage.getItem('lq_student_session');
-  if (studentSessionRaw) {
-    try {
-      const sess = JSON.parse(studentSessionRaw);
-      if (sess && sess.student && sess.studentCls) {
-        state.student = sess.student;
-        state.studentCls = sess.studentCls;
-        state.role = 'student';
-        setTimeout(function(){
-          document.getElementById('screen-landing').style.display='none';
-          document.getElementById('main-area').style.display='block';
-          goToHome();
-          const activeScreen = localStorage.getItem('lq_active_screen');
-          if (activeScreen && activeScreen !== 'screen-landing' && activeScreen !== 'screen-welcome' && activeScreen !== 'screen-subjects' && !activeScreen.startsWith('screen-teacher')) {
-            const screenEl = document.getElementById(activeScreen);
-            if (screenEl) {
-              showScreen(activeScreen);
-              if (typeof refreshCurrentMenu === 'function') refreshCurrentMenu();
-            }
-          }
-        }, 100);
-      }
-    } catch(e) {}
-  }
+  // Un rechargement de la page déconnecte toujours l'élève : on ne restaure jamais sa session
+  try {
+    localStorage.removeItem('lq_student_session');
+    localStorage.removeItem('lq_active_screen');
+  } catch(e) {}
 });
 
 // Écrans sur lesquels le bouton accueil NE doit PAS apparaître
@@ -9011,16 +8992,6 @@ function goToHome(){
   state.role='student';
   localStorage.removeItem('lq_teacher_session');
   if (window.FB_isTeacher && window.FB_teacherSignOut) window.FB_teacherSignOut().catch(()=>{});
-  if (state.student && state.studentCls) {
-    try {
-      localStorage.setItem('lq_student_session', JSON.stringify({
-        student: state.student,
-        studentCls: state.studentCls,
-        role: 'student',
-        timestamp: Date.now()
-      }));
-    } catch(e) {}
-  }
   updateAppLogo(state.studentCls);
   // Charger les résultats de l'élève depuis Firebase
   loadStudentResults();
