@@ -227,14 +227,14 @@ window.LIVRES = [
         "type": "synthesis",
         "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Résumé A : Alice part en Nouvelle-Zélande pour apprendre à nager avec les dauphins. Elle rencontre Pita, un moniteur maori, qui l'entraîne tous les jours. À la fin des vacances, elle gagne une course de natation.",
-          "Résumé B : Alice rejoint sa maman blessée en Nouvelle-Zélande. Un Maori tatoué lui fait peur et tire même sur leur bateau. Elle découvre qu'il pleure son dauphin tué par des pêcheurs, et ils deviennent amis.",
-          "Résumé C : Alice passe Noël dans le Jura avec ses parents. Un soir, un Maori vient frapper à la porte du chalet pour leur raconter l'histoire de son peuple et leur apprendre le haka."
+          "Alice et son papa partent en Nouvelle-Zélande pour rejoindre sa maman, blessée dans un accident de parapente. Sur l'île de Great Barrier, un grand Maori tatoué, Pita, fait très peur à Alice. Pendant une partie de pêche avec le vieux Bill, Pita coupe la corde du bateau pour le laisser partir à la dérive. Alice découvre qu'il protège les langoustes de la baie, et il lui apprend à les pêcher.",
+          "Alice et son papa partent en Nouvelle-Zélande pour rejoindre sa maman, qui s'est cassé la jambe en faisant du ski. Sur l'île de Great Barrier, un grand Maori tatoué, Pita, fait très peur à Alice. Pendant une partie de pêche avec le vieux Bill, quelqu'un tire sur leur bateau depuis la côte. Alice découvre que Pita pleure son dauphin, mais il refuse de lui parler jusqu'à son départ.",
+          "Alice et son papa partent en Nouvelle-Zélande pour rejoindre sa maman, blessée dans un accident de parapente. Sur l'île de Great Barrier, un grand Maori tatoué, Pita, fait très peur à Alice. Pendant une partie de pêche avec le vieux Bill, quelqu'un tire sur leur bateau depuis la côte. Alice découvre que Pita pleure son ami le dauphin, tué par des pêcheurs, et ils finissent par devenir amis."
         ],
-        "correct": 1,
-        "answer": 1,
+        "correct": 2,
+        "answer": 2,
         "points": 1,
-        "explanation": "Seul le résumé B est correct : l'accident de la maman, la peur du Maori, les coups de feu, le dauphin Sweety et l'amitié finale."
+        "explanation": "Seul le résumé C est correct. Pita tire sur le bateau parce que des pêcheurs ont tué son ami le dauphin Sweety. Il regrette son geste, et le matin de Noël, il emmène Alice voir des centaines de dauphins."
       }
     ]
   },
@@ -466,14 +466,14 @@ window.LIVRES = [
         "type": "synthesis",
         "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Résumé A : Marine part en vacances avec sa maman et fait son premier tour en montgolfière. Là-haut, elle aperçoit la maison de son papa et décide de lui écrire une longue lettre.",
-          "Résumé B : Le papa de Marine gagne une montgolfière à un concours. Il emmène sa fille faire le tour du monde, mais un orage les oblige à atterrir dans un pays inconnu.",
-          "Résumé C : Marine voit que son papa est très triste. Avec l'aide de sa maman, elle répare la vieille montgolfière qu'elle a trouvée chez lui. Leur vol ensemble redonne le sourire à son papa."
+          "Marine voit son papa un week-end sur deux, et elle remarque qu'il est très triste depuis la séparation. Dans le débarras de son appartement, elle découvre le ballon troué d'une vieille montgolfière. Avec l'aide de sa maman, elle le répare en cousant des morceaux de tissu de toutes les couleurs. Le vol qu'elle fait ensuite avec son papa lui redonne le sourire et l'envie de faire des projets.",
+          "Marine voit son papa un week-end sur deux, et elle remarque qu'il est très triste depuis la séparation. Dans le grenier de sa maman, elle découvre le ballon troué d'une vieille montgolfière. Avec l'aide de sa maman, elle le répare en cousant des morceaux de tissu de toutes les couleurs. Mais le jour du vol, le vent est trop fort, et son papa décide de vendre la montgolfière.",
+          "Marine voit son papa un week-end sur deux, et elle remarque qu'il est très triste depuis la séparation. Dans le débarras de son appartement, elle découvre le ballon troué d'une vieille montgolfière. En cachette de sa maman, elle le fait réparer par un voisin couturier avec son argent de poche. Le vol qu'elle fait ensuite avec son papa lui redonne le sourire et l'envie de faire des projets."
         ],
-        "correct": 2,
-        "answer": 2,
+        "correct": 0,
+        "answer": 0,
         "points": 1,
-        "explanation": "Seul le résumé C est correct : la tristesse du papa, la bâche retrouvée, les réparations avec la maman et le vol qui lui fait du bien."
+        "explanation": "Seul le résumé A est correct. Marine trouve le ballon chez son papa et le répare avec sa maman. Le vol en montgolfière aide son papa à sortir de sa tristesse : il pense même à en faire son métier."
       }
     ]
   },
@@ -705,14 +705,14 @@ window.LIVRES = [
         "type": "synthesis",
         "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Résumé A : Les jumeaux Francis et Frédéric rendent un portefeuille perdu à son propriétaire, Mathieu. Pour les remercier, il les invite dans un centre de sports d'hiver. Là-bas, Francis démasque un employé qui a volé les trophées d'une compétition.",
-          "Résumé B : Les jumeaux Francis et Frédéric gagnent une compétition de snow au Centre Champlain. Mais leurs trophées sont volés pendant la nuit, et ils mènent l'enquête avec leur papa, ancien champion de ski.",
-          "Résumé C : Les jumeaux Francis et Frédéric se perdent dans une tempête de neige à Québec. Ils trouvent refuge dans le Château de glace, où Mathieu les retrouve le lendemain matin."
+          "À Québec, les jumeaux Francis et Frédéric trouvent un portefeuille dans la neige et décident de garder l'argent pour eux. Mathieu, le propriétaire, les retrouve et les emmène au Centre Champlain pour qu'ils l'aident à travailler. Pendant la journée, Francis entend deux employés parler de trophées et de cuivre. Quand les trophées disparaissent, Francis fait arrêter le voleur, un employé habillé en jaune.",
+          "À Québec, les jumeaux Francis et Frédéric trouvent un portefeuille dans la neige et le rendent à son propriétaire, Mathieu. Pour les remercier, Mathieu les invite au Centre Champlain pour essayer les sports d'hiver. Pendant la journée, Francis entend deux employés parler de trophées et de cuivre. Quand les trophées disparaissent et que Mathieu est retrouvé ligoté, Francis fait arrêter le voleur, un employé habillé en jaune.",
+          "À Québec, les jumeaux Francis et Frédéric trouvent un portefeuille dans la neige et le rendent à son propriétaire, Mathieu. Pour les remercier, Mathieu les invite au Centre Champlain pour essayer les sports d'hiver. Pendant la journée, Francis entend deux employés parler de trophées et de cuivre. Quand les trophées disparaissent, Francis découvre que c'est Mathieu lui-même qui les a cachés dans une vieille cabane, au milieu de la piste de ski de fond."
         ],
-        "correct": 0,
-        "answer": 0,
+        "correct": 1,
+        "answer": 1,
         "points": 1,
-        "explanation": "Seul le résumé A est correct : le portefeuille rendu, la journée au centre Champlain et le vol des trophées découvert par Francis."
+        "explanation": "Seul le résumé B est correct. Les jumeaux rendent le portefeuille, et Mathieu les invite au Centre Champlain pour les remercier. Les voleurs sont Kevin, l'employé en jaune, et Sacha : ils ont ligoté Mathieu pour revendre le cuivre des trophées."
       }
     ]
   },
@@ -944,14 +944,14 @@ window.LIVRES = [
         "type": "synthesis",
         "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Résumé A : Aiko entre dans un collège japonais où elle apprend la poésie. Elle gagne un concours de haïkus et devient la meilleure amie de la préfète de discipline, qui la félicite devant tout le collège.",
-          "Résumé B : Au collège Momiji, Aiko vit des choses étranges : son reflet bouge, une poupée sans visage apparaît sous son lit. Elle brûle les poupées pour sauver son amie Yui, puis elles s'enfuient. Mais personne ne les croit.",
-          "Résumé C : Aiko et sa petite sœur Nanako collectionnent des poupées de Hina-matsuri. Un jour, une poupée disparaît et les deux sœurs mènent l'enquête dans tout le pensionnat."
+          "Aiko est pensionnaire au collège Momiji, un collège japonais très strict où les objets personnels sont interdits. Des choses étranges s'y passent : son reflet bouge après elle, et une poupée sans visage apparaît sous son lit. Pour sauver son amie Yui, Aiko raconte tout à la préfète de discipline, qui fait fouiller toutes les chambres. Les poupées sont enfermées, et les deux amies restent tranquillement au collège.",
+          "Aiko est pensionnaire au collège Momiji, un collège japonais très strict où les objets personnels sont interdits. Des choses étranges s'y passent : son reflet bouge après elle, et une poupée sans visage apparaît sous son lit. Pour sauver sa petite sœur Nanako, Aiko brûle les poupées dans la cheminée, puis les deux sœurs s'enfuient. Son père les croit tout de suite et appelle la police.",
+          "Aiko est pensionnaire au collège Momiji, un collège japonais très strict où les objets personnels sont interdits. Des choses étranges s'y passent : son reflet bouge après elle, et une poupée sans visage apparaît sous son lit. Pour sauver son amie Yui, Aiko brûle les poupées dans le four à micro-ondes, puis les deux filles s'enfuient chez ses parents. Mais son père ne la croit pas et veut les ramener au collège."
         ],
-        "correct": 1,
-        "answer": 1,
+        "correct": 2,
+        "answer": 2,
         "points": 1,
-        "explanation": "Seul le résumé B est correct : les phénomènes étranges, les poupées brûlées pour sauver Yui, la fuite, et les parents qui ne les croient pas."
+        "explanation": "Seul le résumé C est correct. Aiko brûle les deux poupées dans le four à micro-ondes, et Yui retrouve son visage. Elles fuient chez les parents d'Aiko, mais son père, fatigué, veut les ramener à Momiji."
       }
     ]
   },
@@ -1183,14 +1183,14 @@ window.LIVRES = [
         "type": "synthesis",
         "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Résumé A : Eléna et Erwan partent en vacances chez la grand-mère d'Erwan. Ils y découvrent un vieil hôpital hanté et passent la nuit à chercher des fantômes avec la chienne Laïka.",
-          "Résumé B : Après une série de cambriolages, le papa d'Eléna installe une alarme. Les voleurs se font prendre en essayant d'entrer dans sa maison, grâce aux aboiements de Laïka.",
-          "Résumé C : En explorant un hôpital abandonné, Eléna et Erwan tombent sur trois hommes menaçants. Erwan découvre leur cachette pleine d'objets volés. Pris au piège, les enfants sont sauvés par la police grâce au téléphone d'Erwan."
+          "Une vague de cambriolages inquiète le quartier d'Eléna. Avec son ami Erwan, elle explore un vieil hôpital abandonné et tombe sur trois hommes qui se font passer pour des gardiens. Erwan y retourne seul et découvre, derrière une machine à laver, une cachette pleine d'objets volés. Les deux enfants sont faits prisonniers, mais Laïka, l'énorme chienne d'Eléna, attaque les voleurs et les poursuit jusque dans la cour.",
+          "Une vague de cambriolages inquiète le quartier d'Eléna. Avec son ami Erwan, elle explore un vieil hôpital abandonné et tombe sur trois hommes qui se font passer pour des gardiens. Erwan y retourne avec son grand frère Thomas et découvre, dans le grenier, une cachette pleine d'objets volés. Thomas prévient aussitôt la police, qui arrête les voleurs le soir même.",
+          "Une vague de cambriolages inquiète le quartier d'Eléna. Avec son ami Erwan, elle explore un vieil hôpital abandonné et tombe sur trois hommes qui se font passer pour des gardiens. Erwan y retourne seul et découvre, derrière une machine à laver, une cachette pleine d'objets volés. Les deux enfants sont faits prisonniers, mais la police les sauve grâce au téléphone qu'Erwan a laissé allumé dans sa poche."
         ],
         "correct": 2,
         "answer": 2,
         "points": 1,
-        "explanation": "Seul le résumé C est correct : l'Urbex, les trois voleurs, la cachette derrière la machine à laver et le téléphone resté allumé."
+        "explanation": "Seul le résumé C est correct. Erwan retourne seul à l'hôpital et trouve la cachette derrière une machine à laver, à la cave. Prisonniers, les enfants sont sauvés parce qu'Erwan a laissé le téléphone allumé : la police entendait tout."
       }
     ]
   },
@@ -1422,14 +1422,14 @@ window.LIVRES = [
         "type": "synthesis",
         "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Résumé A : Anne prépare un exposé sur la Voie lactée. Avec son grand-père, elle observe les étoiles au télescope et découvre une nouvelle planète, qu'elle appelle Sidérius.",
-          "Résumé B : Un extraterrestre gentil vient aider Anne à faire son exposé. Grâce à lui, elle obtient la meilleure note de la classe et part visiter sa planète pendant les vacances.",
-          "Résumé C : Rorrr, un extraterrestre, veut emmener Anne et sa famille sur sa planète pour son exposé. Anne le trompe en lui faisant croire que les humains naissent dans des œufs. Mais personne ne croit son exposé en classe."
+          "Anne doit préparer un exposé pour l'école. Un soir, un extraterrestre, Rorrr, atterrit près de la ferme de ses grands-parents : il veut emmener un poussin sur sa planète pour son propre exposé. Pour l'aider, Anne lui fait croire que les humains naissent dans des œufs de poule, et il repart avec cinq œufs. En classe, tout le monde croit son histoire, car son grand-père vient à l'école et raconte ce qu'il a vu cette nuit-là.",
+          "Anne doit préparer un exposé pour l'école. Un soir, un extraterrestre, Rorrr, atterrit près de la ferme de ses grands-parents : il veut emmener Anne et sa famille sur sa planète pour son propre exposé. Pour lui échapper, Anne lui fait croire que les humains naissent dans des œufs de poule, et il repart avec cinq œufs. En classe, personne ne croit son histoire, mais elle retrouve des graines bleues laissées par Rorrr.",
+          "Anne doit préparer un exposé pour l'école. Un soir, un extraterrestre, Rorrr, atterrit près de la ferme de ses grands-parents : il veut emmener Anne et sa famille sur sa planète pour son propre exposé. Pour lui échapper, Anne lui donne son smartphone rempli de photos de la Terre, et il repart content. En classe, Anne montre la vidéo du vaisseau et obtient une excellente note."
         ],
-        "correct": 2,
-        "answer": 2,
+        "correct": 1,
+        "answer": 1,
         "points": 1,
-        "explanation": "Seul le résumé C est correct : l'enlèvement, la ruse des œufs, puis l'exposé d'Anne qui passe pour une histoire inventée."
+        "explanation": "Seul le résumé B est correct. Rorrr veut emmener Anne et sa famille. Anne le trompe avec les œufs de poule. Sans preuve (son téléphone était déchargé), l'institutrice pense que l'exposé est inventé."
       }
     ]
   },
@@ -1661,14 +1661,14 @@ window.LIVRES = [
         "type": "synthesis",
         "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Résumé A : Samira accompagne sa meilleure amie Laura à une audition de théâtre et obtient le premier rôle à sa place. Laura lui en veut, mais Samira découvre qu'elle aime jouer. Malgré une entorse, elle joue le soir du spectacle et retrouve son amie.",
-          "Résumé B : Laura et Samira jouent ensemble dans la pièce de fin d'année. Le soir du spectacle, Laura se blesse à la cheville et Samira, qui connaît tout le texte, la remplace au dernier moment.",
-          "Résumé C : Samira veut devenir comédienne, mais le jury choisit Laura pour le premier rôle. Pour se venger, Samira abîme les accessoires, puis finit par demander pardon à son amie."
+          "Samira, surnommée « Sam-la-poisse », accompagne sa meilleure amie Laura à une audition de théâtre. Le jury donne le premier rôle à Laura, et Samira devient la souffleuse de la troupe. Jalouse, elle abîme les costumes, mais elle finit par avouer sa faute. Le soir du spectacle, malgré une entorse à la cheville, Laura joue son rôle et les deux amies se réconcilient.",
+          "Samira, surnommée « Sam-la-poisse », accompagne sa meilleure amie Laura à une audition de théâtre. En lui donnant la réplique sur scène, c'est Samira qui obtient le premier rôle, et Laura ne lui parle plus. Samira découvre qu'elle aime jouer, et Laura devient accessoiriste de la troupe. Le soir du spectacle, Samira se fait une entorse, et c'est finalement Laura qui joue le rôle à sa place.",
+          "Samira, surnommée « Sam-la-poisse », accompagne sa meilleure amie Laura à une audition de théâtre. En lui donnant la réplique sur scène, c'est Samira qui obtient le premier rôle, et Laura ne lui parle plus. Samira découvre qu'elle aime jouer, et Laura devient accessoiriste de la troupe. Le soir du spectacle, malgré une entorse à la cheville, Samira joue son rôle et les deux amies se réconcilient."
         ],
-        "correct": 0,
-        "answer": 0,
+        "correct": 2,
+        "answer": 2,
         "points": 1,
-        "explanation": "Seul le résumé A est correct : l'audition, le rôle donné à Samira, la dispute avec Laura, l'entorse et la réconciliation."
+        "explanation": "Seul le résumé C est correct. Le jury choisit Samira à l'unanimité. Laura, vexée, devient accessoiriste. Le soir de la première, Samira joue avec une entorse, et Laura lui demande pardon."
       }
     ]
   },
@@ -1900,14 +1900,14 @@ window.LIVRES = [
         "type": "synthesis",
         "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Résumé A : Emma part en vacances en Camargue avec son papa et son grand-père. Elle apprend à monter à cheval et gagne une course sur la plage avec une jument qu'elle a achetée au marché.",
-          "Résumé B : Emma libère un cheval maltraité dans un cirque. Avec son grand-père, elle l'emmène en Camargue, où elle retrouve son papa. La jument met au monde un poulain, et Emma se réconcilie avec son père.",
-          "Résumé C : Emma travaille dans un cirque avec son beau-père. Un soir, un cheval s'échappe, et elle traverse toute la France pour le retrouver avant la police."
+          "En visitant un cirque, Emma voit que les animaux sont maltraités, surtout un petit cheval brun très maigre. La nuit, elle le libère et va chercher son grand-père, qui l'emmène en Camargue. Là-bas, le gardian qui s'occupe des chevaux est son papa, qu'elle n'avait plus vu depuis six ans. Le cheval est en fait une jument qui met au monde un poulain, et Emma se réconcilie avec son père.",
+          "En visitant un cirque, Emma voit que les animaux sont maltraités, surtout un petit cheval brun très maigre. Elle convainc le directeur du cirque de le lui vendre, et son petit frère Antoine l'aide à le ramener en train. Là-bas, le gardian qui s'occupe des chevaux est son papa, qu'elle n'avait plus vu depuis six ans. Le cheval est en fait une jument qui met au monde un poulain.",
+          "En visitant un cirque, Emma voit que les animaux sont maltraités, surtout un petit cheval brun très maigre. La nuit, elle le libère et va chercher son grand-père, qui l'emmène en Camargue. Là-bas, le gardian qui s'occupe des chevaux est un vieil ami de son grand-père. Il achète le cheval et Emma rentre chez sa maman, sans jamais revoir son papa."
         ],
-        "correct": 1,
-        "answer": 1,
+        "correct": 0,
+        "answer": 0,
         "points": 1,
-        "explanation": "Seul le résumé B est correct : le cheval libéré, le voyage avec Papy, les retrouvailles avec le papa et la naissance de Bingo."
+        "explanation": "Seul le résumé A est correct. Emma libère Comète la nuit et part avec Papy en Camargue. Le gardian est son papa. Comète a un poulain, Bingo, et Emma les laisse au ranch."
       }
     ]
   },
@@ -2139,14 +2139,14 @@ window.LIVRES = [
         "type": "synthesis",
         "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Résumé A : À 18 ans, Faustine découvre que sa maman est une prêtresse qui protège une source magique. Elle devient gardienne des eaux vives et, avec l'aide des gargouilles, repousse les hommes-chauves-souris. Elle devient ensuite grande prêtresse.",
-          "Résumé B : Faustine est une élève brillante qui veut devenir écrivain comme son papa. Au café, elle rencontre Vivian, et tous les deux partent vivre dans un autre pays pour écrire un livre ensemble.",
-          "Résumé C : Faustine se transforme en panthère la nuit et fait peur aux habitants de Chartres. Ses amis du lycée l'aident à retrouver sa forme humaine grâce à l'eau d'une source."
+          "Faustine vit à Chartres avec son papa, qui la surveille sans arrêt. Un jour, elle est attaquée par des hommes-chauves-souris et sauvée par des femmes-panthères. Elle découvre que sa maman est vivante : c'est la grande prêtresse qui garde la source des eaux vives. Faustine devient gardienne à son tour et, avec l'aide des gargouilles de la cathédrale, elle repousse les ennemis avant de devenir grande prêtresse.",
+          "Faustine vit à Chartres avec son papa, qui la surveille sans arrêt. Un jour, elle est attaquée par des femmes-panthères et sauvée par Vivian, un homme-chauve-souris. Elle découvre que sa maman est vivante : c'est la grande prêtresse qui garde la source des eaux vives. Faustine devient gardienne à son tour et part vivre avec Vivian dans le pays des hommes-chauves-souris.",
+          "Faustine vit à Chartres avec son papa, qui la surveille sans arrêt. Un jour, elle est attaquée par des hommes-chauves-souris et sauvée par des femmes-panthères. Elle découvre que sa maman est vivante : c'est la grande prêtresse qui garde la source des eaux vives. Faustine devient gardienne à son tour, mais son amie Yasmine ouvre la grille du parc aux ennemis, et le temple est détruit, avec la source, pour toujours."
         ],
         "correct": 0,
         "answer": 0,
         "points": 1,
-        "explanation": "Seul le résumé A est correct : la découverte de sa mère, la formation de gardienne, la bataille gagnée avec les gargouilles et son nouveau rôle."
+        "explanation": "Seul le résumé A est correct. Les panthères sauvent Faustine. Sa maman, Moïra, garde la source. Grâce aux gargouilles, les prêtresses gagnent la bataille, et Faustine devient grande prêtresse. Vivian, lui, est parti."
       }
     ]
   },
@@ -2378,14 +2378,14 @@ window.LIVRES = [
         "type": "synthesis",
         "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Résumé A : Line trouve un chaton abandonné dans la rue et le cache chez sa maman. Harold le découvre et veut le donner à Charlotte, une voisine qui adore les chats.",
-          "Résumé B : Line prépare un exposé sur la danse avec sa meilleure amie Assia. Leur professeur est si impressionné qu'il les inscrit à un grand concours de danse à Bruxelles.",
-          "Résumé C : Après la mort du chat de son frère, Line insulte Charlotte, une jeune femme en fauteuil roulant. Elle va s'excuser et elles deviennent amies. Grâce à son exposé, Line réconcilie Charlotte avec son beau-père, le professeur."
+          "Line est triste : son grand frère est parti au Canada, et son chat Catsou est mort dans le jardin d'une jeune femme en fauteuil roulant. Sous le choc, Line lui dit des mots très méchants, puis elle revient s'excuser avec des cookies. Line et Charlotte deviennent amies, et Line prépare un exposé sur la cyclodanse. Grâce à cet exposé, Charlotte retrouve le grand frère de Line, Jérôme, qu'elle avait connu avant son départ au Canada.",
+          "Line est triste : son grand frère est parti au Canada, et son chat Catsou est mort dans le jardin d'une jeune femme en fauteuil roulant. Sous le choc, Line lui dit des mots très méchants, puis elle revient s'excuser avec des cookies. Line et Charlotte deviennent amies, et Line prépare un exposé sur la cyclodanse. Grâce à cet exposé, Charlotte se réconcilie avec son beau-père, le sévère Monsieur Briard.",
+          "Line est triste : son grand frère est parti au Canada, et son chat Catsou est mort dans le jardin d'une jeune femme en fauteuil roulant. Line refuse de lui adresser la parole et lui envoie une lettre de reproches. Les deux ne se revoient plus, et Line prépare un exposé sur les chats. Pour la consoler, son professeur, Monsieur Briard, lui offre un chaton."
         ],
-        "correct": 2,
-        "answer": 2,
+        "correct": 1,
+        "answer": 1,
         "points": 1,
-        "explanation": "Seul le résumé C est correct : la mort de Catsou, les excuses, l'amitié avec Charlotte et la réconciliation avec Monsieur Briard."
+        "explanation": "Seul le résumé B est correct. Line insulte Charlotte, puis va lui demander pardon. L'exposé sur la cyclodanse montre une photo de Charlotte : Monsieur Briard, son beau-père, la retrouve et offre un chaton à Line pour la remercier."
       }
     ]
   },
@@ -2617,14 +2617,14 @@ window.LIVRES = [
         "type": "synthesis",
         "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Résumé A : Une princesse très belle refuse tous les princes. Une fée la rend laide pour la punir, et seul un paysan réussit à rompre le sort grâce à un baiser.",
-          "Résumé B : On dit que la princesse Marjolaine est laide, et plus aucun prince ne vient la voir. Elle choisit d'épouser Séraphin, un paysan. Quand un duc le provoque en duel, Marjolaine se déguise et se bat à sa place.",
-          "Résumé C : Le paysan Séraphin veut devenir roi. Il gagne un tournoi contre tous les princes du royaume et reçoit la main de la princesse en récompense."
+          "La princesse Marjolaine refuse tous les princes, qui l'ennuient. Un prince vexé raconte partout qu'elle est laide, et plus personne ne vient la demander en mariage. Au bord d'un lac, elle rencontre Séraphin, un jeune paysan, et elle lui propose de l'épouser. Quand le duc de Gondard provoque Séraphin en duel, Séraphin se bat avec courage et tue le duc.",
+          "La princesse Marjolaine refuse tous les princes, qui l'ennuient. Pour les faire fuir, elle raconte elle-même partout qu'elle est laide. Au bord d'un lac, elle rencontre Séraphin, un jeune prince déguisé en paysan, et elle lui propose de l'épouser. Quand le duc de Gondard provoque Séraphin en duel, Marjolaine se coupe les cheveux, met son armure et se bat à sa place.",
+          "La princesse Marjolaine refuse tous les princes, qui l'ennuient. Un prince vexé raconte partout qu'elle est laide, et plus personne ne vient la demander en mariage. Au bord d'un lac, elle rencontre Séraphin, un jeune paysan, et elle lui propose de l'épouser. Quand le duc de Gondard provoque Séraphin en duel, Marjolaine se coupe les cheveux, met son armure et se bat à sa place."
         ],
-        "correct": 1,
-        "answer": 1,
+        "correct": 2,
+        "answer": 2,
         "points": 1,
-        "explanation": "Seul le résumé B est correct : la rumeur, le choix de Séraphin et le duel gagné par Marjolaine déguisée."
+        "explanation": "Seul le résumé C est correct. C'est Euclave, un prince refusé, qui lance la rumeur. Séraphin est un vrai paysan. Marjolaine fait enfermer Séraphin et combat le duc à sa place ; elle lui laisse la vie sauve."
       }
     ]
   },
@@ -2856,14 +2856,14 @@ window.LIVRES = [
         "type": "synthesis",
         "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Résumé A : Picolino, un jeune pirate, attaque l'île de Figuélia pour voler l'or de la mine. Mais il tombe amoureux de Toscana et décide de rester vivre sur l'île comme berger.",
-          "Résumé B : Les enfants de l'île de Figuélia découvrent une grotte pleine d'or. Ils deviennent très riches et nomment Picolino roi, car il joue très bien de la mandoline.",
-          "Résumé C : Le vieux roi Picolino raconte comment, à seize ans, il a aidé les enfants de l'île à libérer leurs parents, ensorcelés par des brigands. Grâce au pouvoir de sa mandoline, ils ont chassé l'ennemi sans violence."
+          "Le vieux roi Picolino raconte son enfance sur l'île de Figuélia. Orphelin et coléreux, il devient berger et se calme dans la montagne. Quand le brigand Mostar ensorcelle les adultes pour les faire travailler à la mine d'or, les enfants se cachent dans une grotte et s'organisent. Grâce au chant que compose Picolino, leur musique brise le sort, et les brigands s'enfuient sans qu'une goutte de sang soit versée.",
+          "Le vieux roi Picolino raconte son enfance sur l'île de Figuélia. Fils du roi Livio, il devient berger pour échapper aux brigands. Quand le brigand Mostar ensorcelle les adultes pour les faire travailler à la mine d'or, Picolino part seul chercher de l'aide sur le continent. Il revient avec une armée, et leur musique brise le sort de Mostar.",
+          "Le vieux roi Picolino raconte son enfance sur l'île de Figuélia. Orphelin et coléreux, il devient berger et se calme dans la montagne. Quand le brigand Mostar ensorcelle les adultes pour les faire travailler à la mine d'or, les enfants se cachent dans une grotte et s'organisent. Armés de bâtons et de frondes, ils attaquent la mine en pleine nuit, et une terrible bataille, avec de nombreux blessés, chasse les brigands de l'île."
         ],
-        "correct": 2,
-        "answer": 2,
+        "correct": 0,
+        "answer": 0,
         "points": 1,
-        "explanation": "Seul le résumé C est correct : l'invasion, le sort de Mostar, la résistance des enfants et la victoire grâce à la musique."
+        "explanation": "Seul le résumé A est correct. Picolino est orphelin. Avec Tito, Toscana, Cristina et les autres enfants, il libère les adultes grâce au chant de la Liberté. Les brigands fuient, sans bataille."
       }
     ]
   },
@@ -3095,14 +3095,14 @@ window.LIVRES = [
         "type": "synthesis",
         "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Résumé A : Elisabeth part vivre à Londres chez son papa, qui se remarie. Elle se dispute avec sa nouvelle belle-mère et s'enfuit chez sa tante, qui l'accueille à bras ouverts.",
-          "Résumé B : Elisabeth, orpheline de mère, vit chez sa tante très sévère, qui part souvent à Londres en secret. Elle la soupçonne d'être liée aux meurtres de Whitechapel et la suit. Elle découvre que sa tante enquête en réalité pour la police.",
-          "Résumé C : Elisabeth devient détective à Scotland Yard et arrête Jack l'Éventreur grâce à une machine inventée par sa tante."
+          "À la fin du dix-neuvième siècle, Elisabeth, qui a perdu sa maman, est envoyée chez sa tante, la très sévère Miss Tucson. Elle remarque que sa tante part chaque mois à Londres sans dire pourquoi. Comme ces voyages ont lieu au moment des meurtres de Whitechapel, Elisabeth la soupçonne et la suit, déguisée en cocher. Elle découvre que sa tante rend visite en secret à son papa, qu'elle n'a jamais cessé d'aimer.",
+          "À la fin du dix-neuvième siècle, Elisabeth, qui a perdu sa maman, est envoyée chez sa tante, la très sévère Miss Tucson. Elle remarque que sa tante part chaque mois à Londres sans dire pourquoi. Comme ces voyages ont lieu au moment des meurtres de Whitechapel, Elisabeth la soupçonne et la suit, déguisée en cocher. Elle découvre que sa tante enquête en secret pour la police de Scotland Yard.",
+          "À la fin du dix-neuvième siècle, Elisabeth, qui a perdu sa maman, est envoyée chez sa tante, la très sévère Miss Tucson. Elle remarque que sa tante part chaque mois à Londres sans dire pourquoi. Inquiète, Elisabeth demande à Marie-Louise, la cuisinière, de la suivre à sa place. Marie-Louise découvre que la tante enquête pour la police et prévient aussitôt Elisabeth."
         ],
         "correct": 1,
         "answer": 1,
         "points": 1,
-        "explanation": "Seul le résumé B est correct : la tante sévère, les voyages secrets, les soupçons d'Elisabeth et la révélation finale."
+        "explanation": "Seul le résumé B est correct. Elisabeth suit elle-même sa tante, déguisée en cocher, et se fait assommer par erreur. Miss Tucson lui révèle qu'elle enquête pour Scotland Yard sur l'affaire de Whitechapel."
       }
     ]
   },
@@ -3334,14 +3334,14 @@ window.LIVRES = [
         "type": "synthesis",
         "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Résumé A : Après la mort de son grand-père, Bastien part vivre chez sa grand-mère. Ensemble, ils construisent un épouvantail et gagnent le concours du plus beau jardin du village.",
-          "Résumé B : Après la mort de son grand-père, Bastien fait une bêtise sous le coup de la colère. Sa grand-mère fait semblant de devenir folle et de tout casser dans le village. En réparant ses « dégâts », Bastien oublie sa colère.",
-          "Résumé C : Mamie Henriette devient vraiment folle après la mort de son mari. Bastien doit appeler la police, et sa grand-mère part vivre dans une maison de repos."
+          "Après la mort de son grand-père, Bastien est très en colère : il casse la vitre du cabanon et jette les outils de son grand-père. Sa grand-mère Henriette part alors avec la carabine et semble devenir folle, en faisant des dégâts dans tout le village. Bastien passe ses journées à réparer ses « bêtises ». Il découvre ensuite que c'est le fermier Hector qui avait tout fait, en cachette, pour se venger de Mamie Henriette.",
+          "Après la mort de son grand-père, Bastien est très en colère : il tire avec la carabine et abîme Justin, l'épouvantail qu'ils avaient fabriqué ensemble. Sa grand-mère Henriette part alors avec la carabine et semble devenir folle, en faisant des dégâts dans tout le village. Bastien appelle ses parents, qui viennent la chercher. Elle est placée dans une maison de repos loin du village.",
+          "Après la mort de son grand-père, Bastien est très en colère : il tire avec la carabine et abîme Justin, l'épouvantail qu'ils avaient fabriqué ensemble. Sa grand-mère Henriette part alors avec la carabine et semble devenir folle, en faisant des dégâts dans tout le village. Bastien passe ses journées à réparer ses « bêtises ». Il découvre ensuite que tout était une mise en scène pour l'aider à oublier sa colère."
         ],
-        "correct": 1,
-        "answer": 1,
+        "correct": 2,
+        "answer": 2,
         "points": 1,
-        "explanation": "Seul le résumé B est correct : la colère de Bastien, la fausse folie de Mamie et les réparations qui l'apaisent."
+        "explanation": "Seul le résumé C est correct. Bastien tire sur un corbeau et touche Justin. Henriette fait semblant d'être folle, avec l'aide des villageois. En réparant tout, Bastien oublie sa colère : Hector lui révèle la mise en scène."
       }
     ]
   },
@@ -3573,14 +3573,14 @@ window.LIVRES = [
         "type": "synthesis",
         "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Résumé A : Quatre amis révisent ensemble leur contrôle de géographie. Grâce à leur travail, ils obtiennent tous une excellente note et Monsieur Bertin les félicite devant la classe.",
-          "Résumé B : Une comète tombe vraiment sur Rouen. Damien et ses amis sauvent tous les élèves de l'école en construisant un grand radeau, et ils deviennent des héros.",
-          "Résumé C : Pour éviter un contrôle, Damien et ses amis font chacun un vœu de catastrophe. Damien, malade, vit une aventure incroyable : comète, inondation, tempête… En se réveillant, il comprend qu'il a rêvé. Et le contrôle est reporté, car le professeur a la grippe."
+          "Damien et ses amis n'ont pas assez étudié pour le contrôle de géographie. Ils décident de faire chacun un vœu de catastrophe en se concentrant très fort. Damien, malade, vit alors une aventure incroyable : une comète tombe, l'école est inondée et les amis s'enfuient sur un radeau. En se réveillant, il comprend qu'il a rêvé, et que ses amis ont eu une très bonne note au contrôle.",
+          "Damien et ses amis n'ont pas assez étudié pour le contrôle de géographie. Ils décident de faire chacun un vœu de catastrophe en se concentrant très fort. Damien, malade, vit alors une aventure incroyable : une comète tombe, l'école est inondée et les amis s'enfuient sur un radeau. En se réveillant, il comprend qu'il a rêvé, et que le contrôle est reporté parce que le professeur a la grippe.",
+          "Damien et ses amis n'ont pas assez étudié pour le contrôle de géographie. Ils décident de cacher les feuilles du contrôle dans le bureau du professeur. Damien vit alors une aventure incroyable : une comète tombe, l'école est inondée et les amis s'enfuient en hélicoptère. Ils deviennent des héros, et le directeur annule tous les contrôles de l'année."
         ],
-        "correct": 2,
-        "answer": 2,
+        "correct": 1,
+        "answer": 1,
         "points": 1,
-        "explanation": "Seul le résumé C est correct : les vœux, le rêve dû à la fièvre et le contrôle finalement reporté."
+        "explanation": "Seul le résumé B est correct. Les amis font un vœu (comète, inondation, tempête, extraterrestres). Damien, fiévreux, rêve toute l'aventure. Monsieur Bertin a la grippe : le contrôle est reporté au lundi."
       }
     ]
   },
@@ -3812,14 +3812,14 @@ window.LIVRES = [
         "type": "synthesis",
         "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Résumé A : Babou est attaquée chez elle et ses bijoux sont volés. Les jumeaux Gabrielle et Dorian mènent l'enquête avec leur rat Max. Ils retrouvent des boucles d'oreilles dans un magasin et découvrent que la voleuse est Madame Jansen, qui faisait semblant de mal marcher.",
-          "Résumé B : Les jumeaux perdent leur rat Max dans l'immeuble de Babou. En le cherchant, ils découvrent que Monsieur Julien cache un trésor dans son armoire.",
-          "Résumé C : Zoé, la petite-fille de Monsieur Julien, vole les bijoux de Babou pour acheter des bonbons à la cannelle. La police l'arrête grâce aux jumeaux."
+          "Babou, la grand-mère des jumeaux Gabrielle et Dorian, est attaquée chez elle, et sa boîte à bijoux est volée. Les jumeaux mènent l'enquête avec Max, le rat apprivoisé de Dorian, qui trouve un fil de laine bleu. Gabrielle reconnaît ensuite les boucles d'oreilles de Babou dans un magasin d'occasion. Ils découvrent que la voleuse est Madame Jansen, une voisine qui faisait semblant d'avoir du mal à marcher.",
+          "Babou, la grand-mère des jumeaux Gabrielle et Dorian, est attaquée chez elle, et sa boîte à bijoux est volée. Les jumeaux mènent l'enquête avec Max, le chien de Babou, qui trouve un bouton de manteau. Dorian retrouve ensuite les bijoux de Babou cachés dans la cave de l'immeuble. Ils découvrent que la voleuse est Madame Jansen, une voisine qui faisait semblant d'avoir du mal à marcher.",
+          "Babou, la grand-mère des jumeaux Gabrielle et Dorian, est attaquée chez elle, et sa boîte à bijoux est volée. Les jumeaux mènent l'enquête avec Max, le rat apprivoisé de Dorian, qui trouve un fil de laine bleu. Gabrielle reconnaît ensuite les boucles d'oreilles de Babou dans un magasin d'occasion. Ils découvrent que le voleur est Monsieur Julien, le voisin qui avait déjà fait de la prison."
         ],
         "correct": 0,
         "answer": 0,
         "points": 1,
-        "explanation": "Seul le résumé A est correct : l'agression, l'enquête des jumeaux, les boucles d'oreilles retrouvées et la vraie coupable."
+        "explanation": "Seul le résumé A est correct. Max, le rat de Dorian, trouve un fil bleu. Les boucles d'oreilles sont dans la vitrine d'un magasin d'occasion. La voleuse est Madame Jansen, qui utilisait un déambulateur pour faire semblant."
       }
     ]
   },
@@ -4051,14 +4051,14 @@ window.LIVRES = [
         "type": "synthesis",
         "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Résumé A : Lucie écrit son journal intime et le perd dans le parc. Marguerite le trouve, le lit et découvre que Lucie est amoureuse d'Aurélien.",
-          "Résumé B : Lucie et Marguerite participent à un concours d'écriture. Elles gagnent cinq kilos de chocolat et rencontrent un écrivain célèbre.",
-          "Résumé C : Lucie trouve un journal intime sur un banc. Avec Marguerite, elle mène l'enquête pour trouver le garçon qui l'a écrit. Elles découvrent finalement que c'est un écrivain qui l'a perdu."
+          "Au parc, Lucie trouve sur un banc un cahier rose : c'est le journal intime d'un garçon. Avec sa meilleure amie Marguerite, elle mène l'enquête pour découvrir qui l'a écrit, en comparant les écritures des garçons de l'école. Elles découvrent que l'auteur est Ernest, un garçon de la classe B. Il est très fâché qu'elles aient lu son cahier, et il ne leur adresse plus jamais la parole, même pendant les récréations.",
+          "Au parc, Lucie trouve sur un banc un cahier rose : c'est le journal intime d'un garçon. Avec sa meilleure amie Marguerite, elle mène l'enquête pour découvrir qui l'a écrit, en comparant les écritures des garçons de l'école. Aucun garçon ne correspond aux indices. Finalement, un écrivain venu en classe explique qu'il a perdu ce cahier, où il écrivait un roman, et il promet aux deux amies d'en faire l'héroïne.",
+          "Au parc, Lucie trouve sur un banc un cahier rose : c'est le journal intime d'un garçon. Elle décide de le lire en cachette, sans en parler à personne, pas même à Marguerite. Aucun garçon ne correspond aux indices. Finalement, un écrivain venu en classe explique qu'il a perdu ce cahier, et Lucie le lui rend sans rien dire à personne."
         ],
-        "correct": 2,
-        "answer": 2,
+        "correct": 1,
+        "answer": 1,
         "points": 1,
-        "explanation": "Seul le résumé C est correct : le cahier trouvé, l'enquête des deux amies et la surprise de l'écrivain."
+        "explanation": "Seul le résumé B est correct. Lucie et Marguerite enquêtent ensemble. Le cahier appartient à l'écrivain Jean-Claude Sirop : c'était un roman écrit comme un journal intime. Il leur promet un rôle d'héroïne."
       }
     ]
   },
@@ -4290,14 +4290,14 @@ window.LIVRES = [
         "type": "synthesis",
         "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Résumé A : Alexis part en Laponie pour rencontrer le père Noël. Il l'aide à distribuer les cadeaux le soir de Noël, en conduisant son traîneau tiré par des rennes.",
-          "Résumé B : En vacances en Laponie, Alexis rencontre Meri. Ensemble, ils sauvent un renne aux sabots d'or enlevé par des voleurs. Alexis choisit de le laisser libre pour protéger la nature, comme son oncle Nils avant lui.",
-          "Résumé C : Alexis et Meri découvrent une mine d'or en Laponie. Ils deviennent très riches et construisent un grand chalet pour les rennes du père Noël."
+          "Alexis part en vacances en Laponie chez Nils, le vieil oncle de sa maman. Il y rencontre Meri et, ensemble, ils voient des voleurs enlever un jeune renne. Ils préviennent la police, qui retrouve le renne dans un camion, et Nils le vend à un zoo. Alexis rentre chez lui avec une pépite d'or trouvée dans le camion.",
+          "Alexis part en vacances en Laponie chez Nils, le vieil oncle de sa maman. Il y rencontre Meri et, ensemble, ils voient des voleurs enlever un jeune renne. En le sauvant, ils découvrent que ce renne a des sabots d'or et qu'il peut mener à une mine d'or. Alexis choisit de le laisser libre pour protéger la nature, comme Nils l'avait fait avant lui.",
+          "Alexis part en vacances en Laponie chez Nils, le vieil oncle de sa maman. Il y rencontre Meri et, ensemble, ils voient des voleurs enlever un jeune renne. En le sauvant, ils découvrent que ce renne a des sabots d'or et qu'il peut mener à une mine d'or. Alexis le ramène au village du père Noël, où il l'attache pour que les voleurs ne le reprennent pas."
         ],
         "correct": 1,
         "answer": 1,
         "points": 1,
-        "explanation": "Seul le résumé B est correct : la rencontre avec Meri, le renne volé puis libéré, et le secret de la famille de Nils."
+        "explanation": "Seul le résumé B est correct. Alexis et Meri sauvent eux-mêmes le renne aux sabots d'or. Alexis refuse de l'attacher : une mine d'or détruirait la toundra. Nils lui offre une pépite, trouvée soixante ans plus tôt."
       }
     ]
   },
@@ -4529,14 +4529,14 @@ window.LIVRES = [
         "type": "synthesis",
         "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Résumé A : Pendant une longue marche sur la côte d'Opale, Philippe découvre qu'un père et sa fille ont volé un requin pour leur petit garçon malade. Le père l'attaque pour garder le secret, mais Philippe gagne son pari, et le requin est finalement relâché dans la mer.",
-          "Résumé B : Philippe travaille au centre Nausicaa. Un jour, il découvre qu'un requin s'est échappé de son aquarium et il le retrouve en nageant jusqu'en Angleterre.",
-          "Résumé C : Philippe et ses amis volent un requin pour gagner un pari. La police les arrête sur la plage de Boulogne-sur-Mer et les oblige à rendre l'animal."
+          "Philippe fait le pari de marcher le long de la côte d'Opale, de Calais à Boulogne-sur-Mer, en moins de douze heures. En chemin, il découvre qu'un père et sa fille ont volé le requin du centre Nausicaa pour le petit Joachim, très malade. Le père essaie de l'attaquer pour garder le secret. Blessé, Philippe perd son pari, et le requin est rendu à l'aquarium.",
+          "Philippe fait le pari de nager le long de la côte d'Opale, de Calais à Boulogne-sur-Mer, en moins de douze heures. En chemin, il découvre qu'un pêcheur a volé le requin du centre Nausicaa pour le vendre très cher. Le pêcheur essaie de l'attaquer pour garder le secret. Philippe gagne quand même son pari, et le requin est finalement relâché dans la mer.",
+          "Philippe fait le pari de marcher le long de la côte d'Opale, de Calais à Boulogne-sur-Mer, en moins de douze heures. En chemin, il découvre qu'un père et sa fille ont volé le requin du centre Nausicaa pour le petit Joachim, très malade. Le père essaie de l'attaquer pour garder le secret. Philippe gagne quand même son pari, et le requin est finalement relâché dans la mer."
         ],
-        "correct": 0,
-        "answer": 0,
+        "correct": 2,
+        "answer": 2,
         "points": 1,
-        "explanation": "Seul le résumé A est correct : la marche, le requin volé pour Joachim, les attaques du père et la libération du requin."
+        "explanation": "Seul le résumé C est correct. Philippe marche, aidé par ses amis. Daniel et Élisabeth ont volé le requin pour Joachim, atteint de leucémie. Philippe arrive avec huit minutes d'avance, et le requin est relâché à l'aube."
       }
     ]
   },
@@ -4768,14 +4768,14 @@ window.LIVRES = [
         "type": "synthesis",
         "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Gauthier devient chaudronnier comme son père et quitte la Bretagne avec Bleuenn pour vivre en Normandie.",
-          "Gauthier aide Bleuenn à découvrir qu'elle est Anna, la fille d'un capitaine disparu en mer, ce qui met fin à ses cauchemars.",
-          "Le père Loïk découvre un trésor caché sur la plage grâce à ses rêves et le partage avec tout le village."
+          "Gauthier arrive en Bretagne avec son père, un chaudronnier venu de Normandie. Il tombe amoureux de Bleuenn, une jeune lavandière qui, les nuits de pleine lune, parle une langue étrange et veut se jeter à la mer. Gauthier reconnaît le normand, et il comprend que Bleuenn est la sœur qu'il a perdue quand il était petit. Il repart en Normandie avec elle et son père, et Bleuenn ne fait plus jamais de cauchemars.",
+          "Gauthier arrive en Bretagne avec son père, un pêcheur venu d'Irlande. Il tombe amoureux de Bleuenn, une jeune lavandière qui, les nuits de pleine lune, parle une langue étrange et veut se jeter à la mer. Le père Loïk comprend que Bleuenn est Anna, la fille d'un capitaine disparu en mer. Bleuenn décide alors de s'appeler Anna et de quitter le village.",
+          "Gauthier arrive en Bretagne avec son père, un chaudronnier venu de Normandie. Il tombe amoureux de Bleuenn, une jeune lavandière qui, les nuits de pleine lune, parle une langue étrange et veut se jeter à la mer. Gauthier reconnaît le normand, et il comprend que Bleuenn est Anna, la fille d'un capitaine disparu en mer. Après la rencontre avec son père sur la plage, Bleuenn n'a plus de cauchemars."
         ],
-        "correct": 1,
-        "answer": 1,
+        "correct": 2,
+        "answer": 2,
         "points": 1,
-        "explanation": "L'histoire raconte comment Gauthier aide Bleuenn à découvrir ses origines et à retrouver la paix."
+        "explanation": "Seul le résumé C est correct. Gauthier reconnaît le normand, la langue de sa mère. La médaille ANNA prouve que Bleuenn est la fille du capitaine. Elle garde son prénom et Gauthier reste à Kerbellec avec elle."
       }
     ]
   },
@@ -5007,14 +5007,14 @@ window.LIVRES = [
         "type": "synthesis",
         "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Milo trouve un téléphone volé, découvre une bande de trafiquants et les fait arrêter par la police.",
-          "Milo cherche le propriétaire d'un téléphone trouvé et découvre que c'est un jeu de piste organisé par sa famille pour son anniversaire.",
-          "Milo reçoit un téléphone pour sa communion et passe tout son temps dessus, comme son frère Louis."
+          "Milo rêve d'un smartphone, mais sa maman préfère attendre, car son grand frère Louis passe tout son temps sur le sien. Un jour, Milo trouve un téléphone dans le parterre de fleurs, et des rendez-vous mystérieux apparaissent dans son calendrier. Il suit ces rendez-vous en cachette et a peur d'être mêlé à une affaire louche. À la fin, il découvre que c'est un jeu de piste organisé par Louis et sa famille pour son anniversaire.",
+          "Milo rêve d'un smartphone, mais sa maman préfère attendre, car son grand frère Louis passe tout son temps sur le sien. Un jour, Milo trouve un téléphone dans le parterre de fleurs, et des rendez-vous mystérieux apparaissent dans son calendrier. Inquiet, il apporte tout de suite le téléphone à la police. Les policiers découvrent qu'il appartenait à un homme en veste de cuir, qui est arrêté.",
+          "Milo rêve d'un smartphone, mais sa maman préfère attendre, car son grand frère Louis passe tout son temps sur le sien. Un jour, Milo trouve un téléphone dans le parterre de fleurs, et des rendez-vous mystérieux apparaissent dans son calendrier. Il suit ces rendez-vous en cachette et a peur d'être mêlé à une affaire louche. À la fin, il découvre que le téléphone appartenait à son grand-père, et que c'est sa grand-mère qui lui envoyait ces rendez-vous."
         ],
-        "correct": 1,
-        "answer": 1,
+        "correct": 0,
+        "answer": 0,
         "points": 1,
-        "explanation": "Le smartphone était le cadeau d'anniversaire de Milo, caché derrière un jeu de piste."
+        "explanation": "Seul le résumé A est correct. Milo ne va jamais à la police. C'est Louis qui notait les rendez-vous dans son agenda : le téléphone est le cadeau d'anniversaire de Milo, et la surprise a lieu près de la tombe de son grand-père."
       }
     ]
   },
@@ -5246,14 +5246,14 @@ window.LIVRES = [
         "type": "synthesis",
         "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Pendant des vacances en Irlande, Kathleen aide ses cousines à gagner enfin le trophée contre les frères Clancy.",
-          "Un voleur dérobe le trophée Gorumna et Kathleen le fait arrêter par la police de Galway grâce à son enquête.",
-          "Pendant des vacances en Irlande, la disparition d'un trophée et un sauvetage en mer réconcilient deux familles rivales."
+          "Kathleen passe ses vacances en Irlande, chez ses cousines o'Reilly, qui participent au concours de musique du trophée Gorumna. Depuis longtemps, les o'Reilly sont fâchés avec la famille Clancy. Quand le trophée disparaît, les deux familles s'accusent, mais c'est en fait Patrick, le petit frère de Kathleen, qui l'a caché pour aider son ami Billy. Les deux familles restent fâchées, et les o'Reilly gagnent le trophée.",
+          "Kathleen passe ses vacances en Irlande, chez ses cousines o'Reilly, qui participent au concours de musique du trophée Gorumna. Depuis longtemps, les o'Reilly sont fâchés avec la famille Fitzgerald. Quand le trophée disparaît, les deux familles s'accusent, mais c'est en fait la femme de ménage qui l'a emporté pour le nettoyer. Kathleen joue du violon au concours avec ses cousines, et les o'Reilly gagnent enfin le trophée, sous les applaudissements de toute la salle.",
+          "Kathleen passe ses vacances en Irlande, chez ses cousines o'Reilly, qui participent au concours de musique du trophée Gorumna. Depuis longtemps, les o'Reilly sont fâchés avec la famille Clancy. Quand le trophée disparaît, les deux familles s'accusent, mais c'est en fait la femme de ménage qui l'a emporté pour le nettoyer. Après le sauvetage en mer de Patrick et de son ami Billy Clancy, les deux familles se réconcilient et jouent ensemble au concours."
         ],
         "correct": 2,
         "answer": 2,
         "points": 1,
-        "explanation": "L'aventure met fin à la dispute : les o'Reilly et les Clancy deviennent amis."
+        "explanation": "Seul le résumé C est correct. Molly, la femme de ménage, avait emporté le trophée pour le faire briller. Après le sauvetage de Patrick et Billy, o'Reilly et Clancy jouent ensemble ; hors règlement, ce sont les Fitzgerald qui gagnent."
       }
     ]
   },
@@ -5485,14 +5485,14 @@ window.LIVRES = [
         "type": "synthesis",
         "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Célia doit déménager en ville et se dispute avec son père ; elle part finalement vivre chez sa mère.",
-          "Célia, qui cache la maladie de sa petite sœur, apprend grâce à Tom qu'elle peut être fière de Julie et en parler.",
-          "Célia et Tom deviennent champions de badminton en double et gagnent un voyage au cinéma de la ville."
+          "Célia, championne de badminton, est invitée au cinéma par Tom, un garçon qui lui plaît. Elle cache à tout le monde que sa petite sœur Julie est atteinte d'une maladie grave, et elle a peur que ses amis se moquent d'elle. Chez Tom, elle voit avec quelle douceur il s'occupe de son grand-père malade. Mais elle n'ose jamais lui parler de Julie, et elle préfère ne plus le revoir, même aux entraînements du club de badminton.",
+          "Célia, championne de badminton, est invitée au cinéma par Tom, un garçon qui lui plaît. Elle raconte à toute la classe que sa petite sœur Julie est atteinte d'une maladie grave, et ses amis l'aident beaucoup. Chez Tom, elle voit avec quelle douceur il s'occupe de son grand-père malade. Elle décide d'aller vivre chez sa maman pour aider à soigner Julie.",
+          "Célia, championne de badminton, est invitée au cinéma par Tom, un garçon qui lui plaît. Elle cache à tout le monde que sa petite sœur Julie est atteinte d'une maladie grave, et elle a peur que ses amis se moquent d'elle. Chez Tom, elle voit avec quelle douceur il s'occupe de son grand-père malade. Elle ose enfin lui parler de Julie, et Tom l'aide à comprendre qu'elle peut aimer sa sœur sans se cacher."
         ],
-        "correct": 1,
-        "answer": 1,
+        "correct": 2,
+        "answer": 2,
         "points": 1,
-        "explanation": "L'histoire parle de la peur du regard des autres, et de la façon dont Célia la dépasse."
+        "explanation": "Seul le résumé C est correct. Célia ne l'avait dit qu'à Noémie. Tom, qui s'occupe de son grand-père atteint d'Alzheimer, connaît déjà Julie et accepte tout avec gentillesse. Célia n'a plus besoin de cacher sa sœur."
       }
     ]
   },
@@ -5724,14 +5724,14 @@ window.LIVRES = [
         "type": "synthesis",
         "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Nico et Loïc découvrent qu'un voleur pêche en cachette dans le lac protégé et le dénoncent à la police.",
-          "Grâce à une mouche de pêche perdue, Nico et Loïc rencontrent Fadi, un jeune réfugié syrien, et deviennent ses amis.",
-          "Fadi arrive en France, apprend la pêche à la mouche et gagne un grand concours avec le grand-père de Loïc."
+          "En promenant le chien de Nico, Nico et Loïc trouvent une mouche de pêche au bord d'un lac où la pêche est interdite. Ils mènent l'enquête et rencontrent Fadi, un jeune réfugié syrien qui vit caché avec son père. Ils découvrent que Fadi pêche en cachette dans le lac pour nourrir sa famille. Ils le dénoncent au garde, et Fadi doit quitter la région avec son père.",
+          "En promenant le chien de Nico, Nico et Loïc trouvent une mouche de pêche au bord d'un lac où la pêche est interdite. Ils mènent l'enquête et rencontrent Fadi, un jeune réfugié syrien qui vit caché avec son père. Ils découvrent que c'est le grand-père de Loïc qui avait offert cette mouche à Fadi. Les trois garçons deviennent amis, et Fadi attrape un gros poisson lors d'une partie de pêche avec le grand-père.",
+          "En promenant le chien de Nico, Nico et Loïc trouvent une mouche de pêche au bord d'un lac où la pêche est interdite. Ils mènent l'enquête et rencontrent Fadi, un jeune réfugié syrien qui vit caché avec son père. Ils découvrent que c'est le père de Fadi qui fabrique ces mouches et les vend au marché. Les trois garçons deviennent amis, mais à la rentrée, Fadi est placé dans une autre école, loin de ses deux amis."
         ],
         "correct": 1,
         "answer": 1,
         "points": 1,
-        "explanation": "La mouche perdue permet la rencontre et l'amitié entre les trois garçons."
+        "explanation": "Seul le résumé B est correct. Pixels trouve la mouche. C'est le grand-père de Loïc, le vieux pêcheur, qui l'avait offerte à Fadi. À la rentrée, Fadi est dans la même classe que Nico et Loïc."
       }
     ]
   },
@@ -5963,14 +5963,14 @@ window.LIVRES = [
         "type": "synthesis",
         "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Juliette, nouvelle élève, devient l'amie de Colombe, une fille harcelée, et l'aide grâce à un exposé sur le harcèlement.",
-          "Colombe, une championne de Minecraft, se venge de Marjorie en publiant une vidéo moqueuse sur Internet.",
-          "Juliette ne s'habitue pas à sa nouvelle école et retourne vivre à Lille avec sa meilleure amie Agathe."
+          "Juliette arrive dans une nouvelle école en plein milieu de l'année, car son papa a trouvé du travail loin de Lille. Elle remarque Colombe, une grande fille toujours seule, que d'autres élèves embêtent sans arrêt. Les deux filles se rapprochent grâce au judo, qu'elles pratiquent dans le même club. Juliette apprend à Colombe à se battre, et Colombe fait peur à ceux qui l'embêtaient.",
+          "Juliette arrive dans une nouvelle école en plein milieu de l'année, car son papa a trouvé du travail loin de Lille. Elle remarque Colombe, une grande fille toujours seule, que d'autres élèves embêtent sans arrêt. Les deux filles se rapprochent grâce au jeu Minecraft, auquel elles jouent toutes les deux. Juliette prépare ensuite un exposé sur le harcèlement, qui aide Colombe à reprendre confiance et à se faire des amis.",
+          "Juliette arrive dans une nouvelle école en plein milieu de l'année, car son papa a trouvé du travail loin de Lille. Elle remarque Colombe, une grande fille toujours seule, que d'autres élèves embêtent sans arrêt. Les deux filles se rapprochent grâce au jeu Minecraft, auquel elles jouent toutes les deux. Juliette prépare ensuite un exposé sur le harcèlement, et Marjorie s'excuse aussitôt devant toute la classe."
         ],
-        "correct": 0,
-        "answer": 0,
+        "correct": 1,
+        "answer": 1,
         "points": 1,
-        "explanation": "Grâce à Juliette et Gabriel, la classe comprend le mal que fait le harcèlement, et Colombe retrouve des amis."
+        "explanation": "Seul le résumé B est correct. Colombe (PowerGirl) et Juliette (Zoey) se rapprochent grâce à Minecraft. L'exposé avec la feuille froissée fait réfléchir la classe ; Marjorie, elle, ne s'excuse pas. Colombe trouve enfin une amie."
       }
     ]
   },
@@ -6202,14 +6202,14 @@ window.LIVRES = [
         "type": "synthesis",
         "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Luc, un jeune champion de tennis blessé, se renferme sur lui-même, puis reprend goût à la vie grâce au journal d'un peintre, à son ami Max et à Colette.",
-          "Luc découvre un tableau très précieux dans une brocante, le revend très cher et devient un peintre aussi célèbre que Patrick Rigaud.",
-          "Luc se venge de Max qui l'a fait tomber, puis il gagne le tournoi de Roland-Garros grâce aux conseils de Colette."
+          "Luc, un jeune champion de tennis, se casse le pied en jouant avec son ami Max, et il s'enferme dans sa chambre. Derrière un tableau acheté à la brocante, il trouve le journal d'un peintre qui, lui aussi, a dû arrêter le sport après un accident. Il découvre ensuite que ses parents avaient tout organisé, et il se sent trahi. Grâce à Colette, la grand-mère de Max, il reprend confiance et a de nouveau envie de jouer.",
+          "Luc, un jeune champion de tennis, se casse le pied en jouant avec son ami Max, et il s'enferme dans sa chambre. Derrière un tableau acheté à la brocante, il trouve le journal d'un peintre qui, lui aussi, a dû arrêter le sport après un accident. Luc décide alors d'arrêter le tennis pour toujours et de devenir peintre, comme lui. Colette, la grand-mère de Max, lui donne ses premiers cours.",
+          "Luc, un jeune champion de tennis, se casse le pied en tombant dans les escaliers du collège, et il s'enferme dans sa chambre. Derrière un tableau acheté à la brocante, il trouve le journal d'un peintre qui, lui aussi, a dû arrêter le sport après un accident. Il découvre ensuite que Max avait tout organisé, et il se sent trahi. Grâce à sa maman, il reprend confiance et a de nouveau envie de jouer."
         ],
         "correct": 0,
         "answer": 0,
         "points": 1,
-        "explanation": "L'histoire montre comment Luc surmonte sa blessure et retrouve l'envie d'avancer."
+        "explanation": "Seul le résumé A est correct. Luc se blesse sur le câble du filet, poussé par Max. Le tableau et le journal de Patrick Rigaud étaient un plan de ses parents. C'est Colette, ancienne championne, qui lui redonne confiance."
       }
     ]
   },
@@ -6441,14 +6441,14 @@ window.LIVRES = [
         "type": "synthesis",
         "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Sophie trouve des lettres d'amour anciennes et part à la recherche du fiancé d'Esther, qu'elle retrouve à la brocante.",
-          "Sophie découvre à la brocante un trésor caché dans un livre et le revend pour offrir un cadeau à sa grand-mère.",
-          "Grâce à de vieilles lettres, Sophie découvre l'histoire d'Esther, une jeune juive cachée pendant la guerre, et le passé secret de sa grand-mère."
+          "Sophie accompagne sa grand-mère, Mamine, à un vide-grenier. Dans un vieux livre, elle trouve six lettres écrites pendant la guerre par Esther, une jeune fille juive cachée à la campagne, à son frère jumeau Samuel. Sophie comprend que les lettres ont été écrites dans la maison de Mamine. Mamine lui révèle alors son secret : elle s'appelle en réalité Sarah Cohen et elle a, elle aussi, été cachée pendant la guerre.",
+          "Sophie accompagne sa grand-mère, Mamine, à un vide-grenier. Dans un vieux livre, elle trouve six lettres écrites pendant la guerre par Esther, une jeune fille juive cachée à la campagne, à son frère jumeau Samuel. Sophie raconte tout à son cousin Erwan, et ils retrouvent ensemble Samuel, qui vit encore dans le village. Mamine, elle, ne se souvient de rien.",
+          "Sophie accompagne sa grand-mère, Mamine, à un vide-grenier. Dans un vieux livre, elle trouve six lettres écrites pendant la guerre par Esther, une jeune fille juive cachée à la campagne, à son fiancé Samuel. Sophie comprend que les lettres ont été écrites dans la maison de Mamine. Mamine lui révèle alors son secret, les larmes aux yeux : Esther était sa propre maman, morte dans cette maison juste après la guerre."
         ],
-        "correct": 2,
-        "answer": 2,
+        "correct": 0,
+        "answer": 0,
         "points": 1,
-        "explanation": "Les lettres révèlent le passé d'Esther et celui de Mamine, Sarah Cohen, cachée comme elle pendant la guerre."
+        "explanation": "Seul le résumé A est correct. Samuel est le frère jumeau d'Esther. Le saule en forme de violon montre que les lettres ont été écrites chez Mamine. Mamine est Sarah Cohen, la petite fille cachée dont parle la première lettre."
       }
     ]
   },
@@ -6680,14 +6680,14 @@ window.LIVRES = [
         "type": "synthesis",
         "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Deux élèves insolents sont renvoyés du collège et partent en vacances en Italie visiter les ruines de Pompéi.",
-          "Deux élèves qui s'ennuient en histoire se retrouvent dans l'Antiquité et vivent le dernier jour de Pompéi, ce qui leur donne une leçon.",
-          "Un jeune Romain voyage jusqu'au XXIe siècle et découvre les stylos, les téléphones et les cours d'histoire."
+          "Maxime et Flavie s'ennuient pendant le cours d'histoire et disent à leur professeur qu'ils voudraient plutôt vivre l'histoire. Le lendemain, ils se réveillent dans la Rome antique, où Lucius, un jeune orphelin, leur sert de guide. La famille part à Pompéi, et Maxime prévient tous les habitants que le Vésuve va se réveiller. Grâce à lui, toute la ville est sauvée, et Maxime devient un héros romain.",
+          "Maxime et Flavie s'ennuient pendant le cours d'histoire et, après leur insolence, leur professeur les punit sévèrement. Le lendemain, ils se réveillent au Moyen Âge, où Lucius, un jeune chevalier, leur sert de guide. La famille part à Pompéi, et Maxime comprend avec terreur qu'on est le 24 août 79, le jour où le Vésuve va détruire la ville. Au moment où la lave arrive, ils se réveillent chez eux, et désormais, ils écoutent enfin en classe.",
+          "Maxime et Flavie s'ennuient pendant le cours d'histoire et disent à leur professeur qu'ils voudraient plutôt vivre l'histoire. Le lendemain, ils se réveillent dans la Rome antique, où Lucius, un jeune orphelin, leur sert de guide. La famille part à Pompéi, et Maxime comprend avec terreur qu'on est le 24 août 79, le jour où le Vésuve va détruire la ville. Au moment où la lave arrive, ils se réveillent chez eux et écoutent enfin en classe."
         ],
-        "correct": 1,
-        "answer": 1,
+        "correct": 2,
+        "answer": 2,
         "points": 1,
-        "explanation": "Maxime et Flavie vivent l'histoire « en vrai » et comprennent qu'elle n'est pas ennuyeuse."
+        "explanation": "Seul le résumé C est correct. M. Racontard ne les punit pas : il leur fait « vivre » l'histoire, dans la Rome antique. Ils vivent le dernier jour de Pompéi et se réveillent au moment où la lave arrive. Ils écoutent désormais en classe."
       }
     ]
   },
@@ -6919,14 +6919,14 @@ window.LIVRES = [
         "type": "synthesis",
         "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Sophie passe un été formidable en Australie et devient la meilleure amie de Jacinthe.",
-          "Privée de son voyage en Australie, Sophie passe l'été chez sa tante, ment à ses amies, puis découvre que la vérité vaut mieux que les apparences.",
-          "Sophie aide sa tante Adélaïde à retrouver son mari disparu grâce à une vieille malle cachée dans le grenier."
+          "Sophie devient populaire au collège parce qu'elle doit partir en Australie cet été, et elle laisse tomber sa meilleure amie Sandra pour plaire à Jacinthe. Mais le voyage est annulé, et Sophie passe l'été chez sa tante Adélaïde, une femme sévère qui s'habille toujours en noir. Pour garder sa popularité, elle envoie de fausses photos d'Australie. Elle finit par comprendre que la vérité vaut mieux que les apparences, et elle décide de s'excuser auprès de Sandra.",
+          "Sophie devient populaire au collège parce qu'elle doit partir en Australie cet été, et elle laisse tomber sa meilleure amie Sandra pour plaire à Jacinthe. Le voyage a bien lieu, mais Sophie s'ennuie en Australie chez sa tante Adélaïde, une femme sévère qui s'habille toujours en noir. Pour se faire plaindre, elle envoie des photos tristes à Sandra. À son retour, elle décide de ne plus parler à Jacinthe.",
+          "Sophie devient populaire au collège parce qu'elle doit partir en Australie cet été, et elle laisse tomber sa meilleure amie Sandra pour plaire à Jacinthe. Mais le voyage est annulé, et Sophie passe l'été chez sa tante Adélaïde, une femme sévère qui s'habille toujours en noir. Pour garder sa popularité, elle envoie de fausses photos d'Australie. Personne ne découvre son mensonge, et à la rentrée, elle reste la meilleure amie de Jacinthe, la fille la plus populaire du collège."
         ],
-        "correct": 1,
-        "answer": 1,
+        "correct": 0,
+        "answer": 0,
         "points": 1,
-        "explanation": "Sophie découvre la vraie vie de sa tante et de Jacinthe, et choisit d'arrêter de mentir."
+        "explanation": "Seul le résumé A est correct. Le voyage est annulé à cause de la chute de Mémé. Sophie envoie de faux selfies depuis le jardin. Jacinthe, « la grande sauterelle », passe elle aussi l'été au village. Sophie décide de dire la vérité et d'appeler Sandra."
       }
     ]
   },
@@ -7158,14 +7158,14 @@ window.LIVRES = [
         "type": "synthesis",
         "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Madeline découvre qu'elle a été adoptée et part à la recherche de sa vraie mère, une écrivaine célèbre.",
-          "Madeline mène l'enquête sur la réaction étrange de sa maman et réconcilie deux amies d'enfance fâchées depuis longtemps.",
-          "Madeline gagne un concours au Salon du Livre en démasquant un agent secret qui voulait saboter la fête."
+          "En voyant la photo d'une écrivaine au dos du livre de Madeline, sa maman réagit de façon très étrange. Intriguée, Madeline mène l'enquête avec son amie Mahé, qui imagine même que l'écrivaine pourrait être sa vraie mère. Au Salon du Livre, Madeline rencontre Lewis, le fils de l'écrivaine, et elle découvre que l'écrivaine est vraiment la sœur de sa maman. Avec Lewis, elle organise une grande fête de famille au bord d'un lac pour les réunir enfin, après tant d'années.",
+          "En voyant la photo d'une écrivaine au dos du livre de Madeline, sa maman réagit de façon très étrange. Intriguée, Madeline mène l'enquête avec son amie Mahé, qui imagine même que l'écrivaine pourrait être sa vraie mère. Au Salon du Livre, Madeline rencontre Lewis, le fils de l'écrivaine, et elle découvre que les deux femmes étaient des amies d'enfance fâchées depuis longtemps. Avec Lewis, elle organise une rencontre au bord d'un lac pour les réconcilier.",
+          "En voyant la photo d'une écrivaine au dos du livre de Madeline, sa maman réagit de façon très étrange. Intriguée, Madeline mène l'enquête avec son papa, qui connaît très bien l'écrivaine. Au Salon du Livre, Madeline rencontre Lewis, le fils de l'écrivaine, et elle découvre que les deux femmes étaient des amies d'enfance fâchées depuis longtemps. Mais sa maman refuse de revoir son ancienne amie."
         ],
         "correct": 1,
         "answer": 1,
         "points": 1,
-        "explanation": "Le « secret » était une vieille amitié brisée, que Madeline et Lewis parviennent à réparer."
+        "explanation": "Seul le résumé B est correct. Laure (la maman) et Marie-Ève étaient amies au lycée, puis se sont fâchées. Madeline et Lewis organisent une rencontre « par hasard » au lac de Monteuil, et les deux amies se retrouvent."
       }
     ]
   },
@@ -7397,14 +7397,14 @@ window.LIVRES = [
         "type": "synthesis",
         "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Gauthier découvre les tranchées en voyageant dans le temps et devient soldat pendant la Grande Guerre.",
-          "Grâce à un travail scolaire sur la guerre 14-18, Gauthier découvre son ancêtre Gaston, un soldat qui écrivait les lettres de ses camarades.",
-          "Gauthier et sa grand-mère Nona créent un site Internet pour vendre de vieilles cartes postales de la guerre."
+          "En 2014, la classe de Gauthier travaille toute l'année sur la guerre de 1914-1918. Avec l'aide de son grand frère, il construit son arbre généalogique et choisit de parler de Gaston, un ancêtre qui était boxeur avant la guerre. Pendant la guerre, Gaston écrivait les lettres des soldats qui ne savaient pas écrire, d'où son surnom de « porte-plume ». Pendant son exposé, devant toute la classe, Gauthier montre fièrement le vieux fusil de Gaston.",
+          "En 2014, la classe de Gauthier travaille toute l'année sur la guerre de 1914-1918. Avec l'aide de sa grand-mère Nona, il construit son arbre généalogique et choisit de parler de Gaston, un ancêtre qui porte le même prénom que son deuxième prénom. Pendant la guerre, Gaston écrivait les lettres des soldats qui ne savaient pas écrire, d'où son surnom de « porte-plume ». Pendant son exposé, Gauthier montre à la classe le stylo-plume de Gaston.",
+          "En 2014, la classe de Gauthier travaille toute l'année sur la guerre de 1914-1918. Avec l'aide de sa grand-mère Nona, il construit son arbre généalogique et choisit de parler de Gaston, un ancêtre qui porte le même prénom que son deuxième prénom. Pendant la guerre, Gaston était facteur et apportait le courrier aux soldats dans les tranchées. Pendant son exposé, Gauthier montre la médaille que Gaston a reçue."
         ],
         "correct": 1,
         "answer": 1,
         "points": 1,
-        "explanation": "Le projet d'école lui fait découvrir l'histoire de Gaston, « le porte-plume », et aimer l'histoire."
+        "explanation": "Seul le résumé B est correct. Nona aide Gauthier dans ses recherches. Gaston, ancien ouvrier d'une fabrique de stylos, écrivait les lettres de ses camarades. Il n'a jamais reçu de médaille, et Gauthier montre son stylo-plume."
       }
     ]
   },
@@ -7636,14 +7636,14 @@ window.LIVRES = [
         "type": "synthesis",
         "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Un vieux clown célèbre perd son travail à l'hôpital et part vivre au Mexique pour oublier sa tristesse.",
-          "Archibald, un retraité qui gagne au Lotto, rencontre deux enfants malades et décide de réaliser leurs rêves.",
-          "Tèo, un garçon passionné de papillons, gagne au Lotto et offre des chevaux à son amie Valentine."
+          "Archibald, un employé qui vient de prendre sa pension, gagne plus d'un million au Lotto avec les billets offerts par ses collègues. À l'hôpital, il rencontre Tèo, un garçon orphelin qui trouve qu'il a une vraie tête de clown, et Valentine, une fille gravement malade. Archibald décide d'utiliser son argent pour réaliser leurs rêves : des chevaux pour Valentine et un voyage au Mexique pour voir les papillons avec Tèo.",
+          "Archibald, un vieux clown célèbre, gagne plus d'un million au Lotto avec les billets offerts par son cirque. À l'hôpital, il rencontre Tèo, un garçon orphelin qui adore les chevaux, et Valentine, une fille gravement malade. Archibald décide d'utiliser son argent pour réaliser leurs rêves : des papillons pour Valentine et un voyage en Somalie pour Tèo.",
+          "Archibald, un employé qui vient de prendre sa pension, gagne plus d'un million au Lotto avec les billets offerts par ses collègues. À l'hôpital, il rencontre Tèo, un garçon orphelin qui trouve qu'il a une vraie tête de clown, et Valentine, une fille gravement malade. Archibald garde son argent pour réparer sa maison à la campagne, puis il part seul en voyage au Mexique, loin de l'hôpital, des médecins et des enfants malades."
         ],
-        "correct": 1,
-        "answer": 1,
+        "correct": 0,
+        "answer": 0,
         "points": 1,
-        "explanation": "La rencontre avec Tèo et Valentine change la vie d'Archibald : il devient clown et réalise leurs rêves."
+        "explanation": "Seul le résumé A est correct. Archibald n'est pas clown : c'est Tèo qui lui trouve une tête de clown. Il achète deux chevaux pour Valentine et, malgré sa peur de l'avion, emmène Tèo voir les papillons monarques au Mexique."
       }
     ]
   },
@@ -7875,14 +7875,14 @@ window.LIVRES = [
         "type": "synthesis",
         "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Un robot devenu fou enlève une petite fille ; la police le retrouve et le détruit pour protéger la ville.",
-          "Jimmy découvre qu'un robot jugé défectueux a en fait une âme, et sa famille l'adopte pour le sauver.",
-          "Jimmy et Antonin inventent un pistolet laser qui permet de réparer tous les robots en panne de la ville."
+          "Un jour de grève, Jimmy accompagne son papa chez Futurobow, une entreprise qui fabrique des robots. Une cliente ramène son robot, qu'elle juge « défectueux » parce qu'il prend des initiatives, et le robot risque d'être détruit. Jimmy et son ami Antonin le retrouvent caché dans une cabane avec Arabella, une petite fille qui l'a appelé Alfie. Jimmy comprend qu'Alfie a une âme, et son papa vend sa voiture de collection pour l'adopter.",
+          "Un jour de grève, Jimmy accompagne son papa chez Futurobow, une entreprise qui fabrique des robots. Un robot devenu fou s'enfuit de l'usine en emportant une petite fille, Arabella, qui a très peur de lui. Jimmy et son ami Antonin le retrouvent caché dans une cabane et libèrent Arabella. Le robot est réparé, et Arabella le revend à une famille riche.",
+          "Un jour de grève, Jimmy accompagne son papa chez Futurobow, une entreprise qui fabrique des robots. Une cliente ramène son robot, qu'elle juge « défectueux » parce qu'il prend des initiatives, et le robot risque d'être détruit. Jimmy et son ami Antonin le retrouvent caché dans une cabane avec Arabella, une petite fille qui l'a appelé Alfie. Antonin détruit le robot avec son grille-robot, car il pense que c'est le seul moyen de protéger la ville."
         ],
-        "correct": 1,
-        "answer": 1,
+        "correct": 0,
+        "answer": 0,
         "points": 1,
-        "explanation": "Alfie, grâce à Arabella, est devenu sensible ; Jimmy et son papa le sauvent."
+        "explanation": "Seul le résumé A est correct. Arabella a aidé Alfie à s'enfuir pour le sauver. Il est grillé par la police, mais le papa de Jimmy le remet en marche : sa sensibilité est restée, et il vend sa voiture pour l'adopter."
       }
     ]
   },
@@ -8114,14 +8114,14 @@ window.LIVRES = [
         "type": "synthesis",
         "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Noah part en vacances à Namur avec ses amis et découvre une ferme où il apprend à s'occuper des animaux.",
-          "Après une maladie qui a tué tous les adultes, Noah traverse la Belgique pour retrouver sa sœur et trouve, avec d'autres enfants, un nouveau départ.",
-          "Noah et Milo volent une voiture pour fuir une bande de garçons et finissent arrêtés par la police de Namur."
+          "Après la chute d'une météorite, une fièvre terrible fait mourir presque tous les adultes. Noah se réveille seul à Liège et veut rejoindre sa petite sœur Léane à Namur, comme il l'a promis à son papa. En chemin, il rencontre d'autres enfants, dont Milo, qui conduit une voiture jusqu'à une ferme où des jeunes s'organisent pour survivre. À Namur, Noah retrouve sa maman et Léane guéries, et toute la famille part s'installer à la ferme avec Milo et les autres enfants.",
+          "Après la chute d'une météorite, une fièvre terrible fait mourir presque tous les enfants. Noah se réveille seul à Liège et veut rejoindre sa petite sœur Léane à Namur, comme il l'a promis à son papa. En chemin, il se fait voler sa voiture par Milo, et il doit continuer à pied pendant des semaines. À Namur, Noah ne retrouve pas sa sœur vivante, mais il décide de protéger la petite Camille et de partir vers un nouveau départ.",
+          "Après la chute d'une météorite, une fièvre terrible fait mourir presque tous les adultes. Noah se réveille seul à Liège et veut rejoindre sa petite sœur Léane à Namur, comme il l'a promis à son papa. En chemin, il rencontre d'autres enfants, dont Milo, qui conduit une voiture jusqu'à une ferme où des jeunes s'organisent pour survivre. À Namur, Noah ne retrouve pas sa sœur vivante, mais il décide de protéger la petite Camille et de partir vers un nouveau départ."
         ],
-        "correct": 1,
-        "answer": 1,
+        "correct": 2,
+        "answer": 2,
         "points": 1,
-        "explanation": "Noah perd sa famille, mais choisit d'avancer avec les autres survivants et de protéger Camille."
+        "explanation": "Seul le résumé C est correct. Le virus tue les adultes. Milo conduit les enfants de Liège vers Namur, en passant par la ferme « Un nouveau départ ». La maman et la sœur de Noah sont mortes ; il tient sa promesse en protégeant Camille."
       }
     ]
   },
@@ -8353,14 +8353,14 @@ window.LIVRES = [
         "type": "synthesis",
         "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Nicolas aide les gendarmes à arrêter les gitans qui ont volé les meubles de l'antiquaire du village.",
-          "Nicolas se lie d'amitié avec Django, un garçon du voyage, et comprend qu'il ne faut pas croire les rumeurs.",
-          "Nicolas s'enfuit avec les gens du voyage et part vivre sur les routes avec son ami Django."
+          "Nicolas passe ses vacances chez ses grands-parents quand des gens du voyage s'installent près du village, ce qui fait très peur à sa grand-mère. Dans la cabane du jardin, Nicolas trouve une lettre de Django, un garçon du campement, qui l'invite à une fête. Il y va en cachette la nuit et est accueilli comme un membre de la famille. Quand des meubles sont volés, les villageois accusent les gens du voyage, mais le voleur est un homme du village, et Nicolas comprend qu'il ne faut pas croire les rumeurs.",
+          "Nicolas passe ses vacances chez ses grands-parents quand des gens du voyage s'installent près du village, ce qui fait très peur à son grand-père. Dans la cabane du jardin, Nicolas trouve une lettre de Django, un garçon du campement, qui l'invite à une fête. Il y va avec la permission de ses grands-parents, qui l'accompagnent. Quand des meubles sont volés, Django aide les gendarmes à trouver le voleur, et Nicolas le revoit chaque été.",
+          "Nicolas passe ses vacances chez ses grands-parents quand des gens du voyage s'installent près du village, ce qui fait très peur à sa grand-mère. Dans la cabane du jardin, Nicolas trouve une lettre de Django, un garçon du campement, qui l'invite à une fête. Il y va en cachette la nuit et est accueilli comme un membre de la famille. Quand des meubles sont volés, Nicolas découvre que c'est Manuel, le père de Django, qui les a volés, et il refuse de revoir son ami, même pour lui dire au revoir avant son départ."
         ],
-        "correct": 1,
-        "answer": 1,
+        "correct": 0,
+        "answer": 0,
         "points": 1,
-        "explanation": "L'amitié avec Django montre à Nicolas que les préjugés et les « on-dit » peuvent être faux."
+        "explanation": "Seul le résumé A est correct. C'est la grand-mère qui a peur ; le grand-père est plus calme. Nicolas part en cachette. Le voleur est P'tit Louis, un habitant du village. Nicolas n'a jamais revu Django, mais reste son ami."
       }
     ]
   },
@@ -8592,14 +8592,14 @@ window.LIVRES = [
         "type": "synthesis",
         "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Paul passe des vacances ennuyeuses au camping et décide de ne plus jamais partir avec sa famille.",
-          "Pendant des vacances à la mer, Paul, qui se sent « petit », trouve sa place dans le groupe et vit son premier amour avec Zélie.",
-          "Paul et sa cousine Salomé gagnent le concours de danse de la soirée disco du camping."
+          "Paul passe ses vacances dans un chalet à la montagne, mais il s'ennuie : sa cousine Salomé préfère ses amies et le traite comme un petit. Il rencontre Zélie, qui fait partie de la bande, et l'emmène manger une glace sur le toit d'un cabanon. Peu à peu, Paul trouve sa place dans le groupe et vit son premier amour avec Zélie. À la rentrée, il a la surprise de la retrouver dans son école, et même dans sa classe.",
+          "Paul passe ses vacances dans un camping au bord de la mer, mais il s'ennuie : sa cousine Salomé préfère ses amies et le traite comme un petit. Il rencontre Zélie, qui fait partie de la bande, et l'emmène manger une glace sur le toit d'un cabanon. Peu à peu, Paul trouve sa place dans le groupe et vit son premier amour avec Zélie. De retour chez lui, il met un peu de sel sur ses lèvres pour se souvenir d'elle.",
+          "Paul passe ses vacances dans un camping au bord de la mer, mais il s'ennuie : sa cousine Salomé préfère ses amies et le traite comme un petit. Il rencontre Zélie, qui fait partie de la bande, et l'emmène manger une glace sur le toit d'un cabanon. Mais Zélie se moque de lui devant tout le groupe, et Paul passe la fin des vacances seul sous sa tente."
         ],
         "correct": 1,
         "answer": 1,
         "points": 1,
-        "explanation": "Paul grandit pendant ces vacances : il gagne sa place et vit une histoire avec Zélie."
+        "explanation": "Seul le résumé B est correct. Paul est dans un camping à la mer. Il trouve sa place dans la bande et vit son premier amour avec Zélie. Ils habitent loin l'un de l'autre et s'écrivent ; le goût du sel lui rappelle Zélie."
       }
     ]
   },
@@ -8831,14 +8831,14 @@ window.LIVRES = [
         "type": "synthesis",
         "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Lili, une jeune druide, apprend la magie noire avec Drago pour se venger des élèves qui se moquent d'elle.",
-          "Lili, une jeune druide solitaire, rencontre Drago, un mage noir qui a changé, et ensemble ils sauvent la forêt de l'école.",
-          "Lili devient directrice de l'Institut Lemn et fait construire une immense serre au milieu de la forêt."
+          "Lili est une jeune druide qui parle aux plantes, et les élèves de l'Institut Lemn l'admirent beaucoup. Quand la serre de l'école est démolie, elle découvre dans la forêt un jardin abandonné et rencontre Drago, un jeune jardinier très doué. Le directeur veut abattre la forêt pour construire un golf. Lili demande aux arbres de bloquer les machines, et le directeur abandonne son projet par peur.",
+          "Lili est une jeune druide qui parle aux plantes, et les élèves de l'Institut Lemn se moquent d'elle. Quand la serre de l'école est démolie, elle découvre dans la forêt un jardin abandonné et rencontre Drago, un jeune mage noir qui a choisi de ne plus faire de magie noire. Le directeur veut abattre la forêt pour construire un golf. Lili demande aux arbres de bloquer les machines, et Drago prouve que la forêt appartient à sa famille.",
+          "Lili est une jeune druide qui parle aux plantes, et les élèves de l'Institut Lemn se moquent d'elle. Quand la serre de l'école est démolie, elle découvre dans la forêt un jardin abandonné et rencontre Drago, un jeune mage noir qui a choisi de ne plus faire de magie noire. Le directeur veut abattre la forêt pour construire un golf. Drago utilise la magie noire pour transformer le directeur en arbre, et la forêt est sauvée pour toujours."
         ],
         "correct": 1,
         "answer": 1,
         "points": 1,
-        "explanation": "Grâce à la magie de Lili et au plan de Drago, la forêt est sauvée et Lili trouve un ami."
+        "explanation": "Seul le résumé B est correct. Drago vient d'une famille de mages noirs mais a changé de voie. Lili bloque les machines grâce aux arbres, et Drago prouve que la forêt appartient à sa famille : le directeur ne peut pas y toucher."
       }
     ]
   },
@@ -9070,14 +9070,14 @@ window.LIVRES = [
         "type": "synthesis",
         "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Frode, un jeune Viking, venge la mort de son père en attaquant les Francs au bord du Rhin.",
-          "Frode, un jeune Viking, s'enfuit avec Hisse pour la sauver et part avec elle en Frise.",
-          "Hisse, une jeune esclave, s'échappe seule et devient commerçante au marché de Kaupang."
+          "Frode, un jeune Viking de quatorze ans, perd son père Agnar, mort pendant une tempête en mer. Selon la tradition, Cilia, une vieille esclave, doit accompagner le chef dans la mort. Pour la sauver, Frode s'enfuit avec elle à cheval jusqu'au port de Kaupang, aidé par Knut, qui trompe leurs poursuivants. Cilia trouve des marchands de Suède, et Frode part avec elle.",
+          "Frode, un jeune Viking de quatorze ans, perd son père Agnar, mort après une attaque des Francs. Selon la tradition, Hisse, une jeune esclave de douze ans, doit accompagner le chef dans la mort. Pour la sauver, Frode s'enfuit avec elle à cheval jusqu'au port de Kaupang, aidé par Knut, qui trompe leurs poursuivants. Hisse trouve des marchands de Frise, et Frode rentre seul chez lui avec son cheval.",
+          "Frode, un jeune Viking de quatorze ans, perd son père Agnar, mort après une attaque des Francs. Selon la tradition, Hisse, une jeune esclave de douze ans, doit accompagner le chef dans la mort. Pour la sauver, Frode s'enfuit avec elle à cheval jusqu'au port de Kaupang, aidé par Knut, qui trompe leurs poursuivants. Hisse trouve des marchands de Frise, le pays de sa mère, et Frode part avec elle."
         ],
-        "correct": 1,
-        "answer": 1,
+        "correct": 2,
+        "answer": 2,
         "points": 1,
-        "explanation": "Pour tenir sa promesse, Frode sauve Hisse et choisit de partir avec elle."
+        "explanation": "Seul le résumé C est correct. C'est Hisse qui doit suivre Agnar dans la mort ; Cilia propose même de prendre sa place. Frode fuit avec Hisse jusqu'à Kaupang, confie son cheval Sleipnir à Knut et part en Frise avec elle."
       }
     ]
   },
@@ -9309,14 +9309,14 @@ window.LIVRES = [
         "type": "synthesis",
         "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Pendant une classe rousse, des élèves découvrent qu'un loup-garou vit vraiment dans la ferme voisine du gîte.",
-          "Pendant une classe rousse, Marie mène l'enquête et découvre qui sabote le gîte : un homme qui voulait les truffes du bois voisin.",
-          "Pendant une classe rousse, Quen-Quentin trouve enfin le trésor caché de Lucien Lafarge dans le grenier."
+          "La classe de Marie part en classe rousse dans le gîte de la tante d'Alicia, dans le Périgord. Des incidents inquiétants s'y produisent : un court-circuit, une chaudière abîmée et d'étranges empreintes griffues. Certains croient à un loup-garou, mais Marie mène l'enquête avec son frère jumeau Nathan et avec Alicia. Elle découvre que Quen-Quentin sabotait le gîte pour chercher en paix le trésor de Lucien Lafarge, caché dans le grenier de la ferme.",
+          "La classe de Marie part en classe rousse dans le gîte de la tante d'Alicia, dans le Périgord. Des incidents inquiétants s'y produisent : un court-circuit, une chaudière abîmée et d'étranges empreintes griffues. Certains croient à un loup-garou, mais Marie mène l'enquête avec son frère jumeau Nathan et avec Alicia. Elle découvre que Michel, le livreur, sabotait le gîte pour acheter la propriété voisine, dont le bois cache des truffes.",
+          "La classe de Marie part en classe verte dans une ferme des Ardennes. Des incidents inquiétants s'y produisent : un court-circuit, une chaudière abîmée et d'étranges empreintes griffues. Certains croient à un loup-garou, mais Marie mène l'enquête avec son frère jumeau Nathan et avec Alicia. Elle découvre que Michel, le livreur, sabotait la ferme pour se venger du propriétaire."
         ],
         "correct": 1,
         "answer": 1,
         "points": 1,
-        "explanation": "Derrière la légende du lébérou se cachait Michel, attiré par les truffes."
+        "explanation": "Seul le résumé B est correct. Le gîte est dans le Périgord. Michel provoquait des incidents pour décourager les propriétaires d'acheter la ferme voisine : son chien avait trouvé des truffes dans le bois. Les empreintes étaient des moulages."
       }
     ]
   },
@@ -9548,14 +9548,14 @@ window.LIVRES = [
         "type": "synthesis",
         "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Noé fugue du foyer et part vivre seul dans la forêt, où il apprend à pêcher et à survivre.",
-          "Noé, placé en foyer car sa mère est en prison, rencontre quatre anciens du foyer qui l'aident à retrouver confiance et à revoir sa mère.",
-          "Noé aide sa mère à s'évader de prison grâce au combi Volkswagen d'Octave."
+          "Noé vit dans un foyer, les Aubépines, parce que sa mère est en prison. Le jour de ses douze ans, le gâteau lui rappelle l'arrestation de sa mère : il se met en colère et s'enfuit dans les bois. Il est recueilli par quatre personnes âgées qui ont grandi dans le même foyer et qui vivent ensemble dans une ferme. Grâce à eux, Noé reprend confiance et accepte d'aller revoir sa mère.",
+          "Noé vit dans un foyer, les Aubépines, parce que sa mère est en prison. Le jour de ses douze ans, le gâteau lui rappelle l'arrestation de sa mère : il se met en colère et s'enfuit dans les bois. Il est recueilli par quatre personnes âgées qui ont grandi dans le même foyer et qui vivent ensemble dans une ferme. Noé décide de rester vivre avec eux et refuse de revoir sa mère.",
+          "Noé vit dans un foyer, les Aubépines, parce que sa mère est partie travailler à l'étranger. Le jour de ses douze ans, il reçoit une lettre de sa mère et s'enfuit pour la rejoindre en train. Il est recueilli par quatre personnes âgées qui ont grandi dans le même foyer et qui vivent ensemble dans une ferme. Grâce à eux, Noé reprend confiance et accepte d'aller revoir sa mère."
         ],
-        "correct": 1,
-        "answer": 1,
+        "correct": 0,
+        "answer": 0,
         "points": 1,
-        "explanation": "Grâce à la « bande des quatre », Noé renoue avec sa mère ; à la fin, ils fêtent leur anniversaire ensemble."
+        "explanation": "Seul le résumé A est correct. La mère de Noé est en prison. Noé fugue après la chute du gâteau. Odile, Marie, Jean et Octave l'aident ; il lit les lettres de sa mère et va la voir. À sa sortie, elle s'installe à la ferme."
       }
     ]
   },
@@ -9787,14 +9787,14 @@ window.LIVRES = [
         "type": "synthesis",
         "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Thémis gagne un concours de lecture à la foire aux livres grâce à un vieux livre de comptines.",
-          "Ensorcelé par un vieux bouquiniste, Thémis se retrouve sur une île dangereuse et doit trouver la bonne comptine pour rentrer chez lui.",
-          "Thémis et son ami Titouan écrivent ensemble un livre de comptines pour les enfants de maternelle."
+          "Le jour de son anniversaire, Thémis accompagne ses parents à une foire aux livres anciens, où un étrange bouquiniste lui force la main pour lui donner un livre de comptines. En lisant la première comptine, Thémis se retrouve sur une île inconnue et dangereuse. Aidé par les jumeaux Jahel et Nathanaël, il comprend qu'il doit trouver la seule comptine capable de le ramener chez lui. Il réussit à rentrer chez lui juste à temps pour son anniversaire, et il jette le livre au feu.",
+          "Le jour de son anniversaire, Thémis accompagne ses parents à une foire aux livres anciens, où un étrange bouquiniste lui force la main pour lui donner un livre de comptines. En lisant la première comptine, Thémis se retrouve sur une île inconnue et dangereuse. Aidé par Titouan, il comprend qu'il doit trouver la seule comptine capable de le ramener chez lui. Il réussit en récitant sa comptine à l'envers, mais il reçoit un nouveau livre du bouquiniste en cadeau.",
+          "Le jour de son anniversaire, Thémis accompagne ses parents à une foire aux livres anciens, où il achète lui-même un vieux livre de comptines. En lisant la première comptine, Thémis se retrouve sur une île inconnue et dangereuse. Il appelle ses parents avec son téléphone, et son papa lui lit la bonne comptine pour le faire revenir. Il rentre à temps pour souffler ses bougies."
         ],
         "correct": 1,
         "answer": 1,
         "points": 1,
-        "explanation": "Grâce à Titouan et au message de Louis-Marie, Thémis réussit à rentrer… mais Frédégore n'a pas dit son dernier mot."
+        "explanation": "Seul le résumé B est correct. Frédégore impose le livre à Thémis. Sur l'île (sans réseau), Titouan l'aide, tandis que les jumeaux le piègent. Thémis rentre en lisant la comptine à l'envers, puis reçoit les « Dictons de Frédégore »."
       }
     ]
   },
@@ -10026,14 +10026,14 @@ window.LIVRES = [
         "type": "synthesis",
         "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Liam invente une machine à voyager dans le temps pour rencontrer ses grands-parents.",
-          "Après un orage, Liam se retrouve en 1986 à la place de son père et découvre que ses parents n'étaient pas des ados si parfaits.",
-          "Liam et Mathilde deviennent professeurs au collège et organisent une grande boum des années 80."
+          "Les parents de Liam répètent sans cesse qu'à son âge, ils étaient des enfants parfaits. Liam fabrique une machine à voyager dans le temps et part en 1986 : il devient l'ami de ses parents, qui ont son âge. Il découvre qu'ils étaient loin d'être aussi sages qu'ils le disent. Il décide de rester dans les années 80, où la vie lui paraît plus simple.",
+          "Les parents de Liam répètent sans cesse qu'à son âge, ils étaient des enfants parfaits. Un soir d'orage, Liam se réveille en 1986 : il est devenu professeur de mathématiques, et ses parents sont des adolescents. Il découvre qu'ils étaient encore plus sages et travailleurs qu'ils le disent. Grâce à ses écouteurs, il réussit à revenir dans son époque, et il promet d'être aussi parfait qu'eux.",
+          "Les parents de Liam répètent sans cesse qu'à son âge, ils étaient des enfants parfaits. Un soir d'orage, Liam se réveille en 1986 : il est devenu professeur de mathématiques, et ses parents sont des adolescents. Il découvre qu'ils étaient loin d'être aussi sages qu'ils le disent. Grâce à ses écouteurs, il réussit à revenir dans son époque, et il comprend que ses parents ont été jeunes, eux aussi."
         ],
-        "correct": 1,
-        "answer": 1,
+        "correct": 2,
+        "answer": 2,
         "points": 1,
-        "explanation": "Le voyage dans le temps lui montre la vraie jeunesse de ses parents ; il rentre chez lui en ayant grandi."
+        "explanation": "Seul le résumé C est correct. C'est un orage qui envoie Liam en 1986, où il est le « père » de ses propres parents adolescents. Il découvre qu'ils n'étaient pas si parfaits, puis rentre chez lui en sortant sous l'orage avec ses AirPods."
       }
     ]
   },
@@ -10265,14 +10265,14 @@ window.LIVRES = [
         "type": "synthesis",
         "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Des collégiens retrouvent les voleurs du fauteuil d'Idriss grâce à une enquête dans la cité.",
-          "Après le vol du fauteuil d'Idriss, ses amis créent un club d'entraide et récoltent assez d'argent pour lui en offrir un nouveau.",
-          "Idriss et sa mère obtiennent enfin leurs papiers et partent vivre au Sénégal."
+          "Idriss, un collégien atteint d'une maladie qui affaiblit ses muscles, se fait voler son fauteuil électrique. Sa maman n'ose pas aller à la police, car ils n'ont pas de papiers. Ses amis Melk, Tif et Zik créent alors un club d'entraide : les élèves rendent des services contre des dons, et Idriss devient le trésorier. Ils récoltent assez d'argent pour lui offrir un nouveau fauteuil le jour de son anniversaire.",
+          "Idriss, un collégien atteint d'une maladie qui affaiblit ses muscles, se fait voler son fauteuil électrique. Sa maman porte plainte, et la police lui promet un nouveau fauteuil dans quelques mois. En attendant, ses amis Melk, Tif et Zik créent un club d'entraide pour le transporter partout. Idriss, trop fatigué, décide de quitter le collège et de partir au Sénégal.",
+          "Idriss, un collégien atteint d'une maladie qui affaiblit ses muscles, se fait voler son fauteuil électrique. Sa maman n'ose pas aller à la police, car ils n'ont pas de papiers. Ses amis Melk, Tif et Zik mènent alors l'enquête dans la cité et retrouvent le voleur, qui rend le fauteuil. Pour les remercier, Idriss, très ému, organise une grande fête avec toute la classe et tous les habitants de la cité pour Noël."
         ],
-        "correct": 1,
-        "answer": 1,
+        "correct": 0,
+        "answer": 0,
         "points": 1,
-        "explanation": "Grâce à la solidarité de toute une classe, Idriss retrouve sa liberté de mouvement."
+        "explanation": "Seul le résumé A est correct. La maman d'Idriss a peur d'être expulsée. Le « Gang des Bienfaiteurs d'Idriss » récolte 2002 euros grâce à des services. Idriss reçoit son nouveau fauteuil pour son anniversaire, le 23 mars."
       }
     ]
   },
@@ -10504,14 +10504,14 @@ window.LIVRES = [
         "type": "synthesis",
         "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Lilou et Arthur découvrent une mine d'or dans la jungle et deviennent riches.",
-          "Après le crash de leur avion en Amazonie, Lilou et Arthur survivent trois nuits dans la jungle et apprennent à s'apprécier.",
-          "Lilou et Arthur pilotent un avion pour secourir Jacques, perdu dans la forêt amazonienne."
+          "Lilou et Arthur, qui ne s'entendent pas très bien, font un vol au-dessus de l'Amazonie pour apprendre à se connaître. Un vol d'oiseaux heurte leur petit avion, qui s'écrase dans la jungle. Pendant plusieurs jours, les deux enfants survivent ensemble : ils se protègent des moustiques, suivent une rivière et allument un feu. Ils trouvent un village de chercheurs d'or, dont les habitants les ramènent en pirogue jusqu'à la ville.",
+          "Lilou et Arthur, qui ne s'entendent pas très bien, font un vol au-dessus de l'Amazonie pour apprendre à se connaître. Le moteur tombe en panne, et le pilote Jacques pose l'avion sur une rivière. Pendant plusieurs jours, les deux enfants survivent ensemble, mais ils se disputent sans arrêt. Des policiers les retrouvent, et Lilou décide de ne plus jamais retourner dans la jungle.",
+          "Lilou et Arthur, qui ne s'entendent pas très bien, font un vol au-dessus de l'Amazonie pour apprendre à se connaître. Un vol d'oiseaux heurte leur petit avion, qui s'écrase dans la jungle. Pendant plusieurs jours, les deux enfants survivent ensemble : ils se protègent des moustiques, suivent une rivière et allument un feu. La fumée attire une scientifique qui les sauve, et Lilou et Arthur sont devenus amis."
         ],
-        "correct": 1,
-        "answer": 1,
+        "correct": 2,
+        "answer": 2,
         "points": 1,
-        "explanation": "Ensemble, ils trouvent des solutions pour survivre et se font enfin confiance."
+        "explanation": "Seul le résumé C est correct. Des oiseaux heurtent l'avion. Lilou et Arthur survivent seuls, Arthur allume un feu avec la batterie de son téléphone, et Alice, une entomologiste, voit la fumée. Le village était abandonné. Lilou veut y retourner."
       }
     ]
   },
@@ -10743,14 +10743,14 @@ window.LIVRES = [
         "type": "synthesis",
         "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Dimitri devient bûcheron et abat les arbres malades de la forêt pour sauver la ferme.",
-          "Avec l'aide de Wilgar et de graines magiques, Dimitri cherche le bon arbre pour pousser les hommes à protéger la nature.",
-          "Wilgar et Dimitri ouvrent une brocante pour vendre de vieux jeux de cartes aux habitants du village."
+          "Dimitri est triste de voir la nature de plus en plus abîmée autour de la ferme. Wilgar, un vieil homme sauvé autrefois par son arrière-grand-père pendant la guerre, lui donne des graines magiques : un arbre planté avec l'une d'elles peut réaliser un souhait sincère. Dimitri essaie plusieurs arbres et cherche celui qui poussera les hommes à protéger la nature. Il plante enfin des arbres à conscience, et son petit frère Arnaud raconte leur histoire bien des années plus tard.",
+          "Dimitri est triste de voir la nature de plus en plus abîmée autour de la ferme. Wilgar, un vieil homme qui vit seul dans la forêt, lui vend des graines magiques : un arbre planté avec l'une d'elles peut rendre riche. Dimitri essaie plusieurs arbres et cherche celui qui poussera les hommes à protéger la nature. Il plante enfin des arbres à conscience, et c'est Wilgar qui raconte leur histoire bien des années plus tard.",
+          "Dimitri est triste de voir la nature de plus en plus abîmée autour de la ferme. Wilgar, un vieil homme sauvé autrefois par son arrière-grand-père pendant la guerre, lui donne des graines magiques : un arbre planté avec l'une d'elles peut réaliser un souhait sincère. Dimitri plante un arbre à gronder au bord de la rivière : il fait tellement peur aux pollueurs que l'eau redevient propre pour toujours, et Dimitri n'a plus jamais besoin d'utiliser les autres graines magiques."
         ],
-        "correct": 1,
-        "answer": 1,
+        "correct": 0,
+        "answer": 0,
         "points": 1,
-        "explanation": "Après plusieurs essais, l'arbre à conscience réveille les hommes ; le message final : protéger la Terre par nos efforts."
+        "explanation": "Seul le résumé A est correct. Wilgar, enfant caché pendant la guerre, donne les graines à Dimitri. L'arbre à gronder ne suffit pas : les pollueurs vont plus haut. Dimitri cultive les arbres à conscience, et Arnaud raconte l'épilogue."
       }
     ]
   },
@@ -10982,14 +10982,14 @@ window.LIVRES = [
         "type": "synthesis",
         "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Anna et Ruben s'engagent dans l'armée anglaise pour libérer la Belgique et retrouver leur père.",
-          "Pendant la guerre, Anna et Ruben, enfants juifs, sont protégés par Madame Rosi et survivent jusqu'à la libération.",
-          "Madame Rosi dirige un orphelinat pour enfants riches et organise de grandes fêtes d'anniversaire."
+          "Pendant la Seconde Guerre mondiale, Anna et Ruben, deux enfants juifs, sont envoyés dans une villa-orphelinat dirigée par Madame Rosi. Il faut cacher qu'Anna a seize ans, car à cet âge on peut être déporté. Quand Anna est arrêtée, Ruben s'enfuit en Angleterre pour prévenir l'armée anglaise. À la fin de la guerre, leur papa revient, et Madame Rosi part vivre avec eux à Anvers.",
+          "Pendant la Seconde Guerre mondiale, Anna et Ruben, deux enfants juifs, sont envoyés dans une villa-orphelinat dirigée par Madame Rosi. Il faut cacher qu'Anna a seize ans, car à cet âge on peut être déporté. Quand Anna est arrêtée, Madame Rosi donne ses bijoux pour la faire libérer, puis elle cache les enfants dans un cloître. À la fin de la guerre, leur papa revient et adopte aussi Sami, leur ami de l'orphelinat.",
+          "Pendant la Seconde Guerre mondiale, Anna et Ruben, deux enfants juifs, sont envoyés dans une villa-orphelinat dirigée par Madame Rosi. Il faut cacher que Ruben a seize ans, car à cet âge on peut être déporté. Quand Ruben est arrêté, Sami donne toutes ses économies à l'officier pour le faire libérer, puis il cache les enfants dans la grange d'une ferme voisine. À la fin de la guerre, leur papa revient et adopte aussi Sami."
         ],
         "correct": 1,
         "answer": 1,
         "points": 1,
-        "explanation": "Grâce au courage de Madame Rosi et de ses amis, Anna, Ruben et Sami échappent à la déportation."
+        "explanation": "Seul le résumé B est correct. C'est l'âge d'Anna qu'il faut cacher. Madame Rosi donne ses bijoux pour la libérer, puis cache les enfants chez des religieuses. Le papa revient et adopte Sami ; Madame Rosi meurt quelques années plus tard."
       }
     ]
   },
@@ -11221,14 +11221,14 @@ window.LIVRES = [
         "type": "synthesis",
         "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Trois collégiens enquêtent sur un nouvel élève mystérieux et découvrent qu'il vit dans un camp de migrants.",
-          "Trois collégiens découvrent que le nouvel élève est le fils caché du principal du collège.",
-          "Trois collégiens sont renvoyés du collège pour être entrés dans le bureau du principal."
+          "Walid, Ruben et Altina adorent mener des enquêtes au collège. Un nouvel élève les intrigue : il ne parle presque pas, a très peur des bruits forts, et son dossier est vide. Les trois amis le suivent en secret et découvrent qu'il vit dans un camp de migrants, derrière la colline. Quelques jours plus tard, le camp est détruit, et ils apprennent seulement que le garçon s'appelait Adnan et qu'il avait fui la guerre.",
+          "Walid, Ruben et Altina adorent mener des enquêtes au collège. Un nouvel élève les intrigue : il ne parle presque pas, a très peur des bruits forts, et son dossier est vide. Les trois amis lui posent des questions, et il leur raconte toute sa vie en détail. Ils découvrent qu'il est le fils du principal, et ils crient victoire à la fin de l'enquête.",
+          "Walid, Ruben et Altina adorent mener des enquêtes au collège. Un nouvel élève les intrigue : il ne parle presque pas, a très peur des bruits forts, et son dossier est vide. Les trois amis le suivent en secret et découvrent qu'il vit dans un camp de migrants, derrière la colline. Ils l'aident à apprendre le français, et il devient le quatrième membre de leur équipe d'enquêteurs, qui résout encore bien des mystères."
         ],
         "correct": 0,
         "answer": 0,
         "points": 1,
-        "explanation": "Leur enquête se termine par une prise de conscience : ils ont eu de la chance d'être nés ici."
+        "explanation": "Seul le résumé A est correct. Le nouveau ne parle pas encore français. Les amis le suivent et découvrent le camp de migrants. Le camp est ensuite détruit, et ils ne le revoient jamais : c'est leur première enquête sans victoire."
       }
     ]
   },
@@ -11460,14 +11460,14 @@ window.LIVRES = [
         "type": "synthesis",
         "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Leyla découvre que son voisin est un ancien vétérinaire et devient son assistante.",
-          "Leyla se lie avec son voisin malade et réussit à sauver sa chienne Molly, que sa famille finit par adopter.",
-          "Leyla part vivre en Turquie avec Molly pour échapper à son père."
+          "Leyla s'inquiète pour son voisin, Marcel, un vieil homme malade qui vit seul avec sa petite chienne Molly. Au début, il la chasse de chez lui, mais peu à peu, ils deviennent amis. Leyla apprend que Marcel, très malade, a décidé de faire piquer Molly pour qu'elle ne souffre pas après sa mort. Elle trouve une nouvelle famille pour Molly grâce aux affiches qu'elle a collées dans le quartier.",
+          "Leyla s'inquiète pour son voisin, Marcel, un vieil homme malade qui vit seul avec sa petite chienne Molly. Au début, il la chasse de chez lui, mais peu à peu, ils deviennent amis. Leyla apprend que Marcel, très malade, a décidé de faire piquer Molly pour qu'elle ne souffre pas après sa mort. Elle cherche un nouveau maître pour Molly et, finalement, son papa accepte d'accueillir la chienne à la maison.",
+          "Leyla s'inquiète pour son voisin, Marcel, un vieil homme malade qui vit seul avec sa petite chienne Molly. Dès le premier jour, il l'invite à entrer et lui raconte sa vie. Leyla apprend que Marcel, ancien vétérinaire, veut lui apprendre à soigner les animaux. Leyla devient son assistante, et son papa accepte tout de suite qu'elle garde Molly."
         ],
         "correct": 1,
         "answer": 1,
         "points": 1,
-        "explanation": "Grâce à Leyla, Marcel peut partir rassuré, et le papa de Leyla change son regard."
+        "explanation": "Seul le résumé B est correct. Marcel chasse d'abord Leyla. Il a un cancer et veut faire piquer Molly. Les affiches ne donnent rien : c'est le papa de Leyla, qui refusait au début, qui promet à Marcel de prendre Molly."
       }
     ]
   },
@@ -11699,14 +11699,14 @@ window.LIVRES = [
         "type": "synthesis",
         "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Paloma et Laurine gagnent un concours de téléréalité grâce à leur amitié.",
-          "En échangeant leurs familles, Paloma découvre le projet secret de Laurine, le révèle aux parents et doit ensuite regagner l'amitié de Laurine.",
-          "Laurine part vivre en Angleterre chez son père et Paloma la remplace dans sa famille."
+          "Paloma et Laurine, deux amies très différentes, pensent toujours que l'autre a plus de chance qu'elle. Elles décident d'échanger leurs familles pendant une semaine. Chez Laurine, Paloma découvre un billet de train caché : son amie veut partir seule en Angleterre pour rencontrer son vrai père. Paloma révèle le secret aux parents de Laurine, puis elle doit regagner l'amitié de Laurine, qui lui pardonne.",
+          "Paloma et Laurine, deux amies très différentes, pensent toujours que l'autre a plus de chance qu'elle. Elles décident d'échanger leurs familles pendant une semaine. Chez Laurine, Paloma découvre un billet de train caché : son amie veut partir seule en Angleterre pour rencontrer son vrai père. Paloma garde le secret et accompagne Laurine en Angleterre sans rien dire aux parents.",
+          "Paloma et Laurine, deux amies qui se ressemblent beaucoup, pensent toujours que l'autre a plus de chance qu'elle. Elles s'inscrivent à une émission de télévision pour échanger leurs familles pendant un mois. Chez Laurine, Paloma découvre un billet de train caché : son amie veut partir seule en Angleterre pour rencontrer son vrai père. Paloma révèle le secret aux parents, et Laurine ne lui parle plus jamais."
         ],
-        "correct": 1,
-        "answer": 1,
+        "correct": 0,
+        "answer": 0,
         "points": 1,
-        "explanation": "L'échange montre que chacune envie la vie de l'autre ; le secret met leur amitié à l'épreuve, puis elles se réconcilient."
+        "explanation": "Seul le résumé A est correct. Tout oppose les deux amies. Elles échangent leurs familles une semaine, après avoir vu une émission. Paloma révèle le projet de Laurine à Marco et à Agathe ; Laurine s'apprêtait elle-même à tout avouer, et elle lui pardonne."
       }
     ]
   },
@@ -11938,14 +11938,14 @@ window.LIVRES = [
         "type": "synthesis",
         "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Résumé A : Noah, un garçon de onze ans, apprend qu'il a été abandonné quand il était bébé. Il part seul à Marrakech pour chercher sa mère. Avec son ami Nadir et un petit singe, il découvre un trafic de singes et retrouve sa maman, Isia.",
-          "Résumé B : Noah, un garçon de onze ans, s'enfuit de chez lui pour chercher un trésor caché dans une ferme d'Ifrane. Il y trouve un sac de pièces d'or, qu'il partage avec son ami Nadir. Ensemble, ils ouvrent un cirque avec des singes.",
-          "Résumé C : Noah, un garçon de onze ans, est vendu par ses parents à des trafiquants de singes. Il s'échappe grâce à un policier du commissariat. Il retourne ensuite à Ourika, où sa famille lui demande pardon."
+          "Noah, un garçon de onze ans qui vit dans un village près de Marrakech, apprend qu'il n'est pas le fils de ses parents. Il part seul à Marrakech pour chercher sa vraie mère et rencontre Nadir, qui devient son ami. Dans une ferme abandonnée, Noah apprivoise un petit singe et trouve un carnet rouge. Avec Nadir, il découvre un trésor caché dans la ferme, et il l'utilise pour retrouver sa maman.",
+          "Noah, un garçon de onze ans qui vit dans un village près de Marrakech, apprend qu'il n'est pas le fils de ses parents. Il part seul à Marrakech pour chercher son vrai père et rencontre Nadir, qui devient son ami. Dans une ferme abandonnée, Noah trouve un carnet rouge et vend son petit singe pour payer le voyage. Avec Nadir, il découvre un trafic de singes, mais il ne retrouve jamais sa famille.",
+          "Noah, un garçon de onze ans qui vit dans un village près de Marrakech, apprend qu'il n'est pas le fils de ses parents. Il part seul à Marrakech pour chercher sa vraie mère et rencontre Nadir, qui devient son ami. Dans une ferme abandonnée, Noah apprivoise un petit singe et trouve un carnet rouge. Avec Nadir, il découvre un trafic de singes, et une femme qui les aide reconnaît son carnet : c'est Isia, sa maman."
         ],
-        "correct": 0,
-        "answer": 0,
+        "correct": 2,
+        "answer": 2,
         "points": 1,
-        "explanation": "Seul le résumé A raconte les vraies étapes : l'abandon, la fuite, l'amitié avec Nadir et Cœurjol, le trafic de singes et les retrouvailles avec Isia."
+        "explanation": "Seul le résumé C est correct. Les « magots » sont des singes, pas un trésor. Noah refuse de vendre Cœurjol. Les garçons font arrêter les trafiquants, et Isia reconnaît son carnet : elle est la maman de Noah."
       }
     ]
   },
@@ -12177,14 +12177,14 @@ window.LIVRES = [
         "type": "synthesis",
         "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Résumé A : Louis, un garçon belge de douze ans, part aux États-Unis pour voir un match de Mutombo. Il se perd dans la ville de Houston, mais un joueur de basket le retrouve et l'invite à s'entraîner avec son équipe.",
-          "Résumé B : Louis, un garçon belge de douze ans, déménage en RDC avec sa famille. À l'école de Kinshasa, il se dispute avec Félicien, puis ils deviennent amis en jouant au basket ensemble.",
-          "Résumé C : Louis, un garçon belge de douze ans, choisit de vivre en RDC, le pays de son idole Mutombo. À Kinshasa, il découvre la ville avec son papa et son ami Félicien, qui lui fait visiter l'hôpital de Mutombo."
+          "Louis, un garçon belge de douze ans, déménage souvent avec sa famille, car son papa travaille dans des projets d'aide. Pour son anniversaire, il peut choisir le prochain pays : il choisit la RDC, le pays de son idole, le basketteur Mutombo. À Kinshasa, il découvre la ville avec son papa et se fait un ami, Félicien. Félicien l'emmène voir un match de Mutombo, qui remarque Louis dans le public et l'invite à s'entraîner avec toute son équipe pendant une semaine.",
+          "Louis, un garçon belge de douze ans, déménage souvent avec sa famille, car son papa travaille dans des projets d'aide. Pour son anniversaire, il peut choisir le prochain pays : il choisit la RDC, le pays de son idole, le basketteur Mutombo. À Kinshasa, il découvre la ville avec son papa et se fait un ami, Félicien. Félicien l'emmène voir l'hôpital que Mutombo a fait construire, et Louis apprend que son nouvel ami va, lui aussi, déménager à Bukavu.",
+          "Louis, un garçon belge de douze ans, déménage souvent avec sa famille, car son papa travaille dans des projets d'aide. Pour son anniversaire, il peut choisir le prochain pays : il choisit les États-Unis, où joue son idole, le basketteur Mutombo. À Houston, il découvre la ville avec son papa et se fait un ami, Félicien. Félicien l'emmène voir l'hôpital que Mutombo a fait construire."
         ],
-        "correct": 2,
-        "answer": 2,
+        "correct": 1,
+        "answer": 1,
         "points": 1,
-        "explanation": "Seul le résumé C est correct : Louis choisit la RDC, découvre Kinshasa et Masina, et visite l'hôpital construit par Mutombo."
+        "explanation": "Seul le résumé B est correct. Louis choisit la RDC, le pays de Mutombo. À Masina, Félicien lui fait découvrir l'hôpital construit par Mutombo, qui porte le nom de sa maman. À la fin, Louis apprend que Félicien part aussi à Bukavu."
       }
     ]
   },
@@ -12416,14 +12416,14 @@ window.LIVRES = [
         "type": "synthesis",
         "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Résumé A : James passe ses vacances dans une pension où un voleur prend les bijoux de Mrs Periwinkle. Avec l'aide du docteur Olive, il retrouve les bijoux cachés dans la cuisine de Gran'Ma.",
-          "Résumé B : James passe ses vacances dans une pension où plusieurs meurtres ont lieu. Le détective John Pendwick accuse le docteur Olive, mais James bluffe et prouve que c'est John qui a tué sa tante.",
-          "Résumé C : James passe ses vacances dans une pension où le docteur Black est assassiné. Le détective John Pendwick trouve vite le coupable, le colonel Mustard, et emmène James travailler avec lui à Dublin."
+          "James passe ses vacances dans une pension où, pendant une tempête, plusieurs pensionnaires sont assassinés. John Pendwick, un célèbre détective, mène l'enquête et demande à James de l'aider. Il accuse Miss Rose, parce que ses cheveux roux ont été trouvés sur chaque victime. Mais James bluffe, comme au poker, et prouve que c'est le colonel Mustard qui a tout organisé.",
+          "James passe ses vacances dans une pension où, pendant une tempête, plusieurs pensionnaires sont assassinés. John Pendwick, un célèbre détective, mène l'enquête et demande à James de l'aider. Il accuse le docteur Olive, parce que ses empreintes sont sur le chandelier qui a servi à tuer sa tante. James l'aide à trouver d'autres preuves contre le docteur, qui finit par avouer les trois meurtres devant tous les pensionnaires.",
+          "James passe ses vacances dans une pension où, pendant une tempête, plusieurs pensionnaires sont assassinés. John Pendwick, un célèbre détective, mène l'enquête et demande à James de l'aider. Il accuse le docteur Olive, parce que ses empreintes sont sur le chandelier qui a servi à tuer sa tante. Mais James bluffe, comme au poker, et prouve que c'est John lui-même qui a tué sa tante pour hériter de sa fortune."
         ],
-        "correct": 1,
-        "answer": 1,
+        "correct": 2,
+        "answer": 2,
         "points": 1,
-        "explanation": "Seul le résumé B est correct : il y a plusieurs meurtres, John accuse Olive à tort, et le bluff de James démasque John."
+        "explanation": "Seul le résumé C est correct. John accuse le docteur Olive à cause de ses empreintes sur le chandelier. James invente l'histoire du charbon pour démasquer John, qui a tué Miss Rose et sa tante pour payer ses dettes de jeu."
       }
     ]
   },
@@ -12655,14 +12655,14 @@ window.LIVRES = [
         "type": "synthesis",
         "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Résumé A : Six amis découvrent une soucoupe volante dans un champ. Ils deviennent amis avec les extraterrestres, qui les emmènent visiter leur planète pendant une semaine avant de les ramener chez eux.",
-          "Résumé B : Victoria tient un blog sur les étoiles. Avec Guillaume et son télescope, elle découvre une nouvelle planète. Elle devient célèbre et passe à la télévision avec toute sa bande.",
-          "Résumé C : Sur son blog, Victoria raconte que des lézards venus de l'espace font disparaître ses amis. Mais le dernier message révèle qu'elle invente tout pour prouver que les gens croient n'importe quoi."
+          "Sur son blog, Victoria raconte des événements terrifiants : après avoir vu un engin spatial dans le ciel, ses amis disparaissent un à un. Elle est persuadée que des lézards venus de l'espace les enlèvent, déguisés en ouvriers ou en motards. Les messages sont présentés du plus récent au plus ancien. Le tout dernier message révèle que Victoria a tout inventé, pour prouver que les gens croient n'importe quoi sur Internet.",
+          "Sur son blog, Victoria raconte des événements terrifiants : après avoir vu un engin spatial dans le ciel, ses amis disparaissent un à un. Elle est persuadée que des lézards venus de l'espace les enlèvent, déguisés en ouvriers ou en motards. Les messages sont présentés du plus récent au plus ancien. Le tout dernier message révèle que la police a retrouvé tous ses amis, sains et saufs, cachés dans une cabane du petit bois.",
+          "Sur son blog, Victoria raconte des événements terrifiants : après avoir trouvé un lézard vert dans son jardin, ses amis disparaissent un à un. Elle est persuadée que ses voisins les enlèvent, déguisés en ouvriers ou en motards. Les messages sont présentés dans l'ordre des jours, du lundi au vendredi. Le tout dernier message révèle que Victoria a tout inventé pour faire une farce à ses parents."
         ],
-        "correct": 2,
-        "answer": 2,
+        "correct": 0,
+        "answer": 0,
         "points": 1,
-        "explanation": "Seul le résumé C est correct : l'histoire des lézards est un canular inventé par Victoria."
+        "explanation": "Seul le résumé A est correct. Les messages vont du vendredi 13 au lundi 9 mars. Le dernier (le plus ancien) révèle le pari de Victoria : raconter une histoire inventée pour prouver que les gens croient tout ce qu'ils lisent sur Internet."
       }
     ]
   },
@@ -12894,14 +12894,14 @@ window.LIVRES = [
         "type": "synthesis",
         "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Résumé A : Le soir d'Halloween, Murphy, un garçon malchanceux, entre dans la maison de J.O.L. Il réussit des épreuves terrifiantes et choisit de sauver ses amis. Il découvre que J.O.L. est Jack O'Lantern et l'aide à retrouver Morgane.",
-          "Résumé B : Le soir d'Halloween, Murphy et ses amis se perdent dans une forêt. Une sorcière les enferme dans sa boutique, mais Romaric trouve la clé et ils s'échappent tous ensemble en courant.",
-          "Résumé C : Le soir d'Halloween, Murphy gagne le concours du plus beau déguisement grâce à son costume de Dracula. Comme prix, il reçoit une visite de la maison hantée de Bonnefleur."
+          "Murphy, un garçon qui a toujours de la chance, passe Halloween dans le village de son ami Romaric. Pour gagner un concours de déguisement, il entre dans la maison du mystérieux J.O.L., où il doit réussir des épreuves terrifiantes. Au dernier moment, il choisit de sauver ses trois amis plutôt que de s'enfuir seul. Il découvre que J.O.L. est en fait le grand-père de Romaric, qui voulait simplement lui faire peur pour s'amuser.",
+          "Murphy, un garçon très malchanceux, passe Halloween dans le village de son ami Romaric. Pour ne pas passer pour un peureux, il entre dans la maison du mystérieux J.O.L., où il doit réussir des épreuves terrifiantes. Au dernier moment, il choisit de s'enfuir seul pour prévenir la police du village. Il découvre que J.O.L. est un vieux voleur, et il raconte toute l'histoire à Romaric.",
+          "Murphy, un garçon très malchanceux, passe Halloween dans le village de son ami Romaric. Pour ne pas passer pour un peureux, il entre dans la maison du mystérieux J.O.L., où il doit réussir des épreuves terrifiantes. Au dernier moment, il choisit de sauver ses trois amis plutôt que de s'enfuir seul. Il découvre que J.O.L. est Jack O'Lantern, un esprit malin, et il l'aide à retrouver Morgane, la sorcière qu'il aime."
         ],
-        "correct": 0,
-        "answer": 0,
+        "correct": 2,
+        "answer": 2,
         "points": 1,
-        "explanation": "Seul le résumé A est correct : la maison de J.O.L., les épreuves, le choix courageux de Murphy et les retrouvailles de Jack et Morgane."
+        "explanation": "Seul le résumé C est correct. Murphy entre chez J.O.L. par orgueil, pour répondre à Alain. Il choisit de libérer ses amis. J.O.L. est Jack O'Lantern ; Murphy l'aide à retrouver Morgane (Morjana) et garde son secret."
       }
     ]
   },
@@ -13133,14 +13133,14 @@ window.LIVRES = [
         "type": "synthesis",
         "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Résumé A : Jessica part en vacances en Afrique chez son demi-frère Démouto. Elle a peur des animaux sauvages, mais Démouto lui apprend à les aimer. Elle décide alors de rester vivre là-bas avec lui.",
-          "Résumé B : Jessica apprend que son demi-frère Démouto vient vivre chez elle. Au début, elle est jalouse et le rejette. Mais quand il tombe malade, elle apprend à le connaître et finit par l'appeler « mon frère ».",
-          "Résumé C : Jessica et son demi-frère Démouto se disputent tout le temps à l'école. Lucas les aide à se réconcilier, et les trois enfants ouvrent ensemble une boutique de vêtements africains."
+          "Jessica apprend que Démouto, le fils que son papa a eu en Afrique, vient vivre chez eux et va partager sa chambre. Au début, elle est jalouse et le rejette, d'autant plus qu'il se retrouve dans sa classe. Un soir, Démouto tombe gravement malade pendant que les parents sont absents, et Jessica s'occupe de lui. Peu à peu, elle apprend à le connaître et finit par l'appeler « mon frère ».",
+          "Jessica apprend que Démouto, le fils que son papa a eu en Afrique, vient vivre chez eux et va partager sa chambre. Au début, elle est jalouse et le rejette, d'autant plus qu'il se retrouve dans sa classe. Un soir, Démouto tombe gravement malade pendant que les parents sont absents, et Jessica appelle Lucas à l'aide. Démouto repart ensuite en Afrique, et Jessica ne le revoit plus.",
+          "Jessica apprend que Démouto, le fils que son papa a eu en Afrique, vient vivre chez eux et va partager sa chambre. Au début, elle est ravie et le présente fièrement à toutes ses copines. Un soir, Démouto tombe gravement malade pendant que les parents sont absents, et Jessica s'occupe de lui. Mais ils se disputent à l'hôpital, et Démouto demande à changer de chambre."
         ],
-        "correct": 1,
-        "answer": 1,
+        "correct": 0,
+        "answer": 0,
         "points": 1,
-        "explanation": "Seul le résumé B est correct : la jalousie de Jessica au début, la maladie de Démouto, puis leur rapprochement."
+        "explanation": "Seul le résumé A est correct. Jessica rejette d'abord Démouto. Seule avec lui quand il a de la fièvre, elle le soigne. À l'hôpital, il lui parle de la richesse d'avoir deux cultures ; après l'épisode du cousin Jules, elle l'appelle « mon frère »."
       }
     ]
   },
@@ -13372,14 +13372,14 @@ window.LIVRES = [
         "type": "synthesis",
         "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Résumé A : Méline et ses parents passent une semaine de vacances dans un hôtel en Angleterre. Ils y rencontrent Elsa, qui leur apprend à cuisiner, et ils repartent avec plein de nouvelles recettes.",
-          "Résumé B : Méline et ses parents achètent un vieil hôtel abandonné dans la forêt. Avec l'aide de quatre motards, ils le rénovent pendant l'hiver et l'ouvrent aux clients l'été suivant.",
-          "Résumé C : Perdue avec ses parents, Méline passe une nuit dans un hôtel vivant, qui fait fuir les clients désagréables et veut garder ceux qu'il aime. Méline promet de revenir, et l'hôtel les laisse partir."
+          "En rentrant de vacances, Méline et ses parents se perdent dans le brouillard et passent la nuit dans un vieil hôtel tenu par Elsa, une jeune Anglaise. Des incidents étranges font fuir des clients désagréables, les Grignard. En pleine nuit, Méline découvre que c'est Elsa qui provoque tous ces incidents pour garder les clients qu'elle aime. Effrayée, la famille s'enfuit avant le petit-déjeuner.",
+          "En rentrant de vacances, Méline et ses parents se perdent dans le brouillard et passent la nuit dans un vieil hôtel tenu par Elsa, une jeune Anglaise. Des incidents étranges font fuir des clients désagréables, les Grignard. En pleine nuit, Méline découvre que l'hôtel est vivant : il parle, et il voudrait garder la famille. Méline promet de revenir, et l'hôtel les laisse partir.",
+          "En rentrant de vacances, Méline et ses parents se perdent dans le brouillard et passent la nuit dans un vieil hôtel tenu par Elsa, une jeune Anglaise. Des incidents étranges font fuir la famille de Méline, qui change trois fois de chambre. En pleine nuit, Méline découvre que l'hôtel est vivant : il parle, et il voudrait garder les Grignard. Méline promet de ne jamais revenir."
         ],
-        "correct": 2,
-        "answer": 2,
+        "correct": 1,
+        "answer": 1,
         "points": 1,
-        "explanation": "Seul le résumé C est correct : la nuit dans l'hôtel vivant, les Grignard chassés et la promesse de Méline."
+        "explanation": "Seul le résumé B est correct. C'est l'hôtel lui-même qui parle et qui fait fuir les Grignard. Il aime la famille de Méline et cache les clés de la voiture. Méline promet de revenir ; un an plus tard, elle s'en réjouit."
       }
     ]
   }
