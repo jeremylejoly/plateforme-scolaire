@@ -8181,9 +8181,19 @@ function getAllStudents() {
 }
 
 function loadBooks() {
+  // livres.js est la référence : une ancienne copie locale (lq_books) ne doit jamais masquer
+  // les questionnaires ajoutés depuis. On n'en garde que les livres créés à la main (id absent de livres.js).
+  if(window.LIVRES && window.LIVRES.length > 0) {
+    let custom = [];
+    try {
+      const saved = JSON.parse(localStorage.getItem('lq_books') || '[]');
+      const known = new Set(window.LIVRES.map(b => b.id));
+      if (Array.isArray(saved)) custom = saved.filter(b => b && b.id && !known.has(b.id));
+    } catch(e) {}
+    return window.LIVRES.slice().concat(custom);
+  }
   const saved = localStorage.getItem('lq_books');
   if(saved) return JSON.parse(saved);
-  if(window.LIVRES && window.LIVRES.length > 0) return window.LIVRES;
   return [
   {id:"enquete",title:"Enquête à l'hôpital désaffecté",series:"Récit Express",totalPoints:17,
     questions:[
@@ -8293,6 +8303,10 @@ function loadBooks() {
   ];
 }
 function saveBooks(b){
+  if(window.LIVRES && window.LIVRES.length > 0){
+    const known = new Set(window.LIVRES.map(x => x.id));
+    b = b.filter(x => !known.has(x.id));
+  }
   localStorage.setItem('lq_books',JSON.stringify(b));
   if(window.FB_saveBooks){
     window.FB_saveBooks(b);
@@ -8823,7 +8837,7 @@ function getArchivedBooks(targetCls){
     localStorage.setItem('lq_archived_' + cls, JSON.stringify(merged));
     if (cls === 'lejoly') localStorage.setItem('lq_archived', JSON.stringify(merged));
     localStorage.setItem('lq_archived_v5_migrated_' + cls, 'true');
-    if (window.FB_saveArchivedBooks) window.FB_saveArchivedBooks(cls, merged);
+    if (window.FB_saveArchivedBooks && typeof state !== 'undefined' && state.role === 'teacher') window.FB_saveArchivedBooks(cls, merged);
     return merged;
   }
   return parsed;
@@ -9468,19 +9482,12 @@ async function syncFromFirebase(){
       await window.FB_saveLockedActivities(currentClass, localLocked);
     }
     // Sync livres archivés
-    const archived = await window.FB_loadArchivedBooks();
+    const archived = await window.FB_loadArchivedBooks(currentClass);
     if(archived && Array.isArray(archived)){
-      const newBookIds = [
-        'voyage_valhalla', 'menace_classe_rousse', 'trois_gateaux_anniversaire', 'livre_maudit',
-        'back_to_the_80s', 'comme_sur_des_roulettes', 'crash_coeur_jungle', 'droles_darbres',
-        'la_villa', 'le_mysterieux_inconnu', 'le_vieil_homme_et_le_chien', 'qui_a_le_plus_de_chance',
-        'du_sel_sur_mes_levres', 'nature_et_sortilege_institulemn',
-        'la_ferme_aux_magots', 'louistiti', 'partie_de_poker', 'trois_lezards',
-        'murphy_halloween', 'un_frere_tombe_du_ciel', 'hotel_bon_vent'
-      ];
-      const mergedArchived = Array.from(new Set([...archived, ...newBookIds]));
-      localStorage.setItem('lq_archived', JSON.stringify(mergedArchived));
-      localStorage.setItem('lq_archived_' + currentClass, JSON.stringify(mergedArchived));
+      // Firebase fait foi : les livres « réactivés » par l'enseignant ne doivent pas être re-masqués ici
+      localStorage.setItem('lq_archived_' + currentClass, JSON.stringify(archived));
+      if (currentClass === 'lejoly') localStorage.setItem('lq_archived', JSON.stringify(archived));
+      localStorage.setItem('lq_archived_v5_migrated_' + currentClass, 'true');
     }
     // Sync plan de travail
     if (window.FB_loadPlanTravail) {
@@ -9948,7 +9955,12 @@ function saveNewBook(){
 
 function deleteBook(i){
   if(!confirm('Supprimer ce livre ?')) return;
-  const books=loadBooks();books.splice(i,1);saveBooks(books);
+  const books=loadBooks();
+  if(window.LIVRES && window.LIVRES.some(x => x.id === books[i].id)){
+    alert('Ce questionnaire fait partie du site : utilise plutôt « 🔒 Masquer » pour le cacher aux élèves.');
+    return;
+  }
+  books.splice(i,1);saveBooks(books);
   renderBooksManage();renderBooks();
 }
 
