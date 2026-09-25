@@ -13,7 +13,7 @@
  *  ➜ Si vous remplacez une image en gardant le même nom et voulez forcer la mise à jour
  *    immédiate sur les tablettes : incrémenter MEDIA_VERSION.
  */
-const VERSION = 'v359';
+const VERSION = 'v360';
 const MEDIA_VERSION = 'm3';
 
 const CORE_CACHE  = 'lcml-core-'  + VERSION;
@@ -45,7 +45,7 @@ const MEDIA_EXT = /\.(png|jpe?g|gif|webp|avif|svg|ico|ttf|otf|woff2?)$/i;
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CORE_CACHE).then((cache) =>
-      Promise.allSettled(CORE_ASSETS.map((url) => cache.add(url).catch(() => {})))
+      Promise.allSettled(CORE_ASSETS.map((url) => cache.add(new Request(url, { cache: 'reload' })).catch(() => {})))
     )
   );
   self.skipWaiting();
@@ -112,25 +112,35 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Pages, scripts, styles : réponse immédiate depuis le cache + mise à jour en arrière-plan
-  // (la revérification passe par le cache HTTP du navigateur : le plus souvent une simple réponse 304)
+  // Pages, scripts, styles : TOUJOURS la version en ligne d'abord (sept. 2026).
+  // Avant : la copie en mémoire était servie d'abord, et des appareils gardaient d'anciennes
+  // versions (0/16, « undefined », livres absents). La copie ne sert plus que hors ligne
+  // ou si le réseau ne répond pas en 6 secondes.
   const isCore = CORE_ASSETS.some((a) => a !== './' && url.pathname.endsWith('/' + a)) || url.pathname.endsWith('/');
   const target = isCore ? CORE_CACHE : PAGES_CACHE;
+  const netReq = req.mode === 'navigate'
+    ? new Request(req.url, { cache: 'no-cache', credentials: 'same-origin' })
+    : new Request(req, { cache: 'no-cache' });
+
+  const network = fetch(netReq).then((res) => {
+    if (res && res.status === 200 && (res.type === 'basic' || res.type === 'default')) {
+      const copy = res.clone();
+      caches.open(target).then((c) => c.put(req, copy)).catch(() => {});
+    }
+    return res;
+  });
+  const fallback = () => caches.match(req).then((cached) => {
+    if (cached) return cached;
+    if (req.mode === 'navigate' && req.destination === 'document') return caches.match('index.html');
+    return Response.error();
+  });
+  const timeout = new Promise((resolve) => setTimeout(() => resolve(null), 6000));
 
   event.respondWith(
-    caches.match(req, { ignoreSearch: false }).then((cached) => {
-      const network = fetchAndStore(req, target, false);
-      if (cached) {
-        event.waitUntil(network.catch(() => {}));
-        return cached;
-      }
-      return network.catch(() => {
-        // Hors-ligne : seule la page principale retombe sur l'accueil (pas les exercices en iframe)
-        if (req.mode === 'navigate' && req.destination === 'document') {
-          return caches.match('index.html');
-        }
-        return Response.error();
-      });
+    Promise.race([network.catch(() => null), timeout]).then((res) => {
+      if (res) return res;
+      // Réseau en échec ou trop lent : copie en mémoire, sinon on attend quand même le réseau
+      return caches.match(req).then((cached) => cached || network.catch(fallback));
     })
   );
 });

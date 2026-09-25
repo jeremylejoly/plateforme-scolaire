@@ -13384,3 +13384,5 @@ window.LIVRES = [
     ]
   }
 ];
+
+window.LIVRES_VERSION = '20260925b';
