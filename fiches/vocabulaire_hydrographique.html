@@ -252,6 +252,22 @@
     text-anchor: middle;
     dominant-baseline: central;
   }
+  /* Glisser-déposer : rond visé et étiquette qui suit le doigt */
+  .hotspot.drop-target circle.hs-ring {
+    fill: #bae6fd;
+    stroke: var(--bleu-fonce);
+    stroke-width: 5;
+  }
+  .hotspot.drop-target circle.hs-halo {
+    r: 30;
+    fill: rgba(2, 132, 199, 0.55);
+  }
+  .word-tile { touch-action: none; }
+  .word-tile.drag-clone {
+    position: fixed; z-index: 9999; pointer-events: none; margin: 0;
+    transform: translate(-50%, -130%) scale(1.08);
+    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.3);
+  }
   .hotspot:hover circle.hs-ring {
     fill: #e0f2fe;
     stroke: var(--bleu-fonce);
@@ -478,7 +494,7 @@
       <div class="card-head">
         <div>
           <h2>Le parcours de l'eau, de la montagne à l'océan</h2>
-          <p class="instructions">1. Clique sur un mot dans la liste.<br>2. Clique sur le rond numéroté pour l'y placer. (Tu peux recliquer sur un mot placé pour le retirer ou le déplacer).<br>3. Clique sur <b>« Valider mes réponses »</b> une fois terminé !</p>
+          <p class="instructions">1. Clique sur un mot dans la liste.<br>2. Clique sur le rond numéroté pour l'y placer. Tu peux aussi faire glisser le mot directement sur le rond. (Tu peux recliquer sur un mot placé pour le retirer ou le déplacer).<br>3. Clique sur <b>« Valider mes réponses »</b> une fois terminé !</p>
         </div>
         <div class="status-block">
           <div class="score-pill" id="ex2-status-pill">
@@ -739,7 +755,7 @@
       }
 
       tile.addEventListener("click", function(){ 
-        if(isValidated) return;
+        if(isValidated || justDragged) return;
         if(tile.classList.contains("used")) return;
         onTileClick(w); 
       });
@@ -897,6 +913,93 @@
   // Tout réinitialiser / recommencer
   ex2ResetBtn.addEventListener("click", initExercise);
   ex2RetryAllBtn.addEventListener("click", initExercise);
+
+  // ===== Glisser-déposer (doigt ou souris), en plus de « clique puis clique » =====
+  var drag = null, justDragged = false;
+  var scrollState = { dy: 0, raf: 0 };
+
+  function hotspotAt(x, y){
+    // 1) le rond exactement sous le doigt
+    var el = document.elementFromPoint(x, y);
+    var hs = el && el.closest ? el.closest(".hotspot") : null;
+    if(hs) return hs;
+    // 2) sinon, le rond le plus proche (les ronds sont petits sur une tablette)
+    var best = null, bestD = Infinity;
+    hotspots.forEach(function(h){
+      var r = h.querySelector(".hs-ring").getBoundingClientRect();
+      var d = Math.hypot(r.left + r.width / 2 - x, r.top + r.height / 2 - y);
+      if(d < bestD){ bestD = d; best = h; }
+    });
+    return bestD <= 45 ? best : null;
+  }
+
+  function autoScroll(y){
+    var margin = 70, h = window.innerHeight;
+    scrollState.dy = y > h - margin ? 12 : (y < margin ? -12 : 0);
+    if(scrollState.dy && !scrollState.raf){
+      var step = function(){
+        if(!scrollState.dy){ scrollState.raf = 0; return; }
+        window.scrollBy(0, scrollState.dy);
+        scrollState.raf = requestAnimationFrame(step);
+      };
+      scrollState.raf = requestAnimationFrame(step);
+    }
+  }
+
+  function clearTargets(){ hotspots.forEach(function(h){ h.classList.remove("drop-target"); }); }
+
+  ex2Bank.addEventListener("pointerdown", function(e){
+    var tile = e.target.closest ? e.target.closest(".word-tile") : null;
+    if(!tile || isValidated || tile.classList.contains("used")) return;
+    drag = { tile: tile, word: tile.dataset.word, x0: e.clientX, y0: e.clientY, id: e.pointerId, clone: null };
+  });
+
+  document.addEventListener("pointermove", function(e){
+    if(!drag || e.pointerId !== drag.id) return;
+    if(!drag.clone){
+      if(Math.hypot(e.clientX - drag.x0, e.clientY - drag.y0) < 8) return;
+      var c = drag.tile.cloneNode(true);
+      c.classList.remove("selected");
+      c.classList.add("drag-clone");
+      document.body.appendChild(c);
+      drag.clone = c;
+      drag.tile.style.opacity = "0.4";
+    }
+    e.preventDefault();
+    drag.clone.style.left = e.clientX + "px";
+    drag.clone.style.top = e.clientY + "px";
+    clearTargets();
+    var hs = hotspotAt(e.clientX, e.clientY);
+    if(hs) hs.classList.add("drop-target");
+    autoScroll(e.clientY);
+  }, { passive: false });
+
+  function endDrag(e, cancelled){
+    if(!drag || e.pointerId !== drag.id) return;
+    var d = drag; drag = null;
+    scrollState.dy = 0;
+    clearTargets();
+    if(!d.clone) return; // simple toucher : le « clic » habituel s'en charge
+    d.clone.remove();
+    d.tile.style.opacity = "";
+    justDragged = true;
+    setTimeout(function(){ justDragged = false; }, 400);
+    if(cancelled || isValidated) return;
+    var hs = hotspotAt(e.clientX, e.clientY);
+    if(hs){
+      ex2SelectedWord = d.word;
+      hs.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+    }
+  }
+  // Toucher « à côté » d'un petit rond compte aussi (quand un mot est déjà choisi)
+  document.getElementById("ex2-svg").addEventListener("click", function(e){
+    if(isValidated || !ex2SelectedWord || justDragged) return;
+    if(e.target.closest && e.target.closest(".hotspot")) return;
+    var hs = hotspotAt(e.clientX, e.clientY);
+    if(hs) hs.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+  });
+  document.addEventListener("pointerup", function(e){ endDrag(e, false); });
+  document.addEventListener("pointercancel", function(e){ endDrag(e, true); });
 
   initExercise();
 })();
