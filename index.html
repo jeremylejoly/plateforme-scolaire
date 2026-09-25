@@ -46418,75 +46418,79 @@ window.renderSciCircOrdreEnsemble = renderSciCircOrdreEnsemble;
 // ===== SYSTEME DE FICHES (WORKSHETS) =====
 let fiches = [];
 
+const EXCLUDED_FICHES_EXERCISE_IDS = new Set([
+  'td_moyenne_exercices',
+  'gram_determinant_ex',
+  'conj_present_qcm',
+  'conj_present_ecriture',
+  'conj_imparfait_qcm',
+  'conj_imparfait_ecriture',
+  'fiche_vocabulaire_moyen_age',
+  'fiche_texte_trous_moyen_age',
+  'fiche_proverbes',
+  'fiche_atelier_mots',
+  'fiche_registres_tri',
+  'fiche_verbes_ternes',
+  'fiche_chasseur_intrus',
+  'fiche_fabrique_mots',
+  'geo_hydro_schema',
+  'geo_hydro_definitions',
+  'sci_cycle_eau_schema',
+  'sci_reseaux_trophiques',
+  'sci_plantes_germination',
+  'sci_plantes_fleur',
+  'sci_matiere_etats',
+  'sci_matiere_changements',
+  'sci_melanges_qcm',
+  'sci_energie_tri',
+  'sci_electricite_labo',
+  'sci_lumiere_ombres',
+  'sci_eclipses',
+  'sci_transformations_chimiques',
+  'sci_reproduction_plantes',
+  'geo_globe_3d'
+]);
+
+function cleanFichesList(rawList) {
+  if (!Array.isArray(rawList)) return [];
+  const seenIds = new Set();
+  const seenFilenames = new Set();
+  const cleaned = [];
+  rawList.forEach(f => {
+    if (f && f.id && f.filename) {
+      if (f.id.startsWith('fiche_conj_pc_')) return;
+      if (EXCLUDED_FICHES_EXERCISE_IDS.has(f.id)) return;
+      if (!seenIds.has(f.id) && !seenFilenames.has(f.filename)) {
+        seenIds.add(f.id);
+        seenFilenames.add(f.filename);
+        cleaned.push(f);
+      }
+    }
+  });
+  return cleaned;
+}
+
 function initFiches() {
   const saved = localStorage.getItem('lq_fiches');
   const DEFAULT_FICHES = [
     { id: 'fiche_frise', title: 'La frise chronologique', filename: 'frise-chronologique-histoire.html', category: 'Histoire' },
-    { id: 'fiche_vocabulaire_moyen_age', title: 'Vocabulaire du Moyen Âge (Association)', filename: 'moyen_age_vocabulaire.html', category: 'Histoire' },
-    { id: 'fiche_texte_trous_moyen_age', title: 'Vocabulaire du Moyen Âge (Textes à trous)', filename: 'moyen_age_texte_trous.html', category: 'Histoire' },
     { id: 'fiche_planisphere', title: 'Le planisphère', filename: 'planisphere-interactif.html', category: 'Géographie' },
-    { id: 'fiche_proverbes', title: 'Expressions et proverbes', filename: 'expressions-proverbes.html', category: 'Vocabulaire' },
-    { id: 'fiche_atelier_mots', title: "L'Atelier des Mots", filename: 'vocabulaire-jeu.html', category: 'Vocabulaire' },
-    { id: 'fiche_registres_tri', title: 'Le Défi des Registres', filename: 'registres-tri.html', category: 'Vocabulaire' },
-    { id: 'fiche_verbes_ternes', title: 'Chasse aux Verbes Ternes', filename: 'verbes-ternes.html', category: 'Vocabulaire' },
-    { id: 'fiche_chasseur_intrus', title: "Le Chasseur d'Intrus", filename: 'chasseur-intrus.html', category: 'Vocabulaire' },
-    { id: 'fiche_fabrique_mots', title: 'La Fabrique de Mots', filename: 'fabrique-mots.html', category: 'Vocabulaire' },
     { id: 'fiche_relief_hydro', title: 'Relief et hydrographie', filename: 'relief-hydrographie.html', category: 'Géographie' },
-    { id: 'geo_hydro_schema', title: 'Le schéma du cours d\'eau', filename: 'vocabulaire_hydrographique.html', category: 'Géographie' },
-    { id: 'geo_hydro_definitions', title: 'Vocabulaire hydrographique (Définitions)', filename: 'hydrographie_definitions.html', category: 'Géographie' },
     { id: 'fiche_regions_communautes', title: 'Régions et Communautés', filename: 'regions_communautes_belgique.html', category: 'Géographie' },
     { id: 'fiche_respiratoire', title: "L'appareil respiratoire", filename: 'appareil-respiratoire.html', category: 'Sciences' },
     { id: 'fiche_digestif', title: "L'appareil digestif", filename: 'appareil-digestif.html', category: 'Sciences' },
     { id: 'fiche_circulatoire', title: 'Le système circulatoire', filename: 'systeme-circulatoire.html', category: 'Sciences' },
     { id: 'fiche_lune', title: 'Le Soleil, la Terre et la Lune', filename: 'soleil-terre-lune.html', category: 'Sciences' },
     { id: 'fiche_classification', title: 'La classification phylogénétique', filename: 'classification-phylogenetique.html', category: 'Sciences' },
-    { id: 'fiche_cycle_eau', title: "Le cycle de l'eau", filename: 'cycle-eau.html', category: 'Sciences' },
-    { id: 'sci_cycle_eau_schema', title: "Le cycle de l'eau (Schéma)", filename: 'sci_cycle_eau_schema.html', category: 'Sciences' },
-    { id: 'sci_reseaux_trophiques', title: 'Réseaux trophiques et chaînes alimentaires', filename: 'sci_reseaux_trophiques.html', category: 'Sciences' },
-    { id: 'sci_plantes_germination', title: 'Cycle de vie des plantes et germination', filename: 'sci_plantes_germination.html', category: 'Sciences' },
-    { id: 'sci_plantes_fleur', title: "L'anatomie de la fleur", filename: 'sci_plantes_fleur.html', category: 'Sciences' },
-    { id: 'sci_matiere_etats', title: 'États et propriétés de la matière', filename: 'sci_matiere_etats.html', category: 'Sciences' },
-    { id: 'sci_matiere_changements', title: "Les changements d'état de la matière", filename: 'sci_matiere_changements.html', category: 'Sciences' },
-    { id: 'sci_melanges_qcm', title: 'Mélanges et techniques de séparation', filename: 'sci_melanges_qcm.html', category: 'Sciences' },
-    { id: 'sci_energie_tri', title: "Sources et conversions d'énergie", filename: 'sci_energie_tri.html', category: 'Sciences' },
-    { id: 'sci_electricite_labo', title: "Laboratoire d'Électricité", filename: 'sci_electricite_labo.html', category: 'Sciences' },
-    { id: 'sci_lumiere_ombres', title: "Ombres et Lumière", filename: 'sci_lumiere_ombres.html', category: 'Sciences' },
-    { id: 'sci_eclipses', title: "Les éclipses", filename: 'sci_eclipses.html', category: 'Sciences' },
-    { id: 'sci_transformations_chimiques', title: "Transformations physiques et chimiques", filename: 'transformations-physiques-chimiques.html', category: 'Sciences' },
-    { id: 'sci_reproduction_plantes', title: "La reproduction des plantes à fleurs", filename: 'reproduction_plantes.html', category: 'Sciences' },
-    { id: 'geo_globe_3d', title: "Globe Terrestre 3D Interactif", filename: 'globe-terrestre.html', category: 'Géographie' },
-    { id: 'td_moyenne_exercices', title: "Calcul de la moyenne — Exercices", filename: 'moyenne_exercices.html', category: 'Mathématiques' },
-    { id: 'gram_determinant_ex', title: "Les Déterminants — Exercices d'entraînement", filename: 'determinant_exercice.html', category: 'Français' },
-    { id: 'conj_present_qcm', title: "Conjugaison Présent — QCM", filename: 'conjugaison_present_QCM.html', category: 'Français' },
-    { id: 'conj_present_ecriture', title: "Conjugaison Présent — Écriture", filename: 'conjugaison_present_ecriture.html', category: 'Français' },
-    { id: 'conj_imparfait_qcm', title: "Conjugaison Imparfait — QCM", filename: 'conjugaison_imparfait_QCM.html', category: 'Français' },
-    { id: 'conj_imparfait_ecriture', title: "Conjugaison Imparfait — Écriture", filename: 'conjugaison_imparfait_ecriture.html', category: 'Français' }
+    { id: 'fiche_cycle_eau', title: "Le cycle de l'eau", filename: 'cycle-eau.html', category: 'Sciences' }
   ];
 
   if (saved) {
     try {
-      fiches = JSON.parse(saved);
-      let modified = false;
-      const initialLength = fiches.length;
-      fiches = fiches.filter(f => !f.id.startsWith('fiche_conj_pc_'));
+      const parsed = JSON.parse(saved);
+      fiches = cleanFichesList(parsed);
+      let modified = (fiches.length !== parsed.length);
       
-      const seenIds = new Set();
-      const seenFilenames = new Set();
-      const uniqueFiches = [];
-      fiches.forEach(f => {
-        if (f && f.id && f.filename) {
-          if (!seenIds.has(f.id) && !seenFilenames.has(f.filename)) {
-            seenIds.add(f.id);
-            seenFilenames.add(f.filename);
-            uniqueFiches.push(f);
-          }
-        }
-      });
-      fiches = uniqueFiches;
-
-      if (fiches.length !== initialLength) {
-        modified = true;
-      }
       DEFAULT_FICHES.forEach(df => {
         const existing = fiches.find(f => f.id === df.id);
         if (!existing) {
@@ -46510,14 +46514,17 @@ function initFiches() {
       if (modified || fiches.length === 0) {
         if (fiches.length === 0) fiches = [...DEFAULT_FICHES];
         localStorage.setItem('lq_fiches', JSON.stringify(fiches));
+        if (window.FB_saveFiches) window.FB_saveFiches(fiches);
       }
     } catch(e) {
       fiches = [...DEFAULT_FICHES];
       localStorage.setItem('lq_fiches', JSON.stringify(fiches));
+      if (window.FB_saveFiches) window.FB_saveFiches(fiches);
     }
   } else {
     fiches = [...DEFAULT_FICHES];
     localStorage.setItem('lq_fiches', JSON.stringify(fiches));
+    if (window.FB_saveFiches) window.FB_saveFiches(fiches);
   }
 
   const updateFichesScreens = () => {
@@ -46533,21 +46540,8 @@ function initFiches() {
     window.FB_loadFiches().then(fbFiches => {
       if (fbFiches && fbFiches.length > 0) {
         const initialLength = fbFiches.length;
-        let tempFiches = fbFiches.filter(f => !f.id.startsWith('fiche_conj_pc_'));
-        
-        const seenIds = new Set();
-        const seenFilenames = new Set();
-        const uniqueFiches = [];
-        tempFiches.forEach(f => {
-          if (f && f.id && f.filename) {
-            if (!seenIds.has(f.id) && !seenFilenames.has(f.filename)) {
-              seenIds.add(f.id);
-              seenFilenames.add(f.filename);
-              uniqueFiches.push(f);
-            }
-          }
-        });
-        fiches = uniqueFiches;
+        fiches = cleanFichesList(fbFiches);
+        if (fiches.length === 0) fiches = [...DEFAULT_FICHES];
         localStorage.setItem('lq_fiches', JSON.stringify(fiches));
         updateFichesScreens();
         if (fiches.length !== initialLength && window.FB_saveFiches) {
@@ -46564,21 +46558,8 @@ function initFiches() {
         window.FB_loadFiches().then(fbFiches => {
           if (fbFiches && fbFiches.length > 0) {
             const initialLength = fbFiches.length;
-            let tempFiches = fbFiches.filter(f => !f.id.startsWith('fiche_conj_pc_'));
-            
-            const seenIds = new Set();
-            const seenFilenames = new Set();
-            const uniqueFiches = [];
-            tempFiches.forEach(f => {
-              if (f && f.id && f.filename) {
-                if (!seenIds.has(f.id) && !seenFilenames.has(f.filename)) {
-                  seenIds.add(f.id);
-                  seenFilenames.add(f.filename);
-                  uniqueFiches.push(f);
-                }
-              }
-            });
-            fiches = uniqueFiches;
+            fiches = cleanFichesList(fbFiches);
+            if (fiches.length === 0) fiches = [...DEFAULT_FICHES];
             localStorage.setItem('lq_fiches', JSON.stringify(fiches));
             updateFichesScreens();
             if (fiches.length !== initialLength && window.FB_saveFiches) {
