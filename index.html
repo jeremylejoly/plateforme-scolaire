@@ -61,7 +61,11 @@
       });
 
       // Notification de mise à jour du Service Worker sans interruption de l'utilisateur
+      // Nouvelle version installée : si la page vient juste de s'ouvrir, on recharge une fois
+      // pour que l'élève ait tout de suite la bonne version (jamais en plein exercice).
+      var _swDebut = Date.now(), _swRecharge = false;
       navigator.serviceWorker.addEventListener('controllerchange', function() {
+        if (!_swRecharge && Date.now() - _swDebut < 15000) { _swRecharge = true; location.reload(); return; }
         console.log('✨ Service Worker mis à jour en arrière-plan (sans rechargement forcé).');
       });
     }
@@ -3113,10 +3117,23 @@ input[type=text].calc-input.incorrect {
   margin-bottom: 2rem;
 }
 </style>
-<script src="livres.js"></script>
-<script src="exercices_francais.js"></script>
-<script src="exercices_maths.js"></script>
-<script src="exercices_eveil.js"></script>
+<script src="livres.js?v=20260925b"></script>
+<script src="exercices_francais.js?v=20260925b"></script>
+<script src="exercices_maths.js?v=20260925b"></script>
+<script src="exercices_eveil.js?v=20260925b"></script>
+<script>
+/* Garde-fou : si un appareil a chargé une ancienne version du fichier des livres
+   (0/16, « undefined », livre absent), on vide les copies en mémoire et on recharge une fois. */
+(function(){
+  var ATTENDU = '20260925b';
+  if (window.LIVRES_VERSION === ATTENDU) return;
+  try { if (sessionStorage.getItem('lq_repare') === ATTENDU) return; sessionStorage.setItem('lq_repare', ATTENDU); } catch(e) {}
+  var recharger = function(){ location.reload(); };
+  if (window.caches && caches.keys) {
+    caches.keys().then(function(k){ return Promise.all(k.map(function(n){ return caches.delete(n); })); }).then(recharger, recharger);
+  } else { recharger(); }
+})();
+</script>
 
 <!-- Firebase SDK -->
 <script type="module">
@@ -8842,29 +8859,14 @@ function renderNamesForClass(cls){
 }
 
 function getArchivedBooks(targetCls){
-  const cls = targetCls || (typeof teacherCls !== 'undefined' && teacherCls ? teacherCls : getCurrentClassId());
-  const s = localStorage.getItem('lq_archived_' + cls) || (cls === 'lejoly' ? localStorage.getItem('lq_archived') : null);
-  const newBookIds = [
-    'voyage_valhalla', 'menace_classe_rousse', 'trois_gateaux_anniversaire', 'livre_maudit',
-    'back_to_the_80s', 'comme_sur_des_roulettes', 'crash_coeur_jungle', 'droles_darbres',
-    'la_villa', 'le_mysterieux_inconnu', 'le_vieil_homme_et_le_chien', 'qui_a_le_plus_de_chance',
-    'du_sel_sur_mes_levres', 'nature_et_sortilege_institulemn',
-    'la_ferme_aux_magots', 'louistiti', 'partie_de_poker', 'trois_lezards',
-    'murphy_halloween', 'un_frere_tombe_du_ciel', 'hotel_bon_vent'
-  ];
-  if (!s) {
-    return newBookIds;
-  }
-  const parsed = JSON.parse(s);
-  if (!localStorage.getItem('lq_archived_v5_migrated_' + cls)) {
-    const merged = Array.from(new Set([...parsed, ...newBookIds]));
-    localStorage.setItem('lq_archived_' + cls, JSON.stringify(merged));
-    if (cls === 'lejoly') localStorage.setItem('lq_archived', JSON.stringify(merged));
-    localStorage.setItem('lq_archived_v5_migrated_' + cls, 'true');
-    if (window.FB_saveArchivedBooks && typeof state !== 'undefined' && state.role === 'teacher') window.FB_saveArchivedBooks(cls, merged);
-    return merged;
-  }
-  return parsed;
+  // Élève : liste de SA classe. Enseignant : classe choisie dans l'espace enseignant.
+  const isStudent = (typeof state !== 'undefined' && state.role === 'student' && state.studentCls);
+  const cls = targetCls || (isStudent ? state.studentCls : ((typeof teacherCls !== 'undefined' && teacherCls) ? teacherCls : getCurrentClassId()));
+  let s = localStorage.getItem('lq_archived_' + cls);
+  if (!s && cls !== 'lejoly') s = localStorage.getItem('lq_archived_lejoly'); // classe sans liste : celle de M. Lejoly
+  if (!s) s = localStorage.getItem('lq_archived');
+  if (!s) return []; // aucune liste connue : rien n'est masqué (avant : 21 livres masqués par défaut)
+  try { const a = JSON.parse(s); return Array.isArray(a) ? a : []; } catch(e) { return []; }
 }
 function saveArchivedBooks(arr, targetCls){
   const cls = targetCls || (typeof teacherCls !== 'undefined' && teacherCls ? teacherCls : getCurrentClassId());
@@ -9507,13 +9509,15 @@ async function syncFromFirebase(){
       await window.FB_saveLockedActivities(currentClass, localLocked);
     }
     // Sync livres archivés
-    const archived = await window.FB_loadArchivedBooks(currentClass);
+    let archived = await window.FB_loadArchivedBooks(currentClass);
+    if(!Array.isArray(archived) && currentClass !== 'lejoly') archived = await window.FB_loadArchivedBooks('lejoly');
     if(archived && Array.isArray(archived)){
       // Firebase fait foi : les livres « réactivés » par l'enseignant ne doivent pas être re-masqués ici
       localStorage.setItem('lq_archived_' + currentClass, JSON.stringify(archived));
       if (currentClass === 'lejoly') localStorage.setItem('lq_archived', JSON.stringify(archived));
       localStorage.setItem('lq_archived_v5_migrated_' + currentClass, 'true');
     }
+    if (typeof renderBooks === 'function' && document.getElementById('screen-books') && document.getElementById('screen-books').classList.contains('active')) renderBooks();
     // Sync plan de travail
     if (window.FB_loadPlanTravail) {
       const fbPlan = await window.FB_loadPlanTravail(currentClass);
