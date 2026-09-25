@@ -64,10 +64,34 @@
       // Nouvelle version installée : si la page vient juste de s'ouvrir, on recharge une fois
       // pour que l'élève ait tout de suite la bonne version (jamais en plein exercice).
       var _swDebut = Date.now(), _swRecharge = false;
+      // Moment sans risque pour recharger : écran d'accueil / connexion affiché (aucun élève en plein travail)
+      window.lcmlPeutRecharger = function() {
+        var st = window.state || {};
+        if (st.role === 'teacher') return false;          // jamais pendant le travail de l'enseignant
+        var ma = document.getElementById('main-area');
+        var appliMasquee = !ma || getComputedStyle(ma).display === 'none';
+        return appliMasquee || !st.student;               // écran d'accueil, ou aucun élève connecté
+      };
+      window.lcmlRecharger = function() { if (_swRecharge) return; _swRecharge = true; location.reload(); };
       navigator.serviceWorker.addEventListener('controllerchange', function() {
-        if (!_swRecharge && Date.now() - _swDebut < 15000) { _swRecharge = true; location.reload(); return; }
-        console.log('✨ Service Worker mis à jour en arrière-plan (sans rechargement forcé).');
+        if (Date.now() - _swDebut < 15000 || window.lcmlPeutRecharger()) { window.lcmlRecharger(); return; }
+        window._lcmlMajEnAttente = true; // appliquée au prochain moment sans risque
+        console.log('✨ Nouvelle version prête : elle sera appliquée à l\'écran d\'accueil.');
       });
+      // Application iPad / Android (écran d'accueil) : elle reprend là où elle était sans recharger.
+      // À chaque retour au premier plan : on cherche une mise à jour, et on recharge si c'est sans risque.
+      document.addEventListener('visibilitychange', function() {
+        if (document.visibilityState !== 'visible') return;
+        if (navigator.serviceWorker.getRegistration) {
+          navigator.serviceWorker.getRegistration().then(function(r) { if (r) r.update().catch(function(){}); });
+        }
+        if (window.lcmlPeutRecharger() && (window._lcmlMajEnAttente || Date.now() - _swDebut > 10 * 60 * 1000)) window.lcmlRecharger();
+      });
+      // Vérification régulière (toutes les 15 min) pendant que l'appli reste ouverte
+      setInterval(function() {
+        if (navigator.serviceWorker.getRegistration) navigator.serviceWorker.getRegistration().then(function(r) { if (r) r.update().catch(function(){}); });
+        if (window._lcmlMajEnAttente && window.lcmlPeutRecharger()) window.lcmlRecharger();
+      }, 15 * 60 * 1000);
     }
   }
 </script>
@@ -9365,6 +9389,8 @@ function resetToWelcome(){
   document.getElementById('pin-section').style.display='none';
   document.getElementById('main-area').style.display='none';
   document.getElementById('screen-landing').style.display='flex';
+  // L'élève suivant démarre toujours sur la dernière version du site
+  if (typeof window.lcmlRecharger === 'function') setTimeout(window.lcmlRecharger, 50);
 }
 
 function showTeacherLogin(){
