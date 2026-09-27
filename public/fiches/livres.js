@@ -9410,7 +9410,7 @@ window.LIVRES = [
         "id": "q6",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Quelle « punition » Noé reçoit-il après sa fugue ?",
+        "text": "Après sa fugue, Noé doit « purger sa peine ». Que doit-il faire ?",
         "options": [
           "Il doit rester dans sa chambre pendant une semaine",
           "Il doit cueillir les cerises pour les confitures de Marie",
@@ -9420,7 +9420,7 @@ window.LIVRES = [
         "correct": 1,
         "answer": 1,
         "points": 1,
-        "explanation": "Il passe ses vacances à la ferme : cette « punition » lui fait plaisir."
+        "explanation": "Il doit cueillir les cerises de Marie. Le texte dit que cette punition « n'en est pas vraiment une » : Noé est ravi."
       },
       {
         "id": "q7",
@@ -13385,4 +13385,4 @@ window.LIVRES = [
   }
 ];
 
-window.LIVRES_VERSION = '20260925b';
+window.LIVRES_VERSION = '20260927a';
