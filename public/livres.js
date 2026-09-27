@@ -416,7 +416,7 @@ window.LIVRES = [
         "id": "q13",
         "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« Marine l'avait entendu prononcer le mot dépression en parlant de lui. » Ici, la « dépression » est…",
+        "text": "« Marine avait auparavant entendu sa mère prononcer le mot « dépression » en parlant de lui. » Ici, la « dépression » est…",
         "options": [
           "une tempête de vent et de pluie annoncée à la météo du soir",
           "une maladie qui rend très triste et sans énergie",
@@ -437,7 +437,7 @@ window.LIVRES = [
           "Acheter de quoi allumer le brûleur",
           "Couper ses cheveux très court",
           "Faire une bêtise en cachette",
-          "Révéler un secret sans le vouloir"
+          "Révéler un secret"
         ],
         "correct": 3,
         "answer": 3,
@@ -3374,14 +3374,14 @@ window.LIVRES = [
         "text": "Quelle idée propose Théo, grâce à sa grande sœur ?",
         "options": [
           "Cacher toutes les feuilles du contrôle au fond de la classe",
-          "Faire tous le même vœu en se concentrant très fort",
+          "Faire un vœu tous en même temps, en se concentrant très fort",
           "Demander aux parents d'écrire un mot d'excuse",
           "Aller se plaindre au directeur de l'école"
         ],
         "correct": 1,
         "answer": 1,
         "points": 1,
-        "explanation": "Selon la sœur de Théo, si plusieurs personnes font un vœu en même temps, leurs « énergies positives » peuvent le réaliser."
+        "explanation": "Selon la sœur de Théo, si plusieurs personnes font un vœu en même temps en concentrant leurs pensées, leurs « énergies positives » fusionnent et le vœu se réalise."
       },
       {
         "id": "q3",
@@ -4272,7 +4272,7 @@ window.LIVRES = [
         "id": "q15",
         "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« Je me suis comporté comme un inculte. » Un « inculte » est une personne…",
+        "text": "« Je m'étais comporté comme un inculte. » Un « inculte » est une personne…",
         "options": [
           "très méchante",
           "qui ne connaît pas grand-chose",
@@ -4885,7 +4885,7 @@ window.LIVRES = [
         "id": "q7",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Grâce à quelle information de Louis Milo comprend-il comment fonctionne le jeu ?",
+        "text": "Grâce à quelle information de Louis, Milo comprend-il comment fonctionne le jeu ?",
         "options": [
           "On peut facilement pirater n'importe quel téléphone",
           "Il faut un code secret pour ouvrir le calendrier",
@@ -5724,9 +5724,9 @@ window.LIVRES = [
         "type": "synthesis",
         "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "En promenant le chien de Nico, Nico et Loïc trouvent une mouche de pêche au bord d'un lac où la pêche est interdite. Ils mènent l'enquête et rencontrent Fadi, un jeune réfugié syrien qui vit caché avec son père. Ils découvrent que Fadi pêche en cachette dans le lac pour nourrir sa famille. Ils le dénoncent au garde, et Fadi doit quitter la région avec son père.",
-          "En promenant le chien de Nico, Nico et Loïc trouvent une mouche de pêche au bord d'un lac où la pêche est interdite. Ils mènent l'enquête et rencontrent Fadi, un jeune réfugié syrien qui vit caché avec son père. Ils découvrent que c'est le grand-père de Loïc qui avait offert cette mouche à Fadi. Les trois garçons deviennent amis, et Fadi attrape un gros poisson lors d'une partie de pêche avec le grand-père.",
-          "En promenant le chien de Nico, Nico et Loïc trouvent une mouche de pêche au bord d'un lac où la pêche est interdite. Ils mènent l'enquête et rencontrent Fadi, un jeune réfugié syrien qui vit caché avec son père. Ils découvrent que c'est le père de Fadi qui fabrique ces mouches et les vend au marché. Les trois garçons deviennent amis, mais à la rentrée, Fadi est placé dans une autre école, loin de ses deux amis."
+          "En promenant son chien Pixels, Nico trouve une mouche de pêche au bord d'un lac où la pêche est interdite. Avec son ami Loïc, il mène l'enquête. Ils rencontrent Fadi, un jeune réfugié syrien qui vit caché avec son père. Ils découvrent que Fadi pêche en cachette dans le lac pour nourrir sa famille. Ils le dénoncent au garde, et Fadi doit quitter la région avec son père.",
+          "En promenant son chien Pixels, Nico trouve une mouche de pêche au bord d'un lac où la pêche est interdite. Avec son ami Loïc, il mène l'enquête. Ils rencontrent Fadi, un jeune réfugié syrien qui vit caché avec son père. Ils découvrent que c'est le grand-père de Loïc qui avait offert cette mouche à Fadi. Les trois garçons deviennent amis, et Fadi attrape un gros poisson lors d'une partie de pêche avec le grand-père.",
+          "En promenant son chien Pixels, Nico trouve une mouche de pêche au bord d'un lac où la pêche est interdite. Avec son ami Loïc, il mène l'enquête. Ils rencontrent Fadi, un jeune réfugié syrien qui vit caché avec son père. Ils découvrent que c'est le père de Fadi qui fabrique ces mouches et les vend au marché. Les trois garçons deviennent amis, mais à la rentrée, Fadi est placé dans une autre école, loin de ses deux amis."
         ],
         "correct": 1,
         "answer": 1,
@@ -11534,7 +11534,7 @@ window.LIVRES = [
           "Laurine a reçu plus de cadeaux qu'elle",
           "Laurine a gagné le grand jeu de société",
           "Laurine a de meilleures notes à l'école",
-          "Laurine s'amuse bien chez elle"
+          "Laurine s'amuse bien chez Paloma"
         ],
         "correct": 3,
         "answer": 3,
@@ -13385,4 +13385,4 @@ window.LIVRES = [
   }
 ];
 
-window.LIVRES_VERSION = '20260927b';
+window.LIVRES_VERSION = '20260927c';
