@@ -57,7 +57,7 @@ window.LIVRES = [
         "id": "q4",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Qu'est-ce qu'Alice découvre dans le cabanon, en haut de la falaise ?",
+        "text": "Qu'est-ce qu'Alice découvre au cabanon, en haut de la falaise ?",
         "options": [
           "Une vieille carte au trésor dessinée sur une planche",
           "Des langoustes enfermées dans des casiers",
@@ -107,7 +107,7 @@ window.LIVRES = [
         "type": "mcq",
         "text": "Pourquoi Pita, le Maori, était-il si en colère contre les pêcheurs ?",
         "options": [
-          "Ils avaient volé toutes les terres de sa tribu maorie",
+          "Ils avaient abîmé son cabanon en haut de la falaise",
           "Ils avaient pêché toutes les langoustes",
           "Ils avaient tué son ami, le dauphin Sweety",
           "Ils avaient cassé son fusil à lunette"
@@ -282,7 +282,7 @@ window.LIVRES = [
         "type": "mcq",
         "text": "Que trouve Marine dans le débarras de l'appartement ?",
         "options": [
-          "Un vieux vélo tout neuf, jamais utilisé",
+          "Un vieux coffre rempli de pièces de monnaie",
           "Une boîte de lettres d'amour de ses parents",
           "Un parachute rangé dans une valise",
           "Un gros sac avec une immense bâche trouée"
@@ -671,7 +671,7 @@ window.LIVRES = [
         "id": "q14",
         "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« Mets ta tuque avant de sortir. » Qu'est-ce qu'une « tuque » ?",
+        "text": "« J'enfile […] une tuque à l'effigie des joueurs de hockey. » Qu'est-ce qu'une « tuque » ?",
         "options": [
           "Une paire de gants",
           "Un bonnet de laine",
@@ -705,9 +705,9 @@ window.LIVRES = [
         "type": "synthesis",
         "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "À Québec, les jumeaux Francis et Frédéric trouvent un portefeuille dans la neige et décident de garder l'argent pour eux. Mathieu, le propriétaire, les retrouve et les emmène au Centre Champlain pour qu'ils l'aident à travailler. Pendant la journée, Francis entend deux employés parler de trophées et de cuivre. Quand les trophées disparaissent, Francis fait arrêter le voleur, un employé habillé en jaune.",
-          "À Québec, les jumeaux Francis et Frédéric trouvent un portefeuille dans la neige et le rendent à son propriétaire, Mathieu. Pour les remercier, Mathieu les invite au Centre Champlain pour essayer les sports d'hiver. Pendant la journée, Francis entend deux employés parler de trophées et de cuivre. Quand les trophées disparaissent et que Mathieu est retrouvé ligoté, Francis fait arrêter le voleur, un employé habillé en jaune.",
-          "À Québec, les jumeaux Francis et Frédéric trouvent un portefeuille dans la neige et le rendent à son propriétaire, Mathieu. Pour les remercier, Mathieu les invite au Centre Champlain pour essayer les sports d'hiver. Pendant la journée, Francis entend deux employés parler de trophées et de cuivre. Quand les trophées disparaissent, Francis découvre que c'est Mathieu lui-même qui les a cachés dans une vieille cabane, au milieu de la piste de ski de fond."
+          "À Québec, les jumeaux Francis et Frédéric trouvent un portefeuille dans la neige et décident de garder l'argent pour eux. Mathieu, le propriétaire, les retrouve et les emmène au Centre Champlain pour qu'ils l'aident à travailler. Pendant la journée, Francis entend deux jeunes hommes parler de trophées et de cuivre. Quand les trophées disparaissent, Francis fait arrêter le voleur, un employé habillé en jaune.",
+          "À Québec, les jumeaux Francis et Frédéric trouvent un portefeuille dans la neige et le rendent à son propriétaire, Mathieu. Pour les remercier, Mathieu les invite au Centre Champlain pour essayer les sports d'hiver. Pendant la journée, Francis entend deux jeunes hommes parler de trophées et de cuivre. Quand les trophées disparaissent et que Mathieu est retrouvé ligoté, Francis fait arrêter le voleur, un employé habillé en jaune.",
+          "À Québec, les jumeaux Francis et Frédéric trouvent un portefeuille dans la neige et le rendent à son propriétaire, Mathieu. Pour les remercier, Mathieu les invite au Centre Champlain pour essayer les sports d'hiver. Pendant la journée, Francis entend deux jeunes hommes parler de trophées et de cuivre. Quand les trophées disparaissent, Francis découvre que c'est Mathieu lui-même qui les a cachés dans une vieille cabane, au milieu de la piste de ski de fond."
         ],
         "correct": 1,
         "answer": 1,
@@ -730,7 +730,7 @@ window.LIVRES = [
         "options": [
           "Elle a eu de mauvaises notes au collège",
           "Elle a cassé la tablette qu'ils lui avaient offerte",
-          "Elle a amené une amie sans les prévenir",
+          "Elle a perdu son uniforme du collège",
           "Elle s'est enfuie du pensionnat"
         ],
         "correct": 3,
@@ -926,7 +926,7 @@ window.LIVRES = [
         "id": "q15",
         "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« Il lui avait semblé que ce havre de paix se transformerait en enfer. » Qu'est-ce qu'un « havre de paix » ?",
+        "text": "« Elle n'imaginait pas que ce havre de paix se transformerait en enfer. » Qu'est-ce qu'un « havre de paix » ?",
         "options": [
           "Un port pour les bateaux de pêche",
           "Une école très sévère",
@@ -1149,7 +1149,7 @@ window.LIVRES = [
         "id": "q14",
         "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« Il avait sa technique pour turbiner à cent à l'heure. » Ici, « turbiner », c'est…",
+        "text": "« Je le voyais turbiner à cent à l'heure. » Ici, « turbiner », c'est…",
         "options": [
           "Réfléchir très vite",
           "Pédaler très vite",
@@ -1175,7 +1175,7 @@ window.LIVRES = [
         "correct": 1,
         "answer": 1,
         "points": 1,
-        "explanation": "Les policiers ont menotté les voleurs : ils ne peuvent plus faire de mal. Eléna trouve ces mots amusants."
+        "explanation": "Les policiers ont menotté les voleurs : ils ne peuvent plus faire de mal, les enfants ne craignent plus rien."
       },
       {
         "id": "q16",
@@ -1404,7 +1404,7 @@ window.LIVRES = [
         "id": "q15",
         "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« Rorrr examine les parents de ses quatre yeux inquisiteurs. » Un regard « inquisiteur » est un regard…",
+        "text": "« Rorrr les examine de ses quatre yeux inquisiteurs. » Un regard « inquisiteur » est un regard…",
         "options": [
           "qui cherche à tout savoir",
           "très doux et gentil",
@@ -1422,9 +1422,9 @@ window.LIVRES = [
         "type": "synthesis",
         "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Anne doit préparer un exposé pour l'école. Un soir, un extraterrestre, Rorrr, atterrit près de la ferme de ses grands-parents : il veut emmener un poussin sur sa planète pour son propre exposé. Pour l'aider, Anne lui fait croire que les humains naissent dans des œufs de poule, et il repart avec cinq œufs. En classe, tout le monde croit son histoire, car son grand-père vient à l'école et raconte ce qu'il a vu cette nuit-là.",
-          "Anne doit préparer un exposé pour l'école. Un soir, un extraterrestre, Rorrr, atterrit près de la ferme de ses grands-parents : il veut emmener Anne et sa famille sur sa planète pour son propre exposé. Pour lui échapper, Anne lui fait croire que les humains naissent dans des œufs de poule, et il repart avec cinq œufs. En classe, personne ne croit son histoire, mais elle retrouve des graines bleues laissées par Rorrr.",
-          "Anne doit préparer un exposé pour l'école. Un soir, un extraterrestre, Rorrr, atterrit près de la ferme de ses grands-parents : il veut emmener Anne et sa famille sur sa planète pour son propre exposé. Pour lui échapper, Anne lui donne son smartphone rempli de photos de la Terre, et il repart content. En classe, Anne montre la vidéo du vaisseau et obtient une excellente note."
+          "Anne doit préparer un exposé pour l'école. Un jour, un extraterrestre, Rorrr, atterrit près de la ferme de ses grands-parents : il veut emmener un poussin sur sa planète pour son propre exposé. Pour l'aider, Anne lui fait croire que les humains naissent dans des œufs de poule, et il repart avec cinq œufs. En classe, tout le monde croit son histoire, car son grand-père vient à l'école et raconte ce qu'il a vu ce jour-là.",
+          "Anne doit préparer un exposé pour l'école. Un jour, un extraterrestre, Rorrr, atterrit près de la ferme de ses grands-parents : il veut emmener Anne et sa famille sur sa planète pour son propre exposé. Pour lui échapper, Anne lui fait croire que les humains naissent dans des œufs de poule, et il repart avec cinq œufs. En classe, personne ne croit son histoire, mais elle retrouve des graines bleues laissées par Rorrr.",
+          "Anne doit préparer un exposé pour l'école. Un jour, un extraterrestre, Rorrr, atterrit près de la ferme de ses grands-parents : il veut emmener Anne et sa famille sur sa planète pour son propre exposé. Pour lui échapper, Anne lui donne son smartphone rempli de photos de la Terre, et il repart content. En classe, Anne montre la vidéo du vaisseau et obtient une excellente note."
         ],
         "correct": 1,
         "answer": 1,
@@ -1643,7 +1643,7 @@ window.LIVRES = [
         "id": "q15",
         "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« Le jury a choisi Samira à l'unanimité. » Que veut dire « à l'unanimité » ?",
+        "text": "« C'est Samira qui jouera le rôle, à l'unanimité du jury ! » Que veut dire « à l'unanimité » ?",
         "options": [
           "En hésitant très longtemps",
           "Par erreur",
@@ -1684,7 +1684,7 @@ window.LIVRES = [
         "type": "mcq",
         "text": "Pourquoi Emma se sent-elle mal pendant la visite du cirque ?",
         "options": [
-          "Elle a eu une très mauvaise note en rédaction le matin même",
+          "Elle a mangé trop de barbe à papa avant le spectacle",
           "Elle voit que les animaux sont maltraités",
           "Sa maman lui achète un billet à demi-tarif comme une petite",
           "Elle a peur des lions et des éléphants enfermés dans les cages"
@@ -2121,7 +2121,7 @@ window.LIVRES = [
         "id": "q15",
         "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« Mes compagnes entamèrent leur métamorphose à la hâte. » Que veut dire « à la hâte » ?",
+        "text": "« Mes compagnes entamèrent ensuite leur métamorphose à la hâte. » Que veut dire « à la hâte » ?",
         "options": [
           "Très lentement",
           "En chantant",
@@ -2141,7 +2141,7 @@ window.LIVRES = [
         "options": [
           "Faustine vit à Chartres avec son papa, qui la surveille sans arrêt. Un jour, elle est attaquée par des hommes-chauves-souris et sauvée par des femmes-panthères. Elle découvre que sa maman est vivante : c'est la grande prêtresse qui garde la source des eaux vives. Faustine devient gardienne à son tour et, avec l'aide des gargouilles de la cathédrale, elle repousse les ennemis avant de devenir grande prêtresse.",
           "Faustine vit à Chartres avec son papa, qui la surveille sans arrêt. Un jour, elle est attaquée par des femmes-panthères et sauvée par Vivian, un homme-chauve-souris. Elle découvre que sa maman est vivante : c'est la grande prêtresse qui garde la source des eaux vives. Faustine devient gardienne à son tour et part vivre avec Vivian dans le pays des hommes-chauves-souris.",
-          "Faustine vit à Chartres avec son papa, qui la surveille sans arrêt. Un jour, elle est attaquée par des hommes-chauves-souris et sauvée par des femmes-panthères. Elle découvre que sa maman est vivante : c'est la grande prêtresse qui garde la source des eaux vives. Faustine devient gardienne à son tour, mais son amie Yasmine ouvre la grille du parc aux ennemis, et le temple est détruit, avec la source, pour toujours."
+          "Faustine vit à Chartres avec son papa, qui la surveille sans arrêt. Un jour, elle est attaquée par des hommes-chauves-souris et sauvée par des femmes-panthères. Elle découvre que sa maman est vivante : c'est la grande prêtresse qui garde la source des eaux vives. Faustine devient gardienne à son tour, mais son amie Yasmine ouvre la grille du parc aux ennemis, et les hommes-chauves-souris s'emparent de la source pour devenir immortels."
         ],
         "correct": 0,
         "answer": 0,
@@ -2240,7 +2240,7 @@ window.LIVRES = [
         "id": "q6",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Quelle passion Charlotte partage-t-elle avec Line pour l'exposé ?",
+        "text": "Quelle passion de Charlotte Line choisit-elle de présenter dans son exposé ?",
         "options": [
           "La pâtisserie, surtout les mousses au chocolat",
           "La photographie, comme le papa de Line",
@@ -2328,7 +2328,7 @@ window.LIVRES = [
         "id": "q13",
         "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« Il y avait comme une impression de gâchis terrible. » Un « gâchis », c'est…",
+        "text": "« En la voyant comme ça, j'avais comme une impression de gâchis terrible. » Un « gâchis », c'est…",
         "options": [
           "un grand dommage, quelque chose d'abîmé pour rien",
           "un repas raté",
@@ -2360,7 +2360,7 @@ window.LIVRES = [
         "id": "q15",
         "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« Il avait l'air perdu, avec son regard suppliant. » Un regard « suppliant » est un regard qui…",
+        "text": "« Il me posait ses questions avec un regard si suppliant que ça me faisait mal au cœur. » Un regard « suppliant » est un regard qui…",
         "options": [
           "fait très peur",
           "demande quelque chose avec insistance",
@@ -2567,7 +2567,7 @@ window.LIVRES = [
         "id": "q13",
         "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« Il avait été éconduit par la princesse. » Un prince « éconduit » est un prince…",
+        "text": "« Une chose fut dite, en chuchotant, par un prince éconduit. » Un prince « éconduit » est un prince…",
         "options": [
           "qui conduit un carrosse",
           "qui a été refusé",
@@ -2806,7 +2806,7 @@ window.LIVRES = [
         "id": "q13",
         "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« Il était un garçon insoumis et belliqueux. » Que veut dire « belliqueux » ?",
+        "text": "« Garçon insoumis et belliqueux, je refusais de me laisser apprivoiser. » Que veut dire « belliqueux » ?",
         "options": [
           "Qui aime se battre",
           "Qui aime la musique",
@@ -2896,7 +2896,7 @@ window.LIVRES = [
         "text": "Quelle règle Miss Tucson impose-t-elle au petit-déjeuner ?",
         "options": [
           "Il faut être à table à six heures précises",
-          "On doit se taire pendant tout le repas du matin",
+          "On doit manger debout, sans s'asseoir à table",
           "On ne mange que des fruits servis bien glacés",
           "Chacun doit préparer lui-même son petit-déjeuner"
         ],
@@ -3045,7 +3045,7 @@ window.LIVRES = [
         "id": "q13",
         "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« Elisabeth est une enfant insolente. » Que veut dire « insolent » ?",
+        "text": "« Son beau-frère l'a prévenue du caractère insolent de sa jeune nièce. » Que veut dire « insolent » ?",
         "options": [
           "Très timide",
           "Très triste",
@@ -3077,7 +3077,7 @@ window.LIVRES = [
         "id": "q15",
         "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« Il attend, tirant sur sa pipe avec flegme. » Que veut dire « avec flegme » ?",
+        "text": "« Tirant sur sa pipe avec flegme, il attend, patiemment. » Que veut dire « avec flegme » ?",
         "options": [
           "Avec colère",
           "Avec tristesse",
@@ -3097,7 +3097,7 @@ window.LIVRES = [
         "options": [
           "À la fin du dix-neuvième siècle, Elisabeth, qui a perdu sa maman, est envoyée chez sa tante, la très sévère Miss Tucson. Elle remarque que sa tante part chaque mois à Londres sans dire pourquoi. Comme ces voyages ont lieu au moment des meurtres de Whitechapel, Elisabeth la soupçonne et la suit, déguisée en cocher. Elle découvre que sa tante rend visite en secret à son papa, qu'elle n'a jamais cessé d'aimer.",
           "À la fin du dix-neuvième siècle, Elisabeth, qui a perdu sa maman, est envoyée chez sa tante, la très sévère Miss Tucson. Elle remarque que sa tante part chaque mois à Londres sans dire pourquoi. Comme ces voyages ont lieu au moment des meurtres de Whitechapel, Elisabeth la soupçonne et la suit, déguisée en cocher. Elle découvre que sa tante enquête en secret pour la police de Scotland Yard.",
-          "À la fin du dix-neuvième siècle, Elisabeth, qui a perdu sa maman, est envoyée chez sa tante, la très sévère Miss Tucson. Elle remarque que sa tante part chaque mois à Londres sans dire pourquoi. Inquiète, Elisabeth demande à Marie-Louise, la cuisinière, de la suivre à sa place. Marie-Louise découvre que la tante enquête pour la police et prévient aussitôt Elisabeth."
+          "À la fin du dix-neuvième siècle, Elisabeth, qui a perdu sa maman, est envoyée chez sa tante, la très sévère Miss Tucson. Elle remarque que sa tante part chaque mois à Londres sans dire pourquoi. Inquiète, Elisabeth demande à Marie-Louise, la dame de compagnie, de la suivre à sa place. Marie-Louise découvre que la tante enquête pour la police et prévient aussitôt Elisabeth."
         ],
         "correct": 1,
         "answer": 1,
@@ -3244,7 +3244,7 @@ window.LIVRES = [
         "id": "q9",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Bastien passait toutes ses vacances dans le Cantal avec son grand-père.",
+        "text": "Bastien passait ses vacances scolaires dans le Cantal, chez ses grands-parents.",
         "correct": true,
         "answer": true,
         "points": 1,
@@ -3284,7 +3284,7 @@ window.LIVRES = [
         "id": "q13",
         "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« Regarde ces vieilles toupies éplorées. » Des personnes « éplorées » sont des personnes…",
+        "text": "« Regarde-moi toutes ces vieilles toupies éplorées. » Des personnes « éplorées » sont des personnes…",
         "options": [
           "très en colère",
           "très bien habillées pour la fête",
@@ -3300,7 +3300,7 @@ window.LIVRES = [
         "id": "q14",
         "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« Bastien aida Jo à déblayer ce capharnaüm. » Qu'est-ce qu'un « capharnaüm » ?",
+        "text": "« Le garçon alla aider le grand-père à déblayer ce capharnaüm. » Qu'est-ce qu'un « capharnaüm » ?",
         "options": [
           "Un grand désordre",
           "Un poulailler",
@@ -3316,10 +3316,10 @@ window.LIVRES = [
         "id": "q15",
         "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« Tu cautionnes ce qu'il a fait ? » Ici, « cautionner », c'est…",
+        "text": "« Sa propre grand-mère cautionnait le fait qu'il ait pu assassiner quelqu'un. » Ici, « cautionner », c'est…",
         "options": [
           "payer une amende à la police",
-          "faire une caution",
+          "prêter de l'argent",
           "punir sévèrement",
           "être d'accord, approuver"
         ],
@@ -3523,7 +3523,7 @@ window.LIVRES = [
         "id": "q13",
         "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« Bertin l'a toisé, le sourcil en accent circonflexe. » Que veut dire « toiser » quelqu'un ?",
+        "text": "« Bertin l'a toisé, le sourcil gauche en accent circonflexe. » Que veut dire « toiser » quelqu'un ?",
         "options": [
           "Le prendre dans ses bras",
           "Le regarder de haut, avec mépris",
@@ -3658,12 +3658,12 @@ window.LIVRES = [
         "id": "q5",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Pourquoi Monsieur Julien ne voulait-il pas appeler la police ?",
+        "text": "D'après ce que Gabrielle entend dans l'armoire, pourquoi Monsieur Julien ne voulait-il pas appeler la police ?",
         "options": [
           "Il craignait que sa petite-fille soit la voleuse",
-          "Il avait peur que les policiers l'accusent, lui",
-          "Il pensait que Babou s'était juste disputée avec quelqu'un",
-          "Il avait perdu son téléphone"
+          "Il voulait attraper le voleur tout seul",
+          "Il ne connaissait pas le numéro de la police",
+          "Il avait perdu son téléphone portable la veille au soir"
         ],
         "correct": 0,
         "answer": 0,
@@ -3762,7 +3762,7 @@ window.LIVRES = [
         "id": "q13",
         "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« Le policier parle d'une effraction. » Qu'est-ce qu'une « effraction » ?",
+        "text": "« La police aurait trouvé des traces d'effraction si l'agresseur avait essayé. » Qu'est-ce qu'une « effraction » ?",
         "options": [
           "Le fait d'entrer chez quelqu'un en forçant",
           "Une petite fracture au bras",
@@ -3794,7 +3794,7 @@ window.LIVRES = [
         "id": "q15",
         "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« Elle serre si fort que Gabrielle gémit. » Que veut dire « gémir » ?",
+        "text": "« Madame Jansen lui agrippe le bras et serre si fort qu'elle gémit. » Que veut dire « gémir » ?",
         "options": [
           "Rire très fort",
           "Parler à voix basse",
@@ -4017,7 +4017,7 @@ window.LIVRES = [
         "id": "q14",
         "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« Elles vont questionner mine de rien. » Que veut dire « mine de rien » ?",
+        "text": "« Il va falloir jouer serré, ne pas aller trop vite, questionner mine de rien. » Que veut dire « mine de rien » ?",
         "options": [
           "Avec une grimace",
           "Discrètement, sans en avoir l'air",
@@ -4033,7 +4033,7 @@ window.LIVRES = [
         "id": "q15",
         "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« Madame Lacore leur donne une punition sur les bienfaits du silence. » Les « bienfaits », ce sont…",
+        "text": "« Quatre pages de rédaction sur les bienfaits du silence. » Les « bienfaits », ce sont…",
         "options": [
           "les avantages, les choses positives",
           "les dangers",
@@ -4240,7 +4240,7 @@ window.LIVRES = [
         "id": "q13",
         "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« La Laponie paraissait froide et hostile. » Un endroit « hostile » est un endroit…",
+        "text": "« Proche de l'océan Glacial Arctique, elle paraissait froide et hostile. » Un endroit « hostile » est un endroit…",
         "options": [
           "très chaud",
           "très peuplé",
@@ -4256,7 +4256,7 @@ window.LIVRES = [
         "id": "q14",
         "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« Dans ce pays, c'est la nuit polaire. » Que veut dire « la nuit polaire » ?",
+        "text": "« Dehors, la nuit polaire régnait. » Que veut dire « la nuit polaire » ?",
         "options": [
           "Le soleil ne se lève presque pas pendant des semaines",
           "Il fait très chaud pendant la nuit",
@@ -4479,7 +4479,7 @@ window.LIVRES = [
         "id": "q13",
         "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« Philippe a tous les sens exacerbés. » Que veut dire « exacerbé » ?",
+        "text": "« Il attend… tous les sens exacerbés, les yeux agrandis par la peur. » Que veut dire « exacerbé » ?",
         "options": [
           "Endormi",
           "Rendu très fort, très vif",
@@ -4495,7 +4495,7 @@ window.LIVRES = [
         "id": "q14",
         "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« Une douleur lancinante au poignet. » Une douleur « lancinante » est une douleur…",
+        "text": "« Malgré une douleur lancinante au poignet gauche, il sait qu'il ne peut pas ralentir. » Une douleur « lancinante » est une douleur…",
         "options": [
           "qui disparaît très vite",
           "qui chatouille",
@@ -4511,7 +4511,7 @@ window.LIVRES = [
         "id": "q15",
         "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« Rompu, vidé, sans forces, il se couche sur un banc. » Ici, « rompu » veut dire…",
+        "text": "« Rompu, vidé, sans forces, il se couche sur le premier banc inoccupé qu'il voit. » Ici, « rompu » veut dire…",
         "options": [
           "cassé en deux",
           "très en colère",
@@ -4656,33 +4656,33 @@ window.LIVRES = [
         "correct": 1,
         "answer": 1,
         "points": 1,
-        "explanation": "Bleuenn porte une médaille avec le nom ANNA et sainte Anne."
+        "explanation": "Anaïck avait gardé la médaille : d'un côté le nom ANNA, de l'autre sainte Anne, exactement comme l'a décrite le capitaine."
       },
       {
         "id": "q8",
         "section": "Compréhension (QCM)",
         "type": "mcq",
-        "text": "Pourquoi Anaïck est-elle hostile et garde-t-elle un secret ?",
+        "text": "Quel est le lourd secret que garde Anaïck ?",
         "options": [
-          "Elle déteste les Normands depuis une vieille dispute de famille",
-          "Elle veut que Bleuenn épouse un riche pêcheur du village",
-          "Elle a peur que Gauthier emmène Bleuenn loin de la Bretagne",
-          "Elle a recueilli Bleuenn bébé et n'a jamais dit la vérité"
+          "Elle a une autre fille qui vit en Normandie avec son père",
+          "Elle a volé le bateau du capitaine",
+          "Elle est la sœur du père Loïk",
+          "Bleuenn n'est pas sa fille : elle l'a recueillie bébé"
         ],
         "correct": 3,
         "answer": 3,
         "points": 1,
-        "explanation": "Anaïck a recueilli le bébé après la tempête et a gardé le secret."
+        "explanation": "Le bébé du capitaine est arrivé dans son berceau après la tempête. Anaïck l'a élevé comme sa fille et a caché la médaille, sans jamais rien dire."
       },
       {
         "id": "q9",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Le père Loïk donne à Gauthier un coquillage nacré qui le protège.",
+        "text": "Le père Loïk confie à Gauthier un coquillage nacré pour le protéger.",
         "correct": true,
         "answer": true,
         "points": 1,
-        "explanation": "VRAI : Loïk lui offre un coquillage nacré protecteur."
+        "explanation": "VRAI : Loïk lui confie une spirale de nacre. En la gardant dans sa main, Gauthier ne sera pas tenté de suivre le fantôme."
       },
       {
         "id": "q10",
@@ -4718,17 +4718,17 @@ window.LIVRES = [
         "id": "q13",
         "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "Anaïck est « hostile » envers Gauthier. Cela veut dire qu'elle est…",
+        "text": "« Nous sommes installés ici pour faire des affaires et pas pour conter fleurette. » Que veut dire « conter fleurette » ?",
         "options": [
-          "très gentille et accueillante avec lui",
-          "méfiante et pas du tout bien disposée envers lui",
-          "timide et n'ose pas lui parler du tout",
-          "amoureuse de lui en secret depuis le tout premier jour"
+          "raconter des histoires aux petits enfants",
+          "faire la cour, dire des mots doux à une fille",
+          "cueillir des fleurs dans les champs",
+          "compter les fleurs du jardin"
         ],
         "correct": 1,
         "answer": 1,
         "points": 1,
-        "explanation": "Être hostile, c'est se montrer méfiant, peu aimable, comme un ennemi."
+        "explanation": "Conter fleurette, c'est faire la cour à quelqu'un. Robin veut que Gauthier oublie Bleuenn et pense au travail."
       },
       {
         "id": "q14",
@@ -5485,9 +5485,9 @@ window.LIVRES = [
         "type": "synthesis",
         "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Célia, championne de badminton, est invitée au cinéma par Tom, un garçon qui lui plaît. Elle cache à tout le monde que sa petite sœur Julie est atteinte d'une maladie grave, et elle a peur que ses amis se moquent d'elle. Chez Tom, elle voit avec quelle douceur il s'occupe de son grand-père malade. Mais elle n'ose jamais lui parler de Julie, et elle préfère ne plus le revoir, même aux entraînements du club de badminton.",
-          "Célia, championne de badminton, est invitée au cinéma par Tom, un garçon qui lui plaît. Elle raconte à toute la classe que sa petite sœur Julie est atteinte d'une maladie grave, et ses amis l'aident beaucoup. Chez Tom, elle voit avec quelle douceur il s'occupe de son grand-père malade. Elle décide d'aller vivre chez sa maman pour aider à soigner Julie.",
-          "Célia, championne de badminton, est invitée au cinéma par Tom, un garçon qui lui plaît. Elle cache à tout le monde que sa petite sœur Julie est atteinte d'une maladie grave, et elle a peur que ses amis se moquent d'elle. Chez Tom, elle voit avec quelle douceur il s'occupe de son grand-père malade. Elle ose enfin lui parler de Julie, et Tom l'aide à comprendre qu'elle peut aimer sa sœur sans se cacher."
+          "Célia, qui joue au badminton, est invitée au cinéma par Tom, un garçon qui lui plaît. Elle cache à tout le monde que sa petite sœur Julie est atteinte d'une maladie grave, et elle a peur que ses amis se moquent d'elle. Chez Tom, elle voit avec quelle douceur il s'occupe de son grand-père malade. Mais elle n'ose jamais lui parler de Julie, et elle préfère ne plus le revoir, même aux entraînements du club de badminton.",
+          "Célia, qui joue au badminton, est invitée au cinéma par Tom, un garçon qui lui plaît. Elle raconte à toute la classe que sa petite sœur Julie est atteinte d'une maladie grave, et ses amis l'aident beaucoup. Chez Tom, elle voit avec quelle douceur il s'occupe de son grand-père malade. Elle décide d'aller vivre chez sa maman pour aider à soigner Julie.",
+          "Célia, qui joue au badminton, est invitée au cinéma par Tom, un garçon qui lui plaît. Elle cache à tout le monde que sa petite sœur Julie est atteinte d'une maladie grave, et elle a peur que ses amis se moquent d'elle. Chez Tom, elle voit avec quelle douceur il s'occupe de son grand-père malade. Elle ose enfin lui parler de Julie, et Tom l'aide à comprendre qu'elle peut aimer sa sœur sans se cacher."
         ],
         "correct": 2,
         "answer": 2,
@@ -5674,7 +5674,7 @@ window.LIVRES = [
         "id": "q13",
         "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "Le pêcheur relâche le poisson « épuisé ». Épuisé veut dire…",
+        "text": "« Épuisé, il se laisse finalement cueillir par une épuisette. » Épuisé veut dire…",
         "options": [
           "très fatigué, sans force",
           "blessé par l'hameçon",
@@ -6004,13 +6004,13 @@ window.LIVRES = [
         "options": [
           "En tombant dans les escaliers du collège en courant trop vite",
           "En sautant par-dessus le grand mur de la pension",
-          "En marchant sur le câble du filet de tennis, poussé par Max",
+          "En marchant sur le câble du filet de tennis, encouragé par Max",
           "En glissant sur un court mouillé pendant un match"
         ],
         "correct": 2,
         "answer": 2,
         "points": 1,
-        "explanation": "Max le pousse à essayer de marcher sur le câble du filet ; Luc tombe et se casse un os du pied."
+        "explanation": "Max lui dit qu'il en est capable ; Luc monte sur le câble du filet, tombe et se casse un os du pied."
       },
       {
         "id": "q3",
@@ -6184,7 +6184,7 @@ window.LIVRES = [
         "id": "q15",
         "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "Les parents de Luc lui demandent de redevenir « sociable ». Être sociable, c'est…",
+        "text": "« Il serait temps que tu redeviennes un peu sociable », dit la maman de Luc. Être sociable, c'est…",
         "options": [
           "être très sportif et musclé",
           "travailler bien à l'école",
@@ -6504,7 +6504,7 @@ window.LIVRES = [
         "correct": 2,
         "answer": 2,
         "points": 1,
-        "explanation": "Dans l'Antiquité, les parents de Flavie travaillent pour la famille de Maxime, comme des esclaves."
+        "explanation": "Dans l'Antiquité, les parents de Flavie travaillent pour la famille de Maxime. Flavie trouve injuste que ce soit encore lui qui ait la famille riche."
       },
       {
         "id": "q4",
@@ -6990,7 +6990,7 @@ window.LIVRES = [
         "type": "mcq",
         "text": "Quelle idée inquiétante Mahé propose-t-elle ?",
         "options": [
-          "Que Marie-Ève et la maman aient commis un vol ensemble",
+          "Que Marie-Ève soit une voisine qui les espionne",
           "Que Marie-Ève soit une espionne recherchée par la police",
           "Que la maman de Madeline veuille devenir écrivaine",
           "Que Marie-Ève soit peut-être la vraie mère de Madeline"
@@ -7159,8 +7159,8 @@ window.LIVRES = [
         "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
           "En voyant la photo d'une écrivaine au dos du livre de Madeline, sa maman réagit de façon très étrange. Intriguée, Madeline mène l'enquête avec son amie Mahé, qui imagine même que l'écrivaine pourrait être sa vraie mère. Au Salon du Livre, Madeline rencontre Lewis, le fils de l'écrivaine, et elle découvre que l'écrivaine est vraiment la sœur de sa maman. Avec Lewis, elle organise une grande fête de famille au bord d'un lac pour les réunir enfin, après tant d'années.",
-          "En voyant la photo d'une écrivaine au dos du livre de Madeline, sa maman réagit de façon très étrange. Intriguée, Madeline mène l'enquête avec son amie Mahé, qui imagine même que l'écrivaine pourrait être sa vraie mère. Au Salon du Livre, Madeline rencontre Lewis, le fils de l'écrivaine, et elle découvre que les deux femmes étaient des amies d'enfance fâchées depuis longtemps. Avec Lewis, elle organise une rencontre au bord d'un lac pour les réconcilier.",
-          "En voyant la photo d'une écrivaine au dos du livre de Madeline, sa maman réagit de façon très étrange. Intriguée, Madeline mène l'enquête avec son papa, qui connaît très bien l'écrivaine. Au Salon du Livre, Madeline rencontre Lewis, le fils de l'écrivaine, et elle découvre que les deux femmes étaient des amies d'enfance fâchées depuis longtemps. Mais sa maman refuse de revoir son ancienne amie."
+          "En voyant la photo d'une écrivaine au dos du livre de Madeline, sa maman réagit de façon très étrange. Intriguée, Madeline mène l'enquête avec son amie Mahé, qui imagine même que l'écrivaine pourrait être sa vraie mère. Au Salon du Livre, Madeline rencontre Lewis, le fils de l'écrivaine, et elle découvre que les deux femmes étaient de grandes amies du lycée, fâchées depuis longtemps. Avec Lewis, elle organise une rencontre au bord d'un lac pour les réconcilier.",
+          "En voyant la photo d'une écrivaine au dos du livre de Madeline, sa maman réagit de façon très étrange. Intriguée, Madeline mène l'enquête avec son papa, qui connaît très bien l'écrivaine. Au Salon du Livre, Madeline rencontre Lewis, le fils de l'écrivaine, et elle découvre que les deux femmes étaient de grandes amies du lycée, fâchées depuis longtemps. Mais sa maman refuse de revoir son ancienne amie."
         ],
         "correct": 1,
         "answer": 1,
@@ -7819,23 +7819,23 @@ window.LIVRES = [
         "correct": false,
         "answer": false,
         "points": 1,
-        "explanation": "FAUX : Arabella oblige Antonin à poser l'arme ; ce sont les policiers qui grillent Alfie plus tard."
+        "explanation": "FAUX : Arabella oblige Antonin à poser l'arme. Alfie n'est grillé que plus tard, quand on le retrouve avec Arabella."
       },
       {
         "id": "q13",
         "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "Madame Turèche est « effarée ». Elle est…",
+        "text": "Les voisines de Madame Turèche sont « effarées ». Elles sont…",
         "options": [
-          "très choquée et effrayée",
-          "très joyeuse et fière",
-          "très fatiguée et endormie",
-          "très gourmande et affamée"
+          "très choquées et effrayées",
+          "très joyeuses et fières",
+          "très fatiguées et endormies",
+          "très gourmandes et affamées"
         ],
         "correct": 0,
         "answer": 0,
         "points": 1,
-        "explanation": "Effaré : bouleversé, très choqué par quelque chose."
+        "explanation": "Effaré : bouleversé, très choqué par quelque chose. « J'en ai parlé à toutes mes voisines, elles sont effarées. »"
       },
       {
         "id": "q14",
@@ -7875,14 +7875,14 @@ window.LIVRES = [
         "type": "synthesis",
         "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Un jour de grève, Jimmy accompagne son papa chez Futurobow, une entreprise qui fabrique des robots. Une cliente ramène son robot, qu'elle juge « défectueux » parce qu'il prend des initiatives, et le robot risque d'être détruit. Jimmy et son ami Antonin le retrouvent caché dans une cabane avec Arabella, une petite fille qui l'a appelé Alfie. Jimmy comprend qu'Alfie a une âme, et son papa vend sa voiture de collection pour l'adopter.",
-          "Un jour de grève, Jimmy accompagne son papa chez Futurobow, une entreprise qui fabrique des robots. Un robot devenu fou s'enfuit de l'usine en emportant une petite fille, Arabella, qui a très peur de lui. Jimmy et son ami Antonin le retrouvent caché dans une cabane et libèrent Arabella. Le robot est réparé, et Arabella le revend à une famille riche.",
-          "Un jour de grève, Jimmy accompagne son papa chez Futurobow, une entreprise qui fabrique des robots. Une cliente ramène son robot, qu'elle juge « défectueux » parce qu'il prend des initiatives, et le robot risque d'être détruit. Jimmy et son ami Antonin le retrouvent caché dans une cabane avec Arabella, une petite fille qui l'a appelé Alfie. Antonin détruit le robot avec son grille-robot, car il pense que c'est le seul moyen de protéger la ville."
+          "Un jour de grève, Jimmy accompagne son papa, employé chez Futurobow, une entreprise qui fabrique des robots. Chez une cliente, un robot jugé « défectueux » parce qu'il prend des initiatives risque d'être détruit. Jimmy et son ami Antonin le retrouvent caché dans une cabane avec Arabella, une petite fille qui l'a appelé Alfie. Jimmy comprend qu'Alfie a une âme, et son papa vend sa voiture de collection pour l'adopter.",
+          "Un jour de grève, Jimmy accompagne son papa, employé chez Futurobow, une entreprise qui fabrique des robots. Un robot devenu fou s'enfuit de l'usine en emportant une petite fille, Arabella, qui a très peur de lui. Jimmy et son ami Antonin le retrouvent caché dans une cabane et libèrent Arabella. Le robot est réparé, et Arabella le revend à une famille riche.",
+          "Un jour de grève, Jimmy accompagne son papa, employé chez Futurobow, une entreprise qui fabrique des robots. Chez une cliente, un robot jugé « défectueux » parce qu'il prend des initiatives risque d'être détruit. Jimmy et son ami Antonin le retrouvent caché dans une cabane avec Arabella, une petite fille qui l'a appelé Alfie. Antonin détruit le robot avec son grille-robot, car il pense que c'est le seul moyen de protéger la ville."
         ],
         "correct": 0,
         "answer": 0,
         "points": 1,
-        "explanation": "Seul le résumé A est correct. Arabella a aidé Alfie à s'enfuir pour le sauver. Il est grillé par la police, mais le papa de Jimmy le remet en marche : sa sensibilité est restée, et il vend sa voiture pour l'adopter."
+        "explanation": "Seul le résumé A est correct. Arabella a aidé Alfie à s'enfuir pour le sauver. Il est grillé après avoir été retrouvé, mais le papa de Jimmy le remet en marche : sa sensibilité est restée, et il vend sa voiture pour l'adopter."
       }
     ]
   },
@@ -8303,7 +8303,7 @@ window.LIVRES = [
         "id": "q13",
         "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "Grand-mère parle d'un « cataclysme ». C'est…",
+        "text": "« Rien ne pouvait laisser présager un tel cataclysme. » Un « cataclysme », c'est…",
         "options": [
           "une grande catastrophe",
           "une petite fête",
@@ -8313,7 +8313,7 @@ window.LIVRES = [
         "correct": 0,
         "answer": 0,
         "points": 1,
-        "explanation": "Un cataclysme est une catastrophe, un grand bouleversement."
+        "explanation": "Un cataclysme est une catastrophe, un grand bouleversement. Pour Nicolas, devoir rentrer en plein après-midi, c'est comme une catastrophe."
       },
       {
         "id": "q14",
@@ -8335,7 +8335,7 @@ window.LIVRES = [
         "id": "q15",
         "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "Les villageois écoutent des « racontars ». Ce sont…",
+        "text": "Le chapitre 10 s'appelle « Racontars ». Des racontars, ce sont…",
         "options": [
           "des contes lus dans les livres",
           "des histoires vraies, vérifiées et prouvées",
@@ -8574,12 +8574,12 @@ window.LIVRES = [
         "id": "q15",
         "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "Salomé et ses amies sont « médusées ». Elles sont…",
+        "text": "« Nous nous éloignâmes sous les yeux médusés des autres. » Les autres sont « médusés ». Ils sont…",
         "options": [
-          "piquées par une méduse",
+          "piqués par une méduse",
           "en colère",
-          "très étonnées, stupéfaites",
-          "endormies sur la plage"
+          "très étonnés, stupéfaits",
+          "endormis sur la plage"
         ],
         "correct": 2,
         "answer": 2,
@@ -8719,7 +8719,7 @@ window.LIVRES = [
         "correct": 2,
         "answer": 2,
         "points": 1,
-        "explanation": "La nuit, les racines s'enroulent autour des roues et les branches écrasent les cabines : les engins sont inutilisables."
+        "explanation": "Le soir, en rentrant à l'internat, elle fait jaillir des racines qui s'enroulent autour des roues, et les branches écrasent les cabines : les engins sont inutilisables."
       },
       {
         "id": "q8",
@@ -8974,7 +8974,7 @@ window.LIVRES = [
         "correct": 3,
         "answer": 3,
         "points": 1,
-        "explanation": "Elle tend l'oreille et entend deux marchands se disputer en frison ; ils viennent de Dorestad et connaissent sa famille."
+        "explanation": "Elle tend l'oreille et entend deux marchands se disputer en frison ; ils connaissent sa famille et sa grand-mère."
       },
       {
         "id": "q9",
@@ -9020,23 +9020,23 @@ window.LIVRES = [
         "id": "q13",
         "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "La mère de Frode dit que sa voix est « éloquente ». Ici, cela veut dire que sa voix…",
+        "text": "« Inutile d'en dire plus. Le ton de sa voix est éloquent. » Ici, cela veut dire que le ton de la voix de la mère…",
         "options": [
           "dit tout sans avoir besoin d'expliquer",
           "chante très joliment",
-          "est très faible et fatiguée après la nuit",
+          "est très faible et fatigué après la nuit",
           "parle une langue étrangère"
         ],
         "correct": 0,
         "answer": 0,
         "points": 1,
-        "explanation": "Éloquent : qui exprime clairement quelque chose, même sans beaucoup de mots."
+        "explanation": "Éloquent : qui exprime clairement quelque chose, même sans beaucoup de mots. Frode comprend tout de suite que son père est mort."
       },
       {
         "id": "q14",
         "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "Frode ne veut pas que sa mère sente « le coup fourré ». Un coup fourré, c'est…",
+        "text": "Frode ne veut pas que sa mère ou Knut sentent « le coup fourré ». Un coup fourré, c'est…",
         "options": [
           "un coup d'épée donné par surprise",
           "un plan secret, une ruse cachée",
@@ -9468,7 +9468,7 @@ window.LIVRES = [
         "id": "q10",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Noé refuse de montrer ses sentiments à Capucine dès son arrivée.",
+        "text": "Au début, Noé refuse de parler de sa mère avec Capucine.",
         "correct": true,
         "answer": true,
         "points": 1,
@@ -9488,7 +9488,7 @@ window.LIVRES = [
         "id": "q12",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Le premier soir, Noé trait les vaches sans aucune difficulté.",
+        "text": "La première fois, Noé trait la vache sans aucune difficulté.",
         "correct": false,
         "answer": false,
         "points": 1,
@@ -9514,7 +9514,7 @@ window.LIVRES = [
         "id": "q14",
         "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "Noé a « détourné » de l'argent, dit-on de sa mère. Détourner de l'argent, c'est…",
+        "text": "La maman de Noé a « détourné » de l'argent. Détourner de l'argent, c'est…",
         "options": [
           "le prêter à un ami",
           "prendre l'argent des autres",
@@ -9753,7 +9753,7 @@ window.LIVRES = [
         "id": "q14",
         "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "Frédégore a un « regard livide ». Livide veut dire…",
+        "text": "Frédégore a un « visage livide ». Livide veut dire…",
         "options": [
           "très joyeux et coloré",
           "très pâle, blafard",
@@ -9788,7 +9788,7 @@ window.LIVRES = [
         "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
           "Le jour de son anniversaire, Thémis accompagne ses parents à une foire aux livres anciens, où un étrange bouquiniste lui force la main pour lui donner un livre de comptines. En lisant la première comptine, Thémis se retrouve sur une île inconnue et dangereuse. Aidé par les jumeaux Jahel et Nathanaël, il comprend qu'il doit trouver la seule comptine capable de le ramener chez lui. Il réussit à rentrer chez lui juste à temps pour son anniversaire, et il jette le livre au feu.",
-          "Le jour de son anniversaire, Thémis accompagne ses parents à une foire aux livres anciens, où un étrange bouquiniste lui force la main pour lui donner un livre de comptines. En lisant la première comptine, Thémis se retrouve sur une île inconnue et dangereuse. Aidé par Titouan, il comprend qu'il doit trouver la seule comptine capable de le ramener chez lui. Il réussit en récitant sa comptine à l'envers, mais il reçoit un nouveau livre du bouquiniste en cadeau.",
+          "Le jour de son anniversaire, Thémis accompagne ses parents à une foire aux livres anciens, où un étrange bouquiniste lui force la main pour lui donner un livre de comptines. En lisant la première comptine, Thémis se retrouve sur une île inconnue et dangereuse. Aidé par Titouan, il comprend qu'il doit trouver la seule comptine capable de le ramener chez lui. Il réussit en récitant sa comptine à l'envers, mais ses parents lui offrent un nouveau livre de Frédégore.",
           "Le jour de son anniversaire, Thémis accompagne ses parents à une foire aux livres anciens, où il achète lui-même un vieux livre de comptines. En lisant la première comptine, Thémis se retrouve sur une île inconnue et dangereuse. Il appelle ses parents avec son téléphone, et son papa lui lit la bonne comptine pour le faire revenir. Il rentre à temps pour souffler ses bougies."
         ],
         "correct": 1,
@@ -9976,7 +9976,7 @@ window.LIVRES = [
         "id": "q13",
         "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "La mère parle toujours de la même « rengaine ». Une rengaine, c'est…",
+        "text": "Quand sa mère commence « À ton âge… », Liam pense : « Je connais la rengaine ! » Une rengaine, c'est…",
         "options": [
           "un discours répété",
           "une nouvelle chanson à la radio",
@@ -10161,7 +10161,7 @@ window.LIVRES = [
         "type": "mcq",
         "text": "Combien d'argent le club récolte-t-il finalement ?",
         "options": [
-          "3000 euros, le prix d'un fauteuil neuf",
+          "3000 euros, le prix d'un fauteuil d'occasion",
           "1500 euros, ce qui ne suffit pas",
           "1900 euros, exactement le montant prévu",
           "2002 euros, plus que l'objectif"
@@ -11203,7 +11203,7 @@ window.LIVRES = [
         "id": "q15",
         "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "Ruben invente un « alibi » pour les parents. Un alibi, c'est…",
+        "text": "Sur son carnet, Altina note : « alibi pour les parents ». Un alibi, c'est…",
         "options": [
           "un cadeau pour se faire pardonner",
           "une punition",
@@ -11426,7 +11426,7 @@ window.LIVRES = [
         "id": "q14",
         "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "Le papa reste « imperturbable ». Il…",
+        "text": "Le papa continue de manger « imperturbablement ». Il…",
         "options": [
           "se met en colère",
           "reste calme",
@@ -11436,7 +11436,7 @@ window.LIVRES = [
         "correct": 1,
         "answer": 1,
         "points": 1,
-        "explanation": "Imperturbable : que rien ne peut troubler."
+        "explanation": "Imperturbablement : sans se laisser troubler, en restant calme."
       },
       {
         "id": "q15",
@@ -11467,7 +11467,7 @@ window.LIVRES = [
         "correct": 1,
         "answer": 1,
         "points": 1,
-        "explanation": "Seul le résumé B est correct. Marcel chasse d'abord Leyla. Il a un cancer et veut faire piquer Molly. Les affiches ne donnent rien : c'est le papa de Leyla, qui refusait au début, qui promet à Marcel de prendre Molly."
+        "explanation": "Seul le résumé B est correct. Marcel chasse d'abord Leyla. Il a un cancer et veut faire piquer Molly. Ce ne sont pas les affiches qui sauvent Molly : c'est le papa de Leyla, qui refusait au début, qui promet à Marcel de la prendre."
       }
     ]
   },
@@ -12382,7 +12382,7 @@ window.LIVRES = [
         "id": "q14",
         "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« C'est le vieil homme le plus colérique que j'aie rencontré. » Que veut dire « colérique » ?",
+        "text": "« C'est le vieil homme le plus colérique qu'il m'ait jamais été donné de rencontrer. » Que veut dire « colérique » ?",
         "options": [
           "Qui est souvent malade",
           "Qui se fâche très facilement",
@@ -12605,7 +12605,7 @@ window.LIVRES = [
         "id": "q13",
         "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« Le corps de Barthélémy a grésillé puis il a disparu d'un coup, comme évaporé. » Que veut dire « évaporé » ?",
+        "text": "« Le corps de Barthélémy a grésillé sous l'effet de la décharge puis il a disparu d'un coup, comme évaporé. » Que veut dire « évaporé » ?",
         "options": [
           "Disparu comme de l'eau qui chauffe",
           "Tombé au fond de la piscine",
@@ -12621,7 +12621,7 @@ window.LIVRES = [
         "id": "q14",
         "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« Je voulais éviter de ruminer dans ma tête toutes ces horribles histoires. » Que veut dire « ruminer » ici ?",
+        "text": "« Je voulais à tout prix éviter de me retrouver à ruminer dans ma tête toutes ces horribles histoires. » Que veut dire « ruminer » ici ?",
         "options": [
           "Manger lentement comme une vache",
           "Oublier très vite quelque chose",
@@ -12637,7 +12637,7 @@ window.LIVRES = [
         "id": "q15",
         "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« Je vais flanquer la trouille à tous les internautes. » Que veut dire « flanquer la trouille » ?",
+        "text": "« Je vais flanquer la trouille à tous les internautes qui passent. » Que veut dire « flanquer la trouille » ?",
         "options": [
           "Faire rire",
           "Faire très peur",
@@ -12894,9 +12894,9 @@ window.LIVRES = [
         "type": "synthesis",
         "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Murphy, un garçon qui a toujours de la chance, passe Halloween dans le village de son ami Romaric. Pour gagner un concours de déguisement, il entre dans la maison du mystérieux J.O.L., où il doit réussir des épreuves terrifiantes. Au dernier moment, il choisit de sauver ses trois amis plutôt que de s'enfuir seul. Il découvre que J.O.L. est en fait le grand-père de Romaric, qui voulait simplement lui faire peur pour s'amuser.",
-          "Murphy, un garçon très malchanceux, passe Halloween dans le village de son ami Romaric. Pour ne pas passer pour un peureux, il entre dans la maison du mystérieux J.O.L., où il doit réussir des épreuves terrifiantes. Au dernier moment, il choisit de s'enfuir seul pour prévenir la police du village. Il découvre que J.O.L. est un vieux voleur, et il raconte toute l'histoire à Romaric.",
-          "Murphy, un garçon très malchanceux, passe Halloween dans le village de son ami Romaric. Pour ne pas passer pour un peureux, il entre dans la maison du mystérieux J.O.L., où il doit réussir des épreuves terrifiantes. Au dernier moment, il choisit de sauver ses trois amis plutôt que de s'enfuir seul. Il découvre que J.O.L. est Jack O'Lantern, un esprit malin, et il l'aide à retrouver Morgane, la sorcière qu'il aime."
+          "Murphy, un garçon qui a toujours de la chance, passe Halloween dans le village de son cousin Romaric. Pour gagner un concours de déguisement, il entre dans la maison du mystérieux J.O.L., où il doit réussir des épreuves terrifiantes. Au dernier moment, il choisit de sauver ses trois amis plutôt que de s'enfuir seul. Il découvre que J.O.L. est en fait le grand-père de Romaric, qui voulait simplement lui faire peur pour s'amuser.",
+          "Murphy, un garçon très malchanceux, passe Halloween dans le village de son cousin Romaric. Pour ne pas passer pour un peureux, il entre dans la maison du mystérieux J.O.L., où il doit réussir des épreuves terrifiantes. Au dernier moment, il choisit de s'enfuir seul pour prévenir la police du village. Il découvre que J.O.L. est un vieux voleur, et il raconte toute l'histoire à Romaric.",
+          "Murphy, un garçon très malchanceux, passe Halloween dans le village de son cousin Romaric. Pour ne pas passer pour un peureux, il entre dans la maison du mystérieux J.O.L., où il doit réussir des épreuves terrifiantes. Au dernier moment, il choisit de sauver ses trois amis plutôt que de s'enfuir seul. Il découvre que J.O.L. est Jack O'Lantern, un esprit malin, et il l'aide à retrouver Morgane, la sorcière qu'il aime."
         ],
         "correct": 2,
         "answer": 2,
@@ -13322,7 +13322,7 @@ window.LIVRES = [
         "id": "q13",
         "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« Les Grignard ont continué leurs jérémiades. » Que sont des « jérémiades » ?",
+        "text": "« Pendant tout le repas, Monsieur et Madame Grignard (…) ont continué leurs jérémiades. » Que sont des « jérémiades » ?",
         "options": [
           "Des chansons joyeuses",
           "Des histoires drôles",
@@ -13385,4 +13385,4 @@ window.LIVRES = [
   }
 ];
 
-window.LIVRES_VERSION = '20260927a';
+window.LIVRES_VERSION = '20260927b';
