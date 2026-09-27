@@ -137,24 +137,14 @@ window.LIVRES = [
         "id": "q9",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "À la fin, Pita casse son fusil et regrette ce qu'il a fait.",
+        "text": "Selon Bill, les opossums ont été amenés d'Australie et détruisent la forêt.",
         "correct": true,
         "answer": true,
         "points": 1,
-        "explanation": "VRAI : quand il voit qu'ils auraient pu se noyer, il comprend son erreur. On le retrouve en train de pleurer, son fusil cassé en deux."
+        "explanation": "VRAI : ils abîment la forêt. Tuer un opossum est même devenu « un devoir national »."
       },
       {
         "id": "q10",
-        "section": "Vrai ou Faux",
-        "type": "tf",
-        "text": "Pour aller sur l'île de Great Barrier, la famille doit prendre un cargo de marchandises.",
-        "correct": true,
-        "answer": true,
-        "points": 1,
-        "explanation": "VRAI : il n'y a plus de ferry, car la ligne n'était pas rentable."
-      },
-      {
-        "id": "q11",
         "section": "Vrai ou Faux",
         "type": "tf",
         "text": "Le vieux Bill parle très bien le français.",
@@ -164,14 +154,24 @@ window.LIVRES = [
         "explanation": "FAUX : Bill parle le français « comme une vache espagnole ». Alice doit lui répondre en anglais."
       },
       {
+        "id": "q11",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "À la fin, Pita casse son fusil et regrette ce qu'il a fait.",
+        "correct": true,
+        "answer": true,
+        "points": 1,
+        "explanation": "VRAI : quand il voit qu'ils auraient pu se noyer, il comprend son erreur. On le retrouve en train de pleurer, son fusil cassé en deux."
+      },
+      {
         "id": "q12",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Selon Bill, les opossums sont des animaux utiles qui protègent la forêt.",
-        "correct": false,
-        "answer": false,
+        "text": "Pour aller sur l'île de Great Barrier, la famille doit prendre un cargo de marchandises.",
+        "correct": true,
+        "answer": true,
         "points": 1,
-        "explanation": "FAUX : ils ont été amenés d'Australie et détruisent la forêt. Tuer un opossum est même devenu « un devoir national »."
+        "explanation": "VRAI : il n'y a plus de ferry, car la ligne n'était pas rentable."
       },
       {
         "id": "q13",
@@ -376,26 +376,6 @@ window.LIVRES = [
         "id": "q9",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "À l'atterrissage, la nacelle se pose tout en douceur.",
-        "correct": false,
-        "answer": false,
-        "points": 1,
-        "explanation": "FAUX : la nacelle se couche et les deux passagers tombent par terre… en riant !"
-      },
-      {
-        "id": "q10",
-        "section": "Vrai ou Faux",
-        "type": "tf",
-        "text": "Le papa de Marine a décollé seul avec la montgolfière du toit de l'immeuble.",
-        "correct": false,
-        "answer": false,
-        "points": 1,
-        "explanation": "FAUX : il faut un grand champ. C'est le champ de la meilleure amie de sa maman qui sert de lieu de départ."
-      },
-      {
-        "id": "q11",
-        "section": "Vrai ou Faux",
-        "type": "tf",
         "text": "Marine a lu et appris beaucoup de choses sur les montgolfières avant le vol.",
         "correct": true,
         "answer": true,
@@ -403,7 +383,7 @@ window.LIVRES = [
         "explanation": "VRAI : pendant deux semaines, elle se renseigne sur leur histoire et leur fabrication."
       },
       {
-        "id": "q12",
+        "id": "q10",
         "section": "Vrai ou Faux",
         "type": "tf",
         "text": "Avant de décoller, Marine et son papa jettent les sacs de sable qui retiennent la montgolfière au sol.",
@@ -411,6 +391,26 @@ window.LIVRES = [
         "answer": true,
         "points": 1,
         "explanation": "VRAI : pour Alain, ces sacs ressemblent à ses soucis. Il les laisse tomber un par un."
+      },
+      {
+        "id": "q11",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "À l'atterrissage, la nacelle se pose tout en douceur.",
+        "correct": false,
+        "answer": false,
+        "points": 1,
+        "explanation": "FAUX : la nacelle se couche et les deux passagers tombent par terre… en riant !"
+      },
+      {
+        "id": "q12",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Le papa de Marine a décollé seul avec la montgolfière du toit de l'immeuble.",
+        "correct": false,
+        "answer": false,
+        "points": 1,
+        "explanation": "FAUX : il faut un grand champ. C'est le champ de la meilleure amie de sa maman qui sert de lieu de départ."
       },
       {
         "id": "q13",
@@ -625,6 +625,16 @@ window.LIVRES = [
         "id": "q10",
         "section": "Vrai ou Faux",
         "type": "tf",
+        "text": "Dès la première leçon, Francis et Frédéric sont très doués en snow.",
+        "correct": false,
+        "answer": false,
+        "points": 1,
+        "explanation": "FAUX : ils tombent tout le temps. Ils sont même entourés de petits enfants qui skient mieux qu'eux !"
+      },
+      {
+        "id": "q11",
+        "section": "Vrai ou Faux",
+        "type": "tf",
         "text": "Le papa des jumeaux a arrêté le ski après un grave accident.",
         "correct": true,
         "answer": true,
@@ -632,24 +642,14 @@ window.LIVRES = [
         "explanation": "VRAI : il gagnait beaucoup de médailles, mais une chute l'a envoyé à l'hôpital pendant quelques mois."
       },
       {
-        "id": "q11",
-        "section": "Vrai ou Faux",
-        "type": "tf",
-        "text": "Les jumeaux ont dix ans et n'ont pas encore de téléphone portable.",
-        "correct": true,
-        "answer": true,
-        "points": 1,
-        "explanation": "VRAI : leurs parents trouvent qu'ils sont trop jeunes. Ils utilisent une cabine téléphonique pour appeler Mathieu."
-      },
-      {
         "id": "q12",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Dès la première leçon, Francis et Frédéric sont très doués en snow.",
+        "text": "Les jumeaux appellent Mathieu avec leur propre téléphone portable.",
         "correct": false,
         "answer": false,
         "points": 1,
-        "explanation": "FAUX : ils tombent tout le temps. Ils sont même entourés de petits enfants qui skient mieux qu'eux !"
+        "explanation": "FAUX : leurs parents les trouvent trop jeunes pour avoir un portable. Ils utilisent une cabine téléphonique."
       },
       {
         "id": "q13",
@@ -854,16 +854,6 @@ window.LIVRES = [
         "id": "q9",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Pour aller chez ses parents, Aiko doit voyager toute une journée en train.",
-        "correct": true,
-        "answer": true,
-        "points": 1,
-        "explanation": "VRAI : c'est pour cela qu'elle ne rentre pas chez elle le week-end."
-      },
-      {
-        "id": "q10",
-        "section": "Vrai ou Faux",
-        "type": "tf",
         "text": "Aiko a une grande sœur qui s'appelle Nanako.",
         "correct": false,
         "answer": false,
@@ -871,7 +861,7 @@ window.LIVRES = [
         "explanation": "FAUX : Nanako est sa petite sœur. C'est Aiko, la grande sœur, qui est au pensionnat."
       },
       {
-        "id": "q11",
+        "id": "q10",
         "section": "Vrai ou Faux",
         "type": "tf",
         "text": "Aiko raconte tout à la préfète de discipline pour qu'elle les aide.",
@@ -881,7 +871,7 @@ window.LIVRES = [
         "explanation": "FAUX : elle invente une excuse : elle dit que le proviseur les attend pour préparer la fête des poupées. Puis les deux filles s'enfuient."
       },
       {
-        "id": "q12",
+        "id": "q11",
         "section": "Vrai ou Faux",
         "type": "tf",
         "text": "Au temple, Yui dit à Aiko de repasser sous le torii pour revenir dans le monde des vivants.",
@@ -889,6 +879,16 @@ window.LIVRES = [
         "answer": true,
         "points": 1,
         "explanation": "VRAI : le torii est le grand portail rouge. Le guide explique qu'il est comme un pont entre le monde des vivants et celui des esprits."
+      },
+      {
+        "id": "q12",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Pour aller chez ses parents, Aiko doit voyager toute une journée en train.",
+        "correct": true,
+        "answer": true,
+        "points": 1,
+        "explanation": "VRAI : c'est pour cela qu'elle ne rentre pas chez elle le week-end."
       },
       {
         "id": "q13",
@@ -1093,21 +1093,21 @@ window.LIVRES = [
         "id": "q9",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Chez les Bozelli, le petit-déjeuner est d'habitude un moment très calme.",
+        "text": "Face aux voleurs, Laïka s'enfuit et va se cacher.",
         "correct": true,
         "answer": true,
         "points": 1,
-        "explanation": "VRAI : on n'entend que les petites cuillères. Le papa lit le journal et la maman révise ses dossiers."
+        "explanation": "VRAI : Laïka a peur de tout. Les voleurs se moquent même d'elle en la prenant pour un mouton."
       },
       {
         "id": "q10",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Laïka, la chienne d'Eléna, est un gros bouvier bernois.",
+        "text": "Chez les Bozelli, le petit-déjeuner est d'habitude un moment très calme.",
         "correct": true,
         "answer": true,
         "points": 1,
-        "explanation": "VRAI : elle est énorme, mais pas du tout féroce : elle a même peur de tout !"
+        "explanation": "VRAI : on n'entend que les petites cuillères. Le papa lit le journal et la maman révise ses dossiers."
       },
       {
         "id": "q11",
@@ -1123,11 +1123,11 @@ window.LIVRES = [
         "id": "q12",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Laïka attaque courageusement les voleurs pour défendre les enfants.",
-        "correct": false,
-        "answer": false,
+        "text": "Laïka, la chienne d'Eléna, est un gros bouvier bernois.",
+        "correct": true,
+        "answer": true,
         "points": 1,
-        "explanation": "FAUX : Laïka s'enfuit et se cache. Les voleurs se moquent d'elle en la prenant pour un mouton."
+        "explanation": "VRAI : elle est énorme, mais pas du tout féroce : elle a même peur de tout !"
       },
       {
         "id": "q13",
@@ -1332,24 +1332,14 @@ window.LIVRES = [
         "id": "q9",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Anne filme le vaisseau spatial avec son smartphone.",
+        "text": "Quand Anne présente Rex comme son frère, ses parents refusent de jouer le jeu.",
         "correct": false,
         "answer": false,
         "points": 1,
-        "explanation": "FAUX : son téléphone est déchargé : l'écran s'éteint au bout de quelques secondes. Elle n'a donc aucune preuve."
+        "explanation": "FAUX : ses parents jouent le jeu. Anne veut ajouter du poids dans le vaisseau, et c'est ce qui les sauve."
       },
       {
         "id": "q10",
-        "section": "Vrai ou Faux",
-        "type": "tf",
-        "text": "À la fin, Anne jette les graines bleues à la poubelle.",
-        "correct": false,
-        "answer": false,
-        "points": 1,
-        "explanation": "FAUX : elle les ramasse et les met dans la couveuse, sous les lampes. Peut-être qu'un petit Sidérien va pousser !"
-      },
-      {
-        "id": "q11",
         "section": "Vrai ou Faux",
         "type": "tf",
         "text": "Pour que personne ne remarque rien pendant le voyage, Rorrr veut congeler ses passagers.",
@@ -1359,14 +1349,24 @@ window.LIVRES = [
         "explanation": "VRAI : le voyage dure très longtemps. Rorrr veut les congeler, puis les décongeler au retour."
       },
       {
+        "id": "q11",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Anne filme le vaisseau spatial avec son smartphone.",
+        "correct": false,
+        "answer": false,
+        "points": 1,
+        "explanation": "FAUX : son téléphone est déchargé : l'écran s'éteint au bout de quelques secondes. Elle n'a donc aucune preuve."
+      },
+      {
         "id": "q12",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Anne fait croire à Rorrr que Rex, le chien, est son frère.",
-        "correct": true,
-        "answer": true,
+        "text": "À la fin, Anne jette les graines bleues à la poubelle.",
+        "correct": false,
+        "answer": false,
         "points": 1,
-        "explanation": "VRAI : Anne veut ajouter du poids dans le vaisseau. Ses parents jouent le jeu, et c'est ce qui les sauve."
+        "explanation": "FAUX : elle les ramasse et les met dans la couveuse, sous les lampes. Peut-être qu'un petit Sidérien va pousser !"
       },
       {
         "id": "q13",
@@ -1571,11 +1571,11 @@ window.LIVRES = [
         "id": "q9",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Pendant la pièce, Samira cache son attelle sous sa longue robe.",
+        "text": "Monsieur Léoton est un professeur sévère, mais Samira le trouve plutôt gentil.",
         "correct": true,
         "answer": true,
         "points": 1,
-        "explanation": "VRAI : les médicaments calment la douleur. Si elle marche lentement, personne ne remarque rien."
+        "explanation": "VRAI : il crie souvent, mais il punit rarement, et Samira trouve ses cours passionnants."
       },
       {
         "id": "q10",
@@ -1601,11 +1601,11 @@ window.LIVRES = [
         "id": "q12",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Monsieur Léoton est un professeur sévère, mais Samira le trouve plutôt gentil.",
+        "text": "Pendant la pièce, Samira cache son attelle sous sa longue robe.",
         "correct": true,
         "answer": true,
         "points": 1,
-        "explanation": "VRAI : il crie souvent, mais il punit rarement, et Samira trouve ses cours passionnants."
+        "explanation": "VRAI : les médicaments calment la douleur. Si elle marche lentement, personne ne remarque rien."
       },
       {
         "id": "q13",
@@ -1820,11 +1820,11 @@ window.LIVRES = [
         "id": "q10",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Le poulain de Comète s'appelle Bingo.",
-        "correct": true,
-        "answer": true,
+        "text": "Le papa d'Emma dit qu'il est parti parce qu'il ne l'aimait plus.",
+        "correct": false,
+        "answer": false,
         "points": 1,
-        "explanation": "VRAI : Emma choisit ce nom en pensant au bingo qui leur a permis d'avoir la maison."
+        "explanation": "FAUX : il explique qu'il étouffait dans son travail à la banque, qu'il a fait un burn-out et qu'il avait honte. Il demande pardon à Emma."
       },
       {
         "id": "q11",
@@ -1840,11 +1840,11 @@ window.LIVRES = [
         "id": "q12",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Le papa d'Emma dit qu'il est parti parce qu'il ne l'aimait plus.",
+        "text": "Le poulain de Comète s'appelle Loto.",
         "correct": false,
         "answer": false,
         "points": 1,
-        "explanation": "FAUX : il explique qu'il étouffait dans son travail à la banque, qu'il a fait un burn-out et qu'il avait honte. Il demande pardon à Emma."
+        "explanation": "FAUX : il s'appelle Bingo. Emma choisit ce nom en pensant au bingo qui leur a permis d'avoir la maison."
       },
       {
         "id": "q13",
@@ -2049,14 +2049,24 @@ window.LIVRES = [
         "id": "q9",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Yasmine est l'amie fidèle qui protège Faustine pendant l'attaque.",
-        "correct": false,
-        "answer": false,
+        "text": "C'est Yasmine qui a ouvert la grille du parc aux ennemis.",
+        "correct": true,
+        "answer": true,
         "points": 1,
-        "explanation": "FAUX : Yasmine est la traîtresse : elle a ouvert la grille du parc aux ennemis."
+        "explanation": "VRAI : Yasmine n'est pas une amie fidèle : c'est la traîtresse de l'histoire."
       },
       {
         "id": "q10",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Le papa de Faustine est en réalité un homme-loup.",
+        "correct": true,
+        "answer": true,
+        "points": 1,
+        "explanation": "VRAI : pendant la bataille, Faustine le voit se transformer en loup. Il avait quitté son peuple pour vivre avec Moïra."
+      },
+      {
+        "id": "q11",
         "section": "Vrai ou Faux",
         "type": "tf",
         "text": "Au temple, Faustine se montre tout de suite très douée pour le combat.",
@@ -2066,7 +2076,7 @@ window.LIVRES = [
         "explanation": "FAUX : elle est maladroite et « pataude ». Les autres novices progressent bien plus vite qu'elle."
       },
       {
-        "id": "q11",
+        "id": "q12",
         "section": "Vrai ou Faux",
         "type": "tf",
         "text": "Faustine et son papa ont souvent déménagé avant de s'installer à Chartres.",
@@ -2074,16 +2084,6 @@ window.LIVRES = [
         "answer": true,
         "points": 1,
         "explanation": "VRAI : ils changeaient de pays tous les six mois environ : son papa voulait la cacher des hommes-chauves-souris."
-      },
-      {
-        "id": "q12",
-        "section": "Vrai ou Faux",
-        "type": "tf",
-        "text": "Le papa de Faustine est en réalité un homme-loup.",
-        "correct": true,
-        "answer": true,
-        "points": 1,
-        "explanation": "VRAI : pendant la bataille, Faustine le voit se transformer en loup. Il avait quitté son peuple pour vivre avec Moïra."
       },
       {
         "id": "q13",
@@ -2288,11 +2288,11 @@ window.LIVRES = [
         "id": "q9",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Charlotte est en fauteuil roulant à cause d'un accident de voiture.",
-        "correct": true,
-        "answer": true,
+        "text": "Le papa de Line pense qu'il ne faut pas aller s'excuser auprès de Charlotte.",
+        "correct": false,
+        "answer": false,
         "points": 1,
-        "explanation": "VRAI : il y a sept ans, le conducteur s'est endormi au volant. Charlotte avait 16 ans."
+        "explanation": "FAUX : c'est lui qui conseille à Line d'aller présenter ses excuses. Plus tard, il dit même que c'est grâce à lui !"
       },
       {
         "id": "q10",
@@ -2308,21 +2308,21 @@ window.LIVRES = [
         "id": "q11",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Au début, Line raconte tout à Harold, y compris ce qu'elle a dit à Charlotte.",
-        "correct": false,
-        "answer": false,
+        "text": "Charlotte est en fauteuil roulant à cause d'un accident de voiture.",
+        "correct": true,
+        "answer": true,
         "points": 1,
-        "explanation": "FAUX : elle ne lui dit pas que la dame est handicapée ni qu'elle l'a insultée. Elle en a honte."
+        "explanation": "VRAI : il y a sept ans, le conducteur s'est endormi au volant. Charlotte avait 16 ans."
       },
       {
         "id": "q12",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Le papa de Line pense qu'il ne faut pas aller s'excuser auprès de Charlotte.",
+        "text": "Au début, Line raconte tout à Harold, y compris ce qu'elle a dit à Charlotte.",
         "correct": false,
         "answer": false,
         "points": 1,
-        "explanation": "FAUX : c'est lui qui conseille à Line d'aller présenter ses excuses. Plus tard, il dit même que c'est grâce à lui !"
+        "explanation": "FAUX : elle ne lui dit pas que la dame est handicapée ni qu'elle l'a insultée. Elle en a honte."
       },
       {
         "id": "q13",
@@ -2527,14 +2527,24 @@ window.LIVRES = [
         "id": "q9",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "À la fin, beaucoup de gens copient la coiffure de Marjolaine et Séraphin.",
-        "correct": true,
-        "answer": true,
+        "text": "Pendant le duel, Séraphin tue le duc de Gondard.",
+        "correct": false,
+        "answer": false,
         "points": 1,
-        "explanation": "VRAI : les femmes se coupent les cheveux et les hommes les laissent pousser."
+        "explanation": "FAUX : le vainqueur laisse la vie sauve au duc. Il pose seulement son épée sur sa poitrine, puis s'en va."
       },
       {
         "id": "q10",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Le mariage a lieu dans la grande salle de bal du château.",
+        "correct": false,
+        "answer": false,
+        "points": 1,
+        "explanation": "FAUX : ils se marient sur un simple caillou plat, loin de tout. Les invités doivent venir à pied."
+      },
+      {
+        "id": "q11",
         "section": "Vrai ou Faux",
         "type": "tf",
         "text": "Au début, Marjolaine refuse tous les princes parce qu'ils se ressemblent tous et l'ennuient.",
@@ -2544,24 +2554,14 @@ window.LIVRES = [
         "explanation": "VRAI : ils parlent tous de fêtes, de chasses et de voyages. Elle cherche autre chose, sans savoir quoi."
       },
       {
-        "id": "q11",
-        "section": "Vrai ou Faux",
-        "type": "tf",
-        "text": "Pendant le duel, Séraphin tue le duc de Gondard.",
-        "correct": false,
-        "answer": false,
-        "points": 1,
-        "explanation": "FAUX : le vainqueur laisse la vie sauve au duc. Il pose seulement son épée sur sa poitrine, puis s'en va."
-      },
-      {
         "id": "q12",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Le mariage a lieu dans la grande salle de bal du château.",
+        "text": "À la fin, tout le monde se moque de la coiffure de Marjolaine et Séraphin.",
         "correct": false,
         "answer": false,
         "points": 1,
-        "explanation": "FAUX : ils se marient sur un simple caillou plat, loin de tout. Les invités doivent venir à pied."
+        "explanation": "FAUX : au contraire, beaucoup de gens les copient : les femmes se coupent les cheveux et les hommes les laissent pousser."
       },
       {
         "id": "q13",
@@ -2766,24 +2766,14 @@ window.LIVRES = [
         "id": "q9",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Picolino a gardé tout le trésor royal quand il est devenu roi.",
-        "correct": false,
-        "answer": false,
+        "text": "Pendant la libération, pas une seule goutte de sang n'est versée.",
+        "correct": true,
+        "answer": true,
         "points": 1,
-        "explanation": "FAUX : il a distribué le trésor aux habitants. Il n'a gardé que le sceptre de l'ancien roi Livio, en souvenir."
+        "explanation": "VRAI : il n'y a pas de bataille. Les brigands s'enfuient, effrayés par la musique."
       },
       {
         "id": "q10",
-        "section": "Vrai ou Faux",
-        "type": "tf",
-        "text": "Pendant la libération, il y a une terrible bataille avec beaucoup de blessés.",
-        "correct": false,
-        "answer": false,
-        "points": 1,
-        "explanation": "FAUX : pas une goutte de sang n'est versée. Les brigands s'enfuient, effrayés par la musique."
-      },
-      {
-        "id": "q11",
         "section": "Vrai ou Faux",
         "type": "tf",
         "text": "Luigi, le petit-fils de Picolino, a lui aussi la tache de naissance.",
@@ -2791,6 +2781,16 @@ window.LIVRES = [
         "answer": true,
         "points": 1,
         "explanation": "VRAI : Toscana remarque que Luigi a la même marque, sur le cœur. L'histoire n'est peut-être pas terminée…"
+      },
+      {
+        "id": "q11",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Picolino a gardé tout le trésor royal quand il est devenu roi.",
+        "correct": false,
+        "answer": false,
+        "points": 1,
+        "explanation": "FAUX : il a distribué le trésor aux habitants. Il n'a gardé que le sceptre de l'ancien roi Livio, en souvenir."
       },
       {
         "id": "q12",
@@ -3025,21 +3025,21 @@ window.LIVRES = [
         "id": "q11",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Elisabeth adore les leçons de danse et de maintien.",
-        "correct": false,
-        "answer": false,
-        "points": 1,
-        "explanation": "FAUX : elle les déteste plus que tout. Elle préfère les cours de mathématiques, de musique, de littérature et d'histoire."
-      },
-      {
-        "id": "q12",
-        "section": "Vrai ou Faux",
-        "type": "tf",
         "text": "Au début, Elisabeth décide d'être obéissante, car c'est sa dernière chance avant l'orphelinat.",
         "correct": true,
         "answer": true,
         "points": 1,
         "explanation": "VRAI : elle sait que son papa a eu du mal à trouver quelqu'un pour l'accueillir. Elle veut se montrer raisonnable."
+      },
+      {
+        "id": "q12",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Elisabeth adore les leçons de danse et de maintien.",
+        "correct": false,
+        "answer": false,
+        "points": 1,
+        "explanation": "FAUX : elle les déteste plus que tout. Elle préfère les cours de mathématiques, de musique, de littérature et d'histoire."
       },
       {
         "id": "q13",
@@ -3244,11 +3244,11 @@ window.LIVRES = [
         "id": "q9",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "À la fin, Mamie Henriette recoud la tête de Justin, l'épouvantail.",
-        "correct": true,
-        "answer": true,
+        "text": "Bastien passait ses vacances scolaires à la mer, chez ses cousins.",
+        "correct": false,
+        "answer": false,
         "points": 1,
-        "explanation": "VRAI : elle retire la balle et remplit la tête avec des plumes données par Jo. Justin a maintenant une cicatrice."
+        "explanation": "FAUX : il les passait à Fontagnac, dans le Cantal, chez ses grands-parents, pour retrouver le cabanon de Papy Fernand."
       },
       {
         "id": "q10",
@@ -3264,11 +3264,11 @@ window.LIVRES = [
         "id": "q11",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Bastien passait ses vacances scolaires dans le Cantal, chez ses grands-parents.",
+        "text": "À la fin, Mamie Henriette recoud la tête de Justin, l'épouvantail.",
         "correct": true,
         "answer": true,
         "points": 1,
-        "explanation": "VRAI : toute l'année, il attendait ses vacances à Fontagnac pour retrouver le cabanon de Papy Fernand."
+        "explanation": "VRAI : elle retire la balle et remplit la tête avec des plumes données par Jo. Justin a maintenant une cicatrice."
       },
       {
         "id": "q12",
@@ -3493,16 +3493,6 @@ window.LIVRES = [
         "id": "q10",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Damien fait partie du club de théâtre et fait semblant d'être malade en classe.",
-        "correct": true,
-        "answer": true,
-        "points": 1,
-        "explanation": "VRAI : il se plie en deux sur sa table en gémissant. Mais Monsieur Bertin ne se laisse pas avoir."
-      },
-      {
-        "id": "q11",
-        "section": "Vrai ou Faux",
-        "type": "tf",
         "text": "À la fin, le contrôle de géo a eu lieu pendant que Damien était malade.",
         "correct": false,
         "answer": false,
@@ -3510,7 +3500,7 @@ window.LIVRES = [
         "explanation": "FAUX : Monsieur Bertin était absent : il a la grippe ! Le contrôle est reporté au lundi."
       },
       {
-        "id": "q12",
+        "id": "q11",
         "section": "Vrai ou Faux",
         "type": "tf",
         "text": "Les amis restent concentrés sur leur vœu pendant une heure entière, comme promis.",
@@ -3518,6 +3508,16 @@ window.LIVRES = [
         "answer": false,
         "points": 1,
         "explanation": "FAUX : Damien abandonne au bout de cinq minutes pour lire sa B.D. À la fin du rêve, Laura avoue qu'elle aussi n'a pas tenu."
+      },
+      {
+        "id": "q12",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Damien fait partie du club de théâtre et fait semblant d'être malade en classe.",
+        "correct": true,
+        "answer": true,
+        "points": 1,
+        "explanation": "VRAI : il se plie en deux sur sa table en gémissant. Mais Monsieur Bertin ne se laisse pas avoir."
       },
       {
         "id": "q13",
@@ -3722,26 +3722,6 @@ window.LIVRES = [
         "id": "q9",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Gabrielle et Dorian se ressemblent comme deux gouttes d'eau.",
-        "correct": false,
-        "answer": false,
-        "points": 1,
-        "explanation": "FAUX : ils sont jumeaux, mais ne se ressemblent pas. Madame Jansen se moque même de « un gros et une maigrichonne »."
-      },
-      {
-        "id": "q10",
-        "section": "Vrai ou Faux",
-        "type": "tf",
-        "text": "À la fin, c'est Max qui appelle la police.",
-        "correct": false,
-        "answer": false,
-        "points": 1,
-        "explanation": "FAUX : c'est Babou qui appelle la police. Max l'a réveillée quand les enfants étaient en danger."
-      },
-      {
-        "id": "q11",
-        "section": "Vrai ou Faux",
-        "type": "tf",
         "text": "Dorian arrive à ouvrir une porte simplement avec une carte de banque.",
         "correct": true,
         "answer": true,
@@ -3749,7 +3729,7 @@ window.LIVRES = [
         "explanation": "VRAI : quand la porte n'est pas fermée à double tour, une carte suffit. C'est sans doute ainsi que le voleur est entré."
       },
       {
-        "id": "q12",
+        "id": "q10",
         "section": "Vrai ou Faux",
         "type": "tf",
         "text": "Après l'agression, Babou a peur de sortir de chez elle.",
@@ -3757,6 +3737,26 @@ window.LIVRES = [
         "answer": true,
         "points": 1,
         "explanation": "VRAI : c'est Monsieur Julien qui fait ses courses. Babou dit que « le temps guérit toutes les blessures »."
+      },
+      {
+        "id": "q11",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Gabrielle et Dorian se ressemblent comme deux gouttes d'eau.",
+        "correct": false,
+        "answer": false,
+        "points": 1,
+        "explanation": "FAUX : ils sont jumeaux, mais ne se ressemblent pas. Madame Jansen se moque même de « un gros et une maigrichonne »."
+      },
+      {
+        "id": "q12",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "À la fin, c'est Babou qui appelle la police.",
+        "correct": true,
+        "answer": true,
+        "points": 1,
+        "explanation": "VRAI : Max l'a réveillée quand les enfants étaient en danger, et elle a appelé la police."
       },
       {
         "id": "q13",
@@ -3961,6 +3961,26 @@ window.LIVRES = [
         "id": "q9",
         "section": "Vrai ou Faux",
         "type": "tf",
+        "text": "Au parc, le garçon qui cherche quelque chose reconnaît tout de suite son cahier.",
+        "correct": false,
+        "answer": false,
+        "points": 1,
+        "explanation": "FAUX : il rougit, dit qu'il n'a rien perdu et s'en va. Ce n'était pas lui."
+      },
+      {
+        "id": "q10",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Lucie mène toute l'enquête seule, sans en parler à personne.",
+        "correct": false,
+        "answer": false,
+        "points": 1,
+        "explanation": "FAUX : elle enquête avec sa meilleure amie, Marguerite. Elles ne font rien l'une sans l'autre."
+      },
+      {
+        "id": "q11",
+        "section": "Vrai ou Faux",
+        "type": "tf",
         "text": "Pour trouver des renseignements, Lucie invente un faux concours de chocolat.",
         "correct": true,
         "answer": true,
@@ -3968,17 +3988,7 @@ window.LIVRES = [
         "explanation": "VRAI : elle fait croire à Clara qu'on peut gagner cinq kilos de chocolat Crokos pour savoir quels garçons ont deux sœurs."
       },
       {
-        "id": "q10",
-        "section": "Vrai ou Faux",
-        "type": "tf",
-        "text": "Marguerite est la meilleure amie de Lucie.",
-        "correct": true,
-        "answer": true,
-        "points": 1,
-        "explanation": "VRAI : elles ne font rien l'une sans l'autre et mènent toute l'enquête ensemble."
-      },
-      {
-        "id": "q11",
+        "id": "q12",
         "section": "Vrai ou Faux",
         "type": "tf",
         "text": "Lucie aime beaucoup le Roi-Soleil et connaît toute son histoire.",
@@ -3986,16 +3996,6 @@ window.LIVRES = [
         "answer": false,
         "points": 1,
         "explanation": "FAUX : elle le déteste, car il a fait trop de choses. En classe, elle lit même « Louis Iksivé » au lieu de « Louis XIV » !"
-      },
-      {
-        "id": "q12",
-        "section": "Vrai ou Faux",
-        "type": "tf",
-        "text": "Au parc, le garçon qui cherche quelque chose reconnaît tout de suite son cahier.",
-        "correct": false,
-        "answer": false,
-        "points": 1,
-        "explanation": "FAUX : il rougit, dit qu'il n'a rien perdu et s'en va. Ce n'était pas lui."
       },
       {
         "id": "q13",
@@ -4200,11 +4200,11 @@ window.LIVRES = [
         "id": "q9",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Au début, Alexis croit beaucoup au père Noël et aux légendes.",
-        "correct": false,
-        "answer": false,
+        "text": "Selon la légende, le renne aux sabots d'or apparaît tous les 60 ans.",
+        "correct": true,
+        "answer": true,
         "points": 1,
-        "explanation": "FAUX : il pense que ce sont des histoires pour les petits enfants. Il change d'avis à la fin de l'histoire."
+        "explanation": "VRAI : Nils l'a vu quand il avait l'âge d'Alexis et en a même pris une photo."
       },
       {
         "id": "q10",
@@ -4220,11 +4220,11 @@ window.LIVRES = [
         "id": "q11",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Selon la légende, le renne aux sabots d'or apparaît tous les 60 ans.",
-        "correct": true,
-        "answer": true,
+        "text": "Au début, Alexis croit beaucoup au père Noël et aux légendes.",
+        "correct": false,
+        "answer": false,
         "points": 1,
-        "explanation": "VRAI : Nils l'a vu quand il avait l'âge d'Alexis et en a même pris une photo."
+        "explanation": "FAUX : il pense que ce sont des histoires pour les petits enfants. Il change d'avis à la fin de l'histoire."
       },
       {
         "id": "q12",
@@ -4449,21 +4449,21 @@ window.LIVRES = [
         "id": "q10",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Philippe fait sa longue marche tout seul, sans personne pour l'aider.",
-        "correct": false,
-        "answer": false,
+        "text": "Philippe arrive à Boulogne-sur-Mer à temps et gagne son pari.",
+        "correct": true,
+        "answer": true,
         "points": 1,
-        "explanation": "FAUX : ses amis Olivier, Alain et Hélène l'attendent à plusieurs endroits pour le ravitailler, le soigner et l'encourager."
+        "explanation": "VRAI : malgré les attaques de Daniel, il arrive avec huit minutes d'avance."
       },
       {
         "id": "q11",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Philippe perd son pari à cause des attaques de Daniel.",
+        "text": "Philippe fait sa longue marche tout seul, sans personne pour l'aider.",
         "correct": false,
         "answer": false,
         "points": 1,
-        "explanation": "FAUX : il arrive à Boulogne-sur-Mer avec huit minutes d'avance. Il a gagné !"
+        "explanation": "FAUX : ses amis Olivier, Alain et Hélène l'attendent à plusieurs endroits pour le ravitailler, le soigner et l'encourager."
       },
       {
         "id": "q12",
@@ -4688,21 +4688,21 @@ window.LIVRES = [
         "id": "q10",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Le père Loïk confie à Gauthier un coquillage nacré pour le protéger.",
-        "correct": true,
-        "answer": true,
+        "text": "Même après la rencontre avec le capitaine, Bleuenn continue à faire des cauchemars.",
+        "correct": false,
+        "answer": false,
         "points": 1,
-        "explanation": "VRAI : Loïk lui confie une spirale de nacre. En la gardant dans sa main, Gauthier ne sera pas tenté de suivre le fantôme."
+        "explanation": "FAUX : après la rencontre avec le capitaine, son père, ses cauchemars s'arrêtent."
       },
       {
         "id": "q11",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Après avoir retrouvé son père, Bleuenn n'a plus de cauchemars.",
+        "text": "Le père Loïk confie à Gauthier un coquillage nacré pour le protéger.",
         "correct": true,
         "answer": true,
         "points": 1,
-        "explanation": "VRAI : Après la rencontre avec le capitaine, ses cauchemars s'arrêtent."
+        "explanation": "VRAI : Loïk lui confie une spirale de nacre. En la gardant dans sa main, Gauthier ne sera pas tenté de suivre le fantôme."
       },
       {
         "id": "q12",
@@ -4917,21 +4917,21 @@ window.LIVRES = [
         "id": "q9",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Milo va seul à la police pour rendre le téléphone.",
-        "correct": false,
-        "answer": false,
-        "points": 1,
-        "explanation": "FAUX : Il y pense, mais ne va jamais à la police."
-      },
-      {
-        "id": "q10",
-        "section": "Vrai ou Faux",
-        "type": "tf",
         "text": "Le grand-père de Milo est décédé il y a six mois.",
         "correct": true,
         "answer": true,
         "points": 1,
         "explanation": "VRAI : Il est mort brusquement dans sa cuisine, six mois plus tôt."
+      },
+      {
+        "id": "q10",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "La surprise finale a lieu près de la tombe du grand-père.",
+        "correct": true,
+        "answer": true,
+        "points": 1,
+        "explanation": "VRAI : La famille l'attend près de la tombe de grand-père, au cimetière."
       },
       {
         "id": "q11",
@@ -4947,11 +4947,11 @@ window.LIVRES = [
         "id": "q12",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "La surprise finale a lieu près de la tombe du grand-père.",
-        "correct": true,
-        "answer": true,
+        "text": "Milo va seul à la police pour rendre le téléphone.",
+        "correct": false,
+        "answer": false,
         "points": 1,
-        "explanation": "VRAI : La famille l'attend près de la tombe de grand-père, au cimetière."
+        "explanation": "FAUX : Il y pense, mais ne va jamais à la police."
       },
       {
         "id": "q13",
@@ -5156,6 +5156,16 @@ window.LIVRES = [
         "id": "q9",
         "section": "Vrai ou Faux",
         "type": "tf",
+        "text": "Le garçon roux du marché, c'était John, amoureux de Veronica.",
+        "correct": true,
+        "answer": true,
+        "points": 1,
+        "explanation": "VRAI : À la fin, Kathleen comprend que John n'embêtait pas Veronica : il lui plaisait."
+      },
+      {
+        "id": "q10",
+        "section": "Vrai ou Faux",
+        "type": "tf",
         "text": "Molly Doonghlar ne parle pas anglais, mais gaélique.",
         "correct": true,
         "answer": true,
@@ -5163,7 +5173,7 @@ window.LIVRES = [
         "explanation": "VRAI : Elle vit sur les îles d'Aran et parle gaélique."
       },
       {
-        "id": "q10",
+        "id": "q11",
         "section": "Vrai ou Faux",
         "type": "tf",
         "text": "Patrick a volé le trophée pour faire plaisir à Billy.",
@@ -5173,24 +5183,14 @@ window.LIVRES = [
         "explanation": "FAUX : Il a vu Molly l'emporter et voulait le rapporter pour ne plus être « la honte de la famille »."
       },
       {
-        "id": "q11",
-        "section": "Vrai ou Faux",
-        "type": "tf",
-        "text": "Le garçon roux du marché, c'était John, amoureux de Veronica.",
-        "correct": true,
-        "answer": true,
-        "points": 1,
-        "explanation": "VRAI : À la fin, Kathleen comprend que John n'embêtait pas Veronica : il lui plaisait."
-      },
-      {
         "id": "q12",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Kathleen joue du violon dans le groupe final.",
-        "correct": false,
-        "answer": false,
+        "text": "Dans le groupe final, Kathleen joue des cuillères.",
+        "correct": true,
+        "answer": true,
         "points": 1,
-        "explanation": "FAUX : Kathleen est pianiste ; dans le groupe final, elle joue des cuillères."
+        "explanation": "VRAI : Kathleen est pianiste, mais dans le groupe final, elle joue des cuillères."
       },
       {
         "id": "q13",
@@ -5405,6 +5405,16 @@ window.LIVRES = [
         "id": "q10",
         "section": "Vrai ou Faux",
         "type": "tf",
+        "text": "Après sa crise d'apnée, Julie doit rester plusieurs jours à l'hôpital.",
+        "correct": false,
+        "answer": false,
+        "points": 1,
+        "explanation": "FAUX : Son père la calme à la maison ; le lendemain, elle reste à la maison avec lui."
+      },
+      {
+        "id": "q11",
+        "section": "Vrai ou Faux",
+        "type": "tf",
         "text": "Le grand-père de Tom prend Célia pour sa femme, Claudette.",
         "correct": true,
         "answer": true,
@@ -5412,7 +5422,7 @@ window.LIVRES = [
         "explanation": "VRAI : Il confond les personnes et vit surtout dans le passé."
       },
       {
-        "id": "q11",
+        "id": "q12",
         "section": "Vrai ou Faux",
         "type": "tf",
         "text": "Noémie est la seule amie à qui Célia a parlé de Julie avant Tom.",
@@ -5420,16 +5430,6 @@ window.LIVRES = [
         "answer": true,
         "points": 1,
         "explanation": "VRAI : Elle ne l'avait dit qu'à Noémie, pendant une classe de découverte."
-      },
-      {
-        "id": "q12",
-        "section": "Vrai ou Faux",
-        "type": "tf",
-        "text": "Après sa crise d'apnée, Julie doit rester plusieurs jours à l'hôpital.",
-        "correct": false,
-        "answer": false,
-        "points": 1,
-        "explanation": "FAUX : Son père la calme à la maison ; le lendemain, elle reste à la maison avec lui."
       },
       {
         "id": "q13",
@@ -5634,16 +5634,6 @@ window.LIVRES = [
         "id": "q9",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Nico et Loïc se connaissent depuis qu'ils étaient chez la même nounou.",
-        "correct": true,
-        "answer": true,
-        "points": 1,
-        "explanation": "VRAI : Ils se sont rencontrés chez « Tata », leur nourrice."
-      },
-      {
-        "id": "q10",
-        "section": "Vrai ou Faux",
-        "type": "tf",
         "text": "À la rentrée, Fadi est placé dans une autre classe que ses deux amis.",
         "correct": false,
         "answer": false,
@@ -5651,17 +5641,7 @@ window.LIVRES = [
         "explanation": "FAUX : Sa classe de rattachement est la même que celle de Nico et Loïc."
       },
       {
-        "id": "q11",
-        "section": "Vrai ou Faux",
-        "type": "tf",
-        "text": "Le père de Fadi ne parle pas du tout français.",
-        "correct": false,
-        "answer": false,
-        "points": 1,
-        "explanation": "FAUX : Abdul parle très bien français : il a étudié en France quand il était jeune."
-      },
-      {
-        "id": "q12",
+        "id": "q10",
         "section": "Vrai ou Faux",
         "type": "tf",
         "text": "Fadi rêve de devenir chirurgien pour soigner les gens de son pays.",
@@ -5669,6 +5649,26 @@ window.LIVRES = [
         "answer": true,
         "points": 1,
         "explanation": "VRAI : Il veut faire des études et devenir chirurgien pour aider les Syriens blessés."
+      },
+      {
+        "id": "q11",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Nico et Loïc se sont rencontrés au club de pêche.",
+        "correct": false,
+        "answer": false,
+        "points": 1,
+        "explanation": "FAUX : ils se connaissent depuis tout petits : ils allaient chez la même nourrice, « Tata »."
+      },
+      {
+        "id": "q12",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Le père de Fadi ne parle pas du tout français.",
+        "correct": false,
+        "answer": false,
+        "points": 1,
+        "explanation": "FAUX : Abdul parle très bien français : il a étudié en France quand il était jeune."
       },
       {
         "id": "q13",
@@ -5873,6 +5873,16 @@ window.LIVRES = [
         "id": "q9",
         "section": "Vrai ou Faux",
         "type": "tf",
+        "text": "Colombe accepte tout de suite de faire l'exposé avec Gabriel.",
+        "correct": false,
+        "answer": false,
+        "points": 1,
+        "explanation": "FAUX : Elle baisse le nez sur son cahier ; Gabriel le fait alors avec Juliette."
+      },
+      {
+        "id": "q10",
+        "section": "Vrai ou Faux",
+        "type": "tf",
         "text": "Marjorie s'excuse auprès de Colombe juste après l'exposé.",
         "correct": false,
         "answer": false,
@@ -5880,7 +5890,7 @@ window.LIVRES = [
         "explanation": "FAUX : Marjorie ne vient pas ; elle lui lance un petit sourire moqueur."
       },
       {
-        "id": "q10",
+        "id": "q11",
         "section": "Vrai ou Faux",
         "type": "tf",
         "text": "Juliette pratiquait le judo à Lille.",
@@ -5888,16 +5898,6 @@ window.LIVRES = [
         "answer": true,
         "points": 1,
         "explanation": "VRAI : Elle était dans un club de judo, ceinture orange-verte."
-      },
-      {
-        "id": "q11",
-        "section": "Vrai ou Faux",
-        "type": "tf",
-        "text": "Colombe accepte tout de suite de faire l'exposé avec Gabriel.",
-        "correct": false,
-        "answer": false,
-        "points": 1,
-        "explanation": "FAUX : Elle baisse le nez sur son cahier ; Gabriel le fait alors avec Juliette."
       },
       {
         "id": "q12",
@@ -6112,6 +6112,16 @@ window.LIVRES = [
         "id": "q9",
         "section": "Vrai ou Faux",
         "type": "tf",
+        "text": "Max se sent coupable de l'accident de Luc.",
+        "correct": true,
+        "answer": true,
+        "points": 1,
+        "explanation": "VRAI : Il a même envie d'arrêter Sport-Études à cause de cela."
+      },
+      {
+        "id": "q10",
+        "section": "Vrai ou Faux",
+        "type": "tf",
         "text": "Patrick Rigaud est devenu un peintre reconnu.",
         "correct": true,
         "answer": true,
@@ -6119,7 +6129,7 @@ window.LIVRES = [
         "explanation": "VRAI : Pendant son séjour à l'hôpital, il s'est mis au pastel et est devenu un peintre célèbre."
       },
       {
-        "id": "q10",
+        "id": "q11",
         "section": "Vrai ou Faux",
         "type": "tf",
         "text": "Le vendeur du tableau à la brocante était un inconnu choisi au hasard.",
@@ -6129,24 +6139,14 @@ window.LIVRES = [
         "explanation": "FAUX : C'était Patrick Rigaud lui-même, qui avait pris la place de Monique."
       },
       {
-        "id": "q11",
-        "section": "Vrai ou Faux",
-        "type": "tf",
-        "text": "Max se sent coupable de l'accident de Luc.",
-        "correct": true,
-        "answer": true,
-        "points": 1,
-        "explanation": "VRAI : Il a même envie d'arrêter Sport-Études à cause de cela."
-      },
-      {
         "id": "q12",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Pendant la partie de ping-pong, Luc gagne facilement contre Max.",
-        "correct": false,
-        "answer": false,
+        "text": "Pendant la partie de ping-pong, Luc perd contre Max, mais il remonte beaucoup de points.",
+        "correct": true,
+        "answer": true,
         "points": 1,
-        "explanation": "FAUX : Luc perd 21 à 18, mais il est remonté de 16-8 : c'est une belle remontée."
+        "explanation": "VRAI : Luc perd 21 à 18, mais il est remonté de 16-8 : c'est une belle remontée."
       },
       {
         "id": "q13",
@@ -6351,21 +6351,21 @@ window.LIVRES = [
         "id": "q9",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Mamine a retrouvé son frère Simon après la guerre.",
-        "correct": false,
-        "answer": false,
-        "points": 1,
-        "explanation": "FAUX : Elle a appris que Simon n'avait pas survécu à la guerre."
-      },
-      {
-        "id": "q10",
-        "section": "Vrai ou Faux",
-        "type": "tf",
         "text": "Sophie raconte tout de suite à son cousin Erwan l'histoire d'Esther.",
         "correct": false,
         "answer": false,
         "points": 1,
         "explanation": "FAUX : Elle invente une amie, « Estelle », pour garder son secret."
+      },
+      {
+        "id": "q10",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Au début de l'histoire, Sophie est ravie d'aller au vide-grenier.",
+        "correct": false,
+        "answer": false,
+        "points": 1,
+        "explanation": "FAUX : elle n'en a aucune envie : elle préférerait aller bronzer à la plage."
       },
       {
         "id": "q11",
@@ -6381,11 +6381,11 @@ window.LIVRES = [
         "id": "q12",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Au début de l'histoire, Sophie n'a aucune envie d'aller au vide-grenier.",
-        "correct": true,
-        "answer": true,
+        "text": "Mamine a retrouvé son frère Simon après la guerre.",
+        "correct": false,
+        "answer": false,
         "points": 1,
-        "explanation": "VRAI : Elle préférerait aller bronzer à la plage."
+        "explanation": "FAUX : Elle a appris que Simon n'avait pas survécu à la guerre."
       },
       {
         "id": "q13",
@@ -6829,21 +6829,21 @@ window.LIVRES = [
         "id": "q9",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Chez Adélaïde, il y a la télévision et Internet.",
-        "correct": false,
-        "answer": false,
-        "points": 1,
-        "explanation": "FAUX : Il n'y a ni télévision ni Internet dans sa maison."
-      },
-      {
-        "id": "q10",
-        "section": "Vrai ou Faux",
-        "type": "tf",
         "text": "La malle contient des photos et des tableaux de Jean-Michel, le mari d'Adélaïde.",
         "correct": true,
         "answer": true,
         "points": 1,
         "explanation": "VRAI : Adélaïde finit par ouvrir la malle et montrer ses souvenirs à Sophie."
+      },
+      {
+        "id": "q10",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Chez Adélaïde, il y a la télévision et Internet.",
+        "correct": false,
+        "answer": false,
+        "points": 1,
+        "explanation": "FAUX : Il n'y a ni télévision ni Internet dans sa maison."
       },
       {
         "id": "q11",
@@ -6859,11 +6859,11 @@ window.LIVRES = [
         "id": "q12",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Jacinthe passe ses vacances à l'île Maurice avec ses parents.",
-        "correct": false,
-        "answer": false,
+        "text": "Pendant que ses parents partent aux îles, Jacinthe reste chez son oncle à Saint-Jean-des-Vignes.",
+        "correct": true,
+        "answer": true,
         "points": 1,
-        "explanation": "FAUX : Ses parents partent aux îles, mais elle reste chez son oncle à Saint-Jean-des-Vignes."
+        "explanation": "VRAI : ses parents partent aux îles, mais Jacinthe passe l'été chez son oncle, le boucher du village."
       },
       {
         "id": "q13",
@@ -7068,26 +7068,6 @@ window.LIVRES = [
         "id": "q9",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "La maman de Madeline est biologiste dans un laboratoire.",
-        "correct": true,
-        "answer": true,
-        "points": 1,
-        "explanation": "VRAI : Elle travaille dans un grand laboratoire."
-      },
-      {
-        "id": "q10",
-        "section": "Vrai ou Faux",
-        "type": "tf",
-        "text": "Le papa de Madeline connaît très bien Marie-Ève.",
-        "correct": false,
-        "answer": false,
-        "points": 1,
-        "explanation": "FAUX : Il ne la connaît pas du tout : c'est une fausse piste."
-      },
-      {
-        "id": "q11",
-        "section": "Vrai ou Faux",
-        "type": "tf",
         "text": "À la fin, Lewis veut devenir écrivain comme sa mère.",
         "correct": false,
         "answer": false,
@@ -7095,7 +7075,17 @@ window.LIVRES = [
         "explanation": "FAUX : Lewis rêve d'être chercheur ; c'est Madeline qui aimerait créer et faire rêver."
       },
       {
-        "id": "q12",
+        "id": "q10",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "La maman de Madeline est biologiste dans un laboratoire.",
+        "correct": true,
+        "answer": true,
+        "points": 1,
+        "explanation": "VRAI : Elle travaille dans un grand laboratoire."
+      },
+      {
+        "id": "q11",
         "section": "Vrai ou Faux",
         "type": "tf",
         "text": "Manika Ahoud est une chanteuse que Laure et Marie-Ève adoraient au lycée.",
@@ -7103,6 +7093,16 @@ window.LIVRES = [
         "answer": true,
         "points": 1,
         "explanation": "VRAI : Elles écoutaient ses chansons ensemble."
+      },
+      {
+        "id": "q12",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Le papa de Madeline connaît très bien Marie-Ève.",
+        "correct": false,
+        "answer": false,
+        "points": 1,
+        "explanation": "FAUX : Il ne la connaît pas du tout : c'est une fausse piste."
       },
       {
         "id": "q13",
@@ -7307,11 +7307,11 @@ window.LIVRES = [
         "id": "q9",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Au début, Gauthier est très content du thème de l'année.",
+        "text": "Dans la famille de Gauthier, personne d'autre n'a jamais porté le prénom Gaston.",
         "correct": false,
         "answer": false,
         "points": 1,
-        "explanation": "FAUX : Il aurait préféré les nouvelles technologies ou Harry Potter."
+        "explanation": "FAUX : il y a un Gaston à chaque génération pour honorer sa mémoire. Tonton Gaston est le quatrième à porter ce prénom."
       },
       {
         "id": "q10",
@@ -7327,21 +7327,21 @@ window.LIVRES = [
         "id": "q11",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Dans la famille, il y a un Gaston à chaque génération pour honorer sa mémoire.",
-        "correct": true,
-        "answer": true,
-        "points": 1,
-        "explanation": "VRAI : Tonton Gaston est le quatrième, Gauthier le sixième."
-      },
-      {
-        "id": "q12",
-        "section": "Vrai ou Faux",
-        "type": "tf",
         "text": "Tonton Gaston donne à Gauthier le képi de son ancêtre.",
         "correct": true,
         "answer": true,
         "points": 1,
         "explanation": "VRAI : Il le sort d'un coffre dans la remise et le lui offre."
+      },
+      {
+        "id": "q12",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Au début, Gauthier est très content du thème de l'année.",
+        "correct": false,
+        "answer": false,
+        "points": 1,
+        "explanation": "FAUX : Il aurait préféré les nouvelles technologies ou Harry Potter."
       },
       {
         "id": "q13",
@@ -7546,16 +7546,6 @@ window.LIVRES = [
         "id": "q9",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Capucine, la sœur de Valentine, peut lui donner de la moelle osseuse.",
-        "correct": true,
-        "answer": true,
-        "points": 1,
-        "explanation": "VRAI : Elle est compatible à 100 % pour la greffe."
-      },
-      {
-        "id": "q10",
-        "section": "Vrai ou Faux",
-        "type": "tf",
         "text": "Archibald vit seul, sans femme ni enfants.",
         "correct": true,
         "answer": true,
@@ -7563,7 +7553,7 @@ window.LIVRES = [
         "explanation": "VRAI : Au début, il vit seul à la campagne avec son jardin."
       },
       {
-        "id": "q11",
+        "id": "q10",
         "section": "Vrai ou Faux",
         "type": "tf",
         "text": "Tèo est né en Belgique.",
@@ -7573,7 +7563,7 @@ window.LIVRES = [
         "explanation": "FAUX : Il est arrivé de Somalie à l'âge de deux ans avec sa mère."
       },
       {
-        "id": "q12",
+        "id": "q11",
         "section": "Vrai ou Faux",
         "type": "tf",
         "text": "Archibald garde tout l'argent du Lotto pour réparer sa maison.",
@@ -7581,6 +7571,16 @@ window.LIVRES = [
         "answer": false,
         "points": 1,
         "explanation": "FAUX : Il décide d'utiliser l'argent pour réaliser les rêves d'enfants malades."
+      },
+      {
+        "id": "q12",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Capucine, la sœur de Valentine, peut lui donner de la moelle osseuse.",
+        "correct": true,
+        "answer": true,
+        "points": 1,
+        "explanation": "VRAI : Elle est compatible à 100 % pour la greffe."
       },
       {
         "id": "q13",
@@ -7785,21 +7785,21 @@ window.LIVRES = [
         "id": "q9",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Onze ans plus tard, Jimmy vit avec Arabella et Alfie.",
+        "text": "Dans la cabane, Arabella se met devant le robot pour le protéger.",
         "correct": true,
         "answer": true,
         "points": 1,
-        "explanation": "VRAI : Jimmy, 22 ans, partage son appartement et sa vie avec Arabella ; Alfie vit avec eux."
+        "explanation": "VRAI : elle n'a pas peur d'Alfie : elle le défend et oblige Antonin à poser son grille-robot."
       },
       {
         "id": "q10",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Les robots de Futurobow sont très chers : seules les familles riches peuvent en acheter.",
+        "text": "Onze ans plus tard, Jimmy vit avec Arabella et Alfie.",
         "correct": true,
         "answer": true,
         "points": 1,
-        "explanation": "VRAI : Ils sont à la pointe de la technologie et coûtent très cher."
+        "explanation": "VRAI : Jimmy, 22 ans, partage son appartement et sa vie avec Arabella ; Alfie vit avec eux."
       },
       {
         "id": "q11",
@@ -7815,11 +7815,11 @@ window.LIVRES = [
         "id": "q12",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Arabella a peur du robot et veut qu'on la libère.",
-        "correct": false,
-        "answer": false,
+        "text": "Les robots de Futurobow sont très chers : seules les familles riches peuvent en acheter.",
+        "correct": true,
+        "answer": true,
         "points": 1,
-        "explanation": "FAUX : Elle défend Alfie et se met devant lui pour le protéger."
+        "explanation": "VRAI : Ils sont à la pointe de la technologie et coûtent très cher."
       },
       {
         "id": "q13",
@@ -8024,24 +8024,14 @@ window.LIVRES = [
         "id": "q9",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Milo accepte tout de suite Noah quand il arrive au magasin.",
+        "text": "Noah n'a été malade qu'une seule nuit avant de se réveiller.",
         "correct": false,
         "answer": false,
         "points": 1,
-        "explanation": "FAUX : Milo est d'abord méfiant ; il lui fait confiance après la nuit."
+        "explanation": "FAUX : son téléphone indique le 15 août : il est resté trois jours au lit."
       },
       {
         "id": "q10",
-        "section": "Vrai ou Faux",
-        "type": "tf",
-        "text": "Noah retrouve sa mère et sa sœur vivantes à Namur.",
-        "correct": false,
-        "answer": false,
-        "points": 1,
-        "explanation": "FAUX : Il ne retrouve que leurs vêtements : elles sont mortes ensemble, blotties l'une contre l'autre."
-      },
-      {
-        "id": "q11",
         "section": "Vrai ou Faux",
         "type": "tf",
         "text": "Pour choisir d'aller d'abord à la ferme, les enfants votent.",
@@ -8051,14 +8041,24 @@ window.LIVRES = [
         "explanation": "VRAI : Milo, Irina et Lucie votent pour suivre Tania et Renaud."
       },
       {
+        "id": "q11",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Milo accepte tout de suite Noah quand il arrive au magasin.",
+        "correct": false,
+        "answer": false,
+        "points": 1,
+        "explanation": "FAUX : Milo est d'abord méfiant ; il lui fait confiance après la nuit."
+      },
+      {
         "id": "q12",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Noah a été malade pendant trois jours avant de se réveiller.",
-        "correct": true,
-        "answer": true,
+        "text": "Noah retrouve sa mère et sa sœur vivantes à Namur.",
+        "correct": false,
+        "answer": false,
         "points": 1,
-        "explanation": "VRAI : Son téléphone indique le 15 août : il est resté trois jours au lit."
+        "explanation": "FAUX : Il ne retrouve que leurs vêtements : elles sont mortes ensemble, blotties l'une contre l'autre."
       },
       {
         "id": "q13",
@@ -8263,11 +8263,11 @@ window.LIVRES = [
         "id": "q9",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Au campement, les chiens aboient très fort quand Nicolas arrive.",
+        "text": "À la fin, Nicolas retrouve Django chaque été.",
         "correct": false,
         "answer": false,
         "points": 1,
-        "explanation": "FAUX : Les chiens n'aboient pas ; ils viennent simplement les saluer."
+        "explanation": "FAUX : Il ne l'a plus jamais revu, mais il reste son ami."
       },
       {
         "id": "q10",
@@ -8283,21 +8283,21 @@ window.LIVRES = [
         "id": "q11",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "À la fin, Nicolas retrouve Django chaque été.",
-        "correct": false,
-        "answer": false,
-        "points": 1,
-        "explanation": "FAUX : Il ne l'a plus jamais revu, mais il reste son ami."
-      },
-      {
-        "id": "q12",
-        "section": "Vrai ou Faux",
-        "type": "tf",
         "text": "Le grand-père est moins inquiet que la grand-mère au sujet des gens du voyage.",
         "correct": true,
         "answer": true,
         "points": 1,
         "explanation": "VRAI : Il dit qu'il ne faut pas croire tout ce qu'on raconte et que les enfants ne craignent rien."
+      },
+      {
+        "id": "q12",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Au campement, les chiens aboient très fort quand Nicolas arrive.",
+        "correct": false,
+        "answer": false,
+        "points": 1,
+        "explanation": "FAUX : Les chiens n'aboient pas ; ils viennent simplement les saluer."
       },
       {
         "id": "q13",
@@ -8502,34 +8502,14 @@ window.LIVRES = [
         "id": "q9",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Zélie donne à Paul une enveloppe avec sa photo et un mot.",
+        "text": "Au camping, 359 est le numéro de l'emplacement de la tente de Paul.",
         "correct": true,
         "answer": true,
         "points": 1,
-        "explanation": "VRAI : Il l'ouvre sous sa tente : une photo d'école et un grand cœur rouge."
+        "explanation": "VRAI : c'est pour cela qu'il s'imagine en « 359ᵉ joueur mondial de raquette de plage » !"
       },
       {
         "id": "q10",
-        "section": "Vrai ou Faux",
-        "type": "tf",
-        "text": "Paul est officiellement le 359e joueur mondial de raquette de plage.",
-        "correct": false,
-        "answer": false,
-        "points": 1,
-        "explanation": "FAUX : C'est une blague de Paul : 359, c'est le numéro de son emplacement au camping."
-      },
-      {
-        "id": "q11",
-        "section": "Vrai ou Faux",
-        "type": "tf",
-        "text": "Au début, Paul est vexé que Salomé lui dise à peine bonjour.",
-        "correct": true,
-        "answer": true,
-        "points": 1,
-        "explanation": "VRAI : Il était toujours content de retrouver sa cousine, mais elle l'ignore presque."
-      },
-      {
-        "id": "q12",
         "section": "Vrai ou Faux",
         "type": "tf",
         "text": "Paul et Zélie se revoient la semaine suivante dans leur école.",
@@ -8537,6 +8517,26 @@ window.LIVRES = [
         "answer": false,
         "points": 1,
         "explanation": "FAUX : Ils habitent loin ; ils s'écrivent beaucoup après les vacances."
+      },
+      {
+        "id": "q11",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Zélie donne à Paul une enveloppe avec sa photo et un mot.",
+        "correct": true,
+        "answer": true,
+        "points": 1,
+        "explanation": "VRAI : Il l'ouvre sous sa tente : une photo d'école et un grand cœur rouge."
+      },
+      {
+        "id": "q12",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Au début, Paul est vexé que Salomé lui dise à peine bonjour.",
+        "correct": true,
+        "answer": true,
+        "points": 1,
+        "explanation": "VRAI : Il était toujours content de retrouver sa cousine, mais elle l'ignore presque."
       },
       {
         "id": "q13",
@@ -8751,11 +8751,11 @@ window.LIVRES = [
         "id": "q10",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Lili est la première de sa classe.",
+        "text": "Drago a empêché qu'on parle de la bagarre avec les trois garçons grâce à l'hypnose.",
         "correct": true,
         "answer": true,
         "points": 1,
-        "explanation": "VRAI : Elle est première incontestée depuis la rentrée, ce qui ne l'aide pas à se faire des amis."
+        "explanation": "VRAI : Il avoue qu'il s'en est occupé : il est doué pour l'hypnose."
       },
       {
         "id": "q11",
@@ -8771,11 +8771,11 @@ window.LIVRES = [
         "id": "q12",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Drago a empêché qu'on parle de la bagarre avec les trois garçons grâce à l'hypnose.",
-        "correct": true,
-        "answer": true,
+        "text": "Lili a de mauvaises notes au collège.",
+        "correct": false,
+        "answer": false,
         "points": 1,
-        "explanation": "VRAI : Il avoue qu'il s'en est occupé : il est doué pour l'hypnose."
+        "explanation": "FAUX : elle est la première de sa classe depuis la rentrée, ce qui ne l'aide pas à se faire des amis."
       },
       {
         "id": "q13",
@@ -8980,11 +8980,11 @@ window.LIVRES = [
         "id": "q9",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Frode a quatorze ans et Hisse douze.",
+        "text": "Pour tromper les chiens, Frode fait marcher son cheval dans la mer.",
         "correct": true,
         "answer": true,
         "points": 1,
-        "explanation": "VRAI : Frode le dit : il a quatorze ans, Hisse à peine douze."
+        "explanation": "VRAI : Il longe la plage dans l'eau pour que les chiens perdent la piste."
       },
       {
         "id": "q10",
@@ -9000,11 +9000,11 @@ window.LIVRES = [
         "id": "q11",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Pour tromper les chiens, Frode fait marcher son cheval dans la mer.",
+        "text": "Frode a quatorze ans et Hisse douze.",
         "correct": true,
         "answer": true,
         "points": 1,
-        "explanation": "VRAI : Il longe la plage dans l'eau pour que les chiens perdent la piste."
+        "explanation": "VRAI : Frode le dit : il a quatorze ans, Hisse à peine douze."
       },
       {
         "id": "q12",
@@ -9219,26 +9219,6 @@ window.LIVRES = [
         "id": "q9",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Marie a prévenu les adultes avant de monter dans la camionnette.",
-        "correct": false,
-        "answer": false,
-        "points": 1,
-        "explanation": "FAUX : Elle y monte en cachette ; c'est Nathan qui l'a vue et qui a prévenu les adultes."
-      },
-      {
-        "id": "q10",
-        "section": "Vrai ou Faux",
-        "type": "tf",
-        "text": "Alicia sauve Marie qui allait tomber dans le gouffre.",
-        "correct": true,
-        "answer": true,
-        "points": 1,
-        "explanation": "VRAI : Alicia l'attrape par le bras et la tire en arrière."
-      },
-      {
-        "id": "q11",
-        "section": "Vrai ou Faux",
-        "type": "tf",
         "text": "Les empreintes griffues ont été faites avec des moulages en plâtre.",
         "correct": true,
         "answer": true,
@@ -9246,7 +9226,7 @@ window.LIVRES = [
         "explanation": "VRAI : Marie trouve les moulages de pieds avec des griffes dans la camionnette de Michel."
       },
       {
-        "id": "q12",
+        "id": "q10",
         "section": "Vrai ou Faux",
         "type": "tf",
         "text": "Marie et Nathan sont jumeaux et se ressemblent beaucoup.",
@@ -9254,6 +9234,26 @@ window.LIVRES = [
         "answer": false,
         "points": 1,
         "explanation": "FAUX : Ils sont jumeaux mais n'ont aucun point commun, ni physique ni de caractère."
+      },
+      {
+        "id": "q11",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Marie a prévenu les adultes avant de monter dans la camionnette.",
+        "correct": false,
+        "answer": false,
+        "points": 1,
+        "explanation": "FAUX : Elle y monte en cachette ; c'est Nathan qui l'a vue et qui a prévenu les adultes."
+      },
+      {
+        "id": "q12",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Alicia sauve Marie qui allait tomber dans le gouffre.",
+        "correct": true,
+        "answer": true,
+        "points": 1,
+        "explanation": "VRAI : Alicia l'attrape par le bras et la tire en arrière."
       },
       {
         "id": "q13",
@@ -9468,11 +9468,11 @@ window.LIVRES = [
         "id": "q10",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Octave a lui aussi été en prison quand il était jeune.",
+        "text": "À sa sortie de prison, Marion vient vivre à la ferme d'Odile.",
         "correct": true,
         "answer": true,
         "points": 1,
-        "explanation": "VRAI : Il a braqué une bijouterie à 28 ans et a passé quelques années en prison."
+        "explanation": "VRAI : Odile le lui a proposé. Marion y commence une formation de maraîchage."
       },
       {
         "id": "q11",
@@ -9488,11 +9488,11 @@ window.LIVRES = [
         "id": "q12",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "À sa sortie de prison, Marion part vivre seule en ville.",
-        "correct": false,
-        "answer": false,
+        "text": "Octave a lui aussi été en prison quand il était jeune.",
+        "correct": true,
+        "answer": true,
         "points": 1,
-        "explanation": "FAUX : Odile lui propose de s'installer à la ferme ; elle y commence une formation de maraîchage."
+        "explanation": "VRAI : Il a braqué une bijouterie à 28 ans et a passé quelques années en prison."
       },
       {
         "id": "q13",
@@ -9697,11 +9697,11 @@ window.LIVRES = [
         "id": "q9",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Thémis est passionné de mangas.",
+        "text": "Les jumeaux Jahel et Nathanaël font lire à Thémis une comptine piège.",
         "correct": true,
         "answer": true,
         "points": 1,
-        "explanation": "VRAI : Il est incollable sur One Piece, Naruto ou Fullmetal Alchemist."
+        "explanation": "VRAI : Ils lui font lire « le meilleur sort », et le sol se dérobe sous ses pieds."
       },
       {
         "id": "q10",
@@ -9717,21 +9717,21 @@ window.LIVRES = [
         "id": "q11",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "La bonne comptine est formée en inversant l'ordre des mots.",
+        "text": "Thémis est passionné de mangas.",
         "correct": true,
         "answer": true,
         "points": 1,
-        "explanation": "VRAI : Thémis récite la comptine « à l'envers », mot par mot, et rentre chez lui."
+        "explanation": "VRAI : Il est incollable sur One Piece, Naruto ou Fullmetal Alchemist."
       },
       {
         "id": "q12",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Les jumeaux Jahel et Nathanaël font lire à Thémis une comptine piège.",
+        "text": "La bonne comptine est formée en inversant l'ordre des mots.",
         "correct": true,
         "answer": true,
         "points": 1,
-        "explanation": "VRAI : Ils lui font lire « le meilleur sort », et le sol se dérobe sous ses pieds."
+        "explanation": "VRAI : Thémis récite la comptine « à l'envers », mot par mot, et rentre chez lui."
       },
       {
         "id": "q13",
@@ -9936,16 +9936,6 @@ window.LIVRES = [
         "id": "q9",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "En 1986, les photos se regardent tout de suite sur un ordinateur.",
-        "correct": false,
-        "answer": false,
-        "points": 1,
-        "explanation": "FAUX : Il faut faire développer la pellicule : les photos arrivent une semaine plus tard, sur papier."
-      },
-      {
-        "id": "q10",
-        "section": "Vrai ou Faux",
-        "type": "tf",
         "text": "Liam réussit à conduire la voiture sans problème.",
         "correct": false,
         "answer": false,
@@ -9953,17 +9943,7 @@ window.LIVRES = [
         "explanation": "FAUX : Il cabosse la porte du garage et doit partir à pied."
       },
       {
-        "id": "q11",
-        "section": "Vrai ou Faux",
-        "type": "tf",
-        "text": "En 1986, Liam doit donner le cours de mathématiques.",
-        "correct": true,
-        "answer": true,
-        "points": 1,
-        "explanation": "VRAI : Dans ce monde, il est professeur de maths au collège."
-      },
-      {
-        "id": "q12",
+        "id": "q10",
         "section": "Vrai ou Faux",
         "type": "tf",
         "text": "À la fin, le papa de Liam est déguisé pour une soirée.",
@@ -9971,6 +9951,26 @@ window.LIVRES = [
         "answer": true,
         "points": 1,
         "explanation": "VRAI : Il essaie son costume des années 80 pour la soirée déguisée de la tante."
+      },
+      {
+        "id": "q11",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "En 1986, les photos se regardent tout de suite sur un ordinateur.",
+        "correct": false,
+        "answer": false,
+        "points": 1,
+        "explanation": "FAUX : Il faut faire développer la pellicule : les photos arrivent une semaine plus tard, sur papier."
+      },
+      {
+        "id": "q12",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "En 1986, Liam est assis parmi les élèves pendant le cours de mathématiques.",
+        "correct": false,
+        "answer": false,
+        "points": 1,
+        "explanation": "FAUX : dans ce monde, c'est Liam le professeur de maths ! Monsieur Planchon, lui, est assis parmi les élèves."
       },
       {
         "id": "q13",
@@ -10185,6 +10185,16 @@ window.LIVRES = [
         "id": "q10",
         "section": "Vrai ou Faux",
         "type": "tf",
+        "text": "Idriss reçoit son nouveau fauteuil pour Noël.",
+        "correct": false,
+        "answer": false,
+        "points": 1,
+        "explanation": "FAUX : C'est pour son anniversaire, le 23 mars."
+      },
+      {
+        "id": "q11",
+        "section": "Vrai ou Faux",
+        "type": "tf",
         "text": "Melk, Tif et Zik sont amis depuis l'école maternelle.",
         "correct": true,
         "answer": true,
@@ -10192,24 +10202,14 @@ window.LIVRES = [
         "explanation": "VRAI : Ces trois-là s'adorent depuis la maternelle ; Idriss les a rejoints en sixième."
       },
       {
-        "id": "q11",
-        "section": "Vrai ou Faux",
-        "type": "tf",
-        "text": "Les habitants de la cité refusent de donner de l'argent.",
-        "correct": false,
-        "answer": false,
-        "points": 1,
-        "explanation": "FAUX : Une collecte spontanée récolte déjà la moitié de la somme."
-      },
-      {
         "id": "q12",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Idriss reçoit son nouveau fauteuil pour Noël.",
-        "correct": false,
-        "answer": false,
+        "text": "Avant la création du club, une collecte dans le quartier rapporte déjà la moitié de la somme.",
+        "correct": true,
+        "answer": true,
         "points": 1,
-        "explanation": "FAUX : C'est pour son anniversaire, le 23 mars."
+        "explanation": "VRAI : les habitants de la cité sont généreux, mais pas assez riches pour payer tout le fauteuil."
       },
       {
         "id": "q13",
@@ -10414,26 +10414,6 @@ window.LIVRES = [
         "id": "q9",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Alice, qui les retrouve, est une spécialiste des insectes.",
-        "correct": true,
-        "answer": true,
-        "points": 1,
-        "explanation": "VRAI : Elle est entomologiste et a vu la fumée de leur feu."
-      },
-      {
-        "id": "q10",
-        "section": "Vrai ou Faux",
-        "type": "tf",
-        "text": "Le village trouvé dans la clairière est habité par des chercheurs d'or.",
-        "correct": false,
-        "answer": false,
-        "points": 1,
-        "explanation": "FAUX : C'est un village fantôme : les chercheurs d'or illégaux sont partis depuis des mois."
-      },
-      {
-        "id": "q11",
-        "section": "Vrai ou Faux",
-        "type": "tf",
         "text": "À la fin, Lilou ne veut plus jamais retourner dans la jungle.",
         "correct": false,
         "answer": false,
@@ -10441,7 +10421,7 @@ window.LIVRES = [
         "explanation": "FAUX : Elle dit : « J'ai trop envie d'y retourner ! »"
       },
       {
-        "id": "q12",
+        "id": "q10",
         "section": "Vrai ou Faux",
         "type": "tf",
         "text": "Au début, Lilou et Arthur ne s'entendent pas très bien.",
@@ -10449,6 +10429,26 @@ window.LIVRES = [
         "answer": true,
         "points": 1,
         "explanation": "VRAI : Ils se chamaillent ; à la fin, ils ont appris à se connaître."
+      },
+      {
+        "id": "q11",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Alice, qui les retrouve, est une spécialiste des insectes.",
+        "correct": true,
+        "answer": true,
+        "points": 1,
+        "explanation": "VRAI : Elle est entomologiste et a vu la fumée de leur feu."
+      },
+      {
+        "id": "q12",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Le village trouvé dans la clairière est habité par des chercheurs d'or.",
+        "correct": false,
+        "answer": false,
+        "points": 1,
+        "explanation": "FAUX : C'est un village fantôme : les chercheurs d'or illégaux sont partis depuis des mois."
       },
       {
         "id": "q13",
@@ -10673,11 +10673,11 @@ window.LIVRES = [
         "id": "q11",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "La ferme s'appelle GrandGris en souvenir d'un âne.",
-        "correct": true,
-        "answer": true,
+        "text": "La ferme s'appelle GrandGris à cause de la couleur de ses murs.",
+        "correct": false,
+        "answer": false,
         "points": 1,
-        "explanation": "VRAI : Un grand âne gris qui a rendu d'immenses services à tout le village."
+        "explanation": "FAUX : c'est une bâtisse blanche. Elle porte ce nom en souvenir d'un grand âne gris qui a rendu d'immenses services à tout le village."
       },
       {
         "id": "q12",
@@ -10892,11 +10892,11 @@ window.LIVRES = [
         "id": "q9",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "À l'orphelinat, les enfants mangent beaucoup et bien.",
+        "text": "À la fin, Madame Rosi vit avec la famille à Anvers.",
         "correct": false,
         "answer": false,
         "points": 1,
-        "explanation": "FAUX : Il y a surtout des pommes de terre et des navets ; tout le monde se couche en ayant faim."
+        "explanation": "FAUX : Le père apprend qu'elle est morte ; trois petites fleurs sont déposées sur sa tombe."
       },
       {
         "id": "q10",
@@ -10922,11 +10922,11 @@ window.LIVRES = [
         "id": "q12",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "À la fin, Madame Rosi vit avec la famille à Anvers.",
+        "text": "À l'orphelinat, les enfants mangent beaucoup et bien.",
         "correct": false,
         "answer": false,
         "points": 1,
-        "explanation": "FAUX : Le père apprend qu'elle est morte ; trois petites fleurs sont déposées sur sa tombe."
+        "explanation": "FAUX : Il y a surtout des pommes de terre et des navets ; tout le monde se couche en ayant faim."
       },
       {
         "id": "q13",
@@ -11131,24 +11131,14 @@ window.LIVRES = [
         "id": "q9",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Altina n'avait jamais eu d'heure de retenue avant cette enquête.",
+        "text": "Les parents d'Altina ont eux aussi fui la guerre.",
         "correct": true,
         "answer": true,
         "points": 1,
-        "explanation": "VRAI : C'est sa première, et cela la contrarie beaucoup."
+        "explanation": "VRAI : Ils ont quitté la Tchétchénie ; Altina dit : « Ça aurait pu être moi »."
       },
       {
         "id": "q10",
-        "section": "Vrai ou Faux",
-        "type": "tf",
-        "text": "Walid réussit à apprendre beaucoup de choses en parlant au nouveau.",
-        "correct": false,
-        "answer": false,
-        "points": 1,
-        "explanation": "FAUX : Le nouveau ne répond que « Bonjour » : il ne parle pas encore bien français."
-      },
-      {
-        "id": "q11",
         "section": "Vrai ou Faux",
         "type": "tf",
         "text": "Les trois amis crient victoire à la fin de l'enquête.",
@@ -11158,14 +11148,24 @@ window.LIVRES = [
         "explanation": "FAUX : C'est la première affaire résolue pour laquelle ils ne crient pas victoire."
       },
       {
-        "id": "q12",
+        "id": "q11",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Les parents d'Altina ont eux aussi fui la guerre.",
+        "text": "Altina n'avait jamais eu d'heure de retenue avant cette enquête.",
         "correct": true,
         "answer": true,
         "points": 1,
-        "explanation": "VRAI : Ils ont quitté la Tchétchénie ; Altina dit : « Ça aurait pu être moi »."
+        "explanation": "VRAI : C'est sa première, et cela la contrarie beaucoup."
+      },
+      {
+        "id": "q12",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Quand Walid lui pose des questions, le nouveau répond seulement « Bonjour ».",
+        "correct": true,
+        "answer": true,
+        "points": 1,
+        "explanation": "VRAI : le nouveau ne parle pas encore bien le français."
       },
       {
         "id": "q13",
@@ -11370,21 +11370,21 @@ window.LIVRES = [
         "id": "q9",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Leyla veut arrêter l'école comme sa sœur Meryem.",
+        "text": "Au début, le papa de Leyla accepte tout de suite d'accueillir Molly.",
         "correct": false,
         "answer": false,
         "points": 1,
-        "explanation": "FAUX : Elle veut être la meilleure de la classe et aller à l'université étudier la psychologie."
+        "explanation": "FAUX : Il refuse d'abord : « Ce chien ne mettra pas les pieds ici. »"
       },
       {
         "id": "q10",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Marcel avait trouvé Molly blessée au bord d'une route.",
-        "correct": true,
-        "answer": true,
+        "text": "Leyla veut arrêter l'école comme sa sœur Meryem.",
+        "correct": false,
+        "answer": false,
         "points": 1,
-        "explanation": "VRAI : Elle était toute maigre, avec une patte cassée."
+        "explanation": "FAUX : Elle veut être la meilleure de la classe et aller à l'université étudier la psychologie."
       },
       {
         "id": "q11",
@@ -11400,11 +11400,11 @@ window.LIVRES = [
         "id": "q12",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Au début, le papa de Leyla accepte tout de suite d'accueillir Molly.",
+        "text": "Marcel avait acheté Molly dans une animalerie.",
         "correct": false,
         "answer": false,
         "points": 1,
-        "explanation": "FAUX : Il refuse d'abord : « Ce chien ne mettra pas les pieds ici. »"
+        "explanation": "FAUX : il l'avait trouvée au bord d'une route déserte, toute maigre, avec une patte cassée."
       },
       {
         "id": "q13",
@@ -11619,6 +11619,16 @@ window.LIVRES = [
         "id": "q10",
         "section": "Vrai ou Faux",
         "type": "tf",
+        "text": "Chez Laurine, la règle est de parler des problèmes en famille.",
+        "correct": true,
+        "answer": true,
+        "points": 1,
+        "explanation": "VRAI : Marco le rappelle au repas : « On ne reste pas tout seul avec »."
+      },
+      {
+        "id": "q11",
+        "section": "Vrai ou Faux",
+        "type": "tf",
         "text": "Paloma garde précieusement sa boîte de secrets à la fin.",
         "correct": false,
         "answer": false,
@@ -11626,7 +11636,7 @@ window.LIVRES = [
         "explanation": "FAUX : Elle jette son contenu à la poubelle : elle se sent coupable."
       },
       {
-        "id": "q11",
+        "id": "q12",
         "section": "Vrai ou Faux",
         "type": "tf",
         "text": "Les deux amies se ressemblent beaucoup, physiquement et de caractère.",
@@ -11634,16 +11644,6 @@ window.LIVRES = [
         "answer": false,
         "points": 1,
         "explanation": "FAUX : Tout les oppose : Laurine est rousse, grande et sûre d'elle ; Paloma est brune, plus ronde et timide."
-      },
-      {
-        "id": "q12",
-        "section": "Vrai ou Faux",
-        "type": "tf",
-        "text": "Chez Laurine, la règle est de parler des problèmes en famille.",
-        "correct": true,
-        "answer": true,
-        "points": 1,
-        "explanation": "VRAI : Marco le rappelle au repas : « On ne reste pas tout seul avec »."
       },
       {
         "id": "q13",
@@ -11848,11 +11848,11 @@ window.LIVRES = [
         "id": "q9",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Au commissariat, les deux policiers écoutent les garçons avec beaucoup d'attention.",
-        "correct": false,
-        "answer": false,
+        "text": "Au commissariat, un policier dit aux garçons que les singes, « c'est que des bestioles ».",
+        "correct": true,
+        "answer": true,
         "points": 1,
-        "explanation": "FAUX : les policiers ont l'air fatigués et disent que « ce ne sont que des bestioles ». Heureusement, le deuxième policier prévient ensuite Isia."
+        "explanation": "VRAI : le plus vieux des deux policiers ne les prend pas au sérieux. Heureusement, l'autre prévient ensuite Isia."
       },
       {
         "id": "q10",
@@ -12087,21 +12087,21 @@ window.LIVRES = [
         "id": "q9",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Louis et son papa arrivent à Kinshasa quelques jours avant la maman et la petite sœur.",
-        "correct": true,
-        "answer": true,
+        "text": "Louis adore le sport et joue au basket tous les jours.",
+        "correct": false,
+        "answer": false,
         "points": 1,
-        "explanation": "VRAI : c'est leur habitude : ils préparent le terrain « entre hommes » avant que les filles les rejoignent."
+        "explanation": "FAUX : Louis déteste le sport, sauf la natation. Il regarde seulement les matchs de Mutombo."
       },
       {
         "id": "q10",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Le papa de Louis travaille dans des projets d'aide, dans différents pays du monde.",
+        "text": "Louis et son papa arrivent à Kinshasa quelques jours avant la maman et la petite sœur.",
         "correct": true,
         "answer": true,
         "points": 1,
-        "explanation": "VRAI : il est coopérant. Il part plusieurs mois dans un pays pour y mener un projet, et sa famille le suit."
+        "explanation": "VRAI : c'est leur habitude : ils préparent le terrain « entre hommes » avant que les filles les rejoignent."
       },
       {
         "id": "q11",
@@ -12117,11 +12117,11 @@ window.LIVRES = [
         "id": "q12",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Louis adore le sport et joue au basket tous les jours.",
+        "text": "Le métier du papa de Louis, c'est photographe.",
         "correct": false,
         "answer": false,
         "points": 1,
-        "explanation": "FAUX : Louis déteste le sport, sauf la natation. Il regarde seulement les matchs de Mutombo."
+        "explanation": "FAUX : il aime prendre des photos, mais ce n'est pas son métier. Il est coopérant : il mène des projets d'aide dans différents pays."
       },
       {
         "id": "q13",
@@ -12326,26 +12326,6 @@ window.LIVRES = [
         "id": "q9",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Le docteur Olive est un vieil homme très calme et toujours souriant.",
-        "correct": false,
-        "answer": false,
-        "points": 1,
-        "explanation": "FAUX : il est très colérique et se dispute avec tout le monde. Pourtant, c'est le pensionnaire que James préfère."
-      },
-      {
-        "id": "q10",
-        "section": "Vrai ou Faux",
-        "type": "tf",
-        "text": "Le mercredi matin, Miss Rose est retrouvée morte dans sa chambre.",
-        "correct": true,
-        "answer": true,
-        "points": 1,
-        "explanation": "VRAI : comme elle ne descend pas à neuf heures, James monte la chercher et la découvre étranglée."
-      },
-      {
-        "id": "q11",
-        "section": "Vrai ou Faux",
-        "type": "tf",
         "text": "Pendant la nuit, James entend quelqu'un marcher du côté du petit salon.",
         "correct": true,
         "answer": true,
@@ -12353,7 +12333,17 @@ window.LIVRES = [
         "explanation": "VRAI : vers trois heures du matin, il entend des pas. C'était l'assassin qui venait prendre le chandelier."
       },
       {
-        "id": "q12",
+        "id": "q10",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Le docteur Olive est un vieil homme très calme et toujours souriant.",
+        "correct": false,
+        "answer": false,
+        "points": 1,
+        "explanation": "FAUX : il est très colérique et se dispute avec tout le monde. Pourtant, c'est le pensionnaire que James préfère."
+      },
+      {
+        "id": "q11",
         "section": "Vrai ou Faux",
         "type": "tf",
         "text": "C'est John Pendwick qui a tué le docteur Black.",
@@ -12361,6 +12351,16 @@ window.LIVRES = [
         "answer": false,
         "points": 1,
         "explanation": "FAUX : c'est Miss Rose, pour une histoire d'argent. John l'a découvert grâce à un cheveu roux trouvé sur le corps."
+      },
+      {
+        "id": "q12",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Le mercredi matin, Miss Rose est retrouvée morte dans sa chambre.",
+        "correct": true,
+        "answer": true,
+        "points": 1,
+        "explanation": "VRAI : comme elle ne descend pas à neuf heures, James monte la chercher et la découvre étranglée."
       },
       {
         "id": "q13",
@@ -12565,21 +12565,21 @@ window.LIVRES = [
         "id": "q9",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Victoria lit son horoscope tous les matins, mais pas le vendredi 13.",
+        "text": "Les enfants se promettent de ne pas parler du lézard aux adultes.",
         "correct": true,
         "answer": true,
         "points": 1,
-        "explanation": "VRAI : ce matin-là, pour la première fois depuis des années, elle n'ose pas le lire, car elle a trop peur."
+        "explanation": "VRAI : ils se mettent d'accord sur une autre version, pour ne pas passer pour des fous."
       },
       {
         "id": "q10",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Les enfants racontent à la police qu'ils ont vu un lézard dans les bois.",
-        "correct": false,
-        "answer": false,
+        "text": "Guillaume a acheté son télescope avec l'argent reçu de son parrain.",
+        "correct": true,
+        "answer": true,
         "points": 1,
-        "explanation": "FAUX : ils se mettent d'accord pour ne pas parler du lézard, pour ne pas passer pour des fous."
+        "explanation": "VRAI : pour son anniversaire, il s'est offert un télescope sur pied avec l'argent de son parrain."
       },
       {
         "id": "q11",
@@ -12595,11 +12595,11 @@ window.LIVRES = [
         "id": "q12",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Guillaume a acheté son télescope avec l'argent reçu de son parrain.",
+        "text": "Victoria lit son horoscope tous les matins, mais pas le vendredi 13.",
         "correct": true,
         "answer": true,
         "points": 1,
-        "explanation": "VRAI : pour son anniversaire, il s'est offert un télescope sur pied avec l'argent de son parrain."
+        "explanation": "VRAI : ce matin-là, pour la première fois depuis des années, elle n'ose pas le lire, car elle a trop peur."
       },
       {
         "id": "q13",
@@ -12804,16 +12804,6 @@ window.LIVRES = [
         "id": "q9",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "J.O.L. a fait mourir beaucoup de personnes entrées dans sa maison.",
-        "correct": false,
-        "answer": false,
-        "points": 1,
-        "explanation": "FAUX : il n'a jamais tué personne. Les épreuves étaient des illusions, et tous les visiteurs sont ressortis en bonne santé."
-      },
-      {
-        "id": "q10",
-        "section": "Vrai ou Faux",
-        "type": "tf",
         "text": "À la fin, Murphy raconte à Romaric tout ce qui s'est passé chez J.O.L.",
         "correct": false,
         "answer": false,
@@ -12821,17 +12811,17 @@ window.LIVRES = [
         "explanation": "FAUX : il a promis à Jack de garder son secret."
       },
       {
-        "id": "q11",
+        "id": "q10",
         "section": "Vrai ou Faux",
         "type": "tf",
-        "text": "Personne n'a jamais vu J.O.L., pas même l'épicière qui lui apporte ses courses.",
-        "correct": true,
-        "answer": true,
+        "text": "J.O.L. a fait mourir beaucoup de personnes entrées dans sa maison.",
+        "correct": false,
+        "answer": false,
         "points": 1,
-        "explanation": "VRAI : l'épicière pose les courses contre la porte et s'en va tout de suite."
+        "explanation": "FAUX : il n'a jamais tué personne. Les épreuves étaient des illusions, et tous les visiteurs sont ressortis en bonne santé."
       },
       {
-        "id": "q12",
+        "id": "q11",
         "section": "Vrai ou Faux",
         "type": "tf",
         "text": "Le soir d'Halloween, la boutique « Chez Morjana » est la seule boutique fermée.",
@@ -12839,6 +12829,16 @@ window.LIVRES = [
         "answer": true,
         "points": 1,
         "explanation": "VRAI : Murphy trouve cela bizarre : une « sorcière » qui prend congé le jour d'Halloween !"
+      },
+      {
+        "id": "q12",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Personne n'a jamais vu J.O.L., pas même l'épicière qui lui apporte ses courses.",
+        "correct": true,
+        "answer": true,
+        "points": 1,
+        "explanation": "VRAI : l'épicière pose les courses contre la porte et s'en va tout de suite."
       },
       {
         "id": "q13",
@@ -13043,6 +13043,26 @@ window.LIVRES = [
         "id": "q9",
         "section": "Vrai ou Faux",
         "type": "tf",
+        "text": "Démouto ne sait pas du tout parler le français.",
+        "correct": false,
+        "answer": false,
+        "points": 1,
+        "explanation": "FAUX : il parle très bien le français. Il était surtout timide et perdu dans ce nouveau pays."
+      },
+      {
+        "id": "q10",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Dès son arrivée, Démouto discute beaucoup avec Jessica et sa maman.",
+        "correct": false,
+        "answer": false,
+        "points": 1,
+        "explanation": "FAUX : il est intimidé et ne parle presque qu'à son papa, en lingala. Jessica se sent mise à l'écart."
+      },
+      {
+        "id": "q11",
+        "section": "Vrai ou Faux",
+        "type": "tf",
         "text": "Au début, Jessica pense dire à ses copines que Démouto est un cousin éloigné.",
         "correct": true,
         "answer": true,
@@ -13050,17 +13070,7 @@ window.LIVRES = [
         "explanation": "VRAI : elle ne veut pas expliquer qu'elle a un demi-frère. Elle pense même dire qu'il est venu se faire opérer du cœur !"
       },
       {
-        "id": "q10",
-        "section": "Vrai ou Faux",
-        "type": "tf",
-        "text": "Quand il arrive, Démouto parle surtout le lingala avec son papa.",
-        "correct": true,
-        "answer": true,
-        "points": 1,
-        "explanation": "VRAI : il est intimidé. Parler sa langue avec son papa le rassure, mais Jessica se sent mise à l'écart."
-      },
-      {
-        "id": "q11",
+        "id": "q12",
         "section": "Vrai ou Faux",
         "type": "tf",
         "text": "Après la dispute en classe, c'est Jessica qui est punie.",
@@ -13068,16 +13078,6 @@ window.LIVRES = [
         "answer": false,
         "points": 1,
         "explanation": "FAUX : c'est Lucas qui est puni : il doit rester en retenue pendant la récréation."
-      },
-      {
-        "id": "q12",
-        "section": "Vrai ou Faux",
-        "type": "tf",
-        "text": "Démouto ne sait pas du tout parler le français.",
-        "correct": false,
-        "answer": false,
-        "points": 1,
-        "explanation": "FAUX : il parle très bien le français. Il était surtout timide et perdu dans ce nouveau pays."
       },
       {
         "id": "q13",
@@ -13282,6 +13282,16 @@ window.LIVRES = [
         "id": "q9",
         "section": "Vrai ou Faux",
         "type": "tf",
+        "text": "Le village de Saint-Léger-sur-Veubray est bien indiqué sur la carte du papa.",
+        "correct": false,
+        "answer": false,
+        "points": 1,
+        "explanation": "FAUX : le village n'apparaît sur aucune carte, ni plus tard sur Internet."
+      },
+      {
+        "id": "q10",
+        "section": "Vrai ou Faux",
+        "type": "tf",
         "text": "L'hôtel trouve la famille de Méline sympathique et voudrait qu'elle reste.",
         "correct": true,
         "answer": true,
@@ -13289,7 +13299,7 @@ window.LIVRES = [
         "explanation": "VRAI : la voix de l'hôtel dit qu'elle aimerait bien que la famille reste quelques jours de plus."
       },
       {
-        "id": "q10",
+        "id": "q11",
         "section": "Vrai ou Faux",
         "type": "tf",
         "text": "Quatre motards arrivent eux aussi à l'hôtel, perdus dans le brouillard.",
@@ -13299,7 +13309,7 @@ window.LIVRES = [
         "explanation": "VRAI : deux garçons et deux filles arrivent trempés. Elsa les fait dormir dans une ancienne lingerie."
       },
       {
-        "id": "q11",
+        "id": "q12",
         "section": "Vrai ou Faux",
         "type": "tf",
         "text": "Un an plus tard, Méline a peur de retourner à l'Hôtel du Bon Vent.",
@@ -13307,16 +13317,6 @@ window.LIVRES = [
         "answer": false,
         "points": 1,
         "explanation": "FAUX : elle n'a pas peur du tout : elle se réjouit de revoir l'hôtel et de tenir sa promesse."
-      },
-      {
-        "id": "q12",
-        "section": "Vrai ou Faux",
-        "type": "tf",
-        "text": "Le village de Saint-Léger-sur-Veubray est bien indiqué sur la carte du papa.",
-        "correct": false,
-        "answer": false,
-        "points": 1,
-        "explanation": "FAUX : le village n'apparaît sur aucune carte, ni plus tard sur Internet."
       },
       {
         "id": "q13",
@@ -13385,4 +13385,4 @@ window.LIVRES = [
   }
 ];
 
-window.LIVRES_VERSION = '20260927d';
+window.LIVRES_VERSION = '20260927e';
