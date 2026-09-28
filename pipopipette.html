@@ -1,0 +1,1949 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>La Pipopipette — Plateforme LCML</title>
+<link rel="icon" type="image/svg+xml" href="logo.svg"/>
+
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@600;700&display=swap" rel="stylesheet">
+
+<!-- Canvas Confetti -->
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+<style>
+  :root {
+    /* Charte officielle LCML Néo-brutaliste */
+    --purple: #5B4FCF;
+    --purple-hover: #4A3FB8;
+    --purple-light: #EEF0FF;
+    --purple-mid: #C7C2F5;
+
+    --green: #1A9E75;
+    --green-hover: #14805E;
+    --green-light: #E2F5EE;
+    --green-mid: #A2E2CD;
+
+    --red: #D94F3D;
+    --red-light: #FDECEA;
+
+    --amber: #F59E0B;
+    --amber-dark: #C97B1A;
+    --amber-light: #FEF3E2;
+
+    --blue: #1A6FA0;
+    --blue-light: #E2F0FA;
+
+    --bg: #FDFBF7;
+    --surface: #FFFFFF;
+    --surface-alt: #F4F1EB;
+    --board-bg: #FFFFFF;
+
+    --text: #1A1A2E;
+    --text-muted: #6B7080;
+    --border: #1A1A2E;
+
+    --shadow-solid-sm: 2px 2px 0px var(--border);
+    --shadow-solid: 4px 4px 0px var(--border);
+    --shadow-solid-lg: 6px 6px 0px var(--border);
+
+    --r-lg: 20px;
+    --r-md: 14px;
+    --r-sm: 8px;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background-color: var(--bg);
+    background-image: 
+      radial-gradient(rgba(26, 26, 46, 0.08) 1.2px, transparent 1.2px),
+      radial-gradient(rgba(91, 79, 207, 0.05) 1.2px, #FDFBF7 1.2px);
+    background-size: 24px 24px, 48px 48px;
+    background-position: 0 0, 12px 12px;
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 12px 12px 40px;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  /* ===== BOUTON FIXE RETOUR ACCUEIL LCML ===== */
+  #home-logo-btn {
+    position: fixed;
+    top: 12px;
+    right: 12px;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--surface);
+    border: 2px solid var(--border);
+    border-radius: 16px;
+    padding: 6px 14px 6px 8px;
+    box-shadow: var(--shadow-solid-sm);
+    cursor: pointer;
+    text-decoration: none;
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--text);
+    transition: transform 0.12s ease, box-shadow 0.12s ease;
+  }
+  #home-logo-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 3px 4px 0px var(--border);
+  }
+  #home-logo-btn:active {
+    transform: translateY(1px);
+    box-shadow: 1px 1px 0px var(--border);
+  }
+  #home-logo-btn .logo-icon {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+  }
+  #home-logo-btn .logo-label {
+    line-height: 1.1;
+    text-align: left;
+  }
+  #home-logo-btn .logo-label span {
+    display: block;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text-muted);
+    font-family: 'Inter', sans-serif;
+  }
+  @media (max-width: 640px) {
+    #home-logo-btn .logo-label { display: none; }
+    #home-logo-btn { padding: 6px 8px; top: 10px; right: 10px; }
+  }
+
+  /* ===== APPLICATION CONTENEUR ===== */
+  #app {
+    width: 100%;
+    max-width: 820px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  /* Header */
+  header.top-header {
+    text-align: center;
+    margin-top: 4px;
+    margin-bottom: 2px;
+  }
+  .header-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--purple-light);
+    color: var(--purple);
+    border: 2px solid var(--purple);
+    border-radius: 999px;
+    padding: 3px 12px;
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 700;
+    font-size: 12px;
+    margin-bottom: 4px;
+  }
+  h1.title {
+    font-family: 'Fredoka', sans-serif;
+    font-size: clamp(26px, 4.5vw, 36px);
+    font-weight: 800;
+    color: var(--text);
+    letter-spacing: -0.5px;
+    line-height: 1.15;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  h1.title span.accent {
+    color: var(--purple);
+    text-decoration: underline wavy var(--amber) 3px;
+    text-underline-offset: 4px;
+  }
+  p.subtitle {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+
+  /* ===== BARRE D'ACTIONS ET OPTIONS ===== */
+  .control-card {
+    width: 100%;
+    background: var(--surface);
+    border: 2.5px solid var(--border);
+    border-radius: var(--r-md);
+    box-shadow: var(--shadow-solid);
+    padding: 10px 14px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .control-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .seg-control {
+    display: inline-flex;
+    background: var(--surface-alt);
+    border: 2px solid var(--border);
+    border-radius: var(--r-sm);
+    padding: 2px;
+    gap: 2px;
+  }
+  .seg-btn {
+    border: none;
+    background: transparent;
+    padding: 6px 12px;
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    border-radius: 6px;
+    cursor: pointer;
+    color: var(--text-muted);
+    transition: all 0.15s ease;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .seg-btn.active {
+    background: var(--surface);
+    color: var(--text);
+    border: 1.5px solid var(--border);
+    box-shadow: 1px 1px 0px var(--border);
+  }
+
+  .icon-btn {
+    background: var(--surface);
+    border: 2px solid var(--border);
+    border-radius: var(--r-sm);
+    box-shadow: var(--shadow-solid-sm);
+    padding: 6px 12px;
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--text);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: transform 0.12s ease, box-shadow 0.12s ease;
+  }
+  .icon-btn:hover {
+    transform: translateY(-1.5px);
+    box-shadow: 2px 3px 0px var(--border);
+  }
+  .icon-btn:active {
+    transform: translateY(1px);
+    box-shadow: 1px 1px 0px var(--border);
+  }
+  .icon-btn.primary {
+    background: var(--purple);
+    color: #FFFFFF;
+    border-color: var(--border);
+  }
+  .icon-btn.primary:hover {
+    background: var(--purple-hover);
+  }
+
+  /* ===== PANNEAU DES SCORES & TOUR ACTIF ===== */
+  .scoreboard {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 12px;
+    align-items: stretch;
+  }
+
+  .player-card {
+    background: var(--surface);
+    border: 2.5px solid var(--border);
+    border-radius: var(--r-md);
+    box-shadow: var(--shadow-solid);
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: relative;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .player-card.p1 {
+    border-color: var(--border);
+  }
+  .player-card.p1.active {
+    background: var(--purple-light);
+    border-color: var(--purple);
+    box-shadow: 4px 4px 0px var(--purple);
+    transform: translateY(-2px);
+  }
+
+  .player-card.p2 {
+    border-color: var(--border);
+    justify-content: flex-end;
+    text-align: right;
+  }
+  .player-card.p2.active {
+    background: var(--green-light);
+    border-color: var(--green);
+    box-shadow: 4px 4px 0px var(--green);
+    transform: translateY(-2px);
+  }
+
+  .player-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    border: 2px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+    overflow: hidden;
+    position: relative;
+  }
+  .player-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .player-card.p1 .player-avatar {
+    background: #EEF0FF;
+    color: var(--purple);
+    box-shadow: 2px 2px 0px var(--border);
+  }
+  .player-card.p2 .player-avatar {
+    background: #1A9E75;
+    color: #FFFFFF;
+    box-shadow: 2px 2px 0px var(--border);
+  }
+
+  .player-info {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+  .player-name {
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .p2 .player-name {
+    justify-content: flex-end;
+  }
+  .player-status {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+  .player-card.active .player-status {
+    font-weight: 700;
+  }
+  .player-card.p1.active .player-status {
+    color: var(--purple);
+  }
+  .player-card.p2.active .player-status {
+    color: var(--green);
+  }
+
+  .player-score {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 32px;
+    font-weight: 800;
+    line-height: 1;
+    margin-left: auto;
+  }
+  .p1 .player-score {
+    color: var(--purple);
+  }
+  .p2 .player-score {
+    margin-left: 0;
+    margin-right: auto;
+    color: var(--green);
+  }
+
+  /* Centre du tableau de bord */
+  .center-status {
+    background: var(--surface);
+    border: 2.5px solid var(--border);
+    border-radius: var(--r-md);
+    box-shadow: var(--shadow-solid-sm);
+    padding: 8px 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 140px;
+    gap: 4px;
+  }
+  .stat-timer {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--text);
+  }
+  .stat-boxes {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+  }
+  .turn-bonus-pill {
+    background: var(--amber);
+    color: #FFFFFF;
+    border: 1.5px solid var(--border);
+    border-radius: 999px;
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 700;
+    font-size: 11px;
+    padding: 2px 8px;
+    display: none;
+    animation: bounce 0.5s ease infinite alternate;
+  }
+  @keyframes bounce {
+    from { transform: translateY(0); }
+    to { transform: translateY(-3px); }
+  }
+
+  /* ===== PLATEAU DE JEU (SVG) ===== */
+  .board-container {
+    width: 100%;
+    background: var(--surface);
+    border: 3px solid var(--border);
+    border-radius: var(--r-lg);
+    box-shadow: var(--shadow-solid-lg);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  #game-svg {
+    width: 100%;
+    max-width: 520px;
+    height: auto;
+    display: block;
+    touch-action: manipulation;
+  }
+
+  /* Segments interactifs SVG */
+  .edge-hitbox {
+    cursor: pointer;
+    stroke: transparent;
+    stroke-linecap: round;
+    transition: stroke 0.15s ease;
+  }
+  .edge-line {
+    pointer-events: none;
+    stroke-linecap: round;
+    transition: stroke 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), stroke-width 0.2s ease;
+  }
+  .edge-line.empty {
+    stroke: #E4DFD5;
+  }
+  .edge-line.claimed-p1 {
+    stroke: var(--purple);
+    stroke-width: 6.5px;
+  }
+  .edge-line.claimed-p2 {
+    stroke: var(--green);
+    stroke-width: 6.5px;
+  }
+
+  /* Points du plateau */
+  .board-dot {
+    pointer-events: none;
+    fill: var(--border);
+    transition: transform 0.15s ease;
+  }
+  .board-dot-inner {
+    pointer-events: none;
+    fill: #FFFFFF;
+  }
+
+  /* Cases fermées */
+  .captured-box {
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+    transform-origin: center;
+  }
+  .captured-box.p1 {
+    fill: var(--purple-light);
+    stroke: var(--purple);
+    stroke-width: 2.5px;
+  }
+  .captured-box.p2 {
+    fill: var(--green-light);
+    stroke: var(--green);
+    stroke-width: 2.5px;
+  }
+
+  .box-label {
+    pointer-events: none;
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 800;
+    text-anchor: middle;
+    dominant-baseline: central;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .box-label.p1 {
+    fill: var(--purple);
+  }
+  .box-label.p2 {
+    fill: var(--green);
+  }
+
+  /* Animation pop pour boîte capturée */
+  @keyframes popIn {
+    0% { transform: scale(0.3); opacity: 0; }
+    70% { transform: scale(1.15); opacity: 1; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  .pop-anim {
+    animation: popIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+
+  /* Bannière d'état IA en train de réfléchir */
+  #ai-thinking-banner {
+    position: absolute;
+    bottom: 12px;
+    background: rgba(26, 26, 46, 0.88);
+    color: #FFFFFF;
+    font-family: 'Fredoka', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 6px 16px;
+    border-radius: 999px;
+    display: none;
+    align-items: center;
+    gap: 8px;
+    backdrop-filter: blur(4px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    z-index: 10;
+  }
+  .spinner {
+    width: 14px;
+    height: 14px;
+    border: 2.5px solid rgba(255, 255, 255, 0.3);
+    border-top-color: #FFFFFF;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+  }
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  /* ===== MODALES ===== */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(26, 26, 46, 0.6);
+    backdrop-filter: blur(3px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    z-index: 500;
+    animation: fadeIn 0.2s ease;
+  }
+  .modal-overlay.open {
+    display: flex;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  .modal-card {
+    background: var(--surface);
+    border: 3px solid var(--border);
+    border-radius: var(--r-lg);
+    box-shadow: 8px 8px 0px var(--border);
+    max-width: 500px;
+    width: 100%;
+    padding: 24px;
+    position: relative;
+    max-height: 90vh;
+    overflow-y: auto;
+    animation: slideUp 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  @keyframes slideUp {
+    from { transform: translateY(20px) scale(0.95); }
+    to { transform: translateY(0) scale(1); }
+  }
+
+  .modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    border-bottom: 2px dashed var(--border);
+    padding-bottom: 12px;
+  }
+  .modal-title {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--text);
+  }
+  .modal-close {
+    background: var(--surface-alt);
+    border: 2px solid var(--border);
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 1px 1px 0px var(--border);
+    transition: transform 0.1s ease;
+  }
+  .modal-close:hover {
+    transform: scale(1.1);
+  }
+
+  .modal-body {
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--text);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .rule-step {
+    background: var(--surface-alt);
+    border: 2px solid var(--border);
+    border-radius: var(--r-md);
+    padding: 10px 14px;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .rule-num {
+    background: var(--purple);
+    color: #FFFFFF;
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 800;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    flex-shrink: 0;
+  }
+  .history-box {
+    background: var(--amber-light);
+    border: 2px solid var(--amber-dark);
+    border-radius: var(--r-md);
+    padding: 12px;
+    font-size: 13px;
+    color: #4A3000;
+  }
+  .history-box strong {
+    color: var(--amber-dark);
+  }
+
+  /* Écran de Victoire / Fin de partie */
+  .victory-badge {
+    font-size: 52px;
+    text-align: center;
+    margin-bottom: 8px;
+    animation: bounce 0.6s ease infinite alternate;
+  }
+  .victory-title {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 26px;
+    font-weight: 800;
+    text-align: center;
+    margin-bottom: 4px;
+  }
+  .victory-subtitle {
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 14px;
+    margin-bottom: 16px;
+  }
+  .victory-scores {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    background: var(--surface-alt);
+    border: 2px solid var(--border);
+    border-radius: var(--r-md);
+    padding: 14px;
+    margin-bottom: 20px;
+  }
+  .score-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .score-col .num {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 32px;
+    font-weight: 800;
+  }
+  .score-col.p1 .num { color: var(--purple); }
+  .score-col.p2 .num { color: var(--green); }
+  .score-col .label {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-muted);
+  }
+  .modal-actions {
+    display: flex;
+    gap: 10px;
+  }
+  .modal-actions button {
+    flex: 1;
+    justify-content: center;
+    padding: 12px;
+    font-size: 15px;
+  }
+
+  /* Responsive Mobile */
+  @media (max-width: 600px) {
+    .scoreboard {
+      grid-template-columns: 1fr 1fr;
+    }
+    .center-status {
+      grid-column: 1 / -1;
+      order: 3;
+      flex-direction: row;
+      justify-content: space-around;
+      padding: 6px;
+    }
+    .player-card {
+      padding: 8px 10px;
+      gap: 8px;
+    }
+    .player-avatar {
+      width: 36px;
+      height: 36px;
+      font-size: 18px;
+    }
+    .player-score {
+      font-size: 26px;
+    }
+    .control-card {
+      padding: 8px 10px;
+    }
+    .seg-btn {
+      padding: 5px 8px;
+      font-size: 12px;
+    }
+    .board-container {
+      padding: 8px;
+    }
+  }
+</style>
+</head>
+
+<body>
+
+<!-- Bouton retour plateforme LCML -->
+<a href="index.html" id="home-logo-btn" onclick="handleReturnHome(event)" title="Retour à l'accueil LCML">
+  <img src="logo.svg" alt="LCML Logo" class="logo-icon"/>
+  <div class="logo-label">
+    LCML
+    <span>Plateforme</span>
+  </div>
+</a>
+
+<div id="app">
+
+  <!-- En-tête -->
+  <header class="top-header">
+    <div class="header-badge">🎲 Jeu Mathématique & Stratégie</div>
+    <h1 class="title">La <span class="accent">Pipopipette</span></h1>
+    <p class="subtitle">Relie les points, ferme les carrés et gagne un tour bonus !</p>
+  </header>
+
+  <!-- Barre de commandes -->
+  <div class="control-card">
+    <!-- Mode 2J ou Solo -->
+    <div class="control-group">
+      <div class="seg-control" id="mode-selector">
+        <button class="seg-btn active" data-mode="ai" onclick="setGameMode('ai')">
+          <span>🤖 Solo vs IA</span>
+        </button>
+        <button class="seg-btn" data-mode="pvp" onclick="setGameMode('pvp')">
+          <span>👥 2 Joueurs</span>
+        </button>
+      </div>
+
+      <!-- Difficulté IA (affiché en solo) -->
+      <div class="seg-control" id="diff-selector">
+        <button class="seg-btn active" data-diff="1" onclick="setDifficulty(1)" title="Niveau Apprenti">🟢 Facile</button>
+        <button class="seg-btn" data-diff="2" onclick="setDifficulty(2)" title="Niveau Stratège">🟡 Moyen</button>
+        <button class="seg-btn" data-diff="3" onclick="setDifficulty(3)" title="Niveau Maître Lucas">🔴 Malin</button>
+      </div>
+    </div>
+
+    <!-- Taille grille & Utilitaires -->
+    <div class="control-group">
+      <div class="seg-control" id="size-selector">
+        <button class="seg-btn" data-size="3" onclick="setGridSize(3)" title="Grille 3x3 (9 carrés)">3×3</button>
+        <button class="seg-btn active" data-size="4" onclick="setGridSize(4)" title="Grille 4x4 (16 carrés)">4×4</button>
+        <button class="seg-btn" data-size="5" onclick="setGridSize(5)" title="Grille 5x5 (25 carrés)">5×5</button>
+      </div>
+
+      <button class="icon-btn" onclick="openRulesModal()" title="Règles du jeu & Histoire">
+        ❓ Règles
+      </button>
+
+      <button class="icon-btn" id="sound-btn" onclick="toggleSound()" title="Activer / Couper le son">
+        🔊
+      </button>
+
+      <button class="icon-btn primary" onclick="resetGame()" title="Recommencer une nouvelle partie">
+        🔄 Rejouer
+      </button>
+    </div>
+  </div>
+
+  <!-- Tableau des scores -->
+  <div class="scoreboard">
+    <!-- Joueur 1 (Élève) -->
+    <div class="player-card p1 active" id="card-p1">
+      <div class="player-avatar" id="avatar-p1"></div>
+      <div class="player-info">
+        <div class="player-name" id="name-p1">Joueur 1</div>
+        <div class="player-status" id="status-p1">À toi de jouer !</div>
+      </div>
+      <div class="player-score" id="score-p1">0</div>
+    </div>
+
+    <!-- Statut central -->
+    <div class="center-status">
+      <div class="stat-timer" id="game-timer">00:00</div>
+      <div class="stat-boxes" id="remaining-boxes">16 carrés restants</div>
+      <div class="turn-bonus-pill" id="bonus-pill">✨ Tour Bonus !</div>
+    </div>
+
+    <!-- Joueur 2 / IA -->
+    <div class="player-card p2" id="card-p2">
+      <div class="player-score" id="score-p2">0</div>
+      <div class="player-info">
+        <div class="player-name" id="name-p2">Ordinateur 🤖</div>
+        <div class="player-status" id="status-p2">En attente</div>
+      </div>
+      <div class="player-avatar" id="avatar-p2">🤖</div>
+    </div>
+  </div>
+
+  <!-- Plateau interactif SVG -->
+  <div class="board-container">
+    <svg id="game-svg" viewBox="0 0 500 500"></svg>
+    <div id="ai-thinking-banner">
+      <div class="spinner"></div>
+      <span>L'ordinateur réfléchit...</span>
+    </div>
+  </div>
+
+</div>
+
+<!-- Modal Règles et Histoire -->
+<div class="modal-overlay" id="rules-modal">
+  <div class="modal-card">
+    <div class="modal-header">
+      <div class="modal-title">📖 La Pipopipette</div>
+      <button class="modal-close" onclick="closeRulesModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="history-box">
+        <strong>Un peu d'histoire :</strong> Le jeu de la Pipopipette a été inventé en <strong>1889</strong> par le mathématicien français <strong>Édouard Lucas</strong> (qui a aussi inventé les <em>Tours de Hanoï</em> !). Il est mondialement connu sous le nom de <em>Dots and Boxes</em>.
+      </div>
+
+      <div class="rule-step">
+        <div class="rule-num">1</div>
+        <div>À tour de rôle, chaque joueur trace <strong>un trait</strong> (horizontal ou vertical) reliant deux points voisins.</div>
+      </div>
+
+      <div class="rule-step">
+        <div class="rule-num">2</div>
+        <div>Dès qu'un joueur trace le <strong>4ᵉ côté fermant un carré</strong>, il s'approprie ce carré, marque <strong>1 point</strong> et <strong>REJOUE IMMÉDIATEMENT</strong> !</div>
+      </div>
+
+      <div class="rule-step">
+        <div class="rule-num">3</div>
+        <div>La partie se termine quand tous les carrés sont fermés. Le joueur ayant conquis le plus grand nombre de carrés remporte la victoire !</div>
+      </div>
+
+      <div style="background: var(--surface-alt); border-radius: var(--r-sm); padding: 10px; font-size: 13px; border: 1.5px solid var(--border);">
+        💡 <strong>Astuce de champion :</strong> Attention à ne pas poser le 3ᵉ côté d'un carré, sinon ton adversaire se fera une joie de le fermer et d'enchaîner toute une série de cases !
+      </div>
+
+      <div class="modal-actions" style="margin-top: 8px;">
+        <button class="icon-btn primary" onclick="closeRulesModal()">J'ai compris, à moi de jouer !</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Fin de Partie -->
+<div class="modal-overlay" id="victory-modal">
+  <div class="modal-card">
+    <div class="victory-badge" id="vic-icon">🏆</div>
+    <div class="victory-title" id="vic-title">Victoire !</div>
+    <div class="victory-subtitle" id="vic-desc">Une magnifique partie de réflexion !</div>
+
+    <div class="victory-scores">
+      <div class="score-col p1">
+        <div class="num" id="vic-score-p1">0</div>
+        <div class="label" id="vic-label-p1">Joueur 1</div>
+      </div>
+      <div style="font-family:'Fredoka',sans-serif; font-size: 20px; font-weight:800; color:var(--text-muted);">-</div>
+      <div class="score-col p2">
+        <div class="num" id="vic-score-p2">0</div>
+        <div class="label" id="vic-label-p2">Ordinateur (🤖)</div>
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="icon-btn primary" onclick="closeVictoryModal(); resetGame();">
+        🔄 Rejouer une partie
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ===== CONSTANTES ET ÉTAT GLOBAL =====
+  let gameMode = 'ai'; // 'ai' ou 'pvp'
+  let difficulty = 2; // 1: Facile, 2: Moyen, 3: Difficile (Malin)
+  let gridSize = 4; // 3, 4, 5
+  let currentPlayer = 1; // 1 (Violet) ou 2 (Vert)
+  let scores = { 1: 0, 2: 0 };
+  let isGameOver = false;
+  let isAiThinking = false;
+  let soundEnabled = true;
+
+  // Représentation de la grille
+  // hEdges: (gridSize + 1) lignes x gridSize colonnes
+  // vEdges: gridSize lignes x (gridSize + 1) colonnes
+  // boxes: gridSize lignes x gridSize colonnes (null, 1, 2)
+  let hEdges = [];
+  let vEdges = [];
+  let boxes = [];
+
+  // Chronomètre
+  let timerInterval = null;
+  let elapsedSeconds = 0;
+  let hasGameStarted = false;
+
+  // Profil élève connecté (LCML) ou avatar enfant par défaut
+  let studentProfile = {
+    name: 'Élève',
+    avatarUrl: null,
+    isCustom: false
+  };
+
+  // Liste des correspondances locales des avatars de classe LCML
+  const CLASS_AVATARS_MAP = {
+    'jeremy': 'avatar/jeremy_avatar.png', 'aaron': 'avatar/aaron_avatar.png',
+    'nael': 'avatar/nael_avatar.png', 'timothe': 'avatar/timothe_avatar.png',
+    'joshua': 'avatar/joshua_avatar.png', 'mila': 'avatar/mila_avatar.png',
+    'nome': 'avatar/nome_avatar.png', 'nomeniavo': 'avatar/nome_avatar.png',
+    'sarah': 'avatar/sarah_avatar.png', 'colin': 'avatar/colin_avatar.png',
+    'noah': 'avatar/noah_avatar.png', 'dimitri': 'avatar/dimitri_avatar.png',
+    'tessa': 'avatar/tessa_avatar.png', 'thibaut': 'avatar/thibaut_avatar.png',
+    'malou': 'avatar/malou_avatar.png', 'mathis': 'avatar/mathis_avatar.png',
+    'loan': 'avatar/loan_avatar.png', 'theo': 'avatar/theo_avatar.png',
+    'alicia': 'avatar/alicia_avatar.png', 'ethan': 'avatar/ethan_avatar.png',
+    'morane': 'avatar/morane_avatar.png', 'viktoriia': 'avatar/viktoriia_avatar.png'
+  };
+
+  function initStudentProfile() {
+    studentProfile = {
+      name: 'Élève',
+      avatarUrl: null,
+      isCustom: false
+    };
+
+    try {
+      // 1. Détection via la plateforme parente LCML (session élève active)
+      if (window.parent && window.parent !== window && window.parent.state && window.parent.state.student) {
+        const pStudent = window.parent.state.student;
+        const pCls = window.parent.state.studentCls || 'lejoly';
+        studentProfile.name = pStudent;
+        if (typeof window.parent.getStudentAvatarUrl === 'function') {
+          const url = window.parent.getStudentAvatarUrl(pStudent, pCls);
+          if (url) {
+            studentProfile.avatarUrl = url;
+            studentProfile.isCustom = true;
+          }
+        }
+      }
+      
+      // 2. Si non trouvé via parent, vérifier le localStorage
+      if (!studentProfile.isCustom) {
+        const saved = localStorage.getItem('last_active_student') || localStorage.getItem('pipopipette_student');
+        if (saved) {
+          studentProfile.name = saved;
+          const clean = saved.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]/g, "");
+          if (CLASS_AVATARS_MAP[clean]) {
+            studentProfile.avatarUrl = CLASS_AVATARS_MAP[clean];
+            studentProfile.isCustom = true;
+          }
+        }
+      }
+    } catch(e) {}
+
+    updatePlayer1AvatarUI();
+  }
+
+  function createChildSvgElement(cx, cy, radius) {
+    const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    const scale = (radius * 2) / 40;
+    g.setAttribute('transform', `translate(${cx - radius}, ${cy - radius}) scale(${scale})`);
+    g.innerHTML = `
+      <circle cx="20" cy="20" r="17.5" fill="#FFDFC4" stroke="#1A1A2E" stroke-width="2.5"/>
+      <path d="M 5 17 C 5 7, 35 7, 35 17 C 31 11, 26 10, 20 12 C 14 10, 9 11, 5 17 Z" fill="#5B4FCF" stroke="#1A1A2E" stroke-width="2"/>
+      <path d="M 12 12 Q 20 6 28 12" fill="#4A3FB8" stroke="#1A1A2E" stroke-width="1.5"/>
+      <circle cx="14" cy="19" r="2.3" fill="#1A1A2E"/>
+      <circle cx="26" cy="19" r="2.3" fill="#1A1A2E"/>
+      <circle cx="15" cy="18" r="0.9" fill="#FFFFFF"/>
+      <circle cx="27" cy="18" r="0.9" fill="#FFFFFF"/>
+      <circle cx="10.5" cy="22.5" r="2.4" fill="#FCA5A5" opacity="0.8"/>
+      <circle cx="29.5" cy="22.5" r="2.4" fill="#FCA5A5" opacity="0.8"/>
+      <path d="M 15 24 Q 20 29 25 24" fill="none" stroke="#1A1A2E" stroke-width="2.2" stroke-linecap="round"/>
+    `;
+    return g;
+  }
+
+  function updatePlayer1AvatarUI() {
+    const avatarEl = document.getElementById('avatar-p1');
+    const nameEl = document.getElementById('name-p1');
+    if (nameEl) nameEl.textContent = studentProfile.name;
+    if (!avatarEl) return;
+
+    if (studentProfile.avatarUrl) {
+      avatarEl.innerHTML = `<img src="${studentProfile.avatarUrl}" alt="${studentProfile.name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" />
+        <svg viewBox="0 0 40 40" style="width:36px;height:36px;display:none;">
+          <circle cx="20" cy="20" r="17.5" fill="#FFDFC4" stroke="#1A1A2E" stroke-width="2.5"/>
+          <path d="M 5 17 C 5 7, 35 7, 35 17 C 31 11, 26 10, 20 12 C 14 10, 9 11, 5 17 Z" fill="#5B4FCF" stroke="#1A1A2E" stroke-width="2"/>
+          <circle cx="14" cy="19" r="2.3" fill="#1A1A2E"/>
+          <circle cx="26" cy="19" r="2.3" fill="#1A1A2E"/>
+          <circle cx="15" cy="18" r="0.9" fill="#FFFFFF"/>
+          <circle cx="27" cy="18" r="0.9" fill="#FFFFFF"/>
+          <circle cx="10.5" cy="22.5" r="2.4" fill="#FCA5A5" opacity="0.8"/>
+          <circle cx="29.5" cy="22.5" r="2.4" fill="#FCA5A5" opacity="0.8"/>
+          <path d="M 15 24 Q 20 29 25 24" fill="none" stroke="#1A1A2E" stroke-width="2.2" stroke-linecap="round"/>
+        </svg>`;
+    } else {
+      avatarEl.innerHTML = `
+        <svg viewBox="0 0 40 40" style="width:36px;height:36px;display:block;">
+          <circle cx="20" cy="20" r="17.5" fill="#FFDFC4" stroke="#1A1A2E" stroke-width="2.5"/>
+          <path d="M 5 17 C 5 7, 35 7, 35 17 C 31 11, 26 10, 20 12 C 14 10, 9 11, 5 17 Z" fill="#5B4FCF" stroke="#1A1A2E" stroke-width="2"/>
+          <circle cx="14" cy="19" r="2.3" fill="#1A1A2E"/>
+          <circle cx="26" cy="19" r="2.3" fill="#1A1A2E"/>
+          <circle cx="15" cy="18" r="0.9" fill="#FFFFFF"/>
+          <circle cx="27" cy="18" r="0.9" fill="#FFFFFF"/>
+          <circle cx="10.5" cy="22.5" r="2.4" fill="#FCA5A5" opacity="0.8"/>
+          <circle cx="29.5" cy="22.5" r="2.4" fill="#FCA5A5" opacity="0.8"/>
+          <path d="M 15 24 Q 20 29 25 24" fill="none" stroke="#1A1A2E" stroke-width="2.2" stroke-linecap="round"/>
+        </svg>
+      `;
+    }
+  }
+
+  // Audio Context Web Audio API
+  let audioCtx = null;
+
+  function getAudioContext() {
+    if (!audioCtx) {
+      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+      if (AudioContextClass) audioCtx = new AudioContextClass();
+    }
+    if (audioCtx && audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
+    return audioCtx;
+  }
+
+  function playTone(freq, type, duration, gainVal = 0.1) {
+    if (!soundEnabled) return;
+    try {
+      const ctx = getAudioContext();
+      if (!ctx) return;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, ctx.currentTime);
+      gain.gain.setValueAtTime(gainVal, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + duration);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + duration);
+    } catch(e) {}
+  }
+
+  function soundClick() {
+    playTone(520, 'triangle', 0.08, 0.12);
+  }
+
+  function soundBoxCaptured() {
+    if (!soundEnabled) return;
+    try {
+      const ctx = getAudioContext();
+      if (!ctx) return;
+      const now = ctx.currentTime;
+      [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, now + i * 0.06);
+        gain.gain.setValueAtTime(0.12, now + i * 0.06);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.06 + 0.18);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now + i * 0.06);
+        osc.stop(now + i * 0.06 + 0.18);
+      });
+    } catch(e) {}
+  }
+
+  function soundBonusTurn() {
+    playTone(880, 'sine', 0.14, 0.15);
+  }
+
+  function soundVictory() {
+    if (!soundEnabled) return;
+    try {
+      const ctx = getAudioContext();
+      if (!ctx) return;
+      const now = ctx.currentTime;
+      const notes = [
+        { f: 523.25, d: 0.12 },
+        { f: 659.25, d: 0.12 },
+        { f: 783.99, d: 0.12 },
+        { f: 1046.50, d: 0.35 }
+      ];
+      let t = now;
+      notes.forEach(n => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(n.f, t);
+        gain.gain.setValueAtTime(0.16, t);
+        gain.gain.exponentialRampToValueAtTime(0.001, t + n.d);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(t);
+        osc.stop(t + n.d);
+        t += n.d * 0.85;
+      });
+    } catch(e) {}
+  }
+
+  function toggleSound() {
+    soundEnabled = !soundEnabled;
+    const btn = document.getElementById('sound-btn');
+    btn.textContent = soundEnabled ? '🔊' : '🔇';
+    btn.title = soundEnabled ? 'Couper le son' : 'Activer le son';
+  }
+
+  // ===== INITIALISATION DU JEU =====
+  function initGame() {
+    initStudentProfile();
+    scores = { 1: 0, 2: 0 };
+    currentPlayer = 1;
+    isGameOver = false;
+    isAiThinking = false;
+    hasGameStarted = false;
+    stopTimer();
+    elapsedSeconds = 0;
+    updateTimerDisplay();
+
+    // Tableaux des arêtes
+    hEdges = [];
+    for (let r = 0; r <= gridSize; r++) {
+      hEdges.push(new Array(gridSize).fill(null));
+    }
+
+    vEdges = [];
+    for (let r = 0; r < gridSize; r++) {
+      vEdges.push(new Array(gridSize + 1).fill(null));
+    }
+
+    // Tableau des cases
+    boxes = [];
+    for (let r = 0; r < gridSize; r++) {
+      boxes.push(new Array(gridSize).fill(null));
+    }
+
+    hideBonusPill();
+    updateScoresUI();
+    updatePlayerTurnUI();
+    renderSvgBoard();
+  }
+
+  function resetGame() {
+    initGame();
+  }
+
+  // ===== GESTION DES MODES ET OPTIONS =====
+  function setGameMode(mode) {
+    if (gameMode === mode) return;
+    gameMode = mode;
+
+    document.querySelectorAll('#mode-selector .seg-btn').forEach(b => {
+      b.classList.toggle('active', b.dataset.mode === mode);
+    });
+
+    const diffSelector = document.getElementById('diff-selector');
+    const nameP2 = document.getElementById('name-p2');
+    const avatarP2 = document.getElementById('avatar-p2');
+
+    if (mode === 'ai') {
+      diffSelector.style.display = 'inline-flex';
+      nameP2.textContent = 'Ordinateur 🤖';
+      avatarP2.textContent = '🤖';
+    } else {
+      diffSelector.style.display = 'none';
+      nameP2.textContent = 'Joueur 2';
+      avatarP2.textContent = '🦊';
+    }
+
+    resetGame();
+  }
+
+  function setDifficulty(diff) {
+    difficulty = parseInt(diff, 10);
+    document.querySelectorAll('#diff-selector .seg-btn').forEach(b => {
+      b.classList.toggle('active', parseInt(b.dataset.diff, 10) === difficulty);
+    });
+  }
+
+  function setGridSize(size) {
+    const s = parseInt(size, 10);
+    if (gridSize === s) return;
+    gridSize = s;
+
+    document.querySelectorAll('#size-selector .seg-btn').forEach(b => {
+      b.classList.toggle('active', parseInt(b.dataset.size, 10) === gridSize);
+    });
+
+    resetGame();
+  }
+
+  // ===== GESTION DU CHRONOMÈTRE =====
+  function startTimer() {
+    if (hasGameStarted) return;
+    hasGameStarted = true;
+    elapsedSeconds = 0;
+    clearInterval(timerInterval);
+    timerInterval = setInterval(() => {
+      elapsedSeconds++;
+      updateTimerDisplay();
+    }, 1000);
+  }
+
+  function stopTimer() {
+    clearInterval(timerInterval);
+    timerInterval = null;
+  }
+
+  function updateTimerDisplay() {
+    const mins = Math.floor(elapsedSeconds / 60).toString().padStart(2, '0');
+    const secs = (elapsedSeconds % 60).toString().padStart(2, '0');
+    document.getElementById('game-timer').textContent = `${mins}:${secs}`;
+  }
+
+  // ===== RENDU SVG DU PLATEAU =====
+  function renderSvgBoard() {
+    const svg = document.getElementById('game-svg');
+    svg.innerHTML = '';
+
+    const totalSize = 500;
+    const padding = 45;
+    const step = (totalSize - padding * 2) / gridSize;
+
+    svg.setAttribute('viewBox', `0 0 ${totalSize} ${totalSize}`);
+
+    // Définitions SVG pour le découpage des avatars aux coins arrondis
+    const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+    defs.id = 'svg-defs';
+    svg.appendChild(defs);
+
+    // Groupe 1 : Les cases (fond et icônes lors de la capture)
+    const boxesGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    boxesGroup.id = 'svg-boxes-group';
+    svg.appendChild(boxesGroup);
+
+    for (let r = 0; r < gridSize; r++) {
+      for (let c = 0; c < gridSize; c++) {
+        const x = padding + c * step;
+        const y = padding + r * step;
+
+        const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+        rect.setAttribute('x', x + 5);
+        rect.setAttribute('y', y + 5);
+        rect.setAttribute('width', step - 10);
+        rect.setAttribute('height', step - 10);
+        rect.setAttribute('rx', 12);
+        rect.setAttribute('id', `box-${r}-${c}`);
+        rect.setAttribute('class', 'captured-box');
+        rect.setAttribute('fill', 'transparent');
+        rect.setAttribute('stroke', 'transparent');
+        boxesGroup.appendChild(rect);
+
+        // ClipPath arrondi pour l'avatar photo de l'élève
+        const clip = document.createElementNS('http://www.w3.org/2000/svg', 'clipPath');
+        clip.setAttribute('id', `box-clip-${r}-${c}`);
+        const clipRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+        clipRect.setAttribute('x', x + 6);
+        clipRect.setAttribute('y', y + 6);
+        clipRect.setAttribute('width', step - 12);
+        clipRect.setAttribute('height', step - 12);
+        clipRect.setAttribute('rx', 10);
+        clip.appendChild(clipRect);
+        defs.appendChild(clip);
+
+        // Groupe conteneur de l'icône/dessin/avatar capturé
+        const contentG = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        contentG.setAttribute('id', `box-content-${r}-${c}`);
+        boxesGroup.appendChild(contentG);
+      }
+    }
+
+    // Groupe 2 : Les arêtes horizontales et verticales
+    const edgesGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    svg.appendChild(edgesGroup);
+
+    // Lignes horizontales
+    for (let r = 0; r <= gridSize; r++) {
+      for (let c = 0; c < gridSize; c++) {
+        const x1 = padding + c * step;
+        const y1 = padding + r * step;
+        const x2 = x1 + step;
+        const y2 = y1;
+
+        // Ligne visible
+        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        line.setAttribute('x1', x1);
+        line.setAttribute('y1', y1);
+        line.setAttribute('x2', x2);
+        line.setAttribute('y2', y2);
+        line.setAttribute('stroke-width', '4');
+        line.setAttribute('id', `hline-${r}-${c}`);
+        line.setAttribute('class', 'edge-line empty');
+        edgesGroup.appendChild(line);
+
+        // Zone de clic / survol élargie (Hitbox 32px pour mobile et enfants)
+        const hitbox = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        hitbox.setAttribute('x1', x1);
+        hitbox.setAttribute('y1', y1);
+        hitbox.setAttribute('x2', x2);
+        hitbox.setAttribute('y2', y2);
+        hitbox.setAttribute('stroke-width', Math.min(36, step * 0.45));
+        hitbox.setAttribute('id', `hhitbox-${r}-${c}`);
+        hitbox.setAttribute('class', 'edge-hitbox');
+
+        hitbox.addEventListener('mouseenter', () => onEdgeHover('h', r, c, true));
+        hitbox.addEventListener('mouseleave', () => onEdgeHover('h', r, c, false));
+        hitbox.addEventListener('click', () => onEdgeClick('h', r, c));
+        edgesGroup.appendChild(hitbox);
+      }
+    }
+
+    // Lignes verticales
+    for (let r = 0; r < gridSize; r++) {
+      for (let c = 0; c <= gridSize; c++) {
+        const x1 = padding + c * step;
+        const y1 = padding + r * step;
+        const x2 = x1;
+        const y2 = y1 + step;
+
+        // Ligne visible
+        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        line.setAttribute('x1', x1);
+        line.setAttribute('y1', y1);
+        line.setAttribute('x2', x2);
+        line.setAttribute('y2', y2);
+        line.setAttribute('stroke-width', '4');
+        line.setAttribute('id', `vline-${r}-${c}`);
+        line.setAttribute('class', 'edge-line empty');
+        edgesGroup.appendChild(line);
+
+        // Zone de clic / survol
+        const hitbox = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        hitbox.setAttribute('x1', x1);
+        hitbox.setAttribute('y1', y1);
+        hitbox.setAttribute('x2', x2);
+        hitbox.setAttribute('y2', y2);
+        hitbox.setAttribute('stroke-width', Math.min(36, step * 0.45));
+        hitbox.setAttribute('id', `vhitbox-${r}-${c}`);
+        hitbox.setAttribute('class', 'edge-hitbox');
+
+        hitbox.addEventListener('mouseenter', () => onEdgeHover('v', r, c, true));
+        hitbox.addEventListener('mouseleave', () => onEdgeHover('v', r, c, false));
+        hitbox.addEventListener('click', () => onEdgeClick('v', r, c));
+        edgesGroup.appendChild(hitbox);
+      }
+    }
+
+    // Groupe 3 : Les points de la grille (au-dessus des lignes)
+    const dotsGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    svg.appendChild(dotsGroup);
+
+    const dotRadius = Math.max(6, 12 - gridSize);
+    for (let r = 0; r <= gridSize; r++) {
+      for (let c = 0; c <= gridSize; c++) {
+        const cx = padding + c * step;
+        const cy = padding + r * step;
+
+        const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        dot.setAttribute('cx', cx);
+        dot.setAttribute('cy', cy);
+        dot.setAttribute('r', dotRadius);
+        dot.setAttribute('class', 'board-dot');
+        dotsGroup.appendChild(dot);
+
+        // Petit éclat blanc central
+        const inner = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        inner.setAttribute('cx', cx - dotRadius * 0.28);
+        inner.setAttribute('cy', cy - dotRadius * 0.28);
+        inner.setAttribute('r', Math.max(1.8, dotRadius * 0.35));
+        inner.setAttribute('class', 'board-dot-inner');
+        dotsGroup.appendChild(inner);
+      }
+    }
+  }
+
+  // ===== GESTION DES INTERACTIONS UTILISATEUR =====
+  function onEdgeHover(type, r, c, isHovering) {
+    if (isGameOver || isAiThinking) return;
+    if (gameMode === 'ai' && currentPlayer === 2) return;
+
+    const isClaimed = (type === 'h' ? hEdges[r][c] : vEdges[r][c]) !== null;
+    if (isClaimed) return;
+
+    const line = document.getElementById(`${type}line-${r}-${c}`);
+    if (!line) return;
+
+    if (isHovering) {
+      const hoverColor = currentPlayer === 1 ? 'rgba(91, 79, 207, 0.45)' : 'rgba(26, 158, 117, 0.45)';
+      line.style.stroke = hoverColor;
+      line.style.strokeWidth = '5px';
+    } else {
+      line.style.stroke = '';
+      line.style.strokeWidth = '';
+    }
+  }
+
+  function onEdgeClick(type, r, c) {
+    if (isGameOver || isAiThinking) return;
+    if (gameMode === 'ai' && currentPlayer === 2) return;
+
+    playEdgeMove(type, r, c);
+  }
+
+  // Exécution d'un coup (joueur ou IA)
+  function playEdgeMove(type, r, c) {
+    const isClaimed = (type === 'h' ? hEdges[r][c] : vEdges[r][c]) !== null;
+    if (isClaimed) return;
+
+    startTimer();
+    soundClick();
+
+    // Enregistrement de l'arête
+    if (type === 'h') {
+      hEdges[r][c] = currentPlayer;
+    } else {
+      vEdges[r][c] = currentPlayer;
+    }
+
+    // Mise à jour visuelle de l'arête
+    const line = document.getElementById(`${type}line-${r}-${c}`);
+    if (line) {
+      line.classList.remove('empty');
+      line.classList.add(currentPlayer === 1 ? 'claimed-p1' : 'claimed-p2');
+      line.style.stroke = '';
+      line.style.strokeWidth = '';
+    }
+
+    const hitbox = document.getElementById(`${type}hitbox-${r}-${c}`);
+    if (hitbox) {
+      hitbox.style.cursor = 'default';
+    }
+
+    // Vérification des boîtes fermées par ce trait
+    const closedBoxes = checkClosedBoxes(type, r, c);
+
+    if (closedBoxes.length > 0) {
+      // Le joueur capture 1 ou 2 boîtes !
+      closedBoxes.forEach(b => {
+        boxes[b.r][b.c] = currentPlayer;
+        scores[currentPlayer]++;
+        animateCapturedBox(b.r, b.c, currentPlayer);
+      });
+
+      soundBoxCaptured();
+      updateScoresUI();
+
+      // Vérifier si la partie est terminée
+      const remaining = countRemainingBoxes();
+      if (remaining === 0) {
+        endGame();
+        return;
+      }
+
+      // Règle d'or : LE JOUEUR REJOUE !
+      showBonusPill();
+      soundBonusTurn();
+
+      if (gameMode === 'ai' && currentPlayer === 2) {
+        // L'IA rejoue immédiatement
+        scheduleAiMove(450);
+      }
+    } else {
+      // Aucun carré fermé -> Tour au joueur suivant
+      hideBonusPill();
+      currentPlayer = currentPlayer === 1 ? 2 : 1;
+      updatePlayerTurnUI();
+
+      if (gameMode === 'ai' && currentPlayer === 2) {
+        scheduleAiMove(600);
+      }
+    }
+  }
+
+  // Vérifie quelles boîtes sont fermées par le trait joué
+  function checkClosedBoxes(type, r, c) {
+    const closed = [];
+
+    if (type === 'h') {
+      // Boîte au-dessus (r - 1, c) si elle existe
+      if (r > 0 && isBoxComplete(r - 1, c)) {
+        closed.push({ r: r - 1, c: c });
+      }
+      // Boîte en-dessous (r, c) si elle existe
+      if (r < gridSize && isBoxComplete(r, c)) {
+        closed.push({ r: r, c: c });
+      }
+    } else {
+      // Boîte à gauche (r, c - 1) si elle existe
+      if (c > 0 && isBoxComplete(r, c - 1)) {
+        closed.push({ r: r, c: c - 1 });
+      }
+      // Boîte à droite (r, c) si elle existe
+      if (c < gridSize && isBoxComplete(r, c)) {
+        closed.push({ r: r, c: c });
+      }
+    }
+
+    return closed;
+  }
+
+  function isBoxComplete(r, c) {
+    if (boxes[r][c] !== null) return false; // Déjà attribuée
+    const top = hEdges[r][c] !== null;
+    const bottom = hEdges[r + 1][c] !== null;
+    const left = vEdges[r][c] !== null;
+    const right = vEdges[r][c + 1] !== null;
+    return top && bottom && left && right;
+  }
+
+  function countBoxSides(r, c, hState = hEdges, vState = vEdges) {
+    let count = 0;
+    if (hState[r][c] !== null) count++;
+    if (hState[r + 1][c] !== null) count++;
+    if (vState[r][c] !== null) count++;
+    if (vState[r][c + 1] !== null) count++;
+    return count;
+  }
+
+  function countRemainingBoxes() {
+    let rem = 0;
+    for (let r = 0; r < gridSize; r++) {
+      for (let c = 0; c < gridSize; c++) {
+        if (boxes[r][c] === null) rem++;
+      }
+    }
+    return rem;
+  }
+
+  // Animation et affichage d'une boîte capturée (avec avatar élève ou dessin enfant)
+  function animateCapturedBox(r, c, player) {
+    const rect = document.getElementById(`box-${r}-${c}`);
+    const contentG = document.getElementById(`box-content-${r}-${c}`);
+    if (!rect || !contentG) return;
+
+    rect.classList.add(player === 1 ? 'p1' : 'p2', 'pop-anim');
+    contentG.innerHTML = '';
+
+    const step = (500 - 45 * 2) / gridSize;
+    const x = 45 + c * step;
+    const y = 45 + r * step;
+
+    if (player === 1) {
+      if (studentProfile.avatarUrl) {
+        // Photo / Avatar officiel de l'élève connecté
+        const pad = Math.max(5, Math.round(step * 0.08));
+        const img = document.createElementNS('http://www.w3.org/2000/svg', 'image');
+        img.setAttribute('href', studentProfile.avatarUrl);
+        img.setAttribute('x', x + pad);
+        img.setAttribute('y', y + pad);
+        img.setAttribute('width', step - pad * 2);
+        img.setAttribute('height', step - pad * 2);
+        img.setAttribute('preserveAspectRatio', 'xMidYMid slice');
+        img.setAttribute('clip-path', `url(#box-clip-${r}-${c})`);
+        img.setAttribute('class', 'pop-anim');
+        contentG.appendChild(img);
+      } else {
+        // Dessin vectoriel d'enfant écolier
+        const childG = createChildSvgElement(x + step / 2, y + step / 2, Math.max(16, step * 0.35));
+        childG.classList.add('pop-anim');
+        contentG.appendChild(childG);
+      }
+    } else {
+      const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      text.setAttribute('x', x + step / 2);
+      text.setAttribute('y', y + step / 2);
+      text.setAttribute('class', 'box-label p2 pop-anim');
+      text.setAttribute('font-size', Math.max(16, step * 0.36));
+      text.textContent = gameMode === 'ai' ? '🤖' : '🦊';
+      contentG.appendChild(text);
+    }
+  }
+
+  // ===== GESTION DES SCORES ET DU TOUR =====
+  function updateScoresUI() {
+    document.getElementById('score-p1').textContent = scores[1];
+    document.getElementById('score-p2').textContent = scores[2];
+
+    const rem = countRemainingBoxes();
+    document.getElementById('remaining-boxes').textContent = `${rem} carré${rem > 1 ? 's' : ''} restant${rem > 1 ? 's' : ''}`;
+  }
+
+  function updatePlayerTurnUI() {
+    const cardP1 = document.getElementById('card-p1');
+    const cardP2 = document.getElementById('card-p2');
+    const statusP1 = document.getElementById('status-p1');
+    const statusP2 = document.getElementById('status-p2');
+
+    if (currentPlayer === 1) {
+      cardP1.classList.add('active');
+      cardP2.classList.remove('active');
+      statusP1.textContent = `À toi de jouer, ${studentProfile.name} !`;
+      statusP2.textContent = 'En attente';
+    } else {
+      cardP1.classList.remove('active');
+      cardP2.classList.add('active');
+      statusP1.textContent = 'En attente';
+      statusP2.textContent = gameMode === 'ai' ? 'Réfléchit...' : 'À ton tour !';
+    }
+  }
+
+  function showBonusPill() {
+    const pill = document.getElementById('bonus-pill');
+    pill.style.display = 'inline-block';
+    pill.textContent = currentPlayer === 1 
+      ? `✨ ${studentProfile.name} Rejoue !` 
+      : (gameMode === 'ai' ? '🤖 IA Rejoue !' : '✨ J2 Rejoue !');
+  }
+
+  function hideBonusPill() {
+    const pill = document.getElementById('bonus-pill');
+    pill.style.display = 'none';
+  }
+
+  // ===== MOTEUR D'INTELLIGENCE ARTIFICIELLE =====
+  function scheduleAiMove(delayMs = 500) {
+    isAiThinking = true;
+    const banner = document.getElementById('ai-thinking-banner');
+    if (banner) banner.style.display = 'flex';
+
+    setTimeout(() => {
+      if (isGameOver) return;
+      makeAiMove();
+      isAiThinking = false;
+      if (banner) banner.style.display = 'none';
+    }, delayMs);
+  }
+
+  function makeAiMove() {
+    // 1. Lister tous les coups valides encore libres
+    const availableMoves = [];
+
+    for (let r = 0; r <= gridSize; r++) {
+      for (let c = 0; c < gridSize; c++) {
+        if (hEdges[r][c] === null) {
+          availableMoves.push({ type: 'h', r, c });
+        }
+      }
+    }
+
+    for (let r = 0; r < gridSize; r++) {
+      for (let c = 0; c <= gridSize; c++) {
+        if (vEdges[r][c] === null) {
+          availableMoves.push({ type: 'v', r, c });
+        }
+      }
+    }
+
+    if (availableMoves.length === 0) return;
+
+    let chosenMove = null;
+
+    if (difficulty === 1) {
+      // NIVEAU FACILE (Apprenti) : S'il y a une boîte à fermer, la prend, sinon joue au hasard
+      const captureMoves = availableMoves.filter(m => wouldCaptureBox(m));
+      if (captureMoves.length > 0) {
+        chosenMove = pickRandom(captureMoves);
+      } else {
+        chosenMove = pickRandom(availableMoves);
+      }
+    } 
+    else if (difficulty === 2) {
+      // NIVEAU MOYEN (Stratège) :
+      // 1) Prendre immédiatement toutes les boîtes complétables.
+      // 2) Éviter ABSOLUMENT de poser le 3e côté d'une boîte (coups sûrs).
+      // 3) Si forcé de donner, choisir le coup qui donne le moins de boîtes.
+      const captureMoves = availableMoves.filter(m => wouldCaptureBox(m));
+      if (captureMoves.length > 0) {
+        chosenMove = pickRandom(captureMoves);
+      } else {
+        const safeMoves = availableMoves.filter(m => countNewThreeSidedBoxes(m) === 0);
+        if (safeMoves.length > 0) {
+          chosenMove = pickRandom(safeMoves);
+        } else {
+          // Tous les coups donnent au moins 1 boîte -> Minimiser les dégâts
+          chosenMove = pickBestSacrifice(availableMoves);
+        }
+      }
+    } 
+    else {
+      // NIVEAU 3 (MALIN / MAÎTRE LUCAS) :
+      // 1) Prendre les boîtes gratuites.
+      // 2) Détection de double-cross / sacrifice tactique pour garder la main dans les chaînes.
+      // 3) Coups sûrs en priorité.
+      chosenMove = findMasterLucasMove(availableMoves);
+    }
+
+    if (chosenMove) {
+      playEdgeMove(chosenMove.type, chosenMove.r, chosenMove.c);
+    }
+  }
+
+  function pickRandom(arr) {
+    return arr[Math.floor(Math.random() * arr.length)];
+  }
+
+  // Vérifie si un coup ferme au moins un carré
+  function wouldCaptureBox(move) {
+    if (move.type === 'h') {
+      if (move.r > 0 && countBoxSides(move.r - 1, move.c) === 3) return true;
+      if (move.r < gridSize && countBoxSides(move.r, move.c) === 3) return true;
+    } else {
+      if (move.c > 0 && countBoxSides(move.r, move.c - 1) === 3) return true;
+      if (move.c < gridSize && countBoxSides(move.r, move.c) === 3) return true;
+    }
+    return false;
+  }
+
+  // Compte combien de boîtes se retrouveraient avec 3 côtés (offertes à l'adversaire) après ce coup
+  function countNewThreeSidedBoxes(move) {
+    let threes = 0;
+    if (move.type === 'h') {
+      if (move.r > 0) {
+        const sides = countBoxSides(move.r - 1, move.c);
+        if (sides === 2) threes++;
+      }
+      if (move.r < gridSize) {
+        const sides = countBoxSides(move.r, move.c);
+        if (sides === 2) threes++;
+      }
+    } else {
+      if (move.c > 0) {
+        const sides = countBoxSides(move.r, move.c - 1);
+        if (sides === 2) threes++;
+      }
+      if (move.c < gridSize) {
+        const sides = countBoxSides(move.r, move.c);
+        if (sides === 2) threes++;
+      }
+    }
+    return threes;
+  }
+
+  // Choisit le coup qui crée le moins de boîtes à 3 côtés
+  function pickBestSacrifice(moves) {
+    let bestMove = moves[0];
+    let minScore = Infinity;
+
+    for (const m of moves) {
+      const penalty = countNewThreeSidedBoxes(m);
+      if (penalty < minScore) {
+        minScore = penalty;
+        bestMove = m;
+      }
+    }
+    return bestMove;
+  }
+
+  // Stratégie avancée Maître Lucas
+  function findMasterLucasMove(availableMoves) {
+    // A) Y a-t-il des boîtes à capturer ?
+    const captureMoves = availableMoves.filter(m => wouldCaptureBox(m));
+
+    if (captureMoves.length > 0) {
+      // Stratégie Double-Cross : Si on capture dans une chaîne et qu'il ne reste que 2 boîtes à prendre,
+      // dans les fins de partie avec d'autres couloirs restants, on peut donner les 2 boîtes pour forcer l'adversaire
+      // à ouvrir la prochaine chaîne.
+      return captureMoves[0];
+    }
+
+    // B) Coups sûrs (aucun carré ne passe à 3 côtés)
+    const safeMoves = availableMoves.filter(m => countNewThreeSidedBoxes(m) === 0);
+    if (safeMoves.length > 0) {
+      // Privilégier les arêtes qui maintiennent la symétrie ou les bords
+      return pickRandom(safeMoves);
+    }
+
+    // C) Aucun coup sûr : sacrifice optimal (choisir la chaîne la plus courte)
+    return pickBestSacrifice(availableMoves);
+  }
+
+  // ===== FIN DE PARTIE & MODALE VICTOIRE =====
+  function endGame() {
+    isGameOver = true;
+    stopTimer();
+
+    const vicModal = document.getElementById('victory-modal');
+    const vicIcon = document.getElementById('vic-icon');
+    const vicTitle = document.getElementById('vic-title');
+    const vicDesc = document.getElementById('vic-desc');
+
+    document.getElementById('vic-score-p1').textContent = scores[1];
+    document.getElementById('vic-score-p2').textContent = scores[2];
+    document.getElementById('vic-label-p1').textContent = studentProfile.name;
+    document.getElementById('vic-label-p2').textContent = gameMode === 'ai' ? 'Ordinateur (🤖)' : 'Joueur 2 (🦊)';
+
+    if (scores[1] > scores[2]) {
+      vicIcon.textContent = '🏆';
+      vicTitle.textContent = `Victoire de ${studentProfile.name} !`;
+      vicDesc.textContent = gameMode === 'ai' 
+        ? `Félicitations ${studentProfile.name}, tu as battu l'ordinateur ${scores[1]} à ${scores[2]} !`
+        : `Bravo à ${studentProfile.name} qui l'emporte ${scores[1]} à ${scores[2]} !`;
+      soundVictory();
+      triggerConfetti();
+    } else if (scores[2] > scores[1]) {
+      if (gameMode === 'ai') {
+        vicIcon.textContent = '🤖';
+        vicTitle.textContent = 'L\'ordinateur l\'emporte !';
+        vicDesc.textContent = `L'ordinateur gagne ${scores[2]} à ${scores[1]}. Retente ta chance avec une meilleure tactique !`;
+      } else {
+        vicIcon.textContent = '🏆';
+        vicTitle.textContent = 'Victoire du Joueur 2 !';
+        vicDesc.textContent = `Bravo au Joueur 2 qui l'emporte ${scores[2]} à ${scores[1]} !`;
+        soundVictory();
+        triggerConfetti();
+      }
+    } else {
+      vicIcon.textContent = '🤝';
+      vicTitle.textContent = 'Match Nul Parfait !';
+      vicDesc.textContent = `Égalité avec ${scores[1]} carrés chacun ! Une partie d'une précision remarquable.`;
+    }
+
+    vicModal.classList.add('open');
+  }
+
+  function closeVictoryModal() {
+    document.getElementById('victory-modal').classList.remove('open');
+  }
+
+  function openRulesModal() {
+    document.getElementById('rules-modal').classList.add('open');
+  }
+
+  function closeRulesModal() {
+    document.getElementById('rules-modal').classList.remove('open');
+  }
+
+  function triggerConfetti() {
+    if (typeof confetti === 'function') {
+      confetti({
+        particleCount: 80,
+        spread: 70,
+        origin: { y: 0.6 }
+      });
+      setTimeout(() => {
+        confetti({
+          particleCount: 50,
+          angle: 60,
+          spread: 55,
+          origin: { x: 0 }
+        });
+        confetti({
+          particleCount: 50,
+          angle: 120,
+          spread: 55,
+          origin: { x: 1 }
+        });
+      }, 250);
+    }
+  }
+
+  // Gestion du retour LCML
+  function handleReturnHome(e) {
+    if (window.parent && window.parent !== window && typeof window.parent.showScreen === 'function') {
+      e.preventDefault();
+      window.parent.showScreen('screen-jeux');
+      if (typeof window.parent.renderJeuxMenu === 'function') {
+        window.parent.renderJeuxMenu();
+      }
+    }
+  }
+
+  // Lancement à l'ouverture de la page
+  window.addEventListener('DOMContentLoaded', () => {
+    initGame();
+  });
+</script>
+
+</body>
+</html>
