@@ -9785,7 +9785,35 @@ function renderStudentDetail(studentName){
   }
 }
 
-function doRenderStudentDetail(studentName){
+// Autoriser un élève à refaire un questionnaire Récits express (l'ancien résultat reste visible)
+async function allowBookRetake(studentName, bookId, silent){
+  const book = loadBooks().find(b => b.id === bookId);
+  const title = book ? book.title : bookId;
+  if (!silent && !confirm('Autoriser ' + studentName + ' à refaire « ' + title + ' » ?\n\nSon ancien résultat reste visible ici, marqué « annulée ».')) return false;
+  const cls = teacherCls || 'lejoly';
+  try {
+    await window.FB_setRetake(cls, studentName, bookId, Date.now());
+    _teacherRetakes[studentName] = Object.assign({}, _teacherRetakes[studentName] || {}, { [bookId]: Date.now() });
+    if (!silent) alert('✅ ' + studentName + ' peut refaire « ' + title + ' » (une fois).');
+    return true;
+  } catch(e) {
+    if (!silent) alert('❌ Impossible d\'enregistrer l\'autorisation (connexion ?). Réessaie dans un instant.');
+    return false;
+  }
+}
+function allowBookRetakeFromSelect(studentName){
+  const sel = document.getElementById('retake-book-select');
+  if (!sel || !sel.value) { alert('Choisis d\'abord un livre.'); return; }
+  allowBookRetake(studentName, sel.value).then(ok => { if (ok) doRenderStudentDetail(studentName); });
+}
+function doRenderStudentDetail(studentName, _retakesLoaded){
+  if (!_retakesLoaded && window.FB_loadRetakes) {
+    window.FB_loadRetakes(teacherCls || 'lejoly', studentName)
+      .then(rt => { _teacherRetakes[studentName] = rt || {}; doRenderStudentDetail(studentName, true); })
+      .catch(() => {});
+  }
+  const _retakes = _teacherRetakes[studentName] || {};
+  const _bookIds = new Set(loadBooks().map(b => b.id));
   const results=loadResults(teacherCls).filter(r=>r.student===studentName);
   const avg=results.length?Math.round(results.reduce((s,r)=>s+r.pct,0)/results.length):0;
   const color=avg>=70?'var(--green)':avg>=50?'var(--amber)':'var(--red)';
@@ -9794,6 +9822,16 @@ function doRenderStudentDetail(studentName){
   <button onclick="deleteStudentResults('${studentName}')" style="float:right;background:#fee2e2;color:#e74c3c;border:1px solid #e74c3c;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;margin-bottom:0.5rem;">🗑 Effacer tous les résultats</button>`;
   html+=`<div style="font-family:'Nunito',sans-serif;font-weight:800;font-size:20px;margin-bottom:0.3rem">${studentName}</div>`;
   html+=`<div style="font-size:13px;color:var(--muted);margin-bottom:1.2rem">${results.length} activité${results.length>1?'s':''} · Moyenne : <span style="color:${color};font-weight:700">${avg}%</span></div>`;
+  html+=`<div style="background:var(--purple-light);border-radius:10px;padding:10px 12px;margin-bottom:1.2rem;font-size:13px;">
+    <div style="font-weight:800;margin-bottom:6px">📚 Récits express : autoriser à refaire un questionnaire</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+      <select id="retake-book-select" style="flex:1;min-width:200px;padding:6px 8px;border-radius:8px;border:1px solid var(--border);font-size:13px">
+        <option value="">— Choisir le livre —</option>
+        ${loadBooks().slice().sort((a,b)=>a.title.localeCompare(b.title,'fr')).map(b=>`<option value="${b.id}">${b.title}${_retakes[b.id] ? ' (déjà autorisé)' : ''}</option>`).join('')}
+      </select>
+      <button class="btn btn-sm" onclick="allowBookRetakeFromSelect(${JSON.stringify(studentName).replace(/"/g,'&quot;')})">↺ Autoriser à refaire</button>
+    </div>
+  </div>`;
 
   if(results.length===0){
     html+='<div class="alert alert-info">Aucune activité réalisée.</div>';
@@ -9807,6 +9845,11 @@ function doRenderStudentDetail(studentName){
       const actKey = r.activity || r.book || '';
       const rDate = r.date || '';
       const rTime = r.time || '';
+      const _isRecit = r.book && _bookIds.has(r.book);
+      const _annulee = _isRecit && resultTimestamp(r) <= (Number(_retakes[r.book]) || 0);
+      const retakeBtn = !_isRecit ? '' : (_annulee
+        ? `<span style="font-size:11px;color:var(--green);font-weight:700;margin-left:6px;">↺ annulée — peut refaire</span>`
+        : `<button onclick="event.stopPropagation(); allowBookRetake(${JSON.stringify(studentName).replace(/"/g,'&quot;')}, '${r.book}').then(ok => { if (ok) doRenderStudentDetail(${JSON.stringify(studentName).replace(/"/g,'&quot;')}); })" title="L'élève pourra refaire ce questionnaire ; ce résultat reste visible" style="background:var(--purple-light);border:1px solid var(--purple);color:var(--purple);font-size:12px;font-weight:700;cursor:pointer;padding:4px 8px;border-radius:8px;margin-left:8px;">↺ Autoriser à refaire</button>`);
       const deleteSingleBtn = `<button onclick="event.stopPropagation(); deleteSingleResult('${studentName}', '${encodeURIComponent(actKey)}', '${encodeURIComponent(rDate)}', '${encodeURIComponent(rTime)}')" title="Supprimer uniquement ce résultat" style="background:transparent;border:none;color:#ef4444;font-size:14px;cursor:pointer;padding:4px 6px;border-radius:6px;margin-left:8px;" onmouseover="this.style.background='#fee2e2'" onmouseout="this.style.background='transparent'">🗑️</button>`;
 
       html+=`<div class="student-detail-row" style="align-items:center;">
@@ -9821,8 +9864,8 @@ function doRenderStudentDetail(studentName){
         <div style="width:60px;flex-shrink:0">
           <div class="bar-wrap"><div class="bar-fill" style="width:${r.pct}%;background:${c}"></div></div>
         </div>
-        <div style="flex-shrink:0;">
-          ${deleteSingleBtn}
+        <div style="flex-shrink:0;display:flex;align-items:center;">
+          ${retakeBtn}${deleteSingleBtn}
         </div>
       </div>`;
     });
@@ -9856,6 +9899,12 @@ function deleteSingleResult(studentName, encActivity, encDate, encTime){
     (r.time === time || !time)
   ));
   localStorage.setItem('lq_results', JSON.stringify(filtered));
+
+  // 1 bis. Récit express supprimé : l'élève doit pouvoir le refaire, même si une copie
+  //        du résultat reste dans la mémoire de sa tablette
+  if (loadBooks().some(b => b.id === activity) && window.FB_setRetake) {
+    allowBookRetake(studentName, activity, true);
+  }
 
   // 2. Supprimer dans Firebase
   if(window.FB_ready && window.FB_DB){
