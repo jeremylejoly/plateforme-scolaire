@@ -364,8 +364,15 @@
       <div class="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center border-2 border-neutral-900 shadow-neo-sm">
         <i data-lucide="book-open-check" class="w-6 h-6"></i>
       </div>
-      <div>
+      <div class="flex items-center gap-3">
         <h1 class="font-display font-black text-lg md:text-xl text-neutral-900 tracking-tight leading-none">Récits express</h1>
+        <div class="flex items-center gap-1.5 bg-neutral-100 px-2.5 py-1 rounded-xl border-2 border-neutral-900 shadow-neo-sm">
+          <label for="select-class-switcher" class="text-[11px] font-bold text-neutral-700 uppercase tracking-wide">Classe :</label>
+          <select id="select-class-switcher" onchange="switchClass(this.value)" class="text-xs font-bold bg-white text-neutral-900 rounded-lg px-2 py-0.5 border border-neutral-300 shadow-xs cursor-pointer focus:outline-none focus:ring-1 focus:ring-indigo-500">
+            <option value="lejoly">Mr Lejoly</option>
+            <option value="verryken">Mr Verryken</option>
+          </select>
+        </div>
       </div>
     </div>
 
@@ -938,10 +945,10 @@
       <div class="flex flex-col gap-2">
         <div class="flex items-center justify-between p-2.5 rounded-xl bg-indigo-50/70 border border-indigo-200">
           <div>
-            <h4 class="text-xs font-bold text-indigo-900">Synchroniser avec le TBI / Cahier de cotes</h4>
-            <p class="text-[11px] text-indigo-700">Recharger la mémoire locale (Roue & Cahier de cotes)</p>
+            <h4 class="text-xs font-bold text-indigo-900" id="modal-sync-lcml-title">Synchroniser avec la classe LCML</h4>
+            <p class="text-[11px] text-indigo-700" id="modal-sync-lcml-desc">Recharger automatiquement les élèves de cette classe depuis LCML</p>
           </div>
-          <button onclick="importStudentsFromTBI()" class="neo-btn px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white text-xs flex items-center gap-1">
+          <button onclick="importStudentsFromTBI()" class="neo-btn px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white text-xs flex items-center gap-1 font-bold">
             <i data-lucide="refresh-cw" class="w-3 h-3"></i>
             <span>Synchroniser</span>
           </button>
@@ -1072,7 +1079,7 @@
   <div id="print-area-grid" class="print-only print-grid-container">
     <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1.5px solid #000; padding-bottom:2px; margin-bottom:3px;">
       <h1 style="font-size:11pt; font-weight:900; margin:0; text-transform:uppercase; letter-spacing:0.5px;">
-        Suivi de lecture — Récits express
+        Suivi de lecture — Récits express <span id="print-class-title" style="color:#2563eb; text-transform:none;"></span>
       </h1>
       <div style="text-align:right; font-size:7pt; color:#444;">
         <span>Édité le : <strong id="print-date-today">--/--/----</strong></span>
@@ -1545,6 +1552,38 @@
     "questions": 16,
     "filename": "56_L_hotel_du_bon_vent.html",
     "path": "../LCML/Questionnaire récits express/56_L_hotel_du_bon_vent.html"
+  },
+  {
+    "id": 57,
+    "num": "57",
+    "title": "Le grand blanc",
+    "questions": 16,
+    "filename": "57_Le_grand_blanc.html",
+    "path": "../LCML/Questionnaire récits express/57_Le_grand_blanc.html"
+  },
+  {
+    "id": 58,
+    "num": "58",
+    "title": "Pardon, Simon !",
+    "questions": 16,
+    "filename": "58_Pardon_Simon.html",
+    "path": "../LCML/Questionnaire récits express/58_Pardon_Simon.html"
+  },
+  {
+    "id": 59,
+    "num": "59",
+    "title": "Le mystère des abricots",
+    "questions": 16,
+    "filename": "59_Le_mystere_des_abricots.html",
+    "path": "../LCML/Questionnaire récits express/59_Le_mystere_des_abricots.html"
+  },
+  {
+    "id": 60,
+    "num": "60",
+    "title": "L'oasis des fous",
+    "questions": 16,
+    "filename": "60_L_oasis_des_fous.html",
+    "path": "../LCML/Questionnaire récits express/60_L_oasis_des_fous.html"
   }
 ];
 
@@ -1595,10 +1634,62 @@
     let isColoringModeActive = false;
     let activeColoringTool = 'green';
 
-    // CLÉS LOCALSTORAGE
-    const STORAGE_KEY_DATA = 'tbi_recits_express_data';
+    // CLÉS LOCALSTORAGE ET GESTION MULTI-CLASSES
+    const CLASS_LABELS = {
+      lejoly: 'Mr Lejoly',
+      verryken: 'Mr Verryken'
+    };
+    let currentClass = 'lejoly';
+
     const STORAGE_KEY_BOOKS = 'tbi_recits_express_books';
-    const STORAGE_KEY_STUDENTS = 'tbi_roue_students';
+    const STORAGE_KEY_DATA_PREFIX = 'tbi_recits_express_data_';
+    const STORAGE_KEY_STUDENTS_PREFIX = 'tbi_recits_students_';
+
+    function getCurrentClass() {
+      // 1. Paramètre URL (?cls=lejoly ou ?cls=verryken)
+      try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const qCls = urlParams.get('cls');
+        if (qCls && (qCls === 'lejoly' || qCls === 'verryken')) return qCls;
+      } catch(e) {}
+      // 2. Fenêtre parente (LCML teacherCls)
+      try {
+        if (window.parent && window.parent !== window && window.parent.teacherCls) {
+          const pCls = window.parent.teacherCls;
+          if (pCls === 'lejoly' || pCls === 'verryken') return pCls;
+        }
+      } catch(e) {}
+      // 3. LocalStorage LCML
+      try {
+        const savedCls = localStorage.getItem('lq_teacher_cls');
+        if (savedCls === 'lejoly' || savedCls === 'verryken') return savedCls;
+      } catch(e) {}
+      return 'lejoly';
+    }
+
+    function getDataKey() {
+      return STORAGE_KEY_DATA_PREFIX + currentClass;
+    }
+
+    function getStudentsKey() {
+      return STORAGE_KEY_STUDENTS_PREFIX + currentClass;
+    }
+
+    // Migration transparente des anciennes données globales vers Mr Lejoly
+    function migrateLegacyDataIfNeeded() {
+      if (currentClass === 'lejoly') {
+        const specificData = localStorage.getItem(getDataKey());
+        const legacyData = localStorage.getItem('tbi_recits_express_data');
+        if (!specificData && legacyData) {
+          localStorage.setItem(getDataKey(), legacyData);
+        }
+        const specificStudents = localStorage.getItem(getStudentsKey());
+        const legacyStudents = localStorage.getItem('tbi_roue_students');
+        if (!specificStudents && legacyStudents) {
+          localStorage.setItem(getStudentsKey(), legacyStudents);
+        }
+      }
+    }
 
     // VARIABLE ACTIVE DES LIVRES
     let BOOKS = [];
@@ -1622,7 +1713,88 @@
       renderAll();
     });
 
+    function getLCMLStudentsForClass(cls) {
+      if (window.parent && window.parent !== window && typeof window.parent.getClassStudents === 'function') {
+        try {
+          const list = window.parent.getClassStudents(cls);
+          if (Array.isArray(list) && list.length > 0) return list;
+        } catch(e) {}
+      }
+      try {
+        const raw = localStorage.getItem('lq_students_' + cls);
+        if (raw) {
+          const list = JSON.parse(raw);
+          if (Array.isArray(list)) {
+            return list.filter(s => s && s.name && s.name !== 'Alexandre' && s.name !== 'Lovianna');
+          }
+        }
+      } catch(e) {}
+      return [];
+    }
+
+    function syncStudentsWithLCML() {
+      const lcmlList = getLCMLStudentsForClass(currentClass);
+      if (!lcmlList || lcmlList.length === 0) {
+        return;
+      }
+
+      const existing = state.students || [];
+      const newList = [];
+
+      lcmlList.forEach(s => {
+        if (!s || !s.name || !s.name.trim()) return;
+        const cleanName = s.name.trim();
+        // Conserver l'ID existant si même élève pour préserver les lectures
+        const match = existing.find(e => normalizeName(e.name) === normalizeName(cleanName));
+        if (match) {
+          newList.push({
+            id: match.id,
+            name: cleanName,
+            active: true
+          });
+        } else {
+          // Identifiant déterministe pour nouvel élève
+          const slug = cleanName.toLowerCase().replace(/[^a-z0-9]/g, '_');
+          newList.push({
+            id: 'st_' + currentClass + '_' + slug,
+            name: cleanName,
+            active: true
+          });
+        }
+      });
+
+      // Trier de A à Z
+      newList.sort((a, b) => a.name.localeCompare(b.name, 'fr', { sensitivity: 'base' }));
+
+      // Archiver les élèves retirés pour préserver leurs lectures
+      archiveMissingStudents(newList);
+
+      state.students = newList;
+      saveStudentsList();
+
+      // Restaurer les lectures archivées sans popup intempestif
+      restoreArchivedReadings(state.students, false);
+    }
+
+    function updateClassUI() {
+      const sel = document.getElementById('select-class-switcher');
+      if (sel && sel.value !== currentClass) {
+        sel.value = currentClass;
+      }
+      const printTitle = document.getElementById('print-class-title');
+      if (printTitle) {
+        printTitle.textContent = `— Classe de ${CLASS_LABELS[currentClass] || currentClass}`;
+      }
+      const modalSyncTitle = document.getElementById('modal-sync-lcml-title');
+      if (modalSyncTitle) {
+        modalSyncTitle.textContent = `Synchroniser avec la classe de ${CLASS_LABELS[currentClass] || currentClass}`;
+      }
+    }
+
     function loadData() {
+      currentClass = getCurrentClass();
+      updateClassUI();
+
       // 1. Charger les livres (localStorage ou défaut)
       const storedBooks = localStorage.getItem(STORAGE_KEY_BOOKS);
       if (storedBooks) {
@@ -1633,43 +1805,21 @@
         }
       } else {
         state.books = [...DEFAULT_BOOKS];
-        saveBooksList();
       }
+
+      // Fusionner les livres par défaut manquants (ex: 57 à 60)
+      DEFAULT_BOOKS.forEach(defB => {
+        if (!state.books.some(b => b.filename === defB.filename || compareTitles(b.title, defB.title) === 0)) {
+          state.books.push(defB);
+        }
+      });
       saveBooksList(); // trie par ordre alphabétique, renumérote et enregistre
 
-      // 2. Charger les élèves depuis tbi_roue_students ou défaut
-      const storedStudents = localStorage.getItem(STORAGE_KEY_STUDENTS);
-      if (storedStudents) {
-        try {
-          state.students = JSON.parse(storedStudents);
-        } catch(e) {
-          state.students = [];
-        }
-      }
-      
-      // Si vide et ouvert dans LCML, récupérer automatiquement la classe de LCML
-      if ((!state.students || state.students.length === 0) && window.parent && window.parent !== window && typeof window.parent.getClassStudents === 'function') {
-        try {
-          const cls = window.parent.teacherCls || 'lejoly';
-          const pStudents = window.parent.getClassStudents(cls);
-          if (Array.isArray(pStudents) && pStudents.length > 0) {
-            state.students = pStudents.map(s => ({
-              id: 'st_' + (s.name || '').toLowerCase().replace(/[^a-z0-9]/g, '_') + '_' + Math.random().toString(36).substr(2, 4),
-              name: s.name
-            })).sort((a,b)=>a.name.localeCompare(b.name,'fr'));
-            saveStudentsList();
-          }
-        } catch(e) {}
-      }
+      // 2. Migration des données existantes si besoin
+      migrateLegacyDataIfNeeded();
 
-      // Pas d'élèves fictifs : la liste est partagée avec la Roue et le Cahier de cotes.
-      // Si elle est vide, on reste vide (ajout via le bouton « Élèves »).
-      if (!Array.isArray(state.students)) {
-        state.students = [];
-      }
-
-      // 3. Charger les lectures
-      const storedData = localStorage.getItem(STORAGE_KEY_DATA);
+      // 3. Charger les lectures de la classe active
+      const storedData = localStorage.getItem(getDataKey());
       if (storedData) {
         try {
           const parsed = JSON.parse(storedData);
@@ -1684,10 +1834,44 @@
         state.archivedStudents = {};
       }
 
-      if (state.students.length > 0 && !state.selectedStudentId) {
+      // 4. Charger les élèves de la classe active
+      const storedStudents = localStorage.getItem(getStudentsKey());
+      if (storedStudents) {
+        try {
+          state.students = JSON.parse(storedStudents);
+        } catch(e) {
+          state.students = [];
+        }
+      } else {
+        state.students = [];
+      }
+
+      // 5. Synchroniser automatiquement avec la liste d'élèves LCML de cette classe
+      syncStudentsWithLCML();
+
+      if (!Array.isArray(state.students)) {
+        state.students = [];
+      }
+
+      if (state.students.length > 0 && (!state.selectedStudentId || !state.students.find(s => s.id === state.selectedStudentId))) {
         state.selectedStudentId = firstStudentId();
+      } else if (state.students.length === 0) {
+        state.selectedStudentId = null;
       }
     }
+
+    // Bascule dynamique de classe exposée à la fenêtre parente LCML
+    window.switchClass = function(newCls) {
+      if (newCls !== 'lejoly' && newCls !== 'verryken') return;
+      currentClass = newCls;
+      loadData();
+      renderAll();
+      updateClassUI();
+      const mStudents = document.getElementById('modal-students');
+      if (mStudents && !mStudents.classList.contains('hidden')) {
+        renderModalStudentsList();
+      }
+    };
 
     // Date du jour au format AAAA-MM-JJ, en heure LOCALE (évite le décalage UTC entre minuit et 2 h)
     function todayISO() {
@@ -1716,15 +1900,16 @@
     function saveData() {
       const payload = {
         version: 2,
+        class: currentClass,
         lastUpdated: new Date().toISOString(),
         readings: state.readings,
         archivedStudents: state.archivedStudents || {}
       };
-      localStorage.setItem(STORAGE_KEY_DATA, JSON.stringify(payload));
+      localStorage.setItem(getDataKey(), JSON.stringify(payload));
     }
 
     function saveStudentsList() {
-      localStorage.setItem(STORAGE_KEY_STUDENTS, JSON.stringify(state.students));
+      localStorage.setItem(getStudentsKey(), JSON.stringify(state.students));
     }
 
     // --- GESTION DES LIVRES (AJOUT / DÉCALAGE / ÉDITION / SUPPRESSION) ---
@@ -2912,11 +3097,12 @@
       const list = document.getElementById('modal-students-list');
       list.innerHTML = '';
 
+      const clsLabel = CLASS_LABELS[currentClass] || currentClass;
       const countEl = document.getElementById('modal-students-count');
-      if (countEl) countEl.textContent = `${state.students.length} élève${state.students.length > 1 ? 's' : ''} enregistré${state.students.length > 1 ? 's' : ''} :`;
+      if (countEl) countEl.textContent = `Élèves de ${clsLabel} (${state.students.length}) :`;
 
       if (state.students.length === 0) {
-        list.innerHTML = '<div class="text-neutral-400 italic p-3 text-center">Aucun élève dans la liste</div>';
+        list.innerHTML = `<div class="text-neutral-400 italic p-3 text-center">Aucun élève dans la classe de ${clsLabel}</div>`;
         updatePositionDropdown();
         return;
       }
@@ -3035,33 +3221,17 @@
     }
 
     function importStudentsFromTBI() {
-      // 1. Si on est dans LCML, synchroniser directement depuis la classe LCML active
-      if (window.parent && window.parent !== window && typeof window.parent.getClassStudents === 'function') {
-        try {
-          const cls = window.parent.teacherCls || 'lejoly';
-          const pStudents = window.parent.getClassStudents(cls);
-          if (Array.isArray(pStudents) && pStudents.length > 0) {
-            const list = pStudents.map(s => {
-              const existing = (state.students || []).find(e => e.name.toLowerCase().trim() === s.name.toLowerCase().trim());
-              return {
-                id: existing ? existing.id : ('st_' + (s.name || '').toLowerCase().replace(/[^a-z0-9]/g, '_') + '_' + Math.random().toString(36).substr(2, 4)),
-                name: s.name
-              };
-            }).sort((a,b)=>a.name.localeCompare(b.name,'fr'));
-            archiveMissingStudents(list);
-            state.students = list;
-            saveStudentsList();
-            restoreArchivedReadings(state.students);
-            renderModalStudentsList();
-            renderAll();
-            alert(`✅ ${list.length} élève(s) synchronisé(s) depuis la classe LCML (${cls}) !`);
-            return;
-          }
-        } catch(e) {}
+      const clsLabel = CLASS_LABELS[currentClass] || currentClass;
+      const lcmlList = getLCMLStudentsForClass(currentClass);
+      if (lcmlList && lcmlList.length > 0) {
+        syncStudentsWithLCML();
+        renderModalStudentsList();
+        renderAll();
+        alert(`✅ ${state.students.length} élève(s) synchronisé(s) depuis la classe ${clsLabel} sur LCML !`);
+        return;
       }
-
-      // 2. Sinon, synchroniser depuis le stockage TBI
-      const stored = localStorage.getItem(STORAGE_KEY_STUDENTS);
+      // Sinon, vérifier getStudentsKey() ou l'ancien STORAGE_KEY_STUDENTS
+      const stored = localStorage.getItem(getStudentsKey()) || localStorage.getItem('tbi_roue_students');
       if (stored) {
         try {
           const list = JSON.parse(stored);
@@ -3072,12 +3242,12 @@
             restoreArchivedReadings(state.students);
             renderModalStudentsList();
             renderAll();
-            alert(`✅ ${list.length} élève(s) synchronisé(s) avec succès depuis le TBI !`);
+            alert(`✅ ${list.length} élève(s) synchronisé(s) depuis la mémoire locale !`);
             return;
           }
         } catch(e) {}
       }
-      alert("Aucune liste d'élèves trouvée.");
+      alert(`Aucune liste d'élèves trouvée pour la classe de ${clsLabel}.`);
     }
 
     function importStudentsFromCotesJSON(e) {
@@ -3115,42 +3285,28 @@
       reader.readAsText(file);
     }
 
-    function syncStudentsFromStorage() {
-      const stored = localStorage.getItem(STORAGE_KEY_STUDENTS);
-      if (stored) {
-        try {
-          const list = JSON.parse(stored);
-          if (Array.isArray(list) && list.length > 0) {
-            const currentNames = (state.students || []).map(s => s.name).join('|||');
-            const newNames = list.map(s => s.name).join('|||');
-            if (currentNames !== newNames || state.students.length !== list.length) {
-              archiveMissingStudents(list);
-              state.students = list;
-              restoreArchivedReadings(state.students);
-              if (state.students.length > 0 && (!state.selectedStudentId || !state.students.find(s => s.id === state.selectedStudentId))) {
-                state.selectedStudentId = firstStudentId();
-              }
-              renderAll();
-              const mStudents = document.getElementById('modal-students');
-              if (mStudents && !mStudents.classList.contains('hidden')) {
-                renderModalStudentsList();
-              }
-            }
-          }
-        } catch(e) {}
-      }
-    }
-
-    // Synchronisation automatique inter-onglets en direct (si Joshua ou un autre élève est ajouté dans le Cahier de cotes)
+    // Synchronisation automatique inter-onglets en direct (si la classe ou les élèves changent dans LCML)
     window.addEventListener('storage', (e) => {
-      if (e.key === STORAGE_KEY_STUDENTS) {
-        syncStudentsFromStorage();
+      if (e.key === 'lq_teacher_cls') {
+        const newCls = localStorage.getItem('lq_teacher_cls');
+        if (newCls && (newCls === 'lejoly' || newCls === 'verryken') && newCls !== currentClass) {
+          switchClass(newCls);
+        }
+      } else if (e.key === 'lq_students_' + currentClass || e.key === getStudentsKey() || e.key === 'tbi_roue_students') {
+        syncStudentsWithLCML();
+        renderAll();
       }
     });
 
     // Re-vérifier dès que l'enseignant revient sur l'onglet
     window.addEventListener('focus', () => {
-      syncStudentsFromStorage();
+      const activeCls = getCurrentClass();
+      if (activeCls && activeCls !== currentClass) {
+        switchClass(activeCls);
+      } else {
+        syncStudentsWithLCML();
+        renderAll();
+      }
     });
 
     function setPrintOrientation(orientation) {
@@ -3186,9 +3342,12 @@
     }
 
     function exportBackupJSON() {
+      const clsLabel = CLASS_LABELS[currentClass] || currentClass;
       const dataToExport = {
         application: "TBI-Waimes-RecitsExpress",
-        version: "2.0",
+        version: "2.1",
+        class: currentClass,
+        className: clsLabel,
         exportDate: new Date().toISOString(),
         books: state.books,
         students: state.students,
@@ -3200,7 +3359,7 @@
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `recits_express_sauvegarde_${todayISO()}.json`;
+      a.download = `recits_express_${currentClass}_${todayISO()}.json`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -3216,7 +3375,8 @@
         try {
           const imported = JSON.parse(event.target.result);
           if (imported.readings && Array.isArray(imported.students)) {
-            if (confirm(`Restaurer cette sauvegarde ?\n\n• ${imported.students.length} élèves\n• ${imported.books ? imported.books.length : state.books.length} livres\n• Date : ${imported.exportDate || 'Inconnue'}\n\n⚠️ Cela remplacera les données actuelles.`)) {
+            const fileCls = imported.className || imported.class || '';
+            if (confirm(`Restaurer cette sauvegarde ${fileCls ? '(' + fileCls + ') ' : ''}?\n\n• ${imported.students.length} élèves\n• ${imported.books ? imported.books.length : state.books.length} livres\n• Date : ${imported.exportDate || 'Inconnue'}\n\n⚠️ Cela remplacera les données actuelles de la classe active.`)) {
               if (Array.isArray(imported.books)) {
                 state.books = imported.books;
                 saveBooksList();
@@ -3245,13 +3405,14 @@
     }
 
     function resetAllDataConfirm() {
-      if (confirm(`⚠️ Êtes-vous certain de vouloir EFFACER TOUTES les lectures enregistrées ?\n\n(La liste des livres et des élèves sera conservée)`)) {
+      const clsLabel = CLASS_LABELS[currentClass] || currentClass;
+      if (confirm(`⚠️ Êtes-vous certain de vouloir EFFACER TOUTES les lectures enregistrées pour la classe de ${clsLabel} ?\n\n(La liste des livres et des élèves de cette classe sera conservée)`)) {
         state.readings = {};
         state.archivedStudents = {};
         saveData();
         closeModal('modal-backup');
         renderAll();
-        alert("Les lectures ont été réinitialisées.");
+        alert(`Les lectures de la classe de ${clsLabel} ont été réinitialisées.`);
       }
     }
 
