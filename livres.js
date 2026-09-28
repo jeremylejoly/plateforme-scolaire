@@ -13545,7 +13545,7 @@ window.LIVRES = [
         "correct": false,
         "answer": false,
         "points": 1,
-        "explanation": "FAUX : elle a peur, mais elle descend avec Mika et ses parents. En remontant, elle trouve ça « trop génial » !"
+        "explanation": "FAUX : elle a peur, mais elle descend dans la cage avec Mika et son papa, pendant que sa maman reste sur le bateau pour la remonter. En remontant, elle trouve ça « trop génial » !"
       },
       {
         "id": "q12",
@@ -14341,4 +14341,4 @@ window.LIVRES = [
   }
 ];
 
-window.LIVRES_VERSION = '20260928a';
+window.LIVRES_VERSION = '20260928b';
