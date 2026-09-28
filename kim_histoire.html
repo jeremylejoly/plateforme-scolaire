@@ -1119,6 +1119,40 @@ document.addEventListener('keydown', (e) => {
     closeImageModal();
   }
 });
+
+// Arrêt automatique du jeu et des sons si le jeu est quitté ou masqué
+function stopAndResetGame() {
+  clearInterval(state.timerInterval);
+  state.isPaused = true;
+  if (sfx && sfx.ctx && sfx.ctx.state === 'running') {
+    try { sfx.ctx.suspend(); } catch(e) {}
+  }
+}
+window.stopAndResetGame = stopAndResetGame;
+window.addEventListener('pagehide', stopAndResetGame);
+window.addEventListener('beforeunload', stopAndResetGame);
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) stopAndResetGame();
+});
+
+// Détection du masquage de l'iframe dans le portail LCML (IntersectionObserver)
+if (window.IntersectionObserver) {
+  const frameObs = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) {
+        stopAndResetGame();
+      }
+    });
+  }, { threshold: 0.05 });
+  frameObs.observe(document.documentElement);
+}
+
+// Réception des messages de fermeture depuis le site parent
+window.addEventListener('message', (e) => {
+  if (e.data === 'stop' || e.data === 'pause') {
+    stopAndResetGame();
+  }
+});
 </script>
 
 </body>
