@@ -13555,7 +13555,7 @@ window.LIVRES = [
         "correct": true,
         "answer": true,
         "points": 1,
-        "explanation": "VRAI : grâce à elle, le trafic de peaux de koalas s'arrête. Mika devient ensuite stagiaire pour l'écotourisme dans la baie."
+        "explanation": "VRAI : Burke est envoyé en prison, et les braconniers sont arrêtés. Mika devient ensuite stagiaire pour l'écotourisme dans la baie."
       },
       {
         "id": "q13",
@@ -13733,7 +13733,7 @@ window.LIVRES = [
           "Elle se moque de Faustine devant toute sa famille",
           "Elle dit à tout le monde où se trouve la cabane",
           "Elle accuse Simon d'avoir volé les animaux de la ferme",
-          "Elle révèle devant tout le village que Simon est juif"
+          "Elle révèle sur la place du village que Simon est juif"
         ],
         "correct": 3,
         "answer": 3,
@@ -13764,7 +13764,7 @@ window.LIVRES = [
         "correct": true,
         "answer": true,
         "points": 1,
-        "explanation": "VRAI : sa maman lui a fait comprendre de se cacher. Ensuite, il s'est caché plusieurs jours dans les égouts avant de rejoindre la ferme."
+        "explanation": "VRAI : sa maman lui a fait comprendre de se cacher. Ensuite, il s'est caché dans les égouts, le temps de joindre la maman de Mona."
       },
       {
         "id": "q10",
@@ -13851,7 +13851,7 @@ window.LIVRES = [
         "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
           "Mona a cinq ans quand elle rencontre Simon, le fils des patrons de sa maman, et elle tombe amoureuse de lui. Pendant la guerre, Simon, qui est juif, vient se cacher à la ferme de Mona sous le nom de Louis. Mais il tombe amoureux de Faustine. Jalouse, Mona le dénonce à l'officier allemand qui loge à la ferme, et Simon est arrêté. Bien des années plus tard, elle apprend qu'il est mort.",
-          "Mona a cinq ans quand elle rencontre Simon, le fils des patrons de sa maman, et elle tombe amoureuse de lui. Pendant la guerre, Simon, qui est juif, vient se cacher à la ferme de Mona sous le nom de Louis. Mais il tombe amoureux de Faustine. Jalouse, Mona crie devant tout le village qu'il est juif, et Simon s'enfuit. Bien des années plus tard, une lettre lui apprend qu'il est vivant.",
+          "Mona a cinq ans quand elle rencontre Simon, le fils des patrons de sa maman, et elle tombe amoureuse de lui. Pendant la guerre, Simon, qui est juif, vient se cacher à la ferme de Mona sous le nom de Louis. Mais il tombe amoureux de Faustine. Jalouse, Mona crie sur la place du village qu'il est juif, et Simon s'enfuit. Bien des années plus tard, une lettre lui apprend qu'il est vivant.",
           "Mona a cinq ans quand elle rencontre Simon, le fils des patrons de sa maman, et elle tombe amoureuse de lui. Pendant la guerre, Simon, qui est juif, vient se cacher à la ferme de Bastien sous le nom de Louis. Mona tombe amoureuse de Bastien et oublie Simon, qui part vivre avec Faustine. Bien des années plus tard, une lettre lui apprend qu'il est vivant."
         ],
         "correct": 1,
@@ -14081,7 +14081,7 @@ window.LIVRES = [
         "correct": 3,
         "answer": 3,
         "points": 1,
-        "explanation": "Brailler, c'est crier fort, de façon désagréable. Tom voulait hurler au secours, mais il braille une publicité."
+        "explanation": "Brailler, c'est crier fort, de façon désagréable. Tom voulait hurler de panique, mais il braille une publicité."
       },
       {
         "id": "q16",
@@ -14232,7 +14232,7 @@ window.LIVRES = [
         "correct": 0,
         "answer": 0,
         "points": 1,
-        "explanation": "Derdiche dit que l'arme était chargée. Mais personne ne s'en est servi avant Momo, et elle était vide : c'est donc lui qui l'a vidée. Démasqué, il essaie de s'enfuir."
+        "explanation": "Derdiche dit que l'arme était chargée. Mais personne ne s'en est servi avant Momo, et elle était vide : il a donc menti. Démasqué, il essaie de s'enfuir."
       },
       {
         "id": "q9",
@@ -14335,10 +14335,10 @@ window.LIVRES = [
         "correct": 2,
         "answer": 2,
         "points": 1,
-        "explanation": "Seul le résumé C est correct. Malika conduit la Gazelle jusqu'au chantier avec Momo, poursuivie par les bandits. Grâce au klaxon, les ouvriers arrivent et les sauvent. Monsieur Derdiche, le traître, est arrêté, et Malika et Momo se disent enfin qu'ils s'aiment."
+        "explanation": "Seul le résumé C est correct. Malika conduit la Gazelle jusqu'au chantier avec Momo, poursuivie par les bandits. Grâce au klaxon, les ouvriers arrivent et les sauvent. Monsieur Derdiche, le traître, est rattrapé par les ouvriers, et Malika et Momo se disent enfin qu'ils s'aiment."
       }
     ]
   }
 ];
 
-window.LIVRES_VERSION = '20260928b';
+window.LIVRES_VERSION = '20260928c';
