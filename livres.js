@@ -13382,7 +13382,963 @@ window.LIVRES = [
         "explanation": "Seul le résumé C est correct. C'est l'hôtel lui-même qui parle et qui fait fuir les Grignard. Il aime la famille de Méline et cache les clés de la voiture. Méline promet de revenir ; un an plus tard, elle s'en réjouit."
       }
     ]
+  },
+  {
+    "id": "grand_blanc",
+    "title": "Le grand blanc",
+    "series": "Récit Express",
+    "totalPoints": 16,
+    "questions": [
+      {
+        "id": "q1",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Pourquoi Alice et son papa partent-ils en Australie ?",
+        "options": [
+          "Son papa doit y partir pour un travail important",
+          "Sa maman est retenue là-bas et les invite pour Noël",
+          "Ils veulent voir les kangourous et les koalas",
+          "Alice a gagné ce voyage à un concours de l'école"
+        ],
+        "correct": 1,
+        "answer": 1,
+        "points": 1,
+        "explanation": "Un « contretemps » oblige la maman d'Alice à rester en Australie. Pour ne pas rater Noël ensemble, elle leur propose de venir la rejoindre."
+      },
+      {
+        "id": "q2",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Qu'est-il arrivé à Montgomery, le collègue de la maman d'Alice ?",
+        "options": [
+          "Une méduse venimeuse l'a piqué dans la baie",
+          "Il est tombé de son bateau pendant une tempête",
+          "Il s'est perdu plusieurs jours dans le désert",
+          "Un grand requin blanc l'a attaqué aux jambes"
+        ],
+        "correct": 3,
+        "answer": 3,
+        "points": 1,
+        "explanation": "Montgomery installait les cages d'observation quand un grand blanc a foncé sur lui. Il est à l'hôpital, les deux jambes blessées."
+      },
+      {
+        "id": "q3",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quel est le projet de la maman d'Alice et de Montgomery ?",
+        "options": [
+          "Créer un parc naturel pour protéger le grand blanc",
+          "Construire un grand hôtel de luxe au bord de la baie",
+          "Installer des filets pour interdire la baie aux requins",
+          "Chasser les requins qui s'approchent des plages"
+        ],
+        "correct": 0,
+        "answer": 0,
+        "points": 1,
+        "explanation": "Les grands blancs ont été beaucoup chassés et risquent de disparaître. Les deux scientifiques veulent les protéger et inviter les gens à les observer depuis des cages : c'est l'écotourisme."
+      },
+      {
+        "id": "q4",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Que voit Alice, la nuit, depuis la lucarne de sa chambre ?",
+        "options": [
+          "Sa maman qui part plonger toute seule dans la baie sombre",
+          "Burke qui charge des caisses dans un bateau à moteur",
+          "Un grand requin blanc qui nage tout près de la plage",
+          "Des hommes qui portent des koalas morts vers l'hôtel"
+        ],
+        "correct": 3,
+        "answer": 3,
+        "points": 1,
+        "explanation": "Un 4x4 se gare dans la cour de l'hôtel. Deux hommes en tenue de safari sortent du coffre des dizaines d'animaux morts : des koalas."
+      },
+      {
+        "id": "q5",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Que découvre Alice dans le bateau caché dans le hangar de Burke ?",
+        "options": [
+          "Des peaux de koalas cachées sous une bâche",
+          "Des cages d'observation toutes neuves",
+          "Des poches de sang dans une glacière",
+          "Une carte de la baie couverte de croix rouges"
+        ],
+        "correct": 2,
+        "answer": 2,
+        "points": 1,
+        "explanation": "Parmi le matériel de pêche et de plongée, Alice trouve une glacière avec des sachets remplis de sang. Elle prend peur et s'enfuit."
+      },
+      {
+        "id": "q6",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Pourquoi Alice ne parle-t-elle pas tout de suite du hangar à ses parents ?",
+        "options": [
+          "Elle y est entrée sans permission et craint d'être grondée",
+          "Elle veut d'abord aller prévenir la police toute seule",
+          "Elle a promis à la jeune Aborigène de garder le secret",
+          "Burke l'a vue et l'a menacée si elle disait quelque chose"
+        ],
+        "correct": 0,
+        "answer": 0,
+        "points": 1,
+        "explanation": "Alice est entrée par effraction dans une propriété privée. Elle a peur de se faire « enguirlander », c'est-à-dire gronder. Plus tard, elle avoue tout."
+      },
+      {
+        "id": "q7",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quel travail Mika fait-elle pour Burke ?",
+        "options": [
+          "Elle chasse elle-même les koalas dans la réserve",
+          "Elle surveille les requins depuis le haut des grandes dunes",
+          "Elle prépare les peaux des koalas qu'il lui apporte",
+          "Elle fait le ménage dans les chambres de l'hôtel"
+        ],
+        "correct": 2,
+        "answer": 2,
+        "points": 1,
+        "explanation": "Burke lui apporte des koalas morts. Mika récupère et prépare leur peau, puis livre les peaux à l'hôtel. Toute cette histoire la dépasse."
+      },
+      {
+        "id": "q8",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Selon l'épilogue, pourquoi Burke rend-il les requins agressifs ?",
+        "options": [
+          "Pour se venger de Montgomery, qui voulait le dénoncer",
+          "Pour vendre plus de poissons dans le restaurant de l'hôtel",
+          "Pour faire peur aux gens et organiser des chasses aux requins",
+          "Pour que les touristes n'aillent plus jamais dans la réserve aborigène"
+        ],
+        "correct": 2,
+        "answer": 2,
+        "points": 1,
+        "explanation": "Si les gens ont peur des requins, ils voudront les faire disparaître au lieu de les protéger. Burke pourrait alors proposer dans son hôtel des « safaris » de chasse aux requins."
+      },
+      {
+        "id": "q9",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Alice a vraiment eu vingt sur vingt en mathématiques.",
+        "correct": false,
+        "answer": false,
+        "points": 1,
+        "explanation": "FAUX : elle blague, parce que son papa a la tête ailleurs. La dernière fois, elle avait eu deux !"
+      },
+      {
+        "id": "q10",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Quand le requin l'a attaqué, Montgomery n'avait mis aucun appât dans l'eau.",
+        "correct": true,
+        "answer": true,
+        "points": 1,
+        "explanation": "VRAI : il ne comprend pas pourquoi le requin a foncé sur lui. À la fin, on apprend que Burke avait répandu du sang dans l'eau."
+      },
+      {
+        "id": "q11",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "À la fin, Alice refuse de descendre dans la cage pour observer les requins.",
+        "correct": false,
+        "answer": false,
+        "points": 1,
+        "explanation": "FAUX : elle a peur, mais elle descend avec Mika et ses parents. En remontant, elle trouve ça « trop génial » !"
+      },
+      {
+        "id": "q12",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Mika accepte de témoigner contre Burke, qui est envoyé en prison.",
+        "correct": true,
+        "answer": true,
+        "points": 1,
+        "explanation": "VRAI : grâce à elle, le trafic de peaux de koalas s'arrête. Mika devient ensuite stagiaire pour l'écotourisme dans la baie."
+      },
+      {
+        "id": "q13",
+        "section": "Vocabulaire en contexte",
+        "type": "mcq",
+        "text": "« Papa martyrisait le clavier de l'ordinateur. » Que veut dire ici « martyriser le clavier » ?",
+        "options": [
+          "Réparer les touches cassées",
+          "Taper très fort et sans arrêt",
+          "Nettoyer les touches une à une",
+          "Débrancher le clavier"
+        ],
+        "correct": 1,
+        "answer": 1,
+        "points": 1,
+        "explanation": "Le papa écrit une longue lettre à sa femme. Il tape sur les touches avec force (« tac tac tac »), comme s'il les maltraitait."
+      },
+      {
+        "id": "q14",
+        "section": "Vocabulaire en contexte",
+        "type": "mcq",
+        "text": "« Nous sommes arrivés à l'aéroport d'Adélaïde, fourbus, sous un soleil de plomb. » Que veut dire « fourbus » ?",
+        "options": [
+          "Morts de faim",
+          "Tout bronzés",
+          "Très en avance",
+          "Très fatigués"
+        ],
+        "correct": 3,
+        "answer": 3,
+        "points": 1,
+        "explanation": "Être fourbu, c'est être épuisé. Après plus de vingt heures de voyage, Alice et son papa n'en peuvent plus."
+      },
+      {
+        "id": "q15",
+        "section": "Vocabulaire en contexte",
+        "type": "mcq",
+        "text": "« Mes parents restaient dubitatifs. » Que veut dire « dubitatifs » ?",
+        "options": [
+          "Pas convaincus, ils doutent",
+          "Pressés de partir",
+          "Très en colère contre leur fille Alice",
+          "Très joyeux"
+        ],
+        "correct": 0,
+        "answer": 0,
+        "points": 1,
+        "explanation": "Être dubitatif, c'est douter. Les parents ne sont pas sûrs qu'Alice ait vraiment vu des koalas."
+      },
+      {
+        "id": "q16",
+        "section": "Compréhension globale",
+        "type": "synthesis",
+        "text": "Quel résumé correspond le mieux à l'histoire ?",
+        "options": [
+          "Alice et son papa rejoignent sa maman en Australie pour Noël. Montgomery, un collègue de sa maman, vient d'être attaqué par un grand requin blanc. Alice découvre que Burke, le patron de l'hôtel voisin, fait un trafic de peaux de koalas avec l'aide d'une jeune Aborigène, Mika. Grâce à un piège, Burke est arrêté au moment où il répand du sang près des cages pour exciter les requins.",
+          "Alice et son papa rejoignent sa maman en Australie pour Noël. Montgomery, un collègue de sa maman, vient d'être attaqué par un grand requin blanc. Alice découvre que Mika, une jeune Aborigène, répand du sang dans la baie pour que les requins attaquent les touristes. Grâce à un piège, Mika est arrêtée, et Burke, le patron de l'hôtel voisin, devient le héros de la plage.",
+          "Alice et son papa rejoignent sa maman en Australie pour Noël. Montgomery, un collègue de sa maman, vient d'être attaqué par un grand requin blanc. Alice découvre que Burke, le patron du grand hôtel voisin, fait un trafic de peaux de kangourous avec l'aide d'une jeune Aborigène, Mika. Grâce à un piège, Burke est arrêté au moment où il essaie de voler le bateau de la maman d'Alice."
+        ],
+        "correct": 0,
+        "answer": 0,
+        "points": 1,
+        "explanation": "Seul le résumé A est correct. Burke tue des koalas avec des braconniers, et Mika prépare leurs peaux. Pour faire peur aux gens et pouvoir chasser les requins, il répand du sang près des cages. La maman d'Alice lui tend un piège et la police l'arrête."
+      }
+    ]
+  },
+  {
+    "id": "pardon_simon",
+    "title": "Pardon Simon",
+    "series": "Récit Express",
+    "totalPoints": 16,
+    "questions": [
+      {
+        "id": "q1",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Pourquoi Mona, à cinq ans, accompagne-t-elle sa maman chez les Zimmermann ?",
+        "options": [
+          "L'école du village est fermée ce jour-là",
+          "Madame Zimmermann veut faire sa connaissance",
+          "Sa grand-mère, qui devait la garder, est malade",
+          "C'est le jour de l'anniversaire de Simon"
+        ],
+        "correct": 2,
+        "answer": 2,
+        "points": 1,
+        "explanation": "Oma, la grand-mère de Mona, est malade et ne peut pas la garder. Sa maman, domestique chez les Zimmermann, l'emmène donc avec elle en ville."
+      },
+      {
+        "id": "q2",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quel cadeau Simon fait-il à Mona ce jour-là ?",
+        "options": [
+          "Un des deux baigneurs de la cabane",
+          "Un poisson rouge du bassin du jardin",
+          "Une grosse bille de toutes les couleurs",
+          "Sa petite voiture bleue à pédales du couloir"
+        ],
+        "correct": 2,
+        "answer": 2,
+        "points": 1,
+        "explanation": "Simon lui offre une bille « grosse comme un œuf de pigeon ». Mona la garde toute sa vie : à la fin de l'histoire, elle l'a encore."
+      },
+      {
+        "id": "q3",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Pourquoi Simon vient-il vivre à la ferme de Mona en 1942 ?",
+        "options": [
+          "Son papa est parti se battre à la guerre",
+          "Sa maman est morte de la diphtérie",
+          "Ses parents l'envoient en vacances à la campagne",
+          "Ses parents, juifs, ont été arrêtés et déportés"
+        ],
+        "correct": 3,
+        "answer": 3,
+        "points": 1,
+        "explanation": "La Gestapo a emmené ses parents vers un camp en Allemagne. L'histoire du papa à la guerre et de la maman morte de la diphtérie est un mensonge pour cacher Simon."
+      },
+      {
+        "id": "q4",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Que dit Mona à l'officier allemand pour protéger Simon ?",
+        "options": [
+          "Que Louis est le fils des voisins",
+          "Que son cousin Louis a la diphtérie",
+          "Que Simon travaille à la ferme comme valet",
+          "Que Simon est son frère et qu'il est sourd"
+        ],
+        "correct": 1,
+        "answer": 1,
+        "points": 1,
+        "explanation": "Le mensonge sort tout seul. L'officier a peur de cette maladie contagieuse : il recule et les chasse vers le couloir."
+      },
+      {
+        "id": "q5",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Que découvre la famille dans la grange, le matin après le départ des soldats ?",
+        "options": [
+          "Les soldats ont emmené tous les animaux",
+          "Les soldats ont mis le feu au foin",
+          "Les soldats ont détruit la cabane de Simon",
+          "Un soldat est resté caché pour les surveiller"
+        ],
+        "correct": 0,
+        "answer": 0,
+        "points": 1,
+        "explanation": "La vache Bénédicte, les poules, l'oie Ginette et les moutons ont disparu. Il ne reste que des plumes et des coquilles brisées."
+      },
+      {
+        "id": "q6",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Qu'est-ce qui pousse Simon à reparler, alors qu'il reste muet dans la cabane ?",
+        "options": [
+          "La vache Bénédicte est revenue à la ferme",
+          "Bastien lui apprend que la guerre est finie",
+          "Il reçoit enfin une lettre de ses parents",
+          "Mona pense que Faustine est juive, comme lui"
+        ],
+        "correct": 3,
+        "answer": 3,
+        "points": 1,
+        "explanation": "Quand Mona dit que Faustine est « comme lui », Simon se redresse : « Tu veux dire... juive ? » Dès le lendemain, il mange et veut aller à la rivière."
+      },
+      {
+        "id": "q7",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Pourquoi le cri de Mona sur la place du village est-il si grave ?",
+        "options": [
+          "Elle se moque de Faustine devant toute sa famille",
+          "Elle dit à tout le monde où se trouve la cabane",
+          "Elle accuse Simon d'avoir volé les animaux de la ferme",
+          "Elle révèle devant tout le village que Simon est juif"
+        ],
+        "correct": 3,
+        "answer": 3,
+        "points": 1,
+        "explanation": "Mona hurle une insulte qui dit que Simon est juif. À cette époque, c'est le mettre en grand danger : son cri est une dénonciation. Simon s'enfuit aussitôt avec Faustine."
+      },
+      {
+        "id": "q8",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Qu'apprend Mona, bien des années plus tard, grâce à une lettre ?",
+        "options": [
+          "Faustine est morte et Simon vit tout seul",
+          "Simon est vivant et a épousé Faustine",
+          "Simon est mort dans un camp pendant la guerre",
+          "Simon a épousé une fille du village de Mona"
+        ],
+        "correct": 1,
+        "answer": 1,
+        "points": 1,
+        "explanation": "Sur la photo, il y a Simon et Sarah (le vrai prénom de Faustine), leurs enfants Isaac et Mona, et leurs petits-enfants. Mona est enfin soulagée et murmure « Pardon Simon »."
+      },
+      {
+        "id": "q9",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Pour échapper à la Gestapo, Simon s'est caché au grenier, sous de vieux matelas.",
+        "correct": true,
+        "answer": true,
+        "points": 1,
+        "explanation": "VRAI : sa maman lui a fait comprendre de se cacher. Ensuite, il s'est caché plusieurs jours dans les égouts avant de rejoindre la ferme."
+      },
+      {
+        "id": "q10",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Bastien présente Faustine comme sa cousine.",
+        "correct": true,
+        "answer": true,
+        "points": 1,
+        "explanation": "VRAI : mais Mona n'y croit pas. Elle devine que Faustine se cache, comme Simon."
+      },
+      {
+        "id": "q11",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Sur le panneau de la cabane, Mona a gravé « La cabane de Louis ».",
+        "correct": false,
+        "answer": false,
+        "points": 1,
+        "explanation": "FAUX : elle a gravé « La cabane de Simon ». Pour elle, il n'est pas son faux cousin Louis : il est Simon."
+      },
+      {
+        "id": "q12",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Après le cri de Mona, Simon revient se cacher dans la cabane.",
+        "correct": false,
+        "answer": false,
+        "points": 1,
+        "explanation": "FAUX : Simon s'enfuit dans la forêt avec Faustine. Mona ne le revoit plus jamais et la cabane reste vide."
+      },
+      {
+        "id": "q13",
+        "section": "Vocabulaire en contexte",
+        "type": "mcq",
+        "text": "« Mes yeux émerveillés s'écarquillaient comme des soucoupes. » Que veut dire « s'écarquiller » ?",
+        "options": [
+          "Cligner très vite",
+          "S'ouvrir tout grand",
+          "Se remplir de larmes",
+          "Se fermer doucement"
+        ],
+        "correct": 1,
+        "answer": 1,
+        "points": 1,
+        "explanation": "Des yeux qui s'écarquillent s'ouvrent très grand, de surprise ou d'émerveillement. Mona découvre la grande ville."
+      },
+      {
+        "id": "q14",
+        "section": "Vocabulaire en contexte",
+        "type": "mcq",
+        "text": "« Ils agitaient leurs bras, leurs jambes et leur bouche dans une cacophonie qui me troublait. » Qu'est-ce qu'une « cacophonie » ?",
+        "options": [
+          "Un mélange de bruits désagréables",
+          "Une odeur très forte",
+          "Une jolie chanson",
+          "Un silence gênant entre des inconnus"
+        ],
+        "correct": 0,
+        "answer": 0,
+        "points": 1,
+        "explanation": "Une cacophonie, c'est un ensemble de bruits qui se mélangent et font mal aux oreilles. Dans le bus, tout le monde bouge et parle en même temps."
+      },
+      {
+        "id": "q15",
+        "section": "Vocabulaire en contexte",
+        "type": "mcq",
+        "text": "« Compagnie 13 cherche logement pour la nuit. Vous, être réquisitionnés ! » Que veut dire « être réquisitionné » ?",
+        "options": [
+          "Être obligé de quitter le pays",
+          "Être invité à manger avec les soldats",
+          "Être obligé de laisser sa maison à l'armée",
+          "Être arrêté et envoyé en prison"
+        ],
+        "correct": 2,
+        "answer": 2,
+        "points": 1,
+        "explanation": "L'armée allemande oblige la famille à lui laisser sa maison pour la nuit. Les soldats mangent leur repas et dorment dans leurs lits."
+      },
+      {
+        "id": "q16",
+        "section": "Compréhension globale",
+        "type": "synthesis",
+        "text": "Quel résumé correspond le mieux à l'histoire ?",
+        "options": [
+          "Mona a cinq ans quand elle rencontre Simon, le fils des patrons de sa maman, et elle tombe amoureuse de lui. Pendant la guerre, Simon, qui est juif, vient se cacher à la ferme de Mona sous le nom de Louis. Mais il tombe amoureux de Faustine. Jalouse, Mona le dénonce à l'officier allemand qui loge à la ferme, et Simon est arrêté. Bien des années plus tard, elle apprend qu'il est mort.",
+          "Mona a cinq ans quand elle rencontre Simon, le fils des patrons de sa maman, et elle tombe amoureuse de lui. Pendant la guerre, Simon, qui est juif, vient se cacher à la ferme de Mona sous le nom de Louis. Mais il tombe amoureux de Faustine. Jalouse, Mona crie devant tout le village qu'il est juif, et Simon s'enfuit. Bien des années plus tard, une lettre lui apprend qu'il est vivant.",
+          "Mona a cinq ans quand elle rencontre Simon, le fils des patrons de sa maman, et elle tombe amoureuse de lui. Pendant la guerre, Simon, qui est juif, vient se cacher à la ferme de Bastien sous le nom de Louis. Mona tombe amoureuse de Bastien et oublie Simon, qui part vivre avec Faustine. Bien des années plus tard, une lettre lui apprend qu'il est vivant."
+        ],
+        "correct": 1,
+        "answer": 1,
+        "points": 1,
+        "explanation": "Seul le résumé B est correct. Simon se cache chez Mona sous le nom de Louis. Jalouse de Faustine, Mona crie sur la place qu'il est juif, et Simon s'enfuit. Des années plus tard, sa lettre apprend à Mona qu'il est vivant et marié à Sarah (Faustine)."
+      }
+    ]
+  },
+  {
+    "id": "mystere_abricots",
+    "title": "Le mystère des abricots",
+    "series": "Récit Express",
+    "totalPoints": 16,
+    "questions": [
+      {
+        "id": "q1",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Que croit Tom en se réveillant, le troisième jour des grandes vacances ?",
+        "options": [
+          "Qu'il est devenu un robot en boîtes de conserve",
+          "Qu'il est devenu invisible aux yeux de ses parents",
+          "Qu'il s'est changé en abricot géant",
+          "Qu'il a perdu la mémoire pendant la nuit"
+        ],
+        "correct": 0,
+        "answer": 0,
+        "points": 1,
+        "explanation": "Tom se voit couvert de boîtes de conserve coupées en deux, comme « une pile de boîtes de cassoulet ». Il a beau se pincer, rien ne change."
+      },
+      {
+        "id": "q2",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quand Tom veut crier « Au secours ! », que dit-il ?",
+        "options": [
+          "« J'adore les abricots Shlurps ! »",
+          "« Je suis devenu un robot ! »",
+          "« Où est mon petit-déjeuner ? »",
+          "« Donnez-moi des légumes ! »"
+        ],
+        "correct": 0,
+        "answer": 0,
+        "points": 1,
+        "explanation": "Au lieu des mots qu'il veut dire, il ne sort de sa bouche que des phrases sur les fruits au sirop Shlurps, comme une publicité."
+      },
+      {
+        "id": "q3",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Comment les parents de Tom réagissent-ils en le voyant ?",
+        "options": [
+          "Ils le félicitent pour son beau déguisement",
+          "Ils pensent qu'il est juste mal coiffé et mal habillé",
+          "Ils ont très peur et appellent vite le médecin",
+          "Ils lui servent un grand bol d'abricots au sirop"
+        ],
+        "correct": 1,
+        "answer": 1,
+        "points": 1,
+        "explanation": "Sa maman lui reproche de ne pas s'être peigné et de ressembler à un sauvage. Son papa lui conseille d'aller faire un tour. Ils ne voient aucun robot."
+      },
+      {
+        "id": "q4",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Qu'est-ce qui rend Aïka différente des autres enfants du quartier ?",
+        "options": [
+          "Elle adore les fruits au sirop depuis toujours",
+          "Elle vient d'arriver dans le quartier et ne connaît personne",
+          "Elle n'a pas envie de fruits au sirop et reste normale",
+          "Elle est déguisée en robot, mais pour s'amuser"
+        ],
+        "correct": 2,
+        "answer": 2,
+        "points": 1,
+        "explanation": "Aïka trouve les fruits au sirop « dégueu » et ne marche pas comme un robot. Son père expliquera plus tard que son invention n'a aucun effet sur elle."
+      },
+      {
+        "id": "q5",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Qui est l'homme qui prend des notes en regardant Tom manger ?",
+        "options": [
+          "Le papa de Tom",
+          "Le père d'Aïka",
+          "Un policier déguisé",
+          "Le patron des magasins Shlurps"
+        ],
+        "correct": 1,
+        "answer": 1,
+        "points": 1,
+        "explanation": "À la sortie, Aïka rejoint son père. Tom le reconnaît : l'homme qui prenait des notes et le père d'Aïka sont la même personne."
+      },
+      {
+        "id": "q6",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Que surprend Tom, caché sous une table de l'entrepôt ?",
+        "options": [
+          "Les hommes veulent ouvrir d'autres magasins Shlurps en ville",
+          "Le produit n'est pas au point, mais doit être prêt dans deux mois",
+          "Le père d'Aïka veut transformer sa propre fille en robot",
+          "Les hommes cachent de l'argent volé dans les caisses"
+        ],
+        "correct": 1,
+        "answer": 1,
+        "points": 1,
+        "explanation": "Un des hommes dit que le produit est dangereux. Le père d'Aïka répond que ceux qui paient veulent qu'il soit terminé dans deux mois."
+      },
+      {
+        "id": "q7",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quel est le but de l'invention du père d'Aïka ?",
+        "options": [
+          "Obliger les enfants à manger des légumes",
+          "Faire vendre des fruits au sirop Shlurps",
+          "Empêcher les enfants de manger des bonbons",
+          "Transformer les enfants en vrais robots"
+        ],
+        "correct": 0,
+        "answer": 0,
+        "points": 1,
+        "explanation": "Son produit devait donner envie de légumes. Mais il ne fonctionne pas encore : il donne envie de fruits au sirop et provoque des hallucinations, comme les robots."
+      },
+      {
+        "id": "q8",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quel marché Aïka fait-elle avec son père ?",
+        "options": [
+          "Elle ne dira rien à la police s'il lui donne de l'argent",
+          "Elle l'aidera à terminer son invention en secret",
+          "Elle mangera des fruits au sirop tous les jours",
+          "Elle mangera des légumes s'il arrête ses expériences"
+        ],
+        "correct": 3,
+        "answer": 3,
+        "points": 1,
+        "explanation": "Aïka mangera des légumes un jour sur deux, plus le dimanche. En échange, son père arrête ses expériences et ira expliquer dans les écoles pourquoi les légumes sont bons."
+      },
+      {
+        "id": "q9",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "L'après-midi, Tom retrouve facilement le grand magasin Shlurps à vélo.",
+        "correct": false,
+        "answer": false,
+        "points": 1,
+        "explanation": "FAUX : il ne le retrouve nulle part. Il comprend qu'il n'y a jamais eu de magasin Shlurps."
+      },
+      {
+        "id": "q10",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Aïka voit, elle aussi, les enfants transformés en robots.",
+        "correct": false,
+        "answer": false,
+        "points": 1,
+        "explanation": "FAUX : pour elle, Tom avait l'air normal, juste un peu idiot. Les robots n'existaient que dans la tête des enfants."
+      },
+      {
+        "id": "q11",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Le produit est répandu au-dessus de la ville par un avion.",
+        "correct": true,
+        "answer": true,
+        "points": 1,
+        "explanation": "VRAI : un avion pulvérise le produit au-dessus de la ville, et les enfants le respirent."
+      },
+      {
+        "id": "q12",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Avant cette aventure, Tom adorait déjà les fruits au sirop.",
+        "correct": false,
+        "answer": false,
+        "points": 1,
+        "explanation": "FAUX : il n'avait jamais aimé ça. Il n'en a envie que lorsqu'il se croit transformé en robot."
+      },
+      {
+        "id": "q13",
+        "section": "Vocabulaire en contexte",
+        "type": "mcq",
+        "text": "« J'ai bien vu qu'il essayait de m'embobiner ! » Que veut dire ici « embobiner » ?",
+        "options": [
+          "Attacher avec une corde",
+          "Enrouler du fil autour d'une bobine",
+          "Endormir avec un parfum",
+          "Tromper avec de belles paroles"
+        ],
+        "correct": 3,
+        "answer": 3,
+        "points": 1,
+        "explanation": "Embobiner quelqu'un, c'est essayer de le convaincre en le trompant. L'homme promettait de l'argent à Aïka pour qu'elle accepte ses tests."
+      },
+      {
+        "id": "q14",
+        "section": "Vocabulaire en contexte",
+        "type": "mcq",
+        "text": "« Elle s'éclipsa en pouffant. » Que veut dire « s'éclipser » ?",
+        "options": [
+          "Se cacher le visage",
+          "Se mettre très en colère",
+          "Partir discrètement",
+          "Tomber par terre"
+        ],
+        "correct": 2,
+        "answer": 2,
+        "points": 1,
+        "explanation": "S'éclipser, c'est partir vite, sans se faire remarquer, comme le soleil qui disparaît pendant une éclipse."
+      },
+      {
+        "id": "q15",
+        "section": "Vocabulaire en contexte",
+        "type": "mcq",
+        "text": "« Je braillai lamentablement : Shlurps, le monde entier est Shlurps ! » Que veut dire « brailler » ?",
+        "options": [
+          "Chuchoter",
+          "Bégayer",
+          "Chanter tout doucement",
+          "Crier très fort"
+        ],
+        "correct": 3,
+        "answer": 3,
+        "points": 1,
+        "explanation": "Brailler, c'est crier fort, de façon désagréable. Tom voulait hurler au secours, mais il braille une publicité."
+      },
+      {
+        "id": "q16",
+        "section": "Compréhension globale",
+        "type": "synthesis",
+        "text": "Quel résumé correspond le mieux à l'histoire ?",
+        "options": [
+          "Pendant les vacances, Tom se réveille plusieurs matins persuadé d'être un robot, avec une seule envie : manger des fruits au sirop Shlurps, comme les autres enfants du quartier. Avec Aïka, sur qui cela n'a aucun effet, il découvre que le père d'Aïka, un scientifique, a inventé un produit pour obliger les enfants à manger des légumes. Aïka le convainc d'arrêter ses expériences.",
+          "Pendant les vacances, Tom se réveille plusieurs matins persuadé d'être un robot, avec une seule envie : manger des fruits au sirop Shlurps, comme les autres enfants du quartier. Avec Aïka, sur qui cela n'a aucun effet, il découvre que le père d'Aïka, un scientifique, a inventé un produit pour faire vendre plus de fruits au sirop. Tom le dénonce à la police, qui ferme son laboratoire.",
+          "Pendant les vacances, Tom se réveille plusieurs matins persuadé d'être un robot, avec une seule envie : manger des légumes, comme les autres enfants du quartier. Avec Aïka, elle aussi transformée en robot chaque matin, il découvre que le patron des magasins Shlurps a inventé un produit pour obliger les enfants à acheter ses bocaux. Aïka le convainc d'arrêter ses expériences."
+        ],
+        "correct": 0,
+        "answer": 0,
+        "points": 1,
+        "explanation": "Seul le résumé A est correct. Le produit du père d'Aïka devait donner envie de légumes, mais il donne envie de fruits au sirop. Aïka, sur qui il ne marche pas, convainc son père d'arrêter, en échange de légumes un jour sur deux."
+      }
+    ]
+  },
+  {
+    "id": "oasis_des_fous",
+    "title": "L'oasis des fous",
+    "series": "Récit Express",
+    "totalPoints": 16,
+    "questions": [
+      {
+        "id": "q1",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Comment Malika et Momo s'entendent-ils au début de l'histoire ?",
+        "options": [
+          "Ils s'entendent très bien et jouent toujours ensemble",
+          "Ils s'ignorent et ne se parlent presque jamais",
+          "Ils s'aident toujours pour les tâches ménagères",
+          "Ils se disputent sans arrêt, pour tout et pour rien"
+        ],
+        "correct": 3,
+        "answer": 3,
+        "points": 1,
+        "explanation": "La salle de bain, les affaires de l'autre, les tâches ménagères : tout est prétexte à se disputer. Leur papa, épuisé, n'en peut plus."
+      },
+      {
+        "id": "q2",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quel est le métier de Youssef, leur papa ?",
+        "options": [
+          "Guide pour les caravanes qui traversent tout le désert",
+          "Ouvrier dans la palmeraie de Ouadâne",
+          "Mécanicien dans un garage de Nouakchott",
+          "Chauffeur de camion pour le chantier d'un barrage"
+        ],
+        "correct": 3,
+        "answer": 3,
+        "points": 1,
+        "explanation": "Youssef conduit « la Gazelle », un vieux camion de huit tonnes. Il transporte du matériel sur la piste de l'Enfer, jusqu'au chantier du barrage."
+      },
+      {
+        "id": "q3",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Pourquoi n'entend-on plus les camions, un matin ?",
+        "options": [
+          "Une tempête de sable a recouvert toute la piste",
+          "Un éboulement a fermé la gorge du Diable",
+          "Les ouvriers font grève car ils n'ont pas été payés",
+          "Le barrage est enfin terminé et inauguré"
+        ],
+        "correct": 2,
+        "answer": 2,
+        "points": 1,
+        "explanation": "Pour la première fois, les salaires n'ont pas été versés à la fin du mois. Les ouvriers arrêtent de travailler : c'est la grève."
+      },
+      {
+        "id": "q4",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quelle mission confie-t-on à Youssef ?",
+        "options": [
+          "Aller chercher l'argent de la paie à Ouadâne",
+          "Ramener monsieur Derdiche à Nouakchott",
+          "Livrer de l'eau de la palmeraie jusqu'au chantier",
+          "Conduire un médecin jusqu'au chantier"
+        ],
+        "correct": 0,
+        "answer": 0,
+        "points": 1,
+        "explanation": "Avec Ahmed, il doit rapporter au chantier plusieurs sacs de billets, pour que les ouvriers soient payés et reprennent le travail."
+      },
+      {
+        "id": "q5",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Pourquoi Malika prend-elle le volant de la Gazelle ?",
+        "options": [
+          "Ahmed lui a demandé de venir le chercher dans le désert",
+          "Son papa est blessé et l'argent doit arriver au chantier",
+          "Son papa veut enfin lui apprendre à conduire le camion",
+          "Elle veut rattraper les bandits pour reprendre l'argent"
+        ],
+        "correct": 1,
+        "answer": 1,
+        "points": 1,
+        "explanation": "Youssef a été attaqué et blessé, et les bandits le poursuivent. Il faut vite apporter les sacs de billets aux ouvriers avant d'être rattrapés."
+      },
+      {
+        "id": "q6",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Dans la gorge du Diable, comment Malika se débarrasse-t-elle d'un 4x4 ?",
+        "options": [
+          "Elle arrête le camion juste après un virage",
+          "Elle pousse le 4x4 dans le vide avec le camion",
+          "Elle fait tomber des rochers sur la piste",
+          "Momo tire dans les pneus avec le revolver"
+        ],
+        "correct": 0,
+        "answer": 0,
+        "points": 1,
+        "explanation": "Surpris de trouver le camion arrêté juste derrière le virage, le chauffeur du 4x4 braque et quitte la piste. Le 4x4 dévale une pente."
+      },
+      {
+        "id": "q7",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Pourquoi Malika klaxonne-t-elle sans arrêt près du chantier ?",
+        "options": [
+          "Pour que leur papa sache qu'ils sont bien arrivés",
+          "Pour que les ouvriers comprennent qu'ils ont besoin d'aide",
+          "Pour faire sortir le camion du sable où il s'enfonce",
+          "Pour faire peur aux bandits qui les suivent de près"
+        ],
+        "correct": 1,
+        "answer": 1,
+        "points": 1,
+        "explanation": "Le chantier est caché derrière une dune. Les ouvriers comprennent que ce klaxon est un appel de détresse et accourent."
+      },
+      {
+        "id": "q8",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Comment découvre-t-on que monsieur Derdiche est le traître ?",
+        "options": [
+          "Le revolver qu'il a donné à Youssef était vide",
+          "Ahmed l'a vu parler avec les bandits",
+          "On trouve des billets volés cachés dans sa valise",
+          "Les bandits donnent son nom aux ouvriers"
+        ],
+        "correct": 0,
+        "answer": 0,
+        "points": 1,
+        "explanation": "Derdiche dit que l'arme était chargée. Mais personne ne s'en est servi avant Momo, et elle était vide : c'est donc lui qui l'a vidée. Démasqué, il essaie de s'enfuir."
+      },
+      {
+        "id": "q9",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Le « fesh-fesh » est une zone de sable mou où les véhicules s'enfoncent.",
+        "correct": true,
+        "answer": true,
+        "points": 1,
+        "explanation": "VRAI : le camion s'y enfonce jusqu'en haut des roues. Le 4x4 des bandits s'y retrouve planté, lui aussi."
+      },
+      {
+        "id": "q10",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Momo tire sur les bandits et les fait fuir.",
+        "correct": false,
+        "answer": false,
+        "points": 1,
+        "explanation": "FAUX : quand il appuie sur la gâchette, rien ne se passe : le revolver est vide. Ce sont les ouvriers, armés de pelles et de pioches, qui font fuir les bandits."
+      },
+      {
+        "id": "q11",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "C'est Ahmed qui ramène Youssef, blessé, jusqu'à la maison.",
+        "correct": false,
+        "answer": false,
+        "points": 1,
+        "explanation": "FAUX : Ahmed attire les bandits plus loin pour que Youssef puisse s'enfuir. Youssef rentre seul, au volant de la Gazelle."
+      },
+      {
+        "id": "q12",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Quand tata Haïda est là, Malika et Momo ne se disputent plus.",
+        "correct": true,
+        "answer": true,
+        "points": 1,
+        "explanation": "VRAI : sa douceur leur rappelle leur maman. Pour eux, sa présence est « un rayon de soleil »."
+      },
+      {
+        "id": "q13",
+        "section": "Vocabulaire en contexte",
+        "type": "mcq",
+        "text": "« Des menaces étaient proférées, des noms d'oiseaux fusaient et des portes claquaient ! » Que sont ici des « noms d'oiseaux » ?",
+        "options": [
+          "Des sifflements",
+          "Des surnoms gentils",
+          "Des insultes",
+          "Des cris d'animaux"
+        ],
+        "correct": 2,
+        "answer": 2,
+        "points": 1,
+        "explanation": "Se traiter de noms d'oiseaux, c'est s'insulter. Malika et Momo s'envoient des méchancetés pendant leurs disputes."
+      },
+      {
+        "id": "q14",
+        "section": "Vocabulaire en contexte",
+        "type": "mcq",
+        "text": "« Lorsqu'il rentrait chez lui, harassé de fatigue, il séparait ses enfants. » Que veut dire « harassé » ?",
+        "options": [
+          "Mort de faim",
+          "Épuisé",
+          "Pressé",
+          "Joyeux"
+        ],
+        "correct": 1,
+        "answer": 1,
+        "points": 1,
+        "explanation": "Être harassé, c'est être extrêmement fatigué. Youssef fait beaucoup d'heures supplémentaires."
+      },
+      {
+        "id": "q15",
+        "section": "Vocabulaire en contexte",
+        "type": "mcq",
+        "text": "« Saïd appela l'un de ses hommes qui palabraient avec les autres ouvriers. » Que veut dire « palabrer » ?",
+        "options": [
+          "Manger ensemble",
+          "Travailler très dur sous le soleil",
+          "Discuter longuement",
+          "Se battre"
+        ],
+        "correct": 2,
+        "answer": 2,
+        "points": 1,
+        "explanation": "Palabrer, c'est discuter longtemps. Les ouvriers en grève parlent entre eux de la situation."
+      },
+      {
+        "id": "q16",
+        "section": "Compréhension globale",
+        "type": "synthesis",
+        "text": "Quel résumé correspond le mieux à l'histoire ?",
+        "options": [
+          "Malika et Momo se disputent sans cesse depuis la mort de leur maman. Un jour, leur papa Youssef, chauffeur de camion, est blessé par des bandits alors qu'il rapporte l'argent de la paie des ouvriers. Momo prend le volant du camion, mais les bandits les rattrapent dans le fesh-fesh et emportent tout l'argent. Heureusement, tata Haïda démasque le traître, et le frère et la sœur se réconcilient.",
+          "Malika et Momo se disputent sans cesse depuis la mort de leur maman. Un jour, leur papa Youssef, chauffeur de camion, est blessé dans un accident dans la gorge du Diable. Malika prend le volant du camion et, aidée par Momo, va chercher un médecin à Ouadâne pour le soigner. Quelques mois plus tard, le barrage est inauguré, et le frère et la sœur se réconcilient.",
+          "Malika et Momo se disputent sans cesse depuis la mort de leur maman. Un jour, leur papa Youssef, chauffeur de camion, est blessé par des bandits alors qu'il rapporte l'argent de la paie des ouvriers. Malika prend le volant du camion et, aidée par Momo, échappe aux bandits jusqu'au chantier du barrage. Les ouvriers les sauvent, le traître est démasqué, et le frère et la sœur se réconcilient."
+        ],
+        "correct": 2,
+        "answer": 2,
+        "points": 1,
+        "explanation": "Seul le résumé C est correct. Malika conduit la Gazelle jusqu'au chantier avec Momo, poursuivie par les bandits. Grâce au klaxon, les ouvriers arrivent et les sauvent. Monsieur Derdiche, le traître, est arrêté, et Malika et Momo se disent enfin qu'ils s'aiment."
+      }
+    ]
   }
 ];
 
-window.LIVRES_VERSION = '20260927e';
+window.LIVRES_VERSION = '20260928a';
