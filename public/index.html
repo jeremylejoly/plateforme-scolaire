@@ -3590,24 +3590,38 @@ input[type=text].calc-input.incorrect {
   console.log('✅ Firebase initialisé');
 
   // ===== SYNC PLAN DE TRAVAIL =====
+  // Normalisation des données du plan (Firebase peut renvoyer un objet à la place d'un tableau)
+  const _PLAN_CLASS_KEYS = ['lejoly', 'verryken'];
+  window.lcmlPlanList = function(v) {
+    if (Array.isArray(v)) return v.filter(Boolean);
+    if (v && typeof v === 'object') return Object.keys(v).filter(k => /^\d+$/.test(k)).sort((a, b) => a - b).map(k => v[k]).filter(Boolean);
+    return [];
+  };
+  // Ancien nœud commun 'settings/plan_travail' : liste de Lejoly (clés numériques), sans les nœuds de classe
+  window.lcmlLegacyPlanList = function(v) { return window.lcmlPlanList(v); };
+  // Plans individuels : { élève: [ids] } sans les éventuels nœuds de classe
+  window.lcmlIndividualPlans = function(v) {
+    const out = {};
+    if (v && typeof v === 'object') Object.keys(v).forEach(k => { if (!_PLAN_CLASS_KEYS.includes(k)) out[k] = window.lcmlPlanList(v[k]); });
+    return out;
+  };
   window.FB_savePlanTravail = async function(clsOrAssigned, maybeAssigned) {
     try {
       const cls = (typeof maybeAssigned !== 'undefined') ? clsOrAssigned : (typeof teacherCls !== 'undefined' ? teacherCls : 'lejoly');
       const assigned = (typeof maybeAssigned !== 'undefined') ? maybeAssigned : clsOrAssigned;
+      // Uniquement le nœud de la classe. (Avant, pour Lejoly, on réécrivait aussi 'settings/plan_travail'
+      // en entier, ce qui effaçait le plan de la classe de M. Verryken.)
       await set(ref(db, 'settings/plan_travail/' + cls), assigned);
-      if (cls === 'lejoly') {
-        await set(ref(db, 'settings/plan_travail'), assigned);
-      }
     } catch(e) { console.warn('Firebase savePlanTravail error:', e); }
   };
   window.FB_loadPlanTravail = async function(targetCls) {
     try {
       const cls = targetCls || (typeof teacherCls !== 'undefined' ? teacherCls : (typeof state !== 'undefined' && state.studentCls ? state.studentCls : 'lejoly'));
       const snap = await get(ref(db, 'settings/plan_travail/' + cls));
-      if (snap.exists()) return snap.val();
+      if (snap.exists()) return window.lcmlPlanList(snap.val());
       if (cls === 'lejoly') {
         const fallback = await get(ref(db, 'settings/plan_travail'));
-        return fallback.exists() ? fallback.val() : null;
+        return fallback.exists() ? window.lcmlLegacyPlanList(fallback.val()) : null;
       }
       return null;
     } catch(e) { console.warn('Firebase loadPlanTravail error:', e); return null; }
@@ -3615,20 +3629,18 @@ input[type=text].calc-input.incorrect {
   window.FB_savePlanTravailIndividual = async function(cls, individual) {
     try {
       const classKey = cls || (typeof teacherCls !== 'undefined' ? teacherCls : 'lejoly');
+      // Uniquement le nœud de la classe (voir FB_savePlanTravail).
       await set(ref(db, 'settings/plan_travail_individual/' + classKey), individual);
-      if (classKey === 'lejoly') {
-        await set(ref(db, 'settings/plan_travail_individual'), individual);
-      }
     } catch(e) { console.warn('Firebase savePlanTravailIndividual error:', e); }
   };
   window.FB_loadPlanTravailIndividual = async function(cls) {
     try {
       const classKey = cls || (typeof teacherCls !== 'undefined' ? teacherCls : (typeof state !== 'undefined' && state.studentCls ? state.studentCls : 'lejoly'));
       const snap = await get(ref(db, 'settings/plan_travail_individual/' + classKey));
-      if (snap.exists()) return snap.val();
+      if (snap.exists()) return window.lcmlIndividualPlans(snap.val());
       if (classKey === 'lejoly') {
         const fallback = await get(ref(db, 'settings/plan_travail_individual'));
-        return fallback.exists() ? fallback.val() : null;
+        return fallback.exists() ? window.lcmlIndividualPlans(fallback.val()) : null;
       }
       return null;
     } catch(e) { console.warn('Firebase loadPlanTravailIndividual error:', e); return null; }
@@ -8530,7 +8542,7 @@ function saveResult(entry){
     console.log('Mode enseignant actif : résultat ignoré (pas de sauvegarde).');
     return;
   }
-  if (typeof window.teacherPreviewActive !== 'undefined' && window.teacherPreviewActive) {
+  if (typeof window.teacherPreviewActive !== 'undefined' && window.teacherPreviewActive && typeof state !== 'undefined' && state.role === 'teacher') {
     return;
   }
   if (!entry) return;
@@ -8713,6 +8725,9 @@ function showScreen(id){
 
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
+  // Bouton « Espace enseignant » : jamais visible pendant la session d'un élève
+  const _tl = document.querySelector('.teacher-link');
+  if (_tl) _tl.style.display = (typeof state !== 'undefined' && state.role !== 'teacher' && state.student) ? 'none' : '';
   window.scrollTo(0,0);
 
   // Mémoriser l'écran actif de l'élève pour reprise automatique après veille
@@ -9204,6 +9219,7 @@ function doCheckPin(){
 
 function goToHome(){
   state.role='student';
+  if (typeof resetTeacherPreviewState === 'function') resetTeacherPreviewState();
   localStorage.removeItem('lq_teacher_session');
   if (window.FB_isTeacher && window.FB_teacherSignOut) window.FB_teacherSignOut().catch(()=>{});
   updateAppLogo(state.studentCls);
@@ -9512,8 +9528,8 @@ function resetToWelcome(){
 }
 
 function showTeacherLogin(){
-  state.student = '';
-  state.studentCls = '';
+  // La session élève n'est effacée qu'après un mot de passe correct (openTeacherPanel).
+  // Avant, un simple tap sur « Espace enseignant » vidait l'élève et son plan de travail.
   document.getElementById('teacher-modal').classList.add('open');
   document.getElementById('pw-input').value='';
   document.getElementById('pw-error').style.display='none';
@@ -9522,12 +9538,7 @@ function showTeacherLogin(){
 
 function selectTeacherModalClass(cls){
   teacherCls = cls;
-  state.student = '';
-  state.studentCls = '';
-  planTravailLoaded = false;
-  planTravailAssigned = [];
-  planTravailIndividual = {};
-  planTravailTarget = 'class';
+  // (La session élève et le plan en mémoire sont réinitialisés par openTeacherPanel, après le mot de passe.)
   document.querySelectorAll('.teacher-select-btn').forEach(b => {
     b.style.borderColor = '#e5e7eb';
     b.style.background = '#f9fafb';
@@ -31468,6 +31479,7 @@ function goToRecitsExpress(){
 
 // ===== LANDING PAGE =====
 function goToLogin(){
+  if (typeof resetTeacherPreviewState === 'function') resetTeacherPreviewState();
   // Nettoyer la présence en direct si l'élève se déconnecte
   if (typeof window.clearStudentPresence === 'function') {
     window.clearStudentPresence();
@@ -32191,8 +32203,8 @@ function initRealtimeStudentSync() {
     let val = snap.val();
     if (!snap.exists() && cls === 'lejoly') {
       window.FB_get(window.FB_ref(window.FB_DB, 'settings/plan_travail')).then(legacySnap => {
-        if (legacySnap.exists() && Array.isArray(legacySnap.val())) {
-          planTravailAssigned = legacySnap.val();
+        if (legacySnap.exists()) {
+          planTravailAssigned = window.lcmlLegacyPlanList ? window.lcmlLegacyPlanList(legacySnap.val()) : legacySnap.val();
           localStorage.setItem('lq_plan_travail_' + cls, JSON.stringify(planTravailAssigned));
           localStorage.setItem('lq_plan_travail', JSON.stringify(planTravailAssigned));
           updateHomePlanCardUI();
@@ -32200,6 +32212,7 @@ function initRealtimeStudentSync() {
       }).catch(()=>{});
       return;
     }
+    if (val && window.lcmlPlanList) val = window.lcmlPlanList(val);
     if (val && Array.isArray(val)) {
       planTravailAssigned = val;
       localStorage.setItem('lq_plan_travail_' + cls, JSON.stringify(val));
@@ -32219,7 +32232,7 @@ function initRealtimeStudentSync() {
     if (!snap.exists() && cls === 'lejoly') {
       window.FB_get(window.FB_ref(window.FB_DB, 'settings/plan_travail_individual')).then(legacySnap => {
         if (legacySnap.exists()) {
-          planTravailIndividual = legacySnap.val();
+          planTravailIndividual = window.lcmlIndividualPlans ? window.lcmlIndividualPlans(legacySnap.val()) : legacySnap.val();
           const myIndPlan = planTravailIndividual[student] || [];
           localStorage.setItem('lq_plan_travail_individual_' + cls + '_' + student, JSON.stringify(myIndPlan));
           localStorage.setItem('lq_plan_travail_individual_' + student, JSON.stringify(myIndPlan));
@@ -32229,6 +32242,7 @@ function initRealtimeStudentSync() {
       }).catch(()=>{});
       return;
     }
+    if (val && window.lcmlIndividualPlans) val = window.lcmlIndividualPlans(val);
     if (val) {
       planTravailIndividual = val;
       const myIndPlan = val[student] || [];
@@ -32687,9 +32701,18 @@ function returnFromTeacherPreview() {
   if (typeof switchGestionTab === 'function') switchGestionTab('activities');
 }
 
+// Réinitialise l'aperçu enseignant (appelé à chaque connexion / déconnexion)
+function resetTeacherPreviewState() {
+  window.teacherPreviewActive = false;
+  window.teacherPreviewReturn = null;
+  const bar = document.getElementById('teacher-preview-floating-bar');
+  if (bar) bar.style.display = 'none';
+}
+window.resetTeacherPreviewState = resetTeacherPreviewState;
+
 // Intercepter tout bouton « Retour » d'exercice pendant la prévisualisation enseignant
 document.addEventListener('click', function(e) {
-  if (!window.teacherPreviewActive) return;
+  if (!window.teacherPreviewActive || (typeof state !== 'undefined' && state.role !== 'teacher')) return;
   const backBtn = e.target.closest('.back-btn');
   if (backBtn && backBtn.id !== 'fiche-viewer-back-btn') {
     const currentScreen = backBtn.closest('.screen');
@@ -47749,7 +47772,7 @@ function openFiche(filename, title, sourceScreen) {
 function closeFicheViewer() {
   const iframe = document.getElementById('fiche-viewer-iframe');
   if (iframe) iframe.src = 'about:blank';
-  if (typeof window.teacherPreviewActive !== 'undefined' && window.teacherPreviewActive) {
+  if (typeof window.teacherPreviewActive !== 'undefined' && window.teacherPreviewActive && typeof state !== 'undefined' && state.role === 'teacher') {
     if (typeof returnFromTeacherPreview === 'function') {
       returnFromTeacherPreview();
       return;
