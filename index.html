@@ -2426,6 +2426,29 @@ input[type=text].calc-input.incorrect {
   border: none; transition: all .15s; flex-shrink: 0;
 }
 .pt-item-link:hover { background: var(--purple); color: white; }
+.pt-item-preview-btn {
+  font-size: 11px; font-weight: 700; padding: 4px 10px;
+  border-radius: 999px; background: #e0e7ff;
+  color: #4338ca; cursor: pointer; white-space: nowrap;
+  border: 1px solid #c7d2fe; transition: all .15s; flex-shrink: 0;
+  display: inline-flex; align-items: center; gap: 4px;
+  font-family: inherit;
+}
+.pt-item-preview-btn:hover {
+  background: #4338ca; color: #ffffff; border-color: #4338ca;
+  transform: translateY(-1px); box-shadow: 0 2px 6px rgba(67, 56, 202, 0.25);
+}
+.pt-item-preview-btn:active {
+  transform: translateY(0);
+}
+.pt-item-highlight {
+  animation: ptItemGlow 2.5s ease-out forwards;
+}
+@keyframes ptItemGlow {
+  0% { background: #fef08a; box-shadow: 0 0 0 3px #facc15; }
+  50% { background: #fef9c3; box-shadow: 0 0 0 2px #fde047; }
+  100% { background: transparent; box-shadow: none; }
+}
 .pt-score-badge {
   font-size: 11px; font-weight: 700; padding: 2px 7px;
   border-radius: 10px; white-space: nowrap; flex-shrink: 0;
@@ -32440,12 +32463,14 @@ function bulkToggleAllSite(makeActive) {
 
 function teacherPreviewActivity(id, screen, fn, filename, label) {
   window.teacherPreviewActive = true;
-  window.teacherPreviewReturn = { screen: 'screen-gestion', tab: 'activities' };
+  window.teacherPreviewReturn = { type: 'gestion', screen: 'screen-gestion', tab: 'activities' };
 
   const bar = document.getElementById('teacher-preview-floating-bar');
   if (bar) {
     const titleEl = document.getElementById('teacher-preview-activity-title');
     if (titleEl) titleEl.textContent = label || id;
+    const btn = bar.querySelector('button');
+    if (btn) btn.innerHTML = '⬅️ Revenir à la liste des activités';
     bar.style.display = 'flex';
   }
 
@@ -32456,19 +32481,118 @@ function teacherPreviewActivity(id, screen, fn, filename, label) {
   }
 }
 
+function ptTeacherPreviewItem(itemId, e) {
+  if (e) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+
+  let foundItem = null;
+  const masterCatalogue = (typeof getActivitiesMasterRegistry === 'function') ? getActivitiesMasterRegistry() : PLAN_CATALOGUE;
+  for (const cat of masterCatalogue) {
+    for (const item of cat.items) {
+      if (item.id === itemId) {
+        foundItem = item;
+        break;
+      }
+    }
+    if (foundItem) break;
+  }
+  if (!foundItem) {
+    console.warn('Item introuvable dans le catalogue:', itemId);
+    return;
+  }
+
+  const activeScreen = (document.querySelector('.screen.active') || {}).id || 'screen-plan-travail-teacher-full';
+  const currentScrollY = window.scrollY || window.pageYOffset || 0;
+
+  window.teacherPreviewActive = true;
+  window.teacherPreviewReturn = {
+    type: 'plan-travail',
+    screen: activeScreen,
+    scrollY: currentScrollY,
+    itemId: itemId
+  };
+
+  const bar = document.getElementById('teacher-preview-floating-bar');
+  if (bar) {
+    const titleEl = document.getElementById('teacher-preview-activity-title');
+    if (titleEl) titleEl.textContent = foundItem.label || itemId;
+    const btn = bar.querySelector('button');
+    if (btn) btn.innerHTML = '⬅️ Retour au plan de travail';
+    bar.style.display = 'flex';
+  }
+
+  if (foundItem.screen === 'screen-fiche-viewer' && foundItem.filename) {
+    openFiche(foundItem.filename, foundItem.label, activeScreen);
+  } else if (foundItem.screen) {
+    planNavigateTo(foundItem.screen, foundItem.fn);
+  }
+}
+
 function returnFromTeacherPreview() {
   const bar = document.getElementById('teacher-preview-floating-bar');
   if (bar) bar.style.display = 'none';
-  window.teacherPreviewActive = false;
 
   const iframe = document.getElementById('fiche-viewer-iframe');
   if (iframe) iframe.src = 'about:blank';
+  const iframeCeb = document.getElementById('ceb-viewer-iframe');
+  if (iframeCeb) iframeCeb.src = 'about:blank';
 
   if (typeof tetStop === 'function') tetStop();
+  if (typeof state !== 'undefined' && state.book) state.book = '';
+
+  const ret = window.teacherPreviewReturn;
+  window.teacherPreviewActive = false;
+  window.teacherPreviewReturn = null;
+
+  if (ret && ret.type === 'plan-travail') {
+    const targetScreen = ret.screen || 'screen-plan-travail-teacher-full';
+    showScreen(targetScreen);
+    if (targetScreen === 'screen-teacher-panel') {
+      const tabBtn = document.getElementById('tab-plan-btn');
+      if (tabBtn && typeof switchTab === 'function') switchTab('tab-plan', tabBtn);
+    }
+    setTimeout(() => {
+      if (ret.itemId) {
+        const itemEl = document.querySelector(`.pt-item[data-id="${ret.itemId}"]`);
+        if (itemEl) {
+          itemEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          itemEl.classList.remove('pt-item-highlight');
+          void itemEl.offsetWidth;
+          itemEl.classList.add('pt-item-highlight');
+          setTimeout(() => itemEl.classList.remove('pt-item-highlight'), 2600);
+          return;
+        }
+      }
+      if (typeof ret.scrollY === 'number') {
+        window.scrollTo({ top: ret.scrollY, behavior: 'instant' });
+      }
+    }, 80);
+    return;
+  }
 
   showScreen('screen-gestion');
-  switchGestionTab('activities');
+  if (typeof switchGestionTab === 'function') switchGestionTab('activities');
 }
+
+// Intercepter tout bouton « Retour » d'exercice pendant la prévisualisation enseignant
+document.addEventListener('click', function(e) {
+  if (!window.teacherPreviewActive) return;
+  const backBtn = e.target.closest('.back-btn');
+  if (backBtn && backBtn.id !== 'fiche-viewer-back-btn') {
+    const currentScreen = backBtn.closest('.screen');
+    if (currentScreen && currentScreen.id !== 'screen-plan-travail-teacher-full' && currentScreen.id !== 'screen-teacher-panel') {
+      e.preventDefault();
+      e.stopPropagation();
+      e.stopImmediatePropagation();
+      returnFromTeacherPreview();
+    }
+  }
+}, true);
+
+window.ptTeacherPreviewItem = ptTeacherPreviewItem;
+window.returnFromTeacherPreview = returnFromTeacherPreview;
 
 function renderGestionActivities() {
   const container = document.getElementById('gestion-activities-container');
@@ -32974,6 +33098,7 @@ async function _renderPlanTravailInto(el) {
               onchange="ptToggleItem('${item.id}', this.checked)">
             <span class="pt-item-icon">${item.icon}</span>
             <label class="pt-item-label" for="pt-cb-${item.id}" style="cursor:pointer">${item.label}${isMenuEntry ? ' <span style="font-size:11px;color:var(--muted);font-weight:700;">(thème entier — ancien plan, décochez puis choisissez les exercices)</span>' : ''}</label>
+            <button type="button" class="pt-item-preview-btn" onclick="ptTeacherPreviewItem('${item.id}', event)" title="Voir l'activité en direct">👁️ Voir l'activité</button>
           </div>`;
         });
         html += `</div>`;

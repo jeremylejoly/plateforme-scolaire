@@ -2,6 +2,30 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8"/>
+<script>
+/* Le site ne doit jamais s'afficher DANS un exercice ou un jeu.
+   Certains jeux ont un lien « Accueil » vers index.html : cliqué depuis le site, il chargeait
+   tout le site à l'intérieur du cadre du jeu (ex. : on cliquait sur « Pendu » et on voyait « Robot »).
+   Ici : on remet le jeu dans son cadre et on ramène l'élève au menu du vrai site. */
+(function(){
+  if (window.self === window.top) return;
+  try {
+    var fe = window.frameElement, pdoc = window.parent.document, pwin = window.parent;
+    if (fe && fe.id === 'fiche-viewer-iframe' && typeof pwin.closeFicheViewer === 'function') {
+      pwin.closeFicheViewer();
+      return;
+    }
+    var lazy = fe && fe.getAttribute('data-lazy-src');
+    var screen = fe && fe.closest ? fe.closest('.screen') : null;
+    var back = screen ? screen.querySelector('.back-btn') : null;
+    if (lazy) location.replace(new URL(lazy, pwin.location.href).href); else location.replace('about:blank');
+    if (back) setTimeout(function(){ back.click(); }, 0);
+  } catch (e) {
+    // Cadre d'un autre site : on affiche le site en pleine page
+    try { window.top.location.href = location.href; } catch (e2) {}
+  }
+})();
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Plateforme Scolaire – 5e & 6e primaire FWB</title>
 <meta name="theme-color" content="#1E1F29">
@@ -37,9 +61,37 @@
       });
 
       // Notification de mise à jour du Service Worker sans interruption de l'utilisateur
+      // Nouvelle version installée : si la page vient juste de s'ouvrir, on recharge une fois
+      // pour que l'élève ait tout de suite la bonne version (jamais en plein exercice).
+      var _swDebut = Date.now(), _swRecharge = false;
+      // Moment sans risque pour recharger : écran d'accueil / connexion affiché (aucun élève en plein travail)
+      window.lcmlPeutRecharger = function() {
+        var st = window.state || {};
+        if (st.role === 'teacher') return false;          // jamais pendant le travail de l'enseignant
+        var ma = document.getElementById('main-area');
+        var appliMasquee = !ma || getComputedStyle(ma).display === 'none';
+        return appliMasquee || !st.student;               // écran d'accueil, ou aucun élève connecté
+      };
+      window.lcmlRecharger = function() { if (_swRecharge) return; _swRecharge = true; location.reload(); };
       navigator.serviceWorker.addEventListener('controllerchange', function() {
-        console.log('✨ Service Worker mis à jour en arrière-plan (sans rechargement forcé).');
+        if (Date.now() - _swDebut < 15000 || window.lcmlPeutRecharger()) { window.lcmlRecharger(); return; }
+        window._lcmlMajEnAttente = true; // appliquée au prochain moment sans risque
+        console.log('✨ Nouvelle version prête : elle sera appliquée à l\'écran d\'accueil.');
       });
+      // Application iPad / Android (écran d'accueil) : elle reprend là où elle était sans recharger.
+      // À chaque retour au premier plan : on cherche une mise à jour, et on recharge si c'est sans risque.
+      document.addEventListener('visibilitychange', function() {
+        if (document.visibilityState !== 'visible') return;
+        if (navigator.serviceWorker.getRegistration) {
+          navigator.serviceWorker.getRegistration().then(function(r) { if (r) r.update().catch(function(){}); });
+        }
+        if (window.lcmlPeutRecharger() && (window._lcmlMajEnAttente || Date.now() - _swDebut > 10 * 60 * 1000)) window.lcmlRecharger();
+      });
+      // Vérification régulière (toutes les 15 min) pendant que l'appli reste ouverte
+      setInterval(function() {
+        if (navigator.serviceWorker.getRegistration) navigator.serviceWorker.getRegistration().then(function(r) { if (r) r.update().catch(function(){}); });
+        if (window._lcmlMajEnAttente && window.lcmlPeutRecharger()) window.lcmlRecharger();
+      }, 15 * 60 * 1000);
     }
   }
 </script>
@@ -2346,6 +2398,27 @@ input[type=text].calc-input.incorrect {
 .pt-item-label { flex: 1; }
 .pt-item-icon { font-size: 16px; flex-shrink: 0; width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; }
 .pt-item-icon img { width: 100%; height: 100%; object-fit: contain; }
+/* Navigation rapide sujet / sous-sujet du plan de travail */
+.pt-nav { display:flex; flex-direction:column; gap:10px; margin-bottom:1rem; }
+.pt-nav-subjects { display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:8px; }
+.pt-subject-tile { display:flex; flex-direction:column; align-items:flex-start; gap:4px; padding:10px 12px; border:2px solid var(--border); border-radius:14px; background:var(--surface); color:var(--text); font-family:inherit; cursor:pointer; text-align:left; transition:all .15s; }
+.pt-subject-tile:hover { border-color:var(--purple); transform:translateY(-1px); }
+.pt-subject-tile.active { border-color:var(--purple); background:rgba(124,58,237,.08); box-shadow:3px 3px 0 var(--purple); }
+.pt-subject-icon { font-size:22px; line-height:1; }
+.pt-subject-name { font-weight:800; font-size:14px; }
+.pt-nav-count { font-size:11px; font-weight:700; color:var(--muted); background:var(--bg); border-radius:999px; padding:1px 8px; }
+.pt-nav-count.has-checked { color:#fff; background:var(--purple); }
+.pt-nav-groups { display:none; flex-wrap:wrap; gap:6px; padding:8px; border:1px dashed var(--border); border-radius:12px; }
+.pt-grp-chip { display:inline-flex; align-items:center; gap:6px; padding:6px 12px; border:1.5px solid var(--border); border-radius:999px; background:var(--surface); color:var(--text); font-family:inherit; font-size:13px; font-weight:700; cursor:pointer; }
+.pt-grp-chip:hover { border-color:var(--purple); }
+.pt-grp-chip.active { background:var(--purple); border-color:var(--purple); color:#fff; }
+.pt-grp-chip.active .pt-nav-count { background:rgba(255,255,255,.25); color:#fff; }
+.pt-nav-tools { display:flex; flex-wrap:wrap; gap:10px; align-items:center; }
+.pt-search { flex:1; min-width:200px; padding:8px 12px; border:1.5px solid var(--border); border-radius:10px; background:var(--surface); color:var(--text); font-family:inherit; font-size:13px; }
+.pt-only-checked { display:inline-flex; align-items:center; gap:6px; font-size:13px; font-weight:700; cursor:pointer; }
+.pt-nav-actions { display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
+.pt-scope-label { font-size:12px; color:var(--muted); font-weight:700; margin-right:auto; }
+.pt-nav-empty { text-align:center; color:var(--muted); font-size:14px; padding:1.5rem; }
 .pt-item-link {
   font-size: 11px; font-weight: 700; padding: 3px 8px;
   border-radius: 10px; background: var(--purple-light);
@@ -2353,6 +2426,29 @@ input[type=text].calc-input.incorrect {
   border: none; transition: all .15s; flex-shrink: 0;
 }
 .pt-item-link:hover { background: var(--purple); color: white; }
+.pt-item-preview-btn {
+  font-size: 11px; font-weight: 700; padding: 4px 10px;
+  border-radius: 999px; background: #e0e7ff;
+  color: #4338ca; cursor: pointer; white-space: nowrap;
+  border: 1px solid #c7d2fe; transition: all .15s; flex-shrink: 0;
+  display: inline-flex; align-items: center; gap: 4px;
+  font-family: inherit;
+}
+.pt-item-preview-btn:hover {
+  background: #4338ca; color: #ffffff; border-color: #4338ca;
+  transform: translateY(-1px); box-shadow: 0 2px 6px rgba(67, 56, 202, 0.25);
+}
+.pt-item-preview-btn:active {
+  transform: translateY(0);
+}
+.pt-item-highlight {
+  animation: ptItemGlow 2.5s ease-out forwards;
+}
+@keyframes ptItemGlow {
+  0% { background: #fef08a; box-shadow: 0 0 0 3px #facc15; }
+  50% { background: #fef9c3; box-shadow: 0 0 0 2px #fde047; }
+  100% { background: transparent; box-shadow: none; }
+}
 .pt-score-badge {
   font-size: 11px; font-weight: 700; padding: 2px 7px;
   border-radius: 10px; white-space: nowrap; flex-shrink: 0;
@@ -3089,10 +3185,23 @@ input[type=text].calc-input.incorrect {
   margin-bottom: 2rem;
 }
 </style>
-<script src="livres.js"></script>
-<script src="exercices_francais.js"></script>
-<script src="exercices_maths.js"></script>
-<script src="exercices_eveil.js"></script>
+<script src="livres.js?v=20260928c"></script>
+<script src="exercices_francais.js?v=20260927e"></script>
+<script src="exercices_maths.js?v=20260927e"></script>
+<script src="exercices_eveil.js?v=20260927e"></script>
+<script>
+/* Garde-fou : si un appareil a chargé une ancienne version du fichier des livres
+   (0/16, « undefined », livre absent), on vide les copies en mémoire et on recharge une fois. */
+(function(){
+  var ATTENDU = '20260928c';
+  if (window.LIVRES_VERSION === ATTENDU) return;
+  try { if (sessionStorage.getItem('lq_repare') === ATTENDU) return; sessionStorage.setItem('lq_repare', ATTENDU); } catch(e) {}
+  var recharger = function(){ location.reload(); };
+  if (window.caches && caches.keys) {
+    caches.keys().then(function(k){ return Promise.all(k.map(function(n){ return caches.delete(n); })); }).then(recharger, recharger);
+  } else { recharger(); }
+})();
+</script>
 
 <!-- Firebase SDK -->
 <script type="module">
@@ -3374,6 +3483,17 @@ input[type=text].calc-input.incorrect {
         await set(ref(db, 'settings/archived_books'), arr);
       }
     } catch(e) { console.warn('Firebase saveArchivedBooks error:', e); }
+  };
+
+  // ===== RÉCITS EXPRESS : une seule tentative, l'enseignant peut l'annuler =====
+  // settings/retakes/<classe>/<élève>/<livre> = moment où l'enseignant a annulé la tentative
+  window.FB_setRetake = async function(cls, student, book, ts) {
+    await set(ref(db, 'settings/retakes/' + cls + '/' + String(student).replace(/[\s.#$\[\]\/]+/g, '_') + '/' + book), ts);
+  };
+  window.FB_loadRetakes = async function(cls, student) {
+    const path = 'settings/retakes/' + cls + (student ? '/' + String(student).replace(/[\s.#$\[\]\/]+/g, '_') : '');
+    const snap = await get(ref(db, path));
+    return snap.exists() ? (snap.val() || {}) : {};
   };
 
   window.FB_loadArchivedBooks = async function(targetCls) {
@@ -4570,6 +4690,12 @@ input[type=text].calc-input.incorrect {
   <div id="screen-jeu-pipopipette" class="screen">
     <button class="back-btn" onclick="showScreen('screen-jeux');renderJeuxMenu();">← Retour</button>
     <iframe data-lazy-src="pipopipette.html" style="width:100%;height:calc(100vh - 60px);border:none;border-radius:12px;" allowfullscreen></iframe>
+  </div>
+
+  <!-- SCREEN: L'Œil du Temps (Jeu de Kim Historique) -->
+  <div id="screen-jeu-kim" class="screen">
+    <button class="back-btn" onclick="showScreen('screen-jeux');renderJeuxMenu();">← Retour</button>
+    <iframe data-lazy-src="kim_histoire.html" style="width:100%;height:calc(100vh - 60px);border:none;border-radius:12px;" allowfullscreen></iframe>
   </div>
 
   <!-- SCREEN: Fiches -->
@@ -7994,6 +8120,7 @@ input[type=text].calc-input.incorrect {
       <button class="panel-tab" id="gtab-students-btn" onclick="switchGestionTab('students')">👤 Élèves</button>
       <button class="panel-tab" id="gtab-journal-btn" onclick="switchGestionTab('journal')">📋 Journal des résultats</button>
       <button class="panel-tab" id="gtab-activities-btn" onclick="switchGestionTab('activities')">🎯 Liste des activités</button>
+      <button class="panel-tab" id="gtab-recits-btn" onclick="switchGestionTab('recits')">📖 Récits express</button>
     </div>
     <div id="gtab-results">
       <div id="gestion-summary" class="gestion-summary"></div>
@@ -8007,6 +8134,9 @@ input[type=text].calc-input.incorrect {
     </div>
     <div id="gtab-activities" style="display:none;">
       <div id="gestion-activities-container"></div>
+    </div>
+    <div id="gtab-recits" style="display:none; height:calc(100vh - 170px); min-height:650px; width:100%; border-radius:16px; overflow:hidden; border:2px solid var(--border); box-shadow:3px 3px 0 var(--border); background:#ffffff;">
+      <iframe src="recits_express.html" id="recits-lcml-iframe" style="width:100%; height:100%; border:none; display:block;"></iframe>
     </div>
   </div>
 
@@ -8195,9 +8325,19 @@ function getAllStudents() {
 }
 
 function loadBooks() {
+  // livres.js est la référence : une ancienne copie locale (lq_books) ne doit jamais masquer
+  // les questionnaires ajoutés depuis. On n'en garde que les livres créés à la main (id absent de livres.js).
+  if(window.LIVRES && window.LIVRES.length > 0) {
+    let custom = [];
+    try {
+      const saved = JSON.parse(localStorage.getItem('lq_books') || '[]');
+      const known = new Set(window.LIVRES.map(b => b.id));
+      if (Array.isArray(saved)) custom = saved.filter(b => b && b.id && !known.has(b.id));
+    } catch(e) {}
+    return window.LIVRES.slice().concat(custom);
+  }
   const saved = localStorage.getItem('lq_books');
   if(saved) return JSON.parse(saved);
-  if(window.LIVRES && window.LIVRES.length > 0) return window.LIVRES;
   return [
   {id:"enquete",title:"Enquête à l'hôpital désaffecté",series:"Récit Express",totalPoints:17,
     questions:[
@@ -8307,6 +8447,10 @@ function loadBooks() {
   ];
 }
 function saveBooks(b){
+  if(window.LIVRES && window.LIVRES.length > 0){
+    const known = new Set(window.LIVRES.map(x => x.id));
+    b = b.filter(x => !known.has(x.id));
+  }
   localStorage.setItem('lq_books',JSON.stringify(b));
   if(window.FB_saveBooks){
     window.FB_saveBooks(b);
@@ -8472,30 +8616,11 @@ window.addEventListener('load',function(){
     },100);
     return;
   }
-  const studentSessionRaw = localStorage.getItem('lq_student_session');
-  if (studentSessionRaw) {
-    try {
-      const sess = JSON.parse(studentSessionRaw);
-      if (sess && sess.student && sess.studentCls) {
-        state.student = sess.student;
-        state.studentCls = sess.studentCls;
-        state.role = 'student';
-        setTimeout(function(){
-          document.getElementById('screen-landing').style.display='none';
-          document.getElementById('main-area').style.display='block';
-          goToHome();
-          const activeScreen = localStorage.getItem('lq_active_screen');
-          if (activeScreen && activeScreen !== 'screen-landing' && activeScreen !== 'screen-welcome' && activeScreen !== 'screen-subjects' && !activeScreen.startsWith('screen-teacher')) {
-            const screenEl = document.getElementById(activeScreen);
-            if (screenEl) {
-              showScreen(activeScreen);
-              if (typeof refreshCurrentMenu === 'function') refreshCurrentMenu();
-            }
-          }
-        }, 100);
-      }
-    } catch(e) {}
-  }
+  // Un rechargement de la page déconnecte toujours l'élève : on ne restaure jamais sa session
+  try {
+    localStorage.removeItem('lq_student_session');
+    localStorage.removeItem('lq_active_screen');
+  } catch(e) {}
 });
 
 // Écrans sur lesquels le bouton accueil NE doit PAS apparaître
@@ -8520,6 +8645,11 @@ function showScreen(id){
     if (typeof rhDrag !== 'undefined') {
       rhDrag = null;
       rhSel = null;
+    }
+  }
+  if (id !== 'screen-jeu-kim') {
+    if (typeof stopJeuKim === 'function') {
+      stopJeuKim();
     }
   }
 
@@ -8582,6 +8712,21 @@ function showScreen(id){
       window.currentStudentActivity = label;
       window.updateStudentPresence(label);
       window.initPresenceConnectedListener();
+    }
+  }
+}
+
+function stopJeuKim() {
+  const s = document.getElementById('screen-jeu-kim');
+  if (s) {
+    const f = s.querySelector('iframe');
+    if (f) {
+      try {
+        if (f.contentWindow && typeof f.contentWindow.stopAndResetGame === 'function') {
+          f.contentWindow.stopAndResetGame();
+        }
+      } catch(e) {}
+      f.setAttribute('src', 'about:blank');
     }
   }
 }
@@ -8837,29 +8982,14 @@ function renderNamesForClass(cls){
 }
 
 function getArchivedBooks(targetCls){
-  const cls = targetCls || (typeof teacherCls !== 'undefined' && teacherCls ? teacherCls : getCurrentClassId());
-  const s = localStorage.getItem('lq_archived_' + cls) || (cls === 'lejoly' ? localStorage.getItem('lq_archived') : null);
-  const newBookIds = [
-    'voyage_valhalla', 'menace_classe_rousse', 'trois_gateaux_anniversaire', 'livre_maudit',
-    'back_to_the_80s', 'comme_sur_des_roulettes', 'crash_coeur_jungle', 'droles_darbres',
-    'la_villa', 'le_mysterieux_inconnu', 'le_vieil_homme_et_le_chien', 'qui_a_le_plus_de_chance',
-    'du_sel_sur_mes_levres', 'nature_et_sortilege_institulemn',
-    'la_ferme_aux_magots', 'louistiti', 'partie_de_poker', 'trois_lezards',
-    'murphy_halloween', 'un_frere_tombe_du_ciel', 'hotel_bon_vent'
-  ];
-  if (!s) {
-    return newBookIds;
-  }
-  const parsed = JSON.parse(s);
-  if (!localStorage.getItem('lq_archived_v5_migrated_' + cls)) {
-    const merged = Array.from(new Set([...parsed, ...newBookIds]));
-    localStorage.setItem('lq_archived_' + cls, JSON.stringify(merged));
-    if (cls === 'lejoly') localStorage.setItem('lq_archived', JSON.stringify(merged));
-    localStorage.setItem('lq_archived_v5_migrated_' + cls, 'true');
-    if (window.FB_saveArchivedBooks) window.FB_saveArchivedBooks(cls, merged);
-    return merged;
-  }
-  return parsed;
+  // Élève : liste de SA classe. Enseignant : classe choisie dans l'espace enseignant.
+  const isStudent = (typeof state !== 'undefined' && state.role === 'student' && state.studentCls);
+  const cls = targetCls || (isStudent ? state.studentCls : ((typeof teacherCls !== 'undefined' && teacherCls) ? teacherCls : getCurrentClassId()));
+  let s = localStorage.getItem('lq_archived_' + cls);
+  if (!s && cls !== 'lejoly') s = localStorage.getItem('lq_archived_lejoly'); // classe sans liste : celle de M. Lejoly
+  if (!s) s = localStorage.getItem('lq_archived');
+  if (!s) return []; // aucune liste connue : rien n'est masqué (avant : 21 livres masqués par défaut)
+  try { const a = JSON.parse(s); return Array.isArray(a) ? a : []; } catch(e) { return []; }
 }
 function saveArchivedBooks(arr, targetCls){
   const cls = targetCls || (typeof teacherCls !== 'undefined' && teacherCls ? teacherCls : getCurrentClassId());
@@ -9025,16 +9155,6 @@ function goToHome(){
   state.role='student';
   localStorage.removeItem('lq_teacher_session');
   if (window.FB_isTeacher && window.FB_teacherSignOut) window.FB_teacherSignOut().catch(()=>{});
-  if (state.student && state.studentCls) {
-    try {
-      localStorage.setItem('lq_student_session', JSON.stringify({
-        student: state.student,
-        studentCls: state.studentCls,
-        role: 'student',
-        timestamp: Date.now()
-      }));
-    } catch(e) {}
-  }
   updateAppLogo(state.studentCls);
   // Charger les résultats de l'élève depuis Firebase
   loadStudentResults();
@@ -9144,7 +9264,70 @@ function retourQuiz(){
   showScreen('screen-books');
 }
 
+// ===== Une seule tentative par livre (élève) =====
+function resultTimestamp(r){
+  if (r && r.ts) return r.ts;
+  const m = /^(\d{1,2})\/(\d{1,2})\/(\d{4})/.exec((r && r.date) || '');
+  if (!m) return 0;
+  const t = /^(\d{1,2})[:h](\d{2})/.exec((r && r.time) || '') || [0, 0, 0];
+  return new Date(+m[3], +m[2] - 1, +m[1], +t[1], +t[2]).getTime();
+}
+function withTimeout(p, ms, fallback){
+  return Promise.race([Promise.resolve(p).catch(() => fallback), new Promise(r => setTimeout(() => r(fallback), ms))]);
+}
+// Renvoie la tentative déjà faite (non annulée par l'enseignant), ou null.
+async function findBookAttempt(bookId){
+  const cls = state.studentCls || 'lejoly', student = state.student;
+  let attempts = [];
+  try {
+    attempts = JSON.parse(localStorage.getItem('lq_results') || '[]')
+      .filter(r => r && r.book === bookId && r.student === student && (r.cls || 'lejoly') === cls);
+  } catch(e) {}
+  if (window.FB_loadStudentResults) {
+    const online = await withTimeout(window.FB_loadStudentResults(cls, student), 6000, []);
+    (online || []).forEach(r => { if (r && r.book === bookId) attempts.push(r); });
+  }
+  let retakeTs = 0;
+  if (window.FB_loadRetakes) {
+    const rt = await withTimeout(window.FB_loadRetakes(cls, student), 6000, {});
+    retakeTs = Number((rt || {})[bookId]) || 0;
+  }
+  const valid = attempts.filter(r => resultTimestamp(r) > retakeTs);
+  if (!valid.length) return null;
+  return valid.sort((a, b) => resultTimestamp(b) - resultTimestamp(a))[0];
+}
+function showBookAlreadyDone(r, book){
+  const title = book ? book.title : 'ce livre';
+  document.getElementById('results-body').innerHTML = `
+    <div class="card" style="text-align:center;padding:2rem 1.25rem;">
+      <div style="font-size:44px;margin-bottom:.5rem;">📖✅</div>
+      <div style="font-family:Nunito;font-size:18px;font-weight:800;margin-bottom:.5rem;">Tu as déjà fait ce questionnaire</div>
+      <p style="color:var(--muted);font-size:14px;margin-bottom:1rem;">« ${title} » — le ${r.date || ''} à ${r.time || ''}</p>
+      <div style="font-family:Nunito;font-size:26px;font-weight:800;margin-bottom:1rem;">${r.score}/${r.total}</div>
+      <p style="font-size:14px;">Il n'y a qu'une seule tentative. Si tu dois le refaire, demande à ton enseignant.</p>
+    </div>`;
+  showScreen('screen-results');
+}
 function startQuiz(){
+  if(!state.book) return;
+  if (state.role === 'student' && state.student && !window.teacherPreviewActive) {
+    const bookId = state.book;
+    if (window._quizCheckBusy) return;
+    window._quizCheckBusy = true;
+    const qb = document.getElementById('quiz-body');
+    if (qb) qb.innerHTML = '<p style="text-align:center;color:var(--muted);padding:2rem">⏳ Un instant…</p>';
+    ['btn-prev','btn-next','btn-submit'].forEach(id => { const b = document.getElementById(id); if (b) b.style.display = 'none'; });
+    findBookAttempt(bookId).then(done => {
+      window._quizCheckBusy = false;
+      if (state.book !== bookId) return;
+      if (done) { showBookAlreadyDone(done, loadBooks().find(b => b.id === bookId)); return; }
+      beginQuiz();
+    }).catch(() => { window._quizCheckBusy = false; beginQuiz(); });
+    return;
+  }
+  beginQuiz();
+}
+function beginQuiz(){
   if(!state.book) return;
   state.answers={}; state.currentQ=0;
   showScreen('screen-quiz');
@@ -9176,7 +9359,8 @@ function renderQ(){
     <div class="q-num">Question ${state.currentQ+1}</div>
     <div class="q-text">${q.text}</div>`;
 
-  if(q.type==='mcq'){
+  // Toute question avec des choix (mcq, synthesis/résumés…) s'affiche en QCM ; seules les « tf » en Vrai/Faux
+  if(q.type!=='tf' && Array.isArray(q.options) && q.options.length){
     body+=q.options.map((o,i)=>{
       let cls='option-btn'+(state.answers[q.id]===i?' selected':'');
       return `<button class="${cls}" onclick="selectAnswer('${q.id}',${i},'mcq')"><span class="opt-letter">${letters[i]}</span><span>${o}</span></button>`;
@@ -9212,7 +9396,7 @@ function submitQuiz(){
   const entry={
     student:state.student || 'Enseignant (Aperçu)', cls:state.studentCls || (typeof teacherCls !== 'undefined' ? teacherCls : 'lejoly'),
     className:clsName,
-    book:state.book, bookTitle:book.title,
+    book:state.book, bookTitle:book.title, ts: Date.now(),
     score, total:book.totalPoints, pct,
     answers:{...state.answers},
     date:now.toLocaleDateString('fr-BE'),
@@ -9248,7 +9432,7 @@ function showResultsScreen(book,score,pct){
     if(q.section!==curSection){curSection=q.section;html+=`<div class="section-tag" style="margin-bottom:.75rem">${q.section}</div>`;}
     const given=state.answers[q.id];
     const correct=given===q.answer;
-    let givenText=given===undefined?'<em>Sans réponse</em>':q.type==='tf'?(given?'VRAI':'FAUX'):`${letters[given]} — ${q.options[given]}`;
+    let givenText=given===undefined?'<em>Sans réponse</em>':q.type==='tf'?(given?'VRAI':'FAUX'):(typeof given!=='number'?'<em>Réponse non valide</em>':`${letters[given]} — ${q.options[given]}`);
     let correctText=q.type==='tf'?(q.answer?'VRAI':'FAUX'):`${letters[q.answer]} — ${q.options[q.answer]}`;
     html+=`<div class="result-item">
       <div class="result-header"><span class="result-icon">${correct?'✅':'❌'}</span><span class="result-q">Q${i+1}. ${q.text}</span></div>`;
@@ -9272,6 +9456,8 @@ function resetToWelcome(){
   document.getElementById('pin-section').style.display='none';
   document.getElementById('main-area').style.display='none';
   document.getElementById('screen-landing').style.display='flex';
+  // L'élève suivant démarre toujours sur la dernière version du site
+  if (typeof window.lcmlRecharger === 'function') setTimeout(window.lcmlRecharger, 50);
 }
 
 function showTeacherLogin(){
@@ -9388,6 +9574,7 @@ function openTeacherPanel(){
   renderStudentsManage();
   renderAppsManage();
   renderSettingsPanel(false);
+  renderGestionRecits();
   showScreen('screen-teacher-subjects');
 }
 
@@ -9511,20 +9698,15 @@ async function syncFromFirebase(){
       await window.FB_saveLockedActivities(currentClass, localLocked);
     }
     // Sync livres archivés
-    const archived = await window.FB_loadArchivedBooks();
+    let archived = await window.FB_loadArchivedBooks(currentClass);
+    if(!Array.isArray(archived) && currentClass !== 'lejoly') archived = await window.FB_loadArchivedBooks('lejoly');
     if(archived && Array.isArray(archived)){
-      const newBookIds = [
-        'voyage_valhalla', 'menace_classe_rousse', 'trois_gateaux_anniversaire', 'livre_maudit',
-        'back_to_the_80s', 'comme_sur_des_roulettes', 'crash_coeur_jungle', 'droles_darbres',
-        'la_villa', 'le_mysterieux_inconnu', 'le_vieil_homme_et_le_chien', 'qui_a_le_plus_de_chance',
-        'du_sel_sur_mes_levres', 'nature_et_sortilege_institulemn',
-        'la_ferme_aux_magots', 'louistiti', 'partie_de_poker', 'trois_lezards',
-        'murphy_halloween', 'un_frere_tombe_du_ciel', 'hotel_bon_vent'
-      ];
-      const mergedArchived = Array.from(new Set([...archived, ...newBookIds]));
-      localStorage.setItem('lq_archived', JSON.stringify(mergedArchived));
-      localStorage.setItem('lq_archived_' + currentClass, JSON.stringify(mergedArchived));
+      // Firebase fait foi : les livres « réactivés » par l'enseignant ne doivent pas être re-masqués ici
+      localStorage.setItem('lq_archived_' + currentClass, JSON.stringify(archived));
+      if (currentClass === 'lejoly') localStorage.setItem('lq_archived', JSON.stringify(archived));
+      localStorage.setItem('lq_archived_v5_migrated_' + currentClass, 'true');
     }
+    if (typeof renderBooks === 'function' && document.getElementById('screen-books') && document.getElementById('screen-books').classList.contains('active')) renderBooks();
     // Sync plan de travail
     if (window.FB_loadPlanTravail) {
       const fbPlan = await window.FB_loadPlanTravail(currentClass);
@@ -9671,7 +9853,35 @@ function renderStudentDetail(studentName){
   }
 }
 
-function doRenderStudentDetail(studentName){
+// Autoriser un élève à refaire un questionnaire Récits express (l'ancien résultat reste visible)
+async function allowBookRetake(studentName, bookId, silent){
+  const book = loadBooks().find(b => b.id === bookId);
+  const title = book ? book.title : bookId;
+  if (!silent && !confirm('Autoriser ' + studentName + ' à refaire « ' + title + ' » ?\n\nSon ancien résultat reste visible ici, marqué « annulée ».')) return false;
+  const cls = teacherCls || 'lejoly';
+  try {
+    await window.FB_setRetake(cls, studentName, bookId, Date.now());
+    _teacherRetakes[studentName] = Object.assign({}, _teacherRetakes[studentName] || {}, { [bookId]: Date.now() });
+    if (!silent) alert('✅ ' + studentName + ' peut refaire « ' + title + ' » (une fois).');
+    return true;
+  } catch(e) {
+    if (!silent) alert('❌ Impossible d\'enregistrer l\'autorisation (connexion ?). Réessaie dans un instant.');
+    return false;
+  }
+}
+function allowBookRetakeFromSelect(studentName){
+  const sel = document.getElementById('retake-book-select');
+  if (!sel || !sel.value) { alert('Choisis d\'abord un livre.'); return; }
+  allowBookRetake(studentName, sel.value).then(ok => { if (ok) doRenderStudentDetail(studentName); });
+}
+function doRenderStudentDetail(studentName, _retakesLoaded){
+  if (!_retakesLoaded && window.FB_loadRetakes) {
+    window.FB_loadRetakes(teacherCls || 'lejoly', studentName)
+      .then(rt => { _teacherRetakes[studentName] = rt || {}; doRenderStudentDetail(studentName, true); })
+      .catch(() => {});
+  }
+  const _retakes = _teacherRetakes[studentName] || {};
+  const _bookIds = new Set(loadBooks().map(b => b.id));
   const results=loadResults(teacherCls).filter(r=>r.student===studentName);
   const avg=results.length?Math.round(results.reduce((s,r)=>s+r.pct,0)/results.length):0;
   const color=avg>=70?'var(--green)':avg>=50?'var(--amber)':'var(--red)';
@@ -9680,6 +9890,16 @@ function doRenderStudentDetail(studentName){
   <button onclick="deleteStudentResults('${studentName}')" style="float:right;background:#fee2e2;color:#e74c3c;border:1px solid #e74c3c;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;margin-bottom:0.5rem;">🗑 Effacer tous les résultats</button>`;
   html+=`<div style="font-family:'Nunito',sans-serif;font-weight:800;font-size:20px;margin-bottom:0.3rem">${studentName}</div>`;
   html+=`<div style="font-size:13px;color:var(--muted);margin-bottom:1.2rem">${results.length} activité${results.length>1?'s':''} · Moyenne : <span style="color:${color};font-weight:700">${avg}%</span></div>`;
+  html+=`<div style="background:var(--purple-light);border-radius:10px;padding:10px 12px;margin-bottom:1.2rem;font-size:13px;">
+    <div style="font-weight:800;margin-bottom:6px">📚 Récits express : autoriser à refaire un questionnaire</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+      <select id="retake-book-select" style="flex:1;min-width:200px;padding:6px 8px;border-radius:8px;border:1px solid var(--border);font-size:13px">
+        <option value="">— Choisir le livre —</option>
+        ${loadBooks().slice().sort((a,b)=>a.title.localeCompare(b.title,'fr')).map(b=>`<option value="${b.id}">${b.title}${_retakes[b.id] ? ' (déjà autorisé)' : ''}</option>`).join('')}
+      </select>
+      <button class="btn btn-sm" onclick="allowBookRetakeFromSelect(${JSON.stringify(studentName).replace(/"/g,'&quot;')})">↺ Autoriser à refaire</button>
+    </div>
+  </div>`;
 
   if(results.length===0){
     html+='<div class="alert alert-info">Aucune activité réalisée.</div>';
@@ -9693,6 +9913,11 @@ function doRenderStudentDetail(studentName){
       const actKey = r.activity || r.book || '';
       const rDate = r.date || '';
       const rTime = r.time || '';
+      const _isRecit = r.book && _bookIds.has(r.book);
+      const _annulee = _isRecit && resultTimestamp(r) <= (Number(_retakes[r.book]) || 0);
+      const retakeBtn = !_isRecit ? '' : (_annulee
+        ? `<span style="font-size:11px;color:var(--green);font-weight:700;margin-left:6px;">↺ annulée — peut refaire</span>`
+        : `<button onclick="event.stopPropagation(); allowBookRetake(${JSON.stringify(studentName).replace(/"/g,'&quot;')}, '${r.book}').then(ok => { if (ok) doRenderStudentDetail(${JSON.stringify(studentName).replace(/"/g,'&quot;')}); })" title="L'élève pourra refaire ce questionnaire ; ce résultat reste visible" style="background:var(--purple-light);border:1px solid var(--purple);color:var(--purple);font-size:12px;font-weight:700;cursor:pointer;padding:4px 8px;border-radius:8px;margin-left:8px;">↺ Autoriser à refaire</button>`);
       const deleteSingleBtn = `<button onclick="event.stopPropagation(); deleteSingleResult('${studentName}', '${encodeURIComponent(actKey)}', '${encodeURIComponent(rDate)}', '${encodeURIComponent(rTime)}')" title="Supprimer uniquement ce résultat" style="background:transparent;border:none;color:#ef4444;font-size:14px;cursor:pointer;padding:4px 6px;border-radius:6px;margin-left:8px;" onmouseover="this.style.background='#fee2e2'" onmouseout="this.style.background='transparent'">🗑️</button>`;
 
       html+=`<div class="student-detail-row" style="align-items:center;">
@@ -9707,8 +9932,8 @@ function doRenderStudentDetail(studentName){
         <div style="width:60px;flex-shrink:0">
           <div class="bar-wrap"><div class="bar-fill" style="width:${r.pct}%;background:${c}"></div></div>
         </div>
-        <div style="flex-shrink:0;">
-          ${deleteSingleBtn}
+        <div style="flex-shrink:0;display:flex;align-items:center;">
+          ${retakeBtn}${deleteSingleBtn}
         </div>
       </div>`;
     });
@@ -9742,6 +9967,12 @@ function deleteSingleResult(studentName, encActivity, encDate, encTime){
     (r.time === time || !time)
   ));
   localStorage.setItem('lq_results', JSON.stringify(filtered));
+
+  // 1 bis. Récit express supprimé : l'élève doit pouvoir le refaire, même si une copie
+  //        du résultat reste dans la mémoire de sa tablette
+  if (loadBooks().some(b => b.id === activity) && window.FB_setRetake) {
+    allowBookRetake(studentName, activity, true);
+  }
 
   // 2. Supprimer dans Firebase
   if(window.FB_ready && window.FB_DB){
@@ -9991,7 +10222,12 @@ function saveNewBook(){
 
 function deleteBook(i){
   if(!confirm('Supprimer ce livre ?')) return;
-  const books=loadBooks();books.splice(i,1);saveBooks(books);
+  const books=loadBooks();
+  if(window.LIVRES && window.LIVRES.some(x => x.id === books[i].id)){
+    alert('Ce questionnaire fait partie du site : utilise plutôt « 🔒 Masquer » pour le cacher aux élèves.');
+    return;
+  }
+  books.splice(i,1);saveBooks(books);
   renderBooksManage();renderBooks();
 }
 
@@ -10127,8 +10363,25 @@ function renderGestion(){
   document.getElementById('gestion-students-list').innerHTML = html;
 }
 
-function showStudentDetail(studentName){
+let _teacherRetakes = {}; // { élève: { livre: ts } } pour la classe affichée
+async function cancelBookAttempt(studentName, bookId, bookTitle){
+  if (!confirm('Annuler la tentative de ' + studentName + ' pour « ' + bookTitle + ' » ?\n\nL\'élève pourra refaire ce questionnaire une fois. L\'ancien résultat reste visible dans l\'historique, marqué « annulée ».')) return;
   const cls = teacherCls || 'lejoly';
+  try {
+    await window.FB_setRetake(cls, studentName, bookId, Date.now());
+    alert('✅ Tentative annulée : ' + studentName + ' peut refaire « ' + bookTitle + ' ».');
+  } catch(e) {
+    alert('❌ Impossible d\'enregistrer l\'annulation (connexion ?). Réessaie dans un instant.');
+  }
+  showStudentDetail(studentName);
+}
+function showStudentDetail(studentName, _retakesLoaded){
+  const cls = teacherCls || 'lejoly';
+  if (!_retakesLoaded && window.FB_loadRetakes) {
+    window.FB_loadRetakes(cls, studentName).then(rt => { _teacherRetakes[studentName] = rt || {}; showStudentDetail(studentName, true); })
+      .catch(() => showStudentDetail(studentName, true));
+  }
+  const retakes = _teacherRetakes[studentName] || {};
   const results = loadResults(cls).filter(r=>r.student===studentName);
   const emojis=['😊','🌟','🎯','🚀','🦁','🐬','🦊','🐧','🌈','⚡'];
   const emoji = emojis[studentName.charCodeAt(0)%emojis.length];
@@ -10169,6 +10422,15 @@ function showStudentDetail(studentName){
         <div style="font-family:Nunito;font-size:14px;font-weight:800;">📖 ${bookTitle}</div>
         <div style="font-family:Nunito;font-size:14px;font-weight:800;color:${bookColor}">${bookAvg}% moy.</div>
       </div>`;
+    const bookId = attempts[0] && attempts[0].book;
+    const isRecit = bookId && loadBooks().some(b => b.id === bookId);
+    const retakeTs = isRecit ? (Number(retakes[bookId]) || 0) : 0;
+    const hasValid = isRecit && attempts.some(r => resultTimestamp(r) > retakeTs);
+    if (isRecit) {
+      html += hasValid
+        ? `<button class="btn btn-sm" style="margin-bottom:.75rem" onclick="cancelBookAttempt(${JSON.stringify(studentName).replace(/"/g,'&quot;')}, '${bookId}', ${JSON.stringify(bookTitle).replace(/"/g,'&quot;')})">↺ Annuler la tentative (l'élève pourra refaire)</button>`
+        : `<div style="font-size:12px;color:var(--green);font-weight:700;margin-bottom:.75rem">↺ Tentative annulée : l'élève peut refaire ce questionnaire.</div>`;
+    }
 
     attempts.slice().reverse().forEach((r,i)=>{
       const color = r.pct>=70?'var(--green)':r.pct>=50?'var(--amber)':'var(--red)';
@@ -10178,7 +10440,7 @@ function showStudentDetail(studentName){
         <div style="flex:1;height:6px;background:var(--border);border-radius:3px;overflow:hidden;">
           <div style="width:${r.pct}%;height:100%;background:${color};border-radius:3px;"></div>
         </div>
-        <span class="attempt-date">${r.date} ${r.time}</span>
+        <span class="attempt-date">${r.date} ${r.time}${(isRecit && resultTimestamp(r) <= retakeTs) ? ' · <em style="color:var(--muted)">annulée</em>' : ''}</span>
       </div>`;
     });
 
@@ -10334,7 +10596,7 @@ function restartConjExercise(){
 }
 
 function startConjExercise(tense, type){
-  if(isActivityLocked(tense)){ alert('Cet exercice n\'est pas encore disponible.'); return; }
+  if(state.role !== 'teacher' && isActivityLocked(tense)){ alert('Cet exercice n\'est pas encore disponible.'); return; }
   const data = getConjData(tense);
   if(!data) return;
 
@@ -10376,7 +10638,7 @@ function startConjExercise(tense, type){
 }
 
 function startConjEvaluation(tense){
-  if(isActivityLocked(tense)){ alert('Cet exercice n\'est pas encore disponible.'); return; }
+  if(state.role !== 'teacher' && isActivityLocked(tense)){ alert('Cet exercice n\'est pas encore disponible.'); return; }
   const data = getConjData(tense);
   if(!data) return;
 
@@ -10492,7 +10754,7 @@ function getAllKnownActivities() {
       'francais-conjugaison', 'francais-grammaire', 'francais-orthographe', 'francais-vocabulaire',
       'francais-lecture', 'francais-expression_ecrite', 'francais-savoir_ecouter',
       'maths-numeration', 'maths-operations', 'maths-solides', 'maths-grandeurs', 'maths-traitement',
-      'eveil-histoire', 'eveil-geographie', 'eveil-sciences',
+      'eveil-histoire', 'eveil-geographie', 'eveil-sciences', 'eveil-economie',
       'recits_express', 'contes', 'poemes', 'un_peu_de_tout', 'ortho_homophones', 'ortho_participe_passe',
       'op_vocabulaire', 'grandeur_perimetre_cercle', 'solide_angles', 'solide_disque', 'solide_cercle_disque',
       'td_la_moyenne_menu', 'sci_matiere', 'sci_melanges', 'sci_melanges_qcm', 'sci_cycle_eau_cat', 'sci_energie',
@@ -10881,7 +11143,19 @@ const ACTIVITY_PARENTS = {
   'sci_circ_petite': 'sci_circulatoire',
   'sci_circ_grande': 'sci_circulatoire',
   'sci_circ_ensemble': 'sci_circulatoire',
-  'lecture_substituts': 'francais-expression_ecrite'
+  'lecture_substituts': 'francais-expression_ecrite',
+  // Sous-exercices ajoutés au plan de travail (25/09/2026)
+  'gram_nom_identifier': 'gram_nom', 'gram_nom_reconnaître': 'gram_nom',
+  'gram_determinant_reconnaitre': 'gram_determinant', 'gram_determinant_tri': 'gram_determinant',
+  'gram_verbe_identifier': 'gram_verbe',
+  'gram_pronom_piege': 'gram_pronom', 'gram_pronom_referents': 'gram_pronom', 'gram_pronom_remplacant': 'gram_pronom', 'gram_pronom_repetitions': 'gram_pronom',
+  'gram_adverbe_reconnaitre': 'gram_adverbe', 'gram_adverbe_accord': 'gram_adverbe',
+  'sujet_phrase': 'gram_sujet', 'gram_sujet_texte': 'gram_sujet', 'gram_classes_sujet': 'gram_sujet',
+  'verbe_phrase': 'gram_verbe_fonc', 'gram_verbe_groupe': 'gram_verbe_fonc', 'gram_verbe_infinitif': 'gram_verbe_fonc', 'gram_verbe_texte': 'gram_verbe_fonc',
+  'op_calcul_ecrit_addition': 'op_calcul_ecrit', 'op_calcul_ecrit_soustraction': 'op_calcul_ecrit', 'op_calcul_ecrit_multiplication': 'op_calcul_ecrit', 'op_calcul_ecrit_division': 'op_calcul_ecrit',
+  'op_ordre_pemdas': 'op_ordre', 'op_ordre_defi': 'op_ordre',
+  'hist_grand_voyage_temps': 'eveil-histoire', 'hist_ligne_du_temps': 'eveil-histoire',
+  'eco_formation_economique_sociale': 'eveil-economie'
 };
 
 function getStudentPlanTravail() {
@@ -11229,6 +11503,7 @@ const EVEIL_ITEMS = [
   {id:'eveil-histoire', action:"goToEveilSection('histoire')", teacherAction:"teacherGoToEveilSection('histoire')", label:'Histoire', icon:'🏛️', desc:'Préhistoire, Antiquité, Moyen Âge…'},
   {id:'eveil-geographie', action:"goToEveilSection('geographie')", teacherAction:"teacherGoToEveilSection('geographie')", label:'Géographie', icon:'🌍', desc:'Océans, Europe, Belgique…'},
   {id:'eveil-sciences', action:"goToEveilSection('sciences')", teacherAction:"teacherGoToEveilSection('sciences')", label:'Sciences', icon:'<img src="assets/logos/subject_sciences.png" class="w-full h-full object-contain" />', desc:'Corps humain, électricité, engrenages…'},
+  {id:'eveil-economie', action:"openFiche('formation-economique-sociale.html', 'La formation économique et sociale', 'screen-eveil')", teacherAction:"openFiche('formation-economique-sociale.html', 'La formation économique et sociale', 'screen-teacher-eveil')", label:'Économie', icon:'💶', desc:"La formation économique et sociale : le voyage de ton salaire"},
 ];
 
 function renderSubjectScreen(subjectKey, items, gridIds){
@@ -11435,7 +11710,7 @@ function renderConjugaisonScreen(){
   tenses.forEach(t => {
     const locked = isActivityLocked(t.id);
     const div = document.createElement('div');
-    div.className = 'sub-subject-card' + (locked ? ' disabled' : ' active-card');
+    div.className = 'sub-subject-card' + (locked && !isTeacher ? ' disabled' : ' active-card');
     div.onclick = locked && !isTeacher ? null : () => goToConjugaison(t.id);
 
     // Teacher toggle button
@@ -11451,7 +11726,7 @@ function renderConjugaisonScreen(){
       ${toggleBtn}
       <div class="sub-icon">${t.icon}</div>
       <div class="sub-title">${t.label}</div>
-      <div class="sub-desc">${locked ? '🔒 Non disponible pour le moment' : 'Entraînement et évaluation'}</div>
+      <div class="sub-desc">${locked && !isTeacher ? '🔒 Non disponible pour le moment' : 'Entraînement et évaluation'}</div>
     `;
     grid.appendChild(div);
   });
@@ -13839,8 +14114,37 @@ function geoClearZone(zone){
   geoBelgiqueState.answers[num][type] = '';
 }
 
+// ===== AIDE AU GLISSER-DÉPOSER TACTILE (cartes de géographie, cœur) =====
+// Cherche la case sous le doigt (puis juste au-dessus, là où s'affiche l'étiquette qu'on glisse).
+function geoZoneAtTouch(touch){
+  const offsets = [0, -20, 12];
+  for (const dy of offsets) {
+    const el = document.elementFromPoint(touch.clientX, touch.clientY + dy);
+    if (!el) continue;
+    const zone = el.closest('.geo-drop-zone') || (el.tagName === 'TD' ? el.querySelector('.geo-drop-zone') : null);
+    if (zone) return zone;
+  }
+  return null;
+}
+// Fait défiler la page quand on glisse une étiquette près du haut ou du bas de l'écran.
+const _geoAutoScroll = { dy: 0, raf: 0 };
+function geoAutoScroll(touch){
+  const margin = 80, h = window.innerHeight;
+  _geoAutoScroll.dy = touch.clientY > h - margin ? 14 : (touch.clientY < margin ? -14 : 0);
+  if (_geoAutoScroll.dy && !_geoAutoScroll.raf) {
+    const step = () => {
+      if (!_geoAutoScroll.dy) { _geoAutoScroll.raf = 0; return; }
+      window.scrollBy(0, _geoAutoScroll.dy);
+      _geoAutoScroll.raf = requestAnimationFrame(step);
+    };
+    _geoAutoScroll.raf = requestAnimationFrame(step);
+  }
+}
+function geoStopAutoScroll(){ _geoAutoScroll.dy = 0; }
+
 // ===== TOUCH SUPPORT =====
 window.addEventListener('touchcancel', function(e) {
+  if (typeof geoStopAutoScroll === 'function') geoStopAutoScroll();
   // Safe cleanup for all touch drag and drop clone systems
   const cloneSelectors = '.geo-tag, .ma-assoc-def, .dig-assoc-def, .resp-assoc-def, .sci-ordre-item, .resp-assoc-zone, .dig-assoc-zone, .assoc-def, .trajet-mot';
   document.body.querySelectorAll(cloneSelectors).forEach(c => {
@@ -13940,8 +14244,8 @@ function geoTouchMove(e){
   geoTouchClone.style.top = (touch.clientY - 20) + 'px';
   // Highlight drop zone underneath
   document.querySelectorAll('.geo-drop-zone').forEach(z => z.classList.remove('drag-over'));
-  const el = document.elementFromPoint(touch.clientX, touch.clientY - 20);
-  const zone = el ? (el.closest('.geo-drop-zone') || el.querySelector('.geo-drop-zone')) : null;
+  geoAutoScroll(touch);
+  const zone = geoZoneAtTouch(touch);
   if(zone) zone.classList.add('drag-over');
 }
 
@@ -13952,8 +14256,8 @@ function geoTouchEnd(e){
   geoTouchClone = null;
   geoTouchDragEl.style.opacity = '';
   document.querySelectorAll('.geo-drop-zone').forEach(z => z.classList.remove('drag-over'));
-  const el = document.elementFromPoint(touch.clientX, touch.clientY - 20);
-  const zone = el ? (el.closest('.geo-drop-zone') || el.querySelector('.geo-drop-zone')) : null;
+  geoStopAutoScroll();
+  const zone = geoZoneAtTouch(touch);
   if(zone){
     const num = parseInt(zone.dataset.num);
     const type = zone.dataset.type;
@@ -13964,6 +14268,7 @@ function geoTouchEnd(e){
   geoTouchDragEl = null;
 }
 function geoTouchCancel(e){
+  geoStopAutoScroll();
   if(geoTouchClone) {
     if(geoTouchClone.parentNode) geoTouchClone.parentNode.removeChild(geoTouchClone);
     geoTouchClone = null;
@@ -14154,8 +14459,8 @@ function hydroTouchMove(e){
   hydroTouchClone.style.left=(touch.clientX-40)+'px';
   hydroTouchClone.style.top=(touch.clientY-20)+'px';
   document.querySelectorAll('.geo-drop-zone').forEach(z=>z.classList.remove('drag-over'));
-  const el=document.elementFromPoint(touch.clientX,touch.clientY - 20);
-  const zone = el ? (el.closest('.geo-drop-zone') || el.querySelector('.geo-drop-zone')) : null;
+  geoAutoScroll(touch);
+  const zone = geoZoneAtTouch(touch);
   if(zone) zone.classList.add('drag-over');
 }
 function hydroTouchEnd(e){
@@ -14165,14 +14470,15 @@ function hydroTouchEnd(e){
   hydroTouchClone=null;
   hydroTouchEl.style.opacity='';
   document.querySelectorAll('.geo-drop-zone').forEach(z=>z.classList.remove('drag-over'));
-  const el=document.elementFromPoint(touch.clientX,touch.clientY - 20);
-  const zone = el ? (el.closest('.geo-drop-zone') || el.querySelector('.geo-drop-zone')) : null;
+  geoStopAutoScroll();
+  const zone = geoZoneAtTouch(touch);
   if(zone){
     hydroPlaceTag(zone, hydroTouchEl.dataset.text, parseInt(zone.dataset.num));
   }
   hydroTouchEl=null;
 }
 function hydroTouchCancel(e){
+  geoStopAutoScroll();
   if(hydroTouchClone) {
     if(hydroTouchClone.parentNode) hydroTouchClone.parentNode.removeChild(hydroTouchClone);
     hydroTouchClone=null;
@@ -14339,8 +14645,8 @@ function communeTouchMove(e){
   const touch=e.touches[0];
   communeTouchClone.style.left=(touch.clientX-40)+'px'; communeTouchClone.style.top=(touch.clientY-20)+'px';
   document.querySelectorAll('.geo-drop-zone').forEach(z=>z.classList.remove('drag-over'));
-  const el=document.elementFromPoint(touch.clientX,touch.clientY - 20);
-  const zone = el ? (el.closest('.geo-drop-zone') || el.querySelector('.geo-drop-zone')) : null;
+  geoAutoScroll(touch);
+  const zone = geoZoneAtTouch(touch);
   if(zone) zone.classList.add('drag-over');
 }
 function communeTouchEnd(e){
@@ -14349,12 +14655,13 @@ function communeTouchEnd(e){
   document.body.removeChild(communeTouchClone); communeTouchClone=null;
   communeTouchEl.style.opacity='';
   document.querySelectorAll('.geo-drop-zone').forEach(z=>z.classList.remove('drag-over'));
-  const el=document.elementFromPoint(touch.clientX,touch.clientY - 20);
-  const zone = el ? (el.closest('.geo-drop-zone') || el.querySelector('.geo-drop-zone')) : null;
+  geoStopAutoScroll();
+  const zone = geoZoneAtTouch(touch);
   if(zone) communePlaceTag(zone,communeTouchEl.dataset.text,parseInt(zone.dataset.num));
   communeTouchEl=null;
 }
 function communeTouchCancel(e){
+  geoStopAutoScroll();
   if(communeTouchClone) {
     if(communeTouchClone.parentNode) communeTouchClone.parentNode.removeChild(communeTouchClone);
     communeTouchClone=null;
@@ -18797,6 +19104,7 @@ function renderJeuxMenu(){
     {id:'jeu_tangram', screen:'screen-jeu-tangram', label:'Le Tangram', icon:'<img src="assets/logos/jeu_tangram.png" class="w-full h-full object-contain" alt="Le Tangram" />', desc:'Assemble les 7 tans pour reconstituer les silhouettes géométriques ! 3 niveaux de défi.', fn:''},
     {id:'jeu_demineur', screen:'screen-jeu-demineur', label:'Le Démineur', icon:'<img src="assets/logos/jeu_demineur.png" class="w-full h-full object-contain" alt="Le Démineur" />', desc:'Trouve toutes les mines grâce à la logique et aux indices chiffrés ! 3 niveaux de difficulté.', fn:''},
     {id:'jeu_pipopipette', screen:'screen-jeu-pipopipette', label:'La Pipopipette', icon:'<img src="assets/logos/jeu_pipopipette.png" class="w-full h-full object-contain" alt="La Pipopipette" />', desc:'Relie les points, ferme les carrés et gagne un tour bonus ! Solo vs IA ou 2 joueurs.', fn:''},
+    {id:'jeu_kim', screen:'screen-jeu-kim', label:'L\'Œil du Temps (Jeu de Kim)', icon:'<img src="assets/logos/jeu_kim.png" class="w-full h-full object-contain" alt="L\'Œil du Temps" />', desc:'Mémorise les scènes des 5 époques de l\'Histoire et relève les défis d\'observation ! 10 scènes & 90 questions.', fn:''},
   ];
 
   let html = '';
@@ -27504,8 +27812,8 @@ function coeurTouchMove(e){
   const touch=e.touches[0];
   coeurTouchClone.style.left=(touch.clientX-40)+'px'; coeurTouchClone.style.top=(touch.clientY-20)+'px';
   document.querySelectorAll('.geo-drop-zone').forEach(z=>z.classList.remove('drag-over'));
-  const el=document.elementFromPoint(touch.clientX,touch.clientY - 20);
-  const zone = el ? (el.closest('.geo-drop-zone') || el.querySelector('.geo-drop-zone')) : null;
+  geoAutoScroll(touch);
+  const zone = geoZoneAtTouch(touch);
   if(zone) zone.classList.add('drag-over');
 }
 function coeurTouchEnd(e){
@@ -27513,12 +27821,13 @@ function coeurTouchEnd(e){
   const touch=e.changedTouches[0];
   document.body.removeChild(coeurTouchClone); coeurTouchClone=null; coeurTouchEl.style.opacity='';
   document.querySelectorAll('.geo-drop-zone').forEach(z=>z.classList.remove('drag-over'));
-  const el=document.elementFromPoint(touch.clientX,touch.clientY - 20);
-  const zone = el ? (el.closest('.geo-drop-zone') || el.querySelector('.geo-drop-zone')) : null;
+  geoStopAutoScroll();
+  const zone = geoZoneAtTouch(touch);
   if(zone) coeurPlaceTag(zone,coeurTouchEl.dataset.text,parseInt(zone.dataset.num));
   coeurTouchEl=null;
 }
 function coeurTouchCancel(e){
+  geoStopAutoScroll();
   if(coeurTouchClone) {
     if(coeurTouchClone.parentNode) coeurTouchClone.parentNode.removeChild(coeurTouchClone);
     coeurTouchClone=null;
@@ -30214,6 +30523,8 @@ const HISTOIRE_ITEMS = [
   {id:'hist_temps_modernes', screen:'screen-hist-temps-modernes', label:'Les Temps Modernes', icon:'<img src="assets/logos/hist_temps_modernes.png" class="w-full h-full object-contain" />'},
   {id:'hist_contemporaine', screen:'screen-hist-contemporaine', label:"L'Époque Contemporaine", icon:'<img src="assets/logos/hist_contemporaine.png" class="w-full h-full object-contain" />'},
   {id:'hist_grandes_periodes', screen:'screen-hist-grandes-periodes', label:'Les grandes périodes', icon:'<img src="assets/logos/hist_grandes_periodes.png" class="w-full h-full object-contain" />'},
+  {id:'hist_grand_voyage_temps', file:'lecon_frise_historique.html', label:'Le grand voyage du Temps', icon:'🏛️', desc:"Carnet d'investigation : les 5 périodes, quiz et jeu d'association"},
+  {id:'hist_ligne_du_temps', file:'ligne-du-temps_5.html', label:'La ligne du temps', icon:'⏳', desc:'Séquence P5–P6 : repères, ruptures et défis de chronologie'},
 ];
 
 function renderHistoireScreen(){
@@ -30226,7 +30537,7 @@ function renderHistoireScreen(){
       const locked = isActivityLocked(t.id);
       const div = document.createElement('div');
       div.className = 'sub-subject-card' + (locked && !isTeacher ? ' disabled' : ' active-card');
-      div.onclick = locked && !isTeacher ? null : () => { showScreen(t.screen); if(t.fn && window[t.fn]) window[t.fn](); };
+      div.onclick = locked && !isTeacher ? null : () => { if(t.file){ const cur=document.querySelector('.screen.active'); openFiche(t.file, t.label, cur ? cur.id : 'screen-histoire'); return; } showScreen(t.screen); if(t.fn && window[t.fn]) window[t.fn](); };
 
       const toggleBtn = isTeacher
         ? `<button class="card-teacher-toggle ${locked ? 'btn-show' : 'btn-hide'}"
@@ -30684,17 +30995,38 @@ function switchGestionTab(tab){
   document.getElementById('gtab-journal').style.display = tab==='journal'?'':'none';
   const gtabAct = document.getElementById('gtab-activities');
   if(gtabAct) gtabAct.style.display = tab==='activities'?'':'none';
+  const gtabRecits = document.getElementById('gtab-recits');
+  if(gtabRecits) gtabRecits.style.display = tab==='recits'?'':'none';
 
   document.getElementById('gtab-results-btn').classList.toggle('active', tab==='results');
   document.getElementById('gtab-students-btn').classList.toggle('active', tab==='students');
   document.getElementById('gtab-journal-btn').classList.toggle('active', tab==='journal');
   const gtabActBtn = document.getElementById('gtab-activities-btn');
   if(gtabActBtn) gtabActBtn.classList.toggle('active', tab==='activities');
+  const gtabRecitsBtn = document.getElementById('gtab-recits-btn');
+  if(gtabRecitsBtn) gtabRecitsBtn.classList.toggle('active', tab==='recits');
 
   if(tab==='students') renderStudentsManageNew();
   if(tab==='results') renderGestionResults();
   if(tab==='journal') renderGestionJournal();
   if(tab==='activities') renderGestionActivities();
+  if(tab==='recits') renderGestionRecits();
+}
+
+function renderGestionRecits(){
+  const ifr = document.getElementById('recits-lcml-iframe');
+  if(!ifr) return;
+  const cls = (typeof teacherCls !== 'undefined' && teacherCls) ? teacherCls : 'lejoly';
+  try {
+    if(ifr.contentWindow && typeof ifr.contentWindow.switchClass === 'function'){
+      ifr.contentWindow.switchClass(cls);
+      return;
+    }
+  } catch(e){}
+  const targetSrc = 'recits_express.html?cls=' + encodeURIComponent(cls);
+  if(!ifr.src || !ifr.src.includes('cls=' + cls)){
+    ifr.src = targetSrc;
+  }
 }
 
 function renderGestionJournal(){
@@ -31240,24 +31572,51 @@ const PLAN_CATALOGUE = [
     { id:'dial_conseil', label:'Le grand désaccord', icon:'🎭', screen:'screen-dial-conseil', fn:'renderDialConseil' },
     { id:'dial_marche', label:'Une affaire en or !', icon:'🏪', screen:'screen-dial-marche', fn:'renderDialMarche' },
   ]},
-  { cat: '📖 Français', sub: '⚡ Lecture rapide', items: [
+  { cat: '📖 Français', sub: '⚡ Lecture — Lecture rapide', items: [
     { id:'lecture_rapide', label:'Lecture rapide (tous niveaux)', icon:'⚡', screen:'screen-lecture-rapide', fn:'renderLectureRapideMenu' },
+    { id:"lr_niveau_1", label:"Lecture rapide — Niveau 1", icon:"⚡", screen:"screen-lecture-rapide", fn:"() => renderLectureRapideNiveau(1)" },
+    { id:"lr_niveau_2", label:"Lecture rapide — Niveau 2", icon:"⚡", screen:"screen-lecture-rapide", fn:"() => renderLectureRapideNiveau(2)" },
+    { id:"lr_niveau_3", label:"Lecture rapide — Niveau 3", icon:"⚡", screen:"screen-lecture-rapide", fn:"() => renderLectureRapideNiveau(3)" },
+    { id:"lr_niveau_4", label:"Lecture rapide — Niveau 4", icon:"⚡", screen:"screen-lecture-rapide", fn:"() => renderLectureRapideNiveau(4)" },
+    { id:"lr_niveau_5", label:"Lecture rapide — Niveau 5", icon:"⚡", screen:"screen-lecture-rapide", fn:"() => renderLectureRapideNiveau(5)" },
   ]},
   { cat: '📖 Français', sub: '✏️ Grammaire — Classes de mots', items: [
     { id:'gram_nom', label:'Le nom', icon:'<img src="assets/logos/gram_nom.png" class="w-full h-full object-contain" />', screen:'screen-gram-nom', fn:'renderNomMenu' },
+    { id:"gram_nom_identifier", label:"Le nom — Identifier les noms", icon:"🔍", screen:"screen-gram-nom", fn:"startNomExercise" },
+    { id:"gram_nom_reconnaître", label:"Le nom — Est-ce un nom ?", icon:"❓", screen:"screen-gram-nom", fn:"startNomReconnaîtreExercise" },
     { id:'gram_determinant', label:'Le déterminant', icon:'<img src="assets/logos/gram_determinant.png" class="w-full h-full object-contain" />', screen:'screen-gram-determinant', fn:'' },
+    { id:"gram_determinant_reconnaitre", label:"Le déterminant — Reconnaître les déterminants", icon:"🔍", screen:"screen-gram-determinant", fn:"startDeterminantExercise" },
+    { id:"gram_determinant_tri", label:"Le déterminant — Le tri des déterminants", icon:"🗂️", screen:"screen-gram-determinant-tri", fn:"startTriExercise" },
     { id:'gram_determinant_ex', label:'Le déterminant (Exercices)', icon:'✏️', screen:'screen-vocabulaire', fn:"() => openFiche('determinant_exercice.html', 'Le déterminant (Exercices)', 'screen-plan-travail-student')" },
     { id:'gram_adjectif', label:"L'adjectif", icon:'<img src="assets/logos/gram_adjectif.png" class="w-full h-full object-contain" />', screen:'screen-gram-adjectif', fn:'renderAdjectifMenu' },
+    { id:"gram_adjectif_identifier", label:"L'adjectif — Identifier les adjectifs", icon:"🔍", screen:"screen-gram-adjectif", fn:"startAdjectifExercise" },
+    { id:"gram_adjectif_accord", label:"L'adjectif — Accords de l'adjectif", icon:"✏️", screen:"screen-gram-adjectif", fn:"startAdjectifAccordExercise" },
+    { id:"gram_adjectif_fonction", label:"L'adjectif — Épithète ou attribut ?", icon:"🧩", screen:"screen-gram-adjectif", fn:"startAdjectifFonctionExercise" },
+    { id:"gram_adjectif_nom", label:"L'adjectif — Retrouver le nom qualifié", icon:"🎯", screen:"screen-gram-adjectif", fn:"startAdjectifNomExercise" },
     { id:'gram_verbe', label:'Le verbe', icon:'<img src="assets/logos/gram_verbe.png" class="w-full h-full object-contain" />', screen:'screen-gram-verbe', fn:'renderVerbeClassMenu' },
+    { id:"gram_verbe_identifier", label:"Le verbe — Identifier les verbes", icon:"🔍", screen:"screen-gram-verbe", fn:"startVerbeClassExercise" },
     { id:'gram_pronom', label:'Le pronom', icon:'<img src="assets/logos/gram_pronom.png" class="w-full h-full object-contain" />', screen:'screen-gram-pronom', fn:'' },
+    { id:"gram_pronom_piege", label:"Le pronom — Déterminant ou pronom ?", icon:"❓", screen:"screen-gram-pronom-piege", fn:"startPronomPiegeExercise" },
+    { id:"gram_pronom_referents", label:"Le pronom — Le détecteur de référents", icon:"🔍", screen:"screen-gram-detecteur-referents", fn:"" },
+    { id:"gram_pronom_remplacant", label:"Le pronom — Le remplaçant", icon:"🔄", screen:"screen-gram-remplacant-pronom", fn:"" },
+    { id:"gram_pronom_repetitions", label:"Le pronom — La chasse aux répétitions", icon:"📝", screen:"screen-gram-chasse-repetitions", fn:"" },
     { id:'gram_adverbe', label:"L'adverbe", icon:'<img src="assets/logos/gram_adverbe.png" class="w-full h-full object-contain" />', screen:'screen-gram-adverbe', fn:'' },
+    { id:"gram_adverbe_reconnaitre", label:"L'adverbe — Reconnaître les adverbes", icon:"🔍", screen:"screen-gram-adverbe-exercice", fn:"" },
+    { id:"gram_adverbe_accord", label:"L'adverbe — Adjectif ou adverbe ?", icon:"⚖️", screen:"screen-gram-adverbe-accord-exercice", fn:"" },
     { id:'gram_complement_nom', label:'Le complément du nom', icon:'<img src="assets/logos/gram_complement_nom.png" class="w-full h-full object-contain" />', screen:'screen-gram-complement-nom', fn:'' },
     { id:'gram_tri_mots', label:'Le tri des mots', icon:'<img src="assets/logos/gram_tri_mots.png" class="w-full h-full object-contain" />', screen:'screen-gram-tri-mots', fn:'' },
     { id:'gram_mots_liaison', label:'Les mots de liaison', icon:'🔗', screen:'screen-gram-mots-liaison', fn:'' },
   ]},
   { cat: '📖 Français', sub: '✏️ Grammaire — Fonctions des mots', items: [
     { id:'gram_sujet', label:'Le sujet', icon:'<img src="assets/logos/gram_sujet.png" class="w-full h-full object-contain" />', screen:'screen-gram-sujet', fn:'renderSujetMenu' },
+    { id:"sujet_phrase", label:"Le sujet — Repérer le sujet", icon:"🔍", screen:"screen-gram-sujet", fn:"startSujetExercise" },
+    { id:"gram_sujet_texte", label:"Le sujet — Reconstituer les textes", icon:"📝", screen:"screen-gram-sujet", fn:"startSujetTextesExercise" },
+    { id:"gram_classes_sujet", label:"Le sujet — Les 4 classes du sujet", icon:"🗂️", screen:"screen-gram-sujet", fn:"startSujetClassesExercise" },
     { id:'gram_verbe_fonc', label:'Le verbe (fonction)', icon:'<img src="assets/logos/gram_verbe_fonc.png" class="w-full h-full object-contain" />', screen:'screen-gram-verbe-fonc', fn:'renderVerbeMenu' },
+    { id:"verbe_phrase", label:"Le verbe (fonction) — Repérer le verbe", icon:"🔍", screen:"screen-gram-verbe-fonc", fn:"startVerbeExercise" },
+    { id:"gram_verbe_groupe", label:"Le verbe (fonction) — Infinitif et groupe", icon:"🔬", screen:"screen-gram-verbe-fonc", fn:"startVerbeGroupeExercise" },
+    { id:"gram_verbe_infinitif", label:"Le verbe (fonction) — Trouver l'infinitif", icon:"✏️", screen:"screen-gram-verbe-fonc", fn:"startVerbeInfinitifExercise" },
+    { id:"gram_verbe_texte", label:"Le verbe (fonction) — Reconstituer les textes", icon:"📝", screen:"screen-gram-verbe-fonc", fn:"startVerbeTextesExercise" },
     { id:'gram_predicat', label:'Le prédicat', icon:'<img src="assets/logos/gram_predicat.png" class="w-full h-full object-contain" />', screen:'screen-gram-predicat', fn:'renderPredicatMenu' },
     { id:'gram_cdv_civ', label:'Le CDV et le CIV', icon:'<img src="assets/logos/gram_cdv_civ.png" class="w-full h-full object-contain" />', screen:'screen-gram-cdv-civ', fn:'renderCdvCivMenu' },
     { id:'gram_cc', label:'Le complément circonstanciel', icon:'<img src="assets/logos/gram_cc.png" class="w-full h-full object-contain" />', screen:'screen-gram-cc', fn:'renderCcMenu' },
@@ -31291,7 +31650,7 @@ const PLAN_CATALOGUE = [
     { id:'conj_trois_temps_simples', label:'2. Tableau des 3 temps simples', icon:'📝', screen:'screen-conj-un-peu-de-tout', fn:"() => openFiche('conjugaison_trois_temps_simples.html', '2. Tableau des 3 temps simples', 'screen-conj-un-peu-de-tout')" },
     { id:'conj_repere_verbe', label:'3. Repère le bon verbe', icon:'🧐', screen:'screen-conj-un-peu-de-tout', fn:"() => openFiche('conjugaison_repere_verbe.html', '3. Repère le bon verbe', 'screen-conj-un-peu-de-tout')" },
   ]},
-  { cat: '📖 Français', sub: '📄 Fiches Conjugaison (Passé Composé)', items: [
+  { cat: '📖 Français', sub: '📄 Conjugaison — Fiches du passé composé', items: [
     { id: 'vocabulaire_pc_identifier', label: 'Passé composé ou pas ?', icon: '👍', screen: 'screen-vocabulaire', fn: "() => openFiche('conjugaison_pc_identifier.html', 'Passé composé ou pas ?', 'screen-plan-travail-student')" },
     { id: 'vocabulaire_pc_avoir_qcm', label: 'Participe passé avec Avoir (QCM)', icon: '✏️', screen: 'screen-vocabulaire', fn: "() => openFiche('conjugaison_pc_avoir_qcm.html', 'Participe passé avec Avoir (QCM)', 'screen-plan-travail-student')" },
     { id: 'vocabulaire_pc_avoir_trous', label: 'Participe passé avec Avoir (Écriture)', icon: '✍️', screen: 'screen-vocabulaire', fn: "() => openFiche('conjugaison_pc_avoir_trous.html', 'Participe passé avec Avoir (Écriture)', 'screen-plan-travail-student')" },
@@ -31353,9 +31712,17 @@ const PLAN_CATALOGUE = [
     { id:'num_decomposer', label:'Décomposer un nombre', icon:'<img src="assets/logos/num_decomposer.png" class="w-full h-full object-contain" />', screen:'screen-num-decomposer', fn:'renderNumDecomposer' },
     { id:'num_classer', label:'Classer des nombres', icon:'<img src="assets/logos/num_classer.png" class="w-full h-full object-contain" />', screen:'screen-num-classer', fn:'renderNumClasser' },
     { id:'num_decimaux', label:'Les nombres décimaux (Menu)', icon:'<img src="assets/logos/num_decimaux.png" class="w-full h-full object-contain" />', screen:'screen-num-decimaux', fn:'renderNumDecimauxMenu' },
+    { id:"num_decimaux_abaque", label:"Décimaux — L'abaque des décimaux", icon:"🧮", screen:"screen-num-abaque-decimaux", fn:"renderAbaqueDecimaux" },
+    { id:"num_decimaux_devinettes", label:"Décimaux — Devinettes décimales", icon:"❓", screen:"screen-num-devinettes-decimaux", fn:"renderDevinettesDecimaux" },
+    { id:"num_decimaux_relier", label:"Décimaux — Valeur d'un chiffre", icon:"🔗", screen:"screen-num-relier-decimaux", fn:"renderRelierDecimaux" },
+    { id:"num_decimaux_ecriture", label:"Décimaux — Écrire en chiffres", icon:"✏️", screen:"screen-num-decimaux-ecriture", fn:"renderDecimauxEcriture" },
+    { id:"num_decimaux_droite", label:"Décimaux — Droites numériques", icon:"📏", screen:"screen-num-decimaux-droite", fn:"renderDecimauxDroite" },
+    { id:"num_decimaux_le_bon_nombre", label:"Décimaux — Le bon nombre", icon:"🎯", screen:"screen-num-decimaux-le-bon-nombre", fn:"renderDecimauxLeBonNombre" },
+    { id:"num_decimaux_entre", label:"Décimaux — Entre deux nombres", icon:"↔️", screen:"screen-num-decimaux-entre", fn:"renderDecimauxEntre" },
+    { id:"num_decimaux_op_devinettes", label:"Décimaux — Opérations devinettes", icon:"➕", screen:"screen-num-decimaux-op-devinettes", fn:"renderDecimauxOpDevinettes" },
     { id:'num_entiers_decimaux', label:'Entiers et décimaux (Menu)', icon:'<img src="assets/logos/num_entiers_decimaux.png" class="w-full h-full object-contain" />', screen:'screen-num-entiers-decimaux', fn:'renderNumEntiersDecimauxMenu' },
     { id:'num_entiers_decimaux_abaque', label:'Sélectionne le bon chiffre', icon:'<img src="assets/logos/num_entiers_decimaux_select.png" class="w-full h-full object-contain" />', screen:'screen-num-entiers-decimaux-abaque', fn:'' },
-    { id:'num_entiers_decimaux_comparaison', label:'Comparaison de nombres', icon:'<img src="assets/logos/num_entiers_decimaux_comparaison.png" class="w-full h-full object-contain" />', screen:'screen-num-entiers-decimaison-comparaison', fn:'' },
+    { id:'num_entiers_decimaux_comparaison', label:'Comparaison de nombres', icon:'<img src="assets/logos/num_entiers_decimaux_comparaison.png" class="w-full h-full object-contain" />', screen:'screen-num-entiers-decimaux-comparaison', fn:'' },
     { id:'num_fractions_simples', label:'Fractions simples', icon:'<img src="assets/logos/num_fractions_simples.png" class="w-full h-full object-contain" />', screen:'screen-fractions-simples', fn:'renderFractionsSimples' },
     { id:'num_fractions_complexes', label:'Fractions complexes', icon:'<img src="assets/logos/num_fractions_complexes.png" class="w-full h-full object-contain" />', screen:'screen-fractions-figures', fn:'renderFractionsExercice' },
     { id:'num_balance_fractions', label:'La balance des fractions', icon:'<img src="assets/logos/num_fractions_balance.png" class="w-full h-full object-contain" />', screen:'screen-balance-fractions', fn:'' },
@@ -31366,6 +31733,7 @@ const PLAN_CATALOGUE = [
     { id:'num_pourcentages', label:'Les pourcentages', icon:'<img src="assets/logos/num_pourcentages.png" class="w-full h-full object-contain" />', screen:'screen-num-pourcentages', fn:'' },
     { id:'num_decimaux_arrondir', label:'Arrondir les décimaux', icon:'🎯', screen:'screen-num-decimaux-arrondir', fn:'renderDecimauxArrondir' },
     { id:'num_diviseurs_premiers', label:'Diviseurs & Nombres premiers', icon:'🔢', screen:'screen-num-diviseurs-premiers', fn:'' },
+    { id:"num_tout", label:"Un peu de tout (numération)", icon:"🔀", screen:"screen-num-tout", fn:"" },
   ]},
   { cat: '🔢 Mathématiques', sub: '➕ Opérations — Vocabulaire', items: [
     { id:'op_vocabulaire_def', label:'Vocabulaire des opérations (Définitions)', icon:'📖', screen:'screen-op-vocabulaire-def', fn:'' },
@@ -31374,10 +31742,17 @@ const PLAN_CATALOGUE = [
   ]},
   { cat: '🔢 Mathématiques', sub: '➕ Opérations — Calculs & Techniques', items: [
     { id:'op_add_sous', label:'Additions et soustractions', icon:'<img src="assets/logos/op_add_sous.png" class="w-full h-full object-contain" />', screen:'screen-op-add-sous', fn:'' },
+    { id:"op_add_sous_100", label:"Additions et soustractions — Jusque 100", icon:"🔢", screen:"screen-calc-exercise", fn:"() => startCalcExercise('add_sous_100')" },
+    { id:"op_add_sous_1000", label:"Additions et soustractions — Jusque 1 000", icon:"🔢", screen:"screen-calc-exercise", fn:"() => startCalcExercise('add_sous_1000')" },
+    { id:"op_add_sous_10000", label:"Additions et soustractions — Jusque 10 000", icon:"🔢", screen:"screen-calc-exercise", fn:"() => startCalcExercise('add_sous_10000')" },
+    { id:"op_add_sous_100000", label:"Additions et soustractions — Jusque 100 000", icon:"🔢", screen:"screen-calc-exercise", fn:"() => startCalcExercise('add_sous_100000')" },
+    { id:"op_add_sous_1000000", label:"Additions et soustractions — Jusque 1 000 000", icon:"🔢", screen:"screen-calc-exercise", fn:"() => startCalcExercise('add_sous_1000000')" },
     { id:'op_add_sous_flechettes_calcule', label:'Fléchettes — Calcule le score', icon:'🎯', screen:'screen-op-add-sous-flechettes-calcule', fn:'' },
     { id:'op_add_sous_flechettes_atteins', label:'Fléchettes — Atteins le score', icon:'🎯', screen:'screen-op-add-sous-flechettes-atteins', fn:'' },
     { id:'op_mult_div', label:'Multiplications et divisions', icon:'<img src="assets/logos/op_multiplier.png" class="w-full h-full object-contain" />', screen:'screen-op-mult-div', fn:'' },
+    { id:"op_mult_div_tables", label:"Multiplications et divisions — Tables de multiplication", icon:"✖️", screen:"screen-calc-exercise", fn:"() => startMultDivExercise()" },
     { id:'op_4_operations', label:'Les 4 opérations', icon:'🔢', screen:'screen-op-4-operations', fn:'render4OperationsScreen' },
+    { id:"op_4_operations_melangees", label:"Les 4 opérations mélangées", icon:"🔢", screen:"screen-calc-exercise", fn:"() => start4OpExercise()" },
     { id:'op_add_sous_compte_est_bon', label:'Le compte est bon', icon:'<img src="assets/logos/op_compte_est_bon.png" class="w-full h-full object-contain" />', screen:'screen-op-add-sous-compte-est-bon', fn:'' },
     { id:'op_4_operations_calculs', label:"Fiche d'entraînement (Calculs)", icon:'✏️', screen:'screen-op-4-operations-calculs', fn:'' },
     { id:'op_4_operations_lacunaires', label:'Calculs lacunaires', icon:'✏️', screen:'screen-op-4-operations-lacunaires', fn:'' },
@@ -31389,7 +31764,13 @@ const PLAN_CATALOGUE = [
     { id:'op_divisibilite', label:'Caractères de divisibilité', icon:'<img src="assets/logos/op_divisibilite.png" class="w-full h-full object-contain" />', screen:'screen-op-divisibilite', fn:'' },
     { id:'op_compensation', label:'La compensation', icon:'⚖️', screen:'screen-op-compensation', fn:'' },
     { id:'op_calcul_ecrit', label:'Calcul écrit', icon:'✏️', screen:'screen-op-calcul-ecrit', fn:'' },
+    { id:"op_calcul_ecrit_addition", label:"Calcul écrit — Additions écrites", icon:"➕", screen:"screen-op-calcul-ecrit-addition", fn:"" },
+    { id:"op_calcul_ecrit_soustraction", label:"Calcul écrit — Soustractions écrites", icon:"➖", screen:"screen-op-calcul-ecrit-soustraction", fn:"" },
+    { id:"op_calcul_ecrit_multiplication", label:"Calcul écrit — Multiplications écrites", icon:"✖️", screen:"screen-op-calcul-ecrit-multiplication", fn:"" },
+    { id:"op_calcul_ecrit_division", label:"Calcul écrit — Divisions écrites", icon:"➗", screen:"screen-op-calcul-ecrit-division", fn:"" },
     { id:'op_ordre', label:"L'ordre des opérations", icon:'<img src="assets/logos/op_ordre.png" class="w-full h-full object-contain" />', screen:'screen-op-ordre', fn:'' },
+    { id:"op_ordre_pemdas", label:"L'ordre des opérations — Mission PEMDAS", icon:"🔢", screen:"screen-op-ordre-pemdas", fn:"" },
+    { id:"op_ordre_defi", label:"L'ordre des opérations — Défi PEMDAS", icon:"🏆", screen:"screen-op-ordre-defi", fn:"" },
   ]},
   { cat: '🔢 Mathématiques', sub: '📐 Grandeurs — Mesures de base', items: [
     { id:'grandeur_masses', label:'Les masses (Menu)', icon:'⚖️', screen:'screen-grandeurs-masses', fn:'renderMassesMenu' },
@@ -31413,13 +31794,17 @@ const PLAN_CATALOGUE = [
     { id:'grandeur_aire_quadrillage', label:"Le Géomètre des Carreaux (Quadrillage)", icon:'🟩', screen:'screen-grandeur-aire-quadrillage', fn:'' },
     { id:'grandeur_aire_conversions', label:"L'Arpenteur Impérial (Conversions d'Aire)", icon:'⚖️', screen:'screen-grandeur-aire-conversions', fn:'' },
     { id:'grandeur_aire_agraire', label:"Mesures Agraires & Superficies", icon:'🌾', screen:'screen-grandeur-aire-agraire', fn:'' },
+    { id:"grandeur_aire_formules", label:"L'Arpenteur du Château (Formules d'aire)", icon:"📐", screen:"screen-grandeur-aire-formules", fn:"" },
+    { id:"grandeur_aire_composee", label:"Le Calcul d'Aires Composées", icon:"📐", screen:"screen-grandeur-aire-composee", fn:"" },
     { id:'grandeur_volume', label:'Le volume', icon:'<img src="assets/logos/grandeur_volume.png" class="w-full h-full object-contain" />', screen:'screen-grandeurs-volume', fn:'renderVolumeMenu' },
     { id:'grandeur_volume_cubes', label:"Le Bâtisseur de Cubes (Volume 3D)", icon:'🧊', screen:'screen-grandeur-volume-cubes', fn:'' },
-    { id:'grandeur_volume_formules', label:"L'Architecte des Pavés (Formules)", icon:'🧱', screen:'screen-grandeur-volume-formules', fn:'' },
-    { id:'grandeur_volume_conversions', label:"Le Laboratoire des Liquides", icon:'🧪', screen:'screen-grandeur-volume-conversions', fn:'' },
+    { id:'grandeur_volume_architecte', label:"L'Architecte des Pavés (Formules)", icon:'🧱', screen:'screen-grandeur-volume-formules', fn:'' },
+    { id:'grandeur_volume_liquides', label:"Le Laboratoire des Liquides", icon:'🧪', screen:'screen-grandeur-volume-conversions', fn:'' },
   ]},
   { cat: '🔢 Mathématiques', sub: '📐 Grandeurs — Durées, Monnaie & Vitesse', items: [
     { id:'grandeur_durees', label:'Les durées', icon:'<img src="assets/logos/grandeur_durees.png" class="w-full h-full object-contain" />', screen:'screen-grandeurs-durees', fn:'renderGrandeurDurees' },
+    { id:"grandeur_durees_conversions", label:"Les durées — Conversions", icon:"⏱️", screen:"screen-durees-exercise", fn:"() => startDureesExercise('conversions')" },
+    { id:"grandeur_durees_entre", label:"Les durées — Durée entre 2 heures", icon:"🕑", screen:"screen-durees-exercise", fn:"() => startDureesExercise('duree_entre')" },
     { id:'grandeur_durees_heure_secondes', label:'Quelle heure est-il ? (avec secondes)', icon:'🚆', screen:'screen-grandeurs-durees-heure-secondes', fn:'' },
     { id:'grandeur_durees_situations', label:'Le Labo des Durées', icon:'⏱️', screen:'screen-grandeur-durees-situations', fn:'' },
     { id:'grandeur_monnaie', label:'La monnaie (Menu)', icon:'<img src="assets/logos/grandeur_monnaie.png" class="w-full h-full object-contain" />', screen:'screen-grandeurs-monnaie', fn:'renderGrandeursMonnaieMenu' },
@@ -31439,6 +31824,7 @@ const PLAN_CATALOGUE = [
     { id:'td_graphique', label:'Lire un graphique', icon:'<img src="assets/logos/td_graphique.png" class="w-full h-full object-contain" />', screen:'screen-td-graphique', fn:'renderTDGraphique' },
     { id:'td_la_moyenne_menu', label:'La moyenne', icon:'<img src="assets/logos/td_la_moyenne.png" class="w-full h-full object-contain" />', screen:'screen-td-la-moyenne-menu', fn:'renderLaMoyenneMenu' },
     { id:'td_moyenne_qcm', label:'La moyenne (QCM)', icon:'❓', screen:'screen-td-moyenne-qcm', fn:'renderTDMoyenneQCM' },
+    { id:"td_moyenne", label:"Moyenne et étendue", icon:"🔢", screen:"screen-td-moyenne", fn:"renderTDMoyenne" },
     { id:'td_moyenne_exercices', label:'Calcul de la moyenne (Exercices)', icon:'📊', screen:'screen-vocabulaire', fn:"() => openFiche('moyenne_exercices.html', 'Calcul de la moyenne (Exercices)', 'screen-plan-travail-student')" },
     { id:'td_donnees_circulaires', label:'Le décodeur de camemberts', icon:'🍕', screen:'screen-td-donnees-circulaires', fn:'renderDonneesCirculaires' },
     { id:'td_arbre_dichotomique', label:"L'arbre dichotomique", icon:'🌳', screen:'screen-qcm-arbre-feuilles', fn:'renderArbreDichotomique' },
@@ -31487,7 +31873,10 @@ const PLAN_CATALOGUE = [
     { id:'solide_vocabulaire', label:'Le vocabulaire géométrique', icon:'📖', screen:'screen-solides-vocabulaire', fn:'' },
   ]},
   { cat: '🌍 Éveil', sub: '📜 Histoire', items: [
+    { id:'kim_histoire', label:'L\'Œil du Temps — Jeu de Kim (Mémoire visuelle)', icon:'<img src="assets/logos/jeu_kim.png" class="w-full h-full object-contain" />', screen:'screen-fiche-viewer', filename:'kim_histoire.html', fn:"() => openFiche('kim_histoire.html', 'L\\'Œil du Temps — Jeu de Kim', 'screen-plan-travail-student')" },
     { id:'fiche_frise', label:'La frise chronologique (Interactive)', icon:'📜', screen:'screen-vocabulaire', fn:"() => openFiche('frise-chronologique-histoire.html', 'La frise chronologique', 'screen-plan-travail-student')" },
+    { id:'hist_grand_voyage_temps', label:'Le grand voyage du Temps (Carnet d\'investigation)', icon:'🏛️', screen:'screen-fiche-viewer', filename:'lecon_frise_historique.html', fn:"() => openFiche('lecon_frise_historique.html', 'Le grand voyage du Temps', 'screen-plan-travail-student')" },
+    { id:'hist_ligne_du_temps', label:'La ligne du temps (Séquence P5–P6)', icon:'⏳', screen:'screen-fiche-viewer', filename:'ligne-du-temps_5.html', fn:"() => openFiche('ligne-du-temps_5.html', 'La ligne du temps', 'screen-plan-travail-student')" },
     { id:'hist_grandes_periodes', label:'Les grandes périodes de l\'Histoire', icon:'<img src="assets/logos/hist_grandes_periodes.png" class="w-full h-full object-contain" />', screen:'screen-hist-grandes-periodes', fn:'' },
     { id:'qvgdm_prehistoire', label:'Quiz Préhistoire', icon:'<img src="assets/logos/qvgdm_prehistoire.png" class="w-full h-full object-contain" />', screen:'screen-qvgdm-prehistoire', fn:'renderQVGDMPrehistoire' },
     { id:'prehistoire_assoc', label:'Préhistoire — Termes et définitions', icon:'<img src="assets/logos/prehistoire_assoc.png" class="w-full h-full object-contain" />', screen:'screen-prehistoire-assoc', fn:'renderPrehistoireAssoc' },
@@ -31505,6 +31894,11 @@ const PLAN_CATALOGUE = [
   ]},
   { cat: '🌍 Éveil', sub: '🔬 Sciences — Corps humain & Santé', items: [
     { id:'sci_squelette', label:'Le squelette humain', icon:'<img src="assets/logos/sci_squelette.png" class="w-full h-full object-contain" />', screen:'screen-sci-squelette', fn:'renderSciSqueletteMenu' },
+    { id:"sci_sq_schema", label:"Le squelette — Le schéma", icon:"💀", screen:"screen-sci-sq-schema", fn:"renderSciSqSchema" },
+    { id:"sci_sq_texte", label:"Le squelette — Le fonctionnement du mouvement", icon:"💪", screen:"screen-sci-sq-texte", fn:"renderSciSqTexte" },
+    { id:"sci_sq_qcm", label:"Le squelette — QCM", icon:"❓", screen:"screen-sci-sq-qcm", fn:"renderSciSqQCM" },
+    { id:"sci_sq_intrus", label:"Le squelette — Chasseur d'intrus", icon:"🎯", screen:"screen-sci-sq-intrus", fn:"renderSciSqIntrus" },
+    { id:"sci_sq_vrai_faux", label:"Le squelette — Vrai ou faux ?", icon:"✅", screen:"screen-sci-sq-vrai-faux", fn:"renderSciSqVraiFaux" },
     { id:'fiche_respiratoire', label:"Appareil respiratoire — La leçon", icon:'🫁', screen:'screen-vocabulaire', fn:"() => openFiche('appareil-respiratoire.html', 'L\\'appareil respiratoire (Leçon)', 'screen-plan-travail-student')" },
     { id:'sci_resp_schema', label:'Appareil respiratoire — Le schéma', icon:'🫁', screen:'screen-sci-resp-schema', fn:'renderSciRespSchema' },
     { id:'sci_resp_texte', label:'Appareil respiratoire — Trajet de l\'air', icon:'<img src="assets/logos/sci_resp_texte.png" class="w-full h-full object-contain" />', screen:'screen-sci-resp-texte', fn:'renderSciRespTexte' },
@@ -31532,7 +31926,7 @@ const PLAN_CATALOGUE = [
     { id:'sci_systeme_solaire', label:'Le système solaire', icon:'<img src="assets/logos/sci_systeme_solaire.png" class="w-full h-full object-contain" />', screen:'screen-sci-systeme-solaire', fn:'' },
     { id:'sci_planetes_ordre', label:'Planètes — Ordre et distance', icon:'🪐', screen:'screen-sci-planetes-ordre', fn:'' },
     { id:'sci_planetes_infos', label:'Planètes — Informations & Caractéristiques', icon:'🌍', screen:'screen-sci-planetes-infos', fn:'' },
-    { id:'sci_planetes_qcm', label:'Système solaire — QCM', icon:'❓', screen:'screen-sci-planetes-qcm', fn:'' },
+    { id:'sci_planetes_qcm', label:'Système solaire — QCM', icon:'❓', screen:'screen-sci-planetes-infos', fn:'renderSciPlanetesInfosScreen' },
     { id:'sci_plantes_fleur', label:'L\'anatomie de la fleur', icon:'🌸', screen:'screen-sci-plantes-fleur', fn:'' },
     { id:'sci_plantes_germination', label:'Reproduction & Germination', icon:'🌱', screen:'screen-sci-plantes-germination', fn:'' },
     { id:'sci_reproduction_plantes', label:'La reproduction des plantes (Leçon)', icon:'🌿', screen:'screen-vocabulaire', fn:"() => openFiche('reproduction_plantes.html', 'La reproduction des plantes', 'screen-plan-travail-student')" },
@@ -31551,10 +31945,7 @@ const PLAN_CATALOGUE = [
     { id:'sci_mecanique_leviers', label:'Leviers et balances', icon:'⚖️', screen:'screen-sci-mecanique-leviers', fn:'renderSciMecaniqueLeviers' },
   ]},
   { cat: '🌍 Éveil', sub: '🌍 Géographie', items: [
-    { id:'fiche_planisphere', label:'Le planisphère interactif', icon:'🗺️', screen:'screen-vocabulaire', fn:"() => openFiche('planisphere-interactif.html', 'Le planisphère interactif', 'screen-plan-travail-student')" },
     { id:'geo_globe_3d', label:'Le globe terrestre 3D', icon:'🌐', screen:'screen-vocabulaire', fn:"() => openFiche('globe-terrestre.html', 'Le globe terrestre 3D', 'screen-plan-travail-student')" },
-    { id:'fiche_relief_hydro', label:'Relief et hydrographie de Belgique', icon:'🏔️', screen:'screen-vocabulaire', fn:"() => openFiche('relief-hydrographie.html', 'Relief et hydrographie', 'screen-plan-travail-student')" },
-    { id:'fiche_regions_communautes', label:'Régions et Communautés de Belgique', icon:'🗺️', screen:'screen-vocabulaire', fn:"() => openFiche('regions_communautes_belgique.html', 'Régions et Communautés', 'screen-plan-travail-student')" },
     { id:'geo_belgique_provinces', label:'Les provinces de Belgique', icon:'🗺️', screen:'screen-geo-belgique-provinces', fn:'renderGeoBelgiqueScreen' },
     { id:'geo_belgique_hydro', label:"Les cours d'eau de Belgique", icon:'<img src="assets/logos/geo_belgique_hydro.png" class="w-full h-full object-contain" />', screen:'screen-geo-belgique-hydro', fn:'renderGeoHydroScreen' },
     { id:'geo_belgique_communes', label:'Les communes de notre région', icon:'<img src="assets/logos/geo_belgique_communes.png" class="w-full h-full object-contain" />', screen:'screen-geo-belgique-communes', fn:'renderGeoCommunesScreen' },
@@ -31570,7 +31961,7 @@ const PLAN_CATALOGUE = [
     { id:'geo_europe_relief_fleuves', label:"L'Europe — Relief et Fleuves", icon:'🏔️', screen:'screen-geo-europe-relief-fleuves', fn:'' },
     { id:'geo_europe_villes_pop', label:"L'Europe — Villes, Population et Mégalopole", icon:'🌆', screen:'screen-geo-europe-villes-pop', fn:'' },
     { id:'geo_paysages', label:'Les paysages (Menu)', icon:'<img src="assets/logos/geo_paysages.png" class="w-full h-full object-contain" />', screen:'screen-geo-paysages-menu', fn:'renderGeoPaysagesMenu' },
-    { id:'geo_paysages_vallee', label:'Les paysages : la vallée', icon:'🏔️', screen:'screen-geo-paysages-vallee', fn:'renderGeoPaysagesMenu', filename:'analyse_paysage_vallee.html' },
+    { id:'geo_paysages_vallee', label:'Les paysages : la vallée', icon:'🏔️', screen:'screen-geo-paysages-vallee', fn:'renderGeoPaysagesMenu', filename:'analyse_paysages.html' },
     { id:'geo_paysages_littoral', label:'Les paysages : le littoral', icon:'🏖️', screen:'screen-geo-paysages-littoral', fn:'renderGeoPaysagesMenu', filename:'analyse_paysage_littoral.html' },
     { id:'geo_paysages_types', label:'Les types de paysages', icon:'🗺️', screen:'screen-geo-paysages-types', fn:'renderGeoPaysagesMenu', filename:'analyse_types_paysages.html' },
     { id:'geo_hydro', label:'Le vocabulaire hydrographique (Menu)', icon:'<img src="assets/logos/geo_hydro.png" class="w-full h-full object-contain" />', screen:'screen-geo-hydro', fn:'renderGeoHydroMenu' },
@@ -31578,6 +31969,9 @@ const PLAN_CATALOGUE = [
     { id:'geo_hydro_definitions', label:'Vocabulaire hydrographique (Définitions)', icon:'📖', screen:'screen-geo-hydro-definitions', fn:'renderGeoHydroMenu', filename:'hydrographie_definitions.html' },
     { id:'geo_hydro_belgique', label:'Relief et hydrographie de Belgique', icon:'🇧🇪', screen:'screen-geo-hydro-belgique', fn:'renderGeoHydroMenu', filename:'relief-hydrographie.html' },
     { id:'geo_cartes', label:'Les cartes et les plans', icon:'🗺️', screen:'screen-geo-cartes', fn:'' },
+  ]},
+  { cat: '🌍 Éveil', sub: '💶 Économie — Formation économique et sociale', items: [
+    { id:'eco_formation_economique_sociale', label:'La formation économique et sociale (Carnet d\'investigation)', icon:'💶', screen:'screen-fiche-viewer', filename:'formation-economique-sociale.html', fn:"() => openFiche('formation-economique-sociale.html', 'La formation économique et sociale', 'screen-plan-travail-student')" },
   ]},
   { cat: '🎓 CEB', sub: '🔬 Sciences', items: [
     { id:'ceb_sci_2026', label:'CEB Sciences 2026', icon:'🔬', screen:'screen-ceb-viewer', fn:"() => openCEB('CEB sciences/ceb_sciences_2026.html', 'CEB Sciences 2026', 'screen-plan-travail-student')" },
@@ -31659,6 +32053,26 @@ function initRealtimeStudentSync() {
       }).catch(()=>{});
     }
   }, (err) => console.warn('Realtime locked_activities error:', err));
+
+  // 1 bis. Livres Récits Express masqués : la liste EN LIGNE de la classe fait foi.
+  // (Avant : les élèves gardaient la liste restée en mémoire sur l'appareil, parfois
+  //  « tous les livres masqués » → carte Récits Express invisible, livre absent.)
+  const applyArchived = (list) => {
+    if (!Array.isArray(list)) list = (list && typeof list === 'object') ? Object.values(list) : [];
+    localStorage.setItem('lq_archived_' + cls, JSON.stringify(list));
+    if (cls === 'lejoly') localStorage.setItem('lq_archived', JSON.stringify(list));
+    if (typeof refreshCurrentMenu === 'function') refreshCurrentMenu();
+    const sb = document.getElementById('screen-books');
+    if (sb && sb.classList.contains('active') && typeof renderBooks === 'function') renderBooks();
+  };
+  fbStudentListeners.archived = window.FB_onValue(window.FB_ref(window.FB_DB, 'settings/archived_books_' + cls), (snap) => {
+    if (snap.exists()) { applyArchived(snap.val()); return; }
+    // Classe sans liste : celle de M. Lejoly, sinon l'ancienne liste commune, sinon rien de masqué
+    window.FB_get(window.FB_ref(window.FB_DB, 'settings/archived_books_lejoly')).then(s2 => {
+      if (s2.exists()) return applyArchived(s2.val());
+      return window.FB_get(window.FB_ref(window.FB_DB, 'settings/archived_books')).then(s3 => applyArchived(s3.exists() ? s3.val() : []));
+    }).catch(() => {});
+  }, (err) => console.warn('Realtime archived_books error:', err));
 
   // 2. Observer pour le plan de travail global de la classe
   const planRef = window.FB_ref(window.FB_DB, 'settings/plan_travail/' + cls);
@@ -32049,12 +32463,14 @@ function bulkToggleAllSite(makeActive) {
 
 function teacherPreviewActivity(id, screen, fn, filename, label) {
   window.teacherPreviewActive = true;
-  window.teacherPreviewReturn = { screen: 'screen-gestion', tab: 'activities' };
+  window.teacherPreviewReturn = { type: 'gestion', screen: 'screen-gestion', tab: 'activities' };
 
   const bar = document.getElementById('teacher-preview-floating-bar');
   if (bar) {
     const titleEl = document.getElementById('teacher-preview-activity-title');
     if (titleEl) titleEl.textContent = label || id;
+    const btn = bar.querySelector('button');
+    if (btn) btn.innerHTML = '⬅️ Revenir à la liste des activités';
     bar.style.display = 'flex';
   }
 
@@ -32065,19 +32481,118 @@ function teacherPreviewActivity(id, screen, fn, filename, label) {
   }
 }
 
+function ptTeacherPreviewItem(itemId, e) {
+  if (e) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+
+  let foundItem = null;
+  const masterCatalogue = (typeof getActivitiesMasterRegistry === 'function') ? getActivitiesMasterRegistry() : PLAN_CATALOGUE;
+  for (const cat of masterCatalogue) {
+    for (const item of cat.items) {
+      if (item.id === itemId) {
+        foundItem = item;
+        break;
+      }
+    }
+    if (foundItem) break;
+  }
+  if (!foundItem) {
+    console.warn('Item introuvable dans le catalogue:', itemId);
+    return;
+  }
+
+  const activeScreen = (document.querySelector('.screen.active') || {}).id || 'screen-plan-travail-teacher-full';
+  const currentScrollY = window.scrollY || window.pageYOffset || 0;
+
+  window.teacherPreviewActive = true;
+  window.teacherPreviewReturn = {
+    type: 'plan-travail',
+    screen: activeScreen,
+    scrollY: currentScrollY,
+    itemId: itemId
+  };
+
+  const bar = document.getElementById('teacher-preview-floating-bar');
+  if (bar) {
+    const titleEl = document.getElementById('teacher-preview-activity-title');
+    if (titleEl) titleEl.textContent = foundItem.label || itemId;
+    const btn = bar.querySelector('button');
+    if (btn) btn.innerHTML = '⬅️ Retour au plan de travail';
+    bar.style.display = 'flex';
+  }
+
+  if (foundItem.screen === 'screen-fiche-viewer' && foundItem.filename) {
+    openFiche(foundItem.filename, foundItem.label, activeScreen);
+  } else if (foundItem.screen) {
+    planNavigateTo(foundItem.screen, foundItem.fn);
+  }
+}
+
 function returnFromTeacherPreview() {
   const bar = document.getElementById('teacher-preview-floating-bar');
   if (bar) bar.style.display = 'none';
-  window.teacherPreviewActive = false;
 
   const iframe = document.getElementById('fiche-viewer-iframe');
   if (iframe) iframe.src = 'about:blank';
+  const iframeCeb = document.getElementById('ceb-viewer-iframe');
+  if (iframeCeb) iframeCeb.src = 'about:blank';
 
   if (typeof tetStop === 'function') tetStop();
+  if (typeof state !== 'undefined' && state.book) state.book = '';
+
+  const ret = window.teacherPreviewReturn;
+  window.teacherPreviewActive = false;
+  window.teacherPreviewReturn = null;
+
+  if (ret && ret.type === 'plan-travail') {
+    const targetScreen = ret.screen || 'screen-plan-travail-teacher-full';
+    showScreen(targetScreen);
+    if (targetScreen === 'screen-teacher-panel') {
+      const tabBtn = document.getElementById('tab-plan-btn');
+      if (tabBtn && typeof switchTab === 'function') switchTab('tab-plan', tabBtn);
+    }
+    setTimeout(() => {
+      if (ret.itemId) {
+        const itemEl = document.querySelector(`.pt-item[data-id="${ret.itemId}"]`);
+        if (itemEl) {
+          itemEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          itemEl.classList.remove('pt-item-highlight');
+          void itemEl.offsetWidth;
+          itemEl.classList.add('pt-item-highlight');
+          setTimeout(() => itemEl.classList.remove('pt-item-highlight'), 2600);
+          return;
+        }
+      }
+      if (typeof ret.scrollY === 'number') {
+        window.scrollTo({ top: ret.scrollY, behavior: 'instant' });
+      }
+    }, 80);
+    return;
+  }
 
   showScreen('screen-gestion');
-  switchGestionTab('activities');
+  if (typeof switchGestionTab === 'function') switchGestionTab('activities');
 }
+
+// Intercepter tout bouton « Retour » d'exercice pendant la prévisualisation enseignant
+document.addEventListener('click', function(e) {
+  if (!window.teacherPreviewActive) return;
+  const backBtn = e.target.closest('.back-btn');
+  if (backBtn && backBtn.id !== 'fiche-viewer-back-btn') {
+    const currentScreen = backBtn.closest('.screen');
+    if (currentScreen && currentScreen.id !== 'screen-plan-travail-teacher-full' && currentScreen.id !== 'screen-teacher-panel') {
+      e.preventDefault();
+      e.stopPropagation();
+      e.stopImmediatePropagation();
+      returnFromTeacherPreview();
+    }
+  }
+}, true);
+
+window.ptTeacherPreviewItem = ptTeacherPreviewItem;
+window.returnFromTeacherPreview = returnFromTeacherPreview;
 
 function renderGestionActivities() {
   const container = document.getElementById('gestion-activities-container');
@@ -32371,6 +32886,57 @@ async function renderPlanTravailTeacher() {
   await _renderPlanTravailInto(el);
 }
 
+// Anciens identifiants du plan remplacés (doublons supprimés / identifiants alignés sur les menus élèves)
+const PLAN_ID_MIGRATIONS = {
+  'fiche_relief_hydro': 'geo_hydro_belgique',
+  'fiche_planisphere': 'geo_planisphere_interactif',
+  'fiche_regions_communautes': 'geo_belgique_regions_communautes',
+  'grandeur_volume_formules': 'grandeur_volume_architecte',
+  'grandeur_volume_conversions': 'grandeur_volume_liquides'
+};
+function ptMigrateIds(arr) {
+  if (!Array.isArray(arr)) return arr;
+  return [...new Set(arr.map(id => PLAN_ID_MIGRATIONS[id] || id))];
+}
+
+// Entrées « menu » (thème entier) : plus proposées dans la liste enseignant car tous leurs exercices
+// sont listés individuellement. Elles restent valides pour les plans déjà enregistrés.
+const PLAN_MENU_IDS = new Set([
+  'gram_nom','gram_determinant','gram_adjectif','gram_verbe','gram_pronom','gram_adverbe','gram_sujet','gram_verbe_fonc',
+  'num_grands_nombres','num_decimaux','num_entiers_decimaux',
+  'op_add_sous','op_mult_div','op_4_operations','op_calcul_ecrit','op_ordre',
+  'grandeur_masses','grandeur_capacites','grandeur_longueurs','grandeur_aire','grandeur_volume','grandeur_durees',
+  'grandeur_monnaie','grandeur_proportionnalite','grandeur_vitesse_horaire','td_la_moyenne_menu',
+  'solide_polygones','solide_triangles','solide_quadrilateres','solide_polyedres',
+  'sci_squelette','sci_systeme_solaire','geo_paysages','geo_hydro','geo_oceans'
+]);
+
+// Navigation rapide sujet / sous-sujet (Gestion > Plan de travail)
+let ptNavCat = null;      // null = accueil, 'all' = tout, sinon clé de sujet
+let ptNavGrp = null;      // null = tout le sujet, sinon clé de sous-sujet
+let ptNavSearch = '';
+let ptNavOnlyChecked = false;
+
+function ptKey(txt) {
+  return String(txt).normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/gi, '_').replace(/^_+|_+$/g, '').toLowerCase();
+}
+function ptGroupName(section) {
+  if (section.grp) return section.grp;
+  const clean = String(section.sub).replace(/^[^A-Za-zÀ-ÿ0-9]+/, '');
+  return clean.split(' — ')[0].trim();
+}
+function ptGroupIcon(section) {
+  const m = String(section.sub).match(/^[^A-Za-zÀ-ÿ0-9]+/);
+  return m ? m[0].trim() : '';
+}
+function ptCatParts(catName) {
+  const m = String(catName).match(/^([^A-Za-zÀ-ÿ0-9]+)(.*)$/);
+  return m ? { icon: m[1].trim(), name: m[2].trim() } : { icon: '', name: catName };
+}
+function ptEsc(t) {
+  return String(t).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+}
+
 async function _renderPlanTravailInto(el) {
   const masterCatalogue = (typeof getActivitiesMasterRegistry === 'function') ? getActivitiesMasterRegistry() : PLAN_CATALOGUE;
   const cls = (typeof teacherCls !== 'undefined' && teacherCls) ? teacherCls : 'lejoly';
@@ -32388,7 +32954,7 @@ async function _renderPlanTravailInto(el) {
     } else {
       loadPlanTravailLocal(cls);
     }
-    
+
     if (window.FB_loadPlanTravailIndividual) {
       const fbInd = await window.FB_loadPlanTravailIndividual(cls);
       if (fbInd) {
@@ -32404,27 +32970,40 @@ async function _renderPlanTravailInto(el) {
       planTravailIndividual = s ? JSON.parse(s) : {};
     }
 
-    // Nettoyer les identifiants obsolètes (qui n'existent plus dans le catalogue)
+    // Convertir les anciens identifiants puis nettoyer ceux qui n'existent plus dans le catalogue
     const validIds = new Set();
     masterCatalogue.forEach(section => {
       section.items.forEach(item => validIds.add(item.id));
     });
-    planTravailAssigned = planTravailAssigned.filter(id => validIds.has(id));
+    planTravailAssigned = ptMigrateIds(planTravailAssigned).filter(id => validIds.has(id));
     Object.keys(planTravailIndividual).forEach(student => {
       if (Array.isArray(planTravailIndividual[student])) {
-        planTravailIndividual[student] = planTravailIndividual[student].filter(id => validIds.has(id));
+        planTravailIndividual[student] = ptMigrateIds(planTravailIndividual[student]).filter(id => validIds.has(id));
       }
     });
 
     planTravailLoaded = true;
   }
 
-  // Grouper par catégorie principale
-  const cats = {};
+  // Structure : sujet -> sous-sujets -> sections
+  const tree = [];
+  const catIndex = {};
   masterCatalogue.forEach(section => {
-    if (!cats[section.cat]) cats[section.cat] = [];
-    cats[section.cat].push(section);
+    const cKey = ptKey(section.cat);
+    if (!catIndex[cKey]) {
+      catIndex[cKey] = { key: cKey, name: section.cat, groups: [], grpIndex: {} };
+      tree.push(catIndex[cKey]);
+    }
+    const cat = catIndex[cKey];
+    const gName = ptGroupName(section);
+    const gKey = ptKey(gName);
+    if (!cat.grpIndex[gKey]) {
+      cat.grpIndex[gKey] = { key: gKey, name: gName, icon: ptGroupIcon(section), sections: [] };
+      cat.groups.push(cat.grpIndex[gKey]);
+    }
+    cat.grpIndex[gKey].sections.push(section);
   });
+  if (ptNavCat && ptNavCat !== 'all' && !catIndex[ptNavCat]) { ptNavCat = null; ptNavGrp = null; }
 
   const students = getClassStudents(teacherCls).slice().sort((a,b)=>a.name.localeCompare(b.name,'fr'));
   let optionsHtml = `<option value="class" ${planTravailTarget === 'class' ? 'selected' : ''}>🌍 Toute la classe</option>`;
@@ -32439,61 +33018,214 @@ async function _renderPlanTravailInto(el) {
   let html = `
     <div style="margin-bottom:1.25rem;">
       <h3 style="font-size:15px;font-weight:800;margin-bottom:.25rem;">📋 Plan de travail — Gestion</h3>
-      <p style="font-size:13px;color:var(--muted);">Sélectionnez le destinataire puis cochez les exercices à lui attribuer.</p>
+      <p style="font-size:13px;color:var(--muted);">Sélectionnez le destinataire, choisissez un sujet puis cochez les exercices à attribuer.</p>
     </div>
-    
+
     <div class="card" style="margin-bottom:1rem; padding: 12px; background: var(--surface); display:flex; flex-direction:column; gap:10px; border:1px solid var(--border);">
       <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
         <label for="pt-target-select" style="font-size:13px; font-weight:700; color:var(--text);">Attribuer les exercices à :</label>
         <select id="pt-target-select" onchange="ptChangeTarget(this.value)" style="padding:6px 12px; border-radius:8px; border:1.5px solid var(--border); background:var(--surface); color:var(--text); font-family:inherit; font-size:13px; font-weight:700; outline:none; cursor:pointer; min-width:200px;">
           ${optionsHtml}
         </select>
+        <span style="margin-left:auto;font-size:13px;font-weight:700;color:var(--purple);" id="plan-count-label">${currentCount} exercice(s) assigné(s)</span>
       </div>
     </div>
 
-    <div style="display:flex;gap:8px;margin-bottom:1rem;flex-wrap:wrap;">
-      <button class="btn btn-sm" onclick="planSelectAll(true)">✅ Tout sélectionner</button>
-      <button class="btn btn-sm" onclick="planSelectAll(false)">☐ Tout désélectionner</button>
-      <span style="margin-left:auto;font-size:13px;font-weight:700;color:var(--purple);align-self:center;" id="plan-count-label">${currentCount} exercice(s) assigné(s)</span>
-    </div>`;
+    <div class="pt-nav">
+      <div class="pt-nav-subjects">`;
 
-  Object.entries(cats).forEach(([catName, sections]) => {
-    const catId = catName.replace(/[^a-z]/gi,'_');
-    const catTotal = sections.reduce((a,s) => a + s.items.length, 0);
-    const catChecked = sections.reduce((a,s) => a + s.items.filter(i => ptIsChecked(i.id)).length, 0);
+  tree.forEach(cat => {
+    const p = ptCatParts(cat.name);
     html += `
-    <div class="card pt-category">
-      <div class="pt-cat-header" onclick="ptToggleCat('${catId}')">
-        <span>${catName}</span>
-        <span class="pt-section-count" id="pt-cat-count-${catId}">${catChecked}/${catTotal}</span>
-        <span class="pt-toggle">▼</span>
-      </div>
-      <div id="ptcat-${catId}">`;
+        <button type="button" class="pt-subject-tile" data-cat="${cat.key}" onclick="ptNavSelectCat('${cat.key}')">
+          <span class="pt-subject-icon">${p.icon}</span>
+          <span class="pt-subject-name">${p.name}</span>
+          <span class="pt-nav-count" data-count-cat="${cat.key}"></span>
+        </button>`;
+  });
+  html += `
+        <button type="button" class="pt-subject-tile" data-cat="all" onclick="ptNavSelectCat('all')">
+          <span class="pt-subject-icon">📚</span>
+          <span class="pt-subject-name">Tout afficher</span>
+          <span class="pt-nav-count" data-count-cat="all"></span>
+        </button>
+      </div>`;
 
-    sections.forEach(section => {
-      html += `<div class="pt-sub-header">${section.sub}</div>`;
-      section.items.forEach(item => {
-        const checked = ptIsChecked(item.id) ? 'checked' : '';
-        html += `
-        <div class="pt-item">
-          <input type="checkbox" id="pt-cb-${item.id}" ${checked}
-            onchange="ptToggleItem('${item.id}', this.checked)">
-          <span class="pt-item-icon">${item.icon}</span>
-          <label class="pt-item-label" for="pt-cb-${item.id}" style="cursor:pointer">${item.label}</label>
-        </div>`;
-      });
+  tree.forEach(cat => {
+    html += `<div class="pt-nav-groups" data-groups-of="${cat.key}">
+        <button type="button" class="pt-grp-chip" data-grp="" onclick="ptNavSelectGrp('')">Tout ${ptEsc(ptCatParts(cat.name).name)} <span class="pt-nav-count" data-count-cat="${cat.key}"></span></button>`;
+    cat.groups.forEach(g => {
+      html += `<button type="button" class="pt-grp-chip" data-grp="${g.key}" onclick="ptNavSelectGrp('${g.key}')">${g.icon} ${ptEsc(g.name)} <span class="pt-nav-count" data-count-grp="${cat.key}__${g.key}"></span></button>`;
     });
-
-    html += `</div></div>`;
+    html += `</div>`;
   });
 
   html += `
+      <div class="pt-nav-tools">
+        <input type="search" id="pt-search" class="pt-search" placeholder="🔍 Rechercher un exercice (tous les sujets)…" value="${ptEsc(ptNavSearch)}" oninput="ptNavSetSearch(this.value)">
+        <label class="pt-only-checked"><input type="checkbox" id="pt-only-checked" ${ptNavOnlyChecked ? 'checked' : ''} onchange="ptNavSetOnlyChecked(this.checked)"> Seulement les exercices cochés</label>
+      </div>
+      <div class="pt-nav-actions">
+        <span id="pt-scope-label" class="pt-scope-label"></span>
+        <button class="btn btn-sm" onclick="planSelectAll(true)">✅ Tout cocher (affichés)</button>
+        <button class="btn btn-sm" onclick="planSelectAll(false)">☐ Tout décocher (affichés)</button>
+      </div>
+    </div>
+
+    <div id="pt-nav-empty" class="card pt-nav-empty">👆 Choisissez un sujet (Français, Mathématiques, Éveil…) pour afficher ses exercices.</div>
+    <div id="pt-no-result" class="card pt-nav-empty" style="display:none;">Aucun exercice ne correspond à cette recherche.</div>
+    <div id="pt-lists">`;
+
+  tree.forEach(cat => {
+    html += `
+    <div class="card pt-category" data-cat="${cat.key}">
+      <div class="pt-cat-header" style="cursor:default">
+        <span>${cat.name}</span>
+        <span class="pt-section-count" data-count-cat="${cat.key}"></span>
+      </div>`;
+    cat.groups.forEach(g => {
+      html += `<div class="pt-group" data-cat="${cat.key}" data-grp="${g.key}">`;
+      g.sections.forEach(section => {
+        html += `<div class="pt-section"><div class="pt-sub-header">${section.sub}</div>`;
+        section.items.forEach(item => {
+          const isMenuEntry = PLAN_MENU_IDS.has(item.id);
+          if (isMenuEntry && !ptIsChecked(item.id)) return; // thème entier : affiché seulement s'il est déjà coché
+          const checked = ptIsChecked(item.id) ? 'checked' : '';
+          const search = ptKey(item.label + ' ' + section.sub).replace(/_/g, ' ');
+          html += `
+          <div class="pt-item" data-id="${item.id}" data-search="${ptEsc(search)}">
+            <input type="checkbox" id="pt-cb-${item.id}" ${checked}
+              onchange="ptToggleItem('${item.id}', this.checked)">
+            <span class="pt-item-icon">${item.icon}</span>
+            <label class="pt-item-label" for="pt-cb-${item.id}" style="cursor:pointer">${item.label}${isMenuEntry ? ' <span style="font-size:11px;color:var(--muted);font-weight:700;">(thème entier — ancien plan, décochez puis choisissez les exercices)</span>' : ''}</label>
+            <button type="button" class="pt-item-preview-btn" onclick="ptTeacherPreviewItem('${item.id}', event)" title="Voir l'activité en direct">👁️ Voir l'activité</button>
+          </div>`;
+        });
+        html += `</div>`;
+      });
+      html += `</div>`;
+    });
+    html += `</div>`;
+  });
+
+  html += `
+    </div>
     <div class="pt-save-bar">
       <button class="btn btn-primary" onclick="ptSaveAndNotify()">💾 Enregistrer le plan</button>
       <span class="pt-saved-msg" id="pt-saved-msg">✅ Plan sauvegardé !</span>
     </div>`;
 
+  // Un seul panneau « plan de travail » rendu à la fois (évite les identifiants en double)
+  ['plan-travail-teacher-full-body', 'plan-travail-teacher'].forEach(otherId => {
+    const other = document.getElementById(otherId);
+    if (other && other !== el) other.innerHTML = '';
+  });
   el.innerHTML = html;
+  ptApplyNav(el);
+}
+
+function _ptRoot() {
+  const full = document.getElementById('plan-travail-teacher-full-body');
+  const tab = document.getElementById('plan-travail-teacher');
+  if (full && full.querySelector('.pt-nav')) return full;
+  if (tab && tab.querySelector('.pt-nav')) return tab;
+  return full || tab;
+}
+
+function ptNavSelectCat(catKey) {
+  if (ptNavCat === catKey && !ptNavGrp) { ptNavCat = null; }
+  else { ptNavCat = catKey; }
+  ptNavGrp = null;
+  ptApplyNav();
+}
+
+function ptNavSelectGrp(grpKey) {
+  ptNavGrp = grpKey || null;
+  ptApplyNav();
+}
+
+function ptNavSetSearch(val) {
+  ptNavSearch = val || '';
+  ptApplyNav();
+}
+
+function ptNavSetOnlyChecked(val) {
+  ptNavOnlyChecked = !!val;
+  ptApplyNav();
+}
+
+function ptApplyNav(rootEl) {
+  const root = rootEl || _ptRoot();
+  if (!root) return;
+  const q = ptKey(ptNavSearch).replace(/_/g, ' ').trim();
+  const browsing = !!ptNavCat || !!q || ptNavOnlyChecked;
+  const allScope = ptNavCat === 'all' || !!q || (!ptNavCat && ptNavOnlyChecked); // la recherche porte sur tous les sujets
+
+  root.querySelectorAll('.pt-subject-tile').forEach(b => b.classList.toggle('active', b.dataset.cat === ptNavCat));
+  root.querySelectorAll('.pt-nav-groups').forEach(g => {
+    const show = g.dataset.groupsOf === ptNavCat;
+    g.style.display = show ? 'flex' : 'none';
+    if (show) g.querySelectorAll('.pt-grp-chip').forEach(c => c.classList.toggle('active', (c.dataset.grp || null) === ptNavGrp));
+  });
+
+  let visibleCount = 0;
+  root.querySelectorAll('.pt-category').forEach(catEl => {
+    const catOk = browsing && (allScope || catEl.dataset.cat === ptNavCat);
+    let catVisible = 0;
+    catEl.querySelectorAll('.pt-group').forEach(grpEl => {
+      const grpOk = catOk && (allScope || !ptNavGrp || grpEl.dataset.grp === ptNavGrp);
+      let grpVisible = 0;
+      grpEl.querySelectorAll('.pt-section').forEach(secEl => {
+        let secVisible = 0;
+        secEl.querySelectorAll('.pt-item').forEach(it => {
+          let ok = grpOk;
+          if (ok && q) ok = q.split(' ').every(w => it.dataset.search.includes(w));
+          if (ok && ptNavOnlyChecked) { const cb = it.querySelector('input[type=checkbox]'); ok = !!(cb && cb.checked); }
+          it.style.display = ok ? '' : 'none';
+          if (ok) secVisible++;
+        });
+        secEl.style.display = secVisible ? '' : 'none';
+        grpVisible += secVisible;
+      });
+      grpEl.style.display = grpVisible ? '' : 'none';
+      catVisible += grpVisible;
+    });
+    catEl.style.display = catVisible ? '' : 'none';
+    visibleCount += catVisible;
+  });
+
+  const empty = root.querySelector('#pt-nav-empty');
+  if (empty) empty.style.display = browsing ? 'none' : '';
+  const noRes = root.querySelector('#pt-no-result');
+  if (noRes) noRes.style.display = (browsing && visibleCount === 0) ? '' : 'none';
+  const scope = root.querySelector('#pt-scope-label');
+  if (scope) scope.textContent = browsing ? `${visibleCount} exercice(s) affiché(s)` : '';
+  ptUpdateCounts();
+}
+
+function ptUpdateCounts() {
+  const root = _ptRoot();
+  if (!root) return;
+  const catTot = {}, catChk = {}, grpTot = {}, grpChk = {};
+  let allTot = 0, allChk = 0;
+  root.querySelectorAll('.pt-group').forEach(grpEl => {
+    const c = grpEl.dataset.cat, gk = c + '__' + grpEl.dataset.grp;
+    const items = grpEl.querySelectorAll('.pt-item input[type=checkbox]');
+    const chk = Array.from(items).filter(cb => cb.checked).length;
+    catTot[c] = (catTot[c] || 0) + items.length; catChk[c] = (catChk[c] || 0) + chk;
+    grpTot[gk] = (grpTot[gk] || 0) + items.length; grpChk[gk] = (grpChk[gk] || 0) + chk;
+    allTot += items.length; allChk += chk;
+  });
+  root.querySelectorAll('[data-count-cat]').forEach(e => {
+    const c = e.dataset.countCat;
+    e.textContent = c === 'all' ? `${allChk}/${allTot}` : `${catChk[c] || 0}/${catTot[c] || 0}`;
+    e.classList.toggle('has-checked', (c === 'all' ? allChk : (catChk[c] || 0)) > 0);
+  });
+  root.querySelectorAll('[data-count-grp]').forEach(e => {
+    const g = e.dataset.countGrp;
+    e.textContent = `${grpChk[g] || 0}/${grpTot[g] || 0}`;
+    e.classList.toggle('has-checked', (grpChk[g] || 0) > 0);
+  });
 }
 
 function ptIsChecked(itemId) {
@@ -32507,7 +33239,7 @@ function ptIsChecked(itemId) {
 
 function ptChangeTarget(newTarget) {
   planTravailTarget = newTarget;
-  const el = document.getElementById('plan-travail-teacher-full-body') || document.getElementById('plan-travail-teacher');
+  const el = _ptRoot();
   if (el) {
     _renderPlanTravailInto(el);
   }
@@ -32522,101 +33254,153 @@ function ptToggleCat(catId) {
   if (header) header.classList.toggle('collapsed', !collapsed);
 }
 
-function ptToggleItem(id, checked) {
+function _ptSetChecked(id, checked) {
   if (planTravailTarget === 'class') {
     if (checked) {
       if (!planTravailAssigned.includes(id)) planTravailAssigned.push(id);
     } else {
       planTravailAssigned = planTravailAssigned.filter(x => x !== id);
     }
-    const lbl = document.getElementById('plan-count-label');
-    if (lbl) lbl.textContent = planTravailAssigned.length + ' exercice(s) assigné(s)';
   } else {
-    if (!planTravailIndividual[planTravailTarget]) {
-      planTravailIndividual[planTravailTarget] = [];
-    }
-    let indList = planTravailIndividual[planTravailTarget];
+    let indList = planTravailIndividual[planTravailTarget] || [];
     if (checked) {
       if (!indList.includes(id)) indList.push(id);
     } else {
       indList = indList.filter(x => x !== id);
     }
     planTravailIndividual[planTravailTarget] = indList;
-    const lbl = document.getElementById('plan-count-label');
-    if (lbl) lbl.textContent = indList.length + ' exercice(s) assigné(s)';
-  }
-
-  // Update specific category count badge
-  let foundCat = null;
-  const masterCatalogue = (typeof getActivitiesMasterRegistry === 'function') ? getActivitiesMasterRegistry() : PLAN_CATALOGUE;
-  masterCatalogue.forEach(section => {
-    if (section.items.some(item => item.id === id)) {
-      foundCat = section.cat;
-    }
-  });
-  if (foundCat) {
-    const catId = foundCat.replace(/[^a-z]/gi,'_');
-    const sections = masterCatalogue.filter(s => s.cat === foundCat);
-    const catTotal = sections.reduce((a,s) => a + s.items.length, 0);
-    const catChecked = sections.reduce((a,s) => a + s.items.filter(i => ptIsChecked(i.id)).length, 0);
-    const badge = document.getElementById('pt-cat-count-' + catId);
-    if (badge) badge.textContent = `${catChecked}/${catTotal}`;
   }
 }
 
-function planSelectAll(val) {
-  const masterCatalogue = (typeof getActivitiesMasterRegistry === 'function') ? getActivitiesMasterRegistry() : PLAN_CATALOGUE;
-  masterCatalogue.forEach(section => {
-    section.items.forEach(item => {
-      // Toggle checkboxes locally
-      const cb = document.getElementById('pt-cb-' + item.id);
-      if (cb) {
-        cb.checked = val;
-      }
-      
-      // Update data model
-      if (planTravailTarget === 'class') {
-        if (val) {
-          if (!planTravailAssigned.includes(item.id)) planTravailAssigned.push(item.id);
-        } else {
-          planTravailAssigned = planTravailAssigned.filter(x => x !== item.id);
-        }
-      } else {
-        if (!planTravailIndividual[planTravailTarget]) {
-          planTravailIndividual[planTravailTarget] = [];
-        }
-        let indList = planTravailIndividual[planTravailTarget];
-        if (val) {
-          if (!indList.includes(item.id)) indList.push(item.id);
-        } else {
-          indList = indList.filter(x => x !== item.id);
-        }
-        planTravailIndividual[planTravailTarget] = indList;
-      }
-    });
-  });
-
-  // Update categories counts & count label
+function _ptRefreshCountLabel() {
   const currentCount = planTravailTarget === 'class'
     ? planTravailAssigned.length
     : (planTravailIndividual[planTravailTarget] || []).length;
-  const lbl = document.getElementById('plan-count-label');
+  const root = _ptRoot();
+  const lbl = root ? root.querySelector('#plan-count-label') : document.getElementById('plan-count-label');
   if (lbl) lbl.textContent = currentCount + ' exercice(s) assigné(s)';
+}
 
-  // Re-render categories check counts
-  const cats = {};
-  masterCatalogue.forEach(section => {
-    if (!cats[section.cat]) cats[section.cat] = [];
-    cats[section.cat].push(section);
+function ptToggleItem(id, checked) {
+  _ptSetChecked(id, checked);
+  _ptRefreshCountLabel();
+  ptUpdateCounts();
+}
+
+// Coche / décoche uniquement les exercices actuellement affichés (sujet, sous-sujet, recherche)
+function planSelectAll(val) {
+  const root = _ptRoot();
+  if (!root) return;
+  const visible = Array.from(root.querySelectorAll('.pt-item')).filter(it => it.style.display !== 'none' && it.closest('.pt-category').style.display !== 'none');
+  if (!visible.length) {
+    const scope = root.querySelector('#pt-scope-label');
+    if (scope) scope.textContent = '👆 Choisissez d’abord un sujet : seuls les exercices affichés sont cochés ou décochés.';
+    return;
+  }
+  visible.forEach(it => {
+    const cb = it.querySelector('input[type=checkbox]');
+    if (cb) cb.checked = val;
+    _ptSetChecked(it.dataset.id, val);
   });
-  Object.entries(cats).forEach(([catName, sections]) => {
-    const catId = catName.replace(/[^a-z]/gi,'_');
-    const catTotal = sections.reduce((a,s) => a + s.items.length, 0);
-    const catChecked = sections.reduce((a,s) => a + s.items.filter(i => ptIsChecked(i.id)).length, 0);
-    const badge = document.getElementById('pt-cat-count-' + catId);
-    if (badge) badge.textContent = `${catChecked}/${catTotal}`;
+  _ptRefreshCountLabel();
+  if (ptNavOnlyChecked) ptApplyNav(); else ptUpdateCounts();
+}
+
+// ============================================================
+// Verrouillage des sous-exercices (grammaire, calcul écrit, PEMDAS)
+// Les boutons de ces menus n'étaient pas liés au système « Masquer / Réactiver ».
+// Après chaque rendu du menu, on applique l'état de verrouillage à chaque carte.
+// ============================================================
+const SUB_LOCK_MENUS = {
+  renderNomMenu:        { '#btn-nom-ex1': 'gram_nom_identifier', '#btn-nom-ex2': 'gram_nom_reconnaître' },
+  renderDeterminantMenu:{ '#btn-det-ex1': 'gram_determinant_reconnaitre', '#btn-det-ex2': 'gram_determinant_tri' },
+  renderVerbeClassMenu: { '#btn-verbe-class-ex1': 'gram_verbe_identifier' },
+  renderPronomMenu:     { '#btn-pronom-piege': 'gram_pronom_piege', '#btn-pronom-detecteur-referents': 'gram_pronom_referents',
+                          '#btn-pronom-remplacant': 'gram_pronom_remplacant', '#btn-pronom-chasse-repetitions': 'gram_pronom_repetitions' },
+  renderAdverbeMenu:    { '#btn-adv-ex1': 'gram_adverbe_reconnaitre', '#btn-adv-ex2': 'gram_adverbe_accord' },
+  renderSujetMenu:      { '#btn-sujet-ex1': 'sujet_phrase', '#btn-sujet-ex2': 'gram_sujet_texte', '#btn-sujet-ex3': 'gram_classes_sujet' },
+  renderVerbeMenu:      { '#btn-verbe-ex1': 'verbe_phrase', '#btn-verbe-ex2': 'gram_verbe_groupe', '#btn-verbe-ex3': 'gram_verbe_infinitif', '#btn-verbe-ex4': 'gram_verbe_texte' }
+};
+// Cartes statiques (HTML) repérées par l'écran qu'elles ouvrent
+const SUB_LOCK_STATIC = {
+  'screen-op-calcul-ecrit': { 'screen-op-calcul-ecrit-addition': 'op_calcul_ecrit_addition', 'screen-op-calcul-ecrit-soustraction': 'op_calcul_ecrit_soustraction',
+                              'screen-op-calcul-ecrit-multiplication': 'op_calcul_ecrit_multiplication', 'screen-op-calcul-ecrit-division': 'op_calcul_ecrit_division' },
+  'screen-op-ordre':        { 'screen-op-ordre-pemdas': 'op_ordre_pemdas', 'screen-op-ordre-defi': 'op_ordre_defi' }
+};
+
+function applySubLockToCard(card, actId, rerender) {
+  if (!card || !actId) return;
+  const isTeacher = (typeof state !== 'undefined' && state.role === 'teacher');
+  const locked = isActivityLocked(actId);
+  const desc = card.querySelector('.sub-desc');
+  if (desc && card.dataset.origDesc === undefined) card.dataset.origDesc = desc.innerHTML;
+  card.style.position = 'relative';
+
+  if (!isTeacher && locked) {
+    card.classList.add('disabled'); card.classList.remove('active-card');
+    card.style.pointerEvents = 'none';
+    if (desc) desc.innerHTML = '🔒 Non disponible pour le moment';
+  } else {
+    card.classList.remove('disabled'); card.classList.add('active-card');
+    card.style.pointerEvents = '';
+    if (desc && card.dataset.origDesc !== undefined) desc.innerHTML = card.dataset.origDesc;
+  }
+  card.style.opacity = (isTeacher && locked) ? '0.6' : '';
+
+  let btn = card.querySelector(':scope > .card-teacher-toggle.sub-lock-toggle');
+  if (!isTeacher) { if (btn) btn.remove(); return; }
+  if (!btn) {
+    btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'card-teacher-toggle sub-lock-toggle';
+    card.insertBefore(btn, card.firstChild);
+  }
+  btn.className = 'card-teacher-toggle sub-lock-toggle ' + (locked ? 'btn-show' : 'btn-hide');
+  btn.textContent = locked ? '🔓 Réactiver' : '🔒 Masquer';
+  btn.onclick = (e) => { e.preventDefault(); e.stopPropagation(); toggleActivity(actId); rerender(); };
+}
+
+function applySubLocksForMenu(fnName) {
+  const map = SUB_LOCK_MENUS[fnName];
+  if (!map) return;
+  Object.entries(map).forEach(([sel, actId]) => {
+    document.querySelectorAll(sel).forEach(card => applySubLockToCard(card, actId, () => applySubLocksForMenu(fnName)));
   });
 }
+
+function applySubLocksForScreen(screenId) {
+  const map = SUB_LOCK_STATIC[screenId];
+  const screen = document.getElementById(screenId);
+  if (!map || !screen) return;
+  screen.querySelectorAll('.sub-subject-card[onclick]').forEach(card => {
+    const m = (card.getAttribute('onclick') || '').match(/screen-[\w-]+/);
+    if (m && map[m[0]]) applySubLockToCard(card, map[m[0]], () => applySubLocksForScreen(screenId));
+  });
+}
+
+(function installSubLocks() {
+  Object.keys(SUB_LOCK_MENUS).forEach(fnName => {
+    const orig = window[fnName];
+    if (typeof orig !== 'function' || orig.__subLockWrapped) return;
+    const wrapped = function(...args) {
+      const r = orig.apply(this, args);
+      try { applySubLocksForMenu(fnName); } catch (e) { console.warn('applySubLocksForMenu', fnName, e); }
+      return r;
+    };
+    wrapped.__subLockWrapped = true;
+    window[fnName] = wrapped;
+  });
+  const origShow = window.showScreen;
+  if (typeof origShow === 'function' && !origShow.__subLockWrapped) {
+    const wrappedShow = function(id, ...rest) {
+      const r = origShow.call(this, id, ...rest);
+      if (SUB_LOCK_STATIC[id]) { try { applySubLocksForScreen(id); } catch (e) { console.warn('applySubLocksForScreen', id, e); } }
+      return r;
+    };
+    wrappedShow.__subLockWrapped = true;
+    window.showScreen = wrappedShow;
+  }
+})();
 
 function ptSaveAndNotify() {
   savePlanTravail();
@@ -32649,7 +33433,7 @@ function renderPlanTravailStudent() {
   const validIds = new Set();
   const masterCatalogue = (typeof getActivitiesMasterRegistry === 'function') ? getActivitiesMasterRegistry() : PLAN_CATALOGUE;
   masterCatalogue.forEach(sec => sec.items.forEach(it => validIds.add(it.id)));
-  const assigned = [...new Set([...planTravailAssigned, ...individualPlan])].filter(id => validIds.has(id));
+  const assigned = ptMigrateIds([...planTravailAssigned, ...individualPlan]).filter(id => validIds.has(id));
 
   if (!assigned.length) {
     const tName = (state.studentCls && CLASSES[state.studentCls]) ? CLASSES[state.studentCls].name : 'Ton enseignant';
@@ -32716,7 +33500,7 @@ function ptStudentToggle(id, checked) {
   const validIds = new Set();
   const masterCatalogue = (typeof getActivitiesMasterRegistry === 'function') ? getActivitiesMasterRegistry() : PLAN_CATALOGUE;
   masterCatalogue.forEach(sec => sec.items.forEach(it => validIds.add(it.id)));
-  const assigned = [...new Set([...planTravailAssigned, ...individualPlan])].filter(id => validIds.has(id));
+  const assigned = ptMigrateIds([...planTravailAssigned, ...individualPlan]).filter(id => validIds.has(id));
 
   const done = assigned.filter(i => studentPlanProgress[i]).length;
   const pct = Math.round((done / assigned.length) * 100);
@@ -46453,75 +47237,80 @@ window.renderSciCircOrdreEnsemble = renderSciCircOrdreEnsemble;
 // ===== SYSTEME DE FICHES (WORKSHETS) =====
 let fiches = [];
 
+const EXCLUDED_FICHES_EXERCISE_IDS = new Set([
+  'td_moyenne_exercices',
+  'gram_determinant_ex',
+  'conj_present_qcm',
+  'conj_present_ecriture',
+  'conj_imparfait_qcm',
+  'conj_imparfait_ecriture',
+  'fiche_vocabulaire_moyen_age',
+  'fiche_texte_trous_moyen_age',
+  'fiche_proverbes',
+  'fiche_atelier_mots',
+  'fiche_registres_tri',
+  'fiche_verbes_ternes',
+  'fiche_chasseur_intrus',
+  'fiche_fabrique_mots',
+  'geo_hydro_schema',
+  'geo_hydro_definitions',
+  'sci_cycle_eau_schema',
+  'sci_reseaux_trophiques',
+  'sci_plantes_germination',
+  'sci_plantes_fleur',
+  'sci_matiere_etats',
+  'sci_matiere_changements',
+  'sci_melanges_qcm',
+  'sci_energie_tri',
+  'sci_electricite_labo',
+  'sci_lumiere_ombres',
+  'sci_eclipses',
+  'sci_transformations_chimiques',
+  'sci_reproduction_plantes',
+  'geo_globe_3d'
+]);
+
+function cleanFichesList(rawList) {
+  if (!Array.isArray(rawList)) return [];
+  const seenIds = new Set();
+  const seenFilenames = new Set();
+  const cleaned = [];
+  rawList.forEach(f => {
+    if (f && f.id && f.filename) {
+      if (f.id.startsWith('fiche_conj_pc_')) return;
+      if (EXCLUDED_FICHES_EXERCISE_IDS.has(f.id)) return;
+      if (!seenIds.has(f.id) && !seenFilenames.has(f.filename)) {
+        seenIds.add(f.id);
+        seenFilenames.add(f.filename);
+        cleaned.push(f);
+      }
+    }
+  });
+  return cleaned;
+}
+
 function initFiches() {
   const saved = localStorage.getItem('lq_fiches');
   const DEFAULT_FICHES = [
+    { id: 'kim_histoire', title: 'L\'Œil du Temps (Jeu de Kim Historique)', filename: 'kim_histoire.html', category: 'Histoire' },
     { id: 'fiche_frise', title: 'La frise chronologique', filename: 'frise-chronologique-histoire.html', category: 'Histoire' },
-    { id: 'fiche_vocabulaire_moyen_age', title: 'Vocabulaire du Moyen Âge (Association)', filename: 'moyen_age_vocabulaire.html', category: 'Histoire' },
-    { id: 'fiche_texte_trous_moyen_age', title: 'Vocabulaire du Moyen Âge (Textes à trous)', filename: 'moyen_age_texte_trous.html', category: 'Histoire' },
     { id: 'fiche_planisphere', title: 'Le planisphère', filename: 'planisphere-interactif.html', category: 'Géographie' },
-    { id: 'fiche_proverbes', title: 'Expressions et proverbes', filename: 'expressions-proverbes.html', category: 'Vocabulaire' },
-    { id: 'fiche_atelier_mots', title: "L'Atelier des Mots", filename: 'vocabulaire-jeu.html', category: 'Vocabulaire' },
-    { id: 'fiche_registres_tri', title: 'Le Défi des Registres', filename: 'registres-tri.html', category: 'Vocabulaire' },
-    { id: 'fiche_verbes_ternes', title: 'Chasse aux Verbes Ternes', filename: 'verbes-ternes.html', category: 'Vocabulaire' },
-    { id: 'fiche_chasseur_intrus', title: "Le Chasseur d'Intrus", filename: 'chasseur-intrus.html', category: 'Vocabulaire' },
-    { id: 'fiche_fabrique_mots', title: 'La Fabrique de Mots', filename: 'fabrique-mots.html', category: 'Vocabulaire' },
     { id: 'fiche_relief_hydro', title: 'Relief et hydrographie', filename: 'relief-hydrographie.html', category: 'Géographie' },
-    { id: 'geo_hydro_schema', title: 'Le schéma du cours d\'eau', filename: 'vocabulaire_hydrographique.html', category: 'Géographie' },
-    { id: 'geo_hydro_definitions', title: 'Vocabulaire hydrographique (Définitions)', filename: 'hydrographie_definitions.html', category: 'Géographie' },
     { id: 'fiche_regions_communautes', title: 'Régions et Communautés', filename: 'regions_communautes_belgique.html', category: 'Géographie' },
     { id: 'fiche_respiratoire', title: "L'appareil respiratoire", filename: 'appareil-respiratoire.html', category: 'Sciences' },
     { id: 'fiche_digestif', title: "L'appareil digestif", filename: 'appareil-digestif.html', category: 'Sciences' },
     { id: 'fiche_circulatoire', title: 'Le système circulatoire', filename: 'systeme-circulatoire.html', category: 'Sciences' },
     { id: 'fiche_lune', title: 'Le Soleil, la Terre et la Lune', filename: 'soleil-terre-lune.html', category: 'Sciences' },
     { id: 'fiche_classification', title: 'La classification phylogénétique', filename: 'classification-phylogenetique.html', category: 'Sciences' },
-    { id: 'fiche_cycle_eau', title: "Le cycle de l'eau", filename: 'cycle-eau.html', category: 'Sciences' },
-    { id: 'sci_cycle_eau_schema', title: "Le cycle de l'eau (Schéma)", filename: 'sci_cycle_eau_schema.html', category: 'Sciences' },
-    { id: 'sci_reseaux_trophiques', title: 'Réseaux trophiques et chaînes alimentaires', filename: 'sci_reseaux_trophiques.html', category: 'Sciences' },
-    { id: 'sci_plantes_germination', title: 'Cycle de vie des plantes et germination', filename: 'sci_plantes_germination.html', category: 'Sciences' },
-    { id: 'sci_plantes_fleur', title: "L'anatomie de la fleur", filename: 'sci_plantes_fleur.html', category: 'Sciences' },
-    { id: 'sci_matiere_etats', title: 'États et propriétés de la matière', filename: 'sci_matiere_etats.html', category: 'Sciences' },
-    { id: 'sci_matiere_changements', title: "Les changements d'état de la matière", filename: 'sci_matiere_changements.html', category: 'Sciences' },
-    { id: 'sci_melanges_qcm', title: 'Mélanges et techniques de séparation', filename: 'sci_melanges_qcm.html', category: 'Sciences' },
-    { id: 'sci_energie_tri', title: "Sources et conversions d'énergie", filename: 'sci_energie_tri.html', category: 'Sciences' },
-    { id: 'sci_electricite_labo', title: "Laboratoire d'Électricité", filename: 'sci_electricite_labo.html', category: 'Sciences' },
-    { id: 'sci_lumiere_ombres', title: "Ombres et Lumière", filename: 'sci_lumiere_ombres.html', category: 'Sciences' },
-    { id: 'sci_eclipses', title: "Les éclipses", filename: 'sci_eclipses.html', category: 'Sciences' },
-    { id: 'sci_transformations_chimiques', title: "Transformations physiques et chimiques", filename: 'transformations-physiques-chimiques.html', category: 'Sciences' },
-    { id: 'sci_reproduction_plantes', title: "La reproduction des plantes à fleurs", filename: 'reproduction_plantes.html', category: 'Sciences' },
-    { id: 'geo_globe_3d', title: "Globe Terrestre 3D Interactif", filename: 'globe-terrestre.html', category: 'Géographie' },
-    { id: 'td_moyenne_exercices', title: "Calcul de la moyenne — Exercices", filename: 'moyenne_exercices.html', category: 'Mathématiques' },
-    { id: 'gram_determinant_ex', title: "Les Déterminants — Exercices d'entraînement", filename: 'determinant_exercice.html', category: 'Français' },
-    { id: 'conj_present_qcm', title: "Conjugaison Présent — QCM", filename: 'conjugaison_present_QCM.html', category: 'Français' },
-    { id: 'conj_present_ecriture', title: "Conjugaison Présent — Écriture", filename: 'conjugaison_present_ecriture.html', category: 'Français' },
-    { id: 'conj_imparfait_qcm', title: "Conjugaison Imparfait — QCM", filename: 'conjugaison_imparfait_QCM.html', category: 'Français' },
-    { id: 'conj_imparfait_ecriture', title: "Conjugaison Imparfait — Écriture", filename: 'conjugaison_imparfait_ecriture.html', category: 'Français' }
+    { id: 'fiche_cycle_eau', title: "Le cycle de l'eau", filename: 'cycle-eau.html', category: 'Sciences' }
   ];
 
   if (saved) {
     try {
-      fiches = JSON.parse(saved);
-      let modified = false;
-      const initialLength = fiches.length;
-      fiches = fiches.filter(f => !f.id.startsWith('fiche_conj_pc_'));
+      const parsed = JSON.parse(saved);
+      fiches = cleanFichesList(parsed);
+      let modified = (fiches.length !== parsed.length);
       
-      const seenIds = new Set();
-      const seenFilenames = new Set();
-      const uniqueFiches = [];
-      fiches.forEach(f => {
-        if (f && f.id && f.filename) {
-          if (!seenIds.has(f.id) && !seenFilenames.has(f.filename)) {
-            seenIds.add(f.id);
-            seenFilenames.add(f.filename);
-            uniqueFiches.push(f);
-          }
-        }
-      });
-      fiches = uniqueFiches;
-
-      if (fiches.length !== initialLength) {
-        modified = true;
-      }
       DEFAULT_FICHES.forEach(df => {
         const existing = fiches.find(f => f.id === df.id);
         if (!existing) {
@@ -46545,14 +47334,17 @@ function initFiches() {
       if (modified || fiches.length === 0) {
         if (fiches.length === 0) fiches = [...DEFAULT_FICHES];
         localStorage.setItem('lq_fiches', JSON.stringify(fiches));
+        if (window.FB_saveFiches) window.FB_saveFiches(fiches);
       }
     } catch(e) {
       fiches = [...DEFAULT_FICHES];
       localStorage.setItem('lq_fiches', JSON.stringify(fiches));
+      if (window.FB_saveFiches) window.FB_saveFiches(fiches);
     }
   } else {
     fiches = [...DEFAULT_FICHES];
     localStorage.setItem('lq_fiches', JSON.stringify(fiches));
+    if (window.FB_saveFiches) window.FB_saveFiches(fiches);
   }
 
   const updateFichesScreens = () => {
@@ -46568,21 +47360,8 @@ function initFiches() {
     window.FB_loadFiches().then(fbFiches => {
       if (fbFiches && fbFiches.length > 0) {
         const initialLength = fbFiches.length;
-        let tempFiches = fbFiches.filter(f => !f.id.startsWith('fiche_conj_pc_'));
-        
-        const seenIds = new Set();
-        const seenFilenames = new Set();
-        const uniqueFiches = [];
-        tempFiches.forEach(f => {
-          if (f && f.id && f.filename) {
-            if (!seenIds.has(f.id) && !seenFilenames.has(f.filename)) {
-              seenIds.add(f.id);
-              seenFilenames.add(f.filename);
-              uniqueFiches.push(f);
-            }
-          }
-        });
-        fiches = uniqueFiches;
+        fiches = cleanFichesList(fbFiches);
+        if (fiches.length === 0) fiches = [...DEFAULT_FICHES];
         localStorage.setItem('lq_fiches', JSON.stringify(fiches));
         updateFichesScreens();
         if (fiches.length !== initialLength && window.FB_saveFiches) {
@@ -46599,21 +47378,8 @@ function initFiches() {
         window.FB_loadFiches().then(fbFiches => {
           if (fbFiches && fbFiches.length > 0) {
             const initialLength = fbFiches.length;
-            let tempFiches = fbFiches.filter(f => !f.id.startsWith('fiche_conj_pc_'));
-            
-            const seenIds = new Set();
-            const seenFilenames = new Set();
-            const uniqueFiches = [];
-            tempFiches.forEach(f => {
-              if (f && f.id && f.filename) {
-                if (!seenIds.has(f.id) && !seenFilenames.has(f.filename)) {
-                  seenIds.add(f.id);
-                  seenFilenames.add(f.filename);
-                  uniqueFiches.push(f);
-                }
-              }
-            });
-            fiches = uniqueFiches;
+            fiches = cleanFichesList(fbFiches);
+            if (fiches.length === 0) fiches = [...DEFAULT_FICHES];
             localStorage.setItem('lq_fiches', JSON.stringify(fiches));
             updateFichesScreens();
             if (fiches.length !== initialLength && window.FB_saveFiches) {
@@ -46975,14 +47741,30 @@ init();
    son exercice que lorsque son écran (.screen) devient actif. */
 (function(){
   // Exercices avec animation continue : déchargés quand on quitte l'écran (économise CPU/batterie)
-  var UNLOAD_ON_LEAVE = ['polyedres_definitions.html','polyedres_caracteristiques.html','sci_mecanique_engrenages.html'];
+  var UNLOAD_ON_LEAVE = ['polyedres_definitions.html','polyedres_caracteristiques.html','sci_mecanique_engrenages.html','kim_histoire.html'];
   function isLoaded(f){ var c=f.getAttribute('src'); return !!c && c!=='about:blank'; }
   function load(f){ if(!isLoaded(f)) f.setAttribute('src', f.getAttribute('data-lazy-src')); }
   function framesOf(screen){
     return Array.prototype.filter.call(screen.querySelectorAll('iframe[data-lazy-src]'), function(f){ return f.closest('.screen')===screen; });
   }
+  // Vérifie que le cadre affiche bien SA page. Chrome peut, en restaurant un onglet
+  // (mise en veille, onglet déchargé, bouton Précédent), remettre une autre page
+  // dans un cadre : un élève cliquait sur « Pendu » et voyait « Robot ».
+  function expectedUrl(f){ return new URL(f.getAttribute('data-lazy-src'), location.href); }
+  function ensureRightPage(f){
+    try {
+      var w = f.contentWindow; if(!w) return;
+      var cur = w.location.href;
+      if(!cur || cur === 'about:blank') return; // encore en cours de chargement
+      var exp = expectedUrl(f);
+      if(new URL(cur).pathname !== exp.pathname) w.location.replace(exp.href);
+    } catch(e) {}
+  }
+  function showFrames(screen){
+    framesOf(screen).forEach(function(f){ if(isLoaded(f)) ensureRightPage(f); else load(f); });
+  }
   function onScreenChange(screen){
-    if(screen.classList.contains('active')){ framesOf(screen).forEach(load); return; }
+    if(screen.classList.contains('active')){ showFrames(screen); return; }
     framesOf(screen).forEach(function(f){
       var s=f.getAttribute('data-lazy-src');
       if(isLoaded(f) && UNLOAD_ON_LEAVE.some(function(n){return s.indexOf(n)!==-1;})) f.setAttribute('src','about:blank');
@@ -46992,6 +47774,10 @@ init();
     document.querySelectorAll('iframe[data-lazy-src]').forEach(function(f){
       var sc=f.closest('.screen');
       if(!sc || sc.classList.contains('active')) load(f); // hors écran ou écran déjà affiché : chargement immédiat
+    });
+    // Onglet restauré par le navigateur : revérifier l'écran affiché
+    window.addEventListener('pageshow', function(){
+      var a = document.querySelector('.screen.active'); if(a) showFrames(a);
     });
     new MutationObserver(function(muts){
       for(var i=0;i<muts.length;i++){
