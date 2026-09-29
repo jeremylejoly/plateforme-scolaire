@@ -3236,7 +3236,7 @@ input[type=text].calc-input.incorrect {
 }
 </style>
 <script src="livres.js?v=20260928c"></script>
-<script src="exercices_francais.js?v=20260929b"></script>
+<script src="exercices_francais.js?v=20260929c"></script>
 <script src="exercices_maths.js?v=20260927e"></script>
 <script src="exercices_eveil.js?v=20260927e"></script>
 <script>
@@ -43335,8 +43335,21 @@ function startNomReconnaîtreExercise() {
     return;
   }
 
-  const shuffle = (arr) => [...arr].sort(() => 0.5 - Math.random());
-  const selection = shuffle(window.EXERCICES_NOM_RECONNAITRE).slice(0, 20);
+  // Mélange de Fisher-Yates (tirage équitable)
+  const shuffle = (arr) => {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+    return a;
+  };
+  const bank = window.EXERCICES_NOM_RECONNAITRE;
+  const isNom = q => q.cat === 'nc' || q.cat === 'np';
+  // 10 noms (dont 3 noms propres au maximum) + 10 autres mots, avec au moins 2 adverbes, 2 adjectifs et 2 verbes
+  const noms = shuffle(bank.filter(q => q.cat === 'nc')).slice(0, 7)
+    .concat(shuffle(bank.filter(q => q.cat === 'np')).slice(0, 3));
+  const autresPris = [];
+  ['adv', 'adj', 'v'].forEach(cat => autresPris.push(...shuffle(bank.filter(q => q.cat === cat)).slice(0, 2)));
+  const reste = shuffle(bank.filter(q => !isNom(q) && !autresPris.includes(q))).slice(0, 10 - autresPris.length);
+  const selection = shuffle([...noms, ...autresPris, ...reste]);
 
   nomReconGameState = {
     containerId: 'gram-nom-body',
@@ -43344,7 +43357,8 @@ function startNomReconnaîtreExercise() {
     currentIndex: 0,
     score: 0,
     submitted: false,
-    selectedAnswer: null
+    selectedAnswer: null,
+    answers: []
   };
 
   const backMainBtn = document.querySelector('#screen-gram-nom .gram-nom-back-main-btn');
@@ -43458,10 +43472,8 @@ function renderNomReconnaîtreQuestion() {
     });
   }
 
-  // Restore correction panel content if already submitted (should not happen normally since render is before submit, but for robustness)
-  if (nomReconGameState.submitted) {
-    renderNomReconnaîtreFeedback();
-  }
+  // (La correction est affichée par submitNomReconnaîtreAnswer juste après ce rendu.
+  //  L'ancien appel renderNomReconnaîtreFeedback() sans argument plantait et empêchait la correction de s'afficher.)
 }
 
 function submitNomReconnaîtreAnswer(answerIsNom) {
@@ -43473,6 +43485,8 @@ function submitNomReconnaîtreAnswer(answerIsNom) {
 
   nomReconGameState.submitted = true;
   nomReconGameState.selectedAnswer = answerIsNom;
+  if (!Array.isArray(nomReconGameState.answers)) nomReconGameState.answers = [];
+  nomReconGameState.answers.push({ question, answerIsNom, isActualNom, isCorrect });
 
   if (isCorrect) {
     nomReconGameState.score++;
@@ -43550,7 +43564,7 @@ function showNomReconnaîtreResults() {
   let msg = "";
   let emoji = "";
 
-  if (score === 20) {
+  if (score === total) {
     title = "🏆 Sans faute ! Parfait !";
     msg = "Incroyable ! Tu reconnais les noms sous toutes leurs formes avec brio !";
     emoji = "🎉";
@@ -43578,6 +43592,8 @@ function showNomReconnaîtreResults() {
       <div class="font-display font-black text-5xl text-purple-600 bg-purple-50 border-2 border-purple-200 py-4 px-8 rounded-2xl inline-block mb-8 shadow-[2px_2px_0px_rgba(0,0,0,0.05)]">
         ${score} / ${total}
       </div>
+
+      ${buildNomReconErrorsHtml()}
 
       <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
         <button class="gram-nom-recon-restart-btn px-6 py-3 rounded-2xl border-2 border-neutral-900 bg-purple-600 text-white hover:bg-purple-700 font-display font-bold text-sm transition-all cursor-pointer shadow-[2px_2px_0px_rgba(0,0,0,1)] active:scale-95">
@@ -43621,6 +43637,32 @@ function showNomReconnaîtreResults() {
       time: new Date().toLocaleTimeString('fr-BE', {hour:'2-digit', minute:'2-digit'})
     });
   }
+}
+
+// Récapitulatif des erreurs affiché avec le score final
+function buildNomReconErrorsHtml() {
+  const answers = Array.isArray(nomReconGameState.answers) ? nomReconGameState.answers : [];
+  const errors = answers.filter(a => !a.isCorrect);
+  if (!answers.length) return '';
+  if (!errors.length) {
+    return `<div class="bg-green-50 border-2 border-green-500 rounded-2xl p-4 mb-8 text-green-800 font-bold text-sm max-w-xl mx-auto">✅ Aucune erreur : tu as reconnu tous les mots !</div>`;
+  }
+  const rows = errors.map(a => {
+    const repEleve = a.answerIsNom ? "C'est un nom" : "Ce n'est pas un nom";
+    const bonne = a.isActualNom ? `C'est un nom : ${a.question.label}` : `Ce n'est pas un nom : c'est ${a.question.label}`;
+    return `
+      <li class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3 py-3 border-b border-rose-100 last:border-b-0 text-left">
+        <span class="font-display font-black text-lg text-neutral-800 min-w-[8rem]">« ${a.question.word} »</span>
+        <span class="text-sm text-rose-700"><span class="line-through">${repEleve}</span></span>
+        <span class="text-sm text-green-700 font-bold">✓ ${bonne}</span>
+      </li>`;
+  }).join('');
+  return `
+    <div class="bg-rose-50 border-2 border-neutral-900 rounded-2xl p-5 mb-8 max-w-xl mx-auto text-left shadow-[2px_2px_0px_rgba(0,0,0,1)]">
+      <h4 class="font-display font-bold text-rose-800 mb-2">❌ Tes erreurs (${errors.length})</h4>
+      <p class="text-xs text-neutral-600 mb-2">Ta réponse est barrée, la bonne réponse est en vert.</p>
+      <ul>${rows}</ul>
+    </div>`;
 }
 
 function launchNomReconConfetti() {
