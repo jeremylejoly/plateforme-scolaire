@@ -941,12 +941,13 @@
 <script>
   // ===== CONSTANTES ET ÉTAT GLOBAL =====
   let gameMode = 'ai'; // 'ai' ou 'pvp'
-  let difficulty = 2; // 1: Facile, 2: Moyen, 3: Difficile (Malin)
+  let difficulty = 1; // 1: Facile, 2: Moyen, 3: Difficile (Malin)
   let gridSize = 4; // 3, 4, 5
   let currentPlayer = 1; // 1 (Violet) ou 2 (Vert)
   let scores = { 1: 0, 2: 0 };
   let isGameOver = false;
   let isAiThinking = false;
+  let aiTimeoutId = null;
   let soundEnabled = true;
 
   // Représentation de la grille
@@ -1177,6 +1178,13 @@
 
   // ===== INITIALISATION DU JEU =====
   function initGame() {
+    if (aiTimeoutId) {
+      clearTimeout(aiTimeoutId);
+      aiTimeoutId = null;
+    }
+    const aiBanner = document.getElementById('ai-thinking-banner');
+    if (aiBanner) aiBanner.style.display = 'none';
+
     initStudentProfile();
     scores = { 1: 0, 2: 0 };
     currentPlayer = 1;
@@ -1683,11 +1691,16 @@
 
   // ===== MOTEUR D'INTELLIGENCE ARTIFICIELLE =====
   function scheduleAiMove(delayMs = 500) {
+    if (aiTimeoutId) {
+      clearTimeout(aiTimeoutId);
+      aiTimeoutId = null;
+    }
     isAiThinking = true;
     const banner = document.getElementById('ai-thinking-banner');
     if (banner) banner.style.display = 'flex';
 
-    setTimeout(() => {
+    aiTimeoutId = setTimeout(() => {
+      aiTimeoutId = null;
       if (isGameOver) return;
       makeAiMove();
       isAiThinking = false;
@@ -1815,26 +1828,59 @@
     return bestMove;
   }
 
-  // Stratégie avancée Maître Lucas
+  // Stratégie avancée Maître Lucas (Niveau 3 - Malin)
   function findMasterLucasMove(availableMoves) {
     // A) Y a-t-il des boîtes à capturer ?
     const captureMoves = availableMoves.filter(m => wouldCaptureBox(m));
 
     if (captureMoves.length > 0) {
-      // Stratégie Double-Cross : Si on capture dans une chaîne et qu'il ne reste que 2 boîtes à prendre,
-      // dans les fins de partie avec d'autres couloirs restants, on peut donner les 2 boîtes pour forcer l'adversaire
-      // à ouvrir la prochaine chaîne.
+      // Priorité 1 : fermer les boîtes
       return captureMoves[0];
     }
 
     // B) Coups sûrs (aucun carré ne passe à 3 côtés)
     const safeMoves = availableMoves.filter(m => countNewThreeSidedBoxes(m) === 0);
     if (safeMoves.length > 0) {
-      // Privilégier les arêtes qui maintiennent la symétrie ou les bords
-      return pickRandom(safeMoves);
+      // Stratégie experte :
+      // 1. Privilégier les arêtes de bordure (ne bordent qu'une seule case au lieu de 2).
+      // 2. Éviter d'amener les cases à 2 côtés si on peut les laisser à 0 ou 1 côté.
+      let bestSafeMove = safeMoves[0];
+      let bestScore = -Infinity;
+
+      for (const m of safeMoves) {
+        let score = 0;
+        const isBorder = (m.type === 'h' && (m.r === 0 || m.r === gridSize)) ||
+                         (m.type === 'v' && (m.c === 0 || m.c === gridSize));
+        if (isBorder) score += 4;
+
+        // Évaluer les cases adjacentes
+        const adj = [];
+        if (m.type === 'h') {
+          if (m.r > 0) adj.push({ r: m.r - 1, c: m.c });
+          if (m.r < gridSize) adj.push({ r: m.r, c: m.c });
+        } else {
+          if (m.c > 0) adj.push({ r: m.r, c: m.c - 1 });
+          if (m.c < gridSize) adj.push({ r: m.r, c: m.c });
+        }
+
+        for (const b of adj) {
+          const currentSides = countBoxSides(b.r, b.c);
+          if (currentSides === 0) score += 3;
+          else if (currentSides === 1) score += 1;
+        }
+
+        // Légère variation pour éviter un jeu trop prévisible
+        score += Math.random() * 0.4;
+
+        if (score > bestScore) {
+          bestScore = score;
+          bestSafeMove = m;
+        }
+      }
+      return bestSafeMove;
     }
 
-    // C) Aucun coup sûr : sacrifice optimal (choisir la chaîne la plus courte)
+    // C) Aucun coup sûr : sacrifice minimaliste (donner le moins de boîtes possible)
     return pickBestSacrifice(availableMoves);
   }
 

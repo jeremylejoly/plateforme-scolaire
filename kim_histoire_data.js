@@ -21,7 +21,7 @@ window.KIM_HISTOIRE_DATA = {
           id: "prehistoire_paleo",
           title: "Le campement nomade au Paléolithique",
           subtitle: "Homo sapiens sous l'abri-sous-roche",
-          filename: "prehistoire_paleolithique.png",
+          filename: "prehistoire_paleolithique.jpg",
           altFilenames: ["prehistoire_paleolithique.webp", "prehistoire_paleolithique.jpg"],
           themeColor: "#B5732E",
           intro: "Scrutez attentivement le campement nomade : les outils, les tentes, le feu, les activités des membres du clan et la steppe au loin.",
@@ -104,7 +104,7 @@ window.KIM_HISTOIRE_DATA = {
           id: "prehistoire_neo",
           title: "Le premier village au Néolithique",
           subtitle: "La naissance de l'agriculture et de l'élevage",
-          filename: "prehistoire_neolithique.png",
+          filename: "prehistoire_neolithique.jpg",
           altFilenames: ["prehistoire_neolithique.webp", "prehistoire_neolithique.jpg"],
           themeColor: "#B5732E",
           intro: "Observez la vie du village sédentaire : les maisons, les champs, l'enclos, le lac et les nouvelles inventions du Néolithique.",
@@ -112,9 +112,9 @@ window.KIM_HISTOIRE_DATA = {
             {
               id: "q_neo_1",
               question: "Combien de moutons à laine beige se trouvent dans l'enclos en branchages ?",
-              options: ["4 moutons", "2 moutons", "6 moutons", "3 moutons"],
+              options: ["3 moutons", "5 moutons", "2 moutons", "4 moutons"],
               correct: 0,
-              explanation: "L'enclos abrite 4 moutons à toison beige ainsi qu'une chèvre.",
+              explanation: "L'enclos abrite exactement 3 moutons à toison beige ainsi qu'une chèvre noire.",
               category: "count"
             },
             {
@@ -200,17 +200,17 @@ window.KIM_HISTOIRE_DATA = {
           id: "antiquite_forum",
           title: "Le marché du forum gallo-romain",
           subtitle: "Au cœur de la cité romaine",
-          filename: "antiquite_forum_marche.png",
+          filename: "antiquite_forum_marche.jpg",
           altFilenames: ["antiquite_forum_marche.webp", "antiquite_forum_marche.jpg"],
           themeColor: "#D9A521",
           intro: "Parcourez le forum de la cité gallo-romaine : légionnaires, étals, marchands, amphores, temple et fontaine publique.",
           questions: [
             {
               id: "q_for_1",
-              question: "Combien de grandes amphores en terre cuite sont alignées sur l'étal du marchand ?",
-              options: ["5 amphores", "3 amphores", "7 amphores", "4 amphores"],
+              question: "Combien de grandes amphores en terre cuite sont alignées sur le banc présentoir au premier plan ?",
+              options: ["5 amphores", "3 amphores", "7 amphores", "2 amphores"],
               correct: 0,
-              explanation: "Le marchand d'huile et de vin présente une rangée de 5 amphores en terre cuite.",
+              explanation: "Le marchand présente exactement 5 grandes amphores alignées sur le banc en bois au premier plan.",
               category: "count"
             },
             {
@@ -223,10 +223,10 @@ window.KIM_HISTOIRE_DATA = {
             },
             {
               id: "q_for_3",
-              question: "Quel animal emblématique orne le grand bouclier (scutum) rouge du soldat ?",
-              options: ["Un aigle doré", "Un lion rugissant", "Une louve avec deux jumeaux", "Un serpent d'airain"],
+              question: "Quels motifs dorés ornent le grand bouclier rouge (scutum) du légionnaire ?",
+              options: ["Des ailes et des éclairs (la foudre de Jupiter)", "Un aigle entier aux ailes déployées", "Une tête de lion rugissant", "Une couronne de laurier"],
               correct: 0,
-              explanation: "L'aigle aux ailes déployées et les foudres de Jupiter sont les symboles majeurs des légions romaines.",
+              explanation: "Le scutum romain arbore les foudres ailées dorées de Jupiter, composées d'éclairs et d'ailes stylisées.",
               category: "detail"
             },
             {
@@ -283,7 +283,7 @@ window.KIM_HISTOIRE_DATA = {
           id: "antiquite_villa",
           title: "La villa gallo-romaine et ses thermes",
           subtitle: "Le confort et le raffinement gallo-romain",
-          filename: "antiquite_villa_thermes.png",
+          filename: "antiquite_villa_thermes.jpg",
           altFilenames: ["antiquite_villa_thermes.webp", "antiquite_villa_thermes.jpg"],
           themeColor: "#D9A521",
           intro: "Pénétrez dans la luxueuse demeure d'un grand propriétaire gallo-romain : péristyle, mosaïques, thermes et aqueduc.",
@@ -379,7 +379,7 @@ window.KIM_HISTOIRE_DATA = {
           id: "moyen_age_tournoi",
           title: "Le tournoi au pied du château fort",
           subtitle: "La fête chevaleresque et la cour seigneuriale",
-          filename: "moyen_age_tournoi_chateau.png",
+          filename: "moyen_age_tournoi_chateau.jpg",
           altFilenames: ["moyen_age_tournoi_chateau.webp", "moyen_age_tournoi_chateau.jpg"],
           themeColor: "#9C2F3A",
           intro: "Admirez le tournoi de chevalerie : les lices, les armures, les armoiries, la tribune d'honneur et la forge.",
@@ -462,7 +462,7 @@ window.KIM_HISTOIRE_DATA = {
           id: "moyen_age_scriptorium",
           title: "Le scriptorium et les bâtisseurs",
           subtitle: "L'art du livre et la construction des cathédrales",
-          filename: "moyen_age_scriptorium_artisans.png",
+          filename: "moyen_age_scriptorium_artisans.jpg",
           altFilenames: ["moyen_age_scriptorium_artisans.webp", "moyen_age_scriptorium_artisans.jpg"],
           themeColor: "#9C2F3A",
           intro: "Pénétrez dans le calme du scriptorium d'un monastère donnant sur le grand chantier de la cathédrale.",
@@ -558,7 +558,7 @@ window.KIM_HISTOIRE_DATA = {
           id: "temps_modernes_port",
           title: "Le port des Grandes Découvertes",
           subtitle: "Vers le Nouveau Monde et les routes des Indes",
-          filename: "temps_modernes_port_caravelle.png",
+          filename: "temps_modernes_port_caravelle.jpg",
           altFilenames: ["temps_modernes_port_caravelle.webp", "temps_modernes_port_caravelle.jpg"],
           themeColor: "#2F6E8F",
           intro: "Scrutez le quai animé du port du XVIᵉ siècle : la caravelle, les instruments de navigation, les épices et les trésors exotiques.",
@@ -597,10 +597,10 @@ window.KIM_HISTOIRE_DATA = {
             },
             {
               id: "q_por_5",
-              question: "Combien de tonneaux d'épices scellés sont déposés sur le quai prêts à l'embarquement ?",
-              options: ["4 tonneaux", "2 tonneaux", "6 tonneaux", "3 tonneaux"],
+              question: "Combien de tonneaux compte-t-on au total sur le quai (au sol et suspendus à la grue) ?",
+              options: ["6 tonneaux", "4 tonneaux", "8 tonneaux", "3 tonneaux"],
               correct: 0,
-              explanation: "Quatre gros fûts de bois cerclés de fer contiennent les précieuses épices (poivre, girofle, cannelle).",
+              explanation: "On compte 6 tonneaux au total : 4 empilés au sol près des sacs, 1 soulevé par la grue et 1 posé sur une caisse.",
               category: "count"
             },
             {
@@ -641,7 +641,7 @@ window.KIM_HISTOIRE_DATA = {
           id: "temps_modernes_imprimerie",
           title: "L'atelier de l'imprimeur et du savant",
           subtitle: "La diffusion des savoirs et la révolution scientifique",
-          filename: "temps_modernes_imprimerie_sciences.png",
+          filename: "temps_modernes_imprimerie_sciences.jpg",
           altFilenames: ["temps_modernes_imprimerie_sciences.webp", "temps_modernes_imprimerie_sciences.jpg"],
           themeColor: "#2F6E8F",
           intro: "Explorez cet atelier de la Renaissance : la presse de Gutenberg, les caractères en plomb, la lunette astronomique et le globe.",
@@ -737,7 +737,7 @@ window.KIM_HISTOIRE_DATA = {
           id: "contemporaine_gare",
           title: "La gare et l'usine au XIXᵉ siècle",
           subtitle: "La Révolution industrielle et l'essor de la vapeur",
-          filename: "contemporaine_revolution_industrielle.png",
+          filename: "contemporaine_revolution_industrielle.jpg",
           altFilenames: ["contemporaine_revolution_industrielle.webp", "contemporaine_revolution_industrielle.jpg"],
           themeColor: "#3F8C5C",
           intro: "Plongez dans le tumulte de la gare du XIXᵉ siècle : la locomotive à vapeur, les voyageurs en tenue d'époque, l'horloge et les cheminées.",
@@ -745,9 +745,9 @@ window.KIM_HISTOIRE_DATA = {
             {
               id: "q_gar_1",
               question: "Quelle heure précise indique la grande horloge suspendue sous la verrière de la gare ?",
-              options: ["10h15", "12h00", "08h30", "14h45"],
+              options: ["10h10", "10h15", "11h10", "12h00"],
               correct: 0,
-              explanation: "La grande pendule de gare en fonte indique 10 heures et 15 minutes, l'heure du départ !",
+              explanation: "La grande pendule de gare indique précisément 10 heures et 10 minutes (la petite aiguille sur le 10, la grande sur le 2).",
               category: "detail"
             },
             {
@@ -820,7 +820,7 @@ window.KIM_HISTOIRE_DATA = {
           id: "contemporaine_espace",
           title: "La salle de contrôle spatiale (1969)",
           subtitle: "La mission Apollo 11 et les premiers pas sur la Lune",
-          filename: "contemporaine_conquete_spatiale.png",
+          filename: "contemporaine_conquete_spatiale.jpg",
           altFilenames: ["contemporaine_conquete_spatiale.webp", "contemporaine_conquete_spatiale.jpg"],
           themeColor: "#3F8C5C",
           intro: "Observez la salle de contrôle de mission : les consoles, les bandes magnétiques, l'écran géant, les ordinateurs et les ingénieurs.",
@@ -875,10 +875,10 @@ window.KIM_HISTOIRE_DATA = {
             },
             {
               id: "q_esp_7",
-              question: "Quel logo rouge apparaît sur la tasse à café blanche posée sur le bureau ?",
-              options: ["Le logo rouge de la NASA (la 'boulette de viande')", "Un drapeau américain à étoiles", "Le profil d'une fusée", "Le chiffre romain XI"],
+              question: "Quel instrument circulaire à quadrillage vert est incrusté au centre de la console du directeur ?",
+              options: ["Un écran radar / oscilloscope vert", "Une boussole marine à cadran", "Un tachymètre de vitesse", "Une horloge analogique"],
               correct: 0,
-              explanation: "La tasse blanche du directeur de mission arbore l'emblème reconnaissable de l'agence spatiale NASA.",
+              explanation: "La console centrale comporte un écran radar/oscilloscope circulaire à balayage vert pour surveiller les signaux de télémesure.",
               category: "detail"
             },
             {

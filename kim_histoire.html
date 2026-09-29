@@ -495,6 +495,9 @@ class SoundFx {
       const AudioCtx = window.AudioContext || window.webkitAudioContext;
       if (AudioCtx) this.ctx = new AudioCtx();
     }
+    if (this.ctx && this.ctx.state === 'suspended') {
+      try { this.ctx.resume(); } catch (e) {}
+    }
   }
 
   playTone(freq, type = 'sine', duration = 0.15, gainVal = 0.12) {
@@ -880,27 +883,46 @@ function renderCurrentQuestion() {
     const btn = document.createElement('button');
     btn.className = 'btn-3d bg-slate-50 hover:bg-amber-100 text-slate-900 p-4 rounded-xl text-xs sm:text-sm font-bold text-left transition-all flex items-start gap-2.5 leading-snug';
     btn.innerHTML = `<span class="text-amber-600 font-black">✦</span> <span>${ans.text}</span>`;
-    btn.onclick = () => handleAnswerSelect(ans.isCorrect, ans.text);
+    btn.onclick = () => handleAnswerSelect(btn, ans.isCorrect, ans.text);
     optionsGrid.appendChild(btn);
   });
 }
 
-function handleAnswerSelect(isCorrect, selectedText) {
+let isAnswering = false;
+
+function handleAnswerSelect(btnEl, isCorrect, selectedText) {
+  if (isAnswering) return;
+  isAnswering = true;
+
   sfx.click();
+
+  // Verrouille immédiatement tous les boutons pour empêcher le double-tap intempestif
+  const grid = document.getElementById('question-options-grid');
+  if (grid) grid.style.pointerEvents = 'none';
+
+  if (btnEl) {
+    btnEl.classList.remove('bg-slate-50');
+    btnEl.classList.add('bg-amber-200', 'border-amber-700', 'scale-[0.98]');
+  }
+
   state.userAnswers.push({
     question: state.activeQuestions[state.currentQuestionIdx],
     selectedText: selectedText,
     isCorrect: isCorrect
   });
 
-  state.currentQuestionIdx++;
+  setTimeout(() => {
+    isAnswering = false;
+    if (grid) grid.style.pointerEvents = 'auto';
 
-  if (state.currentQuestionIdx < 4) {
-    renderCurrentQuestion();
-  } else {
-    // Fin des 4 questions -> Bilan !
-    finishQuizAndShowResults();
-  }
+    state.currentQuestionIdx++;
+
+    if (state.currentQuestionIdx < 4) {
+      renderCurrentQuestion();
+    } else {
+      finishQuizAndShowResults();
+    }
+  }, 350);
 }
 
 // Bilan et Débriefing
@@ -1120,7 +1142,29 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
-// Arrêt automatique du jeu et des sons si le jeu est quitté ou masqué
+// Gestion de la visibilité et reprise propre (veille, changement d'onglet)
+function pauseGame() {
+  state.isPaused = true;
+  const pauseBtn = document.getElementById('btn-pause-observe');
+  if (pauseBtn) pauseBtn.innerText = '▶️';
+  if (sfx && sfx.ctx && sfx.ctx.state === 'running') {
+    try { sfx.ctx.suspend(); } catch(e) {}
+  }
+}
+
+function resumeGame() {
+  if (sfx && sfx.ctx && sfx.ctx.state === 'suspended') {
+    try { sfx.ctx.resume(); } catch(e) {}
+  }
+  const observeScreen = document.getElementById('screen-observe');
+  if (observeScreen && !observeScreen.classList.contains('hidden') && state.timerRemaining > 0) {
+    state.isPaused = false;
+    const pauseBtn = document.getElementById('btn-pause-observe');
+    if (pauseBtn) pauseBtn.innerText = '⏸️';
+  }
+}
+
+// Arrêt complet du jeu (appelé lors de la sortie définitive vers le portail)
 function stopAndResetGame() {
   clearInterval(state.timerInterval);
   state.isPaused = true;
@@ -1131,26 +1175,23 @@ function stopAndResetGame() {
 window.stopAndResetGame = stopAndResetGame;
 window.addEventListener('pagehide', stopAndResetGame);
 window.addEventListener('beforeunload', stopAndResetGame);
+
 document.addEventListener('visibilitychange', () => {
-  if (document.hidden) stopAndResetGame();
+  if (document.hidden) {
+    pauseGame();
+  } else {
+    resumeGame();
+  }
 });
 
-// Détection du masquage de l'iframe dans le portail LCML (IntersectionObserver)
-if (window.IntersectionObserver) {
-  const frameObs = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (!entry.isIntersecting) {
-        stopAndResetGame();
-      }
-    });
-  }, { threshold: 0.05 });
-  frameObs.observe(document.documentElement);
-}
-
-// Réception des messages de fermeture depuis le site parent
+// Réception des messages depuis le site parent
 window.addEventListener('message', (e) => {
-  if (e.data === 'stop' || e.data === 'pause') {
+  if (e.data === 'stop') {
     stopAndResetGame();
+  } else if (e.data === 'pause') {
+    pauseGame();
+  } else if (e.data === 'resume') {
+    resumeGame();
   }
 });
 </script>

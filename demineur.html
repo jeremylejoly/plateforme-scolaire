@@ -80,7 +80,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    padding: 16px 12px 48px;
+    padding: 10px 10px 20px;
     user-select: none;
     -webkit-user-select: none;
   }
@@ -887,6 +887,8 @@
   let flaggedCount = 0;
   let revealedSafeCount = 0;
   let totalSafeCells = 0;
+  let endgameTimeout = null;
+  let lastLongPressTime = 0;
 
   // Chronomètre
   let timerInterval = null;
@@ -996,6 +998,13 @@
 
   // ===== INITIALISATION ET GESTION DU PLATEAU =====
   function initGame() {
+    if (endgameTimeout) {
+      clearTimeout(endgameTimeout);
+      endgameTimeout = null;
+    }
+    if (endgameModal) {
+      endgameModal.classList.remove('open');
+    }
     clearInterval(timerInterval);
     timerInterval = null;
     elapsedSeconds = 0;
@@ -1136,6 +1145,9 @@
     el.addEventListener('contextmenu', (e) => {
       e.preventDefault();
       if (gameOver || gameWon) return;
+      if (Date.now() - lastLongPressTime < 800) {
+        return; // Ignore le contextmenu natif d'Android tiré juste après l'appui long
+      }
       toggleFlag(r, c);
     });
 
@@ -1151,6 +1163,7 @@
 
       longPressTimer = setTimeout(() => {
         longPressed = true;
+        lastLongPressTime = Date.now();
         toggleFlag(r, c);
         if (navigator.vibrate) navigator.vibrate(40);
         smileyBtn.textContent = '🙂';
@@ -1404,7 +1417,8 @@
       // Sauvegarder le meilleur score
       saveBestScore();
 
-      setTimeout(() => {
+      if (endgameTimeout) clearTimeout(endgameTimeout);
+      endgameTimeout = setTimeout(() => {
         showEndgameModal(true);
       }, 700);
     }
@@ -1437,7 +1451,8 @@
       }
     }
 
-    setTimeout(() => {
+    if (endgameTimeout) clearTimeout(endgameTimeout);
+    endgameTimeout = setTimeout(() => {
       showEndgameModal(false);
     }, 900);
   }
@@ -1605,16 +1620,25 @@
 
   // Calcul dynamique de la taille de cellule pour que TOUTE la grille tienne dans l'écran
   function adjustGridSize() {
-    const maxAvailableWidth = Math.min(window.innerWidth - 36, 840);
-    const usableWidth = maxAvailableWidth - 46;
+    const maxAvailableWidth = Math.min(window.innerWidth - 24, 840);
+    const usableWidth = maxAvailableWidth - 28;
     const cellFromWidth = Math.floor((usableWidth - (cols - 1) * 2) / cols);
 
-    const topElementsHeight = 330;
-    const availableHeight = Math.max(260, window.innerHeight - topElementsHeight);
-    const cellFromHeight = Math.floor((availableHeight - (rows - 1) * 2) / rows);
+    const headerEl = document.querySelector('header.top');
+    const diffEl = document.querySelector('.difficulty-selector');
+    const controlEl = document.querySelector('.control-bar');
+
+    // Mesure réelle et dynamique des éléments du haut + marges/padding
+    const headerH = headerEl ? headerEl.offsetHeight : 54;
+    const diffH = diffEl ? diffEl.offsetHeight : 42;
+    const controlH = controlEl ? controlEl.offsetHeight : 50;
+    const topElementsHeight = headerH + diffH + controlH + 36;
+
+    const availableHeight = Math.max(160, window.innerHeight - topElementsHeight);
+    const cellFromHeight = Math.floor((availableHeight - (rows - 1) * 2 - 12) / rows);
 
     const optimalCell = Math.min(cellFromWidth, cellFromHeight);
-    const cellSize = Math.max(20, Math.min(44, optimalCell));
+    const cellSize = Math.max(16, Math.min(42, optimalCell));
     document.documentElement.style.setProperty('--cell-size', `${cellSize}px`);
   }
 
