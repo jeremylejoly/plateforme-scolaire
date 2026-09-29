@@ -3236,7 +3236,7 @@ input[type=text].calc-input.incorrect {
 }
 </style>
 <script src="livres.js?v=20260928c"></script>
-<script src="exercices_francais.js?v=20260929_niv"></script>
+<script src="exercices_francais.js?v=20260929b"></script>
 <script src="exercices_maths.js?v=20260927e"></script>
 <script src="exercices_eveil.js?v=20260927e"></script>
 <script>
@@ -10562,7 +10562,8 @@ function validateConjExercise(){
       const inp = document.getElementById(`conj-blank-${i}`);
       given = inp ? inp.value.trim() : '';
       expected = q.answer;
-      isCorrect = given.toLowerCase() === expected.toLowerCase();
+      const _norm = s => (s||'').normalize('NFC').replace(/\s+/g,' ').trim().toLowerCase();
+      isCorrect = _norm(given) === _norm(expected);
       if(inp){
         inp.disabled = true;
         inp.style.borderBottomColor = isCorrect ? 'var(--green)' : 'var(--red)';
@@ -10633,10 +10634,13 @@ const CONJ_PRESENT_LEVELS_DEF = [
   { niv: 1, title: 'Niveau 1', desc: '1er gr. faciles' },
   { niv: 2, title: 'Niveau 2', desc: '1er gr. particuliers' },
   { niv: 3, title: 'Niveau 3', desc: '1er gr. mélangés' },
-  { niv: 4, title: 'Niveau 4', desc: '2ème groupe' },
-  { niv: 5, title: 'Niveau 5', desc: '3ème groupe & aux.' },
+  { niv: 4, title: 'Niveau 4', desc: '2e groupe' },
+  { niv: 5, title: 'Niveau 5', desc: '3e groupe & aux.' },
   { niv: 6, title: 'Niveau 6', desc: 'Tous groupes' }
 ];
+
+// Dernier niveau choisi (présent, phrases à trous) : conservé même après un passage par le QCM
+let conjPresentLastLevel = 1;
 
 function renderConjLevelTabs(){
   const container = document.getElementById('conj-levels-tabs');
@@ -10670,7 +10674,11 @@ function restartConjExercise(){
   document.getElementById('conj-validate-btn').style.display = 'block';
   const data = getConjData(conjState.tense);
   if(conjState.type === 'qcm'){
-    conjState.questions = shuffleArray(data.qcm_bank).slice(0,10);
+    conjState.questions = shuffleArray(data.qcm_bank).slice(0,10).map(q => {
+      const correctVal = q.options[q.answer];
+      const shuffledOpts = shuffleArray([...q.options]);
+      return { ...q, options: shuffledOpts, answer: shuffledOpts.indexOf(correctVal) };
+    });
   } else {
     let bank = data.trous_bank;
     if(conjState.tense === 'present' && data.trous_levels && conjState.level && data.trous_levels[conjState.level]){
@@ -10692,8 +10700,9 @@ function startConjExercise(tense, type, level){
   const tenseLabel = tenseLabels[tense] || tense;
 
   const selectedLevel = (tense === 'present' && type === 'trous')
-    ? (level || (typeof conjState !== 'undefined' && conjState && conjState.level) || 1)
+    ? (level || (typeof conjPresentLastLevel !== 'undefined' && conjPresentLastLevel) || 1)
     : null;
+  if(selectedLevel) conjPresentLastLevel = selectedLevel;
 
   conjState = {
     tense, type,
@@ -31063,7 +31072,8 @@ function renderConjBadges(tense){
     const badge = document.createElement('div');
     badge.className = 'conj-result-badge';
     badge.style.cssText = 'margin-top:4px;font-size:11px;font-weight:800;color:'+color+';';
-    badge.textContent = icon+' '+r.score+'/'+r.total+' — '+pct+'% ('+r.date+')';
+    const _niv = (t === 'trous' && r.bookTitle) ? (String(r.bookTitle).match(/Niveau (\d+)/) || [])[1] : null;
+    badge.textContent = icon+' '+r.score+'/'+r.total+' — '+pct+'% ('+r.date+')' + (_niv ? ' · Niv. '+_niv : '');
     // Insérer après exercise-card-desc
     const desc = card.querySelector('.exercise-card-desc');
     if(desc) desc.after(badge);
