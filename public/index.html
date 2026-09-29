@@ -1476,6 +1476,56 @@ input:focus{border-color:var(--purple);}
   font-weight: 700;
 }
 
+/* Onglets de niveaux conjugaison */
+.conj-levels-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 8px;
+  margin-bottom: 1.5rem;
+  width: 100%;
+}
+.conj-level-tab {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  padding: 8px 10px;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s ease;
+  color: var(--text);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  font-family: inherit;
+}
+.conj-level-tab:hover {
+  border-color: #ec4899;
+  background: #fdf2f8;
+  transform: translateY(-1px);
+}
+.conj-level-tab.active {
+  background: #ec4899 !important;
+  border-color: #db2777 !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 10px rgba(236,72,153,0.3) !important;
+}
+.conj-level-tab.active .conj-level-subtitle {
+  color: rgba(255,255,255,0.92) !important;
+}
+.conj-level-title {
+  font-size: 13px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+.conj-level-subtitle {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+  margin-top: 2px;
+  line-height: 1.2;
+}
+
 /* Fill in the blank */
 .conj-blank-container {
   display: flex;
@@ -5099,7 +5149,7 @@ input[type=text].calc-input.incorrect {
       <div class="sub-subject-card active-card" id="conj-card-present-trous" onclick="startConjExercise('present','trous')">
         <div class="sub-icon">✍️</div>
         <div class="sub-title">Phrases à trous</div>
-        <div class="sub-desc">50 phrases phrases · Recommençable</div>
+        <div class="sub-desc">6 niveaux de difficulté · Recommençable</div>
       </div>
       <div class="sub-subject-card active-card" id="conj-card-present-eval" onclick="startConjEvaluation('present')" style="grid-column:1/-1">
         <div class="sub-icon">🏆</div>
@@ -5161,6 +5211,7 @@ input[type=text].calc-input.incorrect {
   <div id="screen-conj-exercise" class="screen">
     <button class="back-btn" id="conj-back-btn" onclick="showScreen('screen-conj-futur')">← Retour</button>
     <div class="page-title" id="conj-exercise-title">Exercice</div>
+    <div id="conj-levels-tabs" class="conj-levels-container" style="display:none;"></div>
     <div id="conj-exercise-body"></div>
     <div id="conj-score-panel" style="display:none;">
       <div class="exercise-score">
@@ -10547,7 +10598,7 @@ function validateConjExercise(){
       className: CLASSES[state.studentCls] ? CLASSES[state.studentCls].name : state.studentCls,
       activity: 'conjugaison_' + conjState.tense + '_' + (conjState.isEvaluation ? 'eval' : conjState.type),
       activityLabel: 'Conjugaison — ' + conjState.tenseLabel,
-      bookTitle: 'Conjugaison — ' + conjState.tenseLabel + ' (' + (conjState.isEvaluation ? 'Évaluation' : conjState.type === 'qcm' ? 'QCM' : 'Phrases à trous') + ')',
+      bookTitle: 'Conjugaison — ' + conjState.tenseLabel + ' (' + (conjState.isEvaluation ? 'Évaluation' : conjState.type === 'qcm' ? 'QCM' : 'Phrases à trous' + (conjState.level ? ' — Niveau ' + conjState.level : '')) + ')',
       isEvaluation: conjState.isEvaluation || false,
       score, total, pct,
       date: new Date().toLocaleDateString('fr-BE'),
@@ -10578,6 +10629,38 @@ function showConjCorrection(){
   document.getElementById('conj-correction-panel').scrollIntoView({behavior:'smooth'});
 }
 
+const CONJ_PRESENT_LEVELS_DEF = [
+  { niv: 1, title: 'Niveau 1', desc: '1er gr. faciles' },
+  { niv: 2, title: 'Niveau 2', desc: '1er gr. particuliers' },
+  { niv: 3, title: 'Niveau 3', desc: '1er gr. mélangés' },
+  { niv: 4, title: 'Niveau 4', desc: '2ème groupe' },
+  { niv: 5, title: 'Niveau 5', desc: '3ème groupe & aux.' },
+  { niv: 6, title: 'Niveau 6', desc: 'Tous groupes' }
+];
+
+function renderConjLevelTabs(){
+  const container = document.getElementById('conj-levels-tabs');
+  if(!container) return;
+  const isPresentTrous = (conjState && conjState.tense === 'present' && conjState.type === 'trous' && !conjState.isEvaluation);
+  if(!isPresentTrous){
+    container.style.display = 'none';
+    container.innerHTML = '';
+    return;
+  }
+  container.style.display = 'grid';
+  const curLvl = conjState.level || 1;
+  container.innerHTML = CONJ_PRESENT_LEVELS_DEF.map(l => `
+    <button type="button" class="conj-level-tab ${l.niv === curLvl ? 'active' : ''}" onclick="switchConjLevel(${l.niv})">
+      <div class="conj-level-title">⭐ ${l.title}</div>
+      <div class="conj-level-subtitle">${l.desc}</div>
+    </button>
+  `).join('');
+}
+
+function switchConjLevel(lvl){
+  startConjExercise('present', 'trous', lvl);
+}
+
 function restartConjExercise(){
   if(conjState.isEvaluation) return;
   conjState.submitted = false;
@@ -10589,13 +10672,18 @@ function restartConjExercise(){
   if(conjState.type === 'qcm'){
     conjState.questions = shuffleArray(data.qcm_bank).slice(0,10);
   } else {
-    conjState.questions = shuffleArray(data.trous_bank).slice(0,10);
+    let bank = data.trous_bank;
+    if(conjState.tense === 'present' && data.trous_levels && conjState.level && data.trous_levels[conjState.level]){
+      bank = data.trous_levels[conjState.level];
+    }
+    conjState.questions = shuffleArray(bank).slice(0,10);
   }
+  renderConjLevelTabs();
   renderConjQuestions();
   window.scrollTo(0,0);
 }
 
-function startConjExercise(tense, type){
+function startConjExercise(tense, type, level){
   if(state.role !== 'teacher' && isActivityLocked(tense)){ alert('Cet exercice n\'est pas encore disponible.'); return; }
   const data = getConjData(tense);
   if(!data) return;
@@ -10603,9 +10691,14 @@ function startConjExercise(tense, type){
   const tenseLabels = {futur:'Futur simple', present:'Indicatif présent', imparfait:'Imparfait', passe_compose:'Passé composé'};
   const tenseLabel = tenseLabels[tense] || tense;
 
+  const selectedLevel = (tense === 'present' && type === 'trous')
+    ? (level || (typeof conjState !== 'undefined' && conjState && conjState.level) || 1)
+    : null;
+
   conjState = {
     tense, type,
     tenseLabel,
+    level: selectedLevel,
     isEvaluation: false,
     questions: [],
     answers: [],
@@ -10623,9 +10716,16 @@ function startConjExercise(tense, type){
     });
     document.getElementById('conj-exercise-title').textContent = '🎯 Entraînement QCM — ' + tenseLabel;
   } else {
-    conjState.questions = shuffleArray(data.trous_bank).slice(0,10);
-    document.getElementById('conj-exercise-title').textContent = '✍️ Entraînement Phrases à trous — ' + tenseLabel;
+    let bank = data.trous_bank;
+    if(tense === 'present' && data.trous_levels && conjState.level && data.trous_levels[conjState.level]){
+      bank = data.trous_levels[conjState.level];
+    }
+    conjState.questions = shuffleArray(bank).slice(0,10);
+    const lvlDesc = (tense === 'present' && conjState.level) ? ' (Niveau ' + conjState.level + ')' : '';
+    document.getElementById('conj-exercise-title').textContent = '✍️ Phrases à trous — ' + tenseLabel + lvlDesc;
   }
+
+  renderConjLevelTabs();
 
   document.getElementById('conj-score-panel').style.display='none';
   document.getElementById('conj-correction-panel').style.display='none';
@@ -10675,6 +10775,7 @@ function startConjEvaluation(tense){
 
   const tenseLabels2 = {futur:'Futur simple', present:'Indicatif présent', imparfait:'Imparfait', passe_compose:'Passé composé'};
     document.getElementById('conj-exercise-title').textContent = '🏆 Évaluation — ' + (tenseLabels2[tense]||tense);
+  renderConjLevelTabs();
   document.getElementById('conj-score-panel').style.display='none';
   document.getElementById('conj-correction-panel').style.display='none';
   document.getElementById('conj-validate-btn').style.display='block';
@@ -19104,7 +19205,7 @@ function renderJeuxMenu(){
     {id:'jeu_tangram', screen:'screen-jeu-tangram', label:'Le Tangram', icon:'<img src="assets/logos/jeu_tangram.png" class="w-full h-full object-contain" alt="Le Tangram" />', desc:'Assemble les 7 tans pour reconstituer les silhouettes géométriques ! 3 niveaux de défi.', fn:''},
     {id:'jeu_demineur', screen:'screen-jeu-demineur', label:'Le Démineur', icon:'<img src="assets/logos/jeu_demineur.png" class="w-full h-full object-contain" alt="Le Démineur" />', desc:'Trouve toutes les mines grâce à la logique et aux indices chiffrés ! 3 niveaux de difficulté.', fn:''},
     {id:'jeu_pipopipette', screen:'screen-jeu-pipopipette', label:'La Pipopipette', icon:'<img src="assets/logos/jeu_pipopipette.png" class="w-full h-full object-contain" alt="La Pipopipette" />', desc:'Relie les points, ferme les carrés et gagne un tour bonus ! Solo vs IA ou 2 joueurs.', fn:''},
-    {id:'jeu_kim', screen:'screen-jeu-kim', label:'L\'Œil du Temps (Jeu de Kim)', icon:'<img src="assets/logos/jeu_kim.png" class="w-full h-full object-contain" alt="L\'Œil du Temps" />', desc:'Mémorise les scènes des 5 époques de l\'Histoire et relève les défis d\'observation ! 10 scènes & 90 questions.', fn:''},
+    {id:'kim_histoire', screen:'screen-jeu-kim', label:'L\'Œil du Temps (Jeu de Kim)', icon:'<img src="assets/logos/jeu_kim.png" class="w-full h-full object-contain" alt="L\'Œil du Temps" />', desc:'Mémorise les scènes des 5 époques de l\'Histoire et relève les défis d\'observation ! 10 scènes & 90 questions.', fn:''},
   ];
 
   let html = '';
