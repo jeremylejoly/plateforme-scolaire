@@ -14614,7 +14614,7 @@ window.LIVRES = [
         "correct": 2,
         "answer": 2,
         "points": 1,
-        "explanation": "Sur scène, Juliette regarde quelqu'un dans la salle et joue pour lui. Devant la caméra de son papa, elle trouve cela « glacial » et n'arrive plus à être naturelle."
+        "explanation": "Sur scène, Juliette regarde quelqu'un dans la salle et joue pour lui. Parler devant une caméra, elle trouve cela « glacial » : même quand son papa la filme, elle n'arrive plus à être naturelle."
       },
       {
         "id": "q3",
@@ -14933,7 +14933,7 @@ window.LIVRES = [
         "correct": 2,
         "answer": 2,
         "points": 1,
-        "explanation": "Holmes fait semblant de ne plus voir clair. Smith monte la lumière du gaz pour « mieux le regarder mourir ». C'est le signal convenu avec l'inspecteur Morton."
+        "explanation": "Holmes fait semblant de ne plus voir clair. Smith monte la lumière du gaz pour « mieux vous regarder mourir », dit-il à Holmes. C'est le signal convenu avec l'inspecteur Morton."
       },
       {
         "id": "q8",
@@ -14995,7 +14995,7 @@ window.LIVRES = [
         "id": "q13",
         "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« Quand j'entrai dans la chambre, il était étendu dans une sorte d'apathie complète. » Que veut dire « apathie » ?",
+        "text": "« Quand j'entrai dans la chambre il était étendu dans une sorte d'apathie complète. » Que veut dire « apathie » ?",
         "options": [
           "Un état où l'on ne réagit plus à rien",
           "Une grande faim",
@@ -15027,7 +15027,7 @@ window.LIVRES = [
         "id": "q15",
         "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« Connaissant sa nature vindicative, je savais qu'il viendrait contempler son chef-d'œuvre. » Que veut dire « vindicatif » ?",
+        "text": "« Connaissant sa nature vindicative, je savais parfaitement qu'il viendrait contempler son chef-d'œuvre. » Que veut dire « vindicatif » ?",
         "options": [
           "Qui veut se venger",
           "Qui aime aider les autres",
@@ -15045,9 +15045,9 @@ window.LIVRES = [
         "type": "synthesis",
         "text": "Quel résumé correspond le mieux à l'histoire ?",
         "options": [
-          "Madame Hudson croit que Sherlock Holmes va mourir d'une maladie contagieuse. Holmes envoie le docteur Watson chercher Culverton Smith, le seul qui pourrait le soigner. En réalité, Holmes fait semblant d'être malade pour piéger Smith, qui lui a envoyé une boîte piégée. Caché derrière le lit, Watson entend Smith avouer ses crimes, et l'inspecteur Morton l'arrête.",
-          "Madame Hudson croit que Sherlock Holmes va mourir d'une maladie contagieuse. Holmes envoie le docteur Watson chercher Culverton Smith, le seul qui pourrait le soigner. En réalité, Holmes fait semblant d'être malade pour piéger Smith, qui lui a envoyé une boîte piégée. Mais Smith devine la ruse : il emporte la boîte et s'enfuit avant l'arrivée de l'inspecteur Morton.",
-          "Madame Hudson croit que Sherlock Holmes va mourir d'une maladie contagieuse. Holmes envoie le docteur Watson chercher Culverton Smith, le seul qui pourrait le soigner. Smith arrive avec un remède et sauve Holmes, qui était vraiment très malade. Pour le remercier, Holmes l'invite à dîner avec Watson chez Simpson."
+          "Sherlock Holmes semble mourant et dit avoir une maladie contagieuse. Il envoie le docteur Watson chercher Culverton Smith, le seul qui pourrait le soigner. En réalité, Holmes fait semblant d'être malade pour piéger Smith, qui lui a envoyé une boîte piégée. Caché derrière le lit, Watson entend Smith avouer ses crimes, et l'inspecteur Morton l'arrête.",
+          "Sherlock Holmes semble mourant et dit avoir une maladie contagieuse. Il envoie le docteur Watson chercher Culverton Smith, le seul qui pourrait le soigner. En réalité, Holmes fait semblant d'être malade pour piéger Smith, qui lui a envoyé une boîte piégée. Mais Smith devine la ruse : il emporte la boîte et s'enfuit avant l'arrivée de l'inspecteur Morton.",
+          "Sherlock Holmes semble mourant et dit avoir une maladie contagieuse. Il envoie le docteur Watson chercher Culverton Smith, le seul qui pourrait le soigner. Smith arrive avec un remède et sauve Holmes, qui était vraiment très malade. Pour le remercier, Holmes l'invite à dîner avec Watson chez Simpson."
         ],
         "correct": 0,
         "answer": 0,
@@ -15234,7 +15234,7 @@ window.LIVRES = [
         "id": "q13",
         "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« La voix ne se gênait pas pour lui lancer à tout propos ses remarques sarcastiques. » Que veut dire « sarcastique » ?",
+        "text": "La voix ne se gêne pas « pour lui distiller à tout propos ses remarques sarcastiques ». Que veut dire « sarcastique » ?",
         "options": [
           "Effrayant",
           "Savant",
@@ -15250,7 +15250,7 @@ window.LIVRES = [
         "id": "q14",
         "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« Repoussant à plus tard les questions qui le taraudaient, il secourut la plante. » Que veut dire « tarauder » ?",
+        "text": "« Repoussant à plus tard les interrogations qui le taraudaient, il accomplit intuitivement les meilleurs gestes pour porter secours à la plante. » Que veut dire « tarauder » ?",
         "options": [
           "Faire rire",
           "Endormir",
@@ -15586,7 +15586,7 @@ window.LIVRES = [
         "correct": 2,
         "answer": 2,
         "points": 1,
-        "explanation": "Ses parents lui ont donné le nom inscrit au calendrier ce jour-là : « Fét. nat. ». Ils ne savaient pas que cela voulait dire « Fête nationale » !"
+        "explanation": "Ses parents lui ont donné le nom inscrit au calendrier ce jour-là : « FET. NAT. ». Ils ne savaient pas que cela voulait dire « Fête nationale » !"
       },
       {
         "id": "q4",
@@ -15676,7 +15676,7 @@ window.LIVRES = [
         "correct": false,
         "answer": false,
         "points": 1,
-        "explanation": "FAUX : Zaccharie pose ses mains sur ses épaules et lui dit : « Viens, grand-père, on rentre à la maison. »"
+        "explanation": "FAUX : Zaccharie pose ses mains sur ses épaules et lui dit : « Viens grand-père, on rentre à la maison. »"
       },
       {
         "id": "q10",
@@ -15712,7 +15712,7 @@ window.LIVRES = [
         "id": "q13",
         "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« Le spectacle de cet émouvant vieillard était cocasse tout autant qu'attristant. » Que veut dire « cocasse » ?",
+        "text": "« Le spectacle de cet émouvant patriarche était cocasse tout autant qu'attristant. » Que veut dire « cocasse » ?",
         "options": [
           "Ennuyeux",
           "Drôle",
@@ -15728,7 +15728,7 @@ window.LIVRES = [
         "id": "q14",
         "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« Au cœur d'un profond dilemme, Salomé refusait de vivre loin de sa famille. » Qu'est-ce qu'un « dilemme » ?",
+        "text": "« Salomé en fut désespérée, mais, au cœur d'un profond dilemme, elle se refusait à vivre loin de sa famille. » Qu'est-ce qu'un « dilemme » ?",
         "options": [
           "Une grande fête du village",
           "Un choix très difficile entre deux solutions",
@@ -15744,7 +15744,7 @@ window.LIVRES = [
         "id": "q15",
         "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« Les balafres, très nettes et légèrement boursouflées, impressionnèrent l'adolescent. » Que sont des « balafres » ?",
+        "text": "« Les balafres, très nettes et légèrement boursouflées, impressionnèrent fortement l'adolescent. » Que sont des « balafres » ?",
         "options": [
           "Des tatouages",
           "Des peintures sur le corps",
@@ -15825,7 +15825,7 @@ window.LIVRES = [
         "correct": 0,
         "answer": 0,
         "points": 1,
-        "explanation": "Jo a été arrêté dans la région après un hold-up à Paris, et la police n'a jamais retrouvé l'argent. Il vient « récupérer ce qui est à lui »."
+        "explanation": "Jo a été arrêté dans la région après un hold-up à Paris, et la police n'a jamais retrouvé l'argent. Il le dit à Georges : « Juste le temps de récupérer ce qui est à moi. »"
       },
       {
         "id": "q4",
@@ -15945,7 +15945,7 @@ window.LIVRES = [
         "correct": true,
         "answer": true,
         "points": 1,
-        "explanation": "VRAI : Jo le cache dans des broussailles, au fond d'un petit ravin, sous les pierres entassées au pied d'un arbre mort."
+        "explanation": "VRAI : Jo emmène Georges au fond d'un petit ravin, dans des broussailles. Il déplace les lourdes pierres entassées au pied d'un arbre mort : les sacs de billets sont là."
       },
       {
         "id": "q13",
@@ -15967,7 +15967,7 @@ window.LIVRES = [
         "id": "q14",
         "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« De nombreux cueilleurs abandonnaient leur poste. Il risquait d'y avoir un vilain grabuge dans peu de temps. » Qu'est-ce que le « grabuge » ?",
+        "text": "« Il risquait d'y avoir un vilain grabuge dans peu de temps. » Qu'est-ce que le « grabuge » ?",
         "options": [
           "Une très bonne récolte",
           "Une bagarre avec beaucoup de désordre",
@@ -15983,7 +15983,7 @@ window.LIVRES = [
         "id": "q15",
         "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« Les deux policiers poussèrent Jo dans le panier à salade. » Qu'est-ce que le « panier à salade » ?",
+        "text": "« Les deux policiers qui avaient menotté Jo le poussèrent brutalement dans le panier à salade. » Qu'est-ce que le « panier à salade » ?",
         "options": [
           "Une ambulance",
           "Un grand panier de légumes",
@@ -16190,7 +16190,7 @@ window.LIVRES = [
         "id": "q13",
         "section": "Vocabulaire en contexte",
         "type": "mcq",
-        "text": "« Tu es trop pessimiste ! Moi, je suis persuadée qu'un petit grain de sable va venir perturber notre train-train. » Que veut dire « pessimiste » ?",
+        "text": "« Tu es trop pessimiste ! Moi je suis persuadée qu'un petit grain de sable va venir perturber notre train-train. » Que veut dire « pessimiste » ?",
         "options": [
           "Qui parle beaucoup trop",
           "Qui est toujours de bonne humeur",
@@ -16253,4 +16253,4 @@ window.LIVRES = [
   }
 ];
 
-window.LIVRES_VERSION = '20261002a';
+window.LIVRES_VERSION = '20261002b';
