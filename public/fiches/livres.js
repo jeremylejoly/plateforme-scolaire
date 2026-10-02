@@ -14338,7 +14338,1919 @@ window.LIVRES = [
         "explanation": "Seul le résumé C est correct. Malika conduit la Gazelle jusqu'au chantier avec Momo, poursuivie par les bandits. Grâce au klaxon, les ouvriers arrivent et les sauvent. Monsieur Derdiche, le traître, est rattrapé par les ouvriers, et Malika et Momo se disent enfin qu'ils s'aiment."
       }
     ]
+  },
+  {
+    "id": "chen_lumiere_nuit",
+    "title": "Chen, une lumière dans la nuit",
+    "series": "Récit Express",
+    "totalPoints": 16,
+    "questions": [
+      {
+        "id": "q1",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Comment Chen est-il devenu aveugle, à l'âge de cinq ans ?",
+        "options": [
+          "Une grande fièvre lui a fait perdre la vue",
+          "Il est tombé du haut d'un mur de pierre",
+          "Il a eu un accident en travaillant aux champs",
+          "Un policier l'a frappé au visage"
+        ],
+        "correct": 0,
+        "answer": 0,
+        "points": 1,
+        "explanation": "« A l'âge de cinq ans, une grande fièvre a fermé à jamais de lourds volets sur les fenêtres de mes yeux », raconte Chen."
+      },
+      {
+        "id": "q2",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Comment Yuan et Chen deviennent-ils amis, quand ils sont enfants ?",
+        "options": [
+          "Leurs parents les ont promis l'un à l'autre",
+          "Chen défend Yuan contre les moqueries des autres",
+          "Ils sont assis côte à côte dans une école pour aveugles",
+          "Yuan l'aide à se relever quand il tombe en jouant"
+        ],
+        "correct": 3,
+        "answer": 3,
+        "points": 1,
+        "explanation": "Les autres enfants se moquent de Chen quand il tombe en jouant au ballon. Un jour, Yuan l'aide à se relever et propose de le raccompagner. Ensuite, ils rentrent de l'école ensemble."
+      },
+      {
+        "id": "q3",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Pourquoi Chen doit-il quitter son école ?",
+        "options": [
+          "Ses parents n'ont plus d'argent pour l'école",
+          "Le directeur trouve ses idées dangereuses",
+          "Il échoue à tous ses examens",
+          "Il se bat souvent avec les autres élèves"
+        ],
+        "correct": 1,
+        "answer": 1,
+        "points": 1,
+        "explanation": "Chen a posé des questions qui ont dérangé le maître. Le lendemain, le directeur dit que ses idées sont dangereuses et qu'il doit aller dans une école pour handicapés."
+      },
+      {
+        "id": "q4",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Pourquoi le père de Yuan ne veut-il pas qu'elle épouse Chen ?",
+        "options": [
+          "La famille de Chen habite trop loin du village",
+          "Chen est trop pauvre pour offrir un beau banquet",
+          "Chen est aveugle, et Yuan est promise à son cousin Li",
+          "Chen a déjà été mis en prison par la police"
+        ],
+        "correct": 2,
+        "answer": 2,
+        "points": 1,
+        "explanation": "Le père a peur que Chen ne trouve pas de travail à cause de son handicap. En plus, Yuan est déjà promise à son cousin Li. C'est la maman de Yuan qui finit par le convaincre."
+      },
+      {
+        "id": "q5",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Qui sont « les démons qui entrent au village » ?",
+        "options": [
+          "Des voleurs qui pillent les récoltes la nuit",
+          "Les agents qui contrôlent le nombre de naissances",
+          "Des journalistes étrangers venus enquêter",
+          "Des soldats qui recherchent des prisonniers évadés"
+        ],
+        "correct": 1,
+        "answer": 1,
+        "points": 1,
+        "explanation": "Ce sont les agents chargés de faire respecter la loi : pas plus de deux enfants par famille à la campagne. Ils traquent les femmes enceintes sans aucune pitié."
+      },
+      {
+        "id": "q6",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Que fait Chen pour aider les femmes comme Linia ?",
+        "options": [
+          "Il les cache toutes dans sa propre maison",
+          "Il les aide à fuir en cachette hors de Chine",
+          "Il écrit leurs plaintes et prévient les journaux",
+          "Il paie leurs amendes avec son propre argent"
+        ],
+        "correct": 2,
+        "answer": 2,
+        "points": 1,
+        "explanation": "Chen rédige le dossier de Linia et envoie une plainte à l'administration de la province. Il envoie aussi une copie aux journaux et parle à un journaliste américain."
+      },
+      {
+        "id": "q7",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Pour quelle raison officielle Chen est-il condamné à quatre ans et trois mois de prison ?",
+        "options": [
+          "Il aurait gêné la circulation",
+          "Il aurait frappé un policier",
+          "Il aurait volé de l'argent à la commune",
+          "Il aurait quitté la Chine sans autorisation"
+        ],
+        "correct": 0,
+        "answer": 0,
+        "points": 1,
+        "explanation": "Chen est « accusé d'avoir troublé le trafic ». Lui-même trouve ce prétexte ridicule : on l'enferme en réalité parce qu'il défend les femmes."
+      },
+      {
+        "id": "q8",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Qui est Helen ?",
+        "options": [
+          "Une avocate chinoise qui défend Chen au tribunal",
+          "L'institutrice de Fanny, en voyage en Chine",
+          "Une photographe venue pour les Jeux olympiques",
+          "Une chercheuse qui travaille pour Amnesty International"
+        ],
+        "correct": 3,
+        "answer": 3,
+        "points": 1,
+        "explanation": "Amnesty International envoie Helen en Chine pour assister au procès de Chen. Elle rencontre Yuan à la campagne, qui lui confie une photo de Chen à publier dans le monde entier."
+      },
+      {
+        "id": "q9",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Yuan a le droit de rendre visite à Chen en prison.",
+        "correct": false,
+        "answer": false,
+        "points": 1,
+        "explanation": "FAUX : dans sa lettre à Helen, Yuan explique qu'elle n'a pas l'autorisation de le voir. Elle ne l'a plus vu depuis sept mois."
+      },
+      {
+        "id": "q10",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Fanny envoie à Chen un dessin de la muraille de Chine.",
+        "correct": true,
+        "answer": true,
+        "points": 1,
+        "explanation": "VRAI : sur la muraille, elle a écrit « Free Chen », c'est-à-dire « Libérez Chen »."
+      },
+      {
+        "id": "q11",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Selon Chen, la loi chinoise interdit les avortements forcés.",
+        "correct": true,
+        "answer": true,
+        "points": 1,
+        "explanation": "VRAI : Chen le dit au commissaire : « la loi interdit les avortements forcés ». Pourtant, certains agents ne la respectent pas."
+      },
+      {
+        "id": "q12",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Chen a pu étudier le droit à l'université.",
+        "correct": false,
+        "answer": false,
+        "points": 1,
+        "explanation": "FAUX : les aveugles n'étaient pas admis à l'université. Chen a appris le droit tout seul, avec l'aide de ses amis."
+      },
+      {
+        "id": "q13",
+        "section": "Vocabulaire en contexte",
+        "type": "mcq",
+        "text": "« Assieds-toi et décline ton identité ! » Que veut dire ici « décliner son identité » ?",
+        "options": [
+          "Refuser de répondre aux questions",
+          "Dire son nom, son âge et son métier",
+          "Se lever très vite",
+          "Baisser la tête pour montrer qu'on obéit"
+        ],
+        "correct": 1,
+        "answer": 1,
+        "points": 1,
+        "explanation": "Décliner son identité, c'est dire qui on est : son nom, son âge, son métier... Chen répond : « Je m'appelle Chen Guangcheng, j'ai trente-cinq ans. Je suis juriste. »"
+      },
+      {
+        "id": "q14",
+        "section": "Vocabulaire en contexte",
+        "type": "mcq",
+        "text": "« Ils croient pouvoir nous apitoyer, en pleurant toutes les larmes de leur corps. » Que veut dire « apitoyer » ?",
+        "options": [
+          "Mettre en colère",
+          "Faire très peur",
+          "Faire rire aux éclats",
+          "Faire pitié"
+        ],
+        "correct": 3,
+        "answer": 3,
+        "points": 1,
+        "explanation": "Apitoyer quelqu'un, c'est le toucher pour qu'il ait pitié. Les familles pleurent et montrent leurs bébés, mais les agents restent sans pitié."
+      },
+      {
+        "id": "q15",
+        "section": "Vocabulaire en contexte",
+        "type": "mcq",
+        "text": "« Au début, on a essayé de m'amadouer. » Que veut dire « amadouer » ?",
+        "options": [
+          "Convaincre en douceur",
+          "Donner une amende",
+          "Enfermer dans une pièce",
+          "Gronder très fort"
+        ],
+        "correct": 0,
+        "answer": 0,
+        "points": 1,
+        "explanation": "Amadouer quelqu'un, c'est essayer de le faire céder avec des paroles douces. Une infirmière essaie d'abord d'obtenir l'accord de Linia."
+      },
+      {
+        "id": "q16",
+        "section": "Compréhension globale",
+        "type": "synthesis",
+        "text": "Quel résumé correspond le mieux à l'histoire ?",
+        "options": [
+          "Chen, un avocat chinois aveugle, aide les agents du contrôle des naissances à faire respecter la loi dans les campagnes. Les femmes du village se révoltent et le font arrêter par la police. Sa femme Yuan demande alors l'aide d'Amnesty International, qui obtient très vite sa libération. Pour fêter cela, Fanny lui écrit une lettre depuis la Belgique.",
+          "Chen, un avocat chinois aveugle, défend les femmes des campagnes que les agents du contrôle des naissances forcent à avorter. Les autorités le surveillent, puis l'arrêtent et l'envoient en prison. Effrayée par les menaces, sa femme Yuan décide de se taire, et personne à l'étranger n'entend parler de lui. Seule Fanny, une petite fille de son village, lui écrit une lettre pour lui redonner espoir.",
+          "Chen, un avocat chinois aveugle, défend les femmes des campagnes que les agents du contrôle des naissances forcent à avorter. Les autorités le surveillent, puis l'arrêtent et l'envoient en prison. Sa femme Yuan continue le combat malgré les menaces, et Amnesty International fait connaître son histoire dans le monde entier. Des enfants comme Fanny lui écrivent pour lui redonner espoir."
+        ],
+        "correct": 2,
+        "answer": 2,
+        "points": 1,
+        "explanation": "Seul le résumé C est correct. Chen défend les femmes victimes d'avortements forcés et finit en prison. Yuan continue malgré les menaces, Amnesty fait connaître son histoire, et Fanny, une élève belge, lui écrit. À la fin du livre, Chen est toujours en prison."
+      }
+    ]
+  },
+  {
+    "id": "destin_etoile",
+    "title": "Destin étoilé",
+    "series": "Récit Express",
+    "totalPoints": 16,
+    "questions": [
+      {
+        "id": "q1",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quel est le pari entre Juliette et Sandra, au début de l'histoire ?",
+        "options": [
+          "Sandra parie que Juliette aura une bonne note en maths",
+          "Sandra parie une place de cinéma qu'elle aura le rôle",
+          "Juliette parie qu'elle ne deviendra jamais une star",
+          "Juliette parie un tee-shirt que Noémie aura le rôle"
+        ],
+        "correct": 2,
+        "answer": 2,
+        "points": 1,
+        "explanation": "Juliette est sûre de ne jamais devenir une star. Elle parie avec Sandra le plus beau tee-shirt : un tee-shirt à paillettes."
+      },
+      {
+        "id": "q2",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Pourquoi Juliette aime-t-elle le théâtre mais pas jouer devant une caméra ?",
+        "options": [
+          "Elle oublie toujours son texte devant une caméra",
+          "Son papa lui interdit de passer à la télévision",
+          "Elle joue pour le public ; la caméra la bloque",
+          "Les projecteurs lui font mal aux yeux"
+        ],
+        "correct": 2,
+        "answer": 2,
+        "points": 1,
+        "explanation": "Sur scène, Juliette regarde quelqu'un dans la salle et joue pour lui. Devant la caméra de son papa, elle trouve cela « glacial » et n'arrive plus à être naturelle."
+      },
+      {
+        "id": "q3",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Pourquoi Sandra est-elle si déçue après son passage au casting ?",
+        "options": [
+          "Elle est tombée devant toute l'équipe du film",
+          "La directrice de casting s'est moquée de sa voix",
+          "Elle a oublié tout le texte qu'elle devait réciter",
+          "On lui a demandé de rire puis de pleurer, et elle n'y est pas arrivée"
+        ],
+        "correct": 3,
+        "answer": 3,
+        "points": 1,
+        "explanation": "On ne lui a même pas fait réciter son texte. On lui a seulement demandé de rire, puis de pleurer, et elle n'a pas réussi."
+      },
+      {
+        "id": "q4",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Pourquoi monsieur Tabouret reste-t-il si calme pendant le chahut dans le bus ?",
+        "options": [
+          "Il écoute de la musique avec un casque sur les oreilles",
+          "Il s'est mis des bouchons dans les oreilles",
+          "Il dort profondément depuis le départ",
+          "Il est assis tout au fond du bus"
+        ],
+        "correct": 1,
+        "answer": 1,
+        "points": 1,
+        "explanation": "Ariel joue de la guitare, Diego fait la batterie et Sandra crie. Monsieur Tabouret ne bronche pas : Sandra a vu qu'il s'était mis des bouchons dans les oreilles !"
+      },
+      {
+        "id": "q5",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Que dit Noémie à Juliette pour se moquer d'elle dans le bus ?",
+        "options": [
+          "Qu'elle est trop timide pour faire du théâtre",
+          "Qu'elle aura encore une très mauvaise note en maths",
+          "Qu'elle la verrait dans une pub pour le camembert",
+          "Que Sandra n'est pas vraiment son amie"
+        ],
+        "correct": 2,
+        "answer": 2,
+        "points": 1,
+        "explanation": "« Juliette, je te verrais bien dans une pub pour le camembert ! » Blessée, Juliette colle son nez contre la vitre. Pour Sandra, Noémie a « du venin » dans la bouche."
+      },
+      {
+        "id": "q6",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Pourquoi Juliette s'évanouit-elle dans la cage de fer ?",
+        "options": [
+          "Elle croit voir un fantôme",
+          "Elle a très faim et très soif",
+          "Une chauve-souris lui vole dans les cheveux",
+          "Un garde la menace avec son épée"
+        ],
+        "correct": 0,
+        "answer": 0,
+        "points": 1,
+        "explanation": "Juliette tire sur la manche d'un prisonnier : il n'a ni visage ni corps. Elle croit voir un fantôme et tombe dans les pommes. En réalité, c'étaient des mannequins en bois habillés."
+      },
+      {
+        "id": "q7",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Pourquoi Sylvie, la réalisatrice, demande-t-elle à Juliette de jouer la mendiante ?",
+        "options": [
+          "Élisabeth oublie son texte et s'enfuit en larmes",
+          "Élisabeth est rentrée chez elle, malade",
+          "Juliette a demandé à jouer à la place d'Élisabeth",
+          "Élisabeth s'est fait mal à la cheville"
+        ],
+        "correct": 0,
+        "answer": 0,
+        "points": 1,
+        "explanation": "Élisabeth bégaie et oublie son texte deux fois de suite, puis s'enfuit en larmes. Il ne reste qu'un quart d'heure : Sylvie demande à Juliette, qui a entendu le texte, de le dire."
+      },
+      {
+        "id": "q8",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quelle nouvelle déçoit Noémie et les autres filles, le lendemain matin ?",
+        "options": [
+          "Le film sera tourné dans une autre école",
+          "La production ne prend aucune fille de l'école",
+          "Le casting est repoussé à l'année scolaire suivante",
+          "Le tournage du film est annulé"
+        ],
+        "correct": 1,
+        "answer": 1,
+        "points": 1,
+        "explanation": "« Ils ne prennent personne. » Noémie, qui était sûre d'avoir le rôle, pleure pour la première fois devant les autres."
+      },
+      {
+        "id": "q9",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Dans le bus du retour, Juliette n'ose pas raconter qu'elle a joué dans un film.",
+        "correct": true,
+        "answer": true,
+        "points": 1,
+        "explanation": "VRAI : elle a peur que personne ne la croie. Elle dit seulement qu'elle s'est perdue dans les souterrains."
+      },
+      {
+        "id": "q10",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Juliette retient facilement les paroles qu'elle entend.",
+        "correct": true,
+        "answer": true,
+        "points": 1,
+        "explanation": "VRAI : elle retient facilement les paroles des chansons. C'est ainsi qu'elle a pu redire le texte d'Élisabeth."
+      },
+      {
+        "id": "q11",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Juliette s'est présentée au casting de l'école.",
+        "correct": false,
+        "answer": false,
+        "points": 1,
+        "explanation": "FAUX : elle n'a pas osé. Elle est seulement venue pour soutenir Sandra."
+      },
+      {
+        "id": "q12",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "À la fin, Sylvie propose à Juliette de jouer dans les prochains épisodes de Dame Blandine.",
+        "correct": true,
+        "answer": true,
+        "points": 1,
+        "explanation": "VRAI : Sylvie vient à l'école pour le lui annoncer. Juliette a donc perdu son pari et devra offrir un tee-shirt à paillettes à Sandra !"
+      },
+      {
+        "id": "q13",
+        "section": "Vocabulaire en contexte",
+        "type": "mcq",
+        "text": "« Le silence se fait soudain. La tension est palpable. » Que veut dire « palpable » ?",
+        "options": [
+          "Si forte qu'on croirait pouvoir la toucher",
+          "Inventée par quelqu'un",
+          "Que personne ne remarque",
+          "Très douce et agréable"
+        ],
+        "correct": 0,
+        "answer": 0,
+        "points": 1,
+        "explanation": "Palpable vient de « palper », toucher. La tension est si forte qu'on a l'impression de pouvoir la toucher : tout le monde attend le résultat du casting."
+      },
+      {
+        "id": "q14",
+        "section": "Vocabulaire en contexte",
+        "type": "mcq",
+        "text": "« Je m'aperçois que j'ai pas mal de lacunes. » Que sont des « lacunes » ?",
+        "options": [
+          "Des livres très anciens",
+          "Des félicitations du professeur",
+          "Des exercices très faciles",
+          "Des choses qu'on n'a pas comprises ou apprises"
+        ],
+        "correct": 3,
+        "answer": 3,
+        "points": 1,
+        "explanation": "Avoir des lacunes, c'est avoir des « trous » dans ce qu'on a appris. Depuis janvier, les notes de Juliette en maths ont baissé."
+      },
+      {
+        "id": "q15",
+        "section": "Vocabulaire en contexte",
+        "type": "mcq",
+        "text": "« Meurtrie, je colle mon nez contre la vitre. » Que veut dire ici « meurtrie » ?",
+        "options": [
+          "Morte de fatigue",
+          "Remplie de joie",
+          "Couverte de bleus",
+          "Blessée par une parole méchante"
+        ],
+        "correct": 3,
+        "answer": 3,
+        "points": 1,
+        "explanation": "Ici, Juliette n'est pas blessée au corps : la remarque de Noémie lui a fait mal au cœur."
+      },
+      {
+        "id": "q16",
+        "section": "Compréhension globale",
+        "type": "synthesis",
+        "text": "Quel résumé correspond le mieux à l'histoire ?",
+        "options": [
+          "Toutes les filles de l'école rêvent du casting d'un film, sauf Juliette, qui parie avec Sandra qu'elle ne deviendra jamais une star. Lors d'une visite de classe dans un château, elle se perd dans les souterrains et arrive sur le tournage de la série Dame Blandine. Elle y remplace une actrice qui a oublié son texte. Finalement, personne de l'école n'est pris au casting, mais la réalisatrice veut garder Juliette.",
+          "Toutes les filles de l'école rêvent du casting d'un film, sauf Juliette, qui parie avec Sandra qu'elle ne deviendra jamais une star. Lors d'une visite de classe dans un château, elle se perd dans les souterrains et arrive sur le tournage de la série Dame Blandine. Elle y remplace une actrice qui a oublié son texte. Au final, c'est Noémie qui est choisie au casting, et Juliette gagne donc son pari contre Sandra.",
+          "Toutes les filles de l'école rêvent du casting d'un film, et Juliette s'y présente en cachette pour battre Noémie. Lors d'une visite de classe dans un château, elle se perd dans les souterrains et arrive sur le tournage de la série Dame Blandine. Elle y prend la place de Sandra, qui a oublié son texte. Au final, la réalisatrice choisit Juliette pour le film tourné à l'école."
+        ],
+        "correct": 0,
+        "answer": 0,
+        "points": 1,
+        "explanation": "Seul le résumé A est correct. Juliette ne passe pas le casting. Perdue au château, elle remplace Élisabeth sur le tournage de Dame Blandine. Personne de l'école n'est pris au casting, mais Sylvie veut continuer avec Juliette : elle a perdu son pari !"
+      }
+    ]
+  },
+  {
+    "id": "aventure_detective_agonisant",
+    "title": "L'aventure du détective agonisant",
+    "series": "Récit Express",
+    "totalPoints": 16,
+    "questions": [
+      {
+        "id": "q1",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Pourquoi madame Hudson vient-elle chercher le docteur Watson ?",
+        "options": [
+          "Holmes semble mourant et n'a rien mangé depuis trois jours",
+          "La police est venue arrêter Holmes chez lui",
+          "Des voleurs ont fouillé l'appartement de Baker Street",
+          "Holmes a mis le feu à sa chambre pendant une expérience de chimie"
+        ],
+        "correct": 0,
+        "answer": 0,
+        "points": 1,
+        "explanation": "Holmes est au lit depuis trois jours, sans manger ni boire. Madame Hudson croit qu'il va mourir. Holmes a accepté un médecin, à condition que ce soit Watson."
+      },
+      {
+        "id": "q2",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Pourquoi Holmes interdit-il à Watson de s'approcher de son lit ?",
+        "options": [
+          "Il a peur que Watson renverse ses médicaments",
+          "Il dit avoir une maladie mortelle qui s'attrape en touchant",
+          "Il dit que Watson est un mauvais médecin",
+          "Il a honte d'être vu si maigre et si fatigué"
+        ],
+        "correct": 1,
+        "answer": 1,
+        "points": 1,
+        "explanation": "Holmes dit avoir attrapé une maladie de Sumatra, mortelle et contagieuse par le toucher. À la fin, on comprend la vraie raison : de près, Watson aurait vu que son pouls et sa température étaient normaux."
+      },
+      {
+        "id": "q3",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Qui est Culverton Smith ?",
+        "options": [
+          "Un inspecteur de Scotland Yard ami de Holmes",
+          "Le meilleur médecin de tous les hôpitaux de Londres",
+          "Le propriétaire de la maison de Baker Street",
+          "Un planteur qui connaît très bien cette maladie"
+        ],
+        "correct": 3,
+        "answer": 3,
+        "points": 1,
+        "explanation": "Ce n'est pas un médecin mais un planteur. Une épidémie dans sa plantation l'a poussé à étudier la maladie. Pour Holmes, il est le seul à pouvoir le sauver."
+      },
+      {
+        "id": "q4",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Que croit voir Watson dans le miroir, quand il annonce à Smith que Holmes est mourant ?",
+        "options": [
+          "Des larmes dans les yeux de Smith",
+          "L'inspecteur Morton qui le suit",
+          "Un homme caché derrière les rideaux",
+          "Un sourire méchant sur le visage de Smith"
+        ],
+        "correct": 3,
+        "answer": 3,
+        "points": 1,
+        "explanation": "Watson aurait juré voir un « sourire méchant, abominable ». Quand Smith se retourne, son visage est redevenu calme."
+      },
+      {
+        "id": "q5",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "De quoi Holmes soupçonnait-il Culverton Smith ?",
+        "options": [
+          "D'avoir volé de l'argent à des marins",
+          "D'avoir tué son neveu, Victor Savage",
+          "D'avoir cambriolé l'appartement de Holmes",
+          "D'avoir menti sur ses études de médecine"
+        ],
+        "correct": 1,
+        "answer": 1,
+        "points": 1,
+        "explanation": "Holmes pensait que Smith avait donné la maladie à son neveu, Victor Savage, pour un héritage. Smith le reconnaît devant Holmes, sans savoir que Watson écoute."
+      },
+      {
+        "id": "q6",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Comment Smith a-t-il voulu tuer Holmes ?",
+        "options": [
+          "Il a demandé à des marins de l'attaquer",
+          "Il a mis du poison dans son verre d'eau",
+          "Il lui a envoyé une boîte avec un ressort pointu",
+          "Il a mis le feu à toute la maison de Baker Street"
+        ],
+        "correct": 2,
+        "answer": 2,
+        "points": 1,
+        "explanation": "Smith a envoyé par la poste une boîte en ivoire. À l'ouverture, un ressort pointu pique la main et donne la maladie. Holmes, toujours méfiant avec les paquets, ne s'est pas fait piquer."
+      },
+      {
+        "id": "q7",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quel est le signal qui fait venir l'inspecteur Morton ?",
+        "options": [
+          "Watson frappe trois coups contre le mur",
+          "Madame Hudson ouvre la fenêtre de la chambre",
+          "Smith monte la lumière du gaz dans la chambre",
+          "Holmes sonne une petite cloche cachée sous son lit"
+        ],
+        "correct": 2,
+        "answer": 2,
+        "points": 1,
+        "explanation": "Holmes fait semblant de ne plus voir clair. Smith monte la lumière du gaz pour « mieux le regarder mourir ». C'est le signal convenu avec l'inspecteur Morton."
+      },
+      {
+        "id": "q8",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Comment Holmes a-t-il fait pour avoir l'air mourant ?",
+        "options": [
+          "Il a avalé un médicament qui rend malade",
+          "Il n'a rien mangé pendant trois jours et s'est maquillé",
+          "Il a demandé à Madame Hudson de mentir",
+          "Il s'est enfermé trois jours dans une cave froide"
+        ],
+        "correct": 1,
+        "answer": 1,
+        "points": 1,
+        "explanation": "Trois jours sans manger l'ont fait maigrir. Le reste, c'est du maquillage : de la vaseline, du rouge sur les joues, de la cire sur les lèvres... Et il disait des choses bizarres pour faire croire qu'il délirait."
+      },
+      {
+        "id": "q9",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Culverton Smith accepte tout de suite de recevoir Watson.",
+        "correct": false,
+        "answer": false,
+        "points": 1,
+        "explanation": "FAUX : Smith ne veut pas être dérangé. Watson doit entrer de force dans la pièce. Smith change d'attitude en entendant le nom de Holmes."
+      },
+      {
+        "id": "q10",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Holmes a expliqué son plan à Watson dès le début.",
+        "correct": false,
+        "answer": false,
+        "points": 1,
+        "explanation": "FAUX : Holmes ne lui a rien dit. Watson devait vraiment croire que son ami mourait, pour convaincre Smith de venir."
+      },
+      {
+        "id": "q11",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Pendant la visite de Smith, Watson est caché derrière la tête du lit.",
+        "correct": true,
+        "answer": true,
+        "points": 1,
+        "explanation": "VRAI : Holmes l'a caché là pour qu'il entende tout. Watson peut ainsi témoigner des aveux de Smith."
+      },
+      {
+        "id": "q12",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Holmes laisse Watson examiner tranquillement la petite boîte en ivoire.",
+        "correct": false,
+        "answer": false,
+        "points": 1,
+        "explanation": "FAUX : Holmes pousse un cri terrible et lui ordonne de la reposer. On apprend ensuite que c'est la boîte piégée envoyée par Smith."
+      },
+      {
+        "id": "q13",
+        "section": "Vocabulaire en contexte",
+        "type": "mcq",
+        "text": "« Quand j'entrai dans la chambre, il était étendu dans une sorte d'apathie complète. » Que veut dire « apathie » ?",
+        "options": [
+          "Un état où l'on ne réagit plus à rien",
+          "Une grande faim",
+          "Une grande colère",
+          "Une forte envie de rire"
+        ],
+        "correct": 0,
+        "answer": 0,
+        "points": 1,
+        "explanation": "Être dans l'apathie, c'est ne plus avoir d'énergie ni de réaction. Holmes reste immobile, comme éteint."
+      },
+      {
+        "id": "q14",
+        "section": "Vocabulaire en contexte",
+        "type": "mcq",
+        "text": "« Le visage décharné, épuisé, qui me regarda du lit, me glaça le sang. » Que veut dire « décharné » ?",
+        "options": [
+          "Très bronzé",
+          "Couvert de blessures",
+          "Très maigre",
+          "Tout rouge de colère"
+        ],
+        "correct": 2,
+        "answer": 2,
+        "points": 1,
+        "explanation": "Décharné, c'est si maigre qu'on voit presque les os. Holmes n'a rien mangé depuis trois jours."
+      },
+      {
+        "id": "q15",
+        "section": "Vocabulaire en contexte",
+        "type": "mcq",
+        "text": "« Connaissant sa nature vindicative, je savais qu'il viendrait contempler son chef-d'œuvre. » Que veut dire « vindicatif » ?",
+        "options": [
+          "Qui veut se venger",
+          "Qui aime aider les autres",
+          "Qui est très généreux",
+          "Qui est très timide"
+        ],
+        "correct": 0,
+        "answer": 0,
+        "points": 1,
+        "explanation": "Une personne vindicative ne pardonne pas et cherche à se venger. Holmes savait que Smith voudrait le voir mourir."
+      },
+      {
+        "id": "q16",
+        "section": "Compréhension globale",
+        "type": "synthesis",
+        "text": "Quel résumé correspond le mieux à l'histoire ?",
+        "options": [
+          "Madame Hudson croit que Sherlock Holmes va mourir d'une maladie contagieuse. Holmes envoie le docteur Watson chercher Culverton Smith, le seul qui pourrait le soigner. En réalité, Holmes fait semblant d'être malade pour piéger Smith, qui lui a envoyé une boîte piégée. Caché derrière le lit, Watson entend Smith avouer ses crimes, et l'inspecteur Morton l'arrête.",
+          "Madame Hudson croit que Sherlock Holmes va mourir d'une maladie contagieuse. Holmes envoie le docteur Watson chercher Culverton Smith, le seul qui pourrait le soigner. En réalité, Holmes fait semblant d'être malade pour piéger Smith, qui lui a envoyé une boîte piégée. Mais Smith devine la ruse : il emporte la boîte et s'enfuit avant l'arrivée de l'inspecteur Morton.",
+          "Madame Hudson croit que Sherlock Holmes va mourir d'une maladie contagieuse. Holmes envoie le docteur Watson chercher Culverton Smith, le seul qui pourrait le soigner. Smith arrive avec un remède et sauve Holmes, qui était vraiment très malade. Pour le remercier, Holmes l'invite à dîner avec Watson chez Simpson."
+        ],
+        "correct": 0,
+        "answer": 0,
+        "points": 1,
+        "explanation": "Seul le résumé A est correct. Holmes n'était pas malade : il a joué la comédie pour faire avouer Smith. Watson, caché, a tout entendu, et l'inspecteur Morton a arrêté Smith pour le meurtre de Victor Savage."
+      }
+    ]
+  },
+  {
+    "id": "la_voix",
+    "title": "La voix",
+    "series": "Récit Express",
+    "totalPoints": 16,
+    "questions": [
+      {
+        "id": "q1",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Pourquoi les parents de Thomas partent-ils en Bretagne ?",
+        "options": [
+          "Pour accompagner Valentin à un tournoi",
+          "Pour aider Annabelle, qui vient d'avoir un bébé",
+          "Pour se reposer quelques jours au bord de la mer",
+          "Pour réparer leur maison de vacances"
+        ],
+        "correct": 1,
+        "answer": 1,
+        "points": 1,
+        "explanation": "Annabelle, la grande sœur de Thomas, vient d'avoir une petite fille, Solène, avec un mois d'avance. Ses parents vont l'aider, car rien n'est prêt pour le bébé."
+      },
+      {
+        "id": "q2",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Que se passe-t-il d'étrange pour Thomas, seul à la maison ?",
+        "options": [
+          "Les objets changent de place dans la cuisine",
+          "Les portes claquent toutes seules la nuit",
+          "Une voix invisible lui parle et se moque de lui",
+          "Le téléphone sonne sans arrêt sans personne au bout"
+        ],
+        "correct": 2,
+        "answer": 2,
+        "points": 1,
+        "explanation": "D'abord, ses oreilles bourdonnent. Puis une voix lui parle clairement : elle commente tout ce qu'il fait et devine même ce qu'il pense."
+      },
+      {
+        "id": "q3",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Qui Thomas soupçonne-t-il d'abord d'être derrière cette voix ?",
+        "options": [
+          "Son petit frère Valentin",
+          "Ses copains César et Gaëtan",
+          "Sa professeure d'espagnol",
+          "Le voisin d'à côté"
+        ],
+        "correct": 0,
+        "answer": 0,
+        "points": 1,
+        "explanation": "Valentin parlait de monstres et voulait un appareil pour changer sa voix. Mais Thomas se rend compte qu'à sept ans, son frère ne pourrait pas monter une farce aussi compliquée."
+      },
+      {
+        "id": "q4",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Que se passe-t-il quand Thomas essaie d'enregistrer la voix ?",
+        "options": [
+          "Le lecteur MP3 tombe en panne",
+          "Il entend la voix de Valentin",
+          "La voix se met soudain à crier très fort",
+          "Son lecteur MP3 n'a rien enregistré"
+        ],
+        "correct": 3,
+        "answer": 3,
+        "points": 1,
+        "explanation": "Le lecteur MP3 reste muet, alors qu'il fonctionne très bien avec la voix de Thomas. Personne d'autre que lui ne semble entendre la voix."
+      },
+      {
+        "id": "q5",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Sur quel sujet Thomas et Ondine préparent-ils un exposé ?",
+        "options": [
+          "Les plantes de la forêt amazonienne",
+          "Les pyramides d'Égypte",
+          "La vie de l'écrivain Edgar Allan Poe",
+          "Le navigateur James Cook"
+        ],
+        "correct": 3,
+        "answer": 3,
+        "points": 1,
+        "explanation": "Dans leur groupe, Thomas et Ondine sont les seuls à travailler sérieusement sur James Cook, qui a exploré l'Océanie au XVIIIe siècle."
+      },
+      {
+        "id": "q6",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Pourquoi la voix appelle-t-elle Thomas au secours, le samedi midi ?",
+        "options": [
+          "Un rideau du salon a pris feu",
+          "Thomas a allumé le four sans voir la plante posée dessus",
+          "La pizza a pris feu dans le four",
+          "Le chat des voisins est enfermé dans la cave"
+        ],
+        "correct": 1,
+        "answer": 1,
+        "points": 1,
+        "explanation": "Thomas fait chauffer une pizza. Il ne voit pas que la plante est posée sur le four. La voix crie : « Je... grille ! » Il comprend alors que c'est la plante qui lui parle."
+      },
+      {
+        "id": "q7",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "D'où vient cette plante qui parle, l'Isphia Luniga ?",
+        "options": [
+          "La maman de Thomas l'a fabriquée pour un film",
+          "Elle a poussé à partir d'une graine magique",
+          "Des chercheurs l'ont créée dans un laboratoire",
+          "Un explorateur l'a rapportée d'une île lointaine"
+        ],
+        "correct": 2,
+        "answer": 2,
+        "points": 1,
+        "explanation": "Des chercheurs voulaient créer une plante capable de communiquer avec les humains, pour surveiller les maisons. L'expérience a raté, et ils l'ont vendue comme une simple plante verte."
+      },
+      {
+        "id": "q8",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Comment Thomas sauve-t-il la plante ?",
+        "options": [
+          "Il la refroidit avec un journal, l'arrose et mouille ses feuilles",
+          "Il coupe toutes ses feuilles brûlées",
+          "Il la plante dans le jardin, à l'ombre",
+          "Il la met dans le congélateur"
+        ],
+        "correct": 0,
+        "answer": 0,
+        "points": 1,
+        "explanation": "Il pose la plante au frais sur le plan de travail, l'évente avec un journal, l'arrose et humidifie ses feuilles. En un quart d'heure, elle est sauvée."
+      },
+      {
+        "id": "q9",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "À la fin, Ondine entend elle aussi la plante parler.",
+        "correct": true,
+        "answer": true,
+        "points": 1,
+        "explanation": "VRAI : Ondine a des bourdonnements, puis entend « Ah... L'amour ! ». Thomas comprend qu'elle est sensible comme lui."
+      },
+      {
+        "id": "q10",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Selon la plante, être très sensible est un défaut.",
+        "correct": false,
+        "answer": false,
+        "points": 1,
+        "explanation": "FAUX : pour la plante, ce n'est ni une honte ni une faiblesse. La sensibilité permet de profiter plus fort des beaux moments."
+      },
+      {
+        "id": "q11",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "César entend lui aussi la voix quand il vient jouer chez Thomas.",
+        "correct": false,
+        "answer": false,
+        "points": 1,
+        "explanation": "FAUX : César ne remarque rien. La voix dit même à Thomas : « Il ne me perçoit pas. »"
+      },
+      {
+        "id": "q12",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Thomas a insisté pour rester seul à la maison.",
+        "correct": true,
+        "answer": true,
+        "points": 1,
+        "explanation": "VRAI : il a assuré à sa maman qu'il se débrouillerait. Valentin, lui, est allé chez son copain Jordan."
+      },
+      {
+        "id": "q13",
+        "section": "Vocabulaire en contexte",
+        "type": "mcq",
+        "text": "« La voix ne se gênait pas pour lui lancer à tout propos ses remarques sarcastiques. » Que veut dire « sarcastique » ?",
+        "options": [
+          "Effrayant",
+          "Savant",
+          "Gentil",
+          "Moqueur"
+        ],
+        "correct": 3,
+        "answer": 3,
+        "points": 1,
+        "explanation": "Une remarque sarcastique se moque de quelqu'un. Par exemple, la voix dit : « Très tendance, tes chaussettes trouées ! »"
+      },
+      {
+        "id": "q14",
+        "section": "Vocabulaire en contexte",
+        "type": "mcq",
+        "text": "« Repoussant à plus tard les questions qui le taraudaient, il secourut la plante. » Que veut dire « tarauder » ?",
+        "options": [
+          "Faire rire",
+          "Endormir",
+          "Tracasser sans arrêt",
+          "Rassurer"
+        ],
+        "correct": 2,
+        "answer": 2,
+        "points": 1,
+        "explanation": "Une question qui taraude ne nous laisse pas tranquille : on y pense tout le temps. Thomas se demande comment une plante peut parler."
+      },
+      {
+        "id": "q15",
+        "section": "Vocabulaire en contexte",
+        "type": "mcq",
+        "text": "« En un quart d'heure, la plante fut complètement requinquée. » Que veut dire « requinqué » ?",
+        "options": [
+          "Changée de pot",
+          "En forme à nouveau",
+          "Complètement fanée",
+          "Coupée en morceaux"
+        ],
+        "correct": 1,
+        "answer": 1,
+        "points": 1,
+        "explanation": "Être requinqué, c'est avoir retrouvé ses forces. Grâce aux soins de Thomas, la plante se redresse et peut parler."
+      },
+      {
+        "id": "q16",
+        "section": "Compréhension globale",
+        "type": "synthesis",
+        "text": "Quel résumé correspond le mieux à l'histoire ?",
+        "options": [
+          "Pendant que ses parents aident sa sœur qui vient d'avoir un bébé, Thomas reste seul à la maison. Une voix invisible se met à lui parler et à se moquer de lui, et il est le seul à l'entendre. Le samedi, il découvre que c'est son petit frère Valentin qui lui fait une farce avec un appareil caché dans sa chambre. À la fin, son amie Ondine l'aide à se venger de lui.",
+          "Pendant que ses parents aident sa sœur qui vient d'avoir un bébé, Thomas reste seul à la maison. Une voix invisible se met à lui parler et à se moquer de lui, et tous ses copains l'entendent aussi. Le samedi, il découvre que c'est une plante, créée par des chercheurs, qui leur parle. À la fin, Thomas la rapporte à la jardinerie.",
+          "Pendant que ses parents aident sa sœur qui vient d'avoir un bébé, Thomas reste seul à la maison. Une voix invisible se met à lui parler et à se moquer de lui, et il est le seul à l'entendre. Le samedi, il découvre que c'est une plante, créée par des chercheurs, qui lui parle parce qu'il est très sensible. À la fin, son amie Ondine entend elle aussi la plante."
+        ],
+        "correct": 2,
+        "answer": 2,
+        "points": 1,
+        "explanation": "Seul le résumé C est correct. La voix est celle d'une plante, l'Isphia Luniga, qui ne parle qu'aux personnes très sensibles. Thomas la sauve du four brûlant, et Ondine l'entend à son tour."
+      }
+    ]
+  },
+  {
+    "id": "chateau_des_contes",
+    "title": "Le château des contes",
+    "series": "Récit Express",
+    "totalPoints": 16,
+    "questions": [
+      {
+        "id": "q1",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Pourquoi Nathan sort-il seul dans Gand, au milieu de la nuit ?",
+        "options": [
+          "Il cherche le vélo qu'on vient juste de lui voler",
+          "Il rejoint son ami Tim pour un concert",
+          "Il veut admirer les illuminations de Noël",
+          "Il va chercher des médicaments pour son papa"
+        ],
+        "correct": 3,
+        "answer": 3,
+        "points": 1,
+        "explanation": "Le docteur Van Damme est venu soigner papa. Nathan court à la pharmacie de garde avec l'ordonnance."
+      },
+      {
+        "id": "q2",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Que surprend Nathan devant la pâtisserie Bloch ?",
+        "options": [
+          "Des voleurs qui cassent la vitrine",
+          "Des jeunes qui peignent des croix gammées et des insultes contre les juifs",
+          "Des policiers qui arrêtent un cambrioleur",
+          "Le pâtissier qui jette des gâteaux dans l'Escaut"
+        ],
+        "correct": 1,
+        "answer": 1,
+        "points": 1,
+        "explanation": "Quatre jeunes, avec des bombes de peinture, écrivent des mots de haine contre les juifs. Ils attrapent Nathan, le jettent à terre et le menacent s'il parle."
+      },
+      {
+        "id": "q3",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Pourquoi Nathan ne raconte-t-il rien à personne ?",
+        "options": [
+          "Il n'a rien vu à cause du noir",
+          "Il croit avoir reconnu Klaas, le frère de son ami Tim, et on l'a menacé",
+          "Il a promis au pharmacien de garder le secret",
+          "Il a peur d'être puni pour être rentré en retard"
+        ],
+        "correct": 1,
+        "answer": 1,
+        "points": 1,
+        "explanation": "Un des jeunes s'est penché sur lui : Nathan croit que c'est Klaas. Les voyous lui ont dit : « Si tu parles, gare à toi ! »"
+      },
+      {
+        "id": "q4",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Comment Nathan est-il devenu l'ami de Tim ?",
+        "options": [
+          "Ils étaient assis côte à côte le premier jour d'école",
+          "Leurs papas travaillaient ensemble",
+          "Grâce à Bobbie, le chien de Tim, qui s'était sauvé",
+          "Ils jouaient dans le même club de football"
+        ],
+        "correct": 2,
+        "answer": 2,
+        "points": 1,
+        "explanation": "Bobbie courait entre les voitures. Nathan s'est couché sur le trottoir pour le retenir. Tim est arrivé pour reprendre son chien, et ils sont devenus amis."
+      },
+      {
+        "id": "q5",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Pourquoi le papa de Nathan parle-t-il d'un « château des contes » ?",
+        "options": [
+          "L'oncle Charles lui a raconté des légendes du château",
+          "Il a acheté un château près de Gand",
+          "Toute la famille lui a menti le même après-midi",
+          "Il veut écrire un livre de contes de fées"
+        ],
+        "correct": 2,
+        "answer": 2,
+        "points": 1,
+        "explanation": "Maman, Anne et Nathan ont inventé des excuses pour aller acheter son cadeau de Noël. Papa découvre leurs mensonges et crie : le château des contes, avec un N, plein d'histoires inventées !"
+      },
+      {
+        "id": "q6",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Pourquoi Nathan a-t-il encore plus peur après être allé au bureau de police ?",
+        "options": [
+          "Les voyous l'ont vu entrer et croient qu'il les a dénoncés",
+          "Klaas l'attend à la sortie du bureau",
+          "On l'accuse d'avoir volé un vélo",
+          "Le policier ne veut pas l'écouter"
+        ],
+        "correct": 0,
+        "answer": 0,
+        "points": 1,
+        "explanation": "Nathan venait seulement déclarer le vol de son vélo. Mais trois gars qui sortaient du bureau de police l'ont vu, et ils pensent qu'il a parlé d'eux."
+      },
+      {
+        "id": "q7",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Que se passe-t-il après le concert de Noël ?",
+        "options": [
+          "Els est attaquée dans une ruelle sombre",
+          "Nathan joue du violon devant toute l'école réunie",
+          "Tim se dispute avec son frère Klaas",
+          "Des voyous attaquent Nathan, et Klaas le défend"
+        ],
+        "correct": 3,
+        "answer": 3,
+        "points": 1,
+        "explanation": "Dans la ruelle du Diable, trois gars attrapent Nathan. Klaas arrive et se bat pour le défendre. Blessé, il est emmené à l'hôpital."
+      },
+      {
+        "id": "q8",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Qu'est-ce qui montre que ce n'était pas Klaas devant la pâtisserie ?",
+        "options": [
+          "Klaas porte toujours des lunettes, pas le voyou",
+          "Klaas habitait dans une autre ville",
+          "Klaas était à l'hôpital cette nuit-là",
+          "Klaas a les cheveux noirs, alors que le voyou est blond"
+        ],
+        "correct": 0,
+        "answer": 0,
+        "points": 1,
+        "explanation": "Nathan remarque enfin que Klaas porte toujours des lunettes. Cette nuit-là, Klaas était à une fête au Vooruit. Le voyou lui ressemblait, mais sans lunettes."
+      },
+      {
+        "id": "q9",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Au début, la maman de Nathan n'est pas contente de déménager à Gand.",
+        "correct": true,
+        "answer": true,
+        "points": 1,
+        "explanation": "VRAI : elle n'a pas l'air contente du tout. Elle s'inquiète surtout de la langue, car elle ne parle pas le néerlandais."
+      },
+      {
+        "id": "q10",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Nathan, sa maman et Anne achètent chacun une cravate pour le papa.",
+        "correct": true,
+        "answer": true,
+        "points": 1,
+        "explanation": "VRAI : trois cravates ! Ils rient très fort dans la rue, car papa ne met jamais de cravate."
+      },
+      {
+        "id": "q11",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Les garçons qui suivent Anne font partie de la bande des voyous.",
+        "correct": false,
+        "answer": false,
+        "points": 1,
+        "explanation": "FAUX : ce sont deux copains de classe de Klaas, qui voulaient le faire enrager."
+      },
+      {
+        "id": "q12",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "À la fin, Els propose à Nathan une promenade à vélo le long de la Lys.",
+        "correct": true,
+        "answer": true,
+        "points": 1,
+        "explanation": "VRAI : et sans Tim ! Pour Nathan, c'est son plus beau cadeau de Noël."
+      },
+      {
+        "id": "q13",
+        "section": "Vocabulaire en contexte",
+        "type": "mcq",
+        "text": "« Son visage buriné et sévère est lié à tant de merveilleuses excursions ! » Que veut dire « buriné » ?",
+        "options": [
+          "Caché par une grande barbe",
+          "Maquillé de couleurs vives",
+          "Tout lisse, comme le visage d'un bébé",
+          "Ridé par le temps et le grand air"
+        ],
+        "correct": 3,
+        "answer": 3,
+        "points": 1,
+        "explanation": "Un visage buriné a des traits marqués et des rides, comme s'ils avaient été gravés. C'est le visage du vieil oncle Charles."
+      },
+      {
+        "id": "q14",
+        "section": "Vocabulaire en contexte",
+        "type": "mcq",
+        "text": "« Je mentais avec un aplomb dont je ne me serais jamais cru capable. » Que veut dire ici « avec aplomb » ?",
+        "options": [
+          "Avec beaucoup d'assurance",
+          "Très lentement",
+          "En pleurant",
+          "En bégayant et en rougissant"
+        ],
+        "correct": 0,
+        "answer": 0,
+        "points": 1,
+        "explanation": "Mentir avec aplomb, c'est mentir avec calme et assurance, sans montrer qu'on ment. Nathan est lui-même étonné."
+      },
+      {
+        "id": "q15",
+        "section": "Vocabulaire en contexte",
+        "type": "mcq",
+        "text": "« Klaas a quelques côtes froissées et de vilaines contusions. » Que sont des « contusions » ?",
+        "options": [
+          "Des coupures",
+          "Des brûlures",
+          "Des bleus causés par des coups",
+          "Des os cassés"
+        ],
+        "correct": 2,
+        "answer": 2,
+        "points": 1,
+        "explanation": "Une contusion est une blessure faite par un coup, sans que la peau soit coupée : un bleu. Klaas a reçu beaucoup de coups."
+      },
+      {
+        "id": "q16",
+        "section": "Compréhension globale",
+        "type": "synthesis",
+        "text": "Quel résumé correspond le mieux à l'histoire ?",
+        "options": [
+          "Une nuit, à Gand, Nathan surprend des voyous qui écrivent des insultes contre les juifs sur une pâtisserie. Il croit reconnaître parmi eux Klaas, le grand frère de son ami Tim, et il n'ose rien dire, malgré sa peur. Le soir du concert de Noël, Klaas le défend contre ces voyous et il est blessé. À l'hôpital, Nathan comprend qu'il s'était trompé : le voyou ressemblait à Klaas, mais ce n'était pas lui.",
+          "Une nuit, à Gand, Nathan surprend des voyous qui écrivent des insultes contre les juifs sur une pâtisserie. Il croit reconnaître parmi eux Klaas, le grand frère de son ami Tim, et il n'ose rien dire, malgré sa peur. Le soir du concert de Noël, Klaas et ses copains l'attaquent, mais Tim le défend. À l'hôpital, Klaas avoue tout et demande pardon à Nathan.",
+          "Une nuit, à Gand, Nathan surprend des voyous qui écrivent des insultes contre les juifs sur une pâtisserie. Il croit reconnaître parmi eux Klaas, le grand frère de son ami Tim, et il va tout raconter à la police le lendemain. Klaas est arrêté par la police et doit arrêter ses études à l'université. Tim est furieux et ne veut plus jamais parler à Nathan."
+        ],
+        "correct": 0,
+        "answer": 0,
+        "points": 1,
+        "explanation": "Seul le résumé A est correct. Nathan se trompait : Klaas était à une fête cette nuit-là. Il le défend même contre les voyous, qui sont arrêtés. Nathan retrouve son ami et peut enfin profiter de Noël avec Els."
+      }
+    ]
+  },
+  {
+    "id": "passeur_de_memoire",
+    "title": "Le passeur de mémoire",
+    "series": "Récit Express",
+    "totalPoints": 16,
+    "questions": [
+      {
+        "id": "q1",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Pourquoi Zaccharie est-il revenu vivre dans son village africain ?",
+        "options": [
+          "Il veut assister à l'enterrement de Marna Salomé",
+          "L'oncle qui l'élevait en France est mort",
+          "Il a gagné un voyage en Afrique",
+          "Ses parents lui ont demandé de rentrer"
+        ],
+        "correct": 1,
+        "answer": 1,
+        "points": 1,
+        "explanation": "Zaccharie a grandi en France chez un très vieil oncle. À la mort de cet oncle, il a dû rentrer dans son village natal. Il habite chez son ami Léopold."
+      },
+      {
+        "id": "q2",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Comment Zaccharie se comporte-t-il avec le vieux Fetnat, au début de l'histoire ?",
+        "options": [
+          "Il se moque de son allure et de son nom",
+          "Il lui demande de lui raconter toute sa vie",
+          "Il a très peur de lui",
+          "Il l'aide à porter ses courses"
+        ],
+        "correct": 0,
+        "answer": 0,
+        "points": 1,
+        "explanation": "Zaccharie trouve que le vieil homme a une drôle de « dégaine » et un drôle de nom. Léopold lui reproche de parler ainsi des anciens : « C'est pas bien ! »"
+      },
+      {
+        "id": "q3",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Pourquoi le vieil homme s'appelle-t-il Fetnat ?",
+        "options": [
+          "C'est le prénom de son grand-père",
+          "Ce nom veut dire « courageux » dans sa langue",
+          "Il est né le 14 juillet, le jour de la Fête nationale",
+          "C'est le nom d'un grand guerrier de la tribu"
+        ],
+        "correct": 2,
+        "answer": 2,
+        "points": 1,
+        "explanation": "Ses parents lui ont donné le nom inscrit au calendrier ce jour-là : « Fét. nat. ». Ils ne savaient pas que cela voulait dire « Fête nationale » !"
+      },
+      {
+        "id": "q4",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Qui est Salimbo ?",
+        "options": [
+          "Un conteur qui raconte la vie de ceux qui sont morts",
+          "Le chef du village, qui a remplacé Mamadou",
+          "Le père de Léopold",
+          "Le sorcier qui soigne les malades du village"
+        ],
+        "correct": 0,
+        "answer": 0,
+        "points": 1,
+        "explanation": "Quand quelqu'un meurt, Salimbo vient raconter sa vie à toute la tribu, autour du feu. On l'appelle « le passeur de mémoire »."
+      },
+      {
+        "id": "q5",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Comment Fetnat a-t-il sauvé la jeune Salomé ?",
+        "options": [
+          "Il a combattu seul deux lionnes devant sa case",
+          "Il a chassé des voleurs qui l'attaquaient dans la savane",
+          "Il l'a sortie d'un fleuve en crue",
+          "Il l'a guérie d'une très forte fièvre"
+        ],
+        "correct": 0,
+        "answer": 0,
+        "points": 1,
+        "explanation": "Salomé dormait dans sa case pendant que des lionnes s'approchaient. Fetnat a tué la première avec sa sagaie, la deuxième à mains nues. Il en garde quatre griffures sur la poitrine."
+      },
+      {
+        "id": "q6",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Pourquoi Fetnat doit-il quitter le village ?",
+        "options": [
+          "Salomé ne veut plus jamais le revoir",
+          "Il part chasser les lions dans la savane",
+          "Il veut faire de grandes études dans le Nord",
+          "Mamadou, le fils du chef, le fait bannir"
+        ],
+        "correct": 3,
+        "answer": 3,
+        "points": 1,
+        "explanation": "Salomé était promise à Mamadou. Quand elle revient enceinte de Fetnat, Mamadou le fait bannir : il ne doit plus revenir au village, « sous peine de mort »."
+      },
+      {
+        "id": "q7",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Qu'est devenu Youssef, le fils de Salomé et de Fetnat ?",
+        "options": [
+          "Il est parti vivre avec son père, loin du village",
+          "Il est devenu un célèbre acteur à Hollywood",
+          "Il est devenu le chef du village",
+          "Il a été envoyé faire des études dans une ville du Nord"
+        ],
+        "correct": 3,
+        "answer": 3,
+        "points": 1,
+        "explanation": "Mamadou voulait effacer la trace de sa honte : il a envoyé le petit Youssef étudier dans le Nord. Youssef y a épousé Yasmina."
+      },
+      {
+        "id": "q8",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Que découvre Zaccharie à la fin du récit de Salimbo ?",
+        "options": [
+          "Salimbo est son oncle",
+          "Mamadou était son vrai père",
+          "Fetnat est son grand-père",
+          "Léopold est son frère"
+        ],
+        "correct": 2,
+        "answer": 2,
+        "points": 1,
+        "explanation": "Youssef et Yasmina étaient les parents de Zaccharie. Le vieil homme dont il se moquait le matin même est donc son grand-père !"
+      },
+      {
+        "id": "q9",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "À la fin, Zaccharie laisse Fetnat rentrer seul chez lui.",
+        "correct": false,
+        "answer": false,
+        "points": 1,
+        "explanation": "FAUX : Zaccharie pose ses mains sur ses épaules et lui dit : « Viens, grand-père, on rentre à la maison. »"
+      },
+      {
+        "id": "q10",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Salomé a épousé Fetnat.",
+        "correct": false,
+        "answer": false,
+        "points": 1,
+        "explanation": "FAUX : pour obéir à ses parents, Salomé a épousé Mamadou. Ils ont eu quinze enfants, mais elle n'a plus jamais souri."
+      },
+      {
+        "id": "q11",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Zaccharie a grandi en France.",
+        "correct": true,
+        "answer": true,
+        "points": 1,
+        "explanation": "VRAI : ses parents sont morts quand il avait quelques mois, et Mamadou ne voulait pas de lui au village. Il a été envoyé en France."
+      },
+      {
+        "id": "q12",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Depuis l'enfance, Salomé était promise à Fetnat.",
+        "correct": false,
+        "answer": false,
+        "points": 1,
+        "explanation": "FAUX : Salomé était promise à Mamadou, le fils du chef. C'est pour cela que son amour pour Fetnat était impossible."
+      },
+      {
+        "id": "q13",
+        "section": "Vocabulaire en contexte",
+        "type": "mcq",
+        "text": "« Le spectacle de cet émouvant vieillard était cocasse tout autant qu'attristant. » Que veut dire « cocasse » ?",
+        "options": [
+          "Ennuyeux",
+          "Drôle",
+          "Effrayant",
+          "Magnifique"
+        ],
+        "correct": 1,
+        "answer": 1,
+        "points": 1,
+        "explanation": "Cocasse veut dire drôle, un peu bizarre. Zaccharie trouve le vieil homme à la fois amusant et triste à voir."
+      },
+      {
+        "id": "q14",
+        "section": "Vocabulaire en contexte",
+        "type": "mcq",
+        "text": "« Au cœur d'un profond dilemme, Salomé refusait de vivre loin de sa famille. » Qu'est-ce qu'un « dilemme » ?",
+        "options": [
+          "Une grande fête du village",
+          "Un choix très difficile entre deux solutions",
+          "Une dispute entre deux familles",
+          "Un très long voyage"
+        ],
+        "correct": 1,
+        "answer": 1,
+        "points": 1,
+        "explanation": "Salomé est dans un dilemme : partir avec Fetnat, qu'elle aime, ou rester avec sa famille. Les deux choix la rendent malheureuse."
+      },
+      {
+        "id": "q15",
+        "section": "Vocabulaire en contexte",
+        "type": "mcq",
+        "text": "« Les balafres, très nettes et légèrement boursouflées, impressionnèrent l'adolescent. » Que sont des « balafres » ?",
+        "options": [
+          "Des tatouages",
+          "Des peintures sur le corps",
+          "Des colliers de perles",
+          "De longues cicatrices"
+        ],
+        "correct": 3,
+        "answer": 3,
+        "points": 1,
+        "explanation": "Une balafre est une longue cicatrice laissée par une blessure. Ce sont les griffures de la lionne sur la poitrine de Fetnat."
+      },
+      {
+        "id": "q16",
+        "section": "Compréhension globale",
+        "type": "synthesis",
+        "text": "Quel résumé correspond le mieux à l'histoire ?",
+        "options": [
+          "Zaccharie, un adolescent qui a grandi en France, revient vivre dans son village africain, mais il s'y ennuie et se moque des anciens, comme le vieux Fetnat. À la mort de Marna Salomé, le conteur Salimbo raconte sa vie : Fetnat l'avait sauvée de deux lionnes et l'aimait, mais il a dû quitter le village. Zaccharie découvre alors que Fetnat est le père de Léopold, et il repart vivre en France.",
+          "Zaccharie, un adolescent qui a grandi en France, revient vivre dans son village africain, mais il s'y ennuie et se moque des anciens, comme le vieux Fetnat. À la mort de Marna Salomé, le conteur Salimbo raconte sa vie : Fetnat l'avait sauvée de deux lionnes et l'aimait, mais il a dû quitter le village. Zaccharie découvre alors que Fetnat est son grand-père, et il le ramène à la maison.",
+          "Zaccharie, un adolescent qui a grandi en France, revient vivre dans son village africain, où il adore écouter les histoires des anciens, comme le vieux Fetnat. À la mort de Marna Salomé, le conteur Salimbo raconte sa vie : Fetnat l'avait sauvée de deux lionnes, puis l'avait épousée. Zaccharie découvre alors que Mamadou, l'ancien chef, est son grand-père."
+        ],
+        "correct": 1,
+        "answer": 1,
+        "points": 1,
+        "explanation": "Seul le résumé B est correct. Zaccharie méprise d'abord le village et Fetnat. Grâce au récit de Salimbo, il apprend que Fetnat est le père de Youssef, donc son grand-père, et il retrouve ses racines."
+      }
+    ]
+  },
+  {
+    "id": "vergers_du_desordre",
+    "title": "Les vergers du désordre",
+    "series": "Récit Express",
+    "totalPoints": 16,
+    "questions": [
+      {
+        "id": "q1",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Au début de l'histoire, d'où viennent vraiment Jo et Georges ?",
+        "options": [
+          "Ils ont quitté un cirque de Paris",
+          "Ils travaillaient comme menuisiers à Digne, en Provence",
+          "Ils arrivent de leur ferme en Provence",
+          "Ils se sont évadés de la prison de Fresnes"
+        ],
+        "correct": 3,
+        "answer": 3,
+        "points": 1,
+        "explanation": "Ils se sont évadés de la prison de Fresnes. Au patron, Jo raconte un mensonge : ils seraient des menuisiers de Digne, venus de Provence."
+      },
+      {
+        "id": "q2",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Comment s'appelle la vieille grange où dorment les cueilleurs ?",
+        "options": [
+          "L'Hôtel",
+          "Le Château",
+          "Le Paradis",
+          "Le Palace"
+        ],
+        "correct": 3,
+        "answer": 3,
+        "points": 1,
+        "explanation": "Le patron l'appelle « le Palace ». Mais c'est une vieille grange au bois pourri, où la pluie passe par le toit !"
+      },
+      {
+        "id": "q3",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Pourquoi Jo est-il venu dans cette ferme de Touraine ?",
+        "options": [
+          "Pour récupérer l'argent d'un vol qu'il a caché dans le coin",
+          "Pour se venger du patron de la ferme",
+          "Pour gagner les primes de la cueillette des pommes",
+          "Pour retrouver un frère qu'il n'a pas vu depuis très longtemps"
+        ],
+        "correct": 0,
+        "answer": 0,
+        "points": 1,
+        "explanation": "Jo a été arrêté dans la région après un hold-up à Paris, et la police n'a jamais retrouvé l'argent. Il vient « récupérer ce qui est à lui »."
+      },
+      {
+        "id": "q4",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Comment faut-il cueillir une pomme, selon Hans ?",
+        "options": [
+          "En coupant la queue avec des ciseaux",
+          "En la faisant tourner vers le haut pour garder la queue",
+          "En secouant l'arbre pour faire tomber les fruits",
+          "En tirant d'un coup sec vers le bas"
+        ],
+        "correct": 1,
+        "answer": 1,
+        "points": 1,
+        "explanation": "Si on tire, la queue reste sur l'arbre et les acheteurs n'en veulent plus. Il faut faire pivoter la pomme vers le haut, d'un coup de poignet."
+      },
+      {
+        "id": "q5",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Pourquoi Jo achète-t-il un revolver à Tours ?",
+        "options": [
+          "Il a l'impression d'être suivi depuis la première nuit",
+          "Il collectionne les vieilles armes",
+          "Il veut chasser les corneilles qui abîment tous les vergers",
+          "Il veut tirer sur les nuages de grêle"
+        ],
+        "correct": 0,
+        "answer": 0,
+        "points": 1,
+        "explanation": "La première nuit, en se promenant dans les vergers, Jo a entendu des bruits derrière lui. Il pense qu'on l'a reconnu malgré sa barbe."
+      },
+      {
+        "id": "q6",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Pourquoi Hans demande-t-il à Georges le vrai nom de Jo ?",
+        "options": [
+          "Il pense que Jo est un policier",
+          "Il doit l'écrire sur la liste des primes de la semaine",
+          "Il veut que Jo devienne chef d'équipe",
+          "Il a reconnu Jo et veut prendre l'argent volé"
+        ],
+        "correct": 3,
+        "answer": 3,
+        "points": 1,
+        "explanation": "Hans a reconnu Jo Balako. Il rêve de l'argent jamais retrouvé et convainc Philippe, le contremaître, de l'aider à le prendre."
+      },
+      {
+        "id": "q7",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Que raconte Hans quand Jo le surprend dans les vergers, la nuit ?",
+        "options": [
+          "Qu'il cherche une vache échappée de l'étable",
+          "Qu'il vient chercher des cartons pour protéger les pommes de la lune",
+          "Qu'il rentre d'une fête au village voisin",
+          "Qu'il surveille des voleurs de pommes"
+        ],
+        "correct": 1,
+        "answer": 1,
+        "points": 1,
+        "explanation": "Hans dit que le changement de lune fait rosir les pommes non couvertes. Jo trouve l'histoire bizarre et décide de la vérifier."
+      },
+      {
+        "id": "q8",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quelle mauvaise surprise attend Jo à la fin de l'histoire ?",
+        "options": [
+          "Georges a gardé l'argent pour lui seul",
+          "Georges s'est mis d'accord avec Hans",
+          "Georges est en réalité un policier",
+          "Georges est le fils du patron de la ferme"
+        ],
+        "correct": 2,
+        "answer": 2,
+        "points": 1,
+        "explanation": "« Je ne m'appelle pas Georges ! » Le colosse était un policier, qui montre aux autres policiers où se trouve l'argent. Jo est arrêté."
+      },
+      {
+        "id": "q9",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Philippe confirme à Jo qu'il y a un changement de lune cette nuit-là.",
+        "correct": false,
+        "answer": false,
+        "points": 1,
+        "explanation": "FAUX : Philippe dit qu'il n'y aura pas de changement de lune avant vendredi. Jo comprend que Hans a menti et qu'ils sont repérés."
+      },
+      {
+        "id": "q10",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Dans le brouillard, Jo assomme le patron en lui lançant une pomme.",
+        "correct": true,
+        "answer": true,
+        "points": 1,
+        "explanation": "VRAI : le patron menace Georges avec un fusil. Jo lance une pomme qui le frappe à la tête."
+      },
+      {
+        "id": "q11",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "C'est Jo qui tire sur le patron dans le brouillard.",
+        "correct": false,
+        "answer": false,
+        "points": 1,
+        "explanation": "FAUX : c'est Philippe qui tire, affolé : il croit voir revenir Jo et Georges."
+      },
+      {
+        "id": "q12",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "L'argent était caché sous des pierres, au pied d'un arbre mort.",
+        "correct": true,
+        "answer": true,
+        "points": 1,
+        "explanation": "VRAI : Jo le cache dans des broussailles, au fond d'un petit ravin, sous les pierres entassées au pied d'un arbre mort."
+      },
+      {
+        "id": "q13",
+        "section": "Vocabulaire en contexte",
+        "type": "mcq",
+        "text": "« Affolées par le passage de ces deux intrus mal rasés et dépenaillés, quelques corneilles s'envolèrent. » Que veut dire « dépenaillés » ?",
+        "options": [
+          "Très fatigués",
+          "Très bien habillés",
+          "Habillés de vêtements sales et déchirés",
+          "Armés de fusils"
+        ],
+        "correct": 2,
+        "answer": 2,
+        "points": 1,
+        "explanation": "Être dépenaillé, c'est porter des vêtements en mauvais état. Jo et Georges ont marché longtemps après leur évasion."
+      },
+      {
+        "id": "q14",
+        "section": "Vocabulaire en contexte",
+        "type": "mcq",
+        "text": "« De nombreux cueilleurs abandonnaient leur poste. Il risquait d'y avoir un vilain grabuge dans peu de temps. » Qu'est-ce que le « grabuge » ?",
+        "options": [
+          "Une très bonne récolte",
+          "Une bagarre avec beaucoup de désordre",
+          "Un violent orage",
+          "Une grande fête"
+        ],
+        "correct": 1,
+        "answer": 1,
+        "points": 1,
+        "explanation": "Le grabuge, c'est une dispute ou une bagarre qui fait du bruit et du désordre. Jo sent que les choses vont mal tourner."
+      },
+      {
+        "id": "q15",
+        "section": "Vocabulaire en contexte",
+        "type": "mcq",
+        "text": "« Les deux policiers poussèrent Jo dans le panier à salade. » Qu'est-ce que le « panier à salade » ?",
+        "options": [
+          "Une ambulance",
+          "Un grand panier de légumes",
+          "Le fourgon de la police",
+          "La remorque d'un tracteur"
+        ],
+        "correct": 2,
+        "answer": 2,
+        "points": 1,
+        "explanation": "Le « panier à salade » est une expression familière pour parler du fourgon où la police fait monter les personnes arrêtées."
+      },
+      {
+        "id": "q16",
+        "section": "Compréhension globale",
+        "type": "synthesis",
+        "text": "Quel résumé correspond le mieux à l'histoire ?",
+        "options": [
+          "Jo, un voleur évadé de prison, se fait engager avec son ami Georges pour cueillir des pommes en Touraine. Il veut y récupérer l'argent d'un vol, qu'il a caché dans la région. Hans et Philippe le reconnaissent et le surveillent pour prendre l'argent. Une nuit de brouillard, une fusillade éclate. Jo et Georges s'enfuient avec les sacs dans une camionnette, et la police ne les retrouve jamais.",
+          "Jo, un voleur évadé de prison, se fait engager avec son ami Georges pour cueillir des pommes en Touraine. Il veut y récupérer l'argent d'un vol, qu'il a caché dans la région. Hans et Philippe le reconnaissent et le surveillent pour prendre l'argent. Une nuit de brouillard, une fusillade éclate. Jo croit s'en être sorti, mais Georges était en réalité un policier, et Jo est arrêté.",
+          "Jo, un voleur évadé de prison, se fait engager avec son ami Georges pour cueillir des pommes en Touraine. Il veut se venger du patron de la ferme, qui l'a dénoncé à la police. Hans et Philippe le reconnaissent et préviennent les gendarmes. Une nuit de brouillard, Georges est arrêté par la police, et Jo s'enfuit seul avec l'argent caché dans la grange."
+        ],
+        "correct": 1,
+        "answer": 1,
+        "points": 1,
+        "explanation": "Seul le résumé B est correct. Jo vient reprendre l'argent de son hold-up. Hans et Philippe veulent le lui voler, et la nuit de brouillard tourne à la fusillade. À la fin, Jo découvre que Georges, son seul ami, était un policier."
+      }
+    ]
+  },
+  {
+    "id": "weekend_enfer_marrakech",
+    "title": "Week-end d'enfer à Marrakech",
+    "series": "Récit Express",
+    "totalPoints": 16,
+    "questions": [
+      {
+        "id": "q1",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Comment Caro gagne-t-elle un week-end au Maroc ?",
+        "options": [
+          "Avec un billet de loterie acheté par sa maman",
+          "En répondant à un jeu à la radio",
+          "Avec un ticket à gratter, au supermarché",
+          "Grâce à un concours de son école"
+        ],
+        "correct": 2,
+        "answer": 2,
+        "points": 1,
+        "explanation": "À la sortie du supermarché, une hôtesse offre trois tickets à gratter. Les deux premiers sont perdants, mais le troisième fait gagner un week-end pour deux au Maroc."
+      },
+      {
+        "id": "q2",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Quelle surprise Caro a-t-elle dans l'avion ?",
+        "options": [
+          "On lui sert un cheeseburger, son sandwich préféré",
+          "Le pilote l'invite à visiter la cabine de pilotage",
+          "Elle peut choisir le film du voyage",
+          "Les hôtesses lui chantent une chanson"
+        ],
+        "correct": 0,
+        "answer": 0,
+        "points": 1,
+        "explanation": "Les autres passagers ont une salade et un fromage « caoutchouteux ». Caro, elle, a un cheeseburger, et elle se demande pourquoi elle est la seule."
+      },
+      {
+        "id": "q3",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Au musée, qu'est-ce qui étonne Caro devant la vitrine des fauteuils royaux ?",
+        "options": [
+          "La bague qu'elle a fabriquée au collège",
+          "Sa chatte Josette, endormie au pied d'un trône",
+          "Son cartable du collège, couvert de poussière",
+          "Une photo de sa maman et d'elle"
+        ],
+        "correct": 2,
+        "answer": 2,
+        "points": 1,
+        "explanation": "Caro reconnaît son cartable, avec son nom sur l'étiquette. Mais quand elle revient avec le gardien, il a disparu."
+      },
+      {
+        "id": "q4",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Que trouve-t-on dans le coffret à bijoux que Caro achète au souk ?",
+        "options": [
+          "La bague que Caro a fabriquée au collège",
+          "Quelques pièces d'or anciennes",
+          "Un petit scorpion endormi",
+          "Une lettre écrite par sa maman pour le voyage"
+        ],
+        "correct": 0,
+        "answer": 0,
+        "points": 1,
+        "explanation": "Le coffret était vide quand Caro l'a acheté. Pourtant, sa maman y trouve la bague que Caro a fabriquée au collège ! En plus, la boutique n'existe « plus depuis des années »."
+      },
+      {
+        "id": "q5",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Comment la diseuse de bonne aventure étonne-t-elle Caro, sur la place Jemaa el-Fna ?",
+        "options": [
+          "Elle lui montre une photo de sa maison",
+          "Elle devine le prénom de tous ses amis",
+          "Elle parle à Caro avec la même voix que sa maman",
+          "Elle connaît sa note de maths et son adresse"
+        ],
+        "correct": 3,
+        "answer": 3,
+        "points": 1,
+        "explanation": "La vieille dame sait que Caro a eu neuf sur vingt en maths, qu'elle bavarde au cours de français, qu'elle habite rue Carnot et que madame Voisin garde sa chatte."
+      },
+      {
+        "id": "q6",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Qui Caro trouve-t-elle dans l'oasis ?",
+        "options": [
+          "Sa professeure de piano",
+          "Une femme déguisée en sa maman",
+          "Le monsieur de Travel Sud",
+          "Sa vraie maman, qui l'attendait"
+        ],
+        "correct": 1,
+        "answer": 1,
+        "points": 1,
+        "explanation": "La femme a les mêmes vêtements et les mêmes lunettes que sa maman, mais Caro voit tout de suite que ce n'est pas elle. C'est la diseuse de bonne aventure !"
+      },
+      {
+        "id": "q7",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Que découvre Caro en arrivant devant l'hôtel ?",
+        "options": [
+          "Elle a gagné un deuxième voyage en Égypte",
+          "Tout était un jeu filmé pour une émission de télévision",
+          "Ses copines de classe sont venues de France pour la voir",
+          "Sa maman avait été enlevée par des bandits"
+        ],
+        "correct": 1,
+        "answer": 1,
+        "points": 1,
+        "explanation": "Des projecteurs, des caméras, un public qui applaudit et une banderole « BRAVO CARO ! ». Tout ce qui lui est arrivé avait été préparé et filmé."
+      },
+      {
+        "id": "q8",
+        "section": "Compréhension (QCM)",
+        "type": "mcq",
+        "text": "Pourquoi la maman de Caro est-elle furieuse contre le directeur de l'émission ?",
+        "options": [
+          "L'émission a perdu toutes leurs valises",
+          "Le voyage n'était finalement pas gratuit",
+          "Caro n'a pas gagné le premier prix du jeu",
+          "On a laissé Caro seule et sans ses petits mots dans le désert"
+        ],
+        "correct": 3,
+        "answer": 3,
+        "points": 1,
+        "explanation": "La maman avait accepté un jeu de piste rigolo, avec des petits mots pour Caro à chaque étape. L'émission ne les a pas donnés et a laissé Caro seule, pour faire plus de spectacle."
+      },
+      {
+        "id": "q9",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Caro supplie sa maman d'accepter le nouveau voyage proposé par le producteur.",
+        "correct": true,
+        "answer": true,
+        "points": 1,
+        "explanation": "VRAI : Caro s'est bien amusée ! Elle rêve déjà d'un jeu de piste en Égypte : « Moi, j'aime l'aventure ! »"
+      },
+      {
+        "id": "q10",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Caro a reçu à chaque étape les petits mots de sa maman.",
+        "correct": false,
+        "answer": false,
+        "points": 1,
+        "explanation": "FAUX : personne ne lui a donné les lettres de sa maman. C'est pour cela qu'elle a eu si peur."
+      },
+      {
+        "id": "q11",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "Au supermarché, la maman de Caro ne croit pas à ce jeu de grattage.",
+        "correct": true,
+        "answer": true,
+        "points": 1,
+        "explanation": "VRAI : pour elle, ce sont « des bêtises ». Elle parie même qu'elles n'auront plus jamais de nouvelles."
+      },
+      {
+        "id": "q12",
+        "section": "Vrai ou Faux",
+        "type": "tf",
+        "text": "La maman de Caro savait qu'un jeu était préparé pour sa fille.",
+        "correct": true,
+        "answer": true,
+        "points": 1,
+        "explanation": "VRAI : elle était d'accord avec Travel Sud pour un jeu de piste. Mais elle ne savait pas qu'il y aurait des caméras."
+      },
+      {
+        "id": "q13",
+        "section": "Vocabulaire en contexte",
+        "type": "mcq",
+        "text": "« Tu es trop pessimiste ! Moi, je suis persuadée qu'un petit grain de sable va venir perturber notre train-train. » Que veut dire « pessimiste » ?",
+        "options": [
+          "Qui parle beaucoup trop",
+          "Qui est toujours de bonne humeur",
+          "Qui pense que les choses vont mal tourner",
+          "Qui aime voyager"
+        ],
+        "correct": 2,
+        "answer": 2,
+        "points": 1,
+        "explanation": "Être pessimiste, c'est s'attendre au pire. La maman croit qu'elles ne recevront jamais leur voyage. Le contraire, c'est être optimiste."
+      },
+      {
+        "id": "q14",
+        "section": "Vocabulaire en contexte",
+        "type": "mcq",
+        "text": "« J'ai envie à mon tour de la questionner, mais pas un son ne sort de ma bouche. Je suis comme anesthésiée. » Que veut dire ici « anesthésiée » ?",
+        "options": [
+          "Bloquée, incapable de réagir",
+          "Profondément endormie",
+          "Folle de joie",
+          "Complètement guérie"
+        ],
+        "correct": 0,
+        "answer": 0,
+        "points": 1,
+        "explanation": "Chez le médecin, une anesthésie endort ou rend insensible. Ici, Caro est si choquée qu'elle n'arrive plus ni à parler ni à bouger."
+      },
+      {
+        "id": "q15",
+        "section": "Vocabulaire en contexte",
+        "type": "mcq",
+        "text": "« Pour vous, l'important est de faire de l'audimat, n'est-ce pas ? » Qu'est-ce que l'« audimat » ?",
+        "options": [
+          "Le prix des billets d'avion",
+          "Le nombre de personnes qui regardent une émission",
+          "Le son des micros",
+          "Les décors de l'émission"
+        ],
+        "correct": 1,
+        "answer": 1,
+        "points": 1,
+        "explanation": "Faire de l'audimat, c'est attirer beaucoup de téléspectateurs. Pour cela, l'émission a voulu des images impressionnantes, quitte à faire peur à Caro."
+      },
+      {
+        "id": "q16",
+        "section": "Compréhension globale",
+        "type": "synthesis",
+        "text": "Quel résumé correspond le mieux à l'histoire ?",
+        "options": [
+          "Caro gagne un week-end à Marrakech avec sa maman grâce à un ticket à gratter. Là-bas, des choses étranges arrivent : son cartable apparaît dans un musée, sa maman disparaît, et Caro se retrouve seule à dos de chameau dans le désert. À la fin, elle découvre que sa maman a été enlevée par des voleurs, et la police marocaine la retrouve, enfermée dans une tente, au milieu d'une oasis.",
+          "Caro gagne un week-end à Marrakech avec sa maman grâce à un ticket à gratter. Là-bas, des choses étranges arrivent : son cartable apparaît dans un musée, sa maman disparaît, et Caro se retrouve seule à dos de chameau dans le désert. À la fin, elle découvre que tout était un jeu filmé pour la télévision. Sa maman, qui était d'accord pour un jeu de piste, est furieuse que l'émission soit allée trop loin.",
+          "Caro gagne un week-end à Marrakech avec sa maman grâce à un ticket à gratter. Là-bas, des choses étranges arrivent : son cartable apparaît dans un musée, sa maman disparaît, et Caro se retrouve seule à dos de chameau dans le désert. À la fin, elle découvre que tout était une farce de sa professeure de piano, qui voulait la récompenser de ses bonnes notes."
+        ],
+        "correct": 1,
+        "answer": 1,
+        "points": 1,
+        "explanation": "Seul le résumé B est correct. Tout était préparé et filmé pour une émission. La maman était au courant d'un jeu de piste, mais pas des caméras, et l'émission a laissé Caro seule et sans ses petits mots."
+      }
+    ]
   }
 ];
 
-window.LIVRES_VERSION = '20260928c';
+window.LIVRES_VERSION = '20261002a';
