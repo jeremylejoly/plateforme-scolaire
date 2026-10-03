@@ -39,25 +39,23 @@ def main():
     json_in_couv = os.path.join(couv_dir, 'cadrage_couvertures.json')
     home_dl = os.path.expanduser('~/Downloads/cadrage_couvertures.json')
     
+    candidates = [
+        json_path,
+        json_in_couv,
+        json_in_couv1,
+        home_dl
+    ]
+    candidates = [p for p in candidates if os.path.exists(p)]
+    candidates.sort(key=lambda p: os.path.getmtime(p), reverse=True)
+
     crops_data = {}
-    if os.path.exists(json_in_couv):
-        with open(json_in_couv, 'r', encoding='utf-8') as f:
+    if candidates:
+        chosen = candidates[0]
+        with open(chosen, 'r', encoding='utf-8') as f:
             crops_data = json.load(f)
-        print(f"📖 Chargement des cadrages depuis: {json_in_couv}")
-    elif os.path.exists(json_in_couv1):
-        with open(json_in_couv1, 'r', encoding='utf-8') as f:
-            crops_data = json.load(f)
-        print(f"📖 Chargement des cadrages depuis: {json_in_couv1}")
-    elif os.path.exists(json_path):
-        with open(json_path, 'r', encoding='utf-8') as f:
-            crops_data = json.load(f)
-        print(f"📖 Chargement des cadrages depuis: {json_path}")
-    elif os.path.exists(home_dl):
-        with open(home_dl, 'r', encoding='utf-8') as f:
-            crops_data = json.load(f)
-        print(f"📖 Chargement des cadrages depuis: {home_dl}")
+        print(f"📖 Chargement des cadrages depuis: {chosen} ({len(crops_data)} entrées)")
     else:
-        print("ℹ️ Application du cadrage centré par défaut.")
+        print("ℹ️ Aucun fichier de cadrage trouvé. Application du cadrage centré par défaut.")
 
     # 4. Mapper les fichiers
     raw_files = os.listdir(couv_dir)

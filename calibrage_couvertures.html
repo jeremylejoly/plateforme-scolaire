@@ -393,8 +393,8 @@
     <!-- Sidebar with filter tabs -->
     <div class="sidebar-wrapper">
       <div class="filter-tabs">
-        <button id="tab-new" class="filter-tab active" onclick="setFilter('new')">⭐ 14 Récents</button>
-        <button id="tab-all" class="filter-tab" onclick="setFilter('all')">📚 Tous (48)</button>
+        <button id="tab-new" class="filter-tab active" onclick="setFilter('new')">⭐ 8 Nouveaux</button>
+        <button id="tab-all" class="filter-tab" onclick="setFilter('all')">📚 Tous (67)</button>
         <button id="tab-todo" class="filter-tab" onclick="setFilter('todo')">⏳ À faire</button>
         <button id="tab-done" class="filter-tab" onclick="setFilter('done')">✅ Faits</button>
       </div>
@@ -408,7 +408,9 @@
         <button onclick="rotateImage()">🔄 Pivoter 90°</button>
         <button onclick="centerCrop()">🎯 Centrer</button>
         <button onclick="resetCrop()">↩ Réinitialiser</button>
-        <span style="font-size:11px;opacity:.7;">(Molette souris = Zoom cadre)</span>
+        <button onclick="document.getElementById('manualFileInput').click()">📁 Choisir image</button>
+        <input type="file" id="manualFileInput" accept="image/*" style="display:none" onchange="onManualFileSelected(event)" />
+        <span style="font-size:11px;opacity:.7;">(Molette souris = Zoom cadre | Glisser-déposer image supporté)</span>
       </div>
     </div>
 
@@ -987,6 +989,22 @@
       return BOOKS_DATA;
     }
 
+    function updateTabCounts() {
+      const newCount = BOOKS_DATA.filter(b => b.isNew).length;
+      const allCount = BOOKS_DATA.length;
+      const doneCount = BOOKS_DATA.filter(b => !!savedCrops[b.id]).length;
+      const todoCount = allCount - doneCount;
+
+      const tNew = document.getElementById('tab-new');
+      if (tNew) tNew.textContent = `⭐ ${newCount} Nouveaux`;
+      const tAll = document.getElementById('tab-all');
+      if (tAll) tAll.textContent = `📚 Tous (${allCount})`;
+      const tTodo = document.getElementById('tab-todo');
+      if (tTodo) tTodo.textContent = `⏳ À faire (${todoCount})`;
+      const tDone = document.getElementById('tab-done');
+      if (tDone) tDone.textContent = `✅ Faits (${doneCount})`;
+    }
+
     function renderList() {
       const list = document.getElementById('booksList');
       if (!list) return;
@@ -1002,6 +1020,7 @@
         btn.onclick = () => selectBookByIndex(originalIdx);
         list.appendChild(btn);
       });
+      updateTabCounts();
     }
 
     function initUI() {
@@ -1016,10 +1035,44 @@
       });
 
       renderList();
+      updateTabCounts();
+
+      // Drag & drop support on canvas container
+      const container = document.getElementById('canvasContainer');
+      if (container) {
+        container.addEventListener('dragover', e => { e.preventDefault(); });
+        container.addEventListener('drop', e => {
+          e.preventDefault();
+          const file = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+          if (file) loadManualFile(file);
+        });
+      }
 
       // Find first new book
       const firstNewIdx = BOOKS_DATA.findIndex(b => b.isNew);
       selectBookByIndex(firstNewIdx !== -1 ? firstNewIdx : 0);
+    }
+
+    function onManualFileSelected(e) {
+      const file = e.target.files && e.target.files[0];
+      if (file) loadManualFile(file);
+    }
+
+    function loadManualFile(file) {
+      const reader = new FileReader();
+      reader.onload = evt => {
+        currentImage = new Image();
+        currentImage.onload = () => {
+          setupCanvas();
+          autoAdjustCrop();
+          syncSliders();
+          draw();
+          updatePreview();
+          showToast(`📁 Image chargée : ${file.name}`);
+        };
+        currentImage.src = evt.target.result;
+      };
+      reader.readAsDataURL(file);
     }
 
     function selectBookById(id) {
@@ -1079,14 +1132,40 @@
         updatePreview();
       };
       
+      const candidates = [
+        'Couvertures re\u0301cits express/' + encodeURIComponent(book.file.normalize('NFD')),
+        'Couvertures re\u0301cits express/' + encodeURIComponent(book.file.normalize('NFC')),
+        'Couvertures re\u0301cits express/' + encodeURIComponent(book.file),
+        'Couvertures récits express/' + encodeURIComponent(book.file.normalize('NFD')),
+        'Couvertures récits express/' + encodeURIComponent(book.file.normalize('NFC')),
+        'Couvertures récits express/' + encodeURIComponent(book.file),
+        'Couvertures re\u0301cits express/' + book.file.normalize('NFD'),
+        'Couvertures re\u0301cits express/' + book.file,
+        'Couvertures récits express/' + book.file.normalize('NFC'),
+        'Couvertures récits express/' + book.file
+      ];
+      let candIdx = 0;
       currentImage.onerror = () => {
-        if (!currentImage._fallbackTried) {
-          currentImage._fallbackTried = true;
-          // Try unencoded / alternate folder path
-          currentImage.src = 'Couvertures récits express/' + book.file;
+        candIdx++;
+        if (candIdx < candidates.length) {
+          currentImage.src = candidates[candIdx];
+        } else {
+          canvas.width = 600;
+          canvas.height = 800;
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          ctx.fillStyle = '#f8fafc';
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          ctx.strokeStyle = '#cbd5e1';
+          ctx.strokeRect(20, 20, canvas.width - 40, canvas.height - 40);
+          ctx.fillStyle = '#64748b';
+          ctx.font = 'bold 16px Nunito, sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText('Image : ' + book.file, canvas.width / 2, canvas.height / 2 - 20);
+          ctx.font = '13px Nunito, sans-serif';
+          ctx.fillText('Cliquez sur "📁 Choisir image" ci-dessus pour la charger', canvas.width / 2, canvas.height / 2 + 15);
         }
       };
-      currentImage.src = 'Couvertures récits express/' + encodeURIComponent(book.file);
+      currentImage.src = candidates[0];
     }
 
     function setupCanvas() {
