@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Infinitif vers Participe Passé</title>
+  <style>
+    :root {
+      --bg: #f8fafc; --foreground: #0f172a; --primary: #8b5cf6; --primary-hover: #7c3aed;
+      --border-color: #0f172a; --card-bg: #ffffff; --shadow-color: #000000;
+      --accent-red: #ef4444; --accent-green: #10b981;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Fredoka', 'Outfit', sans-serif; }
+    body { background-color: var(--bg); color: var(--foreground); padding: 1.5rem; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+    .game-container { width: 100%; max-width: 600px; background-color: var(--card-bg); border: 4px solid var(--border-color); border-radius: 24px; padding: 2rem; box-shadow: 8px 8px 0px var(--shadow-color); text-align: center; }
+    .game-title { font-size: 2rem; font-weight: 900; color: var(--primary); margin-bottom: 1rem; }
+    .verb-display { font-size: 3rem; font-weight: bold; margin: 2rem 0; color: var(--border-color); }
+    .input-box { width: 100%; font-size: 2rem; padding: 1rem; border: 4px solid var(--border-color); border-radius: 12px; text-align: center; margin-bottom: 1rem; }
+    .btn { width: 100%; padding: 1rem; font-size: 1.5rem; font-weight: 800; background-color: var(--primary); color: white; border: 4px solid var(--border-color); border-radius: 12px; cursor: pointer; box-shadow: 4px 4px 0px var(--shadow-color); transition: 0.2s; }
+    .btn:active { transform: translate(4px, 4px); box-shadow: 0px 0px 0px var(--shadow-color); }
+    .feedback { font-size: 1.2rem; font-weight: bold; margin-bottom: 1rem; min-height: 2rem; }
+    .error { color: var(--accent-red); }
+    .success { color: var(--accent-green); }
+    .progress { font-weight: bold; margin-bottom: 1rem; color: #64748b; }
+  </style>
+</head>
+<body>
+  <div class="game-container">
+    <div class="game-title">🔄 Transforme à l'infini...tif !</div>
+    <div class="progress" id="progress">Mot 1 / 10</div>
+    <div class="verb-display" id="verb"></div>
+    <input type="text" id="answer" class="input-box" placeholder="Participe passé..." autocomplete="off">
+    <div class="feedback" id="feedback"></div>
+    <button class="btn" id="btn" onclick="checkAnswer()">Valider</button>
+  </div>
+
+  <script>
+    const verbsBank = {
+      // 1er groupe (10 verbes)
+      "aimer":"aimé", "chanter":"chanté", "donner":"donné", "trouver":"trouvé", "passer":"passé",
+      "commencer":"commencé", "appeler":"appelé", "jeter":"jeté", "acheter":"acheté", "manger":"mangé",
+      
+      // 2ème groupe
+      "finir":"fini", "choisir":"choisi", "grandir":"grandi", "réussir":"réussi", "rougir":"rougi",
+      "obéir":"obéi", "agir":"agi", "punir":"puni", "remplir":"rempli", "franchir":"franchi",
+      "nourrir":"nourri", "fournir":"fourni", "saisir":"saisi", "blanchir":"blanchi", "ralentir":"ralenti",
+      
+      // 3ème groupe
+      "aller":"allé", "faire":"fait", "dire":"dit", "prendre":"pris", "mettre":"mis", "voir":"vu",
+      "pouvoir":"pu", "vouloir":"voulu", "devoir":"dû", "savoir":"su", "venir":"venu", "tenir":"tenu",
+      "lire":"lu", "boire":"bu", "croire":"cru", "attendre":"attendu", "répondre":"répondu", 
+      "entendre":"entendu", "perdre":"perdu", "écrire":"écrit", "conduire":"conduit", "construire":"construit",
+      "peindre":"peint", "craindre":"craint", "éteindre":"éteint", "ouvrir":"ouvert", "offrir":"offert",
+      "découvrir":"découvert", "souffrir":"souffert", "courir":"couru", "mourir":"mort", "rire":"ri",
+      "sourire":"souri", "naître":"né", "être":"été", "avoir":"eu", "pleuvoir":"plu", "recevoir":"reçu",
+      "décevoir":"déçu", "apercevoir":"aperçu", "vivre":"vécu", "suivre":"suivi", "asseoir":"assis",
+      "partir":"parti", "sortir":"sorti", "sentir":"senti", "mentir":"menti", "fuir":"fui",
+      "accueillir":"accueilli", "cueillir":"cueilli", "couvrir":"couvert", "valoir":"valu",
+      "falloir":"fallu", "plaire":"plu", "suffire":"suffi", "coudre":"cousu", "moudre":"moulu",
+      "résoudre":"résolu", "vaincre":"vaincu", "rompre":"rompu", "exclure":"exclu", "conclure":"conclu",
+      "battre":"battu", "connaître":"connu", "paraître":"paru", "disparaître":"disparu", "croître":"crû",
+      "acquérir":"acquis", "conquérir":"conquis", "concevoir":"conçu", "traduire":"traduit",
+      "produire":"produit", "détruire":"détruit", "instruire":"instruit", "joindre":"joint",
+      "rejoindre":"rejoint", "atteindre":"atteint", "plaindre":"plaint", "mordre":"mordu",
+      "tordre":"tordu", "taire":"tu", "extraire":"extrait"
+    };
+
+    let selectedVerbs = [];
+    let currentIndex = 0;
+    let attempts = 0;
+
+    function initGame() {
+      const allVerbs = Object.keys(verbsBank);
+      selectedVerbs = allVerbs.sort(() => 0.5 - Math.random()).slice(0, 10);
+      currentIndex = 0;
+      loadVerb();
+    }
+
+    function loadVerb() {
+      if (currentIndex >= 10) {
+        document.querySelector('.game-container').innerHTML = `
+          <div class="game-title">🏆 Bravo !</div>
+          <div style="font-size: 1.5rem; margin-bottom: 2rem;">Tu as transformé les 10 verbes.</div>
+          <button class="btn" onclick="location.reload()" style="background-color: var(--accent-green);">Recommencer avec 10 autres verbes</button>
+        `;
+        return;
+      }
+      attempts = 0;
+      document.getElementById('progress').innerText = `Mot ${currentIndex + 1} / 10`;
+      document.getElementById('verb').innerText = selectedVerbs[currentIndex];
+      document.getElementById('answer').value = "";
+      document.getElementById('answer').disabled = false;
+      document.getElementById('feedback').innerText = "";
+      document.getElementById('answer').focus();
+      const btn = document.getElementById('btn');
+      btn.innerText = "Valider";
+      btn.onclick = checkAnswer;
+      btn.style.backgroundColor = 'var(--primary)';
+    }
+
+    function checkAnswer() {
+      const verb = selectedVerbs[currentIndex];
+      const correct = verbsBank[verb];
+      const answer = document.getElementById('answer').value.trim().toLowerCase();
+      const fb = document.getElementById('feedback');
+
+      if (answer === correct) {
+        fb.innerText = "✅ Exact !";
+        fb.className = "feedback success";
+        document.getElementById('answer').disabled = true;
+        showNext();
+      } else {
+        attempts++;
+        if (attempts === 1) {
+          fb.innerText = "❌ Faux, essaie encore !";
+          fb.className = "feedback error";
+        } else {
+          fb.innerHTML = `❌ Toujours faux. La bonne réponse était : <strong>${correct}</strong>`;
+          fb.className = "feedback error";
+          document.getElementById('answer').value = correct;
+          document.getElementById('answer').disabled = true;
+          showNext();
+        }
+      }
+    }
+
+    function showNext() {
+      const btn = document.getElementById('btn');
+      btn.innerText = "Suivant ➔";
+      btn.style.backgroundColor = 'var(--accent-green)';
+      btn.onclick = () => {
+        currentIndex++;
+        loadVerb();
+      };
+    }
+    
+    document.getElementById('answer').addEventListener("keypress", function(event) {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        document.getElementById('btn').click();
+      }
+    });
+
+    window.onload = initGame;
+  </script>
+</body>
+</html>

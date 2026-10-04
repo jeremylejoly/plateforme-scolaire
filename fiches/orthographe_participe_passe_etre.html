@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Participe Passé avec ÊTRE</title>
+  <style>
+    :root { --bg: #f8fafc; --foreground: #0f172a; --primary: #3b82f6; --border-color: #0f172a; --card-bg: #ffffff; --shadow-color: #000000; --accent-red: #ef4444; --accent-green: #10b981; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Fredoka', 'Outfit', sans-serif; }
+    body { background-color: var(--bg); color: var(--foreground); padding: 1.5rem; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+    .game-container { width: 100%; max-width: 700px; background-color: var(--card-bg); border: 4px solid var(--border-color); border-radius: 24px; padding: 2rem; box-shadow: 8px 8px 0px var(--shadow-color); text-align: center; }
+    .game-title { font-size: 2rem; font-weight: 900; color: var(--primary); margin-bottom: 1rem; }
+    .sentence { font-size: 1.5rem; margin: 2rem 0; line-height: 2.5rem; }
+    .input-box { font-size: 1.5rem; padding: 0.5rem; width: 150px; text-align: center; border: 3px solid var(--border-color); border-radius: 8px; font-weight: bold; }
+    .btn { width: 100%; padding: 1rem; font-size: 1.5rem; font-weight: 800; background-color: var(--primary); color: white; border: 4px solid var(--border-color); border-radius: 12px; cursor: pointer; box-shadow: 4px 4px 0px var(--shadow-color); margin-top: 1rem; }
+    .btn:active { transform: translate(4px, 4px); box-shadow: 0px 0px 0px var(--shadow-color); }
+    .feedback { font-size: 1.2rem; font-weight: bold; margin-top: 1rem; padding: 1rem; border-radius: 12px; display: none; }
+    .error { background: #fee2e2; color: var(--accent-red); border: 2px solid var(--accent-red); }
+    .success { background: #d1fae5; color: var(--accent-green); border: 2px solid var(--accent-green); }
+    .progress { font-weight: bold; margin-bottom: 1rem; color: #64748b; }
+  </style>
+</head>
+<body>
+  <div class="game-container">
+    <div class="game-title">🧑‍🤝‍🧑 Participe Passé avec ÊTRE</div>
+    <div class="progress" id="progress">Phrase 1 / 10</div>
+    <div class="sentence" id="sentence"></div>
+    <div class="feedback" id="feedback"></div>
+    <button class="btn" id="btn" onclick="checkAnswer()">Valider</button>
+  </div>
+
+  <script>
+    const allSentences = [
+      {pre: "Les filles sont (rentrer) ", post: " tard hier.", verb: "rentrer", ans: "rentrées", expl: "S'accorde avec 'Les filles' (féminin pluriel)."},
+      {pre: "Le bateau est (partir) ", post: " du port.", verb: "partir", ans: "parti", expl: "S'accorde avec 'Le bateau' (masculin singulier)."},
+      {pre: "Nous (les garçons) sommes (aller) ", post: " au cinéma.", verb: "aller", ans: "allés", expl: "S'accorde avec 'Nous' (masculin pluriel)."},
+      {pre: "La voiture est (tomber) ", post: " en panne.", verb: "tomber", ans: "tombée", expl: "S'accorde avec 'La voiture' (féminin singulier)."},
+      {pre: "Elles sont (venir) ", post: " nous voir.", verb: "venir", ans: "venues", expl: "S'accorde avec 'Elles' (féminin pluriel)."},
+      {pre: "Mes parents sont (sortir) ", post: " ce soir.", verb: "sortir", ans: "sortis", expl: "S'accorde avec 'Mes parents' (masculin pluriel)."},
+      {pre: "La lettre est (arriver) ", post: " ce matin.", verb: "arriver", ans: "arrivée", expl: "S'accorde avec 'La lettre' (féminin singulier)."},
+      {pre: "Les oiseaux sont (rester) ", post: " sur la branche.", verb: "rester", ans: "restés", expl: "S'accorde avec 'Les oiseaux' (masculin pluriel)."},
+      {pre: "L'actrice est (monter) ", post: " sur scène.", verb: "monter", ans: "montée", expl: "S'accorde avec 'L'actrice' (féminin singulier)."},
+      {pre: "Les arbres sont (mourir) ", post: " de froid.", verb: "mourir", ans: "morts", expl: "S'accorde avec 'Les arbres' (masculin pluriel)."},
+      {pre: "Les invités sont (retourner) ", post: " chez eux.", verb: "retourner", ans: "retournés", expl: "S'accorde avec 'Les invités' (masculin pluriel)."},
+      {pre: "Ta sœur est (devenir) ", post: " très grande.", verb: "devenir", ans: "devenue", expl: "S'accorde avec 'Ta sœur' (féminin singulier)."},
+      {pre: "Le soleil est (apparaître) ", post: " derrière les nuages.", verb: "apparaître", ans: "apparu", expl: "S'accorde avec 'Le soleil' (masculin singulier)."},
+      {pre: "Les feuilles sont (tomber) ", post: " des arbres.", verb: "tomber", ans: "tombées", expl: "S'accorde avec 'Les feuilles' (féminin pluriel)."},
+      {pre: "Je (une fille) suis (naître) ", post: " en 2015.", verb: "naître", ans: "née", expl: "S'accorde avec 'Je' (féminin singulier car c'est une fille)."},
+      {pre: "Les chevaliers sont (mourir) ", post: " au combat.", verb: "mourir", ans: "morts", expl: "S'accorde avec 'Les chevaliers' (masculin pluriel)."},
+      {pre: "Elle est (passer) ", post: " par la forêt.", verb: "passer", ans: "passée", expl: "S'accorde avec 'Elle' (féminin singulier)."},
+      {pre: "Mes amis sont (rester) ", post: " jouer avec moi.", verb: "rester", ans: "restés", expl: "S'accorde avec 'Mes amis' (masculin pluriel)."},
+      {pre: "Ma grand-mère est (revenir) ", post: " de vacances.", verb: "revenir", ans: "revenue", expl: "S'accorde avec 'Ma grand-mère' (féminin singulier)."},
+      {pre: "Ils sont (descendre) ", post: " à la cave.", verb: "descendre", ans: "descendus", expl: "S'accorde avec 'Ils' (masculin pluriel)."},
+      {pre: "L'araignée est (monter) ", post: " sur le mur.", verb: "monter", ans: "montée", expl: "S'accorde avec 'L'araignée' (féminin singulier)."},
+      {pre: "Les élèves sont (sortir) ", post: " en récréation.", verb: "sortir", ans: "sortis", expl: "S'accorde avec 'Les élèves' (masculin pluriel)."},
+      {pre: "Ma cousine est (repartir) ", post: " en France.", verb: "repartir", ans: "repartie", expl: "S'accorde avec 'Ma cousine' (féminin singulier)."},
+      {pre: "Nous (les filles) sommes (aller) ", post: " au parc.", verb: "aller", ans: "allées", expl: "S'accorde avec 'Nous' (féminin pluriel)."},
+      {pre: "Le voleur est (entrer) ", post: " par la fenêtre.", verb: "entrer", ans: "entré", expl: "S'accorde avec 'Le voleur' (masculin singulier)."}
+    ];
+    let selectedSentences = [];
+    let currentIndex = 0;
+    let attempts = 0;
+
+    function initGame() {
+      selectedSentences = allSentences.sort(() => 0.5 - Math.random()).slice(0, 10);
+      currentIndex = 0;
+      loadSentence();
+    }
+
+    function loadSentence() {
+      if (currentIndex >= 10) {
+        document.querySelector('.game-container').innerHTML = `
+          <div class="game-title">🏆 Bravo !</div>
+          <div style="font-size: 1.5rem; margin-bottom: 2rem;">Tu as terminé tes 10 phrases.</div>
+          <button class="btn" onclick="location.reload()" style="background-color: var(--accent-green);">Recommencer avec 10 nouvelles phrases</button>
+        `;
+        return;
+      }
+      attempts = 0;
+      const s = selectedSentences[currentIndex];
+      document.getElementById('progress').innerText = `Phrase ${currentIndex + 1} / 10`;
+      document.getElementById('sentence').innerHTML = `${s.pre} <input type="text" id="answer" class="input-box" autocomplete="off"> ${s.post}`;
+      document.getElementById('feedback').style.display = 'none';
+      const btn = document.getElementById('btn');
+      btn.innerText = "Valider";
+      btn.style.backgroundColor = 'var(--primary)';
+      btn.onclick = checkAnswer;
+      document.getElementById('answer').focus();
+    }
+
+    function checkAnswer() {
+      const s = selectedSentences[currentIndex];
+      const ans = document.getElementById('answer').value.trim();
+      const fb = document.getElementById('feedback');
+      fb.style.display = 'block';
+      
+      if (ans.toLowerCase() === s.ans.toLowerCase()) {
+        fb.innerHTML = "✅ Parfait ! " + s.expl;
+        fb.className = "feedback success";
+        document.getElementById('answer').value = s.ans; 
+        document.getElementById('answer').disabled = true;
+        showNext();
+      } else {
+        attempts++;
+        if (attempts === 1) {
+          fb.innerHTML = "❌ Faux, corrige ton erreur ! N'oublie pas l'accord !";
+          fb.className = "feedback error";
+        } else {
+          fb.innerHTML = `❌ Faux. La réponse était : <strong>${s.ans}</strong>.<br><em>Règle : ${s.expl}</em>`;
+          fb.className = "feedback error";
+          document.getElementById('answer').value = s.ans;
+          document.getElementById('answer').disabled = true;
+          showNext();
+        }
+      }
+    }
+
+    function showNext() {
+      const btn = document.getElementById('btn');
+      btn.innerText = "Suivant ➔";
+      btn.style.backgroundColor = 'var(--accent-green)';
+      btn.onclick = () => { currentIndex++; loadSentence(); };
+    }
+
+    document.addEventListener("keypress", function(event) {
+      if (event.key === "Enter" && document.getElementById('answer') && event.target.tagName !== 'BUTTON') {
+        document.getElementById('btn').click();
+      }
+    });
+
+    window.onload = initGame;
+  </script>
+</body>
+</html>

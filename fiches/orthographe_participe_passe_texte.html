@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Détective des Participes Passés</title>
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --foreground: #0f172a;
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --primary-light: #e0e7ff;
+      --accent-red: #ef4444;
+      --accent-red-light: #fee2e2;
+      --accent-green: #10b981;
+      --accent-green-light: #d1fae5;
+      --border-color: #0f172a;
+      --card-bg: #ffffff;
+      --shadow-color: #000000;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Fredoka', 'Outfit', 'Inter', sans-serif;
+      background-color: var(--bg);
+      color: var(--foreground);
+      padding: 1.5rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .game-container {
+      width: 100%;
+      max-width: 800px;
+      background-color: var(--card-bg);
+      border: 4px solid var(--border-color);
+      border-radius: 24px;
+      padding: 2rem;
+      box-shadow: 8px 8px 0px var(--shadow-color);
+      position: relative;
+    }
+
+    .game-header {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      border-bottom: 4px solid var(--border-color);
+      padding-bottom: 1rem;
+    }
+    
+    .game-title {
+      font-size: 2rem;
+      font-weight: 900;
+      color: var(--primary);
+    }
+    
+    .instruction {
+      font-size: 1.2rem;
+      margin-bottom: 1.5rem;
+      text-align: center;
+      font-weight: 600;
+    }
+
+    .text-box {
+      font-size: 1.35rem;
+      line-height: 2.4rem;
+      margin-bottom: 2rem;
+      background: var(--primary-light);
+      padding: 2rem;
+      border-radius: 12px;
+      border: 2px solid var(--border-color);
+      text-align: left;
+    }
+
+    .word {
+      display: inline;
+      padding: 2px 4px;
+      margin: 0;
+      cursor: pointer;
+      border-radius: 6px;
+      transition: background 0.2s;
+      user-select: none;
+    }
+
+    .word:hover {
+      background: #c7d2fe;
+    }
+
+    .word.selected {
+      background: var(--primary);
+      color: white;
+      font-weight: bold;
+    }
+    
+    .word.correct {
+      background: var(--accent-green) !important;
+      color: white;
+      font-weight: bold;
+    }
+
+    .word.incorrect {
+      background: var(--accent-red) !important;
+      color: white;
+      font-weight: bold;
+    }
+
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 1rem;
+      font-size: 1.2rem;
+      font-weight: 800;
+      text-align: center;
+      background-color: var(--primary);
+      color: white;
+      border: 4px solid var(--border-color);
+      border-radius: 12px;
+      cursor: pointer;
+      box-shadow: 4px 4px 0px var(--shadow-color);
+      transition: all 0.2s;
+      margin-top: 1rem;
+    }
+
+    .btn:active {
+      transform: translate(4px, 4px);
+      box-shadow: 0px 0px 0px var(--shadow-color);
+    }
+    
+    .btn-next {
+      background-color: var(--accent-green);
+    }
+
+    .feedback {
+      margin-top: 1.5rem;
+      padding: 1rem;
+      border-radius: 12px;
+      font-weight: bold;
+      text-align: center;
+      display: none;
+      border: 2px solid var(--border-color);
+    }
+
+    .feedback.error { background: var(--accent-red-light); color: var(--accent-red); }
+    .feedback.success { background: var(--accent-green-light); color: var(--accent-green); }
+
+    .explanations {
+      margin-top: 1rem;
+      font-size: 1.1rem;
+      text-align: left;
+      display: none;
+      background: #fffbea;
+      border: 2px dashed #fbbf24;
+      padding: 1.5rem;
+      border-radius: 12px;
+    }
+    .explanations ul { padding-left: 1.5rem; }
+    .explanations li { margin-bottom: 0.75rem; }
+
+    .progress {
+      text-align: center;
+      font-weight: bold;
+      margin-bottom: 1rem;
+      color: var(--foreground);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="game-container">
+    <div class="game-header">
+      <div class="game-title">🕵️ Détective des Participes Passés</div>
+    </div>
+    
+    <div class="progress" id="progress">Texte 1 / 5</div>
+    
+    <div class="instruction">
+      Clique sur TOUS les mots que tu penses être des <strong>participes passés</strong>.
+    </div>
+
+    <div class="text-box" id="text-box"></div>
+
+    <div class="feedback" id="feedback"></div>
+    <div class="explanations" id="explanations"></div>
+
+    <button class="btn" id="valider-btn" onclick="checkAnswers()">Valider</button>
+  </div>
+
+  <script>
+    const rawTexts = [
+      "Le jeune garçon marchait dans la forêt ancienne. Le soleil, **caché|'caché' : participe passé employé seul, s'accorde avec soleil.** par les nuages, ne réchauffait plus la terre. Soudain, il a **entendu|'entendu' : participe passé avec avoir.** un bruit étrange venant d'un grand chêne. Les feuilles, **tombées|'tombées' : participe passé employé seul, s'accorde avec feuilles.** sur le sol, formaient un tapis **doré|'doré' : participe passé de dorer employé seul, s'accorde avec tapis.**. Il s'est **approché|'approché' : participe passé avec être, s'accorde avec il.** de l'arbre mystérieux avec prudence. Une petite porte en bois était **dissimulée|'dissimulée' : participe passé avec être, s'accorde avec porte.** derrière des buissons. Il a **sorti|'sorti' : participe passé avec avoir.** une lampe de poche de son sac à dos. La clé, **trouvée|'trouvée' : participe passé employé seul, s'accorde avec clé.** la veille dans son grenier, brillait doucement. Il l'a **mise|'mise' : participe passé avec avoir, il a mis quoi ? l' (= la clé), placé avant le verbe -> accord au féminin singulier.** dans la serrure **rouillée|'rouillée' : participe passé de rouiller employé seul, s'accorde avec serrure.**. La porte s'est **ouverte|'ouverte' : participe passé avec être, s'accorde avec porte.** avec un long grincement. **Émerveillé|'Émerveillé' : participe passé employé seul, s'accorde avec il.**, il est **entré|'entré' : participe passé avec être, s'accorde avec il.** dans un monde magique et merveilleux.",
+      
+      "Vendredi dernier, notre classe a **visité|'visité' : participe passé avec avoir.** le musée des dinosaures. Le trajet en bus nous a **paru|'paru' : participe passé avec avoir.** très long car nous étions impatients. Une fois **arrivés|'arrivés' : participe passé employé seul, s'accorde avec nous.** devant le grand bâtiment, le guide nous a **accueillis|'accueillis' : participe passé avec avoir, le guide a accueilli qui ? 'nous', placé avant le verbe -> accord au masculin pluriel.** avec un grand sourire. Les squelettes géants étaient **exposés|'exposés' : participe passé avec être, s'accorde avec squelettes.** dans une salle immense et sombre. Je regardais les dents pointues d'un Tyrannosaure Rex avec admiration. Une énorme empreinte, **laissée|'laissée' : participe passé employé seul, s'accorde avec empreinte.** dans la pierre il y a des millions d'années, attirait tous les regards. Ma copine Léa a **pris|'pris' : participe passé avec avoir.** beaucoup de photos pour notre journal de classe. Les explications **données|'données' : participe passé employé seul, s'accorde avec explications.** par le guide étaient passionnantes et faciles à comprendre. À la fin de la visite, nous sommes **passés|'passés' : participe passé avec être, s'accorde avec nous.** par la boutique de souvenirs. J'ai **acheté|'acheté' : participe passé avec avoir.** un petit carnet pour dessiner mes dinosaures **préférés|'préférés' : participe passé de préférer employé seul, s'accorde avec dinosaures.**. Finalement, nous sommes **rentrés|'rentrés' : participe passé avec être, s'accorde avec nous.** à l'école avec plein de beaux souvenirs en tête.",
+      
+      "Maman a **décidé|'décidé' : participe passé avec avoir.** de préparer un grand gâteau pour l'anniversaire de mon frère. Elle a **mélangé|'mélangé' : participe passé avec avoir.** la farine, le sucre et les œufs dans un grand bol. Malheureusement, la bouteille de lait, **posée|'posée' : participe passé employé seul, s'accorde avec bouteille.** trop près du bord, a **basculé|'basculé' : participe passé avec avoir.** sur la table. Le liquide s'est **répandu|'répandu' : participe passé avec être, s'accorde avec liquide.** partout sur le sol de la cuisine. Mon petit chat a **profité|'profité' : participe passé avec avoir.** de la situation pour venir laper ce délicieux festin. Maman, **exaspérée|'exaspérée' : participe passé employé seul, s'accorde avec Maman.**, a **dû|'dû' : participe passé du verbe devoir avec avoir.** nettoyer tout le désordre avant de recommencer. Les nouvelles briques de lait ont **été|'été' : participe passé de être, invariable.** **rangées|'rangées' : participe passé avec être, s'accorde avec briques.** au frigo en lieu sûr. Le gâteau, finalement **cuit|'cuit' : participe passé employé seul, s'accorde avec gâteau.** à temps, était délicieux. Mon frère a **soufflé|'soufflé' : participe passé avec avoir.** ses bougies avec un immense sourire.",
+      
+      "Les pirates ont **navigué|'navigué' : participe passé avec avoir.** pendant des semaines sur l'océan **déchaîné|'déchaîné' : participe passé employé seul, s'accorde avec océan.**. La carte au trésor était **dépliée|'dépliée' : participe passé avec être, s'accorde avec carte.** sur la grande table du capitaine. Une croix rouge, **tracée|'tracée' : participe passé employé seul, s'accorde avec croix.** à l'encre noire, indiquait l'emplacement du butin. Soudain, la vigie a **crié|'crié' : participe passé avec avoir.** qu'une terre était en vue. L'ancre a **été|'été' : participe passé de être, invariable.** **jetée|'jetée' : participe passé avec être, s'accorde avec l'ancre.** près d'une plage de sable fin. Les marins sont **descendus|'descendus' : participe passé avec être, s'accorde avec marins.** sur l'île avec leurs pelles et leurs pioches. Après des heures de recherches, une caisse en bois est **apparue|'apparue' : participe passé avec être, s'accorde avec caisse.** sous le sable chaud. Les pièces d'or, **couvertes|'couvertes' : participe passé employé seul, s'accorde avec pièces.** de boue, brillaient sous le soleil de midi. Le capitaine s'est **réjoui|'réjoui' : participe passé avec être, s'accorde avec capitaine.** de cette magnifique découverte.",
+      
+      "La première neige de l'année est **tombée|'tombée' : participe passé avec être, s'accorde avec neige.** pendant notre sommeil. À notre réveil, le jardin était complètement **recouvert|'recouvert' : participe passé avec être, s'accorde avec jardin.** d'un épais manteau blanc. Nous avons **enfilé|'enfilé' : participe passé avec avoir.** nos grosses bottes et nos gants bien chauds. La luge, **rangée|'rangée' : participe passé employé seul, s'accorde avec luge.** dans le garage depuis l'hiver dernier, a **glissé|'glissé' : participe passé avec avoir.** à toute vitesse sur la grande colline. Mon petit frère a **voulu|'voulu' : participe passé avec avoir.** construire un bonhomme de neige géant. Une carotte a **servi|'servi' : participe passé avec avoir.** de nez et des cailloux ont **formé|'formé' : participe passé avec avoir.** son sourire. Plus tard, nous sommes **rentrés|'rentrés' : participe passé avec être, s'accorde avec nous.** à l'intérieur de la maison pour nous réchauffer. Maman avait **préparé|'préparé' : participe passé avec avoir.** un chocolat chaud délicieux pour tout le monde. Les tasses **vidées|'vidées' : participe passé employé seul, s'accorde avec tasses.**, nous avons **regardé|'regardé' : participe passé avec avoir.** la neige continuer de tomber par la fenêtre."
+    ];
+
+    let currentTextIndex = 0;
+    let attempts = 0;
+    let wordsData = []; 
+
+    function initText() {
+      if (currentTextIndex >= rawTexts.length) {
+        finishGame();
+        return;
+      }
+      attempts = 0;
+      document.getElementById('progress').innerText = `Texte ${currentTextIndex + 1} / ${rawTexts.length}`;
+      document.getElementById('feedback').style.display = 'none';
+      document.getElementById('explanations').style.display = 'none';
+      
+      const btn = document.getElementById('valider-btn');
+      btn.innerText = 'Valider';
+      btn.className = 'btn';
+      btn.onclick = checkAnswers;
+
+      const raw = rawTexts[currentTextIndex];
+      // Regex pour séparer les blocs **mot|explication** de la ponctuation collée
+      const parts = raw.match(/\*\*.*?\*\*[.,:;?!]*|\S+/g);
+      
+      wordsData = [];
+      const box = document.getElementById('text-box');
+      box.innerHTML = '';
+
+      parts.forEach((p, idx) => {
+        let isPP = false;
+        let wordText = p;
+        let explanation = "";
+
+        if (p.startsWith('**') && p.includes('|')) {
+          isPP = true;
+          const endIdx = p.lastIndexOf('**');
+          const inside = p.substring(2, endIdx);
+          const sep = inside.indexOf('|');
+          wordText = inside.substring(0, sep);
+          explanation = inside.substring(sep + 1);
+          
+          let after = p.substring(endIdx + 2); // Ponctuation éventuelle collée
+          wordText += after; 
+        }
+
+        // Séparer le mot de la ponctuation finale pour l'affichage
+        let cleanWord = wordText.replace(/[.,:;?!]+$/g, '');
+        let punct = wordText.substring(cleanWord.length);
+        
+        wordsData.push({
+          id: idx,
+          clean: cleanWord,
+          punct: punct,
+          isPP: isPP,
+          explanation: explanation,
+          selected: false
+        });
+
+        const span = document.createElement('span');
+        span.className = 'word';
+        span.id = `w-${idx}`;
+        span.innerText = cleanWord;
+        span.onclick = () => toggleWord(idx);
+        
+        box.appendChild(span);
+        if (punct) {
+          const pSpan = document.createElement('span');
+          pSpan.innerText = punct;
+          box.appendChild(pSpan);
+        }
+        
+        box.appendChild(document.createTextNode(' '));
+      });
+    }
+
+    function toggleWord(idx) {
+      if (attempts >= 2) return; 
+      const wd = wordsData[idx];
+      wd.selected = !wd.selected;
+      const span = document.getElementById(`w-${idx}`);
+      if (wd.selected) span.classList.add('selected');
+      else span.classList.remove('selected');
+    }
+
+    function checkAnswers() {
+      let missingCount = 0;
+      let falsePositives = 0;
+
+      wordsData.forEach(wd => {
+        if (wd.isPP && !wd.selected) missingCount++;
+        if (!wd.isPP && wd.selected) falsePositives++;
+      });
+
+      const feedback = document.getElementById('feedback');
+      feedback.style.display = 'block';
+
+      if (missingCount === 0 && falsePositives === 0) {
+        feedback.className = 'feedback success';
+        feedback.innerHTML = "🎉 Bravo ! Tu as trouvé tous les participes passés sans erreur !";
+        showNextButton();
+      } else {
+        attempts++;
+        if (attempts === 1) {
+          feedback.className = 'feedback error';
+          let msg = "Presque ! ";
+          if (missingCount > 0) msg += `Il te manque ${missingCount} participe(s) passé(s). `;
+          if (falsePositives > 0) msg += `Tu as sélectionné ${falsePositives} mot(s) en trop. `;
+          msg += "<br><small>Corrige tes erreurs (clique sur les mots pour désélectionner / sélectionner) et valide à nouveau.</small>";
+          feedback.innerHTML = msg;
+        } else {
+          feedback.className = 'feedback error';
+          feedback.innerHTML = "Voici la correction. Les mots verts sont les bonnes réponses.";
+          showCorrection();
+          showNextButton();
+        }
+      }
+    }
+
+    function showCorrection() {
+      const explDiv = document.getElementById('explanations');
+      explDiv.style.display = 'block';
+      let ul = "<ul>";
+
+      wordsData.forEach(wd => {
+        const span = document.getElementById(`w-${wd.id}`);
+        span.classList.remove('selected');
+        
+        if (wd.isPP) {
+          span.classList.add('correct');
+          ul += `<li>${wd.explanation}</li>`;
+        } else if (wd.selected) {
+          span.classList.add('incorrect');
+        }
+      });
+      ul += "</ul>";
+      explDiv.innerHTML = "<strong>Explications :</strong>" + ul;
+    }
+
+    function showNextButton() {
+      const btn = document.getElementById('valider-btn');
+      btn.innerText = 'Texte suivant ➔';
+      btn.className = 'btn btn-next';
+      btn.onclick = () => {
+        currentTextIndex++;
+        initText();
+      };
+    }
+
+    function finishGame() {
+      document.getElementById('text-box').innerHTML = "<div style='text-align:center'><h2>🏆 Félicitations !</h2><p>Tu as terminé l'entraînement sur l'identification des participes passés.</p></div>";
+      document.getElementById('feedback').style.display = 'none';
+      document.getElementById('explanations').style.display = 'none';
+      document.getElementById('valider-btn').style.display = 'none';
+      document.getElementById('progress').style.display = 'none';
+    }
+
+    window.onload = initText;
+  </script>
+</body>
+</html>

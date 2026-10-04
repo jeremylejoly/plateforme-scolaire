@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Participe Passé avec AVOIR</title>
+  <style>
+    :root { --bg: #f8fafc; --foreground: #0f172a; --primary: #3b82f6; --border-color: #0f172a; --card-bg: #ffffff; --shadow-color: #000000; --accent-red: #ef4444; --accent-green: #10b981; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Fredoka', 'Outfit', sans-serif; }
+    body { background-color: var(--bg); color: var(--foreground); padding: 1.5rem; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+    .game-container { width: 100%; max-width: 700px; background-color: var(--card-bg); border: 4px solid var(--border-color); border-radius: 24px; padding: 2rem; box-shadow: 8px 8px 0px var(--shadow-color); text-align: center; }
+    .game-title { font-size: 2rem; font-weight: 900; color: var(--primary); margin-bottom: 1rem; }
+    .sentence { font-size: 1.5rem; margin: 2rem 0; line-height: 2.5rem; }
+    .input-box { font-size: 1.5rem; padding: 0.5rem; width: 150px; text-align: center; border: 3px solid var(--border-color); border-radius: 8px; font-weight: bold; }
+    .btn { width: 100%; padding: 1rem; font-size: 1.5rem; font-weight: 800; background-color: var(--primary); color: white; border: 4px solid var(--border-color); border-radius: 12px; cursor: pointer; box-shadow: 4px 4px 0px var(--shadow-color); margin-top: 1rem; }
+    .btn:active { transform: translate(4px, 4px); box-shadow: 0px 0px 0px var(--shadow-color); }
+    .feedback { font-size: 1.2rem; font-weight: bold; margin-top: 1rem; padding: 1rem; border-radius: 12px; display: none; }
+    .error { background: #fee2e2; color: var(--accent-red); border: 2px solid var(--accent-red); }
+    .success { background: #d1fae5; color: var(--accent-green); border: 2px solid var(--accent-green); }
+    .progress { font-weight: bold; margin-bottom: 1rem; color: #64748b; }
+  </style>
+</head>
+<body>
+  <div class="game-container">
+    <div class="game-title">🎒 Participe Passé avec AVOIR</div>
+    <div class="progress" id="progress">Phrase 1 / 10</div>
+    <div class="sentence" id="sentence"></div>
+    <div class="feedback" id="feedback"></div>
+    <button class="btn" id="btn" onclick="checkAnswer()">Valider</button>
+  </div>
+
+  <script>
+    const allSentences = [
+      {pre: "J'ai (manger) ", post: " une pomme.", verb: "manger", ans: "mangé", expl: "J'ai mangé quoi ? 'une pomme', placé APRÈS le verbe -> Pas d'accord."},
+      {pre: "La pomme que j'ai (manger) ", post: " était bonne.", verb: "manger", ans: "mangée", expl: "J'ai mangé quoi ? 'que' (= la pomme), placé AVANT le verbe -> Accord au féminin singulier."},
+      {pre: "Elles ont (regarder) ", post: " la télévision.", verb: "regarder", ans: "regardé", expl: "Elles ont regardé quoi ? 'la télévision', placé APRÈS le verbe -> Pas d'accord."},
+      {pre: "Les fleurs qu'il a (cueillir) ", post: " sont belles.", verb: "cueillir", ans: "cueillies", expl: "Il a cueilli quoi ? qu' (= les fleurs), placé AVANT le verbe -> Accord au féminin pluriel."},
+      {pre: "Nous avons (acheter) ", post: " des cadeaux.", verb: "acheter", ans: "acheté", expl: "Nous avons acheté quoi ? 'des cadeaux', placé APRÈS le verbe -> Pas d'accord."},
+      {pre: "Les cadeaux que nous avons (acheter) ", post: " plairont.", verb: "acheter", ans: "achetés", expl: "Nous avons acheté quoi ? 'que' (= les cadeaux), placé AVANT le verbe -> Accord au masculin pluriel."},
+      {pre: "Elle a (perdre) ", post: " ses clés.", verb: "perdre", ans: "perdu", expl: "Elle a perdu quoi ? 'ses clés', placé APRÈS le verbe -> Pas d'accord."},
+      {pre: "Les clés qu'elle a (perdre) ", post: " étaient dorées.", verb: "perdre", ans: "perdues", expl: "Elle a perdu quoi ? qu' (= les clés), placé AVANT le verbe -> Accord au féminin pluriel."},
+      {pre: "Ils ont (finir) ", post: " leurs devoirs.", verb: "finir", ans: "fini", expl: "Ils ont fini quoi ? 'leurs devoirs', placé APRÈS le verbe -> Pas d'accord."},
+      {pre: "Les exercices qu'ils ont (faire) ", post: " sont difficiles.", verb: "faire", ans: "faits", expl: "Ils ont fait quoi ? qu' (= les exercices), placé AVANT le verbe -> Accord au masculin pluriel."},
+      {pre: "J'ai (voir) ", post: " mes amis hier.", verb: "voir", ans: "vu", expl: "J'ai vu qui ? 'mes amis', placé APRÈS le verbe -> Pas d'accord."},
+      {pre: "Les amis que j'ai (voir) ", post: " allaient bien.", verb: "voir", ans: "vus", expl: "J'ai vu qui ? 'que' (= les amis), placé AVANT le verbe -> Accord au masculin pluriel."},
+      {pre: "Maman a (cuisiner) ", post: " des tartes.", verb: "cuisiner", ans: "cuisiné", expl: "Maman a cuisiné quoi ? 'des tartes', placé APRÈS le verbe -> Pas d'accord."},
+      {pre: "Les tartes qu'elle a (cuisiner) ", post: " sont délicieuses.", verb: "cuisiner", ans: "cuisinées", expl: "Elle a cuisiné quoi ? qu' (= les tartes), placé AVANT le verbe -> Accord au féminin pluriel."},
+      {pre: "Tu as (comprendre) ", post: " la règle ?", verb: "comprendre", ans: "compris", expl: "Tu as compris quoi ? 'la règle', placé APRÈS le verbe -> Pas d'accord."},
+      {pre: "La règle que tu as (comprendre) ", post: " est importante.", verb: "comprendre", ans: "comprise", expl: "Tu as compris quoi ? 'que' (= la règle), placé AVANT le verbe -> Accord au féminin singulier."},
+      {pre: "Le chat a (boire) ", post: " tout son lait.", verb: "boire", ans: "bu", expl: "Le chat a bu quoi ? 'tout son lait', placé APRÈS le verbe -> Pas d'accord."},
+      {pre: "Le lait que le chat a (boire) ", post: " était chaud.", verb: "boire", ans: "bu", expl: "Le chat a bu quoi ? 'que' (= le lait), placé AVANT le verbe -> Accord au masculin singulier (bu)."},
+      {pre: "Nous avons (appeler) ", post: " les pompiers.", verb: "appeler", ans: "appelé", expl: "Nous avons appelé qui ? 'les pompiers', placé APRÈS le verbe -> Pas d'accord."},
+      {pre: "Les pompiers que nous avons (appeler) ", post: " arrivent.", verb: "appeler", ans: "appelés", expl: "Nous avons appelé qui ? 'que' (= les pompiers), placé AVANT le verbe -> Accord au masculin pluriel."},
+      {pre: "Elle a (mettre) ", post: " sa belle robe.", verb: "mettre", ans: "mis", expl: "Elle a mis quoi ? 'sa belle robe', placé APRÈS le verbe -> Pas d'accord."},
+      {pre: "La belle robe qu'elle a (mettre) ", post: " est rouge.", verb: "mettre", ans: "mise", expl: "Elle a mis quoi ? qu' (= la robe), placé AVANT le verbe -> Accord au féminin singulier."},
+      {pre: "Vous avez (prendre) ", post: " des photos.", verb: "prendre", ans: "pris", expl: "Vous avez pris quoi ? 'des photos', placé APRÈS le verbe -> Pas d'accord."},
+      {pre: "Les photos que vous avez (prendre) ", post: " sont floues.", verb: "prendre", ans: "prises", expl: "Vous avez pris quoi ? 'que' (= les photos), placé AVANT le verbe -> Accord au féminin pluriel."},
+      {pre: "Il a (construire) ", post: " une cabane.", verb: "construire", ans: "construit", expl: "Il a construit quoi ? 'une cabane', placé APRÈS le verbe -> Pas d'accord."},
+      {pre: "La cabane qu'il a (construire) ", post: " est en bois.", verb: "construire", ans: "construite", expl: "Il a construit quoi ? qu' (= la cabane), placé AVANT le verbe -> Accord au féminin singulier."}
+    ];
+    let selectedSentences = [];
+    let currentIndex = 0;
+    let attempts = 0;
+
+    function initGame() {
+      selectedSentences = allSentences.sort(() => 0.5 - Math.random()).slice(0, 10);
+      currentIndex = 0;
+      loadSentence();
+    }
+
+    function loadSentence() {
+      if (currentIndex >= 10) {
+        document.querySelector('.game-container').innerHTML = `
+          <div class="game-title">🏆 Bravo !</div>
+          <div style="font-size: 1.5rem; margin-bottom: 2rem;">Tu as terminé tes 10 phrases.</div>
+          <button class="btn" onclick="location.reload()" style="background-color: var(--accent-green);">Recommencer avec 10 nouvelles phrases</button>
+        `;
+        return;
+      }
+      attempts = 0;
+      const s = selectedSentences[currentIndex];
+      document.getElementById('progress').innerText = `Phrase ${currentIndex + 1} / 10`;
+      document.getElementById('sentence').innerHTML = `${s.pre} <input type="text" id="answer" class="input-box" autocomplete="off"> ${s.post}`;
+      document.getElementById('feedback').style.display = 'none';
+      const btn = document.getElementById('btn');
+      btn.innerText = "Valider";
+      btn.style.backgroundColor = 'var(--primary)';
+      btn.onclick = checkAnswer;
+      document.getElementById('answer').focus();
+    }
+
+    function checkAnswer() {
+      const s = selectedSentences[currentIndex];
+      const ans = document.getElementById('answer').value.trim();
+      const fb = document.getElementById('feedback');
+      fb.style.display = 'block';
+      
+      if (ans.toLowerCase() === s.ans.toLowerCase()) {
+        fb.innerHTML = "✅ Parfait ! " + s.expl;
+        fb.className = "feedback success";
+        document.getElementById('answer').value = s.ans; 
+        document.getElementById('answer').disabled = true;
+        showNext();
+      } else {
+        attempts++;
+        if (attempts === 1) {
+          fb.innerHTML = "❌ Faux, corrige ton erreur ! Vérifie bien s'il faut faire l'accord !";
+          fb.className = "feedback error";
+        } else {
+          fb.innerHTML = `❌ Faux. La réponse était : <strong>${s.ans}</strong>.<br><em>Règle : ${s.expl}</em>`;
+          fb.className = "feedback error";
+          document.getElementById('answer').value = s.ans;
+          document.getElementById('answer').disabled = true;
+          showNext();
+        }
+      }
+    }
+
+    function showNext() {
+      const btn = document.getElementById('btn');
+      btn.innerText = "Suivant ➔";
+      btn.style.backgroundColor = 'var(--accent-green)';
+      btn.onclick = () => { currentIndex++; loadSentence(); };
+    }
+
+    document.addEventListener("keypress", function(event) {
+      if (event.key === "Enter" && document.getElementById('answer') && event.target.tagName !== 'BUTTON') {
+        document.getElementById('btn').click();
+      }
+    });
+
+    window.onload = initGame;
+  </script>
+</body>
+</html>

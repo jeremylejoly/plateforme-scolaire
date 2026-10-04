@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Participe Passé Employé Seul</title>
+  <style>
+    :root { --bg: #f8fafc; --foreground: #0f172a; --primary: #3b82f6; --border-color: #0f172a; --card-bg: #ffffff; --shadow-color: #000000; --accent-red: #ef4444; --accent-green: #10b981; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Fredoka', 'Outfit', sans-serif; }
+    body { background-color: var(--bg); color: var(--foreground); padding: 1.5rem; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+    .game-container { width: 100%; max-width: 700px; background-color: var(--card-bg); border: 4px solid var(--border-color); border-radius: 24px; padding: 2rem; box-shadow: 8px 8px 0px var(--shadow-color); text-align: center; }
+    .game-title { font-size: 2rem; font-weight: 900; color: var(--primary); margin-bottom: 1rem; }
+    .sentence { font-size: 1.5rem; margin: 2rem 0; line-height: 2.5rem; }
+    .input-box { font-size: 1.5rem; padding: 0.5rem; width: 150px; text-align: center; border: 3px solid var(--border-color); border-radius: 8px; font-weight: bold; }
+    .btn { width: 100%; padding: 1rem; font-size: 1.5rem; font-weight: 800; background-color: var(--primary); color: white; border: 4px solid var(--border-color); border-radius: 12px; cursor: pointer; box-shadow: 4px 4px 0px var(--shadow-color); margin-top: 1rem; }
+    .btn:active { transform: translate(4px, 4px); box-shadow: 0px 0px 0px var(--shadow-color); }
+    .feedback { font-size: 1.2rem; font-weight: bold; margin-top: 1rem; padding: 1rem; border-radius: 12px; display: none; }
+    .error { background: #fee2e2; color: var(--accent-red); border: 2px solid var(--accent-red); }
+    .success { background: #d1fae5; color: var(--accent-green); border: 2px solid var(--accent-green); }
+    .progress { font-weight: bold; margin-bottom: 1rem; color: #64748b; }
+  </style>
+</head>
+<body>
+  <div class="game-container">
+    <div class="game-title">👤 Participe Passé Employé Seul</div>
+    <div class="progress" id="progress">Phrase 1 / 10</div>
+    <div class="sentence" id="sentence"></div>
+    <div class="feedback" id="feedback"></div>
+    <button class="btn" id="btn" onclick="checkAnswer()">Valider</button>
+  </div>
+
+  <script>
+    const allSentences = [
+      {pre: "Les fleurs (couper) ", post: " fanent vite.", verb: "couper", ans: "coupées", expl: "S'accorde avec 'fleurs' (féminin pluriel)."},
+      {pre: "Le chat (endormir) ", post: " ronronne doucement.", verb: "endormir", ans: "endormi", expl: "S'accorde avec 'chat' (masculin singulier)."},
+      {pre: "(Surprendre) ", post: " par l'orage, les marcheurs courent.", verb: "surprendre", ans: "Surpris", expl: "S'accorde avec 'marcheurs' (masculin pluriel). Attention à la majuscule !"},
+      {pre: "La porte (fermer) ", post: " ne s'ouvre plus.", verb: "fermer", ans: "fermée", expl: "S'accorde avec 'porte' (féminin singulier)."},
+      {pre: "Ces lettres (écrire) ", post: " avec soin seront postées demain.", verb: "écrire", ans: "écrites", expl: "S'accorde avec 'lettres' (féminin pluriel)."},
+      {pre: "Les fruits (tomber) ", post: " pourrissent sur le sol.", verb: "tomber", ans: "tombés", expl: "S'accorde avec 'fruits' (masculin pluriel)."},
+      {pre: "(Fatiguer) ", post: ", elle alla se coucher.", verb: "fatiguer", ans: "Fatiguée", expl: "S'accorde avec 'elle' (féminin singulier)."},
+      {pre: "Des maisons (détruire) ", post: " par la tempête seront reconstruites.", verb: "détruire", ans: "détruites", expl: "S'accorde avec 'maisons' (féminin pluriel)."},
+      {pre: "Le livre (perdre) ", post: " a été retrouvé.", verb: "perdre", ans: "perdu", expl: "S'accorde avec 'livre' (masculin singulier)."},
+      {pre: "Les fenêtres (ouvrir) ", post: " laissent entrer l'air frais.", verb: "ouvrir", ans: "ouvertes", expl: "S'accorde avec 'fenêtres' (féminin pluriel)."},
+      {pre: "Des mains (geler) ", post: " par le froid se réchauffent près du feu.", verb: "geler", ans: "gelées", expl: "S'accorde avec 'mains' (féminin pluriel)."},
+      {pre: "Un chien (abandonner) ", post: " cherche une famille.", verb: "abandonner", ans: "abandonné", expl: "S'accorde avec 'chien' (masculin singulier)."},
+      {pre: "(Décevoir) ", post: ", les supporters quittent le stade.", verb: "décevoir", ans: "Déçus", expl: "S'accorde avec 'supporters' (masculin pluriel)."},
+      {pre: "Une histoire (inventer) ", post: " de toutes pièces amuse les enfants.", verb: "inventer", ans: "inventée", expl: "S'accorde avec 'histoire' (féminin singulier)."},
+      {pre: "Les chaises (casser) ", post: " seront réparées.", verb: "casser", ans: "cassées", expl: "S'accorde avec 'chaises' (féminin pluriel)."},
+      {pre: "Ce stylo (voler) ", post: " ne m'appartient pas.", verb: "voler", ans: "volé", expl: "S'accorde avec 'stylo' (masculin singulier)."},
+      {pre: "(Épuiser) ", post: " par la course, les athlètes se reposent.", verb: "épuiser", ans: "Épuisés", expl: "S'accorde avec 'athlètes' (masculin pluriel)."},
+      {pre: "La leçon (apprendre) ", post: " par cœur est vite oubliée.", verb: "apprendre", ans: "apprise", expl: "S'accorde avec 'leçon' (féminin singulier)."},
+      {pre: "Les travaux (finir) ", post: " ont coûté cher.", verb: "finir", ans: "finis", expl: "S'accorde avec 'travaux' (masculin pluriel)."},
+      {pre: "Une chanson (oublier) ", post: " revient à la mode.", verb: "oublier", ans: "oubliée", expl: "S'accorde avec 'chanson' (féminin singulier)."},
+      {pre: "Les voitures (laver) ", post: " brillent au soleil.", verb: "laver", ans: "lavées", expl: "S'accorde avec 'voitures' (féminin pluriel)."},
+      {pre: "Un trésor (cacher) ", post: " sous le sable attend les pirates.", verb: "cacher", ans: "caché", expl: "S'accorde avec 'trésor' (masculin singulier)."},
+      {pre: "(Fâcher) ", post: ", elle a quitté la pièce.", verb: "fâcher", ans: "Fâchée", expl: "S'accorde avec 'elle' (féminin singulier)."},
+      {pre: "Les jouets (réparer) ", post: " feront des heureux.", verb: "réparer", ans: "réparés", expl: "S'accorde avec 'jouets' (masculin pluriel)."},
+      {pre: "Une réponse (attendre) ", post: " depuis longtemps est enfin là.", verb: "attendre", ans: "attendue", expl: "S'accorde avec 'réponse' (féminin singulier)."}
+    ];
+    let selectedSentences = [];
+    let currentIndex = 0;
+    let attempts = 0;
+
+    function initGame() {
+      selectedSentences = allSentences.sort(() => 0.5 - Math.random()).slice(0, 10);
+      currentIndex = 0;
+      loadSentence();
+    }
+
+    function loadSentence() {
+      if (currentIndex >= 10) {
+        document.querySelector('.game-container').innerHTML = `
+          <div class="game-title">🏆 Bravo !</div>
+          <div style="font-size: 1.5rem; margin-bottom: 2rem;">Tu as terminé tes 10 phrases.</div>
+          <button class="btn" onclick="location.reload()" style="background-color: var(--accent-green);">Recommencer avec 10 nouvelles phrases</button>
+        `;
+        return;
+      }
+      attempts = 0;
+      const s = selectedSentences[currentIndex];
+      document.getElementById('progress').innerText = `Phrase ${currentIndex + 1} / 10`;
+      document.getElementById('sentence').innerHTML = `${s.pre} <input type="text" id="answer" class="input-box" autocomplete="off"> ${s.post}`;
+      document.getElementById('feedback').style.display = 'none';
+      const btn = document.getElementById('btn');
+      btn.innerText = "Valider";
+      btn.style.backgroundColor = 'var(--primary)';
+      btn.onclick = checkAnswer;
+      document.getElementById('answer').focus();
+    }
+
+    function checkAnswer() {
+      const s = selectedSentences[currentIndex];
+      const ans = document.getElementById('answer').value.trim();
+      const fb = document.getElementById('feedback');
+      fb.style.display = 'block';
+      
+      if (ans.toLowerCase() === s.ans.toLowerCase()) {
+        fb.innerHTML = "✅ Parfait ! " + s.expl;
+        fb.className = "feedback success";
+        document.getElementById('answer').value = s.ans; 
+        document.getElementById('answer').disabled = true;
+        showNext();
+      } else {
+        attempts++;
+        if (attempts === 1) {
+          fb.innerHTML = "❌ Faux, corrige ton erreur ! N'oublie pas l'accord !";
+          fb.className = "feedback error";
+        } else {
+          fb.innerHTML = `❌ Faux. La réponse était : <strong>${s.ans}</strong>.<br><em>Règle : ${s.expl}</em>`;
+          fb.className = "feedback error";
+          document.getElementById('answer').value = s.ans;
+          document.getElementById('answer').disabled = true;
+          showNext();
+        }
+      }
+    }
+
+    function showNext() {
+      const btn = document.getElementById('btn');
+      btn.innerText = "Suivant ➔";
+      btn.style.backgroundColor = 'var(--accent-green)';
+      btn.onclick = () => { currentIndex++; loadSentence(); };
+    }
+
+    document.addEventListener("keypress", function(event) {
+      if (event.key === "Enter" && document.getElementById('answer') && event.target.tagName !== 'BUTTON') {
+        document.getElementById('btn').click();
+      }
+    });
+
+    window.onload = initGame;
+  </script>
+</body>
+</html>
