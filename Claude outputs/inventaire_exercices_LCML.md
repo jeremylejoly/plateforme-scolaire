@@ -540,6 +540,17 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
   - Le résultat était déjà enregistré (`gram_adjectif_nom`).
   - **Toute la rubrique L'adjectif est vérifiée.**
 
+- **05/10 — Grammaire › Le verbe › Identifier les verbes** (50 phrases, 10 par partie ; verbes conjugués et infinitifs) :
+  - Le résultat était enregistré sous `gram_verbe`, que le plan de travail (`gram_verbe_identifier`) ne reconnaissait pas. C'est corrigé.
+  - **Trois phrases comptaient un participe passé comme infinitif** (« après avoir **fini** », « pour avoir **sauvé** », « être **invité** »). L'élève devait donc marquer « fini » comme infinitif pour réussir. Ces phrases sont réécrites sans infinitif passé :
+    - « quand tu auras rangé ta chambre » ;
+    - « parce qu'il a sauvé le petit chat » ;
+    - « espère recevoir une invitation ».
+  - « parler espagnol » : « espagnol » était classé adjectif. Il est maintenant classé nom.
+  - Les autres phrases ont été relues : verbes conjugués (formes composées et passives comprises) et infinitifs corrects.
+  - Le mélange utilise maintenant la méthode Fisher–Yates.
+  - Nouvelle orthographe : maitrise, entrainer, entraine-toi.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -639,7 +650,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | L'adjectif — Accords de l'adjectif | `gram_adjectif_accord` | index › startAdjectifAccordExercise |  |
 | ✅ 05/10 | L'adjectif — Épithète ou attribut ? | `gram_adjectif_fonction` | index › startAdjectifFonctionExercise |  |
 | ✅ 05/10 | L'adjectif — Retrouver le nom qualifié | `gram_adjectif_nom` | index › startAdjectifNomExercise |  |
-| ⬜ | Le verbe — Identifier les verbes | `gram_verbe_identifier` | index › startVerbeClassExercise |  |
+| ✅ 05/10 | Le verbe — Identifier les verbes | `gram_verbe_identifier` | index › startVerbeClassExercise |  |
 | ⬜ | Le pronom | `gram_pronom` | index › (?) | (code à localiser) |
 | ⬜ | Le pronom — Déterminant ou pronom ? | `gram_pronom_piege` | index › startPronomPiegeExercise |  |
 | ⬜ | Le pronom — Le détecteur de référents | `gram_pronom_referents` | fiches/detecteur_referents.html |  |
@@ -1136,6 +1147,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ⬜ | Le Tangram | `jeu_tangram` | index › (?) | (code à localiser) |
 | ⬜ | Le Démineur | `jeu_demineur` | index › (?) | (code à localiser) |
 | ⬜ | La Pipopipette | `jeu_pipopipette` | index › (?) | (code à localiser) |
+| ✅ 05/10 (a5128f7) | Les Échecs (nouveau jeu) | `jeu_echecs` | echecs.html | Corrigé et testé avant mise en ligne (IA, mats, nulles, partie relancée pendant que l'ordinateur réfléchit) |
 
 ### ? — (menu renderLectureNarrativeMenu)
 
