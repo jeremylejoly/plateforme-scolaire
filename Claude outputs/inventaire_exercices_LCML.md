@@ -1173,6 +1173,12 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Moteur commun (v537) : identifiant `op_x10` correct, réponses décimales avec virgule acceptées, réponses vides gérées.
 - Tests : 20 000 séries, 0 erreur, 0 paire inverse.
 
+### 05/10 — Maths › Opérations › Multiplications et divisions › × et ÷ par 0,5 — 5 — 50 — 500 (`op_x5`, OP_X5_BANQUE dans exercices_maths.js) — sw.js v543
+- 40 calculs recalculés par programme : tous justes, aucun doublon ; répartition équilibrée entre 5, 50, 500 et 0,5 (× et ÷).
+- 3 paires inverses (16 × 5 = 80 / 80 ÷ 5 = 16…) pouvaient tomber ensemble → exclu ; toujours 5 × + 5 ÷ (`pickBalancedNoInverse`).
+- Remarque : banque de 40 calculs seulement (menu : « parmi 40 ») → deux séries successives se recoupent en partie ; à agrandir si Jeremy le souhaite.
+- Tests : 20 000 séries, 0 paire inverse, les 40 calculs utilisés.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1472,7 +1478,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ⬜ | Calculs lacunaires | `op_4_operations_lacunaires` | fiches/calculs-4-operations.html |  |
 | ✅ 05/10 | Les tables étendues | `op_tables` | index › startOpTablesExercise |  |
 | ✅ 05/10 | × et ÷ par 0,1 — 10 — 100 — 1000 | `op_x10` | index › startOpX10Exercise |  |
-| ⬜ | × et ÷ par 0,5 — 5 — 50 — 500 | `op_x5` | index › startOpX5Exercise |  |
+| ✅ 05/10 | × et ÷ par 0,5 — 5 — 50 — 500 | `op_x5` | index › startOpX5Exercise |  |
 | ⬜ | × par 9 — 90 — 99 — 9,9 | `op_x9` | index › startOpX9Exercise |  |
 | ⬜ | × par 11 — 101 — 110 — 1,1 | `op_x11` | index › (?) | (code à localiser) |
 | ⬜ | Caractères de divisibilité | `op_divisibilite` | fiches/divisibilite.html |  |
