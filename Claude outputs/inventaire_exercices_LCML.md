@@ -620,6 +620,21 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
   - La copie public/ avait une coquille (« les sépara »). Les copies sont maintenant identiques ; la copie racine garde son bouton Retour.
   - Nouvelle orthographe : paraitre, parait, fraiche, maitresse, maitrise, entrainement.
 
+- **05/10 — Grammaire › Classes de mots › Le tri des mots** (7 niveaux, 10 mots tirés par niveau) :
+  - **Mots ambigus retirés** (une réponse juste pouvait être comptée fausse), surtout pour les mots isolés des niveaux 2 à 4 :
+    - « la » et « les », comptés comme déterminants alors que le bac « Pronom » existe au même niveau 3, deviennent « cette » et « mes » ;
+    - « son » (aussi un nom : le son) devient « quelques » ;
+    - « court », compté comme verbe alors que c'est aussi un adjectif, devient « parle » ;
+    - « neuf » (aussi un nombre) devient « bruyant » ;
+    - « écrit » (aussi un nom) devient « lisent » ;
+    - « calme », « rouge » et « jeune » (aussi des noms) deviennent « gentil », « lourd » et « léger » ;
+    - « personne » et « rien », comptés comme pronoms alors que ce sont aussi des noms (une personne, un rien), deviennent « ceux-ci » et « la mienne » ;
+    - « plusieurs » (aussi un pronom) devient « ces ».
+  - **Le résultat n'était jamais enregistré.** Il est maintenant enregistré par niveau (`gram_tri_mots_n1` à `_n7`), et le plan de travail le reconnait.
+  - Le mélange utilise maintenant la méthode Fisher–Yates.
+  - Nouvelle orthographe : maitre, plait, maitriser, maitrise, entraine-toi.
+  - Les niveaux 6 et 7 (mots en contexte) ont été relus : ils sont justes.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -729,7 +744,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | L'adverbe — Reconnaître les adverbes | `gram_adverbe_reconnaitre` | fiches/adverbe_exercice.html |  |
 | ✅ 05/10 | L'adverbe — Adjectif ou adverbe ? | `gram_adverbe_accord` | fiches/adverbe_accord_exercice.html |  |
 | ⬜ | Le complément du nom | `gram_complement_nom` | index › (?) | (code à localiser) |
-| ⬜ | Le tri des mots | `gram_tri_mots` | fiches/tri_mots.html |  |
+| ✅ 05/10 | Le tri des mots | `gram_tri_mots` | fiches/tri_mots.html |  |
 | ⬜ | Les mots de liaison | `gram_mots_liaison` | fiches/grammaire_mots_liaison.html |  |
 
 ### 📖 Français — ✏️ Grammaire — Fonctions des mots
