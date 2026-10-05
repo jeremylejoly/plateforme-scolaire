@@ -8211,18 +8211,17 @@ window.EXERCICES_VERBE_CLASS = [
     ]
   },
   {
-    text: "Tu pourras regarder la télévision après avoir fini de ranger ta chambre .",
+    text: "Tu pourras regarder la télévision quand tu auras rangé ta chambre .",
     tokens: [
       { text: "Tu", cat: "pr" },
       { text: "pourras", cat: "vc" },
       { text: "regarder", cat: "vi" },
       { text: "la", cat: "det" },
       { text: "télévision", cat: "nc" },
-      { text: "après", cat: "prep" },
-      { text: "avoir", cat: "vi" },
-      { text: "fini", cat: "vi" },
-      { text: "de", cat: "prep" },
-      { text: "ranger", cat: "vi" },
+      { text: "quand", cat: "conj" },
+      { text: "tu", cat: "pr" },
+      { text: "auras", cat: "vc" },
+      { text: "rangé", cat: "vc" },
       { text: "ta", cat: "det" },
       { text: "chambre", cat: "nc" },
       { text: ".", punctuation: true }
@@ -8436,7 +8435,7 @@ window.EXERCICES_VERBE_CLASS = [
       { text: "apprendre", cat: "vi" },
       { text: "à", cat: "prep" },
       { text: "parler", cat: "vi" },
-      { text: "espagnol", cat: "adj" },
+      { text: "espagnol", cat: "nc" },
       { text: ".", punctuation: true }
     ]
   },
@@ -8670,7 +8669,7 @@ window.EXERCICES_VERBE_CLASS = [
     ]
   },
   {
-    text: "Le jeune garçon a été récompensé pour avoir sauvé le petit chat .",
+    text: "Le jeune garçon a été récompensé parce qu' il a sauvé le petit chat .",
     tokens: [
       { text: "Le", cat: "det" },
       { text: "jeune", cat: "adj" },
@@ -8678,9 +8677,11 @@ window.EXERCICES_VERBE_CLASS = [
       { text: "a", cat: "vc" },
       { text: "été", cat: "vc" },
       { text: "récompensé", cat: "vc" },
-      { text: "pour", cat: "prep" },
-      { text: "avoir", cat: "vi" },
-      { text: "sauvé", cat: "vi" },
+      { text: "parce", cat: "conj" },
+      { text: "qu'", cat: "conj" },
+      { text: "il", cat: "pr" },
+      { text: "a", cat: "vc" },
+      { text: "sauvé", cat: "vc" },
       { text: "le", cat: "det" },
       { text: "petit", cat: "adj" },
       { text: "chat", cat: "nc" },
@@ -8767,14 +8768,15 @@ window.EXERCICES_VERBE_CLASS = [
     ]
   },
   {
-    text: "Mon frère espère être invité à la fête de fin d' année .",
+    text: "Mon frère espère recevoir une invitation pour la fête de fin d' année .",
     tokens: [
       { text: "Mon", cat: "det" },
       { text: "frère", cat: "nc" },
       { text: "espère", cat: "vc" },
-      { text: "être", cat: "vi" },
-      { text: "invité", cat: "vi" },
-      { text: "à", cat: "prep" },
+      { text: "recevoir", cat: "vi" },
+      { text: "une", cat: "det" },
+      { text: "invitation", cat: "nc" },
+      { text: "pour", cat: "prep" },
       { text: "la", cat: "det" },
       { text: "fête", cat: "nc" },
       { text: "de", cat: "prep" },

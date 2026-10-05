@@ -528,6 +528,18 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
   - Nouvelle orthographe : entrainement, maitrises.
   - Le résultat était déjà enregistré (`gram_adjectif_fonction`).
 
+- **05/10 — Grammaire › L'adjectif › Retrouver le nom qualifié** (10 phrases par partie) :
+  - Dans les 25 phrases, le nom qualifié était toujours **juste à côté** de l'adjectif. Il suffisait de cliquer sur le mot voisin, sans réfléchir à l'accord.
+  - 15 phrases plus exigeantes ont été ajoutées (banque : 40 phrases).
+    - L'adjectif est attribut, relié au nom par être, sembler, paraitre, rester ou devenir.
+    - Un complément du nom sert de piège : « Le chat de ma voisine est **noir** », « Une odeur de pain **chaud** ».
+    - L'accord permet de trancher. L'explication le montre (« pour voisine, on écrirait noire »).
+  - « L'histoire » formait un seul mot cliquable. L'article et le nom sont maintenant séparés.
+  - Le mélange utilise maintenant la méthode Fisher–Yates.
+  - Nouvelle orthographe : entrainement, maitrise.
+  - Le résultat était déjà enregistré (`gram_adjectif_nom`).
+  - **Toute la rubrique L'adjectif est vérifiée.**
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -626,7 +638,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | L'adjectif — Identifier les adjectifs | `gram_adjectif_identifier` | index › startAdjectifExercise |  |
 | ✅ 05/10 | L'adjectif — Accords de l'adjectif | `gram_adjectif_accord` | index › startAdjectifAccordExercise |  |
 | ✅ 05/10 | L'adjectif — Épithète ou attribut ? | `gram_adjectif_fonction` | index › startAdjectifFonctionExercise |  |
-| ⬜ | L'adjectif — Retrouver le nom qualifié | `gram_adjectif_nom` | index › startAdjectifNomExercise |  |
+| ✅ 05/10 | L'adjectif — Retrouver le nom qualifié | `gram_adjectif_nom` | index › startAdjectifNomExercise |  |
 | ⬜ | Le verbe — Identifier les verbes | `gram_verbe_identifier` | index › startVerbeClassExercise |  |
 | ⬜ | Le pronom | `gram_pronom` | index › (?) | (code à localiser) |
 | ⬜ | Le pronom — Déterminant ou pronom ? | `gram_pronom_piege` | index › startPronomPiegeExercise |  |
