@@ -5894,7 +5894,7 @@ window.POEMES_DATA = {
       {q:"Les autres élèves encouragent le cancre quand il efface tout.", correct:1},
       {q:"Le cancre utilise des craies de toutes les couleurs pour dessiner.", correct:0},
     ],
-    figureStyle:{q:"Dans le poème, Prévert parle du tableau noir du malheur. Que veut-il dire ?", options:["Le tableau est sale et mal entretenu par le professeur","L'école représente la contrainte et la tristesse opposée au bonheur du cancre","Le tableau représente l'école que le cancre n'aime vraiment pas."], correct:2},
+    figureStyle:{q:"Dans le poème, Prévert parle du tableau noir du malheur. Que veut-il dire ?", options:["Le tableau est sale et mal entretenu par le professeur","L'école représente la contrainte et la tristesse, à l'opposé du bonheur du cancre","Le tableau est peint en noir parce que c'est la couleur préférée du maître"], correct:1},
     message:{q:"Quel est le message principal de ce poème ?", options:["Les bons élèves sont toujours plus heureux que les mauvais","Il vaut mieux écouter son professeur que suivre ses envies","Suivre ce qu'on aime vraiment est plus important que de réussir à l'école"], correct:2},
   },
   ecriture:{
@@ -5903,20 +5903,20 @@ window.POEMES_DATA = {
     texte:"Deux et deux quatre\nquatre et quatre huit\nhuit et huit font seize...\nRépétez ! dit le maître\nDeux et deux quatre\nquatre et quatre huit\nhuit et huit font seize.\nMais voilà l'oiseau-lyre\nqui passe dans le ciel\nl'enfant le voit\nl'enfant l'entend\nl'enfant l'appelle :\nSauve-moi\njoue avec moi\noiseau !\nAlors l'oiseau descend\net joue avec l'enfant\nDeux et deux quatre...\nRépétez ! dit le maître\net l'enfant joue\nl'oiseau joue avec lui...\nQuatre et quatre huit\nhuit et huit font seize\net seize et seize qu'est-ce qu'ils font ?\nIls ne font rien seize et seize\net surtout pas trente-deux\nde toute façon\net ils s'en vont.\nL'enfant a caché l'oiseau dans son pupitre\net tous les enfants\nentendent sa chanson\net tous les enfants\nentendent la musique\net huit et huit à leur tour s'en vont\net quatre et quatre et deux et deux\nà leur tour fichent le camp\net un et un ne font ni une ni deux\nun à un s'en vont également.\nEt l'oiseau-lyre joue\net l'enfant chante\net le professeur crie :\nQuand vous aurez fini de faire le pitre !\nMais tous les autres enfants\nécoutent la musique\net les murs de la classe\ns'écroulent tranquillement.\nEt les vitres redeviennent sable\nl'encre redevient eau\nles pupitres redeviennent arbres\nla craie redevient falaise\nle porte-plume redevient oiseau.",
     questions:[
       {q:"Que fait l'enfant quand l'oiseau-lyre arrive dans la classe ?", options:["Il continue à répéter ses tables de multiplication sagement","Il cache l'oiseau dans son pupitre et joue avec lui","Il attrape l'oiseau et le montre au professeur"], correct:1},
-      {q:"Que se passe-t-il avec les chiffres quand l'oiseau chante ?", options:["Les chiffres deviennent de plus en plus grands et compliqués","Les chiffres s'envolent et disparaissent un à un","Les chiffres se transforment en lettres sur le tableau"], correct:1},
-      {q:"Que devient la craie à la fin du poème ?", options:["Elle tombe par terre et se brise en mille morceaux","Elle redevient un oiseau","Elle redevient de la falaise blanche au bord de la mer"], correct:1},
+      {q:"Que se passe-t-il avec les chiffres quand l'oiseau chante ?", options:["Les chiffres deviennent de plus en plus grands et compliqués","Les chiffres s'en vont et disparaissent un à un","Les chiffres se transforment en lettres sur le tableau"], correct:1},
+      {q:"Que devient la craie à la fin du poème ?", options:["Elle tombe par terre et se brise en mille morceaux","Elle redevient un oiseau","Elle redevient falaise"], correct:2},
     ],
     vf:[
       {q:"Seul l'enfant entend la chanson de l'oiseau, les autres élèves continuent à travailler.", correct:1},
       {q:"À la fin du poème, les murs de la classe s'écroulent.", correct:0},
     ],
-    figureStyle:{q:"À la fin du poème, l'encre redevient eau, les pupitres redeviennent arbres, la craie redevient oiseau. Que veut dire Prévert ?", options:["La classe prend feu et tout brûle à cause de l'oiseau","La nature reprend ses droits et libère les enfants de l'école","L'oiseau est en réalité un magicien qui transforme les objets"], correct:1},
+    figureStyle:{q:"À la fin du poème, l'encre redevient eau, les pupitres redeviennent arbres, la craie redevient falaise. Que veut dire Prévert ?", options:["La classe prend feu et tout brûle à cause de l'oiseau","La nature reprend ses droits et libère les enfants de l'école","L'oiseau est en réalité un magicien qui transforme les objets"], correct:1},
     message:{q:"Quel message Prévert veut-il faire passer dans ce poème ?", options:["Il faut toujours bien écouter son professeur et apprendre ses leçons","La liberté et la nature sont plus importantes que les règles imposées à l'école","Les oiseaux sont dangereux car ils perturbent le travail en classe"], correct:1},
   },
   dormeur:{
     id:'dormeur', titre:'Le Dormeur du val', auteur:'Arthur Rimbaud', annee:'1870',
     emoji:'🌿', couleur:'linear-gradient(135deg,#2e7d32,#388e3c)', borderColor:'#2e7d32',
-    texte:"C'est un trou de verdure où chante une rivière\nAccrochant follement aux herbes des haillons\nD'argent ; où le soleil, de la montagne fière,\nLuit : c'est un petit val qui mousse de rayons.\n\nUn soldat jeune, bouche ouverte, tête nue,\nEt la nuque baignant dans le frais cresson bleu,\nDort ; il est étendu dans l'herbe, sous la nue,\nPâle dans son lit vert où la lumière pleut.\n\nLes pieds dans les glaïeuls, il dort. Souriant comme\nSourirait un enfant malade, il fait un somme :\nNature, berce-le chaudement : il a froid.\n\nLes parfums ne font pas frissonner sa narine ;\nIl dort dans le soleil, la main sur sa poitrine,\nTransquille. Il a deux trous rouges au côté droit.",
+    texte:"C'est un trou de verdure où chante une rivière\nAccrochant follement aux herbes des haillons\nD'argent ; où le soleil, de la montagne fière,\nLuit : c'est un petit val qui mousse de rayons.\n\nUn soldat jeune, bouche ouverte, tête nue,\nEt la nuque baignant dans le frais cresson bleu,\nDort ; il est étendu dans l'herbe, sous la nue,\nPâle dans son lit vert où la lumière pleut.\n\nLes pieds dans les glaïeuls, il dort. Souriant comme\nSourirait un enfant malade, il fait un somme :\nNature, berce-le chaudement : il a froid.\n\nLes parfums ne font pas frissonner sa narine ;\nIl dort dans le soleil, la main sur sa poitrine,\nTranquille. Il a deux trous rouges au côté droit.",
     questions:[
       {q:"Où se passe la scène décrite dans ce poème ?", options:["Dans une tranchée boueuse au milieu d'un champ de bataille","Dans un val verdoyant traversé par une rivière ensoleillée","Dans une forêt sombre et froide au bord d'un lac"], correct:1},
       {q:"Comment le soldat est-il décrit au début du poème ?", options:["Il court dans la prairie en tenant son fusil","Il est allongé dans l'herbe, la bouche ouverte, la tête nue","Il est assis contre un arbre, les yeux grands ouverts"], correct:1},
@@ -5930,7 +5930,7 @@ window.POEMES_DATA = {
     message:{q:"Quel est l'effet produit par la révélation finale du poème ?", options:["Le lecteur est soulagé car il pensait que le soldat était malade","Le lecteur est surpris et choqué car toute la beauté décrite cachait la mort","Le lecteur est triste mais s'y attendait car le poème donnait des indices clairs"], correct:1},
   },
   sorciere:{
-    id:'sorciere', titre:'Drôle de bonne femme', auteur:'Maurice Carême', annee:'',
+    id:'sorciere', titre:'Drôle de bonne femme', auteur:'Marie Aubinais', annee:'',
     emoji:'🧙', couleur:'linear-gradient(135deg,#6a1b9a,#8e24aa)', borderColor:'#6a1b9a',
     texte:"Chapeau pointu et gros derrière,\nLongs doigts crochus et sales manières,\nCheveux grisâtres longs jusqu'à terre,\nElle est comme ça Marie-Mémère !\n\nBave de crapaud et ver de terre,\nAraignée noire et feuille de lierre,\nAjouter un pot de poussière,\nVoilà la recette qu'elle préfère.\n\nEt son balai qui fend les airs,\nQui marche avant, qui marche arrière,\nC'est pour aller voir ses commères\nOu jeter des sorts sur la terre.\n\nChapeau pointu et gros derrière,\nMarie-Mémère est une sorcière,\nQui habite loin d'ici, j'espère !",
     questions:[

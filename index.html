@@ -3236,7 +3236,7 @@ input[type=text].calc-input.incorrect {
 }
 </style>
 <script src="livres.js?v=20261002b"></script>
-<script src="exercices_francais.js?v=20261005a"></script>
+<script src="exercices_francais.js?v=20261005b"></script>
 <script src="exercices_maths.js?v=20260927e"></script>
 <script src="exercices_eveil.js?v=20260927e"></script>
 <script>
@@ -22827,7 +22827,7 @@ const POEMES_LIST = [
   {id:'cancre', titre:'Le Cancre', auteur:'Jacques Prévert', emoji:'😄', couleur:'#e65100', screen:'screen-poeme-cancre', fn:'renderPoemeCancre'},
   {id:'ecriture', titre:"Page d'écriture", auteur:'Jacques Prévert', emoji:'🐦', couleur:'#1565c0', screen:'screen-poeme-ecriture', fn:'renderPoemeEcriture'},
   {id:'dormeur', titre:'Le Dormeur du val', auteur:'Arthur Rimbaud', emoji:'🌿', couleur:'#2e7d32', screen:'screen-poeme-dormeur', fn:'renderPoemeDormeur'},
-  {id:'sorciere', titre:'Drôle de bonne femme', auteur:'Maurice Carême', emoji:'🧙', couleur:'#6a1b9a', screen:'screen-poeme-sorciere', fn:'renderPoemeSorciere'},
+  {id:'sorciere', titre:'Drôle de bonne femme', auteur:'Marie Aubinais', emoji:'🧙', couleur:'#6a1b9a', screen:'screen-poeme-sorciere', fn:'renderPoemeSorciere'},
 ];
 
 // window.POEMES_DATA a été extrait vers un fichier JS externe
@@ -22848,9 +22848,19 @@ function renderPoemesMenu(){
     menu.innerHTML='<div class="sub-subjects-grid">'+html+'</div>'||'<p style="color:var(--muted);text-align:center;padding:2rem">Aucun poème disponible.</p>';
 }
 
-function buildPoemeFiche(bodyId,data){
+// Prépare une partie : questions, propositions et Vrai/Faux mélangés à chaque ouverture / « Recommencer »
+function poemeNouvelleSession(src){
+  const mel = conteMelanger; // mélange de Fisher-Yates (moteur des contes)
+  const melQ = q => { const o = mel(q.options.map((t,i)=>({t, ok:i===q.correct}))); return {q:q.q, options:o.map(x=>x.t), correct:o.findIndex(x=>x.ok)}; };
+  return {...src, questions: src.questions.map(melQ), vf: mel(src.vf), figureStyle: melQ(src.figureStyle), message: melQ(src.message), scores:{}};
+}
+const POEME_SESSIONS = {};
+
+function buildPoemeFiche(bodyId,src){
   const body=document.getElementById(bodyId);
   if(!body)return;
+  const data=poemeNouvelleSession(src);
+  POEME_SESSIONS[data.id]=data;
   const lignes=data.texte.split('\n');
   let texteHtml=lignes.map(l=>l.trim()===''?'<br>':`<div style="line-height:2;">${l}</div>`).join('');
   let qhtml='';
@@ -22879,34 +22889,49 @@ function pomeFSSelect(id,oi){window[`pomeFSSel_${id}`]=parseInt(oi);}
 function pomeMsgSelect(id,oi){window[`pomeMsgSel_${id}`]=parseInt(oi);}
 
 function validerPoemeQCM(id){
-  const data=POEMES_DATA[id];const sels=window[`poemeQCMSels_${id}`]||{};let score=0;const total=data.questions.length;
-  data.questions.forEach((q,qi)=>{const sel=sels[qi];const ok=sel===q.correct;if(ok)score++;q.options.forEach((_,oi)=>{const el=document.getElementById(`poeme-opt-${id}-${qi}-${oi}`);if(el){el.querySelector('input').disabled=true;if(oi===sel&&ok)el.classList.add('correct');else if(oi===sel&&!ok)el.classList.add('incorrect');}});});
+  const data=POEME_SESSIONS[id];const sels=window[`poemeQCMSels_${id}`]||{};let score=0;const total=data.questions.length;
+  data.questions.forEach((q,qi)=>{const sel=sels[qi];const ok=sel===q.correct;if(ok)score++;q.options.forEach((_,oi)=>{const el=document.getElementById(`poeme-opt-${id}-${qi}-${oi}`);if(el){el.querySelector('input').disabled=true;if(oi===q.correct)el.classList.add('correct');else if(oi===sel)el.classList.add('incorrect');}});});
   const pct=Math.round(score/total*100);const color=pct>=70?'var(--green)':pct>=50?'var(--amber)':'var(--red)';
+  data.scores.qcm=score;
   const panel=document.getElementById(`poeme-qcm-score-${id}`);panel.style.display='block';document.getElementById(`poeme-qcm-btn-${id}`).style.display='none';
   panel.innerHTML=`<div style="text-align:center;padding:8px;background:var(--surface);border-radius:8px;border:1px solid var(--border)"><span style="font-weight:800;font-size:18px;color:${color}">${score}/${total} — ${pct}%</span> <span style="font-size:13px;color:var(--muted)">${pct>=70?'✅ Bien joué !':pct>=50?'👍 Pas mal !':'💪 Continue !'}</span></div>`;
+  poemeEnregistrerSiFini(id);
 }
 
 function validerPoemeVF(id){
-  const data=POEMES_DATA[id];const sels=window[`poemeVFSels_${id}`]||{};let score=0;const total=data.vf.length;
-  data.vf.forEach((q,qi)=>{const sel=sels[qi];const ok=sel===q.correct;if(ok)score++;[0,1].forEach(oi=>{const el=document.getElementById(`poeme-vf-opt-${id}-${qi}-${oi}`);if(el){el.querySelector('input').disabled=true;if(oi===sel&&ok)el.classList.add('correct');else if(oi===sel&&!ok)el.classList.add('incorrect');}});});
+  const data=POEME_SESSIONS[id];const sels=window[`poemeVFSels_${id}`]||{};let score=0;const total=data.vf.length;
+  data.vf.forEach((q,qi)=>{const sel=sels[qi];const ok=sel===q.correct;if(ok)score++;[0,1].forEach(oi=>{const el=document.getElementById(`poeme-vf-opt-${id}-${qi}-${oi}`);if(el){el.querySelector('input').disabled=true;if(oi===q.correct)el.classList.add('correct');else if(oi===sel)el.classList.add('incorrect');}});});
   const pct=Math.round(score/total*100);const color=pct>=70?'var(--green)':pct>=50?'var(--amber)':'var(--red)';
+  data.scores.vf=score;
   const panel=document.getElementById(`poeme-vf-score-${id}`);panel.style.display='block';document.getElementById(`poeme-vf-btn-${id}`).style.display='none';
   panel.innerHTML=`<div style="text-align:center;padding:8px;background:var(--surface);border-radius:8px;border:1px solid var(--border)"><span style="font-weight:800;font-size:18px;color:${color}">${score}/${total} — ${pct}%</span> <span style="font-size:13px;color:var(--muted)">${pct>=70?'✅ Bien joué !':pct>=50?'👍 Pas mal !':'💪 Continue !'}</span></div>`;
+  poemeEnregistrerSiFini(id);
 }
 
 function validerPoemeAnalyse(id){
-  const data=POEMES_DATA[id];const fsSel=window[`pomeFSSel_${id}`];const msgSel=window[`pomeMsgSel_${id}`];let score=0;const total=2;
+  const data=POEME_SESSIONS[id];const fsSel=window[`pomeFSSel_${id}`];const msgSel=window[`pomeMsgSel_${id}`];let score=0;const total=2;
   const fsOk=fsSel===data.figureStyle.correct;if(fsOk)score++;
-  data.figureStyle.options.forEach((_,oi)=>{const el=document.getElementById(`poeme-fs-opt-${id}-${oi}`);if(el){el.querySelector('input').disabled=true;if(oi===fsSel&&fsOk)el.classList.add('correct');else if(oi===fsSel&&!fsOk)el.classList.add('incorrect');}});
+  data.figureStyle.options.forEach((_,oi)=>{const el=document.getElementById(`poeme-fs-opt-${id}-${oi}`);if(el){el.querySelector('input').disabled=true;if(oi===data.figureStyle.correct)el.classList.add('correct');else if(oi===fsSel)el.classList.add('incorrect');}});
   const msgOk=msgSel===data.message.correct;if(msgOk)score++;
-  data.message.options.forEach((_,oi)=>{const el=document.getElementById(`poeme-msg-opt-${id}-${oi}`);if(el){el.querySelector('input').disabled=true;if(oi===msgSel&&msgOk)el.classList.add('correct');else if(oi===msgSel&&!msgOk)el.classList.add('incorrect');}});
+  data.message.options.forEach((_,oi)=>{const el=document.getElementById(`poeme-msg-opt-${id}-${oi}`);if(el){el.querySelector('input').disabled=true;if(oi===data.message.correct)el.classList.add('correct');else if(oi===msgSel)el.classList.add('incorrect');}});
   const pct=Math.round(score/total*100);const color=pct>=70?'var(--green)':pct>=50?'var(--amber)':'var(--red)';
+  data.scores.analyse=score;
   const panel=document.getElementById(`poeme-analyse-score-${id}`);panel.style.display='block';document.getElementById(`poeme-analyse-btn-${id}`).style.display='none';
-  panel.innerHTML=`<div style="font-size:48px;margin-bottom:0.5rem">${pct===100?'🎉':pct>=50?'👍':'💪'}</div><div style="font-family:'Nunito',sans-serif;font-weight:800;font-size:32px;color:${color}">${score}/${total}</div><div style="font-size:16px;color:${color};font-weight:700;margin-bottom:1rem">${pct}%</div><button class="btn" onclick="buildPoemeFiche('poeme-${id}-body',POEMES_DATA['${id}'])" style="margin-top:0.5rem">🔄 Recommencer</button>`;
+  panel.innerHTML=`<div style="font-size:48px;margin-bottom:0.5rem">${pct===100?'🎉':pct>=50?'👍':'💪'}</div><div style="font-family:'Nunito',sans-serif;font-weight:800;font-size:32px;color:${color}">${score}/${total}</div><div style="font-size:16px;color:${color};font-weight:700;margin-bottom:1rem">${pct}%</div><div id="poeme-total-${id}"></div><button class="btn" onclick="buildPoemeFiche('poeme-${id}-body',POEMES_DATA['${id}'])" style="margin-top:0.5rem">🔄 Recommencer</button>`;
   panel.scrollIntoView({behavior:'smooth'});
-  const q1=parseInt(document.getElementById(`poeme-qcm-score-${id}`)?.querySelector('span')?.textContent?.split('/')[0])||0;
-  const q2=parseInt(document.getElementById(`poeme-vf-score-${id}`)?.querySelector('span')?.textContent?.split('/')[0])||0;
-  const totalScore=q1+q2+score;const totalMax=data.questions.length+data.vf.length+total;const totalPct=Math.round(totalScore/totalMax*100);
+  poemeEnregistrerSiFini(id);
+}
+
+// Le résultat est enregistré une seule fois, quand les 3 parties sont validées (dans n'importe quel ordre)
+function poemeEnregistrerSiFini(id){
+  const data=POEME_SESSIONS[id];
+  if(!data||data.enregistre)return;
+  const sc=data.scores;
+  if(sc.qcm===undefined||sc.vf===undefined||sc.analyse===undefined)return;
+  data.enregistre=true;
+  const totalScore=sc.qcm+sc.vf+sc.analyse;const totalMax=data.questions.length+data.vf.length+2;const totalPct=Math.round(totalScore/totalMax*100);
+  const box=document.getElementById(`poeme-total-${id}`);
+  if(box)box.innerHTML=`<div style="font-size:14px;font-weight:700;margin-bottom:.5rem">Score total : ${totalScore}/${totalMax} — ${totalPct}%</div>`;
   if(state.student)saveResult({student:state.student,cls:state.studentCls,className:CLASSES[state.studentCls]?CLASSES[state.studentCls].name:state.studentCls,activity:'poeme_'+id,bookTitle:'Poème — '+data.titre,score:totalScore,total:totalMax,pct:totalPct,date:new Date().toLocaleDateString('fr-BE'),time:new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})});
 }
 
@@ -31797,7 +31822,7 @@ const PLAN_CATALOGUE = [
     { id:'poeme_cancre', label:'Le Cancre (Prévert)', icon:'😄', screen:'screen-poeme-cancre', fn:'renderPoemeCancre' },
     { id:'poeme_ecriture', label:"Page d'écriture (Prévert)", icon:'🐦', screen:'screen-poeme-ecriture', fn:'renderPoemeEcriture' },
     { id:'poeme_dormeur', label:'Le Dormeur du val (Rimbaud)', icon:'🌿', screen:'screen-poeme-dormeur', fn:'renderPoemeDormeur' },
-    { id:'poeme_sorciere', label:'Drôle de bonne femme (Carême)', icon:'🧙', screen:'screen-poeme-sorciere', fn:'renderPoemeSorciere' },
+    { id:'poeme_sorciere', label:'Drôle de bonne femme (Aubinais)', icon:'🧙', screen:'screen-poeme-sorciere', fn:'renderPoemeSorciere' },
   ]},
   { cat: '📖 Français', sub: '📰 Lecture — Informative', items: [
     { id:'fiche_baleine', label:'La Baleine Bleue', icon:'🐋', screen:'screen-fiche-baleine', fn:'renderFicheBaleine' },
