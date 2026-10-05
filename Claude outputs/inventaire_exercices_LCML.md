@@ -1270,7 +1270,15 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Signe de division « : » → « ÷ » (convention du site) : expressions, affichage, rappels et théorie.
 - Double clic pendant l'animation (300 ms) : l'opération était réduite deux fois / l'étape dupliquée → clic ignoré pendant l'animation.
 - Mélange Fisher–Yates ; nouvelle orthographe (maitrises, entraine-toi).
-- Question posée à Jeremy : à priorité égale dans deux parties indépendantes (« 3 × 5 + 4 × 2 », « (4 + 5) × (10 − 8) »), la fiche impose la gauche d'abord ; garder cette règle stricte ou accepter les deux ?
+- Décision de Jeremy (05/10, v556) : on garde la règle « de gauche à droite », mais deux calculs indépendants de même priorité (« 3 × 5 + 4 × 2 », « (4 + 5) × (10 − 8) ») sont acceptés dans les deux ordres, avec le message « Accepté ! … la règle, c'est de gauche à droite ». Les chaînes dépendantes (16 − 8 ÷ 4 × 3) restent strictes.
+
+### 05/10 — Maths › Opérations › L'ordre des opérations › Défi PEMDAS (`op_ordre_defi`, `fiches/defi_pemdas.html` + copies public et racine) — sw.js v556
+- 80 questions (3 niveaux QCM + saisie libre) vérifiées par programme : réponses justes, chaque étape de la résolution égale au résultat, propositions distinctes.
+- **Bonne réponse toujours en 1re position dans la banque** + mélange par tri aléatoire biaisé → Fisher–Yates (3 000 tirages : ≈ 1/3 par position). Questions aussi tirées par Fisher–Yates.
+- **Aucun résultat enregistré** → enregistrement en fin de défi (réussies du premier coup / 5, niveau).
+- Après une mauvaise réponse, la résolution pas à pas (qui donne la réponse) s'affichait et l'élève devait recliquer jusqu'à trouver → la question s'arrête : bonne réponse montrée (« La bonne réponse était … »), bouton « Question suivante ».
+- Signe « : » → « ÷ » (expressions, étapes, rappels) ; saisie stricte au niveau 4 ; maitrises, entraine-toi.
+- Tests jsdom : 4 niveaux, erreur → correction + passage, 4 / 5 enregistré une fois.
 
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
@@ -1583,7 +1591,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | Calcul écrit — Divisions écrites | `op_calcul_ecrit_division` | fiches/calcul-ecrit-division.html |  |
 | ⬜ | L'ordre des opérations | `op_ordre` | index › (?) | (code à localiser) |
 | ✅ 05/10 | L'ordre des opérations — Mission PEMDAS | `op_ordre_pemdas` | fiches/mission_pemdas.html |  |
-| ⬜ | L'ordre des opérations — Défi PEMDAS | `op_ordre_defi` | fiches/defi_pemdas.html |  |
+| ✅ 05/10 | L'ordre des opérations — Défi PEMDAS | `op_ordre_defi` | fiches/defi_pemdas.html |  |
 
 ### 🔢 Mathématiques — 📐 Grandeurs — Mesures de base
 
