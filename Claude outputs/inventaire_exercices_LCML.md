@@ -614,6 +614,12 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
   - Les 3 copies de la fiche sont identiques.
   - **Toute la rubrique L'adverbe est vérifiée.**
 
+- **05/10 — Grammaire › Le complément du nom › Le défi de l'attribut et du complément du nom** (30 phrases ; par partie : 4 épithètes, 3 compléments du nom, 3 attributs) :
+  - Les 30 phrases et leurs explications ont été relues et sont justes. Un nom attribut est inclus (« est devenu médecin »).
+  - La fiche était déjà en bon état : tirage Fisher–Yates équilibré par catégorie et résultat enregistré (`gram_attribut_cdn`). Les 3 boutons gardent un ordre fixe, ce qui est normal pour un classement.
+  - La copie public/ avait une coquille (« les sépara »). Les copies sont maintenant identiques ; la copie racine garde son bouton Retour.
+  - Nouvelle orthographe : paraitre, parait, fraiche, maitresse, maitrise, entrainement.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -738,7 +744,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ⬜ | Le verbe (fonction) — Trouver l'infinitif | `gram_verbe_infinitif` | index › startVerbeInfinitifExercise |  |
 | ⬜ | Le verbe (fonction) — Reconstituer les textes | `gram_verbe_texte` | index › startVerbeTextesExercise |  |
 | ⬜ | L'attribut du sujet | `gram_attribut` | index › (?) | (code à localiser) |
-| ⬜ | Attribut & Complément du nom | `gram_attribut_cdn` | fiches/grammaire_attribut_cdn.html |  |
+| ✅ 05/10 | Attribut & Complément du nom | `gram_attribut_cdn` | fiches/grammaire_attribut_cdn.html |  |
 | ⬜ | Le complément d'agent | `gram_agent` | index › (?) | (code à localiser) |
 | ⬜ | Analyse de phrases | `gram_analyse_phrase` | index › startAnalyseGlobale |  |
 
