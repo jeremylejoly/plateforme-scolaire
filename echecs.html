@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Les Échecs — Plateforme LCML</title>
+<link rel="icon" type="image/svg+xml" href="logo.svg"/>
+
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<!-- Chess.js (Logique des échecs) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+<!-- Canvas Confetti pour la victoire -->
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+<style>
+  :root {
+    /* Charte officielle LCML Néo-brutaliste */
+    --purple: #5B4FCF;
+    --purple-hover: #4A3FB8;
+    --purple-light: #EEF0FF;
+
+    --green: #1A9E75;
+    --green-light: #E2F5EE;
+    
+    --red: #D94F3D;
+    --red-light: #FDECEA;
+
+    --amber: #F59E0B;
+    --amber-light: #FEF3E2;
+
+    --bg: #FDFBF7;
+    --surface: #FFFFFF;
+    --surface-alt: #F4F1EB;
+
+    --text: #1A1A2E;
+    --text-muted: #6B7080;
+    --border: #1A1A2E;
+
+    --r-lg: 20px;
+    --r-md: 12px;
+    --r-sm: 8px;
+
+    --shadow-solid: 4px 4px 0px var(--border);
+    --shadow-solid-sm: 2px 2px 0px var(--border);
+    --shadow-solid-lg: 6px 6px 0px var(--border);
+    
+    /* Couleurs de l'échiquier */
+    --board-light: #FDFBF7;
+    --board-dark: #1A9E75;
+    --highlight: rgba(245, 158, 11, 0.6);
+    --possible-move: rgba(26, 26, 46, 0.2);
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background-color: var(--bg);
+    background-image: 
+      radial-gradient(rgba(26, 26, 46, 0.07) 1px, transparent 1px),
+      radial-gradient(rgba(91, 79, 207, 0.05) 1px, #FDFBF7 1px);
+    background-size: 24px 24px, 48px 48px;
+    background-position: 0 0, 12px 12px;
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 10px 10px 20px;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  /* ===== CONTENEUR PRINCIPAL ===== */
+  #app {
+    width: 100%;
+    max-width: 860px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  header.top {
+    text-align: center;
+    margin-bottom: 2px;
+  }
+  h1 {
+    font-family: 'Fredoka', sans-serif;
+    font-size: clamp(28px, 6vw, 38px);
+    font-weight: 800;
+    color: var(--text);
+    line-height: 1.1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+  .subtitle {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-top: 4px;
+    max-width: 440px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* Difficultés & Modes */
+  .difficulty-bar {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+  }
+  .diff-btn {
+    background: var(--surface);
+    border: 2px solid var(--border);
+    border-radius: var(--r-md);
+    padding: 7px 14px;
+    font-family: 'Fredoka', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+    cursor: pointer;
+    box-shadow: var(--shadow-solid-sm);
+    transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .diff-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 3px 3px 0px var(--border);
+  }
+  .diff-btn:active {
+    transform: translateY(1px);
+    box-shadow: 1px 1px 0px var(--border);
+  }
+  .diff-btn.active {
+    background: var(--purple);
+    color: #fff;
+    border-color: var(--purple-hover);
+    box-shadow: 2px 2px 0px var(--border);
+  }
+
+  /* Barre d'outils */
+  .actions-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 820px;
+    gap: 12px;
+    margin-top: 2px;
+  }
+  .tool-btn {
+    background: var(--surface);
+    border: 2px solid var(--border);
+    border-radius: var(--r-sm);
+    padding: 8px 16px;
+    font-family: 'Fredoka', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    color: var(--text);
+    box-shadow: var(--shadow-solid-sm);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.1s ease;
+  }
+  .tool-btn:hover {
+    background: var(--surface-alt);
+    transform: translateY(-1px);
+    box-shadow: 3px 3px 0px var(--border);
+  }
+  .tool-btn:active {
+    transform: translateY(1px);
+    box-shadow: 1px 1px 0px var(--border);
+  }
+
+  /* Statut de la partie */
+  .game-status {
+    background: var(--surface);
+    border: 2px solid var(--border);
+    border-radius: var(--r-md);
+    padding: 10px 16px;
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--text);
+    box-shadow: var(--shadow-solid-sm);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 480px;
+  }
+  .game-status.check { background: var(--red-light); border-color: var(--red); color: var(--red); }
+  .status-text {
+    flex-grow: 1;
+    text-align: center;
+  }
+
+  /* ===== CARTE DU JEU ET ÉCHIQUIER ===== */
+  .game-card {
+    background: var(--surface);
+    border: 3px solid var(--border);
+    border-radius: var(--r-lg);
+    box-shadow: var(--shadow-solid-lg);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    width: fit-content;
+    max-width: 100%;
+  }
+
+  .board-container {
+    border: 4px solid var(--border);
+    border-radius: var(--r-sm);
+    background: var(--border);
+    position: relative;
+    box-shadow: inset 0px 0px 10px rgba(0,0,0,0.2);
+  }
+
+  #board {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    grid-template-rows: repeat(8, 1fr);
+    width: min(calc(100vw - 72px), 480px);
+    height: min(calc(100vw - 72px), 480px);
+  }
+
+  .square {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    cursor: pointer;
+  }
+  
+  .square.light { background-color: var(--board-light); }
+  .square.dark { background-color: var(--board-dark); }
+  
+  .square.last-move.light { background-color: #F8E3A8; }
+  .square.last-move.dark { background-color: #8FBF5A; }
+  .square.highlight {
+    background-color: var(--highlight) !important;
+  }
+  .square.in-check {
+    background-image: radial-gradient(circle, rgba(217, 79, 61, 0.95) 0%, rgba(217, 79, 61, 0.55) 45%, transparent 75%);
+  }
+  
+  .square.possible-move::after {
+    content: '';
+    position: absolute;
+    width: 25%;
+    height: 25%;
+    border-radius: 50%;
+    background-color: var(--possible-move);
+  }
+  .square.possible-move.has-piece::after {
+    width: 80%;
+    height: 80%;
+    background-color: transparent;
+    border: 4px solid var(--possible-move);
+  }
+
+  /* Pièces */
+  .piece {
+    width: 80%;
+    height: 80%;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    transition: transform 0.1s;
+    pointer-events: none;
+  }
+  .square:active .piece {
+    transform: scale(0.9);
+  }
+  /* Pièces (SVG Cburnett intégrés : fonctionne sans connexion) */
+  .piece.wp { background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0NSIgaGVpZ2h0PSI0NSI+PHBhdGggZD0iTTIyLjUgOWMtMi4yMSAwLTQgMS43OS00IDQgMCAuODkuMjkgMS43MS43OCAyLjM4QzE3LjMzIDE2LjUgMTYgMTguNTkgMTYgMjFjMCAyLjAzLjk0IDMuODQgMi40MSA1LjAzLTMgMS4wNi03LjQxIDUuNTUtNy40MSAxMy40N2gyM2MwLTcuOTItNC40MS0xMi40MS03LjQxLTEzLjQ3IDEuNDctMS4xOSAyLjQxLTMgMi40MS01LjAzIDAtMi40MS0xLjMzLTQuNS0zLjI4LTUuNjIuNDktLjY3Ljc4LTEuNDkuNzgtMi4zOCAwLTIuMjEtMS43OS00LTQtNHoiIGZpbGw9IiNmZmYiIHN0cm9rZT0iIzAwMCIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjwvc3ZnPg=='); }
+  .piece.wb { background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0NSIgaGVpZ2h0PSI0NSI+PGcgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIiBzdHJva2U9IiMwMDAiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxnIGZpbGw9IiNmZmYiIHN0cm9rZS1saW5lY2FwPSJidXR0Ij48cGF0aCBkPSJNOSAzNmMzLjM5LS45NyAxMC4xMS40MyAxMy41LTIgMy4zOSAyLjQzIDEwLjExIDEuMDMgMTMuNSAyIDAgMCAxLjY1LjU0IDMgMi0uNjguOTctMS42NS45OS0zIC41LTMuMzktLjk3LTEwLjExLjQ2LTEzLjUtMS0zLjM5IDEuNDYtMTAuMTEuMDMtMTMuNSAxLTEuMzU0LjQ5LTIuMzIzLjQ3LTMtLjUgMS4zNTQtMS45NCAzLTIgMy0yeiIvPjxwYXRoIGQ9Ik0xNSAzMmMyLjUgMi41IDEyLjUgMi41IDE1IDAgLjUtMS41IDAtMiAwLTIgMC0yLjUtMi41LTQtMi41LTQgNS41LTEuNSA2LTExLjUtNS0xNS41LTExIDQtMTAuNSAxNC01IDE1LjUgMCAwLTIuNSAxLjUtMi41IDQgMCAwLS41LjUgMCAyeiIvPjxwYXRoIGQ9Ik0yNSA4YTIuNSAyLjUgMCAxIDEtNSAwIDIuNSAyLjUgMCAxIDEgNSAweiIvPjwvZz48cGF0aCBkPSJNMTcuNSAyNmgxME0xNSAzMGgxNW0tNy41LTE0LjV2NU0yMCAxOGg1IiBzdHJva2UtbGluZWpvaW49Im1pdGVyIi8+PC9nPjwvc3ZnPg=='); }
+  .piece.wn { background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0NSIgaGVpZ2h0PSI0NSI+PGcgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIiBzdHJva2U9IiMwMDAiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxwYXRoIGQ9Ik0yMiAxMGMxMC41IDEgMTYuNSA4IDE2IDI5SDE1YzAtOSAxMC02LjUgOC0yMSIgZmlsbD0iI2ZmZiIvPjxwYXRoIGQ9Ik0yNCAxOGMuMzggMi45MS01LjU1IDcuMzctOCA5LTMgMi0yLjgyIDQuMzQtNSA0LTEuMDQyLS45NCAxLjQxLTMuMDQgMC0zLTEgMCAuMTkgMS4yMy0xIDItMSAwLTQuMDAzIDEtNC00IDAtMiA2LTEyIDYtMTJzMS44OS0xLjkgMi0zLjVjLS43My0uOTk0LS41LTItLjUtMyAxLTEgMyAyLjUgMyAyLjVoMnMuNzgtMS45OTIgMi41LTNjMSAwIDEgMyAxIDMiIGZpbGw9IiNmZmYiLz48cGF0aCBkPSJNOS41IDI1LjVhLjUuNSAwIDEgMS0xIDAgLjUuNSAwIDEgMSAxIDB6bTUuNDMzLTkuNzVhLjUgMS41IDMwIDEgMS0uODY2LS41LjUgMS41IDMwIDEgMSAuODY2LjV6IiBmaWxsPSIjMDAwIi8+PC9nPjwvc3ZnPg=='); }
+  .piece.wr { background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0NSIgaGVpZ2h0PSI0NSI+PGcgZmlsbD0iI2ZmZiIgZmlsbC1ydWxlPSJldmVub2RkIiBzdHJva2U9IiMwMDAiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxwYXRoIGQ9Ik05IDM5aDI3di0zSDl2M3ptMy0zdi00aDIxdjRIMTJ6bS0xLTIyVjloNHYyaDVWOWg1djJoNVY5aDR2NSIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiLz48cGF0aCBkPSJNMzQgMTRsLTMgM0gxNGwtMy0zIi8+PHBhdGggZD0iTTMxIDE3djEyLjVIMTRWMTciIHN0cm9rZS1saW5lY2FwPSJidXR0IiBzdHJva2UtbGluZWpvaW49Im1pdGVyIi8+PHBhdGggZD0iTTMxIDI5LjVsMS41IDIuNWgtMjBsMS41LTIuNSIvPjxwYXRoIGQ9Ik0xMSAxNGgyMyIgZmlsbD0ibm9uZSIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciIvPjwvZz48L3N2Zz4='); }
+  .piece.wq { background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0NSIgaGVpZ2h0PSI0NSI+PGcgZmlsbD0iI2ZmZiIgZmlsbC1ydWxlPSJldmVub2RkIiBzdHJva2U9IiMwMDAiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxwYXRoIGQ9Ik04IDEyYTIgMiAwIDEgMS00IDAgMiAyIDAgMSAxIDQgMHptMTYuNS00LjVhMiAyIDAgMSAxLTQgMCAyIDIgMCAxIDEgNCAwek00MSAxMmEyIDIgMCAxIDEtNCAwIDIgMiAwIDEgMSA0IDB6TTE2IDguNWEyIDIgMCAxIDEtNCAwIDIgMiAwIDEgMSA0IDB6TTMzIDlhMiAyIDAgMSAxLTQgMCAyIDIgMCAxIDEgNCAweiIvPjxwYXRoIGQ9Ik05IDI2YzguNS0xLjUgMjEtMS41IDI3IDBsMi0xMi03IDExVjExbC01LjUgMTMuNS0zLTE1LTMgMTUtNS41LTE0VjI1TDcgMTRsMiAxMnoiIHN0cm9rZS1saW5lY2FwPSJidXR0Ii8+PHBhdGggZD0iTTkgMjZjMCAyIDEuNSAyIDIuNSA0IDEgMS41IDEgMSAuNSAzLjUtMS41IDEtMS41IDIuNS0xLjUgMi41LTEuNSAxLjUuNSAyLjUuNSAyLjUgNi41IDEgMTYuNSAxIDIzIDAgMCAwIDEuNS0xIDAtMi41IDAgMCAuNS0xLjUtMS0yLjUtLjUtMi41LS41LTIgLjUtMy41IDEtMiAyLjUtMiAyLjUtNC04LjUtMS41LTE4LjUtMS41LTI3IDB6IiBzdHJva2UtbGluZWNhcD0iYnV0dCIvPjxwYXRoIGQ9Ik0xMS41IDMwYzMuNS0xIDE4LjUtMSAyMiAwTTEyIDMzLjVjNi0xIDE1LTEgMjEgMCIgZmlsbD0ibm9uZSIvPjwvZz48L3N2Zz4='); }
+  .piece.wk { background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0NSIgaGVpZ2h0PSI0NSI+PGcgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIiBzdHJva2U9IiMwMDAiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxwYXRoIGQ9Ik0yMi41IDExLjYzVjZNMjAgOGg1IiBzdHJva2UtbGluZWpvaW49Im1pdGVyIi8+PHBhdGggZD0iTTIyLjUgMjVzNC41LTcuNSAzLTEwLjVjMCAwLTEtMi41LTMtMi41cy0zIDIuNS0zIDIuNWMtMS41IDMgMyAxMC41IDMgMTAuNSIgZmlsbD0iI2ZmZiIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiLz48cGF0aCBkPSJNMTEuNSAzN2M1LjUgMy41IDE1LjUgMy41IDIxIDB2LTdzOS00LjUgNi0xMC41Yy00LTYuNS0xMy41LTMuNS0xNiA0VjI3di0zLjVjLTMuNS03LjUtMTMtMTAuNS0xNi00LTMgNiA1IDEwIDUgMTBWMzd6IiBmaWxsPSIjZmZmIi8+PHBhdGggZD0iTTExLjUgMzBjNS41LTMgMTUuNS0zIDIxIDBtLTIxIDMuNWM1LjUtMyAxNS41LTMgMjEgMG0tMjEgMy41YzUuNS0zIDE1LjUtMyAyMSAwIi8+PC9nPjwvc3ZnPg=='); }
+  .piece.bp { background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0NSIgaGVpZ2h0PSI0NSI+PHBhdGggZD0iTTIyLjUgOWMtMi4yMSAwLTQgMS43OS00IDQgMCAuODkuMjkgMS43MS43OCAyLjM4QzE3LjMzIDE2LjUgMTYgMTguNTkgMTYgMjFjMCAyLjAzLjk0IDMuODQgMi40MSA1LjAzLTMgMS4wNi03LjQxIDUuNTUtNy40MSAxMy40N2gyM2MwLTcuOTItNC40MS0xMi40MS03LjQxLTEzLjQ3IDEuNDctMS4xOSAyLjQxLTMgMi40MS01LjAzIDAtMi40MS0xLjMzLTQuNS0zLjI4LTUuNjIuNDktLjY3Ljc4LTEuNDkuNzgtMi4zOCAwLTIuMjEtMS43OS00LTQtNHoiIHN0cm9rZT0iIzAwMCIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjwvc3ZnPg=='); }
+  .piece.bb { background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0NSIgaGVpZ2h0PSI0NSI+PGcgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIiBzdHJva2U9IiMwMDAiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxnIGZpbGw9IiMwMDAiIHN0cm9rZS1saW5lY2FwPSJidXR0Ij48cGF0aCBkPSJNOSAzNmMzLjM5LS45NyAxMC4xMS40MyAxMy41LTIgMy4zOSAyLjQzIDEwLjExIDEuMDMgMTMuNSAyIDAgMCAxLjY1LjU0IDMgMi0uNjguOTctMS42NS45OS0zIC41LTMuMzktLjk3LTEwLjExLjQ2LTEzLjUtMS0zLjM5IDEuNDYtMTAuMTEuMDMtMTMuNSAxLTEuMzU0LjQ5LTIuMzIzLjQ3LTMtLjUgMS4zNTQtMS45NCAzLTIgMy0yeiIvPjxwYXRoIGQ9Ik0xNSAzMmMyLjUgMi41IDEyLjUgMi41IDE1IDAgLjUtMS41IDAtMiAwLTIgMC0yLjUtMi41LTQtMi41LTQgNS41LTEuNSA2LTExLjUtNS0xNS41LTExIDQtMTAuNSAxNC01IDE1LjUgMCAwLTIuNSAxLjUtMi41IDQgMCAwLS41LjUgMCAyeiIvPjxwYXRoIGQ9Ik0yNSA4YTIuNSAyLjUgMCAxIDEtNSAwIDIuNSAyLjUgMCAxIDEgNSAweiIvPjwvZz48cGF0aCBkPSJNMTcuNSAyNmgxME0xNSAzMGgxNW0tNy41LTE0LjV2NU0yMCAxOGg1IiBzdHJva2U9IiNlY2VjZWMiIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiLz48L2c+PC9zdmc+'); }
+  .piece.bn { background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0NSIgaGVpZ2h0PSI0NSI+PGcgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIiBzdHJva2U9IiMwMDAiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxwYXRoIGQ9Ik0yMiAxMGMxMC41IDEgMTYuNSA4IDE2IDI5SDE1YzAtOSAxMC02LjUgOC0yMSIgZmlsbD0iIzAwMCIvPjxwYXRoIGQ9Ik0yNCAxOGMuMzggMi45MS01LjU1IDcuMzctOCA5LTMgMi0yLjgyIDQuMzQtNSA0LTEuMDQyLS45NCAxLjQxLTMuMDQgMC0zLTEgMCAuMTkgMS4yMy0xIDItMSAwLTQuMDAzIDEtNC00IDAtMiA2LTEyIDYtMTJzMS44OS0xLjkgMi0zLjVjLS43My0uOTk0LS41LTItLjUtMyAxLTEgMyAyLjUgMyAyLjVoMnMuNzgtMS45OTIgMi41LTNjMSAwIDEgMyAxIDMiIGZpbGw9IiMwMDAiLz48cGF0aCBkPSJNOS41IDI1LjVhLjUuNSAwIDEgMS0xIDAgLjUuNSAwIDEgMSAxIDB6bTUuNDMzLTkuNzVhLjUgMS41IDMwIDEgMS0uODY2LS41LjUgMS41IDMwIDEgMSAuODY2LjV6IiBmaWxsPSIjZWNlY2VjIiBzdHJva2U9IiNlY2VjZWMiLz48cGF0aCBkPSJNMjQuNTUgMTAuNGwtLjQ1IDEuNDUuNS4xNWMzLjE1IDEgNS42NSAyLjQ5IDcuOSA2Ljc1UzM1Ljc1IDI5LjA2IDM1LjI1IDM5bC0uMDUuNWgyLjI1bC4wNS0uNWMuNS0xMC4wNi0uODgtMTYuODUtMy4yNS0yMS4zNC0yLjM3LTQuNDktNS43OS02LjY0LTkuMTktNy4xNmwtLjUxLS4xeiIgZmlsbD0iI2VjZWNlYyIgc3Ryb2tlPSJub25lIi8+PC9nPjwvc3ZnPg=='); }
+  .piece.br { background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0NSIgaGVpZ2h0PSI0NSI+PGcgZmlsbC1ydWxlPSJldmVub2RkIiBzdHJva2U9IiMwMDAiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxwYXRoIGQ9Ik05IDM5aDI3di0zSDl2M3ptMy41LTdsMS41LTIuNWgxN2wxLjUgMi41aC0yMHptLS41IDR2LTRoMjF2NEgxMnoiIHN0cm9rZS1saW5lY2FwPSJidXR0Ii8+PHBhdGggZD0iTTE0IDI5LjV2LTEzaDE3djEzSDE0eiIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiLz48cGF0aCBkPSJNMTQgMTYuNUwxMSAxNGgyM2wtMyAyLjVIMTR6TTExIDE0VjloNHYyaDVWOWg1djJoNVY5aDR2NUgxMXoiIHN0cm9rZS1saW5lY2FwPSJidXR0Ii8+PHBhdGggZD0iTTEyIDM1LjVoMjFtLTIwLTRoMTltLTE4LTJoMTdtLTE3LTEzaDE3TTExIDE0aDIzIiBmaWxsPSJub25lIiBzdHJva2U9IiNlY2VjZWMiIHN0cm9rZS13aWR0aD0iMSIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciIvPjwvZz48L3N2Zz4='); }
+  .piece.bq { background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0NSIgaGVpZ2h0PSI0NSI+PGcgZmlsbC1ydWxlPSJldmVub2RkIiBzdHJva2U9IiMwMDAiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxnIHN0cm9rZT0ibm9uZSI+PGNpcmNsZSBjeD0iNiIgY3k9IjEyIiByPSIyLjc1Ii8+PGNpcmNsZSBjeD0iMTQiIGN5PSI5IiByPSIyLjc1Ii8+PGNpcmNsZSBjeD0iMjIuNSIgY3k9IjgiIHI9IjIuNzUiLz48Y2lyY2xlIGN4PSIzMSIgY3k9IjkiIHI9IjIuNzUiLz48Y2lyY2xlIGN4PSIzOSIgY3k9IjEyIiByPSIyLjc1Ii8+PC9nPjxwYXRoIGQ9Ik05IDI2YzguNS0xLjUgMjEtMS41IDI3IDBsMi41LTEyLjVMMzEgMjVsLS4zLTE0LjEtNS4yIDEzLjYtMy0xNC41LTMgMTQuNS01LjItMTMuNkwxNCAyNSA2LjUgMTMuNSA5IDI2eiIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiLz48cGF0aCBkPSJNOSAyNmMwIDIgMS41IDIgMi41IDQgMSAxLjUgMSAxIC41IDMuNS0xLjUgMS0xLjUgMi41LTEuNSAyLjUtMS41IDEuNS41IDIuNS41IDIuNSA2LjUgMSAxNi41IDEgMjMgMCAwIDAgMS41LTEgMC0yLjUgMCAwIC41LTEuNS0xLTIuNS0uNS0yLjUtLjUtMiAuNS0zLjUgMS0yIDIuNS0yIDIuNS00LTguNS0xLjUtMTguNS0xLjUtMjcgMHoiIHN0cm9rZS1saW5lY2FwPSJidXR0Ii8+PHBhdGggZD0iTTExIDM4LjVhMzUgMzUgMSAwIDAgMjMgMCIgZmlsbD0ibm9uZSIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiLz48cGF0aCBkPSJNMTEgMjlhMzUgMzUgMSAwIDEgMjMgMG0tMjEuNSAyLjVoMjBtLTIxIDNhMzUgMzUgMSAwIDAgMjIgMG0tMjMgM2EzNSAzNSAxIDAgMCAyNCAwIiBmaWxsPSJub25lIiBzdHJva2U9IiNlY2VjZWMiLz48L2c+PC9zdmc+'); }
+  .piece.bk { background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0NSIgaGVpZ2h0PSI0NSI+PGcgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIiBzdHJva2U9IiMwMDAiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxwYXRoIGQ9Ik0yMi41IDExLjYzVjYiIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiLz48cGF0aCBkPSJNMjIuNSAyNXM0LjUtNy41IDMtMTAuNWMwIDAtMS0yLjUtMy0yLjVzLTMgMi41LTMgMi41Yy0xLjUgMyAzIDEwLjUgMyAxMC41IiBmaWxsPSIjMDAwIiBzdHJva2UtbGluZWNhcD0iYnV0dCIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciIvPjxwYXRoIGQ9Ik0xMS41IDM3YzUuNSAzLjUgMTUuNSAzLjUgMjEgMHYtN3M5LTQuNSA2LTEwLjVjLTQtNi41LTEzLjUtMy41LTE2IDRWMjd2LTMuNWMtMy41LTcuNS0xMy0xMC41LTE2LTQtMyA2IDUgMTAgNSAxMFYzN3oiIGZpbGw9IiMwMDAiLz48cGF0aCBkPSJNMjAgOGg1IiBzdHJva2UtbGluZWpvaW49Im1pdGVyIi8+PHBhdGggZD0iTTMyIDI5LjVzOC41LTQgNi4wMy05LjY1QzM0LjE1IDE0IDI1IDE4IDIyLjUgMjQuNWwuMDEgMi4xLS4wMS0yLjFDMjAgMTggOS45MDYgMTQgNi45OTcgMTkuODVjLTIuNDk3IDUuNjUgNC44NTMgOSA0Ljg1MyA5IiBzdHJva2U9IiNlY2VjZWMiLz48cGF0aCBkPSJNMTEuNSAzMGM1LjUtMyAxNS41LTMgMjEgMG0tMjEgMy41YzUuNS0zIDE1LjUtMyAyMSAwbS0yMSAzLjVjNS41LTMgMTUuNS0zIDIxIDAiIHN0cm9rZT0iI2VjZWNlYyIvPjwvZz48L3N2Zz4='); }
+
+  /* ===== MODALES ===== */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(26, 26, 46, 0.65);
+    backdrop-filter: blur(4px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    z-index: 500;
+  }
+  .modal-overlay.open {
+    display: flex;
+  }
+  .modal-card {
+    background: var(--surface);
+    border: 3px solid var(--border);
+    border-radius: var(--r-lg);
+    box-shadow: var(--shadow-solid-lg);
+    padding: 24px;
+    max-width: 500px;
+    width: 100%;
+    animation: popModal 0.25s cubic-bezier(0.18, 1.25, 0.4, 1);
+    position: relative;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  @keyframes popModal {
+    from { transform: scale(0.85); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+  .modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+  .modal-title {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .modal-close-btn {
+    background: var(--surface-alt);
+    border: 2px solid var(--border);
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow-solid-sm);
+  }
+  .modal-body {
+    font-size: 14px;
+    color: var(--text);
+    line-height: 1.55;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .modal-rule-step {
+    display: flex;
+    gap: 10px;
+    background: var(--surface-alt);
+    border: 2px solid var(--border);
+    border-radius: var(--r-md);
+    padding: 10px 12px;
+    align-items: flex-start;
+  }
+  .modal-rule-icon {
+    font-size: 22px;
+    line-height: 1;
+    min-width: 30px;
+    text-align: center;
+  }
+
+  /* Modale de fin de partie */
+  .endgame-emoji {
+    font-size: 58px;
+    line-height: 1;
+    margin-bottom: 8px;
+    text-align: center;
+  }
+  .endgame-title {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 26px;
+    font-weight: 800;
+    text-align: center;
+  }
+  .modal-footer {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  .btn-submit {
+    background: var(--purple);
+    color: #fff;
+    border: 2px solid var(--border);
+    border-radius: var(--r-sm);
+    padding: 10px 20px;
+    font-family: 'Fredoka', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: var(--shadow-solid-sm);
+    transition: all 0.1s ease;
+  }
+  .btn-submit:hover {
+    background: var(--purple-hover);
+    transform: translateY(-1px);
+    box-shadow: 3px 3px 0px var(--border);
+  }
+</style>
+</head>
+<body>
+
+<div id="app">
+  <header class="top">
+    <h1>Les Échecs</h1>
+    <p class="subtitle">Protège ton roi et capture celui de l'adversaire dans ce grand classique de la stratégie !</p>
+  </header>
+
+  <div class="difficulty-bar" id="mode-selector">
+    <button class="diff-btn active" data-level="1">🟢 Débutant</button>
+    <button class="diff-btn" data-level="2">🟡 Intermédiaire</button>
+    <button class="diff-btn" data-level="3">🔴 Avancé</button>
+    <button class="diff-btn" data-level="0">👥 2 Joueurs</button>
+  </div>
+
+  <div class="actions-bar">
+    <button class="tool-btn" id="btn-rules">
+      <span>❓</span> Comment jouer ?
+    </button>
+    <button class="tool-btn" id="btn-restart">
+      <span>🔄</span> Nouvelle partie
+    </button>
+  </div>
+
+  <div class="game-status" id="game-status-bar">
+    <span class="status-text" id="status-text">C'est aux Blancs de jouer.</span>
+  </div>
+
+  <div class="game-card">
+    <div class="board-container">
+      <div id="board"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Modale : Règles du jeu -->
+<div class="modal-overlay" id="rules-modal">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h2 class="modal-title"><span>📘</span> Comment jouer aux Échecs ?</h2>
+      <button class="modal-close-btn" data-close="rules-modal">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-rule-step">
+        <div class="modal-rule-icon">♟️</div>
+        <div>
+          <strong>Le Pion :</strong> Avance d'une case en avant (deux au premier coup). Il capture en diagonale.
+        </div>
+      </div>
+      <div class="modal-rule-step">
+        <div class="modal-rule-icon">♜</div>
+        <div>
+          <strong>La Tour :</strong> Se déplace horizontalement ou verticalement sans limite de cases.
+        </div>
+      </div>
+      <div class="modal-rule-step">
+        <div class="modal-rule-icon">♞</div>
+        <div>
+          <strong>Le Cavalier :</strong> Se déplace en "L" (deux cases dans un sens, une case dans l'autre). Il peut sauter par-dessus d'autres pièces !
+        </div>
+      </div>
+      <div class="modal-rule-step">
+        <div class="modal-rule-icon">♝</div>
+        <div>
+          <strong>Le Fou :</strong> Se déplace uniquement en diagonale sans limite de cases.
+        </div>
+      </div>
+      <div class="modal-rule-step">
+        <div class="modal-rule-icon">♛</div>
+        <div>
+          <strong>La Dame (ou Reine) :</strong> C'est la pièce la plus puissante ! Elle combine les déplacements de la Tour et du Fou.
+        </div>
+      </div>
+      <div class="modal-rule-step">
+        <div class="modal-rule-icon">♚</div>
+        <div>
+          <strong>Le Roi :</strong> Se déplace d'une seule case dans n'importe quelle direction. S'il est menacé (« Échec ») et ne peut pas y échapper, c'est l'« Échec et Mat » et la partie est finie !
+        </div>
+      </div>
+      <div class="modal-rule-step">
+        <div class="modal-rule-icon">✨</div>
+        <div>
+          <strong>Coups spéciaux :</strong> le <em>roque</em> (le Roi avance de deux cases vers une Tour qui saute par-dessus lui), la <em>prise en passant</em> et la <em>promotion</em> (un pion qui atteint la dernière rangée devient une Dame). Les cases possibles s'affichent quand tu touches une pièce.
+        </div>
+      </div>
+      <div class="modal-rule-step">
+        <div class="modal-rule-icon">🤝</div>
+        <div>
+          <strong>Match nul :</strong> si un joueur ne peut plus bouger sans que son Roi soit en échec, c'est le <em>pat</em>. La partie est aussi nulle s'il ne reste pas assez de pièces pour mater, si la même position revient trois fois ou après 50 coups sans prise ni mouvement de pion.
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-submit" data-close="rules-modal">J'ai compris !</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modale : Fin de partie -->
+<div class="modal-overlay" id="endgame-modal">
+  <div class="modal-card">
+    <div class="endgame-emoji" id="endgame-emoji">🏆</div>
+    <h2 class="endgame-title" id="endgame-title">Échec et Mat !</h2>
+    <div class="modal-body" style="text-align: center; margin-top: 10px;">
+      <p id="endgame-desc">Les Blancs ont gagné.</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-submit" id="btn-play-again">Rejouer</button>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  // --- VARIABLES GLOBALES ---
+  const boardEl = document.getElementById('board');
+  const statusEl = document.getElementById('status-text');
+  const statusBar = document.getElementById('game-status-bar');
+
+  if (typeof Chess === 'undefined') {
+    statusEl.textContent = "Le jeu n'a pas pu se charger. Vérifie ta connexion internet puis recharge la page.";
+    return;
+  }
+
+  const game = new Chess();
+  let selectedSquare = null;
+  let lastMove = null;          // { from, to } du dernier coup joué
+  let currentDifficulty = 1;    // 0 = 2 joueurs, 1 = Débutant, 2 = Intermédiaire, 3 = Avancé
+  let gameId = 0;               // change à chaque nouvelle partie : annule un coup de l'ordinateur en attente
+  let aiThinking = false;
+  let endgameShown = false;
+
+  // --- INITIALISATION DU PLATEAU ---
+  function initBoard() {
+    boardEl.innerHTML = '';
+    const files = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+    for (let i = 0; i < 64; i++) {
+      const row = 8 - Math.floor(i / 8);
+      const col = i % 8;
+      const square = files[col] + row;
+
+      const sqEl = document.createElement('div');
+      // a1 est une case foncée, h1 une case claire
+      sqEl.className = 'square ' + ((row + col) % 2 === 1 ? 'dark' : 'light');
+      sqEl.dataset.square = square;
+      sqEl.addEventListener('click', () => onSquareClick(square));
+      boardEl.appendChild(sqEl);
+    }
+    updateBoardUI();
+  }
+
+  function findKingSquare(color) {
+    const board = game.board();
+    const files = 'abcdefgh';
+    for (let i = 0; i < 8; i++) {
+      for (let j = 0; j < 8; j++) {
+        const p = board[i][j];
+        if (p && p.type === 'k' && p.color === color) return files[j] + (8 - i);
+      }
+    }
+    return null;
+  }
+
+  function updateBoardUI() {
+    const checkedKing = game.in_check() ? findKingSquare(game.turn()) : null;
+
+    boardEl.querySelectorAll('.square').forEach(sqEl => {
+      const square = sqEl.dataset.square;
+      const piece = game.get(square);
+
+      sqEl.innerHTML = '';
+      sqEl.classList.remove('highlight', 'possible-move', 'has-piece', 'last-move', 'in-check');
+
+      if (piece) {
+        const pieceEl = document.createElement('div');
+        pieceEl.className = 'piece ' + piece.color + piece.type;
+        sqEl.appendChild(pieceEl);
+        sqEl.classList.add('has-piece');
+      }
+      if (lastMove && (square === lastMove.from || square === lastMove.to)) sqEl.classList.add('last-move');
+      if (square === checkedKing) sqEl.classList.add('in-check');
+      if (square === selectedSquare) sqEl.classList.add('highlight');
+    });
+
+    if (selectedSquare) {
+      game.moves({ square: selectedSquare, verbose: true }).forEach(m => {
+        const targetSq = boardEl.querySelector(`[data-square="${m.to}"]`);
+        if (targetSq) targetSq.classList.add('possible-move');
+      });
+    }
+
+    updateStatus();
+  }
+
+  function isHumanTurn() {
+    return currentDifficulty === 0 || game.turn() === 'w';
+  }
+
+  // --- LOGIQUE D'INTERACTION ---
+  function onSquareClick(square) {
+    if (game.game_over() || aiThinking || !isHumanTurn()) return;
+
+    if (selectedSquare) {
+      const move = game.moves({ square: selectedSquare, verbose: true }).find(m => m.to === square);
+      if (move) {
+        // Promotion automatique en Dame pour simplifier
+        const played = game.move({ from: selectedSquare, to: square, promotion: 'q' });
+        lastMove = { from: played.from, to: played.to };
+        selectedSquare = null;
+        updateBoardUI();
+
+        if (!game.game_over() && currentDifficulty > 0) {
+          aiThinking = true;
+          const id = gameId;
+          setTimeout(() => makeAIMove(id), 400);
+        }
+        return;
+      }
+    }
+
+    // Sélectionner (ou changer de sélection) si c'est une pièce du joueur dont c'est le tour
+    const piece = game.get(square);
+    selectedSquare = (piece && piece.color === game.turn() && square !== selectedSquare) ? square : null;
+    updateBoardUI();
+  }
+
+  function colorName(c) { return c === 'w' ? 'Blancs' : 'Noirs'; }
+
+  function drawReason() {
+    if (game.in_stalemate()) return 'pat';
+    if (game.insufficient_material()) return 'material';
+    if (game.in_threefold_repetition()) return 'repetition';
+    return 'fifty';
+  }
+
+  function updateStatus() {
+    let status;
+    statusBar.classList.remove('check');
+
+    if (game.in_checkmate()) {
+      const winner = game.turn() === 'w' ? 'b' : 'w';
+      status = `Échec et mat ! Les ${colorName(winner)} ont gagné.`;
+      showEndgame(winner);
+    } else if (game.in_draw()) {
+      status = 'Match nul !';
+      showEndgame('draw');
+    } else if (currentDifficulty > 0 && game.turn() === 'b') {
+      status = "L'ordinateur réfléchit…";
+    } else {
+      status = currentDifficulty > 0 ? "C'est à toi de jouer (Blancs)." : `C'est aux ${colorName(game.turn())} de jouer.`;
+      if (game.in_check()) {
+        status += ' Ton Roi est en échec !';
+        if (currentDifficulty === 0) status = `Échec ! Les ${colorName(game.turn())} doivent protéger leur Roi.`;
+        statusBar.classList.add('check');
+      }
+    }
+    statusEl.textContent = status;
+  }
+
+  // --- INTELLIGENCE ARTIFICIELLE (joue les Noirs) ---
+  const pieceValues = { 'p': 10, 'n': 30, 'b': 30, 'r': 50, 'q': 90, 'k': 900 };
+  const MATE = 100000;
+
+  function evaluateBoard(g) {
+    let total = 0;
+    const board = g.board();
+    for (let i = 0; i < 8; i++) {
+      for (let j = 0; j < 8; j++) {
+        const piece = board[i][j];
+        if (!piece) continue;
+        let val = pieceValues[piece.type];
+        // Petit bonus pour le contrôle du centre
+        if ((piece.type === 'p' || piece.type === 'n') && i >= 3 && i <= 4 && j >= 3 && j <= 4) val += 2;
+        total += piece.color === 'w' ? val : -val;
+      }
+    }
+    return total;
+  }
+
+  // Coups triés (captures d'abord) et mélangés à valeur égale : plus rapide et moins répétitif
+  function orderedMoves(g) {
+    const moves = g.moves({ verbose: true });
+    for (let i = moves.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [moves[i], moves[j]] = [moves[j], moves[i]];
+    }
+    moves.forEach(m => {
+      m.score = (m.captured ? 10 * pieceValues[m.captured] - pieceValues[m.piece] : 0) + (m.promotion ? 80 : 0);
+    });
+    return moves.sort((a, b) => b.score - a.score);
+  }
+
+  // Blancs = joueur qui maximise, Noirs = joueur qui minimise
+  function minimax(g, depth, alpha, beta, isMaximizingPlayer) {
+    if (depth === 0) {
+      if (g.in_check() && g.moves().length === 0) return isMaximizingPlayer ? -MATE : MATE;
+      return evaluateBoard(g);
+    }
+    const moves = orderedMoves(g);
+    if (moves.length === 0) {
+      // Mat (plus il est rapide, plus il compte) ou pat
+      if (g.in_check()) return isMaximizingPlayer ? -MATE - depth : MATE + depth;
+      return 0;
+    }
+    if (isMaximizingPlayer) {
+      let bestVal = -Infinity;
+      for (const move of moves) {
+        g.move(move);
+        bestVal = Math.max(bestVal, minimax(g, depth - 1, alpha, beta, false));
+        g.undo();
+        alpha = Math.max(alpha, bestVal);
+        if (beta <= alpha) break;
+      }
+      return bestVal;
+    } else {
+      let bestVal = Infinity;
+      for (const move of moves) {
+        g.move(move);
+        bestVal = Math.min(bestVal, minimax(g, depth - 1, alpha, beta, true));
+        g.undo();
+        beta = Math.min(beta, bestVal);
+        if (beta <= alpha) break;
+      }
+      return bestVal;
+    }
+  }
+
+  function chooseAIMove() {
+    const g = new Chess(game.fen());
+    const moves = orderedMoves(g);
+    if (moves.length === 0) return null;
+
+    let bestMove = moves[0];
+    let bestValue = Infinity;
+
+    if (currentDifficulty === 1) {
+      // Débutant : regarde un seul coup, avec beaucoup de hasard
+      for (const move of moves) {
+        g.move(move);
+        const value = evaluateBoard(g) + (Math.random() * 20 - 10);
+        g.undo();
+        if (value < bestValue) { bestValue = value; bestMove = move; }
+      }
+    } else {
+      // Intermédiaire : 2 demi-coups ; Avancé : 3 demi-coups
+      const depth = currentDifficulty === 2 ? 2 : 3;
+      for (const move of moves) {
+        g.move(move);
+        const value = minimax(g, depth - 1, -Infinity, bestValue, true);
+        g.undo();
+        if (value < bestValue) { bestValue = value; bestMove = move; }
+      }
+    }
+    return bestMove;
+  }
+
+  function makeAIMove(id) {
+    if (id !== gameId) return; // partie relancée entre-temps
+    if (game.game_over() || game.turn() !== 'b') { aiThinking = false; return; }
+
+    const move = chooseAIMove();
+    if (id !== gameId) return;
+    aiThinking = false;
+    if (!move) { updateBoardUI(); return; }
+
+    const played = game.move({ from: move.from, to: move.to, promotion: move.promotion || 'q' });
+    lastMove = { from: played.from, to: played.to };
+    updateBoardUI();
+  }
+
+  // --- GESTION DE L'INTERFACE (Boutons, Modales) ---
+  const rulesModal = document.getElementById('rules-modal');
+  const endgameModal = document.getElementById('endgame-modal');
+
+  function showModal(modal) { modal.classList.add('open'); }
+  function hideModal(modal) { modal.classList.remove('open'); }
+
+  document.getElementById('btn-rules').addEventListener('click', () => showModal(rulesModal));
+  document.querySelectorAll('[data-close="rules-modal"]').forEach(btn => {
+    btn.addEventListener('click', () => hideModal(rulesModal));
+  });
+  rulesModal.addEventListener('click', (e) => { if (e.target === rulesModal) hideModal(rulesModal); });
+
+  function showEndgame(winner) {
+    if (endgameShown) return;
+    endgameShown = true;
+
+    const emojiEl = document.getElementById('endgame-emoji');
+    const titleEl = document.getElementById('endgame-title');
+    const descEl = document.getElementById('endgame-desc');
+    let celebrate = false;
+
+    if (winner === 'draw') {
+      emojiEl.textContent = '🤝';
+      titleEl.textContent = 'Match nul !';
+      descEl.textContent = {
+        pat: "C'est un pat : le joueur dont c'est le tour ne peut plus bouger, mais son Roi n'est pas en échec.",
+        material: "Il ne reste plus assez de pièces pour faire échec et mat.",
+        repetition: "La même position est revenue trois fois.",
+        fifty: "50 coups ont été joués sans prise ni mouvement de pion."
+      }[drawReason()];
+    } else if (currentDifficulty > 0) {
+      titleEl.textContent = 'Échec et mat !';
+      if (winner === 'w') {
+        emojiEl.textContent = '🏆';
+        descEl.textContent = "Bravo, tu as battu l'ordinateur !";
+        celebrate = true;
+      } else {
+        emojiEl.textContent = '🤖';
+        descEl.textContent = "L'ordinateur a gagné cette fois-ci. Retente ta chance !";
+      }
+    } else {
+      emojiEl.textContent = '🏆';
+      titleEl.textContent = 'Échec et mat !';
+      descEl.textContent = `Les ${colorName(winner)} ont remporté la victoire.`;
+      celebrate = true;
+    }
+
+    if (celebrate && typeof confetti === 'function') {
+      confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, zIndex: 1000 });
+    }
+    // Laisser voir le coup final avant d'ouvrir la fenêtre
+    setTimeout(() => { if (endgameShown) showModal(endgameModal); }, 700);
+  }
+
+  document.getElementById('btn-play-again').addEventListener('click', () => {
+    hideModal(endgameModal);
+    startNewGame();
+  });
+  document.getElementById('btn-restart').addEventListener('click', startNewGame);
+
+  document.querySelectorAll('.diff-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      document.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('active'));
+      e.currentTarget.classList.add('active');
+      currentDifficulty = parseInt(e.currentTarget.dataset.level, 10);
+      startNewGame();
+    });
+  });
+
+  function startNewGame() {
+    gameId++;
+    aiThinking = false;
+    endgameShown = false;
+    hideModal(endgameModal);
+    game.reset();
+    selectedSquare = null;
+    lastMove = null;
+    initBoard();
+  }
+
+  // Lancement
+  initBoard();
+});
+</script>
+</body>
+</html>
