@@ -311,7 +311,8 @@ function exerciseWithTarget(cfg, targetExp){
     intLen = cfg.minInt + rint(cfg.maxInt - cfg.minInt + 1);
   }
   const intd=[]; for(let i=0;i<intLen;i++) intd.push(i===0 ? 1+rint(9) : rint(10));
-  const decd=[]; for(let j=0;j<decLen;j++) decd.push(rint(10));
+  // Pas de zéro inutile à la fin de la partie décimale (4,50 → on écrirait 4,5)
+  const decd=[]; for(let j=0;j<decLen;j++) decd.push(j===decLen-1 ? 1+rint(9) : rint(10));
   return {intd, decd, targetExp};
 }
 
@@ -331,6 +332,7 @@ let levelKey=1, cfg=LEVELS[1];
 let bank=[], queue=[], qIndex=0;
 let current=null, selectedExp=null, answered=false, score=0;
 let hintOn=false;
+let resultSaved=false;
 
 /* ============ Rendu ============ */
 function expForIntDigit(i){ return current.intd.length-1-i; }   // i=0 -> chiffre de gauche
@@ -427,7 +429,7 @@ function startSession(){
   cfg=LEVELS[levelKey];
   bank=buildBank(cfg);
   queue=shuffle(bank).slice(0,10);
-  qIndex=0; score=0;
+  qIndex=0; score=0; resultSaved=false;
   document.getElementById("endcard").classList.add("hidden");
   document.getElementById("game").classList.remove("hidden");
   loadQuestion();
@@ -488,11 +490,26 @@ function showEnd(){
   card.classList.remove("hidden");
   document.getElementById("endScore").textContent=score+" / 10";
   let msg;
-  if(score>=9) msg="Excellent ! Tu maîtrises les classes et les rangs. 🎉";
+  if(score>=9) msg="Excellent ! Tu maitrises les classes et les rangs. 🎉";
   else if(score>=7) msg="Très bien ! Encore un petit effort sur quelques rangs.";
   else if(score>=5) msg="C’est un bon début. Recommence pour progresser !";
-  else msg="Continue à t’entraîner : observe bien l’abaque pour t’aider.";
+  else msg="Continue à t’entrainer : observe bien l’abaque pour t’aider.";
   document.getElementById("endMsg").textContent=msg;
+  // Enregistrement du résultat (une seule fois par partie) — auparavant rien n'était enregistré
+  if(!resultSaved){
+    resultSaved=true;
+    try{
+      if(window.parent && window.parent.saveResult){
+        window.parent.saveResult({
+          activity:'num_entiers_decimaux_abaque',
+          bookTitle:'Sélectionne le bon chiffre — '+cfg.name,
+          score:score, total:10, pct:score*10,
+          date:new Date().toLocaleDateString('fr-BE'),
+          time:new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})
+        });
+      }
+    }catch(e){}
+  }
 }
 
 /* ============ Interface ============ */

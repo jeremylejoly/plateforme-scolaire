@@ -1030,6 +1030,13 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - « 8,205 − 5 millièmes » attendait « 8,2 » et refusait « 8,200 » ; « 1,01 − 1 centième » refusait « 1,00 » → zéros finaux inutiles acceptés. Réponse vide ignorée.
 - Mélange `sort(random)` → Fisher-Yates.
 
+### 05/10 — Maths › Décimaux › Arrondir les nombres (`num_decimaux_arrondir`, `fiches/decimaux_arrondir.html`, 3 copies) — sw.js v523
+- Générateur vérifié (3 000 parties) : réponses et placements toujours justes.
+- Écriture des arrondis : « arrondi au dixième » affichait « 18 » au lieu de « 18,0 », « au centième » « 3,6 » au lieu de « 3,60 » (boutons, repères, explications) → nombre de décimales fixé selon la précision demandée.
+- Bouton Valider sans choix / double clic : verrou ; comparaison des valeurs tolérante aux arrondis machine.
+- Retour dans l'exercice : la fiche est toujours rechargée (avant : l'écran de fin de la partie précédente restait affiché).
+- Nouvelle orthographe : maitrises, Entraine-toi.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1296,7 +1303,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ⬜ | La fraction d'une quantité | `num_fraction_quantite` | fiches/fraction_quantite.html |  |
 | ⬜ | Les nombres mixtes | `num_nombres_mixtes` | fiches/numeration_nombres_mixtes.html |  |
 | ⬜ | Les pourcentages | `num_pourcentages` | index › (?) | (code à localiser) |
-| ⬜ | Arrondir les décimaux | `num_decimaux_arrondir` | index › renderDecimauxArrondir |  |
+| ✅ 05/10 | Arrondir les décimaux | `num_decimaux_arrondir` | index › renderDecimauxArrondir |  |
 | ⬜ | Diviseurs & Nombres premiers | `num_diviseurs_premiers` | fiches/nombres_diviseurs.html |  |
 | ⬜ | Un peu de tout (numération) | `num_tout` | index › (?) | (code à localiser) |
 
