@@ -1060,6 +1060,11 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Astuce du niveau 1 donnait la réponse (« Trouve le poids qui indique 3/4 ») → règle générale sans la réponse.
 - 5 niveaux vérifiés : sommes justes, outils permettant d'équilibrer. Nouvelle orthographe : boite.
 
+### 05/10 — Maths › Fractions › Colorie les fractions (`num_fractions_colorie`, `fiches/colorie_les_fractions.html`, 3 copies) — sw.js v529
+- AUCUN résultat enregistré → score /10 enregistré à la fin (titre avec le niveau).
+- Score toujours 10/10 : on recommençait jusqu'à réussir et chaque réussite donnait le point → point au premier essai seulement ; après 2 essais ratés, une bonne réponse est coloriée et on passe à la suite. « Vérifier » sans case coloriée n'est plus compté comme un essai.
+- 84 items vérifiés (nombre de cases à colorier toujours entier). Nouvelle orthographe : maitrises, entrainement, entrainant.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1321,7 +1326,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | Fractions simples | `num_fractions_simples` | index › renderFractionsSimples |  |
 | ✅ 05/10 | Fractions complexes | `num_fractions_complexes` | index › renderFractionsExercice |  |
 | ✅ 05/10 | La balance des fractions | `num_balance_fractions` | fiches/balance_fractions.html |  |
-| ⬜ | Colorie les fractions | `num_fractions_colorie` | fiches/colorie_les_fractions.html |  |
+| ✅ 05/10 | Colorie les fractions | `num_fractions_colorie` | fiches/colorie_les_fractions.html |  |
 | ⬜ | Opérations de fractions | `num_fractions_operations` | fiches/calculs_fractions.html |  |
 | ⬜ | La fraction d'une quantité | `num_fraction_quantite` | fiches/fraction_quantite.html |  |
 | ⬜ | Les nombres mixtes | `num_nombres_mixtes` | fiches/numeration_nombres_mixtes.html |  |

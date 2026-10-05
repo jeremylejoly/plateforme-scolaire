@@ -723,7 +723,7 @@
         <div class="welcome-body">
           <h2>Les Calculs de Fractions</h2>
           <p>
-            Bienvenue dans cette activité de numération interactive ! Entraîne-toi à résoudre des additions, soustractions et multiplications de fractions grâce à nos schémas d'aide interactifs.
+            Bienvenue dans cette activité de numération interactive ! Entraine-toi à résoudre des additions, soustractions et multiplications de fractions grâce à nos schémas d'aide interactifs.
           </p>
           
           <div class="level-grid">
@@ -842,7 +842,7 @@
           <img src="./trophy_success.jpg" alt="Trophée de réussite">
         </div>
         <h2 id="successTitle">Félicitations !</h2>
-        <p id="successDesc">Tu as terminé ce niveau avec succès et montré ta maîtrise des fractions !</p>
+        <p id="successDesc">Tu as terminé ce niveau avec succès et montré ta maitrise des fractions !</p>
         
         <div class="stats-summary">
           <div class="stat-box">
@@ -879,6 +879,10 @@
     
     // Algorithmic generator history to prevent repeating recent questions
     let questionHistory = [];
+    // Résultat de chaque calcul : 'correct' (1er essai, sans aide), 'helped', 'wrong'
+    let questionResults = [];
+    let attemptsOnQuestion = 0;
+    let revealed = false;
 
     // Animation variables for equivalent fraction slicing
     let animProgress = 0;
@@ -1133,6 +1137,7 @@
       currentQuestionIndex = 0;
       score = 0;
       questions = buildLevelQuestions(levelNum);
+      questionResults = [];
       helpedOnCurrentQuestion = false;
       
       // Interface updates
@@ -1143,7 +1148,7 @@
       let lvlTitle = "";
       if (levelNum === 1) lvlTitle = "Niveau 1 : Dénominateurs Identiques";
       else if (levelNum === 2) lvlTitle = "Niveau 2 : Dénominateurs Multiples";
-      else if (levelNum === 3) lvlTitle = "Niveau 3 : Multiplications";
+      else if (levelNum === 3) lvlTitle = "Niveau 3 : Nombres mixtes et multiplications";
       document.getElementById('levelTitleDisplay').innerText = lvlTitle;
       
       levelStartTime = Date.now();
@@ -1170,8 +1175,8 @@
         if (idx === currentQuestionIndex) {
           dot.classList.add('active');
         } else if (idx < currentQuestionIndex) {
-          // If already completed, check if they used help
-          dot.classList.add('correct'); // fallback
+          // Avant : toutes les questions passées s'affichaient en vert, même ratées
+          dot.classList.add(questionResults[idx] || 'correct');
         }
       });
     }
@@ -1179,6 +1184,10 @@
     // ---------- LOAD QUESTION ----------
     function loadQuestion() {
       helpedOnCurrentQuestion = false;
+      attemptsOnQuestion = 0;
+      revealed = false;
+      const bv = document.getElementById('btnValidate');
+      if (bv && bv.dataset.libelle) { bv.innerHTML = bv.dataset.libelle; }
       questionStartTime = Date.now();
       closeHelpPanel();
       
@@ -1419,7 +1428,12 @@
 
     // ---------- SUBMIT & CHECK ANSWER ----------
     function checkAnswer() {
+      if (revealed) { nextQuestion(); return; }
+      if (document.getElementById('btnValidate').disabled) return;
       const q = questions[currentQuestionIndex];
+      // Une case vide n'est pas comptée comme un essai
+      const vides = Array.from(document.querySelectorAll('.math-workspace input')).filter(i => i.value.trim() === '');
+      if (vides.length) { vides[0].focus(); return; }
       const feedback = document.getElementById('feedbackMessage');
       
       let userCorrect = false;
@@ -1513,7 +1527,8 @@
         } else {
           const ansNum = parseInt(document.getElementById('ansNum').value);
           const ansDen = parseInt(document.getElementById('ansDen').value);
-          userCorrect = (ansNum === q.ans_num && ansDen === q.ans_den);
+          // Toute fraction égale est acceptée (6/12 ou 1/2)
+          userCorrect = ansDen > 0 && ansNum * q.ans_den === ansDen * q.ans_num;
           if (!userCorrect) {
             errorDetail = `Pour multiplier deux fractions, multiplie les numérateurs ensemble (${q.n1} × ${q.n2} = <strong>${q.ans_num}</strong>) et les dénominateurs ensemble (${q.d1} × ${q.d2} = <strong>${q.ans_den}</strong>). Résultat : <strong>${q.ans_num}/${q.ans_den}</strong>.`;
           }
@@ -1528,14 +1543,11 @@
         
         // Track score and progress states
         const dots = document.querySelectorAll('#progressBar .progress-dot');
-        if (dots[currentQuestionIndex]) {
-          if (helpedOnCurrentQuestion) {
-            dots[currentQuestionIndex].classList.add('helped');
-          } else {
-            dots[currentQuestionIndex].classList.add('correct');
-            score++;
-          }
-        }
+        // Le point ne compte qu'au premier essai et sans l'aide (avant : on pouvait réessayer à l'infini)
+        if (helpedOnCurrentQuestion) questionResults[currentQuestionIndex] = 'helped';
+        else if (attemptsOnQuestion > 0) questionResults[currentQuestionIndex] = 'wrong';
+        else { questionResults[currentQuestionIndex] = 'correct'; score++; }
+        if (dots[currentQuestionIndex]) dots[currentQuestionIndex].classList.add(questionResults[currentQuestionIndex]);
         
         document.getElementById('currentScore').innerText = score;
         
@@ -1554,7 +1566,18 @@
         if (dots[currentQuestionIndex]) {
           dots[currentQuestionIndex].classList.add('wrong');
         }
-        
+        attemptsOnQuestion++;
+        if (attemptsOnQuestion >= 2) {
+          // Après 2 essais ratés : on montre la correction et on passe à la suite (0 point)
+          revealed = true;
+          questionResults[currentQuestionIndex] = 'wrong';
+          feedback.innerHTML = `Voici la correction. <br><span style="font-weight: 500; font-size: 0.95rem;">${errorDetail}</span>`;
+          document.querySelectorAll('.math-workspace input').forEach(i => i.disabled = true);
+          const bv = document.getElementById('btnValidate');
+          if (!bv.dataset.libelle) bv.dataset.libelle = bv.innerHTML;
+          bv.innerHTML = 'Question suivante ➔';
+          return;
+        }
         // Re-focus first input to let them correct
         setupAutofocus();
       }
@@ -1583,11 +1606,11 @@
       
       // Custom feedback text based on performance
       let title = "Félicitations !";
-      let desc = "Tu as validé ce niveau. Continue à t'entraîner !";
+      let desc = "Tu as validé ce niveau. Continue à t'entrainer !";
       
       if (score === 5) {
         title = "Parfait ! 🏆";
-        desc = "Quel exploit ! Sans faute ! Tu maîtrises ces calculs sur les fractions à la perfection.";
+        desc = "Quel exploit ! Sans faute ! Tu maitrises ces calculs sur les fractions à la perfection.";
       } else if (score >= 3) {
         title = "Super Travail ! 👍";
         desc = "Très bon score ! Tu as une bonne compréhension des calculs de fractions.";
@@ -1609,6 +1632,18 @@
       }
       
       showScreen('successScreen');
+      // Enregistrement du résultat (auparavant rien n'était enregistré)
+      try {
+        if (window.parent && window.parent.saveResult) {
+          window.parent.saveResult({
+            activity: 'num_fractions_operations',
+            bookTitle: 'Opérations de fractions — niveau ' + currentLevel,
+            score: score, total: 5, pct: score * 20,
+            date: new Date().toLocaleDateString('fr-BE'),
+            time: new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })
+          });
+        }
+      } catch (e) {}
     }
 
     // ---------- VISUAL HELP RENDERING ----------
