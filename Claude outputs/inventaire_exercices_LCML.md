@@ -363,6 +363,15 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
   - Les mots en gras des explications s'affichent correctement.
   - Nouvelle orthographe : entrainer.
 
+- **05/10 — Conjugaison › Passé composé › 4. Participe avec Être (QCM)** (40 questions) :
+  - Les propositions n'étaient pas mélangées : la bonne réponse était le plus souvent la A. Elles sont maintenant mélangées au hasard à chaque question.
+  - Le résultat n'était jamais enregistré. C'est corrigé (`vocabulaire_pc_etre_qcm`).
+  - Cinq phrases n'étaient pas au passé composé : c'étaient des formes passives ou des participes adjectifs. Leurs verbes se conjuguent avec *avoir* au passé composé.
+    - Ces phrases étaient : la tarte est cuite, la bouteille est cassée, les clés sont retrouvées, la vitre est brisée, les jouets sont rangés.
+    - Elles sont remplacées par de vrais verbes avec être : sortie, montée, revenues, née, restés.
+  - Les mots en gras des explications s'affichent correctement.
+  - Nouvelle orthographe : entrainement, boite, maitrisé.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -532,7 +541,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | Passé composé ou pas ? | `vocabulaire_pc_identifier` | fiches/conjugaison_pc_identifier.html |  |
 | ✅ 05/10 | Participe passé avec Avoir (QCM) | `vocabulaire_pc_avoir_qcm` | fiches/conjugaison_pc_avoir_qcm.html | QCM: bonne réponse en position 1 dans 30/40 questions, options non mélangées |
 | ✅ 05/10 | Participe passé avec Avoir (Écriture) | `vocabulaire_pc_avoir_trous` | fiches/conjugaison_pc_avoir_trous.html |  |
-| ⬜ | Participe passé avec Être (QCM) | `vocabulaire_pc_etre_qcm` | fiches/conjugaison_pc_etre_qcm.html | QCM: bonne réponse en position 1 dans 24/40 questions, options non mélangées |
+| ✅ 05/10 | Participe passé avec Être (QCM) | `vocabulaire_pc_etre_qcm` | fiches/conjugaison_pc_etre_qcm.html | QCM: bonne réponse en position 1 dans 24/40 questions, options non mélangées |
 | ⬜ | Participe passé avec Être (Écriture) | `vocabulaire_pc_etre_trous` | fiches/conjugaison_pc_etre_trous.html |  |
 | ⬜ | Accords avec Avoir (QCM) | `vocabulaire_pc_avoir_accord_qcm` | fiches/conjugaison_pc_avoir_accord_qcm.html | QCM: bonne réponse en position 1 dans 40/40 questions, options non mélangées |
 | ⬜ | Accords avec Avoir (Écriture) | `vocabulaire_pc_avoir_accord_trous` | fiches/conjugaison_pc_avoir_accord_trous.html |  |
