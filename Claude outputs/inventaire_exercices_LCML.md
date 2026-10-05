@@ -67,6 +67,15 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
   - Passé sur le moteur commun.
   - Nombre d'espèces nuancé (3 selon les scientifiques) ; « ils peuvent pleurer » reformulé.
 
+- **05/10 — Lecture informative › Léonard de Vinci** (aafff46) :
+  - Passé sur le moteur commun.
+  - Nombre de pages des carnets corrigé ; écriture en miroir et sommeil présentés comme des hypothèses.
+
+- **05/10 — Lecture informative › Charlemagne** (0e1523d) :
+  - Passé sur le moteur commun.
+  - Aix-la-Chapelle est à 40 km de Waimes, pas 80 (texte et question 4).
+  - Date de naissance incertaine ; deux précisions.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -99,9 +108,9 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | Statut | Exercice | id | Source | Signal automatique |
 |---|---|---|---|---|
 | ✅ 05/10 (9976a57) | La Baleine Bleue | `fiche_baleine` | index › renderFicheBaleine | QCM: bonne réponse en position 2 dans 3/5 questions, options non mélangées ; Aucun hasard : mêmes questions, même ordre à chaque partie |
-| ⬜ | Léonard de Vinci | `fiche_vinci` | index › renderFicheVinci | QCM: bonne réponse en position 2 dans 4/5 questions, options non mélangées ; Aucun hasard : mêmes questions, même ordre à chaque partie |
+| ✅ 05/10 (aafff46) | Léonard de Vinci | `fiche_vinci` | index › renderFicheVinci | QCM: bonne réponse en position 2 dans 4/5 questions, options non mélangées ; Aucun hasard : mêmes questions, même ordre à chaque partie |
 | ⬜ | La Tour Eiffel | `fiche_eiffel` | index › renderFicheEiffel | QCM: bonne réponse en position 1 dans 3/5 questions, options non mélangées ; Aucun hasard : mêmes questions, même ordre à chaque partie |
-| ⬜ | Charlemagne | `fiche_charlemagne` | index › renderFicheCharlemagne | Aucun hasard : mêmes questions, même ordre à chaque partie |
+| ✅ 05/10 (0e1523d) | Charlemagne | `fiche_charlemagne` | index › renderFicheCharlemagne | Aucun hasard : mêmes questions, même ordre à chaque partie |
 | ⬜ | Albert Einstein | `fiche_einstein` | index › renderFicheEinstein | Aucun hasard : mêmes questions, même ordre à chaque partie |
 | ⬜ | L'Atomium | `fiche_atomium` | index › renderFicheAtomium | Aucun hasard : mêmes questions, même ordre à chaque partie |
 | ⬜ | Le Taj Mahal | `fiche_tajmahal` | index › renderFicheTajMahal | Aucun hasard : mêmes questions, même ordre à chaque partie |
