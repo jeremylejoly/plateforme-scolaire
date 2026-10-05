@@ -664,6 +664,13 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
   - Nouvelle orthographe : croute, iles, maitrises.
   - **Toute la rubrique Le sujet est vérifiée.**
 
+- **05/10 — Grammaire › Fonctions › Le sujet › Les 4 classes du sujet** (39 phrases ; par partie : 4 GN, 2 noms propres, 2 infinitifs, 2 pronoms ; repérer le sujet puis choisir sa classe) :
+  - **Score gonflé.** Une réponse juste à la seconde chance rapportait le point. Le point n'est maintenant compté qu'au premier essai, comme dans « Repérer le sujet ».
+  - Les 39 phrases et explications ont été relues et sont justes. On y trouve des sujets inversés, des sujets coordonnés (« Tintin et Milou ») et des groupes infinitifs.
+  - Le résultat était déjà enregistré (`gram_classes_sujet`).
+  - Le mélange utilise maintenant la méthode Fisher–Yates.
+  - Nouvelle orthographe : maitrises, entrainement.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -782,7 +789,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 |---|---|---|---|---|
 | ✅ 05/10 | Le sujet — Repérer le sujet | `sujet_phrase` | index › startSujetExercise |  |
 | ✅ 05/10 | Le sujet — Reconstituer les textes | `gram_sujet_texte` | index › startSujetTextesExercise |  |
-| ⬜ | Le sujet — Les 4 classes du sujet | `gram_classes_sujet` | index › startSujetClassesExercise |  |
+| ✅ 05/10 | Le sujet — Les 4 classes du sujet | `gram_classes_sujet` | index › startSujetClassesExercise |  |
 | ⬜ | Le verbe (fonction) — Repérer le verbe | `verbe_phrase` | index › startVerbeExercise |  |
 | ✅ 05/10 | Le verbe (fonction) — Infinitif et groupe | `gram_verbe_groupe` | index › startVerbeGroupeExercise |  |
 | ⬜ | Le verbe (fonction) — Trouver l'infinitif | `gram_verbe_infinitif` | index › startVerbeInfinitifExercise |  |

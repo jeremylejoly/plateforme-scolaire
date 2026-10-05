@@ -2625,14 +2625,14 @@ window.EXERCICES_VERBE = [
     explanation: "Le verbe principal est le verbe composé « avait reçu » (verbe recevoir au plus-que-parfait). Il faut sélectionner l'auxiliaire « avait » et le participe passé « reçu »."
   },
   {
-    text: "Le roi eut lu le message secret dans sa chambre .",
+    text: "Le roi avait lu le message secret dans sa chambre .",
     words: 2,
     separated: false,
     subject_pos: "before",
     tokens: [
       { text: "Le" },
       { text: "roi" },
-      { text: "eut", verbe: true },
+      { text: "avait", verbe: true },
       { text: "lu", verbe: true },
       { text: "le" },
       { text: "message" },
@@ -2642,7 +2642,7 @@ window.EXERCICES_VERBE = [
       { text: "chambre" },
       { text: ".", punctuation: true }
     ],
-    explanation: "Le verbe principal est le verbe composé « eut lu » (verbe lire au passé antérieur). Il faut sélectionner l'auxiliaire « eut » et le participe passé « lu »."
+    explanation: "Le verbe principal est le verbe composé « avait lu » (verbe lire au plus-que-parfait). Il faut sélectionner l'auxiliaire « avait » et le participe passé « lu »."
   },
   {
     text: "Dans la cour sont entrés deux grands camions de livraison .",
@@ -2903,7 +2903,7 @@ window.EXERCICES_VERBE = [
     explanation: "Le verbe principal est le verbe composé passif « a été construit » (verbe construire au passé composé passif). Les mots de la négation « n' » et « pas » ne font pas partie du verbe."
   },
   {
-    text: "La verrière avait rapidement été réparée après la tempête .",
+    text: "La verrière avait été rapidement réparée après la tempête .",
     words: 3,
     separated: true,
     subject_pos: "before",
@@ -2911,8 +2911,8 @@ window.EXERCICES_VERBE = [
       { text: "La" },
       { text: "verrière" },
       { text: "avait", verbe: true },
-      { text: "rapidement" },
       { text: "été", verbe: true },
+      { text: "rapidement" },
       { text: "réparée", verbe: true },
       { text: "après" },
       { text: "la" },
@@ -2922,7 +2922,7 @@ window.EXERCICES_VERBE = [
     explanation: "Le verbe principal est le verbe composé passif « avait été réparée » (verbe réparer au plus-que-parfait passif). L'adverbe « rapidement » ne fait pas partie du verbe."
   },
   {
-    text: "Le trophée a brillamment été remporté par notre école .",
+    text: "Le trophée a été brillamment remporté par notre école .",
     words: 3,
     separated: true,
     subject_pos: "before",
@@ -2930,8 +2930,8 @@ window.EXERCICES_VERBE = [
       { text: "Le" },
       { text: "trophée" },
       { text: "a", verbe: true },
-      { text: "brillamment" },
       { text: "été", verbe: true },
+      { text: "brillamment" },
       { text: "remporté", verbe: true },
       { text: "par" },
       { text: "notre" },
