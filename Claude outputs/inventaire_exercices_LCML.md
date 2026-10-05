@@ -964,6 +964,15 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Moteur déjà corrigé avec Soignes (enregistrement + mélange).
 - Règles d'échecs exactes (contrôle des 4 cases centrales, petit roque, danger de sortir la dame trop tôt). Questions cohérentes entre elles. ⚠️ Audio non réécouté.
 
+### 05/10 — Savoir écouter : Notice de l'étagère Lyra (`savoir_ecouter_8`) — aucun changement de contenu
+- Moteur déjà corrigé avec Soignes (enregistrement + mélange).
+- Questions cohérentes entre elles (charge max 5 kg ↔ pas de piles de gros livres ; vis pas serrées à fond pour ajuster ; aide pour la fixation murale). ⚠️ Audio non réécouté. Les 8 « Savoir écouter » sont maintenant vérifiés.
+
+### 05/10 — Maths › Grands nombres › Lire un nombre (`num_lire`, index › renderNumLire + exercices_maths.js › NUM_LIRE_BANQUE) — sw.js v511, exercices_maths.js?v=20261005a
+- Les 30 lectures attendues vérifiées par programme (convertisseur belge : septante, nonante, quatre-vingt(s), cent(s), et-un) : toutes justes, aucune mauvaise proposition identique à la bonne.
+- Nouvelle orthographe appliquée aux 120 propositions : traits d'union entre tous les numéraux (quarante-trois, cinq-cents, vingt-et-un, six-cent-cinquante-quatre-mille) ; « million(s) » reste séparé par des espaces (nom, pas numéral).
+- Mélanges `sort(random)` → Fisher-Yates (questions et propositions). Entrainer.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1202,13 +1211,13 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | Savoir écouter - Hautes Fagnes | `savoir_ecouter_5` | index › startSavoirEcouter |  |
 | ✅ 05/10 | Savoir écouter - L'atelier de Sandy | `savoir_ecouter_6` | index › startSavoirEcouter |  |
 | ✅ 05/10 | Savoir écouter - Au club d'échecs | `savoir_ecouter_7` | index › startSavoirEcouter |  |
-| ⬜ | Savoir écouter - Notice de l'étagère Lyra | `savoir_ecouter_8` | index › startSavoirEcouter |  |
+| ✅ 05/10 | Savoir écouter - Notice de l'étagère Lyra | `savoir_ecouter_8` | index › startSavoirEcouter |  |
 
 ### 🔢 Mathématiques — 🔢 Numération
 
 | Statut | Exercice | id | Source | Signal automatique |
 |---|---|---|---|---|
-| ⬜ | Lire un nombre | `num_lire` | index › renderNumLire |  |
+| ✅ 05/10 | Lire un nombre | `num_lire` | index › renderNumLire |  |
 | ⬜ | Écrire un nombre | `num_ecrire` | index › renderNumEcrire |  |
 | ⬜ | Décomposer un nombre | `num_decomposer` | index › renderNumDecomposer |  |
 | ⬜ | Classer des nombres | `num_classer` | index › renderNumClasser |  |
