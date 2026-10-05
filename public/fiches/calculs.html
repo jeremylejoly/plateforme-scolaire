@@ -275,7 +275,7 @@ function buildSheet(){
 }
 
 /* ============ État + rendu ============ */
-let state = { chrono:false, sheet:[], t0:0, raf:null, frozen:null, started:false };
+let state = { chrono:false, sheet:[], t0:0, raf:null, frozen:null, started:false, saved:false };
 
 function begin(withChrono){
   state.chrono = withChrono;
@@ -291,7 +291,7 @@ function goStart(){
 
 function newSheet(){
   stopTimer();
-  state.frozen=null; state.started=false;
+  state.frozen=null; state.started=false; state.saved=false;
   state.sheet = buildSheet();
   document.getElementById('banner').innerHTML='';
   renderGrid();
@@ -369,7 +369,40 @@ function readVal(i){
   const inp=document.querySelector(`input[data-i="${i}"]`);
   return inp.value.trim();
 }
+// Enregistrement : une seule fois par fiche, au premier « Vérifier » (ou avant « Voir les réponses »)
+// (avant : aucun résultat n'était jamais enregistré)
+function countCorrect(){
+  let correct=0, filled=0;
+  state.sheet.forEach((it,i)=>{
+    const v=readVal(i);
+    if(v==='') return;
+    filled++;
+    if(/^\d+$/.test(v) && Number(v)===it.answer) correct++;
+  });
+  return {correct, filled};
+}
+function saveSheet(correct){
+  if(state.saved) return;
+  state.saved=true;
+  if(!(window.parent && typeof window.parent.saveResult === 'function')) return;
+  try{
+    const total=state.sheet.length;
+    const chronoTxt=(state.chrono && state.frozen!==null) ? ` (chrono ${fmt(state.frozen)})` : '';
+    window.parent.saveResult({
+      activity:'op_4_operations_calculs',
+      bookTitle:"Fiche d'entrainement — 20 calculs"+chronoTxt,
+      score:correct, total:total, pct:Math.round(correct/total*100),
+      date:new Date().toLocaleDateString('fr-BE'),
+      time:new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})
+    });
+  }catch(e){ console.warn('Erreur sauvegarde fiche calculs', e); }
+}
 function checkAll(){
+  // Fiche vide : on ne corrige pas (et on n'arrête pas le chrono)
+  if(countCorrect().filled===0){
+    document.getElementById('banner').innerHTML='<div class="banner ok"><span class="emoji">✏️</span><div><div class="msg">Écris d\'abord tes réponses.</div></div></div>';
+    return;
+  }
   freezeTimer();
   let correct=0, filled=0;
   state.sheet.forEach((it,i)=>{
@@ -379,13 +412,15 @@ function checkAll(){
     const v=inp.value.trim();
     if(v==='') return;
     filled++;
-    if(Number(v)===it.answer){ inp.classList.add('right'); badge.textContent='✓'; correct++; }
+    if(/^\d+$/.test(v) && Number(v)===it.answer){ inp.classList.add('right'); badge.textContent='✓'; correct++; }
     else{ inp.classList.add('wrong'); badge.textContent='✗'; }
   });
+  saveSheet(correct); // seul le premier « Vérifier » compte
   showBanner(correct, filled);
 }
 function reveal(){
   freezeTimer();
+  saveSheet(countCorrect().correct); // réponses montrées avant correction : on enregistre ce qui était déjà juste
   state.sheet.forEach((it,i)=>{
     const inp=document.querySelector(`input[data-i="${i}"]`);
     inp.value=it.answer; inp.classList.remove('wrong'); inp.classList.add('right');

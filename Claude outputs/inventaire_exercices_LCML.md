@@ -1212,6 +1212,12 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Joker : montrait une solution inutilement longue (5 calculs pour une cible atteignable en 2) → solution la plus courte (parcours en largeur).
 - Tests jsdom : série gagné / joker / passé / gagné / gagné → 3 / 5, 1 sauvegarde, aucune erreur.
 
+### 05/10 — Maths › Opérations › Les 4 opérations › Les 4 opérations mélangées (`op_4_operations_melangees`, index › generate4OpQuestions + moteur commun) — sw.js v548
+- **« Nouveaux calculs » changeait d'exercice** : le type `4_operations` n'était pas prévu dans `restartCalcExercise` → la 2e série était faite d'additions/soustractions jusque 100. Corrigé.
+- **Score non reconnu par le plan** : enregistré sous `calc_4_operations` puis `op_4_operations` → type = `op_4_operations_melangees` (identifiant du menu et du plan) ; anciens résultats toujours reconnus ; titre lisible.
+- Composition : 10 générateurs tirés parmi 15 (≈ 1 série sur 10 sans division) → toujours 3 +, 3 −, 2 ×, 2 ÷ ; divisions par 1 supprimées (diviseur et quotient de 2 à 10) ; doublons +/− évités.
+- Tests : 20 000 séries, calculs justes, composition exacte, aucun doublon ; index : 6 / 7 scripts OK.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1505,7 +1511,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ⬜ | Multiplications et divisions | `op_mult_div` | index › (?) | (code à localiser) |
 | ✅ 05/10 | Multiplications et divisions — Tables de multiplication | `op_mult_div_tables` | index › startMultDivExercise |  |
 | ⬜ | Les 4 opérations | `op_4_operations` | index › render4OperationsScreen |  |
-| ⬜ | Les 4 opérations mélangées | `op_4_operations_melangees` | index › start4OpExercise |  |
+| ✅ 05/10 | Les 4 opérations mélangées | `op_4_operations_melangees` | index › start4OpExercise |  |
 | ✅ 05/10 | Le compte est bon | `op_add_sous_compte_est_bon` | fiches/compte_est_bon.html |  |
 | ⬜ | Fiche d'entraînement (Calculs) | `op_4_operations_calculs` | fiches/calculs.html |  |
 | ⬜ | Calculs lacunaires | `op_4_operations_lacunaires` | fiches/calculs-4-operations.html |  |
