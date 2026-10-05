@@ -6050,7 +6050,7 @@ window.TEXTES_DESCRIPTIFS_DATA = {
     questions:[
       {q:"À quoi les sapins couverts de neige sont-ils comparés ?", options:["À des fantômes blancs flottant dans la brume","À des géants endormis","À des soldats alignés au garde-à-vous"], correct:1},
       {q:"Quelle couleur prend la neige à cause de la lumière filtrée ?", options:["Des reflets dorés et orangés comme au coucher du soleil","Des reflets roses et mauves comme à l'aube","Des reflets bleutés et argentés"], correct:2},
-      {q:"Quel est le seul bruit décrit dans la forêt ?", options:["Le vent qui siffle entre les branches des sapins","Le craquement des branches sous le gel","Le chant lointain d'un oiseau dans les hauteurs"], correct:1},
+      {q:"Qu'est-ce qui brise parfois le silence de la forêt ?", options:["Le vent qui siffle entre les branches des sapins","Le craquement des branches sous le gel","Le chant lointain d'un oiseau dans les hauteurs"], correct:1},
       {q:"Que rappelle le ruisseau au fond de la forêt ?", options:["Que le printemps est tout proche et que la neige va fondre","Que la vie n'a pas tout à fait disparu sous la neige","Que des animaux sont venus s'y désaltérer récemment"], correct:1},
       {q:"La forêt décrite se trouve dans les Ardennes.", options:["Vrai","Faux"], correct:0}
     ]

@@ -96,6 +96,11 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
   - Contenu exact ; un distracteur en partie vrai (crues de la Yamuna) a été remplacé.
   - **Les 10 fiches de lecture informative sont terminées.**
 
+- **05/10 — Lecture descriptive › Le vieux libraire** :
+  - Moteur des 3 textes descriptifs corrigé : propositions et questions mélangées (la bonne réponse était en 2e position dans 2 questions sur 4), bonne réponse montrée.
+  - Contenu du libraire correct.
+  - La forêt et le renard profitent déjà de la correction du moteur ; leur contenu reste à relire.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -142,7 +147,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 
 | Statut | Exercice | id | Source | Signal automatique |
 |---|---|---|---|---|
-| ⬜ | La librairie enchantée | `desc_libraire` | index › renderDescLibraire |  |
+| ✅ 05/10 | La librairie enchantée | `desc_libraire` | index › renderDescLibraire |  |
 | ⬜ | La forêt en hiver | `desc_foret` | index › renderDescForet |  |
 | ⬜ | Le vieux renard | `desc_renard` | index › renderDescRenard |  |
 
