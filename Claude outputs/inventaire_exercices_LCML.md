@@ -1157,7 +1157,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - 20 000 séries simulées : toujours 5 × + 5 ÷, toutes justes, divisions exactes ; tables 4 à 9 majoritaires (1, 2 rares ; 3, 10 peu), quotients 1 à 10 équilibrés ; mélange Fisher–Yates.
 - 7 × 3 et 3 × 7 pouvaient tomber dans la même série → doublon évité.
 - Titre enregistré lisible (« Tables de multiplication et de division » au lieu de « mult_div ») ; identifiant `op_mult_div_tables` (reconnu par le plan) déjà corrigé dans le moteur commun v537, avec saisie stricte et gestion des réponses vides.
-- Question posée à Jeremy : signe de division « ÷ » (actuel, partout sur le site) ou « : » (usage belge) ?
+- Signe de division : Jeremy garde « ÷ » (comme sur la calculatrice, pas de confusion avec les deux-points).
 
 ### 05/10 — Maths › Opérations › Multiplications et divisions › Les tables étendues (`op_tables`, OP_TABLES_BANQUE dans exercices_maths.js + generateOpTablesQuestions dans index) — sw.js v541
 - 100 calculs (50 ×, 50 ÷, dont 10 décimaux) recalculés par programme : tous justes, aucun doublon.
@@ -1165,6 +1165,13 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Tirage libre (parfois 8 × sur 10) → toujours 5 × + 5 ÷, mélangés ; environ 1 calcul décimal par série.
 - Moteur commun (v537) : identifiant `op_tables` déjà correct, saisie stricte (virgule acceptée), réponses vides gérées.
 - Tests : 20 000 séries, 0 paire inverse, 0 doublon.
+
+### 05/10 — Maths › Opérations › Multiplications et divisions › × et ÷ par 0,1 — 10 — 100 — 1000 (`op_x10`, OP_X10_BANQUE dans exercices_maths.js) — sw.js v542, ?v=20261005e
+- 100 calculs recalculés par programme : **1 faux** → « 7,2 ÷ 0,1 = 7,2 » corrigé en **72**. Aucun doublon.
+- Les 15 divisions par 0,1 sont exactement les inverses des multiplications par 0,1 (8 × 0,1 = 0,8 / 0,8 ÷ 0,1 = 8) : elles pouvaient se donner la réponse dans la même série → exclu.
+- Tirage libre → toujours 5 × + 5 ÷ ; fonction commune `pickBalancedNoInverse` (aussi utilisée par les tables étendues).
+- Moteur commun (v537) : identifiant `op_x10` correct, réponses décimales avec virgule acceptées, réponses vides gérées.
+- Tests : 20 000 séries, 0 erreur, 0 paire inverse.
 
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
@@ -1464,7 +1471,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ⬜ | Fiche d'entraînement (Calculs) | `op_4_operations_calculs` | fiches/calculs.html |  |
 | ⬜ | Calculs lacunaires | `op_4_operations_lacunaires` | fiches/calculs-4-operations.html |  |
 | ✅ 05/10 | Les tables étendues | `op_tables` | index › startOpTablesExercise |  |
-| ⬜ | × et ÷ par 0,1 — 10 — 100 — 1000 | `op_x10` | index › startOpX10Exercise |  |
+| ✅ 05/10 | × et ÷ par 0,1 — 10 — 100 — 1000 | `op_x10` | index › startOpX10Exercise |  |
 | ⬜ | × et ÷ par 0,5 — 5 — 50 — 500 | `op_x5` | index › startOpX5Exercise |  |
 | ⬜ | × par 9 — 90 — 99 — 9,9 | `op_x9` | index › startOpX9Exercise |  |
 | ⬜ | × par 11 — 101 — 110 — 1,1 | `op_x11` | index › (?) | (code à localiser) |
