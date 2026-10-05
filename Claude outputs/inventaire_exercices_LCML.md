@@ -164,6 +164,12 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
   - Rien à corriger : la scène, les 4 questions, les attributions (4 personnages) et les intentions sont cohérentes.
   - Le mélange vient du moteur des nouveaux dialogues.
 
+- **05/10 — Lecture dialoguée › Une affaire en or !** :
+  - 4 didascalies s'affichaient avec des astérisques visibles (« *(à Renaud)* ») : elles sont maintenant en italique.
+  - Faute corrigée : « Ton décoction » devient « Ta décoction ».
+  - Intention 2 : la mauvaise réponse « Protéger Renaud d'une arnaque » se défendait. Elle est remplacée par « … sans rien lui demander en échange ».
+  - **Les 7 dialogues sont terminés.**
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -236,7 +242,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | Avoir un animal de compagnie | `dial_animal` | index › renderDialAnimal |  |
 | ✅ 05/10 | Interview de Neil Armstrong | `dial_armstrong` | index › renderDialArmstrong |  |
 | ✅ 05/10 | Le grand désaccord | `dial_conseil` | index › renderDialConseil |  |
-| ⬜ | Une affaire en or ! | `dial_marche` | index › renderDialMarche |  |
+| ✅ 05/10 | Une affaire en or ! | `dial_marche` | index › renderDialMarche |  |
 
 ### 📖 Français — ⚡ Lecture — Lecture rapide
 
