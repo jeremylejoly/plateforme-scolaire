@@ -8769,8 +8769,8 @@ window.SAVOIR_ECOUTER_DATA = [
         options: [
           "L'endosquelette",
           "L'exosquelette",
-          "La cuticule",
-          "Le squelette externe"
+          "La coquille",
+          "Le pelage"
         ],
         correct: 1
       },

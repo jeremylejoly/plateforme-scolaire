@@ -933,6 +933,12 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Validation impossible tant que toutes les questions n'ont pas de réponse (double sécurité). Entraine-toi.
 - Contenu Soignes : questions cohérentes avec les faits connus (blaireau nocturne, omnivore, terriers à plusieurs dizaines d'entrées, lumière rouge, « cathédrale verte »). ⚠️ Audio NON réécouté : la transcription automatique est impossible ici (modèles bloqués par le réseau) → à confirmer à l'écoute si un doute existe.
 
+### 05/10 — Savoir écouter : Le mystère du carillon de Bruges (`savoir_ecouter_2`, exercices_francais.js) — sw.js v507, ?v=20261005zm
+- Moteur déjà corrigé avec Soignes (enregistrement du résultat + propositions mélangées).
+- Q7 absurde : « Que peut-on déduire du fait que la tour se rétrécit ? » → bonne réponse « La forme de la tour se rétrécit » (simple répétition) → « Que peut-on en déduire pour l'escalier ? » → « Il devient de plus en plus étroit en montant ».
+- Q2 : « Combien de cloches compose » → « composent ».
+- Faits vérifiés (366 marches, 47 cloches, carillonneur, clavier frappé du poing, grosse cloche > 6 t, concerts gratuits, UNESCO). ⚠️ Audio non réécouté (transcription impossible ici).
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1165,7 +1171,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | Statut | Exercice | id | Source | Signal automatique |
 |---|---|---|---|---|
 | ✅ 05/10 | Savoir écouter - Soignes | `savoir_ecouter_1` | index › startSavoirEcouter |  |
-| ⬜ | Savoir écouter - Bruges | `savoir_ecouter_2` | index › startSavoirEcouter |  |
+| ✅ 05/10 | Savoir écouter - Bruges | `savoir_ecouter_2` | index › startSavoirEcouter |  |
 | ⬜ | Savoir écouter - Fourmi | `savoir_ecouter_3` | index › startSavoirEcouter |  |
 | ⬜ | Savoir écouter - Pain perdu | `savoir_ecouter_4` | index › startSavoirEcouter |  |
 | ⬜ | Savoir écouter - Hautes Fagnes | `savoir_ecouter_5` | index › startSavoirEcouter |  |
