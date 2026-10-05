@@ -5538,7 +5538,7 @@ window.DIALOGUES_DATA = {
     tagA:'🌱 Sofia — Pour le bio', tagB:'🛒 Tom — Contre le bio',
     repliques:[
       {nom:'Animateur', texte:'Bonjour à tous ! Aujourd\'hui, Sofia et Tom débattent d\'un sujet qui concerne nos assiettes : faut-il manger bio ? Sofia, tu commences.', anim:true},
-      {nom:'Sofia', texte:'Oui ! Les aliments bio sont cultivés sans pesticides chimiques. Ces produits sont donc meilleurs pour notre santé et pour l\'environnement. Quand on mange bio, on protège aussi les abeilles et les insectes utiles.', couleur:'#388e3c'},
+      {nom:'Sofia', texte:'Oui ! Les aliments bio sont cultivés sans pesticides chimiques de synthèse. Ces produits sont donc meilleurs pour notre santé et pour l\'environnement. Quand on mange bio, on protège aussi les abeilles et les insectes utiles.', couleur:'#388e3c'},
       {nom:'Tom', texte:'Je comprends l\'idée, mais les produits bio coûtent beaucoup plus cher que les produits normaux. Toutes les familles n\'ont pas les moyens de manger bio. Ce n\'est pas juste de demander ça à tout le monde.', couleur:'#f57c00'},
       {nom:'Sofia', texte:'C\'est vrai que c\'est plus cher, mais on peut faire des choix. Acheter des fruits et légumes bio de saison dans les marchés locaux, c\'est souvent moins cher que dans les supermarchés. Et puis, si on mange mieux, on tombe moins malade !', couleur:'#388e3c'},
       {nom:'Tom', texte:'Mais les aliments bio ne sont pas forcément plus nutritifs que les autres. Des études scientifiques montrent que la différence sur la santé est très faible. Et si tout le monde mangeait bio, on ne pourrait pas nourrir toute la planète — l\'agriculture bio produit moins.', couleur:'#f57c00'},
