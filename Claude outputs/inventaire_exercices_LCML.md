@@ -1147,7 +1147,6 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ⬜ | Le Tangram | `jeu_tangram` | index › (?) | (code à localiser) |
 | ⬜ | Le Démineur | `jeu_demineur` | index › (?) | (code à localiser) |
 | ⬜ | La Pipopipette | `jeu_pipopipette` | index › (?) | (code à localiser) |
-| ✅ 05/10 (a5128f7) | Les Échecs (nouveau jeu) | `jeu_echecs` | echecs.html | Corrigé et testé avant mise en ligne (IA, mats, nulles, partie relancée pendant que l'ordinateur réfléchit) |
 
 ### ? — (menu renderLectureNarrativeMenu)
 
