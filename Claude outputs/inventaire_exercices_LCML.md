@@ -1361,6 +1361,16 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Nouvelle orthographe : maitrises, Entraine-toi, boite. Capture 390 px sans défilement horizontal.
 - Tests jsdom : partie 8 / 10 avec doubles clics → 1 sauvegarde ; « Recommencer » → nouvelle série ; syntaxe OK.
 
+### 05/10 — Maths › Grandeurs › Le périmètre › Le cercle › Figures complexes (`grandeur_perimetre_cercle_compose`, `fiches/perimetre_cercle_compose.html` + copies public et racine) — sw.js v569
+- Les 8 figures d'origine recalculées (π = 3,14) : réponses justes (demi-disque, quart de disque, piste, arche, vague, maison à toit arrondi, trèfle, plaque).
+- **Toujours les mêmes mesures** (« Recommencer » ne changeait que l'ordre) → les 8 figures gardées, nouvelles mesures à chaque série, affichées sur les dessins ; ordre Fisher–Yates. 3 000 séries toutes différentes ; réponse recalculée depuis les cotes du dessin = réponse attendue = total de l'explication (0 écart).
+- Plaque : l'explication parlait de quarts de cercle « évidés » alors que le dessin montre des coins arrondis → « coins arrondis », largeur indiquée dans la consigne. Maison : « un carré surmonté d'un demi-cercle » précisé. Vague : « les deux petits demi-cercles du bas » (l'un est en haut) corrigé.
+- Dessins : cote du diamètre de la piste coupée au bord gauche → placée à l'intérieur ; cote de la vague cachée par le petit demi-cercle → placée sous la figure.
+- Signe « / » → « ÷ » dans les explications. « 25,70 » refusé pour 25,7 → comparaison tolérante.
+- **Aucun résultat enregistré** → enregistrement unique en fin de série (x / 8). Double clic sur « Question suivante » → plus de figure sautée.
+- Nouvelle orthographe : entrainement. Captures 390 px vérifiées (8 figures, pas de défilement horizontal).
+- Tests jsdom : partie 6 / 8 avec doubles clics → 1 sauvegarde ; syntaxe OK.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1693,7 +1703,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | Périmètre — Problèmes | `grandeur_perimetre_problemes` | index › renderPerimetreProblemes |  |
 | ✅ 05/10 | Périmètre du cercle — Le labo de la circonférence | `grandeur_perimetre_cercle_labo` | fiches/perimetre_cercle.html |  |
 | ✅ 05/10 | Périmètre du cercle — Le rayon et diamètre cachés | `grandeur_perimetre_cercle_inverse` | fiches/perimetre_cercle_inverse.html |  |
-| ⬜ | Périmètre du cercle — Figures complexes | `grandeur_perimetre_cercle_compose` | fiches/perimetre_cercle_compose.html |  |
+| ✅ 05/10 | Périmètre du cercle — Figures complexes | `grandeur_perimetre_cercle_compose` | fiches/perimetre_cercle_compose.html |  |
 | ⬜ | L'Enquêteur Royal (Situations d'Aire) | `grandeur_aire_situations` | fiches/aire_situations.html |  |
 | ⬜ | Le Géomètre des Carreaux (Quadrillage) | `grandeur_aire_quadrillage` | fiches/aire_quadrillage.html |  |
 | ⬜ | L'Arpenteur Impérial (Conversions d'Aire) | `grandeur_aire_conversions` | fiches/aire_conversions.html |  |

@@ -479,99 +479,62 @@ function playSound(type) {
   }
 }
 
-// --- QUESTIONS DATABASE ---
-const QUESTIONS = [
-  {
-    id: 1,
-    label: "Le demi-disque",
-    question: "Calcule le périmètre de cette figure (un <strong>demi-disque</strong> de diamètre 10 cm).",
-    unit: "cm",
-    correct: 25.7,
-    explanation: "Le périmètre de cette figure est composé de 2 parties :<br/>" +
-                 "1. Le demi-cercle : (10 cm &times; 3,14) / 2 = 15,7 cm.<br/>" +
-                 "2. Le segment droit du bas (le diamètre) : 10 cm.<br/>" +
-                 "Total = 15,7 + 10 = <strong>25,7 cm</strong>."
+// --- QUESTIONS (générées) ---
+// Avant : toujours les 8 mêmes figures avec les mêmes mesures (« Recommencer » ne changeait que l'ordre).
+// Maintenant : les 8 figures, avec de nouvelles mesures à chaque série (affichées sur les dessins).
+function rnd(min, max, step){ step = step || 1; const n = Math.floor((max - min) / step); return min + step * Math.floor(Math.random() * (n + 1)); }
+function r2(v){ return Math.round(v * 100) / 100; }
+function fmt(v){ return String(r2(v)).replace('.', ','); }
+function shuffle(a){ const r = [...a]; for(let i = r.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [r[i], r[j]] = [r[j], r[i]]; } return r; }
+
+const GENERATEURS = [
+  () => { // 1. Demi-disque
+    const d = rnd(4, 20, 2), arc = r2(3.14 * d / 2);
+    return { id:1, label:"Le demi-disque", unit:"cm", v:{d}, correct: r2(arc + d),
+      question:`Calcule le périmètre de cette figure (un <strong>demi-disque</strong> de diamètre ${d} cm).`,
+      explanation:`Le périmètre de cette figure est composé de 2 parties :<br/>1. Le demi-cercle : (${d} &times; 3,14) &divide; 2 = ${fmt(arc)} cm.<br/>2. Le segment droit du bas (le diamètre) : ${d} cm.<br/>Total = ${fmt(arc)} + ${d} = <strong>${fmt(arc + d)} cm</strong>.` };
   },
-  {
-    id: 2,
-    label: "Le quart de disque",
-    question: "Calcule le périmètre de cette figure (un <strong>quart de disque</strong> de rayon 10 m).",
-    unit: "m",
-    correct: 35.7,
-    explanation: "Le contour est composé de 3 parties :<br/>" +
-                 "1. L'arc de cercle (un quart de circonférence) : (2 &times; 10 m &times; 3,14) / 4 = 15,7 m.<br/>" +
-                 "2. Les deux segments droits (les deux rayons) : 10 m + 10 m = 20 m.<br/>" +
-                 "Total = 15,7 + 20 = <strong>35,7 m</strong>."
+  () => { // 2. Quart de disque
+    const r = rnd(2, 15), arc = r2(2 * r * 3.14 / 4);
+    return { id:2, label:"Le quart de disque", unit:"m", v:{r}, correct: r2(arc + 2 * r),
+      question:`Calcule le périmètre de cette figure (un <strong>quart de disque</strong> de rayon ${r} m).`,
+      explanation:`Le contour est composé de 3 parties :<br/>1. L'arc de cercle (un quart de la circonférence) : (2 &times; ${r} &times; 3,14) &divide; 4 = ${fmt(arc)} m.<br/>2. Les deux segments droits (les deux rayons) : ${r} + ${r} = ${2 * r} m.<br/>Total = ${fmt(arc)} + ${2 * r} = <strong>${fmt(arc + 2 * r)} m</strong>.` };
   },
-  {
-    id: 3,
-    label: "La piste de course",
-    question: "Calcule le périmètre extérieur de cette <strong>piste de course</strong>.",
-    unit: "m",
-    correct: 71.4,
-    explanation: "Le périmètre extérieur comprend :<br/>" +
-                 "1. Les deux arcs arrondis aux extrémités. Ensemble, ils forment un cercle complet de diamètre 10 m : 10 &times; 3,14 = 31,4 m.<br/>" +
-                 "2. Les deux segments droits horizontaux : 20 m + 20 m = 40 m.<br/>" +
-                 "Attention : les lignes verticales intérieures ne font pas partie du contour extérieur !<br/>" +
-                 "Total = 31,4 + 40 = <strong>71,4 m</strong>."
+  () => { // 3. Piste de course
+    const d = rnd(6, 20, 2), L = rnd(Math.max(10, d + 2), 40, 2), cercle = r2(3.14 * d);
+    return { id:3, label:"La piste de course", unit:"m", v:{d, L}, correct: r2(cercle + 2 * L),
+      question:"Calcule le périmètre extérieur de cette <strong>piste de course</strong>.",
+      explanation:`Le périmètre extérieur comprend :<br/>1. Les deux arcs arrondis aux extrémités. Ensemble, ils forment un cercle complet de diamètre ${d} m : ${d} &times; 3,14 = ${fmt(cercle)} m.<br/>2. Les deux segments droits : ${L} + ${L} = ${2 * L} m.<br/>Attention : les lignes en pointillés ne font pas partie du contour !<br/>Total = ${fmt(cercle)} + ${2 * L} = <strong>${fmt(cercle + 2 * L)} m</strong>.` };
   },
-  {
-    id: 4,
-    label: "Le pont / Double arc",
-    question: "Calcule le périmètre de cette forme en <strong>arche</strong>.",
-    unit: "cm",
-    correct: 35.4,
-    explanation: "Le contour comprend 4 parties :<br/>" +
-                 "1. Le grand arc extérieur (demi-cercle de diamètre 12 cm) : (12 &times; 3,14) / 2 = 18,84 cm.<br/>" +
-                 "2. Le petit arc intérieur (demi-cercle de diamètre 8 cm) : (8 &times; 3,14) / 2 = 12,56 cm.<br/>" +
-                 "3. Les deux petits segments horizontaux au bas (largeur de 2 cm chacun) : 2 cm + 2 cm = 4 cm.<br/>" +
-                 "Total = 18,84 + 12,56 + 4 = <strong>35,4 cm</strong>."
+  () => { // 4. Arche
+    const d = rnd(6, 14, 2), e = rnd(1, 3), D = d + 2 * e, ga = r2(D * 3.14 / 2), pa = r2(d * 3.14 / 2);
+    return { id:4, label:"L'arche", unit:"cm", v:{d, e}, correct: r2(ga + pa + 2 * e),
+      question:"Calcule le périmètre de cette forme en <strong>arche</strong>.",
+      explanation:`Le contour comprend 4 parties :<br/>1. Le grand arc extérieur, un demi-cercle de diamètre ${d} + ${e} + ${e} = ${D} cm : (${D} &times; 3,14) &divide; 2 = ${fmt(ga)} cm.<br/>2. Le petit arc intérieur, un demi-cercle de diamètre ${d} cm : (${d} &times; 3,14) &divide; 2 = ${fmt(pa)} cm.<br/>3. Les deux petits segments du bas : ${e} + ${e} = ${2 * e} cm.<br/>Total = ${fmt(ga)} + ${fmt(pa)} + ${2 * e} = <strong>${fmt(ga + pa + 2 * e)} cm</strong>.` };
   },
-  {
-    id: 5,
-    label: "La vague / Vague S",
-    question: "Calcule le périmètre de cette forme en <strong>vague</strong>.",
-    unit: "dm",
-    correct: 31.4,
-    explanation: "Le contour est entièrement courbé :<br/>" +
-                 "1. Le grand demi-cercle du haut (diamètre 10 dm) : (10 &times; 3,14) / 2 = 15,7 dm.<br/>" +
-                 "2. Les deux petits demi-cercles du bas (diamètre 5 dm chacun). Ensemble, ils forment un cercle complet de diamètre 5 dm : 5 &times; 3,14 = 15,7 dm.<br/>" +
-                 "Total = 15,7 + 15,7 = <strong>31,4 dm</strong>."
+  () => { // 5. Vague
+    const D = rnd(6, 20, 2), g = r2(D * 3.14 / 2), p = r2(D / 2 * 3.14);
+    return { id:5, label:"La vague", unit:"dm", v:{D}, correct: r2(g + p),
+      question:"Calcule le périmètre de cette forme en <strong>vague</strong>.",
+      explanation:`Le contour est entièrement courbé :<br/>1. Le grand demi-cercle (diamètre ${D} dm) : (${D} &times; 3,14) &divide; 2 = ${fmt(g)} dm.<br/>2. Les deux petits demi-cercles (diamètre ${fmt(D / 2)} dm chacun). Ensemble, ils forment un cercle complet de diamètre ${fmt(D / 2)} dm : ${fmt(D / 2)} &times; 3,14 = ${fmt(p)} dm.<br/>Total = ${fmt(g)} + ${fmt(p)} = <strong>${fmt(g + p)} dm</strong>.` };
   },
-  {
-    id: 6,
-    label: "La maison-dôme",
-    question: "Calcule le périmètre extérieur de cette <strong>maison à toit arrondi</strong>.",
-    unit: "cm",
-    correct: 36.56,
-    explanation: "Le contour extérieur comprend :<br/>" +
-                 "1. Le toit en dôme (un demi-cercle de diamètre 8 cm) : (8 &times; 3,14) / 2 = 12,56 cm.<br/>" +
-                 "2. Les trois côtés carrés extérieurs (gauche, bas, droite) : 8 cm + 8 cm + 8 cm = 24 cm.<br/>" +
-                 "Attention : le plafond horizontal intérieur n'est pas compté !<br/>" +
-                 "Total = 12,56 + 24 = <strong>36,56 cm</strong>."
+  () => { // 6. Maison à toit arrondi
+    const c = rnd(4, 14, 2), toit = r2(c * 3.14 / 2);
+    return { id:6, label:"La maison à toit arrondi", unit:"cm", v:{c}, correct: r2(toit + 3 * c),
+      question:`Calcule le périmètre extérieur de cette <strong>maison à toit arrondi</strong> (un carré surmonté d'un demi-cercle).`,
+      explanation:`Le contour extérieur comprend :<br/>1. Le toit arrondi, un demi-cercle de diamètre ${c} cm : (${c} &times; 3,14) &divide; 2 = ${fmt(toit)} cm.<br/>2. Les trois côtés du carré (gauche, bas, droite) : ${c} + ${c} + ${c} = ${3 * c} cm.<br/>Attention : le côté du haut, en pointillés, est à l'intérieur de la figure et ne compte pas !<br/>Total = ${fmt(toit)} + ${3 * c} = <strong>${fmt(toit + 3 * c)} cm</strong>.` };
   },
-  {
-    id: 7,
-    label: "Le trèfle à 4 feuilles",
-    question: "Calcule le périmètre de cette forme en <strong>trèfle</strong> construite sur un carré de 10 cm.",
-    unit: "cm",
-    correct: 62.8,
-    explanation: "Le contour extérieur est composé uniquement des 4 demi-cercles de diamètre 10 cm.<br/>" +
-                 "4 demi-cercles de diamètre 10 cm équivalent à 2 cercles complets de diamètre 10 cm :<br/>" +
-                 "Périmètre = 2 &times; (10 &times; 3,14) = 2 &times; 31,4 = <strong>62,8 cm</strong>.<br/>" +
-                 "Les côtés du carré central sont à l'intérieur de la figure et ne comptent donc pas !"
+  () => { // 7. Trèfle
+    const c = rnd(4, 14), cercle = r2(c * 3.14);
+    return { id:7, label:"Le trèfle à 4 feuilles", unit:"cm", v:{c}, correct: r2(2 * cercle),
+      question:`Calcule le périmètre de cette forme en <strong>trèfle</strong> construite sur un carré de ${c} cm de côté.`,
+      explanation:`Le contour extérieur est composé uniquement des 4 demi-cercles de diamètre ${c} cm.<br/>4 demi-cercles valent 2 cercles complets : Périmètre = 2 &times; (${c} &times; 3,14) = 2 &times; ${fmt(cercle)} = <strong>${fmt(2 * cercle)} cm</strong>.<br/>Les côtés du carré central sont à l'intérieur de la figure et ne comptent pas !` };
   },
-  {
-    id: 8,
-    label: "La plaque découpée",
-    question: "Calcule le périmètre de cette <strong>plaque en métal découpée</strong>.",
-    unit: "m",
-    correct: 18.56,
-    explanation: "Le périmètre de cette figure comprend :<br/>" +
-                 "1. Les 4 quarts de cercle évidés aux coins. Ensemble, ils forment 1 cercle complet de rayon 2 m (diamètre 4 m) : 4 &times; 3,14 = 12,56 m.<br/>" +
-                 "2. Les deux segments verticaux droits au milieu des côtés : 7 m &minus; 2 m &minus; 2 m = 3 m chacun, soit 6 m au total.<br/>" +
-                 "3. Les segments horizontaux en haut et en bas mesurent 0 m car les quarts de cercle de rayon 2 m se touchent exactement au milieu (2 m + 2 m = 4 m).<br/>" +
-                 "Total = 12,56 + 3 + 3 = <strong>18,56 m</strong>."
+  () => { // 8. Plaque aux coins arrondis
+    const r = rnd(1, 3), H = 2 * r + rnd(2, 6), cercle = r2(2 * r * 3.14), s = H - 2 * r;
+    return { id:8, label:"La plaque aux coins arrondis", unit:"m", v:{r, H}, correct: r2(cercle + 2 * s),
+      question:`Calcule le périmètre de cette <strong>plaque en métal</strong> aux coins arrondis (largeur : ${2 * r} m).`,
+      explanation:`Le périmètre de cette plaque comprend :<br/>1. Les 4 coins arrondis, des quarts de cercle de rayon ${r} m. Ensemble, ils forment 1 cercle complet de diamètre ${2 * r} m : ${2 * r} &times; 3,14 = ${fmt(cercle)} m.<br/>2. Les deux segments droits des côtés : ${H} &minus; ${r} &minus; ${r} = ${s} m chacun, soit ${2 * s} m.<br/>3. En haut et en bas, il n'y a pas de segment droit : la largeur (${2 * r} m) est entièrement occupée par deux coins arrondis (${r} + ${r} m).<br/>Total = ${fmt(cercle)} + ${2 * s} = <strong>${fmt(cercle + 2 * s)} m</strong>.` };
   }
 ];
 
@@ -581,6 +544,7 @@ let currentIdx = 0;
 let score = 0;
 let userAnswers = [];
 let hasAnswered = false;
+let saved = false;
 
 // --- GAME LOGIC ---
 
@@ -590,8 +554,9 @@ function initGame() {
   userAnswers = [];
   hasAnswered = false;
   
-  // Pick all questions in random order
-  currentQuestions = [...QUESTIONS].sort(() => Math.random() - 0.5);
+  // Les 8 figures, nouvelles mesures, ordre mélangé (Fisher–Yates)
+  saved = false;
+  currentQuestions = shuffle(GENERATEURS.map(g => g()));
   
   // Reset dots
   const dotsContainer = document.getElementById("dots-progress");
@@ -655,7 +620,7 @@ function renderComposeSVG(q) {
     svg.appendChild(path);
     
     // Dimension line for diameter
-    drawDimensionLine(svg, 40, 135, 160, 135, "10 cm", dimensionColor, 'below');
+    drawDimensionLine(svg, 40, 135, 160, 135, `${q.v.d} cm`, dimensionColor, 'below');
     
   } else if (q.id === 2) {
     // 2. Quart de disque
@@ -667,7 +632,7 @@ function renderComposeSVG(q) {
     svg.appendChild(path);
     
     // Dimension labels
-    drawDimensionLine(svg, 60, 155, 140, 155, "10 m", dimensionColor, 'below'); // Bottom radius
+    drawDimensionLine(svg, 60, 155, 140, 155, `${q.v.r} m`, dimensionColor, 'below'); // Bottom radius
     
     // Right angle square indicator at (60, 140)
     const angle = document.createElementNS("http://www.w3.org/2000/svg", "path");
@@ -702,8 +667,8 @@ function renderComposeSVG(q) {
     svg.appendChild(dashRight);
 
     // Dimension lines
-    drawDimensionLine(svg, 60, 48, 140, 48, "20 m", dimensionColor, 'above'); // Horizontal straight length
-    drawDimensionLine(svg, 28, 60, 28, 140, "10 m", dimensionColor, 'left'); // Diameter / width
+    drawDimensionLine(svg, 60, 48, 140, 48, `${q.v.L} m`, dimensionColor, 'above'); // Horizontal straight length
+    drawDimensionLine(svg, 100, 60, 100, 140, `${q.v.d} m`, dimensionColor, 'right'); // à l'intérieur (avant : étiquette coupée au bord gauche) // Diameter / width
     
   } else if (q.id === 4) {
     // 4. Le pont (Double arc / annulus slice)
@@ -715,8 +680,8 @@ function renderComposeSVG(q) {
     svg.appendChild(path);
     
     // Dimension lines
-    drawDimensionLine(svg, 55, 142, 145, 142, "8 cm", dimensionColor, 'below'); // Inner diameter
-    drawDimensionLine(svg, 30, 158, 55, 158, "2 cm", dimensionColor, 'below'); // Thickness/path width
+    drawDimensionLine(svg, 55, 142, 145, 142, `${q.v.d} cm`, dimensionColor, 'below'); // Inner diameter
+    drawDimensionLine(svg, 30, 158, 55, 158, `${q.v.e} cm`, dimensionColor, 'below'); // Thickness/path width
     
   } else if (q.id === 5) {
     // 5. La vague (S-shape / wave)
@@ -736,7 +701,7 @@ function renderComposeSVG(q) {
     svg.appendChild(baseLine);
 
     // Dimension lines
-    drawDimensionLine(svg, 40, 115, 160, 115, "10 dm", dimensionColor, 'below');
+    drawDimensionLine(svg, 40, 148, 160, 148, `${q.v.D} dm`, dimensionColor, 'below'); // sous la figure (avant : cachée par le petit demi-cercle)
     
   } else if (q.id === 6) {
     // 6. La maison-dôme
@@ -756,7 +721,7 @@ function renderComposeSVG(q) {
     svg.appendChild(ceilLine);
 
     // Dimension lines
-    drawDimensionLine(svg, 45, 80, 45, 140, "8 cm", dimensionColor, 'left'); // Left height
+    drawDimensionLine(svg, 45, 80, 45, 140, `${q.v.c} cm`, dimensionColor, 'left'); // Left height
     
     // Hash markers on left, bottom and right sides to show they are equal (8 cm)
     // Left marker
@@ -786,7 +751,7 @@ function renderComposeSVG(q) {
     svg.appendChild(innerSq);
 
     // Labeled dimension
-    drawDimensionLine(svg, 70, 130, 130, 130, "10 cm", dimensionColor, 'above');
+    drawDimensionLine(svg, 70, 130, 130, 130, `${q.v.c} cm`, dimensionColor, 'above');
     
   } else if (q.id === 8) {
     // 8. La plaque découpée (The top screenshot!)
@@ -808,8 +773,8 @@ function renderComposeSVG(q) {
     svg.appendChild(outerRect);
 
     // Dimension lines
-    drawDimensionLine(svg, 155, 30, 155, 170, "7 m", dimensionColor, 'right'); // Full Height
-    drawDimensionLine(svg, 60, 182, 100, 182, "2 m", dimensionColor, 'below'); // Radius
+    drawDimensionLine(svg, 155, 30, 155, 170, `${q.v.H} m`, dimensionColor, 'right'); // Full Height
+    drawDimensionLine(svg, 60, 182, 100, 182, `${q.v.r} m`, dimensionColor, 'below'); // Radius
     
     // Hash markers on corner radius lines (showing all corners are equal)
     // Double hatch on horizontal radius at bottom left
@@ -946,7 +911,7 @@ function validateAnswer() {
   hasAnswered = true;
   const q = currentQuestions[currentIdx];
   const normalizedUser = parseFloat(rawText.replace(',', '.'));
-  const isCorrect = (normalizedUser === q.correct);
+  const isCorrect = Math.abs(normalizedUser - q.correct) < 1e-9; // « 25,70 » = 25,7
   const dots = document.getElementById("dots-progress").children;
   
   if (isCorrect) {
@@ -982,6 +947,8 @@ function validateAnswer() {
 }
 
 function nextQuestion() {
+  if (!hasAnswered) return; // double clic : pas de question sautée
+  hasAnswered = false;
   playSound('click');
   currentIdx++;
   
@@ -998,6 +965,20 @@ function showScoreScreen() {
   screen.style.display = "block";
   
   document.getElementById("final-score").textContent = `${score} / ${currentQuestions.length}`;
+
+  // Enregistrement (avant : aucun résultat enregistré)
+  if (!saved && window.parent && typeof window.parent.saveResult === 'function') {
+    saved = true;
+    const total = currentQuestions.length;
+    try {
+      window.parent.saveResult({
+        activity: 'grandeur_perimetre_cercle_compose', bookTitle: 'Périmètre du cercle — Figures complexes',
+        score, total, pct: Math.round(score / total * 100),
+        date: new Date().toLocaleDateString('fr-BE'),
+        time: new Date().toLocaleTimeString('fr-BE', {hour:'2-digit', minute:'2-digit'})
+      });
+    } catch (e) { console.warn('Erreur sauvegarde figures complexes', e); }
+  }
   
   const emojiEl = document.getElementById("final-emoji");
   const titleEl = document.getElementById("final-title");
@@ -1013,7 +994,7 @@ function showScoreScreen() {
     titleEl.textContent = "Pas mal ! Fais bien attention aux parties de cercles (demi ou quart).";
   } else {
     emojiEl.textContent = "💪";
-    titleEl.textContent = "Besoin d'entraînement. Relis bien les corrigés et sépare courbes et droites !";
+    titleEl.textContent = "Besoin d'entrainement. Relis bien les corrigés et sépare courbes et droites !";
   }
   
   // Details
