@@ -501,6 +501,15 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
   - Le mélange utilisait le tri aléatoire biaisé. Il utilise maintenant la méthode Fisher–Yates.
   - Nouvelle orthographe : maitrise, entrainer, entraine-toi.
 
+- **05/10 — Grammaire › Le déterminant › Le tri des déterminants** (100 phrases, 10 par partie, 4 catégories : article, possessif, démonstratif, autre) :
+  - Les 100 classements et leurs explications sont justes, y compris les partitifs, les contractés (au, aux), les numéraux, les indéfinis (tout, nul, certains), les interrogatifs et les exclamatifs.
+  - « La plante a besoin **de l'**eau » : ici, « de » est une préposition (avoir besoin de), donc ce n'est pas un article partitif. La phrase devient « Le jardinier verse **de l'**eau sur les plantes ».
+  - Une coquille dans l'explication de « quelques » est corrigée (« un petit nom de quantité » devient « une petite quantité »).
+  - Le résultat était déjà enregistré sous le bon identifiant (`gram_determinant_tri`).
+  - Le mélange utilisait le tri aléatoire biaisé. Il utilise maintenant la méthode Fisher–Yates.
+  - Les 4 boutons gardent un ordre fixe, ce qui est normal pour un classement.
+  - Nouvelle orthographe : entrainer, maitriser.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -594,7 +603,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | Le nom — Est-ce un nom ? | `gram_nom_reconnaître` | index › startNomReconnaîtreExercise |  |
 | ⬜ | Le déterminant | `gram_determinant` | index › (?) | (code à localiser) |
 | ✅ 05/10 | Le déterminant — Reconnaître les déterminants | `gram_determinant_reconnaitre` | index › startDeterminantExercise |  |
-| ⬜ | Le déterminant — Le tri des déterminants | `gram_determinant_tri` | index › startTriExercise |  |
+| ✅ 05/10 | Le déterminant — Le tri des déterminants | `gram_determinant_tri` | index › startTriExercise |  |
 | ⬜ | Le déterminant (Exercices) | `gram_determinant_ex` | fiches/determinant_exercice.html |  |
 | ✅ 05/10 | L'adjectif — Identifier les adjectifs | `gram_adjectif_identifier` | index › startAdjectifExercise |  |
 | ⬜ | L'adjectif — Accords de l'adjectif | `gram_adjectif_accord` | index › startAdjectifAccordExercise |  |

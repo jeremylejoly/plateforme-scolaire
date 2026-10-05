@@ -3236,7 +3236,7 @@ input[type=text].calc-input.incorrect {
 }
 </style>
 <script src="livres.js?v=20261002b"></script>
-<script src="exercices_francais.js?v=20261005z"></script>
+<script src="exercices_francais.js?v=20261005za"></script>
 <script src="exercices_maths.js?v=20260927e"></script>
 <script src="exercices_eveil.js?v=20260927e"></script>
 <script>
@@ -41668,13 +41668,17 @@ let adjectifAccordGameState = {
   submitted: false
 };
 
+// Comparaison tolérante aux majuscules, espaces et formes Unicode (les accents comptent)
+function _adjAccEgal(a, b) { const n = s => String(s || '').normalize('NFC').replace(/\s+/g, ' ').trim().toLowerCase(); return n(a) === n(b); }
+
 function startAdjectifAccordExercise() {
   if (!window.EXERCICES_ADJECTIF_ACCORD || window.EXERCICES_ADJECTIF_ACCORD.length === 0) {
     console.error("EXERCICES_ADJECTIF_ACCORD n'est pas chargé ou est vide.");
     return;
   }
 
-  const shuffle = (arr) => [...arr].sort(() => 0.5 - Math.random());
+  // Mélange équitable (Fisher–Yates)
+  const shuffle = (arr) => { const a = [...arr]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
   const selection = shuffle(window.EXERCICES_ADJECTIF_ACCORD).slice(0, 10);
 
   adjectifAccordGameState = {
@@ -41715,11 +41719,11 @@ function renderAdjectifAccordQuestion() {
     `;
   } else {
     const userVal = adjectifAccordGameState.lastUserAnswer || "";
-    const isCorrect = userVal.toLowerCase() === question.answer.toLowerCase();
+    const isCorrect = _adjAccEgal(userVal, question.answer);
     const borderClass = isCorrect ? 'border-green-600 bg-green-50 text-green-800' : 'border-rose-600 bg-rose-50 text-rose-800';
     
     inputHtml = `
-      <input type="text" id="adjectif-accord-input" disabled value="${userVal}"
+      <input type="text" id="adjectif-accord-input" disabled value="${String(userVal).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;')}"
         class="border-2 ${borderClass} rounded-xl px-4 py-2 text-xl font-bold font-sans text-center w-52" />
     `;
   }
@@ -41822,7 +41826,7 @@ function verifyAdjectifAccordAnswer() {
   const userVal = inputEl ? inputEl.value.trim() : "";
 
   adjectifAccordGameState.lastUserAnswer = userVal;
-  const isCorrect = userVal.toLowerCase() === question.answer.toLowerCase();
+  const isCorrect = _adjAccEgal(userVal, question.answer);
   
   if (isCorrect) {
     adjectifAccordGameState.score++;
@@ -41837,7 +41841,7 @@ function showAdjectifAccordCorrectionPanel(question) {
   if (!corrPanel) return;
 
   const userVal = adjectifAccordGameState.lastUserAnswer || "";
-  const isCorrect = userVal.toLowerCase() === question.answer.toLowerCase();
+  const isCorrect = _adjAccEgal(userVal, question.answer);
 
   if (isCorrect) {
     corrPanel.innerHTML = `
@@ -41901,7 +41905,7 @@ function showAdjectifAccordResults() {
     msg = "Tu as compris les règles d'accord. Continue ainsi !";
     emoji = "💪";
   } else {
-    title = "✍️ Entraîne-toi encore !";
+    title = "✍️ Entraine-toi encore !";
     msg = "N'oublie pas de vérifier le genre (masculin/féminin) et le nombre (singulier/pluriel) du nom qualifié.";
     emoji = "📚";
   }
