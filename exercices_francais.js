@@ -5067,7 +5067,7 @@ window.LECTURE_RAPIDE_DATA = {
       },
       {
         id: 'n5t3', titre: 'Les séismes',
-        texte: "Un séisme, aussi appelé tremblement de terre, est une secousse brutale du sol causée par une libération soudaine d'énergie dans la croûte terrestre. Cette énergie se propage sous forme d'ondes sismiques qui peuvent être ressenties à des centaines de kilomètres du point d'origine, appelé foyer. La magnitude d'un séisme mesure la quantité d'énergie libérée et s'exprime sur l'échelle de Richter. Un séisme de magnitude 5 est dix fois plus puissant qu'un séisme de magnitude 4. Les régions les plus touchées sont situées le long des frontières des plaques tectoniques, comme le Japon, la Turquie ou le Chili. Si les séismes eux-mêmes durent rarement plus de quelques minutes, leurs conséquences peuvent être catastrophiques : effondrements de bâtiments, glissements de terrain et tsunamis. Des systèmes d'alerte précoce ont été développés dans les pays les plus exposés pour donner aux habitants quelques secondes précieuses pour se mettre à l'abri.",
+        texte: "Un séisme, aussi appelé tremblement de terre, est une secousse brutale du sol causée par une libération soudaine d'énergie dans la croûte terrestre. Cette énergie se propage sous forme d'ondes sismiques qui peuvent être ressenties à des centaines de kilomètres du point d'origine, appelé foyer. La magnitude d'un séisme mesure la quantité d'énergie libérée et s'exprime sur l'échelle de Richter. Les secousses d'un séisme de magnitude 5 sont dix fois plus fortes que celles d'un séisme de magnitude 4. Les régions les plus touchées sont situées le long des frontières des plaques tectoniques, comme le Japon, la Turquie ou le Chili. Si les séismes eux-mêmes durent rarement plus de quelques minutes, leurs conséquences peuvent être catastrophiques : effondrements de bâtiments, glissements de terrain et tsunamis. Des systèmes d'alerte précoce ont été développés dans les pays les plus exposés pour donner aux habitants quelques secondes précieuses pour se mettre à l'abri.",
         questions: [
           {
             q: "Qu'est-ce que le foyer d'un séisme ?",
@@ -5076,7 +5076,7 @@ window.LECTURE_RAPIDE_DATA = {
           },
           {
             q: "Que signifie une différence d'un point sur l'échelle de Richter ?",
-            options: ["Le séisme est cent fois plus puissant que celui du niveau inférieur", "Le séisme dure dix fois plus longtemps que celui du niveau inférieur", "Le séisme est dix fois plus puissant que celui du niveau inférieur", "Le séisme touche une surface dix fois plus grande que celui du niveau inférieur"],
+            options: ["Les secousses sont cent fois plus fortes que celles du niveau inférieur", "Le séisme dure dix fois plus longtemps que celui du niveau inférieur", "Les secousses sont dix fois plus fortes que celles du niveau inférieur", "Le séisme touche une surface dix fois plus grande que celui du niveau inférieur"],
             correct: 2
           },
           {
@@ -5103,7 +5103,7 @@ window.LECTURE_RAPIDE_DATA = {
     textes: [
       {
         id: 'n4t1', titre: 'La photosynthèse',
-        texte: "Les plantes sont les seuls êtres vivants capables de fabriquer eux-mêmes leur propre nourriture grâce à un processus remarquable appelé photosynthèse. Pour cela, elles ont besoin de trois éléments essentiels : la lumière du soleil, le dioxyde de carbone présent dans l'air et l'eau puisée dans le sol par leurs racines. La chlorophylle, le pigment vert contenu dans les feuilles, capte l'énergie lumineuse et permet de transformer ces éléments en glucose, une forme de sucre qui nourrit la plante. En échange, la plante rejette de l'oxygène dans l'atmosphère, ce qui est indispensable à la respiration de la quasi-totalité des êtres vivants. Sans photosynthèse, il n'y aurait ni oxygène dans l'air, ni nourriture disponible pour les animaux et les humains. Ce processus est donc à la base de presque toutes les chaînes alimentaires sur Terre.",
+        texte: "Les plantes sont capables de fabriquer elles-mêmes leur propre nourriture grâce à un processus remarquable appelé photosynthèse. Pour cela, elles ont besoin de trois éléments essentiels : la lumière du soleil, le dioxyde de carbone présent dans l'air et l'eau puisée dans le sol par leurs racines. La chlorophylle, le pigment vert contenu dans les feuilles, capte l'énergie lumineuse et permet de transformer ces éléments en glucose, une forme de sucre qui nourrit la plante. En échange, la plante rejette de l'oxygène dans l'atmosphère, ce qui est indispensable à la respiration de la quasi-totalité des êtres vivants. Sans photosynthèse, il n'y aurait ni oxygène dans l'air, ni nourriture disponible pour les animaux et les humains. Ce processus est donc à la base de presque toutes les chaînes alimentaires sur Terre.",
         questions: [
           {
             q: "De quoi la plante a-t-elle besoin pour réaliser la photosynthèse ?",
@@ -5138,7 +5138,7 @@ window.LECTURE_RAPIDE_DATA = {
         questions: [
           {
             q: "Quelle fut la première mission à envoyer un homme sur la Lune ?",
-            options: ["La mission Soyouz, qui transporta Youri Gagarine en 1961", "La mission Apollo 11, lors de laquelle Neil Armstrong marcha sur la Lune", "La mission Apollo 13, qui fut interrompue à cause d'une panne technique", "La mission Gemini, qui prépara les premiers pas sur la Lune en 1969"],
+            options: ["La mission Vostok 1, qui fit faire à Youri Gagarine le tour de la Terre en 1961", "La mission Apollo 11, lors de laquelle Neil Armstrong marcha sur la Lune", "La mission Apollo 13, qui fut interrompue à cause d'une panne technique", "La mission Gemini, qui prépara les premiers pas sur la Lune en 1969"],
             correct: 1
           },
           {
@@ -5153,7 +5153,7 @@ window.LECTURE_RAPIDE_DATA = {
           },
           {
             q: "Quel fut le premier être humain à voyager dans l'espace ?",
-            options: ["Neil Armstrong, qui orbita autour de la Terre avant d'aller sur la Lune", "Buzz Aldrin, qui accompagnait Armstrong lors de la mission Apollo 11", "Youri Gagarine, premier Russe à avoir voyagé dans l'espace", "John Glenn, qui fut le premier Américain à faire le tour de la Terre"],
+            options: ["Neil Armstrong, qui orbita autour de la Terre avant d'aller sur la Lune", "Buzz Aldrin, qui accompagnait Armstrong lors de la mission Apollo 11", "Youri Gagarine, lors du premier vol habité en 1961", "John Glenn, qui fut le premier Américain à faire le tour de la Terre"],
             correct: 2
           },
           {
@@ -5201,7 +5201,7 @@ window.LECTURE_RAPIDE_DATA = {
     textes: [
       {
         id: 'n3t1', titre: 'La vie des abeilles',
-        texte: "Dans une ruche, chaque abeille a un rôle bien précis. La reine, unique dans la colonie, pond jusqu'à deux mille œufs par jour. Les ouvrières, qui sont toutes des femelles, accomplissent des tâches variées selon leur âge : elles nettoient les cellules, nourrissent les larves, produisent de la cire et gardent l'entrée de la ruche. Ce n'est qu'à partir de trois semaines qu'elles deviennent butineuses et partent collecter le nectar des fleurs. Les faux-bourdons, les seuls mâles de la ruche, n'ont qu'une seule mission : s'accoupler avec la reine. Une fois cette tâche accomplie, ils sont chassés de la ruche avant l'hiver. Les abeilles communiquent entre elles grâce à une danse particulière qui indique aux autres butineuses la direction et la distance des fleurs. Sans les abeilles, la pollinisation de nombreuses plantes serait impossible, menaçant gravement notre alimentation.",
+        texte: "Dans une ruche, chaque abeille a un rôle bien précis. La reine, unique dans la colonie, pond jusqu'à deux mille œufs par jour. Les ouvrières, qui sont toutes des femelles, accomplissent des tâches variées selon leur âge : elles nettoient les cellules, nourrissent les larves, produisent de la cire et gardent l'entrée de la ruche. Ce n'est qu'à partir de trois semaines qu'elles deviennent butineuses et partent collecter le nectar des fleurs. Les faux-bourdons, les seuls mâles de la ruche, n'ont qu'une seule mission : s'accoupler avec la reine. À l'approche de l'hiver, ceux qui restent sont chassés de la ruche. Les abeilles communiquent entre elles grâce à une danse particulière qui indique aux autres butineuses la direction et la distance des fleurs. Sans les abeilles, la pollinisation de nombreuses plantes serait impossible, menaçant gravement notre alimentation.",
         questions: [
           {
             q: "À partir de quel âge les ouvrières deviennent-elles butineuses ?",
@@ -5210,7 +5210,7 @@ window.LECTURE_RAPIDE_DATA = {
           },
           {
             q: "Quel est le rôle des faux-bourdons dans la ruche ?",
-            options: ["Ils produisent le miel en transformant le nectar des fleurs", "Ils gardent l'entrée de la ruche contre les prédateurs", "Ils s'accouplent avec la reine, puis sont chassés avant l'hiver", "Ils nourrissent les larves pendant les premiers jours de leur vie"],
+            options: ["Ils produisent le miel en transformant le nectar des fleurs", "Ils gardent l'entrée de la ruche contre les prédateurs", "Ils s'accouplent avec la reine ; ceux qui restent sont chassés avant l'hiver", "Ils nourrissent les larves pendant les premiers jours de leur vie"],
             correct: 2
           },
           {
@@ -5468,7 +5468,7 @@ window.LECTURE_RAPIDE_DATA = {
           },
           {
             q: "Pourquoi Monsieur Dupont met-il du pain de seigle de côté ?",
-            options: ["C'est le pain qu'il préfère manger lui-même", "Monsieur Henri arrive toujours en retard et le commande", "Madame Bernard en veut chaque matin pour ses enfants", "Ce pain se vend mieux l'après-midi que le matin"],
+            options: ["C'est le pain qu'il préfère manger lui-même", "Pour Monsieur Henri, qui arrive toujours en retard", "Madame Bernard en veut chaque matin pour ses enfants", "Ce pain se vend mieux l'après-midi que le matin"],
             correct: 1
           },
           {
@@ -5477,7 +5477,7 @@ window.LECTURE_RAPIDE_DATA = {
             correct: 2
           },
           {
-            q: "Que fait la queue de clients devant la boulangerie le matin ?",
+            q: "Que font les clients devant la boulangerie le matin ?",
             options: ["Ils attendent que Monsieur Dupont finisse de pétrir la pâte", "Ils arrivent avant même que la boulangerie n'ouvre ses portes", "Ils commandent leur pain la veille pour être servis en priorité", "Ils discutent en attendant que les croissants sortent du four"],
             correct: 1
           },
