@@ -53,6 +53,10 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
   - La carte du menu restait toujours sur « Non fait » (mauvais identifiant).
   - Moteur commun `ficheQCMAfficher`/`ficheQCMValider` créé : les 9 autres fiches ont le même code à migrer.
 
+- **05/10 — Lecture informative › L'écureuil** (a52284d) :
+  - Passé sur le moteur commun.
+  - « Drey » (mot anglais) remplacé par « hutte » ; une question reformulée ; deux petites corrections de contenu.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -91,7 +95,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ⬜ | Albert Einstein | `fiche_einstein` | index › renderFicheEinstein | Aucun hasard : mêmes questions, même ordre à chaque partie |
 | ⬜ | L'Atomium | `fiche_atomium` | index › renderFicheAtomium | Aucun hasard : mêmes questions, même ordre à chaque partie |
 | ⬜ | Le Taj Mahal | `fiche_tajmahal` | index › renderFicheTajMahal | Aucun hasard : mêmes questions, même ordre à chaque partie |
-| ⬜ | L'Écureuil roux | `fiche_ecureuil` | index › renderFicheEcureuil | Aucun hasard : mêmes questions, même ordre à chaque partie |
+| ✅ 05/10 (a52284d) | L'Écureuil roux | `fiche_ecureuil` | index › renderFicheEcureuil | Aucun hasard : mêmes questions, même ordre à chaque partie |
 | ⬜ | Le Loup gris | `fiche_loup` | index › renderFicheLoup | QCM: bonne réponse en position 3 dans 3/5 questions, options non mélangées ; Aucun hasard : mêmes questions, même ordre à chaque partie |
 | ⬜ | L'Éléphant d'Afrique | `fiche_elephant` | index › renderFicheElephant | Aucun hasard : mêmes questions, même ordre à chaque partie |
 
