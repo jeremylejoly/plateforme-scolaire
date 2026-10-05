@@ -551,6 +551,13 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
   - Le mélange utilise maintenant la méthode Fisher–Yates.
   - Nouvelle orthographe : maitrise, entrainer, entraine-toi.
 
+- **05/10 — Grammaire › Classes de mots › Le verbe › 2. Infinitif et groupes** (= exercice `gram_verbe_groupe`, 50 phrases, 10 par partie) :
+  - Dans « Classes de mots › Le verbe », la carte 2 était **grisée** (« Bientôt disponible ! »), alors que l'exercice existait déjà dans « Fonctions › Le verbe ». Elle ouvre maintenant ce même exercice. Le verrouillage par l'enseignant fonctionne aussi sur cette carte.
+  - Les 50 phrases ont été relues : chaque verbe a le bon infinitif et le bon groupe. Aller est classé au 3e groupe.
+  - Le résultat était déjà enregistré (`gram_verbe_groupe`).
+  - Le mélange utilise maintenant la méthode Fisher–Yates.
+  - Nouvelle orthographe : maitrise, entrainer, entraine-toi.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -671,7 +678,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ⬜ | Le sujet — Reconstituer les textes | `gram_sujet_texte` | index › startSujetTextesExercise |  |
 | ⬜ | Le sujet — Les 4 classes du sujet | `gram_classes_sujet` | index › startSujetClassesExercise |  |
 | ⬜ | Le verbe (fonction) — Repérer le verbe | `verbe_phrase` | index › startVerbeExercise |  |
-| ⬜ | Le verbe (fonction) — Infinitif et groupe | `gram_verbe_groupe` | index › startVerbeGroupeExercise |  |
+| ✅ 05/10 | Le verbe (fonction) — Infinitif et groupe | `gram_verbe_groupe` | index › startVerbeGroupeExercise |  |
 | ⬜ | Le verbe (fonction) — Trouver l'infinitif | `gram_verbe_infinitif` | index › startVerbeInfinitifExercise |  |
 | ⬜ | Le verbe (fonction) — Reconstituer les textes | `gram_verbe_texte` | index › startVerbeTextesExercise |  |
 | ⬜ | L'attribut du sujet | `gram_attribut` | index › (?) | (code à localiser) |

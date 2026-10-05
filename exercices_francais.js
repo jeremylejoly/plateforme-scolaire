@@ -12019,7 +12019,7 @@ window.EXERCICES_PRONOM_PIEGE = [
     exp: "« leur » est placé devant le verbe « donnes » et signifie « à eux ». C'est un pronom personnel."
   },
   {
-    phrase: "Chaque élève range <span class='target-highlight'>leur</span> matériel de dessin.",
+    phrase: "Les élèves rangent <span class='target-highlight'>leur</span> matériel de dessin.",
     word: "leur",
     cat: "determinant",
     exp: "« leur » accompagne le nom « matériel ». C'est un déterminant possessif."
@@ -12094,7 +12094,7 @@ window.EXERCICES_PRONOM_PIEGE = [
     phrase: "L'avion atterrit sur <span class='target-highlight'>l'</span> immense piste.",
     word: "l'",
     cat: "determinant",
-    exp: "« l' » accompagne l'adjectif « immense » qui qualifie le nom « piste ». C'est un déterminant (article défini)."
+    exp: "« l' » accompagne le nom « piste » (l'adjectif « immense » est placé entre les deux). C'est un déterminant (article défini)."
   },
   {
     phrase: "Je <span class='target-highlight'>les</span> aime beaucoup, ces petites douceurs.",
@@ -12109,10 +12109,10 @@ window.EXERCICES_PRONOM_PIEGE = [
     exp: "« les » accompagne le nom pluriel « clés ». C'est un déterminant."
   },
   {
-    phrase: "Elle <span class='target-highlight'>la</span> lave car elle était très sale.",
+    phrase: "Sa voiture était très sale : elle <span class='target-highlight'>la</span> lave.",
     word: "la",
     cat: "pronom",
-    exp: "« la » est placé devant le verbe « lave » et remplace un objet ou une chose. C'est un pronom personnel."
+    exp: "« la » est placé devant le verbe « lave » et remplace « sa voiture ». C'est un pronom personnel."
   },
   {
     phrase: "Regarde <span class='target-highlight'>la</span> lune briller ce soir.",
