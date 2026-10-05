@@ -1179,6 +1179,12 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Remarque : banque de 40 calculs seulement (menu : « parmi 40 ») → deux séries successives se recoupent en partie ; à agrandir si Jeremy le souhaite.
 - Tests : 20 000 séries, 0 paire inverse, les 40 calculs utilisés.
 
+### 05/10 — Maths › Opérations › Multiplications et divisions › × par 9 — 90 — 99 — 9,9 (`op_x9`, OP_X9_BANQUE dans exercices_maths.js) — sw.js v544
+- 100 calculs (25 par multiplicateur) recalculés par programme : tous justes, aucun doublon.
+- Tirage libre (pouvait donner 6 calculs × 9,9 et aucun × 90) → `pickStratifiedByB` : 2 ou 3 calculs de chaque multiplicateur, mélangés.
+- Moteur commun (v537) : identifiant `op_x9` correct, virgule acceptée (19,8), réponses vides gérées.
+- Tests : 20 000 séries, toujours les 4 multiplicateurs (2 ou 3 chacun), 100 calculs utilisés.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1479,7 +1485,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | Les tables étendues | `op_tables` | index › startOpTablesExercise |  |
 | ✅ 05/10 | × et ÷ par 0,1 — 10 — 100 — 1000 | `op_x10` | index › startOpX10Exercise |  |
 | ✅ 05/10 | × et ÷ par 0,5 — 5 — 50 — 500 | `op_x5` | index › startOpX5Exercise |  |
-| ⬜ | × par 9 — 90 — 99 — 9,9 | `op_x9` | index › startOpX9Exercise |  |
+| ✅ 05/10 | × par 9 — 90 — 99 — 9,9 | `op_x9` | index › startOpX9Exercise |  |
 | ⬜ | × par 11 — 101 — 110 — 1,1 | `op_x11` | index › (?) | (code à localiser) |
 | ⬜ | Caractères de divisibilité | `op_divisibilite` | fiches/divisibilite.html |  |
 | ⬜ | La compensation | `op_compensation` | index › (?) | (code à localiser) |

@@ -1083,7 +1083,7 @@ window.OP_X10_BANQUE = [
   { a: 1.48, b: 0.1, op: '÷', answer: 14.8 }
 ];
 
-// Banque de 40 exercices × et ÷ par 0,5 — 5 — 50 — 500
+// Banque de 100 exercices × et ÷ par 0,5 — 5 — 50 — 500 (40 d’origine + 60 ajoutés le 05/10/2026)
 window.OP_X5_BANQUE = [
   // --- 60% NOMBRES ENTIERS (24 questions) ---
   // Multiplications par 5
@@ -1143,7 +1143,76 @@ window.OP_X5_BANQUE = [
   { a: 2.68, b: 0.5, op: '×', answer: 1.34 },
   // Divisions par 0,5
   { a: 4.5, b: 0.5, op: '÷', answer: 9 },
-  { a: 3.2, b: 0.5, op: '÷', answer: 6.4 }
+  { a: 3.2, b: 0.5, op: '÷', answer: 6.4 },
+  // --- Ajout du 05/10/2026 : 60 calculs (banque portée à 100) ---
+  // Multiplications par 5
+  { a: 32, b: 5, op: '×', answer: 160 },
+  { a: 64, b: 5, op: '×', answer: 320 },
+  { a: 120, b: 5, op: '×', answer: 600 },
+  { a: 250, b: 5, op: '×', answer: 1250 },
+  { a: 86, b: 5, op: '×', answer: 430 },
+  { a: 7.2, b: 5, op: '×', answer: 36 },
+  { a: 1.8, b: 5, op: '×', answer: 9 },
+  // Divisions par 5
+  { a: 65, b: 5, op: '÷', answer: 13 },
+  { a: 95, b: 5, op: '÷', answer: 19 },
+  { a: 120, b: 5, op: '÷', answer: 24 },
+  { a: 260, b: 5, op: '÷', answer: 52 },
+  { a: 1500, b: 5, op: '÷', answer: 300 },
+  { a: 9.5, b: 5, op: '÷', answer: 1.9 },
+  { a: 2.5, b: 5, op: '÷', answer: 0.5 },
+  // Multiplications par 50
+  { a: 8, b: 50, op: '×', answer: 400 },
+  { a: 24, b: 50, op: '×', answer: 1200 },
+  { a: 36, b: 50, op: '×', answer: 1800 },
+  { a: 120, b: 50, op: '×', answer: 6000 },
+  { a: 15, b: 50, op: '×', answer: 750 },
+  { a: 0.6, b: 50, op: '×', answer: 30 },
+  { a: 2.4, b: 50, op: '×', answer: 120 },
+  { a: 44, b: 50, op: '×', answer: 2200 },
+  // Divisions par 50
+  { a: 1500, b: 50, op: '÷', answer: 30 },
+  { a: 600, b: 50, op: '÷', answer: 12 },
+  { a: 2000, b: 50, op: '÷', answer: 40 },
+  { a: 350, b: 50, op: '÷', answer: 7 },
+  { a: 4500, b: 50, op: '÷', answer: 90 },
+  { a: 5000, b: 50, op: '÷', answer: 100 },
+  { a: 30, b: 50, op: '÷', answer: 0.6 },
+  { a: 150, b: 50, op: '÷', answer: 3 },
+  // Multiplications par 500
+  { a: 6, b: 500, op: '×', answer: 3000 },
+  { a: 12, b: 500, op: '×', answer: 6000 },
+  { a: 18, b: 500, op: '×', answer: 9000 },
+  { a: 30, b: 500, op: '×', answer: 15000 },
+  { a: 7, b: 500, op: '×', answer: 3500 },
+  { a: 0.4, b: 500, op: '×', answer: 200 },
+  { a: 1.2, b: 500, op: '×', answer: 600 },
+  { a: 22, b: 500, op: '×', answer: 11000 },
+  // Divisions par 500
+  { a: 2500, b: 500, op: '÷', answer: 5 },
+  { a: 6000, b: 500, op: '÷', answer: 12 },
+  { a: 10000, b: 500, op: '÷', answer: 20 },
+  { a: 1500, b: 500, op: '÷', answer: 3 },
+  { a: 25000, b: 500, op: '÷', answer: 50 },
+  { a: 4500, b: 500, op: '÷', answer: 9 },
+  { a: 200, b: 500, op: '÷', answer: 0.4 },
+  { a: 12000, b: 500, op: '÷', answer: 24 },
+  // Multiplications par 0,5
+  { a: 30, b: 0.5, op: '×', answer: 15 },
+  { a: 84, b: 0.5, op: '×', answer: 42 },
+  { a: 500, b: 0.5, op: '×', answer: 250 },
+  { a: 7, b: 0.5, op: '×', answer: 3.5 },
+  { a: 13, b: 0.5, op: '×', answer: 6.5 },
+  { a: 2.4, b: 0.5, op: '×', answer: 1.2 },
+  { a: 0.8, b: 0.5, op: '×', answer: 0.4 },
+  // Divisions par 0,5
+  { a: 9, b: 0.5, op: '÷', answer: 18 },
+  { a: 17, b: 0.5, op: '÷', answer: 34 },
+  { a: 35, b: 0.5, op: '÷', answer: 70 },
+  { a: 120, b: 0.5, op: '÷', answer: 240 },
+  { a: 2.5, b: 0.5, op: '÷', answer: 5 },
+  { a: 0.4, b: 0.5, op: '÷', answer: 0.8 },
+  { a: 1.3, b: 0.5, op: '÷', answer: 2.6 },
 ];
 
 // Banque de 100 exercices des tables étendues
