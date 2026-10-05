@@ -237,7 +237,7 @@
     <div id="screen-synthesis" class="fade-in">
       <div class="text-center mb-8">
         <h1 class="font-title text-4xl sm:text-5xl font-black mb-2 tracking-tight">L'accord des adjectifs de couleur</h1>
-        <p class="font-display text-lg text-slate-500 font-bold">Maîtrise les accords simples, les noms-couleurs et les formes composées !</p>
+        <p class="font-display text-lg text-slate-500 font-bold">Maitrise les accords simples, les noms-couleurs et les formes composées !</p>
       </div>
       
       <div class="flat-card p-6 mb-8 bg-amber-50">
@@ -415,7 +415,7 @@
         </div>
 
         <p id="final-comment" class="text-sm font-semibold leading-relaxed text-slate-600 max-w-md mx-auto mb-8">
-          Excellent travail ! Tu maîtrises les règles d'accord des adjectifs de couleur.
+          Excellent travail ! Tu maitrises les règles d'accord des adjectifs de couleur.
         </p>
 
         <!-- Retry and return actions -->
@@ -609,7 +609,7 @@
         category: "noms"
       },
       {
-        textBefore: "Les murs de la cuisine sont peints en ",
+        textBefore: "Les murs de la cuisine sont ",
         textAfter: " (chocolat).",
         target: "chocolat",
         plurals: ["chocolat"],
@@ -710,7 +710,7 @@
         category: "composes"
       },
       {
-        textBefore: "Ils ont peint la barrière en ",
+        textBefore: "Les marins portent des pulls ",
         textAfter: " (bleu marine).",
         target: "bleu marine",
         plurals: ["bleu marine"],
@@ -772,6 +772,7 @@
     let currentQuestionIndex = 0;
     let score = 0;
     let canGoToNext = true;
+    let answered = false;
     
     // Toggle details in synthesis cards
     function toggleRuleDetail(ruleId) {
@@ -796,13 +797,14 @@
       sndTap();
       
       // Pick exactly 5 questions from category 'generale' (accords) and 5 from other categories (invariables)
-      const generals = questionPool.filter(q => q.category === 'generale');
-      const shuffledGenerals = generals.sort(() => 0.5 - Math.random()).slice(0, 5);
-      
-      const invariables = questionPool.filter(q => q.category !== 'generale');
-      const shuffledInvariables = invariables.sort(() => 0.5 - Math.random()).slice(0, 5);
-      
-      currentQuestions = [...shuffledGenerals, ...shuffledInvariables].sort(() => 0.5 - Math.random());
+      // Mélange de Fisher-Yates ; de 4 à 6 phrases qui s'accordent (le reste invariable),
+      // pour que l'élève ne puisse pas compter.
+      const fy = arr => { const a = [...arr]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+      const nbAccord = 4 + Math.floor(Math.random() * 3);
+      const generals = fy(questionPool.filter(q => q.category === 'generale')).slice(0, nbAccord);
+      const invariables = fy(questionPool.filter(q => q.category !== 'generale')).slice(0, 10 - nbAccord);
+      currentQuestions = fy([...generals, ...invariables]);
+      answered = false;
       
       currentQuestionIndex = 0;
       score = 0;
@@ -827,7 +829,10 @@
       const placeholderHTML = `<span class="border-b-4 border-dashed border-purple-500 px-4 text-purple-700 font-bold" id="blank-placeholder">......</span>`;
       const fullSentenceHTML = q.textBefore + placeholderHTML + q.textAfter;
       document.getElementById('target-sentence').innerHTML = fullSentenceHTML;
-      document.getElementById('target-hint').textContent = `Indice : ${q.hint}`;
+      // Indice neutre : l'ancien indice (« Nom employé comme adjectif », « Adjectif composé »…) donnait la réponse.
+      // Il est maintenant affiché dans la correction.
+      document.getElementById('target-hint').textContent = "Indice : regarde le nom auquel la couleur se rapporte, et demande-toi si c'est un adjectif simple, un nom ou une couleur en plusieurs mots.";
+      answered = false;
       
       // Clear input
       const input = document.getElementById('answer-input');
@@ -844,8 +849,9 @@
     
     // Validate current answer
     function validateAnswer() {
+      if (answered) return;
       const q = currentQuestions[currentQuestionIndex];
-      const userInput = document.getElementById('answer-input').value.trim();
+      const userInput = document.getElementById('answer-input').value.normalize('NFC').trim().replace(/\s+/g, ' ');
       
       if (!userInput) {
         // Play error sound and do nothing
@@ -862,6 +868,7 @@
         }
       });
       
+      answered = true;
       // Configure Feedback Modal UI
       const statusIcon = document.getElementById('feedback-status');
       const title = document.getElementById('feedback-title');
@@ -871,7 +878,7 @@
       
       userAnsSpan.textContent = userInput;
       correctAnsSpan.textContent = q.plurals[0];
-      explanation.innerHTML = q.explanation;
+      explanation.innerHTML = `<em>${q.hint}</em><br>` + q.explanation;
       
       if (isCorrect) {
         score++;
@@ -909,7 +916,8 @@
     
     // Go to next question or end game
     function nextQuestion() {
-      if (!canGoToNext) return;
+      if (!canGoToNext || !answered) return;
+      answered = false;
       sndTap();
       // Hide feedback modal
       document.getElementById('feedback-modal').classList.add('hidden');

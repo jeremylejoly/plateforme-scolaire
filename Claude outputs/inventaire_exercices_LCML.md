@@ -885,6 +885,13 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - « en toute confidence » → « en confidence » ; « *avoir* » (astérisques visibles) → italique ; consigne reformulée ; description du menu (« synthèse interactive » inexistante) corrigée.
 - Saisie NFC + espaces. Nouvelle orthographe : maitre, entraine, maitrises, maitriser, entrainer.
 
+### 05/10 — Les pluriels particuliers (`fiches/orthographe_pluriels_particuliers.html`, 3 copies) — sw.js v500
+- L'indice donnait la réponse : « Nom en -ou (exception) », « (régulier) », « (double pluriel) » → l'indice ne garde que la famille (« Nom en -ou ») ; la mention complète apparait dans la correction. Adjectifs : « écris le masculin pluriel » précisé.
+- Double validation : Valider / Entrée plusieurs fois comptait plusieurs points, et « Suivant » cliqué deux fois en fin de partie enregistrait 2 résultats → verrou `answered`.
+- Mélange `sort(random)` → Fisher-Yates ; tirage équilibré 3 -ou / 2 -al / 2 -ail / 3 adjectifs.
+- Saisie NFC + espaces (« des » toujours accepté). Contenu des 30 mots juste.
+- Nouvelle orthographe : maitrise(s), entrainement (fiche + menu).
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1087,7 +1094,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | PP avec Être | `ortho_participe_etre` | fiches/orthographe_participe_passe_etre.html |  |
 | ✅ 05/10 | PP avec Avoir | `ortho_participe_avoir` | fiches/orthographe_participe_passe_avoir.html |  |
 | ✅ 05/10 | L'Accord parfait (Participe passé) | `ortho_participe_accord` | fiches/accord_participe.html |  |
-| ⬜ | Les pluriels particuliers | `ortho_pluriels` | fiches/orthographe_pluriels_particuliers.html |  |
+| ✅ 05/10 | Les pluriels particuliers | `ortho_pluriels` | fiches/orthographe_pluriels_particuliers.html |  |
 | ⬜ | Accord des adjectifs de couleur | `ortho_adjectifs_couleur` | fiches/orthographe_adjectifs_couleur.html |  |
 
 ### 📖 Français — ✍️ Expression écrite
