@@ -35,6 +35,13 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
   - Chat Botté : ordre attendu faux dans la partie 4, et « Recommencer » ne marchait pas.
   - Les deux contes : rien n'était mélangé (le bon résumé était toujours le 1er) ; le résultat n'était enregistré qu'en validant la partie 4 ; trois formulations ont été précisées.
 
+- **05/10 — Français › Lecture narrative › Poèmes** (a286c36) :
+  - Vrai/Faux toujours dans l'ordre F puis V, et bonne réponse presque toujours en 2e position.
+  - Page d'écriture : la réponse attendue pour la craie était fausse (« un oiseau » au lieu de « falaise »).
+  - Le Cancre : deux réponses défendables dans la partie 3.
+  - Drôle de bonne femme : le poème est de Marie Aubinais, pas de Carême.
+  - Dormeur du val : coquille.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -57,10 +64,10 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 |---|---|---|---|---|
 | ✅ 05/10 (199a1f7) | Le Chat Botté | `conte_chatbotte` | index › renderConteChatBotte |  |
 | ✅ 05/10 (199a1f7) | Les Musiciens de Brême | `conte_breme` | index › renderConteBreme |  |
-| ⬜ | Le Cancre (Prévert) | `poeme_cancre` | index › renderPoemeCancre |  |
-| ⬜ | Page d'écriture (Prévert) | `poeme_ecriture` | index › renderPoemeEcriture |  |
-| ⬜ | Le Dormeur du val (Rimbaud) | `poeme_dormeur` | index › renderPoemeDormeur |  |
-| ⬜ | Drôle de bonne femme (Carême) | `poeme_sorciere` | index › renderPoemeSorciere |  |
+| ✅ 05/10 (a286c36) | Le Cancre (Prévert) | `poeme_cancre` | index › renderPoemeCancre |  |
+| ✅ 05/10 (a286c36) | Page d'écriture (Prévert) | `poeme_ecriture` | index › renderPoemeEcriture |  |
+| ✅ 05/10 (a286c36) | Le Dormeur du val (Rimbaud) | `poeme_dormeur` | index › renderPoemeDormeur |  |
+| ✅ 05/10 (a286c36) | Drôle de bonne femme (Aubinais) | `poeme_sorciere` | index › renderPoemeSorciere |  |
 
 ### 📖 Français — 📰 Lecture — Informative
 
