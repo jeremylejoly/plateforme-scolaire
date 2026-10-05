@@ -229,6 +229,11 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
   - « La Belgique faisait partie de l'Empire romain » devient « notre région ».
   - Le mélange est maintenant équitable.
 
+- **05/10 — Conjugaison › Un peu de tout › Tableau des 3 temps simples** :
+  - Le résultat n'était jamais enregistré. Il l'est maintenant sous `conj_trois_temps_simples`.
+  - Mêmes erreurs que dans le Tableau des 3 temps, corrigées de la même façon : « navigaient », Copernic qui « démontrait », « la Belgique » dans l'Empire romain.
+  - Le mélange est maintenant équitable.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -388,7 +393,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ⬜ | Imparfait de l'indicatif (QCM) | `conj_imparfait_qcm` | fiches/conjugaison_imparfait_QCM.html |  |
 | ⬜ | Imparfait de l'indicatif (Écriture) | `conj_imparfait_ecriture` | fiches/conjugaison_imparfait_ecriture.html |  |
 | ✅ 05/10 | 1. Tableau des 3 temps | `conj_tableau_3_temps` | fiches/conjugaison_tableau_3_temps.html |  |
-| ⬜ | 2. Tableau des 3 temps simples | `conj_trois_temps_simples` | fiches/conjugaison_trois_temps_simples.html |  |
+| ✅ 05/10 | 2. Tableau des 3 temps simples | `conj_trois_temps_simples` | fiches/conjugaison_trois_temps_simples.html |  |
 | ⬜ | 3. Repère le bon verbe | `conj_repere_verbe` | fiches/conjugaison_repere_verbe.html |  |
 
 ### 📖 Français — 📄 Conjugaison — Fiches du passé composé
