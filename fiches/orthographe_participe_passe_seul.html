@@ -49,7 +49,7 @@
       {pre: "Ce stylo (voler) ", post: " ne m'appartient pas.", verb: "voler", ans: "volé", expl: "S'accorde avec 'stylo' (masculin singulier)."},
       {pre: "(Épuiser) ", post: " par la course, les athlètes se reposent.", verb: "épuiser", ans: "Épuisés", expl: "S'accorde avec 'athlètes' (masculin pluriel)."},
       {pre: "La leçon (apprendre) ", post: " par cœur est vite oubliée.", verb: "apprendre", ans: "apprise", expl: "S'accorde avec 'leçon' (féminin singulier)."},
-      {pre: "Les travaux (finir) ", post: " ont coûté cher.", verb: "finir", ans: "finis", expl: "S'accorde avec 'travaux' (masculin pluriel)."},
+      {pre: "Les travaux (finir) ", post: " ont couté cher.", verb: "finir", ans: "finis", expl: "S'accorde avec 'travaux' (masculin pluriel)."},
       {pre: "Une chanson (oublier) ", post: " revient à la mode.", verb: "oublier", ans: "oubliée", expl: "S'accorde avec 'chanson' (féminin singulier)."},
       {pre: "Les voitures (laver) ", post: " brillent au soleil.", verb: "laver", ans: "lavées", expl: "S'accorde avec 'voitures' (féminin pluriel)."},
       {pre: "Un trésor (cacher) ", post: " sous le sable attend les pirates.", verb: "cacher", ans: "caché", expl: "S'accorde avec 'trésor' (masculin singulier)."},
@@ -60,20 +60,52 @@
     let selectedSentences = [];
     let currentIndex = 0;
     let attempts = 0;
+    let score = 0;
+    let resultSaved = false;
 
+    function shuffleArray(arr) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
     function initGame() {
-      selectedSentences = allSentences.sort(() => 0.5 - Math.random()).slice(0, 10);
+      selectedSentences = shuffleArray(allSentences).slice(0, 10);
       currentIndex = 0;
+      score = 0;
+      resultSaved = false;
       loadSentence();
+    }
+    function saveScore() {
+      if (resultSaved) return;
+      resultSaved = true;
+      try {
+        if (window.parent && window.parent.saveResult) {
+          window.parent.saveResult({
+            activity: 'ortho_participe_seul',
+            bookTitle: 'Participe passé employé seul',
+            score: score,
+            total: 10,
+            pct: score * 10,
+            date: new Date().toLocaleDateString('fr-BE'),
+            time: new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })
+          });
+        }
+      } catch (e) {}
     }
 
     function loadSentence() {
       if (currentIndex >= 10) {
         document.querySelector('.game-container').innerHTML = `
           <div class="game-title">🏆 Bravo !</div>
-          <div style="font-size: 1.5rem; margin-bottom: 2rem;">Tu as terminé tes 10 phrases.</div>
+          <div style="font-size: 1.5rem; margin-bottom: 1rem;">Tu as terminé tes 10 phrases.</div>
+          <div style="font-size: 2rem; font-weight: bold; margin-bottom: 0.5rem;">Score : ${score} / 10</div>
+          <div style="font-size: 1rem; color: #64748b; margin-bottom: 2rem;">Un point par phrase réussie du premier coup.</div>
           <button class="btn" onclick="location.reload()" style="background-color: var(--accent-green);">Recommencer avec 10 nouvelles phrases</button>
         `;
+        saveScore();
         return;
       }
       attempts = 0;
@@ -90,11 +122,16 @@
 
     function checkAnswer() {
       const s = selectedSentences[currentIndex];
-      const ans = document.getElementById('answer').value.trim();
+      const ans = document.getElementById('answer').value.normalize('NFC').trim().replace(/\s+/g, ' ');
       const fb = document.getElementById('feedback');
       fb.style.display = 'block';
-      
+      if (ans === '') {
+        fb.innerHTML = "✏️ Écris d'abord le participe passé.";
+        fb.className = "feedback error";
+        return;
+      }
       if (ans.toLowerCase() === s.ans.toLowerCase()) {
+        if (attempts === 0) score++;
         fb.innerHTML = "✅ Parfait ! " + s.expl;
         fb.className = "feedback success";
         document.getElementById('answer').value = s.ans; 

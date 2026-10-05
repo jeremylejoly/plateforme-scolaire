@@ -854,6 +854,13 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Sélection bloquée une fois le texte corrigé.
 - Contenu des 5 textes vérifié (60 participes, explications justes). Nouvelle orthographe : déchainé, ile, entrainement.
 
+### 05/10 — Transformation à l'infini…tif (`fiches/orthographe_participe_passe_infinitif.html`, copie unique) — sw.js v495
+- AUCUN résultat enregistré → score sur 10 (1 point par verbe réussi du premier coup), enregistré une fois sous `ortho_participe_infinitif`, affiché en fin de partie.
+- Mélange `sort(random)` → Fisher-Yates ; tirage équilibré 2 verbes du 1er groupe / 3 du 2e / 5 du 3e (avant : ~80 % de 3e groupe, dont des verbes très rares).
+- Verbes hors niveau retirés : moudre, croitre (crû), acquérir, conquérir, concevoir, taire, extraire, exclure, rompre (banque 98).
+- Saisie : NFC + espaces ; réponse vide refusée sans compter d'essai.
+- Nouvelle orthographe : naitre, connaitre, paraitre, disparaitre, assoir (« dû » conservé).
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1051,7 +1058,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | Statut | Exercice | id | Source | Signal automatique |
 |---|---|---|---|---|
 | ✅ 05/10 | Détective des participes | `ortho_participe_texte` | fiches/orthographe_participe_passe_texte.html |  |
-| ⬜ | Transformation à l'infini | `ortho_participe_infinitif` | fiches/orthographe_participe_passe_infinitif.html |  |
+| ✅ 05/10 | Transformation à l'infini | `ortho_participe_infinitif` | fiches/orthographe_participe_passe_infinitif.html |  |
 | ⬜ | PP employé seul | `ortho_participe_seul` | fiches/orthographe_participe_passe_seul.html |  |
 | ⬜ | PP avec Être | `ortho_participe_etre` | fiches/orthographe_participe_passe_etre.html |  |
 | ⬜ | PP avec Avoir | `ortho_participe_avoir` | fiches/orthographe_participe_passe_avoir.html |  |
