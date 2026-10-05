@@ -814,6 +814,13 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Validation unique (verrou + bouton masqué) ; bonne réponse affichée à côté des menus faux.
 - Nouvelle orthographe : traine, maitre, maitresse, boite.
 
+### 05/10 — Homophones ces / ses / c'est / s'est / sais / sait (`homo_ces`, index › HOMO_CES_BANQUE / validerHomoCes) — sw.js v489
+- Faute d'accord dans la banque : « La fillette s'est tordue la cheville » → « tordu » (CDV placé après).
+- Phrases ambigües ces/ses (les deux possibles) : « Le directeur dit que ___ élèves… », « Le jardinier ramasse ___ feuilles », « Regarde ___ jolies fleurs » → reformulées avec « -là » ; « dans la bibliothèque » → « dans sa bibliothèque ».
+- Synthèse : astuces fausses (« remplacer ces par ceux-là », « ses par les siens ») → singulier ce/cet/cette ou ajout de « -là » ; singulier son/sa ou ajout de « à lui / à elle ».
+- Validation unique (verrou + bouton masqué) ; bonne réponse affichée à côté des menus faux.
+- Nouvelle orthographe : parait, maitre, maitresse.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1000,7 +1007,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | se / ce / s' / c' | `homo_ce` | index › renderHomoCeSynthesis |  |
 | ✅ 05/10 | on / ont | `homo_on` | index › renderHomoOnSynthesis |  |
 | ✅ 05/10 | la / là / l'a / l'as | `homo_la` | index › renderHomoLaSynthesis |  |
-| ⬜ | ces / ses / c'est / s'est / sais / sait | `homo_ces` | index › renderHomoCesSynthesis |  |
+| ✅ 05/10 | ces / ses / c'est / s'est / sais / sait | `homo_ces` | index › renderHomoCesSynthesis |  |
 | ⬜ | leur / leurs | `homo_leur` | index › renderHomoLeurSynthesis |  |
 | ⬜ | peu / peux / peut | `homo_peu` | index › renderHomoPeuSynthesis |  |
 | ⬜ | sans / s'en / cent / sang | `homo_sans` | index › renderHomoSansSynthesis |  |
