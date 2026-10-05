@@ -331,7 +331,7 @@
     },
     {
       def: "Qui ne peut pas être mangé car c'est impropre ou mauvais.",
-      radical: "mang",
+      radical: "mange",
       prefix: "im-",
       suffix: "-able",
       word: "immangeable",
@@ -442,12 +442,12 @@
       ex: "Le préfixe <strong>in-</strong> exprime la négation. Le suffixe <strong>-able</strong> montre la possibilité."
     },
     {
-      def: "Action de diviser ou partager à nouveau.",
-      radical: "divis",
-      prefix: "re-",
-      suffix: "-ion",
-      word: "redivision",
-      ex: "Le préfixe <strong>re-</strong> exprime la répétition. Le suffixe <strong>-ion</strong> sert à fabriquer le nom de l'action."
+      def: "Qu'on ne peut pas prévoir à l'avance.",
+      radical: "prévis",
+      prefix: "im-",
+      suffix: "-ible",
+      word: "imprévisible",
+      ex: "Le préfixe <strong>im-</strong> (pour in-, devant p) exprime le contraire. Le suffixe <strong>-ible</strong> indique la possibilité (prévisible ➔ qu'on peut prévoir)."
     },
     {
       def: "Qui ne fait pas preuve de patience.",
@@ -478,6 +478,8 @@
   let currentQIdx = 0;
   let activeWord = null;
   let isAnimating = false;
+  let premierCoup = 0;     // mots assemblés du premier coup
+  let dejaRate = false;
 
   // Choix actuels de l'élève
   let selectedPrefix = null;
@@ -489,6 +491,7 @@
   function initLab() {
     const shuffled = shuffleArray([...WORD_BANK]);
     sessionList = shuffled.slice(0, 10); // 10 mots par partie
+    premierCoup = 0;
     currentQIdx = 0;
     isAnimating = false;
 
@@ -507,6 +510,7 @@
     }
 
     activeWord = sessionList[currentQIdx];
+    dejaRate = false;
     isAnimating = false;
 
     selectedPrefix = null;
@@ -649,6 +653,7 @@
     const zone = document.getElementById('assembly-zone');
 
     if (isCorrect) {
+      if (!dejaRate) premierCoup++;
       // Colorie la zone en vert
       zone.classList.add('assembly-correct');
 
@@ -661,6 +666,7 @@
       document.getElementById('selection-panel').classList.add('hidden');
 
     } else {
+      dejaRate = true;
       // Vibre en rouge
       zone.classList.add('assembly-error');
 
@@ -694,15 +700,16 @@
     document.getElementById('explain-container').classList.add('hidden');
     
     document.getElementById('panel-final').classList.remove('hidden');
-    document.getElementById('final-score-text').innerText = `Félicitations ! Tu as assemblé les 10 mots complexes avec brio en maîtrisant les préfixes et suffixes.`;
+    document.getElementById('final-score-text').innerText = `Tu as assemblé ${premierCoup} mot${premierCoup>1?'s':''} sur ${sessionList.length} du premier coup.`;
 
     if (window.parent && window.parent.saveResult) {
       window.parent.saveResult({
         activity: 'vocabulaire_fabrique_mots',
         bookTitle: 'Vocabulaire — La Fabrique de Mots',
-        score: 10,
-        total: 10,
-        pct: 100,
+        // Avant : toujours 10/10 ; maintenant les mots assemblés du premier coup
+        score: premierCoup,
+        total: sessionList.length,
+        pct: Math.round(premierCoup / sessionList.length * 100),
         date: new Date().toLocaleDateString('fr-BE'),
         time: new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})
       });

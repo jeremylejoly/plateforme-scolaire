@@ -200,6 +200,15 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
   - 6 phrases avaient 2 réponses possibles. Le distracteur défendable a été remplacé : provoque (un bruit), dresse (les verres), rangent (les sacs), annonce (son avis), raconte (sa faute), étudie (le karaté).
   - « Proteste sa colère » est incorrect : la réponse attendue devient « crie sa colère ».
 
+- **05/10 — Vocabulaire › Le Chasseur d'intrus** (fiche + 2 copies) :
+  - Le score était toujours de 10/10. Il compte maintenant les intrus trouvés du premier coup.
+  - Séries précisées :
+    - « fatigué » ne figure plus dans la série « synonymes de fatigué » (remplacé par « las ») ;
+    - « savant », « hâtif » et « rivaliser » n'étaient pas de vrais synonymes : remplacés par « malin », « vif » et « se battre » ;
+    - « maillot » est devenu « maillot de bain » (un maillot de corps se porte aussi en hiver) ;
+    - l'explication sur les fleurs disait que la rose est une plante herbacée, ce qui est faux : corrigée ;
+    - « Synonymes d'INTELLIGENT ».
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -423,7 +432,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | L'Atelier des Mots | `vocabulaire_atelier_mots` | fiches/vocabulaire-jeu.html |  |
 | ✅ 05/10 | Le Défi des Registres | `vocabulaire_registres` | fiches/registres-tri.html |  |
 | ✅ 05/10 | Chasse aux Verbes Ternes | `vocabulaire_verbes_ternes` | fiches/verbes-ternes.html |  |
-| ⬜ | Le Chasseur d'Intrus | `vocabulaire_chasseur_intrus` | fiches/chasseur-intrus.html |  |
+| ✅ 05/10 | Le Chasseur d'Intrus | `vocabulaire_chasseur_intrus` | fiches/chasseur-intrus.html |  |
 | ⬜ | La Fabrique de Mots | `vocabulaire_fabrique_mots` | fiches/fabrique-mots.html |  |
 | ⬜ | Relations lexicales | `vocabulaire_relations_lexicales` | fiches/vocabulaire_relations_lexicales.html | QCM: la bonne réponse est la 1re option dans 30/30 questions, options non mélangées |
 
