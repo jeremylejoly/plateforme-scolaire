@@ -29,6 +29,12 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | Valeur d'un chiffre : 2 réponses possibles refusées | `num_decimaux_relier` | Les chiffres de remplissage rendaient parfois une autre phrase vraie (ex. 4 832,51 et « le 3 représente les dizaines ») | ✅ 9d2364e |
 | Donner l'heure : bonne réponse refusée | `grandeur_durees_heure_secondes` (+ durées) | Horloge : 15 h refusé pour 3 h, 00 h refusé pour 12 h, impossible de saisir 20 h et plus. Durées : « 03 » refusé pour 3, « 00 » refusé pour 0 | ✅ 6d5a2ec |
 
+## Journal des séances
+
+- **05/10 — Français › Lecture narrative › Contes** (199a1f7) :
+  - Chat Botté : ordre attendu faux dans la partie 4, et « Recommencer » ne marchait pas.
+  - Les deux contes : rien n'était mélangé (le bon résumé était toujours le 1er) ; le résultat n'était enregistré qu'en validant la partie 4 ; trois formulations ont été précisées.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
