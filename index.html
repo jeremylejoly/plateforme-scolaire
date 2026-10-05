@@ -3236,7 +3236,7 @@ input[type=text].calc-input.incorrect {
 }
 </style>
 <script src="livres.js?v=20261002b"></script>
-<script src="exercices_francais.js?v=20261005zi"></script>
+<script src="exercices_francais.js?v=20261005zj"></script>
 <script src="exercices_maths.js?v=20260927e"></script>
 <script src="exercices_eveil.js?v=20260927e"></script>
 <script>
@@ -22764,8 +22764,14 @@ function renderConnecteurs(){
   if(!body) return;
 
   // Mélanger et prendre 10 phrases
-  const shuffled = [...CONNECTEURS_POOL].sort(()=>Math.random()-0.5);
-  connexPhrases = shuffled.slice(0, 10);
+  // Fisher-Yates sur les phrases ET sur les propositions (avant, la bonne réponse était
+  // le plus souvent le 3e bouton).
+  const fy = arr => { const a=[...arr]; for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; };
+  connexPhrases = fy(CONNECTEURS_POOL).slice(0, 10).map(p => {
+    const bonne = p.options[p.correct];
+    const options = fy(p.options);
+    return {...p, options, correct: options.indexOf(bonne)};
+  });
   connexSels = {};
   connexScore = 0;
   connexSubmitted = false;
@@ -22882,7 +22888,7 @@ function validerConnecteurs(){
     <div style="font-size:56px;margin-bottom:0.5rem">${pct===100?'🎉':pct>=70?'⭐':pct>=50?'👍':'💪'}</div>
     <div style="font-family:'Nunito',sans-serif;font-weight:900;font-size:40px;color:${color}">${connexScore}/10</div>
     <div style="font-size:18px;color:${color};font-weight:700;margin-bottom:1rem">${pct}%</div>
-    <div style="font-size:14px;color:var(--muted);margin-bottom:1.5rem">${pct===100?'Parfait ! Tu maîtrises tous les connecteurs !':pct>=70?'Très bien ! Continue à t\'entraîner !':pct>=50?'Pas mal ! Relis les explications en rouge.':'Courage ! Relis bien les explications et réessaie.'}</div>
+    <div style="font-size:14px;color:var(--muted);margin-bottom:1.5rem">${pct===100?'Parfait ! Tu maitrises tous les connecteurs !':pct>=70?'Très bien ! Continue à t\'entrainer !':pct>=50?'Pas mal ! Relis les explications en rouge.':'Courage ! Relis bien les explications et réessaie.'}</div>
     <button class="btn" onclick="renderConnecteurs()" style="margin-bottom:0.5rem;width:100%;">🔄 Nouvel exercice (10 nouvelles phrases)</button>`;
   panel.scrollIntoView({behavior:'smooth'});
 

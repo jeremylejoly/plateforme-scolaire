@@ -892,6 +892,13 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Saisie NFC + espaces (« des » toujours accepté). Contenu des 30 mots juste.
 - Nouvelle orthographe : maitrise(s), entrainement (fiche + menu).
 
+### 05/10 — Accord des adjectifs de couleur (`fiches/orthographe_adjectifs_couleur.html`, 3 copies) — sw.js v501
+- L'indice donnait la réponse (« Nom employé comme adjectif », « Adjectif composé » = invariable ; « (féminin pluriel) »…) → indice neutre ; la catégorie apparait dans la correction.
+- Double validation (clic/Entrée répétés = plusieurs points ; double « Suivant » = 2 résultats enregistrés) → verrou `answered`.
+- Répartition toujours 5 accords / 5 invariables → 4 à 6 accords, mélange Fisher-Yates.
+- 2 phrases où la couleur était un nom après « en » (« peints en chocolat », « peint la barrière en bleu marine ») → « Les murs de la cuisine sont chocolat », « des pulls bleu marine ».
+- Saisie NFC + espaces. Nouvelle orthographe : maitrise(s).
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1095,7 +1102,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | PP avec Avoir | `ortho_participe_avoir` | fiches/orthographe_participe_passe_avoir.html |  |
 | ✅ 05/10 | L'Accord parfait (Participe passé) | `ortho_participe_accord` | fiches/accord_participe.html |  |
 | ✅ 05/10 | Les pluriels particuliers | `ortho_pluriels` | fiches/orthographe_pluriels_particuliers.html |  |
-| ⬜ | Accord des adjectifs de couleur | `ortho_adjectifs_couleur` | fiches/orthographe_adjectifs_couleur.html |  |
+| ✅ 05/10 | Accord des adjectifs de couleur | `ortho_adjectifs_couleur` | fiches/orthographe_adjectifs_couleur.html |  |
 
 ### 📖 Français — ✍️ Expression écrite
 
