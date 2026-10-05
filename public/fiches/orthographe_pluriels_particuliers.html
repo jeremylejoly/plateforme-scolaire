@@ -414,7 +414,7 @@
         </div>
 
         <p id="final-comment" class="text-sm font-semibold leading-relaxed text-slate-600 max-w-md mx-auto mb-8">
-          Excellent travail ! Tu maîtrises parfaitement les pluriels particuliers et leurs exceptions les plus complexes.
+          Excellent travail ! Tu maitrises parfaitement les pluriels particuliers et leurs exceptions les plus complexes.
         </p>
 
         <!-- Retry and return actions -->
@@ -711,6 +711,7 @@
     let currentQuestionIndex = 0;
     let score = 0;
     let canGoToNext = true;
+    let answered = false;
     
     // Toggle details in synthesis cards
     function toggleRuleDetail(ruleId) {
@@ -732,8 +733,11 @@
     function startGame() {
       sndTap();
       // Select 10 random questions from pool
-      const shuffled = [...questionPool].sort(() => 0.5 - Math.random());
-      currentQuestions = shuffled.slice(0, 10);
+      // Tirage équilibré et mélangé (Fisher-Yates) : 3 mots en -ou, 2 en -al, 2 en -ail, 3 adjectifs
+      const fy = arr => { const a = [...arr]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+      const pick = (cat, n) => fy(questionPool.filter(q => q.category === cat)).slice(0, n);
+      currentQuestions = fy([...pick('ou', 3), ...pick('al', 2), ...pick('ail', 2), ...pick('adj', 3)]);
+      answered = false;
       
       currentQuestionIndex = 0;
       score = 0;
@@ -755,7 +759,12 @@
       document.getElementById('game-progress').style.width = `${currentQuestionIndex * 10}%`;
       
       document.getElementById('target-singular').textContent = q.singular;
-      document.getElementById('target-hint').textContent = `Indice : ${q.hint}`;
+      // L'indice ne dit plus « régulier / exception » (cela donnait la réponse) ;
+      // l'explication complète apparait dans la correction.
+      let indice = q.hint.replace(/\s*\((régulier|exception|double pluriel)\)/, '');
+      if (q.category === 'adj') indice += ' — écris le masculin pluriel';
+      document.getElementById('target-hint').textContent = `Indice : ${indice}`;
+      answered = false;
       
       // Clear input
       const input = document.getElementById('answer-input');
@@ -773,7 +782,8 @@
     // Validate current answer
     function validateAnswer() {
       const q = currentQuestions[currentQuestionIndex];
-      const userInput = document.getElementById('answer-input').value.trim().toLowerCase();
+      if (answered) return;
+      const userInput = document.getElementById('answer-input').value.normalize('NFC').trim().replace(/\s+/g, ' ').toLowerCase();
       
       if (!userInput) {
         // Play error sound and do nothing
@@ -792,6 +802,7 @@
         }
       });
       
+      answered = true;
       // Configure Feedback Modal UI
       const statusIcon = document.getElementById('feedback-status');
       const title = document.getElementById('feedback-title');
@@ -801,7 +812,7 @@
       
       userAnsSpan.textContent = userInput;
       correctAnsSpan.textContent = q.plurals[0];
-      explanation.innerHTML = q.explanation;
+      explanation.innerHTML = `<em>${q.hint}</em><br>` + q.explanation;
       
       if (isCorrect) {
         score++;
@@ -839,7 +850,8 @@
     
     // Go to next question or end game
     function nextQuestion() {
-      if (!canGoToNext) return;
+      if (!canGoToNext || !answered) return;
+      answered = false;
       sndTap();
       // Hide feedback modal
       document.getElementById('feedback-modal').classList.add('hidden');
@@ -874,7 +886,7 @@
         triggerConfettiShower();
       } else if (score >= 7) {
         stars = "⭐⭐";
-        comment = "Très bon score ! Tu as une excellente maîtrise des règles et de la plupart des exceptions. Continue ainsi !";
+        comment = "Très bon score ! Tu as une excellente maitrise des règles et de la plupart des exceptions. Continue ainsi !";
         sndFanfare();
         triggerConfettiShower();
       } else if (score >= 5) {
@@ -884,7 +896,7 @@
         playTone(659.25, 0.25, 0.1, 'sine', 0.1);
       } else {
         stars = "❌";
-        comment = "Entraînement nécessaire ! Ne te décourage pas, la langue française regorge de pièges. Relis attentivement la fiche synthèse et retente ta chance !";
+        comment = "Entrainement nécessaire ! Ne te décourage pas, la langue française regorge de pièges. Relis attentivement la fiche synthèse et retente ta chance !";
         playTone(220, 0.3, 0, 'sawtooth', 0.1);
       }
       

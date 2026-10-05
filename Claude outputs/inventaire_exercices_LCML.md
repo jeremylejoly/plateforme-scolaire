@@ -877,6 +877,14 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Mélange `sort(random)` → Fisher-Yates ; saisie NFC + espaces, réponse vide refusée sans compter d'essai.
 - Contenu : 26 phrases (13 paires CDV après / CDV avant) justes.
 
+### 05/10 — L'Accord parfait (`fiches/accord_participe.html`, 3 copies) — sw.js v499
+- Réponse corrompue : « Les aventures que nous avons (vivre) » attendait « v��cues » (caractères cassés) → impossible à réussir. Corrigé en « vécues ».
+- 22 parenthèses fermantes manquaient après la case (« (vivre [case] resteront… ») → ajoutées partout.
+- Pas de sortie après erreurs (il fallait trouver la bonne réponse coute que coute) → après 2 essais ratés, réponse affichée + explication, 0 point.
+- AUCUN résultat enregistré → score /10 (1 point au 1er essai) enregistré une fois sous `ortho_participe_accord`.
+- « en toute confidence » → « en confidence » ; « *avoir* » (astérisques visibles) → italique ; consigne reformulée ; description du menu (« synthèse interactive » inexistante) corrigée.
+- Saisie NFC + espaces. Nouvelle orthographe : maitre, entraine, maitrises, maitriser, entrainer.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1078,7 +1086,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | PP employé seul | `ortho_participe_seul` | fiches/orthographe_participe_passe_seul.html |  |
 | ✅ 05/10 | PP avec Être | `ortho_participe_etre` | fiches/orthographe_participe_passe_etre.html |  |
 | ✅ 05/10 | PP avec Avoir | `ortho_participe_avoir` | fiches/orthographe_participe_passe_avoir.html |  |
-| ⬜ | L'Accord parfait (Participe passé) | `ortho_participe_accord` | fiches/accord_participe.html |  |
+| ✅ 05/10 | L'Accord parfait (Participe passé) | `ortho_participe_accord` | fiches/accord_participe.html |  |
 | ⬜ | Les pluriels particuliers | `ortho_pluriels` | fiches/orthographe_pluriels_particuliers.html |  |
 | ⬜ | Accord des adjectifs de couleur | `ortho_adjectifs_couleur` | fiches/orthographe_adjectifs_couleur.html |  |
 
