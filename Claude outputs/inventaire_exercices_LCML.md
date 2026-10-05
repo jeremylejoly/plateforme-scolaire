@@ -973,6 +973,11 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Nouvelle orthographe appliquée aux 120 propositions : traits d'union entre tous les numéraux (quarante-trois, cinq-cents, vingt-et-un, six-cent-cinquante-quatre-mille) ; « million(s) » reste séparé par des espaces (nom, pas numéral).
 - Mélanges `sort(random)` → Fisher-Yates (questions et propositions). Entrainer.
 
+### 05/10 — Maths › Grands nombres › Écrire un nombre (`num_ecrire`, index › renderNumEcrire + exercices_maths.js › NUM_ECRIRE_BANQUE) — sw.js v512, exercices_maths.js?v=20261005b
+- 30 nombres vérifiés par programme : 1 faute d'accord dans l'énoncé, « Deux millions trois cent mille quatre-vingt » → « quatre-vingts » (en fin de nombre).
+- Nouvelle orthographe : traits d'union dans les 30 énoncés (million(s) séparé par des espaces, comme Lire un nombre).
+- Mélanges `sort(random)` → Fisher-Yates.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1218,7 +1223,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | Statut | Exercice | id | Source | Signal automatique |
 |---|---|---|---|---|
 | ✅ 05/10 | Lire un nombre | `num_lire` | index › renderNumLire |  |
-| ⬜ | Écrire un nombre | `num_ecrire` | index › renderNumEcrire |  |
+| ✅ 05/10 | Écrire un nombre | `num_ecrire` | index › renderNumEcrire |  |
 | ⬜ | Décomposer un nombre | `num_decomposer` | index › renderNumDecomposer |  |
 | ⬜ | Classer des nombres | `num_classer` | index › renderNumClasser |  |
 | ⬜ | Décimaux — L'abaque des décimaux | `num_decimaux_abaque` | index › renderAbaqueDecimaux |  |
