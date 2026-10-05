@@ -762,6 +762,12 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
   - Nouvelle orthographe : maitre, maitresse, maitrisé, gout, plait, entrainer, entrainement. « mûrs » reste.
   - La réponse de l'élève est affichée de façon sûre.
 
+### 05/10 — Passives ou actives ? (`fiches/grammaire_voix_passive.html`, 3 copies) — sw.js v481
+- Tirage refait : 10 phrases distinctes (avant, « La souris est poursuivie par le chat » pouvait sortir deux fois), au moins 2 par catégorie + 1 piège, répartition variable (avant toujours 4/3/3).
+- Ajout de 3 pièges actifs au passé composé avec être (sont arrivés, est née, sont reparties) + 2 passifs sans complément d'agent ; encadré « Attention aux pièges » dans la synthèse.
+- Double-clic neutralisé (verrou `answered`).
+- Explication corrigée (« écrire/résoudre », « ('d'') ») ; « CM2 » → « sixième » ; maitrises, Entraine-toi.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -897,7 +903,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | Les types de phrases | `gram_types_phrases` | fiches/types_de_phrases.html |  |
 | ✅ 05/10 | QCM - Affirmative ou négative | `gram_affirm_neg_qcm` | fiches/phrases_affirm_neg.html |  |
 | ✅ 05/10 | Transformation de phrases | `gram_affirm_neg_transfo` | fiches/phrases_transfo.html |  |
-| ⬜ | Passives ou actives ? | `gram_pass_act` | index › (?) | (code à localiser) |
+| ✅ 05/10 | Passives ou actives ? | `gram_pass_act` | index › (?) | (code à localiser) |
 | ⬜ | Phrase simple / complexe | `gram_phrase_simple_complexe` | fiches/grammaire_phrase_simple_complexe.html |  |
 
 ### 📖 Français — ⏰ Conjugaison — Les temps

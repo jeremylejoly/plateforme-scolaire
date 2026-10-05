@@ -212,7 +212,7 @@
       <div class="flat-card p-6 mb-8 bg-white">
         <h2 class="font-title text-xl font-bold mb-3 text-slate-800">Comment les distinguer ?</h2>
         <p class="text-sm sm:text-base text-slate-700 leading-relaxed">
-          Pour connaître la nature d'une phrase, on doit repérer et compter ses <strong>verbes conjugués</strong>.
+          Pour connaitre la nature d'une phrase, on doit repérer et compter ses <strong>verbes conjugués</strong>.
           C'est le nombre de verbes conjugués qui détermine si la phrase est simple ou complexe.
         </p>
       </div>
@@ -481,7 +481,7 @@
         sentence: "Ayant terminé ses devoirs, Thomas peut enfin aller jouer.",
         correct: "simple",
         isTrap: true,
-        explanation: "Cette phrase ne contient qu'<strong>un seul verbe conjugué</strong> : <span class='verb-word'>peut</span>. <em>Ayant terminé</em> est au participe passé, et <em>aller</em> et <em>jouer</em> sont des infinitifs. C'est une <strong>phrase simple</strong>."
+        explanation: "Cette phrase ne contient qu'<strong>un seul verbe conjugué</strong> : <span class='verb-word'>peut</span>. <em>Ayant terminé</em> est un participe (il n'est pas conjugué), et <em>aller</em> et <em>jouer</em> sont des infinitifs. C'est une <strong>phrase simple</strong>."
       },
       {
         sentence: "Cette vieille maison abandonnée semble cacher de lourds secrets.",
@@ -544,9 +544,9 @@
         explanation: "Cette phrase contient <strong>deux verbes conjugués</strong> : <span class='verb-word'>a sonné</span> et <span class='verb-word'>s'est levé</span>. Les propositions sont reliées par <strong>subordination</strong> (introduit par <em>Quand</em>). C'est une <strong>phrase complexe</strong>."
       },
       {
-        sentence: "Il s'entraîne tous les jours car il veut remporter la course.",
+        sentence: "Il s'entraine tous les jours car il veut remporter la course.",
         correct: "complexe",
-        explanation: "Cette phrase contient <strong>deux verbes conjugués</strong> : <span class='verb-word'>s'entraîne</span> et <span class='verb-word'>veut</span>. Les propositions sont reliées par <strong>coordination</strong> (conjonction <em>car</em>). C'est une <strong>phrase complexe</strong>."
+        explanation: "Cette phrase contient <strong>deux verbes conjugués</strong> : <span class='verb-word'>s'entraine</span> et <span class='verb-word'>veut</span>. Les propositions sont reliées par <strong>coordination</strong> (conjonction <em>car</em>). C'est une <strong>phrase complexe</strong>."
       },
       {
         sentence: "Le chat guette l'oiseau, il bondit, il l'attrape.",
@@ -577,7 +577,7 @@
       {
         sentence: "L'orage gronde au loin ; les animaux cherchent un abri.",
         correct: "complexe",
-        explanation: "Cette phrase contient <strong>deux verbes conjugués</strong> : <span class='verb-word'>gronde</span> and <span class='verb-word'>cherchent</span>. Les propositions sont séparées par un point-virgule (<strong>juxtaposition</strong>). C'est une <strong>phrase complexe</strong>."
+        explanation: "Cette phrase contient <strong>deux verbes conjugués</strong> : <span class='verb-word'>gronde</span> et <span class='verb-word'>cherchent</span>. Les propositions sont séparées par un point-virgule (<strong>juxtaposition</strong>). C'est une <strong>phrase complexe</strong>."
       },
       {
         sentence: "Bien qu'il fasse froid, nous irons nous promener en forêt.",
@@ -601,7 +601,7 @@
         explanation: "Cette phrase contient <strong>deux verbes conjugués</strong> : <span class='verb-word'>as parlé</span> et <span class='verb-word'>est</span>. La proposition relative est reliée par <strong>subordination</strong> (pronom relatif <em>dont</em>). C'est une <strong>phrase complexe</strong>."
       },
       {
-        sentence: "Dès que le film commencera, faites silence s'il vous plaît.",
+        sentence: "Dès que le film commencera, faites silence.",
         correct: "complexe",
         explanation: "Cette phrase contient <strong>deux verbes conjugués</strong> : <span class='verb-word'>commencera</span> et <span class='verb-word'>faites</span>. Les propositions sont reliées par <strong>subordination</strong> (introduite par <em>Dès que</em>). C'est une <strong>phrase complexe</strong>."
       },
@@ -631,37 +631,47 @@
     let questionIndex = 0;
     let score = 0;
     
+    let answered = false;
+
+    // Mélange de Fisher-Yates (renvoie une copie)
     function shuffleArray(arr) {
-      return arr.sort(() => Math.random() - 0.5);
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
     }
     
     function startGame() {
       sndTap();
       
-      // Determine how many traps of each type to select (total traps between 2 and 3)
-      const numSimpleTraps = Math.random() < 0.5 ? 1 : 2;
-      const numComplexTraps = numSimpleTraps === 1 ? (Math.random() < 0.5 ? 1 : 2) : 1; 
-      
+      // Répartition variable : 4 à 6 phrases simples (le reste en complexes),
+      // avec 1 ou 2 pièges de chaque sorte.
+      const nbSimples = 4 + Math.floor(Math.random() * 3);
+      const nbComplexes = 10 - nbSimples;
+      const numSimpleTraps = 1 + Math.floor(Math.random() * 2);
+      const numComplexTraps = 1 + Math.floor(Math.random() * 2);
+
       const simpleTrapsPool = questionsPool.filter(q => q.correct === 'simple' && q.isTrap);
       const simpleNormalsPool = questionsPool.filter(q => q.correct === 'simple' && !q.isTrap);
-      
       const complexTrapsPool = questionsPool.filter(q => q.correct === 'complexe' && q.isTrap);
       const complexNormalsPool = questionsPool.filter(q => q.correct === 'complexe' && !q.isTrap);
-      
+
       const simples = [
         ...shuffleArray(simpleTrapsPool).slice(0, numSimpleTraps),
-        ...shuffleArray(simpleNormalsPool).slice(0, 5 - numSimpleTraps)
+        ...shuffleArray(simpleNormalsPool).slice(0, nbSimples - numSimpleTraps)
       ];
-      
       const complexes = [
         ...shuffleArray(complexTrapsPool).slice(0, numComplexTraps),
-        ...shuffleArray(complexNormalsPool).slice(0, 5 - numComplexTraps)
+        ...shuffleArray(complexNormalsPool).slice(0, nbComplexes - numComplexTraps)
       ];
       
       currentQuestions = shuffleArray([...simples, ...complexes]);
       
       questionIndex = 0;
       score = 0;
+      answered = false;
       
       document.getElementById('screen-synthesis').classList.add('hidden');
       document.getElementById('screen-end').classList.add('hidden');
@@ -682,6 +692,8 @@
     }
     
     function submitAnswer(userChoice) {
+      if (answered) return;
+      answered = true;
       const q = currentQuestions[questionIndex];
       const isCorrect = userChoice === q.correct;
       
@@ -709,6 +721,8 @@
     }
     
     function nextQuestion() {
+      if (!answered) return;
+      answered = false;
       sndTap();
       document.getElementById('feedback-modal').classList.add('hidden');
       
@@ -746,7 +760,7 @@
         playTone(659.25, 0.25, 0.1, 'sine', 0.1);
       } else {
         stars = "❌";
-        comment = "Il faut s'entraîner encore ! N'hésite pas à relire attentivement la leçon et à retenter ta chance pour remporter des étoiles.";
+        comment = "Il faut s'entrainer encore ! N'hésite pas à relire attentivement la leçon et à retenter ta chance pour remporter des étoiles.";
         playTone(220, 0.3, 0, 'sawtooth', 0.1);
       }
       
