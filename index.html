@@ -3236,7 +3236,7 @@ input[type=text].calc-input.incorrect {
 }
 </style>
 <script src="livres.js?v=20261002b"></script>
-<script src="exercices_francais.js?v=20260929c"></script>
+<script src="exercices_francais.js?v=20261005a"></script>
 <script src="exercices_maths.js?v=20260927e"></script>
 <script src="exercices_eveil.js?v=20260927e"></script>
 <script>
@@ -20933,9 +20933,42 @@ function renderContesMenu(){
 }
 
 // ===== MOTEUR COMMUN CONTES =====
-function buildConteFiche(bodyId, data){
+// Mélange de Fisher-Yates (répartition équitable)
+function conteMelanger(arr){
+  const a = [...arr];
+  for(let i = a.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+  return a;
+}
+
+// Prépare une partie : questions, propositions, Vrai/Faux, résumés et étapes à remettre dans l'ordre
+// sont mélangés à chaque ouverture et à chaque « Recommencer ».
+function conteNouvelleSession(src){
+  // étapes dans l'ordre de l'histoire (ordreCorrect[i] = place de la phrase i)
+  const etapes = src.ordre.map((phrase, i) => ({phrase, place: src.ordreCorrect[i]}));
+  let ordre;
+  do { ordre = conteMelanger(etapes); } while(ordre.every((e, i) => e.place === i + 1)); // jamais déjà dans le bon ordre
+  return {
+    ...src,
+    questions: src.questions.map(q => {
+      const opts = conteMelanger(q.options.map((o, i) => ({o, ok: i === q.correct})));
+      return {q: q.q, options: opts.map(x => x.o), correct: opts.findIndex(x => x.ok)};
+    }),
+    vf: conteMelanger(src.vf),
+    resumes: conteMelanger(src.resumes),
+    ordre: ordre.map(e => e.phrase),
+    ordreCorrect: ordre.map(e => e.place),
+    scores: {}
+  };
+}
+const CONTE_SESSIONS = {};
+const CONTE_BODIES = {chatbotte: 'conte-chatbotte-body', breme: 'conte-breme-body'};
+function recommencerConte(id){ buildConteFiche(CONTE_BODIES[id], CONTES_DATA[id]); }
+
+function buildConteFiche(bodyId, src){
   const body = document.getElementById(bodyId);
   if(!body) return;
+  const data = conteNouvelleSession(src);
+  CONTE_SESSIONS[data.id] = data;
 
   // Texte avec sections
   let texteHtml = '';
@@ -21051,7 +21084,7 @@ function conteVFSelect(id,qi,oi){ if(!window[`conteVFSels_${id}`]) window[`conte
 function conteResumeSelect(id,ri){ window[`conteResumeSel_${id}`]=ri; }
 
 function validerConteQCM(id){
-  const data = CONTES_DATA[id];
+  const data = CONTE_SESSIONS[id];
   const sels = window[`conteQCMSels_${id}`]||{};
   let score=0; const total=data.questions.length;
   data.questions.forEach((q,qi)=>{
@@ -21059,11 +21092,12 @@ function validerConteQCM(id){
     q.options.forEach((_,oi)=>{
       const optEl=document.getElementById(`conte-opt-${id}-${qi}-${oi}`);
       if(optEl){ optEl.querySelector('input').disabled=true;
-        if(oi===sel&&ok) optEl.classList.add('correct');
-        else if(oi===sel&&!ok) optEl.classList.add('incorrect');
+        if(oi===q.correct) optEl.classList.add('correct');      // la bonne réponse est toujours montrée
+        else if(oi===sel) optEl.classList.add('incorrect');
       }
     });
   });
+  data.scores.qcm = score;
   const pct=Math.round(score/total*100);
   const color=pct>=70?'var(--green)':pct>=50?'var(--amber)':'var(--red)';
   const panel=document.getElementById(`conte-qcm-score-${id}`);
@@ -21073,10 +21107,11 @@ function validerConteQCM(id){
     <span style="font-weight:800;font-size:18px;color:${color}">${score}/${total} — ${pct}%</span>
     <span style="font-size:13px;color:var(--muted);margin-left:8px">${pct>=70?'✅ Bien joué !':pct>=50?'👍 Pas mal !':'💪 Continue !'}</span>
   </div>`;
+  conteEnregistrerSiFini(id);
 }
 
 function validerConteVF(id){
-  const data = CONTES_DATA[id];
+  const data = CONTE_SESSIONS[id];
   const sels = window[`conteVFSels_${id}`]||{};
   let score=0; const total=data.vf.length;
   data.vf.forEach((q,qi)=>{
@@ -21084,11 +21119,12 @@ function validerConteVF(id){
     [0,1].forEach(oi=>{
       const optEl=document.getElementById(`conte-vf-opt-${id}-${qi}-${oi}`);
       if(optEl){ optEl.querySelector('input').disabled=true;
-        if(oi===sel&&ok) optEl.classList.add('correct');
-        else if(oi===sel&&!ok) optEl.classList.add('incorrect');
+        if(oi===q.correct) optEl.classList.add('correct');
+        else if(oi===sel) optEl.classList.add('incorrect');
       }
     });
   });
+  data.scores.vf = score;
   const pct=Math.round(score/total*100);
   const color=pct>=70?'var(--green)':pct>=50?'var(--amber)':'var(--red)';
   const panel=document.getElementById(`conte-vf-score-${id}`);
@@ -21098,10 +21134,11 @@ function validerConteVF(id){
     <span style="font-weight:800;font-size:18px;color:${color}">${score}/${total} — ${pct}%</span>
     <span style="font-size:13px;color:var(--muted);margin-left:8px">${pct>=70?'✅ Bien joué !':pct>=50?'👍 Pas mal !':'💪 Continue !'}</span>
   </div>`;
+  conteEnregistrerSiFini(id);
 }
 
 function validerConteResume(id){
-  const data = CONTES_DATA[id];
+  const data = CONTE_SESSIONS[id];
   const sel = window[`conteResumeSel_${id}`];
   data.resumes.forEach((r,ri)=>{
     const optEl=document.getElementById(`conte-res-${id}-${ri}`);
@@ -21111,17 +21148,19 @@ function validerConteResume(id){
       else if(r.correct) optEl.classList.add('correct');
     }
   });
-  const ok = sel!==null && data.resumes[sel].correct;
+  const ok = sel!==null && sel!==undefined && data.resumes[sel].correct;
+  data.scores.resume = ok ? 1 : 0;
   const panel=document.getElementById(`conte-res-score-${id}`);
   panel.style.display='block';
   document.getElementById(`conte-res-btn-${id}`).style.display='none';
   panel.innerHTML=`<div style="text-align:center;padding:8px;background:var(--surface);border-radius:8px;border:1px solid var(--border)">
     <span style="font-weight:800;font-size:18px;color:${ok?'var(--green)':'var(--red)'}">${ok?'1/1 — ✅ Bravo !':'0/1 — Regarde le résumé en vert !'}</span>
   </div>`;
+  conteEnregistrerSiFini(id);
 }
 
 function validerConteOrdre(id){
-  const data = CONTES_DATA[id];
+  const data = CONTE_SESSIONS[id];
   let score=0; const total=data.ordre.length;
   const inputs = data.ordre.map((_,pi)=>document.getElementById(`conte-ordre-${id}-${pi}`));
   const vals = inputs.map(inp=>parseInt(inp?.value)||0);
@@ -21139,6 +21178,7 @@ function validerConteOrdre(id){
     }
   });
 
+  data.scores.ordre = score;
   const pct=Math.round(score/total*100);
   const color=pct>=70?'var(--green)':pct>=50?'var(--amber)':'var(--red)';
   const panel=document.getElementById(`conte-ordre-score-${id}`);
@@ -21148,16 +21188,24 @@ function validerConteOrdre(id){
     <div style="font-size:48px;margin-bottom:0.5rem">${pct===100?'🎉':pct>=60?'👍':'💪'}</div>
     <div style="font-family:'Nunito',sans-serif;font-weight:800;font-size:32px;color:${color}">${score}/${total}</div>
     <div style="font-size:16px;color:${color};font-weight:700;margin-bottom:1rem">${pct}%</div>
-    <button class="btn" onclick="renderConte${id.charAt(0).toUpperCase()+id.slice(1)}()" style="margin-top:0.5rem">🔄 Recommencer</button>`;
+    <div id="conte-total-${id}"></div>
+    <button class="btn" onclick="recommencerConte('${id}')" style="margin-top:0.5rem">🔄 Recommencer</button>`;
   panel.scrollIntoView({behavior:'smooth'});
+  conteEnregistrerSiFini(id);
+}
 
-  // Calculer score total des 4 parties
-  const q1=parseInt(document.getElementById(`conte-qcm-score-${id}`)?.querySelector('span')?.textContent?.split('/')[0])||0;
-  const q2=parseInt(document.getElementById(`conte-vf-score-${id}`)?.querySelector('span')?.textContent?.split('/')[0])||0;
-  const q3=document.getElementById(`conte-res-score-${id}`)?.querySelector('span')?.textContent?.includes('Bravo')?1:0;
-  const totalScore=q1+q2+q3+score;
-  const totalMax=data.questions.length+data.vf.length+1+total;
-  const totalPct=Math.round(totalScore/totalMax*100);
+// Le résultat est enregistré une seule fois, quand les 4 parties sont validées (dans n'importe quel ordre)
+function conteEnregistrerSiFini(id){
+  const data = CONTE_SESSIONS[id];
+  if(!data || data.enregistre) return;
+  const sc = data.scores;
+  if(sc.qcm===undefined || sc.vf===undefined || sc.resume===undefined || sc.ordre===undefined) return;
+  data.enregistre = true;
+  const totalScore = sc.qcm + sc.vf + sc.resume + sc.ordre;
+  const totalMax = data.questions.length + data.vf.length + 1 + data.ordre.length;
+  const totalPct = Math.round(totalScore/totalMax*100);
+  const box = document.getElementById(`conte-total-${id}`);
+  if(box) box.innerHTML = `<div style="font-size:14px;font-weight:700;margin-bottom:.5rem">Score total : ${totalScore}/${totalMax} — ${totalPct}%</div>`;
   if(state.student) saveResult({
     student:state.student, cls:state.studentCls,
     className:CLASSES[state.studentCls]?CLASSES[state.studentCls].name:state.studentCls,

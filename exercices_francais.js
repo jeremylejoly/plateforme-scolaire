@@ -5959,7 +5959,7 @@ window.CONTES_DATA = {
       {label:'Situation finale', icon:'🔵', color:'#2980b9', texte:"Le marquis de Carabas épousa la princesse et devint grand seigneur. Quant au chat, il ne courut plus jamais après les souris — sauf pour s'amuser."},
     ],
     questions:[
-      {q:"Que reçoit le fils cadet en héritage de son père ?", options:["Le moulin et l'âne","Uniquement le chat","Les bottes et le sac"], correct:1},
+      {q:"Que reçoit le plus jeune des trois fils en héritage de son père ?", options:["Le moulin et l'âne","Uniquement le chat","Les bottes et le sac"], correct:1},
       {q:"Comment le chat convainc-il le roi que son maître est un grand seigneur ?", options:["Il lui montre les terres et le château dès le début","Il lui apporte régulièrement des cadeaux au nom du marquis de Carabas","Il organise un grand banquet dans le château de l'ogre"], correct:1},
       {q:"Comment le chat se débarrasse-t-il de l'ogre ?", options:["Il le pousse par la fenêtre du château pendant son sommeil","Il le défie en duel avec son épée","Il le convainc de se transformer en souris et le dévore"], correct:2},
       {q:"Pourquoi la princesse tombe-t-elle amoureuse du jeune homme ?", options:["Parce qu'elle l'admirait depuis longtemps de loin","Parce qu'il la sauva d'un danger lors de sa promenade","Parce qu'elle le trouva beau après qu'il fut habillé par le roi"], correct:2},
@@ -5967,7 +5967,7 @@ window.CONTES_DATA = {
     vf:[
       {q:"Le chat révèle au roi que son maître est en réalité le fils d'un simple meunier.", correct:1},
       {q:"L'ogre peut se transformer en différents animaux.", correct:0},
-      {q:"Le fils cadet reçoit le moulin en héritage de son père.", correct:1},
+      {q:"Le plus jeune des trois fils reçoit le moulin en héritage de son père.", correct:1},
     ],
     resumes:[
       {texte:"Un jeune homme reçoit un chat en héritage. Grâce à la ruse et à l'intelligence de l'animal, il épouse la fille du roi et devient grand seigneur.", correct:true},
@@ -5976,13 +5976,13 @@ window.CONTES_DATA = {
     ],
     ordre:[
       "Le chat convainc l'ogre de se transformer en souris et le dévore.",
-      "Le fils cadet reçoit uniquement un chat en héritage de son père.",
+      "Le plus jeune des trois fils reçoit uniquement un chat en héritage.",
       "Le roi propose sa fille en mariage au marquis de Carabas.",
       "Le chat apporte des cadeaux au roi au nom du marquis de Carabas.",
-      "Le jeune homme fait semblant de se noyer et est sauvé par le roi.",
+      "Pendant que son maître se baigne, le chat crie qu'il se noie : le roi le fait sauver.",
       "Le chat demande à son maître des bottes et un sac.",
     ],
-    ordreCorrect:[5,1,6,2,3,4],
+    ordreCorrect:[5,1,6,3,4,2],
   },
   breme:{
     id:'breme', titre:'Les Musiciens de Brême', auteur:'Frères Grimm',
@@ -6002,7 +6002,7 @@ window.CONTES_DATA = {
     ],
     vf:[
       {q:"Les quatre animaux arrivent finalement à Brême et y deviennent musiciens célèbres.", correct:1},
-      {q:"C'est le coq qui aperçoit la lumière de la maison des brigands depuis son perchoir.", correct:0},
+      {q:"C'est le coq qui aperçoit au loin la lumière de la maison des brigands.", correct:0},
       {q:"Les brigands reviennent le lendemain matin pour reprendre leur maison.", correct:1},
     ],
     resumes:[
