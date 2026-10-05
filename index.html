@@ -10611,7 +10611,14 @@ function validateConjExercise(){
       given = inp ? inp.value.trim() : '';
       expected = q.answer;
       const _norm = s => (s||'').normalize('NFC').replace(/\s+/g,' ').trim().toLowerCase();
-      isCorrect = _norm(given) === _norm(expected);
+      // Verbes en -ayer : les deux formes sont correctes (il paie / il paye, je paierai / je payerai)
+      const acceptees = [expected];
+      if(/ayer\b/.test(String(q.verb||''))){
+        const v1 = expected.replace(/aie/, 'aye'), v2 = expected.replace(/aye/, 'aie');
+        if(v1 !== expected) { acceptees.push(v1); expected = expected + ' (ou ' + v1 + ')'; }
+        else if(v2 !== expected) { acceptees.push(v2); expected = expected + ' (ou ' + v2 + ')'; }
+      }
+      isCorrect = acceptees.some(a => _norm(given) === _norm(a));
       if(inp){
         inp.disabled = true;
         inp.style.borderBottomColor = isCorrect ? 'var(--green)' : 'var(--red)';

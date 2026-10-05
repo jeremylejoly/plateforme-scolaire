@@ -16,6 +16,13 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 
 **Points d'attention pour chaque exercice :**
 
+- **Nouvelle orthographe (1990), et elle seule** :
+  - pas de circonflexe sur i et u (maitre, boite, connait, gout), sauf dû, mûr, sûr, jeûne et les terminaisons verbales ;
+  - -eler / -eter s'écrivent avec è (il ruissèle, il étiquète) ; seuls appeler, jeter, interpeler et leurs dérivés doublent la consonne ;
+  - pour les verbes en -ayer, accepter les deux formes (paie / paye).
+- **Grammaire** : on dit CDV et CIV, jamais COD ou COI.
+- ⚠️ `exercices_francais.js` (≈ 180 mots) et `index.html` (≈ 215) contiennent encore des circonflexes de l'ancienne orthographe. On les corrige exercice par exercice, sans toucher aux noms de fonctions du code.
+
 - Beaucoup de fiches mélangent avec `sort(() => Math.random() - .5)`. Ce mélange est biaisé : certaines positions reviennent plus souvent. À remplacer par un vrai mélange (Fisher-Yates) au passage.
 - Les banques de `exercices_maths.js`, `exercices_francais.js` et `exercices_eveil.js` n'ont pas été balayées automatiquement : à vérifier avec les exercices qui les utilisent.
 - Rapports du 8/09 (`Claude outputs/rapport_analyse_LCML_*`) : certains bugs y sont listés (boutons Quadrilatères, Longueurs QCM, ¼ dl = 25 ml dans capacites_QCM, V/F quadrilatères contradictoires…). Il faut vérifier s'ils ont été corrigés depuis.
@@ -254,6 +261,10 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
   - Dans la fiche, les points de progression étaient toujours verts. Le mélange y est maintenant équitable.
   - Les cartes affichaient « 50 questions questions » : corrigé en « 52 questions » (présent, imparfait) et « 50 questions » (futur).
   - ⚠️ À voir dans Phrases à trous : seule la réponse « balaie » est acceptée, alors que « balaye » est juste aussi (verbes en -ayer).
+
+- **05/10 — Nouvelle orthographe** : les fiches vérifiées aujourd'hui ont été mises en NO :
+  - maitre, entrainement, apparait, ile, abime, dégout, gouter, chaine, flute, boite, connaitras…
+  - fiches concernées : Atelier des mots, Expressions et proverbes, Registres, Chasseur d'intrus, Fabrique de mots, Relations lexicales, Repère le bon verbe (3 copies chaque fois).
 
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
