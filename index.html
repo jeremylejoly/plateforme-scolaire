@@ -39564,14 +39564,17 @@ function startVerbeInfinitifExercise() {
   const futurPool = window.EXERCICES_VERBE_INFINITIF.filter(q => q.tense === 'futur simple');
   const passePool = window.EXERCICES_VERBE_INFINITIF.filter(q => q.tense === 'passé composé');
 
-  const shuffle = (arr) => [...arr].sort(() => 0.5 - Math.random());
-
-  // Proportional selection: 3 present, 3 imperfect, 3 future, 1 past composed (exactly 10 questions)
+  // Mélange équitable (Fisher–Yates)
+  const shuffle = (arr) => { const a = [...arr]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  // 3 présent, 3 imparfait, 3 futur, 1 passé composé — sans jamais deux fois le même verbe dans une partie
+  // (avant : on pouvait avoir « Noah mange sa tartine » puis « Noah mangeait sa tartine »)
+  const dejaPris = new Set();
+  const tirer = (pool, n) => shuffle(pool).filter(q => { if (dejaPris.has(q.inf) || n <= 0) return false; dejaPris.add(q.inf); n--; return true; });
   const selection = [
-    ...shuffle(presentPool).slice(0, 3),
-    ...shuffle(imparfaitPool).slice(0, 3),
-    ...shuffle(futurPool).slice(0, 3),
-    ...shuffle(passePool).slice(0, 1)
+    ...tirer(passePool, 1),
+    ...tirer(presentPool, 3),
+    ...tirer(imparfaitPool, 3),
+    ...tirer(futurPool, 3)
   ];
 
   // Randomize the order of tenses
@@ -39712,10 +39715,9 @@ function submitVerbeInfinitifAnswer() {
   const input = container.querySelector('#verbe-infinitif-input');
   if (!input) return;
 
-  const ans = input.value.trim().toLowerCase();
+  const ans = input.value.normalize('NFC').replace(/\s+/g, ' ').trim().toLowerCase();
   const question = verbeInfGameState.questions[verbeInfGameState.currentIndex];
-  
-  const isCorrect = ans === question.inf.toLowerCase();
+  const isCorrect = ans === question.inf.normalize('NFC').toLowerCase();
 
   verbeInfGameState.submitted = true;
   verbeInfGameState.selectedAnswer = ans;
@@ -39760,7 +39762,7 @@ function showVerbeInfinitifCorrectionPanel(isCorrect, question, ans) {
             <div>
               <h4 class="font-display font-bold text-rose-800 mb-1">Oups ! Ce n'est pas correct.</h4>
               <p class="text-sm text-neutral-700">
-                Tu as écrit « <strong>${ans || '(vide)'}</strong> ».<br/>
+                Tu as écrit « <strong>${String(ans || '(vide)').replace(/</g, '&lt;')}</strong> ».<br/>
                 L'infinitif du verbe « <strong>${question.verb}</strong> » dans cette phrase est « <strong>${question.inf}</strong> ».
               </p>
             </div>
@@ -39820,14 +39822,14 @@ function showVerbeInfinitifResults() {
     launchVerbeInfinitifConfetti();
   } else if (score >= 8) {
     title = "🌟 Excellent travail !";
-    msg = "C'est un magnifique score ! Tu maîtrises très bien l'infinitif des verbes conjugués.";
+    msg = "C'est un magnifique score ! Tu maitrises très bien l'infinitif des verbes conjugués.";
     emoji = "👏";
   } else if (score >= 5) {
     title = "👍 Pas mal !";
-    msg = "Tu as compris le principe. Continue à t'entraîner pour viser le sans-faute !";
+    msg = "Tu as compris le principe. Continue à t'entrainer pour viser le sans-faute !";
     emoji = "💪";
   } else {
-    title = "✍️ Entraîne-toi encore !";
+    title = "✍️ Entraine-toi encore !";
     msg = "Rappelle-toi que l'infinitif est le nom du verbe (ex: mange ➔ manger). Réessaie !";
     emoji = "📚";
   }
