@@ -1122,6 +1122,10 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
   - validation : tout vide → ignorée ; calculs vides → avertissement, 2e clic = corriger quand même ; double validation bloquée.
 - Tests node : 5 000 séries OK ; flux vide / partiel / sauvegarde unique vérifiés ; index : 6 / 7 scripts OK (module attendu).
 
+### 05/10 — Maths › Opérations › Additions et soustractions › Jusque 1 000 (`op_add_sous_1000`, moteur commun) — aucun changement de code
+- 5 000 séries simulées : nombres en dizaines entières (unités = 0, voulu : « passages à la centaine »), additions toujours avec passage à la centaine (≤ 990), soustractions toujours avec emprunt sur les dizaines (> 0), résultats justes, 5 + 5, aucun doublon, 1 855 calculs différents.
+- Corrections du moteur commun déjà en place depuis v537 (identifiant `op_add_sous_1000` reconnu par le plan, saisie stricte, réponses vides, double validation).
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1406,7 +1410,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 |---|---|---|---|---|
 | ⬜ | Additions et soustractions | `op_add_sous` | index › (?) | (code à localiser) |
 | ✅ 05/10 | Additions et soustractions — Jusque 100 | `op_add_sous_100` | index › startCalcExercise |  |
-| ⬜ | Additions et soustractions — Jusque 1 000 | `op_add_sous_1000` | index › startCalcExercise |  |
+| ✅ 05/10 | Additions et soustractions — Jusque 1 000 | `op_add_sous_1000` | index › startCalcExercise |  |
 | ⬜ | Additions et soustractions — Jusque 10 000 | `op_add_sous_10000` | index › startCalcExercise |  |
 | ⬜ | Additions et soustractions — Jusque 100 000 | `op_add_sous_100000` | index › startCalcExercise |  |
 | ⬜ | Additions et soustractions — Jusque 1 000 000 | `op_add_sous_1000000` | index › startCalcExercise |  |
