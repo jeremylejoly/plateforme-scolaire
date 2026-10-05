@@ -906,6 +906,12 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - « Puisque il… » (élision impossible) ×2 → « Comme il avait oublié son parapluie… » et « Puisque tu as soif, bois… ».
 - Nouvelle orthographe : maitrises, entrainer.
 
+### 05/10 — Synonymes (`synonymes`, index › buildVocabExercice + exercices_francais.js › SYNONYMES_POOL) — sw.js v503, ?v=20261005zk
+- Plusieurs bonnes réponses possibles (un 2e synonyme parmi les « mauvaises » propositions) dans 10 items : observait (guettait), déroba (prit), galopait (courait), demeure (propriété), dévalait (descendait), exigeant (sévère), vive (terrible), répandit (circula), frissonnait (grelottait), contemplait (admirait, observait) → distracteurs remplacés par des mots clairement faux.
+- « mystérieuse » = « inquiétante » (pas un synonyme) → « énigmatique ».
+- « La nouvelle se ___ » + option « se propagea » donnait « se se propagea » → « La nouvelle ___ » avec « se répandit ».
+- Mélanges `sort(random)` (phrases et propositions) → Fisher-Yates. Nouvelle orthographe : maitrises, entrainer (moteur partagé avec Antonymes).
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1116,7 +1122,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | Statut | Exercice | id | Source | Signal automatique |
 |---|---|---|---|---|
 | ✅ 05/10 | Connecteurs logiques | `connecteurs` | index › renderConnecteurs |  |
-| ⬜ | Synonymes | `synonymes` | index › renderSynonymes |  |
+| ✅ 05/10 | Synonymes | `synonymes` | index › renderSynonymes |  |
 | ⬜ | Antonymes | `antonymes` | index › renderAntonymes |  |
 | ⬜ | Mes écrits — Atelier Plume | `mes_ecrits` | index › (?) | (code à localiser) |
 | ⬜ | Les substituts du nom | `lecture_substituts` | fiches/lecture_substituts.html |  |
