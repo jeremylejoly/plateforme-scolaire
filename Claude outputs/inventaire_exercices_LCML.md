@@ -768,6 +768,14 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Double-clic neutralisé (verrou `answered`).
 - Explication corrigée (« écrire/résoudre », « ('d'') ») ; « CM2 » → « sixième » ; maitrises, Entraine-toi.
 
+### 05/10 — Simple ou complexe ? (`fiches/grammaire_phrase_simple_complexe.html`, 3 copies) — sw.js v482
+- Mélange `sort(random)` → Fisher-Yates.
+- Répartition variable : 4 à 6 phrases simples (avant toujours 5/5), 1 ou 2 pièges de chaque sorte.
+- Double-clic neutralisé (verrou `answered`).
+- « faites silence s'il vous plaît » : « plait » est aussi un verbe conjugué → phrase ambigüe, expression retirée.
+- « Ayant terminé est au participe passé » → « est un participe (il n'est pas conjugué) » ; « gronde and cherchent » → « et ».
+- Nouvelle orthographe : connaitre, s'entraine, s'entrainer.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -904,7 +912,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | QCM - Affirmative ou négative | `gram_affirm_neg_qcm` | fiches/phrases_affirm_neg.html |  |
 | ✅ 05/10 | Transformation de phrases | `gram_affirm_neg_transfo` | fiches/phrases_transfo.html |  |
 | ✅ 05/10 | Passives ou actives ? | `gram_pass_act` | index › (?) | (code à localiser) |
-| ⬜ | Phrase simple / complexe | `gram_phrase_simple_complexe` | fiches/grammaire_phrase_simple_complexe.html |  |
+| ✅ 05/10 | Phrase simple / complexe | `gram_phrase_simple_complexe` | fiches/grammaire_phrase_simple_complexe.html |  |
 
 ### 📖 Français — ⏰ Conjugaison — Les temps
 
