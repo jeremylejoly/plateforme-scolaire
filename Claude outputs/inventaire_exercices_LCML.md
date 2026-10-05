@@ -131,6 +131,11 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - **05/10 — Lecture argumentative › Bien manger** :
   - Même piège que les devoirs : l'argument « coûte trop cher pour certaines familles » devait être classé « Contre », alors qu'il n'était pas dans le texte. Je l'ai ajouté comme concession.
 
+- **05/10 — Lecture argumentative › Les réseaux sociaux** :
+  - Le classement est cohérent : avantages et inconvénients sont tous les deux dans le texte.
+  - Question 3 reformulée pour coller au texte.
+  - **Les 7 textes argumentatifs sont terminés.**
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -191,7 +196,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | Faut-il porter un uniforme ? | `arg_uniforme` | index › renderArgUniforme |  |
 | ✅ 05/10 | L'importance de lire | `arg_lecture` | index › renderArgLecture |  |
 | ✅ 05/10 | Bien manger pour bien grandir | `arg_alimentation` | index › renderArgAlimentation |  |
-| ⬜ | Les réseaux sociaux | `arg_reseaux` | index › renderArgReseaux |  |
+| ✅ 05/10 | Les réseaux sociaux | `arg_reseaux` | index › renderArgReseaux |  |
 
 ### 📖 Français — 🎭 Lecture — Dialoguée
 

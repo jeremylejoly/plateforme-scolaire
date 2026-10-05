@@ -19306,9 +19306,23 @@ function ndialValider(id){
     date:new Date().toLocaleDateString('fr-BE'), time:new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})});
 }
 
-function buildDialFiche(bodyId, data){
+// Une partie : propositions des QCM et des intentions mélangées, répliques à attribuer dans un ordre mélangé.
+// Avant : bonne réponse presque toujours en 2e position.
+const DIAL_SESSIONS = {};
+function buildDialFiche(bodyId, src){
   const body = document.getElementById(bodyId);
   if(!body) return;
+  const melQ = q => {
+    const o = ficheQCMMelanger(q.options.map((t, i) => ({t, ok: i === q.correct})));
+    return {...q, options: o.map(x => x.t), correct: o.findIndex(x => x.ok)};
+  };
+  const data = {...src,
+    questions: ficheQCMMelanger(src.questions).map(melQ),
+    attrib: {...src.attrib, items: ficheQCMMelanger(src.attrib.items)},
+    intentions: ficheQCMMelanger(src.intentions).map(melQ),
+    scores: {}
+  };
+  DIAL_SESSIONS[data.id] = data;
 
   // Répliques
   let replHtml = '';
@@ -19426,7 +19440,7 @@ function dialAttribSelect(id,ii,ni){
 }
 
 function validerDialQCM(id){
-  const data=DIALOGUES_DATA[id];
+  const data=DIAL_SESSIONS[id];
   const sels=window[`dialQCMSels_${id}`]||{};
   let score=0; const total=data.questions.length;
   data.questions.forEach((q,qi)=>{
@@ -19434,13 +19448,14 @@ function validerDialQCM(id){
     q.options.forEach((_,oi)=>{
       const optEl=document.getElementById(`dial-opt-${id}-${qi}-${oi}`);
       if(optEl){ optEl.querySelector('input').disabled=true;
-        if(oi===sel&&ok) optEl.classList.add('correct');
-        else if(oi===sel&&!ok) optEl.classList.add('incorrect');
+        if(oi===q.correct) optEl.classList.add('correct');   // la bonne réponse est toujours montrée
+        else if(oi===sel) optEl.classList.add('incorrect');
       }
     });
   });
   const pct=Math.round(score/total*100);
   const color=pct>=70?'var(--green)':pct>=50?'var(--amber)':'var(--red)';
+  data.scores.qcm=score;
   const panel=document.getElementById(`dial-qcm-score-${id}`);
   panel.style.display='block';
   document.getElementById(`dial-qcm-btn-${id}`).style.display='none';
@@ -19448,10 +19463,11 @@ function validerDialQCM(id){
     <span style="font-weight:800;font-size:18px;color:${color}">${score}/${total} — ${pct}%</span>
     <span style="font-size:13px;color:var(--muted);margin-left:8px">${pct>=70?'✅ Bien joué !':pct>=50?'👍 Pas mal !':'💪 Continue !'}</span>
   </div>`;
+  dialEnregistrerSiFini(id);
 }
 
 function validerDialAttrib(id){
-  const data=DIALOGUES_DATA[id];
+  const data=DIAL_SESSIONS[id];
   const sels=window[`dialAttribSels_${id}`]||{};
   let score=0; const total=data.attrib.items.length;
   data.attrib.items.forEach((item,ii)=>{
@@ -19466,6 +19482,7 @@ function validerDialAttrib(id){
   });
   const pct=Math.round(score/total*100);
   const color=pct>=70?'var(--green)':pct>=50?'var(--amber)':'var(--red)';
+  data.scores.attrib=score;
   const panel=document.getElementById(`dial-attrib-score-${id}`);
   panel.style.display='block';
   document.getElementById(`dial-attrib-btn-${id}`).style.display='none';
@@ -19473,10 +19490,11 @@ function validerDialAttrib(id){
     <span style="font-weight:800;font-size:18px;color:${color}">${score}/${total} — ${pct}%</span>
     <span style="font-size:13px;color:var(--muted);margin-left:8px">${pct>=70?'✅ Bien joué !':pct>=50?'👍 Pas mal !':'💪 Continue !'}</span>
   </div>`;
+  dialEnregistrerSiFini(id);
 }
 
 function validerDialInt(id){
-  const data=DIALOGUES_DATA[id];
+  const data=DIAL_SESSIONS[id];
   const sels=window[`dialIntSels_${id}`]||{};
   let score=0; const total=data.intentions.length;
   data.intentions.forEach((item,ii)=>{
@@ -19484,13 +19502,14 @@ function validerDialInt(id){
     item.options.forEach((_,oi)=>{
       const optEl=document.getElementById(`dial-iopt-${id}-${ii}-${oi}`);
       if(optEl){ optEl.querySelector('input').disabled=true;
-        if(oi===sel&&ok) optEl.classList.add('correct');
-        else if(oi===sel&&!ok) optEl.classList.add('incorrect');
+        if(oi===item.correct) optEl.classList.add('correct');
+        else if(oi===sel) optEl.classList.add('incorrect');
       }
     });
   });
   const pct=Math.round(score/total*100);
   const color=pct>=70?'var(--green)':pct>=50?'var(--amber)':'var(--red)';
+  data.scores.int=score;
   const panel=document.getElementById(`dial-int-score-${id}`);
   panel.style.display='block';
   document.getElementById(`dial-int-btn-${id}`).style.display='none';
@@ -19501,11 +19520,19 @@ function validerDialInt(id){
     <button class="btn" onclick="buildDialFiche('dial-${id}-body',DIALOGUES_DATA['${id}'])" style="margin-top:0.5rem">🔄 Recommencer</button>`;
   panel.scrollIntoView({behavior:'smooth'});
 
-  // Score total des 3 parties
-  const q1=parseInt(document.getElementById(`dial-qcm-score-${id}`)?.querySelector('span')?.textContent?.split('/')[0])||0;
-  const q2=parseInt(document.getElementById(`dial-attrib-score-${id}`)?.querySelector('span')?.textContent?.split('/')[0])||0;
-  const totalScore=q1+q2+score;
-  const totalMax=data.questions.length+data.attrib.items.length+total;
+  dialEnregistrerSiFini(id);
+}
+
+// Résultat enregistré une seule fois, quand les 3 parties sont validées (dans n'importe quel ordre).
+// Avant : enregistré à la partie 3 seulement ; une partie validée après comptait 0.
+function dialEnregistrerSiFini(id){
+  const data=DIAL_SESSIONS[id];
+  if(!data||data.enregistre) return;
+  const sc=data.scores;
+  if(sc.qcm===undefined||sc.attrib===undefined||sc.int===undefined) return;
+  data.enregistre=true;
+  const totalScore=sc.qcm+sc.attrib+sc.int;
+  const totalMax=data.questions.length+data.attrib.items.length+data.intentions.length;
   const totalPct=Math.round(totalScore/totalMax*100);
   if(state.student) saveResult({
     student:state.student, cls:state.studentCls,
