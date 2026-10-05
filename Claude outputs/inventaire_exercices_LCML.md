@@ -297,6 +297,16 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
   - Les exercices concernés sont surtout les dialogues, les textes, les CC et le QCM du futur.
 - **05/10 — Grammaire › Le verbe › Trouver l'infinitif** (repéré en passant) : la phrase « Nous lisons un livre intéressant » était classée à l'imparfait avec le verbe « lisions », absent de la phrase. Elle est corrigée en « Nous lisions… ».
 
+- **05/10 — Conjugaison › Indicatif imparfait › Phrases à trous** (site + fiche du plan de travail, 50 phrases) :
+  - Toutes les réponses attendues sont justes et en nouvelle orthographe.
+  - Phrases corrigées :
+    - « Ils lançaient leurs adversaires » → « Ils lançaient le ballon très loin » ;
+    - « J'amenais mes affaires » → « J'amenais mon petit frère à l'école » (on amène une personne, on apporte une chose) ;
+    - « Nous criions nos amis » → « Nous criions de joie à chaque but » ;
+    - « Tu étais très timide quand tu étais petit » → « … à l'école maternelle » (la phrase donnait la réponse).
+  - « Se fier » : la phrase est maintenant « Vous vous … entièrement à votre professeur » et l'élève tape « fiiez ». Avant, il fallait deviner qu'il fallait écrire « vous fiiez », et la préposition « de » était fausse.
+  - La fiche du plan de travail n'enregistrait jamais le résultat. C'est corrigé (`conj_imparfait_ecriture`). Son mélange est maintenant équitable, et elle tolère les espaces doubles et les apostrophes courbes.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -454,7 +464,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | Présent de l'indicatif (QCM) | `conj_present_qcm` | fiches/conjugaison_present_QCM.html |  |
 | ✅ 05/10 | Présent de l'indicatif (Écriture) | `conj_present_ecriture` | fiches/conjugaison_present_ecriture.html |  |
 | ✅ 05/10 | Imparfait de l'indicatif (QCM) | `conj_imparfait_qcm` | fiches/conjugaison_imparfait_QCM.html |  |
-| ⬜ | Imparfait de l'indicatif (Écriture) | `conj_imparfait_ecriture` | fiches/conjugaison_imparfait_ecriture.html |  |
+| ✅ 05/10 | Imparfait de l'indicatif (Écriture) | `conj_imparfait_ecriture` | fiches/conjugaison_imparfait_ecriture.html |  |
 | ✅ 05/10 | 1. Tableau des 3 temps | `conj_tableau_3_temps` | fiches/conjugaison_tableau_3_temps.html |  |
 | ✅ 05/10 | 2. Tableau des 3 temps simples | `conj_trois_temps_simples` | fiches/conjugaison_trois_temps_simples.html |  |
 | ✅ 05/10 | 3. Repère le bon verbe | `conj_repere_verbe` | fiches/conjugaison_repere_verbe.html |  |

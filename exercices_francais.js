@@ -1081,8 +1081,8 @@ window.EXERCICES_FRANCAIS = {
       evaluation: {
         qcm: [
           {text:"Il ___ toujours ses affaires sur la table.", options:["plaçet", "placait", "plaçait"], answer:2},
-          {text:"Tu ___ très vite sur la piste.", options:["courais", "courrais", "courait"], answer:0},
-          {text:"Nous ___ un grand jardin.", options:["avons", "avions", "aviions"], answer:1},
+          {text:"À cette époque, tu ___ très vite sur la piste.", options:["courais", "courrais", "courait"], answer:0},
+          {text:"À cette époque, nous ___ un grand jardin.", options:["avons", "avions", "aviions"], answer:1},
           {text:"Elle ___ peur du noir.", options:["avait", "avais", "aviait"], answer:0},
           {text:"Ils ___ leurs amis après l'école.", options:["rejoingnaient", "rejoignaient", "rejondaient"], answer:1},
         ],
@@ -1090,7 +1090,7 @@ window.EXERCICES_FRANCAIS = {
           {before:"Nous ", after:" souvent des crêpes le dimanche.", verb:"manger (nous)", answer:"mangions"},
           {before:"Elle ", after:" les vitres chaque samedi.", verb:"essuyer (elle)", answer:"essuyait"},
           {before:"Tu ", after:" ta mère dès que tu arrivais.", verb:"appeler (tu)", answer:"appelais"},
-          {before:"Tu ", after:" très timide quand tu étais petit.", verb:"être (tu)", answer:"étais"},
+          {before:"Tu ", after:" très timide à l'école maternelle.", verb:"être (tu)", answer:"étais"},
           {before:"Nous ", after:" chez nos cousins chaque été.", verb:"venir (nous)", answer:"venions"},
         ]
       }
