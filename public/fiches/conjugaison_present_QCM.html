@@ -56,12 +56,12 @@ body { font-family: 'Nunito', sans-serif; background: #f5f6fa; padding: 1.5rem; 
 const QUESTIONS = [
   // Verbes en -YER
   { p:"Mon cousin <em>...</em> la vaisselle.",      opts:["essuie","essuye","essuyie"],       correct:0 },
-  { p:"Tu <em>...</em> tes achats en ligne.",       opts:["paies","payes","payies"],           correct:0 },
+  { p:"Tu <em>...</em> tes achats en ligne.",       opts:["paies","paye","payies"],            correct:0 },
   { p:"Il <em>...</em> une lettre à ses parents.",  opts:["envoie","envoye","envoyie"],        correct:0 },
   { p:"Ils <em>...</em> le carrelage après le repas.", opts:["nettoient","nettoyent","nettoyient"], correct:0 },
   { p:"Nous <em>...</em> l'addition au restaurant.", opts:["payons","paions","paieons"],       correct:0 },
   { p:"Tu <em>...</em> fort sur le bouton rouge.", opts:["appuies","appuyes","appuyies"],      correct:0 },
-  { p:"Elle <em>...</em> le couloir chaque matin.", opts:["balaie","balaye","balayie"],        correct:0 },
+  { p:"Elle <em>...</em> le couloir chaque matin.", opts:["balaie","balais","balayie"],        correct:0 },
   { p:"Vous <em>...</em> vos chaussures avant d'entrer.", opts:["nettoyez","nettoiez","nettoyiez"], correct:0 },
   // Verbes en -CER
   { p:"Nous <em>...</em> la leçon depuis le début.", opts:["recommençons","recommenceons","recomençons"], correct:0 },
@@ -80,7 +80,7 @@ const QUESTIONS = [
   { p:"J'<em>...</em> mes parents à la gare.",     opts:["amène","amene","ammène"],            correct:0 },
   { p:"Elle <em>...</em> les yeux vers le ciel.",  opts:["lève","leve","lèvet"],               correct:0 },
   { p:"Il <em>...</em> un kilo de pommes.",        opts:["achète","achette","achètte"],        correct:0 },
-  { p:"L'eau <em>...</em> sur les rochers.",       opts:["ruissèle","ruisselle","ruissèlle"],  correct:0 },
+  { p:"Elles <em>...</em> leur chat pour le repas.", opts:["appellent","appèlent","appelent"], correct:0 },
   { p:"Tu <em>...</em> ton chien dans le parc.",   opts:["promènes","promenes","prommènes"],   correct:0 },
   { p:"Je <em>...</em> doucement la boite.",       opts:["soulève","souleve","soullève"],      correct:0 },
   // Être et avoir
@@ -118,7 +118,8 @@ const QUESTIONS = [
 ];
 
 const LETTRES = ['A','B','C'];
-function shuffle(a){ return [...a].sort(()=>Math.random()-.5); }
+// Mélange de Fisher-Yates (le tri aléatoire précédent n'était pas équitable)
+function shuffle(arr){ const a=[...arr]; for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
 
 function shuffleQ(q){
   const pairs = q.opts.map((o,i)=>({o, isCorrect:i===q.correct}));
@@ -140,7 +141,7 @@ function afficherQuestion(){
   const q = selection[curIdx];
   document.getElementById('info-numero').textContent = `Question ${curIdx+1}/10`;
   document.getElementById('dots-progress').innerHTML =
-    selection.map((_,i)=>`<div class="dot" style="background:${i<curIdx?'#16a34a':i===curIdx?'#ec4899':'#d1d5db'}"></div>`).join('');
+    selection.map((_,i)=>`<div class="dot" style="background:${i<curIdx?(scores[i]?'#16a34a':'#dc2626'):i===curIdx?'#ec4899':'#d1d5db'}"></div>`).join('');
 
   const optsHtml = q.opts.map((o,i)=>`
     <button class="opt-btn" id="opt-${i}" onclick="choisir(${i},${q.correct})">
@@ -184,6 +185,14 @@ function afficherScoreFinal(){
   document.getElementById('final-score').textContent=`${ok}/${total} — ${pct}%`;
   document.getElementById('final-score').style.color=pct===100?'#16a34a':pct>=60?'#f59e0b':'#dc2626';
   document.getElementById('final-detail').innerHTML=scores.map((s,i)=>`Q${i+1} : ${s?'✅':'❌'}`).join('  ');
+  // Avant : le résultat n'était jamais enregistré (ni dans les résultats, ni dans le plan de travail)
+  try {
+    if (window.parent && window.parent !== window && window.parent.saveResult) {
+      window.parent.saveResult({ activity:'conj_present_qcm', bookTitle:"Conjugaison — Présent de l'indicatif (QCM)",
+        score:ok, total, pct, date:new Date().toLocaleDateString('fr-BE'),
+        time:new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'}) });
+    }
+  } catch(e) { /* fiche ouverte hors du site */ }
 }
 
 demarrer();

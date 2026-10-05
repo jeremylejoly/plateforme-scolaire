@@ -140,12 +140,12 @@ window.EXERCICES_FRANCAIS = {
       // Banque de 52 questions QCM
       qcm_bank: [
         {text:"Mon cousin ___ la vaisselle.", options:["essuyie", "essuie", "essuye"], answer:1},
-        {text:"Tu ___ tes achats en ligne.", options:["payies", "payes", "paies"], answer:2},
+        {text:"Tu ___ tes achats en ligne.", options:["payies", "paye", "paies"], answer:2},
         {text:"Il ___ une lettre à ses parents.", options:["envoye", "envoyie", "envoie"], answer:2},
         {text:"Ils ___ le carrelage après le repas.", options:["nettoyent", "nettoyient", "nettoient"], answer:2},
         {text:"Nous ___ l'addition au restaurant.", options:["paions", "payons", "paieons"], answer:1},
         {text:"Tu ___ fort sur le bouton rouge.", options:["appuies", "appuyes", "appuyies"], answer:0},
-        {text:"Elle ___ le couloir chaque matin.", options:["balaye", "balaie", "balayie"], answer:1},
+        {text:"Elle ___ le couloir chaque matin.", options:["balais", "balaie", "balayie"], answer:1},
         {text:"Vous ___ vos chaussures avant d'entrer.", options:["nettoyez", "nettoyiez", "nettoiez"], answer:0},
         {text:"Nous ___ la leçon depuis le début.", options:["recommençons", "recommenceons", "recomençons"], answer:0},
         {text:"Nous ___ le ballon vers le but.", options:["lançons", "lanceons", "lançeons"], answer:0},
@@ -160,7 +160,7 @@ window.EXERCICES_FRANCAIS = {
         {text:"J'___ mes parents à la gare.", options:["amene", "amène", "ammène"], answer:1},
         {text:"Elle ___ les yeux vers le ciel.", options:["leve", "lève", "lèvet"], answer:1},
         {text:"Il ___ un kilo de pommes.", options:["achète", "achette", "achètte"], answer:0},
-        {text:"L'eau ___ sur les rochers.", options:["ruisselle", "ruissèle", "ruissèlle"], answer:1},
+        {text:"Elles ___ leur chat pour le repas.", options:["appèlent", "appellent", "appelent"], answer:1},
         {text:"Tu ___ ton chien dans le parc.", options:["prommènes", "promenes", "promènes"], answer:2},
         {text:"Je ___ doucement la boite.", options:["souleve", "soullève", "soulève"], answer:2},
         {text:"Nous ___ contents de te voir.", options:["sommes", "somme", "sommons"], answer:0},
