@@ -49,8 +49,8 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 
 | Statut | Exercice | id | Source | Signal automatique |
 |---|---|---|---|---|
-| ⬜ | Le Chat Botté | `conte_chatbotte` | index › renderConteChatBotte |  |
-| ⬜ | Les Musiciens de Brême | `conte_breme` | index › renderConteBreme |  |
+| ✅ 05/10 (199a1f7) | Le Chat Botté | `conte_chatbotte` | index › renderConteChatBotte |  |
+| ✅ 05/10 (199a1f7) | Les Musiciens de Brême | `conte_breme` | index › renderConteBreme |  |
 | ⬜ | Le Cancre (Prévert) | `poeme_cancre` | index › renderPoemeCancre |  |
 | ⬜ | Page d'écriture (Prévert) | `poeme_ecriture` | index › renderPoemeEcriture |  |
 | ⬜ | Le Dormeur du val (Rimbaud) | `poeme_dormeur` | index › renderPoemeDormeur |  |
