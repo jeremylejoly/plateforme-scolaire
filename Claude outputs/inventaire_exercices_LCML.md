@@ -1309,6 +1309,14 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Tests jsdom : partie 8 / 10 avec doubles clics → 1 sauvegarde ; abaque (saisie, passage de case, virgule, vidage) ; syntaxe OK.
 - ⚠️ À voir au prochain : « Conversions de longueurs (QCM — Bis) » a probablement le même doublon.
 
+### 05/10 — Maths › Grandeurs › Les longueurs › Conversions de longueurs QCM (`grandeur_longueurs_qcm`, LONGUEURS_QCM_BANQUE dans exercices_maths.js + index › demarrerLongueursQcm) — sw.js v562
+- 50 questions recalculées par programme (mm, cm, dm, m, dam, hm, km ; ¼ ½ ¾ ⅛) : une seule proposition juste à chaque fois, et c'est bien celle attendue.
+- **Aucun résultat enregistré** → enregistrement unique en fin de série (`grandeur_longueurs_qcm`, identifiant du menu et du plan).
+- **Bonne réponse prévisible** : en 3e position dans 25 questions sur 50 de la banque et mélange par tri aléatoire biaisé → Fisher–Yates (20 000 séries : 33 % par position).
+- **Questions qui se donnaient la réponse** : 11 groupes de même valeur (2,5 km / 2500 m ; ½ km / 5 hm / 0,5 km ; 3,5 m / 3500 mm…) → jamais deux questions de même valeur dans une série.
+- Pastilles toujours vertes → vert / rouge ; double clic sur « Question suivante » / « Voir mon score final » sans effet.
+- Tests jsdom : partie 7 / 10 avec doubles clics → 1 sauvegarde ; index : 6 / 7 scripts OK.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1630,7 +1638,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ⬜ | Conversions & Abaque (QCM) | `grandeur_masses_qcm_abaque` | fiches/masses_QCM_abaque.html |  |
 | ✅ 05/10 | Conversions de capacités (QCM) | `grandeur_capacites_qcm` | index › renderCapacitesQCM |  |
 | ✅ 05/10 | Conversions de capacités & abaque (QCM) | `grandeur_capacites_qcm_sup` | fiches/capacites_QCM.html |  |
-| ⬜ | Conversions de longueurs (QCM) | `grandeur_longueurs_qcm` | index › renderLongueursQCM |  |
+| ✅ 05/10 | Conversions de longueurs (QCM) | `grandeur_longueurs_qcm` | index › renderLongueursQCM |  |
 | ⬜ | Conversions de longueurs (QCM — Bis) | `grandeur_longueurs_qcm_sup` | fiches/longueurs_QCM.html |  |
 
 ### 🔢 Mathématiques — 📐 Grandeurs — Périmètre, Aire & Volume
