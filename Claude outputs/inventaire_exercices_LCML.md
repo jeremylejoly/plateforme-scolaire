@@ -927,6 +927,12 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Double clic (réponse / suivant) neutralisé ; correction indique la bonne réponse ; mélanges Fisher-Yates.
 - Nouvelle orthographe : maitre, plait, maitrises, s'entrainer.
 
+### 05/10 — Savoir écouter : Le secret de la forêt de Soignes (`savoir_ecouter_1`, moteur `savoir_ecouter.html` + copie fiches/, données exercices_francais.js) — sw.js v506
+- MOTEUR COMMUN (les 8 « Savoir écouter ») : AUCUN résultat n'était jamais enregistré. La fiche appelait `saveResult(score, total, temps, 'savoir_ecouter_soignes')` alors que saveResult attend un objet → rejet silencieux ; en plus l'identifiant était toujours celui de Soignes. Corrigé : objet complet avec `activity` = identifiant de l'exercice ouvert (savoir_ecouter_1…8).
+- MOTEUR COMMUN : propositions des QCM jamais mélangées (Soignes : bonne réponse en B pour 5 questions sur 7) → mélange Fisher-Yates à chaque partie (V/F gardés dans l'ordre). Simulation : ~25 % par lettre.
+- Validation impossible tant que toutes les questions n'ont pas de réponse (double sécurité). Entraine-toi.
+- Contenu Soignes : questions cohérentes avec les faits connus (blaireau nocturne, omnivore, terriers à plusieurs dizaines d'entrées, lumière rouge, « cathédrale verte »). ⚠️ Audio NON réécouté : la transcription automatique est impossible ici (modèles bloqués par le réseau) → à confirmer à l'écoute si un doute existe.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1158,7 +1164,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 
 | Statut | Exercice | id | Source | Signal automatique |
 |---|---|---|---|---|
-| ⬜ | Savoir écouter - Soignes | `savoir_ecouter_1` | index › startSavoirEcouter |  |
+| ✅ 05/10 | Savoir écouter - Soignes | `savoir_ecouter_1` | index › startSavoirEcouter |  |
 | ⬜ | Savoir écouter - Bruges | `savoir_ecouter_2` | index › startSavoirEcouter |  |
 | ⬜ | Savoir écouter - Fourmi | `savoir_ecouter_3` | index › startSavoirEcouter |  |
 | ⬜ | Savoir écouter - Pain perdu | `savoir_ecouter_4` | index › startSavoirEcouter |  |

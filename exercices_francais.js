@@ -8650,7 +8650,7 @@ window.SAVOIR_ECOUTER_DATA = [
       {
         num: 2,
         type: 'qcm',
-        q: "Combien de cloches compose le carillon ?",
+        q: "Combien de cloches composent le carillon ?",
         options: [
           '7',
           '47',
@@ -8710,12 +8710,12 @@ window.SAVOIR_ECOUTER_DATA = [
       {
         num: 7,
         type: 'qcm',
-        q: "Que peut-on déduire du fait que la tour se rétrécit vers le sommet ?",
+        q: "La tour se rétrécit vers le sommet. Que peut-on en déduire pour l'escalier ?",
         options: [
-          "La tour a été mal construite",
-          "La forme de la tour se rétrécit vers le sommet",
-          "Les marches ont été abimées par le temps",
-          "Il y a eu une erreur dans les plans de construction"
+          "Il devient plus large en montant",
+          "Il devient de plus en plus étroit en montant",
+          "Il s'arrête au milieu de la tour",
+          "Il est remplacé par un ascenseur"
         ],
         correct: 1
       },
