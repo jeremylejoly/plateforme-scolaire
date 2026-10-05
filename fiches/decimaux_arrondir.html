@@ -477,6 +477,12 @@
       return rounded.toString().replace('.', ',');
     }
 
+    // Un arrondi au dixième s'écrit avec 1 décimale (5,0), au centième avec 2 (3,60)
+    const F1 = v => Number(v).toFixed(1).replace('.', ',');
+    const F2 = v => Number(v).toFixed(2).replace('.', ',');
+    function decimalesNiveau(q) { return q.precision === 'unit' ? 0 : q.precision === 'tenth' ? 1 : 2; }
+    function fmtNiveau(q, v, extra = 0) { return Number(v).toFixed(decimalesNiveau(q) + extra).replace('.', ','); }
+
     function generateDynamicQuestions() {
       const list = [];
       
@@ -545,7 +551,7 @@
           correctIndex: h,
           answer: answer,
           title: `Arrondis ${formatDec(target)} au dixième près`,
-          explanation: `${formatDec(target)} est situé entre les dixièmes ${formatDec(minVal)} et ${formatDec(maxVal)}. La distance jusqu'à ${formatDec(minVal)} est de ${formatDec(target - minVal)}, alors que la distance jusqu'à ${formatDec(maxVal)} est de ${formatDec(maxVal - target)}. Comme il est plus proche de ${formatDec(answer)}, on l'arrondit à ${formatDec(answer)}.`
+          explanation: `${formatDec(target)} est situé entre les dixièmes ${F1(minVal)} et ${F1(maxVal)}. La distance jusqu'à ${F1(minVal)} est de ${formatDec(target - minVal)}, alors que la distance jusqu'à ${F1(maxVal)} est de ${formatDec(maxVal - target)}. Comme il est plus proche de ${F1(answer)}, on l'arrondit à ${F1(answer)}.`
         });
       }
 
@@ -566,7 +572,7 @@
           correctIndex: 5,
           answer: maxVal,
           title: `Arrondis ${formatDec(target)} au dixième près`,
-          explanation: `${formatDec(target)} est à mi-chemin entre ${formatDec(minVal)} (ou ${formatDec(minVal)},00) et ${formatDec(maxVal)}. La distance est de 0,05 des deux côtés. Suivant la règle d'arrondi, si le chiffre suivant (ici le centième) est 5, on choisit le dixième supérieur, soit ${formatDec(maxVal)}.`
+          explanation: `${formatDec(target)} est à mi-chemin entre ${F1(minVal)} (ou ${F1(minVal)},00) et ${F1(maxVal)}. La distance est de 0,05 des deux côtés. Suivant la règle d'arrondi, si le chiffre suivant (ici le centième) est 5, on choisit le dixième supérieur, soit ${F1(maxVal)}.`
         });
       }
 
@@ -591,7 +597,7 @@
           correctIndex: t,
           answer: answer,
           title: `Arrondis ${formatDec(target)} au centième près`,
-          explanation: `${formatDec(target)} est compris entre ${formatDec(minVal)} et ${formatDec(maxVal)}. La distance à ${formatDec(minVal)} est de ${formatDec(target - minVal)} et la distance à ${formatDec(maxVal)} est de ${formatDec(maxVal - target)}. Comme la distance à ${formatDec(answer)} est la plus petite, on l'arrondit à ${formatDec(answer)}.`
+          explanation: `${formatDec(target)} est compris entre ${F2(minVal)} et ${F2(maxVal)}. La distance à ${F2(minVal)} est de ${formatDec(target - minVal)} et la distance à ${F2(maxVal)} est de ${formatDec(maxVal - target)}. Comme la distance à ${F2(answer)} est la plus petite, on l'arrondit à ${F2(answer)}.`
         });
       }
 
@@ -613,7 +619,7 @@
           correctIndex: 5,
           answer: maxVal,
           title: `Arrondis ${formatDec(target)} au centième près`,
-          explanation: `${formatDec(target)} est exactement à égale distance de ${formatDec(minVal)} et de ${formatDec(maxVal)}. Le chiffre des millièmes étant 5, on arrondit au centième supérieur, ce qui donne ${formatDec(maxVal)}.`
+          explanation: `${formatDec(target)} est exactement à égale distance de ${F2(minVal)} et de ${F2(maxVal)}. Le chiffre des millièmes étant 5, on arrondit au centième supérieur, ce qui donne ${F2(maxVal)}.`
         });
       }
 
@@ -633,7 +639,7 @@
           correctIndex: 6,
           answer: maxVal,
           title: `Arrondis ${formatDec(target)} au dixième près`,
-          explanation: `${formatDec(target)} est situé entre ${formatDec(minVal)} et ${formatDec(maxVal)}. Il est à ${formatDec(target - minVal)} de ${formatDec(minVal)} et à seulement ${formatDec(maxVal - target)} de ${formatDec(maxVal)}. Comme ${formatDec(maxVal)} est le plus proche repère, on arrondit à ${formatDec(maxVal)} (ce qui équivaut à l'unité supérieure ${maxVal}).`
+          explanation: `${formatDec(target)} est situé entre ${F1(minVal)} et ${F1(maxVal)}. Il est à ${formatDec(target - minVal)} de ${F1(minVal)} et à seulement ${formatDec(maxVal - target)} de ${F1(maxVal)}. Comme ${F1(maxVal)} est le plus proche repère, on arrondit à ${F1(maxVal)} (ce qui équivaut à l'unité supérieure ${maxVal}).`
         });
       } else {
         const intPart = randRange(1, 9);
@@ -650,7 +656,7 @@
           correctIndex: 5,
           answer: maxVal,
           title: `Arrondis ${formatDec(target)} au centième près`,
-          explanation: `${formatDec(target)} est au milieu entre ${formatDec(minVal)} et ${formatDec(maxVal)}. Le chiffre des millièmes étant 5, on arrondit à la valeur supérieure. ${formatDec(minVal)} augmente de 1 centième, ce qui donne ${formatDec(maxVal)} (ou ${formatDec(intPart + 0.6)}).`
+          explanation: `${formatDec(target)} est au milieu entre ${F2(minVal)} et ${F2(maxVal)}. Le chiffre des millièmes étant 5, on arrondit à la valeur supérieure. ${F2(minVal)} augmente de 1 centième, ce qui donne ${F2(maxVal)}.`
         });
       }
 
@@ -752,17 +758,17 @@
           // Major ticks
           tickHTML += `<line x1="${x}" y1="62" x2="${x}" y2="98" stroke="var(--text)" stroke-width="4" stroke-linecap="round" />`;
           // Major labels
-          tickHTML += `<text x="${x}" y="122" class="tick-label">${formatDec(tickVal)}</text>`;
+          tickHTML += `<text x="${x}" y="122" class="tick-label">${fmtNiveau(q, tickVal)}</text>`;
         } else if (i === 5) {
           // Midpoint
           tickHTML += `<line x1="${x}" y1="68" x2="${x}" y2="92" stroke="var(--accent)" stroke-width="3" stroke-linecap="round" />`;
           // Sub label
-          tickHTML += `<text x="${x}" y="112" class="sub-label font-bold text-accent" fill="var(--accent)">${formatDec(tickVal)}</text>`;
+          tickHTML += `<text x="${x}" y="112" class="sub-label font-bold text-accent" fill="var(--accent)">${fmtNiveau(q, tickVal, 1)}</text>`;
         } else {
           // Minor ticks
           tickHTML += `<line x1="${x}" y1="72" x2="${x}" y2="88" stroke="var(--border)" stroke-width="2" stroke-linecap="round" />`;
           // Sub label
-          tickHTML += `<text x="${x}" y="112" class="sub-label">${formatDec(tickVal)}</text>`;
+          tickHTML += `<text x="${x}" y="112" class="sub-label">${fmtNiveau(q, tickVal, 1)}</text>`;
         }
 
         // Invisible click/hover overlay circle
@@ -788,7 +794,7 @@
       values.forEach(val => {
         const btn = document.createElement('button');
         btn.className = 'choice-btn';
-        btn.innerHTML = `<span class="text-xs uppercase tracking-wider text-muted mb-1 font-semibold">Option</span><span>${formatDec(val)}</span>`;
+        btn.innerHTML = `<span class="text-xs uppercase tracking-wider text-muted mb-1 font-semibold">Option</span><span>${fmtNiveau(q, val)}</span>`;
         btn.onclick = () => selectChoice(btn, val);
         wrapper.appendChild(btn);
       });
@@ -952,9 +958,10 @@
 
     // Validate Answer
     function validateAnswer() {
+      if (isAnswerValidated || selectedChoice === null) return;
       isAnswerValidated = true;
       const q = QUESTIONS[currentQuestionIndex];
-      const isCorrect = (selectedChoice === q.answer);
+      const isCorrect = selectedChoice !== null && Math.abs(selectedChoice - q.answer) < 1e-9;
 
       // Disable choice buttons interaction
       const buttons = document.querySelectorAll('.choice-btn');
@@ -962,7 +969,7 @@
         btn.disabled = true;
         // Find which value matches this button
         const btnVal = parseFloat(btn.lastChild.textContent.replace(',', '.'));
-        if (btnVal === q.answer) {
+        if (Math.abs(btnVal - q.answer) < 1e-9) {
           btn.classList.add('btn-correct');
         } else if (btnVal === selectedChoice && !isCorrect) {
           btn.classList.add('btn-wrong');
@@ -1041,7 +1048,7 @@
       let msg = "";
       
       if (currentScore === 10) {
-        msg = `<strong>Félicitations ! Un sans-faute parfait ! 10/10 (${pct}%)</strong><br>Tu maîtrises parfaitement l'arrondi des nombres décimaux à l'unité, au dixième et au centième près. Superbe réussite !`;
+        msg = `<strong>Félicitations ! Un sans-faute parfait ! 10/10 (${pct}%)</strong><br>Tu maitrises parfaitement l'arrondi des nombres décimaux à l'unité, au dixième et au centième près. Superbe réussite !`;
         stars = "⭐⭐⭐";
         sndFanfare();
         triggerConfettiShower();
@@ -1050,7 +1057,7 @@
         stars = "⭐⭐";
         sndFanfare();
       } else if (currentScore >= 5) {
-        msg = `<strong>Pas mal ! ${currentScore}/10 (${pct}%)</strong><br>C'est un bon début. Fais bien attention aux distances affichées par les arcs et rappelle-toi de la règle du 5. Entraîne-toi encore pour t'améliorer !`;
+        msg = `<strong>Pas mal ! ${currentScore}/10 (${pct}%)</strong><br>C'est un bon début. Fais bien attention aux distances affichées par les arcs et rappelle-toi de la règle du 5. Entraine-toi encore pour t'améliorer !`;
         stars = "⭐";
         playTone(523.25, 0.15, 0, 'sine', 0.1);
         playTone(659.25, 0.25, 0.1, 'sine', 0.1);

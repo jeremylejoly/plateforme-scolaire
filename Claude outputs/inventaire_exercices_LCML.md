@@ -1025,6 +1025,11 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Raccourci possible : presque tous les FAUX avaient un nombre plus « court » que les bornes (2,7 entre 2,71 et 2,79), presque tous les VRAI un nombre plus « long » → 4 pièges ajoutés (6,5 entre 6,49 et 6,51 : VRAI ; 3,849 entre 3,85 et 3,9 : FAUX…). Banque : 19.
 - Mélange `sort(random)` → Fisher-Yates.
 
+### 05/10 — Maths › Décimaux › Opérations devinettes (`num_decimaux_op_devinettes`, index › DECIMAUX_OP_DEVINETTES_BANQUE / validerDecOp) — sw.js v522
+- 15 calculs vérifiés par programme : justes.
+- « 8,205 − 5 millièmes » attendait « 8,2 » et refusait « 8,200 » ; « 1,01 − 1 centième » refusait « 1,00 » → zéros finaux inutiles acceptés. Réponse vide ignorée.
+- Mélange `sort(random)` → Fisher-Yates.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1280,7 +1285,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | Décimaux — Droites numériques | `num_decimaux_droite` | index › renderDecimauxDroite |  |
 | ✅ 05/10 | Décimaux — Le bon nombre | `num_decimaux_le_bon_nombre` | index › renderDecimauxLeBonNombre | Aucun hasard : mêmes questions, même ordre à chaque partie |
 | ✅ 05/10 | Décimaux — Entre deux nombres | `num_decimaux_entre` | index › renderDecimauxEntre |  |
-| ⬜ | Décimaux — Opérations devinettes | `num_decimaux_op_devinettes` | index › renderDecimauxOpDevinettes |  |
+| ✅ 05/10 | Décimaux — Opérations devinettes | `num_decimaux_op_devinettes` | index › renderDecimauxOpDevinettes |  |
 | ⬜ | Sélectionne le bon chiffre | `num_entiers_decimaux_abaque` | fiches/abaque.html |  |
 | ⬜ | Comparaison de nombres | `num_entiers_decimaux_comparaison` | fiches/comparaison.html |  |
 | ⬜ | Fractions simples | `num_fractions_simples` | index › renderFractionsSimples |  |
