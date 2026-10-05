@@ -495,6 +495,12 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
   - Les 50 phrases ont été relues : tous les déterminants sont bien marqués, y compris les numéraux, « chaque », « quelques », « certains », « plusieurs » et l'exclamatif « quel ».
   - Nouvelle orthographe : maitrise, entrainer, entraine-toi, « Reconnaitre » dans le libellé du plan de travail.
 
+- **05/10 — Grammaire › L'adjectif › Identifier les adjectifs** (50 phrases, 10 par partie) :
+  - Les 50 phrases ont été relues. Tous les adjectifs sont bien marqués, y compris les attributs (« est moelleux et savoureux ») et les participes employés comme adjectifs (mouillée, abandonnée, fatigués, ouvert). Les participes des formes verbales restent des verbes (est tombée, est servie).
+  - Le résultat était déjà enregistré sous le bon identifiant (`gram_adjectif_identifier`).
+  - Le mélange utilisait le tri aléatoire biaisé. Il utilise maintenant la méthode Fisher–Yates.
+  - Nouvelle orthographe : maitrise, entrainer, entraine-toi.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -590,7 +596,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | Le déterminant — Reconnaître les déterminants | `gram_determinant_reconnaitre` | index › startDeterminantExercise |  |
 | ⬜ | Le déterminant — Le tri des déterminants | `gram_determinant_tri` | index › startTriExercise |  |
 | ⬜ | Le déterminant (Exercices) | `gram_determinant_ex` | fiches/determinant_exercice.html |  |
-| ⬜ | L'adjectif — Identifier les adjectifs | `gram_adjectif_identifier` | index › startAdjectifExercise |  |
+| ✅ 05/10 | L'adjectif — Identifier les adjectifs | `gram_adjectif_identifier` | index › startAdjectifExercise |  |
 | ⬜ | L'adjectif — Accords de l'adjectif | `gram_adjectif_accord` | index › startAdjectifAccordExercise |  |
 | ⬜ | L'adjectif — Épithète ou attribut ? | `gram_adjectif_fonction` | index › startAdjectifFonctionExercise |  |
 | ⬜ | L'adjectif — Retrouver le nom qualifié | `gram_adjectif_nom` | index › startAdjectifNomExercise |  |

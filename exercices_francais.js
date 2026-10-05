@@ -11612,7 +11612,7 @@ window.EXERCICES_DETERMINANT_TRI = [
     exp: "« de la » désigne une quantité abstraite de patience, c'est un article partitif."
   },
   {
-    phrase: "La plante a besoin <span class='target-highlight'>de l'</span> eau pour grandir.",
+    phrase: "Le jardinier verse <span class='target-highlight'>de l'</span> eau sur les plantes.",
     word: "de l'",
     cat: "article",
     exp: "« de l' » exprime une quantité indéterminée d'eau, c'est un article partitif élidé."
@@ -11645,7 +11645,7 @@ window.EXERCICES_DETERMINANT_TRI = [
     phrase: "J'ai ramassé <span class='target-highlight'>quelques</span> coquillages sur la plage.",
     word: "quelques",
     cat: "autre",
-    exp: "« quelques » désigne un petit nom de quantité indéterminée, c'est un déterminant indéfini."
+    exp: "« quelques » désigne une petite quantité indéterminée, c'est un déterminant indéfini."
   },
   {
     phrase: "L'alpiniste n'a rencontré <span class='target-highlight'>aucun</span> obstacle durant sa montée.",
