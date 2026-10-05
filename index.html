@@ -25510,30 +25510,67 @@ function afficherDevinettesScoreFinal(){
 }
 
 // ===== NUMÉRATION : VALEUR D'UN CHIFFRE (RELIER DÉCIMAUX) =====
-const RELIER_DECIMAUX_BANQUE = [
-  { nombre: "456,701",      phrase: "Le chiffre 1 représente les millièmes" },
-  { nombre: "1 302,663",    phrase: "Le chiffre 1 représente les unités de mille" },
-  { nombre: "1 422,35",     phrase: "Le chiffre 1 représente les milliers" },
-  { nombre: "890,013",      phrase: "Le chiffre 1 représente les centièmes" },
-  { nombre: "12,508",       phrase: "Le chiffre 1 représente les dizaines" },
-  { nombre: "51,204",       phrase: "Le chiffre 1 représente les unités" },
-  { nombre: "176,39",       phrase: "Le chiffre 1 représente les centaines" },
-  { nombre: "0,142",        phrase: "Le chiffre 1 représente les dixièmes" },
-  { nombre: "10 547,8",     phrase: "Le chiffre 1 représente les dizaines de mille" },
-  { nombre: "100 234,7",    phrase: "Le chiffre 1 représente les centaines de mille" },
-  { nombre: "1 000 456,2",  phrase: "Le chiffre 1 représente les millions" },
-  { nombre: "234,61",       phrase: "Le chiffre 1 représente les centièmes" },
-  { nombre: "3 185,4",      phrase: "Le chiffre 1 représente les centaines" },
-  { nombre: "0,051",        phrase: "Le chiffre 1 représente les millièmes" },
-  { nombre: "21,307",       phrase: "Le chiffre 1 représente les unités" },
-  { nombre: "164,25",       phrase: "Le chiffre 1 représente les centaines" },
-  { nombre: "9 012,8",      phrase: "Le chiffre 1 représente les dizaines" },
-  { nombre: "0,019",        phrase: "Le chiffre 1 représente les centièmes" },
-  { nombre: "71 000,4",     phrase: "Le chiffre 1 représente les milliers" },
-  { nombre: "18,003",       phrase: "Le chiffre 1 représente les dizaines" },
+// Rangs possibles : exposant de la puissance de 10 (6 = millions … -3 = millièmes).
+// Un seul terme par rang (pas « milliers » ET « unités de mille ») pour éviter deux étiquettes équivalentes.
+const RELIER_DECIMAUX_RANGS = [
+  { exp:  6, nom: "millions" },
+  { exp:  5, nom: "centaines de mille" },
+  { exp:  4, nom: "dizaines de mille" },
+  { exp:  3, nom: "unités de mille" },
+  { exp:  2, nom: "centaines" },
+  { exp:  1, nom: "dizaines" },
+  { exp:  0, nom: "unités" },
+  { exp: -1, nom: "dixièmes" },
+  { exp: -2, nom: "centièmes" },
+  { exp: -3, nom: "millièmes" },
 ];
 
+function relDecMelanger(arr){
+  const a = [...arr];
+  for(let i = a.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+function relDecHasard(min, max){ return min + Math.floor(Math.random() * (max - min + 1)); }
+
+// Fabrique un nombre où le chiffre `cible` apparaît une seule fois, au rang `exp`.
+function relDecGenererNombre(cible, exp){
+  const nbEnt = Math.max(exp + 1, relDecHasard(1, 4), 1);      // nombre de chiffres de la partie entière
+  const nbDec = Math.max(-exp, relDecHasard(1, 3));             // nombre de chiffres après la virgule
+  const autre = (sansZero) => {
+    let d;
+    do { d = relDecHasard(sansZero ? 1 : 0, 9); } while(d === cible);
+    return d;
+  };
+  const ent = [];
+  for(let k = nbEnt - 1; k >= 0; k--){
+    if(k === exp) ent.push(cible);
+    else ent.push(autre(k === nbEnt - 1 && nbEnt > 1));
+  }
+  const dec = [];
+  for(let k = 1; k <= nbDec; k++){
+    if(-k === exp) dec.push(cible);
+    else dec.push(autre(k === nbDec)); // pas de zéro inutile en fin de partie décimale
+  }
+  let entTxt = ent.join('');
+  entTxt = entTxt.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+  return entTxt + ',' + dec.join('');
+}
+
+// Une série = 5 lignes, 5 rangs différents, chiffre cible différent à chaque ligne.
+function relDecGenererSerie(){
+  const rangs = relDecMelanger(RELIER_DECIMAUX_RANGS).slice(0, 5);
+  const chiffres = relDecMelanger([1,2,3,4,5,6,7,8,9]).slice(0, 5);
+  return rangs.map((r, i) => ({
+    nombre: relDecGenererNombre(chiffres[i], r.exp),
+    phrase: `Le chiffre ${chiffres[i]} représente les ${r.nom}`
+  }));
+}
+
 let relDecSerie = [], relDecCurIdx = 0, relDecScores = [];
+let relDecSeries = [];
 let relDecPlaced = {};
 
 function renderRelierDecimaux(){
@@ -25582,16 +25619,8 @@ function renderRelierDecimaux(){
 }
 
 function demarrerRelier(){
-  const pool = [...RELIER_DECIMAUX_BANQUE].sort(() => Math.random() - 0.5);
-  relDecSerie = [];
-  const usedPhrases = new Set();
-  for(const p of pool){
-    if(!usedPhrases.has(p.phrase)){
-      relDecSerie.push(p);
-      usedPhrases.add(p.phrase);
-    }
-    if(relDecSerie.length === 5) break;
-  }
+  // 5 séries toutes différentes (avant : les 5 séries reprenaient les 5 mêmes nombres dans le même ordre)
+  relDecSeries = Array.from({length: 5}, relDecGenererSerie);
   relDecCurIdx = 0;
   relDecScores = [];
 
@@ -25605,19 +25634,23 @@ function demarrerRelier(){
 
 function afficherRelierSerie(){
   relDecPlaced = {};
+  relDecSerie = relDecSeries[relDecCurIdx];
 
   const numInfo = document.getElementById('relier-info-numero');
   if(numInfo) numInfo.textContent = `Série ${relDecCurIdx+1}/5`;
 
   const dots = document.getElementById('relier-dots-progress');
   if(dots){
-    dots.innerHTML = relDecSerie.map((_,i) => {
+    dots.innerHTML = relDecSeries.map((_,i) => {
       const color = i < relDecCurIdx ? 'bg-green-500' : i === relDecCurIdx ? 'bg-purple-600' : 'bg-neutral-300';
       return `<div class="w-3 h-3 rounded-full ${color}"></div>`;
     }).join('');
   }
 
-  const phraseOrder = [...Array(relDecSerie.length).keys()].sort(() => Math.random() - 0.5);
+  // Ordre des étiquettes vraiment mélangé, et jamais une étiquette déjà en face de son nombre
+  let phraseOrder;
+  do { phraseOrder = relDecMelanger([...Array(relDecSerie.length).keys()]); }
+  while(phraseOrder.some((pIdx, i) => pIdx === i));
 
   const rowsZone = document.getElementById('relier-rows-zone');
   if(rowsZone){
