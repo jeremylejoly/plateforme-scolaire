@@ -152,6 +152,10 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
   - Le contenu est cohérent.
   - Amsterdam et Copenhague n'ont pas interdit la voiture : elles l'ont fortement réduite dans leur centre. Le texte et l'intention 3 ont été corrigés.
 
+- **05/10 — Lecture dialoguée › Animal de compagnie** :
+  - Dernier argument de Noah : « laisser les animaux vivre librement dans la nature » ne tient pas pour des chiens et des chats, et cela revient à un abandon, ce que Noah condamne lui-même. Reformulé en « pas faits pour vivre enfermés dans un appartement » (réplique et question 4).
+  - **Les 4 dialogues à 3 parties sont terminés.** Restent Armstrong, le conseil et le marché, qui ont un autre moteur.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -221,7 +225,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | Les écrans à l'école | `dial_ecrans` | index › renderDialEcrans |  |
 | ✅ 05/10 | Manger bio, est-ce utile ? | `dial_bio` | index › renderDialBio |  |
 | ✅ 05/10 | La voiture en ville | `dial_voiture` | index › renderDialVoiture |  |
-| ⬜ | Avoir un animal de compagnie | `dial_animal` | index › renderDialAnimal |  |
+| ✅ 05/10 | Avoir un animal de compagnie | `dial_animal` | index › renderDialAnimal |  |
 | ⬜ | Interview de Neil Armstrong | `dial_armstrong` | index › renderDialArmstrong |  |
 | ⬜ | Le grand désaccord | `dial_conseil` | index › renderDialConseil |  |
 | ⬜ | Une affaire en or ! | `dial_marche` | index › renderDialMarche |  |

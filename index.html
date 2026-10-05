@@ -19117,9 +19117,21 @@ function renderDialMarche(){ buildNewDialFiche('dial-marche-body', DIAL_MARCHE_D
 // ===== MOTEUR NOUVEAUX DIALOGUES (interview + théâtre) =====
 const COULEURS_INTERVENANTS = ['#0277bd','#2e7d32','#c62828','#6a1b9a','#e65100','#00838f'];
 
-function buildNewDialFiche(bodyId, data){
+function buildNewDialFiche(bodyId, src){
   const body = document.getElementById(bodyId);
   if(!body) return;
+  // Une partie : questions, propositions, répliques à attribuer et intentions mélangées
+  // (avant : toujours le même ordre, bonne réponse souvent en 2e position).
+  const melQ = q => {
+    const o = ficheQCMMelanger(q.opts.map((t, i) => ({t, ok: i === q.correct})));
+    return {...q, opts: o.map(x => x.t), correct: o.findIndex(x => x.ok)};
+  };
+  const data = {...src,
+    qcm: ficheQCMMelanger(src.qcm).map(melQ),
+    attribution: ficheQCMMelanger(src.attribution),
+    intentions: ficheQCMMelanger(src.intentions).map(melQ)
+  };
+  window['_ndialSrc_'+data.id] = src;
 
   const nbInterv = data.intervenants.length;
   const couleurs = {};
@@ -19298,7 +19310,7 @@ function ndialValider(id){
   panel.innerHTML=`<div style="font-size:56px;margin-bottom:0.5rem">${pct===100?'🎉':pct>=70?'⭐':pct>=50?'👍':'💪'}</div>
     <div style="font-family:'Nunito',sans-serif;font-weight:900;font-size:40px;color:${color}">${score}/${total}</div>
     <div style="font-size:18px;color:${color};font-weight:700;margin-bottom:1rem">${pct}%</div>
-    <button class="btn" onclick="buildNewDialFiche('dial-${id}-body',window['_ndialData_${id}'])" style="width:100%;">🔄 Recommencer</button>`;
+    <button class="btn" onclick="buildNewDialFiche('dial-${id}-body',window['_ndialSrc_${id}'])" style="width:100%;">🔄 Recommencer</button>`;
   panel.scrollIntoView({behavior:'smooth'});
 
   if(state.student) saveResult({student:state.student,cls:state.studentCls,className:CLASSES[state.studentCls]?CLASSES[state.studentCls].name:state.studentCls,
