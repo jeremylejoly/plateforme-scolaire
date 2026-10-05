@@ -800,6 +800,12 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Synthèse : se devant un infinitif ; ce pronom devant qui/que ; « ce sont, ce fut » (la règle disait que ce devient toujours c' devant être).
 - Validation unique (verrou + bouton masqué) ; bonne réponse affichée à côté des menus faux.
 
+### 05/10 — Homophones on / ont (`homo_on`, index › HOMO_ON_BANQUE / validerHomoOn) — sw.js v487
+- Biais total : trou en début de phrase = toujours « On » (seule majuscule du menu), trou après « Les … / Mes … » = toujours « ont ». Banque réécrite (34 phrases, 4 à double trou) : « Demain, on… », « Quand on…, on… », « Ils ont faim », « Ont-ils fini ? »…
+- Menu adapté à la position : On/Ont en début de phrase, on/ont ailleurs.
+- Synthèse : exemple « On chante tous ensemble » (→ « Il chante tous ensemble » bancal) remplacé par « On chante une chanson ».
+- Validation unique (verrou + bouton masqué) ; bonne réponse affichée à côté des menus faux.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -984,7 +990,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | ou / où | `homo_ou` | index › renderHomoOuSynthesis |  |
 | ✅ 05/10 | son / sont | `homo_son` | index › renderHomoSonSynthesis |  |
 | ✅ 05/10 | se / ce / s' / c' | `homo_ce` | index › renderHomoCeSynthesis |  |
-| ⬜ | on / ont | `homo_on` | index › renderHomoOnSynthesis |  |
+| ✅ 05/10 | on / ont | `homo_on` | index › renderHomoOnSynthesis |  |
 | ⬜ | la / là / l'a / l'as | `homo_la` | index › renderHomoLaSynthesis |  |
 | ⬜ | ces / ses / c'est / s'est / sais / sait | `homo_ces` | index › renderHomoCesSynthesis |  |
 | ⬜ | leur / leurs | `homo_leur` | index › renderHomoLeurSynthesis |  |
