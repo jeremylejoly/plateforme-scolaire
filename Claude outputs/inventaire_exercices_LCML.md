@@ -291,7 +291,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
   - Certains pièges étaient eux aussi corrects dans la phrase : « Tu écrivis une lettre », « Elle recevrait un colis », « Nous voyons très bien »… Ces phrases ont reçu un repère d'habitude passée (autrefois, à cette époque, l'an dernier, chaque semaine…), pour que seul l'imparfait convienne.
   - Nouvelle orthographe : « diner » au lieu de « dîner ».
   - La fiche du plan de travail n'enregistrait jamais le résultat. C'est corrigé (`conj_imparfait_qcm`). Son mélange est maintenant équitable, et elle a les mêmes phrases corrigées.
-- **05/10 — Nouvelle orthographe dans tout exercices_francais.js** : 237 accents circonflexes retirés sur i/u. Exemples : maitre, maitresse, fraiche, plait, coute, parait, connait, reconnaitre, entrainement, diner, boite, ile, gout, bruler, abimer…
+- **05/10 — Nouvelle orthographe dans tout exercices_francais.js** : 178 accents circonflexes retirés sur i/u. Exemples : maitre, maitresse, fraiche, plait, coute, parait, connait, reconnaitre, entrainement, diner, boite, ile, gout, bruler, abimer…
   - Les exceptions sont conservées : sûr, dû, mûr.
   - Les noms de fonctions du code n'ont pas été touchés.
   - Les exercices concernés sont surtout les dialogues, les textes, les CC et le QCM du futur.
