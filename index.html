@@ -17478,7 +17478,7 @@ function renderFicheBaleine(){
 
       <div class="fiche-card" style="margin-bottom:1rem">
         <h3>💡 Le sais-tu ?</h3>
-        <p>Le cœur de la baleine bleue est aussi grand qu'une petite voiture et pèse environ 180 kg ! Quand elle souffle à la surface, son jet d'eau peut atteindre <strong>9 mètres de hauteur</strong> — aussi haut qu'un immeuble de 3 étages. Un bébé baleine bleue pèse déjà <strong>2 à 3 tonnes</strong> à la naissance et grossit de 90 kg par jour grâce au lait de sa mère !</p>
+        <p>Le cœur de la baleine bleue a à peu près la taille d'une auto tamponneuse et pèse environ 180 kg ! Quand elle souffle à la surface, son jet d'eau peut atteindre <strong>9 mètres de hauteur</strong> — aussi haut qu'un immeuble de 3 étages. Un bébé baleine bleue pèse déjà <strong>2 à 3 tonnes</strong> à la naissance et grossit de 90 kg par jour grâce au lait de sa mère !</p>
       </div>
 
       <div class="fiche-card" style="margin-bottom:1rem">
@@ -17515,8 +17515,8 @@ const BALEINE_QCM = [
     type: 'qcm'
   },
   {
-    q: "Le cri de la baleine bleue est audible à 1 600 km. Waimes se trouve à environ 270 km de Paris. Combien de fois la distance Waimes-Paris représente-t-elle la portée du cri ?",
-    options: ["Environ 4 fois", "Environ 6 fois", "Environ 10 fois"],
+    q: "Le cri de la baleine bleue est audible à 1 600 km. Waimes se trouve à environ 320 km de Paris (à vol d'oiseau). Combien de fois la portée du cri contient-elle la distance Waimes-Paris ?",
+    options: ["Environ 3 fois", "Environ 5 fois", "Environ 10 fois"],
     correct: 1,
     type: 'qcm'
   },
@@ -17528,78 +17528,86 @@ const BALEINE_QCM = [
   }
 ];
 
-let baleineQCMSelections = {};
-
-function renderFicheBaleinQCM(){
-  const container = document.getElementById('baleine-qcm');
+// ===== MOTEUR COMMUN DES QCM DE FICHES (lecture informative) =====
+// Les propositions sont mélangées à chaque partie (sauf « Vrai / Faux », toujours dans cet ordre),
+// l'ordre des questions aussi ; après validation, la bonne réponse est montrée en vert.
+const FICHE_QCM_SESSIONS = {};
+function ficheQCMMelanger(arr){
+  const a = [...arr];
+  for(let i = a.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+  return a;
+}
+function ficheQCMAfficher(cle, banque){
+  const container = document.getElementById(cle + '-qcm');
   if(!container) return;
-  baleineQCMSelections = {};
+  const questions = ficheQCMMelanger(banque).map(q => {
+    if(q.type === 'vf') return {...q};
+    const o = ficheQCMMelanger(q.options.map((t, i) => ({t, ok: i === q.correct})));
+    return {...q, options: o.map(x => x.t), correct: o.findIndex(x => x.ok)};
+  });
+  FICHE_QCM_SESSIONS[cle] = {questions, sel: {}};
   let html = '';
-
-  BALEINE_QCM.forEach((q, qi) => {
-    html += `<div class="lr-question" id="baleine-q-${qi}" style="margin-bottom:0.8rem">
+  questions.forEach((q, qi) => {
+    html += `<div class="lr-question" id="${cle}-q-${qi}" style="margin-bottom:0.8rem">
       <p style="font-weight:700;margin-bottom:0.6rem;font-size:14px">${qi+1}. ${q.q}</p>`;
     q.options.forEach((opt, oi) => {
-      html += `<label class="lr-option" id="baleine-opt-${qi}-${oi}" style="font-size:13px;padding:6px 10px;">
-        <input type="radio" name="baleine-q-${qi}" value="${oi}" onchange="baleineSelect(${qi},${oi})">
+      html += `<label class="lr-option" id="${cle}-opt-${qi}-${oi}" style="font-size:13px;padding:6px 10px;">
+        <input type="radio" name="${cle}-q-${qi}" value="${oi}" onchange="ficheQCMChoisir('${cle}',${qi},${oi})">
         ${opt}
       </label>`;
     });
     html += `</div>`;
   });
-
   container.innerHTML = html;
-  document.getElementById('baleine-qcm-btn').style.display = 'block';
+  const btn = document.getElementById(cle + '-qcm-btn');
+  if(btn) btn.style.display = 'block';
 }
-
-function baleineSelect(qi, oi){
-  baleineQCMSelections[qi] = oi;
-}
-
-function validerFicheBaleine(){
+function ficheQCMChoisir(cle, qi, oi){ if(FICHE_QCM_SESSIONS[cle]) FICHE_QCM_SESSIONS[cle].sel[qi] = oi; }
+// activite : même identifiant que la carte du menu / du plan de travail (« fiche_xxx »)
+function ficheQCMValider(cle, activite, titre, fnRecommencer){
+  const sess = FICHE_QCM_SESSIONS[cle];
+  if(!sess) return;
   let score = 0;
-  const total = BALEINE_QCM.length;
-
-  BALEINE_QCM.forEach((q, qi) => {
-    const sel = baleineQCMSelections[qi];
-    const ok = sel === q.correct;
-    if(ok) score++;
+  const total = sess.questions.length;
+  sess.questions.forEach((q, qi) => {
+    const sel = sess.sel[qi];
+    if(sel === q.correct) score++;
     q.options.forEach((_, oi) => {
-      const optEl = document.getElementById(`baleine-opt-${qi}-${oi}`);
-      if(optEl){
-        optEl.querySelector('input').disabled = true;
-        if(oi === sel && ok) optEl.classList.add('correct');
-        else if(oi === sel && !ok) optEl.classList.add('incorrect');
+      const el = document.getElementById(`${cle}-opt-${qi}-${oi}`);
+      if(el){
+        el.querySelector('input').disabled = true;
+        if(oi === q.correct) el.classList.add('correct');
+        else if(oi === sel) el.classList.add('incorrect');
       }
     });
   });
-
   const pct = Math.round(score/total*100);
   const color = pct>=70?'var(--green)':pct>=50?'var(--amber)':'var(--red)';
-  const panel = document.getElementById('baleine-qcm-score');
+  const panel = document.getElementById(cle + '-qcm-score');
   panel.style.display = 'block';
-  document.getElementById('baleine-qcm-btn').style.display = 'none';
-
+  document.getElementById(cle + '-qcm-btn').style.display = 'none';
   panel.innerHTML = `
     <div style="font-size:48px;margin-bottom:0.5rem">${pct===100?'🎉':pct>=60?'👍':'💪'}</div>
     <div style="font-family:'Nunito',sans-serif;font-weight:800;font-size:32px;color:${color}">${score}/${total}</div>
     <div style="font-size:16px;color:${color};font-weight:700;margin-bottom:1rem">${pct}%</div>
-    <button class="btn" onclick="renderFicheBaleine()" style="margin-top:0.5rem">🔄 Recommencer</button>
+    <button class="btn" onclick="${fnRecommencer}()" style="margin-top:0.5rem">🔄 Recommencer</button>
   `;
   panel.scrollIntoView({behavior:'smooth'});
-
   if(state.student){
     saveResult({
       student:state.student, cls:state.studentCls,
       className:CLASSES[state.studentCls]?CLASSES[state.studentCls].name:state.studentCls,
-      activity:'fiche_baleine_qcm',
-      bookTitle:'Fiche — La Baleine Bleue',
+      activity: activite, bookTitle: titre,
       score, total, pct,
       date:new Date().toLocaleDateString('fr-BE'),
       time:new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})
     });
   }
 }
+
+function renderFicheBaleinQCM(){ ficheQCMAfficher('baleine', BALEINE_QCM); }
+// Avant : enregistré sous « fiche_baleine_qcm », que la carte du menu ne reconnaissait pas (toujours « Non fait »)
+function validerFicheBaleine(){ ficheQCMValider('baleine', 'fiche_baleine', 'Fiche — La Baleine Bleue', 'renderFicheBaleine'); }
 
 
 // ===== FICHE LÉONARD DE VINCI =====
