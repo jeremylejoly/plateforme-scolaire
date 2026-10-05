@@ -18523,9 +18523,17 @@ function renderLectureDescriptiveMenu(){
     menu.innerHTML = '<div class="sub-subjects-grid">' + html + '</div>' || '<p style="color:var(--muted);text-align:center;padding:2rem">Aucun texte disponible.</p>';
 }
 
-function buildDescFiche(bodyId, data){
+// Une partie = questions et propositions mélangées (sauf « Vrai / Faux », toujours dans cet ordre)
+const DESC_SESSIONS = {};
+function buildDescFiche(bodyId, src){
   const body = document.getElementById(bodyId);
   if(!body) return;
+  const data = {...src, questions: ficheQCMMelanger(src.questions).map(q => {
+    if(q.options.length === 2 && q.options[0] === 'Vrai') return {...q};
+    const o = ficheQCMMelanger(q.options.map((t, i) => ({t, ok: i === q.correct})));
+    return {...q, options: o.map(x => x.t), correct: o.findIndex(x => x.ok)};
+  })};
+  DESC_SESSIONS[data.id] = data;
   let qhtml = '';
   data.questions.forEach((q, qi) => {
     qhtml += `<div class="lr-question" id="desc-q-${data.id}-${qi}" style="margin-bottom:0.8rem">
@@ -18569,7 +18577,7 @@ function descSelect(id, qi, oi){
 }
 
 function validerDesc(id){
-  const data = TEXTES_DESCRIPTIFS_DATA[id];
+  const data = DESC_SESSIONS[id];
   const sels = window[`descSelections_${id}`] || {};
   let score = 0; const total = data.questions.length;
   data.questions.forEach((q, qi) => {
@@ -18580,8 +18588,8 @@ function validerDesc(id){
       const optEl = document.getElementById(`desc-opt-${id}-${qi}-${oi}`);
       if(optEl){
         optEl.querySelector('input').disabled = true;
-        if(oi===sel&&ok) optEl.classList.add('correct');
-        else if(oi===sel&&!ok) optEl.classList.add('incorrect');
+        if(oi===q.correct) optEl.classList.add('correct');   // la bonne réponse est toujours montrée
+        else if(oi===sel) optEl.classList.add('incorrect');
       }
     });
   });

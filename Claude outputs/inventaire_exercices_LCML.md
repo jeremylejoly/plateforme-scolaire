@@ -91,6 +91,11 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
   - Durée de construction corrigée (1956-1958) ; phrase sur le tube central corrigée.
   - Distracteur « restaurant » remplacé (il y a vraiment un restaurant au sommet).
 
+- **05/10 — Lecture informative › Le Taj Mahal** :
+  - Passé sur le moteur commun.
+  - Contenu exact ; un distracteur en partie vrai (crues de la Yamuna) a été remplacé.
+  - **Les 10 fiches de lecture informative sont terminées.**
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -100,7 +105,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | `vocabulaire_pc_avoir_qcm` (PP avec Avoir, QCM) | Bonne réponse en 1re position dans 30/40 questions, non mélangées |
 | `vocabulaire_pc_etre_qcm` (PP avec Être, QCM) | Bonne réponse en 1re position dans 24/40 questions, non mélangées |
 | `vocabulaire_relations_lexicales` | Bonne réponse = 1re proposition dans 30/30 questions, non mélangées |
-| Fiches de lecture (Baleine, Vinci, Eiffel, Charlemagne, Einstein, Atomium, Taj Mahal, Écureuil, Loup, Éléphant) | Questions et propositions dans le même ordre à chaque partie |
+| ~~Fiches de lecture (Baleine, Vinci, Eiffel, Charlemagne, Einstein, Atomium, Taj Mahal, Écureuil, Loup, Éléphant)~~ | ✅ corrigées le 05/10 |
 | `hist_ligne_du_temps` | Bonne réponse en 2e position dans 10/10 questions, aucun mélange |
 | `hist_grand_voyage_temps` | Bonne réponse en 1re position dans 5/5 questions, aucun mélange |
 | `qvgdm_antiquite`, `qvgdm_moyen_age`, `qvgdm_prehistoire` (Qui veut gagner des millions) | Propositions jamais mélangées, toujours la même partie. Antiquité : bonne réponse en 3e position dans 9/15 questions. L'ordre croissant de difficulté des questions est voulu |
@@ -128,7 +133,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 (0e1523d) | Charlemagne | `fiche_charlemagne` | index › renderFicheCharlemagne | Aucun hasard : mêmes questions, même ordre à chaque partie |
 | ✅ 05/10 | Albert Einstein | `fiche_einstein` | index › renderFicheEinstein | Aucun hasard : mêmes questions, même ordre à chaque partie |
 | ✅ 05/10 | L'Atomium | `fiche_atomium` | index › renderFicheAtomium | Aucun hasard : mêmes questions, même ordre à chaque partie |
-| ⬜ | Le Taj Mahal | `fiche_tajmahal` | index › renderFicheTajMahal | Aucun hasard : mêmes questions, même ordre à chaque partie |
+| ✅ 05/10 | Le Taj Mahal | `fiche_tajmahal` | index › renderFicheTajMahal | Aucun hasard : mêmes questions, même ordre à chaque partie |
 | ✅ 05/10 (a52284d) | L'Écureuil roux | `fiche_ecureuil` | index › renderFicheEcureuil | Aucun hasard : mêmes questions, même ordre à chaque partie |
 | ✅ 05/10 (8c01793) | Le Loup gris | `fiche_loup` | index › renderFicheLoup | QCM: bonne réponse en position 3 dans 3/5 questions, options non mélangées ; Aucun hasard : mêmes questions, même ordre à chaque partie |
 | ✅ 05/10 (a5c005b) | L'Éléphant d'Afrique | `fiche_elephant` | index › renderFicheElephant | Aucun hasard : mêmes questions, même ordre à chaque partie |
