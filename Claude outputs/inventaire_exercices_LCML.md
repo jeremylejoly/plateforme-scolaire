@@ -245,6 +245,16 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
     - l'eau ne bout pas « plus rapidement » en altitude.
   - Le mélange est maintenant équitable.
 
+- **05/10 — Conjugaison › Indicatif présent › Entraînement QCM** (QCM du site + fiche du plan de travail) :
+  - 3 questions avaient 2 bonnes réponses, mais une seule était acceptée :
+    - « tu payes » et « tu paies » sont tous les deux corrects : le distracteur devient « paye » ;
+    - « elle balaye » et « elle balaie » aussi : le distracteur devient « balais » ;
+    - « ruisselle » et « ruissèle » (nouvelle orthographe) aussi : la question est remplacée par « Elles appellent leur chat ».
+  - La fiche du plan de travail n'enregistrait jamais le résultat. C'est corrigé (`conj_present_qcm`).
+  - Dans la fiche, les points de progression étaient toujours verts. Le mélange y est maintenant équitable.
+  - Les cartes affichaient « 50 questions questions » : corrigé en « 52 questions » (présent, imparfait) et « 50 questions » (futur).
+  - ⚠️ À voir dans Phrases à trous : seule la réponse « balaie » est acceptée, alors que « balaye » est juste aussi (verbes en -ayer).
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -399,7 +409,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 
 | Statut | Exercice | id | Source | Signal automatique |
 |---|---|---|---|---|
-| ⬜ | Présent de l'indicatif (QCM) | `conj_present_qcm` | fiches/conjugaison_present_QCM.html |  |
+| ✅ 05/10 | Présent de l'indicatif (QCM) | `conj_present_qcm` | fiches/conjugaison_present_QCM.html |  |
 | ⬜ | Présent de l'indicatif (Écriture) | `conj_present_ecriture` | fiches/conjugaison_present_ecriture.html |  |
 | ⬜ | Imparfait de l'indicatif (QCM) | `conj_imparfait_qcm` | fiches/conjugaison_imparfait_QCM.html |  |
 | ⬜ | Imparfait de l'indicatif (Écriture) | `conj_imparfait_ecriture` | fiches/conjugaison_imparfait_ecriture.html |  |
