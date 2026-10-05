@@ -1082,6 +1082,13 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Réponses égales refusées : 14/4 = 3 + 2/4 refusait « 3 + 1/2 » ; 4 + 2/3 refusait « 28/6 » → toute forme égale acceptée (la partie fraction du nombre mixte doit rester < 1).
 - Nouvelle orthographe : entrainer, maitrises.
 
+### 05/10 — Maths › Numération › Diviseurs & nombres premiers (`num_diviseurs_premiers`, `fiches/nombres_diviseurs.html` + copie public) — sw.js v533
+- **Versions désynchronisées** : la version en ligne (`fiches/`) contenait encore l'arbre de facteurs premiers retiré le 14/08 ; la version simplifiée (`public/fiches/`, 5 diviseurs + 5 grilles) avait une accolade manquante (page cassée). Corrigé, puis copié dans `fiches/`.
+- Diviseurs : le nombre de cases « ? » ne révèle plus combien il y a de diviseurs ; bouton « J'ai fini » ; point seulement si liste complète sans nombre faux ; correction auto au 3e nombre faux (fin des essais infinis) ; saisie bloquée après correction (avant : on pouvait encore compléter et gagner le point) ; message « X n'est pas un diviseur de N » ; correction avec diviseurs oubliés, reste des divisions fausses et paires.
+- Grilles : 1 ajouté comme piège (+ explication), clic bloqué après correction, validation vide ignorée, « e.g. » → « : ».
+- Fisher–Yates partout ; double-clic sur Continuer sans effet ; sauvegarde une seule fois ; retour visuel d'erreur (CSS manquant) ; textes de fin sans « arbres de facteurs » ; maitrises / Entraine-toi.
+- Tests jsdom : parfait 10/10, une erreur par liste 5/10, partiel 0/10, faux 0/10, 4 sauvegardes ; 3 000 séries : tous les diviseurs et statuts premiers exacts, aucun doublon, nombres premiers répartis uniformément sur les 8 positions.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1349,7 +1356,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | Les nombres mixtes | `num_nombres_mixtes` | fiches/numeration_nombres_mixtes.html |  |
 | ⬜ | Les pourcentages | `num_pourcentages` | index › (?) | (code à localiser) |
 | ✅ 05/10 | Arrondir les décimaux | `num_decimaux_arrondir` | index › renderDecimauxArrondir |  |
-| ⬜ | Diviseurs & Nombres premiers | `num_diviseurs_premiers` | fiches/nombres_diviseurs.html |  |
+| ✅ 05/10 | Diviseurs & Nombres premiers | `num_diviseurs_premiers` | fiches/nombres_diviseurs.html |  |
 | ⬜ | Un peu de tout (numération) | `num_tout` | index › (?) | (code à localiser) |
 
 ### 🔢 Mathématiques — ➕ Opérations — Vocabulaire

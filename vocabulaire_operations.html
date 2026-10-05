@@ -309,6 +309,7 @@
     font-weight: 700;
     color: var(--muted);
   }
+  .correction-note { display:block; margin-top:0.4rem; font-size:0.85em; font-weight:600; color:#166534; }
 </style>
 </head>
 <body>
@@ -388,7 +389,7 @@
     // Render terms (left column)
     const termsContainer = document.getElementById('terms-container');
     termsContainer.innerHTML = '';
-    DATA.forEach(item => {
+    shuffle(DATA).forEach(item => {
       const el = document.createElement('div');
       el.className = 'match-item';
       el.dataset.id = item.id;
@@ -497,6 +498,7 @@
   function validateMatches() {
     // Check if all items are matched
     const matchedCount = Object.keys(matches).length;
+    if (isChecked) return;
     if (matchedCount < DATA.length) {
       const fb = document.getElementById('feedback-text');
       fb.className = 'feedback-text text-danger';
@@ -520,23 +522,24 @@
         if (termEl) termEl.className = 'match-item correct-match';
         if (defEl) defEl.className = 'match-item correct-match';
       } else {
-        if (termEl) termEl.className = 'match-item incorrect-match';
+        if (termEl) {
+          termEl.className = 'match-item incorrect-match';
+          // Correction : la bonne définition s'affiche sous le mot
+          const note = document.createElement('span');
+          note.className = 'correction-note';
+          note.textContent = '✔ ' + item.def;
+          termEl.appendChild(note);
+        }
         if (defEl) defEl.className = 'match-item incorrect-match';
       }
     });
 
     const pct = Math.round((score / DATA.length) * 100);
 
-    // Save results to classroom tracking
-    if (window.parent && window.parent.saveResult && window.parent.state && window.parent.state.student) {
+    // Enregistrement du résultat (index complète élève/classe ; « state » n'est pas accessible via window.parent)
+    if (window.parent && typeof window.parent.saveResult === 'function') {
       try {
-        var state = window.parent.state;
-        var classes = window.parent.CLASSES;
-        var className = classes && classes[state.studentCls] ? classes[state.studentCls].name : state.studentCls;
         window.parent.saveResult({
-          student: state.student,
-          cls: state.studentCls,
-          className: className,
           activity: 'op_vocabulaire_def',
           bookTitle: 'Vocabulaire des opérations — Mots et définitions',
           score: score,
@@ -552,11 +555,12 @@
 
     // Display final score card after a delay
     setTimeout(() => {
-      document.getElementById('exercise-zone').style.display = 'none';
+      // La correction reste visible au-dessus du score
       document.getElementById('actions-panel').style.display = 'none';
-      
+
       const scoreCard = document.getElementById('score-card');
       scoreCard.style.display = 'flex';
+      try { scoreCard.scrollIntoView({behavior: 'smooth', block: 'center'}); } catch (e) {}
       
       document.getElementById('score-value').textContent = `${score} / ${DATA.length}`;
       document.getElementById('score-pct').textContent = `${pct}%`;
@@ -570,7 +574,7 @@
         commentEl.style.color = 'var(--green)';
       } else if (pct >= 70) {
         emojiEl.textContent = '👍';
-        commentEl.textContent = 'Très bien ! Tu maîtrises bien les définitions.';
+        commentEl.textContent = 'Très bien ! Tu maitrises bien les définitions.';
         commentEl.style.color = 'var(--green)';
       } else if (pct >= 50) {
         emojiEl.textContent = '🟠';
