@@ -42,6 +42,11 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
   - Drôle de bonne femme : le poème est de Marie Aubinais, pas de Carême.
   - Dormeur du val : coquille.
 
+- **05/10 — Français › Lecture › Lecture rapide, niveaux 1 à 6** (ae6db01) :
+  - Bonne réponse toujours en 2e ou 3e position.
+  - Le plan de travail ne voyait jamais l'exercice comme fait, et le niveau 6 n'y figurait pas.
+  - 6 corrections de contenu.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -120,11 +125,12 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 
 | Statut | Exercice | id | Source | Signal automatique |
 |---|---|---|---|---|
-| ⬜ | Lecture rapide — Niveau 1 | `lr_niveau_1` | index › renderLectureRapideNiveau |  |
-| ⬜ | Lecture rapide — Niveau 2 | `lr_niveau_2` | index › renderLectureRapideNiveau |  |
-| ⬜ | Lecture rapide — Niveau 3 | `lr_niveau_3` | index › renderLectureRapideNiveau |  |
-| ⬜ | Lecture rapide — Niveau 4 | `lr_niveau_4` | index › renderLectureRapideNiveau |  |
-| ⬜ | Lecture rapide — Niveau 5 | `lr_niveau_5` | index › renderLectureRapideNiveau |  |
+| ✅ 05/10 (ae6db01) | Lecture rapide — Niveau 1 | `lr_niveau_1` | index › renderLectureRapideNiveau |  |
+| ✅ 05/10 (ae6db01) | Lecture rapide — Niveau 2 | `lr_niveau_2` | index › renderLectureRapideNiveau |  |
+| ✅ 05/10 (ae6db01) | Lecture rapide — Niveau 3 | `lr_niveau_3` | index › renderLectureRapideNiveau |  |
+| ✅ 05/10 (ae6db01) | Lecture rapide — Niveau 4 | `lr_niveau_4` | index › renderLectureRapideNiveau |  |
+| ✅ 05/10 (ae6db01) | Lecture rapide — Niveau 5 | `lr_niveau_5` | index › renderLectureRapideNiveau |  |
+| ✅ 05/10 (ae6db01) | Lecture rapide — Niveau 6 | `lr_niveau_6` | index › renderLectureRapideNiveau | (ajouté au plan de travail) |
 
 ### 📖 Français — ✏️ Grammaire — Classes de mots
 
