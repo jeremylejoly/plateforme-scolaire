@@ -567,6 +567,14 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
   - Nouvelle orthographe : maitre, entrainer.
   - Le résultat était déjà enregistré (`gram_pronom_piege`).
 
+- **05/10 — Grammaire › Le pronom › Le détecteur de référents** (24 phrases, 10 par partie ; cliquer sur le groupe que remplace le pronom) :
+  - **Le résultat n'était jamais enregistré.** C'est corrigé (`gram_pronom_referents`).
+  - **Réponses justes refusées.** Seule la sélection exacte du groupe entier était acceptée : pour « les », il fallait cliquer « de magnifiques fleurs ». Cliquer « fleurs » ou « magnifiques fleurs » était compté faux. Maintenant, toute sélection qui contient le nom noyau et ne déborde pas du groupe est acceptée. C'est valable aussi pour « Lucas » sans « à », et pour « Léa et moi » (« Léa » et « moi » sont alors obligatoires).
+  - **Élève bloqué.** En cas d'erreur, l'élève devait recommencer sans fin, sans jamais voir la réponse. Après 2 essais ratés, la réponse et l'explication s'affichent maintenant. Le point reste réservé à la réussite du premier coup.
+  - Les 24 phrases et leurs explications ont été relues : les référents sont justes.
+  - Nouvelle orthographe : maitre, entrainer, maitriser. « sûr » reste.
+  - Les 3 copies de la fiche sont identiques.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -669,7 +677,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | Le verbe — Identifier les verbes | `gram_verbe_identifier` | index › startVerbeClassExercise |  |
 | ⬜ | Le pronom | `gram_pronom` | index › (?) | (code à localiser) |
 | ✅ 05/10 | Le pronom — Déterminant ou pronom ? | `gram_pronom_piege` | index › startPronomPiegeExercise |  |
-| ⬜ | Le pronom — Le détecteur de référents | `gram_pronom_referents` | fiches/detecteur_referents.html |  |
+| ✅ 05/10 | Le pronom — Le détecteur de référents | `gram_pronom_referents` | fiches/detecteur_referents.html |  |
 | ⬜ | Le pronom — Le remplaçant | `gram_pronom_remplacant` | fiches/remplacant_pronom.html |  |
 | ⬜ | Le pronom — La chasse aux répétitions | `gram_pronom_repetitions` | fiches/chasse_repetitions.html |  |
 | ⬜ | L'adverbe | `gram_adverbe` | index › (?) | (code à localiser) |
