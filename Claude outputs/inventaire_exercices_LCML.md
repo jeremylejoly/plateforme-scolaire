@@ -1403,6 +1403,15 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Double clic sur « Question suivante » → plus de question sautée. Nouvelle orthographe : maitrisées, maitrises, entrainer.
 - Tests jsdom : vide et « 12abc » non comptés, « 40 000 » accepté, réponse à 0,05 % près refusée, partie 7 / 10 → 1 sauvegarde ; syntaxe OK.
 
+### 05/10 — Maths › Grandeurs › L'aire › Mesures agraires & superficies (`grandeur_aire_agraire`, `fiches/aire_agraire.html` + copies public et racine) — sw.js v573
+- 10 conversions et 10 problèmes recalculés : réponses justes. Données irréalistes corrigées : vigne à 800 L de vin par are (≈ 16 fois la réalité) → 50 L/are (réponse 6 000 L) ; terrain boisé à 15 €/m² → terrain agricole à 3 €/ca (15 000 €, réponse inchangée : 50 a).
+- **« 12abc » accepté comme 12**, réponse vide → fenêtre `alert()` → lecture stricte, message dans la page, rien n'est compté. Espaces de milliers acceptés (déjà le cas).
+- **Entrée sur la dernière question** passait à une 11e question inexistante (erreur) → Entrée affiche le résultat. Double clic sur « Question suivante » → plus de question sautée ; un seul enregistrement (il y en avait un par clic).
+- **Abaque** : la virgule se plaçait sur la case suivante (vide) → « 3,5 » s'affichait « 35, » → virgule après le dernier chiffre écrit, une seule par ligne ; abaque vidé à chaque question (les chiffres de la question précédente restaient).
+- Problèmes : l'unité attendue (ha, a, ca, m², litres, parcelles, rouleaux) est maintenant affichée à côté de la réponse, comme pour les conversions.
+- Message de fin affichant du code LaTeX brut (« $1\\text{ ha} = 1\\text{ hm}^2$ ») → « 1 ha = 1 hm² ». Signe « − » dans les explications. Nouvelle orthographe : maraichères, maraicher, maitrises, entrainer.
+- Tests jsdom : abaque « 3,5 », vide/« 12abc » non comptés, « 6 000 » accepté, partie 8 / 10 avec doubles clics et doubles Entrée → 1 sauvegarde ; capture 390 px ; syntaxe OK.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1739,7 +1748,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | L'Enquêteur Royal (Situations d'Aire) | `grandeur_aire_situations` | fiches/aire_situations.html |  |
 | ✅ 05/10 | Le Géomètre des Carreaux (Quadrillage) | `grandeur_aire_quadrillage` | fiches/aire_quadrillage.html |  |
 | ✅ 05/10 | L'Arpenteur Impérial (Conversions d'Aire) | `grandeur_aire_conversions` | fiches/aire_conversions.html |  |
-| ⬜ | Mesures Agraires & Superficies | `grandeur_aire_agraire` | fiches/aire_agraire.html |  |
+| ✅ 05/10 | Mesures Agraires & Superficies | `grandeur_aire_agraire` | fiches/aire_agraire.html |  |
 | ⬜ | L'Arpenteur du Château (Formules d'aire) | `grandeur_aire_formules` | fiches/aire_formules.html |  |
 | ⬜ | Le Calcul d'Aires Composées | `grandeur_aire_composee` | fiches/aire_composee.html |  |
 | ⬜ | Le Bâtisseur de Cubes (Volume 3D) | `grandeur_volume_cubes` | fiches/volume_cubes.html |  |
