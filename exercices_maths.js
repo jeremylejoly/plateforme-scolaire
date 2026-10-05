@@ -256,10 +256,10 @@ window.DEVINETTES_DECIMAUX_BANQUE = [
     expl: "Dans 123,453, il y a 6 chiffres (3 entiers et 3 décimaux). La somme de tous les chiffres est 1 + 2 + 3 + 4 + 5 + 3 = 18."
   },
   {
-    texte: "Je suis un nombre décimal. Ma partie entière est égale au double de ma partie décimale. Mon chiffre des dixièmes est 3. Qui suis-je ?",
+    texte: "Je suis un nombre décimal avec deux chiffres après la virgule. Le nombre formé par ces deux chiffres est la moitié de ma partie entière. Mon chiffre des dixièmes est 3. Qui suis-je ?",
     opts:["30,15", "80,4", "60,03", "70,35"],
     correct:3,
-    expl: "Dans 70,35, la partie entière (70) est le double de la partie décimale (35), et le chiffre des dixièmes est bien 3."
+    expl: "Dans 70,35, il y a deux chiffres après la virgule : ils forment 35, qui est la moitié de 70 (la partie entière). Le chiffre des dixièmes est bien 3. (30,15 respecte aussi la moitié, mais son chiffre des dixièmes est 1.)"
   },
   {
     texte: "Je suis un nombre décimal. Mon chiffre des millièmes est 7. Mon chiffre des dixièmes est égal à la différence entre mon chiffre des millièmes et celui des centièmes. Qui suis-je ?",

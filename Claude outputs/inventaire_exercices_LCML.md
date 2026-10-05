@@ -990,6 +990,12 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Déplacements (souris et tactile) bloqués après validation (la correction ne pouvait plus être modifiée visuellement).
 - Entrainer.
 
+### 05/10 — Maths › Décimaux › L'abaque des décimaux (`num_decimaux_abaque`, index › ABQUE_DECIMAUX_BANQUE / renderAbaqueDecimaux) — sw.js v515
+- Réponse fausse : « Cinq cent mille unités et nonante centièmes » attendait 5 en DM (= 50 000,90) → 5 en CM (500 000,90). Un élève juste était compté faux.
+- 19 autres nombres vérifiés : justes (y compris « cent-vingt-huit dixièmes » = 12,8 et les zéros finaux facultatifs).
+- Nouvelle orthographe : traits d'union dans les 20 énoncés (million séparé).
+- Mélange `sort(random)` → Fisher-Yates.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1238,7 +1244,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | Écrire un nombre | `num_ecrire` | index › renderNumEcrire |  |
 | ✅ 05/10 | Décomposer un nombre | `num_decomposer` | index › renderNumDecomposer |  |
 | ✅ 05/10 | Classer des nombres | `num_classer` | index › renderNumClasser |  |
-| ⬜ | Décimaux — L'abaque des décimaux | `num_decimaux_abaque` | index › renderAbaqueDecimaux |  |
+| ✅ 05/10 | Décimaux — L'abaque des décimaux | `num_decimaux_abaque` | index › renderAbaqueDecimaux |  |
 | ⬜ | Décimaux — Devinettes décimales | `num_decimaux_devinettes` | index › renderDevinettesDecimaux |  |
 | ✅ 05/10 (9d2364e) | Décimaux — Valeur d'un chiffre | `num_decimaux_relier` | index › renderRelierDecimaux |  |
 | ⬜ | Décimaux — Écrire en chiffres | `num_decimaux_ecriture` | index › renderDecimauxEcriture |  |
