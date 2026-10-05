@@ -558,6 +558,15 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
   - Le mélange utilise maintenant la méthode Fisher–Yates.
   - Nouvelle orthographe : maitrise, entrainer, entraine-toi.
 
+- **05/10 — Grammaire › Le pronom › Déterminant ou pronom ?** (36 phrases : 18 déterminants, 18 pronoms ; 10 par partie) :
+  - **Faute de français dans une phrase** : « Chaque élève range **leur** matériel » (il faudrait « son »). Elle devient « Les élèves rangent **leur** matériel de dessin ».
+  - L'explication de « sur **l'**immense piste » disait que « l' » accompagne l'adjectif. Elle dit maintenant qu'il accompagne le nom « piste », l'adjectif étant placé entre les deux.
+  - « Elle **la** lave car elle était très sale » était ambigu : on ne savait pas ce que « la » remplace. La phrase devient « Sa voiture était très sale : elle **la** lave ».
+  - Le rappel de fin disait qu'« un pronom est placé devant un verbe », ce qui est trop absolu. Il devient : « un déterminant accompagne un nom ; un pronom remplace un nom et se trouve souvent devant le verbe ».
+  - Le mélange utilise maintenant la méthode Fisher–Yates.
+  - Nouvelle orthographe : maitre, entrainer.
+  - Le résultat était déjà enregistré (`gram_pronom_piege`).
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -659,7 +668,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | L'adjectif — Retrouver le nom qualifié | `gram_adjectif_nom` | index › startAdjectifNomExercise |  |
 | ✅ 05/10 | Le verbe — Identifier les verbes | `gram_verbe_identifier` | index › startVerbeClassExercise |  |
 | ⬜ | Le pronom | `gram_pronom` | index › (?) | (code à localiser) |
-| ⬜ | Le pronom — Déterminant ou pronom ? | `gram_pronom_piege` | index › startPronomPiegeExercise |  |
+| ✅ 05/10 | Le pronom — Déterminant ou pronom ? | `gram_pronom_piege` | index › startPronomPiegeExercise |  |
 | ⬜ | Le pronom — Le détecteur de référents | `gram_pronom_referents` | fiches/detecteur_referents.html |  |
 | ⬜ | Le pronom — Le remplaçant | `gram_pronom_remplacant` | fiches/remplacant_pronom.html |  |
 | ⬜ | Le pronom — La chasse aux répétitions | `gram_pronom_repetitions` | fiches/chasse_repetitions.html |  |

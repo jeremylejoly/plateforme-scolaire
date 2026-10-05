@@ -1032,7 +1032,7 @@
           { text: "élèves", isWord: true, valIndex: 1 },
           { text: "écoutent", isWord: true },
           { text: "le", isWord: true },
-          { text: "maître", isWord: true },
+          { text: "maitre", isWord: true },
           { text: "attentivement", isWord: true },
           { text: ".", isWord: false },
           { text: "Ils", isWord: true, target: true },
@@ -1082,6 +1082,16 @@
       }
       return arr;
     }
+
+    // Mot(s) indispensable(s) du référent (le nom noyau). Une sélection est acceptée si elle contient ce noyau
+    // et ne contient que des mots du groupe : « fleurs », « magnifiques fleurs » ou « de magnifiques fleurs ».
+    // (Avant : seule la sélection exacte du groupe entier était acceptée.)
+    const NOYAUX = ["fleurs", "Lucas", "livre", "vélo", "trousse", "piscine", "tarte", "sœurs", "maison", "travail", "grands-parents", "village", "gâteau", "livre", "chien", "Léa|moi", "trottinette", "feuilles", "château", "Clara", "histoires", "gâteau", "région", "élèves"];
+    QUESTIONS.forEach((q, i) => {
+      const mots = (NOYAUX[i] || '').split('|');
+      q.required = q.correctIndices.filter(idx => mots.includes(q.tokens[idx].text));
+      if (q.required.length === 0) q.required = q.correctIndices.slice();
+    });
 
     // --- INITIALISATION ---
     function initGame() {
@@ -1169,7 +1179,8 @@
       const selected = state.selectedIndices;
       const correct = question.correctIndices;
       
-      const isCorrect = selected.length === correct.length && selected.every(idx => correct.includes(idx));
+      const isCorrect = selected.length > 0 && selected.every(idx => correct.includes(idx))
+        && question.required.every(idx => selected.includes(idx));
 
       if (isCorrect) {
         // Success
@@ -1223,6 +1234,19 @@
           btn.classList.remove('selected');
         });
         state.selectedIndices = [];
+
+        // Après 2 essais ratés, on montre la réponse (avant : l'élève pouvait rester bloqué sans fin)
+        if (state.incorrectAttempts >= 2) {
+          state.submitted = true;
+          question.correctIndices.forEach(idx => {
+            const btn = sentenceZone.querySelector(`[data-idx="${idx}"]`);
+            if (btn) btn.className = 'word-token correct-match';
+          });
+          explanationText.innerHTML = '<strong>Voici la réponse :</strong> ' + question.explanation;
+          explanationPanel.style.display = 'block';
+          validateBtn.style.display = 'none';
+          nextBtn.style.display = 'inline-flex';
+        }
       }
     }
 
@@ -1246,10 +1270,21 @@
       const textEl = document.getElementById('final-feedback');
       const iconEl = document.getElementById('feedback-icon');
 
+      // Enregistrement du résultat (avant : jamais enregistré)
+      try {
+        if (window.parent && window.parent !== window && window.parent.saveResult) {
+          const total = state.questions.length;
+          window.parent.saveResult({ activity: 'gram_pronom_referents', bookTitle: 'Grammaire — Le détecteur de référents',
+            score: state.score, total, pct: Math.round(state.score / total * 100),
+            date: new Date().toLocaleDateString('fr-BE'),
+            time: new Date().toLocaleTimeString('fr-BE', {hour:'2-digit', minute:'2-digit'}) });
+        }
+      } catch (e) { /* fiche ouverte hors du site */ }
+
       if (state.score === state.questions.length) {
         iconEl.textContent = '🏆';
         titleEl.textContent = 'Parfait !';
-        textEl.textContent = 'Incroyable ! Tu es un véritable maître des pronoms et des anaphores !';
+        textEl.textContent = 'Incroyable ! Tu es un véritable maitre des pronoms et des anaphores !';
         startConfetti();
       } else if (state.score >= 7) {
         iconEl.textContent = '🌟';
@@ -1263,7 +1298,7 @@
       } else {
         iconEl.textContent = '🌱';
         titleEl.textContent = 'Continue d\'apprendre !';
-        textEl.textContent = 'N\'hésite pas à refaire l\'exercice pour t\'entraîner et maîtriser les pronoms.';
+        textEl.textContent = 'N\'hésite pas à refaire l\'exercice pour t\'entrainer et maitriser les pronoms.';
       }
     }
 
