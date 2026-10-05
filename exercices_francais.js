@@ -9058,7 +9058,7 @@ window.SAVOIR_ECOUTER_DATA = [
         q: "Que peut-on déduire du fait que des oiseaux comme la pie-grièche grise nichent dans la végétation basse ?",
         options: [
           "Ces oiseaux préfèrent toujours les grands arbres",
-          "L'absence de grands prédateurs rend ce milieu sûr pour nicher au sol",
+          "Ces oiseaux sont adaptés à un paysage ouvert, avec peu de grands arbres",
           "Ces oiseaux ne savent pas voler",
           "La végétation basse est dangereuse pour les oiseaux"
         ],

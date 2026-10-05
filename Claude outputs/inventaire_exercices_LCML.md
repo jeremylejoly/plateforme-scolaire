@@ -944,6 +944,12 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Q2 « carapace rigide » : « Le squelette externe » (= définition d'exosquelette) et « La cuticule » (la matière de l'exosquelette) étaient aussi justes → remplacés par « La coquille » et « Le pelage ».
 - Autres questions cohérentes (50 fois son poids ↔ humain de 40 kg et 2 tonnes, phéromones, reine pondeuse, colonies nombreuses). ⚠️ Audio non réécouté.
 
+### 05/10 — Savoir écouter : La recette du pain perdu (`savoir_ecouter_4`, exercices_francais.js) — sw.js v509, ?v=20261005zo
+- Moteur déjà corrigé (enregistrement + mélange).
+- Q5 : proposition agrammaticale « S'il faut acheter beaucoup d'ingrédients » → « Parce qu'il faut… ».
+- Remarque (non modifiée) : Q1 et Q5 ont la même bonne réponse (pain rassis qu'on aurait jeté).
+- Autres questions cohérentes (lait/œufs/sucre/cannelle, 30 s, beurre qui mousse, 2-3 min par face, garnitures). ⚠️ Audio non réécouté.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1178,7 +1184,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | Savoir écouter - Soignes | `savoir_ecouter_1` | index › startSavoirEcouter |  |
 | ✅ 05/10 | Savoir écouter - Bruges | `savoir_ecouter_2` | index › startSavoirEcouter |  |
 | ✅ 05/10 | Savoir écouter - Fourmi | `savoir_ecouter_3` | index › startSavoirEcouter |  |
-| ⬜ | Savoir écouter - Pain perdu | `savoir_ecouter_4` | index › startSavoirEcouter |  |
+| ✅ 05/10 | Savoir écouter - Pain perdu | `savoir_ecouter_4` | index › startSavoirEcouter |  |
 | ⬜ | Savoir écouter - Hautes Fagnes | `savoir_ecouter_5` | index › startSavoirEcouter |  |
 | ⬜ | Savoir écouter - L'atelier de Sandy | `savoir_ecouter_6` | index › startSavoirEcouter |  |
 | ⬜ | Savoir écouter - Au club d'échecs | `savoir_ecouter_7` | index › startSavoirEcouter |  |
