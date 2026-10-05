@@ -209,6 +209,12 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
     - l'explication sur les fleurs disait que la rose est une plante herbacée, ce qui est faux : corrigée ;
     - « Synonymes d'INTELLIGENT ».
 
+- **05/10 — Vocabulaire › La Fabrique de mots** (fiche + 2 copies) :
+  - Le score était toujours de 10/10. Il compte maintenant les mots assemblés du premier coup.
+  - Le montage im + mang + able donnait « immangable ». Le radical est devenu « mange », et l'assemblage donne bien « immangeable ».
+  - « Redivision » (mot très rare) remplacé par « imprévisible ».
+  - Contrôle : préfixe + radical + suffixe donne bien le mot attendu pour les 20 mots.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -433,7 +439,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | Le Défi des Registres | `vocabulaire_registres` | fiches/registres-tri.html |  |
 | ✅ 05/10 | Chasse aux Verbes Ternes | `vocabulaire_verbes_ternes` | fiches/verbes-ternes.html |  |
 | ✅ 05/10 | Le Chasseur d'Intrus | `vocabulaire_chasseur_intrus` | fiches/chasseur-intrus.html |  |
-| ⬜ | La Fabrique de Mots | `vocabulaire_fabrique_mots` | fiches/fabrique-mots.html |  |
+| ✅ 05/10 | La Fabrique de Mots | `vocabulaire_fabrique_mots` | fiches/fabrique-mots.html |  |
 | ⬜ | Relations lexicales | `vocabulaire_relations_lexicales` | fiches/vocabulaire_relations_lexicales.html | QCM: la bonne réponse est la 1re option dans 30/30 questions, options non mélangées |
 
 ### 📖 Français — 🎧 Savoir écouter
