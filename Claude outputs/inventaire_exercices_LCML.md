@@ -1017,6 +1017,9 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - 4 petites graduations décoratives entre deux nombres, quel que soit le pas (0,1 ; 0,25 ; 0,05…), suggéraient un pas de 1/5 qui n'existe pas → retirées.
 - Case vide : plus comptée fausse (on attend que les 2 cases soient remplies) ; espaces ignorés dans la saisie.
 
+### 05/10 — Maths › Décimaux › Le bon nombre (`num_decimaux_le_bon_nombre`, index › DECIMAUX_LE_BON_NOMBRE_SERIES) — sw.js v520
+- 12 réponses recalculées par programme (toutes les combinaisons des 5 chiffres). Les 4 « plus petit nombre » n'étaient justes QUE si l'on s'arrête aux millièmes (sinon 2,3945 < 23,495 ; 7,1345 < 17,345 ; 1,5347 < 13,547 ; 1,6278 < 12,678) : un élève logique pouvait être compté faux. Consigne complétée : « avec au maximum 3 chiffres après la virgule (jusqu'aux millièmes) ». Avec cette règle, les 12 réponses sont justes.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1270,7 +1273,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 (9d2364e) | Décimaux — Valeur d'un chiffre | `num_decimaux_relier` | index › renderRelierDecimaux |  |
 | ✅ 05/10 | Décimaux — Écrire en chiffres | `num_decimaux_ecriture` | index › renderDecimauxEcriture |  |
 | ✅ 05/10 | Décimaux — Droites numériques | `num_decimaux_droite` | index › renderDecimauxDroite |  |
-| ⬜ | Décimaux — Le bon nombre | `num_decimaux_le_bon_nombre` | index › renderDecimauxLeBonNombre | Aucun hasard : mêmes questions, même ordre à chaque partie |
+| ✅ 05/10 | Décimaux — Le bon nombre | `num_decimaux_le_bon_nombre` | index › renderDecimauxLeBonNombre | Aucun hasard : mêmes questions, même ordre à chaque partie |
 | ⬜ | Décimaux — Entre deux nombres | `num_decimaux_entre` | index › renderDecimauxEntre |  |
 | ⬜ | Décimaux — Opérations devinettes | `num_decimaux_op_devinettes` | index › renderDecimauxOpDevinettes |  |
 | ⬜ | Sélectionne le bon chiffre | `num_entiers_decimaux_abaque` | fiches/abaque.html |  |
