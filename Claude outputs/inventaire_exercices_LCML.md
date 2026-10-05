@@ -834,6 +834,13 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Validation unique (verrou + bouton masqué) ; bonne réponse affichée à côté des menus faux.
 - Nouvelle orthographe : plait, t'entraines, maitresse.
 
+### 05/10 — Homophones sans / s'en / cent / sang (`homo_sans`, index › HOMO_SANS_BANQUE / validerHomoSans) — sw.js v492
+- « La maitresse s'en réjouit de voir vos résultats » (double complément) → « Vos résultats sont excellents : la maitresse s'en réjouit. »
+- « du sang froid » → « son sang-froid » (trait d'union) ; « chien de pur-sang » → « cheval pur-sang » ; « la blessure ne contient plus de sang » → « une petite tache de sang ».
+- Ajouts : « il est temps de s'en aller » (s'en devant un infinitif) + 2 phrases à double trou (banque 53, équilibrée).
+- Validation unique (verrou + bouton masqué) ; bonne réponse affichée à côté des menus faux.
+- Nouvelle orthographe : maitresse, boite.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1023,7 +1030,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | ces / ses / c'est / s'est / sais / sait | `homo_ces` | index › renderHomoCesSynthesis |  |
 | ✅ 05/10 | leur / leurs | `homo_leur` | index › renderHomoLeurSynthesis |  |
 | ✅ 05/10 | peu / peux / peut | `homo_peu` | index › renderHomoPeuSynthesis |  |
-| ⬜ | sans / s'en / cent / sang | `homo_sans` | index › renderHomoSansSynthesis |  |
+| ✅ 05/10 | sans / s'en / cent / sang | `homo_sans` | index › renderHomoSansSynthesis |  |
 | ⬜ | Les homophones complexes | `homo_complexes` | fiches/homophones_complexes.html |  |
 
 ### 📖 Français — ✏️ Orthographe — Règles & Accords
