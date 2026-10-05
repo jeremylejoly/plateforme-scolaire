@@ -784,6 +784,11 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Tirage (Fisher-Yates, 10 trous) et banque (40 phrases équilibrées) OK.
 - À vérifier pour les autres homophones : même moteur copié (10 fonctions `validerHomo*`).
 
+### 05/10 — Homophones ou / où (`homo_ou`, index › HOMO_OU_BANQUE / validerHomoOu) — sw.js v484
+- Biais : toutes les questions (« … ? ») attendaient « ou », aucune « où » → 4 questions avec « où » ajoutées, 3 « Tu … ou … ? » transformées en phrases déclaratives (banque 44).
+- Validation unique (verrou `submitted`, bouton masqué) ; bonne réponse affichée à côté des menus faux.
+- Nouvelle orthographe : connait, fraiche.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -965,7 +970,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | Statut | Exercice | id | Source | Signal automatique |
 |---|---|---|---|---|
 | ✅ 05/10 | a / as / à | `homo_a` | index › renderHomoASynthesis |  |
-| ⬜ | ou / où | `homo_ou` | index › renderHomoOuSynthesis |  |
+| ✅ 05/10 | ou / où | `homo_ou` | index › renderHomoOuSynthesis |  |
 | ⬜ | son / sont | `homo_son` | index › renderHomoSonSynthesis |  |
 | ⬜ | se / ce / s' / c' | `homo_ce` | index › renderHomoCeSynthesis |  |
 | ⬜ | on / ont | `homo_on` | index › renderHomoOnSynthesis |  |
