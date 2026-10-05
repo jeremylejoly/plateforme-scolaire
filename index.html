@@ -3237,7 +3237,7 @@ input[type=text].calc-input.incorrect {
 </style>
 <script src="livres.js?v=20261002b"></script>
 <script src="exercices_francais.js?v=20261005zp"></script>
-<script src="exercices_maths.js?v=20261005f"></script>
+<script src="exercices_maths.js?v=20261005g"></script>
 <script src="exercices_eveil.js?v=20260927e"></script>
 <script>
 /* Garde-fou : si un appareil a chargé une ancienne version du fichier des livres
@@ -29380,12 +29380,13 @@ function renderPerimetreCalcul(){
   const body = document.getElementById('perimetre-calcul-body');
   if(!body) return;
 
-  // Tirer 5 figures en favorisant triangles et quadrilatères
+  // Tirer 5 figures DIFFÉRENTES en favorisant triangles et quadrilatères
   // Indices: 0=carré, 1=rect, 2=tri éq, 3=tri iso, 4=tri qq, 5=losange, 6=trapèze, 7=penta, 8=hexa, 9=parallél
-  const pool = [0,0,1,1,2,3,4,4,5,6,9]; // triangles et quadrilatères surreprésentés
-  const chosen = shuffle([...pool]).slice(0,5);
+  // (avant : la même figure pouvait sortir deux fois, et le pentagone et l'hexagone ne sortaient jamais)
+  const pool = [0,0,1,1,2,3,4,4,5,6,7,8,9];
+  const chosen = [...new Set(shuffle(pool))].slice(0,5);
   const figures = chosen.map(i => PERIMETRE_GENERATEURS[i]());
-  perimetreState = {figures, current:0, score:0, answers:Array(5).fill(null)};
+  perimetreState = {figures, current:0, score:0, answers:Array(5).fill(null), saved:false};
   renderPerimetreQuestion();
 }
 
@@ -29429,19 +29430,36 @@ function renderPerimetreQuestion(){
   document.getElementById('perimetre-input').focus();
 }
 
+// Lecture de la réponse : « 24 », « 24 m », « 24,5m », « 24.50 mètres » → 24 / 24,5 ; autre unité → 'unite' ; illisible → null
+function perimetreLireReponse(txt){
+  const t = String(txt).trim().toLowerCase().replace(/\s+/g,' ');
+  const m = t.match(/^(\d+(?:[.,]\d+)?)\s*(m|mètres?|metres?|[a-zà-ÿ]+)?$/);
+  if(!m) return null;
+  if(m[2] && !/^(m|mètres?|metres?)$/.test(m[2])) return 'unite';
+  return parseFloat(m[1].replace(',', '.'));
+}
+
 function validerPerimetre(){
   const input = document.getElementById('perimetre-input');
   const feedback = document.getElementById('perimetre-feedback');
   if(!input || !feedback) return;
+  if(perimetreState.answers[perimetreState.current] !== null) return; // déjà corrigé (double clic / double Entrée)
 
-  const rep = input.value.trim().toLowerCase().replace(/\s+/g,' ');
   const fig = perimetreState.figures[perimetreState.current];
-
-  // Construire la réponse attendue : "X m" avec virgule française
   const attendu = fmtM(fig.perimetre) + ' m';
-  const attenduSansEspace = fmtM(fig.perimetre) + 'm';
-  const correct = rep === attendu.toLowerCase() || rep === attendu
-    || rep === attenduSansEspace.toLowerCase() || rep === attenduSansEspace;
+
+  // Réponse vide ou illisible : rien n'est compté (avant : vide = faux ; « 24 », « 24,0 m » ou « 24.5 m » refusés)
+  const lu = perimetreLireReponse(input.value);
+  if(input.value.trim() === '' || lu === null || lu === 'unite'){
+    feedback.style.display = 'block';
+    feedback.style.color = 'var(--amber,#d97706)';
+    feedback.innerHTML = input.value.trim() === '' ? '✏️ Écris d\'abord ta réponse.'
+      : lu === 'unite' ? '📏 Donne ta réponse en mètres (m).'
+      : '✏️ Écris un nombre, par exemple 24 m ou 12,5 m.';
+    input.focus();
+    return;
+  }
+  const correct = Math.abs(lu - fig.perimetre) < 1e-9;
 
   input.style.borderColor = correct ? 'var(--green,#16a34a)' : 'var(--red,#dc2626)';
   input.disabled = true;
@@ -29470,11 +29488,14 @@ function validerPerimetre(){
 }
 
 function perimetreNext(){
+  if(perimetreState.answers[perimetreState.current] === null) return; // double clic : pas de figure sautée
   perimetreState.current++;
   renderPerimetreQuestion();
 }
 
 function perimetreResultat(){
+  if(perimetreState.saved) return; // double clic : un seul enregistrement
+  perimetreState.saved = true;
   const body = document.getElementById('perimetre-calcul-body');
   const {score, figures} = perimetreState;
   const total = figures.length;

@@ -1325,6 +1325,14 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - **Aucun résultat enregistré** → enregistrement unique en fin de série (`grandeur_longueurs_qcm_sup`) ; double clic sur une proposition (comptait 2 réponses) ou sur « Question suivante » bloqué ; pastilles vert / rouge.
 - Tests jsdom : partie 8 / 10 avec doubles clics → 1 sauvegarde ; abaque (saisie, passage de case, virgule, vidage) ; syntaxe OK.
 
+### 05/10 — Maths › Grandeurs › Le périmètre › Calcul du périmètre (`grandeur_perimetre_calcul`, PERIMETRE_GENERATEURS dans exercices_maths.js + index › renderPerimetreCalcul / validerPerimetre) — sw.js v564, exercices_maths.js?v=20261005g
+- **Figures impossibles** : le triangle isocèle (21 % des tirages : ex. base 12 m, côtés 5 m), le triangle quelconque (15 % : inégalité triangulaire non respectée) et le trapèze (40 % : petite base parfois plus longue que la grande, côtés incompatibles) pouvaient avoir des mesures qui ne forment aucune figure → mesures toujours constructibles (vérifié sur 3 000 tirages par figure).
+- Périmètre attendu = somme des côtés affichés pour les 10 figures (3 000 tirages chacune : 0 écart).
+- **Réponses justes refusées** : seules « 24 m » / « 24m » étaient acceptées ; « 24 », « 24,0 m », « 24.5 m », « 24 mètres » comptées fausses → tout nombre égal accepté, avec ou sans « m ». Autre unité (cm…) ou saisie illisible (« 12abc ») : message, rien n'est compté. **Réponse vide** : comptée fausse → ignorée.
+- **Double validation** : un 2e clic sur « Valider » recomptait le point (score > 5 possible) et ajoutait un 2e bouton → bloqué ; double clic sur « Suivant » / « Voir les résultats » : pas de figure sautée, un seul enregistrement.
+- Tirage : la même figure pouvait sortir deux fois, le pentagone et l'hexagone jamais → 5 figures différentes, triangles et quadrilatères toujours favorisés (2 000 séries : 0 doublon).
+- Tests jsdom : vide / « 12abc » / « 5 cm » non comptés ; « 24 », « 24,50 mètres », « 24.5m » acceptés ; partie 4 / 5 → 1 sauvegarde ; syntaxe OK.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1653,7 +1661,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 
 | Statut | Exercice | id | Source | Signal automatique |
 |---|---|---|---|---|
-| ⬜ | Périmètre — Calcul | `grandeur_perimetre_calcul` | index › renderPerimetreCalcul |  |
+| ✅ 05/10 | Périmètre — Calcul | `grandeur_perimetre_calcul` | index › renderPerimetreCalcul |  |
 | ⬜ | Périmètre — Problèmes | `grandeur_perimetre_problemes` | index › renderPerimetreProblemes |  |
 | ⬜ | Périmètre du cercle — Le labo de la circonférence | `grandeur_perimetre_cercle_labo` | fiches/perimetre_cercle.html |  |
 | ⬜ | Périmètre du cercle — Le rayon et diamètre cachés | `grandeur_perimetre_cercle_inverse` | fiches/perimetre_cercle_inverse.html |  |

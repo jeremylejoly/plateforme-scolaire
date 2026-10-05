@@ -328,7 +328,8 @@ window.PERIMETRE_GENERATEURS = [
   () => {
     const b = rndM(4, 12, true);
     let c = rndM(3, 10, true);
-    while(c === b) c = rndM(3, 10, true);
+    // Les deux côtés égaux doivent être plus longs que la moitié de la base (sinon le triangle n'existe pas)
+    while(c === b || 2 * c <= b) c = rndM(3, 10, true);
     const p = addM(b,c,c);
     const svg = `<svg viewBox="0 0 250 215" width="250" height="215">
       <polygon points="110,20 190,165 30,165" fill="#e8e4f7" stroke="var(--purple)" stroke-width="2.5"/>
@@ -340,7 +341,10 @@ window.PERIMETRE_GENERATEURS = [
 
   // Triangle quelconque
   () => {
-    const a = rndM(3, 10, true), b = rndM(3, 10, true), c = rndM(3, 10, true);
+    let a, b, c;
+    // Inégalité triangulaire : chaque côté plus court que la somme des deux autres (sinon le triangle n'existe pas)
+    do { a = rndM(3, 10, true); b = rndM(3, 10, true); c = rndM(3, 10, true); }
+    while(a >= b + c || b >= a + c || c >= a + b);
     const p = addM(a,b,c);
     const svg = `<svg viewBox="-10 0 280 215" width="270" height="215">
       <polygon points="40,165 195,165 140,25" fill="#e8e4f7" stroke="var(--purple)" stroke-width="2.5"/>
@@ -364,8 +368,11 @@ window.PERIMETRE_GENERATEURS = [
 
   // Trapèze
   () => {
-    const b1 = rndM(5, 12, true), b2 = rndM(3, 8, true);
-    const c1 = rndM(3, 8, true), c2 = rndM(3, 8, true);
+    let b1, b2, c1, c2;
+    // Grande base en bas (comme sur le dessin) et trapèze constructible :
+    // |c1 − c2| < b1 − b2 < c1 + c2
+    do { b1 = rndM(5, 12, true); b2 = rndM(3, 8, true); c1 = rndM(3, 8, true); c2 = rndM(3, 8, true); }
+    while(!(b1 > b2 && Math.abs(c1 - c2) < b1 - b2 && b1 - b2 < c1 + c2));
     const p = addM(b1,b2,c1,c2);
     const offset = 25;
     const svg = `<svg viewBox="-15 0 300 205" width="285" height="205">
