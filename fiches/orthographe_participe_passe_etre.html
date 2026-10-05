@@ -43,9 +43,9 @@
       {pre: "Les arbres sont (mourir) ", post: " de froid.", verb: "mourir", ans: "morts", expl: "S'accorde avec 'Les arbres' (masculin pluriel)."},
       {pre: "Les invités sont (retourner) ", post: " chez eux.", verb: "retourner", ans: "retournés", expl: "S'accorde avec 'Les invités' (masculin pluriel)."},
       {pre: "Ta sœur est (devenir) ", post: " très grande.", verb: "devenir", ans: "devenue", expl: "S'accorde avec 'Ta sœur' (féminin singulier)."},
-      {pre: "Le soleil est (apparaître) ", post: " derrière les nuages.", verb: "apparaître", ans: "apparu", expl: "S'accorde avec 'Le soleil' (masculin singulier)."},
+      {pre: "Le soleil est (apparaitre) ", post: " derrière les nuages.", verb: "apparaitre", ans: "apparu", expl: "S'accorde avec 'Le soleil' (masculin singulier)."},
       {pre: "Les feuilles sont (tomber) ", post: " des arbres.", verb: "tomber", ans: "tombées", expl: "S'accorde avec 'Les feuilles' (féminin pluriel)."},
-      {pre: "Je (une fille) suis (naître) ", post: " en 2015.", verb: "naître", ans: "née", expl: "S'accorde avec 'Je' (féminin singulier car c'est une fille)."},
+      {pre: "Je (une fille) suis (naitre) ", post: " en 2015.", verb: "naitre", ans: "née", expl: "S'accorde avec 'Je' (féminin singulier car c'est une fille)."},
       {pre: "Les chevaliers sont (mourir) ", post: " au combat.", verb: "mourir", ans: "morts", expl: "S'accorde avec 'Les chevaliers' (masculin pluriel)."},
       {pre: "Elle est (passer) ", post: " par la forêt.", verb: "passer", ans: "passée", expl: "S'accorde avec 'Elle' (féminin singulier)."},
       {pre: "Mes amis sont (rester) ", post: " jouer avec moi.", verb: "rester", ans: "restés", expl: "S'accorde avec 'Mes amis' (masculin pluriel)."},
@@ -60,20 +60,52 @@
     let selectedSentences = [];
     let currentIndex = 0;
     let attempts = 0;
+    let score = 0;
+    let resultSaved = false;
 
+    function shuffleArray(arr) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
     function initGame() {
-      selectedSentences = allSentences.sort(() => 0.5 - Math.random()).slice(0, 10);
+      selectedSentences = shuffleArray(allSentences).slice(0, 10);
       currentIndex = 0;
+      score = 0;
+      resultSaved = false;
       loadSentence();
+    }
+    function saveScore() {
+      if (resultSaved) return;
+      resultSaved = true;
+      try {
+        if (window.parent && window.parent.saveResult) {
+          window.parent.saveResult({
+            activity: 'ortho_participe_etre',
+            bookTitle: 'Participe passé avec être',
+            score: score,
+            total: 10,
+            pct: score * 10,
+            date: new Date().toLocaleDateString('fr-BE'),
+            time: new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })
+          });
+        }
+      } catch (e) {}
     }
 
     function loadSentence() {
       if (currentIndex >= 10) {
         document.querySelector('.game-container').innerHTML = `
           <div class="game-title">🏆 Bravo !</div>
-          <div style="font-size: 1.5rem; margin-bottom: 2rem;">Tu as terminé tes 10 phrases.</div>
+          <div style="font-size: 1.5rem; margin-bottom: 1rem;">Tu as terminé tes 10 phrases.</div>
+          <div style="font-size: 2rem; font-weight: bold; margin-bottom: 0.5rem;">Score : ${score} / 10</div>
+          <div style="font-size: 1rem; color: #64748b; margin-bottom: 2rem;">Un point par phrase réussie du premier coup.</div>
           <button class="btn" onclick="location.reload()" style="background-color: var(--accent-green);">Recommencer avec 10 nouvelles phrases</button>
         `;
+        saveScore();
         return;
       }
       attempts = 0;
@@ -90,11 +122,16 @@
 
     function checkAnswer() {
       const s = selectedSentences[currentIndex];
-      const ans = document.getElementById('answer').value.trim();
+      const ans = document.getElementById('answer').value.normalize('NFC').trim().replace(/\s+/g, ' ');
       const fb = document.getElementById('feedback');
       fb.style.display = 'block';
-      
+      if (ans === '') {
+        fb.innerHTML = "✏️ Écris d'abord le participe passé.";
+        fb.className = "feedback error";
+        return;
+      }
       if (ans.toLowerCase() === s.ans.toLowerCase()) {
+        if (attempts === 0) score++;
         fb.innerHTML = "✅ Parfait ! " + s.expl;
         fb.className = "feedback success";
         document.getElementById('answer').value = s.ans; 
