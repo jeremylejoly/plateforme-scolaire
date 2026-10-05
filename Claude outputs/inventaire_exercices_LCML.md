@@ -1264,6 +1264,14 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - **Aucun résultat enregistré** → enregistrement au premier « Vérifier » (x / 6, niveau, chrono) ; fiche vide ignorée.
 - Tests jsdom : 6 niveaux → 5 / 6 enregistré une fois, correction en bleu, « Vérifier » bloqué après correction.
 
+### 05/10 — Maths › Opérations › L'ordre des opérations › Mission PEMDAS (`op_ordre_pemdas`, `fiches/mission_pemdas.html` + copies public et racine) — sw.js v555
+- 60 expressions (3 niveaux × 20) vérifiées : divisions exactes, aucune étape négative, résultats entiers ; réduction pas à pas simulée sur les 3 niveaux (dernière étape = valeur de l'expression).
+- **Aucun résultat enregistré** → enregistrement en fin de mission (questions réussies du premier coup / 5, niveau dans le titre).
+- Signe de division « : » → « ÷ » (convention du site) : expressions, affichage, rappels et théorie.
+- Double clic pendant l'animation (300 ms) : l'opération était réduite deux fois / l'étape dupliquée → clic ignoré pendant l'animation.
+- Mélange Fisher–Yates ; nouvelle orthographe (maitrises, entraine-toi).
+- Question posée à Jeremy : à priorité égale dans deux parties indépendantes (« 3 × 5 + 4 × 2 », « (4 + 5) × (10 − 8) »), la fiche impose la gauche d'abord ; garder cette règle stricte ou accepter les deux ?
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1574,7 +1582,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | Calcul écrit — Multiplications écrites | `op_calcul_ecrit_multiplication` | fiches/calcul-ecrit-multiplication.html |  |
 | ✅ 05/10 | Calcul écrit — Divisions écrites | `op_calcul_ecrit_division` | fiches/calcul-ecrit-division.html |  |
 | ⬜ | L'ordre des opérations | `op_ordre` | index › (?) | (code à localiser) |
-| ⬜ | L'ordre des opérations — Mission PEMDAS | `op_ordre_pemdas` | fiches/mission_pemdas.html |  |
+| ✅ 05/10 | L'ordre des opérations — Mission PEMDAS | `op_ordre_pemdas` | fiches/mission_pemdas.html |  |
 | ⬜ | L'ordre des opérations — Défi PEMDAS | `op_ordre_defi` | fiches/defi_pemdas.html |  |
 
 ### 🔢 Mathématiques — 📐 Grandeurs — Mesures de base

@@ -1450,7 +1450,11 @@
       
       const correctOp = getPriorityOperator(operatorsList);
       
-      if (clickedOp.node.id === correctOp.node.id) {
+      // Règle « de gauche à droite », MAIS deux calculs indépendants de même priorité
+      // (ex. 3 × 5 + 4 × 2 ou (4 + 5) × (10 − 8)) sont acceptés dans les deux ordres (décision de Jeremy, 05/10).
+      const sameLevel = clickedOp.isCandidate && clickedOp.depth === correctOp.depth && clickedOp.priority === correctOp.priority;
+      const notLeftmost = sameLevel && clickedOp.node.id !== correctOp.node.id;
+      if (clickedOp.node.id === correctOp.node.id || sameLevel) {
         // Flash correct green
         reducing = true;
         playCorrectAnimation(nodeId, () => {
@@ -1461,10 +1465,18 @@
           // Append new step
           const newExpr = getExpressionString(currentTree);
           stepsHistory.push(newExpr);
-          renderHistory();
-          
+ renderHistory();
+
           hideFeedback();
-          
+          if (notLeftmost && currentTree.type !== 'number') {
+            const box = document.getElementById('feedbackBox');
+            box.style.display = 'flex';
+            box.className = 'feedback-box correct';
+            document.getElementById('feedbackIcon').textContent = '👍';
+            document.getElementById('feedbackTitle').textContent = 'Accepté !';
+            document.getElementById('feedbackText').innerHTML = "Ces deux calculs sont indépendants : l'ordre ne change pas le résultat. Mais la règle, c'est de travailler <strong>de gauche à droite</strong>.";
+          }
+
           if (currentTree.type === 'number') {
             handleQuestionSolved();
           } else {
