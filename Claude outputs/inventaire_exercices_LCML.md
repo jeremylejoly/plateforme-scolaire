@@ -156,6 +156,10 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
   - Dernier argument de Noah : « laisser les animaux vivre librement dans la nature » ne tient pas pour des chiens et des chats, et cela revient à un abandon, ce que Noah condamne lui-même. Reformulé en « pas faits pour vivre enfermés dans un appartement » (réplique et question 4).
   - **Les 4 dialogues à 3 parties sont terminés.** Restent Armstrong, le conseil et le marché, qui ont un autre moteur.
 
+- **05/10 — Lecture dialoguée › Interview de Neil Armstrong** :
+  - Moteur des 3 nouveaux dialogues (Armstrong, conseil, marché) : rien n'était mélangé (bonne réponse souvent en 2e position). Les questions, les propositions, les répliques à attribuer et les intentions sont maintenant mélangées.
+  - Le contenu est exact (Apollo 11 en 1969, rochers évités, environ 30 s de carburant, 400 000 personnes).
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -226,7 +230,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | Manger bio, est-ce utile ? | `dial_bio` | index › renderDialBio |  |
 | ✅ 05/10 | La voiture en ville | `dial_voiture` | index › renderDialVoiture |  |
 | ✅ 05/10 | Avoir un animal de compagnie | `dial_animal` | index › renderDialAnimal |  |
-| ⬜ | Interview de Neil Armstrong | `dial_armstrong` | index › renderDialArmstrong |  |
+| ✅ 05/10 | Interview de Neil Armstrong | `dial_armstrong` | index › renderDialArmstrong |  |
 | ⬜ | Le grand désaccord | `dial_conseil` | index › renderDialConseil |  |
 | ⬜ | Une affaire en or ! | `dial_marche` | index › renderDialMarche |  |
 
