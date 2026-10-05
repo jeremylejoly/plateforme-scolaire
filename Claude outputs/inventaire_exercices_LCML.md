@@ -520,6 +520,14 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
   - Le résultat était déjà enregistré sous le bon identifiant (`gram_adjectif_accord`).
   - Nouvelle orthographe : entraine-toi.
 
+- **05/10 — Grammaire › L'adjectif › Épithète ou attribut ?** (10 phrases par partie) :
+  - **L'écran de fin affichait du code** au lieu du score : « ${congratsTitle} », « ${score} sur ${total} ». Une barre oblique en trop empêchait le remplacement. C'est corrigé.
+  - La banque ne comptait que 15 phrases, et aucune n'utilisait le verbe « être », pourtant le cas le plus courant. Chaque partie en tirant 10, les élèves revoyaient vite les mêmes. La banque passe à 30 phrases (14 épithètes, 16 attributs avec être, devenir et rester).
+  - Le cas « Les spectateurs, ravis, applaudissent » (épithète détachée entre virgules) était trop subtil. Il est remplacé par la même phrase sans virgules.
+  - Le mélange utilise maintenant la méthode Fisher–Yates.
+  - Nouvelle orthographe : entrainement, maitrises.
+  - Le résultat était déjà enregistré (`gram_adjectif_fonction`).
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -617,7 +625,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ⬜ | Le déterminant (Exercices) | `gram_determinant_ex` | fiches/determinant_exercice.html |  |
 | ✅ 05/10 | L'adjectif — Identifier les adjectifs | `gram_adjectif_identifier` | index › startAdjectifExercise |  |
 | ✅ 05/10 | L'adjectif — Accords de l'adjectif | `gram_adjectif_accord` | index › startAdjectifAccordExercise |  |
-| ⬜ | L'adjectif — Épithète ou attribut ? | `gram_adjectif_fonction` | index › startAdjectifFonctionExercise |  |
+| ✅ 05/10 | L'adjectif — Épithète ou attribut ? | `gram_adjectif_fonction` | index › startAdjectifFonctionExercise |  |
 | ⬜ | L'adjectif — Retrouver le nom qualifié | `gram_adjectif_nom` | index › startAdjectifNomExercise |  |
 | ⬜ | Le verbe — Identifier les verbes | `gram_verbe_identifier` | index › startVerbeClassExercise |  |
 | ⬜ | Le pronom | `gram_pronom` | index › (?) | (code à localiser) |
@@ -1116,7 +1124,6 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ⬜ | Le Tangram | `jeu_tangram` | index › (?) | (code à localiser) |
 | ⬜ | Le Démineur | `jeu_demineur` | index › (?) | (code à localiser) |
 | ⬜ | La Pipopipette | `jeu_pipopipette` | index › (?) | (code à localiser) |
-| ✅ 05/10 | Les Échecs (nouveau jeu) | `jeu_echecs` | echecs.html | Corrigé et testé avant mise en ligne (IA, mats, nulles, partie relancée pendant que l'ordinateur réfléchit) |
 
 ### ? — (menu renderLectureNarrativeMenu)
 

@@ -12461,9 +12461,99 @@ window.EXERCICES_ADJECTIF_NOM = [
     exp: "L'adjectif « nouveau » s'accorde avec le nom commun « jeu » et le qualifie."
   },
   {
-    tokens: ["L'histoire", "drôle", "fait", "rire", "toute", "la", "classe", "."],
-    adjIndex: 1,
-    nounIndex: 0,
-    exp: "L'adjectif « drôle » s'accorde avec le nom commun « L'histoire » et le qualifie."
+    tokens: ["L'", "histoire", "drôle", "fait", "rire", "toute", "la", "classe", "."],
+    adjIndex: 2,
+    nounIndex: 1,
+    exp: "L'adjectif « drôle » s'accorde avec le nom commun « histoire » et le qualifie."
+  },
+  {
+    tokens: ["Les", "pommes", "du", "verger", "sont", "mûres", "."],
+    adjIndex: 5,
+    nounIndex: 1,
+    exp: "Ce sont les pommes qui sont mûres : l'adjectif « mûres » qualifie le nom « pommes » et s'accorde avec lui (féminin pluriel). « verger » est masculin singulier : ce n'est pas lui."
+  },
+  {
+    tokens: ["Le", "chat", "de", "ma", "voisine", "est", "noir", "."],
+    adjIndex: 6,
+    nounIndex: 1,
+    exp: "C'est le chat qui est noir : l'adjectif « noir » qualifie le nom « chat » (masculin singulier). S'il qualifiait « voisine », on écrirait « noire »."
+  },
+  {
+    tokens: ["La", "maison", "de", "mes", "grands-parents", "semble", "immense", "."],
+    adjIndex: 6,
+    nounIndex: 1,
+    exp: "C'est la maison qui semble immense : l'adjectif « immense » qualifie le nom « maison ». Il est au singulier, alors que « grands-parents » est au pluriel."
+  },
+  {
+    tokens: ["Les", "fleurs", "du", "jardin", "sont", "fanées", "."],
+    adjIndex: 5,
+    nounIndex: 1,
+    exp: "Ce sont les fleurs qui sont fanées : l'adjectif « fanées » qualifie le nom « fleurs » (féminin pluriel), pas « jardin » (masculin singulier)."
+  },
+  {
+    tokens: ["Le", "livre", "de", "ma", "sœur", "est", "passionnant", "."],
+    adjIndex: 6,
+    nounIndex: 1,
+    exp: "C'est le livre qui est passionnant : l'adjectif « passionnant » qualifie le nom « livre » (masculin singulier). Pour « sœur », on écrirait « passionnante »."
+  },
+  {
+    tokens: ["Les", "enfants", "de", "la", "classe", "sont", "joyeux", "."],
+    adjIndex: 6,
+    nounIndex: 1,
+    exp: "Ce sont les enfants qui sont joyeux : l'adjectif « joyeux » qualifie le nom « enfants » (masculin pluriel), pas « classe » (féminin singulier)."
+  },
+  {
+    tokens: ["Les", "bottes", "de", "mon", "frère", "sont", "mouillées", "."],
+    adjIndex: 6,
+    nounIndex: 1,
+    exp: "Ce sont les bottes qui sont mouillées : l'adjectif « mouillées » qualifie le nom « bottes » (féminin pluriel), pas « frère » (masculin singulier)."
+  },
+  {
+    tokens: ["Mes", "amies", "semblent", "fatiguées", "."],
+    adjIndex: 3,
+    nounIndex: 1,
+    exp: "L'adjectif « fatiguées » qualifie le nom « amies » (féminin pluriel). Il est relié au nom par le verbe « sembler »."
+  },
+  {
+    tokens: ["Le", "ciel", "reste", "nuageux", "aujourd'hui", "."],
+    adjIndex: 3,
+    nounIndex: 1,
+    exp: "L'adjectif « nuageux » qualifie le nom « ciel ». Il est relié au nom par le verbe « rester »."
+  },
+  {
+    tokens: ["La", "soupe", "de", "légumes", "est", "chaude", "."],
+    adjIndex: 5,
+    nounIndex: 1,
+    exp: "C'est la soupe qui est chaude : l'adjectif « chaude » qualifie le nom « soupe » (féminin singulier), pas « légumes » (masculin pluriel)."
+  },
+  {
+    tokens: ["Le", "directeur", "de", "l'école", "parait", "content", "."],
+    adjIndex: 5,
+    nounIndex: 1,
+    exp: "C'est le directeur qui parait content : l'adjectif « content » qualifie le nom « directeur » (masculin singulier). Pour « école », on écrirait « contente »."
+  },
+  {
+    tokens: ["Les", "cahiers", "de", "Léa", "sont", "neufs", "."],
+    adjIndex: 5,
+    nounIndex: 1,
+    exp: "Ce sont les cahiers qui sont neufs : l'adjectif « neufs » qualifie le nom « cahiers » (masculin pluriel)."
+  },
+  {
+    tokens: ["Une", "odeur", "de", "pain", "chaud", "envahit", "la", "cuisine", "."],
+    adjIndex: 4,
+    nounIndex: 3,
+    exp: "C'est le pain qui est chaud : l'adjectif « chaud » qualifie le nom « pain » (masculin singulier). Pour « odeur » (féminin), on écrirait « chaude »."
+  },
+  {
+    tokens: ["Les", "feuilles", "des", "arbres", "deviennent", "rousses", "."],
+    adjIndex: 5,
+    nounIndex: 1,
+    exp: "Ce sont les feuilles qui deviennent rousses : l'adjectif « rousses » qualifie le nom « feuilles » (féminin pluriel), pas « arbres » (masculin pluriel)."
+  },
+  {
+    tokens: ["La", "chambre", "de", "mon", "frère", "est", "toujours", "rangée", "."],
+    adjIndex: 7,
+    nounIndex: 1,
+    exp: "C'est la chambre qui est rangée : l'adjectif « rangée » qualifie le nom « chambre » (féminin singulier), pas « frère » (masculin singulier)."
   }
 ];
