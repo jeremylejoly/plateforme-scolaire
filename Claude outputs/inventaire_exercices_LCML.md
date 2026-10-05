@@ -682,6 +682,15 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
   - Le mélange utilise maintenant la méthode Fisher–Yates.
   - Nouvelle orthographe : maitrises, entrainement.
 
+- **05/10 — Grammaire › Fonctions › Le verbe › Trouver l'infinitif** (100 phrases : 30 au présent, 30 à l'imparfait, 30 au futur, 10 au passé composé ; 3 + 3 + 3 + 1 par partie ; saisie de l'infinitif) :
+  - **Même phrase plusieurs fois dans une partie.** La banque reprend les 30 mêmes phrases à chaque temps. Une partie pouvait donc proposer « Noah mange sa tartine » puis « Noah mangeait sa tartine ». Le tirage évite maintenant deux fois le même verbe dans une partie (vérifié sur 2 000 tirages).
+  - La saisie tolère maintenant les espaces en trop et les variantes Unicode des accents. Les accents comptent toujours.
+  - La réponse de l'élève est affichée de façon sûre dans la correction.
+  - Les 100 infinitifs ont été relus et sont justes. La phrase « Nous lisons / lisions », corrigée plus tôt dans la banque partagée, est maintenant juste.
+  - Le résultat était déjà enregistré (`gram_verbe_infinitif`).
+  - Le mélange utilise maintenant la méthode Fisher–Yates.
+  - Nouvelle orthographe : maitrises, entrainer, entraine-toi.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -803,7 +812,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | Le sujet — Les 4 classes du sujet | `gram_classes_sujet` | index › startSujetClassesExercise |  |
 | ✅ 05/10 | Le verbe (fonction) — Repérer le verbe | `verbe_phrase` | index › startVerbeExercise |  |
 | ✅ 05/10 | Le verbe (fonction) — Infinitif et groupe | `gram_verbe_groupe` | index › startVerbeGroupeExercise |  |
-| ⬜ | Le verbe (fonction) — Trouver l'infinitif | `gram_verbe_infinitif` | index › startVerbeInfinitifExercise |  |
+| ✅ 05/10 | Le verbe (fonction) — Trouver l'infinitif | `gram_verbe_infinitif` | index › startVerbeInfinitifExercise |  |
 | ⬜ | Le verbe (fonction) — Reconstituer les textes | `gram_verbe_texte` | index › startVerbeTextesExercise |  |
 | ⬜ | L'attribut du sujet | `gram_attribut` | index › (?) | (code à localiser) |
 | ✅ 05/10 | Attribut & Complément du nom | `gram_attribut_cdn` | fiches/grammaire_attribut_cdn.html |  |
