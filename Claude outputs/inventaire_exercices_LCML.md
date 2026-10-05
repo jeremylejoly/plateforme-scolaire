@@ -1092,7 +1092,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 ### 05/10 — Maths › Opérations › Vocabulaire › Associer mot et définition (`op_vocabulaire_def`, `fiches/vocabulaire_operations.html` + copies public et racine) — sw.js v534
 - Contenu (10 mots/définitions) : juste.
 - **Aucun résultat enregistré** : la fiche exigeait `window.parent.state.student`, or `state` est déclaré avec `let` dans index → invisible via `window.parent` → jamais de sauvegarde. Appel direct à `saveResult` (index complète élève/classe).
-- ⚠️ Même condition bloquante dans 10 autres fiches, à corriger quand on y arrivera : problemes_operations, flechettes_atteins_le_score, flechettes_calcule_le_score, mots-croises, sudoku, ~~parties_calcul~~ (corrigé v535), vocabulaire_solides, mots-caches, trajet_du_sang_ordre, sci_plantes_fleur.
+- ⚠️ Même condition bloquante dans 10 autres fiches, à corriger quand on y arrivera : ~~problemes_operations~~ (corrigé v536), flechettes_atteins_le_score, flechettes_calcule_le_score, mots-croises, sudoku, ~~parties_calcul~~ (corrigé v535), vocabulaire_solides, mots-caches, trajet_du_sang_ordre, sci_plantes_fleur.
 - La correction disparaissait après 1,5 s (remplacée par le score) : elle reste maintenant visible, avec la bonne définition sous chaque mot mal associé.
 - Mots de gauche aussi mélangés (ordre fixe avant) ; double validation bloquée ; maitrises.
 - Tests jsdom : parfait 10/10, 2 inversés 8/10 avec 2 corrections, sauvegarde OK.
@@ -1104,6 +1104,13 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Signes typographiques × et − ; « Quelle opération ce signe représente-t-il ? ».
 - Point à confirmer par Jeremy : multiplicande = 1er facteur, multiplicateur = 2e (convention de la fiche, l'usage varie).
 - Tests jsdom : parfait 10/10, tout faux 0/10, 10 questions, calculs exacts, sauvegarde unique.
+
+### 05/10 — Maths › Opérations › Vocabulaire › Résolution de problèmes (`op_vocabulaire_prob`, `fiches/problemes_operations.html` + copies public et racine) — sw.js v536
+- 12 devinettes fixes vérifiées (calculs justes) ; mais 10 tirées sur 12 → séries quasi identiques. Remplacées par 12 modèles générés (nouveaux nombres à chaque série, dont 2 nouveaux : différence entre a et la somme de b et c ; produit d'une différence par un facteur).
+- **Aucun résultat enregistré** (condition `window.parent.state`) → corrigé ; double Entrée/clic sur « Voir mon score » ne sauvegarde plus deux fois.
+- **Essais infinis** → après 2 erreurs, la réponse est montrée (« La bonne réponse était … ») et on passe.
+- « 077 » accepté pour 77 ; Entrée sur un bouton ayant le focus ne valide plus deux fois ; signes × et − ; maitrise.
+- Tests jsdom : 300 séries, toutes les réponses recalculées depuis l'explication = justes, ≤ 5 chiffres ; parfait 10/10, faux 0/10, 1 sauvegarde par série.
 
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
@@ -1381,7 +1388,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 |---|---|---|---|---|
 | ✅ 05/10 | Vocabulaire des opérations (Définitions) | `op_vocabulaire_def` | fiches/vocabulaire_operations.html |  |
 | ✅ 05/10 | Vocabulaire des opérations (Parties d'un calcul) | `op_vocabulaire_calc` | fiches/parties_calcul.html |  |
-| ⬜ | Vocabulaire des opérations (Résolution de problèmes) | `op_vocabulaire_prob` | fiches/problemes_operations.html |  |
+| ✅ 05/10 | Vocabulaire des opérations (Résolution de problèmes) | `op_vocabulaire_prob` | fiches/problemes_operations.html |  |
 
 ### 🔢 Mathématiques — ➕ Opérations — Calculs & Techniques
 

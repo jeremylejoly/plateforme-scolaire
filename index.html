@@ -6021,6 +6021,7 @@ input[type=text].calc-input.incorrect {
       <div id="calc-correction-body"></div>
       <button class="btn" style="width:100%;margin-top:1rem;" onclick="restartCalcExercise()">🔄 Nouveaux calculs</button>
     </div>
+    <div id="calc-empty-warning" style="display:none;margin-top:1rem;padding:10px 14px;border-radius:10px;background:#fff7ed;color:#9a3412;font-weight:600;text-align:center;"></div>
     <button id="calc-validate-btn" class="btn btn-primary" style="width:100%;font-size:16px;padding:14px;margin-top:1rem;display:none;" onclick="validateCalcExercise()">✓ Valider mes réponses</button>
   </div>
   <div id="screen-op-mult-div" class="screen">
@@ -12921,18 +12922,23 @@ function generateCalcQuestions(type){
   };
 
   const fns = generators[type] || [tryAdd100, trySub100];
-  
-  while(questions.length < 10 && attempts < 500){
+
+  // 5 additions + 5 soustractions (avant : tirage à pile ou face, parfois 8 additions sur 10), puis mélange
+  while(questions.length < 10 && attempts < 2000){
     attempts++;
-    const fn = fns[Math.floor(Math.random()*fns.length)];
+    const fn = fns[questions.length % fns.length];
     const q = fn();
     if(!q) continue;
-    const key = `${q.a}${q.op}${q.b}`;
+    const key = q.op === '+' ? `${Math.min(q.a,q.b)}+${Math.max(q.a,q.b)}` : `${q.a}${q.op}${q.b}`; // 23 + 48 et 48 + 23 = doublon
     if(used.has(key)) continue;
     used.add(key);
     questions.push(q);
   }
 
+  for(let i = questions.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [questions[i], questions[j]] = [questions[j], questions[i]];
+  }
   return questions;
 }
 
@@ -13074,12 +13080,14 @@ function startCalcExercise(type){
     add_sous_1000000: '🔢 Additions et soustractions jusque 1 000 000',
   };
 
-  calcState = { type, questions: generateCalcQuestions(type), submitted: false };
+  calcState = { type, questions: generateCalcQuestions(type), submitted: false, typeLabel: (titles[type] || 'Calculs').replace(/^\S+\s/, '') };
 
   document.getElementById('calc-exercise-title').textContent = titles[type] || 'Calculs';
   document.getElementById('calc-score-panel').style.display = 'none';
   document.getElementById('calc-correction-panel').style.display = 'none';
   document.getElementById('calc-validate-btn').style.display = 'block';
+  const warnEl = document.getElementById('calc-empty-warning');
+  if(warnEl) warnEl.style.display = 'none';
   document.getElementById('calc-back-btn').onclick = function(){
     showScreen(state.role === 'teacher' ? 'screen-teacher-op-add-sous' : 'screen-op-add-sous');
   };
@@ -13090,6 +13098,9 @@ function startCalcExercise(type){
 
 function renderCalcQuestions(){
   const body = document.getElementById('calc-exercise-body');
+  const warnCalc = document.getElementById('calc-empty-warning');
+  if(warnCalc) warnCalc.style.display = 'none';
+  calcState.emptyWarned = false;
   let html = '';
 
   calcState.questions.forEach((q, i) => {
@@ -13117,7 +13128,39 @@ function renderCalcQuestions(){
   }, 100);
 }
 
+// Identifiant enregistré = identifiant du menu / du plan de travail (avant : 'calc_add_sous_100', non reconnu)
+function calcActivityId(type){
+  if(!type) return 'calc_operations';
+  if(type.startsWith('op_')) return type;
+  if(type === 'mult_div') return 'op_mult_div_tables';
+  return 'op_' + type;
+}
+
+// Lecture stricte d'une réponse : « 45abc » ou « 4 5 » ne sont plus acceptés comme 45 / 4
+function parseCalcAnswer(str){
+  const t = String(str).replace(/[\s\u00a0\u202f]/g, ''); // espaces (séparateur de milliers) ignorés
+  if(!/^-?\d+([.,]\d+)?$/.test(t)) return NaN;
+  return parseFloat(t.replace(',', '.'));
+}
+
 function validateCalcExercise(){
+  if(calcState.submitted) return;
+  // Calculs laissés vides : on prévient d'abord (2e clic = corriger quand même)
+  const empties = calcState.questions.filter((q, i) => {
+    const inp = document.getElementById(`calc-inp-${i}`);
+    return !inp || inp.value.trim() === '';
+  }).length;
+  const warn = document.getElementById('calc-empty-warning');
+  if(empties === calcState.questions.length){
+    if(warn){ warn.textContent = '✏️ Réponds aux calculs avant de valider.'; warn.style.display = 'block'; }
+    return;
+  }
+  if(empties > 0 && !calcState.emptyWarned){
+    calcState.emptyWarned = true;
+    if(warn){ warn.textContent = `⚠️ ${empties} calcul${empties > 1 ? 's sont' : ' est'} encore sans réponse. Complète-${empties > 1 ? 'les' : 'le'} ou clique encore sur « Valider » pour corriger quand même.`; warn.style.display = 'block'; }
+    return;
+  }
+  if(warn) warn.style.display = 'none';
   calcState.submitted = true;
   let score = 0;
   const details = [];
@@ -13128,7 +13171,7 @@ function validateCalcExercise(){
     let givenStr = '?';
     if(inp && inp.value.trim() !== ''){
       givenStr = inp.value.trim();
-      given = parseFloat(givenStr.replace(',', '.'));
+      given = parseCalcAnswer(givenStr);
     }
     const roundVal = (v) => isNaN(v) ? NaN : Math.round(v * 10000) / 10000;
     const isCorrect = roundVal(given) === roundVal(q.answer);
@@ -13163,7 +13206,7 @@ function validateCalcExercise(){
     saveResult({
       student: state.student, cls: state.studentCls,
       className: CLASSES[state.studentCls] ? CLASSES[state.studentCls].name : state.studentCls,
-      activity: 'calc_' + (calcState.type||'operations'),
+      activity: calcActivityId(calcState.type),
       bookTitle: 'Opérations — ' + (calcState.typeLabel || calcState.type || 'calcul'),
       score, total: 10, pct,
       date: new Date().toLocaleDateString('fr-BE'),
@@ -13197,6 +13240,9 @@ function showCalcCorrection(){
 
 function restartCalcExercise(){
   calcState.submitted = false;
+  calcState.emptyWarned = false;
+  const warnEl = document.getElementById('calc-empty-warning');
+  if(warnEl) warnEl.style.display = 'none';
   if(calcState.type === 'mult_div'){
     calcState.questions = generateMultDivQuestions();
   } else if(calcState.type === 'op_x10'){
@@ -32338,7 +32384,13 @@ async function loadStudentProgress() {
 function getPlanItemScore(id) {
   if (!state.student || state.role === 'teacher') return null;
   const results = window._cachedResults || [];
-  const matches = results.filter(r => r.student === state.student && r.cls === state.studentCls && r.activity && r.activity.includes(id));
+  // Correspondance à frontière de mot : « op_add_sous_100 » ne capte plus « op_add_sous_1000 »,
+  // mais « gram_analyse_phrase_n1 » ou « calc_op_x10 » restent reconnus.
+  const esc = id.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const re = new RegExp('(^|[_\\-])' + esc + '($|[_\\-])');
+  // Anciens résultats des calculs enregistrés sous « calc_add_sous_100 », « calc_mult_div »…
+  const legacy = id.startsWith('op_') ? ('calc_' + (id === 'op_mult_div_tables' ? 'mult_div' : id.slice(3))) : null;
+  const matches = results.filter(r => r.student === state.student && r.cls === state.studentCls && r.activity && (re.test(r.activity) || r.activity === legacy));
   if (!matches.length) return null;
   const best = matches.reduce((a, b) => (a.pct||0) > (b.pct||0) ? a : b);
   return best;
