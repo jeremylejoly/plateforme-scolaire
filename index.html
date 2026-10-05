@@ -26728,7 +26728,9 @@ function renderDecimauxOpDevinettes(){
 }
 
 function demarrerDecOp(){
-  decOpDevSelection = [...DECIMAUX_OP_DEVINETTES_BANQUE].sort(() => Math.random() - 0.5).slice(0, 5);
+  const melange = [...DECIMAUX_OP_DEVINETTES_BANQUE];
+  for(let i=melange.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [melange[i],melange[j]]=[melange[j],melange[i]]; }
+  decOpDevSelection = melange.slice(0, 5);
   decOpDevCurIdx = 0;
   decOpDevScores = [];
 
@@ -26795,8 +26797,11 @@ function validerDecOp(){
   if(!inp || inp.disabled) return;
 
   const valEleve = normaliserDecVal(inp.value);
+  if(valEleve === '') { inp.focus(); return; }   // réponse vide : on ne compte pas d'essai
   const valCorrecte = q.rep;
-  const ok = (valEleve === valCorrecte);
+  // Zéros inutiles en fin de partie décimale acceptés (8,200 = 8,2 ; 1,00 = 1)
+  const sansZerosFinaux = v => v.includes(',') ? v.replace(/0+$/,'').replace(/,$/,'') : v;
+  const ok = /^\d+(,\d+)?$/.test(valEleve) && sansZerosFinaux(valEleve) === sansZerosFinaux(valCorrecte);
 
   inp.disabled = true;
   inp.className = `w-36 border-b-3 border-solid font-black text-3xl bg-transparent text-center py-1 outline-none ${ok ? 'border-green-500 text-green-700' : 'border-red-500 text-red-700'}`;

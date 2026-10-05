@@ -1020,6 +1020,11 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 ### 05/10 — Maths › Décimaux › Le bon nombre (`num_decimaux_le_bon_nombre`, index › DECIMAUX_LE_BON_NOMBRE_SERIES) — sw.js v520
 - 12 réponses recalculées par programme (toutes les combinaisons des 5 chiffres). Les 4 « plus petit nombre » n'étaient justes QUE si l'on s'arrête aux millièmes (sinon 2,3945 < 23,495 ; 7,1345 < 17,345 ; 1,5347 < 13,547 ; 1,6278 < 12,678) : un élève logique pouvait être compté faux. Consigne complétée : « avec au maximum 3 chiffres après la virgule (jusqu'aux millièmes) ». Avec cette règle, les 12 réponses sont justes.
 
+### 05/10 — Maths › Décimaux › Entre deux nombres (`num_decimaux_entre`, index › DECIMAUX_ENTRE_BANQUE) — sw.js v521
+- 15 réponses VRAI/FAUX recalculées : justes.
+- Raccourci possible : presque tous les FAUX avaient un nombre plus « court » que les bornes (2,7 entre 2,71 et 2,79), presque tous les VRAI un nombre plus « long » → 4 pièges ajoutés (6,5 entre 6,49 et 6,51 : VRAI ; 3,849 entre 3,85 et 3,9 : FAUX…). Banque : 19.
+- Mélange `sort(random)` → Fisher-Yates.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1274,7 +1279,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | Décimaux — Écrire en chiffres | `num_decimaux_ecriture` | index › renderDecimauxEcriture |  |
 | ✅ 05/10 | Décimaux — Droites numériques | `num_decimaux_droite` | index › renderDecimauxDroite |  |
 | ✅ 05/10 | Décimaux — Le bon nombre | `num_decimaux_le_bon_nombre` | index › renderDecimauxLeBonNombre | Aucun hasard : mêmes questions, même ordre à chaque partie |
-| ⬜ | Décimaux — Entre deux nombres | `num_decimaux_entre` | index › renderDecimauxEntre |  |
+| ✅ 05/10 | Décimaux — Entre deux nombres | `num_decimaux_entre` | index › renderDecimauxEntre |  |
 | ⬜ | Décimaux — Opérations devinettes | `num_decimaux_op_devinettes` | index › renderDecimauxOpDevinettes |  |
 | ⬜ | Sélectionne le bon chiffre | `num_entiers_decimaux_abaque` | fiches/abaque.html |  |
 | ⬜ | Comparaison de nombres | `num_entiers_decimaux_comparaison` | fiches/comparaison.html |  |
