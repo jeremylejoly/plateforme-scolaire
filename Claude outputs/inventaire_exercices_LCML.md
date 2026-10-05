@@ -386,11 +386,23 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
     - le gras des explications s'affiche correctement.
   - Les 27 autres réponses sont justes. « mûres » garde son accent (exception de la nouvelle orthographe).
 
+- **05/10 — Conjugaison › Passé composé › 6. Accords avec Avoir (QCM)** (40 questions) :
+  - La bonne réponse était **toujours la A** (40/40). Les propositions sont maintenant mélangées : sur 3 000 tirages, environ un tiers tombe sur chaque lettre.
+  - L'indice « CDV : les pommes…, placé avant » s'affichait sous la phrase et donnait la réponse. Or l'élève doit justement repérer le CDV. L'indice apparait maintenant dans la correction.
+  - Le résultat n'était jamais enregistré. C'est corrigé (`vocabulaire_pc_avoir_accord_qcm`).
+  - Phrases incohérentes corrigées :
+    - « la leçon difficile… était pourtant simple » ;
+    - « les superbes photos… sont floues » ;
+    - « les clés que tu as perdues sont sur le meuble ».
+  - « réparer des fiches » est devenu « préparer des fiches ».
+  - Le gras des explications s'affiche correctement.
+  - Nouvelle orthographe : fraiche, maitrisé.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
 |---|---|
-| `vocabulaire_pc_avoir_accord_qcm` (Accords avec Avoir, QCM) | Bonne réponse en 1re position dans 40/40 questions, propositions non mélangées |
+| `vocabulaire_pc_avoir_accord_qcm` (Accords avec Avoir, QCM) | Bonne réponse en 1re position dans 40/40 questions, propositions non mélangées | ✅ 05/10 |
 | `vocabulaire_pc_mix_qcm` (Bilan Avoir & Être, QCM) | Bonne réponse en 1re position dans 50/50 questions, non mélangées |
 | `vocabulaire_pc_avoir_qcm` (PP avec Avoir, QCM) | Bonne réponse en 1re position dans 30/40 questions, non mélangées | ✅ 05/10 |
 | `vocabulaire_pc_etre_qcm` (PP avec Être, QCM) | Bonne réponse en 1re position dans 24/40 questions, non mélangées |
@@ -557,7 +569,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | Participe passé avec Avoir (Écriture) | `vocabulaire_pc_avoir_trous` | fiches/conjugaison_pc_avoir_trous.html |  |
 | ✅ 05/10 | Participe passé avec Être (QCM) | `vocabulaire_pc_etre_qcm` | fiches/conjugaison_pc_etre_qcm.html | QCM: bonne réponse en position 1 dans 24/40 questions, options non mélangées |
 | ✅ 05/10 | Participe passé avec Être (Écriture) | `vocabulaire_pc_etre_trous` | fiches/conjugaison_pc_etre_trous.html |  |
-| ⬜ | Accords avec Avoir (QCM) | `vocabulaire_pc_avoir_accord_qcm` | fiches/conjugaison_pc_avoir_accord_qcm.html | QCM: bonne réponse en position 1 dans 40/40 questions, options non mélangées |
+| ✅ 05/10 | Accords avec Avoir (QCM) | `vocabulaire_pc_avoir_accord_qcm` | fiches/conjugaison_pc_avoir_accord_qcm.html | QCM: bonne réponse en position 1 dans 40/40 questions, options non mélangées |
 | ⬜ | Accords avec Avoir (Écriture) | `vocabulaire_pc_avoir_accord_trous` | fiches/conjugaison_pc_avoir_accord_trous.html |  |
 | ⬜ | Bilan Avoir & Être (QCM) | `vocabulaire_pc_mix_qcm` | fiches/conjugaison_pc_mix_qcm.html | QCM: bonne réponse en position 1 dans 50/50 questions, options non mélangées |
 | ⬜ | Bilan Avoir & Être (Texte) | `vocabulaire_pc_mix_texte` | fiches/conjugaison_pc_mix_texte.html |  |
