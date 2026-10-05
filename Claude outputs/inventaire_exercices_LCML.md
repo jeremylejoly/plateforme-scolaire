@@ -215,6 +215,12 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
   - « Redivision » (mot très rare) remplacé par « imprévisible ».
   - Contrôle : préfixe + radical + suffixe donne bien le mot attendu pour les 20 mots.
 
+- **05/10 — Vocabulaire › Relations lexicales** (fiche + 2 copies) :
+  - La bonne réponse était toujours la 1re proposition, dans les 30 questions de la version en ligne. Les propositions sont maintenant mélangées équitablement.
+  - Un double clic ne compte plus deux points.
+  - Synonymes : 5 questions avaient une 2e réponse correcte (« raide », « recherche », « joli », « gentillesse », « frousse »). Ces propositions ont été remplacées par des réponses clairement fausses.
+  - « Le vert, couleur primaire » : erreur corrigée.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -223,7 +229,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | `vocabulaire_pc_mix_qcm` (Bilan Avoir & Être, QCM) | Bonne réponse en 1re position dans 50/50 questions, non mélangées |
 | `vocabulaire_pc_avoir_qcm` (PP avec Avoir, QCM) | Bonne réponse en 1re position dans 30/40 questions, non mélangées |
 | `vocabulaire_pc_etre_qcm` (PP avec Être, QCM) | Bonne réponse en 1re position dans 24/40 questions, non mélangées |
-| `vocabulaire_relations_lexicales` | Bonne réponse = 1re proposition dans 30/30 questions, non mélangées |
+| ~~`vocabulaire_relations_lexicales`~~ | ✅ corrigé le 05/10 |
 | ~~Fiches de lecture (Baleine, Vinci, Eiffel, Charlemagne, Einstein, Atomium, Taj Mahal, Écureuil, Loup, Éléphant)~~ | ✅ corrigées le 05/10 |
 | `hist_ligne_du_temps` | Bonne réponse en 2e position dans 10/10 questions, aucun mélange |
 | `hist_grand_voyage_temps` | Bonne réponse en 1re position dans 5/5 questions, aucun mélange |
@@ -440,7 +446,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | Chasse aux Verbes Ternes | `vocabulaire_verbes_ternes` | fiches/verbes-ternes.html |  |
 | ✅ 05/10 | Le Chasseur d'Intrus | `vocabulaire_chasseur_intrus` | fiches/chasseur-intrus.html |  |
 | ✅ 05/10 | La Fabrique de Mots | `vocabulaire_fabrique_mots` | fiches/fabrique-mots.html |  |
-| ⬜ | Relations lexicales | `vocabulaire_relations_lexicales` | fiches/vocabulaire_relations_lexicales.html | QCM: la bonne réponse est la 1re option dans 30/30 questions, options non mélangées |
+| ✅ 05/10 | Relations lexicales | `vocabulaire_relations_lexicales` | fiches/vocabulaire_relations_lexicales.html | QCM: la bonne réponse est la 1re option dans 30/30 questions, options non mélangées |
 
 ### 📖 Français — 🎧 Savoir écouter
 
