@@ -101,6 +101,9 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
   - Contenu du libraire correct.
   - La forêt et le renard profitent déjà de la correction du moteur ; leur contenu reste à relire.
 
+- **05/10 — Lecture descriptive › La forêt en hiver** :
+  - Question 3 « le seul bruit décrit » ambiguë (le ruisseau murmure aussi) ; reformulée.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -148,7 +151,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | Statut | Exercice | id | Source | Signal automatique |
 |---|---|---|---|---|
 | ✅ 05/10 | La librairie enchantée | `desc_libraire` | index › renderDescLibraire |  |
-| ⬜ | La forêt en hiver | `desc_foret` | index › renderDescForet |  |
+| ✅ 05/10 | La forêt en hiver | `desc_foret` | index › renderDescForet |  |
 | ⬜ | Le vieux renard | `desc_renard` | index › renderDescRenard |  |
 
 ### 📖 Français — 💬 Lecture — Argumentative
