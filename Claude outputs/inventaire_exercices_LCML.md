@@ -603,6 +603,17 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
   - Le mélange utilise maintenant la méthode Fisher–Yates.
   - Nouvelle orthographe : maitresse, disparait, entrainement, entraine-toi. « surement » était déjà en nouvelle orthographe.
 
+- **05/10 — Grammaire › L'adverbe › Adjectif ou adverbe ?** (2 parties de 10 questions : « Compléter les phrases », banque de 30 ; « Identifier la classe », banque de 30) :
+  - **Faute d'accord dans une question** : « Ces montres en or massif sont extrêmement **chers** » est devenu « **chères** ». L'explication est corrigée aussi.
+  - « un retard **tardif** » (pléonasme) devient « un repas **tardif** après le spectacle ».
+  - « s'arrêter **court** », expression rare et peu connue des élèves, devient « s'arrêter **net** » (2 questions).
+  - Dans « Compléter », les propositions **n'étaient pas mélangées** dans la fiche affichée : la forme de base venait toujours en premier. Elles le sont maintenant.
+  - Le mélange des questions utilise maintenant la méthode Fisher–Yates.
+  - **Le résultat n'était jamais enregistré.** Il est maintenant enregistré pour chaque partie (`gram_adverbe_accord_completer` / `_classe`), et le plan de travail le reconnait.
+  - Nouvelle orthographe : coutent, maitrise, entraine-toi.
+  - Les 3 copies de la fiche sont identiques.
+  - **Toute la rubrique L'adverbe est vérifiée.**
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -710,7 +721,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | Le pronom — La chasse aux répétitions | `gram_pronom_repetitions` | fiches/chasse_repetitions.html |  |
 | ⬜ | L'adverbe | `gram_adverbe` | index › (?) | (code à localiser) |
 | ✅ 05/10 | L'adverbe — Reconnaître les adverbes | `gram_adverbe_reconnaitre` | fiches/adverbe_exercice.html |  |
-| ⬜ | L'adverbe — Adjectif ou adverbe ? | `gram_adverbe_accord` | fiches/adverbe_accord_exercice.html |  |
+| ✅ 05/10 | L'adverbe — Adjectif ou adverbe ? | `gram_adverbe_accord` | fiches/adverbe_accord_exercice.html |  |
 | ⬜ | Le complément du nom | `gram_complement_nom` | index › (?) | (code à localiser) |
 | ⬜ | Le tri des mots | `gram_tri_mots` | fiches/tri_mots.html |  |
 | ⬜ | Les mots de liaison | `gram_mots_liaison` | fiches/grammaire_mots_liaison.html |  |
