@@ -423,7 +423,7 @@
   <!-- ÉCRAN EXERCICE -->
   <section id="exercise" style="display:none">
     <div class="print-head">
-      <h2>✏️ Soustraction écrite — Fiche d'entraînement</h2>
+      <h2>✏️ Soustraction écrite — Fiche d'entrainement</h2>
       <div class="lines">
         <span>Prénom : ___________________</span>
         <span>Date : ______________</span>
@@ -577,7 +577,7 @@ function makeZerosChallenge() {
   rawA += units.toString(); // ex: "5002"
   
   const rawBVal = rnd(Math.pow(10, len - 2), parseInt(rawA, 10) - 100);
-  const rawBStr = rawBVal.toString().padStart(len, '0');
+  const rawBStr = rawBVal.toString(); // avant : padStart → « 0345 » affiché avec un zéro inutile devant
   const bUnits = rnd(units + 1, 9); // force le premier emprunt aux unités
   const finalRawB = rawBStr.slice(0, -1) + bUnits.toString();
   
@@ -783,6 +783,7 @@ function generateNewSheet() {
   state.started = false;
   state.checked = false;
   state.revealed = false;
+  state.saved = false;
   
   const levelLabels = {
     1: "Niveau 1 : Facile (Avec reports)",
@@ -1281,8 +1282,13 @@ function freezeChrono() {
 }
 
 /* ============ CORRECTION & VALIDATION ============ */
-function checkSheet() {
+function checkSheet(fromReveal) {
   if (state.revealed) return;
+  // Fiche vide : on ne corrige pas (et le chrono continue)
+  if (!fromReveal && ![...document.querySelectorAll('#exercise input')].some(i => i.value.trim() !== '')) {
+    document.getElementById('score-banner').innerHTML = '<div class="banner ok"><span class="emoji">✏️</span><div><div class="msg">Écris d\'abord tes réponses.</div></div></div>';
+    return;
+  }
   freezeChrono();
   state.checked = true;
   
@@ -1317,8 +1323,8 @@ function checkSheet() {
             cardOk = false;
           }
         } else {
-          // Une retenue était attendue (1)
-          if (userVal === correctVal) {
+          // Une retenue était attendue (1 en bas ; 10 en haut, que l'on peut aussi noter « 1 » devant le chiffre)
+          if (userVal === correctVal || (type === 'top-carryover' && correctVal === '10' && userVal === '1')) {
             inp.classList.add('right');
             correctInputs++;
           } else if (userVal === '') {
@@ -1354,7 +1360,35 @@ function checkSheet() {
   });
   
   renderScoreBanner(correctCardsCount, 6);
+  saveSheetResult(correctCardsCount, 6);
   setActionButtons();
+}
+
+// Enregistrement : une seule fois par fiche, au premier « Vérifier » (avant : aucun résultat enregistré).
+// Les vérifications suivantes (après correction de ses erreurs) ne changent pas le score enregistré.
+function saveSheetResult(correct, total) {
+  if (state.saved) {
+    const note = document.createElement('div');
+    note.className = 'reveal-note';
+    note.textContent = `📌 Score enregistré au premier contrôle : ${state.savedScore} / ${total}.`;
+    document.getElementById('score-banner').appendChild(note);
+    return;
+  }
+  state.saved = true;
+  state.savedScore = correct;
+  if (!(window.parent && typeof window.parent.saveResult === 'function')) return;
+  try {
+    const chronoTxt = (state.useChrono && state.frozenTime !== null) ? ` (chrono ${fmtTime(state.frozenTime)})` : '';
+    window.parent.saveResult({
+      activity: 'op_calcul_ecrit_soustraction',
+      bookTitle: 'Soustractions écrites — ' + document.getElementById('exercise-title').textContent + chronoTxt,
+      score: correct,
+      total: total,
+      pct: Math.round(correct / total * 100),
+      date: new Date().toLocaleDateString('fr-BE'),
+      time: new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })
+    });
+  } catch (e) { console.warn('Erreur sauvegarde calcul écrit', e); }
 }
 
 function setActionButtons() {
@@ -1370,7 +1404,7 @@ function revealSheetAnswers() {
   // La correction n'est disponible qu'après avoir vérifié ses réponses
   if (!state.checked || state.revealed) return;
   // Réévaluer les réponses actuelles (l'élève a pu les modifier depuis la vérification)
-  checkSheet();
+  checkSheet(true);
   state.revealed = true;
 
   const cards = document.querySelectorAll('.addition-card');
@@ -1393,7 +1427,7 @@ function revealSheetAnswers() {
 
   const note = document.createElement('div');
   note.className = 'reveal-note';
-  note.textContent = '👁️ Correction affichée : les chiffres en bleu sont les bonnes réponses que tu n\'avais pas trouvées. Pour t\'entraîner à nouveau, clique sur « Nouvelle fiche ».';
+  note.textContent = '👁️ Correction affichée : les chiffres en bleu sont les bonnes réponses que tu n\'avais pas trouvées. Pour t\'entrainer à nouveau, clique sur « Nouvelle fiche ».';
   document.getElementById('score-banner').appendChild(note);
   setActionButtons();
 }
@@ -1405,9 +1439,9 @@ function renderScoreBanner(correct, total) {
   } else if (correct >= total * 0.8) {
     emoji = '😃'; msg = 'Très bon travail, c\'est presque parfait !';
   } else if (correct >= total * 0.5) {
-    emoji = '🙂'; msg = 'Bonne tentative, continue à t\'entraîner !';
+    emoji = '🙂'; msg = 'Bonne tentative, continue à t\'entrainer !';
   } else {
-    emoji = '💪'; msg = 'Entraîne-toi encore, tu vas y arriver !';
+    emoji = '💪'; msg = 'Entraine-toi encore, tu vas y arriver !';
   }
   
   const cls = correct >= total * 0.8 ? 'good' : 'ok';

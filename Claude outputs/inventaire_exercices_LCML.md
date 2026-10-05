@@ -1235,6 +1235,14 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Signe « - » → « − » ; saisie stricte (« 12abc » refusé) ; entrainement.
 - Tests : 20 000 tirages (composition exacte, 0 groupe partagé), parcours jsdom (Entrée, partiel, 9/10, 1 sauvegarde).
 
+### 05/10 — Maths › Opérations › Calcul écrit › Additions écrites (`op_calcul_ecrit_addition`, `fiches/calcul-ecrit-addition.html` + copies public et racine) — sw.js v551
+- 5 niveaux × 3 000 additions simulées : sommes justes (décimaux compris), retenues cohérentes (1,5 à 2,7 reports par calcul selon le niveau) ; niveau lacunaire : 3 ou 4 cases cachées, une seule par colonne (solution unique).
+- Correctif « Voir la correction » du matin (v385) toujours en place.
+- **Aucun résultat enregistré** → enregistrement au premier « Vérifier » (calculs entièrement justes / 6, niveau et chrono dans le titre) ; les vérifications suivantes après correction affichent « Score enregistré au premier contrôle : x / 6 ».
+- « Vérifier » sur une fiche vide affichait 0 / 6 et arrêtait le chrono → message, rien n'est arrêté.
+- Nouvelle orthographe : entrainer, entraine-toi, entrainement.
+- Tests jsdom : niveaux 1, 4, 5 — fiche vide ignorée, 5 calculs justes → 5 / 6 enregistré une fois.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1540,7 +1548,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | Caractères de divisibilité | `op_divisibilite` | fiches/divisibilite.html |  |
 | ⬜ | La compensation | `op_compensation` | index › (?) | (code à localiser) |
 | ⬜ | Calcul écrit | `op_calcul_ecrit` | index › (?) | (code à localiser) |
-| ⬜ | Calcul écrit — Additions écrites | `op_calcul_ecrit_addition` | fiches/calcul-ecrit-addition.html |  |
+| ✅ 05/10 | Calcul écrit — Additions écrites | `op_calcul_ecrit_addition` | fiches/calcul-ecrit-addition.html |  |
 | ⬜ | Calcul écrit — Soustractions écrites | `op_calcul_ecrit_soustraction` | fiches/calcul-ecrit-soustraction.html |  |
 | ⬜ | Calcul écrit — Multiplications écrites | `op_calcul_ecrit_multiplication` | fiches/calcul-ecrit-multiplication.html |  |
 | ⬜ | Calcul écrit — Divisions écrites | `op_calcul_ecrit_division` | fiches/calcul-ecrit-division.html |  |
