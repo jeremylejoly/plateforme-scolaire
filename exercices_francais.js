@@ -7538,11 +7538,12 @@ window.EXERCICES_NOM = [
     ]
   },
   {
-    text: "Chaque soir , maman raconte une belle histoire à mon petit frère .",
+    text: "Chaque soir , ma maman raconte une belle histoire à mon petit frère .",
     tokens: [
       { text: "Chaque", cat: "det" },
       { text: "soir", cat: "nc" },
       { text: ",", cat: "prep", punctuation: "," },
+      { text: "ma", cat: "det" },
       { text: "maman", cat: "nc" },
       { text: "raconte", cat: "v" },
       { text: "une", cat: "det" },
@@ -7971,7 +7972,7 @@ window.EXERCICES_NOM = [
     ]
   },
   {
-    text: "Le Nil est un fleuve immense qui traverse l' Egypte .",
+    text: "Le Nil est un fleuve immense qui traverse l' Égypte .",
     tokens: [
       { text: "Le", cat: "det" },
       { text: "Nil", cat: "np" },
@@ -7982,7 +7983,7 @@ window.EXERCICES_NOM = [
       { text: "qui", cat: "pr" },
       { text: "traverse", cat: "v" },
       { text: "l'", cat: "det" },
-      { text: "Egypte", cat: "np" },
+      { text: "Égypte", cat: "np" },
       { text: ".", punctuation: true }
     ]
   },

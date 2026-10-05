@@ -460,6 +460,14 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
   - Nouvelle orthographe : entrainer, maitrises, maitrise.
   - Le résultat était déjà enregistré (`conj_subj_imp`). Les 30 réponses sont justes. Les 3 copies de la fiche sont corrigées.
 
+- **05/10 — Conjugaison › Le passé simple (Lecture)** (30 questions ; 3 par catégorie + 1 tirée au hasard par partie) :
+  - La copie réellement affichée (fiches/) ne mélangeait pas les propositions des QCM. La bonne réponse était toujours en 1re ou en 2e position, jamais en 3e ni en 4e. Les propositions sont maintenant mélangées. Les copies public/ et racine les mélangeaient déjà.
+  - Les accents n'étaient pas vérifiés dans les réponses tapées. Ils comptent maintenant.
+  - Réponses tapées précédées du pronom sujet (« il commence », « ils mettent ») : elles sont maintenant acceptées.
+  - Les 30 réponses et leurs explications sont justes.
+  - Le résultat était déjà enregistré (`conj_passe_simple`).
+  - Nouvelle orthographe : reconnaitre, entraine-toi.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -606,7 +614,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | Indicatif imparfait | `imparfait` | index › goToConjugaison |  |
 | ✅ 05/10 | Indicatif futur simple | `futur` | index › goToConjugaison |  |
 | ⬜ | Indicatif passé composé | `passe_compose` | index › goToConjugaison |  |
-| ⬜ | Passé simple (Lecture) | `conj_passe_simple` | fiches/conjugaison_passe_simple.html |  |
+| ✅ 05/10 | Passé simple (Lecture) | `conj_passe_simple` | fiches/conjugaison_passe_simple.html |  |
 | ✅ 05/10 | Subjonctif & Impératif | `conj_subj_imp` | fiches/conjugaison_subj_imp.html |  |
 | ✅ 05/10 | Conditionnel & Plus-que-parfait | `conj_cond_pqpf` | fiches/conjugaison_cond_pqpf.html |  |
 
