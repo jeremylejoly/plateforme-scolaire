@@ -422,6 +422,17 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - **05/10 — NO, correction d'une erreur de ma part** : surement, murement et murir perdent l'accent en nouvelle orthographe. Seuls les adjectifs dû, mûr, sûr et le mot jeûne le gardent.
   - Les formes à corriger étaient dans exercices_francais.js (dialogue alimentation, futur QCM et phrases à trous, évaluation), dans les fiches Adverbes et Germination et dans un mot des antonymes. Elles sont corrigées.
 
+- **05/10 — Conjugaison › Passé composé › 9. Bilan Avoir & Être (Texte)** (5 histoires de 10 verbes) :
+  - Les 50 réponses et leurs explications sont justes.
+  - Le résultat n'était jamais enregistré. C'est corrigé : un résultat par histoire, `vocabulaire_pc_mix_texte_1` à `_5`, que le plan de travail reconnait.
+  - La fiche s'ouvrait toujours sur l'histoire 1. Elle s'ouvre maintenant sur une histoire au hasard, et l'élève peut toujours choisir dans la liste.
+  - Phrases corrigées :
+    - « La souris qu'il a attrapée hier s'était déjà échappée » était illogique. Elle est réécrite.
+    - « classe verte à la mer » devient « classe de mer ».
+  - Le gras des explications s'affiche correctement, et l'apostrophe courbe est acceptée.
+  - Nouvelle orthographe : maitresse, fraiche.
+  - **Toute la rubrique Passé composé (fiches 1 à 9) est vérifiée.** Plus aucune fiche n'utilise l'ancien envoi `fiche_result`, que le site ne recevait pas.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -595,8 +606,8 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | Participe passé avec Être (Écriture) | `vocabulaire_pc_etre_trous` | fiches/conjugaison_pc_etre_trous.html |  |
 | ✅ 05/10 | Accords avec Avoir (QCM) | `vocabulaire_pc_avoir_accord_qcm` | fiches/conjugaison_pc_avoir_accord_qcm.html | QCM: bonne réponse en position 1 dans 40/40 questions, options non mélangées |
 | ✅ 05/10 | Accords avec Avoir (Écriture) | `vocabulaire_pc_avoir_accord_trous` | fiches/conjugaison_pc_avoir_accord_trous.html |  |
-| ✅ 05/10 | Bilan Avoir & Être (QCM) | `vocabulaire_pc_mix_qcm` | fiches/conjugaison_pc_mix_qcm.html | ✅ 05/10 |
-| ⬜ | Bilan Avoir & Être (Texte) | `vocabulaire_pc_mix_texte` | fiches/conjugaison_pc_mix_texte.html |  |
+| ✅ 05/10 | Bilan Avoir & Être (QCM) | `vocabulaire_pc_mix_qcm` | fiches/conjugaison_pc_mix_qcm.html | QCM: bonne réponse en position 1 dans 50/50 questions, options non mélangées (corrigé) |
+| ✅ 05/10 | Bilan Avoir & Être (Texte) | `vocabulaire_pc_mix_texte` | fiches/conjugaison_pc_mix_texte.html |  |
 
 ### 📖 Français — ✏️ Orthographe — Homophones
 
