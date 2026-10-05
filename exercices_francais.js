@@ -5619,14 +5619,14 @@ window.DIALOGUES_DATA = {
       {nom:'Camille', texte:'C\'est vrai que c\'est une responsabilité, mais c\'est justement pour ça que c\'est bien ! Les enfants qui s\'occupent d\'un animal apprennent à être responsables, à respecter le vivant et à développer leur empathie.', couleur:'#e64a19'},
       {nom:'Noah', texte:'Peut-être, mais les animaux coûtent très cher. La nourriture, les visites chez le vétérinaire, les vaccins... tout ça représente beaucoup d\'argent. Et certaines personnes adoptent des animaux sans y avoir bien réfléchi, puis les abandonnent. C\'est cruel !', couleur:'#5c6bc0'},
       {nom:'Camille', texte:'Les abandons, c\'est effectivement un problème grave. Mais ce n\'est pas une raison pour dire qu\'il ne faut pas avoir d\'animaux. Il faut juste mieux informer les gens avant l\'adoption. Et pour les enfants malades ou isolés, un animal peut vraiment faire des miracles.', couleur:'#e64a19'},
-      {nom:'Noah', texte:'Je préfèrerais qu\'on laisse les animaux vivre librement dans la nature plutôt que de les enfermer dans un appartement. Un chien qui reste seul toute la journée pendant que ses maîtres travaillent, est-ce vraiment une belle vie ?', couleur:'#5c6bc0'},
+      {nom:'Noah', texte:'Pour moi, beaucoup d\'animaux ne sont pas faits pour vivre enfermés dans un appartement. Un chien qui reste seul toute la journée pendant que ses maîtres travaillent, est-ce vraiment une belle vie ?', couleur:'#5c6bc0'},
       {nom:'Animateur', texte:'Un débat plein de cœur ! Merci Camille et Noah !', anim:true},
     ],
     questions:[
       {q:"Quel est le sujet du débat ?", options:["Faut-il interdire les animaux dans les appartements ?","Faut-il avoir un animal de compagnie ?","Faut-il mieux protéger les animaux sauvages ?"], correct:1},
       {q:"Selon Camille, quel bénéfice les animaux apportent-ils aux personnes ?", options:["Ils aident à faire de l\'exercice physique tous les jours","Ils apportent de la joie et réduisent le stress","Ils permettent de faire des économies sur les sorties et loisirs"], correct:1},
       {q:"Quel problème Noah soulève-t-il concernant les animaux et les vacances ?", options:["Les animaux ont peur des voyages en voiture et en avion","Avoir un animal complique l\'organisation des vacances","Les hôtels et campings refusent souvent les animaux de compagnie"], correct:1},
-      {q:"Quel argument Noah utilise-t-il à la fin du débat ?", options:["Les animaux sont dangereux pour les jeunes enfants en bas âge","Les animaux seraient mieux dans leur milieu naturel que dans un appartement","Les animaux causent des allergies chez de nombreuses personnes"], correct:1},
+      {q:"Quel argument Noah utilise-t-il à la fin du débat ?", options:["Les animaux sont dangereux pour les jeunes enfants en bas âge","Beaucoup d\'animaux ne sont pas faits pour vivre enfermés dans un appartement","Les animaux causent des allergies chez de nombreuses personnes"], correct:1},
     ],
     attrib:{
       noms:['Camille','Noah'],
