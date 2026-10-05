@@ -1077,6 +1077,11 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - On pouvait cliquer « Continuer » juste après une erreur (sans voir la solution) ou réessayer à l'infini → après 1 erreur, on réessaie ; après 2, la solution s'affiche (division puis multiplication) et on passe à la suite.
 - Nouvelle orthographe : maitrise, entrainer.
 
+### 05/10 — Maths › Fractions › Les nombres mixtes (`num_nombres_mixtes`, `fiches/numeration_nombres_mixtes.html` + copie public) — sw.js v532
+- 30 conversions vérifiées par programme : justes. Tirage 5 + 5 Fisher-Yates et enregistrement déjà en place.
+- Réponses égales refusées : 14/4 = 3 + 2/4 refusait « 3 + 1/2 » ; 4 + 2/3 refusait « 28/6 » → toute forme égale acceptée (la partie fraction du nombre mixte doit rester < 1).
+- Nouvelle orthographe : entrainer, maitrises.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1341,7 +1346,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | Colorie les fractions | `num_fractions_colorie` | fiches/colorie_les_fractions.html |  |
 | ✅ 05/10 | Opérations de fractions | `num_fractions_operations` | fiches/calculs_fractions.html |  |
 | ✅ 05/10 | La fraction d'une quantité | `num_fraction_quantite` | fiches/fraction_quantite.html |  |
-| ⬜ | Les nombres mixtes | `num_nombres_mixtes` | fiches/numeration_nombres_mixtes.html |  |
+| ✅ 05/10 | Les nombres mixtes | `num_nombres_mixtes` | fiches/numeration_nombres_mixtes.html |  |
 | ⬜ | Les pourcentages | `num_pourcentages` | index › (?) | (code à localiser) |
 | ✅ 05/10 | Arrondir les décimaux | `num_decimaux_arrondir` | index › renderDecimauxArrondir |  |
 | ⬜ | Diviseurs & Nombres premiers | `num_diviseurs_premiers` | fiches/nombres_diviseurs.html |  |
