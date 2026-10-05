@@ -377,7 +377,7 @@ for(let n=1;n<=12;n++){
 }
 
 /* ---------- digits / readout ---------- */
-const MAX=[1,9,5,9,5,9];
+const MAX=[2,9,5,9,5,9]; // heures de 00 à 23 (lecture « 15 h » acceptée pour 3 h)
 let digits=[0,0,0,0,0,0];
 
 const plusSVG=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>`;
@@ -504,7 +504,10 @@ validerBtn.onclick=()=>{
   const h=digits[0]*10+digits[1];
   const m=digits[2]*10+digits[3];
   const s=digits[4]*10+digits[5];
-  if(h===target.h && m===target.m && s===target.s){
+  // Une horloge à aiguilles ne distingue pas le matin de l'après-midi :
+  // pour 3 h, « 03 » et « 15 » sont justes ; pour 12 h, « 12 » et « 00 ».
+  const heureOk = h <= 23 && h % 12 === target.h % 12;
+  if(heureOk && m===target.m && s===target.s){
     locked=true;
     feedback.textContent='Bravo, c’est la bonne heure ! 🎉';
     feedback.className='feedback ok';
@@ -517,7 +520,8 @@ validerBtn.onclick=()=>{
   }else{
     lives--;buildHearts();
     const pad=n=>String(n).padStart(2,'0');
-    feedback.textContent=`Pas encore… la bonne réponse était ${pad(target.h)} h ${pad(target.m)} min ${pad(target.s)} s.`;
+    const h2=(target.h+12)%24;
+    feedback.textContent=`Pas encore… la bonne réponse était ${pad(target.h)} h ${pad(target.m)} min ${pad(target.s)} s (ou ${pad(h2)} h ${pad(target.m)} min ${pad(target.s)} s).`;
     feedback.className='feedback no';
     if(lives<=0){
       locked=true;
