@@ -186,6 +186,15 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
   - Après la réussite d'un mot, on ne peut plus retirer de lettre.
   - Définitions et exemples corrigés : rivière, cathédrale, infirmière, « écrivaine », se brosser les dents deux fois par jour.
 
+- **05/10 — Vocabulaire › Le Défi des registres** (fiche + 2 copies) :
+  - Le score était toujours de 15/15, car l'élève recommence jusqu'à trouver. Il compte maintenant les expressions classées du premier coup.
+  - Cinq expressions soutenues n'étaient pas de vrais synonymes et ont été remplacées :
+    - « gendarme » (un autre métier) → « agent de la force publique » ;
+    - « descendant » → « progéniture » ;
+    - « demeure » ne correspondait pas à « chambre » : la série devient baraque / maison / demeure ;
+    - « véhicule » → « automobile » ;
+    - « larmoyer » → « verser des larmes ».
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -407,7 +416,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 |---|---|---|---|---|
 | ✅ 05/10 | Expressions & Proverbes | `vocabulaire_proverbes` | fiches/expressions-proverbes.html |  |
 | ✅ 05/10 | L'Atelier des Mots | `vocabulaire_atelier_mots` | fiches/vocabulaire-jeu.html |  |
-| ⬜ | Le Défi des Registres | `vocabulaire_registres` | fiches/registres-tri.html |  |
+| ✅ 05/10 | Le Défi des Registres | `vocabulaire_registres` | fiches/registres-tri.html |  |
 | ⬜ | Chasse aux Verbes Ternes | `vocabulaire_verbes_ternes` | fiches/verbes-ternes.html |  |
 | ⬜ | Le Chasseur d'Intrus | `vocabulaire_chasseur_intrus` | fiches/chasseur-intrus.html |  |
 | ⬜ | La Fabrique de Mots | `vocabulaire_fabrique_mots` | fiches/fabrique-mots.html |  |

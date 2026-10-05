@@ -330,7 +330,7 @@
     },
     { 
       sentence: "Le moteur de la voiture <span class='verb-cloud' id='target-verb'>fait</span> un bruit bizarre.", 
-      options: ["provoque", "émet", "fixe"], 
+      options: ["range", "émet", "fixe"], 
       answer: "émet", 
       ex: "<strong>Émettre</strong> signifie projeter ou produire au-dehors (un son, de la lumière, de la chaleur)." 
     },
@@ -360,7 +360,7 @@
     },
     { 
       sentence: "Mon grand frère <span class='verb-cloud' id='target-verb'>fait</span> du karaté le mercredi.", 
-      options: ["pratique", "étudie", "épargne"], 
+      options: ["pratique", "rédige", "épargne"], 
       answer: "pratique", 
       ex: "On <strong>pratique</strong> un sport, un art ou un instrument de musique de façon régulière." 
     },
@@ -384,7 +384,7 @@
     },
     { 
       sentence: "La serveuse <span class='verb-cloud' id='target-verb'>met</span> les verres sur la table.", 
-      options: ["dresse", "dispose", "charge"], 
+      options: ["renverse", "dispose", "charge"], 
       answer: "dispose", 
       ex: "<strong>Disposer</strong> signifie ranger harmonieusement des objets à des emplacements précis pour faire joli." 
     },
@@ -414,7 +414,7 @@
     },
     { 
       sentence: "Les ouvriers <span class='verb-cloud' id='target-verb'>mettent</span> les sacs dans le camion.", 
-      options: ["chargent", "rangent", "déposent"], 
+      options: ["chargent", "vident", "déposent"], 
       answer: "chargent", 
       ex: "<strong>Charger</strong> un camion ou un bateau signifie y empiler des marchandises pour le transport." 
     },
@@ -450,13 +450,13 @@
     },
     { 
       sentence: "L'instituteur <span class='verb-cloud' id='target-verb'>dit</span> son avis au directeur.", 
-      options: ["exprime", "annonce", "nie"], 
+      options: ["exprime", "récite", "nie"], 
       answer: "exprime", 
       ex: "On <strong>exprime</strong> ou on formule une idée, une opinion ou un sentiment." 
     },
     { 
       sentence: "Le voleur <span class='verb-cloud' id='target-verb'>dit</span> enfin sa faute au juge.", 
-      options: ["avoue", "raconte", "souhaite"], 
+      options: ["avoue", "chante", "souhaite"], 
       answer: "avoue", 
       ex: "<strong>Avouer</strong> signifie admettre un méfait, une bêtise ou une responsabilité cachée." 
     },
@@ -480,9 +480,9 @@
     },
     { 
       sentence: "Le citoyen mécontent <span class='verb-cloud' id='target-verb'>dit</span> sa colère devant la mairie.", 
-      options: ["proteste", "récite", "confie"], 
-      answer: "proteste", 
-      ex: "<strong>Protester</strong> signifie crier publiquement et vigoureusement son désaccord." 
+      options: ["crie", "récite", "épargne"], 
+      answer: "crie", 
+      ex: "<strong>Crier</strong> sa colère, c'est l'exprimer très fort, à voix haute. (Attention : on ne dit pas « protester sa colère », on dit « protester contre quelque chose ».)" 
     },
     { 
       sentence: "Le directeur de l'école <span class='verb-cloud' id='target-verb'>dit</span> le règlement de rentrée.", 
@@ -499,6 +499,8 @@
   let currentQIdx = 0;
   let activeQuestion = null;
   let isAnimating = false;
+  let premierCoup = 0;     // verbes trouvés du premier coup
+  let dejaRate = false;
 
   // ================================================================
   // INITIALISATION
@@ -507,6 +509,7 @@
     // Sélectionne 10 questions aléatoires
     const shuffled = shuffleArray([...QUESTION_BANK]);
     currentList = shuffled.slice(0, 10);
+    premierCoup = 0;
     currentQIdx = 0;
     isAnimating = false;
 
@@ -526,6 +529,7 @@
     }
 
     activeQuestion = currentList[currentQIdx];
+    dejaRate = false;
     
     // Met à jour la barre de progression
     const pct = (currentQIdx / currentList.length) * 100;
@@ -566,6 +570,7 @@
       btn.classList.remove('potion-pouring');
 
       if (isCorrect) {
+        if (!dejaRate) premierCoup++;
         // Mutation réussie !
         const target = document.getElementById('target-verb');
         if (target) {
@@ -581,6 +586,7 @@
 
       } else {
         // Erreur
+        dejaRate = true;
         const parchment = document.getElementById('game-parchment');
         parchment.classList.add('parchment-error');
         btn.classList.add('potion-error');
@@ -614,15 +620,16 @@
     document.getElementById('explain-container').classList.add('hidden');
     
     document.getElementById('panel-final').classList.remove('hidden');
-    document.getElementById('final-score-text').innerText = `Félicitations ! Tu as réussi à métamorphoser les 10 verbes ternes de ta formule en verbes riches de sens.`;
+    document.getElementById('final-score-text').innerText = `Tu as trouvé ${premierCoup} verbe${premierCoup>1?'s':''} précis sur ${currentList.length} du premier coup.`;
 
     if (window.parent && window.parent.saveResult) {
       window.parent.saveResult({
         activity: 'vocabulaire_verbes_ternes',
         bookTitle: 'Vocabulaire — Chasse aux Verbes Ternes',
-        score: 10,
-        total: 10,
-        pct: 100,
+        // Avant : toujours 10/10 ; maintenant les verbes trouvés du premier coup
+        score: premierCoup,
+        total: currentList.length,
+        pct: Math.round(premierCoup / currentList.length * 100),
         date: new Date().toLocaleDateString('fr-BE'),
         time: new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})
       });
