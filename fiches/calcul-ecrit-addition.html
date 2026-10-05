@@ -317,6 +317,17 @@
     .additions-grid { gap: 18px; grid-template-columns: repeat(2, 1fr); }
     .wrap { padding: 0; }
   }
+  /* Correction affichée : chiffres corrigés en bleu (≠ réussite en vert) */
+  .addition-card input.revealed {
+    border-style: solid; border-color: var(--blue) !important;
+    background-color: #e6f3fd !important; color: #1c6fb0 !important;
+  }
+  .addition-card.card-revealed { border-color: var(--blue); background-color: #f6fbff; }
+  .btn[disabled] { opacity: .45; cursor: not-allowed; pointer-events: none; }
+  .reveal-note {
+    margin: -6px 0 14px; padding: 10px 14px; border-radius: 12px;
+    background: #e6f3fd; color: #1c6fb0; font-weight: 700; font-size: .95rem;
+  }
 </style>
 </head>
 <body>
@@ -422,8 +433,8 @@
     </div>
 
     <div class="actions">
-      <button class="btn btn-primary" onclick="checkSheet()">✓ Vérifier mes réponses</button>
-      <button class="btn btn-ghost" onclick="revealSheetAnswers()">👁️ Voir la correction</button>
+      <button id="btn-check" class="btn btn-primary" onclick="checkSheet()">✓ Vérifier mes réponses</button>
+      <button id="btn-reveal" class="btn btn-ghost" onclick="revealSheetAnswers()" disabled title="Vérifie d'abord tes réponses">👁️ Voir la correction</button>
       <button class="btn btn-coral" onclick="generateNewSheet()">🔄 Nouvelle fiche</button>
       <button class="btn btn-ghost" onclick="window.print()">🖨️ Imprimer la fiche</button>
     </div>
@@ -760,6 +771,7 @@ function generateNewSheet() {
   state.frozenTime = null;
   state.started = false;
   state.checked = false;
+  state.revealed = false;
   
   // Titre de l'exercice
   const levelLabels = {
@@ -779,6 +791,7 @@ function generateNewSheet() {
   }
   
   renderSheet();
+  setActionButtons();
   
   // Gestion chrono
   const chip = document.getElementById('chip');
@@ -1220,6 +1233,7 @@ function freezeChrono() {
 
 /* ============ CORRECTION & VALIDATION ============ */
 function checkSheet() {
+  if (state.revealed) return;
   freezeChrono();
   state.checked = true;
   
@@ -1293,26 +1307,48 @@ function checkSheet() {
   });
   
   renderScoreBanner(correctCardsCount, 6);
+  setActionButtons();
+}
+
+function setActionButtons() {
+  const btnCheck = document.getElementById('btn-check');
+  const btnReveal = document.getElementById('btn-reveal');
+  // « Vérifier » : bloqué une fois la correction affichée (sinon 6/6 en recopiant la correction)
+  if (btnCheck) btnCheck.disabled = !!state.revealed;
+  // « Voir la correction » : seulement après une vérification, et une seule fois
+  if (btnReveal) btnReveal.disabled = !state.checked || !!state.revealed;
 }
 
 function revealSheetAnswers() {
-  freezeChrono();
-  state.checked = true;
-  
+  // La correction n'est disponible qu'après avoir vérifié ses réponses
+  if (!state.checked || state.revealed) return;
+  // Réévaluer les réponses actuelles (l'élève a pu les modifier depuis la vérification)
+  checkSheet();
+  state.revealed = true;
+
   const cards = document.querySelectorAll('.addition-card');
   cards.forEach((card, cardIdx) => {
     const inputs = card.querySelectorAll('input');
     inputs.forEach(inp => {
+      inp.readOnly = true;
+      // Les réponses justes de l'élève restent en vert ; seules les erreurs/oublis sont corrigés en bleu
+      if (inp.classList.contains('right')) return;
       inp.value = inp.dataset.correctVal === '0' ? '' : inp.dataset.correctVal;
       inp.classList.remove('wrong', 'wrong-empty');
-      inp.classList.add('right');
+      inp.classList.add('revealed');
     });
-    card.classList.remove('card-checked-err');
-    card.classList.add('card-checked-ok');
-    document.getElementById(`badge-${cardIdx}`).textContent = '👁️';
+    if (!card.classList.contains('card-checked-ok')) {
+      card.classList.remove('card-checked-err');
+      card.classList.add('card-revealed');
+      document.getElementById(`badge-${cardIdx}`).textContent = '👁️';
+    }
   });
-  
-  document.getElementById('score-banner').innerHTML = '';
+
+  const note = document.createElement('div');
+  note.className = 'reveal-note';
+  note.textContent = '👁️ Correction affichée : les chiffres en bleu sont les bonnes réponses que tu n\'avais pas trouvées. Pour t\'entraîner à nouveau, clique sur « Nouvelle fiche ».';
+  document.getElementById('score-banner').appendChild(note);
+  setActionButtons();
 }
 
 function renderScoreBanner(correct, total) {
