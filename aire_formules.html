@@ -442,7 +442,15 @@
       0%, 100% { transform: scale(1); }
       50% { transform: scale(1.05); }
     }
-  </style>
+      /* Téléphone : moins de marges (avant : le score « Restauration » était coupé à 390 px) */
+    @media (max-width: 480px) {
+      body { padding: 0.6rem; }
+      .game-container { padding: 1.1rem 0.9rem; }
+      .scoreboard { padding: 0.75rem 0.8rem; gap: 0.5rem; }
+      .score-label { font-size: 0.7rem; }
+      .scenario-box { padding: 1rem; }
+    }
+</style>
 </head>
 <body>
 
@@ -485,7 +493,7 @@
     <div class="interaction-panel">
       <div class="input-wrapper">
         <div class="input-row">
-          <input type="number" id="student-answer" class="numeric-input" placeholder="Calcule l'aire" min="1" step="any" required autocomplete="off">
+          <input type="text" inputmode="decimal" id="student-answer" class="numeric-input" placeholder="Calcule l'aire" autocomplete="off">
           <span class="unit-badge">m²</span>
         </div>
         <button id="action-btn" class="btn-submit" onclick="submitAnswer()">
@@ -520,10 +528,8 @@
   let correctAnswersCount = 0;
   let currentProblem = null;
   let hasSubmitted = false;
-
   // Selected problems for the current session (10 items)
   let activeQuestions = [];
-
   // SVG Dimension Helpers
   function generateSquare(side) {
     const area = side * side;
@@ -539,8 +545,8 @@
     `;
     return { answer: area, svg, formula: `${side} m × ${side} m = ${area} m²` };
   }
-
   function generateRectangle(base, height) {
+    if (base === height) base++; // un rectangle aux côtés égaux serait un carré (≈ 4 % des tirages avant)
     const area = base * height;
     const svg = `
       <svg class="shape-svg" viewBox="0 0 200 200">
@@ -554,7 +560,6 @@
     `;
     return { answer: area, svg, formula: `${base} m × ${height} m = ${area} m²` };
   }
-
   function generateTriangle(base, height) {
     const area = (base * height) / 2;
     const svg = `
@@ -569,7 +574,6 @@
     `;
     return { answer: area, svg, formula: `(${base} m × ${height} m) ÷ 2 = ${area} m²` };
   }
-
   function generateParallelogram(base, height) {
     const area = base * height;
     const svg = `
@@ -585,7 +589,6 @@
     `;
     return { answer: area, svg, formula: `${base} m × ${height} m = ${area} m²` };
   }
-
   function generateTrapezoid(bigBase, smallBase, height) {
     const area = ((bigBase + smallBase) * height) / 2;
     const svg = `
@@ -602,7 +605,6 @@
     `;
     return { answer: area, svg, formula: `((${bigBase} m + ${smallBase} m) × ${height} m) ÷ 2 = ${area} m²` };
   }
-
   // Immense pool of 50 tasks (10 for each geometry type)
   const shapesPool = [
     // --- CARRÉS (1-10) ---
@@ -621,7 +623,7 @@
     {
       type: "carré",
       noun: "la Cour de la Sentinelle (carré)",
-      desc: "Les gardes veulent peindre une cible carrée géante au sol de la cour pour l'entraînement au tir. Détermine la superficie nécessaire.",
+      desc: "Les gardes veulent peindre une cible carrée géante au sol de la cour pour l'entrainement au tir. Détermine la superficie nécessaire.",
       generator: () => generateSquare(Math.floor(Math.random() * 9) + 4)
     },
     {
@@ -666,7 +668,6 @@
       desc: "Le collecteur d'impôts souhaite poser un grand tapis royal recouvrant exactement toute la pièce carrée. Calcule l'aire de son bureau.",
       generator: () => generateSquare(Math.floor(Math.random() * 5) + 4)
     },
-
     // --- RECTANGLES (11-20) ---
     {
       type: "rectangle",
@@ -728,7 +729,6 @@
       desc: "Les gardes veulent recouvrir le sol de cette salle blindée de plaques de bronze protectrices. Trouve l'aire rectangulaire.",
       generator: () => generateRectangle(Math.floor(Math.random() * 6) + 7, Math.floor(Math.random() * 3) + 4)
     },
-
     // --- TRIANGLES (21-30) ---
     {
       type: "triangle",
@@ -745,7 +745,7 @@
     {
       type: "triangle",
       noun: "le Pavillon de Chasse (triangle)",
-      desc: "Ce pavillon forestier triangulaire doit recevoir une toiture de chaume neuve. Calcule sa surface au sol.",
+      desc: "Ce pavillon forestier triangulaire doit recevoir un nouveau plancher. Calcule sa surface au sol.",
       generator: () => generateTriangle((Math.floor(Math.random() * 6) + 5) * 2, Math.floor(Math.random() * 5) + 6)
     },
     {
@@ -790,7 +790,6 @@
       desc: "Cette casemate triangulaire nécessite une couche de résine étanche sur tout son sol. Calcule sa superficie.",
       generator: () => generateTriangle((Math.floor(Math.random() * 6) + 4) * 2, Math.floor(Math.random() * 5) + 5)
     },
-
     // --- PARALLÉLOGRAMMES (31-40) ---
     {
       type: "parallélogramme",
@@ -825,7 +824,7 @@
     {
       type: "parallélogramme",
       noun: "la Loge des Archers (parallélogramme)",
-      desc: "La guilde des archers veut huiler le plancher de leur stand d'entraînement oblique. Trouve l'aire à traiter.",
+      desc: "La guilde des archers veut huiler le plancher de leur stand d'entrainement oblique. Trouve l'aire à traiter.",
       generator: () => generateParallelogram(Math.floor(Math.random() * 6) + 8, Math.floor(Math.random() * 3) + 5)
     },
     {
@@ -852,7 +851,6 @@
       desc: "Les ingénieurs doivent recouvrir de cuir huilé le sol de cette salle d'assemblage oblique pour atténuer le bruit. Calcule l'aire.",
       generator: () => generateParallelogram(Math.floor(Math.random() * 8) + 8, Math.floor(Math.random() * 4) + 5)
     },
-
     // --- TRAPÈZES (41-50) ---
     {
       type: "trapèze",
@@ -955,7 +953,6 @@
       }
     }
   ];
-
   // Shuffling helper
   function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
@@ -964,11 +961,15 @@
     }
     return array;
   }
-
   // Session initializer
+  let saved = false;
   function startNewSession() {
-    const shuffledPool = shuffleArray([...shapesPool]);
-    activeQuestions = shuffledPool.slice(0, totalQuestions).map(item => {
+    // 2 figures de chaque type (carré, rectangle, triangle, parallélogramme, trapèze), dans un ordre mélangé
+    // (avant : 10 tirées au hasard parmi 50 → parfois aucun carré et 4 triangles)
+    saved = false;
+    const types = [...new Set(shapesPool.map(q => q.type))];
+    const choix = types.flatMap(t => shuffleArray(shapesPool.filter(q => q.type === t)).slice(0, 2));
+    activeQuestions = shuffleArray(choix).map(item => {
       const problem = item.generator();
       return {
         type: item.type,
@@ -980,61 +981,59 @@
       };
     });
   }
-
   // Start initialization
   window.addEventListener("DOMContentLoaded", () => {
     startNewSession();
     initQuestion();
   });
-
+  // Entrée = Vérifier, puis Continuer (avant : Entrée ne faisait rien)
+  document.addEventListener("keydown", e => {
+    if (e.key !== "Enter") return;
+    e.preventDefault();
+    document.getElementById("action-btn").click();
+  });
   function initQuestion() {
     hasSubmitted = false;
     document.getElementById("student-answer").value = "";
     document.getElementById("student-answer").disabled = false;
     document.getElementById("feedback-area").innerHTML = "";
-
     // Reset button states
     const actionBtn = document.getElementById("action-btn");
     actionBtn.innerHTML = `<span>Vérifier mes calculs</span> 🛡️`;
     actionBtn.onclick = submitAnswer;
-
     // Pick preselected question
     currentProblem = activeQuestions[currentStep - 1];
-
-    // Format bold noun in description
-    const formattedDesc = currentProblem.desc.replace(currentProblem.noun, `<strong>${currentProblem.noun}</strong>`);
-
+    // Le nom du lieu (et sa forme) en titre : avant, il ne s'affichait jamais (desc.replace ne le trouvait pas dans la phrase)
+    const formattedDesc = `<strong>${currentProblem.noun.charAt(0).toUpperCase() + currentProblem.noun.slice(1)}</strong><br>${currentProblem.desc}`;
     // Render properties in the DOM
     document.getElementById("current-question-num").innerText = currentStep;
     document.getElementById("scenario-desc").innerHTML = formattedDesc;
     document.getElementById("visual-shape-container").innerHTML = currentProblem.svg;
-
     // Update progress bar
     const progressPercent = ((currentStep - 1) / totalQuestions) * 100;
     document.getElementById("game-progress").style.width = `${progressPercent}%`;
   }
-
   function submitAnswer() {
+    if (hasSubmitted) return;
     const inputElement = document.getElementById("student-answer");
-    const val = parseFloat((inputElement.value || '').replace(',', '.'));
-
-    if (isNaN(val)) {
-      alert("S'il te plaît, entre une valeur numérique valide.");
+    const raw = (inputElement.value || '').replace(/[\s\u00a0\u202f]/g, '').replace(',', '.');
+    // Vide ou illisible : message, rien n'est compté (avant : fenêtre alert())
+    if (!/^\d+(\.\d+)?$/.test(raw)) {
+      document.getElementById("feedback-area").innerHTML = `<div class="feedback-message feedback-error"><span class="feedback-icon">✏️</span><div class="feedback-details"><span class="feedback-desc">Écris l'aire (un nombre), puis vérifie.</span></div></div>`;
+      inputElement.focus();
       return;
     }
-
+    const val = parseFloat(raw);
     hasSubmitted = true;
+    submittedAt = Date.now();
     inputElement.disabled = true;
-
     const isCorrect = Math.abs(val - currentProblem.answer) < 0.01;
     if (isCorrect) {
       correctAnswersCount++;
     }
-
     // Update scoreboard score in real-time
     const currentScorePercent = Math.round((correctAnswersCount / totalQuestions) * 100);
     document.getElementById("game-score").innerText = `${currentScorePercent}%`;
-
     // Render feedback panel
     const feedbackArea = document.getElementById("feedback-area");
     if (isCorrect) {
@@ -1058,7 +1057,6 @@
         </div>
       `;
     }
-
     // Change action button to "Next"
     const actionBtn = document.getElementById("action-btn");
     if (currentStep < totalQuestions) {
@@ -1069,25 +1067,24 @@
       actionBtn.onclick = finishGame;
     }
   }
-
+  let submittedAt = 0;
+  // Double clic sur « Vérifier » : le 2e clic tombait sur « Continuer » et sautait la correction → ignoré pendant 0,6 s
   function nextStep() {
+    if (!hasSubmitted || currentStep >= totalQuestions || Date.now() - submittedAt < 600) return;
     currentStep++;
     initQuestion();
   }
-
   function finishGame() {
+    if (!hasSubmitted || currentStep < totalQuestions || saved || Date.now() - submittedAt < 600) return;
     // Hide active layout and show congrats
     document.getElementById("game-active-flow").style.display = "none";
     document.getElementById("game-congrats-flow").style.display = "block";
-
     // Set score percent and stars
     const scorePercent = Math.round((correctAnswersCount / totalQuestions) * 100);
     const scoreVal = document.getElementById("game-score").innerText;
-    
     // Set custom text message depending on performance
     const congratsMsg = document.getElementById("congrats-message");
     const starsSummary = document.getElementById("stars-summary");
-
     if (correctAnswersCount === 10) {
       congratsMsg.innerHTML = `Incroyable ! Tu as réalisé un sans-faute parfait de <strong>10/10</strong> (100% de réussite). Le seigneur te nomme Grand Arpenteur Royal du Royaume !`;
       starsSummary.innerHTML = "⭐⭐⭐";
@@ -1099,17 +1096,21 @@
       starsSummary.innerHTML = "⭐";
     } else {
       congratsMsg.innerHTML = `Tu as obtenu un score de <strong>${correctAnswersCount}/10</strong> (${scorePercent}%). De nombreuses pièces restent en ruines. Révise les formules et retente ta chance !`;
-      starsSummary.innerHTML = "❌ (Entraîne-toi encore !)";
+      starsSummary.innerHTML = "❌ (Entraine-toi encore !)";
     }
-
-    // Report score back to classroom dashboard if integration is available
-    if (typeof parent !== 'undefined' && parent.handleActivityScore) {
-      parent.handleActivityScore('grandeur_aire_formules', correctAnswersCount);
-    } else if (typeof window.parent !== 'undefined' && window.parent.handleActivityScore) {
-      window.parent.handleActivityScore('grandeur_aire_formules', correctAnswersCount);
+    // Enregistrement (avant : appel à handleActivityScore, fonction inexistante → jamais enregistré)
+    if (!saved && window.parent && typeof window.parent.saveResult === 'function') {
+      saved = true;
+      try {
+        window.parent.saveResult({
+          activity: 'grandeur_aire_formules', bookTitle: "L'Arpenteur du Château (formules d'aire)",
+          score: correctAnswersCount, total: totalQuestions, pct: scorePercent,
+          date: new Date().toLocaleDateString('fr-BE'),
+          time: new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })
+        });
+      } catch (e) { console.warn('Erreur sauvegarde Arpenteur du Château', e); }
     }
   }
-
   function resetGame() {
     currentStep = 1;
     correctAnswersCount = 0;

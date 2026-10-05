@@ -1379,7 +1379,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Double clic sur « Situation suivante » sautait une situation → bloqué ; un seul enregistrement en fin de série.
 - Nouvelle orthographe : iles, boite, maitrises.
 - Tests jsdom : partie 7 / 10 avec doubles clics → 1 sauvegarde ; « Recommencer » remet à zéro ; syntaxe OK.
-- ⚠️ Même appel inexistant `handleActivityScore` (donc aucun résultat enregistré) dans 6 autres fiches, à corriger quand on y arrivera : ~~aire_quadrillage~~ (v571), ~~aire_conversions~~ (v572), aire_formules, volume_cubes, volume_formules, volume_conversions.
+- ⚠️ Même appel inexistant `handleActivityScore` (donc aucun résultat enregistré) dans 6 autres fiches, à corriger quand on y arrivera : ~~aire_quadrillage~~ (v571), ~~aire_conversions~~ (v572), ~~aire_formules~~ (v574), volume_cubes, volume_formules, volume_conversions.
 
 ### 05/10 — Maths › Grandeurs › L'aire › Le Géomètre des Carreaux (`grandeur_aire_quadrillage`, `fiches/aire_quadrillage.html` + copies public et racine) — sw.js v571
 - 51 figures recalculées par la formule du lacet : toutes les aires justes, aucun polygone croisé, toutes dans la grille.
@@ -1411,6 +1411,17 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Problèmes : l'unité attendue (ha, a, ca, m², litres, parcelles, rouleaux) est maintenant affichée à côté de la réponse, comme pour les conversions.
 - Message de fin affichant du code LaTeX brut (« $1\\text{ ha} = 1\\text{ hm}^2$ ») → « 1 ha = 1 hm² ». Signe « − » dans les explications. Nouvelle orthographe : maraichères, maraicher, maitrises, entrainer.
 - Tests jsdom : abaque « 3,5 », vide/« 12abc » non comptés, « 6 000 » accepté, partie 8 / 10 avec doubles clics et doubles Entrée → 1 sauvegarde ; capture 390 px ; syntaxe OK.
+
+### 05/10 — Maths › Grandeurs › L'aire › L'Arpenteur du Château (`grandeur_aire_formules`, `fiches/aire_formules.html` + copies public et racine) — sw.js v574
+- 50 situations générées (carrés, rectangles, triangles, parallélogrammes, trapèzes) : sur 2 000 séries, l'aire attendue = formule appliquée aux cotes du dessin (0 écart), toujours entière, grande base > petite base.
+- **Aucun résultat enregistré** (`handleActivityScore` inexistante) → `saveResult`, une seule fois par série.
+- **Nom du lieu jamais affiché** (le code cherchait le nom dans la phrase, où il n'est pas) → nom et forme en titre de chaque mission.
+- **Double clic sur « Vérifier »** : le 2e clic tombait sur « Continuer » et sautait la correction → ignoré pendant 0,6 s ; un seul enregistrement. Entrée : Vérifier puis Continuer (ne faisait rien avant).
+- Saisie : champ numérique + fenêtre `alert()` → champ texte, virgule et espaces acceptés, vide/illisible : message, rien n'est compté.
+- Tirage : 10 parmi 50 au hasard (parfois aucun carré) → 2 figures de chaque type. Rectangles aux côtés égaux (≈ 4 %) → évités.
+- « Pavillon … toiture de chaume … surface au sol » → nouveau plancher. Score « Restauration » coupé à 390 px → marges réduites sur téléphone (capture vérifiée).
+- Nouvelle orthographe : entrainement, Entraine-toi.
+- Tests jsdom : vide/« 12abc » non comptés, double clic sans saut, partie 7 / 10 → 1 sauvegarde ; syntaxe OK.
 
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
@@ -1749,7 +1760,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | Le Géomètre des Carreaux (Quadrillage) | `grandeur_aire_quadrillage` | fiches/aire_quadrillage.html |  |
 | ✅ 05/10 | L'Arpenteur Impérial (Conversions d'Aire) | `grandeur_aire_conversions` | fiches/aire_conversions.html |  |
 | ✅ 05/10 | Mesures Agraires & Superficies | `grandeur_aire_agraire` | fiches/aire_agraire.html |  |
-| ⬜ | L'Arpenteur du Château (Formules d'aire) | `grandeur_aire_formules` | fiches/aire_formules.html |  |
+| ✅ 05/10 | L'Arpenteur du Château (Formules d'aire) | `grandeur_aire_formules` | fiches/aire_formules.html |  |
 | ⬜ | Le Calcul d'Aires Composées | `grandeur_aire_composee` | fiches/aire_composee.html |  |
 | ⬜ | Le Bâtisseur de Cubes (Volume 3D) | `grandeur_volume_cubes` | fiches/volume_cubes.html |  |
 | ⬜ | L'Architecte des Pavés (Formules) | `grandeur_volume_architecte` | fiches/volume_formules.html |  |
