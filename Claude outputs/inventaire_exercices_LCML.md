@@ -445,6 +445,21 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
   - Le résultat était déjà enregistré (`conj_cond_pqpf`). Le mélange se fait déjà selon la méthode Fisher–Yates. Les 30 réponses sont justes.
   - Les 3 copies de la fiche ont été corrigées : fiches/, public/fiches/ et la racine.
 
+- **05/10 — Conjugaison › Subjonctif & Impératif** (30 questions : 15 au subjonctif, 15 à l'impératif ; 5 + 5 tirées par partie) :
+  - Les accents n'étaient pas vérifiés. Ils comptent maintenant.
+  - Réponses acceptées en plus :
+    - le pronom recopié (« tu sois », « elle ait », « j'aille ») ;
+    - l'apostrophe courbe ;
+    - les espaces ou les tirets typographiques dans « vas-y », « manges-en ».
+  - Phrases corrigées :
+    - « Il exige que je aille » devient « que j'aille » (élision).
+    - « Il faut que tu doives faire tes devoirs » (pléonasme) devient « Je ne crois pas que tu doives partir si tôt ».
+    - « Il est nécessaire qu'ils veuillent apprendre » devient « Je doute qu'ils veuillent venir avec nous ».
+    - « Il se peut que nous puissions » devient « Je ne suis pas certain que nous puissions ».
+  - Affichage : « j'[ ] » s'affiche sans espace.
+  - Nouvelle orthographe : entrainer, maitrises, maitrise.
+  - Le résultat était déjà enregistré (`conj_subj_imp`). Les 30 réponses sont justes. Les 3 copies de la fiche sont corrigées.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -592,7 +607,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | Indicatif futur simple | `futur` | index › goToConjugaison |  |
 | ⬜ | Indicatif passé composé | `passe_compose` | index › goToConjugaison |  |
 | ⬜ | Passé simple (Lecture) | `conj_passe_simple` | fiches/conjugaison_passe_simple.html |  |
-| ⬜ | Subjonctif & Impératif | `conj_subj_imp` | fiches/conjugaison_subj_imp.html |  |
+| ✅ 05/10 | Subjonctif & Impératif | `conj_subj_imp` | fiches/conjugaison_subj_imp.html |  |
 | ✅ 05/10 | Conditionnel & Plus-que-parfait | `conj_cond_pqpf` | fiches/conjugaison_cond_pqpf.html |  |
 
 ### 📖 Français — 🔀 Conjugaison — Un peu de tout

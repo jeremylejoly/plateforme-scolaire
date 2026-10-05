@@ -131,7 +131,7 @@
       <div id="screen-lesson" class="fade-in flex flex-col gap-6">
         <div class="text-center">
           <h1 class="font-display text-2xl md:text-3xl font-black text-neutral-900">📖 Le Passé Simple (Lecture)</h1>
-          <p class="text-neutral-500 font-nunito text-sm mt-1">Apprends à le reconnaître facilement dans tes lectures !</p>
+          <p class="text-neutral-500 font-nunito text-sm mt-1">Apprends à le reconnaitre facilement dans tes lectures !</p>
         </div>
 
         <!-- Summary & Rules -->
@@ -809,12 +809,13 @@
     }
 
     // String normalization helper
+    // Normalisation : minuscules, espaces, apostrophes. Les accents comptent (avant : ils étaient ignorés).
     function normalizeString(str) {
-      return str
+      return String(str || '')
+        .normalize("NFC")
         .toLowerCase()
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "") // remove accents
-        .replace(/\s+/g, ' ') // collapse spaces
+        .replace(/[’`]/g, "'")
+        .replace(/\s+/g, ' ')
         .trim();
     }
 
@@ -830,7 +831,10 @@
         userAns = input ? input.value : "";
       }
 
-      const isCorrect = (normalizeString(userAns) === normalizeString(q.answer));
+      // Réponse tapée : on accepte aussi qu'elle commence par le pronom sujet (« il commence », « ils mettent »)
+      const _u = normalizeString(userAns);
+      const isCorrect = (_u === normalizeString(q.answer))
+        || (!q.type.startsWith('mchoice') && _u.replace(/^(il|elle|on|ils|elles) /, '') === normalizeString(q.answer));
       
       const comparisonContainer = document.getElementById('comparison-container');
       const compUserAns = document.getElementById('comparison-user-ans');
@@ -920,7 +924,7 @@
       } else if (score >= 5) {
         stars = "⭐";
         title = "👍 Pas mal !";
-        message = "Tu as compris les bases. Entraîne-toi encore pour repérer tous les verbes irréguliers.";
+        message = "Tu as compris les bases. Entraine-toi encore pour repérer tous les verbes irréguliers.";
       }
 
       document.getElementById('final-stars').textContent = stars;
