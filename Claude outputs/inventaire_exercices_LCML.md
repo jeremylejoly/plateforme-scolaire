@@ -996,6 +996,16 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Nouvelle orthographe : traits d'union dans les 20 énoncés (million séparé).
 - Mélange `sort(random)` → Fisher-Yates.
 
+### 05/10 — Maths › Décimaux › Devinettes décimales (`num_decimaux_devinettes`, exercices_maths.js › DEVINETTES_DECIMAUX_BANQUE) — sw.js v516, exercices_maths.js?v=20261005d
+- 10 devinettes vérifiées une à une (chaque indice, chaque proposition) : une seule bonne réponse partout.
+- Énoncé mathématiquement faux : « Ma partie entière est le double de ma partie décimale » (70,35 : la partie décimale vaut 0,35, pas 35) → « Le nombre formé par mes deux chiffres après la virgule est la moitié de ma partie entière » ; explication réécrite.
+- Mélanges `sort(random)` → Fisher-Yates. Coquille d'identifiant « num_decinaux_devinettes » dans la liste des activités corrigée.
+
+### 05/10 — Maths › Décimaux › Valeur d'un chiffre (`num_decimaux_relier`, index › relDecGenererSerie / validerRelier) — sw.js v517
+- Moteur déjà refait (nombres générés, étiquettes mélangées, réponse jugée sur le nombre). 20 000 séries simulées : chiffre toujours au bon rang, aucune 2e étiquette vraie pour un même nombre, pas de zéro inutile.
+- On pouvait encore glisser des étiquettes dans les cases après la correction → bloqué.
+- Variables globales du glisser-déposer déclarées proprement.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1245,7 +1255,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | Décomposer un nombre | `num_decomposer` | index › renderNumDecomposer |  |
 | ✅ 05/10 | Classer des nombres | `num_classer` | index › renderNumClasser |  |
 | ✅ 05/10 | Décimaux — L'abaque des décimaux | `num_decimaux_abaque` | index › renderAbaqueDecimaux |  |
-| ⬜ | Décimaux — Devinettes décimales | `num_decimaux_devinettes` | index › renderDevinettesDecimaux |  |
+| ✅ 05/10 | Décimaux — Devinettes décimales | `num_decimaux_devinettes` | index › renderDevinettesDecimaux |  |
 | ✅ 05/10 (9d2364e) | Décimaux — Valeur d'un chiffre | `num_decimaux_relier` | index › renderRelierDecimaux |  |
 | ⬜ | Décimaux — Écrire en chiffres | `num_decimaux_ecriture` | index › renderDecimauxEcriture |  |
 | ⬜ | Décimaux — Droites numériques | `num_decimaux_droite` | index › renderDecimauxDroite |  |
