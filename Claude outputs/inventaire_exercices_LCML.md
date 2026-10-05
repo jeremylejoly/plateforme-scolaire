@@ -116,6 +116,10 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - **05/10 — Lecture argumentative › Les écrans** :
   - Même piège que les devoirs : « Les écrans permettent d'apprendre et de découvrir le monde » devait être classé « pas dangereux » sans être dans le texte. Il est ajouté comme concession.
 
+- **05/10 — Lecture argumentative › Végétarien** :
+  - Classement cohérent avec le texte.
+  - Question 1 précisée par « Selon le texte » (l'oxyde d'azote des déjections, proposé comme mauvaise réponse, est aussi un vrai gaz à effet de serre).
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -172,7 +176,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 |---|---|---|---|---|
 | ✅ 05/10 | Faut-il supprimer les devoirs ? | `arg_devoirs` | index › renderArgDevoirs |  |
 | ✅ 05/10 | Les écrans sont-ils dangereux ? | `arg_ecrans` | index › renderArgEcrans |  |
-| ⬜ | Doit-on devenir végétarien ? | `arg_vegetarien` | index › renderArgVegetarien |  |
+| ✅ 05/10 | Doit-on devenir végétarien ? | `arg_vegetarien` | index › renderArgVegetarien |  |
 | ⬜ | Faut-il porter un uniforme ? | `arg_uniforme` | index › renderArgUniforme |  |
 | ⬜ | L'importance de lire | `arg_lecture` | index › renderArgLecture |  |
 | ⬜ | Bien manger pour bien grandir | `arg_alimentation` | index › renderArgAlimentation |  |
