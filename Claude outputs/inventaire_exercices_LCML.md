@@ -1286,6 +1286,15 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Pastilles de progression toujours vertes, même après une erreur → vert / rouge selon la réponse.
 - Double clic sur « Voir mon score final » : un seul enregistrement.
 
+### 05/10 — Maths › Grandeurs › Les capacités › Conversions de capacités QCM (`grandeur_capacites_qcm`, CAPACITES_QCM_BANQUE dans exercices_maths.js + index › demarrerCapacitesQcm) — sw.js v559
+- 50 questions recalculées par programme (ml, cl, dl, l, dal, hl, m³ ; ¼ ½ ¾ ⅛) : une seule proposition juste à chaque fois, et c'est bien celle attendue (¼ dl = 25 ml et 1 dl = 10 cl justes). Enregistrement déjà en place.
+- **Bonne réponse prévisible** : en 3e position dans 28 questions sur 50 de la banque et mélange par tri aléatoire biaisé → Fisher–Yates (20 000 séries : 33 % par position) ; questions aussi tirées par Fisher–Yates.
+- **Questions qui se donnaient la réponse** : 9 groupes de questions de même valeur (« 3,5 l → 3500 ml » et « 3500 ml → 3,5 l » ; ¼ l, 250 ml, 0,25 l ; ½ m³, 5 hl, 0,5 m³…) pouvaient tomber dans la même série → jamais deux questions de même valeur (20 000 séries : 0).
+- Pastilles de progression toujours vertes → vert / rouge selon la réponse.
+- Double clic sur « Voir mon score final » : un seul enregistrement ; double clic sur « Question suivante » ne saute pas de question.
+- Tests jsdom : partie 7 / 10 avec doubles clics → 1 sauvegarde (`grandeur_capacites_qcm`, 7 / 10) ; index : 6 / 7 scripts OK.
+- ⚠️ Même défaut de valeurs répétées dans la banque des masses (QCM et fiche abaque) : 250 mg / ¼ g, 3,5 kg / 3500 g, ½ t / 5 q / 0,5 t… À corriger si Jeremy le souhaite.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1605,7 +1614,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 |---|---|---|---|---|
 | ✅ 05/10 | Conversions de masses (QCM) | `grandeur_masses_qcm` | index › renderMassesQCM |  |
 | ⬜ | Conversions & Abaque (QCM) | `grandeur_masses_qcm_abaque` | fiches/masses_QCM_abaque.html |  |
-| ⬜ | Conversions de capacités (QCM) | `grandeur_capacites_qcm` | index › renderCapacitesQCM |  |
+| ✅ 05/10 | Conversions de capacités (QCM) | `grandeur_capacites_qcm` | index › renderCapacitesQCM |  |
 | ⬜ | Conversions de capacités (QCM — Bis) | `grandeur_capacites_qcm_sup` | fiches/capacites_QCM.html |  |
 | ⬜ | Conversions de longueurs (QCM) | `grandeur_longueurs_qcm` | index › renderLongueursQCM |  |
 | ⬜ | Conversions de longueurs (QCM — Bis) | `grandeur_longueurs_qcm_sup` | fiches/longueurs_QCM.html |  |
