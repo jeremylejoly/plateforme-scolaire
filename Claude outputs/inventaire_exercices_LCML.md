@@ -313,6 +313,14 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
   - « Tu … très timide quand tu étais petit » donnait la réponse. La phrase devient « … à l'école maternelle ».
   - Les autres réponses sont justes et en nouvelle orthographe. Les propositions et l'ordre des questions sont mélangés.
 
+- **05/10 — Conjugaison › Futur simple › Entraînement QCM** (50 questions, pas de fiche au plan de travail) :
+  - Toutes les bonnes réponses sont justes et en nouvelle orthographe (appellerez, jetteront, achèterai, naitra…).
+  - « je irai » et « je achèterai » s'affichaient sans élision. C'est corrigé en « j'… ».
+  - Dans environ 20 phrases, le piège au conditionnel était aussi correct : « Il viendrait nous aider demain », « Elle voudrait un cadeau »… Ces phrases commencent maintenant par « Si + présent » (« S'il a le temps, il … »), qui impose le futur.
+  - Phrases réécrites :
+    - « Je haïrai attendre » → « Si tu me trahis, je te haïrai ! » ;
+    - « Tu naitras sous une bonne étoile » (on ne nait qu'une fois…) → « Le bébé naitra au printemps prochain ».
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |

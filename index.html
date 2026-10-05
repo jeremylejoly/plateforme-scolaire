@@ -3236,7 +3236,7 @@ input[type=text].calc-input.incorrect {
 }
 </style>
 <script src="livres.js?v=20261002b"></script>
-<script src="exercices_francais.js?v=20261005t"></script>
+<script src="exercices_francais.js?v=20261005u"></script>
 <script src="exercices_maths.js?v=20260927e"></script>
 <script src="exercices_eveil.js?v=20260927e"></script>
 <script>
@@ -10610,7 +10610,7 @@ function validateConjExercise(){
       const inp = document.getElementById(`conj-blank-${i}`);
       given = inp ? inp.value.trim() : '';
       expected = q.answer;
-      const _norm = s => (s||'').normalize('NFC').replace(/\s+/g,' ').trim().toLowerCase();
+      const _norm = s => (s||'').normalize('NFC').replace(/[’`]/g,"'").replace(/\s+/g,' ').trim().toLowerCase();
       // Verbes en -ayer : les deux formes sont correctes (il paie / il paye, je paierai / je payerai)
       const acceptees = [expected];
       if(/ayer\b/.test(String(q.verb||''))){
@@ -10618,6 +10618,9 @@ function validateConjExercise(){
         if(v1 !== expected) { acceptees.push(v1); expected = expected + ' (ou ' + v1 + ')'; }
         else if(v2 !== expected) { acceptees.push(v2); expected = expected + ' (ou ' + v2 + ')'; }
       }
+      // Pronom déjà écrit avant le trou (« le soleil se … ») : on accepte aussi que l'élève le recopie.
+      const _pron = String(q.before||'').trim().match(/(?:^|\s)(me|te|se|nous|vous|m'|t'|s')$/i);
+      if(_pron) acceptees.slice().forEach(a => acceptees.push(_pron[1] + (/'$/.test(_pron[1]) ? '' : ' ') + a));
       isCorrect = acceptees.some(a => _norm(given) === _norm(a));
       if(inp){
         inp.disabled = true;

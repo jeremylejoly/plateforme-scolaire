@@ -78,7 +78,7 @@ window.EXERCICES_FRANCAIS = {
         {before:"Chaque matin, tu", after:"la main pour répondre aux questions.", verb:"lever", answer:"lèveras"},
         {before:"Ce film long", after:"les plus jeunes spectateurs.", verb:"ennuyer", answer:"ennuiera"},
         {before:"L'entreprise", after:"cinquante personnes supplémentaires l'an prochain.", verb:"employer", answer:"emploiera"},
-        {before:"La semaine prochaine, je", after:"ma lettre au père Noël.", verb:"envoyer", answer:"enverrai"},
+        {before:"La semaine prochaine, j'", after:"ma lettre au père Noël.", verb:"envoyer", answer:"enverrai"},
         {before:"Après le repas, vous", after:"la vaisselle ensemble.", verb:"essuyer", answer:"essuierez"},
         {before:"Dans quelques semaines, il", after:"complètement de sa blessure.", verb:"guérir", answer:"guérira"},
         {before:"Cet été, tu", after:"au moins trois romans.", verb:"lire", answer:"liras"},
@@ -113,7 +113,7 @@ window.EXERCICES_FRANCAIS = {
         {before:"Demain, il", after:"son nouveau magasin en centre-ville.", verb:"ouvrir", answer:"ouvrira"},
         {before:"Pour Noël, nous", after:"un livre à chacun de nos amis.", verb:"offrir", answer:"offrirons"},
         {before:"Dès que tu auras fini tes devoirs, tu", after:"jouer dehors.", verb:"sortir", answer:"sortiras"},
-        {before:"Dans quelques minutes, le soleil", after:"sur la montagne.", verb:"se lever", answer:"se lèvera"},
+        {before:"Dans quelques minutes, le soleil se", after:"sur la montagne.", verb:"se lever", answer:"lèvera"},
       ],
 
       // Évaluation fixe (une seule tentative)
