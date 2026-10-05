@@ -124,6 +124,10 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
   - Rien à corriger dans le contenu. Le classement est cohérent : l'argument contre, l'expression de la personnalité, figure bien dans le texte.
   - Le mélange vient du moteur commun.
 
+- **05/10 — Lecture argumentative › L'importance de lire** :
+  - Même piège que les devoirs : « Lire est ennuyeux et démotive » devait être classé « Contre » alors qu'il n'était pas dans le texte. Ajouté comme concession.
+  - Question 3 : la mauvaise réponse « reconnaître les différentes cultures » était presque dans le texte. Remplacée.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -182,7 +186,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | Les écrans sont-ils dangereux ? | `arg_ecrans` | index › renderArgEcrans |  |
 | ✅ 05/10 | Doit-on devenir végétarien ? | `arg_vegetarien` | index › renderArgVegetarien |  |
 | ✅ 05/10 | Faut-il porter un uniforme ? | `arg_uniforme` | index › renderArgUniforme |  |
-| ⬜ | L'importance de lire | `arg_lecture` | index › renderArgLecture |  |
+| ✅ 05/10 | L'importance de lire | `arg_lecture` | index › renderArgLecture |  |
 | ⬜ | Bien manger pour bien grandir | `arg_alimentation` | index › renderArgAlimentation |  |
 | ⬜ | Les réseaux sociaux | `arg_reseaux` | index › renderArgReseaux |  |
 
