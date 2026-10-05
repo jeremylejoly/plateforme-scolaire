@@ -1112,6 +1112,16 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - « 077 » accepté pour 77 ; Entrée sur un bouton ayant le focus ne valide plus deux fois ; signes × et − ; maitrise.
 - Tests jsdom : 300 séries, toutes les réponses recalculées depuis l'explication = justes, ≤ 5 chiffres ; parfait 10/10, faux 0/10, 1 sauvegarde par série.
 
+### 05/10 — Maths › Opérations › Additions et soustractions › Jusque 100 (`op_add_sous_100`, moteur commun `startCalcExercise` / `validateCalcExercise` dans index.html) — sw.js v537
+- Contenu : 5 000 séries simulées → additions toujours avec passage à la dizaine (≤ 99), soustractions toujours avec emprunt (> 0), résultats justes.
+- Tirage à pile ou face (parfois 8 additions sur 10) → toujours 5 additions + 5 soustractions, mélangées ; 23 + 48 et 48 + 23 comptent comme doublon.
+- MOTEUR COMMUN (concerne aussi 1 000 → 1 000 000, tables, ×10, ×5, ×9, ×11, tables étendues) :
+  - résultat enregistré sous `calc_add_sous_100` (non reconnu par le plan de travail) → `op_add_sous_100` (`calcActivityId` : add_sous_* → op_…, mult_div → op_mult_div_tables, op_* inchangé) ; titre lisible au lieu de « add_sous_100 » ;
+  - `getPlanItemScore` : correspondance à frontière de mot (sinon le score « Jusque 1 000 » se serait affiché sur « Jusque 100 ») + anciens résultats `calc_…` toujours reconnus ;
+  - lecture stricte : « 45abc » n'est plus accepté comme 45 (espaces de milliers acceptés) ;
+  - validation : tout vide → ignorée ; calculs vides → avertissement, 2e clic = corriger quand même ; double validation bloquée.
+- Tests node : 5 000 séries OK ; flux vide / partiel / sauvegarde unique vérifiés ; index : 6 / 7 scripts OK (module attendu).
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1395,7 +1405,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | Statut | Exercice | id | Source | Signal automatique |
 |---|---|---|---|---|
 | ⬜ | Additions et soustractions | `op_add_sous` | index › (?) | (code à localiser) |
-| ⬜ | Additions et soustractions — Jusque 100 | `op_add_sous_100` | index › startCalcExercise |  |
+| ✅ 05/10 | Additions et soustractions — Jusque 100 | `op_add_sous_100` | index › startCalcExercise |  |
 | ⬜ | Additions et soustractions — Jusque 1 000 | `op_add_sous_1000` | index › startCalcExercise |  |
 | ⬜ | Additions et soustractions — Jusque 10 000 | `op_add_sous_10000` | index › startCalcExercise |  |
 | ⬜ | Additions et soustractions — Jusque 100 000 | `op_add_sous_100000` | index › startCalcExercise |  |
