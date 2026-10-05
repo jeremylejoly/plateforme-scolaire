@@ -221,6 +221,14 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
   - Synonymes : 5 questions avaient une 2e réponse correcte (« raide », « recherche », « joli », « gentillesse », « frousse »). Ces propositions ont été remplacées par des réponses clairement fausses.
   - « Le vert, couleur primaire » : erreur corrigée.
 
+- **05/10 — Conjugaison › Un peu de tout › Tableau des 3 temps** :
+  - Le résultat n'était jamais enregistré, ni dans les résultats ni dans le plan de travail. C'est corrigé (`conj_tableau_3_temps`).
+  - ⚠️ 15 autres fiches de conjugaison n'enregistrent pas non plus de résultat : seules cond_pqpf, passe_simple et subj_imp le font. À corriger au fil des fiches.
+  - Faute corrigée : « navigaient » devient « naviguaient ».
+  - Copernic n'a pas « démontré », il a « affirmé ».
+  - « La Belgique faisait partie de l'Empire romain » devient « notre région ».
+  - Le mélange est maintenant équitable.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -379,7 +387,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ⬜ | Présent de l'indicatif (Écriture) | `conj_present_ecriture` | fiches/conjugaison_present_ecriture.html |  |
 | ⬜ | Imparfait de l'indicatif (QCM) | `conj_imparfait_qcm` | fiches/conjugaison_imparfait_QCM.html |  |
 | ⬜ | Imparfait de l'indicatif (Écriture) | `conj_imparfait_ecriture` | fiches/conjugaison_imparfait_ecriture.html |  |
-| ⬜ | 1. Tableau des 3 temps | `conj_tableau_3_temps` | fiches/conjugaison_tableau_3_temps.html |  |
+| ✅ 05/10 | 1. Tableau des 3 temps | `conj_tableau_3_temps` | fiches/conjugaison_tableau_3_temps.html |  |
 | ⬜ | 2. Tableau des 3 temps simples | `conj_trois_temps_simples` | fiches/conjugaison_trois_temps_simples.html |  |
 | ⬜ | 3. Repère le bon verbe | `conj_repere_verbe` | fiches/conjugaison_repere_verbe.html |  |
 
