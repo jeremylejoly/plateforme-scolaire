@@ -821,6 +821,13 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Validation unique (verrou + bouton masqué) ; bonne réponse affichée à côté des menus faux.
 - Nouvelle orthographe : parait, maitre, maitresse.
 
+### 05/10 — Homophones leur / leurs (`homo_leur`, index › HOMO_LEUR_BANQUE / validerHomoLeur) — sw.js v490
+- Phrase affichée aux élèves avec un mot anglais : « nos games de société » (+ commentaire de développement) → « jeux ».
+- Phrase illogique : « Le chat court après les oiseaux mais il leur échappe » → « Mes cousins arrivent : je leur ouvre la porte ».
+- Équilibre : 16 « leurs » sur 50 → 8 phrases ajoutées dont 3 à double trou (« Je leur ai rendu leurs crayons ») ; banque 58 (37 leur / 24 leurs).
+- Validation unique (verrou + bouton masqué) ; bonne réponse affichée à côté des menus faux.
+- Nouvelle orthographe : maitre, gouter, entraineur.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1008,7 +1015,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | on / ont | `homo_on` | index › renderHomoOnSynthesis |  |
 | ✅ 05/10 | la / là / l'a / l'as | `homo_la` | index › renderHomoLaSynthesis |  |
 | ✅ 05/10 | ces / ses / c'est / s'est / sais / sait | `homo_ces` | index › renderHomoCesSynthesis |  |
-| ⬜ | leur / leurs | `homo_leur` | index › renderHomoLeurSynthesis |  |
+| ✅ 05/10 | leur / leurs | `homo_leur` | index › renderHomoLeurSynthesis |  |
 | ⬜ | peu / peux / peut | `homo_peu` | index › renderHomoPeuSynthesis |  |
 | ⬜ | sans / s'en / cent / sang | `homo_sans` | index › renderHomoSansSynthesis |  |
 | ⬜ | Les homophones complexes | `homo_complexes` | fiches/homophones_complexes.html |  |
