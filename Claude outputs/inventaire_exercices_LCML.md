@@ -1342,6 +1342,15 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - En cas d'erreur, la correction affiche aussi la méthode (indice). Nouvelle orthographe : coute, couter, cout.
 - Tests jsdom : messages vide / sans unité / cm / « 12abc » sans compter ; partie 9 / 10 avec doubles clics → 1 sauvegarde ; « Nouveaux problèmes » → nouvelle série 10 / 10 ; syntaxe OK.
 
+### 05/10 — Maths › Grandeurs › Le périmètre › Le cercle › Le labo de la circonférence (`grandeur_perimetre_cercle_labo`, `fiches/perimetre_cercle.html` + copies public et racine) — sw.js v567
+- Les 12 questions d'origine recalculées (π = 3,14) : réponses justes.
+- **Presque toujours les mêmes questions** (10 tirées sur 12, tri aléatoire biaisé) → série générée : 2 calculs avec le diamètre, 2 avec le rayon (cm, dm ou m) et les 6 situations (roue, tronc, piste de cirque, table, boite de conserve, rond-point) avec de nouvelles mesures réalistes à chaque série ; ordre mélangé (Fisher–Yates) ; jamais deux fois la même réponse dans une série. 5 000 séries toutes différentes, réponses = 3,14 × diamètre (0 écart), mesure de l'énoncé = mesure du dessin.
+- **Valeur de π jamais donnée avant de répondre** (seulement dans la correction) : un élève qui utilisait 3,1416 ou la touche π était compté faux → « Utilise π = 3,14 » affiché sous la question (la formule n'est pas affichée : doubler le rayon fait partie de l'exercice).
+- « 31,40 » refusé pour 31,4 (comparaison exacte de nombres à virgule) → comparaison tolérante, zéros finaux acceptés.
+- **Aucun résultat enregistré** → enregistrement unique en fin de série. Double clic sur « Question suivante » sautait une question → bloqué.
+- Nouvelle orthographe : maitrises, Entraine-toi, boite. Capture 390 px sans défilement horizontal.
+- Tests jsdom : partie 7 / 10 avec doubles clics (validation et suivant) → 1 sauvegarde ; « Recommencer » → nouvelle série ; syntaxe OK.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1672,7 +1681,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 |---|---|---|---|---|
 | ✅ 05/10 | Périmètre — Calcul | `grandeur_perimetre_calcul` | index › renderPerimetreCalcul |  |
 | ✅ 05/10 | Périmètre — Problèmes | `grandeur_perimetre_problemes` | index › renderPerimetreProblemes |  |
-| ⬜ | Périmètre du cercle — Le labo de la circonférence | `grandeur_perimetre_cercle_labo` | fiches/perimetre_cercle.html |  |
+| ✅ 05/10 | Périmètre du cercle — Le labo de la circonférence | `grandeur_perimetre_cercle_labo` | fiches/perimetre_cercle.html |  |
 | ⬜ | Périmètre du cercle — Le rayon et diamètre cachés | `grandeur_perimetre_cercle_inverse` | fiches/perimetre_cercle_inverse.html |  |
 | ⬜ | Périmètre du cercle — Figures complexes | `grandeur_perimetre_cercle_compose` | fiches/perimetre_cercle_compose.html |  |
 | ⬜ | L'Enquêteur Royal (Situations d'Aire) | `grandeur_aire_situations` | fiches/aire_situations.html |  |
