@@ -776,6 +776,14 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - « Ayant terminé est au participe passé » → « est un participe (il n'est pas conjugué) » ; « gronde and cherchent » → « et ».
 - Nouvelle orthographe : connaitre, s'entraine, s'entrainer.
 
+### 05/10 — Homophones a / as / à (`homo_a`, index › HOMO_A_BANQUE / validerHomoA) — sw.js v483
+- Le bouton « Valider » restait actif après correction → on pouvait revalider et enregistrer plusieurs résultats. Verrou `submitted` + bouton masqué.
+- Correction : la bonne réponse s'affiche désormais à côté de chaque menu faux (avant, seulement rouge).
+- « Il ___ froid dehors » (on attend « il fait froid ») → « Il ___ froid aux mains ce matin ».
+- Nouvelle orthographe : gouter, diner.
+- Tirage (Fisher-Yates, 10 trous) et banque (40 phrases équilibrées) OK.
+- À vérifier pour les autres homophones : même moteur copié (10 fonctions `validerHomo*`).
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -956,7 +964,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 
 | Statut | Exercice | id | Source | Signal automatique |
 |---|---|---|---|---|
-| ⬜ | a / as / à | `homo_a` | index › renderHomoASynthesis |  |
+| ✅ 05/10 | a / as / à | `homo_a` | index › renderHomoASynthesis |  |
 | ⬜ | ou / où | `homo_ou` | index › renderHomoOuSynthesis |  |
 | ⬜ | son / sont | `homo_son` | index › renderHomoSonSynthesis |  |
 | ⬜ | se / ce / s' / c' | `homo_ce` | index › renderHomoCeSynthesis |  |

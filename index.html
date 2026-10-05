@@ -15336,19 +15336,23 @@ const HOMO_OU_BANQUE = [
   {phrase: "Je cherche un endroit ___ me reposer tranquillement.", trous: [{pos:0, correct:'où'}]},
   {phrase: "Il doit choisir entre le football ___ le tennis.", trous: [{pos:0, correct:'ou'}]},
   {phrase: "Le café ___ nous nous retrouvons est près de la gare.", trous: [{pos:0, correct:'où'}]},
-  {phrase: "Tu préfères travailler le matin ___ le soir ?", trous: [{pos:0, correct:'ou'}]},
+  {phrase: "Mon père travaille le matin ___ le soir, selon les semaines.", trous: [{pos:0, correct:'ou'}]},
   {phrase: "La forêt ___ nous nous sommes perdus était immense.", trous: [{pos:0, correct:'où'}]},
   {phrase: "Elle ne sait pas ___ poser ses affaires.", trous: [{pos:0, correct:'où'}]},
-  {phrase: "Tu veux un sandwich ___ une salade pour le déjeuner ?", trous: [{pos:0, correct:'ou'}]},
+  {phrase: "Je mangerai un sandwich ___ une salade à midi.", trous: [{pos:0, correct:'ou'}]},
   {phrase: "Le moment ___ elle a compris était inoubliable.", trous: [{pos:0, correct:'où'}]},
-  {phrase: "Il habite dans un quartier ___ tout le monde se connaît.", trous: [{pos:0, correct:'où'}]},
-  {phrase: "Tu choisis la porte de gauche ___ celle de droite ?", trous: [{pos:0, correct:'ou'}]},
-  {phrase: "La rivière ___ nous nous sommes baignés était fraîche.", trous: [{pos:0, correct:'où'}]},
+  {phrase: "Il habite dans un quartier ___ tout le monde se connait.", trous: [{pos:0, correct:'où'}]},
+  {phrase: "Prends la porte de gauche ___ celle de droite, peu importe.", trous: [{pos:0, correct:'ou'}]},
+  {phrase: "La rivière ___ nous nous sommes baignés était fraiche.", trous: [{pos:0, correct:'où'}]},
   {phrase: "Il ne sait plus ___ il a garé sa voiture.", trous: [{pos:0, correct:'où'}]},
   {phrase: "Tu veux du sucre ___ du miel dans ton thé ?", trous: [{pos:0, correct:'ou'}]},
   {phrase: "Le musée ___ nous allons est fermé le lundi.", trous: [{pos:0, correct:'où'}]},
   {phrase: "Elle se demande ___ elle passera ses prochaines vacances.", trous: [{pos:0, correct:'où'}]},
   {phrase: "Tu préfères dormir ___ regarder encore un épisode ?", trous: [{pos:0, correct:'ou'}]},
+  {phrase: "Tu sais ___ se trouve la gare ?", trous: [{pos:0, correct:'où'}]},
+  {phrase: "Tu as vu ___ le chat s'est caché ?", trous: [{pos:0, correct:'où'}]},
+  {phrase: "Tu connais un magasin ___ on vend des timbres ?", trous: [{pos:0, correct:'où'}]},
+  {phrase: "Te rappelles-tu le jour ___ il a neigé si fort ?", trous: [{pos:0, correct:'où'}]},
 ];
 
 let homoOuState = {phrases:[], selections:{}, submitted:false, total:0};
@@ -15448,7 +15452,7 @@ function renderHomoOuScreen(){
 
   html += `</div>`;
 
-  html += `<button class="btn" onclick="validerHomoOu()" style="width:100%;margin-top:1rem">✅ Valider</button>
+  html += `<button class="btn" id="homo-ou-valider" onclick="validerHomoOu()" style="width:100%;margin-top:1rem">✅ Valider</button>
     <div id="homo-ou-score" style="display:none;margin-top:1rem" class="geo-score-panel"></div>`;
 
   body.innerHTML = html;
@@ -15462,6 +15466,8 @@ function homoOuSelect(tid, pi, ti){
 }
 
 function validerHomoOu(){
+  if(homoOuState.submitted) return;
+  homoOuState.submitted = true;
   let score = 0;
   const total = homoOuState.total;
   homoOuState.phrases.forEach((p, pi) => {
@@ -15471,10 +15477,19 @@ function validerHomoOu(){
       const val = (homoOuState.selections[pi] && homoOuState.selections[pi][ti]) || '';
       const ok = val === t.correct;
       if(ok){ score++; sel.style.background='#d4f5e9'; sel.style.borderColor='var(--green)'; sel.style.color='var(--green)'; }
-      else { sel.style.background='#fde8e8'; sel.style.borderColor='var(--red)'; sel.style.color='var(--red)'; }
+      else {
+        sel.style.background='#fde8e8'; sel.style.borderColor='var(--red)'; sel.style.color='var(--red)';
+        // Afficher la bonne réponse à côté du menu
+        const corr = document.createElement('span');
+        corr.textContent = ' → ' + t.correct;
+        corr.style.cssText = 'color:var(--green);font-weight:800;';
+        sel.insertAdjacentElement('afterend', corr);
+      }
       sel.disabled = true;
     });
   });
+  const btnVal = document.getElementById('homo-ou-valider');
+  if(btnVal) btnVal.style.display = 'none';
   const pct = Math.round(score/total*100);
   const color = pct===100?'var(--green)':pct>=70?'var(--amber)':'var(--red)';
   const panel = document.getElementById('homo-ou-score');
