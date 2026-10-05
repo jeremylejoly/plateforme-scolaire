@@ -702,6 +702,14 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
   - Nouvelle orthographe : maitrisaient, connaitre.
   - **Toute la rubrique Le verbe (fonction) est vérifiée.**
 
+- **05/10 — Grammaire › Fonctions › Le prédicat › Repérer le prédicat** (40 phrases : 8 par type — verbe seul, verbe + CDV, verbe + CIV, verbe + CDV + CIV, verbe + attribut ; 2 de chaque par partie) :
+  - **Plan de travail.** Le résultat était enregistré sous `predicat_phrase`, que l'élément « Le prédicat » du plan (`gram_predicat`) ne reconnaissait pas. Il est maintenant enregistré sous `gram_predicat_phrase`.
+  - **Score gonflé.** Une réponse juste à la seconde chance rapportait le point. Le point n'est maintenant compté qu'au premier essai.
+  - Coquille corrigée : « l'artist » devient « l'artiste ».
+  - Les 40 phrases ont été relues. Les prédicats sont justes, et les CC placés en tête ne sont pas à cliquer, comme le dit la consigne.
+  - Le mélange utilise maintenant la méthode Fisher–Yates.
+  - Nouvelle orthographe : maitrises, entrainement.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |

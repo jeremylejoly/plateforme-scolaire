@@ -45062,7 +45062,8 @@ function startCdvCivExercise() {
   const pronomPool = window.EXERCICES_CDV_CIV.filter(q => q.cat === 'pronominalized');
   const pronomCdvCompleteCivPool = window.EXERCICES_CDV_CIV.filter(q => q.cat === 'pronom_cdv_complete_civ');
 
-  const shuffle = (arr) => [...arr].sort(() => 0.5 - Math.random());
+  // Mélange équitable (Fisher–Yates)
+  const shuffle = (arr) => { const a = [...arr]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
 
   // Tirer exactement 2 de chaque catégorie (2 * 5 = 10 questions)
   const selectedCdv = shuffle(onlyCdvPool).slice(0, 2);
@@ -45351,7 +45352,8 @@ function verifyCdvCivAnswer() {
   }
 
   if (isPerfect) {
-    cdvCivGameState.score++;
+    // Point compté seulement si la réponse est juste du premier coup (la seconde chance sert à apprendre)
+    if (!cdvCivGameState.attempts) cdvCivGameState.score++;
     cdvCivGameState.submitted = true;
     renderCdvCivQuestion();
   } else {
@@ -45384,8 +45386,8 @@ function renderCdvCivResults() {
 
   const pct = Math.round((cdvCivGameState.score / cdvCivGameState.questions.length) * 100);
 
-  let msg = "Continue à t'entraîner, tu vas y arriver ! 💪";
-  if (pct === 100) msg = "Parfait ! Tu maîtrises parfaitement le CDV et le CIV ! 👑🏆";
+  let msg = "Continue à t'entrainer, tu vas y arriver ! 💪";
+  if (pct === 100) msg = "Parfait ! Tu maitrises parfaitement le CDV et le CIV ! 👑🏆";
   else if (pct >= 80) msg = "Excellent travail ! C'est presque parfait ! 🌟";
   else if (pct >= 50) msg = "Bon travail ! Poursuis tes efforts ! 👍";
 
@@ -45440,7 +45442,7 @@ function renderCdvCivResults() {
       student: state.student,
       cls: state.studentCls,
       className: CLASSES[state.studentCls] ? CLASSES[state.studentCls].name : state.studentCls,
-      activity: 'cdv_civ_phrase',
+      activity: 'gram_cdv_civ_phrase',   // avant : 'cdv_civ_phrase', que le plan de travail (gram_cdv_civ) ne reconnaissait pas
       bookTitle: `Grammaire — Repérer le CDV et le CIV`,
       score: cdvCivGameState.score,
       total: cdvCivGameState.questions.length,
