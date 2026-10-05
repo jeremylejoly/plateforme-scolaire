@@ -1379,6 +1379,18 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Double clic sur « Situation suivante » sautait une situation → bloqué ; un seul enregistrement en fin de série.
 - Nouvelle orthographe : iles, boite, maitrises.
 - Tests jsdom : partie 7 / 10 avec doubles clics → 1 sauvegarde ; « Recommencer » remet à zéro ; syntaxe OK.
+- ⚠️ Même appel inexistant `handleActivityScore` (donc aucun résultat enregistré) dans 6 autres fiches, à corriger quand on y arrivera : ~~aire_quadrillage~~ (v571), aire_conversions, aire_formules, volume_cubes, volume_formules, volume_conversions.
+
+### 05/10 — Maths › Grandeurs › L'aire › Le Géomètre des Carreaux (`grandeur_aire_quadrillage`, `fiches/aire_quadrillage.html` + copies public et racine) — sw.js v571
+- 51 figures recalculées par la formule du lacet : toutes les aires justes, aucun polygone croisé, toutes dans la grille.
+- **Aucun résultat enregistré** (appel à `handleActivityScore`, fonction inexistante) → `saveResult`, une seule fois par série.
+- **Figures en double / perdue** : la figure 50 était identique à la figure 43, le « losange fin vertical » identique au « petit losange », et un correctif écrasait par erreur le mini-hexagone → mini-hexagone rétabli, doublons remplacés (pentagone maison 27 cm², losange couché).
+- **Noms faux** : « trapèze rectangle » sans côté vertical (sommets corrigés) ; « double escalier — monte puis descend » qui ne fait que descendre ; « hexagone » à 8 côtés → « octogone allongé » ; « bouclier » pointe en haut → « grange » ; « 6 côtés réguliers » (non réguliers).
+- **Indices qui donnaient les mesures pendant la question** (« Côté 5 », « Base 6, hauteur 4 », « Diagonales 4 et 6 », « 2 colonnes × 3 rangées »…) → méthode seulement ; les mesures apparaissent dans la correction.
+- Correction : formule avec les vraies mesures pour chaque type (trapèze, parallélogramme et losange n'avaient que l'aire ; le mini-hexagone était expliqué comme un rectangle « 6 × 4 = 16 ») — 51 explications vérifiées.
+- Saisie vide : fenêtre `alert()` bloquante → message dans la page, rien n'est compté. Double clic sur « Figure suivante » → plus de figure sautée.
+- Nouvelle orthographe : maitrises, entrainer. Capture 390 px OK.
+- Tests jsdom : vide non compté, partie 7 / 10 avec doubles clics → 1 sauvegarde ; syntaxe OK.
 
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
@@ -1714,7 +1726,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | Périmètre du cercle — Le rayon et diamètre cachés | `grandeur_perimetre_cercle_inverse` | fiches/perimetre_cercle_inverse.html |  |
 | ✅ 05/10 | Périmètre du cercle — Figures complexes | `grandeur_perimetre_cercle_compose` | fiches/perimetre_cercle_compose.html |  |
 | ✅ 05/10 | L'Enquêteur Royal (Situations d'Aire) | `grandeur_aire_situations` | fiches/aire_situations.html |  |
-| ⬜ | Le Géomètre des Carreaux (Quadrillage) | `grandeur_aire_quadrillage` | fiches/aire_quadrillage.html |  |
+| ✅ 05/10 | Le Géomètre des Carreaux (Quadrillage) | `grandeur_aire_quadrillage` | fiches/aire_quadrillage.html |  |
 | ⬜ | L'Arpenteur Impérial (Conversions d'Aire) | `grandeur_aire_conversions` | fiches/aire_conversions.html |  |
 | ⬜ | Mesures Agraires & Superficies | `grandeur_aire_agraire` | fiches/aire_agraire.html |  |
 | ⬜ | L'Arpenteur du Château (Formules d'aire) | `grandeur_aire_formules` | fiches/aire_formules.html |  |
