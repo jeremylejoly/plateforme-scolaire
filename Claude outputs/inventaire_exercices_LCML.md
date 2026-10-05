@@ -584,6 +584,16 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
   - Nouvelle orthographe : fraiche, maitresse, maitrises, entrainer.
   - Les 3 copies de la fiche sont identiques.
 
+- **05/10 — Grammaire › Le pronom › La chasse aux répétitions** (12 textes, 6 par partie, 3 répétitions par texte à remplacer par un pronom relatif, possessif ou démonstratif) :
+  - **Le résultat n'était jamais enregistré.** C'est corrigé (`gram_pronom_repetitions`).
+  - **Score trop sévère.** Un texte ne rapportait 1 point que si les 3 remplacements étaient justes du premier coup (score sur 6). Maintenant, chaque remplacement juste du premier coup rapporte 1 point, soit un score sur 18.
+  - **Élève bloqué.** Après 2 essais ratés, la réponse et l'explication s'affichent maintenant.
+  - Terminologie : « pronom relatif COD » devient « CDV » (4 explications).
+  - « élèves de CM2 » (terme français) devient « élèves de 6e primaire ».
+  - Les 36 remplacements ont été relus et sont justes (qui, que, dont, où ; le mien, la sienne, les leurs… ; celui-ci, celles-là…).
+  - Nouvelle orthographe : maitresse, fraiche, boite. « mûrs » reste.
+  - **Toute la rubrique Le pronom est vérifiée.**
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -688,7 +698,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | Le pronom — Déterminant ou pronom ? | `gram_pronom_piege` | index › startPronomPiegeExercise |  |
 | ✅ 05/10 | Le pronom — Le détecteur de référents | `gram_pronom_referents` | fiches/detecteur_referents.html |  |
 | ✅ 05/10 | Le pronom — Le remplaçant | `gram_pronom_remplacant` | fiches/remplacant_pronom.html |  |
-| ⬜ | Le pronom — La chasse aux répétitions | `gram_pronom_repetitions` | fiches/chasse_repetitions.html |  |
+| ✅ 05/10 | Le pronom — La chasse aux répétitions | `gram_pronom_repetitions` | fiches/chasse_repetitions.html |  |
 | ⬜ | L'adverbe | `gram_adverbe` | index › (?) | (code à localiser) |
 | ⬜ | L'adverbe — Reconnaître les adverbes | `gram_adverbe_reconnaitre` | fiches/adverbe_exercice.html |  |
 | ⬜ | L'adverbe — Adjectif ou adverbe ? | `gram_adverbe_accord` | fiches/adverbe_accord_exercice.html |  |
