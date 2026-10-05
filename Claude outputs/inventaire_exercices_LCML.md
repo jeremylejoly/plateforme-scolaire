@@ -1351,6 +1351,16 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Nouvelle orthographe : maitrises, Entraine-toi, boite. Capture 390 px sans défilement horizontal.
 - Tests jsdom : partie 7 / 10 avec doubles clics (validation et suivant) → 1 sauvegarde ; « Recommencer » → nouvelle série ; syntaxe OK.
 
+### 05/10 — Maths › Grandeurs › Le périmètre › Le cercle › Le rayon et le diamètre cachés (`grandeur_perimetre_cercle_inverse`, `fiches/perimetre_cercle_inverse.html` + copies public et racine) — sw.js v568
+- Les 14 questions d'origine recalculées (D = P ÷ 3,14, r = D ÷ 2) : réponses justes.
+- **Questions qui se donnaient la réponse** : 6 paires avec le même périmètre (31,4 cm → diamètre puis 31,4 cm → rayon ; 62,8 m ; 314 dm ; 9,42 cm ; 12,56 m ; 188,4 cm) pouvaient tomber dans la même série. **Presque toujours les mêmes questions** (10 sur 14, tri biaisé).
+- → Série générée : 3 diamètres, 3 rayons (cm, dm ou m) et 4 situations sur 6 (roue, tronc, boite de conserve, bassin, couvercle, piste de cirque), nouveaux nombres à chaque série, ordre Fisher–Yates, jamais deux fois le même périmètre. 5 000 séries toutes différentes, 0 écart entre l'énoncé, le dessin et la réponse.
+- Contenu : « un prisme a une base circulaire » (un prisme n'a pas de base ronde) → remplacé par le couvercle ; étiquette de boite de 25,12 dm (2,5 m !) → mesures en cm réalistes.
+- Signe « / » → « ÷ » dans les explications et le message de fin.
+- « 1,50 » refusé pour 1,5 → comparaison tolérante. **Aucun résultat enregistré** → enregistrement unique en fin de série. Double clic sur « Question suivante » → plus de question sautée.
+- Nouvelle orthographe : maitrises, Entraine-toi, boite. Capture 390 px sans défilement horizontal.
+- Tests jsdom : partie 8 / 10 avec doubles clics → 1 sauvegarde ; « Recommencer » → nouvelle série ; syntaxe OK.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1682,7 +1692,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | Périmètre — Calcul | `grandeur_perimetre_calcul` | index › renderPerimetreCalcul |  |
 | ✅ 05/10 | Périmètre — Problèmes | `grandeur_perimetre_problemes` | index › renderPerimetreProblemes |  |
 | ✅ 05/10 | Périmètre du cercle — Le labo de la circonférence | `grandeur_perimetre_cercle_labo` | fiches/perimetre_cercle.html |  |
-| ⬜ | Périmètre du cercle — Le rayon et diamètre cachés | `grandeur_perimetre_cercle_inverse` | fiches/perimetre_cercle_inverse.html |  |
+| ✅ 05/10 | Périmètre du cercle — Le rayon et diamètre cachés | `grandeur_perimetre_cercle_inverse` | fiches/perimetre_cercle_inverse.html |  |
 | ⬜ | Périmètre du cercle — Figures complexes | `grandeur_perimetre_cercle_compose` | fiches/perimetre_cercle_compose.html |  |
 | ⬜ | L'Enquêteur Royal (Situations d'Aire) | `grandeur_aire_situations` | fiches/aire_situations.html |  |
 | ⬜ | Le Géomètre des Carreaux (Quadrillage) | `grandeur_aire_quadrillage` | fiches/aire_quadrillage.html |  |
