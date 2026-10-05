@@ -919,6 +919,14 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Phrase contradictoire « Le savant avait une grande ignorance du sujet » → « L'apprenti avoua sa grande ignorance du sujet ».
 - Les 32 autres items sont justes.
 
+### 05/10 — Les substituts du nom (`fiches/lecture_substituts.html` + copie public) — sw.js v505
+- Phrase illogique : « J'ai prêté mon dictionnaire à Sophie. Elle lui a rendu son livre » (« lui » ne pouvait pas être Sophie) → « J'ai croisé Sophie à la bibliothèque. Je lui ai rendu son livre. »
+- « Voici mon dessin et voici le sien. Celui de Thomas… » (référent après le pronom) → « Thomas a terminé son dessin. Voici le mien, et voici le sien. »
+- « Ces pommes sont mûres, mais celles-ci sont vertes » (réponse « ces pommes-ci ») → « Ces pommes-là sont mûres, mais celles-ci… » ; réponse « d'autres pommes », piège « les pommes mûres ».
+- Synthèse : « **…** » affichés tels quels → gras.
+- Double clic (réponse / suivant) neutralisé ; correction indique la bonne réponse ; mélanges Fisher-Yates.
+- Nouvelle orthographe : maitre, plait, maitrises, s'entrainer.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1132,7 +1140,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | Synonymes | `synonymes` | index › renderSynonymes |  |
 | ✅ 05/10 | Antonymes | `antonymes` | index › renderAntonymes |  |
 | ⬜ | Mes écrits — Atelier Plume | `mes_ecrits` | index › (?) | (code à localiser) |
-| ⬜ | Les substituts du nom | `lecture_substituts` | fiches/lecture_substituts.html |  |
+| ✅ 05/10 | Les substituts du nom | `lecture_substituts` | fiches/lecture_substituts.html |  |
 
 ### 📖 Français — 📚 Vocabulaire
 

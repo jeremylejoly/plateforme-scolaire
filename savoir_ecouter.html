@@ -679,7 +679,7 @@
   <script>
     // BASE DE DONNÉES DE L'EXERCICE
     const EXERCISE_DATA = {
-      id: 'savoir_ecouter_soignes',
+      id: 'savoir_ecouter_1',
       title: 'Le secret de la forêt de Soignes',
       audioUrl: 'audio/soignes_audio.m4a',
       questions: [
@@ -831,7 +831,23 @@
     const restartBtn = document.getElementById('restart-btn');
 
     // INITIALISATION DE L'EXERCICE
+    // Mélange (Fisher-Yates) des propositions des QCM à chaque partie ; « Vrai / Faux » reste dans l'ordre.
+    let QUESTIONS_SOURCE = null;
+    function melangerPropositions() {
+      if (!QUESTIONS_SOURCE) QUESTIONS_SOURCE = EXERCISE_DATA.questions;
+      EXERCISE_DATA.questions = QUESTIONS_SOURCE.map(q => {
+        if (q.type === 'vf') return { ...q };
+        const o = q.options.map((t, i) => ({ t, ok: i === q.correct }));
+        for (let i = o.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [o[i], o[j]] = [o[j], o[i]];
+        }
+        return { ...q, options: o.map(x => x.t), correct: o.findIndex(x => x.ok) };
+      });
+    }
+
     function initExercise() {
+      melangerPropositions();
       currentStep = 'A';
       userAnswers = Array(EXERCISE_DATA.questions.length).fill(null);
       totalTimeSec = 0;
@@ -996,9 +1012,22 @@
 
     // ENVOI DU SCORE AU SITE / PARENT
     function sendScoreToDashboard(score, total, timeSec) {
-      const key = 'savoir_ecouter_soignes';
+      // saveResult attend UN objet. Avant, on lui passait (score, total, temps, clé) :
+      // le résultat était silencieusement rejeté et l'identifiant était toujours celui de Soignes.
+      const key = EXERCISE_DATA.id;
       if (window.parent && typeof window.parent.saveResult === 'function') {
-        window.parent.saveResult(score, total, timeSec, key);
+        try {
+          window.parent.saveResult({
+            activity: key,
+            bookTitle: 'Savoir écouter — ' + EXERCISE_DATA.title,
+            score: score,
+            total: total,
+            pct: Math.round(score / total * 100),
+            timeSec: timeSec,
+            date: new Date().toLocaleDateString('fr-BE'),
+            time: new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })
+          });
+        } catch (e) { console.warn(e); }
         console.log("Score envoyé au parent :", score, total, timeSec);
       } else {
         console.log("Mode autonome : Score non envoyé (pas d'objet parent saveResult). Score:", score, "/", total);
@@ -1072,6 +1101,7 @@
         timerStart = Date.now();
         
       } else if (currentStep === 'D') {
+        if (!userAnswers.every(ans => ans !== null)) return;
         // Validation des réponses
         totalTimeSec = Math.round((Date.now() - timerStart) / 1000);
         currentStep = 'F';
@@ -1158,7 +1188,7 @@
       } else {
         scoreCircle.style.borderColor = 'var(--red)';
         scoreCircle.style.color = 'var(--red)';
-        scoreMsg.textContent = "Entraîne-toi encore, concentre-toi bien sur la voix ! 💪";
+        scoreMsg.textContent = "Entraine-toi encore, concentre-toi bien sur la voix ! 💪";
       }
       
       resultBox.style.display = 'flex';
@@ -1262,6 +1292,7 @@
           EXERCISE_DATA.title = found.titre;
           EXERCISE_DATA.audioUrl = found.audioUrl;
           EXERCISE_DATA.questions = found.questions;
+          QUESTIONS_SOURCE = null;
           const subt = document.querySelector('.subtitle');
           if (subt) subt.textContent = found.titre;
         }
