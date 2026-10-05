@@ -468,6 +468,15 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
   - Le résultat était déjà enregistré (`conj_passe_simple`).
   - Nouvelle orthographe : reconnaitre, entraine-toi.
 
+- **05/10 — Grammaire › Le nom › Identifier les noms** (50 phrases, 10 par partie) :
+  - Le résultat était enregistré sous `gram_nom`. Or le plan de travail cherche `gram_nom_identifier` : l'exercice n'y était jamais coché. L'identifiant enregistré est maintenant `gram_nom_identifier`. L'élément « Le nom » (thème entier) le reconnait toujours.
+  - Le mélange des phrases utilisait le tri aléatoire biaisé. Il utilise maintenant la méthode Fisher–Yates.
+  - Données :
+    - « Chaque soir, maman raconte… » : « maman » employé sans déterminant pouvait passer pour un nom propre. La phrase devient « ma maman ».
+    - « l'Egypte » devient « l'Égypte » (accent sur la majuscule).
+  - Les 50 phrases ont été relues : tous les noms communs et propres sont bien marqués.
+  - Nouvelle orthographe : entrainer, maitrise, entraine-toi (menu et résultats du nom).
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -557,7 +566,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 
 | Statut | Exercice | id | Source | Signal automatique |
 |---|---|---|---|---|
-| ⬜ | Le nom — Identifier les noms | `gram_nom_identifier` | index › startNomExercise |  |
+| ✅ 05/10 | Le nom — Identifier les noms | `gram_nom_identifier` | index › startNomExercise |  |
 | ⬜ | Le nom — Est-ce un nom ? | `gram_nom_reconnaître` | index › startNomReconnaîtreExercise |  |
 | ⬜ | Le déterminant | `gram_determinant` | index › (?) | (code à localiser) |
 | ⬜ | Le déterminant — Reconnaître les déterminants | `gram_determinant_reconnaitre` | index › startDeterminantExercise |  |
