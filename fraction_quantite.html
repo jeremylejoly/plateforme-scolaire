@@ -484,6 +484,8 @@
       const q = questions[currentIdx];
       currentQuestionState.isHelped = false;
       currentQuestionState.hasSubmittedWrong = false;
+      currentQuestionState.wrongCount = 0;
+      document.getElementById('btn-continue').classList.remove('hidden');
       
       // Update progress dot active class
       document.querySelectorAll('.progress-dot').forEach((dot, idx) => {
@@ -704,6 +706,26 @@
       } else {
         playSound('error');
         currentQuestionState.hasSubmittedWrong = true;
+        currentQuestionState.wrongCount = (currentQuestionState.wrongCount || 0) + 1;
+        const partValR = q.total / q.d;
+        if (currentQuestionState.wrongCount >= 2) {
+          // Après 2 essais ratés : on montre la solution et on passe à la suite (0 point)
+          input.disabled = true;
+          document.getElementById('btn-validate').disabled = true;
+          document.getElementById('btn-help').disabled = true;
+          drawSVG(true, true);
+          dot.className = "progress-dot wrong";
+          questionsHistory.push({ index: currentIdx, status: 'wrong' });
+          feedbackTitle.innerHTML = `Voici la solution`;
+          feedbackBox.className = "border-3 border-rose-500 bg-rose-50 text-rose-900 rounded-xl p-4 flex flex-col gap-2 mt-4";
+          feedbackDetail.innerHTML = `1. On divise : <strong>${q.total} ÷ ${q.d} = ${partValR}</strong>.<br>2. On multiplie par ${q.n} : <strong>${partValR} × ${q.n} = ${q.ans}</strong>.`;
+          document.getElementById('btn-continue').classList.remove('hidden');
+          feedbackBox.classList.remove('hidden');
+          document.getElementById('btn-continue').focus();
+          return;
+        }
+        // 1er essai raté : on laisse réessayer (le bouton Continuer est masqué)
+        document.getElementById('btn-continue').classList.add('hidden');
         
         feedbackTitle.innerHTML = `❌ Oups ! Ce n'est pas tout à fait ça.`;
         feedbackBox.className = "border-3 border-rose-500 bg-rose-50 text-rose-900 rounded-xl p-4 flex flex-col gap-2 mt-4";
@@ -768,7 +790,7 @@
         launchConfetti();
       } else if (score >= 7) {
         titleEl.innerText = "Super score ! 🌟";
-        descEl.innerText = "Excellent travail ! Tu as une excellente maîtrise du calcul de fractions d'une quantité.";
+        descEl.innerText = "Excellent travail ! Tu as une excellente maitrise du calcul de fractions d'une quantité.";
         trophyEl.innerText = "🏆";
         playSound('success');
       } else if (score >= 5) {
@@ -776,7 +798,7 @@
         descEl.innerText = "Tu as réussi la moitié ou plus des questions. Relance le jeu pour essayer de t'améliorer !";
         trophyEl.innerText = "🥈";
       } else {
-        titleEl.innerText = "Continue à t'entraîner ! 💪";
+        titleEl.innerText = "Continue à t'entrainer ! 💪";
         descEl.innerText = "C'était un peu difficile, mais ne te décourage pas. Prends le temps d'analyser le schéma en demandant de l'aide !";
         trophyEl.innerText = "🎯";
       }
