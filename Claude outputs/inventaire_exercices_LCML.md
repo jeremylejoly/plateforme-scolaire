@@ -1371,6 +1371,15 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Nouvelle orthographe : entrainement. Captures 390 px vérifiées (8 figures, pas de défilement horizontal).
 - Tests jsdom : partie 6 / 8 avec doubles clics → 1 sauvegarde ; syntaxe OK.
 
+### 05/10 — Maths › Grandeurs › L'aire › L'Enquêteur Royal (`grandeur_aire_situations`, `fiches/aire_situations.html` + copies public et racine) — sw.js v570
+- 51 situations relues (26 d'aire, 25 non) : classements justes.
+- **Aucun résultat enregistré** : la fiche appelait `window.parent.handleActivityScore`, fonction qui n'existe pas → `saveResult` (une seule fois par série).
+- **Le mot donnait la réponse** : 9 situations VRAI contenaient « surface » ou « superficie » dans l'énoncé (surface habitable, même surface, toute la surface, surface à poncer…) → reformulées sans ces mots (place au sol, tout l'intérieur, couvrir tout le sol…). « Rideaux de sol » (n'existe pas) → tapis de danse ; tournesol et panneau solaire reformulés.
+- Tirage libre (parfois 8 VRAI sur 10) → 4 à 6 situations d'aire par série (5 000 séries : 4 / 5 / 6 à parts égales), mélange Fisher–Yates déjà en place.
+- Double clic sur « Situation suivante » sautait une situation → bloqué ; un seul enregistrement en fin de série.
+- Nouvelle orthographe : iles, boite, maitrises.
+- Tests jsdom : partie 7 / 10 avec doubles clics → 1 sauvegarde ; « Recommencer » remet à zéro ; syntaxe OK.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1704,7 +1713,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | Périmètre du cercle — Le labo de la circonférence | `grandeur_perimetre_cercle_labo` | fiches/perimetre_cercle.html |  |
 | ✅ 05/10 | Périmètre du cercle — Le rayon et diamètre cachés | `grandeur_perimetre_cercle_inverse` | fiches/perimetre_cercle_inverse.html |  |
 | ✅ 05/10 | Périmètre du cercle — Figures complexes | `grandeur_perimetre_cercle_compose` | fiches/perimetre_cercle_compose.html |  |
-| ⬜ | L'Enquêteur Royal (Situations d'Aire) | `grandeur_aire_situations` | fiches/aire_situations.html |  |
+| ✅ 05/10 | L'Enquêteur Royal (Situations d'Aire) | `grandeur_aire_situations` | fiches/aire_situations.html |  |
 | ⬜ | Le Géomètre des Carreaux (Quadrillage) | `grandeur_aire_quadrillage` | fiches/aire_quadrillage.html |  |
 | ⬜ | L'Arpenteur Impérial (Conversions d'Aire) | `grandeur_aire_conversions` | fiches/aire_conversions.html |  |
 | ⬜ | Mesures Agraires & Superficies | `grandeur_aire_agraire` | fiches/aire_agraire.html |  |
