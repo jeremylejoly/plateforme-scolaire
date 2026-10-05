@@ -85,6 +85,12 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
   - Passé sur le moteur commun.
   - Contenu exact ; un distracteur de la question 4 était historiquement vrai (crainte d'effondrement) et a été remplacé.
 
+- **05/10 — Lecture informative › L'Atomium** :
+  - Passé sur le moteur commun.
+  - « Molécule de fer » remplacé par « cristal de fer ».
+  - Durée de construction corrigée (1956-1958) ; phrase sur le tube central corrigée.
+  - Distracteur « restaurant » remplacé (il y a vraiment un restaurant au sommet).
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -121,7 +127,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | La Tour Eiffel | `fiche_eiffel` | index › renderFicheEiffel | QCM: bonne réponse en position 1 dans 3/5 questions, options non mélangées ; Aucun hasard : mêmes questions, même ordre à chaque partie |
 | ✅ 05/10 (0e1523d) | Charlemagne | `fiche_charlemagne` | index › renderFicheCharlemagne | Aucun hasard : mêmes questions, même ordre à chaque partie |
 | ✅ 05/10 | Albert Einstein | `fiche_einstein` | index › renderFicheEinstein | Aucun hasard : mêmes questions, même ordre à chaque partie |
-| ⬜ | L'Atomium | `fiche_atomium` | index › renderFicheAtomium | Aucun hasard : mêmes questions, même ordre à chaque partie |
+| ✅ 05/10 | L'Atomium | `fiche_atomium` | index › renderFicheAtomium | Aucun hasard : mêmes questions, même ordre à chaque partie |
 | ⬜ | Le Taj Mahal | `fiche_tajmahal` | index › renderFicheTajMahal | Aucun hasard : mêmes questions, même ordre à chaque partie |
 | ✅ 05/10 (a52284d) | L'Écureuil roux | `fiche_ecureuil` | index › renderFicheEcureuil | Aucun hasard : mêmes questions, même ordre à chaque partie |
 | ✅ 05/10 (8c01793) | Le Loup gris | `fiche_loup` | index › renderFicheLoup | QCM: bonne réponse en position 3 dans 3/5 questions, options non mélangées ; Aucun hasard : mêmes questions, même ordre à chaque partie |
