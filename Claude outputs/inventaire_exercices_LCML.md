@@ -594,6 +594,15 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
   - Nouvelle orthographe : maitresse, fraiche, boite. « mûrs » reste.
   - **Toute la rubrique Le pronom est vérifiée.**
 
+- **05/10 — Grammaire › L'adverbe › Reconnaitre les adverbes** (niveau 1 : 30 phrases, 10 par partie ; niveau 2 : 15 petits textes, 5 par partie) :
+  - **Le résultat n'était jamais enregistré.** Il est maintenant enregistré par niveau (`gram_adverbe_reconnaitre_n1` / `_n2`), et le plan de travail le reconnait.
+  - La fiche **vouvoyait** l'élève (« Sélectionnez », « Vous avez oublié », « Entraînez-vous »), contrairement au reste du site. Elle le tutoie maintenant.
+  - « la tempête s'est calmée **bientôt** » était maladroit. La phrase devient « … s'est calmée **rapidement** ».
+  - « des salades » : « des » était classé préposition. Il est maintenant classé déterminant (visible seulement dans la correction).
+  - Les 45 phrases et textes ont été relus. Tous les adverbes sont bien marqués, y compris ne… pas, ne… jamais, « très bien », « sentir bon », « faire mal » et « devant ».
+  - Le mélange utilise maintenant la méthode Fisher–Yates.
+  - Nouvelle orthographe : maitresse, disparait, entrainement, entraine-toi. « surement » était déjà en nouvelle orthographe.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -700,7 +709,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | Le pronom — Le remplaçant | `gram_pronom_remplacant` | fiches/remplacant_pronom.html |  |
 | ✅ 05/10 | Le pronom — La chasse aux répétitions | `gram_pronom_repetitions` | fiches/chasse_repetitions.html |  |
 | ⬜ | L'adverbe | `gram_adverbe` | index › (?) | (code à localiser) |
-| ⬜ | L'adverbe — Reconnaître les adverbes | `gram_adverbe_reconnaitre` | fiches/adverbe_exercice.html |  |
+| ✅ 05/10 | L'adverbe — Reconnaître les adverbes | `gram_adverbe_reconnaitre` | fiches/adverbe_exercice.html |  |
 | ⬜ | L'adverbe — Adjectif ou adverbe ? | `gram_adverbe_accord` | fiches/adverbe_accord_exercice.html |  |
 | ⬜ | Le complément du nom | `gram_complement_nom` | index › (?) | (code à localiser) |
 | ⬜ | Le tri des mots | `gram_tri_mots` | fiches/tri_mots.html |  |
