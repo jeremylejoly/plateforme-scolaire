@@ -331,6 +331,12 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
     - quand un pronom est déjà écrit avant le trou, l'élève peut aussi le recopier sans être compté faux ;
     - les apostrophes courbes (’) sont acceptées.
 
+- **05/10 — Conjugaison › Futur simple › Évaluation** (5 QCM + 5 phrases à trous) :
+  - « Une seule tentative » est maintenant réellement appliquée, grâce à la correction du moteur commun.
+  - « Demain, je … (aller) » s'affichait sans élision. C'est corrigé en « j'… ».
+  - Dans trois QCM, le piège au conditionnel était aussi correct : irais, pourraient, voudrait. On a ajouté « Si + présent » en début de phrase, comme dans l'entrainement.
+  - Les autres réponses sont justes et en nouvelle orthographe. Les propositions et l'ordre des questions sont mélangés.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -475,7 +481,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 |---|---|---|---|---|
 | ✅ 05/10 | Indicatif présent | `present` | index › goToConjugaison |  |
 | ✅ 05/10 | Indicatif imparfait | `imparfait` | index › goToConjugaison |  |
-| ⬜ | Indicatif futur simple | `futur` | index › goToConjugaison |  |
+| ✅ 05/10 | Indicatif futur simple | `futur` | index › goToConjugaison |  |
 | ⬜ | Indicatif passé composé | `passe_compose` | index › goToConjugaison |  |
 | ⬜ | Passé simple (Lecture) | `conj_passe_simple` | fiches/conjugaison_passe_simple.html |  |
 | ⬜ | Subjonctif & Impératif | `conj_subj_imp` | fiches/conjugaison_subj_imp.html |  |
