@@ -8918,7 +8918,7 @@ window.SAVOIR_ECOUTER_DATA = [
         type: 'qcm',
         q: "Pourquoi le texte présente-t-il le pain perdu comme une lutte contre le gaspillage alimentaire ?",
         options: [
-          "S'il faut acheter beaucoup d'ingrédients",
+          "Parce qu'il faut acheter beaucoup d'ingrédients",
           "Parce qu'il permet de réutiliser du pain qu'on aurait sinon jeté",
           "Parce que cette recette coute très cher",
           "Parce qu'elle nécessite beaucoup de temps de préparation"

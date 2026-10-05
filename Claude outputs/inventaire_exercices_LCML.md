@@ -939,6 +939,11 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Q2 : « Combien de cloches compose » → « composent ».
 - Faits vérifiés (366 marches, 47 cloches, carillonneur, clavier frappé du poing, grosse cloche > 6 t, concerts gratuits, UNESCO). ⚠️ Audio non réécouté (transcription impossible ici).
 
+### 05/10 — Savoir écouter : La fourmi superstar (`savoir_ecouter_3`, exercices_francais.js) — sw.js v508, ?v=20261005zn
+- Moteur déjà corrigé (enregistrement + mélange).
+- Q2 « carapace rigide » : « Le squelette externe » (= définition d'exosquelette) et « La cuticule » (la matière de l'exosquelette) étaient aussi justes → remplacés par « La coquille » et « Le pelage ».
+- Autres questions cohérentes (50 fois son poids ↔ humain de 40 kg et 2 tonnes, phéromones, reine pondeuse, colonies nombreuses). ⚠️ Audio non réécouté.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1172,7 +1177,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 |---|---|---|---|---|
 | ✅ 05/10 | Savoir écouter - Soignes | `savoir_ecouter_1` | index › startSavoirEcouter |  |
 | ✅ 05/10 | Savoir écouter - Bruges | `savoir_ecouter_2` | index › startSavoirEcouter |  |
-| ⬜ | Savoir écouter - Fourmi | `savoir_ecouter_3` | index › startSavoirEcouter |  |
+| ✅ 05/10 | Savoir écouter - Fourmi | `savoir_ecouter_3` | index › startSavoirEcouter |  |
 | ⬜ | Savoir écouter - Pain perdu | `savoir_ecouter_4` | index › startSavoirEcouter |  |
 | ⬜ | Savoir écouter - Hautes Fagnes | `savoir_ecouter_5` | index › startSavoirEcouter |  |
 | ⬜ | Savoir écouter - L'atelier de Sandy | `savoir_ecouter_6` | index › startSavoirEcouter |  |
