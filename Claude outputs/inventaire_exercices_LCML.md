@@ -806,6 +806,14 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Synthèse : exemple « On chante tous ensemble » (→ « Il chante tous ensemble » bancal) remplacé par « On chante une chanson ».
 - Validation unique (verrou + bouton masqué) ; bonne réponse affichée à côté des menus faux.
 
+### 05/10 — Homophones la / là / l'a / l'as (`homo_la`, index › HOMO_LA_BANQUE / validerHomoLa) — sw.js v488
+- Phrases agrammaticales corrigées : « Le livre que tu l'as prêté » (que + l' en double), « Ce secret, tu l'as promis de le garder », « Tu l'as échappée de peu » (accord fautif).
+- Autres retouches : « Ce chien est perdu… l'a retrouvé » → « était perdu » ; « là -bas » → « là-bas » ; virgule dans « Tu l'as méritée, cette… » ; « prépare la cuisson » → « surveille la cuisson ».
+- Biais : « tu ___ » = toujours l'as → ajout de « tu la connais / tu la vois », « Tu es là ? », « Tu restes là », + « je la trouve », « on l'a attendue », 2 phrases à double trou (banque 58).
+- Synthèse : le pronom « la » se remplace par « le » (et non « lui »).
+- Validation unique (verrou + bouton masqué) ; bonne réponse affichée à côté des menus faux.
+- Nouvelle orthographe : traine, maitre, maitresse, boite.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -991,7 +999,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | son / sont | `homo_son` | index › renderHomoSonSynthesis |  |
 | ✅ 05/10 | se / ce / s' / c' | `homo_ce` | index › renderHomoCeSynthesis |  |
 | ✅ 05/10 | on / ont | `homo_on` | index › renderHomoOnSynthesis |  |
-| ⬜ | la / là / l'a / l'as | `homo_la` | index › renderHomoLaSynthesis |  |
+| ✅ 05/10 | la / là / l'a / l'as | `homo_la` | index › renderHomoLaSynthesis |  |
 | ⬜ | ces / ses / c'est / s'est / sais / sait | `homo_ces` | index › renderHomoCesSynthesis |  |
 | ⬜ | leur / leurs | `homo_leur` | index › renderHomoLeurSynthesis |  |
 | ⬜ | peu / peux / peut | `homo_peu` | index › renderHomoPeuSynthesis |  |
