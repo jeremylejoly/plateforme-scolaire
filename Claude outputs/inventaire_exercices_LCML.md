@@ -717,6 +717,15 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
   - Le mélange utilise maintenant la méthode Fisher–Yates.
   - Nouvelle orthographe : maitrises, entrainer.
 
+- **05/10 — Grammaire › Fonctions › Le complément circonstanciel › Repérer et classer les CC** (40 phrases ; 7 CC de lieu, temps ou manière et 3 de condition, cause ou but par partie) :
+  - **Faux CC.** Dans « Les clés perdues **se trouvaient** derrière le buffet », le complément ne peut pas être supprimé (« se trouver » exige un lieu) : ce n'est donc pas un CC. La phrase devient « J'ai **retrouvé** les clés perdues derrière le lourd buffet en chêne », et l'explication rappelle le test de suppression.
+  - **Plan de travail.** Le résultat était enregistré sous `cc_phrase`, que l'élément du plan (`gram_cc`) ne reconnaissait pas. Il est maintenant enregistré sous `gram_cc_phrase`.
+  - **Score gonflé.** Une réponse juste à la seconde chance rapportait le point. Le point n'est maintenant compté qu'au premier essai.
+  - Les 40 phrases ont été relues : CC et virgules après un CC placé en tête sont justes.
+  - Le mélange utilise maintenant la méthode Fisher–Yates.
+  - Nouvelle orthographe : entrainer, maitrises.
+  - La carte « 2. Identifier la question » est toujours grisée (« Bientôt disponible »). Aucun exercice n'existe derrière.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
