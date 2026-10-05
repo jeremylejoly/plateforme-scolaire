@@ -1037,6 +1037,11 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Retour dans l'exercice : la fiche est toujours rechargée (avant : l'écran de fin de la partie précédente restait affiché).
 - Nouvelle orthographe : maitrises, Entraine-toi.
 
+### 05/10 — Maths › Entiers et décimaux › Sélectionne le bon chiffre (`num_entiers_decimaux_abaque`, `fiches/abaque.html`, 3 copies) — sw.js v524
+- AUCUN résultat n'était enregistré → score /10 enregistré une fois par partie (titre avec le niveau).
+- Générateur vérifié (9 000 nombres, 3 niveaux) : le rang demandé existe toujours, pas de zéro en tête. Ajout : pas de zéro inutile en fin de partie décimale.
+- Nouvelle orthographe : maitrises, entrainer.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1293,7 +1298,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | Décimaux — Le bon nombre | `num_decimaux_le_bon_nombre` | index › renderDecimauxLeBonNombre | Aucun hasard : mêmes questions, même ordre à chaque partie |
 | ✅ 05/10 | Décimaux — Entre deux nombres | `num_decimaux_entre` | index › renderDecimauxEntre |  |
 | ✅ 05/10 | Décimaux — Opérations devinettes | `num_decimaux_op_devinettes` | index › renderDecimauxOpDevinettes |  |
-| ⬜ | Sélectionne le bon chiffre | `num_entiers_decimaux_abaque` | fiches/abaque.html |  |
+| ✅ 05/10 | Sélectionne le bon chiffre | `num_entiers_decimaux_abaque` | fiches/abaque.html |  |
 | ⬜ | Comparaison de nombres | `num_entiers_decimaux_comparaison` | fiches/comparaison.html |  |
 | ⬜ | Fractions simples | `num_fractions_simples` | index › renderFractionsSimples |  |
 | ⬜ | Fractions complexes | `num_fractions_complexes` | index › renderFractionsExercice |  |
