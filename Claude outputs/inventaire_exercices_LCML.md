@@ -1092,10 +1092,18 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 ### 05/10 — Maths › Opérations › Vocabulaire › Associer mot et définition (`op_vocabulaire_def`, `fiches/vocabulaire_operations.html` + copies public et racine) — sw.js v534
 - Contenu (10 mots/définitions) : juste.
 - **Aucun résultat enregistré** : la fiche exigeait `window.parent.state.student`, or `state` est déclaré avec `let` dans index → invisible via `window.parent` → jamais de sauvegarde. Appel direct à `saveResult` (index complète élève/classe).
-- ⚠️ Même condition bloquante dans 10 autres fiches, à corriger quand on y arrivera : problemes_operations, flechettes_atteins_le_score, flechettes_calcule_le_score, mots-croises, sudoku, parties_calcul, vocabulaire_solides, mots-caches, trajet_du_sang_ordre, sci_plantes_fleur.
+- ⚠️ Même condition bloquante dans 10 autres fiches, à corriger quand on y arrivera : problemes_operations, flechettes_atteins_le_score, flechettes_calcule_le_score, mots-croises, sudoku, ~~parties_calcul~~ (corrigé v535), vocabulaire_solides, mots-caches, trajet_du_sang_ordre, sci_plantes_fleur.
 - La correction disparaissait après 1,5 s (remplacée par le score) : elle reste maintenant visible, avec la bonne définition sous chaque mot mal associé.
 - Mots de gauche aussi mélangés (ordre fixe avant) ; double validation bloquée ; maitrises.
 - Tests jsdom : parfait 10/10, 2 inversés 8/10 avec 2 corrections, sauvegarde OK.
+
+### 05/10 — Maths › Opérations › Vocabulaire › Parties d'un calcul (`op_vocabulaire_calc`, `fiches/parties_calcul.html` + copies public et racine) — sw.js v535
+- **Aucun résultat enregistré** (même condition `window.parent.state` que la fiche Définitions) → corrigé ; double clic sur « Voir mon score » ne sauvegarde plus deux fois.
+- **Essais infinis** : on pouvait cliquer jusqu'à tomber sur la bonne réponse → après 2 erreurs, la bonne réponse est montrée (« La bonne réponse était … ») et on passe.
+- **Toujours les 5 mêmes calculs** (14 + 32, 75 − 20, 6 × 8, 35 : 5, 162 × 38) → nombres tirés au hasard à chaque question (aucun nombre répété dans un calcul), explications adaptées.
+- Signes typographiques × et − ; « Quelle opération ce signe représente-t-il ? ».
+- Point à confirmer par Jeremy : multiplicande = 1er facteur, multiplicateur = 2e (convention de la fiche, l'usage varie).
+- Tests jsdom : parfait 10/10, tout faux 0/10, 10 questions, calculs exacts, sauvegarde unique.
 
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
@@ -1372,7 +1380,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | Statut | Exercice | id | Source | Signal automatique |
 |---|---|---|---|---|
 | ✅ 05/10 | Vocabulaire des opérations (Définitions) | `op_vocabulaire_def` | fiches/vocabulaire_operations.html |  |
-| ⬜ | Vocabulaire des opérations (Parties d'un calcul) | `op_vocabulaire_calc` | fiches/parties_calcul.html |  |
+| ✅ 05/10 | Vocabulaire des opérations (Parties d'un calcul) | `op_vocabulaire_calc` | fiches/parties_calcul.html |  |
 | ⬜ | Vocabulaire des opérations (Résolution de problèmes) | `op_vocabulaire_prob` | fiches/problemes_operations.html |  |
 
 ### 🔢 Mathématiques — ➕ Opérations — Calculs & Techniques
