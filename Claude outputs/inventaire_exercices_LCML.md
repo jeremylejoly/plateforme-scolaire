@@ -848,6 +848,12 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Double clic neutralisé (verrou `answered`) — avant, un double clic pouvait compter 2 points ou sauter une question.
 - Nouvelle orthographe : entrainement, Entraine-toi, fraiches, maitrises ; coquille « is » → « est » (copie public).
 
+### 05/10 — Détective des participes (`fiches/orthographe_participe_passe_texte.html`, copie unique) — sw.js v494
+- AUCUN résultat n'était enregistré (pas de saveResult) → le plan de travail ne voyait jamais l'exercice fait. Ajout d'un score : sur la 1re validation de chaque texte, participes trouvés − mots cliqués à tort (min. 0), total = 60 participes ; enregistré une seule fois sous `ortho_participe_texte`.
+- Les 5 textes passaient toujours dans le même ordre → ordre tiré au hasard ; bouton « Recommencer » en fin de partie (nouvel ordre).
+- Sélection bloquée une fois le texte corrigé.
+- Contenu des 5 textes vérifié (60 participes, explications justes). Nouvelle orthographe : déchainé, ile, entrainement.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1044,7 +1050,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 
 | Statut | Exercice | id | Source | Signal automatique |
 |---|---|---|---|---|
-| ⬜ | Détective des participes | `ortho_participe_texte` | fiches/orthographe_participe_passe_texte.html |  |
+| ✅ 05/10 | Détective des participes | `ortho_participe_texte` | fiches/orthographe_participe_passe_texte.html |  |
 | ⬜ | Transformation à l'infini | `ortho_participe_infinitif` | fiches/orthographe_participe_passe_infinitif.html |  |
 | ⬜ | PP employé seul | `ortho_participe_seul` | fiches/orthographe_participe_passe_seul.html |  |
 | ⬜ | PP avec Être | `ortho_participe_etre` | fiches/orthographe_participe_passe_etre.html |  |

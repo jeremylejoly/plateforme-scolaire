@@ -52,37 +52,77 @@
       "entendre":"entendu", "perdre":"perdu", "écrire":"écrit", "conduire":"conduit", "construire":"construit",
       "peindre":"peint", "craindre":"craint", "éteindre":"éteint", "ouvrir":"ouvert", "offrir":"offert",
       "découvrir":"découvert", "souffrir":"souffert", "courir":"couru", "mourir":"mort", "rire":"ri",
-      "sourire":"souri", "naître":"né", "être":"été", "avoir":"eu", "pleuvoir":"plu", "recevoir":"reçu",
-      "décevoir":"déçu", "apercevoir":"aperçu", "vivre":"vécu", "suivre":"suivi", "asseoir":"assis",
+      "sourire":"souri", "naitre":"né", "être":"été", "avoir":"eu", "pleuvoir":"plu", "recevoir":"reçu",
+      "décevoir":"déçu", "apercevoir":"aperçu", "vivre":"vécu", "suivre":"suivi", "assoir":"assis",
       "partir":"parti", "sortir":"sorti", "sentir":"senti", "mentir":"menti", "fuir":"fui",
       "accueillir":"accueilli", "cueillir":"cueilli", "couvrir":"couvert", "valoir":"valu",
-      "falloir":"fallu", "plaire":"plu", "suffire":"suffi", "coudre":"cousu", "moudre":"moulu",
-      "résoudre":"résolu", "vaincre":"vaincu", "rompre":"rompu", "exclure":"exclu", "conclure":"conclu",
-      "battre":"battu", "connaître":"connu", "paraître":"paru", "disparaître":"disparu", "croître":"crû",
-      "acquérir":"acquis", "conquérir":"conquis", "concevoir":"conçu", "traduire":"traduit",
+      "falloir":"fallu", "plaire":"plu", "suffire":"suffi", "coudre":"cousu",
+      "résoudre":"résolu", "vaincre":"vaincu", "conclure":"conclu",
+      "battre":"battu", "connaitre":"connu", "paraitre":"paru", "disparaitre":"disparu",
+      "traduire":"traduit",
       "produire":"produit", "détruire":"détruit", "instruire":"instruit", "joindre":"joint",
       "rejoindre":"rejoint", "atteindre":"atteint", "plaindre":"plaint", "mordre":"mordu",
-      "tordre":"tordu", "taire":"tu", "extraire":"extrait"
+      "tordre":"tordu"
     };
 
     let selectedVerbs = [];
     let currentIndex = 0;
     let attempts = 0;
+    let score = 0;
+    let resultSaved = false;
 
+    function shuffleArray(arr) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+    function groupe(v) {
+      if (v === 'aller') return 3;
+      if (v.endsWith('er')) return 1;
+      const g2 = ["finir","choisir","grandir","réussir","rougir","obéir","agir","punir","remplir","franchir","nourrir","fournir","saisir","blanchir","ralentir"];
+      return g2.includes(v) ? 2 : 3;
+    }
     function initGame() {
-      const allVerbs = Object.keys(verbsBank);
-      selectedVerbs = allVerbs.sort(() => 0.5 - Math.random()).slice(0, 10);
+      // Tirage équilibré : 2 verbes du 1er groupe, 3 du 2e, 5 du 3e, dans un ordre mélangé
+      const all = Object.keys(verbsBank);
+      const pick = (g, n) => shuffleArray(all.filter(v => groupe(v) === g)).slice(0, n);
+      selectedVerbs = shuffleArray([...pick(1, 2), ...pick(2, 3), ...pick(3, 5)]);
       currentIndex = 0;
+      score = 0;
+      resultSaved = false;
       loadVerb();
+    }
+    function saveScore() {
+      if (resultSaved) return;
+      resultSaved = true;
+      try {
+        if (window.parent && window.parent.saveResult) {
+          window.parent.saveResult({
+            activity: 'ortho_participe_infinitif',
+            bookTitle: "Transformation à l'infini…tif",
+            score: score,
+            total: 10,
+            pct: score * 10,
+            date: new Date().toLocaleDateString('fr-BE'),
+            time: new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })
+          });
+        }
+      } catch (e) {}
     }
 
     function loadVerb() {
       if (currentIndex >= 10) {
         document.querySelector('.game-container').innerHTML = `
           <div class="game-title">🏆 Bravo !</div>
-          <div style="font-size: 1.5rem; margin-bottom: 2rem;">Tu as transformé les 10 verbes.</div>
+          <div style="font-size: 1.5rem; margin-bottom: 1rem;">Tu as transformé les 10 verbes.</div>
+          <div style="font-size: 2rem; font-weight: bold; margin-bottom: 0.5rem;">Score : ${score} / 10</div>
+          <div style="font-size: 1rem; color: #64748b; margin-bottom: 2rem;">Un point par verbe réussi du premier coup.</div>
           <button class="btn" onclick="location.reload()" style="background-color: var(--accent-green);">Recommencer avec 10 autres verbes</button>
         `;
+        saveScore();
         return;
       }
       attempts = 0;
@@ -101,11 +141,17 @@
     function checkAnswer() {
       const verb = selectedVerbs[currentIndex];
       const correct = verbsBank[verb];
-      const answer = document.getElementById('answer').value.trim().toLowerCase();
+      const answer = document.getElementById('answer').value.normalize('NFC').trim().replace(/\s+/g, ' ').toLowerCase();
       const fb = document.getElementById('feedback');
 
+      if (answer === '') {
+        fb.innerText = "✏️ Écris d'abord le participe passé.";
+        fb.className = "feedback error";
+        return;
+      }
       if (answer === correct) {
-        fb.innerText = "✅ Exact !";
+        if (attempts === 0) score++;
+        fb.innerText = attempts === 0 ? "✅ Exact !" : "✅ Exact (au deuxième essai) !";
         fb.className = "feedback success";
         document.getElementById('answer').disabled = true;
         showNext();
