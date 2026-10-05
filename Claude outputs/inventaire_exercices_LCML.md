@@ -645,6 +645,14 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
   - Le mélange utilise maintenant la méthode Fisher–Yates.
   - Nouvelle orthographe : maitrises, entrainer.
 
+- **05/10 — Grammaire › Fonctions › Le sujet › Repérer le sujet** (42 phrases, 10 par partie, réparties entre GN avec complément du nom ou relative, nom seul, pronom, infinitif, et sujets inversés ou après un CC) :
+  - **Score gonflé.** Une réponse juste à la seconde chance rapportait le point comme une réponse juste du premier coup. Le point n'est maintenant compté qu'au premier essai. La seconde chance reste disponible pour apprendre.
+  - **Consigne ambigüe.** Avec des phrases comme « La maison **où j'ai habité** a été vendue », un élève pouvait cliquer « j' », qui est le sujet du verbe de la relative. La consigne précise maintenant : « le sujet du verbe principal (le groupe sujet en entier, avec ses compléments) ».
+  - Les 42 phrases ont été relues : les sujets sont justes, y compris les relatives, les sujets inversés et les CC placés en tête avec virgule.
+  - Le résultat était déjà enregistré (`sujet_phrase`).
+  - Le mélange utilise maintenant la méthode Fisher–Yates.
+  - Nouvelle orthographe : maitrises, entrainement.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -761,7 +769,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 
 | Statut | Exercice | id | Source | Signal automatique |
 |---|---|---|---|---|
-| ⬜ | Le sujet — Repérer le sujet | `sujet_phrase` | index › startSujetExercise |  |
+| ✅ 05/10 | Le sujet — Repérer le sujet | `sujet_phrase` | index › startSujetExercise |  |
 | ⬜ | Le sujet — Reconstituer les textes | `gram_sujet_texte` | index › startSujetTextesExercise |  |
 | ⬜ | Le sujet — Les 4 classes du sujet | `gram_classes_sujet` | index › startSujetClassesExercise |  |
 | ⬜ | Le verbe (fonction) — Repérer le verbe | `verbe_phrase` | index › startVerbeExercise |  |

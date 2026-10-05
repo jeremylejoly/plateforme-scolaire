@@ -38115,9 +38115,9 @@ const SUJET_TEXTES = [
       { id: 't0l3',  rep: "Des milliers d'ouvrières" },
       { id: 't0l4',  rep: 'Le pollen' },
       { id: 't0l5',  rep: 'Chaque fleur visitée' },
-      { id: 't0l6',  rep: 'Ce précieux travail' },
+      { id: 't0l6',  rep: 'Ce précieux travail', aussi: ['Elle'] },
       { id: 't0l7',  rep: 'Les scientifiques' },
-      { id: 't0l8',  rep: 'Elle' },
+      { id: 't0l8',  rep: 'Elle', aussi: ['Ce précieux travail'] },
       { id: 't0l9',  rep: 'Les pesticides' },
       { id: 't0l10', rep: 'Nous' },
     ],
@@ -38137,7 +38137,7 @@ Chaque colonie est organisée comme une véritable société.
 
 <p class="mb-4">Malheureusement, les abeilles sont aujourd'hui menacées.
 <span class="sujet-lacune" id="t0l9"></span> utilisés dans l'agriculture détruisent les colonies.
-C'est pourquoi <span class="sujet-lacune" id="t0l10"></span> devons protéger ces insectes précieux en préférant des pratiques agricoles respectueuses de l'environnement.</p>`
+<span class="sujet-lacune" id="t0l10"></span> devons donc protéger ces insectes précieux en préférant des pratiques agricoles respectueuses de l'environnement.</p>`
   },
 
   // ── TEXTE 1 : La Révolution française ──
@@ -38151,8 +38151,8 @@ C'est pourquoi <span class="sujet-lacune" id="t0l10"></span> devons protéger ce
       { id: 't1l4',  rep: 'Des milliers de Parisiens' },
       { id: 't1l5',  rep: 'La Bastille' },
       { id: 't1l6',  rep: 'Les représentants du peuple' },
-      { id: 't1l7',  rep: 'Elle' },
-      { id: 't1l8',  rep: 'Cette nouvelle société' },
+      { id: 't1l7',  rep: 'Elle', aussi: ['Cette nouvelle société'] },
+      { id: 't1l8',  rep: 'Cette nouvelle société', aussi: ['Elle'] },
       { id: 't1l9',  rep: 'Napoléon Bonaparte' },
       { id: 't1l10', rep: 'Ces événements' },
     ],
@@ -38162,7 +38162,7 @@ C'est pourquoi <span class="sujet-lacune" id="t0l10"></span> devons protéger ce
 <span class="sujet-lacune" id="t1l2"></span> est épuisé et réclame plus de justice.</p>
 
 <p class="mb-4"><span class="sujet-lacune" id="t1l3"></span> frappe durement les plus pauvres, car les récoltes ont été mauvaises.
-Le 14 juillet 1789, <span class="sujet-lacune" id="t1l4"></span> décident d'agir.
+<span class="sujet-lacune" id="t1l4"></span> décident d'agir le 14 juillet 1789.
 <span class="sujet-lacune" id="t1l5"></span> est une prison royale qui symbolise le pouvoir absolu du roi : ils l'attaquent et la prennent d'assaut.</p>
 
 <p class="mb-4"><span class="sujet-lacune" id="t1l6"></span> rédigent alors la <strong>Déclaration des droits de l'homme et du citoyen</strong>.
@@ -38224,11 +38224,11 @@ En altitude, elle se refroidit et se transforme en minuscules gouttelettes.
       { id: 't3l10', rep: 'Les scientifiques' },
     ],
     html: `
-<p class="mb-4"><span class="sujet-lacune" id="t3l1"></span> est une ouverture dans la croûte terrestre par laquelle des matières en fusion remontent depuis les profondeurs de la Terre.
+<p class="mb-4"><span class="sujet-lacune" id="t3l1"></span> est une ouverture dans la croute terrestre par laquelle des matières en fusion remontent depuis les profondeurs de la Terre.
 <span class="sujet-lacune" id="t3l2"></span> est le nom donné à ces roches en fusion lorsqu'elles sortent du volcan.
-En refroidissant, elle forme de nouvelles roches et parfois même de nouvelles îles.</p>
+En refroidissant, elle forme de nouvelles roches et parfois même de nouvelles iles.</p>
 
-<p class="mb-4"><span class="sujet-lacune" id="t3l3"></span> sont d'énormes morceaux de la croûte terrestre qui bougent très lentement.
+<p class="mb-4"><span class="sujet-lacune" id="t3l3"></span> sont d'énormes morceaux de la croute terrestre qui bougent très lentement.
 <span class="sujet-lacune" id="t3l4"></span> se forme là où ces plaques se séparent ou s'affrontent.
 <span class="sujet-lacune" id="t3l5"></span> peut durer quelques heures, mais aussi plusieurs années.</p>
 
@@ -38532,7 +38532,8 @@ function initSujetTextesPanneau(ti) {
   }
 
   // Shuffle labels for banque
-  const shuffle = (arr) => [...arr].sort(() => Math.random() - 0.5);
+  // Mélange équitable (Fisher–Yates)
+  const shuffle = (arr) => { const a = [...arr]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
   const shuffled = shuffle(data.lacunes);
 
   const banque = document.getElementById('sujet-textes-banque-container');
@@ -38747,7 +38748,8 @@ function corrigerSujetTextes(ti) {
     if (!el) return;
 
     const val = (etat.placees[l.id] || '').trim().toLowerCase();
-    const ok = val === l.rep.toLowerCase();
+    // Certaines étiquettes peuvent s'échanger sans erreur (ex. « Elle » / « Ce précieux travail ») : on accepte les deux.
+    const ok = val === l.rep.toLowerCase() || (l.aussi || []).some(a => a.toLowerCase() === val);
 
     if (val) {
       el.classList.remove('correcte', 'incorrecte');
@@ -38762,7 +38764,7 @@ function corrigerSujetTextes(ti) {
 
   const nb = Object.keys(etat.placees).length;
   const msgs = [
-    [10, '🏆 Parfait ! Tu maîtrises parfaitement le sujet du verbe dans ces textes !'],
+    [10, '🏆 Parfait ! Tu maitrises parfaitement le sujet du verbe dans ces textes !'],
     [8,  '🌟 Très bien ! Encore un tout petit effort !'],
     [6,  '👍 Bien ! Relis les phrases incorrectes et réessaie.'],
     [4,  '💪 Continue d\'essayer ! Pose-toi bien la question « Qui est-ce qui ? » avant chaque verbe.'],
@@ -38799,8 +38801,10 @@ function corrigerSujetTextes(ti) {
     resPanel.classList.add('visible');
   }
 
-  // Save results in student dashboard
-  if (state.student) {
+  // Save results in student dashboard — seulement la PREMIÈRE correction de chaque texte
+  // (avant : l'élève pouvait corriger ses erreurs et recliquer, chaque essai était enregistré → 10/10 garanti)
+  if (state.student && !etat.resultatEnregistre) {
+    etat.resultatEnregistre = true;
     const pct = Math.round((score / 10) * 100);
     saveResult({
       student: state.student,
