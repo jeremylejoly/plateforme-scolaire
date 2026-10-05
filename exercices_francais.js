@@ -4315,14 +4315,15 @@ window.EXERCICES_CC = [
     explanation: "« Dans sa chambre mansardée » est le CC de lieu (écrit son journal où ?)."
   },
   {
-    text: "Les clés perdues se trouvaient derrière le lourd buffet en chêne .",
+    text: "J' ai retrouvé les clés perdues derrière le lourd buffet en chêne .",
     cat: "lieu",
     tokens: [
-      { text: "Les" },
+      { text: "J'" },
+      { text: "ai" },
+      { text: "retrouvé" },
+      { text: "les" },
       { text: "clés" },
       { text: "perdues" },
-      { text: "se" },
-      { text: "trouvaient" },
       { text: "derrière", cc: "lieu" },
       { text: "le", cc: "lieu" },
       { text: "lourd", cc: "lieu" },
@@ -4331,7 +4332,7 @@ window.EXERCICES_CC = [
       { text: "chêne", cc: "lieu" },
       { text: ".", punctuation: true }
     ],
-    explanation: "« derrière le lourd buffet en chêne » est le CC de lieu (se trouvaient où ?)."
+    explanation: "« derrière le lourd buffet en chêne » est le CC de lieu (j'ai retrouvé les clés où ?). On peut le supprimer : « J'ai retrouvé les clés perdues. »"
   },
 
   // --- 2. TEMPS (10 phrases) ---

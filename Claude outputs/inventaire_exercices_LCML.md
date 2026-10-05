@@ -710,6 +710,13 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
   - Le mélange utilise maintenant la méthode Fisher–Yates.
   - Nouvelle orthographe : maitrises, entrainement.
 
+- **05/10 — Grammaire › Fonctions › Le CDV et le CIV › Repérer le CDV et le CIV** (40 phrases, 5 types : CDV seul, CIV seul, CDV + CIV, pronoms, pronom CDV + CIV complet ; 2 de chaque par partie) :
+  - **Plan de travail.** Le résultat était enregistré sous `cdv_civ_phrase`, que l'élément du plan (`gram_cdv_civ`) ne reconnaissait pas. Il est maintenant enregistré sous `gram_cdv_civ_phrase`.
+  - **Score gonflé.** Une réponse juste à la seconde chance rapportait le point. Le point n'est maintenant compté qu'au premier essai.
+  - Les 40 phrases ont été relues et sont justes, y compris les pronoms le, la, les (CDV) et lui, leur (CIV), et les CIV introduits par « en ».
+  - Le mélange utilise maintenant la méthode Fisher–Yates.
+  - Nouvelle orthographe : maitrises, entrainer.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
