@@ -1012,6 +1012,11 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Nouvelle orthographe : traits d'union dans les 23 énoncés (million séparé).
 - Mélange `sort(random)` → Fisher-Yates.
 
+### 05/10 — Maths › Décimaux › Droites numériques (`num_decimaux_droite`, index › genDecDrtData / validerDecDrt) — sw.js v519
+- Générateur vérifié sur 20 000 droites : pas réguliers, aucune erreur d'arrondi, valeurs bien formatées. Zéros finaux déjà acceptés.
+- 4 petites graduations décoratives entre deux nombres, quel que soit le pas (0,1 ; 0,25 ; 0,05…), suggéraient un pas de 1/5 qui n'existe pas → retirées.
+- Case vide : plus comptée fausse (on attend que les 2 cases soient remplies) ; espaces ignorés dans la saisie.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1264,7 +1269,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | Décimaux — Devinettes décimales | `num_decimaux_devinettes` | index › renderDevinettesDecimaux |  |
 | ✅ 05/10 (9d2364e) | Décimaux — Valeur d'un chiffre | `num_decimaux_relier` | index › renderRelierDecimaux |  |
 | ✅ 05/10 | Décimaux — Écrire en chiffres | `num_decimaux_ecriture` | index › renderDecimauxEcriture |  |
-| ⬜ | Décimaux — Droites numériques | `num_decimaux_droite` | index › renderDecimauxDroite |  |
+| ✅ 05/10 | Décimaux — Droites numériques | `num_decimaux_droite` | index › renderDecimauxDroite |  |
 | ⬜ | Décimaux — Le bon nombre | `num_decimaux_le_bon_nombre` | index › renderDecimauxLeBonNombre | Aucun hasard : mêmes questions, même ordre à chaque partie |
 | ⬜ | Décimaux — Entre deux nombres | `num_decimaux_entre` | index › renderDecimauxEntre |  |
 | ⬜ | Décimaux — Opérations devinettes | `num_decimaux_op_devinettes` | index › renderDecimauxOpDevinettes |  |
