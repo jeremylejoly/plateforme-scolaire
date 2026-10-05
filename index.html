@@ -29528,94 +29528,106 @@ function perimetreResultat(){
 }
 
 // ===== PÉRIMÈTRE — PROBLÈMES =====
+// Avant : 10 problèmes fixes, toujours les mêmes nombres dans le même ordre (« Recommencer » redonnait la même série).
+// Maintenant : 10 modèles (niveaux 1 → 3, dans l'ordre), nouveaux nombres à chaque série.
+function pbRnd(min, max, step){ step = step || 1; const n = Math.floor((max - min) / step); return min + step * Math.floor(Math.random() * (n + 1)); }
+function pbArr(v){ return Math.round(v * 100) / 100; }
+function pbFmt(v, unite){
+  const r = pbArr(v);
+  const s = (unite === '€' && !Number.isInteger(r)) ? r.toFixed(2) : String(r);
+  return s.replace('.', ',');
+}
+function pbNom(n){ return {2:'le double', 3:'le triple', 4:'le quadruple'}[n]; }
+
 const PERIMETRE_PROBLEMES = [
-  {
-    niveau: 1,
-    enonce: "La cour de récréation de l'école a la forme d'un <strong>rectangle</strong> de <strong>45 m</strong> de long et <strong>28 m</strong> de large. Quelle est la longueur de la clôture qui l'entoure ?",
-    unite: "m",
-    reponse: "146 m",
-    indice: "P = 2 × (longueur + largeur)"
+  () => { // 1. Rectangle
+    const L = pbRnd(30, 60), l = pbRnd(15, Math.min(35, L - 5));
+    return { niveau:1, unite:'m', valeur: 2 * (L + l), indice:'P = 2 × (longueur + largeur)',
+      enonce:`La cour de récréation de l'école a la forme d'un <strong>rectangle</strong> de <strong>${L} m</strong> de long et <strong>${l} m</strong> de large. Quelle est la longueur de la clôture qui l'entoure ?` };
   },
-  {
-    niveau: 1,
-    enonce: "Un terrain de football a la forme d'un <strong>rectangle</strong> de <strong>100 m</strong> de long et <strong>64 m</strong> de large. Quelle est la distance parcourue par un joueur qui fait le tour complet du terrain ?",
-    unite: "m",
-    reponse: "328 m",
-    indice: "P = 2 × (longueur + largeur)"
+  () => { // 2. Rectangle (terrain de football)
+    const L = pbRnd(90, 110), l = pbRnd(60, 75);
+    return { niveau:1, unite:'m', valeur: 2 * (L + l), indice:'P = 2 × (longueur + largeur)',
+      enonce:`Un terrain de football a la forme d'un <strong>rectangle</strong> de <strong>${L} m</strong> de long et <strong>${l} m</strong> de large. Quelle distance parcourt un joueur qui fait le tour complet du terrain ?` };
   },
-  {
-    niveau: 1,
-    enonce: "Une pancarte triangulaire a trois côtés de <strong>1,2 m</strong> chacun. Quelle est la longueur du cadre métallique qui l'entoure ?",
-    unite: "m",
-    reponse: "3,6 m",
-    indice: "P = 3 × côté"
+  () => { // 3. Triangle équilatéral, mesure décimale
+    const c = pbRnd(8, 19) / 10;
+    return { niveau:1, unite:'m', valeur: pbArr(3 * c), indice:'P = 3 × côté',
+      enonce:`Une pancarte triangulaire a trois côtés de <strong>${pbFmt(c)} m</strong> chacun. Quelle est la longueur du cadre métallique qui l'entoure ?` };
   },
-  {
-    niveau: 2,
-    enonce: "Le jardin de Lucie a la forme d'un <strong>carré</strong> de <strong>12 m</strong> de côté. Elle veut planter des piquets tous les <strong>3 m</strong> autour du jardin. De combien de piquets a-t-elle besoin ?",
-    unite: "piquets",
-    reponse: "16 piquets",
-    indice: "Calcule d'abord le périmètre, puis divise par 3."
+  () => { // 4. Piquets autour d'un carré (circuit fermé : autant de piquets que d'intervalles)
+    const pas = pbRnd(2, 5), c = pas * pbRnd(3, 6);
+    return { niveau:2, unite:'piquets', valeur: 4 * c / pas, indice:`Calcule d'abord le périmètre, puis divise par ${pas}.`,
+      enonce:`Le jardin de Lucie a la forme d'un <strong>carré</strong> de <strong>${c} m</strong> de côté. Elle veut planter des piquets tout autour, un piquet tous les <strong>${pas} m</strong>, en commençant par un coin. De combien de piquets a-t-elle besoin ?` };
   },
-  {
-    niveau: 2,
-    enonce: "Un cadre rectangulaire mesure <strong>60 cm</strong> de long et <strong>40 cm</strong> de large. Lucas veut coller un ruban doré tout autour. Le ruban coûte <strong>2 € le mètre</strong>. Combien cela va-t-il lui coûter ?",
-    unite: "€",
-    reponse: "4 €",
-    indice: "Pense à convertir les cm en m avant de calculer le coût."
+  () => { // 5. Ruban autour d'un cadre (cm → m, puis prix)
+    const P = pbRnd(1, 3), L = pbRnd(25 * P + 5, 50 * P - 10, 5), l = 50 * P - L, prix = pbRnd(2, 6);
+    return { niveau:2, unite:'€', valeur: P * prix, indice:'Calcule le périmètre, convertis les cm en m, puis multiplie par le prix d\'un mètre.',
+      enonce:`Un cadre rectangulaire mesure <strong>${L} cm</strong> de long et <strong>${l} cm</strong> de large. Lucas veut coller un ruban doré tout autour. Le ruban coute <strong>${prix} € le mètre</strong>. Combien cela va-t-il lui couter ?` };
   },
-  {
-    niveau: 2,
-    enonce: "Une piste de jogging a la forme d'un <strong>rectangle</strong> de <strong>250 m</strong> de long et <strong>80 m</strong> de large. Marie court <strong>5 fois</strong> le tour de la piste. Quelle distance a-t-elle parcourue en km ?",
-    unite: "km",
-    reponse: "3,3 km",
-    indice: "Calcule le périmètre, multiplie par 5, puis convertis en km."
+  () => { // 6. Tours de piste (m → km)
+    const L = pbRnd(150, 300, 10), l = pbRnd(50, 120, 10), n = pbRnd(3, 8);
+    return { niveau:2, unite:'km', valeur: pbArr(2 * (L + l) * n / 1000), indice:`Calcule le périmètre, multiplie par ${n}, puis convertis en km.`,
+      enonce:`Une piste de jogging a la forme d'un <strong>rectangle</strong> de <strong>${L} m</strong> de long et <strong>${l} m</strong> de large. Marie fait <strong>${n} fois</strong> le tour de la piste. Quelle distance a-t-elle parcourue, en km ?` };
   },
-  {
-    niveau: 2,
-    enonce: "Pour clôturer son potager <strong>carré</strong> de <strong>8 m</strong> de côté, Paul achète du grillage vendu en <strong>rouleaux de 10 m</strong>. Combien de rouleaux doit-il acheter ?",
-    unite: "rouleaux",
-    reponse: "4 rouleaux",
-    indice: "Attention : il faut des rouleaux entiers !"
+  () => { // 7. Rouleaux de grillage (arrondi au rouleau supérieur)
+    let c, rl;
+    do { c = pbRnd(5, 12); rl = [10, 15, 25][pbRnd(0, 2)]; } while((4 * c) % rl === 0 || 4 * c < rl);
+    return { niveau:2, unite:'rouleaux', valeur: Math.ceil(4 * c / rl), indice:'Calcule le périmètre. Attention : on n\'achète que des rouleaux entiers !',
+      enonce:`Pour clôturer son potager <strong>carré</strong> de <strong>${c} m</strong> de côté, Paul achète du grillage vendu en <strong>rouleaux de ${rl} m</strong>. Combien de rouleaux doit-il acheter ?` };
   },
-  {
-    niveau: 2,
-    enonce: "Un <strong>rectangle</strong> mesure <strong>400 m</strong> de périmètre. La longueur est <strong>3 fois plus grande</strong> que la largeur. Que vaut la longueur du rectangle ?",
-    unite: "m",
-    reponse: "150 m",
-    indice: "Le demi-périmètre = longueur + largeur. Si la longueur = 3 × largeur, alors demi-périmètre = 4 × largeur."
+  () => { // 8. Retrouver la longueur à partir du périmètre
+    const k = pbRnd(2, 4), w = pbRnd(10, 60, 5), P = 2 * (k + 1) * w;
+    return { niveau:2, unite:'m', valeur: k * w, indice:`Le demi-périmètre = longueur + largeur. Si la longueur vaut ${k} × la largeur, le demi-périmètre vaut ${k + 1} × la largeur.`,
+      enonce:`Un <strong>rectangle</strong> a un périmètre de <strong>${P} m</strong>. Sa longueur est <strong>${pbNom(k)}</strong> de sa largeur. Combien mesure la longueur du rectangle ?` };
   },
-  {
-    niveau: 3,
-    enonce: "La façade d'une maison a la forme d'un <strong>rectangle</strong> de <strong>9 m</strong> de large et <strong>6 m</strong> de haut, surmontée d'un <strong>toit triangulaire</strong> dont les deux côtés égaux mesurent <strong>5 m</strong> et dont la base mesure <strong>9 m</strong>. Un électricien pose un câble tout autour de la façade et du toit (sans compter la base du toit, partagée avec le haut du rectangle). Quelle est la longueur totale du câble ?",
-    unite: "m",
-    reponse: "31 m",
-    indice: "Calcule séparément : les 3 côtés du rectangle (sans le haut) + les 2 côtés du triangle (sans la base)."
+  () => { // 9. Façade + toit (côtés partagés non comptés) ; toit constructible : 2 × côté > base
+    const w = pbRnd(6, 10), h = pbRnd(4, 8), s = pbRnd(Math.floor(w / 2) + 1, w);
+    return { niveau:3, unite:'m', valeur: w + 2 * h + 2 * s, indice:'Additionne les 3 côtés du rectangle (sans le haut) et les 2 côtés du toit (sans sa base).',
+      enonce:`La façade d'une maison a la forme d'un <strong>rectangle</strong> de <strong>${w} m</strong> de large et <strong>${h} m</strong> de haut, surmontée d'un <strong>toit triangulaire</strong> dont les deux côtés égaux mesurent <strong>${s} m</strong> et dont la base mesure <strong>${w} m</strong>. Un électricien pose un câble tout autour de la façade et du toit (sans compter la base du toit, partagée avec le haut du rectangle). Quelle est la longueur totale du câble ?` };
   },
-  {
-    niveau: 3,
-    enonce: "Un agriculteur veut clôturer <strong>deux champs rectangulaires</strong> côte à côte. Le premier mesure <strong>40 m × 25 m</strong> et le second mesure <strong>30 m × 25 m</strong>. Les deux champs partagent un côté commun de <strong>25 m</strong> (une seule clôture entre eux). Il achète du fil barbelé à <strong>3,50 € le mètre</strong>. Quel est le coût total de la clôture ?",
-    unite: "€",
-    reponse: "752,50 €",
-    indice: "Calcule le périmètre de chaque champ, additionne-les, puis enlève le côté commun compté 2 fois."
+  () => { // 10. Deux champs avec un côté commun clôturé une seule fois, puis prix
+    const L1 = pbRnd(30, 50, 5), L2 = pbRnd(20, 40, 5), c = pbRnd(20, 30), prix = [2.5, 3, 3.5, 4][pbRnd(0, 3)];
+    const long = 2 * (L1 + L2) + 3 * c;
+    return { niveau:3, unite:'€', valeur: pbArr(long * prix), indice:'Calcule le périmètre de chaque champ, additionne-les, puis enlève une fois le côté commun (compté 2 fois).',
+      enonce:`Un agriculteur veut clôturer <strong>deux champs rectangulaires</strong> côte à côte. Le premier mesure <strong>${L1} m × ${c} m</strong> et le second <strong>${L2} m × ${c} m</strong>. Les deux champs partagent leur côté de <strong>${c} m</strong> (une seule clôture entre eux). Le fil barbelé coute <strong>${pbFmt(prix, '€')} € le mètre</strong>. Quel est le cout total de la clôture ?` };
   },
 ];
 
-let perimetreProblState = {current:0, score:0, answers:[], showIndice:false};
+// Unités acceptées pour chaque type de réponse
+const PB_UNITES = {
+  'm': /^(m|mètres?|metres?)$/,
+  'km': /^(km|kilomètres?|kilometres?)$/,
+  '€': /^(€|euros?|eur)$/,
+  'piquets': /^piquets?$/,
+  'rouleaux': /^rouleaux?$/
+};
+// Lecture : nombre + unité → valeur ; sans unité → 'sansUnite' ; autre unité → 'unite' ; illisible → null
+function perimetreProblLire(txt, unite){
+  const t = String(txt).trim().toLowerCase().replace(/\s+/g, ' ');
+  const m = t.match(/^(\d+(?:[.,]\d+)?)\s*(€|[a-zà-ÿ]+)?$/);
+  if(!m) return null;
+  if(!m[2]) return 'sansUnite';
+  if(!PB_UNITES[unite].test(m[2])) return 'unite';
+  return parseFloat(m[1].replace(',', '.'));
+}
+
+let perimetreProblState = {problemes:[], current:0, score:0, answers:[], saved:false};
 
 function renderPerimetreProblemes(){
   const body = document.getElementById('perimetre-problemes-body');
   if(!body) return;
-  perimetreProblState = {current:0, score:0, answers:Array(PERIMETRE_PROBLEMES.length).fill(null), showIndice:false};
+  const problemes = PERIMETRE_PROBLEMES.map(g => g());
+  perimetreProblState = {problemes, current:0, score:0, answers:Array(problemes.length).fill(null), saved:false};
   renderPerimetreProbl();
 }
 
 function renderPerimetreProbl(){
   const body = document.getElementById('perimetre-problemes-body');
   if(!body) return;
-  const {current, score, answers} = perimetreProblState;
-  const pb = PERIMETRE_PROBLEMES[current];
-  const total = PERIMETRE_PROBLEMES.length;
+  const {problemes, current, score, answers} = perimetreProblState;
+  const pb = problemes[current];
+  const total = problemes.length;
   const etoiles = '⭐'.repeat(pb.niveau);
 
   let formatExample = '12 m';
@@ -29642,6 +29654,7 @@ function renderPerimetreProbl(){
           style="font-size:16px;font-weight:700;padding:10px 16px;border:2px solid var(--border);
           border-radius:10px;width:160px;outline:none;"
           onkeydown="if(event.key==='Enter') validerPerimetreProbl()"
+          oninput="this.style.borderColor='var(--border)'"
         />
         <button class="btn" onclick="validerPerimetreProbl()" style="padding:10px 20px;">✅ Valider</button>
       </div>
@@ -29656,12 +29669,12 @@ function renderPerimetreProbl(){
     </div>
 
     <div style="display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:0.5rem;">
-      ${PERIMETRE_PROBLEMES.map((p, i) => `
+      ${problemes.map((p, i) => `
         <div title="Problème ${i+1}" style="width:26px;height:26px;border-radius:50%;background:${
           answers[i]===null ? 'var(--border)' :
           answers[i] ? 'var(--green,#16a34a)' : 'var(--red,#dc2626)'
         };display:flex;align-items:center;justify-content:center;font-size:10px;color:white;font-weight:700;">
-          ${'⭐'.repeat(p.niveau).length > 0 ? p.niveau : ''}
+          ${p.niveau}
         </div>`).join('')}
     </div>
   `;
@@ -29677,35 +29690,45 @@ function validerPerimetreProbl(){
   const input = document.getElementById('probl-input');
   const feedback = document.getElementById('probl-feedback');
   if(!input || !feedback) return;
+  const st = perimetreProblState;
+  if(st.answers[st.current] !== null) return; // déjà corrigé (double clic / double Entrée)
 
-  const pb = PERIMETRE_PROBLEMES[perimetreProblState.current];
-  const rep = input.value.trim().toLowerCase()
-    .replace(/\s+/g, ' ')
-    .replace('.', ',');
+  const pb = st.problemes[st.current];
+  const attendu = pbFmt(pb.valeur, pb.unite) + ' ' + pb.unite;
 
-  // Réponses acceptées : avec et sans espace avant l'unité
-  const attendu = pb.reponse.toLowerCase();
-  const attenduSansEspace = attendu.replace(' ', '');
-  const correct = rep === attendu || rep === attenduSansEspace;
+  // Vide, illisible, sans unité ou autre unité : message, rien n'est compté
+  // (avant : vide = faux ; « 752,5 € », « 146 mètres », « 4 euros » refusés)
+  const lu = perimetreProblLire(input.value, pb.unite);
+  if(input.value.trim() === '' || typeof lu !== 'number'){
+    feedback.style.display = 'block';
+    feedback.style.color = 'var(--amber,#d97706)';
+    feedback.innerHTML = input.value.trim() === '' ? '✏️ Écris d\'abord ta réponse.'
+      : lu === 'sansUnite' ? `📏 N'oublie pas l'unité : écris par exemple ${formatExampleProbl(pb.unite)}.`
+      : lu === 'unite' ? `📏 Donne ta réponse en <strong>${pb.unite}</strong>.`
+      : `✏️ Écris un nombre suivi de l'unité, par exemple ${formatExampleProbl(pb.unite)}.`;
+    input.focus();
+    return;
+  }
+  const correct = Math.abs(lu - pb.valeur) < 1e-9;
 
   input.style.borderColor = correct ? 'var(--green,#16a34a)' : 'var(--red,#dc2626)';
   input.disabled = true;
 
   if(correct){
-    perimetreProblState.score++;
-    perimetreProblState.answers[perimetreProblState.current] = true;
+    st.score++;
+    st.answers[st.current] = true;
     feedback.style.color = 'var(--green,#16a34a)';
     feedback.innerHTML = '✅ Bravo, c\'est correct !';
   } else {
-    perimetreProblState.answers[perimetreProblState.current] = false;
+    st.answers[st.current] = false;
     feedback.style.color = 'var(--red,#dc2626)';
-    feedback.innerHTML = `❌ Incorrect. La bonne réponse est <strong>${pb.reponse}</strong>.`;
+    feedback.innerHTML = `❌ Incorrect. La bonne réponse est <strong>${attendu}</strong>.<div style="font-size:13px;font-weight:600;margin-top:.4rem;color:var(--text)">💡 ${pb.indice}</div>`;
   }
   feedback.style.display = 'block';
 
   const btnDiv = document.createElement('div');
   btnDiv.style.cssText = 'text-align:center;margin-top:1rem;';
-  if(perimetreProblState.current < PERIMETRE_PROBLEMES.length - 1){
+  if(st.current < st.problemes.length - 1){
     btnDiv.innerHTML = `<button class="btn" onclick="perimetreProblNext()">Suivant →</button>`;
   } else {
     btnDiv.innerHTML = `<button class="btn" onclick="perimetreProblResultat()">Voir les résultats 🏁</button>`;
@@ -29713,26 +29736,33 @@ function validerPerimetreProbl(){
   feedback.after(btnDiv);
 }
 
+function formatExampleProbl(unite){
+  return {'m':'12 m', 'km':'2,5 km', '€':'15 €', 'piquets':'8 piquets', 'rouleaux':'3 rouleaux'}[unite] || '12 m';
+}
+
 function perimetreProblNext(){
+  if(perimetreProblState.answers[perimetreProblState.current] === null) return; // double clic : pas de problème sauté
   perimetreProblState.current++;
   renderPerimetreProbl();
 }
 
 function perimetreProblResultat(){
+  if(perimetreProblState.saved) return; // double clic : un seul enregistrement
+  perimetreProblState.saved = true;
   const body = document.getElementById('perimetre-problemes-body');
-  const {score} = perimetreProblState;
-  const total = PERIMETRE_PROBLEMES.length;
+  const {score, problemes} = perimetreProblState;
+  const total = problemes.length;
   const pct = Math.round(score/total*100);
   const color = pct>=70?'var(--green)':pct>=50?'var(--amber)':'var(--red)';
   const emoji = pct>=70?'🎉':pct>=50?'👍':'💪';
 
-  const details = PERIMETRE_PROBLEMES.map((pb, i) => {
+  const details = problemes.map((pb, i) => {
     const ok = perimetreProblState.answers[i];
     return `<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);font-size:13px;">
       <span>${ok ? '✅' : '❌'}</span>
       <span style="color:var(--muted)">Problème ${i+1}</span>
       <span style="color:var(--muted);margin-left:auto">${'⭐'.repeat(pb.niveau)}</span>
-      ${ok ? '' : `<span style="color:var(--red,#dc2626);font-weight:700">${pb.reponse}</span>`}
+      ${ok ? '' : `<span style="color:var(--red,#dc2626);font-weight:700">${pbFmt(pb.valeur, pb.unite)} ${pb.unite}</span>`}
     </div>`;
   }).join('');
 
@@ -29746,7 +29776,7 @@ function perimetreProblResultat(){
       <div style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:0.75rem;">Détail des réponses</div>
       ${details}
     </div>
-    <button class="btn" onclick="renderPerimetreProblemes()" style="width:100%">🔄 Recommencer</button>
+    <button class="btn" onclick="renderPerimetreProblemes()" style="width:100%">🔄 Nouveaux problèmes</button>
   `;
 
   if(state.student){

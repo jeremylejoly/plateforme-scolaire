@@ -1334,6 +1334,14 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Tests jsdom : vide / « 12abc » / « 5 cm » non comptés ; « 24 », « 24,50 mètres », « 24.5m » acceptés ; partie 4 / 5 → 1 sauvegarde ; syntaxe OK.
 - Décision de Jeremy (05/10, v565) : l'unité est obligatoire. « 24 » sans unité → message « N'oublie pas l'unité : écris par exemple 24 m. », rien n'est compté.
 
+### 05/10 — Maths › Grandeurs › Le périmètre › Problèmes (`grandeur_perimetre_problemes`, index › PERIMETRE_PROBLEMES / validerPerimetreProbl) — sw.js v566
+- Les 10 problèmes d'origine recalculés : réponses justes (146 m, 328 m, 3,6 m, 16 piquets, 4 €, 3,3 km, 4 rouleaux, 150 m, 31 m, 752,50 €).
+- **Toujours les mêmes problèmes avec les mêmes nombres** (« Recommencer » redonnait la même série) → 10 modèles générés, mêmes situations et même progression de niveau 1 à 3, nouveaux nombres à chaque série (5 000 séries toutes différentes ; réponses recalculées depuis l'énoncé : 0 écart). Contraintes : longueur > largeur, piquets en nombre entier, toit constructible, rouleaux à arrondir vraiment, prix au centime.
+- **Réponses justes refusées** (comparaison de texte exacte) : « 752,5 € », « 146 mètres », « 4 euros », « 3.3 km »… → tout nombre égal accepté avec son unité (m/mètres, km, €/euros, piquets, rouleaux). Unité obligatoire (comme le calcul du périmètre) : sans unité, autre unité ou saisie illisible → message, rien n'est compté. **Réponse vide** comptée fausse → ignorée.
+- **Double validation** (2e clic sur « Valider » = point compté deux fois, 2e bouton) → bloquée ; double clic sur « Suivant » / « Voir les résultats » : pas de problème sauté, un seul enregistrement.
+- En cas d'erreur, la correction affiche aussi la méthode (indice). Nouvelle orthographe : coute, couter, cout.
+- Tests jsdom : messages vide / sans unité / cm / « 12abc » sans compter ; partie 9 / 10 avec doubles clics → 1 sauvegarde ; « Nouveaux problèmes » → nouvelle série 10 / 10 ; syntaxe OK.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1663,7 +1671,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | Statut | Exercice | id | Source | Signal automatique |
 |---|---|---|---|---|
 | ✅ 05/10 | Périmètre — Calcul | `grandeur_perimetre_calcul` | index › renderPerimetreCalcul |  |
-| ⬜ | Périmètre — Problèmes | `grandeur_perimetre_problemes` | index › renderPerimetreProblemes |  |
+| ✅ 05/10 | Périmètre — Problèmes | `grandeur_perimetre_problemes` | index › renderPerimetreProblemes |  |
 | ⬜ | Périmètre du cercle — Le labo de la circonférence | `grandeur_perimetre_cercle_labo` | fiches/perimetre_cercle.html |  |
 | ⬜ | Périmètre du cercle — Le rayon et diamètre cachés | `grandeur_perimetre_cercle_inverse` | fiches/perimetre_cercle_inverse.html |  |
 | ⬜ | Périmètre du cercle — Figures complexes | `grandeur_perimetre_cercle_compose` | fiches/perimetre_cercle_compose.html |  |
