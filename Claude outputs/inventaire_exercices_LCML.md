@@ -912,6 +912,13 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - « La nouvelle se ___ » + option « se propagea » donnait « se se propagea » → « La nouvelle ___ » avec « se répandit ».
 - Mélanges `sort(random)` (phrases et propositions) → Fisher-Yates. Nouvelle orthographe : maitrises, entrainer (moteur partagé avec Antonymes).
 
+### 05/10 — Antonymes (`antonymes`, index › buildVocabExercice + exercices_francais.js › ANTONYMES_POOL) — sw.js v504, ?v=20261005zl
+- Moteur déjà corrigé avec Synonymes (Fisher-Yates phrases + propositions, ~25 % par position).
+- « agile » : « lent » était aussi un antonyme acceptable → remplacé par « grand ».
+- Faute d'orthographe dans une proposition : « s'assèchait » → « s'asséchait ».
+- Phrase contradictoire « Le savant avait une grande ignorance du sujet » → « L'apprenti avoua sa grande ignorance du sujet ».
+- Les 32 autres items sont justes.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1123,7 +1130,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 |---|---|---|---|---|
 | ✅ 05/10 | Connecteurs logiques | `connecteurs` | index › renderConnecteurs |  |
 | ✅ 05/10 | Synonymes | `synonymes` | index › renderSynonymes |  |
-| ⬜ | Antonymes | `antonymes` | index › renderAntonymes |  |
+| ✅ 05/10 | Antonymes | `antonymes` | index › renderAntonymes |  |
 | ⬜ | Mes écrits — Atelier Plume | `mes_ecrits` | index › (?) | (code à localiser) |
 | ⬜ | Les substituts du nom | `lecture_substituts` | fiches/lecture_substituts.html |  |
 
