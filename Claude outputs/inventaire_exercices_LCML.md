@@ -1055,6 +1055,11 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Pour 1/2, 1/3… les 4 propositions étaient toutes justes (1/2, 2/4, 3/6, 4/8) : il suffisait de tout cocher. Maintenant 5 propositions : 1 à 3 bonnes (originale, simplifiée, + une équivalente au hasard) et au moins 2 mauvaises, dont des pièges « presque équivalents » (5/8 pour 1/2). Vérifié sur 115 000 tirages : toute fraction équivalente est comptée juste, aucune mauvaise n'est équivalente.
 - « Valider » sans case cochée : ignoré (avant : erreur comptée).
 
+### 05/10 — Maths › Fractions › La balance des fractions (`num_balance_fractions`, `fiches/balance_fractions.html`, 3 copies) — sw.js v528
+- AUCUN résultat enregistré → enregistré une fois quand le niveau 5 est réussi : 1 point par niveau équilibré à la première vérification (/5).
+- Astuce du niveau 1 donnait la réponse (« Trouve le poids qui indique 3/4 ») → règle générale sans la réponse.
+- 5 niveaux vérifiés : sommes justes, outils permettant d'équilibrer. Nouvelle orthographe : boite.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1315,7 +1320,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | Comparaison de nombres | `num_entiers_decimaux_comparaison` | fiches/comparaison.html |  |
 | ✅ 05/10 | Fractions simples | `num_fractions_simples` | index › renderFractionsSimples |  |
 | ✅ 05/10 | Fractions complexes | `num_fractions_complexes` | index › renderFractionsExercice |  |
-| ⬜ | La balance des fractions | `num_balance_fractions` | fiches/balance_fractions.html |  |
+| ✅ 05/10 | La balance des fractions | `num_balance_fractions` | fiches/balance_fractions.html |  |
 | ⬜ | Colorie les fractions | `num_fractions_colorie` | fiches/colorie_les_fractions.html |  |
 | ⬜ | Opérations de fractions | `num_fractions_operations` | fiches/calculs_fractions.html |  |
 | ⬜ | La fraction d'une quantité | `num_fraction_quantite` | fiches/fraction_quantite.html |  |

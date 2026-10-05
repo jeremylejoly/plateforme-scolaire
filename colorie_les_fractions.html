@@ -359,6 +359,7 @@ function renderQuestion(){
   const q = state.queue[state.index];
   state.colored = new Set();
   state.checked = false;
+  state.attempts = 0;
 
   // fraction
   $('numEl').textContent = q.num;
@@ -491,12 +492,18 @@ function checkAnswer(){
   const q=state.queue[state.index];
   const fb=$('feedback');
   const n=state.colored.size;
-
+  if(n===0){
+    fb.textContent='Tu n’as colorié aucune case. Clique sur les cases !';
+    fb.className='feedback no show';
+    return;   // pas compté comme un essai
+  }
   if(n===q.toColor){
     state.checked=true;
-    state.score++;
-    state.results[state.index]=true;
-    fb.textContent='Bravo ! 🎉 C’est exactement ça.';
+    // Le point ne compte qu'au premier essai (avant : on recommençait jusqu'à réussir → toujours 10/10)
+    const premierEssai = state.attempts===0;
+    if(premierEssai) state.score++;
+    state.results[state.index]=premierEssai;
+    fb.textContent= premierEssai ? 'Bravo ! 🎉 C’est exactement ça.' : 'C’est juste maintenant ! (pas de point : ce n’était pas le premier essai)';
     fb.className='feedback ok show';
     $('scorePill').textContent='⭐ '+state.score;
     $('checkBtn').classList.add('hidden');
@@ -504,22 +511,33 @@ function checkAnswer(){
     $('nextBtn').classList.remove('hidden');
     renderProgress();
   } else {
-    // mauvaise réponse : on indique seulement trop / pas assez (sans donner le nombre exact au niveau 2)
-    if(n===0){
-      fb.textContent='Tu n’as colorié aucune case. Clique sur les cases !';
-    } else if(n>q.toColor){
+    state.attempts++;
+    if(state.attempts>=2){
+      // Après 2 essais ratés : on montre une bonne réponse et on passe à la suite (0 point)
+      state.checked=true;
+      state.results[state.index]=false;
+      state.colored=new Set([...Array(q.toColor).keys()]);
+      $('shapeWrap').querySelectorAll('[data-i]').forEach(el=>el.classList.toggle('fill', parseInt(el.dataset.i,10)<q.toColor));
+      fb.textContent=`Voici une bonne réponse : il fallait colorier ${q.toColor} case${q.toColor>1?'s':''} sur ${q.cells}.`;
+      fb.className='feedback no show';
+      $('checkBtn').classList.add('hidden');
+      $('clearBtn').classList.add('hidden');
+      $('nextBtn').classList.remove('hidden');
+      renderProgress();
+      return;
+    }
+    // mauvaise réponse : on indique seulement trop / pas assez (sans donner le nombre exact)
+    if(n>q.toColor){
       fb.textContent='Tu as colorié un peu trop de cases. Réessaie ✏️';
     } else {
       fb.textContent='Il n’y a pas encore assez de cases coloriées. Réessaie ✏️';
     }
     fb.className='feedback no show';
-    if(state.results[state.index]!==true) state.results[state.index]=state.results[state.index]??null;
   }
 }
 
 function nextQuestion(){
-  if(state.results[state.index]===undefined || state.results[state.index]===null)
-    state.results[state.index]=true; // sécurité
+  if(!state.checked) return;
   state.index++;
   if(state.index>=state.queue.length){ showResults(); }
   else { renderQuestion(); }
@@ -533,12 +551,24 @@ function showResults(){
   const s=state.score, total=state.queue.length;
   $('resScore').textContent=`${s} / ${total}`;
   let stars, title, msg;
-  if(s>=9){ stars='⭐⭐⭐'; title='Champion·ne des fractions !'; msg='Tu maîtrises super bien. Tu peux essayer l’autre niveau pour aller plus loin.'; }
+  if(s>=9){ stars='⭐⭐⭐'; title='Champion·ne des fractions !'; msg='Tu maitrises super bien. Tu peux essayer l’autre niveau pour aller plus loin.'; }
   else if(s>=6){ stars='⭐⭐'; title='Très bien joué !'; msg='Tu progresses bien. Rejoue pour viser les trois étoiles !'; }
-  else { stars='⭐'; title='Bon entraînement !'; msg='Les fractions, ça s’apprend en s’entraînant. Recommence quand tu veux.'; }
+  else { stars='⭐'; title='Bon entrainement !'; msg='Les fractions, ça s’apprend en s’entrainant. Recommence quand tu veux.'; }
   $('resStars').textContent=stars;
   $('resTitle').textContent=title;
   $('resMsg').textContent=msg;
+  // Enregistrement du résultat (auparavant rien n'était enregistré)
+  try{
+    if(window.parent && window.parent.saveResult){
+      window.parent.saveResult({
+        activity:'num_fractions_colorie',
+        bookTitle:'Colorie les fractions — niveau '+state.level,
+        score:s, total:total, pct:Math.round(s/total*100),
+        date:new Date().toLocaleDateString('fr-BE'),
+        time:new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})
+      });
+    }
+  }catch(e){}
 }
 
 /* =========================================================
