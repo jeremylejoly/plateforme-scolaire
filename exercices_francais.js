@@ -5815,7 +5815,7 @@ Il est donc essentiel d'apprendre aux jeunes à utiliser les réseaux sociaux de
     questions:[
       {q:"Quelle est la position de l'auteur sur les réseaux sociaux ?", options:["Il pense que les réseaux sociaux sont uniquement dangereux","Il pense que les réseaux sociaux ont à la fois des avantages et des inconvénients","Il pense que les réseaux sociaux sont indispensables à la vie sociale"], correct:1},
       {q:"Quel avantage des réseaux sociaux est mentionné dans le texte ?", options:["Ils permettent d'apprendre des langues étrangères facilement","Ils permettent de rester en contact avec ses proches et de partager ses créations","Ils offrent des jeux éducatifs gratuits pour tous les âges"], correct:1},
-      {q:"Combien d'heures par jour sur les réseaux sociaux est considéré comme risqué ?", options:["Plus d'une heure par jour","Plus de deux heures par jour","Plus de trois heures par jour"], correct:2},
+      {q:"Selon le texte, à partir de combien de temps par jour sur les réseaux sociaux les adolescents ont-ils plus de risques de souffrir de problèmes de santé mentale ?", options:["Plus d'une heure par jour","Plus de deux heures par jour","Plus de trois heures par jour"], correct:2},
       {q:"L'auteur conseille d'interdire complètement les réseaux sociaux aux jeunes.", options:["Vrai","Faux"], correct:1}
     ],
     classif:{

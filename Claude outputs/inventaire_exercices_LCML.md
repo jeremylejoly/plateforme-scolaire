@@ -128,6 +128,9 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
   - Même piège que les devoirs : « Lire est ennuyeux et démotive » devait être classé « Contre » alors qu'il n'était pas dans le texte. Ajouté comme concession.
   - Question 3 : la mauvaise réponse « reconnaître les différentes cultures » était presque dans le texte. Remplacée.
 
+- **05/10 — Lecture argumentative › Bien manger** :
+  - Même piège que les devoirs : l'argument « coûte trop cher pour certaines familles » devait être classé « Contre », alors qu'il n'était pas dans le texte. Je l'ai ajouté comme concession.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -187,7 +190,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | Doit-on devenir végétarien ? | `arg_vegetarien` | index › renderArgVegetarien |  |
 | ✅ 05/10 | Faut-il porter un uniforme ? | `arg_uniforme` | index › renderArgUniforme |  |
 | ✅ 05/10 | L'importance de lire | `arg_lecture` | index › renderArgLecture |  |
-| ⬜ | Bien manger pour bien grandir | `arg_alimentation` | index › renderArgAlimentation |  |
+| ✅ 05/10 | Bien manger pour bien grandir | `arg_alimentation` | index › renderArgAlimentation |  |
 | ⬜ | Les réseaux sociaux | `arg_reseaux` | index › renderArgReseaux |  |
 
 ### 📖 Français — 🎭 Lecture — Dialoguée
