@@ -144,6 +144,10 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
   - Contenu des écrans correct.
   - Les 3 dialogues « nouveaux » (Armstrong, conseil, marché) ont un autre moteur, pas encore vérifié.
 
+- **05/10 — Lecture dialoguée › Manger bio** :
+  - Le contenu est cohérent.
+  - Petite précision : « pesticides chimiques **de synthèse** » (le bio autorise certains pesticides naturels).
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -211,7 +215,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | Statut | Exercice | id | Source | Signal automatique |
 |---|---|---|---|---|
 | ✅ 05/10 | Les écrans à l'école | `dial_ecrans` | index › renderDialEcrans |  |
-| ⬜ | Manger bio, est-ce utile ? | `dial_bio` | index › renderDialBio |  |
+| ✅ 05/10 | Manger bio, est-ce utile ? | `dial_bio` | index › renderDialBio |  |
 | ⬜ | La voiture en ville | `dial_voiture` | index › renderDialVoiture |  |
 | ⬜ | Avoir un animal de compagnie | `dial_animal` | index › renderDialAnimal |  |
 | ⬜ | Interview de Neil Armstrong | `dial_armstrong` | index › renderDialArmstrong |  |

@@ -5576,7 +5576,7 @@ window.DIALOGUES_DATA = {
     tagA:'🚲 Léa — Pour interdire', tagB:'🚗 Maxime — Contre l\'interdiction',
     repliques:[
       {nom:'Animateur', texte:'Bonjour à tous ! Aujourd\'hui, Léa et Maxime débattent d\'un sujet brûlant : faut-il interdire les voitures dans les villes ? Léa, à toi !', anim:true},
-      {nom:'Léa', texte:'Je pense qu\'il faudrait interdire les voitures dans les centres-villes. La pollution due aux voitures est responsable de nombreuses maladies respiratoires, surtout chez les enfants. Des villes comme Amsterdam ou Copenhague ont montré que c\'est possible !', couleur:'#c2185b'},
+      {nom:'Léa', texte:'Je pense qu\'il faudrait interdire les voitures dans les centres-villes. La pollution due aux voitures est responsable de nombreuses maladies respiratoires, surtout chez les enfants. Des villes comme Amsterdam ou Copenhague ont déjà fortement réduit la place des voitures dans leur centre !', couleur:'#c2185b'},
       {nom:'Maxime', texte:'Mais comment les gens feraient-ils pour aller travailler, faire leurs courses ou emmener leurs enfants à l\'école ? Tout le monde n\'habite pas près d\'une gare ou d\'un arrêt de bus. La voiture est indispensable pour beaucoup de personnes.', couleur:'#1565c0'},
       {nom:'Léa', texte:'On pourrait développer les transports en commun et les pistes cyclables. Si les bus et les vélos sont plus pratiques et moins chers, les gens laisseront naturellement leur voiture au garage.', couleur:'#c2185b'},
       {nom:'Maxime', texte:'Développer les transports en commun, ça coûte très cher et ça prend des années. En attendant, les gens ont besoin de leurs voitures maintenant. Et dans les zones rurales comme la nôtre, il n\'y a souvent aucune alternative.', couleur:'#1565c0'},
@@ -5603,7 +5603,7 @@ window.DIALOGUES_DATA = {
     intentions:[
       {rep:"\"C\'est vrai pour les zones rurales, mais dans les villes, on pourrait commencer par des zones sans voitures.\" (Léa)", options:["Abandonner complètement son point de vue","Nuancer sa position en reconnaissant une limite","Accuser Maxime de ne pas comprendre le problème"], correct:1},
       {rep:"\"Comment les gens feraient-ils pour aller travailler ?\" (Maxime)", options:["Remettre en question la faisabilité de la proposition de Léa","Proposer une solution alternative aux voitures","Approuver l\'idée de Léa tout en exprimant des doutes"], correct:0},
-      {rep:"\"Des villes comme Amsterdam ou Copenhague ont montré que c\'est possible !\" (Léa)", options:["Se moquer des villes qui n\'ont pas encore interdit les voitures","Appuyer son argument avec des exemples concrets","Admettre qu\'elle n\'est pas sûre de sa position"], correct:1},
+      {rep:"\"Des villes comme Amsterdam ou Copenhague ont déjà fortement réduit la place des voitures dans leur centre !\" (Léa)", options:["Se moquer des villes qui n\'ont pas encore interdit les voitures","Appuyer son argument avec des exemples concrets","Admettre qu\'elle n\'est pas sûre de sa position"], correct:1},
       {rep:"\"On ne peut pas les oublier.\" (Maxime, en parlant des personnes âgées)", options:["Exprimer son inquiétude pour les personnes vulnérables","Critiquer Léa pour ne pas penser aux autres","Demander à l\'animateur de changer de sujet"], correct:0},
     ]
   },
