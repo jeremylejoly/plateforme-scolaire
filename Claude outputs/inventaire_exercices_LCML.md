@@ -726,6 +726,14 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
   - Nouvelle orthographe : entrainer, maitrises.
   - La carte « 2. Identifier la question » est toujours grisée (« Bientôt disponible »). Aucun exercice n'existe derrière.
 
+- **05/10 — Grammaire › Fonctions › Analyse de phrases** (6 niveaux : sujet/verbe, sujet/prédicat, + CDV/CIV, + CC, + attribut, + complément d'agent ; 5 phrases par partie) :
+  - **La même partie revenait à chaque fois.** Chaque niveau ne contenait que 5 phrases (4 au niveau 6), et chaque partie en tirait 5 : l'élève retrouvait toujours les mêmes, seul l'ordre changeait. Chaque niveau compte maintenant **12 phrases** (39 nouvelles au total, avec CDV, CIV, attributs, CC en tête suivis d'une virgule, et passifs avec « par saint Nicolas »).
+  - **Erreur dans le niveau 2 (prédicat).** « Le chat noir dort **sur le canapé** » et « Ce vieux monsieur marche **lentement** » mettaient un CC dans le prédicat, ce qui contredit le niveau 4 et l'exercice « Repérer le prédicat ». Ces phrases sont remplacées par « Le chat noir attrape une souris » et « Ce vieux monsieur lit le journal ».
+  - **Plan de travail.** Le résultat était enregistré sous `analyse_phrase`, que l'élément du plan (`gram_analyse_phrase`) ne reconnaissait pas. Il est maintenant enregistré par niveau (`gram_analyse_phrase_n1` à `_n6`).
+  - Les messages de débogage de la console ont été retirés.
+  - Nouvelle orthographe : maitrises, entrainement.
+- **05/10 — Plan de travail** : « Le complément d'agent » est retiré de la liste. L'écran ne contient pas encore d'exercice. Décision de Jeremy : on ne crée rien pour le moment.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -851,8 +859,8 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | Le verbe (fonction) — Reconstituer les textes | `gram_verbe_texte` | index › startVerbeTextesExercise |  |
 | ⬜ | L'attribut du sujet | `gram_attribut` | index › (?) | (code à localiser) |
 | ✅ 05/10 | Attribut & Complément du nom | `gram_attribut_cdn` | fiches/grammaire_attribut_cdn.html |  |
-| ⬜ | Le complément d'agent | `gram_agent` | index › (?) | (code à localiser) |
-| ⬜ | Analyse de phrases | `gram_analyse_phrase` | index › startAnalyseGlobale |  |
+| ➖ 05/10 | Le complément d'agent | `gram_agent` | index › (?) | (code à localiser) |
+| ✅ 05/10 | Analyse de phrases | `gram_analyse_phrase` | index › startAnalyseGlobale |  |
 
 ### 📖 Français — ✏️ Grammaire — Types et formes de phrases
 
