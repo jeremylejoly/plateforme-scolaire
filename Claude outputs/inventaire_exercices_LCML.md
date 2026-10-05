@@ -1072,6 +1072,11 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Multiplication de deux fractions : seule la forme non simplifiée était acceptée (6/12) → toute fraction égale acceptée (1/2, 3/6…).
 - Titre du niveau 3 : « Multiplications » → « Nombres mixtes et multiplications ». Nouvelle orthographe : maitrise(s), entrainer, Entraine-toi.
 
+### 05/10 — Maths › Fractions › La fraction d'une quantité (`num_fraction_quantite`, `fiches/fraction_quantite.html`, 3 copies) — sw.js v531
+- Déjà bon : point au 1er essai sans aide, enregistrement en place. Générateur vérifié (50 000 questions : divisions toujours exactes).
+- On pouvait cliquer « Continuer » juste après une erreur (sans voir la solution) ou réessayer à l'infini → après 1 erreur, on réessaie ; après 2, la solution s'affiche (division puis multiplication) et on passe à la suite.
+- Nouvelle orthographe : maitrise, entrainer.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1335,7 +1340,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | La balance des fractions | `num_balance_fractions` | fiches/balance_fractions.html |  |
 | ✅ 05/10 | Colorie les fractions | `num_fractions_colorie` | fiches/colorie_les_fractions.html |  |
 | ✅ 05/10 | Opérations de fractions | `num_fractions_operations` | fiches/calculs_fractions.html |  |
-| ⬜ | La fraction d'une quantité | `num_fraction_quantite` | fiches/fraction_quantite.html |  |
+| ✅ 05/10 | La fraction d'une quantité | `num_fraction_quantite` | fiches/fraction_quantite.html |  |
 | ⬜ | Les nombres mixtes | `num_nombres_mixtes` | fiches/numeration_nombres_mixtes.html |  |
 | ⬜ | Les pourcentages | `num_pourcentages` | index › (?) | (code à localiser) |
 | ✅ 05/10 | Arrondir les décimaux | `num_decimaux_arrondir` | index › renderDecimauxArrondir |  |
