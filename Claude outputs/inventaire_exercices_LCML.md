@@ -1046,6 +1046,10 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - 108 écritures (54 comparaisons) recalculées par programme : toutes les valeurs justes, signes bien répartis (23 =, 17 <, 14 >). Tirage Fisher-Yates et enregistrement déjà en place.
 - Nouvelle orthographe seulement : maitrises, entraine-toi, entrainer.
 
+### 05/10 — Maths › Fractions › Les fractions simples (`num_fractions_simples`, index › FRACTIONS_SIMPLES_BANQUE / validerFractSimple) — sw.js v526
+- 23 figures vérifiées (parts égales : disques, bandes, grilles 2×2, 3×3, 4×3) ; distracteurs jamais équivalents à la bonne fraction ; propositions et figures mélangées (Fisher-Yates).
+- « Valider » sans réponse cochée comptait une erreur → ignoré.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1304,7 +1308,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | Décimaux — Opérations devinettes | `num_decimaux_op_devinettes` | index › renderDecimauxOpDevinettes |  |
 | ✅ 05/10 | Sélectionne le bon chiffre | `num_entiers_decimaux_abaque` | fiches/abaque.html |  |
 | ✅ 05/10 | Comparaison de nombres | `num_entiers_decimaux_comparaison` | fiches/comparaison.html |  |
-| ⬜ | Fractions simples | `num_fractions_simples` | index › renderFractionsSimples |  |
+| ✅ 05/10 | Fractions simples | `num_fractions_simples` | index › renderFractionsSimples |  |
 | ⬜ | Fractions complexes | `num_fractions_complexes` | index › renderFractionsExercice |  |
 | ⬜ | La balance des fractions | `num_balance_fractions` | fiches/balance_fractions.html |  |
 | ⬜ | Colorie les fractions | `num_fractions_colorie` | fiches/colorie_les_fractions.html |  |

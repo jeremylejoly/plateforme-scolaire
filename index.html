@@ -30210,12 +30210,15 @@ function getFractionsCorrectes(colorie, total){
   res.push(fracStr(colorie, total));
   // Forme simplifiée si différente
   if(sn !== colorie || sd !== total) res.push(fracStr(sn, sd));
-  // Multiples simples
-  for(let k = 2; k <= 4; k++){
-    const mn = colorie * k, md = total * k;
-    if(md <= 12) res.push(fracStr(mn, md));
+  // Une autre fraction équivalente au plus (dénominateur ≤ 12), tirée au hasard.
+  // Avant : jusqu'à 4 bonnes réponses sur 4 propositions (1/2 → 1/2, 2/4, 3/6, 4/8) : il suffisait de tout cocher.
+  const autres = [];
+  for(let k = 2; sd * k <= 12; k++){
+    const f = fracStr(sn * k, sd * k);
+    if(!res.includes(f)) autres.push(f);
   }
-  return [...new Set(res)];
+  if(autres.length) res.push(autres[Math.floor(Math.random() * autres.length)]);
+  return res;
 }
 
 // Génère 4 propositions : correctes + distracteurs proches
@@ -30237,11 +30240,18 @@ function genererPropositions(colorie, total){
   for(let n = 1; n < total; n++){
     if(n !== colorie) dist.add(fracStr(n, total));
   }
-  // Retirer les correctes des distracteurs
+  // Pièges « presque équivalents » (utiles pour les petits dénominateurs : 1/2, 1/3…)
+  for(let k = 2; sd * k <= 12; k++){
+    if(sn * k + 1 < sd * k) dist.add(fracStr(sn * k + 1, sd * k));
+    if(sn * k - 1 > 0)      dist.add(fracStr(sn * k - 1, sd * k));
+  }
+  if(sd + 1 <= 12) dist.add(fracStr(sn, sd + 1));
+  // Retirer les correctes (et toute fraction équivalente) des distracteurs
   correctes.forEach(f => dist.delete(f));
+  [...dist].forEach(f => { const [a, b] = f.split('/').map(Number); if(a * total === b * colorie) dist.delete(f); });
 
-  // Prendre 4 - correctes.length distracteurs
-  const nbDist = 4 - correctes.length;
+  // 5 propositions : 1 à 3 bonnes, le reste de mauvaises (toujours au moins 2)
+  const nbDist = Math.max(2, 5 - correctes.length);
   const distArr = shuffle([...dist]).slice(0, nbDist);
 
   // Assembler et mélanger
@@ -30280,8 +30290,8 @@ function renderFractionsQuestion(){
     <label id="frac-label-${i}" style="display:flex;align-items:center;gap:12px;padding:12px 16px;
       background:var(--surface);border:2px solid var(--border);border-radius:10px;cursor:pointer;
       font-size:18px;font-weight:700;transition:border-color .15s;"
-      onclick="fracToggle(${i}, this)">
-      <input type="checkbox" id="frac-cb-${i}" data-prop="${p}" style="width:20px;height:20px;cursor:pointer;accent-color:var(--purple);">
+      >
+      <input type="checkbox" id="frac-cb-${i}" data-prop="${p}" onchange="fracToggle(${i}, this.parentNode)" style="width:20px;height:20px;cursor:pointer;accent-color:var(--purple);">
       <span style="font-family:'Nunito',sans-serif;">${p}</span>
     </label>`).join('');
 
@@ -30330,7 +30340,13 @@ function fracToggle(idx, label){
 
 function validerFraction(){
   const q = fractionsState.questions[fractionsState.current];
-  const selections = fractionsState.selections;
+  if(fractionsState.answers[fractionsState.current] !== null) return;
+  // Lecture directe des cases cochées (avant : un clic sur le texte inversait l'état mémorisé)
+  const selections = q.propositions.map((_, i) => i).filter(i => {
+    const cb = document.getElementById('frac-cb-' + i);
+    return cb && cb.checked;
+  });
+  if(selections.length === 0) return;   // rien de coché : on ne compte pas d'erreur
 
   // Vérifier que chaque sélection est correcte ET toutes les correctes sont sélectionnées
   const selectedProps = selections.map(i => q.propositions[i]);
