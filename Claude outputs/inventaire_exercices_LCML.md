@@ -343,13 +343,22 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
   - Les 100 phrases sont justes et les explications cohérentes. L'ordre est mélangé à chaque partie (Fisher–Yates), donc il n'y a pas de schéma oui/non fixe.
   - Nouvelle orthographe : maitresse, gouter, entrainement.
 
+- **05/10 — Conjugaison › Passé composé › 2. Participe avec Avoir (QCM)** (40 questions) :
+  - La bonne réponse était en A dans 30 questions sur 40, car les propositions n'étaient pas mélangées. C'est corrigé : sur 3 000 tirages, la bonne réponse tombe environ un tiers des fois sur chaque position.
+  - Le résultat n'était jamais enregistré (même défaut que la fiche 1). C'est corrigé (`vocabulaire_pc_avoir_qcm`).
+  - « Verbe : grandi » est devenu « grandir », et l'explication a été corrigée.
+  - « la clé à double tour » est devenu « la clé dans la serrure ».
+  - Les mots en gras des explications (**s**, **t**, **-é**) s'affichaient mal. C'est corrigé.
+  - Nouvelle orthographe : diner, maitrises, entraine-toi. « dû » garde son accent.
+  - Les copies fiches/ et public/fiches/ sont maintenant identiques.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
 |---|---|
 | `vocabulaire_pc_avoir_accord_qcm` (Accords avec Avoir, QCM) | Bonne réponse en 1re position dans 40/40 questions, propositions non mélangées |
 | `vocabulaire_pc_mix_qcm` (Bilan Avoir & Être, QCM) | Bonne réponse en 1re position dans 50/50 questions, non mélangées |
-| `vocabulaire_pc_avoir_qcm` (PP avec Avoir, QCM) | Bonne réponse en 1re position dans 30/40 questions, non mélangées |
+| `vocabulaire_pc_avoir_qcm` (PP avec Avoir, QCM) | Bonne réponse en 1re position dans 30/40 questions, non mélangées | ✅ 05/10 |
 | `vocabulaire_pc_etre_qcm` (PP avec Être, QCM) | Bonne réponse en 1re position dans 24/40 questions, non mélangées |
 | ~~`vocabulaire_relations_lexicales`~~ | ✅ corrigé le 05/10 |
 | ~~Fiches de lecture (Baleine, Vinci, Eiffel, Charlemagne, Einstein, Atomium, Taj Mahal, Écureuil, Loup, Éléphant)~~ | ✅ corrigées le 05/10 |
@@ -510,7 +519,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | Statut | Exercice | id | Source | Signal automatique |
 |---|---|---|---|---|
 | ✅ 05/10 | Passé composé ou pas ? | `vocabulaire_pc_identifier` | fiches/conjugaison_pc_identifier.html |  |
-| ⬜ | Participe passé avec Avoir (QCM) | `vocabulaire_pc_avoir_qcm` | fiches/conjugaison_pc_avoir_qcm.html | QCM: bonne réponse en position 1 dans 30/40 questions, options non mélangées |
+| ✅ 05/10 | Participe passé avec Avoir (QCM) | `vocabulaire_pc_avoir_qcm` | fiches/conjugaison_pc_avoir_qcm.html | QCM: bonne réponse en position 1 dans 30/40 questions, options non mélangées |
 | ⬜ | Participe passé avec Avoir (Écriture) | `vocabulaire_pc_avoir_trous` | fiches/conjugaison_pc_avoir_trous.html |  |
 | ⬜ | Participe passé avec Être (QCM) | `vocabulaire_pc_etre_qcm` | fiches/conjugaison_pc_etre_qcm.html | QCM: bonne réponse en position 1 dans 24/40 questions, options non mélangées |
 | ⬜ | Participe passé avec Être (Écriture) | `vocabulaire_pc_etre_trous` | fiches/conjugaison_pc_etre_trous.html |  |
