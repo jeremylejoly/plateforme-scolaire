@@ -950,6 +950,11 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Remarque (non modifiée) : Q1 et Q5 ont la même bonne réponse (pain rassis qu'on aurait jeté).
 - Autres questions cohérentes (lait/œufs/sucre/cannelle, 30 s, beurre qui mousse, 2-3 min par face, garnitures). ⚠️ Audio non réécouté.
 
+### 05/10 — Savoir écouter : Les Hautes Fagnes (`savoir_ecouter_5`, exercices_francais.js) — sw.js v510, ?v=20261005zp
+- Moteur déjà corrigé (enregistrement + mélange).
+- Q7 : réponse attendue fausse sur le plan scientifique (« l'absence de grands prédateurs rend ce milieu sûr pour nicher au sol » : renards, rapaces… ; et la pie-grièche grise niche dans les buissons, pas au sol) → « Ces oiseaux sont adaptés à un paysage ouvert, avec peu de grands arbres ». ⚠️ À confirmer par Jeremy si l'audio dit autre chose.
+- Autres questions justes (frontière allemande, tourbe-éponge, caillebotis, brame en automne, Botrange, bruyères, neige qui tient plus longtemps). ⚠️ Audio non réécouté.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1185,7 +1190,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | Savoir écouter - Bruges | `savoir_ecouter_2` | index › startSavoirEcouter |  |
 | ✅ 05/10 | Savoir écouter - Fourmi | `savoir_ecouter_3` | index › startSavoirEcouter |  |
 | ✅ 05/10 | Savoir écouter - Pain perdu | `savoir_ecouter_4` | index › startSavoirEcouter |  |
-| ⬜ | Savoir écouter - Hautes Fagnes | `savoir_ecouter_5` | index › startSavoirEcouter |  |
+| ✅ 05/10 | Savoir écouter - Hautes Fagnes | `savoir_ecouter_5` | index › startSavoirEcouter |  |
 | ⬜ | Savoir écouter - L'atelier de Sandy | `savoir_ecouter_6` | index › startSavoirEcouter |  |
 | ⬜ | Savoir écouter - Au club d'échecs | `savoir_ecouter_7` | index › startSavoirEcouter |  |
 | ⬜ | Savoir écouter - Notice de l'étagère Lyra | `savoir_ecouter_8` | index › startSavoirEcouter |  |
