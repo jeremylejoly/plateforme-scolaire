@@ -1089,6 +1089,14 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Fisher–Yates partout ; double-clic sur Continuer sans effet ; sauvegarde une seule fois ; retour visuel d'erreur (CSS manquant) ; textes de fin sans « arbres de facteurs » ; maitrises / Entraine-toi.
 - Tests jsdom : parfait 10/10, une erreur par liste 5/10, partiel 0/10, faux 0/10, 4 sauvegardes ; 3 000 séries : tous les diviseurs et statuts premiers exacts, aucun doublon, nombres premiers répartis uniformément sur les 8 positions.
 
+### 05/10 — Maths › Opérations › Vocabulaire › Associer mot et définition (`op_vocabulaire_def`, `fiches/vocabulaire_operations.html` + copies public et racine) — sw.js v534
+- Contenu (10 mots/définitions) : juste.
+- **Aucun résultat enregistré** : la fiche exigeait `window.parent.state.student`, or `state` est déclaré avec `let` dans index → invisible via `window.parent` → jamais de sauvegarde. Appel direct à `saveResult` (index complète élève/classe).
+- ⚠️ Même condition bloquante dans 10 autres fiches, à corriger quand on y arrivera : problemes_operations, flechettes_atteins_le_score, flechettes_calcule_le_score, mots-croises, sudoku, parties_calcul, vocabulaire_solides, mots-caches, trajet_du_sang_ordre, sci_plantes_fleur.
+- La correction disparaissait après 1,5 s (remplacée par le score) : elle reste maintenant visible, avec la bonne définition sous chaque mot mal associé.
+- Mots de gauche aussi mélangés (ordre fixe avant) ; double validation bloquée ; maitrises.
+- Tests jsdom : parfait 10/10, 2 inversés 8/10 avec 2 corrections, sauvegarde OK.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1363,7 +1371,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 
 | Statut | Exercice | id | Source | Signal automatique |
 |---|---|---|---|---|
-| ⬜ | Vocabulaire des opérations (Définitions) | `op_vocabulaire_def` | fiches/vocabulaire_operations.html |  |
+| ✅ 05/10 | Vocabulaire des opérations (Définitions) | `op_vocabulaire_def` | fiches/vocabulaire_operations.html |  |
 | ⬜ | Vocabulaire des opérations (Parties d'un calcul) | `op_vocabulaire_calc` | fiches/parties_calcul.html |  |
 | ⬜ | Vocabulaire des opérations (Résolution de problèmes) | `op_vocabulaire_prob` | fiches/problemes_operations.html |  |
 
