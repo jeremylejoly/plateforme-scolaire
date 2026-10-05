@@ -11,7 +11,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
    - position de la bonne réponse répartie ;
    - « Recommencer » → nouvelle série ;
    - réponses équivalentes acceptées (majuscules, accents, espaces, 02 = 2…).
-3. **Un commit par exercice**, avec `VERSION` de `sw.js` augmentée à chaque fois (sinon les tablettes gardent l'ancienne version). Claude ne peut pas pousser sur GitHub depuis la session : **Jérémy fait le push**.
+3. **Un commit par exercice, fait par Claude** (liste de suivi comprise), avec `VERSION` de `sw.js` augmentée à chaque fois (sinon les tablettes gardent l'ancienne version). Claude ne peut pas pousser sur GitHub depuis la session : **Jérémy fait le push**.
 4. Statut dans la colonne de gauche : ⬜ à vérifier · 🔧 en cours · ✅ vérifié/corrigé (date + commit).
 
 **Points d'attention pour chaque exercice :**
@@ -76,6 +76,11 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
   - Aix-la-Chapelle est à 40 km de Waimes, pas 80 (texte et question 4).
   - Date de naissance incertaine ; deux précisions.
 
+- **05/10 — Lecture informative › Albert Einstein** :
+  - Passé sur le moteur commun.
+  - « Élève ordinaire » est une légende : il était très bon en maths et en physique (texte et question 4 corrigés).
+  - « QI estimé à 160-190 » retiré (jamais mesuré).
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -111,7 +116,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 (aafff46) | Léonard de Vinci | `fiche_vinci` | index › renderFicheVinci | QCM: bonne réponse en position 2 dans 4/5 questions, options non mélangées ; Aucun hasard : mêmes questions, même ordre à chaque partie |
 | ⬜ | La Tour Eiffel | `fiche_eiffel` | index › renderFicheEiffel | QCM: bonne réponse en position 1 dans 3/5 questions, options non mélangées ; Aucun hasard : mêmes questions, même ordre à chaque partie |
 | ✅ 05/10 (0e1523d) | Charlemagne | `fiche_charlemagne` | index › renderFicheCharlemagne | Aucun hasard : mêmes questions, même ordre à chaque partie |
-| ⬜ | Albert Einstein | `fiche_einstein` | index › renderFicheEinstein | Aucun hasard : mêmes questions, même ordre à chaque partie |
+| ✅ 05/10 | Albert Einstein | `fiche_einstein` | index › renderFicheEinstein | Aucun hasard : mêmes questions, même ordre à chaque partie |
 | ⬜ | L'Atomium | `fiche_atomium` | index › renderFicheAtomium | Aucun hasard : mêmes questions, même ordre à chaque partie |
 | ⬜ | Le Taj Mahal | `fiche_tajmahal` | index › renderFicheTajMahal | Aucun hasard : mêmes questions, même ordre à chaque partie |
 | ✅ 05/10 (a52284d) | L'Écureuil roux | `fiche_ecureuil` | index › renderFicheEcureuil | Aucun hasard : mêmes questions, même ordre à chaque partie |
