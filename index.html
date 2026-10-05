@@ -24255,9 +24255,17 @@ function renderNumClasser(){
   numClasserState.decroissantSerie = NUM_CLASSER_DECROISSANT[di];
   numClasserState.submitted = false;
 
-  // Mélanger les nombres pour affichage
-  const shuffleIdxC = [...Array(5).keys()].sort(()=>Math.random()-0.5);
-  const shuffleIdxD = [...Array(5).keys()].sort(()=>Math.random()-0.5);
+  // Mélanger les nombres pour affichage (Fisher-Yates), sans jamais les montrer déjà dans le bon ordre
+  const melanger = (ordreJuste) => {
+    let idx;
+    do {
+      idx = [...Array(ordreJuste.length).keys()];
+      for(let i=idx.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[idx[i],idx[j]]=[idx[j],idx[i]];}
+    } while (JSON.stringify(idx) === JSON.stringify(ordreJuste));
+    return idx;
+  };
+  const shuffleIdxC = melanger(numClasserState.croissantSerie.ordre);
+  const shuffleIdxD = melanger(numClasserState.decroissantSerie.ordre);
   numClasserState.croissantOrder = shuffleIdxC;
   numClasserState.decroissantOrder = shuffleIdxD;
 
@@ -24339,6 +24347,7 @@ function onDragOver(e){
 }
 function onDrop(e){
   e.stopPropagation();
+  if(numClasserState.submitted) return false;
   if(numClasserState.dragSrc === this) return;
   if(numClasserState.dragSrc.dataset.type !== this.dataset.type) return;
   const srcHtml = numClasserState.dragSrc.innerHTML;
@@ -24394,7 +24403,7 @@ function onTouchEnd(e){
       target = el;
     }
   });
-  if(target && target !== touchDragEl){
+  if(target && target !== touchDragEl && !numClasserState.submitted){
     const srcHtml = touchDragEl.innerHTML;
     const srcPos = touchDragEl.dataset.pos;
     touchDragEl.innerHTML = target.innerHTML;
@@ -24479,7 +24488,7 @@ function validerNumClasser(){
   panel.innerHTML=`<div style="font-size:56px;margin-bottom:0.5rem">${pct===100?'🎉':pct===50?'👍':'💪'}</div>
     <div style="font-family:'Nunito',sans-serif;font-weight:900;font-size:40px;color:${color}">${score}/2</div>
     <div style="font-size:18px;color:${color};font-weight:700;margin-bottom:1rem">${pct}%</div>
-    <div style="font-size:14px;color:var(--muted);margin-bottom:1.5rem">${pct===100?'Parfait ! Tu classes les grands nombres sans problème !':pct===50?'Une bonne réponse sur deux — continue à t\'entraîner !':'Courage ! Compare chiffre par chiffre, classe par classe.'}</div>
+    <div style="font-size:14px;color:var(--muted);margin-bottom:1.5rem">${pct===100?'Parfait ! Tu classes les grands nombres sans problème !':pct===50?'Une bonne réponse sur deux — continue à t\'entrainer !':'Courage ! Compare chiffre par chiffre, classe par classe.'}</div>
     <button class="btn" onclick="renderNumClasser()" style="width:100%;background:#e65100;">🔄 Nouvel exercice</button>`;
   panel.scrollIntoView({behavior:'smooth'});
 

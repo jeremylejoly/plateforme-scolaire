@@ -978,6 +978,12 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Nouvelle orthographe : traits d'union dans les 30 énoncés (million(s) séparé par des espaces, comme Lire un nombre).
 - Mélanges `sort(random)` → Fisher-Yates.
 
+### 05/10 — Maths › Grands nombres › Décomposer un nombre (`num_decomposer`, index › renderNumDecomposer + exercices_maths.js › NUM_DECOMPOSER_BANQUE) — sw.js v513, exercices_maths.js?v=20261005c
+- 120 décompositions recalculées par programme : 2 erreurs.
+  - 55 505 055 : la « bonne » réponse oubliait « 5 mille » (valait 55 500 055) ; et une mauvaise proposition (« 5 millions + 5 dizaines de millions… ») avait la même valeur que la bonne. Corrigé (les 4 propositions incluent « 5 mille », une seule vaut le nombre).
+  - 317 080 317 : la réponse attendue disait « 8 mille » (= 317 008 317) alors que la bonne proposition (« 8 dizaines de mille ») était comptée fausse. Réponse corrigée.
+- Mélanges `sort(random)` → Fisher-Yates. Entrainer.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1224,7 +1230,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 |---|---|---|---|---|
 | ✅ 05/10 | Lire un nombre | `num_lire` | index › renderNumLire |  |
 | ✅ 05/10 | Écrire un nombre | `num_ecrire` | index › renderNumEcrire |  |
-| ⬜ | Décomposer un nombre | `num_decomposer` | index › renderNumDecomposer |  |
+| ✅ 05/10 | Décomposer un nombre | `num_decomposer` | index › renderNumDecomposer |  |
 | ⬜ | Classer des nombres | `num_classer` | index › renderNumClasser |  |
 | ⬜ | Décimaux — L'abaque des décimaux | `num_decimaux_abaque` | index › renderAbaqueDecimaux |  |
 | ⬜ | Décimaux — Devinettes décimales | `num_decimaux_devinettes` | index › renderDevinettesDecimaux |  |
