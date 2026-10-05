@@ -510,6 +510,16 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
   - Les 4 boutons gardent un ordre fixe, ce qui est normal pour un classement.
   - Nouvelle orthographe : entrainer, maitriser.
 
+- **05/10 — Grammaire › L'adjectif › Accords de l'adjectif** (40 phrases, 10 par partie, saisie libre) :
+  - Les 40 réponses attendues et leurs explications sont justes : neuve, creuses, fraiches, vieille, nouvelles, longue, fausse, sèche(s), blanche, douce(s), belle, grosse… « mûres » garde son accent.
+  - Une coquille est corrigée dans une explication (« on s'accorde » devient « on accorde »).
+  - Mécanique :
+    - La comparaison est maintenant tolérante aux espaces en trop et aux variantes Unicode des accents. Les accents comptent toujours.
+    - Une réponse contenant un guillemet ne casse plus l'affichage.
+    - Le mélange utilise maintenant la méthode Fisher–Yates.
+  - Le résultat était déjà enregistré sous le bon identifiant (`gram_adjectif_accord`).
+  - Nouvelle orthographe : entraine-toi.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -606,7 +616,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | Le déterminant — Le tri des déterminants | `gram_determinant_tri` | index › startTriExercise |  |
 | ⬜ | Le déterminant (Exercices) | `gram_determinant_ex` | fiches/determinant_exercice.html |  |
 | ✅ 05/10 | L'adjectif — Identifier les adjectifs | `gram_adjectif_identifier` | index › startAdjectifExercise |  |
-| ⬜ | L'adjectif — Accords de l'adjectif | `gram_adjectif_accord` | index › startAdjectifAccordExercise |  |
+| ✅ 05/10 | L'adjectif — Accords de l'adjectif | `gram_adjectif_accord` | index › startAdjectifAccordExercise |  |
 | ⬜ | L'adjectif — Épithète ou attribut ? | `gram_adjectif_fonction` | index › startAdjectifFonctionExercise |  |
 | ⬜ | L'adjectif — Retrouver le nom qualifié | `gram_adjectif_nom` | index › startAdjectifNomExercise |  |
 | ⬜ | Le verbe — Identifier les verbes | `gram_verbe_identifier` | index › startVerbeClassExercise |  |
@@ -1106,6 +1116,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ⬜ | Le Tangram | `jeu_tangram` | index › (?) | (code à localiser) |
 | ⬜ | Le Démineur | `jeu_demineur` | index › (?) | (code à localiser) |
 | ⬜ | La Pipopipette | `jeu_pipopipette` | index › (?) | (code à localiser) |
+| ✅ 05/10 | Les Échecs (nouveau jeu) | `jeu_echecs` | echecs.html | Corrigé et testé avant mise en ligne (IA, mats, nulles, partie relancée pendant que l'ordinateur réfléchit) |
 
 ### ? — (menu renderLectureNarrativeMenu)
 

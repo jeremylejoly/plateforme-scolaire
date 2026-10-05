@@ -12170,10 +12170,10 @@ window.EXERCICES_ADJECTIF_FONCTION = [
     exp: "« fort » est relié au sujet « Ce jeune athlète » par le verbe d'état « devenir ». C'est un adjectif attribut du sujet."
   },
   {
-    phrase: "Les spectateurs, <span class='target-highlight'>ravis</span>, applaudissent chaleureusement.",
+    phrase: "Les spectateurs <span class='target-highlight'>ravis</span> applaudissent chaleureusement.",
     word: "ravis",
     cat: "epithete",
-    exp: "« ravis » est séparé du nom « spectateurs » par des virgules, mais il n'y a pas de verbe d'état entre eux. C'est un adjectif épithète (apposé)."
+    exp: "« ravis » est placé directement après le nom « spectateurs » qu'il qualifie, sans verbe d'état entre eux. C'est un adjectif épithète."
   },
   {
     phrase: "Les rues de la ville restent <span class='target-highlight'>sombres</span> ce soir.",
@@ -12222,6 +12222,96 @@ window.EXERCICES_ADJECTIF_FONCTION = [
     word: "bleue",
     cat: "epithete",
     exp: "« bleue » qualifie directement le nom « robe ». C'est un adjectif épithète."
+  },
+  {
+    phrase: "Le ciel est <span class='target-highlight'>bleu</span> ce matin.",
+    word: "bleu",
+    cat: "attribut",
+    exp: "« bleu » est relié au sujet « Le ciel » par le verbe d'état « être ». C'est un adjectif attribut du sujet."
+  },
+  {
+    phrase: "Ma sœur est très <span class='target-highlight'>courageuse</span>.",
+    word: "courageuse",
+    cat: "attribut",
+    exp: "« courageuse » est relié au sujet « Ma sœur » par le verbe d'état « être ». C'est un adjectif attribut du sujet."
+  },
+  {
+    phrase: "Nous avons vu de <span class='target-highlight'>hautes</span> montagnes.",
+    word: "hautes",
+    cat: "epithete",
+    exp: "« hautes » est placé directement devant le nom « montagnes » qu'il qualifie. C'est un adjectif épithète."
+  },
+  {
+    phrase: "Cette histoire est vraiment <span class='target-highlight'>drôle</span>.",
+    word: "drôle",
+    cat: "attribut",
+    exp: "« drôle » est relié au sujet « Cette histoire » par le verbe d'état « être ». C'est un adjectif attribut du sujet."
+  },
+  {
+    phrase: "Le <span class='target-highlight'>gros</span> chien aboie dans le jardin.",
+    word: "gros",
+    cat: "epithete",
+    exp: "« gros » est placé directement devant le nom « chien » qu'il qualifie. C'est un adjectif épithète."
+  },
+  {
+    phrase: "Les fraises du jardin sont <span class='target-highlight'>mûres</span>.",
+    word: "mûres",
+    cat: "attribut",
+    exp: "« mûres » est relié au sujet « Les fraises du jardin » par le verbe d'état « être ». C'est un adjectif attribut du sujet."
+  },
+  {
+    phrase: "Mon frère a reçu un vélo <span class='target-highlight'>neuf</span> pour son anniversaire.",
+    word: "neuf",
+    cat: "epithete",
+    exp: "« neuf » est placé directement après le nom « vélo » qu'il qualifie. C'est un adjectif épithète."
+  },
+  {
+    phrase: "Cette soupe est trop <span class='target-highlight'>chaude</span> pour être mangée tout de suite.",
+    word: "chaude",
+    cat: "attribut",
+    exp: "« chaude » est relié au sujet « Cette soupe » par le verbe d'état « être ». C'est un adjectif attribut du sujet."
+  },
+  {
+    phrase: "La <span class='target-highlight'>petite</span> souris se cache sous l'armoire.",
+    word: "petite",
+    cat: "epithete",
+    exp: "« petite » est placé directement devant le nom « souris » qu'il qualifie. C'est un adjectif épithète."
+  },
+  {
+    phrase: "Après la course, les coureurs sont <span class='target-highlight'>épuisés</span>.",
+    word: "épuisés",
+    cat: "attribut",
+    exp: "« épuisés » est relié au sujet « les coureurs » par le verbe d'état « être ». C'est un adjectif attribut du sujet."
+  },
+  {
+    phrase: "Il a écrit une lettre <span class='target-highlight'>émouvante</span> à sa grand-mère.",
+    word: "émouvante",
+    cat: "epithete",
+    exp: "« émouvante » est placé directement après le nom « lettre » qu'il qualifie. C'est un adjectif épithète."
+  },
+  {
+    phrase: "Ton dessin est <span class='target-highlight'>magnifique</span> !",
+    word: "magnifique",
+    cat: "attribut",
+    exp: "« magnifique » est relié au sujet « Ton dessin » par le verbe d'état « être ». C'est un adjectif attribut du sujet."
+  },
+  {
+    phrase: "Nous traversons une forêt <span class='target-highlight'>sombre</span> et silencieuse.",
+    word: "sombre",
+    cat: "epithete",
+    exp: "« sombre » est placé directement après le nom « forêt » qu'il qualifie. C'est un adjectif épithète."
+  },
+  {
+    phrase: "Ces exercices deviennent <span class='target-highlight'>difficiles</span>.",
+    word: "difficiles",
+    cat: "attribut",
+    exp: "« difficiles » est relié au sujet « Ces exercices » par le verbe d'état « devenir ». C'est un adjectif attribut du sujet."
+  },
+  {
+    phrase: "La porte du garage reste <span class='target-highlight'>ouverte</span> toute la journée.",
+    word: "ouverte",
+    cat: "attribut",
+    exp: "« ouverte » est relié au sujet « La porte du garage » par le verbe d'état « rester ». C'est un adjectif attribut du sujet."
   }
 ];
 
