@@ -29430,12 +29430,13 @@ function renderPerimetreQuestion(){
   document.getElementById('perimetre-input').focus();
 }
 
-// Lecture de la réponse : « 24 », « 24 m », « 24,5m », « 24.50 mètres » → 24 / 24,5 ; autre unité → 'unite' ; illisible → null
+// Lecture de la réponse : « 24 m », « 24,5m », « 24.50 mètres » → 24 / 24,5 ; sans unité → 'sansUnite' ; autre unité → 'unite' ; illisible → null
 function perimetreLireReponse(txt){
   const t = String(txt).trim().toLowerCase().replace(/\s+/g,' ');
   const m = t.match(/^(\d+(?:[.,]\d+)?)\s*(m|mètres?|metres?|[a-zà-ÿ]+)?$/);
   if(!m) return null;
-  if(m[2] && !/^(m|mètres?|metres?)$/.test(m[2])) return 'unite';
+  if(!m[2]) return 'sansUnite'; // l'unité est obligatoire (choix de Jeremy, 05/10)
+  if(!/^(m|mètres?|metres?)$/.test(m[2])) return 'unite';
   return parseFloat(m[1].replace(',', '.'));
 }
 
@@ -29450,11 +29451,12 @@ function validerPerimetre(){
 
   // Réponse vide ou illisible : rien n'est compté (avant : vide = faux ; « 24 », « 24,0 m » ou « 24.5 m » refusés)
   const lu = perimetreLireReponse(input.value);
-  if(input.value.trim() === '' || lu === null || lu === 'unite'){
+  if(input.value.trim() === '' || lu === null || lu === 'unite' || lu === 'sansUnite'){
     feedback.style.display = 'block';
     feedback.style.color = 'var(--amber,#d97706)';
     feedback.innerHTML = input.value.trim() === '' ? '✏️ Écris d\'abord ta réponse.'
       : lu === 'unite' ? '📏 Donne ta réponse en mètres (m).'
+      : lu === 'sansUnite' ? '📏 N\'oublie pas l\'unité : écris par exemple 24 m.'
       : '✏️ Écris un nombre, par exemple 24 m ou 12,5 m.';
     input.focus();
     return;

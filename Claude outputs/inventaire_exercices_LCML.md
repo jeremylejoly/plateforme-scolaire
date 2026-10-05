@@ -1332,6 +1332,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - **Double validation** : un 2e clic sur « Valider » recomptait le point (score > 5 possible) et ajoutait un 2e bouton → bloqué ; double clic sur « Suivant » / « Voir les résultats » : pas de figure sautée, un seul enregistrement.
 - Tirage : la même figure pouvait sortir deux fois, le pentagone et l'hexagone jamais → 5 figures différentes, triangles et quadrilatères toujours favorisés (2 000 séries : 0 doublon).
 - Tests jsdom : vide / « 12abc » / « 5 cm » non comptés ; « 24 », « 24,50 mètres », « 24.5m » acceptés ; partie 4 / 5 → 1 sauvegarde ; syntaxe OK.
+- Décision de Jeremy (05/10, v565) : l'unité est obligatoire. « 24 » sans unité → message « N'oublie pas l'unité : écris par exemple 24 m. », rien n'est compté.
 
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
