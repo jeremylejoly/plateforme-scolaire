@@ -1423,6 +1423,15 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Nouvelle orthographe : entrainement, Entraine-toi.
 - Tests jsdom : vide/« 12abc » non comptés, double clic sans saut, partie 7 / 10 → 1 sauvegarde ; syntaxe OK.
 
+### 05/10 — Maths › Grandeurs › L'aire › Le calcul d'aires composées (`grandeur_aire_composee`, `fiches/aire_composee.html` + copie public) — sw.js v575
+- 10 figures générées (maison, cadre, L, plaque à encoche, flocon, carré évidé, scène, pelouse et bassin, flèche, triangle troué) : sur 2 000 séries, l'aire recalculée depuis les cotes du dessin (ou les paramètres) = réponse attendue = total de la correction. Enregistrement du résultat déjà en place (doublé par un double clic → une seule fois).
+- **Plaque à encoche** : l'énoncé faisait du diamètre de l'encoche la largeur de la plaque, alors que le dessin montre une encoche plus étroite → largeur = diamètre + 2 à 4 unités (cotes différentes, comme sur le dessin).
+- **Mauvaises réponses acceptées** : tolérance de 0,01 → « 85,88 » accepté pour 85,87 → tolérance limitée aux arrondis machine. « 12, » (virgule sans décimale) n'est plus validé.
+- Double clic sur « Question suivante » → plus de question sautée.
+- Cotes coupées au bord du dessin (« 12 dm » à gauche du triangle, hauteur du L à droite) → zone de dessin élargie (captures 390 px vérifiées).
+- Signes « ÷ » et « − » dans les corrections (« / 2 », « - »). Nouvelle orthographe : maitrises, entrainement.
+- Tests jsdom : « 12, » non compté, réponse fausse d'un centième refusée, partie 7 / 10 avec doubles clics → 1 sauvegarde ; syntaxe OK.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1761,7 +1770,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | L'Arpenteur Impérial (Conversions d'Aire) | `grandeur_aire_conversions` | fiches/aire_conversions.html |  |
 | ✅ 05/10 | Mesures Agraires & Superficies | `grandeur_aire_agraire` | fiches/aire_agraire.html |  |
 | ✅ 05/10 | L'Arpenteur du Château (Formules d'aire) | `grandeur_aire_formules` | fiches/aire_formules.html |  |
-| ⬜ | Le Calcul d'Aires Composées | `grandeur_aire_composee` | fiches/aire_composee.html |  |
+| ✅ 05/10 | Le Calcul d'Aires Composées | `grandeur_aire_composee` | fiches/aire_composee.html |  |
 | ⬜ | Le Bâtisseur de Cubes (Volume 3D) | `grandeur_volume_cubes` | fiches/volume_cubes.html |  |
 | ⬜ | L'Architecte des Pavés (Formules) | `grandeur_volume_architecte` | fiches/volume_formules.html |  |
 | ⬜ | Le Laboratoire des Liquides | `grandeur_volume_liquides` | fiches/volume_conversions.html |  |
