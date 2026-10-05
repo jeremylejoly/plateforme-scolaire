@@ -78,6 +78,27 @@ body { font-family: 'Nunito', sans-serif; background: #f5f6fa; padding: 1.5rem; 
 .big-emoji { font-size: 64px; margin-bottom: .5rem; }
 .big-score { font-size: 36px; font-weight: 900; margin-bottom: 1rem; }
 .score-detail { font-size: 13px; color: #6b7280; margin-bottom: 1.5rem; line-height: 2; }
+/* Abaque interactif (avant : annoncé dans le menu mais absent de la fiche) */
+.abaque-wrap { margin: 0 0 1.25rem; overflow-x: auto; }
+.abaque-titre { font-size: 12px; font-weight: 800; color: #6b7280; text-align: center; margin-bottom: .4rem; }
+table.abaque { border-collapse: collapse; margin: 0 auto; }
+table.abaque th { font-size: 12px; font-weight: 900; color: #1d4ed8; background: #dbeafe; border: 1px solid #93c5fd; padding: 4px 2px; min-width: 38px; }
+table.abaque th.kg { background: #1d4ed8; color: white; }
+table.abaque th.g { background: #16a34a; color: white; border-color: #16a34a; }
+table.abaque th small { font-weight: 700; font-size: 10px; }
+table.abaque td { border: 1px solid #cbd5e1; padding: 0; position: relative; }
+table.abaque td input { width: 38px; height: 34px; border: none; text-align: center; font-size: 18px; font-weight: 900; font-family: 'Nunito', sans-serif; color: #1e1b4b; background: transparent; }
+table.abaque td input:focus { outline: 2px solid #3b82f6; background: #eff6ff; }
+table.abaque td.virgule::after { content: ','; position: absolute; right: -5px; bottom: -2px; font-weight: 900; font-size: 26px; color: #dc2626; pointer-events: none; z-index: 1; }
+.abaque-actions { text-align: center; margin-top: .4rem; font-size: 12px; color: #6b7280; }
+@media (max-width: 480px) {
+  body { padding: .75rem; }
+  .question-card { padding: 1.25rem .6rem; }
+  table.abaque th { min-width: 27px; font-size: 11px; padding: 3px 0; }
+  table.abaque th small { font-size: 8px; }
+  table.abaque td input { width: 27px; height: 30px; font-size: 16px; }
+}
+.abaque-actions button { border: 1px solid #cbd5e1; background: white; border-radius: 8px; padding: 3px 10px; font-weight: 800; cursor: pointer; font-family: 'Nunito', sans-serif; margin-left: 6px; }
 </style>
 </head>
 <body>
@@ -154,12 +175,47 @@ const QUESTIONS = [
 ];
 
 const LETTRES = ['A','B','C'];
-function shuffle(a){ return [...a].sort(()=>Math.random()-.5); }
+// Fisher–Yates (avant : tri aléatoire biaisé, et les propositions n'étaient pas mélangées :
+// réponse C dans 28 questions sur 50)
+function shuffle(a){ const r=[...a]; for(let i=r.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [r[i],r[j]]=[r[j],r[i]]; } return r; }
 
-let selection=[], curIdx=0, scores=[];
+// Abaque : t | q | 10 kg | kg | hg | dag | g | dg | cg | mg ; 2 lignes de brouillon, virgule déplaçable (clic sur une case)
+const ABAQUE_COLS = [['t',''],['q',''],['','10 kg'],['kg','kg'],['hg',''],['dag',''],['g','g'],['dg',''],['cg',''],['mg','']];
+function abaqueHtml(){
+  const head = ABAQUE_COLS.map(([u,c]) => `<th class="${c==='kg'?'kg':c==='g'?'g':''}">${u || `<small>${c}</small>`}</th>`).join('');
+  const row = r => '<tr>' + ABAQUE_COLS.map((_,c) => `<td data-c="${c}"><input inputmode="numeric" maxlength="1" data-r="${r}" data-c="${c}" aria-label="Abaque ligne ${r+1} colonne ${c+1}"></td>`).join('') + '</tr>';
+  return `<div class="abaque-wrap"><div class="abaque-titre">🧮 Mon abaque (brouillon) — écris un chiffre par case</div>
+    <table class="abaque"><thead><tr>${head}</tr></thead><tbody>${row(0)}${row(1)}</tbody></table>
+    <div class="abaque-actions">Double-clique sur une case pour y placer la virgule (après la case).<button type="button" onclick="viderAbaque()">Effacer l'abaque</button></div></div>`;
+}
+function viderAbaque(){
+  document.querySelectorAll('table.abaque input').forEach(i => i.value='');
+  document.querySelectorAll('table.abaque td.virgule').forEach(td => td.classList.remove('virgule'));
+}
+document.addEventListener('input', e => {
+  const t = e.target;
+  if(!t.matches || !t.matches('table.abaque input')) return;
+  t.value = t.value.replace(/[^0-9]/g,'').slice(-1);
+  if(t.value){ const next = document.querySelector(`table.abaque input[data-r="${t.dataset.r}"][data-c="${+t.dataset.c+1}"]`); if(next) next.focus(); }
+});
+document.addEventListener('dblclick', e => {
+  const td = e.target.closest && e.target.closest('table.abaque td');
+  if(!td) return;
+  const row = td.parentElement;
+  const had = td.classList.contains('virgule');
+  row.querySelectorAll('td').forEach(x => x.classList.remove('virgule'));
+  if(!had) td.classList.add('virgule');
+});
+
+let selection=[], curIdx=0, scores=[], saved=false;
 
 function demarrer(){
-  selection = shuffle(QUESTIONS).slice(0,10);
+  selection = shuffle(QUESTIONS).slice(0,10).map(q => {
+    const correctVal = q.opts[q.correct];
+    const shuffledOpts = shuffle(q.opts);
+    return { ...q, opts: shuffledOpts, correct: shuffledOpts.indexOf(correctVal) };
+  });
+  saved = false;
   curIdx=0; scores=[];
   document.getElementById('score-final').style.display='none';
   document.getElementById('exercice-zone').style.display='block';
@@ -171,7 +227,7 @@ function afficherQuestion(){
 
   document.getElementById('info-numero').textContent = `Question ${curIdx+1}/10`;
   document.getElementById('dots-progress').innerHTML =
-    selection.map((_,i) => `<div class="dot" style="background:${i<curIdx?'#16a34a':i===curIdx?'#3b82f6':'#d1d5db'}"></div>`).join('');
+    selection.map((_,i) => `<div class="dot" style="background:${i<curIdx?(scores[i]?'#16a34a':'#dc2626'):i===curIdx?'#3b82f6':'#d1d5db'}"></div>`).join('');
 
   const optsHtml = q.opts.map((o,i) => `
     <button class="opt-btn" id="opt-${i}" onclick="choisir(${i})">
@@ -184,6 +240,7 @@ function afficherQuestion(){
       <div class="q-label">⚖️ Conversion de masses</div>
       <div class="q-nombre">${q.nombre}</div>
       <div class="q-texte">${q.texte}</div>
+      ${abaqueHtml()}
       <div class="options">${optsHtml}</div>
     </div>`;
 
@@ -192,6 +249,7 @@ function afficherQuestion(){
 
 function choisir(idx){
   const q = selection[curIdx];
+  if(scores.length > curIdx) return; // déjà répondu
   const ok = (idx === q.correct);
   scores.push(ok);
 
@@ -223,6 +281,18 @@ function afficherScoreFinal(){
   document.getElementById('final-score').style.color = pct===100?'#16a34a':pct>=60?'#f59e0b':'#dc2626';
   document.getElementById('final-detail').innerHTML =
     scores.map((s,i) => `Q${i+1} : ${s?'✅':'❌'}`).join('  ');
+  // Enregistrement (avant : aucun résultat enregistré)
+  if(!saved && window.parent && typeof window.parent.saveResult === 'function'){
+    saved = true;
+    try{
+      window.parent.saveResult({
+        activity:'grandeur_masses_qcm_abaque', bookTitle:'Masses — Conversions avec abaque (QCM)',
+        score:ok, total, pct,
+        date:new Date().toLocaleDateString('fr-BE'),
+        time:new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})
+      });
+    }catch(e){ console.warn('Erreur sauvegarde masses abaque', e); }
+  }
 }
 
 demarrer();

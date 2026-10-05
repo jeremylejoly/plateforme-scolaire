@@ -1280,6 +1280,12 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Signe « : » → « ÷ » (expressions, étapes, rappels) ; saisie stricte au niveau 4 ; maitrises, entraine-toi.
 - Tests jsdom : 4 niveaux, erreur → correction + passage, 4 / 5 enregistré une fois.
 
+### 05/10 — Maths › Grandeurs › Les masses › Conversions de masses QCM (`grandeur_masses_qcm`, MASSES_QCM_BANQUE dans exercices_maths.js + index › demarrerMassesQcm) — sw.js v557
+- 50 questions recalculées par programme (t, q, kg, hg, dag, g, dg, cg, mg ; ¼ ½ ¾ ⅛) : une seule proposition juste à chaque fois, et c'est bien celle attendue. Enregistrement déjà en place.
+- **Bonne réponse prévisible** : en 3e position dans 28 questions sur 50 de la banque et mélange par tri aléatoire biaisé → Fisher–Yates (20 000 séries : 33 % par position) ; questions aussi tirées par Fisher–Yates.
+- Pastilles de progression toujours vertes, même après une erreur → vert / rouge selon la réponse.
+- Double clic sur « Voir mon score final » : un seul enregistrement.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1597,7 +1603,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 
 | Statut | Exercice | id | Source | Signal automatique |
 |---|---|---|---|---|
-| ⬜ | Conversions de masses (QCM) | `grandeur_masses_qcm` | index › renderMassesQCM |  |
+| ✅ 05/10 | Conversions de masses (QCM) | `grandeur_masses_qcm` | index › renderMassesQCM |  |
 | ⬜ | Conversions & Abaque (QCM) | `grandeur_masses_qcm_abaque` | fiches/masses_QCM_abaque.html |  |
 | ⬜ | Conversions de capacités (QCM) | `grandeur_capacites_qcm` | index › renderCapacitesQCM |  |
 | ⬜ | Conversions de capacités (QCM — Bis) | `grandeur_capacites_qcm_sup` | fiches/capacites_QCM.html |  |
