@@ -1307,7 +1307,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Jamais deux questions de même valeur dans une série (même règle que le QCM principal).
 - **Aucun résultat enregistré** → enregistrement unique en fin de série (`grandeur_capacites_qcm_sup`) ; double clic sur une proposition (comptait 2 réponses) ou sur « Question suivante » bloqué ; pastilles vert / rouge.
 - Tests jsdom : partie 8 / 10 avec doubles clics → 1 sauvegarde ; abaque (saisie, passage de case, virgule, vidage) ; syntaxe OK.
-- ⚠️ À voir au prochain : « Conversions de longueurs (QCM — Bis) » a probablement le même doublon.
+- « Conversions de longueurs (QCM — Bis) » avait le même doublon : traité en v563.
 
 ### 05/10 — Maths › Grandeurs › Les longueurs › Conversions de longueurs QCM (`grandeur_longueurs_qcm`, LONGUEURS_QCM_BANQUE dans exercices_maths.js + index › demarrerLongueursQcm) — sw.js v562
 - 50 questions recalculées par programme (mm, cm, dm, m, dam, hm, km ; ¼ ½ ¾ ⅛) : une seule proposition juste à chaque fois, et c'est bien celle attendue.
@@ -1316,6 +1316,14 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - **Questions qui se donnaient la réponse** : 11 groupes de même valeur (2,5 km / 2500 m ; ½ km / 5 hm / 0,5 km ; 3,5 m / 3500 mm…) → jamais deux questions de même valeur dans une série.
 - Pastilles toujours vertes → vert / rouge ; double clic sur « Question suivante » / « Voir mon score final » sans effet.
 - Tests jsdom : partie 7 / 10 avec doubles clics → 1 sauvegarde ; index : 6 / 7 scripts OK.
+
+### 05/10 — Maths › Grandeurs › Les longueurs › Conversions de longueurs QCM bis → « Conversions de longueurs & abaque » (`grandeur_longueurs_qcm_sup`, `fiches/longueurs_QCM.html` + copies public et racine) — sw.js v563
+- **Pas « un autre exercice »** : les 50 questions étaient exactement celles du QCM principal. Comme pour les masses et les capacités (choix de Jeremy) → abaque interactif ajouté : km | hm | dam | m | dm | cm | mm, 2 lignes de brouillon, passage automatique à la case suivante, virgule par double-clic, « Effacer l'abaque », vidé à chaque question ; capture 390 px sans défilement horizontal. Menu et plan : « Conversions de longueurs & abaque (QCM) ».
+- Contenu : mêmes 50 questions, déjà recalculées (toutes justes).
+- **Copies désynchronisées** : la version en ligne (`fiches/`) ne mélangeait pas les propositions (réponse C dans 25 questions sur 50) ; public/racine avec tri biaisé → Fisher–Yates partout (5 000 séries : ≈ 33 % par position) ; 3 copies identiques.
+- Jamais deux questions de même valeur dans une série.
+- **Aucun résultat enregistré** → enregistrement unique en fin de série (`grandeur_longueurs_qcm_sup`) ; double clic sur une proposition (comptait 2 réponses) ou sur « Question suivante » bloqué ; pastilles vert / rouge.
+- Tests jsdom : partie 8 / 10 avec doubles clics → 1 sauvegarde ; abaque (saisie, passage de case, virgule, vidage) ; syntaxe OK.
 
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
@@ -1639,7 +1647,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | Conversions de capacités (QCM) | `grandeur_capacites_qcm` | index › renderCapacitesQCM |  |
 | ✅ 05/10 | Conversions de capacités & abaque (QCM) | `grandeur_capacites_qcm_sup` | fiches/capacites_QCM.html |  |
 | ✅ 05/10 | Conversions de longueurs (QCM) | `grandeur_longueurs_qcm` | index › renderLongueursQCM |  |
-| ⬜ | Conversions de longueurs (QCM — Bis) | `grandeur_longueurs_qcm_sup` | fiches/longueurs_QCM.html |  |
+| ✅ 05/10 | Conversions de longueurs & abaque (QCM) | `grandeur_longueurs_qcm_sup` | fiches/longueurs_QCM.html |  |
 
 ### 🔢 Mathématiques — 📐 Grandeurs — Périmètre, Aire & Volume
 
