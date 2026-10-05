@@ -258,7 +258,7 @@
 
     <div class="corps">
       <div class="commandes">
-        <button class="btn-cmd" id="btn-nouveau"><span class="ic">🎲</span>Nouveau jeu</button>
+        <button class="btn-cmd" id="btn-nouveau"><span class="ic">🎲</span>Passer ce défi</button>
         <button class="btn-cmd" id="btn-recommencer"><span class="ic">↺</span>Recommencer</button>
         <button class="btn-cmd" id="btn-annuler"><span class="ic">⌫</span>Annuler</button>
         <div class="niveaux">
@@ -274,6 +274,7 @@
       </div>
 
       <div class="plateau">
+        <p class="consigne" id="serie-info" style="font-weight:700;margin-bottom:0.2rem;"></p>
         <p class="consigne">Choisis un nombre, une opération, puis un second nombre.</p>
         <div class="tuiles" id="tuiles"></div>
 
@@ -331,6 +332,9 @@
   let opChoisie = null;
   let gagne = false;
   let meilleurEcart = Infinity;
+  // Série de 5 défis avec enregistrement (avant : parties sans fin, aucun résultat enregistré)
+  const NB_DEFIS = 5;
+  let defi = 0, reussis = 0, jokerUtilise = false, defiTermine = false;
 
   // ----- Outils -----
   const rnd = (a,b)=>Math.floor(Math.random()*(b-a+1))+a;
@@ -461,34 +465,48 @@
     }
   }
 
-  // Solveur (pour le joker) -> renvoie la liste des étapes ou null
+  // Solveur (pour le joker) : solution la plus courte (parcours en largeur) -> liste des étapes ou null
   function resoudre(valeurs, but){
-    function rec(items){
-      for(const it of items) if(it.v === but) return it.steps;
-      if(items.length < 2) return null;
-      for(let i=0;i<items.length;i++){
-        for(let j=i+1;j<items.length;j++){
-          const a = items[i], b = items[j];
-          const reste = items.filter((_,k)=>k!==i && k!==j);
-          const grand = Math.max(a.v,b.v), petit = Math.min(a.v,b.v);
-          const cands = [];
-          cands.push([a.v+b.v, `${a.v} + ${b.v} = ${a.v+b.v}`]);
+    const start = valeurs.slice().sort((x,y)=>x-y);
+    const queue = [[start, []]];
+    const vus = new Set([start.join(',')]);
+    for(let idx=0; idx<queue.length; idx++){
+      const [nums, steps] = queue[idx];
+      if(nums.includes(but) && steps.length) return steps;
+      for(let i=0;i<nums.length;i++){
+        for(let j=i+1;j<nums.length;j++){
+          const a = nums[i], b = nums[j];
+          const reste = nums.filter((_,k)=>k!==i && k!==j);
+          const grand = Math.max(a,b), petit = Math.min(a,b);
+          const cands = [[a+b, `${a} + ${b} = ${a+b}`], [a*b, `${a} × ${b} = ${a*b}`]];
           if(grand-petit > 0) cands.push([grand-petit, `${grand} − ${petit} = ${grand-petit}`]);
-          cands.push([a.v*b.v, `${a.v} × ${b.v} = ${a.v*b.v}`]);
           if(petit > 0 && grand % petit === 0) cands.push([grand/petit, `${grand} ÷ ${petit} = ${grand/petit}`]);
-          for(const [v,s] of cands){
-            const r = rec([...reste, {v, steps:[...a.steps, ...b.steps, s]}]);
-            if(r) return r;
+          for(const [v,txt] of cands){
+            const next = reste.concat(v).sort((x,y)=>x-y);
+            const key = next.join(',');
+            if(vus.has(key)) continue;
+            vus.add(key);
+            const st = steps.concat(txt);
+            if(v === but) return st;
+            queue.push([next, st]);
           }
         }
       }
-      return null;
     }
-    return rec(valeurs.map(v=>({v, steps:[]})));
+    return null;
   }
-
   // ----- Mise en place -----
+  function majSerieInfo(){
+    document.getElementById('serie-info').textContent = `Défi ${defi} / ${NB_DEFIS} · Réussis sans joker : ${reussis}`;
+  }
+  function nouvelleSerie(){
+    defi = 0; reussis = 0;
+    nouvellePartie();
+  }
   function nouvellePartie(){
+    if(defi >= NB_DEFIS){ nouvelleSerie(); return; }
+    defi++; jokerUtilise = false; defiTermine = false;
+    majSerieInfo();
     const p = genererPartie();
     cible = p.cible;
     nombresInitiaux = p.valeurs.slice();
@@ -658,6 +676,7 @@
   // ----- Joker -----
   function joker(){
     if(gagne) return;
+    jokerUtilise = true; // défi compté comme non réussi
     const sol = resoudre(nombresInitiaux, cible);
     const histo = document.getElementById('historique');
     if(!sol){
@@ -674,10 +693,47 @@
   function victoire(){
     gagne = true;
     const nb = historique.length;
-    document.getElementById('victoire-txt').textContent =
-      `Tu as atteint ${cible} en ${nb} opération${nb>1?'s':''}. Bravo !`;
+    if(!jokerUtilise) reussis++;
+    const txt = jokerUtilise
+      ? `Tu as atteint ${cible} avec l'aide du joker : pas de point pour ce défi.`
+      : `Tu as atteint ${cible} en ${nb} opération${nb>1?'s':''}. Bravo !`;
+    finDefi(txt);
+    if(!jokerUtilise) lancerConfettis();
+  }
+  // Fin d'un défi (réussi ou passé) : défi suivant, ou fin de série avec enregistrement
+  function finDefi(txt){
+    if(defiTermine) return;
+    defiTermine = true;
+    majSerieInfo();
+    let message = txt;
+    const btn = document.getElementById('btn-rejouer');
+    if(defi >= NB_DEFIS){
+      message += `\n\nSérie terminée : ${reussis} / ${NB_DEFIS} défis réussis sans joker.`;
+      btn.textContent = 'Nouvelle série';
+      enregistrer();
+    } else {
+      btn.textContent = 'Défi suivant';
+    }
+    const el = document.getElementById('victoire-txt');
+    el.style.whiteSpace = 'pre-line';
+    el.textContent = message;
+    document.querySelector('#victoire h2').textContent = gagne ? 'Ton compte est bon !' : 'Défi passé';
     document.getElementById('victoire').classList.add('on');
-    lancerConfettis();
+  }
+  function enregistrer(){
+    if(!(window.parent && typeof window.parent.saveResult === 'function')) return;
+    try {
+      const nomNiv = { facile:'facile', moyen:'moyen', difficile:'difficile' }[niveau];
+      window.parent.saveResult({
+        activity: 'op_add_sous_compte_est_bon',
+        bookTitle: 'Le compte est bon — niveau ' + nomNiv,
+        score: reussis,
+        total: NB_DEFIS,
+        pct: Math.round((reussis / NB_DEFIS) * 100),
+        date: new Date().toLocaleDateString('fr-BE'),
+        time: new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })
+      });
+    } catch(e) { console.warn('Erreur sauvegarde compte est bon', e); }
   }
 
   function lancerConfettis(){
@@ -710,11 +766,13 @@
     o.addEventListener('click', ()=>cliquerOp(o.dataset.op));
   });
   document.getElementById('btn-nouveau').addEventListener('click', ()=>{
-    document.getElementById('victoire').classList.remove('on');
-    nouvellePartie();
+    // Passer le défi = non réussi ; la solution la plus courte est montrée
+    if(gagne || defiTermine) return;
+    const sol = resoudre(nombresInitiaux, cible);
+    finDefi(`Défi passé. Une solution pour ${cible} :\n` + (sol ? sol.join('\n') : '—'));
   });
   document.getElementById('btn-recommencer').addEventListener('click', ()=>{
-    document.getElementById('victoire').classList.remove('on');
+    if(defiTermine) return; // un défi terminé ne se rejoue pas (sinon point compté deux fois)
     construireTuiles();
   });
   document.getElementById('btn-annuler').addEventListener('click', annuler);
@@ -723,13 +781,14 @@
     document.getElementById('victoire').classList.remove('on');
     nouvellePartie();
   });
+  // Recommencer / annuler / jouer : impossible une fois le défi terminé (la fenêtre reste ouverte)
   document.querySelectorAll('.btn-niv').forEach(b=>{
     b.addEventListener('click', ()=>{
       niveau = b.dataset.niv;
       document.querySelectorAll('.btn-niv').forEach(x=>x.classList.remove('actif'));
       b.classList.add('actif');
       document.getElementById('victoire').classList.remove('on');
-      nouvellePartie();
+      nouvelleSerie(); // changer de niveau = nouvelle série
     });
   });
 
@@ -739,7 +798,7 @@
   document.head.appendChild(styleConfetti);
 
   // démarrage
-  nouvellePartie();
+  nouvelleSerie();
 })();
 </script>
 </body>

@@ -1196,6 +1196,15 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Moteur commun (v537) : identifiant `op_x11`, virgule acceptée, réponses vides gérées.
 - L'ancien écran `screen-op-x11` (vide) reste dans le HTML mais n'est plus relié.
 
+### 05/10 — Maths › Opérations › Multiplications et divisions › Les caractères de divisibilité (`op_divisibilite`, `fiches/divisibilite.html` + copies public et racine, 4 mini-jeux) — sw.js v546
+- **Aucun résultat enregistré, jeux sans fin** → séries limitées avec enregistrement sous `op_divisibilite` (titre par jeu) : Usine 10 nombres, Coffre-fort 5 coffres, Labyrinthe 5 couloirs (réussi ou raté = 1 manche), Tableau = 1 tableau (cases justes / 25). Badge « Nombre 3 / 10 »… ; bouton « Nouvelle série » en fin de série.
+- Usine : validation sans rien cocher ignorée (comptait faux) ; explication « par 8 » affichait « 123 ÷ 8 = 15.375 » → « 15 reste 3 ».
+- Coffre-fort : mélange Fisher–Yates ; message de réussite sans « (ou une valeur valide comme 47) » redondant ; 300 énigmes simulées → solution toujours unique dans l'intervalle.
+- Labyrinthe : chemin toujours praticable (seules les dalles du chemin sont divisibles) ; un écran quitté ne relance plus de labyrinthe en arrière-plan.
+- Tableau : colonnes tirées parmi les critères actifs (avant : toujours les 5 premiers, « par 10 » jamais présent) ; consigne « si un nombre n'a aucun diviseur » (faux : tout nombre a des diviseurs) → « n'est divisible par aucun d'eux » ; bouton « Aide » visible seulement après correction (déjà le cas).
+- Nouvelle orthographe : entrainement.
+- Tests jsdom : 4 jeux joués de bout en bout, 4 sauvegardes correctes, aucune erreur JS.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1498,7 +1507,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | × et ÷ par 0,5 — 5 — 50 — 500 | `op_x5` | index › startOpX5Exercise |  |
 | ✅ 05/10 | × par 9 — 90 — 99 — 9,9 | `op_x9` | index › startOpX9Exercise |  |
 | ✅ 05/10 | × par 11 — 101 — 110 — 1,1 | `op_x11` | index › (?) | (code à localiser) |
-| ⬜ | Caractères de divisibilité | `op_divisibilite` | fiches/divisibilite.html |  |
+| ✅ 05/10 | Caractères de divisibilité | `op_divisibilite` | fiches/divisibilite.html |  |
 | ⬜ | La compensation | `op_compensation` | index › (?) | (code à localiser) |
 | ⬜ | Calcul écrit | `op_calcul_ecrit` | index › (?) | (code à localiser) |
 | ⬜ | Calcul écrit — Additions écrites | `op_calcul_ecrit_addition` | fiches/calcul-ecrit-addition.html |  |
