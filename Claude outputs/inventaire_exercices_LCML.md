@@ -1243,6 +1243,14 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Nouvelle orthographe : entrainer, entraine-toi, entrainement.
 - Tests jsdom : niveaux 1, 4, 5 — fiche vide ignorée, 5 calculs justes → 5 / 6 enregistré une fois.
 
+### 05/10 — Maths › Opérations › Calcul écrit › Soustractions écrites (`op_calcul_ecrit_soustraction`, `fiches/calcul-ecrit-soustraction.html` + copies public et racine) — sw.js v552
+- 5 niveaux × 3 000 soustractions simulées : différences justes et positives ; emprunts (+10 en haut / +1 en bas, méthode par compensation) cohérents colonne par colonne ; lacunaire : une case cachée par colonne.
+- **Niveau 3 (zéros consécutifs)** : le nombre du bas était complété par des zéros devant (« 5002 − 0345 ») dans environ 1 calcul sur 5 → plus de zéro inutile.
+- Retenue du haut : « 1 » écrit devant le chiffre accepté comme « 10 » (les deux notations).
+- **Aucun résultat enregistré** → enregistrement au premier « Vérifier » (x / 6, niveau et chrono) ; vérifications suivantes : rappel du score enregistré ; fiche vide ignorée (chrono non arrêté). Correctif « Voir la correction » (v385) toujours en place.
+- Nouvelle orthographe : entrainer, entraine-toi.
+- Tests jsdom : niveaux 1, 3, 4, 5 → 5 / 6 enregistré une fois, fiche vide ignorée.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1549,7 +1557,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ⬜ | La compensation | `op_compensation` | index › (?) | (code à localiser) |
 | ⬜ | Calcul écrit | `op_calcul_ecrit` | index › (?) | (code à localiser) |
 | ✅ 05/10 | Calcul écrit — Additions écrites | `op_calcul_ecrit_addition` | fiches/calcul-ecrit-addition.html |  |
-| ⬜ | Calcul écrit — Soustractions écrites | `op_calcul_ecrit_soustraction` | fiches/calcul-ecrit-soustraction.html |  |
+| ✅ 05/10 | Calcul écrit — Soustractions écrites | `op_calcul_ecrit_soustraction` | fiches/calcul-ecrit-soustraction.html |  |
 | ⬜ | Calcul écrit — Multiplications écrites | `op_calcul_ecrit_multiplication` | fiches/calcul-ecrit-multiplication.html |  |
 | ⬜ | Calcul écrit — Divisions écrites | `op_calcul_ecrit_division` | fiches/calcul-ecrit-division.html |  |
 | ⬜ | L'ordre des opérations | `op_ordre` | index › (?) | (code à localiser) |
