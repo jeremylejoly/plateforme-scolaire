@@ -1153,6 +1153,12 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Tous les objectifs sont atteignables (générés à partir d'une combinaison réelle) ; vérifié par recherche exhaustive sur 30 défis simulés.
 - Tests jsdom : parfait 10/10, réussite au 2e essai = 0 point, échec → solution affichée et défi verrouillé, 1 sauvegarde par série.
 
+### 05/10 — Maths › Opérations › Multiplications et divisions › Tables de multiplication (`op_mult_div_tables`, index › generateMultDivQuestions + moteur commun) — sw.js v540
+- 20 000 séries simulées : toujours 5 × + 5 ÷, toutes justes, divisions exactes ; tables 4 à 9 majoritaires (1, 2 rares ; 3, 10 peu), quotients 1 à 10 équilibrés ; mélange Fisher–Yates.
+- 7 × 3 et 3 × 7 pouvaient tomber dans la même série → doublon évité.
+- Titre enregistré lisible (« Tables de multiplication et de division » au lieu de « mult_div ») ; identifiant `op_mult_div_tables` (reconnu par le plan) déjà corrigé dans le moteur commun v537, avec saisie stricte et gestion des réponses vides.
+- Question posée à Jeremy : signe de division « ÷ » (actuel, partout sur le site) ou « : » (usage belge) ?
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1444,7 +1450,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | Fléchettes — Calcule le score | `op_add_sous_flechettes_calcule` | fiches/flechettes_calcule_le_score.html |  |
 | ✅ 05/10 | Fléchettes — Atteins le score | `op_add_sous_flechettes_atteins` | fiches/flechettes_atteins_le_score.html |  |
 | ⬜ | Multiplications et divisions | `op_mult_div` | index › (?) | (code à localiser) |
-| ⬜ | Multiplications et divisions — Tables de multiplication | `op_mult_div_tables` | index › startMultDivExercise |  |
+| ✅ 05/10 | Multiplications et divisions — Tables de multiplication | `op_mult_div_tables` | index › startMultDivExercise |  |
 | ⬜ | Les 4 opérations | `op_4_operations` | index › render4OperationsScreen |  |
 | ⬜ | Les 4 opérations mélangées | `op_4_operations_melangees` | index › start4OpExercise |  |
 | ⬜ | Le compte est bon | `op_add_sous_compte_est_bon` | fiches/compte_est_bon.html |  |

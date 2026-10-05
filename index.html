@@ -12759,7 +12759,17 @@ function generateOpTablesQuestions(){
     console.error("OP_TABLES_BANQUE n'est pas définie dans exercices_maths.js");
     return [];
   }
-  return shuffleArray([...window.OP_TABLES_BANQUE]).slice(0, 10);
+  // 5 multiplications + 5 divisions (avant : tirage libre, parfois 8 × sur 10), sans qu'une division soit
+  // l'inverse d'une multiplication de la même série (60 × 80 = 4 800 puis 4 800 ÷ 80 donnait la réponse).
+  const pool = shuffleArray([...window.OP_TABLES_BANQUE]);
+  const mults = [], divs = [];
+  const isInverse = (m, d) => d.a === m.answer && (d.b === m.a || d.b === m.b);
+  for (const q of pool) {
+    if (q.op === '×' && mults.length < 5 && !divs.some(d => isInverse(q, d))) mults.push(q);
+    else if (q.op !== '×' && divs.length < 5 && !mults.some(m => isInverse(m, q))) divs.push(q);
+    if (mults.length === 5 && divs.length === 5) break;
+  }
+  return shuffleArray(mults.concat(divs));
 }
 
 function startOpTablesExercise(){
