@@ -170,6 +170,16 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
   - Intention 2 : la mauvaise réponse « Protéger Renaud d'une arnaque » se défendait. Elle est remplacée par « … sans rien lui demander en échange ».
   - **Les 7 dialogues sont terminés.**
 
+- **05/10 — Vocabulaire › Expressions et proverbes** (fiche + 2 copies) :
+  - Les 2 jeux d'association et les 16 QCM étaient toujours dans le même ordre. Ils sont maintenant mélangés à chaque ouverture et à chaque « Recommencer ».
+  - La bonne réponse est maintenant montrée.
+  - Le résultat était enregistré à chaque partie vérifiée, avec un score partiel (par exemple 12/40). Il ne l'est plus que lorsque les 4 parties ont été vérifiées.
+  - Origines historiques corrigées :
+    - « L'habit ne fait pas le moine » : vient du latin « cucullus non facit monachum » (l'histoire des brigands déguisés était inventée) ;
+    - « Donner sa langue au chat » : XVIIe puis XIXe siècle ;
+    - dates incertaines retirées ;
+    - coquille « générésité » corrigée.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -389,7 +399,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 
 | Statut | Exercice | id | Source | Signal automatique |
 |---|---|---|---|---|
-| ⬜ | Expressions & Proverbes | `vocabulaire_proverbes` | fiches/expressions-proverbes.html |  |
+| ✅ 05/10 | Expressions & Proverbes | `vocabulaire_proverbes` | fiches/expressions-proverbes.html |  |
 | ⬜ | L'Atelier des Mots | `vocabulaire_atelier_mots` | fiches/vocabulaire-jeu.html |  |
 | ⬜ | Le Défi des Registres | `vocabulaire_registres` | fiches/registres-tri.html |  |
 | ⬜ | Chasse aux Verbes Ternes | `vocabulaire_verbes_ternes` | fiches/verbes-ternes.html |  |
