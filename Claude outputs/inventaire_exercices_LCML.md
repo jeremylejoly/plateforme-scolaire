@@ -1042,6 +1042,10 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Générateur vérifié (9 000 nombres, 3 niveaux) : le rang demandé existe toujours, pas de zéro en tête. Ajout : pas de zéro inutile en fin de partie décimale.
 - Nouvelle orthographe : maitrises, entrainer.
 
+### 05/10 — Maths › Entiers et décimaux › Comparaison de nombres (`num_entiers_decimaux_comparaison`, `fiches/comparaison.html`, 3 copies) — sw.js v525
+- 108 écritures (54 comparaisons) recalculées par programme : toutes les valeurs justes, signes bien répartis (23 =, 17 <, 14 >). Tirage Fisher-Yates et enregistrement déjà en place.
+- Nouvelle orthographe seulement : maitrises, entraine-toi, entrainer.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1299,7 +1303,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | Décimaux — Entre deux nombres | `num_decimaux_entre` | index › renderDecimauxEntre |  |
 | ✅ 05/10 | Décimaux — Opérations devinettes | `num_decimaux_op_devinettes` | index › renderDecimauxOpDevinettes |  |
 | ✅ 05/10 | Sélectionne le bon chiffre | `num_entiers_decimaux_abaque` | fiches/abaque.html |  |
-| ⬜ | Comparaison de nombres | `num_entiers_decimaux_comparaison` | fiches/comparaison.html |  |
+| ✅ 05/10 | Comparaison de nombres | `num_entiers_decimaux_comparaison` | fiches/comparaison.html |  |
 | ⬜ | Fractions simples | `num_fractions_simples` | index › renderFractionsSimples |  |
 | ⬜ | Fractions complexes | `num_fractions_complexes` | index › renderFractionsExercice |  |
 | ⬜ | La balance des fractions | `num_balance_fractions` | fiches/balance_fractions.html |  |
