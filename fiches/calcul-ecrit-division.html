@@ -301,6 +301,17 @@
     .additions-grid { gap: 18px; grid-template-columns: repeat(2, 1fr); }
     .wrap { padding: 0; }
   }
+  /* Correction affichée : chiffres corrigés en bleu (≠ réussite en vert) */
+  .addition-card input.revealed {
+    border-style: solid; border-color: var(--blue) !important;
+    background-color: #e6f3fd !important; color: #1c6fb0 !important;
+  }
+  .addition-card.card-revealed { border-color: var(--blue); background-color: #f6fbff; }
+  .btn[disabled] { opacity: .45; cursor: not-allowed; pointer-events: none; }
+  .reveal-note {
+    margin: -6px 0 14px; padding: 10px 14px; border-radius: 12px;
+    background: #e6f3fd; color: #1c6fb0; font-weight: 700; font-size: .95rem;
+  }
 </style>
 </head>
 <body>
@@ -389,7 +400,7 @@
   <!-- ÉCRAN EXERCICE -->
   <section id="exercise" style="display:none">
     <div class="print-head">
-      <h2>✏️ Division écrite — Fiche d'entraînement</h2>
+      <h2>✏️ Division écrite — Fiche d'entrainement</h2>
       <div class="lines">
         <span>Prénom : ___________________</span>
         <span>Date : ______________</span>
@@ -413,8 +424,8 @@
     </div>
 
     <div class="actions">
-      <button class="btn btn-primary" onclick="checkSheet()">✓ Vérifier mes réponses</button>
-      <button class="btn btn-ghost" onclick="revealSheetAnswers()">👁️ Voir la correction</button>
+      <button id="btn-check" class="btn btn-primary" onclick="checkSheet()">✓ Vérifier mes réponses</button>
+      <button id="btn-reveal" class="btn btn-ghost" onclick="revealSheetAnswers()" disabled title="Vérifie d'abord tes réponses">👁️ Voir la correction</button>
       <button class="btn btn-coral" onclick="generateNewSheet()">🔄 Nouvelle fiche</button>
       <button class="btn btn-ghost" onclick="window.print()">🖨️ Imprimer la fiche</button>
     </div>
@@ -784,6 +795,8 @@ function generateNewSheet() {
   state.frozenTime = null;
   state.started = false;
   state.checked = false;
+  state.revealed = false;
+  state.saved = false;
   
   const levelLabels = {
     1: "Niveau 1 : Facile (Diviseur 2, 3, 4, 5)",
@@ -802,6 +815,7 @@ function generateNewSheet() {
   }
   
   renderSheet();
+  setActionButtons();
   
   const chip = document.getElementById('chip');
   if (state.useChrono) {
@@ -1456,7 +1470,13 @@ function freezeChrono() {
 }
 
 /* ============ CORRECTION & VALIDATION ============ */
-function checkSheet() {
+function checkSheet(fromReveal) {
+  if (state.revealed) return;
+  // Fiche vide : on ne corrige pas (et le chrono continue)
+  if (!fromReveal && ![...document.querySelectorAll('#exercise input')].some(i => i.value.trim() !== '')) {
+    document.getElementById('score-banner').innerHTML = '<div class="banner ok"><span class="emoji">✏️</span><div><div class="msg">Écris d\'abord tes réponses.</div></div></div>';
+    return;
+  }
   freezeChrono();
   state.checked = true;
   
@@ -1500,26 +1520,73 @@ function checkSheet() {
   });
   
   renderScoreBanner(correctCardsCount, 6);
+  saveSheetResult(correctCardsCount, 6);
+  setActionButtons();
 }
 
+function setActionButtons() {
+  const btnCheck = document.getElementById('btn-check');
+  const btnReveal = document.getElementById('btn-reveal');
+  // « Vérifier » : bloqué une fois la correction affichée (sinon 6/6 en recopiant la correction)
+  if (btnCheck) btnCheck.disabled = !!state.revealed;
+  // « Voir la correction » : seulement après une vérification, et une seule fois
+  if (btnReveal) btnReveal.disabled = !state.checked || !!state.revealed;
+}
+
+// Avant : « Voir la correction » était utilisable sans avoir vérifié, remplissait tout en vert
+// (tout paraissait juste) et effaçait le score.
 function revealSheetAnswers() {
-  freezeChrono();
-  state.checked = true;
-  
+  if (!state.checked || state.revealed) return;
+  checkSheet(true); // réévalue les réponses actuelles
+  state.revealed = true;
   const cards = document.querySelectorAll('.addition-card');
   cards.forEach((card, cardIdx) => {
     const inputs = card.querySelectorAll('input');
     inputs.forEach(inp => {
-      inp.value = inp.dataset.correctVal;
+      inp.readOnly = true;
+      // Les réponses justes de l'élève restent en vert ; seules les erreurs/oublis sont corrigés en bleu
+      if (inp.classList.contains('right')) return;
+      inp.value = inp.dataset.correctVal; // en division, un 0 (quotient, reste) doit s'afficher
       inp.classList.remove('wrong', 'wrong-empty');
-      inp.classList.add('right');
+      inp.classList.add('revealed');
     });
-    card.classList.remove('card-checked-err');
-    card.classList.add('card-checked-ok');
-    document.getElementById(`badge-${cardIdx}`).textContent = '👁️';
+    if (!card.classList.contains('card-checked-ok')) {
+      card.classList.remove('card-checked-err');
+      card.classList.add('card-revealed');
+      document.getElementById(`badge-${cardIdx}`).textContent = '👁️';
+    }
   });
-  
-  document.getElementById('score-banner').innerHTML = '';
+  const note = document.createElement('div');
+  note.className = 'reveal-note';
+  note.textContent = '👁️ Correction affichée : les chiffres en bleu sont les bonnes réponses que tu n\'avais pas trouvées. Pour t\'entrainer à nouveau, clique sur « Nouvelle fiche ».';
+  document.getElementById('score-banner').appendChild(note);
+  setActionButtons();
+}
+
+// Enregistrement : une seule fois par fiche, au premier « Vérifier » (avant : aucun résultat enregistré).
+function saveSheetResult(correct, total) {
+  if (state.saved) {
+    const note = document.createElement('div');
+    note.className = 'reveal-note';
+    note.textContent = `📌 Score enregistré au premier contrôle : ${state.savedScore} / ${total}.`;
+    document.getElementById('score-banner').appendChild(note);
+    return;
+  }
+  state.saved = true;
+  state.savedScore = correct;
+  if (!(window.parent && typeof window.parent.saveResult === 'function')) return;
+  try {
+    const chronoTxt = (state.useChrono && state.frozenTime !== null) ? ` (chrono ${fmtTime(state.frozenTime)})` : '';
+    window.parent.saveResult({
+      activity: 'op_calcul_ecrit_division',
+      bookTitle: 'Divisions écrites — ' + document.getElementById('exercise-title').textContent + chronoTxt,
+      score: correct,
+      total: total,
+      pct: Math.round(correct / total * 100),
+      date: new Date().toLocaleDateString('fr-BE'),
+      time: new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })
+    });
+  } catch (e) { console.warn('Erreur sauvegarde calcul écrit', e); }
 }
 
 function renderScoreBanner(correct, total) {
@@ -1529,9 +1596,9 @@ function renderScoreBanner(correct, total) {
   } else if (correct >= total * 0.8) {
     emoji = '😃'; msg = 'Très bon travail, c\'est presque parfait !';
   } else if (correct >= total * 0.5) {
-    emoji = '🙂'; msg = 'Bonne tentative, continue à t\'entraîner !';
+    emoji = '🙂'; msg = 'Bonne tentative, continue à t\'entrainer !';
   } else {
-    emoji = '💪'; msg = 'Entraîne-toi encore, tu vas y arriver !';
+    emoji = '💪'; msg = 'Entraine-toi encore, tu vas y arriver !';
   }
   
   const cls = correct >= total * 0.8 ? 'good' : 'ok';

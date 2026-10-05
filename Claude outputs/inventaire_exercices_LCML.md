@@ -1251,6 +1251,13 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Nouvelle orthographe : entrainer, entraine-toi.
 - Tests jsdom : niveaux 1, 3, 4, 5 → 5 / 6 enregistré une fois, fiche vide ignorée.
 
+### 05/10 — Maths › Opérations › Calcul écrit › Multiplications écrites (`op_calcul_ecrit_multiplication`, `fiches/calcul-ecrit-multiplication.html` + copies public et racine) — sw.js v553
+- 5 niveaux × 1 500-2 000 multiplications simulées : produits justes (décimaux compris), produits partiels (avec le 0 de décalage) dont la somme = produit.
+- **« Voir la correction »** (même défaut que celui corrigé ce matin pour + et −) : utilisable sans avoir vérifié, mettait tout en vert (tout paraissait juste) et effaçait le score → même correctif : bouton actif seulement après « Vérifier », réponses justes en vert, corrections en bleu, score conservé, fiche verrouillée ensuite.
+- **Niveau lacunaire ambigu** : ~2 % des calculs admettaient plusieurs réponses justes (ex. 194 × 5 avec le 1 caché) → vérification par essai de tous les chiffres, seuls les calculs à solution unique sont gardés (0 / 1 500 ambigu).
+- **Aucun résultat enregistré** → enregistrement au premier « Vérifier » (x / 6, niveau, chrono) ; fiche vide ignorée ; nouvelle orthographe (entrainer).
+- Tests jsdom : 5 niveaux → 5 / 6 enregistré une fois, correction en bleu, « Vérifier » bloqué après correction.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1558,7 +1565,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ⬜ | Calcul écrit | `op_calcul_ecrit` | index › (?) | (code à localiser) |
 | ✅ 05/10 | Calcul écrit — Additions écrites | `op_calcul_ecrit_addition` | fiches/calcul-ecrit-addition.html |  |
 | ✅ 05/10 | Calcul écrit — Soustractions écrites | `op_calcul_ecrit_soustraction` | fiches/calcul-ecrit-soustraction.html |  |
-| ⬜ | Calcul écrit — Multiplications écrites | `op_calcul_ecrit_multiplication` | fiches/calcul-ecrit-multiplication.html |  |
+| ✅ 05/10 | Calcul écrit — Multiplications écrites | `op_calcul_ecrit_multiplication` | fiches/calcul-ecrit-multiplication.html |  |
 | ⬜ | Calcul écrit — Divisions écrites | `op_calcul_ecrit_division` | fiches/calcul-ecrit-division.html |  |
 | ⬜ | L'ordre des opérations | `op_ordre` | index › (?) | (code à localiser) |
 | ⬜ | L'ordre des opérations — Mission PEMDAS | `op_ordre_pemdas` | fiches/mission_pemdas.html |  |
