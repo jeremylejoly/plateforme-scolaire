@@ -899,6 +899,13 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - 2 phrases où la couleur était un nom après « en » (« peints en chocolat », « peint la barrière en bleu marine ») → « Les murs de la cuisine sont chocolat », « des pulls bleu marine ».
 - Saisie NFC + espaces. Nouvelle orthographe : maitrise(s).
 
+### 05/10 — Connecteurs logiques (`connecteurs`, index › renderConnecteurs + exercices_francais.js › CONNECTEURS_POOL) — sw.js v502, ?v=20261005zj
+- Bonne réponse en 3e position dans 21 phrases sur 40 (jamais mélangée) → propositions mélangées à chaque partie (simulation : ~25 % par position). Phrases : `sort(random)` → Fisher-Yates.
+- « La météo était mauvaise. De plus le match a été annulé » (c'est une conséquence, pas un ajout) → « De plus le terrain de football était inondé ».
+- « Malgré la fatigue, pourtant les joueurs continuèrent » (double opposition) → « Les joueurs étaient épuisés. Pourtant ils continuèrent… ».
+- « Puisque il… » (élision impossible) ×2 → « Comme il avait oublié son parapluie… » et « Puisque tu as soif, bois… ».
+- Nouvelle orthographe : maitrises, entrainer.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1108,7 +1115,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 
 | Statut | Exercice | id | Source | Signal automatique |
 |---|---|---|---|---|
-| ⬜ | Connecteurs logiques | `connecteurs` | index › renderConnecteurs |  |
+| ✅ 05/10 | Connecteurs logiques | `connecteurs` | index › renderConnecteurs |  |
 | ⬜ | Synonymes | `synonymes` | index › renderSynonymes |  |
 | ⬜ | Antonymes | `antonymes` | index › renderAntonymes |  |
 | ⬜ | Mes écrits — Atelier Plume | `mes_ecrits` | index › (?) | (code à localiser) |
