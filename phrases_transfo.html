@@ -312,7 +312,7 @@
         },
         {
           text: "Nous lisons une histoire intéressante.",
-          accept: ["nous ne lisons pas une histoire intéressante"],
+          accept: ["nous ne lisons pas d'histoire intéressante", "nous ne lisons pas une histoire intéressante"],
           explanation: "On transforme en négatif simple en insérant <strong>ne ... pas</strong> autour de <em>lisons</em>."
         },
         {
@@ -379,7 +379,7 @@
       level2: [
         {
           text: "Elle mange des pommes.",
-          accept: ["elle ne mange pas de pommes"],
+          accept: ["elle ne mange pas de pommes", "elle ne mange pas de pomme"],
           explanation: "<strong>Piège déjoué !</strong> À la forme négative, le déterminant indéfini <em>des</em> se transforme en <strong>de</strong>."
         },
         {
@@ -413,8 +413,8 @@
           explanation: "<strong>Piège déjoué !</strong> Le pronom <em>quelque chose</em> devient <strong>rien</strong> à la forme négative, placé devant le participe passé."
         },
         {
-          text: "Il y a encore des cookies.",
-          accept: ["il n'y a plus de cookies", "il n'y a plus de cookie"],
+          text: "Il y a encore des biscuits.",
+          accept: ["il n'y a plus de biscuits", "il n'y a plus de biscuit"],
           explanation: "<strong>Double piège !</strong> <em>encore</em> se transforme en <strong>ne ... plus</strong> et le déterminant <em>des</em> devient <strong>de</strong>."
         },
         {
@@ -602,7 +602,7 @@
             <!-- Level 2 Card -->
             <div onclick="startLevel('level2')" class="cursor-pointer border-3 border-neutral-900 rounded-2xl p-6 bg-[#FEF3E2] hover:bg-[#FEECD1] shadow-[4px_4px_0px_#1A1A2E] hover:shadow-[6px_6px_0px_#1A1A2E] hover:-translate-y-1 transition-all flex flex-col justify-between items-center text-center h-full min-h-[220px]">
               <div>
-                <h3 class="font-title font-black text-xl text-[#C97B1A] mb-2 mt-4">Maître Détective</h3>
+                <h3 class="font-title font-black text-xl text-[#C97B1A] mb-2 mt-4">Maitre Détective</h3>
                 <p class="text-neutral-700 text-xs sm:text-sm">
                   Garde l'œil ouvert : transformations de déterminants, coordinations, infinitifs !
                 </p>
@@ -629,7 +629,9 @@
     // --- START GAME LEVEL ---
     function startLevel(levelKey) {
       gameState.level = levelKey;
-      const shuffled = [...DB_EXERCICES[levelKey]].sort(() => Math.random() - 0.5);
+      // Mélange équitable (Fisher–Yates)
+      const shuffled = [...DB_EXERCICES[levelKey]];
+      for (let i = shuffled.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]; }
       gameState.questions = shuffled.slice(0, 10);
       gameState.currentIndex = 0;
       gameState.score = 0;
@@ -725,6 +727,7 @@
     function normalizeString(str) {
       if (!str) return "";
       return str
+        .normalize("NFC")
         .toLowerCase()
         .replace(/[’`’‘]/g, "'") // Normalize curly apostrophes to straight
         .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?]/g, "") // Remove punctuation (periods, exclamation, question marks)
@@ -740,7 +743,7 @@
       const answerVal = inputEl.value;
       
       if (!answerVal.trim()) {
-        alert("S'il te plaît, écris quelque chose avant de valider !");
+        alert("S'il te plait, écris quelque chose avant de valider !");
         return;
       }
       
@@ -751,7 +754,13 @@
       const normalizedStudent = normalizeString(answerVal);
       
       // Check if the normalized student input matches any of the accepted forms
-      const isCorrect = question.accept.some(acceptedForm => normalizeString(acceptedForm) === normalizedStudent);
+      // Autres négations acceptées : quand la phrase ne contient pas de mot-piège (encore, toujours, quelqu'un…),
+      // « ne … plus » et « ne … jamais » sont aussi des formes négatives correctes (avant : seul « ne … pas » était accepté).
+      const variantes = [...question.accept];
+      if (!/encore|toujours|quelqu|quelque chose|tout le monde/i.test(question.text)) {
+        question.accept.forEach(a => { if (/\bpas\b/.test(a)) { variantes.push(a.replace(/\bpas\b/, 'plus'), a.replace(/\bpas\b/, 'jamais')); } });
+      }
+      const isCorrect = variantes.some(acceptedForm => normalizeString(acceptedForm) === normalizedStudent);
       
       if (isCorrect) {
         gameState.score++;
@@ -791,7 +800,7 @@
             🎉 Excellent ! Ta réponse est tout à fait correcte !
           </h4>
           <p class="text-sm leading-relaxed mb-3 text-neutral-800">
-            <strong>Ta réponse :</strong> « ${answerVal} »<br>
+            <strong>Ta réponse :</strong> « ${String(answerVal).replace(/</g,'&lt;')} »<br>
             <strong>Correction modèle :</strong> « ${displayModel} »
           </p>
           <div class="bg-white/80 p-3 rounded-lg border-2 border-neutral-900/10 text-neutral-800 text-xs sm:text-sm">
@@ -805,7 +814,7 @@
             😢 Mince, il y a une petite erreur...
           </h4>
           <p class="text-sm leading-relaxed mb-3 text-neutral-800">
-            <strong>Ta réponse :</strong> « <span class="line-through text-red-600">${answerVal}</span> »<br>
+            <strong>Ta réponse :</strong> « <span class="line-through text-red-600">${String(answerVal).replace(/</g,'&lt;')}</span> »<br>
             <strong>Correction attendue :</strong> « <strong>${displayModel}</strong> »
           </p>
           <div class="bg-white/80 p-3 rounded-lg border-2 border-neutral-900/10 text-neutral-800 text-xs sm:text-sm">
@@ -832,6 +841,19 @@
 
     // --- RENDER RESULTS SCREEN ---
     function renderResults() {
+      // Enregistrement du résultat (avant : jamais enregistré)
+      try {
+        if (window.parent && window.parent !== window && window.parent.saveResult) {
+          const total = gameState.questions.length;
+          const niv = gameState.level === 'level2' ? 2 : 1;
+          window.parent.saveResult({ activity: 'gram_affirm_neg_transfo_n' + niv,
+            bookTitle: 'Grammaire — Transforme les phrases (niveau ' + niv + ')',
+            score: gameState.score, total, pct: Math.round(gameState.score / total * 100),
+            date: new Date().toLocaleDateString('fr-BE'),
+            time: new Date().toLocaleTimeString('fr-BE', {hour:'2-digit', minute:'2-digit'}) });
+        }
+      } catch (e) { /* fiche ouverte hors du site */ }
+
       const screenContainer = document.getElementById("screen-container");
       
       let scoreTitle = "";
@@ -839,13 +861,13 @@
       let scoreEmoji = "";
       
       if (gameState.score === gameState.questions.length) {
-        scoreTitle = "Parfait ! Maître de la Négation !";
+        scoreTitle = "Parfait ! Maitre de la Négation !";
         scoreMessage = "Tu as réussi le sans-faute sur les transformations les plus pièges de FWB. Félicitations !";
         scoreEmoji = "🏆🥇";
         triggerConfettiFull();
       } else if (gameState.score >= 7) {
         scoreTitle = "Superbe score !";
-        scoreMessage = "Tu as très bien maîtrisé les transformations et déjoué la majorité des pièges.";
+        scoreMessage = "Tu as très bien maitrisé les transformations et déjoué la majorité des pièges.";
         scoreEmoji = "🌟🎉";
         triggerConfettiMini();
       } else if (gameState.score >= 5) {
@@ -853,7 +875,7 @@
         scoreMessage = "L'essentiel est compris. Relis bien le tableau ci-dessous pour repérer tes erreurs de déterminants.";
         scoreEmoji = "👍🔍";
       } else {
-        scoreTitle = "Continue de t'entraîner !";
+        scoreTitle = "Continue de t'entrainer !";
         scoreMessage = "La négation peut être complexe avec les changements de mots. Reprends le niveau 1 pour te rassurer.";
         scoreEmoji = "📚💪";
       }

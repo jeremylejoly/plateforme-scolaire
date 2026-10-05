@@ -734,6 +734,17 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
   - Nouvelle orthographe : maitrises, entrainement.
 - **05/10 — Plan de travail** : « Le complément d'agent » est retiré de la liste. L'écran ne contient pas encore d'exercice. Décision de Jeremy : on ne crée rien pour le moment.
 
+- **05/10 — Grammaire › Types et formes › Les types de phrases** (2 niveaux de 30 phrases : assertion, interrogation, injonction ; 10 par partie) :
+  - **Incohérence au niveau 2.** Pour « Pourrais-tu fermer la fenêtre ? », la fiche explique que c'est la **structure** qui compte (→ interrogation). Pourtant, 4 phrases au futur de l'indicatif terminées par un point (« Tu rangeras ta chambre… », « Vous sortirez par la porte de secours »…) étaient classées injonction d'après leur **valeur**. Un élève qui appliquait la règle répondait « assertion » et était compté faux. Ces 4 phrases sont remplacées par des injonctions sans ambigüité (infinitif ou phrase sans verbe) :
+    - « Bien mélanger la pâte… » ;
+    - « Attention à la marche ! » ;
+    - « Ne pas déranger. » ;
+    - « Défense de fumer dans le bâtiment. »
+  - **Le résultat n'était jamais enregistré.** Il est maintenant enregistré par niveau (`gram_types_phrases_n1` / `_n2`), et le plan de travail le reconnait.
+  - Le mélange utilise maintenant la méthode Fisher–Yates.
+  - Nouvelle orthographe : coute, boite, plait, maitre, gouter, gouts, maitrise, entrainer, connaitre.
+  - Les 3 copies de la fiche sont identiques (la copie public/ affichait « *sois* » avec des astérisques).
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -866,7 +877,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 
 | Statut | Exercice | id | Source | Signal automatique |
 |---|---|---|---|---|
-| ⬜ | Les types de phrases | `gram_types_phrases` | fiches/types_de_phrases.html |  |
+| ✅ 05/10 | Les types de phrases | `gram_types_phrases` | fiches/types_de_phrases.html |  |
 | ⬜ | QCM - Affirmative ou négative | `gram_affirm_neg_qcm` | fiches/phrases_affirm_neg.html |  |
 | ⬜ | Transformation de phrases | `gram_affirm_neg_transfo` | fiches/phrases_transfo.html |  |
 | ⬜ | Passives ou actives ? | `gram_pass_act` | index › (?) | (code à localiser) |

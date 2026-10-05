@@ -223,7 +223,7 @@
         {
           text: "Les élèves écoutent le professeur.",
           type: "affirmative",
-          explanation: "La phrase affirme un fait directement et ne contient aucun mot de négation (*ne... pas, ne... jamais* etc.)."
+          explanation: "La phrase affirme un fait directement et ne contient aucun mot de négation (<em>ne... pas</em>, <em>ne... jamais</em>, etc.)."
         },
         {
           text: "Nous irons à la piscine samedi prochain.",
@@ -233,7 +233,7 @@
         {
           text: "J'aime beaucoup lire des romans policiers.",
           type: "affirmative",
-          explanation: "Cette phrase énonce un goût personnel de façon affirmative."
+          explanation: "Cette phrase énonce un gout personnel de façon affirmative."
         },
         {
           text: "Le train entre en gare à l'heure.",
@@ -241,7 +241,7 @@
           explanation: "C'est une phrase affirmative simple constatant un événement réel."
         },
         {
-          text: "La maîtresse écrit la date au tableau.",
+          text: "La maitresse écrit la date au tableau.",
           type: "affirmative",
           explanation: "Phrase affirmative simple décrivant l'action en cours."
         },
@@ -318,7 +318,7 @@
         {
           text: "Elle n'aime pas manger de champignons.",
           type: "negative",
-          explanation: "Elle nie un goût à l'aide de la double négation <strong>n' ... pas</strong>."
+          explanation: "Elle nie un gout à l'aide de la négation <strong>n' ... pas</strong>."
         },
         {
           text: "Tu ne feras plus de bêtises.",
@@ -435,7 +435,7 @@
         {
           text: "Je crains qu'il ne se fasse gronder.",
           type: "affirmative",
-          explanation: "<strong>Piège déjoué !</strong> Le <strong>ne</strong> explétif après le verbe de crainte (*craindre*) n'est pas une négation. La phrase est <strong>affirmative</strong>."
+          explanation: "<strong>Piège déjoué !</strong> Le <strong>ne</strong> explétif après le verbe de crainte (<em>craindre</em>) n'est pas une négation. La phrase est <strong>affirmative</strong>."
         },
         {
           text: "Il n'a qu'un rêve : voyager dans l'espace.",
@@ -473,7 +473,7 @@
           explanation: "La tournure littéraire <strong>n' ... mot</strong> signifie « n'a pas dit un mot ». C'est une négation renforcée, la phrase est <strong>négative</strong>."
         },
         {
-          text: "Cette solution ne sert guère à grand-chose.",
+          text: "Cette vieille solution ne sert guère.",
           type: "negative",
           explanation: "Le mot <strong>guère</strong> associé à <strong>ne</strong> exprime une négation restrictive signifiant « presque pas ». La phrase est <strong>négative</strong>."
         },
@@ -597,7 +597,7 @@
             <!-- Level 2 Card -->
             <div onclick="startLevel('level2')" class="cursor-pointer border-3 border-neutral-900 rounded-2xl p-6 bg-[#FEF3E2] hover:bg-[#FEECD1] shadow-[4px_4px_0px_#1A1A2E] hover:shadow-[6px_6px_0px_#1A1A2E] hover:-translate-y-1 transition-all flex flex-col justify-between items-center text-center h-full min-h-[220px]">
               <div>
-                <h3 class="font-title font-black text-xl text-[#C97B1A] mb-2 mt-4">Maître Détective</h3>
+                <h3 class="font-title font-black text-xl text-[#C97B1A] mb-2 mt-4">Maitre Détective</h3>
                 <p class="text-neutral-700 text-xs sm:text-sm">
                   Attention aux pièges du français : la restriction, le « ne » explétif, et plus encore !
                 </p>
@@ -624,7 +624,9 @@
     // --- START GAME LEVEL ---
     function startLevel(levelKey) {
       gameState.level = levelKey;
-      const shuffled = [...DB_EXERCICES[levelKey]].sort(() => Math.random() - 0.5);
+      // Mélange équitable (Fisher–Yates)
+      const shuffled = [...DB_EXERCICES[levelKey]];
+      for (let i = shuffled.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]; }
       gameState.questions = shuffled.slice(0, 10);
       gameState.currentIndex = 0;
       gameState.score = 0;
@@ -778,6 +780,19 @@
 
     // --- RENDER RESULTS SCREEN ---
     function renderResults() {
+      // Enregistrement du résultat (avant : jamais enregistré)
+      try {
+        if (window.parent && window.parent !== window && window.parent.saveResult) {
+          const total = gameState.questions.length;
+          const niv = gameState.level === 'level2' ? 2 : 1;
+          window.parent.saveResult({ activity: 'gram_affirm_neg_qcm_n' + niv,
+            bookTitle: 'Grammaire — Affirmative ou négative ? (QCM, niveau ' + niv + ')',
+            score: gameState.score, total, pct: Math.round(gameState.score / total * 100),
+            date: new Date().toLocaleDateString('fr-BE'),
+            time: new Date().toLocaleTimeString('fr-BE', {hour:'2-digit', minute:'2-digit'}) });
+        }
+      } catch (e) { /* fiche ouverte hors du site */ }
+
       const screenContainer = document.getElementById("screen-container");
       
       let scoreTitle = "";
@@ -800,7 +815,7 @@
         scoreEmoji = "👍🔍";
       } else {
         scoreTitle = "Ne baisse pas les bras !";
-        scoreMessage = "Relis bien les explications pour progresser. L'entraînement est la clé du succès !";
+        scoreMessage = "Relis bien les explications pour progresser. L'entrainement est la clé du succès !";
         scoreEmoji = "📚💪";
       }
       
