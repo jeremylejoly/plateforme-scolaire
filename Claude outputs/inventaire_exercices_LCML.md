@@ -1379,7 +1379,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Double clic sur « Situation suivante » sautait une situation → bloqué ; un seul enregistrement en fin de série.
 - Nouvelle orthographe : iles, boite, maitrises.
 - Tests jsdom : partie 7 / 10 avec doubles clics → 1 sauvegarde ; « Recommencer » remet à zéro ; syntaxe OK.
-- ⚠️ Même appel inexistant `handleActivityScore` (donc aucun résultat enregistré) dans 6 autres fiches, à corriger quand on y arrivera : ~~aire_quadrillage~~ (v571), aire_conversions, aire_formules, volume_cubes, volume_formules, volume_conversions.
+- ⚠️ Même appel inexistant `handleActivityScore` (donc aucun résultat enregistré) dans 6 autres fiches, à corriger quand on y arrivera : ~~aire_quadrillage~~ (v571), ~~aire_conversions~~ (v572), aire_formules, volume_cubes, volume_formules, volume_conversions.
 
 ### 05/10 — Maths › Grandeurs › L'aire › Le Géomètre des Carreaux (`grandeur_aire_quadrillage`, `fiches/aire_quadrillage.html` + copies public et racine) — sw.js v571
 - 51 figures recalculées par la formule du lacet : toutes les aires justes, aucun polygone croisé, toutes dans la grille.
@@ -1391,6 +1391,17 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Saisie vide : fenêtre `alert()` bloquante → message dans la page, rien n'est compté. Double clic sur « Figure suivante » → plus de figure sautée.
 - Nouvelle orthographe : maitrises, entrainer. Capture 390 px OK.
 - Tests jsdom : vide non compté, partie 7 / 10 avec doubles clics → 1 sauvegarde ; syntaxe OK.
+
+### 05/10 — Maths › Grandeurs › L'aire › L'Arpenteur Impérial (`grandeur_aire_conversions`, `fiches/aire_conversions.html` + copies public et racine) — sw.js v572
+- 51 conversions recalculées (km², hm² = ha, dam² = a, m² = ca, dm², cm², mm²) : toutes justes.
+- **Aucun résultat enregistré** (`handleActivityScore` inexistante) → `saveResult`, une seule fois par série.
+- **Mauvaises réponses acceptées** : tolérance de 0,1 % → « 1 000 500 » accepté pour 1 000 000 → tolérance limitée aux arrondis machine.
+- **Bonnes réponses refusées** : champ numérique → « 10 000 » (avec espace) illisible, fenêtre `alert()` → champ texte, espaces de milliers et virgule acceptés, « 12abc » refusé ; vide ou illisible : message, rien n'est compté.
+- Affichage « 5,00×10^10 » (notation scientifique) → nombres avec espaces de milliers ; la question 5 km² → cm² (50 milliards) remplacée par 5 km² → a.
+- Doublon exact (1 km² → m² deux fois) → 2 km² → m². Questions sur la même quantité (1 ha → m² / 10 000 m² → ha ; 500 a → ha / 5 ha → a…) : jamais ensemble dans une série (5 000 séries : 0).
+- Astuce « la France fait ±55 M ha » → Belgique ≈ 30 700 km² ≈ 3 millions d'hectares.
+- Double clic sur « Question suivante » → plus de question sautée. Nouvelle orthographe : maitrisées, maitrises, entrainer.
+- Tests jsdom : vide et « 12abc » non comptés, « 40 000 » accepté, réponse à 0,05 % près refusée, partie 7 / 10 → 1 sauvegarde ; syntaxe OK.
 
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
@@ -1727,7 +1738,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | Périmètre du cercle — Figures complexes | `grandeur_perimetre_cercle_compose` | fiches/perimetre_cercle_compose.html |  |
 | ✅ 05/10 | L'Enquêteur Royal (Situations d'Aire) | `grandeur_aire_situations` | fiches/aire_situations.html |  |
 | ✅ 05/10 | Le Géomètre des Carreaux (Quadrillage) | `grandeur_aire_quadrillage` | fiches/aire_quadrillage.html |  |
-| ⬜ | L'Arpenteur Impérial (Conversions d'Aire) | `grandeur_aire_conversions` | fiches/aire_conversions.html |  |
+| ✅ 05/10 | L'Arpenteur Impérial (Conversions d'Aire) | `grandeur_aire_conversions` | fiches/aire_conversions.html |  |
 | ⬜ | Mesures Agraires & Superficies | `grandeur_aire_agraire` | fiches/aire_agraire.html |  |
 | ⬜ | L'Arpenteur du Château (Formules d'aire) | `grandeur_aire_formules` | fiches/aire_formules.html |  |
 | ⬜ | Le Calcul d'Aires Composées | `grandeur_aire_composee` | fiches/aire_composee.html |  |
