@@ -872,6 +872,11 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Mélange `sort(random)` → Fisher-Yates ; saisie NFC + espaces, réponse vide refusée sans compter d'essai.
 - Contenu : 25 phrases justes. Nouvelle orthographe : apparaitre, naitre.
 
+### 05/10 — PP avec avoir (`fiches/orthographe_participe_passe_avoir.html`, copie unique) — sw.js v498
+- AUCUN résultat enregistré → score sur 10 (1 point par phrase réussie du premier coup), enregistré une fois sous `ortho_participe_avoir`.
+- Mélange `sort(random)` → Fisher-Yates ; saisie NFC + espaces, réponse vide refusée sans compter d'essai.
+- Contenu : 26 phrases (13 paires CDV après / CDV avant) justes.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1072,7 +1077,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | Transformation à l'infini | `ortho_participe_infinitif` | fiches/orthographe_participe_passe_infinitif.html |  |
 | ✅ 05/10 | PP employé seul | `ortho_participe_seul` | fiches/orthographe_participe_passe_seul.html |  |
 | ✅ 05/10 | PP avec Être | `ortho_participe_etre` | fiches/orthographe_participe_passe_etre.html |  |
-| ⬜ | PP avec Avoir | `ortho_participe_avoir` | fiches/orthographe_participe_passe_avoir.html |  |
+| ✅ 05/10 | PP avec Avoir | `ortho_participe_avoir` | fiches/orthographe_participe_passe_avoir.html |  |
 | ⬜ | L'Accord parfait (Participe passé) | `ortho_participe_accord` | fiches/accord_participe.html |  |
 | ⬜ | Les pluriels particuliers | `ortho_pluriels` | fiches/orthographe_pluriels_particuliers.html |  |
 | ⬜ | Accord des adjectifs de couleur | `ortho_adjectifs_couleur` | fiches/orthographe_adjectifs_couleur.html |  |
