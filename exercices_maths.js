@@ -1079,7 +1079,7 @@ window.OP_X10_BANQUE = [
   { a: 78, b: 0.1, op: '÷', answer: 780 },
   { a: 1.6, b: 0.1, op: '÷', answer: 16 },
   { a: 98.2, b: 0.1, op: '÷', answer: 982 },
-  { a: 7.2, b: 0.1, op: '÷', answer: 7.2 },
+  { a: 7.2, b: 0.1, op: '÷', answer: 72 },
   { a: 1.48, b: 0.1, op: '÷', answer: 14.8 }
 ];
 

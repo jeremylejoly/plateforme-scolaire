@@ -1159,6 +1159,13 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Titre enregistré lisible (« Tables de multiplication et de division » au lieu de « mult_div ») ; identifiant `op_mult_div_tables` (reconnu par le plan) déjà corrigé dans le moteur commun v537, avec saisie stricte et gestion des réponses vides.
 - Question posée à Jeremy : signe de division « ÷ » (actuel, partout sur le site) ou « : » (usage belge) ?
 
+### 05/10 — Maths › Opérations › Multiplications et divisions › Les tables étendues (`op_tables`, OP_TABLES_BANQUE dans exercices_maths.js + generateOpTablesQuestions dans index) — sw.js v541
+- 100 calculs (50 ×, 50 ÷, dont 10 décimaux) recalculés par programme : tous justes, aucun doublon.
+- 44 multiplications ont leur division inverse dans la banque (60 × 80 = 4 800 / 4 800 ÷ 80) : les deux pouvaient tomber dans la même série et se donner la réponse → exclu.
+- Tirage libre (parfois 8 × sur 10) → toujours 5 × + 5 ÷, mélangés ; environ 1 calcul décimal par série.
+- Moteur commun (v537) : identifiant `op_tables` déjà correct, saisie stricte (virgule acceptée), réponses vides gérées.
+- Tests : 20 000 séries, 0 paire inverse, 0 doublon.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1456,7 +1463,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ⬜ | Le compte est bon | `op_add_sous_compte_est_bon` | fiches/compte_est_bon.html |  |
 | ⬜ | Fiche d'entraînement (Calculs) | `op_4_operations_calculs` | fiches/calculs.html |  |
 | ⬜ | Calculs lacunaires | `op_4_operations_lacunaires` | fiches/calculs-4-operations.html |  |
-| ⬜ | Les tables étendues | `op_tables` | index › startOpTablesExercise |  |
+| ✅ 05/10 | Les tables étendues | `op_tables` | index › startOpTablesExercise |  |
 | ⬜ | × et ÷ par 0,1 — 10 — 100 — 1000 | `op_x10` | index › startOpX10Exercise |  |
 | ⬜ | × et ÷ par 0,5 — 5 — 50 — 500 | `op_x5` | index › startOpX5Exercise |  |
 | ⬜ | × par 9 — 90 — 99 — 9,9 | `op_x9` | index › startOpX9Exercise |  |
