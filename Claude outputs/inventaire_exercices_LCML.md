@@ -108,6 +108,11 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
   - « Blanc sur le bout des pattes » corrigé : le renard roux a les pattes noires et le blanc sur la gorge et le ventre (texte et question 1).
   - **Les 3 textes descriptifs sont terminés.**
 
+- **05/10 — Lecture argumentative › Faut-il supprimer les devoirs ?** :
+  - Moteur des 7 textes argumentatifs corrigé. Avant, la bonne réponse des QCM était toujours en 2e position, et les arguments à classer suivaient presque toujours le même ordre (Pour, Pour, Contre, Pas dans le texte, Pour). Maintenant, tout est mélangé, la bonne réponse est montrée, et le résultat est enregistré quand les 2 parties sont faites.
+  - Devoirs : l'argument « consolider les apprentissages » devait être classé « Contre », alors qu'il n'apparaissait pas dans le texte. Il y est maintenant, comme concession.
+  - Les 6 autres textes ont la même structure de classement : leur contenu reste à relire.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -162,7 +167,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 
 | Statut | Exercice | id | Source | Signal automatique |
 |---|---|---|---|---|
-| ⬜ | Faut-il supprimer les devoirs ? | `arg_devoirs` | index › renderArgDevoirs |  |
+| ✅ 05/10 | Faut-il supprimer les devoirs ? | `arg_devoirs` | index › renderArgDevoirs |  |
 | ⬜ | Les écrans sont-ils dangereux ? | `arg_ecrans` | index › renderArgEcrans |  |
 | ⬜ | Doit-on devenir végétarien ? | `arg_vegetarien` | index › renderArgVegetarien |  |
 | ⬜ | Faut-il porter un uniforme ? | `arg_uniforme` | index › renderArgUniforme |  |
