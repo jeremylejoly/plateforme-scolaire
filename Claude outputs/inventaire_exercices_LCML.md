@@ -653,6 +653,17 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
   - Le mélange utilise maintenant la méthode Fisher–Yates.
   - Nouvelle orthographe : maitrises, entrainement.
 
+- **05/10 — Grammaire › Fonctions › Le sujet › Reconstituer les textes** (5 textes documentaires de 10 sujets à replacer) :
+  - **Score toujours à 10/10 possible.** Après « Corriger », l'élève pouvait déplacer les étiquettes fausses et recliquer. Chaque essai était enregistré, le dernier souvent à 10/10. Seule la **première correction** de chaque texte est maintenant enregistrée.
+  - **Réponses justes refusées.** Deux paires d'étiquettes peuvent s'échanger sans erreur. Les deux placements sont maintenant acceptés :
+    - « Elle » / « Ce précieux travail » (abeilles) ;
+    - « Elle » / « Cette nouvelle société » (Révolution).
+  - **Majuscule en milieu de phrase.** Deux étiquettes s'affichaient avec une majuscule au milieu d'une phrase : « C'est pourquoi **Nous** devons… » et « Le 14 juillet 1789, **Des** milliers de Parisiens… ». Les deux phrases sont réécrites pour que le sujet soit en tête.
+  - Les 50 sujets ont été relus et sont justes.
+  - Le mélange des étiquettes utilise maintenant la méthode Fisher–Yates.
+  - Nouvelle orthographe : croute, iles, maitrises.
+  - **Toute la rubrique Le sujet est vérifiée.**
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -770,7 +781,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | Statut | Exercice | id | Source | Signal automatique |
 |---|---|---|---|---|
 | ✅ 05/10 | Le sujet — Repérer le sujet | `sujet_phrase` | index › startSujetExercise |  |
-| ⬜ | Le sujet — Reconstituer les textes | `gram_sujet_texte` | index › startSujetTextesExercise |  |
+| ✅ 05/10 | Le sujet — Reconstituer les textes | `gram_sujet_texte` | index › startSujetTextesExercise |  |
 | ⬜ | Le sujet — Les 4 classes du sujet | `gram_classes_sujet` | index › startSujetClassesExercise |  |
 | ⬜ | Le verbe (fonction) — Repérer le verbe | `verbe_phrase` | index › startVerbeExercise |  |
 | ✅ 05/10 | Le verbe (fonction) — Infinitif et groupe | `gram_verbe_groupe` | index › startVerbeGroupeExercise |  |
