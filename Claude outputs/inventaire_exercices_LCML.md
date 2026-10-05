@@ -1300,6 +1300,15 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Double clic sur « Question suivante » : plus de question sautée (index + fiche).
 - Tests : 20 000 séries (index) et 5 000 (fiche) → 0 valeur répétée, ≈ 33 % par position ; parties jsdom 7 / 10 et 8 / 10 avec doubles clics → 1 sauvegarde chacune.
 
+### 05/10 — Maths › Grandeurs › Les capacités › Conversions de capacités QCM bis → « Conversions de capacités & abaque » (`grandeur_capacites_qcm_sup`, `fiches/capacites_QCM.html` + copies public et racine) — sw.js v561
+- **Pas « un autre exercice »** : les 50 questions étaient exactement celles du QCM principal. Choix de Jeremy : même principe que les masses → abaque interactif des capacités ajouté au-dessus des propositions : m³ (= 1 000 l) | hl | dal | l | dl | cl | ml, 2 lignes de brouillon (un chiffre par case, passage automatique à la case suivante), virgule par double-clic, « Effacer l'abaque », vidé à chaque question ; capture 390 px sans défilement horizontal. Menu et plan : « Conversions de capacités & abaque (QCM) ».
+- Contenu : mêmes 50 questions, déjà recalculées (toutes justes).
+- **Copies désynchronisées** : la version en ligne (`fiches/`) ne mélangeait pas les propositions (réponse C dans 28 questions sur 50) ; public/racine les mélangeaient avec un tri biaisé → Fisher–Yates partout (5 000 séries : ≈ 33 % par position) ; 3 copies identiques.
+- Jamais deux questions de même valeur dans une série (même règle que le QCM principal).
+- **Aucun résultat enregistré** → enregistrement unique en fin de série (`grandeur_capacites_qcm_sup`) ; double clic sur une proposition (comptait 2 réponses) ou sur « Question suivante » bloqué ; pastilles vert / rouge.
+- Tests jsdom : partie 8 / 10 avec doubles clics → 1 sauvegarde ; abaque (saisie, passage de case, virgule, vidage) ; syntaxe OK.
+- ⚠️ À voir au prochain : « Conversions de longueurs (QCM — Bis) » a probablement le même doublon.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1620,7 +1629,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | Conversions de masses (QCM) | `grandeur_masses_qcm` | index › renderMassesQCM |  |
 | ⬜ | Conversions & Abaque (QCM) | `grandeur_masses_qcm_abaque` | fiches/masses_QCM_abaque.html |  |
 | ✅ 05/10 | Conversions de capacités (QCM) | `grandeur_capacites_qcm` | index › renderCapacitesQCM |  |
-| ⬜ | Conversions de capacités (QCM — Bis) | `grandeur_capacites_qcm_sup` | fiches/capacites_QCM.html |  |
+| ✅ 05/10 | Conversions de capacités & abaque (QCM) | `grandeur_capacites_qcm_sup` | fiches/capacites_QCM.html |  |
 | ⬜ | Conversions de longueurs (QCM) | `grandeur_longueurs_qcm` | index › renderLongueursQCM |  |
 | ⬜ | Conversions de longueurs (QCM — Bis) | `grandeur_longueurs_qcm_sup` | fiches/longueurs_QCM.html |  |
 
