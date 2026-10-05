@@ -477,6 +477,18 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
   - Les 50 phrases ont été relues : tous les noms communs et propres sont bien marqués.
   - Nouvelle orthographe : entrainer, maitrise, entraine-toi (menu et résultats du nom).
 
+- **05/10 — Grammaire › Le nom › Est-ce un nom ?** (banque de mots isolés, 20 par partie) :
+  - La refonte du 29/09 était toujours en place : tirage Fisher–Yates, 10 noms et 10 autres mots, correction après chaque mot, récapitulatif des erreurs, résultat enregistré (`gram_nom_reconnaître`).
+  - J'ai retiré 8 mots qui étaient comptés « pas un nom », alors qu'ils sont aussi des noms courants. Il reste 267 mots.
+    - **sous** (des sous) ;
+    - **vers** (un vers, des vers de terre) ;
+    - **ensemble** (un ensemble) ;
+    - **rien** (un rien) ;
+    - **minuscule** (une minuscule) ;
+    - **curieux**, **timide**, **peureux** (les curieux, un timide, un peureux).
+  - J'ai vérifié 2 000 tirages : toujours 20 mots différents, dont exactement 10 noms.
+  - Nouvelle orthographe : entrainer, entraine-toi, « Reconnaitre un nom » dans le titre affiché. L'identifiant technique ne change pas.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -567,7 +579,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | Statut | Exercice | id | Source | Signal automatique |
 |---|---|---|---|---|
 | ✅ 05/10 | Le nom — Identifier les noms | `gram_nom_identifier` | index › startNomExercise |  |
-| ⬜ | Le nom — Est-ce un nom ? | `gram_nom_reconnaître` | index › startNomReconnaîtreExercise |  |
+| ✅ 05/10 | Le nom — Est-ce un nom ? | `gram_nom_reconnaître` | index › startNomReconnaîtreExercise |  |
 | ⬜ | Le déterminant | `gram_determinant` | index › (?) | (code à localiser) |
 | ⬜ | Le déterminant — Reconnaître les déterminants | `gram_determinant_reconnaitre` | index › startDeterminantExercise |  |
 | ⬜ | Le déterminant — Le tri des déterminants | `gram_determinant_tri` | index › startTriExercise |  |
