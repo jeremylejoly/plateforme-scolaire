@@ -3236,7 +3236,7 @@ input[type=text].calc-input.incorrect {
 }
 </style>
 <script src="livres.js?v=20261002b"></script>
-<script src="exercices_francais.js?v=20261005e"></script>
+<script src="exercices_francais.js?v=20261005f"></script>
 <script src="exercices_maths.js?v=20260927e"></script>
 <script src="exercices_eveil.js?v=20260927e"></script>
 <script>
@@ -18659,9 +18659,22 @@ function renderLectureArgumentativeMenu(){
     menu.innerHTML = '<div class="sub-subjects-grid">' + html + '</div>' || '<p style="color:var(--muted);text-align:center;padding:2rem">Aucun texte disponible.</p>';
 }
 
-function buildArgFiche(bodyId, data){
+// Une partie : propositions des QCM mélangées (sauf Vrai/Faux), arguments à classer dans un ordre mélangé.
+// Avant : bonne réponse toujours en 2e position et arguments toujours dans l'ordre Pour, Pour, Contre, Pas dans le texte, Pour.
+const ARG_SESSIONS = {};
+function buildArgFiche(bodyId, src){
   const body = document.getElementById(bodyId);
   if(!body) return;
+  const data = {...src,
+    questions: ficheQCMMelanger(src.questions).map(q => {
+      if(q.options.length === 2 && q.options[0] === 'Vrai') return {...q};
+      const o = ficheQCMMelanger(q.options.map((t, i) => ({t, ok: i === q.correct})));
+      return {...q, options: o.map(x => x.t), correct: o.findIndex(x => x.ok)};
+    }),
+    classif: {...src.classif, items: ficheQCMMelanger(src.classif.items)},
+    scores: {}
+  };
+  ARG_SESSIONS[data.id] = data;
 
   // QCM
   let qhtml = '';
@@ -18730,7 +18743,7 @@ function argQCMSelect(id, qi, oi){
 
 function argClassifSelect(id, ii, li){
   if(!window[`argClassifSels_${id}`]) window[`argClassifSels_${id}`] = {};
-  const data = TEXTES_ARG_DATA[id];
+  const data = ARG_SESSIONS[id];
   // Désélectionner les autres boutons de la même ligne
   data.classif.labels.forEach((_, li2) => {
     const btn = document.getElementById(`classif-btn-${id}-${ii}-${li2}`);
@@ -18742,7 +18755,7 @@ function argClassifSelect(id, ii, li){
 }
 
 function validerArgQCM(id){
-  const data = TEXTES_ARG_DATA[id];
+  const data = ARG_SESSIONS[id];
   const sels = window[`argQCMSels_${id}`] || {};
   let score = 0; const total = data.questions.length;
   data.questions.forEach((q, qi) => {
@@ -18753,11 +18766,12 @@ function validerArgQCM(id){
       const optEl = document.getElementById(`arg-opt-${id}-${qi}-${oi}`);
       if(optEl){
         optEl.querySelector('input').disabled = true;
-        if(oi===sel&&ok) optEl.classList.add('correct');
-        else if(oi===sel&&!ok) optEl.classList.add('incorrect');
+        if(oi===q.correct) optEl.classList.add('correct');   // la bonne réponse est toujours montrée
+        else if(oi===sel) optEl.classList.add('incorrect');
       }
     });
   });
+  data.scores.qcm = score;
   const pct = Math.round(score/total*100);
   const color = pct>=70?'var(--green)':pct>=50?'var(--amber)':'var(--red)';
   const panel = document.getElementById(`arg-qcm-score-${id}`);
@@ -18767,10 +18781,11 @@ function validerArgQCM(id){
     <span style="font-weight:800;font-size:18px;color:${color}">${score}/${total} — ${pct}%</span>
     <span style="font-size:13px;color:var(--muted);margin-left:8px">${pct>=70?'✅ Bien joué !':pct>=50?'👍 Pas mal !':'💪 Continue !'}</span>
   </div>`;
+  argEnregistrerSiFini(id);
 }
 
 function validerArgClassif(id){
-  const data = TEXTES_ARG_DATA[id];
+  const data = ARG_SESSIONS[id];
   const sels = window[`argClassifSels_${id}`] || {};
   let score = 0; const total = data.classif.items.length;
   data.classif.items.forEach((item, ii) => {
@@ -18798,10 +18813,18 @@ function validerArgClassif(id){
     <button class="btn" onclick="buildArgFiche('arg-${id}-body',TEXTES_ARG_DATA['${id}'])" style="margin-top:0.5rem">🔄 Recommencer</button>`;
   panel.scrollIntoView({behavior:'smooth'});
 
-  // Sauvegarder score total (QCM + classif)
-  const qcmScore = parseInt(document.getElementById(`arg-qcm-score-${id}`)?.querySelector('span')?.textContent?.split('/')[0]) || 0;
-  const totalScore = qcmScore + score;
-  const totalMax = data.questions.length + total;
+  data.scores.classif = score;
+  argEnregistrerSiFini(id);
+}
+
+// Résultat enregistré une seule fois, quand les 2 parties sont validées (dans n'importe quel ordre).
+// Avant : enregistré à la partie 2 seulement ; si la partie 1 n'était pas encore validée, elle comptait 0.
+function argEnregistrerSiFini(id){
+  const data = ARG_SESSIONS[id];
+  if(!data || data.enregistre || data.scores.qcm === undefined || data.scores.classif === undefined) return;
+  data.enregistre = true;
+  const totalScore = data.scores.qcm + data.scores.classif;
+  const totalMax = data.questions.length + data.classif.items.length;
   const totalPct = Math.round(totalScore/totalMax*100);
   if(state.student) saveResult({
     student:state.student, cls:state.studentCls,

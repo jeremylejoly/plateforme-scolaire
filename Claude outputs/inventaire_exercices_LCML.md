@@ -104,6 +104,10 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - **05/10 — Lecture descriptive › La forêt en hiver** :
   - Question 3 « le seul bruit décrit » ambiguë (le ruisseau murmure aussi) ; reformulée.
 
+- **05/10 — Lecture descriptive › Le renard** :
+  - « Blanc sur le bout des pattes » corrigé : le renard roux a les pattes noires et le blanc sur la gorge et le ventre (texte et question 1).
+  - **Les 3 textes descriptifs sont terminés.**
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -152,7 +156,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 |---|---|---|---|---|
 | ✅ 05/10 | La librairie enchantée | `desc_libraire` | index › renderDescLibraire |  |
 | ✅ 05/10 | La forêt en hiver | `desc_foret` | index › renderDescForet |  |
-| ⬜ | Le vieux renard | `desc_renard` | index › renderDescRenard |  |
+| ✅ 05/10 | Le vieux renard | `desc_renard` | index › renderDescRenard |  |
 
 ### 📖 Français — 💬 Lecture — Argumentative
 
