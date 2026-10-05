@@ -794,6 +794,12 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Validation unique (verrou + bouton masqué) ; bonne réponse affichée à côté des menus faux.
 - Nouvelle orthographe : gouter, s'il vous plait (« mûres » conservé).
 
+### 05/10 — Homophones se / ce / s' / c' (`homo_ce`, index › HOMO_CE_BANQUE / validerHomoCe) — sw.js v486
+- Biais majeur : trou en début de phrase = toujours Ce/C' (le menu proposait « Ce » et « C' » mais ni « Se » ni « S' »), trou après le sujet = toujours se/s'. Banque réécrite (41 phrases, 2 à double trou) : « Se lever tôt… », « S'amuser… », « Je n'aime pas ce film », « Je crois que c'est… », « Tout ce qui brille… ».
+- Menu adapté à la position : Se/Ce/S'/C' en début de phrase, se/ce/s'/c' ailleurs (4 choix au lieu de 6).
+- Synthèse : se devant un infinitif ; ce pronom devant qui/que ; « ce sont, ce fut » (la règle disait que ce devient toujours c' devant être).
+- Validation unique (verrou + bouton masqué) ; bonne réponse affichée à côté des menus faux.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -977,7 +983,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | a / as / à | `homo_a` | index › renderHomoASynthesis |  |
 | ✅ 05/10 | ou / où | `homo_ou` | index › renderHomoOuSynthesis |  |
 | ✅ 05/10 | son / sont | `homo_son` | index › renderHomoSonSynthesis |  |
-| ⬜ | se / ce / s' / c' | `homo_ce` | index › renderHomoCeSynthesis |  |
+| ✅ 05/10 | se / ce / s' / c' | `homo_ce` | index › renderHomoCeSynthesis |  |
 | ⬜ | on / ont | `homo_on` | index › renderHomoOnSynthesis |  |
 | ⬜ | la / là / l'a / l'as | `homo_la` | index › renderHomoLaSynthesis |  |
 | ⬜ | ces / ses / c'est / s'est / sais / sait | `homo_ces` | index › renderHomoCesSynthesis |  |
