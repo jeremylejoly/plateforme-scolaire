@@ -841,6 +841,13 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Validation unique (verrou + bouton masqué) ; bonne réponse affichée à côté des menus faux.
 - Nouvelle orthographe : maitresse, boite.
 
+### 05/10 — Homophones complexes (`fiches/homophones_complexes.html`, 3 copies) — sw.js v493
+- Copies désynchronisées : la copie `fiches/` (celle qu'ouvre index.html) n'avait PAS le mélange des 4 boutons de réponse → toujours le même ordre (tout/tous/toute/toutes). Mélange ajouté, 3 copies alignées. Simulation : bonne réponse répartie ~25 % sur chaque position.
+- Faute dans la banque : « Les enfants ont tout compris la consigne » attendu « tout » (agrammatical avec un CDV) → réponse « tous » (pronom), explication réécrite.
+- Ambigüité : « Ces livres sont tous / tout intéressants » (les deux possibles) → « J'ai invité mes cousins : ils sont tous venus. »
+- Double clic neutralisé (verrou `answered`) — avant, un double clic pouvait compter 2 points ou sauter une question.
+- Nouvelle orthographe : entrainement, Entraine-toi, fraiches, maitrises ; coquille « is » → « est » (copie public).
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1031,7 +1038,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | leur / leurs | `homo_leur` | index › renderHomoLeurSynthesis |  |
 | ✅ 05/10 | peu / peux / peut | `homo_peu` | index › renderHomoPeuSynthesis |  |
 | ✅ 05/10 | sans / s'en / cent / sang | `homo_sans` | index › renderHomoSansSynthesis |  |
-| ⬜ | Les homophones complexes | `homo_complexes` | fiches/homophones_complexes.html |  |
+| ✅ 05/10 | Les homophones complexes | `homo_complexes` | fiches/homophones_complexes.html |  |
 
 ### 📖 Français — ✏️ Orthographe — Règles & Accords
 
