@@ -3119,13 +3119,13 @@ window.EXERCICES_PREDICAT = [
     explanation: "Le sujet est « le chat » et le complément de phrase est « Sur la table ». Le prédicat est « mange sa pâtée » (verbe + son complément direct du verbe CDV)."
   },
   {
-    text: "Avec soin , l' artist dessine un portrait .",
+    text: "Avec soin , l' artiste dessine un portrait .",
     cat: "cdv",
     tokens: [
       { text: "Avec" },
       { text: "soin", punctuation: "," },
       { text: "l'" },
-      { text: "artist" },
+      { text: "artiste" },
       { text: "dessine", predicat: true },
       { text: "un", predicat: true },
       { text: "portrait", predicat: true },

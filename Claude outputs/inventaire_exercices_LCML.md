@@ -691,6 +691,17 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
   - Le mélange utilise maintenant la méthode Fisher–Yates.
   - Nouvelle orthographe : maitrises, entrainer, entraine-toi.
 
+- **05/10 — Grammaire › Fonctions › Le verbe › Reconstituer les textes** (5 textes documentaires de 10 verbes à replacer) :
+  - **Fautes dans les réponses attendues :**
+    - « une météorite géante **s'est écrasé** » (accord) devient « **s'est écrasée** » ;
+    - « Jules César et ses légions romaines **envahit** » (sujet pluriel) devient « **achevèrent** la conquête de toute la Gaule ». C'est aussi plus juste historiquement, puisque 52 av. J.-C. est l'année d'Alésia.
+  - « Beaucoup de dinosaures **possédaient** des œufs » n'avait pas de sens : la phrase devient « **pondaient** des œufs ».
+  - **10/10 garanti** : comme dans l'exercice sur le sujet, chaque nouvelle correction était enregistrée. Seule la première correction de chaque texte compte maintenant.
+  - Les autres verbes ont été relus et sont justes.
+  - Le mélange des étiquettes utilise maintenant la méthode Fisher–Yates.
+  - Nouvelle orthographe : maitrisaient, connaitre.
+  - **Toute la rubrique Le verbe (fonction) est vérifiée.**
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -813,7 +824,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | Le verbe (fonction) — Repérer le verbe | `verbe_phrase` | index › startVerbeExercise |  |
 | ✅ 05/10 | Le verbe (fonction) — Infinitif et groupe | `gram_verbe_groupe` | index › startVerbeGroupeExercise |  |
 | ✅ 05/10 | Le verbe (fonction) — Trouver l'infinitif | `gram_verbe_infinitif` | index › startVerbeInfinitifExercise |  |
-| ⬜ | Le verbe (fonction) — Reconstituer les textes | `gram_verbe_texte` | index › startVerbeTextesExercise |  |
+| ✅ 05/10 | Le verbe (fonction) — Reconstituer les textes | `gram_verbe_texte` | index › startVerbeTextesExercise |  |
 | ⬜ | L'attribut du sujet | `gram_attribut` | index › (?) | (code à localiser) |
 | ✅ 05/10 | Attribut & Complément du nom | `gram_attribut_cdn` | fiches/grammaire_attribut_cdn.html |  |
 | ⬜ | Le complément d'agent | `gram_agent` | index › (?) | (code à localiser) |

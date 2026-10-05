@@ -3236,7 +3236,7 @@ input[type=text].calc-input.incorrect {
 }
 </style>
 <script src="livres.js?v=20261002b"></script>
-<script src="exercices_francais.js?v=20261005zf"></script>
+<script src="exercices_francais.js?v=20261005zg"></script>
 <script src="exercices_maths.js?v=20260927e"></script>
 <script src="exercices_eveil.js?v=20260927e"></script>
 <script>
@@ -44639,7 +44639,8 @@ function startPredicatExercise() {
   const cdvCivPool = window.EXERCICES_PREDICAT.filter(q => q.cat === 'cdv_civ');
   const attributPool = window.EXERCICES_PREDICAT.filter(q => q.cat === 'attribut');
 
-  const shuffle = (arr) => [...arr].sort(() => 0.5 - Math.random());
+  // Mélange équitable (Fisher–Yates)
+  const shuffle = (arr) => { const a = [...arr]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
 
   // Tirer exactement 2 de chaque catégorie (2 * 5 = 10 questions)
   const selectedVerbOnly = shuffle(verbOnlyPool).slice(0, 2);
@@ -44859,7 +44860,8 @@ function verifyPredicatAnswer() {
   }
 
   if (isPerfect) {
-    predicatGameState.score++;
+    // Point compté seulement si la réponse est juste du premier coup (la seconde chance sert à apprendre)
+    if (!predicatGameState.attempts) predicatGameState.score++;
     predicatGameState.submitted = true;
     renderPredicatQuestion();
   } else {
@@ -44896,7 +44898,7 @@ function renderPredicatResults() {
   let msg = "Pas mal ! Relis tes explications et réessaie !";
   if (pct === 100) {
     emoji = "🏆";
-    msg = "Sans faute exceptionnel ! Tu maîtrises le prédicat sur le bout des doigts !";
+    msg = "Sans faute exceptionnel ! Tu maitrises le prédicat sur le bout des doigts !";
   } else if (pct >= 70) {
     emoji = "⭐️";
     msg = "Très bon travail, tu distingues bien le prédicat dans les phrases !";
@@ -44908,7 +44910,7 @@ function renderPredicatResults() {
         <span class="text-4xl">${emoji}</span>
       </div>
       <h3 class="text-2xl md:text-3xl font-display font-bold text-neutral-800 mb-2">
-        Entraînement Terminé !
+        Entrainement Terminé !
       </h3>
       <p class="text-neutral-500 mb-6 max-w-md mx-auto">
         Tu as complété le repérage du prédicat de la phrase. Voici ton résultat :
@@ -44959,7 +44961,7 @@ function renderPredicatResults() {
       student: state.student,
       cls: state.studentCls,
       className: CLASSES[state.studentCls] ? CLASSES[state.studentCls].name : state.studentCls,
-      activity: 'predicat_phrase',
+      activity: 'gram_predicat_phrase',   // avant : 'predicat_phrase', que le plan de travail (gram_predicat) ne reconnaissait pas
       bookTitle: `Grammaire — Repérer le prédicat`,
       score: predicatGameState.score,
       total: predicatGameState.questions.length,
