@@ -1092,7 +1092,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 ### 05/10 — Maths › Opérations › Vocabulaire › Associer mot et définition (`op_vocabulaire_def`, `fiches/vocabulaire_operations.html` + copies public et racine) — sw.js v534
 - Contenu (10 mots/définitions) : juste.
 - **Aucun résultat enregistré** : la fiche exigeait `window.parent.state.student`, or `state` est déclaré avec `let` dans index → invisible via `window.parent` → jamais de sauvegarde. Appel direct à `saveResult` (index complète élève/classe).
-- ⚠️ Même condition bloquante dans 10 autres fiches, à corriger quand on y arrivera : ~~problemes_operations~~ (corrigé v536), flechettes_atteins_le_score, ~~flechettes_calcule_le_score~~ (corrigé v538), mots-croises, sudoku, ~~parties_calcul~~ (corrigé v535), vocabulaire_solides, mots-caches, trajet_du_sang_ordre, sci_plantes_fleur.
+- ⚠️ Même condition bloquante dans 10 autres fiches, à corriger quand on y arrivera : ~~problemes_operations~~ (corrigé v536), ~~flechettes_atteins_le_score~~ (corrigé v539), ~~flechettes_calcule_le_score~~ (corrigé v538), mots-croises, sudoku, ~~parties_calcul~~ (corrigé v535), vocabulaire_solides, mots-caches, trajet_du_sang_ordre, sci_plantes_fleur.
 - La correction disparaissait après 1,5 s (remplacée par le score) : elle reste maintenant visible, avec la bonne définition sous chaque mot mal associé.
 - Mots de gauche aussi mélangés (ordre fixe avant) ; double validation bloquée ; maitrises.
 - Tests jsdom : parfait 10/10, 2 inversés 8/10 avec 2 corrections, sauvegarde OK.
@@ -1144,6 +1144,14 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - **Fléchettes cachant les nombres** : 1 243 recouvrements sur 8 000 (valeurs écrites en haut et au centre) → aucune fléchette dans un couloir de ±26° sous les valeurs, zone centrale éloignée du nombre central → 0 recouvrement.
 - Saisie stricte (« 12,5 » ou « 12abc » refusés avec message, pas comptés faux) ; affichage initial « Lancer 1 / 30 » → « 1 / 10 ».
 - Déjà correct : un seul essai par lancer, réponse vide ignorée, correction détaillée, nouvelle série à chaque recommencement.
+
+### 05/10 — Maths › Opérations › Additions et soustractions › Fléchettes : Atteins le score (`op_add_sous_flechettes_atteins`, `fiches/flechettes_atteins_le_score.html` + copies public et racine) — sw.js v539
+- **Aucun résultat enregistré** (condition `window.parent.state`) → corrigé, titre lisible.
+- **Score gonflé** : après un défi réussi, « Annuler » rouvrait le défi ; replanter la même fléchette recomptait le point (plus de 10/10 possible). → défi verrouillé une fois terminé.
+- **Essais infinis** (annuler/effacer à volonté) → point seulement si le 1er essai complet est juste ; 2e essai permis sans point ; après 2 essais ratés, une solution est montrée (« Une solution : 10 + 5 + 5 = 20 »).
+- Double clic sur « Nouveau défi » sautait un défi → ignoré ; bouton « Passer ce défi → » / « Défi suivant → » selon l'état.
+- Tous les objectifs sont atteignables (générés à partir d'une combinaison réelle) ; vérifié par recherche exhaustive sur 30 défis simulés.
+- Tests jsdom : parfait 10/10, réussite au 2e essai = 0 point, échec → solution affichée et défi verrouillé, 1 sauvegarde par série.
 
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
@@ -1434,7 +1442,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | Additions et soustractions — Jusque 100 000 | `op_add_sous_100000` | index › startCalcExercise |  |
 | ✅ 05/10 | Additions et soustractions — Jusque 1 000 000 | `op_add_sous_1000000` | index › startCalcExercise |  |
 | ✅ 05/10 | Fléchettes — Calcule le score | `op_add_sous_flechettes_calcule` | fiches/flechettes_calcule_le_score.html |  |
-| ⬜ | Fléchettes — Atteins le score | `op_add_sous_flechettes_atteins` | fiches/flechettes_atteins_le_score.html |  |
+| ✅ 05/10 | Fléchettes — Atteins le score | `op_add_sous_flechettes_atteins` | fiches/flechettes_atteins_le_score.html |  |
 | ⬜ | Multiplications et divisions | `op_mult_div` | index › (?) | (code à localiser) |
 | ⬜ | Multiplications et divisions — Tables de multiplication | `op_mult_div_tables` | index › startMultDivExercise |  |
 | ⬜ | Les 4 opérations | `op_4_operations` | index › render4OperationsScreen |  |
