@@ -337,6 +337,12 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
   - Dans trois QCM, le piège au conditionnel était aussi correct : irais, pourraient, voudrait. On a ajouté « Si + présent » en début de phrase, comme dans l'entrainement.
   - Les autres réponses sont justes et en nouvelle orthographe. Les propositions et l'ordre des questions sont mélangés.
 
+- **05/10 — Conjugaison › Passé composé › 1. Passé composé ou pas ?** (100 phrases, 10 tirées au hasard) :
+  - Le résultat n'était jamais enregistré. La fiche envoyait un message que le site n'écoute pas. Elle appelle maintenant `saveResult` (`vocabulaire_pc_identifier`, le même identifiant que le plan de travail).
+  - Le même défaut touche les 8 autres fiches du passé composé (2 à 9). Il sera corrigé au fur et à mesure.
+  - Les 100 phrases sont justes et les explications cohérentes. L'ordre est mélangé à chaque partie (Fisher–Yates), donc il n'y a pas de schéma oui/non fixe.
+  - Nouvelle orthographe : maitresse, gouter, entrainement.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -503,7 +509,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 
 | Statut | Exercice | id | Source | Signal automatique |
 |---|---|---|---|---|
-| ⬜ | Passé composé ou pas ? | `vocabulaire_pc_identifier` | fiches/conjugaison_pc_identifier.html |  |
+| ✅ 05/10 | Passé composé ou pas ? | `vocabulaire_pc_identifier` | fiches/conjugaison_pc_identifier.html |  |
 | ⬜ | Participe passé avec Avoir (QCM) | `vocabulaire_pc_avoir_qcm` | fiches/conjugaison_pc_avoir_qcm.html | QCM: bonne réponse en position 1 dans 30/40 questions, options non mélangées |
 | ⬜ | Participe passé avec Avoir (Écriture) | `vocabulaire_pc_avoir_trous` | fiches/conjugaison_pc_avoir_trous.html |  |
 | ⬜ | Participe passé avec Être (QCM) | `vocabulaire_pc_etre_qcm` | fiches/conjugaison_pc_etre_qcm.html | QCM: bonne réponse en position 1 dans 24/40 questions, options non mélangées |
