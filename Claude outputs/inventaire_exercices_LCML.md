@@ -828,6 +828,12 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Validation unique (verrou + bouton masqué) ; bonne réponse affichée à côté des menus faux.
 - Nouvelle orthographe : maitre, gouter, entraineur.
 
+### 05/10 — Homophones peu / peux / peut (`homo_peu`, index › HOMO_PEU_BANQUE / validerHomoPeu) — sw.js v491
+- Contenu juste. Ajout de pièges : « peu » juste après « Il / Tu / Je » (Il mange peu, Tu dors trop peu, Je suis un peu triste) + 2 phrases à double trou (banque 55).
+- Synthèse : astuce « remplacer peu par un peu » retirée (beaucoup / très, en précisant que le sens change).
+- Validation unique (verrou + bouton masqué) ; bonne réponse affichée à côté des menus faux.
+- Nouvelle orthographe : plait, t'entraines, maitresse.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1016,7 +1022,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | la / là / l'a / l'as | `homo_la` | index › renderHomoLaSynthesis |  |
 | ✅ 05/10 | ces / ses / c'est / s'est / sais / sait | `homo_ces` | index › renderHomoCesSynthesis |  |
 | ✅ 05/10 | leur / leurs | `homo_leur` | index › renderHomoLeurSynthesis |  |
-| ⬜ | peu / peux / peut | `homo_peu` | index › renderHomoPeuSynthesis |  |
+| ✅ 05/10 | peu / peux / peut | `homo_peu` | index › renderHomoPeuSynthesis |  |
 | ⬜ | sans / s'en / cent / sang | `homo_sans` | index › renderHomoSansSynthesis |  |
 | ⬜ | Les homophones complexes | `homo_complexes` | fiches/homophones_complexes.html |  |
 
