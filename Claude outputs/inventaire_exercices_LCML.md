@@ -113,6 +113,9 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
   - Devoirs : l'argument « consolider les apprentissages » devait être classé « Contre », alors qu'il n'apparaissait pas dans le texte. Il y est maintenant, comme concession.
   - Les 6 autres textes ont la même structure de classement : leur contenu reste à relire.
 
+- **05/10 — Lecture argumentative › Les écrans** :
+  - Même piège que les devoirs : « Les écrans permettent d'apprendre et de découvrir le monde » devait être classé « pas dangereux » sans être dans le texte. Il est ajouté comme concession.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -168,7 +171,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | Statut | Exercice | id | Source | Signal automatique |
 |---|---|---|---|---|
 | ✅ 05/10 | Faut-il supprimer les devoirs ? | `arg_devoirs` | index › renderArgDevoirs |  |
-| ⬜ | Les écrans sont-ils dangereux ? | `arg_ecrans` | index › renderArgEcrans |  |
+| ✅ 05/10 | Les écrans sont-ils dangereux ? | `arg_ecrans` | index › renderArgEcrans |  |
 | ⬜ | Doit-on devenir végétarien ? | `arg_vegetarien` | index › renderArgVegetarien |  |
 | ⬜ | Faut-il porter un uniforme ? | `arg_uniforme` | index › renderArgUniforme |  |
 | ⬜ | L'importance de lire | `arg_lecture` | index › renderArgLecture |  |
