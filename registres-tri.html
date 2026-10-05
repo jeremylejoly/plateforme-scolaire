@@ -311,7 +311,7 @@
 
     { text: "un flic", register: "familier", ex: "Dans cette bande dessinée, le flic mène l'enquête dans la rue." },
     { text: "un policier", register: "courant", ex: "Le policier aide les enfants à traverser devant l'école." },
-    { text: "un gendarme", register: "soutenu", ex: "Les forces de l'ordre ont dépêché un gendarme pour sécuriser les lieux." },
+    { text: "un agent de la force publique", register: "soutenu", ex: "Un agent de la force publique fut dépêché pour sécuriser les lieux." },
 
     { text: "se casser", register: "familier", ex: "Allez, il se fait tard, on va se casser d'ici !" },
     { text: "s'en aller", register: "courant", ex: "Nous devons nous en aller avant le coucher du soleil." },
@@ -327,7 +327,7 @@
 
     { text: "une bagnole", register: "familier", ex: "Mon oncle a garé sa vieille bagnole rouillée dans la cour." },
     { text: "une voiture", register: "courant", ex: "La voiture électrique fait très peu de bruit en roulant." },
-    { text: "un véhicule", register: "soutenu", ex: "Ce véhicule prioritaire a le droit d'utiliser sa sirène." },
+    { text: "une automobile", register: "soutenu", ex: "Une élégante automobile de collection était exposée devant le château." },
 
     { text: "choper", register: "familier", ex: "Le gardien a réussi à choper le ballon juste avant la ligne." },
     { text: "attraper", register: "courant", ex: "Essaie d'attraper ce frisbee avant qu'il ne touche le sol." },
@@ -367,10 +367,10 @@
 
     { text: "un gosse", register: "familier", ex: "Le gosse du voisin joue souvent dans le jardin." },
     { text: "un enfant", register: "courant", ex: "Chaque enfant de la classe a reçu un livre de conte." },
-    { text: "un descendant", register: "soutenu", ex: "Ce prince est le dernier descendant d'une longue dynastie." },
+    { text: "sa progéniture", register: "soutenu", ex: "La reine veillait avec tendresse sur sa nombreuse progéniture." },
 
-    { text: "une piaule", register: "familier", ex: "Range ta piaule, il y a des jouets partout par terre !" },
-    { text: "une chambre", register: "courant", ex: "Ma chambre a des murs bleus et un grand tapis jaune." },
+    { text: "une baraque", register: "familier", ex: "Ils habitent une grande baraque au bout de la rue." },
+    { text: "une maison", register: "courant", ex: "Notre maison a un grand jardin avec un pommier." },
     { text: "une demeure", register: "soutenu", ex: "Ce vieux manoir en pierre était la demeure de ses ancêtres." },
 
     { text: "barboter", register: "familier", ex: "Le voleur a profité du chahut pour lui barboter son goûter." },
@@ -379,7 +379,7 @@
 
     { text: "chialer", register: "familier", ex: "Arrête de chialer pour un petit bobo sans importance !" },
     { text: "pleurer", register: "courant", ex: "L'oignon pique les yeux et fait pleurer quand on le coupe." },
-    { text: "larmoyer", register: "soutenu", ex: "L'acteur s'est mis à larmoyer d'une tristesse affectée sur scène." }
+    { text: "verser des larmes", register: "soutenu", ex: "La princesse versa des larmes en quittant le château de son enfance." }
   ];
 
   // ================================================================
@@ -389,6 +389,8 @@
   let currentIndex = 0;
   let activeItem = null;
   let isAnimating = false;
+  let premierCoup = 0;      // expressions classées correctement du premier coup
+  let dejaRate = false;
 
   // ================================================================
   // INITIALISATION DU JEU
@@ -397,6 +399,7 @@
     // Sélectionne 15 cartes aléatoires dans la banque de 60
     const shuffledBank = shuffleArray([...ITEM_BANK]);
     sessionList = shuffledBank.slice(0, 15);
+    premierCoup = 0;
     currentIndex = 0;
     isAnimating = false;
 
@@ -417,6 +420,7 @@
     }
 
     activeItem = sessionList[currentIndex];
+    dejaRate = false;
     
     // Met à jour la barre de progression
     const percent = (currentIndex / sessionList.length) * 100;
@@ -444,6 +448,7 @@
     const avatar = document.getElementById(`avatar-${chosenRegister}`);
 
     if (isCorrect) {
+      if (!dejaRate) premierCoup++;
       isAnimating = true; // Empêche d'autres clics pendant l'animation
 
       if (avatar) {
@@ -483,6 +488,7 @@
       document.getElementById('continue-container').classList.remove('hidden');
 
     } else {
+      dejaRate = true;
       isAnimating = true;
       // Animation d'erreur sur la carte (secousse et couleur rouge)
       card.classList.add('card-incorrect');
@@ -519,15 +525,16 @@
     document.getElementById('choices-container').classList.add('hidden');
     document.getElementById('continue-container').classList.add('hidden');
     
-    document.getElementById('final-score-text').innerText = `Félicitations ! Tu as réussi à trier correctement les 15 expressions de cette session.`;
+    document.getElementById('final-score-text').innerText = `Tu as classé ${premierCoup} expression${premierCoup>1?'s':''} sur ${sessionList.length} du premier coup.`;
 
     if (window.parent && window.parent.saveResult) {
       window.parent.saveResult({
         activity: 'vocabulaire_registres',
         bookTitle: 'Vocabulaire — Le Défi des Registres',
-        score: 15,
-        total: 15,
-        pct: 100,
+        // Avant : toujours 15/15 ; maintenant les expressions classées du premier coup
+        score: premierCoup,
+        total: sessionList.length,
+        pct: Math.round(premierCoup / sessionList.length * 100),
         date: new Date().toLocaleDateString('fr-BE'),
         time: new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})
       });

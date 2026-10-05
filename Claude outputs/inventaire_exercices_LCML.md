@@ -180,6 +180,12 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
     - dates incertaines retirées ;
     - coquille « générésité » corrigée.
 
+- **05/10 — Vocabulaire › L'Atelier des mots** (fiche + 2 copies) :
+  - 38 mots étaient écrits sans accent (BONTE, FORET, CHATEAU…). Ils ont maintenant leurs accents (BONTÉ, FORÊT, CHÂTEAU…).
+  - Le score enregistré était toujours de 10/10. Il compte maintenant les mots trouvés sans indice.
+  - Après la réussite d'un mot, on ne peut plus retirer de lettre.
+  - Définitions et exemples corrigés : rivière, cathédrale, infirmière, « écrivaine », se brosser les dents deux fois par jour.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -400,7 +406,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | Statut | Exercice | id | Source | Signal automatique |
 |---|---|---|---|---|
 | ✅ 05/10 | Expressions & Proverbes | `vocabulaire_proverbes` | fiches/expressions-proverbes.html |  |
-| ⬜ | L'Atelier des Mots | `vocabulaire_atelier_mots` | fiches/vocabulaire-jeu.html |  |
+| ✅ 05/10 | L'Atelier des Mots | `vocabulaire_atelier_mots` | fiches/vocabulaire-jeu.html |  |
 | ⬜ | Le Défi des Registres | `vocabulaire_registres` | fiches/registres-tri.html |  |
 | ⬜ | Chasse aux Verbes Ternes | `vocabulaire_verbes_ternes` | fiches/verbes-ternes.html |  |
 | ⬜ | Le Chasseur d'Intrus | `vocabulaire_chasseur_intrus` | fiches/chasseur-intrus.html |  |
