@@ -120,6 +120,10 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
   - Classement cohérent avec le texte.
   - Question 1 précisée par « Selon le texte » (l'oxyde d'azote des déjections, proposé comme mauvaise réponse, est aussi un vrai gaz à effet de serre).
 
+- **05/10 — Lecture argumentative › L'uniforme** :
+  - Rien à corriger dans le contenu. Le classement est cohérent : l'argument contre, l'expression de la personnalité, figure bien dans le texte.
+  - Le mélange vient du moteur commun.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -177,7 +181,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | Faut-il supprimer les devoirs ? | `arg_devoirs` | index › renderArgDevoirs |  |
 | ✅ 05/10 | Les écrans sont-ils dangereux ? | `arg_ecrans` | index › renderArgEcrans |  |
 | ✅ 05/10 | Doit-on devenir végétarien ? | `arg_vegetarien` | index › renderArgVegetarien |  |
-| ⬜ | Faut-il porter un uniforme ? | `arg_uniforme` | index › renderArgUniforme |  |
+| ✅ 05/10 | Faut-il porter un uniforme ? | `arg_uniforme` | index › renderArgUniforme |  |
 | ⬜ | L'importance de lire | `arg_lecture` | index › renderArgLecture |  |
 | ⬜ | Bien manger pour bien grandir | `arg_alimentation` | index › renderArgAlimentation |  |
 | ⬜ | Les réseaux sociaux | `arg_reseaux` | index › renderArgReseaux |  |

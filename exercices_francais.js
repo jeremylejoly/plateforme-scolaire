@@ -5759,11 +5759,11 @@ Bien sûr, certains élèves regrettent de ne pas pouvoir exprimer leur personna
 Tout d'abord, lire <strong>enrichit le vocabulaire et améliore l'expression écrite</strong>. Un élève qui lit régulièrement dispose d'un bagage de mots beaucoup plus riche, ce qui lui permet de mieux s'exprimer, aussi bien à l'oral qu'à l'écrit.<br><br>
 Ensuite, la lecture <strong>développe l'imagination et la créativité</strong>. En lisant un roman, l'élève visualise les personnages, les lieux, les situations. Il construit dans sa tête des images que personne d'autre ne verra exactement de la même façon.<br><br>
 De plus, lire permet de <strong>mieux comprendre le monde et les autres</strong>. Les livres nous font voyager dans d'autres pays, d'autres époques, d'autres cultures. Ils nous aident à développer notre empathie en nous mettant à la place de personnages très différents de nous.<br><br>
-Alors, la prochaine fois que tu t'ennuies, pose ton téléphone et ouvre un livre. Tu ne le regretteras pas !`,
+Certains diront que <strong>lire est ennuyeux et démotive les enfants</strong>. Pourtant, il suffit souvent de trouver le bon livre ! Alors, la prochaine fois que tu t'ennuies, pose ton téléphone et ouvre un livre. Tu ne le regretteras pas !`,
     questions:[
       {q:"Selon l'auteur, quel est l'un des premiers bénéfices de la lecture ?", options:["Elle permet d'apprendre des langues étrangères sans effort","Elle enrichit le vocabulaire et améliore l'expression écrite","Elle aide à mémoriser les leçons apprises à l'école"], correct:1},
       {q:"Comment la lecture développe-t-elle l'imagination selon le texte ?", options:["En proposant des exercices créatifs après chaque chapitre","En obligeant le lecteur à visualiser mentalement ce qu'il lit","En racontant des histoires impossibles qui font rêver"], correct:1},
-      {q:"Comment la lecture aide-t-elle à comprendre les autres ?", options:["Elle nous apprend à reconnaitre les différentes cultures","Elle nous met à la place de personnages différents de nous","Elle nous explique comment résoudre les conflits"], correct:1},
+      {q:"Comment la lecture aide-t-elle à comprendre les autres ?", options:["Elle nous oblige à discuter avec nos voisins","Elle nous met à la place de personnages différents de nous","Elle nous explique comment résoudre les conflits"], correct:1},
       {q:"L'auteur pense que les écrans sont plus bénéfiques que la lecture.", options:["Vrai","Faux"], correct:1}
     ],
     classif:{
