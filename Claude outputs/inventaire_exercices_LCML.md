@@ -789,6 +789,11 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Validation unique (verrou `submitted`, bouton masqué) ; bonne réponse affichée à côté des menus faux.
 - Nouvelle orthographe : connait, fraiche.
 
+### 05/10 — Homophones son / sont (`homo_son`, index › HOMO_SON_BANQUE / validerHomoSon) — sw.js v485
+- Biais : toutes les phrases « sont » commençaient par « Les … », toutes les « son » par « Il / Elle … » → banque réécrite (40 phrases, 2 à double trou) : sujets variés (Ils, Elles, Mes cousins, Ton frère et ta sœur, Où sont…), « son » après des sujets pluriels.
+- Validation unique (verrou + bouton masqué) ; bonne réponse affichée à côté des menus faux.
+- Nouvelle orthographe : gouter, s'il vous plait (« mûres » conservé).
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -971,7 +976,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 |---|---|---|---|---|
 | ✅ 05/10 | a / as / à | `homo_a` | index › renderHomoASynthesis |  |
 | ✅ 05/10 | ou / où | `homo_ou` | index › renderHomoOuSynthesis |  |
-| ⬜ | son / sont | `homo_son` | index › renderHomoSonSynthesis |  |
+| ✅ 05/10 | son / sont | `homo_son` | index › renderHomoSonSynthesis |  |
 | ⬜ | se / ce / s' / c' | `homo_ce` | index › renderHomoCeSynthesis |  |
 | ⬜ | on / ont | `homo_on` | index › renderHomoOnSynthesis |  |
 | ⬜ | la / là / l'a / l'as | `homo_la` | index › renderHomoLaSynthesis |  |
