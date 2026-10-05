@@ -1006,6 +1006,12 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - On pouvait encore glisser des étiquettes dans les cases après la correction → bloqué.
 - Variables globales du glisser-déposer déclarées proprement.
 
+### 05/10 — Maths › Décimaux › Écrire en chiffres (`num_decimaux_ecriture`, index › DECIMAUX_ECRITURE_BANQUE / validerDecEcr) — sw.js v518
+- 23 réponses attendues vérifiées : justes (y compris « deux-mille-trois-cent-trois millièmes » = 2,303).
+- Saisie : « 45,30 » était refusé pour 45,3 → zéros finaux inutiles acceptés (pas d'autre valeur) ; réponse vide ignorée au lieu d'être comptée fausse. Le point « . » reste accepté comme virgule, les espaces aussi.
+- Nouvelle orthographe : traits d'union dans les 23 énoncés (million séparé).
+- Mélange `sort(random)` → Fisher-Yates.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1257,7 +1263,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | Décimaux — L'abaque des décimaux | `num_decimaux_abaque` | index › renderAbaqueDecimaux |  |
 | ✅ 05/10 | Décimaux — Devinettes décimales | `num_decimaux_devinettes` | index › renderDevinettesDecimaux |  |
 | ✅ 05/10 (9d2364e) | Décimaux — Valeur d'un chiffre | `num_decimaux_relier` | index › renderRelierDecimaux |  |
-| ⬜ | Décimaux — Écrire en chiffres | `num_decimaux_ecriture` | index › renderDecimauxEcriture |  |
+| ✅ 05/10 | Décimaux — Écrire en chiffres | `num_decimaux_ecriture` | index › renderDecimauxEcriture |  |
 | ⬜ | Décimaux — Droites numériques | `num_decimaux_droite` | index › renderDecimauxDroite |  |
 | ⬜ | Décimaux — Le bon nombre | `num_decimaux_le_bon_nombre` | index › renderDecimauxLeBonNombre | Aucun hasard : mêmes questions, même ordre à chaque partie |
 | ⬜ | Décimaux — Entre deux nombres | `num_decimaux_entre` | index › renderDecimauxEntre |  |
