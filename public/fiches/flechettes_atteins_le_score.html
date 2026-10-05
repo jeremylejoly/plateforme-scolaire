@@ -131,7 +131,7 @@
   }
 
   var $=function(id){return document.getElementById(id);};
-  var t, need, target, placed=[], solved=0, done=false;
+  var t, need, target, placed=[], solved=0, done=false, attempts=0, solution=[], lastNewClick=0;
   var idx = 0, totalRounds = 10;
 
   function newChallenge(){
@@ -141,8 +141,10 @@
     }
     t=TARGETS[rnd(0,TARGETS.length-1)];
     need=rnd(2,4);
-    var s=0; for(var i=0;i<need;i++) s+=t.vals[rnd(0,3)];
-    target=s; placed=[]; done=false;
+    var s=0; solution=[];
+    for(var i=0;i<need;i++){ var v=t.vals[rnd(0,3)]; solution.push(v); s+=v; }
+    solution.sort(function(a,b){return b-a;});
+    target=s; placed=[]; done=false; attempts=0;
     idx++;
     render(); setFeedback('','');
   }
@@ -159,9 +161,10 @@
     $('ibCount').textContent=placed.length;
     $('ibSum').textContent=sumOf();
     $('ibBoard').innerHTML=drawBoard(t,placed);
-    $('ibUndo').disabled=placed.length===0;
-    $('ibClear').disabled=placed.length===0;
-    $('ibNew').textContent = (idx === totalRounds) ? '🏁 Voir mon score final' : 'Nouveau défi →';
+    // Défi terminé (réussi ou solution montrée) : plus de retouche possible
+    $('ibUndo').disabled=done||placed.length===0;
+    $('ibClear').disabled=done||placed.length===0;
+    $('ibNew').textContent = (idx === totalRounds) ? '🏁 Voir mon score final' : (done ? 'Défi suivant →' : 'Passer ce défi →');
   }
 
   function zoneFromRadius(r){
@@ -172,16 +175,29 @@
     return -1;
   }
 
+  // Point seulement si le 1er essai complet est juste ; 2e essai permis (sans point) ; ensuite, une solution est montrée.
   function evaluate(){
     var s=sumOf();
+    var calc=placed.map(function(p){return t.vals[p.zone];}).join(' + ')+' = '+s;
     if(s===target){
-      done=true; solved++;
+      done=true;
+      if(attempts===0){ solved++; setFeedback('Gagné ! '+calc,'good'); }
+      else setFeedback('Réussi au 2e essai : '+calc+' (pas de point cette fois).','muted');
       $('ibSolved').textContent='Défis réussis : '+solved;
-      setFeedback('Gagné ! '+placed.map(function(p){return t.vals[p.zone];}).join(' + ')+' = '+target,'good');
-    } else if(s>target){
-      setFeedback('Trop ! Tu as '+s+' au lieu de '+target+'. Annule une fléchette.','bad');
+      render();
+      return;
+    }
+    attempts++;
+    if(attempts>=2){
+      done=true;
+      setFeedback('Raté : '+calc+'. Une solution : '+solution.join(' + ')+' = '+target+'.','bad');
+      render();
+      return;
+    }
+    if(s>target){
+      setFeedback('Trop ! '+calc+' au lieu de '+target+'. Annule une fléchette : il te reste 1 essai.','bad');
     } else {
-      setFeedback('Pas assez : '+s+' au lieu de '+target+'. Annule une fléchette.','bad');
+      setFeedback('Pas assez : '+calc+' au lieu de '+target+'. Annule une fléchette : il te reste 1 essai.','bad');
     }
   }
 
@@ -200,8 +216,8 @@
     if(placed.length===need) evaluate(); else setFeedback('','');
   }
 
-  function undo(){ if(placed.length===0) return; placed.pop(); done=false; render(); setFeedback('',''); }
-  function clearAll(){ placed=[]; done=false; render(); setFeedback('',''); }
+  function undo(){ if(done||placed.length===0) return; placed.pop(); render(); }
+  function clearAll(){ if(done) return; placed=[]; render(); }
 
   function showFinal(){
     $('ibExercise').hidden=true; $('ibFinal').hidden=false;
@@ -210,16 +226,12 @@
     else if(solved>=totalRounds*0.7) msg='Très bien ! '+solved+' / '+totalRounds;
     $('ibFinalMsg').textContent=msg;
 
-    if (window.parent && window.parent.saveResult && window.parent.state && window.parent.state.student) {
+    // Enregistrement (index complète élève/classe ; « state » n'est pas accessible via window.parent)
+    if (window.parent && typeof window.parent.saveResult === 'function') {
       try {
-        var state = window.parent.state;
-        var classes = window.parent.CLASSES;
-        var className = classes && classes[state.studentCls] ? classes[state.studentCls].name : state.studentCls;
         window.parent.saveResult({
-          student: state.student,
-          cls: state.studentCls,
-          className: className,
           activity: 'op_add_sous_flechettes_atteins',
+          bookTitle: 'Fléchettes — Atteins le score',
           score: solved,
           total: totalRounds,
           pct: Math.round((solved / totalRounds) * 100),
@@ -239,7 +251,11 @@
   $('ibBoard').addEventListener('click',boardClick);
   $('ibUndo').addEventListener('click',undo);
   $('ibClear').addEventListener('click',clearAll);
-  $('ibNew').addEventListener('click',newChallenge);
+  $('ibNew').addEventListener('click',function(){
+    // Double clic : ne saute pas un défi sans le voir
+    var now=Date.now(); if(now-lastNewClick<600) return; lastNewClick=now;
+    newChallenge();
+  });
   $('ibRestart').addEventListener('click',restart);
   newChallenge();
 })();
