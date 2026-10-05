@@ -635,6 +635,16 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
   - Nouvelle orthographe : maitre, plait, maitriser, maitrise, entraine-toi.
   - Les niveaux 6 et 7 (mots en contexte) ont été relus : ils sont justes.
 
+- **05/10 — Grammaire › Classes de mots › Les mots de liaison** (30 phrases : 10 prépositions, 10 conjonctions de coordination, 10 de subordination ; 10 par partie) :
+  - Terminologie : « complément d'objet indirect (COI) » devient « CIV », et « complétive objet direct (COD) » devient « CDV ».
+  - Explications précisées :
+    - « devenir astronaute » est un groupe infinitif, pas une « proposition infinitive » ;
+    - « sans faire » : l'explication ne parle plus de « verbe de la principale », la phrase n'ayant pas de subordonnée.
+  - Les 30 réponses sont justes.
+  - Le résultat était déjà enregistré (`gram_mots_liaison`).
+  - Le mélange utilise maintenant la méthode Fisher–Yates.
+  - Nouvelle orthographe : maitrises, entrainer.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -745,7 +755,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | L'adverbe — Adjectif ou adverbe ? | `gram_adverbe_accord` | fiches/adverbe_accord_exercice.html |  |
 | ⬜ | Le complément du nom | `gram_complement_nom` | index › (?) | (code à localiser) |
 | ✅ 05/10 | Le tri des mots | `gram_tri_mots` | fiches/tri_mots.html |  |
-| ⬜ | Les mots de liaison | `gram_mots_liaison` | fiches/grammaire_mots_liaison.html |  |
+| ✅ 05/10 | Les mots de liaison | `gram_mots_liaison` | fiches/grammaire_mots_liaison.html |  |
 
 ### 📖 Français — ✏️ Grammaire — Fonctions des mots
 
