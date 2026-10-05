@@ -1130,6 +1130,10 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - 5 000 séries simulées : nombres en centaines entières (voulu : « passages au millier »), additions toujours avec passage au millier (≤ 9 900), soustractions toujours avec emprunt sur les centaines (> 0), résultats justes, 5 + 5, aucun doublon, 1 856 calculs différents.
 - Affichage « 2 200 » ; réponses « 2200 » et « 2 200 » acceptées. Corrections du moteur commun (v537) déjà en place.
 
+### 05/10 — Maths › Opérations › Additions et soustractions › Jusque 100 000 (`op_add_sous_100000`, moteur commun) — aucun changement de code
+- 5 000 séries simulées : nombres en milliers entiers (voulu : « passages à la dizaine de mille »), additions toujours avec passage (≤ 99 000), soustractions toujours avec emprunt sur les milliers (> 0), résultats justes, 5 + 5, aucun doublon, 1 856 calculs différents.
+- Corrections du moteur commun (v537) déjà en place. (Pré-contrôle « Jusque 1 000 000 » : mêmes vérifications OK.)
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1416,7 +1420,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | Additions et soustractions — Jusque 100 | `op_add_sous_100` | index › startCalcExercise |  |
 | ✅ 05/10 | Additions et soustractions — Jusque 1 000 | `op_add_sous_1000` | index › startCalcExercise |  |
 | ✅ 05/10 | Additions et soustractions — Jusque 10 000 | `op_add_sous_10000` | index › startCalcExercise |  |
-| ⬜ | Additions et soustractions — Jusque 100 000 | `op_add_sous_100000` | index › startCalcExercise |  |
+| ✅ 05/10 | Additions et soustractions — Jusque 100 000 | `op_add_sous_100000` | index › startCalcExercise |  |
 | ⬜ | Additions et soustractions — Jusque 1 000 000 | `op_add_sous_1000000` | index › startCalcExercise |  |
 | ⬜ | Fléchettes — Calcule le score | `op_add_sous_flechettes_calcule` | fiches/flechettes_calcule_le_score.html |  |
 | ⬜ | Fléchettes — Atteins le score | `op_add_sous_flechettes_atteins` | fiches/flechettes_atteins_le_score.html |  |
