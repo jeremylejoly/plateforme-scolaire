@@ -489,6 +489,12 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
   - J'ai vérifié 2 000 tirages : toujours 20 mots différents, dont exactement 10 noms.
   - Nouvelle orthographe : entrainer, entraine-toi, « Reconnaitre un nom » dans le titre affiché. L'identifiant technique ne change pas.
 
+- **05/10 — Grammaire › Le déterminant › Reconnaitre les déterminants** (50 phrases, 10 par partie) :
+  - Le résultat était enregistré sous `gram_determinant`, que le plan de travail ne reconnait pas : l'exercice n'y était jamais coché. Il est maintenant enregistré sous `gram_determinant_reconnaitre`.
+  - Le mélange utilisait le tri aléatoire biaisé. Il utilise maintenant la méthode Fisher–Yates.
+  - Les 50 phrases ont été relues : tous les déterminants sont bien marqués, y compris les numéraux, « chaque », « quelques », « certains », « plusieurs » et l'exclamatif « quel ».
+  - Nouvelle orthographe : maitrise, entrainer, entraine-toi, « Reconnaitre » dans le libellé du plan de travail.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -581,7 +587,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | Le nom — Identifier les noms | `gram_nom_identifier` | index › startNomExercise |  |
 | ✅ 05/10 | Le nom — Est-ce un nom ? | `gram_nom_reconnaître` | index › startNomReconnaîtreExercise |  |
 | ⬜ | Le déterminant | `gram_determinant` | index › (?) | (code à localiser) |
-| ⬜ | Le déterminant — Reconnaître les déterminants | `gram_determinant_reconnaitre` | index › startDeterminantExercise |  |
+| ✅ 05/10 | Le déterminant — Reconnaître les déterminants | `gram_determinant_reconnaitre` | index › startDeterminantExercise |  |
 | ⬜ | Le déterminant — Le tri des déterminants | `gram_determinant_tri` | index › startTriExercise |  |
 | ⬜ | Le déterminant (Exercices) | `gram_determinant_ex` | fiches/determinant_exercice.html |  |
 | ⬜ | L'adjectif — Identifier les adjectifs | `gram_adjectif_identifier` | index › startAdjectifExercise |  |
