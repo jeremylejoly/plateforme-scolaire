@@ -273,6 +273,30 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
   - La fiche du plan de travail n'enregistrait jamais le résultat. C'est corrigé (`conj_present_ecriture`, avec le niveau).
   - Le mélange est maintenant équitable.
 
+- **05/10 — Conjugaison › Indicatif présent › Évaluation** :
+  - La règle « une seule tentative » ne fonctionnait pas : l'élève pouvait refaire l'évaluation à l'infini. Le site vérifiait une marque sur l'appareil, mais cette marque n'était jamais écrite.
+  - Le site regarde maintenant l'appareil et aussi les résultats déjà enregistrés en ligne. L'évaluation est donc bloquée même sur un autre appareil. L'enseignant peut toujours l'ouvrir.
+  - Le moteur est commun : la correction vaut aussi pour les évaluations du futur, de l'imparfait et du passé composé.
+  - Le contenu a été vérifié : 5 QCM et 5 phrases à trous, justes et en nouvelle orthographe. Les propositions et l'ordre des questions sont mélangés.
+
+- **05/10 — Conjugaison › Indicatif imparfait › Entraînement QCM** (QCM du site + fiche du plan de travail) :
+  - Les 52 questions ont été relues. Toutes les bonnes réponses sont justes.
+  - Phrases bizarres réécrites :
+    - « Nous appuyions nos amis » → « Nous appuyions sur le bouton… » ;
+    - « Il rejetait ses clés par la fenêtre » → « Le gardien rejetait le ballon… » ;
+    - « Nous criions nos amis » → « nous criions de joie… » ;
+    - « Vous vous fiiez de vos parents » → « à vos parents » ;
+    - « Nous craignions l'orage arriver » → « nous craignions les orages » ;
+    - « nous lancions dans la rivière » → « nous lancions des cailloux dans la rivière ».
+  - Certains pièges étaient eux aussi corrects dans la phrase : « Tu écrivis une lettre », « Elle recevrait un colis », « Nous voyons très bien »… Ces phrases ont reçu un repère d'habitude passée (autrefois, à cette époque, l'an dernier, chaque semaine…), pour que seul l'imparfait convienne.
+  - Nouvelle orthographe : « diner » au lieu de « dîner ».
+  - La fiche du plan de travail n'enregistrait jamais le résultat. C'est corrigé (`conj_imparfait_qcm`). Son mélange est maintenant équitable, et elle a les mêmes phrases corrigées.
+- **05/10 — Nouvelle orthographe dans tout exercices_francais.js** : 237 accents circonflexes retirés sur i/u. Exemples : maitre, maitresse, fraiche, plait, coute, parait, connait, reconnaitre, entrainement, diner, boite, ile, gout, bruler, abimer…
+  - Les exceptions sont conservées : sûr, dû, mûr.
+  - Les noms de fonctions du code n'ont pas été touchés.
+  - Les exercices concernés sont surtout les dialogues, les textes, les CC et le QCM du futur.
+- **05/10 — Grammaire › Le verbe › Trouver l'infinitif** (repéré en passant) : la phrase « Nous lisons un livre intéressant » était classée à l'imparfait avec le verbe « lisions », absent de la phrase. Elle est corrigée en « Nous lisions… ».
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -415,7 +439,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 
 | Statut | Exercice | id | Source | Signal automatique |
 |---|---|---|---|---|
-| ⬜ | Indicatif présent | `present` | index › goToConjugaison |  |
+| ✅ 05/10 | Indicatif présent | `present` | index › goToConjugaison |  |
 | ⬜ | Indicatif imparfait | `imparfait` | index › goToConjugaison |  |
 | ⬜ | Indicatif futur simple | `futur` | index › goToConjugaison |  |
 | ⬜ | Indicatif passé composé | `passe_compose` | index › goToConjugaison |  |
@@ -429,7 +453,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 |---|---|---|---|---|
 | ✅ 05/10 | Présent de l'indicatif (QCM) | `conj_present_qcm` | fiches/conjugaison_present_QCM.html |  |
 | ✅ 05/10 | Présent de l'indicatif (Écriture) | `conj_present_ecriture` | fiches/conjugaison_present_ecriture.html |  |
-| ⬜ | Imparfait de l'indicatif (QCM) | `conj_imparfait_qcm` | fiches/conjugaison_imparfait_QCM.html |  |
+| ✅ 05/10 | Imparfait de l'indicatif (QCM) | `conj_imparfait_qcm` | fiches/conjugaison_imparfait_QCM.html |  |
 | ⬜ | Imparfait de l'indicatif (Écriture) | `conj_imparfait_ecriture` | fiches/conjugaison_imparfait_ecriture.html |  |
 | ✅ 05/10 | 1. Tableau des 3 temps | `conj_tableau_3_temps` | fiches/conjugaison_tableau_3_temps.html |  |
 | ✅ 05/10 | 2. Tableau des 3 temps simples | `conj_trois_temps_simples` | fiches/conjugaison_trois_temps_simples.html |  |

@@ -59,7 +59,7 @@ window.EXERCICES_FRANCAIS = {
         {text:"Vous ___ (suivre) le guide pendant la visite.", options:["suivrez", "suivriez", "suivrerez"], answer:0},
         {text:"Elles ___ (vivre) à l'étranger après leurs études.", options:["viveront", "vivreront", "vivront"], answer:2},
         {text:"Je ___ (résoudre) ce problème rapidement.", options:["résoudrai", "résolverai", "résoudrais"], answer:0},
-        {text:"Tu ___ (naître) sous une bonne étoile !", options:["naîtrais", "naîtera", "naîtras"], answer:2},
+        {text:"Tu ___ (naitre) sous une bonne étoile !", options:["naitrais", "naitera", "naitras"], answer:2},
       ],
 
       // Banque de 50 phrases à trous
@@ -969,19 +969,19 @@ window.EXERCICES_FRANCAIS = {
     ,imparfait: {
       // Banque de 52 questions QCM
       qcm_bank: [
-        {text:"Chaque été, nous ___ dans la rivière.", options:["lancions", "lançeons", "lançions"], answer:0},
+        {text:"Chaque été, nous ___ des cailloux dans la rivière.", options:["lancions", "lançeons", "lançions"], answer:0},
         {text:"Il ___ toujours ses affaires sur la table.", options:["placait", "plaçait", "plaçet"], answer:1},
-        {text:"Ils ___ le match depuis le début.", options:["commencaient", "commençaient", "comencaient"], answer:1},
-        {text:"Nous ___ chez nos grands-parents le dimanche.", options:["mangeons", "mangeions", "mangions"], answer:2},
-        {text:"Elle ___ toujours sa chambre avant le dîner.", options:["rangeait", "rangait", "rangaient"], answer:0},
-        {text:"Ils ___ souvent dans la piscine.", options:["nagaient", "nageraient", "nageaient"], answer:2},
+        {text:"Chaque samedi, ils ___ le match à 14 heures.", options:["commencaient", "commençaient", "comencaient"], answer:1},
+        {text:"Autrefois, nous ___ chez nos grands-parents le dimanche.", options:["mangeons", "mangeions", "mangions"], answer:2},
+        {text:"Elle ___ toujours sa chambre avant le diner.", options:["rangeait", "rangait", "rangaient"], answer:0},
+        {text:"L'été dernier, ils ___ souvent dans la piscine.", options:["nagaient", "nageraient", "nageaient"], answer:2},
         {text:"Tu ___ toujours tes achats comptant.", options:["paiais", "payiais", "payais"], answer:2},
-        {text:"Elle ___ le sol après le repas.", options:["essuyait", "essuiait", "essuyiait"], answer:0},
-        {text:"Nous ___ nos amis chaque week-end.", options:["appuyiions", "appuiions", "appuyions"], answer:2},
+        {text:"Elle ___ la table après le repas.", options:["essuyait", "essuiait", "essuyiait"], answer:0},
+        {text:"Nous ___ sur le bouton pour ouvrir la porte.", options:["appuyiions", "appuiions", "appuyions"], answer:2},
         {text:"Ils ___ le couloir chaque matin.", options:["balaiaient", "balaïaient", "balayaient"], answer:2},
         {text:"Tu ___ souvent ta mère depuis l'école.", options:["appèlais", "appelais", "appellais"], answer:1},
         {text:"Je ___ mes vieux jouets chaque année.", options:["jètais", "jettais", "jetais"], answer:2},
-        {text:"Il ___ ses clés par la fenêtre.", options:["rejettait", "rejetait", "rejètait"], answer:1},
+        {text:"Le gardien ___ toujours le ballon loin de son but.", options:["rejettait", "rejetait", "rejètait"], answer:1},
         {text:"Elle ___ ses amis pour leur anniversaire.", options:["rappellait", "rappèlait", "rappelait"], answer:2},
         {text:"J'___ mes parents à la gare.", options:["amènais", "ammènais", "amenais"], answer:2},
         {text:"Tu ___ la main pour répondre.", options:["levvais", "lèvais", "levais"], answer:2},
@@ -989,38 +989,38 @@ window.EXERCICES_FRANCAIS = {
         {text:"Nous ___ le chien chaque matin.", options:["promeneons", "promènions", "promenions"], answer:2},
         {text:"Elle ___ doucement le couvercle.", options:["soulèvait", "soulevvait", "soulevait"], answer:2},
         {text:"La rivière ___ après chaque pluie.", options:["ruissellait", "ruisselait", "ruissèlait"], answer:1},
-        {text:"Nous ___ nos amis au parc.", options:["criions", "crïions", "crions"], answer:0},
-        {text:"Vous ___ entièrement de vos parents.", options:["vous fiiez", "vous fïiez", "vous fiez"], answer:0},
+        {text:"Autrefois, nous ___ de joie à chaque but.", options:["criions", "crïions", "crions"], answer:0},
+        {text:"Vous ___ entièrement à vos parents.", options:["vous fiiez", "vous fïiez", "vous fiez"], answer:0},
         {text:"Nous ___ à la même école.", options:["étudiions", "étudïions", "étudions"], answer:0},
         {text:"Vous ___ souvent ensemble avant le repas.", options:["priez", "prïiez", "priiez"], answer:2},
         {text:"Tu ___ très courageux à cette époque.", options:["était", "étais", "étes"], answer:1},
-        {text:"Nous ___ un grand jardin.", options:["avons", "aviions", "avions"], answer:2},
+        {text:"À cette époque, nous ___ un grand jardin.", options:["avons", "aviions", "avions"], answer:2},
         {text:"Ils ___ toujours en retard.", options:["étaient", "étaients", "étiaient"], answer:0},
         {text:"Elle ___ peur du noir.", options:["avais", "aviait", "avait"], answer:2},
         {text:"Nous ___ en voiture chaque été.", options:["venions", "vienions", "veneons"], answer:0},
-        {text:"Tu ___ très vite sur la piste.", options:["courrais", "courais", "courait"], answer:1},
-        {text:"Ils ___ tôt chaque matin.", options:["partirent", "partissaient", "partaient"], answer:2},
+        {text:"À cette époque, tu ___ très vite sur la piste.", options:["courrais", "courais", "courait"], answer:1},
+        {text:"À cette époque, ils ___ tôt chaque matin.", options:["partirent", "partissaient", "partaient"], answer:2},
         {text:"Elle ___ la fenêtre chaque matin.", options:["ouvrit", "ouvrais", "ouvrait"], answer:2},
         {text:"Je ___ profondément toutes les nuits.", options:["dormit", "dormais", "dormait"], answer:1},
         {text:"Nous ___ toujours nos promesses.", options:["tienions", "tenions", "teneons"], answer:1},
-        {text:"Il ___ souvent des cadeaux à sa famille.", options:["offrais", "offrait", "offrit"], answer:1},
+        {text:"Autrefois, il ___ souvent des cadeaux à sa famille.", options:["offrais", "offrait", "offrit"], answer:1},
         {text:"Nous ___ un film chaque vendredi.", options:["voions", "voyions", "veyions"], answer:1},
         {text:"Je ___ de la natation le mercredi.", options:["fesais", "faisais", "faisait"], answer:1},
-        {text:"Tu ___ une lettre à ta mamie.", options:["écrivis", "écrivais", "écrivait"], answer:1},
+        {text:"Chaque semaine, tu ___ une lettre à ta mamie.", options:["écrivis", "écrivais", "écrivait"], answer:1},
         {text:"Ils ___ le problème ensemble.", options:["résolvaient", "résolvient", "résoudaient"], answer:0},
         {text:"Nous ___ le sel dans l'eau.", options:["dissolveons", "dissolvions", "dissoudions"], answer:1},
         {text:"Je ___ toujours en lui.", options:["croyais", "croiais", "croyait"], answer:0},
         {text:"Ils ___ devant le danger.", options:["fuiyaient", "fuiaient", "fuyaient"], answer:2},
         {text:"Tu ___ les murs de ta chambre.", options:["peingnais", "peignais", "peindais"], answer:1},
-        {text:"Nous ___ l'orage arriver.", options:["craignions", "craindions", "craigneons"], answer:0},
+        {text:"Petits, nous ___ les orages.", options:["craignions", "craindions", "craigneons"], answer:0},
         {text:"Ils ___ leurs amis après l'école.", options:["rejoignaient", "rejondaient", "rejoingnaient"], answer:0},
-        {text:"Vous ___ toujours n'importe quoi !", options:["diziez", "dites", "disiez"], answer:2},
-        {text:"Je ___ finir mes devoirs avant de jouer.", options:["devrais", "devais", "devait"], answer:1},
+        {text:"Quand vous étiez petits, vous ___ toujours n'importe quoi !", options:["diziez", "dites", "disiez"], answer:2},
+        {text:"Autrefois, je ___ finir mes devoirs avant de jouer.", options:["devrais", "devais", "devait"], answer:1},
         {text:"Nous ___ la réponse.", options:["saveons", "saviions", "savions"], answer:2},
         {text:"Tu ___ partir quand tu voulais.", options:["pouvais", "pouvait", "pourrais"], answer:0},
-        {text:"Elle ___ un colis chaque semaine.", options:["recevrait", "reçevait", "recevait"], answer:2},
-        {text:"Vous ___ aller au cinéma le samedi.", options:["vouliéez", "voulez", "vouliez"], answer:2},
-        {text:"Nous ___ très bien sans lunettes.", options:["voyions", "voyons", "voions"], answer:0},
+        {text:"L'an dernier, elle ___ un colis chaque semaine.", options:["recevrait", "reçevait", "recevait"], answer:2},
+        {text:"L'an dernier, vous ___ aller au cinéma le samedi.", options:["vouliéez", "voulez", "vouliez"], answer:2},
+        {text:"Avant, nous ___ très bien sans lunettes.", options:["voyions", "voyons", "voions"], answer:0},
       ],
 
       // Banque de 50 phrases à trous
@@ -1101,7 +1101,7 @@ window.EXERCICES_FRANCAIS = {
         {text:"Hier, je ___ (aller) chez le médecin.", options:["ai allé", "suis allé(e)", "suis allés"], answer:1},
         {text:"Ce matin, tu ___ (avoir) une bonne surprise.", options:["as eu", "as eut", "a eu"], answer:0},
         {text:"Il ___ (être) très courageux pendant l'opération.", options:["a été", "est allé", "as été"], answer:0},
-        {text:"Nous ___ (finir) nos devoirs avant le dîner.", options:["avons fini", "sommes finis", "avons finis"], answer:0},
+        {text:"Nous ___ (finir) nos devoirs avant le diner.", options:["avons fini", "sommes finis", "avons finis"], answer:0},
         {text:"Vous ___ (unir) vos forces pour déplacer les meubles.", options:["êtes unis", "avez uni", "avez unis"], answer:1},
         {text:"Elle ___ (savoir) la réponse immédiatement.", options:["a sue", "a sut", "a su"], answer:2},
         {text:"Ils ___ (pouvoir) partir à l'heure grâce au train.", options:["sont pu", "ont pu", "ont put"], answer:1},
@@ -1143,10 +1143,10 @@ window.EXERCICES_FRANCAIS = {
         {text:"Nous ___ (rire) beaucoup en regardant ce film comique.", options:["avons ris", "avons ri", "avons rit"], answer:1},
         {text:"Vous ___ (suivre) attentivement les conseils du guide.", options:["avez suivi", "avez suivis", "avez suivit"], answer:0},
         {text:"Il ___ (ouvrir) la fenêtre pour aérer la pièce.", options:["a ouvert", "a ouvers", "a ouvèrt"], answer:0},
-        {text:"Nous ___ (offrir) un cadeau à notre maîtresse pour Noël.", options:["avons offert", "avons offerts", "avons offrit"], answer:0},
+        {text:"Nous ___ (offrir) un cadeau à notre maitresse pour Noël.", options:["avons offert", "avons offerts", "avons offrit"], answer:0},
         {text:"Je ___ (sortir) après avoir fini tous mes devoirs.", options:["suis sorti(e)", "ai sorti", "suis sortis"], answer:0},
         {text:"Elle ___ (partir) sans dire au revoir à personne.", options:["est partit", "est partie", "est partite"], answer:1},
-        {text:"Nous ___ (naître) dans la même ville tous les deux.", options:["sommes nés", "sommes né", "avons né"], answer:0},
+        {text:"Nous ___ (naitre) dans la même ville tous les deux.", options:["sommes nés", "sommes né", "avons né"], answer:0},
         {text:"Ils ___ (prendre) le train de sept heures ce matin.", options:["ont pri", "ont pris", "ont prit"], answer:1},
       ],
 
@@ -1199,14 +1199,14 @@ window.EXERCICES_FRANCAIS = {
         {before:"Elle", after:"un magnifique bouquet de fleurs à sa mère.", verb:"offrir", answer:"a offert"},
         {before:"Nous", after:"par la grande porte pour éviter la foule.", verb:"sortir", answer:"sommes sortis"},
         {before:"Il", after:"en voyage sans prévenir sa famille.", verb:"partir", answer:"est parti"},
-        {before:"Elles", after:"dans ce pays à quelques années d'intervalle.", verb:"naître", answer:"sont nées"},
+        {before:"Elles", after:"dans ce pays à quelques années d'intervalle.", verb:"naitre", answer:"sont nées"},
         {before:"Vous", after:"votre repas en terrasse malgré le froid.", verb:"prendre", answer:"avez pris"},
       ],
 
       evaluation: {
         qcm: [
           {text:"Hier, je ___ (aller) chez le médecin.", options:["suis allés", "suis allé(e)", "ai allé"], answer:1},
-          {text:"Nous ___ (finir) nos devoirs avant le dîner.", options:["avons fini", "sommes finis", "avons finis"], answer:0},
+          {text:"Nous ___ (finir) nos devoirs avant le diner.", options:["avons fini", "sommes finis", "avons finis"], answer:0},
           {text:"Il ___ (appeler) ses parents dès son arrivée.", options:["as appelé", "a appellé", "a appelé"], answer:2},
           {text:"Nous ___ (aller) au cinéma vendredi soir.", options:["sommes allés", "sommes allé", "sommes aller"], answer:0},
           {text:"Elle ___ (partir) sans dire au revoir à personne.", options:["est partit", "est partite", "est partie"], answer:2},
@@ -1216,7 +1216,7 @@ window.EXERCICES_FRANCAIS = {
           {before:"Elle", after:"complètement après sa longue maladie.", verb:"guérir", answer:"a guéri"},
           {before:"Il", after:"sans réfléchir et il le regrette.", verb:"mentir", answer:"a menti"},
           {before:"Vous", after:"le marathon en moins de quatre heures.", verb:"courir", answer:"avez couru"},
-          {before:"Elles", after:"dans ce pays à quelques années d'intervalle.", verb:"naître", answer:"sont nées"},
+          {before:"Elles", after:"dans ce pays à quelques années d'intervalle.", verb:"naitre", answer:"sont nées"},
         ]
       }
     }
@@ -1557,17 +1557,17 @@ window.EXERCICES_ANALYSE = [
       explanation: "« Ces élèves » (sujet), « deviendront » (verbe d'état), « des scientifiques » (attribut du sujet)."
     },
     {
-      text: "La mer paraît calme ce matin .",
+      text: "La mer parait calme ce matin .",
       tokens: [
         { text: "La", sujet: true },
         { text: "mer", sujet: true },
-        { text: "paraît", verbe: true },
+        { text: "parait", verbe: true },
         { text: "calme", attribut: true },
         { text: "ce", other: true },
         { text: "matin", other: true },
         { text: ".", punctuation: true }
       ],
-      explanation: "« La mer » (sujet), « paraît » (verbe d'état), « calme » (attribut du sujet). « ce matin » est un CC (non recherché ici)."
+      explanation: "« La mer » (sujet), « parait » (verbe d'état), « calme » (attribut du sujet). « ce matin » est un CC (non recherché ici)."
     },
     {
       text: "Le chocolat chaud reste sa boisson préférée .",
@@ -1727,7 +1727,7 @@ window.EXERCICES_SUJET = [
     explanation: "Le sujet est le groupe nominal avec proposition relative « La maison où j'ai habité »."
   },
   {
-    text: "Le cadeau que je t' ai offert te plaît ?",
+    text: "Le cadeau que je t' ai offert te plait ?",
     cat: "cdn_rel",
     position: "standard",
     tokens: [
@@ -1739,7 +1739,7 @@ window.EXERCICES_SUJET = [
       { text: "ai", sujet: true },
       { text: "offert", sujet: true },
       { text: "te" },
-      { text: "plaît" },
+      { text: "plait" },
       { text: "?", punctuation: true }
     ],
     explanation: "Le sujet est le groupe nominal avec proposition relative « Le cadeau que je t'ai offert »."
@@ -1806,19 +1806,19 @@ window.EXERCICES_SUJET = [
     explanation: "Le sujet est « des milliers d'étoiles », inversé après le verbe « brillent »."
   },
   {
-    text: "Sur la table traînent plusieurs livres .",
+    text: "Sur la table trainent plusieurs livres .",
     cat: "noun",
     position: "inverted",
     tokens: [
       { text: "Sur" },
       { text: "la" },
       { text: "table" },
-      { text: "traînent" },
+      { text: "trainent" },
       { text: "plusieurs", sujet: true },
       { text: "livres", sujet: true },
       { text: ".", punctuation: true }
     ],
-    explanation: "Le sujet est « plusieurs livres », inversé après le verbe « traînent »."
+    explanation: "Le sujet est « plusieurs livres », inversé après le verbe « trainent »."
   },
   {
     text: "Derrière la maison coule une petite rivière .",
@@ -2197,12 +2197,12 @@ window.EXERCICES_SUJET = [
     explanation: "Le sujet est le groupe nominal « un vieux chêne », placé après le complément circonstanciel."
   },
   {
-    text: "Ceux-ci coûtent plus cher .",
+    text: "Ceux-ci coutent plus cher .",
     cat: "pronoun",
     position: "standard",
     tokens: [
       { text: "Ceux-ci", sujet: true },
-      { text: "coûtent" },
+      { text: "coutent" },
       { text: "plus" },
       { text: "cher" },
       { text: ".", punctuation: true }
@@ -3315,13 +3315,13 @@ window.EXERCICES_PREDICAT = [
 
   // --- CDV_CIV (8 phrases) ---
   {
-    text: "Le matin , le maître distribue les cahiers aux élèves .",
+    text: "Le matin , le maitre distribue les cahiers aux élèves .",
     cat: "cdv_civ",
     tokens: [
       { text: "Le" },
       { text: "matin", punctuation: "," },
       { text: "le" },
-      { text: "maître" },
+      { text: "maitre" },
       { text: "distribue", predicat: true },
       { text: "les", predicat: true },
       { text: "cahiers", predicat: true },
@@ -3329,7 +3329,7 @@ window.EXERCICES_PREDICAT = [
       { text: "élèves", predicat: true },
       { text: ".", punctuation: true }
     ],
-    explanation: "Le sujet est « le maître » et le complément de phrase est « Le matin ». Le prédicat est « distribue les cahiers aux élèves » (verbe + CDV + CIV)."
+    explanation: "Le sujet est « le maitre » et le complément de phrase est « Le matin ». Le prédicat est « distribue les cahiers aux élèves » (verbe + CDV + CIV)."
   },
   {
     text: "Dans la boutique , la vendeuse propose une écharpe au client .",
@@ -3488,7 +3488,7 @@ window.EXERCICES_PREDICAT = [
     explanation: "Le sujet est « le sable » et le complément de phrase est « Sous le soleil ». Le prédicat est « devient chaud » (verbe d'état + attribut du sujet)."
   },
   {
-    text: "Dans ce costume , l' acteur paraît immense .",
+    text: "Dans ce costume , l' acteur parait immense .",
     cat: "attribut",
     tokens: [
       { text: "Dans" },
@@ -3496,11 +3496,11 @@ window.EXERCICES_PREDICAT = [
       { text: "costume", punctuation: "," },
       { text: "l'" },
       { text: "acteur" },
-      { text: "paraît", predicat: true },
+      { text: "parait", predicat: true },
       { text: "immense", predicat: true },
       { text: ".", punctuation: true }
     ],
-    explanation: "Le sujet est « l'acteur » et le complément de phrase est « Dans ce costume ». Le prédicat est « paraît immense » (verbe d'état + attribut du sujet)."
+    explanation: "Le sujet est « l'acteur » et le complément de phrase est « Dans ce costume ». Le prédicat est « parait immense » (verbe d'état + attribut du sujet)."
   },
   {
     text: "Malgré l' âge , ce vieux chêne reste solide .",
@@ -3786,26 +3786,26 @@ window.EXERCICES_CDV_CIV = [
     explanation: "Le sujet est « Les citoyens » et le verbe est « croient ». Le groupe prépositionnel « en la justice » est le Complément Indirect du Verbe (CIV) car il répond à la question : Les citoyens croient en quoi ?"
   },
   {
-    text: "Ce projet plaît aux enseignants .",
+    text: "Ce projet plait aux enseignants .",
     cat: "only_civ",
     tokens: [
       { text: "Ce" },
       { text: "projet" },
-      { text: "plaît" },
+      { text: "plait" },
       { text: "aux", civ: true },
       { text: "enseignants", civ: true },
       { text: ".", punctuation: true }
     ],
-    explanation: "Le sujet est « Ce projet » et le verbe est « plaît ». Le groupe prépositionnel « aux enseignants » est le Complément Indirect du Verbe (CIV) car il répond à la question : Ce projet plaît à qui ?"
+    explanation: "Le sujet est « Ce projet » et le verbe est « plait ». Le groupe prépositionnel « aux enseignants » est le Complément Indirect du Verbe (CIV) car il répond à la question : Ce projet plait à qui ?"
   },
 
   // --- BOTH (8 phrases) ---
   {
-    text: "Le maître donne un livre à l' élève .",
+    text: "Le maitre donne un livre à l' élève .",
     cat: "both",
     tokens: [
       { text: "Le" },
-      { text: "maître" },
+      { text: "maitre" },
       { text: "donne" },
       { text: "un", cdv: true },
       { text: "livre", cdv: true },
@@ -3814,7 +3814,7 @@ window.EXERCICES_CDV_CIV = [
       { text: "élève", civ: true },
       { text: ".", punctuation: true }
     ],
-    explanation: "Le sujet est « Le maître » et le verbe est « donne ». « un livre » est le CDV (donne quoi ?) et « à l'élève » est le CIV (donne à qui ?)."
+    explanation: "Le sujet est « Le maitre » et le verbe est « donne ». « un livre » est le CDV (donne quoi ?) et « à l'élève » est le CIV (donne à qui ?)."
   },
   {
     text: "Jules offre un cadeau à sa sœur .",
@@ -3973,11 +3973,11 @@ window.EXERCICES_CDV_CIV = [
     explanation: "Le pronom « lui » remplace un groupe prépositionnel CIV (il répond à la question : Le fils ressemble à qui ? -> lui)."
   },
   {
-    text: "Le maître le lui donne .",
+    text: "Le maitre le lui donne .",
     cat: "pronominalized",
     tokens: [
       { text: "Le" },
-      { text: "maître" },
+      { text: "maitre" },
       { text: "le", cdv: true },
       { text: "lui", civ: true },
       { text: "donne" },
@@ -4026,11 +4026,11 @@ window.EXERCICES_CDV_CIV = [
 
   // --- PRONOM_CDV_COMPLETE_CIV (8 phrases) ---
   {
-    text: "Le maître le donne à l' élève .",
+    text: "Le maitre le donne à l' élève .",
     cat: "pronom_cdv_complete_civ",
     tokens: [
       { text: "Le" },
-      { text: "maître" },
+      { text: "maitre" },
       { text: "le", cdv: true },
       { text: "donne" },
       { text: "à", civ: true },
@@ -4758,13 +4758,13 @@ window.EXERCICES_CC = [
     explanation: "« À cause du brouillard épais » est le CC de cause (pour quelle raison le match a-t-il été annulé ?)."
   },
   {
-    text: "Par manque d' entraînement , il a abandonné la course au milieu .",
+    text: "Par manque d' entrainement , il a abandonné la course au milieu .",
     cat: "cause",
     tokens: [
       { text: "Par", cc: "cause" },
       { text: "manque", cc: "cause" },
       { text: "d'", cc: "cause" },
-      { text: "entraînement", cc: "cause", punctuation: "," },
+      { text: "entrainement", cc: "cause", punctuation: "," },
       { text: "il" },
       { text: "a" },
       { text: "abandonné" },
@@ -4774,7 +4774,7 @@ window.EXERCICES_CC = [
       { text: "milieu", cc: "lieu" },
       { text: ".", punctuation: true }
     ],
-    explanation: "« Par manque d'entraînement » est le CC de cause (pourquoi a-t-il abandonné ?). « au milieu » est le CC de lieu (où ?)."
+    explanation: "« Par manque d'entrainement » est le CC de cause (pourquoi a-t-il abandonné ?). « au milieu » est le CC de lieu (où ?)."
   },
   {
     text: "Grâce à ton soutien financier , l' association a pu réparer le toit .",
@@ -4856,12 +4856,12 @@ window.EXERCICES_CC = [
     explanation: "« afin d'assurer leur croissance » est le CC de but (dans quel but arrose-t-il ?)."
   },
   {
-    text: "Il s' entraîne tous les jours dans le but d' améliorer son record .",
+    text: "Il s' entraine tous les jours dans le but d' améliorer son record .",
     cat: "but",
     tokens: [
       { text: "Il" },
       { text: "s'" },
-      { text: "entraîne" },
+      { text: "entraine" },
       { text: "tous", cc: "temps" },
       { text: "les", cc: "temps" },
       { text: "jours", cc: "temps" },
@@ -4874,7 +4874,7 @@ window.EXERCICES_CC = [
       { text: "record", cc: "but" },
       { text: ".", punctuation: true }
     ],
-    explanation: "« dans le but d'améliorer son record » est le CC de but (dans quel but s'entraîne-t-il ?). « tous les jours » est le CC de temps (quand ?)."
+    explanation: "« dans le but d'améliorer son record » est le CC de but (dans quel but s'entraine-t-il ?). « tous les jours » est le CC de temps (quand ?)."
   },
   {
     text: "Nous portons des casques de protection pour éviter les blessures graves .",
@@ -4926,7 +4926,7 @@ window.LECTURE_RAPIDE_DATA = {
           },
           {
             q: "Que signifie avoir accès à une information libre selon le texte ?",
-            options: ["Pouvoir regarder gratuitement toutes les chaînes de télévision du pays", "Avoir la possibilité de lire des journaux sans payer d'abonnement mensuel", "Pouvoir accéder à des informations variées sans que l'État les contrôle", "Recevoir automatiquement les décisions du gouvernement par courrier postal"],
+            options: ["Pouvoir regarder gratuitement toutes les chaines de télévision du pays", "Avoir la possibilité de lire des journaux sans payer d'abonnement mensuel", "Pouvoir accéder à des informations variées sans que l'État les contrôle", "Recevoir automatiquement les décisions du gouvernement par courrier postal"],
             correct: 2
           },
           {
@@ -5005,7 +5005,7 @@ window.LECTURE_RAPIDE_DATA = {
     textes: [
       {
         id: 'n5t1', titre: 'Les volcans',
-        texte: "Un volcan est une ouverture dans la croûte terrestre par laquelle du magma, des gaz et des cendres peuvent s'échapper vers la surface. Lorsqu'un volcan entre en éruption, le magma, qui prend alors le nom de lave, peut couler sur des dizaines de kilomètres et atteindre des températures supérieures à mille degrés. Les éruptions peuvent être explosives et projeter des roches et des cendres très haut dans l'atmosphère, ou effusives, avec des coulées de lave lentes mais continues. Les volcans se forment principalement aux endroits où les plaques tectoniques se rencontrent ou s'écartent. Bien que dangereux, ils jouent un rôle important : ils créent de nouvelles terres, enrichissent les sols en minéraux et régulent en partie le climat de la planète. Certaines régions très peuplées vivent à proximité de volcans actifs, car leurs sols fertiles permettent une agriculture très productive.",
+        texte: "Un volcan est une ouverture dans la croute terrestre par laquelle du magma, des gaz et des cendres peuvent s'échapper vers la surface. Lorsqu'un volcan entre en éruption, le magma, qui prend alors le nom de lave, peut couler sur des dizaines de kilomètres et atteindre des températures supérieures à mille degrés. Les éruptions peuvent être explosives et projeter des roches et des cendres très haut dans l'atmosphère, ou effusives, avec des coulées de lave lentes mais continues. Les volcans se forment principalement aux endroits où les plaques tectoniques se rencontrent ou s'écartent. Bien que dangereux, ils jouent un rôle important : ils créent de nouvelles terres, enrichissent les sols en minéraux et régulent en partie le climat de la planète. Certaines régions très peuplées vivent à proximité de volcans actifs, car leurs sols fertiles permettent une agriculture très productive.",
         questions: [
           {
             q: "Que devient le magma lorsqu'il atteint la surface lors d'une éruption ?",
@@ -5045,7 +5045,7 @@ window.LECTURE_RAPIDE_DATA = {
           },
           {
             q: "Quel avantage du recyclage est mentionné dans le texte ?",
-            options: ["Il permet de créer de nombreux emplois dans les usines de traitement des déchets", "Il réduit les déchets en décharge, limite l'extraction de matières premières et économise l'énergie", "Il supprime complètement la nécessité d'extraire de nouvelles matières premières dans la nature", "Il permet aux entreprises de produire des objets de meilleure qualité à moindre coût"],
+            options: ["Il permet de créer de nombreux emplois dans les usines de traitement des déchets", "Il réduit les déchets en décharge, limite l'extraction de matières premières et économise l'énergie", "Il supprime complètement la nécessité d'extraire de nouvelles matières premières dans la nature", "Il permet aux entreprises de produire des objets de meilleure qualité à moindre cout"],
             correct: 1
           },
           {
@@ -5067,11 +5067,11 @@ window.LECTURE_RAPIDE_DATA = {
       },
       {
         id: 'n5t3', titre: 'Les séismes',
-        texte: "Un séisme, aussi appelé tremblement de terre, est une secousse brutale du sol causée par une libération soudaine d'énergie dans la croûte terrestre. Cette énergie se propage sous forme d'ondes sismiques qui peuvent être ressenties à des centaines de kilomètres du point d'origine, appelé foyer. La magnitude d'un séisme mesure la quantité d'énergie libérée et s'exprime sur l'échelle de Richter. Les secousses d'un séisme de magnitude 5 sont dix fois plus fortes que celles d'un séisme de magnitude 4. Les régions les plus touchées sont situées le long des frontières des plaques tectoniques, comme le Japon, la Turquie ou le Chili. Si les séismes eux-mêmes durent rarement plus de quelques minutes, leurs conséquences peuvent être catastrophiques : effondrements de bâtiments, glissements de terrain et tsunamis. Des systèmes d'alerte précoce ont été développés dans les pays les plus exposés pour donner aux habitants quelques secondes précieuses pour se mettre à l'abri.",
+        texte: "Un séisme, aussi appelé tremblement de terre, est une secousse brutale du sol causée par une libération soudaine d'énergie dans la croute terrestre. Cette énergie se propage sous forme d'ondes sismiques qui peuvent être ressenties à des centaines de kilomètres du point d'origine, appelé foyer. La magnitude d'un séisme mesure la quantité d'énergie libérée et s'exprime sur l'échelle de Richter. Les secousses d'un séisme de magnitude 5 sont dix fois plus fortes que celles d'un séisme de magnitude 4. Les régions les plus touchées sont situées le long des frontières des plaques tectoniques, comme le Japon, la Turquie ou le Chili. Si les séismes eux-mêmes durent rarement plus de quelques minutes, leurs conséquences peuvent être catastrophiques : effondrements de bâtiments, glissements de terrain et tsunamis. Des systèmes d'alerte précoce ont été développés dans les pays les plus exposés pour donner aux habitants quelques secondes précieuses pour se mettre à l'abri.",
         questions: [
           {
             q: "Qu'est-ce que le foyer d'un séisme ?",
-            options: ["La zone en surface où les dégâts causés par le séisme sont les plus importants", "Le point d'origine du séisme dans la croûte terrestre d'où partent les ondes", "L'appareil utilisé par les scientifiques pour mesurer la magnitude des séismes", "La région géographique la plus souvent touchée par les tremblements de terre"],
+            options: ["La zone en surface où les dégâts causés par le séisme sont les plus importants", "Le point d'origine du séisme dans la croute terrestre d'où partent les ondes", "L'appareil utilisé par les scientifiques pour mesurer la magnitude des séismes", "La région géographique la plus souvent touchée par les tremblements de terre"],
             correct: 1
           },
           {
@@ -5103,7 +5103,7 @@ window.LECTURE_RAPIDE_DATA = {
     textes: [
       {
         id: 'n4t1', titre: 'La photosynthèse',
-        texte: "Les plantes sont capables de fabriquer elles-mêmes leur propre nourriture grâce à un processus remarquable appelé photosynthèse. Pour cela, elles ont besoin de trois éléments essentiels : la lumière du soleil, le dioxyde de carbone présent dans l'air et l'eau puisée dans le sol par leurs racines. La chlorophylle, le pigment vert contenu dans les feuilles, capte l'énergie lumineuse et permet de transformer ces éléments en glucose, une forme de sucre qui nourrit la plante. En échange, la plante rejette de l'oxygène dans l'atmosphère, ce qui est indispensable à la respiration de la quasi-totalité des êtres vivants. Sans photosynthèse, il n'y aurait ni oxygène dans l'air, ni nourriture disponible pour les animaux et les humains. Ce processus est donc à la base de presque toutes les chaînes alimentaires sur Terre.",
+        texte: "Les plantes sont capables de fabriquer elles-mêmes leur propre nourriture grâce à un processus remarquable appelé photosynthèse. Pour cela, elles ont besoin de trois éléments essentiels : la lumière du soleil, le dioxyde de carbone présent dans l'air et l'eau puisée dans le sol par leurs racines. La chlorophylle, le pigment vert contenu dans les feuilles, capte l'énergie lumineuse et permet de transformer ces éléments en glucose, une forme de sucre qui nourrit la plante. En échange, la plante rejette de l'oxygène dans l'atmosphère, ce qui est indispensable à la respiration de la quasi-totalité des êtres vivants. Sans photosynthèse, il n'y aurait ni oxygène dans l'air, ni nourriture disponible pour les animaux et les humains. Ce processus est donc à la base de presque toutes les chaines alimentaires sur Terre.",
         questions: [
           {
             q: "De quoi la plante a-t-elle besoin pour réaliser la photosynthèse ?",
@@ -5117,7 +5117,7 @@ window.LECTURE_RAPIDE_DATA = {
           },
           {
             q: "Pourquoi la photosynthèse est-elle essentielle pour les animaux ?",
-            options: ["Elle réchauffe l'atmosphère et régule le climat de la planète", "Elle produit de l'oxygène et constitue la base des chaînes alimentaires", "Elle permet aux plantes de se reproduire et de coloniser de nouveaux milieux", "Elle purifie l'eau des rivières en absorbant les substances toxiques"],
+            options: ["Elle réchauffe l'atmosphère et régule le climat de la planète", "Elle produit de l'oxygène et constitue la base des chaines alimentaires", "Elle permet aux plantes de se reproduire et de coloniser de nouveaux milieux", "Elle purifie l'eau des rivières en absorbant les substances toxiques"],
             correct: 1
           },
           {
@@ -5134,7 +5134,7 @@ window.LECTURE_RAPIDE_DATA = {
       },
       {
         id: 'n4t2', titre: "L'exploration spatiale",
-        texte: "Depuis le premier vol habité de Youri Gagarine en 1961, l'humanité n'a cessé d'explorer l'espace. En 1969, Neil Armstrong fut le premier être humain à poser le pied sur la Lune, lors de la mission Apollo 11. Depuis lors, des centaines d'astronautes ont séjourné dans l'espace, notamment à bord de la Station spatiale internationale, où des équipages multinationaux se relaient en permanence depuis l'an 2000. L'exploration spatiale a permis de nombreuses découvertes scientifiques et a conduit à des innovations technologiques qui améliorent notre quotidien, comme les panneaux solaires, les systèmes GPS ou certains matériaux utilisés en médecine. Aujourd'hui, de nouvelles ambitions émergent : retourner sur la Lune, envoyer des humains sur Mars et explorer plus loin encore notre système solaire. Ces projets soulèvent cependant des questions éthiques et environnementales importantes sur le coût et l'impact de ces aventures.",
+        texte: "Depuis le premier vol habité de Youri Gagarine en 1961, l'humanité n'a cessé d'explorer l'espace. En 1969, Neil Armstrong fut le premier être humain à poser le pied sur la Lune, lors de la mission Apollo 11. Depuis lors, des centaines d'astronautes ont séjourné dans l'espace, notamment à bord de la Station spatiale internationale, où des équipages multinationaux se relaient en permanence depuis l'an 2000. L'exploration spatiale a permis de nombreuses découvertes scientifiques et a conduit à des innovations technologiques qui améliorent notre quotidien, comme les panneaux solaires, les systèmes GPS ou certains matériaux utilisés en médecine. Aujourd'hui, de nouvelles ambitions émergent : retourner sur la Lune, envoyer des humains sur Mars et explorer plus loin encore notre système solaire. Ces projets soulèvent cependant des questions éthiques et environnementales importantes sur le cout et l'impact de ces aventures.",
         questions: [
           {
             q: "Quelle fut la première mission à envoyer un homme sur la Lune ?",
@@ -5165,7 +5165,7 @@ window.LECTURE_RAPIDE_DATA = {
       },
       {
         id: 'n4t3', titre: 'Les énergies renouvelables',
-        texte: "Face au réchauffement climatique causé par l'utilisation massive des combustibles fossiles, de nombreux pays cherchent à développer des sources d'énergie renouvelables. Contrairement au pétrole, au charbon et au gaz naturel, qui sont des ressources limitées et polluantes, les énergies renouvelables sont inépuisables et produisent peu ou pas de gaz à effet de serre. L'énergie solaire capte la chaleur et la lumière du soleil grâce à des panneaux photovoltaïques. L'énergie éolienne utilise la force du vent pour faire tourner des turbines et produire de l'électricité. L'énergie hydraulique exploite la puissance des rivières et des barrages. Malgré leurs avantages, ces sources d'énergie présentent aussi des limites : elles dépendent des conditions météorologiques, nécessitent des installations coûteuses et leur stockage reste un défi technologique majeur. La transition vers ces nouvelles énergies est indispensable mais demande des investissements considérables et une adaptation profonde de nos modes de consommation.",
+        texte: "Face au réchauffement climatique causé par l'utilisation massive des combustibles fossiles, de nombreux pays cherchent à développer des sources d'énergie renouvelables. Contrairement au pétrole, au charbon et au gaz naturel, qui sont des ressources limitées et polluantes, les énergies renouvelables sont inépuisables et produisent peu ou pas de gaz à effet de serre. L'énergie solaire capte la chaleur et la lumière du soleil grâce à des panneaux photovoltaïques. L'énergie éolienne utilise la force du vent pour faire tourner des turbines et produire de l'électricité. L'énergie hydraulique exploite la puissance des rivières et des barrages. Malgré leurs avantages, ces sources d'énergie présentent aussi des limites : elles dépendent des conditions météorologiques, nécessitent des installations couteuses et leur stockage reste un défi technologique majeur. La transition vers ces nouvelles énergies est indispensable mais demande des investissements considérables et une adaptation profonde de nos modes de consommation.",
         questions: [
           {
             q: "Quelle est la principale différence entre les énergies fossiles et les énergies renouvelables ?",
@@ -5225,14 +5225,14 @@ window.LECTURE_RAPIDE_DATA = {
           },
           {
             q: "Que se passerait-il sans les abeilles selon le texte ?",
-            options: ["Les fleurs ne pourraient plus produire de nectar pour se reproduire", "La pollinisation de nombreuses plantes serait impossible, menaçant notre alimentation", "Les autres insectes disparaîtraient également car ils se nourrissent de miel", "Les forêts disparaîtraient car les arbres ont besoin des abeilles pour grandir"],
+            options: ["Les fleurs ne pourraient plus produire de nectar pour se reproduire", "La pollinisation de nombreuses plantes serait impossible, menaçant notre alimentation", "Les autres insectes disparaitraient également car ils se nourrissent de miel", "Les forêts disparaitraient car les arbres ont besoin des abeilles pour grandir"],
             correct: 1
           }
         ]
       },
       {
         id: 'n3t2', titre: 'La révolution industrielle',
-        texte: "Au XIXe siècle, l'invention de la machine à vapeur a profondément transformé les sociétés européennes. Les usines ont remplacé les ateliers artisanaux, et des millions de paysans ont quitté les campagnes pour travailler dans les villes. Cette période, qu'on appelle la révolution industrielle, a permis de produire des biens en grande quantité et à moindre coût. Cependant, les conditions de travail étaient souvent très difficiles : les journées duraient douze à quinze heures, les salaires étaient bas et même les enfants travaillaient dans les mines ou les usines. Face à ces injustices, les ouvriers ont commencé à s'organiser en syndicats pour défendre leurs droits. Progressivement, des lois ont été adoptées pour limiter le travail des enfants et améliorer les conditions de travail. La révolution industrielle a donc apporté à la fois des progrès considérables et de profondes inégalités sociales.",
+        texte: "Au XIXe siècle, l'invention de la machine à vapeur a profondément transformé les sociétés européennes. Les usines ont remplacé les ateliers artisanaux, et des millions de paysans ont quitté les campagnes pour travailler dans les villes. Cette période, qu'on appelle la révolution industrielle, a permis de produire des biens en grande quantité et à moindre cout. Cependant, les conditions de travail étaient souvent très difficiles : les journées duraient douze à quinze heures, les salaires étaient bas et même les enfants travaillaient dans les mines ou les usines. Face à ces injustices, les ouvriers ont commencé à s'organiser en syndicats pour défendre leurs droits. Progressivement, des lois ont été adoptées pour limiter le travail des enfants et améliorer les conditions de travail. La révolution industrielle a donc apporté à la fois des progrès considérables et de profondes inégalités sociales.",
         questions: [
           {
             q: "Quelle invention est à l'origine de la révolution industrielle ?",
@@ -5281,7 +5281,7 @@ window.LECTURE_RAPIDE_DATA = {
             correct: 2
           },
           {
-            q: "Quelles sont les températures extrêmes que peut connaître le Sahara ?",
+            q: "Quelles sont les températures extrêmes que peut connaitre le Sahara ?",
             options: ["Entre 20°C la nuit et 40°C le jour dans les régions les plus chaudes", "Plus de 50°C le jour et en dessous de 0°C la nuit dans certaines régions", "Entre 30°C et 60°C selon les saisons et les régions du désert", "Toujours entre 35°C et 45°C, avec peu de variations entre le jour et la nuit"],
             correct: 1
           },
@@ -5361,7 +5361,7 @@ window.LECTURE_RAPIDE_DATA = {
       },
       {
         id: 'n2t3', titre: 'Le marché du samedi',
-        texte: "Tous les samedis matin, la place centrale du village se transforme en marché animé. Les producteurs locaux installent leurs étals dès l'aube pour proposer leurs fruits, légumes, fromages et pains frais. Les habitants du village et des environs s'y retrouvent pour faire leurs courses, mais aussi pour discuter et se retrouver entre voisins. Madame Collin, maraîchère depuis trente ans, vend ses légumes bios cultivés dans sa ferme à deux kilomètres du village. Elle connaît chacun de ses clients et leur conseille des recettes selon les saisons. À côté d'elle, un jeune apiculteur propose différentes variétés de miel et explique aux curieux comment fonctionnent ses ruches. Vers midi, les étals se vident progressivement et les vendeurs commencent à ranger leurs affaires. Le marché du samedi est bien plus qu'un simple lieu de commerce : c'est un moment de lien social précieux pour toute la communauté.",
+        texte: "Tous les samedis matin, la place centrale du village se transforme en marché animé. Les producteurs locaux installent leurs étals dès l'aube pour proposer leurs fruits, légumes, fromages et pains frais. Les habitants du village et des environs s'y retrouvent pour faire leurs courses, mais aussi pour discuter et se retrouver entre voisins. Madame Collin, maraichère depuis trente ans, vend ses légumes bios cultivés dans sa ferme à deux kilomètres du village. Elle connait chacun de ses clients et leur conseille des recettes selon les saisons. À côté d'elle, un jeune apiculteur propose différentes variétés de miel et explique aux curieux comment fonctionnent ses ruches. Vers midi, les étals se vident progressivement et les vendeurs commencent à ranger leurs affaires. Le marché du samedi est bien plus qu'un simple lieu de commerce : c'est un moment de lien social précieux pour toute la communauté.",
         questions: [
           {
             q: "Depuis combien de temps Madame Collin vend-elle ses légumes au marché ?",
@@ -5397,7 +5397,7 @@ window.LECTURE_RAPIDE_DATA = {
     textes: [
       {
         id: 'n1t1', titre: 'Le chat',
-        texte: "Milo est un chat roux qui vit dans une petite maison à la campagne. Chaque matin, il se lève avant tout le monde et file dans le jardin pour chasser les papillons. Il ne les attrape jamais, mais cela ne l'empêche pas d'essayer. L'après-midi, il s'installe sur le rebord de la fenêtre et observe les oiseaux qui volent dans le ciel. Quand il pleut, Milo reste à l'intérieur et se love dans son panier en osier, près du radiateur. Sa maîtresse, Emma, lui prépare chaque soir une gamelle de croquettes. Milo mange lentement, puis vient se frotter contre les jambes d'Emma pour la remercier. Le soir, il saute sur le lit et s'endort en ronronnant doucement. C'est un chat heureux, qui profite de chaque moment de sa journée.",
+        texte: "Milo est un chat roux qui vit dans une petite maison à la campagne. Chaque matin, il se lève avant tout le monde et file dans le jardin pour chasser les papillons. Il ne les attrape jamais, mais cela ne l'empêche pas d'essayer. L'après-midi, il s'installe sur le rebord de la fenêtre et observe les oiseaux qui volent dans le ciel. Quand il pleut, Milo reste à l'intérieur et se love dans son panier en osier, près du radiateur. Sa maitresse, Emma, lui prépare chaque soir une gamelle de croquettes. Milo mange lentement, puis vient se frotter contre les jambes d'Emma pour la remercier. Le soir, il saute sur le lit et s'endort en ronronnant doucement. C'est un chat heureux, qui profite de chaque moment de sa journée.",
         questions: [
           {
             q: "Que fait Milo le matin dans le jardin ?",
@@ -5416,7 +5416,7 @@ window.LECTURE_RAPIDE_DATA = {
           },
           {
             q: "Où Milo passe-t-il ses après-midis ?",
-            options: ["Dans le jardin à chasser les oiseaux", "Sur le rebord de la fenêtre à observer les oiseaux", "Dans son panier en osier près du radiateur", "Sur le lit de sa maîtresse Emma"],
+            options: ["Dans le jardin à chasser les oiseaux", "Sur le rebord de la fenêtre à observer les oiseaux", "Dans son panier en osier près du radiateur", "Sur le lit de sa maitresse Emma"],
             correct: 1
           },
           {
@@ -5459,7 +5459,7 @@ window.LECTURE_RAPIDE_DATA = {
       },
       {
         id: 'n1t3', titre: 'La boulangerie du village',
-        texte: "Chaque matin, Monsieur Dupont se lève à quatre heures pour préparer le pain de son village. Il allume son four, pèse la farine et mélange les ingrédients avec soin. La pâte doit reposer longtemps avant d'être enfournée. Vers sept heures, les premières baguettes dorées sortent du four. Une odeur délicieuse envahit toute la rue. Les habitants font la queue devant la boulangerie avant même qu'elle n'ouvre. Madame Bernard achète toujours deux baguettes et des croissants pour ses enfants. Le boulanger connaît les habitudes de chacun. Il garde de côté le pain de seigle pour le vieux Monsieur Henri, qui arrive toujours en retard. À midi, presque tout est vendu. Monsieur Dupont nettoie son fournil et prépare déjà les pâtes pour le lendemain. Son travail est fatigant, mais il est fier de régaler tout son village chaque jour.",
+        texte: "Chaque matin, Monsieur Dupont se lève à quatre heures pour préparer le pain de son village. Il allume son four, pèse la farine et mélange les ingrédients avec soin. La pâte doit reposer longtemps avant d'être enfournée. Vers sept heures, les premières baguettes dorées sortent du four. Une odeur délicieuse envahit toute la rue. Les habitants font la queue devant la boulangerie avant même qu'elle n'ouvre. Madame Bernard achète toujours deux baguettes et des croissants pour ses enfants. Le boulanger connait les habitudes de chacun. Il garde de côté le pain de seigle pour le vieux Monsieur Henri, qui arrive toujours en retard. À midi, presque tout est vendu. Monsieur Dupont nettoie son fournil et prépare déjà les pâtes pour le lendemain. Son travail est fatigant, mais il est fier de régaler tout son village chaque jour.",
         questions: [
           {
             q: "À quelle heure Monsieur Dupont se lève-t-il ?",
@@ -5505,7 +5505,7 @@ window.DIALOGUES_DATA = {
       {nom:'Lucas', texte:'C\'est vrai, mais les écrans permettent aussi de corriger ses erreurs instantanément. Quand on écrit sur papier et qu\'on fait une faute, on doit tout recommencer ou effacer. Sur tablette, c\'est beaucoup plus simple !', couleur:'#3949ab'},
       {nom:'Manon', texte:'Peut-être, mais les écrans sont une source de distraction énorme. Quand un élève a une tablette devant lui, il est tenté d\'aller sur des jeux ou des vidéos au lieu de travailler. Le papier, lui, ne distrait pas !', couleur:'#c2185b'},
       {nom:'Lucas', texte:'On pourrait simplement bloquer l\'accès aux sites non éducatifs. Et puis, les écrans préparent les élèves au monde de demain. Presque tous les métiers utilisent des ordinateurs aujourd\'hui !', couleur:'#3949ab'},
-      {nom:'Manon', texte:'Je préfère qu\'on apprenne d\'abord à bien écrire et à bien lire avant de passer aux écrans. Les bases sont importantes. Et puis, les écrans coûtent cher — tout le monde n\'a pas les mêmes moyens.', couleur:'#c2185b'},
+      {nom:'Manon', texte:'Je préfère qu\'on apprenne d\'abord à bien écrire et à bien lire avant de passer aux écrans. Les bases sont importantes. Et puis, les écrans coutent cher — tout le monde n\'a pas les mêmes moyens.', couleur:'#c2185b'},
       {nom:'Animateur', texte:'Merci à tous les deux pour ce débat passionné !', anim:true},
     ],
     questions:[
@@ -5519,7 +5519,7 @@ window.DIALOGUES_DATA = {
       items:[
         {arg:"Grâce aux tablettes, les élèves peuvent trouver des informations bien plus rapidement qu\'avec un livre.", correct:0, type:'A'},
         {arg:"Un enfant qui a une tablette devant lui aura du mal à rester concentré sur son travail.", correct:1, type:'A'},
-        {arg:"Apprendre à bien maîtriser l\'écriture est une étape fondamentale avant de passer aux outils numériques.", correct:1, type:'A'},
+        {arg:"Apprendre à bien maitriser l\'écriture est une étape fondamentale avant de passer aux outils numériques.", correct:1, type:'A'},
         {arg:"Si l\'élève est trop exposé aux écrans, il risque d\'avoir des maux de tête et des problèmes de vue.", correct:1, type:'B'},
         {arg:"Les élèves pourraient partager leurs travaux et collaborer plus facilement grâce aux outils numériques.", correct:0, type:'B'},
       ]
@@ -5528,7 +5528,7 @@ window.DIALOGUES_DATA = {
       {rep:"\"Je ne suis pas d\'accord.\" (Manon)", options:["S\'excuser","Exprimer son désaccord","Encourager Lucas"], correct:1},
       {rep:"\"On pourrait simplement bloquer l\'accès aux sites non éducatifs.\" (Lucas)", options:["Menacer Manon","Proposer une solution","Abandonner son point de vue"], correct:1},
       {rep:"\"Merci à tous les deux pour ce débat passionné !\" (l\'animateur)", options:["Critiquer les deux intervenants","Interrompre le débat brutalement","Clore le débat en remerciant les participants"], correct:2},
-      {rep:"\"Les bases sont importantes.\" (Manon)", options:["Insister sur l\'importance des fondamentaux","Reconnaître que Lucas a raison","Changer de sujet pour éviter la discussion"], correct:0},
+      {rep:"\"Les bases sont importantes.\" (Manon)", options:["Insister sur l\'importance des fondamentaux","Reconnaitre que Lucas a raison","Changer de sujet pour éviter la discussion"], correct:0},
     ]
   },
   bio:{
@@ -5539,7 +5539,7 @@ window.DIALOGUES_DATA = {
     repliques:[
       {nom:'Animateur', texte:'Bonjour à tous ! Aujourd\'hui, Sofia et Tom débattent d\'un sujet qui concerne nos assiettes : faut-il manger bio ? Sofia, tu commences.', anim:true},
       {nom:'Sofia', texte:'Oui ! Les aliments bio sont cultivés sans pesticides chimiques de synthèse. Ces produits sont donc meilleurs pour notre santé et pour l\'environnement. Quand on mange bio, on protège aussi les abeilles et les insectes utiles.', couleur:'#388e3c'},
-      {nom:'Tom', texte:'Je comprends l\'idée, mais les produits bio coûtent beaucoup plus cher que les produits normaux. Toutes les familles n\'ont pas les moyens de manger bio. Ce n\'est pas juste de demander ça à tout le monde.', couleur:'#f57c00'},
+      {nom:'Tom', texte:'Je comprends l\'idée, mais les produits bio coutent beaucoup plus cher que les produits normaux. Toutes les familles n\'ont pas les moyens de manger bio. Ce n\'est pas juste de demander ça à tout le monde.', couleur:'#f57c00'},
       {nom:'Sofia', texte:'C\'est vrai que c\'est plus cher, mais on peut faire des choix. Acheter des fruits et légumes bio de saison dans les marchés locaux, c\'est souvent moins cher que dans les supermarchés. Et puis, si on mange mieux, on tombe moins malade !', couleur:'#388e3c'},
       {nom:'Tom', texte:'Mais les aliments bio ne sont pas forcément plus nutritifs que les autres. Des études scientifiques montrent que la différence sur la santé est très faible. Et si tout le monde mangeait bio, on ne pourrait pas nourrir toute la planète — l\'agriculture bio produit moins.', couleur:'#f57c00'},
       {nom:'Sofia', texte:'L\'agriculture intensive, elle, détruit les sols et pollue les rivières avec ses engrais chimiques. Sur le long terme, c\'est bien plus dangereux. Il faut penser à la planète que l\'on va laisser aux générations futures.', couleur:'#388e3c'},
@@ -5549,7 +5549,7 @@ window.DIALOGUES_DATA = {
     questions:[
       {q:"Quel est le sujet du débat ?", options:["Faut-il supprimer les fast-foods dans les villes ?","Faut-il manger bio ?","Faut-il devenir végétarien pour sauver la planète ?"], correct:1},
       {q:"Selon Sofia, pourquoi les produits bio sont-ils meilleurs pour l\'environnement ?", options:["Parce qu\'ils sont produits localement et ne nécessitent pas de transport","Parce qu\'ils sont cultivés sans pesticides chimiques et protègent les insectes","Parce qu\'ils utilisent moins d\'eau que l\'agriculture traditionnelle"], correct:1},
-      {q:"Quel argument Tom utilise-t-il contre le bio ?", options:["Les produits bio ont mauvais goût comparés aux produits traditionnels","Les produits bio coûtent plus cher et ne sont pas accessibles à toutes les familles","Les produits bio se conservent moins longtemps que les produits normaux"], correct:1},
+      {q:"Quel argument Tom utilise-t-il contre le bio ?", options:["Les produits bio ont mauvais gout comparés aux produits traditionnels","Les produits bio coutent plus cher et ne sont pas accessibles à toutes les familles","Les produits bio se conservent moins longtemps que les produits normaux"], correct:1},
       {q:"Quel est l\'argument final de Sofia pour défendre le bio ?", options:["Le bio est de plus en plus présent dans les grandes surfaces","L\'agriculture intensive détruit les sols et pollue les rivières","Les médecins recommandent de manger bio au moins trois fois par semaine"], correct:1},
     ],
     attrib:{
@@ -5558,12 +5558,12 @@ window.DIALOGUES_DATA = {
         {arg:"Les pesticides utilisés dans l\'agriculture classique sont nocifs pour les abeilles et les autres insectes.", correct:0, type:'A'},
         {arg:"Il serait impossible de nourrir toute la population mondiale uniquement avec des aliments biologiques.", correct:1, type:'A'},
         {arg:"En achetant des produits de saison au marché local, on peut manger bio sans dépenser trop.", correct:0, type:'A'},
-        {arg:"Les agriculteurs bio gagnent moins d\'argent car ils produisent moins et leurs coûts sont plus élevés.", correct:1, type:'B'},
+        {arg:"Les agriculteurs bio gagnent moins d\'argent car ils produisent moins et leurs couts sont plus élevés.", correct:1, type:'B'},
         {arg:"En mangeant bio, on soutient les petits producteurs locaux plutôt que les grandes industries alimentaires.", correct:0, type:'B'},
       ]
     },
     intentions:[
-      {rep:"\"C\'est vrai que c\'est plus cher, mais on peut faire des choix.\" (Sofia)", options:["Abandonner son point de vue face à l\'argument de Tom","Reconnaître un point faible tout en maintenant sa position","Changer de sujet pour éviter la discussion"], correct:1},
+      {rep:"\"C\'est vrai que c\'est plus cher, mais on peut faire des choix.\" (Sofia)", options:["Abandonner son point de vue face à l\'argument de Tom","Reconnaitre un point faible tout en maintenant sa position","Changer de sujet pour éviter la discussion"], correct:1},
       {rep:"\"La science peut nous aider à produire suffisamment tout en réduisant les produits chimiques.\" (Tom)", options:["Proposer une alternative à l\'agriculture bio","Admettre que Sofia a entièrement raison","Menacer Sofia de mettre fin au débat"], correct:0},
       {rep:"\"Il faut penser à la planète que l\'on va laisser aux générations futures.\" (Sofia)", options:["Critiquer le mode de vie de Tom","Appeler à la responsabilité environnementale","Demander à l\'animateur d\'intervenir"], correct:1},
       {rep:"\"Merci Sofia et Tom pour ce débat très instructif !\" (l\'animateur)", options:["Exprimer sa préférence pour l\'un des deux intervenants","Clore le débat en valorisant les deux participants","Inviter le public à voter pour le meilleur argument"], correct:1},
@@ -5575,11 +5575,11 @@ window.DIALOGUES_DATA = {
     intervenants:['Léa','Maxime'],
     tagA:'🚲 Léa — Pour interdire', tagB:'🚗 Maxime — Contre l\'interdiction',
     repliques:[
-      {nom:'Animateur', texte:'Bonjour à tous ! Aujourd\'hui, Léa et Maxime débattent d\'un sujet brûlant : faut-il interdire les voitures dans les villes ? Léa, à toi !', anim:true},
+      {nom:'Animateur', texte:'Bonjour à tous ! Aujourd\'hui, Léa et Maxime débattent d\'un sujet brulant : faut-il interdire les voitures dans les villes ? Léa, à toi !', anim:true},
       {nom:'Léa', texte:'Je pense qu\'il faudrait interdire les voitures dans les centres-villes. La pollution due aux voitures est responsable de nombreuses maladies respiratoires, surtout chez les enfants. Des villes comme Amsterdam ou Copenhague ont déjà fortement réduit la place des voitures dans leur centre !', couleur:'#c2185b'},
       {nom:'Maxime', texte:'Mais comment les gens feraient-ils pour aller travailler, faire leurs courses ou emmener leurs enfants à l\'école ? Tout le monde n\'habite pas près d\'une gare ou d\'un arrêt de bus. La voiture est indispensable pour beaucoup de personnes.', couleur:'#1565c0'},
       {nom:'Léa', texte:'On pourrait développer les transports en commun et les pistes cyclables. Si les bus et les vélos sont plus pratiques et moins chers, les gens laisseront naturellement leur voiture au garage.', couleur:'#c2185b'},
-      {nom:'Maxime', texte:'Développer les transports en commun, ça coûte très cher et ça prend des années. En attendant, les gens ont besoin de leurs voitures maintenant. Et dans les zones rurales comme la nôtre, il n\'y a souvent aucune alternative.', couleur:'#1565c0'},
+      {nom:'Maxime', texte:'Développer les transports en commun, ça coute très cher et ça prend des années. En attendant, les gens ont besoin de leurs voitures maintenant. Et dans les zones rurales comme la nôtre, il n\'y a souvent aucune alternative.', couleur:'#1565c0'},
       {nom:'Léa', texte:'C\'est vrai pour les zones rurales, mais dans les villes, on pourrait commencer par des zones sans voitures dans les centres. Les commerces bénéficieraient même de plus de passages de piétons et de cyclistes !', couleur:'#c2185b'},
       {nom:'Maxime', texte:'Certains commerçants pensent au contraire que supprimer les voitures ferait fuir leurs clients. Et les personnes âgées ou handicapées ont souvent besoin de la voiture pour se déplacer. On ne peut pas les oublier.', couleur:'#1565c0'},
       {nom:'Animateur', texte:'Voilà un débat qui nous touche tous ! Merci Léa et Maxime !', anim:true},
@@ -5617,9 +5617,9 @@ window.DIALOGUES_DATA = {
       {nom:'Camille', texte:'J\'adore les animaux et je pense qu\'avoir un animal de compagnie est vraiment bénéfique. Un chien ou un chat, ça apporte de la joie, de l\'amour et ça aide à combattre la solitude. Des études montrent même que les personnes qui ont des animaux sont moins stressées !', couleur:'#e64a19'},
       {nom:'Noah', texte:'Je comprends que les animaux soient attachants, mais avoir un animal, c\'est une énorme responsabilité. Il faut les nourrir, les soigner, les promener. Quand on part en vacances, que fait-on de l\'animal ? Ça complique beaucoup la vie.', couleur:'#5c6bc0'},
       {nom:'Camille', texte:'C\'est vrai que c\'est une responsabilité, mais c\'est justement pour ça que c\'est bien ! Les enfants qui s\'occupent d\'un animal apprennent à être responsables, à respecter le vivant et à développer leur empathie.', couleur:'#e64a19'},
-      {nom:'Noah', texte:'Peut-être, mais les animaux coûtent très cher. La nourriture, les visites chez le vétérinaire, les vaccins... tout ça représente beaucoup d\'argent. Et certaines personnes adoptent des animaux sans y avoir bien réfléchi, puis les abandonnent. C\'est cruel !', couleur:'#5c6bc0'},
+      {nom:'Noah', texte:'Peut-être, mais les animaux coutent très cher. La nourriture, les visites chez le vétérinaire, les vaccins... tout ça représente beaucoup d\'argent. Et certaines personnes adoptent des animaux sans y avoir bien réfléchi, puis les abandonnent. C\'est cruel !', couleur:'#5c6bc0'},
       {nom:'Camille', texte:'Les abandons, c\'est effectivement un problème grave. Mais ce n\'est pas une raison pour dire qu\'il ne faut pas avoir d\'animaux. Il faut juste mieux informer les gens avant l\'adoption. Et pour les enfants malades ou isolés, un animal peut vraiment faire des miracles.', couleur:'#e64a19'},
-      {nom:'Noah', texte:'Pour moi, beaucoup d\'animaux ne sont pas faits pour vivre enfermés dans un appartement. Un chien qui reste seul toute la journée pendant que ses maîtres travaillent, est-ce vraiment une belle vie ?', couleur:'#5c6bc0'},
+      {nom:'Noah', texte:'Pour moi, beaucoup d\'animaux ne sont pas faits pour vivre enfermés dans un appartement. Un chien qui reste seul toute la journée pendant que ses maitres travaillent, est-ce vraiment une belle vie ?', couleur:'#5c6bc0'},
       {nom:'Animateur', texte:'Un débat plein de cœur ! Merci Camille et Noah !', anim:true},
     ],
     questions:[
@@ -5640,9 +5640,9 @@ window.DIALOGUES_DATA = {
     },
     intentions:[
       {rep:"\"C\'est vrai que c\'est une responsabilité, mais c\'est justement pour ça que c\'est bien !\" (Camille)", options:["Admettre qu\'elle a tort et changer de position","Retourner l\'argument de Noah en sa faveur","Demander à l\'animateur de l\'aider à répondre"], correct:1},
-      {rep:"\"Est-ce vraiment une belle vie ?\" (Noah, en parlant du chien seul)", options:["Poser une question rhétorique pour faire réfléchir","Demander l\'avis de Camille sur la question","Admettre qu\'il ne connaît pas la réponse"], correct:0},
-      {rep:"\"Il faut juste mieux informer les gens avant l\'adoption.\" (Camille)", options:["Critiquer les personnes qui abandonnent leurs animaux","Proposer une solution au problème des abandons","Reconnaître que Noah a raison sur ce point"], correct:1},
-      {rep:"\"Je comprends que les animaux soient attachants, mais...\" (Noah)", options:["Exprimer son accord total avec Camille","Reconnaître un point positif avant d\'introduire une objection","Changer de sujet pour éviter d\'admettre qu\'il a tort"], correct:1},
+      {rep:"\"Est-ce vraiment une belle vie ?\" (Noah, en parlant du chien seul)", options:["Poser une question rhétorique pour faire réfléchir","Demander l\'avis de Camille sur la question","Admettre qu\'il ne connait pas la réponse"], correct:0},
+      {rep:"\"Il faut juste mieux informer les gens avant l\'adoption.\" (Camille)", options:["Critiquer les personnes qui abandonnent leurs animaux","Proposer une solution au problème des abandons","Reconnaitre que Noah a raison sur ce point"], correct:1},
+      {rep:"\"Je comprends que les animaux soient attachants, mais...\" (Noah)", options:["Exprimer son accord total avec Camille","Reconnaitre un point positif avant d\'introduire une objection","Changer de sujet pour éviter d\'admettre qu\'il a tort"], correct:1},
     ]
   }
 };
@@ -5711,7 +5711,7 @@ Cependant, devenir totalement végétarien <strong>n'est pas forcément réalist
     questions:[
       {q:"Selon le texte, quel gaz à effet de serre est produit par les vaches et les moutons ?", options:["Le dioxyde de carbone rejeté lors de leur digestion","Le méthane, un gaz à effet de serre très puissant","L'oxyde d'azote rejeté dans leurs déjections"], correct:1},
       {q:"Combien d'eau faut-il pour produire 1 kg de bœuf selon le texte ?", options:["Environ 5 000 litres d'eau","Environ 15 000 litres d'eau","Environ 30 000 litres d'eau"], correct:1},
-      {q:"Quelle nuance l'auteur apporte-t-il à la fin du texte ?", options:["Il pense que manger de la viande est indispensable pour être en bonne santé","Il reconnaît que devenir totalement végétarien n'est pas réaliste pour tout le monde","Il suggère de remplacer la viande rouge par du poulet uniquement"], correct:1},
+      {q:"Quelle nuance l'auteur apporte-t-il à la fin du texte ?", options:["Il pense que manger de la viande est indispensable pour être en bonne santé","Il reconnait que devenir totalement végétarien n'est pas réaliste pour tout le monde","Il suggère de remplacer la viande rouge par du poulet uniquement"], correct:1},
       {q:"L'auteur demande à tout le monde de devenir totalement végétarien.", options:["Vrai","Faux"], correct:1}
     ],
     classif:{
@@ -5731,13 +5731,13 @@ Cependant, devenir totalement végétarien <strong>n'est pas forcément réalist
     thèse:"Pour l'uniforme scolaire",
     texte:`Dans certains pays comme l'Angleterre ou le Japon, tous les élèves portent un uniforme à l'école. En Belgique, cette pratique est rare. Pourtant, l'uniforme scolaire présente de nombreux avantages.<br><br>
 Premièrement, l'uniforme <strong>réduit les inégalités visibles</strong>. Quand tout le monde porte les mêmes vêtements, les différences de richesse entre les familles sont moins apparentes. Un élève qui ne peut pas se payer des vêtements à la mode ne se sentira plus jugé.<br><br>
-Deuxièmement, l'uniforme <strong>simplifie le quotidien des familles</strong>. Plus besoin de se demander chaque matin quoi mettre ! Cela évite également les dépenses excessives en vêtements tendance, souvent coûteux.<br><br>
+Deuxièmement, l'uniforme <strong>simplifie le quotidien des familles</strong>. Plus besoin de se demander chaque matin quoi mettre ! Cela évite également les dépenses excessives en vêtements tendance, souvent couteux.<br><br>
 Troisièmement, certaines études montrent que le port de l'uniforme <strong>améliore la concentration</strong> des élèves et renforce le sentiment d'appartenance à l'école.<br><br>
 Bien sûr, certains élèves regrettent de ne pas pouvoir exprimer leur personnalité à travers leurs vêtements. Mais l'école est avant tout un lieu d'apprentissage, pas un défilé de mode.`,
     questions:[
       {q:"Dans quels pays l'uniforme scolaire est-il mentionné dans le texte ?", options:["En France et en Allemagne","En Angleterre et au Japon","Aux États-Unis et en Chine"], correct:1},
       {q:"Comment l'uniforme réduit-il les inégalités selon l'auteur ?", options:["En empêchant les élèves riches d'apporter des objets de luxe","En rendant les différences de richesse moins visibles entre élèves","En obligeant toutes les familles à acheter les mêmes fournitures"], correct:1},
-      {q:"Quel argument l'auteur utilise-t-il concernant les familles ?", options:["L'uniforme évite les dépenses excessives en vêtements tendance","L'uniforme permet aux parents de retrouver facilement leur enfant","L'uniforme évite que les élèves abîment leurs beaux vêtements"], correct:0},
+      {q:"Quel argument l'auteur utilise-t-il concernant les familles ?", options:["L'uniforme évite les dépenses excessives en vêtements tendance","L'uniforme permet aux parents de retrouver facilement leur enfant","L'uniforme évite que les élèves abiment leurs beaux vêtements"], correct:0},
       {q:"L'auteur pense que l'école est avant tout un lieu pour s'exprimer à travers les vêtements.", options:["Vrai","Faux"], correct:1}
     ],
     classif:{
@@ -5785,7 +5785,7 @@ Certains diront que <strong>lire est ennuyeux et démotive les enfants</strong>.
 Premièrement, une bonne alimentation <strong>donne de l'énergie</strong>. Le cerveau a besoin de glucides, de protéines et de bonnes graisses pour fonctionner correctement. Un élève qui mange sainement sera plus concentré en classe.<br><br>
 Deuxièmement, manger des fruits et légumes <strong>renforce le système immunitaire</strong>. Les vitamines et minéraux qu'ils contiennent aident le corps à se défendre contre les maladies. Un enfant qui mange varié tombe moins souvent malade.<br><br>
 Troisièmement, les <strong>bonnes habitudes alimentaires prises dans l'enfance durent toute la vie</strong>. Un enfant qui apprend à apprécier les légumes et les céréales complètes aura beaucoup plus de chances d'avoir une alimentation équilibrée à l'âge adulte.<br><br>
-Certains objectent que <strong>bien manger coûte trop cher pour certaines familles</strong>. Pourtant, des aliments simples comme les pommes, les carottes ou les lentilles restent bon marché. Bien manger ne veut pas dire ne jamais manger de gâteaux ou de chips. Cela signifie trouver un équilibre et faire de bonnes habitudes une priorité.`,
+Certains objectent que <strong>bien manger coute trop cher pour certaines familles</strong>. Pourtant, des aliments simples comme les pommes, les carottes ou les lentilles restent bon marché. Bien manger ne veut pas dire ne jamais manger de gâteaux ou de chips. Cela signifie trouver un équilibre et faire de bonnes habitudes une priorité.`,
     questions:[
       {q:"Selon l'auteur, pourquoi le cerveau a-t-il besoin d'une bonne alimentation ?", options:["Pour produire des hormones qui régulent les émotions","Pour fonctionner correctement et être concentré en classe","Pour mémoriser plus facilement les leçons"], correct:1},
       {q:"Quel effet les fruits et légumes ont-ils sur la santé selon le texte ?", options:["Ils renforcent les muscles et permettent de faire plus de sport","Ils aident le corps à se défendre contre les maladies","Ils améliorent la vue et réduisent la fatigue oculaire"], correct:1},
@@ -5797,7 +5797,7 @@ Certains objectent que <strong>bien manger coûte trop cher pour certaines famil
       items:[
         {arg:"Une bonne alimentation améliore la concentration à l'école.", correct:0},
         {arg:"Manger des légumes renforce le système immunitaire.", correct:0},
-        {arg:"Les bonnes habitudes alimentaires coûtent trop cher pour certaines familles.", correct:1},
+        {arg:"Les bonnes habitudes alimentaires coutent trop cher pour certaines familles.", correct:1},
         {arg:"Une mauvaise alimentation provoque des difficultés de lecture.", correct:2},
         {arg:"Les bonnes habitudes alimentaires prises enfant durent toute la vie.", correct:0}
       ]
@@ -5862,7 +5862,7 @@ window.CONNECTEURS_POOL = [
   {cat:'🔍 Cause', avant:'La route était fermée', trou:true, apres:'des travaux avaient commencé la nuit précédente.', options:['donc','pourtant','parce que','ensuite'], correct:2, explication:'"Parce que" introduit la cause directe d\'un fait.'},
   {cat:'🔍 Cause', avant:'', trou:false, apres:'il avait oublié son parapluie, Tom fut trempé jusqu\'aux os.', options:['Donc','Pourtant','Puisque','Ensuite'], correct:2, explication:'"Puisque" introduit une cause présentée comme évidente ou connue.'},
   {cat:'🔍 Cause', avant:'Emma ne put pas participer au spectacle', trou:true, apres:'elle était malade ce jour-là.', options:['donc','pourtant','car','ensuite'], correct:2, explication:'"Car" introduit l\'explication d\'une situation.'},
-  {cat:'🔍 Cause', avant:'Les élèves étaient contents', trou:true, apres:'la maîtresse avait annulé le contrôle.', options:['donc','pourtant','ensuite','parce que'], correct:3, explication:'"Parce que" explique pourquoi les élèves étaient contents.'},
+  {cat:'🔍 Cause', avant:'Les élèves étaient contents', trou:true, apres:'la maitresse avait annulé le contrôle.', options:['donc','pourtant','ensuite','parce que'], correct:3, explication:'"Parce que" explique pourquoi les élèves étaient contents.'},
   {cat:'🔍 Cause', avant:'', trou:false, apres:'il fait très chaud en été, il est important de bien s\'hydrater.', options:['Pourtant','Ensuite','Puisque','Donc'], correct:2, explication:'"Puisque" présente la chaleur comme une cause évidente.'},
   {cat:'🔍 Cause', avant:'', trou:false, apres:'les hivers sont très froids dans cette région, les habitants portent des vêtements très chauds.', options:['Donc','Pourtant','Ensuite','Comme'], correct:3, explication:'"Comme" peut introduire une cause en début de phrase.'},
   // CONSEQUENCE
@@ -5870,7 +5870,7 @@ window.CONNECTEURS_POOL = [
   {cat:'🎯 Conséquence', avant:'Nina avait étudié très sérieusement.', trou:true, apres:'elle réussit son examen avec une très bonne note.', options:['Pourtant','Car','Ensuite','C\'est pourquoi'], correct:3, explication:'"C\'est pourquoi" introduit le résultat logique d\'une situation.'},
   {cat:'🎯 Conséquence', avant:'La tempête avait été très violente.', trou:true, apres:'plusieurs arbres s\'étaient effondrés sur la route.', options:['Pourtant','Car','Ainsi','Ensuite'], correct:2, explication:'"Ainsi" introduit une conséquence ou un résultat.'},
   {cat:'🎯 Conséquence', avant:'Le petit garçon avait mangé trop de bonbons. Il avait', trou:true, apres:'très mal au ventre.', options:['pourtant','car','donc','ensuite'], correct:2, explication:'"Donc" introduit la conséquence directe d\'une action.'},
-  {cat:'🎯 Conséquence', avant:'Les pompiers étaient arrivés très vite.', trou:true, apres:'l\'incendie fut rapidement maîtrisé.', options:['Pourtant','Car','Ensuite','C\'est pourquoi'], correct:3, explication:'"C\'est pourquoi" relie la cause à son effet.'},
+  {cat:'🎯 Conséquence', avant:'Les pompiers étaient arrivés très vite.', trou:true, apres:'l\'incendie fut rapidement maitrisé.', options:['Pourtant','Car','Ensuite','C\'est pourquoi'], correct:3, explication:'"C\'est pourquoi" relie la cause à son effet.'},
   {cat:'🎯 Conséquence', avant:'La fillette avait oublié son manteau. Elle avait', trou:true, apres:'très froid en rentrant de l\'école.', options:['pourtant','donc','car','ensuite'], correct:1, explication:'"Donc" exprime la conséquence logique d\'un oubli.'},
   {cat:'🎯 Conséquence', avant:'Le soleil brillait fort.', trou:true, apres:'les enfants décidèrent de passer la journée à la piscine.', options:['Pourtant','Car','Alors','Ensuite'], correct:2, explication:'"Alors" introduit une décision prise en réponse à une situation.'},
   // ILLUSTRATION
@@ -5884,7 +5884,7 @@ window.POEMES_DATA = {
   cancre:{
     id:'cancre', titre:'Le Cancre', auteur:'Jacques Prévert', annee:'1946',
     emoji:'😄', couleur:'linear-gradient(135deg,#e65100,#ff6d00)', borderColor:'#e65100',
-    texte:"Il dit non avec la tête\nmais il dit oui avec le coeur\nil dit oui à ce qu'il aime\nil dit non au professeur\nil est debout\non le questionne\net tous les problèmes sont posés\nsoudain le fou rire le prend\net il efface tout\nles chiffres et les mots\nles dates et les noms\nles phrases et les pièges\net malgré les menaces du maître\nsous les huées des enfants prodiges\navec des craies de toutes les couleurs\nsur le tableau noir du malheur\nil dessine le visage du bonheur.",
+    texte:"Il dit non avec la tête\nmais il dit oui avec le coeur\nil dit oui à ce qu'il aime\nil dit non au professeur\nil est debout\non le questionne\net tous les problèmes sont posés\nsoudain le fou rire le prend\net il efface tout\nles chiffres et les mots\nles dates et les noms\nles phrases et les pièges\net malgré les menaces du maitre\nsous les huées des enfants prodiges\navec des craies de toutes les couleurs\nsur le tableau noir du malheur\nil dessine le visage du bonheur.",
     questions:[
       {q:"Que fait le cancre quand on lui pose des questions ?", options:["Il répond correctement à toutes les questions du professeur","Il est pris d'un fou rire et efface tout au tableau","Il sort de la classe sans demander la permission"], correct:1},
       {q:"Que signifie il dit non avec la tête mais il dit oui avec le coeur ?", options:["Il est d'accord avec le professeur mais fait semblant de refuser","Il refuse ce qu'on lui impose mais suit ce qu'il aime vraiment","Il est trop timide pour répondre à voix haute en classe"], correct:1},
@@ -5894,13 +5894,13 @@ window.POEMES_DATA = {
       {q:"Les autres élèves encouragent le cancre quand il efface tout.", correct:1},
       {q:"Le cancre utilise des craies de toutes les couleurs pour dessiner.", correct:0},
     ],
-    figureStyle:{q:"Dans le poème, Prévert parle du tableau noir du malheur. Que veut-il dire ?", options:["Le tableau est sale et mal entretenu par le professeur","L'école représente la contrainte et la tristesse, à l'opposé du bonheur du cancre","Le tableau est peint en noir parce que c'est la couleur préférée du maître"], correct:1},
+    figureStyle:{q:"Dans le poème, Prévert parle du tableau noir du malheur. Que veut-il dire ?", options:["Le tableau est sale et mal entretenu par le professeur","L'école représente la contrainte et la tristesse, à l'opposé du bonheur du cancre","Le tableau est peint en noir parce que c'est la couleur préférée du maitre"], correct:1},
     message:{q:"Quel est le message principal de ce poème ?", options:["Les bons élèves sont toujours plus heureux que les mauvais","Il vaut mieux écouter son professeur que suivre ses envies","Suivre ce qu'on aime vraiment est plus important que de réussir à l'école"], correct:2},
   },
   ecriture:{
     id:'ecriture', titre:"Page d'écriture", auteur:'Jacques Prévert', annee:'1946',
     emoji:'🐦', couleur:'linear-gradient(135deg,#1565c0,#1976d2)', borderColor:'#1565c0',
-    texte:"Deux et deux quatre\nquatre et quatre huit\nhuit et huit font seize...\nRépétez ! dit le maître\nDeux et deux quatre\nquatre et quatre huit\nhuit et huit font seize.\nMais voilà l'oiseau-lyre\nqui passe dans le ciel\nl'enfant le voit\nl'enfant l'entend\nl'enfant l'appelle :\nSauve-moi\njoue avec moi\noiseau !\nAlors l'oiseau descend\net joue avec l'enfant\nDeux et deux quatre...\nRépétez ! dit le maître\net l'enfant joue\nl'oiseau joue avec lui...\nQuatre et quatre huit\nhuit et huit font seize\net seize et seize qu'est-ce qu'ils font ?\nIls ne font rien seize et seize\net surtout pas trente-deux\nde toute façon\net ils s'en vont.\nL'enfant a caché l'oiseau dans son pupitre\net tous les enfants\nentendent sa chanson\net tous les enfants\nentendent la musique\net huit et huit à leur tour s'en vont\net quatre et quatre et deux et deux\nà leur tour fichent le camp\net un et un ne font ni une ni deux\nun à un s'en vont également.\nEt l'oiseau-lyre joue\net l'enfant chante\net le professeur crie :\nQuand vous aurez fini de faire le pitre !\nMais tous les autres enfants\nécoutent la musique\net les murs de la classe\ns'écroulent tranquillement.\nEt les vitres redeviennent sable\nl'encre redevient eau\nles pupitres redeviennent arbres\nla craie redevient falaise\nle porte-plume redevient oiseau.",
+    texte:"Deux et deux quatre\nquatre et quatre huit\nhuit et huit font seize...\nRépétez ! dit le maitre\nDeux et deux quatre\nquatre et quatre huit\nhuit et huit font seize.\nMais voilà l'oiseau-lyre\nqui passe dans le ciel\nl'enfant le voit\nl'enfant l'entend\nl'enfant l'appelle :\nSauve-moi\njoue avec moi\noiseau !\nAlors l'oiseau descend\net joue avec l'enfant\nDeux et deux quatre...\nRépétez ! dit le maitre\net l'enfant joue\nl'oiseau joue avec lui...\nQuatre et quatre huit\nhuit et huit font seize\net seize et seize qu'est-ce qu'ils font ?\nIls ne font rien seize et seize\net surtout pas trente-deux\nde toute façon\net ils s'en vont.\nL'enfant a caché l'oiseau dans son pupitre\net tous les enfants\nentendent sa chanson\net tous les enfants\nentendent la musique\net huit et huit à leur tour s'en vont\net quatre et quatre et deux et deux\nà leur tour fichent le camp\net un et un ne font ni une ni deux\nun à un s'en vont également.\nEt l'oiseau-lyre joue\net l'enfant chante\net le professeur crie :\nQuand vous aurez fini de faire le pitre !\nMais tous les autres enfants\nécoutent la musique\net les murs de la classe\ns'écroulent tranquillement.\nEt les vitres redeviennent sable\nl'encre redevient eau\nles pupitres redeviennent arbres\nla craie redevient falaise\nle porte-plume redevient oiseau.",
     questions:[
       {q:"Que fait l'enfant quand l'oiseau-lyre arrive dans la classe ?", options:["Il continue à répéter ses tables de multiplication sagement","Il cache l'oiseau dans son pupitre et joue avec lui","Il attrape l'oiseau et le montre au professeur"], correct:1},
       {q:"Que se passe-t-il avec les chiffres quand l'oiseau chante ?", options:["Les chiffres deviennent de plus en plus grands et compliqués","Les chiffres s'en vont et disparaissent un à un","Les chiffres se transforment en lettres sur le tableau"], correct:1},
@@ -5910,7 +5910,7 @@ window.POEMES_DATA = {
       {q:"Seul l'enfant entend la chanson de l'oiseau, les autres élèves continuent à travailler.", correct:1},
       {q:"À la fin du poème, les murs de la classe s'écroulent.", correct:0},
     ],
-    figureStyle:{q:"À la fin du poème, l'encre redevient eau, les pupitres redeviennent arbres, la craie redevient falaise. Que veut dire Prévert ?", options:["La classe prend feu et tout brûle à cause de l'oiseau","La nature reprend ses droits et libère les enfants de l'école","L'oiseau est en réalité un magicien qui transforme les objets"], correct:1},
+    figureStyle:{q:"À la fin du poème, l'encre redevient eau, les pupitres redeviennent arbres, la craie redevient falaise. Que veut dire Prévert ?", options:["La classe prend feu et tout brule à cause de l'oiseau","La nature reprend ses droits et libère les enfants de l'école","L'oiseau est en réalité un magicien qui transforme les objets"], correct:1},
     message:{q:"Quel message Prévert veut-il faire passer dans ce poème ?", options:["Il faut toujours bien écouter son professeur et apprendre ses leçons","La liberté et la nature sont plus importantes que les règles imposées à l'école","Les oiseaux sont dangereux car ils perturbent le travail en classe"], correct:1},
   },
   dormeur:{
@@ -5936,7 +5936,7 @@ window.POEMES_DATA = {
     questions:[
       {q:"Comment s'appelle la sorcière décrite dans ce poème ?", options:["Marie-Madeleine","Marie-Mémère","Marie-Mystère"], correct:1},
       {q:"À quoi sert le balai de la sorcière selon le poème ?", options:["À nettoyer sa maison et à préparer ses potions magiques","À voler dans les airs pour voir ses amies ou jeter des sorts","À effrayer les enfants qui passent devant sa maison"], correct:1},
-      {q:"Quels ingrédients la sorcière utilise-t-elle dans sa recette préférée ?", options:["Des herbes fraîches, des fleurs séchées et de la poudre d'étoile","De la bave de crapaud, des vers de terre, une araignée et de la poussière","Du sang de dragon, des ailes de chauve-souris et des plumes de hibou"], correct:1},
+      {q:"Quels ingrédients la sorcière utilise-t-elle dans sa recette préférée ?", options:["Des herbes fraiches, des fleurs séchées et de la poudre d'étoile","De la bave de crapaud, des vers de terre, une araignée et de la poussière","Du sang de dragon, des ailes de chauve-souris et des plumes de hibou"], correct:1},
     ],
     vf:[
       {q:"La sorcière a les cheveux courts et soignés.", correct:1},
@@ -5952,35 +5952,35 @@ window.CONTES_DATA = {
     id:'chatbotte', titre:'Le Chat Botté', auteur:'Charles Perrault',
     emoji:'🐱', couleur:'linear-gradient(135deg,#8b3a00,#e07b00)', borderColor:'#e07b00',
     sections:[
-      {label:'Situation initiale', icon:'🟡', color:'#f0a000', texte:"Il était une fois un meunier qui, en mourant, ne laissa à ses trois fils que son moulin, son âne et son chat. L'aîné reçut le moulin, le second eut l'âne, et le benjamin n'hérita que du chat. Le jeune homme était bien triste : comment allait-il survivre avec un simple animal ? Mais le chat, qui était fort malin, lui dit : « Ne vous inquiétez pas, maître. Donnez-moi un sac et faites-moi faire une paire de bottes, et vous verrez que vous n'êtes pas si mal loti que vous le croyez. »"},
-      {label:'Élément perturbateur', icon:'🔴', color:'#e74c3c', texte:"Le jeune homme fit confiance à son chat. Celui-ci chaussa ses bottes, prit son sac, y mit des herbes et attendit que des lapins viennent s'y prendre. Il porta ensuite sa prise au roi en disant : « Sire, voici un présent de la part de mon maître, le marquis de Carabas. » Le roi, flatté, accepta le cadeau avec plaisir. Le chat répéta cette ruse plusieurs fois, apportant toujours des cadeaux au roi au nom de ce mystérieux marquis."},
-      {label:'Péripéties', icon:'🟠', color:'#e67e22', texte:"Un jour, le chat apprit que le roi allait se promener en carrosse avec sa fille. Il dit à son maître : « Baignez-vous dans la rivière ! » Pendant que le jeune homme se baignait, le carrosse passa. Le chat cria : « Au secours ! Mon maître, le marquis de Carabas, se noie ! » Le roi fit sauver le jeune homme et l'habilla de beaux vêtements. La princesse en tomba amoureuse. Le chat courut en avant et ordonna aux paysans de dire que ces terres appartenaient au marquis. Enfin, il arriva au château d'un terrible ogre qui pouvait se transformer en n'importe quel animal. « Pouvez-vous vous changer en souris ? » demanda-t-il. L'ogre, fier de ses pouvoirs, se transforma en souris. Le chat l'attrapa et le dévora aussitôt."},
-      {label:'Résolution', icon:'🟢', color:'#27ae60', texte:"Quand le carrosse royal arriva au château, le chat accueillit le roi en disant : « Bienvenue dans le château de mon maître, le marquis de Carabas ! » Le roi, impressionné par le château et les terres, proposa sa fille en mariage au jeune homme. Celui-ci accepta avec joie."},
+      {label:'Situation initiale', icon:'🟡', color:'#f0a000', texte:"Il était une fois un meunier qui, en mourant, ne laissa à ses trois fils que son moulin, son âne et son chat. L'ainé reçut le moulin, le second eut l'âne, et le benjamin n'hérita que du chat. Le jeune homme était bien triste : comment allait-il survivre avec un simple animal ? Mais le chat, qui était fort malin, lui dit : « Ne vous inquiétez pas, maitre. Donnez-moi un sac et faites-moi faire une paire de bottes, et vous verrez que vous n'êtes pas si mal loti que vous le croyez. »"},
+      {label:'Élément perturbateur', icon:'🔴', color:'#e74c3c', texte:"Le jeune homme fit confiance à son chat. Celui-ci chaussa ses bottes, prit son sac, y mit des herbes et attendit que des lapins viennent s'y prendre. Il porta ensuite sa prise au roi en disant : « Sire, voici un présent de la part de mon maitre, le marquis de Carabas. » Le roi, flatté, accepta le cadeau avec plaisir. Le chat répéta cette ruse plusieurs fois, apportant toujours des cadeaux au roi au nom de ce mystérieux marquis."},
+      {label:'Péripéties', icon:'🟠', color:'#e67e22', texte:"Un jour, le chat apprit que le roi allait se promener en carrosse avec sa fille. Il dit à son maitre : « Baignez-vous dans la rivière ! » Pendant que le jeune homme se baignait, le carrosse passa. Le chat cria : « Au secours ! Mon maitre, le marquis de Carabas, se noie ! » Le roi fit sauver le jeune homme et l'habilla de beaux vêtements. La princesse en tomba amoureuse. Le chat courut en avant et ordonna aux paysans de dire que ces terres appartenaient au marquis. Enfin, il arriva au château d'un terrible ogre qui pouvait se transformer en n'importe quel animal. « Pouvez-vous vous changer en souris ? » demanda-t-il. L'ogre, fier de ses pouvoirs, se transforma en souris. Le chat l'attrapa et le dévora aussitôt."},
+      {label:'Résolution', icon:'🟢', color:'#27ae60', texte:"Quand le carrosse royal arriva au château, le chat accueillit le roi en disant : « Bienvenue dans le château de mon maitre, le marquis de Carabas ! » Le roi, impressionné par le château et les terres, proposa sa fille en mariage au jeune homme. Celui-ci accepta avec joie."},
       {label:'Situation finale', icon:'🔵', color:'#2980b9', texte:"Le marquis de Carabas épousa la princesse et devint grand seigneur. Quant au chat, il ne courut plus jamais après les souris — sauf pour s'amuser."},
     ],
     questions:[
       {q:"Que reçoit le plus jeune des trois fils en héritage de son père ?", options:["Le moulin et l'âne","Uniquement le chat","Les bottes et le sac"], correct:1},
-      {q:"Comment le chat convainc-il le roi que son maître est un grand seigneur ?", options:["Il lui montre les terres et le château dès le début","Il lui apporte régulièrement des cadeaux au nom du marquis de Carabas","Il organise un grand banquet dans le château de l'ogre"], correct:1},
+      {q:"Comment le chat convainc-il le roi que son maitre est un grand seigneur ?", options:["Il lui montre les terres et le château dès le début","Il lui apporte régulièrement des cadeaux au nom du marquis de Carabas","Il organise un grand banquet dans le château de l'ogre"], correct:1},
       {q:"Comment le chat se débarrasse-t-il de l'ogre ?", options:["Il le pousse par la fenêtre du château pendant son sommeil","Il le défie en duel avec son épée","Il le convainc de se transformer en souris et le dévore"], correct:2},
       {q:"Pourquoi la princesse tombe-t-elle amoureuse du jeune homme ?", options:["Parce qu'elle l'admirait depuis longtemps de loin","Parce qu'il la sauva d'un danger lors de sa promenade","Parce qu'elle le trouva beau après qu'il fut habillé par le roi"], correct:2},
     ],
     vf:[
-      {q:"Le chat révèle au roi que son maître est en réalité le fils d'un simple meunier.", correct:1},
+      {q:"Le chat révèle au roi que son maitre est en réalité le fils d'un simple meunier.", correct:1},
       {q:"L'ogre peut se transformer en différents animaux.", correct:0},
       {q:"Le plus jeune des trois fils reçoit le moulin en héritage de son père.", correct:1},
     ],
     resumes:[
       {texte:"Un jeune homme reçoit un chat en héritage. Grâce à la ruse et à l'intelligence de l'animal, il épouse la fille du roi et devient grand seigneur.", correct:true},
       {texte:"Un jeune homme reçoit un chat en héritage. Il part à l'aventure avec lui et, après avoir vaincu lui-même un terrible ogre, il épouse la fille du roi.", correct:false},
-      {texte:"Un jeune homme reçoit un chat en héritage. Le chat vole les richesses d'un ogre pour les offrir au roi, ce qui permet à son maître d'épouser la princesse.", correct:false},
+      {texte:"Un jeune homme reçoit un chat en héritage. Le chat vole les richesses d'un ogre pour les offrir au roi, ce qui permet à son maitre d'épouser la princesse.", correct:false},
     ],
     ordre:[
       "Le chat convainc l'ogre de se transformer en souris et le dévore.",
       "Le plus jeune des trois fils reçoit uniquement un chat en héritage.",
       "Le roi propose sa fille en mariage au marquis de Carabas.",
       "Le chat apporte des cadeaux au roi au nom du marquis de Carabas.",
-      "Pendant que son maître se baigne, le chat crie qu'il se noie : le roi le fait sauver.",
-      "Le chat demande à son maître des bottes et un sac.",
+      "Pendant que son maitre se baigne, le chat crie qu'il se noie : le roi le fait sauver.",
+      "Le chat demande à son maitre des bottes et un sac.",
     ],
     ordreCorrect:[5,1,6,3,4,2],
   },
@@ -5988,14 +5988,14 @@ window.CONTES_DATA = {
     id:'breme', titre:'Les Musiciens de Brême', auteur:'Frères Grimm',
     emoji:'🎵', couleur:'linear-gradient(135deg,#1a3a5c,#2980b9)', borderColor:'#2980b9',
     sections:[
-      {label:'Situation initiale', icon:'🟡', color:'#f0a000', texte:"Il était une fois un âne qui avait travaillé toute sa vie pour son maître. Devenu vieux et trop faible pour porter des charges, il entendit son maître parler de s'en débarrasser. Sans attendre, l'âne prit la route en direction de Brême, où il espérait devenir musicien. En chemin, il rencontra un chien de chasse, lui aussi chassé par son maître parce qu'il était trop vieux pour courir. « Viens avec moi à Brême, dit l'âne, nous ferons de la musique ensemble ! » Le chien accepta."},
-      {label:'Élément perturbateur', icon:'🔴', color:'#e74c3c', texte:"Plus loin, ils trouvèrent un chat assis au bord du chemin, l'air bien malheureux. Sa maîtresse voulait le noyer car il ne chassait plus les souris. « Viens avec nous ! » dirent l'âne et le chien. Le chat les rejoignit. Enfin, ils aperçurent un coq perché sur un portail, chantant à tue-tête. Son maître voulait le cuisiner pour le repas du lendemain. « Tu as une belle voix ! Joins-toi à nous ! » Et le coq sauta sur le chemin avec eux. Les quatre compagnons marchèrent longtemps vers Brême."},
+      {label:'Situation initiale', icon:'🟡', color:'#f0a000', texte:"Il était une fois un âne qui avait travaillé toute sa vie pour son maitre. Devenu vieux et trop faible pour porter des charges, il entendit son maitre parler de s'en débarrasser. Sans attendre, l'âne prit la route en direction de Brême, où il espérait devenir musicien. En chemin, il rencontra un chien de chasse, lui aussi chassé par son maitre parce qu'il était trop vieux pour courir. « Viens avec moi à Brême, dit l'âne, nous ferons de la musique ensemble ! » Le chien accepta."},
+      {label:'Élément perturbateur', icon:'🔴', color:'#e74c3c', texte:"Plus loin, ils trouvèrent un chat assis au bord du chemin, l'air bien malheureux. Sa maitresse voulait le noyer car il ne chassait plus les souris. « Viens avec nous ! » dirent l'âne et le chien. Le chat les rejoignit. Enfin, ils aperçurent un coq perché sur un portail, chantant à tue-tête. Son maitre voulait le cuisiner pour le repas du lendemain. « Tu as une belle voix ! Joins-toi à nous ! » Et le coq sauta sur le chemin avec eux. Les quatre compagnons marchèrent longtemps vers Brême."},
       {label:'Péripéties', icon:'🟠', color:'#e67e22', texte:"Comme la nuit tombait, le coq aperçut au loin une lumière. Ils découvrirent une maison bien éclairée, avec une table couverte de bonnes choses — et autour, des brigands qui festoyaient. Ils décidèrent de les chasser. L'âne posa ses pattes sur le rebord de la fenêtre, le chien sauta sur le dos de l'âne, le chat grimpa sur le chien, et le coq se percha tout en haut. Puis, au signal, ils firent le plus grand vacarme possible. Épouvantés, les brigands s'enfuirent. Plus tard dans la nuit, un brigand revint vérifier. Dans l'obscurité, le chat lui griffa le visage, le chien le mordit à la jambe, l'âne lui donna un coup de sabot et le coq se mit à chanter. Le brigand s'enfuit terrorisé et raconta qu'une horrible sorcière, un géant et un juge crieur l'avaient attaqué. Les brigands ne revinrent jamais."},
       {label:'Résolution', icon:'🟢', color:'#27ae60', texte:"Les quatre animaux s'installèrent définitivement dans la maison. Ils avaient trouvé un foyer confortable et chaleureux où ils pouvaient vivre en paix, ensemble."},
       {label:'Situation finale', icon:'🔵', color:'#2980b9', texte:"Ils n'allèrent finalement jamais à Brême — ils n'en avaient plus besoin. Mais on dit que si tu passes par là une nuit, tu peux encore entendre au loin le braillement d'un âne, l'aboiement d'un chien, le miaulement d'un chat et le chant d'un coq."},
     ],
     questions:[
-      {q:"Pourquoi l'âne quitte-t-il son maître ?", options:["Parce qu'il rêve depuis toujours de devenir musicien à Brême","Parce que son maître veut s'en débarrasser car il est trop vieux","Parce qu'il se dispute avec son maître après une longue journée de travail"], correct:1},
+      {q:"Pourquoi l'âne quitte-t-il son maitre ?", options:["Parce qu'il rêve depuis toujours de devenir musicien à Brême","Parce que son maitre veut s'en débarrasser car il est trop vieux","Parce qu'il se dispute avec son maitre après une longue journée de travail"], correct:1},
       {q:"Combien d'animaux composent le groupe qui marche vers Brême ?", options:["Trois","Cinq","Quatre"], correct:2},
       {q:"Comment les animaux parviennent-ils à faire fuir les brigands ?", options:["En mettant le feu à la maison pour les obliger à sortir","En se superposant et en faisant un vacarme terrible à la fenêtre","En attaquant les brigands un par un pendant leur sommeil"], correct:1},
       {q:"Pourquoi le brigand envoyé vérifier la maison repart-il terrorisé ?", options:["Il voit les quatre animaux danser autour d'un feu","Il entend une voix mystérieuse lui ordonner de partir","Il est griffé, mordu, frappé et surpris par le chant du coq dans le noir"], correct:2},
@@ -6006,13 +6006,13 @@ window.CONTES_DATA = {
       {q:"Les brigands reviennent le lendemain matin pour reprendre leur maison.", correct:1},
     ],
     resumes:[
-      {texte:"Quatre vieux animaux, chassés par leurs maîtres, s'associent pour aller à Brême. En chemin, ils chassent des brigands de leur maison grâce à leur ruse et s'y installent pour toujours.", correct:true},
+      {texte:"Quatre vieux animaux, chassés par leurs maitres, s'associent pour aller à Brême. En chemin, ils chassent des brigands de leur maison grâce à leur ruse et s'y installent pour toujours.", correct:true},
       {texte:"Quatre animaux musiciens partent pour Brême, chassent des brigands grâce à leur musique et deviennent célèbres dans toute la région.", correct:false},
-      {texte:"Quatre vieux animaux, chassés par leurs maîtres, partent pour Brême. Ils volent la maison de brigands endormis et partagent leur butin avec les habitants du village.", correct:false},
+      {texte:"Quatre vieux animaux, chassés par leurs maitres, partent pour Brême. Ils volent la maison de brigands endormis et partagent leur butin avec les habitants du village.", correct:false},
     ],
     ordre:[
       "Les animaux se superposent et font fuir les brigands par leur vacarme.",
-      "L'âne quitte son maître qui veut s'en débarrasser et part vers Brême.",
+      "L'âne quitte son maitre qui veut s'en débarrasser et part vers Brême.",
       "Un brigand revient vérifier la maison mais repart terrorisé.",
       "Le chat, le chien et le coq rejoignent l'âne sur la route.",
       "Les quatre animaux s'installent définitivement dans la maison.",
@@ -6030,7 +6030,7 @@ window.TEXTES_DESCRIPTIFS_DATA = {
     emoji:'📚',
     couleur:'linear-gradient(135deg,#6b2737,#c0392b)',
     bordure:'#c0392b',
-    texte:`Derrière son comptoir encombré de livres empilés jusqu'au plafond, Monsieur Anselme semblait faire partie du décor, comme un meuble oublié là depuis des siècles. C'était un vieil homme voûté aux épaules étroites, dont le dos courbé lui donnait l'allure d'un <strong>point d'interrogation vivant</strong>. Ses cheveux blancs, fins comme de la soie, formaient une couronne clairsemée autour de son crâne rose et luisant. Son visage, creusé de rides profondes, ressemblait à une <strong>vieille carte géographique</strong>. Deux petits yeux noisette, vifs et malicieux, brillaient derrière des lunettes rondes perchées au bout d'un nez en forme de bec de canard. Ses mains, noueuses et tachées d'encre, caressaient les couvertures des livres avec une tendresse infinie, comme s'il s'agissait d'êtres vivants. Toujours vêtu d'un gilet de laine bordeaux élimé aux coudes, il dégageait une douce odeur de <strong>papier ancien et de café froid</strong>.`,
+    texte:`Derrière son comptoir encombré de livres empilés jusqu'au plafond, Monsieur Anselme semblait faire partie du décor, comme un meuble oublié là depuis des siècles. C'était un vieil homme vouté aux épaules étroites, dont le dos courbé lui donnait l'allure d'un <strong>point d'interrogation vivant</strong>. Ses cheveux blancs, fins comme de la soie, formaient une couronne clairsemée autour de son crâne rose et luisant. Son visage, creusé de rides profondes, ressemblait à une <strong>vieille carte géographique</strong>. Deux petits yeux noisette, vifs et malicieux, brillaient derrière des lunettes rondes perchées au bout d'un nez en forme de bec de canard. Ses mains, noueuses et tachées d'encre, caressaient les couvertures des livres avec une tendresse infinie, comme s'il s'agissait d'êtres vivants. Toujours vêtu d'un gilet de laine bordeaux élimé aux coudes, il dégageait une douce odeur de <strong>papier ancien et de café froid</strong>.`,
     questions:[
       {q:"Comment est décrit le dos de Monsieur Anselme ?", options:["Droit et élégant comme celui d'un militaire","Courbé comme un point d'interrogation","Penché sur le côté à cause d'une blessure ancienne"], correct:1},
       {q:"À quoi le visage de Monsieur Anselme est-il comparé ?", options:["À une vieille carte géographique","À un parchemin jauni par le temps","À une pomme ridée séchée au soleil"], correct:0},
@@ -6046,7 +6046,7 @@ window.TEXTES_DESCRIPTIFS_DATA = {
     emoji:'🌨️',
     couleur:'linear-gradient(135deg,#1a3a2a,#2d7a4a)',
     bordure:'#2d7a4a',
-    texte:`Au cœur de la forêt ardennaise, l'hiver avait tout recouvert de son grand manteau blanc. Les sapins, ployant sous le poids de la neige fraîche, formaient de hautes silhouettes immobiles, pareilles à des <strong>géants endormis</strong>. Entre leurs troncs sombres et rugueux, la lumière filtrait à peine, teintant la neige de <strong>reflets bleutés et argentés</strong>. Pas un bruit. Pas un souffle. Seul le craquement sourd des branches sous le gel brisait parfois ce silence absolu. Le sol, recouvert d'une épaisse couche blanche et poudreuse, gardait les traces de quelques pas d'animaux — une ligne de petites empreintes rondes qui disparaissait entre les arbres. Une odeur fraîche et piquante de <strong>résine et de froid</strong> flottait dans l'air. Au loin, un ruisseau encore libre de glace murmurait doucement, comme pour rappeler que la vie n'avait pas tout à fait disparu sous la neige.`,
+    texte:`Au cœur de la forêt ardennaise, l'hiver avait tout recouvert de son grand manteau blanc. Les sapins, ployant sous le poids de la neige fraiche, formaient de hautes silhouettes immobiles, pareilles à des <strong>géants endormis</strong>. Entre leurs troncs sombres et rugueux, la lumière filtrait à peine, teintant la neige de <strong>reflets bleutés et argentés</strong>. Pas un bruit. Pas un souffle. Seul le craquement sourd des branches sous le gel brisait parfois ce silence absolu. Le sol, recouvert d'une épaisse couche blanche et poudreuse, gardait les traces de quelques pas d'animaux — une ligne de petites empreintes rondes qui disparaissait entre les arbres. Une odeur fraiche et piquante de <strong>résine et de froid</strong> flottait dans l'air. Au loin, un ruisseau encore libre de glace murmurait doucement, comme pour rappeler que la vie n'avait pas tout à fait disparu sous la neige.`,
     questions:[
       {q:"À quoi les sapins couverts de neige sont-ils comparés ?", options:["À des fantômes blancs flottant dans la brume","À des géants endormis","À des soldats alignés au garde-à-vous"], correct:1},
       {q:"Quelle couleur prend la neige à cause de la lumière filtrée ?", options:["Des reflets dorés et orangés comme au coucher du soleil","Des reflets roses et mauves comme à l'aube","Des reflets bleutés et argentés"], correct:2},
@@ -6062,10 +6062,10 @@ window.TEXTES_DESCRIPTIFS_DATA = {
     emoji:'🦊',
     couleur:'linear-gradient(135deg,#8b3a00,#e07b00)',
     bordure:'#e07b00',
-    texte:`Tapi au bord du champ enneigé, le renard attendait, immobile comme une <strong>statue de roux et de feu</strong>. Son pelage épais, d'un beau <strong>roux flamboyant mêlé de blanc</strong> sur la gorge et le ventre, luisait doucement sous le soleil d'hiver. Sa longue queue touffue, presque aussi grande que son corps, était enroulée autour de ses pattes comme une <strong>écharpe de fourrure</strong>. Son museau fin et pointu, frémissant légèrement, capturait les moindres odeurs portées par le vent. Ses oreilles triangulaires, dressées bien droites sur sa tête, pivotaient comme de petits <strong>radars</strong> à l'affût du moindre son. Ses yeux en amande, d'un <strong>jaune ambré</strong> presque lumineux, fixaient un point invisible dans la neige. Soudain, sans crier gare, il bondit en arc de cercle et plongea le museau dans la neige pour en ressortir avec une souris dans les mâchoires, les oreilles fièrement dressées, l'air satisfait.`,
+    texte:`Tapi au bord du champ enneigé, le renard attendait, immobile comme une <strong>statue de roux et de feu</strong>. Son pelage épais, d'un beau <strong>roux flamboyant mêlé de blanc</strong> sur la gorge et le ventre, luisait doucement sous le soleil d'hiver. Sa longue queue touffue, presque aussi grande que son corps, était enroulée autour de ses pattes comme une <strong>écharpe de fourrure</strong>. Son museau fin et pointu, frémissant légèrement, capturait les moindres odeurs portées par le vent. Ses oreilles triangulaires, dressées bien droites sur sa tête, pivotaient comme de petits <strong>radars</strong> à l'affut du moindre son. Ses yeux en amande, d'un <strong>jaune ambré</strong> presque lumineux, fixaient un point invisible dans la neige. Soudain, sans crier gare, il bondit en arc de cercle et plongea le museau dans la neige pour en ressortir avec une souris dans les mâchoires, les oreilles fièrement dressées, l'air satisfait.`,
     questions:[
       {q:"De quelle couleur est le pelage du renard ?", options:["Brun foncé sur le dos et beige clair sur le ventre","Gris argenté avec des reflets blancs sous la lumière","Roux flamboyant mêlé de blanc sur la gorge et le ventre"], correct:2},
-      {q:"À quoi la queue du renard est-elle comparée ?", options:["À un plumet de cavalier planté sur son arrière-train","À une écharpe de fourrure enroulée autour de ses pattes","À un balai retourné traînant sur la neige"], correct:1},
+      {q:"À quoi la queue du renard est-elle comparée ?", options:["À un plumet de cavalier planté sur son arrière-train","À une écharpe de fourrure enroulée autour de ses pattes","À un balai retourné trainant sur la neige"], correct:1},
       {q:"Comment sont décrites les oreilles du renard ?", options:["Rondes et poilues, légèrement tombantes sur les côtés","Triangulaires et dressées, pivotant comme des radars","Plates et collées contre la tête pour résister au froid"], correct:1},
       {q:"Comment le renard attrape-t-il sa proie ?", options:["Il la pourchasse en courant très vite dans la neige","Il bondit en arc de cercle et plonge le museau dans la neige","Il creuse dans la neige avec ses pattes avant"], correct:1},
       {q:"Les yeux du renard sont décrits comme noirs et brillants.", options:["Vrai","Faux"], correct:1}
@@ -6082,7 +6082,7 @@ window.SYNONYMES_POOL = [
   {phrase:"L\'enfant était ___ face au chien.", mot:"intrépide", options:["méfiant","courageux","curieux","surpris"], correct:1, explication:'"Intrépide" signifie qui n\'a peur de rien.'},
   {phrase:"Le discours du maire était ___.", mot:"ennuyeux", options:["long","confus","monotone","incompréhensible"], correct:2, explication:'"Monotone" désigne quelque chose d\'ennuyeux car toujours pareil.'},
   {phrase:"La forêt semblait ___ à la tombée de la nuit.", mot:"mystérieuse", options:["inquiétante","silencieuse","dense","sombre"], correct:0, explication:'"Mystérieuse" et "inquiétante" évoquent tous les deux quelque chose d\'étrange.'},
-  {phrase:"Le repas préparé par grand-mère était ___.", mot:"savoureux", options:["copieux","chaud","délicieux","original"], correct:2, explication:'"Savoureux" et "délicieux" signifient tous les deux qui a très bon goût.'},
+  {phrase:"Le repas préparé par grand-mère était ___.", mot:"savoureux", options:["copieux","chaud","délicieux","original"], correct:2, explication:'"Savoureux" et "délicieux" signifient tous les deux qui a très bon gout.'},
   {phrase:"Le scientifique était ___ dans son travail.", mot:"méthodique", options:["rigoureux","rapide","passionné","expérimenté"], correct:0, explication:'"Méthodique" et "rigoureux" désignent quelqu\'un qui travaille avec ordre et précision.'},
   {phrase:"Le chat ___ les oiseaux depuis la fenêtre.", mot:"observait", options:["guettait","épiait","cherchait","attendait"], correct:1, explication:'"Épier" signifie observer attentivement et discrètement.'},
   {phrase:"Le vent ___ les feuilles des arbres.", mot:"agitait", options:["secouait","arrachait","balayait","courbait"], correct:0, explication:'"Agiter" et "secouer" signifient tous les deux faire bouger dans tous les sens.'},
@@ -6101,13 +6101,13 @@ window.SYNONYMES_POOL = [
   {phrase:"Le torrent ___ la montagne avec fracas.", mot:"dévalait", options:["traversait","dégringolait","descendait","coulait"], correct:1, explication:'"Dévaler" et "dégringoler" signifient descendre très rapidement.'},
   {phrase:"L\'enseignant était ___ avec ses élèves.", mot:"exigeant", options:["sévère","strict","injuste","impatient"], correct:1, explication:'"Exigeant" et "strict" désignent quelqu\'un qui demande beaucoup d\'efforts.'},
   {phrase:"Le blessé ressentait une ___ douleur dans le bras.", mot:"vive", options:["longue","terrible","intense","profonde"], correct:2, explication:'"Vive" et "intense" qualifient tous les deux une douleur forte et immédiate.'},
-  {phrase:"Le paysage était ___ sous le soleil brûlant.", mot:"aride", options:["desséché","plat","rocheux","brûlant"], correct:0, explication:'"Aride" et "desséché" décrivent un terrain privé d\'eau et de végétation.'},
+  {phrase:"Le paysage était ___ sous le soleil brulant.", mot:"aride", options:["desséché","plat","rocheux","brulant"], correct:0, explication:'"Aride" et "desséché" décrivent un terrain privé d\'eau et de végétation.'},
   {phrase:"L\'aventurier ___ la falaise sans difficulté.", mot:"gravit", options:["escalada","traversa","contourna","atteignit"], correct:0, explication:'"Gravir" et "escalader" signifient tous les deux monter en s\'aidant des mains.'},
   {phrase:"La nouvelle se ___ rapidement dans le village.", mot:"répandit", options:["arriva","circula","se propagea","surprit"], correct:2, explication:'"Se répandre" et "se propager" signifient se diffuser dans toutes les directions.'},
   {phrase:"Le roi était réputé pour sa grande ___.", mot:"clémence", options:["sagesse","puissance","indulgence","générosité"], correct:2, explication:'"Clémence" et "indulgence" désignent la disposition à pardonner.'},
   {phrase:"La fillette ___ dans le froid de la nuit.", mot:"frissonnait", options:["grelottait","tremblait","soufflait","pleurait"], correct:1, explication:'"Frissonner" et "trembler" désignent tous les deux un mouvement involontaire causé par le froid.'},
   {phrase:"Emma ___ le coucher de soleil.", mot:"contemplait", options:["photographiait","admirait","regardait longuement","observait"], correct:2, explication:'"Contempler" signifie regarder longuement et avec admiration.'},
-  {phrase:"Le soleil ___ derrière les nuages.", mot:"disparaissait", options:["se cachait","brillait","descendait","s\'éteignait"], correct:0, explication:'"Disparaître" et "se cacher" expriment ici la même idée.'},
+  {phrase:"Le soleil ___ derrière les nuages.", mot:"disparaissait", options:["se cachait","brillait","descendait","s\'éteignait"], correct:0, explication:'"Disparaitre" et "se cacher" expriment ici la même idée.'},
   {phrase:"Le discours fut accueilli avec ___.", mot:"enthousiasme", options:["attention","respect","applaudissements","ferveur"], correct:3, explication:'"Enthousiasme" et "ferveur" expriment tous les deux une passion intense.'},
 ];
 
@@ -6118,12 +6118,12 @@ window.ANTONYMES_POOL = [
   {phrase:"La décision du juge était ___.", mot:"sévère", options:["rapide","injuste","indulgente","incomprise"], correct:2, explication:'L\'antonyme de "sévère" est "indulgente" — qui pardonne facilement.'},
   {phrase:"L\'appartement était ___.", mot:"exigu", options:["spacieux","lumineux","agréable","moderne"], correct:0, explication:'L\'antonyme d\'"exigu" (très petit) est "spacieux" (très grand).'},
   {phrase:"Le discours du président était ___.", mot:"ambigu", options:["long","ennuyeux","clair","important"], correct:2, explication:'L\'antonyme d\'"ambigu" (que l\'on peut interpréter de plusieurs façons) est "clair".'},
-  {phrase:"La soupe servie était ___.", mot:"brûlante", options:["salée","mauvaise","légère","froide"], correct:3, explication:'L\'antonyme de "brûlante" est "froide".'},
+  {phrase:"La soupe servie était ___.", mot:"brulante", options:["salée","mauvaise","légère","froide"], correct:3, explication:'L\'antonyme de "brulante" est "froide".'},
   {phrase:"La petite fille était ___ en présence des adultes.", mot:"timide", options:["gentille","audacieuse","curieuse","souriante"], correct:1, explication:'L\'antonyme de "timide" est "audacieuse" — qui ose facilement.'},
   {phrase:"Le sportif était ___ sur le terrain.", mot:"agile", options:["rapide","fort","maladroit","lent"], correct:2, explication:'L\'antonyme d\'"agile" (souple et rapide) est "maladroit".'},
   {phrase:"La forêt était ___ dans cette région.", mot:"dense", options:["clairsemée","humide","sombre","silencieuse"], correct:0, explication:'L\'antonyme de "dense" (très serré) est "clairsemée" (peu fournie).'},
   {phrase:"Le général ___ à ses soldats d\'avancer.", mot:"ordonna", options:["interdit","supplia","demanda","conseilla"], correct:0, explication:'L\'antonyme d\'"ordonner" est "interdire" — l\'un impose une action, l\'autre la refuse.'},
-  {phrase:"Le soleil ___ la terre au printemps.", mot:"réchauffait", options:["séchait","refroidissait","éclairait","brûlait"], correct:1, explication:'L\'antonyme de "réchauffer" est "refroidir".'},
+  {phrase:"Le soleil ___ la terre au printemps.", mot:"réchauffait", options:["séchait","refroidissait","éclairait","brulait"], correct:1, explication:'L\'antonyme de "réchauffer" est "refroidir".'},
   {phrase:"Le chat ___ sur la souris.", mot:"bondit", options:["marcha","s\'immobilisa","tomba","recula"], correct:1, explication:'L\'antonyme de "bondir" (s\'élancer) est "s\'immobiliser" (s\'arrêter complètement).'},
   {phrase:"La rivière ___ à mesure qu\'elle descendait.", mot:"s\'élargissait", options:["accélérait","débordait","se rétrécissait","s\'assèchait"], correct:2, explication:'L\'antonyme de "s\'élargir" est "se rétrécir".'},
   {phrase:"L\'enfant ___ toujours à ses parents.", mot:"obéissait", options:["écoutait","désobéissait","répondait","résistait"], correct:1, explication:'L\'antonyme d\'"obéir" est "désobéir".'},
@@ -6162,7 +6162,7 @@ window.DIAL_MARCHE_DATA = {
     {qui:'Margot', texte:'Eh bien, beau paysan ! Tu as l\'air d\'un homme prospère ce matin ! Qu\'est-ce qui t\'amène sur mon marché ?', didascalie:'s\'approchant avec un grand sourire'},
     {qui:'Renaud', texte:'Je cherche un remède pour ma vache. Elle tousse et refuse de manger depuis trois jours.'},
     {qui:'Margot', texte:'Tu tombes à pic ! J\'ai exactement ce qu\'il te faut ! Regarde cette poudre magique venue d\'Orient ! Une pincée dans l\'eau de ta vache, et demain matin elle gambade comme un agneau de printemps !', didascalie:'avec enthousiasme'},
-    {qui:'Renaud', texte:'Et ça coûte combien, cette poudre magique ?', didascalie:'suspicieux'},
+    {qui:'Renaud', texte:'Et ça coute combien, cette poudre magique ?', didascalie:'suspicieux'},
     {qui:'Margot', texte:'Pour toi, mon ami, prix d\'ami : une pièce d\'argent !'},
     {qui:'Renaud', texte:'Une pièce d\'argent ?! C\'est tout ce que j\'ai !'},
     {qui:'Théodore', texte:'N\'écoutez pas cette femme, brave homme ! Je suis Théodore, médecin renommé dans tout le royaume ! Cette poudre n\'est que de la farine de moulin teintée en jaune ! J\'ai moi-même le remède qu\'il vous faut : une décoction de plantes rares récoltées sous la pleine lune !', didascalie:'s\'interposant avec autorité'},
@@ -6228,7 +6228,7 @@ window.DIAL_ARMSTRONG_DATA = {
   repliques: [
     {qui:'didascalie', texte:'Dans le studio de télévision, Neil Armstrong est installé face à la journaliste sous les projecteurs.'},
     {qui:'La Journaliste', texte:'Monsieur Armstrong, bonjour et bienvenue. Le monde entier a retenu son souffle en juillet 1969 en vous voyant descendre de l\'échelle. Que ressent-on au moment de poser le pied sur la Lune ?', didascalie:'avec admiration'},
-    {qui:'Neil Armstrong', texte:'Bonjour. C\'était un moment d\'intense concentration et d\'émerveillement. Il n\'y avait pas de place pour la peur : chaque seconde et chaque geste avaient été répétés des centaines de fois à l\'entraînement.', didascalie:'calmement'},
+    {qui:'Neil Armstrong', texte:'Bonjour. C\'était un moment d\'intense concentration et d\'émerveillement. Il n\'y avait pas de place pour la peur : chaque seconde et chaque geste avaient été répétés des centaines de fois à l\'entrainement.', didascalie:'calmement'},
     {qui:'La Journaliste', texte:'Pourtant, l\'alunissage du module Eagle ne s\'est pas déroulé exactement comme prévu...', didascalie:'curieuse'},
     {qui:'Neil Armstrong', texte:'En effet ! Le pilote automatique nous dirigeait droit vers un cratère encombré de gros rochers. J\'ai dû reprendre les commandes manuelles pour survoler la zone et trouver un terrain plat et sûr avant d\'épuiser notre carburant. Il ne nous restait qu\'une trentaine de secondes de réserve !'},
     {qui:'La Journaliste', texte:'Une sacrée frayeur ! Et cette phrase devenue mythique : « C\'est un petit pas pour un homme, mais un bond de géant pour l\'humanité », l\'aviez-vous préparée à l\'avance ?', didascalie:'souriante'},
@@ -6323,7 +6323,7 @@ window.DIAL_CONSEIL_DATA = {
   intentions:[
     {replique:'"Un conseil de classe n\'est pas une foire d\'empoigne. Avez-vous remarqué que chacune de vos propositions est pleine de qualités ?"',
      opts:['Rappeler les règles du respect mutuel et encourager la recherche d\'un compromis','Punir les élèves en les renvoyant en récréation','Donner raison à Léa','Annuler la réunion de conseil'],
-     correct:0, explication:'Le maître apaise les tensions et recentre le débat sur la coopération et l\'écoute constructive.'},
+     correct:0, explication:'Le maitre apaise les tensions et recentre le débat sur la coopération et l\'écoute constructive.'},
     {replique:'"Et toi Léa, tu ne penses qu\'à l\'effort physique ! Tout le monde n\'est pas un grand sportif !"',
      opts:['Complimenter Léa sur ses qualités athlétiques','Exprimer sa frustration face à un projet qui manque d\'inclusivité','Demander des explications sur le règlement intérieur','Proposer un match de football'],
      correct:1, explication:'Maxime exprime son irritation car il souhaite une activité où chaque élève se sent à l\'aise.'},
@@ -6517,7 +6517,7 @@ window.SAVOIR_ECOUTER_DATA = [
       {
         num: 5,
         type: 'qcm',
-        q: "Pourquoi les habitants apprenaient-ils à reconnaître les différentes mélodies du carillon ?",
+        q: "Pourquoi les habitants apprenaient-ils à reconnaitre les différentes mélodies du carillon ?",
         options: [
           "Parce que c'était un jeu pour les enfants",
           "Parce que chaque mélodie transmettait un message important, comme une alerte",
@@ -6533,7 +6533,7 @@ window.SAVOIR_ECOUTER_DATA = [
         options: [
           "Parce qu'il est le plus grand du monde",
           "Parce que cette tradition musicale est considérée comme un trésor culturel à préserver",
-          "Parce qu'il a coûté très cher à construire",
+          "Parce qu'il a couté très cher à construire",
           "Parce qu'il est interdit de le faire sonner"
         ],
         correct: 1
@@ -6545,7 +6545,7 @@ window.SAVOIR_ECOUTER_DATA = [
         options: [
           "La tour a été mal construite",
           "La forme de la tour se rétrécit vers le sommet",
-          "Les marches ont été abîmées par le temps",
+          "Les marches ont été abimées par le temps",
           "Il y a eu une erreur dans les plans de construction"
         ],
         correct: 1
@@ -6751,7 +6751,7 @@ window.SAVOIR_ECOUTER_DATA = [
         options: [
           "S'il faut acheter beaucoup d'ingrédients",
           "Parce qu'il permet de réutiliser du pain qu'on aurait sinon jeté",
-          "Parce que cette recette coûte très cher",
+          "Parce que cette recette coute très cher",
           "Parce qu'elle nécessite beaucoup de temps de préparation"
         ],
         correct: 1
@@ -6762,7 +6762,7 @@ window.SAVOIR_ECOUTER_DATA = [
         q: "Pourquoi faut-il surveiller attentivement la cuisson du pain perdu ?",
         options: [
           "Parce que le pain peut s'envoler de la poêle",
-          "Parce que le sucre du mélange peut faire brûler le pain rapidement",
+          "Parce que le sucre du mélange peut faire bruler le pain rapidement",
           "Parce que la poêle peut casser",
           "Parce qu'il faut compter le nombre de tranches"
         ],
@@ -6842,7 +6842,7 @@ window.SAVOIR_ECOUTER_DATA = [
         options: [
           "À éclairer le chemin la nuit",
           "À empêcher les visiteurs de se perdre",
-          "À protéger la tourbe en permettant de traverser sans l'abîmer",
+          "À protéger la tourbe en permettant de traverser sans l'abimer",
           "À nourrir les animaux"
         ],
         correct: 2
@@ -7128,7 +7128,7 @@ window.SAVOIR_ECOUTER_DATA = [
       {
         num: 8,
         type: 'vf',
-        q: 'Léa connaît déjà les règles de base des échecs avant cette discussion.',
+        q: 'Léa connait déjà les règles de base des échecs avant cette discussion.',
         options: ['Vrai', 'Faux'],
         correct: 0
       },
@@ -7570,10 +7570,10 @@ window.EXERCICES_NOM = [
     ]
   },
   {
-    text: "La maîtresse écrit la date au tableau vert .",
+    text: "La maitresse écrit la date au tableau vert .",
     tokens: [
       { text: "La", cat: "det" },
-      { text: "maîtresse", cat: "nc" },
+      { text: "maitresse", cat: "nc" },
       { text: "écrit", cat: "v" },
       { text: "la", cat: "det" },
       { text: "date", cat: "nc" },
@@ -7891,7 +7891,7 @@ window.EXERCICES_NOM = [
     ]
   },
   {
-    text: "Le pirate a caché son coffre sur une île déserte .",
+    text: "Le pirate a caché son coffre sur une ile déserte .",
     tokens: [
       { text: "Le", cat: "det" },
       { text: "pirate", cat: "nc" },
@@ -7901,7 +7901,7 @@ window.EXERCICES_NOM = [
       { text: "coffre", cat: "nc" },
       { text: "sur", cat: "prep" },
       { text: "une", cat: "det" },
-      { text: "île", cat: "nc" },
+      { text: "ile", cat: "nc" },
       { text: "déserte", cat: "adj" },
       { text: ".", punctuation: true }
     ]
@@ -7956,12 +7956,12 @@ window.EXERCICES_NOM = [
     ]
   },
   {
-    text: "Une magnifique licorne apparaît dans les contes pour enfants .",
+    text: "Une magnifique licorne apparait dans les contes pour enfants .",
     tokens: [
       { text: "Une", cat: "det" },
       { text: "magnifique", cat: "adj" },
       { text: "licorne", cat: "nc" },
-      { text: "apparaît", cat: "v" },
+      { text: "apparait", cat: "v" },
       { text: "dans", cat: "prep" },
       { text: "les", cat: "det" },
       { text: "contes", cat: "nc" },
@@ -8993,11 +8993,11 @@ window.EXERCICES_ADJECTIF = [
     ]
   },
   {
-    text: "Le nouveau maître explique une leçon difficile .",
+    text: "Le nouveau maitre explique une leçon difficile .",
     tokens: [
       { text: "Le", cat: "det" },
       { text: "nouveau", cat: "adj" },
-      { text: "maître", cat: "nc" },
+      { text: "maitre", cat: "nc" },
       { text: "explique", cat: "v" },
       { text: "une", cat: "det" },
       { text: "leçon", cat: "nc" },
@@ -9169,11 +9169,11 @@ window.EXERCICES_ADJECTIF = [
     ]
   },
   {
-    text: "Une eau fraîche coule dans la petite rivière claire .",
+    text: "Une eau fraiche coule dans la petite rivière claire .",
     tokens: [
       { text: "Une", cat: "det" },
       { text: "eau", cat: "nc" },
-      { text: "fraîche", cat: "adj" },
+      { text: "fraiche", cat: "adj" },
       { text: "coule", cat: "v" },
       { text: "dans", cat: "prep" },
       { text: "la", cat: "det" },
@@ -9211,11 +9211,11 @@ window.EXERCICES_ADJECTIF = [
     ]
   },
   {
-    text: "Une grosse boîte verte est posée sur la table ronde .",
+    text: "Une grosse boite verte est posée sur la table ronde .",
     tokens: [
       { text: "Une", cat: "det" },
       { text: "grosse", cat: "adj" },
-      { text: "boîte", cat: "nc" },
+      { text: "boite", cat: "nc" },
       { text: "verte", cat: "adj" },
       { text: "est", cat: "v" },
       { text: "posée", cat: "v" },
@@ -9267,7 +9267,7 @@ window.EXERCICES_ADJECTIF = [
     ]
   },
   {
-    text: "Le chien fidèle attend son jeune maître devant la porte .",
+    text: "Le chien fidèle attend son jeune maitre devant la porte .",
     tokens: [
       { text: "Le", cat: "det" },
       { text: "chien", cat: "nc" },
@@ -9275,7 +9275,7 @@ window.EXERCICES_ADJECTIF = [
       { text: "attend", cat: "v" },
       { text: "son", cat: "det" },
       { text: "jeune", cat: "adj" },
-      { text: "maître", cat: "nc" },
+      { text: "maitre", cat: "nc" },
       { text: "devant", cat: "prep" },
       { text: "la", cat: "det" },
       { text: "porte", cat: "nc" },
@@ -9480,11 +9480,11 @@ window.EXERCICES_ADJECTIF = [
     ]
   },
   {
-    text: "Cette boisson fraîche est parfaite pour une journée chaude .",
+    text: "Cette boisson fraiche est parfaite pour une journée chaude .",
     tokens: [
       { text: "Cette", cat: "det" },
       { text: "boisson", cat: "nc" },
-      { text: "fraîche", cat: "adj" },
+      { text: "fraiche", cat: "adj" },
       { text: "est", cat: "v" },
       { text: "parfaite", cat: "adj" },
       { text: "pour", cat: "prep" },
@@ -9553,8 +9553,8 @@ window.EXERCICES_ADJECTIF_ACCORD = [
   { before: "Le professeur explique une leçon ", adjective: "difficile", after: ".", answer: "difficile", exp: "Le nom « leçon » est féminin singulier. L'adjectif « difficile » se terminant déjà par un « e », il ne change pas." },
   { before: "Les voitures roulent sur des routes ", adjective: "mouillé", after: ".", answer: "mouillées", exp: "Le nom « routes » est féminin pluriel, on accorde l'adjectif « mouillé » en lui ajoutant « es »." },
   { before: "Une fillette ", adjective: "attentif", after: " écoute la consigne.", answer: "attentive", exp: "Le nom « fillette » est féminin singulier. Le « f » final de « attentif » devient « ve » au féminin." },
-  { before: "Des herbes ", adjective: "frais", after: " poussent au bord de la rivière.", answer: "fraîches", exp: "Le nom « herbes » est féminin pluriel. Le féminin de « frais » est « fraîche », auquel on ajoute un « s » au pluriel." },
-  { before: "La maîtresse est très ", adjective: "heureux", after: " de notre travail.", answer: "heureuse", exp: "Le nom « maîtresse » est féminin singulier. Le « x » final de « heureux » devient « se » au féminin." },
+  { before: "Des herbes ", adjective: "frais", after: " poussent au bord de la rivière.", answer: "fraiches", exp: "Le nom « herbes » est féminin pluriel. Le féminin de « frais » est « fraiche », auquel on ajoute un « s » au pluriel." },
+  { before: "La maitresse est très ", adjective: "heureux", after: " de notre travail.", answer: "heureuse", exp: "Le nom « maitresse » est féminin singulier. Le « x » final de « heureux » devient « se » au féminin." },
   { before: "Une musique ", adjective: "doux", after: " nous aide à nous endormir.", answer: "douce", exp: "Le nom « musique » est féminin singulier. Le féminin de l'adjectif « doux » est irrégulier et s'écrit « douce »." },
   { before: "Une ", adjective: "vieux", after: " dame traverse prudemment la rue.", answer: "vieille", exp: "Le nom « dame » est féminin singulier. Le féminin de « vieux » est irrégulier et s'écrit « vieille »." },
   { before: "Les ", adjective: "nouveau", after: " classes de l'école sont prêtes.", answer: "nouvelles", exp: "Le nom « classes » est féminin pluriel. L'adjectif « nouveau » devient « nouvelle » au féminin, puis prend un « s » au pluriel." },
@@ -9563,7 +9563,7 @@ window.EXERCICES_ADJECTIF_ACCORD = [
   { before: "Nous avons passé une ", adjective: "long", after: " journée à la plage.", answer: "longue", exp: "Le nom « journée » est féminin singulier. Pour accorder « long », on ajoute « ue » pour obtenir le son [g] correct." },
   { before: "C'est une ", adjective: "faux", after: " information.", answer: "fausse", exp: "Le nom « information » est féminin singulier. Le féminin de « faux » est irrégulier et s'écrit « fausse »." },
   { before: "Nous avons ramassé des fruits ", adjective: "sec", after: ".", answer: "secs", exp: "Le nom « fruits » est masculin pluriel. On ajoute simplement un « s » à l'adjectif « sec »." },
-  { before: "Le bûcheron a coupé une branche ", adjective: "sec", after: ".", answer: "sèche", exp: "Le nom « branche » est féminin singulier. Le féminin de « sec » s'écrit « sèche »." },
+  { before: "Le bucheron a coupé une branche ", adjective: "sec", after: ".", answer: "sèche", exp: "Le nom « branche » est féminin singulier. Le féminin de « sec » s'écrit « sèche »." },
   { before: "Nous ramassons des feuilles ", adjective: "sec", after: " dans le jardin.", answer: "sèches", exp: "Le nom « feuilles » est féminin pluriel. L'adjectif « sec » devient « sèche » au féminin, puis prend un « s » au pluriel." },
   { before: "Les garçons sont très ", adjective: "heureux", after: " aujourd'hui.", answer: "heureux", exp: "Le nom « garçons » est masculin pluriel. L'adjectif « heureux » se terminant déjà par un « x », il ne change pas." },
   { before: "J'écris sur une feuille ", adjective: "blanc", after: ".", answer: "blanche", exp: "Le nom « feuille » est féminin singulier. Le féminin de « blanc » est particulier et s'écrit « blanche »." },
@@ -9574,7 +9574,7 @@ window.EXERCICES_ADJECTIF_ACCORD = [
   { before: "Les enfants observent des oiseaux ", adjective: "migrateur", after: ".", answer: "migrateurs", exp: "Le nom « oiseaux » est masculin pluriel, on accorde donc « migrateur » au pluriel en ajoutant un « s »." },
   { before: "Les randonneurs avancent sur des routes ", adjective: "étroit", after: ".", answer: "étroites", exp: "Le nom « routes » est féminin pluriel, donc l'adjectif « étroit » s'accorde au féminin pluriel en ajoutant « es »." },
   { before: "Une lumière ", adjective: "vif", after: " éclaire soudainement la pièce.", answer: "vive", exp: "Le nom « lumière » est féminin singulier. Pour « vif », la lettre « f » se transforme en « ve » au féminin." },
-  { before: "Le maître nous donne des devoirs ", adjective: "facile", after: ".", answer: "faciles", exp: "Le nom « devoirs » est masculin pluriel. L'adjectif « facile » prend simplement un « s »." },
+  { before: "Le maitre nous donne des devoirs ", adjective: "facile", after: ".", answer: "faciles", exp: "Le nom « devoirs » est masculin pluriel. L'adjectif « facile » prend simplement un « s »." },
   { before: "Nous entendons des voix très ", adjective: "doux", after: ".", answer: "douces", exp: "Le nom « voix » est féminin pluriel. Le féminin pluriel de « doux » est « douces »." },
   { before: "Nous avons passé une très ", adjective: "beau", after: " journée en famille.", answer: "belle", exp: "Le nom « journée » est féminin singulier. Le féminin de l'adjectif « beau » est « belle »." },
   { before: "Il a fait une ", adjective: "gros", after: " bêtise.", answer: "grosse", exp: "Le nom « bêtise » est féminin singulier, donc on double le « s » de l'adjectif « gros » et on ajoute un « e »." }
@@ -9649,7 +9649,7 @@ window.EXERCICES_VERBE_GROUPE = [
     text: "Vous paraissez grandir très vite .",
     tokens: [
       { text: "Vous", cat: "pr" },
-      { text: "paraissez", cat: "v", group: 3, inf: "paraître" },
+      { text: "paraissez", cat: "v", group: 3, inf: "paraitre" },
       { text: "grandir", cat: "v", group: 2, inf: "grandir" },
       { text: "très", cat: "adv" },
       { text: "vite", cat: "adv" },
@@ -10011,7 +10011,7 @@ window.EXERCICES_VERBE_GROUPE = [
     ]
   },
   {
-    text: "Vous remplissiez les bouteilles d' eau fraîche .",
+    text: "Vous remplissiez les bouteilles d' eau fraiche .",
     tokens: [
       { text: "Vous", cat: "pr" },
       { text: "remplissiez", cat: "v", group: 2, inf: "remplir" },
@@ -10019,7 +10019,7 @@ window.EXERCICES_VERBE_GROUPE = [
       { text: "bouteilles", cat: "nc" },
       { text: "d'", cat: "prep" },
       { text: "eau", cat: "nc" },
-      { text: "fraîche", cat: "adj" },
+      { text: "fraiche", cat: "adj" },
       { text: ".", punctuation: true }
     ]
   },
@@ -10518,7 +10518,7 @@ window.EXERCICES_VERBE_INFINITIF = [
   { phrase: "Nous habitons près de l'école.", verb: "habitons", inf: "habiter", tense: "présent" },
   { phrase: "Tu parles français très bien.", verb: "parles", inf: "parler", tense: "présent" },
   { phrase: "Je perds souvent mes clés.", verb: "perds", inf: "perdre", tense: "présent" },
-  { phrase: "Vous vendez des pommes fraîches.", verb: "vendez", inf: "vendre", tense: "présent" },
+  { phrase: "Vous vendez des pommes fraiches.", verb: "vendez", inf: "vendre", tense: "présent" },
   { phrase: "Le soleil brille dans le ciel.", verb: "brille", inf: "briller", tense: "présent" },
   { phrase: "Ils écrivent une longue lettre.", verb: "écrivent", inf: "écrire", tense: "présent" },
   { phrase: "La voiture roule vite.", verb: "roule", inf: "rouler", tense: "présent" },
@@ -10538,7 +10538,7 @@ window.EXERCICES_VERBE_INFINITIF = [
   { phrase: "Noah mangeait sa tartine.", verb: "mangeait", inf: "manger", tense: "imparfait" },
   { phrase: "Le vent soufflait fort.", verb: "soufflait", inf: "souffler", tense: "imparfait" },
   { phrase: "Les oiseaux chantaient le matin.", verb: "chantaient", inf: "chanter", tense: "imparfait" },
-  { phrase: "Nous lisons un livre intéressant.", verb: "lisions", inf: "lire", tense: "imparfait" },
+  { phrase: "Nous lisions un livre intéressant.", verb: "lisions", inf: "lire", tense: "imparfait" },
   { phrase: "Tu finissais tes devoirs à l'heure.", verb: "finissais", inf: "finir", tense: "imparfait" },
   { phrase: "Je préparais un délicieux gâteau.", verb: "préparais", inf: "préparer", tense: "imparfait" },
   { phrase: "Le chien dormait dans sa niche.", verb: "dormait", inf: "dormir", tense: "imparfait" },
@@ -10550,7 +10550,7 @@ window.EXERCICES_VERBE_INFINITIF = [
   { phrase: "Nous habitions près de l'école.", verb: "habitions", inf: "habiter", tense: "imparfait" },
   { phrase: "Tu parlais français très bien.", verb: "parlais", inf: "parler", tense: "imparfait" },
   { phrase: "Je perdais souvent mes clés.", verb: "perdais", inf: "perdre", tense: "imparfait" },
-  { phrase: "Vous vendiez des pommes fraîches.", verb: "vendiez", inf: "vendre", tense: "imparfait" },
+  { phrase: "Vous vendiez des pommes fraiches.", verb: "vendiez", inf: "vendre", tense: "imparfait" },
   { phrase: "Le soleil brillait dans le ciel.", verb: "brillait", inf: "briller", tense: "imparfait" },
   { phrase: "Ils écrivaient une longue lettre.", verb: "écrivaient", inf: "écrire", tense: "imparfait" },
   { phrase: "La voiture roulait vite.", verb: "roulit", verb: "roulait", inf: "rouler", tense: "imparfait" },
@@ -10582,7 +10582,7 @@ window.EXERCICES_VERBE_INFINITIF = [
   { phrase: "Nous habiterons près de l'école.", verb: "habiterons", inf: "habiter", tense: "futur simple" },
   { phrase: "Tu parleras français très bien.", verb: "parleras", inf: "parler", tense: "futur simple" },
   { phrase: "Je perdrai souvent mes clés.", verb: "perdrai", inf: "perdre", tense: "futur simple" },
-  { phrase: "Vous vendrez des pommes fraîches.", verb: "vendrez", inf: "vendre", tense: "futur simple" },
+  { phrase: "Vous vendrez des pommes fraiches.", verb: "vendrez", inf: "vendre", tense: "futur simple" },
   { phrase: "Le soleil brillera dans le ciel.", verb: "brillera", inf: "briller", tense: "futur simple" },
   { phrase: "Ils écriront une longue lettre.", verb: "écriront", inf: "écrire", tense: "futur simple" },
   { phrase: "La voiture roulera vite.", verb: "roulera", inf: "rouler", tense: "futur simple" },
@@ -11158,7 +11158,7 @@ window.EXERCICES_DETERMINANT = [
     ]
   },
   {
-    text: "Chaque élève écoute attentivement les explications de la maîtresse .",
+    text: "Chaque élève écoute attentivement les explications de la maitresse .",
     tokens: [
       { text: "Chaque", cat: "det" },
       { text: "élève", cat: "nc" },
@@ -11168,7 +11168,7 @@ window.EXERCICES_DETERMINANT = [
       { text: "explications", cat: "nc" },
       { text: "de", cat: "prep" },
       { text: "la", cat: "det" },
-      { text: "maîtresse", cat: "nc" },
+      { text: "maitresse", cat: "nc" },
       { text: ".", punctuation: true }
     ]
   },
@@ -11595,7 +11595,7 @@ window.EXERCICES_DETERMINANT_TRI = [
     exp: "« un » introduit un nom singulier de manière non spécifique, c'est un article indéfini."
   },
   {
-    phrase: "Le maître raconte <span class='target-highlight'>une</span> histoire drôle aux élèves.",
+    phrase: "Le maitre raconte <span class='target-highlight'>une</span> histoire drôle aux élèves.",
     word: "une",
     cat: "article",
     exp: "« une » détermine le nom histoire, c'est un article indéfini."
@@ -11631,7 +11631,7 @@ window.EXERCICES_DETERMINANT_TRI = [
     exp: "« au » est un article contracté résultant de la fusion de la préposition « à » et de l'article « le »."
   },
   {
-    phrase: "La maîtresse distribue des fiches <span class='target-highlight'>aux</span> élèves attentifs.",
+    phrase: "La maitresse distribue des fiches <span class='target-highlight'>aux</span> élèves attentifs.",
     word: "aux",
     cat: "article",
     exp: "« aux » est un article contracté résultant de la fusion de la préposition « à » et de l'article « les »."
@@ -11865,7 +11865,7 @@ window.EXERCICES_DETERMINANT_TRI = [
     exp: "« de la » indique une quantité indénombrable de buée, c'est un article partitif."
   },
   {
-    phrase: "Elle boit <span class='target-highlight'>de l'</span> eau bien fraîche.",
+    phrase: "Elle boit <span class='target-highlight'>de l'</span> eau bien fraiche.",
     word: "de l'",
     cat: "article",
     exp: "« de l' » indique une quantité indénombrable (devant voyelle), c'est un article partitif."
@@ -11937,16 +11937,16 @@ window.EXERCICES_PRONOM_PIEGE = [
     phrase: "Nous <span class='target-highlight'>la</span> rangerons demain dans le tiroir.",
     word: "la",
     cat: "pronom",
-    exp: "« la » est placé devant le verbe « rangerons » et remplace un objet (ex: la boîte). C'est un pronom personnel."
+    exp: "« la » est placé devant le verbe « rangerons » et remplace un objet (ex: la boite). C'est un pronom personnel."
   },
   {
-    phrase: "Ferme <span class='target-highlight'>la</span> fenêtre s'il te plaît, il fait froid.",
+    phrase: "Ferme <span class='target-highlight'>la</span> fenêtre s'il te plait, il fait froid.",
     word: "la",
     cat: "determinant",
     exp: "« la » accompagne le nom « fenêtre ». C'est un déterminant (article défini)."
   },
   {
-    phrase: "Le maître <span class='target-highlight'>les</span> félicite pour leurs bons résultats.",
+    phrase: "Le maitre <span class='target-highlight'>les</span> félicite pour leurs bons résultats.",
     word: "les",
     cat: "pronom",
     exp: "« les » est placé devant le verbe « félicite » et remplace les élèves. C'est un pronom personnel."
@@ -11964,10 +11964,10 @@ window.EXERCICES_PRONOM_PIEGE = [
     exp: "« leur » est placé devant le verbe « vend » et signifie « à eux ». C'est un pronom personnel."
   },
   {
-    phrase: "Les enfants écoutent attentivement <span class='target-highlight'>leur</span> maître.",
+    phrase: "Les enfants écoutent attentivement <span class='target-highlight'>leur</span> maitre.",
     word: "leur",
     cat: "determinant",
-    exp: "« leur » accompagne le nom singulier « maître ». C'est un déterminant possessif."
+    exp: "« leur » accompagne le nom singulier « maitre ». C'est un déterminant possessif."
   },
   {
     phrase: "Il <span class='target-highlight'>l'</span> adore plus que tout.",
@@ -11976,7 +11976,7 @@ window.EXERCICES_PRONOM_PIEGE = [
     exp: "« l' » est placé devant le verbe « adore » et remplace un nom singulier. C'est un pronom personnel."
   },
   {
-    phrase: "Ne touche pas à <span class='target-highlight'>l'</span> assiette, elle est brûlante.",
+    phrase: "Ne touche pas à <span class='target-highlight'>l'</span> assiette, elle est brulante.",
     word: "l'",
     cat: "determinant",
     exp: "« l' » (élision de la) accompagne le nom « assiette ». C'est un déterminant (article défini)."
@@ -12198,7 +12198,7 @@ window.EXERCICES_ADJECTIF_FONCTION = [
     phrase: "Ces enfants paraissent <span class='target-highlight'>sages</span> aujourd'hui.",
     word: "sages",
     cat: "attribut",
-    exp: "« sages » est relié au sujet « Ces enfants » par le verbe d'état « paraître ». C'est un adjectif attribut du sujet."
+    exp: "« sages » est relié au sujet « Ces enfants » par le verbe d'état « paraitre ». C'est un adjectif attribut du sujet."
   },
   {
     phrase: "Un vent <span class='target-highlight'>glacial</span> souffle sur la montagne.",
@@ -12252,7 +12252,7 @@ window.EXERCICES_ADJECTIF_NOM = [
     exp: "L'adjectif « vieux » s'accorde avec le nom commun « château » et le qualifie."
   },
   {
-    tokens: ["Les", "élèves", "attentifs", "écoutent", "la", "maîtresse", "."],
+    tokens: ["Les", "élèves", "attentifs", "écoutent", "la", "maitresse", "."],
     adjIndex: 2,
     nounIndex: 1,
     exp: "L'adjectif « attentifs » s'accorde avec le nom commun « élèves » et le qualifie."
@@ -12324,10 +12324,10 @@ window.EXERCICES_ADJECTIF_NOM = [
     exp: "L'adjectif « sauvages » s'accorde avec le nom commun « chats » et le qualifie."
   },
   {
-    tokens: ["Une", "eau", "fraîche", "coule", "de", "la", "source", "."],
+    tokens: ["Une", "eau", "fraiche", "coule", "de", "la", "source", "."],
     adjIndex: 2,
     nounIndex: 1,
-    exp: "L'adjectif « fraîche » s'accorde avec le nom commun « eau » et le qualifie."
+    exp: "L'adjectif « fraiche » s'accorde avec le nom commun « eau » et le qualifie."
   },
   {
     tokens: ["La", "vieille", "dame", "traverse", "prudemment", "la", "rue", "."],
@@ -12354,7 +12354,7 @@ window.EXERCICES_ADJECTIF_NOM = [
     exp: "L'adjectif « magnifique » s'accorde avec le nom commun « paysage » et le qualifie."
   },
   {
-    tokens: ["Le", "chien", "fidèle", "attend", "son", "maître", "."],
+    tokens: ["Le", "chien", "fidèle", "attend", "son", "maitre", "."],
     adjIndex: 2,
     nounIndex: 1,
     exp: "L'adjectif « fidèle » s'accorde avec le nom commun « chien » et le qualifie."
