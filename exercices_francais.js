@@ -16,7 +16,7 @@ window.EXERCICES_FRANCAIS = {
         {text:"Nous ___ (faire) un gâteau pour l'anniversaire.", options:["ferrons", "ferons", "fairons"], answer:1},
         {text:"Si vous avez le temps, vous ___ (venir) nous rendre visite dimanche.", options:["viendrez", "venirez", "viendriez"], answer:0},
         {text:"S'ils sont prêts, ils ___ (pouvoir) partir dès demain.", options:["pourront", "pouveront", "pourraient"], answer:0},
-        {text:"Si c'est son anniversaire, elle ___ (vouloir) sûrement un cadeau.", options:["vouloira", "voudra", "voudrait"], answer:1},
+        {text:"Si c'est son anniversaire, elle ___ (vouloir) surement un cadeau.", options:["vouloira", "voudra", "voudrait"], answer:1},
         {text:"Je ___ (savoir) nager l'été prochain.", options:["saurai", "savoirai", "savrai"], answer:0},
         {text:"Tu ___ (voir) tes amis ce week-end.", options:["voiras", "voieras", "verras"], answer:2},
         {text:"S'il a le temps, il ___ (venir) nous aider demain matin.", options:["viendrait", "venira", "viendra"], answer:2},
@@ -91,7 +91,7 @@ window.EXERCICES_FRANCAIS = {
         {before:"Je ne", after:"jamais à mes parents.", verb:"mentir", answer:"mentirai"},
         {before:"Tu", after:"ta promesse, j'en suis sûr.", verb:"tenir", answer:"tiendras"},
         {before:"Le directeur", after:"les nouveaux élèves à la rentrée.", verb:"accueillir", answer:"accueillera"},
-        {before:"Ce soir, vous", after:"sûrement regarder un film.", verb:"vouloir", answer:"voudrez"},
+        {before:"Ce soir, vous", after:"surement regarder un film.", verb:"vouloir", answer:"voudrez"},
         {before:"L'été prochain, nous", after:"en vacances en Italie.", verb:"aller", answer:"irons"},
         {before:"Dans une semaine, tu", after:"ta commande par la poste.", verb:"recevoir", answer:"recevras"},
         {before:"Bientôt, elle", after:"de son voyage au Canada.", verb:"revenir", answer:"reviendra"},
@@ -122,7 +122,7 @@ window.EXERCICES_FRANCAIS = {
           {text:"Si j'ai encore mal demain, j'___ (aller) chez le médecin.", options:["irais", "allerai", "irai"], answer:2},
           {text:"L'année prochaine, tu ___ (avoir) douze ans.", options:["auras", "aurais", "avoiras"], answer:0},
           {text:"S'ils sont prêts, ils ___ (pouvoir) partir dès demain.", options:["pourront", "pouveront", "pourraient"], answer:0},
-          {text:"Si c'est son anniversaire, elle ___ (vouloir) sûrement un cadeau.", options:["voudrait", "vouloira", "voudra"], answer:2},
+          {text:"Si c'est son anniversaire, elle ___ (vouloir) surement un cadeau.", options:["voudrait", "vouloira", "voudra"], answer:2},
           {text:"Nous ___ (envoyer) une lettre à nos grands-parents.", options:["envoierons", "envoyerons", "enverrons"], answer:2},
         ],
         trous: [
@@ -5781,7 +5781,7 @@ Certains diront que <strong>lire est ennuyeux et démotive les enfants</strong>.
     id:'alimentation', titre:'Bien manger pour bien grandir', emoji:'🥦',
     couleur:'linear-gradient(135deg,#006064,#00897b)', bordure:'#00897b',
     thèse:'Pour une alimentation saine',
-    texte:`Tu as sûrement déjà entendu l'expression : "On est ce qu'on mange." Et c'est vrai ! Une alimentation saine et équilibrée est indispensable pour grandir en bonne santé et bien apprendre à l'école.<br><br>
+    texte:`Tu as surement déjà entendu l'expression : "On est ce qu'on mange." Et c'est vrai ! Une alimentation saine et équilibrée est indispensable pour grandir en bonne santé et bien apprendre à l'école.<br><br>
 Premièrement, une bonne alimentation <strong>donne de l'énergie</strong>. Le cerveau a besoin de glucides, de protéines et de bonnes graisses pour fonctionner correctement. Un élève qui mange sainement sera plus concentré en classe.<br><br>
 Deuxièmement, manger des fruits et légumes <strong>renforce le système immunitaire</strong>. Les vitamines et minéraux qu'ils contiennent aident le corps à se défendre contre les maladies. Un enfant qui mange varié tombe moins souvent malade.<br><br>
 Troisièmement, les <strong>bonnes habitudes alimentaires prises dans l'enfance durent toute la vie</strong>. Un enfant qui apprend à apprécier les légumes et les céréales complètes aura beaucoup plus de chances d'avoir une alimentation équilibrée à l'âge adulte.<br><br>
@@ -6139,7 +6139,7 @@ window.ANTONYMES_POOL = [
   {phrase:"La ___ régnait dans le village depuis des années.", mot:"paix", options:["calme","joie","guerre","silence"], correct:2, explication:'L\'antonyme de "paix" est "guerre".'},
   {phrase:"Le blessé marchait avec ___ malgré sa cheville tordue.", mot:"aisance", options:["lenteur","douleur","difficulté","prudence"], correct:2, explication:'L\'antonyme d\'"aisance" (facilité naturelle) est "difficulté".'},
   {phrase:"L\'eau de la source était ___.", mot:"pure", options:["froide","rare","polluée","abondante"], correct:2, explication:'L\'antonyme de "pure" (sans impureté) est "polluée".'},
-  {phrase:"La décision fut prise de façon ___.", mot:"réfléchie", options:["rapide","collective","impulsive","discrète"], correct:2, explication:'L\'antonyme de "réfléchie" (mûrement pensée) est "impulsive" (prise sans réfléchir).'},
+  {phrase:"La décision fut prise de façon ___.", mot:"réfléchie", options:["rapide","collective","impulsive","discrète"], correct:2, explication:'L\'antonyme de "réfléchie" (murement pensée) est "impulsive" (prise sans réfléchir).'},
   {phrase:"L\'attitude de l\'élève était ___ envers son professeur.", mot:"respectueuse", options:["froide","insolente","indifférente","réservée"], correct:1, explication:'L\'antonyme de "respectueuse" est "insolente" — qui manque de respect.'},
   {phrase:"La nuit était ___ grâce à la pleine lune.", mot:"lumineuse", options:["froide","longue","silencieuse","sombre"], correct:3, explication:'L\'antonyme de "lumineuse" est "sombre".'},
   {phrase:"Le soldat avança d\'un pas ___.", mot:"assuré", options:["lent","lourd","hésitant","discret"], correct:2, explication:'L\'antonyme d\'"assuré" (confiant) est "hésitant" (qui doute).'},
