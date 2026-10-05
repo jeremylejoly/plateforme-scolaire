@@ -1221,7 +1221,7 @@
           <div class="card-icon">📊</div>
           <div>
             <div class="card-title">Le Tableau Interactif</div>
-            <div class="card-desc">Remplis le tableau de synthèse et coche toutes les divisibilités. Idéal pour un entraînement complet.</div>
+            <div class="card-desc">Remplis le tableau de synthèse et coche toutes les divisibilités. Idéal pour un entrainement complet.</div>
           </div>
           <div class="card-action">
             Compléter le tableau
@@ -1409,7 +1409,7 @@
           </div>
         </div>
 
-        <div class="factory-instruction">Coche les cases si le nombre est divisible par le diviseur proposé (si un nombre n'a aucun diviseur, laisse sa ligne vide) :</div>
+        <div class="factory-instruction">Coche les cases si le nombre est divisible par le nombre de la colonne (si un nombre n'est divisible par aucun d'eux, laisse sa ligne vide) :</div>
 
         <div class="table-layout">
           <table class="grid-table">
@@ -1647,7 +1647,7 @@
       }
       if (d === 8) {
         if (n < 1000) {
-          return `Pour ${n}, on calcule si la division par 8 tombe juste : ${n} ÷ 8 = ${n / 8}. Donc ${n} ${suffix}.`;
+          return `Pour ${n}, on calcule la division par 8 : ${n} ÷ 8 = ${Math.floor(n / 8)}${n % 8 ? ' reste ' + (n % 8) : ', sans reste'}. Donc ${n} ${suffix}.`;
         } else {
           const lastThree = n % 1000;
           const lastThreeStr = String(lastThree).padStart(3, '0');
@@ -1659,6 +1659,50 @@
     }
 
     // UTILS
+    function shuffle(arr) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    // Séries limitées + enregistrement du résultat (avant : jeux sans fin, AUCUN résultat enregistré)
+    const SERIES = { factory: 10, vault: 5, frog: 5 };
+    const GAME_TITLES = {
+      factory: "Divisibilité — L'usine à diviseurs",
+      vault: 'Divisibilité — Le défi du coffre-fort',
+      frog: 'Divisibilité — Le labyrinthe des dalles',
+      table: 'Divisibilité — Le tableau interactif'
+    };
+    function saveDivResult(game, score, total) {
+      if (!(window.parent && typeof window.parent.saveResult === 'function')) return;
+      try {
+        window.parent.saveResult({
+          activity: 'op_divisibilite',
+          bookTitle: GAME_TITLES[game],
+          score: score,
+          total: total,
+          pct: Math.round((score / total) * 100),
+          date: new Date().toLocaleDateString('fr-BE'),
+          time: new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })
+        });
+      } catch (e) { console.warn('Erreur lors de la sauvegarde du score :', e); }
+    }
+    function setRoundBadge(screenId, text) {
+      const header = document.querySelector('#' + screenId + ' .game-header');
+      if (!header) return;
+      let badge = header.querySelector('.round-badge');
+      if (!badge) {
+        badge = document.createElement('div');
+        badge.className = 'round-badge';
+        badge.style.cssText = 'font-weight:700;color:var(--color-primary);';
+        header.insertBefore(badge, header.children[1] || null);
+      }
+      badge.textContent = text;
+    }
+
     function getRandomInt(min, max) {
       return Math.floor(Math.random() * (max - min)) + min;
     }
@@ -1799,6 +1843,8 @@
       showScreen('screen-game-factory');
       state.factory.score = 0;
       state.factory.streak = 0;
+      state.factory.round = 0;
+      state.factory.correct = 0;
       updateFactoryScoreboard();
       generateFactoryQuestion();
     }
@@ -1817,6 +1863,9 @@
     }
 
     function generateFactoryQuestion() {
+      if (state.factory.round >= SERIES.factory) { startFactoryGame(); return; }
+      state.factory.round++;
+      setRoundBadge('screen-game-factory', `Nombre ${state.factory.round} / ${SERIES.factory}`);
       state.factory.isAnswered = false;
       state.factory.selected = [];
       
@@ -1900,6 +1949,12 @@
 
     function validateFactoryAnswer() {
       if (state.factory.isAnswered) return;
+      // Rien coché : on ignore (ce n'est pas une réponse)
+      if (state.factory.selected.length === 0) {
+        const instr = document.querySelector('#screen-game-factory .factory-instruction');
+        if (instr) { instr.style.color = 'var(--color-danger)'; setTimeout(() => { instr.style.color = ''; }, 900); }
+        return;
+      }
       state.factory.isAnswered = true;
 
       const num = state.factory.currentNum;
@@ -1956,6 +2011,7 @@
       
       if (isCorrect) {
         playSound('success');
+        state.factory.correct++;
         state.factory.score += 10 + Math.floor(state.factory.streak / 2);
         state.factory.streak += 1;
         
@@ -1996,8 +2052,14 @@
 
       // Transform action button
       const mainBtn = document.getElementById('factory-btn-main');
-      mainBtn.textContent = "Nombre suivant";
       mainBtn.className = "btn-action btn-action-primary";
+      if (state.factory.round >= SERIES.factory) {
+        saveDivResult('factory', state.factory.correct, SERIES.factory);
+        fExplain.innerHTML += `<br><br><strong>Série terminée : ${state.factory.correct} / ${SERIES.factory} nombres sans faute.</strong>`;
+        mainBtn.textContent = "Nouvelle série";
+      } else {
+        mainBtn.textContent = "Nombre suivant";
+      }
       mainBtn.onclick = generateFactoryQuestion;
     }
 
@@ -2008,12 +2070,18 @@
       showScreen('screen-game-vault');
       state.vault.score = 0;
       state.vault.level = 1;
+      state.vault.round = 0;
+      state.vault.correct = 0;
       document.getElementById('vault-score').textContent = state.vault.score;
       document.getElementById('vault-level-badge').textContent = state.vault.level;
       generateVaultQuestion();
     }
 
     function generateVaultQuestion() {
+      if (state.vault.round >= SERIES.vault) { startVaultGame(); return; }
+      state.vault.round++;
+      setRoundBadge('screen-game-vault', `Coffre ${state.vault.round} / ${SERIES.vault}`);
+      document.querySelector('#vault-next-container button').textContent = 'Enquête suivante';
       state.vault.isAnswered = false;
       state.vault.inputVal = '';
       document.getElementById('vault-input').textContent = '???';
@@ -2046,9 +2114,9 @@
         
         if (matches.length >= 1) {
           // Shuffled matches and non-matches
-          const shuffledMatches = [...matches].sort(() => Math.random() - 0.5);
+          const shuffledMatches = shuffle(matches);
           const nonMatches = state.activeCriteria.filter(div => !divisorsCheck[div](secret));
-          const shuffledNonMatches = [...nonMatches].sort(() => Math.random() - 0.5);
+          const shuffledNonMatches = shuffle(nonMatches);
           
           // Let's build a candidate clue set:
           // 1 or 2 positive clues, and 0 or 1 negative clues
@@ -2213,10 +2281,10 @@
         
         state.vault.score += 25;
         state.vault.level += 1;
-        
+        state.vault.correct++;
         fTitle.textContent = "Félicitations ! Le coffre s'ouvre ! 🔓";
         feedback.className = "feedback-banner success active";
-        fExplain.innerHTML = `Le code secret était bien <strong>${secret}</strong> (ou une valeur valide comme ${userAns}).<br>Il respecte toutes les consignes de divisibilité.`;
+        fExplain.innerHTML = `Le code secret était bien <strong>${secret}</strong>.<br>Il respecte toutes les consignes de divisibilité.`;
       } else {
         playSound('error');
         fTitle.textContent = "Accès refusé ! Code erroné. 🔒";
@@ -2244,6 +2312,11 @@
       document.getElementById('vault-score').textContent = state.vault.score;
       document.getElementById('vault-level-badge').textContent = state.vault.level;
       document.getElementById('vault-next-container').style.display = 'flex';
+      if (state.vault.round >= SERIES.vault) {
+        saveDivResult('vault', state.vault.correct, SERIES.vault);
+        fExplain.innerHTML += `<br><br><strong>Série terminée : ${state.vault.correct} / ${SERIES.vault} coffres ouverts.</strong>`;
+        document.querySelector('#vault-next-container button').textContent = 'Nouvelle série';
+      }
     }
 
     // ==========================================
@@ -2253,12 +2326,29 @@
       showScreen('screen-game-frog');
       state.frog.score = 0;
       state.frog.level = 1;
+      state.frog.round = 0;
+      state.frog.correct = 0;
       document.getElementById('frog-score').textContent = state.frog.score;
       document.getElementById('frog-level').textContent = state.frog.level;
       generateFrogPond();
     }
 
+    // Fin d'un couloir (réussi ou raté) : suivant, ou fin de série avec enregistrement
+    function nextFrogRound(delay) {
+      if (state.frog.round >= SERIES.frog) {
+        saveDivResult('frog', state.frog.correct, SERIES.frog);
+        const fExplain = document.getElementById('frog-feedback-explanation');
+        fExplain.innerHTML += `<br><br><strong>Série terminée : ${state.frog.correct} / ${SERIES.frog} labyrinthes franchis.</strong><br><button class="btn-action btn-action-primary" style="margin-top:0.8rem" onclick="startFrogGame()">Nouvelle série</button>`;
+        return;
+      }
+      setTimeout(generateFrogPond, delay);
+    }
+
     function generateFrogPond() {
+      // Un écran déjà quitté ne relance rien
+      if (!document.getElementById('screen-game-frog').classList.contains('active')) return;
+      state.frog.round++;
+      setRoundBadge('screen-game-frog', `Labyrinthe ${state.frog.round} / ${SERIES.frog}`);
       state.frog.isGameOver = false;
       state.frog.currentRow = -1;
       state.frog.frogPosition = { row: -1, col: 1 };
@@ -2460,6 +2550,7 @@
             
             state.frog.score += 30;
             state.frog.level += 1;
+            state.frog.correct++;
             document.getElementById('frog-score').textContent = state.frog.score;
             document.getElementById('frog-level').textContent = state.frog.level;
 
@@ -2472,7 +2563,7 @@
             fExplain.textContent = "Tu as traversé le labyrinthe avec succès ! Prépare-toi pour le couloir suivant.";
             
             state.frog.isGameOver = true;
-            setTimeout(generateFrogPond, 2500);
+            nextFrogRound(2500);
           }, 600);
         }
       } else {
@@ -2485,10 +2576,9 @@
         
         fTitle.textContent = "Piège déclenché ! 💥";
         feedback.className = "feedback-banner error active";
-        fExplain.innerHTML = `La dalle ${val} s'est effondrée !<br>${getExplanation(val, div)}<br>Recommence l'exploration.`;
-        
+        fExplain.innerHTML = `La dalle ${val} s'est effondrée !<br>${getExplanation(val, div)}<br>Un nouveau labyrinthe arrive.`;
         state.frog.isGameOver = true;
-        setTimeout(generateFrogPond, 4000);
+        nextFrogRound(4000);
       }
     }
 
@@ -2515,7 +2605,8 @@
       mainBtn.onclick = validateTable;
 
       // Select columns (subset of activeCriteria, max 5 columns to keep it legible)
-      state.table.cols = [...state.activeCriteria].slice(0, 5);
+      // 5 critères tirés parmi les critères actifs (avant : toujours les 5 premiers, « par 10 » jamais présent)
+      state.table.cols = shuffle(state.activeCriteria).slice(0, 5).sort((a, b) => a - b);
       
       // Select 5 random numbers
       state.table.numbers = [];
@@ -2612,6 +2703,7 @@
 
       // Accuracy score
       const accPercent = Math.round((correctCount / totalCells) * 100);
+      saveDivResult('table', correctCount, totalCells);
       document.getElementById('table-accuracy').textContent = `${accPercent}%`;
       
       // Update score

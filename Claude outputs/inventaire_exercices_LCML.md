@@ -1176,7 +1176,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 ### 05/10 — Maths › Opérations › Multiplications et divisions › × et ÷ par 0,5 — 5 — 50 — 500 (`op_x5`, OP_X5_BANQUE dans exercices_maths.js) — sw.js v543
 - 40 calculs recalculés par programme : tous justes, aucun doublon ; répartition équilibrée entre 5, 50, 500 et 0,5 (× et ÷).
 - 3 paires inverses (16 × 5 = 80 / 80 ÷ 5 = 16…) pouvaient tomber ensemble → exclu ; toujours 5 × + 5 ÷ (`pickBalancedNoInverse`).
-- Remarque : banque de 40 calculs seulement (menu : « parmi 40 ») → deux séries successives se recoupent en partie ; à agrandir si Jeremy le souhaite.
+- Banque agrandie à 100 calculs le 05/10 (accord de Jeremy, v545) : +60 calculs (12-13 par type : × et ÷ par 5, 50, 500, 0,5), menu « parmi 100 ».
 - Tests : 20 000 séries, 0 paire inverse, les 40 calculs utilisés.
 
 ### 05/10 — Maths › Opérations › Multiplications et divisions › × par 9 — 90 — 99 — 9,9 (`op_x9`, OP_X9_BANQUE dans exercices_maths.js) — sw.js v544
@@ -1184,6 +1184,17 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Tirage libre (pouvait donner 6 calculs × 9,9 et aucun × 90) → `pickStratifiedByB` : 2 ou 3 calculs de chaque multiplicateur, mélangés.
 - Moteur commun (v537) : identifiant `op_x9` correct, virgule acceptée (19,8), réponses vides gérées.
 - Tests : 20 000 séries, toujours les 4 multiplicateurs (2 ou 3 chacun), 100 calculs utilisés.
+
+### 05/10 — Maths › Opérations › × et ÷ par 0,5 — 5 — 50 — 500 : banque agrandie (`op_x5`) — sw.js v545, ?v=20261005f
+- 60 calculs ajoutés (calculés en décimal exact) → 100 : × 5 : 13, ÷ 5 : 13, × 50 : 13, ÷ 50 : 13, × 500 : 12, ÷ 500 : 12, × 0,5 : 12, ÷ 0,5 : 12 ; aucun doublon ; tous justes. Menu : « parmi 100 ».
+- 20 000 séries : 5 × + 5 ÷, 0 paire inverse, les 100 calculs utilisés.
+
+### 05/10 — Maths › Opérations › Multiplications et divisions › × par 11 — 101 — 110 — 1,1 (`op_x11`, OP_X11_BANQUE) — sw.js v545
+- **Exercice inaccessible** : le menu et le plan de travail ouvraient un écran « 🚧 Les exercices arrivent bientôt ! », alors que l'exercice (100 calculs + `startOpX11Exercise`) existait → menu et plan relient maintenant l'exercice ; description « 10 calculs aléatoires parmi 100 ».
+- 100 calculs (25 par multiplicateur) recalculés : tous justes, aucun doublon.
+- Tirage réparti : 2 ou 3 calculs de chaque multiplicateur (`pickStratifiedByB`).
+- Moteur commun (v537) : identifiant `op_x11`, virgule acceptée, réponses vides gérées.
+- L'ancien écran `screen-op-x11` (vide) reste dans le HTML mais n'est plus relié.
 
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
@@ -1486,7 +1497,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | × et ÷ par 0,1 — 10 — 100 — 1000 | `op_x10` | index › startOpX10Exercise |  |
 | ✅ 05/10 | × et ÷ par 0,5 — 5 — 50 — 500 | `op_x5` | index › startOpX5Exercise |  |
 | ✅ 05/10 | × par 9 — 90 — 99 — 9,9 | `op_x9` | index › startOpX9Exercise |  |
-| ⬜ | × par 11 — 101 — 110 — 1,1 | `op_x11` | index › (?) | (code à localiser) |
+| ✅ 05/10 | × par 11 — 101 — 110 — 1,1 | `op_x11` | index › (?) | (code à localiser) |
 | ⬜ | Caractères de divisibilité | `op_divisibilite` | fiches/divisibilite.html |  |
 | ⬜ | La compensation | `op_compensation` | index › (?) | (code à localiser) |
 | ⬜ | Calcul écrit | `op_calcul_ecrit` | index › (?) | (code à localiser) |
