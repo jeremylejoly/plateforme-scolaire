@@ -1218,6 +1218,14 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Composition : 10 générateurs tirés parmi 15 (≈ 1 série sur 10 sans division) → toujours 3 +, 3 −, 2 ×, 2 ÷ ; divisions par 1 supprimées (diviseur et quotient de 2 à 10) ; doublons +/− évités.
 - Tests : 20 000 séries, calculs justes, composition exacte, aucun doublon ; index : 6 / 7 scripts OK.
 
+### 05/10 — Maths › Opérations › Les 4 opérations › Fiche d'entrainement (`op_4_operations_calculs`, `fiches/calculs.html` + copies public et racine) — sw.js v549
+- Génération vérifiée (5 000 fiches) : toujours 5 +, 5 −, 5 ×, 5 ÷, tous les résultats entre 1 et 99, justes, aucun doublon ; 3 additions et 3 soustractions avec passage par fiche.
+- **Aucun résultat enregistré** → enregistrement au premier « Vérifier » (une seule fois par fiche ; les vérifications suivantes après correction ne changent pas le score), avec le temps si chrono ; « Voir les réponses » avant correction enregistre ce qui était déjà juste.
+- « Vérifier » sur une fiche vide affichait 0 / 20 et arrêtait le chrono → message « Écris d'abord tes réponses », rien n'est arrêté.
+- Saisie stricte (« 1x » n'est plus lu comme juste par Number()).
+- Nouvelle orthographe : « Fiche d'entrainement » (menu, titre, plan).
+- Tests jsdom : fiche vide ignorée, 15/20 enregistré une fois, double vérification sans doublon.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1513,7 +1521,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ⬜ | Les 4 opérations | `op_4_operations` | index › render4OperationsScreen |  |
 | ✅ 05/10 | Les 4 opérations mélangées | `op_4_operations_melangees` | index › start4OpExercise |  |
 | ✅ 05/10 | Le compte est bon | `op_add_sous_compte_est_bon` | fiches/compte_est_bon.html |  |
-| ⬜ | Fiche d'entraînement (Calculs) | `op_4_operations_calculs` | fiches/calculs.html |  |
+| ✅ 05/10 | Fiche d'entraînement (Calculs) | `op_4_operations_calculs` | fiches/calculs.html |  |
 | ⬜ | Calculs lacunaires | `op_4_operations_lacunaires` | fiches/calculs-4-operations.html |  |
 | ✅ 05/10 | Les tables étendues | `op_tables` | index › startOpTablesExercise |  |
 | ✅ 05/10 | × et ÷ par 0,1 — 10 — 100 — 1000 | `op_x10` | index › startOpX10Exercise |  |

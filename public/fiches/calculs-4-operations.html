@@ -371,14 +371,29 @@ const opClass = { "+": "op-add", "-": "op-sub", "×": "op-mul", "÷": "op-div" }
 
 let currentExercise = [];
 
-function pickExercise() {
-  const indices = [...Array(FILTERED_BANK.length).keys()];
-  // mélange Fisher-Yates
-  for (let i = indices.length - 1; i > 0; i--) {
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
-    [indices[i], indices[j]] = [indices[j], indices[i]];
+    [a[i], a[j]] = [a[j], a[i]];
   }
-  return indices.slice(0, 10).map(i => FILTERED_BANK[i]);
+  return a;
+}
+// 3 additions, 3 soustractions, 2 multiplications, 2 divisions (avant : tirage libre, parfois sans division),
+// et jamais deux calculs avec les mêmes nombres (9 × 7 = ? puis 63 ÷ 9 = ? se donnaient la réponse).
+function pickExercise() {
+  const want = { "+": 3, "-": 3, "×": 2, "÷": 2 };
+  const used = new Set(), out = [];
+  for (const c of shuffle(FILTERED_BANK)) {
+    if (!want[c.op]) continue;
+    const key = [c.a, c.b, c.result].sort((x, y) => x - y).join(",");
+    if (used.has(key)) continue;
+    used.add(key);
+    want[c.op]--;
+    out.push(c);
+    if (out.length === 10) break;
+  }
+  return shuffle(out);
 }
 
 function valueFor(calc, part) {
@@ -386,6 +401,7 @@ function valueFor(calc, part) {
 }
 
 function renderExercise() {
+  validated = false; emptyWarned = false;
   currentExercise = pickExercise();
   const container = document.getElementById("exercise");
   container.innerHTML = "";
@@ -411,7 +427,7 @@ function renderExercise() {
       if (part === "op") {
         const span = document.createElement("span");
         span.className = "sign operator";
-        span.textContent = calc.op;
+        span.textContent = calc.op === "-" ? "−" : calc.op; // vrai signe moins
         div.appendChild(span);
         return;
       }
@@ -456,7 +472,26 @@ function renderExercise() {
   document.getElementById("validateBtn").style.opacity = "1";
 }
 
+let validated = false, emptyWarned = false;
 function checkAnswers() {
+  if (validated) return; // une seule correction (et un seul enregistrement) par exercice
+  const inputs = [...document.querySelectorAll("#exercise input.answer")];
+  const empties = inputs.filter(i => i.value.trim() === "").length;
+  const banner0 = document.getElementById("scoreBanner");
+  if (empties === inputs.length) {
+    banner0.className = "score-banner show mid";
+    banner0.innerHTML = "✏️ Complète les calculs avant de valider.";
+    return;
+  }
+  if (empties > 0 && !emptyWarned) {
+    emptyWarned = true;
+    banner0.className = "score-banner show mid";
+    banner0.innerHTML = "⚠️ " + empties + (empties > 1 ? " calculs sont" : " calcul est") + " encore vide" + (empties > 1 ? "s" : "") +
+      '<div class="score-sub">Complète-les ou clique encore sur « Valider » pour corriger quand même.</div>';
+    return;
+  }
+  validated = true;
+  banner0.className = "score-banner";
   const calcDivs = document.querySelectorAll(".calc");
   let score = 0;
 
@@ -465,7 +500,8 @@ function checkAnswers() {
     const calc = currentExercise[idx];
     const input = div.querySelector("input.answer");
     const correctValue = calc[calc.blank];
-    const userValue = parseInt((input.value || "").trim(), 10);
+    const raw = (input.value || "").trim();
+    const userValue = /^\d+$/.test(raw) ? parseInt(raw, 10) : NaN; // « 12abc » n'est plus lu comme 12
 
     // supprime ancienne correction éventuelle
     const oldCorrection = div.querySelector(".correction");
@@ -495,7 +531,7 @@ function checkAnswers() {
     message = "Bien joué, continue comme ça ! 💪";
   } else if (score < 6) {
     cls = "low";
-    message = "Pas grave, encore un peu d'entraînement ! 🌱";
+    message = "Pas grave, encore un peu d'entrainement ! 🌱";
   }
   banner.classList.add(cls);
   banner.innerHTML = "Score : " + score + " / 10" +
@@ -521,11 +557,14 @@ function checkAnswers() {
 document.getElementById("validateBtn").addEventListener("click", checkAnswers);
 document.getElementById("restartBtn").addEventListener("click", renderExercise);
 
-// permet de valider avec la touche Entrée
+// Entrée : passe au calcul suivant ; sur le dernier, valide (avant : Entrée validait toute la fiche dès le 1er calcul)
 document.getElementById("exercise").addEventListener("keydown", (e) => {
   if (e.key === "Enter") {
     e.preventDefault();
-    checkAnswers();
+    const inputs = [...document.querySelectorAll("#exercise input.answer")];
+    const k = inputs.indexOf(e.target);
+    if (k > -1 && k < inputs.length - 1) inputs[k + 1].focus();
+    else checkAnswers();
   }
 });
 
