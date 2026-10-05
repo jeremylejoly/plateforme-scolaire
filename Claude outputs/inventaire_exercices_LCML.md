@@ -266,6 +266,13 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
   - maitre, entrainement, apparait, ile, abime, dégout, gouter, chaine, flute, boite, connaitras…
   - fiches concernées : Atelier des mots, Expressions et proverbes, Registres, Chasseur d'intrus, Fabrique de mots, Relations lexicales, Repère le bon verbe (3 copies chaque fois).
 
+- **05/10 — Conjugaison › Indicatif présent › Phrases à trous** (site, 6 niveaux, et fiche du plan de travail) :
+  - Les verbes en -ayer n'acceptaient qu'une seule forme. « Paye », « balaye », « essaye »… sont maintenant acceptés, et la correction affiche « paie (ou paye) ».
+  - Le moteur est commun : la correction vaut aussi pour le futur (je paierai / payerai) et les autres temps.
+  - Les 634 phrases sont conformes à la nouvelle orthographe : aucun circonflexe sur i/u, et -eler/-eter s'écrivent avec è.
+  - La fiche du plan de travail n'enregistrait jamais le résultat. C'est corrigé (`conj_present_ecriture`, avec le niveau).
+  - Le mélange est maintenant équitable.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -421,7 +428,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | Statut | Exercice | id | Source | Signal automatique |
 |---|---|---|---|---|
 | ✅ 05/10 | Présent de l'indicatif (QCM) | `conj_present_qcm` | fiches/conjugaison_present_QCM.html |  |
-| ⬜ | Présent de l'indicatif (Écriture) | `conj_present_ecriture` | fiches/conjugaison_present_ecriture.html |  |
+| ✅ 05/10 | Présent de l'indicatif (Écriture) | `conj_present_ecriture` | fiches/conjugaison_present_ecriture.html |  |
 | ⬜ | Imparfait de l'indicatif (QCM) | `conj_imparfait_qcm` | fiches/conjugaison_imparfait_QCM.html |  |
 | ⬜ | Imparfait de l'indicatif (Écriture) | `conj_imparfait_ecriture` | fiches/conjugaison_imparfait_ecriture.html |  |
 | ✅ 05/10 | 1. Tableau des 3 temps | `conj_tableau_3_temps` | fiches/conjugaison_tableau_3_temps.html |  |

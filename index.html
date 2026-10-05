@@ -10661,6 +10661,9 @@ function validateConjExercise(){
       time: new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})
     };
     saveResult(entry);
+    if(conjState.isEvaluation){
+      try { localStorage.setItem(`lq_eval_${conjState.tense}_${state.studentCls}_${state.student}`, String(Date.now())); } catch(e) {}
+    }
     // Rafraîchir les badges après un délai (laisser Firebase se mettre à jour)
     setTimeout(function(){ renderConjBadges(conjState.tense); }, 1500);
   }
@@ -10808,7 +10811,12 @@ function startConjEvaluation(tense){
 
   // Check if already done
   const evalKey = `lq_eval_${tense}_${state.studentCls}_${state.student}`;
-  if(state.student && localStorage.getItem(evalKey)){
+  // Une seule tentative : on regarde l'appareil ET les résultats déjà enregistrés en ligne
+  // (avant : la clé n'était jamais écrite, l'évaluation pouvait être refaite à l'infini).
+  let dejaFaite = false;
+  try { dejaFaite = !!localStorage.getItem(evalKey); } catch(e) {}
+  if(!dejaFaite && typeof getStudentResult === 'function' && getStudentResult('conjugaison_' + tense + '_eval')) dejaFaite = true;
+  if(state.student && state.role !== 'teacher' && dejaFaite){
     alert('Tu as déjà passé cette évaluation. Tu ne peux pas la recommencer.');
     return;
   }
