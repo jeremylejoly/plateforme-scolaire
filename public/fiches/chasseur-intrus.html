@@ -244,7 +244,7 @@
   const MISSION_BANK = [
     { 
       category: "Synonymes de FATIGUÉ", 
-      words: ["fatigué", "épuisé", "éreinté", "vigoureux"], 
+      words: ["las", "épuisé", "éreinté", "vigoureux"], 
       intruder: "vigoureux", 
       ex: "<strong>Vigoureux</strong> signifie fort et plein d'énergie, c'est le contraire exact de fatigué." 
     },
@@ -267,8 +267,8 @@
       ex: "Le <strong>téléphone</strong> sert à communiquer à distance. Les trois autres servent à déplacer des personnes ou objets." 
     },
     { 
-      category: "Synonymes de INTELLIGENT", 
-      words: ["astucieux", "savant", "ingénieux", "sot"], 
+      category: "Synonymes d'INTELLIGENT", 
+      words: ["astucieux", "malin", "ingénieux", "sot"], 
       intruder: "sot", 
       ex: "<strong>Sot</strong> veut dire bête ou stupide. C'est l'antonyme d'intelligent." 
     },
@@ -316,7 +316,7 @@
     },
     { 
       category: "Synonymes de RAPIDE", 
-      words: ["véloce", "prompt", "hâtif", "lent"], 
+      words: ["véloce", "prompt", "vif", "lent"], 
       intruder: "lent", 
       ex: "<strong>Lent</strong> indique une vitesse réduite, c'est le contraire exact de rapide." 
     },
@@ -358,9 +358,9 @@
     },
     { 
       category: "Vêtements d'hiver", 
-      words: ["manteau", "écharpe", "bonnet", "maillot"], 
-      intruder: "maillot", 
-      ex: "Le <strong>maillot</strong> (de bain) s'utilise en été. Le manteau, l'écharpe et le bonnet servent à garder la chaleur en hiver." 
+      words: ["manteau", "écharpe", "bonnet", "maillot de bain"], 
+      intruder: "maillot de bain", 
+      ex: "Le <strong>maillot de bain</strong> s'utilise en été. Le manteau, l'écharpe et le bonnet servent à garder la chaleur en hiver." 
     },
     { 
       category: "Synonymes de VOLER (vol)", 
@@ -384,11 +384,11 @@
       category: "Noms de fleurs", 
       words: ["rose", "marguerite", "tulipe", "pommier"], 
       intruder: "pommier", 
-      ex: "Le <strong>pommier</strong> est un arbre fruitier ligneux. Les autres sont des plantes à fleurs herbacées." 
+      ex: "Le <strong>pommier</strong> est un arbre fruitier (même s'il fleurit au printemps). La rose, la marguerite et la tulipe sont des fleurs." 
     },
     { 
       category: "Synonymes de COMBATTRE", 
-      words: ["lutter", "affronter", "rivaliser", "fuir"], 
+      words: ["lutter", "affronter", "se battre", "fuir"], 
       intruder: "fuir", 
       ex: "<strong>Fuir</strong> signifie s'enfuir devant un adversaire ou un danger, c'est le contraire d'affronter." 
     },
@@ -431,6 +431,8 @@
   let currentIdx = 0;
   let activeMission = null;
   let isAnimating = false;
+  let premierCoup = 0;     // intrus trouvés du premier coup
+  let dejaRate = false;
 
   // ================================================================
   // INITIALISATION
@@ -438,6 +440,7 @@
   function initMission() {
     const shuffled = shuffleArray([...MISSION_BANK]);
     sessionList = shuffled.slice(0, 10); // 10 séries par partie
+    premierCoup = 0;
     currentIdx = 0;
     isAnimating = false;
 
@@ -455,6 +458,7 @@
     }
 
     activeMission = sessionList[currentIdx];
+    dejaRate = false;
     isAnimating = false;
 
     // Progression
@@ -491,6 +495,7 @@
     const isIntruder = (word === activeMission.intruder);
 
     if (isIntruder) {
+      if (!dejaRate) premierCoup++;
       isAnimating = true;
 
       // Caisse de l'intrus explose
@@ -511,6 +516,7 @@
       }, 400);
 
     } else {
+      dejaRate = true;
       isAnimating = true;
       // Caisse vibre en rouge
       crateEl.classList.add('caisse-error');
@@ -536,15 +542,16 @@
     document.getElementById('explain-container').classList.add('hidden');
     document.getElementById('panel-final').classList.remove('hidden');
     
-    document.getElementById('final-score-text').innerText = `Félicitations ! Tu as réussi à chasser tous les intrus et à décrypter les 10 catégories sémantiques.`;
+    document.getElementById('final-score-text').innerText = `Tu as trouvé ${premierCoup} intrus sur ${sessionList.length} du premier coup.`;
 
     if (window.parent && window.parent.saveResult) {
       window.parent.saveResult({
         activity: 'vocabulaire_chasseur_intrus',
         bookTitle: "Vocabulaire — Le Chasseur d'Intrus",
-        score: 10,
-        total: 10,
-        pct: 100,
+        // Avant : toujours 10/10 ; maintenant les intrus trouvés du premier coup
+        score: premierCoup,
+        total: sessionList.length,
+        pct: Math.round(premierCoup / sessionList.length * 100),
         date: new Date().toLocaleDateString('fr-BE'),
         time: new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})
       });

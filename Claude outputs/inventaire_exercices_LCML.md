@@ -195,6 +195,11 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
     - « véhicule » → « automobile » ;
     - « larmoyer » → « verser des larmes ».
 
+- **05/10 — Vocabulaire › Chasse aux verbes ternes** (fiche + 2 copies) :
+  - Le score était toujours de 10/10. Il compte maintenant les verbes trouvés du premier coup.
+  - 6 phrases avaient 2 réponses possibles. Le distracteur défendable a été remplacé : provoque (un bruit), dresse (les verres), rangent (les sacs), annonce (son avis), raconte (sa faute), étudie (le karaté).
+  - « Proteste sa colère » est incorrect : la réponse attendue devient « crie sa colère ».
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -417,7 +422,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | Expressions & Proverbes | `vocabulaire_proverbes` | fiches/expressions-proverbes.html |  |
 | ✅ 05/10 | L'Atelier des Mots | `vocabulaire_atelier_mots` | fiches/vocabulaire-jeu.html |  |
 | ✅ 05/10 | Le Défi des Registres | `vocabulaire_registres` | fiches/registres-tri.html |  |
-| ⬜ | Chasse aux Verbes Ternes | `vocabulaire_verbes_ternes` | fiches/verbes-ternes.html |  |
+| ✅ 05/10 | Chasse aux Verbes Ternes | `vocabulaire_verbes_ternes` | fiches/verbes-ternes.html |  |
 | ⬜ | Le Chasseur d'Intrus | `vocabulaire_chasseur_intrus` | fiches/chasseur-intrus.html |  |
 | ⬜ | La Fabrique de Mots | `vocabulaire_fabrique_mots` | fiches/fabrique-mots.html |  |
 | ⬜ | Relations lexicales | `vocabulaire_relations_lexicales` | fiches/vocabulaire_relations_lexicales.html | QCM: la bonne réponse est la 1re option dans 30/30 questions, options non mélangées |
