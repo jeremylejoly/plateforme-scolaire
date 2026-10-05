@@ -1293,7 +1293,12 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Pastilles de progression toujours vertes → vert / rouge selon la réponse.
 - Double clic sur « Voir mon score final » : un seul enregistrement ; double clic sur « Question suivante » ne saute pas de question.
 - Tests jsdom : partie 7 / 10 avec doubles clics → 1 sauvegarde (`grandeur_capacites_qcm`, 7 / 10) ; index : 6 / 7 scripts OK.
-- ⚠️ Même défaut de valeurs répétées dans la banque des masses (QCM et fiche abaque) : 250 mg / ¼ g, 3,5 kg / 3500 g, ½ t / 5 q / 0,5 t… À corriger si Jeremy le souhaite.
+- Même défaut de valeurs répétées dans la banque des masses : corrigé en v560 (voir ci-dessous).
+
+### 05/10 — Maths › Grandeurs › Les masses : QCM et Conversions & abaque, questions de même valeur (`grandeur_masses_qcm`, `grandeur_masses_qcm_abaque`) — sw.js v560
+- Repéré en vérifiant les capacités : 9 groupes de questions de même valeur dans la banque des masses (250 mg / ¼ g ; 0,1 kg / 1 hg ; ¼ kg / 0,25 kg ; 500 g / ½ kg / 5 hg ; 750 g / ¾ kg / 0,75 kg ; 3,5 kg / 3500 g ; ¼ t / 2,5 q ; ½ t / 5 q / 0,5 t ; 1 t / 10 q) pouvaient tomber dans la même série et se donner la réponse → jamais deux questions de même valeur (index + fiche, 3 copies identiques).
+- Double clic sur « Question suivante » : plus de question sautée (index + fiche).
+- Tests : 20 000 séries (index) et 5 000 (fiche) → 0 valeur répétée, ≈ 33 % par position ; parties jsdom 7 / 10 et 8 / 10 avec doubles clics → 1 sauvegarde chacune.
 
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 

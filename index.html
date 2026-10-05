@@ -27123,9 +27123,27 @@ function renderMassesQCM(){
   demarrerMassesQcm();
 }
 
+// Valeur d'une masse en mg (« ¾ kg », « 0,5 t »…) — sert à éviter deux questions de même valeur dans une série
+function masseQcmValeurMg(s){
+  const m = String(s).trim().match(/^([\d,]+|[¼½¾⅛])\s*(mg|cg|dg|dag|hg|kg|g|q|t)$/);
+  if(!m) return s;
+  const frac = {'¼':0.25,'½':0.5,'¾':0.75,'⅛':0.125};
+  const unit = {mg:1, cg:10, dg:100, g:1000, dag:1e4, hg:1e5, kg:1e6, q:1e8, t:1e9};
+  const n = frac[m[1]] !== undefined ? frac[m[1]] : parseFloat(m[1].replace(',', '.'));
+  return Math.round(n * unit[m[2]] * 1000) / 1000;
+}
+
 function demarrerMassesQcm(){
-  // Fisher–Yates (avant : tri aléatoire biaisé ; la bonne réponse est en 3e position dans 28 questions sur 50 de la banque)
-  mQcmSelection = shuffleArray(MASSES_QCM_BANQUE).slice(0, 10).map(q => {
+  // Fisher–Yates (avant : tri aléatoire biaisé ; la bonne réponse est en 3e position dans 28 questions sur 50 de la banque).
+  // Jamais deux questions de même valeur (ex. « 3,5 kg → 3500 g » et « 3500 g → 3,5 kg » se donnaient la réponse).
+  const vus = new Set(), choix = [];
+  for(const q of shuffleArray(MASSES_QCM_BANQUE)){
+    const val = masseQcmValeurMg(q.nombre);
+    if(vus.has(val)) continue;
+    vus.add(val); choix.push(q);
+    if(choix.length === 10) break;
+  }
+  mQcmSelection = choix.map(q => {
     const correctVal = q.opts[q.correct];
     const shuffledOpts = shuffleArray(q.opts);
     return {
@@ -27218,6 +27236,7 @@ function choisirMassesQcm(idx){
 }
 
 function suivantMassesQcm(){
+  if(mQcmScores.length <= mQcmCurIdx) return; // double clic : pas de question sautée
   mQcmCurIdx++;
   afficherMassesQcmQuestion();
 }

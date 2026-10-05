@@ -209,8 +209,26 @@ document.addEventListener('dblclick', e => {
 
 let selection=[], curIdx=0, scores=[], saved=false;
 
+// Valeur d'une masse en mg (« ¾ kg », « 0,5 t »…) — sert à éviter deux questions de même valeur dans une série
+function masseQcmValeurMg(s){
+  const m = String(s).trim().match(/^([\d,]+|[¼½¾⅛])\s*(mg|cg|dg|dag|hg|kg|g|q|t)$/);
+  if(!m) return s;
+  const frac = {'¼':0.25,'½':0.5,'¾':0.75,'⅛':0.125};
+  const unit = {mg:1, cg:10, dg:100, g:1000, dag:1e4, hg:1e5, kg:1e6, q:1e8, t:1e9};
+  const n = frac[m[1]] !== undefined ? frac[m[1]] : parseFloat(m[1].replace(',', '.'));
+  return Math.round(n * unit[m[2]] * 1000) / 1000;
+}
+
 function demarrer(){
-  selection = shuffle(QUESTIONS).slice(0,10).map(q => {
+  // Jamais deux questions de même valeur dans une série (elles se donnaient la réponse)
+  const vus = new Set(), choix = [];
+  for(const q of shuffle(QUESTIONS)){
+    const val = masseQcmValeurMg(q.nombre);
+    if(vus.has(val)) continue;
+    vus.add(val); choix.push(q);
+    if(choix.length === 10) break;
+  }
+  selection = choix.map(q => {
     const correctVal = q.opts[q.correct];
     const shuffledOpts = shuffle(q.opts);
     return { ...q, opts: shuffledOpts, correct: shuffledOpts.indexOf(correctVal) };
@@ -269,7 +287,7 @@ function choisir(idx){
   btn.onclick = isLast ? afficherScoreFinal : suivant;
 }
 
-function suivant(){ curIdx++; afficherQuestion(); }
+function suivant(){ if(scores.length <= curIdx) return; curIdx++; afficherQuestion(); }
 
 function afficherScoreFinal(){
   document.getElementById('exercice-zone').style.display='none';
