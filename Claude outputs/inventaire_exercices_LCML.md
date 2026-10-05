@@ -1226,6 +1226,15 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Nouvelle orthographe : « Fiche d'entrainement » (menu, titre, plan).
 - Tests jsdom : fiche vide ignorée, 15/20 enregistré une fois, double vérification sans doublon.
 
+### 05/10 — Maths › Opérations › Les 4 opérations › Calculs lacunaires (`op_4_operations_lacunaires`, `fiches/calculs-4-operations.html` + copies public et racine) — sw.js v550
+- 103 calculs vérifiés par programme : tous justes. Enregistrement du résultat déjà en place.
+- **Entrée validait toute la fiche** dès le 1er calcul (les 9 autres comptés faux) → Entrée passe au calcul suivant, valide seulement sur le dernier.
+- Validation : fiche vide ignorée ; calculs vides → avertissement puis 2e clic ; une seule correction/sauvegarde par fiche (Entrée ou clic répétés ne réenregistrent plus).
+- **Réponses données par un autre calcul** : 19 groupes de nombres apparaissent plusieurs fois (9 × 7 = ?, 7 × ? = 63, 63 ÷ 9 = ?…) et pouvaient tomber ensemble → jamais deux calculs avec les mêmes nombres.
+- Tirage libre (parfois sans division) → toujours 3 +, 3 −, 2 ×, 2 ÷, mélangés.
+- Signe « - » → « − » ; saisie stricte (« 12abc » refusé) ; entrainement.
+- Tests : 20 000 tirages (composition exacte, 0 groupe partagé), parcours jsdom (Entrée, partiel, 9/10, 1 sauvegarde).
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1522,7 +1531,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | Les 4 opérations mélangées | `op_4_operations_melangees` | index › start4OpExercise |  |
 | ✅ 05/10 | Le compte est bon | `op_add_sous_compte_est_bon` | fiches/compte_est_bon.html |  |
 | ✅ 05/10 | Fiche d'entraînement (Calculs) | `op_4_operations_calculs` | fiches/calculs.html |  |
-| ⬜ | Calculs lacunaires | `op_4_operations_lacunaires` | fiches/calculs-4-operations.html |  |
+| ✅ 05/10 | Calculs lacunaires | `op_4_operations_lacunaires` | fiches/calculs-4-operations.html |  |
 | ✅ 05/10 | Les tables étendues | `op_tables` | index › startOpTablesExercise |  |
 | ✅ 05/10 | × et ÷ par 0,1 — 10 — 100 — 1000 | `op_x10` | index › startOpX10Exercise |  |
 | ✅ 05/10 | × et ÷ par 0,5 — 5 — 50 — 500 | `op_x5` | index › startOpX5Exercise |  |
