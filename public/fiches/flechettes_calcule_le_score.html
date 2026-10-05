@@ -56,7 +56,7 @@
 
   <div id="fbExercise">
     <div class="fb-status">
-      <span class="fb-pill" id="fbProgress">Lancer 1 / 30</span>
+      <span class="fb-pill" id="fbProgress">Lancer 1 / 10</span>
       <span class="fb-pill" id="fbScore">Score : 0</span>
     </div>
 
@@ -99,11 +99,15 @@
     var t=TARGETS[rnd(0,TARGETS.length-1)];
     var n=rnd(3,5);
     var base=Math.random()*Math.PI*2;
-    var ranges=[[16,44],[62,90],[104,130],[144,170]];
+    var ranges=[[34,48],[62,90],[104,130],[144,170]]; // zone centrale : pas trop près du nombre écrit au centre
     var darts=[];
     for(var i=0;i<n;i++){
       var zone=rnd(0,3);
       var ang=base+(i/n)*2*Math.PI+(Math.random()-0.5)*0.5;
+      // Les valeurs des zones sont écrites en haut de la cible (angle −90°) : aucune fléchette ne doit les cacher
+      var top=-Math.PI/2, gap=0.45;
+      var dA=Math.atan2(Math.sin(ang-top),Math.cos(ang-top));
+      if(Math.abs(dA)<gap) ang=top+(dA>=0?gap:-gap);
       var r=ranges[zone][0]+Math.random()*(ranges[zone][1]-ranges[zone][0]);
       darts.push({zone:zone,ang:ang,r:r});
     }
@@ -167,8 +171,10 @@
   function submit(){
     if(answered) return;
     var cur=throws[idx];
-    var v=parseInt($('fbAns').value,10);
-    if(isNaN(v)){setFeedback('Écris un nombre.','muted'); return;}
+    var raw=String($('fbAns').value).trim();
+    if(raw===''){setFeedback('Écris un nombre.','muted'); return;}
+    if(!/^\d+$/.test(raw)){setFeedback('Écris un nombre entier, sans virgule.','muted'); return;}
+    var v=parseInt(raw,10);
     answered=true;
     if(v===cur.sum){score++; setFeedback('Bravo ! '+breakdown(cur),'good');}
     else{setFeedback('Pas tout à fait. Le calcul : '+breakdown(cur),'bad');}
@@ -187,16 +193,12 @@
     else if(score>=throws.length*0.7) msg='Très bien ! '+score+' / '+throws.length;
     $('fbFinalMsg').textContent=msg;
 
-    if (window.parent && window.parent.saveResult && window.parent.state && window.parent.state.student) {
+    // Enregistrement (index complète élève/classe ; « state » n'est pas accessible via window.parent)
+    if (window.parent && typeof window.parent.saveResult === 'function') {
       try {
-        var state = window.parent.state;
-        var classes = window.parent.CLASSES;
-        var className = classes && classes[state.studentCls] ? classes[state.studentCls].name : state.studentCls;
         window.parent.saveResult({
-          student: state.student,
-          cls: state.studentCls,
-          className: className,
           activity: 'op_add_sous_flechettes_calcule',
+          bookTitle: 'Fléchettes — Calcule le score',
           score: score,
           total: throws.length,
           pct: Math.round((score / throws.length) * 100),
