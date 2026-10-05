@@ -960,6 +960,10 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - 10 questions cohérentes entre elles (1 semaine par page × 48 pages ≈ 1 an ; scénario → crayonné → encre → couleur numérique). Rien à corriger.
 - Remarque (non modifiée) : Q8 (V/F « la première étape est le dessin à l'encre ») redonne la réponse de Q2. ⚠️ Audio non réécouté.
 
+### 05/10 — Savoir écouter : Au club d'échecs (`savoir_ecouter_7`) — aucun changement de contenu
+- Moteur déjà corrigé avec Soignes (enregistrement + mélange).
+- Règles d'échecs exactes (contrôle des 4 cases centrales, petit roque, danger de sortir la dame trop tôt). Questions cohérentes entre elles. ⚠️ Audio non réécouté.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1197,7 +1201,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | Savoir écouter - Pain perdu | `savoir_ecouter_4` | index › startSavoirEcouter |  |
 | ✅ 05/10 | Savoir écouter - Hautes Fagnes | `savoir_ecouter_5` | index › startSavoirEcouter |  |
 | ✅ 05/10 | Savoir écouter - L'atelier de Sandy | `savoir_ecouter_6` | index › startSavoirEcouter |  |
-| ⬜ | Savoir écouter - Au club d'échecs | `savoir_ecouter_7` | index › startSavoirEcouter |  |
+| ✅ 05/10 | Savoir écouter - Au club d'échecs | `savoir_ecouter_7` | index › startSavoirEcouter |  |
 | ⬜ | Savoir écouter - Notice de l'étagère Lyra | `savoir_ecouter_8` | index › startSavoirEcouter |  |
 
 ### 🔢 Mathématiques — 🔢 Numération
