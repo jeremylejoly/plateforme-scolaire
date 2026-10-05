@@ -1050,6 +1050,11 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - 23 figures vérifiées (parts égales : disques, bandes, grilles 2×2, 3×3, 4×3) ; distracteurs jamais équivalents à la bonne fraction ; propositions et figures mélangées (Fisher-Yates).
 - « Valider » sans réponse cochée comptait une erreur → ignoré.
 
+### 05/10 — Maths › Fractions › Les fractions complexes (`num_fractions_complexes`, index › genererPropositions / validerFraction) — sw.js v527
+- BUG de clic : cliquer sur le TEXTE d'une proposition (et non sur la case) inversait l'état mémorisé → la réponse comptée n'était pas celle affichée. La validation lit maintenant directement les cases cochées.
+- Pour 1/2, 1/3… les 4 propositions étaient toutes justes (1/2, 2/4, 3/6, 4/8) : il suffisait de tout cocher. Maintenant 5 propositions : 1 à 3 bonnes (originale, simplifiée, + une équivalente au hasard) et au moins 2 mauvaises, dont des pièges « presque équivalents » (5/8 pour 1/2). Vérifié sur 115 000 tirages : toute fraction équivalente est comptée juste, aucune mauvaise n'est équivalente.
+- « Valider » sans case cochée : ignoré (avant : erreur comptée).
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1309,7 +1314,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | Sélectionne le bon chiffre | `num_entiers_decimaux_abaque` | fiches/abaque.html |  |
 | ✅ 05/10 | Comparaison de nombres | `num_entiers_decimaux_comparaison` | fiches/comparaison.html |  |
 | ✅ 05/10 | Fractions simples | `num_fractions_simples` | index › renderFractionsSimples |  |
-| ⬜ | Fractions complexes | `num_fractions_complexes` | index › renderFractionsExercice |  |
+| ✅ 05/10 | Fractions complexes | `num_fractions_complexes` | index › renderFractionsExercice |  |
 | ⬜ | La balance des fractions | `num_balance_fractions` | fiches/balance_fractions.html |  |
 | ⬜ | Colorie les fractions | `num_fractions_colorie` | fiches/colorie_les_fractions.html |  |
 | ⬜ | Opérations de fractions | `num_fractions_operations` | fiches/calculs_fractions.html |  |

@@ -799,7 +799,7 @@
     <!-- PANNEAU DE DROITE : COFFRE A POIDS (OUTILS) -->
     <section class="panel toolbox-panel">
       <div class="panel-title">
-        <span>📦 Boîte à Outils</span>
+        <span>📦 Boite à Outils</span>
         <span style="font-size: 0.85rem; color: var(--text-muted);">Glisse ou clique sur un poids</span>
       </div>
       
@@ -832,7 +832,7 @@
         <p>1. **Observe le plateau de gauche** : Il contient des fractions de référence qui pèsent sur la balance.</p>
         <p>2. **Ajoute des poids à droite** pour équilibrer la balance. **Tu peux utiliser la même fraction plusieurs fois !** Tu peux :</p>
         <ul>
-          <li>**Faire glisser** un poids de la boîte à outils vers le plateau.</li>
+          <li>**Faire glisser** un poids de la boite à outils vers le plateau.</li>
           <li>**Cliquer** sur un poids pour l'ajouter directement à droite.</li>
         </ul>
         <p>3. **Retire un poids** en cliquant dessus directement sur le plateau de droite.</p>
@@ -943,7 +943,7 @@
         title: "Niveau 1 : Même dénominateur",
         objective: "Additionner des quarts",
         description: "Associe les fractions. Additionne les quarts à gauche et équilibre la balance. Tu peux utiliser plusieurs fois la même fraction !",
-        hint: "Astuce : 2 quarts + 1 quart = 3 quarts ! Trouve le poids qui indique 3/4.",
+        hint: "Astuce : quand les fractions ont le même dénominateur, on additionne les numérateurs (2 quarts + 1 quart = … quarts).",
         // Poids initialement présents à gauche
         leftWeights: [
           { numerator: 2, denominator: 4 },
@@ -952,7 +952,7 @@
         // Poids initialement présents à droite (vide)
         rightWeights: [],
         mysterySlot: false,
-        // Poids autorisés dans la boîte à outils pour ce niveau
+        // Poids autorisés dans la boite à outils pour ce niveau
         allowedToolbox: ["1/4", "2/4", "3/4", "1/2"]
       },
       {
@@ -1064,6 +1064,9 @@
     let userRightWeights = []; // Liste des poids ajoutés à droite par l'utilisateur
     let isWinner = false;
     let draggedWeightData = null;
+    // Score : un niveau compte s'il est équilibré à la PREMIÈRE vérification
+    let niveauxPremierCoup = {};   // id du niveau → true/false (1re vérification)
+    let resultatEnregistre = false;
 
     // --- INITIALISATION ---
     window.addEventListener('DOMContentLoaded', () => {
@@ -1113,7 +1116,7 @@
       // Réinitialiser les poids de l'utilisateur
       userRightWeights = [];
 
-      // Dessiner la boîte à outils filtrée
+      // Dessiner la boite à outils filtrée
       renderToolbox(lvl.allowedToolbox);
 
       // Dessiner les plateaux
@@ -1123,7 +1126,7 @@
       updateBalancePhysics();
     }
 
-    // Affiche la boîte à outils de poids
+    // Affiche la boite à outils de poids
     function renderToolbox(allowedLabels) {
       const container = document.getElementById('toolboxContainer');
       container.innerHTML = '';
@@ -1420,8 +1423,8 @@
     // --- VALIDATION DE L'EQUILIBRE ---
     function checkBalanceResult() {
       if (isWinner) return;
-
       const lvl = levels[currentLevelIndex];
+      const premiereVerif = !(lvl.id in niveauxPremierCoup);
 
       // Calcul des sommes
       let totalLeft = 0;
@@ -1439,9 +1442,11 @@
 
       const isBalanced = Math.abs(totalLeft - totalRight) < 0.001;
 
+      if (premiereVerif) niveauxPremierCoup[lvl.id] = isBalanced;
       if (isBalanced) {
         // Victoire !
         isWinner = true;
+        if (currentLevelIndex === levels.length - 1) enregistrerResultat();
         audio.playWin();
         triggerConfetti();
 
@@ -1462,6 +1467,8 @@
 
         showModal("🎉 Équilibré !", message, "btn-modal-success", actionBtnText, () => {
           if (isLastLevel) {
+            niveauxPremierCoup = {};
+            resultatEnregistre = false;
             loadLevel(1);
           } else {
             loadLevel(currentLevelIndex + 2);
@@ -1478,6 +1485,27 @@
           "Réessayer"
         );
       }
+    }
+
+    // Enregistrement (une fois) quand le dernier niveau est réussi : 1 point par niveau
+    // équilibré du premier coup. Auparavant, rien n'était enregistré.
+    function enregistrerResultat() {
+      if (resultatEnregistre) return;
+      resultatEnregistre = true;
+      const score = levels.filter(l => niveauxPremierCoup[l.id] === true).length;
+      try {
+        if (window.parent && window.parent.saveResult) {
+          window.parent.saveResult({
+            activity: 'num_balance_fractions',
+            bookTitle: 'La balance des fractions',
+            score: score,
+            total: levels.length,
+            pct: Math.round(score / levels.length * 100),
+            date: new Date().toLocaleDateString('fr-BE'),
+            time: new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })
+          });
+        }
+      } catch (e) {}
     }
 
     // --- MODALES ---
