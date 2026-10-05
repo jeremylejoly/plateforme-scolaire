@@ -1258,6 +1258,12 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - **Aucun résultat enregistré** → enregistrement au premier « Vérifier » (x / 6, niveau, chrono) ; fiche vide ignorée ; nouvelle orthographe (entrainer).
 - Tests jsdom : 5 niveaux → 5 / 6 enregistré une fois, correction en bleu, « Vérifier » bloqué après correction.
 
+### 05/10 — Maths › Opérations › Calcul écrit › Divisions écrites (`op_calcul_ecrit_division`, `fiches/calcul-ecrit-division.html` + copies public et racine) — sw.js v554
+- 6 niveaux × 3 000 divisions simulées : quotient × diviseur + reste = dividende, reste < diviseur, divisions exactes aux niveaux 1, 2, 3, 5 (dividende décimal), reste non nul au niveau 4 ; chaque étape (produit soustrait, reste) cohérente ; aucun zéro inutile en tête du quotient.
+- **« Voir la correction »** : même défaut que + − × (utilisable sans vérifier, tout en vert, score effacé) → même correctif (bouton actif après « Vérifier », corrections en bleu, score conservé, fiche verrouillée) ; les 0 corrigés (quotient, reste) s'affichent bien.
+- **Aucun résultat enregistré** → enregistrement au premier « Vérifier » (x / 6, niveau, chrono) ; fiche vide ignorée.
+- Tests jsdom : 6 niveaux → 5 / 6 enregistré une fois, correction en bleu, « Vérifier » bloqué après correction.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1566,7 +1572,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | Calcul écrit — Additions écrites | `op_calcul_ecrit_addition` | fiches/calcul-ecrit-addition.html |  |
 | ✅ 05/10 | Calcul écrit — Soustractions écrites | `op_calcul_ecrit_soustraction` | fiches/calcul-ecrit-soustraction.html |  |
 | ✅ 05/10 | Calcul écrit — Multiplications écrites | `op_calcul_ecrit_multiplication` | fiches/calcul-ecrit-multiplication.html |  |
-| ⬜ | Calcul écrit — Divisions écrites | `op_calcul_ecrit_division` | fiches/calcul-ecrit-division.html |  |
+| ✅ 05/10 | Calcul écrit — Divisions écrites | `op_calcul_ecrit_division` | fiches/calcul-ecrit-division.html |  |
 | ⬜ | L'ordre des opérations | `op_ordre` | index › (?) | (code à localiser) |
 | ⬜ | L'ordre des opérations — Mission PEMDAS | `op_ordre_pemdas` | fiches/mission_pemdas.html |  |
 | ⬜ | L'ordre des opérations — Défi PEMDAS | `op_ordre_defi` | fiches/defi_pemdas.html |  |
