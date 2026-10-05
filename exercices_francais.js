@@ -119,10 +119,10 @@ window.EXERCICES_FRANCAIS = {
       // Évaluation fixe (une seule tentative)
       evaluation: {
         qcm: [
-          {text:"Demain, je ___ (aller) chez le médecin.", options:["irais", "allerai", "irai"], answer:2},
+          {text:"Si j'ai encore mal demain, j'___ (aller) chez le médecin.", options:["irais", "allerai", "irai"], answer:2},
           {text:"L'année prochaine, tu ___ (avoir) douze ans.", options:["auras", "aurais", "avoiras"], answer:0},
-          {text:"Ils ___ (pouvoir) partir dès demain.", options:["pourront", "pouveront", "pourraient"], answer:0},
-          {text:"Elle ___ (vouloir) sûrement un cadeau.", options:["voudrait", "vouloira", "voudra"], answer:2},
+          {text:"S'ils sont prêts, ils ___ (pouvoir) partir dès demain.", options:["pourront", "pouveront", "pourraient"], answer:0},
+          {text:"Si c'est son anniversaire, elle ___ (vouloir) sûrement un cadeau.", options:["voudrait", "vouloira", "voudra"], answer:2},
           {text:"Nous ___ (envoyer) une lettre à nos grands-parents.", options:["envoierons", "envoyerons", "enverrons"], answer:2},
         ],
         trous: [

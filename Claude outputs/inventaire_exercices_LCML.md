@@ -321,6 +321,16 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
     - « Je haïrai attendre » → « Si tu me trahis, je te haïrai ! » ;
     - « Tu naitras sous une bonne étoile » (on ne nait qu'une fois…) → « Le bébé naitra au printemps prochain ».
 
+- **05/10 — Conjugaison › Futur simple › Phrases à trous** (50 phrases) :
+  - Toutes les réponses attendues sont justes et en nouvelle orthographe :
+    - ruissèlera, jetteras, appellera ;
+    - emploiera, ennuiera, essuierez (i obligatoire pour -oyer/-uyer).
+  - « je enverrai » s'affichait sans élision. C'est corrigé en « j'… ».
+  - « Le soleil … sur la montagne » attendait « se lèvera » sans le dire. Le « se » est maintenant écrit avant le trou, et l'élève tape « lèvera ».
+  - Moteur commun à tous les temps :
+    - quand un pronom est déjà écrit avant le trou, l'élève peut aussi le recopier sans être compté faux ;
+    - les apostrophes courbes (’) sont acceptées.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
