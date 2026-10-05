@@ -745,6 +745,23 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
   - Nouvelle orthographe : coute, boite, plait, maitre, gouter, gouts, maitrise, entrainer, connaitre.
   - Les 3 copies de la fiche sont identiques (la copie public/ affichait « *sois* » avec des astérisques).
 
+- **05/10 — Grammaire › Types et formes › Affirmatives ou négatives ?** (2 fiches, 2 niveaux de 30 phrases chacune) :
+  - **Les résultats n'étaient jamais enregistrés** dans les deux fiches. Ils le sont maintenant par niveau : `gram_affirm_neg_qcm_n1`/`_n2` et `gram_affirm_neg_transfo_n1`/`_n2`.
+  - **Transforme les phrases — réponses justes refusées :**
+    - Seul « ne … pas » était accepté. « Le soleil ne brille plus » ou « Le soleil ne brille jamais » étaient comptés faux, alors que ce sont des formes négatives correctes. Ils sont maintenant acceptés, sauf pour les phrases-pièges (encore → plus, toujours → jamais, quelqu'un → personne…).
+    - « Nous ne lisons pas **d'**histoire intéressante » (la forme la plus correcte) est maintenant acceptée.
+    - « Elle ne mange pas de pomme » (au singulier) est maintenant acceptée.
+    - La saisie tolère maintenant les variantes Unicode des accents.
+  - « cookies » (anglicisme) devient « biscuits ».
+  - **QCM :**
+    - Des astérisques s'affichaient dans deux explications (« (*ne... pas*) »). C'est corrigé.
+    - « double négation » (terme trompeur pour « n'… pas ») devient « négation ».
+    - « ne sert guère à grand-chose » (lourd) devient « ne sert guère ».
+    - Les tournures restrictives « ne … que », le « ne » explétif et « personne » employé comme nom restent classés comme affirmatifs, avec leur explication : choix de la fiche conservé.
+  - Le mélange utilise maintenant la méthode Fisher–Yates dans les deux fiches.
+  - Nouvelle orthographe : maitre, maitresse, maitrisé, gout, plait, entrainer, entrainement. « mûrs » reste.
+  - La réponse de l'élève est affichée de façon sûre.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -878,8 +895,8 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | Statut | Exercice | id | Source | Signal automatique |
 |---|---|---|---|---|
 | ✅ 05/10 | Les types de phrases | `gram_types_phrases` | fiches/types_de_phrases.html |  |
-| ⬜ | QCM - Affirmative ou négative | `gram_affirm_neg_qcm` | fiches/phrases_affirm_neg.html |  |
-| ⬜ | Transformation de phrases | `gram_affirm_neg_transfo` | fiches/phrases_transfo.html |  |
+| ✅ 05/10 | QCM - Affirmative ou négative | `gram_affirm_neg_qcm` | fiches/phrases_affirm_neg.html |  |
+| ✅ 05/10 | Transformation de phrases | `gram_affirm_neg_transfo` | fiches/phrases_transfo.html |  |
 | ⬜ | Passives ou actives ? | `gram_pass_act` | index › (?) | (code à localiser) |
 | ⬜ | Phrase simple / complexe | `gram_phrase_simple_complexe` | fiches/grammaire_phrase_simple_complexe.html |  |
 
