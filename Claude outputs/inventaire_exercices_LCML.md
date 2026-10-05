@@ -575,6 +575,15 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
   - Nouvelle orthographe : maitre, entrainer, maitriser. « sûr » reste.
   - Les 3 copies de la fiche sont identiques.
 
+- **05/10 — Grammaire › Le pronom › Le remplaçant** (35 phrases, 10 par partie ; placer le, la, les, lui, leur, y, en devant le verbe) :
+  - **Faute de français dans 3 phrases** : la réponse attendue était « la y » (« Le garçon **la y** jette »). L'élision donne « l'y », et ce mot n'existe pas dans les choix. Les phrases sont passées au pluriel (« les pierres », « les voitures », « les tartes »), et la réponse devient **les y**.
+  - « Elle pose **une question** à la maitresse » demandait « Elle lui en pose ». C'est incorrect : il faudrait « lui en pose **une** ». La phrase devient « Elle pose **des questions** à la maitresse » → « Elle lui en pose ».
+  - **Le résultat n'était jamais enregistré.** C'est corrigé (`gram_pronom_remplacant`).
+  - **L'élève pouvait rester bloqué** : il devait réessayer sans fin, sans jamais voir la réponse. Après 2 essais ratés, la réponse et l'explication s'affichent maintenant. Le point reste réservé à la réussite du premier coup.
+  - Les autres phrases ont été relues : ordre des pronoms (le lui, les leur, leur en, les y) et négations corrects.
+  - Nouvelle orthographe : fraiche, maitresse, maitrises, entrainer.
+  - Les 3 copies de la fiche sont identiques.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -678,7 +687,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ⬜ | Le pronom | `gram_pronom` | index › (?) | (code à localiser) |
 | ✅ 05/10 | Le pronom — Déterminant ou pronom ? | `gram_pronom_piege` | index › startPronomPiegeExercise |  |
 | ✅ 05/10 | Le pronom — Le détecteur de référents | `gram_pronom_referents` | fiches/detecteur_referents.html |  |
-| ⬜ | Le pronom — Le remplaçant | `gram_pronom_remplacant` | fiches/remplacant_pronom.html |  |
+| ✅ 05/10 | Le pronom — Le remplaçant | `gram_pronom_remplacant` | fiches/remplacant_pronom.html |  |
 | ⬜ | Le pronom — La chasse aux répétitions | `gram_pronom_repetitions` | fiches/chasse_repetitions.html |  |
 | ⬜ | L'adverbe | `gram_adverbe` | index › (?) | (code à localiser) |
 | ⬜ | L'adverbe — Reconnaître les adverbes | `gram_adverbe_reconnaitre` | fiches/adverbe_exercice.html |  |

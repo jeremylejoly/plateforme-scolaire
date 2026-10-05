@@ -446,7 +446,7 @@
 
       <!-- Banque de pronoms -->
       <div class="pool-zone">
-        <div class="pool-title">Boîte à pronoms :</div>
+        <div class="pool-title">Boite à pronoms :</div>
         <div class="pool-badges" id="pool-badges"></div>
       </div>
 
@@ -584,7 +584,7 @@
           slot1: "celle-ci",
           slot2: "les siennes"
         },
-        explanation: "1. <strong>que</strong> est le pronom relatif COD remplaçant <i>le poisson grillé</i>.<br>2. <strong>celle-ci</strong> est le pronom démonstratif féminin singulier remplaçant <i>cette assiette-ci</i>.<br>3. <strong>les siennes</strong> est le pronom possessif féminin pluriel désignant les croquettes du chat."
+        explanation: "1. <strong>que</strong> est le pronom relatif CDV remplaçant <i>le poisson grillé</i>.<br>2. <strong>celle-ci</strong> est le pronom démonstratif féminin singulier remplaçant <i>cette assiette-ci</i>.<br>3. <strong>les siennes</strong> est le pronom possessif féminin pluriel désignant les croquettes du chat."
       },
       {
         tokens: [
@@ -605,7 +605,7 @@
       },
       {
         tokens: [
-          { type: "text", text: "Les élèves de CM2 répètent leur pièce de théâtre sous l'œil attentif de la maîtresse. Nous applaudissons l'actrice principale " },
+          { type: "text", text: "Les élèves de 6e primaire répètent leur pièce de théâtre sous l'œil attentif de la maitresse. Nous applaudissons l'actrice principale " },
           { type: "slot", id: "slot0", original: "l'actrice principale" },
           { type: "text", text: " incarne une reine courageuse. Cependant, la jeune fille a égaré sa couronne dorée juste avant d'entrer en scène. Heureusement, sa camarade lui prête " },
           { type: "slot", id: "slot1", original: "la couronne de sa camarade" },
@@ -635,7 +635,7 @@
           slot1: "les miens",
           slot2: "celui-là"
         },
-        explanation: "1. <strong>que</strong> est le pronom relatif COD remplaçant <i>les branches de sapin</i>.<br>2. <strong>les miens</strong> désigne mes outils à moi.<br>3. <strong>celui-là</strong> désigne le tronc éloigné."
+        explanation: "1. <strong>que</strong> est le pronom relatif CDV remplaçant <i>les branches de sapin</i>.<br>2. <strong>les miens</strong> désigne mes outils à moi.<br>3. <strong>celui-là</strong> désigne le tronc éloigné."
       },
       {
         tokens: [
@@ -703,7 +703,7 @@
           slot1: "la sienne",
           slot2: "celui-ci"
         },
-        explanation: "1. <strong>que</strong> est le pronom relatif COD remplaçant <i>le chef-d'œuvre</i>.<br>2. <strong>la sienne</strong> désigne la loupe du professeur.<br>3. <strong>celui-ci</strong> désigne le tableau proche."
+        explanation: "1. <strong>que</strong> est le pronom relatif CDV remplaçant <i>le chef-d'œuvre</i>.<br>2. <strong>la sienne</strong> désigne la loupe du professeur.<br>3. <strong>celui-ci</strong> désigne le tableau proche."
       },
       {
         tokens: [
@@ -713,7 +713,7 @@
           { type: "slot", id: "slot1", original: "mon ballon" },
           { type: "text", text: " de mon sac de sport pour continuer le match. Parmi les deux gourdes posées au sol, le capitaine choisit " },
           { type: "slot", id: "slot2", original: "cette gourde-ci" },
-          { type: "text", text: " pour boire une gorgée d'eau fraîche." }
+          { type: "text", text: " pour boire une gorgée d'eau fraiche." }
         ],
         correct: {
           slot0: "où",
@@ -754,7 +754,7 @@
           slot1: "les leurs",
           slot2: "ceux-ci"
         },
-        explanation: "1. <strong>que</strong> est le pronom relatif COD remplaçant <i>les costumes</i>.<br>2. <strong>les leurs</strong> désigne les chaussons des garçons.<br>3. <strong>ceux-ci</strong> désigne ces chapeaux."
+        explanation: "1. <strong>que</strong> est le pronom relatif CDV remplaçant <i>les costumes</i>.<br>2. <strong>les leurs</strong> désigne les chaussons des garçons.<br>3. <strong>ceux-ci</strong> désigne ces chapeaux."
       }
     ];
 
@@ -812,6 +812,7 @@
     function initGame() {
       state.currentIndex = 0;
       state.score = 0;
+      state.points = 0;
       state.submitted = false;
       state.incorrectAttempts = 0;
       state.activeSlotId = null;
@@ -973,6 +974,14 @@
         return;
       }
 
+      // Points : chaque répétition bien remplacée du premier coup rapporte 1 point
+      // (avant : 1 point seulement si les 3 étaient justes du premier coup → score sur 6 très sévère)
+      if (state.incorrectAttempts === 0) {
+        Object.keys(question.correct).forEach(slotId => {
+          if (state.slotAnswers[slotId] === question.correct[slotId]) state.points++;
+        });
+      }
+
       // Check correctness
       let isCorrect = true;
       Object.keys(question.correct).forEach(slotId => {
@@ -993,8 +1002,8 @@
 
         if (state.incorrectAttempts === 0) {
           state.score++;
-          scoreBadge.textContent = `Score : ${state.score}`;
         }
+        scoreBadge.textContent = `Score : ${state.points}`;
 
         explanationText.innerHTML = question.explanation;
         explanationPanel.style.display = 'block';
@@ -1035,7 +1044,19 @@
         });
         state.activeSlotId = null;
 
+        scoreBadge.textContent = `Score : ${state.points}`;
+
         setTimeout(() => {
+          // Après 2 essais ratés, on montre la réponse (avant : l'élève pouvait rester bloqué sans fin)
+          if (state.incorrectAttempts >= 2) {
+            Object.keys(question.correct).forEach(slotId => { state.slotAnswers[slotId] = question.correct[slotId]; });
+            state.submitted = true;
+            hideTip();
+            explanationText.innerHTML = '<strong>Voici la réponse :</strong><br>' + question.explanation;
+            explanationPanel.style.display = 'block';
+            validateBtn.style.display = 'none';
+            nextBtn.style.display = 'inline-flex';
+          }
           renderText();
           renderPool();
         }, 500);
@@ -1056,23 +1077,35 @@
       resultsScreen.style.display = 'block';
 
       const finalScore = document.getElementById('final-score');
-      finalScore.textContent = `${state.score} / ${state.questions.length}`;
+      const totalPoints = state.questions.reduce((s, q) => s + Object.keys(q.correct).length, 0);
+      finalScore.textContent = `${state.points} / ${totalPoints}`;
+      const pctFinal = Math.round(state.points / totalPoints * 100);
+
+      // Enregistrement du résultat (avant : jamais enregistré)
+      try {
+        if (window.parent && window.parent !== window && window.parent.saveResult) {
+          window.parent.saveResult({ activity: 'gram_pronom_repetitions', bookTitle: 'Grammaire — La chasse aux répétitions',
+            score: state.points, total: totalPoints, pct: pctFinal,
+            date: new Date().toLocaleDateString('fr-BE'),
+            time: new Date().toLocaleTimeString('fr-BE', {hour:'2-digit', minute:'2-digit'}) });
+        }
+      } catch (e) { /* fiche ouverte hors du site */ }
 
       const titleEl = document.getElementById('feedback-title');
       const textEl = document.getElementById('final-feedback');
       const iconEl = document.getElementById('feedback-icon');
 
-      if (state.score === state.questions.length) {
+      if (pctFinal === 100) {
         iconEl.textContent = '🏆';
         titleEl.textContent = 'Parfait !';
         textEl.textContent = 'Exceptionnel ! Tu as débusqué toutes les répétitions sans faire de fautes !';
         startConfetti();
-      } else if (state.score >= 4) {
+      } else if (pctFinal >= 70) {
         iconEl.textContent = '🌟';
         titleEl.textContent = 'Excellent !';
         textEl.textContent = 'Félicitations ! Ton style est maintenant beaucoup plus fluide.';
         startConfetti();
-      } else if (state.score >= 2) {
+      } else if (pctFinal >= 40) {
         iconEl.textContent = '👍';
         titleEl.textContent = 'Bravo !';
         textEl.textContent = 'Bon travail. Relis bien les explications pour t\'améliorer encore.';
