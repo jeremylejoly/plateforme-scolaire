@@ -331,7 +331,7 @@
         type: 'subj',
         verb: 'avoir',
         sentenceBefore: "Bien qu'elle ",
-        sentenceAfter: " du talent, elle doit s'entraîner.",
+        sentenceAfter: " du talent, elle doit s'entrainer.",
         answer: "ait",
         explanation: "Subjonctif présent du verbe <strong>avoir</strong> (3e personne du singulier : <em>elle ait</em>). C'est un verbe irrégulier : <em>que j'aie, que tu aies, qu'il/elle ait, que nous ayons, que vous ayez, qu'ils/elles aient</em>. Notez le <strong>t</strong> final pour la 3e personne."
       },
@@ -346,8 +346,8 @@
       {
         type: 'subj',
         verb: 'vouloir',
-        sentenceBefore: "Il est nécessaire qu'ils ",
-        sentenceAfter: " apprendre cette leçon.",
+        sentenceBefore: "Je doute qu'ils ",
+        sentenceAfter: " venir avec nous.",
         answer: "veuillent",
         explanation: "Subjonctif présent du verbe <strong>vouloir</strong> (3e personne du pluriel : <em>ils veuillent</em>). Ce verbe a un radical irrégulier qui change : <em>que je veuille, que nous voulions, qu'ils veuillent</em>."
       },
@@ -362,7 +362,7 @@
       {
         type: 'subj',
         verb: 'pouvoir',
-        sentenceBefore: "Il se peut que nous ",
+        sentenceBefore: "Je ne suis pas certain que nous ",
         sentenceAfter: " venir ce soir.",
         answer: "puissions",
         explanation: "Subjonctif présent du verbe <strong>pouvoir</strong> (1re personne du pluriel : <em>nous puissions</em>). Le radical du subjonctif est <em>puiss-</em> : <em>que je puisse, que tu puisses, qu'il puisse, que nous puissions, que vous puissiez, qu'ils puissent</em>."
@@ -370,7 +370,7 @@
       {
         type: 'subj',
         verb: 'aller',
-        sentenceBefore: "Il exige que je ",
+        sentenceBefore: "Il exige que j'",
         sentenceAfter: " le voir immédiatement.",
         answer: "aille",
         explanation: "Subjonctif présent du verbe <strong>aller</strong> (1re personne du singulier : <em>je / j'aille</em>). Le radical irrégulier change aux personnes du singulier et à la 3e personne du pluriel (<em>aill-</em>) : <em>que j'aille, que tu ailles, qu'il aille, qu'ils aillent</em> (mais <em>que nous allions, que vous alliez</em>)."
@@ -410,8 +410,8 @@
       {
         type: 'subj',
         verb: 'devoir',
-        sentenceBefore: "Il faut que tu ",
-        sentenceAfter: " faire tes devoirs tous les jours.",
+        sentenceBefore: "Je ne crois pas que tu ",
+        sentenceAfter: " partir si tôt.",
         answer: "doives",
         explanation: "Subjonctif présent du verbe <strong>devoir</strong> (2e personne du singulier : <em>tu doives</em>). Le radical est <em>doiv-</em> au singulier et à la 3e personne du pluriel (<em>que tu doives</em>, mais <em>que nous devions</em>)."
       },
@@ -426,7 +426,7 @@
       {
         type: 'subj',
         verb: 'écrire',
-        sentenceBefore: "Le professeur veut que j' ",
+        sentenceBefore: "Le professeur veut que j'",
         sentenceAfter: " une rédaction.",
         answer: "écrive",
         explanation: "Subjonctif présent du verbe <strong>écrire</strong> (1re personne du singulier : <em>j'écrive</em>). Le radical est <em>écriv-</em> (de <em>ils écrivent</em>) + terminaison <em>-e</em>."
@@ -651,7 +651,7 @@
       const inputHtml = `<input type="text" id="verb-input" class="border-b-4 border-neutral-900 focus:outline-none text-center font-bold px-2 py-1 text-neutral-800 bg-neutral-50 focus:bg-neutral-100 rounded-md transition-all mx-1 w-48" placeholder="taper ici" autocomplete="off" />`;
       const verbTip = `<span class="text-neutral-500 font-nunito font-semibold text-sm">(${q.verb})</span>`;
       
-      container.innerHTML = `${q.sentenceBefore} ${inputHtml} ${verbTip} ${q.sentenceAfter}`;
+      container.innerHTML = `${q.sentenceBefore}${/'\s*$/.test(q.sentenceBefore) ? '' : ' '}${inputHtml} ${verbTip} ${q.sentenceAfter}`;
 
       // Autofocus input & Enter handler
       const verbInput = document.getElementById('verb-input');
@@ -665,13 +665,15 @@
       });
     }
 
-    // String normalization helper (accent removal and lowercase)
+    // Normalisation : minuscules, espaces, apostrophes, tirets. Les accents comptent (avant : ils étaient ignorés).
     function normalizeString(str) {
-      return str
+      return String(str || '')
+        .normalize("NFC")
         .toLowerCase()
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "") // remove accents
-        .replace(/\s+/g, ' ') // collapse spaces
+        .replace(/[’`]/g, "'")
+        .replace(/[‐‑–—]/g, '-')
+        .replace(/\s*-\s*/g, '-')
+        .replace(/\s+/g, ' ')
         .trim();
     }
 
@@ -685,7 +687,11 @@
       const q = gameQuestions[currentQ];
       const correctNormalized = normalizeString(q.answer);
       
-      const isCorrect = (userNormalized === correctNormalized);
+      // On accepte aussi que l'élève recopie le pronom déjà écrit avant le trou (« tu sois », « elle ait », « j'aille »)
+      const avant = normalizeString(q.sentenceBefore);
+      const dernier = ((avant.match(/(?:^|\s)(\S+)$/) || [,''])[1]).replace(/^qu'/, '').replace(/^que$/, '');
+      const colle = (a, b) => normalizeString(a + (/'$/.test(a) ? '' : ' ') + b);
+      const isCorrect = (userNormalized === correctNormalized) || (!!dernier && /^(j'|je|tu|il|elle|on|nous|vous|ils|elles|me|te)$/.test(dernier) && userNormalized === colle(dernier, correctNormalized));
       
       const comparisonContainer = document.getElementById('comparison-container');
       const compUserAns = document.getElementById('comparison-user-ans');
@@ -754,12 +760,12 @@
       if (score === 10) {
         stars = "⭐⭐⭐";
         title = "👑 Excellent ! Un sans-faute !";
-        message = "Tu maîtrises parfaitement le subjonctif présent et l'impératif présent !";
+        message = "Tu maitrises parfaitement le subjonctif présent et l'impératif présent !";
         triggerConfettis();
       } else if (score >= 7) {
         stars = "⭐⭐";
         title = "☀️ Super score !";
-        message = "C'est un excellent travail. Tu as une très bonne maîtrise de ces modes verbaux.";
+        message = "C'est un excellent travail. Tu as une très bonne maitrise de ces modes verbaux.";
         triggerConfettis();
       } else if (score >= 5) {
         stars = "⭐";

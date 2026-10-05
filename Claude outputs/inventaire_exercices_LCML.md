@@ -433,6 +433,18 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
   - Nouvelle orthographe : maitresse, fraiche.
   - **Toute la rubrique Passé composé (fiches 1 à 9) est vérifiée.** Plus aucune fiche n'utilise l'ancien envoi `fiche_result`, que le site ne recevait pas.
 
+- **05/10 — Conjugaison › Conditionnel & Plus-que-parfait** (30 questions : 15 au conditionnel, 15 au plus-que-parfait ; 5 + 5 tirées par partie) :
+  - Les accents n'étaient pas vérifiés : « etaient tombees » ou « ecrits » étaient comptés justes. Ils comptent maintenant.
+  - Bonnes réponses qui étaient refusées, maintenant acceptées :
+    - le pronom recopié (« j'aurais », « nous finirions », « il avait écrits ») ;
+    - l'apostrophe courbe (’).
+  - Terminologie : « complément d'objet direct » devient « CDV ». La coquille « with » devient « avec ».
+  - Concordance des temps : « étaient sorties dès que la pluie s'est calmée » devient « … s'était calmée ».
+  - Affichage : « j'[ ] » et « m'[ ] » s'affichent sans espace après l'apostrophe.
+  - Nouvelle orthographe : gouter, maitrises, maitrise.
+  - Le résultat était déjà enregistré (`conj_cond_pqpf`). Le mélange se fait déjà selon la méthode Fisher–Yates. Les 30 réponses sont justes.
+  - Les 3 copies de la fiche ont été corrigées : fiches/, public/fiches/ et la racine.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -581,7 +593,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ⬜ | Indicatif passé composé | `passe_compose` | index › goToConjugaison |  |
 | ⬜ | Passé simple (Lecture) | `conj_passe_simple` | fiches/conjugaison_passe_simple.html |  |
 | ⬜ | Subjonctif & Impératif | `conj_subj_imp` | fiches/conjugaison_subj_imp.html |  |
-| ⬜ | Conditionnel & Plus-que-parfait | `conj_cond_pqpf` | fiches/conjugaison_cond_pqpf.html |  |
+| ✅ 05/10 | Conditionnel & Plus-que-parfait | `conj_cond_pqpf` | fiches/conjugaison_cond_pqpf.html |  |
 
 ### 📖 Français — 🔀 Conjugaison — Un peu de tout
 
