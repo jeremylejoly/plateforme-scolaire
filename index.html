@@ -12505,8 +12505,8 @@ function generate4OpQuestions(){
 
   function genDiv(){
     for(let t=0;t<50;t++){
-      const divisor = Math.floor(Math.random()*10)+1;
-      const factor = Math.floor(Math.random()*10)+1;
+      const divisor = Math.floor(Math.random()*9)+2;  // 2 à 10 (avant : ÷ 1 possible, ex. 7 ÷ 1)
+      const factor = Math.floor(Math.random()*9)+2;
       const dividend = divisor*factor;
       const key = `÷${dividend}÷${divisor}`;
       if(used.has(key)) continue;
@@ -12516,21 +12516,24 @@ function generate4OpQuestions(){
     return null;
   }
 
-  // Build exactly 10 questions: ~2-3 of each type
+  // Composition fixe : 3 additions, 3 soustractions, 2 multiplications, 2 divisions
+  // (avant : 10 générateurs tirés parmi 15 → environ 1 série sur 10 sans aucune division)
+  const pick = arr => arr[Math.floor(Math.random()*arr.length)];
   const generators = [
-    ...Array(3).fill(genAdd100),
-    ...Array(2).fill(genAdd1000),
-    ...Array(3).fill(genSub100),
-    ...Array(2).fill(genSub1000),
-    ...Array(3).fill(genMult),
-    ...Array(2).fill(genDiv),
+    genAdd100, genAdd1000, pick([genAdd100, genAdd1000]),
+    genSub100, genSub1000, pick([genSub100, genSub1000]),
+    genMult, genMult, genDiv, genDiv
   ];
-
-  // Shuffle generators and pick 10
-  const shuffled = shuffleArray(generators).slice(0, 10);
-  shuffled.forEach(gen => {
-    const q = gen();
-    if(q) questions.push(q);
+  generators.forEach(gen => {
+    for(let t=0;t<20;t++){
+      const q = gen();
+      if(!q) break;
+      const key = q.op === '+' ? `+${Math.min(q.a,q.b)}+${Math.max(q.a,q.b)}` : `${q.op}${q.a}${q.op}${q.b}`;
+      if(q.op !== '×' && q.op !== '÷' && used.has(key)) continue; // × et ÷ gèrent déjà leurs doublons
+      used.add(key);
+      questions.push(q);
+      break;
+    }
   });
 
   // If we didn't get 10, fill with mult
@@ -12545,7 +12548,8 @@ function generate4OpQuestions(){
 
 function start4OpExercise(){
   calcState = {
-    type: '4_operations',
+    type: 'op_4_operations_melangees', // = identifiant du menu et du plan (avant : '4_operations', non reconnu)
+    typeLabel: 'Les 4 opérations mélangées',
     questions: generate4OpQuestions(),
     submitted: false
   };
@@ -13283,6 +13287,8 @@ function restartCalcExercise(){
     calcState.questions = generateOpX5Questions();
   } else if(calcState.type === 'op_x9'){
     calcState.questions = generateOpX9Questions();
+  } else if(calcState.type === 'op_4_operations_melangees'){
+    calcState.questions = generate4OpQuestions(); // avant : « Nouveaux calculs » donnait des +/− jusque 100
   } else if(calcState.type === 'op_x11'){
     calcState.questions = generateOpX11Questions();
   } else if(calcState.type === 'op_tables'){
@@ -32421,8 +32427,11 @@ function getPlanItemScore(id) {
   const esc = id.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   const re = new RegExp('(^|[_\\-])' + esc + '($|[_\\-])');
   // Anciens résultats des calculs enregistrés sous « calc_add_sous_100 », « calc_mult_div »…
-  const legacy = id.startsWith('op_') ? ('calc_' + (id === 'op_mult_div_tables' ? 'mult_div' : id.slice(3))) : null;
-  const matches = results.filter(r => r.student === state.student && r.cls === state.studentCls && r.activity && (re.test(r.activity) || r.activity === legacy));
+  const legacy = !id.startsWith('op_') ? [] :
+    id === 'op_mult_div_tables' ? ['calc_mult_div'] :
+    id === 'op_4_operations_melangees' ? ['calc_4_operations', 'op_4_operations'] :
+    ['calc_' + id.slice(3)];
+  const matches = results.filter(r => r.student === state.student && r.cls === state.studentCls && r.activity && (re.test(r.activity) || legacy.includes(r.activity)));
   if (!matches.length) return null;
   const best = matches.reduce((a, b) => (a.pct||0) > (b.pct||0) ? a : b);
   return best;

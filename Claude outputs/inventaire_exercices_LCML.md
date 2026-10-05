@@ -1205,6 +1205,13 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Nouvelle orthographe : entrainement.
 - Tests jsdom : 4 jeux joués de bout en bout, 4 sauvegardes correctes, aucune erreur JS.
 
+### 05/10 — Maths › Opérations › Les 4 opérations › Le compte est bon (`op_add_sous_compte_est_bon`, `fiches/compte_est_bon.html` + copies public et racine) — sw.js v547
+- Génération vérifiée (150 grilles facile/moyen, 60 difficile) : toujours résolubles, avec le nombre minimal de calculs voulu par niveau ; génération rapide (≤ 0,13 s).
+- **Aucun résultat enregistré, parties sans fin** → série de 5 défis : point si la cible est atteinte sans joker ; joker = pas de point ; « Nouveau jeu » devient « Passer ce défi » (non réussi, solution montrée) ; fin de série → enregistrement « Le compte est bon — niveau … » (x / 5) et « Nouvelle série ». Changer de niveau = nouvelle série.
+- « Recommencer » après une victoire permettait de rejouer le même défi et de regagner le point → bloqué.
+- Joker : montrait une solution inutilement longue (5 calculs pour une cible atteignable en 2) → solution la plus courte (parcours en largeur).
+- Tests jsdom : série gagné / joker / passé / gagné / gagné → 3 / 5, 1 sauvegarde, aucune erreur.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1499,7 +1506,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | Multiplications et divisions — Tables de multiplication | `op_mult_div_tables` | index › startMultDivExercise |  |
 | ⬜ | Les 4 opérations | `op_4_operations` | index › render4OperationsScreen |  |
 | ⬜ | Les 4 opérations mélangées | `op_4_operations_melangees` | index › start4OpExercise |  |
-| ⬜ | Le compte est bon | `op_add_sous_compte_est_bon` | fiches/compte_est_bon.html |  |
+| ✅ 05/10 | Le compte est bon | `op_add_sous_compte_est_bon` | fiches/compte_est_bon.html |  |
 | ⬜ | Fiche d'entraînement (Calculs) | `op_4_operations_calculs` | fiches/calculs.html |  |
 | ⬜ | Calculs lacunaires | `op_4_operations_lacunaires` | fiches/calculs-4-operations.html |  |
 | ✅ 05/10 | Les tables étendues | `op_tables` | index › startOpTablesExercise |  |
