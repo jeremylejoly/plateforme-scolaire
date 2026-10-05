@@ -984,6 +984,12 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
   - 317 080 317 : la réponse attendue disait « 8 mille » (= 317 008 317) alors que la bonne proposition (« 8 dizaines de mille ») était comptée fausse. Réponse corrigée.
 - Mélanges `sort(random)` → Fisher-Yates. Entrainer.
 
+### 05/10 — Maths › Grands nombres › Classer des nombres (`num_classer`, index › renderNumClasser, banques dans index) — sw.js v514
+- 20 séries (10 croissantes, 10 décroissantes) vérifiées par programme : ordres justes, aucun doublon.
+- Le mélange pouvait afficher la série déjà dans le bon ordre (point gratuit ; une série de la banque est même stockée dans l'ordre) → Fisher-Yates qui refuse l'ordre correct.
+- Déplacements (souris et tactile) bloqués après validation (la correction ne pouvait plus être modifiée visuellement).
+- Entrainer.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1231,7 +1237,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | Lire un nombre | `num_lire` | index › renderNumLire |  |
 | ✅ 05/10 | Écrire un nombre | `num_ecrire` | index › renderNumEcrire |  |
 | ✅ 05/10 | Décomposer un nombre | `num_decomposer` | index › renderNumDecomposer |  |
-| ⬜ | Classer des nombres | `num_classer` | index › renderNumClasser |  |
+| ✅ 05/10 | Classer des nombres | `num_classer` | index › renderNumClasser |  |
 | ⬜ | Décimaux — L'abaque des décimaux | `num_decimaux_abaque` | index › renderAbaqueDecimaux |  |
 | ⬜ | Décimaux — Devinettes décimales | `num_decimaux_devinettes` | index › renderDevinettesDecimaux |  |
 | ✅ 05/10 (9d2364e) | Décimaux — Valeur d'un chiffre | `num_decimaux_relier` | index › renderRelierDecimaux |  |
