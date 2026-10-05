@@ -307,6 +307,12 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
   - « Se fier » : la phrase est maintenant « Vous vous … entièrement à votre professeur » et l'élève tape « fiiez ». Avant, il fallait deviner qu'il fallait écrire « vous fiiez », et la préposition « de » était fausse.
   - La fiche du plan de travail n'enregistrait jamais le résultat. C'est corrigé (`conj_imparfait_ecriture`). Son mélange est maintenant équitable, et elle tolère les espaces doubles et les apostrophes courbes.
 
+- **05/10 — Conjugaison › Indicatif imparfait › Évaluation** (5 QCM + 5 phrases à trous) :
+  - « Une seule tentative » est maintenant réellement appliquée, grâce à la correction du 05/10 sur le moteur commun.
+  - Dans deux QCM, un piège était aussi correct : « Tu courrais très vite » (conditionnel) et « Nous avons un grand jardin » (présent). On a ajouté « À cette époque, » pour que seul l'imparfait convienne.
+  - « Tu … très timide quand tu étais petit » donnait la réponse. La phrase devient « … à l'école maternelle ».
+  - Les autres réponses sont justes et en nouvelle orthographe. Les propositions et l'ordre des questions sont mélangés.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -450,7 +456,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | Statut | Exercice | id | Source | Signal automatique |
 |---|---|---|---|---|
 | ✅ 05/10 | Indicatif présent | `present` | index › goToConjugaison |  |
-| ⬜ | Indicatif imparfait | `imparfait` | index › goToConjugaison |  |
+| ✅ 05/10 | Indicatif imparfait | `imparfait` | index › goToConjugaison |  |
 | ⬜ | Indicatif futur simple | `futur` | index › goToConjugaison |  |
 | ⬜ | Indicatif passé composé | `passe_compose` | index › goToConjugaison |  |
 | ⬜ | Passé simple (Lecture) | `conj_passe_simple` | fiches/conjugaison_passe_simple.html |  |
