@@ -36846,11 +36846,21 @@ const MOYEN_AGE_DOC_INFERENCE = [
   {q:"Pourquoi des villages entiers furent-ils abandonnés ?", opts:["Parce que les seigneurs avaient chassé les habitants","Parce qu'il n'y avait plus assez de survivants pour les faire vivre","Parce que les villages avaient été brûlés pour arrêter la maladie","Parce que les habitants étaient partis faire les Croisades"], correct:1},
 ];
 
-let maDocState = {qcmAnswers:new Array(5).fill(-1), vfAnswers:{}, infAnswers:new Array(4).fill(-1), validated:false};
+let maDocState = {qcm:[], vf:[], inf:[], qcmAnswers:[], vfAnswers:{}, infAnswers:[], validated:false};
 
 function renderMoyenAgeDoc(){
   const body = document.getElementById('moyen-age-doc-body'); if(!body) return;
-  maDocState = {qcmAnswers:new Array(5).fill(-1), vfAnswers:{}, infAnswers:new Array(4).fill(-1), validated:false};
+  // Nouvelle partie : ordre des questions et des propositions mélangé à chaque fois
+  const melangeQCM = list => shuffle(list).map(q => {
+    const opts = shuffle(q.opts);
+    return {q:q.q, opts, correct:opts.indexOf(q.opts[q.correct])};
+  });
+  maDocState = {
+    qcm: melangeQCM(MOYEN_AGE_DOC_QCM),
+    vf: shuffle(MOYEN_AGE_DOC_VF),
+    inf: melangeQCM(MOYEN_AGE_DOC_INFERENCE),
+    qcmAnswers:new Array(MOYEN_AGE_DOC_QCM.length).fill(-1), vfAnswers:{}, infAnswers:new Array(MOYEN_AGE_DOC_INFERENCE.length).fill(-1), validated:false
+  };
   renderMoyenAgeDocHtml();
 }
 
@@ -36860,7 +36870,7 @@ function renderMoyenAgeDocHtml(){
 
   // QCM
   let qcmHtml = '';
-  MOYEN_AGE_DOC_QCM.forEach((q,i) => {
+  maDocState.qcm.forEach((q,i) => {
     qcmHtml += `<div style="margin-bottom:1rem"><p style="font-weight:700;font-size:14px;margin-bottom:.5rem">${i+1}. ${q.q}</p><div style="display:flex;flex-direction:column;gap:6px;">`;
     q.opts.forEach((o,j) => {
       const sel = qcmAnswers[i]===j;
@@ -36877,7 +36887,7 @@ function renderMoyenAgeDocHtml(){
 
   // Vrai/Faux
   let vfHtml = '';
-  MOYEN_AGE_DOC_VF.forEach((item,i) => {
+  maDocState.vf.forEach((item,i) => {
     const ans = vfAnswers[i];
     vfHtml += `<div style="margin-bottom:10px;padding:10px 14px;background:var(--surface);border:1.5px solid var(--border);border-radius:10px;">
       <p style="font-size:13px;font-weight:600;margin-bottom:8px">${item.q}</p>
@@ -36896,7 +36906,7 @@ function renderMoyenAgeDocHtml(){
 
   // Inférence
   let infHtml = '';
-  MOYEN_AGE_DOC_INFERENCE.forEach((q,i) => {
+  maDocState.inf.forEach((q,i) => {
     infHtml += `<div style="margin-bottom:1rem"><p style="font-weight:700;font-size:14px;margin-bottom:.5rem;color:var(--purple)">🔍 ${q.q}</p><div style="display:flex;flex-direction:column;gap:6px;">`;
     q.opts.forEach((o,j) => {
       const sel = infAnswers[i]===j;
@@ -36912,9 +36922,9 @@ function renderMoyenAgeDocHtml(){
   });
 
   const scoreHtml = validated ? (() => {
-    const qcmOk = MOYEN_AGE_DOC_QCM.filter((_,i)=>qcmAnswers[i]===MOYEN_AGE_DOC_QCM[i].correct).length;
-    const vfOk = MOYEN_AGE_DOC_VF.filter((_,i)=>vfAnswers[i]===MOYEN_AGE_DOC_VF[i].correct).length;
-    const infOk = MOYEN_AGE_DOC_INFERENCE.filter((_,i)=>infAnswers[i]===MOYEN_AGE_DOC_INFERENCE[i].correct).length;
+    const qcmOk = maDocState.qcm.filter((q,i)=>qcmAnswers[i]===q.correct).length;
+    const vfOk = maDocState.vf.filter((q,i)=>vfAnswers[i]===q.correct).length;
+    const infOk = maDocState.inf.filter((q,i)=>infAnswers[i]===q.correct).length;
     const total = 14; const ok = qcmOk+vfOk+infOk; const pct=Math.round(ok/total*100);
     return `<div style="text-align:center;padding:1.5rem;background:var(--surface);border-radius:12px;margin-bottom:1rem">
       <div style="font-size:48px">${pct>=70?'🎉':pct>=50?'👍':'💪'}</div>
@@ -36965,9 +36975,9 @@ function maDocInfSelect(qi,ai){ if(maDocState.validated) return; maDocState.infA
 function validateMoyenAgeDoc(){
   maDocState.validated = true;
   const {qcmAnswers, vfAnswers, infAnswers} = maDocState;
-  const qcmOk = MOYEN_AGE_DOC_QCM.filter((_,i)=>qcmAnswers[i]===MOYEN_AGE_DOC_QCM[i].correct).length;
-  const vfOk = MOYEN_AGE_DOC_VF.filter((_,i)=>vfAnswers[i]===MOYEN_AGE_DOC_VF[i].correct).length;
-  const infOk = MOYEN_AGE_DOC_INFERENCE.filter((_,i)=>infAnswers[i]===MOYEN_AGE_DOC_INFERENCE[i].correct).length;
+  const qcmOk = maDocState.qcm.filter((q,i)=>qcmAnswers[i]===q.correct).length;
+  const vfOk = maDocState.vf.filter((q,i)=>vfAnswers[i]===q.correct).length;
+  const infOk = maDocState.inf.filter((q,i)=>infAnswers[i]===q.correct).length;
   const ok = qcmOk+vfOk+infOk; const total=14; const pct=Math.round(ok/total*100);
   renderMoyenAgeDocHtml();
   if(state.student) saveResult({student:state.student,cls:state.studentCls,className:CLASSES[state.studentCls]?CLASSES[state.studentCls].name:state.studentCls,activity:'moyen_age_doc',bookTitle:'Moyen Âge — La Peste Noire',score:ok,total,pct,date:new Date().toLocaleDateString('fr-BE'),time:new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})});
