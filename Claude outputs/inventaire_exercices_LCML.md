@@ -2248,6 +2248,8 @@ Spécifique :
 
 - **06/10 — Jeux › Le Tangram (`jeu_tangram`, tangram.html + public, sw.js v714)** : les 9 figures et leurs 100 solutions vérifiées géométriquement (7 pièces, surface 16, aucun chevauchement, toutes les solutions donnent la même silhouette, d'un seul tenant, sans trou ; aucun triangle « retourné » impossible à obtenir) ; silhouettes dessinées et reconnaissables. Jeu joué au doigt sur téléphone (sélection, rotations, retournement, glisser) : Carré, Bateau à voile et Sapin reconstitués → aimantation des 7 pièces et victoire. Aucun défaut de fonctionnement. Corrections : record de temps par élève (avant : commun à l'appareil) ; « emboîte » → « emboite » (NO) ; règle du retournement reformulée (« pas symétrique par réflexion » → « n'a pas d'axe de symétrie »). Pas de saveResult ni de boite de dialogue.
 
+- **06/10 — Jeux › Tetris (`jeu_tetris`, index › renderJeuTetris, sw.js v715)** : fonctionnement correct (collisions, lignes, score 100/300/500/800 × niveau, accélération tous les 10 lignes, arrêt quand on quitte l'écran). Améliorations : rotation refusée contre un mur (la pièce restait bloquée, surtout la barre) → la pièce se décale d'une à trois cases pour pouvoir tourner ; tirage au hasard pur (longues séries sans barre) → tirage « par sac » (les 7 formes passent avant qu'une revienne). saveResult à chaque fin de partie retiré (règle jeux ; son « pourcentage » = score ÷ 50 n'avait pas de sens) → record personnel affiché en fin de partie, gardé par élève. Bouton « DROP » → « Chute ». Test Playwright 390 px : sac de 7 vérifié, rotation de la barre contre le mur droit, partie jusqu'au GAME OVER, aucune sauvegarde enseignant.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2835,7 +2837,7 @@ Spécifique :
 |---|---|---|---|---|
 | ✅ 06/10 | Tables de multiplication | `jeu_tables` | index › renderJeuTables |  |
 | ✅ 06/10 | Memory Calcul | `jeu_memory` | index › renderJeuMemory |  |
-| ⬜ | Tetris | `jeu_tetris` | index › renderJeuTetris |  |
+| ✅ 06/10 | Tetris | `jeu_tetris` | index › renderJeuTetris |  |
 | ✅ 06/10 | Rush Hour | `jeu_rushhour` | index › renderJeuRushHour |  |
 | ✅ 06/10 | Le robot | `jeu_robot` | fiches/Labyrinthe.html |  |
 | ✅ 06/10 | Mots croisés | `jeu_mots_croises` | fiches/mots-croises.html |  |

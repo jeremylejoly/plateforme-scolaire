@@ -20253,7 +20253,7 @@ function renderJeuTetris(){
           <button onclick="tetMobile('rotate')" style="width:48px;height:48px;border-radius:10px;border:1.5px solid var(--border);background:var(--surface);font-size:20px;cursor:pointer;">↑</button>
           <button onclick="tetMobile('down')" style="width:48px;height:48px;border-radius:10px;border:1.5px solid var(--border);background:var(--surface);font-size:20px;cursor:pointer;">↓</button>
           <button onclick="tetMobile('right')" style="width:48px;height:48px;border-radius:10px;border:1.5px solid var(--border);background:var(--surface);font-size:20px;cursor:pointer;">→</button>
-          <button onclick="tetMobile('drop')" style="width:48px;height:48px;border-radius:10px;border:1.5px solid var(--purple);background:var(--purple-light);font-size:14px;font-weight:800;cursor:pointer;color:var(--purple);">DROP</button>
+          <button onclick="tetMobile('drop')" style="width:48px;height:48px;border-radius:10px;border:1.5px solid var(--purple);background:var(--purple-light);font-size:13px;font-weight:800;cursor:pointer;color:var(--purple);">Chute</button>
         </div>
       </div>
 
@@ -20298,12 +20298,25 @@ function tetStop(){
 
 function tetNewBoard(){ return Array.from({length:TET_ROWS},()=>Array(TET_COLS).fill(0)); }
 
+let tetBag = [];
 function tetRandPiece(){
-  const i=Math.floor(Math.random()*TET_PIECES.length);
+  if(!tetBag.length){
+    tetBag = TET_PIECES.map((_,k)=>k);
+    for(let k=tetBag.length-1;k>0;k--){ const j=Math.floor(Math.random()*(k+1)); [tetBag[k],tetBag[j]]=[tetBag[j],tetBag[k]]; }
+  }
+  const i=tetBag.pop();
   return{shape:TET_PIECES[i].map(r=>[...r]),color:TET_COLORS[i],x:Math.floor((TET_COLS-TET_PIECES[i][0].length)/2),y:0};
 }
 
 function tetRotate(s){ return Array.from({length:s[0].length},(_,i)=>Array.from({length:s.length},(_,j)=>s[s.length-1-j][i])); }
+
+function tetTryRotate(){
+  const r=tetRotate(tetCur.shape);
+  for(const dx of [0,-1,1,-2,2,-3]){
+    if(tetValid(r,tetCur.x+dx,tetCur.y)){ tetCur.shape=r; tetCur.x+=dx; return true; }
+  }
+  return false;
+}
 
 function tetValid(shape,x,y){
   return shape.every((row,dy)=>row.every((v,dx)=>{
@@ -20396,7 +20409,7 @@ function tetOnKey(e){
   if(e.code==='ArrowLeft'){ e.preventDefault(); if(tetValid(tetCur.shape,tetCur.x-1,tetCur.y)) tetCur.x--; tetDraw(); }
   else if(e.code==='ArrowRight'){ e.preventDefault(); if(tetValid(tetCur.shape,tetCur.x+1,tetCur.y)) tetCur.x++; tetDraw(); }
   else if(e.code==='ArrowDown'){ e.preventDefault(); if(tetValid(tetCur.shape,tetCur.x,tetCur.y+1)) tetCur.y++; tetDraw(); }
-  else if(e.code==='ArrowUp'){ e.preventDefault(); const r=tetRotate(tetCur.shape); if(tetValid(r,tetCur.x,tetCur.y)) tetCur.shape=r; tetDraw(); }
+  else if(e.code==='ArrowUp'){ e.preventDefault(); tetTryRotate(); tetDraw(); }
   else if(e.code==='Space'){
     e.preventDefault();
     while(tetValid(tetCur.shape,tetCur.x,tetCur.y+1)) tetCur.y++;
@@ -20409,7 +20422,7 @@ function tetMobile(action){
   if(action==='left'){ if(tetValid(tetCur.shape,tetCur.x-1,tetCur.y)) tetCur.x--; }
   else if(action==='right'){ if(tetValid(tetCur.shape,tetCur.x+1,tetCur.y)) tetCur.x++; }
   else if(action==='down'){ if(tetValid(tetCur.shape,tetCur.x,tetCur.y+1)) tetCur.y++; }
-  else if(action==='rotate'){ const r=tetRotate(tetCur.shape); if(tetValid(r,tetCur.x,tetCur.y)) tetCur.shape=r; }
+  else if(action==='rotate'){ tetTryRotate(); }
   else if(action==='drop'){ while(tetValid(tetCur.shape,tetCur.x,tetCur.y+1)) tetCur.y++; tetPlace(); }
   tetDraw();
 }
@@ -20422,25 +20435,26 @@ function tetGameOver(){
   ov.style.display='flex';
   ov.innerHTML=`
     <div style="font-size:22px;font-weight:900;color:#fff;font-family:'Nunito',sans-serif;">GAME OVER</div>
-    <div style="font-size:13px;color:#bbb;text-align:center;line-height:1.6;">Score : ${tetScore} · Niveau : ${tetLevel}</div>
+    <div style="font-size:13px;color:#bbb;text-align:center;line-height:1.6;">Score : ${tetScore} · Lignes : ${tetLines} · Niveau : ${tetLevel}</div>
+    <div style="font-size:13px;color:#ffd166;text-align:center;font-weight:800;">${tetRecordLine()}</div>
     <button onclick="tetStart()" style="padding:0.7rem 2rem;font-size:16px;font-weight:800;border-radius:8px;cursor:pointer;background:#e65100;color:#fff;border:none;font-family:'Nunito',sans-serif;">▶ REJOUER</button>`;
-  if(state.student){
-    saveResult({
-      student:state.student, cls:state.studentCls,
-      className:CLASSES[state.studentCls]?CLASSES[state.studentCls].name:state.studentCls,
-      activity:'jeu_tetris',
-      bookTitle:'Jeu — Tetris',
-      score:tetScore, total:tetScore, pct:Math.min(100,Math.round(tetScore/50)),
-      date:new Date().toLocaleDateString('fr-BE'),
-      time:new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})
-    });
-  }
+  // (Jeux : aucun résultat envoyé à la page enseignant ; le record reste dans le jeu)
+}
+
+// Record personnel (meilleur score), gardé par élève sur l'appareil
+function tetRecordLine(){
+  try {
+    const k = 'lcml_tetris_best_' + (state.studentCls||'') + '_' + (state.student||'invite');
+    const old = parseInt(localStorage.getItem(k) || '0', 10) || 0;
+    if (tetScore > old) { localStorage.setItem(k, String(tetScore)); return old ? '🔥 Nouveau record ! (avant : ' + old + ')' : (tetScore ? '📌 Premier record : ' + tetScore : ''); }
+    return old ? '🏅 Ton record : ' + old : '';
+  } catch(e) { return ''; }
 }
 
 function tetStart(){
   const ov=document.getElementById('tet-overlay');
   if(ov) ov.style.display='none';
-  tetBoard=tetNewBoard(); tetScore=0; tetLines=0; tetLevel=1; tetSpeed=550; tetRunning=true;
+  tetBoard=tetNewBoard(); tetScore=0; tetLines=0; tetLevel=1; tetSpeed=550; tetRunning=true; tetBag=[];
   const ts=document.getElementById('t-score');
   const tl=document.getElementById('t-lines');
   const tlv=document.getElementById('t-level');
