@@ -1934,6 +1934,13 @@ Spécifique :
 - **Validation** : questions sans réponse comptées fausses → message dans la page (nombre de réponses manquantes) ; garde 600 ms ; enregistrement dans un try/catch ; bonne réponse en bleu (#1f5fbf, ➜) quand l'élève s'est trompé, en vert quand il a juste (QCM, V/F et inférences) ; la page ne remonte plus en haut à chaque clic.
 - Tests Chromium : vide → « il en reste 14 », 13/14 → « Il te reste une question sans réponse », 2 erreurs → 2 réponses en bleu, 1 seul enregistrement 12/14 malgré les clics répétés, réponses verrouillées ; 390 px sans débordement.
 
+### 06/10 — Éveil → Histoire → Le Moyen Âge → Texte lacunaire (`moyen_age_texte_trous`, `fiches/moyen_age_texte_trous.html`, 3 copies) — sw.js v634
+- **Résultat sans valeur** : enregistré seulement quand les 3 textes étaient parfaits, toujours « 24/24 », après autant d'essais que voulu (la correction « ✗ (mot) » s'affichait dès la 1re vérification : il suffisait de la recopier) → chaque texte n'est vérifié qu'**une fois** (trous verrouillés), score au premier essai, enregistrement unique du vrai score /24 quand les 3 textes sont vérifiés (try/catch, `window.parent !== window`).
+- Vérifier avec des trous vides comptait faux → message « Complète d'abord les N trous restants », rien de compté ; garde 600 ms. Correction en **bleu** (« ➜ mot », elle était rouge) ; onglet = score du texte (ex. 6/8) ; bouton « Texte suivant » ; « Réinitialiser » → « Effacer mes choix » (avant vérification seulement) ; finale avec le score réel.
+- **Liens « Retour à l'accueil » / « Retour aux activités »** dans la fiche : ils chargeaient tout le site à l'intérieur du cadre → retirés (le bouton Retour du site suffit).
+- **Contenu** : serfs « qui appartiennent au seigneur et sont vendus avec la terre » → « attachés à la terre du seigneur, ne peuvent pas la quitter » ; corvées « lorsqu'ils ne peuvent pas payer en monnaie » (faux : la corvée est due en plus) → « ils doivent effectuer des corvées » ; « Cette cérémonie » sans antécédent → « La cérémonie ». Banques de mots et définitions relues (cens / taille, séculier / régulier distingués par le texte).
+- Tests Chromium (fiche dans un cadre) : vide → message, 6/8 → 2 réponses en bleu + trous verrouillés, double clic sans effet, 3 textes → 1 seule sauvegarde 22/24 (92 %), « Recommencer » remet tout à zéro ; 390 px sans débordement.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2376,7 +2383,7 @@ Spécifique :
 | ✅ 06/10 | Quiz Moyen Âge | `qvgdm_moyen_age` | index › renderQVGDMMoyenAge |  |
 | ✅ 06/10 | Moyen Âge — Termes et définitions | `moyen_age_assoc` | index › renderMoyenAgeAssoc |  |
 | ✅ 05/10 (ac366c8) + 06/10 | Moyen Âge — La Peste Noire | `moyen_age_doc` | index › renderMoyenAgeDoc |  |
-| ⬜ | Moyen Âge — Texte lacunaire | `moyen_age_texte_trous` | fiches/moyen_age_texte_trous.html | Saisie libre comparée strictement |
+| ✅ 06/10 | Moyen Âge — Texte lacunaire | `moyen_age_texte_trous` | fiches/moyen_age_texte_trous.html | Saisie libre comparée strictement |
 | ⬜ | Moyen Âge — Je relie (Vocabulaire) | `moyen_age_vocabulaire` | fiches/moyen_age_vocabulaire.html |  |
 | ⬜ | Les Temps Modernes | `hist_temps_modernes` | index › (?) | (code à localiser) |
 | ⬜ | L'Époque Contemporaine | `hist_contemporaine` | index › (?) | (code à localiser) |
