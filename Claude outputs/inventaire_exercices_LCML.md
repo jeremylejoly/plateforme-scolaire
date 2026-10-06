@@ -2213,6 +2213,10 @@ Spécifique :
 - **06/10 — Le globe terrestre 3D (`geo_globe_3d`, fiches/globe-terrestre.html, sw.js v697)** : le globe n'était accessible que depuis le plan de travail → nouvel écran `screen-geo-globe-3d` et carte en tête du menu Éveil → Géographie → Les océans et continents (décision de Jeremy) ; le plan de travail ouvre maintenant cet écran. Leçon sans score (acceptée). Bug majeur : le méridien de Greenwich était dessiné à 90° de sa place (il traversait l'Amérique, son étiquette aussi) et les étiquettes de longitude étaient décalées de 90° → longitudes recalées sur la texture (0° = Greenwich), Greenwich en demi-cercle d'un pôle à l'autre passant par Londres, méridiens gris tous les 10° complets ; au départ, l'Europe et l'Afrique sont face à l'élève. Autres : la texture locale de la Terre était cherchée dans fiches/ (absente → passage par le CDN) → `../earth-blue-marble.jpg` ; fichier des frontières (600 Ko) chargé deux fois ; 23,4° / 66,6° avec virgule. Vérifié à l'écran : Greenwich passe par Londres et le golfe de Guinée, tropique du Cancer dans le Sahara, 20°O dans l'Atlantique, 20°E en Afrique. Test Playwright 390 px : carte du menu → écran du globe, globe chargé, pas de débordement.
 - **06/10 — Les cartes et les plans (`geo_cartes`)** : écran vide, laissé tel quel à la demande de Jeremy ; retiré du plan de travail (sw.js v697).
 
+- **06/10 — La reproduction des plantes (`sci_reproduction_plantes`, fiches/reproduction_plantes.html, sw.js v698)** : n'était accessible que depuis le plan de travail → nouvel écran `screen-sci-reproduction-plantes` et carte dans Sciences → Le monde végétal (décision de Jeremy). Erreur de fond : la noix était classée « transportée par l'eau » avec l'indice de la noix de coco (« coque qui contient de l'air pour flotter ») → réponse « les animaux » (écureuils, geais) et titre « La Noix ». Autres : « Disserquer », « 6 organes » (il y en a 9), « coupe réelle » (c'est un dessin), atelier « fleur de Lys » (c'est une tulipe), `**` affichés tels quels, « Issus » → « Issues ». Mécanique : colonne des fruits et étiquettes du cycle mélangées ; correction en bleu pour graines, clones et cycle ; quiz final : choix mélangés et renumérotés, bonne réponse manquée en bleu, une seule réponse par question, sauvegarde unique (seul le quiz final est noté, /5, comme Économie). Filigranes de banque d'images visibles sur graine_erable et cycle_germination/cycle_fruit (signalé). Test Playwright 390 px : menu → écran → fiche, 4/5, 1 sauvegarde, pas de débordement.
+- **06/10 — Transformations physiques et chimiques (`sci_transformations_chimiques`, fiches/transformations-physiques-chimiques.html, sw.js v698)** : n'était accessible que depuis le plan de travail → nouvel écran `screen-sci-transformations-chimiques` et carte dans Sciences → La matière (décision de Jeremy). Leçon sans score (acceptée). Formules LaTeX affichées brutes (`$CO_2$`) → CO₂, H₂O, C + O₂ → CO₂ ; « l'eau chauffe dans la casserole » alors que le schéma montre un bécher ; texte parasite « (valeur d'exposition à gauche sur le schéma) » ; brûleur à gaz → lampe à alcool (cohérent avec l'image) ; l'outil de calibrage s'ouvrait en tapant « d » → Ctrl+Maj+D ; débordement de 49 px sur téléphone corrigé. Test Playwright 390 px : tous les onglets, menu → écran → fiche.
+- **06/10 — Le système solaire (`sci_systeme_solaire`)** : ligne du menu ; ses exercices ont été vérifiés en v673/v674.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2703,16 +2707,16 @@ Spécifique :
 |---|---|---|---|---|
 | ⬜ | Le Soleil, la Terre et la Lune (Leçon) | `fiche_lune` | fiches/soleil-terre-lune.html |  |
 | ⬜ | La classification phylogénétique (Leçon) | `fiche_classification` | fiches/classification-phylogenetique.html |  |
-| ⬜ | Le système solaire | `sci_systeme_solaire` | index › (?) | (code à localiser) |
+| ✅ 06/10 | Le système solaire | `sci_systeme_solaire` | index › (?) | menu du système solaire — ses exercices vérifiés en v673/v674 |
 | ✅ 06/10 | Planètes — Ordre et distance | `sci_planetes_ordre` | index › renderSciPlanetesOrdreScreen |  |
 | ✅ 06/10 | Planètes — Informations & Caractéristiques | `sci_planetes_infos` | index › renderSciPlanetesInfosContent |  |
 | ✅ 06/10 | Système solaire — QCM | `sci_planetes_qcm` | index › renderSciPlanetesInfosScreen |  |
 | ✅ 06/10 | L'anatomie de la fleur | `sci_plantes_fleur` | fiches/sci_plantes_fleur.html |  |
 | ✅ 06/10 | Reproduction & Germination | `sci_plantes_germination` | fiches/sci_plantes_germination.html |  |
-| ⬜ | La reproduction des plantes (Leçon) | `sci_reproduction_plantes` | fiches/reproduction_plantes.html |  |
+| ✅ 06/10 | La reproduction des plantes (Leçon) | `sci_reproduction_plantes` | fiches/reproduction_plantes.html |  |
 | ✅ 06/10 | États et propriétés de la matière | `sci_matiere_etats` | fiches/sci_matiere_etats.html |  |
 | ✅ 06/10 | Les changements d'état | `sci_matiere_changements` | fiches/sci_matiere_changements.html |  |
-| ⬜ | Transformations physiques et chimiques | `sci_transformations_chimiques` | fiches/transformations-physiques-chimiques.html |  |
+| ✅ 06/10 | Transformations physiques et chimiques | `sci_transformations_chimiques` | fiches/transformations-physiques-chimiques.html |  |
 | ✅ 06/10 | Mélanges et séparations | `sci_melanges_qcm` | fiches/sci_melanges_qcm.html |  |
 | ✅ 06/10 | Le cycle de l'eau (QCM) | `fiche_cycle_eau` | fiches/cycle-eau.html |  |
 | ✅ 06/10 | Le cycle de l'eau (Schéma) | `sci_cycle_eau_schema` | fiches/sci_cycle_eau_schema.html |  |
