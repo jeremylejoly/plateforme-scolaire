@@ -1573,6 +1573,16 @@ Spécifique :
 - 4 Messager d'Europe : toutes les paires de capitales avant répétition, jamais deux fois de suite la même.
 - Tests : jsdom pour les 4 activités (vide / lettres non comptés, 2 erreurs → réponse bleue et point perdu, double clic, fin → 1 seul saveResult), node --check 7 OK ×4, Playwright (glisser-tourner la règle) et captures 390 / 768 / 1 100 px. Copies racine = fiches avec `assets/` (comme avant).
 
+### 06/10 — Identifier les polygones (`polygones_reconnaitre`, fiches/polygones_reconnaitre.html) — sw.js v591
+- **Aucun résultat enregistré** → saveResult `polygones_reconnaitre`, une fois par série, try/catch.
+- Mélange biaisé sort(random) (options et tirage) → Fisher–Yates (bonne réponse A/B/C ≈ 33 % chacune sur 2 000 séries).
+- Distracteurs tirés n'importe où (« un dodécagone ? un triangle ? un quadrilatère ? ») alors que le commentaire annonçait des voisins → 2 distracteurs à 1 ou 2 côtés près.
+- Formes irrégulières figées (7 graines) et peu lisibles : octogone, décagone et dodécagone irréguliers avec des sommets presque plats (6° d'écart) et des côtés de 10 px → irréguliers tirés au hasard avec rejet (angle ≥ 14° du plat, côté ≥ 24 px), réguliers avec rotation au hasard, points visibles aux sommets.
+- Série : les 8 types + 2 en plus, jamais deux fois le même type de suite.
+- Pastilles de progression vertes même après une erreur → rouges pour les erreurs.
+- « Forme suivante » protégé (600 ms) ; Entrée passe à la suite après réponse.
+- Tests : jsdom (2 000 séries : positions, distracteurs voisins, 0 forme illisible, 0 doublon consécutif ; partie 7/10 → 1 seul saveResult ; double clic), node --check 7 OK, Playwright 390 px + planche de 10 formes irrégulières.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1956,7 +1966,7 @@ Spécifique :
 | Statut | Exercice | id | Source | Signal automatique |
 |---|---|---|---|---|
 | ⬜ | Points, lignes et droites | `solide_points` | index › (?) | (code à localiser) |
-| ⬜ | Identifier les polygones | `polygones_reconnaitre` | fiches/polygones_reconnaitre.html |  |
+| ✅ 06/10 | Identifier les polygones | `polygones_reconnaitre` | fiches/polygones_reconnaitre.html |  |
 | ⬜ | Caractéristiques des polygones | `polygones_caracteristiques` | fiches/polygones_caracteristiques.html |  |
 
 ### 🔢 Mathématiques — 🔷 Solides & Figures — Triangles & Angles
