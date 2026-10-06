@@ -2289,6 +2289,8 @@ Spécifique :
 
 - **06/10 — CEB Histoire/Géo 2019 (`ceb_hg_2019`, CEB histoire:géo/ceb_histoire_geo_2019.html, sw.js v734)** : 20 questions vérifiées contre le portfolio PDF (p. 20-37 : formation du charbon, ligne du temps, sites miniers (Grand-Hornu, Bois-du-Luc, Bois du Cazier, Blegny-Mine), voies navigables 1953 (canal Albert, Saint-Hubert hors réseau), gisements, construction de l'UE (CECA 1951, Rome 1957, Maastricht 1992), terril Albert Ier 209 m, Ixelles/Chiny, livret d'ouvrier, Van Gogh à Flénu) — réponses justes. Moteur des Sciences 2013 (module) : sauvegarde unique /20, choix mélangés, réponse unique, bleu (+ explications après les Vrai/Faux), message des questions vides, garde 600 ms. Contenu : 3.1 « sceller une paix durable » absent du livret ; bonne réponse seule longue ou avec son explication (1.1, 2.2, 3.1, 3.2, 3.4, 4.1, 4.5) → équilibrée ; explications 2.2, 3.1, 4.5 recalées sur le livret. NO : aout, cout, entrainement, maitriser ; « prêt-e » → « prêt ». Test Playwright 390 px : message « 1.5, 4.3 », 17/20, 1 seule sauvegarde, pas de débordement.
 
+- **06/10 — CEB Histoire/Géo 2016 (`ceb_hg_2016`, CEB histoire:géo/ceb_histoire_geo_2016.html, sw.js v735)** : 20 questions vérifiées contre le portfolio PDF (p. 12-17 : renards et talus de chemin de fer, diagramme des espaces verts 32/20/12/10/7/4/3/12 %, échelle Midi-Nord ≈ 3,5 km mesurée, carte politique (Wavre, 5 provinces flamandes, germanophones en province de Liège), Lusignan 1412 / Villebois 2014, Martellus 1490, Haïti 1493/2014) — réponses justes. Moteur des Sciences 2013 (module) : sauvegarde unique /20, choix mélangés, réponse unique, bleu (+ explications après les Vrai/Faux), message des questions vides, garde 600 ms. Contenu : 1.2 les choix donnaient les pourcentages → retirés ; 2.4 la bonne réponse énumérait les 5 provinces → « 5 provinces » ; 4.2 la bonne réponse expliquait le symbole de la croix (absent) → « une grande croix en bois » ; bonne réponse seule longue (1.1, 3.1, 3.4, 4.5) → équilibrée. NO : entraine, entrainement, maitriser ; « prêt-e » → « prêt ». Test Playwright 390 px : message « 1.5, 4.3 », 17/20, 1 seule sauvegarde, pas de débordement.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2858,7 +2860,7 @@ Spécifique :
 | ✅ 06/10 | CEB Histoire/Géo 2022 | `ceb_hg_2022` | index › openCEB |  |
 | ✅ 06/10 | CEB Histoire/Géo 2021 | `ceb_hg_2021` | index › openCEB |  |
 | ✅ 06/10 | CEB Histoire/Géo 2019 | `ceb_hg_2019` | index › openCEB |  |
-| ⬜ | CEB Histoire/Géo 2016 | `ceb_hg_2016` | index › openCEB |  |
+| ✅ 06/10 | CEB Histoire/Géo 2016 | `ceb_hg_2016` | index › openCEB |  |
 | ⬜ | CEB Histoire/Géo 2013 | `ceb_hg_2013` | index › openCEB |  |
 
 ### ? — (menu renderConjugaisonScreen)
