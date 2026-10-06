@@ -2125,7 +2125,12 @@ Spécifique :
 - Contenu vérifié : 20 questions justes (homogène/hétérogène, solvant/soluté/solution, saturation, filtration/filtrat/résidu, décantation, évaporation, aimantation, miscible/soluble).
 - « 💡 Aide Mémo » affichait toute la fiche de révision PENDANT le test (réponses dedans) → retiré pendant le test (décision de Jeremy) ; la fiche reste consultable avant de commencer.
 - Tests Playwright 390 px : 300 parties sans doublon de famille, 1 erreur → rouge + bleu, double réponse/double « suivant » sans effet, 9/10, 1 sauvegarde, pas de débordement.
-- Note : `sci_matiere_changements` (changements d'état) commencé puis interrompu à la demande de Jeremy — aucune modification faite, reste ⬜.
+
+### 06/10 — Éveil → Sciences → La matière → Les changements d'état (`sci_matiere_changements`, fiches/sci_matiere_changements.html + public/fiches/) — sw.js v665
+- Mise en page : les 3 états (cartes de 144 px) et les 6 cases étaient posés en absolu sur le schéma → sur téléphone (390 px) tout se chevauchait, illisible. Schéma redessiné en un seul SVG (flèches existantes + 3 états + numéros 1–6 au milieu de chaque flèche) qui se réduit proprement, et tableau de 6 lignes dessous : numéro, sens (« Solide ➜ Liquide », en rouge/bleu comme la flèche), case.
+- `alert()` si étiquettes manquantes → message « il en reste N » ; correction verte « Correction : … » → « ➜ … » en bleu sous la case ; mélange `sort(()=>Math.random()-0.5)` → Fisher–Yates ; garde 600 ms ; cases verrouillées ; sauvegarde unique try/catch `window.parent !== window` ; Entrée = valider / recommencer.
+- Contenu vérifié : fusion, solidification, vaporisation, liquéfaction, sublimation, condensation solide (sens des flèches et couleurs chaleur/froid justes).
+- Test : Tailwind (CDN bloqué dans le conteneur) régénéré localement avec tailwindcss@3 (`/tmp/tw/twinline.py`) pour des captures fidèles. Playwright 390 px (toucher) : 15 ordres d'étiquettes différents, message à vide, aucune boîte de dialogue, fusion/solidification inversées → 4/6 + 2 bleus, 1 sauvegarde malgré 2 validations, pas de débordement.
 
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
@@ -2624,7 +2629,7 @@ Spécifique :
 | ✅ 06/10 | Reproduction & Germination | `sci_plantes_germination` | fiches/sci_plantes_germination.html |  |
 | ⬜ | La reproduction des plantes (Leçon) | `sci_reproduction_plantes` | fiches/reproduction_plantes.html |  |
 | ✅ 06/10 | États et propriétés de la matière | `sci_matiere_etats` | fiches/sci_matiere_etats.html |  |
-| ⬜ | Les changements d'état | `sci_matiere_changements` | fiches/sci_matiere_changements.html |  |
+| ✅ 06/10 | Les changements d'état | `sci_matiere_changements` | fiches/sci_matiere_changements.html |  |
 | ⬜ | Transformations physiques et chimiques | `sci_transformations_chimiques` | fiches/transformations-physiques-chimiques.html |  |
 | ✅ 06/10 | Mélanges et séparations | `sci_melanges_qcm` | fiches/sci_melanges_qcm.html |  |
 | ⬜ | Le cycle de l'eau (QCM) | `fiche_cycle_eau` | fiches/cycle-eau.html |  |
