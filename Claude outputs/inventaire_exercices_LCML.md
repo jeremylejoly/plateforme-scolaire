@@ -1583,6 +1583,15 @@ Spécifique :
 - « Forme suivante » protégé (600 ms) ; Entrée passe à la suite après réponse.
 - Tests : jsdom (2 000 séries : positions, distracteurs voisins, 0 forme illisible, 0 doublon consécutif ; partie 7/10 → 1 seul saveResult ; double clic), node --check 7 OK, Playwright 390 px + planche de 10 formes irrégulières.
 
+### 06/10 — Caractéristiques des polygones (`polygones_caracteristiques`, fiches/polygones_caracteristiques.html) — sw.js v592
+- Contenu : 30 questions, toutes justes.
+- **Aucun résultat enregistré** → saveResult `polygones_caracteristiques`, une fois par série, try/catch.
+- Mélange biaisé sort(random) (dans la banque, la bonne réponse était en C 23 fois sur 30) → Fisher–Yates (≈ 33 % par position sur 3 000 séries).
+- Questions qui se donnaient la réponse dans une même série (« 6 côtés → hexagone » et « un hexagone a… 6 côtés », « un hexagone régulier… 120° » et « … pentagone 108° », etc.) → chaque question porte ses notions, une série n'en contient jamais deux qui partagent une notion (0 sur 3 000 séries).
+- Bonne réponse repérable car la plus longue (polygone régulier, triangle équilatéral, définition du polygone, rectangle) → distracteurs de même longueur et de même forme ; « le moins grand nombre » → « le plus petit nombre » ; distracteurs plus proches (décagone/dodécagone, 45°/60°/90°).
+- Pastilles vertes même après une erreur → rouges ; « Question suivante » protégé (600 ms) ; Entrée passe à la suite.
+- Tests : jsdom (positions, notions, double clic, partie 8/10 → 1 seul saveResult), node --check 7 OK, Playwright 390 px.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1967,7 +1976,7 @@ Spécifique :
 |---|---|---|---|---|
 | ⬜ | Points, lignes et droites | `solide_points` | index › (?) | (code à localiser) |
 | ✅ 06/10 | Identifier les polygones | `polygones_reconnaitre` | fiches/polygones_reconnaitre.html |  |
-| ⬜ | Caractéristiques des polygones | `polygones_caracteristiques` | fiches/polygones_caracteristiques.html |  |
+| ✅ 06/10 | Caractéristiques des polygones | `polygones_caracteristiques` | fiches/polygones_caracteristiques.html |  |
 
 ### 🔢 Mathématiques — 🔷 Solides & Figures — Triangles & Angles
 
