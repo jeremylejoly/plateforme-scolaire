@@ -1467,6 +1467,15 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Symbole des secondes : « sec » → « s ».
 - Tests node/jsdom : clé de quantité lue pour les 41 questions, vide ignoré, avertissement puis correction, 7 / 10 enregistré une fois ; index : 6 / 7 scripts OK.
 
+### 06/10 — Maths › Grandeurs › Les durées › Durée entre 2 heures (`grandeur_durees_entre`, index › DUREE_ENTRE_BANK / checkDureeEntre) — sw.js v580
+- 20 durées recalculées par programme (y compris les 4 qui passent minuit) : toutes justes, aucun doublon.
+- **Résultat jamais reconnu** : enregistré sous « durées_entre2heures » → `grandeur_durees_entre` (anciens résultats reconnus via `RESULT_ID_ALIASES`).
+- **Point compté au 2e essai** → seulement au premier essai (message « correct au 2e essai, pas de point »).
+- **Case vide = essai perdu** → message, rien n'est compté. **Double clic** sur Valider consommait les 2 essais d'un coup → un essai à la fois.
+- **« Recommencer » pendant le passage automatique** faisait sauter la 1re question de la nouvelle partie → passages en attente annulés.
+- Passages de minuit : « (le lendemain) » ajouté à l'énoncé et sous l'heure d'arrivée (« De 20h50 à 6h07 » était ambigu). Entrée : passe aux minutes, puis valide.
+- Tests jsdom : vide sans essai, double clic = 1 essai, juste au 2e essai = 0 point, Recommencer sans saut, partie 4 / 5 → 1 sauvegarde ; index : 6 / 7 scripts OK.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1816,7 +1825,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 |---|---|---|---|---|
 | ⬜ | Les durées | `grandeur_durees` | index › renderGrandeurDurees | QCM: bonne réponse en position 2 dans 39/65 questions, options non mélangées |
 | ✅ 06/10 | Les durées — Conversions | `grandeur_durees_conversions` | index › startDureesExercise |  |
-| ✅ 05/10 (6d5a2ec) | Les durées — Durée entre 2 heures | `grandeur_durees_entre` | index › startDureesExercise |  |
+| ✅ 06/10 | Les durées — Durée entre 2 heures | `grandeur_durees_entre` | index › startDureesExercise |  |
 | ✅ 05/10 (6d5a2ec) | Quelle heure est-il ? (avec secondes) | `grandeur_durees_heure_secondes` | fiches/heure_secondes.html |  |
 | ⬜ | Le Labo des Durées | `grandeur_durees_situations` | fiches/durees_situations.html |  |
 | ⬜ | Paie le commerçant | `grandeur_monnaie_payer` | fiches/payer_le_commercant.html |  |

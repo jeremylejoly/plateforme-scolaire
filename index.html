@@ -12155,7 +12155,8 @@ let dureesState = {
 };
 
 function startDureesExercise(mode){
-  dureesState = { type: mode, questions: [], currentIdx: 0, attempts: 0, score: 0, submitted: false, mode };
+  // jeton : une nouvelle partie annule les passages automatiques en attente de la partie précédente
+  dureesState = { type: mode, questions: [], currentIdx: 0, attempts: 0, score: 0, submitted: false, mode, jeton: Math.random(), done: false, locked: false };
 
   document.getElementById('durees-back-btn').onclick = function(){ showScreen('screen-grandeurs-durees'); if(window.renderGrandeurDurees) renderGrandeurDurees(); };
   document.getElementById('durees-score-panel').style.display = 'none';
@@ -12320,7 +12321,7 @@ function renderDureeEntreQuestion(){
   body.innerHTML = `
     <div class="durees-question" id="durees-current-q">
       <div class="conj-question-num">Question ${dureesState.currentIdx+1}/${total}</div>
-      <div class="durees-text">⏱️ De <strong>${q.from}</strong> à <strong>${q.to}</strong>, combien de temps s'est-il écoulé ?</div>
+      <div class="durees-text">⏱️ De <strong>${q.from}</strong> à <strong>${q.to}</strong>${dureeEnMin(q.to) < dureeEnMin(q.from) ? ' <em>(le lendemain)</em>' : ''}, combien de temps s'est-il écoulé ?</div>
       
       <div class="timeline-container">
         <div class="timeline-track">
@@ -12335,7 +12336,7 @@ function renderDureeEntreQuestion(){
           </div>
           <div class="timeline-point">
             <span class="timeline-time">${q.to}</span>
-            <span class="timeline-label">Arrivée</span>
+            <span class="timeline-label">Arrivée${dureeEnMin(q.to) < dureeEnMin(q.from) ? ' (lendemain)' : ''}</span>
           </div>
         </div>
       </div>
@@ -12358,13 +12359,30 @@ function renderDureeEntreQuestion(){
   const btn = document.getElementById('durees-validate-btn');
   btn.style.display = 'block';
   btn.onclick = checkDureeEntre;
+  // Entrée : passer à la case des minutes, puis valider (avant : Entrée ne faisait rien)
+  document.getElementById('de-h').onkeydown = e => { if(e.key === 'Enter'){ e.preventDefault(); document.getElementById('de-min').focus(); } };
+  document.getElementById('de-min').onkeydown = e => { if(e.key === 'Enter'){ e.preventDefault(); checkDureeEntre(); } };
+  dureesState.locked = false;
   document.getElementById('de-h').focus();
 }
 
+// « 20h50 » → 1250 minutes depuis minuit
+function dureeEnMin(t){ const [h, m] = String(t).split('h').map(Number); return h * 60 + (m || 0); }
+
 function checkDureeEntre(){
+  if(dureesState.locked) return; // double clic / double Entrée : un seul essai compté
   const q = dureesState.questions[dureesState.currentIdx];
   const h = document.getElementById('de-h')?.value?.trim();
   const m = document.getElementById('de-min')?.value?.trim();
+  const fb0 = document.getElementById('de-feedback');
+  // Case vide : rien n'est compté (avant : un essai perdu)
+  if(!h || !m){
+    fb0.style.color = 'var(--amber)';
+    fb0.textContent = '✏️ Complète les heures et les minutes (0 s\'il n\'y en a pas).';
+    return;
+  }
+  dureesState.locked = true;
+  setTimeout(() => { if(dureesState.attempts < 2 && !dureesState.done) dureesState.locked = false; }, 600);
   const isCorrect = dureeNombreEgal(h, q.answerH) && dureeNombreEgal(m, q.answerMin);
   dureesState.attempts++;
 
@@ -12375,10 +12393,13 @@ function checkDureeEntre(){
   if(isCorrect){
     block.classList.add('correct');
     fb.style.color = 'var(--green)';
-    fb.textContent = '✅ Bravo, c\'est correct !';
-    dureesState.score++;
+    // Le point ne compte qu'au premier essai (avant : aussi au 2e)
+    if(dureesState.attempts === 1){ dureesState.score++; fb.textContent = '✅ Bravo, c\'est correct !'; }
+    else fb.textContent = '✅ Correct au 2e essai (pas de point, mais bien joué !)';
+    dureesState.done = true;
     document.getElementById('durees-validate-btn').style.display = 'none';
-    setTimeout(() => advanceDureeEntre(), 1200);
+    const jeton = dureesState.jeton;
+    setTimeout(() => { if(dureesState.jeton === jeton) advanceDureeEntre(); }, 1200);
   } else if(dureesState.attempts < 2){
     block.classList.add('incorrect');
     fb.style.color = 'var(--red)';
@@ -12391,15 +12412,18 @@ function checkDureeEntre(){
     block.classList.add('revealed');
     block.classList.remove('incorrect');
     fb.style.color = 'var(--amber)';
-    fb.textContent = `❌ La bonne réponse était : ${q.answerH}h${q.answerMin}min`;
+    fb.textContent = `❌ La bonne réponse était : ${q.answerH} h ${q.answerMin} min`;
+    dureesState.done = true;
     document.getElementById('durees-validate-btn').style.display = 'none';
-    setTimeout(() => advanceDureeEntre(), 2500);
+    const jeton = dureesState.jeton;
+    setTimeout(() => { if(dureesState.jeton === jeton) advanceDureeEntre(); }, 2500);
   }
 }
 
 function advanceDureeEntre(){
   dureesState.currentIdx++;
   dureesState.attempts = 0;
+  dureesState.done = false;
   if(dureesState.currentIdx >= dureesState.questions.length){
     // Show final score
     document.getElementById('durees-exercise-body').innerHTML = '';
@@ -12414,7 +12438,7 @@ function advanceDureeEntre(){
       saveResult({
         student: state.student, cls: state.studentCls,
         className: CLASSES[state.studentCls] ? CLASSES[state.studentCls].name : state.studentCls,
-        activity: 'durées_entre2heures',
+        activity: 'grandeur_durees_entre', // avant : « durées_entre2heures », inconnu du menu et du plan
         bookTitle: 'Durées — Entre 2 heures',
         score, total, pct,
         date: new Date().toLocaleDateString('fr-BE'),
