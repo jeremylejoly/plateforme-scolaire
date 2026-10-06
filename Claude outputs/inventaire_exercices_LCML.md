@@ -1948,6 +1948,9 @@ Spécifique :
 - **Contenu** : serf « appartient au seigneur et est vendu avec la terre » → « attaché à la terre de son seigneur, qu'il ne peut pas quitter » ; « Clergé régulier » et « Moine » avaient presque la même définition (indiscernables) → « Moine » remplacé par « Monastère » (« ensemble de bâtiments où vivent des moines ou des moniales »), clergé régulier « religieux qui vivent à l'écart du monde en suivant une règle ».
 - Tests Chromium (fiche dans un cadre) : vide → message (pas d'alert), 6/8 → 2 bons mots en bleu, série verrouillée (clics et ✕ sans effet), double clic sans effet, 3 séries → 1 seule sauvegarde 22/24 (92 %) ; colonnes mélangées indépendamment (0/200 ordres identiques) ; 390 px sans débordement.
 
+### 06/10 — Éveil → Histoire → Les Temps modernes / L'Époque contemporaine (`hist_temps_modernes`, `hist_contemporaine`)
+- Cases encore vides, **gardées à la demande de Jeremy** (des exercices y seront ajoutés plus tard). Aucun changement. À noter : elles figurent aussi dans le catalogue du plan de travail (`PLAN_CATALOGUE`) ; si on les place dans un plan, l'élève ne pourra pas les terminer tant qu'elles sont vides.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2392,8 +2395,8 @@ Spécifique :
 | ✅ 05/10 (ac366c8) + 06/10 | Moyen Âge — La Peste Noire | `moyen_age_doc` | index › renderMoyenAgeDoc |  |
 | ✅ 06/10 | Moyen Âge — Texte lacunaire | `moyen_age_texte_trous` | fiches/moyen_age_texte_trous.html | Saisie libre comparée strictement |
 | ✅ 06/10 | Moyen Âge — Je relie (Vocabulaire) | `moyen_age_vocabulaire` | fiches/moyen_age_vocabulaire.html |  |
-| ⬜ | Les Temps Modernes | `hist_temps_modernes` | index › (?) | (code à localiser) |
-| ⬜ | L'Époque Contemporaine | `hist_contemporaine` | index › (?) | (code à localiser) |
+| ⏸️ case vide gardée (06/10) | Les Temps Modernes | `hist_temps_modernes` | index › (?) | (code à localiser) |
+| ⏸️ case vide gardée (06/10) | L'Époque Contemporaine | `hist_contemporaine` | index › (?) | (code à localiser) |
 
 ### 🌍 Éveil — 🔬 Sciences — Corps humain & Santé
 
