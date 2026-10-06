@@ -2091,6 +2091,13 @@ Spécifique :
 - Mécanique : plusieurs essais par groupe (on cliquait jusqu'à trouver) → un seul essai, l'intrus est montré en bleu après une erreur + explication ; familles `k` (les 2 groupes bras/jambe jamais ensemble) ; garde 600 ms sur « Groupe suivant » (double clic sautait un groupe) ; sauvegarde unique try/catch `window.parent !== window` ; Entrée = suivant / recommencer ; « Round 1/5 » → « Groupe 1/5 » ; grille 2×2 sans dépendre de Tailwind.
 - Tests Playwright 390 px : 300 tirages sans conflit de famille, 1 erreur → boutons verrouillés + intrus en bleu, double « suivant » ne saute pas de groupe, 4/5, 1 sauvegarde, pas de débordement.
 
+### 06/10 — Éveil → Sciences → Le squelette → Vrai ou faux ? (`sci_sq_vrai_faux`, fiche squelette_vrai_faux.html + fiches/ et public/fiches/) — sw.js v659
+- Couleurs trompeuses : le bouton FAUX devenait toujours rouge et VRAI toujours vert, même quand l'élève avait juste (« FAUX » choisi à raison = bouton rouge) → le bouton choisi est vert si juste, rouge si faux, et la bonne réponse est en bleu après une erreur ; message « La bonne réponse était : VRAI/FAUX ».
+- Familles `k` (ligament/tendon ×2, biceps-triceps ×3, cage thoracique ×2, calcium/vitamine D ×4, synovie ×2, entorse/luxation ×3, commande ×2, articulations ×2) → 10 affirmations jamais de la même famille. Banque : 15 vraies / 15 fausses (≈ 4,9 vraies par série).
+- Contenu : « la cage thoracique protège… l'estomac » → FAUX discutable (l'estomac est en partie sous les côtes basses) → « nos intestins » ; « ligaments articulations » → « d'une articulation » ; « 640 muscles squelettiques volontaires » → « plus de 600 muscles attachés au squelette » ; nouvelle orthographe (déboité, boite, entraine).
+- Mécanique : garde 600 ms sur « Continuer » (double clic sautait une affirmation), sauvegarde unique try/catch `window.parent !== window`, Entrée = continuer / recommencer, total calculé, « Question 1/10 » → « Affirmation 1/10 », grille sans Tailwind.
+- Tests Playwright 390 px : 300 tirages sans doublon de famille, erreur → rouge + bleu (vérifié après la transition CSS), bonne réponse → vert sans bleu, double « Continuer » ne saute rien, 9/10, 1 sauvegarde, pas de débordement.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2552,7 +2559,7 @@ Spécifique :
 | ✅ 06/10 | Le squelette — Le fonctionnement du mouvement | `sci_sq_texte` | index › renderSciSqTexte |  |
 | ✅ 06/10 | Le squelette — QCM | `sci_sq_qcm` | index › renderSciSqQCM |  |
 | ✅ 06/10 | Le squelette — Chasseur d'intrus | `sci_sq_intrus` | index › renderSciSqIntrus |  |
-| ⬜ | Le squelette — Vrai ou faux ? | `sci_sq_vrai_faux` | index › renderSciSqVraiFaux |  |
+| ✅ 06/10 | Le squelette — Vrai ou faux ? | `sci_sq_vrai_faux` | index › renderSciSqVraiFaux |  |
 | ⬜ | Appareil respiratoire — La leçon | `fiche_respiratoire` | fiches/appareil-respiratoire.html |  |
 | ✅ 06/10 | Appareil respiratoire — Le schéma | `sci_resp_schema` | index › renderSciRespSchema |  |
 | ✅ 06/10 | Appareil respiratoire — Trajet de l'air | `sci_resp_texte` | index › renderSciRespTexte |  |
