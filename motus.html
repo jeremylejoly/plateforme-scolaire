@@ -13,6 +13,7 @@
 
   <!-- Canvas Confetti -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+  <script src="motus_dico.js"></script>
 
   <style>
     :root {
@@ -715,7 +716,7 @@
         <span>←</span>
         <span>Accueil</span>
       </a>
-      <span class="brand-badge">🇫🇷 Français • Vocabulaire</span>
+      <span class="brand-badge">🎮 Jeux • Vocabulaire</span>
     </div>
   </header>
 
@@ -808,6 +809,8 @@
     <!-- Grille des lettres -->
     <div class="rows" id="rows"></div>
 
+    <div id="motus-msg" style="min-height:22px;text-align:center;font-weight:800;font-size:0.95rem;color:#B45309;margin:2px 0 4px;"></div>
+
     <!-- Bouton de validation rapide -->
     <div style="display: flex; justify-content: center; margin: 4px 0 12px;">
       <button class="btn" id="validate-btn" type="button">
@@ -846,31 +849,31 @@
     facile: {
       label: "Facile", length: 5, tries: 6,
       words: ["PORTE","TABLE","VOILE","FLEUR","LIVRE","GOMME","STYLO","ARBRE","NUAGE","PLUIE",
-              "CHIEN","TIGRE","ZEBRE","LAPIN","PANDA","AIGLE","BALLE","ROUTE","FORET","RADIO",
-              "CARRE","ANGLE","SOMME","TOTAL","UNITE","VERBE","SUJET","POINT","TEXTE","RECIT",
-              "CONTE","FABLE","ROMAN","COEUR","OCEAN","VILLE","REINE","MOMIE","OUTIL","SILEX",
-              "PIANO","FLUTE","GAMME","SPORT","STADE","PATIN","ECOLE","ELEVE","REGLE","LECON",
-              "ECRAN","NEIGE","GLACE","ORAGE","CARTE"]
+              "CHIEN","TIGRE","ZÈBRE","LAPIN","PANDA","AIGLE","BALLE","ROUTE","FORÊT","RADIO",
+              "CARRÉ","ANGLE","SOMME","TOTAL","UNITÉ","VERBE","SUJET","POINT","TEXTE","RÉCIT",
+              "CONTE","FABLE","ROMAN","CŒUR","OCÉAN","VILLE","REINE","MOMIE","OUTIL","SILEX",
+              "PIANO","FLUTE","GAMME","SPORT","STADE","PATIN","ÉCOLE","ÉLÈVE","RÈGLE","LEÇON",
+              "ÉCRAN","NEIGE","GLACE","ORAGE","CARTE"]
     },
     moyen: {
       label: "Moyen", length: 6, tries: 6,
-      words: ["CRAYON","CAHIER","BUREAU","JARDIN","GATEAU","BATEAU","CHATON","OISEAU","VOLCAN","DRAGON",
-              "ORANGE","BANANE","PIRATE","PLANTE","NATURE","VOYAGE","CINEMA","MOTEUR",
-              "LETTRE","PHRASE","ACCORD","POESIE","DICTEE","RESUME","ANIMAL","RACINE","GRAINE","MUSCLE",
-              "ORGANE","POUMON","SOLIDE","AIMANT","ETOILE","CLIMAT","SAISON","ECLAIR","DESERT","REGION",
-              "PLAINE","EPOQUE","SIECLE","GUERRE","ARMURE","EMPIRE","GROTTE","STATUE","DESSIN","RYTHME",
-              "VIOLON","CHOEUR","COURSE","BALLON","EQUIPE","RECORD","CLASSE","MAITRE","COMPAS","AGENDA",
-              "EXAMEN","PROJET","EXPOSE","SOURIS"]
+      words: ["CRAYON","CAHIER","BUREAU","JARDIN","GÂTEAU","BATEAU","CHATON","OISEAU","VOLCAN","DRAGON",
+              "ORANGE","BANANE","PIRATE","PLANTE","NATURE","VOYAGE","CINÉMA","MOTEUR",
+              "LETTRE","PHRASE","ACCORD","POÉSIE","DICTÉE","RÉSUMÉ","ANIMAL","RACINE","GRAINE","MUSCLE",
+              "ORGANE","POUMON","SOLIDE","AIMANT","ÉTOILE","CLIMAT","SAISON","ÉCLAIR","DÉSERT","RÉGION",
+              "PLAINE","ÉPOQUE","SIÈCLE","GUERRE","ARMURE","EMPIRE","GROTTE","STATUE","DESSIN","RYTHME",
+              "VIOLON","CHŒUR","COURSE","BALLON","ÉQUIPE","RECORD","CLASSE","MAITRE","COMPAS","AGENDA",
+              "EXAMEN","PROJET","EXPOSÉ","SOURIS"]
     },
     difficile: {
       label: "Difficile", length: 7, tries: 7,
-      words: ["MUSIQUE","FENETRE","LUMIERE","VOITURE","CHATEAU","POUSSIN","DAUPHIN","PLANETE",
+      words: ["MUSIQUE","FENÊTRE","LUMIÈRE","VOITURE","CHÂTEAU","POUSSIN","DAUPHIN","PLANÈTE",
               "SORCIER","GUITARE","BALEINE","AUTOMNE",
-              "CHIFFRE","PLURIEL","LECTURE","INSECTE","REPTILE","CERVEAU","ENERGIE","MATIERE","CHALEUR","GRAVITE",
-              "UNIVERS","GALAXIE","TEMPETE","RIVIERE","GLACIER","COLLINE","FALAISE","PHARAON","ROYAUME","ANCETRE",
-              "PALETTE","PINCEAU","CISEAUX","COLLAGE","MELODIE","TAMBOUR","MAILLOT","DEFAITE","ARBITRE","TERRAIN",
-              "PISCINE","GYMNASE","ATHLETE","ETAGERE","TROUSSE","DEVOIRS","CLAVIER","VOYELLE","VIRGULE","VILLAGE",
-              "COULEUR","CHANSON","CANTINE","AFFICHE","EQUERRE"]
+              "CHIFFRE","PLURIEL","LECTURE","INSECTE","REPTILE","CERVEAU","ÉNERGIE","MATIÈRE","CHALEUR","GRAVITÉ",
+              "UNIVERS","GALAXIE","TEMPÊTE","RIVIÈRE","GLACIER","COLLINE","FALAISE","PHARAON","ROYAUME","ANCÊTRE",
+              "PALETTE","PINCEAU","CISEAUX","COLLAGE","MÉLODIE","TAMBOUR","MAILLOT","DÉFAITE","ARBITRE","TERRAIN",
+              "PISCINE","GYMNASE","ATHLÈTE","ÉTAGÈRE","TROUSSE","DEVOIRS","CLAVIER","VOYELLE","VIRGULE","VILLAGE",
+              "COULEUR","CHANSON","CANTINE","AFFICHE","ÉQUERRE"]
     }
   };
 
@@ -884,12 +887,40 @@
 
   const BEST_KEY_PREFIX = "motus_best_";
 
+  // Mot affiché (avec accents) -> mot du jeu (majuscules sans accent, Œ = OE)
+  function gameKey(w){ return w.replace(/Œ/g, "OE").normalize("NFD").replace(/[\u0300-\u036f]/g, ""); }
+
+  // Dictionnaire : un essai doit être un vrai mot
+  const DICO = {};
+  [5, 6, 7].forEach(n => {
+    const set = new Set();
+    const str = (window.MOTUS_DICO && window.MOTUS_DICO[n]) || "";
+    for (let i = 0; i + n <= str.length; i += n) set.add(str.substr(i, n));
+    Object.keys(LEVELS).forEach(k => LEVELS[k].words.forEach(w => { const g = gameKey(w); if (g.length === n) set.add(g); }));
+    DICO[n] = set;
+  });
+  const dicoOK = !!window.MOTUS_DICO;
+
+  // Élève connecté : record personnel par élève
+  function studentSuffix(){
+    try {
+      const st = window.parent && window.parent !== window && window.parent.state;
+      if (st && st.student) return "_" + (st.studentCls || "") + "_" + st.student;
+    } catch(e) {}
+    return "";
+  }
+
+  // Tirage « sac » : tous les mots du niveau passent avant qu'un revienne
+  const bags = {};
+
   let levelKey, level, target, wordLen, maxTries;
   let guesses = [];
   let current = [];
   let keyStatus = {};
   let gameActive = true;
   let lastWord = {};
+  let targetDisplay = "";
+  let overlayShownAt = 0;
 
   const screenLevels = document.getElementById("screen-levels");
   const screenGame = document.getElementById("screen-game");
@@ -924,11 +955,13 @@
   document.getElementById("validate-btn").addEventListener("click", () => handleKey("ENTER"));
 
   function pickWord(lvlKey){
-    const list = LEVELS[lvlKey].words;
-    let word;
-    do {
-      word = list[Math.floor(Math.random() * list.length)];
-    } while(list.length > 1 && word === lastWord[lvlKey]);
+    if (!bags[lvlKey] || !bags[lvlKey].length) {
+      const b = LEVELS[lvlKey].words.slice();
+      for (let i = b.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [b[i], b[j]] = [b[j], b[i]]; }
+      if (b.length > 1 && b[b.length - 1] === lastWord[lvlKey]) b.unshift(b.pop());
+      bags[lvlKey] = b;
+    }
+    const word = bags[lvlKey].pop();
     lastWord[lvlKey] = word;
     return word;
   }
@@ -938,7 +971,9 @@
     level = LEVELS[lvlKey];
     wordLen = level.length;
     maxTries = level.tries;
-    target = pickWord(lvlKey);
+    targetDisplay = pickWord(lvlKey);
+    target = gameKey(targetDisplay);
+    setMsg("");
     guesses = [];
     current = new Array(wordLen).fill("");
     current[0] = target[0];
@@ -1026,6 +1061,7 @@
     if (!gameActive) return;
 
     if (k === "BACK") {
+      setMsg("");
       let removed = false;
       for (let i = wordLen - 1; i >= 1; i--) {
         if (current[i] !== "") {
@@ -1046,6 +1082,7 @@
     }
 
     // Lettre de l'alphabet
+    setMsg("");
     let added = false;
     for (let i = 1; i < wordLen; i++) {
       if (current[i] === "") {
@@ -1059,16 +1096,30 @@
     }
   }
 
+  function setMsg(t){ const m = document.getElementById("motus-msg"); if (m) m.textContent = t; }
+
+  function shakeRow(){
+    const activeRow = rowsEl.children[guesses.length];
+    if (activeRow) {
+      activeRow.classList.remove("shake");
+      void activeRow.offsetWidth;
+      activeRow.classList.add("shake");
+    }
+  }
+
   function submitGuess(){
     if (current.some(c => c === "")) {
-      const activeRow = rowsEl.children[guesses.length];
-      if (activeRow) {
-        activeRow.classList.remove("shake");
-        void activeRow.offsetWidth;
-        activeRow.classList.add("shake");
-      }
+      setMsg("Complète toutes les cases avant de valider.");
+      shakeRow();
       return;
     }
+    const essai = current.join("");
+    if (dicoOK && !DICO[wordLen].has(essai)) {
+      setMsg("« " + essai + " » n'est pas dans le dictionnaire : essaie un vrai mot (cet essai ne compte pas).");
+      shakeRow();
+      return;
+    }
+    setMsg("");
 
     const result = evaluateGuess(current, target);
     guesses.push({ letters: current.slice(), result });
@@ -1167,7 +1218,7 @@
     }
   }
 
-  function bestKey(){ return BEST_KEY_PREFIX + levelKey; }
+  function bestKey(){ return BEST_KEY_PREFIX + levelKey + studentSuffix(); }
 
   function showWin(tries){
     let best = null;
@@ -1182,7 +1233,8 @@
 
     overlayEmoji.textContent = "🎉";
     overlayTitle.textContent = "Bravo, trouvé !";
-    overlayWord.textContent = target;
+    overlayWord.textContent = targetDisplay;
+    overlayWord.style.color = "";
 
     let msg = `Trouvé en <strong>${tries}</strong> essai${tries > 1 ? "s" : ""}`;
     if (best !== null) {
@@ -1195,9 +1247,10 @@
 
   function showLose(){
     overlayEmoji.textContent = "😅";
-    overlayTitle.textContent = "Dommage !";
-    overlayWord.textContent = target;
-    overlaySub.innerHTML = "Pas de panique, réessaie pour t'entraîner !";
+    overlayTitle.textContent = "Dommage ! Le mot était :";
+    overlayWord.textContent = targetDisplay;
+    overlayWord.style.color = "#1f5fbf";
+    overlaySub.innerHTML = "Pas de panique, réessaie pour t'entrainer !";
     buildOverlayActions();
     overlay.classList.remove("hidden");
   }
@@ -1221,17 +1274,20 @@
 
     overlayActions.appendChild(btnAgain);
     overlayActions.appendChild(btnMenu);
+    overlayShownAt = Date.now();
   }
 
-  // Si le jeu est intégré dans un iframe sur index.html, ouvrir la page d'accueil au premier plan
+  // Dans le site (cadre), le lien « Accueil » rechargeait tout le site : on le cache (le site a « ← Retour »)
   const homeLink = document.querySelector(".home-link");
-  if (homeLink && window.self !== window.top) {
-    homeLink.setAttribute("target", "_top");
-  }
+  try { if (homeLink && window.self !== window.top) homeLink.style.display = "none"; } catch(e) {}
 
   // Raccourcis clavier physique (avec support des lettres accentuées é, è, ê, à, ç...)
   window.addEventListener("keydown", (e) => {
     if (screenGame.classList.contains("hidden")) return;
+    if (!overlay.classList.contains("hidden")) {
+      if (e.key === "Enter" && Date.now() - overlayShownAt > 600) { e.preventDefault(); startLevel(levelKey); }
+      return;
+    }
     if (!gameActive) return;
 
     if (e.key === "Enter") {
