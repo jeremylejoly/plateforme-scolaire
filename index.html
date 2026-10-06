@@ -28909,25 +28909,24 @@ function validerSciCircQCM(){
 // ===== ASSOCIATION TERMES/DÉFINITIONS — APPAREIL CIRCULATOIRE =====
 const SCI_CIRCULATOIRE_ASSOC = [
   {terme:"Le cœur", def:"Muscle creux qui pompe le sang dans tout le corps"},
-  {terme:"Une artère", def:"Vaisseau qui transporte le sang du cœur vers les organes ou les poumons"},
-  {terme:"Une veine", def:"Vaisseau qui transporte le sang des organes ou des poumons vers le cœur"},
+  {terme:"Une artère", k:"artere", def:"Vaisseau qui transporte le sang du cœur vers les organes ou les poumons"},
+  {terme:"Une veine", k:"veine", def:"Vaisseau qui transporte le sang des organes ou des poumons vers le cœur"},
   {terme:"Un capillaire", def:"Minuscule vaisseau qui fait le lien entre les artères et les veines"},
-  {terme:"L'oreillette droite", def:"Cavité du cœur qui reçoit le sang venant de la veine cave"},
+  {terme:"L'oreillette droite", def:"Cavité du cœur qui reçoit le sang venant des veines caves"},
   {terme:"L'oreillette gauche", def:"Cavité du cœur qui reçoit le sang venant des veines pulmonaires"},
-  {terme:"Le ventricule droit", def:"Cavité du cœur qui envoie le sang vers les poumons via l'artère pulmonaire"},
-  {terme:"Le ventricule gauche", def:"Cavité du cœur qui envoie le sang vers les organes via l'artère aorte"},
-  {terme:"L'artère pulmonaire", def:"Vaisseau qui transporte le sang chargé en gaz carbonique vers les poumons"},
-  {terme:"Les veines pulmonaires", def:"Vaisseaux qui transportent le sang chargé en oxygène vers l'oreillette gauche"},
-  {terme:"L'artère aorte", def:"Le plus grand vaisseau du corps — transporte le sang oxygéné vers les organes"},
-  {terme:"La veine cave", def:"Vaisseau qui ramène le sang chargé en gaz carbonique vers l'oreillette droite"},
+  {terme:"Le ventricule droit", def:"Cavité du cœur qui envoie le sang vers les poumons par l'artère pulmonaire"},
+  {terme:"Le ventricule gauche", def:"Cavité du cœur qui envoie le sang vers les organes par l'artère aorte"},
+  {terme:"L'artère pulmonaire", k:"artere", def:"Vaisseau qui transporte le sang chargé en gaz carbonique vers les poumons"},
+  {terme:"Les veines pulmonaires", k:"veine", def:"Vaisseaux qui ramènent le sang chargé en oxygène vers l'oreillette gauche"},
+  {terme:"L'artère aorte", k:"artere", def:"La plus grande artère du corps : elle transporte le sang chargé en oxygène vers les organes"},
+  {terme:"Les veines caves", k:"veine", def:"Vaisseaux qui ramènent le sang chargé en gaz carbonique vers l'oreillette droite"},
   {terme:"La petite circulation", def:"Trajet du sang entre le cœur et les poumons"},
   {terme:"La grande circulation", def:"Trajet du sang entre le cœur et les organes"},
-  {terme:"Les échanges gazeux", def:"Phénomène qui se produit dans les capillaires : l'oxygène est livré et le gaz carbonique est récupéré"},
+  {terme:"Les échanges gazeux", def:"Ce qui se passe dans les capillaires : l'oxygène est livré et le gaz carbonique est récupéré"},
   {terme:"Le gaz carbonique", def:"Déchet produit par les cellules du corps, rejeté dans les poumons"},
   {terme:"L'oxygène", def:"Gaz capté dans les poumons et transporté vers toutes les cellules du corps"},
   {terme:"Les valvules", def:"Petites portes dans le cœur qui empêchent le sang de revenir en arrière"},
-  {terme:"La cage thoracique", def:"Structure osseuse qui protège le cœur et les poumons"},
-  {terme:"Une pompe", def:"Rôle joué par le cœur lorsqu'il se contracte pour faire circuler le sang"},
+  {terme:"La cage thoracique", def:"Ensemble des côtes, du sternum et des vertèbres qui protège le cœur et les poumons"},
 ];
 
 let sciAssocState = {pairs:[], defOrder:[], placed:{}, dragging:null, touchClone:null, touchSource:null};
@@ -28935,225 +28934,222 @@ let sciAssocState = {pairs:[], defOrder:[], placed:{}, dragging:null, touchClone
 function renderSciCirculatoireAssoc(){
   const body = document.getElementById('sci-circulatoire-assoc-body');
   if(!body) return;
-  const pairs = shuffle([...SCI_CIRCULATOIRE_ASSOC]).slice(0, 8);
+
+  const vus = new Set(), pairs = [];
+  shuffle([...SCI_CIRCULATOIRE_ASSOC]).forEach(p => { const k = p.k || p.terme; if(pairs.length < 8 && !vus.has(k)){ vus.add(k); pairs.push(p); } });
   const defOrder = shuffle(pairs.map((_,i) => i));
-  sciAssocState = {pairs, defOrder, placed:{}, dragging:null, touchClone:null, touchSource:null};
-  const defsCol = shuffle(pairs.map((_,i) => i));
-  let rowsHtml = '';
-  pairs.forEach((p,i) => {
-    rowsHtml += `<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px;align-items:center;">
-      <div style="padding:8px 12px;background:var(--surface);border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-weight:700;min-height:48px;display:flex;align-items:center">${p.terme}</div>
-      <div class="assoc-drop-zone" id="assoc-zone-${i}" data-index="${i}" onclick="assocClearZone(this)"
-        style="min-height:48px;display:flex;align-items:center;padding:6px 10px;
-        background:var(--purple-light);border:2px dashed var(--purple);border-radius:8px;font-size:12px;transition:background .2s;cursor:pointer;"
-        ondragover="assocDragOver(event)" ondrop="assocDrop(event)" ondragleave="assocDragLeave(event)"
-        ontouchstart="assocZoneTouchStart(event)">
-        <span class="assoc-zone-placeholder" style="opacity:.5">Glisse ici…</span>
-      </div>
-      <div id="assoc-def-container-${defsCol[i]}" style="min-height:48px;">
-        <div class="assoc-def" id="assoc-def-${defsCol[i]}" data-index="${defsCol[i]}" draggable="true"
-          style="padding:8px 10px;background:var(--purple);color:#fff;border-radius:8px;font-size:12px;
-          font-weight:600;cursor:grab;user-select:none;touch-action:none;min-height:48px;
-          display:flex;align-items:center;line-height:1.3;"
-          ondragstart="assocDragStart(event)" ondragend="assocDragEnd(event)"
-          ontouchstart="assocDefTouchStart(event)" ontouchmove="assocDefTouchMove(event)" ontouchend="assocDefTouchEnd(event)" ontouchcancel="assocDefTouchCancel(event)">
-          ${pairs[defsCol[i]].def}
-        </div>
-      </div>
+  sciAssocState = {pairs, defOrder, placed:{}, dragging:null, touchClone:null, touchSource:null, done:false, lastClick:0};
+
+  let termesHtml = '';
+  pairs.forEach((p, i) => {
+    termesHtml += `<div class="assoc-terme" id="circassoc-terme-${i}" data-index="${i}"
+      style="min-height:52px;display:flex;align-items:center;padding:8px 12px;
+      background:var(--surface);border:1.5px solid var(--border);border-radius:8px;
+      font-size:13px;font-weight:700;color:var(--text)">
+      ${p.terme}
+    </div>`;
+    termesHtml += `<div class="assoc-drop-zone" id="circassoc-zone-${i}" data-index="${i}" onclick="circAssocClearZone(this)"
+      style="min-height:52px;display:flex;align-items:center;padding:8px 12px;
+      background:var(--purple-light);border:2px dashed var(--purple);border-radius:8px;
+      font-size:12px;color:var(--muted);cursor:pointer;transition:background .2s;min-width:0;overflow-wrap:anywhere;"
+      ondragover="circAssocDragOver(event)" ondrop="circAssocDrop(event)" ondragleave="circAssocDragLeave(event)"
+      ontouchstart="circAssocZoneTouchStart(event)">
+      <span style="opacity:.5">Glisse une définition ici…</span>
     </div>`;
   });
+
+  let defsHtml = '';
+  defOrder.forEach(i => {
+    defsHtml += `<div class="assoc-def" id="circassoc-def-${i}" data-index="${i}" draggable="true"
+      style="padding:8px 14px;background:var(--purple);color:#fff;border-radius:8px;
+      font-size:12px;font-weight:600;cursor:grab;user-select:none;touch-action:none;
+      margin-bottom:6px;line-height:1.4;"
+      onclick="circAssocSelect(this)" ondragstart="circAssocDragStart(event)" ondragend="circAssocDragEnd(event)"
+      ontouchstart="circAssocDefTouchStart(event)" ontouchmove="circAssocDefTouchMove(event)" ontouchend="circAssocDefTouchEnd(event)" ontouchcancel="circAssocDefTouchCancel(event)">
+      ${pairs[i].def}
+    </div>`;
+  });
+
   body.innerHTML = `
     <div class="card" style="margin-bottom:1rem;padding:0.8rem 1rem;background:var(--purple-light);border:1px solid var(--purple);">
-      <p style="margin:0;font-size:13px;color:var(--purple);font-weight:700">Glisse chaque définition (colonne de droite) en face du bon terme (colonne de gauche).</p>
+      <p style="margin:0;font-size:13px;color:var(--purple);font-weight:700">Glisse chaque définition en face du bon terme (ou touche une définition, puis la case).</p>
     </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:6px;">
-      <div style="font-size:11px;font-weight:800;text-transform:uppercase;color:var(--muted);">Terme</div>
-      <div style="font-size:11px;font-weight:800;text-transform:uppercase;color:var(--muted);">Ta réponse</div>
-      <div style="font-size:11px;font-weight:800;text-transform:uppercase;color:var(--muted);">Définitions</div>
+    <div style="display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:8px 10px;margin-bottom:1rem;">
+      <div style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);">Termes</div>
+      <div style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);">Définitions</div>
+      ${termesHtml}
     </div>
-    <div id="circ-rows">${rowsHtml}</div>
-    <button class="btn" onclick="validerSciAssoc()" style="width:100%;margin-top:1rem;margin-bottom:1rem">✅ Vérifier mes réponses</button>
-    <div id="assoc-score-panel" style="display:none"></div>`;
+    <div class="card" style="margin-bottom:1rem;">
+      <div style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:8px;">🏷️ Définitions à placer</div>
+      <div id="circassoc-def-pool">${defsHtml}</div>
+    </div>
+    <div id="circassoc-msg" style="display:none;margin-bottom:.75rem;padding:.6rem .9rem;border-radius:8px;background:#fff7ed;border:1.5px solid #f59e0b;color:#92400e;font-size:13px;font-weight:700;text-align:center"></div>
+    <button class="btn" id="circassoc-verif" onclick="validerSciAssoc()" style="width:100%;margin-bottom:1rem">✅ Vérifier mes réponses</button>
+    <div id="circassoc-score-panel" style="display:none"></div>
+  `;
 }
-function assocDragStart(e){
-  sciAssocState.dragging = e.currentTarget.dataset.index;
-  e.dataTransfer.setData('text/plain', e.currentTarget.dataset.index);
-  e.currentTarget.style.opacity = '0.5';
-}
-function assocDragEnd(e){ e.currentTarget.style.opacity = ''; sciAssocState.dragging = null; }
-function assocDragOver(e){ e.preventDefault(); e.currentTarget.style.background = 'var(--purple-mid,#ede9fe)'; }
-function assocDragLeave(e){ e.currentTarget.style.background = 'var(--purple-light)'; }
-function assocDrop(e){
+
+function circAssocDragStart(e){ sciAssocState.dragging=e.currentTarget.dataset.index; e.dataTransfer.setData('text/plain',e.currentTarget.dataset.index); e.currentTarget.style.opacity='0.5'; }
+function circAssocDragEnd(e){ e.currentTarget.style.opacity=''; sciAssocState.dragging=null; }
+function circAssocDragOver(e){ e.preventDefault(); e.currentTarget.style.background='var(--purple-mid,#ede9fe)'; }
+function circAssocDragLeave(e){ e.currentTarget.style.background='var(--purple-light)'; }
+function circAssocDrop(e){
   e.preventDefault();
-  const zone = e.currentTarget;
-  zone.style.background = 'var(--purple-light)';
-  const defIndex = parseInt(e.dataTransfer.getData('text/plain'));
-  assocPlacerDef(zone, defIndex);
+  e.currentTarget.style.background='var(--purple-light)';
+  circAssocPlacerDef(e.currentTarget, parseInt(e.dataTransfer.getData('text/plain')));
 }
 
-function assocPlacerDef(zone, defIndex){
+function circAssocPlacerDef(zone, defIndex){
+  if(sciAssocState.done || isNaN(defIndex)) return;
+  const m=document.getElementById('circassoc-msg'); if(m) m.style.display='none';
   const zoneIndex = parseInt(zone.dataset.index);
-  const pairs = sciAssocState.pairs;
-
-  // Si la zone avait déjà une def, la remettre dans la banque
   const ancien = sciAssocState.placed[zoneIndex];
-  if(ancien !== undefined) assocRetournerDef(ancien);
-
-  // Si la def était dans une autre zone, vider cette zone
+  if(ancien !== undefined) circAssocRetournerDef(ancien);
   Object.entries(sciAssocState.placed).forEach(([zi, di]) => {
     if(di === defIndex && parseInt(zi) !== zoneIndex){
       delete sciAssocState.placed[parseInt(zi)];
-      const oldZone = document.getElementById(`assoc-zone-${zi}`);
-      if(oldZone){
-        oldZone.innerHTML = '<span class="assoc-zone-placeholder" style="opacity:.5">Glisse une définition ici…</span>';
-        oldZone.style.background = 'var(--purple-light)';
-        oldZone.style.border = '2px dashed var(--purple)';
-      }
+      const oldZone = document.getElementById('circassoc-zone-'+zi);
+      if(oldZone){ oldZone.innerHTML='<span style="opacity:.5">Glisse une définition ici…</span>'; oldZone.style.background='var(--purple-light)'; oldZone.style.border='2px dashed var(--purple)'; }
     }
   });
-
-  // Retirer la def de la banque si elle y est
-  assocRetirerDeBanque(defIndex);
-
-  // Placer dans la zone
+  circAssocRetirerDeBanque(defIndex);
+  if(sciAssocState.sel===defIndex) sciAssocState.sel=undefined;
   sciAssocState.placed[zoneIndex] = defIndex;
-  zone.innerHTML = `<span style="font-size:12px;font-weight:600;color:var(--purple);line-height:1.4">${pairs[defIndex].def}</span>`;
-  zone.style.background = 'var(--purple-light)';
+  zone.innerHTML = `<span style="font-size:12px;font-weight:600;color:var(--purple);line-height:1.4">${sciAssocState.pairs[defIndex].def}</span>`;
   zone.style.border = '2px solid var(--purple)';
 }
 
-function assocRetournerDef(defIndex){
-  const pool = document.getElementById('assoc-def-container-'+defIndex);
-  if(!pool || document.getElementById(`assoc-def-${defIndex}`)) return;
+function circAssocRetournerDef(defIndex){
+  const pool = document.getElementById('circassoc-def-pool');
+  if(!pool || document.getElementById('circassoc-def-'+defIndex)) return;
   const div = document.createElement('div');
-  div.className = 'assoc-def';
-  div.id = `assoc-def-${defIndex}`;
-  div.dataset.index = defIndex;
-  div.draggable = true;
-  div.style.cssText = 'padding:8px 10px;background:var(--purple);color:#fff;border-radius:8px;font-size:12px;font-weight:600;cursor:grab;user-select:none;touch-action:none;min-height:48px;display:flex;align-items:center;line-height:1.3;';
-  div.textContent = sciAssocState.pairs[defIndex].def;
-  div.addEventListener('dragstart', assocDragStart);
-  div.addEventListener('dragend', assocDragEnd);
-  div.addEventListener('touchstart', assocDefTouchStart, {passive:false});
-  div.addEventListener('touchmove', assocDefTouchMove, {passive:false});
-  div.addEventListener('touchend', assocDefTouchEnd);
-  div.addEventListener('touchcancel', assocDefTouchCancel);
+  div.className='assoc-def'; div.id='circassoc-def-'+defIndex; div.dataset.index=defIndex; div.draggable=true;
+  div.style.cssText='padding:8px 14px;background:var(--purple);color:#fff;border-radius:8px;font-size:12px;font-weight:600;cursor:grab;user-select:none;touch-action:none;margin-bottom:6px;line-height:1.4;';
+  div.textContent=sciAssocState.pairs[defIndex].def;
+  div.addEventListener('dragstart',circAssocDragStart); div.addEventListener('dragend',circAssocDragEnd);
+  div.addEventListener('touchstart',circAssocDefTouchStart,{passive:false}); div.addEventListener('touchmove',circAssocDefTouchMove,{passive:false}); div.addEventListener('touchend',circAssocDefTouchEnd);
+  div.addEventListener('touchcancel',circAssocDefTouchCancel);
+  div.addEventListener('click',()=>circAssocSelect(div));
   pool.appendChild(div);
 }
-
-function assocRetirerDeBanque(defIndex){
-  const el = document.getElementById(`assoc-def-${defIndex}`);
-  if(el) el.remove();
+function circAssocSelect(el){
+  const st=sciAssocState; if(st.done||!el) return;
+  const di=parseInt(el.dataset.index);
+  document.querySelectorAll('#circassoc-def-pool .assoc-def').forEach(d=>d.style.outline='');
+  if(st.sel===di){ st.sel=undefined; return; }
+  st.sel=di; el.style.outline='3px solid #f59e0b';
 }
-
-// --- Touch Mobile ---
-function assocDefTouchStart(e){
-  e.preventDefault();
-  const tag = e.currentTarget;
-  sciAssocState.touchSource = tag;
-  const touch = e.touches[0];
-  const clone = tag.cloneNode(true);
-  clone.style.cssText += ';position:fixed;z-index:9999;pointer-events:none;opacity:0.85;width:160px;';
-  clone.style.left = (touch.clientX - 80) + 'px';
-  clone.style.top  = (touch.clientY - 20) + 'px';
-  document.body.appendChild(clone);
-  sciAssocState.touchClone = clone;
-  tag.style.opacity = '0.4';
+function circAssocPoserSelection(zone){
+  const st=sciAssocState;
+  if(st.done || st.sel===undefined || st.placed[parseInt(zone.dataset.index)]!==undefined) return false;
+  const di=st.sel; st.sel=undefined; circAssocPlacerDef(zone,di); return true;
 }
-function assocDefTouchMove(e){
-  e.preventDefault();
-  if(!sciAssocState.touchClone) return;
-  const touch = e.touches[0];
-  sciAssocState.touchClone.style.left = (touch.clientX - 80) + 'px';
-  sciAssocState.touchClone.style.top  = (touch.clientY - 20) + 'px';
-}
-function assocDefTouchEnd(e){
-  e.preventDefault();
-  if(!sciAssocState.touchClone) return;
-  const touch = e.changedTouches[0];
-  sciAssocState.touchClone.remove(); sciAssocState.touchClone = null;
-  if(sciAssocState.touchSource) sciAssocState.touchSource.style.opacity = '';
-  const el = document.elementFromPoint(touch.clientX, touch.clientY);
-  const zone = el ? el.closest('.assoc-drop-zone') : null;
-  if(zone && sciAssocState.touchSource){
-    assocPlacerDef(zone, parseInt(sciAssocState.touchSource.dataset.index));
-  }
-  sciAssocState.touchSource = null;
-}
-function assocDefTouchCancel(e){
-  if(sciAssocState.touchClone) { sciAssocState.touchClone.remove(); sciAssocState.touchClone = null; }
-  if(sciAssocState.touchSource) { sciAssocState.touchSource.style.opacity = ''; sciAssocState.touchSource = null; }
-}
-function assocZoneTouchStart(e){
-  const zone = e.currentTarget;
-  const zoneIndex = parseInt(zone.dataset.index);
-  const defIndex = sciAssocState.placed[zoneIndex];
-  if(defIndex === undefined) return;
-  e.preventDefault();
-  delete sciAssocState.placed[zoneIndex];
-  zone.innerHTML = '<span class="assoc-zone-placeholder" style="opacity:.5">Glisse une définition ici…</span>';
-  zone.style.background = 'var(--purple-light)';
-  zone.style.border = '2px dashed var(--purple)';
-  assocRetournerDef(defIndex);
-}
-function assocClearZone(zone){
-  const panel = document.getElementById('assoc-score-panel');
+function circAssocRetirerDeBanque(defIndex){ const el=document.getElementById('circassoc-def-'+defIndex); if(el) el.remove(); }
+function circAssocClearZone(zone){
+  const panel = document.getElementById('circassoc-score-panel');
   if(panel && panel.style.display === 'block') return;
-  const zoneIndex = parseInt(zone.dataset.index);
-  const defIndex = sciAssocState.placed[zoneIndex];
-  if(defIndex === undefined) return;
-  delete sciAssocState.placed[zoneIndex];
-  zone.innerHTML = '<span class="assoc-zone-placeholder" style="opacity:.5">Glisse une définition ici…</span>';
-  zone.style.background = 'var(--purple-light)';
-  zone.style.border = '2px dashed var(--purple)';
-  assocRetournerDef(defIndex);
+  if(circAssocPoserSelection(zone)) return;
+  const zi = parseInt(zone.dataset.index);
+  const di = sciAssocState.placed[zi];
+  if(di === undefined) return;
+  delete sciAssocState.placed[zi];
+  zone.innerHTML = '<span style="opacity:.5">Glisse une définition ici…</span>';
+  zone.style.background = 'var(--purple-light)'; zone.style.border = '2px dashed var(--purple)';
+  circAssocRetournerDef(di);
 }
 
-// --- Vérification ---
+function circAssocDefTouchStart(e){
+  e.preventDefault();
+  if(sciAssocState.done) return;
+  sciAssocState.touchSource=e.currentTarget;
+  const touch=e.touches[0];
+  sciAssocState.touchX=touch.clientX; sciAssocState.touchY=touch.clientY;
+  const clone=e.currentTarget.cloneNode(true);
+  clone.style.cssText+=';position:fixed;z-index:9999;pointer-events:none;opacity:.85;width:160px;';
+  clone.style.left=(touch.clientX-80)+'px'; clone.style.top=(touch.clientY-20)+'px';
+  document.body.appendChild(clone); sciAssocState.touchClone=clone;
+  e.currentTarget.style.opacity='0.4';
+}
+function circAssocDefTouchMove(e){
+  e.preventDefault();
+  if(!sciAssocState.touchClone) return;
+  const touch=e.touches[0];
+  sciAssocState.touchClone.style.left=(touch.clientX-80)+'px';
+  sciAssocState.touchClone.style.top=(touch.clientY-20)+'px';
+}
+function circAssocDefTouchEnd(e){
+  e.preventDefault();
+  if(!sciAssocState.touchClone) return;
+  const touch=e.changedTouches[0];
+  sciAssocState.touchClone.remove(); sciAssocState.touchClone=null;
+  if(sciAssocState.touchSource) sciAssocState.touchSource.style.opacity='';
+  const el=document.elementFromPoint(touch.clientX,touch.clientY);
+  const zone=el?el.closest('.assoc-drop-zone'):null;
+  const src=sciAssocState.touchSource;
+  if(zone && src) circAssocPlacerDef(zone,parseInt(src.dataset.index));
+  else if(src && Math.abs(touch.clientX-sciAssocState.touchX)<10 && Math.abs(touch.clientY-sciAssocState.touchY)<10) circAssocSelect(src);
+  sciAssocState.touchSource=null;
+}
+function circAssocDefTouchCancel(e){
+  if(sciAssocState.touchClone) { sciAssocState.touchClone.remove(); sciAssocState.touchClone=null; }
+  if(sciAssocState.touchSource) { sciAssocState.touchSource.style.opacity=''; sciAssocState.touchSource=null; }
+}
+function circAssocZoneTouchStart(e){
+  const zone=e.currentTarget;
+  const zi=parseInt(zone.dataset.index);
+  const di=sciAssocState.placed[zi];
+  if(sciAssocState.done) return;
+  if(di===undefined){ if(circAssocPoserSelection(zone)) e.preventDefault(); return; }
+  e.preventDefault();
+  delete sciAssocState.placed[zi];
+  zone.innerHTML='<span style="opacity:.5">Glisse une définition ici…</span>';
+  zone.style.background='var(--purple-light)'; zone.style.border='2px dashed var(--purple)';
+  circAssocRetournerDef(di);
+}
+
 function validerSciAssoc(){
-  const pairs = sciAssocState.pairs;
-  let score = 0;
-  pairs.forEach((p, i) => {
-    const zone = document.getElementById(`assoc-zone-${i}`);
-    const placedIndex = sciAssocState.placed[i];
-    const correct = placedIndex !== undefined && pairs[placedIndex].terme === p.terme;
-    if(correct){
-      score++;
-      if(zone){ zone.style.background = 'var(--green-light,#dcfce7)'; zone.style.border = '2px solid var(--green,#16a34a)'; }
-    } else {
-      if(zone){ zone.style.background = 'var(--red-light,#fee2e2)'; zone.style.border = '2px solid var(--red,#dc2626)'; }
-      // Afficher la bonne réponse
-      if(zone) zone.innerHTML += `<div style="font-size:11px;color:var(--green,#16a34a);margin-top:4px;font-weight:700">✅ ${p.def}</div>`;
-    }
+  const st=sciAssocState, now=Date.now();
+  if(st.done || now-st.lastClick<600) return;
+  st.lastClick=now;
+  const pairs=st.pairs;
+  const reste=pairs.length-Object.keys(st.placed).length;
+  const msg=document.getElementById('circassoc-msg');
+  if(reste>0){
+    if(msg){ msg.textContent='Place d\'abord toutes les définitions (il en reste '+reste+').'; msg.style.display='block'; }
+    return;
+  }
+  if(msg) msg.style.display='none';
+  st.done=true;
+  const vb=document.getElementById('circassoc-verif'); if(vb) vb.style.display='none';
+  document.querySelectorAll('#circassoc-def-pool .assoc-def').forEach(d=>d.draggable=false);
+  let score=0;
+  pairs.forEach((p,i)=>{
+    const zone=document.getElementById('circassoc-zone-'+i);
+    const di=sciAssocState.placed[i];
+    const correct=di!==undefined && pairs[di].terme===p.terme;
+    if(correct){ score++; if(zone){zone.style.background='var(--green-light,#dcfce7)';zone.style.border='2px solid var(--green,#16a34a)';} }
+    else{ if(zone){zone.style.background='var(--red-light,#fee2e2)';zone.style.border='2px solid var(--red,#dc2626)'; const c=document.createElement('div'); c.style.cssText='font-size:11px;color:#1f5fbf;margin-top:4px;font-weight:700;line-height:1.35'; c.textContent='➜ '+p.def; zone.style.flexDirection='column'; zone.style.alignItems='flex-start'; zone.appendChild(c);} }
   });
-
-  const total = pairs.length;
-  const pct = Math.round(score/total*100);
-  const color = pct>=70?'var(--green)':pct>=50?'var(--amber)':'var(--red)';
-  const emoji = pct>=70?'🎉':pct>=50?'👍':'💪';
-
-  const panel = document.getElementById('assoc-score-panel');
-  panel.style.display = 'block';
-  panel.innerHTML = `
-    <div class="card" style="text-align:center">
-      <div style="font-size:48px;margin-bottom:0.5rem">${emoji}</div>
-      <div style="font-family:'Nunito',sans-serif;font-weight:800;font-size:32px;color:${color}">${score}/${total}</div>
-      <div style="font-size:16px;color:${color};font-weight:700;margin-bottom:1rem">${pct}%</div>
-      <button class="btn" onclick="renderSciCirculatoireAssoc()">🔄 Nouvel exercice</button>
-    </div>
-  `;
+  const total=pairs.length, pct=Math.round(score/total*100);
+  const color=pct>=70?'var(--green)':pct>=50?'var(--amber)':'var(--red)';
+  const emoji=pct>=70?'🎉':pct>=50?'👍':'💪';
+  const panel=document.getElementById('circassoc-score-panel');
+  panel.style.display='block';
+  panel.innerHTML=`<div class="card" style="text-align:center">
+    <div style="font-size:48px;margin-bottom:.5rem">${emoji}</div>
+    <div style="font-family:'Nunito',sans-serif;font-weight:800;font-size:32px;color:${color}">${score}/${total}</div>
+    <div style="font-size:16px;color:${color};font-weight:700;margin-bottom:1rem">${pct}%</div>
+    <button class="btn" onclick="renderSciCirculatoireAssoc()">🔄 Nouvel exercice</button>
+  </div>`;
   panel.scrollIntoView({behavior:'smooth'});
-
   if(state.student){
-    saveResult({
-      student:state.student, cls:state.studentCls,
+    try{ saveResult({student:state.student,cls:state.studentCls,
       className:CLASSES[state.studentCls]?CLASSES[state.studentCls].name:state.studentCls,
-      activity:'sci_circulatoire_assoc',
-      bookTitle:'Termes et définitions — Appareil circulatoire',
-      score, total, pct,
+      activity:'sci_circulatoire_assoc',bookTitle:'Termes et définitions — Appareil circulatoire',
+      score,total,pct,
       date:new Date().toLocaleDateString('fr-BE'),
       time:new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})
-    });
+    }); }catch(e){}
   }
 }
 

@@ -2055,6 +2055,11 @@ Spécifique :
 - Moteur remplacé par celui des QCM respiratoire/digestif (avant : boutons radio, validation possible à vide, sauvegarde sans try/catch, bonne réponse en vert) : message si incomplet, garde 600 ms, bleu, sauvegarde unique, scroll conservé.
 - Tests Playwright 390 px : 300 tirages sans doublon de famille, bonne réponse ~1/3 par position, message « il en reste 10 », 1 erreur → 1 bleu, 1 sauvegarde malgré 3 clics, pas de débordement. exercices_eveil.js?v=20261006d.
 
+### 06/10 — Éveil → Sciences → L'appareil circulatoire → Termes et définitions (`sci_circulatoire_assoc`, index › SCI_CIRCULATOIRE_ASSOC / renderSciCirculatoireAssoc / validerSciAssoc) — sw.js v653
+- Ancien moteur à 3 colonnes remplacé par le moteur commun corrigé (comme respiratoire/digestif) : terme ↔ case, banque, glisser ou toucher puis case, message « il en reste N », garde 600 ms, validation unique, bonne définition en bleu, sauvegarde unique try/catch.
+- Ambiguïtés levées : la définition générale d'« une artère » convient aussi à l'artère pulmonaire et à l'aorte (idem « une veine » / veines pulmonaires / veines caves) → familles `k` : jamais le terme général et un terme précis de la même famille dans la même série ; paire « Une pompe » retirée (sa définition convenait aussi au cœur). « La veine cave » → « Les veines caves » ; aorte « plus grand vaisseau » → « plus grande artère » ; cage thoracique précisée. 19 paires, 8 tirées.
+- Tests Playwright 390 px (toucher) : message à vide, placement par toucher, 2 inversées → 6/8 + 2 bleus, 1 sauvegarde malgré 3 clics, 500 tirages sans conflit de famille, pas de débordement.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2527,7 +2532,7 @@ Spécifique :
 | ✅ 06/10 | Appareil circulatoire — Le cœur | `sci_coeur` | index › renderSciCoeurScreen |  |
 | ✅ 06/10 | Appareil circulatoire — Le trajet du sang | `sci_trajet_sang` | index › renderSciTrajetSangScreen |  |
 | ✅ 06/10 | Appareil circulatoire — QCM | `sci_circulatoire_qcm` | index › renderSciCirculatoireQCM |  |
-| ⬜ | Appareil circulatoire — Termes et définitions | `sci_circulatoire_assoc` | index › renderSciCirculatoireAssoc |  |
+| ✅ 06/10 | Appareil circulatoire — Termes et définitions | `sci_circulatoire_assoc` | index › renderSciCirculatoireAssoc |  |
 | ⬜ | La petite circulation (Ordre) | `sci_circ_petite` | index › renderSciCircOrdrePetite |  |
 | ⬜ | La grande circulation (Ordre) | `sci_circ_grande` | index › renderSciCircOrdreGrande |  |
 | ⬜ | Le trajet du sang (Ordre complet) | `sci_circ_ensemble` | index › renderSciCircOrdreEnsemble |  |
