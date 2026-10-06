@@ -2150,6 +2150,12 @@ Spécifique :
 - Contenu vérifié : 7 termes à leur place sur l'image (évaporation sur l'océan, condensation aux nuages, précipitations, ruissellement, infiltration, nappe phréatique, évapotranspiration au-dessus de la forêt) et définitions justes.
 - Tests Playwright 390 px (Tailwind régénéré) : message à vide, évaporation/condensation inversées → 5/7 + 2 bleus, 1 sauvegarde malgré 2 validations, pas de débordement.
 
+### 06/10 — Éveil → Sciences → Les énergies (`sci_energie_tri` = `sci_energie`, fiches/sci_energie_tri.html + public/fiches/) — sw.js v669
+- Mécanique : chaque validation enregistrait un résultat et « Corriger les erreurs » renvoyait les erreurs à placer pour revalider jusqu'au 17/17 → une validation par partie, tout est figé, bonne réponse en bleu pour chaque erreur (« ➜ Renouvelable », « ➜ ☀️ Lumineuse »), bouton « Recommencer », sauvegarde unique try/catch `window.parent !== window`, garde 600 ms.
+- Toucher : avec une étiquette choisie, toucher une colonne déjà garnie tombait sur une carte rangée et la renvoyait dans la réserve (au lieu de ranger l'étiquette choisie) → l'étiquette choisie est rangée dans cette colonne.
+- Contenu : « Renouvelables : Naturelle & Infinie » (faux pour la biomasse) → « Se renouvelle sans s'épuiser » ; « Énergie produite » → « Énergie utile produite » (une ampoule produit aussi de la chaleur, la réponse attendue est la lumière) ; « Score de passage » (c'était la progression) → « Réponses » ; boutons « Retour » internes masqués dans le site ; confettis protégés. Vérifié : 9 sources (5 renouvelables, 4 non renouvelables) et 4 conversions justes.
+- Tests Playwright 390 px (Tailwind régénéré, toucher) : 9 cartes placées par toucher, biomasse mal classée + ampoule « thermique » → 15/17 + 2 bleus, 1 sauvegarde malgré 2 validations, Recommencer remet à zéro, pas de débordement.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2653,7 +2659,7 @@ Spécifique :
 | ✅ 06/10 | Le cycle de l'eau (QCM) | `fiche_cycle_eau` | fiches/cycle-eau.html |  |
 | ✅ 06/10 | Le cycle de l'eau (Schéma) | `sci_cycle_eau_schema` | fiches/sci_cycle_eau_schema.html |  |
 | ✅ 06/10 | Les réseaux trophiques | `sci_reseaux_trophiques` | fiches/sci_reseaux_trophiques.html |  |
-| ⬜ | Les énergies (Tri & conversions) | `sci_energie_tri` | fiches/sci_energie_tri.html |  |
+| ✅ 06/10 | Les énergies (Tri & conversions) | `sci_energie_tri` | fiches/sci_energie_tri.html |  |
 | ⬜ | Laboratoire d'Électricité | `sci_electricite_labo` | fiches/sci_electricite_labo.html |  |
 | ⬜ | Ombres & Lumière | `sci_lumiere_ombres` | fiches/sci_lumiere_ombres.html |  |
 | ⬜ | Les éclipses | `sci_eclipses` | index › renderSciEclipses |  |
@@ -2783,7 +2789,7 @@ Spécifique :
 | ⬜ | La matière | `sci_matiere` | index › (?) | (code à localiser) |
 | ✅ 06/10 | Les mélanges | `sci_melanges` | fiches/sci_melanges_qcm.html |  |
 | ⬜ | Le cycle de l'eau | `sci_cycle_eau_cat` | index › (?) | (code à localiser) |
-| ⬜ | Les énergies | `sci_energie` | fiches/sci_energie_tri.html |  |
+| ✅ 06/10 | Les énergies | `sci_energie` | fiches/sci_energie_tri.html |  |
 | ⬜ | L'électricité | `sci_electricite` | index › (?) | (code à localiser) |
 
 ### ? — (menu renderTraitementScreen)
