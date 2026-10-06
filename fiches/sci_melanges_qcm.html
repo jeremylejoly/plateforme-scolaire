@@ -100,6 +100,12 @@
       box-shadow: 4px 4px 0px #047857 !important;
     }
 
+    .option-btn.reveal {
+      background-color: #eaf1fc !important;
+      color: #1f5fbf !important;
+      border-color: #1f5fbf !important;
+      box-shadow: 4px 4px 0px #1f5fbf !important;
+    }
     .option-btn.incorrect {
       background-color: var(--error-light) !important;
       color: #B91C1C !important;
@@ -623,6 +629,13 @@
     }
 
     // Game Variables
+    // k = famille : jamais deux questions de la même famille dans une partie
+    // (l'explication de l'une donnerait la réponse de l'autre, ex. filtration → filtrat / résidu)
+    const FAMILLES = ['homogene','heterogene','heterogene','solvant','solvant','solvant','satur','filtration','filtration','decantation',
+                      'miscible','evaporation','aimant','homogene','heterogene','soluble','miscible','miscible','filtration','soluble'];
+    QUESTION_POOL.forEach((q, i) => { q.k = FAMILLES[i]; });
+    let lastClick = 0, saved = false;
+
     let selectedQuestions = [];
     let currentQuestionIndex = 0;
     let scores = []; // stores true/false for each question answered
@@ -648,8 +661,10 @@
     function startGame() {
       playClickSound();
       
-      // Select 10 random questions from pool
-      selectedQuestions = shuffleArray(QUESTION_POOL).slice(0, 10);
+      // 10 questions au hasard, une par famille
+      const vus = new Set(); selectedQuestions = [];
+      shuffleArray(QUESTION_POOL).forEach(q => { if (selectedQuestions.length < 10 && !vus.has(q.k)) { vus.add(q.k); selectedQuestions.push(q); } });
+      saved = false; lastClick = 0;
       currentQuestionIndex = 0;
       scores = [];
 
@@ -729,6 +744,8 @@
     }
 
     function selectOption(selectedIndex, correctIndex) {
+      if (scores.length > currentQuestionIndex) return; // une seule réponse par question
+      lastClick = Date.now();
       const isCorrect = (selectedIndex === correctIndex);
       scores.push(isCorrect);
 
@@ -739,7 +756,7 @@
         if (btn) {
           btn.disabled = true;
           if (idx === correctIndex) {
-            btn.classList.add('correct');
+            btn.classList.add(isCorrect ? 'correct' : 'reveal');
           } else if (idx === selectedIndex) {
             btn.classList.add('incorrect');
           } else {
@@ -779,7 +796,7 @@
         fbPanel.style.backgroundColor = 'var(--error-light)';
         fbPanel.style.borderColor = '#B91C1C';
         fbEmoji.textContent = '💡';
-        fbTitle.textContent = 'Oups, ce n\'est pas tout à fait ça...';
+        fbTitle.textContent = 'Oups ! La bonne réponse est en bleu : ' + question.options[correctIndex];
         fbTitle.style.color = '#B91C1C';
       }
 
@@ -792,6 +809,9 @@
     }
 
     function nextQuestion() {
+      const now = Date.now();
+      if (scores.length <= currentQuestionIndex || now - lastClick < 600) return; // pas de saut de question
+      lastClick = now;
       playClickSound();
       currentQuestionIndex++;
 
@@ -803,6 +823,7 @@
     }
 
     function finishGame() {
+      if (saved) return;
       // Calculate results
       const correctCount = scores.filter(Boolean).length;
       const pct = Math.round((correctCount / 10) * 100);
@@ -832,7 +853,7 @@
         triggerConfettis();
       } else if (correctCount >= 8) {
         titleElem.textContent = 'Excellent ! 👍';
-        msgElem.textContent = 'Tu maîtrises très bien le sujet, bravo !';
+        msgElem.textContent = 'Tu maitrises très bien le sujet, bravo !';
         starsElem.textContent = '⭐⭐';
         starsElem.style.color = '#FBBF24';
         playFanfareSound();
@@ -843,7 +864,7 @@
         starsElem.style.color = '#FBBF24';
         playSuccessSound();
       } else {
-        titleElem.textContent = 'Entraîne-toi encore ! 😅';
+        titleElem.textContent = 'Entraine-toi encore ! 😅';
         msgElem.textContent = 'Révise les mélanges et les techniques et tente à nouveau ta chance.';
         starsElem.textContent = '✨';
         starsElem.style.color = '#94A3B8';
@@ -871,8 +892,9 @@
         reviewGrid.appendChild(box);
       }
 
-      // Save score to parent
-      if (window.parent && window.parent.saveResult) {
+      // Save score to parent (une seule fois)
+      saved = true;
+      if (window.parent && window.parent !== window && typeof window.parent.saveResult === 'function') {
         try {
           window.parent.saveResult({
             activity: 'sci_melanges_qcm',
@@ -972,6 +994,15 @@
       const modal = document.getElementById('help-modal');
       modal.classList.add('hidden');
       modal.classList.remove('flex');
+    }
+
+    document.addEventListener('keydown', e => {
+      if (e.key !== 'Enter' || (e.target && e.target.tagName === 'BUTTON')) return;
+      if (!document.getElementById('screen-game').classList.contains('hidden') && scores.length > currentQuestionIndex) { e.preventDefault(); nextQuestion(); }
+    });
+    // Boutons « Quitter » inutiles dans le site (l'écran a déjà « ← Retour »)
+    if (window.parent && window.parent !== window) {
+      document.querySelectorAll('button[onclick*="handleBack"]').forEach(b => b.style.display = 'none');
     }
 
     // Inject content immediately

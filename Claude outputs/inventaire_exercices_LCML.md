@@ -2118,6 +2118,15 @@ Spécifique :
 - Divers : « Score de passage » (c'était la progression) → « Réponses » ; « **Solide** » (astérisques Markdown affichés) → gras ; « maîtrisé » → « maitrisé » ; boutons « Retour » internes masqués dans le site (l'écran a déjà « ← Retour ») ; confettis protégés.
 - Tests Playwright 390 px (toucher) : 300 tirages sans doublon de famille, aucune boîte de dialogue, 1 ligne fausse → 9/10 + « ➜ Solide » + 1 bouton bleu + 1 rouge, 1 sauvegarde malgré 3 validations, pas de débordement.
 
+### 06/10 — Éveil → Sciences → Les mélanges → Mélanges et séparations (`sci_melanges_qcm` = `sci_melanges`, fiches/sci_melanges_qcm.html + public/fiches/) — sw.js v663
+- Correction : après une erreur, la bonne réponse était en vert → en bleu #1f5fbf, et le titre dit « La bonne réponse est en bleu : … ».
+- Familles `k` (10 familles pour 20 questions) → 10 questions, une par famille : avant, « Quelle technique… filtre en papier ? » (dont l'explication définit filtrat et résidu) pouvait précéder « Comment appelle-t-on le liquide… filtré ? » ; idem solvant/soluté/solution, soluble/insoluble, miscible/non miscible (l'explication « huile moins dense » cite « non miscibles »).
+- Mécanique : double clic sur « Question suivante » sautait une question → garde 600 ms et pas de passage sans réponse ; une seule réponse par question ; sauvegarde unique avec `window.parent !== window` ; Entrée = question suivante ; boutons « Quitter » internes masqués dans le site ; « maîtrises / Entraîne » → « maitrises / Entraine ».
+- Contenu vérifié : 20 questions justes (homogène/hétérogène, solvant/soluté/solution, saturation, filtration/filtrat/résidu, décantation, évaporation, aimantation, miscible/soluble).
+- Question posée à Jeremy : le bouton « 💡 Aide Mémo » affiche toute la fiche de révision PENDANT le test (les réponses sont dedans) — garder ou retirer ?
+- Tests Playwright 390 px : 300 parties sans doublon de famille, 1 erreur → rouge + bleu, double réponse/double « suivant » sans effet, 9/10, 1 sauvegarde, pas de débordement.
+- Note : `sci_matiere_changements` (changements d'état) commencé puis interrompu à la demande de Jeremy — aucune modification faite, reste ⬜.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2617,7 +2626,7 @@ Spécifique :
 | ✅ 06/10 | États et propriétés de la matière | `sci_matiere_etats` | fiches/sci_matiere_etats.html |  |
 | ⬜ | Les changements d'état | `sci_matiere_changements` | fiches/sci_matiere_changements.html |  |
 | ⬜ | Transformations physiques et chimiques | `sci_transformations_chimiques` | fiches/transformations-physiques-chimiques.html |  |
-| ⬜ | Mélanges et séparations | `sci_melanges_qcm` | fiches/sci_melanges_qcm.html |  |
+| ✅ 06/10 | Mélanges et séparations | `sci_melanges_qcm` | fiches/sci_melanges_qcm.html |  |
 | ⬜ | Le cycle de l'eau (QCM) | `fiche_cycle_eau` | fiches/cycle-eau.html |  |
 | ⬜ | Le cycle de l'eau (Schéma) | `sci_cycle_eau_schema` | fiches/sci_cycle_eau_schema.html |  |
 | ⬜ | Les réseaux trophiques | `sci_reseaux_trophiques` | fiches/sci_reseaux_trophiques.html |  |
@@ -2749,7 +2758,7 @@ Spécifique :
 | ⬜ | L'appareil circulatoire | `sci_circulatoire` | index › (?) | (code à localiser) |
 | ⬜ | Le monde végétal | `sci_plantes` | index › (?) | (code à localiser) |
 | ⬜ | La matière | `sci_matiere` | index › (?) | (code à localiser) |
-| ⬜ | Les mélanges | `sci_melanges` | fiches/sci_melanges_qcm.html |  |
+| ✅ 06/10 | Les mélanges | `sci_melanges` | fiches/sci_melanges_qcm.html |  |
 | ⬜ | Le cycle de l'eau | `sci_cycle_eau_cat` | index › (?) | (code à localiser) |
 | ⬜ | Les énergies | `sci_energie` | fiches/sci_energie_tri.html |  |
 | ⬜ | L'électricité | `sci_electricite` | index › (?) | (code à localiser) |
