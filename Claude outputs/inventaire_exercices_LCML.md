@@ -1951,6 +1951,13 @@ Spécifique :
 ### 06/10 — Éveil → Histoire → Les Temps modernes / L'Époque contemporaine (`hist_temps_modernes`, `hist_contemporaine`)
 - Cases encore vides, **gardées à la demande de Jeremy** (des exercices y seront ajoutés plus tard). Aucun changement. À noter : elles figurent aussi dans le catalogue du plan de travail (`PLAN_CATALOGUE`) ; si on les place dans un plan, l'élève ne pourra pas les terminer tant qu'elles sont vides.
 
+### 06/10 — Éveil → Histoire → Les grandes périodes = La frise chronologique (`hist_grandes_periodes` et `fiche_frise`, `fiches/frise-chronologique-histoire.html`, 3 copies) — sw.js v636
+- Leçon interactive (pas de score). **Décision de Jeremy** : fin de la Préhistoire = invention de l'écriture (vers 3 300 av. J.-C.) dans le monde ; dans nos régions, jusqu'à la conquête romaine (52 av. J.-C.) — les deux sont expliquées. La frise garde ses blocs « de nos régions » et le dit (badge, description de la Préhistoire et de l'Antiquité) ; écriture, pyramides et démocratie athénienne (placées dans l'Antiquité alors qu'elles précèdent 52 av. J.-C.) marquées « Ailleurs dans le monde » ; l'écriture « marque la fin de la Préhistoire » → « dans ces régions du monde… et chez nous ? ». Quiz Préhistoire (« Dans le monde, quel évènement… ») et Termes et définitions (« ; dans nos régions, jusqu'à la conquête romaine ») alignés.
+- **Dates des sous-périodes incohérentes** (dates du Proche-Orient sur une frise de nos régions, alors que le texte disait « agriculture en Belgique vers 5 000 ») → dates de nos régions : Mésolithique jusqu'à 5 300, Néolithique 5 300–2 100, Bronze 2 100–800, Fer 800–52 av. J.-C. (frise principale, frise zoomée, repères) ; Âge du Fer daté ~800 (au lieu de 1 200).
+- **Erreurs corrigées** : naissance de Jésus en « an 0 » (il n'y a pas d'année 0 ; naissance réelle quelques années plus tôt) ; Magellan « prouve que la Terre est ronde » (on le savait depuis l'Antiquité) ; Louis XIV « sa devise : L'État, c'est moi » (phrase apocryphe ; sa devise est autre) et « villes belges (Lille…) » → villes des Pays-Bas espagnols ; « Pays-Bas espagnols et naissance de la Belgique » → « (nos régions) » ; « -58 … av. J.-C. » (double notation) ; Godefroid « né à Baisy » → « probablement » ; peste « Belgique durement touchée, villes décimées » nuancé ; 6e réforme de l'État « 2011 » → 2012-2014 ; inondations 2021 « 42 morts » → « des dizaines de morts » ; légende « équipement réel » d'un Gaulois à casque à cornes → précisé ; « à Étiolles » retiré (huttes en os de mammouth) ; Lune (1969) remise avant la fédéralisation (1970). Nouvelle orthographe : maitrise, apparait, traineaux, voute, naitre, entrainent, brulée, aout, ile, évènement(s).
+- **390 px** : les deux frises étaient illisibles (étiquettes superposées) → défilement horizontal (largeur minimale 760 px) avec « ↔ Fais glisser la frise » ; plus de débordement de la page. Illustrations vérifiées (9 images, légendes conformes aux images malgré des noms de fichiers trompeurs).
+- Tests Chromium à 390 et 1024 px : repères de la frise croissants (0 → 100 %), aucune erreur JavaScript, aucune image manquante.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2380,10 +2387,10 @@ Spécifique :
 | Statut | Exercice | id | Source | Signal automatique |
 |---|---|---|---|---|
 | ⬜ | L'Œil du Temps — Jeu de Kim (Mémoire visuelle) | `kim_histoire` | fiches/kim_histoire.html |  |
-| ⬜ | La frise chronologique (Interactive) | `fiche_frise` | fiches/frise-chronologique-histoire.html |  |
+| ✅ 06/10 | La frise chronologique (Interactive) | `fiche_frise` | fiches/frise-chronologique-histoire.html |  |
 | ⬜ | Le grand voyage du Temps (Carnet d'investigation) | `hist_grand_voyage_temps` | fiches/lecon_frise_historique.html | QCM: bonne réponse en position 1 dans 5/5 questions, options non mélangées ; Aucun hasard : mêmes questions, même ordre à chaque partie |
 | ⬜ | La ligne du temps (Séquence P5–P6) | `hist_ligne_du_temps` | fiches/ligne-du-temps_5.html | QCM: bonne réponse en position 2 dans 10/10 questions, options non mélangées ; Aucun hasard : mêmes questions, même ordre à chaque partie |
-| ⬜ | Les grandes périodes de l'Histoire | `hist_grandes_periodes` | fiches/frise-chronologique-histoire.html |  |
+| ✅ 06/10 | Les grandes périodes de l'Histoire | `hist_grandes_periodes` | fiches/frise-chronologique-histoire.html |  |
 | ✅ 06/10 | Quiz Préhistoire | `qvgdm_prehistoire` | index › renderQVGDMPrehistoire |  |
 | ✅ 06/10 | Préhistoire — Termes et définitions | `prehistoire_assoc` | index › renderPrehistoireAssoc |  |
 | ✅ 06/10 | Préhistoire — Campement du Paléolithique | `prehistoire_doc` | index › renderPrehistoireDoc |  |
