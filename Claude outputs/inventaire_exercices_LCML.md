@@ -2246,6 +2246,8 @@ Spécifique :
 
 - **06/10 — Jeux › Les Pentominos (`jeu_pentomino`, pentomino.html, sw.js v713)** : les 12 formes vérifiées (F I L N P T U V W X Y Z standard) ; nombres de solutions des rectangles exacts (6×10 : 2 339 ; 5×12 : 1 010 ; 4×15 : 368 ; 3×20 : 2) ; victoire = 12 pièces posées sans chevauchement dans 60 cases. Bug téléphone : le plateau 3 × 20 dépassait de son cadre (colonnes de gauche et de droite coupées) → taille des cases calculée sur la largeur réelle du cadre (min. 14 px). La « case repère » (rond blanc) qui se pose sur la case touchée n'était expliquée nulle part — et sur tablette il n'y a pas de survol pour voir l'aperçu → expliquée dans la consigne et les astuces. « 2 solutions au monde entier » → « 2 solutions possibles » ; « 12 formes différentes dans le monde » ; « cliquant » → « touchant ». Ajout : meilleur temps par plateau, gardé par élève (rien vers l'enseignant). Pas de boite de dialogue. Test Playwright 390 px : les 4 plateaux tiennent dans leur cadre, pose et reprise d'une pièce.
 
+- **06/10 — Jeux › Le Tangram (`jeu_tangram`, tangram.html + public, sw.js v714)** : les 9 figures et leurs 100 solutions vérifiées géométriquement (7 pièces, surface 16, aucun chevauchement, toutes les solutions donnent la même silhouette, d'un seul tenant, sans trou ; aucun triangle « retourné » impossible à obtenir) ; silhouettes dessinées et reconnaissables. Jeu joué au doigt sur téléphone (sélection, rotations, retournement, glisser) : Carré, Bateau à voile et Sapin reconstitués → aimantation des 7 pièces et victoire. Aucun défaut de fonctionnement. Corrections : record de temps par élève (avant : commun à l'appareil) ; « emboîte » → « emboite » (NO) ; règle du retournement reformulée (« pas symétrique par réflexion » → « n'a pas d'axe de symétrie »). Pas de saveResult ni de boite de dialogue.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2846,7 +2848,7 @@ Spécifique :
 | ✅ 06/10 | Le Nonogram | `jeu_nonogram` | nonogram.html (racine + public) |  |
 | ⬜ | 2048 | `jeu_2048` | index › (?) | (code à localiser) |
 | ✅ 06/10 | Motus | `jeu_motus` | motus.html (racine + public) |  |
-| ⬜ | Le Tangram | `jeu_tangram` | index › (?) | (code à localiser) |
+| ✅ 06/10 | Le Tangram | `jeu_tangram` | tangram.html (racine + public) |  |
 | ⬜ | Le Démineur | `jeu_demineur` | index › (?) | (code à localiser) |
 | ⬜ | La Pipopipette | `jeu_pipopipette` | index › (?) | (code à localiser) |
 
