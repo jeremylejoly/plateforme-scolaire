@@ -1764,6 +1764,15 @@ Spécifique :
 - Question mal mise en page (texte coupé en colonnes) → corrigée. Nouvelle orthographe : Entraine-toi, maitrises.
 - Tests jsdom : 2 000 séries, vide/« 12abc » non comptés, 2 échecs → réponse bleue, 2e essai juste = 0 point, double Entrée sans saut, partie 7/10 → 1 sauvegarde, Recommencer OK. Capture 390 px sans défilement horizontal.
 
+### 06/10 — Mathématiques → Solides et figures → Le vocabulaire géométrique (`solide_vocabulaire`, `fiches/vocabulaire_solides.html` + copies public et racine) — sw.js v611
+- **Aucun résultat enregistré** (condition `window.parent.state`, une des 6 fiches repérées) → `saveResult` au format objet, une seule fois, try/catch.
+- 100 questions relues (solides, patrons, polygones, angles, triangles, quadrilatères, cercle, symétrie) : réponses justes. Corrections : patron du cylindre « un rectangle et deux cercles » → deux **disques** ; « 6 faces carrées : le cube / le pavé droit » (un cube est un pavé) → autres distracteurs ; triangle « acutangle / équilatéral » (un équilatéral est aussi acutangle) → « rectangle » ; axes du rectangle « médiatrices des côtés » → « ses médianes » (terme du site) ; « circommérence » → circonférence ; « d = 2 x r » → ×.
+- **La bonne réponse était la plus longue dans 63 % des questions** (phrases de définition complètes contre distracteurs courts) → 60 questions réécrites : distracteurs de même longueur, précisions entre parenthèses retirées des bonnes réponses. Plus longue : 17 % (3 000 séries).
+- **Questions qui se donnaient la réponse** (ex. « faces d'un prisme triangulaire ? 5 » et « 2 triangles + 3 rectangles = ? » ; formule d'Euler et ses 2 calculs ; rayon / diamètre / corde ; carré-rectangle-losange…) → 17 familles, jamais deux d'une famille dans la même série (3 000 séries : 0).
+- Mélange biaisé sort(random) → Fisher–Yates (≈ 33 % par position).
+- Bonne réponse montrée en bleu (#1f5fbf) après une erreur (vert si juste) ; pastilles rouges pour les erreurs ; « Question suivante » protégé (600 ms), Entrée ; score final une seule fois.
+- Tests jsdom : 3 000 séries de 20 questions, partie 16/20 → 1 sauvegarde, Entrée juste après un clic sans saut, Recommencer OK. Capture 390 px sans défilement horizontal.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2186,7 +2195,7 @@ Spécifique :
 | ✅ 06/10 | Les axes de symétrie | `solide_symetrie` | fiches/solide_symetrie.html |  |
 | ✅ 06/10 | Le labo des transformations | `solide_transformations_labo` | fiches/transformations_labo.html |  |
 | ✅ 06/10 | Projections de cubes (Solides 3D) | `solide_projections_cubes` | fiches/solides_projections.html |  |
-| ⬜ | Le vocabulaire géométrique | `solide_vocabulaire` | fiches/vocabulaire_solides.html |  |
+| ✅ 06/10 | Le vocabulaire géométrique | `solide_vocabulaire` | fiches/vocabulaire_solides.html |  |
 
 ### 🌍 Éveil — 📜 Histoire
 
