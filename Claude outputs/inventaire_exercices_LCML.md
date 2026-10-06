@@ -2098,6 +2098,12 @@ Spécifique :
 - Mécanique : garde 600 ms sur « Continuer » (double clic sautait une affirmation), sauvegarde unique try/catch `window.parent !== window`, Entrée = continuer / recommencer, total calculé, « Question 1/10 » → « Affirmation 1/10 », grille sans Tailwind.
 - Tests Playwright 390 px : 300 tirages sans doublon de famille, erreur → rouge + bleu (vérifié après la transition CSS), bonne réponse → vert sans bleu, double « Continuer » ne saute rien, 9/10, 1 sauvegarde, pas de débordement.
 
+### 06/10 — Éveil → Sciences → Le monde végétal → L'anatomie de la fleur (`sci_plantes_fleur`, fiches/sci_plantes_fleur.html + public/fiches/) — sw.js v660
+- Mise en page : les 9 cases « Déposer ici » étaient posées sur le dessin → sur ordinateur elles cachaient le style et le haut des pétales, la case « Pistil » était coupée à gauche et « Étamine » débordait à droite ; sur téléphone (390 px) les cases se chevauchaient et la page débordait (441 px). → Numéros 1–9 sur le dessin (au départ de chaque trait) + tableau de 9 cases sous le dessin, comme les autres schémas du site ; dessin recadré, « Organe femelle / mâle » lisibles.
+- Mécanique : chaque validation enregistrait un résultat et les étiquettes fausses repartaient seules dans la réserve → on revalidait jusqu'au 9/9 (score gonflé). Maintenant : une validation par partie, cases verrouillées, bonne étiquette en bleu sous chaque case rouge, sauvegarde unique try/catch `window.parent !== window`, garde 600 ms, Entrée = valider / recommencer. Étiquettes mélangées (avant : toujours dans le même ordre). Confettis protégés si la bibliothèque ne se charge pas.
+- Contenu : 9 traits vérifiés sur le dessin (stigmate, style, ovaire, sépale, pollen = grains au-dessus de l'anthère, filet, pétale ; accolades pistil et étamine) ; consigne « nommer les organes reproducteurs » (faux pour sépale/pétale) → « les parties » ; descriptions en minuscules (« Le Pistil » → « Le pistil »).
+- Tests Playwright 390 px (toucher) : 20 ordres d'étiquettes différents, placement par toucher, style/filet inversés → 7/9 + 2 bleus, 1 sauvegarde malgré 3 validations, Entrée relance, pas de débordement ; capture ordinateur 1100 px vérifiée.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2591,7 +2597,7 @@ Spécifique :
 | ⬜ | Planètes — Ordre et distance | `sci_planetes_ordre` | index › (?) | (code à localiser) |
 | ⬜ | Planètes — Informations & Caractéristiques | `sci_planetes_infos` | index › (?) | (code à localiser) |
 | ⬜ | Système solaire — QCM | `sci_planetes_qcm` | index › renderSciPlanetesInfosScreen |  |
-| ⬜ | L'anatomie de la fleur | `sci_plantes_fleur` | fiches/sci_plantes_fleur.html |  |
+| ✅ 06/10 | L'anatomie de la fleur | `sci_plantes_fleur` | fiches/sci_plantes_fleur.html |  |
 | ⬜ | Reproduction & Germination | `sci_plantes_germination` | fiches/sci_plantes_germination.html |  |
 | ⬜ | La reproduction des plantes (Leçon) | `sci_reproduction_plantes` | fiches/reproduction_plantes.html |  |
 | ⬜ | États et propriétés de la matière | `sci_matiere_etats` | fiches/sci_matiere_etats.html |  |
