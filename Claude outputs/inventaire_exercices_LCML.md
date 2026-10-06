@@ -2269,6 +2269,8 @@ Spécifique :
 
 - **06/10 — CEB Sciences 2021 (`ceb_sci_2021`, CEB sciences/ceb_sciences_2021.html, sw.js v724)** : 20 questions vérifiées contre le portfolio PDF (p. 13-26 : expériences A/B/C sur les plantes, cycle du cerf, épeire, ensembles emboités, cloportes 5/2/1, bouteille modèle A 27 → 29 cm, pièce et clous, fusée 12 m) — réponses justes. Même moteur que 2026/2023/2022 → mêmes corrections (sauvegarde unique /20, choix mélangés, bleu, message des questions vides, double clic). Contenu : 2.4 la bonne réponse énumérait 5 attributs (seule longue) → « quel attribut le cafard et la mouche ont-ils, mais pas le millepatte ? » (3 paires de pattes) ; 3.1 donnait « 5 sur 8 » → retiré ; bonne réponse seule longue ou avec son explication (1.1, 1.2, 2.3, 3.1, 3.2, 3.4, 3.5, 4.2, 4.4) → équilibrée, explications de 3.4 et 4.2 montrées après la réponse ; « boîte emboîtée » → « ensembles emboités » (livret). NO : emboité, entrainement, maitriser ; « prêt-e » → « prêt ». Test Playwright 390 px : message « 1.5 », 17/20, 1 seule sauvegarde, pas de débordement.
 
+- **06/10 — CEB Sciences 2019 (`ceb_sci_2019`, CEB sciences/ceb_sciences_2019.html, sw.js v725)** : 20 questions vérifiées contre le portfolio PDF (p. 2-15 : haricot, capucine, grenouille et urodèles, cycle de l'eau, salade, dispositifs d'évaporation, carte météo du 17/01/2019 — Verviers −3 °C, 60 km/h, lever 08h36 —, Beaufort, grue). Même moteur que 2026/2023 → mêmes corrections (sauvegarde unique /20, choix mélangés, bleu, message des questions vides, double clic). Contenu : 1.2 deux distracteurs étaient aussi des ordres justes (rotations du cycle) → « en commençant par les graines » + 4 ordres qui commencent tous par les graines ; 3.5 se basait sur la « flèche rose n°3 » (un repère du livret, pas le vent) → flèche noire de la rose des vents (repère 2) : le vent vient de l'ouest, explication (carte imprimée de côté) ; 2.4 et 2.5 b présentaient comme observés des résultats que le livret ne donne pas → formulés en prévision ; 3.1 donnait « −3 °C » → retiré ; bonne réponse seule longue (1.5, 2.2, 2.4, 4.2, 4.4) → équilibrée. NO : entrainement, maitriser ; « prêt-e » → « prêt ». Test Playwright 390 px : message « 1.5 », 17/20, 1 seule sauvegarde, pas de débordement.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2823,7 +2825,7 @@ Spécifique :
 | ✅ 06/10 | CEB Sciences 2023 | `ceb_sci_2023` | index › openCEB |  |
 | ✅ 06/10 | CEB Sciences 2022 | `ceb_sci_2022` | index › openCEB |  |
 | ✅ 06/10 | CEB Sciences 2021 | `ceb_sci_2021` | index › openCEB |  |
-| ⬜ | CEB Sciences 2019 | `ceb_sci_2019` | index › openCEB |  |
+| ✅ 06/10 | CEB Sciences 2019 | `ceb_sci_2019` | index › openCEB |  |
 | ⬜ | CEB Sciences 2016 | `ceb_sci_2016` | index › openCEB |  |
 | ⬜ | CEB Sciences 2013 | `ceb_sci_2013` | index › openCEB |  |
 
