@@ -2060,6 +2060,13 @@ Spécifique :
 - Ambiguïtés levées : la définition générale d'« une artère » convient aussi à l'artère pulmonaire et à l'aorte (idem « une veine » / veines pulmonaires / veines caves) → familles `k` : jamais le terme général et un terme précis de la même famille dans la même série ; paire « Une pompe » retirée (sa définition convenait aussi au cœur). « La veine cave » → « Les veines caves » ; aorte « plus grand vaisseau » → « plus grande artère » ; cage thoracique précisée. 19 paires, 8 tirées.
 - Tests Playwright 390 px (toucher) : message à vide, placement par toucher, 2 inversées → 6/8 + 2 bleus, 1 sauvegarde malgré 3 clics, 500 tirages sans conflit de famille, pas de débordement.
 
+### 06/10 — Éveil → Sciences → Le squelette → Le schéma du squelette (`sci_sq_schema`, fiche squelette_schema.html + fiches/ et public/fiches/ (chemin ../photos/), image photos/schema_squelette.jpg) — sw.js v654
+- 15 numéros vérifiés sur l'image (pastilles agrandies) : crâne, mandibule, clavicule, omoplate, sternum, côte, colonne, humérus, radius (côté pouce), cubitus, bassin, fémur, rotule, tibia (côté intérieur), péroné (côté extérieur) — tous corrects.
+- « Mode Calibrage » (outil de développement pour déplacer les pastilles) visible par les élèves → bouton, zone et code retirés.
+- Mécanique : validation possible avec des menus vides → message « il en reste N » ; validation unique (menus verrouillés, bouton masqué ; avant : clics répétés = sauvegardes multiples) ; garde 600 ms ; bon nom en bleu sous chaque menu faux (avant : seulement rouge) ; sauvegarde unique try/catch avec `window.parent !== window` ; Entrée = vérifier / recommencer.
+- Mise en page sans dépendre de Tailwind (CDN) : image à 100 % de son cadre (sans Tailwind elle débordait et les pastilles étaient décalées), grille 1 colonne sur téléphone / 2 colonnes ≥ 768 px.
+- Tests Playwright 390 px : message à vide, radius/cubitus inversés → 13/15 + 2 bleus, menus verrouillés, 1 sauvegarde malgré 3 clics, Entrée relance, plus de bouton de calibrage, pas de débordement.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2511,7 +2518,7 @@ Spécifique :
 
 | Statut | Exercice | id | Source | Signal automatique |
 |---|---|---|---|---|
-| ⬜ | Le squelette — Le schéma | `sci_sq_schema` | index › renderSciSqSchema |  |
+| ✅ 06/10 | Le squelette — Le schéma | `sci_sq_schema` | index › renderSciSqSchema |  |
 | ⬜ | Le squelette — Le fonctionnement du mouvement | `sci_sq_texte` | index › renderSciSqTexte |  |
 | ⬜ | Le squelette — QCM | `sci_sq_qcm` | index › renderSciSqQCM |  |
 | ⬜ | Le squelette — Chasseur d'intrus | `sci_sq_intrus` | index › renderSciSqIntrus |  |
