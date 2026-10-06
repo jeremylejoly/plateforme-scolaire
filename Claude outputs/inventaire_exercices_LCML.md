@@ -2287,6 +2287,8 @@ Spécifique :
 
 - **06/10 — CEB Histoire/Géo 2021 (`ceb_hg_2021`, CEB histoire:géo/ceb_histoire_geo_2021.html, sw.js v733)** : 20 questions vérifiées contre le portfolio PDF (p. 8-12 : carte des voies de communication (A10 Bruxelles-Gand-Ostende, aéroports), réseau ferroviaire, Liège 1778/2019 (Jupille à l'est, Robermont), rue de Courcelles, avis du 12 mai 1940 (Achêne, 16-30 ans, Erquelinnes, transport gratuit, vivres 48 h, H. Denis)) — réponses justes. Moteur des Sciences 2013 (module réutilisé) : aucune sauvegarde → sauvegarde unique /20 ; choix jamais mélangés ; question déjà répondue recliquable ; réponse manquée en vert → bleu, explications aussi après les Vrai/Faux ; bilan avec questions vides → message ; garde 600 ms ; confetti protégé. Contenu : 1.1 la bonne réponse contenait sa justification (A15/A54 ; l'A54 n'est pas sur la carte) → « Charleroi » ; 1.5 distracteurs absents de la légende → symboles réels (points noirs = gares intervilles, traits orange, avions) ; bonne réponse seule longue (2.1, 2.2, 2.5, 3.2, 3.4, 4.1, 4.4) → équilibrée. NO : entrainement, maitriser ; « prêt-e » → « prêt ». Test Playwright 390 px : message « 1.5, 4.3 », 17/20, 3 réponses en bleu, 1 seule sauvegarde, pas de débordement.
 
+- **06/10 — CEB Histoire/Géo 2019 (`ceb_hg_2019`, CEB histoire:géo/ceb_histoire_geo_2019.html, sw.js v734)** : 20 questions vérifiées contre le portfolio PDF (p. 20-37 : formation du charbon, ligne du temps, sites miniers (Grand-Hornu, Bois-du-Luc, Bois du Cazier, Blegny-Mine), voies navigables 1953 (canal Albert, Saint-Hubert hors réseau), gisements, construction de l'UE (CECA 1951, Rome 1957, Maastricht 1992), terril Albert Ier 209 m, Ixelles/Chiny, livret d'ouvrier, Van Gogh à Flénu) — réponses justes. Moteur des Sciences 2013 (module) : sauvegarde unique /20, choix mélangés, réponse unique, bleu (+ explications après les Vrai/Faux), message des questions vides, garde 600 ms. Contenu : 3.1 « sceller une paix durable » absent du livret ; bonne réponse seule longue ou avec son explication (1.1, 2.2, 3.1, 3.2, 3.4, 4.1, 4.5) → équilibrée ; explications 2.2, 3.1, 4.5 recalées sur le livret. NO : aout, cout, entrainement, maitriser ; « prêt-e » → « prêt ». Test Playwright 390 px : message « 1.5, 4.3 », 17/20, 1 seule sauvegarde, pas de débordement.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2855,7 +2857,7 @@ Spécifique :
 | ✅ 06/10 | CEB Histoire/Géo 2023 | `ceb_hg_2023` | index › openCEB |  |
 | ✅ 06/10 | CEB Histoire/Géo 2022 | `ceb_hg_2022` | index › openCEB |  |
 | ✅ 06/10 | CEB Histoire/Géo 2021 | `ceb_hg_2021` | index › openCEB |  |
-| ⬜ | CEB Histoire/Géo 2019 | `ceb_hg_2019` | index › openCEB |  |
+| ✅ 06/10 | CEB Histoire/Géo 2019 | `ceb_hg_2019` | index › openCEB |  |
 | ⬜ | CEB Histoire/Géo 2016 | `ceb_hg_2016` | index › openCEB |  |
 | ⬜ | CEB Histoire/Géo 2013 | `ceb_hg_2013` | index › openCEB |  |
 
