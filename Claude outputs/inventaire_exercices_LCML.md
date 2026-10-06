@@ -1650,6 +1650,18 @@ Spécifique :
 - Correction : cases oubliées en bleu (au lieu d'orange) dans l'exercice et dans le récapitulatif.
 - Tests : jsdom (moteur extrait : 3 000 séries, 8 sortes différentes, bonnes réponses suivies au mélange ; message ; double clic ; 6/8 → 1 saveResult), node --check 6/6 + exercices_maths.js, planche Playwright des 24 figures ; Reconnais la forme toujours juste (même fichier).
 
+### 06/10 — Quadrilatères — Médianes & Diagonales (`quadrilateres_diagonales_medianes`, fiches/quadrilateres_diagonales_medianes.html) — sw.js v599
+- Contenu : 27 questions et la fiche mémo vérifiées (propriétés des diagonales et des médianes).
+  - Mémo, trapèze isocèle : médianes « Non isométriques » (pas toujours vrai) et perpendicularité oubliée → « Perpendiculaires, 1 médiane est axe de symétrie, se coupent en leur milieu ».
+  - Devinette « diagonales isométriques non perpendiculaires, médianes perpendiculaires → rectangle » : le trapèze isocèle répond aussi → ajout « se coupent en leur milieu ».
+  - « Seul le carré a des diagonales perpendiculaires ET isométriques » (faux sans « se coupent en leur milieu ») → explication précisée. Médianes perpendiculaires : mention du trapèze isocèle dans l'explication.
+  - Définitions : les figures « Diagonales (violettes) » / « Médianes (oranges) » affichées pendant la question donnaient la réponse → montrées seulement à la correction ; question « le segment orange relie les milieux… C'est… » qui contenait la définition → reformulée.
+- Bonne réponse la plus longue avec de gros écarts (« Non, elles sont non isométriques (une grande et une petite diagonale) », « Faux (cela peut être un losange ou un cerf-volant) », « Perpendiculaires, isométriques et qui se coupent en leur milieu »…) → distracteurs de même forme ; plus aucun écart de plus de 6 caractères.
+- Entrainement complet : questions qui se donnaient la réponse (définition + reconnaissance de la même notion, propriété + devinette correspondante) → notions par question, 0 conflit sur 2 000 séries (3 définitions, 3 diagonales, 2 médianes, 2 devinettes conservés).
+- Enregistrement unique (try/catch) ; « Question suivante » protégé (600 ms) ; Entrée ; bonne réponse du bilan en bleu.
+- Orthographe : Entraine-toi, Entrainement complet, entrainement, maitrises.
+- Tests : jsdom (2 000 séries, 4 thèmes, double clic, 8/10 → 1 saveResult, figure de définition cachée pendant la question), node --check OK, rendu des figures (Playwright).
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2055,7 +2067,7 @@ Spécifique :
 | ✅ 06/10 | Quadrilatères — Reconnaître la forme | `quadrilateres_reconnaître` | index › startShapeExercise |  |
 | ✅ 06/10 | Quadrilatères — Vrai ou Faux | `quadrilateres_vf` | index › startVFExercise |  |
 | ✅ 06/10 | Quadrilatères — Caractéristiques | `quadrilateres_caracteristiques` | index › startCharsExercise |  |
-| ⬜ | Quadrilatères — Médianes & Diagonales | `quadrilateres_diagonales_medianes` | fiches/quadrilateres_diagonales_medianes.html |  |
+| ✅ 06/10 | Quadrilatères — Médianes & Diagonales | `quadrilateres_diagonales_medianes` | fiches/quadrilateres_diagonales_medianes.html |  |
 | ⬜ | Quadrilatères — Évaluation | `quadrilateres_evaluation` | index › startShapeEvaluation |  |
 | ⬜ | Le cercle et le disque — Le vocabulaire | `disque_vocabulaire` | fiches/disque_vocabulaire.html |  |
 | ⬜ | Le cercle et le disque — Le laboratoire | `disque_laboratoire` | fiches/disque_laboratoire.html |  |
