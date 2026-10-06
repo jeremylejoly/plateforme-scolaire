@@ -34634,7 +34634,7 @@ function respTxtTouchEnd(e){
   geoStopAutoScroll();
   if(respTxtTEl) respTxtTEl.style.opacity='';
   const zone=geoZoneAtTouch(touch);
-  if(zone && zone.classList.contains('resp-blank') && respTxtTEl){
+  if(zone && zone.classList.contains('resp-blank') && zone.closest('#sci-resp-texte-body') && respTxtTEl){
     respTextePlace(zone, respTxtTEl.dataset.text);
   } else if(respTxtTEl && Math.abs(touch.clientX-respTxtX)<10 && Math.abs(touch.clientY-respTxtY)<10){
     respTexteSelect(respTxtTEl);
@@ -34650,7 +34650,7 @@ function validateSciRespTexte(){
   if(st.done || now-st.lastClick<600) return;
   st.lastClick=now;
   const data=SCI_RESP_TEXTES[st.cur];
-  const zones=[...document.querySelectorAll('.resp-blank')];
+  const zones=[...document.querySelectorAll('#sci-resp-texte-body .resp-blank')];
   const vides=zones.filter(z=>!st.answers[z.id]).length;
   const msg=document.getElementById('resp-texte-msg');
   if(vides>0){
@@ -34672,7 +34672,7 @@ function validateSciRespTexte(){
   });
   const pct=Math.round(ok/total*100);
   const panel=document.getElementById('resp-texte-score'); panel.style.display='block';
-  const autre = SCI_RESP_TEXTES.findIndex((_,i)=>i!==st.cur);
+  const autre = SCI_RESP_TEXTES.length>1 ? (st.cur+1)%SCI_RESP_TEXTES.length : -1;
   panel.innerHTML=`<div class="score-title">${ok}/${total} — ${pct}%</div>
     <div class="score-msg">${pct===100?'Parfait ! 🏆':pct>=70?'Bien joué ! 👍':'Continue à réviser ! 💪'}</div>
     ${ok<total?'<div class="score-msg" style="font-size:13px">Le bon mot est indiqué en <span style="color:#1f5fbf;font-weight:800">bleu</span>.</div>':''}
@@ -37313,8 +37313,8 @@ function validateSciDigSchema(){
 const SCI_DIG_TEXTES = [
   {
     titre: "Le trajet de la nourriture",
-    texte: ["La digestion commence dans la ","bouche"," où les aliments sont mâchés. Les ","glandes salivaires"," produisent la salive qui ramollit les aliments. Ils descendent ensuite dans l'","oesophage"," pour arriver dans l'","estomac",". La bouillie passe alors dans l'","intestin grêle"," où le ","foie"," et le ","pancréas"," déversent leurs sucs. Les nutriments sont absorbés dans le sang. Les déchets continuent dans le ","gros intestin",", puis le ","rectum"," avant d'être évacués par l'","anus","."],
-    mots: ["bouche","glandes salivaires","oesophage","estomac","intestin grêle","foie","pancréas","gros intestin","rectum","anus"]
+    texte: ["La digestion commence dans la ","bouche"," où les aliments sont mâchés. Les ","glandes salivaires"," produisent la salive qui ramollit les aliments. Ils descendent ensuite dans l'","œsophage"," pour arriver dans l'","estomac",", où ils sont transformés en bouillie. Cette bouillie passe alors dans l'","intestin grêle",", où le ","foie"," déverse la bile et le ","pancréas"," son suc. Les nutriments traversent la paroi de l'intestin grêle et passent dans le sang. Les déchets continuent dans le ","gros intestin",", puis le ","rectum"," avant d'être évacués par l'","anus","."],
+    mots: ["bouche","glandes salivaires","œsophage","estomac","intestin grêle","foie","pancréas","gros intestin","rectum","anus"]
   },
   {
     titre: "Les actions chimiques",
@@ -37323,79 +37323,174 @@ const SCI_DIG_TEXTES = [
   },
   {
     titre: "Les actions mécaniques",
-    texte: ["Les actions mécaniques permettent de déplacer et broyer les aliments sans les transformer chimiquement. La ","mastication"," dans la bouche broie les aliments grâce aux dents. La ","déglutition"," permet d'avaler le bol alimentaire vers l'œsophage. Dans l'estomac, le ","brassage"," mélange les aliments aux sucs gastriques. Tout au long du tube digestif, des ","contractions"," musculaires poussent les aliments vers l'avant. Dans le ","côlon",", l'eau est absorbée et les déchets se solidifient avant d'être stockés dans le ","rectum","."],
+    texte: ["Les actions mécaniques permettent de déplacer et broyer les aliments sans les transformer chimiquement. La ","mastication"," dans la bouche broie les aliments grâce aux dents. La ","déglutition"," permet d'avaler le bol alimentaire vers l'œsophage. Dans l'estomac, le ","brassage"," mélange les aliments au suc gastrique. Tout au long du tube digestif, des ","contractions"," musculaires poussent les aliments vers l'avant. Dans le ","côlon",", l'eau est absorbée et les déchets se solidifient avant d'être stockés dans le ","rectum","."],
     mots: ["mastication","déglutition","brassage","contractions","côlon","rectum"]
   }
 ];
 
-let digTexteState = {cur:0, answers:{}};
+let digTexteState = {cur:0, answers:{}, sel:null, done:false, lastClick:0};
 
-function renderSciDigTexte(){ digTexteState={cur:0,answers:{}}; renderSciDigTexteIdx(0); }
-function renderSciDigTexteIdx(idx){
-  const body=document.getElementById('sci-dig-texte-body'); if(!body) return;
-  const data=SCI_DIG_TEXTES[idx]; digTexteState.cur=idx; digTexteState.answers={};
-  let blanks=0;
-  let paraHtml='<p style="font-size:15px;line-height:2.4;">';
-  data.texte.forEach(part=>{
-    if(data.mots.includes(part)){
-      const bid='dig-blank-'+blanks;
-      paraHtml+=`<span class="geo-drop-zone resp-blank" id="${bid}" data-word="${part}" onclick="digTexteClearZone(this)"
-        ondragover="digTexteDragOver(event)" ondrop="digTexteDrop(event)" ondragleave="digTexteDragLeave(event)"
-        style="display:inline-block;min-width:150px;margin:0 3px;vertical-align:middle;cursor:pointer;"></span>`;
-      digTexteState.answers[bid]=''; blanks++;
-    } else { paraHtml+=part; }
-  });
-  paraHtml+='</p>';
-  const words=shuffle([...data.mots]);
-  let tagsHtml='<div class="geo-tags-pool" id="dig-texte-pool">';
-  words.forEach((w,i)=>{ tagsHtml+=`<div class="geo-tag" id="dig-wtag-${i}" draggable="true" data-text="${w}" ondragstart="digTexteDragStart(event)" ondragend="digTexteDragEnd(event)" ontouchstart="digTxtTouchStart(event)" ontouchmove="digTxtTouchMove(event)" ontouchend="digTxtTouchEnd(event)" ontouchcancel="digTxtTouchCancel(event)">${w}</div>`; });
-  tagsHtml+='</div>';
-  const tabs=SCI_DIG_TEXTES.map((t,i)=>`<button onclick="renderSciDigTexteIdx(${i})" class="btn btn-sm ${i===idx?'btn-primary':''}" style="margin-right:6px">${t.titre}</button>`).join('');
-  body.innerHTML=`<div class="card" style="margin-bottom:1rem">${tabs}</div><div class="card">${paraHtml}</div>${tagsHtml}<button class="btn" onclick="validateSciDigTexte()" style="width:100%;margin-bottom:1rem">✅ Valider</button><div id="dig-texte-score" style="display:none" class="geo-score-panel"></div>`;
+function renderSciDigTexte(){
+  renderSciDigTexteIdx(0);
 }
-function digTexteDragStart(e){ e.dataTransfer.setData('text/plain',e.currentTarget.dataset.text); e.currentTarget.style.opacity='0.5'; }
+function renderSciDigTexteIdx(idx){
+  const body = document.getElementById('sci-dig-texte-body');
+  if(!body) return;
+  const data = SCI_DIG_TEXTES[idx];
+  digTexteState = {cur:idx, answers:{}, sel:null, done:false, lastClick:0};
+  let blanks = 0;
+  let paraHtml = '<p style="font-size:15px;line-height:2.2;">';
+  data.texte.forEach((part, k) => {
+    if(k % 2 === 1){
+      const bid = 'dig-blank-'+blanks;
+      paraHtml += `<span class="geo-drop-zone resp-blank" id="${bid}" data-word="${part}" onclick="digTexteZoneClick(this)"
+        ondragover="digTexteDragOver(event)" ondrop="digTexteDrop(event)" ondragleave="digTexteDragLeave(event)"
+        style="display:inline-flex;min-width:120px;max-width:100%;margin:0 3px;vertical-align:middle;cursor:pointer;"></span>`;
+      digTexteState.answers[bid] = '';
+      blanks++;
+    } else { paraHtml += part; }
+  });
+  paraHtml += '</p>';
+
+  const words = shuffle([...data.mots]);
+  let tagsHtml = '<div class="geo-tags-pool" id="dig-texte-pool">';
+  words.forEach((w,i) => {
+    tagsHtml += `<div class="geo-tag" id="dig-wtag-${i}" draggable="true" data-text="${w}" onclick="digTexteSelect(this)"
+      ondragstart="digTexteDragStart(event)" ondragend="digTexteDragEnd(event)"
+      ontouchstart="digTxtTouchStart(event)" ontouchmove="digTxtTouchMove(event)" ontouchend="digTxtTouchEnd(event)" ontouchcancel="digTxtTouchCancel(event)"
+    >${w}</div>`;
+  });
+  tagsHtml += '</div>';
+
+  const tabs = SCI_DIG_TEXTES.map((t,i) =>
+    `<button onclick="renderSciDigTexteIdx(${i})" class="btn btn-sm ${i===idx?'btn-primary':''}" style="margin:0 6px 6px 0">${t.titre}</button>`
+  ).join('');
+
+  body.innerHTML = `
+    <div class="card" style="margin-bottom:1rem">${tabs}
+      <p style="margin:.4rem 0 0;font-size:13px;color:var(--muted);font-weight:600">Glisse chaque mot dans le bon trou (ou touche un mot, puis le trou).</p></div>
+    <div class="card">${paraHtml}</div>
+    ${tagsHtml}
+    <div id="dig-texte-msg" style="display:none;margin:.5rem 0;padding:.6rem .9rem;border-radius:8px;background:#fff7ed;border:1.5px solid #f59e0b;color:#92400e;font-size:13px;font-weight:700;text-align:center"></div>
+    <button class="btn" id="dig-texte-valider" onclick="validateSciDigTexte()" style="width:100%;margin-bottom:1rem">✅ Valider</button>
+    <div id="dig-texte-score" style="display:none" class="geo-score-panel"></div>`;
+}
+function digTexteDragStart(e){ if(digTexteState.done){ e.preventDefault(); return; } e.dataTransfer.setData('text/plain',e.currentTarget.dataset.text); e.currentTarget.style.opacity='0.5'; }
 function digTexteDragEnd(e){ e.currentTarget.style.opacity=''; }
 function digTexteDragOver(e){ e.preventDefault(); e.currentTarget.classList.add('drag-over'); }
 function digTexteDragLeave(e){ e.currentTarget.classList.remove('drag-over'); }
 function digTexteDrop(e){
-  e.preventDefault(); const zone=e.currentTarget; zone.classList.remove('drag-over');
-  const word=e.dataTransfer.getData('text/plain'); const old=zone.textContent.trim();
-  if(old){ const pool=document.getElementById('dig-texte-pool'); pool&&pool.querySelectorAll('.geo-tag').forEach(t=>{if(t.dataset.text===old&&t.classList.contains('used'))t.classList.remove('used');}); }
-  zone.textContent=word; zone.classList.add('filled'); digTexteState.answers[zone.id]=word;
-  const pool=document.getElementById('dig-texte-pool'); let found=false;
-  pool&&pool.querySelectorAll('.geo-tag').forEach(t=>{if(t.dataset.text===word&&!t.classList.contains('used')&&!found){t.classList.add('used');found=true;}});
+  e.preventDefault();
+  const zone=e.currentTarget; zone.classList.remove('drag-over');
+  digTextePlace(zone, e.dataTransfer.getData('text/plain'));
 }
-function digTexteClearZone(zone){
-  const panel = document.getElementById('dig-texte-score');
-  if(panel && panel.style.display === 'block') return;
+function digTexteFreeTag(word){
+  const pool=document.getElementById('dig-texte-pool'); let done=false;
+  pool && pool.querySelectorAll('.geo-tag').forEach(t=>{ if(!done && t.dataset.text===word && t.classList.contains('used')){ t.classList.remove('used'); done=true; } });
+}
+function digTexteUseTag(word){
+  const pool=document.getElementById('dig-texte-pool'); let found=false;
+  pool && pool.querySelectorAll('.geo-tag').forEach(t=>{ if(!found && t.dataset.text===word && !t.classList.contains('used')){ t.classList.add('used'); found=true; } });
+}
+function digTextePlace(zone, word){
+  if(digTexteState.done || !word || !zone) return;
+  const old = digTexteState.answers[zone.id];
+  if(old) digTexteFreeTag(old);
+  zone.textContent=word; zone.classList.add('filled'); digTexteState.answers[zone.id]=word;
+  digTexteUseTag(word);
+  digTexteClearSel();
+  const m=document.getElementById('dig-texte-msg'); if(m) m.style.display='none';
+}
+function digTexteClearSel(){
+  digTexteState.sel=null;
+  document.querySelectorAll('#dig-texte-pool .geo-tag').forEach(t=>t.style.outline='');
+}
+function digTexteSelect(tag){
+  if(digTexteState.done || !tag || tag.classList.contains('used')) return;
+  const same = digTexteState.sel===tag;
+  digTexteClearSel();
+  if(!same){ digTexteState.sel=tag; tag.style.outline='3px solid #f59e0b'; }
+}
+function digTexteZoneClick(zone){
+  if(digTexteState.done) return;
+  if(digTexteState.sel){ digTextePlace(zone, digTexteState.sel.dataset.text); return; }
   const word = digTexteState.answers[zone.id];
   if(!word) return;
   zone.textContent = ''; zone.classList.remove('filled');
-  const pool = document.getElementById('dig-texte-pool');
-  if(pool){
-    let found = false;
-    pool.querySelectorAll('.geo-tag').forEach(t => {
-      if(t.dataset.text === word && t.classList.contains('used') && !found){
-        t.classList.remove('used'); found = true;
-      }
-    });
-  }
+  digTexteFreeTag(word);
   digTexteState.answers[zone.id] = '';
 }
-let digTxtTEl=null,digTxtTClone=null;
-function digTxtTouchStart(e){ const tag=e.currentTarget; if(tag.classList.contains('used')) return; digTxtTEl=tag; const clone=tag.cloneNode(true); clone.style.cssText='position:fixed;z-index:9999;opacity:.85;pointer-events:none;'; const touch=e.touches[0]; clone.style.left=(touch.clientX-40)+'px'; clone.style.top=(touch.clientY-20)+'px'; document.body.appendChild(clone); digTxtTClone=clone; tag.style.opacity='0.4'; }
-function digTxtTouchMove(e){ e.preventDefault(); if(!digTxtTClone) return; const touch=e.touches[0]; digTxtTClone.style.left=(touch.clientX-40)+'px'; digTxtTClone.style.top=(touch.clientY-20)+'px'; }
-function digTxtTouchEnd(e){ if(!digTxtTClone) return; const touch=e.changedTouches[0]; digTxtTClone.remove(); digTxtTClone=null; if(digTxtTEl) digTxtTEl.style.opacity=''; const el=document.elementFromPoint(touch.clientX,touch.clientY); const zone=el?el.closest('.geo-drop-zone'):null; if(zone&&digTxtTEl){ const word=digTxtTEl.dataset.text; const old=zone.textContent.trim(); if(old){const pool=document.getElementById('dig-texte-pool');pool&&pool.querySelectorAll('.geo-tag').forEach(t=>{if(t.dataset.text===old&&t.classList.contains('used'))t.classList.remove('used');});} zone.textContent=word; zone.classList.add('filled'); digTexteState.answers[zone.id]=word; const pool=document.getElementById('dig-texte-pool'); let found=false; pool&&pool.querySelectorAll('.geo-tag').forEach(t=>{if(t.dataset.text===word&&!t.classList.contains('used')&&!found){t.classList.add('used');found=true;}}); } digTxtTEl=null; }
-function digTxtTouchCancel(e){ if(digTxtTClone) { digTxtTClone.remove(); digTxtTClone=null; } if(digTxtTEl) { digTxtTEl.style.opacity=''; digTxtTEl=null; } }
+function digTexteClearZone(zone){ digTexteZoneClick(zone); }
+let digTxtTEl=null,digTxtTClone=null,digTxtX=0,digTxtY=0;
+function digTxtTouchStart(e){
+  const tag=e.currentTarget; if(tag.classList.contains('used') || digTexteState.done) return;
+  digTxtTEl=tag;
+  const touch=e.touches[0]; digTxtX=touch.clientX; digTxtY=touch.clientY;
+  const clone=tag.cloneNode(true); clone.style.cssText='position:fixed;z-index:9999;opacity:.85;pointer-events:none;';
+  clone.style.left=(touch.clientX-40)+'px'; clone.style.top=(touch.clientY-20)+'px';
+  document.body.appendChild(clone); digTxtTClone=clone; tag.style.opacity='0.4';
+}
+function digTxtTouchMove(e){
+  e.preventDefault(); if(!digTxtTClone) return;
+  const touch=e.touches[0]; digTxtTClone.style.left=(touch.clientX-40)+'px'; digTxtTClone.style.top=(touch.clientY-20)+'px';
+  geoAutoScroll(touch);
+}
+function digTxtTouchEnd(e){
+  if(!digTxtTClone) return;
+  e.preventDefault();
+  const touch=e.changedTouches[0]; digTxtTClone.remove(); digTxtTClone=null;
+  geoStopAutoScroll();
+  if(digTxtTEl) digTxtTEl.style.opacity='';
+  const zone=geoZoneAtTouch(touch);
+  if(zone && zone.classList.contains('resp-blank') && zone.closest('#sci-dig-texte-body') && digTxtTEl){
+    digTextePlace(zone, digTxtTEl.dataset.text);
+  } else if(digTxtTEl && Math.abs(touch.clientX-digTxtX)<10 && Math.abs(touch.clientY-digTxtY)<10){
+    digTexteSelect(digTxtTEl);
+  }
+  digTxtTEl=null;
+}
+function digTxtTouchCancel(e){
+  if(digTxtTClone) { digTxtTClone.remove(); digTxtTClone=null; }
+  if(digTxtTEl) { digTxtTEl.style.opacity=''; digTxtTEl=null; }
+}
 function validateSciDigTexte(){
+  const st=digTexteState, now=Date.now();
+  if(st.done || now-st.lastClick<600) return;
+  st.lastClick=now;
+  const data=SCI_DIG_TEXTES[st.cur];
+  const zones=[...document.querySelectorAll('#sci-dig-texte-body .resp-blank')];
+  const vides=zones.filter(z=>!st.answers[z.id]).length;
+  const msg=document.getElementById('dig-texte-msg');
+  if(vides>0){
+    if(msg){ msg.textContent = vides===1 ? 'Complète d\'abord le dernier trou.' : 'Complète d\'abord tous les trous (il en reste '+vides+').'; msg.style.display='block'; }
+    return;
+  }
+  if(msg) msg.style.display='none';
+  st.done=true; digTexteClearSel();
+  const vb=document.getElementById('dig-texte-valider'); if(vb) vb.style.display='none';
   let ok=0,total=0;
-  document.querySelectorAll('#sci-dig-texte-body .resp-blank').forEach(zone=>{
-    total++; if(zone.dataset.word===zone.textContent.trim()){zone.style.background='#d4f5e2';zone.style.color='#166534';ok++;}
-    else{zone.style.background='#fdd9d7';zone.style.color='#991b1b';if(!zone.textContent.trim()) zone.textContent='— '+zone.dataset.word;}
+  zones.forEach(zone=>{
+    total++; zone.style.cursor='default';
+    if(zone.dataset.word===st.answers[zone.id]){ zone.style.background='#d4f5e2'; zone.style.color='#166534'; zone.style.borderColor='#16a34a'; ok++; }
+    else {
+      zone.style.background='#fdd9d7'; zone.style.color='#991b1b'; zone.style.borderColor='#dc2626';
+      const c=document.createElement('span'); c.style.cssText='color:#1f5fbf;font-weight:800;margin-left:6px'; c.textContent='➜ '+zone.dataset.word;
+      zone.appendChild(c);
+    }
   });
-  const pct=Math.round(ok/total*100); const panel=document.getElementById('dig-texte-score'); panel.style.display='block';
-  panel.innerHTML=`<div style="font-size:48px">${pct>=70?'🎉':pct>=50?'👍':'💪'}</div><div style="font-weight:800;font-size:28px;color:${pct>=70?'var(--green)':pct>=50?'var(--amber)':'var(--red)'}">${ok}/${total} — ${pct}%</div>`;
-  if(state.student) saveResult({student:state.student,cls:state.studentCls,className:CLASSES[state.studentCls]?CLASSES[state.studentCls].name:state.studentCls,activity:'sci_dig_texte',bookTitle:'Digestif — Texte lacunaire',score:ok,total,pct,date:new Date().toLocaleDateString('fr-BE'),time:new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})});
+  const pct=Math.round(ok/total*100);
+  const panel=document.getElementById('dig-texte-score'); panel.style.display='block';
+  const autre = SCI_DIG_TEXTES.length>1 ? (st.cur+1)%SCI_DIG_TEXTES.length : -1;
+  panel.innerHTML=`<div class="score-title">${ok}/${total} — ${pct}%</div>
+    <div class="score-msg">${pct===100?'Parfait ! 🏆':pct>=70?'Bien joué ! 👍':'Continue à réviser ! 💪'}</div>
+    ${ok<total?'<div class="score-msg" style="font-size:13px">Le bon mot est indiqué en <span style="color:#1f5fbf;font-weight:800">bleu</span>.</div>':''}
+    <button class="btn" onclick="renderSciDigTexteIdx(${st.cur})" style="margin:.6rem .3rem 0">🔄 Recommencer</button>
+    ${autre>=0?`<button class="btn" onclick="renderSciDigTexteIdx(${autre})" style="margin:.6rem .3rem 0">➜ ${SCI_DIG_TEXTES[autre].titre}</button>`:''}`;
+  if(state.student){ try{ saveResult({student:state.student,cls:state.studentCls,
+    className:CLASSES[state.studentCls]?CLASSES[state.studentCls].name:state.studentCls,
+    activity:'sci_dig_texte',bookTitle:'Digestif — Texte lacunaire ('+data.titre+')',
+    score:ok,total,pct,date:new Date().toLocaleDateString('fr-BE'),
+    time:new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})}); }catch(e){} }
 }
 
 // ----- EXERCICE 3 : QCM -----

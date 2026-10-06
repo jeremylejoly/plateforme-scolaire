@@ -2015,6 +2015,12 @@ Spécifique :
 - Moteur remplacé par celui déjà corrigé du schéma respiratoire : 2 colonnes fixes → grille auto (image puis tableau sur téléphone), toucher une étiquette puis la case, message « il en reste N » au lieu d'une validation à vide, garde 600 ms, validation unique (avant : clics répétés = sauvegardes multiples), bonne légende en bleu sous chaque case fausse (avant : rien si la case était remplie), sauvegarde unique en try/catch.
 - Tests Playwright 390 px (toucher) : message à vide, placement par toucher, bouche/anus inversés → 8/10 + 2 corrections bleues, 1 seule sauvegarde malgré 3 clics, pas de débordement.
 
+### 06/10 — Éveil → Sciences → L'appareil digestif → Le trajet des aliments (`sci_dig_texte`, index › SCI_DIG_TEXTES / renderSciDigTexteIdx / validateSciDigTexte) — sw.js v646
+- Contenu : « oesophage » → « œsophage » ; « le foie et le pancréas déversent leurs sucs » (foie et pancréas interchangeables, et le foie ne fait pas de suc) → « le foie déverse la bile et le pancréas son suc » ; bouillie formée dans l'estomac ; nutriments qui traversent la paroi de l'intestin grêle ; « aux sucs gastriques » → « au suc gastrique ». Mots de chaque texte = trous (vérifié).
+- Moteur remplacé par celui du trajet de l'air (toucher un mot puis le trou, message « il en reste N », garde 600 ms, validation unique, bon mot en bleu, sauvegarde unique try/catch avec le titre du texte, bouton vers le texte suivant).
+- Correctif aussi pour `sci_resp_texte` (v641) : la validation comptait tous les `.resp-blank` du document (aussi ceux du Tour du monde et du digestif) → requêtes limitées à son écran ; bouton « texte suivant » = suivant au lieu du premier différent.
+- Tests Playwright 390 px (toucher), 3 textes : message à vide, 2 mots inversés → 2 corrections bleues, 1 sauvegarde par texte malgré 3 clics, pas de débordement ; respiratoire validé correctement avec le digestif affiché en parallèle.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2479,7 +2485,7 @@ Spécifique :
 | ✅ 06/10 | Appareil respiratoire — Remettre de l'ordre | `sci_resp_ordre` | index › renderSciRespOrdre |  |
 | ⬜ | Appareil digestif — La leçon | `fiche_digestif` | fiches/appareil-digestif.html |  |
 | ✅ 06/10 | Appareil digestif — Le schéma | `sci_dig_schema` | index › renderSciDigSchema |  |
-| ⬜ | Appareil digestif — Trajet des aliments | `sci_dig_texte` | index › renderSciDigTexte |  |
+| ✅ 06/10 | Appareil digestif — Trajet des aliments | `sci_dig_texte` | index › renderSciDigTexte |  |
 | ⬜ | Appareil digestif — QCM | `sci_dig_qcm` | index › renderSciDigQCM |  |
 | ⬜ | Appareil digestif — Termes et définitions | `sci_dig_assoc` | index › renderSciDigAssoc |  |
 | ⬜ | Appareil digestif — Remettre de l'ordre | `sci_dig_ordre` | index › renderSciDigOrdre |  |
