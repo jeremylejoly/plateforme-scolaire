@@ -2198,6 +2198,8 @@ Spécifique :
 
 - **06/10 — Les paysages : la vallée (`geo_paysages_vallee`, fiches/analyse_paysages.html, sw.js v690)** : la fiche n'enregistrait AUCUN résultat → sauvegarde ajoutée (score /16, une fois par validation, try/catch). Défaut majeur : la fiche de rappel, visible pendant l'exercice, donnait toutes les réponses de plan avec les éléments de l'image (« ex : la rivière, la route, les champs » au premier plan, « le village, le pont, la forêt, le train » au second, « les collines lointaines » à l'arrière) → exemples retirés, définitions gardées ; titre « Les collines de l'horizon » (donnait l'arrière-plan) → « Les collines ». Corrigé faux : le pont en pierre est en bas de l'image (même hauteur que la route, classée premier plan) mais était attendu au « second plan » → premier plan. Textes : village « de briques » → en pierre ; « lignes électriques » retirées des voies de communication ; « végétation spontanée » → végétation. Correction : `**…**` affiché tel quel → texte en bleu ; boutons après validation : vert (bon choix), rouge barré (mauvais), bleu (bonne réponse manquée) ; boutons figés ; double validation bloquée. Test Playwright 390 px : 14/16, 2 bleus, 1 seule sauvegarde, recommencer remet tout à zéro. 3 copies alignées.
 
+- **06/10 — Les paysages : le littoral (`geo_paysages_littoral`, fiches/analyse_paysage_littoral.html, sw.js v691)** : mêmes défauts que la vallée (même moteur) : aucun résultat enregistré → sauvegarde ajoutée ; la fiche de rappel donnait tous les plans avec les éléments de l'image → exemples retirés ; `**…**` affiché tel quel → correction en bleu ; boutons vert / rouge barré / bleu (bonne réponse manquée), figés après validation ; « lignes électriques » retirées des voies de communication. Décisions de Jeremy : « La jetée au loin » supprimée (le corrigé décrivait une estacade en bois et métal à gauche qui n'existe pas sur l'image ; la seule avancée est le brise-lames, déjà un élément) → 7 éléments, score sur 14 ; cabines de plage → arrière-plan (elles sont collées à la digue, attendue à l'arrière-plan ; avant : second plan, incohérent). Textes : « photographie » → illustration ; bateau « (transport/activité) » → activité économique (pêche). Test Playwright 390 px : 12/14, 2 bleus, 1 seule sauvegarde. 3 copies alignées.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2729,7 +2731,7 @@ Spécifique :
 | ✅ 06/10 | L'Europe — Relief et Fleuves | `geo_europe_relief_fleuves` | fiches/europe_relief_fleuves.html |  |
 | ✅ 06/10 | L'Europe — Villes, Population et Mégalopole | `geo_europe_villes_pop` | fiches/europe_villes_population.html | QCM: bonne réponse en position 2 dans 3/5 questions, options non mélangées |
 | ✅ 06/10 | Les paysages : la vallée | `geo_paysages_vallee` | fiches/analyse_paysages.html |  |
-| ⬜ | Les paysages : le littoral | `geo_paysages_littoral` | index › (?) | (code à localiser) |
+| ✅ 06/10 | Les paysages : le littoral | `geo_paysages_littoral` | fiches/analyse_paysage_littoral.html |  |
 | ⬜ | Les types de paysages | `geo_paysages_types` | index › (?) | (code à localiser) |
 | ⬜ | Le schéma du cours d'eau | `geo_hydro_schema` | index › (?) | (code à localiser) |
 | ⬜ | Vocabulaire hydrographique (Définitions) | `geo_hydro_definitions` | index › (?) | (code à localiser) |
