@@ -2261,6 +2261,8 @@ Spécifique :
 
 - **06/10 — CEB Sciences 2025 (`ceb_sci_2025`, CEB sciences/ceb_sciences_2025.html, sw.js v720)** : 20 questions vérifiées contre le portfolio PDF (pages 20-31 : poule, papillon, électricité, ballons tableaux 1 et 2, poulies 5 kg → 5 / 2,5 / 1,25 kg). Défauts de contenu : 1.3 « Après l'ACCOUPLEMENT ➔ Œufs (après la ponte) » (pas d'état bleu juste après l'accouplement, et 2 fois la réponse « œufs ») → « Après la PONTE » + « Juste avant la MUE ➔ chenille », options identiques partout ; 3.3 a « plus la corde est fine, plus le ballon va loin » est faux dans le tableau 1 à 15,6 l (2 mm : 625 < 3 mm : 780) → la phrase vise le tableau 2 ; 4.2 citait un « tableau de résultats p. 31 » inexistant → « expériences 1, 2 et 3 (p. 30-31) » ; bonne réponse = la plus longue (1.5, 2.1, 2.3, 2.4, 3.5, 4.1, 4.2, 4.4, 4.5) → longueurs équilibrées ; « Le pylône s'envolerait » → « serait renversé ». Mécanique : AUCUNE sauvegarde → sauvegarde unique /20 au bilan ; choix jamais mélangés → QCM et listes mélangés (Fisher-Yates), lettres renumérotées ; une partie pouvait être validée vide et revalidée à l'infini (on corrigeait ensuite ses réponses et le score montait) → message dans la page avec les numéros manquants, partie verrouillée après correction, bouton « Partie suivante → » ; bonne réponse manquée en vert → bleu (QCM, Vrai/Faux, et « ➜ bonne réponse » sous les listes) ; bilan seulement quand les 4 parties sont validées ; garde 600 ms. NO : entrainement, maitriser. Test Playwright 390 px : message « 1.1 … 1.5 », 16/20, 1 seule sauvegarde, pas de débordement.
 
+- **06/10 — CEB Sciences 2024 (`ceb_sci_2024`, CEB sciences/ceb_sciences_2024.html, sw.js v721)** : 20 questions vérifiées contre le portfolio PDF (p. 22-31 : bouteille et eau colorée, classification, méduse, papillon, météo, besoins énergétiques, dents, éprouvettes et tulipe, liquides, électricité) — toutes les réponses justes. Même moteur que 2025, mêmes défauts corrigés (aucune sauvegarde → sauvegarde unique /20 ; choix jamais mélangés ; parties validables vides et revalidables à l'infini ; bonne réponse manquée en vert → bleu ; bilan avant la fin). Contenu : 4.1 donnait la réponse dans la question (« 80 mm avec des orages ») → retiré ; 3.1 « 1ère/2ème/3ème action » alors que le livret numérote déjà les étapes 1 et 2 → « Étapes 3, 4, 5 » avec explication ; 3.2 « nourrir la plante » (aucune plante dans l'expérience 1) → autres distracteurs ; 1.5 « trait rouge » (il est rose) → « désignée par un trait » ; bonne réponse = la plus longue (3.2, 3.4, 3.5, 4.4) → longueurs équilibrées. NO : entrainement, maitriser. Test Playwright 390 px : 16/20, 1 seule sauvegarde, pas de débordement.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2811,7 +2813,7 @@ Spécifique :
 |---|---|---|---|---|
 | ✅ 06/10 | CEB Sciences 2026 | `ceb_sci_2026` | index › openCEB |  |
 | ✅ 06/10 | CEB Sciences 2025 | `ceb_sci_2025` | index › openCEB |  |
-| ⬜ | CEB Sciences 2024 | `ceb_sci_2024` | index › openCEB |  |
+| ✅ 06/10 | CEB Sciences 2024 | `ceb_sci_2024` | index › openCEB |  |
 | ⬜ | CEB Sciences 2023 | `ceb_sci_2023` | index › openCEB |  |
 | ⬜ | CEB Sciences 2022 | `ceb_sci_2022` | index › openCEB |  |
 | ⬜ | CEB Sciences 2021 | `ceb_sci_2021` | index › openCEB |  |
