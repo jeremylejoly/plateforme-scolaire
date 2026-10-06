@@ -33,6 +33,7 @@ body { font-family: 'Nunito', sans-serif; background: #f5f6fa; padding: 1.5rem; 
 .big-emoji { font-size:64px;margin-bottom:.5rem; }
 .big-score { font-size:36px;font-weight:900;margin-bottom:1rem; }
 .score-detail { font-size:13px;color:#6b7280;margin-bottom:1.5rem;line-height:2; }
+.q-aide{font-size:.78rem;color:#6b7280;text-align:center;margin:-4px 0 8px;}
 </style>
 </head>
 <body>
@@ -53,108 +54,143 @@ body { font-family: 'Nunito', sans-serif; background: #f5f6fa; padding: 1.5rem; 
   </div>
 </div>
 <script>
-function norm(v){ const l=Math.sqrt(v[0]*v[0]+v[1]*v[1]); return [v[0]/l,v[1]/l]; }
-
+function melanger(arr){
+  for(let i=arr.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]]; }
+  return arr;
+}
+function rnd(a,b){ return a+Math.random()*(b-a); }
+function norm(v){ const l=Math.hypot(v[0],v[1]); return [v[0]/l,v[1]/l]; }
+// --- Les 7 sortes de triangles ---
+const TYPES = [
+  { label:'scalène acutangle',     cotes:'scalène',     angle:'acutangle' },
+  { label:'scalène rectangle',     cotes:'scalène',     angle:'rectangle' },
+  { label:'scalène obtusangle',    cotes:'scalène',     angle:'obtusangle' },
+  { label:'isocèle acutangle',     cotes:'isocèle',     angle:'acutangle' },
+  { label:'isocèle rectangle',     cotes:'isocèle',     angle:'rectangle' },
+  { label:'isocèle obtusangle',    cotes:'isocèle',     angle:'obtusangle' },
+  { label:'équilatéral acutangle', cotes:'équilatéral', angle:'acutangle' },
+];
+// Angles d'un triangle de chaque sorte, bien typés à l'œil :
+// côtés d'un scalène différents d'au moins 15 %, angle obtus franc (≥ 105°), aigus nettement aigus (≤ 80°)
+function anglesPour(type){
+  for(let essai=0; essai<1000; essai++){
+    let A;
+    switch(type.label){
+      case 'scalène acutangle':  { const x=rnd(40,80), y=rnd(40,80); A=[x,y,180-x-y]; break; }
+      case 'scalène rectangle':  { const x=rnd(25,40); A=[90,x,90-x]; break; }
+      case 'scalène obtusangle': { const o=rnd(105,135), x=rnd(15,180-o-15); A=[o,x,180-o-x]; break; }
+      case 'isocèle acutangle':  { let ap; do { ap=rnd(30,80); } while(Math.abs(ap-60)<14); A=[ap,(180-ap)/2,(180-ap)/2]; break; }
+      case 'isocèle rectangle':  A=[90,45,45]; break;
+      case 'isocèle obtusangle': { const ap=rnd(105,135); A=[ap,(180-ap)/2,(180-ap)/2]; break; }
+      default: A=[60,60,60];
+    }
+    if(A.some(x=>x<12)) continue;
+    if(type.angle==='acutangle' && Math.max(...A)>80) continue;
+    if(type.cotes==='scalène'){
+      const c=A.map(x=>Math.sin(x*Math.PI/180)).sort((u,v)=>u-v);
+      if(c[1]/c[0]<1.15 || c[2]/c[1]<1.15) continue;
+    }
+    return A;
+  }
+  return null;
+}
+// Construit le triangle (loi des sinus), le tourne au hasard et le centre dans 220 × 185
+function construire(type){
+  const ang=anglesPour(type).map(x=>x*Math.PI/180);
+  const [a,b,c]=ang.map(Math.sin);            // côté opposé à chaque angle
+  // A en (0,0), B sur l'axe à distance c, C grâce à l'angle en A
+  let P=[[0,0],[c,0],[b*Math.cos(ang[0]), -b*Math.sin(ang[0])]];
+  const rot=Math.random()*2*Math.PI;
+  P=P.map(([x,y])=>[x*Math.cos(rot)-y*Math.sin(rot), x*Math.sin(rot)+y*Math.cos(rot)]);
+  const xs=P.map(p=>p[0]), ys=P.map(p=>p[1]);
+  const w=Math.max(...xs)-Math.min(...xs), h=Math.max(...ys)-Math.min(...ys);
+  const k=Math.min(180/w, 150/h);
+  const ox=110-(Math.max(...xs)+Math.min(...xs))/2*k, oy=92.5-(Math.max(...ys)+Math.min(...ys))/2*k;
+  const pts=P.map(([x,y])=>[x*k+ox, y*k+oy]);
+  const ra=ang.findIndex(x=>Math.abs(x-Math.PI/2)<1e-9);
+  return { type, pts, ra };
+}
+// Codage : petit carré pour l'angle droit, petits traits sur les côtés de même longueur
 function drawTriangle(pts, rightAngle){
   const col='#8b5cf6';
   const [A,B,C]=pts;
-  const path=`M${A[0]},${A[1]} L${B[0]},${B[1]} L${C[0]},${C[1]} Z`;
+  const f=v=>v.toFixed(1);
+  const path=`M${f(A[0])},${f(A[1])} L${f(B[0])},${f(B[1])} L${f(C[0])},${f(C[1])} Z`;
   let sq='';
   if(rightAngle>=0){
     const P=pts[rightAngle], prev=pts[(rightAngle+2)%3], next=pts[(rightAngle+1)%3];
     const sz=12;
     const n1=norm([prev[0]-P[0],prev[1]-P[1]]), n2=norm([next[0]-P[0],next[1]-P[1]]);
     const q1=[P[0]+n1[0]*sz,P[1]+n1[1]*sz], q2=[P[0]+n2[0]*sz,P[1]+n2[1]*sz], q3=[q1[0]+n2[0]*sz,q1[1]+n2[1]*sz];
-    sq=`<polyline points="${q1[0]},${q1[1]} ${q3[0]},${q3[1]} ${q2[0]},${q2[1]}" fill="none" stroke="${col}" stroke-width="1.5"/>`;
+    sq=`<polyline points="${f(q1[0])},${f(q1[1])} ${f(q3[0])},${f(q3[1])} ${f(q2[0])},${f(q2[1])}" fill="none" stroke="${col}" stroke-width="1.5"/>`;
   }
+  const cotes=[[A,B],[B,C],[C,A]];
+  const L=cotes.map(([p,q])=>Math.hypot(p[0]-q[0],p[1]-q[1]));
+  let traits='';
+  cotes.forEach(([p,q],i)=>{
+    const egal=L.some((l,j)=>j!==i && Math.abs(l-L[i])<0.01*L[i]);
+    if(!egal) return;
+    const m=[(p[0]+q[0])/2,(p[1]+q[1])/2], d=norm([q[0]-p[0],q[1]-p[1]]), n=[-d[1],d[0]];
+    traits+=`<line x1="${f(m[0]-n[0]*7)}" y1="${f(m[1]-n[1]*7)}" x2="${f(m[0]+n[0]*7)}" y2="${f(m[1]+n[1]*7)}" stroke="#1f2937" stroke-width="2.2" stroke-linecap="round"/>`;
+  });
   return `<svg viewBox="0 0 220 185" width="220" height="185" xmlns="http://www.w3.org/2000/svg">
     <path d="${path}" fill="${col}22" stroke="${col}" stroke-width="2.5" stroke-linejoin="round"/>
-    ${sq}</svg>`;
+    ${sq}${traits}</svg>`;
 }
-
-const DATA = [
-  { pts:[[35,160],[185,160],[97,86.1]],    ra:2,  label:'scalène rectangle' },
-  { pts:[[35,160],[185,160],[110,85]],     ra:2,  label:'isocèle rectangle' },
-  { pts:[[35,160],[185,160],[93,126.5]],   ra:-1, label:'scalène obtusangle' },
-  { pts:[[35,160],[185,160],[110,132.7]],  ra:-1, label:'isocèle obtusangle' },
-  { pts:[[35,160],[185,160],[110,30.1]],   ra:-1, label:'équilatéral acutangle' },
-  { pts:[[60,160],[160,160],[110,22.6]],   ra:-1, label:'isocèle acutangle' },
-  { pts:[[35,160],[185,160],[110,52.9]],   ra:-1, label:'isocèle acutangle' },
-  { pts:[[35,160],[185,160],[72.5,95]],    ra:2,  label:'scalène rectangle' },
-  { pts:[[35,160],[185,160],[139.6,35.3]], ra:-1, label:'scalène acutangle' },
-  { pts:[[72.5,160],[147.5,160],[110,20]], ra:-1, label:'isocèle acutangle' },
-  { pts:[[35,160],[185,160],[148.1,80.8]], ra:-1, label:'scalène acutangle' },
-  { pts:[[35,160],[185,160],[110,125]],    ra:-1, label:'isocèle obtusangle' },
-  { pts:[[35,160],[185,160],[110,30.1]],   ra:-1, label:'équilatéral acutangle' },
-  { pts:[[35,160],[185,160],[97,86.1]],    ra:2,  label:'scalène rectangle' },
-  { pts:[[35,160],[185,160],[110,85]],     ra:2,  label:'isocèle rectangle' },
-  { pts:[[35,160],[185,160],[139.6,35.3]], ra:-1, label:'scalène acutangle' },
-  { pts:[[35,160],[185,160],[110,132.7]],  ra:-1, label:'isocèle obtusangle' },
-  { pts:[[60,160],[160,160],[110,22.6]],   ra:-1, label:'isocèle acutangle' },
-  { pts:[[35,160],[185,160],[72.5,95]],    ra:2,  label:'scalène rectangle' },
-  { pts:[[35,160],[185,160],[110,52.9]],   ra:-1, label:'isocèle acutangle' },
-  { pts:[[35,160],[185,160],[93,126.5]],   ra:-1, label:'scalène obtusangle' },
-  { pts:[[35,160],[185,160],[110,125]],    ra:-1, label:'isocèle obtusangle' },
-  { pts:[[35,160],[185,160],[110,30.1]],   ra:-1, label:'équilatéral acutangle' },
-  { pts:[[35,160],[185,160],[148.1,80.8]], ra:-1, label:'scalène acutangle' },
-  { pts:[[35,160],[185,160],[110,132.7]],  ra:-1, label:'isocèle obtusangle' },
-];
-
-const TOUS = [
-  'un triangle scalène obtusangle',
-  'un triangle scalène acutangle',
-  'un triangle scalène rectangle',
-  'un triangle isocèle acutangle',
-  'un triangle isocèle obtusangle',
-  'un triangle isocèle rectangle',
-  'un triangle équilatéral acutangle',
-];
-
-function shuffle(a){ return [...a].sort(()=>Math.random()-.5); }
-
-function getOpts(t){
-  const correct = 'un triangle ' + t.label;
-  const wrong = shuffle(TOUS.filter(o=>o!==correct)).slice(0,2);
-  const opts = shuffle([correct,...wrong]);
+// Distracteurs : un qui garde les mêmes côtés, un qui garde la même sorte d'angles (quand c'est possible)
+function getOpts(type){
+  const correct='un triangle '+type.label;
+  const autres=TYPES.filter(t=>t!==type);
+  const memeCotes=melanger(autres.filter(t=>t.cotes===type.cotes));
+  const memeAngle=melanger(autres.filter(t=>t.angle===type.angle));
+  const pris=[];
+  if(memeCotes.length) pris.push(memeCotes[0]);
+  const second=memeAngle.find(t=>!pris.includes(t));
+  if(second) pris.push(second);
+  for(const t of melanger([...autres])){ if(pris.length>=2) break; if(!pris.includes(t)) pris.push(t); }
+  const opts=melanger([correct, ...pris.map(t=>'un triangle '+t.label)]);
   return { opts, correct: opts.indexOf(correct) };
 }
-
-let selection=[], curIdx=0, scores=[];
-
+let selection=[], curIdx=0, scores=[], repondu=false, answeredAt=0, termine=false, saved=false;
 function demarrer(){
-  selection = shuffle([...DATA]).slice(0,10);
-  curIdx=0; scores=[];
+  // les 7 sortes + 3 en plus, jamais deux fois la même sorte de suite
+  let types;
+  do { types=melanger([...TYPES, ...melanger([...TYPES]).slice(0,3)]); }
+  while(types.some((t,k)=>k>0 && t===types[k-1]));
+  selection=types.map(t=>({ ...construire(t), ...getOpts(t) }));
+  curIdx=0; scores=[]; termine=false; saved=false;
   document.getElementById('score-final').style.display='none';
   document.getElementById('exercice-zone').style.display='block';
   afficherTriangle();
 }
-
 function afficherTriangle(){
-  const t = selection[curIdx];
-  const q = getOpts(t);
-  document.getElementById('info-numero').textContent = `Triangle ${curIdx+1}/10`;
-  document.getElementById('dots-progress').innerHTML =
-    selection.map((_,i)=>`<div class="dot" style="background:${i<curIdx?'#16a34a':i===curIdx?'#8b5cf6':'#d1d5db'}"></div>`).join('');
-
-  const svg = drawTriangle(t.pts, t.ra);
-  const L = ['A','B','C'];
-  const optsHtml = q.opts.map((o,i)=>`
-    <button class="opt-btn" id="opt-${i}" onclick="choisir(${i},${q.correct})">
+  repondu=false;
+  const t=selection[curIdx];
+  document.getElementById('info-numero').textContent=`Triangle ${curIdx+1}/10`;
+  document.getElementById('dots-progress').innerHTML=
+    selection.map((_,i)=>`<div class="dot" style="background:${i<curIdx?(scores[i]?'#16a34a':'#dc2626'):i===curIdx?'#8b5cf6':'#d1d5db'}"></div>`).join('');
+  const svg=drawTriangle(t.pts, t.ra);
+  const L=['A','B','C'];
+  const optsHtml=t.opts.map((o,i)=>`
+    <button class="opt-btn" id="opt-${i}" onclick="choisir(${i})">
       <span class="opt-letter">${L[i]}</span><span>${o}</span>
     </button>`).join('');
-
-  document.getElementById('question-zone').innerHTML = `
+  document.getElementById('question-zone').innerHTML=`
     <div class="question-card">
       <div class="q-label">📐 De quel triangle s'agit-il ?</div>
       <div class="triangle-zone">${svg}</div>
+      <div class="q-aide">Les petits traits marquent les côtés de même longueur ; le petit carré, un angle droit.</div>
       <div class="q-texte">Ce triangle est...</div>
       <div class="options">${optsHtml}</div>
     </div>`;
   document.getElementById('btn-suivant').style.display='none';
 }
-
-function choisir(idx, correct){
-  const ok = (idx===correct);
+function choisir(idx){
+  if(repondu || termine) return;
+  repondu=true;
+  answeredAt=Date.now();
+  const correct=selection[curIdx].correct;
+  const ok=(idx===correct);
   scores.push(ok);
   for(let i=0;i<3;i++){
     const b=document.getElementById('opt-'+i);
@@ -164,16 +200,18 @@ function choisir(idx, correct){
     else if(i===idx&&!ok) b.classList.add('incorrect');
     else b.classList.add('disabled-neutral');
   }
-  const isLast = curIdx>=9;
-  const btn = document.getElementById('btn-suivant');
+  const isLast=curIdx>=selection.length-1;
+  const btn=document.getElementById('btn-suivant');
   btn.style.display='block';
-  btn.textContent = isLast ? '🏁 Voir mon score final' : '➡️ Triangle suivant';
-  btn.onclick = isLast ? afficherScoreFinal : suivant;
+  btn.textContent=isLast?'🏁 Voir mon score final':'➡️ Triangle suivant';
 }
-
-function suivant(){ curIdx++; afficherTriangle(); }
-
+function suivant(){
+  if(!repondu || termine || Date.now()-answeredAt<600) return;
+  if(curIdx>=selection.length-1){ afficherScoreFinal(); return; }
+  curIdx++; afficherTriangle();
+}
 function afficherScoreFinal(){
+  termine=true;
   document.getElementById('exercice-zone').style.display='none';
   const sf=document.getElementById('score-final'); sf.style.display='block';
   const ok=scores.filter(Boolean).length, total=scores.length;
@@ -182,8 +220,23 @@ function afficherScoreFinal(){
   document.getElementById('final-score').textContent=`${ok}/${total} — ${pct}%`;
   document.getElementById('final-score').style.color=pct===100?'#16a34a':pct>=60?'#f59e0b':'#dc2626';
   document.getElementById('final-detail').innerHTML=scores.map((s,i)=>`Q${i+1} : ${s?'✅':'❌'}`).join('  ');
+  if(!saved){
+    saved=true;
+    try {
+      window.parent.saveResult({
+        activity:'triangles_qcm',
+        bookTitle:'Identifier les triangles',
+        score:ok, total:total, pct:pct,
+        date:new Date().toLocaleDateString('fr-BE'),
+        time:new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})
+      });
+    } catch(e) {}
+  }
 }
-
+document.addEventListener('keydown',e=>{
+  if(e.key!=='Enter') return;
+  if(repondu && !termine){ e.preventDefault(); suivant(); }
+});
 demarrer();
 </script>
 </body>

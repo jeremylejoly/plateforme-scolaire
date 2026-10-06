@@ -1592,6 +1592,15 @@ Spécifique :
 - Pastilles vertes même après une erreur → rouges ; « Question suivante » protégé (600 ms) ; Entrée passe à la suite.
 - Tests : jsdom (positions, notions, double clic, partie 8/10 → 1 seul saveResult), node --check 7 OK, Playwright 390 px.
 
+### 06/10 — Identifier les triangles (`triangles_qcm`, fiches/triangles_QCM.html) — sw.js v593
+- Contenu : les 12 triangles dessinés étaient bien classés (côtés et angles recalculés). Mais la banque de 25 n'en comptait que 12 différents → le même triangle revenait souvent 2 fois dans une série ; base toujours horizontale, sommet de l'isocèle toujours au milieu.
+- **Aucun résultat enregistré** → saveResult `triangles_qcm`, une fois par série, try/catch.
+- Égalité de côtés à deviner à l'œil (scalène 132,7 / 150 / 162,8 ; isocèle 55-55-70 presque équilatéral) → codage : petits traits sur les côtés de même longueur (en plus du carré de l'angle droit) + phrase d'aide.
+- Triangles construits au hasard (loi des sinus), tournés dans tous les sens : scalène = côtés différents d'au moins 15 %, acutangle ≤ 80°, obtusangle ≥ 105°. Série = les 7 sortes + 3, jamais deux fois la même de suite.
+- Distracteurs au hasard → un distracteur garde les mêmes côtés, l'autre la même sorte d'angles (il faut juger les deux).
+- Mélange biaisé sort(random) → Fisher–Yates (≈ 33 % par position) ; pastilles rouges pour les erreurs ; « Triangle suivant » protégé (600 ms) ; Entrée passe à la suite.
+- Tests : jsdom (2 000 séries : classement recalculé depuis le dessin 0 erreur, codage 0 erreur, rien hors cadre ; partie 6/10 → 1 seul saveResult ; double clic), node --check 7 OK, Playwright 390 px + planche des 7 sortes.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1982,7 +1991,7 @@ Spécifique :
 
 | Statut | Exercice | id | Source | Signal automatique |
 |---|---|---|---|---|
-| ⬜ | Identifier les triangles | `triangles_qcm` | fiches/triangles_QCM.html |  |
+| ✅ 06/10 | Identifier les triangles | `triangles_qcm` | fiches/triangles_QCM.html |  |
 | ⬜ | Caractéristiques des triangles | `triangles_caracteristiques` | fiches/triangles_caracteristiques.html |  |
 | ⬜ | Les hauteurs du triangle | `solide_triangles_hauteurs` | fiches/triangles_hauteurs.html |  |
 | ⬜ | Reconnaître les angles | `angles_reconnaitre` | fiches/angles_reconnaitre.html |  |
