@@ -1912,6 +1912,11 @@ Spécifique :
 - **Contenu (27 paires relues)** : la Gaule « correspondant à la France actuelle » → « la France, la Belgique et la Suisse actuelles » ; oppidum « village » → « ville gauloise fortifiée, souvent sur une hauteur » ; César « entre 58 et 52 » → « à partir de 58 av. J.-C. » (la conquête s'achève en 51) ; moissonneuse « invention gauloise… mécaniquement » → « machine gallo-romaine poussée par un animal » ; hypocauste « inventé par les Romains » → « utilisé par les Romains » ; Gaulois « peuples celtes… dont nos régions » ; villa « grand domaine agricole » ; légionnaire (la définition répétait « légion ») ; civilisation gallo-romaine (la définition répétait « civilisation ») ; évènements, guillemets « ».
 - Tests Chromium : 300 tirages (27 termes vus), vide → message sans enregistrement, clic définition + case → placée, 6/8 → bleu + 1 seul enregistrement, verrouillage, alignement termes / cases vérifié ; capture 390 px sans débordement.
 
+### 06/10 — Éveil → Histoire → L'Antiquité → Document historique : la bataille d'Alésia (`antiquite_doc`, index › ANTIQUITE_DOC_TEXTE / renderAntiquiteDoc / antDocValider) — sw.js v630
+- Même moteur que Préhistoire → Campement, mêmes défauts : 8 questions à 3 propositions, bonne réponse le plus souvent la plus longue (« De la dignité — il se rend courageusement pour épargner son peuple »), questions sans réponse comptées fausses, réponses modifiables après validation, correction en vert → moteur corrigé repris (13 questions à 4 propositions : 9 de compréhension + 4 d'inférence, mélange Fisher–Yates, message s'il manque des réponses, verrouillage, garde 600 ms, enregistrement unique, bonne réponse en bleu). Bonne réponse strictement la plus longue : 1/13.
+- **Texte et questions corrigés** : « deux lignes de fortifications en bois » et la question qui en découlait (« un mur en pierre et un fossé rempli d'eau » en mauvaise réponse, alors que César décrit des fossés remplis d'eau) → « fossés, palissades et tours » ; « les murs sont trop solides » → « ville perchée sur une colline aux pentes raides, trop bien protégée » ; « Vercingétorix chasse les femmes, les enfants et les vieillards » → « les chefs gaulois chassent les habitants, avec les femmes et les enfants » ; reddition en armure présentée comme un récit écrit plus tard ; « la Gaule devient une province romaine » → « passe sous la domination romaine » ; inférence « moins nombreuse mais mieux entrainée » (le nombre n'est pas dans le texte) → « bien entrainés et bien commandés ».
+- Tests Chromium : 400 parties (bonne réponse en A/B/C/D 1292/1283/1278/1347), vide → message, 12/13 → « Réponds d'abord à la question 13 », erreur → rouge + bleu, 1 seul enregistrement 12/13, réponses verrouillées ; 390 px sans débordement.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2350,7 +2355,7 @@ Spécifique :
 | ✅ 06/10 | Préhistoire — Campement du Paléolithique | `prehistoire_doc` | index › renderPrehistoireDoc |  |
 | ✅ 06/10 | Quiz L'Antiquité | `qvgdm_antiquite` | index › renderQVGDMAntiquite | QCM: bonne réponse en position 3 dans 9/15 questions, options non mélangées |
 | ✅ 06/10 | Antiquité — Termes et définitions | `antiquite_assoc` | index › renderAntiquiteAssoc |  |
-| ⬜ | Antiquité — Document historique | `antiquite_doc` | index › renderAntiquiteDoc |  |
+| ✅ 06/10 | Antiquité — Document historique | `antiquite_doc` | index › renderAntiquiteDoc |  |
 | ⬜ | Quiz Moyen Âge | `qvgdm_moyen_age` | index › renderQVGDMMoyenAge |  |
 | ⬜ | Moyen Âge — Termes et définitions | `moyen_age_assoc` | index › renderMoyenAgeAssoc |  |
 | ✅ 05/10 (ac366c8) | Moyen Âge — La Peste Noire | `moyen_age_doc` | index › renderMoyenAgeDoc |  |
