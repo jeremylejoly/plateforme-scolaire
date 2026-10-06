@@ -2104,6 +2104,14 @@ Spécifique :
 - Contenu : 9 traits vérifiés sur le dessin (stigmate, style, ovaire, sépale, pollen = grains au-dessus de l'anthère, filet, pétale ; accolades pistil et étamine) ; consigne « nommer les organes reproducteurs » (faux pour sépale/pétale) → « les parties » ; descriptions en minuscules (« Le Pistil » → « Le pistil »).
 - Tests Playwright 390 px (toucher) : 20 ordres d'étiquettes différents, placement par toucher, style/filet inversés → 7/9 + 2 bleus, 1 sauvegarde malgré 3 validations, Entrée relance, pas de débordement ; capture ordinateur 1100 px vérifiée.
 
+### 06/10 — Éveil → Sciences → Le monde végétal → Reproduction et germination (`sci_plantes_germination`, fiches/sci_plantes_germination.html + public/fiches/) — sw.js v661
+- Enregistrement : le résultat n'était enregistré QUE si l'élève réussissait 7/7 puis 5/5, et toujours « 12/12 » ; l'exercice 2 n'était accessible (bouton) qu'après un 7/7 et chaque erreur imposait de recommencer jusqu'à la perfection → le plan de travail ne voyait jamais un élève en difficulté. Maintenant : une validation par exercice, l'exercice 2 est toujours accessible, le vrai score (exercice 1 /7 + exercice 2 /5 = /12, au premier essai) est enregistré une seule fois quand les deux sont validés (try/catch, `window.parent !== window`) ; « Tout recommencer » relance une nouvelle tentative.
+- `alert()` ×2 si cartes non placées → message dans la page « il en reste N ».
+- Correction : « Devrait être : … » en rouge → « ➜ … » en bleu sous chaque case fausse ; pour les facteurs : « ➜ Indispensable / Non indispensable. » + explication en bleu.
+- Toucher : toucher une colonne déjà garnie tombait sur une carte rangée et changeait la sélection au lieu de ranger la carte choisie (le 3e facteur ne se plaçait plus) → la carte choisie est rangée là. Titre « Facteurs à trier » / « Cartes des étapes à trier » affiché deux fois → une fois. Onglets qui passent à la ligne (le 3e était coupé à 390 px).
+- Contenu (leçon) : pollinisation « vers le pistil d'une autre fleur » → « de la même fleur ou d'une autre fleur » ; fécondation « le grain de pollen descend le long d'un tube » → « forme un long tube qui descend jusqu'à l'ovule » ; « l'ovule » → « les ovules » ; « maîtrisé » → « maitrisé ».
+- Tests Playwright 390 px (toucher) : messages à vide, aucun dialogue, croissance/floraison inversées → 5/7 + 2 bleus et « Continuer » visible, lumière mal classée → 4/5 + bleu, total 9/12 enregistré une fois (rien avant la 2e validation), double validation sans effet, Tout recommencer remet à zéro, pas de débordement.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2598,7 +2606,7 @@ Spécifique :
 | ⬜ | Planètes — Informations & Caractéristiques | `sci_planetes_infos` | index › (?) | (code à localiser) |
 | ⬜ | Système solaire — QCM | `sci_planetes_qcm` | index › renderSciPlanetesInfosScreen |  |
 | ✅ 06/10 | L'anatomie de la fleur | `sci_plantes_fleur` | fiches/sci_plantes_fleur.html |  |
-| ⬜ | Reproduction & Germination | `sci_plantes_germination` | fiches/sci_plantes_germination.html |  |
+| ✅ 06/10 | Reproduction & Germination | `sci_plantes_germination` | fiches/sci_plantes_germination.html |  |
 | ⬜ | La reproduction des plantes (Leçon) | `sci_reproduction_plantes` | fiches/reproduction_plantes.html |  |
 | ⬜ | États et propriétés de la matière | `sci_matiere_etats` | fiches/sci_matiere_etats.html |  |
 | ⬜ | Les changements d'état | `sci_matiere_changements` | fiches/sci_matiere_changements.html |  |
