@@ -326,7 +326,7 @@
         title: "Le sens de rotation direct",
         question: "Si la première roue (A, bleue) tourne dans le sens des aiguilles d'une montre (horaire), dans quel sens tourne la deuxième roue (B, orange) qui la touche directement ?",
         options: [
-          "Dans le même sens (sens horaire) ↩️",
+          "Dans le même sens (sens horaire) 🔃",
           "En sens inverse (sens anti-horaire) 🔄"
         ],
         correctIndex: 1,
@@ -341,7 +341,7 @@
         title: "Le train de 3 engrenages",
         question: "Dans un train de 3 roues (A touche B, B touche C). Si la première roue (A, bleue) tourne dans le sens horaire, dans quel sens tourne la troisième roue (C, orange) ?",
         options: [
-          "Dans le même sens (sens horaire) ↩️",
+          "Dans le même sens (sens horaire) 🔃",
           "En sens inverse (sens anti-horaire) 🔄"
         ],
         correctIndex: 0,
@@ -390,7 +390,7 @@
         question: "Deux roues dentées éloignées sont reliées par une chaîne (comme sur un vélo). Si la roue A (bleue) tourne dans le sens horaire, dans quel sens tourne la roue B (orange) ?",
         options: [
           "En sens inverse (sens anti-horaire) 🔄",
-          "Dans le même sens (sens horaire) ↩️"
+          "Dans le même sens (sens horaire) 🔃"
         ],
         correctIndex: 1,
         explanation: "Contrairement au contact direct, la chaîne tire le haut de la roue B dans le même sens que le haut de la roue A. Deux roues reliées par une chaîne tournent donc toujours dans le <strong>même sens</strong> !",
@@ -406,7 +406,7 @@
         question: "Dans cet engrenage fermé en boucle de 4 roues (nombre pair). Si la roue bleue tourne dans le sens horaire, dans quel sens tourne la roue rouge ?",
         options: [
           "Le système est complètement bloqué 🔒",
-          "Dans le même sens (sens horaire) ↩️",
+          "Dans le même sens (sens horaire) 🔃",
           "En sens inverse (sens anti-horaire) 🔄"
         ],
         correctIndex: 2,
@@ -426,7 +426,7 @@
         options: [
           "En sens inverse (sens anti-horaire) 🔄",
           "Tout se bloque (le système ne peut pas tourner) 🔒",
-          "Dans le même sens (sens horaire) ↩️"
+          "Dans le même sens (sens horaire) 🔃"
         ],
         correctIndex: 1,
         explanation: "Avec un nombre <strong>impair</strong> de roues (3) en boucle fermée, le mouvement se bloque. La bleue (sens horaire) pousse la jaune vers le sens anti-horaire, qui veut pousser la rouge vers le sens horaire. Mais la bleue (sens horaire) touche aussi la rouge et veut la pousser vers le sens anti-horaire. N'ayant pas de sens de rotation compatible, <strong>l'engrenage se bloque</strong> !",
@@ -446,6 +446,9 @@
     let score = 0;
     let hasAnswered = false;
     let selectedOptionIndex = null;
+    let currentOrder = [];
+    let resultSaved = false;
+    let nextLock = 0;
     let animationFrameId = null;
     let driverAngle = 0;
     let lastTickCount = 0;
@@ -934,9 +937,18 @@
       statusLabel.innerText = "Simulation à l'arrêt";
       document.getElementById('simulation-status').className = "absolute top-3 left-3 bg-[#475569] text-white border-2 border-[#0f172a] px-3 py-1 rounded-full text-xs font-bold shadow-flat select-none flex items-center gap-1.5";
 
-      // Rebuild options stack
+      // Rebuild options stack (ordre mélangé, Fisher–Yates)
       optionsContainer.innerHTML = '';
-      challenge.options.forEach((optText, idx) => {
+      currentOrder = challenge.options.map((_, i) => i);
+      for (let i = currentOrder.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [currentOrder[i], currentOrder[j]] = [currentOrder[j], currentOrder[i]];
+      }
+      nextBtn.innerHTML = (index === DEFI_DATA.length - 1)
+        ? `<span>Voir les résultats</span><span>📊</span>`
+        : `<span>Défi suivant</span><span>➔</span>`;
+      currentOrder.forEach((origIdx, idx) => {
+        const optText = challenge.options[origIdx];
         const btn = document.createElement('button');
         btn.className = "w-full text-left font-nunito font-semibold text-base md:text-lg text-[#0f172a] bg-white border-3 border-[#0f172a] p-4 rounded-2xl shadow-flat btn-3d hover:scale-[1.01] active:translate-y-0.5 active:shadow-[1px_1px_0px_#0f172a] transition-all";
         btn.innerHTML = optText;
@@ -965,7 +977,9 @@
       selectedOptionIndex = optIndex;
 
       const challenge = DEFI_DATA[currentChallengeIndex];
-      const isCorrect = optIndex === challenge.correctIndex;
+      const correctPos = currentOrder.indexOf(challenge.correctIndex);
+      const isCorrect = optIndex === correctPos;
+      nextLock = Date.now();
 
       // Highlight options
       const buttons = optionsContainer.querySelectorAll('button');
@@ -974,9 +988,14 @@
         btn.classList.remove('hover:scale-[1.01]', 'active:translate-y-0.5', 'shadow-flat');
         btn.style.cursor = 'default';
         
-        if (idx === challenge.correctIndex) {
-          // Highlight correct answer in green
+        if (idx === correctPos && isCorrect) {
+          // Bonne réponse choisie : vert
           btn.className = "w-full text-left font-nunito font-bold text-base md:text-lg text-green-800 bg-green-100 border-3 border-green-600 p-4 rounded-2xl shadow-[2px_2px_0px_#16a34a] transition-all";
+        } else if (idx === correctPos) {
+          // Bonne réponse manquée : bleu
+          btn.className = "w-full text-left font-nunito font-bold text-base md:text-lg p-4 rounded-2xl border-3 transition-all";
+          btn.style.color = '#1f5fbf'; btn.style.background = '#e8f0fc'; btn.style.borderColor = '#1f5fbf'; btn.style.boxShadow = '2px 2px 0px #1f5fbf';
+          btn.innerHTML = '✔ ' + btn.innerHTML;
         } else if (idx === optIndex) {
           // Highlight user incorrect choice in red
           btn.className = "w-full text-left font-nunito font-bold text-base md:text-lg text-red-800 bg-red-100 border-3 border-red-600 p-4 rounded-2xl shadow-[2px_2px_0px_#dc2626] transition-all";
@@ -1029,9 +1048,6 @@
       feedbackPanel.classList.remove('hidden');
 
       // Adjust next button label for last challenge
-      if (currentChallengeIndex === DEFI_DATA.length - 1) {
-        nextBtn.innerHTML = `<span>Voir les résultats</span><span>📊</span>`;
-      }
       nextBtn.classList.remove('hidden');
     }
 
@@ -1040,51 +1056,64 @@
       challengeScreen.classList.add('hidden');
       scoreScreen.classList.remove('hidden');
 
-      finalScore.innerText = `${score} / 7`;
+      const total = DEFI_DATA.length;
+      finalScore.innerText = `${score} / ${total}`;
       
       // Animate percentage bar
-      const percentage = Math.round((score / 7) * 100);
+      const percentage = Math.round((score / total) * 100);
       setTimeout(() => {
         scoreBar.style.width = `${percentage}%`;
       }, 200);
 
       // Custom message based on score
-      if (score === 7) {
+      if (score === total) {
         finalMessage.innerText = "🏆 Score parfait ! Tu es un(e) véritable ingénieur(e) mécanicien(ne). Tu as tout compris des forces et rotations !";
         launchConfetti();
       } else if (score >= 5) {
-        finalMessage.innerText = "👍 Superbe score ! Tu as une excellente intuition des engrenages. Entraîne-toi à nouveau pour faire un sans-faute !";
+        finalMessage.innerText = "👍 Superbe score ! Tu as une excellente intuition des engrenages. Entraine-toi à nouveau pour faire un sans-faute !";
         launchConfetti();
       } else if (score >= 3) {
         finalMessage.innerText = "💪 Pas mal du tout ! Tu as compris la plupart des notions, mais relis bien les explications des engrenages fermés ou de la vitesse pour t'améliorer.";
       } else {
-        finalMessage.innerText = "🔧 Continue d'essayer ! Recommence le défi pour mieux analyser comment les dents des roues s'emboîtent et transmettent le mouvement.";
+        finalMessage.innerText = "🔧 Continue d'essayer ! Recommence le défi pour mieux analyser comment les dents des roues s'emboitent et transmettent le mouvement.";
       }
 
       // Persist Result to parent LCML Platform via window.parent.saveResult helper
-      if (window.parent && window.parent.saveResult) {
-        window.parent.saveResult({
-          activity: 'sci_mecanique_engrenages',
-          bookTitle: 'Sciences — Transmission de mouvement (engrenages)',
-          score: score,
-          total: 7,
-          pct: percentage,
-          date: new Date().toLocaleDateString('fr-BE'),
-          time: new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })
-        });
+      if (!resultSaved) {
+        resultSaved = true;
+        try {
+          if (window.parent && window.parent !== window && typeof window.parent.saveResult === 'function') {
+            window.parent.saveResult({
+              activity: 'sci_engrenages',
+              bookTitle: 'Sciences — Transmission de mouvement (engrenages)',
+              score: score,
+              total: total,
+              pct: percentage,
+              date: new Date().toLocaleDateString('fr-BE'),
+              time: new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })
+            });
+          }
+        } catch (e) { console.warn('saveResult', e); }
       }
     }
 
     // =========================================================================
     // ATTACH DOM LISTENERS
     // =========================================================================
-    nextBtn.addEventListener('click', () => {
+    function goNext() {
+      if (!hasAnswered || nextBtn.classList.contains('hidden')) return;
+      if (Date.now() - nextLock < 600) return;
+      nextLock = Date.now();
       playClickSound();
       if (currentChallengeIndex < DEFI_DATA.length - 1) {
         startChallenge(currentChallengeIndex + 1);
       } else {
         showFinalResults();
       }
+    }
+    nextBtn.addEventListener('click', goNext);
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !challengeScreen.classList.contains('hidden')) { e.preventDefault(); goNext(); }
     });
 
     restartBtn.addEventListener('click', () => {
@@ -1097,6 +1126,7 @@
       });
 
       score = 0;
+      resultSaved = false;
       scoreScreen.classList.add('hidden');
       challengeScreen.classList.remove('hidden');
       startChallenge(0);

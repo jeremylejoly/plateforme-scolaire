@@ -2156,6 +2156,8 @@ Spécifique :
 - Contenu : « Renouvelables : Naturelle & Infinie » (faux pour la biomasse) → « Se renouvelle sans s'épuiser » ; « Énergie produite » → « Énergie utile produite » (une ampoule produit aussi de la chaleur, la réponse attendue est la lumière) ; « Score de passage » (c'était la progression) → « Réponses » ; boutons « Retour » internes masqués dans le site ; confettis protégés. Vérifié : 9 sources (5 renouvelables, 4 non renouvelables) et 4 conversions justes.
 - Tests Playwright 390 px (Tailwind régénéré, toucher) : 9 cartes placées par toucher, biomasse mal classée + ampoule « thermique » → 15/17 + 2 bleus, 1 sauvegarde malgré 2 validations, Recommencer remet à zéro, pas de débordement.
 
+- **06/10 — Les engrenages (`sci_engrenages`, sw.js v670)** : contenu des 7 défis vérifié (contact direct = sens inverse, train de 3, rapport 10/20 dents, vitesse, chaine = même sens, boucle paire de 4, boucle impaire de 3 bloquée ; l'animation avant réponse ne trahit rien). Corrigé : id d'activité `sci_mecanique_engrenages` → `sci_engrenages` (le résultat n'apparaissait pas au menu ni au plan de travail), sauvegarde unique en try/catch avec contrôle `window.parent !== window`, bonne réponse manquée affichée en bleu #1f5fbf, options mélangées (Fisher–Yates), garde 600 ms sur « Défi suivant » + Entrée pour continuer, total = `DEFI_DATA.length`, libellé du bouton remis à « Défi suivant » après « Recommencer », emoji ↩️ → 🔃 pour le sens horaire, nouvelle orthographe (Entraine-toi, s'emboitent). Test Playwright 390 px : 1 erreur → bleu, double clic sans saut, 1 seule sauvegarde 6/7, pas de débordement.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2663,7 +2665,7 @@ Spécifique :
 | ⬜ | Laboratoire d'Électricité | `sci_electricite_labo` | fiches/sci_electricite_labo.html |  |
 | ⬜ | Ombres & Lumière | `sci_lumiere_ombres` | fiches/sci_lumiere_ombres.html |  |
 | ⬜ | Les éclipses | `sci_eclipses` | index › renderSciEclipses |  |
-| ⬜ | Les engrenages | `sci_engrenages` | fiches/sci_mecanique_engrenages.html |  |
+| ✅ 06/10 | Les engrenages | `sci_engrenages` | fiches/sci_mecanique_engrenages.html |  |
 | ⬜ | Leviers et balances | `sci_mecanique_leviers` | index › renderSciMecaniqueLeviers |  |
 
 ### 🌍 Éveil — 🌍 Géographie
