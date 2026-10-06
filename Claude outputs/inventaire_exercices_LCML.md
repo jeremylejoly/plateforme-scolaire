@@ -2072,6 +2072,13 @@ Spécifique :
 - Mécanique (comme trajet_de_lair v644) : vérification unique, garde 600 ms, bonne étape en bleu, Recommencer, Entrée, sauvegarde unique try/catch `window.parent !== window` (avant : à chaque clic), mélange ≤ 2 étapes en place, toucher-placer, conteneur reconstruit (plus d'écouteurs empilés), onglets qui passent à la ligne, mise en page < 480 px. Verrouillage par onglet (isActivityLocked) et onglet par #ancre conservés.
 - Tests Playwright 390 px (toucher) : ouverture sur #ensemble, 3 onglets remis en ordre par toucher puis 2 inversées → 4/6, 5/7, 4/6 + 2 bleus chacun, 1 sauvegarde par onglet, onglet verrouillé 🔒 désactivé, 3000 mélanges ≤ 2 en place, pas de débordement.
 
+### 06/10 — Éveil → Sciences → Le squelette → Le fonctionnement du mouvement (`sci_sq_texte`, fiche squelette_mouvement.html + fiches/ et public/fiches/ (chemin ../photos/), image photos/mecanique_bras.jpg) — sw.js v656
+- `alert()` si cases vides (et les cases étaient déjà colorées avant l'alerte) → message dans la page « il en reste N », rien n'est corrigé tant que tout n'est pas rempli.
+- « l'action combinée des ___, des ___ et des ___ » : muscles / os / articulations interchangeables mais un seul ordre accepté → ordre libre (notation par case comme les oreillettes du trajet du sang).
+- Mécanique : validation unique (avant : clics répétés = sauvegardes multiples), garde 600 ms, cases verrouillées, bon mot en bleu dans chaque case rouge, sauvegarde unique try/catch `window.parent !== window`, Entrée = vérifier / recommencer, toucher un mot puis la case (avant : glisser seulement), mélange Fisher–Yates, cases à hauteur variable (la correction tient dedans), image et grille sans dépendre de Tailwind.
+- Contenu : « bandes élastiques solides » (ligaments) → « bandes solides ». Image vérifiée : flexion = biceps contracté (foncé, gonflé), extension = triceps contracté ; le dessin « extension » montre le bras encore à 90° (mouvement en cours) — signalé à Jeremy.
+- Tests Playwright 390 px (toucher) : message à vide, aucun dialogue, muscles/os/articulations permutés comptés justes, biceps/triceps inversés → 8/10 + 2 bleus, 1 sauvegarde malgré 3 clics, pas de débordement.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2524,7 +2531,7 @@ Spécifique :
 | Statut | Exercice | id | Source | Signal automatique |
 |---|---|---|---|---|
 | ✅ 06/10 | Le squelette — Le schéma | `sci_sq_schema` | index › renderSciSqSchema |  |
-| ⬜ | Le squelette — Le fonctionnement du mouvement | `sci_sq_texte` | index › renderSciSqTexte |  |
+| ✅ 06/10 | Le squelette — Le fonctionnement du mouvement | `sci_sq_texte` | index › renderSciSqTexte |  |
 | ⬜ | Le squelette — QCM | `sci_sq_qcm` | index › renderSciSqQCM |  |
 | ⬜ | Le squelette — Chasseur d'intrus | `sci_sq_intrus` | index › renderSciSqIntrus |  |
 | ⬜ | Le squelette — Vrai ou faux ? | `sci_sq_vrai_faux` | index › renderSciSqVraiFaux |  |
