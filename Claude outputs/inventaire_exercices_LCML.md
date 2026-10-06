@@ -2263,6 +2263,8 @@ Spécifique :
 
 - **06/10 — CEB Sciences 2024 (`ceb_sci_2024`, CEB sciences/ceb_sciences_2024.html, sw.js v721)** : 20 questions vérifiées contre le portfolio PDF (p. 22-31 : bouteille et eau colorée, classification, méduse, papillon, météo, besoins énergétiques, dents, éprouvettes et tulipe, liquides, électricité) — toutes les réponses justes. Même moteur que 2025, mêmes défauts corrigés (aucune sauvegarde → sauvegarde unique /20 ; choix jamais mélangés ; parties validables vides et revalidables à l'infini ; bonne réponse manquée en vert → bleu ; bilan avant la fin). Contenu : 4.1 donnait la réponse dans la question (« 80 mm avec des orages ») → retiré ; 3.1 « 1ère/2ème/3ème action » alors que le livret numérote déjà les étapes 1 et 2 → « Étapes 3, 4, 5 » avec explication ; 3.2 « nourrir la plante » (aucune plante dans l'expérience 1) → autres distracteurs ; 1.5 « trait rouge » (il est rose) → « désignée par un trait » ; bonne réponse = la plus longue (3.2, 3.4, 3.5, 4.4) → longueurs équilibrées. NO : entrainement, maitriser. Test Playwright 390 px : 16/20, 1 seule sauvegarde, pas de débordement.
 
+- **06/10 — CEB Sciences 2023 (`ceb_sci_2023`, CEB sciences/ceb_sciences_2023.html, sw.js v722)** : 20 questions vérifiées contre le portfolio PDF (p. 7-16 : cycle de l'eau, animaux de la ferme et arbre, débit expiratoire tableaux 1 et 2, flottaison exp. 1-3, dilatation, circuit simple) — toutes les réponses justes. Même moteur que 2026 → mêmes corrections (aucune sauvegarde → sauvegarde unique /20 ; choix mélangés et renumérotés ; bonne réponse manquée en vert → bleu ; bilan possible avec des questions vides → message avec les numéros ; double clic, Entrée ; confetti protégé). Contenu : la question se donnait la réponse en 1.1 (« la pluie qui tombe »), 1.5 (« sous la surface du sol ») et 2.2 (« 400 l/min ») → retiré ; bonne réponse seule longue (1.2, 1.5, 3.2, 3.4, 3.5) → longueurs équilibrées ; 3.4 l'explication était dans la bonne réponse → montrée après la réponse (boite ouverte : à plat l'eau n'entre pas) ; 4.1 « liquide coloré » → « eau colorée » (livret). NO : boite, entrainement, maitriser ; « prêt-e » → « prêt ». Test Playwright 390 px : message « 1.5 », 17/20, 3 réponses en bleu, 1 seule sauvegarde, pas de débordement.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2814,7 +2816,7 @@ Spécifique :
 | ✅ 06/10 | CEB Sciences 2026 | `ceb_sci_2026` | index › openCEB |  |
 | ✅ 06/10 | CEB Sciences 2025 | `ceb_sci_2025` | index › openCEB |  |
 | ✅ 06/10 | CEB Sciences 2024 | `ceb_sci_2024` | index › openCEB |  |
-| ⬜ | CEB Sciences 2023 | `ceb_sci_2023` | index › openCEB |  |
+| ✅ 06/10 | CEB Sciences 2023 | `ceb_sci_2023` | index › openCEB |  |
 | ⬜ | CEB Sciences 2022 | `ceb_sci_2022` | index › openCEB |  |
 | ⬜ | CEB Sciences 2021 | `ceb_sci_2021` | index › openCEB |  |
 | ⬜ | CEB Sciences 2019 | `ceb_sci_2019` | index › openCEB |  |
