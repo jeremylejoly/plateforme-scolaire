@@ -34760,104 +34760,247 @@ function validateSciRespQCM(){
 
 // ----- EXERCICE 4 : TERMES ET DÉFINITIONS (glisser-déposer comme circulatoire) -----
 const SCI_RESP_ASSOC_DATA = [
-  {terme:"Trachée artère",       def:"Tube qui conduit l'air de la gorge vers les bronches"},
-  {terme:"Bronches",             def:"Deux tubes issus de la trachée, un par poumon"},
+  {terme:"Fosses nasales",       def:"Cavités du nez où l'air est filtré, réchauffé et humidifié"},
+  {terme:"Trachée",              def:"Tube qui conduit l'air de la gorge vers les bronches"},
+  {terme:"Bronches",             def:"Deux tubes issus de la trachée, un pour chaque poumon"},
   {terme:"Bronchioles",          def:"Petites ramifications des bronches à l'intérieur des poumons"},
-  {terme:"Alvéoles pulmonaires", def:"Petits sacs où se font les échanges entre l'air et le sang"},
-  {terme:"Diaphragme",           def:"Muscle situé sous les poumons qui permet la respiration"},
+  {terme:"Alvéoles pulmonaires", def:"Minuscules sacs où se font les échanges entre l'air et le sang"},
+  {terme:"Diaphragme",           def:"Muscle situé sous les poumons qui se contracte pour faire entrer l'air"},
   {terme:"Inspiration",          def:"Action de faire entrer l'air dans les poumons"},
   {terme:"Expiration",           def:"Action de faire sortir l'air des poumons"},
-  {terme:"Oxygène",              def:"Gaz absorbé par le sang dans les alvéoles"},
-  {terme:"Dioxyde de carbone",   def:"Gaz rejeté par le corps lors de l'expiration"},
-  {terme:"Plèvre",               def:"Membrane qui entoure les poumons"},
-  {terme:"Capillaires",          def:"Petits vaisseaux sanguins autour des alvéoles"},
-  {terme:"Cage thoracique",      def:"Structure osseuse qui protège les poumons"},
-  {terme:"Coeur",                def:"Organe qui pompe le sang oxygéné vers tout le corps"},
+  {terme:"Oxygène",              def:"Gaz de l'air dont le corps a besoin, qui passe dans le sang au niveau des alvéoles"},
+  {terme:"Dioxyde de carbone",   def:"Gaz produit par le corps, que le sang ramène aux poumons pour être rejeté"},
+  {terme:"Plèvre",               def:"Fine enveloppe qui entoure chaque poumon"},
+  {terme:"Capillaires",          def:"Tout petits vaisseaux sanguins qui entourent les alvéoles"},
+  {terme:"Cage thoracique",      def:"Ensemble des côtes, du sternum et des vertèbres qui protège les poumons et le cœur"},
+  {terme:"Cœur",                 def:"Muscle qui pompe le sang et l'envoie dans tout le corps"},
   {terme:"Globule rouge",        def:"Cellule du sang qui transporte l'oxygène"},
 ];
 
-let respAssocState = {pairs:[], defOrder:[], placed:{}, dragging:null, touchClone:null};
+let respATEl=null,respAClone=null;
+let respAssocState = {pairs:[], defOrder:[], placed:{}, dragging:null, touchClone:null, touchSource:null};
 
 function renderSciRespAssoc(){
-  const body = document.getElementById('sci-resp-assoc-body'); if(!body) return;
+  const body = document.getElementById('sci-resp-assoc-body');
+  if(!body) return;
+
   const pairs = shuffle([...SCI_RESP_ASSOC_DATA]).slice(0, 8);
   const defOrder = shuffle(pairs.map((_,i) => i));
-  respAssocState = {pairs, defOrder, placed:{}, dragging:null, touchClone:null};
-  const defsCol = shuffle(pairs.map((_,i) => i));
-  let rowsHtml = '';
-  pairs.forEach((p,i) => {
-    rowsHtml += `<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px;align-items:center;">
-      <div style="padding:8px 12px;background:var(--surface);border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-weight:700;min-height:48px;display:flex;align-items:center">${p.terme}</div>
-      <div class="resp-assoc-zone" id="resp-zone-${i}" data-index="${i}" onclick="respAssocClearZone(this)"
-        style="min-height:48px;display:flex;align-items:center;padding:6px 10px;
-        background:var(--purple-light);border:2px dashed var(--purple);border-radius:8px;font-size:12px;transition:background .2s;cursor:pointer;"
-        ondragover="respAssocDragOver(event)" ondrop="respAssocDrop(event)" ondragleave="respAssocDragLeave(event)">
-        <span style="opacity:.5">Glisse ici…</span>
-      </div>
-      <div id="resp-def-container-${defsCol[i]}" style="min-height:48px;">
-        <div class="resp-assoc-def" id="resp-def2-${defsCol[i]}" data-index="${defsCol[i]}" draggable="true"
-          style="padding:8px 10px;background:var(--purple);color:#fff;border-radius:8px;font-size:12px;
-          font-weight:600;cursor:grab;user-select:none;touch-action:none;min-height:48px;
-          display:flex;align-items:center;line-height:1.3;"
-          ondragstart="respAssocDragStart(event)" ondragend="respAssocDragEnd(event)"
-          ontouchstart="respAssocTouchStart(event)" ontouchmove="respAssocTouchMove(event)" ontouchend="respAssocTouchEnd(event)" ontouchcancel="respAssocTouchCancel(event)">
-          ${pairs[defsCol[i]].def}
-        </div>
-      </div>
+  respAssocState = {pairs, defOrder, placed:{}, dragging:null, touchClone:null, touchSource:null, done:false, lastClick:0};
+
+  let termesHtml = '';
+  pairs.forEach((p, i) => {
+    termesHtml += `<div class="assoc-terme" id="respassoc-terme-${i}" data-index="${i}"
+      style="min-height:52px;display:flex;align-items:center;padding:8px 12px;
+      background:var(--surface);border:1.5px solid var(--border);border-radius:8px;
+      font-size:13px;font-weight:700;color:var(--text)">
+      ${p.terme}
+    </div>`;
+    termesHtml += `<div class="assoc-drop-zone" id="respassoc-zone-${i}" data-index="${i}" onclick="respAssocClearZone(this)"
+      style="min-height:52px;display:flex;align-items:center;padding:8px 12px;
+      background:var(--purple-light);border:2px dashed var(--purple);border-radius:8px;
+      font-size:12px;color:var(--muted);cursor:pointer;transition:background .2s;min-width:0;overflow-wrap:anywhere;"
+      ondragover="respAssocDragOver(event)" ondrop="respAssocDrop(event)" ondragleave="respAssocDragLeave(event)"
+      ontouchstart="respAssocZoneTouchStart(event)">
+      <span style="opacity:.5">Glisse une définition ici…</span>
     </div>`;
   });
+
+  let defsHtml = '';
+  defOrder.forEach(i => {
+    defsHtml += `<div class="assoc-def" id="respassoc-def-${i}" data-index="${i}" draggable="true"
+      style="padding:8px 14px;background:var(--purple);color:#fff;border-radius:8px;
+      font-size:12px;font-weight:600;cursor:grab;user-select:none;touch-action:none;
+      margin-bottom:6px;line-height:1.4;"
+      onclick="respAssocSelect(this)" ondragstart="respAssocDragStart(event)" ondragend="respAssocDragEnd(event)"
+      ontouchstart="respAssocDefTouchStart(event)" ontouchmove="respAssocDefTouchMove(event)" ontouchend="respAssocDefTouchEnd(event)" ontouchcancel="respAssocDefTouchCancel(event)">
+      ${pairs[i].def}
+    </div>`;
+  });
+
   body.innerHTML = `
-    <div class="card" style="margin-bottom:1rem;padding:.8rem 1rem;background:var(--purple-light);border:1px solid var(--purple);">
-      <p style="margin:0;font-size:13px;color:var(--purple);font-weight:700">Glisse chaque définition (colonne de droite) en face du bon terme (colonne de gauche).</p>
+    <div class="card" style="margin-bottom:1rem;padding:0.8rem 1rem;background:var(--purple-light);border:1px solid var(--purple);">
+      <p style="margin:0;font-size:13px;color:var(--purple);font-weight:700">Glisse chaque définition en face du bon terme (ou touche une définition, puis la case).</p>
     </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:6px;">
-      <div style="font-size:11px;font-weight:800;text-transform:uppercase;color:var(--muted);">Terme</div>
-      <div style="font-size:11px;font-weight:800;text-transform:uppercase;color:var(--muted);">Ta réponse</div>
-      <div style="font-size:11px;font-weight:800;text-transform:uppercase;color:var(--muted);">Définitions</div>
+    <div style="display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:8px 10px;margin-bottom:1rem;">
+      <div style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);">Termes</div>
+      <div style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);">Définitions</div>
+      ${termesHtml}
     </div>
-    <div id="resp-rows">${rowsHtml}</div>
-    <button class="btn" onclick="validateSciRespAssoc()" style="width:100%;margin-top:1rem;margin-bottom:1rem">✅ Vérifier mes réponses</button>
-    <div id="resp-assoc-score" style="display:none"></div>`;
+    <div class="card" style="margin-bottom:1rem;">
+      <div style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:8px;">🏷️ Définitions à placer</div>
+      <div id="respassoc-def-pool">${defsHtml}</div>
+    </div>
+    <div id="respassoc-msg" style="display:none;margin-bottom:.75rem;padding:.6rem .9rem;border-radius:8px;background:#fff7ed;border:1.5px solid #f59e0b;color:#92400e;font-size:13px;font-weight:700;text-align:center"></div>
+    <button class="btn" id="respassoc-verif" onclick="validateSciRespAssoc()" style="width:100%;margin-bottom:1rem">✅ Vérifier mes réponses</button>
+    <div id="respassoc-score-panel" style="display:none"></div>
+  `;
 }
+
 function respAssocDragStart(e){ respAssocState.dragging=e.currentTarget.dataset.index; e.dataTransfer.setData('text/plain',e.currentTarget.dataset.index); e.currentTarget.style.opacity='0.5'; }
 function respAssocDragEnd(e){ e.currentTarget.style.opacity=''; respAssocState.dragging=null; }
 function respAssocDragOver(e){ e.preventDefault(); e.currentTarget.style.background='var(--purple-mid,#ede9fe)'; }
 function respAssocDragLeave(e){ e.currentTarget.style.background='var(--purple-light)'; }
-function respAssocDrop(e){ e.preventDefault(); const zone=e.currentTarget; zone.style.background='var(--purple-light)'; respAssocPlacer(zone,parseInt(e.dataTransfer.getData('text/plain'))); }
-function respAssocPlacer(zone,defIndex){
-  const zi=parseInt(zone.dataset.index); const pairs=respAssocState.pairs;
-  const ancien=respAssocState.placed[zi]; if(ancien!==undefined) respAssocRetourner(ancien);
-  Object.entries(respAssocState.placed).forEach(([z,d])=>{ if(d===defIndex&&parseInt(z)!==zi){ delete respAssocState.placed[parseInt(z)]; const oz=document.getElementById('resp-zone-'+z); if(oz){oz.innerHTML='<span style="opacity:.5">Glisse une définition ici…</span>';oz.style.background='var(--purple-light)';oz.style.border='2px dashed var(--purple)';} } });
-  respAssocRetirerBanque(defIndex); respAssocState.placed[zi]=defIndex;
-  zone.innerHTML=`<span style="font-size:12px;font-weight:600;color:var(--purple);line-height:1.4">${pairs[defIndex].def}</span>`;
-  zone.style.border='2px solid var(--purple)';
+function respAssocDrop(e){
+  e.preventDefault();
+  e.currentTarget.style.background='var(--purple-light)';
+  respAssocPlacerDef(e.currentTarget, parseInt(e.dataTransfer.getData('text/plain')));
 }
-function respAssocRetourner(di){ const pool=document.getElementById('resp-def-container-'+di); if(!pool||document.getElementById('resp-def2-'+di)) return; const pairs=respAssocState.pairs; const div=document.createElement('div'); div.className='resp-assoc-def'; div.id='resp-def2-'+di; div.dataset.index=di; div.draggable=true; div.style.cssText='padding:8px 10px;background:var(--purple);color:#fff;border-radius:8px;font-size:12px;font-weight:600;cursor:grab;user-select:none;touch-action:none;min-height:48px;display:flex;align-items:center;line-height:1.3;'; div.textContent=pairs[di].def; div.ondragstart=respAssocDragStart; div.ondragend=respAssocDragEnd; div.ontouchstart=respAssocTouchStart; div.ontouchmove=respAssocTouchMove; div.ontouchend=respAssocTouchEnd; div.ontouchcancel=respAssocTouchCancel; pool.appendChild(div); }
-function respAssocRetirerBanque(di){ const el=document.getElementById('resp-def2-'+di); if(el) el.remove(); }
+
+function respAssocPlacerDef(zone, defIndex){
+  if(respAssocState.done || isNaN(defIndex)) return;
+  const m=document.getElementById('respassoc-msg'); if(m) m.style.display='none';
+  const zoneIndex = parseInt(zone.dataset.index);
+  const ancien = respAssocState.placed[zoneIndex];
+  if(ancien !== undefined) respAssocRetournerDef(ancien);
+  Object.entries(respAssocState.placed).forEach(([zi, di]) => {
+    if(di === defIndex && parseInt(zi) !== zoneIndex){
+      delete respAssocState.placed[parseInt(zi)];
+      const oldZone = document.getElementById('respassoc-zone-'+zi);
+      if(oldZone){ oldZone.innerHTML='<span style="opacity:.5">Glisse une définition ici…</span>'; oldZone.style.background='var(--purple-light)'; oldZone.style.border='2px dashed var(--purple)'; }
+    }
+  });
+  respAssocRetirerDeBanque(defIndex);
+  if(respAssocState.sel===defIndex) respAssocState.sel=undefined;
+  respAssocState.placed[zoneIndex] = defIndex;
+  zone.innerHTML = `<span style="font-size:12px;font-weight:600;color:var(--purple);line-height:1.4">${respAssocState.pairs[defIndex].def}</span>`;
+  zone.style.border = '2px solid var(--purple)';
+}
+
+function respAssocRetournerDef(defIndex){
+  const pool = document.getElementById('respassoc-def-pool');
+  if(!pool || document.getElementById('respassoc-def-'+defIndex)) return;
+  const div = document.createElement('div');
+  div.className='assoc-def'; div.id='respassoc-def-'+defIndex; div.dataset.index=defIndex; div.draggable=true;
+  div.style.cssText='padding:8px 14px;background:var(--purple);color:#fff;border-radius:8px;font-size:12px;font-weight:600;cursor:grab;user-select:none;touch-action:none;margin-bottom:6px;line-height:1.4;';
+  div.textContent=respAssocState.pairs[defIndex].def;
+  div.addEventListener('dragstart',respAssocDragStart); div.addEventListener('dragend',respAssocDragEnd);
+  div.addEventListener('touchstart',respAssocDefTouchStart,{passive:false}); div.addEventListener('touchmove',respAssocDefTouchMove,{passive:false}); div.addEventListener('touchend',respAssocDefTouchEnd);
+  div.addEventListener('touchcancel',respAssocDefTouchCancel);
+  div.addEventListener('click',()=>respAssocSelect(div));
+  pool.appendChild(div);
+}
+function respAssocSelect(el){
+  const st=respAssocState; if(st.done||!el) return;
+  const di=parseInt(el.dataset.index);
+  document.querySelectorAll('#respassoc-def-pool .assoc-def').forEach(d=>d.style.outline='');
+  if(st.sel===di){ st.sel=undefined; return; }
+  st.sel=di; el.style.outline='3px solid #f59e0b';
+}
+function respAssocPoserSelection(zone){
+  const st=respAssocState;
+  if(st.done || st.sel===undefined || st.placed[parseInt(zone.dataset.index)]!==undefined) return false;
+  const di=st.sel; st.sel=undefined; respAssocPlacerDef(zone,di); return true;
+}
+function respAssocRetirerDeBanque(defIndex){ const el=document.getElementById('respassoc-def-'+defIndex); if(el) el.remove(); }
 function respAssocClearZone(zone){
-  const panel = document.getElementById('resp-assoc-score');
+  const panel = document.getElementById('respassoc-score-panel');
   if(panel && panel.style.display === 'block') return;
+  if(respAssocPoserSelection(zone)) return;
   const zi = parseInt(zone.dataset.index);
   const di = respAssocState.placed[zi];
   if(di === undefined) return;
   delete respAssocState.placed[zi];
-  zone.innerHTML = '<span style="opacity:.5">Glisse ici…</span>';
+  zone.innerHTML = '<span style="opacity:.5">Glisse une définition ici…</span>';
   zone.style.background = 'var(--purple-light)'; zone.style.border = '2px dashed var(--purple)';
-  respAssocRetourner(di);
+  respAssocRetournerDef(di);
 }
-let respATEl=null,respAClone=null;
-function respAssocTouchStart(e){ e.preventDefault(); respATEl=e.currentTarget; const clone=respATEl.cloneNode(true); clone.style.cssText='position:fixed;z-index:9999;opacity:.85;pointer-events:none;padding:8px 14px;background:var(--purple);color:#fff;border-radius:8px;font-size:12px;'; const t=e.touches[0]; clone.style.left=(t.clientX-60)+'px'; clone.style.top=(t.clientY-20)+'px'; document.body.appendChild(clone); respAClone=clone; respATEl.style.opacity='0.4'; }
-function respAssocTouchMove(e){ e.preventDefault(); if(!respAClone) return; const t=e.touches[0]; respAClone.style.left=(t.clientX-60)+'px'; respAClone.style.top=(t.clientY-20)+'px'; }
-function respAssocTouchEnd(e){ if(!respAClone) return; const t=e.changedTouches[0]; respAClone.remove(); respAClone=null; if(respATEl) respATEl.style.opacity=''; const el=document.elementFromPoint(t.clientX,t.clientY); const zone=el?el.closest('.resp-assoc-zone'):null; if(zone&&respATEl) respAssocPlacer(zone,parseInt(respATEl.dataset.index)); respATEl=null; }
-function respAssocTouchCancel(e){ if(respAClone) { respAClone.remove(); respAClone=null; } if(respATEl) { respATEl.style.opacity=''; respATEl=null; } }
+
+function respAssocDefTouchStart(e){
+  e.preventDefault();
+  if(respAssocState.done) return;
+  respAssocState.touchSource=e.currentTarget;
+  const touch=e.touches[0];
+  respAssocState.touchX=touch.clientX; respAssocState.touchY=touch.clientY;
+  const clone=e.currentTarget.cloneNode(true);
+  clone.style.cssText+=';position:fixed;z-index:9999;pointer-events:none;opacity:.85;width:160px;';
+  clone.style.left=(touch.clientX-80)+'px'; clone.style.top=(touch.clientY-20)+'px';
+  document.body.appendChild(clone); respAssocState.touchClone=clone;
+  e.currentTarget.style.opacity='0.4';
+}
+function respAssocDefTouchMove(e){
+  e.preventDefault();
+  if(!respAssocState.touchClone) return;
+  const touch=e.touches[0];
+  respAssocState.touchClone.style.left=(touch.clientX-80)+'px';
+  respAssocState.touchClone.style.top=(touch.clientY-20)+'px';
+}
+function respAssocDefTouchEnd(e){
+  e.preventDefault();
+  if(!respAssocState.touchClone) return;
+  const touch=e.changedTouches[0];
+  respAssocState.touchClone.remove(); respAssocState.touchClone=null;
+  if(respAssocState.touchSource) respAssocState.touchSource.style.opacity='';
+  const el=document.elementFromPoint(touch.clientX,touch.clientY);
+  const zone=el?el.closest('.assoc-drop-zone'):null;
+  const src=respAssocState.touchSource;
+  if(zone && src) respAssocPlacerDef(zone,parseInt(src.dataset.index));
+  else if(src && Math.abs(touch.clientX-respAssocState.touchX)<10 && Math.abs(touch.clientY-respAssocState.touchY)<10) respAssocSelect(src);
+  respAssocState.touchSource=null;
+}
+function respAssocDefTouchCancel(e){
+  if(respAssocState.touchClone) { respAssocState.touchClone.remove(); respAssocState.touchClone=null; }
+  if(respAssocState.touchSource) { respAssocState.touchSource.style.opacity=''; respAssocState.touchSource=null; }
+}
+function respAssocZoneTouchStart(e){
+  const zone=e.currentTarget;
+  const zi=parseInt(zone.dataset.index);
+  const di=respAssocState.placed[zi];
+  if(respAssocState.done) return;
+  if(di===undefined){ if(respAssocPoserSelection(zone)) e.preventDefault(); return; }
+  e.preventDefault();
+  delete respAssocState.placed[zi];
+  zone.innerHTML='<span style="opacity:.5">Glisse une définition ici…</span>';
+  zone.style.background='var(--purple-light)'; zone.style.border='2px dashed var(--purple)';
+  respAssocRetournerDef(di);
+}
+
 function validateSciRespAssoc(){
-  const pairs=respAssocState.pairs; let ok=0;
-  pairs.forEach((p,i)=>{ const zone=document.getElementById('resp-zone-'+i); if(!zone) return; const placed=respAssocState.placed[i]; if(placed!==undefined&&pairs[placed].def===p.def){zone.style.border='2px solid #16a34a';zone.style.background='#d4f5e2';ok++;}else{zone.style.border='2px solid #dc2626';zone.style.background='#fdd9d7';if(placed===undefined)zone.innerHTML='<span style="font-size:11px;color:#dc2626">— '+p.def+'</span>';} });
-  const total=pairs.length; const pct=Math.round(ok/total*100);
-  const panel=document.getElementById('resp-assoc-score'); panel.style.display='block';
-  panel.innerHTML=`<div style="font-size:48px;margin-bottom:.5rem">${pct>=70?'🎉':pct>=50?'👍':'💪'}</div><div style="font-weight:800;font-size:28px;color:${pct>=70?'var(--green)':pct>=50?'var(--amber)':'var(--red)'}">${ok}/${total} — ${pct}%</div><button class="btn" onclick="renderSciRespAssoc()" style="margin-top:1rem">🔄 Recommencer</button>`;
-  if(state.student) saveResult({student:state.student,cls:state.studentCls,className:CLASSES[state.studentCls]?CLASSES[state.studentCls].name:state.studentCls,activity:'sci_resp_assoc',bookTitle:'Respiratoire — Termes et définitions',score:ok,total,pct,date:new Date().toLocaleDateString('fr-BE'),time:new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})});
+  const st=respAssocState, now=Date.now();
+  if(st.done || now-st.lastClick<600) return;
+  st.lastClick=now;
+  const pairs=st.pairs;
+  const reste=pairs.length-Object.keys(st.placed).length;
+  const msg=document.getElementById('respassoc-msg');
+  if(reste>0){
+    if(msg){ msg.textContent='Place d\'abord toutes les définitions (il en reste '+reste+').'; msg.style.display='block'; }
+    return;
+  }
+  if(msg) msg.style.display='none';
+  st.done=true;
+  const vb=document.getElementById('respassoc-verif'); if(vb) vb.style.display='none';
+  document.querySelectorAll('#respassoc-def-pool .assoc-def').forEach(d=>d.draggable=false);
+  let score=0;
+  pairs.forEach((p,i)=>{
+    const zone=document.getElementById('respassoc-zone-'+i);
+    const di=respAssocState.placed[i];
+    const correct=di!==undefined && pairs[di].terme===p.terme;
+    if(correct){ score++; if(zone){zone.style.background='var(--green-light,#dcfce7)';zone.style.border='2px solid var(--green,#16a34a)';} }
+    else{ if(zone){zone.style.background='var(--red-light,#fee2e2)';zone.style.border='2px solid var(--red,#dc2626)'; const c=document.createElement('div'); c.style.cssText='font-size:11px;color:#1f5fbf;margin-top:4px;font-weight:700;line-height:1.35'; c.textContent='➜ '+p.def; zone.style.flexDirection='column'; zone.style.alignItems='flex-start'; zone.appendChild(c);} }
+  });
+  const total=pairs.length, pct=Math.round(score/total*100);
+  const color=pct>=70?'var(--green)':pct>=50?'var(--amber)':'var(--red)';
+  const emoji=pct>=70?'🎉':pct>=50?'👍':'💪';
+  const panel=document.getElementById('respassoc-score-panel');
+  panel.style.display='block';
+  panel.innerHTML=`<div class="card" style="text-align:center">
+    <div style="font-size:48px;margin-bottom:.5rem">${emoji}</div>
+    <div style="font-family:'Nunito',sans-serif;font-weight:800;font-size:32px;color:${color}">${score}/${total}</div>
+    <div style="font-size:16px;color:${color};font-weight:700;margin-bottom:1rem">${pct}%</div>
+    <button class="btn" onclick="renderSciRespAssoc()">🔄 Nouvel exercice</button>
+  </div>`;
+  panel.scrollIntoView({behavior:'smooth'});
+  if(state.student){
+    try{ saveResult({student:state.student,cls:state.studentCls,
+      className:CLASSES[state.studentCls]?CLASSES[state.studentCls].name:state.studentCls,
+      activity:'sci_resp_assoc',bookTitle:'Respiratoire — Termes et définitions',
+      score,total,pct,
+      date:new Date().toLocaleDateString('fr-BE'),
+      time:new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})
+    }); }catch(e){}
+  }
 }
+
 
 function renderSciRespOrdre() {
   const iframe = document.getElementById('iframe-sci-resp-ordre');

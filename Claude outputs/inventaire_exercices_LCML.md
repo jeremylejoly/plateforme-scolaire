@@ -2000,6 +2000,11 @@ Spécifique :
 - Moteur : message dans la page si des questions sont sans réponse (plus de validation incomplète comptée fausse), garde 600 ms, correction en bleu #1f5fbf (plus de vert pour une réponse non choisie), sauvegarde unique en try/catch, scroll conservé.
 - Tests Playwright 390 px : 300 tirages sans doublon de famille, bonne réponse répartie ~25 % par position, message « il en reste 10 », 1 erreur → 1 bonne réponse en bleu, 1 seule sauvegarde malgré 3 clics, pas de débordement. exercices_eveil.js?v=20261006a.
 
+### 06/10 — Éveil → Sciences → L'appareil respiratoire → Termes et définitions (`sci_resp_assoc`, index › SCI_RESP_ASSOC_DATA / renderSciRespAssoc / validateSciRespAssoc) — sw.js v643
+- Ancien moteur à 3 colonnes (débordait à 390 px, pas de toucher-placer, validation possible à vide/plusieurs fois, sauvegarde sans try/catch, pas de correction) remplacé par le moteur commun corrigé (Préhistoire/Antiquité/Moyen Âge) : ligne terme ↔ case, banque de définitions, glisser ou toucher puis case, message « il en reste N », garde 600 ms, bonne définition en bleu sous une case fausse, sauvegarde unique en try/catch.
+- Contenu : « Trachée » (au lieu de « Trachée artère »), « Cœur » ; définitions précisées pour éviter les ambiguïtés (oxygène/dioxyde de carbone : on expire aussi de l'oxygène ; diaphragme ; cage thoracique ; cœur = muscle qui pompe le sang) ; ajout « Fosses nasales ». 15 paires, 8 tirées.
+- Tests Playwright 390 px (toucher) : message à vide, placement par clic définition → case, 2 inversées → 6/8 avec 2 corrections bleues, 1 seule sauvegarde malgré 3 clics, pas de débordement.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2460,7 +2465,7 @@ Spécifique :
 | ✅ 06/10 | Appareil respiratoire — Le schéma | `sci_resp_schema` | index › renderSciRespSchema |  |
 | ✅ 06/10 | Appareil respiratoire — Trajet de l'air | `sci_resp_texte` | index › renderSciRespTexte |  |
 | ✅ 06/10 | Appareil respiratoire — QCM | `sci_resp_qcm` | index › renderSciRespQCM |  |
-| ⬜ | Appareil respiratoire — Termes et définitions | `sci_resp_assoc` | index › renderSciRespAssoc |  |
+| ✅ 06/10 | Appareil respiratoire — Termes et définitions | `sci_resp_assoc` | index › renderSciRespAssoc |  |
 | ⬜ | Appareil respiratoire — Remettre de l'ordre | `sci_resp_ordre` | index › renderSciRespOrdre |  |
 | ⬜ | Appareil digestif — La leçon | `fiche_digestif` | fiches/appareil-digestif.html |  |
 | ⬜ | Appareil digestif — Le schéma | `sci_dig_schema` | index › renderSciDigSchema |  |
