@@ -597,7 +597,15 @@
   "use strict";
   const N = 4;
   const TARGET = 2048;
-  const BEST_KEY = "game2048_best";
+  // Record par élève (avant : le même pour tous les élèves de l'appareil)
+  const BEST_KEY = (function(){
+    try {
+      const st = window.parent && window.parent !== window && window.parent.state;
+      if (st && st.student) return "game2048_best_" + (st.studentCls || "") + "_" + st.student;
+    } catch(e) {}
+    return "game2048_best";
+  })();
+  let bestAtStart = 0;
 
   /* Palette de couleurs Signature LCML pour chaque valeur de tuile */
   const TILE_COLORS = {
@@ -702,6 +710,7 @@
 
   function move(direction){
     if(gameOver) return;
+    if(!overlay.classList.contains("hidden")) return; // pas de coups cachés derrière la fenêtre de victoire
     const gainRef = { total: 0 };
     let moved = false;
     mergedCells = [];
@@ -850,7 +859,7 @@
   }
 
   function showGameOver(){
-    const isNewRecord = score >= best && score > 0;
+    const isNewRecord = score > bestAtStart && score > 0; // (avant : « record » aussi en cas d'égalité)
     if(isNewRecord) fireConfetti();
 
     overlayEmoji.textContent = isNewRecord ? "⭐" : "😅";
@@ -868,6 +877,7 @@
   }
 
   function startNewGame(){
+    bestAtStart = best;
     grid = emptyGrid();
     score = 0;
     hasWon = false;

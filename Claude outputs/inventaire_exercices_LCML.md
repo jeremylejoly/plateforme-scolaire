@@ -2250,6 +2250,8 @@ Spécifique :
 
 - **06/10 — Jeux › Tetris (`jeu_tetris`, index › renderJeuTetris, sw.js v715)** : fonctionnement correct (collisions, lignes, score 100/300/500/800 × niveau, accélération tous les 10 lignes, arrêt quand on quitte l'écran). Améliorations : rotation refusée contre un mur (la pièce restait bloquée, surtout la barre) → la pièce se décale d'une à trois cases pour pouvoir tourner ; tirage au hasard pur (longues séries sans barre) → tirage « par sac » (les 7 formes passent avant qu'une revienne). saveResult à chaque fin de partie retiré (règle jeux ; son « pourcentage » = score ÷ 50 n'avait pas de sens) → record personnel affiché en fin de partie, gardé par élève. Bouton « DROP » → « Chute ». Test Playwright 390 px : sac de 7 vérifié, rotation de la barre contre le mur droit, partie jusqu'au GAME OVER, aucune sauvegarde enseignant.
 
+- **06/10 — Jeux › 2048 (`jeu_2048`, 2048.html + public, sw.js v716)** : règles correctes (une tuile ne fusionne qu'une fois par coup, nouvelle tuile 2 ou 4, victoire à 2048 avec « Continuer », fin quand plus aucun coup) ; flèches, glisser du doigt et pavé tactile ; lien Accueil déjà caché dans le site. Petites corrections : record par élève (avant : commun à l'appareil) ; « Nouveau record ! » s'affichait aussi en cas d'égalité avec l'ancien record ; on pouvait encore jouer au clavier derrière la fenêtre de victoire → bloqué. Pas de saveResult. Test Playwright 390 px : partie jouée au pavé jusqu'à la fin (2 812 points), record enregistré, pas de débordement.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2848,7 +2850,7 @@ Spécifique :
 | ✅ 06/10 | Le Pendu des Mots | `jeu_pendu` | le_pendu.html (racine) |  |
 | ✅ 06/10 | Les Pentominos | `jeu_pentomino` | pentomino.html (racine) |  |
 | ✅ 06/10 | Le Nonogram | `jeu_nonogram` | nonogram.html (racine + public) |  |
-| ⬜ | 2048 | `jeu_2048` | index › (?) | (code à localiser) |
+| ✅ 06/10 | 2048 | `jeu_2048` | 2048.html (racine + public) |  |
 | ✅ 06/10 | Motus | `jeu_motus` | motus.html (racine + public) |  |
 | ✅ 06/10 | Le Tangram | `jeu_tangram` | tangram.html (racine + public) |  |
 | ⬜ | Le Démineur | `jeu_demineur` | index › (?) | (code à localiser) |
