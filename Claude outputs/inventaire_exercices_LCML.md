@@ -2037,6 +2037,12 @@ Spécifique :
 - Contenu : étapes simultanées fusionnées (mastication + salive → étape donnée « Dans la bouche, les dents mâchent les aliments et la salive les ramollit » ; « la bouillie passe dans l'intestin grêle » + « le foie et le pancréas déversent leurs sucs » → une étape) ; « sucs gastriques » → « suc gastrique » ; déglutition = « On avale » ; nutriments qui traversent la paroi de l'intestin grêle. 7 étapes à ordonner (+ la 1re donnée).
 - Tests Playwright 390 px (toucher réel CDP) : 2000 mélanges ≤ 2 étapes en place, ordre complet par toucher, glisser au doigt, rectum/anus inversés → 5/7 + 2 bleus, 1 sauvegarde malgré 3 clics, Entrée relance, pas de débordement.
 
+### 06/10 — Éveil → Sciences → L'appareil circulatoire → Le schéma du cœur (`sci_coeur`, index › SCI_COEUR_DATA / renderSciCoeurScreen / validateSciCoeur, image schema_vierge_coeur.png) — sw.js v650
+- Numéros 1–10 vérifiés sur l'image : artère pulmonaire, veine cave, oreillette droite, ventricule droit, muscle cardiaque (paroi de la pointe), artère aorte, veines pulmonaires, oreillette gauche, ventricule gauche, cloison — tous corrects.
+- Image chargée depuis l'URL GitHub Pages absolue → fichier local `schema_vierge_coeur.png` (même dépôt ; fonctionne hors ligne et en test local).
+- Moteur remplacé par celui des schémas respiratoire/digestif : grille auto (image puis tableau sur téléphone, avant 2 colonnes serrées), toucher une étiquette puis la case, message « il en reste N », garde 600 ms, validation unique (avant : clics répétés = sauvegardes multiples), bonne légende en bleu sous chaque case fausse (avant : seulement rouge), sauvegarde unique try/catch, total calculé (avant 10 en dur).
+- Tests Playwright 390 px (toucher) : message à vide, placement par toucher, 1/9 inversés → 8/10 + 2 bleus, 1 sauvegarde malgré 3 clics, pas de débordement.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2506,7 +2512,7 @@ Spécifique :
 | ✅ 06/10 | Appareil digestif — Termes et définitions | `sci_dig_assoc` | index › renderSciDigAssoc |  |
 | ✅ 06/10 | Appareil digestif — Remettre de l'ordre | `sci_dig_ordre` | index › renderSciDigOrdre |  |
 | ⬜ | Système circulatoire — La leçon | `fiche_circulatoire` | fiches/systeme-circulatoire.html |  |
-| ⬜ | Appareil circulatoire — Le cœur | `sci_coeur` | index › renderSciCoeurScreen |  |
+| ✅ 06/10 | Appareil circulatoire — Le cœur | `sci_coeur` | index › renderSciCoeurScreen |  |
 | ⬜ | Appareil circulatoire — Le trajet du sang | `sci_trajet_sang` | index › renderSciTrajetSangScreen |  |
 | ⬜ | Appareil circulatoire — QCM | `sci_circulatoire_qcm` | index › renderSciCirculatoireQCM |  |
 | ⬜ | Appareil circulatoire — Termes et définitions | `sci_circulatoire_assoc` | index › renderSciCirculatoireAssoc |  |

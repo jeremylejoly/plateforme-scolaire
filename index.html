@@ -28414,30 +28414,27 @@ const SCI_COEUR_DATA = [
   {num:10, label:"Cloison"},
 ];
 
-let sciCoeurState = {answers:{}, dragging:null};
+let sciCoeurState = {answers:{}, dragging:null, sel:null, done:false, lastClick:0};
+
 function renderSciCoeurScreen(){
   const body = document.getElementById('sci-coeur-body');
   if(!body) return;
-  sciCoeurState = {answers:{}, dragging:null};
+  sciCoeurState = {answers:{}, dragging:null, sel:null, done:false, lastClick:0};
   SCI_COEUR_DATA.forEach(d => { sciCoeurState.answers[d.num] = ''; });
+  const tags = shuffle(SCI_COEUR_DATA.map(d => d.label));
 
-  const tags = shuffle(SCI_COEUR_DATA.map(d=>d.label));
-
-  let tableHtml = `<table class="geo-table">
-    <thead><tr><th>N°</th><th>Légende</th></tr></thead><tbody>`;
+  let tableHtml = `<table class="geo-table"><thead><tr><th>N°</th><th>Légende</th></tr></thead><tbody>`;
   SCI_COEUR_DATA.forEach(d => {
-    tableHtml += `<tr>
-      <td>${d.num}</td>
-      <td><div class="geo-drop-zone" id="drop-coeur-${d.num}" data-num="${d.num}" onclick="coeurClearZone(this)"
-        ondragover="coeurDragOver(event)" ondrop="coeurDrop(event)" ondragleave="coeurDragLeave(event)"></div></td>
-    </tr>`;
+    tableHtml += `<tr><td>${d.num}</td><td>
+      <div class="geo-drop-zone" id="drop-coeur-${d.num}" data-num="${d.num}" onclick="coeurZoneClick(this)"
+        ondragover="coeurDragOver(event)" ondrop="coeurDrop(event)" ondragleave="coeurDragLeave(event)"></div>
+    </td></tr>`;
   });
   tableHtml += '</tbody></table>';
 
   let tagsHtml = '<div class="geo-tags-pool" id="coeur-tags-pool">';
   tags.forEach((t,i) => {
-    tagsHtml += `<div class="geo-tag" id="coeur-tag-${i}" draggable="true"
-      data-text="${t}" data-idx="${i}"
+    tagsHtml += `<div class="geo-tag" id="coeur-tag-${i}" draggable="true" data-text="${t}" data-idx="${i}" onclick="coeurSelect(this)"
       ondragstart="coeurDragStart(event)" ondragend="coeurDragEnd(event)"
       ontouchstart="coeurTouchStart(event)" ontouchmove="coeurTouchMove(event)" ontouchend="coeurTouchEnd(event)" ontouchcancel="coeurTouchCancel(event)"
     >${t}</div>`;
@@ -28446,49 +28443,64 @@ function renderSciCoeurScreen(){
 
   body.innerHTML = `
     <div class="card" style="margin-bottom:1rem;padding:0.8rem 1rem;background:var(--purple-light);border:1px solid var(--purple);">
-      <p style="margin:0;font-size:13px;color:var(--purple);font-weight:700">Glisse chaque partie du cœur dans la bonne case du tableau.</p>
+      <p style="margin:0;font-size:13px;color:var(--purple);font-weight:700">Glisse chaque partie du cœur dans la bonne case du tableau (ou touche une étiquette, puis la case).</p>
     </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start;">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;align-items:start;">
       <div>
-        <img src="https://jeremylejoly.github.io/plateforme-scolaire/schema_vierge_coeur.png" alt="Schéma du cœur" style="width:100%;border-radius:6px;border:2px solid var(--border);">
+        <img src="schema_vierge_coeur.png" alt="Schéma du cœur" style="width:100%;max-width:520px;display:block;margin:0 auto;border-radius:6px;border:2px solid var(--border);">
         ${tagsHtml}
       </div>
       <div>
         ${tableHtml}
-        <button class="btn" onclick="validateSciCoeur()" style="width:100%;margin-bottom:1rem">✅ Valider</button>
-        <div id="coeur-score-panel" style="display:none" class="geo-score-panel"></div>
+        <div id="coeur-msg" style="display:none;margin:.5rem 0;padding:.6rem .9rem;border-radius:8px;background:#fff7ed;border:1.5px solid #f59e0b;color:#92400e;font-size:13px;font-weight:700;text-align:center"></div>
+        <button class="btn" id="coeur-valider" onclick="validateSciCoeur()" style="width:100%;margin-bottom:1rem">✅ Valider</button>
+        <div id="coeur-score" style="display:none" class="geo-score-panel"></div>
       </div>
-    </div>
-  `;
+    </div>`;
 }
 
-function coeurDragStart(e){ e.dataTransfer.setData('text/plain',e.currentTarget.dataset.text); e.currentTarget.style.opacity='0.5'; }
+function coeurDragStart(e){ if(sciCoeurState.done){ e.preventDefault(); return; } e.dataTransfer.setData('text/plain', e.currentTarget.dataset.text); e.currentTarget.style.opacity='0.5'; }
 function coeurDragEnd(e){ e.currentTarget.style.opacity=''; }
 function coeurDragOver(e){ e.preventDefault(); e.currentTarget.classList.add('drag-over'); }
 function coeurDragLeave(e){ e.currentTarget.classList.remove('drag-over'); }
 function coeurDrop(e){
   e.preventDefault();
-  const zone=e.currentTarget; zone.classList.remove('drag-over');
+  const zone = e.currentTarget; zone.classList.remove('drag-over');
   coeurPlaceTag(zone, e.dataTransfer.getData('text/plain'), parseInt(zone.dataset.num));
 }
 function coeurPlaceTag(zone, text, num){
-  const old=zone.textContent.trim();
+  if(sciCoeurState.done || !text) return;
+  const old = zone.textContent.trim();
   if(old) coeurReturnTag(old);
-  zone.textContent=text; zone.classList.add('filled');
-  sciCoeurState.answers[num]=text; coeurMarkUsed(text);
+  zone.textContent = text; zone.classList.add('filled');
+  sciCoeurState.answers[num] = text; coeurMarkUsed(text);
+  coeurClearSel();
+  const m = document.getElementById('coeur-msg'); if(m) m.style.display='none';
 }
 function coeurReturnTag(text){
-  const pool=document.getElementById('coeur-tags-pool'); if(!pool) return;
-  pool.querySelectorAll('.geo-tag').forEach(t=>{ if(t.dataset.text===text&&t.classList.contains('used')) t.classList.remove('used'); });
+  const pool = document.getElementById('coeur-tags-pool'); if(!pool) return;
+  let done=false;
+  pool.querySelectorAll('.geo-tag').forEach(t => { if(!done && t.dataset.text===text && t.classList.contains('used')){ t.classList.remove('used'); done=true; } });
 }
 function coeurMarkUsed(text){
-  const pool=document.getElementById('coeur-tags-pool'); if(!pool) return;
-  let found=false;
-  pool.querySelectorAll('.geo-tag').forEach(t=>{ if(t.dataset.text===text&&!t.classList.contains('used')&&!found){t.classList.add('used');found=true;} });
+  const pool = document.getElementById('coeur-tags-pool'); if(!pool) return;
+  let found = false;
+  pool.querySelectorAll('.geo-tag').forEach(t => { if(t.dataset.text===text && !t.classList.contains('used') && !found){ t.classList.add('used'); found=true; } });
 }
-function coeurClearZone(zone){
-  const panel = document.getElementById('coeur-score-panel');
-  if (panel && panel.style.display === 'block') return;
+function coeurClearSel(){
+  sciCoeurState.sel = null;
+  document.querySelectorAll('#coeur-tags-pool .geo-tag').forEach(t => t.style.outline='');
+}
+function coeurSelect(tag){
+  if(sciCoeurState.done || !tag || tag.classList.contains('used')) return;
+  const same = sciCoeurState.sel === tag;
+  coeurClearSel();
+  if(!same){ sciCoeurState.sel = tag; tag.style.outline='3px solid #f59e0b'; }
+}
+function coeurZoneClick(zone){
+  if(sciCoeurState.done) return;
+  const sel = sciCoeurState.sel;
+  if(sel){ coeurPlaceTag(zone, sel.dataset.text, parseInt(zone.dataset.num)); return; }
   const num = parseInt(zone.dataset.num);
   const text = sciCoeurState.answers[num];
   if(!text) return;
@@ -28496,14 +28508,17 @@ function coeurClearZone(zone){
   coeurReturnTag(text);
   sciCoeurState.answers[num] = '';
 }
+// conservé pour compatibilité
+function coeurClearZone(zone){ coeurZoneClick(zone); }
 
-let coeurTouchEl=null, coeurTouchClone=null;
+let coeurTouchEl=null, coeurTouchClone=null, coeurTouchX=0, coeurTouchY=0;
 function coeurTouchStart(e){
-  const tag=e.currentTarget; if(tag.classList.contains('used')) return;
+  const tag=e.currentTarget; if(tag.classList.contains('used') || sciCoeurState.done) return;
   coeurTouchEl=tag;
+  const touch=e.touches[0];
+  coeurTouchX=touch.clientX; coeurTouchY=touch.clientY;
   const clone=tag.cloneNode(true);
   clone.style.cssText='position:fixed;z-index:9999;opacity:.85;pointer-events:none;transform:scale(1.1);';
-  const touch=e.touches[0];
   clone.style.left=(touch.clientX-40)+'px'; clone.style.top=(touch.clientY-20)+'px';
   document.body.appendChild(clone); coeurTouchClone=clone; tag.style.opacity='0.4';
 }
@@ -28511,62 +28526,68 @@ function coeurTouchMove(e){
   e.preventDefault(); if(!coeurTouchClone) return;
   const touch=e.touches[0];
   coeurTouchClone.style.left=(touch.clientX-40)+'px'; coeurTouchClone.style.top=(touch.clientY-20)+'px';
-  document.querySelectorAll('.geo-drop-zone').forEach(z=>z.classList.remove('drag-over'));
   geoAutoScroll(touch);
-  const zone = geoZoneAtTouch(touch);
-  if(zone) zone.classList.add('drag-over');
 }
 function coeurTouchEnd(e){
-  if(!coeurTouchClone||!coeurTouchEl) return;
+  if(!coeurTouchClone) return;
+  e.preventDefault();
   const touch=e.changedTouches[0];
-  document.body.removeChild(coeurTouchClone); coeurTouchClone=null; coeurTouchEl.style.opacity='';
-  document.querySelectorAll('.geo-drop-zone').forEach(z=>z.classList.remove('drag-over'));
+  coeurTouchClone.remove(); coeurTouchClone=null;
   geoStopAutoScroll();
-  const zone = geoZoneAtTouch(touch);
-  if(zone) coeurPlaceTag(zone,coeurTouchEl.dataset.text,parseInt(zone.dataset.num));
+  if(coeurTouchEl) coeurTouchEl.style.opacity='';
+  const zone=geoZoneAtTouch(touch);
+  if(zone && coeurTouchEl){
+    coeurPlaceTag(zone, coeurTouchEl.dataset.text, parseInt(zone.dataset.num));
+  } else if(coeurTouchEl && Math.abs(touch.clientX-coeurTouchX)<10 && Math.abs(touch.clientY-coeurTouchY)<10){
+    coeurSelect(coeurTouchEl);
+  }
   coeurTouchEl=null;
 }
 function coeurTouchCancel(e){
-  geoStopAutoScroll();
-  if(coeurTouchClone) {
-    if(coeurTouchClone.parentNode) coeurTouchClone.parentNode.removeChild(coeurTouchClone);
-    coeurTouchClone=null;
-  }
+  if(coeurTouchClone) { coeurTouchClone.remove(); coeurTouchClone=null; }
   if(coeurTouchEl) { coeurTouchEl.style.opacity=''; coeurTouchEl=null; }
-  document.querySelectorAll('.geo-drop-zone').forEach(z=>z.classList.remove('drag-over'));
 }
 
 function validateSciCoeur(){
-  let score=0; const total=10;
-  SCI_COEUR_DATA.forEach(d=>{
-    const zone=document.getElementById('drop-coeur-'+d.num);
-    const ok=sciCoeurState.answers[d.num]===d.label;
-    if(ok){ score++; zone.classList.remove('filled'); zone.classList.add('correct'); }
-    else { zone.classList.remove('filled'); zone.classList.add('incorrect'); if(!zone.textContent.trim()) zone.textContent='—'; }
-  });
-  const pct=Math.round(score/total*100);
-  const color=pct>=70?'var(--green)':pct>=50?'var(--amber)':'var(--red)';
-  const panel=document.getElementById('coeur-score-panel');
-  panel.style.display='block';
-  panel.innerHTML=`
-    <div style="font-size:48px;margin-bottom:0.5rem">${pct>=70?'🎉':pct>=50?'👍':'💪'}</div>
-    <div style="font-family:'Nunito',sans-serif;font-weight:800;font-size:32px;color:${color}">${score}/${total}</div>
-    <div style="font-size:16px;color:${color};font-weight:700;margin-bottom:1rem">${pct}%</div>
-    <p style="font-size:13px;color:var(--muted);margin-bottom:1rem">Les cases <span style="color:var(--red)">rouges</span> indiquent les erreurs.</p>
-    <button class="btn" onclick="renderSciCoeurScreen()">🔄 Recommencer</button>
-  `;
-  panel.scrollIntoView({behavior:'smooth'});
-  if(state.student){
-    saveResult({
-      student:state.student, cls:state.studentCls,
-      className:CLASSES[state.studentCls]?CLASSES[state.studentCls].name:state.studentCls,
-      activity:'sci_coeur',
-      bookTitle:'Le cœur — Légender le schéma',
-      score, total, pct,
-      date:new Date().toLocaleDateString('fr-BE'),
-      time:new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})
-    });
+  const st = sciCoeurState, now = Date.now();
+  if(st.done || now - st.lastClick < 600) return;
+  st.lastClick = now;
+  const vides = SCI_COEUR_DATA.filter(d => !st.answers[d.num]).length;
+  const msg = document.getElementById('coeur-msg');
+  if(vides > 0){
+    if(msg){ msg.textContent = vides === 1 ? 'Place d\'abord la dernière étiquette.' : 'Place d\'abord toutes les étiquettes (il en reste ' + vides + ').'; msg.style.display = 'block'; }
+    return;
   }
+  if(msg) msg.style.display = 'none';
+  st.done = true;
+  coeurClearSel();
+  const vb = document.getElementById('coeur-valider'); if(vb) vb.style.display = 'none';
+  let ok=0;
+  SCI_COEUR_DATA.forEach(d => {
+    const zone = document.getElementById('drop-coeur-'+d.num);
+    if(!zone) return;
+    zone.style.cursor = 'default';
+    if(st.answers[d.num]===d.label){ zone.style.background='#d4f5e2'; zone.style.color='#166534'; zone.style.borderColor='#16a34a'; ok++; }
+    else {
+      zone.style.background='#fdd9d7'; zone.style.color='#991b1b'; zone.style.borderColor='#dc2626';
+      zone.style.flexDirection='column';
+      const c=document.createElement('div'); c.style.cssText='color:#1f5fbf;font-weight:800;font-size:12px;margin-top:2px'; c.textContent='➜ '+d.label;
+      zone.appendChild(c);
+    }
+  });
+  const total = SCI_COEUR_DATA.length;
+  const pct = Math.round(ok/total*100);
+  const panel = document.getElementById('coeur-score');
+  panel.style.display='block';
+  panel.innerHTML = `<div class="score-title">${ok}/${total} — ${pct}%</div>
+    <div class="score-msg">${pct===100?'Parfait ! 🏆':pct>=70?'Bien joué ! 👍':'Continue à réviser ! 💪'}</div>
+    ${ok<total?'<div class="score-msg" style="font-size:13px">La bonne légende est indiquée en <span style="color:#1f5fbf;font-weight:800">bleu</span>.</div>':''}
+    <button class="btn" onclick="renderSciCoeurScreen()" style="margin-top:.6rem">🔄 Recommencer</button>`;
+  if(state.student){ try{ saveResult({student:state.student,cls:state.studentCls,
+    className:CLASSES[state.studentCls]?CLASSES[state.studentCls].name:state.studentCls,
+    activity:'sci_coeur',bookTitle:'Le cœur — Légender le schéma',
+    score:ok,total,pct,date:new Date().toLocaleDateString('fr-BE'),
+    time:new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})}); }catch(e){} }
 }
 
 
