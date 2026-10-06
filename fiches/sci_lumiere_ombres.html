@@ -403,6 +403,17 @@
       background-color: #ef4444;
     }
 
+    .option-btn.missed {
+      background-color: #1f5fbf !important;
+      border-color: #0f172a;
+      color: #ffffff;
+    }
+
+    .option-btn.missed .option-letter {
+      background-color: #93c5fd;
+      color: #0f172a;
+    }
+
     .option-btn.neutral-disabled {
       background-color: #0f172a;
       opacity: 0.45;
@@ -798,30 +809,30 @@
       num: 4,
       text: "Si je remplace la balle en bois par une balle en verre transparent, qu'advient-il de l'ombre ?",
       options: [
-        { text: "Elle disparaît ou devient presque invisible", correct: true, letter: "A" },
-        { text: "Elle reste identique", correct: false, letter: "B" },
-        { text: "Elle devient plus noire", correct: false, letter: "C" }
+        { text: "Elle devient presque invisible", correct: true, letter: "A" },
+        { text: "Elle reste exactement identique", correct: false, letter: "B" },
+        { text: "Elle devient plus noire et plus nette", correct: false, letter: "C" }
       ],
-      explanation: "La balle en verre transparent laisse passer la lumière. Les rayons lumineux la traversent donc pour atteindre l'écran, ce qui fait disparaître l'ombre projetée (ou la rend presque invisible)."
+      explanation: "La balle en verre transparent laisse passer la lumière. Les rayons lumineux la traversent donc pour atteindre l'écran, ce qui fait disparaitre l'ombre projetée (ou la rend presque invisible)."
     },
     // --- EXP 2: BALLE MOBILE (Q5-Q8) ---
     {
       num: 5,
-      text: "Plus l'objet (la balle) est proche de la source de lumière, plus son ombre sur l'écran est...",
+      text: "Si on éloigne la balle de la lampe (en la rapprochant du mur), son ombre sur l'écran devient...",
       options: [
-        { text: "Grande", correct: true, letter: "A" },
-        { text: "Petite", correct: false, letter: "B" },
+        { text: "Plus petite", correct: true, letter: "A" },
+        { text: "Plus grande", correct: false, letter: "B" },
         { text: "Identique", correct: false, letter: "C" }
       ],
-      explanation: "Quand la balle se rapproche de la lampe, elle intercepte une plus grande partie du cône de lumière. Les rayons qui la contournent s'écartent beaucoup plus, agrandissant l'ombre sur le mur."
+      explanation: "Plus la balle est loin de la lampe, plus elle arrête une petite partie du cône de lumière : les rayons qui la frôlent s'écartent moins, et l'ombre sur le mur rétrécit. À l'inverse, une balle tout près de la lampe donne une très grande ombre."
     },
     {
       num: 6,
       text: "Si on colle l'objet (la balle) contre l'écran (le mur), qu'advient-il de la taille de l'ombre ?",
       options: [
-        { text: "Elle a presque exactement la même taille que la balle", correct: true, letter: "A" },
-        { text: "Elle devient deux fois plus grande", correct: false, letter: "B" },
-        { text: "Elle devient totalement invisible", correct: false, letter: "C" }
+        { text: "Elle a presque la même taille que la balle", correct: true, letter: "A" },
+        { text: "Elle devient deux fois plus grande que la balle", correct: false, letter: "B" },
+        { text: "Elle devient beaucoup plus petite que la balle", correct: false, letter: "C" }
       ],
       explanation: "Lorsque l'objet est collé à l'écran, les rayons lumineux n'ont pas la distance nécessaire pour s'écarter après avoir contourné l'objet. L'ombre fait donc presque exactement la taille réelle de l'objet."
     },
@@ -852,7 +863,9 @@
   let userAnswers = []; // records boolean values
   let selectedOptionIdx = null;
   let questionAnswered = false;
-  
+  let resultSaved = false;
+  let actionLock = 0;
+
   // Simulation positions
   let currentTab = 'tab1'; // 'tab1' or 'tab2'
   let x_light = 200; // variable in tab1, fixed at 120 in tab2
@@ -1204,7 +1217,21 @@
   // ────────────────────────────────────────────────────────────────
   // QUIZ CONTROL & SYSTEM LOGIC
   // ────────────────────────────────────────────────────────────────
+  function shuffleOptions() {
+    const letters = ['A', 'B', 'C', 'D'];
+    questions.forEach(q => {
+      const o = q.options;
+      for (let i = o.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [o[i], o[j]] = [o[j], o[i]];
+      }
+      o.forEach((opt, idx) => { opt.letter = letters[idx]; });
+    });
+  }
+
   function initQuiz() {
+    shuffleOptions();
+    resultSaved = false;
     currentQuestionIdx = 0;
     score = 0;
     userAnswers = [];
@@ -1298,7 +1325,11 @@
   }
 
   function onActionButtonClick() {
+    if (selectedOptionIdx === null) return;
+    // garde anti double clic : on ne passe pas à la suite moins de 600 ms après la validation
+    if (questionAnswered && Date.now() - actionLock < 600) return;
     if (!questionAnswered) {
+      actionLock = Date.now();
       validateAnswer();
     } else {
       nextQuestion();
@@ -1329,8 +1360,12 @@
     
     q.options.forEach((opt, idx) => {
       buttons[idx].disabled = true;
-      if (opt.correct) {
+      buttons[idx].style.backgroundColor = '';
+      buttons[idx].style.borderColor = '';
+      if (opt.correct && idx === selectedOptionIdx) {
         buttons[idx].className = 'option-btn correct';
+      } else if (opt.correct) {
+        buttons[idx].className = 'option-btn missed';
       } else if (idx === selectedOptionIdx) {
         buttons[idx].className = 'option-btn incorrect';
       } else {
@@ -1389,7 +1424,7 @@
       triggerConfettiShower();
     } else if (score >= 5) {
       emojiEl.textContent = '👏';
-      detailsEl.innerHTML = `Pas mal du tout ! Tu as obtenu un score de <strong>${percent}%</strong> (${score}/${questions.length}). Recommence l'activité pour obtenir le score parfait !`;
+      detailsEl.innerHTML = `Pas mal du tout ! Tu as obtenu un score de <strong>${percent} %</strong> (${score}/${questions.length}). Recommence l'activité pour obtenir le score parfait !`;
       playSound('success_step');
     } else {
       emojiEl.textContent = '💪';
@@ -1397,19 +1432,32 @@
       playSound('error');
     }
     
-    // Persist result on the school server
-    if (window.parent && window.parent.saveResult) {
-      window.parent.saveResult({
-        activity: 'sci_lumiere_ombres',
-        bookTitle: "Sciences — Ombres et Lumière",
-        score: score,
-        total: questions.length,
-        pct: percent,
-        date: new Date().toLocaleDateString('fr-BE'),
-        time: new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })
-      });
+    // Persist result on the school server (une seule fois)
+    if (!resultSaved) {
+      resultSaved = true;
+      try {
+        if (window.parent && window.parent !== window && typeof window.parent.saveResult === 'function') {
+          window.parent.saveResult({
+            activity: 'sci_lumiere_ombres',
+            bookTitle: "Sciences — Ombres et Lumière",
+            score: score,
+            total: questions.length,
+            pct: percent,
+            date: new Date().toLocaleDateString('fr-BE'),
+            time: new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })
+          });
+        }
+      } catch (e) { console.warn('saveResult', e); }
     }
   }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Enter') return;
+    const btn = document.getElementById('btn-action');
+    if (!btn || btn.style.display === 'none' || document.getElementById('quiz-card').style.display === 'none') return;
+    e.preventDefault();
+    onActionButtonClick();
+  });
 
   function restartExercise() {
     playSound('click');

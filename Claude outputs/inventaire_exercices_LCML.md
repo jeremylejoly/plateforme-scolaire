@@ -2166,6 +2166,8 @@ Spécifique :
 
 - **06/10 — Informations sur les planètes + quiz (`sci_planetes_infos` / `sci_planetes_qcm`, sw.js v674)** : **le quiz n'enregistrait jamais la note** (`window.state` est toujours vide car `state` est déclaré avec `let`) → corrigé. **Même erreur dans le Service Worker** (`lcmlPeutRecharger`, en tête d'index.html) : la page pouvait se recharger en plein exercice lors d'une mise à jour (retour au premier plan après 10 min, ou mise à jour détectée) → corrigé, vérifié (accueil : rechargement permis ; élève connecté : refusé). Fiches : nombres de lunes mis à jour (Jupiter 115, Saturne 293 — NASA, 2026 ; Uranus 29), « N/A » → texte français, comètes (période de quelques années à des milliers d'années, pas « 75 ans »), Mercure −180 °C (cohérent avec le quiz), rotation de Saturne 10 h 33, masse de la ceinture ≈ 3 % de la Lune, Jupiter « protège en partie ». Carte : liste de boutons sous l'image (les zones sont minuscules à 390 px). Quiz : banque réécrite (20 questions, distracteurs plausibles au lieu de blagues, la bonne réponse n'est plus la plus longue — vérifié par script), familles `k` (Vénus la plus chaude / pourquoi Vénus plus chaude ; Mercure 88 jours / Mercure froide la nuit), question hypothétique remplacée par « planète la plus éloignée » (Pluton en distracteur), alert → message dans la page, bonne réponse manquée en bleu, total = nombre de questions, sauvegarde en try/catch. Test Playwright 390 px : 8/10, 1 seule sauvegarde, pas de débordement.
 
+- **06/10 — Ombres & Lumière (`sci_lumiere_ombres`, sw.js v675)** : géométrie de la simulation vérifiée (tangentes exactes depuis la lampe, ombre portée, balle en verre sans ombre). Les deux copies avaient divergé : celle de `fiches/` (chargée par le site) avait **toujours la bonne réponse en A**, celle de `public/` un mélange biaisé (`sort(random)`) → mélange Fisher–Yates dans les deux, copies identiques. Q5 était la même question que Q1 (« plus la balle est proche de la lampe, plus l'ombre est… grande ») → inversée (« si on éloigne la balle de la lampe… plus petite »). Options rééquilibrées (Q4 verre, Q6 balle contre le mur : la bonne n'est plus la plus longue). Bonne réponse manquée en bleu, garde 600 ms entre validation et question suivante + Entrée, sauvegarde unique en try/catch, « disparaître » → « disparaitre ». Test Playwright 390 px : 7/8, 1 seule sauvegarde, double clic sans saut, pas de débordement.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2671,7 +2673,7 @@ Spécifique :
 | ✅ 06/10 | Les réseaux trophiques | `sci_reseaux_trophiques` | fiches/sci_reseaux_trophiques.html |  |
 | ✅ 06/10 | Les énergies (Tri & conversions) | `sci_energie_tri` | fiches/sci_energie_tri.html |  |
 | ✅ 06/10 | Laboratoire d'Électricité | `sci_electricite_labo` | fiches/sci_electricite_labo.html |  |
-| ⬜ | Ombres & Lumière | `sci_lumiere_ombres` | fiches/sci_lumiere_ombres.html |  |
+| ✅ 06/10 | Ombres & Lumière | `sci_lumiere_ombres` | fiches/sci_lumiere_ombres.html |  |
 | ⬜ | Les éclipses | `sci_eclipses` | index › renderSciEclipses |  |
 | ✅ 06/10 | Les engrenages | `sci_engrenages` | fiches/sci_mecanique_engrenages.html |  |
 | ✅ 06/10 | Leviers et balances | `sci_mecanique_leviers` | index › renderSciMecaniqueLeviers |  |
