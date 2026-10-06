@@ -237,6 +237,19 @@
       box-shadow: 6px 6px 0px var(--green);
       color: #166534;
     }
+    .drag-card.selected { outline: 3px solid #f59e0b; outline-offset: 2px; }
+    .drag-card.locked { cursor: default; }
+    .fix { display:block; margin-top:4px; font-size:0.85rem; font-weight:800; color:#1f5fbf; }
+    .msg-info { display:none; margin-top:1rem; padding:.6rem .9rem; border-radius:8px; background:#fff7ed; border:1.5px solid #f59e0b; color:#92400e; font-size:.9rem; font-weight:700; text-align:center; }
+    @media (max-width: 480px) {
+      body { padding: 1rem .5rem; }
+      .card { padding: 1.1rem .9rem; box-shadow: 4px 4px 0px var(--border); }
+      h1 { font-size: 1.3rem; gap: 8px; }
+      .step-row { gap: 8px; }
+      .step-num { min-width: 24px; font-size: 1rem; }
+      .drag-card, .given-card { padding: .6rem .7rem; font-size: .9rem; gap: 8px; }
+      .insert-line { margin-left: 32px; }
+    }
     .result-msg.partial {
       display: block;
       background: var(--amber-light);
@@ -249,7 +262,7 @@
 <body>
 <div class="card">
   <h1>🫁 Le trajet de l'air — dans l'ordre</h1>
-  <div class="instr">Remets les étapes du trajet de l'air dans le bon ordre en les faisant glisser.</div>
+  <div class="instr">Remets les étapes du trajet de l'air dans le bon ordre : fais-les glisser, ou touche une étape puis l'endroit où elle doit aller.</div>
 
   <div class="step-row">
     <div class="step-num">1.</div>
@@ -261,34 +274,36 @@
 
   <div id="list-container"></div>
 
-  <button class="btn-verify" onclick="verify()">✅ Vérifier l'ordre</button>
-  <button class="btn-reset" onclick="init()">↺ Mélanger à nouveau</button>
+  <button class="btn-verify" id="btn-verify" onclick="verify()">✅ Vérifier l'ordre</button>
+  <button class="btn-reset" id="btn-reset" onclick="init()">↺ Mélanger à nouveau</button>
   <div class="result-msg" id="result"></div>
 </div>
 
 <script>
   const STEPS = [
-    "L'air passe par le pharynx (gorge)",
-    "L'air descend dans la trachée artère",
-    "La trachée se divise en deux bronches",
-    "Les bronches se ramifient en bronchioles",
+    "L'air passe par la gorge (pharynx, puis larynx)",
+    "L'air descend dans la trachée",
+    "L'air passe dans les deux bronches, une pour chaque poumon",
+    "L'air circule dans les bronchioles, de plus en plus fines",
     "L'air arrive dans les alvéoles pulmonaires",
-    "L'oxygène passe dans le sang",
-    "Le dioxyde de carbone passe du sang vers les alvéoles",
-    "L'air chargé de CO₂ remonte par les bronchioles, bronches et trachée",
-    "L'air sort par la bouche ou le nez"
+    "Dans les alvéoles, l'oxygène passe dans le sang et le dioxyde de carbone passe du sang dans l'air",
+    "L'air chargé de dioxyde de carbone remonte par les bronchioles, les bronches et la trachée",
+    "L'air sort par le nez ou la bouche"
   ];
+  const N = STEPS.length;
 
   let order = [];
   let dragSrcIdx = null;
   let insertIdx = null;
   let highlights = null;
+  let done = false, saved = false, lastClick = 0, sel = null;
 
   // Touch state
   let touchStartIdx = null;
   let touchActiveEl = null;
   let touchClone = null;
   let touchInsertIdx = null;
+  let touchX = 0, touchY = 0, touchMoved = false;
 
   function shuffle(arr) {
     let a = [...arr];
@@ -296,20 +311,43 @@
       let j = Math.floor(Math.random() * (i + 1));
       [a[i], a[j]] = [a[j], a[i]];
     }
-    if (a.every((v, i) => v === arr[i])) return shuffle(arr);
+    // jamais déjà (presque) en ordre : au moins la moitié des étapes déplacées
+    if (a.filter((v, i) => v === arr[i]).length > Math.floor(arr.length / 2) - 1) return shuffle(arr);
     return a;
   }
 
   function init() {
     order = shuffle(STEPS);
-    highlights = null;
-    render();
+    highlights = null; done = false; saved = false; sel = null;
     document.getElementById('result').style.display = 'none';
+    document.getElementById('result').className = 'result-msg';
+    document.getElementById('btn-verify').style.display = '';
+    document.getElementById('btn-reset').textContent = '↺ Mélanger à nouveau';
+    render();
+  }
+
+  function moveItem(from, insertBefore) {
+    if (insertBefore === from || insertBefore === from + 1) return false;
+    const item = order.splice(from, 1)[0];
+    order.splice(insertBefore > from ? insertBefore - 1 : insertBefore, 0, item);
+    return true;
+  }
+
+  function cardClick(i) {
+    if (done) return;
+    if (sel === null) { sel = i; render(); return; }
+    if (sel === i) { sel = null; render(); return; }
+    // l'étape choisie prend la place de l'étape touchée
+    const item = order.splice(sel, 1)[0];
+    order.splice(i, 0, item);
+    sel = null;
+    render();
   }
 
   function render() {
-    const container = document.getElementById('list-container');
-    container.innerHTML = '';
+    const old = document.getElementById('list-container');
+    const container = old.cloneNode(false); // nouveau conteneur = pas d'écouteurs empilés
+    old.replaceWith(container);
 
     order.forEach((text, i) => {
       const line = document.createElement('div');
@@ -327,31 +365,35 @@
 
       const card = document.createElement('div');
       card.className = 'drag-card';
-      if (highlights) card.classList.add(highlights[i] ? 'card-correct' : 'card-wrong');
-      card.draggable = true;
+      if (highlights) card.classList.add(highlights[i] ? 'card-correct' : 'card-wrong', 'locked');
+      if (sel === i) card.classList.add('selected');
+      card.draggable = !done;
       card.dataset.idx = i;
-      card.innerHTML = `<span class="drag-handle">☰</span><span>${text}</span>`;
+      card.innerHTML = done
+        ? `<span>${highlights[i] ? '✅ ' : '❌ '}${text}${highlights[i] ? '' : `<span class="fix">➜ ${STEPS[i]}</span>`}</span>`
+        : `<span class="drag-handle">☰</span><span>${text}</span>`;
 
-      // Mouse drag-and-drop events (Original robust centralized logic)
-      card.addEventListener('dragstart', e => {
-        dragSrcIdx = i;
-        insertIdx = null;
-        e.dataTransfer.effectAllowed = 'move';
-        e.dataTransfer.setData('text/plain', String(i));
-        setTimeout(() => card.classList.add('dragging'), 0);
-      });
-
-      card.addEventListener('dragend', () => {
-        card.classList.remove('dragging');
-        clearInsertLines();
-        dragSrcIdx = null;
-        insertIdx = null;
-      });
-
-      // Touch events (iPads and tablets support)
-      card.addEventListener('touchstart', handleTouchStart, { passive: false });
-      card.addEventListener('touchmove', handleTouchMove, { passive: false });
-      card.addEventListener('touchend', handleTouchEnd);
+      if (!done) {
+        card.addEventListener('dragstart', e => {
+          dragSrcIdx = i;
+          insertIdx = null;
+          sel = null;
+          e.dataTransfer.effectAllowed = 'move';
+          e.dataTransfer.setData('text/plain', String(i));
+          setTimeout(() => card.classList.add('dragging'), 0);
+        });
+        card.addEventListener('dragend', () => {
+          card.classList.remove('dragging');
+          clearInsertLines();
+          dragSrcIdx = null;
+          insertIdx = null;
+        });
+        card.addEventListener('click', () => cardClick(i));
+        card.addEventListener('touchstart', handleTouchStart, { passive: false });
+        card.addEventListener('touchmove', handleTouchMove, { passive: false });
+        card.addEventListener('touchend', handleTouchEnd, { passive: false });
+        card.addEventListener('touchcancel', handleTouchCancel);
+      }
 
       row.appendChild(num);
       row.appendChild(card);
@@ -363,154 +405,144 @@
     lastLine.dataset.insertBefore = order.length;
     container.appendChild(lastLine);
 
-    // Centralised dragover: compute insert position from all rows (Original robust logic)
+    if (done) return;
     container.addEventListener('dragover', e => {
       e.preventDefault();
       if (dragSrcIdx === null) return;
       e.dataTransfer.dropEffect = 'move';
-      const rows = [...container.querySelectorAll('.step-row')];
-      let newInsert = order.length;
-      for (let j = 0; j < rows.length; j++) {
-        const rect = rows[j].getBoundingClientRect();
-        if (e.clientY < rect.top + rect.height / 2) { newInsert = j; break; }
-      }
-      if (newInsert !== insertIdx) {
-        insertIdx = newInsert;
-        showInsertLine(insertIdx);
-      }
+      const newInsert = insertFromY(e.clientY);
+      if (newInsert !== insertIdx) { insertIdx = newInsert; showInsertLine(insertIdx); }
     });
-
-    // Reorder on drop (Original robust logic)
     container.addEventListener('drop', e => {
       e.preventDefault();
       if (dragSrcIdx === null || insertIdx === null) return;
-      if (insertIdx !== dragSrcIdx && insertIdx !== dragSrcIdx + 1) {
-        const item = order.splice(dragSrcIdx, 1)[0];
-        let target = insertIdx;
-        if (insertIdx > dragSrcIdx) target--;
-        order.splice(target, 0, item);
-        highlights = null;
-        document.getElementById('result').style.display = 'none';
-      }
+      moveItem(dragSrcIdx, insertIdx);
       clearInsertLines();
       dragSrcIdx = null;
       insertIdx = null;
       render();
     });
-
     container.addEventListener('dragleave', e => {
-      if (!container.contains(e.relatedTarget)) {
-        clearInsertLines();
-        insertIdx = null;
-      }
+      if (!container.contains(e.relatedTarget)) { clearInsertLines(); insertIdx = null; }
     });
   }
 
-  // Touch Handlers
+  function insertFromY(y) {
+    const rows = [...document.querySelectorAll('#list-container .step-row')];
+    for (let j = 0; j < rows.length; j++) {
+      const rect = rows[j].getBoundingClientRect();
+      if (y < rect.top + rect.height / 2) return j;
+    }
+    return order.length;
+  }
+
+  // Toucher : glisser pour déplacer, ou simple toucher pour sélectionner
   function handleTouchStart(e) {
+    if (done) return;
     const card = e.currentTarget;
-    const idx = parseInt(card.dataset.idx);
-    touchStartIdx = idx;
+    touchStartIdx = parseInt(card.dataset.idx);
     touchActiveEl = card;
-    
-    touchClone = card.cloneNode(true);
-    touchClone.style.position = 'fixed';
-    touchClone.style.zIndex = '9999';
-    touchClone.style.width = card.offsetWidth + 'px';
-    touchClone.style.opacity = '0.9';
-    touchClone.style.pointerEvents = 'none';
-    touchClone.style.boxShadow = '6px 6px 0px var(--border)';
-    
-    const touch = e.touches[0];
-    touchClone.style.left = (touch.clientX - card.offsetWidth / 2) + 'px';
-    touchClone.style.top = (touch.clientY - 20) + 'px';
-    
-    document.body.appendChild(touchClone);
-    card.classList.add('dragging');
+    const t = e.touches[0];
+    touchX = t.clientX; touchY = t.clientY; touchMoved = false; touchInsertIdx = null;
   }
 
   function handleTouchMove(e) {
-    if (!touchClone) return;
+    if (touchActiveEl === null) return;
+    const t = e.touches[0];
+    if (!touchMoved && Math.abs(t.clientX - touchX) < 8 && Math.abs(t.clientY - touchY) < 8) return;
     e.preventDefault();
-    const touch = e.touches[0];
-    touchClone.style.left = (touch.clientX - touchClone.offsetWidth / 2) + 'px';
-    touchClone.style.top = (touch.clientY - 20) + 'px';
-    
-    const container = document.getElementById('list-container');
-    const rows = [...container.querySelectorAll('.step-row')];
-    let newInsert = order.length;
-    for (let j = 0; j < rows.length; j++) {
-      const rect = rows[j].getBoundingClientRect();
-      if (touch.clientY < rect.top + rect.height / 2) { newInsert = j; break; }
+    if (!touchMoved) {
+      touchMoved = true; sel = null;
+      touchActiveEl.classList.remove('selected');
+      touchClone = touchActiveEl.cloneNode(true);
+      touchClone.style.position = 'fixed';
+      touchClone.style.zIndex = '9999';
+      touchClone.style.width = touchActiveEl.offsetWidth + 'px';
+      touchClone.style.opacity = '0.9';
+      touchClone.style.pointerEvents = 'none';
+      document.body.appendChild(touchClone);
+      touchActiveEl.classList.add('dragging');
     }
-    
-    if (newInsert !== touchInsertIdx) {
-      touchInsertIdx = newInsert;
-      showInsertLine(touchInsertIdx);
-    }
+    touchClone.style.left = (t.clientX - touchClone.offsetWidth / 2) + 'px';
+    touchClone.style.top = (t.clientY - 20) + 'px';
+    const newInsert = insertFromY(t.clientY);
+    if (newInsert !== touchInsertIdx) { touchInsertIdx = newInsert; showInsertLine(touchInsertIdx); }
   }
 
   function handleTouchEnd(e) {
-    if (!touchClone) return;
-    touchClone.remove();
-    touchClone = null;
-    
+    if (touchActiveEl === null) return;
+    if (!touchMoved) { touchActiveEl = null; return; } // simple toucher → l'événement click gère la sélection
+    e.preventDefault();
+    if (touchClone) { touchClone.remove(); touchClone = null; }
+    touchActiveEl.classList.remove('dragging');
+    clearInsertLines();
+    if (touchInsertIdx !== null) moveItem(touchStartIdx, touchInsertIdx);
+    touchStartIdx = null; touchActiveEl = null; touchInsertIdx = null;
+    render();
+  }
+
+  function handleTouchCancel() {
+    if (touchClone) { touchClone.remove(); touchClone = null; }
     if (touchActiveEl) touchActiveEl.classList.remove('dragging');
     clearInsertLines();
-    
-    if (touchInsertIdx !== null && touchInsertIdx !== touchStartIdx && touchInsertIdx !== touchStartIdx + 1) {
-      const item = order.splice(touchStartIdx, 1)[0];
-      let target = touchInsertIdx;
-      if (touchInsertIdx > touchStartIdx) target--;
-      order.splice(target, 0, item);
-      highlights = null;
-      document.getElementById('result').style.display = 'none';
-      render();
-    }
-    
-    touchStartIdx = null;
-    touchActiveEl = null;
-    touchInsertIdx = null;
+    touchStartIdx = null; touchActiveEl = null; touchInsertIdx = null;
   }
 
   function showInsertLine(idx) {
-    document.querySelectorAll('.insert-line').forEach(l => l.classList.remove('visible'));
-    const lines = document.querySelectorAll('.insert-line');
+    const lines = document.querySelectorAll('#list-container .insert-line');
+    lines.forEach(l => l.classList.remove('visible'));
     if (lines[idx]) lines[idx].classList.add('visible');
   }
 
-  // Clear lines helper
   function clearInsertLines() {
     document.querySelectorAll('.insert-line').forEach(l => l.classList.remove('visible'));
   }
 
   function verify() {
+    const now = Date.now();
+    if (done || now - lastClick < 600) return;
+    lastClick = now;
+    done = true; sel = null;
     highlights = order.map((text, i) => text === STEPS[i]);
     render();
     const correct = highlights.filter(Boolean).length;
+    const pct = Math.round(correct / N * 100);
     const msg = document.getElementById('result');
-    if (correct === 9) {
+    if (correct === N) {
       msg.className = 'result-msg success';
       msg.innerHTML = '🎉 Bravo ! Toutes les étapes sont dans le bon ordre !';
     } else {
       msg.className = 'result-msg partial';
-      msg.innerHTML = `${correct}/9 étapes correctes. Les cases en rouge sont à corriger !`;
+      msg.innerHTML = `${correct}/${N} étapes à la bonne place.<br><span style="font-size:1rem">La bonne étape est écrite en <span style="color:#1f5fbf">bleu</span> sous chaque case rouge.</span>`;
     }
+    msg.style.display = 'block';
+    document.getElementById('btn-verify').style.display = 'none';
+    document.getElementById('btn-reset').textContent = '🔄 Recommencer';
 
-    // Save score to parent dashboard
-    if (window.parent && window.parent.saveResult) {
-      const pct = Math.round(correct / 9 * 100);
-      window.parent.saveResult({
-        activity: 'sci_resp_ordre',
-        bookTitle: "Respiratoire — Remettre dans l'ordre",
-        score: correct,
-        total: 9,
-        pct: pct,
-        date: new Date().toLocaleDateString('fr-BE'),
-        time: new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })
-      });
+    if (!saved) {
+      saved = true;
+      try {
+        if (window.parent && window.parent !== window && typeof window.parent.saveResult === 'function') {
+          window.parent.saveResult({
+            activity: 'sci_resp_ordre',
+            bookTitle: "Respiratoire — Remettre dans l'ordre",
+            score: correct,
+            total: N,
+            pct: pct,
+            date: new Date().toLocaleDateString('fr-BE'),
+            time: new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })
+          });
+        }
+      } catch (e) {}
     }
+    msg.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
+
+  document.addEventListener('keydown', e => {
+    if (e.key !== 'Enter') return;
+    e.preventDefault();
+    if (done) init(); else verify();
+  });
 
   init();
 </script>
