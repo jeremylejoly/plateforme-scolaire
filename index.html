@@ -3155,6 +3155,11 @@ input[type=text].calc-input.incorrect {
   background-color: var(--success-light, #f0fdf4);
   color: var(--success, #16a34a);
 }
+.qcm-option-btn.reveal {
+  border-color: #1f5fbf !important;
+  background: #eaf1fc !important;
+  color: #1f5fbf !important;
+}
 .qcm-option-btn.incorrect {
   border-color: var(--error, #dc2626);
   background-color: var(--error-light, #fef2f2);
@@ -3238,7 +3243,7 @@ input[type=text].calc-input.incorrect {
 </style>
 <script src="livres.js?v=20261002b"></script>
 <script src="exercices_francais.js?v=20261005zp"></script>
-<script src="exercices_maths.js?v=20261006e"></script>
+<script src="exercices_maths.js?v=20261006f"></script>
 <script src="exercices_eveil.js?v=20260927e"></script>
 <script>
 /* Garde-fou : si un appareil a chargé une ancienne version du fichier des livres
@@ -23549,12 +23554,13 @@ function validerTDGraphique(){
 }
 
 // ===== EXERCICE 3 : MOYENNE ET ETENDUE =====
-// window.TD_MOYENNES a été extrait vers un fichier JS externe
+// Séries générées à chaque fois : window.genTDMoyenne() (exercices_maths.js)
 
-let tdMoyenneIdx = 0, tdMoyenneSels = {}, tdMoyenneSubmitted = false;
+let tdMoyenneData = null, tdMoyenneSels = {}, tdMoyenneSubmitted = false, tdMoyenneLast = 0;
 
 function renderTDMoyenne(){
-  tdMoyenneIdx = Math.floor(Math.random() * TD_MOYENNES.length);
+  const t = Date.now(); if (t - tdMoyenneLast < 600) return; tdMoyenneLast = t;   // double clic sur « Nouvelle série »
+  tdMoyenneData = genTDMoyenne();
   tdMoyenneSels = {};
   tdMoyenneSubmitted = false;
   buildTDMoyenne();
@@ -23563,7 +23569,7 @@ function renderTDMoyenne(){
 function buildTDMoyenne(){
   const body = document.getElementById('td-moyenne-body');
   if(!body) return;
-  const data = TD_MOYENNES[tdMoyenneIdx];
+  const data = tdMoyenneData;
   tdMoyenneSels = {};
   tdMoyenneSubmitted = false;
 
@@ -23574,7 +23580,7 @@ function buildTDMoyenne(){
   data.donnees.forEach((v,i) => {
     const barH = Math.round((v/maxVal)*barMaxH);
     serieHtml += `<div style="text-align:center;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;">
-      <div style="font-weight:900;font-size:15px;color:var(--purple);margin-bottom:4px;">${v}</div>
+      <div style="font-weight:900;font-size:15px;color:var(--purple);margin-bottom:4px;">${String(v).replace(/\B(?=(\d{3})+(?!\d))/g,' ')}</div>
       <div style="height:${barH}px;width:100%;max-width:40px;background:linear-gradient(to top,var(--purple),#9c4dcc);border-radius:4px 4px 0 0;"></div>
       <div style="font-size:10px;color:var(--muted);margin-top:4px;">${data.labels[i]}</div>
     </div>`;
@@ -23615,6 +23621,7 @@ function buildTDMoyenne(){
       <div class="card" style="padding:1rem;margin-top:0.5rem;">
         <h3 style="color:#bf360c;font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;margin-bottom:1rem;">❓ Questions</h3>
         ${qhtml}
+        <div id="tdm-msg" style="display:none;margin-top:0.5rem;padding:8px 12px;border-radius:8px;background:#fff7e6;color:#8a5a00;font-size:13px;font-weight:700;"></div>
         <button class="btn" id="tdm-submit" onclick="validerTDMoyenne()" style="width:100%;margin-top:0.5rem;background:#e64a19;">✅ Valider mes réponses</button>
         <div id="tdm-score" style="display:none;margin-top:1rem;" class="geo-score-panel"></div>
       </div>
@@ -23625,8 +23632,16 @@ function tdmSelect(qi, oi){ tdMoyenneSels[qi] = oi; }
 
 function validerTDMoyenne(){
   if(tdMoyenneSubmitted) return;
+  const data = tdMoyenneData;
+  const manque = data.questions.map((_,qi)=>qi).filter(qi => tdMoyenneSels[qi] === undefined);
+  const msg = document.getElementById('tdm-msg');
+  if(manque.length){   // toutes les questions doivent avoir une réponse (rien n'est compté)
+    msg.style.display = 'block';
+    msg.textContent = `Réponds d'abord à ${manque.length > 1 ? 'toutes les questions' : 'la question'} ${manque.map(i=>i+1).join(', ')}.`;
+    return;
+  }
+  msg.style.display = 'none';
   tdMoyenneSubmitted = true;
-  const data = TD_MOYENNES[tdMoyenneIdx];
   let score = 0; const total = data.questions.length;
   document.getElementById('tdm-submit').style.display='none';
   data.questions.forEach((q,qi) => {
@@ -23635,10 +23650,11 @@ function validerTDMoyenne(){
       const el = document.getElementById(`tdm-opt-${qi}-${oi}`);
       if(el){ el.querySelector('input').disabled=true;
         if(oi===sel&&ok) el.classList.add('correct');
-        else if(oi===sel&&!ok) el.classList.add('incorrect'); }
+        else if(oi===sel&&!ok) el.classList.add('incorrect');
+        else if(oi===q.correct) el.classList.add('reveal'); }
     });
     const expl = document.getElementById(`tdm-expl-${qi}`);
-    if(expl){ expl.style.display='block'; expl.style.background=ok?'#d4f5e9':'#fde8e8'; expl.style.color=ok?'var(--green)':'var(--red)'; expl.innerHTML=(ok?'✅ ':'❌ ')+q.explication; }
+    if(expl){ expl.style.display='block'; expl.style.background=ok?'#d4f5e9':'#eaf1fc'; expl.style.color=ok?'var(--green)':'#1f5fbf'; expl.innerHTML=(ok?'✅ ':'❌ Bonne réponse : <strong>'+q.options[q.correct]+'</strong>. ')+q.explication; }
   });
   const pct = Math.round(score/total*100);
   const color = pct>=70?'var(--green)':pct>=50?'var(--amber)':'var(--red)';
@@ -23697,7 +23713,7 @@ const QCM_EXERCISES = [
         q: "Quelle est l'étendue de cette récolte de vieux papiers ?",
         options: ["12 kg", "15 kg", "18 kg", "20 kg"],
         correct: 2,
-        explication: "L'étendue est la différence entre la plus grande valeur et la plus petite : 30 kg - 12 kg = 18 kg."
+        explication: "L'étendue est la différence entre la plus grande valeur et la plus petite : 30 kg − 12 kg = 18 kg."
       },
       {
         q: "Quelle est la moyenne de papier récolté par classe ?",
@@ -23747,7 +23763,7 @@ const QCM_EXERCISES = [
         q: "Combien de cornets de frites le gérant doit-il vendre le vendredi pour atteindre son objectif de moyenne ?",
         options: ["80 cornets", "85 cornets", "90 cornets", "95 cornets"],
         correct: 2,
-        explication: "Il lui faut 400 cornets au total. Il en a déjà vendu 310 du lundi au jeudi. Il doit en vendre : 400 - 310 = 90 cornets le vendredi."
+        explication: "Il lui faut 400 cornets au total. Il en a déjà vendu 310 du lundi au jeudi. Il doit en vendre : 400 − 310 = 90 cornets le vendredi."
       },
       {
         q: "Quelle a été la moyenne quotidienne de vente uniquement sur les 4 premiers jours (de lundi à jeudi) ?",
@@ -23779,7 +23795,7 @@ const QCM_EXERCISES = [
         q: "Quelle est l'étendue de temps entre le coureur le plus rapide et le moins rapide ?",
         options: ["60 s", "80 s", "90 s", "100 s"],
         correct: 3,
-        explication: "Étendue = temps maximal (Manon : 300 s) - temps minimal (Léo : 200 s) = 100 secondes."
+        explication: "Étendue = temps maximal (Manon : 300 s) − temps minimal (Léo : 200 s) = 100 secondes."
       },
       {
         q: "Quelle est la moyenne de temps pour ce groupe d'élèves en secondes ?",
@@ -23802,7 +23818,7 @@ const QCM_EXERCISES = [
     ]
   },
   {
-    contexte: "Les 6 essais de saut en longueur (en cm) de Thomas lors de l'entraînement (avec une chute au 3e essai) :",
+    contexte: "Les 6 essais de saut en longueur (en cm) de Thomas lors de l'entrainement (avec une chute au 3e essai) :",
     donnees: [310, 325, 200, 315, 330, 320],
     labels: ['Essai 1', 'Essai 2', 'Essai 3 (chute)', 'Essai 4', 'Essai 5', 'Essai 6'],
     unit: "cm",
@@ -23811,7 +23827,7 @@ const QCM_EXERCISES = [
         q: "Quelle est l'étendue de l'ensemble de ses essais ?",
         options: ["110 cm", "120 cm", "130 cm", "140 cm"],
         correct: 2,
-        explication: "Le saut le plus long est de 330 cm and le plus court (la chute) est de 200 cm. Étendue = 330 - 200 = 130 cm."
+        explication: "Le saut le plus long est de 330 cm et le plus court (la chute) est de 200 cm. Étendue = 330 − 200 = 130 cm."
       },
       {
         q: "Quelle est la moyenne de Thomas sur l'ensemble de ses 6 essais ?",
@@ -23823,13 +23839,13 @@ const QCM_EXERCISES = [
         q: "Si on ne compte pas son essai raté (le 3e avec chute), quelle serait sa moyenne sur ses 5 autres essais ?",
         options: ["315 cm", "318 cm", "320 cm", "322 cm"],
         correct: 2,
-        explication: "Somme sans la chute = 1800 - 200 = 1600 cm. Moyenne = 1600 ÷ 5 = 320 cm."
+        explication: "Somme sans la chute = 1800 − 200 = 1600 cm. Moyenne = 1600 ÷ 5 = 320 cm."
       },
       {
         q: "De combien de centimètres la chute a-t-elle fait baisser la moyenne générale de Thomas ?",
         options: ["10 cm", "15 cm", "20 cm", "25 cm"],
         correct: 2,
-        explication: "Sa moyenne sans la chute était de 320 cm. Avec la chute, elle tombe à 300 cm. La baisse est donc de 320 - 300 = 20 cm."
+        explication: "Sa moyenne sans la chute était de 320 cm. Avec la chute, elle tombe à 300 cm. La baisse est donc de 320 − 300 = 20 cm."
       },
       {
         q: "Combien d'essais ont un résultat supérieur à sa moyenne générale globale (300 cm) ?",
@@ -23853,15 +23869,15 @@ const QCM_EXERCISES = [
       },
       {
         q: "Quelle est l'étendue des récoltes de ce verger ?",
-        options: ["6,5 kg", "7,0 kg", "7,5 kg", "8,0 kg"],
+        options: ["6,5 kg", "7 kg", "7,5 kg", "8 kg"],
         correct: 2,
-        explication: "Étendue = récolte maximale (45,5 kg) - récolte minimale (38,0 kg) = 7,5 kg."
+        explication: "Étendue = récolte maximale (45,5 kg) − récolte minimale (38 kg) = 7,5 kg."
       },
       {
         q: "Quelle est la récolte moyenne de pommes par arbre ?",
         options: ["40 kg", "40,5 kg", "41 kg", "41,5 kg"],
         correct: 2,
-        explication: "Somme = 42,5 + 38,0 + 45,5 + 39,0 + 40,0 = 205,0 kg. Moyenne = 205 ÷ 5 arbres = 41 kg."
+        explication: "Somme = 42,5 + 38 + 45,5 + 39 + 40 = 205 kg. Moyenne = 205 ÷ 5 arbres = 41 kg."
       },
       {
         q: "Si le jardinier souhaite récolter en moyenne 42 kg de pommes par arbre l'an prochain, quelle quantité totale devra-t-il récolter sur ses 5 arbres ?",
@@ -23883,6 +23899,15 @@ let qcmActiveExerciseIndex = null;
 let qcmCurrentQuestionIndex = 0;
 let qcmSelectedOptionIndex = null;
 let qcmExerciseScores = Array(5).fill(null);
+let qcmRepondu = false, qcmTermine = false, qcmDernierClic = 0;
+// Entrée : valider la réponse choisie, puis passer à la question suivante
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Enter') return;
+  const ws = document.getElementById('qcm-workspace');
+  if (!ws || ws.style.display === 'none' || !ws.offsetParent) return;
+  e.preventDefault();
+  if (qcmRepondu) qcmNextQuestion(); else qcmSubmitAnswer();
+});
 let qcmCurrentExerciseScore = 0;
 let qcmUserAnswers = [];
 
@@ -23983,12 +24008,14 @@ function qcmStartExercise(index) {
   const workspace = document.getElementById('qcm-workspace');
   workspace.style.display = 'block';
   
+  qcmTermine = false; qcmRepondu = false;
   const exRaw = QCM_EXERCISES[index];
   qcmCurrentExerciseData = {
     ...exRaw,
     questions: exRaw.questions.map(q => {
       const correctVal = q.options[q.correct];
-      const shuffledOpts = [...q.options].sort(() => Math.random() - 0.5);
+      const shuffledOpts = [...q.options];   // mélange Fisher–Yates
+      for (let i = shuffledOpts.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [shuffledOpts[i], shuffledOpts[j]] = [shuffledOpts[j], shuffledOpts[i]]; }
       return {
         ...q,
         options: shuffledOpts,
@@ -24053,7 +24080,7 @@ function qcmBuildChart(ex) {
       bar.style.border = '2px dashed var(--purple)';
       bar.style.background = 'transparent';
     } else {
-      valLabel.innerText = `${val} ${ex.unit}`;
+      valLabel.innerText = `${String(val).replace('.', ',')} ${ex.unit}`;
       const pctHeight = Math.max(15, Math.round((val / maxVal) * 110));
       setTimeout(() => {
         bar.style.height = `${pctHeight}px`;
@@ -24076,6 +24103,7 @@ function qcmLoadQuestion() {
   const ex = (typeof qcmCurrentExerciseData !== 'undefined' && qcmCurrentExerciseData) ? qcmCurrentExerciseData : QCM_EXERCISES[qcmActiveExerciseIndex];
   const question = ex.questions[qcmCurrentQuestionIndex];
   qcmSelectedOptionIndex = null;
+  qcmRepondu = false;
   
   document.getElementById('qcm-ex-explanation').style.display = 'none';
   document.getElementById('qcm-btn-next').style.display = 'none';
@@ -24139,7 +24167,8 @@ function qcmSelectOption(index) {
 }
 
 function qcmSubmitAnswer() {
-  if (qcmSelectedOptionIndex === null) return;
+  if (qcmSelectedOptionIndex === null || qcmRepondu || qcmTermine) return;
+  qcmRepondu = true; qcmDernierClic = Date.now();
   const ex = (typeof qcmCurrentExerciseData !== 'undefined' && qcmCurrentExerciseData) ? qcmCurrentExerciseData : QCM_EXERCISES[qcmActiveExerciseIndex];
   const question = ex.questions[qcmCurrentQuestionIndex];
   const isCorrect = qcmSelectedOptionIndex === question.correct;
@@ -24154,7 +24183,7 @@ function qcmSubmitAnswer() {
     if (btn) {
       btn.onclick = null;
       if (idx === question.correct) {
-        btn.classList.add('correct');
+        btn.classList.add(isCorrect ? 'correct' : 'reveal');
       } else if (idx === qcmSelectedOptionIndex) {
         btn.classList.add('incorrect');
       }
@@ -24168,7 +24197,7 @@ function qcmSubmitAnswer() {
     explPanel.innerHTML = `<strong>🎉 Bravo, bonne réponse !</strong><br><br>${question.explication}`;
   } else {
     explPanel.className = 'qcm-explanation-panel error-style';
-    explPanel.innerHTML = `<strong>❌ Oups, ce n'est pas correct...</strong><br><br>${question.explication}`;
+    explPanel.innerHTML = `<strong>❌ Ce n'est pas correct.</strong> La bonne réponse est <strong style="color:#1f5fbf">${question.options[question.correct]}</strong>.<br><br>${question.explication}`;
   }
   
   qcmBuildProgressBar();
@@ -24176,6 +24205,8 @@ function qcmSubmitAnswer() {
 }
 
 function qcmNextQuestion() {
+  if (!qcmRepondu || qcmTermine) return;
+  const t = Date.now(); if (t - qcmDernierClic < 600) return; qcmDernierClic = t;   // double clic / double Entrée
   qcmCurrentQuestionIndex++;
   if (qcmCurrentQuestionIndex < 5) {
     qcmLoadQuestion();
@@ -24186,6 +24217,8 @@ function qcmNextQuestion() {
 }
 
 function qcmShowScoreScreen() {
+  if (qcmTermine) return;
+  qcmTermine = true;
   document.getElementById('qcm-workspace').style.display = 'none';
   const scorePanel = document.getElementById('qcm-score-container');
   scorePanel.style.display = 'block';
@@ -24205,7 +24238,7 @@ function qcmShowScoreScreen() {
     titleEl.innerText = "Très bien joué ! Tu as compris l'essentiel.";
   } else {
     emojiEl.innerText = "💪";
-    titleEl.innerText = "Ne décourage pas, réessaie pour t'améliorer !";
+    titleEl.innerText = "Ne te décourage pas, réessaie pour t'améliorer !";
   }
   
   qcmUpdateDashboardStatus();

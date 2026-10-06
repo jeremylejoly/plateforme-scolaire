@@ -742,56 +742,59 @@ window.LONGUEURS_QCM_BANQUE = [
   };
 })();
 
-window.TD_MOYENNES = [
-  {
-    contexte:"Les températures (en °C) relevées à Waimes pendant une semaine :",
-    donnees:[14,18,12,20,16,15,19],
-    labels:['Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi','Dimanche'],
-    questions:[
-      {q:"Quelle est la température la plus élevée de la semaine ?", options:["18°C","19°C","20°C","21°C"], correct:2, explication:"La valeur maximale dans la série est 20°C (jeudi)."},
-      {q:"Quelle est la température la plus basse de la semaine ?", options:["12°C","14°C","15°C","16°C"], correct:0, explication:"La valeur minimale dans la série est 12°C (mercredi)."},
-      {q:"Quelle est l'étendue des températures ?", options:["6°C","7°C","8°C","9°C"], correct:2, explication:"Étendue = max - min = 20 - 12 = 8°C."},
-      {q:"Quelle est la moyenne des températures de la semaine ?", options:["15°C","16°C","17°C","18°C"], correct:1, explication:"Moyenne = (14+18+12+20+16+15+19) ÷ 7 = 114 ÷ 7 = 16,3°C ≈ 16°C."},
-      {q:"Combien de jours la température dépasse-t-elle 16°C ?", options:["2 jours","3 jours","4 jours","5 jours"], correct:1, explication:"18 (mardi), 20 (jeudi) et 19 (dimanche) dépassent 16°C — soit 3 jours."},
-    ]
-  },
-  {
-    contexte:"Les points marqués par Lucas lors de ses 8 derniers matchs de basket :",
-    donnees:[12,8,15,6,18,10,14,9],
-    labels:['Match 1','Match 2','Match 3','Match 4','Match 5','Match 6','Match 7','Match 8'],
-    questions:[
-      {q:"Quel est le score maximum de Lucas en un match ?", options:["14 points","15 points","16 points","18 points"], correct:3, explication:"Le maximum est 18 points (match 5)."},
-      {q:"Quel est le score minimum de Lucas en un match ?", options:["6 points","8 points","9 points","10 points"], correct:0, explication:"Le minimum est 6 points (match 4)."},
-      {q:"Quelle est l'étendue de ses scores ?", options:["10 points","11 points","12 points","13 points"], correct:2, explication:"Étendue = 18 - 6 = 12 points."},
-      {q:"Quelle est sa moyenne de points par match ?", options:["10 points","11 points","12 points","13 points"], correct:1, explication:"Moyenne = (12+8+15+6+18+10+14+9) ÷ 8 = 92 ÷ 8 = 11,5 ≈ 11 points."},
-      {q:"Combien de matchs Lucas a-t-il marqué plus que sa moyenne ?", options:["3 matchs","4 matchs","5 matchs","2 matchs"], correct:0, explication:"Sa moyenne est environ 11,5 pts. Il dépasse ce score en match 1 (12), 3 (15), 5 (18) et 7 (14) — soit 4 matchs. Attention : la moyenne exacte est 11,5 donc 12 > 11,5 aussi."},
-    ]
-  },
-  {
-    contexte:"Les résultats de 6 élèves à un test de mathématiques (sur 20) :",
-    donnees:[14,16,12,18,11,15],
-    labels:['Emma','Noah','Léa','Tom','Camille','Lucas'],
-    questions:[
-      {q:"Quelle est la note la plus élevée ?", options:["15","16","17","18"], correct:3, explication:"La note maximale est 18, obtenue par Tom."},
-      {q:"Quelle est la note la plus basse ?", options:["11","12","13","14"], correct:0, explication:"La note minimale est 11, obtenue par Camille."},
-      {q:"Quelle est l'étendue des notes ?", options:["5 points","6 points","7 points","8 points"], correct:2, explication:"Étendue = 18 - 11 = 7 points."},
-      {q:"Quelle est la moyenne de la classe ?", options:["14 points","15 points","14,3 points","16 points"], correct:0, explication:"Moyenne = (14+16+12+18+11+15) ÷ 6 = 86 ÷ 6 ≈ 14,3 — on arrondit à 14."},
-      {q:"Combien d'élèves ont une note supérieure à 14 ?", options:["2 élèves","3 élèves","4 élèves","5 élèves"], correct:1, explication:"Noah (16), Tom (18) et Lucas (15) ont une note supérieure à 14 — soit 3 élèves."},
-    ]
-  },
-  {
-    contexte:"Le nombre de visiteurs (en centaines) dans un musée pendant 5 jours :",
-    donnees:[320,450,280,510,390],
-    labels:['Lundi','Mardi','Mercredi','Jeudi','Vendredi'],
-    questions:[
-      {q:"Quel jour y a-t-il eu le plus de visiteurs ?", options:["Lundi","Mardi","Jeudi","Vendredi"], correct:2, explication:"Le jeudi avec 510 visiteurs, c'est le jour le plus fréquenté."},
-      {q:"Quel jour y a-t-il eu le moins de visiteurs ?", options:["Lundi","Mercredi","Vendredi","Mardi"], correct:1, explication:"Le mercredi avec seulement 280 visiteurs, c'est le jour le moins fréquenté."},
-      {q:"Quelle est l'étendue du nombre de visiteurs ?", options:["220","230","240","250"], correct:1, explication:"Étendue = 510 - 280 = 230 visiteurs."},
-      {q:"Quelle est la moyenne journalière de visiteurs ?", options:["370","380","390","400"], correct:2, explication:"Moyenne = (320+450+280+510+390) ÷ 5 = 1950 ÷ 5 = 390 visiteurs."},
-      {q:"Combien de jours le musée a-t-il accueilli plus de 400 visiteurs ?", options:["1 jour","2 jours","3 jours","4 jours"], correct:1, explication:"Mardi (450) et jeudi (510) dépassent 400 visiteurs — soit 2 jours."},
-    ]
-  },
-];
+// ===== Moyenne et étendue : séries générées (nouvelles données à chaque fois) =====
+// genTDMoyenne() renvoie { contexte, donnees, labels, unite, questions:[{q, options, correct, explication}] }
+// La moyenne tombe toujours juste (nombre entier) : pas d'arrondi à deviner.
+(function(){
+  const melanger = a => { const r = [...a]; for (let i = r.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [r[i], r[j]] = [r[j], r[i]]; } return r; };
+  const entier = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+  const sp = n => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+  function qcm(q, bonne, distr, explication){
+    const vus = new Set([bonne]), d = [];
+    for (const x of melanger(distr)) { if (x !== undefined && x !== null && !vus.has(x) && d.length < 3) { vus.add(x); d.push(x); } }
+    const options = melanger([bonne, ...d]);
+    return { q, options, correct: options.indexOf(bonne), explication };
+  }
+  const THEMES = [
+    { contexte: "Les températures maximales (en °C) relevées à Waimes pendant une semaine :", labels: ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'], min: 8, max: 24, pas: 1, u: ' °C', mot: ['jour', 'jours'] },
+    { contexte: "Les points marqués par Lucas lors de ses 8 derniers matchs de basket :", labels: ['Match 1', 'Match 2', 'Match 3', 'Match 4', 'Match 5', 'Match 6', 'Match 7', 'Match 8'], min: 4, max: 22, pas: 1, u: ' points', mot: ['match', 'matchs'] },
+    { contexte: "Les résultats de 6 élèves à un test de mathématiques (sur 20) :", labels: ['Emma', 'Noah', 'Léa', 'Tom', 'Camille', 'Lucas'], min: 8, max: 20, pas: 1, u: ' points', mot: ['élève', 'élèves'] },
+    { contexte: "Le nombre de visiteurs d'un musée pendant 5 jours :", labels: ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi'], min: 150, max: 550, pas: 10, u: ' visiteurs', mot: ['jour', 'jours'] },
+    { contexte: "Le nombre de pages lues par Inès chaque jour pendant 6 jours :", labels: ['Jour 1', 'Jour 2', 'Jour 3', 'Jour 4', 'Jour 5', 'Jour 6'], min: 8, max: 40, pas: 1, u: ' pages', mot: ['jour', 'jours'] },
+    { contexte: "La taille (en cm) de 5 plants de tournesol après un mois :", labels: ['Plant A', 'Plant B', 'Plant C', 'Plant D', 'Plant E'], min: 20, max: 60, pas: 1, u: ' cm', mot: ['plant', 'plants'] }
+  ];
+  function serie(t){
+    const n = t.labels.length;
+    for (let k = 0; k < 1000; k++) {
+      const v = t.labels.map(() => t.pas * entier(t.min / t.pas, t.max / t.pas));
+      const s = v.reduce((a, b) => a + b, 0), m = s / n;
+      // moyenne entière (multiple du pas), au moins une valeur au-dessus et au-dessous, étendue assez grande
+      if (Number.isInteger(m) && m % t.pas === 0 && v.some(x => x > m) && v.some(x => x < m) && Math.max(...v) - Math.min(...v) >= 4 * t.pas) return v;
+    }
+  }
+  let dernier = -1;
+  window.genTDMoyenne = function(){
+    let k; do { k = entier(0, THEMES.length - 1); } while (k === dernier); dernier = k;
+    const t = THEMES[k], v = serie(t), n = v.length, u = t.u;
+    const s = v.reduce((a, b) => a + b, 0), m = s / n, mx = Math.max(...v), mn = Math.min(...v), e = mx - mn;
+    const p = t.pas, L = t.labels;
+    const qs = [];
+    qs.push(qcm("Quelle est la plus grande valeur de la série ?", `${sp(mx)}${u}`, [...v.filter(x => x !== mx).map(x => `${sp(x)}${u}`), `${sp(mx + p)}${u}`],
+      `La valeur maximale est ${sp(mx)}${u} (${L.filter((_, i) => v[i] === mx).join(', ')}).`));
+    qs.push(qcm("Quelle est la plus petite valeur de la série ?", `${sp(mn)}${u}`, [...v.filter(x => x !== mn).map(x => `${sp(x)}${u}`), `${sp(Math.max(p, mn - p))}${u}`],
+      `La valeur minimale est ${sp(mn)}${u} (${L.filter((_, i) => v[i] === mn).join(', ')}).`));
+    qs.push(qcm("Quelle est l'étendue de la série ?", `${sp(e)}${u}`, [`${sp(mx + mn)}${u}`, `${sp(e + p)}${u}`, `${sp(e - p)}${u}`, `${sp(e + 2 * p)}${u}`, `${sp(mx)}${u}`],
+      `Étendue = valeur maximale − valeur minimale = ${sp(mx)} − ${sp(mn)} = ${sp(e)}${u}.`));
+    qs.push(qcm("Quelle est la moyenne de la série ?", `${sp(m)}${u}`, [`${sp(m + p)}${u}`, `${sp(m - p)}${u}`, `${sp(m + 2 * p)}${u}`, `${sp(m - 2 * p)}${u}`, `${sp(s)}${u}`].filter(x => !x.startsWith('-')),
+      `Somme = ${v.map(sp).join(' + ')} = ${sp(s)}. Moyenne = ${sp(s)} ÷ ${n} = ${sp(m)}${u}.`));
+    const dessus = Math.random() < 0.5;
+    const sel = v.map((x, i) => [L[i], x]).filter(([, x]) => dessus ? x > m : x < m), nb = sel.length;
+    qs.push(qcm(`Combien ${/^[aeiouéèh]/i.test(t.mot[1]) ? "d'" : 'de '}${t.mot[1]} ont une valeur ${dessus ? 'supérieure' : 'inférieure'} à la moyenne ?`, `${nb}`, [...Array(n + 1).keys()].filter(x => x !== nb).map(String),
+      `La moyenne est ${sp(m)}${u}. ${dessus ? 'Au-dessus' : 'En dessous'} : ${sel.map(([l, x]) => `${l} (${sp(x)})`).join(', ')} — soit ${nb} ${nb > 1 ? t.mot[1] : t.mot[0]}.${v.includes(m) ? ` (${L.filter((_, i) => v[i] === m).join(', ')} : exactement la moyenne, ni au-dessus ni en dessous.)` : ''}`));
+    return { contexte: t.contexte, donnees: v, labels: L, unite: u.trim(), questions: qs };
+  };
+})();
+
 
 // ===== Lire un graphique : graphiques générés (nouvelles données à chaque fois) =====
 // genTDGraphique() renvoie { titre, type:'barres'|'lineaire', axeY, pas, max, donnees:[{label, valeur}], questions:[{q, options, correct, explication}] }

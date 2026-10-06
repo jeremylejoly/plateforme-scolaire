@@ -1818,6 +1818,18 @@ Spécifique :
 - Questions sans réponse comptées fausses → message, rien n'est compté. Bonne réponse en bleu (#1f5fbf) avec l'explication ; « Nouveau graphique » protégé (600 ms) ; textes du graphique agrandis pour le téléphone. Enregistrement : une fois par graphique (déjà en place). `exercices_maths.js?v=20261006e`.
 - Tests jsdom : parcours (vide → message, 3/5 → 1 sauvegarde `td_graphique`, réponses en bleu), planche de 6 graphiques (Playwright), syntaxe 6 fichiers OK.
 
+### 06/10 — Mathématiques → Traitement de données → La moyenne (menu `td_la_moyenne_menu` : QCM `td_moyenne_qcm` + Moyenne et étendue `td_moyenne`) — sw.js v617
+- **QCM (5 défis)** : calculs revérifiés (sommes 120, 310, 1 200, 1 800, 205 ; moyennes 20, 77,5, 240, 300, 41), réponses justes.
+  - Mélange des propositions sort(random) biaisé → Fisher–Yates (≈ 25 % par position sur 2 000 défis).
+  - **Double clic sur « Suivant » sautait une question ; après la 5e, il enregistrait le score deux fois** → garde de 600 ms, fin de défi et enregistrement une seule fois ; Entrée = Valider puis Suivant.
+  - Bonne réponse montrée en bleu (#1f5fbf) avec « La bonne réponse est … » (elle était en vert, comme une réussite).
+  - Verger d'Aubel : valeurs du graphique affichées « 42.5 kg » (point) → « 42,5 kg » ; « 7,0 kg », « 38,0 » → 7 kg, 38. Coquille « and » → « et » ; signes − ; « entrainement » ; « Ne te décourage pas ».
+- **Moyenne et étendue** (4 séries fixes) : **réponses fausses** — Lucas : moyenne 11,5 donnée « 11 points » et « 3 matchs au-dessus de la moyenne » alors que l'explication en compte 4 ; notes : bonne réponse « 14 » alors que « 14,3 » était aussi proposé ; températures : 16,3 « ≈ 16 » ; musée : « visiteurs (en centaines) » pour 320, 450… visiteurs.
+  - → Séries générées (6 thèmes : températures, basket, notes, musée, pages lues, tournesols), moyenne toujours entière (pas d'arrondi à deviner), au moins une valeur au-dessus et au-dessous ; 5 questions (max, min, étendue, moyenne, combien au-dessus / en dessous de la moyenne, avec la valeur égale à la moyenne expliquée) ; distracteurs plausibles (somme au lieu de la moyenne, max + min au lieu de l'étendue…) ; propositions mélangées ; jamais deux fois le même thème de suite. `TD_MOYENNES` supprimé, `genTDMoyenne()` dans exercices_maths.js (`?v=20261006f`).
+  - Questions sans réponse → message, rien n'est compté ; bonne réponse en bleu ; « Nouvelle série » protégé (600 ms).
+- Tests jsdom : 3 000 séries (valeurs affichées = données, 15 000 réponses recalculées : 0 erreur, jamais deux propositions de même valeur), parcours (vide → message, 4/5 → 1 sauvegarde `td_moyenne`) ; QCM : faux → bleu, Suivant immédiat ignoré, 4/5 → 1 sauvegarde `td_moyenne_qcm`.
+- Reste dans « La moyenne » : la fiche « Calcul de la moyenne (Exercices) » (`td_moyenne_exercices`, accessible par le plan de travail).
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2185,8 +2197,8 @@ Spécifique :
 |---|---|---|---|---|
 | ✅ 06/10 | Lire un tableau | `td_tableau` | index › renderTDTableau |  |
 | ✅ 06/10 | Lire un graphique | `td_graphique` | index › renderTDGraphique |  |
-| ⬜ | La moyenne (QCM) | `td_moyenne_qcm` | index › renderTDMoyenneQCM |  |
-| ⬜ | Moyenne et étendue | `td_moyenne` | index › renderTDMoyenne |  |
+| ✅ 06/10 | La moyenne (QCM) | `td_moyenne_qcm` | index › renderTDMoyenneQCM |  |
+| ✅ 06/10 | Moyenne et étendue | `td_moyenne` | index › renderTDMoyenne |  |
 | ⬜ | Calcul de la moyenne (Exercices) | `td_moyenne_exercices` | fiches/moyenne_exercices.html | Aucun hasard : mêmes questions, même ordre à chaque partie |
 | ⬜ | Le décodeur de camemberts | `td_donnees_circulaires` | index › renderDonneesCirculaires |  |
 | ⬜ | L'arbre dichotomique | `td_arbre_dichotomique` | index › renderArbreDichotomique |  |
