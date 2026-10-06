@@ -1907,6 +1907,11 @@ Spécifique :
 - **Fin de partie** : carte de fin imbriquée dans une autre carte, réponse en jaune → une seule carte, bonne réponse en bleu (#1f5fbf) ; après une erreur, la bonne proposition est en bleu (elle était en vert). Minuteurs liés à la partie (rejouer / quitter pendant le délai n'avance plus la nouvelle partie) ; paliers qui défilent jusqu'au palier en cours ; espaces insécables (« ? », « av. J.-C. ») ; enregistrement dans un try/catch.
 - Tests Chromium : 60 parties gagnées (30 questions vues, 1 sauvegarde 15/15 par partie, double clic sans effet), répartition A/B/C/D 253/213/210/224 ; partie perdue à la question 7 → bleu + 1 sauvegarde 6/15 ; relance pendant le délai sans effet ; captures 390 px sans débordement.
 
+### 06/10 — Éveil → Histoire → L'Antiquité → Termes et définitions (`antiquite_assoc`, index › ANTIQUITE_ASSOC / renderAntiquiteAssoc) — sw.js v629
+- Même moteur que Préhistoire → Termes et définitions, avec les mêmes défauts (termes décalés par rapport à leur case dès qu'une définition fait plusieurs lignes ; « Vérifier » cliquable plusieurs fois → plusieurs enregistrements ; cases vides comptées fausses ; déplacements encore possibles après la correction ; correction en vert) → moteur corrigé de la Préhistoire repris tel quel (une ligne de grille par paire, message s'il reste des définitions, garde 600 ms, correction et enregistrement uniques, verrouillage, correction en bleu #1f5fbf, placement par toucher, nombres et « av. J.-C. » insécables).
+- **Contenu (27 paires relues)** : la Gaule « correspondant à la France actuelle » → « la France, la Belgique et la Suisse actuelles » ; oppidum « village » → « ville gauloise fortifiée, souvent sur une hauteur » ; César « entre 58 et 52 » → « à partir de 58 av. J.-C. » (la conquête s'achève en 51) ; moissonneuse « invention gauloise… mécaniquement » → « machine gallo-romaine poussée par un animal » ; hypocauste « inventé par les Romains » → « utilisé par les Romains » ; Gaulois « peuples celtes… dont nos régions » ; villa « grand domaine agricole » ; légionnaire (la définition répétait « légion ») ; civilisation gallo-romaine (la définition répétait « civilisation ») ; évènements, guillemets « ».
+- Tests Chromium : 300 tirages (27 termes vus), vide → message sans enregistrement, clic définition + case → placée, 6/8 → bleu + 1 seul enregistrement, verrouillage, alignement termes / cases vérifié ; capture 390 px sans débordement.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2344,7 +2349,7 @@ Spécifique :
 | ✅ 06/10 | Préhistoire — Termes et définitions | `prehistoire_assoc` | index › renderPrehistoireAssoc |  |
 | ✅ 06/10 | Préhistoire — Campement du Paléolithique | `prehistoire_doc` | index › renderPrehistoireDoc |  |
 | ✅ 06/10 | Quiz L'Antiquité | `qvgdm_antiquite` | index › renderQVGDMAntiquite | QCM: bonne réponse en position 3 dans 9/15 questions, options non mélangées |
-| ⬜ | Antiquité — Termes et définitions | `antiquite_assoc` | index › renderAntiquiteAssoc |  |
+| ✅ 06/10 | Antiquité — Termes et définitions | `antiquite_assoc` | index › renderAntiquiteAssoc |  |
 | ⬜ | Antiquité — Document historique | `antiquite_doc` | index › renderAntiquiteDoc |  |
 | ⬜ | Quiz Moyen Âge | `qvgdm_moyen_age` | index › renderQVGDMMoyenAge |  |
 | ⬜ | Moyen Âge — Termes et définitions | `moyen_age_assoc` | index › renderMoyenAgeAssoc |  |

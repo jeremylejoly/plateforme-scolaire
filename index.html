@@ -21916,32 +21916,32 @@ function mayEndGame(won){
 
 // ===== TERMES ET DÉFINITIONS — L'ANTIQUITÉ =====
 const ANTIQUITE_ASSOC = [
-  {terme:'Les Gaulois', def:"Peuple qui habitait notre région durant l'Antiquité, avant la conquête romaine"},
+  {terme:'Les Gaulois', def:"Peuples celtes qui habitaient la Gaule, dont nos régions, avant la conquête romaine"},
   {terme:'Les Romains', def:"Peuple originaire d'Italie qui a conquis une grande partie de l'Europe"},
-  {terme:'Jules César', def:"Général et homme politique romain qui a conquis la Gaule entre 58 et 52 av. J.-C."},
+  {terme:'Jules César', def:"Général et homme politique romain qui a conquis la Gaule à partir de 58 av. J.-C."},
   {terme:'Vercingétorix', def:"Chef gaulois qui a résisté à Jules César avant de se rendre après la bataille d'Alésia"},
-  {terme:"L'oppidum", def:"Village gaulois fortifié, construit sur une hauteur pour se défendre"},
+  {terme:"L'oppidum", def:"Ville gauloise fortifiée, souvent construite sur une hauteur pour se défendre"},
   {terme:'Le forum', def:"Place publique au centre d'une ville romaine, lieu de commerce et de politique"},
   {terme:"L'aqueduc", def:"Construction romaine en pierre servant à transporter l'eau vers les villes"},
   {terme:'Les thermes', def:"Bains publics romains où les citoyens se lavaient et se retrouvaient"},
   {terme:"L'amphithéâtre", def:"Grande arène romaine en forme d'ovale où se déroulaient des spectacles et des combats"},
-  {terme:'La villa', def:"Grande maison de campagne romaine entourée de terres agricoles"},
+  {terme:'La villa', def:"Grand domaine agricole gallo-romain, avec la maison du propriétaire et ses terres"},
   {terme:'La conquête de la Gaule', def:"Ensemble des batailles menées par Jules César pour soumettre les peuples gaulois à Rome"},
   {terme:"La bataille d'Alésia", def:"Bataille décisive de 52 av. J.-C. où Jules César vainquit Vercingétorix"},
   {terme:'La Pax Romana', def:"Longue période de paix et de stabilité dans l'Empire romain"},
   {terme:'La romanisation', def:"Processus par lequel les Gaulois ont adopté la langue, les lois et les coutumes romaines"},
-  {terme:'La civilisation gallo-romaine', def:"Mélange des cultures gauloise et romaine après la conquête"},
+  {terme:'La civilisation gallo-romaine', def:"Mélange des modes de vie gaulois et romain qui apparait après la conquête"},
   {terme:'Une province romaine', def:"Territoire conquis par Rome et placé sous son autorité"},
-  {terme:'av. J.-C.', def:'Abréviation signifiant "avant Jésus-Christ", utilisée pour dater les événements anciens'},
+  {terme:'av. J.-C.', def:'Abréviation signifiant « avant Jésus-Christ », utilisée pour dater les évènements anciens'},
   {terme:'La Guerre des Gaules', def:"Livre écrit par Jules César racontant sa conquête de la Gaule"},
-  {terme:'La Gaule', def:"Nom donné par les Romains au territoire occupé par les Gaulois, correspondant à la France actuelle"},
-  {terme:'La moissonneuse', def:"Invention gauloise permettant de ramasser mécaniquement les céréales"},
+  {terme:'La Gaule', def:"Nom donné par les Romains au territoire des Gaulois : la France, la Belgique et la Suisse actuelles"},
+  {terme:'La moissonneuse', def:"Machine gallo-romaine poussée par un animal, qui coupe les épis de céréales"},
   {terme:'Le torque', def:"Collier rigide en métal précieux porté par les guerriers et chefs gaulois"},
-  {terme:'La fibule', def:"Épingle qui sert à attacher les vêtements ou les capes"},
+  {terme:'La fibule', def:"Sorte de broche (épingle) qui sert à attacher les vêtements ou les capes"},
   {terme:'Un druide', def:"Personnage important de la société gauloise qui est à la fois prêtre, juge, médecin et gardien des traditions"},
   {terme:'Le polythéisme', def:"Croyance en plusieurs dieux, pratiquée aussi bien par les Gaulois que par les Romains"},
-  {terme:'Un légionnaire', def:"Nom du soldat romain appartenant à une légion"},
-  {terme:"L'hypocauste", def:"Système de chauffage par le sol inventé par les Romains, utilisé dans les thermes et les villas"},
+  {terme:'Un légionnaire', def:"Soldat de métier de l'armée romaine"},
+  {terme:"L'hypocauste", def:"Système de chauffage par le sol utilisé par les Romains dans les thermes et les villas"},
   {terme:'Un barbare', def:"Terme utilisé par les Grecs et les Romains pour désigner les peuples étrangers qui ne parlaient ni le grec ni le latin"},
 ];
 
@@ -21950,25 +21950,23 @@ let antiquiteAssocState = {pairs:[], defOrder:[], placed:{}, dragging:null, touc
 function renderAntiquiteAssoc(){
   const body = document.getElementById('antiquite-assoc-body');
   if(!body) return;
-  const pairs = shuffle([...ANTIQUITE_ASSOC]).slice(0, 8);
+
+  const pairs = shuffle([...ANTIQUITE_ASSOC]).slice(0, 8).map(p=>({terme:p.terme.replace(/J\.-C\./g,'J.\u2011C.'), def:p.def.replace(/(\d) (\d)/g,'$1\u00a0$2').replace(/ av\. J\.-C\./g,'\u00a0av.\u00a0J.\u2011C.').replace(/ (millions)/g,'\u00a0$1')}));
   const defOrder = shuffle(pairs.map((_,i) => i));
-  antiquiteAssocState = {pairs, defOrder, placed:{}, dragging:null, touchClone:null, touchSource:null};
+  antiquiteAssocState = {pairs, defOrder, placed:{}, dragging:null, touchClone:null, touchSource:null, done:false, lastClick:0};
 
   let termesHtml = '';
   pairs.forEach((p, i) => {
     termesHtml += `<div class="assoc-terme" id="antassoc-terme-${i}" data-index="${i}"
       style="min-height:52px;display:flex;align-items:center;padding:8px 12px;
       background:var(--surface);border:1.5px solid var(--border);border-radius:8px;
-      margin-bottom:8px;font-size:13px;font-weight:700;color:var(--text)">
-      ${p.terme}</div>`;
-  });
-
-  let zonesHtml = '';
-  pairs.forEach((_, i) => {
-    zonesHtml += `<div class="assoc-drop-zone" id="antassoc-zone-${i}" data-index="${i}" onclick="antAssocClearZone(this)"
+      font-size:13px;font-weight:700;color:var(--text)">
+      ${p.terme}
+    </div>`;
+    termesHtml += `<div class="assoc-drop-zone" id="antassoc-zone-${i}" data-index="${i}" onclick="antAssocClearZone(this)"
       style="min-height:52px;display:flex;align-items:center;padding:8px 12px;
       background:var(--purple-light);border:2px dashed var(--purple);border-radius:8px;
-      margin-bottom:8px;font-size:12px;color:var(--muted);cursor:pointer;transition:background .2s;"
+      font-size:12px;color:var(--muted);cursor:pointer;transition:background .2s;min-width:0;overflow-wrap:anywhere;"
       ondragover="antAssocDragOver(event)" ondrop="antAssocDrop(event)" ondragleave="antAssocDragLeave(event)"
       ontouchstart="antAssocZoneTouchStart(event)">
       <span style="opacity:.5">Glisse une définition ici…</span>
@@ -21981,30 +21979,27 @@ function renderAntiquiteAssoc(){
       style="padding:8px 14px;background:var(--purple);color:#fff;border-radius:8px;
       font-size:12px;font-weight:600;cursor:grab;user-select:none;touch-action:none;
       margin-bottom:6px;line-height:1.4;"
-      ondragstart="antAssocDragStart(event)" ondragend="antAssocDragEnd(event)"
+      onclick="antAssocSelect(this)" ondragstart="antAssocDragStart(event)" ondragend="antAssocDragEnd(event)"
       ontouchstart="antAssocDefTouchStart(event)" ontouchmove="antAssocDefTouchMove(event)" ontouchend="antAssocDefTouchEnd(event)" ontouchcancel="antAssocDefTouchCancel(event)">
-      ${pairs[i].def}</div>`;
+      ${pairs[i].def}
+    </div>`;
   });
 
   body.innerHTML = `
-    <div class="card" style="margin-bottom:1rem;padding:.8rem 1rem;background:var(--purple-light);border:1px solid var(--purple);">
-      <p style="margin:0;font-size:13px;color:var(--purple);font-weight:700">Glisse chaque définition en face du bon terme.</p>
+    <div class="card" style="margin-bottom:1rem;padding:0.8rem 1rem;background:var(--purple-light);border:1px solid var(--purple);">
+      <p style="margin:0;font-size:13px;color:var(--purple);font-weight:700">Glisse chaque définition en face du bon terme (ou touche une définition, puis la case).</p>
     </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:1rem;">
-      <div>
-        <div style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:8px;">Termes</div>
-        ${termesHtml}
-      </div>
-      <div>
-        <div style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:8px;">Définitions</div>
-        ${zonesHtml}
-      </div>
+    <div style="display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:8px 10px;margin-bottom:1rem;">
+      <div style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);">Termes</div>
+      <div style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);">Définitions</div>
+      ${termesHtml}
     </div>
     <div class="card" style="margin-bottom:1rem;">
       <div style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:8px;">🏷️ Définitions à placer</div>
       <div id="antassoc-def-pool">${defsHtml}</div>
     </div>
-    <button class="btn" onclick="validerAntiquiteAssoc()" style="width:100%;margin-bottom:1rem">✅ Vérifier mes réponses</button>
+    <div id="antassoc-msg" style="display:none;margin-bottom:.75rem;padding:.6rem .9rem;border-radius:8px;background:#fff7ed;border:1.5px solid #f59e0b;color:#92400e;font-size:13px;font-weight:700;text-align:center"></div>
+    <button class="btn" id="antassoc-verif" onclick="validerAntiquiteAssoc()" style="width:100%;margin-bottom:1rem">✅ Vérifier mes réponses</button>
     <div id="antassoc-score-panel" style="display:none"></div>
   `;
 }
@@ -22013,9 +22008,15 @@ function antAssocDragStart(e){ antiquiteAssocState.dragging=e.currentTarget.data
 function antAssocDragEnd(e){ e.currentTarget.style.opacity=''; antiquiteAssocState.dragging=null; }
 function antAssocDragOver(e){ e.preventDefault(); e.currentTarget.style.background='var(--purple-mid,#ede9fe)'; }
 function antAssocDragLeave(e){ e.currentTarget.style.background='var(--purple-light)'; }
-function antAssocDrop(e){ e.preventDefault(); e.currentTarget.style.background='var(--purple-light)'; antAssocPlacerDef(e.currentTarget, parseInt(e.dataTransfer.getData('text/plain'))); }
+function antAssocDrop(e){
+  e.preventDefault();
+  e.currentTarget.style.background='var(--purple-light)';
+  antAssocPlacerDef(e.currentTarget, parseInt(e.dataTransfer.getData('text/plain')));
+}
 
 function antAssocPlacerDef(zone, defIndex){
+  if(antiquiteAssocState.done || isNaN(defIndex)) return;
+  const m=document.getElementById('antassoc-msg'); if(m) m.style.display='none';
   const zoneIndex = parseInt(zone.dataset.index);
   const ancien = antiquiteAssocState.placed[zoneIndex];
   if(ancien !== undefined) antAssocRetournerDef(ancien);
@@ -22027,6 +22028,7 @@ function antAssocPlacerDef(zone, defIndex){
     }
   });
   antAssocRetirerDeBanque(defIndex);
+  if(antiquiteAssocState.sel===defIndex) antiquiteAssocState.sel=undefined;
   antiquiteAssocState.placed[zoneIndex] = defIndex;
   zone.innerHTML = `<span style="font-size:12px;font-weight:600;color:var(--purple);line-height:1.4">${antiquiteAssocState.pairs[defIndex].def}</span>`;
   zone.style.border = '2px solid var(--purple)';
@@ -22042,12 +22044,26 @@ function antAssocRetournerDef(defIndex){
   div.addEventListener('dragstart',antAssocDragStart); div.addEventListener('dragend',antAssocDragEnd);
   div.addEventListener('touchstart',antAssocDefTouchStart,{passive:false}); div.addEventListener('touchmove',antAssocDefTouchMove,{passive:false}); div.addEventListener('touchend',antAssocDefTouchEnd);
   div.addEventListener('touchcancel',antAssocDefTouchCancel);
+  div.addEventListener('click',()=>antAssocSelect(div));
   pool.appendChild(div);
 }
-function antAssocRetirerDeBanque(i){ const el=document.getElementById('antassoc-def-'+i); if(el) el.remove(); }
+function antAssocSelect(el){
+  const st=antiquiteAssocState; if(st.done||!el) return;
+  const di=parseInt(el.dataset.index);
+  document.querySelectorAll('#antassoc-def-pool .assoc-def').forEach(d=>d.style.outline='');
+  if(st.sel===di){ st.sel=undefined; return; }
+  st.sel=di; el.style.outline='3px solid #f59e0b';
+}
+function antAssocPoserSelection(zone){
+  const st=antiquiteAssocState;
+  if(st.done || st.sel===undefined || st.placed[parseInt(zone.dataset.index)]!==undefined) return false;
+  const di=st.sel; st.sel=undefined; antAssocPlacerDef(zone,di); return true;
+}
+function antAssocRetirerDeBanque(defIndex){ const el=document.getElementById('antassoc-def-'+defIndex); if(el) el.remove(); }
 function antAssocClearZone(zone){
   const panel = document.getElementById('antassoc-score-panel');
   if(panel && panel.style.display === 'block') return;
+  if(antAssocPoserSelection(zone)) return;
   const zi = parseInt(zone.dataset.index);
   const di = antiquiteAssocState.placed[zi];
   if(di === undefined) return;
@@ -22058,27 +22074,35 @@ function antAssocClearZone(zone){
 }
 
 function antAssocDefTouchStart(e){
-  e.preventDefault(); antiquiteAssocState.touchSource=e.currentTarget;
-  const touch=e.touches[0], clone=e.currentTarget.cloneNode(true);
+  e.preventDefault();
+  if(antiquiteAssocState.done) return;
+  antiquiteAssocState.touchSource=e.currentTarget;
+  const touch=e.touches[0];
+  antiquiteAssocState.touchX=touch.clientX; antiquiteAssocState.touchY=touch.clientY;
+  const clone=e.currentTarget.cloneNode(true);
   clone.style.cssText+=';position:fixed;z-index:9999;pointer-events:none;opacity:.85;width:160px;';
   clone.style.left=(touch.clientX-80)+'px'; clone.style.top=(touch.clientY-20)+'px';
   document.body.appendChild(clone); antiquiteAssocState.touchClone=clone;
   e.currentTarget.style.opacity='0.4';
 }
 function antAssocDefTouchMove(e){
-  e.preventDefault(); if(!antiquiteAssocState.touchClone) return;
+  e.preventDefault();
+  if(!antiquiteAssocState.touchClone) return;
   const touch=e.touches[0];
   antiquiteAssocState.touchClone.style.left=(touch.clientX-80)+'px';
   antiquiteAssocState.touchClone.style.top=(touch.clientY-20)+'px';
 }
 function antAssocDefTouchEnd(e){
-  e.preventDefault(); if(!antiquiteAssocState.touchClone) return;
+  e.preventDefault();
+  if(!antiquiteAssocState.touchClone) return;
   const touch=e.changedTouches[0];
   antiquiteAssocState.touchClone.remove(); antiquiteAssocState.touchClone=null;
   if(antiquiteAssocState.touchSource) antiquiteAssocState.touchSource.style.opacity='';
   const el=document.elementFromPoint(touch.clientX,touch.clientY);
   const zone=el?el.closest('.assoc-drop-zone'):null;
-  if(zone && antiquiteAssocState.touchSource) antAssocPlacerDef(zone,parseInt(antiquiteAssocState.touchSource.dataset.index));
+  const src=antiquiteAssocState.touchSource;
+  if(zone && src) antAssocPlacerDef(zone,parseInt(src.dataset.index));
+  else if(src && Math.abs(touch.clientX-antiquiteAssocState.touchX)<10 && Math.abs(touch.clientY-antiquiteAssocState.touchY)<10) antAssocSelect(src);
   antiquiteAssocState.touchSource=null;
 }
 function antAssocDefTouchCancel(e){
@@ -22086,8 +22110,12 @@ function antAssocDefTouchCancel(e){
   if(antiquiteAssocState.touchSource) { antiquiteAssocState.touchSource.style.opacity=''; antiquiteAssocState.touchSource=null; }
 }
 function antAssocZoneTouchStart(e){
-  const zone=e.currentTarget, zi=parseInt(zone.dataset.index), di=antiquiteAssocState.placed[zi];
-  if(di===undefined) return; e.preventDefault();
+  const zone=e.currentTarget;
+  const zi=parseInt(zone.dataset.index);
+  const di=antiquiteAssocState.placed[zi];
+  if(antiquiteAssocState.done) return;
+  if(di===undefined){ if(antAssocPoserSelection(zone)) e.preventDefault(); return; }
+  e.preventDefault();
   delete antiquiteAssocState.placed[zi];
   zone.innerHTML='<span style="opacity:.5">Glisse une définition ici…</span>';
   zone.style.background='var(--purple-light)'; zone.style.border='2px dashed var(--purple)';
@@ -22095,14 +22123,27 @@ function antAssocZoneTouchStart(e){
 }
 
 function validerAntiquiteAssoc(){
-  const pairs=antiquiteAssocState.pairs; let score=0;
+  const st=antiquiteAssocState, now=Date.now();
+  if(st.done || now-st.lastClick<600) return;
+  st.lastClick=now;
+  const pairs=st.pairs;
+  const reste=pairs.length-Object.keys(st.placed).length;
+  const msg=document.getElementById('antassoc-msg');
+  if(reste>0){
+    if(msg){ msg.textContent='Place d\'abord toutes les définitions (il en reste '+reste+').'; msg.style.display='block'; }
+    return;
+  }
+  if(msg) msg.style.display='none';
+  st.done=true;
+  const vb=document.getElementById('antassoc-verif'); if(vb) vb.style.display='none';
+  document.querySelectorAll('#antassoc-def-pool .assoc-def').forEach(d=>d.draggable=false);
+  let score=0;
   pairs.forEach((p,i)=>{
     const zone=document.getElementById('antassoc-zone-'+i);
     const di=antiquiteAssocState.placed[i];
     const correct=di!==undefined && pairs[di].terme===p.terme;
     if(correct){ score++; if(zone){zone.style.background='var(--green-light,#dcfce7)';zone.style.border='2px solid var(--green,#16a34a)';} }
-    else{ if(zone){zone.style.background='var(--red-light,#fee2e2)';zone.style.border='2px solid var(--red,#dc2626)';
-      zone.innerHTML+='<div style="font-size:11px;color:var(--green,#16a34a);margin-top:4px;font-weight:700">✅ '+p.def+'</div>';} }
+    else{ if(zone){zone.style.background='var(--red-light,#fee2e2)';zone.style.border='2px solid var(--red,#dc2626)'; const c=document.createElement('div'); c.style.cssText='font-size:11px;color:#1f5fbf;margin-top:4px;font-weight:700;line-height:1.35'; c.textContent='➜ '+p.def; zone.style.flexDirection='column'; zone.style.alignItems='flex-start'; zone.appendChild(c);} }
   });
   const total=pairs.length, pct=Math.round(score/total*100);
   const color=pct>=70?'var(--green)':pct>=50?'var(--amber)':'var(--red)';
@@ -22117,13 +22158,13 @@ function validerAntiquiteAssoc(){
   </div>`;
   panel.scrollIntoView({behavior:'smooth'});
   if(state.student){
-    saveResult({student:state.student,cls:state.studentCls,
+    try{ saveResult({student:state.student,cls:state.studentCls,
       className:CLASSES[state.studentCls]?CLASSES[state.studentCls].name:state.studentCls,
       activity:'antiquite_assoc',bookTitle:"Termes et définitions — L'Antiquité",
       score,total,pct,
       date:new Date().toLocaleDateString('fr-BE'),
       time:new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})
-    });
+    }); }catch(e){}
   }
 }
 
