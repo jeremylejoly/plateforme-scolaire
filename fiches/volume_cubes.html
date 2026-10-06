@@ -227,10 +227,11 @@
     <div class="viewport-wrapper">
       <svg id="volume-svg" width="500" height="400" viewBox="0 0 500 400"></svg>
     </div>
+    <p class="figure-hint" style="text-align:center;margin:-0.25rem 0 0.9rem;">📏 Règle : aucun cube ne flotte. Les seuls cubes cachés sont ceux qui en portent d'autres (ou ceux que l'indice signale).</p>
 
     <div class="answer-row">
       <span class="answer-label">Volume de la structure :</span>
-      <input type="number" id="volume-input" class="answer-input" min="1" step="1" placeholder="?">
+      <input type="text" inputmode="numeric" autocomplete="off" id="volume-input" class="answer-input" placeholder="?">
       <span class="answer-unit">cm³</span>
       <button class="btn-validate" id="btn-val" onclick="validateAnswer()">✓ Valider</button>
     </div>
@@ -259,11 +260,9 @@ const W = 32; // Largeur horizontale d'une face
 const H = 18; // Hauteur verticale d'une face
 const CUBE_H = 36; // Hauteur de la face de côté du cube
 const TOTAL_Q = 10; // Nombre total de questions
-
 // Origine de la grille (centrée en bas/milieu)
 const ORIGIN_X = 250;
 const ORIGIN_Y = 160;
-
 // ════════════════════════════════════════════════
 // 15 STRUCTURES PRÉDÉFINIES
 // ════════════════════════════════════════════════
@@ -309,7 +308,7 @@ const SHAPES = [
       [1, 3, 1],
       [1, 1, 1]
     ],
-    hint: "Le cube du sommet repose sur des cubes cachés en dessous.",
+    hint: "La base est un carré complet de 3 × 3 cubes. Le sommet repose sur des cubes cachés.",
     desc: "La base (l'étage inférieur) forme un anneau de 8 cubes de hauteur 1. Au centre, la colonne fait 3 cubes de haut. Total : 8 + 3 = <strong>11 cubes</strong>."
   },
   {
@@ -346,15 +345,15 @@ const SHAPES = [
     desc: "Les 4 branches de la croix ont 1 cube chacune (4 cubes), et le centre a 2 cubes. Total : 4 + 2 = <strong>6 cubes</strong>."
   },
   {
-    name: "Le Pont",
-    icon: "🌉",
+    name: "Le Mur et ses deux tours",
+    icon: "🧱",
     grid: [
       [2, 0, 2],
       [2, 2, 2],
       [0, 0, 0]
     ],
-    hint: "Il y a un trou sous le pont.",
-    desc: "Les deux piliers de devant ont 2 cubes chacun, et le fond a 3 colonnes de 2 cubes. Total : 5 colonnes de 2 cubes = <strong>10 cubes</strong>."
+    hint: "Regarde bien les colonnes qui dépassent derrière le mur.",
+    desc: "Le mur de devant a 3 colonnes de 2 cubes et, derrière, il y a 2 colonnes de 2 cubes aux extrémités. Total : 5 colonnes de 2 cubes = <strong>10 cubes</strong>."
   },
   {
     name: "La Pente du Coin",
@@ -434,7 +433,6 @@ const SHAPES = [
     desc: "Il y a une colonne de 3 cubes, une colonne de 2 cubes et une colonne de 1 cube. Elles ne se touchent pas. Total : 3 + 2 + 1 = <strong>6 cubes</strong>."
   }
 ];
-
 // ════════════════════════════════════════════════
 // ÉTAT DE LA PARTIE
 // ════════════════════════════════════════════════
@@ -443,7 +441,6 @@ let score = 0;
 let session = [];
 let currentShape = null;
 let answered = false;
-
 // ════════════════════════════════════════════════
 // DESSIN DU SOL (Optionnel / Esthétique)
 // ════════════════════════════════════════════════
@@ -454,7 +451,6 @@ function drawGround(svg) {
     for (let x = 0; x < 3; x++) {
       const cx = ORIGIN_X + x * W - y * W;
       const cy = ORIGIN_Y + x * H + y * H;
-
       const poly = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
       poly.setAttribute('points', `${cx},${cy} ${cx + W},${cy + H} ${cx},${cy + 2 * H} ${cx - W},${cy + H}`);
       poly.setAttribute('fill', '#1e293b');
@@ -464,7 +460,6 @@ function drawGround(svg) {
     }
   }
 }
-
 // ════════════════════════════════════════════════
 // DESSIN D'UN CUBE ISOMÉTRIQUE
 // ════════════════════════════════════════════════
@@ -472,9 +467,7 @@ function drawCube(svg, x, y, z) {
   // Calcul de la coordonnée centrale du sommet du cube
   const cx = ORIGIN_X + x * W - y * W;
   const cy = ORIGIN_Y + x * H + y * H - z * CUBE_H;
-
   const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-  
   // 1. Face du haut (Rhombus)
   const top = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
   top.setAttribute('points', `${cx},${cy} ${cx + W},${cy + H} ${cx},${cy + 2 * H} ${cx - W},${cy + H}`);
@@ -482,7 +475,6 @@ function drawCube(svg, x, y, z) {
   top.setAttribute('stroke', '#0f172a');
   top.setAttribute('stroke-width', '1.5');
   g.appendChild(top);
-
   // 2. Face gauche (Rhombus vertical)
   const left = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
   left.setAttribute('points', `${cx - W},${cy + H} ${cx},${cy + 2 * H} ${cx},${cy + 2 * H + CUBE_H} ${cx - W},${cy + H + CUBE_H}`);
@@ -490,7 +482,6 @@ function drawCube(svg, x, y, z) {
   left.setAttribute('stroke', '#0f172a');
   left.setAttribute('stroke-width', '1.5');
   g.appendChild(left);
-
   // 3. Face droite (Rhombus vertical)
   const right = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
   right.setAttribute('points', `${cx},${cy + 2 * H} ${cx + W},${cy + H} ${cx + W},${cy + H + CUBE_H} ${cx},${cy + 2 * H + CUBE_H}`);
@@ -498,20 +489,16 @@ function drawCube(svg, x, y, z) {
   right.setAttribute('stroke', '#0f172a');
   right.setAttribute('stroke-width', '1.5');
   g.appendChild(right);
-
   svg.appendChild(g);
 }
-
 // ════════════════════════════════════════════════
 // CRÉATION DE LA FIGURE
 // ════════════════════════════════════════════════
 function renderFigure(shape) {
   const svg = document.getElementById('volume-svg');
   svg.innerHTML = '';
-
   // 1. On dessine la grille de sol
   drawGround(svg);
-
   // 2. Algorithme du peintre (de l'arrière vers l'avant, et du bas vers le haut)
   const grid = shape.grid;
   for (let y = 0; y < 3; y++) {
@@ -523,7 +510,6 @@ function renderFigure(shape) {
     }
   }
 }
-
 // Calcule le volume total (somme de tous les cubes)
 function calculateVolume(shape) {
   let total = 0;
@@ -534,7 +520,6 @@ function calculateVolume(shape) {
   }
   return total;
 }
-
 // ════════════════════════════════════════════════
 // ACTIONS DU JEU
 // ════════════════════════════════════════════════
@@ -545,41 +530,35 @@ function renderQuestion() {
   document.getElementById('volume-input').value = '';
   document.getElementById('volume-input').disabled = false;
   document.getElementById('btn-val').disabled = false;
-
   currentShape = SHAPES[session[step - 1]];
-
   document.getElementById('q-num').textContent = step;
   document.getElementById('score-disp').textContent = score;
   document.getElementById('prog-bar').style.width = `${((step - 1) / TOTAL_Q) * 100}%`;
-
   document.getElementById('fig-icon').textContent = currentShape.icon;
   document.getElementById('fig-name').textContent = currentShape.name;
   document.getElementById('fig-hint').textContent = currentShape.hint;
-
   renderFigure(currentShape);
   document.getElementById('volume-input').focus();
 }
-
 function validateAnswer() {
   if (answered) return;
   const inputEl = document.getElementById('volume-input');
-  const val = parseInt(inputEl.value, 10);
-  
-  if (isNaN(val) || val <= 0) {
-    alert("Saisis un nombre entier de cubes valide !");
+  const raw = inputEl.value.trim();
+  // Vide ou illisible : message, rien n'est compté (avant : fenêtre alert() ; « 12abc » lu comme 12)
+  if (!/^\d+$/.test(raw) || +raw <= 0) {
+    document.getElementById('feedback-area').innerHTML = `<div class="feedback fb-wrong"><div class="fb-icon">✏️</div><div><div class="fb-text">Écris le nombre de cubes (un nombre entier), puis valide.</div></div></div>`;
+    inputEl.focus();
     return;
   }
-
+  const val = parseInt(raw, 10);
+  answeredAt = Date.now();
   answered = true;
   document.getElementById('btn-val').disabled = true;
   inputEl.disabled = true;
-
   const correctAns = calculateVolume(currentShape);
   const correct = (val === correctAns);
-
   if (correct) score++;
   document.getElementById('score-disp').textContent = score;
-
   const feedbackArea = document.getElementById('feedback-area');
   feedbackArea.innerHTML = `
     <div class="feedback ${correct ? 'fb-correct' : 'fb-wrong'}">
@@ -592,24 +571,23 @@ function validateAnswer() {
         </div>
       </div>
     </div>`;
-
   document.getElementById('next-area').innerHTML = step < TOTAL_Q
     ? `<button class="btn-next" onclick="nextQ()">Structure suivante 👉</button>`
     : `<button class="btn-next" onclick="finishGame()">Voir mon résultat 🏆</button>`;
 }
-
 function nextQ() {
+  if (!answered || step >= TOTAL_Q) return; // double clic : pas de structure sautée
   step++;
   renderQuestion();
 }
-
+let saved = false;
+let answeredAt = 0;
 function finishGame() {
+  if (!answered || step < TOTAL_Q || saved) return;
   document.getElementById('game-flow').style.display = 'none';
   document.getElementById('congrats-flow').style.display = 'block';
-
   const pct = Math.round((score / TOTAL_Q) * 100);
   let msg, stars;
-
   if (score === TOTAL_Q) {
     msg = `Fantastique ! Tu as obtenu un score parfait de <strong>${score}/${TOTAL_Q}</strong> (${pct}%). Tu visualises la 3D à la perfection !`;
     stars = '⭐⭐⭐';
@@ -623,15 +601,21 @@ function finishGame() {
     msg = `Score : <strong>${score}/${TOTAL_Q}</strong> (${pct}%). Essaie à nouveau en prenant ton temps pour compter ligne par ligne.`;
     stars = '❌';
   }
-
   document.getElementById('congrats-msg').innerHTML = msg;
   document.getElementById('stars').textContent = stars;
-
-  if (typeof window.parent !== 'undefined' && window.parent.handleActivityScore) {
-    window.parent.handleActivityScore('grandeur_volume_cubes', score);
+  // Enregistrement (avant : appel à handleActivityScore, fonction inexistante → jamais enregistré)
+  if (window.parent && typeof window.parent.saveResult === 'function') {
+    saved = true;
+    try {
+      window.parent.saveResult({
+        activity: 'grandeur_volume_cubes', bookTitle: 'Le Bâtisseur de Cubes (volume)',
+        score, total: TOTAL_Q, pct,
+        date: new Date().toLocaleDateString('fr-BE'),
+        time: new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })
+      });
+    } catch (e) { console.warn('Erreur sauvegarde Bâtisseur de cubes', e); }
   }
 }
-
 function startSession() {
   const indices = SHAPES.map((_, i) => i);
   // Mélange des indices
@@ -640,8 +624,8 @@ function startSession() {
     [indices[i], indices[j]] = [indices[j], indices[i]];
   }
   session = indices.slice(0, TOTAL_Q);
+  saved = false;
 }
-
 function resetGame() {
   step = 1;
   score = 0;
@@ -650,14 +634,12 @@ function resetGame() {
   startSession();
   renderQuestion();
 }
-
 // Raccourci clavier Entrée pour valider
 document.addEventListener('keydown', e => {
-  if (e.key === 'Enter' && !answered) {
-    validateAnswer();
-  }
+  if (e.key !== 'Enter') return;
+  if (!answered) validateAnswer();
+  else if (Date.now() - answeredAt > 600) { if (step < TOTAL_Q) nextQ(); else finishGame(); } // Entrée : passer à la suite (pas sur un double Entrée)
 });
-
 // Lancement au chargement de la page
 window.addEventListener('DOMContentLoaded', () => {
   startSession();

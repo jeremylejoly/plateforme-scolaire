@@ -1379,7 +1379,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Double clic sur « Situation suivante » sautait une situation → bloqué ; un seul enregistrement en fin de série.
 - Nouvelle orthographe : iles, boite, maitrises.
 - Tests jsdom : partie 7 / 10 avec doubles clics → 1 sauvegarde ; « Recommencer » remet à zéro ; syntaxe OK.
-- ⚠️ Même appel inexistant `handleActivityScore` (donc aucun résultat enregistré) dans 6 autres fiches, à corriger quand on y arrivera : ~~aire_quadrillage~~ (v571), ~~aire_conversions~~ (v572), ~~aire_formules~~ (v574), volume_cubes, volume_formules, volume_conversions.
+- ⚠️ Même appel inexistant `handleActivityScore` (donc aucun résultat enregistré) dans 6 autres fiches, à corriger quand on y arrivera : ~~aire_quadrillage~~ (v571), ~~aire_conversions~~ (v572), ~~aire_formules~~ (v574), ~~volume_cubes~~ (v576), volume_formules, volume_conversions.
 
 ### 05/10 — Maths › Grandeurs › L'aire › Le Géomètre des Carreaux (`grandeur_aire_quadrillage`, `fiches/aire_quadrillage.html` + copies public et racine) — sw.js v571
 - 51 figures recalculées par la formule du lacet : toutes les aires justes, aucun polygone croisé, toutes dans la grille.
@@ -1431,6 +1431,15 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Cotes coupées au bord du dessin (« 12 dm » à gauche du triangle, hauteur du L à droite) → zone de dessin élargie (captures 390 px vérifiées).
 - Signes « ÷ » et « − » dans les corrections (« / 2 », « - »). Nouvelle orthographe : maitrises, entrainement.
 - Tests jsdom : « 12, » non compté, réponse fausse d'un centième refusée, partie 7 / 10 avec doubles clics → 1 sauvegarde ; syntaxe OK.
+
+### 06/10 — Maths › Grandeurs › Le volume › Le Bâtisseur de cubes (`grandeur_volume_cubes`, `fiches/volume_cubes.html` + copies public et racine) — sw.js v576
+- 15 structures : total = somme des colonnes de la grille, égal au total de chaque explication.
+- **Cubes invisibles** : analyse par rendu (Chromium, chaque colonne ± 1 cube comparée pixel par pixel) → dans 9 dessins, une case du fond est entièrement cachée par une colonne de devant. Elle est vide dans 8 cas, mais la **Petite Pyramide** comptait un cube de coin totalement invisible (réponse 11 impossible à trouver sur le dessin). → Règle affichée sous chaque dessin : « aucun cube ne flotte ; les seuls cubes cachés sont ceux qui en portent d'autres (ou ceux que l'indice signale) » ; indice de la pyramide : « la base est un carré complet de 3 × 3 cubes ».
+- **« Le Pont »** : « il y a un trou sous le pont » était faux (le creux est derrière, et invisible) et l'explication inversait devant / derrière → « Le Mur et ses deux tours », indice et explication corrigés.
+- **Aucun résultat enregistré** (`handleActivityScore` inexistante) → `saveResult`, une seule fois par série.
+- Saisie : `parseInt` (« 12abc » = 12) + fenêtre `alert()` → lecture stricte, message dans la page, rien n'est compté.
+- Double clic sur « Structure suivante » → plus de structure sautée ; Entrée passe à la suite (pas sur un double Entrée).
+- Tests jsdom : vide/« 12abc » non comptés, double Entrée sans saut, partie 7 / 10 → 1 sauvegarde ; capture 390 px ; syntaxe OK.
 
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
@@ -1771,7 +1780,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | Mesures Agraires & Superficies | `grandeur_aire_agraire` | fiches/aire_agraire.html |  |
 | ✅ 05/10 | L'Arpenteur du Château (Formules d'aire) | `grandeur_aire_formules` | fiches/aire_formules.html |  |
 | ✅ 05/10 | Le Calcul d'Aires Composées | `grandeur_aire_composee` | fiches/aire_composee.html |  |
-| ⬜ | Le Bâtisseur de Cubes (Volume 3D) | `grandeur_volume_cubes` | fiches/volume_cubes.html |  |
+| ✅ 06/10 | Le Bâtisseur de Cubes (Volume 3D) | `grandeur_volume_cubes` | fiches/volume_cubes.html |  |
 | ⬜ | L'Architecte des Pavés (Formules) | `grandeur_volume_architecte` | fiches/volume_formules.html |  |
 | ⬜ | Le Laboratoire des Liquides | `grandeur_volume_liquides` | fiches/volume_conversions.html |  |
 
