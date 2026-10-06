@@ -1838,6 +1838,15 @@ Spécifique :
 - Bonne réponse en bleu (#1f5fbf) quand l'élève s'est trompé (elle était en vert) ; « Tu maitrises » ; « Relis les explications en rouge » → « sous tes erreurs ».
 - Tests jsdom : vide → message, 9/10 → message, 8/10 → 1 sauvegarde, 2 réponses en bleu ; capture 390 px sans défilement horizontal.
 
+### 06/10 — Mathématiques → Traitement de données → Choisir la bonne question (`td_quelle_question`, `quelle_question.html` à la racine, chargé par l'iframe + copies fiches/ et public/fiches/) — sw.js v619
+- 51 situations relues : la bonne question est toujours celle qui utilise les données du problème ; les distracteurs demandent une donnée déjà écrite.
+- **Distracteurs qui étaient aussi de « bonnes » questions** (calcul intermédiaire qu'on peut vraiment se poser) : pains sortis du four (8 × 18), aire du terrain, billes de Tom en tout (3 × 24), sièges de la salle (15 × 22), heures de fuite (3 jours), kWh par mois, élèves des classes de 18, pages par chapitre, litres mis dans le réservoir ; Léo : « économisé en tout » (77 €) → remplacés par des questions dont la réponse est dans l'énoncé. Léo : « Lui manque-t-il de l'argent ? » (il ne lui manque rien : 77 € pour 59 €) → « Combien d'argent restera-t-il… ». Piscine « contient 1 200 l… on la remplit » → « Une piscine vide peut contenir… ».
+- **La bonne question était la plus longue dans 59 % des cas** → 37 propositions réécrites à longueur comparable : plus longue dans 2 / 51.
+- Mélanges sort(random) → Fisher–Yates (≈ 33 % par position).
+- **Double clic sur « Question suivante » sautait une question ; après la 10e, il enregistrait deux fois** → garde de 600 ms, enregistrement unique (try/catch) ; Entrée = question suivante.
+- Bonne question montrée en bleu (#1f5fbf) après une erreur. Orthographe : boite, entraineur, entrainements ; « la recette prévoie-t-elle » → « est-elle prévue » ; « 4 amis partagent » → « partage » ; « boîtes … reçu » → « reçues » ; « kilos » → « kilogrammes ».
+- Tests jsdom : 1 000 séries, faux → bleu, Entrée immédiate ignorée, double Entrée sans saut, 9/10 → 1 sauvegarde ; capture 390 px sans défilement horizontal.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2211,7 +2220,7 @@ Spécifique :
 | ⬜ | Le décodeur de camemberts | `td_donnees_circulaires` | index › renderDonneesCirculaires |  |
 | ✅ 06/10 | L'arbre dichotomique | `td_arbre_dichotomique` | index › renderArbreDichotomique |  |
 | ⬜ | Le tri logique (Venn & Carroll) | `td_logique_tri` | index › renderTDLogiqueTri |  |
-| ⬜ | Choisir la bonne question | `td_quelle_question` | index › renderQuelleQuestion |  |
+| ✅ 06/10 | Choisir la bonne question | `td_quelle_question` | index › renderQuelleQuestion |  |
 | ⬜ | Les graphiques de synthèse | `trait_graphiques` | index › (?) | (code à localiser) |
 | ⬜ | La règle de trois | `trait_regle3` | index › (?) | (code à localiser) |
 | ⬜ | Résolution de problèmes | `trait_problemes` | index › (?) | (code à localiser) |
