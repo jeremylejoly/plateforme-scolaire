@@ -1716,6 +1716,14 @@ Spécifique :
 - L'angle droit garde volontairement un arc (sinon le carré donnerait 90°).
 - Tests : jsdom (positions, double clic, 8/10 → 1 saveResult), node --check 7 OK.
 
+### 06/10 — Mesurer les angles (`angles_mesurer`, fiches/angles_mesurer.html) — sw.js v606
+- Contenu : équerre Aristo vérifiée (double graduation : l'échelle intérieure donne la mesure quand le côté de départ est à gauche ; contrôle visuel après le recalage automatique), 5 angles tirés au hasard (15°–85° et 95°–165°), barème 3 / 2 / 1 / 0 point selon l'écart (0°, 1°, 2°, plus).
+- **Aucun résultat enregistré** → saveResult `angles_mesurer` sur 15 points, une seule fois, try/catch.
+- Un côté de l'angle sortait souvent du cadre (orientation 20°–260° : côté vers le bas coupé, cadre de 260 de haut pour des côtés de 130) → orientation choisie pour que les deux côtés restent visibles (0 sur 10 000 angles).
+- Saisie : champ « number » + parseInt (« 45.5 » lu 45) et alert → lecture stricte (entier 0–180, « ° » et espaces tolérés), message dans la page, rien n'est compté.
+- « Question suivante » protégé (600 ms), Entrée passe à la suite ; orthographe « maitrises », « Entraine-toi ».
+- Tests : jsdom (vide / 45.5 / 12abc refusés, double clic, partie 3+2+1+0+3 = 9/15 → 1 saveResult), node --check 7 OK, captures Playwright de l'équerre recalée.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2111,7 +2119,7 @@ Spécifique :
 | ✅ 06/10 | Les hauteurs du triangle | `solide_triangles_hauteurs` | fiches/triangles_hauteurs.html |  |
 | ✅ 06/10 | Reconnaître les angles | `angles_reconnaitre` | fiches/angles_reconnaitre.html |  |
 | ✅ 06/10 | Estimation des angles | `angles_estimation` | fiches/angles_estimation.html | Saisie libre comparée strictement |
-| ⬜ | Mesurer les angles | `angles_mesurer` | fiches/angles_mesurer.html |  |
+| ✅ 06/10 | Mesurer les angles | `angles_mesurer` | fiches/angles_mesurer.html |  |
 | ⬜ | Calcul d'angles manquants | `geometrie_angles_manquants` | fiches/geometrie_angles_manquants.html |  |
 
 ### 🔢 Mathématiques — 🔷 Solides & Figures — Quadrilatères & Cercle
