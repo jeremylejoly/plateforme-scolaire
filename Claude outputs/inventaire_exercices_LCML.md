@@ -1917,6 +1917,11 @@ Spécifique :
 - **Texte et questions corrigés** : « deux lignes de fortifications en bois » et la question qui en découlait (« un mur en pierre et un fossé rempli d'eau » en mauvaise réponse, alors que César décrit des fossés remplis d'eau) → « fossés, palissades et tours » ; « les murs sont trop solides » → « ville perchée sur une colline aux pentes raides, trop bien protégée » ; « Vercingétorix chasse les femmes, les enfants et les vieillards » → « les chefs gaulois chassent les habitants, avec les femmes et les enfants » ; reddition en armure présentée comme un récit écrit plus tard ; « la Gaule devient une province romaine » → « passe sous la domination romaine » ; inférence « moins nombreuse mais mieux entrainée » (le nombre n'est pas dans le texte) → « bien entrainés et bien commandés ».
 - Tests Chromium : 400 parties (bonne réponse en A/B/C/D 1292/1283/1278/1347), vide → message, 12/13 → « Réponds d'abord à la question 13 », erreur → rouge + bleu, 1 seul enregistrement 12/13, réponses verrouillées ; 390 px sans débordement.
 
+### 06/10 — Éveil → Histoire → Le Moyen Âge → Qui veut gagner des millions ? (`qvgdm_moyen_age`, index › QVGDM_MOYEN_AGE_Q / renderQVGDMMoyenAge) — sw.js v631
+- **Propositions jamais mélangées, toujours la même partie** ; moteur à part (styles intégrés, ancienne présentation), mêmes défauts que les deux autres quiz (50/50 biaisé, minuteurs non liés à la partie, bonne réponse en vert, enregistrement sans try/catch) → moteur du quiz Antiquité repris (présentation commune aux 3 quiz d'histoire), **30 questions, 2 par niveau**, propositions mélangées. Bonne réponse strictement la plus longue : 5/30 (avant : très souvent, ex. « L'espace extérieur entourant le château où vivaient les gens »).
+- **Contenu** : fin du Moyen Âge avec 1453 (chute de Constantinople, date aussi enseignée) en mauvaise réponse à côté de 1492 → 1453 retiré des propositions, question « dans de nombreux manuels » ; « le seigneur qui possédait des terres… → un seigneur féodal » (la question donnait la réponse) retirée ; basse-cour « espace extérieur où vivaient les gens » → « cour fermée avec écuries et ateliers » ; « cérémonie où le seigneur accorde des terres → l'hommage » (c'est l'investiture) → « cérémonie où le vassal jure fidélité » ; croisades : « pèlerinages organisés par le pape » (en partie vrai) retiré des mauvaises réponses ; « Le baptême féodal » (inventé) retiré. Nouvelles questions : château fort, chevalier, donjon, pont-levis, trois ordres, fief, corvée, dîme, Godefroy de Bouillon, Charlemagne, Clovis, Bruges et le drap, gothique, roman, Éperons d'or (1302), imprimerie. Nouvelle orthographe (apparait).
+- Tests Chromium : 60 parties gagnées (30 questions vues, 1 sauvegarde 15/15 par partie), répartition A/B/C/D 221/231/239/209 ; partie perdue à la question 7 → bleu + 1 sauvegarde 6/15 ; relance pendant le délai sans effet ; captures 390 px sans débordement.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2356,7 +2361,7 @@ Spécifique :
 | ✅ 06/10 | Quiz L'Antiquité | `qvgdm_antiquite` | index › renderQVGDMAntiquite | QCM: bonne réponse en position 3 dans 9/15 questions, options non mélangées |
 | ✅ 06/10 | Antiquité — Termes et définitions | `antiquite_assoc` | index › renderAntiquiteAssoc |  |
 | ✅ 06/10 | Antiquité — Document historique | `antiquite_doc` | index › renderAntiquiteDoc |  |
-| ⬜ | Quiz Moyen Âge | `qvgdm_moyen_age` | index › renderQVGDMMoyenAge |  |
+| ✅ 06/10 | Quiz Moyen Âge | `qvgdm_moyen_age` | index › renderQVGDMMoyenAge |  |
 | ⬜ | Moyen Âge — Termes et définitions | `moyen_age_assoc` | index › renderMoyenAgeAssoc |  |
 | ✅ 05/10 (ac366c8) | Moyen Âge — La Peste Noire | `moyen_age_doc` | index › renderMoyenAgeDoc |  |
 | ⬜ | Moyen Âge — Texte lacunaire | `moyen_age_texte_trous` | fiches/moyen_age_texte_trous.html | Saisie libre comparée strictement |
