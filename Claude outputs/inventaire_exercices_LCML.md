@@ -1922,6 +1922,11 @@ Spécifique :
 - **Contenu** : fin du Moyen Âge avec 1453 (chute de Constantinople, date aussi enseignée) en mauvaise réponse à côté de 1492 → 1453 retiré des propositions, question « dans de nombreux manuels » ; « le seigneur qui possédait des terres… → un seigneur féodal » (la question donnait la réponse) retirée ; basse-cour « espace extérieur où vivaient les gens » → « cour fermée avec écuries et ateliers » ; « cérémonie où le seigneur accorde des terres → l'hommage » (c'est l'investiture) → « cérémonie où le vassal jure fidélité » ; croisades : « pèlerinages organisés par le pape » (en partie vrai) retiré des mauvaises réponses ; « Le baptême féodal » (inventé) retiré. Nouvelles questions : château fort, chevalier, donjon, pont-levis, trois ordres, fief, corvée, dîme, Godefroy de Bouillon, Charlemagne, Clovis, Bruges et le drap, gothique, roman, Éperons d'or (1302), imprimerie. Nouvelle orthographe (apparait).
 - Tests Chromium : 60 parties gagnées (30 questions vues, 1 sauvegarde 15/15 par partie), répartition A/B/C/D 221/231/239/209 ; partie perdue à la question 7 → bleu + 1 sauvegarde 6/15 ; relance pendant le délai sans effet ; captures 390 px sans débordement.
 
+### 06/10 — Éveil → Histoire → Le Moyen Âge → Termes et définitions (`moyen_age_assoc`, index › MOYEN_AGE_ASSOC_DATA / renderMoyenAgeAssoc) — sw.js v632
+- Moteur à part en **3 colonnes** (terme / case / définition, ≈ 110 px chacune à 390 px), avec les mêmes défauts que Préhistoire et Antiquité (« Vérifier » cliquable plusieurs fois → plusieurs enregistrements, cases vides comptées fausses, déplacements possibles après correction, correction en vert) → moteur corrigé commun repris (terme + case sur une ligne, réserve de définitions en dessous, message s'il en reste, garde 600 ms, correction et enregistrement uniques, verrouillage, correction en bleu, placement par toucher).
+- **Contenu** : « Motte » et « Château à motte » avaient presque la même définition (indiscernables s'ils tombaient ensemble) → « Motte » retirée, château à motte « une tour en bois au sommet d'une butte de terre » ; basse-cour « espace extérieur où vivaient les gens » → « cour fermée avec écuries, ateliers et logements des serviteurs » ; peste noire « population européenne » ; banalités payées par « les paysans » (pas seulement les serfs). 23 paires, termes et définitions distincts.
+- Tests Chromium : 300 tirages (23 termes vus), vide → message, clic définition + case → placée, 6/8 → bleu + 1 seul enregistrement, verrouillage, alignement vérifié ; 390 px sans débordement.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2362,7 +2367,7 @@ Spécifique :
 | ✅ 06/10 | Antiquité — Termes et définitions | `antiquite_assoc` | index › renderAntiquiteAssoc |  |
 | ✅ 06/10 | Antiquité — Document historique | `antiquite_doc` | index › renderAntiquiteDoc |  |
 | ✅ 06/10 | Quiz Moyen Âge | `qvgdm_moyen_age` | index › renderQVGDMMoyenAge |  |
-| ⬜ | Moyen Âge — Termes et définitions | `moyen_age_assoc` | index › renderMoyenAgeAssoc |  |
+| ✅ 06/10 | Moyen Âge — Termes et définitions | `moyen_age_assoc` | index › renderMoyenAgeAssoc |  |
 | ✅ 05/10 (ac366c8) | Moyen Âge — La Peste Noire | `moyen_age_doc` | index › renderMoyenAgeDoc |  |
 | ⬜ | Moyen Âge — Texte lacunaire | `moyen_age_texte_trous` | fiches/moyen_age_texte_trous.html | Saisie libre comparée strictement |
 | ⬜ | Moyen Âge — Je relie (Vocabulaire) | `moyen_age_vocabulaire` | fiches/moyen_age_vocabulaire.html |  |

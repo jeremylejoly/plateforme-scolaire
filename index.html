@@ -37236,106 +37236,245 @@ const MOYEN_AGE_ASSOC_DATA = [
   {terme:"Adoubement",     def:"Cérémonie qui fait d'un jeune noble un chevalier"},
   {terme:"Croisades",      def:"Expéditions militaires chrétiennes vers Jérusalem"},
   {terme:"Donjon",         def:"Tour principale et plus haute d'un château fort"},
-  {terme:"Basse-cour",     def:"Espace extérieur du château où vivaient les gens"},
+  {terme:"Basse-cour",     def:"Cour fermée du château, avec les écuries, les ateliers et les logements des serviteurs"},
   {terme:"Clergé",         def:"Ensemble des personnes qui assurent les fonctions religieuses"},
-  {terme:"Peste noire",    def:"Terrible maladie qui tua environ un tiers de la population au XIVe siècle"},
-  {terme:"Château à motte",def:"Premier type de château médiéval, construit sur une butte de terre"},
+  {terme:"Peste noire",    def:"Terrible maladie qui tua environ un tiers de la population européenne au XIVe siècle"},
+  {terme:"Château à motte",def:"Premier type de château : une tour en bois au sommet d'une butte de terre"},
   {terme:"Hommage",        def:"Cérémonie lors de laquelle un vassal jurait fidélité à son suzerain"},
   {terme:"Sarrasins",      def:"Nom donné par les chrétiens aux musulmans pendant les Croisades"},
   {terme:"Huns",           def:"Peuple nomade venu d'Asie qui envahit l'Europe à la fin de l'Empire romain"},
-  {terme:"Motte",          def:"Butte de terre artificielle sur laquelle était construit le premier château médiéval"},
   {terme:"Douve",          def:"Fossé rempli d'eau qui entourait un château fort pour le protéger"},
   {terme:"Francs",         def:"Peuple germanique qui s'installa en Gaule et dont Clovis fut le premier grand roi"},
   {terme:"Haute-cour",     def:"Partie du château réservée au seigneur et à sa famille, mieux protégée"},
   {terme:"Insalubrité",    def:"Mauvaises conditions d'hygiène dangereuses pour la santé"},
   {terme:"Promiscuité",    def:"Fait de vivre trop nombreux dans un espace trop petit"},
-  {terme:"Banalités",      def:"Taxes que les serfs devaient payer pour utiliser le moulin, le four ou le pressoir du seigneur"},
+  {terme:"Banalités",      def:"Taxes que les paysans devaient payer pour utiliser le moulin, le four ou le pressoir du seigneur"},
   {terme:"Masure",         def:"Petite maison pauvre et en mauvais état dans laquelle vivaient les serfs"},
   {terme:"Écuyer",         def:"Jeune noble qui servait un chevalier et se préparait à devenir chevalier à son tour"},
   {terme:"Page",           def:"Jeune garçon de noble naissance placé au service d'un seigneur pour apprendre les bonnes manières"},
 ];
 
-let moyenAgeAssocState = {pairs:[], defOrder:[], placed:{}, dragging:null, touchClone:null};
+let moyenAgeAssocState = {pairs:[], defOrder:[], placed:{}, dragging:null, touchClone:null, touchSource:null};
 
 function renderMoyenAgeAssoc(){
-  const body = document.getElementById('moyen-age-assoc-body'); if(!body) return;
-  const pairs = shuffle([...MOYEN_AGE_ASSOC_DATA]).slice(0, 8);
+  const body = document.getElementById('moyen-age-assoc-body');
+  if(!body) return;
+
+  const pairs = shuffle([...MOYEN_AGE_ASSOC_DATA]).slice(0, 8).map(p=>({terme:p.terme.replace(/J\.-C\./g,'J.\u2011C.'), def:p.def.replace(/(\d) (\d)/g,'$1\u00a0$2').replace(/ av\. J\.-C\./g,'\u00a0av.\u00a0J.\u2011C.').replace(/ (millions)/g,'\u00a0$1')}));
   const defOrder = shuffle(pairs.map((_,i) => i));
-  moyenAgeAssocState = {pairs, defOrder, placed:{}, dragging:null, touchClone:null};
-  const defsCol = shuffle(pairs.map((_,i) => i));
-  let rowsHtml = '';
-  pairs.forEach((p,i) => {
-    rowsHtml += `<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px;align-items:center;">
-      <div style="padding:8px 12px;background:var(--surface);border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-weight:700;min-height:48px;display:flex;align-items:center">${p.terme}</div>
-      <div class="ma-assoc-zone" id="ma-zone-${i}" data-index="${i}" onclick="maAssocClearZone(this)"
-        style="min-height:48px;display:flex;align-items:center;padding:6px 10px;
-        background:var(--purple-light);border:2px dashed var(--purple);border-radius:8px;font-size:12px;transition:background .2s;cursor:pointer;"
-        ondragover="maAssocDragOver(event)" ondrop="maAssocDrop(event)" ondragleave="maAssocDragLeave(event)">
-        <span style="opacity:.5">Glisse ici…</span>
-      </div>
-      <div id="ma-def-container-${defsCol[i]}" style="min-height:48px;">
-        <div class="ma-assoc-def" id="ma-def-${defsCol[i]}" data-index="${defsCol[i]}" draggable="true"
-          style="padding:8px 10px;background:var(--purple);color:#fff;border-radius:8px;font-size:12px;
-          font-weight:600;cursor:grab;user-select:none;touch-action:none;min-height:48px;
-          display:flex;align-items:center;line-height:1.3;"
-          ondragstart="maAssocDragStart(event)" ondragend="maAssocDragEnd(event)"
-          ontouchstart="maAssocTouchStart(event)" ontouchmove="maAssocTouchMove(event)" ontouchend="maAssocTouchEnd(event)" ontouchcancel="maAssocTouchCancel(event)">
-          ${pairs[defsCol[i]].def}
-        </div>
-      </div>
+  moyenAgeAssocState = {pairs, defOrder, placed:{}, dragging:null, touchClone:null, touchSource:null, done:false, lastClick:0};
+
+  let termesHtml = '';
+  pairs.forEach((p, i) => {
+    termesHtml += `<div class="assoc-terme" id="maassoc-terme-${i}" data-index="${i}"
+      style="min-height:52px;display:flex;align-items:center;padding:8px 12px;
+      background:var(--surface);border:1.5px solid var(--border);border-radius:8px;
+      font-size:13px;font-weight:700;color:var(--text)">
+      ${p.terme}
+    </div>`;
+    termesHtml += `<div class="assoc-drop-zone" id="maassoc-zone-${i}" data-index="${i}" onclick="maAssocClearZone(this)"
+      style="min-height:52px;display:flex;align-items:center;padding:8px 12px;
+      background:var(--purple-light);border:2px dashed var(--purple);border-radius:8px;
+      font-size:12px;color:var(--muted);cursor:pointer;transition:background .2s;min-width:0;overflow-wrap:anywhere;"
+      ondragover="maAssocDragOver(event)" ondrop="maAssocDrop(event)" ondragleave="maAssocDragLeave(event)"
+      ontouchstart="maAssocZoneTouchStart(event)">
+      <span style="opacity:.5">Glisse une définition ici…</span>
     </div>`;
   });
+
+  let defsHtml = '';
+  defOrder.forEach(i => {
+    defsHtml += `<div class="assoc-def" id="maassoc-def-${i}" data-index="${i}" draggable="true"
+      style="padding:8px 14px;background:var(--purple);color:#fff;border-radius:8px;
+      font-size:12px;font-weight:600;cursor:grab;user-select:none;touch-action:none;
+      margin-bottom:6px;line-height:1.4;"
+      onclick="maAssocSelect(this)" ondragstart="maAssocDragStart(event)" ondragend="maAssocDragEnd(event)"
+      ontouchstart="maAssocDefTouchStart(event)" ontouchmove="maAssocDefTouchMove(event)" ontouchend="maAssocDefTouchEnd(event)" ontouchcancel="maAssocDefTouchCancel(event)">
+      ${pairs[i].def}
+    </div>`;
+  });
+
   body.innerHTML = `
-    <div class="card" style="margin-bottom:1rem;padding:.8rem 1rem;background:var(--purple-light);border:1px solid var(--purple);">
-      <p style="margin:0;font-size:13px;color:var(--purple);font-weight:700">Glisse chaque définition (colonne de droite) en face du bon terme (colonne de gauche).</p>
+    <div class="card" style="margin-bottom:1rem;padding:0.8rem 1rem;background:var(--purple-light);border:1px solid var(--purple);">
+      <p style="margin:0;font-size:13px;color:var(--purple);font-weight:700">Glisse chaque définition en face du bon terme (ou touche une définition, puis la case).</p>
     </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:6px;">
-      <div style="font-size:11px;font-weight:800;text-transform:uppercase;color:var(--muted);">Terme</div>
-      <div style="font-size:11px;font-weight:800;text-transform:uppercase;color:var(--muted);">Ta réponse</div>
-      <div style="font-size:11px;font-weight:800;text-transform:uppercase;color:var(--muted);">Définitions</div>
+    <div style="display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:8px 10px;margin-bottom:1rem;">
+      <div style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);">Termes</div>
+      <div style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);">Définitions</div>
+      ${termesHtml}
     </div>
-    <div>${rowsHtml}</div>
-    <button class="btn" onclick="validateMoyenAgeAssoc()" style="width:100%;margin-top:1rem;margin-bottom:1rem">✅ Vérifier mes réponses</button>
-    <div id="ma-assoc-score" style="display:none"></div>`;
+    <div class="card" style="margin-bottom:1rem;">
+      <div style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:8px;">🏷️ Définitions à placer</div>
+      <div id="maassoc-def-pool">${defsHtml}</div>
+    </div>
+    <div id="maassoc-msg" style="display:none;margin-bottom:.75rem;padding:.6rem .9rem;border-radius:8px;background:#fff7ed;border:1.5px solid #f59e0b;color:#92400e;font-size:13px;font-weight:700;text-align:center"></div>
+    <button class="btn" id="maassoc-verif" onclick="validateMoyenAgeAssoc()" style="width:100%;margin-bottom:1rem">✅ Vérifier mes réponses</button>
+    <div id="maassoc-score-panel" style="display:none"></div>
+  `;
 }
+
 function maAssocDragStart(e){ moyenAgeAssocState.dragging=e.currentTarget.dataset.index; e.dataTransfer.setData('text/plain',e.currentTarget.dataset.index); e.currentTarget.style.opacity='0.5'; }
 function maAssocDragEnd(e){ e.currentTarget.style.opacity=''; moyenAgeAssocState.dragging=null; }
 function maAssocDragOver(e){ e.preventDefault(); e.currentTarget.style.background='var(--purple-mid,#ede9fe)'; }
 function maAssocDragLeave(e){ e.currentTarget.style.background='var(--purple-light)'; }
-function maAssocDrop(e){ e.preventDefault(); const zone=e.currentTarget; zone.style.background='var(--purple-light)'; maAssocPlacer(zone,parseInt(e.dataTransfer.getData('text/plain'))); }
-function maAssocPlacer(zone,defIndex){
-  const zi=parseInt(zone.dataset.index); const pairs=moyenAgeAssocState.pairs;
-  const ancien=moyenAgeAssocState.placed[zi]; if(ancien!==undefined) maAssocRetourner(ancien);
-  Object.entries(moyenAgeAssocState.placed).forEach(([z,d])=>{ if(d===defIndex&&parseInt(z)!==zi){ delete moyenAgeAssocState.placed[parseInt(z)]; const oz=document.getElementById('ma-zone-'+z); if(oz){oz.innerHTML='<span style="opacity:.5">Glisse ici…</span>';oz.style.background='var(--purple-light)';oz.style.border='2px dashed var(--purple)';} } });
-  maAssocRetirerBanque(defIndex); moyenAgeAssocState.placed[zi]=defIndex;
-  zone.innerHTML=`<span style="font-size:12px;font-weight:600;color:var(--purple);line-height:1.3">${pairs[defIndex].def}</span>`;
-  zone.style.border='2px solid var(--purple)';
+function maAssocDrop(e){
+  e.preventDefault();
+  e.currentTarget.style.background='var(--purple-light)';
+  maAssocPlacerDef(e.currentTarget, parseInt(e.dataTransfer.getData('text/plain')));
 }
-function maAssocRetourner(di){ const pool=document.getElementById('ma-def-container-'+di); if(!pool||document.getElementById('ma-def-'+di)) return; const pairs=moyenAgeAssocState.pairs; const div=document.createElement('div'); div.className='ma-assoc-def'; div.id='ma-def-'+di; div.dataset.index=di; div.draggable=true; div.style.cssText='padding:8px 10px;background:var(--purple);color:#fff;border-radius:8px;font-size:12px;font-weight:600;cursor:grab;user-select:none;touch-action:none;min-height:48px;display:flex;align-items:center;line-height:1.3;'; div.textContent=pairs[di].def; div.ondragstart=maAssocDragStart; div.ondragend=maAssocDragEnd; div.ontouchstart=maAssocTouchStart; div.ontouchmove=maAssocTouchMove; div.ontouchend=maAssocTouchEnd; div.ontouchcancel=maAssocTouchCancel; pool.appendChild(div); }
-function maAssocRetirerBanque(di){ const el=document.getElementById('ma-def-'+di); if(el) el.remove(); }
+
+function maAssocPlacerDef(zone, defIndex){
+  if(moyenAgeAssocState.done || isNaN(defIndex)) return;
+  const m=document.getElementById('maassoc-msg'); if(m) m.style.display='none';
+  const zoneIndex = parseInt(zone.dataset.index);
+  const ancien = moyenAgeAssocState.placed[zoneIndex];
+  if(ancien !== undefined) maAssocRetournerDef(ancien);
+  Object.entries(moyenAgeAssocState.placed).forEach(([zi, di]) => {
+    if(di === defIndex && parseInt(zi) !== zoneIndex){
+      delete moyenAgeAssocState.placed[parseInt(zi)];
+      const oldZone = document.getElementById('maassoc-zone-'+zi);
+      if(oldZone){ oldZone.innerHTML='<span style="opacity:.5">Glisse une définition ici…</span>'; oldZone.style.background='var(--purple-light)'; oldZone.style.border='2px dashed var(--purple)'; }
+    }
+  });
+  maAssocRetirerDeBanque(defIndex);
+  if(moyenAgeAssocState.sel===defIndex) moyenAgeAssocState.sel=undefined;
+  moyenAgeAssocState.placed[zoneIndex] = defIndex;
+  zone.innerHTML = `<span style="font-size:12px;font-weight:600;color:var(--purple);line-height:1.4">${moyenAgeAssocState.pairs[defIndex].def}</span>`;
+  zone.style.border = '2px solid var(--purple)';
+}
+
+function maAssocRetournerDef(defIndex){
+  const pool = document.getElementById('maassoc-def-pool');
+  if(!pool || document.getElementById('maassoc-def-'+defIndex)) return;
+  const div = document.createElement('div');
+  div.className='assoc-def'; div.id='maassoc-def-'+defIndex; div.dataset.index=defIndex; div.draggable=true;
+  div.style.cssText='padding:8px 14px;background:var(--purple);color:#fff;border-radius:8px;font-size:12px;font-weight:600;cursor:grab;user-select:none;touch-action:none;margin-bottom:6px;line-height:1.4;';
+  div.textContent=moyenAgeAssocState.pairs[defIndex].def;
+  div.addEventListener('dragstart',maAssocDragStart); div.addEventListener('dragend',maAssocDragEnd);
+  div.addEventListener('touchstart',maAssocDefTouchStart,{passive:false}); div.addEventListener('touchmove',maAssocDefTouchMove,{passive:false}); div.addEventListener('touchend',maAssocDefTouchEnd);
+  div.addEventListener('touchcancel',maAssocDefTouchCancel);
+  div.addEventListener('click',()=>maAssocSelect(div));
+  pool.appendChild(div);
+}
+function maAssocSelect(el){
+  const st=moyenAgeAssocState; if(st.done||!el) return;
+  const di=parseInt(el.dataset.index);
+  document.querySelectorAll('#maassoc-def-pool .assoc-def').forEach(d=>d.style.outline='');
+  if(st.sel===di){ st.sel=undefined; return; }
+  st.sel=di; el.style.outline='3px solid #f59e0b';
+}
+function maAssocPoserSelection(zone){
+  const st=moyenAgeAssocState;
+  if(st.done || st.sel===undefined || st.placed[parseInt(zone.dataset.index)]!==undefined) return false;
+  const di=st.sel; st.sel=undefined; maAssocPlacerDef(zone,di); return true;
+}
+function maAssocRetirerDeBanque(defIndex){ const el=document.getElementById('maassoc-def-'+defIndex); if(el) el.remove(); }
 function maAssocClearZone(zone){
-  const panel = document.getElementById('ma-assoc-score');
+  const panel = document.getElementById('maassoc-score-panel');
   if(panel && panel.style.display === 'block') return;
+  if(maAssocPoserSelection(zone)) return;
   const zi = parseInt(zone.dataset.index);
   const di = moyenAgeAssocState.placed[zi];
   if(di === undefined) return;
   delete moyenAgeAssocState.placed[zi];
-  zone.innerHTML = '<span style="opacity:.5">Glisse ici…</span>';
+  zone.innerHTML = '<span style="opacity:.5">Glisse une définition ici…</span>';
   zone.style.background = 'var(--purple-light)'; zone.style.border = '2px dashed var(--purple)';
-  maAssocRetourner(di);
+  maAssocRetournerDef(di);
 }
-let maATEl=null,maAClone=null;
-function maAssocTouchStart(e){ e.preventDefault(); maATEl=e.currentTarget; const clone=maATEl.cloneNode(true); clone.style.cssText='position:fixed;z-index:9999;opacity:.85;pointer-events:none;padding:8px 10px;background:var(--purple);color:#fff;border-radius:8px;font-size:12px;'; const t=e.touches[0]; clone.style.left=(t.clientX-60)+'px'; clone.style.top=(t.clientY-20)+'px'; document.body.appendChild(clone); maAClone=clone; maATEl.style.opacity='0.4'; }
-function maAssocTouchMove(e){ e.preventDefault(); if(!maAClone) return; const t=e.touches[0]; maAClone.style.left=(t.clientX-60)+'px'; maAClone.style.top=(t.clientY-20)+'px'; }
-function maAssocTouchEnd(e){ if(!maAClone) return; const t=e.changedTouches[0]; maAClone.remove(); maAClone=null; if(maATEl) maATEl.style.opacity=''; const el=document.elementFromPoint(t.clientX,t.clientY); const zone=el?el.closest('.ma-assoc-zone'):null; if(zone&&maATEl) maAssocPlacer(zone,parseInt(maATEl.dataset.index)); maATEl=null; }
-function maAssocTouchCancel(e){ if(maAClone) { maAClone.remove(); maAClone=null; } if(maATEl) { maATEl.style.opacity=''; maATEl=null; } }
+
+function maAssocDefTouchStart(e){
+  e.preventDefault();
+  if(moyenAgeAssocState.done) return;
+  moyenAgeAssocState.touchSource=e.currentTarget;
+  const touch=e.touches[0];
+  moyenAgeAssocState.touchX=touch.clientX; moyenAgeAssocState.touchY=touch.clientY;
+  const clone=e.currentTarget.cloneNode(true);
+  clone.style.cssText+=';position:fixed;z-index:9999;pointer-events:none;opacity:.85;width:160px;';
+  clone.style.left=(touch.clientX-80)+'px'; clone.style.top=(touch.clientY-20)+'px';
+  document.body.appendChild(clone); moyenAgeAssocState.touchClone=clone;
+  e.currentTarget.style.opacity='0.4';
+}
+function maAssocDefTouchMove(e){
+  e.preventDefault();
+  if(!moyenAgeAssocState.touchClone) return;
+  const touch=e.touches[0];
+  moyenAgeAssocState.touchClone.style.left=(touch.clientX-80)+'px';
+  moyenAgeAssocState.touchClone.style.top=(touch.clientY-20)+'px';
+}
+function maAssocDefTouchEnd(e){
+  e.preventDefault();
+  if(!moyenAgeAssocState.touchClone) return;
+  const touch=e.changedTouches[0];
+  moyenAgeAssocState.touchClone.remove(); moyenAgeAssocState.touchClone=null;
+  if(moyenAgeAssocState.touchSource) moyenAgeAssocState.touchSource.style.opacity='';
+  const el=document.elementFromPoint(touch.clientX,touch.clientY);
+  const zone=el?el.closest('.assoc-drop-zone'):null;
+  const src=moyenAgeAssocState.touchSource;
+  if(zone && src) maAssocPlacerDef(zone,parseInt(src.dataset.index));
+  else if(src && Math.abs(touch.clientX-moyenAgeAssocState.touchX)<10 && Math.abs(touch.clientY-moyenAgeAssocState.touchY)<10) maAssocSelect(src);
+  moyenAgeAssocState.touchSource=null;
+}
+function maAssocDefTouchCancel(e){
+  if(moyenAgeAssocState.touchClone) { moyenAgeAssocState.touchClone.remove(); moyenAgeAssocState.touchClone=null; }
+  if(moyenAgeAssocState.touchSource) { moyenAgeAssocState.touchSource.style.opacity=''; moyenAgeAssocState.touchSource=null; }
+}
+function maAssocZoneTouchStart(e){
+  const zone=e.currentTarget;
+  const zi=parseInt(zone.dataset.index);
+  const di=moyenAgeAssocState.placed[zi];
+  if(moyenAgeAssocState.done) return;
+  if(di===undefined){ if(maAssocPoserSelection(zone)) e.preventDefault(); return; }
+  e.preventDefault();
+  delete moyenAgeAssocState.placed[zi];
+  zone.innerHTML='<span style="opacity:.5">Glisse une définition ici…</span>';
+  zone.style.background='var(--purple-light)'; zone.style.border='2px dashed var(--purple)';
+  maAssocRetournerDef(di);
+}
+
 function validateMoyenAgeAssoc(){
-  const pairs=moyenAgeAssocState.pairs; let ok=0;
-  pairs.forEach((p,i)=>{ const zone=document.getElementById('ma-zone-'+i); if(!zone) return; const placed=moyenAgeAssocState.placed[i]; if(placed!==undefined&&pairs[placed].def===p.def){zone.style.border='2px solid #16a34a';zone.style.background='#d4f5e2';ok++;}else{zone.style.border='2px solid #dc2626';zone.style.background='#fdd9d7';if(placed===undefined)zone.innerHTML='<span style="font-size:11px;color:#dc2626">— '+p.def+'</span>';} });
-  const total=pairs.length; const pct=Math.round(ok/total*100);
-  const panel=document.getElementById('ma-assoc-score'); panel.style.display='block';
-  panel.innerHTML=`<div style="font-size:48px">${pct>=70?'🎉':pct>=50?'👍':'💪'}</div><div style="font-weight:800;font-size:28px;color:${pct>=70?'var(--green)':pct>=50?'var(--amber)':'var(--red)'}">${ok}/${total} — ${pct}%</div><button class="btn" onclick="renderMoyenAgeAssoc()" style="margin-top:1rem">🔄 Recommencer</button>`;
-  if(state.student) saveResult({student:state.student,cls:state.studentCls,className:CLASSES[state.studentCls]?CLASSES[state.studentCls].name:state.studentCls,activity:'moyen_age_assoc',bookTitle:'Moyen Âge — Termes et définitions',score:ok,total,pct,date:new Date().toLocaleDateString('fr-BE'),time:new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})});
+  const st=moyenAgeAssocState, now=Date.now();
+  if(st.done || now-st.lastClick<600) return;
+  st.lastClick=now;
+  const pairs=st.pairs;
+  const reste=pairs.length-Object.keys(st.placed).length;
+  const msg=document.getElementById('maassoc-msg');
+  if(reste>0){
+    if(msg){ msg.textContent='Place d\'abord toutes les définitions (il en reste '+reste+').'; msg.style.display='block'; }
+    return;
+  }
+  if(msg) msg.style.display='none';
+  st.done=true;
+  const vb=document.getElementById('maassoc-verif'); if(vb) vb.style.display='none';
+  document.querySelectorAll('#maassoc-def-pool .assoc-def').forEach(d=>d.draggable=false);
+  let score=0;
+  pairs.forEach((p,i)=>{
+    const zone=document.getElementById('maassoc-zone-'+i);
+    const di=moyenAgeAssocState.placed[i];
+    const correct=di!==undefined && pairs[di].terme===p.terme;
+    if(correct){ score++; if(zone){zone.style.background='var(--green-light,#dcfce7)';zone.style.border='2px solid var(--green,#16a34a)';} }
+    else{ if(zone){zone.style.background='var(--red-light,#fee2e2)';zone.style.border='2px solid var(--red,#dc2626)'; const c=document.createElement('div'); c.style.cssText='font-size:11px;color:#1f5fbf;margin-top:4px;font-weight:700;line-height:1.35'; c.textContent='➜ '+p.def; zone.style.flexDirection='column'; zone.style.alignItems='flex-start'; zone.appendChild(c);} }
+  });
+  const total=pairs.length, pct=Math.round(score/total*100);
+  const color=pct>=70?'var(--green)':pct>=50?'var(--amber)':'var(--red)';
+  const emoji=pct>=70?'🎉':pct>=50?'👍':'💪';
+  const panel=document.getElementById('maassoc-score-panel');
+  panel.style.display='block';
+  panel.innerHTML=`<div class="card" style="text-align:center">
+    <div style="font-size:48px;margin-bottom:.5rem">${emoji}</div>
+    <div style="font-family:'Nunito',sans-serif;font-weight:800;font-size:32px;color:${color}">${score}/${total}</div>
+    <div style="font-size:16px;color:${color};font-weight:700;margin-bottom:1rem">${pct}%</div>
+    <button class="btn" onclick="renderMoyenAgeAssoc()">🔄 Nouvel exercice</button>
+  </div>`;
+  panel.scrollIntoView({behavior:'smooth'});
+  if(state.student){
+    try{ saveResult({student:state.student,cls:state.studentCls,
+      className:CLASSES[state.studentCls]?CLASSES[state.studentCls].name:state.studentCls,
+      activity:'moyen_age_assoc',bookTitle:'Moyen Âge — Termes et définitions',
+      score,total,pct,
+      date:new Date().toLocaleDateString('fr-BE'),
+      time:new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})
+    }); }catch(e){}
+  }
 }
 
 // ================================================================
