@@ -1698,6 +1698,15 @@ Spécifique :
 - Orthographe : maitrises, Entraine-toi.
 - Tests : jsdom (étiquette cachée puis visible, rien coché → message, double clic, 6/8 → 1 saveResult au bon format), node --check 7 OK, capture 390 px (Playwright).
 
+### 06/10 — Reconnaître les angles (`angles_reconnaitre`, fiches/angles_reconnaitre.html) — sw.js v604
+- Contenu : 30 angles (aigu, obtus, droit, nul, plat, rentrant, plein) dessinés et vérifiés (planche Playwright) ; Fisher–Yates déjà en place.
+- **Aucun résultat enregistré** → saveResult `angles_reconnaitre`, une fois par série, try/catch.
+- Angle droit dessiné avec un arc alors que l'explication parle du « symbole carré » → petit carré au sommet.
+- Correction affichée avec des astérisques « **Excellent !** » (markdown non interprété) → texte en gras.
+- « Inférieur à l'alignement droit » → « plus petit qu'un angle plat (180°) ».
+- « Question suivante » protégé (600 ms), Entrée ; orthographe « Entraine-toi ».
+- Tests : jsdom (correction sans astérisques, double clic, 8/10 → 1 saveResult), node --check 7 OK, planche des 30 angles.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2091,7 +2100,7 @@ Spécifique :
 | ✅ 06/10 | Identifier les triangles | `triangles_qcm` | fiches/triangles_QCM.html |  |
 | ✅ 06/10 | Caractéristiques des triangles | `triangles_caracteristiques` | fiches/triangles_caracteristiques.html |  |
 | ✅ 06/10 | Les hauteurs du triangle | `solide_triangles_hauteurs` | fiches/triangles_hauteurs.html |  |
-| ⬜ | Reconnaître les angles | `angles_reconnaitre` | fiches/angles_reconnaitre.html |  |
+| ✅ 06/10 | Reconnaître les angles | `angles_reconnaitre` | fiches/angles_reconnaitre.html |  |
 | ⬜ | Estimation des angles | `angles_estimation` | fiches/angles_estimation.html | Saisie libre comparée strictement |
 | ⬜ | Mesurer les angles | `angles_mesurer` | fiches/angles_mesurer.html |  |
 | ⬜ | Calcul d'angles manquants | `geometrie_angles_manquants` | fiches/geometrie_angles_manquants.html |  |
