@@ -2259,6 +2259,8 @@ Spécifique :
 - **06/10 — Jeux › L'Œil du Temps (Jeu de Kim) (`kim_histoire`, kim_histoire.html, sw.js v719)** : décision de Jeremy — c'est un jeu (style « 7 erreurs ») → l'envoi du résultat à la page enseignant ajouté le matin (v639) est retiré, comme pour tous les jeux ; étoiles par scène gardées par élève (avant : communes à l'appareil). Contenu et moteur déjà vérifiés le matin (90 questions image par image).
 - **06/10 — Jeux › Les Échecs (`jeu_echecs`, echecs.html, sw.js v719)** : jeu absent de la liste de l'inventaire → ajouté. Règles complètes via chess.js (roque, prise en passant, promotion automatique en Dame annoncée dans la règle, pat, répétition, 50 coups, matériel insuffisant) ; IA Débutant (1 coup + hasard) / Intermédiaire (2 demi-coups) / Avancé (3 demi-coups, élagage alpha-bêta) : temps de réflexion mesuré ≤ 0,15 s ; coup de l'ordinateur annulé si on relance la partie ; pas de saveResult. Textes : « capture celui de l'adversaire » (on ne prend jamais le Roi) → « mets celui de l'adversaire échec et mat » ; pat mal défini (« ne peut plus bouger sans que son Roi soit en échec ») → « ne peut plus jouer aucun coup alors que son Roi n'est pas en échec » ; pion « il peut avancer de deux cases à son premier coup ». Test Playwright 390 px : partie contre le niveau Avancé (réponse de l'ordinateur, échec signalé), échiquier dans l'écran.
 
+- **06/10 — CEB Sciences 2025 (`ceb_sci_2025`, CEB sciences/ceb_sciences_2025.html, sw.js v720)** : 20 questions vérifiées contre le portfolio PDF (pages 20-31 : poule, papillon, électricité, ballons tableaux 1 et 2, poulies 5 kg → 5 / 2,5 / 1,25 kg). Défauts de contenu : 1.3 « Après l'ACCOUPLEMENT ➔ Œufs (après la ponte) » (pas d'état bleu juste après l'accouplement, et 2 fois la réponse « œufs ») → « Après la PONTE » + « Juste avant la MUE ➔ chenille », options identiques partout ; 3.3 a « plus la corde est fine, plus le ballon va loin » est faux dans le tableau 1 à 15,6 l (2 mm : 625 < 3 mm : 780) → la phrase vise le tableau 2 ; 4.2 citait un « tableau de résultats p. 31 » inexistant → « expériences 1, 2 et 3 (p. 30-31) » ; bonne réponse = la plus longue (1.5, 2.1, 2.3, 2.4, 3.5, 4.1, 4.2, 4.4, 4.5) → longueurs équilibrées ; « Le pylône s'envolerait » → « serait renversé ». Mécanique : AUCUNE sauvegarde → sauvegarde unique /20 au bilan ; choix jamais mélangés → QCM et listes mélangés (Fisher-Yates), lettres renumérotées ; une partie pouvait être validée vide et revalidée à l'infini (on corrigeait ensuite ses réponses et le score montait) → message dans la page avec les numéros manquants, partie verrouillée après correction, bouton « Partie suivante → » ; bonne réponse manquée en vert → bleu (QCM, Vrai/Faux, et « ➜ bonne réponse » sous les listes) ; bilan seulement quand les 4 parties sont validées ; garde 600 ms. NO : entrainement, maitriser. Test Playwright 390 px : message « 1.1 … 1.5 », 16/20, 1 seule sauvegarde, pas de débordement.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2808,7 +2810,7 @@ Spécifique :
 | Statut | Exercice | id | Source | Signal automatique |
 |---|---|---|---|---|
 | ✅ 06/10 | CEB Sciences 2026 | `ceb_sci_2026` | index › openCEB |  |
-| ⬜ | CEB Sciences 2025 | `ceb_sci_2025` | index › openCEB |  |
+| ✅ 06/10 | CEB Sciences 2025 | `ceb_sci_2025` | index › openCEB |  |
 | ⬜ | CEB Sciences 2024 | `ceb_sci_2024` | index › openCEB |  |
 | ⬜ | CEB Sciences 2023 | `ceb_sci_2023` | index › openCEB |  |
 | ⬜ | CEB Sciences 2022 | `ceb_sci_2022` | index › openCEB |  |
