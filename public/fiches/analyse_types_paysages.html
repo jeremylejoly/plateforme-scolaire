@@ -585,14 +585,14 @@
       type: 'industriel',
       title: 'Le port fluvial de marchandises',
       typeLabel: 'industriel',
-      desc: "C'est un paysage <strong>industriel</strong> de transport. On y trouve des grues de chargement géantes, des rangées de conteneurs multicolores et une péniche de fret amarrée à un canal."
+      desc: "C'est un paysage <strong>industriel</strong> de transport. On y trouve des grues de chargement géantes, des rangées de conteneurs multicolores et une péniche chargée de conteneurs amarrée le long d'un fleuve."
     },
     {
       src: '../photos/paysage_types_montagne.png',
       type: 'montagne',
       title: 'Les sommets alpins',
       typeLabel: 'montagnard',
-      desc: "C'est un paysage <strong>montagnard</strong>. On y reconnaît des sommets rocheux abrupts recouverts de neige, des forêts de sapins d'altitude et un chalet traditionnel en bois."
+      desc: "C'est un paysage <strong>montagnard</strong>. On y reconnait des sommets rocheux abrupts recouverts de neige, des forêts de sapins d'altitude et un chalet traditionnel en bois."
     },
     {
       src: '../photos/paysage_littoral.png',
@@ -606,14 +606,14 @@
       type: 'desert',
       title: 'Le désert de sable',
       typeLabel: 'désertique',
-      desc: "C'est un paysage <strong>désertique</strong> chaud. Les dunes de sable s'étendent à perte de vue. L'absence d'eau et de végétation en fait un milieu impropre à l'installation humaine (forte contrainte naturelle)."
+      desc: "C'est un paysage <strong>désertique</strong> chaud. Les dunes de sable s'étendent à perte de vue. Le manque d'eau et de végétation rend la vie humaine très difficile (forte contrainte naturelle)."
     },
     {
       src: '../photos/paysage_types_desert_glace.png',
       type: 'desert',
       title: 'Le désert de glace (Antarctique)',
       typeLabel: 'désertique',
-      desc: "C'est un paysage <strong>désertique</strong> froid polaire (l'Antarctique). C'est un désert d'eau gelée (glacier), sans arbres ni herbes, où les conditions climatiques extrêmes empêchent l'Homme de vivre."
+      desc: "C'est un paysage <strong>désertique</strong> froid polaire (l'Antarctique). C'est un désert d'eau gelée (glacier), sans arbres ni herbes, où le froid extrême empêche l'Homme d'y vivre de façon permanente."
     }
   ];
 
@@ -636,6 +636,8 @@
   function initGame() {
     currentIndex = 0;
     answers = [];
+    saved = false;
+    tempSelectedValue = null;
     currentSelection = [];
     
     // Mélange et tirage au sort de 5 éléments uniques
@@ -693,7 +695,10 @@
   }
 
   // Passe à la question suivante ou valide
+  let lastNext = 0, saved = false;
   function nextQuestion() {
+    if (tempSelectedValue === null || Date.now() - lastNext < 600) return;
+    lastNext = Date.now();
     answers.push(tempSelectedValue);
     tempSelectedValue = null;
 
@@ -739,7 +744,7 @@
           </div>
           <div class="rev-answers-info">
             Ta réponse : <strong>${userAnsLabel}</strong> 
-            ${!isCorrect ? `| Réponse correcte : <strong>${correctAnsLabel}</strong>` : ''}
+            ${!isCorrect ? `<br><span style="color:#1f5fbf">➜ Bonne réponse : <strong>${correctAnsLabel}</strong></span>` : ''}
           </div>
           <div class="rev-desc">${item.desc}</div>
         </div>
@@ -751,11 +756,29 @@
     // Affiche le score
     document.getElementById('score-val').innerText = `${score}/5`;
 
+    // Sauvegarde (une seule fois par partie)
+    if (!saved) {
+      saved = true;
+      try {
+        if (window.parent && window.parent !== window && typeof window.parent.saveResult === 'function') {
+          window.parent.saveResult({
+            activity: 'geo_paysages_types',
+            bookTitle: 'Les types de paysages',
+            score: score,
+            total: 5,
+            pct: Math.round(score / 5 * 100),
+            date: new Date().toLocaleDateString('fr-BE'),
+            time: new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })
+          });
+        }
+      } catch (e) { console.warn('saveResult', e); }
+    }
+
     // Messages de félicitations
     let feedback = "";
     if (score === 5) feedback = "Excellent ! 5/5, tu es un vrai géographe ! 🎉";
     else if (score >= 3) feedback = "Bien joué ! Beau score ! 👍";
-    else feedback = "Entraîne-toi encore pour repérer tous les paysages ! 💪";
+    else feedback = "Entraine-toi encore pour repérer tous les paysages ! 💪";
 
     document.getElementById('feedback-title').innerText = feedback;
 
@@ -776,6 +799,10 @@
   function closeZoom() {
     document.getElementById('zoomModal').style.display = 'none';
   }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && document.getElementById('main-game').style.display !== 'none' && !document.getElementById('btn-next').disabled) { e.preventDefault(); nextQuestion(); }
+  });
 
   // Démarrage initial
   window.onload = () => {

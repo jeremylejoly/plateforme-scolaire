@@ -2200,6 +2200,8 @@ Spécifique :
 
 - **06/10 — Les paysages : le littoral (`geo_paysages_littoral`, fiches/analyse_paysage_littoral.html, sw.js v691)** : mêmes défauts que la vallée (même moteur) : aucun résultat enregistré → sauvegarde ajoutée ; la fiche de rappel donnait tous les plans avec les éléments de l'image → exemples retirés ; `**…**` affiché tel quel → correction en bleu ; boutons vert / rouge barré / bleu (bonne réponse manquée), figés après validation ; « lignes électriques » retirées des voies de communication. Décisions de Jeremy : « La jetée au loin » supprimée (le corrigé décrivait une estacade en bois et métal à gauche qui n'existe pas sur l'image ; la seule avancée est le brise-lames, déjà un élément) → 7 éléments, score sur 14 ; cabines de plage → arrière-plan (elles sont collées à la digue, attendue à l'arrière-plan ; avant : second plan, incohérent). Textes : « photographie » → illustration ; bateau « (transport/activité) » → activité économique (pêche). Test Playwright 390 px : 12/14, 2 bleus, 1 seule sauvegarde. 3 copies alignées.
 
+- **06/10 — Les types de paysages (`geo_paysages_types`, fiches/analyse_types_paysages.html, sw.js v692)** : 12 images vues, toutes conformes à leur type (rural ×2, urbain ×2, périurbain ×2, industriel ×2, montagnard, littoral, désertique chaud et froid). La fiche n'enregistrait AUCUN résultat → sauvegarde ajoutée (score /5, une fois par partie, try/catch). Correction finale : bonne réponse manquée en bleu « ➜ Bonne réponse : … » (avant : même gris que le reste) ; garde 600 ms sur « Continuer » (un double clic sautait une image sans réponse) ; Entrée = continuer. Textes : port « amarrée à un canal » → le long d'un fleuve (l'image montre un fleuve) ; désert de sable « impropre à l'installation humaine » → « rend la vie humaine très difficile » ; Antarctique « empêche l'Homme de vivre » → « d'y vivre de façon permanente » ; reconnait / Entraine-toi (NO). Remarque : l'image de la zone commerciale (périurbain 2) montre des enseignes réelles (Carrefour…), laissée telle quelle. Test Playwright 390 px : 5 images, double clic sans effet, Entrée OK, 4/5 avec correction bleue, 1 seule sauvegarde. 3 copies alignées.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2732,7 +2734,7 @@ Spécifique :
 | ✅ 06/10 | L'Europe — Villes, Population et Mégalopole | `geo_europe_villes_pop` | fiches/europe_villes_population.html | QCM: bonne réponse en position 2 dans 3/5 questions, options non mélangées |
 | ✅ 06/10 | Les paysages : la vallée | `geo_paysages_vallee` | fiches/analyse_paysages.html |  |
 | ✅ 06/10 | Les paysages : le littoral | `geo_paysages_littoral` | fiches/analyse_paysage_littoral.html |  |
-| ⬜ | Les types de paysages | `geo_paysages_types` | index › (?) | (code à localiser) |
+| ✅ 06/10 | Les types de paysages | `geo_paysages_types` | fiches/analyse_types_paysages.html |  |
 | ⬜ | Le schéma du cours d'eau | `geo_hydro_schema` | index › (?) | (code à localiser) |
 | ⬜ | Vocabulaire hydrographique (Définitions) | `geo_hydro_definitions` | index › (?) | (code à localiser) |
 | ⬜ | Relief et hydrographie de Belgique | `geo_hydro_belgique` | index › (?) | (code à localiser) |
