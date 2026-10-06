@@ -198,8 +198,9 @@
     color: var(--ink);
     margin-bottom: 1.25rem;
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    gap: 8px;
+    gap: 4px 8px;
   }
   .clue-icon {
     font-size: 22px;
@@ -285,13 +286,13 @@
     content: "✗" !important;
   }
   .checkbox-item.missed {
-    border-color: #f59e0b !important;
-    background: #fef3c7 !important;
-    color: #b45309 !important;
+    border-color: #1f5fbf !important;
+    background: #E8F0FE !important;
+    color: #1f5fbf !important;
     animation: pulseWarning 1.5s infinite ease-in-out;
   }
   .checkbox-item.missed input[type="checkbox"] {
-    border-color: #f59e0b !important;
+    border-color: #1f5fbf !important;
     background: #fff !important;
   }
   .checkbox-item.missed input[type="checkbox"]::after {
@@ -496,6 +497,7 @@
     </div>
 
     <!-- Action Button -->
+    <p id="msg-vide" style="display:none;text-align:center;color:#dc2626;font-weight:700;font-size:13px;margin:.5rem 0;">Coche au moins une caractéristique avant de valider.</p>
     <div class="actions-container">
       <button class="btn-action" id="btn-validate" onclick="validateSelection()">Valider mes choix</button>
       <button class="btn-action" id="btn-next" onclick="nextQuestion()" style="display:none;">Solide suivant →</button>
@@ -512,7 +514,7 @@
       <div class="end-score-lbl">Score final</div>
       <div class="end-score-val"><span id="score-value">0</span> / 8</div>
     </div>
-    <p class="end-text" id="end-comment">Excellent travail ! Tu maîtrises parfaitement la caractérisation des solides.</p>
+    <p class="end-text" id="end-comment">Excellent travail ! Tu maitrises parfaitement la caractérisation des solides.</p>
     <button class="btn-action" onclick="restartGame()">Recommencer</button>
   </div>
 </div>
@@ -528,14 +530,11 @@ function playSound(type) {
     if (audioCtx.state === 'suspended') {
       audioCtx.resume();
     }
-
     const osc = audioCtx.createOscillator();
     const gain = audioCtx.createGain();
     osc.connect(gain);
     gain.connect(audioCtx.destination);
-
     const now = audioCtx.currentTime;
-
     if (type === 'click') {
       osc.type = 'sine';
       osc.frequency.setValueAtTime(400, now);
@@ -566,7 +565,6 @@ function playSound(type) {
     console.warn("Audio Context blocked or unsupported:", e);
   }
 }
-
 // --- 3D RENDERING DATA ---
 const FACE_COLORS = {
   1: { rgb: [37, 99, 235], border: '#1d4ed8' },   // Blue
@@ -576,7 +574,6 @@ const FACE_COLORS = {
   5: { rgb: [14, 165, 233], border: '#0284c7' },  // Sky Blue
   6: { rgb: [244, 63, 94], border: '#e11d48' }    // Rose
 };
-
 const MODELS = {
   cube: {
     isPoly: true,
@@ -821,7 +818,6 @@ const MODELS = {
     }
   }
 };
-
 class CanvasRenderer3D {
   constructor(canvasId) {
     this.canvas = document.getElementById(canvasId);
@@ -832,13 +828,11 @@ class CanvasRenderer3D {
     this.zoom = 2.4;
     this.isSilhouette = true;
   }
-
   setSolid(modelKey, isSilhouette) {
     const model = MODELS[modelKey];
     this.faces = model ? model.getFaces() : [];
     this.isSilhouette = isSilhouette;
   }
-
   resize() {
     const w = this.canvas.clientWidth;
     const h = this.canvas.clientHeight;
@@ -849,86 +843,66 @@ class CanvasRenderer3D {
       this.ctx.scale(dpr, dpr);
     }
   }
-
   draw() {
     this.resize();
     const ctx = this.ctx;
     const w = this.canvas.width / (window.devicePixelRatio || 1);
     const h = this.canvas.height / (window.devicePixelRatio || 1);
     ctx.clearRect(0, 0, w, h);
-
     const cx = w / 2;
     const cy = h / 2;
     const D = 250; 
-
     const theta = (this.ry * Math.PI) / 180; // Yaw
     const phi = (this.rx * Math.PI) / 180;   // Pitch
-
     const cosT = Math.cos(theta), sinT = Math.sin(theta);
     const cosP = Math.cos(phi), sinP = Math.sin(phi);
-
     const faceData = this.faces.map(face => {
       const projectedVerts = face.vertices.map(v => {
         // Yaw (Z rotation)
         const x1 = v.x * cosT - v.y * sinT;
         const y1 = v.x * sinT + v.y * cosT;
         const z1 = v.z;
-
         // Pitch (X rotation)
         const x2 = x1;
         const y2 = y1 * cosP - z1 * sinP;
         const z2 = y1 * sinP + z1 * cosP;
-
         // Projection
         const scale = D / (D - y2);
         const px = cx + x2 * scale * this.zoom;
         const py = cy - z2 * scale * this.zoom;
-
         return { x: px, y: py, depth: y2 };
       });
-
       // Simple flat lighting normal
       const p0 = face.vertices[0];
       const p1 = face.vertices[1];
       const p2 = face.vertices[face.vertices.length - 1];
-      
       const ux = p1.x - p0.x, uy = p1.y - p0.y, uz = p1.z - p0.z;
       const vx = p2.x - p0.x, vy = p2.y - p0.y, vz = p2.z - p0.z;
-
       let nx = uy * vz - uz * vy;
       let ny = uz * vx - ux * vz;
       let nz = ux * vy - uy * vx;
-
       const len = Math.sqrt(nx*nx + ny*ny + nz*nz);
       if (len > 0.001) { nx /= len; ny /= len; nz /= len; }
-
       // Rotate normal
       const nx1 = nx * cosT - ny * sinT;
       const ny1 = nx * sinT + ny * cosT;
       const nz1 = nz;
-
       const nx2 = nx1;
       const ny2 = ny1 * cosP - nz1 * sinP;
       const nz2 = ny1 * sinP + nz1 * cosP;
-
       const lightSource = { x: 0.3, y: -0.3, z: 0.9 };
       const lenL = Math.sqrt(lightSource.x*lightSource.x + lightSource.y*lightSource.y + lightSource.z*lightSource.z);
       lightSource.x /= lenL; lightSource.y /= lenL; lightSource.z /= lenL;
-
       const cosTheta = nx2 * lightSource.x + ny2 * lightSource.y + nz2 * lightSource.z;
       const intensity = Math.max(0.1, 0.4 + 0.6 * Math.abs(cosTheta));
-
       // Average depth
       let avgDepth = 0;
       projectedVerts.forEach(pv => avgDepth += pv.depth);
       avgDepth /= projectedVerts.length;
-
       return { face, projectedVerts, depth: avgDepth, intensity };
     });
-
     // Painter's algorithm sort
     faceData.sort((a, b) => a.depth - b.depth);
-
     faceData.forEach(({ face, projectedVerts, intensity }) => {
       ctx.beginPath();
       ctx.moveTo(projectedVerts[0].x, projectedVerts[0].y);
@@ -936,7 +910,6 @@ class CanvasRenderer3D {
         ctx.lineTo(projectedVerts[i].x, projectedVerts[i].y);
       }
       ctx.closePath();
-
       if (this.isSilhouette) {
         ctx.fillStyle = `rgba(30, 41, 59, ${0.9 * intensity})`;
         ctx.fill();
@@ -947,7 +920,6 @@ class CanvasRenderer3D {
         const base = FACE_COLORS[face.colorIdx];
         ctx.fillStyle = `rgba(${base.rgb[0]}, ${base.rgb[1]}, ${base.rgb[2]}, ${intensity * 0.85})`;
         ctx.fill();
-
         if (!face.noStroke) {
           ctx.strokeStyle = base.border;
           ctx.lineWidth = 2.0;
@@ -958,7 +930,6 @@ class CanvasRenderer3D {
     });
   }
 }
-
 // --- GAME LOGIC ---
 const DATABASE = [
   {
@@ -1138,23 +1109,29 @@ const DATABASE = [
     model: "demi_sphere"
   }
 ];
-
+function melanger(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+const NB_QUESTIONS = 8;
+let answeredAt = 0, termine = false, saved = false;
 let renderer3D;
 let questions = [];
 let currentQIdx = 0;
 let score = 0;
 let answered = false;
 let currentProperties = [];
-
 // Drag angles
 let isDragging = false;
 let startX = 0, startY = 0;
 let rx = -25, ry = 35;
 let animationFrameId;
-
 function init() {
   renderer3D = new CanvasRenderer3D('canvas3d');
-
   // Handle Dragging
   const container = document.getElementById('canvas-container');
   container.addEventListener('mousedown', (e) => {
@@ -1167,7 +1144,6 @@ function init() {
     startX = e.touches[0].clientX;
     startY = e.touches[0].clientY;
   });
-
   window.addEventListener('mousemove', (e) => {
     if (!isDragging) return;
     const dx = e.clientX - startX;
@@ -1178,7 +1154,6 @@ function init() {
     startX = e.clientX;
     startY = e.clientY;
   });
-
   window.addEventListener('touchmove', (e) => {
     if (!isDragging) return;
     const dx = e.touches[0].clientX - startX;
@@ -1189,10 +1164,8 @@ function init() {
     startX = e.touches[0].clientX;
     startY = e.touches[0].clientY;
   });
-
   window.addEventListener('mouseup', () => isDragging = false);
   window.addEventListener('touchend', () => isDragging = false);
-
   // Start animation loop
   function animate() {
     if (!isDragging) {
@@ -1204,37 +1177,31 @@ function init() {
     animationFrameId = requestAnimationFrame(animate);
   }
   animate();
-
   restartGame();
 }
-
 function restartGame() {
   score = 0;
   currentQIdx = 0;
   // Shuffle solids questions
-  questions = [...DATABASE].sort(() => Math.random() - 0.5);
+  questions = melanger(DATABASE).slice(0, NB_QUESTIONS);
+  termine = false;
+  saved = false;
   document.getElementById('end-overlay').style.display = 'none';
   loadQuestion();
 }
-
 function loadQuestion() {
   answered = false;
-  
   const q = questions[currentQIdx];
-
   // Title solid target
   document.getElementById('solid-target-name').textContent = q.name;
-
   // Set up 3D renderer solid (in silhouette hidden mode)
   renderer3D.setSolid(q.model, true);
   rx = -25;
   ry = 35;
-
   // Reset visual card state
   document.getElementById('mystery-box').style.display = 'flex';
   document.getElementById('canvas3d').style.display = 'none';
   document.getElementById('drag-hint').style.display = 'none';
-
   // Set progression UI
   document.getElementById('current-question-idx').textContent = currentQIdx + 1;
   const dots = document.getElementById('progress-dots').children;
@@ -1245,15 +1212,13 @@ function loadQuestion() {
       // past answers dots are colored correctly
     }
   }
-
   // Set classification badge
   const badge = document.getElementById('poly-badge');
   badge.textContent = q.isPolyedre ? "Polyèdre" : "Non-polyèdre";
   badge.className = q.isPolyedre ? "classification-badge badge-poly" : "classification-badge badge-nonpoly";
-
+  badge.style.visibility = 'hidden';
   // Shuffle properties
-  currentProperties = [...q.properties].sort(() => Math.random() - 0.5);
-
+  currentProperties = melanger(q.properties);
   // Load properties checkboxes
   const listContainer = document.getElementById('checkboxes-list');
   listContainer.innerHTML = '';
@@ -1261,42 +1226,39 @@ function loadQuestion() {
     const label = document.createElement('label');
     label.className = 'checkbox-item';
     label.id = `item-${idx}`;
-
     const checkbox = document.createElement('input');
     checkbox.type = 'checkbox';
     checkbox.id = `check-${idx}`;
     checkbox.onclick = () => playSound('click');
-
     const span = document.createElement('span');
     span.textContent = prop.text;
-
     label.appendChild(checkbox);
     label.appendChild(span);
     listContainer.appendChild(label);
   });
-
   // Toggle button states
   document.getElementById('btn-validate').style.display = 'inline-flex';
   document.getElementById('btn-next').style.display = 'none';
   document.getElementById('feedback-panel').style.display = 'none';
 }
-
 function validateSelection() {
-  if (answered) return;
+  if (answered || termine) return;
+  const coches = currentProperties.filter((_, idx) => document.getElementById(`check-${idx}`).checked).length;
+  const msg = document.getElementById('msg-vide');
+  if (coches === 0) { if (msg) msg.style.display = 'block'; return; }
+  if (msg) msg.style.display = 'none';
   answered = true;
-
+  answeredAt = Date.now();
+  document.getElementById('poly-badge').style.visibility = 'visible';
   const q = questions[currentQIdx];
   let errorsCount = 0;
-
   currentProperties.forEach((prop, idx) => {
     const checkbox = document.getElementById(`check-${idx}`);
     const label = document.getElementById(`item-${idx}`);
     const checked = checkbox.checked;
-
     // Lock elements
     checkbox.disabled = true;
     label.classList.add('disabled');
-
     if (prop.correct) {
       if (checked) {
         label.classList.add('correct-checked');
@@ -1313,7 +1275,6 @@ function validateSelection() {
       }
     }
   });
-
   const isPerfect = (errorsCount === 0);
   if (isPerfect) {
     playSound('success');
@@ -1321,19 +1282,16 @@ function validateSelection() {
   } else {
     playSound('error');
   }
-
   // Reveal solid in 3D color
   renderer3D.isSilhouette = false;
   document.getElementById('mystery-box').style.display = 'none';
   document.getElementById('canvas3d').style.display = 'block';
   document.getElementById('drag-hint').style.display = 'block';
-
   // Toggle panel feedback
   const feedback = document.getElementById('feedback-panel');
   const fTitle = document.getElementById('feedback-title');
   const fDesc = document.getElementById('feedback-desc');
   feedback.style.display = 'block';
-
   if (isPerfect) {
     feedback.className = 'feedback-box feedback-success';
     fTitle.textContent = "Bravo ! Tout est correct.";
@@ -1342,20 +1300,18 @@ function validateSelection() {
     fTitle.textContent = `Vérifie tes réponses (${errorsCount} erreur${errorsCount > 1 ? 's' : ''}).`;
   }
   fDesc.textContent = q.desc;
-
   // Toggle actions buttons
   document.getElementById('btn-validate').style.display = 'none';
   document.getElementById('btn-next').style.display = 'inline-flex';
-
   // Progression dot coloring
   const dots = document.getElementById('progress-dots').children;
   dots[currentQIdx].className = isPerfect ? 'dot correct' : 'dot incorrect';
 }
-
 function nextQuestion() {
+  if (!answered || termine || Date.now() - answeredAt < 600) return;
   playSound('click');
   currentQIdx++;
-  if (currentQIdx < 8) {
+  if (currentQIdx < NB_QUESTIONS) {
     loadQuestion();
   } else {
     // Show End Screen
@@ -1368,18 +1324,24 @@ function nextQuestion() {
     } else if (score >= 4) {
       commentEl.textContent = "Pas mal ! Revois bien les caractéristiques des solides qui t'ont posé problème et essaie d'améliorer ton score.";
     } else {
-      commentEl.textContent = "Entraîne-toi encore en relisant tes fiches de cours pour mieux retenir le nombre de faces, de sommets ou d'arêtes de chaque solide.";
+      commentEl.textContent = "Entraine-toi encore en relisant tes fiches de cours pour mieux retenir le nombre de faces, de sommets ou d'arêtes de chaque solide.";
     }
-
     document.getElementById('end-overlay').style.display = 'flex';
-
-    // Firebase Hook score reporting
-    if (window.parent && typeof window.parent.saveResult === 'function') {
-      window.parent.saveResult('polyedres_caracteristiques', score);
-    }
+    termine = true;
+    if (!saved) { saved = true; try {
+      window.parent.saveResult({
+        activity: 'polyedres_caracteristiques',
+        bookTitle: 'Trouve les caractéristiques (solides)',
+        score: score, total: NB_QUESTIONS, pct: Math.round(score / NB_QUESTIONS * 100),
+        date: new Date().toLocaleDateString('fr-BE'),
+        time: new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })
+      });
+    } catch (e) {} }
   }
 }
-
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && answered && !termine) { e.preventDefault(); nextQuestion(); }
+});
 // Window load trigger
 window.addEventListener('load', init);
 </script>

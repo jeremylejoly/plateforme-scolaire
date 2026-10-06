@@ -1688,6 +1688,16 @@ Spécifique :
 - « Question suivante » protégé (600 ms), Entrée ; « Entrainement terminé ! ».
 - Tests : jsdom (2 erreurs → réponse montrée, 2e essai sans point, double clic, 6/8 → 1 saveResult au bon format), node --check 7 OK, capture 390 px (Playwright).
 
+### 06/10 — Trouve les caractéristiques (`polyedres_caracteristiques`, fiches/polyedres_caracteristiques.html) — sw.js v603
+- Contenu : 11 solides × 7 affirmations vérifiées, toutes justes.
+- **Résultat jamais enregistré correctement** : `saveResult('polyedres_caracteristiques', score)` → objet complet, une seule fois, try/catch.
+- **L'étiquette « Polyèdre / Non-polyèdre » affichée au-dessus du solide donnait la réponse** à l'affirmation « Je suis un polyèdre / Je ne suis pas un polyèdre » à cocher → étiquette cachée jusqu'à la validation.
+- Valider sans rien cocher comptait faux → message, rien n'est compté.
+- Mélanges sort(random) → Fisher–Yates ; 8 solides tirés parmi 11. Cases oubliées en bleu (au lieu d'orange).
+- « Solide suivant » protégé (600 ms), Entrée ; titre « Solide proposé : … » qui se cassait sur 3 lignes à 390 px → retour à la ligne propre.
+- Orthographe : maitrises, Entraine-toi.
+- Tests : jsdom (étiquette cachée puis visible, rien coché → message, double clic, 6/8 → 1 saveResult au bon format), node --check 7 OK, capture 390 px (Playwright).
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2106,7 +2116,7 @@ Spécifique :
 | ✅ 06/10 | Polyèdre ou non-polyèdre | `polyedres_reconnaitre` | fiches/polyedres_reconnaitre.html |  |
 | ✅ 06/10 | Patrons de solides | `polyedres_patrons` | fiches/patrons_solides.html |  |
 | ✅ 06/10 | Trouve le bon solide (Définitions) | `polyedres_definitions` | fiches/polyedres_definitions.html |  |
-| ⬜ | Trouve les caractéristiques (Définitions) | `polyedres_caracteristiques` | fiches/polyedres_caracteristiques.html |  |
+| ✅ 06/10 | Trouve les caractéristiques (Définitions) | `polyedres_caracteristiques` | fiches/polyedres_caracteristiques.html |  |
 | ⬜ | Les axes de symétrie | `solide_symetrie` | fiches/solide_symetrie.html |  |
 | ⬜ | Le labo des transformations | `solide_transformations_labo` | fiches/transformations_labo.html |  |
 | ⬜ | Projections de cubes (Solides 3D) | `solide_projections_cubes` | fiches/solides_projections.html |  |
