@@ -323,6 +323,8 @@
     max-width: 60%;
   }
   .feedback.correct { color: var(--green); }
+  .corr-prix { color: #1f5fbf; font-weight: 800; font-size: 15px; min-height: 0; margin-top: 4px; font-family: 'Fredoka', sans-serif; }
+  .corr-prix:empty { display: none; }
   .feedback.wrong { color: var(--red); }
 
   .buttons-group {
@@ -444,6 +446,9 @@
   }
 
   @media (max-width: 650px) {
+    .topbar { flex-wrap: wrap; gap: 10px; }
+    .topbar h1 { flex: 1; font-size: 19px; text-align: center; }
+    .lives { width: 100%; justify-content: center; }
     .shelf {
       flex-direction: column;
       gap: 16px;
@@ -508,9 +513,10 @@
         <div class="calc-box" onclick="event.stopPropagation()">
           <span class="calc-label" id="lblCalcA">Prix au kg</span>
           <div class="calc-input-row">
-            <input type="number" step="0.01" class="input-price" id="inputPriceA" placeholder="ex: 1.50">
+            <input type="text" inputmode="decimal" autocomplete="off" class="input-price" id="inputPriceA" placeholder="ex. : 1,50">
             <span class="currency">€</span>
           </div>
+          <div class="corr-prix" id="corrA"></div>
         </div>
       </div>
 
@@ -529,9 +535,10 @@
         <div class="calc-box" onclick="event.stopPropagation()">
           <span class="calc-label" id="lblCalcB">Prix au kg</span>
           <div class="calc-input-row">
-            <input type="number" step="0.01" class="input-price" id="inputPriceB" placeholder="ex: 1.50">
+            <input type="text" inputmode="decimal" autocomplete="off" class="input-price" id="inputPriceB" placeholder="ex. : 1,50">
             <span class="currency">€</span>
           </div>
+          <div class="corr-prix" id="corrB"></div>
         </div>
       </div>
     </div>
@@ -566,65 +573,49 @@
 </div>
 
 <script>
-const exerciseBank = [
-  {
-    name: 'Céréales croustillantes',
-    image: 'assets/supermarche/cereales.jpg',
-    unitLabel: 'Prix au kg',
-    optA: { qty: '500 g', price: 3.00, unitPrice: 6.00 },
-    optB: { qty: '750 g', price: 4.20, unitPrice: 5.60 },
-    best: 'B'
-  },
-  {
-    name: 'Jus d\'orange pressé',
-    image: 'assets/supermarche/jus.jpg',
-    unitLabel: 'Prix au litre',
-    optA: { qty: '1 L', price: 1.80, unitPrice: 1.80 },
-    optB: { qty: '2 L', price: 3.20, unitPrice: 1.60 },
-    best: 'B'
-  },
-  {
-    name: 'Œufs de ferme',
-    image: 'assets/supermarche/oeufs.jpg',
-    unitLabel: 'Prix à l\'unité',
-    optA: { qty: '6 œufs', price: 1.50, unitPrice: 0.25 },
-    optB: { qty: '10 œufs', price: 2.80, unitPrice: 0.28 },
-    best: 'A'
-  },
-  {
-    name: 'Lait entier',
-    image: 'assets/supermarche/lait.jpg',
-    unitLabel: 'Prix au litre',
-    optA: { qty: '2 L', price: 2.00, unitPrice: 1.00 },
-    optB: { qty: '5 L', price: 5.50, unitPrice: 1.10 },
-    best: 'A'
-  },
-  {
-    name: 'Chocolat au lait',
-    image: 'assets/supermarche/chocolat.jpg',
-    unitLabel: 'Prix au kg (pour 1 kg)',
-    optA: { qty: '100 g', price: 1.50, unitPrice: 15.00 },
-    optB: { qty: '250 g', price: 3.50, unitPrice: 14.00 },
-    best: 'B'
-  },
-  {
-    name: 'Pommes de terre',
-    image: 'assets/supermarche/pommes_de_terre.jpg',
-    unitLabel: 'Prix au kg',
-    optA: { qty: '2 kg', price: 2.80, unitPrice: 1.40 },
-    optB: { qty: '5 kg', price: 7.50, unitPrice: 1.50 },
-    best: 'A'
-  },
-  {
-    name: 'Lessive liquide',
-    image: 'assets/supermarche/lessive.jpg',
-    unitLabel: 'Prix par lavage',
-    optA: { qty: '40 lavages', price: 8.00, unitPrice: 0.20 },
-    optB: { qty: '60 lavages', price: 10.80, unitPrice: 0.18 },
-    best: 'B'
-  }
+const IMG = "assets/supermarche/";
+// q = quantité dans l'unité du prix demandé (kg, L, œuf, lavage) ; prix unitaire = price ÷ q
+const PRODUITS = [
+  { name: 'Céréales croustillantes', image: IMG + 'cereales.jpg', unitLabel: 'Prix au kg', variantes: [
+    [{ qty: '500 g', q: 0.5, price: 3.00 }, { qty: '750 g', q: 0.75, price: 4.20 }],
+    [{ qty: '250 g', q: 0.25, price: 1.40 }, { qty: '1 kg', q: 1, price: 6.00 }]
+  ]},
+  { name: 'Jus d\'orange pressé', image: IMG + 'jus.jpg', unitLabel: 'Prix au litre', variantes: [
+    [{ qty: '1 L', q: 1, price: 1.80 }, { qty: '2 L', q: 2, price: 3.20 }],
+    [{ qty: '1,5 L', q: 1.5, price: 2.40 }, { qty: '3 L', q: 3, price: 5.10 }]
+  ]},
+  { name: 'Œufs de ferme', image: IMG + 'oeufs.jpg', unitLabel: 'Prix d\'un œuf', variantes: [
+    [{ qty: '6 œufs', q: 6, price: 1.50 }, { qty: '10 œufs', q: 10, price: 2.80 }],
+    [{ qty: '12 œufs', q: 12, price: 3.00 }, { qty: '30 œufs', q: 30, price: 6.90 }]
+  ]},
+  { name: 'Lait entier', image: IMG + 'lait.jpg', unitLabel: 'Prix au litre', variantes: [
+    [{ qty: '2 L', q: 2, price: 2.00 }, { qty: '5 L', q: 5, price: 5.50 }],
+    [{ qty: '1 L', q: 1, price: 1.15 }, { qty: '6 L', q: 6, price: 6.30 }]
+  ]},
+  { name: 'Chocolat au lait', image: IMG + 'chocolat.jpg', unitLabel: 'Prix au kg', variantes: [
+    [{ qty: '100 g', q: 0.1, price: 1.50 }, { qty: '250 g', q: 0.25, price: 3.50 }],
+    [{ qty: '200 g', q: 0.2, price: 2.60 }, { qty: '500 g', q: 0.5, price: 7.00 }]
+  ]},
+  { name: 'Pommes de terre', image: IMG + 'pommes_de_terre.jpg', unitLabel: 'Prix au kg', variantes: [
+    [{ qty: '2 kg', q: 2, price: 2.80 }, { qty: '5 kg', q: 5, price: 7.50 }],
+    [{ qty: '3 kg', q: 3, price: 3.60 }, { qty: '10 kg', q: 10, price: 9.00 }]
+  ]},
+  { name: 'Lessive liquide', image: IMG + 'lessive.jpg', unitLabel: 'Prix par lavage', variantes: [
+    [{ qty: '40 lavages', q: 40, price: 8.00 }, { qty: '60 lavages', q: 60, price: 10.80 }],
+    [{ qty: '25 lavages', q: 25, price: 6.25 }, { qty: '50 lavages', q: 50, price: 13.00 }]
+  ]}
 ];
-
+function enCents(x) { return Math.round(x * 100); }
+function prixUnitaire(o) { return enCents(o.price / o.q) / 100; }
+// Un exercice : une variante au hasard, les deux paquets placés au hasard en A et en B
+function construireExercice(prod) {
+  const v = prod.variantes[Math.floor(Math.random() * prod.variantes.length)];
+  const [o1, o2] = Math.random() < 0.5 ? [v[0], v[1]] : [v[1], v[0]];
+  const optA = { ...o1, unitPrice: prixUnitaire(o1) };
+  const optB = { ...o2, unitPrice: prixUnitaire(o2) };
+  return { name: prod.name, image: prod.image, unitLabel: prod.unitLabel, optA, optB,
+           best: optA.unitPrice < optB.unitPrice ? 'A' : 'B' };
+}
 const EXERCISES_PER_SESSION = 5;
 let sessionExercises = [];
 let currentIndex = 0;
@@ -632,10 +623,18 @@ let score = 0;
 let results = [];
 let answered = false;
 let selectedBest = null; // 'A' or 'B'
-
+let answeredAt = 0;
+let saved = false;
+let ended = false;
+// Lecture stricte d'un prix : « 1,8 », « 1,80 », « 1.80 », « 1,80 € » ; au plus 2 décimales
+function lirePrix(v) {
+  const t = String(v).replace(/[\s\u00A0\u202F€]/g, '').replace(',', '.');
+  if (t === '') return { vide: true };
+  if (!/^\d+(\.\d{1,2})?$/.test(t) && !/^\.\d{1,2}$/.test(t)) return { invalide: true };
+  return { cents: Math.round(parseFloat(t) * 100) };
+}
 const checkSVG = `<svg viewBox="0 0 24 24" fill="none" stroke="#FFF" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 10 18 20 6"/></svg>`;
 const cartSVG = `<svg viewBox="0 0 24 24" fill="none" stroke="var(--line)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>`;
-
 function shuffle(array) {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -643,12 +642,9 @@ function shuffle(array) {
   }
   return array;
 }
-
 function pickSession() {
-  const shuffled = shuffle([...exerciseBank]);
-  return shuffled.slice(0, EXERCISES_PER_SESSION);
+  return shuffle([...PRODUITS]).slice(0, EXERCISES_PER_SESSION).map(construireExercice);
 }
-
 function renderLives() {
   const box = document.getElementById('lives');
   box.innerHTML = '<span class="heart">' + cartSVG + '</span>';
@@ -671,16 +667,13 @@ function renderLives() {
     box.appendChild(pip);
   }
 }
-
 function selectOption(opt) {
   if (answered) return;
   selectedBest = opt;
-
   document.getElementById('cardA').classList.remove('selected');
   document.getElementById('cardB').classList.remove('selected');
   document.getElementById('btnChooseA').classList.remove('active');
   document.getElementById('btnChooseB').classList.remove('active');
-
   if (opt === 'A') {
     document.getElementById('cardA').classList.add('selected');
     document.getElementById('btnChooseA').classList.add('active');
@@ -689,7 +682,6 @@ function selectOption(opt) {
     document.getElementById('btnChooseB').classList.add('active');
   }
 }
-
 function loadExercise() {
   answered = false;
   selectedBest = null;
@@ -697,7 +689,6 @@ function loadExercise() {
   document.getElementById('feedback').textContent = '';
   document.getElementById('btnNext').disabled = true;
   document.getElementById('btnValidate').disabled = false;
-
   // Reset inputs
   const inputA = document.getElementById('inputPriceA');
   const inputB = document.getElementById('inputPriceB');
@@ -707,76 +698,66 @@ function loadExercise() {
   inputB.className = 'input-price';
   inputA.disabled = false;
   inputB.disabled = false;
-
+  document.getElementById('corrA').textContent = '';
+  document.getElementById('corrB').textContent = '';
   // Reset card styles
   document.getElementById('cardA').classList.remove('selected');
   document.getElementById('cardB').classList.remove('selected');
   document.getElementById('btnChooseA').classList.remove('active');
   document.getElementById('btnChooseB').classList.remove('active');
-
   renderLives();
-
   const ex = sessionExercises[currentIndex];
-
   // Set texts and images
   document.getElementById('imgA').src = ex.image;
   document.getElementById('imgB').src = ex.image;
-
   document.getElementById('nameA').textContent = ex.name;
   document.getElementById('nameB').textContent = ex.name;
-
   document.getElementById('qtyA').textContent = ex.optA.qty;
   document.getElementById('priceA').textContent = formatPrice(ex.optA.price);
-
   document.getElementById('qtyB').textContent = ex.optB.qty;
   document.getElementById('priceB').textContent = formatPrice(ex.optB.price);
-
   document.getElementById('lblCalcA').textContent = ex.unitLabel;
   document.getElementById('lblCalcB').textContent = ex.unitLabel;
 }
-
 function formatPrice(val) {
   return val.toFixed(2).replace('.', ',') + ' €';
 }
-
 function validate() {
   if (answered) return;
-
   const ex = sessionExercises[currentIndex];
   const inputA = document.getElementById('inputPriceA');
   const inputB = document.getElementById('inputPriceB');
-
-  const valA = parseFloat(inputA.value.replace(',', '.'));
-  const valB = parseFloat(inputB.value.replace(',', '.'));
-
-  if (isNaN(valA) || isNaN(valB) || !selectedBest) {
+  const rA = lirePrix(inputA.value);
+  const rB = lirePrix(inputB.value);
+  if (rA.invalide || rB.invalide) {
+    const fb = document.getElementById('feedback');
+    fb.className = 'feedback wrong';
+    fb.textContent = 'Écris un prix en euros, avec au plus 2 chiffres après la virgule (ex. : 1,50).';
+    return;
+  }
+  if (rA.vide || rB.vide || !selectedBest) {
     const fb = document.getElementById('feedback');
     fb.className = 'feedback wrong';
     fb.textContent = 'Complète les deux calculs et choisis la meilleure option !';
     return;
   }
-
   answered = true;
+  answeredAt = Date.now();
   document.getElementById('btnValidate').disabled = true;
   document.getElementById('btnNext').disabled = false;
-
   inputA.disabled = true;
   inputB.disabled = true;
-
   // Check student calculations
-  const margin = 0.011; // float approximation margin
-  const calcACorrect = Math.abs(valA - ex.optA.unitPrice) < margin;
-  const calcBCorrect = Math.abs(valB - ex.optB.unitPrice) < margin;
+  const calcACorrect = rA.cents === enCents(ex.optA.unitPrice);
+  const calcBCorrect = rB.cents === enCents(ex.optB.unitPrice);
+  if (!calcACorrect) document.getElementById('corrA').textContent = 'Réponse : ' + formatPrice(ex.optA.unitPrice);
+  if (!calcBCorrect) document.getElementById('corrB').textContent = 'Réponse : ' + formatPrice(ex.optB.unitPrice);
   const choiceCorrect = selectedBest === ex.best;
-
   inputA.className = calcACorrect ? 'input-price correct-val' : 'input-price wrong-val';
   inputB.className = calcBCorrect ? 'input-price correct-val' : 'input-price wrong-val';
-
   const correctColor = 'var(--green)';
   const wrongColor = 'var(--red)';
-
   const fb = document.getElementById('feedback');
-
   if (calcACorrect && calcBCorrect && choiceCorrect) {
     score++;
     results.push(true);
@@ -791,11 +772,10 @@ function validate() {
     correctionText += `Le meilleur choix est l'option ${ex.best}.`;
     fb.textContent = correctionText;
   }
-
   renderLives();
 }
-
 function nextExercise() {
+  if (!answered || ended || Date.now() - answeredAt < 600) return;
   currentIndex++;
   if (currentIndex < EXERCISES_PER_SESSION) {
     loadExercise();
@@ -803,22 +783,18 @@ function nextExercise() {
     showEndScreen();
   }
 }
-
 function showEndScreen() {
+  ended = true;
   document.getElementById('gameScreen').style.display = 'none';
   document.getElementById('endScreen').style.display = 'block';
-
   document.getElementById('finalScore').textContent = `${score} / ${EXERCISES_PER_SESSION}`;
-
   let message = '';
   if (score === EXERCISES_PER_SESSION) message = 'Excellent ! Tu es le roi ou la reine des bonnes affaires au supermarché ! 🛒🌟';
   else if (score >= EXERCISES_PER_SESSION - 1) message = 'Très bon parcours ! Tu sais repérer le meilleur rapport quantité/prix ! 👍';
   else if (score >= EXERCISES_PER_SESSION / 2) message = 'Pas mal, mais garde l\'œil ouvert sur le prix unitaire la prochaine fois !';
-  else message = 'Entraîne-toi à diviser le prix par la quantité pour trouver le meilleur achat !';
-
+  else message = 'Entraine-toi à diviser le prix par la quantité pour trouver le meilleur achat !';
   document.getElementById('endMessage').textContent = message;
-
-  if (window.parent && window.parent.saveResult) {
+  if (!saved) { saved = true; try {
     const pct = Math.round(score / EXERCISES_PER_SESSION * 100);
     window.parent.saveResult({
       activity: 'grandeur_proportionnalite_supermarche_malin',
@@ -829,20 +805,27 @@ function showEndScreen() {
       date: new Date().toLocaleDateString('fr-BE'),
       time: new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })
     });
-  }
+  } catch (e) {} }
 }
-
 function restartGame() {
   sessionExercises = pickSession();
   currentIndex = 0;
   score = 0;
   results = [];
+  saved = false;
+  ended = false;
+  answeredAt = 0;
   document.getElementById('gameScreen').style.display = 'block';
   document.getElementById('endScreen').style.display = 'none';
   loadExercise();
 }
-
 // Initialisation
+document.addEventListener('keydown', (e) => {
+  if (e.key !== 'Enter' || ended) return;
+  e.preventDefault();
+  if (!answered) validate();
+  else nextExercise();
+});
 window.onload = function() {
   restartGame();
 };

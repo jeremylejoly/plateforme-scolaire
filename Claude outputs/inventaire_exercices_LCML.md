@@ -1537,6 +1537,17 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Orthographe : s'entraine, maitrises, Entraine-toi.
 - Tests : jsdom (vide et « 12abc » non comptés, « 4 000 » accepté, double Entrée bloquée, partie 4/5 → 1 seul saveResult, redémarrage), node --check 7 OK, Playwright 390 px.
 
+### 06/10 — Le supermarché malin (`grandeur_proportionnalite_supermarche_malin`, fiches/supermarche_malin.html) — sw.js v588
+- Contenu : 7 produits, prix unitaires justes. Mais 7 exercices pour 5 par partie, toujours dans la même disposition → 2 variantes par produit (14 comparaisons, prix unitaires exacts au cent, 7 fois le grand paquet gagne, 7 fois le petit), une variante tirée au hasard, paquets placés au hasard en A ou B (A meilleur 50,8 % sur 4 000 parties), 5 produits différents par partie.
+- Correction trop tolérante : marge de 0,011 € → 1,01 € accepté pour 1,00 € → comparaison exacte au cent.
+- Saisie : champ « number » (une virgule vidait le champ dans certains navigateurs, « 1,8abc » accepté par parseFloat) → champ texte décimal, lecture stricte (« 1,8 », « 1,80 », « 1.80 », « 1,80 € » acceptés ; 3 décimales ou lettres → message, essai non compté).
+- Correction : « Réponse : 1,50 € » en bleu sous chaque case fausse (en plus du message).
+- Libellés : « Prix au kg (pour 1 kg) » → « Prix au kg » ; « Prix à l'unité » → « Prix d'un œuf ».
+- Entrée valide puis passe à la suite (garde 600 ms) ; Suivant protégé ; un seul enregistrement (try/catch), drapeaux remis à zéro au redémarrage.
+- Téléphone : barre du haut à 411 px → media query (390 px).
+- Orthographe : Entraine-toi. Copie racine : chemin d'images `assets/` (GitHub Pages sert la racine), fiches/ et public/fiches/ identiques.
+- Tests : jsdom (données vérifiées, vide / « 1,8abc » / « 1,234 » non comptés, +1 cent refusé avec correction bleue, double Entrée bloquée, partie 4/5 → 1 seul saveResult, redémarrage), node --check 7 OK, Playwright 390 px et 1 100 px.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1894,7 +1905,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 06/10 | Deux objets — Rends la monnaie | `grandeur_monnaie_deux_objets` | fiches/deux_objets_monnaie.html |  |
 | ✅ 06/10 | Recettes | `grandeur_proportionnalite_exercice` | fiches/proportionnalite.html |  |
 | ✅ 06/10 | Le rallye des bolides | `grandeur_proportionnalite_rallye_bolides` | fiches/rallye_bolides.html |  |
-| ⬜ | Le supermarché malin | `grandeur_proportionnalite_supermarche_malin` | fiches/supermarche_malin.html |  |
+| ✅ 06/10 | Le supermarché malin | `grandeur_proportionnalite_supermarche_malin` | fiches/supermarche_malin.html |  |
 | ⬜ | QCM de vitesse horaire | `grandeur_vitesse_horaire_qcm` | fiches/vitesse_situations.html |  |
 | ⬜ | L'échelle | `grandeur_echelle` | fiches/grandeurs_echelle.html |  |
 
