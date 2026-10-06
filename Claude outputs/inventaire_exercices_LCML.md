@@ -2123,7 +2123,7 @@ Spécifique :
 - Familles `k` (10 familles pour 20 questions) → 10 questions, une par famille : avant, « Quelle technique… filtre en papier ? » (dont l'explication définit filtrat et résidu) pouvait précéder « Comment appelle-t-on le liquide… filtré ? » ; idem solvant/soluté/solution, soluble/insoluble, miscible/non miscible (l'explication « huile moins dense » cite « non miscibles »).
 - Mécanique : double clic sur « Question suivante » sautait une question → garde 600 ms et pas de passage sans réponse ; une seule réponse par question ; sauvegarde unique avec `window.parent !== window` ; Entrée = question suivante ; boutons « Quitter » internes masqués dans le site ; « maîtrises / Entraîne » → « maitrises / Entraine ».
 - Contenu vérifié : 20 questions justes (homogène/hétérogène, solvant/soluté/solution, saturation, filtration/filtrat/résidu, décantation, évaporation, aimantation, miscible/soluble).
-- Question posée à Jeremy : le bouton « 💡 Aide Mémo » affiche toute la fiche de révision PENDANT le test (les réponses sont dedans) — garder ou retirer ?
+- « 💡 Aide Mémo » affichait toute la fiche de révision PENDANT le test (réponses dedans) → retiré pendant le test (décision de Jeremy) ; la fiche reste consultable avant de commencer.
 - Tests Playwright 390 px : 300 parties sans doublon de famille, 1 erreur → rouge + bleu, double réponse/double « suivant » sans effet, 9/10, 1 sauvegarde, pas de débordement.
 - Note : `sci_matiere_changements` (changements d'état) commencé puis interrompu à la demande de Jeremy — aucune modification faite, reste ⬜.
 
