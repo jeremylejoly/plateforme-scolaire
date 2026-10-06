@@ -2291,6 +2291,8 @@ Spécifique :
 
 - **06/10 — CEB Histoire/Géo 2016 (`ceb_hg_2016`, CEB histoire:géo/ceb_histoire_geo_2016.html, sw.js v735)** : 20 questions vérifiées contre le portfolio PDF (p. 12-17 : renards et talus de chemin de fer, diagramme des espaces verts 32/20/12/10/7/4/3/12 %, échelle Midi-Nord ≈ 3,5 km mesurée, carte politique (Wavre, 5 provinces flamandes, germanophones en province de Liège), Lusignan 1412 / Villebois 2014, Martellus 1490, Haïti 1493/2014) — réponses justes. Moteur des Sciences 2013 (module) : sauvegarde unique /20, choix mélangés, réponse unique, bleu (+ explications après les Vrai/Faux), message des questions vides, garde 600 ms. Contenu : 1.2 les choix donnaient les pourcentages → retirés ; 2.4 la bonne réponse énumérait les 5 provinces → « 5 provinces » ; 4.2 la bonne réponse expliquait le symbole de la croix (absent) → « une grande croix en bois » ; bonne réponse seule longue (1.1, 3.1, 3.4, 4.5) → équilibrée. NO : entraine, entrainement, maitriser ; « prêt-e » → « prêt ». Test Playwright 390 px : message « 1.5, 4.3 », 17/20, 1 seule sauvegarde, pas de débordement.
 
+- **06/10 — CEB Histoire/Géo 2013 (`ceb_hg_2013`, CEB histoire:géo/ceb_histoire_geo_2013.html, sw.js v736)** : 20 questions vérifiées contre le portfolio PDF (p. 16-21 : arbre généalogique Dunant, carte des voies de communication, paysage vu du terril de Châtelet A-J, communication à travers le temps A-H, carte de prisonnier du 20-4-41, avis du Préfet et file d'attente). Défaut de contenu : 3.1 FAUSSE — le repère G montrait « un terril » alors que la photo est prise DEPUIS le terril de Châtelet ; G encadre des maisons au loin → « que montre le repère G ? » (des maisons), explication ajoutée ; 3.5 « voie ferrée (repère B) » (B encadre une zone industrielle) → sans lettre ; les choix donnaient la réponse : 1.2 (années de vie), 1.4 (noms des 3 personnes), 4.1 (« 15 000 avant J.-C. »), 4.4 (« noté Le 20-4-41 ») → retirés ; bonne réponse seule longue (1.5, 3.2, 4.5) → équilibrée. Moteur des Sciences 2013 (module) : sauvegarde unique /20, choix mélangés, réponse unique, bleu (+ explications après les Vrai/Faux), message des questions vides, garde 600 ms. NO : ainée, entrainement, maitriser ; « prêt-e » → « prêt ». Test Playwright 390 px : message « 1.5, 4.3 », 17/20, 1 seule sauvegarde, pas de débordement. **Tous les CEB (Sciences et Histoire-Géo, 18 pages) sont revérifiés.**
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2861,7 +2863,7 @@ Spécifique :
 | ✅ 06/10 | CEB Histoire/Géo 2021 | `ceb_hg_2021` | index › openCEB |  |
 | ✅ 06/10 | CEB Histoire/Géo 2019 | `ceb_hg_2019` | index › openCEB |  |
 | ✅ 06/10 | CEB Histoire/Géo 2016 | `ceb_hg_2016` | index › openCEB |  |
-| ⬜ | CEB Histoire/Géo 2013 | `ceb_hg_2013` | index › openCEB |  |
+| ✅ 06/10 | CEB Histoire/Géo 2013 | `ceb_hg_2013` | index › openCEB |  |
 
 ### ? — (menu renderConjugaisonScreen)
 
