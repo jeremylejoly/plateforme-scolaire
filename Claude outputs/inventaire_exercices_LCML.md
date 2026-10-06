@@ -2079,6 +2079,13 @@ Spécifique :
 - Contenu : « bandes élastiques solides » (ligaments) → « bandes solides ». Image vérifiée : flexion = biceps contracté (foncé, gonflé), extension = triceps contracté ; le dessin « extension » montre le bras encore à 90° (mouvement en cours) — signalé à Jeremy.
 - Tests Playwright 390 px (toucher) : message à vide, aucun dialogue, muscles/os/articulations permutés comptés justes, biceps/triceps inversés → 8/10 + 2 bleus, 1 sauvegarde malgré 3 clics, pas de débordement.
 
+### 06/10 — Éveil → Sciences → Le squelette → QCM (`sci_sq_qcm`, fiche squelette_qcm.html + fiches/ et public/fiches/) — sw.js v657
+- `alert()` si question sans réponse → message dans la page « il en reste N ». La copie `fiches/` ne mélangeait même pas les propositions (divergente) → les 3 copies identiques.
+- Banque réécrite : 49 questions (correct:0, mélangées), 32 familles `k` → 10 questions sans doublon de famille (avant : fémur ×2, flexion/extension ×5, entorse/fracture/luxation ×4, calcium ×4, moelle épinière ×2, sternum ×2, types d'os ×3, radius-cubitus/tibia-péroné… se donnaient la réponse). Biais « plus longue = bonne » : 6/49 (avant : très fréquent).
+- Contenu : « 24 vertèbres » proposé à côté de 33 (24 = vertèbres mobiles, aussi juste) → 60 ; « Solder les os » → « souder » ; « muscles squelettiques » simplifié ; formulations raccourcies ; « déboîtée » → « déboitée ». Menu : « parmi 50 » → « parmi 49 » (index.html).
+- Mécanique : garde 600 ms, validation unique, bonne réponse manquée en bleu (avant : verte), sauvegarde unique try/catch `window.parent !== window` (avant : sans garde), total calculé, scroll conservé, Entrée.
+- Tests Playwright 390 px : 300 tirages sans doublon, bonne réponse ~25 % par position, message à vide, aucun dialogue, 1 erreur → 1 bleu, 1 sauvegarde malgré 3 clics, pas de débordement.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2092,6 +2099,12 @@ Spécifique :
 | `hist_ligne_du_temps` | Bonne réponse en 2e position dans 10/10 questions, aucun mélange |
 | `hist_grand_voyage_temps` | Bonne réponse en 1re position dans 5/5 questions, aucun mélange |
 | `qvgdm_antiquite`, `qvgdm_moyen_age`, `qvgdm_prehistoire` (Qui veut gagner des millions) | Propositions jamais mélangées, toujours la même partie. Antiquité : bonne réponse en 3e position dans 9/15 questions. L'ordre croissant de difficulté des questions est voulu |
+
+## À revoir à la fin (décisions de Jeremy)
+
+| Exercice | Point à revoir |
+|---|---|
+| `sci_sq_texte` (Le fonctionnement du mouvement) — image `photos/mecanique_bras.jpg` | Le dessin « Extension (triceps contracté) » montre le bras encore plié à 90° et non tendu. Jeremy : « on verra ça à la fin » (remplacer l'image ou adapter la légende). |
 
 ## Liste complète
 
@@ -2532,7 +2545,7 @@ Spécifique :
 |---|---|---|---|---|
 | ✅ 06/10 | Le squelette — Le schéma | `sci_sq_schema` | index › renderSciSqSchema |  |
 | ✅ 06/10 | Le squelette — Le fonctionnement du mouvement | `sci_sq_texte` | index › renderSciSqTexte |  |
-| ⬜ | Le squelette — QCM | `sci_sq_qcm` | index › renderSciSqQCM |  |
+| ✅ 06/10 | Le squelette — QCM | `sci_sq_qcm` | index › renderSciSqQCM |  |
 | ⬜ | Le squelette — Chasseur d'intrus | `sci_sq_intrus` | index › renderSciSqIntrus |  |
 | ⬜ | Le squelette — Vrai ou faux ? | `sci_sq_vrai_faux` | index › renderSciSqVraiFaux |  |
 | ⬜ | Appareil respiratoire — La leçon | `fiche_respiratoire` | fiches/appareil-respiratoire.html |  |
