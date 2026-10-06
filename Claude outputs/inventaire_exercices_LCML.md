@@ -2176,6 +2176,8 @@ Spécifique :
 
 - **06/10 — QCM Continents et océans (`geo_continents_qcm`, sw.js v679)** : contenu corrigé — « plus grand désert du monde = Sahara » était faux avec « l'Antarctique » parmi les propositions → « plus grand désert chaud » (Sahara, Kalahari, Atacama, Arabie) ; « plus long fleuve du monde = Nil » (contesté face à l'Amazone, proposée) → « plus long fleuve d'Afrique » (Nil, Congo, Niger, Zambèze) ; « Belgique (côte ouest), quel océan ? » → « La mer du Nord… fait partie de quel océan ? » ; « Kilimandjaro » proposé comme chaine de montagnes → l'Atlas ; « combien de continents ? 6 » précisé (« si l'on compte l'Amérique comme un seul continent », cohérent avec le planisphère interactif). Questions « Amérique » : la bonne réponse était le mot le plus long → « Antarctique » ajouté comme distracteur. Famille montagnes (5 questions qui se donnent la réponse) : au plus 2 par série. Mécanique : validation refusée avec message s'il manque des réponses (avant : comptées fausses), validation unique (avant : double clic = 2 sauvegardes), bonne réponse manquée en bleu, total = nombre de questions, sauvegarde en try/catch. Test Playwright 390 px : 8/10, 1 seule sauvegarde.
 
+- **06/10 — Le tour du monde (`geo_tour_monde`, sw.js v680)** : trajets vérifiés sur les 4 textes. Corrigé : T1 « repart vers le sud » de New York vers Tokyo → « vers l'ouest », « remonte vers Rio » depuis le Kenya (Rio est plus au sud) → « continue vers l'ouest » ; T2 « Londres, en Angleterre » → « au Royaume-Uni » ; T3 de l'Antarctique à Buenos Aires « en traversant l'Atlantique » → « longe la pointe de l'Amérique du Sud… au bord de l'Atlantique », retour Pékin → Le Caire « en traversant l'océan Indien » (faux : on survole l'Asie) → « en survolant une grande partie de l'[Asie] » ; T4 Goa → Jakarta « en traversant l'océan Pacifique » (faux) → « toujours sur l'[Océan Indien] », « traverse l'Atlantique et longe l'Afrique » → « descend l'Atlantique », retour de Lima « par le canal de Panama ». Mécanique : placement au toucher ajouté, un seul essai (avant : on pouvait redéposer et revalider → plusieurs sauvegardes), validation refusée avec message s'il reste des trous, bonne réponse en bleu sous chaque trou faux (avant : rouge, réponse de l'élève conservée sans correction), garde 600 ms, sauvegarde en try/catch, classe `resp-blank` remplacée par `tour-blank` (évite tout mélange avec les textes à trous des appareils respiratoire/digestif). Test Playwright 390 px : 9/11, 1 seule sauvegarde.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2700,7 +2702,7 @@ Spécifique :
 | ✅ 06/10 | Le planisphère interactif (découverte) | `geo_planisphere_interactif` | fiches/planisphere-interactif.html |  |
 | ✅ 06/10 | Les planisphères | `geo_planispheres` | index › renderGeoPlanispheres |  |
 | ✅ 06/10 | QCM — Continents et océans | `geo_continents_qcm` | index › renderGeoContinentsQCM |  |
-| ⬜ | Le tour du monde | `geo_tour_monde` | index › renderGeoTourMonde |  |
+| ✅ 06/10 | Le tour du monde | `geo_tour_monde` | index › renderGeoTourMonde |  |
 | ⬜ | Les océans et continents | `geo_oceans` | index › (?) | (code à localiser) |
 | ⬜ | L'Europe — Cartes interactives | `geo_europe_cartes` | fiches/europe_cartes.html |  |
 | ⬜ | L'Europe — Climats et climagrammes | `geo_europe_climats` | fiches/europe_climats.html | Aucun hasard : mêmes questions, même ordre à chaque partie |
