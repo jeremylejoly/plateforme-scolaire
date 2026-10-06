@@ -147,11 +147,13 @@
 
     /* Validation assistance indicators */
     .btn-state.btn-missed {
-      border: 2.5px dashed var(--color-correct) !important;
-      background-color: #ecfdf5 !important;
+      border: 2.5px solid #1f5fbf !important;
+      background-color: #eaf1fc !important;
+      color: #1f5fbf !important;
       box-shadow: none !important;
-      animation: pulseGreen 1.5s infinite;
     }
+    .fix { display: block; margin-top: 4px; color: #1f5fbf; font-weight: 800; font-size: .85rem; }
+    .result-box { border: 3px solid #1e293b; border-radius: 16px; padding: 1rem; text-align: center; background: #f8fafc; box-shadow: 4px 4px 0 #1e293b; }
 
     .btn-state.btn-error {
       border: 2.5px solid var(--color-incorrect) !important;
@@ -191,7 +193,7 @@
       </button>
       <div class="score-badge bg-white font-title text-sm md:text-base border-[3px] border-slate-800 rounded-xl px-4 py-2 shadow-[3px_3px_0px_rgba(30,41,59,1)] flex items-center gap-2">
         <span class="text-amber-500">🏆</span>
-        <span>Score de passage : <span id="header-progress" class="font-bold text-sky-600">0 / 10</span></span>
+        <span>Réponses : <span id="header-progress" class="font-bold text-sky-600">0 / 10</span></span>
       </div>
     </div>
 
@@ -210,7 +212,7 @@
             Pour chaque propriété physique, coche le ou les états de la matière correspondants.
           </p>
           <div class="bg-amber-50 border-2 border-amber-300 text-amber-800 rounded-xl p-3 text-xs md:text-sm mt-3 inline-block max-w-2xl font-medium shadow-sm">
-            💡 <strong>Comment jouer ?</strong> Clique sur les boutons **Solide**, **Liquide** et/ou **Gaz** dans chaque ligne pour attribuer la propriété. Attention, certaines propriétés s'appliquent à plusieurs états à la fois !
+            💡 <strong>Comment jouer ?</strong> Clique sur les boutons <strong>Solide</strong>, <strong>Liquide</strong> et/ou <strong>Gaz</strong> dans chaque ligne pour attribuer la propriété. Attention, certaines propriétés s'appliquent à plusieurs états à la fois !
           </div>
         </div>
 
@@ -232,13 +234,14 @@
           <button id="btn-validate" class="btn-3d px-8 py-3.5 bg-emerald-500 hover:bg-emerald-400 text-white font-title text-lg flex items-center gap-2" onclick="validateGame()">
             Valider ✔️
           </button>
-          <button id="btn-clear" class="btn-3d px-6 py-3.5 bg-white hover:bg-slate-50 text-slate-700 font-title text-lg flex items-center gap-2" onclick="confirmReset()">
+          <button id="btn-clear" class="btn-3d px-6 py-3.5 bg-white hover:bg-slate-50 text-slate-700 font-title text-lg flex items-center gap-2" onclick="restartEntireGame()">
             Tout effacer 🔄
           </button>
-          <button id="btn-correct-errors" class="btn-3d px-6 py-3.5 bg-amber-400 hover:bg-amber-300 text-slate-800 font-title text-lg flex items-center gap-2 hidden" onclick="correctErrorsOnly()">
-            Corriger les erreurs 🛠️
+          <button id="btn-correct-errors" class="btn-3d px-6 py-3.5 bg-amber-400 hover:bg-amber-300 text-slate-800 font-title text-lg flex items-center gap-2 hidden" onclick="restartEntireGame()">
+            Recommencer 🔄
           </button>
         </div>
+        <div id="result-box" class="result-box hidden"></div>
 
       </div>
 
@@ -250,7 +253,7 @@
         
         <div>
           <h2 class="font-title text-3xl md:text-4xl font-extrabold text-slate-800">Excellent travail !</h2>
-          <p class="text-slate-500 text-sm md:text-base mt-2 font-semibold">Tu as maîtrisé les propriétés physiques des états de la matière !</p>
+          <p class="text-slate-500 text-sm md:text-base mt-2 font-semibold">Tu as maitrisé les propriétés physiques des états de la matière !</p>
         </div>
 
         <!-- Score & Percent -->
@@ -287,27 +290,30 @@
 
   <script>
     // Properties data bank
+    // k = famille : jamais deux propriétés de la même famille dans une série (elles se donneraient la réponse)
     const PROPERTIES_BANK = [
-      { id: 'p1', text: "A sa forme propre (qui ne change pas)", states: { solide: true, liquide: false, gaz: false } },
-      { id: 'p2', text: "S'attrape facilement avec les doigts", states: { solide: true, liquide: false, gaz: false } },
-      { id: 'p3', text: "Ne s'écoule pas si on le pose sur une table", states: { solide: true, liquide: false, gaz: false } },
-      { id: 'p4', text: "Garde sa forme quel que soit le récipient", states: { solide: true, liquide: false, gaz: false } },
-      { id: 'p5', text: "Sa surface au repos est plane et horizontale", states: { solide: false, liquide: true, gaz: false } },
-      { id: 'p6', text: "Reste au fond d'un récipient ouvert en prenant sa forme", states: { solide: false, liquide: true, gaz: false } },
-      { id: 'p7', text: "Coule et s'adapte au récipient sans s'échapper (si ouvert)", states: { solide: false, liquide: true, gaz: false } },
-      { id: 'p8', text: "Prend toute la place disponible dans un récipient fermé", states: { solide: false, liquide: false, gaz: true } },
-      { id: 'p9', text: "Est compressible (son volume peut diminuer facilement)", states: { solide: false, liquide: false, gaz: true } },
-      { id: 'p10', text: "Est expansible (son volume peut augmenter facilement)", states: { solide: false, liquide: false, gaz: true } },
-      { id: 'p11', text: "Peut être comprimé en poussant sur le piston d'une seringue fermée", states: { solide: false, liquide: false, gaz: true } },
-      { id: 'p12', text: "S'échappe et se disperse si le récipient est ouvert", states: { solide: false, liquide: false, gaz: true } },
-      { id: 'p13', text: "Pratiquement incompressible (son volume ne change presque pas)", states: { solide: true, liquide: true, gaz: false } },
-      { id: 'p14', text: "A un volume propre (ne change pas de volume d'un récipient à l'autre)", states: { solide: true, liquide: true, gaz: false } },
-      { id: 'p15', text: "N'occupe pas tout le volume du récipient fermé dans lequel on le place", states: { solide: true, liquide: true, gaz: false } },
-      { id: 'p16', text: "N'a pas de forme propre (n'a pas de forme définie à lui-même)", states: { solide: false, liquide: true, gaz: true } },
-      { id: 'p17', text: "Prend la forme du récipient qui le contient", states: { solide: false, liquide: true, gaz: true } },
-      { id: 'p18', text: "Peut s'écouler (se déplacer comme un fluide)", states: { solide: false, liquide: true, gaz: true } },
-      { id: 'p19', text: "Ne peut pas être saisi entre les doigts", states: { solide: false, liquide: true, gaz: true } },
-      { id: 'p20', text: "Possède à la fois une forme propre et un volume propre", states: { solide: true, liquide: false, gaz: false } }
+      { id: 'p1', k: 'forme_propre', text: "A sa forme propre (qui ne change pas)", states: { solide: true, liquide: false, gaz: false } },
+      { id: 'p2', k: 'doigts', text: "S'attrape facilement avec les doigts", states: { solide: true, liquide: false, gaz: false } },
+      { id: 'p3', k: 'ecoule', text: "Ne s'écoule pas si on le pose sur une table", states: { solide: true, liquide: false, gaz: false } },
+      { id: 'p4', k: 'forme_propre', text: "Garde sa forme quel que soit le récipient", states: { solide: true, liquide: false, gaz: false } },
+      { id: 'p5', k: 'surface', text: "Sa surface au repos est plane et horizontale", states: { solide: false, liquide: true, gaz: false } },
+      { id: 'p6', k: 'forme_recipient', text: "Reste au fond d'un récipient ouvert en prenant sa forme", states: { solide: false, liquide: true, gaz: false } },
+      { id: 'p7', k: 'ecoule', text: "Coule et s'adapte au récipient sans s'échapper (si ouvert)", states: { solide: false, liquide: true, gaz: false } },
+      { id: 'p8', k: 'volume', text: "Prend toute la place disponible dans un récipient fermé", states: { solide: false, liquide: false, gaz: true } },
+      { id: 'p9', k: 'compress', text: "Est compressible (son volume peut diminuer facilement)", states: { solide: false, liquide: false, gaz: true } },
+      { id: 'p10', k: 'expansible', text: "Est expansible (son volume peut augmenter facilement)", states: { solide: false, liquide: false, gaz: true } },
+      { id: 'p11', k: 'compress', text: "Peut être comprimé en poussant sur le piston d'une seringue fermée", states: { solide: false, liquide: false, gaz: true } },
+      { id: 'p12', k: 'echappe', text: "S'échappe et se disperse si le récipient est ouvert", states: { solide: false, liquide: false, gaz: true } },
+      { id: 'p13', k: 'compress', text: "Pratiquement incompressible (son volume ne change presque pas)", states: { solide: true, liquide: true, gaz: false } },
+      { id: 'p14', k: 'volume', text: "A un volume propre (ne change pas de volume d'un récipient à l'autre)", states: { solide: true, liquide: true, gaz: false } },
+      { id: 'p15', k: 'volume', text: "N'occupe pas tout le volume du récipient fermé dans lequel on le place", states: { solide: true, liquide: true, gaz: false } },
+      { id: 'p16', k: 'forme_propre', text: "N'a pas de forme propre (n'a pas de forme définie à lui-même)", states: { solide: false, liquide: true, gaz: true } },
+      { id: 'p17', k: 'forme_recipient', text: "Prend la forme du récipient qui le contient", states: { solide: false, liquide: true, gaz: true } },
+      { id: 'p18', k: 'ecoule', text: "Peut s'écouler (se déplacer comme un fluide)", states: { solide: false, liquide: true, gaz: true } },
+      { id: 'p19', k: 'doigts', text: "Ne peut pas être saisi entre les doigts", states: { solide: false, liquide: true, gaz: true } },
+      { id: 'p20', k: 'forme_volume', text: "Possède à la fois une forme propre et un volume propre", states: { solide: true, liquide: false, gaz: false } },
+      { id: 'p21', k: 'masse', text: "A une masse : on peut le peser", states: { solide: true, liquide: true, gaz: true } },
+      { id: 'p22', k: 'occupe', text: "Occupe de la place", states: { solide: true, liquide: true, gaz: true } }
     ];
 
     let PROPERTIES_DATA = [];
@@ -316,6 +322,7 @@
     let userSelections = {};
     let rowValidationStates = {}; // Track rows that are 100% correct to lock them on partial retries
     let hasValidated = false;
+    let saved = false, lastClick = 0;
 
     // Audio Context Setup
     let audioCtx = null;
@@ -391,9 +398,13 @@
       const grid = document.getElementById('properties-grid');
       grid.innerHTML = '';
 
-      // Randomize and select 10 properties from the bank
+      // 10 propriétés au hasard, une seule par famille
       const shuffledBank = shuffleArray([...PROPERTIES_BANK]);
-      PROPERTIES_DATA = shuffledBank.slice(0, 10);
+      const vus = new Set(); PROPERTIES_DATA = [];
+      shuffledBank.forEach(p => { if (PROPERTIES_DATA.length < 10 && !vus.has(p.k)) { vus.add(p.k); PROPERTIES_DATA.push(p); } });
+      saved = false; lastClick = 0;
+      const rb = document.getElementById('result-box'); rb.classList.add('hidden'); rb.innerHTML = '';
+      document.getElementById('btn-validate').classList.remove('hidden');
 
       shuffledBank.forEach(p => {
         rowValidationStates[p.id] = false;
@@ -492,125 +503,72 @@
       }
     }
 
-    // Validation checks
+    const NOMS = { solide: 'Solide', liquide: 'Liquide', gaz: 'Gaz' };
+    // Validation : une seule fois par série
     function validateGame() {
+      const now = Date.now();
+      if (hasValidated || document.getElementById('btn-validate').disabled || now - lastClick < 600) return;
+      lastClick = now;
       initAudio();
       hasValidated = true;
-
       document.getElementById('btn-validate').disabled = true;
+      document.getElementById('btn-validate').classList.add('hidden');
       document.getElementById('btn-clear').classList.add('hidden');
-
       let score = 0;
       const total = PROPERTIES_DATA.length;
-
       PROPERTIES_DATA.forEach(prop => {
         const rowEl = document.getElementById(`row-${prop.id}`);
         const textEl = document.getElementById(`text-${prop.id}`);
-        
         const sel = userSelections[prop.id];
         const answers = prop.states;
-
-        // Check if all three buttons match the answer sheet exactly
-        const isSolideCorrect = (sel.solide === answers.solide);
-        const isLiquideCorrect = (sel.liquide === answers.liquide);
-        const isGazCorrect = (sel.gaz === answers.gaz);
-
-        const isRowCorrect = isSolideCorrect && isLiquideCorrect && isGazCorrect;
-
-        // Visual states styling
-        if (isRowCorrect) {
-          rowEl.classList.remove('row-incorrect');
-          rowEl.classList.add('row-correct');
-          if (!textEl.textContent.includes('✔️')) {
-            textEl.textContent = textEl.textContent + '  ✔️';
-          }
-          rowValidationStates[prop.id] = true; // Lock this row
-          score++;
-        } else {
-          rowEl.classList.remove('row-correct');
-          rowEl.classList.add('row-incorrect');
-          if (!textEl.textContent.includes('❌')) {
-            textEl.textContent = textEl.textContent + '  ❌';
-          }
-          rowValidationStates[prop.id] = false;
-        }
-
-        // Simply disable buttons to lock input during validation review
-        const statesList = ['solide', 'liquide', 'gaz'];
-        statesList.forEach(state => {
-          const btn = document.getElementById(`btn-${prop.id}-${state}`);
+        const isRowCorrect = ['solide', 'liquide', 'gaz'].every(st => sel[st] === answers[st]);
+        ['solide', 'liquide', 'gaz'].forEach(st => {
+          const btn = document.getElementById(`btn-${prop.id}-${st}`);
           btn.disabled = true;
-          btn.classList.remove('btn-missed', 'btn-error');
+          if (sel[st] && !answers[st]) btn.classList.add('btn-error');
+          if (!sel[st] && answers[st]) btn.classList.add('btn-missed');
         });
-      });
-
-      const pct = Math.round((score / total) * 100);
-
-      // Trigger audios
-      if (score === total) {
-        sndSuccess();
-        triggerConfettiShower();
-        showCongratsScreen(score, total, pct);
-      } else {
-        sndError();
-        document.getElementById('btn-correct-errors').classList.remove('hidden');
-        alert(`Tu as des erreurs dans ton classement (${score} / ${total}). Repère les lignes marquées d'une croix rouge (❌), puis clique sur "Corriger les erreurs" pour modifier tes réponses.`);
-      }
-
-      // Save results LCML parent hook
-      if (window.parent && window.parent.saveResult) {
-        window.parent.saveResult({
-          activity: 'sci_matiere_etats',
-          bookTitle: 'Sciences : États et propriétés de la matière',
-          score: score,
-          total: total,
-          pct: pct,
-          date: new Date().toLocaleDateString('fr-BE'),
-          time: new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })
-        });
-      }
-    }
-
-    // Allow user to correct incorrect rows only
-    function correctErrorsOnly() {
-      initAudio();
-      sndTap();
-
-      PROPERTIES_DATA.forEach(prop => {
-        if (rowValidationStates[prop.id]) {
-          // Locked row, ignore
-          return;
+        if (isRowCorrect) {
+          score++;
+          rowEl.classList.add('row-correct');
+          textEl.textContent = prop.text + '  ✔️';
+        } else {
+          rowEl.classList.add('row-incorrect');
+          textEl.textContent = prop.text + '  ❌';
+          const fix = document.createElement('span');
+          fix.className = 'fix';
+          fix.textContent = '➜ ' + ['solide', 'liquide', 'gaz'].filter(st => answers[st]).map(st => NOMS[st]).join(' + ');
+          textEl.appendChild(fix);
         }
-
-        // Reset incorrect row feedback styles
-        const rowEl = document.getElementById(`row-${prop.id}`);
-        const textEl = document.getElementById(`text-${prop.id}`);
-        rowEl.classList.remove('row-incorrect');
-        textEl.textContent = textEl.textContent.replace('  ❌', '');
-
-        const statesList = ['solide', 'liquide', 'gaz'];
-        statesList.forEach(state => {
-          const btn = document.getElementById(`btn-${prop.id}-${state}`);
-          btn.disabled = false;
-          btn.classList.remove('btn-missed', 'btn-error');
-        });
       });
-
-      hasValidated = false;
-      document.getElementById('btn-correct-errors').classList.add('hidden');
-      document.getElementById('btn-clear').classList.remove('hidden');
-
-      updateProgress();
-    }
-
-    // Reset everything
-    function confirmReset() {
-      initAudio();
-      if (confirm("Es-tu sûr(e) de vouloir tout effacer et recommencer ?")) {
-        sndTap();
-        initGame();
+      const pct = Math.round((score / total) * 100);
+      const rb = document.getElementById('result-box');
+      rb.innerHTML = `<div class="font-title" style="font-size:1.8rem;font-weight:800;color:${pct >= 70 ? '#059669' : pct >= 50 ? '#d97706' : '#dc2626'}">${score} / ${total}</div>
+        <div style="font-weight:700;margin-top:4px">${score === total ? 'Génial ! Tu as classé correctement toutes les propriétés. 🎉' : 'Sous chaque ligne rouge, la bonne réponse est écrite en <span style="color:#1f5fbf">bleu</span> ; les boutons bleus sont ceux qu\'il fallait aussi cocher, les rouges ceux qu\'il ne fallait pas cocher.'}</div>`;
+      rb.classList.remove('hidden');
+      document.getElementById('btn-correct-errors').classList.remove('hidden');
+      if (score === total) { sndSuccess(); triggerConfettiShower(); } else { sndError(); }
+      rb.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      if (!saved) {
+        saved = true;
+        try {
+          if (window.parent && window.parent !== window && typeof window.parent.saveResult === 'function') {
+            window.parent.saveResult({
+              activity: 'sci_matiere_etats',
+              bookTitle: 'Sciences : États et propriétés de la matière',
+              score: score, total: total, pct: pct,
+              date: new Date().toLocaleDateString('fr-BE'),
+              time: new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })
+            });
+          }
+        } catch (e) {}
       }
     }
+    document.addEventListener('keydown', e => {
+      if (e.key !== 'Enter' || (e.target && e.target.tagName === 'BUTTON')) return;
+      e.preventDefault();
+      if (hasValidated) restartEntireGame(); else validateGame();
+    });
 
     // Final screen transition
     function showCongratsScreen(score, total, pct) {
@@ -638,6 +596,7 @@
     }
 
     function triggerConfettiShower() {
+      if (typeof confetti !== 'function') return;
       const duration = 3 * 1000;
       const end = Date.now() + duration;
 
@@ -664,6 +623,9 @@
     }
 
     window.addEventListener('DOMContentLoaded', () => {
+      if (window.parent && window.parent !== window) {
+        document.querySelectorAll('button[onclick*="handleBack"]').forEach(b => b.style.display = 'none');
+      }
       initGame();
     });
   </script>

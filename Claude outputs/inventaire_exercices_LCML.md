@@ -2112,6 +2112,12 @@ Spécifique :
 - Contenu (leçon) : pollinisation « vers le pistil d'une autre fleur » → « de la même fleur ou d'une autre fleur » ; fécondation « le grain de pollen descend le long d'un tube » → « forme un long tube qui descend jusqu'à l'ovule » ; « l'ovule » → « les ovules » ; « maîtrisé » → « maitrisé ».
 - Tests Playwright 390 px (toucher) : messages à vide, aucun dialogue, croissance/floraison inversées → 5/7 + 2 bleus et « Continuer » visible, lumière mal classée → 4/5 + bleu, total 9/12 enregistré une fois (rien avant la 2e validation), double validation sans effet, Tout recommencer remet à zéro, pas de débordement.
 
+### 06/10 — Éveil → Sciences → La matière → États et propriétés (`sci_matiere_etats`, fiches/sci_matiere_etats.html + public/fiches/) — sw.js v662
+- Mécanique : `alert()` après une validation avec erreurs + `confirm()` pour « Tout effacer » → supprimés (résultat dans la page, effacement direct). Chaque validation enregistrait un résultat et « Corriger les erreurs » permettait de revalider jusqu'au 10/10 → une validation par série, sauvegarde unique try/catch `window.parent !== window`, garde 600 ms, Entrée. Correction : sous chaque ligne rouge « ➜ Liquide + Gaz » en bleu ; boutons qu'il fallait cocher en bleu, boutons cochés à tort en rouge (avant : seulement ❌). Plus d'écran « Excellent travail ! » qui cachait la correction.
+- Familles `k` (forme propre ×3, forme du récipient ×2, volume ×3, compressible ×3, doigts ×2, écoulement ×3…) → 10 propriétés jamais de la même famille (avant : « A sa forme propre » et « N'a pas de forme propre » pouvaient sortir ensemble). Ajout de 2 propriétés vraies pour les 3 états (« A une masse : on peut le peser », « Occupe de la place ») pour avoir assez de familles et un piège « les trois ».
+- Divers : « Score de passage » (c'était la progression) → « Réponses » ; « **Solide** » (astérisques Markdown affichés) → gras ; « maîtrisé » → « maitrisé » ; boutons « Retour » internes masqués dans le site (l'écran a déjà « ← Retour ») ; confettis protégés.
+- Tests Playwright 390 px (toucher) : 300 tirages sans doublon de famille, aucune boîte de dialogue, 1 ligne fausse → 9/10 + « ➜ Solide » + 1 bouton bleu + 1 rouge, 1 sauvegarde malgré 3 validations, pas de débordement.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2608,7 +2614,7 @@ Spécifique :
 | ✅ 06/10 | L'anatomie de la fleur | `sci_plantes_fleur` | fiches/sci_plantes_fleur.html |  |
 | ✅ 06/10 | Reproduction & Germination | `sci_plantes_germination` | fiches/sci_plantes_germination.html |  |
 | ⬜ | La reproduction des plantes (Leçon) | `sci_reproduction_plantes` | fiches/reproduction_plantes.html |  |
-| ⬜ | États et propriétés de la matière | `sci_matiere_etats` | fiches/sci_matiere_etats.html |  |
+| ✅ 06/10 | États et propriétés de la matière | `sci_matiere_etats` | fiches/sci_matiere_etats.html |  |
 | ⬜ | Les changements d'état | `sci_matiere_changements` | fiches/sci_matiere_changements.html |  |
 | ⬜ | Transformations physiques et chimiques | `sci_transformations_chimiques` | fiches/transformations-physiques-chimiques.html |  |
 | ⬜ | Mélanges et séparations | `sci_melanges_qcm` | fiches/sci_melanges_qcm.html |  |
