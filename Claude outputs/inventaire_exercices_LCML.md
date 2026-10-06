@@ -1476,6 +1476,15 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Passages de minuit : « (le lendemain) » ajouté à l'énoncé et sous l'heure d'arrivée (« De 20h50 à 6h07 » était ambigu). Entrée : passe aux minutes, puis valide.
 - Tests jsdom : vide sans essai, double clic = 1 essai, juste au 2e essai = 0 point, Recommencer sans saut, partie 4 / 5 → 1 sauvegarde ; index : 6 / 7 scripts OK.
 
+### 06/10 — Maths › Grandeurs › Les durées › Quelle heure est-il ? (avec secondes) (`grandeur_durees_heure_secondes`, `fiches/heure_secondes.html` + copies public et racine) — sw.js v581
+- Correctif du 05/10 toujours en place (15 h accepté pour 3 h, 00 h pour 12 h, saisie jusqu'à 23 h). Aiguilles vérifiées : position exacte des 3 aiguilles pour l'heure demandée.
+- **Aucun résultat enregistré** → `saveResult` en fin de parcours, une seule fois.
+- **Score toujours parfait** : le parcours se termine à 5 bonnes réponses ; une erreur ne faisait que retirer un cœur → score = horloges lues juste / horloges proposées (ex. 5 / 6), aussi affiché en fin de parcours.
+- **« Recommencer » pendant le délai** après une réponse : la question ou l'écran de fin de l'ancien parcours s'affichait dans le nouveau → suites en attente annulées.
+- L'aiguille des heures tient maintenant compte des secondes (avant : avançait par minute seulement).
+- La copie racine garde son propre chemin d'image (`assets/…` au lieu de `../assets/…`) ; le reste est identique aux 2 autres copies.
+- Tests jsdom : aiguilles exactes, 15 h accepté pour 3 h, double clic sans double comptage, Recommencer sans fuite, parcours 5 / 6 → 1 sauvegarde ; syntaxe OK.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1826,7 +1835,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ⬜ | Les durées | `grandeur_durees` | index › renderGrandeurDurees | QCM: bonne réponse en position 2 dans 39/65 questions, options non mélangées |
 | ✅ 06/10 | Les durées — Conversions | `grandeur_durees_conversions` | index › startDureesExercise |  |
 | ✅ 06/10 | Les durées — Durée entre 2 heures | `grandeur_durees_entre` | index › startDureesExercise |  |
-| ✅ 05/10 (6d5a2ec) | Quelle heure est-il ? (avec secondes) | `grandeur_durees_heure_secondes` | fiches/heure_secondes.html |  |
+| ✅ 06/10 | Quelle heure est-il ? (avec secondes) | `grandeur_durees_heure_secondes` | fiches/heure_secondes.html |  |
 | ⬜ | Le Labo des Durées | `grandeur_durees_situations` | fiches/durees_situations.html |  |
 | ⬜ | Paie le commerçant | `grandeur_monnaie_payer` | fiches/payer_le_commercant.html |  |
 | ⬜ | Rends la monnaie | `grandeur_monnaie_rendre` | fiches/rendre_la_monnaie.html |  |

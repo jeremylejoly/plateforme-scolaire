@@ -422,7 +422,7 @@ function change(i,d){
 
 /* ---------- game state ---------- */
 let target={h:0,m:0,s:0};
-let lives=3, solved=0, locked=false;
+let lives=3, solved=0, locked=false, jeton=0; // jeton : annule les suites en attente si on recommence
 const TOTAL=5; // 5 questions pour un parcours complet
 
 function buildHearts(){
@@ -444,7 +444,7 @@ function buildProgress(){
 function setHands(h,m,s){
   const sec=s*6;
   const min=m*6+s*0.1;
-  const hr=(h%12)*30+m*0.5;
+  const hr=(h%12)*30+m*0.5+s/120; // l'aiguille des heures avance aussi avec les secondes
   document.getElementById('hSec').setAttribute('transform',`rotate(${sec} 200 200)`);
   document.getElementById('hMin').setAttribute('transform',`rotate(${min} 200 200)`);
   document.getElementById('hHour').setAttribute('transform',`rotate(${hr} 200 200)`);
@@ -513,9 +513,9 @@ validerBtn.onclick=()=>{
     feedback.className='feedback ok';
     solved++;buildProgress();
     if(solved>=TOTAL){
-      setTimeout(()=>endGame(true), 1200);
+      { const j=jeton; setTimeout(()=>{ if(j===jeton) endGame(true); }, 1200); }
     }else{
-      setTimeout(newQuestion,1300);
+      { const j=jeton; setTimeout(()=>{ if(j===jeton) newQuestion(); },1300); }
     }
   }else{
     lives--;buildHearts();
@@ -525,23 +525,39 @@ validerBtn.onclick=()=>{
     feedback.className='feedback no';
     if(lives<=0){
       locked=true;
-      setTimeout(()=>endGame(false), 1800);
+      { const j=jeton; setTimeout(()=>{ if(j===jeton) endGame(false); }, 1800); }
     }else{
       locked=true;
-      setTimeout(newQuestion,1800);
+      { const j=jeton; setTimeout(()=>{ if(j===jeton) newQuestion(); },1800); }
     }
   }
 };
 
+let saved=false;
 function endGame(won){
   const es=document.getElementById("endscreen");
+  // Enregistrement (avant : aucun résultat n'était enregistré) — une seule fois par parcours
+  if(!saved && window.parent && typeof window.parent.saveResult==='function'){
+    saved=true;
+    try{
+      window.parent.saveResult({
+        activity:'grandeur_durees_heure_secondes', bookTitle:'Quelle heure est-il ? (avec secondes)',
+        // Score = horloges lues juste / horloges proposées (avant le correctif, le parcours finissait toujours
+        // à 5 bonnes réponses : une erreur n'aurait pas fait baisser le score)
+        score:solved, total:solved+(3-lives), pct:Math.round(solved/(solved+(3-lives))*100),
+        date:new Date().toLocaleDateString('fr-BE'),
+        time:new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})
+      });
+    }catch(e){ console.warn('Erreur sauvegarde heure avec secondes', e); }
+  }
   document.getElementById("endTitle").textContent=won?"Excellent parcours ! 🏆":"Parcours terminé 🔄";
-  document.getElementById("endScore").textContent="Tu as trouvé la bonne heure "+solved+" fois sur "+TOTAL+".";
+  const essais=solved+(3-lives);
+  document.getElementById("endScore").textContent="Tu as trouvé la bonne heure "+solved+" fois sur "+essais+" horloge"+(essais>1?"s":"")+".";
   es.classList.add("show");
 }
 
 function newSession(){
-  lives=3;solved=0;
+  lives=3;solved=0;saved=false;jeton++;
   document.getElementById("endscreen").classList.remove("show");
   buildHearts();buildProgress();newQuestion();
 }
