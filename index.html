@@ -2413,6 +2413,9 @@ input[type=text].calc-input.incorrect {
 .geo-tag{background:var(--purple);color:#fff;padding:6px 14px;border-radius:20px;font-size:13px;font-weight:700;cursor:grab;user-select:none;transition:opacity .2s,transform .2s;touch-action:none;}
 .geo-tag:active{cursor:grabbing;transform:scale(1.05);}
 .geo-tag.used{opacity:0.3;cursor:default;pointer-events:none;}
+.geo-tag.geo-sel{outline:3px solid #f97316;outline-offset:2px;}
+#geo-belgique-body .geo-drop-zone{min-width:0;}
+@media(max-width:480px){#geo-belgique-body .geo-table{font-size:13px}#geo-belgique-body .geo-table td{padding:4px}#geo-belgique-body .geo-drop-zone{font-size:12px;padding:3px 4px;min-height:34px}}
 .geo-score-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--rsm);padding:1.5rem;text-align:center;margin-top:1rem;}
 
 
@@ -14347,18 +14350,14 @@ function renderGeoBelgiqueMenu(){
 function renderGeoBelgiqueScreen(){
   const body = document.getElementById('geo-belgique-body');
   if(!body) return;
-  geoBelgiqueState = {answers:{}, submitted:false, dragging:null};
+  geoBelgiqueState = {answers:{}, submitted:false, sel:null};
   GEO_BELGIQUE_DATA.forEach(d => { geoBelgiqueState.answers[d.num] = {province:'', chef:''}; });
 
-  // Mélanger les étiquettes
-  const provinces = shuffle(GEO_BELGIQUE_DATA.map(d=>d.province));
-  const chefs = shuffle(GEO_BELGIQUE_DATA.map(d=>d.chef));
-  const allTags = shuffle([...provinces.map(p=>({text:p,type:'province'})), ...chefs.map(c=>({text:c,type:'chef'}))]);
+  // Mélanger les étiquettes (Anvers, Namur et Liège existent 2 fois : province et chef-lieu)
+  const allTags = shuffle([...GEO_BELGIQUE_DATA.map(d=>d.province), ...GEO_BELGIQUE_DATA.map(d=>d.chef)]);
 
-  // Carte image réelle
-  const mapSVG = `<img src="https://jeremylejoly.github.io/plateforme-scolaire/carte_politique_belgique.png" alt="Carte politique de la Belgique" style="width:100%;border-radius:6px;border:2px solid var(--border);">`;
+  const mapSVG = `<img src="carte_politique_belgique.png" alt="Carte des provinces de Belgique numérotées de 1 à 10" style="width:100%;border-radius:6px;border:2px solid var(--border);background:#fff">`;
 
-  // Tableau
   let tableHtml = `<table class="geo-table">
     <thead><tr>
       <th>N°</th>
@@ -14368,40 +14367,39 @@ function renderGeoBelgiqueScreen(){
   GEO_BELGIQUE_DATA.forEach(d => {
     tableHtml += `<tr>
       <td>${d.num}</td>
-      <td><div class="geo-drop-zone" id="drop-prov-${d.num}" data-num="${d.num}" data-type="province" onclick="geoClearZone(this)" ondragover="geoDragOver(event)" ondrop="geoDrop(event)" ondragleave="geoDragLeave(event)"></div></td>
-      <td><div class="geo-drop-zone" id="drop-chef-${d.num}" data-num="${d.num}" data-type="chef" onclick="geoClearZone(this)" ondragover="geoDragOver(event)" ondrop="geoDrop(event)" ondragleave="geoDragLeave(event)"></div></td>
+      <td><div class="geo-drop-zone" id="drop-prov-${d.num}" data-num="${d.num}" data-type="province" onclick="geoZoneTap(this)" ondragover="geoDragOver(event)" ondrop="geoDrop(event)" ondragleave="geoDragLeave(event)"></div></td>
+      <td><div class="geo-drop-zone" id="drop-chef-${d.num}" data-num="${d.num}" data-type="chef" onclick="geoZoneTap(this)" ondragover="geoDragOver(event)" ondrop="geoDrop(event)" ondragleave="geoDragLeave(event)"></div></td>
     </tr>`;
   });
   tableHtml += '</tbody></table>';
 
-  // Banque d'étiquettes
   let tagsHtml = '<div class="geo-tags-pool" id="geo-tags-pool">';
   allTags.forEach((t,i) => {
-    tagsHtml += `<div class="geo-tag" id="geo-tag-${i}" draggable="true" 
-      data-text="${t.text}" data-idx="${i}"
+    tagsHtml += `<div class="geo-tag" id="geo-tag-${i}" draggable="true"
+      data-text="${t}" data-idx="${i}"
+      onclick="geoTagTap(this)"
       ondragstart="geoDragStart(event)"
       ondragend="geoDragEnd(event)"
       ontouchstart="geoTouchStart(event)"
       ontouchmove="geoTouchMove(event)"
       ontouchend="geoTouchEnd(event)"
       ontouchcancel="geoTouchCancel(event)"
-    >${t.text}</div>`;
+    >${t}</div>`;
   });
   tagsHtml += '</div>';
 
   body.innerHTML = `
     <div class="card geo-belgique-intro">
-      <p style="font-size:14px;color:var(--muted);margin-bottom:0.5rem">Glisse chaque province et chef-lieu dans la bonne case du tableau.</p>
+      <p style="font-size:14px;color:var(--muted);margin-bottom:0.4rem">Place chaque province et son chef-lieu dans la bonne ligne du tableau : fais glisser l'étiquette, ou touche-la puis touche la case. Touche une case remplie pour la vider.</p>
+      <p style="font-size:13px;color:var(--muted);margin:0">ℹ️ La petite zone sans numéro au milieu de la province 9 est la Région de Bruxelles-Capitale : ce n'est pas une province.</p>
     </div>
     <div class="geo-map-container">${mapSVG}</div>
     ${tagsHtml}
     ${tableHtml}
-    <button class="btn" onclick="validateGeoBelgique()" style="width:100%;margin-bottom:1rem">✅ Valider</button>
+    <div id="geo-bel-msg" style="display:none;margin:.5rem 0;padding:.6rem .9rem;border-radius:8px;background:#fff7ed;border:1.5px solid #f59e0b;color:#92400e;font-size:13px;font-weight:700;text-align:center"></div>
+    <button class="btn" id="geo-bel-valider" onclick="validateGeoBelgique()" style="width:100%;margin-bottom:1rem">✅ Valider</button>
     <div id="geo-score-panel" style="display:none" class="geo-score-panel"></div>
   `;
-
-  // Touch support
-  setupGeoTouchEvents();
 }
 
 function renderGeoBelgiqueRegionsCommunautes(){
@@ -14419,8 +14417,8 @@ function shuffle(arr){
 // ===== DRAG & DROP DESKTOP =====
 function geoDragStart(e){
   const tag = e.currentTarget;
-  geoBelgiqueState.dragging = {text: tag.dataset.text, tagEl: tag};
-  e.dataTransfer.setData('text/plain', tag.dataset.text);
+  if(geoBelgiqueState.submitted || tag.classList.contains('used')){ e.preventDefault(); return; }
+  e.dataTransfer.setData('text/plain', tag.dataset.idx);
   tag.style.opacity = '0.5';
 }
 function geoDragEnd(e){
@@ -14428,7 +14426,7 @@ function geoDragEnd(e){
 }
 function geoDragOver(e){
   e.preventDefault();
-  e.currentTarget.classList.add('drag-over');
+  if(!geoBelgiqueState.submitted) e.currentTarget.classList.add('drag-over');
 }
 function geoDragLeave(e){
   e.currentTarget.classList.remove('drag-over');
@@ -14437,56 +14435,44 @@ function geoDrop(e){
   e.preventDefault();
   const zone = e.currentTarget;
   zone.classList.remove('drag-over');
-  const text = e.dataTransfer.getData('text/plain');
-  const num = parseInt(zone.dataset.num);
-  const type = zone.dataset.type;
-  geoPlaceTag(zone, text, num, type);
+  const tag = document.getElementById('geo-tag-' + e.dataTransfer.getData('text/plain'));
+  geoPlaceTag(zone, tag);
 }
-
-function geoPlaceTag(zone, text, num, type){
-  // Si la zone est déjà remplie, remettre l'ancienne étiquette dans la banque
-  const oldText = zone.textContent.trim();
-  if(oldText){
-    geoReturnTagToPool(oldText);
-  }
-  // Placer le nouveau tag
-  zone.textContent = text;
+function geoClearSel(){
+  if(geoBelgiqueState.sel) geoBelgiqueState.sel.classList.remove('geo-sel');
+  geoBelgiqueState.sel = null;
+}
+function geoTagTap(tag){
+  if(geoBelgiqueState.submitted || tag.classList.contains('used')) return;
+  const same = geoBelgiqueState.sel === tag;
+  geoClearSel();
+  if(!same){ geoBelgiqueState.sel = tag; tag.classList.add('geo-sel'); }
+}
+function geoZoneTap(zone){
+  if(geoBelgiqueState.submitted) return;
+  if(geoBelgiqueState.sel){ geoPlaceTag(zone, geoBelgiqueState.sel); return; }
+  geoClearZone(zone);
+}
+function geoPlaceTag(zone, tag){
+  if(geoBelgiqueState.submitted || !zone || !tag || tag.classList.contains('used')) return;
+  const num = parseInt(zone.dataset.num), type = zone.dataset.type;
+  // Si la case est déjà remplie, l'ancienne étiquette retourne dans la banque
+  if(zone.dataset.tag){ const old = document.getElementById('geo-tag-' + zone.dataset.tag); if(old){ old.classList.remove('used'); old.draggable = true; } }
+  zone.textContent = tag.dataset.text;
+  zone.dataset.tag = tag.dataset.idx;
   zone.classList.add('filled');
-  geoBelgiqueState.answers[num][type] = text;
-  // Marquer l'étiquette comme utilisée
-  geoMarkTagUsed(text);
-}
-
-function geoReturnTagToPool(text){
-  const pool = document.getElementById('geo-tags-pool');
-  const tags = pool.querySelectorAll('.geo-tag');
-  tags.forEach(t => {
-    if(t.dataset.text === text && t.classList.contains('used')){
-      t.classList.remove('used');
-    }
-  });
-}
-
-function geoMarkTagUsed(text){
-  const pool = document.getElementById('geo-tags-pool');
-  const tags = pool.querySelectorAll('.geo-tag');
-  let found = false;
-  tags.forEach(t => {
-    if(t.dataset.text === text && !t.classList.contains('used') && !found){
-      t.classList.add('used');
-      found = true;
-    }
-  });
+  geoBelgiqueState.answers[num][type] = tag.dataset.text;
+  tag.classList.add('used'); tag.draggable = false;
+  geoClearSel();
+  const m = document.getElementById('geo-bel-msg'); if(m) m.style.display = 'none';
 }
 function geoClearZone(zone){
-  const panel = document.getElementById('geo-score-panel');
-  if(panel && panel.style.display === 'block') return;
-  const num = parseInt(zone.dataset.num);
-  const type = zone.dataset.type;
-  const text = geoBelgiqueState.answers[num][type];
-  if(!text) return;
+  if(geoBelgiqueState.submitted || !zone.dataset.tag) return;
+  const num = parseInt(zone.dataset.num), type = zone.dataset.type;
+  const tag = document.getElementById('geo-tag-' + zone.dataset.tag);
+  if(tag){ tag.classList.remove('used'); tag.draggable = true; }
   zone.textContent = ''; zone.classList.remove('filled');
-  geoReturnTagToPool(text);
+  delete zone.dataset.tag;
   geoBelgiqueState.answers[num][type] = '';
 }
 
@@ -14594,79 +14580,85 @@ let geoTouchClone = null;
 
 function setupGeoTouchEvents(){ /* handled via ontouchstart */ }
 
+let geoTouchX0 = 0, geoTouchY0 = 0, geoTouchMoved = false;
 function geoTouchStart(e){
   const tag = e.currentTarget;
-  if(tag.classList.contains('used')) return;
-  geoTouchDragEl = tag;
-  const clone = tag.cloneNode(true);
-  clone.style.position = 'fixed';
-  clone.style.zIndex = '9999';
-  clone.style.opacity = '0.85';
-  clone.style.pointerEvents = 'none';
-  clone.style.transform = 'scale(1.1)';
-  const touch = e.touches[0];
-  clone.style.left = (touch.clientX - 40) + 'px';
-  clone.style.top = (touch.clientY - 20) + 'px';
-  document.body.appendChild(clone);
-  geoTouchClone = clone;
-  tag.style.opacity = '0.4';
+  if(geoBelgiqueState.submitted || tag.classList.contains('used')) return;
+  geoTouchDragEl = tag; geoTouchMoved = false;
+  geoTouchX0 = e.touches[0].clientX; geoTouchY0 = e.touches[0].clientY;
 }
-
 function geoTouchMove(e){
-  e.preventDefault();
-  if(!geoTouchClone) return;
+  if(!geoTouchDragEl) return;
   const touch = e.touches[0];
+  if(!geoTouchMoved && Math.hypot(touch.clientX - geoTouchX0, touch.clientY - geoTouchY0) < 10) return;
+  e.preventDefault();
+  if(!geoTouchMoved){
+    geoTouchMoved = true;
+    const clone = geoTouchDragEl.cloneNode(true);
+    clone.classList.remove('geo-sel');
+    clone.removeAttribute('id');
+    clone.style.position = 'fixed'; clone.style.zIndex = '9999'; clone.style.opacity = '0.85';
+    clone.style.pointerEvents = 'none'; clone.style.transform = 'scale(1.1)';
+    document.body.appendChild(clone);
+    geoTouchClone = clone;
+    geoTouchDragEl.style.opacity = '0.4';
+  }
   geoTouchClone.style.left = (touch.clientX - 40) + 'px';
   geoTouchClone.style.top = (touch.clientY - 20) + 'px';
-  // Highlight drop zone underneath
-  document.querySelectorAll('.geo-drop-zone').forEach(z => z.classList.remove('drag-over'));
+  document.querySelectorAll('#geo-belgique-body .geo-drop-zone').forEach(z => z.classList.remove('drag-over'));
   geoAutoScroll(touch);
   const zone = geoZoneAtTouch(touch);
-  if(zone) zone.classList.add('drag-over');
+  if(zone && zone.closest('#geo-belgique-body')) zone.classList.add('drag-over');
 }
-
 function geoTouchEnd(e){
-  if(!geoTouchClone || !geoTouchDragEl) return;
+  if(!geoTouchDragEl) return;
+  e.preventDefault();   // évite le clic fantôme
+  const tag = geoTouchDragEl; geoTouchDragEl = null;
+  if(!geoTouchMoved){ geoTagTap(tag); return; }
   const touch = e.changedTouches[0];
-  document.body.removeChild(geoTouchClone);
-  geoTouchClone = null;
-  geoTouchDragEl.style.opacity = '';
-  document.querySelectorAll('.geo-drop-zone').forEach(z => z.classList.remove('drag-over'));
+  if(geoTouchClone){ geoTouchClone.remove(); geoTouchClone = null; }
+  tag.style.opacity = '';
+  document.querySelectorAll('#geo-belgique-body .geo-drop-zone').forEach(z => z.classList.remove('drag-over'));
   geoStopAutoScroll();
-  const zone = geoZoneAtTouch(touch);
-  if(zone){
-    const num = parseInt(zone.dataset.num);
-    const type = zone.dataset.type;
-    geoPlaceTag(zone, geoTouchDragEl.dataset.text, num, type);
-  } else {
-    geoTouchDragEl.style.opacity = '';
-  }
-  geoTouchDragEl = null;
+  let zone = geoZoneAtTouch(touch);
+  if(zone && !zone.closest('#geo-belgique-body')) zone = null;
+  if(zone){ geoClearSel(); geoPlaceTag(zone, tag); }
 }
 function geoTouchCancel(e){
   geoStopAutoScroll();
-  if(geoTouchClone) {
-    if(geoTouchClone.parentNode) geoTouchClone.parentNode.removeChild(geoTouchClone);
-    geoTouchClone = null;
-  }
-  if(geoTouchDragEl) { geoTouchDragEl.style.opacity = ''; geoTouchDragEl = null; }
-  document.querySelectorAll('.geo-drop-zone').forEach(z => z.classList.remove('drag-over'));
+  if(geoTouchClone){ if(geoTouchClone.parentNode) geoTouchClone.parentNode.removeChild(geoTouchClone); geoTouchClone = null; }
+  if(geoTouchDragEl){ geoTouchDragEl.style.opacity = ''; geoTouchDragEl = null; }
+  document.querySelectorAll('#geo-belgique-body .geo-drop-zone').forEach(z => z.classList.remove('drag-over'));
 }
 
 // ===== VALIDATION =====
 function validateGeoBelgique(){
+  if(geoBelgiqueState.submitted) return;
+  const total = GEO_BELGIQUE_DATA.length * 2; // 10 provinces + 10 chefs-lieux
+  let empty = 0;
+  GEO_BELGIQUE_DATA.forEach(d => { if(!geoBelgiqueState.answers[d.num].province) empty++; if(!geoBelgiqueState.answers[d.num].chef) empty++; });
+  if(empty){
+    const m = document.getElementById('geo-bel-msg');
+    m.textContent = empty === 1 ? 'Il reste 1 case vide. Complète le tableau avant de valider.' : `Il reste ${empty} cases vides. Complète le tableau avant de valider.`;
+    m.style.display = 'block';
+    return;
+  }
+  geoBelgiqueState.submitted = true;
+  geoClearSel();
   let score = 0;
-  const total = 20; // 10 provinces + 10 chefs-lieux
+  const mark = (zone, given, good) => {
+    zone.classList.remove('filled');
+    if(given === good){ score++; zone.classList.add('correct'); return; }
+    zone.classList.add('incorrect');
+    zone.style.flexDirection = 'column';
+    zone.innerHTML = `<s>${given}</s><span style="color:#1f5fbf;font-weight:800;font-size:12px">➜ ${good}</span>`;
+  };
   GEO_BELGIQUE_DATA.forEach(d => {
-    const provZone = document.getElementById('drop-prov-' + d.num);
-    const chefZone = document.getElementById('drop-chef-' + d.num);
-    const provOk = geoBelgiqueState.answers[d.num].province === d.province;
-    const chefOk = geoBelgiqueState.answers[d.num].chef === d.chef;
-    if(provOk){ score++; provZone.classList.remove('filled'); provZone.classList.add('correct'); }
-    else { provZone.classList.remove('filled'); provZone.classList.add('incorrect'); if(!provZone.textContent.trim()) provZone.textContent = '—'; }
-    if(chefOk){ score++; chefZone.classList.remove('filled'); chefZone.classList.add('correct'); }
-    else { chefZone.classList.remove('filled'); chefZone.classList.add('incorrect'); if(!chefZone.textContent.trim()) chefZone.textContent = '—'; }
+    mark(document.getElementById('drop-prov-' + d.num), geoBelgiqueState.answers[d.num].province, d.province);
+    mark(document.getElementById('drop-chef-' + d.num), geoBelgiqueState.answers[d.num].chef, d.chef);
   });
+  document.querySelectorAll('#geo-tags-pool .geo-tag').forEach(t => { t.classList.add('used'); t.draggable = false; });
+  const btn = document.getElementById('geo-bel-valider'); if(btn) btn.style.display = 'none';
   const pct = Math.round(score/total*100);
   const color = pct>=70?'var(--green)':pct>=50?'var(--amber)':'var(--red)';
   const panel = document.getElementById('geo-score-panel');
@@ -14674,22 +14666,24 @@ function validateGeoBelgique(){
   panel.innerHTML = `
     <div style="font-size:48px;margin-bottom:0.5rem">${pct>=70?'🎉':pct>=50?'👍':'💪'}</div>
     <div style="font-family:'Nunito',sans-serif;font-weight:800;font-size:32px;color:${color}">${score}/${total}</div>
-    <div style="font-size:16px;color:${color};font-weight:700;margin-bottom:1rem">${pct}%</div>
-    <p style="font-size:13px;color:var(--muted);margin-bottom:1rem">Les cases <span style="color:var(--red)">rouges</span> indiquent les erreurs.</p>
-    <button class="btn" onclick="renderGeoBelgiqueScreen()">🔄 Recommencer</button>
+    <div style="font-size:16px;color:${color};font-weight:700;margin-bottom:1rem">${pct} %</div>
+    ${score < total ? '<p style="font-size:13px;color:var(--muted);margin-bottom:1rem">Les cases <span style="color:var(--red)">rouges</span> sont fausses ; la bonne réponse est écrite en <span style="color:#1f5fbf;font-weight:800">bleu</span>.</p>' : ''}
+    <button class="btn" onclick="renderGeoBelgiqueScreen();document.getElementById('geo-belgique-body').scrollIntoView({behavior:'smooth'})">🔄 Recommencer</button>
   `;
-  panel.scrollIntoView({behavior:'smooth'});
-  if(state.student){
-    saveResult({
-      student: state.student, cls: state.studentCls,
-      className: CLASSES[state.studentCls] ? CLASSES[state.studentCls].name : state.studentCls,
-      activity: 'geo_belgique_provinces',
-      bookTitle: 'Belgique — Provinces et chefs-lieux',
-      score, total, pct,
-      date: new Date().toLocaleDateString('fr-BE'),
-      time: new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})
-    });
-  }
+  panel.scrollIntoView({behavior:'smooth', block:'nearest'});
+  try {
+    if(state.student){
+      saveResult({
+        student: state.student, cls: state.studentCls,
+        className: CLASSES[state.studentCls] ? CLASSES[state.studentCls].name : state.studentCls,
+        activity: 'geo_belgique_provinces',
+        bookTitle: 'Belgique — Provinces et chefs-lieux',
+        score, total, pct,
+        date: new Date().toLocaleDateString('fr-BE'),
+        time: new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})
+      });
+    }
+  } catch(err) { console.warn('saveResult', err); }
 }
 
 
