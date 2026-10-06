@@ -2032,6 +2032,11 @@ Spécifique :
 - Contenu : définitions ambiguës levées — Estomac (« mélange les aliments avec les sucs ») ≈ Brassage → « poche qui produit le suc gastrique » ; Côlon (« partie du gros intestin qui absorbe l'eau ») ≈ Gros intestin (« absorbe l'eau et forme les selles ») → paire Côlon retirée (synonyme) ; Pancréas « enzymes » → « un suc digestif et l'insuline » ; Foie ≠ Bile reformulés ; sucs pancréatique/intestinal distingués ; « Oesophage » → « Œsophage ». 19 paires, 8 tirées.
 - Tests Playwright 390 px (toucher) : message à vide, placement par toucher, 2 inversées → 6/8 + 2 bleus, 1 sauvegarde malgré 3 clics, pas de débordement.
 
+### 06/10 — Éveil → Sciences → L'appareil digestif → Remettre de l'ordre (`sci_dig_ordre`, fiche trajet_de_la_nourriture.html + copies racine et public/fiches) — sw.js v649
+- Même gabarit que trajet_de_lair.html → reconstruit à partir de la version corrigée (v644) : vérification unique, garde 600 ms, bonne étape en bleu, Recommencer, Entrée, sauvegarde unique try/catch `window.parent !== window`, total calculé (avant 9 en dur), mélange ≤ 2 étapes déjà en place, toucher-placer, mise en page < 480 px.
+- Contenu : étapes simultanées fusionnées (mastication + salive → étape donnée « Dans la bouche, les dents mâchent les aliments et la salive les ramollit » ; « la bouillie passe dans l'intestin grêle » + « le foie et le pancréas déversent leurs sucs » → une étape) ; « sucs gastriques » → « suc gastrique » ; déglutition = « On avale » ; nutriments qui traversent la paroi de l'intestin grêle. 7 étapes à ordonner (+ la 1re donnée).
+- Tests Playwright 390 px (toucher réel CDP) : 2000 mélanges ≤ 2 étapes en place, ordre complet par toucher, glisser au doigt, rectum/anus inversés → 5/7 + 2 bleus, 1 sauvegarde malgré 3 clics, Entrée relance, pas de débordement.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2499,7 +2504,7 @@ Spécifique :
 | ✅ 06/10 | Appareil digestif — Trajet des aliments | `sci_dig_texte` | index › renderSciDigTexte |  |
 | ✅ 06/10 | Appareil digestif — QCM | `sci_dig_qcm` | index › renderSciDigQCM |  |
 | ✅ 06/10 | Appareil digestif — Termes et définitions | `sci_dig_assoc` | index › renderSciDigAssoc |  |
-| ⬜ | Appareil digestif — Remettre de l'ordre | `sci_dig_ordre` | index › renderSciDigOrdre |  |
+| ✅ 06/10 | Appareil digestif — Remettre de l'ordre | `sci_dig_ordre` | index › renderSciDigOrdre |  |
 | ⬜ | Système circulatoire — La leçon | `fiche_circulatoire` | fiches/systeme-circulatoire.html |  |
 | ⬜ | Appareil circulatoire — Le cœur | `sci_coeur` | index › renderSciCoeurScreen |  |
 | ⬜ | Appareil circulatoire — Le trajet du sang | `sci_trajet_sang` | index › renderSciTrajetSangScreen |  |
