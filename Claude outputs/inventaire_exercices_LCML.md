@@ -2240,6 +2240,8 @@ Spécifique :
 
 - **06/10 — Jeux › Le robot (`jeu_robot`, fiches/Labyrinthe.html + public + racine, sw.js v709)** : les 10 niveaux passés dans un solveur (toutes les suites de blocs, boucles comprises, dans la limite de blocs) : tous résolubles ; minimum = limite pour 1, 2, 3, 5, 6, 8, 10 (solution unique pour 3, 5, 8, 10), 14/15 pour le 4, 8/9 pour le 7 et le 9 ; les conseils des niveaux 1, 3, 5, 8, 9, 10 correspondent exactement à la solution trouvée. Conseil du niveau 7 « de la boue juste devant » (elle est 2 cases plus haut) → « un peu plus haut ». Téléphone : seuls les niveaux 1 à 3 étaient visibles (barre qui défile sans indication) → les 10 boutons passent à la ligne ; confettis de victoire faisant déborder la page (100 vw) → 94 vw. « Démarrer » sans bloc : un simple bip → message « Programme vide ». Ajout : ✓ sur les niveaux réussis, gardé par élève (pas de score enseignant, règle jeux). « Clique sur les blocs à gauche » (ils sont au-dessus sur téléphone) → « Touche les blocs Instructions ». NO : maitrisé. Test Playwright 390 px : 10 niveaux visibles, message programme vide, niveau 1 résolu → ✓ + sauvegarde locale, pas de débordement.
 
+- **06/10 — Jeux › Flux Connecté (`jeu_flux`, flux_connecte.html, sw.js v710)** : les 12 niveaux passés dans un solveur SAT (chaque case remplie, chaque paire reliée, sans boucle parasite) : tous résolubles, plusieurs solutions possibles chacun (le jeu accepte n'importe quelle solution : il vérifie « grille pleine + tous les flux reliés »). Jeu testé au doigt sur téléphone : niveaux 1 (5 × 5) et 12 (10 × 10, 11 couleurs) tracés entièrement → victoire, niveau suivant débloqué ; plateau 339 px, pas de débordement. Pas de boite de dialogue ni de saveResult (règle jeux respectée). Seul défaut : la progression (niveaux débloqués/terminés) était commune à tous les élèves de l'appareil → gardée par élève.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2833,7 +2835,7 @@ Spécifique :
 | ✅ 06/10 | Mots croisés | `jeu_mots_croises` | fiches/mots-croises.html |  |
 | ✅ 06/10 | Mots cachés | `jeu_mots_caches` | fiches/mots-caches.html |  |
 | ✅ 06/10 | Sudoku | `jeu_sudoku` | fiches/sudoku.html |  |
-| ⬜ | Flux Connecté | `jeu_flux` | index › (?) | (code à localiser) |
+| ✅ 06/10 | Flux Connecté | `jeu_flux` | flux_connecte.html (racine) |  |
 | ⬜ | Le Code Secret | `jeu_code_secret` | index › (?) | (code à localiser) |
 | ✅ 06/10 | Le Pendu des Mots | `jeu_pendu` | le_pendu.html (racine) |  |
 | ⬜ | Les Pentominos | `jeu_pentomino` | index › (?) | (code à localiser) |
