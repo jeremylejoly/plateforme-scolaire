@@ -433,7 +433,7 @@
       {
         id: 1,
         shapeType: 'triangle',
-        subType: 'quelconque (scalène)',
+        subType: 'scalène',
         angles: [50, 60, 70],
         targetIndex: 2,
         vertices: [{x:50,y:170}, {x:270,y:170}, {x:160,y:50}],
@@ -488,7 +488,7 @@
       {
         id: 6,
         shapeType: 'triangle',
-        subType: 'quelconque (scalène)',
+        subType: 'scalène',
         angles: [40, 65, 75],
         targetIndex: 1,
         vertices: [{x:50,y:170}, {x:270,y:170}, {x:190,y:50}],
@@ -499,7 +499,7 @@
       {
         id: 7,
         shapeType: 'triangle',
-        subType: 'obtusangle (quelconque)',
+        subType: 'scalène obtusangle',
         angles: [30, 110, 40],
         targetIndex: 1,
         vertices: [{x:40,y:150}, {x:280,y:150}, {x:90,y:60}],
@@ -532,7 +532,7 @@
       {
         id: 10,
         shapeType: 'triangle',
-        subType: 'quelconque (scalène)',
+        subType: 'scalène',
         angles: [45, 60, 75],
         targetIndex: 0,
         vertices: [{x:50,y:170}, {x:270,y:170}, {x:170,y:50}],
@@ -543,7 +543,7 @@
       {
         id: 11,
         shapeType: 'triangle',
-        subType: 'quelconque (obtus)',
+        subType: 'scalène obtusangle',
         angles: [25, 125, 30],
         targetIndex: 0,
         vertices: [{x:40,y:160}, {x:280,y:160}, {x:90,y:80}],
@@ -554,7 +554,7 @@
       {
         id: 12,
         shapeType: 'triangle',
-        subType: 'quelconque (scalène)',
+        subType: 'scalène',
         angles: [55, 40, 85],
         targetIndex: 2,
         vertices: [{x:60,y:170}, {x:260,y:170}, {x:130,y:40}],
@@ -587,7 +587,7 @@
       {
         id: 15,
         shapeType: 'triangle',
-        subType: 'quelconque',
+        subType: 'scalène obtusangle',
         angles: [35, 115, 30],
         targetIndex: 2,
         vertices: [{x:40,y:160}, {x:280,y:160}, {x:100,y:80}],
@@ -764,11 +764,49 @@
       }
     ];
 
+    // --- Figures dessinées à partir des angles annoncés (avant : dessins sans rapport,
+    //     ex. « 110° » écrit dans un angle de 25°, triangle « équilatéral » à 50/50/80) ---
+    function ajusterCadre(P, W = 320, H = 220, marge = 34) {
+      const xs = P.map(p => p[0]), ys = P.map(p => p[1]);
+      const w = Math.max(...xs) - Math.min(...xs), h = Math.max(...ys) - Math.min(...ys);
+      const k = Math.min((W - 2 * marge) / w, (H - 2 * marge) / h);
+      const cx = (Math.max(...xs) + Math.min(...xs)) / 2, cy = (Math.max(...ys) + Math.min(...ys)) / 2;
+      // y mathématique vers le haut → y SVG vers le bas
+      return P.map(([x, y]) => ({ x: Math.round(W / 2 + (x - cx) * k), y: Math.round(H / 2 - (y - cy) * k) }));
+    }
+    function sommetsDepuisAngles(angles, sousType) {
+      const r = d => d * Math.PI / 180;
+      if (angles.length === 3) {
+        const [a, b, c] = angles;
+        const ac = Math.sin(r(b)) / Math.sin(r(c));        // loi des sinus, AB = 1
+        return ajusterCadre([[0, 0], [1, 0], [ac * Math.cos(r(a)), ac * Math.sin(r(a))]]);
+      }
+      // quadrilatère : on parcourt les côtés (sens direct), puis on ferme la figure
+      const th = [0];
+      for (let i = 1; i < 4; i++) th.push(th[i - 1] + 180 - angles[i]);
+      const u = th.map(t => [Math.cos(r(t)), Math.sin(r(t))]);
+      let best = null;
+      for (let s1 = 0.4; s1 <= 1.3; s1 += 0.02) {
+        const bx = -(u[0][0] + s1 * u[1][0]), by = -(u[0][1] + s1 * u[1][1]);
+        const det = u[2][0] * u[3][1] - u[2][1] * u[3][0];
+        const s2 = (bx * u[3][1] - by * u[3][0]) / det, s3 = (u[2][0] * by - u[2][1] * bx) / det;
+        const L = [1, s1, s2, s3];
+        if (Math.min(...L) < 0.3) continue;
+        let cout = Math.max(...L) / Math.min(...L);
+        if (sousType === 'cerf-volant') cout += 20 * Math.abs(1 - s1);
+        else cout += 2 * Math.abs(s1 - 0.72);
+        if (!best || cout < best.cout) best = { cout, L };
+      }
+      const L = best.L, P = [[0, 0]];
+      for (let i = 0; i < 3; i++) P.push([P[i][0] + L[i] * u[i][0], P[i][1] + L[i] * u[i][1]]);
+      return ajusterCadre(P);
+    }
     // Game state
     let gameQuestions = [];
     let currentQ = 0;
     let score = 0;
     let feedbackReady = false;
+    let termine = false, saved = false, enCorrection = false;
 
     // Switch synthesis tab
     function switchTab(tab) {
@@ -913,8 +951,14 @@
 
       // Pick 10 random questions from pool
       gameQuestions = [];
-      const shuffled = [...QUESTION_POOL].sort(() => 0.5 - Math.random());
-      gameQuestions = shuffled.slice(0, 10);
+      // 5 triangles et 5 quadrilatères, mélange de Fisher–Yates
+      const melanger = arr => { const t = [...arr]; for (let i = t.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [t[i], t[j]] = [t[j], t[i]]; } return t; };
+      gameQuestions = melanger([
+        ...melanger(QUESTION_POOL.filter(q => q.shapeType === 'triangle')).slice(0, 5),
+        ...melanger(QUESTION_POOL.filter(q => q.shapeType !== 'triangle')).slice(0, 5)
+      ]);
+      termine = false;
+      saved = false;
       
       currentQ = 0;
       score = 0;
@@ -1023,6 +1067,9 @@
     }
 
     function checkAnswer() {
+      if (enCorrection || termine) return;
+      if (!/^\d{1,3}$/.test(document.getElementById('input-angle').value)) return;
+      enCorrection = true;
       const q = gameQuestions[currentQ];
       const userVal = parseInt(document.getElementById('input-angle').value);
       const isCorrect = (userVal === q.correctAnswer);
@@ -1077,6 +1124,8 @@
 
     function closeFeedback() {
       if (!feedbackReady) return;
+      feedbackReady = false;
+      enCorrection = false;
       playClickSound();
       document.getElementById('feedback-modal').style.display = 'none';
       currentQ++;
@@ -1095,13 +1144,13 @@
       document.getElementById('final-score').textContent = `${score} / 10`;
 
       let stars = "";
-      let title = "💪 Continue de t'entraîner !";
+      let title = "💪 Continue de t'entrainer !";
       let message = "Relis bien la leçon et réessaie pour obtenir 3 étoiles !";
 
       if (score === 10) {
         stars = "⭐⭐⭐";
         title = "👑 Parfait ! Un sans-faute !";
-        message = "Incroyable ! Tu maîtrises parfaitement le calcul d'angles manquants !";
+        message = "Incroyable ! Tu maitrises parfaitement le calcul d'angles manquants !";
         triggerConfettis();
       } else if (score >= 7) {
         stars = "⭐⭐";
@@ -1119,7 +1168,8 @@
       document.getElementById('congrats-message').textContent = message;
 
       // Parent SaveResult API
-      if (window.parent && window.parent.saveResult) {
+      termine = true;
+      if (!saved) { saved = true; try {
         window.parent.saveResult({
           activity: 'geometrie_angles_manquants',
           bookTitle: "Calcul d'angles manquants",
@@ -1129,7 +1179,7 @@
           date: new Date().toLocaleDateString('fr-BE'),
           time: new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })
         });
-      }
+      } catch (e) {} }
     }
 
     function restartGame() {
@@ -1214,6 +1264,7 @@
       }, 4000);
     }
 
+    [...QUESTION_POOL, ...lessonTriangles, ...lessonQuads].forEach(q => { q.vertices = sommetsDepuisAngles(q.angles, q.subType); });
     // Page Load initialization
     window.onload = function() {
       renderLessonTriangle();

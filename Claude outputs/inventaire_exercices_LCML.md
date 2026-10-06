@@ -1724,6 +1724,15 @@ Spécifique :
 - « Question suivante » protégé (600 ms), Entrée passe à la suite ; orthographe « maitrises », « Entraine-toi ».
 - Tests : jsdom (vide / 45.5 / 12abc refusés, double clic, partie 3+2+1+0+3 = 9/15 → 1 saveResult), node --check 7 OK, captures Playwright de l'équerre recalée.
 
+### 06/10 — Mathématiques → Solides et figures → Les angles → Calcul d'angles manquants (`geometrie_angles_manquants`) — sw.js v607
+- **Figures fausses** : les sommets étaient fixés à la main sans rapport avec les angles annoncés (« 110° » écrit dans un coin de 25° aux triangles #7, #11, #15 ; « équilatéral » de la leçon dessiné 50/50/80 ; quadrilatères faux jusqu'à 20°). → Sommets recalculés à partir des angles (loi des sinus pour les triangles, fermeture du polygone pour les quadrilatères, cerfs-volants à côtés adjacents égaux), cadrage automatique. Écart max dessin/valeur : 0,5°, aucun sommet hors cadre.
+- **Double Entrée dans la fenêtre de correction sautait une question** (`feedbackReady` jamais remis à faux). → Garde `enCorrection` + remise à zéro à la fermeture.
+- Mélange `sort(random)` biaisé et séries déséquilibrées. → Fisher–Yates, 5 triangles + 5 quadrilatères.
+- Sous-types avec parenthèses imbriquées (« quelconque (scalène) ») → « scalène », « scalène obtusangle ».
+- Enregistrement sans garde unique ni try/catch → corrigé (`saveResult` format objet, une seule fois). Saisie : 1 à 3 chiffres uniquement.
+- Orthographe : maitrises, entrainer.
+- Tests : jsdom (série 5+5, double Entrée sans saut, score 8/10 enregistré une fois). 2 copies identiques (md5).
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2120,7 +2129,7 @@ Spécifique :
 | ✅ 06/10 | Reconnaître les angles | `angles_reconnaitre` | fiches/angles_reconnaitre.html |  |
 | ✅ 06/10 | Estimation des angles | `angles_estimation` | fiches/angles_estimation.html | Saisie libre comparée strictement |
 | ✅ 06/10 | Mesurer les angles | `angles_mesurer` | fiches/angles_mesurer.html |  |
-| ⬜ | Calcul d'angles manquants | `geometrie_angles_manquants` | fiches/geometrie_angles_manquants.html |  |
+| ✅ 06/10 | Calcul d'angles manquants | `geometrie_angles_manquants` | fiches/geometrie_angles_manquants.html |  |
 
 ### 🔢 Mathématiques — 🔷 Solides & Figures — Quadrilatères & Cercle
 
