@@ -2158,6 +2158,8 @@ Spécifique :
 
 - **06/10 — Les engrenages (`sci_engrenages`, sw.js v670)** : contenu des 7 défis vérifié (contact direct = sens inverse, train de 3, rapport 10/20 dents, vitesse, chaine = même sens, boucle paire de 4, boucle impaire de 3 bloquée ; l'animation avant réponse ne trahit rien). Corrigé : id d'activité `sci_mecanique_engrenages` → `sci_engrenages` (le résultat n'apparaissait pas au menu ni au plan de travail), sauvegarde unique en try/catch avec contrôle `window.parent !== window`, bonne réponse manquée affichée en bleu #1f5fbf, options mélangées (Fisher–Yates), garde 600 ms sur « Défi suivant » + Entrée pour continuer, total = `DEFI_DATA.length`, libellé du bouton remis à « Défi suivant » après « Recommencer », emoji ↩️ → 🔃 pour le sens horaire, nouvelle orthographe (Entraine-toi, s'emboitent). Test Playwright 390 px : 1 erreur → bleu, double clic sans saut, 1 seule sauvegarde 6/7, pas de débordement.
 
+- **06/10 — Leviers et balances (`sci_mecanique_leviers`, sw.js v671)** : le score faisait toujours 4/4 (on revalidait jusqu'à réussir et la balance affichait « ÉQUILIBRE PARFAIT » en direct). Décisions de Jeremy : défis 1-2 en « prédire puis vérifier » (balance horizontale et totaux masqués pendant le placement, un seul essai, la balance penche ou s'équilibre à la validation, bonne solution en bleu) ; défi 4 posé en texte, l'image (dont les titres donnaient la réponse) n'apparait qu'en correction. Aussi corrigé : défi 1 changé (30 g au cran 1 → 10 g au cran 3) car identique à l'exemple de la fiche synthèse ; fiche synthèse et rappel du pied de page retirés pendant les défis (même règle que Mélanges) ; défi 3 refait (schéma SVG avec repères 1-2-3 + liste d'emplacements ; les emplacements affichaient « Déposer la Charge/le Pivot/l'Effort ici » et se chevauchaient à 390 px) ; étiquettes mélangées, correction en bleu par emplacement ; QCM défi 4 sans lettres, options mélangées et de même longueur ; bug de retrait d'une masse (mauvais index) ; message dans la page si réponse incomplète (essai non consommé) ; Réinitialiser masqué après validation ; pastilles ✓/✗ ; sauvegarde unique en try/catch ; garde 600 ms + Entrée ; nouvelle orthographe. Test Playwright 390 px : 4 défis, 1 seule sauvegarde 1/4, pas de débordement, aucune erreur.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2666,7 +2668,7 @@ Spécifique :
 | ⬜ | Ombres & Lumière | `sci_lumiere_ombres` | fiches/sci_lumiere_ombres.html |  |
 | ⬜ | Les éclipses | `sci_eclipses` | index › renderSciEclipses |  |
 | ✅ 06/10 | Les engrenages | `sci_engrenages` | fiches/sci_mecanique_engrenages.html |  |
-| ⬜ | Leviers et balances | `sci_mecanique_leviers` | index › renderSciMecaniqueLeviers |  |
+| ✅ 06/10 | Leviers et balances | `sci_mecanique_leviers` | index › renderSciMecaniqueLeviers |  |
 
 ### 🌍 Éveil — 🌍 Géographie
 
