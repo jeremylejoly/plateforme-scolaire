@@ -1679,6 +1679,15 @@ Spécifique :
 - « Question suivante » protégé (600 ms), Entrée, enregistrement unique (try/catch).
 - Tests : jsdom (2 000 séries 5/5, 3D bloquée avant réponse, faces neutres, double clic, 7/10 → 1 saveResult), node --check 7 OK, planche des patrons et capture 390 px (Playwright).
 
+### 06/10 — Trouve le bon solide (`polyedres_definitions`, fiches/polyedres_definitions.html) — sw.js v602
+- **Résultat jamais enregistré correctement** : `saveResult('polyedres_definitions', score)` (deux arguments au lieu d'un objet) → objet complet {activity, bookTitle, score, total, pct, date, time}, une seule fois, try/catch.
+- **Score toujours 8/8** : essais illimités et point accordé même après des erreurs (la pastille passait au vert) → point au 1er essai seulement ; après 2 erreurs, la bonne réponse est montrée (en bleu) et le solide révélé.
+- Ambiguïté cube / pavé : les 3 indices du pavé convenaient aussi au cube (un cube est un parallélépipède rectangle) → indice « mes arêtes n'ont pas toutes la même longueur » ; « parallélépipède rectangle » retiré des propositions pour le cube.
+- Modèle 3D du pavé faux (face de droite construite avec y = x : face tordue) → corrigé.
+- Mélanges sort(random) → Fisher–Yates ; 8 solides tirés parmi 11.
+- « Question suivante » protégé (600 ms), Entrée ; « Entrainement terminé ! ».
+- Tests : jsdom (2 erreurs → réponse montrée, 2e essai sans point, double clic, 6/8 → 1 saveResult au bon format), node --check 7 OK, capture 390 px (Playwright).
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2096,7 +2105,7 @@ Spécifique :
 |---|---|---|---|---|
 | ✅ 06/10 | Polyèdre ou non-polyèdre | `polyedres_reconnaitre` | fiches/polyedres_reconnaitre.html |  |
 | ✅ 06/10 | Patrons de solides | `polyedres_patrons` | fiches/patrons_solides.html |  |
-| ⬜ | Trouve le bon solide (Définitions) | `polyedres_definitions` | fiches/polyedres_definitions.html |  |
+| ✅ 06/10 | Trouve le bon solide (Définitions) | `polyedres_definitions` | fiches/polyedres_definitions.html |  |
 | ⬜ | Trouve les caractéristiques (Définitions) | `polyedres_caracteristiques` | fiches/polyedres_caracteristiques.html |  |
 | ⬜ | Les axes de symétrie | `solide_symetrie` | fiches/solide_symetrie.html |  |
 | ⬜ | Le labo des transformations | `solide_transformations_labo` | fiches/transformations_labo.html |  |
