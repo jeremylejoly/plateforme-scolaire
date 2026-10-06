@@ -1983,6 +1983,12 @@ Spécifique :
 - **Moteur** : tirage des questions et mélange des propositions par `sort(() => 0.5 - Math.random())` → Fisher–Yates ; verrou contre le double tap visant un id inexistant (`question-options-grid`) et 350 ms → bon id, 600 ms ; bonne réponse du débriefing en bleu (#1f5fbf, elle était verte) ; `alert()` de fin du Grand Voyage → message dans l'accueil avec le score ; Grand Voyage toujours sur la 1re scène de chaque époque → scène tirée au hasard ; « ⭐ 0 / 40 ⭐ » (étoile doublée) ; `border-3` inexistant ; image limitée à la largeur de l'écran.
 - Tests Chromium (jeu dans un cadre) : double tap → 4 réponses (pas 8), 1 sauvegarde /4 par scène, Grand Voyage de 5 scènes différentes → 1 seule sauvegarde /20 + message d'accueil, aucune fenêtre `alert`, bonne réponse en bleu ; positions de la bonne réponse 65/73/83/79 sur 300 tirages ; 390 px sans débordement.
 
+### 06/10 — Éveil → Sciences → L'appareil respiratoire → Le schéma (`sci_resp_schema`, index › SCI_RESP_SCHEMA_DATA / renderSciRespSchema / validateSciRespSchema) — sw.js v640
+- Schéma `appareil_respiratoire.png` vérifié : les 9 numéros correspondent aux légendes (1 bouche, 2 nez, 3 poumon, 4 trachée, 5 bronches, 6 bronchioles, 7 alvéoles, 8 diaphragme, 9 cœur). « Trachée artère » (forme vieillie) → « Trachée » ; « Coeur » → « Cœur ».
+- **Validation** : « Valider » cliquable plusieurs fois → plusieurs enregistrements ; cases vides comptées fausses (et remplies d'office en rouge) ; une étiquette mal placée n'était **jamais corrigée** ; étiquettes encore déplaçables après validation → message dans la page s'il reste des étiquettes, rien de compté ; garde 600 ms ; validation unique et verrouillage ; bonne légende en bleu (« ➜ … ») sous chaque erreur ; enregistrement unique (try/catch) ; bouton « Recommencer ».
+- **Tablette / téléphone** : seul le glisser était possible → ajout du placement par toucher (étiquette puis case) ; aide tactile commune (case visée sous le doigt, défilement automatique près du bord) ; schéma et tableau côte à côte même à 390 px (schéma de 170 px) → passage sur une colonne quand l'écran est étroit.
+- Tests Chromium (390 px, tactile) : vide → « il en reste 9 », placement par toucher, 2 inversions → 7/9 + 2 corrections en bleu, 1 seul enregistrement malgré 3 clics, verrouillage ; pas de débordement.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2440,7 +2446,7 @@ Spécifique :
 | ⬜ | Le squelette — Chasseur d'intrus | `sci_sq_intrus` | index › renderSciSqIntrus |  |
 | ⬜ | Le squelette — Vrai ou faux ? | `sci_sq_vrai_faux` | index › renderSciSqVraiFaux |  |
 | ⬜ | Appareil respiratoire — La leçon | `fiche_respiratoire` | fiches/appareil-respiratoire.html |  |
-| ⬜ | Appareil respiratoire — Le schéma | `sci_resp_schema` | index › renderSciRespSchema |  |
+| ✅ 06/10 | Appareil respiratoire — Le schéma | `sci_resp_schema` | index › renderSciRespSchema |  |
 | ⬜ | Appareil respiratoire — Trajet de l'air | `sci_resp_texte` | index › renderSciRespTexte |  |
 | ⬜ | Appareil respiratoire — QCM | `sci_resp_qcm` | index › renderSciRespQCM |  |
 | ⬜ | Appareil respiratoire — Termes et définitions | `sci_resp_assoc` | index › renderSciRespAssoc |  |
