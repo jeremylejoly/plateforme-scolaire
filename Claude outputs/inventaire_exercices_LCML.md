@@ -1895,6 +1895,12 @@ Spécifique :
 - **Contenu (29 paires relues)** : Préhistoire « premiers hominidés (3,5 millions av. J.-C.) » → « premiers hommes (il y a environ 3 millions d'années) … écriture (vers 3 300 av. J.-C.) » ; « Homo sapiens sapiens » → « Homo sapiens » ; silex « pierre dure taillée » → « roche très dure que l'on taille » ; biface « taillé sur ses deux faces » ; roue « fin du Néolithique (vers 3 500 av. J.-C.) » ; feu « sa maitrise permet… » ; sagaie / propulseur précisés ; évènements, guillemets « ». Nombres et « av. J.-C. » insécables. Termes et définitions tous distincts, aucun terme répété dans sa définition.
 - Tests Chromium : 300 tirages (29 termes vus, définitions bien mélangées), vide → message sans enregistrement, clic définition + case → placée, re-clic → retirée, 6/8 → bleu + 1 seul enregistrement malgré 3 clics, verrouillage ; captures 390 px sans débordement.
 
+### 06/10 — Éveil → Histoire → La Préhistoire → Un campement du Paléolithique (`prehistoire_doc`, index › PREHISTOIRE_DOC_TEXTE / renderPrehistoireDoc / pdocValider) — sw.js v627
+- **La bonne réponse était presque toujours la plus longue** (souvent de loin : « Parce qu'ils n'avaient pas d'allumettes ni de briquet — faire du feu demandait… ») et les 2 autres propositions étaient absurdes (palais souterrains, fusils, grandes villes) → 13 questions à 4 propositions plausibles et de longueur voisine (bonne réponse strictement la plus longue : 3/13) : 9 de compréhension + 4 d'inférence (section séparée, comme le Moyen Âge), ordre des questions et des propositions mélangé (Fisher–Yates).
+- **Texte corrigé** : « il y a 30 000 ans » avec harpons et propulseurs (anachroniques à cette date) → « il y a environ 15 000 ans » ; « ils choisissent toujours un abri naturel » puis « certains construisent des huttes » (contradictoire) → « ils cherchent un abri » ; explication confuse de la fumée → « la fumée s'échappe à l'air libre au lieu d'envahir l'abri » ; « les femmes et les enfants restent cueillir » (répartition non établie par l'archéologie) → « d'autres membres du groupe cueillent » ; citation « chacun avait un rôle » alignée sur le texte (présent). La question « pourquoi était-il si difficile de faire du feu ? » (réponse absente du texte) est remplacée par une inférence fondée sur le texte.
+- **Validation** : questions sans réponse comptées fausses → message dans la page (numéros des questions manquantes) ; réponses encore modifiables après validation → verrouillées ; garde 600 ms ; enregistrement unique (try/catch). Bonne réponse en bleu (#1f5fbf, classe `reveal`) après une erreur (elle était en vert) ; message « les réponses vertes sont correctes » adapté.
+- Tests Chromium : 400 parties (bonne réponse en A/B/C/D 1330/1291/1316/1263, 9 premières questions différentes), vide → message, 12/13 répondues → « Réponds d'abord à la question 13 », 1 erreur → bleu + rouge, 1 seul enregistrement 12/13 malgré les clics répétés, réponses verrouillées ; capture 390 px sans débordement.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2330,7 +2336,7 @@ Spécifique :
 | ⬜ | Les grandes périodes de l'Histoire | `hist_grandes_periodes` | fiches/frise-chronologique-histoire.html |  |
 | ✅ 06/10 | Quiz Préhistoire | `qvgdm_prehistoire` | index › renderQVGDMPrehistoire |  |
 | ✅ 06/10 | Préhistoire — Termes et définitions | `prehistoire_assoc` | index › renderPrehistoireAssoc |  |
-| ⬜ | Préhistoire — Campement du Paléolithique | `prehistoire_doc` | index › renderPrehistoireDoc |  |
+| ✅ 06/10 | Préhistoire — Campement du Paléolithique | `prehistoire_doc` | index › renderPrehistoireDoc |  |
 | ⬜ | Quiz L'Antiquité | `qvgdm_antiquite` | index › renderQVGDMAntiquite | QCM: bonne réponse en position 3 dans 9/15 questions, options non mélangées |
 | ⬜ | Antiquité — Termes et définitions | `antiquite_assoc` | index › renderAntiquiteAssoc |  |
 | ⬜ | Antiquité — Document historique | `antiquite_doc` | index › renderAntiquiteDoc |  |
