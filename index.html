@@ -12042,6 +12042,21 @@ function renderGramAffirmNegScreen(){
 
 // ===== DURÉES EXERCISE ENGINE =====
 
+// Valeur d'une question de conversion en secondes + unités en jeu : deux questions avec la même clé
+// (« 1h30 = ___ min » et « 90 min = ___h___min ») se donneraient la réponse dans une même série.
+function dureeCleQuestion(q){
+  const t = q.text.replace(/\s/g, '');
+  const m = t.match(/^([\d½¼¾\/]+)(h|min|jours?|j|semaines?|an|s|sec)(\d+)?=/);
+  if(!m) return q.text;
+  const frac = {'½':0.5,'¼':0.25,'¾':0.75,'1/10':0.1};
+  const n = frac[m[1]] !== undefined ? frac[m[1]] : Number(m[1]);
+  const u = {h:3600, min:60, jour:86400, jours:86400, j:86400, semaine:604800, semaines:604800, an:31536000, s:1, sec:1}[m[2]];
+  const extra = m[3] ? Number(m[3]) * 60 : 0; // « 1h30 » : les minutes après le h
+  const dest = t.includes('___h___min') ? 'h' : t.includes('___j___h') ? 'j' : (t.match(/___(\w+)$/) || [,''])[1];
+  const unites = [m[2].replace(/s$/, '').replace(/^jour$/, 'j'), dest.replace(/s$/, '').replace(/^jour$/, 'j')].sort().join('-');
+  return (n * u + extra) + '|' + unites;
+}
+
 // Compare une saisie d'élève à la réponse attendue en tant que nombre :
 // « 02 » = « 2 », « 00 » = « 0 », « 1 440 » = « 1440 ». Une case vide n'est jamais juste.
 function dureeNombreEgal(saisie, attendu){
@@ -12092,13 +12107,13 @@ const CONVERSIONS_BANK = [
   // Années → mois
   {text:"1 an = ___ mois", type:"single", answer:"12"},
   // Minutes → secondes
-  {text:"1 min = ___ sec", type:"single", answer:"60"},
-  {text:"½ min = ___ sec", type:"single", answer:"30"},
-  {text:"¼ min = ___ sec", type:"single", answer:"15"},
-  {text:"10 min = ___ sec", type:"single", answer:"600"},
+  {text:"1 min = ___ s", type:"single", answer:"60"},
+  {text:"½ min = ___ s", type:"single", answer:"30"},
+  {text:"¼ min = ___ s", type:"single", answer:"15"},
+  {text:"10 min = ___ s", type:"single", answer:"600"},
   // Heures → secondes
-  {text:"1h = ___ sec", type:"single", answer:"3600"},
-  {text:"½h = ___ sec", type:"single", answer:"1800"},
+  {text:"1h = ___ s", type:"single", answer:"3600"},
+  {text:"½h = ___ s", type:"single", answer:"1800"},
   // Jours → minutes
   {text:"1 jour = ___ min", type:"single", answer:"1440"},
 ];
@@ -12149,7 +12164,17 @@ function startDureesExercise(mode){
 
   if(mode === 'conversions'){
     document.getElementById('durees-exercise-title').textContent = '🔄 Conversions de durées';
-    dureesState.questions = shuffleArray([...CONVERSIONS_BANK]).slice(0,10);
+    // 10 questions, jamais deux sur la même quantité avec les mêmes unités (avant : « 1h30 = ? min » et
+    // « 90 min = ?h?min » pouvaient tomber ensemble)
+    const vus = new Set(), choix = [];
+    for(const q of shuffleArray([...CONVERSIONS_BANK])){
+      const k = dureeCleQuestion(q);
+      if(vus.has(k)) continue;
+      vus.add(k); choix.push(q);
+      if(choix.length === 10) break;
+    }
+    dureesState.questions = choix;
+    dureesState.emptyWarned = false;
     dureesState.submitted = false;
     renderConversionsExercise();
     document.getElementById('durees-validate-btn').style.display = 'block';
@@ -12201,6 +12226,23 @@ function renderConversionsExercise(){
 
 function validateDureesExercise(){
   if(dureesState.mode !== 'conversions') return;
+  if(dureesState.submitted) return; // double validation : un seul enregistrement
+  // Cases vides : rien si tout est vide ; sinon avertissement, et le 2e clic corrige quand même
+  // (avant : les cases vides étaient comptées fausses sans prévenir)
+  const champs = [...document.querySelectorAll('#durees-exercise-body .durees-input')];
+  const vides = champs.filter(c => !c.value.trim()).length;
+  if(vides === champs.length) return;
+  const avert = document.getElementById('durees-empty-warning');
+  if(vides > 0 && !dureesState.emptyWarned){
+    dureesState.emptyWarned = true;
+    const w = avert || document.createElement('div');
+    w.id = 'durees-empty-warning';
+    w.style.cssText = 'margin-top:.75rem;padding:.6rem .8rem;border-radius:10px;background:#fef3c7;color:#92400e;font-weight:700;font-size:14px;text-align:center;';
+    w.textContent = `⚠️ ${vides} case${vides > 1 ? 's' : ''} encore vide${vides > 1 ? 's' : ''}. Complète-les, ou clique à nouveau sur « Valider » pour corriger quand même.`;
+    if(!avert) document.getElementById('durees-exercise-body').appendChild(w);
+    return;
+  }
+  if(avert) avert.remove();
   dureesState.submitted = true;
   let score = 0;
 
@@ -12256,7 +12298,7 @@ function validateDureesExercise(){
     saveResult({
       student: state.student, cls: state.studentCls,
       className: CLASSES[state.studentCls] ? CLASSES[state.studentCls].name : state.studentCls,
-      activity: 'durées_conversions',
+      activity: 'grandeur_durees_conversions', // avant : « durées_conversions », que le menu et le plan ne reconnaissaient pas
       bookTitle: 'Durées — conversions',
       score, total: 10, pct,
       date: new Date().toLocaleDateString('fr-BE'),
@@ -24240,9 +24282,16 @@ function invalidateResultsCache(){
   loadStudentResults();
 }
 
+// Anciens identifiants de résultats (enregistrés avant l'alignement sur les identifiants du menu)
+const RESULT_ID_ALIASES = {
+  'grandeur_durees_conversions': ['durées_conversions'],
+  'grandeur_durees_entre': ['durées_entre2heures']
+};
 function getStudentResult(actId){
   if(state.role !== 'student') return null;
-  return _studentResultsCache[actId] || null;
+  if(_studentResultsCache[actId]) return _studentResultsCache[actId];
+  for(const old of (RESULT_ID_ALIASES[actId] || [])) if(_studentResultsCache[old]) return _studentResultsCache[old];
+  return null;
 }
 
 function renderScoreBadge(actId){
@@ -32559,7 +32608,7 @@ function getPlanItemScore(id) {
   const esc = id.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   const re = new RegExp('(^|[_\\-])' + esc + '($|[_\\-])');
   // Anciens résultats des calculs enregistrés sous « calc_add_sous_100 », « calc_mult_div »…
-  const legacy = !id.startsWith('op_') ? [] :
+  const legacy = RESULT_ID_ALIASES[id] ? RESULT_ID_ALIASES[id] : !id.startsWith('op_') ? [] :
     id === 'op_mult_div_tables' ? ['calc_mult_div'] :
     id === 'op_4_operations_melangees' ? ['calc_4_operations', 'op_4_operations'] :
     ['calc_' + id.slice(3)];

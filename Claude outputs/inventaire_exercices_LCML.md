@@ -1459,6 +1459,14 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Nouvelle orthographe : maitrises, entrainer. Capture 390 px OK.
 - Tests jsdom : vide/« 12abc » non comptés, « 2 500 » accepté, double Entrée sans saut, partie 7 / 10 → 1 sauvegarde ; syntaxe OK.
 
+### 06/10 — Maths › Grandeurs › Les durées › Conversions (`grandeur_durees_conversions`, index › CONVERSIONS_BANK / validateDureesExercise) — sw.js v579
+- 41 conversions vérifiées par programme (h, min, s, jours, semaines, an ; ½, ¼, ¾, 1/10) : toutes justes. Correctif du 05/10 (« 03 » = 3, « 00 » = 0) toujours en place.
+- **Résultat jamais reconnu** : enregistré sous « durées_conversions », alors que le menu et le plan de travail cherchent `grandeur_durees_conversions` → bon identifiant ; les anciens résultats restent reconnus (table `RESULT_ID_ALIASES`, aussi prévue pour « durées_entre2heures »).
+- **Questions qui se donnaient la réponse** : 11 paires (« 1h30 = ? min » / « 90 min = ? h ? min », « 2 jours = ? h » / « 48 h = ? j ? h »…) pouvaient tomber dans la même série → jamais ensemble (5 000 séries : 0).
+- **Cases vides comptées fausses sans prévenir** → fiche vide ignorée ; cases vides : avertissement, le 2e clic corrige quand même. Double validation bloquée (un seul enregistrement).
+- Symbole des secondes : « sec » → « s ».
+- Tests node/jsdom : clé de quantité lue pour les 41 questions, vide ignoré, avertissement puis correction, 7 / 10 enregistré une fois ; index : 6 / 7 scripts OK.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1807,7 +1815,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | Statut | Exercice | id | Source | Signal automatique |
 |---|---|---|---|---|
 | ⬜ | Les durées | `grandeur_durees` | index › renderGrandeurDurees | QCM: bonne réponse en position 2 dans 39/65 questions, options non mélangées |
-| ✅ 05/10 (6d5a2ec) | Les durées — Conversions | `grandeur_durees_conversions` | index › startDureesExercise |  |
+| ✅ 06/10 | Les durées — Conversions | `grandeur_durees_conversions` | index › startDureesExercise |  |
 | ✅ 05/10 (6d5a2ec) | Les durées — Durée entre 2 heures | `grandeur_durees_entre` | index › startDureesExercise |  |
 | ✅ 05/10 (6d5a2ec) | Quelle heure est-il ? (avec secondes) | `grandeur_durees_heure_secondes` | fiches/heure_secondes.html |  |
 | ⬜ | Le Labo des Durées | `grandeur_durees_situations` | fiches/durees_situations.html |  |
