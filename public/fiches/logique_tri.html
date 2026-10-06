@@ -175,7 +175,6 @@
       border-radius: var(--r-md);
       padding: 1.5rem;
       position: relative;
-      overflow-x: auto;
     }
 
     /* --- DRAGGABLE TAGS --- */
@@ -229,6 +228,15 @@
       transform: none !important;
     }
 
+    .item-tag.revele {
+      border-color: #1f5fbf !important;
+      background: rgba(31, 95, 191, 0.25) !important;
+      color: #bcd4ff !important;
+      box-shadow: 0 0 8px rgba(31, 95, 191, 0.35);
+      cursor: default;
+      transform: none !important;
+    }
+
     .item-tag.incorrect {
       border-color: var(--red) !important;
       background: rgba(244, 63, 94, 0.1) !important;
@@ -239,10 +247,14 @@
     }
 
     /* --- VENN DIAGRAM RENDER --- */
+    .diagram-workspace.is-venn {
+      display: block;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
     .venn-container {
       position: relative;
-      width: 100%;
-      max-width: 700px;
+      width: 700px;
       min-width: 700px;
       height: 425px;
       margin: 0 auto;
@@ -268,7 +280,7 @@
       border: 4px solid var(--secondary);
       background: rgba(59, 130, 246, 0.04);
       position: absolute;
-      left: 310px;
+      right: 90px;
       top: 20px;
       pointer-events: none;
       z-index: 1;
@@ -331,7 +343,7 @@
     }
 
     .zone-right {
-      left: 390px;
+      right: 90px;
       top: 20px;
       width: 220px;
       height: 300px;
@@ -398,6 +410,12 @@
       text-align: center;
       width: 100%;
       margin-bottom: 2px;
+    }
+
+    @media (max-width: 560px) {
+      .diagram-workspace { padding: 0.75rem; }
+      .carroll-grid { grid-template-columns: 92px 1fr 1fr !important; gap: 6px !important; }
+      .carroll-header-col, .carroll-header-row { font-size: 0.78rem !important; padding: 4px !important; }
     }
 
     /* --- CARROLL DIAGRAM RENDER --- */
@@ -695,6 +713,8 @@
         <!-- Rendered dynamically by Javascript -->
       </div>
 
+      <div id="venn-hint" style="display:none;margin-top:6px;text-align:center;font-size:.8rem;color:#94a3b8;font-weight:700">↔ Fais glisser le diagramme de côté pour voir les deux cercles.</div>
+
       <!-- Items pool to class -->
       <div class="items-pool-container">
         <div class="items-pool-title">Étiquettes à classer :</div>
@@ -704,6 +724,7 @@
       </div>
 
       <!-- Controls -->
+      <div id="validate-msg" style="display:none;margin-top:12px;padding:10px 14px;border-radius:10px;background:rgba(245,158,11,.12);border:2px solid #f59e0b;color:#fcd34d;font-weight:700;text-align:center"></div>
       <div class="controls">
         <button class="btn-3d btn-primary" id="validate-btn" onclick="validateSelection()">Valider</button>
       </div>
@@ -746,15 +767,7 @@
           { id: 'item1_5', label: '15', correctZone: 'left', explanation: '15 est un multiple de 3 (3 × 5 = 15) mais il est impair.' },
           { id: 'item1_6', label: '8', correctZone: 'right', explanation: "8 est pair mais n'est pas un multiple de 3." },
           { id: 'item1_7', label: '7', correctZone: 'outside', explanation: "7 est un nombre impair et il n'est pas multiple de 3." },
-          { id: 'item1_8', label: '20', correctZone: 'right', explanation: "20 est pair mais n'est pas divisible par 3." },
-          { id: 'item1_9', label: '18', correctZone: 'intersection', explanation: '18 est pair et c\'est un multiple de 3 (3 × 6 = 18).' },
-          { id: 'item1_10', label: '21', correctZone: 'left', explanation: '21 est un multiple de 3 (3 × 7 = 21) mais il est impair.' },
-          { id: 'item1_11', label: '14', correctZone: 'right', explanation: "14 est pair mais n'est pas un multiple de 3." },
-          { id: 'item1_12', label: '13', correctZone: 'outside', explanation: "13 est impair et n'est pas divisible par 3." },
-          { id: 'item1_13', label: '30', correctZone: 'intersection', explanation: '30 est pair et c\'est un multiple de 3 (3 × 10 = 30).' },
-          { id: 'item1_14', label: '27', correctZone: 'left', explanation: '27 est un multiple de 3 (3 × 9 = 27) mais il est impair.' },
-          { id: 'item1_15', label: '16', correctZone: 'right', explanation: "16 est pair mais n'est pas un multiple de 3." },
-          { id: 'item1_16', label: '11', correctZone: 'outside', explanation: "11 est impair et n'est pas dans la table de 3." }
+          { id: 'item1_8', label: '20', correctZone: 'right', explanation: "20 est pair mais n'est pas divisible par 3." }
         ]
       },
       {
@@ -766,15 +779,10 @@
         items: [
           { id: 'item2_1', label: 'Carré', correctZone: 'intersection', explanation: 'Le carré possède 4 côtés (donc au moins 4) et tous ses côtés sont égaux.' },
           { id: 'item2_2', label: 'Triangle équilatéral', correctZone: 'right', explanation: 'Le triangle équilatéral possède 3 côtés égaux (il en a moins de 4).' },
-          { id: 'item2_3', label: 'Rectangle', correctZone: 'left', explanation: 'Le rectangle possède 4 côtés, mais ils ne sont pas tous égaux (seulement opposés égaux).' },
-          { id: 'item2_4', label: 'Parallélogramme', correctZone: 'left', explanation: 'Un parallélogramme classique possède 4 côtés, mais ils ne sont pas tous de même longueur.' },
+          { id: 'item2_3', label: 'Rectangle (pas carré)', correctZone: 'left', explanation: "Ce rectangle possède 4 côtés, mais ils ne sont pas tous égaux (seulement les côtés opposés)." },
+          { id: 'item2_4', label: 'Parallélogramme quelconque', correctZone: 'left', explanation: 'Un parallélogramme quelconque possède 4 côtés, mais ils ne sont pas tous de même longueur.' },
           { id: 'item2_5', label: 'Losange', correctZone: 'intersection', explanation: 'Le losange possède 4 côtés et tous ses côtés sont de même longueur.' },
-          { id: 'item2_6', label: 'Triangle rectangle', correctZone: 'outside', explanation: "Le triangle rectangle scalène a 3 côtés (moins de 4) et aucun n'est égal." },
-          { id: 'item2_7', label: 'Pentagone régulier', correctZone: 'intersection', explanation: 'Il a 5 côtés (donc au moins 4) et tous ses côtés sont de même longueur.' },
-          { id: 'item2_8', label: 'Hexagone régulier', correctZone: 'intersection', explanation: 'Il a 6 côtés (donc au moins 4) et tous ses côtés sont de même longueur.' },
-          { id: 'item2_9', label: 'Trapèze isocèle', correctZone: 'left', explanation: 'Le trapèze isocèle a 4 côtés, mais ils ne sont pas tous égaux.' },
-          { id: 'item2_10', label: 'Triangle isocèle', correctZone: 'outside', explanation: "Il a 3 côtés (moins de 4) et seulement 2 côtés égaux (pas tous égaux)." },
-          { id: 'item2_11', label: 'Cercle', correctZone: 'outside', explanation: "Le cercle n'a pas de côtés droits (0 côtés, donc moins de 4)." }
+          { id: 'item2_6', label: 'Triangle rectangle scalène', correctZone: 'outside', explanation: "Le triangle rectangle scalène a 3 côtés (moins de 4) et ses côtés sont tous différents." }
         ]
       },
       {
@@ -792,13 +800,7 @@
           { id: 'item3_6', label: '9', correctZone: 'right', explanation: '9 divise 36 (36 = 9 × 4) mais ne divise pas 24.' },
           { id: 'item3_7', label: '12', correctZone: 'intersection', explanation: '12 divise 24 (24 = 12 × 2) et divise 36 (36 = 12 × 3).' },
           { id: 'item3_8', label: '18', correctZone: 'right', explanation: '18 divise 36 (36 = 18 × 2) mais ne divise pas 24.' },
-          { id: 'item3_9', label: '5', correctZone: 'outside', explanation: '5 ne divise ni 24, ni 36 (la division a un reste).' },
-          { id: 'item3_10', label: '1', correctZone: 'intersection', explanation: '1 est le diviseur universel, il divise 24 et 36 sans reste.' },
-          { id: 'item3_11', label: '24', correctZone: 'left', explanation: '24 divise 24 (24 = 24 × 1) mais ne divise pas 36.' },
-          { id: 'item3_12', label: '36', correctZone: 'right', explanation: '36 divise 36 (36 = 36 × 1) mais ne divise pas 24.' },
-          { id: 'item3_13', label: '10', correctZone: 'outside', explanation: '10 ne divise ni 24, ni 36.' },
-          { id: 'item3_14', label: '7', correctZone: 'outside', explanation: '7 ne divise ni 24, ni 36.' },
-          { id: 'item3_15', label: '15', correctZone: 'outside', explanation: '15 ne divise ni 24, ni 36.' }
+          { id: 'item3_9', label: '5', correctZone: 'outside', explanation: '5 ne divise ni 24, ni 36 (la division a un reste).' }
         ]
       },
       {
@@ -815,15 +817,7 @@
           { id: 'item4_5', label: '72', correctZone: 'left', explanation: "72 est supérieur à 50 mais ce n'est pas un multiple de 5." },
           { id: 'item4_6', label: '80', correctZone: 'intersection', explanation: '80 est supérieur à 50 et c\'est un multiple de 5.' },
           { id: 'item4_7', label: '14', correctZone: 'outside', explanation: "14 n'est pas supérieur à 50 et n'est pas un multiple de 5." },
-          { id: 'item4_8', label: '95', correctZone: 'intersection', explanation: '95 est supérieur à 50 et c\'est un multiple de 5.' },
-          { id: 'item4_9', label: '50', correctZone: 'right', explanation: '50 est un multiple de 5 (5 × 10 = 50) mais il n\'est pas strictement supérieur à 50.' },
-          { id: 'item4_10', label: '85', correctZone: 'intersection', explanation: '85 est supérieur à 50 et c\'est un multiple de 5 (5 × 17 = 85).' },
-          { id: 'item4_11', label: '100', correctZone: 'intersection', explanation: '100 est supérieur à 50 et c\'est un multiple de 5 (5 × 20 = 100).' },
-          { id: 'item4_12', label: '63', correctZone: 'left', explanation: '63 est supérieur à 50 mais ce n\'est pas un multiple de 5.' },
-          { id: 'item4_13', label: '51', correctZone: 'left', explanation: '51 est supérieur à 50 mais ce n\'est pas un multiple de 5.' },
-          { id: 'item4_14', label: '37', correctZone: 'outside', explanation: '37 est inférieur à 50 et n\'est pas un multiple de 5.' },
-          { id: 'item4_15', label: '5', correctZone: 'right', explanation: '5 est un multiple de 5 (5 × 1 = 5) mais il est inférieur à 50.' },
-          { id: 'item4_16', label: '8', correctZone: 'outside', explanation: '8 est inférieur à 50 et n\'est pas un multiple de 5.' }
+          { id: 'item4_8', label: '95', correctZone: 'intersection', explanation: '95 est supérieur à 50 et c\'est un multiple de 5.' }
         ]
       },
       {
@@ -837,10 +831,7 @@
           { id: 'item5_2', label: 'T. rectangle scalène', correctZone: 'left', explanation: 'Il a un angle droit (rectangle) mais tous ses côtés sont différents (scalène).' },
           { id: 'item5_3', label: 'T. isocèle acutangle', correctZone: 'right', explanation: 'Il a deux côtés égaux (isocèle) et tous ses angles sont aigus (acutangle, donc pas rectangle).' },
           { id: 'item5_4', label: 'T. équilatéral', correctZone: 'right', explanation: 'Un triangle équilatéral a trois côtés égaux (donc il est aussi isocèle), mais ses angles font tous 60° (il n\'est pas rectangle).' },
-          { id: 'item5_5', label: 'T. obtusangle scalène', correctZone: 'outside', explanation: "Ce triangle possède un angle obtus et trois côtés différents (ni rectangle, ni isocèle)." },
-          { id: 'item5_6', label: 'T. rectangle (côtés 3,4,5)', correctZone: 'left', explanation: 'Il possède un angle droit (rectangle), mais tous ses côtés sont de longueurs différentes (3, 4 et 5).' },
-          { id: 'item5_7', label: 'T. isocèle obtusangle', correctZone: 'right', explanation: 'Il possède deux côtés égaux (isocèle) et un angle obtus (donc pas d\'angle droit, pas rectangle).' },
-          { id: 'item5_8', label: 'T. scalène acutangle', correctZone: 'outside', explanation: 'Tous ses angles sont aigus (acutangle) et ses côtés sont différents (ni rectangle, ni isocèle).' }
+          { id: 'item5_5', label: 'T. obtusangle scalène', correctZone: 'outside', explanation: "Ce triangle possède un angle obtus et trois côtés différents (ni rectangle, ni isocèle)." }
         ]
       },
       {
@@ -857,15 +848,7 @@
           { id: 'item6_5', label: '15', correctZone: 'cell_0_1', explanation: '15 est impair et c\'est un multiple de 3.' },
           { id: 'item6_6', label: '12', correctZone: 'cell_0_0', explanation: '12 est pair et c\'est un multiple de 3.' },
           { id: 'item6_7', label: '16', correctZone: 'cell_1_0', explanation: "16 est pair et n'est pas divisible par 3." },
-          { id: 'item6_8', label: '25', correctZone: 'cell_1_1', explanation: "25 est impair et n'est pas multiple de 3." },
-          { id: 'item6_9', label: '18', correctZone: 'cell_0_0', explanation: '18 est pair et c\'est un multiple de 3 (3 × 6 = 18).' },
-          { id: 'item6_10', label: '21', correctZone: 'cell_0_1', explanation: '21 est impair et c\'est un multiple de 3 (3 × 7 = 21).' },
-          { id: 'item6_11', label: '14', correctZone: 'cell_1_0', explanation: "14 est pair et n'est pas un multiple de 3." },
-          { id: 'item6_12', label: '13', correctZone: 'cell_1_1', explanation: "13 est impair et n'est pas un multiple de 3." },
-          { id: 'item6_13', label: '30', correctZone: 'cell_0_0', explanation: '30 est pair et c\'est un multiple de 3 (3 × 10 = 30).' },
-          { id: 'item6_14', label: '27', correctZone: 'cell_0_1', explanation: '27 est impair et c\'est un multiple de 3 (3 × 9 = 27).' },
-          { id: 'item6_15', label: '20', correctZone: 'cell_1_0', explanation: "20 est pair et n'est pas divisible par 3." },
-          { id: 'item6_16', label: '7', correctZone: 'cell_1_1', explanation: "7 est impair et n'est pas dans la table de 3." }
+          { id: 'item6_8', label: '25', correctZone: 'cell_1_1', explanation: "25 est impair et n'est pas multiple de 3." }
         ]
       },
       {
@@ -877,16 +860,11 @@
         items: [
           { id: 'item7_1', label: 'Carré', correctZone: 'cell_0_0', explanation: 'Le carré est un quadrilatère (4 côtés) et a tous ses côtés égaux.' },
           { id: 'item7_2', label: 'Losange', correctZone: 'cell_0_0', explanation: 'Le losange est un quadrilatère (4 côtés) et a tous ses côtés égaux.' },
-          { id: 'item7_3', label: 'Rectangle', correctZone: 'cell_1_0', explanation: 'Le rectangle est un quadrilatère, mais ses 4 côtés ne sont pas égaux (seulement 2 à 2).' },
-          { id: 'item7_4', label: 'Trapèze', correctZone: 'cell_1_0', explanation: 'Le trapèze est un quadrilatère, mais ses côtés ne sont pas tous de même longueur.' },
+          { id: 'item7_3', label: 'Rectangle (pas carré)', correctZone: 'cell_1_0', explanation: 'Ce rectangle est un quadrilatère, mais ses 4 côtés ne sont pas égaux (seulement 2 à 2).' },
+          { id: 'item7_4', label: 'Trapèze quelconque', correctZone: 'cell_1_0', explanation: 'Le trapèze quelconque est un quadrilatère, mais ses côtés ne sont pas tous de même longueur.' },
           { id: 'item7_5', label: 'Triangle équilatéral', correctZone: 'cell_0_1', explanation: "Il a ses côtés égaux, mais ce n'est pas un quadrilatère (c'est un triangle à 3 côtés)." },
-          { id: 'item7_6', label: 'Triangle isocèle', correctZone: 'cell_1_1', explanation: "Il n'a pas tous ses côtés égaux (seulement 2) et ce n'est pas un quadrilatère." },
-          { id: 'item7_7', label: 'Cercle', correctZone: 'cell_1_1', explanation: "Le cercle n'a pas de côtés et n'est pas un quadrilatère." },
-          { id: 'item7_8', label: 'Pentagone régulier', correctZone: 'cell_0_1', explanation: 'Il a 5 côtés égaux, donc ce n\'est pas un quadrilatère (qui a 4 côtés).' },
-          { id: 'item7_9', label: 'Hexagone régulier', correctZone: 'cell_0_1', explanation: 'Il a 6 côtés égaux, donc ce n\'est pas un quadrilatère (qui a 4 côtés).' },
-          { id: 'item7_10', label: 'Parallélogramme', correctZone: 'cell_1_0', explanation: 'C\'est un quadrilatère, mais ses 4 côtés ne sont pas tous égaux.' },
-          { id: 'item7_11', label: 'Cerf-volant', correctZone: 'cell_1_0', explanation: 'C\'est un quadrilatère, mais ses côtés ne sont pas tous de même longueur.' },
-          { id: 'item7_12', label: 'Triangle scalène', correctZone: 'cell_1_1', explanation: 'Il n\'a pas de côtés égaux et ce n\'est pas un quadrilatère.' }
+          { id: 'item7_6', label: 'Triangle isocèle (pas équilatéral)', correctZone: 'cell_1_1', explanation: "Il n'a que 2 côtés égaux (pas les 3) et ce n'est pas un quadrilatère." },
+          { id: 'item7_7', label: 'Hexagone régulier', correctZone: 'cell_0_1', explanation: "L'hexagone régulier a ses 6 côtés égaux, mais ce n'est pas un quadrilatère." }
         ]
       },
       {
@@ -903,15 +881,7 @@
           { id: 'item8_5', label: '200', correctZone: 'cell_0_0', explanation: '200 est supérieur à 100 et c\'est un multiple de 10.' },
           { id: 'item8_6', label: '100', correctZone: 'cell_0_1', explanation: '100 est égal à 100 (donc ≤ 100) et c\'est un multiple de 10.' },
           { id: 'item8_7', label: '30', correctZone: 'cell_0_1', explanation: '30 est inférieur à 100 et c\'est un multiple de 10.' },
-          { id: 'item8_8', label: '150', correctZone: 'cell_0_0', explanation: '150 est supérieur à 100 et c\'est un multiple de 10.' },
-          { id: 'item8_9', label: '110', correctZone: 'cell_0_0', explanation: '110 est supérieur à 100 et c\'est un multiple de 10.' },
-          { id: 'item8_10', label: '80', correctZone: 'cell_0_1', explanation: '80 est inférieur à 100 et c\'est un multiple de 10.' },
-          { id: 'item8_11', label: '101', correctZone: 'cell_1_0', explanation: '101 est supérieur à 100 mais ce n\'est pas un multiple de 10.' },
-          { id: 'item8_12', label: '99', correctZone: 'cell_1_1', explanation: '99 est inférieur à 100 et ce n\'est pas un multiple de 10.' },
-          { id: 'item8_13', label: '250', correctZone: 'cell_0_0', explanation: '250 est supérieur à 100 et c\'est un multiple de 10.' },
-          { id: 'item8_14', label: '50', correctZone: 'cell_0_1', explanation: '50 est inférieur à 100 et c\'est un multiple de 10.' },
-          { id: 'item8_15', label: '135', correctZone: 'cell_1_0', explanation: '135 est supérieur à 100 mais ce n\'est pas un multiple de 10.' },
-          { id: 'item8_16', label: '42', correctZone: 'cell_1_1', explanation: '42 est inférieur à 100 et ce n\'est pas un multiple de 10.' }
+          { id: 'item8_8', label: '150', correctZone: 'cell_0_0', explanation: '150 est supérieur à 100 et c\'est un multiple de 10.' }
         ]
       },
       {
@@ -928,15 +898,7 @@
           { id: 'item9_5', label: 'écrire', correctZone: 'cell_1_0', explanation: '« écrire » est un verbe commençant par la voyelle « é ».' },
           { id: 'item9_6', label: 'aimer', correctZone: 'cell_1_0', explanation: '« aimer » est un verbe commençant par la voyelle « a ».' },
           { id: 'item9_7', label: 'chanter', correctZone: 'cell_1_1', explanation: '« chanter » est un verbe commençant par la consonne « c ».' },
-          { id: 'item9_8', label: 'parler', correctZone: 'cell_1_1', explanation: '« parler » est un verbe commençant par la consonne « p ».' },
-          { id: 'item9_9', label: 'oiseau', correctZone: 'cell_0_0', explanation: '« oiseau » est un nom commun commençant par la voyelle « o ».' },
-          { id: 'item9_10', label: 'chat', correctZone: 'cell_0_1', explanation: '« chat » est un nom commun commençant par la consonne « c ».' },
-          { id: 'item9_11', label: 'écouter', correctZone: 'cell_1_0', explanation: '« écouter » est un verbe commençant par la voyelle « é ».' },
-          { id: 'item9_12', label: 'courir', correctZone: 'cell_1_1', explanation: '« courir » est un verbe commençant par la consonne « c ».' },
-          { id: 'item9_13', label: 'image', correctZone: 'cell_0_0', explanation: '« image » est un nom commun commençant par la voyelle « i ».' },
-          { id: 'item9_14', label: 'fleur', correctZone: 'cell_0_1', explanation: '« fleur » est un nom commun commençant par la consonne « f ».' },
-          { id: 'item9_15', label: 'ouvrir', correctZone: 'cell_1_0', explanation: '« ouvrir » est un verbe commençant par la voyelle « o ».' },
-          { id: 'item9_16', label: 'lire', correctZone: 'cell_1_1', explanation: '« lire » est un verbe commençant par la consonne « l ».' }
+          { id: 'item9_8', label: 'parler', correctZone: 'cell_1_1', explanation: '« parler » est un verbe commençant par la consonne « p ».' }
         ]
       },
       {
@@ -953,24 +915,61 @@
           { id: 'item10_5', label: '25', correctZone: 'cell_1_0', explanation: '25 est impair, se termine par 5 et est multiple de 5.' },
           { id: 'item10_6', label: '30', correctZone: 'cell_0_0', explanation: '30 se termine par 0 : il est divisible par 2 (pair) et par 5.' },
           { id: 'item10_7', label: '18', correctZone: 'cell_0_1', explanation: "18 est pair mais n'est pas un multiple de 5." },
-          { id: 'item10_8', label: '9', correctZone: 'cell_1_1', explanation: "9 est impair et n'est pas divisible par 5." },
-          { id: 'item10_9', label: '20', correctZone: 'cell_0_0', explanation: '20 est pair (se termine par 0) et multiple de 5.' },
-          { id: 'item10_10', label: '35', correctZone: 'cell_1_0', explanation: '35 est impair (se termine par 5) et c\'est un multiple de 5.' },
-          { id: 'item10_11', label: '14', correctZone: 'cell_0_1', explanation: "14 est pair mais n'est pas divisible par 5." },
-          { id: 'item10_12', label: '13', correctZone: 'cell_1_1', explanation: "13 est impair et n'est pas multiple de 5." },
-          { id: 'item10_13', label: '40', correctZone: 'cell_0_0', explanation: '40 est pair (se termine par 0) et multiple de 5.' },
-          { id: 'item10_14', label: '45', correctZone: 'cell_1_0', explanation: '45 est impair (se termine par 5) et c\'est un multiple de 5.' },
-          { id: 'item10_15', label: '16', correctZone: 'cell_0_1', explanation: "16 est pair mais n'est pas divisible par 5." },
-          { id: 'item10_16', label: '17', correctZone: 'cell_1_1', explanation: "17 est impair et n'est pas multiple de 5." }
+          { id: 'item10_8', label: '9', correctZone: 'cell_1_1', explanation: "9 est impair et n'est pas divisible par 5." }
         ]
       }
     ];
+
+    // --- Niveaux de nombres générés (nouvelles étiquettes à chaque partie) ---
+    function melanger(a) { const r = [...a]; for (let i = r.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [r[i], r[j]] = [r[j], r[i]]; } return r; }
+    // def : { prefix, nombres:[...], A(n), B(n), expl(n, a, b), type }
+    function genItems(def) {
+      const zoneDe = (a, b) => def.type === 'venn'
+        ? (a && b ? 'intersection' : a ? 'left' : b ? 'right' : 'outside')
+        : `cell_${a ? 0 : 1}_${b ? 0 : 1}`;
+      for (let essai = 0; essai < 200; essai++) {
+        const seaux = {};
+        melanger([...new Set(def.nombres)]).forEach(n => { const z = zoneDe(def.A(n), def.B(n)); (seaux[z] = seaux[z] || []).push(n); });
+        const zones = Object.keys(seaux);
+        if (zones.length < 4) continue;
+        const choix = [];
+        zones.forEach(z => choix.push([z, seaux[z].pop()]));         // au moins 1 par zone
+        const reste = melanger(zones.flatMap(z => seaux[z].slice(0, 2).map(n => [z, n])));  // au plus 3 par zone
+        choix.push(...reste.slice(0, 8 - choix.length));
+        if (choix.length < 8) continue;
+        return melanger(choix).map(([z, n], i) => ({ id: `${def.prefix}_${i}`, label: String(n), correctZone: z, explanation: def.expl(n, def.A(n), def.B(n)) }));
+      }
+    }
+    const intervalle = (a, b, pas = 1) => { const r = []; for (let n = a; n <= b; n += pas) r.push(n); return r; };
+    const m3 = (n, oui) => oui ? `c'est un multiple de 3 (3 × ${n / 3} = ${n})` : `ce n'est pas un multiple de 3`;
+    const m5 = (n, oui) => oui ? `c'est un multiple de 5` : `ce n'est pas un multiple de 5`;
+    const DIVISEURS = [[24, 36], [18, 30], [20, 30], [12, 30], [24, 40], [12, 18]];
+    let couple = DIVISEURS[0];
+    const GEN = {
+      1: () => genItems({ type: 'venn', prefix: 'n1', nombres: intervalle(4, 40), A: n => n % 3 === 0, B: n => n % 2 === 0,
+            expl: (n, a, b) => `${n} est ${b ? 'pair' : 'impair'} et ${m3(n, a)}.` }),
+      3: () => { couple = DIVISEURS[Math.floor(Math.random() * DIVISEURS.length)]; const [X, Y] = couple;
+            const lv = LEVELS[2]; lv.criteriaA = `Diviseurs de ${X}`; lv.criteriaB = `Diviseurs de ${Y}`;
+            lv.instruction = `Classe les nombres selon qu'ils divisent ${X} ou ${Y} sans reste.`;
+            const d = (n, Z, oui) => oui ? `${n} divise ${Z} (${Z} = ${n} × ${Z / n})` : `${n} ne divise pas ${Z}`;
+            return genItems({ type: 'venn', prefix: 'n3', nombres: intervalle(2, Math.max(X, Y)).filter(n => n !== X && n !== Y), A: n => X % n === 0, B: n => Y % n === 0,
+              expl: (n, a, b) => `${d(n, X, a)} ; ${d(n, Y, b)}.`}); },
+      4: () => genItems({ type: 'venn', prefix: 'n4', nombres: intervalle(11, 99), A: n => n > 50, B: n => n % 5 === 0,
+            expl: (n, a, b) => `${n} ${a ? 'est supérieur à 50' : "n'est pas supérieur à 50"} et ${m5(n, b)}.` }),
+      6: () => genItems({ type: 'carroll', prefix: 'n6', nombres: intervalle(4, 40), A: n => n % 3 === 0, B: n => n % 2 === 0,
+            expl: (n, a, b) => `${n} est ${b ? 'pair' : 'impair'} et ${m3(n, a)}.` }),
+      8: () => genItems({ type: 'carroll', prefix: 'n8', nombres: [...intervalle(20, 250, 5), 100, 101, 99], A: n => n % 10 === 0, B: n => n > 100,
+            expl: (n, a, b) => `${n} ${b ? 'est supérieur à 100' : (n === 100 ? 'est égal à 100 (donc ≤ 100)' : 'est inférieur à 100')} et ${a ? "c'est un multiple de 10" : "ce n'est pas un multiple de 10"}.` }),
+      10: () => genItems({ type: 'carroll', prefix: 'n10', nombres: intervalle(3, 60), A: n => n % 2 === 0, B: n => n % 5 === 0,
+            expl: (n, a, b) => `${n} est ${a ? 'pair' : 'impair'} (il se termine par ${n % 10}) et ${m5(n, b)}.` })
+    };
 
     // --- State variables ---
     let currentLevelIdx = 0;
     let score = 0;
     let selectedItemElement = null; // for click-to-move
     let levelAnswersChecked = false;
+    let termine = false, saved = false, lastAct = 0;
 
     // --- Audio Retro Synth ---
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -1032,14 +1031,6 @@
       loadLevel();
     });
 
-    function shuffleArray(array) {
-      for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-      }
-      return array;
-    }
-
     function loadLevel() {
       levelAnswersChecked = false;
       selectedItemElement = null;
@@ -1047,6 +1038,8 @@
       document.getElementById('correction-list').innerHTML = '';
       
       const level = LEVELS[currentLevelIdx];
+      if (GEN[currentLevelIdx + 1]) level.items = GEN[currentLevelIdx + 1]();   // nouvelles étiquettes à chaque partie
+      document.getElementById('validate-msg').style.display = 'none';
       
       // Update top bar stats
       document.getElementById('level-num').innerText = `${currentLevelIdx + 1} / ${LEVELS.length}`;
@@ -1067,22 +1060,21 @@
       // Render workspace according to type
       const area = document.getElementById('diagram-area');
       area.innerHTML = '';
+      area.classList.toggle('is-venn', level.type === 'venn');
       
       if (level.type === 'venn') {
         renderVennDiagram(level, area);
+        // petit écran : le diagramme garde sa taille et défile ; on le centre sur l'intersection
+        area.scrollLeft = Math.max(0, (area.scrollWidth - area.clientWidth) / 2);
       } else {
         renderCarrollDiagram(level, area);
       }
+      document.getElementById('venn-hint').style.display = (level.type === 'venn' && area.scrollWidth > area.clientWidth + 2) ? 'block' : 'none';
 
       // Render items in pool
       const pool = document.getElementById('items-pool');
       pool.innerHTML = '';
-      
-      // Select a random subset of items (max 6 for levels 2 and 5, max 8 for others)
-      const maxItems = (currentLevelIdx === 1 || currentLevelIdx === 4) ? 6 : 8;
-      const activeItems = shuffleArray([...level.items]).slice(0, maxItems);
-      
-      activeItems.forEach(item => {
+      melanger(level.items).forEach(item => {
         const tag = document.createElement('div');
         tag.className = 'item-tag';
         tag.id = item.id;
@@ -1324,9 +1316,19 @@
 
     // --- VALIDATION AND CORRECTION LOGIC ---
     function validateSelection() {
-      if (levelAnswersChecked) return;
+      if (levelAnswersChecked || termine) return;
       
       const level = LEVELS[currentLevelIdx];
+      // toutes les étiquettes doivent être placées (rien n'est compté sinon)
+      const restantes = document.querySelectorAll('#items-pool .item-tag').length;
+      const msgEl = document.getElementById('validate-msg');
+      if (restantes > 0) {
+        msgEl.textContent = restantes > 1 ? `Place d'abord les ${restantes} étiquettes qui restent.` : "Place d'abord la dernière étiquette.";
+        msgEl.style.display = 'block';
+        return;
+      }
+      msgEl.style.display = 'none';
+      lastAct = Date.now();
       const dropZones = document.querySelectorAll('[data-zone]');
       let allCorrect = true;
       let explanationHtml = '';
@@ -1349,7 +1351,7 @@
             <div><strong>${item.label}</strong> : ${item.explanation}</div>
           </div>`;
         } else {
-          element.classList.add('incorrect');
+          element.classList.add('revele');
           element.draggable = false;
           allCorrect = false;
           
@@ -1385,7 +1387,7 @@
           
           explanationHtml += `<div class="correction-item item-err">
             <span>❌</span>
-            <div><strong>${item.label}</strong> (placé dans : <em>${placedName}</em>) doit aller dans <strong>${destName}</strong>.<br>${item.explanation}</div>
+            <div><strong>${item.label}</strong> (placé dans : <em>${placedName}</em>) doit aller dans <strong style="color:#8fb8ff">${destName}</strong> (étiquette en bleu sur le diagramme).<br>${item.explanation}</div>
           </div>`;
 
           // Put it in the correct visual zone so the student sees the correct layout
@@ -1421,6 +1423,8 @@
     }
 
     function handleContinue() {
+      if (!levelAnswersChecked || termine) return;
+      const t = Date.now(); if (t - lastAct < 600) return; lastAct = t;   // double clic : pas de niveau sauté
       currentLevelIdx++;
       if (currentLevelIdx < LEVELS.length) {
         loadLevel();
@@ -1430,11 +1434,13 @@
     }
 
     function finishGame() {
+      if (termine) return;
+      termine = true;
       document.getElementById('game-view').style.display = 'none';
       document.getElementById('end-view').style.display = 'flex';
 
       // Scoring evaluation
-      const pct = (score / LEVELS.length) * 100;
+      const pct = Math.round((score / LEVELS.length) * 100);
       const titleEl = document.getElementById('end-title');
       const descEl = document.getElementById('end-desc');
       const trophyEl = document.getElementById('end-trophy');
@@ -1444,7 +1450,7 @@
 
       if (score === LEVELS.length) {
         titleEl.innerText = "Super score ! 🌟";
-        descEl.innerText = "Excellent travail ! Tu as une maîtrise parfaite des tris logiques (diagrammes de Venn & Carroll).";
+        descEl.innerText = "Excellent travail ! Tu as une maitrise parfaite des tris logiques (diagrammes de Venn & Carroll).";
         trophyEl.innerText = "🏆";
         playSound('perfect');
         launchConfetti();
@@ -1454,14 +1460,14 @@
         trophyEl.innerText = "🥈";
         playSound('success');
       } else {
-        titleEl.innerText = "Continue à t'entraîner ! 💪";
+        titleEl.innerText = "Continue à t'entrainer ! 💪";
         descEl.innerText = "Les diagrammes logiques demandent de la concentration. Prends ton temps pour bien lire chaque critère !";
         trophyEl.innerText = "🎯";
         playSound('error');
       }
 
       // Save result to Firebase parent
-      if (window.parent && window.parent.saveResult) {
+      if (!saved) { saved = true; try {
         window.parent.saveResult({
           activity: 'td_logique_tri',
           bookTitle: "Traitement de données — Le Défi Logique (Venn & Carroll)",
@@ -1471,12 +1477,14 @@
           date: new Date().toLocaleDateString('fr-BE'),
           time: new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })
         });
-      }
+      } catch (e) {} }
     }
 
     function restartGame() {
+      const t = Date.now(); if (t - lastAct < 600) return; lastAct = t;
       currentLevelIdx = 0;
       score = 0;
+      termine = false; saved = false;
       document.getElementById('end-view').style.display = 'none';
       document.getElementById('game-view').style.display = 'flex';
       loadLevel();

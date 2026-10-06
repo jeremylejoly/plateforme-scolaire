@@ -1855,6 +1855,14 @@ Spécifique :
 - Bonne réponse encadrée en bleu (#1f5fbf) après une erreur (elle était en vert). Orthographe : maitrisé, Entraine-toi.
 - Tests jsdom (CDN Tailwind retiré) : contenu 0 erreur, 1 000 séries (positions équilibrées), faux → bleu, double clic sans saut, 9/10 → 1 sauvegarde. Pas de capture : Tailwind ne se charge pas dans l'environnement de test.
 
+### 06/10 — Mathématiques → Traitement de données → Le défi logique (Venn & Carroll) (`td_logique_tri`, `fiches/logique_tri.html` + copies public et racine) — sw.js v621
+- **Diagramme de Venn faux sur téléphone** : cercles placés en pixels depuis la gauche ET depuis la droite ; sous ~700 px de large, le cercle « droit » passait à gauche du cercle « gauche » (capture 390 px : « Nombres pairs » à gauche, « Multiples de 3 » à droite), alors que les zones de dépôt restaient à leur place → un nombre posé dans le cercle « Multiples de 3 » était compté dans « pairs ». Page plus large que l'écran (457 px). → Diagramme à taille fixe (700 px) qui défile dans son cadre, centré sur l'intersection, avec une aide « ↔ Fais glisser le diagramme » ; tableau de Carroll resserré sur petit écran. Plus de défilement de la page à 390 px.
+- **Étiquettes ambiguës** (classement inclusif) : « Rectangle » (un carré est un rectangle), « Parallélogramme », « Triangle rectangle », « Trapèze », « Triangle isocèle » (un équilatéral est isocèle) → « Rectangle (pas carré) », « Parallélogramme quelconque », « Triangle rectangle scalène », « Trapèze quelconque », « Triangle isocèle (pas équilatéral) » ; « Cercle » dans « côtés non tous égaux » (il n'a pas de côtés) → « Hexagone régulier ».
+- **Toujours les mêmes étiquettes, dans le même ordre** → les 6 niveaux de nombres sont générés à chaque partie (multiples de 3 / pairs, diviseurs de deux nombres choisis au hasard, > 50 / multiples de 5, Carroll pair-impair / multiples de 3, > 100 / multiples de 10, multiples de 2 / de 5) : 8 nombres, chaque case occupée (1 à 3 nombres), explications générées ; ordre des étiquettes mélangé dans tous les niveaux. Vérification indépendante : 12 000 niveaux, 0 erreur de case.
+- Valider avec des étiquettes non placées comptait faux → message « Place d'abord les … étiquettes ». Étiquettes mal placées déplacées vers la bonne case **en bleu** (#1f5fbf) avec « étiquette en bleu sur le diagramme » dans l'explication.
+- **Double clic sur « Continuer » sautait un niveau ; à la fin, double enregistrement possible** → garde de 600 ms, enregistrement unique (try/catch), pourcentage arrondi. Orthographe : maitrise, entrainer.
+- Tests jsdom : parcours (rien placé → message, 1 erreur → bleu, double clic sans saut, 9/10 → 1 sauvegarde) ; captures 390 px (Venn et Carroll).
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2227,7 +2235,7 @@ Spécifique :
 | ⬜ | Calcul de la moyenne (Exercices) | `td_moyenne_exercices` | fiches/moyenne_exercices.html | Aucun hasard : mêmes questions, même ordre à chaque partie |
 | ✅ 06/10 | Le décodeur de camemberts | `td_donnees_circulaires` | index › renderDonneesCirculaires |  |
 | ✅ 06/10 | L'arbre dichotomique | `td_arbre_dichotomique` | index › renderArbreDichotomique |  |
-| ⬜ | Le tri logique (Venn & Carroll) | `td_logique_tri` | index › renderTDLogiqueTri |  |
+| ✅ 06/10 | Le tri logique (Venn & Carroll) | `td_logique_tri` | index › renderTDLogiqueTri |  |
 | ✅ 06/10 | Choisir la bonne question | `td_quelle_question` | index › renderQuelleQuestion |  |
 | ⬜ | Les graphiques de synthèse | `trait_graphiques` | index › (?) | (code à localiser) |
 | ⬜ | La règle de trois | `trait_regle3` | index › (?) | (code à localiser) |
