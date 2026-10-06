@@ -2271,6 +2271,8 @@ Spécifique :
 
 - **06/10 — CEB Sciences 2019 (`ceb_sci_2019`, CEB sciences/ceb_sciences_2019.html, sw.js v725)** : 20 questions vérifiées contre le portfolio PDF (p. 2-15 : haricot, capucine, grenouille et urodèles, cycle de l'eau, salade, dispositifs d'évaporation, carte météo du 17/01/2019 — Verviers −3 °C, 60 km/h, lever 08h36 —, Beaufort, grue). Même moteur que 2026/2023 → mêmes corrections (sauvegarde unique /20, choix mélangés, bleu, message des questions vides, double clic). Contenu : 1.2 deux distracteurs étaient aussi des ordres justes (rotations du cycle) → « en commençant par les graines » + 4 ordres qui commencent tous par les graines ; 3.5 se basait sur la « flèche rose n°3 » (un repère du livret, pas le vent) → flèche noire de la rose des vents (repère 2) : le vent vient de l'ouest, explication (carte imprimée de côté) ; 2.4 et 2.5 b présentaient comme observés des résultats que le livret ne donne pas → formulés en prévision ; 3.1 donnait « −3 °C » → retiré ; bonne réponse seule longue (1.5, 2.2, 2.4, 4.2, 4.4) → équilibrée. NO : entrainement, maitriser ; « prêt-e » → « prêt ». Test Playwright 390 px : message « 1.5 », 17/20, 1 seule sauvegarde, pas de débordement.
 
+- **06/10 — CEB Sciences 2016 (`ceb_sci_2016`, CEB sciences/ceb_sciences_2016.html, sw.js v726)** : 20 questions vérifiées contre le portfolio PDF (p. 5-11 : squelettes et pattes articulées, roues à eau 5/9 pales et 7,5-8 / 10,5-11 tours, clé des arbres, leviers, boule et anneau, baladeuse — fil brun détaché dans le support de l'ampoule) — réponses justes. Même moteur que 2026/2023 → mêmes corrections (sauvegarde unique /20, choix mélangés, bleu, message des questions vides, double clic). Contenu : 4.2 la bonne réponse était la seule à 5 étapes (les autres en avaient 4) → 4 ordres de 5 étapes commençant tous par l'étape 1 ; bonne réponse seule longue ou avec son explication (1.1, 2.2, 2.4, 3.5, 4.1, 4.4, 4.5) → équilibrée, explications de 4.1 et 4.5 après la réponse. NO : entraine, entrainement, maitriser ; « prêt-e » → « prêt ». Test Playwright 390 px : message « 1.5 », 17/20, 1 seule sauvegarde, pas de débordement.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2826,7 +2828,7 @@ Spécifique :
 | ✅ 06/10 | CEB Sciences 2022 | `ceb_sci_2022` | index › openCEB |  |
 | ✅ 06/10 | CEB Sciences 2021 | `ceb_sci_2021` | index › openCEB |  |
 | ✅ 06/10 | CEB Sciences 2019 | `ceb_sci_2019` | index › openCEB |  |
-| ⬜ | CEB Sciences 2016 | `ceb_sci_2016` | index › openCEB |  |
+| ✅ 06/10 | CEB Sciences 2016 | `ceb_sci_2016` | index › openCEB |  |
 | ⬜ | CEB Sciences 2013 | `ceb_sci_2013` | index › openCEB |  |
 
 ### 🎓 CEB — 🌍 Histoire / Géographie
