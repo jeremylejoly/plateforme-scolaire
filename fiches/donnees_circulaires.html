@@ -261,6 +261,10 @@
       border-color: var(--green) !important;
       background: var(--green-soft) !important;
     }
+    .option-btn.reveal, .svg-choice-btn.reveal {
+      border-color: #1f5fbf !important;
+      background: rgba(31, 95, 191, 0.18) !important;
+    }
     .option-btn.wrong {
       border-color: var(--red) !important;
       background: var(--red-soft) !important;
@@ -805,20 +809,20 @@
       },
       {
         type: 'CALCULATE',
-        title: "Le football occupe exactement la moitié (50%) de ce diagramme circulaire. Combien d'enfants pratiquent le football si le groupe complet compte 150 enfants ?",
+        title: "Le football occupe exactement la moitié (50%) de ce diagramme circulaire. Combien d'enfants pratiquent le football si le groupe complet compte 160 enfants ?",
         slices: [
-          { name: "Football", value: 75, color: SEG_COLORS[0] }, 
-          { name: "Basket-ball", value: 37.5, color: SEG_COLORS[1] }, 
-          { name: "Tennis", value: 22.5, color: SEG_COLORS[2] }, 
-          { name: "Judo", value: 15, color: SEG_COLORS[3] } 
+          { name: "Football", value: 80, color: SEG_COLORS[0] }, 
+          { name: "Basket-ball", value: 40, color: SEG_COLORS[1] }, 
+          { name: "Tennis", value: 24, color: SEG_COLORS[2] }, 
+          { name: "Judo", value: 16, color: SEG_COLORS[3] } 
         ],
         options: [
-          { text: "50 enfants", isCorrect: false },
-          { text: "75 enfants", isCorrect: true },
-          { text: "100 enfants", isCorrect: false },
-          { text: "25 enfants", isCorrect: false }
+          { text: "40 enfants", isCorrect: false },
+          { text: "80 enfants", isCorrect: true },
+          { text: "120 enfants", isCorrect: false },
+          { text: "60 enfants", isCorrect: false }
         ],
-        explanation: "Le football occupe la moitié (50%) du diagramme. La moitié de 150 s'obtient simplement en divisant par 2 : 150 ÷ 2 = 75 enfants."
+        explanation: "Le football occupe la moitié (50%) du diagramme. La moitié de 160 s'obtient simplement en divisant par 2 : 160 ÷ 2 = 80 enfants."
       },
       {
         type: 'CALCULATE',
@@ -847,11 +851,17 @@
     let questions = [];
     let selectedOptionIndex = null;
     let answerSubmitted = false;
+    let termine = false, saved = false, lastAct = 0;
 
     const TOTAL_QUESTIONS = 10;
 
     function initSession() {
-      questions = [...QUESTIONS_POOL].sort(() => Math.random() - 0.5);
+      const melanger = a => { const r = [...a]; for (let i = r.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [r[i], r[j]] = [r[j], r[i]]; } return r; };
+      questions = melanger(QUESTIONS_POOL).map(q => ({
+        ...q,
+        options: melanger(q.options).map((o, i) => o.label ? { ...o, label: `Option ${String.fromCharCode(65 + i)}` } : o)
+      }));
+      termine = false; saved = false;
       currentQuestionIndex = 0;
       currentScore = 0;
       answerSubmitted = false;
@@ -1158,6 +1168,8 @@
     }
 
     function handleActionClick() {
+      if (termine || selectedOptionIndex === null) return;
+      const t = Date.now(); if (t - lastAct < 600) return; lastAct = t;   // double clic : ne saute pas la correction
       if (!answerSubmitted) {
         checkAnswer();
       } else {
@@ -1182,9 +1194,9 @@
         
         if (q.type === 'TABLE_TO_PIE') {
           if (opt.isCorrect) {
-            btn.classList.add('correct');
-            btn.style.borderColor = 'var(--green)';
-            btn.style.background = 'var(--green-soft)';
+            btn.classList.add(isCorrect ? 'correct' : 'reveal');
+            btn.style.borderColor = isCorrect ? 'var(--green)' : '#1f5fbf';
+            btn.style.background = isCorrect ? 'var(--green-soft)' : 'rgba(31, 95, 191, 0.18)';
           } else if (idx === selectedOptionIndex) {
             btn.classList.add('wrong');
             btn.style.borderColor = 'var(--red)';
@@ -1192,7 +1204,7 @@
           }
         } else {
           if (opt.isCorrect) {
-            btn.classList.add('correct');
+            btn.classList.add(isCorrect ? 'correct' : 'reveal');
           } else if (idx === selectedOptionIndex) {
             btn.classList.add('wrong');
           }
@@ -1218,6 +1230,7 @@
             <span>❌</span>
             <span>Oups ! Ce n'est pas la bonne réponse.</span>
           </div>
+          <p style="color:#8fb8ff;font-weight:700">La bonne réponse est encadrée en bleu.</p>
           <p>${q.explanation}</p>
         `;
       }
@@ -1243,6 +1256,8 @@
     }
 
     function finishSession() {
+      if (termine) return;
+      termine = true;
       document.getElementById('game-interface').style.display = 'none';
       document.getElementById('congrats-flow').style.display = 'block';
       
@@ -1254,7 +1269,7 @@
       let msg = "";
       
       if (currentScore === 10) {
-        msg = `<strong>Félicitations ! Sans-faute parfait ! 10/10 (${pct}%)</strong><br>Tu as parfaitement décodé tous les diagrammes circulaires et maîtrisé les fractions de référence (1/2, 1/4, 3/4, 1/10). Magnifique travail !`;
+        msg = `<strong>Félicitations ! Sans-faute parfait ! 10/10 (${pct}%)</strong><br>Tu as parfaitement décodé tous les diagrammes circulaires et maitrisé les fractions de référence (1/2, 1/4, 3/4, 1/10). Magnifique travail !`;
         stars = "⭐⭐⭐";
         sndFanfare();
         triggerConfettiShower();
@@ -1268,7 +1283,7 @@
         playTone(523.25, 0.15, 0, 'sine', 0.1);
         playTone(659.25, 0.25, 0.1, 'sine', 0.1);
       } else {
-        msg = `<strong>${currentScore}/10 (${pct}%)</strong><br>Prends le temps de bien relire les explications pour chaque question. Utilise les fractions clés (1/2, 1/4) comme repères visuels sur le camembert. Entraîne-toi à nouveau !`;
+        msg = `<strong>${currentScore}/10 (${pct}%)</strong><br>Prends le temps de bien relire les explications pour chaque question. Utilise les fractions clés (1/2, 1/4) comme repères visuels sur le camembert. Entraine-toi à nouveau !`;
         stars = "❌";
         playTone(220, 0.3, 0, 'sawtooth', 0.1);
       }
@@ -1276,7 +1291,7 @@
       document.getElementById('congrats-msg').innerHTML = msg;
       document.getElementById('stars-disp').textContent = stars;
       
-      if (window.parent && window.parent.saveResult) {
+      if (!saved) { saved = true; try {
         window.parent.saveResult({
           activity: 'td_donnees_circulaires',
           bookTitle: 'Le décodeur de camemberts',
@@ -1286,7 +1301,7 @@
           date: new Date().toLocaleDateString('fr-BE'),
           time: new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })
         });
-      }
+      } catch (e) {} }
     }
 
     function resetGame() {
@@ -1314,6 +1329,10 @@
         }, 3200);
       }
     }
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && selectedOptionIndex !== null && !termine) { e.preventDefault(); handleActionClick(); }
+    });
 
     window.onload = () => {
       initSession();

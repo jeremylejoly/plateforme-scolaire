@@ -1847,6 +1847,14 @@ Spécifique :
 - Bonne question montrée en bleu (#1f5fbf) après une erreur. Orthographe : boite, entraineur, entrainements ; « la recette prévoie-t-elle » → « est-elle prévue » ; « 4 amis partagent » → « partage » ; « boîtes … reçu » → « reçues » ; « kilos » → « kilogrammes ».
 - Tests jsdom : 1 000 séries, faux → bleu, Entrée immédiate ignorée, double Entrée sans saut, 9/10 → 1 sauvegarde ; capture 390 px sans défilement horizontal.
 
+### 06/10 — Mathématiques → Traitement de données → Le décodeur de camemberts (`td_donnees_circulaires`, `fiches/donnees_circulaires.html` + copies public et racine) — sw.js v620
+- 10 questions vérifiées par programme (tableau ↔ diagramme, pourcentages affichés, calculs de 1/2, 1/4, 3/4, 1/10, 15 %) : justes.
+- **Bonne réponse toujours au même endroit dans la copie affichée** (fiches/ : propositions jamais mélangées ; seules les copies public/ et racine les mélangeaient, avec un tri biaisé) : le bon diagramme était toujours « Option A », le bon tableau toujours « Tableau A » → propositions mélangées (Fisher–Yates) et renommées A, B, C après le mélange (≈ 25 % / 33 % par position).
+- Football : groupe de 150 enfants → secteurs de 37,5 et 22,5 enfants → groupe de 160 (80, 40, 24, 16 : effectifs entiers).
+- **Double clic sur « Valider » passait aussitôt à la question suivante (correction jamais vue) ; après la 10e, il pouvait enregistrer deux fois** → garde de 600 ms, fin et enregistrement une seule fois (try/catch) ; Entrée = Valider puis Suivant.
+- Bonne réponse encadrée en bleu (#1f5fbf) après une erreur (elle était en vert). Orthographe : maitrisé, Entraine-toi.
+- Tests jsdom (CDN Tailwind retiré) : contenu 0 erreur, 1 000 séries (positions équilibrées), faux → bleu, double clic sans saut, 9/10 → 1 sauvegarde. Pas de capture : Tailwind ne se charge pas dans l'environnement de test.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2217,7 +2225,7 @@ Spécifique :
 | ✅ 06/10 | La moyenne (QCM) | `td_moyenne_qcm` | index › renderTDMoyenneQCM |  |
 | ✅ 06/10 | Moyenne et étendue | `td_moyenne` | index › renderTDMoyenne |  |
 | ⬜ | Calcul de la moyenne (Exercices) | `td_moyenne_exercices` | fiches/moyenne_exercices.html | Aucun hasard : mêmes questions, même ordre à chaque partie |
-| ⬜ | Le décodeur de camemberts | `td_donnees_circulaires` | index › renderDonneesCirculaires |  |
+| ✅ 06/10 | Le décodeur de camemberts | `td_donnees_circulaires` | index › renderDonneesCirculaires |  |
 | ✅ 06/10 | L'arbre dichotomique | `td_arbre_dichotomique` | index › renderArbreDichotomique |  |
 | ⬜ | Le tri logique (Venn & Carroll) | `td_logique_tri` | index › renderTDLogiqueTri |  |
 | ✅ 06/10 | Choisir la bonne question | `td_quelle_question` | index › renderQuelleQuestion |  |
