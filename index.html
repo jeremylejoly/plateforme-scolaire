@@ -3266,7 +3266,7 @@ input[type=text].calc-input.incorrect {
 <script src="livres.js?v=20261002b"></script>
 <script src="exercices_francais.js?v=20261005zp"></script>
 <script src="exercices_maths.js?v=20261006g"></script>
-<script src="exercices_eveil.js?v=20261006c"></script>
+<script src="exercices_eveil.js?v=20261006d"></script>
 <script>
 /* Garde-fou : si un appareil a chargé une ancienne version du fichier des livres
    (0/16, « undefined », livre absent), on vide les copies en mémoire et on recharge une fois. */
@@ -28836,87 +28836,74 @@ function trajetVerifier(){
 // ===== QCM APPAREIL CIRCULATOIRE =====
 // window.SCI_CIRCULATOIRE_QCM a été extrait vers un fichier JS externe
 
-let sciCircQCMState = {questions:[], selections:{}, submitted:false};
-
+let sciCircQCMState = {questions:[], answers:[], validated:false, msg:'', lastClick:0};
 function renderSciCirculatoireQCM(){
-  const body = document.getElementById('sci-circulatoire-qcm-body');
-  if(!body) return;
-
-  // Tirer 10 questions aléatoires
-  const shuffledQ = shuffle([...SCI_CIRCULATOIRE_QCM]).slice(0, 10);
-  // Pour chaque question, mélanger les options et noter la bonne réponse
-  const questions = shuffledQ.map(q => {
-    const opts = shuffle([...q.options]);
-    return {q: q.q, options: opts, correctIndex: opts.indexOf(q.correct)};
+  const body=document.getElementById('sci-circulatoire-qcm-body'); if(!body) return;
+  // 10 questions, une seule par famille (k) pour qu'aucune question n'en donne une autre
+  const vus = new Set(), picked = [];
+  shuffle(SCI_CIRCULATOIRE_QCM).forEach(q => { const k = q.k || q.q; if(picked.length < 10 && !vus.has(k)){ vus.add(k); picked.push(q); } });
+  sciCircQCMState.questions = picked.map(q => {
+    const correctVal = q.opts[q.correct];
+    const shuffledOpts = shuffle([...q.opts]);
+    return { q: q.q, opts: shuffledOpts, correct: shuffledOpts.indexOf(correctVal) };
   });
-  sciCircQCMState = {questions, selections:{}, submitted:false};
-
-  let html = `<div class="card" style="margin-bottom:1rem;padding:0.8rem 1rem;background:var(--purple-light);border:1px solid var(--purple);">
-    <p style="margin:0;font-size:13px;color:var(--purple);font-weight:700">Choisis la bonne réponse pour chaque question.</p>
-  </div>`;
-
-  questions.forEach((q, qi) => {
-    html += `<div class="lr-question" id="sci-circ-qcm-q-${qi}">
-      <p style="font-weight:700;margin-bottom:0.8rem;font-size:15px">${qi+1}. ${q.q}</p>`;
-    q.options.forEach((opt, oi) => {
-      html += `<label class="lr-option" id="sci-circ-qcm-opt-${qi}-${oi}">
-        <input type="radio" name="sci-circ-qcm-${qi}" value="${oi}" onchange="sciCircQCMSelect(${qi},${oi})">
-        ${opt}
-      </label>`;
-    });
-    html += `</div>`;
-  });
-
-  html += `<button class="btn" onclick="validerSciCircQCM()" style="width:100%;margin-top:1rem">✅ Valider</button>
-    <div id="sci-circ-qcm-score" style="display:none;margin-top:1rem;text-align:center" class="card"></div>`;
-  body.innerHTML = html;
-  sciCircQCMState.selections = {};
+  sciCircQCMState.answers = new Array(sciCircQCMState.questions.length).fill(-1);
+  sciCircQCMState.validated = false; sciCircQCMState.msg = ''; sciCircQCMState.lastClick = 0;
+  renderSciCircQCMHtml();
 }
-
-function sciCircQCMSelect(qi, oi){
-  sciCircQCMState.selections[qi] = oi;
-}
-
-function validerSciCircQCM(){
-  if(sciCircQCMState.submitted) return;
-  sciCircQCMState.submitted = true;
-  let score = 0;
-  const total = sciCircQCMState.questions.length;
-  sciCircQCMState.questions.forEach((q, qi) => {
-    const sel = sciCircQCMState.selections[qi];
-    const ok = sel === q.correctIndex;
-    if(ok) score++;
-    q.options.forEach((_, oi) => {
-      const optEl = document.getElementById(`sci-circ-qcm-opt-${qi}-${oi}`);
-      if(optEl){
-        if(oi === q.correctIndex) optEl.classList.add('correct');
-        else if(oi === sel && !ok) optEl.classList.add('incorrect');
-      }
+function renderSciCircQCMHtml(){
+  const body=document.getElementById('sci-circulatoire-qcm-body'); if(!body) return;
+  const V = sciCircQCMState.validated, N = sciCircQCMState.questions.length;
+  let html='';
+  sciCircQCMState.questions.forEach((q,i)=>{
+    html+=`<div class="card" style="margin-bottom:1rem"><p style="font-weight:700;margin-bottom:.75rem">${i+1}. ${q.q}</p><div style="display:flex;flex-direction:column;gap:8px;">`;
+    q.opts.forEach((o,j)=>{
+      const sel=sciCircQCMState.answers[i]===j;
+      let bg='white', border='var(--border)', color='inherit', mark='';
+      if(V){
+        if(j===q.correct){ if(sel){bg='#d4f5e2';border='#16a34a';mark=' ✅';} else {bg='#eaf1fc';border='#1f5fbf';color='#1f5fbf';mark=' ➜';} }
+        else if(sel){bg='#fdd9d7';border='#dc2626';mark=' ❌';}
+      } else if(sel){bg='var(--purple-light)';border='var(--purple)';}
+      html+=`<button onclick="${V?'':'sciCircQCMSelect('+i+','+j+')'}"
+        style="text-align:left;padding:10px 14px;border-radius:10px;border:2px solid ${border};background:${bg};color:${color};font-weight:${V&&j===q.correct&&!sel?'700':'400'};cursor:${V?'default':'pointer'};font-family:'Nunito',sans-serif;font-size:14px;transition:all .15s;">${o}${mark}</button>`;
     });
+    html+='</div></div>';
   });
-  const pct = Math.round(score/total*100);
-  const color = pct>=70?'var(--green)':pct>=50?'var(--amber)':'var(--red)';
-  const emoji = pct>=70?'🎉':pct>=50?'👍':'💪';
-  const panel = document.getElementById('sci-circ-qcm-score');
-  panel.style.display = 'block';
-  panel.innerHTML = `
-    <div style="font-size:48px;margin-bottom:0.5rem">${emoji}</div>
-    <div style="font-family:'Nunito',sans-serif;font-weight:800;font-size:32px;color:${color}">${score}/${total}</div>
-    <div style="font-size:16px;color:${color};font-weight:700;margin-bottom:1rem">${pct}%</div>
-    <button class="btn" onclick="renderSciCirculatoireQCM()" style="margin-top:0.5rem">🔄 Recommencer</button>
-  `;
-  panel.scrollIntoView({behavior:'smooth'});
-  if(state.student){
-    saveResult({
-      student:state.student, cls:state.studentCls,
-      className:CLASSES[state.studentCls]?CLASSES[state.studentCls].name:state.studentCls,
-      activity:'sci_circulatoire_qcm',
-      bookTitle:"QCM — L'appareil circulatoire",
-      score, total, pct,
-      date:new Date().toLocaleDateString('fr-BE'),
-      time:new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})
-    });
+  if(!V){
+    if(sciCircQCMState.msg) html+=`<div style="margin-bottom:.75rem;padding:.6rem .9rem;border-radius:8px;background:#fff7ed;border:1.5px solid #f59e0b;color:#92400e;font-size:13px;font-weight:700;text-align:center">${sciCircQCMState.msg}</div>`;
+    html+=`<button class="btn" onclick="validerSciCircQCM()" style="width:100%;margin-bottom:1rem">✅ Valider</button>`;
+  } else {
+    const ok=sciCircQCMState.questions.filter((q,i)=>sciCircQCMState.answers[i]===q.correct).length;
+    const pct=Math.round(ok/N*100);
+    html+=`<div class="geo-score-panel"><div class="score-title">${ok}/${N} — ${pct}%</div>
+      <div class="score-msg">${pct===100?'Parfait ! 🏆':pct>=70?'Bien joué ! 👍':'Continue à réviser ! 💪'}</div>
+      ${ok<N?'<div class="score-msg" style="font-size:13px">Après une erreur, la bonne réponse est en <span style="color:#1f5fbf;font-weight:800">bleu</span>.</div>':''}
+      <button class="btn" onclick="renderSciCirculatoireQCM()" style="margin-top:1rem">🔄 Recommencer</button></div>`;
   }
+  const y = window.scrollY;
+  body.innerHTML=html;
+  if(!V) window.scrollTo(0, y);
+}
+function sciCircQCMSelect(qi,ai){ if(sciCircQCMState.validated) return; sciCircQCMState.answers[qi]=ai; sciCircQCMState.msg=''; renderSciCircQCMHtml(); }
+function validerSciCircQCM(){
+  const now = Date.now();
+  if(sciCircQCMState.validated || now - sciCircQCMState.lastClick < 600) return;
+  sciCircQCMState.lastClick = now;
+  const N = sciCircQCMState.questions.length;
+  const manque = sciCircQCMState.answers.map((a,i)=>a<0?i+1:0).filter(Boolean);
+  if(manque.length){
+    sciCircQCMState.msg = manque.length===1 ? 'Réponds d\'abord à la question '+manque[0]+'.' : 'Réponds d\'abord à toutes les questions (il en reste '+manque.length+').';
+    renderSciCircQCMHtml(); return;
+  }
+  sciCircQCMState.validated=true;
+  const ok=sciCircQCMState.questions.filter((q,i)=>sciCircQCMState.answers[i]===q.correct).length;
+  const pct=Math.round(ok/N*100);
+  renderSciCircQCMHtml();
+  if(state.student){ try{ saveResult({student:state.student,cls:state.studentCls,
+    className:CLASSES[state.studentCls]?CLASSES[state.studentCls].name:state.studentCls,
+    activity:'sci_circulatoire_qcm',bookTitle:"QCM — L'appareil circulatoire",
+    score:ok,total:N,pct,date:new Date().toLocaleDateString('fr-BE'),
+    time:new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})}); }catch(e){} }
 }
 
 // ===== ASSOCIATION TERMES/DÉFINITIONS — APPAREIL CIRCULATOIRE =====
