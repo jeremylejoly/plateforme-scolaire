@@ -34503,43 +34503,41 @@ const SCI_RESP_TEXTES = [
   {
     titre: "L'inspiration",
     texte: ["Quand on inspire, l'air entre par le ", "nez", " ou la ", "bouche",
-      ". Il descend ensuite dans la ", "trachée artère",
+      ". Il descend ensuite dans la ", "trachée",
       " qui se divise en deux ", "bronches", ", une pour chaque poumon. Les bronches se divisent à leur tour en de nombreuses ",
       "bronchioles", " qui conduisent l'air jusqu'aux ", "alvéoles pulmonaires",
       ". C'est là que l'", "oxygène", " passe dans le ", "sang", " pour être distribué à tout le corps."],
-    mots: ["nez","bouche","trachée artère","bronches","bronchioles","alvéoles pulmonaires","oxygène","sang"]
+    mots: ["nez","bouche","trachée","bronches","bronchioles","alvéoles pulmonaires","oxygène","sang"]
   },
   {
     titre: "L'expiration",
-    texte: ["Lors de l'expiration, les ", "poumons", " se dégonflent grâce au ", "diaphragme",
-      " qui remonte. L'air chargé de ", "dioxyde de carbone",
+    texte: ["Lors de l'expiration, les ", "poumons", " se vident de leur air quand le ", "diaphragme",
+      " remonte. L'air chargé de ", "dioxyde de carbone",
       " quitte les ", "alvéoles pulmonaires", ", remonte par les ", "bronchioles",
-      ", puis les ", "bronches", ", et enfin la ", "trachée artère",
-      " pour sortir par la ", "bouche", "."],
-    mots: ["poumons","diaphragme","dioxyde de carbone","alvéoles pulmonaires","bronchioles","bronches","trachée artère","bouche"]
+      ", puis les ", "bronches", ", et enfin la ", "trachée",
+      " pour sortir par le nez ou la ", "bouche", "."],
+    mots: ["poumons","diaphragme","dioxyde de carbone","alvéoles pulmonaires","bronchioles","bronches","trachée","bouche"]
   }
 ];
 
-let respTexteState = {cur:0, answers:{}, dragging:null};
+let respTexteState = {cur:0, answers:{}, sel:null, done:false, lastClick:0};
 
 function renderSciRespTexte(){
-  respTexteState = {cur:0, answers:{}, dragging:null};
   renderSciRespTexteIdx(0);
 }
 function renderSciRespTexteIdx(idx){
   const body = document.getElementById('sci-resp-texte-body');
   if(!body) return;
   const data = SCI_RESP_TEXTES[idx];
-  respTexteState.cur = idx;
-  respTexteState.answers = {};
+  respTexteState = {cur:idx, answers:{}, sel:null, done:false, lastClick:0};
   let blanks = 0;
   let paraHtml = '<p style="font-size:15px;line-height:2.2;">';
-  data.texte.forEach(part => {
-    if(data.mots.includes(part)){
+  data.texte.forEach((part, k) => {
+    if(k % 2 === 1){
       const bid = 'resp-blank-'+blanks;
-      paraHtml += `<span class="geo-drop-zone resp-blank" id="${bid}" data-word="${part}" onclick="respTexteClearZone(this)"
+      paraHtml += `<span class="geo-drop-zone resp-blank" id="${bid}" data-word="${part}" onclick="respTexteZoneClick(this)"
         ondragover="respTexteDragOver(event)" ondrop="respTexteDrop(event)" ondragleave="respTexteDragLeave(event)"
-        style="display:inline-block;min-width:140px;margin:0 3px;vertical-align:middle;cursor:pointer;"></span>`;
+        style="display:inline-flex;min-width:120px;max-width:100%;margin:0 3px;vertical-align:middle;cursor:pointer;"></span>`;
       respTexteState.answers[bid] = '';
       blanks++;
     } else { paraHtml += part; }
@@ -34549,7 +34547,7 @@ function renderSciRespTexteIdx(idx){
   const words = shuffle([...data.mots]);
   let tagsHtml = '<div class="geo-tags-pool" id="resp-texte-pool">';
   words.forEach((w,i) => {
-    tagsHtml += `<div class="geo-tag" id="resp-wtag-${i}" draggable="true" data-text="${w}"
+    tagsHtml += `<div class="geo-tag" id="resp-wtag-${i}" draggable="true" data-text="${w}" onclick="respTexteSelect(this)"
       ondragstart="respTexteDragStart(event)" ondragend="respTexteDragEnd(event)"
       ontouchstart="respTxtTouchStart(event)" ontouchmove="respTxtTouchMove(event)" ontouchend="respTxtTouchEnd(event)" ontouchcancel="respTxtTouchCancel(event)"
     >${w}</div>`;
@@ -34557,73 +34555,89 @@ function renderSciRespTexteIdx(idx){
   tagsHtml += '</div>';
 
   const tabs = SCI_RESP_TEXTES.map((t,i) =>
-    `<button onclick="renderSciRespTexteIdx(${i})" class="btn btn-sm ${i===idx?'btn-primary':''}" style="margin-right:6px">${t.titre}</button>`
+    `<button onclick="renderSciRespTexteIdx(${i})" class="btn btn-sm ${i===idx?'btn-primary':''}" style="margin:0 6px 6px 0">${t.titre}</button>`
   ).join('');
 
   body.innerHTML = `
-    <div class="card" style="margin-bottom:1rem">${tabs}</div>
+    <div class="card" style="margin-bottom:1rem">${tabs}
+      <p style="margin:.4rem 0 0;font-size:13px;color:var(--muted);font-weight:600">Glisse chaque mot dans le bon trou (ou touche un mot, puis le trou).</p></div>
     <div class="card">${paraHtml}</div>
     ${tagsHtml}
-    <button class="btn" onclick="validateSciRespTexte()" style="width:100%;margin-bottom:1rem">✅ Valider</button>
+    <div id="resp-texte-msg" style="display:none;margin:.5rem 0;padding:.6rem .9rem;border-radius:8px;background:#fff7ed;border:1.5px solid #f59e0b;color:#92400e;font-size:13px;font-weight:700;text-align:center"></div>
+    <button class="btn" id="resp-texte-valider" onclick="validateSciRespTexte()" style="width:100%;margin-bottom:1rem">✅ Valider</button>
     <div id="resp-texte-score" style="display:none" class="geo-score-panel"></div>`;
 }
-function respTexteDragStart(e){ e.dataTransfer.setData('text/plain',e.currentTarget.dataset.text); e.currentTarget.style.opacity='0.5'; }
+function respTexteDragStart(e){ if(respTexteState.done){ e.preventDefault(); return; } e.dataTransfer.setData('text/plain',e.currentTarget.dataset.text); e.currentTarget.style.opacity='0.5'; }
 function respTexteDragEnd(e){ e.currentTarget.style.opacity=''; }
 function respTexteDragOver(e){ e.preventDefault(); e.currentTarget.classList.add('drag-over'); }
 function respTexteDragLeave(e){ e.currentTarget.classList.remove('drag-over'); }
 function respTexteDrop(e){
   e.preventDefault();
   const zone=e.currentTarget; zone.classList.remove('drag-over');
-  const word = e.dataTransfer.getData('text/plain');
-  const old = zone.textContent.trim();
-  if(old){ const pool=document.getElementById('resp-texte-pool');
-    pool && pool.querySelectorAll('.geo-tag').forEach(t=>{if(t.dataset.text===old&&t.classList.contains('used'))t.classList.remove('used');}); }
-  zone.textContent=word; zone.classList.add('filled'); respTexteState.answers[zone.id]=word;
-  const pool=document.getElementById('resp-texte-pool'); let found=false;
-  pool && pool.querySelectorAll('.geo-tag').forEach(t=>{if(t.dataset.text===word&&!t.classList.contains('used')&&!found){t.classList.add('used');found=true;}});
+  respTextePlace(zone, e.dataTransfer.getData('text/plain'));
 }
-function respTexteClearZone(zone){
-  const panel = document.getElementById('resp-texte-score');
-  if(panel && panel.style.display === 'block') return;
+function respTexteFreeTag(word){
+  const pool=document.getElementById('resp-texte-pool'); let done=false;
+  pool && pool.querySelectorAll('.geo-tag').forEach(t=>{ if(!done && t.dataset.text===word && t.classList.contains('used')){ t.classList.remove('used'); done=true; } });
+}
+function respTexteUseTag(word){
+  const pool=document.getElementById('resp-texte-pool'); let found=false;
+  pool && pool.querySelectorAll('.geo-tag').forEach(t=>{ if(!found && t.dataset.text===word && !t.classList.contains('used')){ t.classList.add('used'); found=true; } });
+}
+function respTextePlace(zone, word){
+  if(respTexteState.done || !word || !zone) return;
+  const old = respTexteState.answers[zone.id];
+  if(old) respTexteFreeTag(old);
+  zone.textContent=word; zone.classList.add('filled'); respTexteState.answers[zone.id]=word;
+  respTexteUseTag(word);
+  respTexteClearSel();
+  const m=document.getElementById('resp-texte-msg'); if(m) m.style.display='none';
+}
+function respTexteClearSel(){
+  respTexteState.sel=null;
+  document.querySelectorAll('#resp-texte-pool .geo-tag').forEach(t=>t.style.outline='');
+}
+function respTexteSelect(tag){
+  if(respTexteState.done || !tag || tag.classList.contains('used')) return;
+  const same = respTexteState.sel===tag;
+  respTexteClearSel();
+  if(!same){ respTexteState.sel=tag; tag.style.outline='3px solid #f59e0b'; }
+}
+function respTexteZoneClick(zone){
+  if(respTexteState.done) return;
+  if(respTexteState.sel){ respTextePlace(zone, respTexteState.sel.dataset.text); return; }
   const word = respTexteState.answers[zone.id];
   if(!word) return;
   zone.textContent = ''; zone.classList.remove('filled');
-  const pool = document.getElementById('resp-texte-pool');
-  if(pool){
-    let found = false;
-    pool.querySelectorAll('.geo-tag').forEach(t => {
-      if(t.dataset.text === word && t.classList.contains('used') && !found){
-        t.classList.remove('used'); found = true;
-      }
-    });
-  }
+  respTexteFreeTag(word);
   respTexteState.answers[zone.id] = '';
 }
-let respTxtTEl=null,respTxtTClone=null;
+function respTexteClearZone(zone){ respTexteZoneClick(zone); }
+let respTxtTEl=null,respTxtTClone=null,respTxtX=0,respTxtY=0;
 function respTxtTouchStart(e){
-  const tag=e.currentTarget; if(tag.classList.contains('used')) return;
+  const tag=e.currentTarget; if(tag.classList.contains('used') || respTexteState.done) return;
   respTxtTEl=tag;
+  const touch=e.touches[0]; respTxtX=touch.clientX; respTxtY=touch.clientY;
   const clone=tag.cloneNode(true); clone.style.cssText='position:fixed;z-index:9999;opacity:.85;pointer-events:none;';
-  const touch=e.touches[0]; clone.style.left=(touch.clientX-40)+'px'; clone.style.top=(touch.clientY-20)+'px';
+  clone.style.left=(touch.clientX-40)+'px'; clone.style.top=(touch.clientY-20)+'px';
   document.body.appendChild(clone); respTxtTClone=clone; tag.style.opacity='0.4';
 }
 function respTxtTouchMove(e){
   e.preventDefault(); if(!respTxtTClone) return;
   const touch=e.touches[0]; respTxtTClone.style.left=(touch.clientX-40)+'px'; respTxtTClone.style.top=(touch.clientY-20)+'px';
+  geoAutoScroll(touch);
 }
 function respTxtTouchEnd(e){
   if(!respTxtTClone) return;
+  e.preventDefault();
   const touch=e.changedTouches[0]; respTxtTClone.remove(); respTxtTClone=null;
+  geoStopAutoScroll();
   if(respTxtTEl) respTxtTEl.style.opacity='';
-  const el=document.elementFromPoint(touch.clientX,touch.clientY);
-  const zone=el?el.closest('.geo-drop-zone'):null;
-  if(zone && respTxtTEl){
-    const word=respTxtTEl.dataset.text; const old=zone.textContent.trim();
-    if(old){ const pool=document.getElementById('resp-texte-pool');
-      pool && pool.querySelectorAll('.geo-tag').forEach(t=>{if(t.dataset.text===old&&t.classList.contains('used'))t.classList.remove('used');}); }
-    zone.textContent=word; zone.classList.add('filled'); respTexteState.answers[zone.id]=word;
-    const pool=document.getElementById('resp-texte-pool'); let found=false;
-    pool && pool.querySelectorAll('.geo-tag').forEach(t=>{if(t.dataset.text===word&&!t.classList.contains('used')&&!found){t.classList.add('used');found=true;}});
+  const zone=geoZoneAtTouch(touch);
+  if(zone && zone.classList.contains('resp-blank') && respTxtTEl){
+    respTextePlace(zone, respTxtTEl.dataset.text);
+  } else if(respTxtTEl && Math.abs(touch.clientX-respTxtX)<10 && Math.abs(touch.clientY-respTxtY)<10){
+    respTexteSelect(respTxtTEl);
   }
   respTxtTEl=null;
 }
@@ -34632,22 +34646,43 @@ function respTxtTouchCancel(e){
   if(respTxtTEl) { respTxtTEl.style.opacity=''; respTxtTEl=null; }
 }
 function validateSciRespTexte(){
-  const data=SCI_RESP_TEXTES[respTexteState.cur];
+  const st=respTexteState, now=Date.now();
+  if(st.done || now-st.lastClick<600) return;
+  st.lastClick=now;
+  const data=SCI_RESP_TEXTES[st.cur];
+  const zones=[...document.querySelectorAll('.resp-blank')];
+  const vides=zones.filter(z=>!st.answers[z.id]).length;
+  const msg=document.getElementById('resp-texte-msg');
+  if(vides>0){
+    if(msg){ msg.textContent = vides===1 ? 'Complète d\'abord le dernier trou.' : 'Complète d\'abord tous les trous (il en reste '+vides+').'; msg.style.display='block'; }
+    return;
+  }
+  if(msg) msg.style.display='none';
+  st.done=true; respTexteClearSel();
+  const vb=document.getElementById('resp-texte-valider'); if(vb) vb.style.display='none';
   let ok=0,total=0;
-  document.querySelectorAll('.resp-blank').forEach(zone=>{
-    total++;
-    if(zone.dataset.word===zone.textContent.trim()){ zone.style.background='#d4f5e2'; zone.style.color='#166534'; ok++; }
-    else { zone.style.background='#fdd9d7'; zone.style.color='#991b1b'; if(!zone.textContent.trim()) zone.textContent='— '+zone.dataset.word; }
+  zones.forEach(zone=>{
+    total++; zone.style.cursor='default';
+    if(zone.dataset.word===st.answers[zone.id]){ zone.style.background='#d4f5e2'; zone.style.color='#166534'; zone.style.borderColor='#16a34a'; ok++; }
+    else {
+      zone.style.background='#fdd9d7'; zone.style.color='#991b1b'; zone.style.borderColor='#dc2626';
+      const c=document.createElement('span'); c.style.cssText='color:#1f5fbf;font-weight:800;margin-left:6px'; c.textContent='➜ '+zone.dataset.word;
+      zone.appendChild(c);
+    }
   });
   const pct=Math.round(ok/total*100);
   const panel=document.getElementById('resp-texte-score'); panel.style.display='block';
+  const autre = SCI_RESP_TEXTES.findIndex((_,i)=>i!==st.cur);
   panel.innerHTML=`<div class="score-title">${ok}/${total} — ${pct}%</div>
-    <div class="score-msg">${pct===100?'Parfait ! 🏆':pct>=70?'Bien joué ! 👍':'Continue à réviser ! 💪'}</div>`;
-  if(state.student) saveResult({student:state.student,cls:state.studentCls,
+    <div class="score-msg">${pct===100?'Parfait ! 🏆':pct>=70?'Bien joué ! 👍':'Continue à réviser ! 💪'}</div>
+    ${ok<total?'<div class="score-msg" style="font-size:13px">Le bon mot est indiqué en <span style="color:#1f5fbf;font-weight:800">bleu</span>.</div>':''}
+    <button class="btn" onclick="renderSciRespTexteIdx(${st.cur})" style="margin:.6rem .3rem 0">🔄 Recommencer</button>
+    ${autre>=0?`<button class="btn" onclick="renderSciRespTexteIdx(${autre})" style="margin:.6rem .3rem 0">➜ ${SCI_RESP_TEXTES[autre].titre}</button>`:''}`;
+  if(state.student){ try{ saveResult({student:state.student,cls:state.studentCls,
     className:CLASSES[state.studentCls]?CLASSES[state.studentCls].name:state.studentCls,
-    activity:'sci_resp_texte',bookTitle:'Respiratoire — Texte lacunaire',
+    activity:'sci_resp_texte',bookTitle:'Respiratoire — Texte lacunaire ('+data.titre+')',
     score:ok,total,pct,date:new Date().toLocaleDateString('fr-BE'),
-    time:new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})});
+    time:new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})}); }catch(e){} }
 }
 
 // ----- EXERCICE 3 : QCM -----

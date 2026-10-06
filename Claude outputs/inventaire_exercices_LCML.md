@@ -1989,6 +1989,11 @@ Spécifique :
 - **Tablette / téléphone** : seul le glisser était possible → ajout du placement par toucher (étiquette puis case) ; aide tactile commune (case visée sous le doigt, défilement automatique près du bord) ; schéma et tableau côte à côte même à 390 px (schéma de 170 px) → passage sur une colonne quand l'écran est étroit.
 - Tests Chromium (390 px, tactile) : vide → « il en reste 9 », placement par toucher, 2 inversions → 7/9 + 2 corrections en bleu, 1 seul enregistrement malgré 3 clics, verrouillage ; pas de débordement.
 
+### 06/10 — Éveil → Sciences → L'appareil respiratoire → Le trajet de l'air (`sci_resp_texte`, index › SCI_RESP_TEXTES / renderSciRespTexteIdx / validateSciRespTexte) — sw.js v641
+- Mêmes défauts que le schéma : « Valider » cliquable plusieurs fois (plusieurs enregistrements), trous vides comptés faux, mot mal placé jamais corrigé, mots encore déplaçables après validation, glisser seulement → message s'il reste des trous (rien de compté), garde 600 ms, validation et enregistrement uniques (try/catch, titre du texte dans l'enregistrement), verrouillage, bon mot en bleu (« ➜ … »), placement par toucher, aide tactile commune (case sous le doigt, défilement près du bord), boutons « Recommencer » et « ➜ autre texte ».
+- **Contenu** : « trachée artère » → « trachée » (2 textes) ; expiration « les poumons se dégonflent grâce au diaphragme qui remonte » → « se vident de leur air quand le diaphragme remonte » ; l'air sort « par le nez ou la bouche ». Les 16 trous relus (articles et ordre bronchioles → bronches cohérents).
+- Tests Chromium (390 px, tactile) : vide → « il en reste 8 », nez / bouche inversés → 6/8 + correction en bleu, 1 seul enregistrement malgré 3 clics, verrouillage, 2e texte : 8 trous ; pas de débordement.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2447,7 +2452,7 @@ Spécifique :
 | ⬜ | Le squelette — Vrai ou faux ? | `sci_sq_vrai_faux` | index › renderSciSqVraiFaux |  |
 | ⬜ | Appareil respiratoire — La leçon | `fiche_respiratoire` | fiches/appareil-respiratoire.html |  |
 | ✅ 06/10 | Appareil respiratoire — Le schéma | `sci_resp_schema` | index › renderSciRespSchema |  |
-| ⬜ | Appareil respiratoire — Trajet de l'air | `sci_resp_texte` | index › renderSciRespTexte |  |
+| ✅ 06/10 | Appareil respiratoire — Trajet de l'air | `sci_resp_texte` | index › renderSciRespTexte |  |
 | ⬜ | Appareil respiratoire — QCM | `sci_resp_qcm` | index › renderSciRespQCM |  |
 | ⬜ | Appareil respiratoire — Termes et définitions | `sci_resp_assoc` | index › renderSciRespAssoc |  |
 | ⬜ | Appareil respiratoire — Remettre de l'ordre | `sci_resp_ordre` | index › renderSciRespOrdre |  |
