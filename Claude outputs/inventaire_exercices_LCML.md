@@ -2232,6 +2232,8 @@ Spécifique :
 
 - **06/10 — Jeux › Mots cachés (`jeu_mots_caches`, fiches/mots-caches.html + public + racine, sw.js v705)** : 20 thèmes × 15 mots (mêmes listes que les mots croisés) ; 1 600 grilles générées (4 niveaux) sans échec ; grille 14 × 14 tenant à 390 px. Bug : un mot n'était accepté qu'à la place exacte prévue par le générateur ; or les lettres de remplissage recréent parfois le mot ailleurs (« OR » apparait plusieurs fois dans 56 % des grilles « Expressions ») → l'élève qui entourait l'autre « OR » était refusé (reproduit en test) → tout tracé qui écrit un mot non trouvé (dans un sens ou l'autre) est accepté. Doigt relâché hors de la grille : la sélection restait bloquée → relâcher/annuler partout est pris en compte. IMBECILE (insulte) → COLLECTION, comme dans les mots croisés. alert() et confirm() → message dans la page et « Recommencer » en deux touchers. saveResult retiré (règle jeux) ; record par thème et niveau gardé par élève. Test Playwright 390 px : « OR » hors place accepté, grille complétée, victoire, record, aucune boite de dialogue, pas de débordement.
 
+- **06/10 — Jeux › Sudoku (`jeu_sudoku`, fiches/sudoku.html + public + racine, sw.js v706)** : les 80 grilles (4 niveaux × 20) vérifiées : solution unique pour toutes, indices conformes à la solution, 51-52 / 39-40 / 31-32 / 25-30 indices selon le niveau, génération ≤ 0,33 s. Grille remplie mais fausse : rien ne se passait → message « touche Vérifier pour voir les erreurs en rouge ». 2 alert() et 1 confirm() → messages dans la page, « Vider » en deux touchers. saveResult retiré (règle jeux) ; record par grille gardé par élève (avant : partagé) ; case « Aide » de la victoire (toujours « Aucune », il n'y a pas d'aide) → « Ton record ». Coquilles : « À FARE » → « À FAIRE » sur les 20 grilles ; « (subgrid) » retiré. Test Playwright 390 px : message 1 faute, message grille pleine fausse, victoire, record, aucune boite de dialogue, pas de débordement.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2824,7 +2826,7 @@ Spécifique :
 | ⬜ | Le robot | `jeu_robot` | fiches/Labyrinthe.html |  |
 | ✅ 06/10 | Mots croisés | `jeu_mots_croises` | fiches/mots-croises.html |  |
 | ✅ 06/10 | Mots cachés | `jeu_mots_caches` | fiches/mots-caches.html |  |
-| ⬜ | Sudoku | `jeu_sudoku` | fiches/sudoku.html |  |
+| ✅ 06/10 | Sudoku | `jeu_sudoku` | fiches/sudoku.html |  |
 | ⬜ | Flux Connecté | `jeu_flux` | index › (?) | (code à localiser) |
 | ⬜ | Le Code Secret | `jeu_code_secret` | index › (?) | (code à localiser) |
 | ✅ 06/10 | Le Pendu des Mots | `jeu_pendu` | le_pendu.html (racine) |  |

@@ -541,6 +541,7 @@
               <!-- Rendered dynamically -->
             </div>
           </div>
+          <div id="sd-msg" class="hidden w-full max-w-sm text-center text-sm font-bold rounded-xl border-2 px-3 py-2"></div>
         </div>
 
         <!-- Right: Input Keypad & helpers (md:col-5) -->
@@ -574,7 +575,7 @@
 
             <div class="flex gap-2">
               <button class="btn btn-success flex-1" onclick="validateGrid()">✅ Vérifier</button>
-              <button class="btn btn-danger flex-1" onclick="restartGrid()">🔄 Vider</button>
+              <button id="btn-restart" class="btn btn-danger flex-1" onclick="restartGrid()">🔄 Vider</button>
             </div>
           </div>
         </div>
@@ -592,7 +593,7 @@
           <ul class="list-decimal pl-5 flex flex-col gap-1.5 font-medium text-slate-800">
             <li>Chaque <strong>ligne</strong> doit contenir tous les chiffres de 1 à 9 (sans doublons).</li>
             <li>Chaque <strong>colonne</strong> doit contenir tous les chiffres de 1 à 9 (sans doublons).</li>
-            <li>Chaque <strong>grand carré de 3x3</strong> (subgrid) doit contenir tous les chiffres de 1 à 9.</li>
+            <li>Chaque <strong>grand carré de 3x3</strong> doit contenir tous les chiffres de 1 à 9.</li>
           </ul>
           <p class="bg-indigo-50 border border-indigo-200 text-indigo-800 p-2.5 rounded-lg text-xs font-semibold mt-1">
             💡 Astuce : Commence par chercher les zones (lignes, colonnes ou grands carrés) qui ont déjà beaucoup de chiffres posés !
@@ -616,8 +617,8 @@
             <span class="text-base font-black text-[#5B4FCF]" id="victory-time">00:00</span>
           </div>
           <div class="flex flex-col">
-            <span class="text-[10px] text-slate-500 font-bold uppercase tracking-wider">💡 Aide</span>
-            <span class="text-base font-black text-[#C97B1A]" id="victory-helps">Aucune</span>
+            <span class="text-[10px] text-slate-500 font-bold uppercase tracking-wider">🏆 Ton record</span>
+            <span class="text-base font-black text-[#C97B1A]" id="victory-helps">—</span>
           </div>
         </div>
 
@@ -914,7 +915,7 @@
         const progData = progress[key];
         
         let style = 'border-color: var(--border);';
-        let badgeHtml = `<span class="text-[9px] text-slate-400 font-bold">À FARE</span>`;
+        let badgeHtml = `<span class="text-[9px] text-slate-400 font-bold">À FAIRE</span>`;
         
         if (progData && progData.completed) {
           const col = ['#1A9E75', '#1A6FA0', '#C97B1A', '#D94F3D'][activeLevel - 1];
@@ -956,7 +957,9 @@
       isCompleted = false;
 
       updatePencilUI();
-      
+      showMsg('');
+      armRestart(false);
+
       // Set titles
       document.getElementById('game-grid-num').innerText = gridIdx + 1;
       
@@ -1100,8 +1103,10 @@
       renderGrid();
       
       // Auto check if completed
+      showMsg('');
       if (isGridFilled()) {
         checkBoardCompletion();
+        if (!isCompleted) showMsg("La grille est remplie, mais il y a des erreurs : touche « Vérifier » pour les voir en rouge.");
       }
     }
 
@@ -1221,15 +1226,37 @@
         triggerVictory();
       } else {
         if (mistakes > 0) {
-          alert(`La grille comporte ${mistakes} erreur(s) (marquée(s) en rouge). Corrige-les !`);
+          showMsg(`${mistakes} chiffre${mistakes > 1 ? 's sont faux' : ' est faux'} (en rouge) : corrige${mistakes > 1 ? '-les' : '-le'} !`);
         } else {
-          alert("Pas d'erreurs pour le moment, mais la grille n'est pas encore finie ! Continue ! 💪");
+          showMsg(`Pas d'erreur pour le moment ! Il reste ${empty} case${empty > 1 ? 's' : ''} à remplir. Continue ! 💪`, 'ok');
         }
       }
     }
 
+    function showMsg(text, kind) {
+      const m = document.getElementById('sd-msg');
+      if (!m) return;
+      if (!text) { m.classList.add('hidden'); return; }
+      m.textContent = text;
+      m.className = 'w-full max-w-sm text-center text-sm font-bold rounded-xl border-2 px-3 py-2 ' +
+        (kind === 'ok' ? 'bg-emerald-50 border-emerald-400 text-emerald-800' : 'bg-amber-50 border-amber-400 text-amber-900');
+    }
+
+    // « Vider » : 1er toucher = demande de confirmation, 2e toucher (dans les 4 s) = on vide
+    let restartArmed = false, restartTimer = null;
+    function armRestart(on) {
+      restartArmed = on;
+      clearTimeout(restartTimer);
+      const btn = document.getElementById('btn-restart');
+      if (btn) btn.textContent = on ? '⚠️ Sûr ? Touche encore' : '🔄 Vider';
+      if (on) restartTimer = setTimeout(() => armRestart(false), 4000);
+    }
+
     function restartGrid() {
-      if (confirm("Es-tu sûr de vouloir vider tous les chiffres que tu as saisis ?")) {
+      if (!restartArmed) { armRestart(true); return; }
+      armRestart(false);
+      showMsg('');
+      {
         userBoard = boardData.puzzle.map(row => [...row]);
         userNotes = Array(9).fill(null).map(() => Array(9).fill(null).map(() => new Set()));
         
@@ -1261,26 +1288,13 @@
       isCompleted = true;
       clearInterval(timerInterval);
       
+      // (Jeux : aucun résultat envoyé à la page enseignant ; le record reste dans le jeu)
+      const before = getSavedProgress()[`lvl${activeLevel}_grid${activeGridIndex}`];
       saveProgress(activeLevel, activeGridIndex, timeElapsed);
-
-      if (window.parent && typeof window.parent.saveResult === 'function') {
-        window.parent.saveResult({
-          student: window.parent.state ? window.parent.state.student : 'Local',
-          cls: window.parent.state ? window.parent.state.studentCls : 'P5-P6',
-          activity: `sudoku_lvl${activeLevel}_grid${activeGridIndex}`,
-          bookTitle: `Sudoku — Grille ${activeGridIndex + 1} (Lvl ${activeLevel})`,
-          score: 81,
-          total: 81,
-          pct: 100,
-          time_sec: timeElapsed,
-          helps_count: helpCount,
-          date: new Date().toLocaleDateString('fr-BE'),
-          time: new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })
-        });
-      }
+      showMsg('');
 
       document.getElementById('victory-time').innerText = formatTime(timeElapsed);
-      document.getElementById('victory-helps').innerText = helpCount === 0 ? "Aucune ! 🎉" : `${helpCount} fois`;
+      document.getElementById('victory-helps').innerText = (!before || timeElapsed < before.time) ? "Nouveau ! 🎉" : formatTime(before.time);
       document.getElementById('modal-victory').classList.remove('hidden');
 
       confetti.start();
@@ -1304,13 +1318,19 @@
     // =========================================================================
     // 5. LOCAL STORAGE PROGRESS TRACKING
     // =========================================================================
-    const LOCAL_STORAGE_KEY = 'lcml_sudoku_progress';
+    // Record par élève (avant : partagé par tous les élèves de l'appareil)
+    const LOCAL_STORAGE_KEY = (function() {
+      try {
+        const st = window.parent && window.parent !== window && window.parent.state;
+        if (st && st.student) return 'lcml_sudoku_progress_' + (st.studentCls || '') + '_' + st.student;
+      } catch (e) {}
+      return 'lcml_sudoku_progress';
+    })();
 
     function getSavedProgress() {
-      const raw = localStorage.getItem(LOCAL_STORAGE_KEY);
-      if (!raw) return {};
       try {
-        return JSON.parse(raw);
+        const raw = localStorage.getItem(LOCAL_STORAGE_KEY);
+        return raw ? (JSON.parse(raw) || {}) : {};
       } catch (e) {
         return {};
       }
@@ -1326,7 +1346,7 @@
           time: time,
           date: new Date().toLocaleDateString('fr-BE')
         };
-        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(progress));
+        try { localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(progress)); } catch (e) {}
       }
     }
 
