@@ -2174,6 +2174,8 @@ Spécifique :
 
 - **06/10 — Les planisphères (`geo_planispheres`, sw.js v678)** : positions des 57 zones vérifiées sur les 5 cartes (Europe, Amérique, Indien, Pôle Nord, Pôle Sud) — toutes justes. Corrigé : sur téléphone les cases posées sur la carte faisaient ~29 × 15 px (illisibles, impossibles à toucher) → repères numérotés sur la carte (ordre de lecture) + tableau « N° / Nom » à côté (modèle des schémas Sciences) ; placement au toucher ajouté (touche l'étiquette puis la case) en plus du glisser ; un seul essai (après « Valider », plus de glisser ni de nouvelle validation : avant, on pouvait corriger et revalider → plusieurs sauvegardes) ; validation refusée avec message dans la page tant qu'il reste des cases vides ; bonne réponse en bleu sous la case fausse (avant : réponse de l'élève effacée et remplacée en rouge) ; garde 600 ms ; sauvegarde en try/catch ; bouton « Carte suivante ». Test Playwright 390 px : 11/13, 1 seule sauvegarde, pas de débordement.
 
+- **06/10 — QCM Continents et océans (`geo_continents_qcm`, sw.js v679)** : contenu corrigé — « plus grand désert du monde = Sahara » était faux avec « l'Antarctique » parmi les propositions → « plus grand désert chaud » (Sahara, Kalahari, Atacama, Arabie) ; « plus long fleuve du monde = Nil » (contesté face à l'Amazone, proposée) → « plus long fleuve d'Afrique » (Nil, Congo, Niger, Zambèze) ; « Belgique (côte ouest), quel océan ? » → « La mer du Nord… fait partie de quel océan ? » ; « Kilimandjaro » proposé comme chaine de montagnes → l'Atlas ; « combien de continents ? 6 » précisé (« si l'on compte l'Amérique comme un seul continent », cohérent avec le planisphère interactif). Questions « Amérique » : la bonne réponse était le mot le plus long → « Antarctique » ajouté comme distracteur. Famille montagnes (5 questions qui se donnent la réponse) : au plus 2 par série. Mécanique : validation refusée avec message s'il manque des réponses (avant : comptées fausses), validation unique (avant : double clic = 2 sauvegardes), bonne réponse manquée en bleu, total = nombre de questions, sauvegarde en try/catch. Test Playwright 390 px : 8/10, 1 seule sauvegarde.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2697,7 +2699,7 @@ Spécifique :
 | ⬜ | La Belgique — QCM | `geo_belgique_qcm` | index › renderGeoBelgiqueQCM |  |
 | ✅ 06/10 | Le planisphère interactif (découverte) | `geo_planisphere_interactif` | fiches/planisphere-interactif.html |  |
 | ✅ 06/10 | Les planisphères | `geo_planispheres` | index › renderGeoPlanispheres |  |
-| ⬜ | QCM — Continents et océans | `geo_continents_qcm` | index › renderGeoContinentsQCM |  |
+| ✅ 06/10 | QCM — Continents et océans | `geo_continents_qcm` | index › renderGeoContinentsQCM |  |
 | ⬜ | Le tour du monde | `geo_tour_monde` | index › renderGeoTourMonde |  |
 | ⬜ | Les océans et continents | `geo_oceans` | index › (?) | (code à localiser) |
 | ⬜ | L'Europe — Cartes interactives | `geo_europe_cartes` | fiches/europe_cartes.html |  |
