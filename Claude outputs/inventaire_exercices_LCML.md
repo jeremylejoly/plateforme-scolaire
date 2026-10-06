@@ -2265,6 +2265,8 @@ Spécifique :
 
 - **06/10 — CEB Sciences 2023 (`ceb_sci_2023`, CEB sciences/ceb_sciences_2023.html, sw.js v722)** : 20 questions vérifiées contre le portfolio PDF (p. 7-16 : cycle de l'eau, animaux de la ferme et arbre, débit expiratoire tableaux 1 et 2, flottaison exp. 1-3, dilatation, circuit simple) — toutes les réponses justes. Même moteur que 2026 → mêmes corrections (aucune sauvegarde → sauvegarde unique /20 ; choix mélangés et renumérotés ; bonne réponse manquée en vert → bleu ; bilan possible avec des questions vides → message avec les numéros ; double clic, Entrée ; confetti protégé). Contenu : la question se donnait la réponse en 1.1 (« la pluie qui tombe »), 1.5 (« sous la surface du sol ») et 2.2 (« 400 l/min ») → retiré ; bonne réponse seule longue (1.2, 1.5, 3.2, 3.4, 3.5) → longueurs équilibrées ; 3.4 l'explication était dans la bonne réponse → montrée après la réponse (boite ouverte : à plat l'eau n'entre pas) ; 4.1 « liquide coloré » → « eau colorée » (livret). NO : boite, entrainement, maitriser ; « prêt-e » → « prêt ». Test Playwright 390 px : message « 1.5 », 17/20, 3 réponses en bleu, 1 seule sauvegarde, pas de débordement.
 
+- **06/10 — CEB Sciences 2022 (`ceb_sci_2022`, CEB sciences/ceb_sciences_2022.html, sw.js v723)** : 20 questions vérifiées contre le portfolio PDF (p. 8-19 : cycles cormoran/roussette/crevette, littoral, clé de détermination, oiseaux et graphique Natagora 32/20/16/14/6/5/4/3 %, bouteilles noire/blanche 19 °C à 9 h et 30/25 °C à 13 h, isolation, glaces Arctique/Antarctique) — réponses justes. Même moteur que 2026/2023 → mêmes corrections (sauvegarde unique /20, choix mélangés, bleu, message des questions vides, double clic). Contenu : 1.2 demandait la photo de l'« œuf de roussette », écrit sous la photo → « roussette adulte » (photo A, à déduire) ; 1.4 réponse recopiée de la fiche sans utiliser la clé → « dans quelle couleur de fleurs la bette maritime est-elle classée ? » (autres) ; 2.1 donnait « 32 % » et 2.5 a donnait les valeurs → retirés ; 3.3 b se présentait comme une observation alors que le livret ne donne aucun résultat d'isolation → présentée comme une prévision + explication après réponse ; bonne réponse seule longue (2.2, 3.2, 3.5, 4.1, 4.2, 4.4) → équilibrée ; « En vous basant » → « En te basant ». NO : entrainement, maitriser ; « prêt-e » → « prêt ». Test Playwright 390 px : message « 1.5 », 17/20, 1 seule sauvegarde, pas de débordement.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2817,7 +2819,7 @@ Spécifique :
 | ✅ 06/10 | CEB Sciences 2025 | `ceb_sci_2025` | index › openCEB |  |
 | ✅ 06/10 | CEB Sciences 2024 | `ceb_sci_2024` | index › openCEB |  |
 | ✅ 06/10 | CEB Sciences 2023 | `ceb_sci_2023` | index › openCEB |  |
-| ⬜ | CEB Sciences 2022 | `ceb_sci_2022` | index › openCEB |  |
+| ✅ 06/10 | CEB Sciences 2022 | `ceb_sci_2022` | index › openCEB |  |
 | ⬜ | CEB Sciences 2021 | `ceb_sci_2021` | index › openCEB |  |
 | ⬜ | CEB Sciences 2019 | `ceb_sci_2019` | index › openCEB |  |
 | ⬜ | CEB Sciences 2016 | `ceb_sci_2016` | index › openCEB |  |
