@@ -2139,6 +2139,11 @@ Spécifique :
 - Mécanique : validation possible deux fois → une seule ; propositions colorées après validation (bonne en bleu si manquée) ; « Bonne réponse » du récapitulatif en bleu et non tronquée (avant : coupée par `truncate`) ; sauvegarde unique try/catch `window.parent !== window` ; boutons « Retour » internes masqués dans le site ; double « Continuer » sans effet.
 - Tests Playwright 390 px (Tailwind régénéré localement) : 400 parties sans doublon de famille, bonne réponse répartie sur les positions, 1 erreur → 4/5, 1 sauvegarde, pas de débordement.
 
+### 06/10 — Éveil → Sciences → Le cycle de l'eau → « QCM » (`fiche_cycle_eau`, fiches/cycle-eau.html + public/fiches/) — sw.js v667
+- La carte « Le cycle de l'eau (QCM) — Teste tes connaissances » ouvrait une leçon interactive en 5 onglets SANS aucune question ni score (le plan de travail ne pouvait jamais la valider). Décision de Jeremy : renommer en leçon → menu « Le cycle de l'eau (leçon interactive) » + description, titre d'écran, catalogue du plan de travail « (leçon) » (index.html). Aucun saveResult (comme `sci_reproduction_plantes`).
+- Contenu : réservoir enterré « au sommet d'une colline… on utilise des pompes de surpression pour distribuer » (faux : il est en hauteur pour distribuer par gravité) → « l'eau redescend par gravité… des pompes servent surtout à le remplir », type « Stockage gravitaire en hauteur » ; « Ce réseau de collecte collecte » → « Ce réseau collecte » ; « Les eaux usées… Elle subit » → « Elles subissent » ; « secrets anatomiques et géologiques » → « secrets ». Vérifié : 8 étapes du cycle naturel, 10 du cycle anthropique, états, changements d'état (liquéfaction = condensation déjà expliqué), 97/2/1 % sur 10 L, éco-gestes.
+- Affichage vérifié à 390 px (Tailwind régénéré) sur les 5 onglets : pas de débordement, aucune erreur.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2639,7 +2644,7 @@ Spécifique :
 | ✅ 06/10 | Les changements d'état | `sci_matiere_changements` | fiches/sci_matiere_changements.html |  |
 | ⬜ | Transformations physiques et chimiques | `sci_transformations_chimiques` | fiches/transformations-physiques-chimiques.html |  |
 | ✅ 06/10 | Mélanges et séparations | `sci_melanges_qcm` | fiches/sci_melanges_qcm.html |  |
-| ⬜ | Le cycle de l'eau (QCM) | `fiche_cycle_eau` | fiches/cycle-eau.html |  |
+| ✅ 06/10 | Le cycle de l'eau (QCM) | `fiche_cycle_eau` | fiches/cycle-eau.html |  |
 | ⬜ | Le cycle de l'eau (Schéma) | `sci_cycle_eau_schema` | fiches/sci_cycle_eau_schema.html |  |
 | ✅ 06/10 | Les réseaux trophiques | `sci_reseaux_trophiques` | fiches/sci_reseaux_trophiques.html |  |
 | ⬜ | Les énergies (Tri & conversions) | `sci_energie_tri` | fiches/sci_energie_tri.html |  |
