@@ -2204,6 +2204,8 @@ Spécifique :
 
 - **06/10 — Le schéma du cours d'eau (`geo_hydro_schema`, fiches/vocabulaire_hydrographique.html, sw.js v693)** : illustration et 10 ronds vérifiés (source, amont, méandre, affluent, confluent, rive gauche/droite — orientées dans le sens du courant —, aval, estuaire, delta) : tous justes. Copies divergentes : public/ et la racine n'avaient pas le glisser-déposer du 25/09 → 3 copies réalignées sur fiches/. Défauts corrigés : `alert()` → message dans la page ; validation possible avec 1 seul mot placé (les autres comptés faux) → « Il reste N ronds sans mot » ; bouton « Corriger mes erreurs » = 2e essai et une sauvegarde de plus à chaque validation → retiré (un seul essai, « Tout recommencer » pour refaire) ; bonne réponse jamais montrée → écrite en bleu dans l'étiquette du rond faux ; sauvegarde en try/catch ; maitrises (NO). Téléphone : les ronds font ~9 px et les étiquettes ~4 px → liste des 10 ronds sous l'image (cases cliquables et cibles du glisser, correction « ̶m̶o̶t̶ ➜ bonne réponse » en bleu), affichée sous 700 px. Test Playwright 390 px : message 10 ronds vides, placement par la liste, vidage, 8/10 avec bleu, 1 seule sauvegarde ; glisser à la souris sur ordinateur OK.
 
+- **06/10 — Mots et définitions (`geo_hydro_definitions`, fiches/hydrographie_definitions.html, sw.js v694)** : 10 définitions vérifiées ; précisées : méandre (« grand virage » → grande courbe en forme de boucle), estuaire (large, en forme d'entonnoir, un seul bras), delta (« bancs de sable » → dépôts de sable et de boue). L'astuce « amont = MONTagne, aval = VALlée », affichée avant de répondre, donnait 2 réponses → déplacée dans la correction. Défauts corrigés : `alert()` → message dans la page ; validation possible avec 1 seule paire (les autres comptées fausses) → « Il reste N mots à relier » ; « Corriger mes erreurs » = 2e essai et nouvelle sauvegarde → retiré (un seul essai) ; bonne réponse jamais montrée → « ➜ mot » en bleu sous chaque définition mal reliée ; sauvegarde en try/catch. Copies : public/ = fiches/ (commentaires en moins), racine = ancienne version → 3 copies identiques. Test Playwright 390 px : message 10 mots, 8/10 avec ➜ amont / ➜ aval en bleu, astuce visible seulement après, 1 seule sauvegarde.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2738,7 +2740,7 @@ Spécifique :
 | ✅ 06/10 | Les paysages : le littoral | `geo_paysages_littoral` | fiches/analyse_paysage_littoral.html |  |
 | ✅ 06/10 | Les types de paysages | `geo_paysages_types` | fiches/analyse_types_paysages.html |  |
 | ✅ 06/10 | Le schéma du cours d'eau | `geo_hydro_schema` | fiches/vocabulaire_hydrographique.html |  |
-| ⬜ | Vocabulaire hydrographique (Définitions) | `geo_hydro_definitions` | index › (?) | (code à localiser) |
+| ✅ 06/10 | Vocabulaire hydrographique (Définitions) | `geo_hydro_definitions` | fiches/hydrographie_definitions.html |  |
 | ⬜ | Relief et hydrographie de Belgique | `geo_hydro_belgique` | index › (?) | (code à localiser) |
 | ⬜ | Les cartes et les plans | `geo_cartes` | index › (?) | (code à localiser) |
 
