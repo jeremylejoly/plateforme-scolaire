@@ -1500,8 +1500,14 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - **Score toujours 5 / 5** (l'élève recommence le même article jusqu'à réussir ; une erreur ne retirait qu'un cœur) → score = paiements justes / essais (ex. 5 / 6), même règle que « Quelle heure est-il ? » ; écran de fin adapté.
 - **Plusieurs enregistrements** possibles en fin de partie (clics pendant le délai) → un seul. **« Recommencer » pendant un message** : l'ancien message faisait avancer la nouvelle partie → annulé.
 - Nouvelle orthographe : boite.
-- Remarque (non modifiée) : en Belgique, les paiements en espèces sont arrondis à 5 cents ; l'exercice garde les pièces de 1 et 2 cents (prix comme 1,99 €). À voir avec Jeremy.
+- Pièces de 1 et 2 cents : on garde (décision de Jeremy, 06/10), même si les paiements en espèces sont arrondis à 5 cents en Belgique.
 - Tests jsdom : cadre vide sans cœur perdu, double clic = 1 achat, Recommencer sans saut, partie 5 / 6 → 1 sauvegarde ; syntaxe OK.
+
+### 06/10 — Maths › Grandeurs › La monnaie › Rends la monnaie (`grandeur_monnaie_rendre`, `fiches/rendre_la_monnaie.html` + copies public et racine) — sw.js v584
+- 20 achats (1,15 € à 35,90 €, payés avec un billet de 5 à 50 €) : billet toujours supérieur au prix, et chaque monnaie à rendre est faisable avec au plus 5 pièces ou billets de chaque sorte (recherche exhaustive). Résultat déjà enregistré sous le bon identifiant.
+- Même moteur que « Paie le commerçant », mêmes défauts et mêmes corrections : double clic sur « Valider » = client compté deux fois et suivant sauté ; score toujours 5 / 5 → score = monnaies rendues juste / essais ; plusieurs enregistrements possibles → un seul ; « Recommencer » pendant un message → plus d'effet sur la nouvelle partie.
+- Nouvelle orthographe : boite.
+- Tests jsdom : cadre vide sans cœur perdu, double clic = 1 client, Recommencer sans saut, partie 5 / 6 → 1 sauvegarde ; syntaxe OK.
 
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
@@ -1856,7 +1862,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 06/10 | Quelle heure est-il ? (avec secondes) | `grandeur_durees_heure_secondes` | fiches/heure_secondes.html |  |
 | ✅ 06/10 | Le Labo des Durées | `grandeur_durees_situations` | fiches/durees_situations.html |  |
 | ✅ 06/10 | Paie le commerçant | `grandeur_monnaie_payer` | fiches/payer_le_commercant.html |  |
-| ⬜ | Rends la monnaie | `grandeur_monnaie_rendre` | fiches/rendre_la_monnaie.html |  |
+| ✅ 06/10 | Rends la monnaie | `grandeur_monnaie_rendre` | fiches/rendre_la_monnaie.html |  |
 | ⬜ | Deux objets — Rends la monnaie | `grandeur_monnaie_deux_objets` | fiches/deux_objets_monnaie.html |  |
 | ⬜ | Recettes | `grandeur_proportionnalite_exercice` | fiches/proportionnalite.html |  |
 | ⬜ | Le rallye des bolides | `grandeur_proportionnalite_rallye_bolides` | fiches/rallye_bolides.html |  |
