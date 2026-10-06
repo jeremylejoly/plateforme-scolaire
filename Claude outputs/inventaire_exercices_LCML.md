@@ -2228,6 +2228,8 @@ Spécifique :
 
 - **06/10 — Jeux › Motus (`jeu_motus`, motus.html + public, sw.js v703)** : 174 mots vérifiés (longueurs, doublons : OK). N'importe quelle suite de lettres comptait comme essai (« VZZZZZ ») → décision de Jeremy : vrais mots obligatoires → dictionnaire `motus_dico.js` (+ public, 24 275 mots de 5 à 7 lettres, 155 Ko / 63 Ko compressé, liste française de pyspellchecker, licence MIT) ; un essai hors dictionnaire affiche un message dans la page et ne compte pas ; case vide → message aussi. Mot de fin affiché sans accents (ZEBRE, FORET, COEUR) → affiché avec accents (ZÈBRE, FORÊT, CŒUR ; 41 mots), le jeu reste en majuscules sans accent. Mot perdu affiché en bleu. Lien « ← Accueil » (target _top) rechargeait tout le site → caché dans le site ; badge « Jeux • Vocabulaire ». Mots tirés « en sac » (tous passent avant qu'un revienne). Record personnel par élève (avant : partagé entre tous les élèves de l'appareil). Entrée sur la fenêtre de fin = autre mot (garde 600 ms). NO : t'entrainer. Test Playwright 390 px dans le site : « VZZZZZ » refusé sans compter, vrai mot accepté, défaite avec mot en bleu, Entrée relance, pas de débordement.
 
+- **06/10 — Jeux › Mots croisés (`jeu_mots_croises`, fiches/mots-croises.html + public + racine, sw.js v704)** : 20 thèmes × 15 mots relus ; 1 200 grilles générées : jamais d'échec, les 15 mots toujours placés. Bug téléphone : la grille (jusqu'à 23 cases, 600 px) était centrée et coupée à gauche, impossible à faire défiler (bord gauche à −93 px) → cadre défilant + « ↔ Fais glisser la grille ». 3 alert() et 1 confirm() → messages dans la page (nombre de cases fausses ET vides ; « Recommencer » demande un 2e toucher). saveResult retiré (règle jeux) ; record (meilleur temps par thème) gardé par élève (avant : partagé). Définitions : « IMBECILE — personne stupide » (insulte) → « COLLECTION » ; SYLLABE « contenant une seule voyelle » (faux : eau) → « groupe de sons prononcés d'une seule émission de voix » ; SURFACE/aire distinguées ; RAYON « à un point du cercle » ; PARTICIPE (« mode verbal ») ; HOMOPHONE (pluriel) ; VOYELLE (« son vocalique ») ; ÉQUILIBRE et ÉNERGIE (définitions vagues) ; RAPPELER (« faire remémorer ») ; RESPIRATOIRE ; PONTLEVIS « (sans trait d'union) » ; « Mots dans : » → « Mot manquant : » (15) ; NO : maitre, traine, parait. Interface : « Horizontaux (Across) / Verticaux (Down) » → « Horizontalement / Verticalement ». Test Playwright 390 px : grille défilante, messages, double toucher Recommencer, victoire, record, aucune boite de dialogue.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2818,7 +2820,7 @@ Spécifique :
 | ⬜ | Tetris | `jeu_tetris` | index › renderJeuTetris |  |
 | ⬜ | Rush Hour | `jeu_rushhour` | index › renderJeuRushHour |  |
 | ⬜ | Le robot | `jeu_robot` | fiches/Labyrinthe.html |  |
-| ⬜ | Mots croisés | `jeu_mots_croises` | fiches/mots-croises.html |  |
+| ✅ 06/10 | Mots croisés | `jeu_mots_croises` | fiches/mots-croises.html |  |
 | ⬜ | Mots cachés | `jeu_mots_caches` | fiches/mots-caches.html |  |
 | ⬜ | Sudoku | `jeu_sudoku` | fiches/sudoku.html |  |
 | ⬜ | Flux Connecté | `jeu_flux` | index › (?) | (code à localiser) |
