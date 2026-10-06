@@ -1557,6 +1557,22 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Orthographe : s'entraine (×2), Entrainement, Entraine-toi, entrainement, « Maitre de la règle de trois ».
 - Tests : jsdom (positions, doublons, double clic, Entrée, niveaux 1 et 2 → 1 saveResult chacun), node --check 7 OK, Playwright 390 px (menu et jeu).
 
+### 06/10 — L'échelle (`grandeur_echelle`, fiches/grandeurs_echelle.html + activités 1 à 4) — sw.js v590
+Défauts communs aux 4 activités :
+- **Aucun résultat enregistré** → saveResult `grandeur_echelle` une fois par partie, try/catch, titre « L'échelle — <activité> (Niveau N) ».
+- Score toujours 100/100 (10 pts dès qu'on finissait par trouver, essais infinis) → une question compte seulement sans erreur ; 2 essais par étape, puis la réponse s'affiche en bleu et on continue. Affichage « Réussies : x » et « x / 10 » (« x / 5 » pour l'architecte).
+- Champs « number » (virgule refusée selon le navigateur, parseFloat laxiste) → champs texte décimaux, lecture stricte, vide ou lettres = message sans compter l'essai ; nombres affichés avec virgule et espaces (1 400 cm, 4,45 km).
+- Tolérances trop larges (± 1 m, ± 5 km) → résultat exact (au niveau 4 : exact ou arrondi au km).
+- Pas de garde sur « Question suivante » ; Entrée ajoutée (valide l'étape en cours puis passe à la suite, 600 ms).
+- Mise en page : carte 800 × 600 écrasée à 1 100 px (un lieu sortait du cadre) et débordement à 390 px (587 à 643 px) → la carte est réduite proportionnellement (règle comprise) et les coordonnées du glisser-déposer sont recalculées ; testé à la souris dans Chromium à 390, 768 et 1 100 px (erreur de placement < 2 px). Page à 390 px.
+- Orthographe : entrainement, entrainer, Entraine-toi, maitre d'œuvre.
+Spécifique :
+- 1 Arpenteur des Ardennes : paires de lieux tirées sans remise (10 paires différentes sur 15).
+- 2 Architecte : meubles dans un ordre aléatoire ; « Hauteur » → « Profondeur » (plan vu du dessus) ; « bureau du maître » → « bureau de l'enseignant » ; après 2 tailles fausses les curseurs se règlent seuls.
+- 3 Convertisseur : situations irréalistes (camion de pompiers de 20 cm, acarien de 10 mm, distance de 20 m entre deux abbayes, tache de coccinelle de 3 cm) et nombres à rallonge (0,30000000000000004) → 24 situations avec longueurs réelles plausibles, valeurs « rondes », thèmes en rotation, jamais deux fois la même situation (0 doublon sur 1 000 séries, sens plan→réel / réel→plan ≈ 50/50). Description du menu corrigée (« 40 scénarios » faux).
+- 4 Messager d'Europe : toutes les paires de capitales avant répétition, jamais deux fois de suite la même.
+- Tests : jsdom pour les 4 activités (vide / lettres non comptés, 2 erreurs → réponse bleue et point perdu, double clic, fin → 1 seul saveResult), node --check 7 OK ×4, Playwright (glisser-tourner la règle) et captures 390 / 768 / 1 100 px. Copies racine = fiches avec `assets/` (comme avant).
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1916,7 +1932,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 06/10 | Le rallye des bolides | `grandeur_proportionnalite_rallye_bolides` | fiches/rallye_bolides.html |  |
 | ✅ 06/10 | Le supermarché malin | `grandeur_proportionnalite_supermarche_malin` | fiches/supermarche_malin.html |  |
 | ✅ 06/10 | QCM de vitesse horaire | `grandeur_vitesse_horaire_qcm` | fiches/vitesse_situations.html |  |
-| ⬜ | L'échelle | `grandeur_echelle` | fiches/grandeurs_echelle.html |  |
+| ✅ 06/10 | L'échelle | `grandeur_echelle` | fiches/grandeurs_echelle.html |  |
 
 ### 🔢 Mathématiques — 📊 Traitement de données
 
