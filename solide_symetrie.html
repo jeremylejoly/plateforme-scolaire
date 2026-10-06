@@ -145,17 +145,18 @@
   </header>
 
   <nav class="axis-tabs" aria-label="Type d'axe">
-    <button data-axis="V" aria-pressed="true">
+    <button data-axis="S" aria-pressed="true">🎯 Série notée (10 figures)</button>
+    <button data-axis="V" aria-pressed="false">
       <svg class="ico" viewBox="0 0 24 24" fill="none"><line x1="12" y1="2" x2="12" y2="22" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
-      Axe vertical
+      Entrainement : axe vertical
     </button>
     <button data-axis="H" aria-pressed="false">
       <svg class="ico" viewBox="0 0 24 24" fill="none"><line x1="2" y1="12" x2="22" y2="12" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
-      Axe horizontal
+      Entrainement : axe horizontal
     </button>
     <button data-axis="O" aria-pressed="false">
       <svg class="ico" viewBox="0 0 24 24" fill="none"><line x1="3" y1="3" x2="21" y2="21" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
-      Axe oblique
+      Entrainement : axe oblique
     </button>
   </nav>
 
@@ -163,7 +164,7 @@
     <div class="toolbar">
       <div class="nav grp">
         <button class="btn round" id="prev" title="Figure précédente" aria-label="Figure précédente">‹</button>
-        <span class="count" id="count">Figure 1 / 15</span>
+        <span class="count" id="count">Figure 1 / 10</span>
         <button class="btn round" id="next" title="Figure suivante" aria-label="Figure suivante">›</button>
       </div>
 
@@ -196,7 +197,7 @@
           <span>🖱️ <b>Trace :</b> Clique sur les points.</span>
           <span>🔄 <b>Ferme :</b> Reclique sur ton point de départ.</span>
           <span>✏️ <b>Partie séparée :</b> Clique sur <b>Nouveau trait</b> pour lever le crayon.</span>
-          <span>✅ <b>Valide :</b> Clique sur <b>Vérifier</b> (🟩 juste, 🟧 manquant, 🟥 faux).</span>
+          <span>✅ <b>Valide :</b> Clique sur <b>Vérifier</b> ou appuie sur Entrée (🟩 juste, 🟥 à enlever).</span>
         </div>
       </div>
       <div class="canvas" id="canvas"></div>
@@ -209,6 +210,7 @@
         <span><i class="swatch" style="border-color:var(--axis)"></i> Axe de symétrie</span>
         <span><i class="swatch" style="border-color:var(--ok)"></i> Correct</span>
         <span><i class="swatch" style="border-color:var(--extra)"></i> À revoir</span>
+        <span><i class="swatch" style="border-color:#1f5fbf"></i> Solution</span>
       </div>
     </div>
   </section>
@@ -288,17 +290,37 @@ function buildAxis(type){
 }
 const EXOS = { V:buildAxis('V'), H:buildAxis('H'), O:buildAxis('O') };
 
+/* Noms des figures (pour ne jamais tirer deux fois la même forme dans une série) */
+const NOMS_BASE=['chevron','triangle','maison','escalier','flèche','trapèze','hexagone','zigzag','peigne','losange','croix','éclair','montagnes','barque','drapeau'];
+const NOMS_OBL=['triangle','carré','chevron','maison','flèche','escalier','trapèze','zigzag','pentagone','losange','barque','éclair','montagnes','croix','drapeau'];
+function melanger(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+const SERIE_N=10;
+function construireSerie(){
+  const pool=[];
+  ['V','H','O'].forEach(t=>EXOS[t].forEach((ex,i)=>pool.push({t,i,nom:t==='V'?NOMS_BASE[i]:t==='H'?NOMS_BASE[(i+7)%15]:NOMS_OBL[i]})));
+  for(let essai=0;essai<50;essai++){
+    const quota={V:4,H:3,O:3}, pris=new Set(), choix=[];
+    melanger(pool).forEach(c=>{ if(quota[c.t]>0 && !pris.has(c.nom)){ quota[c.t]--; pris.add(c.nom); choix.push(c); } });
+    if(choix.length===SERIE_N){
+      return melanger(choix).map(c=>{ const s=EXOS[c.t][c.i]; return {type:s.type, axis:s.axis, cols:s.cols, rows:s.rows, model:s.model, answer:s.answer, bg:(Math.random()<.5?'grid':'dots'), nom:c.nom}; });
+    }
+  }
+}
+
 /* ------------------------------------------------------------------ *
  *  État
  * ------------------------------------------------------------------ */
-let axisType='V', idx=0;
+let axisType='S', idx=0;
 let committed=[];     // traits terminés de l'élève [{pts:[...]}]
 let current=null;     // trait en cours {pts:[...]}
 let showSolution=false, verified=false;
+/* Série notée */
+let serie=construireSerie(), sIdx=0, score=0, essais=0, figDone=false, revealed=false, termine=false, saved=false, lastAct=0;
 
 const CELL=36, PAD=26;
 const X = c => PAD + c*CELL;
 const Y = r => PAD + r*CELL;
+const BLEU='#1f5fbf';
 
 const INSTR = {
   V:"Trace le symétrique de la figure par rapport à l'axe vertical rose.",
@@ -306,10 +328,20 @@ const INSTR = {
   O:"Trace le symétrique de la figure par rapport à l'axe oblique rose."
 };
 
-function curEx(){ return EXOS[axisType][idx]; }
+function enSerie(){ return axisType==='S'; }
+function curEx(){ return enSerie() ? serie[sIdx] : EXOS[axisType][idx]; }
+function bloque(){ return enSerie() && (figDone || termine); }
 
 /* ----- segments & comparaison ----- */
 function ekey(a,b){ const A=a[0]+','+a[1], B=b[0]+','+b[1]; return A<B ? A+'|'+B : B+'|'+A; }
+function pgcd(a,b){ a=Math.abs(a); b=Math.abs(b); while(b){ [a,b]=[b,a%b]; } return a; }
+/* Un segment est découpé en petits morceaux d'un nœud au suivant :
+   tracer [A,C] d'un coup ou [A,B] puis [B,C] (B sur le segment) revient au même. */
+function morceaux(a,b){
+  const dx=b[0]-a[0], dy=b[1]-a[1], n=pgcd(dx,dy)||1, out=[];
+  for(let k=0;k<n;k++) out.push([[a[0]+dx*k/n, a[1]+dy*k/n],[a[0]+dx*(k+1)/n, a[1]+dy*(k+1)/n]]);
+  return out;
+}
 function strokeSegs(s, asClosed){
   const segs=[];
   for(let i=0;i<s.pts.length-1;i++) segs.push([s.pts[i], s.pts[i+1]]);
@@ -322,10 +354,23 @@ function studentSegs(){
   studentStrokes().forEach(s=>{ for(let i=0;i<s.pts.length-1;i++) out.push([s.pts[i], s.pts[i+1]]); });
   return out;
 }
+function expectedSegs(){ return curEx().answer.flatMap(s=>strokeSegs(s,true)); }
 function expectedSet(){
   const set=new Set();
-  curEx().answer.forEach(s=> strokeSegs(s,true).forEach(seg=> set.add(ekey(seg[0],seg[1]))));
+  expectedSegs().forEach(seg=> morceaux(seg[0],seg[1]).forEach(m=> set.add(ekey(m[0],m[1]))));
   return set;
+}
+function drawnSet(){
+  const set=new Set();
+  studentSegs().forEach(seg=> morceaux(seg[0],seg[1]).forEach(m=> set.add(ekey(m[0],m[1]))));
+  return set;
+}
+function evaluer(){
+  const exp=expectedSet(), drawn=drawnSet(), segs=studentSegs();
+  let correct=0, missing=0, extra=0;
+  expectedSegs().forEach(seg=>{ morceaux(seg[0],seg[1]).every(m=>drawn.has(ekey(m[0],m[1]))) ? correct++ : missing++; });
+  segs.forEach(seg=>{ if(morceaux(seg[0],seg[1]).some(m=>!exp.has(ekey(m[0],m[1])))) extra++; });
+  return {correct, missing, extra, vide:segs.length===0, juste:(missing===0 && extra===0 && segs.length>0)};
 }
 
 /* ------------------------------------------------------------------ *
@@ -336,10 +381,8 @@ function svgOpen(ex){
   return `<svg viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="grille de symétrie">`;
 }
 function tintLayer(ex){
-  // teinte le côté "donné" pour montrer ce qui est déjà tracé
   if(ex.axis.t==='V') return `<rect x="${X(0)}" y="${Y(0)}" width="${ex.axis.pos*CELL}" height="${ex.rows*CELL}" fill="var(--tint)"/>`;
   if(ex.axis.t==='H') return `<rect x="${X(0)}" y="${Y(0)}" width="${ex.cols*CELL}" height="${ex.axis.pos*CELL}" fill="var(--tint)"/>`;
-  // diagonale : triangle bas-gauche
   return `<polygon points="${X(0)},${Y(0)} ${X(0)},${Y(ex.rows)} ${X(ex.cols)},${Y(ex.rows)}" fill="var(--tint)"/>`;
 }
 function backgroundLayer(ex){
@@ -372,30 +415,31 @@ function modelLayer(ex){
   return s;
 }
 function solutionLayer(ex){
-  if(!showSolution) return '';
+  const voir = enSerie() ? revealed : showSolution;
+  if(!voir) return '';
   let s='<g class="solution-layer">';
-  ex.answer.forEach(st=> s+=`<path d="${pathD(st)}" fill="none" stroke="var(--ok)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="2 8" opacity=".85"/>`);
+  ex.answer.forEach(st=> s+=`<path d="${pathD(st)}" fill="none" stroke="${BLEU}" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="9 7" opacity=".9"/>`);
   return s+'</g>';
 }
+/* Morceaux manquants en orange : seulement en entrainement libre (en série, ce serait donner la réponse). */
 function hintLayer(ex){
-  if(!verified) return '';
-  const exp = curEx().answer.flatMap(s=>strokeSegs(s,true));
-  const drawn = new Set(studentSegs().map(seg=>ekey(seg[0],seg[1])));
+  if(!verified || enSerie()) return '';
+  const drawn = drawnSet();
   let s='<g class="hint-layer">';
-  exp.forEach(seg=>{
-    if(!drawn.has(ekey(seg[0],seg[1])))
-      s+=`<line x1="${X(seg[0][0])}" y1="${Y(seg[0][1])}" x2="${X(seg[1][0])}" y2="${Y(seg[1][1])}" stroke="var(--missing)" stroke-width="3" stroke-linecap="round" stroke-dasharray="3 7" opacity=".75"/>`;
-  });
+  expectedSegs().forEach(seg=> morceaux(seg[0],seg[1]).forEach(m=>{
+    if(!drawn.has(ekey(m[0],m[1])))
+      s+=`<line x1="${X(m[0][0])}" y1="${Y(m[0][1])}" x2="${X(m[1][0])}" y2="${Y(m[1][1])}" stroke="var(--missing)" stroke-width="3" stroke-linecap="round" stroke-dasharray="3 7" opacity=".75"/>`;
+  }));
   return s+'</g>';
 }
 function studentLayer(){
   const exp = verified ? expectedSet() : null;
   let s='<g class="student-layer">';
-  studentSegs().forEach(seg=>{
+  studentSegs().forEach(seg=> morceaux(seg[0],seg[1]).forEach(m=>{
     let col='var(--student)';
-    if(verified) col = exp.has(ekey(seg[0],seg[1])) ? 'var(--ok)' : 'var(--extra)';
-    s+=`<line x1="${X(seg[0][0])}" y1="${Y(seg[0][1])}" x2="${X(seg[1][0])}" y2="${Y(seg[1][1])}" stroke="${col}" stroke-width="4.5" stroke-linecap="round"/>`;
-  });
+    if(verified) col = exp.has(ekey(m[0],m[1])) ? 'var(--ok)' : 'var(--extra)';
+    s+=`<line x1="${X(m[0][0])}" y1="${Y(m[0][1])}" x2="${X(m[1][0])}" y2="${Y(m[1][1])}" stroke="${col}" stroke-width="4.5" stroke-linecap="round"/>`;
+  }));
   s+='</g><g class="vertex-layer">';
   studentStrokes().forEach(st=> st.pts.forEach((p,i)=>{
     const last = current && st===current && i===st.pts.length-1;
@@ -410,6 +454,16 @@ function hitLayer(ex){
   return s+'</g>';
 }
 
+function majBoutons(){
+  const S=enSerie();
+  document.getElementById('prev').style.display = S ? 'none' : '';
+  document.getElementById('next').style.display = S ? 'none' : '';
+  document.getElementById('solve').style.display = S ? 'none' : '';
+  const chk=document.getElementById('check');
+  chk.textContent = !S ? '✓ Vérifier' : termine ? '🔁 Nouvelle série' : figDone ? (sIdx===SERIE_N-1 ? 'Voir mon score →' : 'Figure suivante →') : '✓ Vérifier';
+  ['newStroke','undo','clear'].forEach(id=> document.getElementById(id).disabled = bloque());
+}
+
 function render(){
   const ex = curEx();
   const html = svgOpen(ex) + tintLayer(ex) + backgroundLayer(ex) + hintLayer(ex)
@@ -420,19 +474,23 @@ function render(){
     n.addEventListener('click', ()=> addPoint(+n.dataset.c, +n.dataset.r));
   });
 
-  document.getElementById('count').textContent = `Figure ${idx+1} / 15`;
-  document.getElementById('instructionText').textContent = INSTR[axisType];
+  document.getElementById('count').textContent = enSerie()
+    ? (termine ? `Score : ${score} / ${SERIE_N}` : `Figure ${sIdx+1} / ${SERIE_N} · ${score} pt`)
+    : `Figure ${idx+1} / 15`;
+  document.getElementById('instructionText').textContent = INSTR[ex.type];
   document.getElementById('bgBadge').textContent = 'Fond : ' + (ex.bg==='grid'?'quadrillage':'points');
   document.getElementById('bgGrid').setAttribute('aria-pressed', ex.bg==='grid');
   document.getElementById('bgDots').setAttribute('aria-pressed', ex.bg==='dots');
   document.getElementById('solve').style.background = showSolution ? 'var(--accent)' : '';
   document.getElementById('solve').style.color = showSolution ? '#063b30' : '';
+  majBoutons();
 }
 
 /* ------------------------------------------------------------------ *
  *  Interactions
  * ------------------------------------------------------------------ */
 function addPoint(c,r){
+  if(bloque()) return;
   if(verified){ verified=false; } // on repart en mode tracé dès qu'on reclique
   if(!current){ current={pts:[[c,r]]}; render(); return; }
   const last=current.pts[current.pts.length-1];
@@ -449,68 +507,120 @@ function resetDrawing(){ committed=[]; current=null; showSolution=false; verifie
 function setFeedback(text, cls){
   const f=document.getElementById('feedback');
   f.className='feedback'+(cls?' '+cls:'');
-  f.innerHTML=text;
+  f.innerHTML='<span>'+text+'</span>';
+}
+function detail(r){
+  const parts=[];
+  parts.push(`<span class="chip">✅ <b>${r.correct}</b> côté(s) juste(s)</span>`);
+  if(r.missing>0) parts.push(`<span class="chip">🟧 <b>${r.missing}</b> manquant(s)</span>`);
+  if(r.extra>0)   parts.push(`<span class="chip">🟥 <b>${r.extra}</b> à enlever</span>`);
+  return parts.join('&nbsp;&nbsp;');
 }
 
-function check(){
+/* ----- entrainement libre ----- */
+function checkLibre(){
   finishStroke();
+  const r=evaluer();
   verified=true;
-  const exp = expectedSet();
-  const drawn = studentSegs().map(seg=>ekey(seg[0],seg[1]));
-  const drawnSet=new Set(drawn);
-  let correct=0, extra=0;
-  drawn.forEach(k=> exp.has(k) ? correct++ : extra++);
-  let missing=0;
-  exp.forEach(k=> { if(!drawnSet.has(k)) missing++; });
+  if(r.juste) setFeedback('🎉 Bravo&nbsp;! La figure symétrique est parfaite.', 'ok');
+  else if(r.vide) setFeedback('Commence par cliquer sur les points pour tracer le symétrique.', 'warn');
+  else setFeedback(detail(r), 'warn');
+  render();
+}
 
-  if(missing===0 && extra===0 && correct>0){
-    setFeedback('🎉 Bravo&nbsp;! La figure symétrique est parfaite.', 'ok');
-  } else if(drawn.length===0){
-    setFeedback('Commence par cliquer sur les points pour tracer le symétrique.', 'warn');
+/* ----- série notée ----- */
+function demarrerSerie(){
+  serie=construireSerie(); sIdx=0; score=0; essais=0; figDone=false; revealed=false; termine=false; saved=false;
+  resetDrawing(); defaultMsg(); render();
+}
+function figureSuivante(){
+  if(sIdx>=SERIE_N-1){ finSerie(); return; }
+  sIdx++; essais=0; figDone=false; revealed=false; resetDrawing(); defaultMsg(); render();
+}
+function finSerie(){
+  termine=true;
+  const pct=Math.round(score/SERIE_N*100);
+  const msg = pct>=80 ? 'Excellent, tu maitrises la symétrie&nbsp;!' : pct>=50 ? 'Bien joué, continue à t\'entrainer.' : 'Entraine-toi encore avec les onglets d\'entrainement.';
+  setFeedback(`🏁 Série terminée : <b>${score} / ${SERIE_N}</b> (${pct}&nbsp;%). ${msg}`, pct>=50 ? 'ok' : 'warn');
+  if(!saved){ saved=true; try {
+    window.parent.saveResult({
+      activity: 'solide_symetrie',
+      bookTitle: 'Les axes de symétrie',
+      score: score,
+      total: SERIE_N,
+      pct: pct,
+      date: new Date().toLocaleDateString('fr-BE'),
+      time: new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })
+    });
+  } catch(e) {} }
+  render();
+}
+function actionSerie(){
+  const t=Date.now(); if(t-lastAct<600) return; lastAct=t;
+  if(termine){ demarrerSerie(); return; }
+  if(figDone){ figureSuivante(); return; }
+  finishStroke();
+  const r=evaluer();
+  if(r.vide){ setFeedback('Commence par cliquer sur les points pour tracer le symétrique.', 'warn'); render(); return; }
+  essais++; verified=true;
+  if(r.juste){
+    figDone=true;
+    if(essais===1){ score++; setFeedback('🎉 Bravo&nbsp;! +1 point.', 'ok'); }
+    else setFeedback('✅ C\'est juste, mais au 2<sup>e</sup> essai : pas de point cette fois.', 'ok');
+  } else if(essais===1){
+    setFeedback(detail(r)+'&nbsp;&nbsp;— Corrige ton tracé puis clique sur <b>Vérifier</b>. Dernier essai&nbsp;!', 'warn');
   } else {
-    const parts=[];
-    parts.push(`<span class="chip">✅ <b>${correct}</b> segment(s) juste(s)</span>`);
-    if(missing>0) parts.push(`<span class="chip">🟧 <b>${missing}</b> manquant(s)</span>`);
-    if(extra>0)   parts.push(`<span class="chip">🟥 <b>${extra}</b> à enlever</span>`);
-    setFeedback(parts.join('&nbsp;&nbsp;'), 'warn');
+    figDone=true; revealed=true;
+    setFeedback(`Ce n'est pas encore ça. La bonne figure est tracée en <b style="color:${BLEU}">bleu</b>.`, 'warn');
   }
   render();
 }
+function check(){ if(enSerie()) actionSerie(); else checkLibre(); }
 
 /* ----- boutons ----- */
 document.querySelectorAll('.axis-tabs button').forEach(b=>{
   b.addEventListener('click', ()=>{
-    axisType=b.dataset.axis; idx=0; resetDrawing();
+    if(axisType===b.dataset.axis) return;
+    axisType=b.dataset.axis; resetDrawing();
+    if(!enSerie()) idx=0;
     document.querySelectorAll('.axis-tabs button').forEach(x=> x.setAttribute('aria-pressed', x===b));
-    setFeedback('Clique sur les points pour relier la figure de l\'autre côté de l\'axe rose.');
+    if(enSerie() && termine) setFeedback(`🏁 Série terminée : <b>${score} / ${SERIE_N}</b>. Clique sur <b>Nouvelle série</b> pour recommencer.`);
+    else defaultMsg();
+    if(enSerie() && figDone && !termine){ figureSuivante(); return; }
     render();
   });
 });
-document.getElementById('prev').addEventListener('click', ()=>{ idx=(idx+14)%15; resetDrawing(); defaultMsg(); render(); });
-document.getElementById('next').addEventListener('click', ()=>{ idx=(idx+1)%15; resetDrawing(); defaultMsg(); render(); });
+document.getElementById('prev').addEventListener('click', ()=>{ if(enSerie()) return; idx=(idx+14)%15; resetDrawing(); defaultMsg(); render(); });
+document.getElementById('next').addEventListener('click', ()=>{ if(enSerie()) return; idx=(idx+1)%15; resetDrawing(); defaultMsg(); render(); });
 document.getElementById('bgGrid').addEventListener('click', ()=>{ curEx().bg='grid'; render(); });
 document.getElementById('bgDots').addEventListener('click', ()=>{ curEx().bg='dots'; render(); });
-document.getElementById('newStroke').addEventListener('click', ()=>{ finishStroke(); render(); });
+document.getElementById('newStroke').addEventListener('click', ()=>{ if(bloque()) return; finishStroke(); render(); });
 document.getElementById('undo').addEventListener('click', ()=>{
+  if(bloque()) return;
   verified=false;
   if(current){ current.pts.pop(); if(current.pts.length===0) current=null; }
   else if(committed.length){ current=committed.pop(); current.pts.pop(); if(current.pts.length===0) current=null; }
   render();
 });
-document.getElementById('clear').addEventListener('click', ()=>{ resetDrawing(); defaultMsg(); render(); });
+document.getElementById('clear').addEventListener('click', ()=>{ if(bloque()) return; resetDrawing(); defaultMsg(); render(); });
 document.getElementById('check').addEventListener('click', check);
-document.getElementById('solve').addEventListener('click', ()=>{ finishStroke(); showSolution=!showSolution; render(); });
+document.getElementById('solve').addEventListener('click', ()=>{ if(enSerie()) return; finishStroke(); showSolution=!showSolution; render(); });
 
-function defaultMsg(){ setFeedback('Clique sur les points pour relier la figure de l\'autre côté de l\'axe rose.'); }
+function defaultMsg(){
+  setFeedback(enSerie()
+    ? 'Trace le symétrique puis clique sur <b>Vérifier</b>. Juste du premier coup = 1 point ; tu as 2 essais par figure.'
+    : 'Clique sur les points pour relier la figure de l\'autre côté de l\'axe rose.');
+}
 
-
-
-/* ----- clavier (navigation) ----- */
+/* ----- clavier ----- */
 document.addEventListener('keydown', e=>{
-  if(e.key==='ArrowRight'){ document.getElementById('next').click(); }
+  if(e.key==='Enter'){ e.preventDefault(); check(); }
+  else if(enSerie()) return;
+  else if(e.key==='ArrowRight'){ document.getElementById('next').click(); }
   else if(e.key==='ArrowLeft'){ document.getElementById('prev').click(); }
 });
 
+defaultMsg();
 render();
 </script>
 </body>

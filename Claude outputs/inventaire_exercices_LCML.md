@@ -1733,6 +1733,14 @@ Spécifique :
 - Orthographe : maitrises, entrainer.
 - Tests : jsdom (série 5+5, double Entrée sans saut, score 8/10 enregistré une fois). 2 copies identiques (md5).
 
+### 06/10 — Mathématiques → Solides et figures → Les axes de symétrie (`solide_symetrie`, `fiches/solide_symetrie.html` + copies public et racine) — sw.js v608
+- 45 figures (15 par axe : vertical, horizontal, oblique) vérifiées par programme : symétriques justes, tout dans la grille, figure donnée toujours du bon côté de l'axe.
+- **Tracé juste compté faux** : la vérification comparait les segments tels quels. Un élève qui cliquait sur les nœuds intermédiaires d'un côté (ex. côté de 8 carreaux tracé en 8 clics) avait « faux » ; 43 figures sur 45 concernées. → Chaque trait est découpé de nœud en nœud avant la comparaison.
+- **Aucun score, aucun enregistrement** (exercice jamais validé dans le plan de travail). → Choix de Jeremy : onglet « 🎯 Série notée » (par défaut) de 10 figures (4 verticales, 3 horizontales, 3 obliques, jamais deux fois la même forme, ordre Fisher–Yates, fond au hasard). 1 point si juste au 1er « Vérifier » ; 2 essais ; après 2 échecs la solution s'affiche en bleu (#1f5fbf). Résultat enregistré une fois (`saveResult`, format objet). Les 3 onglets d'entrainement libre restent.
+- En série, pas de bouton Solution ni de morceaux manquants en orange (ils donnaient la réponse). Garde de 600 ms : double Entrée ne saute rien ; Entrée = Vérifier / Figure suivante. Tracé verrouillé une fois la figure finie.
+- Solution libre en bleu (était verte, confondue avec « correct ») ; légende « Solution » ajoutée.
+- Tests jsdom : 2 000 séries (4/3/3, 0 doublon), vide non compté, tracé nœud par nœud accepté, 2 échecs → solution bleue, 2e essai juste = 0 point, partie 8/10 → 1 sauvegarde, double Entrée sans saut. Capture 390 px sans défilement horizontal.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2152,7 +2160,7 @@ Spécifique :
 | ✅ 06/10 | Patrons de solides | `polyedres_patrons` | fiches/patrons_solides.html |  |
 | ✅ 06/10 | Trouve le bon solide (Définitions) | `polyedres_definitions` | fiches/polyedres_definitions.html |  |
 | ✅ 06/10 | Trouve les caractéristiques (Définitions) | `polyedres_caracteristiques` | fiches/polyedres_caracteristiques.html |  |
-| ⬜ | Les axes de symétrie | `solide_symetrie` | fiches/solide_symetrie.html |  |
+| ✅ 06/10 | Les axes de symétrie | `solide_symetrie` | fiches/solide_symetrie.html |  |
 | ⬜ | Le labo des transformations | `solide_transformations_labo` | fiches/transformations_labo.html |  |
 | ⬜ | Projections de cubes (Solides 3D) | `solide_projections_cubes` | fiches/solides_projections.html |  |
 | ⬜ | Le vocabulaire géométrique | `solide_vocabulaire` | fiches/vocabulaire_solides.html |  |
