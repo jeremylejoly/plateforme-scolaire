@@ -1379,7 +1379,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Double clic sur « Situation suivante » sautait une situation → bloqué ; un seul enregistrement en fin de série.
 - Nouvelle orthographe : iles, boite, maitrises.
 - Tests jsdom : partie 7 / 10 avec doubles clics → 1 sauvegarde ; « Recommencer » remet à zéro ; syntaxe OK.
-- ⚠️ Même appel inexistant `handleActivityScore` (donc aucun résultat enregistré) dans 6 autres fiches, à corriger quand on y arrivera : ~~aire_quadrillage~~ (v571), ~~aire_conversions~~ (v572), ~~aire_formules~~ (v574), ~~volume_cubes~~ (v576), volume_formules, volume_conversions.
+- ⚠️ Même appel inexistant `handleActivityScore` (donc aucun résultat enregistré) dans 6 autres fiches, à corriger quand on y arrivera : ~~aire_quadrillage~~ (v571), ~~aire_conversions~~ (v572), ~~aire_formules~~ (v574), ~~volume_cubes~~ (v576), ~~volume_formules~~ (v577), volume_conversions.
 
 ### 05/10 — Maths › Grandeurs › L'aire › Le Géomètre des Carreaux (`grandeur_aire_quadrillage`, `fiches/aire_quadrillage.html` + copies public et racine) — sw.js v571
 - 51 figures recalculées par la formule du lacet : toutes les aires justes, aucun polygone croisé, toutes dans la grille.
@@ -1440,6 +1440,15 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Saisie : `parseInt` (« 12abc » = 12) + fenêtre `alert()` → lecture stricte, message dans la page, rien n'est compté.
 - Double clic sur « Structure suivante » → plus de structure sautée ; Entrée passe à la suite (pas sur un double Entrée).
 - Tests jsdom : vide/« 12abc » non comptés, double Entrée sans saut, partie 7 / 10 → 1 sauvegarde ; capture 390 px ; syntaxe OK.
+
+### 06/10 — Maths › Grandeurs › Le volume › L'Architecte des pavés (`fiches/volume_formules.html` + copies public et racine) — sw.js v577
+- Solides générés (cubes de 2 à 6 cm, pavés jusqu'à 8 × 5 × 6 cm) : sur 3 000 séries, les cotes du dessin = mesures du calcul, et le volume de l'explication = L × l × h.
+- **Aucun résultat enregistré** (`handleActivityScore` inexistante) → `saveResult` sous `grandeur_volume_architecte` (identifiant du menu et du plan de travail ; l'ancien nom de la fiche, `grandeur_volume_formules`, n'aurait pas été reconnu), une seule fois par série.
+- Tirage : 35 % de chances de cube à chaque question (parfois aucun cube, parfois 7) et mêmes mesures possibles deux fois → 3 cubes + 7 pavés par série, mélangés, jamais deux fois les mêmes mesures ; un « pavé » aux trois mesures égales (un cube) est évité.
+- Cote de la hauteur placée sur la face de droite, à côté de la profondeur (confusion) → à gauche de l'arête avant, hors du solide (captures 390 px vérifiées).
+- Saisie : `parseInt` (« 12abc » = 12) + fenêtre `alert()` → lecture stricte, espaces de milliers acceptés, message, rien n'est compté. Double clic sur « Solide suivant » → plus de solide sauté ; Entrée passe à la suite (pas sur un double Entrée).
+- Nouvelle orthographe : maitrisée.
+- Tests jsdom : vide/« 12abc » non comptés, double Entrée sans saut, partie 7 / 10 → 1 sauvegarde ; syntaxe OK.
 
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
@@ -1781,7 +1790,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | L'Arpenteur du Château (Formules d'aire) | `grandeur_aire_formules` | fiches/aire_formules.html |  |
 | ✅ 05/10 | Le Calcul d'Aires Composées | `grandeur_aire_composee` | fiches/aire_composee.html |  |
 | ✅ 06/10 | Le Bâtisseur de Cubes (Volume 3D) | `grandeur_volume_cubes` | fiches/volume_cubes.html |  |
-| ⬜ | L'Architecte des Pavés (Formules) | `grandeur_volume_architecte` | fiches/volume_formules.html |  |
+| ✅ 06/10 | L'Architecte des Pavés (Formules) | `grandeur_volume_architecte` | fiches/volume_formules.html |  |
 | ⬜ | Le Laboratoire des Liquides | `grandeur_volume_liquides` | fiches/volume_conversions.html |  |
 
 ### 🔢 Mathématiques — 📐 Grandeurs — Durées, Monnaie & Vitesse

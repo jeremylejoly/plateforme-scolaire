@@ -230,7 +230,7 @@
 
     <div class="answer-row">
       <span class="answer-label">Volume du solide :</span>
-      <input type="number" id="volume-input" class="answer-input" min="1" step="1" placeholder="?">
+      <input type="text" inputmode="numeric" autocomplete="off" id="volume-input" class="answer-input" placeholder="?">
       <span class="answer-unit">cm³</span>
       <button class="btn-validate" id="btn-val" onclick="validateAnswer()">✓ Valider</button>
     </div>
@@ -258,17 +258,26 @@
 const SVG_W = 500;
 const SVG_H = 340;
 const TOTAL_Q = 10;
-
 let step = 1;
 let score = 0;
 let answered = false;
 let currentSolide = null;
-
 // ════════════════════════════════════════════════
 // GÉNÉRATEUR DE SOLIDES
 // ════════════════════════════════════════════════
-function generateSolide() {
-  const isCube = Math.random() < 0.35; // 35% de chance de tomber sur un cube
+// Série : 3 cubes et 7 pavés, dans un ordre mélangé, jamais deux fois les mêmes mesures
+// (avant : 35 % de chances par question → parfois aucun cube ou 7 cubes ; mêmes mesures possibles deux fois)
+let serie = [];
+function shuffle(a){ const r=[...a]; for(let i=r.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [r[i],r[j]]=[r[j],r[i]]; } return r; }
+function genererSerie() {
+  const vus = new Set(); serie = [];
+  for (const isCube of shuffle([true, true, true, false, false, false, false, false, false, false])) {
+    let sol, cle;
+    do { sol = generateSolide(isCube); cle = [sol.L, sol.W, sol.H].sort((a, b) => a - b).join('x'); } while (vus.has(cle));
+    vus.add(cle); serie.push(sol);
+  }
+}
+function generateSolide(isCube) {
   if (isCube) {
     const side = Math.floor(Math.random() * 5) + 2; // Côté entre 2 et 6 cm
     return {
@@ -283,9 +292,12 @@ function generateSolide() {
     };
   } else {
     // Pavé droit (parallélépipède rectangle)
-    const L = Math.floor(Math.random() * 6) + 3; // Longueur 3 à 8 cm
-    const W = Math.floor(Math.random() * 4) + 2; // Largeur 2 à 5 cm
-    const H = Math.floor(Math.random() * 5) + 2; // Hauteur 2 à 6 cm
+    let L, W, H;
+    do {
+      L = Math.floor(Math.random() * 6) + 3; // Longueur 3 à 8 cm
+      W = Math.floor(Math.random() * 4) + 2; // Largeur 2 à 5 cm
+      H = Math.floor(Math.random() * 5) + 2; // Hauteur 2 à 6 cm
+    } while (L === W && W === H); // trois mesures égales = un cube
     return {
       type: "pave",
       name: "Un parallélépipède rectangle",
@@ -298,26 +310,22 @@ function generateSolide() {
     };
   }
 }
-
 // ════════════════════════════════════════════════
 // RENDU 3D DYNAMIQUE DU SOLIDE (Perspective Axonométrique)
 // ════════════════════════════════════════════════
 function renderSolide(solide) {
   const svg = document.getElementById('volume-svg');
   svg.innerHTML = '';
-
   // 1. Calcul des dimensions relatives pour le dessin (s'adaptent aux ratios sans déborder)
   // On mappe les cm réels vers des pixels
   const baseScale = 200 / Math.max(solide.L, solide.W, solide.H);
   const sL = solide.L * baseScale;
   const sW = solide.W * baseScale * 0.8; // Réduction pour l'effet de profondeur
   const sH = solide.H * baseScale;
-
   // Calcul du décalage (angle de 30° pour la profondeur)
   const angle = Math.PI / 6; // 30 degrés
   const dx = sW * Math.cos(angle);
   const dy = -sW * Math.sin(angle);
-
   // 2. Définition des 8 points en 3D projetés sur l'écran (non translatés)
   const p0 = { x: 0, y: 0 };        // devant-bas-gauche
   const p1 = { x: sL, y: 0 };       // devant-bas-droit
@@ -327,26 +335,21 @@ function renderSolide(solide) {
   const p5 = { x: sL + dx, y: dy }; // derrière-bas-droit
   const p6 = { x: sL + dx, y: -sH + dy }; // derrière-haut-droit
   const p7 = { x: dx, y: -sH + dy }; // derrière-haut-gauche
-
   // 3. Centrage automatique dans le viewport de l'SVG
   const points = [p0, p1, p2, p3, p4, p5, p6, p7];
   const minX = Math.min(...points.map(p => p.x));
   const maxX = Math.max(...points.map(p => p.x));
   const minY = Math.min(...points.map(p => p.y));
   const maxY = Math.max(...points.map(p => p.y));
-
   const contentW = maxX - minX;
   const contentH = maxY - minY;
-
   const offsetX = (SVG_W - contentW) / 2 - minX;
   const offsetY = (SVG_H - contentH) / 2 - minY;
-
   // Application de l'offset à tous les points
   points.forEach(p => {
     p.x += offsetX;
     p.y += offsetY;
   });
-
   // 4. Dessin des arêtes cachées (en pointillés au fond)
   // P4 connecte à P0, P5, P7
   const drawDashed = (pa, pb) => {
@@ -361,7 +364,6 @@ function renderSolide(solide) {
   drawDashed(p0, p4);
   drawDashed(p5, p4);
   drawDashed(p7, p4);
-
   // 5. Remplissage et contour des faces visibles
   const drawFace = (pts, fill) => {
     const poly = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
@@ -372,49 +374,47 @@ function renderSolide(solide) {
     poly.setAttribute('stroke-linejoin', 'round');
     svg.appendChild(poly);
   };
-
   // Face de devant
   drawFace([p0, p1, p2, p3], 'rgba(6, 182, 212, 0.25)'); // Cyan transparent
   // Face de droite
   drawFace([p1, p5, p6, p2], 'rgba(99, 102, 241, 0.22)'); // Bleu/Violet transparent
   // Face du dessus
   drawFace([p3, p2, p6, p7], 'rgba(14, 165, 233, 0.35)'); // Ciel transparent
-
   // 6. Placement des annotations de cotes (Dimensions)
   const drawLabel = (pa, pb, text, offsetType) => {
     const textEl = document.createElementNS('http://www.w3.org/2000/svg', 'text');
     let lx = (pa.x + pb.x) / 2;
     let ly = (pa.y + pb.y) / 2;
-
     if (offsetType === 'bottom') {
       ly += 20;
     } else if (offsetType === 'right') {
       lx += 12;
       ly += 4;
+    } else if (offsetType === 'left') {
+      lx -= 10;
+      ly += 5;
+      textEl.setAttribute('text-anchor', 'end');
     } else if (offsetType === 'side') {
       lx += 15;
       ly += 15;
     }
-
     textEl.setAttribute('x', lx);
     textEl.setAttribute('y', ly);
     textEl.setAttribute('fill', '#f1f5f9');
     textEl.setAttribute('font-size', '14');
     textEl.setAttribute('font-weight', '700');
     textEl.setAttribute('font-family', 'Outfit, sans-serif');
-    textEl.setAttribute('text-anchor', 'middle');
+    if (!textEl.getAttribute('text-anchor')) textEl.setAttribute('text-anchor', 'middle');
     textEl.textContent = text;
     svg.appendChild(textEl);
   };
-
   // Longueur (devant bas)
   drawLabel(p0, p1, `${solide.L} cm`, 'bottom');
-  // Hauteur (devant droit)
-  drawLabel(p1, p2, `${solide.H} cm`, 'right');
+  // Hauteur : à gauche de l'arête avant gauche, hors du solide (avant : sur la face de droite, mélangée à la profondeur)
+  drawLabel(p0, p3, `${solide.H} cm`, 'left');
   // Largeur/Profondeur (reculant bas droit)
   drawLabel(p1, p5, `${solide.W} cm`, 'side');
 }
-
 // ════════════════════════════════════════════════
 // ACTIONS DU JEU
 // ════════════════════════════════════════════════
@@ -425,41 +425,36 @@ function renderQuestion() {
   document.getElementById('volume-input').value = '';
   document.getElementById('volume-input').disabled = false;
   document.getElementById('btn-val').disabled = false;
-
-  currentSolide = generateSolide();
-
+  if (step === 1 || serie.length !== TOTAL_Q) genererSerie();
+  currentSolide = serie[step - 1];
   document.getElementById('q-num').textContent = step;
   document.getElementById('score-disp').textContent = score;
   document.getElementById('prog-bar').style.width = `${((step - 1) / TOTAL_Q) * 100}%`;
-
   document.getElementById('fig-icon').textContent = currentSolide.icon;
   document.getElementById('fig-name').textContent = currentSolide.name;
   document.getElementById('fig-hint').textContent = currentSolide.hint;
-
   renderSolide(currentSolide);
   document.getElementById('volume-input').focus();
 }
-
 function validateAnswer() {
   if (answered) return;
   const inputEl = document.getElementById('volume-input');
-  const val = parseInt(inputEl.value, 10);
-
-  if (isNaN(val) || val <= 0) {
-    alert("Saisis un nombre entier pour le volume !");
+  const raw = inputEl.value.trim().replace(/[\s\u00a0\u202f]/g, '');
+  // Vide ou illisible : message, rien n'est compté (avant : fenêtre alert() ; « 12abc » lu comme 12)
+  if (!/^\d+$/.test(raw) || +raw <= 0) {
+    document.getElementById('feedback-area').innerHTML = `<div class="feedback fb-wrong"><div class="fb-icon">✏️</div><div><div class="fb-text">Écris le volume (un nombre entier), puis valide.</div></div></div>`;
+    inputEl.focus();
     return;
   }
-
+  const val = parseInt(raw, 10);
+  answeredAt = Date.now();
   answered = true;
   document.getElementById('btn-val').disabled = true;
   inputEl.disabled = true;
-
   const correctAns = currentSolide.L * currentSolide.W * currentSolide.H;
   const correct = (val === correctAns);
-
   if (correct) score++;
   document.getElementById('score-disp').textContent = score;
-
   const feedbackArea = document.getElementById('feedback-area');
   feedbackArea.innerHTML = `
     <div class="feedback ${correct ? 'fb-correct' : 'fb-wrong'}">
@@ -472,29 +467,27 @@ function validateAnswer() {
         </div>
       </div>
     </div>`;
-
   document.getElementById('next-area').innerHTML = step < TOTAL_Q
     ? `<button class="btn-next" onclick="nextQ()">Solide suivant 👉</button>`
     : `<button class="btn-next" onclick="finishGame()">Voir mon résultat 🏆</button>`;
 }
-
+let saved = false, answeredAt = 0;
 function nextQ() {
+  if (!answered || step >= TOTAL_Q) return; // double clic : pas de solide sauté
   step++;
   renderQuestion();
 }
-
 function finishGame() {
+  if (!answered || step < TOTAL_Q || saved) return;
   document.getElementById('game-flow').style.display = 'none';
   document.getElementById('congrats-flow').style.display = 'block';
-
   const pct = Math.round((score / TOTAL_Q) * 100);
   let msg, stars;
-
   if (score === TOTAL_Q) {
     msg = `Géométrie spatiale parfaite ! <strong>${score}/${TOTAL_Q}</strong> (${pct}%). Tu calcules les volumes comme un chef architecte !`;
     stars = '⭐⭐⭐';
   } else if (score >= 8) {
-    msg = `Excellent travail ! <strong>${score}/${TOTAL_Q}</strong> (${pct}%). La formule est bien maîtrisée !`;
+    msg = `Excellent travail ! <strong>${score}/${TOTAL_Q}</strong> (${pct}%). La formule est bien maitrisée !`;
     stars = '⭐⭐';
   } else if (score >= 5) {
     msg = `C'est pas mal ! <strong>${score}/${TOTAL_Q}</strong> (${pct}%). Rappelle-toi bien de multiplier les 3 dimensions !`;
@@ -503,30 +496,36 @@ function finishGame() {
     msg = `Score : <strong>${score}/${TOTAL_Q}</strong> (${pct}%). N'hésite pas à poser tes calculs sur papier pour t'aider.`;
     stars = '❌';
   }
-
   document.getElementById('congrats-msg').innerHTML = msg;
   document.getElementById('stars').textContent = stars;
-
-  if (typeof window.parent !== 'undefined' && window.parent.handleActivityScore) {
-    window.parent.handleActivityScore('grandeur_volume_formules', score);
+  // Enregistrement (avant : appel à handleActivityScore, fonction inexistante → jamais enregistré)
+  if (window.parent && typeof window.parent.saveResult === 'function') {
+    saved = true;
+    try {
+      window.parent.saveResult({
+        activity: 'grandeur_volume_architecte', bookTitle: "L'Architecte des Pavés (formules de volume)",
+        score, total: TOTAL_Q, pct,
+        date: new Date().toLocaleDateString('fr-BE'),
+        time: new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })
+      });
+    } catch (e) { console.warn('Erreur sauvegarde Architecte des pavés', e); }
   }
 }
-
 function resetGame() {
   step = 1;
   score = 0;
+  saved = false;
+  serie = [];
   document.getElementById('game-flow').style.display = 'block';
   document.getElementById('congrats-flow').style.display = 'none';
   renderQuestion();
 }
-
 // Raccourci clavier Entrée
 document.addEventListener('keydown', e => {
-  if (e.key === 'Enter' && !answered) {
-    validateAnswer();
-  }
+  if (e.key !== 'Enter') return;
+  if (!answered) validateAnswer();
+  else if (Date.now() - answeredAt > 600) { if (step < TOTAL_Q) nextQ(); else finishGame(); } // Entrée : suite (pas sur un double Entrée)
 });
-
 // Lancement automatique
 window.addEventListener('DOMContentLoaded', () => {
   renderQuestion();
