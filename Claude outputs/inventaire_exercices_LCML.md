@@ -1868,6 +1868,12 @@ Spécifique :
 - Bonne réponse en bleu (#1f5fbf) après une erreur (elle était en vert) ; Entrée = question suivante / score final (pas depuis une case de l'abaque).
 - Tests jsdom : faux → bleu, double Entrée sans saut, 9/10 → 1 sauvegarde ; capture 390 px sans défilement horizontal.
 
+### 06/10 — Mathématiques → Solides et figures → Les quadrilatères → Évaluation (`quadrilateres_evaluation`, index › startShapeEvaluation + exercices_maths.js) — sw.js v623
+- **Le menu annonçait « 5 formes + 5 vrai/faux » mais seules les 5 formes étaient posées** (`evaluation_vf` jamais utilisé) → les 5 affirmations vrai / faux suivent les 5 formes (score sur 10).
+- **Formes de l'évaluation mal choisies** : 2 parallélogrammes, pas de losange → carré, rectangle, parallélogramme, losange, trapèze isocèle (5 noms différents) ; ordre des formes et des affirmations mélangé, propositions mélangées (déjà en place).
+- Évaluation déjà passée : fenêtre `alert` → message dans la page. Bonne réponse en bleu (#1f5fbf) après une erreur ; correction finale avec le texte des affirmations. « Nouvel entrainement » (8 boutons du site).
+- Tests jsdom : 10 questions (5 formes, 5 VF), 2 erreurs → bleu, doubles clics sans saut, 8/10 → 1 sauvegarde, 2e tentative → message. `exercices_maths.js?v=20261006g`.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2274,7 +2280,7 @@ Spécifique :
 | ✅ 06/10 | Quadrilatères — Vrai ou Faux | `quadrilateres_vf` | index › startVFExercise |  |
 | ✅ 06/10 | Quadrilatères — Caractéristiques | `quadrilateres_caracteristiques` | index › startCharsExercise |  |
 | ✅ 06/10 | Quadrilatères — Médianes & Diagonales | `quadrilateres_diagonales_medianes` | fiches/quadrilateres_diagonales_medianes.html |  |
-| ⬜ | Quadrilatères — Évaluation | `quadrilateres_evaluation` | index › startShapeEvaluation |  |
+| ✅ 06/10 | Quadrilatères — Évaluation | `quadrilateres_evaluation` | index › startShapeEvaluation |  |
 | ✅ 06/10 | Le cercle et le disque — Le vocabulaire | `disque_vocabulaire` | fiches/disque_vocabulaire.html |  |
 | ✅ 06/10 | Le cercle et le disque — Le laboratoire | `disque_laboratoire` | fiches/disque_laboratoire.html |  |
 | ✅ 06/10 | Le cercle et le disque — L'enquête du compas | `disque_compas` | fiches/disque_compas.html |  |

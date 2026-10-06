@@ -37,9 +37,10 @@ window.EXERCICES_MATHS = {
   {id:"q24",svg:"<polygon points=\"31,47 185,19 152,119 62,110\" fill=\"#DBEAFE\" stroke=\"#2563EB\" stroke-width=\"2.5\"/>",options:["trapèze isocèle","parallélogramme","quadrilatère quelconque"],answer:2}
       ],
 
-      // Évaluation fixe (une seule tentative) - 5 questions
+      // Évaluation fixe (une seule tentative) - 5 formes toutes différentes :
+      // carré, rectangle, parallélogramme, losange, trapèze isocèle (avant : 2 parallélogrammes, pas de losange)
       evaluation: [
-        0, 4, 7, 11, 15
+        0, 4, 7, 8, 13
       ],
 
       // Banque de 30 questions Vrai/Faux
