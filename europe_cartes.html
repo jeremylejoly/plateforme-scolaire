@@ -86,7 +86,10 @@ body { font-family: 'Nunito', sans-serif; background: #f5f6fa; padding: 1.5rem; 
 .drop-zone.filled.capitale { color: #991b1b; }
 .drop-zone.correct { background: #d4f5e2; border-color: #16a34a; color: #166534; border-style: solid; }
 .drop-zone.incorrect { background: #fdd9d7; border-color: #dc2626; color: #dc2626; border-style: solid; }
-.drop-zone.vide-ok { background: #f3f4f6; border-color: #9ca3af; border-style: dashed; color: #9ca3af; }
+.drop-zone.vide-ok { background: #d4f5e2; border-color: #16a34a; border-style: solid; color: #166534; }
+.drop-zone .ph { opacity: .4; }
+.etiquette.used { pointer-events: none; }
+@media(max-width: 700px){ body { padding: .75rem; } }
 
 .btn {
   width: 100%; padding: 10px; background: #8b5cf6; color: white;
@@ -116,7 +119,7 @@ body { font-family: 'Nunito', sans-serif; background: #f5f6fa; padding: 1.5rem; 
 </div>
 
 <div style="background:#fef9c3;border:1px solid #f59e0b;border-radius:10px;padding:.75rem 1rem;margin-bottom:1rem;font-size:13px;font-weight:700;color:#92400e;">
-  📌 Place les étiquettes près du bon numéro. Attention, il y a 3 cases qui devront rester vides.
+  <span id="consigne">📌 Place les étiquettes près du bon numéro. Attention, il y a 3 cases qui devront rester vides.</span>
 </div>
 <div class="main-layout">
   <div class="carte-wrap">
@@ -133,18 +136,21 @@ body { font-family: 'Nunito', sans-serif; background: #f5f6fa; padding: 1.5rem; 
         <tbody id="tableau-body"></tbody>
       </table>
     </div>
+    <div id="msg" style="display:none;padding:.6rem .9rem;border-radius:8px;background:#fff7ed;border:1.5px solid #f59e0b;color:#92400e;font-size:13px;font-weight:700;text-align:center"></div>
     <button class="btn" id="btn-valider" onclick="valider()">✅ Valider</button>
     <button class="btn" id="btn-reset" style="background:#6b7280;display:none" onclick="resetCarte()">🔄 Recommencer</button>
     <div class="score-panel" id="score-panel">
       <div class="emoji" id="score-emoji"></div>
       <div class="score" id="score-txt"></div>
+      <div id="score-aide" style="display:none;font-size:13px;font-weight:700;margin-top:4px">La bonne réponse est indiquée en <span style="color:#1f5fbf">bleu</span>.</div>
     </div>
   </div>
 </div>
 
 </div>
 <script>
-const BASE = 'https://jeremylejoly.github.io/plateforme-scolaire/';
+// Images du site (chemin relatif : fonctionne en ligne, hors ligne et en local)
+const BASE = window.location.pathname.includes('/fiches/') ? '../' : '';
 
 const CARTES = [
   {
@@ -218,7 +224,7 @@ const CARTES = [
       {n:4,  label:'Croatie'},
       {n:5,  label:''},
       {n:6,  label:'Biélorussie'},
-      {n:7,  label:'République Tchèque'},
+      {n:7,  label:'République tchèque'},
       {n:8,  label:'Finlande'},
       {n:9,  label:'Lettonie'},
       {n:10, label:'Pologne'},
@@ -332,7 +338,8 @@ const CARTES = [
 // État
 let curCarte = null;
 let placed = {};
-let dragging = null, touchEl = null, touchClone = null;
+let selTag = null, done = false;
+let touchEl = null, touchClone = null, touchX = 0, touchY = 0;
 
 // ===== INIT =====
 function buildCarteSelect(){
@@ -342,14 +349,18 @@ function buildCarteSelect(){
   ).join('');
 }
 
+const CONSIGNES = {
+  physique: "📌 Place chaque étiquette dans la case du bon numéro. Attention : 3 numéros n'ont pas d'étiquette, leur case doit rester vide.",
+  pays: "📌 Place le nom de chaque pays dans la case du bon numéro. Attention : 3 numéros n'ont pas d'étiquette, leur case doit rester vide.",
+  capitale: "📌 Place la capitale de chaque pays numéroté dans la case du bon numéro. Attention : 3 numéros n'ont pas d'étiquette, leur case doit rester vide."
+};
+
 function chargerCarte(idx){
   curCarte = CARTES[idx];
-  placed = {};
+  placed = {}; selTag = null; done = false;
 
-  // Boutons actifs
   document.querySelectorAll('.carte-btn').forEach((b,i) => b.classList.toggle('active', i===idx));
 
-  // Info
   const infoCard = document.getElementById('info-card');
   const colors = {physique:'#dcfce7', pays:'#ede9fe', capitale:'#fee2e2'};
   const textColors = {physique:'#166534', pays:'#6d28d9', capitale:'#991b1b'};
@@ -357,72 +368,85 @@ function chargerCarte(idx){
   infoCard.style.border = `1px solid ${textColors[curCarte.type]}`;
   document.getElementById('info-titre').textContent = curCarte.titre;
   document.getElementById('info-titre').style.color = textColors[curCarte.type];
+  document.getElementById('consigne').textContent = CONSIGNES[curCarte.type];
 
-  // Image
   document.getElementById('carte-img').src = curCarte.img;
 
-  // Étiquettes (seulement les non-vides, mélangées)
-  const etiquettes = curCarte.zones.filter(z=>z.label!=='').map(z=>z.label);
-  shuffle(etiquettes);
+  // Étiquettes (seulement les non-vides, mélangées — Fisher–Yates)
+  const etiquettes = shuffle(curCarte.zones.filter(z=>z.label!=='').map(z=>z.label));
   const banque = document.getElementById('banque');
   banque.innerHTML = etiquettes.map(lbl =>
     `<div class="etiquette ${curCarte.type}" id="etiq-${slug(lbl)}" data-label="${lbl}"
-      draggable="true"
+      draggable="true" onclick="selectTag(this)"
       ondragstart="dragStart(event)" ondragend="dragEnd(event)"
-      ontouchstart="touchStart(event)" ontouchmove="touchMove(event)" ontouchend="touchEnd(event)">
-      ${lbl}
-    </div>`
+      ontouchstart="touchStart(event)" ontouchmove="touchMove(event)" ontouchend="touchEnd(event)" ontouchcancel="touchCancel(event)">${lbl}</div>`
   ).join('');
 
-  // Tableau
+  // Tableau : toutes les cases ont le même aspect (rien n'indique les cases qui restent vides)
   const tbody = document.getElementById('tableau-body');
   tbody.innerHTML = curCarte.zones.map(z =>
     `<tr>
       <td class="td-num">${z.n}</td>
-      <td>
-        <div class="drop-zone ${curCarte.type}" id="zone-${z.n}" data-n="${z.n}" onclick="clearZone(this)"
-          ondragover="dzOver(event)" ondrop="dzDrop(event)" ondragleave="dzLeave(event)">
-          ${z.label===''?'<span style="font-size:11px;color:#d1d5db">Case vide</span>':'<span style="opacity:.4">Glisse ici…</span>'}
-        </div>
-      </td>
+      <td><div class="drop-zone ${curCarte.type}" id="zone-${z.n}" data-n="${z.n}" onclick="zoneClick(this)"
+          ondragover="dzOver(event)" ondrop="dzDrop(event)" ondragleave="dzLeave(event)"><span class="ph">…</span></div></td>
     </tr>`
   ).join('');
 
-  // Boutons
   const btn = document.getElementById('btn-valider');
   btn.className = `btn ${curCarte.type}`;
+  btn.style.display = 'block';
   document.getElementById('btn-reset').style.display='none';
   document.getElementById('score-panel').style.display='none';
+  document.getElementById('msg').style.display='none';
 }
 
 function slug(s){ return s.replace(/[^a-zA-Z0-9]/g,'-'); }
-function shuffle(a){ a.sort(()=>Math.random()-.5); }
+function shuffle(a){
+  for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; }
+  return a;
+}
+
+// ===== SÉLECTION AU TOUCHER =====
+function clearSel(){ selTag=null; document.querySelectorAll('.etiquette').forEach(t=>t.style.outline=''); }
+function selectTag(tag){
+  if(done || tag.classList.contains('used')) return;
+  const same = selTag === tag;
+  clearSel();
+  if(!same){ selTag = tag; tag.style.outline = '3px solid #f59e0b'; tag.style.outlineOffset='2px'; }
+}
+function zoneClick(zone){
+  if(done) return;
+  if(selTag){ placer(zone, selTag.dataset.label); return; }
+  clearZone(zone);
+}
 
 // ===== DRAG DESKTOP =====
-function dragStart(e){ dragging=e.currentTarget.dataset.label; e.dataTransfer.setData('text/plain',dragging); e.currentTarget.style.opacity='.4'; }
-function dragEnd(e){ e.currentTarget.style.opacity=''; dragging=null; }
+function dragStart(e){ if(done){ e.preventDefault(); return; } e.dataTransfer.setData('text/plain',e.currentTarget.dataset.label); e.currentTarget.style.opacity='.4'; }
+function dragEnd(e){ e.currentTarget.style.opacity=''; }
 function dzOver(e){ e.preventDefault(); e.currentTarget.classList.add('drag-over'); }
 function dzLeave(e){ e.currentTarget.classList.remove('drag-over'); }
 function dzDrop(e){ e.preventDefault(); e.currentTarget.classList.remove('drag-over'); placer(e.currentTarget, e.dataTransfer.getData('text/plain')); }
 
 function placer(zone, label){
+  if(done || !label) return;
   const n = parseInt(zone.dataset.n);
-  // Retourner l'ancienne étiquette si zone occupée
   const old = placed[n];
+  if(old === label){ clearSel(); return; }
   if(old) retourner(old);
-  // Retirer de l'autre zone si déjà placée
+  // Retirer de l'autre case si déjà placée
   Object.entries(placed).forEach(([k,v])=>{
     if(v===label && parseInt(k)!==n){
       const oz = document.getElementById('zone-'+k);
-      if(oz){ oz.innerHTML='<span style="opacity:.4">Glisse ici…</span>'; oz.classList.remove('filled'); }
+      if(oz){ oz.innerHTML='<span class="ph">…</span>'; oz.classList.remove('filled'); }
       delete placed[parseInt(k)];
     }
   });
-  // Retirer de la banque
   retirer(label);
   placed[n] = label;
   zone.textContent = label;
   zone.classList.add('filled');
+  clearSel();
+  document.getElementById('msg').style.display='none';
 }
 
 function retourner(label){
@@ -434,14 +458,11 @@ function retirer(label){
   if(tag){ tag.classList.add('used'); tag.draggable=false; }
 }
 function clearZone(zone){
-  const panel = document.getElementById('score-panel');
-  if(panel && panel.style.display === 'block') return;
+  if(done) return;
   const n = parseInt(zone.dataset.n);
-  const z = curCarte.zones.find(x => x.n === n);
-  if(z && z.label === '') return;
   const label = placed[n];
   if(!label) return;
-  zone.innerHTML = '<span style="opacity:.4">Glisse ici…</span>';
+  zone.innerHTML = '<span class="ph">…</span>';
   zone.classList.remove('filled');
   retourner(label);
   delete placed[n];
@@ -449,64 +470,90 @@ function clearZone(zone){
 
 // ===== TOUCH MOBILE =====
 function touchStart(e){
-  const tag=e.currentTarget; if(tag.classList.contains('used')) return;
+  const tag=e.currentTarget; if(tag.classList.contains('used') || done) return;
   touchEl=tag;
+  const t=e.touches[0]; touchX=t.clientX; touchY=t.clientY;
   const clone=tag.cloneNode(true);
   clone.style.cssText='position:fixed;z-index:9999;opacity:.85;pointer-events:none;border-radius:20px;padding:6px 12px;font-size:12px;font-weight:700;color:white;';
   clone.style.background = curCarte.type==='physique'?'#16a34a':curCarte.type==='capitale'?'#dc2626':'#8b5cf6';
-  const t=e.touches[0]; clone.style.left=(t.clientX-40)+'px'; clone.style.top=(t.clientY-20)+'px';
+  clone.style.left=(t.clientX-40)+'px'; clone.style.top=(t.clientY-20)+'px';
   document.body.appendChild(clone); touchClone=clone; tag.style.opacity='.4';
 }
 function touchMove(e){ e.preventDefault(); if(!touchClone) return; const t=e.touches[0]; touchClone.style.left=(t.clientX-40)+'px'; touchClone.style.top=(t.clientY-20)+'px'; }
 function touchEnd(e){
-  if(!touchClone) return; const t=e.changedTouches[0]; touchClone.remove(); touchClone=null;
+  if(!touchClone) return;
+  e.preventDefault();
+  const t=e.changedTouches[0]; touchClone.remove(); touchClone=null;
   if(touchEl) touchEl.style.opacity='';
-  const el=document.elementFromPoint(t.clientX,t.clientY);
-  const zone=el?el.closest('.drop-zone'):null;
-  if(zone&&touchEl) placer(zone,touchEl.dataset.label);
+  let zone=null;
+  for(const dy of [0,-20,12]){ const el=document.elementFromPoint(t.clientX,t.clientY+dy); if(el && el.closest('.drop-zone')){ zone=el.closest('.drop-zone'); break; } }
+  if(zone && touchEl) placer(zone, touchEl.dataset.label);
+  else if(touchEl && Math.abs(t.clientX-touchX)<10 && Math.abs(t.clientY-touchY)<10) selectTag(touchEl);
   touchEl=null;
 }
+function touchCancel(e){
+  if(touchClone){ touchClone.remove(); touchClone=null; }
+  if(touchEl){ touchEl.style.opacity=''; touchEl=null; }
+}
 
-// ===== VALIDATION =====
+// ===== VALIDATION (un seul essai) =====
 function valider(){
+  if(done) return;
   const c = curCarte;
+  const restantes = c.zones.filter(z=>z.label!=='').length - Object.keys(placed).length;
+  if(restantes > 0){
+    const m = document.getElementById('msg');
+    m.textContent = restantes===1 ? "Place d'abord la dernière étiquette." : "Place d'abord toutes les étiquettes (il en reste " + restantes + ").";
+    m.style.display = 'block';
+    return;
+  }
+  done = true; clearSel();
   let ok=0, total=0;
   c.zones.forEach(z=>{
     const zone = document.getElementById('zone-'+z.n);
     if(!zone) return;
-    if(z.label===''){
-      // Case vide : correct si rien n'est placé
-      if(!placed[z.n]){
-        zone.classList.add('vide-ok');
-        ok++;
-      } else {
-        zone.classList.add('incorrect');
-        zone.textContent += ' ✗';
-      }
-      total++;
-    } else {
-      total++;
-      if(placed[z.n]===z.label){
-        zone.classList.add('correct'); ok++;
-      } else {
-        zone.classList.add('incorrect');
-        if(!placed[z.n]) zone.textContent='→ '+z.label;
-      }
-    }
+    total++;
     zone.classList.remove('filled');
+    zone.style.cursor = 'default';
+    if(z.label===''){
+      if(!placed[z.n]){ zone.classList.add('vide-ok'); zone.innerHTML='✓ case vide'; ok++; }
+      else { zone.classList.add('incorrect'); addFix(zone, 'cette case devait rester vide'); }
+    } else if(placed[z.n]===z.label){
+      zone.classList.add('correct'); ok++;
+    } else {
+      zone.classList.add('incorrect');
+      if(!placed[z.n]) zone.innerHTML='';
+      addFix(zone, z.label);
+    }
   });
 
   const pct=Math.round(ok/total*100);
   const panel=document.getElementById('score-panel'); panel.style.display='block';
   document.getElementById('score-emoji').textContent=pct===100?'🎉':pct>=70?'👍':'💪';
-  document.getElementById('score-txt').textContent=`${ok}/${total} — ${pct}%`;
+  document.getElementById('score-txt').textContent=`${ok}/${total} — ${pct} %`;
   document.getElementById('score-txt').style.color=pct===100?'#16a34a':pct>=70?'#f59e0b':'#dc2626';
+  document.getElementById('score-aide').style.display = ok<total ? 'block' : 'none';
 
   document.getElementById('btn-valider').style.display='none';
   document.getElementById('btn-reset').style.display='block';
-
-  // Désactiver les étiquettes
   document.querySelectorAll('.etiquette').forEach(t=>{ t.draggable=false; t.style.cursor='default'; });
+
+  try {
+    if (window.parent && window.parent !== window && typeof window.parent.saveResult === 'function') {
+      window.parent.saveResult({
+        activity: 'geo_europe_cartes',
+        bookTitle: 'Géo — Europe : ' + c.titre.replace(/^[^A-Za-zÀ-ÿ]+/, ''),
+        score: ok, total: total, pct: pct,
+        date: new Date().toLocaleDateString('fr-BE'),
+        time: new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })
+      });
+    }
+  } catch (e) { console.warn('saveResult', e); }
+}
+function addFix(zone, txt){
+  zone.style.flexDirection='column'; zone.style.alignItems='flex-start';
+  const d=document.createElement('div'); d.style.cssText='color:#1f5fbf;font-weight:800;font-size:12px'; d.textContent='➜ '+txt;
+  zone.appendChild(d);
 }
 
 function resetCarte(){

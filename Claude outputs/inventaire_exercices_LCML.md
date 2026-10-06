@@ -2178,6 +2178,8 @@ Spécifique :
 
 - **06/10 — Le tour du monde (`geo_tour_monde`, sw.js v680)** : trajets vérifiés sur les 4 textes. Corrigé : T1 « repart vers le sud » de New York vers Tokyo → « vers l'ouest », « remonte vers Rio » depuis le Kenya (Rio est plus au sud) → « continue vers l'ouest » ; T2 « Londres, en Angleterre » → « au Royaume-Uni » ; T3 de l'Antarctique à Buenos Aires « en traversant l'Atlantique » → « longe la pointe de l'Amérique du Sud… au bord de l'Atlantique », retour Pékin → Le Caire « en traversant l'océan Indien » (faux : on survole l'Asie) → « en survolant une grande partie de l'[Asie] » ; T4 Goa → Jakarta « en traversant l'océan Pacifique » (faux) → « toujours sur l'[Océan Indien] », « traverse l'Atlantique et longe l'Afrique » → « descend l'Atlantique », retour de Lima « par le canal de Panama ». Mécanique : placement au toucher ajouté, un seul essai (avant : on pouvait redéposer et revalider → plusieurs sauvegardes), validation refusée avec message s'il reste des trous, bonne réponse en bleu sous chaque trou faux (avant : rouge, réponse de l'élève conservée sans correction), garde 600 ms, sauvegarde en try/catch, classe `resp-blank` remplacée par `tour-blank` (évite tout mélange avec les textes à trous des appareils respiratoire/digestif). Test Playwright 390 px : 9/11, 1 seule sauvegarde.
 
+- **06/10 — L'Europe — Cartes interactives (`geo_europe_cartes`, sw.js v681)** : les 9 cartes (2 physiques, 4 pays, 3 capitales) vérifiées numéro par numéro sur les images — toutes justes. Corrigé : **aucune note n'était jamais enregistrée** (pas de saveResult : impossible à valider dans le plan de travail) → sauvegarde ajoutée (une par carte validée, titre de la carte) ; les 3 cases qui doivent rester vides affichaient « Case vide » (réponse donnée) → toutes les cases ont le même aspect ; un seul essai (avant : on pouvait redéposer après validation) ; validation refusée avec message tant que toutes les étiquettes ne sont pas placées ; bonne réponse en bleu sous chaque case fausse (« ➜ Alpes », « ➜ cette case devait rester vide ») ; placement au toucher (touche l'étiquette puis la case) ; mélange Fisher–Yates ; consigne adaptée au type de carte (capitales : « la capitale du pays numéroté ») ; images chargées par chemin relatif au lieu de l'adresse GitHub Pages en dur ; « République Tchèque » → « République tchèque ». 3 copies (fiches/, public/fiches/, racine) identiques. Test Playwright 390 px : 11/13, 1 seule sauvegarde.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2704,7 +2706,7 @@ Spécifique :
 | ✅ 06/10 | QCM — Continents et océans | `geo_continents_qcm` | index › renderGeoContinentsQCM |  |
 | ✅ 06/10 | Le tour du monde | `geo_tour_monde` | index › renderGeoTourMonde |  |
 | ⬜ | Les océans et continents | `geo_oceans` | index › (?) | (code à localiser) |
-| ⬜ | L'Europe — Cartes interactives | `geo_europe_cartes` | fiches/europe_cartes.html |  |
+| ✅ 06/10 | L'Europe — Cartes interactives | `geo_europe_cartes` | fiches/europe_cartes.html |  |
 | ⬜ | L'Europe — Climats et climagrammes | `geo_europe_climats` | fiches/europe_climats.html | Aucun hasard : mêmes questions, même ordre à chaque partie |
 | ⬜ | L'Europe — Relief et Fleuves | `geo_europe_relief_fleuves` | fiches/europe_relief_fleuves.html |  |
 | ⬜ | L'Europe — Villes, Population et Mégalopole | `geo_europe_villes_pop` | fiches/europe_villes_population.html | QCM: bonne réponse en position 2 dans 3/5 questions, options non mélangées |
