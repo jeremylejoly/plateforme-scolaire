@@ -1780,6 +1780,15 @@ Spécifique :
 - Bonne réponse en bleu (#1f5fbf) après une erreur ; « Question suivante » protégé (600 ms), Entrée ; orthographe : Entraine-toi, maitrises. Les images PNG de `assets/disque/` ne sont plus utilisées par cette fiche (les images compas restent utilisées ailleurs).
 - Tests jsdom : 3 000 séries (7 notions + 3 définitions différentes), partie 7/10 → 1 sauvegarde, Entrée juste après un clic sans saut, Recommencer OK. Planche des 7 figures et capture 390 px sans défilement horizontal.
 
+### 06/10 — Mathématiques → Solides et figures → Le cercle et le disque → Le laboratoire (`disque_laboratoire`, `fiches/disque_laboratoire.html` + copies public et racine) — sw.js v613
+- Les 14 calculs d'origine (rayon ↔ diamètre, conversions) étaient justes.
+- **Aucun résultat enregistré** → `saveResult` au format objet, une seule fois, try/catch.
+- **Questions qui se donnaient la réponse** (rayon 4,5 dm → 9 dm et diamètre 9 cm → 4,5 cm ; rayon 3,5 cm et diamètre 7 cm) et séries presque identiques (10 sur 14) → questions générées, nouveaux nombres à chaque série : 3 entiers, 3 décimaux, 2 avec conversion (cm→mm, dm→cm, m→dm, m→cm), 2 décimaux + conversion, du plus simple au plus difficile ; 5 « rayon → diamètre » et 5 « diamètre → rayon » mélangés ; jamais deux fois le même cercle. 30 000 questions relues par un programme indépendant (énoncé → calcul) : 0 erreur.
+- Comparaison exacte du texte : « 18,0 » refusé pour 18, « 7, » accepté comme réponse → comparaison numérique, nombre incomplet ou vide : message, rien n'est compté.
+- Un seul essai → 2 essais (rappel de la règle au 1er échec, sans la réponse) ; point au 1er essai ; après 2 échecs, réponse en bleu (#1f5fbf) avec le calcul. Signe ÷ au lieu de « / » ; grands nombres avec espace (1 300 cm).
+- **Entrée inutilisable après la réponse et double clic sur « Question suivante » qui sautait une question** → Entrée = Valider puis Suivant, garde de 600 ms. Figure générée (orientation au hasard) au lieu des 2 images fixes. Orthographe : Entraine-toi, maitrises.
+- Tests jsdom : 3 000 séries, vide / « 7, » non comptés, « 18,0 » accepté, 2 échecs → réponse bleue, double Entrée sans saut, partie 9/10 → 1 sauvegarde, Recommencer OK. Capture 390 px sans défilement horizontal.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2188,7 +2197,7 @@ Spécifique :
 | ✅ 06/10 | Quadrilatères — Médianes & Diagonales | `quadrilateres_diagonales_medianes` | fiches/quadrilateres_diagonales_medianes.html |  |
 | ⬜ | Quadrilatères — Évaluation | `quadrilateres_evaluation` | index › startShapeEvaluation |  |
 | ✅ 06/10 | Le cercle et le disque — Le vocabulaire | `disque_vocabulaire` | fiches/disque_vocabulaire.html |  |
-| ⬜ | Le cercle et le disque — Le laboratoire | `disque_laboratoire` | fiches/disque_laboratoire.html |  |
+| ✅ 06/10 | Le cercle et le disque — Le laboratoire | `disque_laboratoire` | fiches/disque_laboratoire.html |  |
 | ⬜ | Le cercle et le disque — L'enquête du compas | `disque_compas` | fiches/disque_compas.html |  |
 
 ### 🔢 Mathématiques — 🔷 Solides & Figures — Polyèdres, Symétrie & 3D
