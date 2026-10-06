@@ -2361,6 +2361,7 @@ input[type=text].calc-input.incorrect {
 .lr-option input{accent-color:var(--purple);}
 .lr-option.correct{background:#d4f5e9;border-color:var(--green);}
 .lr-option.incorrect{background:#fde8e8;border-color:var(--red);}
+.lr-option.reveal{background:#eaf1fc;border-color:#1f5fbf;color:#1f5fbf;}
 .lr-niveau-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--rsm);padding:1.2rem;margin-bottom:0.8rem;cursor:pointer;transition:border-color .2s,box-shadow .2s;}
 .lr-niveau-card:hover{border-color:var(--purple);box-shadow:0 2px 8px rgba(124,58,237,.1);}
 .lr-niveau-card h3{margin:0 0 4px 0;font-size:16px;font-family:'Nunito',sans-serif;font-weight:800;}
@@ -3237,7 +3238,7 @@ input[type=text].calc-input.incorrect {
 </style>
 <script src="livres.js?v=20261002b"></script>
 <script src="exercices_francais.js?v=20261005zp"></script>
-<script src="exercices_maths.js?v=20261006c"></script>
+<script src="exercices_maths.js?v=20261006d"></script>
 <script src="exercices_eveil.js?v=20260927e"></script>
 <script>
 /* Garde-fou : si un appareil a chargé une ancienne version du fichier des livres
@@ -23290,11 +23291,12 @@ function renderTraitementDonneesMenu(){
 }
 
 // ===== EXERCICE 1 : TABLEAUX =====
-// window.TD_TABLEAUX a été extrait vers un fichier JS externe
+// Tableaux générés à chaque fois : window.genTDTableau() (exercices_maths.js)
 
-let tdTableauIdx = 0, tdTableauSels = {}, tdTableauSubmitted = false;
+let tdTableauData = null, tdTableauSels = {}, tdTableauSubmitted = false, tdTableauLast = 0;
 function renderTDTableau(){
-  tdTableauIdx = Math.floor(Math.random() * TD_TABLEAUX.length);
+  const t = Date.now(); if (t - tdTableauLast < 600) return; tdTableauLast = t;   // double clic sur « Nouveau tableau »
+  tdTableauData = genTDTableau();
   tdTableauSels = {};
   tdTableauSubmitted = false;
   buildTDTableau();
@@ -23303,7 +23305,7 @@ function renderTDTableau(){
 function buildTDTableau(){
   const body = document.getElementById('td-tableau-body');
   if(!body) return;
-  const data = TD_TABLEAUX[tdTableauIdx];
+  const data = tdTableauData;
   tdTableauSels = {};
   tdTableauSubmitted = false;
 
@@ -23348,6 +23350,7 @@ function buildTDTableau(){
       <div class="card" style="padding:1rem;margin-top:0.5rem;">
         <h3 style="color:#1565c0;font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;margin-bottom:1rem;">❓ Questions</h3>
         ${qhtml}
+        <div id="tdt-msg" style="display:none;margin-top:0.5rem;padding:8px 12px;border-radius:8px;background:#fff7e6;color:#8a5a00;font-size:13px;font-weight:700;"></div>
         <button class="btn" id="tdt-submit" onclick="validerTDTableau()" style="width:100%;margin-top:0.5rem;">✅ Valider mes réponses</button>
         <div id="tdt-score" style="display:none;margin-top:1rem;" class="geo-score-panel"></div>
       </div>
@@ -23358,8 +23361,16 @@ function tdtSelect(qi, oi){ tdTableauSels[qi] = oi; }
 
 function validerTDTableau(){
   if(tdTableauSubmitted) return;
+  const data = tdTableauData;
+  const manque = data.questions.map((_,qi)=>qi).filter(qi => tdTableauSels[qi] === undefined);
+  const msg = document.getElementById('tdt-msg');
+  if(manque.length){   // toutes les questions doivent avoir une réponse (rien n'est compté)
+    msg.style.display = 'block';
+    msg.textContent = `Réponds d'abord à ${manque.length > 1 ? 'toutes les questions' : 'la question'} ${manque.map(i=>i+1).join(', ')}.`;
+    return;
+  }
+  msg.style.display = 'none';
   tdTableauSubmitted = true;
-  const data = TD_TABLEAUX[tdTableauIdx];
   let score = 0; const total = data.questions.length;
   document.getElementById('tdt-submit').style.display = 'none';
   data.questions.forEach((q,qi) => {
@@ -23368,10 +23379,11 @@ function validerTDTableau(){
       const el = document.getElementById(`tdt-opt-${qi}-${oi}`);
       if(el){ el.querySelector('input').disabled=true;
         if(oi===sel&&ok) el.classList.add('correct');
-        else if(oi===sel&&!ok) el.classList.add('incorrect'); }
+        else if(oi===sel&&!ok) el.classList.add('incorrect');
+        else if(oi===q.correct) el.classList.add('reveal'); }
     });
     const expl = document.getElementById(`tdt-expl-${qi}`);
-    if(expl){ expl.style.display='block'; expl.style.background=ok?'#d4f5e9':'#fde8e8'; expl.style.color=ok?'var(--green)':'var(--red)'; expl.innerHTML=(ok?'✅ ':'❌ ')+q.explication; }
+    if(expl){ expl.style.display='block'; expl.style.background=ok?'#d4f5e9':'#eaf1fc'; expl.style.color=ok?'var(--green)':'#1f5fbf'; expl.innerHTML=(ok?'✅ ':'❌ Bonne réponse : <strong>'+q.options[q.correct]+'</strong>. ')+q.explication; }
   });
   const pct = Math.round(score/total*100);
   const color = pct>=70?'var(--green)':pct>=50?'var(--amber)':'var(--red)';

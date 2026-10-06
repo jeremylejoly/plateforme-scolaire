@@ -592,73 +592,155 @@ window.LONGUEURS_QCM_BANQUE = [
   { nombre:"¾ km",      opts:["7,5 m","75 m","750 m"],              correct:2 },
 ];
 
-window.TD_TABLEAUX = [
-  {
-    titre:"Animaux préférés des élèves de 6e",
-    type:'simple',
-    colonnes:['Animal','Nombre d\'élèves'],
-    lignes:[
-      ['Chien','8'],['Chat','12'],['Lapin','5'],['Hamster','3'],['Poisson','2']
-    ],
-    questions:[
-      {q:"Quel animal est préféré par le plus grand nombre d'élèves ?", options:["Chien","Chat","Lapin","Hamster"], correct:1, explication:"Le chat est choisi par 12 élèves, c'est le maximum."},
-      {q:"Combien d'élèves ont été interrogés au total ?", options:["25 élèves","28 élèves","30 élèves","32 élèves"], correct:2, explication:"8 + 12 + 5 + 3 + 2 = 30 élèves au total."},
-      {q:"Combien d'élèves de plus préfèrent le chat plutôt que le chien ?", options:["2 élèves","4 élèves","6 élèves","8 élèves"], correct:1, explication:"12 - 8 = 4 élèves de plus pour le chat."},
-      {q:"Quel animal est choisi par le moins d'élèves ?", options:["Lapin","Hamster","Poisson","Chat"], correct:2, explication:"Le poisson n'est choisi que par 2 élèves, c'est le minimum."},
-      {q:"Le chat et le chien ensemble représentent combien d'élèves ?", options:["18 élèves","20 élèves","22 élèves","16 élèves"], correct:1, explication:"12 + 8 = 20 élèves pour le chat et le chien réunis."},
-    ]
-  },
-  {
-    titre:"Températures maximales (°C) en juillet",
-    type:'simple',
-    colonnes:['Ville','Température'],
-    lignes:[
-      ['Bruxelles','24'],['Liège','26'],['Namur','25'],['Waimes','21'],['Arlon','23']
-    ],
-    questions:[
-      {q:"Quelle ville a la température la plus élevée en juillet ?", options:["Bruxelles","Liège","Namur","Arlon"], correct:1, explication:"Liège atteint 26°C, c'est la température la plus élevée."},
-      {q:"Quelle ville a la température la plus basse en juillet ?", options:["Arlon","Namur","Waimes","Bruxelles"], correct:2, explication:"Waimes n'atteint que 21°C, c'est la température la plus basse."},
-      {q:"Quelle est l'étendue des températures (différence entre max et min) ?", options:["3°C","4°C","5°C","6°C"], correct:2, explication:"26 - 21 = 5°C d'étendue entre Liège et Waimes."},
-      {q:"Combien de villes atteignent au moins 24°C ?", options:["2 villes","3 villes","4 villes","1 ville"], correct:1, explication:"Bruxelles (24), Liège (26) et Namur (25) atteignent au moins 24°C — soit 3 villes."},
-      {q:"De combien de degrés la température de Liège dépasse-t-elle celle de Waimes ?", options:["3°C","4°C","5°C","6°C"], correct:2, explication:"26 - 21 = 5°C de différence entre Liège et Waimes."},
-    ]
-  },
-  {
-    titre:"Livres lus par des élèves durant les vacances",
-    type:'double',
-    colonnes:['','Garçons','Filles','Total'],
-    lignes:[
-      ['Romans','14','18','32'],
-      ['BD','20','12','32'],
-      ['Documentaires','6','10','16'],
-      ['Total','40','40','80']
-    ],
-    questions:[
-      {q:"Combien de filles ont lu des romans ?", options:["12 filles","14 filles","18 filles","20 filles"], correct:2, explication:"Dans la ligne 'Romans' et la colonne 'Filles', on lit 18."},
-      {q:"Quel type de livre a été lu le moins souvent au total ?", options:["Romans","BD","Documentaires","Impossible à savoir"], correct:2, explication:"Les documentaires totalisent 16 lectures, c'est le moins lu."},
-      {q:"Combien de garçons ont lu des BD ?", options:["12","14","18","20"], correct:3, explication:"Dans la ligne 'BD' et la colonne 'Garçons', on lit 20."},
-      {q:"Romans et BD confondus, combien d'élèves ont lu ces livres ?", options:["48 élèves","54 élèves","60 élèves","64 élèves"], correct:3, explication:"32 (romans) + 32 (BD) = 64 élèves au total pour ces deux catégories."},
-      {q:"Au total, combien d'élèves ont été interrogés ?", options:["60 élèves","70 élèves","80 élèves","90 élèves"], correct:2, explication:"Le total général est indiqué dans la case en bas à droite : 80 élèves."},
-    ]
-  },
-  {
-    titre:"Résultats sportifs de la classe",
-    type:'double',
-    colonnes:['','Basket','Foot','Natation','Total'],
-    lignes:[
-      ['Garçons','8','15','5','28'],
-      ['Filles','12','6','10','28'],
-      ['Total','20','21','15','56']
-    ],
-    questions:[
-      {q:"Combien de garçons pratiquent le football ?", options:["6","8","15","21"], correct:2, explication:"Dans la ligne 'Garçons' et la colonne 'Foot', on lit 15."},
-      {q:"Quel sport est pratiqué par le plus grand nombre d'élèves ?", options:["Basket","Foot","Natation","Impossible à savoir"], correct:1, explication:"Le football totalise 21 élèves, c'est le sport le plus pratiqué."},
-      {q:"Combien de filles pratiquent la natation ?", options:["5","6","10","15"], correct:2, explication:"Dans la ligne 'Filles' et la colonne 'Natation', on lit 10."},
-      {q:"Combien d'élèves pratiquent le basket au total ?", options:["8","12","20","21"], correct:2, explication:"Dans la ligne 'Total' et la colonne 'Basket', on lit 20."},
-      {q:"Combien d'élèves ont été interrogés au total ?", options:["28","42","56","60"], correct:2, explication:"Le total général est 56 élèves (28 garçons + 28 filles)."},
-    ]
-  },
-];
+// ===== Lire un tableau : tableaux générés (nouvelles données à chaque fois) =====
+// genTDTableau() renvoie { titre, type:'simple'|'double', colonnes, lignes, questions:[{q, options, correct, explication}] }
+(function(){
+  const melanger = a => { const r = [...a]; for (let i = r.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [r[i], r[j]] = [r[j], r[i]]; } return r; };
+  const entier = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+  const sp = n => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+  // valeurs toutes différentes
+  function valeursDistinctes(n, a, b){ const s = new Set(); while (s.size < n) s.add(entier(a, b)); return melanger([...s]); }
+  // QCM : bonne réponse + 3 distracteurs différents, mélangés (Fisher–Yates)
+  function qcm(q, bonne, distr, explication){
+    const vus = new Set([bonne]), d = [];
+    for (const x of melanger(distr)) { if (x !== undefined && x !== null && !vus.has(x) && d.length < 3) { vus.add(x); d.push(x); } }
+    const options = melanger([bonne, ...d]);
+    return { q, options, correct: options.indexOf(bonne), explication };
+  }
+  const numDistr = (v, u, extra) => [...(extra || []), v + 1, v - 1, v + 2, v - 2, v + 5, v - 5, v + 10, v - 10].filter(x => x > 0).map(x => `${sp(x)}${u}`);
+
+  const SIMPLES = [
+    { titre: "Animaux préférés des élèves de 6e", col: ["Animal", "Nombre d'élèves"], cats: ["Chien", "Chat", "Lapin", "Hamster", "Poisson", "Cheval", "Perruche"], min: 2, max: 15, u: " élèves", additif: true,
+      plus: "Quel animal est préféré par le plus d'élèves ?", moins: "Quel animal est choisi par le moins d'élèves ?",
+      seuil: s => `Combien d'animaux sont choisis par au moins ${s} élèves ?`, mot: ["animal", "animaux"], total: "Combien d'élèves ont été interrogés en tout ?" },
+    { titre: "Températures maximales (°C) un jour de juillet", col: ["Ville", "Température (°C)"], cats: ["Bruxelles", "Liège", "Namur", "Mons", "Arlon", "Waimes", "Ostende", "Charleroi"], min: 17, max: 31, u: " °C", additif: false,
+      plus: "Dans quelle ville a-t-il fait le plus chaud ?", moins: "Dans quelle ville a-t-il fait le moins chaud ?",
+      seuil: s => `Dans combien de villes a-t-il fait au moins ${s} °C ?`, mot: ["ville", "villes"] },
+    { titre: "Fruits vendus au marché (en kg)", col: ["Fruit", "Masse vendue (kg)"], cats: ["Pommes", "Poires", "Fraises", "Cerises", "Bananes", "Prunes", "Kiwis"], min: 12, max: 60, u: " kg", additif: true,
+      plus: "Quel fruit s'est le plus vendu ?", moins: "Quel fruit s'est le moins vendu ?",
+      seuil: s => `De combien de fruits a-t-on vendu au moins ${s} kg ?`, mot: ["fruit", "fruits"], total: "Combien de kilos de fruits ont été vendus en tout ?" },
+    { titre: "Kilomètres parcourus à vélo en une semaine", col: ["Élève", "Distance (km)"], cats: ["Léa", "Tom", "Inès", "Noah", "Zoé", "Hugo", "Lina", "Sami"], min: 5, max: 40, u: " km", additif: true,
+      plus: "Qui a roulé le plus ?", moins: "Qui a roulé le moins ?",
+      seuil: s => `Combien d'élèves ont roulé au moins ${s} km ?`, mot: ["élève", "élèves"], total: "Combien de kilomètres ces élèves ont-ils roulé en tout ?" },
+    { titre: "Points marqués au grand quiz de l'école", col: ["Équipe", "Points"], cats: ["Les Renards", "Les Hiboux", "Les Lynx", "Les Castors", "Les Aigles", "Les Loups"], min: 10, max: 50, u: " points", additif: true,
+      plus: "Quelle équipe a marqué le plus de points ?", moins: "Quelle équipe a marqué le moins de points ?",
+      seuil: s => `Combien d'équipes ont marqué au moins ${s} points ?`, mot: ["équipe", "équipes"], total: "Combien de points ont été marqués en tout ?" },
+    { titre: "Visiteurs de la piscine", col: ["Jour", "Visiteurs"], cats: ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"], min: 40, max: 210, u: " visiteurs", additif: true, ordre: true,
+      plus: "Quel jour la piscine a-t-elle eu le plus de visiteurs ?", moins: "Quel jour la piscine a-t-elle eu le moins de visiteurs ?",
+      seuil: s => `Combien de jours la piscine a-t-elle eu au moins ${s} visiteurs ?`, mot: ["jour", "jours"], total: "Combien de visiteurs la piscine a-t-elle eus en tout sur ces 5 jours ?" }
+  ];
+
+  function genSimple(){
+    const t = SIMPLES[entier(0, SIMPLES.length - 1)];
+    let cats = melanger(t.cats).slice(0, 5);
+    if (t.ordre) { const i0 = entier(0, t.cats.length - 5); cats = t.cats.slice(i0, i0 + 5); }
+    const v = valeursDistinctes(5, t.min, t.max);
+    const L = cats.map((c, i) => [c, v[i]]);
+    const tri = [...L].sort((a, b) => b[1] - a[1]);
+    const [cMax, vMax] = tri[0], [cMin, vMin] = tri[4];
+    const u = t.u;
+    const qs = [];
+    qs.push(qcm(t.plus, cMax, [tri[1][0], tri[2][0], cMin, tri[3][0]],
+      `${cMax} : ${sp(vMax)}${u}, c'est la plus grande valeur du tableau.`));
+    qs.push(qcm(t.moins, cMin, [tri[3][0], tri[2][0], cMax, tri[1][0]],
+      `${cMin} : ${sp(vMin)}${u}, c'est la plus petite valeur du tableau.`));
+    // une question de calcul parmi plusieurs sortes
+    const autres = [];
+    const [a, b] = melanger(L).slice(0, 2), grand = a[1] > b[1] ? a : b, petit = a[1] > b[1] ? b : a;
+    autres.push(() => qcm(`Quel est l'écart entre « ${grand[0]} » et « ${petit[0]} » ?`, `${sp(grand[1] - petit[1])}${u}`,
+      numDistr(grand[1] - petit[1], u, [`${sp(grand[1] + petit[1])}${u}`]),
+      `${sp(grand[1])} − ${sp(petit[1])} = ${sp(grand[1] - petit[1])}${u}.`));
+    const seuil = tri[entier(1, 3)][1], nb = L.filter(x => x[1] >= seuil).length;
+    autres.push(() => qcm(t.seuil(sp(seuil)), `${nb}`, ['1', '2', '3', '4', '5'].filter(x => +x !== nb),
+      `${L.filter(x => x[1] >= seuil).map(x => `${x[0]} (${sp(x[1])})`).join(', ')} : ${nb} ${nb > 1 ? t.mot[1] : t.mot[0]}.`));
+    if (t.additif) {
+      const tot = v.reduce((s, x) => s + x, 0);
+      autres.push(() => qcm(t.total, `${sp(tot)}${u}`, numDistr(tot, u, [`${sp(tot - vMin)}${u}`, `${sp(tot + vMax)}${u}`]),
+        `${v.map(sp).join(' + ')} = ${sp(tot)}${u}.`));
+      const [c, d] = melanger(L.filter(x => x !== a && x !== b)).slice(0, 2);
+      autres.push(() => qcm(`« ${c[0]} » et « ${d[0]} » ensemble, cela fait combien ?`, `${sp(c[1] + d[1])}${u}`, numDistr(c[1] + d[1], u, [`${sp(Math.abs(c[1] - d[1]))}${u}`]),
+        `${sp(c[1])} + ${sp(d[1])} = ${sp(c[1] + d[1])}${u}.`));
+    } else {
+      autres.push(() => qcm(`Quel est l'écart entre la température la plus haute et la plus basse du tableau ?`, `${vMax - vMin}${u}`, numDistr(vMax - vMin, u, [`${vMax + vMin}${u}`]),
+        `${vMax} − ${vMin} = ${vMax - vMin}${u} (entre ${cMax} et ${cMin}).`));
+      const [c] = melanger(L.filter(x => x[0] !== cMax && x[0] !== cMin));
+      autres.push(() => qcm(`Quelle température faisait-il à ${c[0]} ?`, `${c[1]}${u}`, L.filter(x => x !== c).map(x => `${x[1]}${u}`),
+        `On lit la ligne ${c[0]} : ${c[1]}${u}.`));
+    }
+    melanger(autres).slice(0, 3).forEach(f => qs.push(f()));
+    return { titre: t.titre, type: 'simple', colonnes: t.col, lignes: L.map(x => [x[0], sp(x[1])]), questions: melanger(qs) };
+  }
+
+  const DOUBLES = [
+    { titre: "Livres lus pendant les vacances", coin: "Type de livre", lig: ["Romans", "BD", "Documentaires", "Mangas"], col: ["Garçons", "Filles"], min: 3, max: 20,
+      plusL: "Au total, quel type de livre a été le plus lu ?", moinsC: "Au total, qui a lu le moins de livres ?" },
+    { titre: "Sport pratiqué par les élèves de 6e", coin: "", lig: ["Garçons", "Filles"], col: ["Basket", "Foot", "Natation", "Danse"], min: 2, max: 15,
+      plusL: "Au total, qui est le plus nombreux à pratiquer ces sports ?", moinsC: "Au total, quel sport est le moins pratiqué ?" },
+    { titre: "Comment les élèves viennent-ils à l'école ?", coin: "Classe", lig: ["5e A", "5e B", "6e A", "6e B"], col: ["À pied", "À vélo", "En voiture", "En bus"], min: 1, max: 12,
+      plusL: "Au total, quelle classe compte le plus d'élèves ?", moinsC: "Au total, quel moyen de transport est le moins utilisé ?" },
+    { titre: "Collation préférée des élèves", coin: "Collation", lig: ["Fruit", "Biscuit", "Yaourt", "Tartine"], col: ["5e", "6e"], min: 3, max: 16,
+      plusL: "Au total, quelle collation est la plus choisie ?", moinsC: "Au total, dans quelle année y a-t-il le moins d'élèves interrogés ?" }
+  ];
+
+  function genDouble(){
+    const t = DOUBLES[entier(0, DOUBLES.length - 1)];
+    const nl = Math.min(t.lig.length, t.col.length === 2 ? 3 : (t.lig.length === 2 ? 2 : 3));
+    const lig = t.lig.length === 2 ? t.lig : melanger(t.lig).slice(0, nl).sort((x, y) => t.lig.indexOf(x) - t.lig.indexOf(y));
+    const col = t.col.length === 2 ? t.col : melanger(t.col).slice(0, 3).sort((x, y) => t.col.indexOf(x) - t.col.indexOf(y));
+    let M, totL, totC;
+    for (let k = 0; k < 200; k++) {   // totaux de lignes tous différents (une seule réponse au « plus » / « moins »)
+      M = lig.map(() => col.map(() => entier(t.min, t.max)));
+      totL = M.map(r => r.reduce((s, x) => s + x, 0));
+      totC = col.map((_, j) => M.reduce((s, r) => s + r[j], 0));
+      if (new Set(totL).size === totL.length && new Set(totC).size === totC.length) break;
+    }
+    const tot = totL.reduce((s, x) => s + x, 0);
+    const lignes = lig.map((l, i) => [l, ...M[i].map(sp), sp(totL[i])]);
+    lignes.push(['Total', ...totC.map(sp), sp(tot)]);
+    const toutes = M.flat();
+    const qs = [];
+    // 2 lectures de cases différentes (lignes et colonnes différentes)
+    const i1 = entier(0, lig.length - 1), j1 = entier(0, col.length - 1);
+    let i2 = (i1 + 1) % lig.length, j2 = (j1 + 1) % col.length;
+    [[i1, j1], [i2, j2]].forEach(([i, j]) => {
+      qs.push(qcm(`Quel nombre lit-on dans la ligne « ${lig[i]} » et la colonne « ${col[j]} » ?`, `${sp(M[i][j])}`,
+        [...toutes.filter(x => x !== M[i][j]).map(sp), sp(M[i][j] + 1), sp(M[i][j] - 1)],
+        `Ligne « ${lig[i]} », colonne « ${col[j]} » : on lit ${sp(M[i][j])}.`));
+    });
+    // le plus / le moins au total (colonne ou ligne Total)
+    if (Math.random() < 0.5) {
+      const iMax = totL.indexOf(Math.max(...totL));
+      qs.push(qcm(t.plusL, lig[iMax], [...lig.filter((_, i) => i !== iMax), 'Impossible à savoir'],
+        `On regarde la colonne « Total » : ${lig.map((l, i) => `${l} ${sp(totL[i])}`).join(', ')}. Le plus grand est ${lig[iMax]}.`));
+    } else {
+      const jMin = totC.indexOf(Math.min(...totC));
+      qs.push(qcm(t.moinsC, col[jMin], [...col.filter((_, j) => j !== jMin), 'Impossible à savoir'],
+        `On regarde la ligne « Total » : ${col.map((c, j) => `${c} ${sp(totC[j])}`).join(', ')}. Le plus petit est ${col[jMin]}.`));
+    }
+    // total général
+    qs.push(qcm(`Quel est le total général du tableau ?`, `${sp(tot)}`, [sp(tot + 1), sp(tot - 1), sp(tot + 10), sp(tot - 10), ...totL.map(sp), ...totC.map(sp)],
+      `Le total général est dans la case en bas à droite : ${sp(tot)}.`));
+    // calcul : différence dans une même ligne
+    const i3 = entier(0, lig.length - 1), [ja, jb] = melanger(col.map((_, j) => j)).slice(0, 2);
+    if (M[i3][ja] !== M[i3][jb]) {
+      const g = M[i3][ja] > M[i3][jb] ? ja : jb, p = g === ja ? jb : ja, d = M[i3][g] - M[i3][p];
+      qs.push(qcm(`Dans la ligne « ${lig[i3]} », combien de plus y a-t-il dans « ${col[g]} » que dans « ${col[p]} » ?`, `${d}`, [d + 1, d - 1, d + 2, d - 2, M[i3][g] + M[i3][p]].filter(x => x > 0).map(String),
+        `${sp(M[i3][g])} − ${sp(M[i3][p])} = ${d}.`));
+    } else {
+      qs.push(qcm(`Combien y a-t-il en tout dans la ligne « ${lig[i3]} » ?`, sp(totL[i3]), [...totL.filter((_, i) => i !== i3).map(sp), sp(totL[i3] + 1), sp(totL[i3] - 1)],
+        `On lit la case « Total » de la ligne « ${lig[i3]} » : ${sp(totL[i3])}.`));
+    }
+    return { titre: t.titre, type: 'double', colonnes: [t.coin, ...col, 'Total'], lignes, questions: melanger(qs) };
+  }
+
+  let dernierType = null;
+  window.genTDTableau = function(){
+    // alterne au hasard tableaux simples et à double entrée, sans répéter deux fois le même type de suite
+    const type = dernierType === 'simple' ? 'double' : dernierType === 'double' ? 'simple' : (Math.random() < 0.5 ? 'simple' : 'double');
+    dernierType = type;
+    return type === 'simple' ? genSimple() : genDouble();
+  };
+})();
 
 window.TD_MOYENNES = [
   {

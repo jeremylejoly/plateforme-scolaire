@@ -1799,6 +1799,17 @@ Spécifique :
 - Tests jsdom : partie 7/10 → 1 sauvegarde, Entrée juste après un clic sans saut, Recommencer OK. Planche des 9 figures et capture 390 px sans défilement horizontal.
 - Les 4 images `assets/disque/compas_*.png` ne sont plus utilisées (comme les 7 autres images de `assets/disque/`).
 
+### 06/10 — Ménage : dossier `assets/disque/` supprimé (11 images) — sw.js v615
+- Plus aucune page ne l'utilisait après la refonte des 3 fiches « Le cercle et le disque » (figures générées). Seuls des scripts de génération dans `scratch/` et d'anciens rapports le citaient. Accord de Jeremy (06/10) : supprimer ce qui n'est plus utilisé quand c'est certain.
+
+### 06/10 — Mathématiques → Traitement de données → Lire un tableau (`td_tableau`, index › renderTDTableau + exercices_maths.js › genTDTableau) — sw.js v615
+- Contenu d'origine (4 tableaux, 20 questions) : réponses justes, mais **seulement 4 tableaux aux questions fixes**, et **bonne réponse toujours à la même place** pour chaque question (propositions jamais mélangées) ; deux questions identiques dans le tableau des températures (« étendue » et « de combien Liège dépasse Waimes » : 26 − 21 deux fois) ; titre « Résultats sportifs » pour un tableau de sports pratiqués.
+- → Tableaux générés : 6 thèmes de tableaux simples (animaux, températures, fruits, vélo, quiz, piscine) et 4 thèmes à double entrée (livres, sports, trajet vers l'école, collation) avec totaux calculés ; nouvelles valeurs à chaque fois, simple et double entrée en alternance ; 5 questions (simple : le plus, le moins + 3 parmi écart, seuil, total, somme, lecture ; double : 2 lectures de cases, le plus / le moins au total, total général, différence dans une ligne) ; propositions mélangées (Fisher–Yates), distracteurs plausibles (autres cases, somme au lieu de différence…). Le tableau statique `TD_TABLEAUX` est supprimé.
+- Vérification indépendante : 5 000 tableaux / 25 000 questions recalculés à partir du tableau affiché (totaux, cases, max/min, écarts, seuils) : 0 erreur ; bonne réponse ≈ 25 % par position ; jamais deux propositions identiques.
+- **Questions sans réponse comptées fausses** → message « Réponds d'abord à la question… », rien n'est compté. Bonne réponse montrée en bleu (#1f5fbf) avec l'explication ; signe −. « Nouveau tableau » protégé (600 ms). Enregistrement : une fois par tableau (déjà en place).
+- Tests jsdom : parcours (vide → message, 4/5 → message, 3/5 → 1 sauvegarde `td_tableau`, 2 bonnes réponses en bleu), syntaxe 6 fichiers OK. `exercices_maths.js?v=20261006d`.
+- À noter pour « Moyenne et étendue » (`TD_MOYENNES`) : la question « Combien de matchs Lucas a-t-il marqué plus que sa moyenne ? » a pour réponse « 3 matchs » alors que l'explication en compte 4 ; moyennes arrondies (16,3 → 16 ; 11,5 → 11).
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2164,7 +2175,7 @@ Spécifique :
 
 | Statut | Exercice | id | Source | Signal automatique |
 |---|---|---|---|---|
-| ⬜ | Lire un tableau | `td_tableau` | index › renderTDTableau |  |
+| ✅ 06/10 | Lire un tableau | `td_tableau` | index › renderTDTableau |  |
 | ⬜ | Lire un graphique | `td_graphique` | index › renderTDGraphique |  |
 | ⬜ | La moyenne (QCM) | `td_moyenne_qcm` | index › renderTDMoyenneQCM |  |
 | ⬜ | Moyenne et étendue | `td_moyenne` | index › renderTDMoyenne |  |
