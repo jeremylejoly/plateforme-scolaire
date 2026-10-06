@@ -2164,6 +2164,8 @@ Spécifique :
 
 - **06/10 — L'ordre des planètes (`sci_planetes_ordre`, sw.js v673)** : contenu juste (ordre Mercure → Neptune, 8 points pour l'ordre + 8 pour les noms, le nom est jugé par rapport à la planète posée). Corrigé : inutilisable sur téléphone (piste de 1 050 px en défilement horizontal, une seule case visible, glisser-déposer seulement) → liste verticale sous 700 px et piste qui passe à la ligne sur ordinateur ; ajout du placement au toucher (touche un élément puis une case, échange entre cases, touche la réserve pour y renvoyer ; un simple toucher n'est plus pris pour un glisser) ; correction en bleu sous chaque colonne fausse (« ✔ n° 2 : Vénus », « ✔ cette planète : Uranus ») ; étiquette « Soleil » invisible (variables CSS --soleil-* inexistantes) ; sauvegarde en try/catch ; consignes réécrites. Test Playwright 390 px (toucher + vrai glisser au doigt) et 1 280 px : 12/16, 1 seule sauvegarde, pas de débordement.
 
+- **06/10 — Informations sur les planètes + quiz (`sci_planetes_infos` / `sci_planetes_qcm`, sw.js v674)** : **le quiz n'enregistrait jamais la note** (`window.state` est toujours vide car `state` est déclaré avec `let`) → corrigé. **Même erreur dans le Service Worker** (`lcmlPeutRecharger`, en tête d'index.html) : la page pouvait se recharger en plein exercice lors d'une mise à jour (retour au premier plan après 10 min, ou mise à jour détectée) → corrigé, vérifié (accueil : rechargement permis ; élève connecté : refusé). Fiches : nombres de lunes mis à jour (Jupiter 115, Saturne 293 — NASA, 2026 ; Uranus 29), « N/A » → texte français, comètes (période de quelques années à des milliers d'années, pas « 75 ans »), Mercure −180 °C (cohérent avec le quiz), rotation de Saturne 10 h 33, masse de la ceinture ≈ 3 % de la Lune, Jupiter « protège en partie ». Carte : liste de boutons sous l'image (les zones sont minuscules à 390 px). Quiz : banque réécrite (20 questions, distracteurs plausibles au lieu de blagues, la bonne réponse n'est plus la plus longue — vérifié par script), familles `k` (Vénus la plus chaude / pourquoi Vénus plus chaude ; Mercure 88 jours / Mercure froide la nuit), question hypothétique remplacée par « planète la plus éloignée » (Pluton en distracteur), alert → message dans la page, bonne réponse manquée en bleu, total = nombre de questions, sauvegarde en try/catch. Test Playwright 390 px : 8/10, 1 seule sauvegarde, pas de débordement.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2655,8 +2657,8 @@ Spécifique :
 | ⬜ | La classification phylogénétique (Leçon) | `fiche_classification` | fiches/classification-phylogenetique.html |  |
 | ⬜ | Le système solaire | `sci_systeme_solaire` | index › (?) | (code à localiser) |
 | ✅ 06/10 | Planètes — Ordre et distance | `sci_planetes_ordre` | index › renderSciPlanetesOrdreScreen |  |
-| ⬜ | Planètes — Informations & Caractéristiques | `sci_planetes_infos` | index › (?) | (code à localiser) |
-| ⬜ | Système solaire — QCM | `sci_planetes_qcm` | index › renderSciPlanetesInfosScreen |  |
+| ✅ 06/10 | Planètes — Informations & Caractéristiques | `sci_planetes_infos` | index › renderSciPlanetesInfosContent |  |
+| ✅ 06/10 | Système solaire — QCM | `sci_planetes_qcm` | index › renderSciPlanetesInfosScreen |  |
 | ✅ 06/10 | L'anatomie de la fleur | `sci_plantes_fleur` | fiches/sci_plantes_fleur.html |  |
 | ✅ 06/10 | Reproduction & Germination | `sci_plantes_germination` | fiches/sci_plantes_germination.html |  |
 | ⬜ | La reproduction des plantes (Leçon) | `sci_reproduction_plantes` | fiches/reproduction_plantes.html |  |
