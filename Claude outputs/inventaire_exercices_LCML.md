@@ -2192,6 +2192,8 @@ Spécifique :
 
 - **06/10 — Les communes de notre région (`geo_belgique_communes`, sw.js v687)** : carte vérifiée, les 10 numéros sont justes (1 Eupen, 2 Malmedy, 3 Jalhay, 4 Amblève, 5 Waimes, 6 Bütgenbach, 7 Baelen, 8 Stavelot, 9 Saint-Vith, 10 Bullange). Carte chargée en chemin relatif. Sur téléphone, les numéros faisaient ~7 px (carte de toute la province) → zoom sur l'est de la province (recadrage CSS de la même image, aucun nouveau fichier) avec une légende ; carte entière inchangée sur ordinateur. Mêmes défauts que provinces et cours d'eau, corrigés pareil : validation unique (avant : une sauvegarde par clic), message « Il reste N cases vides », correction en bleu « ➜ … », placement au toucher, glissé tactile distingué du tap, sauvegarde en try/catch. Test Playwright 390 px : pas de débordement, tap, glissé tactile, glissé souris, 8/10, 1 seule sauvegarde.
 
+- **06/10 — Régions et Communautés (`geo_belgique_regions_communautes`, sw.js v688)** : la fiche n'enregistrait AUCUN résultat. Sur décision de Jeremy, l'onglet « Défis » devient un seul défi noté sur 13, enregistré une fois : étape 1 localiser les 3 Régions, étape 2 les 4 zones des Communautés (calque imposé, boutons de calque cachés pendant le défi), étape 3 six questions « Région ou Communauté ? » tirées parmi 12. Défauts corrigés : dans le QCM on pouvait recliquer et gagner un point à chaque clic → une seule réponse, boutons figés, bonne réponse manquée en bleu ; en localisation, la mauvaise zone n'était pas corrigée et les contours rouge/vert ne s'affichaient jamais (la CSS `.map-path` écrasait les attributs `stroke`) → contours en style, bonne zone entourée en bleu ; passage automatique après 2 s → bouton « Continuer » (+ Entrée, garde 600 ms). Bruxelles fait 18 px sur téléphone → zone de toucher agrandie. Sur téléphone, la consigne du défi passe au-dessus de la carte ; le texte d'explication (« Le savais-tu ? ») et la fiche d'info sont cachés pendant le défi. Contenu : `**Régions**` affiché avec les astérisques (3 endroits) → gras ; Région wallonne « langue : français » → « français et allemand » ; chaine (NO) ; texte illisible dans le bouton de calque actif (gris foncé sur fond foncé). Test Playwright 390 px : théorie OK, 13 étapes, 1 erreur de localisation + 1 erreur QCM → 11/13, double clic ignoré, Entrée trop tôt ignorée, 1 seule sauvegarde. 3 copies identiques.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2711,7 +2713,7 @@ Spécifique :
 | ✅ 06/10 | Les provinces de Belgique | `geo_belgique_provinces` | index › renderGeoBelgiqueScreen |  |
 | ✅ 06/10 | Les cours d'eau de Belgique | `geo_belgique_hydro` | index › renderGeoHydroScreen |  |
 | ✅ 06/10 | Les communes de notre région | `geo_belgique_communes` | index › renderGeoCommunesScreen |  |
-| ⬜ | Régions et Communautés (Quiz) | `geo_belgique_regions_communautes` | index › renderGeoBelgiqueRegionsCommunautes |  |
+| ✅ 06/10 | Régions et Communautés (Quiz) | `geo_belgique_regions_communautes` | index › renderGeoBelgiqueRegionsCommunautes |  |
 | ⬜ | La Belgique — QCM | `geo_belgique_qcm` | index › renderGeoBelgiqueQCM |  |
 | ✅ 06/10 | Le planisphère interactif (découverte) | `geo_planisphere_interactif` | fiches/planisphere-interactif.html |  |
 | ✅ 06/10 | Les planisphères | `geo_planispheres` | index › renderGeoPlanispheres |  |
