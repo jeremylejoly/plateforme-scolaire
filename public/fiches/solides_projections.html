@@ -156,6 +156,23 @@
       background: rgba(16, 185, 129, 0.1) !important;
     }
 
+    .choice-card.reveal-ans {
+      border-color: #1f5fbf !important;
+      background: rgba(31, 95, 191, 0.25) !important;
+      box-shadow: 0 0 0 2px #1f5fbf;
+    }
+
+    .fb-reveal {
+      background: rgba(31, 95, 191, 0.14);
+      border-color: #1f5fbf;
+    }
+    .fb-reveal .fb-title { color: #8fb8ff; }
+    .fb-info {
+      background: rgba(148, 163, 184, 0.10);
+      border-color: rgba(148, 163, 184, 0.35);
+    }
+    .fb-info .fb-title { color: #e2e8f0; }
+
     .choice-card.wrong-ans {
       border-color: var(--red) !important;
       background: rgba(244, 63, 94, 0.1) !important;
@@ -510,7 +527,7 @@
           <div id="counting-section" style="display: none; text-align: center; padding: 1rem 0;">
             <div class="input-row">
               <span class="input-label">Nombre total de cubes :</span>
-              <input type="number" id="count-input" class="count-input" min="1" step="1" placeholder="?">
+              <input type="text" inputmode="numeric" autocomplete="off" maxlength="3" id="count-input" class="count-input" placeholder="?">
             </div>
           </div>
 
@@ -553,11 +570,11 @@
       name: "La Tour Simple",
       grid: [
         [0, 0, 0],
-        [0, 4, 0],
+        [0, 3, 0],
         [0, 0, 0]
       ],
       hint: "Une unique colonne verticale empilée.",
-      desc: "L'assemblage est composé d'une seule colonne contenant <strong>4 cubes</strong>."
+      desc: "L'assemblage est composé d'une seule colonne contenant <strong>3 cubes</strong>."
     },
     {
       name: "Le Canapé",
@@ -614,10 +631,10 @@
       grid: [
         [2, 0, 2],
         [2, 0, 2],
-        [2, 2, 2]
+        [1, 1, 1]
       ],
-      hint: "Un bloc en forme de U de hauteur 2 constante.",
-      desc: "7 colonnes de hauteur 2 disposées en forme de U. Le centre est entièrement vide. Total : 7 × 2 = <strong>14 cubes</strong>."
+      hint: "Un U : deux branches de hauteur 2 et un fond de hauteur 1.",
+      desc: "Les deux branches ont 2 colonnes de hauteur 2 chacune (8 cubes) et le fond du U a 3 colonnes de hauteur 1 (3 cubes). Le centre est vide. Total : 8 + 3 = <strong>11 cubes</strong>."
     },
     {
       name: "Le Coin Caché",
@@ -633,11 +650,11 @@
       name: "Le Bloc Creux",
       grid: [
         [2, 2, 2],
-        [2, 0, 2],
-        [2, 2, 2]
+        [2, 0, 1],
+        [2, 1, 1]
       ],
-      hint: "Un bloc de 3x3 de hauteur 2 auquel il manque juste la colonne centrale.",
-      desc: "8 colonnes périphériques de hauteur 2. Le centre est vide. Total : 8 × 2 = <strong>16 cubes</strong>."
+      hint: "Un bloc creux : le centre est vide, les colonnes autour ont 1 ou 2 cubes.",
+      desc: "Autour du trou central, il y a 5 colonnes de hauteur 2 (10 cubes) et 3 colonnes de hauteur 1 (3 cubes). Total : 10 + 3 = <strong>13 cubes</strong>."
     },
     {
       name: "Les Tours Jumelles",
@@ -647,7 +664,7 @@
         [0, 0, 0]
       ],
       hint: "Deux tours hautes de 3 cubes reliées par des blocs de hauteur 1.",
-      desc: "Deux colonnes de hauteur 3 (6 cubes) et trois colonnes de hauteur 1 (3 cubes). Total : 6 + 3 = <strong>9 cubes</strong>."
+      desc: "Deux colonnes de hauteur 3 (6 cubes) et quatre colonnes de hauteur 1 : celle entre les tours et les trois de devant (4 cubes). Total : 6 + 4 = <strong>10 cubes</strong>."
     },
     {
       name: "L'Escalier Double",
@@ -670,14 +687,14 @@
       desc: "Une colonne centrale de hauteur 3 (3 cubes), deux colonnes arrière de hauteur 2 (4 cubes) et trois colonnes avant de hauteur 1 (3 cubes). Total : 3 + 4 + 3 = <strong>10 cubes</strong>."
     },
     {
-      name: "Le Trident",
+      name: "Le Diapason",
       grid: [
         [2, 0, 2],
-        [2, 2, 2],
-        [2, 0, 2]
+        [1, 1, 1],
+        [0, 1, 0]
       ],
-      hint: "Une base centrale de 3 colonnes et deux dents latérales de hauteur 2.",
-      desc: "7 colonnes de hauteur 2 disposées en trident. Total : 7 × 2 = <strong>14 cubes</strong>."
+      hint: "Deux branches de hauteur 2, une barre et un manche de hauteur 1.",
+      desc: "Deux branches de hauteur 2 (4 cubes), une barre de 3 colonnes de hauteur 1 (3 cubes) et un manche de 1 cube. Total : 4 + 3 + 1 = <strong>8 cubes</strong>."
     },
     {
       name: "La Lettre H",
@@ -714,6 +731,9 @@
   let selectedChoiceIdx = null;
   let answered = false;
   let generatedChoices = [];
+  let essais = 0, termine = false, saved = false, lastAct = 0, sessionViews = [];
+  const VIEW_LABELS = { face: 'vue de face', profil_gauche: 'vue de profil gauche', profil_droit: 'vue de profil droit', haut: 'vue de dessus' };
+  const VIEW_ARROWS = { face: 'Face', profil_gauche: 'Profil gauche', profil_droit: 'Profil droit', haut: 'Dessus' };
 
   // Web Audio Context
   const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -809,6 +829,7 @@
     
     // Draw ground grid first
     drawGround(svg, rotatedGrid);
+    if (angle === 0) drawViewMarkers(svg);
 
     // Draw cubes from back to front (x=0..2, y=0..2)
     for (let x = 0; x < 3; x++) {
@@ -821,47 +842,71 @@
     }
   }
 
-  // Generates 3x3 boolean matrix representing the requested plane projection view
+  // Vues planes. Repère du dessin : grid[x][y] ; x descend vers la droite, y descend vers la gauche.
+  // Les flèches du dessin indiquent d'où l'on regarde :
+  //  • Face : depuis l'avant-gauche (côté y = 2), on voit x croissant de gauche à droite ;
+  //  • Profil droit : depuis l'avant-droite (côté x = 2), y croissant vers la gauche ;
+  //  • Profil gauche : depuis l'arrière-gauche (côté x = 0), y croissant vers la droite ;
+  //  • Dessus : vu d'en haut, le côté « Face » en bas.
   function getViewMatrix(grid, viewType) {
     let matrix = Array(3).fill(0).map(() => Array(3).fill(false));
+    const colMaxX = y => Math.max(grid[0][y], grid[1][y], grid[2][y]); // max sur x
+    const colMaxY = x => Math.max(grid[x][0], grid[x][1], grid[x][2]); // max sur y
     if (viewType === 'haut') {
-      for (let r = 0; r < 3; r++) {
-        for (let c = 0; c < 3; c++) {
-          matrix[r][c] = (grid[r][c] > 0);
+      for (let y = 0; y < 3; y++) {
+        for (let x = 0; x < 3; x++) {
+          matrix[y][x] = (grid[x][y] > 0);
         }
       }
     } else {
       let heights = [0, 0, 0];
-      if (viewType === 'face') {
-        heights = [
-          Math.max(grid[0][0], grid[1][0], grid[2][0]),
-          Math.max(grid[0][1], grid[1][1], grid[2][1]),
-          Math.max(grid[0][2], grid[1][2], grid[2][2])
-        ];
-      } else if (viewType === 'profil_gauche') {
-        heights = [
-          Math.max(grid[0][0], grid[0][1], grid[0][2]),
-          Math.max(grid[1][0], grid[1][1], grid[1][2]),
-          Math.max(grid[2][0], grid[2][1], grid[2][2])
-        ];
-      } else if (viewType === 'profil_droit') {
-        heights = [
-          Math.max(grid[2][0], grid[2][1], grid[2][2]),
-          Math.max(grid[1][0], grid[1][1], grid[1][2]),
-          Math.max(grid[0][0], grid[0][1], grid[0][2])
-        ];
-      }
+      if (viewType === 'face') heights = [colMaxY(0), colMaxY(1), colMaxY(2)];
+      else if (viewType === 'profil_droit') heights = [colMaxX(2), colMaxX(1), colMaxX(0)];
+      else if (viewType === 'profil_gauche') heights = [colMaxX(0), colMaxX(1), colMaxX(2)];
       for (let c = 0; c < 3; c++) {
-        const h = heights[c];
+        const h = Math.min(3, heights[c]);
         for (let r = 0; r < 3; r++) {
-          // Bottom row in 3x3 grid is index 2, middle is 1, top is 0
-          if (r >= 3 - h) {
-            matrix[r][c] = true;
-          }
+          if (r >= 3 - h) matrix[r][c] = true;
         }
       }
     }
     return matrix;
+  }
+
+  // Flèches qui indiquent les points de vue (dessin standard uniquement)
+  function drawViewMarkers(svg) {
+    const NS = 'http://www.w3.org/2000/svg';
+    // point (u, v) du sol -> écran
+    const P = (u, v) => [ORIGIN_X + (u - v) * W, ORIGIN_Y + (u + v) * H + CUBE_H];
+    const arrow = (x1, y1, x2, y2, label, lx, ly, anchor) => {
+      const l = document.createElementNS(NS, 'line');
+      l.setAttribute('x1', x1); l.setAttribute('y1', y1); l.setAttribute('x2', x2); l.setAttribute('y2', y2);
+      l.setAttribute('stroke', '#fbbf24'); l.setAttribute('stroke-width', '3'); l.setAttribute('marker-end', 'url(#fleche-vue)');
+      svg.appendChild(l);
+      const t = document.createElementNS(NS, 'text');
+      t.setAttribute('x', lx); t.setAttribute('y', ly); t.setAttribute('text-anchor', anchor);
+      t.setAttribute('fill', '#fbbf24'); t.setAttribute('font-size', '14'); t.setAttribute('font-weight', '800');
+      t.setAttribute('font-family', 'Nunito, sans-serif');
+      t.textContent = label;
+      svg.appendChild(t);
+    };
+    const defs = document.createElementNS(NS, 'defs');
+    defs.innerHTML = '<marker id="fleche-vue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#fbbf24"/></marker>';
+    svg.appendChild(defs);
+    const nY = [-W, H], nX = [W, H], nmX = [-W, -H];
+    const k = 1 / Math.hypot(W, H);
+    const fl = (m, n, a, b) => [m[0] + n[0] * k * a, m[1] + n[1] * k * a, m[0] + n[0] * k * b, m[1] + n[1] * k * b];
+    // Face : milieu du bord y = 3
+    let m = P(1.5, 3), s = fl(m, nY, 52, 12);
+    arrow(s[0], s[1], s[2], s[3], 'Face', s[0] - 2, s[1] + 12, 'end');
+    // Profil droit : milieu du bord x = 3
+    m = P(3, 1.5); s = fl(m, nX, 52, 12);
+    arrow(s[0], s[1], s[2], s[3], 'Profil droit', s[0] + 2, s[1] + 12, 'start');
+    // Profil gauche : milieu du bord x = 0 (côté caché)
+    m = P(0, 1.5); s = fl(m, nmX, 70, 22);
+    arrow(s[0], s[1], s[2], s[3], 'Profil gauche', 6, s[1] - 12, 'start');
+    // Dessus
+    arrow(ORIGIN_X, 8, ORIGIN_X, 46, 'Dessus', ORIGIN_X + 10, 26, 'start');
   }
 
   // Generates a 3x3 grid in HTML/SVG to represent a projection view
@@ -928,9 +973,20 @@
       }
     }
 
+    // Variantes interdites : image miroir de la bonne vue (et ses rotations pour le dessus),
+    // qui ne seraient fausses que par l'orientation.
+    const miroir = m => m.map(row => [...row].reverse());
+    const rot = m => [0, 1, 2].map(r => [0, 1, 2].map(c => m[2 - c][r]));
+    const interdites = new Set([serializeMatrix(miroir(correctMatrix))]);
+    if (correctView === 'haut') {
+      let m = correctMatrix;
+      for (let k = 0; k < 4; k++) { m = rot(m); interdites.add(serializeMatrix(m)); interdites.add(serializeMatrix(miroir(m))); }
+    }
+    interdites.delete(serializeMatrix(correctMatrix));
+
     // If we have less than 4 choices, generate mutated variations of the correct view
     let attempts = 0;
-    while (choices.length < 4 && attempts < 50) {
+    while (choices.length < 4 && attempts < 500) {
       attempts++;
       // Clone correct matrix
       let mutated = choices[Math.floor(Math.random() * choices.length)].matrix.map(row => [...row]);
@@ -966,7 +1022,7 @@
       if (!hasCell) continue;
 
       const ser = serializeMatrix(mutated);
-      if (!matrixSet.has(ser)) {
+      if (!matrixSet.has(ser) && !interdites.has(ser)) {
         matrixSet.add(ser);
         choices.push({ matrix: mutated, viewType: null, isCorrect: false });
       }
@@ -986,45 +1042,32 @@
   // ════════════════════════════════════════════════
   function loadQuestion() {
     answered = false;
+    essais = 0;
     selectedChoiceIdx = null;
     currentRotateAngle = 0;
     document.getElementById('feedback-area').innerHTML = '';
     document.getElementById('next-area').style.display = 'none';
 
-    // Configure question mode
     isMCQ = (currentStep <= 5);
 
     document.getElementById('btn-validate').disabled = isMCQ;
     document.getElementById('count-input').value = '';
     document.getElementById('count-input').disabled = false;
 
-    // Load shapes
     const shape = sessionShapes[currentStep - 1];
 
-    // Setup stats display
     document.getElementById('q-num').textContent = currentStep;
     document.getElementById('score-disp').textContent = score;
     document.getElementById('prog-bar').style.width = `${((currentStep - 1) / TOTAL_Q) * 100}%`;
 
     const titleEl = document.getElementById('q-title');
     if (isMCQ) {
-      // Pick random view type
-      const views = ['face', 'profil_gauche', 'profil_droit', 'haut'];
-      currentViewType = views[Math.floor(Math.random() * views.length)];
-      
-      let viewLabel = '';
-      if (currentViewType === 'face') viewLabel = 'vue de face';
-      else if (currentViewType === 'profil_gauche') viewLabel = 'vue de profil gauche';
-      else if (currentViewType === 'profil_droit') viewLabel = 'vue de profil droit';
-      else if (currentViewType === 'haut') viewLabel = 'vue de haut';
+      currentViewType = sessionViews[currentStep - 1];
+      titleEl.innerHTML = `<span>❓</span> <span>Quelle est la <strong>${VIEW_LABELS[currentViewType]}</strong> de cet assemblage ? ${currentViewType === 'haut' ? '(le côté « Face » en bas)' : '(suis la flèche jaune)'}</span>`;
 
-      titleEl.innerHTML = `<span>❓</span> Quelle est la <strong>${viewLabel}</strong> de cet assemblage 3D ?`;
-      
-      // Show MCQ area, hide counting area
       document.getElementById('mcq-section').style.display = 'block';
       document.getElementById('counting-section').style.display = 'none';
 
-      // Render choices
       generatedChoices = generateMCQChoices(shape, currentViewType);
       const gridEl = document.getElementById('choices-grid');
       gridEl.innerHTML = '';
@@ -1034,7 +1077,6 @@
         card.className = 'choice-card';
         card.id = `choice-${idx}`;
         card.onclick = () => selectChoice(idx);
-        
         const svgHTML = drawViewSVG(ch.matrix, currentViewType, 90);
         card.innerHTML = `
           ${svgHTML}
@@ -1044,137 +1086,143 @@
       });
 
     } else {
-      // Counting mode
-      titleEl.innerHTML = `<span>❓</span> Combien de petits cubes composent cet assemblage au total ? (Fais attention aux cubes cachés !)`;
-      
-      // Hide MCQ area, show counting area
+      titleEl.innerHTML = `<span>❓</span> <span>Combien de petits cubes composent cet assemblage au total ? (Fais attention aux cubes cachés !)</span>`;
       document.getElementById('mcq-section').style.display = 'none';
       document.getElementById('counting-section').style.display = 'block';
       document.getElementById('count-input').focus();
     }
 
-    // Render 3D
     renderIsometric(shape, currentRotateAngle);
   }
 
   function selectChoice(idx) {
     if (answered) return;
+    const el = document.getElementById(`choice-${idx}`);
+    if (el.classList.contains('disabled')) return; // déjà essayé
     playSound('click');
-
-    // Deselect previous
     if (selectedChoiceIdx !== null) {
       document.getElementById(`choice-${selectedChoiceIdx}`).classList.remove('selected');
     }
-
     selectedChoiceIdx = idx;
-    document.getElementById(`choice-${idx}`).classList.add('selected');
+    el.classList.add('selected');
     document.getElementById('btn-validate').disabled = false;
   }
 
+  function garde() {
+    const t = Date.now();
+    if (t - lastAct < 600) return false;
+    lastAct = t;
+    return true;
+  }
+
+  function messageSimple(classe, titre, texte) {
+    document.getElementById('feedback-area').innerHTML = `
+      <div class="feedback-box ${classe}">
+        <div class="fb-icon">${classe === 'fb-wrong' ? '🔁' : '✏️'}</div>
+        <div style="flex:1;">
+          <div class="fb-title">${titre}</div>
+          <div class="fb-desc">${texte}</div>
+        </div>
+      </div>`;
+  }
+
   function submitAnswer() {
-    if (answered) return;
+    if (answered || termine) return;
     const shape = sessionShapes[currentStep - 1];
-    
-    // Calculate total cubes
     let correctCubes = 0;
-    for (let r = 0; r < 3; r++) {
-      for (let c = 0; c < 3; c++) {
-        correctCubes += shape.grid[r][c];
-      }
-    }
+    for (let r = 0; r < 3; r++) for (let c = 0; c < 3; c++) correctCubes += shape.grid[r][c];
 
     let isCorrect = false;
-    let detailMsg = '';
+    const inputEl = document.getElementById('count-input');
 
     if (isMCQ) {
       if (selectedChoiceIdx === null) return;
-      answered = true;
-      document.getElementById('btn-validate').disabled = true;
+    } else {
+      const v = inputEl.value.trim();
+      if (!/^\d{1,3}$/.test(v) || parseInt(v, 10) <= 0) {
+        messageSimple('fb-info', 'Écris un nombre', 'Tape le nombre de cubes avec des chiffres (par exemple 12).');
+        inputEl.focus();
+        return; // pas compté
+      }
+    }
+    if (!garde()) return;
 
-      const choice = generatedChoices[selectedChoiceIdx];
-      isCorrect = choice.isCorrect;
+    essais++;
+    if (isMCQ) {
+      isCorrect = generatedChoices[selectedChoiceIdx].isCorrect;
+    } else {
+      isCorrect = (parseInt(inputEl.value.trim(), 10) === correctCubes);
+    }
 
-      // Color choice cards
+    // 1er essai raté : on peut réessayer, sans voir la réponse
+    if (!isCorrect && essais === 1) {
+      playSound('error');
+      if (isMCQ) {
+        const el = document.getElementById(`choice-${selectedChoiceIdx}`);
+        el.classList.remove('selected');
+        el.classList.add('wrong-ans', 'disabled');
+        selectedChoiceIdx = null;
+        document.getElementById('btn-validate').disabled = true;
+        messageSimple('fb-wrong', 'Ce n\'est pas la bonne vue.',
+          currentViewType === 'haut'
+            ? 'Regarde l\'assemblage d\'en haut, le côté « Face » en bas, et choisis une autre option. Dernier essai !'
+            : `Place-toi au bout de la flèche « ${VIEW_ARROWS[currentViewType]} » et choisis une autre option. Dernier essai !`);
+      } else {
+        inputEl.value = '';
+        inputEl.focus();
+        messageSimple('fb-wrong', 'Ce n\'est pas le bon nombre.',
+          'Recompte colonne par colonne, sans oublier les cubes cachés en dessous et derrière. Dernier essai !');
+      }
+      return;
+    }
+
+    answered = true;
+    document.getElementById('btn-validate').disabled = true;
+    inputEl.disabled = true;
+    if (isCorrect && essais === 1) score++;
+    document.getElementById('score-disp').textContent = score;
+    const revele = !isCorrect;
+
+    let detailMsg = '';
+    if (isMCQ) {
+      const bonne = generatedChoices.findIndex(c => c.isCorrect);
       generatedChoices.forEach((ch, idx) => {
         const el = document.getElementById(`choice-${idx}`);
         el.classList.add('disabled');
-        if (ch.isCorrect) {
-          el.classList.add('correct-ans');
-        } else if (idx === selectedChoiceIdx) {
-          el.classList.add('wrong-ans');
-        }
+        el.classList.remove('selected');
+        if (ch.isCorrect) el.classList.add(revele ? 'reveal-ans' : 'correct-ans');
+        else if (idx === selectedChoiceIdx) el.classList.add('wrong-ans');
       });
-
-      let viewName = '';
-      if (currentViewType === 'face') viewName = 'de face';
-      else if (currentViewType === 'profil_gauche') viewName = 'de profil gauche';
-      else if (currentViewType === 'profil_droit') viewName = 'de profil droit';
-      else if (currentViewType === 'haut') viewName = 'de haut';
-
-      detailMsg = `Pour cet assemblage, la bonne vue <strong>${viewName}</strong> correspond à l'<strong>Option ${String.fromCharCode(65 + generatedChoices.findIndex(c => c.isCorrect))}</strong>.`;
-
+      detailMsg = `La bonne <strong>${VIEW_LABELS[currentViewType]}</strong> est l'<strong>option ${String.fromCharCode(65 + bonne)}</strong>.`;
     } else {
-      // Counting validation
-      const inputEl = document.getElementById('count-input');
-      const val = parseInt(inputEl.value, 10);
-      if (isNaN(val) || val <= 0) {
-        alert("Saisis un nombre entier de cubes valide !");
-        return;
-      }
-      answered = true;
-      document.getElementById('btn-validate').disabled = true;
-      inputEl.disabled = true;
-
-      isCorrect = (val === correctCubes);
-
       detailMsg = `L'assemblage contient exactement <strong>${correctCubes} cubes</strong>.<br>${shape.desc}`;
     }
 
-    if (isCorrect) score++;
-    document.getElementById('score-disp').textContent = score;
-
-    // Play retro sounds
     playSound(isCorrect ? 'success' : 'error');
 
-    // Build detailed feedback and views row
     const mHaut = getViewMatrix(shape.grid, 'haut');
     const mFace = getViewMatrix(shape.grid, 'face');
     const mG = getViewMatrix(shape.grid, 'profil_gauche');
     const mD = getViewMatrix(shape.grid, 'profil_droit');
 
-    const feedbackArea = document.getElementById('feedback-area');
-    feedbackArea.innerHTML = `
-      <div class="feedback-box ${isCorrect ? 'fb-correct' : 'fb-wrong'}">
+    const classe = isCorrect ? 'fb-correct' : 'fb-reveal';
+    const titre = isCorrect
+      ? (essais === 1 ? 'Excellent travail !' : 'C\'est juste au 2<sup>e</sup> essai (pas de point cette fois).')
+      : 'Voici la bonne réponse.';
+    document.getElementById('feedback-area').innerHTML = `
+      <div class="feedback-box ${classe}">
         <div class="fb-icon">${isCorrect ? '🎯' : '💡'}</div>
         <div style="flex:1;">
-          <div class="fb-title">${isCorrect ? 'Excellent travail !' : 'Ce n\'est pas tout à fait ça.'}</div>
-          <div class="fb-desc">
-            ${detailMsg}
-          </div>
-          
-          <!-- Detailed projections analysis during correction -->
+          <div class="fb-title">${titre}</div>
+          <div class="fb-desc">${detailMsg}</div>
           <div class="correction-detail">
-            <div class="correction-subtitle">🔍 Analyse des 4 projections :</div>
+            <div class="correction-subtitle">🔍 Les 4 vues de l'assemblage :</div>
             <div class="projections-row">
-              <div class="projection-item">
-                ${drawViewSVG(mHaut, 'haut', 60)}
-                <span class="projection-item-title">Vue de Haut</span>
-              </div>
-              <div class="projection-item">
-                ${drawViewSVG(mFace, 'face', 60)}
-                <span class="projection-item-title">Vue de Face</span>
-              </div>
-              <div class="projection-item">
-                ${drawViewSVG(mG, 'profil_gauche', 60)}
-                <span class="projection-item-title">Profil G.</span>
-              </div>
-              <div class="projection-item">
-                ${drawViewSVG(mD, 'profil_droit', 60)}
-                <span class="projection-item-title">Profil D.</span>
-              </div>
+              <div class="projection-item">${drawViewSVG(mHaut, 'haut', 60)}<span class="projection-item-title">Dessus</span></div>
+              <div class="projection-item">${drawViewSVG(mFace, 'face', 60)}<span class="projection-item-title">Face</span></div>
+              <div class="projection-item">${drawViewSVG(mG, 'profil_gauche', 60)}<span class="projection-item-title">Profil gauche</span></div>
+              <div class="projection-item">${drawViewSVG(mD, 'profil_droit', 60)}<span class="projection-item-title">Profil droit</span></div>
             </div>
-            
-            <!-- Rotation control for pedagogical explanation -->
             <div class="rotation-control">
               <span class="rotation-label">👀 Observe l'assemblage sous d'autres angles :</span>
               <div class="rotation-buttons">
@@ -1189,30 +1237,26 @@
       </div>
     `;
 
+    document.getElementById('btn-next').textContent = currentStep === TOTAL_Q ? 'Voir mon score 👉' : 'Question suivante 👉';
     document.getElementById('next-area').style.display = 'block';
-    
-    // Set focus on next button
     document.getElementById('btn-next').focus();
   }
 
   function changeRotation(deg) {
     if (!answered) return;
     playSound('click');
-    
-    // Toggle active class in rotation buttons
     [0, 90, 180, 270].forEach(d => {
       const btn = document.getElementById(`rot-btn-${d}`);
       if (d === deg) btn.classList.add('active');
       else btn.classList.remove('active');
     });
-
     currentRotateAngle = deg;
-    const shape = sessionShapes[currentStep - 1];
-    renderIsometric(shape, currentRotateAngle);
+    renderIsometric(sessionShapes[currentStep - 1], currentRotateAngle);
   }
 
-  // Proceed to next question
   function nextQuestion() {
+    if (!answered || termine) return;
+    if (!garde()) return;
     if (currentStep < TOTAL_Q) {
       currentStep++;
       loadQuestion();
@@ -1222,6 +1266,8 @@
   }
 
   function finishSession() {
+    if (termine) return;
+    termine = true;
     document.getElementById('game-flow').style.display = 'none';
     document.getElementById('congrats-flow').style.display = 'block';
 
@@ -1231,57 +1277,66 @@
     const starsEl = document.getElementById('stars');
 
     if (score === TOTAL_Q) {
-      titleEl.textContent = "Score Parfait ! 🏆";
-      msgEl.innerHTML = `Géomètre d'exception ! Tu as résolu les 10 questions sans aucune erreur (score : <strong>${score}/${TOTAL_Q}</strong>, soit ${pct}%). Ton sens de la perspective 3D est parfait !`;
+      titleEl.textContent = "Score parfait ! 🏆";
+      msgEl.innerHTML = `Tu as résolu les 10 questions sans aucune erreur (score : <strong>${score}/${TOTAL_Q}</strong>, soit ${pct} %). Tu maitrises les vues et les empilements !`;
       starsEl.textContent = "⭐⭐⭐";
       playSound('perfect');
       launchConfetti();
     } else if (score >= 8) {
       titleEl.textContent = "Félicitations ! 🥈";
-      msgEl.innerHTML = `Excellent résultat ! Tu as obtenu un score de <strong>${score}/${TOTAL_Q}</strong> (${pct}%). Ton sens de la perspective 3D est excellent !`;
+      msgEl.innerHTML = `Excellent résultat ! Tu as obtenu <strong>${score}/${TOTAL_Q}</strong> (${pct} %).`;
       starsEl.textContent = "⭐⭐";
       playSound('success');
     } else if (score >= 5) {
       titleEl.textContent = "Bien joué ! 🎯";
-      msgEl.innerHTML = `Bon travail ! Tu as un score de <strong>${score}/${TOTAL_Q}</strong> (${pct}%). Essaie à nouveau pour faire encore mieux, et fais bien attention aux cubes cachés !`;
+      msgEl.innerHTML = `Bon travail ! Tu as <strong>${score}/${TOTAL_Q}</strong> (${pct} %). Recommence pour faire encore mieux, et fais bien attention aux cubes cachés !`;
       starsEl.textContent = "⭐";
       playSound('success');
     } else {
-      titleEl.textContent = "Entraîne-toi encore ! 💪";
-      msgEl.innerHTML = `Score : <strong>${score}/${TOTAL_Q}</strong> (${pct}%). Ne te décourage pas ! Relance l'exercice et prends ton temps pour analyser la structure face par face.`;
-      starsEl.textContent = "❌";
+      titleEl.textContent = "Entraine-toi encore ! 💪";
+      msgEl.innerHTML = `Score : <strong>${score}/${TOTAL_Q}</strong> (${pct} %). Ne te décourage pas ! Recommence et prends ton temps pour observer l'assemblage depuis chaque flèche.`;
+      starsEl.textContent = "💪";
       playSound('error');
     }
 
-    // Save result to Firebase parent if available
-    if (window.parent && window.parent.saveResult) {
-      window.parent.saveResult({
-        activity: 'solide_projections_cubes',
-        bookTitle: "Géométrie — Vues 3D & Empilements de Cubes",
-        score: score,
-        total: TOTAL_Q,
-        pct: pct,
-        date: new Date().toLocaleDateString('fr-BE'),
-        time: new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })
-      });
+    if (!saved) {
+      saved = true;
+      try {
+        window.parent.saveResult({
+          activity: 'solide_projections_cubes',
+          bookTitle: 'Projections de cubes (Solides 3D)',
+          score: score,
+          total: TOTAL_Q,
+          pct: pct,
+          date: new Date().toLocaleDateString('fr-BE'),
+          time: new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })
+        });
+      } catch (e) {}
     }
+  }
+
+  function melanger(a) {
+    const arr = [...a];
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
   }
 
   function startSession() {
-    // Shuffle shapes index array
-    const indices = SHAPES.map((_, i) => i);
-    for (let i = indices.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [indices[i], indices[j]] = [indices[j], indices[i]];
-    }
-    
-    // Choose 10 random shapes
-    sessionShapes = indices.slice(0, TOTAL_Q).map(idx => SHAPES[idx]);
+    sessionShapes = melanger(SHAPES).slice(0, TOTAL_Q);
+    // 5 questions de vues : les 4 vues au moins une fois, la 5e au hasard, ordre mélangé
+    const v = ['face', 'profil_droit', 'profil_gauche', 'haut'];
+    sessionViews = melanger([...v, v[Math.floor(Math.random() * 4)]]);
   }
 
   function restartGame() {
+    if (!garde()) return;
     currentStep = 1;
     score = 0;
+    termine = false;
+    saved = false;
     document.getElementById('game-flow').style.display = 'block';
     document.getElementById('congrats-flow').style.display = 'none';
     startSession();
@@ -1367,14 +1422,12 @@
 
   // Key event listeners
   document.addEventListener('keydown', e => {
-    if (e.key === 'Enter') {
-      if (!answered) {
-        if (!isMCQ || selectedChoiceIdx !== null) {
-          submitAnswer();
-        }
-      } else {
-        nextQuestion();
-      }
+    if (e.key !== 'Enter' || termine) return;
+    e.preventDefault();
+    if (!answered) {
+      if (!isMCQ || selectedChoiceIdx !== null) submitAnswer();
+    } else {
+      nextQuestion();
     }
   });
 

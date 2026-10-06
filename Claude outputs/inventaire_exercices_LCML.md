@@ -1752,6 +1752,18 @@ Spécifique :
 - Consignes à l'impératif (« Fais glisser la figure de… ») ; titre qui se cassait mal à 390 px ; nouvelle orthographe (maitrises, entrainement, Continue de t'entrainer ; menu « S'entrainer aux translations… »).
 - Tests jsdom : 2 000 séries 5+5, vide non compté, tracé nœud par nœud accepté, 2 échecs → solution bleue, 2e essai juste = 0 point, double Entrée sans saut, partie 8/10 → 1 sauvegarde, Recommencer OK. Capture 390 px sans défilement horizontal.
 
+### 06/10 — Mathématiques → Solides et figures → Les vues 3D et empilements (`solide_projections_cubes`, `fiches/solides_projections.html` + copie public) — sw.js v610
+- **Points de vue non indiqués et « vue de face » prise depuis l'arrière** : rien sur le dessin ne disait d'où regarder ; la « face » du programme correspondait au côté caché (arrière-gauche), et la vue de haut n'avait pas d'orientation. → Flèches jaunes sur le dessin (Face = avant-gauche, Profil droit = avant-droite, Profil gauche = arrière-gauche, Dessus), vues recalculées pour ces points de vue (vérifié sur capture : la tour haute de l'exemple apparait bien à gauche dans la vue de face) ; vue de dessus « côté Face en bas ».
+- **Distracteurs ambigus** : une option pouvait être la bonne vue retournée ou tournée (fausse seulement par l'orientation) → exclue (12 000 QCM générés : toujours 4 options, 1 seule bonne, bonne réponse répartie 25 % par position).
+- **Comptage impossible à trancher sur 3 formes** (vérifié pixel par pixel en changeant chaque colonne) : Lettre U, Bloc creux et Trident avaient un trou caché où 1 cube de plus ne changeait rien au dessin → formes modifiées (U 11 cubes, Bloc creux 13, « Le Diapason » 8) ; les 15 formes sont maintenant sans ambiguïté.
+- **Corrections fausses** : Tours jumelles annoncées 6 + 3 = 9 cubes alors qu'il y en a 10 → explication corrigée. Tour simple de 4 cubes impossible à montrer dans les vues 3 × 3 → 3 cubes.
+- Vues tirées au hasard (une série pouvait n'avoir que des vues de face) → les 4 vues au moins une fois sur les 5 questions, ordre mélangé.
+- Un seul essai → 2 essais : au 1er échec, l'option choisie passe en rouge et ne peut plus être reprise, sans la réponse ; point seulement au 1er essai ; après 2 échecs, bonne option et explication en bleu (#1f5fbf).
+- Saisie : « 12abc » lu comme 12 et fenêtre `alert` → lecture stricte (1 à 3 chiffres), message dans la page, rien n'est compté.
+- **Double Entrée sautait la correction ; Entrée sur l'écran final réenregistrait le score** → garde de 600 ms, enregistrement une seule fois (try/catch).
+- Question mal mise en page (texte coupé en colonnes) → corrigée. Nouvelle orthographe : Entraine-toi, maitrises.
+- Tests jsdom : 2 000 séries, vide/« 12abc » non comptés, 2 échecs → réponse bleue, 2e essai juste = 0 point, double Entrée sans saut, partie 7/10 → 1 sauvegarde, Recommencer OK. Capture 390 px sans défilement horizontal.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2173,7 +2185,7 @@ Spécifique :
 | ✅ 06/10 | Trouve les caractéristiques (Définitions) | `polyedres_caracteristiques` | fiches/polyedres_caracteristiques.html |  |
 | ✅ 06/10 | Les axes de symétrie | `solide_symetrie` | fiches/solide_symetrie.html |  |
 | ✅ 06/10 | Le labo des transformations | `solide_transformations_labo` | fiches/transformations_labo.html |  |
-| ⬜ | Projections de cubes (Solides 3D) | `solide_projections_cubes` | fiches/solides_projections.html |  |
+| ✅ 06/10 | Projections de cubes (Solides 3D) | `solide_projections_cubes` | fiches/solides_projections.html |  |
 | ⬜ | Le vocabulaire géométrique | `solide_vocabulaire` | fiches/vocabulaire_solides.html |  |
 
 ### 🌍 Éveil — 📜 Histoire
