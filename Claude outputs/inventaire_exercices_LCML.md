@@ -2210,6 +2210,9 @@ Spécifique :
 
 - **06/10 — La formation économique et sociale (`eco_formation_economique_sociale`, fiches/formation-economique-sociale.html, sw.js v696, MEDIA m8)** : carnet de 7 onglets. Bugs majeurs : les 2 infographies et le son (« Où va l'argent de ton salaire ? ») étaient appelés avec un chemin relatif au dossier fiches/ alors qu'ils étaient à la racine → introuvables sur le site (images vides, lecteur muet) → images déplacées dans photos/ (+ public/photos/), son renommé audio/salaire_audio.m4a (nom sans accent ; recompressé : 20 Mo → 4,5 Mo, voix mono, 10 min) ; aucun résultat enregistré → sur décision de Jeremy, seul le quiz final du Bilan (8 questions) est enregistré, une fois par essai ; les autres ateliers restent des entrainements corrigés. Infographie « gâteau » : faute « pour saigner les malades » → « soigner » (retouche de l'image). Fiche de paie : la ligne « SALAIRE NET À PAYER » affichait les totaux (858,80 € / 3 060,00 €) → ligne TOTAUX + vraie ligne net 2 201,20 € ; « 22 jours / 152 h » incohérent (152 h = 20 jours, et 20 chèques-repas) → 20 jours ; tableau qui débordait au téléphone → cadre qu'on fait glisser. Quiz : choix toujours dans le même ordre et bonne réponse souvent la plus longue, distracteurs farfelus (« vendre des objets ronds », « jeux vidéo ») → quiz final réécrit, choix du gâteau/entonnoir réécrits, choix mélangés partout ; bonne réponse manquée en bleu (avant : verte, et « la bonne réponse était la B » alors que l'ordre peut changer) ; « Incorrect. C'est exact ! » corrigé ; « net net ». Tri besoins/envies : ordre fixe besoin-envie-besoin… (devinable) → mélangé. Facteurs de production : le choix fait n'était pas visible et l'erreur n'était pas corrigée → catégorie affichée à côté de chaque ressource, correction « ➜ … » en bleu, figé après vérification. Test Playwright 390 px : pas de débordement, images et son trouvés, 6/8 au quiz final, 1 seule sauvegarde. 3 copies alignées.
 
+- **06/10 — Le globe terrestre 3D (`geo_globe_3d`, fiches/globe-terrestre.html, sw.js v697)** : le globe n'était accessible que depuis le plan de travail → nouvel écran `screen-geo-globe-3d` et carte en tête du menu Éveil → Géographie → Les océans et continents (décision de Jeremy) ; le plan de travail ouvre maintenant cet écran. Leçon sans score (acceptée). Bug majeur : le méridien de Greenwich était dessiné à 90° de sa place (il traversait l'Amérique, son étiquette aussi) et les étiquettes de longitude étaient décalées de 90° → longitudes recalées sur la texture (0° = Greenwich), Greenwich en demi-cercle d'un pôle à l'autre passant par Londres, méridiens gris tous les 10° complets ; au départ, l'Europe et l'Afrique sont face à l'élève. Autres : la texture locale de la Terre était cherchée dans fiches/ (absente → passage par le CDN) → `../earth-blue-marble.jpg` ; fichier des frontières (600 Ko) chargé deux fois ; 23,4° / 66,6° avec virgule. Vérifié à l'écran : Greenwich passe par Londres et le golfe de Guinée, tropique du Cancer dans le Sahara, 20°O dans l'Atlantique, 20°E en Afrique. Test Playwright 390 px : carte du menu → écran du globe, globe chargé, pas de débordement.
+- **06/10 — Les cartes et les plans (`geo_cartes`)** : écran vide, laissé tel quel à la demande de Jeremy ; retiré du plan de travail (sw.js v697).
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2725,7 +2728,7 @@ Spécifique :
 
 | Statut | Exercice | id | Source | Signal automatique |
 |---|---|---|---|---|
-| ⬜ | Le globe terrestre 3D | `geo_globe_3d` | fiches/globe-terrestre.html |  |
+| ✅ 06/10 | Le globe terrestre 3D | `geo_globe_3d` | fiches/globe-terrestre.html |  |
 | ✅ 06/10 | Les provinces de Belgique | `geo_belgique_provinces` | index › renderGeoBelgiqueScreen |  |
 | ✅ 06/10 | Les cours d'eau de Belgique | `geo_belgique_hydro` | index › renderGeoHydroScreen |  |
 | ✅ 06/10 | Les communes de notre région | `geo_belgique_communes` | index › renderGeoCommunesScreen |  |
@@ -2746,7 +2749,7 @@ Spécifique :
 | ✅ 06/10 | Le schéma du cours d'eau | `geo_hydro_schema` | fiches/vocabulaire_hydrographique.html |  |
 | ✅ 06/10 | Vocabulaire hydrographique (Définitions) | `geo_hydro_definitions` | fiches/hydrographie_definitions.html |  |
 | ✅ 06/10 | Relief et hydrographie de Belgique | `geo_hydro_belgique` | fiches/relief-hydrographie.html |  |
-| ⬜ | Les cartes et les plans | `geo_cartes` | index › (?) | (code à localiser) |
+| ⏸️ vide | Les cartes et les plans | `geo_cartes` | index › (?) | écran vide — laissé tel quel (Jeremy), retiré du plan de travail |
 
 ### 🌍 Éveil — 💶 Économie — Formation économique et sociale
 

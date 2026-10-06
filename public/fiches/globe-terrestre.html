@@ -618,7 +618,7 @@
               <span class="checkmark"></span>
               <span class="checkbox-label">
                 <span class="color-dot" style="background-color: var(--accent-orange);"></span>
-                Tropiques (23.4°)
+                Tropiques (23,4°)
               </span>
             </label>
 
@@ -627,7 +627,7 @@
               <span class="checkmark"></span>
               <span class="checkbox-label">
                 <span class="color-dot" style="background-color: var(--accent-blue);"></span>
-                Cercles Polaires (66.6°)
+                Cercles polaires (66,6°)
               </span>
             </label>
 
@@ -751,10 +751,10 @@
       
       <!-- Floating labels projected from 3D points -->
       <div id="label-equateur" class="html-label" style="color: var(--accent-red);">ÉQUATEUR</div>
-      <div id="label-cancer" class="html-label" style="color: var(--accent-orange);">Tropique du Cancer (+23.4°)</div>
-      <div id="label-capricorne" class="html-label" style="color: var(--accent-orange);">Tropique du Capricorne (-23.4°)</div>
-      <div id="label-arctique" class="html-label" style="color: var(--accent-blue);">Cercle Polaire Arctique (+66.6°)</div>
-      <div id="label-antarctique" class="html-label" style="color: var(--accent-blue);">Cercle Polaire Antarctique (-66.6°)</div>
+      <div id="label-cancer" class="html-label" style="color: var(--accent-orange);">Tropique du Cancer (+23,4°)</div>
+      <div id="label-capricorne" class="html-label" style="color: var(--accent-orange);">Tropique du Capricorne (−23,4°)</div>
+      <div id="label-arctique" class="html-label" style="color: var(--accent-blue);">Cercle Polaire Arctique (+66,6°)</div>
+      <div id="label-antarctique" class="html-label" style="color: var(--accent-blue);">Cercle Polaire Antarctique (−66,6°)</div>
       <div id="label-greenwich" class="html-label" style="color: var(--accent-gold);">Méridien de Greenwich (0°)</div>
       <div id="label-pole-nord" class="html-label" style="border-style: dashed;">Pôle Nord</div>
       <div id="label-pole-sud" class="html-label" style="border-style: dashed;">Pôle Sud</div>
@@ -793,7 +793,6 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
   <script src="../ne_110m_admin_0_countries.js"></script>
-  <script src="../ne_110m_admin_0_countries.js"></script>
 
   <script>
     /* ==========================================================
@@ -814,7 +813,7 @@
         
         labelElements[`parallel_${lat}`] = {
           el: el,
-          pos: getVectorFromLonLat(0, lat), // Placed on Greenwich meridian (lon 0)
+          pos: getVectorFromLonLat(0, lat), // sur le méridien de Greenwich
           chkId: 'chk-paralleles'
         };
       }
@@ -1004,6 +1003,7 @@
 
       // earthGroup: contient la sphère terrestre et les lignes qui tournent ensemble
       earthGroup = new THREE.Group();
+      earthGroup.rotation.y = -Math.PI / 2; // Europe et Afrique face à l'élève au départ
       earthPivot.add(earthGroup);
 
       // Load satellite texture with robust fallbacks for offline and local file:// CORS restrictions
@@ -1052,7 +1052,7 @@
           // If served via local web server, try local file first
           textureLoader.setCrossOrigin('anonymous');
           textureLoader.load(
-            'earth-blue-marble.jpg',
+            '../earth-blue-marble.jpg',
             function(texture) {
               applySatelliteTexture(texture);
             },
@@ -1189,10 +1189,10 @@
       polarGroup.add(antarctiqueMesh);
 
       // 4. Greenwich (Méridien 0°)
-      const greenwichGeo = new THREE.TorusGeometry(r, 0.035, 8, 120);
+      const greenwichGeo = new THREE.TorusGeometry(r, 0.035, 8, 60, Math.PI);
       greenwichTorus = new THREE.Mesh(greenwichGeo, goldMat);
-      // Le méridien passe par les pôles. On l'oriente verticalement face à nous
-      greenwichTorus.rotation.y = Math.PI / 2;
+      // Demi-cercle du pôle Sud au pôle Nord passant par la longitude 0° (Londres)
+      greenwichTorus.rotation.z = -Math.PI / 2;
       earthGroup.add(greenwichTorus);
 
       // 5. Parallèles secondaires (tous les 10° : ±10°, ±20°, etc.)
@@ -1215,11 +1215,11 @@
       meridiansGroup = new THREE.Group();
       earthGroup.add(meridiansGroup);
 
-      for (let lonDeg = 10; lonDeg < 360; lonDeg += 10) {
-        if (lonDeg === 180) continue; // Greenwich opposé
+      for (let lonDeg = 0; lonDeg < 180; lonDeg += 10) {
+        // chaque cercle complet porte deux méridiens : lonDeg et lonDeg + 180°
         const merGeo = new THREE.TorusGeometry(r, 0.01, 6, 100);
         const merMesh = new THREE.Mesh(merGeo, lightGreyMat);
-        merMesh.rotation.y = (lonDeg * Math.PI / 180) + Math.PI / 2;
+        merMesh.rotation.y = lonDeg * Math.PI / 180;
         meridiansGroup.add(merMesh);
       }
     }
@@ -1287,7 +1287,7 @@
     function getVectorFromLonLat(lon, lat) {
       const r = 5.05;
       const latRad = lat * Math.PI / 180;
-      const lonRad = lon * Math.PI / 180;
+      const lonRad = (lon + 90) * Math.PI / 180; // lon = vraie longitude (0 = Greenwich)
       const x = r * Math.cos(latRad) * Math.sin(lonRad);
       const y = r * Math.sin(latRad);
       const z = r * Math.cos(latRad) * Math.cos(lonRad);
@@ -1300,25 +1300,25 @@
       capricorne: { el: document.getElementById('label-capricorne'), pos: new THREE.Vector3(5.1 * Math.cos(-23.44*Math.PI/180), 5.1 * Math.sin(-23.44*Math.PI/180), 0), chkId: 'chk-tropiques' },
       arctique: { el: document.getElementById('label-arctique'), pos: new THREE.Vector3(5.1 * Math.cos(66.56*Math.PI/180), 5.1 * Math.sin(66.56*Math.PI/180), 0), chkId: 'chk-polaires' },
       antarctique: { el: document.getElementById('label-antarctique'), pos: new THREE.Vector3(5.1 * Math.cos(-66.56*Math.PI/180), 5.1 * Math.sin(-66.56*Math.PI/180), 0), chkId: 'chk-polaires' },
-      greenwich: { el: document.getElementById('label-greenwich'), pos: new THREE.Vector3(0, 0, 5.1), chkId: 'chk-greenwich' },
+      greenwich: { el: document.getElementById('label-greenwich'), pos: getVectorFromLonLat(0, 51.5), chkId: 'chk-greenwich' },
       poleNord: { el: document.getElementById('label-pole-nord'), pos: new THREE.Vector3(0, 5.8, 0), chkId: 'always' },
       poleSud: { el: document.getElementById('label-pole-sud'), pos: new THREE.Vector3(0, -5.8, 0), chkId: 'always' },
       
       // Continents
-      europe: { el: document.getElementById('label-europe'), pos: getVectorFromLonLat(93.1, 47.4), chkId: 'chk-continents' },
-      asie: { el: document.getElementById('label-asie'), pos: getVectorFromLonLat(-176.5, 35.2), chkId: 'chk-continents' },
-      afrique: { el: document.getElementById('label-afrique'), pos: getVectorFromLonLat(108.4, 13.2), chkId: 'chk-continents' },
-      namerique: { el: document.getElementById('label-namerique'), pos: getVectorFromLonLat(-10.1, 40.3), chkId: 'chk-continents' },
-      samerique: { el: document.getElementById('label-samerique'), pos: getVectorFromLonLat(32.8, -14.5), chkId: 'chk-continents' },
-      oceanie: { el: document.getElementById('label-oceanie'), pos: getVectorFromLonLat(-121.8, -26.9), chkId: 'chk-continents' },
-      antarctiqueCont: { el: document.getElementById('label-antarctique-cont'), pos: getVectorFromLonLat(-166.1, -82.7), chkId: 'chk-continents' },
+      europe: { el: document.getElementById('label-europe'), pos: getVectorFromLonLat(15, 50), chkId: 'chk-continents' },
+      asie: { el: document.getElementById('label-asie'), pos: getVectorFromLonLat(93.5, 35.2), chkId: 'chk-continents' },
+      afrique: { el: document.getElementById('label-afrique'), pos: getVectorFromLonLat(18.4, 13.2), chkId: 'chk-continents' },
+      namerique: { el: document.getElementById('label-namerique'), pos: getVectorFromLonLat(-100.1, 40.3), chkId: 'chk-continents' },
+      samerique: { el: document.getElementById('label-samerique'), pos: getVectorFromLonLat(-57.2, -14.5), chkId: 'chk-continents' },
+      oceanie: { el: document.getElementById('label-oceanie'), pos: getVectorFromLonLat(148.2, -26.9), chkId: 'chk-continents' },
+      antarctiqueCont: { el: document.getElementById('label-antarctique-cont'), pos: getVectorFromLonLat(103.9, -82.7), chkId: 'chk-continents' },
 
       // Oceans
-      atlantique: { el: document.getElementById('label-atlantique'), pos: getVectorFromLonLat(54.9, 14.9), chkId: 'chk-oceans' },
-      pacifique: { el: document.getElementById('label-pacifique'), pos: getVectorFromLonLat(-78.1, 6), chkId: 'chk-oceans' },
-      indien: { el: document.getElementById('label-indien'), pos: getVectorFromLonLat(164.9, -13.3), chkId: 'chk-oceans' },
-      arctiqueOc: { el: document.getElementById('label-arctique-oc'), pos: getVectorFromLonLat(-64.5, 86.1), chkId: 'chk-oceans' },
-      austral: { el: document.getElementById('label-austral'), pos: getVectorFromLonLat(-69.6, -70.3), chkId: 'chk-oceans' }
+      atlantique: { el: document.getElementById('label-atlantique'), pos: getVectorFromLonLat(-35.1, 14.9), chkId: 'chk-oceans' },
+      pacifique: { el: document.getElementById('label-pacifique'), pos: getVectorFromLonLat(-168.1, 6), chkId: 'chk-oceans' },
+      indien: { el: document.getElementById('label-indien'), pos: getVectorFromLonLat(74.9, -13.3), chkId: 'chk-oceans' },
+      arctiqueOc: { el: document.getElementById('label-arctique-oc'), pos: getVectorFromLonLat(-154.5, 86.1), chkId: 'chk-oceans' },
+      austral: { el: document.getElementById('label-austral'), pos: getVectorFromLonLat(-159.6, -70.3), chkId: 'chk-oceans' }
     };
 
     function updateLabelsProjection() {
@@ -1558,7 +1558,7 @@
         camera.position.set(0, 3, 14);
         controls.target.set(0, 0, 0);
         controls.update();
-        earthGroup.rotation.set(0, 0, 0);
+        earthGroup.rotation.set(0, -Math.PI / 2, 0);
       });
     }
 
