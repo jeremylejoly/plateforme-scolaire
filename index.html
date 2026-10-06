@@ -14701,17 +14701,16 @@ const GEO_HYDRO_DATA = [
   {num:10, cours:"Escaut"},
 ];
 
-let geoHydroState = {answers:{}, submitted:false, dragging:null};
+let geoHydroState = {answers:{}, submitted:false, sel:null};
 
 function renderGeoHydroScreen(){
   const body = document.getElementById('geo-hydro-body');
   if(!body) return;
-  geoHydroState = {answers:{}, submitted:false, dragging:null};
+  geoHydroState = {answers:{}, submitted:false, sel:null};
   GEO_HYDRO_DATA.forEach(d => { geoHydroState.answers[d.num] = ''; });
 
   const tags = shuffle(GEO_HYDRO_DATA.map(d=>d.cours));
 
-  // Tableau
   let tableHtml = `<table class="geo-table">
     <thead><tr>
       <th>N°</th>
@@ -14720,17 +14719,17 @@ function renderGeoHydroScreen(){
   GEO_HYDRO_DATA.forEach(d => {
     tableHtml += `<tr>
       <td>${d.num}</td>
-      <td><div class="geo-drop-zone" id="drop-hydro-${d.num}" data-num="${d.num}" data-type="cours" onclick="hydroClearZone(this)"
+      <td><div class="geo-drop-zone" id="drop-hydro-${d.num}" data-num="${d.num}" onclick="hydroZoneTap(this)"
         ondragover="hydroDragOver(event)" ondrop="hydroDrop(event)" ondragleave="hydroDragLeave(event)"></div></td>
     </tr>`;
   });
   tableHtml += '</tbody></table>';
 
-  // Banque d'étiquettes
   let tagsHtml = '<div class="geo-tags-pool" id="hydro-tags-pool">';
   tags.forEach((t,i) => {
     tagsHtml += `<div class="geo-tag" id="hydro-tag-${i}" draggable="true"
       data-text="${t}" data-idx="${i}"
+      onclick="hydroTagTap(this)"
       ondragstart="hydroDragStart(event)"
       ondragend="hydroDragEnd(event)"
       ontouchstart="hydroTouchStart(event)"
@@ -14743,153 +14742,174 @@ function renderGeoHydroScreen(){
 
   body.innerHTML = `
     <div class="card geo-belgique-intro">
-      <p style="font-size:14px;color:var(--muted);margin-bottom:0.5rem">Glisse chaque cours d'eau dans la bonne case du tableau.</p>
+      <p style="font-size:14px;color:var(--muted);margin-bottom:0.5rem">Place chaque cours d'eau dans la bonne case du tableau : fais glisser l'étiquette, ou touche-la puis touche la case. Touche une case remplie pour la vider.</p>
     </div>
     <div class="geo-map-container">
-      <img src="https://jeremylejoly.github.io/plateforme-scolaire/carte_hydrographie_belgique.jpg" alt="Carte hydrographique de la Belgique" style="width:100%;border-radius:6px;border:2px solid var(--border);">
+      <img src="carte_hydrographie_belgique.jpg" alt="Carte des fleuves et rivières de Belgique, numérotés de 1 à 10" style="width:100%;border-radius:6px;border:2px solid var(--border);background:#fff">
     </div>
     ${tagsHtml}
     ${tableHtml}
-    <button class="btn" onclick="validateGeoHydro()" style="width:100%;margin-bottom:1rem">✅ Valider</button>
+    <div id="hydro-msg" style="display:none;margin:.5rem 0;padding:.6rem .9rem;border-radius:8px;background:#fff7ed;border:1.5px solid #f59e0b;color:#92400e;font-size:13px;font-weight:700;text-align:center"></div>
+    <button class="btn" id="hydro-valider" onclick="validateGeoHydro()" style="width:100%;margin-bottom:1rem">✅ Valider</button>
     <div id="hydro-score-panel" style="display:none" class="geo-score-panel"></div>
   `;
 }
 
-// Drag & Drop desktop
+// Glisser-déposer (souris)
 function hydroDragStart(e){
-  geoHydroState.dragging = {text:e.currentTarget.dataset.text, tagEl:e.currentTarget};
-  e.dataTransfer.setData('text/plain', e.currentTarget.dataset.text);
-  e.currentTarget.style.opacity='0.5';
+  const tag = e.currentTarget;
+  if(geoHydroState.submitted || tag.classList.contains('used')){ e.preventDefault(); return; }
+  e.dataTransfer.setData('text/plain', tag.dataset.idx);
+  tag.style.opacity='0.5';
 }
 function hydroDragEnd(e){ e.currentTarget.style.opacity=''; }
-function hydroDragOver(e){ e.preventDefault(); e.currentTarget.classList.add('drag-over'); }
+function hydroDragOver(e){ e.preventDefault(); if(!geoHydroState.submitted) e.currentTarget.classList.add('drag-over'); }
 function hydroDragLeave(e){ e.currentTarget.classList.remove('drag-over'); }
 function hydroDrop(e){
   e.preventDefault();
   const zone = e.currentTarget;
   zone.classList.remove('drag-over');
-  const text = e.dataTransfer.getData('text/plain');
-  const num = parseInt(zone.dataset.num);
-  hydroPlaceTag(zone, text, num);
+  hydroPlaceTag(zone, document.getElementById('hydro-tag-' + e.dataTransfer.getData('text/plain')));
 }
 
-function hydroPlaceTag(zone, text, num){
-  const oldText = zone.textContent.trim();
-  if(oldText) hydroReturnTag(oldText);
-  zone.textContent = text;
+// Placement au toucher : étiquette puis case
+function hydroClearSel(){
+  if(geoHydroState.sel) geoHydroState.sel.classList.remove('geo-sel');
+  geoHydroState.sel = null;
+}
+function hydroTagTap(tag){
+  if(geoHydroState.submitted || tag.classList.contains('used')) return;
+  const same = geoHydroState.sel === tag;
+  hydroClearSel();
+  if(!same){ geoHydroState.sel = tag; tag.classList.add('geo-sel'); }
+}
+function hydroZoneTap(zone){
+  if(geoHydroState.submitted) return;
+  if(geoHydroState.sel){ hydroPlaceTag(zone, geoHydroState.sel); return; }
+  hydroClearZone(zone);
+}
+function hydroPlaceTag(zone, tag){
+  if(geoHydroState.submitted || !zone || !tag || tag.classList.contains('used')) return;
+  if(zone.dataset.tag){ const old = document.getElementById('hydro-tag-' + zone.dataset.tag); if(old){ old.classList.remove('used'); old.draggable = true; } }
+  zone.textContent = tag.dataset.text;
+  zone.dataset.tag = tag.dataset.idx;
   zone.classList.add('filled');
-  geoHydroState.answers[num] = text;
-  hydroMarkUsed(text);
-}
-function hydroReturnTag(text){
-  const pool = document.getElementById('hydro-tags-pool');
-  if(!pool) return;
-  pool.querySelectorAll('.geo-tag').forEach(t => {
-    if(t.dataset.text===text && t.classList.contains('used')) t.classList.remove('used');
-  });
-}
-function hydroMarkUsed(text){
-  const pool = document.getElementById('hydro-tags-pool');
-  if(!pool) return;
-  let found=false;
-  pool.querySelectorAll('.geo-tag').forEach(t => {
-    if(t.dataset.text===text && !t.classList.contains('used') && !found){ t.classList.add('used'); found=true; }
-  });
+  geoHydroState.answers[parseInt(zone.dataset.num)] = tag.dataset.text;
+  tag.classList.add('used'); tag.draggable = false;
+  hydroClearSel();
+  const m = document.getElementById('hydro-msg'); if(m) m.style.display = 'none';
 }
 function hydroClearZone(zone){
-  const panel = document.getElementById('hydro-score-panel');
-  if(panel && panel.style.display === 'block') return;
-  const num = parseInt(zone.dataset.num);
-  const text = geoHydroState.answers[num];
-  if(!text) return;
+  if(geoHydroState.submitted || !zone.dataset.tag) return;
+  const tag = document.getElementById('hydro-tag-' + zone.dataset.tag);
+  if(tag){ tag.classList.remove('used'); tag.draggable = true; }
   zone.textContent = ''; zone.classList.remove('filled');
-  hydroReturnTag(text);
-  geoHydroState.answers[num] = '';
+  delete zone.dataset.tag;
+  geoHydroState.answers[parseInt(zone.dataset.num)] = '';
 }
 
-// Touch support
-let hydroTouchEl=null, hydroTouchClone=null;
+// Toucher : un tap choisit l'étiquette, un glissé (> 10 px) la dépose
+let hydroTouchEl=null, hydroTouchClone=null, hydroTX=0, hydroTY=0, hydroMoved=false;
 function hydroTouchStart(e){
   const tag=e.currentTarget;
-  if(tag.classList.contains('used')) return;
-  hydroTouchEl=tag;
-  const clone=tag.cloneNode(true);
-  clone.style.cssText='position:fixed;z-index:9999;opacity:.85;pointer-events:none;transform:scale(1.1);';
-  const touch=e.touches[0];
-  clone.style.left=(touch.clientX-40)+'px';
-  clone.style.top=(touch.clientY-20)+'px';
-  document.body.appendChild(clone);
-  hydroTouchClone=clone;
-  tag.style.opacity='0.4';
+  if(geoHydroState.submitted || tag.classList.contains('used')) return;
+  hydroTouchEl=tag; hydroMoved=false;
+  hydroTX=e.touches[0].clientX; hydroTY=e.touches[0].clientY;
 }
 function hydroTouchMove(e){
-  e.preventDefault();
-  if(!hydroTouchClone) return;
+  if(!hydroTouchEl) return;
   const touch=e.touches[0];
+  if(!hydroMoved && Math.hypot(touch.clientX-hydroTX, touch.clientY-hydroTY) < 10) return;
+  e.preventDefault();
+  if(!hydroMoved){
+    hydroMoved=true;
+    const clone=hydroTouchEl.cloneNode(true);
+    clone.classList.remove('geo-sel'); clone.removeAttribute('id');
+    clone.style.cssText='position:fixed;z-index:9999;opacity:.85;pointer-events:none;transform:scale(1.1);';
+    document.body.appendChild(clone);
+    hydroTouchClone=clone;
+    hydroTouchEl.style.opacity='0.4';
+  }
   hydroTouchClone.style.left=(touch.clientX-40)+'px';
   hydroTouchClone.style.top=(touch.clientY-20)+'px';
-  document.querySelectorAll('.geo-drop-zone').forEach(z=>z.classList.remove('drag-over'));
+  document.querySelectorAll('#geo-hydro-body .geo-drop-zone').forEach(z=>z.classList.remove('drag-over'));
   geoAutoScroll(touch);
   const zone = geoZoneAtTouch(touch);
-  if(zone) zone.classList.add('drag-over');
+  if(zone && zone.closest('#geo-hydro-body')) zone.classList.add('drag-over');
 }
 function hydroTouchEnd(e){
-  if(!hydroTouchClone||!hydroTouchEl) return;
+  if(!hydroTouchEl) return;
+  e.preventDefault();   // évite le clic fantôme
+  const tag=hydroTouchEl; hydroTouchEl=null;
+  if(!hydroMoved){ hydroTagTap(tag); return; }
   const touch=e.changedTouches[0];
-  document.body.removeChild(hydroTouchClone);
-  hydroTouchClone=null;
-  hydroTouchEl.style.opacity='';
-  document.querySelectorAll('.geo-drop-zone').forEach(z=>z.classList.remove('drag-over'));
+  if(hydroTouchClone){ hydroTouchClone.remove(); hydroTouchClone=null; }
+  tag.style.opacity='';
+  document.querySelectorAll('#geo-hydro-body .geo-drop-zone').forEach(z=>z.classList.remove('drag-over'));
   geoStopAutoScroll();
-  const zone = geoZoneAtTouch(touch);
-  if(zone){
-    hydroPlaceTag(zone, hydroTouchEl.dataset.text, parseInt(zone.dataset.num));
-  }
-  hydroTouchEl=null;
+  let zone = geoZoneAtTouch(touch);
+  if(zone && !zone.closest('#geo-hydro-body')) zone = null;
+  if(zone){ hydroClearSel(); hydroPlaceTag(zone, tag); }
 }
 function hydroTouchCancel(e){
   geoStopAutoScroll();
-  if(hydroTouchClone) {
-    if(hydroTouchClone.parentNode) hydroTouchClone.parentNode.removeChild(hydroTouchClone);
-    hydroTouchClone=null;
-  }
-  if(hydroTouchEl) { hydroTouchEl.style.opacity=''; hydroTouchEl=null; }
-  document.querySelectorAll('.geo-drop-zone').forEach(z=>z.classList.remove('drag-over'));
+  if(hydroTouchClone){ if(hydroTouchClone.parentNode) hydroTouchClone.parentNode.removeChild(hydroTouchClone); hydroTouchClone=null; }
+  if(hydroTouchEl){ hydroTouchEl.style.opacity=''; hydroTouchEl=null; }
+  document.querySelectorAll('#geo-hydro-body .geo-drop-zone').forEach(z=>z.classList.remove('drag-over'));
 }
 
-// Validation
+// Validation (une seule fois)
 function validateGeoHydro(){
-  let score=0;
-  const total=10;
-  GEO_HYDRO_DATA.forEach(d=>{
-    const zone=document.getElementById('drop-hydro-'+d.num);
-    const ok=geoHydroState.answers[d.num]===d.cours;
-    if(ok){ score++; zone.classList.remove('filled'); zone.classList.add('correct'); }
-    else { zone.classList.remove('filled'); zone.classList.add('incorrect'); if(!zone.textContent.trim()) zone.textContent='—'; }
+  if(geoHydroState.submitted) return;
+  const total = GEO_HYDRO_DATA.length;
+  const empty = GEO_HYDRO_DATA.filter(d => !geoHydroState.answers[d.num]).length;
+  if(empty){
+    const m = document.getElementById('hydro-msg');
+    m.textContent = empty === 1 ? 'Il reste 1 case vide. Complète le tableau avant de valider.' : `Il reste ${empty} cases vides. Complète le tableau avant de valider.`;
+    m.style.display = 'block';
+    return;
+  }
+  geoHydroState.submitted = true;
+  hydroClearSel();
+  let score = 0;
+  GEO_HYDRO_DATA.forEach(d => {
+    const zone = document.getElementById('drop-hydro-'+d.num);
+    const given = geoHydroState.answers[d.num];
+    zone.classList.remove('filled');
+    if(given === d.cours){ score++; zone.classList.add('correct'); }
+    else {
+      zone.classList.add('incorrect');
+      zone.style.flexDirection = 'column';
+      zone.innerHTML = `<s>${given}</s><span style="color:#1f5fbf;font-weight:800;font-size:12px">➜ ${d.cours}</span>`;
+    }
   });
-  const pct=Math.round(score/total*100);
-  const color=pct>=70?'var(--green)':pct>=50?'var(--amber)':'var(--red)';
-  const panel=document.getElementById('hydro-score-panel');
-  panel.style.display='block';
-  panel.innerHTML=`
+  document.querySelectorAll('#hydro-tags-pool .geo-tag').forEach(t => { t.classList.add('used'); t.draggable = false; });
+  const btn = document.getElementById('hydro-valider'); if(btn) btn.style.display = 'none';
+  const pct = Math.round(score/total*100);
+  const color = pct>=70?'var(--green)':pct>=50?'var(--amber)':'var(--red)';
+  const panel = document.getElementById('hydro-score-panel');
+  panel.style.display = 'block';
+  panel.innerHTML = `
     <div style="font-size:48px;margin-bottom:0.5rem">${pct>=70?'🎉':pct>=50?'👍':'💪'}</div>
     <div style="font-family:'Nunito',sans-serif;font-weight:800;font-size:32px;color:${color}">${score}/${total}</div>
-    <div style="font-size:16px;color:${color};font-weight:700;margin-bottom:1rem">${pct}%</div>
-    <p style="font-size:13px;color:var(--muted);margin-bottom:1rem">Les cases <span style="color:var(--red)">rouges</span> indiquent les erreurs.</p>
-    <button class="btn" onclick="renderGeoHydroScreen()">🔄 Recommencer</button>
+    <div style="font-size:16px;color:${color};font-weight:700;margin-bottom:1rem">${pct} %</div>
+    ${score < total ? '<p style="font-size:13px;color:var(--muted);margin-bottom:1rem">Les cases <span style="color:var(--red)">rouges</span> sont fausses ; la bonne réponse est écrite en <span style="color:#1f5fbf;font-weight:800">bleu</span>.</p>' : ''}
+    <button class="btn" onclick="renderGeoHydroScreen();document.getElementById('geo-hydro-body').scrollIntoView({behavior:'smooth'})">🔄 Recommencer</button>
   `;
-  panel.scrollIntoView({behavior:'smooth'});
-  if(state.student){
-    saveResult({
-      student:state.student, cls:state.studentCls,
-      className:CLASSES[state.studentCls]?CLASSES[state.studentCls].name:state.studentCls,
-      activity:'geo_belgique_hydro',
-      bookTitle:"Belgique — Cours d'eau",
-      score, total, pct,
-      date:new Date().toLocaleDateString('fr-BE'),
-      time:new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})
-    });
-  }
+  panel.scrollIntoView({behavior:'smooth', block:'nearest'});
+  try {
+    if(state.student){
+      saveResult({
+        student:state.student, cls:state.studentCls,
+        className:CLASSES[state.studentCls]?CLASSES[state.studentCls].name:state.studentCls,
+        activity:'geo_belgique_hydro',
+        bookTitle:"Belgique — Cours d'eau",
+        score, total, pct,
+        date:new Date().toLocaleDateString('fr-BE'),
+        time:new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})
+      });
+    }
+  } catch(err) { console.warn('saveResult', err); }
 }
 
 

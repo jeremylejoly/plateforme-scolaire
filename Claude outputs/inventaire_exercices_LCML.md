@@ -2188,6 +2188,8 @@ Spécifique :
 
 - **06/10 — Les provinces de Belgique (`geo_belgique_provinces`, sw.js v685)** : carte vérifiée (numéros 1–10 corrects : Anvers, Namur, Flandre orientale, Brabant wallon, Limbourg, Luxembourg, Flandre occidentale, Hainaut, Brabant flamand, Liège ; chefs-lieux corrects). La carte était chargée depuis l'adresse complète `jeremylejoly.github.io/…` → chemin relatif (même fichier, marche hors ligne et en local). Ajout d'une phrase : la zone sans numéro au milieu du 9 est la Région de Bruxelles-Capitale, pas une province. Défauts corrigés : on pouvait valider plusieurs fois (une sauvegarde à chaque clic) et continuer à déplacer les étiquettes après validation → validation unique, tout est figé ; validation possible avec des cases vides (comptées fausses) → message dans la page « Il reste N cases vides » ; aucune correction affichée (cases rouges seulement) → réponse donnée barrée + bonne réponse en bleu « ➜ … » ; pas de placement au toucher → touche l'étiquette (contour orange) puis la case, case remplie touchée = vidée ; glissé tactile distingué du tap (10 px) ; les doublons Anvers/Namur/Liège sont suivis par étiquette (et non par texte) ; sauvegarde en try/catch. Test Playwright 390 px : pas de débordement, message 20 puis 1 case vide, tap, glissé tactile, glissé souris, 18/20 avec la bonne réponse en bleu, 1 seule sauvegarde.
 
+- **06/10 — Les cours d'eau de Belgique (`geo_belgique_hydro`, sw.js v686)** : carte vérifiée, les 10 numéros sont justes (1 Yser, 2 Vesdre, 3 Sambre, 4 Senne, 5 Amblève, 6 Semois, 7 Meuse, 8 Warche, 9 Ourthe, 10 Escaut). Carte chargée en chemin relatif (au lieu de l'adresse complète `jeremylejoly.github.io/…`). Mêmes défauts que les provinces, corrigés de la même façon : validation multiple (une sauvegarde par clic) et étiquettes encore déplaçables après validation → validation unique, tout figé ; cases vides comptées fausses → message « Il reste N cases vides » ; cases rouges sans correction → réponse barrée + bonne réponse en bleu « ➜ … » ; placement au toucher ajouté (étiquette puis case, case remplie touchée = vidée), glissé tactile distingué du tap ; sauvegarde en try/catch. Remarque : la carte porte « (c) excursions-scolaires.com ». Test Playwright 390 px : pas de débordement, messages 10 puis 1 case vide, tap, glissé tactile, glissé souris, 8/10 avec correction en bleu, 1 seule sauvegarde.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2705,7 +2707,7 @@ Spécifique :
 |---|---|---|---|---|
 | ⬜ | Le globe terrestre 3D | `geo_globe_3d` | fiches/globe-terrestre.html |  |
 | ✅ 06/10 | Les provinces de Belgique | `geo_belgique_provinces` | index › renderGeoBelgiqueScreen |  |
-| ⬜ | Les cours d'eau de Belgique | `geo_belgique_hydro` | index › renderGeoHydroScreen |  |
+| ✅ 06/10 | Les cours d'eau de Belgique | `geo_belgique_hydro` | index › renderGeoHydroScreen |  |
 | ⬜ | Les communes de notre région | `geo_belgique_communes` | index › renderGeoCommunesScreen |  |
 | ⬜ | Régions et Communautés (Quiz) | `geo_belgique_regions_communautes` | index › renderGeoBelgiqueRegionsCommunautes |  |
 | ⬜ | La Belgique — QCM | `geo_belgique_qcm` | index › renderGeoBelgiqueQCM |  |
