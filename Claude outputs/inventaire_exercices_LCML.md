@@ -1631,6 +1631,14 @@ Spécifique :
 - Tests : jsdom (moteur extrait : positions, 0 erreur, message sans choix, double clic, 7/10 → 1 saveResult `quadrilateres_reconnaître`, évaluation → `quadrilateres_evaluation`), node --check 6/6 + exercices_maths.js, planche Playwright des 24 formes.
 - Remarque pour l'évaluation (à revoir à son tour) : le menu annonce « 5 formes + 5 vrai/faux » mais seules 5 formes sont posées (`evaluation_vf` n'est pas utilisé).
 
+### 06/10 — Quadrilatères — Vrai ou Faux (`quadrilateres_vf`, index › startVFExercise + exercices_maths.js) — sw.js v597, exercices_maths.js ?v=20261006b
+- **Décision de Jérémy : définition inclusive du trapèze (au moins une paire de côtés parallèles ; le parallélogramme est un trapèze particulier).** Le fichier disait l'inverse : « Un trapèze a exactement une paire de côtés parallèles » = VRAI et « Un parallélogramme est un trapèze » = FAUX → « Un trapèze a au moins une paire de côtés parallèles » (V), « Un parallélogramme est un trapèze particulier » (V), « Un trapèze a toujours deux paires de côtés parallèles » (F).
+- Affirmation fausse en soi : « Un trapèze quelconque peut avoir 2 côtés isométriques » = FAUX (alors que c'est possible, ex. petite base = un côté oblique) → « … a ses deux côtés non parallèles de même longueur » (F).
+- Doublons : « Un carré est un parallélogramme » 2 fois ; « Un rectangle est un parallélogramme » = « Tout rectangle est un parallélogramme » → remplacés.
+- Banque 19 V / 11 F → 15 V / 15 F ; chaque série = 5 V + 5 F, sans deux affirmations sur la même notion (ex. « Un losange est un parallélogramme » et « Un parallélogramme est toujours un losange ») — 0 conflit sur 3 000 séries.
+- Double clic sur « Valider » passait à la suite → garde 600 ms (et sur « Terminer ») ; alert → message dans la page ; « Bonne réponse » en bleu dans la correction ; nouvelle orthographe « non parallèles ».
+- Tests : jsdom (moteur extrait), node --check 6/6 + exercices_maths.js. Autres textes du site vérifiés : aucune autre définition « exactement une paire ».
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2034,7 +2042,7 @@ Spécifique :
 | Statut | Exercice | id | Source | Signal automatique |
 |---|---|---|---|---|
 | ✅ 06/10 | Quadrilatères — Reconnaître la forme | `quadrilateres_reconnaître` | index › startShapeExercise |  |
-| ⬜ | Quadrilatères — Vrai ou Faux | `quadrilateres_vf` | index › startVFExercise |  |
+| ✅ 06/10 | Quadrilatères — Vrai ou Faux | `quadrilateres_vf` | index › startVFExercise |  |
 | ⬜ | Quadrilatères — Caractéristiques | `quadrilateres_caracteristiques` | index › startCharsExercise |  |
 | ⬜ | Quadrilatères — Médianes & Diagonales | `quadrilateres_diagonales_medianes` | fiches/quadrilateres_diagonales_medianes.html |  |
 | ⬜ | Quadrilatères — Évaluation | `quadrilateres_evaluation` | index › startShapeEvaluation |  |

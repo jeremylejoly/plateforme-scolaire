@@ -3237,7 +3237,7 @@ input[type=text].calc-input.incorrect {
 </style>
 <script src="livres.js?v=20261002b"></script>
 <script src="exercices_francais.js?v=20261005zp"></script>
-<script src="exercices_maths.js?v=20261006a"></script>
+<script src="exercices_maths.js?v=20261006b"></script>
 <script src="exercices_eveil.js?v=20260927e"></script>
 <script>
 /* Garde-fou : si un appareil a chargé une ancienne version du fichier des livres
@@ -13613,13 +13613,30 @@ let vfState = {
   score: 0
 };
 
+// 10 affirmations : 5 vraies et 5 fausses, jamais deux qui partagent une notion
+function choisirVF(bank){
+  for(let essai = 0; essai < 300; essai++){
+    const pris = [], notions = new Set();
+    let nbV = 0, nbF = 0;
+    for(const q of shuffleArray(bank)){
+      if((q.k || []).some(x => notions.has(x))) continue;
+      if(q.answer && nbV >= 5) continue;
+      if(!q.answer && nbF >= 5) continue;
+      pris.push(q); (q.k || []).forEach(x => notions.add(x));
+      if(q.answer) nbV++; else nbF++;
+      if(pris.length === 10) return shuffleArray(pris);
+    }
+  }
+  return shuffleArray(bank).slice(0, 10);
+}
+
 function startVFExercise(section){
   const data = getShapeData(section);
   if(!data || !data.vf_bank) return;
 
   vfState = {
     section,
-    questions: shuffleArray(data.vf_bank).slice(0,10),
+    questions: choisirVF(data.vf_bank),
     answers: [],
     submitted: false,
     currentIdx: 0,
@@ -13656,6 +13673,7 @@ function renderVFQuestions(){
       <button class="vf-option vrai${trueSelected}" id="vf-opt-${i}-true" onclick="selectVFOption(${i}, true)">✓ VRAI</button>
       <button class="vf-option faux${falseSelected}" id="vf-opt-${i}-false" onclick="selectVFOption(${i}, false)">✗ FAUX</button>
     </div>
+    <p id="vf-msg" style="display:none;text-align:center;color:var(--red);font-weight:700;font-size:13px;margin-top:.6rem;">Choisis VRAI ou FAUX avant de valider.</p>
   </div>`;
   body.innerHTML = html;
 }
@@ -13676,12 +13694,15 @@ function validateCurrentVFQuestion(){
   const q = vfState.questions[i];
   const answered = vfState.answers[i];
 
+  if(vfState.currentValidated) return;
   if(answered === undefined){
-    alert('Veuillez sélectionner VRAI ou FAUX avant de valider.');
+    const m = document.getElementById('vf-msg');
+    if(m) m.style.display = 'block';
     return;
   }
 
   vfState.currentValidated = true;
+  vfState.validatedAt = Date.now();
   const isCorrect = answered === q.answer;
   if(isCorrect) vfState.score++;
 
@@ -13713,6 +13734,7 @@ function validateCurrentVFQuestion(){
 }
 
 function nextVFQuestion(){
+  if(!vfState.currentValidated || Date.now() - (vfState.validatedAt || 0) < 600) return;
   vfState.currentIdx++;
   vfState.currentValidated = false;
 
@@ -13724,6 +13746,7 @@ function nextVFQuestion(){
 }
 
 function finishVFExercise(){
+  if(vfState.submitted || Date.now() - (vfState.validatedAt || 0) < 600) return;
   vfState.submitted = true;
   const total = vfState.questions.length;
   const score = vfState.score;
@@ -13771,7 +13794,7 @@ function showVFCorrection(){
     html += `<div class="vf-question" style="border-color:${color}">
       <div class="vf-question-text">${d.text}</div>
       <div style="font-size:13px;">${icon} Ta réponse : <strong style="color:${color}">${givenLabel}</strong></div>
-      ${!d.isCorrect ? `<div style="font-size:13px;color:var(--green);">✓ Bonne réponse : <strong>${expectedLabel}</strong></div>` : ''}
+      ${!d.isCorrect ? `<div style="font-size:13px;color:#1f5fbf;">✓ Bonne réponse : <strong>${expectedLabel}</strong></div>` : ''}
     </div>`;
   });
 
@@ -13791,7 +13814,7 @@ function restartVFExercise(){
   document.getElementById('vf-validate-btn').textContent = '✓ Valider ma réponse';
   document.getElementById('vf-validate-btn').onclick = validateCurrentVFQuestion;
   const data = getShapeData(vfState.section);
-  vfState.questions = shuffleArray(data.vf_bank).slice(0,10);
+  vfState.questions = choisirVF(data.vf_bank);
   renderVFQuestions();
   window.scrollTo(0,0);
 }
