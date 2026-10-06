@@ -3266,7 +3266,7 @@ input[type=text].calc-input.incorrect {
 <script src="livres.js?v=20261002b"></script>
 <script src="exercices_francais.js?v=20261005zp"></script>
 <script src="exercices_maths.js?v=20261006g"></script>
-<script src="exercices_eveil.js?v=20261006a"></script>
+<script src="exercices_eveil.js?v=20261006b"></script>
 <script>
 /* Garde-fou : si un appareil a chargé une ancienne version du fichier des livres
    (0/16, « undefined », livre absent), on vide les copies en mémoire et on recharge une fois. */
@@ -37496,56 +37496,74 @@ function validateSciDigTexte(){
 // ----- EXERCICE 3 : QCM -----
 // window.SCI_DIG_QCM_DATA a été extrait vers un fichier JS externe
 
-let digQCMState = {questions:[], answers:[], validated:false};
+let digQCMState = {questions:[], answers:[], validated:false, msg:'', lastClick:0};
 function renderSciDigQCM(){
   const body=document.getElementById('sci-dig-qcm-body'); if(!body) return;
-  const picked = shuffle(SCI_DIG_QCM_DATA).slice(0,10);
+  // 10 questions, une seule par famille (k) pour qu'aucune question n'en donne une autre
+  const vus = new Set(), picked = [];
+  shuffle(SCI_DIG_QCM_DATA).forEach(q => { const k = q.k || q.q; if(picked.length < 10 && !vus.has(k)){ vus.add(k); picked.push(q); } });
   digQCMState.questions = picked.map(q => {
     const correctVal = q.opts[q.correct];
     const shuffledOpts = shuffle([...q.opts]);
-    return {
-      q: q.q,
-      opts: shuffledOpts,
-      correct: shuffledOpts.indexOf(correctVal)
-    };
+    return { q: q.q, opts: shuffledOpts, correct: shuffledOpts.indexOf(correctVal) };
   });
-  digQCMState.answers = new Array(10).fill(-1);
-  digQCMState.validated = false;
+  digQCMState.answers = new Array(digQCMState.questions.length).fill(-1);
+  digQCMState.validated = false; digQCMState.msg = ''; digQCMState.lastClick = 0;
   renderSciDigQCMHtml();
 }
 function renderSciDigQCMHtml(){
   const body=document.getElementById('sci-dig-qcm-body'); if(!body) return;
+  const V = digQCMState.validated, N = digQCMState.questions.length;
   let html='';
   digQCMState.questions.forEach((q,i)=>{
     html+=`<div class="card" style="margin-bottom:1rem"><p style="font-weight:700;margin-bottom:.75rem">${i+1}. ${q.q}</p><div style="display:flex;flex-direction:column;gap:8px;">`;
     q.opts.forEach((o,j)=>{
       const sel=digQCMState.answers[i]===j;
-      let bg='white',border='var(--border)';
-      if(digQCMState.validated){if(j===q.correct){bg='#d4f5e2';border='#16a34a';}else if(sel&&j!==q.correct){bg='#fdd9d7';border='#dc2626';}}
-      else if(sel){bg='var(--purple-light)';border='var(--purple)';}
-      html+=`<button onclick="${digQCMState.validated?'':'digQCMSelect('+i+','+j+')'}"
-        style="text-align:left;padding:10px 14px;border-radius:10px;border:2px solid ${border};background:${bg};cursor:${digQCMState.validated?'default':'pointer'};font-family:'Nunito',sans-serif;font-size:14px;">
-        ${o}${digQCMState.validated&&j===q.correct?' ✅':''}${digQCMState.validated&&sel&&j!==q.correct?' ❌':''}
-      </button>`;
+      let bg='white', border='var(--border)', color='inherit', mark='';
+      if(V){
+        if(j===q.correct){ if(sel){bg='#d4f5e2';border='#16a34a';mark=' ✅';} else {bg='#eaf1fc';border='#1f5fbf';color='#1f5fbf';mark=' ➜';} }
+        else if(sel){bg='#fdd9d7';border='#dc2626';mark=' ❌';}
+      } else if(sel){bg='var(--purple-light)';border='var(--purple)';}
+      html+=`<button onclick="${V?'':'digQCMSelect('+i+','+j+')'}"
+        style="text-align:left;padding:10px 14px;border-radius:10px;border:2px solid ${border};background:${bg};color:${color};font-weight:${V&&j===q.correct&&!sel?'700':'400'};cursor:${V?'default':'pointer'};font-family:'Nunito',sans-serif;font-size:14px;transition:all .15s;">${o}${mark}</button>`;
     });
     html+='</div></div>';
   });
-  if(!digQCMState.validated){
+  if(!V){
+    if(digQCMState.msg) html+=`<div style="margin-bottom:.75rem;padding:.6rem .9rem;border-radius:8px;background:#fff7ed;border:1.5px solid #f59e0b;color:#92400e;font-size:13px;font-weight:700;text-align:center">${digQCMState.msg}</div>`;
     html+=`<button class="btn" onclick="validateSciDigQCM()" style="width:100%;margin-bottom:1rem">✅ Valider</button>`;
   } else {
     const ok=digQCMState.questions.filter((q,i)=>digQCMState.answers[i]===q.correct).length;
-    const pct=Math.round(ok/10*100);
-    html+=`<div class="geo-score-panel"><div style="font-size:48px">${pct>=70?'🎉':pct>=50?'👍':'💪'}</div><div style="font-weight:800;font-size:28px;color:${pct>=70?'var(--green)':pct>=50?'var(--amber)':'var(--red)'}">${ok}/10 — ${pct}%</div><button class="btn" onclick="renderSciDigQCM()" style="margin-top:1rem">🔄 Recommencer</button></div>`;
+    const pct=Math.round(ok/N*100);
+    html+=`<div class="geo-score-panel"><div class="score-title">${ok}/${N} — ${pct}%</div>
+      <div class="score-msg">${pct===100?'Parfait ! 🏆':pct>=70?'Bien joué ! 👍':'Continue à réviser ! 💪'}</div>
+      ${ok<N?'<div class="score-msg" style="font-size:13px">Après une erreur, la bonne réponse est en <span style="color:#1f5fbf;font-weight:800">bleu</span>.</div>':''}
+      <button class="btn" onclick="renderSciDigQCM()" style="margin-top:1rem">🔄 Recommencer</button></div>`;
   }
+  const y = window.scrollY;
   body.innerHTML=html;
+  if(!V) window.scrollTo(0, y);
 }
-function digQCMSelect(qi,ai){ if(digQCMState.validated) return; digQCMState.answers[qi]=ai; renderSciDigQCMHtml(); }
+function digQCMSelect(qi,ai){ if(digQCMState.validated) return; digQCMState.answers[qi]=ai; digQCMState.msg=''; renderSciDigQCMHtml(); }
 function validateSciDigQCM(){
+  const now = Date.now();
+  if(digQCMState.validated || now - digQCMState.lastClick < 600) return;
+  digQCMState.lastClick = now;
+  const N = digQCMState.questions.length;
+  const manque = digQCMState.answers.map((a,i)=>a<0?i+1:0).filter(Boolean);
+  if(manque.length){
+    digQCMState.msg = manque.length===1 ? 'Réponds d\'abord à la question '+manque[0]+'.' : 'Réponds d\'abord à toutes les questions (il en reste '+manque.length+').';
+    renderSciDigQCMHtml(); return;
+  }
   digQCMState.validated=true;
   const ok=digQCMState.questions.filter((q,i)=>digQCMState.answers[i]===q.correct).length;
-  const pct=Math.round(ok/10*100);
+  const pct=Math.round(ok/N*100);
   renderSciDigQCMHtml();
-  if(state.student) saveResult({student:state.student,cls:state.studentCls,className:CLASSES[state.studentCls]?CLASSES[state.studentCls].name:state.studentCls,activity:'sci_dig_qcm',bookTitle:'Digestif — QCM',score:ok,total:10,pct,date:new Date().toLocaleDateString('fr-BE'),time:new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})});
+  if(state.student){ try{ saveResult({student:state.student,cls:state.studentCls,
+    className:CLASSES[state.studentCls]?CLASSES[state.studentCls].name:state.studentCls,
+    activity:'sci_dig_qcm',bookTitle:'Digestif — QCM',
+    score:ok,total:N,pct,date:new Date().toLocaleDateString('fr-BE'),
+    time:new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})}); }catch(e){} }
 }
 
 // ----- EXERCICE 4 : TERMES ET DÉFINITIONS -----

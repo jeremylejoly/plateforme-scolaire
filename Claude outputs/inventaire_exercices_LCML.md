@@ -2021,6 +2021,12 @@ Spécifique :
 - Correctif aussi pour `sci_resp_texte` (v641) : la validation comptait tous les `.resp-blank` du document (aussi ceux du Tour du monde et du digestif) → requêtes limitées à son écran ; bouton « texte suivant » = suivant au lieu du premier différent.
 - Tests Playwright 390 px (toucher), 3 textes : message à vide, 2 mots inversés → 2 corrections bleues, 1 sauvegarde par texte malgré 3 clics, pas de débordement ; respiratoire validé correctement avec le digestif affiché en parallèle.
 
+### 06/10 — Éveil → Sciences → L'appareil digestif → QCM (`sci_dig_qcm`, index › renderSciDigQCM / validateSciDigQCM, exercices_eveil.js › SCI_DIG_QCM_DATA) — sw.js v647
+- Données réécrites : 31 questions (correct:0, mélangées à l'affichage), 20 familles `k` → 10 questions tirées, jamais deux de la même famille (avant : doublons bol alimentaire ×2, bile ×2, œsophage ×2, suc gastrique ×2, absorption ×3 pouvaient sortir ensemble et se trahir).
+- Contenu : « Quel organe filtre le sang… ? → le foie » supprimé (les reins filtrent le sang : ambigu) ; « glande digestive et endocrine » → « suc digestif et l'insuline » ; « Quel organe produit le suc pancréatique ? » (réponse dans la question) → « Où le pancréas déverse-t-il son suc ? » ; « nutriment principalement digéré dans la bouche » → « aliments que la salive commence à digérer : les féculents » ; ajouts : rôle de la bile, rôle du gros intestin, anus, dents de lait ; dents adulte « (dents de sagesse comprises) ». Biais « plus longue = bonne » : 4/31 (avant : très fréquent).
+- Moteur remplacé par celui du QCM respiratoire : message si questions sans réponse, garde 600 ms, bonne réponse manquée en bleu (avant : verte), sauvegarde unique try/catch (avant : sans garde, total 10 en dur), scroll conservé.
+- Tests Playwright 390 px : 300 tirages sans doublon de famille, bonne réponse ~25 % par position, message « il en reste 10 », 1 erreur → 1 bleu, 1 sauvegarde malgré 3 clics, pas de débordement. exercices_eveil.js?v=20261006b.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2486,7 +2492,7 @@ Spécifique :
 | ⬜ | Appareil digestif — La leçon | `fiche_digestif` | fiches/appareil-digestif.html |  |
 | ✅ 06/10 | Appareil digestif — Le schéma | `sci_dig_schema` | index › renderSciDigSchema |  |
 | ✅ 06/10 | Appareil digestif — Trajet des aliments | `sci_dig_texte` | index › renderSciDigTexte |  |
-| ⬜ | Appareil digestif — QCM | `sci_dig_qcm` | index › renderSciDigQCM |  |
+| ✅ 06/10 | Appareil digestif — QCM | `sci_dig_qcm` | index › renderSciDigQCM |  |
 | ⬜ | Appareil digestif — Termes et définitions | `sci_dig_assoc` | index › renderSciDigAssoc |  |
 | ⬜ | Appareil digestif — Remettre de l'ordre | `sci_dig_ordre` | index › renderSciDigOrdre |  |
 | ⬜ | Système circulatoire — La leçon | `fiche_circulatoire` | fiches/systeme-circulatoire.html |  |
