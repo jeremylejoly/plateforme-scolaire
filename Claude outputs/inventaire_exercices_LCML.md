@@ -1671,6 +1671,14 @@ Spécifique :
 - « Solide suivant » protégé (600 ms) ; étape 2 impossible avant l'étape 1 ; Entrée ; orthographe « entrainement ».
 - Tests : jsdom (3 000 séries, distracteurs tous connus et différents de la réponse, double clic, 18/20 → 1 saveResult), node --check 7 OK, planche des 15 solides et capture 390 px (Playwright).
 
+### 06/10 — Patrons de solides (`polyedres_patrons`, fiches/patrons_solides.html) — sw.js v601
+- **La vue 3D (pliage du solide, complet ou avec la face qui se superpose) était accessible avant de répondre** et les couleurs des faces du patron 2D montraient où chaque face arrive → onglet 3D désactivé et faces neutres jusqu'à la réponse, puis 3D affichée automatiquement.
+- Banque de 10 patrons pour 10 questions : toujours les mêmes (6 corrects, 4 incorrects), seul l'ordre changeait → 5 patrons de cube ajoutés (2 corrects : 1-4-1 décalé, 2-3-1 ; 3 incorrects : 5 carrés alignés, « U », escalier), validité vérifiée par un programme de pliage du cube ; série = 5 corrects + 5 incorrects parmi 15.
+- Patron du cylindre déclaré correct mais rectangle de 110 px pour des disques de rayon 30 (périmètre 188) → rectangle de 176 = 2 × π × 28.
+- Mélange biaisé sort(random) → Fisher–Yates ; libellés « un Cube », « un Prisme droit » → « un cube », « un prisme droit à base triangulaire »…
+- « Question suivante » protégé (600 ms), Entrée, enregistrement unique (try/catch).
+- Tests : jsdom (2 000 séries 5/5, 3D bloquée avant réponse, faces neutres, double clic, 7/10 → 1 saveResult), node --check 7 OK, planche des patrons et capture 390 px (Playwright).
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2087,7 +2095,7 @@ Spécifique :
 | Statut | Exercice | id | Source | Signal automatique |
 |---|---|---|---|---|
 | ✅ 06/10 | Polyèdre ou non-polyèdre | `polyedres_reconnaitre` | fiches/polyedres_reconnaitre.html |  |
-| ⬜ | Patrons de solides | `polyedres_patrons` | fiches/patrons_solides.html |  |
+| ✅ 06/10 | Patrons de solides | `polyedres_patrons` | fiches/patrons_solides.html |  |
 | ⬜ | Trouve le bon solide (Définitions) | `polyedres_definitions` | fiches/polyedres_definitions.html |  |
 | ⬜ | Trouve les caractéristiques (Définitions) | `polyedres_caracteristiques` | fiches/polyedres_caracteristiques.html |  |
 | ⬜ | Les axes de symétrie | `solide_symetrie` | fiches/solide_symetrie.html |  |
