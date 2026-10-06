@@ -2132,6 +2132,13 @@ Spécifique :
 - Contenu vérifié : fusion, solidification, vaporisation, liquéfaction, sublimation, condensation solide (sens des flèches et couleurs chaleur/froid justes).
 - Test : Tailwind (CDN bloqué dans le conteneur) régénéré localement avec tailwindcss@3 (`/tmp/tw/twinline.py`) pour des captures fidèles. Playwright 390 px (toucher) : 15 ordres d'étiquettes différents, message à vide, aucune boîte de dialogue, fusion/solidification inversées → 4/6 + 2 bleus, 1 sauvegarde malgré 2 validations, pas de débordement.
 
+### 06/10 — Éveil → Sciences → Les réseaux trophiques (`sci_reseaux_trophiques`, fiches/sci_reseaux_trophiques.html + public/fiches/) — sw.js v666
+- Copies divergentes : la copie `fiches/` (celle chargée par le site) ne mélangeait PAS les propositions, `public/` les mélangeait avec `sort(()=>0.5-Math.random())` → les deux identiques, Fisher–Yates.
+- Biais « plus longue = bonne » : « Les carnivores (ou zoophages), qui sont des consommateurs secondaires ou tertiaires » face à « Les producteurs secondaires » (et « producteurs secondaires » n'existe pas dans ce sens), décomposeurs, réseau trophique, recyclage de la matière → propositions rééquilibrées (0/10 bonne réponse strictement plus longue). « herbivores ou consommateurs primaires » dans 2 questions → « Les herbivores ».
+- Familles `k` (prédation ×2, source d'énergie/producteur ×2, décomposeurs ×2, régimes ×2) → 5 questions jamais de la même famille. « Ce sont toujours des plantes vertes » → « les plantes vertes et les algues ».
+- Mécanique : validation possible deux fois → une seule ; propositions colorées après validation (bonne en bleu si manquée) ; « Bonne réponse » du récapitulatif en bleu et non tronquée (avant : coupée par `truncate`) ; sauvegarde unique try/catch `window.parent !== window` ; boutons « Retour » internes masqués dans le site ; double « Continuer » sans effet.
+- Tests Playwright 390 px (Tailwind régénéré localement) : 400 parties sans doublon de famille, bonne réponse répartie sur les positions, 1 erreur → 4/5, 1 sauvegarde, pas de débordement.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2634,7 +2641,7 @@ Spécifique :
 | ✅ 06/10 | Mélanges et séparations | `sci_melanges_qcm` | fiches/sci_melanges_qcm.html |  |
 | ⬜ | Le cycle de l'eau (QCM) | `fiche_cycle_eau` | fiches/cycle-eau.html |  |
 | ⬜ | Le cycle de l'eau (Schéma) | `sci_cycle_eau_schema` | fiches/sci_cycle_eau_schema.html |  |
-| ⬜ | Les réseaux trophiques | `sci_reseaux_trophiques` | fiches/sci_reseaux_trophiques.html |  |
+| ✅ 06/10 | Les réseaux trophiques | `sci_reseaux_trophiques` | fiches/sci_reseaux_trophiques.html |  |
 | ⬜ | Les énergies (Tri & conversions) | `sci_energie_tri` | fiches/sci_energie_tri.html |  |
 | ⬜ | Laboratoire d'Électricité | `sci_electricite_labo` | fiches/sci_electricite_labo.html |  |
 | ⬜ | Ombres & Lumière | `sci_lumiere_ombres` | fiches/sci_lumiere_ombres.html |  |
