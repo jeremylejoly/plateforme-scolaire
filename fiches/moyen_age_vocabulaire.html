@@ -171,9 +171,10 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 22px;
+      min-width: 22px;
       height: 22px;
-      border-radius: 50%;
+      padding: 0 6px;
+      border-radius: 11px;
       background: #22c55e;
       color: white;
       font-size: 13px;
@@ -302,9 +303,6 @@
         </div>
       </div>
 
-      <a href="index.html" class="flat-btn px-4 py-2 text-sm text-neutral-700 bg-white hover:bg-neutral-100">
-        ← Retour à l'accueil
-      </a>
     </header>
 
     <!-- CONSIGNE -->
@@ -312,7 +310,7 @@
       <div class="flex items-start gap-3">
         <span class="text-2xl">💡</span>
         <div class="text-sm sm:text-base text-neutral-800 leading-relaxed font-medium">
-          <strong>Consigne :</strong> Associe chaque <strong>terme</strong> (colonne de gauche) à sa <strong>définition</strong> (colonne de droite). Chaque paire prendra une <strong>couleur distincte</strong>. Tu peux modifier tes choix à tout moment. Une fois prêt, clique sur <strong>« Valider mes réponses »</strong> pour vérifier tes associations !
+          <strong>Consigne :</strong> Associe chaque <strong>terme</strong> (colonne de gauche) à sa <strong>définition</strong> (colonne de droite). Chaque paire prendra une <strong>couleur distincte</strong>. Tu peux modifier tes choix tant que tu n'as pas validé. Quand les 8 paires sont formées, clique sur <strong>« Valider mes réponses »</strong> : chaque série n'est validée qu'une fois, puis la correction s'affiche en <span style="color:#1f5fbf;font-weight:700">bleu</span>.
         </div>
       </div>
     </div>
@@ -322,7 +320,7 @@
       <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
         <span class="font-display font-bold text-sm sm:text-base text-neutral-800 flex items-center gap-2">
           <span>🏆 Progression globale :</span>
-          <span id="globalLabel" class="text-purple-700 font-extrabold">0 / 24 paires validées</span>
+          <span id="globalLabel" class="text-purple-700 font-extrabold">0 / 24 au premier essai</span>
         </span>
         <span id="globalPct" class="font-display font-bold text-sm bg-purple-100 text-purple-800 border-2 border-purple-800 px-2.5 py-0.5 rounded-lg">
           0%
@@ -354,9 +352,6 @@
         <button class="flat-btn btn-purple px-6 py-3 text-base" onclick="resetAll()">
           🔄 Recommencer tout l'exercice
         </button>
-        <a href="index.html" class="flat-btn btn-amber px-6 py-3 text-base">
-          🏰 Retour aux activités LCML
-        </a>
       </div>
     </div>
 
@@ -456,7 +451,7 @@
         icon: "🌾",
         label: "Les paysans",
         pairs: [
-          { word: "Serf", def: "Paysan qui appartient au seigneur et qui est vendu avec la terre" },
+          { word: "Serf", def: "Paysan attaché à la terre de son seigneur, qu'il ne peut pas quitter" },
           { word: "Vilain", def: "Paysan libre, qui n'est pas attaché à la terre" },
           { word: "Masure", def: "Maison pauvre des paysans, construite en bois ou en torchis" },
           { word: "Cens", def: "Sorte de loyer que le paysan verse à son seigneur" },
@@ -486,8 +481,8 @@
         pairs: [
           { word: "Clerc", def: "Membre du clergé, homme d'Église" },
           { word: "Clergé séculier", def: "Prêtres qui vivent dans le siècle, c'est-à-dire dans le monde" },
-          { word: "Clergé régulier", def: "Moines qui vivent isolés du monde, selon une règle, dans un monastère" },
-          { word: "Moine", def: "Religieux qui vit selon une règle dans un monastère" },
+          { word: "Clergé régulier", def: "Religieux qui vivent à l'écart du monde en suivant une règle" },
+          { word: "Monastère", def: "Ensemble de bâtiments où vivent des moines ou des moniales" },
           { word: "Aumône", def: "Don fait aux pauvres" },
           { word: "Pèlerinage", def: "Voyage effectué à pied vers un lieu saint" },
           { word: "Excommunication", def: "Sanction qui exclut un fidèle de l'Église" },
@@ -498,6 +493,8 @@
 
     const ROUND_ORDER = ["paysans", "seigneurs", "clerge"];
     const roundStates = {};
+    let resultSaved = false;
+    let lastValidate = 0;
 
     function shuffle(arr){
       const a = arr.slice();
@@ -609,7 +606,7 @@
               ✅ Valider mes réponses
             </button>
             <button class="flat-btn px-4 py-2 text-xs sm:text-sm text-neutral-600 hover:text-neutral-900" onclick="resetRound('${key}')">
-              🔄 Recommencer cette série
+              🔄 Tout délier
             </button>
           </div>
           <button class="flat-btn btn-purple px-4 py-2 text-xs sm:text-sm hidden" id="next-btn-${key}" onclick="goToNextRound('${key}')">
@@ -724,7 +721,7 @@
               btn.classList.add("val-wrong");
               // Retrouver le bon terme correspondant
               const correctPair = st.pairsWithId.find(p => p.id === item.id);
-              validationBadge = `<span class="badge-pair bg-rose-100 text-rose-800 border-rose-600 text-xs">Bon mot : ${correctPair.word}</span>`;
+              validationBadge = `<span class="badge-pair text-xs" style="background:#EAF1FC;border-color:#1f5fbf;color:#1f5fbf">➜ ${correctPair.word}</span>`;
             }
           } else {
             validationBadge = `
@@ -773,12 +770,9 @@
 
     function onCardClick(key, type, id){
       const st = roundStates[key];
-      // Si l'enfant clique après validation, on réactive le mode édition
-      if (st.validated) {
-        st.validated = false;
-        const resultBox = document.getElementById(`result-box-${key}`);
-        if (resultBox) resultBox.classList.add("hidden");
-      }
+      if (st.validated) return;   // une série validée est verrouillée
+      const msgBox = document.getElementById(`result-box-${key}`);
+      if (msgBox) msgBox.classList.add("hidden");
 
       if (type === "word") {
         if (st.selectedWordId === id) {
@@ -842,72 +836,65 @@
 
     function unpairWord(key, wordId){
       const st = roundStates[key];
+      if (st.validated) return;
       st.pairings = st.pairings.filter(p => p.wordId !== wordId);
       st.selectedWordId = null;
-      st.validated = false;
       playSound('tap');
       renderCards(key);
     }
 
     function unpairDef(key, defId){
       const st = roundStates[key];
+      if (st.validated) return;
       st.pairings = st.pairings.filter(p => p.defId !== defId);
       st.selectedDefId = null;
-      st.validated = false;
       playSound('tap');
       renderCards(key);
     }
 
     function validateRound(key){
       const st = roundStates[key];
-      if (st.pairings.length === 0) {
+      if (st.validated) return;
+      const now = Date.now();
+      if (now - lastValidate < 600) return;
+      lastValidate = now;
+      const resultBox = document.getElementById(`result-box-${key}`);
+      const reste = st.total - st.pairings.length;
+      if (reste > 0) {
         playSound('wrong');
-        alert("Associe d'abord des mots avec leurs définitions avant de valider !");
+        resultBox.className = "p-4 rounded-xl border-2 mb-5 font-bold";
+        resultBox.style.cssText = "background:#fff7ed;border-color:#f59e0b;color:#92400e";
+        resultBox.textContent = reste === st.total
+          ? "Relie d'abord chaque mot à sa définition avant de valider."
+          : `Relie d'abord tous les mots : il reste ${reste} paire${reste > 1 ? "s" : ""} à former.`;
         return;
       }
+      resultBox.style.cssText = "";
 
       st.validated = true;
       st.selectedWordId = null;
       st.selectedDefId = null;
+      st.correctCount = st.pairings.filter(p => p.wordId === p.defId).length;
+      const correct = st.correctCount;
 
-      let correct = 0;
-      st.pairings.forEach(p => {
-        if (p.wordId === p.defId) {
-          correct++;
-        }
-      });
-      st.correctCount = correct;
-
-      const resultBox = document.getElementById(`result-box-${key}`);
+      const valBtn = document.getElementById(`val-btn-${key}`);
+      if (valBtn) valBtn.parentElement.style.display = "none";
+      const nextKey = ROUND_ORDER.find(k => !roundStates[k].validated);
       const nextBtn = document.getElementById(`next-btn-${key}`);
-      const isComplete = (correct === st.total);
+      if (nextBtn && nextKey) { nextBtn.classList.remove("hidden"); nextBtn.dataset.next = nextKey; }
+      const badge = document.getElementById(`badge-${key}`);
+      badge.textContent = `${correct}/${st.total}`;
+      badge.classList.remove("hidden");
 
-      if (resultBox) {
-        resultBox.classList.remove("hidden");
-        if (isComplete) {
-          playSound('match');
-          resultBox.className = "p-4 rounded-xl border-3 border-emerald-500 bg-emerald-50 text-emerald-900 font-bold mb-5 flex items-center justify-between flex-wrap gap-3";
-          resultBox.innerHTML = `
-            <div class="flex items-center gap-2.5">
-              <span class="text-2xl">🎉</span>
-              <span><strong>Excellent !</strong> 8 / 8 associations correctes ! Cette série est validée avec succès.</span>
-            </div>
-          `;
-          document.getElementById(`badge-${key}`).classList.remove("hidden");
-          if (nextBtn && key !== ROUND_ORDER[ROUND_ORDER.length - 1]) {
-            nextBtn.classList.remove("hidden");
-          }
-        } else {
-          playSound('wrong');
-          resultBox.className = "p-4 rounded-xl border-3 border-rose-500 bg-rose-50 text-rose-900 font-bold mb-5";
-          resultBox.innerHTML = `
-            <div class="flex items-center gap-2.5">
-              <span class="text-2xl">⚠️</span>
-              <span>Tu as obtenu <strong>${correct} / ${st.total}</strong> bonnes réponses. Observe les corrections en rouge et reclique sur les étiquettes pour modifier tes paires !</span>
-            </div>
-          `;
-          document.getElementById(`badge-${key}`).classList.add("hidden");
-        }
+      if (correct === st.total) {
+        playSound('match');
+        resultBox.className = "p-4 rounded-xl border-3 border-emerald-500 bg-emerald-50 text-emerald-900 font-bold mb-5";
+        resultBox.innerHTML = `<span class="text-2xl">🎉</span> <strong>Excellent !</strong> ${correct} / ${st.total} associations correctes au premier essai.`;
+      } else {
+        playSound('wrong');
+        resultBox.className = "p-4 rounded-xl border-2 mb-5 font-bold";
+        resultBox.style.cssText = "background:#EAF1FC;border-color:#1f5fbf;color:#1f5fbf";
+        resultBox.innerHTML = `Tu as obtenu <strong>${correct} / ${st.total}</strong>. À côté de chaque définition mal reliée, le bon mot est indiqué en bleu (➜).`;
       }
 
       renderCards(key);
@@ -916,57 +903,53 @@
 
     function updateGlobal(){
       let totalCorrect = 0;
-      let allDone = true;
-
+      const allDone = ROUND_ORDER.every(k => roundStates[k] && roundStates[k].validated);
       ROUND_ORDER.forEach(k => {
         const st = roundStates[k];
-        if (st && st.validated) {
-          totalCorrect += st.correctCount;
-          if (st.correctCount !== st.total) allDone = false;
-        } else {
-          allDone = false;
-        }
+        if (st && st.validated) totalCorrect += st.correctCount;
       });
-
       const total = totalPairsAll();
       const pct = Math.round((totalCorrect / total) * 100);
 
-      document.getElementById("globalLabel").textContent = `${totalCorrect} / ${total} paires validées`;
+      document.getElementById("globalLabel").textContent = `${totalCorrect} / ${total} au premier essai`;
       document.getElementById("globalPct").textContent = `${pct}%`;
       document.getElementById("globalBar").style.width = pct + "%";
 
-      if (allDone) {
-        playSound('victory');
-        triggerConfetti();
-        document.getElementById("finaleText").textContent =
-          `Tu as validé avec succès l'ensemble des 24 notions du Moyen Âge avec un score parfait de 100% ! Félicitations !`;
-        document.getElementById("finale").classList.remove("hidden");
-        document.getElementById("finale").scrollIntoView({ behavior: 'smooth' });
+      if (!allDone) return;
+      if (pct >= 70) { playSound('victory'); triggerConfetti(); }
+      const finale = document.getElementById("finale");
+      finale.querySelector("h2").textContent = pct >= 70 ? "Oyez, Oyez ! Félicitations !" : "Exercice terminé";
+      document.getElementById("finaleText").textContent =
+        `Tu as relié les 24 notions du Moyen Âge : ${totalCorrect} / ${total} bonnes associations au premier essai (${pct} %).`;
+      finale.classList.remove("hidden");
+      finale.scrollIntoView({ behavior: 'smooth' });
 
-        if (window.parent && window.parent.saveResult) {
+      if (resultSaved) return;
+      resultSaved = true;
+      try {
+        if (window.parent && window.parent !== window && window.parent.saveResult) {
           window.parent.saveResult({
             activity: 'moyen_age_vocabulaire',
             bookTitle: 'Moyen Âge — Je relie (Vocabulaire)',
-            score: total,
+            score: totalCorrect,
             total: total,
-            pct: 100,
+            pct: pct,
             date: new Date().toLocaleDateString('fr-BE'),
             time: new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })
           });
         }
-      }
+      } catch(e) {}
     }
 
     function goToNextRound(currentKey) {
       playSound('tap');
-      const idx = ROUND_ORDER.indexOf(currentKey);
-      if (idx !== -1 && idx < ROUND_ORDER.length - 1) {
-        const nextKey = ROUND_ORDER[idx + 1];
-        showRound(nextKey);
-      }
+      const btn = document.getElementById(`next-btn-${currentKey}`);
+      const nextKey = (btn && btn.dataset.next) || ROUND_ORDER.find(k => !roundStates[k].validated);
+      if (nextKey) { showRound(nextKey); window.scrollTo({ top: 0, behavior: 'smooth' }); }
     }
 
     function resetRound(key){
+      if (roundStates[key] && roundStates[key].validated) return;
       playSound('tap');
       initRoundState(key);
       document.getElementById(`badge-${key}`).classList.add("hidden");
@@ -981,9 +964,10 @@
 
     function resetAll(){
       playSound('tap');
+      resultSaved = false;
       ROUND_ORDER.forEach(k => {
         initRoundState(k);
-        document.getElementById(`badge-${k}`).classList.add("hidden");
+        const b = document.getElementById(`badge-${k}`); b.textContent = "✓"; b.classList.add("hidden");
       });
       document.getElementById("finale").classList.add("hidden");
       ROUND_ORDER.forEach(k => buildRound(k));

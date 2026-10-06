@@ -1941,6 +1941,13 @@ Spécifique :
 - **Contenu** : serfs « qui appartiennent au seigneur et sont vendus avec la terre » → « attachés à la terre du seigneur, ne peuvent pas la quitter » ; corvées « lorsqu'ils ne peuvent pas payer en monnaie » (faux : la corvée est due en plus) → « ils doivent effectuer des corvées » ; « Cette cérémonie » sans antécédent → « La cérémonie ». Banques de mots et définitions relues (cens / taille, séculier / régulier distingués par le texte).
 - Tests Chromium (fiche dans un cadre) : vide → message, 6/8 → 2 réponses en bleu + trous verrouillés, double clic sans effet, 3 textes → 1 seule sauvegarde 22/24 (92 %), « Recommencer » remet tout à zéro ; 390 px sans débordement.
 
+### 06/10 — Éveil → Histoire → Le Moyen Âge → Je relie (`moyen_age_vocabulaire`, `fiches/moyen_age_vocabulaire.html`, 3 copies) — sw.js v635
+- **Résultat sans valeur** (même défaut que le texte lacunaire) : enregistré seulement à 24/24, après autant d'essais que voulu ; après « Valider », la correction « Bon mot : … » restait affichée et un clic rouvrait la série pour la corriger → chaque série n'est validée qu'**une fois** (verrouillée), score au premier essai, vrai score /24 enregistré une fois quand les 3 séries sont validées (try/catch, `window.parent !== window`).
+- `alert()` si rien n'était relié, et validation possible avec des paires manquantes (comptées fausses) → message dans la page « il reste N paires à former », rien de compté ; garde 600 ms. Bon mot en **bleu** (« ➜ mot », il était rouge) ; onglet = score de la série ; « Série suivante » mène à la première série non validée ; « Recommencer cette série » → « Tout délier » (avant validation seulement) ; finale avec le score réel.
+- Liens « Retour à l'accueil » / « Retour aux activités » (chargeaient le site dans le cadre) retirés.
+- **Contenu** : serf « appartient au seigneur et est vendu avec la terre » → « attaché à la terre de son seigneur, qu'il ne peut pas quitter » ; « Clergé régulier » et « Moine » avaient presque la même définition (indiscernables) → « Moine » remplacé par « Monastère » (« ensemble de bâtiments où vivent des moines ou des moniales »), clergé régulier « religieux qui vivent à l'écart du monde en suivant une règle ».
+- Tests Chromium (fiche dans un cadre) : vide → message (pas d'alert), 6/8 → 2 bons mots en bleu, série verrouillée (clics et ✕ sans effet), double clic sans effet, 3 séries → 1 seule sauvegarde 22/24 (92 %) ; colonnes mélangées indépendamment (0/200 ordres identiques) ; 390 px sans débordement.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2384,7 +2391,7 @@ Spécifique :
 | ✅ 06/10 | Moyen Âge — Termes et définitions | `moyen_age_assoc` | index › renderMoyenAgeAssoc |  |
 | ✅ 05/10 (ac366c8) + 06/10 | Moyen Âge — La Peste Noire | `moyen_age_doc` | index › renderMoyenAgeDoc |  |
 | ✅ 06/10 | Moyen Âge — Texte lacunaire | `moyen_age_texte_trous` | fiches/moyen_age_texte_trous.html | Saisie libre comparée strictement |
-| ⬜ | Moyen Âge — Je relie (Vocabulaire) | `moyen_age_vocabulaire` | fiches/moyen_age_vocabulaire.html |  |
+| ✅ 06/10 | Moyen Âge — Je relie (Vocabulaire) | `moyen_age_vocabulaire` | fiches/moyen_age_vocabulaire.html |  |
 | ⬜ | Les Temps Modernes | `hist_temps_modernes` | index › (?) | (code à localiser) |
 | ⬜ | L'Époque Contemporaine | `hist_contemporaine` | index › (?) | (code à localiser) |
 
