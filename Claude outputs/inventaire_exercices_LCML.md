@@ -1610,6 +1610,16 @@ Spécifique :
 - Pastilles rouges pour les erreurs ; « Question suivante » protégé (600 ms) ; Entrée ; espace insécable avant « ? » (le point d'interrogation partait seul à la ligne à 390 px, corrigé aussi dans Caractéristiques des polygones).
 - Tests : jsdom (positions, notions, double clic, partie 8/10 → 1 seul saveResult), node --check 7 OK, Playwright 390 px.
 
+### 06/10 — Les hauteurs du triangle (`solide_triangles_hauteurs`, fiches/triangles_hauteurs.html) — sw.js v595
+- **La bonne réponse était toujours « La droite verte »** (couleur fixée par type : hauteur verte, médiane bleue, piège violet ; seul l'ordre des boutons changeait) → couleurs tirées au hasard (verte / bleue / violette ≈ 1/3 chacune sur 4 000 questions).
+- **Orthocentre placé au hasard** (point dessiné à `(P_AB.x, P_BC.y − 28)`, pas sur les hauteurs) → H calculé exactement (intersection des hauteurs, vérifiée sur les 3).
+- Hauteur et médiane parfois confondues à l'œil (sommet C au-dessus du milieu de la base) → pied de la hauteur à au moins 18 % de la base du milieu et du « piège » ; triangles acutangles nets (angles 40°–80°).
+- Triangles rectangle et obtusangle toujours identiques (mêmes coordonnées pour 3 questions chacun) → tirés au hasard (obtus 110°–140° en A, tout reste dans le cadre). Les deux questions « rectangle en A, hauteur relative à [AB] » et « … à [AC] » dans la même série se donnaient la réponse → une seule des deux ; série = 4 acutangles, 2 rectangles, 3 obtusangles, 1 orthocentre.
+- Mélanges sort(random) → Fisher–Yates. Après une erreur, la bonne réponse est montrée (✅ + contour vert, hauteur épaissie).
+- « Continuer » protégé (600 ms), Entrée ; enregistrement unique avec try/catch.
+- Orthographe : maitrise, entrainer.
+- Tests : jsdom (500 séries : 0 triangle manquant, couleurs équilibrées, écart P/M/S ≥ 18 %, orthocentre juste ; partie 7/10 → 1 seul saveResult ; double clic), node --check OK, rendus Playwright (géométrie ; Tailwind non chargé dans l'environnement de test, mise en page inchangée).
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2002,7 +2012,7 @@ Spécifique :
 |---|---|---|---|---|
 | ✅ 06/10 | Identifier les triangles | `triangles_qcm` | fiches/triangles_QCM.html |  |
 | ✅ 06/10 | Caractéristiques des triangles | `triangles_caracteristiques` | fiches/triangles_caracteristiques.html |  |
-| ⬜ | Les hauteurs du triangle | `solide_triangles_hauteurs` | fiches/triangles_hauteurs.html |  |
+| ✅ 06/10 | Les hauteurs du triangle | `solide_triangles_hauteurs` | fiches/triangles_hauteurs.html |  |
 | ⬜ | Reconnaître les angles | `angles_reconnaitre` | fiches/angles_reconnaitre.html |  |
 | ⬜ | Estimation des angles | `angles_estimation` | fiches/angles_estimation.html | Saisie libre comparée strictement |
 | ⬜ | Mesurer les angles | `angles_mesurer` | fiches/angles_mesurer.html |  |
