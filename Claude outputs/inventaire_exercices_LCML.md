@@ -1927,6 +1927,13 @@ Spécifique :
 - **Contenu** : « Motte » et « Château à motte » avaient presque la même définition (indiscernables s'ils tombaient ensemble) → « Motte » retirée, château à motte « une tour en bois au sommet d'une butte de terre » ; basse-cour « espace extérieur où vivaient les gens » → « cour fermée avec écuries, ateliers et logements des serviteurs » ; peste noire « population européenne » ; banalités payées par « les paysans » (pas seulement les serfs). 23 paires, termes et définitions distincts.
 - Tests Chromium : 300 tirages (23 termes vus), vide → message, clic définition + case → placée, 6/8 → bleu + 1 seul enregistrement, verrouillage, alignement vérifié ; 390 px sans débordement.
 
+### 06/10 — Éveil → Histoire → Le Moyen Âge → La Peste Noire (`moyen_age_doc`, index › MOYEN_AGE_DOC_* / renderMoyenAgeDoc / validateMoyenAgeDoc) — revérification complète — sw.js v633
+- Le 05/10 (ac366c8), seuls le mélange des QCM et l'ordre des vrai/faux avaient été corrigés (signalement d'élève) ; toujours en place (bonne réponse en A/B/C/D 889/888/894/929 sur 400 parties, 10 suites V/F différentes).
+- **Anachronisme** : « les médecins portaient des masques en forme de bec d'oiseau remplis de plantes » (costume apparu au XVIIe siècle, pas en 1347) et la question d'inférence qui s'y rapportait → « les médecins ne savaient pas d'où venait le mal ; beaucoup pensaient qu'il se transmettait par l'air empesté » + inférence « Pourquoi les médecins ne parvenaient-ils pas à arrêter la maladie ? ».
+- **Bonne réponse la plus longue** (inférences surtout : « Parce qu'ils ne comprenaient pas comment Dieu pouvait laisser mourir autant d'innocents » contre 3 réponses courtes et absurdes) → propositions réécrites, de longueur voisine, sans « Parce que » répétitif ; QCM rééquilibrés (« 1/4 » → « Environ 1/4 », etc.). V/F « inébranlée » → « La Peste n'affaiblit pas du tout l'Église » (faux).
+- **Validation** : questions sans réponse comptées fausses → message dans la page (nombre de réponses manquantes) ; garde 600 ms ; enregistrement dans un try/catch ; bonne réponse en bleu (#1f5fbf, ➜) quand l'élève s'est trompé, en vert quand il a juste (QCM, V/F et inférences) ; la page ne remonte plus en haut à chaque clic.
+- Tests Chromium : vide → « il en reste 14 », 13/14 → « Il te reste une question sans réponse », 2 erreurs → 2 réponses en bleu, 1 seul enregistrement 12/14 malgré les clics répétés, réponses verrouillées ; 390 px sans débordement.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2368,7 +2375,7 @@ Spécifique :
 | ✅ 06/10 | Antiquité — Document historique | `antiquite_doc` | index › renderAntiquiteDoc |  |
 | ✅ 06/10 | Quiz Moyen Âge | `qvgdm_moyen_age` | index › renderQVGDMMoyenAge |  |
 | ✅ 06/10 | Moyen Âge — Termes et définitions | `moyen_age_assoc` | index › renderMoyenAgeAssoc |  |
-| ✅ 05/10 (ac366c8) | Moyen Âge — La Peste Noire | `moyen_age_doc` | index › renderMoyenAgeDoc |  |
+| ✅ 05/10 (ac366c8) + 06/10 | Moyen Âge — La Peste Noire | `moyen_age_doc` | index › renderMoyenAgeDoc |  |
 | ⬜ | Moyen Âge — Texte lacunaire | `moyen_age_texte_trous` | fiches/moyen_age_texte_trous.html | Saisie libre comparée strictement |
 | ⬜ | Moyen Âge — Je relie (Vocabulaire) | `moyen_age_vocabulaire` | fiches/moyen_age_vocabulaire.html |  |
 | ⬜ | Les Temps Modernes | `hist_temps_modernes` | index › (?) | (code à localiser) |
