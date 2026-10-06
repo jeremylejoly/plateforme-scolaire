@@ -225,7 +225,7 @@
       overflow-x: auto;
       padding: 6px 2px;
       display: flex;
-      justify-content: center;
+      justify-content: flex-start;
       -webkit-overflow-scrolling: touch;
       touch-action: none;
     }
@@ -545,7 +545,7 @@
         </div>
 
         <p class="text-center text-xs text-[#6B7080] mt-3 font-medium" id="game-bottom-hint">
-          🖱️ Clic gauche ou glisser pour agir • Clic droit pour poser une croix (ou bascule en mode ❌ ci-dessus)
+          👆 Touche ou fais glisser pour remplir • Mode ❌ Marquer pour poser des croix (à la souris : clic droit)
         </p>
       </div>
 
@@ -650,7 +650,7 @@
           losange: ["00100","01110","11111","01110","00100"],
           maison:  ["00100","01110","11111","10101","11111"],
           sapin:   ["00100","01110","11111","00100","00100"],
-          smiley:  ["01010","00000","00100","10001","01110"],
+          smiley:  ["01010","01010","00100","11011","01110"],
           pomme:   ["00110","00100","11111","11111","01110"]
         }
       },
@@ -658,7 +658,7 @@
         label: "Niveau 2 (Moyen)", size: 10, cellSize: 34,
         patterns: {
           coeur:     ["0110000110","1111111111","1111111111","1111111111","0111111110","0011111100","0001111000","0000110000","0000000000","0000000000"],
-          etoile:    ["0000110000","0000110000","0001111000","0011111100","1111111111","0111111110","0011111100","0110000110","1100000011","1000000001"],
+          etoile:    ["0000110000","0000110000","0001111000","1111111111","0111111110","0011111100","0011111100","0111001110","0110000110","1100000011"],
           chat:      ["1000000001","1100000011","0111111110","0111111110","0110110110","0111111110","0111001110","0111111110","0011111100","0001111000"],
           papillon:  ["1100000011","1110000111","1111011111","1111111111","0111111110","0111111110","1111111111","1111011111","1110000111","1100000011"],
           poisson:   ["0000000000","0011100000","0111111100","1111111110","1111101001","1111111110","0111111100","0011100000","0000000000","0000000000"],
@@ -851,7 +851,24 @@
       buildBoard();
       startTimer();
       showScreen("game");
+      fitBoard();
     }
+
+    // Ajuste la taille des cases pour que toute la grille (indices compris) tienne dans l'écran
+    function fitBoard(){
+      if (!current) return;
+      const tbl = boardContainer.querySelector("table.board");
+      const wrap = boardContainer.parentElement;
+      if (!tbl || !wrap || !wrap.clientWidth) return;
+      let cs = current.cellSize;
+      tbl.style.setProperty("--cell-size", cs + "px");
+      const avail = wrap.clientWidth - 12;
+      while (cs > 16 && tbl.getBoundingClientRect().width > avail) {
+        cs -= 1;
+        tbl.style.setProperty("--cell-size", cs + "px");
+      }
+    }
+    window.addEventListener("resize", fitBoard);
 
     /* ---------------- MODE TOGGLE ---------------- */
     function setMode(m){
@@ -1081,7 +1098,12 @@
 
     /* ---------------- VICTOIRE & ADMIRATION DU DESSIN ---------------- */
     function bestTimeKey(){
-      return `nonogram_best_${current.lvlKey}_${current.patternKey}`;
+      let who = "";
+      try {
+        const st = window.parent && window.parent !== window && window.parent.state;
+        if (st && st.student) who = "_" + (st.studentCls || "") + "_" + st.student;
+      } catch(e) {}
+      return `nonogram_best_${current.lvlKey}_${current.patternKey}${who}`;
     }
 
     function fireConfetti(){

@@ -2234,6 +2234,8 @@ Spécifique :
 
 - **06/10 — Jeux › Sudoku (`jeu_sudoku`, fiches/sudoku.html + public + racine, sw.js v706)** : les 80 grilles (4 niveaux × 20) vérifiées : solution unique pour toutes, indices conformes à la solution, 51-52 / 39-40 / 31-32 / 25-30 indices selon le niveau, génération ≤ 0,33 s. Grille remplie mais fausse : rien ne se passait → message « touche Vérifier pour voir les erreurs en rouge ». 2 alert() et 1 confirm() → messages dans la page, « Vider » en deux touchers. saveResult retiré (règle jeux) ; record par grille gardé par élève (avant : partagé) ; case « Aide » de la victoire (toujours « Aucune », il n'y a pas d'aide) → « Ton record ». Coquilles : « À FARE » → « À FAIRE » sur les 20 grilles ; « (subgrid) » retiré. Test Playwright 390 px : message 1 faute, message grille pleine fausse, victoire, record, aucune boite de dialogue, pas de débordement.
 
+- **06/10 — Jeux › Le Nonogram (`jeu_nonogram`, nonogram.html + public, sw.js v707)** : les 17 images passées dans un solveur : toutes ont une solution unique, mais 2 ne se résolvaient pas sans deviner (la logique ligne/colonne restait bloquée) : « Sourire » (niveau Facile, 18 cases indécidables) et « Étoile » (Moyen, 72 cases) → redessinées (sourire avec nez, étoile plus large) : maintenant résolubles par simple logique. Bug téléphone : la grille 15 × 15 (433 px) dépassait l'écran, les indices des lignes étaient coupés à gauche et le glisser bloquait le défilement → les cases rétrécissent jusqu'à ce que toute la grille tienne (25 → 16 px à 390 px ; taille d'origine sur tablette). Consigne « Clic gauche / clic droit » → « Touche ou fais glisser… ». Record personnel par élève (avant : partagé). Pas de saveResult (déjà le cas). Test Playwright à 390 et 1024 px : les 17 grilles tiennent dans l'écran, Sourire résolu → victoire + record.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2831,7 +2833,7 @@ Spécifique :
 | ⬜ | Le Code Secret | `jeu_code_secret` | index › (?) | (code à localiser) |
 | ✅ 06/10 | Le Pendu des Mots | `jeu_pendu` | le_pendu.html (racine) |  |
 | ⬜ | Les Pentominos | `jeu_pentomino` | index › (?) | (code à localiser) |
-| ⬜ | Le Nonogram | `jeu_nonogram` | index › (?) | (code à localiser) |
+| ✅ 06/10 | Le Nonogram | `jeu_nonogram` | nonogram.html (racine + public) |  |
 | ⬜ | 2048 | `jeu_2048` | index › (?) | (code à localiser) |
 | ✅ 06/10 | Motus | `jeu_motus` | motus.html (racine + public) |  |
 | ⬜ | Le Tangram | `jeu_tangram` | index › (?) | (code à localiser) |
