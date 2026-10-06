@@ -19369,7 +19369,9 @@ function renderJeuTables(){
           <div id="jt-question" style="font-family:'Nunito',sans-serif;font-size:42px;font-weight:900;color:var(--text);margin-bottom:1.5rem;">— × — = ?</div>
           <input type="text" inputmode="numeric" id="jt-reponse" placeholder="Ta réponse…"
             style="width:100%;font-size:24px;font-weight:800;text-align:center;padding:12px;border-radius:12px;border:2.5px solid var(--purple);background:var(--surface);color:var(--text);font-family:'Nunito',sans-serif;outline:none;box-sizing:border-box;">
-          <div id="jt-feedback" style="margin-top:1rem;font-size:18px;font-weight:800;min-height:28px;">&nbsp;</div>
+          <button class="btn" id="jt-valider" type="button" style="width:100%;margin-top:0.8rem;font-size:16px;padding:0.8rem;" onclick="jtValider()">Valider ✔</button>
+          <div id="jt-msg" style="margin-top:0.6rem;font-size:14px;font-weight:700;color:var(--amber);min-height:20px;"></div>
+          <div id="jt-feedback" style="margin-top:0.4rem;font-size:18px;font-weight:800;min-height:28px;">&nbsp;</div>
         </div>
       </div>
 
@@ -19389,6 +19391,7 @@ function renderJeuTables(){
 }
 
 let jtScore=0, jtTotal=0, jtNumQ=10, jtTable=0, jtA=0, jtB=0, jtDebut=0, jtTimerInterval=null;
+let jtAttente=false, jtPartie=0, jtSac=[], jtDerniere='', jtFinie=false;
 
 function jtRnd(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
 
@@ -19396,51 +19399,87 @@ function jtInitEvents(){
   const inp = document.getElementById('jt-reponse');
   if(!inp) return;
   inp.addEventListener('keydown', function(e){
-    if(e.key==='Enter'){
-      const val = parseInt(this.value);
-      if(isNaN(val)) return;
-      jtTotal++;
-      const fb = document.getElementById('jt-feedback');
-      if(val === jtA * jtB){
-        jtScore++;
-        fb.style.color='var(--green)';
-        fb.textContent='✅ Bravo !';
-      } else {
-        fb.style.color='var(--red)';
-        fb.textContent='❌ C\'était ' + (jtA * jtB);
-      }
-      document.getElementById('jt-score').textContent = jtScore;
-      setTimeout(jtProchaine, 900);
-    }
+    if(e.key==='Enter'){ e.preventDefault(); jtValider(); }
+  });
+  inp.addEventListener('input', function(){
+    const m = document.getElementById('jt-msg'); if(m) m.textContent='';
   });
 }
 
+// Une seule réponse par question : le délai d'affichage de la correction bloque Entrée / Valider
+function jtValider(){
+  if(jtAttente || jtFinie) return;
+  const inp = document.getElementById('jt-reponse');
+  const msg = document.getElementById('jt-msg');
+  const brut = (inp.value||'').trim();
+  if(!/^\d+$/.test(brut)){
+    if(msg) msg.textContent = brut==='' ? 'Écris ta réponse avant de valider.' : 'Écris uniquement un nombre.';
+    inp.focus();
+    return;
+  }
+  jtAttente = true;
+  if(msg) msg.textContent='';
+  const val = parseInt(brut, 10);
+  jtTotal++;
+  const fb = document.getElementById('jt-feedback');
+  const bon = val === jtA * jtB;
+  if(bon){
+    jtScore++;
+    fb.style.color='var(--green)';
+    fb.textContent='✅ Bravo !';
+  } else {
+    fb.style.color='var(--red)';
+    fb.innerHTML='❌ ' + jtA + ' × ' + jtB + ' = <span style="color:#1f5fbf;font-weight:900">' + (jtA * jtB) + '</span>';
+  }
+  inp.readOnly = true;
+  const btn = document.getElementById('jt-valider'); if(btn) btn.disabled = true;
+  document.getElementById('jt-score').textContent = jtScore;
+  const partie = jtPartie;
+  setTimeout(()=>{ if(partie === jtPartie) jtProchaine(); }, bon ? 900 : 2000);
+}
+
+// Tirage « sac » : toutes les multiplications passent avant qu'une revienne, jamais deux fois de suite
+function jtTirer(){
+  if(!jtSac.length){
+    const tables = jtTable===0 ? [2,3,4,5,6,7,8,9] : [jtTable];
+    tables.forEach(a => { for(let b=2;b<=10;b++) jtSac.push([a,b]); });
+    for(let i=jtSac.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [jtSac[i],jtSac[j]]=[jtSac[j],jtSac[i]]; }
+    if(jtSac.length>1 && (jtSac[jtSac.length-1].join('x')===jtDerniere)) jtSac.unshift(jtSac.pop());
+  }
+  const [a,b] = jtSac.pop();
+  jtDerniere = a+'x'+b;
+  return Math.random()>.5 ? [a,b] : [b,a];
+}
+
 function jtDemarrer(){
-  jtScore=0; jtTotal=0;
+  jtScore=0; jtTotal=0; jtPartie++; jtAttente=false; jtFinie=false; jtSac=[]; jtDerniere='';
   jtNumQ = parseInt(document.getElementById('jt-sel-nb').value);
   jtTable = parseInt(document.getElementById('jt-sel-table').value);
   document.getElementById('jt-config').style.display='none';
   document.getElementById('jt-fin').style.display='none';
   document.getElementById('jt-jeu').style.display='block';
+  document.getElementById('jt-score').textContent = 0;
   jtDebut = Date.now();
   if(jtTimerInterval) clearInterval(jtTimerInterval);
   jtTimerInterval = setInterval(()=>{
     const el = document.getElementById('jt-timer');
-    if(el) el.textContent = Math.round((Date.now()-jtDebut)/1000)+'s';
+    if(!el || !document.getElementById('screen-jeu-tables').classList.contains('active')){ clearInterval(jtTimerInterval); jtPartie++; return; }
+    el.textContent = Math.round((Date.now()-jtDebut)/1000)+'s';
   }, 500);
   jtProchaine();
 }
 
 function jtProchaine(){
+  jtAttente = false;
   if(jtTotal >= jtNumQ){ jtFin(); return; }
-  if(jtTable===0){ jtA=jtRnd(2,9); jtB=jtRnd(2,10); }
-  else { jtA=jtTable; jtB=jtRnd(2,10); if(Math.random()>.5){let t=jtA;jtA=jtB;jtB=t;} }
+  [jtA, jtB] = jtTirer();
   const q = document.getElementById('jt-question');
   const inp = document.getElementById('jt-reponse');
   const fb = document.getElementById('jt-feedback');
   const prog = document.getElementById('jt-progress');
+  const btn = document.getElementById('jt-valider'); if(btn) btn.disabled = false;
   if(q) q.textContent = jtA + ' × ' + jtB + ' = ?';
-  if(inp){ inp.value=''; setTimeout(()=>inp.focus(),50); }
+  if(inp){ inp.value=''; inp.readOnly=false; setTimeout(()=>inp.focus(),50); }
   if(fb) fb.innerHTML='&nbsp;';
   const qEl = document.getElementById('jt-q');
   if(qEl) qEl.textContent=(jtTotal+1)+'/'+jtNumQ;
@@ -19448,6 +19487,8 @@ function jtProchaine(){
 }
 
 function jtFin(){
+  if(jtFinie) return;
+  jtFinie = true;
   clearInterval(jtTimerInterval);
   document.getElementById('jt-jeu').style.display='none';
   document.getElementById('jt-fin').style.display='block';
@@ -19461,16 +19502,18 @@ function jtFin(){
      <span style="color:${color};font-weight:700">${pct}%</span><br>
      ⏱️ Temps : <strong>${sec} secondes</strong>`;
   if(state.student){
-    saveResult({
-      student:state.student, cls:state.studentCls,
-      className:CLASSES[state.studentCls]?CLASSES[state.studentCls].name:state.studentCls,
-      activity:'jeu_tables',
-      bookTitle:'Jeu — Tables de multiplication',
-      score:jtScore, total:jtNumQ, pct,
-      time_sec: sec,
-      date:new Date().toLocaleDateString('fr-BE'),
-      time:new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})
-    });
+    try {
+      saveResult({
+        student:state.student, cls:state.studentCls,
+        className:CLASSES[state.studentCls]?CLASSES[state.studentCls].name:state.studentCls,
+        activity:'jeu_tables',
+        bookTitle:'Jeu — Tables de multiplication' + (jtTable ? ' (table de ' + jtTable + ')' : ' (toutes les tables)'),
+        score:jtScore, total:jtNumQ, pct,
+        time_sec: sec,
+        date:new Date().toLocaleDateString('fr-BE'),
+        time:new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})
+      });
+    } catch(e){ console.warn('saveResult', e); }
   }
 }
 

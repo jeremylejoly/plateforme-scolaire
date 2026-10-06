@@ -2219,6 +2219,8 @@ Spécifique :
 
 - **06/10 — CEB Sciences 2026 (`ceb_sci_2026`, CEB sciences/ceb_sciences_2026.html, sw.js v699)** : 20 questions vérifiées contre le portfolio PDF (graphique : récipient 3 = 8 s ; tableau : récipient 5 = 48 s ; expérience 2 : 66/38/28 s ; expérience 3 : la grande bougie s'éteint d'abord). Décision de Jeremy : le portfolio n'est pas intégré, l'exercice se fait en classe avec le livret papier. Défauts : AUCUNE sauvegarde du score (les 18 pages CEB n'appellent pas saveResult) → sauvegarde unique /20 ; choix jamais mélangés et bonne réponse souvent la seule longue (2.2, 2.3, 3.4, 4.1, 4.4, 4.5) → choix mélangés et renumérotés, longueurs équilibrées ; questions qui se donnaient les réponses : numéros (1), (2), (3), (5), (6), (7), (8) dans 2.2/2.3/2.5 donnaient 2.1 et 2.4 par élimination → retirés ; 4.3 répétait 4.1 et 4.4 → deux nouvelles affirmations (récipient unique de l'expérience 2 : FAUX ; récipient 5 dans l'expérience 3 : VRAI) ; 4.4 contenait l'explication dans la bonne réponse → explication montrée après la réponse ; 4.5 « consigne de sécurité » absente du protocole → « à quel moment déclenche-t-on le chronomètre ? » ; 3.4 « consomme tout le dioxygène » (inexact) → « le dioxygène devient trop rare » ; 3.1 donnait les 2 secondes dans la question. Mécanique : bonne réponse manquée en vert → bleu (QCM et Vrai/Faux) ; bilan possible avec des questions vides → message dans la page avec les numéros ; double clic et Entrée gérés ; confetti protégé (sans réseau, le bilan plantait). NO : bruler, maitriser, entrainement. Test Playwright 390 px : 17/20, 3 réponses en bleu, message « 1.5 », 1 seule sauvegarde, pas de débordement.
 
+- **06/10 — Jeux › Tables de multiplication (`jeu_tables`, index › renderJeuTables, sw.js v700)** : (CEB mis en pause à la demande de Jeremy, on passe aux jeux.) Bloquant : la réponse ne se validait qu'avec Entrée, absente du clavier numérique des téléphones/tablettes (inputmode numeric) → bouton « Valider ✔ ». Double Entrée pendant la correction : la question comptait deux fois, une question sautait, la fin pouvait s'enregistrer deux fois → une seule réponse par question (saisie figée pendant la correction) et fin protégée. Tirage au hasard pur : mêmes calculs répétés, parfois deux fois de suite → tirage « sac » (toutes les multiplications de la table passent avant qu'une revienne, jamais deux fois de suite). Correction « C'était 42 » en rouge, 0,9 s → « 7 × 6 = 42 » avec le résultat en bleu, affiché 2 s. Validation vide ou non numérique → message dans la page. Quitter l'écran en cours de partie arrête le chrono et la partie. Sauvegarde en try/catch, titre précisant la table. Test Playwright 390 px : table de 7 en 20 questions, 9 calculs différents, aucune répétition consécutive, doubles clics/Entrée sans effet, 17/20, 1 sauvegarde, pas de débordement.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2804,7 +2806,7 @@ Spécifique :
 
 | Statut | Exercice | id | Source | Signal automatique |
 |---|---|---|---|---|
-| ⬜ | Tables de multiplication | `jeu_tables` | index › renderJeuTables |  |
+| ✅ 06/10 | Tables de multiplication | `jeu_tables` | index › renderJeuTables |  |
 | ⬜ | Memory Calcul | `jeu_memory` | index › renderJeuMemory |  |
 | ⬜ | Tetris | `jeu_tetris` | index › renderJeuTetris |  |
 | ⬜ | Rush Hour | `jeu_rushhour` | index › renderJeuRushHour |  |
