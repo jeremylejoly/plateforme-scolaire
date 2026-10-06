@@ -1707,6 +1707,15 @@ Spécifique :
 - « Question suivante » protégé (600 ms), Entrée ; orthographe « Entraine-toi ».
 - Tests : jsdom (correction sans astérisques, double clic, 8/10 → 1 saveResult), node --check 7 OK, planche des 30 angles.
 
+### 06/10 — Estimation des angles (`angles_estimation`, fiches/angles_estimation.html) — sw.js v605
+- Contenu : 30 angles, 4 propositions chacun (bonne mesure toujours présente, aucun doublon). Le signal « saisie libre comparée strictement » de l'inventaire ne s'applique plus : l'exercice est un QCM.
+- **Aucun résultat enregistré** → saveResult `angles_estimation`, une fois par série, try/catch.
+- Propositions rangées dans l'ordre croissant et jamais mélangées dans fiches/ (bonne réponse en 3e position 18 fois sur 30 ; les copies racine/public mélangeaient, elles) → mélange Fisher–Yates partout (≈ 25 % par position sur 5 000 questions), 3 copies de nouveau identiques.
+- Correction affichée avec des astérisques (markdown) → gras ; « dépasse d'un sixième l'alignement droit » → « dépasse l'angle plat (180°) de 30° ».
+- « Question suivante » protégé (600 ms), Entrée ; orthographe « entrainer ».
+- L'angle droit garde volontairement un arc (sinon le carré donnerait 90°).
+- Tests : jsdom (positions, double clic, 8/10 → 1 saveResult), node --check 7 OK.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2101,7 +2110,7 @@ Spécifique :
 | ✅ 06/10 | Caractéristiques des triangles | `triangles_caracteristiques` | fiches/triangles_caracteristiques.html |  |
 | ✅ 06/10 | Les hauteurs du triangle | `solide_triangles_hauteurs` | fiches/triangles_hauteurs.html |  |
 | ✅ 06/10 | Reconnaître les angles | `angles_reconnaitre` | fiches/angles_reconnaitre.html |  |
-| ⬜ | Estimation des angles | `angles_estimation` | fiches/angles_estimation.html | Saisie libre comparée strictement |
+| ✅ 06/10 | Estimation des angles | `angles_estimation` | fiches/angles_estimation.html | Saisie libre comparée strictement |
 | ⬜ | Mesurer les angles | `angles_mesurer` | fiches/angles_mesurer.html |  |
 | ⬜ | Calcul d'angles manquants | `geometrie_angles_manquants` | fiches/geometrie_angles_manquants.html |  |
 
