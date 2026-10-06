@@ -1863,6 +1863,11 @@ Spécifique :
 - **Double clic sur « Continuer » sautait un niveau ; à la fin, double enregistrement possible** → garde de 600 ms, enregistrement unique (try/catch), pourcentage arrondi. Orthographe : maitrise, entrainer.
 - Tests jsdom : parcours (rien placé → message, 1 erreur → bleu, double clic sans saut, 9/10 → 1 sauvegarde) ; captures 390 px (Venn et Carroll).
 
+### 06/10 — Mathématiques → Grandeurs → Les masses → Conversions & Abaque (QCM) (`grandeur_masses_qcm_abaque`, `fiches/masses_QCM_abaque.html` + copies public et racine) — sw.js v622
+- Vérification complète (le 05/10, seuls les doublons de valeur et le double clic avaient été corrigés) : 50 conversions relues par programme (chaque proposition convertie en mg) : la bonne réponse est toujours égale, les deux autres toujours différentes (0 erreur). Mélange Fisher–Yates déjà en place (≈ 33 % par position sur 2 000 séries), enregistrement unique déjà en place, abaque t → mg correct (colonne « 10 kg »).
+- Bonne réponse en bleu (#1f5fbf) après une erreur (elle était en vert) ; Entrée = question suivante / score final (pas depuis une case de l'abaque).
+- Tests jsdom : faux → bleu, double Entrée sans saut, 9/10 → 1 sauvegarde ; capture 390 px sans défilement horizontal.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2181,7 +2186,7 @@ Spécifique :
 | Statut | Exercice | id | Source | Signal automatique |
 |---|---|---|---|---|
 | ✅ 05/10 | Conversions de masses (QCM) | `grandeur_masses_qcm` | index › renderMassesQCM |  |
-| ⬜ | Conversions & Abaque (QCM) | `grandeur_masses_qcm_abaque` | fiches/masses_QCM_abaque.html |  |
+| ✅ 06/10 | Conversions & Abaque (QCM) | `grandeur_masses_qcm_abaque` | fiches/masses_QCM_abaque.html |  |
 | ✅ 05/10 | Conversions de capacités (QCM) | `grandeur_capacites_qcm` | index › renderCapacitesQCM |  |
 | ✅ 05/10 | Conversions de capacités & abaque (QCM) | `grandeur_capacites_qcm_sup` | fiches/capacites_QCM.html |  |
 | ✅ 05/10 | Conversions de longueurs (QCM) | `grandeur_longueurs_qcm` | index › renderLongueursQCM |  |
