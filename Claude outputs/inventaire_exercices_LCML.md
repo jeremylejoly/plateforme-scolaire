@@ -1620,6 +1620,17 @@ Spécifique :
 - Orthographe : maitrise, entrainer.
 - Tests : jsdom (500 séries : 0 triangle manquant, couleurs équilibrées, écart P/M/S ≥ 18 %, orthocentre juste ; partie 7/10 → 1 seul saveResult ; double clic), node --check OK, rendus Playwright (géométrie ; Tailwind non chargé dans l'environnement de test, mise en page inchangée).
 
+### 06/10 — Quadrilatères — Reconnais la forme (`quadrilateres_reconnaître`, index › startShapeExercise + exercices_maths.js) — sw.js v596, exercices_maths.js ?v=20261006a
+- Contenu : les 24 formes recalculées (côtés, angles, parallélisme) → toutes bien nommées.
+- **Résultat enregistré sous `quadrilateres_forme`**, id inconnu du menu et du plan (exercice jamais coché) → `quadrilateres_reconnaître` (+ alias pour les anciens résultats) ; l'évaluation, qui passe par le même code, enregistre maintenant sous `quadrilateres_evaluation`.
+- **La couleur trahissait la réponse** (rose = parallélogramme, violet = trapèze isocèle, jaune = rectangle…) → même couleur pour toutes les formes.
+- Propositions jamais mélangées (bonne réponse A 10 fois, B 7, C 7, toujours à la même place pour une forme) → Fisher–Yates à chaque série (≈ 33 % par position sur 3 000 séries), évaluation comprise.
+- Formes ambiguës à l'œil : parallélogrammes q10/q11 aux côtés 110/104 (proposition « losange » possible), q8 72/81 → côtés 120/81 et 110/86 ; quadrilatères quelconques q22-q24 avec des côtés presque parallèles (6° d'écart) ou des angles de 89-90° → nouveaux sommets (≥ 16° d'écart au parallélisme, aucun angle à moins de 8° de l'angle droit).
+- Double clic sur « Valider » passait aussitôt à la question suivante → garde 600 ms (et sur « Terminer ») ; alert « Veuillez sélectionner… » → message dans la page, sans rien compter.
+- Correction : « Bonne réponse » en bleu.
+- Tests : jsdom (moteur extrait : positions, 0 erreur, message sans choix, double clic, 7/10 → 1 saveResult `quadrilateres_reconnaître`, évaluation → `quadrilateres_evaluation`), node --check 6/6 + exercices_maths.js, planche Playwright des 24 formes.
+- Remarque pour l'évaluation (à revoir à son tour) : le menu annonce « 5 formes + 5 vrai/faux » mais seules 5 formes sont posées (`evaluation_vf` n'est pas utilisé).
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2022,7 +2033,7 @@ Spécifique :
 
 | Statut | Exercice | id | Source | Signal automatique |
 |---|---|---|---|---|
-| ⬜ | Quadrilatères — Reconnaître la forme | `quadrilateres_reconnaître` | index › startShapeExercise |  |
+| ✅ 06/10 | Quadrilatères — Reconnaître la forme | `quadrilateres_reconnaître` | index › startShapeExercise |  |
 | ⬜ | Quadrilatères — Vrai ou Faux | `quadrilateres_vf` | index › startVFExercise |  |
 | ⬜ | Quadrilatères — Caractéristiques | `quadrilateres_caracteristiques` | index › startCharsExercise |  |
 | ⬜ | Quadrilatères — Médianes & Diagonales | `quadrilateres_diagonales_medianes` | fiches/quadrilateres_diagonales_medianes.html |  |

@@ -3237,7 +3237,7 @@ input[type=text].calc-input.incorrect {
 </style>
 <script src="livres.js?v=20261002b"></script>
 <script src="exercices_francais.js?v=20261005zp"></script>
-<script src="exercices_maths.js?v=20261005g"></script>
+<script src="exercices_maths.js?v=20261006a"></script>
 <script src="exercices_eveil.js?v=20260927e"></script>
 <script>
 /* Garde-fou : si un appareil a chargé une ancienne version du fichier des livres
@@ -13815,6 +13815,14 @@ function getShapeData(section){
     : null;
 }
 
+// Copie des questions avec les propositions mélangées (Fisher–Yates) en suivant la bonne réponse
+function preparerQuestionsForme(liste){
+  return liste.map(q => {
+    const ordre = shuffleArray(q.options.map((_, k) => k));
+    return { ...q, options: ordre.map(k => q.options[k]), answer: ordre.indexOf(q.answer) };
+  });
+}
+
 function startShapeExercise(section, type){
   const data = getShapeData(section);
   if(!data) return;
@@ -13823,7 +13831,7 @@ function startShapeExercise(section, type){
     section,
     type,
     isEvaluation: false,
-    questions: shuffleArray(data.qcm_bank).slice(0, 10),
+    questions: preparerQuestionsForme(shuffleArray(data.qcm_bank).slice(0, 10)),
     answers: [],
     submitted: false,
     currentIdx: 0,
@@ -13858,7 +13866,7 @@ function startShapeEvaluation(section){
     section,
     type: 'qcm',
     isEvaluation: true,
-    questions: data.evaluation.map(idx => data.qcm_bank[idx]),
+    questions: preparerQuestionsForme(data.evaluation.map(idx => data.qcm_bank[idx])),
     answers: [],
     submitted: false,
     currentIdx: 0,
@@ -13900,7 +13908,7 @@ function renderShapeQuestions(){
     const selectedClass = answered === j ? ' selected' : '';
     html += `<button class="shape-option${selectedClass}" id="shape-opt-${i}-${j}" onclick="selectShapeOption(${i},${j})">${opt}</button>`;
   });
-  html += `</div></div></div>`;
+  html += `</div></div><p id="shape-msg" style="display:none;text-align:center;color:var(--red);font-weight:700;font-size:13px;margin-top:.6rem;">Choisis une réponse avant de valider.</p></div>`;
 
   body.innerHTML = html;
 }
@@ -13921,12 +13929,15 @@ function validateCurrentShapeQuestion(){
   const q = shapeState.questions[i];
   const answered = shapeState.answers[i];
 
+  if(shapeState.currentValidated) return;
   if(answered === undefined){
-    alert('Veuillez sélectionner une option avant de valider.');
+    const m = document.getElementById('shape-msg');
+    if(m) m.style.display = 'block';
     return;
   }
 
   shapeState.currentValidated = true;
+  shapeState.validatedAt = Date.now();
   const isCorrect = answered === q.answer;
   if(isCorrect) shapeState.score++;
 
@@ -13952,6 +13963,7 @@ function validateCurrentShapeQuestion(){
 }
 
 function nextShapeQuestion(){
+  if(!shapeState.currentValidated || Date.now() - (shapeState.validatedAt || 0) < 600) return;
   shapeState.currentIdx++;
   shapeState.currentValidated = false;
 
@@ -13963,6 +13975,7 @@ function nextShapeQuestion(){
 }
 
 function finishShapeExercise(){
+  if(shapeState.submitted || Date.now() - (shapeState.validatedAt || 0) < 600) return;
   shapeState.submitted = true;
   const total = shapeState.questions.length;
   const score = shapeState.score;
@@ -14007,7 +14020,7 @@ function showShapeCorrection(){
         <svg viewBox="0 0 200 160" xmlns="http://www.w3.org/2000/svg">${d.svg}</svg>
       </div>
       <div style="font-size:13px;text-align:center;">${icon} Ta réponse : <strong style="color:${color}">${d.given}</strong></div>
-      ${!d.isCorrect ? `<div style="font-size:13px;color:var(--green);text-align:center;">✓ Bonne réponse : <strong>${d.expected}</strong></div>` : ''}
+      ${!d.isCorrect ? `<div style="font-size:13px;color:#1f5fbf;text-align:center;">✓ Bonne réponse : <strong>${d.expected}</strong></div>` : ''}
     </div>`;
   });
 
@@ -14028,7 +14041,7 @@ function restartShapeExercise(){
   document.getElementById('shape-validate-btn').textContent = '✓ Valider ma réponse';
   document.getElementById('shape-validate-btn').onclick = validateCurrentShapeQuestion;
   const data = getShapeData(shapeState.section);
-  shapeState.questions = shuffleArray(data.qcm_bank).slice(0, 10);
+  shapeState.questions = preparerQuestionsForme(shuffleArray(data.qcm_bank).slice(0, 10));
   renderShapeQuestions();
   window.scrollTo(0,0);
 }
@@ -14054,8 +14067,8 @@ function saveShapeResult(score, total, pct){
     saveResult({
       student: state.student, cls: state.studentCls,
       className: CLASSES[state.studentCls] ? CLASSES[state.studentCls].name : state.studentCls,
-      activity: 'quadrilateres_forme',
-      bookTitle: 'Quadrilatères — Reconnaître la forme',
+      activity: shapeState.isEvaluation ? 'quadrilateres_evaluation' : 'quadrilateres_reconnaître',
+      bookTitle: shapeState.isEvaluation ? 'Quadrilatères — Évaluation' : 'Quadrilatères — Reconnaître la forme',
       score, total, pct,
       date: dateStr, time: timeStr
     });
@@ -24309,7 +24322,8 @@ function invalidateResultsCache(){
 // Anciens identifiants de résultats (enregistrés avant l'alignement sur les identifiants du menu)
 const RESULT_ID_ALIASES = {
   'grandeur_durees_conversions': ['durées_conversions'],
-  'grandeur_durees_entre': ['durées_entre2heures']
+  'grandeur_durees_entre': ['durées_entre2heures'],
+  'quadrilateres_reconnaître': ['quadrilateres_forme']
 };
 function getStudentResult(actId){
   if(state.role !== 'student') return null;
