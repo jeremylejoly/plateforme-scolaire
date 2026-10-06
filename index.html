@@ -21342,11 +21342,11 @@ function pdocValider(){
 
 // ===== TERMES ET DÉFINITIONS — LA PRÉHISTOIRE =====
 const PREHISTOIRE_ASSOC = [
-  {terme:'La Préhistoire', def:"Période allant de l'apparition des premiers hominidés (3,5 millions av. J.-C.) à l'invention de l'écriture"},
+  {terme:'La Préhistoire', def:"Période allant de l'apparition des premiers hommes (il y a environ 3 millions d'années) à l'invention de l'écriture (vers 3 300 av. J.-C.)"},
   {terme:'Le Paléolithique', def:"Période de la pierre taillée — les hommes sont nomades, chasseurs et cueilleurs"},
   {terme:'Le Néolithique', def:"Période de la pierre polie — les hommes deviennent sédentaires, agriculteurs et éleveurs"},
   {terme:"L'Âge des métaux", def:"Période où les hommes apprennent à fabriquer des outils en cuivre, bronze puis fer"},
-  {terme:'av. J.-C.', def:'Abréviation signifiant "avant Jésus-Christ" — utilisée pour dater les événements anciens'},
+  {terme:'av. J.-C.', def:'Abréviation signifiant « avant Jésus-Christ », utilisée pour dater les évènements anciens'},
   {terme:'Un hominidé', def:"Famille de primates regroupant les grands singes et l'Homme"},
   {terme:'Nomade', def:"Qui se déplace constamment pour suivre les troupeaux ou trouver de la nourriture"},
   {terme:'Sédentaire', def:"Qui s'installe durablement au même endroit"},
@@ -21359,18 +21359,18 @@ const PREHISTOIRE_ASSOC = [
   {terme:'Une hutte', def:"Abri construit avec des branches, des peaux d'animaux ou de l'argile"},
   {terme:'Un dolmen', def:"Monument mégalithique formé de grandes pierres plates servant de tombe"},
   {terme:'Un menhir', def:"Pierre dressée verticalement, souvent alignée avec d'autres"},
-  {terme:'Un silex', def:"Pierre dure taillée pour fabriquer des outils tranchants"},
-  {terme:'Un biface', def:"Outil en pierre taillée des deux côtés, utilisé pour couper et gratter"},
+  {terme:'Un silex', def:"Roche très dure que l'on taille pour fabriquer des outils tranchants"},
+  {terme:'Un biface', def:"Outil en pierre taillé sur ses deux faces, utilisé pour couper et gratter"},
   {terme:'La poterie', def:"Technique de fabrication de récipients en argile cuite"},
-  {terme:'La roue', def:"Invention du Néolithique qui facilite le transport"},
-  {terme:'Le feu', def:"Découverte majeure permettant de se chauffer, se protéger et cuire les aliments"},
-  {terme:'Un propulseur', def:"Outil qui permet de lancer une lance ou un javelot plus loin et plus fort"},
+  {terme:'La roue', def:"Invention de la fin du Néolithique (vers 3 500 av. J.-C.) qui facilite le transport"},
+  {terme:'Le feu', def:"Sa maitrise permet de se chauffer, de se protéger des animaux et de cuire les aliments"},
+  {terme:'Un propulseur', def:"Outil en bois ou en os qui permet de lancer une arme plus loin et plus fort"},
   {terme:'Un harpon', def:"Outil en os ou en bois de cerf servant à pêcher"},
-  {terme:'La sagaie', def:"Longue lance lancée à la main, arme de chasse des hommes préhistoriques"},
+  {terme:'La sagaie', def:"Arme de chasse : sorte de javelot à pointe de pierre ou d'os"},
   {terme:'Bipède', def:"Être qui se déplace sur deux pieds"},
-  {terme:'Homo sapiens sapiens', def:"Nom scientifique de l'être humain moderne, apparu il y a environ 300 000 ans"},
+  {terme:'Homo sapiens', def:"Nom scientifique de l'être humain moderne, apparu il y a environ 300 000 ans"},
   {terme:'Une peinture rupestre', def:"Dessin ou peinture réalisé sur les parois d'une grotte"},
-  {terme:'Lascaux', def:"Grotte du Périgord (France) célèbre pour ses peintures préhistoriques vieilles de 17 000 ans"},
+  {terme:'Lascaux', def:"Grotte du Périgord (France) célèbre pour ses peintures préhistoriques, vieilles d'environ 17 000 ans"},
 ];
 
 let prehistoireAssocState = {pairs:[], defOrder:[], placed:{}, dragging:null, touchClone:null, touchSource:null};
@@ -21379,26 +21379,22 @@ function renderPrehistoireAssoc(){
   const body = document.getElementById('prehistoire-assoc-body');
   if(!body) return;
 
-  const pairs = shuffle([...PREHISTOIRE_ASSOC]).slice(0, 8);
+  const pairs = shuffle([...PREHISTOIRE_ASSOC]).slice(0, 8).map(p=>({terme:p.terme.replace(/J\.-C\./g,'J.\u2011C.'), def:p.def.replace(/(\d) (\d)/g,'$1\u00a0$2').replace(/ av\. J\.-C\./g,'\u00a0av.\u00a0J.\u2011C.').replace(/ (millions)/g,'\u00a0$1')}));
   const defOrder = shuffle(pairs.map((_,i) => i));
-  prehistoireAssocState = {pairs, defOrder, placed:{}, dragging:null, touchClone:null, touchSource:null};
+  prehistoireAssocState = {pairs, defOrder, placed:{}, dragging:null, touchClone:null, touchSource:null, done:false, lastClick:0};
 
   let termesHtml = '';
   pairs.forEach((p, i) => {
     termesHtml += `<div class="assoc-terme" id="prassoc-terme-${i}" data-index="${i}"
       style="min-height:52px;display:flex;align-items:center;padding:8px 12px;
       background:var(--surface);border:1.5px solid var(--border);border-radius:8px;
-      margin-bottom:8px;font-size:13px;font-weight:700;color:var(--text)">
+      font-size:13px;font-weight:700;color:var(--text)">
       ${p.terme}
     </div>`;
-  });
-
-  let zonesHtml = '';
-  pairs.forEach((_, i) => {
-    zonesHtml += `<div class="assoc-drop-zone" id="prassoc-zone-${i}" data-index="${i}" onclick="prAssocClearZone(this)"
+    termesHtml += `<div class="assoc-drop-zone" id="prassoc-zone-${i}" data-index="${i}" onclick="prAssocClearZone(this)"
       style="min-height:52px;display:flex;align-items:center;padding:8px 12px;
       background:var(--purple-light);border:2px dashed var(--purple);border-radius:8px;
-      margin-bottom:8px;font-size:12px;color:var(--muted);cursor:pointer;transition:background .2s;"
+      font-size:12px;color:var(--muted);cursor:pointer;transition:background .2s;min-width:0;overflow-wrap:anywhere;"
       ondragover="prAssocDragOver(event)" ondrop="prAssocDrop(event)" ondragleave="prAssocDragLeave(event)"
       ontouchstart="prAssocZoneTouchStart(event)">
       <span style="opacity:.5">Glisse une définition ici…</span>
@@ -21411,7 +21407,7 @@ function renderPrehistoireAssoc(){
       style="padding:8px 14px;background:var(--purple);color:#fff;border-radius:8px;
       font-size:12px;font-weight:600;cursor:grab;user-select:none;touch-action:none;
       margin-bottom:6px;line-height:1.4;"
-      ondragstart="prAssocDragStart(event)" ondragend="prAssocDragEnd(event)"
+      onclick="prAssocSelect(this)" ondragstart="prAssocDragStart(event)" ondragend="prAssocDragEnd(event)"
       ontouchstart="prAssocDefTouchStart(event)" ontouchmove="prAssocDefTouchMove(event)" ontouchend="prAssocDefTouchEnd(event)" ontouchcancel="prAssocDefTouchCancel(event)">
       ${pairs[i].def}
     </div>`;
@@ -21419,23 +21415,19 @@ function renderPrehistoireAssoc(){
 
   body.innerHTML = `
     <div class="card" style="margin-bottom:1rem;padding:0.8rem 1rem;background:var(--purple-light);border:1px solid var(--purple);">
-      <p style="margin:0;font-size:13px;color:var(--purple);font-weight:700">Glisse chaque définition en face du bon terme.</p>
+      <p style="margin:0;font-size:13px;color:var(--purple);font-weight:700">Glisse chaque définition en face du bon terme (ou touche une définition, puis la case).</p>
     </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:1rem;">
-      <div>
-        <div style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:8px;">Termes</div>
-        ${termesHtml}
-      </div>
-      <div>
-        <div style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:8px;">Définitions</div>
-        ${zonesHtml}
-      </div>
+    <div style="display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:8px 10px;margin-bottom:1rem;">
+      <div style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);">Termes</div>
+      <div style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);">Définitions</div>
+      ${termesHtml}
     </div>
     <div class="card" style="margin-bottom:1rem;">
       <div style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:8px;">🏷️ Définitions à placer</div>
       <div id="prassoc-def-pool">${defsHtml}</div>
     </div>
-    <button class="btn" onclick="validerPrehistoireAssoc()" style="width:100%;margin-bottom:1rem">✅ Vérifier mes réponses</button>
+    <div id="prassoc-msg" style="display:none;margin-bottom:.75rem;padding:.6rem .9rem;border-radius:8px;background:#fff7ed;border:1.5px solid #f59e0b;color:#92400e;font-size:13px;font-weight:700;text-align:center"></div>
+    <button class="btn" id="prassoc-verif" onclick="validerPrehistoireAssoc()" style="width:100%;margin-bottom:1rem">✅ Vérifier mes réponses</button>
     <div id="prassoc-score-panel" style="display:none"></div>
   `;
 }
@@ -21451,6 +21443,8 @@ function prAssocDrop(e){
 }
 
 function prAssocPlacerDef(zone, defIndex){
+  if(prehistoireAssocState.done || isNaN(defIndex)) return;
+  const m=document.getElementById('prassoc-msg'); if(m) m.style.display='none';
   const zoneIndex = parseInt(zone.dataset.index);
   const ancien = prehistoireAssocState.placed[zoneIndex];
   if(ancien !== undefined) prAssocRetournerDef(ancien);
@@ -21462,6 +21456,7 @@ function prAssocPlacerDef(zone, defIndex){
     }
   });
   prAssocRetirerDeBanque(defIndex);
+  if(prehistoireAssocState.sel===defIndex) prehistoireAssocState.sel=undefined;
   prehistoireAssocState.placed[zoneIndex] = defIndex;
   zone.innerHTML = `<span style="font-size:12px;font-weight:600;color:var(--purple);line-height:1.4">${prehistoireAssocState.pairs[defIndex].def}</span>`;
   zone.style.border = '2px solid var(--purple)';
@@ -21477,12 +21472,26 @@ function prAssocRetournerDef(defIndex){
   div.addEventListener('dragstart',prAssocDragStart); div.addEventListener('dragend',prAssocDragEnd);
   div.addEventListener('touchstart',prAssocDefTouchStart,{passive:false}); div.addEventListener('touchmove',prAssocDefTouchMove,{passive:false}); div.addEventListener('touchend',prAssocDefTouchEnd);
   div.addEventListener('touchcancel',prAssocDefTouchCancel);
+  div.addEventListener('click',()=>prAssocSelect(div));
   pool.appendChild(div);
+}
+function prAssocSelect(el){
+  const st=prehistoireAssocState; if(st.done||!el) return;
+  const di=parseInt(el.dataset.index);
+  document.querySelectorAll('#prassoc-def-pool .assoc-def').forEach(d=>d.style.outline='');
+  if(st.sel===di){ st.sel=undefined; return; }
+  st.sel=di; el.style.outline='3px solid #f59e0b';
+}
+function prAssocPoserSelection(zone){
+  const st=prehistoireAssocState;
+  if(st.done || st.sel===undefined || st.placed[parseInt(zone.dataset.index)]!==undefined) return false;
+  const di=st.sel; st.sel=undefined; prAssocPlacerDef(zone,di); return true;
 }
 function prAssocRetirerDeBanque(defIndex){ const el=document.getElementById('prassoc-def-'+defIndex); if(el) el.remove(); }
 function prAssocClearZone(zone){
   const panel = document.getElementById('prassoc-score-panel');
   if(panel && panel.style.display === 'block') return;
+  if(prAssocPoserSelection(zone)) return;
   const zi = parseInt(zone.dataset.index);
   const di = prehistoireAssocState.placed[zi];
   if(di === undefined) return;
@@ -21494,8 +21503,10 @@ function prAssocClearZone(zone){
 
 function prAssocDefTouchStart(e){
   e.preventDefault();
+  if(prehistoireAssocState.done) return;
   prehistoireAssocState.touchSource=e.currentTarget;
   const touch=e.touches[0];
+  prehistoireAssocState.touchX=touch.clientX; prehistoireAssocState.touchY=touch.clientY;
   const clone=e.currentTarget.cloneNode(true);
   clone.style.cssText+=';position:fixed;z-index:9999;pointer-events:none;opacity:.85;width:160px;';
   clone.style.left=(touch.clientX-80)+'px'; clone.style.top=(touch.clientY-20)+'px';
@@ -21517,7 +21528,9 @@ function prAssocDefTouchEnd(e){
   if(prehistoireAssocState.touchSource) prehistoireAssocState.touchSource.style.opacity='';
   const el=document.elementFromPoint(touch.clientX,touch.clientY);
   const zone=el?el.closest('.assoc-drop-zone'):null;
-  if(zone && prehistoireAssocState.touchSource) prAssocPlacerDef(zone,parseInt(prehistoireAssocState.touchSource.dataset.index));
+  const src=prehistoireAssocState.touchSource;
+  if(zone && src) prAssocPlacerDef(zone,parseInt(src.dataset.index));
+  else if(src && Math.abs(touch.clientX-prehistoireAssocState.touchX)<10 && Math.abs(touch.clientY-prehistoireAssocState.touchY)<10) prAssocSelect(src);
   prehistoireAssocState.touchSource=null;
 }
 function prAssocDefTouchCancel(e){
@@ -21528,7 +21541,8 @@ function prAssocZoneTouchStart(e){
   const zone=e.currentTarget;
   const zi=parseInt(zone.dataset.index);
   const di=prehistoireAssocState.placed[zi];
-  if(di===undefined) return;
+  if(prehistoireAssocState.done) return;
+  if(di===undefined){ if(prAssocPoserSelection(zone)) e.preventDefault(); return; }
   e.preventDefault();
   delete prehistoireAssocState.placed[zi];
   zone.innerHTML='<span style="opacity:.5">Glisse une définition ici…</span>';
@@ -21537,14 +21551,27 @@ function prAssocZoneTouchStart(e){
 }
 
 function validerPrehistoireAssoc(){
-  const pairs=prehistoireAssocState.pairs;
+  const st=prehistoireAssocState, now=Date.now();
+  if(st.done || now-st.lastClick<600) return;
+  st.lastClick=now;
+  const pairs=st.pairs;
+  const reste=pairs.length-Object.keys(st.placed).length;
+  const msg=document.getElementById('prassoc-msg');
+  if(reste>0){
+    if(msg){ msg.textContent='Place d\'abord toutes les définitions (il en reste '+reste+').'; msg.style.display='block'; }
+    return;
+  }
+  if(msg) msg.style.display='none';
+  st.done=true;
+  const vb=document.getElementById('prassoc-verif'); if(vb) vb.style.display='none';
+  document.querySelectorAll('#prassoc-def-pool .assoc-def').forEach(d=>d.draggable=false);
   let score=0;
   pairs.forEach((p,i)=>{
     const zone=document.getElementById('prassoc-zone-'+i);
     const di=prehistoireAssocState.placed[i];
     const correct=di!==undefined && pairs[di].terme===p.terme;
     if(correct){ score++; if(zone){zone.style.background='var(--green-light,#dcfce7)';zone.style.border='2px solid var(--green,#16a34a)';} }
-    else{ if(zone){zone.style.background='var(--red-light,#fee2e2)';zone.style.border='2px solid var(--red,#dc2626)'; zone.innerHTML+='<div style="font-size:11px;color:var(--green,#16a34a);margin-top:4px;font-weight:700">✅ '+p.def+'</div>';} }
+    else{ if(zone){zone.style.background='var(--red-light,#fee2e2)';zone.style.border='2px solid var(--red,#dc2626)'; const c=document.createElement('div'); c.style.cssText='font-size:11px;color:#1f5fbf;margin-top:4px;font-weight:700;line-height:1.35'; c.textContent='➜ '+p.def; zone.style.flexDirection='column'; zone.style.alignItems='flex-start'; zone.appendChild(c);} }
   });
   const total=pairs.length, pct=Math.round(score/total*100);
   const color=pct>=70?'var(--green)':pct>=50?'var(--amber)':'var(--red)';
@@ -21559,13 +21586,13 @@ function validerPrehistoireAssoc(){
   </div>`;
   panel.scrollIntoView({behavior:'smooth'});
   if(state.student){
-    saveResult({student:state.student,cls:state.studentCls,
+    try{ saveResult({student:state.student,cls:state.studentCls,
       className:CLASSES[state.studentCls]?CLASSES[state.studentCls].name:state.studentCls,
       activity:'prehistoire_assoc',bookTitle:'Termes et définitions — La Préhistoire',
       score,total,pct,
       date:new Date().toLocaleDateString('fr-BE'),
       time:new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})
-    });
+    }); }catch(e){}
   }
 }
 

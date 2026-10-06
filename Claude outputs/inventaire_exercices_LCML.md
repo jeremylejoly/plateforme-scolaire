@@ -1888,6 +1888,13 @@ Spécifique :
 - **Minuteurs** : quitter / rejouer pendant le délai de 1,5–2 s faisait avancer ou terminer la nouvelle partie → minuteurs liés à la partie. La barre des paliers défile jusqu'au palier en cours.
 - Tests Chromium : 150 parties gagnées (30 questions vues, texte affiché = question, bonne réponse cliquable, double clic sans effet, 1 sauvegarde 15/15 par partie), répartition A/B/C/D 545/546/571/588 ; partie perdue à la question 7 → bleu + 1 sauvegarde 6/15 ; relance pendant le délai sans effet ; captures 390 px sans débordement.
 
+### 06/10 — Éveil → Histoire → La Préhistoire → Termes et définitions (`prehistoire_assoc`, index › PREHISTOIRE_ASSOC / renderPrehistoireAssoc) — sw.js v626
+- **Termes et cases décalés** : les deux colonnes étaient indépendantes ; dès qu'une définition prenait plusieurs lignes (toujours à 390 px), les termes ne se trouvaient plus en face de leur case → une ligne de grille par paire (alignement vérifié).
+- **« Vérifier » pouvait être cliqué plusieurs fois** (un enregistrement et une correction ajoutée à chaque clic), les cases vides comptaient faux et on pouvait encore déplacer après la correction → message dans la page s'il reste des définitions, garde de 600 ms, correction unique, enregistrement unique (try/catch), exercice verrouillé ensuite.
+- Correction en bleu (#1f5fbf) sous la définition fausse (elle était en vert) ; ajout du placement par toucher : toucher une définition, puis la case (utile sur tablette, la réserve est sous les cases).
+- **Contenu (29 paires relues)** : Préhistoire « premiers hominidés (3,5 millions av. J.-C.) » → « premiers hommes (il y a environ 3 millions d'années) … écriture (vers 3 300 av. J.-C.) » ; « Homo sapiens sapiens » → « Homo sapiens » ; silex « pierre dure taillée » → « roche très dure que l'on taille » ; biface « taillé sur ses deux faces » ; roue « fin du Néolithique (vers 3 500 av. J.-C.) » ; feu « sa maitrise permet… » ; sagaie / propulseur précisés ; évènements, guillemets « ». Nombres et « av. J.-C. » insécables. Termes et définitions tous distincts, aucun terme répété dans sa définition.
+- Tests Chromium : 300 tirages (29 termes vus, définitions bien mélangées), vide → message sans enregistrement, clic définition + case → placée, re-clic → retirée, 6/8 → bleu + 1 seul enregistrement malgré 3 clics, verrouillage ; captures 390 px sans débordement.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2322,7 +2329,7 @@ Spécifique :
 | ⬜ | La ligne du temps (Séquence P5–P6) | `hist_ligne_du_temps` | fiches/ligne-du-temps_5.html | QCM: bonne réponse en position 2 dans 10/10 questions, options non mélangées ; Aucun hasard : mêmes questions, même ordre à chaque partie |
 | ⬜ | Les grandes périodes de l'Histoire | `hist_grandes_periodes` | fiches/frise-chronologique-histoire.html |  |
 | ✅ 06/10 | Quiz Préhistoire | `qvgdm_prehistoire` | index › renderQVGDMPrehistoire |  |
-| ⬜ | Préhistoire — Termes et définitions | `prehistoire_assoc` | index › renderPrehistoireAssoc |  |
+| ✅ 06/10 | Préhistoire — Termes et définitions | `prehistoire_assoc` | index › renderPrehistoireAssoc |  |
 | ⬜ | Préhistoire — Campement du Paléolithique | `prehistoire_doc` | index › renderPrehistoireDoc |  |
 | ⬜ | Quiz L'Antiquité | `qvgdm_antiquite` | index › renderQVGDMAntiquite | QCM: bonne réponse en position 3 dans 9/15 questions, options non mélangées |
 | ⬜ | Antiquité — Termes et définitions | `antiquite_assoc` | index › renderAntiquiteAssoc |  |
