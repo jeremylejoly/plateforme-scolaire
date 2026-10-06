@@ -1976,6 +1976,13 @@ Spécifique :
 - Étiquettes des défis de manipulation toujours dans le même ordre → mélangées au départ et à chaque « Recommencer » (24 ordres différents sur 30). Frise du calendrier : légendes « avant / après J.-C. » superposées à 390 px → réduites et sur deux lignes.
 - Tests Chromium (fiche dans un cadre) : 10 questions, 1 erreur → rouge + bleu, double clic sans effet, 1 sauvegarde 9/10 (90 %) par partie ; 390 px sans débordement.
 
+### 06/10 — Éveil → Histoire → L'Œil du Temps, jeu de Kim (`kim_histoire`, `kim_histoire.html` + `kim_histoire_data.js` ; `fiches/kim_histoire.html` = simple redirection) — sw.js v639
+- **Aucun résultat enregistré** (le plan de travail ne pouvait jamais valider l'exercice) → `saveResult` au format objet (`activity:'kim_histoire'`) : une fois par scène en mode libre (/4), une fois à la fin du Grand Voyage (/20) ; try/catch, `window.parent !== window`.
+- **Contenu revérifié image par image (90 questions, 10 images)** ; corrections encore nécessaires depuis l'analyse du 29/09 : amphores **7** (le jeu disait 5, 7 était une mauvaise réponse) ; grenades (6-7, impossible à compter) → « qui tient l'ombrelle ? » ; colonnes du temple (7 en façade + côtés, ambigu) → « que voit-on au sommet du fronton ? » ; pots de laurier (4 + palmiers, ambigu) → forme de l'arcade du fond ; « robe (stola) bleue » (elle est blanche, c'est la palla qui est bleue ; « blanche » était une mauvaise réponse) → manteau (palla) ; coupe dorée sur le plateau du serviteur (elle est dans la main du maitre) ; tonneaux « au total » (9 visibles) → les 6 empilés au sol ; café (anachronique, arrive au XVIIe s.) → cacao ; faucon « chaperonné » (pas de chaperon) ; livres « sur l'étagère » (sur la table) ; squelette « miniature » ; « Étincelant devant un âtre » → « Étendues » ; femme « sur un tronc d'arbre » (assise au sol) ; panier « d'écorce » (osier) ; rivière « gelée » ; tenue « et cravate » (tous n'en ont pas) ; trajectoire « en 8 » ; Santa María « caravelle » ; « premier pays du continent » → première ligne voyageurs (1835). Périodes : fin de la Préhistoire selon la convention (monde / nos régions). Nouvelle orthographe (maitre, boite, nénufars, fut, disparaitra, entrainer).
+- **Bonne réponse souvent la plus longue** (34/90, ex. « Des ailes et des éclairs (la foudre de Jupiter) ») → propositions raccourcies ou rééquilibrées : 13/90.
+- **Moteur** : tirage des questions et mélange des propositions par `sort(() => 0.5 - Math.random())` → Fisher–Yates ; verrou contre le double tap visant un id inexistant (`question-options-grid`) et 350 ms → bon id, 600 ms ; bonne réponse du débriefing en bleu (#1f5fbf, elle était verte) ; `alert()` de fin du Grand Voyage → message dans l'accueil avec le score ; Grand Voyage toujours sur la 1re scène de chaque époque → scène tirée au hasard ; « ⭐ 0 / 40 ⭐ » (étoile doublée) ; `border-3` inexistant ; image limitée à la largeur de l'écran.
+- Tests Chromium (jeu dans un cadre) : double tap → 4 réponses (pas 8), 1 sauvegarde /4 par scène, Grand Voyage de 5 scènes différentes → 1 seule sauvegarde /20 + message d'accueil, aucune fenêtre `alert`, bonne réponse en bleu ; positions de la bonne réponse 65/73/83/79 sur 300 tirages ; 390 px sans débordement.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2404,7 +2411,7 @@ Spécifique :
 
 | Statut | Exercice | id | Source | Signal automatique |
 |---|---|---|---|---|
-| ⬜ | L'Œil du Temps — Jeu de Kim (Mémoire visuelle) | `kim_histoire` | fiches/kim_histoire.html |  |
+| ✅ 06/10 | L'Œil du Temps — Jeu de Kim (Mémoire visuelle) | `kim_histoire` | fiches/kim_histoire.html |  |
 | ✅ 06/10 | La frise chronologique (Interactive) | `fiche_frise` | fiches/frise-chronologique-histoire.html |  |
 | ✅ 06/10 | Le grand voyage du Temps (Carnet d'investigation) | `hist_grand_voyage_temps` | fiches/lecon_frise_historique.html | QCM: bonne réponse en position 1 dans 5/5 questions, options non mélangées ; Aucun hasard : mêmes questions, même ordre à chaque partie |
 | ✅ 06/10 | La ligne du temps (Séquence P5–P6) | `hist_ligne_du_temps` | fiches/ligne-du-temps_5.html | QCM: bonne réponse en position 2 dans 10/10 questions, options non mélangées ; Aucun hasard : mêmes questions, même ordre à chaque partie |

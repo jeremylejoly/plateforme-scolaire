@@ -44,6 +44,8 @@
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
 
 <style>
+  img { max-width: 100%; }
+
   :root {
     --encre: #1a1a2e;
     --papier: #fdfbf7;
@@ -180,7 +182,7 @@
           <span>⏱️</span> <span id="header-timer-label">25s</span>
         </button>
         <!-- Menu popover réglage chrono -->
-        <div id="timer-menu" class="hidden absolute right-0 mt-2 w-44 bg-white border-3 border-encre rounded-xl shadow-3d p-2 z-40 text-xs">
+        <div id="timer-menu" class="hidden absolute right-0 mt-2 w-44 bg-white border-2 border-encre rounded-xl shadow-3d p-2 z-40 text-xs">
           <p class="font-bold text-slate-600 mb-1.5 px-2">Temps d'observation :</p>
           <button onclick="setTimerDuration(15)" class="w-full text-left px-2 py-1.5 rounded-lg hover:bg-amber-100 font-bold flex justify-between">⚡ Rapide <span>15s</span></button>
           <button onclick="setTimerDuration(25)" class="w-full text-left px-2 py-1.5 rounded-lg hover:bg-amber-100 font-bold flex justify-between">🎯 Normal <span>25s</span></button>
@@ -204,6 +206,7 @@
   <!-- ÉCRAN 1 : HUB / SÉLECTION DES ÉPOQUES     -->
   <!-- ========================================== -->
   <section id="screen-hub" class="flex flex-col gap-6 pop-in">
+    <div id="hub-message" class="hidden card-retro p-4 bg-emerald-50 border-emerald-600 font-display font-bold text-emerald-900 text-center"></div>
     
     <!-- Bannière d'accueil & Grand Voyage -->
     <div class="card-retro p-6 sm:p-8 bg-gradient-to-r from-amber-100 via-orange-50 to-amber-200 relative overflow-hidden">
@@ -215,7 +218,7 @@
           Ouvre l'œil, voyage à travers les époques !
         </h2>
         <p class="text-sm sm:text-base text-slate-700 mb-5 leading-relaxed">
-          Observe la scène pendant <strong id="hub-timer-info">25 secondes</strong>. Retiens les personnages, les outils, les animaux, les couleurs et les quantités. L'image disparaîtra ensuite pour laisser place à <strong>4 questions défis</strong> !
+          Observe la scène pendant <strong id="hub-timer-info">25 secondes</strong>. Retiens les personnages, les outils, les animaux, les couleurs et les quantités. L'image disparaitra ensuite pour laisser place à <strong>4 questions défis</strong> !
         </p>
         
         <div class="flex flex-wrap gap-3">
@@ -481,8 +484,29 @@ let state = {
   // Timer d'observation
   timerRemaining: 25,
   timerInterval: null,
-  isPaused: false
+  isPaused: false,
+  voyageScore: 0
 };
+
+function melanger(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+  return a;
+}
+
+function enregistrerResultat(score, total, titre) {
+  try {
+    if (window.parent && window.parent !== window && typeof window.parent.saveResult === 'function') {
+      window.parent.saveResult({
+        activity: 'kim_histoire',
+        bookTitle: titre,
+        score: score, total: total, pct: Math.round(score / total * 100),
+        date: new Date().toLocaleDateString('fr-BE'),
+        time: new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })
+      });
+    }
+  } catch (e) {}
+}
 
 // Synthétiseur audio Web Audio API
 class SoundFx {
@@ -600,7 +624,7 @@ function updateHeaderStats() {
       });
     });
   }
-  document.getElementById('header-total-stars').innerText = `${totalStars} / 40 ⭐`;
+  document.getElementById('header-total-stars').innerText = `${totalStars} / 40`;
 }
 
 // Rendu de l'écran d'accueil
@@ -675,10 +699,11 @@ function startGrandVoyage() {
   sfx.click();
   state.mode = 'grand_voyage';
   state.currentPeriodIndex = 0;
-  state.currentSceneIndex = 0; // Scène 1 de la Préhistoire
-  
+  state.voyageScore = 0;
+  const msg = document.getElementById('hub-message'); if (msg) msg.classList.add('hidden');
+  // Une scène tirée au hasard dans chaque époque
   const period = window.KIM_HISTOIRE_DATA.periods[0];
-  const scene = period.scenes[0];
+  const scene = period.scenes[Math.floor(Math.random() * period.scenes.length)];
   setupAndStartScene(period, scene);
 }
 
@@ -710,7 +735,7 @@ function setupAndStartScene(period, scene) {
 
 // Tirage aléatoire sans remise de N questions
 function pickRandomQuestions(bank, count) {
-  const shuffled = [...bank].sort(() => 0.5 - Math.random());
+  const shuffled = melanger(bank);
   return shuffled.slice(0, Math.min(count, shuffled.length));
 }
 
@@ -874,10 +899,10 @@ function renderCurrentQuestion() {
   optionsGrid.innerHTML = '';
 
   // Crée un tableau d'objets { text, isCorrect, origIdx }
-  const answers = q.options.map((opt, idx) => ({
+  const answers = melanger(q.options.map((opt, idx) => ({
     text: opt,
     isCorrect: idx === q.correct
-  })).sort(() => 0.5 - Math.random()); // Mélange les 4 propositions
+  }))); // Mélange les 4 propositions (Fisher–Yates)
 
   answers.forEach((ans) => {
     const btn = document.createElement('button');
@@ -897,7 +922,7 @@ function handleAnswerSelect(btnEl, isCorrect, selectedText) {
   sfx.click();
 
   // Verrouille immédiatement tous les boutons pour empêcher le double-tap intempestif
-  const grid = document.getElementById('question-options-grid');
+  const grid = document.getElementById('quiz-options-grid');
   if (grid) grid.style.pointerEvents = 'none';
 
   if (btnEl) {
@@ -922,7 +947,7 @@ function handleAnswerSelect(btnEl, isCorrect, selectedText) {
     } else {
       finishQuizAndShowResults();
     }
-  }, 350);
+  }, 600);
 }
 
 // Bilan et Débriefing
@@ -936,6 +961,16 @@ function finishQuizAndShowResults() {
     saveStoredScores();
     updateHeaderStats();
     renderHub();
+  }
+
+  // Enregistrement : une scène en mode libre, le voyage complet (5 scènes) en Grand Voyage
+  if (state.mode === 'grand_voyage') {
+    state.voyageScore += score;
+    if (state.currentPeriodIndex === window.KIM_HISTOIRE_DATA.periods.length - 1) {
+      enregistrerResultat(state.voyageScore, 4 * window.KIM_HISTOIRE_DATA.periods.length, "L'Œil du Temps — Le Grand Voyage");
+    }
+  } else {
+    enregistrerResultat(score, 4, "L'Œil du Temps — " + state.currentScene.title);
   }
 
   // Étoiles animées
@@ -954,7 +989,7 @@ function finishQuizAndShowResults() {
     { min: 4, title: '🎉 Œil de Lynx Historique !', sub: 'Exceptionnel ! Tu as repéré tous les détails comme un véritable historien.' },
     { min: 3, title: '👏 Très bon observateur !', sub: 'Félicitations ! Tu as mémorisé presque tous les éléments de la scène.' },
     { min: 2, title: '👍 Pas mal !', sub: 'Certains détails t\'ont échappé, mais ton regard s\'aiguise.' },
-    { min: 0, title: '🧐 Ouvre grand les yeux !', sub: 'Recommence pour entraîner ta mémoire visuelle et battre ton record !' }
+    { min: 0, title: '🧐 Ouvre grand les yeux !', sub: 'Recommence pour entrainer ta mémoire visuelle et battre ton record !' }
   ];
   const verdict = titles.find(t => score >= t.min);
   document.getElementById('result-title').innerText = verdict.title;
@@ -1001,7 +1036,7 @@ function finishQuizAndShowResults() {
       </div>
       <div class="space-y-0.5 mb-2 text-slate-700">
         <p><strong>Ta réponse :</strong> <span class="${isOk ? 'text-emerald-800 font-bold' : 'text-rose-800 line-through'}">${ans.selectedText}</span></p>
-        ${!isOk ? `<p><strong>Bonne réponse :</strong> <span class="text-emerald-800 font-bold">${ans.question.options[ans.question.correct]}</span></p>` : ''}
+        ${!isOk ? `<p><strong>Bonne réponse :</strong> <span class="font-bold" style="color:#1f5fbf">${ans.question.options[ans.question.correct]}</span></p>` : ''}
       </div>
       <p class="text-xs text-slate-600 bg-white/70 p-2 rounded-lg border border-slate-200 leading-relaxed">
         💡 <em>${ans.question.explanation}</em>
@@ -1016,6 +1051,9 @@ function finishQuizAndShowResults() {
     nextBtn.innerText = 'Étape suivante du Voyage ➔';
   } else {
     nextBtn.innerText = 'Scène suivante ➔';
+  }
+  if (state.mode === 'grand_voyage' && state.currentPeriodIndex === window.KIM_HISTOIRE_DATA.periods.length - 1) {
+    nextBtn.innerText = 'Terminer le Voyage 🏆';
   }
 
   showScreen('screen-result');
@@ -1035,12 +1073,17 @@ function nextStepOrScene() {
     state.currentPeriodIndex++;
     if (state.currentPeriodIndex < window.KIM_HISTOIRE_DATA.periods.length) {
       const nextPeriod = window.KIM_HISTOIRE_DATA.periods[state.currentPeriodIndex];
-      const nextScene = nextPeriod.scenes[0];
+      const nextScene = nextPeriod.scenes[Math.floor(Math.random() * nextPeriod.scenes.length)];
       setupAndStartScene(nextPeriod, nextScene);
     } else {
       // Voyage terminé !
-      alert('🏆 Félicitations ! Tu as accompli Le Grand Voyage dans le Temps à travers les 5 époques !');
       cancelToHub();
+      const msg = document.getElementById('hub-message');
+      if (msg) {
+        const total = 4 * window.KIM_HISTOIRE_DATA.periods.length;
+        msg.textContent = `🏆 Félicitations ! Tu as accompli le Grand Voyage dans le Temps à travers les 5 époques : ${state.voyageScore} / ${total} bonnes réponses.`;
+        msg.classList.remove('hidden');
+      }
     }
   } else {
     // Mode libre : trouver la scène suivante
