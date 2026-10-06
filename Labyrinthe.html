@@ -136,6 +136,13 @@
       transition: var(--transition);
     }
 
+    @media (max-width: 700px) {
+      .header-controls { max-width: 100%; flex-wrap: wrap; justify-content: center; }
+      .level-selector { flex-wrap: wrap; justify-content: center; white-space: normal; border-radius: 16px; }
+      .btn-level { padding: 0.4rem 0.6rem; font-size: 0.8rem; }
+    }
+    .btn-level.done::after { content: ' ✓'; color: #10b981; font-weight: 800; }
+
     .btn-level.active {
       background-color: var(--bg-card);
       color: var(--primary);
@@ -690,7 +697,7 @@
     }
 
     .workspace-list:empty::before {
-      content: 'Clique sur les blocs à gauche pour construire ton programme';
+      content: 'Touche les blocs « Instructions » pour construire ton programme';
       position: absolute;
       top: 50%;
       left: 50%;
@@ -1058,7 +1065,7 @@
     <section class="panel panel-palette">
       <h2 class="panel-title">🧩 Instructions</h2>
       <div class="palette-container">
-        <div class="palette-info">Clique sur un bloc pour l'ajouter à la zone active (surbrillance colorée)</div>
+        <div class="palette-info">Touche un bloc pour l'ajouter à la zone active (surbrillance colorée)</div>
         
         <button class="block-template block-move" onclick="addBlockToWorkspace('move')">
           <span>🚶‍♂️</span> Avancer d'une case
@@ -1354,7 +1361,7 @@
         startY: 4,
         startAngle: 0, // Nord
         maxBlocks: 9,
-        hint: "Le robot regarde au Nord, mais il y a de la boue juste devant. Tourne à droite vers l'Est, avance de 2 cases, puis monte vers le portail."
+        hint: "Le robot regarde au Nord, mais il y a de la boue un peu plus haut. Tourne à droite vers l'Est, avance de 2 cases, puis monte vers le portail."
       },
       {
         id: 8,
@@ -1432,10 +1439,33 @@
     let totalLevelBatteries = 0;
     let collectedBatteries = 0;
 
+    // Niveaux réussis, par élève (gardés sur l'appareil)
+    function doneKey() {
+      let who = '';
+      try {
+        const st = window.parent && window.parent !== window && window.parent.state;
+        if (st && st.student) who = '_' + (st.studentCls || '') + '_' + st.student;
+      } catch (e) {}
+      return 'lcml_robot_done' + who;
+    }
+    function getDone() {
+      try { const a = JSON.parse(localStorage.getItem(doneKey()) || '[]'); return Array.isArray(a) ? a : []; } catch (e) { return []; }
+    }
+    function markDone(id) {
+      const d = getDone();
+      if (!d.includes(id)) { d.push(id); try { localStorage.setItem(doneKey(), JSON.stringify(d)); } catch (e) {} }
+      paintDone();
+    }
+    function paintDone() {
+      const d = getDone();
+      document.querySelectorAll('.btn-level').forEach((btn, idx) => btn.classList.toggle('done', d.includes(idx + 1)));
+    }
+
     // --- INITIALISATION ---
     window.addEventListener('DOMContentLoaded', () => {
       loadLevel(1);
-      
+      paintDone();
+
       document.body.addEventListener('click', () => {
         audio.init();
       }, { once: true });
@@ -1839,6 +1869,7 @@
       if (isRunning) return;
       if (programBlocks.length === 0) {
         audio.playError();
+        showModal('🧩 Programme vide', "Ajoute d'abord des blocs à ton programme, puis touche « Démarrer ».", 'btn-modal-primary', "D'accord");
         return;
       }
       
@@ -2029,13 +2060,14 @@
         if (collectedBatteries === totalLevelBatteries) {
           audio.playWin();
           triggerConfetti();
+          markDone(lvl.id);
           
           let message = "Tu as ramassé toutes les piles et rejoint le portail ! Excellent travail !";
           let actionBtnText = "Niveau Suivant";
           let isLastLevel = (currentLevelIndex === levels.length - 1);
           
           if (isLastLevel) {
-            message = "Félicitations ! Tu as terminé les 10 niveaux et tu as maîtrisé les algorithmes de boucles, de dangers et d'optimisation ! 🏆";
+            message = "Félicitations ! Tu as terminé les 10 niveaux et tu as maitrisé les algorithmes de boucles, de dangers et d'optimisation ! 🏆";
             actionBtnText = "Recommencer au début";
           }
           
@@ -2109,7 +2141,7 @@
       for (let i = 0; i < 60; i++) {
         const confetti = document.createElement('div');
         confetti.className = 'confetti';
-        confetti.style.left = Math.random() * 100 + 'vw';
+        confetti.style.left = Math.random() * 94 + 'vw'; // (100 vw faisait déborder la page pendant les confettis)
         confetti.style.top = -10 + 'px';
         confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
         confetti.style.width = Math.random() * 8 + 6 + 'px';

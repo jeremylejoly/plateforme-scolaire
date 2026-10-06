@@ -2238,6 +2238,8 @@ Spécifique :
 
 - **06/10 — Jeux › Rush Hour (`jeu_rushhour`, index › renderJeuRushHour + RH_PUZZLES dans exercices_maths.js, sw.js v708)** : les 25 puzzles vérifiés par un solveur : aucun chevauchement ni véhicule hors grille, tous résolubles ; minimum 4 à 29 déplacements (Débutant 4-17, Intermédiaire 8-25, Avancé 21-29 ; ordre non modifié). Bug : en mode « toucher » (toucher un véhicule puis une case en pointillés), le véhicule restait dessiné à son ancienne place avec la case en pointillés (le déplacement n'était pas redessiné) → toujours redessiné après un déplacement. On pouvait continuer à déplacer après la victoire → bloqué. « Solution optimale ! » s'affichait dès 5 coups ou moins (impossible sur 22 puzzles sur 25) → comparaison au vrai minimum calculé (« minimum possible : 13 », « Solution parfaite » seulement s'il est atteint). saveResult retiré (règle jeux) ; record de déplacements par puzzle gardé par élève. « Clique sur un bloc, puis sur une flèche » (il n'y a plus de flèches) → « Fais glisser un véhicule, ou touche-le puis touche une case en pointillés » ; « Reset » → « Recommencer ». Test Playwright 390 px : déplacement au toucher redessiné, puzzle 3 résolu en 4 (= minimum) → « Solution parfaite », plus de déplacement après la victoire, aucune sauvegarde enseignant.
 
+- **06/10 — Jeux › Le robot (`jeu_robot`, fiches/Labyrinthe.html + public + racine, sw.js v709)** : les 10 niveaux passés dans un solveur (toutes les suites de blocs, boucles comprises, dans la limite de blocs) : tous résolubles ; minimum = limite pour 1, 2, 3, 5, 6, 8, 10 (solution unique pour 3, 5, 8, 10), 14/15 pour le 4, 8/9 pour le 7 et le 9 ; les conseils des niveaux 1, 3, 5, 8, 9, 10 correspondent exactement à la solution trouvée. Conseil du niveau 7 « de la boue juste devant » (elle est 2 cases plus haut) → « un peu plus haut ». Téléphone : seuls les niveaux 1 à 3 étaient visibles (barre qui défile sans indication) → les 10 boutons passent à la ligne ; confettis de victoire faisant déborder la page (100 vw) → 94 vw. « Démarrer » sans bloc : un simple bip → message « Programme vide ». Ajout : ✓ sur les niveaux réussis, gardé par élève (pas de score enseignant, règle jeux). « Clique sur les blocs à gauche » (ils sont au-dessus sur téléphone) → « Touche les blocs Instructions ». NO : maitrisé. Test Playwright 390 px : 10 niveaux visibles, message programme vide, niveau 1 résolu → ✓ + sauvegarde locale, pas de débordement.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2827,7 +2829,7 @@ Spécifique :
 | ✅ 06/10 | Memory Calcul | `jeu_memory` | index › renderJeuMemory |  |
 | ⬜ | Tetris | `jeu_tetris` | index › renderJeuTetris |  |
 | ✅ 06/10 | Rush Hour | `jeu_rushhour` | index › renderJeuRushHour |  |
-| ⬜ | Le robot | `jeu_robot` | fiches/Labyrinthe.html |  |
+| ✅ 06/10 | Le robot | `jeu_robot` | fiches/Labyrinthe.html |  |
 | ✅ 06/10 | Mots croisés | `jeu_mots_croises` | fiches/mots-croises.html |  |
 | ✅ 06/10 | Mots cachés | `jeu_mots_caches` | fiches/mots-caches.html |  |
 | ✅ 06/10 | Sudoku | `jeu_sudoku` | fiches/sudoku.html |  |
