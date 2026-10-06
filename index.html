@@ -2414,6 +2414,8 @@ input[type=text].calc-input.incorrect {
 .geo-tag:active{cursor:grabbing;transform:scale(1.05);}
 .geo-tag.used{opacity:0.3;cursor:default;pointer-events:none;}
 .geo-tag.geo-sel{outline:3px solid #f97316;outline-offset:2px;}
+.commune-zoom{display:none}
+@media(max-width:600px){.commune-full{display:none}.commune-zoom{display:block}}
 #geo-belgique-body .geo-drop-zone{min-width:0;}
 @media(max-width:480px){#geo-belgique-body .geo-table{font-size:13px}#geo-belgique-body .geo-table td{padding:4px}#geo-belgique-body .geo-drop-zone{font-size:12px;padding:3px 4px;min-height:34px}}
 .geo-score-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--rsm);padding:1.5rem;text-align:center;margin-top:1rem;}
@@ -14927,22 +14929,25 @@ const GEO_COMMUNES_DATA = [
   {num:10, commune:"Bullange"},
 ];
 
-let geoCommunesState = {answers:{}, dragging:null};
+let geoCommunesState = {answers:{}, submitted:false, sel:null};
 
 function renderGeoCommunesScreen(){
   const body = document.getElementById('geo-communes-body');
   if(!body) return;
-  geoCommunesState = {answers:{}, dragging:null};
+  geoCommunesState = {answers:{}, submitted:false, sel:null};
   GEO_COMMUNES_DATA.forEach(d => { geoCommunesState.answers[d.num] = ''; });
 
   const tags = shuffle(GEO_COMMUNES_DATA.map(d=>d.commune));
 
   let tableHtml = `<table class="geo-table">
-    <thead><tr><th>N°</th><th>Commune</th></tr></thead><tbody>`;
+    <thead><tr>
+      <th>N°</th>
+      <th>Commune</th>
+    </tr></thead><tbody>`;
   GEO_COMMUNES_DATA.forEach(d => {
     tableHtml += `<tr>
       <td>${d.num}</td>
-      <td><div class="geo-drop-zone" id="drop-commune-${d.num}" data-num="${d.num}" onclick="communeClearZone(this)"
+      <td><div class="geo-drop-zone" id="drop-commune-${d.num}" data-num="${d.num}" onclick="communeZoneTap(this)"
         ondragover="communeDragOver(event)" ondrop="communeDrop(event)" ondragleave="communeDragLeave(event)"></div></td>
     </tr>`;
   });
@@ -14952,6 +14957,7 @@ function renderGeoCommunesScreen(){
   tags.forEach((t,i) => {
     tagsHtml += `<div class="geo-tag" id="commune-tag-${i}" draggable="true"
       data-text="${t}" data-idx="${i}"
+      onclick="communeTagTap(this)"
       ondragstart="communeDragStart(event)"
       ondragend="communeDragEnd(event)"
       ontouchstart="communeTouchStart(event)"
@@ -14964,133 +14970,180 @@ function renderGeoCommunesScreen(){
 
   body.innerHTML = `
     <div class="card geo-belgique-intro">
-      <p style="font-size:14px;color:var(--muted);margin-bottom:0.5rem">Glisse chaque commune dans la bonne case du tableau.</p>
+      <p style="font-size:14px;color:var(--muted);margin-bottom:0.5rem">Place chaque commune dans la bonne case du tableau : fais glisser l'étiquette, ou touche-la puis touche la case. Touche une case remplie pour la vider.</p>
     </div>
     <div class="geo-map-container">
-      <img src="https://jeremylejoly.github.io/plateforme-scolaire/carte_communes_province_liege.gif" alt="Communes de la province de Liège" style="width:100%;border-radius:6px;border:2px solid var(--border);">
+      <img class="commune-full" src="carte_communes_province_liege.gif" alt="Carte des communes de la province de Liège ; 10 communes de l'est sont numérotées" style="width:100%;border-radius:6px;border:2px solid var(--border);background:#fff">
+      <div class="commune-zoom">
+        <div style="position:relative;width:100%;aspect-ratio:380/540;overflow:hidden;border-radius:6px;border:2px solid var(--border);background:#fff">
+          <img src="carte_communes_province_liege.gif" alt="Zoom sur l'est de la province de Liège : communes numérotées de 1 à 10" style="position:absolute;width:251.3%;max-width:none;left:-146.05%;top:-11.11%">
+        </div>
+        <p style="font-size:12px;color:var(--muted);text-align:center;margin-top:4px">Zoom sur l'est de la province de Liège, là où se trouvent les numéros.</p>
+      </div>
     </div>
     ${tagsHtml}
     ${tableHtml}
-    <button class="btn" onclick="validateGeoCommunes()" style="width:100%;margin-bottom:1rem">✅ Valider</button>
+    <div id="commune-msg" style="display:none;margin:.5rem 0;padding:.6rem .9rem;border-radius:8px;background:#fff7ed;border:1.5px solid #f59e0b;color:#92400e;font-size:13px;font-weight:700;text-align:center"></div>
+    <button class="btn" id="commune-valider" onclick="validateGeoCommunes()" style="width:100%;margin-bottom:1rem">✅ Valider</button>
     <div id="communes-score-panel" style="display:none" class="geo-score-panel"></div>
   `;
 }
 
-function communeDragStart(e){ geoCommunesState.dragging={text:e.currentTarget.dataset.text,tagEl:e.currentTarget}; e.dataTransfer.setData('text/plain',e.currentTarget.dataset.text); e.currentTarget.style.opacity='0.5'; }
+// Glisser-déposer (souris)
+function communeDragStart(e){
+  const tag = e.currentTarget;
+  if(geoCommunesState.submitted || tag.classList.contains('used')){ e.preventDefault(); return; }
+  e.dataTransfer.setData('text/plain', tag.dataset.idx);
+  tag.style.opacity='0.5';
+}
 function communeDragEnd(e){ e.currentTarget.style.opacity=''; }
-function communeDragOver(e){ e.preventDefault(); e.currentTarget.classList.add('drag-over'); }
+function communeDragOver(e){ e.preventDefault(); if(!geoCommunesState.submitted) e.currentTarget.classList.add('drag-over'); }
 function communeDragLeave(e){ e.currentTarget.classList.remove('drag-over'); }
 function communeDrop(e){
   e.preventDefault();
-  const zone=e.currentTarget;
+  const zone = e.currentTarget;
   zone.classList.remove('drag-over');
-  communePlaceTag(zone, e.dataTransfer.getData('text/plain'), parseInt(zone.dataset.num));
+  communePlaceTag(zone, document.getElementById('commune-tag-' + e.dataTransfer.getData('text/plain')));
 }
 
-function communePlaceTag(zone, text, num){
-  const old=zone.textContent.trim();
-  if(old) communeReturnTag(old);
-  zone.textContent=text;
+// Placement au toucher : étiquette puis case
+function communeClearSel(){
+  if(geoCommunesState.sel) geoCommunesState.sel.classList.remove('geo-sel');
+  geoCommunesState.sel = null;
+}
+function communeTagTap(tag){
+  if(geoCommunesState.submitted || tag.classList.contains('used')) return;
+  const same = geoCommunesState.sel === tag;
+  communeClearSel();
+  if(!same){ geoCommunesState.sel = tag; tag.classList.add('geo-sel'); }
+}
+function communeZoneTap(zone){
+  if(geoCommunesState.submitted) return;
+  if(geoCommunesState.sel){ communePlaceTag(zone, geoCommunesState.sel); return; }
+  communeClearZone(zone);
+}
+function communePlaceTag(zone, tag){
+  if(geoCommunesState.submitted || !zone || !tag || tag.classList.contains('used')) return;
+  if(zone.dataset.tag){ const old = document.getElementById('commune-tag-' + zone.dataset.tag); if(old){ old.classList.remove('used'); old.draggable = true; } }
+  zone.textContent = tag.dataset.text;
+  zone.dataset.tag = tag.dataset.idx;
   zone.classList.add('filled');
-  geoCommunesState.answers[num]=text;
-  communeMarkUsed(text);
-}
-function communeReturnTag(text){
-  const pool=document.getElementById('commune-tags-pool');
-  if(!pool) return;
-  pool.querySelectorAll('.geo-tag').forEach(t=>{ if(t.dataset.text===text&&t.classList.contains('used')) t.classList.remove('used'); });
-}
-function communeMarkUsed(text){
-  const pool=document.getElementById('commune-tags-pool');
-  if(!pool) return;
-  let found=false;
-  pool.querySelectorAll('.geo-tag').forEach(t=>{ if(t.dataset.text===text&&!t.classList.contains('used')&&!found){t.classList.add('used');found=true;} });
+  geoCommunesState.answers[parseInt(zone.dataset.num)] = tag.dataset.text;
+  tag.classList.add('used'); tag.draggable = false;
+  communeClearSel();
+  const m = document.getElementById('commune-msg'); if(m) m.style.display = 'none';
 }
 function communeClearZone(zone){
-  const panel = document.getElementById('communes-score-panel');
-  if(panel && panel.style.display === 'block') return;
-  const num = parseInt(zone.dataset.num);
-  const text = geoCommunesState.answers[num];
-  if(!text) return;
+  if(geoCommunesState.submitted || !zone.dataset.tag) return;
+  const tag = document.getElementById('commune-tag-' + zone.dataset.tag);
+  if(tag){ tag.classList.remove('used'); tag.draggable = true; }
   zone.textContent = ''; zone.classList.remove('filled');
-  communeReturnTag(text);
-  geoCommunesState.answers[num] = '';
+  delete zone.dataset.tag;
+  geoCommunesState.answers[parseInt(zone.dataset.num)] = '';
 }
 
-let communeTouchEl=null, communeTouchClone=null;
+// Toucher : un tap choisit l'étiquette, un glissé (> 10 px) la dépose
+let communeTouchEl=null, communeTouchClone=null, communeTX=0, communeTY=0, communeMoved=false;
 function communeTouchStart(e){
   const tag=e.currentTarget;
-  if(tag.classList.contains('used')) return;
-  communeTouchEl=tag;
-  const clone=tag.cloneNode(true);
-  clone.style.cssText='position:fixed;z-index:9999;opacity:.85;pointer-events:none;transform:scale(1.1);';
-  const touch=e.touches[0];
-  clone.style.left=(touch.clientX-40)+'px'; clone.style.top=(touch.clientY-20)+'px';
-  document.body.appendChild(clone); communeTouchClone=clone;
-  tag.style.opacity='0.4';
+  if(geoCommunesState.submitted || tag.classList.contains('used')) return;
+  communeTouchEl=tag; communeMoved=false;
+  communeTX=e.touches[0].clientX; communeTY=e.touches[0].clientY;
 }
 function communeTouchMove(e){
-  e.preventDefault();
-  if(!communeTouchClone) return;
+  if(!communeTouchEl) return;
   const touch=e.touches[0];
-  communeTouchClone.style.left=(touch.clientX-40)+'px'; communeTouchClone.style.top=(touch.clientY-20)+'px';
-  document.querySelectorAll('.geo-drop-zone').forEach(z=>z.classList.remove('drag-over'));
+  if(!communeMoved && Math.hypot(touch.clientX-communeTX, touch.clientY-communeTY) < 10) return;
+  e.preventDefault();
+  if(!communeMoved){
+    communeMoved=true;
+    const clone=communeTouchEl.cloneNode(true);
+    clone.classList.remove('geo-sel'); clone.removeAttribute('id');
+    clone.style.cssText='position:fixed;z-index:9999;opacity:.85;pointer-events:none;transform:scale(1.1);';
+    document.body.appendChild(clone);
+    communeTouchClone=clone;
+    communeTouchEl.style.opacity='0.4';
+  }
+  communeTouchClone.style.left=(touch.clientX-40)+'px';
+  communeTouchClone.style.top=(touch.clientY-20)+'px';
+  document.querySelectorAll('#geo-communes-body .geo-drop-zone').forEach(z=>z.classList.remove('drag-over'));
   geoAutoScroll(touch);
   const zone = geoZoneAtTouch(touch);
-  if(zone) zone.classList.add('drag-over');
+  if(zone && zone.closest('#geo-communes-body')) zone.classList.add('drag-over');
 }
 function communeTouchEnd(e){
-  if(!communeTouchClone||!communeTouchEl) return;
+  if(!communeTouchEl) return;
+  e.preventDefault();   // évite le clic fantôme
+  const tag=communeTouchEl; communeTouchEl=null;
+  if(!communeMoved){ communeTagTap(tag); return; }
   const touch=e.changedTouches[0];
-  document.body.removeChild(communeTouchClone); communeTouchClone=null;
-  communeTouchEl.style.opacity='';
-  document.querySelectorAll('.geo-drop-zone').forEach(z=>z.classList.remove('drag-over'));
+  if(communeTouchClone){ communeTouchClone.remove(); communeTouchClone=null; }
+  tag.style.opacity='';
+  document.querySelectorAll('#geo-communes-body .geo-drop-zone').forEach(z=>z.classList.remove('drag-over'));
   geoStopAutoScroll();
-  const zone = geoZoneAtTouch(touch);
-  if(zone) communePlaceTag(zone,communeTouchEl.dataset.text,parseInt(zone.dataset.num));
-  communeTouchEl=null;
+  let zone = geoZoneAtTouch(touch);
+  if(zone && !zone.closest('#geo-communes-body')) zone = null;
+  if(zone){ communeClearSel(); communePlaceTag(zone, tag); }
 }
 function communeTouchCancel(e){
   geoStopAutoScroll();
-  if(communeTouchClone) {
-    if(communeTouchClone.parentNode) communeTouchClone.parentNode.removeChild(communeTouchClone);
-    communeTouchClone=null;
-  }
-  if(communeTouchEl) { communeTouchEl.style.opacity=''; communeTouchEl=null; }
-  document.querySelectorAll('.geo-drop-zone').forEach(z=>z.classList.remove('drag-over'));
+  if(communeTouchClone){ if(communeTouchClone.parentNode) communeTouchClone.parentNode.removeChild(communeTouchClone); communeTouchClone=null; }
+  if(communeTouchEl){ communeTouchEl.style.opacity=''; communeTouchEl=null; }
+  document.querySelectorAll('#geo-communes-body .geo-drop-zone').forEach(z=>z.classList.remove('drag-over'));
 }
 
+// Validation (une seule fois)
 function validateGeoCommunes(){
-  let score=0; const total=10;
-  GEO_COMMUNES_DATA.forEach(d=>{
-    const zone=document.getElementById('drop-commune-'+d.num);
-    const ok=geoCommunesState.answers[d.num]===d.commune;
-    if(ok){ score++; zone.classList.remove('filled'); zone.classList.add('correct'); }
-    else { zone.classList.remove('filled'); zone.classList.add('incorrect'); if(!zone.textContent.trim()) zone.textContent='—'; }
+  if(geoCommunesState.submitted) return;
+  const total = GEO_COMMUNES_DATA.length;
+  const empty = GEO_COMMUNES_DATA.filter(d => !geoCommunesState.answers[d.num]).length;
+  if(empty){
+    const m = document.getElementById('commune-msg');
+    m.textContent = empty === 1 ? 'Il reste 1 case vide. Complète le tableau avant de valider.' : `Il reste ${empty} cases vides. Complète le tableau avant de valider.`;
+    m.style.display = 'block';
+    return;
+  }
+  geoCommunesState.submitted = true;
+  communeClearSel();
+  let score = 0;
+  GEO_COMMUNES_DATA.forEach(d => {
+    const zone = document.getElementById('drop-commune-'+d.num);
+    const given = geoCommunesState.answers[d.num];
+    zone.classList.remove('filled');
+    if(given === d.commune){ score++; zone.classList.add('correct'); }
+    else {
+      zone.classList.add('incorrect');
+      zone.style.flexDirection = 'column';
+      zone.innerHTML = `<s>${given}</s><span style="color:#1f5fbf;font-weight:800;font-size:12px">➜ ${d.commune}</span>`;
+    }
   });
-  const pct=Math.round(score/total*100);
-  const color=pct>=70?'var(--green)':pct>=50?'var(--amber)':'var(--red)';
-  const panel=document.getElementById('communes-score-panel');
-  panel.style.display='block';
-  panel.innerHTML=`
+  document.querySelectorAll('#commune-tags-pool .geo-tag').forEach(t => { t.classList.add('used'); t.draggable = false; });
+  const btn = document.getElementById('commune-valider'); if(btn) btn.style.display = 'none';
+  const pct = Math.round(score/total*100);
+  const color = pct>=70?'var(--green)':pct>=50?'var(--amber)':'var(--red)';
+  const panel = document.getElementById('communes-score-panel');
+  panel.style.display = 'block';
+  panel.innerHTML = `
     <div style="font-size:48px;margin-bottom:0.5rem">${pct>=70?'🎉':pct>=50?'👍':'💪'}</div>
     <div style="font-family:'Nunito',sans-serif;font-weight:800;font-size:32px;color:${color}">${score}/${total}</div>
-    <div style="font-size:16px;color:${color};font-weight:700;margin-bottom:1rem">${pct}%</div>
-    <p style="font-size:13px;color:var(--muted);margin-bottom:1rem">Les cases <span style="color:var(--red)">rouges</span> indiquent les erreurs.</p>
-    <button class="btn" onclick="renderGeoCommunesScreen()">🔄 Recommencer</button>
+    <div style="font-size:16px;color:${color};font-weight:700;margin-bottom:1rem">${pct} %</div>
+    ${score < total ? '<p style="font-size:13px;color:var(--muted);margin-bottom:1rem">Les cases <span style="color:var(--red)">rouges</span> sont fausses ; la bonne réponse est écrite en <span style="color:#1f5fbf;font-weight:800">bleu</span>.</p>' : ''}
+    <button class="btn" onclick="renderGeoCommunesScreen();document.getElementById('geo-communes-body').scrollIntoView({behavior:'smooth'})">🔄 Recommencer</button>
   `;
-  panel.scrollIntoView({behavior:'smooth'});
-  if(state.student){
-    saveResult({
-      student:state.student, cls:state.studentCls,
-      className:CLASSES[state.studentCls]?CLASSES[state.studentCls].name:state.studentCls,
-      activity:'geo_belgique_communes',
-      bookTitle:'Les communes de notre région',
-      score, total, pct,
-      date:new Date().toLocaleDateString('fr-BE'),
-      time:new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})
-    });
-  }
+  panel.scrollIntoView({behavior:'smooth', block:'nearest'});
+  try {
+    if(state.student){
+      saveResult({
+        student:state.student, cls:state.studentCls,
+        className:CLASSES[state.studentCls]?CLASSES[state.studentCls].name:state.studentCls,
+        activity:'geo_belgique_communes',
+        bookTitle:'Les communes de notre région',
+        score, total, pct,
+        date:new Date().toLocaleDateString('fr-BE'),
+        time:new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})
+      });
+    }
+  } catch(err) { console.warn('saveResult', err); }
 }
 
 
