@@ -2217,6 +2217,8 @@ Spécifique :
 - **06/10 — Transformations physiques et chimiques (`sci_transformations_chimiques`, fiches/transformations-physiques-chimiques.html, sw.js v698)** : n'était accessible que depuis le plan de travail → nouvel écran `screen-sci-transformations-chimiques` et carte dans Sciences → La matière (décision de Jeremy). Leçon sans score (acceptée). Formules LaTeX affichées brutes (`$CO_2$`) → CO₂, H₂O, C + O₂ → CO₂ ; « l'eau chauffe dans la casserole » alors que le schéma montre un bécher ; texte parasite « (valeur d'exposition à gauche sur le schéma) » ; brûleur à gaz → lampe à alcool (cohérent avec l'image) ; l'outil de calibrage s'ouvrait en tapant « d » → Ctrl+Maj+D ; débordement de 49 px sur téléphone corrigé. Test Playwright 390 px : tous les onglets, menu → écran → fiche.
 - **06/10 — Le système solaire (`sci_systeme_solaire`)** : ligne du menu ; ses exercices ont été vérifiés en v673/v674.
 
+- **06/10 — CEB Sciences 2026 (`ceb_sci_2026`, CEB sciences/ceb_sciences_2026.html, sw.js v699)** : 20 questions vérifiées contre le portfolio PDF (graphique : récipient 3 = 8 s ; tableau : récipient 5 = 48 s ; expérience 2 : 66/38/28 s ; expérience 3 : la grande bougie s'éteint d'abord). Décision de Jeremy : le portfolio n'est pas intégré, l'exercice se fait en classe avec le livret papier. Défauts : AUCUNE sauvegarde du score (les 18 pages CEB n'appellent pas saveResult) → sauvegarde unique /20 ; choix jamais mélangés et bonne réponse souvent la seule longue (2.2, 2.3, 3.4, 4.1, 4.4, 4.5) → choix mélangés et renumérotés, longueurs équilibrées ; questions qui se donnaient les réponses : numéros (1), (2), (3), (5), (6), (7), (8) dans 2.2/2.3/2.5 donnaient 2.1 et 2.4 par élimination → retirés ; 4.3 répétait 4.1 et 4.4 → deux nouvelles affirmations (récipient unique de l'expérience 2 : FAUX ; récipient 5 dans l'expérience 3 : VRAI) ; 4.4 contenait l'explication dans la bonne réponse → explication montrée après la réponse ; 4.5 « consigne de sécurité » absente du protocole → « à quel moment déclenche-t-on le chronomètre ? » ; 3.4 « consomme tout le dioxygène » (inexact) → « le dioxygène devient trop rare » ; 3.1 donnait les 2 secondes dans la question. Mécanique : bonne réponse manquée en vert → bleu (QCM et Vrai/Faux) ; bilan possible avec des questions vides → message dans la page avec les numéros ; double clic et Entrée gérés ; confetti protégé (sans réseau, le bilan plantait). NO : bruler, maitriser, entrainement. Test Playwright 390 px : 17/20, 3 réponses en bleu, message « 1.5 », 1 seule sauvegarde, pas de débordement.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2765,7 +2767,7 @@ Spécifique :
 
 | Statut | Exercice | id | Source | Signal automatique |
 |---|---|---|---|---|
-| ⬜ | CEB Sciences 2026 | `ceb_sci_2026` | index › openCEB |  |
+| ✅ 06/10 | CEB Sciences 2026 | `ceb_sci_2026` | index › openCEB |  |
 | ⬜ | CEB Sciences 2025 | `ceb_sci_2025` | index › openCEB |  |
 | ⬜ | CEB Sciences 2024 | `ceb_sci_2024` | index › openCEB |  |
 | ⬜ | CEB Sciences 2023 | `ceb_sci_2023` | index › openCEB |  |
