@@ -1830,6 +1830,14 @@ Spécifique :
 - Tests jsdom : 3 000 séries (valeurs affichées = données, 15 000 réponses recalculées : 0 erreur, jamais deux propositions de même valeur), parcours (vide → message, 4/5 → 1 sauvegarde `td_moyenne`) ; QCM : faux → bleu, Suivant immédiat ignoré, 4/5 → 1 sauvegarde `td_moyenne_qcm`.
 - Reste dans « La moyenne » : la fiche « Calcul de la moyenne (Exercices) » (`td_moyenne_exercices`, accessible par le plan de travail).
 
+### 06/10 — Mathématiques → Traitement de données → L'arbre dichotomique (`td_arbre_dichotomique`, `qcm_arbre_feuilles.html` à la racine, chargé par l'iframe + copies fiches/ et public/fiches/) — sw.js v618
+- **Erreur dans l'arbre (image)** : question 4 « Les folioles partent-elles toutes du même point (palmées) ? » → OUI palmée (marronnier), NON trifoliée (trèfle). Or les 3 folioles du trèfle partent du même point : en suivant l'arbre, le trèfle arrivait à « palmée », alors que la question 4 du QCM attendait « trifoliée » (et son explication disait l'inverse de l'arbre). → Case 4 de l'image réécrite : « La feuille a-t-elle plus de 3 folioles ? » (marronnier 5 à 7 : OUI → palmée ; trèfle 3 : NON → trifoliée) ; explications des questions 3 et 4 adaptées. Image passée en WebP (290 Ko → 222 Ko).
+- 10 questions vérifiées sur l'arbre (chemins, nombre de types = 8, chemin le plus long = 4 questions, foliole terminale → nombre impair) : justes.
+- **Bonne réponse toujours en 2e ou 3e position** (jamais en 1re ni en 4e) et **souvent la plus longue** (pin, laurier, Tom : phrases complètes contre distracteurs courts) → propositions mélangées à chaque partie (Fisher–Yates, ≈ 25 % par position), distracteurs réécrits à longueur égale (plus longue : 3/10, dont la lecture de la question 1 de l'arbre).
+- **« Corriger » cliqué deux fois enregistrait deux fois** ; questions sans réponse comptées fausses → message « Réponds d'abord à la question… », enregistrement unique (try/catch).
+- Bonne réponse en bleu (#1f5fbf) quand l'élève s'est trompé (elle était en vert) ; « Tu maitrises » ; « Relis les explications en rouge » → « sous tes erreurs ».
+- Tests jsdom : vide → message, 9/10 → message, 8/10 → 1 sauvegarde, 2 réponses en bleu ; capture 390 px sans défilement horizontal.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2201,7 +2209,7 @@ Spécifique :
 | ✅ 06/10 | Moyenne et étendue | `td_moyenne` | index › renderTDMoyenne |  |
 | ⬜ | Calcul de la moyenne (Exercices) | `td_moyenne_exercices` | fiches/moyenne_exercices.html | Aucun hasard : mêmes questions, même ordre à chaque partie |
 | ⬜ | Le décodeur de camemberts | `td_donnees_circulaires` | index › renderDonneesCirculaires |  |
-| ⬜ | L'arbre dichotomique | `td_arbre_dichotomique` | index › renderArbreDichotomique |  |
+| ✅ 06/10 | L'arbre dichotomique | `td_arbre_dichotomique` | index › renderArbreDichotomique |  |
 | ⬜ | Le tri logique (Venn & Carroll) | `td_logique_tri` | index › renderTDLogiqueTri |  |
 | ⬜ | Choisir la bonne question | `td_quelle_question` | index › renderQuelleQuestion |  |
 | ⬜ | Les graphiques de synthèse | `trait_graphiques` | index › (?) | (code à localiser) |
