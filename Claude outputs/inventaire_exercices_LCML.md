@@ -2144,6 +2144,12 @@ Spécifique :
 - Contenu : réservoir enterré « au sommet d'une colline… on utilise des pompes de surpression pour distribuer » (faux : il est en hauteur pour distribuer par gravité) → « l'eau redescend par gravité… des pompes servent surtout à le remplir », type « Stockage gravitaire en hauteur » ; « Ce réseau de collecte collecte » → « Ce réseau collecte » ; « Les eaux usées… Elle subit » → « Elles subissent » ; « secrets anatomiques et géologiques » → « secrets ». Vérifié : 8 étapes du cycle naturel, 10 du cycle anthropique, états, changements d'état (liquéfaction = condensation déjà expliqué), 97/2/1 % sur 10 L, éco-gestes.
 - Affichage vérifié à 390 px (Tailwind régénéré) sur les 5 onglets : pas de débordement, aucune erreur.
 
+### 06/10 — Éveil → Sciences → Le cycle de l'eau → Schéma interactif (`sci_cycle_eau_schema`, fiches/sci_cycle_eau_schema.html + public/fiches/) — sw.js v668
+- Mise en page : 7 cases de 165 px posées en absolu sur l'image → sur téléphone elles se chevauchaient et cachaient tout le dessin. Numéros 1–7 sur le dessin (mêmes positions) + liste de 7 cases sous le dessin (2 colonnes ≥ 640 px).
+- Mécanique : validation possible avec des cases vides (comptées fausses) → message « il en reste N » ; correction : sous chaque case rouge « ➜ bon terme » en bleu (avant : seulement ✗) ; garde 600 ms ; sauvegarde unique try/catch `window.parent !== window` ; Entrée = valider / recommencer.
+- Contenu vérifié : 7 termes à leur place sur l'image (évaporation sur l'océan, condensation aux nuages, précipitations, ruissellement, infiltration, nappe phréatique, évapotranspiration au-dessus de la forêt) et définitions justes.
+- Tests Playwright 390 px (Tailwind régénéré) : message à vide, évaporation/condensation inversées → 5/7 + 2 bleus, 1 sauvegarde malgré 2 validations, pas de débordement.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2645,7 +2651,7 @@ Spécifique :
 | ⬜ | Transformations physiques et chimiques | `sci_transformations_chimiques` | fiches/transformations-physiques-chimiques.html |  |
 | ✅ 06/10 | Mélanges et séparations | `sci_melanges_qcm` | fiches/sci_melanges_qcm.html |  |
 | ✅ 06/10 | Le cycle de l'eau (QCM) | `fiche_cycle_eau` | fiches/cycle-eau.html |  |
-| ⬜ | Le cycle de l'eau (Schéma) | `sci_cycle_eau_schema` | fiches/sci_cycle_eau_schema.html |  |
+| ✅ 06/10 | Le cycle de l'eau (Schéma) | `sci_cycle_eau_schema` | fiches/sci_cycle_eau_schema.html |  |
 | ✅ 06/10 | Les réseaux trophiques | `sci_reseaux_trophiques` | fiches/sci_reseaux_trophiques.html |  |
 | ⬜ | Les énergies (Tri & conversions) | `sci_energie_tri` | fiches/sci_energie_tri.html |  |
 | ⬜ | Laboratoire d'Électricité | `sci_electricite_labo` | fiches/sci_electricite_labo.html |  |
