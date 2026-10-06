@@ -20469,7 +20469,40 @@ const RH_PCOLS={
 };
 
 const RH_S=54, RH_PAD=27, RH_NC=6, RH_NR=6;
-let rhPieces=[], rhMoves=0, rhSel=null, rhCurIdx=0, rhDrag=null;
+let rhPieces=[], rhMoves=0, rhSel=null, rhCurIdx=0, rhDrag=null, rhWon=false;
+const rhMinCache = {};
+// Nombre minimum de déplacements (un déplacement = un véhicule glissé d'une ou plusieurs cases), calculé une fois
+function rhMinMoves(idx){
+  if (rhMinCache[idx] !== undefined) return rhMinCache[idx];
+  const start = RH_PUZZLES[idx].pieces.map(p => ({...p}));
+  const key = pcs => pcs.map(p => p.x + ',' + p.y).join(';');
+  const occ = pcs => { const g = Array.from({length:6}, () => Array(6).fill(0)); pcs.forEach(p => { for (let i = 0; i < p.len; i++) g[p.y + (p.dir==='v'?i:0)][p.x + (p.dir==='h'?i:0)] = 1; }); return g; };
+  const seen = new Set([key(start)]);
+  let q = [start], depth = 0, res = -1;
+  while (q.length && depth < 60 && res < 0) {
+    const nq = [];
+    for (const st of q) {
+      const pl = st.find(p => p.isPlayer);
+      if (pl.x + pl.len >= 6) { res = depth; break; }
+      const g = occ(st);
+      st.forEach((pc, pi) => {
+        for (const sg of [-1, 1]) for (let d = 1; d < 6; d++) {
+          const x = pc.dir==='h' ? (sg > 0 ? pc.x + pc.len - 1 + d : pc.x - d) : pc.x;
+          const y = pc.dir==='v' ? (sg > 0 ? pc.y + pc.len - 1 + d : pc.y - d) : pc.y;
+          if (x < 0 || x > 5 || y < 0 || y > 5 || g[y][x]) break;
+          const n = st.map(o => ({...o}));
+          if (pc.dir==='h') n[pi].x += sg * d; else n[pi].y += sg * d;
+          const k = key(n);
+          if (!seen.has(k)) { seen.add(k); nq.push(n); }
+        }
+      });
+    }
+    if (res >= 0) break;
+    q = nq; depth++;
+  }
+  rhMinCache[idx] = res;
+  return res;
+}
 
 function renderJeuRushHour(){
   const body = document.getElementById('jeu-rushhour-body');
@@ -20492,7 +20525,7 @@ function renderJeuRushHour(){
             <div style="font-weight:900;font-size:16px;color:var(--text)" id="rh-puzzle-title">Puzzle 1</div>
             <span id="rh-level-badge" style="display:inline-block;padding:2px 10px;border-radius:20px;font-size:11px;font-weight:700;color:#fff;background:#27AE60;">Débutant</span>
           </div>
-          <button onclick="rhLoadPuzzle(rhCurIdx)" style="padding:6px 14px;border-radius:8px;border:none;background:var(--surface);color:var(--text);font-family:'Nunito',sans-serif;font-weight:700;cursor:pointer;border:1.5px solid var(--border);">↺ Reset</button>
+          <button onclick="rhLoadPuzzle(rhCurIdx)" style="padding:6px 14px;border-radius:8px;border:none;background:var(--surface);color:var(--text);font-family:'Nunito',sans-serif;font-weight:700;cursor:pointer;border:1.5px solid var(--border);">↺ Recommencer</button>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:0.75rem;">
           <div class="card" style="text-align:center;padding:0.6rem;">
@@ -20507,7 +20540,7 @@ function renderJeuRushHour(){
         <div style="position:relative;width:100%;aspect-ratio:1;">
           <svg id="rh-svg" style="width:100%;height:100%;border-radius:14px;" viewBox="0 0 378 378"></svg>
         </div>
-        <p style="text-align:center;font-size:13px;color:var(--muted);margin-top:0.6rem;min-height:18px;" id="rh-msg">Clique sur un bloc, puis sur une flèche !</p>
+        <p style="text-align:center;font-size:13px;color:var(--muted);margin-top:0.6rem;min-height:18px;" id="rh-msg">Fais glisser un véhicule, ou touche-le puis touche une case en pointillés.</p>
         <div id="rh-win-box" style="display:none;text-align:center;padding:1.2rem;background:var(--surface);border-radius:14px;margin-top:0.75rem;border:2px solid var(--purple);" class="card">
           <div style="font-size:48px;margin-bottom:0.5rem">🎉</div>
           <div style="font-family:'Nunito',sans-serif;font-weight:900;font-size:20px;color:var(--purple);margin-bottom:0.5rem">Bravo !</div>
@@ -20528,14 +20561,13 @@ function rhGetSolvedKey(){
 function rhGetSolved(){
   const key = rhGetSolvedKey();
   if(!key) return [];
-  const s = localStorage.getItem(key);
-  return s ? JSON.parse(s) : [];
+  try { const s = localStorage.getItem(key); const a = s ? JSON.parse(s) : []; return Array.isArray(a) ? a : []; } catch(e) { return []; }
 }
 function rhMarkSolved(idx){
   const key = rhGetSolvedKey();
   if(!key) return; // pas de sauvegarde pour l'enseignant
   const solved = rhGetSolved();
-  if(!solved.includes(idx)) { solved.push(idx); localStorage.setItem(key, JSON.stringify(solved)); }
+  if(!solved.includes(idx)) { solved.push(idx); try { localStorage.setItem(key, JSON.stringify(solved)); } catch(e) {} }
   // Mettre à jour la carte visuellement si la grille est visible
   const btn = document.getElementById('rh-card-'+idx);
   if(btn) rhColorCard(btn, idx);
@@ -20612,7 +20644,8 @@ function rhLoadPuzzle(idx){
   if(pt) pt.textContent='Puzzle '+(rhCurIdx+1);
   if(lb){ lb.textContent=RH_LEVELS[pz.level]; lb.style.background=RH_LEVEL_COLORS[pz.level]; }
   if(wb) wb.style.display='none';
-  if(mg) mg.textContent='Clique sur un bloc, puis sur une flèche !';
+  if(mg) mg.textContent='Fais glisser un véhicule, ou touche-le puis touche une case en pointillés.';
+  rhWon = false;
   rhRender();
 }
 
@@ -20719,6 +20752,7 @@ function rhTouchTapTarget(delta){
 // ===== MODE MOUSE/TOUCH : DRAG & DROP =====
 function rhStartDrag(e, pcId){
   if(e.cancelable) e.preventDefault();
+  if(rhWon) return;
   const svg = document.getElementById('rh-svg');
   if(!svg) return;
   const pc = rhPieces.find(p => p.id === pcId);
@@ -20786,6 +20820,7 @@ function rhOnDragEnd(e){
 }
 
 function rhApplyMove(id, totalDelta, fromX, fromY){
+  if(rhWon) return;
   const i = rhPieces.findIndex(p => p.id === id);
   if(i < 0) return;
   const pc = rhPieces[i];
@@ -20805,23 +20840,29 @@ function rhApplyMove(id, totalDelta, fromX, fromY){
     const wb = document.getElementById('rh-win-box');
     const wm = document.getElementById('rh-win-msg');
     const mg = document.getElementById('rh-msg');
+    rhWon = true; rhSel = null; rhTouchTargets = [];
     if(wb) wb.style.display = 'block';
     if(mg) mg.textContent = '';
-    const perf = rhMoves <= 5 ? 'Solution optimale ! 🏆' : rhMoves <= 10 ? 'Très bien ! ⭐' : 'Bien joué ! 👍';
-    if(wm) wm.textContent = 'Résolu en ' + rhMoves + ' déplacements ! ' + perf;
+    // « Solution optimale » s'affichait dès 5 coups ou moins, alors que le minimum va de 4 à 29 selon le puzzle
+    const mini = rhMinMoves(rhCurIdx);
+    const perf = mini > 0 && rhMoves <= mini ? 'Solution parfaite : impossible de faire mieux ! 🏆'
+               : mini > 0 && rhMoves <= mini + 3 ? 'Très bien ! ⭐' : 'Bien joué ! 👍';
+    // Record personnel (jeux : rien n'est envoyé à la page enseignant)
+    let recTxt = '';
+    try {
+      const rk = 'rh_best_' + (state.studentCls||'') + '_' + (state.student||'invite');
+      const rec = JSON.parse(localStorage.getItem(rk) || '{}') || {};
+      const old = rec[rhCurIdx];
+      if (!old || rhMoves < old) { rec[rhCurIdx] = rhMoves; localStorage.setItem(rk, JSON.stringify(rec)); recTxt = old ? ' Nouveau record (avant : ' + old + ').' : ''; }
+      else recTxt = ' Ton record : ' + old + ' déplacements.';
+    } catch(e) {}
+    if(wm) wm.textContent = 'Résolu en ' + rhMoves + ' déplacements' + (mini > 0 ? ' (minimum possible : ' + mini + ')' : '') + '. ' + perf + recTxt;
     if(wb) wb.scrollIntoView({behavior:'smooth'});
     rhMarkSolved(rhCurIdx);
-    if(state.student) saveResult({
-      student: state.student, cls: state.studentCls,
-      className: CLASSES[state.studentCls] ? CLASSES[state.studentCls].name : state.studentCls,
-      activity: 'jeu_rushhour',
-      bookTitle: 'Rush Hour — Puzzle ' + (rhCurIdx + 1),
-      score: rhMoves <= 5 ? 3 : rhMoves <= 10 ? 2 : 1, total: 3,
-      pct: rhMoves <= 5 ? 100 : rhMoves <= 10 ? 67 : 33,
-      date: new Date().toLocaleDateString('fr-BE'),
-      time: new Date().toLocaleTimeString('fr-BE', {hour:'2-digit', minute:'2-digit'})
-    });
   }
+  // Redessine toujours après un déplacement (avant : en mode « toucher », le véhicule restait dessiné
+  // à son ancienne place avec la case en pointillés)
+  rhRender();
 }
 
 function rhRenderWithGhost(dragId, origX, origY, delta){
@@ -20965,7 +21006,7 @@ function rhRender(){
   if(msg){
     const wb = document.getElementById('rh-win-box');
     if(!wb || wb.style.display === 'none'){
-      msg.textContent = 'Glisse un bloc ou clique dessus pour le déplacer !';
+      msg.textContent = 'Fais glisser un véhicule, ou touche-le puis touche une case en pointillés.';
     }
   }
 }

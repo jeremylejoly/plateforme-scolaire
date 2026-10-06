@@ -2236,6 +2236,8 @@ Spécifique :
 
 - **06/10 — Jeux › Le Nonogram (`jeu_nonogram`, nonogram.html + public, sw.js v707)** : les 17 images passées dans un solveur : toutes ont une solution unique, mais 2 ne se résolvaient pas sans deviner (la logique ligne/colonne restait bloquée) : « Sourire » (niveau Facile, 18 cases indécidables) et « Étoile » (Moyen, 72 cases) → redessinées (sourire avec nez, étoile plus large) : maintenant résolubles par simple logique. Bug téléphone : la grille 15 × 15 (433 px) dépassait l'écran, les indices des lignes étaient coupés à gauche et le glisser bloquait le défilement → les cases rétrécissent jusqu'à ce que toute la grille tienne (25 → 16 px à 390 px ; taille d'origine sur tablette). Consigne « Clic gauche / clic droit » → « Touche ou fais glisser… ». Record personnel par élève (avant : partagé). Pas de saveResult (déjà le cas). Test Playwright à 390 et 1024 px : les 17 grilles tiennent dans l'écran, Sourire résolu → victoire + record.
 
+- **06/10 — Jeux › Rush Hour (`jeu_rushhour`, index › renderJeuRushHour + RH_PUZZLES dans exercices_maths.js, sw.js v708)** : les 25 puzzles vérifiés par un solveur : aucun chevauchement ni véhicule hors grille, tous résolubles ; minimum 4 à 29 déplacements (Débutant 4-17, Intermédiaire 8-25, Avancé 21-29 ; ordre non modifié). Bug : en mode « toucher » (toucher un véhicule puis une case en pointillés), le véhicule restait dessiné à son ancienne place avec la case en pointillés (le déplacement n'était pas redessiné) → toujours redessiné après un déplacement. On pouvait continuer à déplacer après la victoire → bloqué. « Solution optimale ! » s'affichait dès 5 coups ou moins (impossible sur 22 puzzles sur 25) → comparaison au vrai minimum calculé (« minimum possible : 13 », « Solution parfaite » seulement s'il est atteint). saveResult retiré (règle jeux) ; record de déplacements par puzzle gardé par élève. « Clique sur un bloc, puis sur une flèche » (il n'y a plus de flèches) → « Fais glisser un véhicule, ou touche-le puis touche une case en pointillés » ; « Reset » → « Recommencer ». Test Playwright 390 px : déplacement au toucher redessiné, puzzle 3 résolu en 4 (= minimum) → « Solution parfaite », plus de déplacement après la victoire, aucune sauvegarde enseignant.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2824,7 +2826,7 @@ Spécifique :
 | ✅ 06/10 | Tables de multiplication | `jeu_tables` | index › renderJeuTables |  |
 | ✅ 06/10 | Memory Calcul | `jeu_memory` | index › renderJeuMemory |  |
 | ⬜ | Tetris | `jeu_tetris` | index › renderJeuTetris |  |
-| ⬜ | Rush Hour | `jeu_rushhour` | index › renderJeuRushHour |  |
+| ✅ 06/10 | Rush Hour | `jeu_rushhour` | index › renderJeuRushHour |  |
 | ⬜ | Le robot | `jeu_robot` | fiches/Labyrinthe.html |  |
 | ✅ 06/10 | Mots croisés | `jeu_mots_croises` | fiches/mots-croises.html |  |
 | ✅ 06/10 | Mots cachés | `jeu_mots_caches` | fiches/mots-caches.html |  |
