@@ -2256,6 +2256,9 @@ Spécifique :
 
 - **06/10 — Jeux › La Pipopipette (`jeu_pipopipette`, pipopipette.html + public, sw.js v718)** : repris de l'analyse du 29/09. Les 2 bugs 🔴 étaient déjà corrigés (commit fcf19ae : niveau Facile réellement joué, coup de l'IA annulé à « Rejouer »). Restait : « Malin » jouait exactement comme « Moyen » → vraie stratégie de fin de partie : ouvrir la chaîne la plus courte en comptant réellement les carrés offerts, et « double coup » (refuser les 2 derniers carrés d'une chaîne pour garder la main quand l'adversaire devra ensuite ouvrir une chaîne d'au moins 3). Simulation IA contre IA : Malin bat Moyen 76 % (3×3), 91 % (4×4), 98 % (5×5) ; avant : même niveau. Aussi : bandeau « L'ordinateur réfléchit » qui clignotait pendant une série de prises ; réglage du son mémorisé (comme le Démineur) ; copie public/pipopipette.html antérieure aux corrections du 29/09 → réalignée. Pas de saveResult. Test Playwright 390 px : partie complète contre Malin dans l'interface, aucune erreur.
 
+- **06/10 — Jeux › L'Œil du Temps (Jeu de Kim) (`kim_histoire`, kim_histoire.html, sw.js v719)** : décision de Jeremy — c'est un jeu (style « 7 erreurs ») → l'envoi du résultat à la page enseignant ajouté le matin (v639) est retiré, comme pour tous les jeux ; étoiles par scène gardées par élève (avant : communes à l'appareil). Contenu et moteur déjà vérifiés le matin (90 questions image par image).
+- **06/10 — Jeux › Les Échecs (`jeu_echecs`, echecs.html, sw.js v719)** : jeu absent de la liste de l'inventaire → ajouté. Règles complètes via chess.js (roque, prise en passant, promotion automatique en Dame annoncée dans la règle, pat, répétition, 50 coups, matériel insuffisant) ; IA Débutant (1 coup + hasard) / Intermédiaire (2 demi-coups) / Avancé (3 demi-coups, élagage alpha-bêta) : temps de réflexion mesuré ≤ 0,15 s ; coup de l'ordinateur annulé si on relance la partie ; pas de saveResult. Textes : « capture celui de l'adversaire » (on ne prend jamais le Roi) → « mets celui de l'adversaire échec et mat » ; pat mal défini (« ne peut plus bouger sans que son Roi soit en échec ») → « ne peut plus jouer aucun coup alors que son Roi n'est pas en échec » ; pion « il peut avancer de deux cases à son premier coup ». Test Playwright 390 px : partie contre le niveau Avancé (réponse de l'ordinateur, échec signalé), échiquier dans l'écran.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2859,6 +2862,7 @@ Spécifique :
 | ✅ 06/10 | Le Tangram | `jeu_tangram` | tangram.html (racine + public) |  |
 | ✅ 06/10 | Le Démineur | `jeu_demineur` | demineur.html (racine + public) |  |
 | ✅ 06/10 | La Pipopipette | `jeu_pipopipette` | pipopipette.html (racine + public) |  |
+| ✅ 06/10 | Les Échecs | `jeu_echecs` | echecs.html (racine) |  |
 
 ### ? — (menu renderLectureNarrativeMenu)
 
