@@ -2254,6 +2254,8 @@ Spécifique :
 
 - **06/10 — Jeux › Le Démineur (`jeu_demineur`, demineur.html + public, sw.js v717)** : repris de l'analyse du 29/09. Déjà corrigés depuis (commit fcf19ae) : modale de fin qui s'ouvrait sur la partie suivante, appui long Android. Restait : calcul de la hauteur de grille fondé sur des blocs inexistants (.difficulty-selector / .control-bar) → grille trop haute (Expert en portrait iPad : 1 121 px pour 964) → mesure de la vraie position de la grille, cases min. 20 px (Expert tient désormais en portrait tablette et sur téléphone ; en paysage tablette, l'en-tête prend trop de place, on défile un peu) ; modale de défaite « Mines débusquées 10 / 10 » même sans en trouver → nombre de drapeaux justes ; un écouteur mouseup ajouté par case à chaque partie → un seul ; record de 0 s ignoré ; record par élève (avant : commun à l'appareil). Copie public/demineur.html qui avait pris du retard (antérieure aux corrections du 29/09) → réalignée. Pas de saveResult. Test Playwright : tailles à 390×784, 768×964, 1024×580 ; défaite → modale « 0 / 10 ».
 
+- **06/10 — Jeux › La Pipopipette (`jeu_pipopipette`, pipopipette.html + public, sw.js v718)** : repris de l'analyse du 29/09. Les 2 bugs 🔴 étaient déjà corrigés (commit fcf19ae : niveau Facile réellement joué, coup de l'IA annulé à « Rejouer »). Restait : « Malin » jouait exactement comme « Moyen » → vraie stratégie de fin de partie : ouvrir la chaîne la plus courte en comptant réellement les carrés offerts, et « double coup » (refuser les 2 derniers carrés d'une chaîne pour garder la main quand l'adversaire devra ensuite ouvrir une chaîne d'au moins 3). Simulation IA contre IA : Malin bat Moyen 76 % (3×3), 91 % (4×4), 98 % (5×5) ; avant : même niveau. Aussi : bandeau « L'ordinateur réfléchit » qui clignotait pendant une série de prises ; réglage du son mémorisé (comme le Démineur) ; copie public/pipopipette.html antérieure aux corrections du 29/09 → réalignée. Pas de saveResult. Test Playwright 390 px : partie complète contre Malin dans l'interface, aucune erreur.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2856,7 +2858,7 @@ Spécifique :
 | ✅ 06/10 | Motus | `jeu_motus` | motus.html (racine + public) |  |
 | ✅ 06/10 | Le Tangram | `jeu_tangram` | tangram.html (racine + public) |  |
 | ✅ 06/10 | Le Démineur | `jeu_demineur` | demineur.html (racine + public) |  |
-| ⬜ | La Pipopipette | `jeu_pipopipette` | index › (?) | (code à localiser) |
+| ✅ 06/10 | La Pipopipette | `jeu_pipopipette` | pipopipette.html (racine + public) |  |
 
 ### ? — (menu renderLectureNarrativeMenu)
 

@@ -1171,7 +1171,12 @@
 
   function toggleSound() {
     soundEnabled = !soundEnabled;
+    try { localStorage.setItem('lcml_pipopipette_sound', soundEnabled ? '1' : '0'); } catch(e) {} // réglage mémorisé (comme le Démineur)
+    paintSoundBtn();
+  }
+  function paintSoundBtn() {
     const btn = document.getElementById('sound-btn');
+    if (!btn) return;
     btn.textContent = soundEnabled ? '🔊' : '🔇';
     btn.title = soundEnabled ? 'Couper le son' : 'Activer le son';
   }
@@ -1702,13 +1707,20 @@
     aiTimeoutId = setTimeout(() => {
       aiTimeoutId = null;
       if (isGameOver) return;
-      makeAiMove();
       isAiThinking = false;
       if (banner) banner.style.display = 'none';
+      makeAiMove(); // (si l'IA rejoue, scheduleAiMove remet le bandeau)
     }, delayMs);
   }
 
   function makeAiMove() {
+    const chosenMove = aiChooseMove(difficulty);
+    if (chosenMove) {
+      playEdgeMove(chosenMove.type, chosenMove.r, chosenMove.c);
+    }
+  }
+
+  function aiChooseMove(level) {
     // 1. Lister tous les coups valides encore libres
     const availableMoves = [];
 
@@ -1728,11 +1740,11 @@
       }
     }
 
-    if (availableMoves.length === 0) return;
+    if (availableMoves.length === 0) return null;
 
     let chosenMove = null;
 
-    if (difficulty === 1) {
+    if (level === 1) {
       // NIVEAU FACILE (Apprenti) : S'il y a une boîte à fermer, la prend, sinon joue au hasard
       const captureMoves = availableMoves.filter(m => wouldCaptureBox(m));
       if (captureMoves.length > 0) {
@@ -1741,7 +1753,7 @@
         chosenMove = pickRandom(availableMoves);
       }
     } 
-    else if (difficulty === 2) {
+    else if (level === 2) {
       // NIVEAU MOYEN (Stratège) :
       // 1) Prendre immédiatement toutes les boîtes complétables.
       // 2) Éviter ABSOLUMENT de poser le 3e côté d'une boîte (coups sûrs).
@@ -1767,9 +1779,7 @@
       chosenMove = findMasterLucasMove(availableMoves);
     }
 
-    if (chosenMove) {
-      playEdgeMove(chosenMove.type, chosenMove.r, chosenMove.c);
-    }
+    return chosenMove;
   }
 
   function pickRandom(arr) {
@@ -1828,13 +1838,83 @@
     return bestMove;
   }
 
-  // Stratégie avancée Maître Lucas (Niveau 3 - Malin)
+  // ----- Outils de simulation (copies de la grille) -----
+  function simClone(h, v) { return { h: h.map(row => row.slice()), v: v.map(row => row.slice()) }; }
+  function simMoves(st) {
+    const out = [];
+    for (let r = 0; r <= gridSize; r++) for (let c = 0; c < gridSize; c++) if (st.h[r][c] === null) out.push({ type: 'h', r, c });
+    for (let r = 0; r < gridSize; r++) for (let c = 0; c <= gridSize; c++) if (st.v[r][c] === null) out.push({ type: 'v', r, c });
+    return out;
+  }
+  function simAdjBoxes(m) {
+    const out = [];
+    if (m.type === 'h') { if (m.r > 0) out.push({ r: m.r - 1, c: m.c }); if (m.r < gridSize) out.push({ r: m.r, c: m.c }); }
+    else { if (m.c > 0) out.push({ r: m.r, c: m.c - 1 }); if (m.c < gridSize) out.push({ r: m.r, c: m.c }); }
+    return out;
+  }
+  function simSides(st, b) { return countBoxSides(b.r, b.c, st.h, st.v); }
+  function simIsCapture(st, m) { return simAdjBoxes(m).some(b => simSides(st, b) === 3); }
+  function simIsSafe(st, m) { return simAdjBoxes(m).every(b => simSides(st, b) !== 2); }
+  // Joue m ; renvoie le nombre de carrés fermés
+  function simPlay(st, m) {
+    const closedBefore = simAdjBoxes(m).filter(b => simSides(st, b) === 3).length;
+    if (m.type === 'h') st.h[m.r][m.c] = 1; else st.v[m.r][m.c] = 1;
+    return closedBefore;
+  }
+  // Le joueur au trait prend tout ce qui est prenable ; renvoie le nombre de carrés pris
+  function simGreedyTake(st) {
+    let taken = 0, again = true;
+    while (again) {
+      again = false;
+      for (const m of simMoves(st)) {
+        if (simIsCapture(st, m)) { taken += simPlay(st, m); again = true; break; }
+      }
+    }
+    return taken;
+  }
+  // Coût d'un sacrifice : combien de carrés l'adversaire prendra d'affilée si je joue m
+  function simGiveCost(st, m) {
+    const t = simClone(st.h, st.v);
+    simPlay(t, m);
+    return simGreedyTake(t);
+  }
+  // Plus petit nombre de carrés que le joueur au trait doit offrir (position sans coup sûr)
+  function simMinGive(st) {
+    const moves = simMoves(st);
+    if (moves.length === 0) return 0;
+    if (moves.some(m => simIsSafe(st, m))) return 0;
+    let best = Infinity;
+    for (const m of moves) best = Math.min(best, simGiveCost(st, m));
+    return best;
+  }
+
+  // Stratégie avancée Maître Lucas (Niveau 3 - Malin) : contrôle des chaînes
   function findMasterLucasMove(availableMoves) {
+    const st = simClone(hEdges, vEdges);
     // A) Y a-t-il des boîtes à capturer ?
     const captureMoves = availableMoves.filter(m => wouldCaptureBox(m));
 
     if (captureMoves.length > 0) {
-      // Priorité 1 : fermer les boîtes
+      // Fin de partie (plus aucun coup sûr après avoir tout pris) : faut-il « refuser » les 2 derniers carrés
+      // de la chaîne (double coup) pour garder la main et obliger l'adversaire à ouvrir une longue chaîne ?
+      const after = simClone(st.h, st.v);
+      const n = simGreedyTake(after);
+      const restMoves = simMoves(after);
+      const endgame = restMoves.length > 0 && !restMoves.some(m => simIsSafe(after, m));
+      if (endgame && n === 2) {
+        for (const d of availableMoves) {
+          if (simIsCapture(st, d)) continue;
+          const t = simClone(st.h, st.v);
+          simPlay(t, d);
+          const t2 = simClone(t.h, t.v);
+          if (simGreedyTake(t2) !== 2) continue;           // il laisse exactement les 2 carrés
+          const opp = simMoves(t2);
+          if (opp.length === 0 || opp.some(m => simIsSafe(t2, m))) continue;
+          // après avoir pris les 2 carrés, l'adversaire devra m'offrir au moins 3 carrés : ça vaut le coup
+          if (simMinGive(t2) >= 3) return d;
+        }
+      }
+      // Sinon : fermer les boîtes
       return captureMoves[0];
     }
 
@@ -1880,8 +1960,13 @@
       return bestSafeMove;
     }
 
-    // C) Aucun coup sûr : sacrifice minimaliste (donner le moins de boîtes possible)
-    return pickBestSacrifice(availableMoves);
+    // C) Aucun coup sûr : ouvrir la chaîne la plus courte (en comptant vraiment les carrés offerts)
+    let best = availableMoves[0], bestCost = Infinity;
+    for (const m of availableMoves) {
+      const cost = simGiveCost(st, m) + Math.random() * 0.1;
+      if (cost < bestCost) { bestCost = cost; best = m; }
+    }
+    return best;
   }
 
   // ===== FIN DE PARTIE & MODALE VICTOIRE =====
@@ -1977,6 +2062,8 @@
 
   // Lancement à l'ouverture de la page
   window.addEventListener('DOMContentLoaded', () => {
+    try { soundEnabled = localStorage.getItem('lcml_pipopipette_sound') !== '0'; } catch(e) {}
+    paintSoundBtn();
     initGame();
   });
 </script>
