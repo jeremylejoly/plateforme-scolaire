@@ -13,8 +13,8 @@
  *  ➜ Si vous remplacez une image en gardant le même nom et voulez forcer la mise à jour
  *    immédiate sur les tablettes : incrémenter MEDIA_VERSION.
  */
-const VERSION = 'v676';
-const MEDIA_VERSION = 'm5';
+const VERSION = 'v677';
+const MEDIA_VERSION = 'm6';
 
 const CORE_CACHE  = 'lcml-core-'  + VERSION;
 const PAGES_CACHE = 'lcml-pages-' + VERSION;

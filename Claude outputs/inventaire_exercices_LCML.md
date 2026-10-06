@@ -2170,6 +2170,8 @@ Spécifique :
 
 - **06/10 — Les éclipses (`sci_eclipses`, sw.js v676)** : copies `fiches/` et `public/` divergentes (celle chargée par le site n'avait **aucun mélange : ordre fixe des réponses**) → Fisher–Yates, copies identiques. Décision de Jeremy : les 3 images « Schéma scientifique » (en anglais, générées avec erreurs : pleine lune du côté du Soleil, deux « descending node », « WAXING CFOON », « PHOTOSHERE ») remplacées par 3 schémas SVG en français dessinés dans la fiche (éclipse de Soleil, éclipse de Lune, inclinaison 5° avec nouvelle/pleine lune sans éclipse ; « tailles et distances non respectées »). Quiz réécrit : distracteurs fantaisistes (« rouge comme une fraise », « yeux fluorescents », « poison ») remplacés par des erreurs plausibles, la bonne réponse n'est plus la plus longue (vérifié par script), Q2 corrigée (« face éclairée tournée vers le Soleil » donné comme indice, toujours vrai), majuscules (« pleine lune »). Bonne réponse manquée en bleu, garde 600 ms + Entrée, sauvegarde unique en try/catch, score parfait = total. En-tête lisible sur téléphone, bouton Retour interne (history.back) masqué dans le site. Les anciennes images `assets/eclipses/*_diagram.jpg` ne sont plus utilisées. Test Playwright 390 px : 9/10, 1 seule sauvegarde, pas de débordement.
 
+- **06/10 — Le planisphère interactif (`geo_planisphere_interactif`, sw.js v677, MEDIA m6)** : fiche de découverte (pas de score ; libellé « (Quiz) » du plan de travail → « (découverte) »). Décision de Jeremy : illustrations retouchées en français — Afrique (OCÉAN ATLANTIQUE / INDIEN, Nil, Bassin du Congo), Amérique du Nord (OCÉAN PACIFIQUE / ATLANTIQUE, Baie d'Hudson, Golfe du Mexique), Océanie (Australie, Nouvelle-Zélande, Iles Salomon, Fidji, Ile du Sud ; mot inventé « SLUITCRN ISLANDS » effacé), Atlantique (« Dorsale atlantique »), Arctique (2e cadre « béluga » posé sur le narval effacé), Europe (« ALPES », « CARPATES », « Seine » ; faux « ALPS » en Pologne et mot inventé « Russis » effacés), Asie (étiquettes de fleuves illisibles effacées), Antarctique (« BRITISH MALLEY » effacé). Les fichiers restent des JPEG nommés .png (comme avant). Textes : Everest 8 849 m, Mont Blanc 4 806 m (Elbrouz en premier), Afrique ~1,5 milliard, Océanie : Puncak Jaya (4 884 m) au lieu du mont Wilhelm, légendes Amérique corrigées (l'image montre le castor, pas le lama/jaguar), émojis faux retirés (kiwi = fruit 🥝, ornithorynque = loutre 🦦, dugong = sirène, lamantin = phoque), « N/A » → texte français, « animé by » → « par », « Profondeur Max » → « Profondeur maximale », « Sommet » → « Point culminant », nouvelle orthographe (chaine, ile, apparaitre). Téléphone : la fiche détaillée défile à l'écran après un choix. 3 copies (fiches/, public/fiches/, racine) alignées. **Reste à décider : sur la carte de l'Asie, le Taj Mahal est dessiné sur l'Iran / la péninsule arabique au lieu de l'Inde.**
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2185,6 +2187,7 @@ Spécifique :
 | `qvgdm_antiquite`, `qvgdm_moyen_age`, `qvgdm_prehistoire` (Qui veut gagner des millions) | Propositions jamais mélangées, toujours la même partie. Antiquité : bonne réponse en 3e position dans 9/15 questions. L'ordre croissant de difficulté des questions est voulu |
 
 ## À revoir à la fin (décisions de Jeremy)
+- Planisphère interactif — carte illustrée de l'Asie : le Taj Mahal est placé sur l'Iran / la péninsule arabique (il est en Inde, à Agra). Garder, recadrer ou remplacer l'image ?
 
 | Exercice | Point à revoir |
 |---|---|
@@ -2690,7 +2693,7 @@ Spécifique :
 | ⬜ | Les communes de notre région | `geo_belgique_communes` | index › renderGeoCommunesScreen |  |
 | ⬜ | Régions et Communautés (Quiz) | `geo_belgique_regions_communautes` | index › renderGeoBelgiqueRegionsCommunautes |  |
 | ⬜ | La Belgique — QCM | `geo_belgique_qcm` | index › renderGeoBelgiqueQCM |  |
-| ⬜ | Le planisphère interactif (Quiz) | `geo_planisphere_interactif` | fiches/planisphere-interactif.html |  |
+| ✅ 06/10 | Le planisphère interactif (découverte) | `geo_planisphere_interactif` | fiches/planisphere-interactif.html |  |
 | ⬜ | Les planisphères | `geo_planispheres` | index › renderGeoPlanispheres |  |
 | ⬜ | QCM — Continents et océans | `geo_continents_qcm` | index › renderGeoContinentsQCM |  |
 | ⬜ | Le tour du monde | `geo_tour_monde` | index › renderGeoTourMonde |  |
