@@ -133,6 +133,15 @@
     }
 
     /* PROGRESS BAR */
+    .intruder-opt.reveal {
+      background: #eaf1fc !important;
+      border-color: #1f5fbf !important;
+      color: #1f5fbf !important;
+      box-shadow: 3px 3px 0px #1f5fbf !important;
+    }
+    .intruder-opt:disabled { cursor: default; }
+    #options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 1rem; }
+    @media (max-width: 480px) { body { padding: .5rem; } .intruder-opt { min-height: 70px; font-size: 1rem; } }
     .progress-bar-bg {
       width: 100%;
       height: 12px;
@@ -190,13 +199,13 @@
   <div class="card-premium bg-indigo-50 border-indigo-200" style="margin-top: 0;">
     <div class="flex justify-between items-center mb-2">
       <span class="font-display font-bold text-indigo-950 text-sm md:text-base">🎯 Chasseur d'intrus !</span>
-      <span class="font-mono font-bold text-indigo-700 text-xs bg-indigo-100 px-2 py-0.5 rounded-md" id="round-num">Round 1/5</span>
+      <span class="font-mono font-bold text-indigo-700 text-xs bg-indigo-100 px-2 py-0.5 rounded-md" id="round-num">Groupe 1/5</span>
     </div>
     <div class="progress-bar-bg">
       <div class="progress-bar-fill" id="progress-bar"></div>
     </div>
     <p class="text-xs text-indigo-900 mt-2 font-medium mb-0">
-      Trouve le mot qui ne fait pas partie du même groupe logique et clique dessus pour découvrir pourquoi.
+      Trouve le mot qui ne fait pas partie du même groupe et clique dessus. Tu n'as qu'un essai par groupe !
     </p>
   </div>
 
@@ -216,9 +225,10 @@
       explanation: "L'humérus est un os du bras, tandis que les trois autres sont des muscles !"
     },
     {
+      k: "protection",
       words: ["Crâne", "Cage thoracique", "Bassin", "Fémur"],
       intruder: "Fémur",
-      explanation: "Le fémur est un os de soutien et de mouvement, alors que le crâne, le bassin et la cage thoracique protègent nos organes vitaux (cerveau, cœur, moelle, etc.)."
+      explanation: "Le fémur est un os de soutien et de mouvement, alors que le crâne, la cage thoracique et le bassin protègent des organes (le cerveau ; le cœur et les poumons ; les organes du bas du ventre)."
     },
     {
       words: ["Cartilage", "Tendon", "Ligament", "Calcium"],
@@ -231,19 +241,20 @@
       explanation: "La toux est un symptôme lié à la respiration, tandis que les trois autres sont des traumatismes ou des blessures du squelette et des articulations."
     },
     {
+      k: "membres",
       words: ["Radius", "Tibia", "Cubitus", "Humérus"],
       intruder: "Tibia",
       explanation: "Le tibia est un os du membre inférieur (la jambe), alors que le radius, le cubitus et l'humérus sont des os du membre supérieur (le bras)."
     },
     {
-      words: ["Rotule", "Coude", "Hanche", "Nerf"],
+      words: ["Genou", "Coude", "Hanche", "Nerf"],
       intruder: "Nerf",
-      explanation: "Le nerf fait partie du système nerveux qui commande le mouvement, alors que la rotule, le coude et la hanche sont des parties articulaires ou osseuses."
+      explanation: "Le nerf fait partie du système nerveux qui commande le mouvement, alors que le genou, le coude et la hanche sont des articulations."
     },
     {
-      words: ["Se contracter", "Gonfler", "Se durcir", "S'allonger"],
+      words: ["Raccourcir", "Gonfler", "Se durcir", "S'allonger"],
       intruder: "S'allonger",
-      explanation: "Lorsqu'un muscle travaille (se contracte), il se raccourcit, gonfle et se durcit. Il ne s'allonge pas (l'allongement correspond à la phase de relâchement)."
+      explanation: "Lorsqu'un muscle se contracte, il raccourcit, gonfle et se durcit. Il ne s'allonge pas : il s'allonge quand il se relâche."
     },
     {
       words: ["Moelle épinière", "Cerveau", "Nerf moteur", "Cartilage"],
@@ -251,14 +262,15 @@
       explanation: "Le cartilage est un tissu de protection articulaire, tandis que le cerveau, la moelle épinière et le nerf moteur font partie du système nerveux qui coordonne le mouvement."
     },
     {
+      k: "membres",
       words: ["Tibia", "Fémur", "Rotule", "Radius"],
       intruder: "Radius",
       explanation: "Le radius est un os du bras (membre supérieur), alors que le tibia, le fémur et la rotule sont des os de la jambe (membre inférieur) !"
     },
     {
-      words: ["Vertèbre", "Clavicule", "Omoplate", "Sternum"],
+      words: ["Vertèbre", "Fémur", "Humérus", "Tibia"],
       intruder: "Vertèbre",
-      explanation: "La vertèbre est un os court et irrégulier formant la colonne vertébrale, alors que la clavicule, l'omoplate et le sternum sont des os plats situés sur le buste."
+      explanation: "La vertèbre est un os court, alors que le fémur, l'humérus et le tibia sont des os longs."
     },
     {
       words: ["Calcium", "Vitamine D", "Soleil", "Soda"],
@@ -268,7 +280,7 @@
     {
       words: ["Synovie", "Cartilage", "Rotule", "Biceps"],
       intruder: "Biceps",
-      explanation: "Le biceps est un muscle squelettique, alors que la synovie (liquide lubrifiant), le cartilage et la rotule font tous partie de la structure articulaire du genou."
+      explanation: "Le biceps est un muscle du bras, alors que la synovie (le liquide qui fait glisser les os), le cartilage et la rotule font partie de l'articulation du genou."
     },
     {
       words: ["Réflexe", "Flexion", "Extension", "Rotation"],
@@ -299,129 +311,109 @@
   }
 
   // STATE VARIABLES
+  const NB = 5;
   let activeRounds = [];
   let currentRoundIdx = 0;
   let score = 0;
-  let hasFailedInRound = false;
-  let roundCompleted = false;
+  let roundCompleted = false, saved = false, lastClick = 0, finished = false;
 
   function initGame() {
-    activeRounds = shuffle([...INTRUDERS_POOL]).slice(0, 5);
-    currentRoundIdx = 0;
-    score = 0;
+    const vus = new Set(); activeRounds = [];
+    shuffle([...INTRUDERS_POOL]).forEach(r => { const k = r.k || r.intruder; if (activeRounds.length < NB && !vus.has(k)) { vus.add(k); activeRounds.push(r); } });
+    currentRoundIdx = 0; score = 0; saved = false; finished = false; lastClick = 0;
     loadRound();
   }
 
   function loadRound() {
-    hasFailedInRound = false;
     roundCompleted = false;
-    
-    // Update progress panel
-    document.getElementById('round-num').textContent = `Groupe ${currentRoundIdx + 1}/5`;
-    document.getElementById('progress-bar').style.width = `${currentRoundIdx * 20}%`;
-
-    // Clear feedback
+    document.getElementById('round-num').textContent = `Groupe ${currentRoundIdx + 1}/${NB}`;
+    document.getElementById('progress-bar').style.width = `${currentRoundIdx * 100 / NB}%`;
     document.getElementById('feedback-area').innerHTML = '';
-
     const roundData = activeRounds[currentRoundIdx];
-    // Copy and shuffle options layout
-    const shuffledOptions = shuffle([...roundData.words]);
-
     const gameArea = document.getElementById('game-area');
-    gameArea.innerHTML = `
-      <div class="grid grid-cols-2 gap-4 mt-4" id="options-grid"></div>
-    `;
-
+    gameArea.innerHTML = `<div class="grid grid-cols-2 gap-4 mt-4" id="options-grid"></div>`;
     const grid = document.getElementById('options-grid');
-    shuffledOptions.forEach(opt => {
+    shuffle([...roundData.words]).forEach(opt => {
       const btn = document.createElement('button');
       btn.className = 'btn-3d intruder-opt';
       btn.textContent = opt;
+      btn.dataset.word = opt;
       btn.onclick = () => checkSelection(btn, opt);
       grid.appendChild(btn);
     });
   }
 
+  // Un seul essai : si c'est faux, l'intrus est montré en bleu.
   function checkSelection(btn, textVal) {
     if (roundCompleted) return;
+    roundCompleted = true;
+    lastClick = Date.now();
     const roundData = activeRounds[currentRoundIdx];
-
-    if (textVal === roundData.intruder) {
-      roundCompleted = true;
-      btn.classList.add('correct');
-      
-      // Calculate score
-      if (!hasFailedInRound) {
-        score++;
-      }
-
-      // Disable all buttons in grid
-      document.querySelectorAll('.intruder-opt').forEach(b => {
-        b.disabled = true;
-      });
-
-      // Show explanation
-      const feedbackArea = document.getElementById('feedback-area');
-      feedbackArea.innerHTML = `
-        <div class="explanation-box animate-fadeIn">
-          <p class="font-bold text-sm md:text-base m-0 flex items-center gap-2">
-            🎯 Bravo ! Tu as démasqué l'intrus : <strong>${textVal}</strong>
-          </p>
-          <p class="text-xs md:text-sm mt-2 mb-0 leading-relaxed font-sans font-medium">
-            ${roundData.explanation}
-          </p>
-        </div>
-        <button class="btn-3d w-full py-3.5 bg-indigo-500 text-white rounded-xl text-sm font-bold mt-4 animate-fadeIn" onclick="nextRound()">
-          ${currentRoundIdx === 4 ? '🏁 Voir le score final' : 'Groupe suivant ➡️'}
-        </button>
-      `;
-    } else {
+    const ok = textVal === roundData.intruder;
+    if (ok) { score++; btn.classList.add('correct'); }
+    else {
       btn.classList.add('incorrect');
-      btn.disabled = true;
-      hasFailedInRound = true;
+      document.querySelectorAll('.intruder-opt').forEach(b => { if (b.dataset.word === roundData.intruder) b.classList.add('reveal'); });
     }
+    document.querySelectorAll('.intruder-opt').forEach(b => { b.disabled = true; });
+    const last = currentRoundIdx === NB - 1;
+    document.getElementById('feedback-area').innerHTML = `
+      <div class="explanation-box animate-fadeIn">
+        <p class="font-bold text-sm md:text-base m-0">
+          ${ok ? `🎯 Bravo ! Tu as démasqué l'intrus : <strong>${textVal}</strong>` : `❌ Ce n'était pas « ${textVal} ». L'intrus était : <strong style="color:#1f5fbf">${roundData.intruder}</strong>`}
+        </p>
+        <p class="text-xs md:text-sm mt-2 mb-0 leading-relaxed font-sans font-medium">${roundData.explanation}</p>
+      </div>
+      <button class="btn-3d w-full py-3.5 bg-indigo-500 text-white rounded-xl text-sm font-bold mt-4 animate-fadeIn" style="width:100%;margin-top:1rem;padding:.85rem;background:#6366f1;color:#fff;border-radius:12px;" onclick="nextRound()">
+        ${last ? '🏁 Voir le score final' : 'Groupe suivant ➡️'}
+      </button>`;
   }
 
   function nextRound() {
-    if (currentRoundIdx < 4) {
-      currentRoundIdx++;
-      loadRound();
-    } else {
-      showFinalScore();
-    }
+    const now = Date.now();
+    if (!roundCompleted || finished || now - lastClick < 600) return;
+    lastClick = now;
+    if (currentRoundIdx < NB - 1) { currentRoundIdx++; loadRound(); }
+    else showFinalScore();
   }
 
   function showFinalScore() {
+    finished = true;
     document.getElementById('round-num').textContent = `Terminé !`;
     document.getElementById('progress-bar').style.width = `100%`;
     document.getElementById('game-area').innerHTML = '';
     document.getElementById('feedback-area').innerHTML = '';
-
-    const pct = Math.round((score / 5) * 100);
+    const pct = Math.round((score / NB) * 100);
     const scorePanel = document.createElement('div');
     scorePanel.className = 'geo-score-panel animate-fadeIn';
     scorePanel.innerHTML = `
-      <div class="score-title">${score} / 5</div>
+      <div class="score-title">${score} / ${NB}</div>
       <div class="score-msg">
-        ${pct === 100 ? 'Magnifique ! 🏆 Tu as débusqué tous les intrus dès le premier coup !' : pct >= 60 ? 'Bien joué ! 👍 Tu as une bonne vue d\'ensemble de la matière.' : 'Recommence pour améliorer ta vigilance scientifique ! 💪'}
+        ${pct === 100 ? 'Magnifique ! 🏆 Tu as débusqué tous les intrus !' : pct >= 60 ? 'Bien joué ! 👍 Tu as une bonne vue d\'ensemble de la matière.' : 'Recommence pour améliorer ta vigilance scientifique ! 💪'}
       </div>
-      <button class="btn-3d px-4 py-2 mt-4 bg-white text-slate-800 rounded-xl" onclick="initGame()">🔄 Recommencer</button>
-    `;
+      <button class="btn-3d px-4 py-2 mt-4 bg-white text-slate-800 rounded-xl" style="margin-top:.8rem;padding:.5rem 1rem;background:#fff;border-radius:12px;" onclick="initGame()">🔄 Recommencer</button>`;
     document.getElementById('game-area').appendChild(scorePanel);
-
-    // Save score to parent platform dashboard
-    if (window.parent && window.parent.saveResult) {
-      window.parent.saveResult({
-        activity: 'sci_sq_intrus',
-        bookTitle: "Le squelette — Chasseur d'intrus",
-        score: score,
-        total: 5,
-        pct: pct,
-        date: new Date().toLocaleDateString('fr-BE'),
-        time: new Date().toLocaleTimeString('fr-BE', {hour: '2-digit', minute: '2-digit'})
-      });
+    if (!saved) {
+      saved = true;
+      try {
+        if (window.parent && window.parent !== window && typeof window.parent.saveResult === 'function') {
+          window.parent.saveResult({
+            activity: 'sci_sq_intrus',
+            bookTitle: "Le squelette — Chasseur d'intrus",
+            score: score, total: NB, pct: pct,
+            date: new Date().toLocaleDateString('fr-BE'),
+            time: new Date().toLocaleTimeString('fr-BE', {hour: '2-digit', minute: '2-digit'})
+          });
+        }
+      } catch (e) {}
     }
   }
+
+  document.addEventListener('keydown', e => {
+    if (e.key !== 'Enter') return;
+    e.preventDefault();
+    if (finished) initGame(); else if (roundCompleted) nextRound();
+  });
 
   window.onload = initGame;
 </script>

@@ -2086,6 +2086,11 @@ Spécifique :
 - Mécanique : garde 600 ms, validation unique, bonne réponse manquée en bleu (avant : verte), sauvegarde unique try/catch `window.parent !== window` (avant : sans garde), total calculé, scroll conservé, Entrée.
 - Tests Playwright 390 px : 300 tirages sans doublon, bonne réponse ~25 % par position, message à vide, aucun dialogue, 1 erreur → 1 bleu, 1 sauvegarde malgré 3 clics, pas de débordement.
 
+### 06/10 — Éveil → Sciences → Le squelette → Chasseur d'intrus (`sci_sq_intrus`, fiche squelette_intrus.html + fiches/ et public/fiches/) — sw.js v658
+- Intrus ambigus corrigés : « Vertèbre, Clavicule, Omoplate, Sternum » (la clavicule est un os long, pas plat : 2 intrus possibles) → « Vertèbre, Fémur, Humérus, Tibia » (os court / os longs) ; « Rotule, Coude, Hanche, Nerf » (la rotule est un os, coude et hanche des articulations) → « Genou, Coude, Hanche, Nerf » ; « Se contracter, Gonfler, Se durcir, S'allonger » (« se contracter » = la catégorie elle-même) → « Raccourcir… » ; explication « crâne, bassin, cage thoracique protègent… la moelle » corrigée (cerveau ; cœur et poumons ; organes du bas du ventre) ; « muscle squelettique » simplifié.
+- Mécanique : plusieurs essais par groupe (on cliquait jusqu'à trouver) → un seul essai, l'intrus est montré en bleu après une erreur + explication ; familles `k` (les 2 groupes bras/jambe jamais ensemble) ; garde 600 ms sur « Groupe suivant » (double clic sautait un groupe) ; sauvegarde unique try/catch `window.parent !== window` ; Entrée = suivant / recommencer ; « Round 1/5 » → « Groupe 1/5 » ; grille 2×2 sans dépendre de Tailwind.
+- Tests Playwright 390 px : 300 tirages sans conflit de famille, 1 erreur → boutons verrouillés + intrus en bleu, double « suivant » ne saute pas de groupe, 4/5, 1 sauvegarde, pas de débordement.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2546,7 +2551,7 @@ Spécifique :
 | ✅ 06/10 | Le squelette — Le schéma | `sci_sq_schema` | index › renderSciSqSchema |  |
 | ✅ 06/10 | Le squelette — Le fonctionnement du mouvement | `sci_sq_texte` | index › renderSciSqTexte |  |
 | ✅ 06/10 | Le squelette — QCM | `sci_sq_qcm` | index › renderSciSqQCM |  |
-| ⬜ | Le squelette — Chasseur d'intrus | `sci_sq_intrus` | index › renderSciSqIntrus |  |
+| ✅ 06/10 | Le squelette — Chasseur d'intrus | `sci_sq_intrus` | index › renderSciSqIntrus |  |
 | ⬜ | Le squelette — Vrai ou faux ? | `sci_sq_vrai_faux` | index › renderSciSqVraiFaux |  |
 | ⬜ | Appareil respiratoire — La leçon | `fiche_respiratoire` | fiches/appareil-respiratoire.html |  |
 | ✅ 06/10 | Appareil respiratoire — Le schéma | `sci_resp_schema` | index › renderSciRespSchema |  |
