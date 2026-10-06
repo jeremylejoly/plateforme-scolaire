@@ -2273,6 +2273,8 @@ Spécifique :
 
 - **06/10 — CEB Sciences 2016 (`ceb_sci_2016`, CEB sciences/ceb_sciences_2016.html, sw.js v726)** : 20 questions vérifiées contre le portfolio PDF (p. 5-11 : squelettes et pattes articulées, roues à eau 5/9 pales et 7,5-8 / 10,5-11 tours, clé des arbres, leviers, boule et anneau, baladeuse — fil brun détaché dans le support de l'ampoule) — réponses justes. Même moteur que 2026/2023 → mêmes corrections (sauvegarde unique /20, choix mélangés, bleu, message des questions vides, double clic). Contenu : 4.2 la bonne réponse était la seule à 5 étapes (les autres en avaient 4) → 4 ordres de 5 étapes commençant tous par l'étape 1 ; bonne réponse seule longue ou avec son explication (1.1, 2.2, 2.4, 3.5, 4.1, 4.4, 4.5) → équilibrée, explications de 4.1 et 4.5 après la réponse. NO : entraine, entrainement, maitriser ; « prêt-e » → « prêt ». Test Playwright 390 px : message « 1.5 », 17/20, 1 seule sauvegarde, pas de débordement.
 
+- **06/10 — CEB Sciences 2013 (`ceb_sci_2013`, CEB sciences/ceb_sciences_2013.html, sw.js v727)** : 20 questions vérifiées contre le portfolio PDF (p. 4-15 : bouteille et eau bouillante, graphique Sofia 40 / Louise 37 puis 31, diaphragme, radiographies, faucon, éléphant, sauterelle, organe de Jacobson, cycles marronnier/haricot, instruments météo, engrenages rouge→jaune dans le sens des aiguilles, objets sans engrenage) — réponses justes. Moteur propre à cette page (onglets sans « Thème suivant ») : aucune sauvegarde → sauvegarde unique /20 ; choix jamais mélangés → mélangés et renumérotés ; on pouvait recliquer une question déjà répondue ; bonne réponse manquée en vert → bleu (QCM et Vrai/Faux), explications aussi après les Vrai/Faux ; bilan possible avec des questions vides → message dans la page avec les numéros ; double clic ; confetti protégé. Contenu : 3.1 bonne réponse seule à 6 étapes → 4 ordres de 5 étapes commençant par la graine ; 1.2 les choix donnaient les valeurs du graphique → noms seuls ; bonne réponse seule longue (1.1, 2.1, 2.3, 2.4, 3.2, 3.5, 4.2, 4.5) → équilibrée ; « sens horaire/antihoraire » → « sens des aiguilles d'une montre / inverse ». NO : apparaitre, boite, chaine, entraine, entrainement, maitriser ; « prêt-e » → « prêt ». Test Playwright 390 px : message « 1.5, 4.3 », 17/20, 3 réponses en bleu, 1 seule sauvegarde, pas de débordement.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2829,7 +2831,7 @@ Spécifique :
 | ✅ 06/10 | CEB Sciences 2021 | `ceb_sci_2021` | index › openCEB |  |
 | ✅ 06/10 | CEB Sciences 2019 | `ceb_sci_2019` | index › openCEB |  |
 | ✅ 06/10 | CEB Sciences 2016 | `ceb_sci_2016` | index › openCEB |  |
-| ⬜ | CEB Sciences 2013 | `ceb_sci_2013` | index › openCEB |  |
+| ✅ 06/10 | CEB Sciences 2013 | `ceb_sci_2013` | index › openCEB |  |
 
 ### 🎓 CEB — 🌍 Histoire / Géographie
 
