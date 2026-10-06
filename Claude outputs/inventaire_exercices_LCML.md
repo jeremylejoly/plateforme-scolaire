@@ -1601,6 +1601,15 @@ Spécifique :
 - Mélange biaisé sort(random) → Fisher–Yates (≈ 33 % par position) ; pastilles rouges pour les erreurs ; « Triangle suivant » protégé (600 ms) ; Entrée passe à la suite.
 - Tests : jsdom (2 000 séries : classement recalculé depuis le dessin 0 erreur, codage 0 erreur, rien hors cadre ; partie 6/10 → 1 seul saveResult ; double clic), node --check 7 OK, Playwright 390 px + planche des 7 sortes.
 
+### 06/10 — Caractéristiques des triangles (`triangles_caracteristiques`, fiches/triangles_caracteristiques.html) — sw.js v594
+- Contenu : 30 questions justes, mais 3 options ambiguës (un équilatéral est aussi isocèle) : « Un triangle isocèle possède… 3 côtés égaux » (distracteur) → « 2 angles droits » ; « Un équilatéral possède… 2 côtés égaux » → « seulement 2 côtés égaux » ; « 3 côtés égaux, je suis forcément… un isocèle acutangle » → « un isocèle rectangle ».
+- **Aucun résultat enregistré** → saveResult `triangles_caracteristiques`, une fois par série, try/catch.
+- Mélange biaisé sort(random) (bonne réponse en C 29 fois sur 30 dans la banque) → Fisher–Yates (≈ 33 % par position).
+- Questions qui se donnaient la réponse dans une même série (équilatéral : 7 questions ; rectangle : « 1 angle droit » et « 2 angles droits impossible », etc.) → notions par question, jamais deux fois la même notion dans une série (0 sur 3 000).
+- Bonne réponse nettement la plus longue (« 1 angle de 90° et 2 angles aigus », « 3 angles de 60° et 3 côtés isométriques », « peut être acutangle, rectangle ou obtusangle »…) → distracteurs de même forme et de même longueur.
+- Pastilles rouges pour les erreurs ; « Question suivante » protégé (600 ms) ; Entrée ; espace insécable avant « ? » (le point d'interrogation partait seul à la ligne à 390 px, corrigé aussi dans Caractéristiques des polygones).
+- Tests : jsdom (positions, notions, double clic, partie 8/10 → 1 seul saveResult), node --check 7 OK, Playwright 390 px.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1992,7 +2001,7 @@ Spécifique :
 | Statut | Exercice | id | Source | Signal automatique |
 |---|---|---|---|---|
 | ✅ 06/10 | Identifier les triangles | `triangles_qcm` | fiches/triangles_QCM.html |  |
-| ⬜ | Caractéristiques des triangles | `triangles_caracteristiques` | fiches/triangles_caracteristiques.html |  |
+| ✅ 06/10 | Caractéristiques des triangles | `triangles_caracteristiques` | fiches/triangles_caracteristiques.html |  |
 | ⬜ | Les hauteurs du triangle | `solide_triangles_hauteurs` | fiches/triangles_hauteurs.html |  |
 | ⬜ | Reconnaître les angles | `angles_reconnaitre` | fiches/angles_reconnaitre.html |  |
 | ⬜ | Estimation des angles | `angles_estimation` | fiches/angles_estimation.html | Saisie libre comparée strictement |
