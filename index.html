@@ -38298,20 +38298,22 @@ function renderGeoOceansMenu(){
 
 // window.GEO_PLANISPHERES a été extrait vers un fichier JS externe
 
-let geoPlanState = {curMap:0, answers:{}, dragging:null, touchEl:null, touchClone:null};
+let geoPlanState = {curMap:0, answers:{}, sel:null, done:false, lastClick:0, order:[]};
+let geoPlanTEl=null, geoPlanTClone=null, geoPlanTX=0, geoPlanTY=0;
 
 function renderGeoPlanispheres(){
-  geoPlanState = {curMap:0, answers:{}, dragging:null, touchEl:null, touchClone:null};
   renderGeoPlanMap(0);
 }
 
+// Repères numérotés sur la carte + liste des cases sous la carte (lisible sur téléphone)
 function renderGeoPlanMap(idx){
   const body = document.getElementById('geo-planispheres-body'); if(!body) return;
   const map = GEO_PLANISPHERES[idx];
-  geoPlanState.curMap = idx; geoPlanState.answers = {};
+  // Numérotation dans l'ordre de lecture (de haut en bas, puis de gauche à droite)
+  const order = [...map.zones].sort((a,b) => (Math.round((a.y+a.h/2)/8) - Math.round((b.y+b.h/2)/8)) || ((a.x+a.w/2) - (b.x+b.w/2)));
+  geoPlanState = {curMap:idx, answers:{}, sel:null, done:false, lastClick:0, order:order.map(z=>z.id)};
   map.zones.forEach(z => { geoPlanState.answers[z.id] = ''; });
 
-  // Tabs navigation
   const tabs = GEO_PLANISPHERES.map((m,i) => `
     <button onclick="renderGeoPlanMap(${i})" style="padding:6px 12px;border-radius:20px;border:1.5px solid var(--border);
       background:${i===idx?'var(--purple)':'white'};color:${i===idx?'white':'var(--text)'};
@@ -38319,122 +38321,164 @@ function renderGeoPlanMap(idx){
       ${m.id==='europe'?'🌍 Europe':m.id==='amerique'?'🌎 Amérique':m.id==='indien'?'🌏 Indien':m.id==='arctique'?'🧊 Arctique':'❄️ Antarctique'}
     </button>`).join('');
 
-  // Étiquettes
-  const labels = shuffle([...map.zones.map(z=>z.label)]);
-  let tagsHtml = '<div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:1rem;" id="geoplan-pool">';
+  const labels = shuffle(map.zones.map(z=>z.label));
+  let tagsHtml = '<div class="geo-tags-pool" id="geoplan-pool" style="margin-bottom:1rem">';
   labels.forEach((lbl,i) => {
-    tagsHtml += `<div class="geo-tag" id="geoplan-tag-${i}" draggable="true" data-text="${lbl}"
+    tagsHtml += `<div class="geo-tag" id="geoplan-tag-${i}" draggable="true" data-text="${lbl}" onclick="geoPlanSelect(this)"
       ondragstart="geoPlanDragStart(event)" ondragend="geoPlanDragEnd(event)"
-      ontouchstart="geoPlanTouchStart(event)" ontouchmove="geoPlanTouchMove(event)" ontouchend="geoPlanTouchEnd(event)"
+      ontouchstart="geoPlanTouchStart(event)" ontouchmove="geoPlanTouchMove(event)" ontouchend="geoPlanTouchEnd(event)" ontouchcancel="geoPlanTouchCancel(event)"
     >${lbl}</div>`;
   });
   tagsHtml += '</div>';
 
+  const markers = order.map((z,n) => `<div style="position:absolute;left:${z.x+z.w/2}%;top:${z.y+z.h/2}%;transform:translate(-50%,-50%);
+      width:24px;height:24px;border-radius:50%;background:#4f46e5;color:#fff;border:2px solid #fff;box-shadow:0 0 0 2px #4f46e5;
+      display:flex;align-items:center;justify-content:center;font:800 12px 'Nunito',sans-serif;pointer-events:none">${n+1}</div>`).join('');
+
+  let rows = '';
+  order.forEach((z,n) => {
+    rows += `<tr><td>${n+1}</td><td><div class="geo-drop-zone" id="geoplan-zone-${z.id}" data-id="${z.id}" onclick="geoPlanZoneClick(this)"
+      ondragover="event.preventDefault();this.classList.add('drag-over')" ondragleave="this.classList.remove('drag-over')"
+      ondrop="geoPlanDropEvt(event,this)"></div></td></tr>`;
+  });
+
+  const polar = (map.id==='arctique'||map.id==='antarctique');
   body.innerHTML = `
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1rem;">${tabs}</div>
     <div class="card" style="margin-bottom:1rem;padding:.8rem 1rem;background:var(--purple-light);border:1px solid var(--purple);">
-      <p style="margin:0;font-size:13px;color:var(--purple);font-weight:700">🗺️ ${map.titre} — Glisse les étiquettes sur la bonne zone.</p>
+      <p style="margin:0;font-size:13px;color:var(--purple);font-weight:700">🗺️ ${map.titre} — Retrouve le nom de chaque repère numéroté : glisse une étiquette dans la bonne case (ou touche une étiquette, puis la case).</p>
     </div>
-    ${tagsHtml}
-    <div style="display:flex;justify-content:center;">
-      <div style="position:relative;${(map.id==='arctique'||map.id==='antarctique')?'max-height:60vh;':'width:100%;'}" id="geoplan-mapwrap">
-        <img src="${map.img}" style="${(map.id==='arctique'||map.id==='antarctique')?'height:60vh;width:auto;display:block;':'width:100%;display:block;'}" id="geoplan-img"/>
-        <div id="geoplan-zones" style="position:absolute;inset:0;"></div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;align-items:start;">
+      <div>
+        <div style="display:flex;justify-content:center;">
+          <div style="position:relative;${polar?'width:min(100%,60vh);':'width:100%;'}" id="geoplan-mapwrap">
+            <img src="${map.img}" alt="Carte : ${map.titre}" style="width:100%;display:block;" id="geoplan-img"/>
+            ${markers}
+          </div>
+        </div>
+        ${tagsHtml}
       </div>
-    </div>
-    <button class="btn" onclick="validateGeoPlan()" style="width:100%;margin-top:1rem;margin-bottom:1rem">✅ Valider</button>
-    <div id="geoplan-score" style="display:none"></div>`;
-
-  // Attendre que l'image soit chargée pour positionner les zones
-  const img = document.getElementById('geoplan-img');
-  const positionZones = () => renderGeoPlanZones(map);
-  if(img.complete) positionZones();
-  else img.onload = positionZones;
+      <div>
+        <table class="geo-table"><thead><tr><th>N°</th><th>Nom</th></tr></thead><tbody>${rows}</tbody></table>
+        <div id="geoplan-msg" style="display:none;margin:.5rem 0;padding:.6rem .9rem;border-radius:8px;background:#fff7ed;border:1.5px solid #f59e0b;color:#92400e;font-size:13px;font-weight:700;text-align:center"></div>
+        <button class="btn" id="geoplan-valider" onclick="validateGeoPlan()" style="width:100%;margin-bottom:1rem">✅ Valider</button>
+        <div id="geoplan-score" style="display:none" class="geo-score-panel"></div>
+      </div>
+    </div>`;
 }
 
-function renderGeoPlanZones(map){
-  const wrap = document.getElementById('geoplan-mapwrap'); if(!wrap) return;
-  const zones = document.getElementById('geoplan-zones'); if(!zones) return;
-  zones.innerHTML = '';
-  map.zones.forEach(z => {
-    const div = document.createElement('div');
-    div.id = 'geoplan-zone-'+z.id;
-    div.dataset.id = z.id;
-    div.dataset.label = z.label;
-    const filled = geoPlanState.answers[z.id];
-    div.style.cssText = `position:absolute;left:${z.x}%;top:${z.y}%;width:${z.w}%;height:${z.h}%;
-      border:2px dashed rgba(99,102,241,0.8);border-radius:8px;
-      background:${filled?'rgba(99,102,241,0.25)':'rgba(99,102,241,0.08)'};
-      display:flex;align-items:center;justify-content:center;
-      font-size:clamp(9px,1.2vw,12px);font-weight:800;color:#4f46e5;
-      text-align:center;padding:2px;cursor:pointer;transition:all .2s;box-sizing:border-box;`;
-    div.textContent = filled || '?';
-    div.ondragover = e => { e.preventDefault(); div.style.background='rgba(99,102,241,0.35)'; };
-    div.ondragleave = () => { div.style.background=geoPlanState.answers[z.id]?'rgba(99,102,241,0.25)':'rgba(99,102,241,0.08)'; };
-    div.ondrop = e => { e.preventDefault(); div.style.background='rgba(99,102,241,0.2)'; geoPlanDrop(z.id, e.dataTransfer.getData('text/plain')); };
-    div.onclick = () => geoPlanClearZone(div);
-    zones.appendChild(div);
-  });
+function geoPlanClearSel(){
+  geoPlanState.sel = null;
+  document.querySelectorAll('#geoplan-pool .geo-tag').forEach(t => t.style.outline='');
 }
-
-function geoPlanDrop(zoneId, label){
-  const map = GEO_PLANISPHERES[geoPlanState.curMap];
-  const zone = map.zones.find(z=>z.id===zoneId); if(!zone) return;
-  // Retourner l'ancienne étiquette si zone déjà remplie
-  const old = geoPlanState.answers[zoneId];
-  if(old) geoPlanReturnTag(old);
-  // Retirer la même étiquette d'une autre zone si on dépasse le nombre disponible dans le pool
+function geoPlanSelect(tag){
+  if(geoPlanState.done || !tag || tag.classList.contains('used')) return;
+  const same = geoPlanState.sel === tag;
+  geoPlanClearSel();
+  if(!same){ geoPlanState.sel = tag; tag.style.outline='3px solid #f59e0b'; }
+}
+function geoPlanReturnTag(label){
+  const pool=document.getElementById('geoplan-pool'); if(!pool) return;
+  const t = Array.from(pool.querySelectorAll('.geo-tag')).find(t => t.dataset.text===label && t.classList.contains('used'));
+  if(t){ t.classList.remove('used'); t.draggable=true; }
+}
+function geoPlanMarkUsed(label){
+  const pool=document.getElementById('geoplan-pool'); if(!pool) return;
+  const t = Array.from(pool.querySelectorAll('.geo-tag')).find(t => t.dataset.text===label && !t.classList.contains('used'));
+  if(t){ t.classList.add('used'); t.draggable=false; }
+}
+function geoPlanPlace(zoneEl, label){
+  if(geoPlanState.done || !zoneEl || !label) return;
+  const zid = zoneEl.dataset.id;
   const pool = document.getElementById('geoplan-pool');
-  const poolTags = pool ? Array.from(pool.querySelectorAll('.geo-tag')).filter(t => t.dataset.text === label).length : 1;
-  const filledZones = Object.values(geoPlanState.answers).filter(lbl => lbl === label).length;
-  if (filledZones >= poolTags) {
-    const otherZid = Object.keys(geoPlanState.answers).find(zid => zid !== zoneId && geoPlanState.answers[zid] === label);
-    if (otherZid) {
-      geoPlanState.answers[otherZid] = '';
-      const zEl = document.getElementById('geoplan-zone-' + otherZid);
-      if (zEl) { zEl.textContent = '?'; zEl.style.background = 'rgba(99,102,241,0.08)'; }
-    }
-  }
-  geoPlanState.answers[zoneId] = label;
-  const zEl = document.getElementById('geoplan-zone-'+zoneId);
-  if(zEl){ zEl.textContent=label; zEl.style.background='rgba(99,102,241,0.2)'; }
+  const free = pool ? Array.from(pool.querySelectorAll('.geo-tag')).some(t => t.dataset.text===label && !t.classList.contains('used')) : false;
+  if(!free) return;
+  const old = geoPlanState.answers[zid];
+  if(old) geoPlanReturnTag(old);
+  geoPlanState.answers[zid] = label;
+  zoneEl.textContent = label; zoneEl.classList.add('filled'); zoneEl.classList.remove('drag-over');
   geoPlanMarkUsed(label);
+  geoPlanClearSel();
+  const m = document.getElementById('geoplan-msg'); if(m) m.style.display='none';
 }
-function geoPlanReturnTag(label){ const pool=document.getElementById('geoplan-pool'); if(!pool) return; pool.querySelectorAll('.geo-tag').forEach(t=>{ if(t.dataset.text===label&&t.classList.contains('used')){t.classList.remove('used');t.draggable=true;} }); }
-function geoPlanMarkUsed(label){ const pool=document.getElementById('geoplan-pool'); if(!pool) return; let found=false; pool.querySelectorAll('.geo-tag').forEach(t=>{ if(t.dataset.text===label&&!t.classList.contains('used')&&!found){t.classList.add('used');t.draggable=false;found=true;} }); }
-function geoPlanClearZone(div){
-  const panel = document.getElementById('geoplan-score');
-  if(panel && panel.style.display === 'block') return;
-  const zoneId = div.dataset.id;
-  const label = geoPlanState.answers[zoneId];
+function geoPlanZoneClick(zoneEl){
+  if(geoPlanState.done) return;
+  if(geoPlanState.sel){ geoPlanPlace(zoneEl, geoPlanState.sel.dataset.text); return; }
+  const zid = zoneEl.dataset.id, label = geoPlanState.answers[zid];
   if(!label) return;
-  div.textContent = '?'; div.style.background = 'rgba(99,102,241,0.08)';
+  zoneEl.textContent=''; zoneEl.classList.remove('filled');
   geoPlanReturnTag(label);
-  geoPlanState.answers[zoneId] = '';
+  geoPlanState.answers[zid]='';
 }
-function geoPlanDragStart(e){ geoPlanState.dragging=e.currentTarget.dataset.text; e.dataTransfer.setData('text/plain',geoPlanState.dragging); e.currentTarget.style.opacity='0.5'; }
-function geoPlanDragEnd(e){ e.currentTarget.style.opacity=''; geoPlanState.dragging=null; }
-let geoPlanTEl=null,geoPlanTClone=null;
-function geoPlanTouchStart(e){ const tag=e.currentTarget; if(tag.classList.contains('used')) return; geoPlanTEl=tag; const clone=tag.cloneNode(true); clone.style.cssText='position:fixed;z-index:9999;opacity:.85;pointer-events:none;'; const t=e.touches[0]; clone.style.left=(t.clientX-40)+'px'; clone.style.top=(t.clientY-20)+'px'; document.body.appendChild(clone); geoPlanTClone=clone; tag.style.opacity='0.4'; }
-function geoPlanTouchMove(e){ e.preventDefault(); if(!geoPlanTClone) return; const t=e.touches[0]; geoPlanTClone.style.left=(t.clientX-40)+'px'; geoPlanTClone.style.top=(t.clientY-20)+'px'; }
-function geoPlanTouchEnd(e){ if(!geoPlanTClone) return; const t=e.changedTouches[0]; geoPlanTClone.remove(); geoPlanTClone=null; if(geoPlanTEl) geoPlanTEl.style.opacity=''; const el=document.elementFromPoint(t.clientX,t.clientY); const zone=el?el.closest('[id^="geoplan-zone-"]'):null; if(zone&&geoPlanTEl){ const zid=zone.dataset.id; geoPlanDrop(zid,geoPlanTEl.dataset.text); } geoPlanTEl=null; }
+function geoPlanDropEvt(e, zoneEl){ e.preventDefault(); zoneEl.classList.remove('drag-over'); geoPlanPlace(zoneEl, e.dataTransfer.getData('text/plain')); }
+function geoPlanDragStart(e){ if(geoPlanState.done){ e.preventDefault(); return; } e.dataTransfer.setData('text/plain', e.currentTarget.dataset.text); e.currentTarget.style.opacity='0.5'; }
+function geoPlanDragEnd(e){ e.currentTarget.style.opacity=''; }
+function geoPlanTouchStart(e){
+  const tag=e.currentTarget; if(tag.classList.contains('used') || geoPlanState.done) return;
+  geoPlanTEl=tag; const t=e.touches[0]; geoPlanTX=t.clientX; geoPlanTY=t.clientY;
+  const clone=tag.cloneNode(true); clone.style.cssText='position:fixed;z-index:9999;opacity:.85;pointer-events:none;transform:scale(1.1);';
+  clone.style.left=(t.clientX-40)+'px'; clone.style.top=(t.clientY-20)+'px';
+  document.body.appendChild(clone); geoPlanTClone=clone; tag.style.opacity='0.4';
+}
+function geoPlanTouchMove(e){
+  e.preventDefault(); if(!geoPlanTClone) return;
+  const t=e.touches[0]; geoPlanTClone.style.left=(t.clientX-40)+'px'; geoPlanTClone.style.top=(t.clientY-20)+'px';
+  if(typeof geoAutoScroll==='function') geoAutoScroll(t);
+}
+function geoPlanTouchEnd(e){
+  if(!geoPlanTClone) return;
+  e.preventDefault();
+  const t=e.changedTouches[0];
+  geoPlanTClone.remove(); geoPlanTClone=null;
+  if(typeof geoStopAutoScroll==='function') geoStopAutoScroll();
+  if(geoPlanTEl) geoPlanTEl.style.opacity='';
+  let zone = (typeof geoZoneAtTouch==='function') ? geoZoneAtTouch(t) : null;
+  if(zone && !zone.closest('#geo-planispheres-body')) zone = null;
+  if(zone && geoPlanTEl) geoPlanPlace(zone, geoPlanTEl.dataset.text);
+  else if(geoPlanTEl && Math.abs(t.clientX-geoPlanTX)<10 && Math.abs(t.clientY-geoPlanTY)<10) geoPlanSelect(geoPlanTEl);
+  geoPlanTEl=null;
+}
+function geoPlanTouchCancel(e){
+  if(geoPlanTClone){ geoPlanTClone.remove(); geoPlanTClone=null; }
+  if(geoPlanTEl){ geoPlanTEl.style.opacity=''; geoPlanTEl=null; }
+}
 
 function validateGeoPlan(){
-  const map = GEO_PLANISPHERES[geoPlanState.curMap];
-  let ok=0, total=map.zones.length;
+  const st = geoPlanState, now = Date.now();
+  if(st.done || now - st.lastClick < 600) return;
+  st.lastClick = now;
+  const map = GEO_PLANISPHERES[st.curMap];
+  const vides = map.zones.filter(z => !st.answers[z.id]).length;
+  const msg = document.getElementById('geoplan-msg');
+  if(vides > 0){
+    if(msg){ msg.textContent = vides === 1 ? "Place d'abord la dernière étiquette." : "Place d'abord toutes les étiquettes (il en reste " + vides + ")."; msg.style.display='block'; }
+    return;
+  }
+  if(msg) msg.style.display='none';
+  st.done = true;
+  geoPlanClearSel();
+  const vb = document.getElementById('geoplan-valider'); if(vb) vb.style.display='none';
+  let ok=0; const total=map.zones.length;
   map.zones.forEach(z => {
     const zEl=document.getElementById('geoplan-zone-'+z.id); if(!zEl) return;
-    if(geoPlanState.answers[z.id]===z.label){
-      zEl.style.border='2px solid #16a34a'; zEl.style.background='rgba(22,163,74,0.2)'; ok++;
-    } else {
-      zEl.style.border='2px solid #dc2626'; zEl.style.background='rgba(220,38,38,0.15)';
-      zEl.textContent=z.label; zEl.style.color='#dc2626';
+    zEl.style.cursor='default';
+    if(st.answers[z.id]===z.label){ zEl.style.background='#d4f5e2'; zEl.style.color='#166534'; zEl.style.borderColor='#16a34a'; ok++; }
+    else {
+      zEl.style.background='#fdd9d7'; zEl.style.color='#991b1b'; zEl.style.borderColor='#dc2626'; zEl.style.flexDirection='column';
+      const c=document.createElement('div'); c.style.cssText='color:#1f5fbf;font-weight:800;font-size:12px;margin-top:2px'; c.textContent='➜ '+z.label;
+      zEl.appendChild(c);
     }
   });
   const pct=Math.round(ok/total*100);
   const panel=document.getElementById('geoplan-score'); panel.style.display='block';
-  panel.innerHTML=`<div style="font-size:48px">${pct>=70?'🎉':pct>=50?'👍':'💪'}</div><div style="font-weight:800;font-size:28px;color:${pct>=70?'var(--green)':pct>=50?'var(--amber)':'var(--red)'}">${ok}/${total} — ${pct}%</div><button class="btn" onclick="renderGeoPlanMap(${geoPlanState.curMap})" style="margin-top:1rem">🔄 Recommencer</button>`;
-  if(state.student) saveResult({student:state.student,cls:state.studentCls,className:CLASSES[state.studentCls]?CLASSES[state.studentCls].name:state.studentCls,activity:'geo_planispheres',bookTitle:'Géo — Planisphère '+map.titre,score:ok,total,pct,date:new Date().toLocaleDateString('fr-BE'),time:new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})});
+  const next = st.curMap < GEO_PLANISPHERES.length-1 ? `<button class="btn" onclick="renderGeoPlanMap(${st.curMap+1})" style="margin-top:.6rem;margin-left:6px">➡️ Carte suivante</button>` : '';
+  panel.innerHTML=`<div class="score-title">${ok}/${total} — ${pct} %</div>
+    <div class="score-msg">${pct===100?'Parfait ! 🏆':pct>=70?'Bien joué ! 👍':'Continue à réviser ! 💪'}</div>
+    ${ok<total?'<div class="score-msg" style="font-size:13px">La bonne réponse est indiquée en <span style="color:#1f5fbf;font-weight:800">bleu</span>.</div>':''}
+    <button class="btn" onclick="renderGeoPlanMap(${st.curMap})" style="margin-top:.6rem">🔄 Recommencer</button>${next}`;
+  if(state.student){ try{ saveResult({student:state.student,cls:state.studentCls,className:CLASSES[state.studentCls]?CLASSES[state.studentCls].name:state.studentCls,
+    activity:'geo_planispheres',bookTitle:'Géo — Planisphère '+map.titre,score:ok,total,pct,
+    date:new Date().toLocaleDateString('fr-BE'),time:new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})}); }catch(e){} }
 }
 
 // ================================================================

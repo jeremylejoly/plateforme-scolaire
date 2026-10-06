@@ -2172,6 +2172,8 @@ Spécifique :
 
 - **06/10 — Le planisphère interactif (`geo_planisphere_interactif`, sw.js v677, MEDIA m6)** : fiche de découverte (pas de score ; libellé « (Quiz) » du plan de travail → « (découverte) »). Décision de Jeremy : illustrations retouchées en français — Afrique (OCÉAN ATLANTIQUE / INDIEN, Nil, Bassin du Congo), Amérique du Nord (OCÉAN PACIFIQUE / ATLANTIQUE, Baie d'Hudson, Golfe du Mexique), Océanie (Australie, Nouvelle-Zélande, Iles Salomon, Fidji, Ile du Sud ; mot inventé « SLUITCRN ISLANDS » effacé), Atlantique (« Dorsale atlantique »), Arctique (2e cadre « béluga » posé sur le narval effacé), Europe (« ALPES », « CARPATES », « Seine » ; faux « ALPS » en Pologne et mot inventé « Russis » effacés), Asie (étiquettes de fleuves illisibles effacées), Antarctique (« BRITISH MALLEY » effacé). Les fichiers restent des JPEG nommés .png (comme avant). Textes : Everest 8 849 m, Mont Blanc 4 806 m (Elbrouz en premier), Afrique ~1,5 milliard, Océanie : Puncak Jaya (4 884 m) au lieu du mont Wilhelm, légendes Amérique corrigées (l'image montre le castor, pas le lama/jaguar), émojis faux retirés (kiwi = fruit 🥝, ornithorynque = loutre 🦦, dugong = sirène, lamantin = phoque), « N/A » → texte français, « animé by » → « par », « Profondeur Max » → « Profondeur maximale », « Sommet » → « Point culminant », nouvelle orthographe (chaine, ile, apparaitre). Téléphone : la fiche détaillée défile à l'écran après un choix. 3 copies (fiches/, public/fiches/, racine) alignées. **Reste à décider : sur la carte de l'Asie, le Taj Mahal est dessiné sur l'Iran / la péninsule arabique au lieu de l'Inde.**
 
+- **06/10 — Les planisphères (`geo_planispheres`, sw.js v678)** : positions des 57 zones vérifiées sur les 5 cartes (Europe, Amérique, Indien, Pôle Nord, Pôle Sud) — toutes justes. Corrigé : sur téléphone les cases posées sur la carte faisaient ~29 × 15 px (illisibles, impossibles à toucher) → repères numérotés sur la carte (ordre de lecture) + tableau « N° / Nom » à côté (modèle des schémas Sciences) ; placement au toucher ajouté (touche l'étiquette puis la case) en plus du glisser ; un seul essai (après « Valider », plus de glisser ni de nouvelle validation : avant, on pouvait corriger et revalider → plusieurs sauvegardes) ; validation refusée avec message dans la page tant qu'il reste des cases vides ; bonne réponse en bleu sous la case fausse (avant : réponse de l'élève effacée et remplacée en rouge) ; garde 600 ms ; sauvegarde en try/catch ; bouton « Carte suivante ». Test Playwright 390 px : 11/13, 1 seule sauvegarde, pas de débordement.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2694,7 +2696,7 @@ Spécifique :
 | ⬜ | Régions et Communautés (Quiz) | `geo_belgique_regions_communautes` | index › renderGeoBelgiqueRegionsCommunautes |  |
 | ⬜ | La Belgique — QCM | `geo_belgique_qcm` | index › renderGeoBelgiqueQCM |  |
 | ✅ 06/10 | Le planisphère interactif (découverte) | `geo_planisphere_interactif` | fiches/planisphere-interactif.html |  |
-| ⬜ | Les planisphères | `geo_planispheres` | index › renderGeoPlanispheres |  |
+| ✅ 06/10 | Les planisphères | `geo_planispheres` | index › renderGeoPlanispheres |  |
 | ⬜ | QCM — Continents et océans | `geo_continents_qcm` | index › renderGeoContinentsQCM |  |
 | ⬜ | Le tour du monde | `geo_tour_monde` | index › renderGeoTourMonde |  |
 | ⬜ | Les océans et continents | `geo_oceans` | index › (?) | (code à localiser) |
