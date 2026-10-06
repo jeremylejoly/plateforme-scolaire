@@ -1485,6 +1485,15 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - La copie racine garde son propre chemin d'image (`assets/…` au lieu de `../assets/…`) ; le reste est identique aux 2 autres copies.
 - Tests jsdom : aiguilles exactes, 15 h accepté pour 3 h, double clic sans double comptage, Recommencer sans fuite, parcours 5 / 6 → 1 sauvegarde ; syntaxe OK.
 
+### 06/10 — Maths › Grandeurs › Les durées › Le Labo des durées (`grandeur_durees_situations`, `fiches/durees_situations.html` + copies public et racine) — sw.js v582
+- 10 situations générées (durée, heure d'arrivée, heure de départ ; train, cinéma, four, école, voiture) : sur 2 000 tirages de chacune, réponse = écart réel entre les deux heures, heures valides (pas de passage de minuit).
+- **Schéma de correction faux pour l'heure de départ** (3 situations sur 10) : le premier bond était étiqueté avec les minutes de l'heure de départ au lieu du complément à l'heure (« 8h15 → 9h00 : −15 min » au lieu de −45 min) → corrigé ; chaque bond du schéma recalculé (12 000 schémas : 0 erreur). Signe « − » dans les calculs.
+- **Réponse vide comptée** comme « 0 h 00 » (donc fausse) → message, rien n'est compté ; pour une durée, heures vides = 0 (« 45 min »). Lecture stricte des cases.
+- **Double Entrée** sautait la correction ; Entrée après la dernière question réenregistrait le résultat → correction affichée au moins 0,6 s, un seul enregistrement.
+- Libellé « Durée du trajet » aussi pour le cinéma, le four, l'école → « Durée ».
+- Nouvelle orthographe : Entraine-toi, maitrises, entrainer, Entrainement terminé.
+- Tests jsdom : vide non compté, double Entrée sans saut, partie 7 / 10 (les 3 types) → 1 sauvegarde ; capture 390 px du schéma de départ ; syntaxe OK.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1836,7 +1845,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 06/10 | Les durées — Conversions | `grandeur_durees_conversions` | index › startDureesExercise |  |
 | ✅ 06/10 | Les durées — Durée entre 2 heures | `grandeur_durees_entre` | index › startDureesExercise |  |
 | ✅ 06/10 | Quelle heure est-il ? (avec secondes) | `grandeur_durees_heure_secondes` | fiches/heure_secondes.html |  |
-| ⬜ | Le Labo des Durées | `grandeur_durees_situations` | fiches/durees_situations.html |  |
+| ✅ 06/10 | Le Labo des Durées | `grandeur_durees_situations` | fiches/durees_situations.html |  |
 | ⬜ | Paie le commerçant | `grandeur_monnaie_payer` | fiches/payer_le_commercant.html |  |
 | ⬜ | Rends la monnaie | `grandeur_monnaie_rendre` | fiches/rendre_la_monnaie.html |  |
 | ⬜ | Deux objets — Rends la monnaie | `grandeur_monnaie_deux_objets` | fiches/deux_objets_monnaie.html |  |
