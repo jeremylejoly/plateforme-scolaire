@@ -2027,6 +2027,11 @@ Spécifique :
 - Moteur remplacé par celui du QCM respiratoire : message si questions sans réponse, garde 600 ms, bonne réponse manquée en bleu (avant : verte), sauvegarde unique try/catch (avant : sans garde, total 10 en dur), scroll conservé.
 - Tests Playwright 390 px : 300 tirages sans doublon de famille, bonne réponse ~25 % par position, message « il en reste 10 », 1 erreur → 1 bleu, 1 sauvegarde malgré 3 clics, pas de débordement. exercices_eveil.js?v=20261006b.
 
+### 06/10 — Éveil → Sciences → L'appareil digestif → Termes et définitions (`sci_dig_assoc`, index › SCI_DIG_ASSOC_DATA / renderSciDigAssoc / validateSciDigAssoc) — sw.js v648
+- Ancien moteur à 3 colonnes remplacé par le moteur commun corrigé (comme respiratoire v643) : terme ↔ case, banque de définitions, glisser ou toucher puis case, message « il en reste N », garde 600 ms, validation unique, bonne définition en bleu, sauvegarde unique try/catch.
+- Contenu : définitions ambiguës levées — Estomac (« mélange les aliments avec les sucs ») ≈ Brassage → « poche qui produit le suc gastrique » ; Côlon (« partie du gros intestin qui absorbe l'eau ») ≈ Gros intestin (« absorbe l'eau et forme les selles ») → paire Côlon retirée (synonyme) ; Pancréas « enzymes » → « un suc digestif et l'insuline » ; Foie ≠ Bile reformulés ; sucs pancréatique/intestinal distingués ; « Oesophage » → « Œsophage ». 19 paires, 8 tirées.
+- Tests Playwright 390 px (toucher) : message à vide, placement par toucher, 2 inversées → 6/8 + 2 bleus, 1 sauvegarde malgré 3 clics, pas de débordement.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2493,7 +2498,7 @@ Spécifique :
 | ✅ 06/10 | Appareil digestif — Le schéma | `sci_dig_schema` | index › renderSciDigSchema |  |
 | ✅ 06/10 | Appareil digestif — Trajet des aliments | `sci_dig_texte` | index › renderSciDigTexte |  |
 | ✅ 06/10 | Appareil digestif — QCM | `sci_dig_qcm` | index › renderSciDigQCM |  |
-| ⬜ | Appareil digestif — Termes et définitions | `sci_dig_assoc` | index › renderSciDigAssoc |  |
+| ✅ 06/10 | Appareil digestif — Termes et définitions | `sci_dig_assoc` | index › renderSciDigAssoc |  |
 | ⬜ | Appareil digestif — Remettre de l'ordre | `sci_dig_ordre` | index › renderSciDigOrdre |  |
 | ⬜ | Système circulatoire — La leçon | `fiche_circulatoire` | fiches/systeme-circulatoire.html |  |
 | ⬜ | Appareil circulatoire — Le cœur | `sci_coeur` | index › renderSciCoeurScreen |  |

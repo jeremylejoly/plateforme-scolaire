@@ -37568,101 +37568,249 @@ function validateSciDigQCM(){
 
 // ----- EXERCICE 4 : TERMES ET DÉFINITIONS -----
 const SCI_DIG_ASSOC_DATA = [
-  {terme:"Oesophage",        def:"Tube musculaire qui transporte les aliments de la gorge vers l'estomac"},
-  {terme:"Estomac",          def:"Organe qui mélange les aliments avec les sucs gastriques"},
-  {terme:"Foie",             def:"Organe qui produit la bile pour digérer les graisses"},
-  {terme:"Pancréas",         def:"Glande qui produit des enzymes digestives et l'insuline"},
-  {terme:"Intestin grêle",   def:"Long tube où sont absorbés la plupart des nutriments"},
-  {terme:"Gros intestin",    def:"Organe qui absorbe l'eau et forme les selles"},
-  {terme:"Rectum",           def:"Partie finale du gros intestin qui stocke les selles"},
-  {terme:"Anus",             def:"Orifice par lequel les selles sont évacuées"},
-  {terme:"Salive",           def:"Liquide produit par les glandes salivaires qui commence la digestion"},
-  {terme:"Bile",             def:"Liquide produit par le foie qui aide à digérer les graisses"},
-  {terme:"Mastication",      def:"Action de broyer les aliments avec les dents"},
-  {terme:"Déglutition",      def:"Action d'avaler les aliments vers l'œsophage"},
-  {terme:"Brassage",         def:"Mouvement de l'estomac qui mélange les aliments aux sucs"},
-  {terme:"Contractions",     def:"Mouvements musculaires qui font avancer les aliments dans le tube digestif"},
-  {terme:"Côlon",            def:"Partie du gros intestin qui absorbe l'eau"},
-  {terme:"Suc gastrique",    def:"Liquide acide produit par l'estomac pour digérer les aliments"},
-  {terme:"Suc pancréatique", def:"Liquide produit par le pancréas qui achève la digestion dans l'intestin grêle"},
-  {terme:"Suc intestinal",   def:"Liquide produit par l'intestin grêle qui termine la décomposition des aliments"},
-  {terme:"Nutriments",       def:"Substances issues de la digestion qui nourrissent les cellules du corps"},
-  {terme:"Glandes salivaires",def:"Organes qui produisent la salive dans la bouche"},
+  {terme:"Œsophage",           def:"Tube musculaire qui conduit les aliments de la gorge vers l'estomac"},
+  {terme:"Estomac",            def:"Organe en forme de poche qui produit le suc gastrique"},
+  {terme:"Foie",               def:"Gros organe qui produit la bile"},
+  {terme:"Pancréas",           def:"Organe qui produit un suc digestif et l'insuline"},
+  {terme:"Intestin grêle",     def:"Long tube replié où la plupart des nutriments passent dans le sang"},
+  {terme:"Gros intestin",      def:"Organe qui absorbe l'eau et forme les selles"},
+  {terme:"Rectum",             def:"Partie finale du gros intestin qui stocke les selles"},
+  {terme:"Anus",               def:"Orifice par lequel les selles sont évacuées"},
+  {terme:"Salive",             def:"Liquide de la bouche qui ramollit les aliments et commence la digestion"},
+  {terme:"Bile",               def:"Liquide produit par le foie qui aide à digérer les graisses"},
+  {terme:"Mastication",        def:"Action de broyer les aliments avec les dents"},
+  {terme:"Déglutition",        def:"Action d'avaler les aliments vers l'œsophage"},
+  {terme:"Brassage",           def:"Mouvement de l'estomac qui mélange les aliments au suc gastrique"},
+  {terme:"Contractions",       def:"Mouvements des muscles qui font avancer les aliments dans le tube digestif"},
+  {terme:"Suc gastrique",      def:"Liquide acide produit par l'estomac pour digérer les aliments"},
+  {terme:"Suc pancréatique",   def:"Liquide produit par le pancréas et déversé dans l'intestin grêle"},
+  {terme:"Suc intestinal",     def:"Liquide produit par l'intestin grêle qui termine la digestion"},
+  {terme:"Nutriments",         def:"Substances issues de la digestion qui nourrissent les cellules du corps"},
+  {terme:"Glandes salivaires", def:"Organes qui produisent la salive"},
 ];
 
-let digAssocState = {pairs:[], defOrder:[], placed:{}, dragging:null, touchClone:null};
+let digATEl=null,digAClone=null;
+let digAssocState = {pairs:[], defOrder:[], placed:{}, dragging:null, touchClone:null, touchSource:null};
+
 function renderSciDigAssoc(){
-  const body=document.getElementById('sci-dig-assoc-body'); if(!body) return;
-  const pairs=shuffle([...SCI_DIG_ASSOC_DATA]).slice(0,8);
-  const defOrder=shuffle(pairs.map((_,i)=>i));
-  digAssocState={pairs,defOrder,placed:{},dragging:null,touchClone:null};
-  const defsCol = shuffle(pairs.map((_,i) => i));
-  let rowsHtml = '';
-  pairs.forEach((p,i) => {
-    rowsHtml += `<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px;align-items:center;">
-      <div style="padding:8px 12px;background:var(--surface);border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-weight:700;min-height:48px;display:flex;align-items:center">${p.terme}</div>
-      <div class="dig-assoc-zone" id="dig-zone-${i}" data-index="${i}" onclick="digAssocClearZone(this)"
-        style="min-height:48px;display:flex;align-items:center;padding:6px 10px;
-        background:var(--purple-light);border:2px dashed var(--purple);border-radius:8px;font-size:12px;transition:background .2s;cursor:pointer;"
-        ondragover="digAssocDragOver(event)" ondrop="digAssocDrop(event)" ondragleave="digAssocDragLeave(event)">
-        <span style="opacity:.5">Glisse ici…</span>
-      </div>
-      <div id="dig-def-container-${defsCol[i]}" style="min-height:48px;">
-        <div class="dig-assoc-def" id="dig-def-${defsCol[i]}" data-index="${defsCol[i]}" draggable="true"
-          style="padding:8px 10px;background:var(--purple);color:#fff;border-radius:8px;font-size:12px;
-          font-weight:600;cursor:grab;user-select:none;touch-action:none;min-height:48px;
-          display:flex;align-items:center;line-height:1.3;"
-          ondragstart="digAssocDragStart(event)" ondragend="digAssocDragEnd(event)"
-          ontouchstart="digAssocTouchStart(event)" ontouchmove="digAssocTouchMove(event)" ontouchend="digAssocTouchEnd(event)" ontouchcancel="digAssocTouchCancel(event)">
-          ${pairs[defsCol[i]].def}
-        </div>
-      </div>
+  const body = document.getElementById('sci-dig-assoc-body');
+  if(!body) return;
+
+  const pairs = shuffle([...SCI_DIG_ASSOC_DATA]).slice(0, 8);
+  const defOrder = shuffle(pairs.map((_,i) => i));
+  digAssocState = {pairs, defOrder, placed:{}, dragging:null, touchClone:null, touchSource:null, done:false, lastClick:0};
+
+  let termesHtml = '';
+  pairs.forEach((p, i) => {
+    termesHtml += `<div class="assoc-terme" id="digassoc-terme-${i}" data-index="${i}"
+      style="min-height:52px;display:flex;align-items:center;padding:8px 12px;
+      background:var(--surface);border:1.5px solid var(--border);border-radius:8px;
+      font-size:13px;font-weight:700;color:var(--text)">
+      ${p.terme}
+    </div>`;
+    termesHtml += `<div class="assoc-drop-zone" id="digassoc-zone-${i}" data-index="${i}" onclick="digAssocClearZone(this)"
+      style="min-height:52px;display:flex;align-items:center;padding:8px 12px;
+      background:var(--purple-light);border:2px dashed var(--purple);border-radius:8px;
+      font-size:12px;color:var(--muted);cursor:pointer;transition:background .2s;min-width:0;overflow-wrap:anywhere;"
+      ondragover="digAssocDragOver(event)" ondrop="digAssocDrop(event)" ondragleave="digAssocDragLeave(event)"
+      ontouchstart="digAssocZoneTouchStart(event)">
+      <span style="opacity:.5">Glisse une définition ici…</span>
     </div>`;
   });
+
+  let defsHtml = '';
+  defOrder.forEach(i => {
+    defsHtml += `<div class="assoc-def" id="digassoc-def-${i}" data-index="${i}" draggable="true"
+      style="padding:8px 14px;background:var(--purple);color:#fff;border-radius:8px;
+      font-size:12px;font-weight:600;cursor:grab;user-select:none;touch-action:none;
+      margin-bottom:6px;line-height:1.4;"
+      onclick="digAssocSelect(this)" ondragstart="digAssocDragStart(event)" ondragend="digAssocDragEnd(event)"
+      ontouchstart="digAssocDefTouchStart(event)" ontouchmove="digAssocDefTouchMove(event)" ontouchend="digAssocDefTouchEnd(event)" ontouchcancel="digAssocDefTouchCancel(event)">
+      ${pairs[i].def}
+    </div>`;
+  });
+
   body.innerHTML = `
-    <div class="card" style="margin-bottom:1rem;padding:.8rem 1rem;background:var(--purple-light);border:1px solid var(--purple);">
-      <p style="margin:0;font-size:13px;color:var(--purple);font-weight:700">Glisse chaque définition (colonne de droite) en face du bon terme (colonne de gauche).</p>
+    <div class="card" style="margin-bottom:1rem;padding:0.8rem 1rem;background:var(--purple-light);border:1px solid var(--purple);">
+      <p style="margin:0;font-size:13px;color:var(--purple);font-weight:700">Glisse chaque définition en face du bon terme (ou touche une définition, puis la case).</p>
     </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:6px;">
-      <div style="font-size:11px;font-weight:800;text-transform:uppercase;color:var(--muted);">Terme</div>
-      <div style="font-size:11px;font-weight:800;text-transform:uppercase;color:var(--muted);">Ta réponse</div>
-      <div style="font-size:11px;font-weight:800;text-transform:uppercase;color:var(--muted);">Définitions</div>
+    <div style="display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:8px 10px;margin-bottom:1rem;">
+      <div style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);">Termes</div>
+      <div style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);">Définitions</div>
+      ${termesHtml}
     </div>
-    <div id="dig-rows">${rowsHtml}</div>
-    <button class="btn" onclick="validateSciDigAssoc()" style="width:100%;margin-top:1rem;margin-bottom:1rem">✅ Vérifier mes réponses</button>
-    <div id="dig-assoc-score" style="display:none"></div>`;
+    <div class="card" style="margin-bottom:1rem;">
+      <div style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:8px;">🏷️ Définitions à placer</div>
+      <div id="digassoc-def-pool">${defsHtml}</div>
+    </div>
+    <div id="digassoc-msg" style="display:none;margin-bottom:.75rem;padding:.6rem .9rem;border-radius:8px;background:#fff7ed;border:1.5px solid #f59e0b;color:#92400e;font-size:13px;font-weight:700;text-align:center"></div>
+    <button class="btn" id="digassoc-verif" onclick="validateSciDigAssoc()" style="width:100%;margin-bottom:1rem">✅ Vérifier mes réponses</button>
+    <div id="digassoc-score-panel" style="display:none"></div>
+  `;
 }
+
 function digAssocDragStart(e){ digAssocState.dragging=e.currentTarget.dataset.index; e.dataTransfer.setData('text/plain',e.currentTarget.dataset.index); e.currentTarget.style.opacity='0.5'; }
 function digAssocDragEnd(e){ e.currentTarget.style.opacity=''; digAssocState.dragging=null; }
 function digAssocDragOver(e){ e.preventDefault(); e.currentTarget.style.background='var(--purple-mid,#ede9fe)'; }
 function digAssocDragLeave(e){ e.currentTarget.style.background='var(--purple-light)'; }
-function digAssocDrop(e){ e.preventDefault(); const zone=e.currentTarget; zone.style.background='var(--purple-light)'; digAssocPlacer(zone,parseInt(e.dataTransfer.getData('text/plain'))); }
-function digAssocPlacer(zone,defIndex){ const zi=parseInt(zone.dataset.index); const pairs=digAssocState.pairs; const ancien=digAssocState.placed[zi]; if(ancien!==undefined) digAssocRetourner(ancien); Object.entries(digAssocState.placed).forEach(([z,d])=>{ if(d===defIndex&&parseInt(z)!==zi){delete digAssocState.placed[parseInt(z)]; const oz=document.getElementById('dig-zone-'+z); if(oz){oz.innerHTML='<span style="opacity:.5">Glisse une définition ici…</span>';oz.style.background='var(--purple-light)';oz.style.border='2px dashed var(--purple)';}} }); digAssocRetirerBanque(defIndex); digAssocState.placed[zi]=defIndex; zone.innerHTML=`<span style="font-size:12px;font-weight:600;color:var(--purple);line-height:1.4">${pairs[defIndex].def}</span>`; zone.style.border='2px solid var(--purple)'; }
-function digAssocRetourner(di){ const pool=document.getElementById('dig-def-container-'+di); if(!pool||document.getElementById('dig-def-'+di)) return; const pairs=digAssocState.pairs; const div=document.createElement('div'); div.className='dig-assoc-def'; div.id='dig-def-'+di; div.dataset.index=di; div.draggable=true; div.style.cssText='padding:8px 10px;background:var(--purple);color:#fff;border-radius:8px;font-size:12px;font-weight:600;cursor:grab;user-select:none;touch-action:none;min-height:48px;display:flex;align-items:center;line-height:1.3;'; div.textContent=pairs[di].def; div.ondragstart=digAssocDragStart; div.ondragend=digAssocDragEnd; div.ontouchstart=digAssocTouchStart; div.ontouchmove=digAssocTouchMove; div.ontouchend=digAssocTouchEnd; div.ontouchcancel=digAssocTouchCancel; pool.appendChild(div); }
-function digAssocRetirerBanque(di){ const el=document.getElementById('dig-def-'+di); if(el) el.remove(); }
+function digAssocDrop(e){
+  e.preventDefault();
+  e.currentTarget.style.background='var(--purple-light)';
+  digAssocPlacerDef(e.currentTarget, parseInt(e.dataTransfer.getData('text/plain')));
+}
+
+function digAssocPlacerDef(zone, defIndex){
+  if(digAssocState.done || isNaN(defIndex)) return;
+  const m=document.getElementById('digassoc-msg'); if(m) m.style.display='none';
+  const zoneIndex = parseInt(zone.dataset.index);
+  const ancien = digAssocState.placed[zoneIndex];
+  if(ancien !== undefined) digAssocRetournerDef(ancien);
+  Object.entries(digAssocState.placed).forEach(([zi, di]) => {
+    if(di === defIndex && parseInt(zi) !== zoneIndex){
+      delete digAssocState.placed[parseInt(zi)];
+      const oldZone = document.getElementById('digassoc-zone-'+zi);
+      if(oldZone){ oldZone.innerHTML='<span style="opacity:.5">Glisse une définition ici…</span>'; oldZone.style.background='var(--purple-light)'; oldZone.style.border='2px dashed var(--purple)'; }
+    }
+  });
+  digAssocRetirerDeBanque(defIndex);
+  if(digAssocState.sel===defIndex) digAssocState.sel=undefined;
+  digAssocState.placed[zoneIndex] = defIndex;
+  zone.innerHTML = `<span style="font-size:12px;font-weight:600;color:var(--purple);line-height:1.4">${digAssocState.pairs[defIndex].def}</span>`;
+  zone.style.border = '2px solid var(--purple)';
+}
+
+function digAssocRetournerDef(defIndex){
+  const pool = document.getElementById('digassoc-def-pool');
+  if(!pool || document.getElementById('digassoc-def-'+defIndex)) return;
+  const div = document.createElement('div');
+  div.className='assoc-def'; div.id='digassoc-def-'+defIndex; div.dataset.index=defIndex; div.draggable=true;
+  div.style.cssText='padding:8px 14px;background:var(--purple);color:#fff;border-radius:8px;font-size:12px;font-weight:600;cursor:grab;user-select:none;touch-action:none;margin-bottom:6px;line-height:1.4;';
+  div.textContent=digAssocState.pairs[defIndex].def;
+  div.addEventListener('dragstart',digAssocDragStart); div.addEventListener('dragend',digAssocDragEnd);
+  div.addEventListener('touchstart',digAssocDefTouchStart,{passive:false}); div.addEventListener('touchmove',digAssocDefTouchMove,{passive:false}); div.addEventListener('touchend',digAssocDefTouchEnd);
+  div.addEventListener('touchcancel',digAssocDefTouchCancel);
+  div.addEventListener('click',()=>digAssocSelect(div));
+  pool.appendChild(div);
+}
+function digAssocSelect(el){
+  const st=digAssocState; if(st.done||!el) return;
+  const di=parseInt(el.dataset.index);
+  document.querySelectorAll('#digassoc-def-pool .assoc-def').forEach(d=>d.style.outline='');
+  if(st.sel===di){ st.sel=undefined; return; }
+  st.sel=di; el.style.outline='3px solid #f59e0b';
+}
+function digAssocPoserSelection(zone){
+  const st=digAssocState;
+  if(st.done || st.sel===undefined || st.placed[parseInt(zone.dataset.index)]!==undefined) return false;
+  const di=st.sel; st.sel=undefined; digAssocPlacerDef(zone,di); return true;
+}
+function digAssocRetirerDeBanque(defIndex){ const el=document.getElementById('digassoc-def-'+defIndex); if(el) el.remove(); }
 function digAssocClearZone(zone){
-  const panel = document.getElementById('dig-assoc-score');
+  const panel = document.getElementById('digassoc-score-panel');
   if(panel && panel.style.display === 'block') return;
+  if(digAssocPoserSelection(zone)) return;
   const zi = parseInt(zone.dataset.index);
   const di = digAssocState.placed[zi];
   if(di === undefined) return;
   delete digAssocState.placed[zi];
-  zone.innerHTML = '<span style="opacity:.5">Glisse ici…</span>';
+  zone.innerHTML = '<span style="opacity:.5">Glisse une définition ici…</span>';
   zone.style.background = 'var(--purple-light)'; zone.style.border = '2px dashed var(--purple)';
-  digAssocRetourner(di);
+  digAssocRetournerDef(di);
 }
-let digATEl=null,digAClone=null;
-function digAssocTouchStart(e){ e.preventDefault(); digATEl=e.currentTarget; const clone=digATEl.cloneNode(true); clone.style.cssText='position:fixed;z-index:9999;opacity:.85;pointer-events:none;padding:8px 14px;background:var(--purple);color:#fff;border-radius:8px;font-size:12px;'; const t=e.touches[0]; clone.style.left=(t.clientX-60)+'px'; clone.style.top=(t.clientY-20)+'px'; document.body.appendChild(clone); digAClone=clone; digATEl.style.opacity='0.4'; }
-function digAssocTouchMove(e){ e.preventDefault(); if(!digAClone) return; const t=e.touches[0]; digAClone.style.left=(t.clientX-60)+'px'; digAClone.style.top=(t.clientY-20)+'px'; }
-function digAssocTouchEnd(e){ if(!digAClone) return; const t=e.changedTouches[0]; digAClone.remove(); digAClone=null; if(digATEl) digATEl.style.opacity=''; const el=document.elementFromPoint(t.clientX,t.clientY); const zone=el?el.closest('.dig-assoc-zone'):null; if(zone&&digATEl) digAssocPlacer(zone,parseInt(digATEl.dataset.index)); digATEl=null; }
-function digAssocTouchCancel(e){ if(digAClone) { digAClone.remove(); digAClone=null; } if(digATEl) { digATEl.style.opacity=''; digATEl=null; } }
+
+function digAssocDefTouchStart(e){
+  e.preventDefault();
+  if(digAssocState.done) return;
+  digAssocState.touchSource=e.currentTarget;
+  const touch=e.touches[0];
+  digAssocState.touchX=touch.clientX; digAssocState.touchY=touch.clientY;
+  const clone=e.currentTarget.cloneNode(true);
+  clone.style.cssText+=';position:fixed;z-index:9999;pointer-events:none;opacity:.85;width:160px;';
+  clone.style.left=(touch.clientX-80)+'px'; clone.style.top=(touch.clientY-20)+'px';
+  document.body.appendChild(clone); digAssocState.touchClone=clone;
+  e.currentTarget.style.opacity='0.4';
+}
+function digAssocDefTouchMove(e){
+  e.preventDefault();
+  if(!digAssocState.touchClone) return;
+  const touch=e.touches[0];
+  digAssocState.touchClone.style.left=(touch.clientX-80)+'px';
+  digAssocState.touchClone.style.top=(touch.clientY-20)+'px';
+}
+function digAssocDefTouchEnd(e){
+  e.preventDefault();
+  if(!digAssocState.touchClone) return;
+  const touch=e.changedTouches[0];
+  digAssocState.touchClone.remove(); digAssocState.touchClone=null;
+  if(digAssocState.touchSource) digAssocState.touchSource.style.opacity='';
+  const el=document.elementFromPoint(touch.clientX,touch.clientY);
+  const zone=el?el.closest('.assoc-drop-zone'):null;
+  const src=digAssocState.touchSource;
+  if(zone && src) digAssocPlacerDef(zone,parseInt(src.dataset.index));
+  else if(src && Math.abs(touch.clientX-digAssocState.touchX)<10 && Math.abs(touch.clientY-digAssocState.touchY)<10) digAssocSelect(src);
+  digAssocState.touchSource=null;
+}
+function digAssocDefTouchCancel(e){
+  if(digAssocState.touchClone) { digAssocState.touchClone.remove(); digAssocState.touchClone=null; }
+  if(digAssocState.touchSource) { digAssocState.touchSource.style.opacity=''; digAssocState.touchSource=null; }
+}
+function digAssocZoneTouchStart(e){
+  const zone=e.currentTarget;
+  const zi=parseInt(zone.dataset.index);
+  const di=digAssocState.placed[zi];
+  if(digAssocState.done) return;
+  if(di===undefined){ if(digAssocPoserSelection(zone)) e.preventDefault(); return; }
+  e.preventDefault();
+  delete digAssocState.placed[zi];
+  zone.innerHTML='<span style="opacity:.5">Glisse une définition ici…</span>';
+  zone.style.background='var(--purple-light)'; zone.style.border='2px dashed var(--purple)';
+  digAssocRetournerDef(di);
+}
+
 function validateSciDigAssoc(){
-  const pairs=digAssocState.pairs; let ok=0;
-  pairs.forEach((p,i)=>{ const zone=document.getElementById('dig-zone-'+i); if(!zone) return; const placed=digAssocState.placed[i]; if(placed!==undefined&&pairs[placed].def===p.def){zone.style.border='2px solid #16a34a';zone.style.background='#d4f5e2';ok++;}else{zone.style.border='2px solid #dc2626';zone.style.background='#fdd9d7';if(placed===undefined)zone.innerHTML='<span style="font-size:11px;color:#dc2626">— '+p.def+'</span>';} });
-  const total=pairs.length; const pct=Math.round(ok/total*100);
-  const panel=document.getElementById('dig-assoc-score'); panel.style.display='block';
-  panel.innerHTML=`<div style="font-size:48px">${pct>=70?'🎉':pct>=50?'👍':'💪'}</div><div style="font-weight:800;font-size:28px;color:${pct>=70?'var(--green)':pct>=50?'var(--amber)':'var(--red)'}">${ok}/${total} — ${pct}%</div><button class="btn" onclick="renderSciDigAssoc()" style="margin-top:1rem">🔄 Recommencer</button>`;
-  if(state.student) saveResult({student:state.student,cls:state.studentCls,className:CLASSES[state.studentCls]?CLASSES[state.studentCls].name:state.studentCls,activity:'sci_dig_assoc',bookTitle:'Digestif — Termes et définitions',score:ok,total,pct,date:new Date().toLocaleDateString('fr-BE'),time:new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})});
+  const st=digAssocState, now=Date.now();
+  if(st.done || now-st.lastClick<600) return;
+  st.lastClick=now;
+  const pairs=st.pairs;
+  const reste=pairs.length-Object.keys(st.placed).length;
+  const msg=document.getElementById('digassoc-msg');
+  if(reste>0){
+    if(msg){ msg.textContent='Place d\'abord toutes les définitions (il en reste '+reste+').'; msg.style.display='block'; }
+    return;
+  }
+  if(msg) msg.style.display='none';
+  st.done=true;
+  const vb=document.getElementById('digassoc-verif'); if(vb) vb.style.display='none';
+  document.querySelectorAll('#digassoc-def-pool .assoc-def').forEach(d=>d.draggable=false);
+  let score=0;
+  pairs.forEach((p,i)=>{
+    const zone=document.getElementById('digassoc-zone-'+i);
+    const di=digAssocState.placed[i];
+    const correct=di!==undefined && pairs[di].terme===p.terme;
+    if(correct){ score++; if(zone){zone.style.background='var(--green-light,#dcfce7)';zone.style.border='2px solid var(--green,#16a34a)';} }
+    else{ if(zone){zone.style.background='var(--red-light,#fee2e2)';zone.style.border='2px solid var(--red,#dc2626)'; const c=document.createElement('div'); c.style.cssText='font-size:11px;color:#1f5fbf;margin-top:4px;font-weight:700;line-height:1.35'; c.textContent='➜ '+p.def; zone.style.flexDirection='column'; zone.style.alignItems='flex-start'; zone.appendChild(c);} }
+  });
+  const total=pairs.length, pct=Math.round(score/total*100);
+  const color=pct>=70?'var(--green)':pct>=50?'var(--amber)':'var(--red)';
+  const emoji=pct>=70?'🎉':pct>=50?'👍':'💪';
+  const panel=document.getElementById('digassoc-score-panel');
+  panel.style.display='block';
+  panel.innerHTML=`<div class="card" style="text-align:center">
+    <div style="font-size:48px;margin-bottom:.5rem">${emoji}</div>
+    <div style="font-family:'Nunito',sans-serif;font-weight:800;font-size:32px;color:${color}">${score}/${total}</div>
+    <div style="font-size:16px;color:${color};font-weight:700;margin-bottom:1rem">${pct}%</div>
+    <button class="btn" onclick="renderSciDigAssoc()">🔄 Nouvel exercice</button>
+  </div>`;
+  panel.scrollIntoView({behavior:'smooth'});
+  if(state.student){
+    try{ saveResult({student:state.student,cls:state.studentCls,
+      className:CLASSES[state.studentCls]?CLASSES[state.studentCls].name:state.studentCls,
+      activity:'sci_dig_assoc',bookTitle:'Digestif — Termes et définitions',
+      score,total,pct,
+      date:new Date().toLocaleDateString('fr-BE'),
+      time:new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})
+    }); }catch(e){}
+  }
 }
 
 function renderSciDigOrdre() {
