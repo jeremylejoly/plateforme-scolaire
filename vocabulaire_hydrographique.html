@@ -252,6 +252,22 @@
     text-anchor: middle;
     dominant-baseline: central;
   }
+  /* Glisser-déposer : rond visé et étiquette qui suit le doigt */
+  .hotspot.drop-target circle.hs-ring {
+    fill: #bae6fd;
+    stroke: var(--bleu-fonce);
+    stroke-width: 5;
+  }
+  .hotspot.drop-target circle.hs-halo {
+    r: 30;
+    fill: rgba(2, 132, 199, 0.55);
+  }
+  .word-tile { touch-action: none; }
+  .word-tile.drag-clone {
+    position: fixed; z-index: 9999; pointer-events: none; margin: 0;
+    transform: translate(-50%, -130%) scale(1.08);
+    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.3);
+  }
   .hotspot:hover circle.hs-ring {
     fill: #e0f2fe;
     stroke: var(--bleu-fonce);
@@ -320,8 +336,31 @@
     fill: var(--rouge-clair);
   }
   .hotspot.validated-wrong .hs-label {
-    fill: var(--rouge-fonce);
+    fill: #1f5fbf;
+    font-weight: 700;
   }
+  .hotspot.validated-wrong .hs-label-bg {
+    stroke: #1f5fbf;
+    fill: #e8f0fc;
+  }
+  /* Liste des ronds sous l'illustration (téléphone : les ronds et les mots y sont minuscules) */
+  .hs-list { display: none; grid-template-columns: 1fr 1fr; gap: 8px; margin: 12px 0 4px; }
+  .hs-slot {
+    display: flex; align-items: center; gap: 8px; min-height: 42px; padding: 6px 8px;
+    border: 2px dashed #94a3b8; border-radius: 10px; background: #fff; cursor: pointer;
+    font-family: 'Fredoka', sans-serif; font-size: 14px; color: var(--encre); text-align: left;
+  }
+  .hs-slot .hs-slot-num {
+    flex: 0 0 26px; height: 26px; border-radius: 50%; background: var(--bleu-fonce); color: #fff;
+    display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px;
+  }
+  .hs-slot.filled { border-style: solid; border-color: var(--bleu-fonce); background: #e0f2fe; }
+  .hs-slot.ok { border-style: solid; border-color: var(--vert-fonce); background: #dcfce7; }
+  .hs-slot.ko { border-style: solid; border-color: var(--rouge-fonce); background: #fee2e2; }
+  .hs-slot .fix { display: block; color: #1f5fbf; font-weight: 700; }
+  .hs-slot.drop-target { border-color: var(--bleu-fonce); background: #bae6fd; }
+  .ex-msg { display: none; margin: 10px 0; padding: 10px 14px; border-radius: 10px; background: #fff7ed; border: 2px solid #f59e0b; color: #92400e; font-weight: 700; font-size: 14px; text-align: center; }
+  @media (max-width: 700px) { .hs-list { display: grid; } }
 
   /* LABELS LCML SUR LE DESSIN */
   .hs-label {
@@ -478,7 +517,7 @@
       <div class="card-head">
         <div>
           <h2>Le parcours de l'eau, de la montagne à l'océan</h2>
-          <p class="instructions">1. Clique sur un mot dans la liste.<br>2. Clique sur le rond numéroté pour l'y placer. (Tu peux recliquer sur un mot placé pour le retirer ou le déplacer).<br>3. Clique sur <b>« Valider mes réponses »</b> une fois terminé !</p>
+          <p class="instructions">1. Clique sur un mot dans la liste.<br>2. Clique sur le rond numéroté (ou sa case dans la liste sous l'image) pour l'y placer. Tu peux aussi faire glisser le mot. (Reclique sur un mot placé pour le retirer.)<br>3. Clique sur <b>« Valider mes réponses »</b> une fois terminé !</p>
         </div>
         <div class="status-block">
           <div class="score-pill" id="ex2-status-pill">
@@ -647,7 +686,9 @@
         </svg>
       </div>
 
+      <div class="hs-list" id="hs-list"></div>
       <div class="word-bank" id="ex2-bank"></div>
+      <div class="ex-msg" id="ex2-msg"></div>
 
       <div class="actions-bar" id="ex2-actions-bar">
         <button class="btn-3d btn-primary" id="ex2-validate-btn">✔ Valider mes réponses</button>
@@ -658,7 +699,7 @@
         <h3 id="ex2-banner-title">Résultats</h3>
         <p id="ex2-banner-text"></p>
         <div class="banner-actions">
-          <button class="btn-3d btn-primary" id="ex2-retry-errors-btn">✏️ Corriger mes erreurs</button>
+          <button class="btn-3d btn-primary" id="ex2-retry-errors-btn" style="display:none">✏️ Corriger mes erreurs</button>
           <button class="btn-3d" id="ex2-retry-all-btn">↺ Tout recommencer</button>
         </div>
       </div>
@@ -695,10 +736,35 @@
   var ex2RetryAllBtn = document.getElementById("ex2-retry-all-btn");
 
   var hotspots = Array.prototype.slice.call(document.querySelectorAll("#ex2-svg .hotspot"));
+  var ex2Msg = document.getElementById("ex2-msg");
+  var hsList = document.getElementById("hs-list");
+  var slots = {};
+  hotspots.forEach(function(hs){
+    var n = hs.dataset.hs;
+    var b = document.createElement("button");
+    b.type = "button"; b.className = "hs-slot"; b.dataset.hs = n;
+    b.innerHTML = '<span class="hs-slot-num">' + n + '</span><span class="hs-slot-word"></span>';
+    b.addEventListener("click", function(){ hs.dispatchEvent(new MouseEvent("click", { bubbles: true })); });
+    hsList.appendChild(b);
+    slots[n] = b;
+  });
+  function syncSlots(){
+    hotspots.forEach(function(hs){
+      var n = hs.dataset.hs, b = slots[n], w = placements[n], wEl = b.querySelector(".hs-slot-word");
+      b.classList.remove("filled", "ok", "ko");
+      if(isValidated){
+        if(w === hs.dataset.answer){ b.classList.add("ok"); wEl.textContent = w; }
+        else { b.classList.add("ko"); wEl.innerHTML = '<s>' + (w || '—') + '</s><span class="fix">➜ ' + hs.dataset.answer + '</span>'; }
+      } else {
+        wEl.textContent = w || "";
+        if(w) b.classList.add("filled");
+      }
+    });
+  }
   
   // State
-  var ex2SelectedWord = null;
-  var placements = {};
+  var ex2SelectedWord = null; // currently selected word string
+  var placements = {};        // hotspotId -> word
   var isValidated = false;
 
   function initExercise(){
@@ -711,6 +777,7 @@
     ex2StatusLabel.textContent = "Placés :";
     ex2StatusNum.textContent = "0 / " + ex2Words.length;
     ex2ValidateBtn.style.display = "inline-flex";
+    ex2Msg.style.display = "none";
 
     hotspots.forEach(function(hs){
       hs.classList.remove("filled", "validated-correct", "validated-wrong");
@@ -739,13 +806,14 @@
       }
 
       tile.addEventListener("click", function(){ 
-        if(isValidated) return;
+        if(isValidated || justDragged) return;
         if(tile.classList.contains("used")) return;
         onTileClick(w); 
       });
 
       ex2Bank.appendChild(tile);
     });
+    syncSlots();
   }
 
   function onTileClick(word){
@@ -760,6 +828,8 @@
   function updateStatus(){
     var count = Object.keys(placements).length;
     ex2StatusNum.textContent = count + " / " + ex2Words.length;
+    if(count === ex2Words.length) ex2Msg.style.display = "none";
+    syncSlots();
   }
 
   hotspots.forEach(function(hs){
@@ -767,6 +837,7 @@
       if(isValidated) return;
       var hsId = hs.dataset.hs;
 
+      // Cas 1 : Le hotspot a déjà un mot placé et aucun mot n'est sélectionné -> on retire le mot
       if(placements[hsId] && !ex2SelectedWord){
         delete placements[hsId];
         hs.classList.remove("filled");
@@ -777,7 +848,9 @@
         return;
       }
 
+      // Cas 2 : Un mot est sélectionné -> on le place sur ce hotspot
       if(ex2SelectedWord){
+        // Si ce mot était placé ailleurs, on libère l'ancien hotspot
         for(var id in placements){
           if(placements[id] === ex2SelectedWord){
             delete placements[id];
@@ -806,10 +879,13 @@
   ex2ValidateBtn.addEventListener("click", function(){
     if(isValidated) return;
     var placedCount = Object.keys(placements).length;
-    if(placedCount === 0){
-      alert("Place au moins un mot avant de valider !");
+    if(placedCount < ex2Words.length){
+      var left = ex2Words.length - placedCount;
+      ex2Msg.textContent = left === 1 ? "Il reste 1 rond sans mot. Place tous les mots avant de valider." : "Il reste " + left + " ronds sans mot. Place tous les mots avant de valider.";
+      ex2Msg.style.display = "block";
       return;
     }
+    ex2Msg.style.display = "none";
 
     isValidated = true;
     var correctCount = 0;
@@ -824,45 +900,54 @@
       if(userWord === answer){
         correctCount++;
         hs.classList.add("validated-correct");
-      } else if(userWord) {
+      } else {
         hs.classList.add("validated-wrong");
+        // la bonne réponse s'écrit en bleu dans l'étiquette
+        var lbl = hs.querySelector(".hs-label");
+        if(lbl) lbl.textContent = answer;
       }
     });
+    syncSlots();
 
     ex2StatusPill.classList.add("validated");
     ex2StatusLabel.textContent = "Score :";
     ex2StatusNum.textContent = correctCount + " / " + ex2Words.length;
     ex2ValidateBtn.style.display = "none";
 
+    // Affichage bannière
     ex2Banner.classList.add("show");
     if(correctCount === ex2Words.length){
       ex2Banner.classList.add("success");
       ex2BannerTitle.textContent = "🎉 Félicitations ! Score parfait : 10 / 10";
-      ex2BannerText.textContent = "Tu maîtrises parfaitement tout le vocabulaire hydrographique, de la source jusqu'à l'océan !";
+      ex2BannerText.textContent = "Tu maitrises parfaitement tout le vocabulaire hydrographique, de la source jusqu'à la mer !";
       ex2RetryErrorsBtn.style.display = "none";
     } else {
       ex2Banner.classList.add("partial");
       ex2BannerTitle.textContent = "Résultat : " + correctCount + " / " + ex2Words.length;
-      ex2BannerText.textContent = "Observe tes réponses : les cases vertes sont exactes, les rouges sont à revoir. Clique sur « Corriger mes erreurs » ou « Tout recommencer » pour t'entraîner !";
-      ex2RetryErrorsBtn.style.display = "inline-flex";
+      ex2BannerText.innerHTML = "Les ronds verts sont exacts. Sur les ronds rouges, la bonne réponse est écrite en <b style=\"color:#1f5fbf\">bleu</b>. Clique sur « Tout recommencer » pour refaire l'exercice.";
+      ex2RetryErrorsBtn.style.display = "none";
     }
 
-    // Communication avec la plateforme parent pour persister les résultats
-    if (window.parent && window.parent.saveResult) {
-      window.parent.saveResult({
-        activity: 'geo_hydro_schema',
-        bookTitle: "Le schéma du cours d'eau",
-        score: correctCount,
-        total: ex2Words.length,
-        pct: Math.round((correctCount / ex2Words.length) * 100),
-        date: new Date().toLocaleDateString('fr-BE'),
-        time: new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })
-      });
-    }
+    // Communication avec la plateforme parent pour persister les résultats (une fois par essai)
+    try {
+      if (window.parent && window.parent !== window && typeof window.parent.saveResult === 'function') {
+        window.parent.saveResult({
+          activity: 'geo_hydro_schema',
+          bookTitle: "Le schéma du cours d'eau",
+          score: correctCount,
+          total: ex2Words.length,
+          pct: Math.round((correctCount / ex2Words.length) * 100),
+          date: new Date().toLocaleDateString('fr-BE'),
+          time: new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })
+        });
+      }
+    } catch (e) { console.warn('saveResult', e); }
+    ex2Banner.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   });
 
-  // Corriger les erreurs uniquement
+  // (bouton retiré : un seul essai par exercice)
   ex2RetryErrorsBtn.addEventListener("click", function(){
+    return;
     isValidated = false;
     ex2Banner.classList.remove("show", "success", "partial");
     ex2StatusPill.classList.remove("validated");
@@ -880,6 +965,7 @@
         var lbl = hs.querySelector(".hs-label");
         if(lbl) lbl.textContent = "";
       } else {
+        // Conserver les bonnes réponses en état filled
         hs.classList.remove("validated-correct");
         hs.classList.add("filled");
       }
@@ -892,6 +978,95 @@
   // Tout réinitialiser / recommencer
   ex2ResetBtn.addEventListener("click", initExercise);
   ex2RetryAllBtn.addEventListener("click", initExercise);
+
+  // ===== Glisser-déposer (doigt ou souris), en plus de « clique puis clique » =====
+  var drag = null, justDragged = false;
+  var scrollState = { dy: 0, raf: 0 };
+
+  function hotspotAt(x, y){
+    // 1) le rond exactement sous le doigt (ou sa case dans la liste)
+    var el = document.elementFromPoint(x, y);
+    var hs = el && el.closest ? el.closest(".hotspot") : null;
+    if(hs) return hs;
+    var slot = el && el.closest ? el.closest(".hs-slot") : null;
+    if(slot) return document.getElementById("hs-" + slot.dataset.hs);
+    // 2) sinon, le rond le plus proche (les ronds sont petits sur une tablette)
+    var best = null, bestD = Infinity;
+    hotspots.forEach(function(h){
+      var r = h.querySelector(".hs-ring").getBoundingClientRect();
+      var d = Math.hypot(r.left + r.width / 2 - x, r.top + r.height / 2 - y);
+      if(d < bestD){ bestD = d; best = h; }
+    });
+    return bestD <= 45 ? best : null;
+  }
+
+  function autoScroll(y){
+    var margin = 70, h = window.innerHeight;
+    scrollState.dy = y > h - margin ? 12 : (y < margin ? -12 : 0);
+    if(scrollState.dy && !scrollState.raf){
+      var step = function(){
+        if(!scrollState.dy){ scrollState.raf = 0; return; }
+        window.scrollBy(0, scrollState.dy);
+        scrollState.raf = requestAnimationFrame(step);
+      };
+      scrollState.raf = requestAnimationFrame(step);
+    }
+  }
+
+  function clearTargets(){ hotspots.forEach(function(h){ h.classList.remove("drop-target"); slots[h.dataset.hs].classList.remove("drop-target"); }); }
+
+  ex2Bank.addEventListener("pointerdown", function(e){
+    var tile = e.target.closest ? e.target.closest(".word-tile") : null;
+    if(!tile || isValidated || tile.classList.contains("used")) return;
+    drag = { tile: tile, word: tile.dataset.word, x0: e.clientX, y0: e.clientY, id: e.pointerId, clone: null };
+  });
+
+  document.addEventListener("pointermove", function(e){
+    if(!drag || e.pointerId !== drag.id) return;
+    if(!drag.clone){
+      if(Math.hypot(e.clientX - drag.x0, e.clientY - drag.y0) < 8) return;
+      var c = drag.tile.cloneNode(true);
+      c.classList.remove("selected");
+      c.classList.add("drag-clone");
+      document.body.appendChild(c);
+      drag.clone = c;
+      drag.tile.style.opacity = "0.4";
+    }
+    e.preventDefault();
+    drag.clone.style.left = e.clientX + "px";
+    drag.clone.style.top = e.clientY + "px";
+    clearTargets();
+    var hs = hotspotAt(e.clientX, e.clientY);
+    if(hs){ hs.classList.add("drop-target"); slots[hs.dataset.hs].classList.add("drop-target"); }
+    autoScroll(e.clientY);
+  }, { passive: false });
+
+  function endDrag(e, cancelled){
+    if(!drag || e.pointerId !== drag.id) return;
+    var d = drag; drag = null;
+    scrollState.dy = 0;
+    clearTargets();
+    if(!d.clone) return; // simple toucher : le « clic » habituel s'en charge
+    d.clone.remove();
+    d.tile.style.opacity = "";
+    justDragged = true;
+    setTimeout(function(){ justDragged = false; }, 400);
+    if(cancelled || isValidated) return;
+    var hs = hotspotAt(e.clientX, e.clientY);
+    if(hs){
+      ex2SelectedWord = d.word;
+      hs.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+    }
+  }
+  // Toucher « à côté » d'un petit rond compte aussi (quand un mot est déjà choisi)
+  document.getElementById("ex2-svg").addEventListener("click", function(e){
+    if(isValidated || !ex2SelectedWord || justDragged) return;
+    if(e.target.closest && e.target.closest(".hotspot")) return;
+    var hs = hotspotAt(e.clientX, e.clientY);
+    if(hs) hs.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+  });
+  document.addEventListener("pointerup", function(e){ endDrag(e, false); });
+  document.addEventListener("pointercancel", function(e){ endDrag(e, true); });
 
   initExercise();
 })();

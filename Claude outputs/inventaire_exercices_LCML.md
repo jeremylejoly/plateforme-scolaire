@@ -2202,6 +2202,8 @@ Spécifique :
 
 - **06/10 — Les types de paysages (`geo_paysages_types`, fiches/analyse_types_paysages.html, sw.js v692)** : 12 images vues, toutes conformes à leur type (rural ×2, urbain ×2, périurbain ×2, industriel ×2, montagnard, littoral, désertique chaud et froid). La fiche n'enregistrait AUCUN résultat → sauvegarde ajoutée (score /5, une fois par partie, try/catch). Correction finale : bonne réponse manquée en bleu « ➜ Bonne réponse : … » (avant : même gris que le reste) ; garde 600 ms sur « Continuer » (un double clic sautait une image sans réponse) ; Entrée = continuer. Textes : port « amarrée à un canal » → le long d'un fleuve (l'image montre un fleuve) ; désert de sable « impropre à l'installation humaine » → « rend la vie humaine très difficile » ; Antarctique « empêche l'Homme de vivre » → « d'y vivre de façon permanente » ; reconnait / Entraine-toi (NO). Remarque : l'image de la zone commerciale (périurbain 2) montre des enseignes réelles (Carrefour…), laissée telle quelle. Test Playwright 390 px : 5 images, double clic sans effet, Entrée OK, 4/5 avec correction bleue, 1 seule sauvegarde. 3 copies alignées.
 
+- **06/10 — Le schéma du cours d'eau (`geo_hydro_schema`, fiches/vocabulaire_hydrographique.html, sw.js v693)** : illustration et 10 ronds vérifiés (source, amont, méandre, affluent, confluent, rive gauche/droite — orientées dans le sens du courant —, aval, estuaire, delta) : tous justes. Copies divergentes : public/ et la racine n'avaient pas le glisser-déposer du 25/09 → 3 copies réalignées sur fiches/. Défauts corrigés : `alert()` → message dans la page ; validation possible avec 1 seul mot placé (les autres comptés faux) → « Il reste N ronds sans mot » ; bouton « Corriger mes erreurs » = 2e essai et une sauvegarde de plus à chaque validation → retiré (un seul essai, « Tout recommencer » pour refaire) ; bonne réponse jamais montrée → écrite en bleu dans l'étiquette du rond faux ; sauvegarde en try/catch ; maitrises (NO). Téléphone : les ronds font ~9 px et les étiquettes ~4 px → liste des 10 ronds sous l'image (cases cliquables et cibles du glisser, correction « ̶m̶o̶t̶ ➜ bonne réponse » en bleu), affichée sous 700 px. Test Playwright 390 px : message 10 ronds vides, placement par la liste, vidage, 8/10 avec bleu, 1 seule sauvegarde ; glisser à la souris sur ordinateur OK.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2735,7 +2737,7 @@ Spécifique :
 | ✅ 06/10 | Les paysages : la vallée | `geo_paysages_vallee` | fiches/analyse_paysages.html |  |
 | ✅ 06/10 | Les paysages : le littoral | `geo_paysages_littoral` | fiches/analyse_paysage_littoral.html |  |
 | ✅ 06/10 | Les types de paysages | `geo_paysages_types` | fiches/analyse_types_paysages.html |  |
-| ⬜ | Le schéma du cours d'eau | `geo_hydro_schema` | index › (?) | (code à localiser) |
+| ✅ 06/10 | Le schéma du cours d'eau | `geo_hydro_schema` | fiches/vocabulaire_hydrographique.html |  |
 | ⬜ | Vocabulaire hydrographique (Définitions) | `geo_hydro_definitions` | index › (?) | (code à localiser) |
 | ⬜ | Relief et hydrographie de Belgique | `geo_hydro_belgique` | index › (?) | (code à localiser) |
 | ⬜ | Les cartes et les plans | `geo_cartes` | index › (?) | (code à localiser) |
