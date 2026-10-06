@@ -2162,6 +2162,8 @@ Spécifique :
 
 - **06/10 — Laboratoire d'Électricité (`sci_electricite_labo`, sw.js v672)** : physique du circuit vérifiée (boucle fermée avec interrupteur, court-circuit détecté, isolant dans le testeur = ampoule éteinte). La note faisait toujours 6/6 (objet mal classé refusé puis reclassé). Décision de Jeremy : le 1er essai compte — chaque objet est classé une seule fois, rangé dans la bonne colonne même en cas d'erreur avec « ✗ mal classé · ✔ c'est un … » en bleu ; plus de bouton × pour déclasser ; double clic sans effet. Sauvegarde unique (score = bien classés du 1er coup / 6) en try/catch, résumé du score dans la fenêtre de fin. Aussi : « Gomme » 🧼 (savon) → « Ballon en caoutchouc » 🎈, « 4.5V » → « 4,5 V », badge « Étape 1 » remis à zéro après « Recommencer ». Test Playwright 390 px : 1 erreur → 5/6, 1 seule sauvegarde, pas de débordement.
 
+- **06/10 — L'ordre des planètes (`sci_planetes_ordre`, sw.js v673)** : contenu juste (ordre Mercure → Neptune, 8 points pour l'ordre + 8 pour les noms, le nom est jugé par rapport à la planète posée). Corrigé : inutilisable sur téléphone (piste de 1 050 px en défilement horizontal, une seule case visible, glisser-déposer seulement) → liste verticale sous 700 px et piste qui passe à la ligne sur ordinateur ; ajout du placement au toucher (touche un élément puis une case, échange entre cases, touche la réserve pour y renvoyer ; un simple toucher n'est plus pris pour un glisser) ; correction en bleu sous chaque colonne fausse (« ✔ n° 2 : Vénus », « ✔ cette planète : Uranus ») ; étiquette « Soleil » invisible (variables CSS --soleil-* inexistantes) ; sauvegarde en try/catch ; consignes réécrites. Test Playwright 390 px (toucher + vrai glisser au doigt) et 1 280 px : 12/16, 1 seule sauvegarde, pas de débordement.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2652,7 +2654,7 @@ Spécifique :
 | ⬜ | Le Soleil, la Terre et la Lune (Leçon) | `fiche_lune` | fiches/soleil-terre-lune.html |  |
 | ⬜ | La classification phylogénétique (Leçon) | `fiche_classification` | fiches/classification-phylogenetique.html |  |
 | ⬜ | Le système solaire | `sci_systeme_solaire` | index › (?) | (code à localiser) |
-| ⬜ | Planètes — Ordre et distance | `sci_planetes_ordre` | index › (?) | (code à localiser) |
+| ✅ 06/10 | Planètes — Ordre et distance | `sci_planetes_ordre` | index › renderSciPlanetesOrdreScreen |  |
 | ⬜ | Planètes — Informations & Caractéristiques | `sci_planetes_infos` | index › (?) | (code à localiser) |
 | ⬜ | Système solaire — QCM | `sci_planetes_qcm` | index › renderSciPlanetesInfosScreen |  |
 | ✅ 06/10 | L'anatomie de la fleur | `sci_plantes_fleur` | fiches/sci_plantes_fleur.html |  |
