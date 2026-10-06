@@ -2168,6 +2168,8 @@ Spécifique :
 
 - **06/10 — Ombres & Lumière (`sci_lumiere_ombres`, sw.js v675)** : géométrie de la simulation vérifiée (tangentes exactes depuis la lampe, ombre portée, balle en verre sans ombre). Les deux copies avaient divergé : celle de `fiches/` (chargée par le site) avait **toujours la bonne réponse en A**, celle de `public/` un mélange biaisé (`sort(random)`) → mélange Fisher–Yates dans les deux, copies identiques. Q5 était la même question que Q1 (« plus la balle est proche de la lampe, plus l'ombre est… grande ») → inversée (« si on éloigne la balle de la lampe… plus petite »). Options rééquilibrées (Q4 verre, Q6 balle contre le mur : la bonne n'est plus la plus longue). Bonne réponse manquée en bleu, garde 600 ms entre validation et question suivante + Entrée, sauvegarde unique en try/catch, « disparaître » → « disparaitre ». Test Playwright 390 px : 7/8, 1 seule sauvegarde, double clic sans saut, pas de débordement.
 
+- **06/10 — Les éclipses (`sci_eclipses`, sw.js v676)** : copies `fiches/` et `public/` divergentes (celle chargée par le site n'avait **aucun mélange : ordre fixe des réponses**) → Fisher–Yates, copies identiques. Décision de Jeremy : les 3 images « Schéma scientifique » (en anglais, générées avec erreurs : pleine lune du côté du Soleil, deux « descending node », « WAXING CFOON », « PHOTOSHERE ») remplacées par 3 schémas SVG en français dessinés dans la fiche (éclipse de Soleil, éclipse de Lune, inclinaison 5° avec nouvelle/pleine lune sans éclipse ; « tailles et distances non respectées »). Quiz réécrit : distracteurs fantaisistes (« rouge comme une fraise », « yeux fluorescents », « poison ») remplacés par des erreurs plausibles, la bonne réponse n'est plus la plus longue (vérifié par script), Q2 corrigée (« face éclairée tournée vers le Soleil » donné comme indice, toujours vrai), majuscules (« pleine lune »). Bonne réponse manquée en bleu, garde 600 ms + Entrée, sauvegarde unique en try/catch, score parfait = total. En-tête lisible sur téléphone, bouton Retour interne (history.back) masqué dans le site. Les anciennes images `assets/eclipses/*_diagram.jpg` ne sont plus utilisées. Test Playwright 390 px : 9/10, 1 seule sauvegarde, pas de débordement.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2674,7 +2676,7 @@ Spécifique :
 | ✅ 06/10 | Les énergies (Tri & conversions) | `sci_energie_tri` | fiches/sci_energie_tri.html |  |
 | ✅ 06/10 | Laboratoire d'Électricité | `sci_electricite_labo` | fiches/sci_electricite_labo.html |  |
 | ✅ 06/10 | Ombres & Lumière | `sci_lumiere_ombres` | fiches/sci_lumiere_ombres.html |  |
-| ⬜ | Les éclipses | `sci_eclipses` | index › renderSciEclipses |  |
+| ✅ 06/10 | Les éclipses | `sci_eclipses` | fiches/sci_eclipses.html |  |
 | ✅ 06/10 | Les engrenages | `sci_engrenages` | fiches/sci_mecanique_engrenages.html |  |
 | ✅ 06/10 | Leviers et balances | `sci_mecanique_leviers` | index › renderSciMecaniqueLeviers |  |
 

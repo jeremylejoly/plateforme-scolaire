@@ -224,11 +224,17 @@
 
     .diagram-img {
       width: 100%;
-      height: auto;
-      max-height: 310px;
-      object-fit: contain;
       display: block;
       border-radius: 12px;
+      overflow: hidden;
+    }
+    .diagram-img svg { width: 100%; height: auto; display: block; }
+
+    @media (max-width: 640px) {
+      header > div[style*="width: 80px"] { display: none; }
+      .header-titles { flex-basis: 100%; }
+      h1 { font-size: 1.5rem; flex-wrap: wrap; }
+      .subtitle { font-size: 0.85rem; }
     }
 
     /* Dynamic Realistic Animation Stage */
@@ -621,6 +627,12 @@
       flex-shrink: 0;
     }
 
+    .option-btn.missed {
+      background-color: #1f5fbf !important;
+      border-color: #93c5fd !important;
+      color: #ffffff !important;
+    }
+    .option-btn.missed .option-letter { background-color: #93c5fd; color: #0f172a; }
     .option-btn.correct .option-letter { background-color: #22c55e; }
     .option-btn.incorrect .option-letter { background-color: #ef4444; }
 
@@ -769,7 +781,7 @@
     <button class="back-btn" onclick="history.back()">← Retour</button>
     <div class="header-titles">
       <h1>🌑 Les Éclipses de Soleil et de Lune ☀️</h1>
-      <div class="subtitle">Dessins scientifiques réalistes, simulation interactive & Enquête (10 questions)</div>
+      <div class="subtitle">Schémas, simulation interactive et quiz (10 questions)</div>
     </div>
     <div style="width: 80px;"></div>
   </header>
@@ -808,7 +820,7 @@
         
         <!-- 1. DETAILED SCIENTIFIC DIAGRAMS -->
         <div class="diagram-display active" id="diagram-view">
-          <img id="diagram-img" class="diagram-img" src="../assets/eclipses/solar_diagram.jpg" alt="Schéma scientifique de l'éclipse">
+          <div id="diagram-img" class="diagram-img" aria-label="Schéma scientifique de l'éclipse"></div>
         </div>
 
         <!-- 2. REALISTIC DYNAMIC ANIMATION STAGE -->
@@ -1017,6 +1029,84 @@
   /* ────────────────────────────────────────────────────────────────
      STATE & MODES
      ──────────────────────────────────────────────────────────────── */
+  /* ────────────────────────────────────────────────────────────────
+     SCHÉMAS SCIENTIFIQUES (SVG, en français — tailles et distances non respectées)
+     ──────────────────────────────────────────────────────────────── */
+  const SVG_DEFS = `<defs>
+      <radialGradient id="gSun" cx="70%" cy="50%" r="60%"><stop offset="0%" stop-color="#fde68a"/><stop offset="70%" stop-color="#f59e0b"/><stop offset="100%" stop-color="#ea580c"/></radialGradient>
+      <radialGradient id="gEarth" cx="35%" cy="35%" r="70%"><stop offset="0%" stop-color="#60a5fa"/><stop offset="100%" stop-color="#1e3a8a"/></radialGradient>
+      <radialGradient id="gMoon" cx="35%" cy="35%" r="70%"><stop offset="0%" stop-color="#e5e7eb"/><stop offset="100%" stop-color="#6b7280"/></radialGradient>
+      <radialGradient id="gBlood" cx="35%" cy="35%" r="70%"><stop offset="0%" stop-color="#fb923c"/><stop offset="100%" stop-color="#7c2d12"/></radialGradient>
+    </defs>`;
+  const SVG_TXT = 'font-family="Nunito, sans-serif" font-weight="800"';
+  const DIAGRAM_SVG = {
+    solar: `<svg viewBox="0 0 640 340" role="img" aria-label="Schéma d'une éclipse de Soleil">${SVG_DEFS}
+      <rect width="640" height="340" fill="#030712"/>
+      <polygon points="40,40 330,150 330,180 40,290" fill="#facc15" opacity="0.10"/>
+      <polygon points="330,150 330,180 520,232 520,98" fill="#64748b" opacity="0.35"/>
+      <polygon points="330,150 330,180 503,165" fill="#020617" opacity="0.95"/>
+      <line x1="40" y1="40" x2="520" y2="232" stroke="#fde68a" stroke-width="1.5" stroke-dasharray="6 5" opacity="0.6"/>
+      <line x1="40" y1="290" x2="520" y2="98" stroke="#fde68a" stroke-width="1.5" stroke-dasharray="6 5" opacity="0.6"/>
+      <circle cx="-60" cy="165" r="150" fill="url(#gSun)"/>
+      <circle cx="560" cy="165" r="62" fill="url(#gEarth)"/>
+      <ellipse cx="502" cy="165" rx="5" ry="9" fill="#020617"/>
+      <circle cx="330" cy="165" r="15" fill="url(#gMoon)"/>
+      <text x="20" y="30" fill="#fde68a" font-size="26" ${SVG_TXT}>Soleil</text>
+      <text x="330" y="132" fill="#e5e7eb" font-size="24" text-anchor="middle" ${SVG_TXT}>Lune</text>
+      <text x="560" y="88" fill="#93c5fd" font-size="24" text-anchor="middle" ${SVG_TXT}>Terre</text>
+      <text x="425" y="75" fill="#cbd5e1" font-size="20" text-anchor="middle" ${SVG_TXT}>pénombre</text>
+      <line x1="425" y1="82" x2="455" y2="125" stroke="#cbd5e1" stroke-width="2"/>
+      <text x="425" y="270" fill="#f8fafc" font-size="20" text-anchor="middle" ${SVG_TXT}>ombre</text>
+      <line x1="425" y1="255" x2="420" y2="172" stroke="#f8fafc" stroke-width="2"/>
+      <text x="320" y="318" fill="#facc15" font-size="20" text-anchor="middle" ${SVG_TXT}>La Lune passe entre le Soleil et la Terre (nouvelle lune).</text>
+      <text x="630" y="22" fill="#64748b" font-size="13" text-anchor="end" ${SVG_TXT}>Tailles et distances non respectées</text>
+    </svg>`,
+    lunar: `<svg viewBox="0 0 640 340" role="img" aria-label="Schéma d'une éclipse de Lune">${SVG_DEFS}
+      <rect width="640" height="340" fill="#030712"/>
+      <polygon points="40,40 300,110 300,220 40,290" fill="#facc15" opacity="0.10"/>
+      <polygon points="300,110 300,220 640,262 640,68" fill="#64748b" opacity="0.30"/>
+      <polygon points="300,110 300,220 640,190 640,140" fill="#020617" opacity="0.95"/>
+      <circle cx="-60" cy="165" r="150" fill="url(#gSun)"/>
+      <circle cx="300" cy="165" r="55" fill="url(#gEarth)"/>
+      <circle cx="555" cy="165" r="16" fill="url(#gBlood)"/>
+      <text x="20" y="30" fill="#fde68a" font-size="26" ${SVG_TXT}>Soleil</text>
+      <text x="300" y="95" fill="#93c5fd" font-size="24" text-anchor="middle" ${SVG_TXT}>Terre</text>
+      <text x="555" y="128" fill="#fdba74" font-size="24" text-anchor="middle" ${SVG_TXT}>Lune</text>
+      <text x="470" y="50" fill="#cbd5e1" font-size="20" text-anchor="middle" ${SVG_TXT}>pénombre</text>
+      <line x1="470" y1="57" x2="470" y2="92" stroke="#cbd5e1" stroke-width="2"/>
+      <text x="440" y="272" fill="#f8fafc" font-size="20" text-anchor="middle" ${SVG_TXT}>ombre de la Terre</text>
+      <line x1="440" y1="256" x2="440" y2="195" stroke="#f8fafc" stroke-width="2"/>
+      <text x="320" y="306" fill="#facc15" font-size="20" text-anchor="middle" ${SVG_TXT}>La Terre passe entre le Soleil et la Lune (pleine lune).</text>
+      <text x="320" y="326" fill="#fdba74" font-size="18" text-anchor="middle" ${SVG_TXT}>Dans l'ombre de la Terre, la Lune devient rouge cuivré.</text>
+      <text x="630" y="22" fill="#64748b" font-size="13" text-anchor="end" ${SVG_TXT}>Tailles et distances non respectées</text>
+    </svg>`,
+    orbit: `<svg viewBox="0 0 640 340" role="img" aria-label="Schéma de l'inclinaison de l'orbite de la Lune">${SVG_DEFS}
+      <rect width="640" height="340" fill="#030712"/>
+      <line x1="60" y1="165" x2="630" y2="165" stroke="#3b82f6" stroke-width="2" stroke-dasharray="8 6"/>
+      
+      <polygon points="330,135 330,195 630,182 630,148" fill="#020617" stroke="#334155" stroke-width="1"/>
+      <line x1="150" y1="111" x2="520" y2="222" stroke="#eab308" stroke-width="2.5" stroke-dasharray="8 6"/>
+      <text x="520" y="245" fill="#fde047" font-size="17" text-anchor="middle" ${SVG_TXT}>orbite de la Lune</text>
+      <polygon points="190,115 190,131 330,96" fill="#94a3b8" opacity="0.55"/>
+      <circle cx="-60" cy="165" r="110" fill="url(#gSun)"/>
+      <circle cx="330" cy="165" r="30" fill="url(#gEarth)"/>
+      <circle cx="190" cy="123" r="10" fill="url(#gMoon)"/>
+      <circle cx="470" cy="207" r="10" fill="url(#gMoon)"/>
+      <path d="M 380 165 A 50 50 0 0 1 378 180" fill="none" stroke="#f8fafc" stroke-width="2"/>
+      <text x="386" y="186" fill="#f8fafc" font-size="17" ${SVG_TXT}>5° (agrandi)</text>
+      <text x="15" y="30" fill="#fde68a" font-size="24" ${SVG_TXT}>Soleil</text>
+      <text x="330" y="222" fill="#93c5fd" font-size="20" text-anchor="middle" ${SVG_TXT}>Terre</text>
+      <text x="190" y="58" fill="#e5e7eb" font-size="18" text-anchor="middle" ${SVG_TXT}>Nouvelle lune :</text>
+      <text x="190" y="76" fill="#e5e7eb" font-size="18" text-anchor="middle" ${SVG_TXT}>son ombre passe</text>
+      <text x="190" y="94" fill="#e5e7eb" font-size="18" text-anchor="middle" ${SVG_TXT}>au-dessus de la Terre</text>
+      <text x="470" y="272" fill="#e5e7eb" font-size="18" text-anchor="middle" ${SVG_TXT}>Pleine lune : elle passe</text>
+      <text x="470" y="290" fill="#e5e7eb" font-size="18" text-anchor="middle" ${SVG_TXT}>sous l'ombre de la Terre</text>
+      <text x="70" y="190" fill="#93c5fd" font-size="17" ${SVG_TXT}>plan de la Terre</text>
+      <text x="320" y="322" fill="#facc15" font-size="19" text-anchor="middle" ${SVG_TXT}>Ici, pas d'éclipse : les 3 astres ne sont pas bien alignés.</text>
+      <text x="630" y="22" fill="#64748b" font-size="13" text-anchor="end" ${SVG_TXT}>Tailles et distances non respectées</text>
+    </svg>`
+  };
+
   let currentAstroMode = 'solar'; // 'solar' | 'lunar' | 'orbit'
   let currentViewMode = 'diagram'; // 'diagram' | 'anim'
   let orbitOffsetY = 0; // -50 to 50
@@ -1044,7 +1134,7 @@
 
     if (mode === 'solar') {
       viewTitle.textContent = "Modèle : Éclipse de Soleil";
-      diagramImg.src = BASE_ASSETS + 'solar_diagram.jpg';
+      diagramImg.innerHTML = DIAGRAM_SVG.solar;
       obsWindow.style.display = 'flex';
 
       midImg.src = BASE_ASSETS + 'moon.jpg';
@@ -1064,7 +1154,7 @@
       document.getElementById('slider-desc').textContent = "🎛️ Déplacer la Lune sur son orbite :";
     } else if (mode === 'lunar') {
       viewTitle.textContent = "Modèle : Éclipse de Lune";
-      diagramImg.src = BASE_ASSETS + 'lunar_diagram.jpg';
+      diagramImg.innerHTML = DIAGRAM_SVG.lunar;
       obsWindow.style.display = 'flex';
 
       midImg.src = BASE_ASSETS + 'earth.jpg';
@@ -1084,7 +1174,7 @@
       document.getElementById('slider-desc').textContent = "🎛️ Déplacer la Terre sur l'axe :";
     } else if (mode === 'orbit') {
       viewTitle.textContent = "Modèle : Inclinaison orbitale (5°)";
-      diagramImg.src = BASE_ASSETS + 'orbit_diagram.jpg';
+      diagramImg.innerHTML = DIAGRAM_SVG.orbit;
       obsWindow.style.display = 'none';
 
       midImg.src = BASE_ASSETS + 'moon.jpg';
@@ -1249,104 +1339,104 @@
      ──────────────────────────────────────────────────────────────── */
   const quizDatabase = [
     {
-      question: "1. Quel est l'alignement exact des astres lors d'une ÉCLIPSE DE SOLEIL ?",
+      question: "1. Dans quel ordre les astres sont-ils alignés lors d'une éclipse de Soleil ?",
       options: [
-        { text: "Soleil ➔ Lune ➔ Terre (La Lune se place au milieu)", correct: true },
-        { text: "Soleil ➔ Terre ➔ Lune (La Terre se place au milieu)", correct: false },
-        { text: "Lune ➔ Soleil ➔ Terre (Le Soleil se place au milieu)", correct: false },
-        { text: "Terre ➔ Soleil ➔ Lune (La Terre et la Lune se font face)", correct: false }
+        { text: "Soleil ➔ Lune ➔ Terre (la Lune au milieu)", correct: true },
+        { text: "Soleil ➔ Terre ➔ Lune (la Terre au milieu)", correct: false },
+        { text: "Lune ➔ Soleil ➔ Terre (le Soleil au milieu)", correct: false },
+        { text: "Terre ➔ Soleil ➔ Lune (le Soleil au milieu)", correct: false }
       ],
-      explanation: "Lors d'une éclipse de Soleil, la Lune s'intercale exactement entre le Soleil et la Terre et intercepte la lumière solaire."
+      explanation: "Lors d'une éclipse de Soleil, la Lune passe exactement entre le Soleil et la Terre : elle cache le Soleil et projette son ombre sur la Terre."
     },
     {
-      question: "2. À quelle phase lunaire une ÉCLIPSE DE SOLEIL peut-elle uniquement se produire ?",
+      question: "2. À quelle phase de la Lune une éclipse de Soleil peut-elle se produire ?",
       options: [
-        { text: "À la Pleine Lune", correct: false },
-        { text: "À la Nouvelle Lune (quand la face éclairée de la Lune est tournée vers le Soleil)", correct: true },
-        { text: "Au Premier Quartier", correct: false },
-        { text: "Au Dernier Quartier", correct: false }
+        { text: "À la pleine lune", correct: false },
+        { text: "À la nouvelle lune", correct: true },
+        { text: "Au premier quartier", correct: false },
+        { text: "Au dernier quartier", correct: false }
       ],
-      explanation: "L'éclipse de Soleil a toujours lieu à la Nouvelle Lune, moment où la Lune passe entre la Terre et le Soleil dans le ciel diurne."
+      explanation: "Une éclipse de Soleil a toujours lieu à la nouvelle lune : la Lune est alors entre la Terre et le Soleil, et sa face éclairée est tournée vers le Soleil, donc invisible pour nous."
     },
     {
-      question: "3. Que voit un observateur terrestre situé exactement dans le cône d'OMBRE TOTALE lors d'une éclipse solaire ?",
+      question: "3. Que voit une personne qui se trouve dans l'ombre totale de la Lune pendant une éclipse de Soleil ?",
       options: [
-        { text: "Le Soleil totalement occulté par le disque noir de la Lune, seule la couronne solaire brille", correct: true },
-        { text: "Le Soleil qui devient tout rouge comme une fraise", correct: false },
-        { text: "Une simple baisse de lumière comme par temps pluvieux", correct: false },
-        { text: "Des aurores boréales dans le ciel en plein midi", correct: false }
+        { text: "Le Soleil caché par la Lune, entouré d'une couronne lumineuse", correct: true },
+        { text: "Un Soleil devenu tout rouge, mais qui reste entièrement visible", correct: false },
+        { text: "Une petite baisse de lumière, comme quand un nuage passe", correct: false },
+        { text: "Un Soleil en forme de croissant qui reste toujours visible", correct: false }
       ],
-      explanation: "Dans la zone de totalité, le disque lunaire masque entièrement le Soleil : le ciel s'obscurcit en plein jour et la magnifique couronne solaire apparaît !"
+      explanation: "Dans la zone de totalité, la Lune cache entièrement le Soleil : le ciel s'assombrit en plein jour et la couronne solaire apparait autour du disque noir. Un Soleil en croissant, c'est ce que l'on voit dans la pénombre (éclipse partielle)."
     },
     {
-      question: "4. À quoi correspond la zone de « PÉNOMBRE » projetée par un astre ?",
+      question: "4. À quoi correspond la « pénombre » projetée par un astre ?",
       options: [
-        { text: "Une zone où la lumière du Soleil est totalement bloquée", correct: false },
-        { text: "Une zone de transition où la lumière n'est que partiellement masquée (éclipse partielle)", correct: true },
-        { text: "Une zone qui amplifie la luminosité comme une loupe", correct: false },
-        { text: "L'atmosphère brillante de la Terre", correct: false }
+        { text: "Une zone où la lumière du Soleil est entièrement bloquée", correct: false },
+        { text: "Une zone où la lumière du Soleil est en partie cachée", correct: true },
+        { text: "Une zone où la lumière du Soleil est plus forte que d'habitude", correct: false },
+        { text: "La partie de la Lune qui n'est jamais éclairée par le Soleil", correct: false }
       ],
-      explanation: "Dans la pénombre, une partie seulement des rayons du Soleil est bloquée. Un observateur situé dans cette zone assiste à une éclipse partielle."
+      explanation: "Dans la pénombre, une partie seulement des rayons du Soleil est arrêtée. Une personne qui s'y trouve voit une éclipse partielle. La zone où toute la lumière est bloquée s'appelle l'ombre (ou ombre totale)."
     },
     {
-      question: "5. Pourquoi est-il TRÈS DANGEREUX de regarder une éclipse de Soleil à l'œil nu sans lunettes spéciales homologuées ?",
+      question: "5. Pourquoi est-il très dangereux de regarder une éclipse de Soleil sans lunettes spéciales ?",
       options: [
-        { text: "Parce que le Soleil s'éteint et nous fait perdre l'équilibre", correct: false },
-        { text: "Parce que les rayons invisibles (UV et infrarouges) brûlent la rétine de façon irréversible et indolore", correct: true },
-        { text: "Parce que la Lune renvoie un poison dans l'air", correct: false },
-        { text: "Parce que nos yeux se dilatent et deviennent fluorescents", correct: false }
+        { text: "Sa lumière, même en partie cachée, brule la rétine sans douleur", correct: true },
+        { text: "Pendant l'éclipse, la Lune renvoie vers nous des rayons très dangereux", correct: false },
+        { text: "L'obscurité soudaine abime les yeux qui n'ont pas le temps de s'adapter", correct: false },
+        { text: "Ce n'est pas dangereux : seules les éclipses de Lune abiment les yeux", correct: false }
       ],
-      explanation: "Même masqué à 99%, le Soleil émet des rayons ultraviolets et infrarouges capables de détruire les cellules de la rétine sans que l'on ressente de douleur immédiate. Seules les lunettes spéciales certifiées ISO 12312-2 protègent les yeux !"
+      explanation: "Même caché à 99 %, le Soleil reste assez puissant pour détruire les cellules de la rétine, sans aucune douleur sur le moment. Il faut des lunettes spéciales pour éclipses (norme ISO 12312-2) : des lunettes de soleil ne suffisent pas ! Une éclipse de Lune, elle, se regarde sans danger."
     },
     {
-      question: "6. Quel est l'alignement exact des astres lors d'une ÉCLIPSE DE LUNE ?",
+      question: "6. Dans quel ordre les astres sont-ils alignés lors d'une éclipse de Lune ?",
       options: [
-        { text: "Soleil ➔ Terre ➔ Lune (La Terre s'interpose au milieu)", correct: true },
-        { text: "Soleil ➔ Lune ➔ Terre (La Lune est au milieu)", correct: false },
-        { text: "Lune ➔ Soleil ➔ Terre (Le Soleil est au milieu)", correct: false },
-        { text: "Terre ➔ Lune ➔ Soleil (La Lune éclaire la Terre)", correct: false }
+        { text: "Soleil ➔ Terre ➔ Lune (la Terre au milieu)", correct: true },
+        { text: "Soleil ➔ Lune ➔ Terre (la Lune au milieu)", correct: false },
+        { text: "Lune ➔ Soleil ➔ Terre (le Soleil au milieu)", correct: false },
+        { text: "Terre ➔ Soleil ➔ Lune (le Soleil au milieu)", correct: false }
       ],
-      explanation: "Pendant une éclipse de Lune, la Terre se place entre le Soleil et la Lune, projetant son ombre sur la surface lunaire."
+      explanation: "Pendant une éclipse de Lune, la Terre se place entre le Soleil et la Lune : elle projette son ombre sur la Lune."
     },
     {
-      question: "7. À quelle phase lunaire une ÉCLIPSE DE LUNE se déroule-t-elle exclusivement ?",
+      question: "7. À quelle phase de la Lune une éclipse de Lune peut-elle se produire ?",
       options: [
-        { text: "À la Nouvelle Lune", correct: false },
-        { text: "À la Pleine Lune (quand la Lune est à l'opposé du Soleil par rapport à la Terre)", correct: true },
-        { text: "Au croissant de Lune", correct: false },
+        { text: "À la nouvelle lune", correct: false },
+        { text: "À la pleine lune", correct: true },
+        { text: "Au premier quartier", correct: false },
         { text: "N'importe quel jour du mois", correct: false }
       ],
-      explanation: "L'éclipse de Lune se produit uniquement lors de la Pleine Lune, lorsque la Terre est directement située entre le Soleil et la Lune."
+      explanation: "Une éclipse de Lune se produit uniquement à la pleine lune, quand la Lune est du côté opposé au Soleil par rapport à la Terre."
     },
     {
-      question: "8. Pourquoi la Lune prend-elle une teinte ROUGE CUIVRÉE (« Lune de sang ») pendant une éclipse totale de Lune ?",
+      question: "8. Pourquoi la Lune devient-elle rouge cuivré pendant une éclipse totale de Lune ?",
       options: [
-        { text: "Parce que la roche lunaire se met à chauffer et à rougir", correct: false },
-        { text: "Parce que l'atmosphère terrestre dévie et filtre les rayons rouges du Soleil vers la Lune", correct: true },
-        { text: "Parce que Mars passe devant la Lune et lui donne sa couleur", correct: false },
-        { text: "Parce que les océans terrestres reflètent leur couleur", correct: false }
+        { text: "Les roches de la Lune chauffent et se mettent à rougir", correct: false },
+        { text: "L'atmosphère de la Terre dévie la lumière rouge vers la Lune", correct: true },
+        { text: "La planète Mars passe juste devant la Lune et la colore en rouge", correct: false },
+        { text: "Les océans de la Terre renvoient leur couleur vers la Lune", correct: false }
       ],
-      explanation: "L'atmosphère de la Terre diffuse la lumière bleue et dévie (réfracte) les rayons rouges du Soleil vers le cône d'ombre, éclairant la Lune d'une lueur cuivrée."
+      explanation: "En traversant l'atmosphère de la Terre, la lumière du Soleil est déviée : le bleu est dispersé, et une lumière rouge-orangé arrive jusqu'à la Lune, dans l'ombre de la Terre. C'est la « lune de sang »."
     },
     {
-      question: "9. Pourquoi n'y a-t-il PAS d'éclipse à chaque Pleine Lune et à chaque Nouvelle Lune ?",
+      question: "9. Pourquoi n'y a-t-il pas une éclipse à chaque pleine lune et à chaque nouvelle lune ?",
       options: [
-        { text: "Parce que la Lune s'arrête de tourner certains mois", correct: false },
-        { text: "Parce que le plan orbital de la Lune est incliné d'environ 5° par rapport à l'orbite de la Terre", correct: true },
-        { text: "Parce que les nuages cachent toujours les éclipses", correct: false },
-        { text: "Parce que le Soleil change de place dans la galaxie", correct: false }
+        { text: "La Lune s'arrête de tourner autour de la Terre certains mois", correct: false },
+        { text: "L'orbite de la Lune est un peu inclinée (environ 5°)", correct: true },
+        { text: "Les nuages cachent la plupart des éclipses aux habitants", correct: false },
+        { text: "Le Soleil est trop loin certains mois pour faire une ombre", correct: false }
       ],
-      explanation: "L'orbite de la Lune est inclinée de 5° par rapport au plan Terre-Soleil. La plupart du temps, l'ombre de la Lune ou de la Terre passe au-dessus ou en-dessous !"
+      explanation: "L'orbite de la Lune est inclinée d'environ 5° par rapport à celle de la Terre autour du Soleil. La plupart du temps, l'ombre de la Lune passe au-dessus ou en dessous de la Terre (ou la Lune passe au-dessus ou en dessous de l'ombre de la Terre)."
     },
     {
-      question: "10. Pourquoi une éclipse totale de Soleil ne dure que quelques minutes, alors qu'une éclipse de Lune peut durer plusieurs heures ?",
+      question: "10. Pourquoi une éclipse totale de Soleil ne dure-t-elle que quelques minutes, alors qu'une éclipse de Lune peut durer plusieurs heures ?",
       options: [
-        { text: "Parce que l'ombre portée de la petite Lune sur Terre est très étroite, alors que le cône d'ombre de la Terre est immense", correct: true },
-        { text: "Parce que le Soleil s'éteint très vite et se rallume", correct: false },
-        { text: "Parce que la Terre accélère sa vitesse de rotation pendant le jour", correct: false },
-        { text: "Parce que la Lune se déplace 100 fois plus vite la nuit", correct: false }
+        { text: "L'ombre de la Lune sur Terre est petite, celle de la Terre immense", correct: true },
+        { text: "Le Soleil se rallume très vite après avoir été caché par la Lune", correct: false },
+        { text: "La Terre tourne beaucoup plus vite sur elle-même pendant la journée", correct: false },
+        { text: "La Lune avance beaucoup plus vite pendant le jour que la nuit", correct: false }
       ],
-      explanation: "L'ombre portée de la Lune sur Terre ne fait que 100 à 250 km de large et défile très vite. En revanche, le cône d'ombre de la Terre dans l'espace est colossal et la Lune met plusieurs heures à le traverser."
+      explanation: "L'ombre de la Lune sur la Terre ne fait qu'environ 100 à 250 km de large et se déplace très vite : la totalité dure au plus quelques minutes. L'ombre de la Terre dans l'espace est bien plus grande que la Lune, qui met plusieurs heures à la traverser."
     }
   ];
 
@@ -1354,6 +1444,9 @@
   let userScore = 0;
   let answersRecorded = [];
   let isQuestionAnswered = false;
+  let resultSaved = false;
+  let answeredAt = 0;
+  let currentOrder = [];
 
   /* ────────────────────────────────────────────────────────────────
      QUIZ FLOW
@@ -1390,11 +1483,13 @@
     container.innerHTML = '';
     const letters = ['A', 'B', 'C', 'D'];
 
-    if (!q.shuffledOptions) {
-      q.shuffledOptions = [...q.options].sort(() => Math.random() - 0.5);
+    currentOrder = q.options.map((_, i) => i);
+    for (let i = currentOrder.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [currentOrder[i], currentOrder[j]] = [currentOrder[j], currentOrder[i]];
     }
-
-    q.shuffledOptions.forEach((opt, idx) => {
+    currentOrder.forEach((origIdx, idx) => {
+      const opt = q.options[origIdx];
       const btn = document.createElement('button');
       btn.className = 'option-btn';
       btn.onclick = () => selectOption(idx);
@@ -1424,8 +1519,9 @@
 
   function validateAnswer(idx) {
     isQuestionAnswered = true;
+    answeredAt = Date.now();
     const q = quizDatabase[currentQIdx];
-    const isCorrect = q.options[idx].correct;
+    const isCorrect = q.options[currentOrder[idx]].correct;
     answersRecorded.push(isCorrect);
 
     if (isCorrect) {
@@ -1439,10 +1535,13 @@
 
     // Update buttons
     const buttons = document.querySelectorAll('#quiz-options .option-btn');
-    q.options.forEach((opt, i) => {
+    currentOrder.forEach((origIdx, i) => {
+      const opt = q.options[origIdx];
       buttons[i].disabled = true;
-      if (opt.correct) {
+      if (opt.correct && i === idx) {
         buttons[i].className = 'option-btn correct';
+      } else if (opt.correct) {
+        buttons[i].className = 'option-btn missed';
       } else if (i === idx) {
         buttons[i].className = 'option-btn incorrect';
       } else {
@@ -1468,6 +1567,9 @@
   }
 
   function onNextQuestionClick() {
+    if (!isQuestionAnswered) return;
+    if (Date.now() - answeredAt < 600) return;  // garde anti double clic
+    answeredAt = Date.now();
     if (currentQIdx < quizDatabase.length - 1) {
       currentQIdx++;
       renderQuestion();
@@ -1493,45 +1595,59 @@
     const starsEl = document.getElementById('final-stars');
     const summaryEl = document.getElementById('final-summary');
 
-    if (userScore === 10) {
+    if (userScore === maxScore) {
       emojiEl.textContent = '🏆';
       starsEl.textContent = '⭐⭐⭐⭐⭐';
-      summaryEl.innerHTML = "<strong>Score Parfait (10/10) !</strong> Tu es un véritable astronome chevronné ! Tu maîtrises sur le bout des doigts la mécanique céleste des éclipses.";
+      summaryEl.innerHTML = `<strong>Score parfait (${maxScore}/${maxScore}) !</strong> Tu es un véritable astronome chevronné ! Tu maitrises sur le bout des doigts la mécanique céleste des éclipses.`;
       playSound('victory');
       triggerConfetti();
     } else if (userScore >= 8) {
       emojiEl.textContent = '🌟';
       starsEl.textContent = '⭐⭐⭐⭐☆';
-      summaryEl.innerHTML = `Bravo ! Tu as obtenu un score remarquable de <strong>${pct}%</strong> (${userScore}/${maxScore}). Très belle maîtrise scientifique !`;
+      summaryEl.innerHTML = `Bravo ! Tu as obtenu un score remarquable de <strong>${pct} %</strong> (${userScore}/${maxScore}). Très belle maitrise scientifique !`;
       playSound('correct');
     } else if (userScore >= 5) {
       emojiEl.textContent = '👏';
       starsEl.textContent = '⭐⭐⭐☆☆';
-      summaryEl.innerHTML = `Bon travail ! Tu as obtenu <strong>${pct}%</strong> (${userScore}/${maxScore}). Utilise les schémas et l'animation pour revoir les points délicats et retente l'aventure !`;
+      summaryEl.innerHTML = `Bon travail ! Tu as obtenu <strong>${pct} %</strong> (${userScore}/${maxScore}). Utilise les schémas et l'animation pour revoir les points délicats et retente l'aventure !`;
       playSound('correct');
     } else {
       emojiEl.textContent = '💪';
       starsEl.textContent = '⭐☆☆☆☆';
-      summaryEl.innerHTML = `Tu as obtenu un score de <strong>${pct}%</strong> (${userScore}/${maxScore}). Observe bien les rayons lumineux et l'ombre portée avant de recommencer !`;
+      summaryEl.innerHTML = `Tu as obtenu un score de <strong>${pct} %</strong> (${userScore}/${maxScore}). Observe bien les rayons lumineux et l'ombre portée avant de recommencer !`;
       playSound('error');
     }
 
-    // Save score in platform
-    if (window.parent && window.parent.saveResult) {
-      window.parent.saveResult({
-        activity: 'sci_eclipses',
-        bookTitle: "Sciences — Les éclipses",
-        score: userScore,
-        total: maxScore,
-        pct: pct,
-        date: new Date().toLocaleDateString('fr-BE'),
-        time: new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })
-      });
+    // Save score in platform (une seule fois)
+    if (!resultSaved) {
+      resultSaved = true;
+      try {
+        if (window.parent && window.parent !== window && typeof window.parent.saveResult === 'function') {
+          window.parent.saveResult({
+            activity: 'sci_eclipses',
+            bookTitle: "Sciences — Les éclipses",
+            score: userScore,
+            total: maxScore,
+            pct: pct,
+            date: new Date().toLocaleDateString('fr-BE'),
+            time: new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })
+          });
+        }
+      } catch (e) { console.warn('saveResult', e); }
     }
   }
 
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Enter') return;
+    const nb = document.getElementById('btn-quiz-next');
+    if (!nb || nb.style.display === 'none' || document.getElementById('quiz-panel').style.display === 'none') return;
+    e.preventDefault();
+    onNextQuestionClick();
+  });
+
   function restartQuiz() {
     playSound('click');
+    resultSaved = false;
     currentQIdx = 0;
     userScore = 0;
     answersRecorded = [];
@@ -1563,6 +1679,10 @@
   /* ────────────────────────────────────────────────────────────────
      INITIALIZATION
      ──────────────────────────────────────────────────────────────── */
+  if (window.parent !== window) {
+    const bb = document.querySelector('header .back-btn');
+    if (bb) bb.style.display = 'none';
+  }
   window.onload = () => {
     switchAstronomicalMode('solar');
     renderQuestion();
