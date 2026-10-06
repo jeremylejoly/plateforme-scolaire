@@ -1525,6 +1525,18 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Orthographe : œufs, boites, maitrises, entrainement, entrainer.
 - Tests : jsdom (3 cases, réponse vide non comptée, double Entrée, partie 4/5 → 1 seul saveResult), node --check 7 OK, Playwright 390 px (scrollWidth 390).
 
+### 06/10 — Le rallye des bolides (`grandeur_proportionnalite_rallye_bolides`, fiches/rallye_bolides.html) — sw.js v587
+- Contenu : 13 véhicules, rapports vérifiés. « Le TGV relie Bruxelles à Paris » avec 1 000 km en 4 h était faux → contexte neutre (ligne à grande vitesse).
+- Tableaux figés (toujours les mêmes 3 colonnes, toujours distance/temps/distance cachés) → colonnes tirées au hasard parmi les multiples du rapport (½, 1½, 2, 2½, 3, 4, 5 fois la référence et l'unité), dans un ordre aléatoire, cases cachées variées (au moins une distance et un temps). 300 tirages × 13 : aucune erreur.
+- Dessins inadaptés : marcheur et poney sur un vélo, camion en voiture, skateur en trottinette → 4 nouveaux dessins (camion, marcheur, poney, skate).
+- Saisie : parseInt acceptait 12,5 → 12 ; champs number refusaient « 3 200 » → champ texte numérique, lecture stricte, espaces acceptés, message sans compter l'essai.
+- Correction « Rép: 60 » en vert → « Réponse : 60 » en bleu ; grands nombres affichés avec espace (1 600, 8 000).
+- Aucune touche Entrée → Entrée valide puis passe à la suite (garde 600 ms) ; Suivant protégé contre le double clic.
+- Enregistrement : un seul, try/catch, drapeau remis à zéro au redémarrage. Bulles : minuteries annulées (plus de bulle effacée trop tôt).
+- Téléphone : tableau qui défilait horizontalement et barre du haut trop large → media query (tableau 328/328 px, page 390 px).
+- Orthographe : s'entraine, maitrises, Entraine-toi.
+- Tests : jsdom (vide et « 12abc » non comptés, « 4 000 » accepté, double Entrée bloquée, partie 4/5 → 1 seul saveResult, redémarrage), node --check 7 OK, Playwright 390 px.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1881,7 +1893,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 06/10 | Rends la monnaie | `grandeur_monnaie_rendre` | fiches/rendre_la_monnaie.html |  |
 | ✅ 06/10 | Deux objets — Rends la monnaie | `grandeur_monnaie_deux_objets` | fiches/deux_objets_monnaie.html |  |
 | ✅ 06/10 | Recettes | `grandeur_proportionnalite_exercice` | fiches/proportionnalite.html |  |
-| ⬜ | Le rallye des bolides | `grandeur_proportionnalite_rallye_bolides` | fiches/rallye_bolides.html |  |
+| ✅ 06/10 | Le rallye des bolides | `grandeur_proportionnalite_rallye_bolides` | fiches/rallye_bolides.html |  |
 | ⬜ | Le supermarché malin | `grandeur_proportionnalite_supermarche_malin` | fiches/supermarche_malin.html |  |
 | ⬜ | QCM de vitesse horaire | `grandeur_vitesse_horaire_qcm` | fiches/vitesse_situations.html |  |
 | ⬜ | L'échelle | `grandeur_echelle` | fiches/grandeurs_echelle.html |  |
