@@ -1881,6 +1881,13 @@ Spécifique :
 - Menus parents (Additions et soustractions, Multiplications et divisions, Les 4 opérations, Calcul écrit, L'ordre des opérations, Les durées, Le périmètre) marqués « menu » : tous leurs exercices sont vérifiés.
 - Contrôles : plus aucune référence aux identifiants supprimés dans index.html / exercices_*.js (hors sauvegardes et `public/index.html`, ancienne copie non publiée) ; index chargé dans Chromium : menus Numération, Opérations, Solides rendus sans les cases supprimées, aucune nouvelle erreur JavaScript ; syntaxe 6 fichiers OK.
 
+### 06/10 — Éveil → Histoire → La Préhistoire → Qui veut gagner des millions ? (`qvgdm_prehistoire`, index › renderQVGDMPrehistoire / QVGDM_Q) — sw.js v625
+- **Propositions jamais mélangées, toujours la même partie** (bonne réponse en B dans 8/15 questions, jamais en D sauf une fois) → banque de **30 questions, 2 par niveau** (l'ordre croissant de difficulté est gardé) : une question tirée par niveau à chaque partie, propositions mélangées (Fisher–Yates ; 50/50 aussi). Bonne réponse strictement la plus longue dans 7/30 questions seulement.
+- **Contenu revu** : « outil fabriqué en premier = couteau en silex » (faux) → « galets aménagés » ; « vivaient dans des grottes » (idée reçue) supprimée ; « chassant et cueillant » → « nomades chasseurs-cueilleurs » (la question donnait la réponse) → « se déplacent sans cesse… » ; Lucy (« ancêtre de l'homme moderne » douteux) → « squelette d'australopithèque découvert en Éthiopie en 1974 » ; « a provoqué la disparition » → « a contribué » ; premiers villages → « Proche-Orient ». Nouvelles questions : fin de la Préhistoire, dinosaures, pierre, peintures rupestres, Lascaux (animaux), élevage, hache polie, poteries, Afrique, Homo sapiens, Néandertal (Spy), agriculture en Belgique (≈ 7 000 ans), Mésolithique, biface, cuivre, mégalithes (Wéris). Nouvelle orthographe (maitrise, apparait). Espace insécable avant « ? ».
+- **Message de fin cassé** : le texte affichait les balises `<br>` et `<strong>` en clair (textContent) → affichage correct, bonne réponse en bleu (#1f5fbf). Après une erreur, la bonne proposition est en bleu (elle était en vert).
+- **Minuteurs** : quitter / rejouer pendant le délai de 1,5–2 s faisait avancer ou terminer la nouvelle partie → minuteurs liés à la partie. La barre des paliers défile jusqu'au palier en cours.
+- Tests Chromium : 150 parties gagnées (30 questions vues, texte affiché = question, bonne réponse cliquable, double clic sans effet, 1 sauvegarde 15/15 par partie), répartition A/B/C/D 545/546/571/588 ; partie perdue à la question 7 → bleu + 1 sauvegarde 6/15 ; relance pendant le délai sans effet ; captures 390 px sans débordement.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2314,7 +2321,7 @@ Spécifique :
 | ⬜ | Le grand voyage du Temps (Carnet d'investigation) | `hist_grand_voyage_temps` | fiches/lecon_frise_historique.html | QCM: bonne réponse en position 1 dans 5/5 questions, options non mélangées ; Aucun hasard : mêmes questions, même ordre à chaque partie |
 | ⬜ | La ligne du temps (Séquence P5–P6) | `hist_ligne_du_temps` | fiches/ligne-du-temps_5.html | QCM: bonne réponse en position 2 dans 10/10 questions, options non mélangées ; Aucun hasard : mêmes questions, même ordre à chaque partie |
 | ⬜ | Les grandes périodes de l'Histoire | `hist_grandes_periodes` | fiches/frise-chronologique-histoire.html |  |
-| ⬜ | Quiz Préhistoire | `qvgdm_prehistoire` | index › renderQVGDMPrehistoire |  |
+| ✅ 06/10 | Quiz Préhistoire | `qvgdm_prehistoire` | index › renderQVGDMPrehistoire |  |
 | ⬜ | Préhistoire — Termes et définitions | `prehistoire_assoc` | index › renderPrehistoireAssoc |  |
 | ⬜ | Préhistoire — Campement du Paléolithique | `prehistoire_doc` | index › renderPrehistoireDoc |  |
 | ⬜ | Quiz L'Antiquité | `qvgdm_antiquite` | index › renderQVGDMAntiquite | QCM: bonne réponse en position 3 dans 9/15 questions, options non mélangées |
