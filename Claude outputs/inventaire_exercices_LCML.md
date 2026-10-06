@@ -2206,6 +2206,8 @@ Spécifique :
 
 - **06/10 — Mots et définitions (`geo_hydro_definitions`, fiches/hydrographie_definitions.html, sw.js v694)** : 10 définitions vérifiées ; précisées : méandre (« grand virage » → grande courbe en forme de boucle), estuaire (large, en forme d'entonnoir, un seul bras), delta (« bancs de sable » → dépôts de sable et de boue). L'astuce « amont = MONTagne, aval = VALlée », affichée avant de répondre, donnait 2 réponses → déplacée dans la correction. Défauts corrigés : `alert()` → message dans la page ; validation possible avec 1 seule paire (les autres comptées fausses) → « Il reste N mots à relier » ; « Corriger mes erreurs » = 2e essai et nouvelle sauvegarde → retiré (un seul essai) ; bonne réponse jamais montrée → « ➜ mot » en bleu sous chaque définition mal reliée ; sauvegarde en try/catch. Copies : public/ = fiches/ (commentaires en moins), racine = ancienne version → 3 copies identiques. Test Playwright 390 px : message 10 mots, 8/10 avec ➜ amont / ➜ aval en bleu, astuce visible seulement après, 1 seule sauvegarde.
 
+- **06/10 — Relief et hydrographie de Belgique (`geo_hydro_belgique`, fiches/relief-hydrographie.html, sw.js v695, MEDIA m7)** : leçon interactive sans score (6 onglets, points à cliquer) — acceptée sans sauvegarde. Vérifiés : les 7 reliefs, la coupe de Belgique (paliers 0-100 / 100-200 / 200-694 m), les 11 éléments du cours d'eau, les 3 fleuves, les 11 points de la région (longueurs Warche 41 km, Salm 34 km, Amblève 93 km, lacs de Robertville 1928 et Bütgenbach 1932 vérifiés). Corrections : carte orohydrographique — la légende de l'image disait « 500 m + Haute / 150 m Moyenne / 0 m Basse » (contredit la leçon) → légende redessinée : plus de 200 m / 100 à 200 m / 0 à 100 m (+ Fleuve, Rivière, Capitale) ; `**glaciers**` affiché tel quel ; Coo « cascade créée il y a plus de 500 ans » → une partie créée au 18e siècle par les moines de Stavelot ; Yser « 50 km en Belgique » → environ 45 km ; Escaut : « la Senne » n'est pas un affluent direct → « le Rupel (qui reçoit la Dyle et la Senne) » ; Diksmuide/Nieuwpoort → Dixmude/Nieuport (carte et fiche) ; méandre « dans les plaines… courant très lent » → surtout là où la pente est faible ; « Organes hydrographiques » → Éléments ; « Le Holzwarche » → La ; l'accueil annonçait des « défis » inexistants → « clique sur les numéros… ». Téléphone : sur les cartes des onglets 04 et 05, étiquettes et points se chevauchaient → carte plus large dans un cadre qu'on fait glisser (+ phrase d'aide). 3 copies alignées, image dans photos/ et public/photos/.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2741,7 +2743,7 @@ Spécifique :
 | ✅ 06/10 | Les types de paysages | `geo_paysages_types` | fiches/analyse_types_paysages.html |  |
 | ✅ 06/10 | Le schéma du cours d'eau | `geo_hydro_schema` | fiches/vocabulaire_hydrographique.html |  |
 | ✅ 06/10 | Vocabulaire hydrographique (Définitions) | `geo_hydro_definitions` | fiches/hydrographie_definitions.html |  |
-| ⬜ | Relief et hydrographie de Belgique | `geo_hydro_belgique` | index › (?) | (code à localiser) |
+| ✅ 06/10 | Relief et hydrographie de Belgique | `geo_hydro_belgique` | fiches/relief-hydrographie.html |  |
 | ⬜ | Les cartes et les plans | `geo_cartes` | index › (?) | (code à localiser) |
 
 ### 🌍 Éveil — 💶 Économie — Formation économique et sociale
