@@ -2285,6 +2285,8 @@ Spécifique :
 
 - **06/10 — CEB Histoire/Géo 2022 (`ceb_hg_2022`, CEB histoire:géo/ceb_histoire_geo_2022.html, sw.js v732)** : 20 questions vérifiées contre le portfolio PDF (p. 20-30 : 8 photos de milieux naturels et carte, enluminures février/mars/juillet/novembre, remparts de Binche, Ferraris 1777, plan de 2020 (N90, Parc Communal, Grand-Place), glaciers, Europe politique, FOJE (1991 Belgique, tous les 2 ans, 13-18 ans, finales de cyclisme les 28 et 29)). Défaut de contenu : 1.5 la bonne réponse plaçait la photo 2 « au bord des mers du nord de l'Europe » alors que le point 2 est sur la côte atlantique de la France → « la photo 3 est au bord de la Méditerranée » ; 1.2 les choix nommaient les continents (réponse évidente) → numéros de photos seuls (la photo 7, autre désert, comme piège) ; 4.1 « sous l'effet de l'augmentation des températures » (absent) retiré ; bonne réponse seule longue (1.1, 2.2, 2.4, 2.5, 3.1, 3.5, 4.1, 4.5) → équilibrée ; explications 1.5, 3.2, 4.1 recalées. Moteur 2024 (module) : sauvegarde unique /20, Vrai/Faux en points entiers, choix mélangés, réponse unique, bleu, « Revoir mes réponses ». NO : chaine, entrainement, maitriser. Test Playwright 390 px : bilan 17/20, 1 seule sauvegarde, pas de débordement.
 
+- **06/10 — CEB Histoire/Géo 2021 (`ceb_hg_2021`, CEB histoire:géo/ceb_histoire_geo_2021.html, sw.js v733)** : 20 questions vérifiées contre le portfolio PDF (p. 8-12 : carte des voies de communication (A10 Bruxelles-Gand-Ostende, aéroports), réseau ferroviaire, Liège 1778/2019 (Jupille à l'est, Robermont), rue de Courcelles, avis du 12 mai 1940 (Achêne, 16-30 ans, Erquelinnes, transport gratuit, vivres 48 h, H. Denis)) — réponses justes. Moteur des Sciences 2013 (module réutilisé) : aucune sauvegarde → sauvegarde unique /20 ; choix jamais mélangés ; question déjà répondue recliquable ; réponse manquée en vert → bleu, explications aussi après les Vrai/Faux ; bilan avec questions vides → message ; garde 600 ms ; confetti protégé. Contenu : 1.1 la bonne réponse contenait sa justification (A15/A54 ; l'A54 n'est pas sur la carte) → « Charleroi » ; 1.5 distracteurs absents de la légende → symboles réels (points noirs = gares intervilles, traits orange, avions) ; bonne réponse seule longue (2.1, 2.2, 2.5, 3.2, 3.4, 4.1, 4.4) → équilibrée. NO : entrainement, maitriser ; « prêt-e » → « prêt ». Test Playwright 390 px : message « 1.5, 4.3 », 17/20, 3 réponses en bleu, 1 seule sauvegarde, pas de débordement.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2852,7 +2854,7 @@ Spécifique :
 | ✅ 06/10 | CEB Histoire/Géo 2024 | `ceb_hg_2024` | index › openCEB |  |
 | ✅ 06/10 | CEB Histoire/Géo 2023 | `ceb_hg_2023` | index › openCEB |  |
 | ✅ 06/10 | CEB Histoire/Géo 2022 | `ceb_hg_2022` | index › openCEB |  |
-| ⬜ | CEB Histoire/Géo 2021 | `ceb_hg_2021` | index › openCEB |  |
+| ✅ 06/10 | CEB Histoire/Géo 2021 | `ceb_hg_2021` | index › openCEB |  |
 | ⬜ | CEB Histoire/Géo 2019 | `ceb_hg_2019` | index › openCEB |  |
 | ⬜ | CEB Histoire/Géo 2016 | `ceb_hg_2016` | index › openCEB |  |
 | ⬜ | CEB Histoire/Géo 2013 | `ceb_hg_2013` | index › openCEB |  |
