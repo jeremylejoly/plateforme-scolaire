@@ -3710,7 +3710,7 @@ input[type=text].calc-input.incorrect {
       'screen-books': "Choisit un livre de lecture",
       'screen-jeux': "Choisit un jeu",
       'screen-jeu-tables': "Jeu : Tables de multiplication",
-      'screen-jeu-memory': "Jeu : Memory des fractions",
+      'screen-jeu-memory': "Jeu : Memory Calcul",
       'screen-jeu-tetris': "Jeu : Tetris",
       'screen-jeu-rushhour': "Jeu : Rush Hour",
       'screen-jeu-robot': "Jeu : Logic Robot (Labyrinthe)",
@@ -20045,10 +20045,10 @@ function renderJeuMemory(){
     </div>
 
     <style>
-      .mem-card{aspect-ratio:1;border-radius:12px;cursor:pointer;position:relative;transform-style:preserve-3d;transition:transform 0.4s;user-select:none;}
+      .mem-card{aspect-ratio:1;border-radius:12px;cursor:pointer;position:relative;-webkit-transform-style:preserve-3d;transform-style:preserve-3d;transition:transform 0.4s;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;}
       .mem-card.flipped{transform:rotateY(180deg);}
       .mem-card.matched{transform:rotateY(180deg);cursor:default;outline:3px solid var(--green);}
-      .card-front,.card-back{position:absolute;inset:0;border-radius:12px;display:flex;align-items:center;justify-content:center;backface-visibility:hidden;font-weight:700;}
+      .card-front,.card-back{position:absolute;inset:0;border-radius:12px;display:flex;align-items:center;justify-content:center;-webkit-backface-visibility:hidden;backface-visibility:hidden;font-weight:700;}
       .card-back{background:var(--purple);border:2px solid var(--purple);font-size:28px;color:rgba(255,255,255,0.7);}
       .card-front{background:var(--surface);border:2px solid var(--border);transform:rotateY(180deg);}
       .card-front.is-op{font-size:14px;color:var(--text);padding:6px;text-align:center;font-weight:800;}
@@ -20063,7 +20063,7 @@ let memFlipped=[], memMatched=0, memTours=0, memTimerI=null, memElapsed=0, memLo
 const MEM_OPS=[
   ()=>{let a=rndM(2,9),b=rndM(2,10);return{op:a+' × '+b,ans:a*b};},
   ()=>{let a=rndM(10,60),b=rndM(5,30);return{op:a+' + '+b,ans:a+b};},
-  ()=>{let a=rndM(20,70),b=rndM(5,25);return{op:a+' - '+b,ans:a-b};},
+  ()=>{let a=rndM(20,70),b=rndM(5,Math.min(25,a-6));return{op:a+' − '+b,ans:a-b};}, // jamais de résultat négatif (avant : 21 − 25 = -4)
   ()=>{let a=rndM(2,9),b=rndM(2,9);return{op:(a*b)+' ÷ '+a,ans:b};},
 ];
 
@@ -20073,8 +20073,8 @@ function memGenPairs(){
   let pairs=[],used=[];
   const fns=[MEM_OPS[0],MEM_OPS[1],MEM_OPS[2],MEM_OPS[3],MEM_OPS[0],MEM_OPS[1],MEM_OPS[2],MEM_OPS[3]];
   fns.forEach(fn=>{
-    let p,tries=0;
-    do{p=fn();tries++;}while(used.includes(p.ans)&&tries<30);
+    let p;
+    do{p=fn();}while(used.includes(p.ans));
     used.push(p.ans);
     pairs.push(p);
   });
@@ -20108,8 +20108,8 @@ function memInit(){
   const pairs=memGenPairs();
   let cards=[];
   pairs.forEach((p,i)=>{
-    cards.push({id:'op'+i,pairId:i,type:'op',text:p.op});
-    cards.push({id:'ans'+i,pairId:i,type:'ans',text:String(p.ans)});
+    cards.push({id:'op'+i,pairId:i,type:'op',text:p.op,val:p.ans});
+    cards.push({id:'ans'+i,pairId:i,type:'ans',text:String(p.ans),val:p.ans});
   });
   memShuffle(cards);
 
@@ -20123,6 +20123,7 @@ function memInit(){
     el.dataset.id=c.id;
     el.dataset.pair=c.pairId;
     el.dataset.type=c.type;
+    el.dataset.val=c.val;
     el.innerHTML=`
       <div class="card-back">?</div>
       <div class="card-front is-${c.type==='op'?'op':'ans'}">${c.text}</div>`;
@@ -20131,6 +20132,8 @@ function memInit(){
   });
 
   memTimerI=setInterval(()=>{
+    const scr=document.getElementById('screen-jeu-memory');
+    if(!scr || !scr.classList.contains('active')){ clearInterval(memTimerI); return; }
     memElapsed++;
     const el=document.getElementById('m-temps');
     if(el) el.textContent=memElapsed+'s';
@@ -20152,7 +20155,7 @@ function memFlipCard(el,id){
     memLocked=true;
     const [a,b]=memFlipped;
     const aEl=a.el, bEl=b.el;
-    if(aEl.dataset.pair===bEl.dataset.pair && aEl.dataset.type!==bEl.dataset.type){
+    if(aEl.dataset.val===bEl.dataset.val && aEl.dataset.type!==bEl.dataset.type){
       setTimeout(()=>{
         aEl.classList.add('matched'); bEl.classList.add('matched');
         memCardStates[a.id]='matched'; memCardStates[b.id]='matched';
@@ -20166,7 +20169,9 @@ function memFlipCard(el,id){
       },600);
     } else {
       const mMsg=document.getElementById('mem-msg');
-      if(mMsg) mMsg.textContent='Pas la bonne paire… Mémorise bien !';
+      if(mMsg) mMsg.textContent = aEl.dataset.type===bEl.dataset.type
+        ? (aEl.dataset.type==='op' ? 'Deux calculs : il faut un calcul et son résultat.' : 'Deux résultats : il faut un calcul et son résultat.')
+        : 'Pas la bonne paire… Mémorise bien !';
       setTimeout(()=>{
         aEl.classList.remove('flipped'); bEl.classList.remove('flipped');
         memCardStates[a.id]='hidden'; memCardStates[b.id]='hidden';
@@ -20196,16 +20201,18 @@ function memFinJeu(){
     panel.scrollIntoView({behavior:'smooth'});
   }
   if(state.student){
-    saveResult({
-      student:state.student, cls:state.studentCls,
-      className:CLASSES[state.studentCls]?CLASSES[state.studentCls].name:state.studentCls,
-      activity:'jeu_memory',
-      bookTitle:'Jeu — Memory Calcul',
-      score:8, total:8, pct:100,
-      time_sec: memElapsed,
-      date:new Date().toLocaleDateString('fr-BE'),
-      time:new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})
-    });
+    try {
+      saveResult({
+        student:state.student, cls:state.studentCls,
+        className:CLASSES[state.studentCls]?CLASSES[state.studentCls].name:state.studentCls,
+        activity:'jeu_memory',
+        bookTitle:'Jeu — Memory Calcul (' + memTours + ' tentatives)',
+        score:8, total:8, pct:100,
+        time_sec: memElapsed,
+        date:new Date().toLocaleDateString('fr-BE'),
+        time:new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})
+      });
+    } catch(e){ console.warn('saveResult', e); }
   }
 }
 

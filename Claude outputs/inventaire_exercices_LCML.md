@@ -2221,6 +2221,8 @@ Spécifique :
 
 - **06/10 — Jeux › Tables de multiplication (`jeu_tables`, index › renderJeuTables, sw.js v700)** : (CEB mis en pause à la demande de Jeremy, on passe aux jeux.) Bloquant : la réponse ne se validait qu'avec Entrée, absente du clavier numérique des téléphones/tablettes (inputmode numeric) → bouton « Valider ✔ ». Double Entrée pendant la correction : la question comptait deux fois, une question sautait, la fin pouvait s'enregistrer deux fois → une seule réponse par question (saisie figée pendant la correction) et fin protégée. Tirage au hasard pur : mêmes calculs répétés, parfois deux fois de suite → tirage « sac » (toutes les multiplications de la table passent avant qu'une revienne, jamais deux fois de suite). Correction « C'était 42 » en rouge, 0,9 s → « 7 × 6 = 42 » avec le résultat en bleu, affiché 2 s. Validation vide ou non numérique → message dans la page. Quitter l'écran en cours de partie arrête le chrono et la partie. Sauvegarde en try/catch, titre précisant la table. Test Playwright 390 px : table de 7 en 20 questions, 9 calculs différents, aucune répétition consécutive, doubles clics/Entrée sans effet, 17/20, 1 sauvegarde, pas de débordement.
 
+- **06/10 — Jeux › Memory Calcul (`jeu_memory`, index › renderJeuMemory, sw.js v701)** : erreur de calcul : les soustractions pouvaient donner un résultat négatif (« 21 − 25 » avec la carte « -4 », 56 cas sur 2 000 parties simulées) → le nombre retiré est toujours plus petit. Deux cartes de même résultat restaient possibles (abandon après 30 essais) et seule la paire « d'origine » était acceptée : un calcul juste associé à l'autre carte identique était refusé → résultats toujours tous différents et paire validée par la valeur (calcul + son résultat). Deux calculs ou deux résultats retournés ensemble → message qui explique. Signe « - » → « − ». Safari/iPad : préfixes -webkit- pour le retournement des cartes (le dos pouvait rester visible). Chrono arrêté quand on quitte l'écran. Suivi : « Memory des fractions » → « Memory Calcul » ; sauvegarde en try/catch avec le nombre de tentatives dans le titre (score toujours 8/8, le jeu se termine toujours). Test Playwright 390 px : 2 000 tirages sans doublon ni résultat faux/négatif, partie complète, 1 sauvegarde, pas de débordement.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2807,7 +2809,7 @@ Spécifique :
 | Statut | Exercice | id | Source | Signal automatique |
 |---|---|---|---|---|
 | ✅ 06/10 | Tables de multiplication | `jeu_tables` | index › renderJeuTables |  |
-| ⬜ | Memory Calcul | `jeu_memory` | index › renderJeuMemory |  |
+| ✅ 06/10 | Memory Calcul | `jeu_memory` | index › renderJeuMemory |  |
 | ⬜ | Tetris | `jeu_tetris` | index › renderJeuTetris |  |
 | ⬜ | Rush Hour | `jeu_rushhour` | index › renderJeuRushHour |  |
 | ⬜ | Le robot | `jeu_robot` | fiches/Labyrinthe.html |  |
