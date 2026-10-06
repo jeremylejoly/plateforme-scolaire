@@ -3266,7 +3266,7 @@ input[type=text].calc-input.incorrect {
 <script src="livres.js?v=20261002b"></script>
 <script src="exercices_francais.js?v=20261005zp"></script>
 <script src="exercices_maths.js?v=20261006g"></script>
-<script src="exercices_eveil.js?v=20261006b"></script>
+<script src="exercices_eveil.js?v=20261006c"></script>
 <script>
 /* Garde-fou : si un appareil a chargé une ancienne version du fichier des livres
    (0/16, « undefined », livre absent), on vide les copies en mémoire et on recharge une fois. */
@@ -28594,258 +28594,234 @@ function validateSciCoeur(){
 // ===== LE TRAJET DU SANG =====
 // window.SCI_TRAJET_SANG_TEXTES a été extrait vers un fichier JS externe
 
-let sciTrajetState = {texteIndex:0, answers:{}, draggingWord:null, touchClone:null, touchSource:null};
+let sciTrajetState = {cur:0, answers:{}, sel:null, done:false, lastClick:0, touchClone:null, touchSource:null, tx:0, ty:0, moved:false};
 
-function renderSciTrajetSangScreen(){
+function trajetMotHtml(mot){
+  return `<div class="trajet-mot" draggable="true" data-mot="${mot}"
+      style="padding:6px 14px;background:var(--purple);color:#fff;border-radius:20px;cursor:grab;
+      font-size:14px;font-weight:600;user-select:none;touch-action:none;"
+      onclick="trajetSelect(this)" ondragstart="trajetDragStart(event)" ondragend="trajetDragEnd(event)"
+      ontouchstart="trajetMotTouchStart(event)" ontouchmove="trajetMotTouchMove(event)" ontouchend="trajetMotTouchEnd(event)" ontouchcancel="trajetMotTouchCancel(event)"
+      >${mot}</div>`;
+}
+
+function renderSciTrajetSangScreen(){ renderSciTrajetSangIdx(sciTrajetState.cur || 0); }
+function renderSciTrajetSangIdx(idx){
   const body = document.getElementById('sci-trajet-sang-body');
   if(!body) return;
+  const T = SCI_TRAJET_SANG_TEXTES;
+  idx = ((idx % T.length) + T.length) % T.length;
+  const texte = T[idx];
+  sciTrajetState = {cur:idx, answers:{}, sel:null, done:false, lastClick:0, touchClone:null, touchSource:null, tx:0, ty:0, moved:false};
 
-  // Choisir le texte suivant de manière cyclique
-  const texte = SCI_TRAJET_SANG_TEXTES[sciTrajetState.texteIndex % SCI_TRAJET_SANG_TEXTES.length];
-  sciTrajetState.answers = {};
-  sciTrajetState.texteIndex++;
-
-  // Mélanger les mots
-  const motsMelanges = [...texte.mots].sort(() => Math.random() - 0.5);
-
-  // Construire le texte lacunaire
   let texteHtml = '<p style="font-size:16px;line-height:2.2;color:var(--text)">';
   texte.segments.forEach(seg => {
     if(seg.type === 'text'){
       texteHtml += seg.content.replace(/\n/g,'<br>');
     } else {
-      const w = seg.answer.length * 9 + 20;
+      const w = Math.min(seg.answer.length * 9 + 20, 260);
       texteHtml += `<span class="trajet-drop-zone" id="tdz-${seg.id}"
         data-id="${seg.id}" data-answer="${seg.answer}" ${seg.group ? `data-group="${seg.group}"` : ''}
-        style="display:inline-block;min-width:${w}px;min-height:28px;border-bottom:2px solid var(--purple);
-        border-radius:4px;margin:0 3px;padding:2px 6px;vertical-align:middle;cursor:pointer;
+        style="display:inline-block;min-width:${w}px;max-width:100%;min-height:28px;border-bottom:2px solid var(--purple);
+        border-radius:4px;margin:0 3px;padding:2px 6px;vertical-align:middle;cursor:pointer;line-height:1.5;
         background:var(--purple-light);transition:background .2s;"
-        ondragover="trajetDragOver(event)" ondrop="trajetDrop(event)" ondragleave="trajetDragLeave(event)" onclick="trajetClearZone(this)"
-        ontouchstart="trajetZoneTouchStart(event)" >&nbsp;</span>`;
+        ondragover="trajetDragOver(event)" ondrop="trajetDrop(event)" ondragleave="trajetDragLeave(event)" onclick="trajetZoneClick(this)">&nbsp;</span>`;
     }
   });
   texteHtml += '</p>';
 
-  // Construire la banque de mots
-  let motsHtml = '<div id="trajet-mots-pool" style="display:flex;flex-wrap:wrap;gap:8px;margin:1rem 0 1.5rem;padding:1rem;background:var(--surface);border-radius:10px;border:1px solid var(--border);">';
-  motsMelanges.forEach(mot => {
-    const motId = 'tmot-' + Math.random().toString(36).slice(2,10);
-    motsHtml += `<div class="trajet-mot" id="${motId}"
-      draggable="true" data-mot="${mot}"
-      style="padding:6px 14px;background:var(--purple);color:#fff;border-radius:20px;cursor:grab;
-      font-size:14px;font-weight:600;user-select:none;touch-action:none;"
-      ondragstart="trajetDragStart(event)" ondragend="trajetDragEnd(event)"
-      ontouchstart="trajetMotTouchStart(event)" ontouchmove="trajetMotTouchMove(event)" ontouchend="trajetMotTouchEnd(event)" ontouchcancel="trajetMotTouchCancel(event)"
-      >${mot}</div>`;
-  });
-  motsHtml += '</div>';
+  const motsHtml = '<div id="trajet-mots-pool" style="display:flex;flex-wrap:wrap;gap:8px;margin:1rem 0 1.5rem;padding:1rem;background:var(--surface);border-radius:10px;border:1px solid var(--border);">'
+    + shuffle([...texte.mots]).map(trajetMotHtml).join('') + '</div>';
+
+  const tabs = T.map((t,i) =>
+    `<button onclick="renderSciTrajetSangIdx(${i})" class="btn btn-sm ${i===idx?'btn-primary':''}" style="margin:0 6px 6px 0">${t.titre}</button>`).join('');
 
   body.innerHTML = `
+    <div class="card" style="margin-bottom:1rem">${tabs}
+      <p style="margin:.4rem 0 0;font-size:13px;color:var(--muted);font-weight:600">Glisse chaque mot au bon endroit dans le texte (ou touche un mot, puis le trou).</p></div>
     <div class="card" style="margin-bottom:1rem">
       <div style="font-weight:700;font-size:15px;color:var(--purple);margin-bottom:0.75rem">📖 ${texte.titre}</div>
-      <p style="font-size:13px;color:var(--muted);margin-bottom:1rem">Glisse chaque mot au bon endroit dans le texte.</p>
       ${texteHtml}
     </div>
     <div class="card" style="margin-bottom:1rem">
       <div style="font-weight:700;font-size:14px;margin-bottom:0.5rem">🏷️ Mots à placer</div>
       ${motsHtml}
     </div>
-    <button class="btn" onclick="trajetVerifier('${texte.id}')" style="width:100%;margin-bottom:1rem">✅ Vérifier mes réponses</button>
+    <div id="trajet-msg" style="display:none;margin:.5rem 0;padding:.6rem .9rem;border-radius:8px;background:#fff7ed;border:1.5px solid #f59e0b;color:#92400e;font-size:13px;font-weight:700;text-align:center"></div>
+    <button class="btn" id="trajet-verif" onclick="trajetVerifier()" style="width:100%;margin-bottom:1rem">✅ Vérifier mes réponses</button>
     <div id="trajet-score-panel" style="display:none"></div>
   `;
 }
 
-// --- Drag & Drop Desktop ---
+// --- Glisser (souris) ---
 function trajetDragStart(e){
-  const mot = e.currentTarget.dataset.mot;
-  sciTrajetState.draggingWord = mot;
-  sciTrajetState.draggingEl = e.currentTarget;
-  e.dataTransfer.setData('text/plain', mot);
+  if(sciTrajetState.done){ e.preventDefault(); return; }
+  e.dataTransfer.setData('text/plain', e.currentTarget.dataset.mot);
   e.currentTarget.style.opacity = '0.5';
 }
-function trajetDragEnd(e){ e.currentTarget.style.opacity = ''; sciTrajetState.draggingWord = null; }
-function trajetDragOver(e){ e.preventDefault(); e.currentTarget.style.background = 'var(--purple-mid)'; }
-function trajetDragLeave(e){ e.currentTarget.style.background = 'var(--purple-light)'; }
+function trajetDragEnd(e){ e.currentTarget.style.opacity = ''; }
+function trajetDragOver(e){ e.preventDefault(); if(!sciTrajetState.done) e.currentTarget.style.background = 'var(--purple-mid)'; }
+function trajetDragLeave(e){ if(!sciTrajetState.done) e.currentTarget.style.background = 'var(--purple-light)'; }
 function trajetDrop(e){
   e.preventDefault();
   const zone = e.currentTarget;
-  zone.style.background = 'var(--surface)';
-  const mot = e.dataTransfer.getData('text/plain');
-  trajetPlacerMot(zone, mot);
+  if(sciTrajetState.done) return;
+  zone.style.background = 'var(--purple-light)';
+  trajetPlacerMot(zone, e.dataTransfer.getData('text/plain'));
 }
 
 function trajetPlacerMot(zone, mot){
-  // Si la zone était déjà remplie, remettre l'ancien mot dans la banque
+  if(sciTrajetState.done || !zone || !mot) return;
   const ancien = zone.dataset.placed;
+  if(ancien === mot) return;
   if(ancien) trajetRetournerMot(ancien);
-
-  // Retirer le mot de la banque s'il y est encore
   trajetRetirerDeBanque(mot);
-
   zone.dataset.placed = mot;
   zone.textContent = mot;
   zone.style.color = 'var(--text)';
   zone.style.fontWeight = '600';
-  zone.style.borderBottom = '2px solid var(--purple)';
   sciTrajetState.answers[zone.dataset.id] = mot;
+  trajetClearSel();
+  const m = document.getElementById('trajet-msg'); if(m) m.style.display = 'none';
 }
-
 function trajetRetournerMot(mot){
   const pool = document.getElementById('trajet-mots-pool');
-  if(!pool) return;
-  // Vérifier si le mot n'est pas déjà dans la banque
-  const existing = pool.querySelector(`[data-mot="${mot}"]`);
-  if(existing) return;
-  const div = document.createElement('div');
-  div.className = 'trajet-mot';
-  div.dataset.mot = mot;
-  div.draggable = true;
-  div.style.cssText = 'padding:6px 14px;background:var(--purple);color:#fff;border-radius:20px;cursor:grab;font-size:14px;font-weight:600;user-select:none;touch-action:none;';
-  div.textContent = mot;
-  div.addEventListener('dragstart', trajetDragStart);
-  div.addEventListener('dragend', trajetDragEnd);
-  div.addEventListener('touchstart', trajetMotTouchStart, {passive:false});
-  div.addEventListener('touchmove', trajetMotTouchMove, {passive:false});
-  div.addEventListener('touchend', trajetMotTouchEnd);
-  div.addEventListener('touchcancel', trajetMotTouchCancel);
-  pool.appendChild(div);
+  if(!pool || pool.querySelector(`[data-mot="${mot}"]`)) return;
+  pool.insertAdjacentHTML('beforeend', trajetMotHtml(mot));
 }
-
 function trajetRetirerDeBanque(mot){
   const pool = document.getElementById('trajet-mots-pool');
-  if(!pool) return;
-  const el = pool.querySelector(`[data-mot="${mot}"]`);
+  const el = pool ? pool.querySelector(`[data-mot="${mot}"]`) : null;
   if(el) el.remove();
 }
+function trajetClearSel(){
+  sciTrajetState.sel = null;
+  document.querySelectorAll('#trajet-mots-pool .trajet-mot').forEach(t => t.style.outline = '');
+}
+function trajetSelect(el){
+  if(sciTrajetState.done || !el) return;
+  const same = sciTrajetState.sel === el.dataset.mot;
+  trajetClearSel();
+  if(!same){ sciTrajetState.sel = el.dataset.mot; el.style.outline = '3px solid #f59e0b'; }
+}
+function trajetZoneClick(zone){
+  if(sciTrajetState.done) return;
+  if(sciTrajetState.sel){ trajetPlacerMot(zone, sciTrajetState.sel); return; }
+  const mot = zone.dataset.placed;
+  if(!mot) return;
+  zone.dataset.placed = '';
+  zone.innerHTML = '&nbsp;';
+  zone.style.color = ''; zone.style.fontWeight = '';
+  delete sciTrajetState.answers[zone.dataset.id];
+  trajetRetournerMot(mot);
+}
+function trajetClearZone(zone){ trajetZoneClick(zone); }
 
-// --- Touch Mobile ---
+// --- Toucher : glisser, ou simple toucher = sélection (gérée par click) ---
 function trajetMotTouchStart(e){
-  e.preventDefault();
-  const tag = e.currentTarget;
-  sciTrajetState.touchSource = tag;
-  const touch = e.touches[0];
-  const clone = tag.cloneNode(true);
-  clone.style.cssText += ';position:fixed;z-index:9999;pointer-events:none;opacity:0.85;';
-  clone.style.left = (touch.clientX - 60) + 'px';
-  clone.style.top  = (touch.clientY - 20) + 'px';
-  document.body.appendChild(clone);
-  sciTrajetState.touchClone = clone;
-  tag.style.opacity = '0.4';
+  if(sciTrajetState.done) return;
+  const t = e.touches[0];
+  sciTrajetState.touchSource = e.currentTarget;
+  sciTrajetState.tx = t.clientX; sciTrajetState.ty = t.clientY; sciTrajetState.moved = false;
 }
 function trajetMotTouchMove(e){
+  const st = sciTrajetState; if(!st.touchSource) return;
+  const t = e.touches[0];
+  if(!st.moved && Math.abs(t.clientX-st.tx) < 8 && Math.abs(t.clientY-st.ty) < 8) return;
   e.preventDefault();
-  if(!sciTrajetState.touchClone) return;
-  const touch = e.touches[0];
-  sciTrajetState.touchClone.style.left = (touch.clientX - 60) + 'px';
-  sciTrajetState.touchClone.style.top  = (touch.clientY - 20) + 'px';
+  if(!st.moved){
+    st.moved = true; trajetClearSel();
+    const clone = st.touchSource.cloneNode(true);
+    clone.removeAttribute('id');
+    clone.style.cssText += ';position:fixed;z-index:9999;pointer-events:none;opacity:0.85;';
+    document.body.appendChild(clone); st.touchClone = clone;
+    st.touchSource.style.opacity = '0.4';
+  }
+  st.touchClone.style.left = (t.clientX - 60) + 'px';
+  st.touchClone.style.top  = (t.clientY - 20) + 'px';
+  if(typeof geoAutoScroll === 'function') geoAutoScroll(t);
 }
 function trajetMotTouchEnd(e){
+  const st = sciTrajetState; if(!st.touchSource) return;
+  if(!st.moved){ st.touchSource = null; return; }
   e.preventDefault();
-  if(!sciTrajetState.touchClone) return;
-  const touch = e.changedTouches[0];
-  sciTrajetState.touchClone.remove(); sciTrajetState.touchClone = null;
-  if(sciTrajetState.touchSource) sciTrajetState.touchSource.style.opacity = '';
-  const el = document.elementFromPoint(touch.clientX, touch.clientY);
-  const zone = el ? el.closest('.trajet-drop-zone') : null;
-  if(zone && sciTrajetState.touchSource){
-    trajetPlacerMot(zone, sciTrajetState.touchSource.dataset.mot);
-  }
-  sciTrajetState.touchSource = null;
+  if(typeof geoStopAutoScroll === 'function') geoStopAutoScroll();
+  const t = e.changedTouches[0];
+  if(st.touchClone){ st.touchClone.remove(); st.touchClone = null; }
+  st.touchSource.style.opacity = '';
+  const el = document.elementFromPoint(t.clientX, t.clientY);
+  const zone = el ? el.closest('#sci-trajet-sang-body .trajet-drop-zone') : null;
+  if(zone) trajetPlacerMot(zone, st.touchSource.dataset.mot);
+  st.touchSource = null;
 }
 function trajetMotTouchCancel(e){
-  if(sciTrajetState.touchClone) { sciTrajetState.touchClone.remove(); sciTrajetState.touchClone = null; }
-  if(sciTrajetState.touchSource) { sciTrajetState.touchSource.style.opacity = ''; sciTrajetState.touchSource = null; }
-}
-function trajetZoneTouchStart(e){
-  // Permet de reprendre un mot déjà placé dans une zone
-  const zone = e.currentTarget;
-  const mot = zone.dataset.placed;
-  if(!mot) return;
-  e.preventDefault();
-  // Remettre dans la banque et vider la zone
-  zone.dataset.placed = '';
-  zone.innerHTML = '&nbsp;';
-  zone.style.color = '';
-  zone.style.fontWeight = '';
-  delete sciTrajetState.answers[zone.dataset.id];
-  trajetRetournerMot(mot);
-}
-function trajetClearZone(zone){
-  const panel = document.getElementById('trajet-score-panel');
-  if(panel && panel.style.display === 'block') return;
-  const mot = zone.dataset.placed;
-  if(!mot) return;
-  zone.dataset.placed = '';
-  zone.innerHTML = '&nbsp;';
-  zone.style.color = '';
-  zone.style.fontWeight = '';
-  delete sciTrajetState.answers[zone.dataset.id];
-  trajetRetournerMot(mot);
+  const st = sciTrajetState;
+  if(typeof geoStopAutoScroll === 'function') geoStopAutoScroll();
+  if(st.touchClone){ st.touchClone.remove(); st.touchClone = null; }
+  if(st.touchSource){ st.touchSource.style.opacity = ''; st.touchSource = null; }
 }
 
 // --- Vérification ---
-function trajetVerifier(texteId){
-  const texte = SCI_TRAJET_SANG_TEXTES.find(t => t.id === texteId);
-  if(!texte) return;
-
+function trajetVerifier(){
+  const st = sciTrajetState, now = Date.now();
+  if(st.done || now - st.lastClick < 600) return;
+  st.lastClick = now;
+  const texte = SCI_TRAJET_SANG_TEXTES[st.cur];
   const blanks = texte.segments.filter(s => s.type === 'blank');
-  const groupsChecked = {};
+  const vides = blanks.filter(b => !st.answers[b.id]).length;
+  const msg = document.getElementById('trajet-msg');
+  if(vides > 0){
+    if(msg){ msg.textContent = vides === 1 ? 'Complète d\'abord le dernier trou.' : 'Complète d\'abord tous les trous (il en reste ' + vides + ').'; msg.style.display = 'block'; }
+    return;
+  }
+  if(msg) msg.style.display = 'none';
+  st.done = true; trajetClearSel();
+  const vb = document.getElementById('trajet-verif'); if(vb) vb.style.display = 'none';
+  document.querySelectorAll('#trajet-mots-pool .trajet-mot').forEach(m => { m.draggable = false; m.style.cursor = 'default'; });
+
+  // Groupes (ex. les deux oreillettes) : l'ordre à l'intérieur du groupe est libre
+  const attendu = {}, resultat = {};
+  blanks.forEach(b => { if(b.group) (attendu[b.group] = attendu[b.group] || []).push(b.answer); });
+  blanks.forEach(b => {
+    const placed = st.answers[b.id];
+    if(!b.group){ resultat[b.id] = placed === b.answer ? true : b.answer; return; }
+    const reste = attendu[b.group], k = reste.indexOf(placed);
+    if(k >= 0){ reste.splice(k,1); resultat[b.id] = true; } else resultat[b.id] = null;
+  });
+  blanks.forEach(b => { if(resultat[b.id] === null) resultat[b.id] = attendu[b.group].shift(); });
+
   let score = 0;
-
-  blanks.forEach(seg => {
-    const zone = document.getElementById('tdz-' + seg.id);
-    if(!zone) return;
-    const placed = zone.dataset.placed || '';
-
-    let correct = false;
-    if(seg.group){
-      // Vérification de groupe : les 2 bons mots dans les 2 cases, peu importe l'ordre
-      if(!groupsChecked[seg.group]){
-        const groupBlanks = blanks.filter(b => b.group === seg.group);
-        const groupAnswers = groupBlanks.map(b => (document.getElementById('tdz-' + b.id)?.dataset.placed || '').toLowerCase());
-        const groupExpected = groupBlanks.map(b => b.answer.toLowerCase()).sort();
-        const groupActual = [...groupAnswers].sort();
-        const groupOk = JSON.stringify(groupExpected) === JSON.stringify(groupActual);
-        groupsChecked[seg.group] = groupOk;
-      }
-      correct = groupsChecked[seg.group];
-    } else {
-      correct = placed.toLowerCase().trim() === seg.answer.toLowerCase().trim();
-    }
-
-    if(correct){
+  blanks.forEach(b => {
+    const zone = document.getElementById('tdz-' + b.id); if(!zone) return;
+    zone.style.cursor = 'default';
+    if(resultat[b.id] === true){
       score++;
-      zone.style.background = 'var(--green-light, #dcfce7)';
-      zone.style.borderBottom = '2px solid var(--green, #16a34a)';
-      zone.style.color = 'var(--green, #16a34a)';
+      zone.style.background = '#d4f5e2'; zone.style.borderBottom = '2px solid #16a34a'; zone.style.color = '#166534';
     } else {
-      zone.style.background = 'var(--red-light, #fee2e2)';
-      zone.style.borderBottom = '2px solid var(--red, #dc2626)';
-      zone.style.color = 'var(--red, #dc2626)';
-      if(!placed) zone.innerHTML = `<span style="font-size:11px;opacity:.7">${seg.answer}</span>`;
+      zone.style.background = '#fdd9d7'; zone.style.borderBottom = '2px solid #dc2626'; zone.style.color = '#991b1b';
+      const c = document.createElement('span');
+      c.style.cssText = 'color:#1f5fbf;font-weight:800;margin-left:6px';
+      c.textContent = '➜ ' + resultat[b.id];
+      zone.appendChild(c);
     }
   });
 
   const total = blanks.length;
   const pct = Math.round(score / total * 100);
-  const color = pct>=70 ? 'var(--green)' : pct>=50 ? 'var(--amber)' : 'var(--red)';
-  const emoji = pct>=70 ? '🎉' : pct>=50 ? '👍' : '💪';
-
+  const suivant = (st.cur + 1) % SCI_TRAJET_SANG_TEXTES.length;
   const panel = document.getElementById('trajet-score-panel');
   panel.style.display = 'block';
-  panel.innerHTML = `
-    <div class="card" style="text-align:center">
-      <div style="font-size:48px;margin-bottom:0.5rem">${emoji}</div>
-      <div style="font-family:'Nunito',sans-serif;font-weight:800;font-size:32px;color:${color}">${score}/${total}</div>
-      <div style="font-size:16px;color:${color};font-weight:700;margin-bottom:1rem">${pct}%</div>
-      <p style="font-size:13px;color:var(--muted);margin-bottom:1rem">Les cases <span style="color:var(--red)">rouges</span> indiquent les erreurs.</p>
-      <button class="btn" onclick="renderSciTrajetSangScreen()">🔄 Nouveau texte</button>
-    </div>
-  `;
-  panel.scrollIntoView({behavior:'smooth'});
+  panel.innerHTML = `<div class="geo-score-panel">
+      <div class="score-title">${score}/${total} — ${pct}%</div>
+      <div class="score-msg">${pct===100?'Parfait ! 🏆':pct>=70?'Bien joué ! 👍':'Continue à réviser ! 💪'}</div>
+      ${score<total?'<div class="score-msg" style="font-size:13px">Le bon mot est indiqué en <span style="color:#1f5fbf;font-weight:800">bleu</span>.</div>':''}
+      <button class="btn" onclick="renderSciTrajetSangIdx(${st.cur})" style="margin:.6rem .3rem 0">🔄 Recommencer</button>
+      <button class="btn" onclick="renderSciTrajetSangIdx(${suivant})" style="margin:.6rem .3rem 0">➜ ${SCI_TRAJET_SANG_TEXTES[suivant].titre}</button>
+    </div>`;
+  panel.scrollIntoView({behavior:'smooth', block:'nearest'});
 
   if(state.student){
-    saveResult({
+    try{ saveResult({
       student: state.student, cls: state.studentCls,
       className: CLASSES[state.studentCls] ? CLASSES[state.studentCls].name : state.studentCls,
       activity: 'sci_trajet_sang',
@@ -28853,7 +28829,7 @@ function trajetVerifier(texteId){
       score, total, pct,
       date: new Date().toLocaleDateString('fr-BE'),
       time: new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})
-    });
+    }); }catch(e){}
   }
 }
 

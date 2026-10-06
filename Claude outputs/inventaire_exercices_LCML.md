@@ -2043,6 +2043,12 @@ Spécifique :
 - Moteur remplacé par celui des schémas respiratoire/digestif : grille auto (image puis tableau sur téléphone, avant 2 colonnes serrées), toucher une étiquette puis la case, message « il en reste N », garde 600 ms, validation unique (avant : clics répétés = sauvegardes multiples), bonne légende en bleu sous chaque case fausse (avant : seulement rouge), sauvegarde unique try/catch, total calculé (avant 10 en dur).
 - Tests Playwright 390 px (toucher) : message à vide, placement par toucher, 1/9 inversés → 8/10 + 2 bleus, 1 sauvegarde malgré 3 clics, pas de débordement.
 
+### 06/10 — Éveil → Sciences → L'appareil circulatoire → Le trajet du sang (`sci_trajet_sang`, index › renderSciTrajetSangIdx / trajetVerifier, exercices_eveil.js › SCI_TRAJET_SANG_TEXTES) — sw.js v651
+- Moteur réécrit : onglets pour choisir l'un des 4 textes (avant : rotation imposée A→B→C→D), mélange Fisher–Yates (avant `sort(() => Math.random()-0.5)`), toucher un mot puis le trou (avant : glisser seulement ; le toucher sur un mot ne permettait aucun choix), message « il en reste N » au lieu d'une validation à vide, garde 600 ms, validation unique (avant : clics répétés = sauvegardes multiples), bon mot en bleu dans chaque trou faux (avant : rien si le trou était rempli), sauvegarde unique try/catch, boutons Recommencer / texte suivant.
+- Groupes (les 2 oreillettes, les 2 ventricules) : ordre libre conservé, mais notation par trou (avant : un seul mot faux dans le groupe rendait les deux trous faux).
+- Contenu : « les veines ramènent le sang des organes vers le cœur » → « des organes et des poumons » (texte A) ; « par la veine cave » → « par les veines caves » (texte C). Mots de chaque texte = trous (vérifié). exercices_eveil.js?v=20261006c.
+- Tests Playwright 390 px (toucher) : 4 textes, message à vide, oreillettes inversées comptées justes, 2 erreurs → 2 bleus, 1 sauvegarde par texte malgré 3 clics, glisser au doigt (CDP) place le mot, pas de débordement.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2513,7 +2519,7 @@ Spécifique :
 | ✅ 06/10 | Appareil digestif — Remettre de l'ordre | `sci_dig_ordre` | index › renderSciDigOrdre |  |
 | ⬜ | Système circulatoire — La leçon | `fiche_circulatoire` | fiches/systeme-circulatoire.html |  |
 | ✅ 06/10 | Appareil circulatoire — Le cœur | `sci_coeur` | index › renderSciCoeurScreen |  |
-| ⬜ | Appareil circulatoire — Le trajet du sang | `sci_trajet_sang` | index › renderSciTrajetSangScreen |  |
+| ✅ 06/10 | Appareil circulatoire — Le trajet du sang | `sci_trajet_sang` | index › renderSciTrajetSangScreen |  |
 | ⬜ | Appareil circulatoire — QCM | `sci_circulatoire_qcm` | index › renderSciCirculatoireQCM |  |
 | ⬜ | Appareil circulatoire — Termes et définitions | `sci_circulatoire_assoc` | index › renderSciCirculatoireAssoc |  |
 | ⬜ | La petite circulation (Ordre) | `sci_circ_petite` | index › renderSciCircOrdrePetite |  |
