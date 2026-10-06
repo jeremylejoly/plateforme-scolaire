@@ -2160,6 +2160,8 @@ Spécifique :
 
 - **06/10 — Leviers et balances (`sci_mecanique_leviers`, sw.js v671)** : le score faisait toujours 4/4 (on revalidait jusqu'à réussir et la balance affichait « ÉQUILIBRE PARFAIT » en direct). Décisions de Jeremy : défis 1-2 en « prédire puis vérifier » (balance horizontale et totaux masqués pendant le placement, un seul essai, la balance penche ou s'équilibre à la validation, bonne solution en bleu) ; défi 4 posé en texte, l'image (dont les titres donnaient la réponse) n'apparait qu'en correction. Aussi corrigé : défi 1 changé (30 g au cran 1 → 10 g au cran 3) car identique à l'exemple de la fiche synthèse ; fiche synthèse et rappel du pied de page retirés pendant les défis (même règle que Mélanges) ; défi 3 refait (schéma SVG avec repères 1-2-3 + liste d'emplacements ; les emplacements affichaient « Déposer la Charge/le Pivot/l'Effort ici » et se chevauchaient à 390 px) ; étiquettes mélangées, correction en bleu par emplacement ; QCM défi 4 sans lettres, options mélangées et de même longueur ; bug de retrait d'une masse (mauvais index) ; message dans la page si réponse incomplète (essai non consommé) ; Réinitialiser masqué après validation ; pastilles ✓/✗ ; sauvegarde unique en try/catch ; garde 600 ms + Entrée ; nouvelle orthographe. Test Playwright 390 px : 4 défis, 1 seule sauvegarde 1/4, pas de débordement, aucune erreur.
 
+- **06/10 — Laboratoire d'Électricité (`sci_electricite_labo`, sw.js v672)** : physique du circuit vérifiée (boucle fermée avec interrupteur, court-circuit détecté, isolant dans le testeur = ampoule éteinte). La note faisait toujours 6/6 (objet mal classé refusé puis reclassé). Décision de Jeremy : le 1er essai compte — chaque objet est classé une seule fois, rangé dans la bonne colonne même en cas d'erreur avec « ✗ mal classé · ✔ c'est un … » en bleu ; plus de bouton × pour déclasser ; double clic sans effet. Sauvegarde unique (score = bien classés du 1er coup / 6) en try/catch, résumé du score dans la fenêtre de fin. Aussi : « Gomme » 🧼 (savon) → « Ballon en caoutchouc » 🎈, « 4.5V » → « 4,5 V », badge « Étape 1 » remis à zéro après « Recommencer ». Test Playwright 390 px : 1 erreur → 5/6, 1 seule sauvegarde, pas de débordement.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2664,7 +2666,7 @@ Spécifique :
 | ✅ 06/10 | Le cycle de l'eau (Schéma) | `sci_cycle_eau_schema` | fiches/sci_cycle_eau_schema.html |  |
 | ✅ 06/10 | Les réseaux trophiques | `sci_reseaux_trophiques` | fiches/sci_reseaux_trophiques.html |  |
 | ✅ 06/10 | Les énergies (Tri & conversions) | `sci_energie_tri` | fiches/sci_energie_tri.html |  |
-| ⬜ | Laboratoire d'Électricité | `sci_electricite_labo` | fiches/sci_electricite_labo.html |  |
+| ✅ 06/10 | Laboratoire d'Électricité | `sci_electricite_labo` | fiches/sci_electricite_labo.html |  |
 | ⬜ | Ombres & Lumière | `sci_lumiere_ombres` | fiches/sci_lumiere_ombres.html |  |
 | ⬜ | Les éclipses | `sci_eclipses` | index › renderSciEclipses |  |
 | ✅ 06/10 | Les engrenages | `sci_engrenages` | fiches/sci_mecanique_engrenages.html |  |

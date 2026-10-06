@@ -204,7 +204,7 @@
             <!-- Pile -->
             <div class="bg-white border-3 border-slate-900 rounded-2xl shadow-[3px_3px_0px_#0f172a] p-3 flex flex-col items-center justify-between min-h-[160px]">
               <div class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Générateur</div>
-              <h3 class="font-fredoka font-bold text-xs text-slate-800 mb-2">Pile (4.5V)</h3>
+              <h3 class="font-fredoka font-bold text-xs text-slate-800 mb-2">Pile (4,5 V)</h3>
               
               <div class="relative w-36 h-18 bg-gradient-to-r from-red-600 to-red-500 border-3 border-slate-900 rounded-lg shadow-[3px_3px_0px_#0f172a] flex items-center justify-between px-3 py-1">
                 <!-- Anode metal tip (left) -->
@@ -219,7 +219,7 @@
                 <!-- Label de la pile -->
                 <div class="flex flex-col items-center bg-slate-900 text-yellow-400 font-black px-1.5 py-0.5 rounded text-[10px] rotate-[-4deg] border border-yellow-400 shadow select-none">
                   <span>PILE</span>
-                  <span class="text-[8px]">4.5V</span>
+                  <span class="text-[8px]">4,5 V</span>
                 </div>
                 
                 <!-- Borne Négatif -->
@@ -489,7 +489,7 @@
       <span class="text-6xl mb-4 block select-none">🏆</span>
       <h2 class="font-fredoka font-bold text-2xl text-slate-800 mb-2">Excellent travail !</h2>
       <p class="font-nunito font-semibold text-slate-500 text-sm mb-4">
-        Tu as allumé l'ampoule avec succès et classé correctement les 6 objets !
+        <span id="success-summary">Tu as allumé l'ampoule et classé les 6 objets !</span>
       </p>
       
       <!-- Résumé scientifique -->
@@ -500,7 +500,7 @@
         </div>
         <div class="flex gap-2">
           <span>🛡️</span>
-          <p><strong class="text-slate-600">Les Isolants</strong> (la règle, la gomme, le bâtonnet en bois) bloquent le passage du courant électrique.</p>
+          <p><strong class="text-slate-600">Les Isolants</strong> (la règle, le ballon, le bâtonnet en bois) bloquent le passage du courant électrique.</p>
         </div>
       </div>
       
@@ -526,6 +526,8 @@
     let currentStep = 1;
     let challenge1Completed = false;
     let challenge2Completed = false;
+    let firstTry = {};        // id -> true (bien classé du 1er coup) / false
+    let resultSaved = false;
     
     let cursorX = 0;
     let cursorY = 0;
@@ -542,7 +544,7 @@
       { id: 'monnaie', name: 'Pièce en métal', emoji: '🪙', type: 'conducteur', desc: 'Métal (Cuivre/Nickel)' },
       { id: 'cle', name: 'Clé en acier', emoji: '🔑', type: 'conducteur', desc: 'Métal (Acier)' },
       { id: 'regle', name: 'Règle en plastique', emoji: '📏', type: 'isolant', desc: 'Plastique' },
-      { id: 'gomme', name: 'Gomme en caoutchouc', emoji: '🧼', type: 'isolant', desc: 'Caoutchouc' },
+      { id: 'gomme', name: 'Ballon en caoutchouc', emoji: '🎈', type: 'isolant', desc: 'Caoutchouc' },
       { id: 'baton_bois', name: 'Bâtonnet en bois', emoji: '🪵', type: 'isolant', desc: 'Bois' }
     ];
 
@@ -1031,6 +1033,7 @@
       const badge2 = document.getElementById('step-2-badge');
 
       if (currentStep === 1) {
+        badge1.innerHTML = 'Étape 1 : Circuit Simple';
         badge1.className = 'px-3 py-1.5 bg-blue-600 text-white rounded-xl border-2 border-slate-900 shadow-[2px_2px_0px_#0f172a] font-fredoka font-bold text-xs';
         badge2.className = 'px-3 py-1.5 bg-slate-100 text-slate-400 rounded-xl border-2 border-dashed border-slate-300 font-fredoka font-bold text-xs';
       } else {
@@ -1039,8 +1042,9 @@
         badge2.className = 'px-3 py-1.5 bg-blue-600 text-white rounded-xl border-2 border-slate-900 shadow-[2px_2px_0px_#0f172a] font-fredoka font-bold text-xs';
       }
 
-      document.getElementById('score-text').innerText = `${score} / 6`;
-      const pct = Math.round((score / 6) * 100);
+      const done = classifiedCount();
+      document.getElementById('score-text').innerText = `${done} / ${objectsData.length}`;
+      const pct = Math.round((done / objectsData.length) * 100);
       document.getElementById('score-progress-bar').style.width = `${pct}%`;
     }
 
@@ -1203,7 +1207,7 @@
         shelf.innerHTML = `
           <div class="col-span-2 flex flex-col items-center justify-center p-4 bg-emerald-50 border-2 border-dashed border-emerald-300 rounded-2xl text-emerald-800 font-bold text-center">
             <span class="text-2xl mb-1 select-none">🎉 Bravo !</span>
-            <span class="text-[10px]">Tous les objets ont été classés avec succès !</span>
+            <span class="text-[10px]">Tous les objets sont classés.</span>
           </div>
         `;
         return;
@@ -1233,6 +1237,13 @@
       });
     }
 
+    function badgeFor(obj) {
+      if (firstTry[obj.id] === false) {
+        return `<div class="text-[9px] font-black mt-0.5" style="color:#1f5fbf">✗ mal classé · ✔ c'est un ${obj.type}</div>`;
+      }
+      return `<div class="text-[9px] font-black text-emerald-700 mt-0.5">✓ bien classé</div>`;
+    }
+
     function renderClassifications() {
       const condList = document.getElementById('conductors-list');
       const isolList = document.getElementById('insulators-list');
@@ -1249,13 +1260,13 @@
           condCount++;
           const card = document.createElement('div');
           card.className = 'flex items-center gap-2 p-2 bg-emerald-50 border-2 border-emerald-500 text-emerald-800 font-bold rounded-xl text-[10px] shadow-sm pop-anim';
-          card.innerHTML = `<span class="text-xl select-none">${obj.emoji}</span> <div class="flex-1 leading-tight"><div>${obj.name}</div><span class="text-[8px] text-emerald-600 font-medium">L'ampoule s'allume !</span></div> <button onclick="unclassifyObject('${obj.id}')" class="text-slate-400 hover:text-slate-600 hover:scale-110 font-bold text-xs p-1 select-none transition-transform" title="Retirer de la liste">×</button>`;
+          card.innerHTML = `<span class="text-xl select-none">${obj.emoji}</span> <div class="flex-1 leading-tight"><div>${obj.name}</div><span class="text-[8px] text-emerald-600 font-medium">L'ampoule s'allume !</span>${badgeFor(obj)}</div>`;
           condList.appendChild(card);
         } else if (cls === 'isolant') {
           isolCount++;
           const card = document.createElement('div');
           card.className = 'flex items-center gap-2 p-2 bg-slate-50 border-2 border-slate-400 text-slate-700 font-bold rounded-xl text-[10px] shadow-sm pop-anim';
-          card.innerHTML = `<span class="text-xl select-none">${obj.emoji}</span> <div class="flex-1 leading-tight"><div>${obj.name}</div><span class="text-[8px] text-slate-500 font-medium">L'ampoule reste éteinte</span></div> <button onclick="unclassifyObject('${obj.id}')" class="text-slate-400 hover:text-slate-600 hover:scale-110 font-bold text-xs p-1 select-none transition-transform" title="Retirer de la liste">×</button>`;
+          card.innerHTML = `<span class="text-xl select-none">${obj.emoji}</span> <div class="flex-1 leading-tight"><div>${obj.name}</div><span class="text-[8px] text-slate-500 font-medium">L'ampoule reste éteinte</span>${badgeFor(obj)}</div>`;
           isolList.appendChild(card);
         }
       });
@@ -1315,7 +1326,7 @@
     function classifyDirect(objId, classType) {
       if (currentStep === 1) return;
       const obj = objectsData.find(o => o.id === objId);
-      if (!obj) return;
+      if (!obj || classifications[obj.id] !== null) return;
 
       currentObject = obj;
 
@@ -1337,37 +1348,29 @@
       if (!currentObject) return;
 
       const obj = currentObject;
+      if (classifications[obj.id] !== null) return;
       const isCorrect = (obj.type === classType);
 
+      // Un seul essai : l'objet est rangé dans la bonne colonne dans tous les cas
+      classifications[obj.id] = obj.type;
+      firstTry[obj.id] = isCorrect;
+      currentObject = null;
+      document.getElementById('test-slot-placeholder').classList.remove('hidden');
+      document.getElementById('test-slot-content').classList.add('hidden');
+      document.getElementById('btn-remove-test').classList.add('hidden');
+
       if (isCorrect) {
-        classifications[obj.id] = classType;
         playSuccessSound();
-        currentObject = null;
-
-        // Reset slot
-        document.getElementById('test-slot-placeholder').classList.remove('hidden');
-        document.getElementById('test-slot-content').classList.add('hidden');
-        document.getElementById('btn-remove-test').classList.add('hidden');
-
         showNotification(`✅ Super ! <strong>${obj.name}</strong> est bien un <strong>${classType === 'conducteur' ? 'conducteur' : 'isolant'}</strong>.`);
-        calculateScore();
-        checkMissionCompleted();
       } else {
         playErrorSound();
-
-        // Shake slot
         const box = document.getElementById('test-slot-box');
         box.classList.add('animate-shake', 'border-red-500');
-        setTimeout(() => {
-          box.classList.remove('animate-shake', 'border-red-500');
-        }, 300);
-
-        if (classType === 'conducteur') {
-          showNotification(`❌ Faux ! L'ampoule ne s'allume pas. Ce n'est pas un conducteur.`);
-        } else {
-          showNotification(`❌ Faux ! Le courant passe et l'ampoule brille. Ce n'est pas un isolant.`);
-        }
+        setTimeout(() => { box.classList.remove('animate-shake', 'border-red-500'); }, 300);
+        showNotification(`❌ Non : <strong>${obj.name}</strong> est un <strong>${obj.type}</strong>. Teste les objets dans le circuit avant de les classer !`);
       }
+      calculateScore();
+      checkMissionCompleted();
 
       renderInventory();
       checkCircuit();
@@ -1396,17 +1399,19 @@
     }
 
 
+    function classifiedCount() {
+      return objectsData.filter(o => classifications[o.id] !== null).length;
+    }
     function calculateScore() {
-      score = 0;
-      objectsData.forEach(o => {
-        if (classifications[o.id] !== null) score++;
-      });
+      score = objectsData.filter(o => firstTry[o.id] === true).length;
     }
 
     function checkMissionCompleted() {
-      if (challenge1Completed && score === 6) {
+      if (challenge1Completed && classifiedCount() === objectsData.length && !challenge2Completed) {
         challenge2Completed = true;
         updateChallengeChecklist();
+        const total = objectsData.length;
+        document.getElementById('success-summary').innerHTML = `Tu as allumé l'ampoule et classé les ${total} objets.<br><strong>Bien classés du premier coup : ${score} / ${total}</strong>`;
         
         setTimeout(() => {
           document.getElementById('success-modal').classList.remove('hidden');
@@ -1418,17 +1423,22 @@
     }
 
     function saveScore() {
-      if (window.parent && window.parent.saveResult) {
-        window.parent.saveResult({
-          activity: 'sci_electricite_labo',
-          bookTitle: "Sciences — Labo Électricité",
-          score: score,
-          total: 6,
-          pct: Math.round((score / 6) * 100),
-          date: new Date().toLocaleDateString('fr-BE'),
-          time: new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })
-        });
-      }
+      if (resultSaved) return;
+      resultSaved = true;
+      const total = objectsData.length;
+      try {
+        if (window.parent && window.parent !== window && typeof window.parent.saveResult === 'function') {
+          window.parent.saveResult({
+            activity: 'sci_electricite_labo',
+            bookTitle: "Sciences — Labo Électricité",
+            score: score,
+            total: total,
+            pct: Math.round((score / total) * 100),
+            date: new Date().toLocaleDateString('fr-BE'),
+            time: new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })
+          });
+        }
+      } catch (e) { console.warn('saveResult', e); }
     }
 
     function restartExperiment() {
@@ -1444,6 +1454,8 @@
       currentStep = 1;
       challenge1Completed = false;
       challenge2Completed = false;
+      firstTry = {};
+      resultSaved = false;
       
       // Hide transition button
       document.getElementById('step-transition-container').classList.add('hidden');
