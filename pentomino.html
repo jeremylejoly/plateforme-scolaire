@@ -1058,17 +1058,18 @@
 
       <div class="rules-content">
         <p style="margin-bottom:10px;">
-          Un <strong>pentomino</strong> est une figure géométrique formée de 5 carrés adjacents. Il existe exactement <strong>12 formes différentes</strong> dans le monde (souvent nommées d'après les lettres de l'alphabet : F, I, L, N, P, T, U, V, W, X, Y, Z).
+          Un <strong>pentomino</strong> est une figure géométrique formée de 5 carrés adjacents. Il existe exactement <strong>12 formes différentes</strong> (souvent nommées d'après les lettres de l'alphabet : F, I, L, N, P, T, U, V, W, X, Y, Z).
         </p>
 
         <div class="rules-piece-gallery" id="rules-gallery"></div>
 
         <h4 style="font-size:15px; margin:10px 0 4px; color:var(--text);">🎮 Astuces pour réussir :</h4>
         <ul style="padding-left:18px; margin-bottom:8px;">
-          <li>Chaque forme a une surface de 5 cases. 12 × 5 = <strong>60 cases au total</strong>.</li>
+          <li>Pour poser une pièce : choisis-la, tourne-la si besoin, puis touche une case du plateau. <strong>La case marquée d'un rond blanc ⚪</strong> sur la pièce se pose sur la case que tu touches.</li>
+<li>Chaque forme a une surface de 5 cases. 12 × 5 = <strong>60 cases au total</strong>.</li>
           <li>Commence souvent par placer les pièces les plus difficiles ou biscornues (comme X, W, F ou V) près des coins ou des bords.</li>
           <li>Garde les pièces longues ou compactes (comme I, L, P) pour combler les espaces restants.</li>
-          <li><strong>Tu peux retirer une pièce posée</strong> à tout moment en cliquant simplement dessus sur le plateau !</li>
+          <li><strong>Tu peux retirer une pièce posée</strong> à tout moment en la touchant sur le plateau !</li>
         </ul>
 
         <h4 style="font-size:15px; margin:10px 0 4px; color:var(--text);">⌨️ Raccourcis clavier pratiques :</h4>
@@ -1147,7 +1148,7 @@
         rows: 3, cols: 20, label: "Rectangle 3 × 20", 
         diff: "Défi Ultime", badgeClass: "badge-expert",
         desc: "Une bande ultra-fine ! Un véritable casse-tête mondial pour les experts.",
-        fact: "🔥 Seulement 2 solutions au monde entier !"
+        fact: "🔥 Seulement 2 solutions possibles !"
       }
     ];
 
@@ -1392,8 +1393,10 @@
     function calculateCellSize(){
       var screenW = window.innerWidth;
       var maxAvailableWidth = Math.min(screenW - 60, 760);
+      var host = boardEl.parentElement;
+      if (host && host.clientWidth) maxAvailableWidth = Math.min(maxAvailableWidth, host.clientWidth - 8);
       var calcW = Math.floor(maxAvailableWidth / boardCols);
-      CELL_PX = Math.max(18, Math.min(38, calcW));
+      CELL_PX = Math.max(14, Math.min(38, calcW));
     }
 
     window.addEventListener("resize", function(){
@@ -1538,7 +1541,7 @@
       if(selectedTrayIdx === null){
         var msg = document.createElement("div");
         msg.className = "empty-msg";
-        msg.innerHTML = "<span>👈</span> <span>Choisis une pièce dans la réserve ci-dessous pour la placer.</span>";
+        msg.innerHTML = "<span>👇</span> <span>Choisis une pièce dans la réserve ci-dessous, puis touche une case du plateau : le rond blanc ⚪ de la pièce se posera sur cette case.</span>";
         selectedPanel.appendChild(msg);
         return;
       }
@@ -1704,7 +1707,18 @@
         var m = Math.floor(secondsElapsed / 60);
         var s = secondsElapsed % 60;
         var timeStr = (m < 10 ? "0" + m : m) + ":" + (s < 10 ? "0" + s : s);
-        document.getElementById("win-time").textContent = timeStr;
+        var recTxt = "";
+        try {
+          var who = "";
+          var st = window.parent && window.parent !== window && window.parent.state;
+          if (st && st.student) who = "_" + (st.studentCls || "") + "_" + st.student;
+          var rk = "lcml_pentomino_best" + who;
+          var rec = JSON.parse(localStorage.getItem(rk) || "{}") || {};
+          var old = rec[currentBoardIdx];
+          if (!old || secondsElapsed < old) { rec[currentBoardIdx] = secondsElapsed; localStorage.setItem(rk, JSON.stringify(rec)); recTxt = old ? " 🔥 record !" : ""; }
+          else recTxt = " (record : " + (Math.floor(old/60) < 10 ? "0" : "") + Math.floor(old/60) + ":" + (old%60 < 10 ? "0" : "") + (old%60) + ")";
+        } catch(e) {}
+        document.getElementById("win-time").textContent = timeStr + recTxt;
         document.getElementById("win-board-lbl").textContent = currentBoard.label;
         document.getElementById("modal-win").hidden = false;
       }

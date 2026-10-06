@@ -2244,6 +2244,8 @@ Spécifique :
 
 - **06/10 — Jeux › Le Code Secret (`jeu_code_secret`, jeu_code_secret.html, sw.js v711)** : calcul des indices vérifié (bien placés / mal placés, couleurs répétées comptées correctement) ; guide et astuces exacts. Bug téléphone : avec 6 plots (niveaux 9 à 12), la ligne dépassait et le carré des indices était coupé à droite ; le bouton « Rejouer » débordait → billes et espacements resserrés, en-tête qui passe à la ligne. Guide : « Pastille vide : une bille ne fait pas du tout partie du code » (inexact quand une couleur est répétée) → « sa couleur n'est pas dans le code, ou elle y est moins de fois que dans ta ligne ». Progression (niveaux débloqués) gardée par élève (avant : commune à l'appareil). Pas de saveResult ni de boite de dialogue. Niveaux 11-12 (6 plots, 9-10 couleurs, 8 essais) jugés trop difficiles → supprimés à la demande de Jeremy (10 niveaux, sw.js v712 ; progression des anciens niveaux 11-12 ignorée). Test Playwright 390 px : niveau 12 sans débordement, partie complète du niveau 1.
 
+- **06/10 — Jeux › Les Pentominos (`jeu_pentomino`, pentomino.html, sw.js v713)** : les 12 formes vérifiées (F I L N P T U V W X Y Z standard) ; nombres de solutions des rectangles exacts (6×10 : 2 339 ; 5×12 : 1 010 ; 4×15 : 368 ; 3×20 : 2) ; victoire = 12 pièces posées sans chevauchement dans 60 cases. Bug téléphone : le plateau 3 × 20 dépassait de son cadre (colonnes de gauche et de droite coupées) → taille des cases calculée sur la largeur réelle du cadre (min. 14 px). La « case repère » (rond blanc) qui se pose sur la case touchée n'était expliquée nulle part — et sur tablette il n'y a pas de survol pour voir l'aperçu → expliquée dans la consigne et les astuces. « 2 solutions au monde entier » → « 2 solutions possibles » ; « 12 formes différentes dans le monde » ; « cliquant » → « touchant ». Ajout : meilleur temps par plateau, gardé par élève (rien vers l'enseignant). Pas de boite de dialogue. Test Playwright 390 px : les 4 plateaux tiennent dans leur cadre, pose et reprise d'une pièce.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2840,7 +2842,7 @@ Spécifique :
 | ✅ 06/10 | Flux Connecté | `jeu_flux` | flux_connecte.html (racine) |  |
 | ✅ 06/10 | Le Code Secret | `jeu_code_secret` | jeu_code_secret.html (racine) |  |
 | ✅ 06/10 | Le Pendu des Mots | `jeu_pendu` | le_pendu.html (racine) |  |
-| ⬜ | Les Pentominos | `jeu_pentomino` | index › (?) | (code à localiser) |
+| ✅ 06/10 | Les Pentominos | `jeu_pentomino` | pentomino.html (racine) |  |
 | ✅ 06/10 | Le Nonogram | `jeu_nonogram` | nonogram.html (racine + public) |  |
 | ⬜ | 2048 | `jeu_2048` | index › (?) | (code à localiser) |
 | ✅ 06/10 | Motus | `jeu_motus` | motus.html (racine + public) |  |
