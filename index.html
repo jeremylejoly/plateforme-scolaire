@@ -1688,7 +1688,7 @@ input:focus{border-color:var(--purple);}
 .chars-item.checked{border-color:var(--purple);background:var(--purple-light);color:var(--purple);}
 .chars-item.correct-check{border-color:var(--green);background:#E6FFF3;color:var(--green);}
 .chars-item.wrong-check{border-color:var(--red);background:#FFE6E6;color:var(--red);}
-.chars-item.missed{border-color:var(--amber);background:#FFFBEB;color:#B45309;}
+.chars-item.missed{border-color:#1f5fbf;background:#E8F0FE;color:#1f5fbf;}
 .chars-checkbox{width:20px;height:20px;border:2px solid currentColor;border-radius:4px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;}
 
 
@@ -3237,7 +3237,7 @@ input[type=text].calc-input.incorrect {
 </style>
 <script src="livres.js?v=20261002b"></script>
 <script src="exercices_francais.js?v=20261005zp"></script>
-<script src="exercices_maths.js?v=20261006b"></script>
+<script src="exercices_maths.js?v=20261006c"></script>
 <script src="exercices_eveil.js?v=20260927e"></script>
 <script>
 /* Garde-fou : si un appareil a chargé une ancienne version du fichier des livres
@@ -13380,13 +13380,23 @@ let charsState = {
   score: 0
 };
 
+// 8 formes, une de chaque sorte, caractéristiques mélangées (la bonne liste suit le mélange)
+function choisirChars(bank){
+  const parForme = {};
+  shuffleArray(bank).forEach(q => { if(!parForme[q.shape]) parForme[q.shape] = q; });
+  return shuffleArray(Object.values(parForme)).slice(0, 8).map(q => {
+    const ordre = shuffleArray(q.chars.map((_, k) => k));
+    return { ...q, chars: ordre.map(k => q.chars[k]), answers: q.answers.map(a => ordre.indexOf(a)) };
+  });
+}
+
 function startCharsExercise(section){
   const data = getShapeData(section);
   if(!data || !data.chars_bank) return;
 
   charsState = {
     section,
-    questions: shuffleArray(data.chars_bank).slice(0, 8),
+    questions: choisirChars(data.chars_bank),
     answers: [],
     submitted: false,
     currentIdx: 0,
@@ -13434,7 +13444,7 @@ function renderCharsQuestions(){
     </div>`;
   });
 
-  html += `</div></div></div>`;
+  html += `</div></div><p id="chars-msg" style="display:none;text-align:center;color:var(--red);font-weight:700;font-size:13px;margin-top:.6rem;">Coche au moins une caractéristique avant de valider.</p></div>`;
   body.innerHTML = html;
 }
 
@@ -13459,7 +13469,14 @@ function toggleChar(qIdx, charIdx){
 function validateCurrentCharsQuestion(){
   const i = charsState.currentIdx;
   const q = charsState.questions[i];
+  if(charsState.currentValidated) return;
+  if(!charsState.answers[i] || charsState.answers[i].length === 0){
+    const m = document.getElementById('chars-msg');
+    if(m) m.style.display = 'block';
+    return;
+  }
   charsState.currentValidated = true;
+  charsState.validatedAt = Date.now();
 
   const correct = new Set(q.answers);
   const given = new Set(charsState.answers[i]);
@@ -13501,6 +13518,7 @@ function validateCurrentCharsQuestion(){
 }
 
 function nextCharsQuestion(){
+  if(!charsState.currentValidated || Date.now() - (charsState.validatedAt || 0) < 600) return;
   charsState.currentIdx++;
   charsState.currentValidated = false;
 
@@ -13512,6 +13530,7 @@ function nextCharsQuestion(){
 }
 
 function finishCharsExercise(){
+  if(charsState.submitted || Date.now() - (charsState.validatedAt || 0) < 600) return;
   charsState.submitted = true;
   charsState.total = charsState.questions.length;
   const score = charsState.score;
@@ -13569,7 +13588,7 @@ function showCharsCorrection(){
       let cls = '', icon = '';
       if(isCorrect && wasGiven){ cls = 'color:var(--green)'; icon = '✅'; }
       else if(!isCorrect && wasGiven){ cls = 'color:var(--red)'; icon = '❌'; }
-      else if(isCorrect && !wasGiven){ cls = 'color:var(--amber)'; icon = '⚠️'; }
+      else if(isCorrect && !wasGiven){ cls = 'color:#1f5fbf'; icon = '👉'; }
       else { cls = 'color:var(--muted)'; icon = ''; }
 
       if(isCorrect || wasGiven){
@@ -13596,7 +13615,7 @@ function restartCharsExercise(){
   document.getElementById('chars-validate-btn').textContent = '✓ Valider ma réponse';
   document.getElementById('chars-validate-btn').onclick = validateCurrentCharsQuestion;
   const data = getShapeData(charsState.section);
-  charsState.questions = shuffleArray(data.chars_bank).slice(0, 8);
+  charsState.questions = choisirChars(data.chars_bank);
   charsState.questions.forEach((_, i) => { charsState.answers[i] = []; });
   renderCharsQuestions();
   window.scrollTo(0,0);

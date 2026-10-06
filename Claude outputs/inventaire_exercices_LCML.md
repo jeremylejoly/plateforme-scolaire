@@ -1639,6 +1639,17 @@ Spécifique :
 - Double clic sur « Valider » passait à la suite → garde 600 ms (et sur « Terminer ») ; alert → message dans la page ; « Bonne réponse » en bleu dans la correction ; nouvelle orthographe « non parallèles ».
 - Tests : jsdom (moteur extrait), node --check 6/6 + exercices_maths.js. Autres textes du site vérifiés : aucune autre définition « exactement une paire ».
 
+### 06/10 — Quadrilatères — Caractéristiques (`quadrilateres_caracteristiques`, index › startCharsExercise + exercices_maths.js) — sw.js v598, exercices_maths.js ?v=20261006c
+- Contenu : les 24 figures × 5 caractéristiques recalculées depuis le dessin (côtés, parallélisme, angles, diagonales, médianes).
+  - Le 2e « carré » n'était pas un carré (côtés 106/87, angles 90/76/118/76 : un cerf-volant) → vrai carré posé sur la pointe.
+  - Trapèze rectangle (côtés 70/108/110/100) : « 4 côtés de longueurs différentes » vrai mais non coché ; un autre trapèze rectangle redessiné l'est aussi → réponses recalculées.
+  - 11 figures avec des côtés presque égaux à l'œil (parallélogrammes 110/104 et 78/82 → « losange ? », trapèzes isocèles dont la base ≈ les côtés obliques, trapèzes rectangles 108/110, trapèzes quelconques 90/89, quadrilatère quelconque) → redessinées : deux côtés sont soit égaux, soit différents d'au moins 14 % ; un losange touchait le bord du cadre.
+- La couleur trahissait la forme (bleu = carré, jaune = rectangle…) → même couleur pour toutes.
+- Série : 8 figures tirées au hasard (parfois 3 parallélogrammes) → une figure de chaque sorte ; caractéristiques dans un ordre fixe → mélangées (Fisher–Yates, bonnes cases réparties ≈ 20 % par position).
+- Valider sans rien cocher comptait faux → message, rien n'est compté. Double clic sur « Valider » passait à la suite → garde 600 ms (et sur « Terminer »).
+- Correction : cases oubliées en bleu (au lieu d'orange) dans l'exercice et dans le récapitulatif.
+- Tests : jsdom (moteur extrait : 3 000 séries, 8 sortes différentes, bonnes réponses suivies au mélange ; message ; double clic ; 6/8 → 1 saveResult), node --check 6/6 + exercices_maths.js, planche Playwright des 24 figures ; Reconnais la forme toujours juste (même fichier).
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2043,7 +2054,7 @@ Spécifique :
 |---|---|---|---|---|
 | ✅ 06/10 | Quadrilatères — Reconnaître la forme | `quadrilateres_reconnaître` | index › startShapeExercise |  |
 | ✅ 06/10 | Quadrilatères — Vrai ou Faux | `quadrilateres_vf` | index › startVFExercise |  |
-| ⬜ | Quadrilatères — Caractéristiques | `quadrilateres_caracteristiques` | index › startCharsExercise |  |
+| ✅ 06/10 | Quadrilatères — Caractéristiques | `quadrilateres_caracteristiques` | index › startCharsExercise |  |
 | ⬜ | Quadrilatères — Médianes & Diagonales | `quadrilateres_diagonales_medianes` | fiches/quadrilateres_diagonales_medianes.html |  |
 | ⬜ | Quadrilatères — Évaluation | `quadrilateres_evaluation` | index › startShapeEvaluation |  |
 | ⬜ | Le cercle et le disque — Le vocabulaire | `disque_vocabulaire` | fiches/disque_vocabulaire.html |  |
