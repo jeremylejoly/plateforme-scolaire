@@ -238,6 +238,11 @@ body {
   background: var(--success-light);
   color: #15803d;
 }
+.option-label.missed {
+  border-color: #1f5fbf;
+  background: #e8f0fc;
+  color: #1f5fbf;
+}
 .option-label.incorrect {
   border-color: var(--danger);
   background: var(--danger-light);
@@ -283,6 +288,17 @@ body {
   user-select: none;
   touch-action: none;
   transition: opacity .15s;
+}
+.drag-tag.sel { outline: 3px solid #f59e0b; outline-offset: 2px; }
+.chips { display:flex; flex-wrap:wrap; gap:6px; justify-content:center; margin: -0.5rem 0 1.5rem; }
+.chip { border:1.5px solid var(--border); background:white; border-radius:16px; padding:5px 10px; font-family:'Nunito',sans-serif; font-size:12px; font-weight:800; cursor:pointer; }
+.chip.relief { color: var(--success); border-color: var(--success); }
+.chip.fleuve { color: #2563eb; border-color: #2563eb; }
+@media(max-width: 600px){
+  body { padding: .75rem; }
+  .pin { width: 14px; height: 14px; }
+  .tabs-nav { flex-direction: column; border-radius: 16px; }
+  .tab-btn { border-radius: 12px; }
 }
 .drag-tag.used {
   opacity: .3;
@@ -450,6 +466,7 @@ body {
       <div class="pin fleuve" style="top: 73.6%; left: 39.2%;" onclick="showInfo('po')"></div>
       <div class="pin fleuve" style="top: 61.7%; left: 29.6%;" onclick="showInfo('tamise')"></div>
     </div>
+    <div class="chips" id="chips"></div>
 
     <!-- Fiche informative -->
     <div class="info-panel" id="info-panel">
@@ -490,7 +507,7 @@ body {
     </div>
 
     <div style="background:#fef9c3; border:1px solid #f59e0b; border-radius:12px; padding:12px 16px; margin-bottom:1.5rem; font-size:13px; font-weight:700; color:#92400e;">
-      Instructions : Glisse chaque étiquette d'embouchure (mer ou océan) dans la case correspondant au fleuve. Les étiquettes peuvent être réutilisées plusieurs fois !
+      Instructions : Glisse chaque étiquette d'embouchure (mer ou océan) dans la case du fleuve, ou touche une étiquette puis la case. Les étiquettes peuvent être réutilisées plusieurs fois !
     </div>
 
     <div class="drag-drop-layout">
@@ -518,6 +535,7 @@ body {
   </div>
 
   <!-- Boutons et Score -->
+  <div id="msg" style="display:none;margin-bottom:1rem;padding:.7rem 1rem;border-radius:10px;background:#fff7ed;border:1.5px solid #f59e0b;color:#92400e;font-size:13px;font-weight:800;text-align:center"></div>
   <button class="btn-valider" id="btn-valider" onclick="validerTout()">Valider les réponses</button>
   <button class="btn-reset" id="btn-reset" onclick="resetExercice()">Recommencer l'exercice</button>
   
@@ -535,37 +553,37 @@ const EXPLORATION_DATA = {
     type: "relief",
     title: "Les Alpes scandinaves",
     img: "../photos/relief_alpes_scand.jpg",
-    desc: "Cette chaîne de montagnes traverse la Norvège et la Suède. Elle est connue pour ses paysages spectaculaires de fjords (vallées glaciaires envahies par la mer). Son sommet culmine à 2469 mètres."
+    desc: "Cette chaine de montagnes traverse la Norvège et la Suède. Elle est connue pour ses paysages spectaculaires de fjords (vallées glaciaires envahies par la mer). Son sommet culmine à 2469 mètres."
   },
   alpes: {
     type: "relief",
     title: "Les Alpes",
     img: "../photos/relief_alpes.jpg",
-    desc: "C'est la plus haute chaîne de montagnes d'Europe occidentale. Elle forme une barrière naturelle s'étendant sur la France, l'Italie, la Suisse, l'Autriche et l'Allemagne. Son point culminant est le <strong>Mont Blanc</strong> (4808 m), situé à la frontière entre la France et l'Italie."
+    desc: "C'est la plus haute chaine de montagnes d'Europe occidentale. Elle forme une barrière naturelle s'étendant sur la France, l'Italie, la Suisse, l'Autriche et l'Allemagne. Son point culminant est le <strong>mont Blanc</strong> (4 806 m), situé à la frontière entre la France et l'Italie."
   },
   pyrenees: {
     type: "relief",
     title: "Les Pyrénées",
     img: "../photos/relief_pyrenees.jpg",
-    desc: "Cette chaîne de montagnes forme une frontière naturelle continue entre la France et l'Espagne. Elle abrite également la petite principauté d'Andorre. Son point culminant est le pic d'Aneto (3404 m)."
+    desc: "Cette chaine de montagnes forme une frontière naturelle continue entre la France et l'Espagne. Elle abrite également la petite principauté d'Andorre. Son point culminant est le pic d'Aneto (3404 m)."
   },
   carpates: {
     type: "relief",
     title: "Les Carpates",
     img: "../photos/relief_carpates.jpg",
-    desc: "Un grand arc montagneux situé principalement en Europe de l'Est (Roumanie, Slovaquie, Ukraine, Pologne). C'est le deuxième plus long massif montagneux d'Europe. Il abrite les plus grandes populations d'ours bruns et de loups du continent."
+    desc: "Un grand arc montagneux situé principalement en Europe de l'Est (Roumanie, Slovaquie, Ukraine, Pologne). C'est le deuxième plus long massif montagneux d'Europe. Il abrite certaines des plus grandes populations d'ours bruns et de loups d'Europe."
   },
   oural: {
     type: "relief",
     title: "Les monts Oural",
     img: "../photos/relief_oural.jpg",
-    desc: "Située en Russie, cette très ancienne chaîne de montagnes de faible altitude est historiquement considérée comme la <strong>frontière naturelle qui sépare le continent européen du continent asiatique</strong>."
+    desc: "Située en Russie, cette très ancienne chaine de montagnes de faible altitude est historiquement considérée comme la <strong>frontière naturelle qui sépare le continent européen du continent asiatique</strong>."
   },
   caucase: {
     type: "relief",
     title: "Le Caucase",
     img: "../photos/relief_caucase.jpg",
-    desc: "Cette haute chaîne de montagnes se situe entre la mer Noire et la mer Caspienne. Elle abrite le <strong>Mont Elbrouz</strong> (5642 m), qui est considéré par les géographes comme le véritable point culminant du continent européen."
+    desc: "Cette haute chaine de montagnes se situe entre la mer Noire et la mer Caspienne. Elle abrite le <strong>mont Elbrouz</strong> (5 642 m), souvent considéré comme le point culminant de l'Europe (cela dépend de l'endroit où l'on place la limite entre l'Europe et l'Asie)."
   },
   plaine: {
     type: "relief",
@@ -613,7 +631,7 @@ const EXPLORATION_DATA = {
     type: "fleuve",
     title: "L'Elbe",
     img: "../photos/fleuve_elbe.jpg",
-    desc: "Ce fleuve prend sa source en République tchèque (dans les monts des Géants), traverse l'Allemagne vers le nord-ouest, arrose Hambourg (deuxième plus grand port d'Europe) et se jette dans la <strong>mer du Nord</strong>."
+    desc: "Ce fleuve prend sa source en République tchèque (dans les monts des Géants), traverse l'Allemagne vers le nord-ouest, arrose Hambourg (l'un des plus grands ports d'Europe) et se jette dans la <strong>mer du Nord</strong>."
   },
   po: {
     type: "fleuve",
@@ -632,27 +650,27 @@ const EXPLORATION_DATA = {
 // --- QUESTIONS DU QUIZ DE RELIEF ---
 const QUIZ_QUESTIONS = [
   {
-    q: "Quelle chaîne de montagnes est considérée comme la frontière naturelle entre l'Europe et l'Asie ?",
-    options: ["Les Alpes", "Les Carpates", "Les monts Oural"],
+    q: "Quelle chaine de montagnes est considérée comme la frontière naturelle entre l'Europe et l'Asie ?",
+    options: ["Les Alpes", "Les Carpates", "Les monts Oural", "Les Alpes scandinaves"],
     correct: 2
   },
   {
-    q: "Quel est le point culminant des Alpes et de l'Europe de l'Ouest ?",
-    options: ["Le Mont Blanc (4808 m)", "Le pic d'Aneto (3404 m)", "Le Mont Elbrouz (5642 m)"],
+    q: "Quel est le point culminant des Alpes ?",
+    options: ["Le mont Blanc", "Le pic d'Aneto", "Le mont Elbrouz"],
     correct: 0
   },
   {
-    q: "Quelle chaîne de montagnes forme la frontière naturelle entre la France et l'Espagne ?",
+    q: "Quelle chaine de montagnes forme la frontière naturelle entre la France et l'Espagne ?",
     options: ["Les Apennins", "Les Pyrénées", "Le Caucase"],
     correct: 1
   },
   {
     q: "Quelles montagnes traversent la Norvège et la Suède, abritant de magnifiques fjords ?",
-    options: ["Les Alpes scandinaves", "Les Pyrénées", "Les Carpates"],
+    options: ["Les Alpes scandinaves", "Les Pyrénées", "Les Alpes dinariques", "Les Carpates"],
     correct: 0
   },
   {
-    q: "Où se situe le Mont Elbrouz (5642 m), le plus haut sommet du continent européen ?",
+    q: "Dans quelle chaine de montagnes se trouve le mont Elbrouz (5 642 m) ?",
     options: ["Dans les Pyrénées", "Dans les Carpates", "Dans le Caucase"],
     correct: 2
   }
@@ -684,6 +702,8 @@ const MOUTHS = {
 let userSelections = { quiz: {}, rivers: {} };
 let submitted = false;
 let draggingTag = null;
+let selTag = null;
+let quizOrder = [];
 
 // --- INITIALISATION ---
 function init(){
@@ -691,16 +711,22 @@ function init(){
   document.getElementById('info-content').style.display = 'none';
   document.getElementById('info-empty').style.display = 'block';
 
-  // Générer Quiz
+  // Liste des éléments (sous la carte)
+  const chips = document.getElementById('chips');
+  if (chips) chips.innerHTML = Object.entries(EXPLORATION_DATA).map(([k, d]) =>
+    `<button class="chip ${d.type}" onclick="showInfo('${k}')">${d.title.replace(/^(Les |Le |La |L')/, '')}</button>`).join('');
+
+  // Générer Quiz (options mélangées)
+  quizOrder = QUIZ_QUESTIONS.map(q => shuffle(q.options.map((_, i) => i)));
   const quizContainer = document.getElementById('quiz-container');
   quizContainer.innerHTML = QUIZ_QUESTIONS.map((q, qi) => `
     <div class="question-block" id="quiz-block-${qi}">
       <div class="question-title">${qi + 1}. ${q.q}</div>
       <div class="options-list">
-        ${q.options.map((opt, oi) => `
+        ${quizOrder[qi].map(oi => `
           <label class="option-label" id="quiz-lbl-${qi}-${oi}">
             <input type="radio" name="quiz-${qi}" value="${oi}" onchange="selectQuiz(${qi}, ${oi})"/>
-            <span>${opt}</span>
+            <span>${q.options[oi]}</span>
           </label>
         `).join('')}
       </div>
@@ -711,9 +737,9 @@ function init(){
   const tagsPool = document.getElementById('tags-pool');
   tagsPool.innerHTML = Object.entries(MOUTHS).map(([k, v]) => `
     <div class="drag-tag" id="tag-${k}" data-id="${k}" data-label="${v}"
-      draggable="true"
+      draggable="true" onclick="selectTag(this)"
       ondragstart="dragStart(event)" ondragend="dragEnd(event)"
-      ontouchstart="touchStart(event)" ontouchmove="touchMove(event)" ontouchend="touchEnd(event)">
+      ontouchstart="touchStart(event)" ontouchmove="touchMove(event)" ontouchend="touchEnd(event)" ontouchcancel="touchCancel(event)">
       ${v}
     </div>
   `).join('');
@@ -725,7 +751,7 @@ function init(){
     <tr>
       <td style="font-weight: 800; font-size:13px; color:var(--text);">${r.label}</td>
       <td>
-        <div class="drop-zone" id="zone-${r.id}" data-river="${r.id}" onclick="clearZone(this)"
+        <div class="drop-zone" id="zone-${r.id}" data-river="${r.id}" onclick="zoneClick(this)"
           ondragover="dzOver(event)" ondrop="dzDrop(event)" ondragleave="dzLeave(event)">
           <span style="opacity:.4">Glisse une embouchure ici...</span>
         </div>
@@ -734,7 +760,9 @@ function init(){
   `).join('');
 
   userSelections = { quiz: {}, rivers: {} };
-  submitted = false;
+  submitted = false; selTag = null;
+  const m = document.getElementById('msg'); if (m) m.style.display = 'none';
+  const aide = document.getElementById('score-aide'); if (aide) aide.remove();
   document.getElementById('btn-valider').style.display = 'block';
   document.getElementById('btn-reset').style.display = 'none';
   document.getElementById('score-panel').style.display = 'none';
@@ -807,8 +835,23 @@ function dzDrop(e){
   placer(e.currentTarget, data.id, data.label);
 }
 
+function selectTag(tag){
+  if (submitted) return;
+  const same = selTag === tag;
+  document.querySelectorAll('.drag-tag').forEach(t => t.classList.remove('sel'));
+  selTag = same ? null : tag;
+  if (selTag) selTag.classList.add('sel');
+}
+function zoneClick(zone){
+  if (submitted) return;
+  if (selTag) { placer(zone, selTag.dataset.id, selTag.dataset.label); return; }
+  clearZone(zone);
+}
 function placer(zone, id, label){
+  if (submitted) return;
   const riverId = zone.dataset.river;
+  document.querySelectorAll('.drag-tag').forEach(t => t.classList.remove('sel')); selTag = null;
+  const m = document.getElementById('msg'); if (m) m.style.display = 'none';
   userSelections.rivers[riverId] = id;
   zone.textContent = label;
   zone.classList.add('filled');
@@ -825,11 +868,12 @@ function clearZone(zone){
 }
 
 // --- TOUCH MOBILE ---
-let touchEl = null, touchClone = null;
+let touchEl = null, touchClone = null, touchX = 0, touchY = 0;
 function touchStart(e){
   if(submitted) return;
   const tag = e.currentTarget;
   touchEl = tag;
+  touchX = e.touches[0].clientX; touchY = e.touches[0].clientY;
   const clone = tag.cloneNode(true);
   clone.style.cssText = 'position:fixed;z-index:9999;opacity:.85;pointer-events:none;border-radius:20px;padding:6px 12px;font-size:12px;font-weight:700;color:white;background:#2563eb;';
   const t = e.touches[0];
@@ -848,24 +892,34 @@ function touchMove(e){
 }
 function touchEnd(e){
   if(!touchClone) return;
+  e.preventDefault();
   const t = e.changedTouches[0];
   touchClone.remove();
   touchClone = null;
   if(touchEl) touchEl.style.opacity = '';
-  
-  const el = document.elementFromPoint(t.clientX, t.clientY);
-  const zone = el ? el.closest('.drop-zone') : null;
+  let zone = null;
+  for (const dy of [0, -20, 12]) { const el = document.elementFromPoint(t.clientX, t.clientY + dy); if (el && el.closest('.drop-zone')) { zone = el.closest('.drop-zone'); break; } }
   if(zone && touchEl) {
     placer(zone, touchEl.dataset.id, touchEl.dataset.label);
+  } else if (touchEl && Math.abs(t.clientX - touchX) < 10 && Math.abs(t.clientY - touchY) < 10) {
+    selectTag(touchEl);
   }
   touchEl = null;
 }
+function touchCancel(e){
+  if (touchClone) { touchClone.remove(); touchClone = null; }
+  if (touchEl) { touchEl.style.opacity = ''; touchEl = null; }
+}
 
 // --- HELPER UTILS ---
-function shuffle(a){ return a.sort(() => Math.random() - .5); }
+function shuffle(a){
+  for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+  return a;
+}
 
 // --- VALIDATION ---
 function validerTout() {
+  if (submitted) return;
   const quizCount = QUIZ_QUESTIONS.length;
   
   let missingQuiz = false;
@@ -884,16 +938,12 @@ function validerTout() {
   });
 
   if(missingQuiz || missingRivers) {
-    let msg = "Oups ! Il reste des questions sans réponse :\n\n";
     let list = [];
-    if(missingQuiz) {
-      list.push("• Onglet « 2. Le Jeu des Reliefs » (il reste des questions à choix multiples)");
-    }
-    if(missingRivers) {
-      list.push("• Onglet « 3. Le Défi des Fleuves » (il reste des embouchures à attribuer)");
-    }
-    msg += list.join("\n\n") + "\n\nMerci de compléter ces sections avant de valider.";
-    alert(msg);
+    if(missingQuiz) list.push("l'onglet « 2. Le Jeu des Reliefs » (questions sans réponse)");
+    if(missingRivers) list.push("l'onglet « 3. Le Défi des Fleuves » (embouchures à placer)");
+    const m = document.getElementById('msg');
+    m.textContent = "Il reste des réponses à donner dans " + list.join(' et dans ') + ". Complète-les avant de valider.";
+    m.style.display = 'block';
     return;
   }
 
@@ -910,7 +960,8 @@ function validerTout() {
     q.options.forEach((_, oi) => {
       const el = document.getElementById(`quiz-lbl-${qi}-${oi}`);
       el.classList.remove('selected');
-      if (oi === q.correct) el.classList.add('correct');
+      const radio = el.querySelector('input'); if (radio) radio.disabled = true;
+      if (oi === q.correct) el.classList.add(userSel === q.correct ? 'correct' : 'missed');
       else if (oi === userSel) el.classList.add('incorrect');
     });
   });
@@ -927,7 +978,8 @@ function validerTout() {
       zone.classList.add('correct');
     } else {
       zone.classList.add('incorrect');
-      zone.innerHTML = `${MOUTHS[selMouth]} <span style="font-weight:400; font-size:11px; display:block; margin-top:2px;">(Correction : ${MOUTHS[r.correctMouth]})</span>`;
+      zone.style.flexDirection = 'column'; zone.style.alignItems = 'flex-start';
+      zone.innerHTML = `<span>${MOUTHS[selMouth]}</span><span style="font-weight:800; font-size:12px; display:block; margin-top:2px; color:#1f5fbf;">➜ ${MOUTHS[r.correctMouth]}</span>`;
     }
   });
 
@@ -938,7 +990,8 @@ function validerTout() {
   const scorePanel = document.getElementById('score-panel');
   scorePanel.style.display = 'block';
   const scoreTxt = document.getElementById('score-txt');
-  scoreTxt.textContent = `${correctPoints} / ${totalPoints} — ${pct}%`;
+  scoreTxt.textContent = `${correctPoints} / ${totalPoints} — ${pct} %`;
+  if (correctPoints < totalPoints) scoreTxt.insertAdjacentHTML('afterend', '<div id="score-aide" style="font-size:13px;font-weight:700;margin-top:6px">Les bonnes réponses manquées sont indiquées en <span style="color:#1f5fbf">bleu</span>.</div>');
   
   if (pct >= 80) scoreTxt.style.color = 'var(--success)';
   else if (pct >= 50) scoreTxt.style.color = 'var(--warning)';
@@ -949,17 +1002,19 @@ function validerTout() {
   scorePanel.scrollIntoView({ behavior: 'smooth' });
 
   // Sauvegarde
-  if (window.parent && window.parent.saveResult) {
-    window.parent.saveResult({
-      activity: 'geo_europe_relief_fleuves',
-      bookTitle: "L'Europe : Relief et Fleuves",
-      score: correctPoints,
-      total: totalPoints,
-      pct: pct,
-      date: new Date().toLocaleDateString('fr-BE'),
-      time: new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })
-    });
-  }
+  try {
+    if (window.parent && window.parent !== window && typeof window.parent.saveResult === 'function') {
+      window.parent.saveResult({
+        activity: 'geo_europe_relief_fleuves',
+        bookTitle: "L'Europe : Relief et Fleuves",
+        score: correctPoints,
+        total: totalPoints,
+        pct: pct,
+        date: new Date().toLocaleDateString('fr-BE'),
+        time: new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })
+      });
+    }
+  } catch (e) { console.warn('saveResult', e); }
 }
 
 function resetExercice() {
