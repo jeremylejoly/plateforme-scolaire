@@ -2230,6 +2230,8 @@ Spécifique :
 
 - **06/10 — Jeux › Mots croisés (`jeu_mots_croises`, fiches/mots-croises.html + public + racine, sw.js v704)** : 20 thèmes × 15 mots relus ; 1 200 grilles générées : jamais d'échec, les 15 mots toujours placés. Bug téléphone : la grille (jusqu'à 23 cases, 600 px) était centrée et coupée à gauche, impossible à faire défiler (bord gauche à −93 px) → cadre défilant + « ↔ Fais glisser la grille ». 3 alert() et 1 confirm() → messages dans la page (nombre de cases fausses ET vides ; « Recommencer » demande un 2e toucher). saveResult retiré (règle jeux) ; record (meilleur temps par thème) gardé par élève (avant : partagé). Définitions : « IMBECILE — personne stupide » (insulte) → « COLLECTION » ; SYLLABE « contenant une seule voyelle » (faux : eau) → « groupe de sons prononcés d'une seule émission de voix » ; SURFACE/aire distinguées ; RAYON « à un point du cercle » ; PARTICIPE (« mode verbal ») ; HOMOPHONE (pluriel) ; VOYELLE (« son vocalique ») ; ÉQUILIBRE et ÉNERGIE (définitions vagues) ; RAPPELER (« faire remémorer ») ; RESPIRATOIRE ; PONTLEVIS « (sans trait d'union) » ; « Mots dans : » → « Mot manquant : » (15) ; NO : maitre, traine, parait. Interface : « Horizontaux (Across) / Verticaux (Down) » → « Horizontalement / Verticalement ». Test Playwright 390 px : grille défilante, messages, double toucher Recommencer, victoire, record, aucune boite de dialogue.
 
+- **06/10 — Jeux › Mots cachés (`jeu_mots_caches`, fiches/mots-caches.html + public + racine, sw.js v705)** : 20 thèmes × 15 mots (mêmes listes que les mots croisés) ; 1 600 grilles générées (4 niveaux) sans échec ; grille 14 × 14 tenant à 390 px. Bug : un mot n'était accepté qu'à la place exacte prévue par le générateur ; or les lettres de remplissage recréent parfois le mot ailleurs (« OR » apparait plusieurs fois dans 56 % des grilles « Expressions ») → l'élève qui entourait l'autre « OR » était refusé (reproduit en test) → tout tracé qui écrit un mot non trouvé (dans un sens ou l'autre) est accepté. Doigt relâché hors de la grille : la sélection restait bloquée → relâcher/annuler partout est pris en compte. IMBECILE (insulte) → COLLECTION, comme dans les mots croisés. alert() et confirm() → message dans la page et « Recommencer » en deux touchers. saveResult retiré (règle jeux) ; record par thème et niveau gardé par élève. Test Playwright 390 px : « OR » hors place accepté, grille complétée, victoire, record, aucune boite de dialogue, pas de débordement.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2821,7 +2823,7 @@ Spécifique :
 | ⬜ | Rush Hour | `jeu_rushhour` | index › renderJeuRushHour |  |
 | ⬜ | Le robot | `jeu_robot` | fiches/Labyrinthe.html |  |
 | ✅ 06/10 | Mots croisés | `jeu_mots_croises` | fiches/mots-croises.html |  |
-| ⬜ | Mots cachés | `jeu_mots_caches` | fiches/mots-caches.html |  |
+| ✅ 06/10 | Mots cachés | `jeu_mots_caches` | fiches/mots-caches.html |  |
 | ⬜ | Sudoku | `jeu_sudoku` | fiches/sudoku.html |  |
 | ⬜ | Flux Connecté | `jeu_flux` | index › (?) | (code à localiser) |
 | ⬜ | Le Code Secret | `jeu_code_secret` | index › (?) | (code à localiser) |

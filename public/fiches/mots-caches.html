@@ -361,10 +361,11 @@
             </div>
           </div>
           
+          <div id="mk-msg" class="hidden text-center text-sm font-bold rounded-xl border-2 px-3 py-2"></div>
           <!-- Game actions -->
           <div class="flex gap-3 justify-center">
             <button class="btn btn-warning flex-1 sm:flex-initial" onclick="revealOneWord()">💡 Révéler un mot</button>
-            <button class="btn btn-danger flex-1 sm:flex-initial" onclick="restartGame()">🔄 Recommencer</button>
+            <button id="btn-restart" class="btn btn-danger flex-1 sm:flex-initial" onclick="restartGame()">🔄 Recommencer</button>
           </div>
         </div>
 
@@ -536,7 +537,7 @@
         id: "pieges",
         title: "Pièges d'orthographe",
         emoji: "📖",
-        words: ["ACCUEIL", "CLEF", "SECONDE", "GENTIL", "NOURRITURE", "SOUFFLER", "HORRIBLE", "DIFFICILE", "INTELLIGENT", "IMBECILE", "RESSOURCE", "VOCABULAIRE", "COMPTER", "AUTOMNE", "RYTHME"]
+        words: ["ACCUEIL", "CLEF", "SECONDE", "GENTIL", "NOURRITURE", "SOUFFLER", "HORRIBLE", "DIFFICILE", "INTELLIGENT", "COLLECTION", "RESSOURCE", "VOCABULAIRE", "COMPTER", "AUTOMNE", "RYTHME"]
       }
     ];
 
@@ -825,11 +826,11 @@
       currentTheme = WORDSEARCH_THEMES.find(t => t.id === themeId);
       if (!currentTheme) return;
 
-      gridData = generator.generate(currentTheme.words, activeLevel);
-      if (!gridData) {
-        alert("Une erreur de génération est survenue. Veuillez réessayer !");
-        return;
-      }
+      gridData = null;
+      for (let essai = 0; essai < 5 && !gridData; essai++) gridData = generator.generate(currentTheme.words, activeLevel);
+      if (!gridData) return; // (jamais observé : 1 600 grilles générées sans échec)
+      showMsg('');
+      armRestart(false);
 
       foundWords = [];
       cellFoundClasses = {};
@@ -952,9 +953,15 @@
       const reversedWord = selectedWord.split('').reverse().join('');
 
       let matchedWord = null;
-      
-      // Look for match in theme list
-      gridData.placedWords.forEach(pw => {
+
+      // 1) le mot sélectionné (dans un sens ou dans l'autre) est un mot de la liste pas encore trouvé
+      if (selectedCellsList.length >= 2) {
+        const cand = currentTheme.words.find(w => !foundWords.includes(w) && (w === selectedWord || w === reversedWord));
+        if (cand) matchedWord = cand;
+      }
+
+      // 2) (ancien contrôle par position, gardé en secours)
+      if (!matchedWord) gridData.placedWords.forEach(pw => {
         if (!foundWords.includes(pw.word) && selectedCellsList.length === pw.cells.length) {
           // Check coordinates alignment as well
           const matchForwards = pw.cells.every((c, i) => selectedCellsList[i] && selectedCellsList[i].x === c.x && selectedCellsList[i].y === c.y);
@@ -1003,6 +1010,14 @@
       document.querySelectorAll('.grid-cell').forEach(c => c.classList.remove('cell-selecting'));
       selectedCellsList = [];
     }
+
+    window.addEventListener('pointerup', (e) => { if (isSelecting) onGridPointerUp(e); });
+    window.addEventListener('pointercancel', () => {
+      if (!isSelecting) return;
+      isSelecting = false;
+      document.querySelectorAll('.grid-cell').forEach(c => c.classList.remove('cell-selecting'));
+      selectedCellsList = [];
+    });
 
     function updateSelectionHighlight() {
       // Clear current selectors
@@ -1097,8 +1112,28 @@
       }
     }
 
+    function showMsg(text) {
+      const m = document.getElementById('mk-msg');
+      if (!m) return;
+      if (!text) { m.classList.add('hidden'); return; }
+      m.textContent = text;
+      m.className = 'text-center text-sm font-bold rounded-xl border-2 px-3 py-2 bg-amber-50 border-amber-400 text-amber-900';
+    }
+
+    // « Recommencer » : 1er toucher = demande de confirmation, 2e toucher (dans les 4 s) = on efface
+    let restartArmed = false, restartTimer = null;
+    function armRestart(on) {
+      restartArmed = on;
+      clearTimeout(restartTimer);
+      const btn = document.getElementById('btn-restart');
+      if (btn) btn.textContent = on ? '⚠️ Sûr ? Touche encore' : '🔄 Recommencer';
+      if (on) restartTimer = setTimeout(() => armRestart(false), 4000);
+    }
+
     function restartGame() {
-      if (confirm("Veux-tu réinitialiser cette grille de jeu ?")) {
+      if (!restartArmed) { armRestart(true); return; }
+      armRestart(false);
+      {
         foundWords = [];
         cellFoundClasses = {};
         helpCount = 0;
@@ -1131,21 +1166,8 @@
       
       saveProgress(currentTheme.id, activeLevel, timeElapsed);
 
-      if (window.parent && typeof window.parent.saveResult === 'function') {
-        window.parent.saveResult({
-          student: window.parent.state ? window.parent.state.student : 'Local',
-          cls: window.parent.state ? window.parent.state.studentCls : 'P5-P6',
-          activity: `mots_caches_${currentTheme.id}_lvl${activeLevel}`,
-          bookTitle: `Mots cachés — ${currentTheme.title} (Lvl ${activeLevel})`,
-          score: foundWords.length,
-          total: currentTheme.words.length,
-          pct: 100,
-          time_sec: timeElapsed,
-          helps_count: helpCount,
-          date: new Date().toLocaleDateString('fr-BE'),
-          time: new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })
-        });
-      }
+      // (Jeux : aucun résultat envoyé à la page enseignant ; le record reste dans le jeu)
+
 
       document.getElementById('victory-time').innerText = formatTime(timeElapsed);
       document.getElementById('victory-helps').innerText = helpCount === 0 ? "Aucune ! 🎉" : `${helpCount} fois`;
@@ -1172,13 +1194,19 @@
     // =========================================================================
     // 7. LOCAL STORAGE PROGRESS TRACKING
     // =========================================================================
-    const LOCAL_STORAGE_KEY = 'lcml_wordsearch_progress';
+    // Record par élève (avant : partagé par tous les élèves de l'appareil)
+    const LOCAL_STORAGE_KEY = (function() {
+      try {
+        const st = window.parent && window.parent !== window && window.parent.state;
+        if (st && st.student) return 'lcml_wordsearch_progress_' + (st.studentCls || '') + '_' + st.student;
+      } catch (e) {}
+      return 'lcml_wordsearch_progress';
+    })();
 
     function getSavedProgress() {
-      const raw = localStorage.getItem(LOCAL_STORAGE_KEY);
-      if (!raw) return {};
       try {
-        return JSON.parse(raw);
+        const raw = localStorage.getItem(LOCAL_STORAGE_KEY);
+        return raw ? (JSON.parse(raw) || {}) : {};
       } catch (e) {
         return {};
       }
@@ -1194,7 +1222,7 @@
           time: time,
           date: new Date().toLocaleDateString('fr-BE')
         };
-        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(progress));
+        try { localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(progress)); } catch (e) {}
       }
     }
   </script>
