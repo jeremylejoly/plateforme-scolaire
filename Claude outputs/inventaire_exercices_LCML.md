@@ -1515,6 +1515,16 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Nouvelle orthographe : boite.
 - Tests jsdom : cadre vide sans cœur perdu, double clic = 1 client, Recommencer sans saut, partie 5 / 6 → 1 sauvegarde ; syntaxe OK. **Les 3 fiches de monnaie sont vérifiées.**
 
+### 06/10 — Recettes (`grandeur_proportionnalite_exercice`, fiches/proportionnalite.html) — sw.js v586
+- Contenu : 30 situations vérifiées, toutes les réponses entières (max 625).
+- Le nombre de cases de réponse révélait le nombre de chiffres → toujours 3 cases.
+- Pastilles « personnes » affichées pour des sachets, étagères… → boites neutres pour les unités non humaines.
+- Double Entrée sautait la correction ; Entrée après la dernière question pouvait enregistrer plusieurs fois → garde 600 ms + un seul enregistrement (try/catch).
+- Entrée après validation ne faisait rien (champs désactivés) → Entrée passe à l'exercice suivant.
+- Débordement à 390 px (pastilles de progression à 440 px) → media query téléphone.
+- Orthographe : œufs, boites, maitrises, entrainement, entrainer.
+- Tests : jsdom (3 cases, réponse vide non comptée, double Entrée, partie 4/5 → 1 seul saveResult), node --check 7 OK, Playwright 390 px (scrollWidth 390).
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1870,7 +1880,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 06/10 | Paie le commerçant | `grandeur_monnaie_payer` | fiches/payer_le_commercant.html |  |
 | ✅ 06/10 | Rends la monnaie | `grandeur_monnaie_rendre` | fiches/rendre_la_monnaie.html |  |
 | ✅ 06/10 | Deux objets — Rends la monnaie | `grandeur_monnaie_deux_objets` | fiches/deux_objets_monnaie.html |  |
-| ⬜ | Recettes | `grandeur_proportionnalite_exercice` | fiches/proportionnalite.html |  |
+| ✅ 06/10 | Recettes | `grandeur_proportionnalite_exercice` | fiches/proportionnalite.html |  |
 | ⬜ | Le rallye des bolides | `grandeur_proportionnalite_rallye_bolides` | fiches/rallye_bolides.html |  |
 | ⬜ | Le supermarché malin | `grandeur_proportionnalite_supermarche_malin` | fiches/supermarche_malin.html |  |
 | ⬜ | QCM de vitesse horaire | `grandeur_vitesse_horaire_qcm` | fiches/vitesse_situations.html |  |

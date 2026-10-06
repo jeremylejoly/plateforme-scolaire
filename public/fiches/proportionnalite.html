@@ -271,6 +271,14 @@
     h1 { font-size: 20px; }
     .topbar { grid-template-columns: 54px 1fr auto; }
   }
+  /* Téléphone : la consigne passe sous les boutons (avant : les pastilles de progression débordaient à droite) */
+  @media (max-width: 520px) {
+    .topbar { grid-template-columns: 54px 1fr; }
+    .topbar h1 { grid-column: 1 / -1; grid-row: 2; font-size: 17px; }
+    .lives { justify-self: end; gap: 5px; }
+    .lives .heart svg { width: 26px; height: 26px; }
+    .pip { width: 24px; height: 24px; border-width: 2px; }
+  }
 </style>
 </head>
 <body>
@@ -348,14 +356,14 @@ const exerciseBank = [
   {"icon":"book","item":"livres","unit":"étagères","a1":3,"v1":24,"a2":5},
   {"icon":"apple","item":"pommes","unit":"paniers","a1":4,"v1":16,"a2":7},
   {"icon":"juice","item":"verres de jus","unit":"bouteilles","a1":2,"v1":6,"a2":9},
-  {"icon":"egg","item":"oeufs","unit":"boîtes","a1":3,"v1":18,"a2":8},
+  {"icon":"egg","item":"œufs","unit":"boites","a1":3,"v1":18,"a2":8},
   {"icon":"flour","item":"grammes de farine","unit":"gâteaux","a1":2,"v1":250,"a2":5},
   {"icon":"strawberry","item":"fraises","unit":"barquettes","a1":4,"v1":28,"a2":6},
   {"icon":"sandwich","item":"sandwichs","unit":"pique-niques","a1":3,"v1":9,"a2":7},
   {"icon":"balloon","item":"ballons","unit":"fêtes","a1":2,"v1":14,"a2":6},
   {"icon":"ball","item":"ballons de foot","unit":"équipes","a1":5,"v1":15,"a2":8},
   {"icon":"tshirt","item":"tee-shirts","unit":"cartons","a1":4,"v1":12,"a2":9},
-  {"icon":"shoe","item":"paires de chaussures","unit":"boîtes","a1":2,"v1":8,"a2":7},
+  {"icon":"shoe","item":"paires de chaussures","unit":"boites","a1":2,"v1":8,"a2":7},
   {"icon":"bike","item":"vélos","unit":"rangées","a1":3,"v1":6,"a2":10},
   {"icon":"fish","item":"poissons rouges","unit":"aquariums","a1":2,"v1":12,"a2":5},
   {"icon":"bird","item":"oiseaux","unit":"cages","a1":3,"v1":21,"a2":8},
@@ -428,11 +436,14 @@ function pickSession() {
   return shuffled.slice(0, EXERCISES_PER_SESSION);
 }
 
-function renderPeople(container, count) {
+const UNITES_PERSONNES = ['personnes', 'enfants', 'amis', 'familles', 'équipes', 'classes'];
+const groupSVG = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><rect x="3.5" y="3.5" width="17" height="17" rx="4" fill="#f4c27a" stroke="#1c3326" stroke-width="1.6"/></svg>`;
+function renderPeople(container, count, unit) {
   container.innerHTML = '';
+  const svg = (!unit || UNITES_PERSONNES.includes(unit)) ? personSVG : groupSVG;
   for (let i = 0; i < count; i++) {
     const wrap = document.createElement('div');
-    wrap.innerHTML = personSVG;
+    wrap.innerHTML = svg;
     container.appendChild(wrap.firstElementChild);
   }
 }
@@ -508,6 +519,7 @@ function onDigitKeydown(e) {
   } else if (e.key === 'ArrowRight' && idx < currentSlots - 1) {
     inputs[idx + 1].focus();
   } else if (e.key === 'Enter') {
+    e.preventDefault();
     if (!answered) validate(); else nextExercise();
   }
 }
@@ -529,14 +541,14 @@ function setSlotsState(state) {
 
 function loadExercise() {
   const ex = sessionExercises[currentIndex];
-  renderPeople(document.getElementById('leftPeople'), ex.a1);
-  renderPeople(document.getElementById('rightPeople'), ex.a2);
+  renderPeople(document.getElementById('leftPeople'), ex.a1, ex.unit);
+  renderPeople(document.getElementById('rightPeople'), ex.a2, ex.unit);
   document.getElementById('leftLabel').textContent = `pour ${ex.a1} ${ex.unit}`;
   document.getElementById('rightLabel').textContent = `pour ${ex.a2} ${ex.unit}`;
   document.getElementById('centerIcon').innerHTML = icons[ex.icon];
   renderLeftDigits(ex.v1);
   const correct = ex.v1 * ex.a2 / ex.a1;
-  renderAnswerSlots(String(correct).length);
+  renderAnswerSlots(3); // toujours 3 cases (avant : le nombre de cases révélait le nombre de chiffres de la réponse)
   document.getElementById('leftItemName').textContent = ex.item;
   document.getElementById('rightItemName').textContent = ex.item;
   document.getElementById('feedback').textContent = '';
@@ -563,6 +575,7 @@ function validate() {
   }
 
   answered = true;
+  answeredAt = Date.now();
   document.querySelectorAll('#answerDigits input').forEach(i => i.disabled = true);
   document.getElementById('btnValidate').disabled = true;
   document.getElementById('btnNext').disabled = false;
@@ -586,7 +599,11 @@ function validate() {
   }
 }
 
+let answeredAt = 0, saved = false;
+// Entrée sur la case suivante après validation (champs désactivés) : le bouton « Suivant » garde le focus
 function nextExercise() {
+  // Double clic / double Entrée : la correction reste affichée au moins 0,6 s ; pas d'exercice sauté
+  if (!answered || Date.now() - answeredAt < 600 || currentIndex >= EXERCISES_PER_SESSION) return;
   currentIndex++;
   if (currentIndex >= EXERCISES_PER_SESSION) showEndScreen();
   else loadExercise();
@@ -597,15 +614,16 @@ function showEndScreen() {
   document.getElementById('endScreen').style.display = 'block';
   document.getElementById('finalScore').textContent = `${score} / ${EXERCISES_PER_SESSION}`;
   let message = '';
-  if (score === EXERCISES_PER_SESSION) message = 'Parfait, tu maîtrises la règle de trois !';
+  if (score === EXERCISES_PER_SESSION) message = 'Parfait, tu maitrises la règle de trois !';
   else if (score >= EXERCISES_PER_SESSION - 1) message = 'Très bon travail, continue comme ça !';
-  else if (score >= EXERCISES_PER_SESSION / 2) message = "Pas mal, encore un peu d'entraînement !";
-  else message = "Courage, recommence pour t'entraîner encore !";
+  else if (score >= EXERCISES_PER_SESSION / 2) message = "Pas mal, encore un peu d'entrainement !";
+  else message = "Courage, recommence pour t'entrainer encore !";
   document.getElementById('endMessage').textContent = message;
 
-  if (window.parent && window.parent.saveResult) {
+  if (!saved && window.parent && typeof window.parent.saveResult === 'function') { // une seule fois par série
+    saved = true;
     const pct = Math.round(score / EXERCISES_PER_SESSION * 100);
-    window.parent.saveResult({
+    try { window.parent.saveResult({
       activity: 'grandeur_proportionnalite_exercice',
       bookTitle: 'Grandeurs — Recettes',
       score: score,
@@ -613,12 +631,13 @@ function showEndScreen() {
       pct: pct,
       date: new Date().toLocaleDateString('fr-BE'),
       time: new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })
-    });
+    }); } catch (e) { console.warn('Erreur sauvegarde recettes', e); }
   }
 }
 
 function restartGame() {
   sessionExercises = pickSession();
+  saved = false;
   currentIndex = 0;
   score = 0;
   results = [];
@@ -628,6 +647,10 @@ function restartGame() {
   loadExercise();
 }
 
+// Entrée après la correction : exercice suivant (avant : les cases désactivées ne recevaient plus Entrée)
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && answered && !(e.target.closest && e.target.closest('#answerDigits'))) { e.preventDefault(); nextExercise(); }
+});
 restartGame();
 </script>
 </body>
