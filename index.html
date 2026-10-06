@@ -31143,20 +31143,19 @@ function renderGeoBelgiqueQCM(){
   const body = document.getElementById('geo-belgique-qcm-body');
   if(!body) return;
 
-  const shuffled = shuffle([...GEO_BELGIQUE_QCM]);
-  const selected = shuffled.slice(0, 10).map(q => {
+  // 10 questions au hasard, une seule par famille (k) pour qu'aucune ne donne la réponse d'une autre
+  const usedK = new Set(), selected = [];
+  for (const q of shuffle([...GEO_BELGIQUE_QCM])) {
+    if (selected.length >= 10) break;
+    if (q.k) { if (usedK.has(q.k)) continue; usedK.add(q.k); }
     const correctVal = q.options[q.correct];
     const shuffledOpts = shuffle([...q.options]);
-    return {
-      ...q,
-      options: shuffledOpts,
-      correct: shuffledOpts.indexOf(correctVal)
-    };
-  });
+    selected.push({ ...q, options: shuffledOpts, correct: shuffledOpts.indexOf(correctVal) });
+  }
   geoBelgiqueQCMState = {questions: selected, selections:{}, submitted:false};
 
   let html = `<div class="card" style="margin-bottom:1rem;padding:0.8rem 1rem;background:var(--purple-light);border:1px solid var(--purple);">
-    <p style="margin:0;font-size:13px;color:var(--purple);font-weight:700">Choisis la bonne réponse pour chaque question.</p>
+    <p style="margin:0;font-size:13px;color:var(--purple);font-weight:700">Choisis la bonne réponse pour chaque question, puis valide. Tu n'as qu'un essai.</p>
   </div>`;
 
   selected.forEach((q, qi) => {
@@ -31171,31 +31170,45 @@ function renderGeoBelgiqueQCM(){
     html += `</div>`;
   });
 
-  html += `<button class="btn" onclick="validerGeoBelgiqueQCM()" style="width:100%;margin-top:1rem">✅ Valider</button>
+  html += `<div id="geo-qcm-msg" style="display:none;margin:1rem 0 0;padding:.6rem .9rem;border-radius:8px;background:#fff7ed;border:1.5px solid #f59e0b;color:#92400e;font-size:13px;font-weight:700;text-align:center"></div>
+    <button class="btn" id="geo-qcm-valider" onclick="validerGeoBelgiqueQCM()" style="width:100%;margin-top:1rem">✅ Valider</button>
     <div id="geo-qcm-score" style="display:none;margin-top:1rem" class="geo-score-panel"></div>`;
   body.innerHTML = html;
-  geoBelgiqueQCMState.selections = {};
 }
 
 function geoBelQCMSelect(qi, oi){
+  if(geoBelgiqueQCMState.submitted) return;
   geoBelgiqueQCMState.selections[qi] = oi;
+  const m = document.getElementById('geo-qcm-msg'); if(m) m.style.display = 'none';
 }
 
 function validerGeoBelgiqueQCM(){
+  if(geoBelgiqueQCMState.submitted) return;
+  const total = geoBelgiqueQCMState.questions.length;
+  const missing = geoBelgiqueQCMState.questions.map((_, qi) => qi).filter(qi => geoBelgiqueQCMState.selections[qi] === undefined);
+  if(missing.length){
+    const m = document.getElementById('geo-qcm-msg');
+    m.textContent = missing.length === 1 ? `Il te reste 1 question sans réponse (n° ${missing[0]+1}).` : `Il te reste ${missing.length} questions sans réponse (n° ${missing.map(i=>i+1).join(', ')}).`;
+    m.style.display = 'block';
+    return;
+  }
+  geoBelgiqueQCMState.submitted = true;
   let score = 0;
-  const total = 10;
   geoBelgiqueQCMState.questions.forEach((q, qi) => {
     const sel = geoBelgiqueQCMState.selections[qi];
     const ok = sel === q.correct;
     if(ok) score++;
     q.options.forEach((_, oi) => {
       const optEl = document.getElementById(`geo-qcm-opt-${qi}-${oi}`);
-      if(optEl){
-        if(oi === sel && ok) optEl.classList.add('correct');
-        else if(oi === sel && !ok) optEl.classList.add('incorrect');
-      }
+      if(!optEl) return;
+      const inp = optEl.querySelector('input'); if(inp) inp.disabled = true;
+      optEl.style.cursor = 'default';
+      if(oi === sel && ok) optEl.classList.add('correct');
+      else if(oi === sel && !ok) optEl.classList.add('incorrect');
+      else if(oi === q.correct && !ok){ optEl.style.background = '#e8f0fc'; optEl.style.borderColor = '#1f5fbf'; optEl.style.color = '#1f5fbf'; optEl.style.fontWeight = '800'; }
     });
   });
+  const btn = document.getElementById('geo-qcm-valider'); if(btn) btn.style.display = 'none';
   const pct = Math.round(score/total*100);
   const color = pct>=70?'var(--green)':pct>=50?'var(--amber)':'var(--red)';
   const panel = document.getElementById('geo-qcm-score');
@@ -31203,21 +31216,24 @@ function validerGeoBelgiqueQCM(){
   panel.innerHTML = `
     <div style="font-size:48px;margin-bottom:0.5rem">${pct>=70?'🎉':pct>=50?'👍':'💪'}</div>
     <div style="font-family:'Nunito',sans-serif;font-weight:800;font-size:32px;color:${color}">${score}/${total}</div>
-    <div style="font-size:16px;color:${color};font-weight:700;margin-bottom:1rem">${pct}%</div>
-    <button class="btn" onclick="renderGeoBelgiqueQCM()" style="margin-top:0.5rem">🔄 Recommencer</button>
+    <div style="font-size:16px;color:${color};font-weight:700;margin-bottom:1rem">${pct} %</div>
+    ${score < total ? '<p style="font-size:13px;color:var(--muted);margin-bottom:1rem">Les bonnes réponses que tu as manquées sont en <span style="color:#1f5fbf;font-weight:800">bleu</span>.</p>' : ''}
+    <button class="btn" onclick="renderGeoBelgiqueQCM();document.getElementById('geo-belgique-qcm-body').scrollIntoView({behavior:'smooth'})" style="margin-top:0.5rem">🔄 Recommencer</button>
   `;
-  panel.scrollIntoView({behavior:'smooth'});
-  if(state.student){
-    saveResult({
-      student:state.student, cls:state.studentCls,
-      className:CLASSES[state.studentCls]?CLASSES[state.studentCls].name:state.studentCls,
-      activity:'geo_belgique_qcm',
-      bookTitle:'La Belgique — QCM',
-      score, total, pct,
-      date:new Date().toLocaleDateString('fr-BE'),
-      time:new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})
-    });
-  }
+  panel.scrollIntoView({behavior:'smooth', block:'nearest'});
+  try {
+    if(state.student){
+      saveResult({
+        student:state.student, cls:state.studentCls,
+        className:CLASSES[state.studentCls]?CLASSES[state.studentCls].name:state.studentCls,
+        activity:'geo_belgique_qcm',
+        bookTitle:'La Belgique — QCM',
+        score, total, pct,
+        date:new Date().toLocaleDateString('fr-BE'),
+        time:new Date().toLocaleTimeString('fr-BE',{hour:'2-digit',minute:'2-digit'})
+      });
+    }
+  } catch(err) { console.warn('saveResult', err); }
 }
 
 // ===== GÉOGRAPHIE NAVIGATION =====
