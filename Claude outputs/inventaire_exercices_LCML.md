@@ -1874,6 +1874,13 @@ Spécifique :
 - Évaluation déjà passée : fenêtre `alert` → message dans la page. Bonne réponse en bleu (#1f5fbf) après une erreur ; correction finale avec le texte des affirmations. « Nouvel entrainement » (8 boutons du site).
 - Tests jsdom : 10 questions (5 formes, 5 VF), 2 erreurs → bleu, doubles clics sans saut, 8/10 → 1 sauvegarde, 2e tentative → message. `exercices_maths.js?v=20261006g`.
 
+### 06/10 — Ménage Mathématiques : cases vides et doublon supprimés (accord de Jeremy) — sw.js v624
+- **Cases « 🚧 Les exercices arrivent bientôt ! » retirées du site** (menu, écran, plan de travail, liste des activités, carte des menus) : Numération → Les pourcentages ; Numération → Un peu de tout ; Opérations → La compensation ; Solides et figures → Points, lignes et droites. Logos devenus inutiles supprimés (`assets/logos/num_pourcentages.png`, `num_tout.png`, `solide_points.png`).
+- **Ancien menu « Traitement de données »** (écrans `screen-traitement`, `screen-teacher-traitement`, « Les graphiques », « La règle de 3 », « Résolution de problèmes », tous 🚧 et inaccessibles depuis l'accueil, plus `TRAITEMENT_ITEMS` / `renderTraitementScreen`) supprimé ; `goToMathsSection('traitement')` ouvre maintenant le vrai menu Traitement de données. Entrées du plan de travail retirées.
+- **« Calcul de la moyenne (Exercices) »** (`td_moyenne_exercices`, accessible seulement par le plan de travail) : copie ancienne des 5 défis de « La moyenne → QCM », sans enregistrement → supprimée (fiche en 3 copies + entrée du plan) ; le contenu reste dans La moyenne → QCM (corrigé le 06/10).
+- Menus parents (Additions et soustractions, Multiplications et divisions, Les 4 opérations, Calcul écrit, L'ordre des opérations, Les durées, Le périmètre) marqués « menu » : tous leurs exercices sont vérifiés.
+- Contrôles : plus aucune référence aux identifiants supprimés dans index.html / exercices_*.js (hors sauvegardes et `public/index.html`, ancienne copie non publiée) ; index chargé dans Chromium : menus Numération, Opérations, Solides rendus sans les cases supprimées, aucune nouvelle erreur JavaScript ; syntaxe 6 fichiers OK.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2139,10 +2146,10 @@ Spécifique :
 | ✅ 05/10 | Opérations de fractions | `num_fractions_operations` | fiches/calculs_fractions.html |  |
 | ✅ 05/10 | La fraction d'une quantité | `num_fraction_quantite` | fiches/fraction_quantite.html |  |
 | ✅ 05/10 | Les nombres mixtes | `num_nombres_mixtes` | fiches/numeration_nombres_mixtes.html |  |
-| ⬜ | Les pourcentages | `num_pourcentages` | index › (?) | (code à localiser) |
+| 🗑️ 06/10 supprimé | Les pourcentages| `num_pourcentages` | index › (?) | (code à localiser) |
 | ✅ 05/10 | Arrondir les décimaux | `num_decimaux_arrondir` | index › renderDecimauxArrondir |  |
 | ✅ 05/10 | Diviseurs & Nombres premiers | `num_diviseurs_premiers` | fiches/nombres_diviseurs.html |  |
-| ⬜ | Un peu de tout (numération) | `num_tout` | index › (?) | (code à localiser) |
+| 🗑️ 06/10 supprimé | Un peu de tout (numération)| `num_tout` | index › (?) | (code à localiser) |
 
 ### 🔢 Mathématiques — ➕ Opérations — Vocabulaire
 
@@ -2156,7 +2163,7 @@ Spécifique :
 
 | Statut | Exercice | id | Source | Signal automatique |
 |---|---|---|---|---|
-| ⬜ | Additions et soustractions | `op_add_sous` | index › (?) | (code à localiser) |
+| ✅ 06/10 (menu) | Additions et soustractions| `op_add_sous` | index › (?) | (code à localiser) |
 | ✅ 05/10 | Additions et soustractions — Jusque 100 | `op_add_sous_100` | index › startCalcExercise |  |
 | ✅ 05/10 | Additions et soustractions — Jusque 1 000 | `op_add_sous_1000` | index › startCalcExercise |  |
 | ✅ 05/10 | Additions et soustractions — Jusque 10 000 | `op_add_sous_10000` | index › startCalcExercise |  |
@@ -2164,9 +2171,9 @@ Spécifique :
 | ✅ 05/10 | Additions et soustractions — Jusque 1 000 000 | `op_add_sous_1000000` | index › startCalcExercise |  |
 | ✅ 05/10 | Fléchettes — Calcule le score | `op_add_sous_flechettes_calcule` | fiches/flechettes_calcule_le_score.html |  |
 | ✅ 05/10 | Fléchettes — Atteins le score | `op_add_sous_flechettes_atteins` | fiches/flechettes_atteins_le_score.html |  |
-| ⬜ | Multiplications et divisions | `op_mult_div` | index › (?) | (code à localiser) |
+| ✅ 06/10 (menu) | Multiplications et divisions| `op_mult_div` | index › (?) | (code à localiser) |
 | ✅ 05/10 | Multiplications et divisions — Tables de multiplication | `op_mult_div_tables` | index › startMultDivExercise |  |
-| ⬜ | Les 4 opérations | `op_4_operations` | index › render4OperationsScreen |  |
+| ✅ 06/10 (menu) | Les 4 opérations| `op_4_operations` | index › render4OperationsScreen |  |
 | ✅ 05/10 | Les 4 opérations mélangées | `op_4_operations_melangees` | index › start4OpExercise |  |
 | ✅ 05/10 | Le compte est bon | `op_add_sous_compte_est_bon` | fiches/compte_est_bon.html |  |
 | ✅ 05/10 | Fiche d'entraînement (Calculs) | `op_4_operations_calculs` | fiches/calculs.html |  |
@@ -2177,13 +2184,13 @@ Spécifique :
 | ✅ 05/10 | × par 9 — 90 — 99 — 9,9 | `op_x9` | index › startOpX9Exercise |  |
 | ✅ 05/10 | × par 11 — 101 — 110 — 1,1 | `op_x11` | index › (?) | (code à localiser) |
 | ✅ 05/10 | Caractères de divisibilité | `op_divisibilite` | fiches/divisibilite.html |  |
-| ⬜ | La compensation | `op_compensation` | index › (?) | (code à localiser) |
-| ⬜ | Calcul écrit | `op_calcul_ecrit` | index › (?) | (code à localiser) |
+| 🗑️ 06/10 supprimé | La compensation| `op_compensation` | index › (?) | (code à localiser) |
+| ✅ 06/10 (menu) | Calcul écrit| `op_calcul_ecrit` | index › (?) | (code à localiser) |
 | ✅ 05/10 | Calcul écrit — Additions écrites | `op_calcul_ecrit_addition` | fiches/calcul-ecrit-addition.html |  |
 | ✅ 05/10 | Calcul écrit — Soustractions écrites | `op_calcul_ecrit_soustraction` | fiches/calcul-ecrit-soustraction.html |  |
 | ✅ 05/10 | Calcul écrit — Multiplications écrites | `op_calcul_ecrit_multiplication` | fiches/calcul-ecrit-multiplication.html |  |
 | ✅ 05/10 | Calcul écrit — Divisions écrites | `op_calcul_ecrit_division` | fiches/calcul-ecrit-division.html |  |
-| ⬜ | L'ordre des opérations | `op_ordre` | index › (?) | (code à localiser) |
+| ✅ 06/10 (menu) | L'ordre des opérations| `op_ordre` | index › (?) | (code à localiser) |
 | ✅ 05/10 | L'ordre des opérations — Mission PEMDAS | `op_ordre_pemdas` | fiches/mission_pemdas.html |  |
 | ✅ 05/10 | L'ordre des opérations — Défi PEMDAS | `op_ordre_defi` | fiches/defi_pemdas.html |  |
 
@@ -2221,7 +2228,7 @@ Spécifique :
 
 | Statut | Exercice | id | Source | Signal automatique |
 |---|---|---|---|---|
-| ⬜ | Les durées | `grandeur_durees` | index › renderGrandeurDurees | QCM: bonne réponse en position 2 dans 39/65 questions, options non mélangées |
+| ✅ 06/10 (menu) | Les durées| `grandeur_durees` | index › renderGrandeurDurees | QCM: bonne réponse en position 2 dans 39/65 questions, options non mélangées |
 | ✅ 06/10 | Les durées — Conversions | `grandeur_durees_conversions` | index › startDureesExercise |  |
 | ✅ 06/10 | Les durées — Durée entre 2 heures | `grandeur_durees_entre` | index › startDureesExercise |  |
 | ✅ 06/10 | Quelle heure est-il ? (avec secondes) | `grandeur_durees_heure_secondes` | fiches/heure_secondes.html |  |
@@ -2243,20 +2250,20 @@ Spécifique :
 | ✅ 06/10 | Lire un graphique | `td_graphique` | index › renderTDGraphique |  |
 | ✅ 06/10 | La moyenne (QCM) | `td_moyenne_qcm` | index › renderTDMoyenneQCM |  |
 | ✅ 06/10 | Moyenne et étendue | `td_moyenne` | index › renderTDMoyenne |  |
-| ⬜ | Calcul de la moyenne (Exercices) | `td_moyenne_exercices` | fiches/moyenne_exercices.html | Aucun hasard : mêmes questions, même ordre à chaque partie |
+| 🗑️ 06/10 supprimé | Calcul de la moyenne (Exercices)| `td_moyenne_exercices` | fiches/moyenne_exercices.html | Aucun hasard : mêmes questions, même ordre à chaque partie |
 | ✅ 06/10 | Le décodeur de camemberts | `td_donnees_circulaires` | index › renderDonneesCirculaires |  |
 | ✅ 06/10 | L'arbre dichotomique | `td_arbre_dichotomique` | index › renderArbreDichotomique |  |
 | ✅ 06/10 | Le tri logique (Venn & Carroll) | `td_logique_tri` | index › renderTDLogiqueTri |  |
 | ✅ 06/10 | Choisir la bonne question | `td_quelle_question` | index › renderQuelleQuestion |  |
-| ⬜ | Les graphiques de synthèse | `trait_graphiques` | index › (?) | (code à localiser) |
-| ⬜ | La règle de trois | `trait_regle3` | index › (?) | (code à localiser) |
-| ⬜ | Résolution de problèmes | `trait_problemes` | index › (?) | (code à localiser) |
+| 🗑️ 06/10 supprimé | Les graphiques de synthèse| `trait_graphiques` | index › (?) | (code à localiser) |
+| 🗑️ 06/10 supprimé | La règle de trois| `trait_regle3` | index › (?) | (code à localiser) |
+| 🗑️ 06/10 supprimé | Résolution de problèmes| `trait_problemes` | index › (?) | (code à localiser) |
 
 ### 🔢 Mathématiques — 🔷 Solides & Figures — Notions & Polygones
 
 | Statut | Exercice | id | Source | Signal automatique |
 |---|---|---|---|---|
-| ⬜ | Points, lignes et droites | `solide_points` | index › (?) | (code à localiser) |
+| 🗑️ 06/10 supprimé | Points, lignes et droites| `solide_points` | index › (?) | (code à localiser) |
 | ✅ 06/10 | Identifier les polygones | `polygones_reconnaitre` | fiches/polygones_reconnaitre.html |  |
 | ✅ 06/10 | Caractéristiques des polygones | `polygones_caracteristiques` | fiches/polygones_caracteristiques.html |  |
 
@@ -2521,4 +2528,4 @@ Spécifique :
 
 | Statut | Exercice | id | Source | Signal automatique |
 |---|---|---|---|---|
-| ⬜ | Le périmètre | `grandeur_perimetre` | index › (?) | (code à localiser) |
+| ✅ 06/10 (menu) | Le périmètre| `grandeur_perimetre` | index › (?) | (code à localiser) |
