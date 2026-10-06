@@ -1994,6 +1994,12 @@ Spécifique :
 - **Contenu** : « trachée artère » → « trachée » (2 textes) ; expiration « les poumons se dégonflent grâce au diaphragme qui remonte » → « se vident de leur air quand le diaphragme remonte » ; l'air sort « par le nez ou la bouche ». Les 16 trous relus (articles et ordre bronchioles → bronches cohérents).
 - Tests Chromium (390 px, tactile) : vide → « il en reste 8 », nez / bouche inversés → 6/8 + correction en bleu, 1 seul enregistrement malgré 3 clics, verrouillage, 2e texte : 8 trous ; pas de débordement.
 
+### 06/10 — Éveil → Sciences → L'appareil respiratoire → QCM (`sci_resp_qcm`, index › renderSciRespQCM / validateSciRespQCM, exercices_eveil.js › SCI_RESP_QCM_DATA) — sw.js v642
+- Données réécrites : 30 questions (correct:0, mélangées à l'affichage), 21 familles `k` → 10 questions tirées, jamais deux de la même famille (une question ne donne plus la réponse d'une autre).
+- Contenu : « Trachée », « œsophage », « cœur » (nouvelle orthographe), question CO2 reformulée (produit par notre corps), poils du nez, poumon gauche plus petit (place du cœur), tabac, nouvelle question « Pourquoi respire-t-on plus vite quand on court ? », option absurde « D'air et de sang » supprimée. Biais « plus longue = bonne » : 4/30.
+- Moteur : message dans la page si des questions sont sans réponse (plus de validation incomplète comptée fausse), garde 600 ms, correction en bleu #1f5fbf (plus de vert pour une réponse non choisie), sauvegarde unique en try/catch, scroll conservé.
+- Tests Playwright 390 px : 300 tirages sans doublon de famille, bonne réponse répartie ~25 % par position, message « il en reste 10 », 1 erreur → 1 bonne réponse en bleu, 1 seule sauvegarde malgré 3 clics, pas de débordement. exercices_eveil.js?v=20261006a.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2453,7 +2459,7 @@ Spécifique :
 | ⬜ | Appareil respiratoire — La leçon | `fiche_respiratoire` | fiches/appareil-respiratoire.html |  |
 | ✅ 06/10 | Appareil respiratoire — Le schéma | `sci_resp_schema` | index › renderSciRespSchema |  |
 | ✅ 06/10 | Appareil respiratoire — Trajet de l'air | `sci_resp_texte` | index › renderSciRespTexte |  |
-| ⬜ | Appareil respiratoire — QCM | `sci_resp_qcm` | index › renderSciRespQCM |  |
+| ✅ 06/10 | Appareil respiratoire — QCM | `sci_resp_qcm` | index › renderSciRespQCM |  |
 | ⬜ | Appareil respiratoire — Termes et définitions | `sci_resp_assoc` | index › renderSciRespAssoc |  |
 | ⬜ | Appareil respiratoire — Remettre de l'ordre | `sci_resp_ordre` | index › renderSciRespOrdre |  |
 | ⬜ | Appareil digestif — La leçon | `fiche_digestif` | fiches/appareil-digestif.html |  |
