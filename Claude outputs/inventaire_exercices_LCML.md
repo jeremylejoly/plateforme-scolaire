@@ -1773,6 +1773,13 @@ Spécifique :
 - Bonne réponse montrée en bleu (#1f5fbf) après une erreur (vert si juste) ; pastilles rouges pour les erreurs ; « Question suivante » protégé (600 ms), Entrée ; score final une seule fois.
 - Tests jsdom : 3 000 séries de 20 questions, partie 16/20 → 1 sauvegarde, Entrée juste après un clic sans saut, Recommencer OK. Capture 390 px sans défilement horizontal.
 
+### 06/10 — Mathématiques → Solides et figures → Le cercle et le disque → Le vocabulaire (`disque_vocabulaire`, `fiches/disque_vocabulaire.html` + copies public et racine) — sw.js v612
+- **Aucun résultat enregistré** (aucun appel à `saveResult`) → enregistrement unique, format objet, try/catch.
+- **Même image pour deux questions** : 7 dessins pour 14 questions, 10 tirées → la même figure revenait souvent dans une série, juste après sa correction ; certaines séries n'avaient pas les 7 notions. → Figures dessinées par le programme (SVG), orientation différente à chaque fois ; série = les 7 notions avec une figure + 3 questions de définition (3 notions différentes), ordre mélangé (Fisher–Yates).
+- **Diamètre / corde** : un diamètre est aussi une corde (l'autre fiche de vocabulaire dit « la plus longue corde = le diamètre ») → consigne « Choisis le nom le plus précis », cordes dessinées loin du centre (51 à 123 px pour un rayon de 150), explications cohérentes. Questions qui décrivaient l'élément (« ce point… au milieu », « reliant le centre à la frontière ») → consigne neutre pour les figures, définitions précises pour les questions sans figure. Coquille « le diamètre que, lui, passe ».
+- Bonne réponse en bleu (#1f5fbf) après une erreur ; « Question suivante » protégé (600 ms), Entrée ; orthographe : Entraine-toi, maitrises. Les images PNG de `assets/disque/` ne sont plus utilisées par cette fiche (les images compas restent utilisées ailleurs).
+- Tests jsdom : 3 000 séries (7 notions + 3 définitions différentes), partie 7/10 → 1 sauvegarde, Entrée juste après un clic sans saut, Recommencer OK. Planche des 7 figures et capture 390 px sans défilement horizontal.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2180,7 +2187,7 @@ Spécifique :
 | ✅ 06/10 | Quadrilatères — Caractéristiques | `quadrilateres_caracteristiques` | index › startCharsExercise |  |
 | ✅ 06/10 | Quadrilatères — Médianes & Diagonales | `quadrilateres_diagonales_medianes` | fiches/quadrilateres_diagonales_medianes.html |  |
 | ⬜ | Quadrilatères — Évaluation | `quadrilateres_evaluation` | index › startShapeEvaluation |  |
-| ⬜ | Le cercle et le disque — Le vocabulaire | `disque_vocabulaire` | fiches/disque_vocabulaire.html |  |
+| ✅ 06/10 | Le cercle et le disque — Le vocabulaire | `disque_vocabulaire` | fiches/disque_vocabulaire.html |  |
 | ⬜ | Le cercle et le disque — Le laboratoire | `disque_laboratoire` | fiches/disque_laboratoire.html |  |
 | ⬜ | Le cercle et le disque — L'enquête du compas | `disque_compas` | fiches/disque_compas.html |  |
 
