@@ -463,8 +463,8 @@
 
     <div class="level-card" onclick="startLevel(2)">
       <div class="level-info">
-        <div class="level-title">Niveau 2 : Entraînement</div>
-        <div class="level-desc">Problèmes plus complexes utilisant des durées fractionnaires (45 min, 1h30, 1h15, 2h30). Utilise la règle de trois pour raisonner étape par étape.</div>
+        <div class="level-title">Niveau 2 : Entrainement</div>
+        <div class="level-desc">Problèmes plus complexes utilisant des durées fractionnaires (45 min, 1h15, 1h30, 1h45, 2h30). Utilise la règle de trois pour raisonner étape par étape.</div>
       </div>
       <div class="level-badge">5 questions</div>
     </div>
@@ -537,7 +537,6 @@
 
 <script>
 // ==================== BANQUE DE QUESTIONS ====================
-
 // NIVEAU 1 : 30 situations faciles (calculs directs simples)
 const level1Questions = [
   {
@@ -838,18 +837,17 @@ const level1Questions = [
     ]
   },
   {
-    text: "Un poney galope dans une prairie et parcourt 15 km en 30 minutes. Quelle est sa vitesse horaire moyenne ?",
-    options: ["15 km/h", "30 km/h", "45 km/h", "150 km/h"],
+    text: "Un poney galope dans une prairie et parcourt 12 km en 30 minutes. Quelle est sa vitesse horaire moyenne ?",
+    options: ["12 km/h", "24 km/h", "36 km/h", "6 km/h"],
     correct: 1,
     expl: "30 minutes représentent la moitié d'une heure. On multiplie la distance par 2 pour obtenir la vitesse par heure.",
     steps: [
-      "En 30 minutes, il fait 15 km.",
-      "En 60 minutes (1 heure), il parcourt 15 km × 2 = 30 km.",
-      "Sa vitesse moyenne est de 30 km/h."
+      "En 30 minutes, il fait 12 km.",
+      "En 60 minutes (1 heure), il parcourt 12 km × 2 = 24 km.",
+      "Sa vitesse moyenne est de 24 km/h."
     ]
   }
 ];
-
 // NIVEAU 2 : 20 situations plus difficiles (durées fractionnaires, règle de trois requise)
 const level2Questions = [
   {
@@ -865,7 +863,7 @@ const level2Questions = [
     ]
   },
   {
-    text: "Un coureur à pied s'entraîne et parcourt 9 km en 45 minutes. Quelle est sa vitesse moyenne ?",
+    text: "Un coureur à pied s'entraine et parcourt 9 km en 45 minutes. Quelle est sa vitesse moyenne ?",
     options: ["12 km/h", "9 km/h", "10 km/h", "18 km/h"],
     correct: 0,
     expl: "45 minutes représentent les trois quarts d'une heure. On utilise la règle de trois pour trouver la vitesse en 60 minutes.",
@@ -997,7 +995,7 @@ const level2Questions = [
     ]
   },
   {
-    text: "Un cycliste s'entraîne et parcourt 35 km en 1h45. Quelle est sa vitesse moyenne ?",
+    text: "Un cycliste s'entraine et parcourt 35 km en 1h45. Quelle est sa vitesse moyenne ?",
     options: ["20 km/h", "18 km/h", "22 km/h", "25 km/h"],
     correct: 0,
     expl: "1h45 équivaut à 105 minutes. Faisons le calcul avec la règle de trois.",
@@ -1093,30 +1091,50 @@ const level2Questions = [
     ]
   }
 ];
-
 // ==================== LOGIQUE DU JEU ====================
 let currentLevel = 1;
 let currentQuestions = [];
 let currentIndex = 0;
 let score = 0;
 let userHasAnswered = false;
-
+let answeredAt = 0;
+let saved = false;
+let ended = false;
+function melanger(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+// Pioche : jamais deux fois la même réponse dans une série ; options mélangées en suivant la bonne
+function piocherQuestions(bank, n) {
+  const pris = [], vus = new Set();
+  for (const q of melanger([...bank])) {
+    const rep = q.options[q.correct];
+    if (vus.has(rep)) continue;
+    vus.add(rep); pris.push(q);
+    if (pris.length === n) break;
+  }
+  return pris.map(q => {
+    const ordre = melanger([0, 1, 2, 3].slice(0, q.options.length));
+    return { ...q, options: ordre.map(k => q.options[k]), correct: ordre.indexOf(q.correct) };
+  });
+}
 // Démarrer un niveau
 function startLevel(level) {
   currentLevel = level;
   score = 0;
   currentIndex = 0;
   userHasAnswered = false;
-
   // Sélectionner la banque de questions correspondante
   let sourceBank = [];
   let numQuestionsNeeded = 10;
-  
   if (level === 1) {
     sourceBank = [...level1Questions];
     numQuestionsNeeded = 10;
     document.getElementById('mainTitle').textContent = "Situations de Vitesse — Niveau 1";
-    document.getElementById('mainSubtitle').textContent = "Entraînement aux calculs de vitesse simples (10 questions)";
+    document.getElementById('mainSubtitle').textContent = "Entrainement aux calculs de vitesse simples (10 questions)";
     document.getElementById('maxScore').textContent = "/ 10";
   } else {
     sourceBank = [...level2Questions];
@@ -1125,42 +1143,35 @@ function startLevel(level) {
     document.getElementById('mainSubtitle').textContent = "Problèmes avec règle de trois et fractions d'heures (5 questions)";
     document.getElementById('maxScore').textContent = "/ 5";
   }
-
-  // Mélanger et piocher le nombre nécessaire de questions
-  const shuffled = sourceBank.sort(() => 0.5 - Math.random());
-  currentQuestions = shuffled.slice(0, numQuestionsNeeded);
-
+  // Mélanger et piocher le nombre nécessaire de questions (options mélangées)
+  currentQuestions = piocherQuestions(sourceBank, numQuestionsNeeded);
+  saved = false;
+  ended = false;
+  answeredAt = 0;
   // Basculer l'affichage vers la zone de jeu
   document.getElementById('menuScreen').style.display = 'none';
   document.getElementById('playZone').style.display = 'block';
   document.getElementById('congratsScreen').style.display = 'none';
   document.getElementById('btnBackToMenu').style.display = 'block';
-
   // Lancer la première question
   loadQuestion();
 }
-
 // Charger la question courante
 function loadQuestion() {
   userHasAnswered = false;
   const q = currentQuestions[currentIndex];
-
   // Mettre à jour l'en-tête et scoreboard
   document.getElementById('currentQuestionNum').textContent = currentIndex + 1;
   document.getElementById('scoreValue').textContent = score;
-
   // Mettre à jour la barre de progression
   const percentage = (currentIndex / currentQuestions.length) * 100;
   document.getElementById('progressBar').style.width = `${percentage}%`;
-
   // Mettre à jour l'intitulé de la situation
   document.getElementById('situationTag').textContent = `Défi ${currentIndex + 1} sur ${currentQuestions.length}`;
   document.getElementById('situationText').textContent = q.text;
-
   // Réinitialiser les boutons d'options
   const optionsGrid = document.getElementById('optionsGrid');
   optionsGrid.innerHTML = '';
-
   // Créer les boutons QCM
   q.options.forEach((opt, idx) => {
     const btn = document.createElement('button');
@@ -1169,24 +1180,20 @@ function loadQuestion() {
     btn.onclick = () => selectOption(idx);
     optionsGrid.appendChild(btn);
   });
-
   // Cacher le panneau de correction et le bouton suivant
   document.getElementById('feedbackPanel').style.display = 'none';
   document.getElementById('btnNext').style.display = 'none';
 }
-
 // Sélectionner une option
 function selectOption(selectedIdx) {
-  if (userHasAnswered) return;
+  if (userHasAnswered || ended) return;
   userHasAnswered = true;
-
+  answeredAt = Date.now();
   const q = currentQuestions[currentIndex];
   const correctIdx = q.correct;
   const isCorrect = (selectedIdx === correctIdx);
-
   const optionsGrid = document.getElementById('optionsGrid');
   const buttons = optionsGrid.getElementsByTagName('button');
-
   // Appliquer les styles de validation sur les boutons
   for (let i = 0; i < buttons.length; i++) {
     buttons[i].disabled = true; // Désactiver le clic
@@ -1198,7 +1205,6 @@ function selectOption(selectedIdx) {
       buttons[i].classList.add('faded');
     }
   }
-
   // Mettre à jour le score si correct
   if (isCorrect) {
     score++;
@@ -1207,20 +1213,16 @@ function selectOption(selectedIdx) {
   } else {
     showFeedback(false, q);
   }
-
   // Afficher le bouton Continuer
   document.getElementById('btnNext').style.display = 'flex';
 }
-
 // Afficher la correction
 function showFeedback(isCorrect, q) {
   const panel = document.getElementById('feedbackPanel');
   const header = document.getElementById('feedbackHeader');
   const expl = document.getElementById('feedbackExpl');
   const ruleBox = document.getElementById('ruleOfThreeBox');
-
   panel.style.display = 'flex';
-
   if (isCorrect) {
     panel.className = 'feedback-panel feedback-correct';
     header.innerHTML = '🎉 Correct !';
@@ -1228,9 +1230,7 @@ function showFeedback(isCorrect, q) {
     panel.className = 'feedback-panel feedback-wrong';
     header.innerHTML = '❌ Oups, ce n\'est pas tout à fait ça...';
   }
-
   expl.innerHTML = q.expl;
-
   // Afficher la règle de trois sous forme de liste propre
   if (q.steps && q.steps.length > 0) {
     ruleBox.style.display = 'block';
@@ -1244,9 +1244,9 @@ function showFeedback(isCorrect, q) {
     ruleBox.style.display = 'none';
   }
 }
-
 // Passer à la question suivante
 function nextQuestion() {
+  if (!userHasAnswered || ended || Date.now() - answeredAt < 600) return;
   currentIndex++;
   if (currentIndex < currentQuestions.length) {
     loadQuestion();
@@ -1254,20 +1254,31 @@ function nextQuestion() {
     showCongrats();
   }
 }
-
 // Afficher l'écran de fin
 function showCongrats() {
+  ended = true;
+  if (!saved) {
+    saved = true;
+    try {
+      const total = currentQuestions.length;
+      window.parent.saveResult({
+        activity: 'grandeur_vitesse_horaire_qcm',
+        bookTitle: 'Vitesse horaire — QCM niveau ' + currentLevel,
+        score: score,
+        total: total,
+        pct: Math.round(score / total * 100),
+        date: new Date().toLocaleDateString('fr-BE'),
+        time: new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })
+      });
+    } catch (e) {}
+  }
   document.getElementById('playZone').style.display = 'none';
   document.getElementById('congratsScreen').style.display = 'block';
-
   // Barre de progression finale à 100%
   document.getElementById('progressBar').style.width = '100%';
-
   document.getElementById('finalScore').textContent = score;
-
   let title = "Bravo !";
   let message = "";
-
   if (currentLevel === 1) {
     if (score === 10) {
       title = "🏆 Sans-faute !";
@@ -1280,40 +1291,42 @@ function showCongrats() {
       message = "C'est un bon début. Relis bien les explications pour progresser lors de ta prochaine partie.";
     } else {
       title = "💪 Courage !";
-      message = "Entraîne-toi encore ! Diviser la distance totale par les heures est la clé. Recommence pour t'améliorer.";
+      message = "Entraine-toi encore ! Diviser la distance totale par les heures est la clé. Recommence pour t'améliorer.";
     }
   } else { // Niveau 2
     if (score === 5) {
-      title = "🏆 Maître de la Règle de 3 !";
+      title = "🏆 Maitre de la règle de trois !";
       message = "Fantastique ! Les durées complexes et le raisonnement proportionnel n'ont plus aucun secret pour toi.";
     } else if (score >= 3) {
       title = "☀️ Très bon niveau !";
       message = "Félicitations ! Tu as réussi à appliquer la règle de trois sur des fractions d'heures difficiles.";
     } else {
       title = "💪 Ne baisse pas les bras !";
-      message = "La règle de trois sur les heures et minutes demande de l'entraînement. Prends ton temps pour bien lire chaque étape de correction.";
+      message = "La règle de trois sur les heures et minutes demande de l'entrainement. Prends ton temps pour bien lire chaque étape de correction.";
     }
   }
-
   document.getElementById('congratsTitle').textContent = title;
   document.getElementById('congratsText').textContent = message;
 }
-
 // Réinitialiser le niveau actuel
 function initLevel() {
   startLevel(currentLevel);
 }
-
 // Retourner à l'écran d'accueil / menu
 function backToMenu() {
+  ended = true;
   document.getElementById('menuScreen').style.display = 'flex';
   document.getElementById('playZone').style.display = 'none';
   document.getElementById('congratsScreen').style.display = 'none';
   document.getElementById('btnBackToMenu').style.display = 'none';
-
   document.getElementById('mainTitle').textContent = "Situations de Vitesse";
   document.getElementById('mainSubtitle').textContent = "Résous des situations réelles et trouve la bonne vitesse moyenne";
 }
+document.addEventListener('keydown', (e) => {
+  if (e.key !== 'Enter') return;
+  if (document.getElementById('playZone').style.display === 'none') return;
+  if (userHasAnswered && !ended) { e.preventDefault(); nextQuestion(); }
+});
 </script>
 </body>
 </html>

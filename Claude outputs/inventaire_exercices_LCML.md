@@ -1548,6 +1548,15 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Orthographe : Entraine-toi. Copie racine : chemin d'images `assets/` (GitHub Pages sert la racine), fiches/ et public/fiches/ identiques.
 - Tests : jsdom (données vérifiées, vide / « 1,8abc » / « 1,234 » non comptés, +1 cent refusé avec correction bleue, double Entrée bloquée, partie 4/5 → 1 seul saveResult, redémarrage), node --check 7 OK, Playwright 390 px et 1 100 px.
 
+### 06/10 — QCM de vitesse horaire (`grandeur_vitesse_horaire_qcm`, fiches/vitesse_situations.html) — sw.js v589
+- Contenu : 50 situations (niveau 1 : 30, niveau 2 : 20) recalculées par programme → toutes justes, 4 options distinctes. Le poney (15 km en 30 min) refaisait le calcul de l'adolescent en scooter → 12 km en 30 min (24 km/h).
+- **Aucun résultat n'était enregistré** → saveResult (`grandeur_vitesse_horaire_qcm`, « QCM niveau 1/2 »), une fois par série, try/catch.
+- Bonne réponse non mélangée dans fiches/ (position B 19/30 au niveau 1, A 19/20 au niveau 2) ; les copies racine/public mélangeaient avec sort(random) → Fisher–Yates partout, options mélangées en suivant la bonne (≈ 25 % par position sur 3 000 séries). Les 3 copies sont de nouveau identiques.
+- Plusieurs questions d'une série avaient la même réponse (niveau 2 : cinq fois 80 km/h dans la banque) → jamais deux fois la même réponse dans une série.
+- Double clic sur « Question suivante » sautait une question → garde 600 ms ; Entrée passe à la suite après réponse ; retour au menu coupe la série.
+- Orthographe : s'entraine (×2), Entrainement, Entraine-toi, entrainement, « Maitre de la règle de trois ».
+- Tests : jsdom (positions, doublons, double clic, Entrée, niveaux 1 et 2 → 1 saveResult chacun), node --check 7 OK, Playwright 390 px (menu et jeu).
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -1906,7 +1915,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 06/10 | Recettes | `grandeur_proportionnalite_exercice` | fiches/proportionnalite.html |  |
 | ✅ 06/10 | Le rallye des bolides | `grandeur_proportionnalite_rallye_bolides` | fiches/rallye_bolides.html |  |
 | ✅ 06/10 | Le supermarché malin | `grandeur_proportionnalite_supermarche_malin` | fiches/supermarche_malin.html |  |
-| ⬜ | QCM de vitesse horaire | `grandeur_vitesse_horaire_qcm` | fiches/vitesse_situations.html |  |
+| ✅ 06/10 | QCM de vitesse horaire | `grandeur_vitesse_horaire_qcm` | fiches/vitesse_situations.html |  |
 | ⬜ | L'échelle | `grandeur_echelle` | fiches/grandeurs_echelle.html |  |
 
 ### 🔢 Mathématiques — 📊 Traitement de données
