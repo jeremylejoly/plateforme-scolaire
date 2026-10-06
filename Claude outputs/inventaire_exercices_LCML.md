@@ -1741,6 +1741,17 @@ Spécifique :
 - Solution libre en bleu (était verte, confondue avec « correct ») ; légende « Solution » ajoutée.
 - Tests jsdom : 2 000 séries (4/3/3, 0 doublon), vide non compté, tracé nœud par nœud accepté, 2 échecs → solution bleue, 2e essai juste = 0 point, partie 8/10 → 1 sauvegarde, double Entrée sans saut. Capture 390 px sans défilement horizontal.
 
+### 06/10 — Mathématiques → Solides et figures → Le labo des transformations (`solide_transformations_labo`, `fiches/transformations_labo.html` + copies public et racine) — sw.js v609
+- 20 figures (10 translations, 10 rotations ¼ de tour à droite / à gauche et ½ tour) recalculées : images justes, sens de rotation correct à l'écran, tout dans la grille.
+- **Tracé juste compté faux** si l'élève cliquait les nœuds intermédiaires d'un côté (19 figures sur 20 ont des côtés de plus d'une case) → comparaison de nœud en nœud.
+- **À partir de la 2e question, plus aucun message après « Vérifier »** (la fiche cachait la carte en style direct au passage à la suite, et ne la réaffichait plus) → corrigé.
+- **Double clic sur « Suivant » sautait une question** ; sur la dernière, il enregistrait deux fois → garde de 600 ms, fin de série et enregistrement une seule fois, dans un try/catch (`.then` plantait si `saveResult` ne renvoyait pas de promesse).
+- Un seul essai, et la réponse s'affichait (en vert) dès la 1re erreur → 2 essais : au 1er échec, côtés justes en vert, mal placés en rouge, sans la réponse ; point seulement au 1er essai ; après 2 échecs, la bonne figure en bleu (#1f5fbf) avec les flèches / arcs. Légende « Solution ».
+- Séries déséquilibrées (10 tirées sur 20 au hasard, jusqu'à 8 translations) → 5 translations + 5 rotations, mélangées (Fisher–Yates).
+- Moins de 3 sommets : message, pas compté. Figure oubliée ouverte : fermée automatiquement. Entrée = Vérifier puis Suivant.
+- Consignes à l'impératif (« Fais glisser la figure de… ») ; titre qui se cassait mal à 390 px ; nouvelle orthographe (maitrises, entrainement, Continue de t'entrainer ; menu « S'entrainer aux translations… »).
+- Tests jsdom : 2 000 séries 5+5, vide non compté, tracé nœud par nœud accepté, 2 échecs → solution bleue, 2e essai juste = 0 point, double Entrée sans saut, partie 8/10 → 1 sauvegarde, Recommencer OK. Capture 390 px sans défilement horizontal.
+
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
 | Exercice | Défaut |
@@ -2161,7 +2172,7 @@ Spécifique :
 | ✅ 06/10 | Trouve le bon solide (Définitions) | `polyedres_definitions` | fiches/polyedres_definitions.html |  |
 | ✅ 06/10 | Trouve les caractéristiques (Définitions) | `polyedres_caracteristiques` | fiches/polyedres_caracteristiques.html |  |
 | ✅ 06/10 | Les axes de symétrie | `solide_symetrie` | fiches/solide_symetrie.html |  |
-| ⬜ | Le labo des transformations | `solide_transformations_labo` | fiches/transformations_labo.html |  |
+| ✅ 06/10 | Le labo des transformations | `solide_transformations_labo` | fiches/transformations_labo.html |  |
 | ⬜ | Projections de cubes (Solides 3D) | `solide_projections_cubes` | fiches/solides_projections.html |  |
 | ⬜ | Le vocabulaire géométrique | `solide_vocabulaire` | fiches/vocabulaire_solides.html |  |
 
