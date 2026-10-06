@@ -1379,7 +1379,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Double clic sur « Situation suivante » sautait une situation → bloqué ; un seul enregistrement en fin de série.
 - Nouvelle orthographe : iles, boite, maitrises.
 - Tests jsdom : partie 7 / 10 avec doubles clics → 1 sauvegarde ; « Recommencer » remet à zéro ; syntaxe OK.
-- ⚠️ Même appel inexistant `handleActivityScore` (donc aucun résultat enregistré) dans 6 autres fiches, à corriger quand on y arrivera : ~~aire_quadrillage~~ (v571), ~~aire_conversions~~ (v572), ~~aire_formules~~ (v574), ~~volume_cubes~~ (v576), ~~volume_formules~~ (v577), volume_conversions.
+- ⚠️ Même appel inexistant `handleActivityScore` (donc aucun résultat enregistré) dans 6 autres fiches, à corriger quand on y arrivera : ~~aire_quadrillage~~ (v571), ~~aire_conversions~~ (v572), ~~aire_formules~~ (v574), ~~volume_cubes~~ (v576), ~~volume_formules~~ (v577), ~~volume_conversions~~ (v578). **Les 7 fiches concernées sont corrigées.**
 
 ### 05/10 — Maths › Grandeurs › L'aire › Le Géomètre des Carreaux (`grandeur_aire_quadrillage`, `fiches/aire_quadrillage.html` + copies public et racine) — sw.js v571
 - 51 figures recalculées par la formule du lacet : toutes les aires justes, aucun polygone croisé, toutes dans la grille.
@@ -1449,6 +1449,15 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 - Saisie : `parseInt` (« 12abc » = 12) + fenêtre `alert()` → lecture stricte, espaces de milliers acceptés, message, rien n'est compté. Double clic sur « Solide suivant » → plus de solide sauté ; Entrée passe à la suite (pas sur un double Entrée).
 - Nouvelle orthographe : maitrisée.
 - Tests jsdom : vide/« 12abc » non comptés, double Entrée sans saut, partie 7 / 10 → 1 sauvegarde ; syntaxe OK.
+
+### 06/10 — Maths › Grandeurs › Le volume › Le Laboratoire des liquides (`grandeur_volume_liquides`, `fiches/volume_conversions.html` + copies public et racine) — sw.js v578
+- Conversions générées (m³, dm³, cm³ ↔ l, dl…) : sur 3 000 séries, réponse = calcul exact, explication cohérente, jamais de conversion capacité → capacité (choix de Jeremy noté dans le code).
+- **Aucun résultat enregistré** : `handleActivityScore` inexistante, et avec l'ancien identifiant `grandeur_volume_conversions` → `saveResult` sous `grandeur_volume_liquides` (identifiant du menu et du plan), une seule fois par série.
+- Saisie : « 12abc » lu comme 12, fenêtre `alert()` → lecture stricte (espaces de milliers et virgule acceptés), message, rien n'est compté ; comparaison tolérante aux arrondis machine.
+- Même quantité deux fois dans une série (ex. 2 dm³ → cm³ puis 2 000 cm³ → dm³) → évité. Double clic sur « Conversion suivante » → plus de question sautée ; Entrée passe à la suite (pas sur un double Entrée).
+- Symboles de capacité en minuscules comme dans le reste du site (ml, cl, dl, l, dal, hl ; avant mL, L, kL…) ; le kilolitre (peu utilisé en primaire) n'est plus demandé, l'abaque indique « m³ = 1 000 l ». Nombres affichés avec espaces de milliers.
+- Nouvelle orthographe : maitrises, entrainer. Capture 390 px OK.
+- Tests jsdom : vide/« 12abc » non comptés, « 2 500 » accepté, double Entrée sans saut, partie 7 / 10 → 1 sauvegarde ; syntaxe OK.
 
 ## Défauts déjà confirmés à la main (à traiter en priorité)
 
@@ -1791,7 +1800,7 @@ Commencée le 5 octobre 2026. Ce document est mis à jour à chaque séance.
 | ✅ 05/10 | Le Calcul d'Aires Composées | `grandeur_aire_composee` | fiches/aire_composee.html |  |
 | ✅ 06/10 | Le Bâtisseur de Cubes (Volume 3D) | `grandeur_volume_cubes` | fiches/volume_cubes.html |  |
 | ✅ 06/10 | L'Architecte des Pavés (Formules) | `grandeur_volume_architecte` | fiches/volume_formules.html |  |
-| ⬜ | Le Laboratoire des Liquides | `grandeur_volume_liquides` | fiches/volume_conversions.html |  |
+| ✅ 06/10 | Le Laboratoire des Liquides | `grandeur_volume_liquides` | fiches/volume_conversions.html |  |
 
 ### 🔢 Mathématiques — 📐 Grandeurs — Durées, Monnaie & Vitesse
 
